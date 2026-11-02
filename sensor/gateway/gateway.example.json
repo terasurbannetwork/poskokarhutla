@@ -1,0 +1,11 @@
+{
+  "url": "http://localhost:8788/api/sensor/baca",
+  "url_lapor": "",
+  "alat_gateway": {"id": "GW-BJN-01", "kunci": "GANTI-DARI-kunci_alat.py"},
+  "folder_antrean": "antrean",
+  "rahasia_webhook": "GANTI-DENGAN-ACAK-PANJANG",
+  "alat": {
+    "tma-bjn-01": {"id": "TMA-BJN-01", "kunci": "GANTI-DARI-kunci_alat.py", "tinggi_pasang_cm": 500, "nodes": ["!GANTI-id-node-radio"]}
+  },
+  "mqtt": {"host": "GANTI-broker-pribadi.contoh.id", "port": 8883, "tls": true, "user": "gateway", "sandi": "GANTI", "topik": "msh/ID/2/json/KANAL-PRIBADI/#"}
+}

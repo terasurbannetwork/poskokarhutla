@@ -47,5 +47,7 @@ def lebar_teks(runs):
     """Lebar EMU deretan run [(teks, sz seperseratus pt, tebal)], diukur dengan metrik Arial (Roboto deck tidak terpasang; lebarnya mirip).
     Dipakai untuk menengahkan ikon + tulisan di kotak kepala (ganti.py, tambah_peta.py)."""
     from PIL import ImageFont
-    f = {b: ImageFont.truetype(f'/System/Library/Fonts/Supplemental/Arial{" Bold" if b else ""}.ttf', 1000) for b in (False, True)}
+    jalur = lambda b: next(p for p in (f'/System/Library/Fonts/Supplemental/Arial{" Bold" if b else ""}.ttf',
+                                       rf'C:\Windows\Fonts\arial{"bd" if b else ""}.ttf') if os.path.exists(p))   # Mac, Windows (30 Okt)
+    f = {b: ImageFont.truetype(jalur(b), 1000) for b in (False, True)}
     return round(sum(f[b].getlength(t) * sz / 100 / 1000 * 12700 for t, sz, b in runs))

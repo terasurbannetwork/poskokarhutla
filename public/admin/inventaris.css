@@ -20,8 +20,10 @@ button.iv-kartu{cursor:pointer}.iv-kartu[aria-pressed=true]{outline:2px solid va
 .iv-pil.ok{background:color-mix(in srgb,var(--c4) 22%,transparent);color:var(--ink)}.iv-pil.basi{background:color-mix(in srgb,var(--c2) 28%,transparent);color:var(--ink)}
 .iv-pil.kosong{background:color-mix(in srgb,var(--c1) 24%,transparent);color:var(--ink)}.iv-pil.dummy{background:var(--emas);color:#2a2000}
 .iv-tabel-wadah{overflow-x:auto;border-radius:12px;box-shadow:var(--ring);background:var(--card)}
-.iv-tabel{border-collapse:collapse;width:100%;font-size:12.5px}.iv-tabel th,.iv-tabel td{padding:8px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
-.iv-tabel th:first-child,.iv-tabel td:first-child{text-align:left;position:sticky;left:0;background:var(--card)}.iv-tabel td.nol,.iv-tabel td.tak{color:var(--ink3)}
+.iv-tabel{border-collapse:collapse;width:100%;font-size:12.5px}.iv-tabel th,.iv-tabel td{padding:8px 10px;text-align:center;white-space:nowrap;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.iv-tabel td:first-child{text-align:left;position:sticky;left:0;background:var(--card)}
+.iv-tabel th:first-child{text-align:center;position:sticky;left:0;background:var(--card)}
+.iv-tabel th:first-child{text-align:center}.iv-tabel td.nol,.iv-tabel td.tak{color:var(--ink3)}
 .iv-tabel td.rusak_berat,.iv-tabel td.servis{color:var(--c1);font-weight:700}.iv-tabel td.dikerahkan{color:var(--c5);font-weight:700}
 .iv-jumlah td{font-weight:800;border-top:2px solid var(--line)}
 .iv-daftar{list-style:none;margin:0 0 8px;padding:0;display:grid;gap:8px}

@@ -1,5 +1,17 @@
 # Generator laporan BNPB
 
+## Semua PPT lewat deck.py (pemilik 31 Okt 2026)
+
+"Kalo bentuknya dalam ppt semuanya harus pasti ke deck.py." Generator tetap menghitung data dan menggambar slide isi;
+`lewat_deck.py` lalu membingkai ulang berkasnya dengan mesin deck BNPB (`~/.claude/skills/ppt-konsultan/bnpb/scripts/deck.py`,
+atau setel `DECK_BNPB`): sampul dan penutup templat terbaru, pita kaki navy, warna dipaskan ke palet, penanda bagian, dan
+gerbang QA deck.py. Format di `deck.py` (`FORMAT`): `harian`, `penanganan`, `daerah`, `kajian`.
+
+- `harian.py` sudah lewat deck.py (slide 1 jadi sampul, "Terima kasih" jadi penutup, sisanya slide `impor`).
+- `penanganan.py` BELUM: templatnya memakai huruf 4,5 pt (batas deck.py 6 pt), perlu ditata ulang dulu.
+- Mesin tanpa skill (Windows) berhenti dengan pesan jelas; jalankan langkah akhir di Mac yang punya skill.
+- Gerbang QA deck.py GAGAL = berkas tetap dibuat, proses berhenti; baca `qa/` sebelum menyerahkan.
+
 ## Bahan Pusdalops di layar (/laporan-bnpb)
 
 Sejak 25 Okt 2026 bahan harian Dit. Koordalops juga bisa dimasukkan lewat layar, tanpa menjalankan
@@ -91,7 +103,7 @@ masing-masing (urutan HOTSPOT, FIRESPOT, LUAS TERBAKAR, BELUM PADAM, sama dengan
   dengan kelas BMKG; uji `python3 pil_sendiri.py`). Dengan `--bmkg`: `wa_operasi.py` (uji `python3 wa_operasi.py`).
 - Skrip deck di `penanganan/`: `kisi.py` (geometri kolom, dipakai bersama), `ganti.py` (tabel, baca param.json),
   `tambah_peta.py`, `peta.mjs`, `bnpb.py` (pil, slide operasi), `ikon.mjs` (ikon Pemda; ikon FIRESPOT disalin dari deck 25 Okt), `cek6.py` (gerbang: tiap sel tabel harus cocok angka.json).
-- Provinsi 6 teratas tanpa baris di templat (selain 62,16,63,15,61,93,72,64) butuh `penanganan/logo/<kode>.png`; tanpa itu generator berhenti dengan pesan jelas.
+- Provinsi 6 teratas tanpa baris di templat (selain 62,16,63,15,61,93,72,64) memakai `penanganan/logo/<kode>.png` bila ada, kalau tidak lambang layar `public/lambang/provinsi/<kode>.png` (semua 38 provinsi tersedia); baris disalin dari baris Kaltim.
 
 ## Penanganan banjir, longsor dan rob
 

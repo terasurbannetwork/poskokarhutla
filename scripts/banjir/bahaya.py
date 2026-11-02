@@ -7,9 +7,15 @@ adalah NILAI TERTINGGI: "ada bagian kecamatan ini dengan indeks bahaya setinggi 
 ponytail: 10 titik per kecamatan, bukan statistik zonal penuh; ganti dengan computeHistograms per poligon bila
 kecamatan besar (Papua, Kalimantan) terbukti terlewat.
 
-Pakai:  python3 scripts/data/bahaya.py        |  python3 scripts/data/bahaya.py uji
+Mode `kelas` -> public/banjir/data/bahaya_kelas.json: SEBARAN kelas per kecamatan, bukan satu nilai tertinggi.
+Tiap kecamatan dikirim utuh sebagai poligon ke computeHistograms InaRISK, jadi yang dihitung SEMUA piksel 100 m di
+dalamnya. Kelas mengikuti InaRISK: rendah < 0,333 <= sedang < 0,666 <= tinggi. Hasilnya persen luas kecamatan per
+kelas; sisanya (100 - jumlah) = di luar zona bahaya. Luas satu piksel = (100 m x cos lintang)^2 karena raster
+memakai World Mercator (EPSG 3395). bahaya.json TIDAK diubah: status.py memakai nilai tertingginya.
+
+Pakai:  python3 scripts/banjir/bahaya.py   |   python3 scripts/banjir/bahaya.py kelas   |   python3 scripts/banjir/bahaya.py uji
 """
-import json, os, sys, time
+import json, math, os, sys, time
 from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -109,6 +115,110 @@ def main():
     print(f"bahaya.json: {len(out)} kecamatan, {time.time() - mulai:.0f} dtk", file=sys.stderr)
 
 
+KELAS_LAPISAN = ("banjir", "bandang", "longsor")
+AMBANG_KELAS = (0.333, 0.666)  # InaRISK: rendah < 0,333 <= sedang < 0,666 <= tinggi
+PIKSEL_M = 100.0
+
+
+def kelas_hist(h):
+    """Histogram ArcGIS {min, max, counts} -> [n_rendah, n_sedang, n_tinggi] menurut nilai tengah tiap kotak."""
+    n, c = [0, 0, 0], h["counts"]
+    lebar = (h["max"] - h["min"]) / len(c)
+    for i, x in enumerate(c):
+        if x:
+            v = h["min"] + (i + .5) * lebar
+            n[(v >= AMBANG_KELAS[0]) + (v >= AMBANG_KELAS[1])] += x
+    return n
+
+
+def luas_km2(ring):
+    """Luas cincin [lon, lat] (km2), proyeksi sinusoidal lokal; cukup untuk kecamatan (galat < 0,5%)."""
+    la0 = sum(p[1] for p in ring) / len(ring)
+    kx = 111.32 * math.cos(math.radians(la0))
+    pts = [(x * kx, y * 110.574) for x, y in ring]
+    return abs(sum(x1 * y2 - x2 * y1 for (x1, y1), (x2, y2) in zip(pts, pts[1:] + pts[:1]))) / 2
+
+
+def poligon_kec():
+    """-> {"prov|kab|kec": {"rings": [...], "km2": luas, "lat": lintang tengah}}; kecamatan terbelah digabung."""
+    out = {}
+    for kode in PROVINSI:
+        for f in json.load(open(os.path.join(AKAR, "public/geo/kecamatan", f"{kode}.json")))["features"]:
+            g = f["geometry"]
+            polys = g["coordinates"] if g["type"] == "MultiPolygon" else [g["coordinates"]]
+            k = f"{kode}|{f['properties']['kab']}|{f['properties']['kec']}"
+            v = out.setdefault(k, {"rings": [], "km2": 0.0, "lat": sentroid(max((p[0] for p in polys), key=len))[0]})
+            for p in polys:
+                v["rings"] += p
+                v["km2"] += luas_km2(p[0]) - sum(luas_km2(r) for r in p[1:])
+    return out
+
+
+def persen_kelas(n, km2, lat):
+    """Jumlah piksel per kelas -> persen luas kecamatan (1 desimal, total dibatasi 100)."""
+    px_km2 = (PIKSEL_M * math.cos(math.radians(lat)) / 1000) ** 2
+    if km2 <= 0:
+        return [0.0, 0.0, 0.0]
+    p = [100 * x * px_km2 / km2 for x in n]
+    s = sum(p)
+    p = [round(x * (100 / s if s > 100 else 1), 1) for x in p]
+    lebih = round(sum(p) - 100, 1)
+    if lebih > 0:  # pembulatan bisa memberi 100,1: kurangi dari kelas terbesar
+        i = p.index(max(p))
+        p[i] = round(p[i] - lebih, 1)
+    return p
+
+
+def histogram(layanan, rings):
+    geom = json.dumps({"rings": [[[round(x, 5), round(y, 5)] for x, y in r] for r in rings], "spatialReference": {"wkid": 4326}})
+    r = ambil(f"{BASIS}/{layanan}/ImageServer/computeHistograms",
+              {"geometry": geom, "geometryType": "esriGeometryPolygon", "f": "json"})
+    if "error" in r:
+        raise RuntimeError(f"{layanan}: {r['error']}")
+    h = r.get("histograms") or []
+    return kelas_hist(h[0]) if h and h[0].get("counts") else [0, 0, 0]
+
+
+def main_kelas():
+    mulai = time.time()
+    kec = poligon_kec()
+    kerja = [(k, b) for k in kec for b in KELAS_LAPISAN]
+    print(f"{len(kec)} kecamatan x {len(KELAS_LAPISAN)} lapisan = {len(kerja)} histogram", file=sys.stderr)
+
+    def satu(kb):
+        k, b = kb
+        try:
+            return k, b, histogram(LAPISAN[b], kec[k]["rings"])
+        except RuntimeError as e:  # gagal ambil != tanpa zona: dicatat, tidak ditulis 0, tidak mematikan proses
+            print(f"  gagal {k} {b}: {e}"[:200], file=sys.stderr)
+            return k, b, None
+    out = {k: {"km2": round(v["km2"], 2)} for k, v in kec.items()}
+    gagal = []
+    with ThreadPoolExecutor(4) as ex:
+        for i, (k, b, n) in enumerate(ex.map(satu, kerja), 1):
+            if n is None:
+                gagal.append(f"{k}|{b}")
+                continue
+            p = persen_kelas(n, kec[k]["km2"], kec[k]["lat"])
+            if any(p):
+                out[k][b] = p
+            if i % 2000 == 0:
+                print(f"  {i}/{len(kerja)} ({time.time() - mulai:.0f} dtk)", file=sys.stderr)
+    simpan(os.path.join(KELUAR, "bahaya_kelas.json"), {
+        "sumber": "InaRISK BNPB (gis.bnpb.go.id), raster bahaya 100 m; computeHistograms per poligon kecamatan",
+        "dibuat": time.strftime("%Y-%m-%d"),
+        "kelas": ["rendah", "sedang", "tinggi"], "ambang": list(AMBANG_KELAS),
+        "catatan": "Nilai = persen luas kecamatan per kelas; 100 dikurangi jumlahnya = di luar zona bahaya. km2 = luas poligon. "
+                   "gagal = kecamatan|lapisan yang tidak terambil (bukan berarti tanpa zona).",
+        "gagal": gagal, "kec": out})
+    if gagal:
+        print(f"  {len(gagal)} histogram gagal; jalankan ulang untuk mengisinya", file=sys.stderr)
+    for b in KELAS_LAPISAN:
+        t = sum(1 for v in out.values() if v.get(b, [0, 0, 0])[2] >= 25)
+        print(f"  {b}: {sum(1 for v in out.values() if b in v)} kec punya zona, {t} kec >= 25% luas kelas tinggi", file=sys.stderr)
+    print(f"bahaya_kelas.json: {time.time() - mulai:.0f} dtk", file=sys.stderr)
+
+
 def uji():
     persegi = [[0, 0], [2, 0], [2, 2], [0, 2]]
     assert sentroid(persegi) == (1.0, 1.0)
@@ -118,8 +228,18 @@ def uji():
     huruf_l = [[0, 0], [3, 0], [3, 1], [1, 1], [1, 3], [0, 3]]  # bentuk L: sebagian titik kisi di luar
     assert 1 < len(cuplikan(huruf_l)) < 10
     assert nilai("") == 0.0 and nilai("0.6666") == 0.667 and nilai(None) == 0.0
+    # 4 kotak 0..1: tengah 0,125 / 0,375 / 0,625 / 0,875 -> rendah, sedang, sedang, tinggi
+    assert kelas_hist({"min": 0, "max": 1, "counts": [5, 1, 2, 7]}) == [5, 3, 7]
+    assert kelas_hist({"min": .7, "max": .7, "counts": [4]}) == [0, 0, 4]  # min = max: semua satu nilai
+    # persegi 0,01 derajat di ekuator ~ 1,23 km2
+    assert abs(luas_km2([[0, 0], [.01, 0], [.01, .01], [0, .01]]) - 1.231) < .01
+    # 100 piksel di ekuator = 1 km2 dari kecamatan 4 km2 = 25%; jumlah > 100 dinormalkan
+    assert persen_kelas([100, 0, 0], 4.0, 0) == [25.0, 0.0, 0.0]
+    assert sum(persen_kelas([300, 300, 0], 4.0, 0)) == 100.0
+    assert sum(persen_kelas([333, 333, 334], 10.0, 0)) <= 100.0  # pembulatan tidak melampaui 100
+    assert persen_kelas([5, 5, 5], 0, 0) == [0.0, 0.0, 0.0]
     print("ok bahaya")
 
 
 if __name__ == "__main__":
-    uji() if sys.argv[1:] == ["uji"] else main()
+    {"uji": uji, "kelas": main_kelas}.get((sys.argv[1:] or [""])[0], main)()

@@ -40,8 +40,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
 .rr-gulir{overflow-x:auto}
 .rr-tabel{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
 .rr-tabel caption{text-align:left;padding-bottom:6px}
-.rr-tabel th,.rr-tabel td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right}
-.rr-tabel th:first-child,.rr-tabel td:first-child{text-align:left}
+.rr-tabel th,.rr-tabel td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:center}
+.rr-tabel td:first-child{text-align:left}
+.rr-tabel th:first-child{text-align:center}
 .rr-tabel tr.kab td{font-weight:800;background:color-mix(in srgb,var(--navy2) 8%,var(--card))}
 .rr-tabel tr.kec td:first-child{padding-left:20px}
 .rr-tabel tr.jumlah td{font-weight:800;border-top:2px solid var(--ink)}

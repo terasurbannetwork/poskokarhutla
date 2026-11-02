@@ -331,7 +331,7 @@ test("batch tampilan: prakiraan 4 hari sebaris, tabel prakiraan pil+persen sebar
   assert.match(css, /\.grid\.g4\.pa-4\{grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/); assert.match(pk, /class="grid g4 pa-4"/);
   assert.match(css, /\.laci table\.tb3 td small\{display:inline/); assert.match(css, /table\.tb3 thead th\{[^}]*color:#fff;text-align:center/);
   assert.match(css, /\.tools \.db-bmkg\{order:99;width:100%/);
-  assert.match(pk, /function tabelBahaya\(bh\)/); assert.match(pk, /<th>Bahaya<\/th><th>Indeks<\/th><th>Kelas<\/th>/); assert.match(pk, /title="Sampel raster InaRISK BNPB di titik tengah kecamatan\."/);
+  assert.match(pk, /function tabelBahaya\(bh\)/); assert.match(pk, /<th>Bahaya<\/th><th>Indeks<\/th><th>Kelas<\/th>/); assert.match(pk, /Nilai tertinggi dari 10 titik cuplik di dalam kecamatan\. Angka ini yang dipakai aturan status\./); assert.match(pk, /function sebaranBahaya\(kunci\)/);
   assert.ok(!/<p class="fnd">Sampel raster InaRISK/.test(pk), "kalimat sampel pindah ke tooltip");
 });
 

@@ -6,6 +6,7 @@ export const IKON = {
   banjir: '<path fill="#4f9be0" d="M12 2.5s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/><path fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" d="M9 14.5a3 3 0 0 0 3 3"/>',
   gempa: '<path fill="#8a6d4e" d="M2 13h4l2-5 3 10 3-12 2 7h6v2h-7l-1-3-3 11-3-10-1 3H2z"/>',
   cuaca: '<path fill="#7d8ca3" d="M7 18a5 5 0 1 1 1.2-9.9A6 6 0 0 1 19.5 10 4 4 0 0 1 18 18z"/><path fill="#e3b94e" d="m12 13-2 5h2.5l-1 4 4-6h-2.5l1.5-3z"/>',
+  pesisir: '<path fill="none" stroke="#2f7fb8" stroke-width="2" stroke-linecap="round" d="M2.5 9c2.2-2.4 4.3-2.4 6.5 0s4.3 2.4 6.5 0 4.3-2.4 6 0M2.5 14c2.2-2.4 4.3-2.4 6.5 0s4.3 2.4 6.5 0 4.3-2.4 6 0M2.5 19c2.2-2.4 4.3-2.4 6.5 0s4.3 2.4 6.5 0 4.3-2.4 6 0"/>',
   udara: '<path fill="none" stroke="#4a9d9c" stroke-width="2" stroke-linecap="round" d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/>',
   kekeringan: '<circle cx="12" cy="12" r="4.5" fill="#d9a441"/><path fill="none" stroke="#d9a441" stroke-width="1.8" stroke-linecap="round" d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/>',
   gunungapi: '<path fill="#b5523b" d="M3 21 9 10h6l6 11z"/><path fill="#e58a45" d="M10 10l1-3h2l1 3z"/><path fill="none" stroke="#9aa3ad" stroke-width="1.6" stroke-linecap="round" d="M12 6c-1-1.5 0-3 1.5-3.5M14 5c1-1 2.5-1 3.5 0"/>',
@@ -20,11 +21,17 @@ async function gambar(d) {
   if (!r.ok) throw new Error(r.status);
   /* TAMPIL berisi id = hanya itu yang bisa dibuka dari menu, sisanya berlabel "Soon". Kosong = semua bencana berstatus aktif
      terbuka, plus "Semua bencana". Pemilik menutup lagi bencana selain karhutla jadi "Soon" (21 Okt 2026), lalu membuka banjir (27 Okt 2026). */
-  const TAMPIL = new Set(["karhutla", "banjir"]);
-  const daftar = (await r.json()).bencana.filter(b => IKON[b.ikon]);
+  const TAMPIL = new Set(["karhutla", "banjir", "pesisir", "cuaca"]);
+  const reg = (await r.json()).bencana;
+  /* urutan menu (pemilik, 1 Nov 2026, dikonfirmasi ulang): Karhutla, Banjir, Cuaca Ekstrem tepat di bawah Banjir, lalu Pesisir,
+     Gempa, Gunung api, Kekeringan; sisanya (udara) di belakang */
+  const URUT = ["karhutla", "banjir", "cuaca", "pesisir", "gempa", "gunungapi", "kekeringan"];
+  const nomor = b => (n => n < 0 ? URUT.length : n)(URUT.indexOf(b.id));
+  const lengkap = reg.slice().sort((x, y) => nomor(x) - nomor(y)).filter(b => IKON[b.ikon]);
+  const daftar = lengkap.filter(b => b.menu !== false);   /* menu:false = halaman hidup tapi bukan jenis bencana BNPB (udara) */
   const buka = b => !TAMPIL.size ? b.status === "aktif" : TAMPIL.has(b.id);
   const semua = d.dataset.bencana === "semua";   /* beranda semua bencana: judul ringkasan tetap, tiap bencana hidup jadi tautan */
-  const ini = semua ? {} : daftar.find(b => b.id === d.dataset.bencana) || daftar[0];
+  const ini = semua ? {} : lengkap.find(b => b.id === d.dataset.bencana) || daftar[0];
   if (!ini) return;
   const lokasi = rata(location.pathname);
   const tanpaSegera = "tanpaSegera" in d.dataset;
@@ -35,10 +42,11 @@ async function gambar(d) {
   }).join("");
   const sr = d.querySelector("summary .sr")?.outerHTML || "";
   if (!semua) d.querySelector("summary").innerHTML = svg(IKON[ini.ikon]) + sr + esc(ini.nama);
-  /* Tautan polos non-bencana (bukan entri bencana.json): Prediksi, Kemitraan, halaman khusus masuk. */
-  const prediksi = `<hr><a href="/prediksi"${location.pathname.startsWith("/prediksi") ? ' aria-current="page"' : ""}>${svg('<path d="M3 17l5-6 4 3 8-9M15 5h5v5"/>', ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"')}Prediksi</a>`;
-  const kemitraan = `<a href="/kemitraan"${location.pathname.startsWith("/kemitraan") ? ' aria-current="page"' : ""}>${svg('<path d="M3 10l9-5 9 5-9 5zM7 12v4c0 1.5 2.2 3 5 3s5-1.5 5-3v-4"/>', ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"')}Kemitraan</a>`;
-  d.querySelector(".menu").innerHTML = butir + prediksi + kemitraan;  /* "Tentang kami" dicabut dari menu (pemilik, 20 Okt 2026); /tentang tetap bisa dibuka lewat URL */
+  /* Prediksi bukan jenis bencana: tombol sendiri di kepala, tepat sesudah menu bencana (tautan polos, tanpa JS klik). */
+  if (!d.nextElementSibling?.classList.contains("bc-pred"))
+    d.insertAdjacentHTML("afterend", `<a class="bc-pred" href="/prediksi"${location.pathname.startsWith("/prediksi") ? ' aria-current="page"' : ""}>${svg('<path d="M3 17l5-6 4 3 8-9M15 5h5v5"/>', ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"')}<span>Prediksi</span></a>`);
+  const kemitraan = `<hr><a href="/kemitraan"${location.pathname.startsWith("/kemitraan") ? ' aria-current="page"' : ""}>${svg('<path d="M3 10l9-5 9 5-9 5zM7 12v4c0 1.5 2.2 3 5 3s5-1.5 5-3v-4"/>', ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"')}Kemitraan</a>`;
+  d.querySelector(".menu").innerHTML = butir + kemitraan;  /* "Tentang kami" dicabut dari menu (pemilik, 20 Okt 2026); /tentang tetap bisa dibuka lewat URL */
   d.classList.toggle("ada-segera", (!tanpaSegera || TAMPIL.size > 0) && daftar.some(b => !buka(b)));
 }
 

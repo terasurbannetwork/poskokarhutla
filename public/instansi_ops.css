@@ -42,7 +42,7 @@ html.op-buka{overflow:hidden}
 .op-rinci>summary{cursor:pointer;font-weight:800;display:flex;align-items:center;gap:8px;min-height:44px}.op-rinci ul{margin:6px 0;padding-left:18px}
 .op-dls{display:grid;gap:4px;margin:0}.op-dl{display:grid;grid-template-columns:minmax(90px,150px) minmax(0,1fr);gap:8px}.op-dl dt{font-size:13px;font-weight:700;color:var(--o-ink2)}.op-dl dd{margin:0;overflow-wrap:anywhere}
 .op-linimasa{list-style:none;margin:0;padding:0;display:grid;gap:8px}.op-linimasa li{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;padding-bottom:8px;border-bottom:1px solid var(--o-garis)}.op-jam{font-size:13px;font-weight:700;color:var(--o-ink2);min-width:120px}
-.op-tabel{width:100%;border-collapse:collapse;font-size:14px;display:block;overflow-x:auto}.op-tabel th,.op-tabel td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--o-garis)}
+.op-tabel{width:100%;border-collapse:collapse;font-size:14px;display:block;overflow-x:auto}.op-tabel td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--o-garis)}.op-tabel th{text-align:center;padding:6px 8px;border-bottom:1px solid var(--o-garis)}
 .op-serah{display:grid;gap:10px;padding-top:6px}
 @media (min-width:1000px){
   .op-badan{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start}
@@ -55,7 +55,8 @@ html.op-buka{overflow:hidden}
   html.op-buka{overflow:visible}
   .op-cetak-doc{display:block;color:#000;font:12pt/1.45 system-ui,sans-serif}
   .op-cetak-doc h1{font-size:18pt;margin:0 0 6pt}.op-cetak-doc h2{font-size:13pt;margin:14pt 0 4pt}
-  .op-cetak-doc table{width:100%;border-collapse:collapse}.op-cetak-doc th,.op-cetak-doc td{border:1px solid #000;padding:4pt 6pt;text-align:left;vertical-align:top}.op-cetak-doc th{width:28%;background:#eee}
+  .op-cetak-doc table{width:100%;border-collapse:collapse}.op-cetak-doc td{border:1px solid #000;padding:4pt 6pt;text-align:left;vertical-align:top}.op-cetak-doc th{border:1px solid #000;padding:4pt 6pt;text-align:center;vertical-align:top}
+.op-cetak-doc th{text-align:center}.op-cetak-doc th{width:28%;background:#eee}
   .op-cetak-doc .op-ttd{display:flex;justify-content:space-between;margin-top:28pt}.op-cetak-doc .op-ttd>div{width:45%}
 }
 @media (prefers-reduced-motion:reduce){.op-layar *{animation:none!important;transition:none!important}}

@@ -50,6 +50,33 @@ def unik(titik, kunci_hari, kunci=lambda p: (p["s"], p["c"], p["lat"], p["lon"])
     return out
 
 
+def yakin_maks(titik, kunci_hari, kunci=lambda p: (p["s"], p["c"], p["lat"], p["lon"])):
+    """{(hari, sel): keyakinan tertinggi} di antara semua deteksi yang dihitung() di sel itu. unik() mewakilkan sel dengan deteksi PERTAMA,
+    yang bisa saja rendah padahal satelit lain di sel yang sama melihat tinggi; keyakinan sel yang dilaporkan = ini (kelas 0 rendah < 1 sedang < 2 tinggi)."""
+    m = {}
+    for p in titik:
+        s, c, la, lo = kunci(p)
+        if dihitung(s, c):
+            k = (kunci_hari(p), sel(la, lo)); m[k] = max(m.get(k, c), c)
+    return m
+
+
+BMKG_DEFINISI = ("Pembanding definisi BMKG (faktsheet 19 Okt 2026): titik mentah tanpa buang kembaran, MODIS Terra+Aqua, VIIRS S-NPP, VIIRS NOAA-20, "
+                 "keyakinan tinggi saja, hari kalender WIB, dalam batas provinsi; NOAA-21 tidak ikut; sumber panas tetap tidak dibuang. "
+                 "Cocok persis 1.744 titik nasional 18 Okt 2026. BUKAN angka headline (lokasi unik, semua keyakinan, empat satelit).")
+BMKG_CATATAN = "S-NPP berhenti didistribusikan FIRMS 1 Nov 2026 13.00 UTC: sesudahnya deret ini hanya MODIS + NOAA-20, jadi tidak sebanding dengan hari sebelumnya."
+BMKG_SENSOR = ("M", "N", "N20")
+
+
+def seri_bmkg(titik, kunci_hari, prov):
+    """{prov: {hari: jumlah}} menurut definisi BMKG (lihat BMKG_DEFINISI); titik = dict s, c (0-2), plus apa yang dibaca kunci_hari dan prov."""
+    out = {}
+    for p in titik:
+        if p["s"] in BMKG_SENSOR and p["c"] == 2:
+            d = out.setdefault(prov(p), {}); h = kunci_hari(p); d[h] = d.get(h, 0) + 1
+    return out
+
+
 if __name__ == "__main__":
     p = lambda s, c, la, lo, h="10-25": {"s": s, "c": c, "lat": la, "lon": lo, "h": h}
     T = [p("N20", 1, -2.0, 113.0), p("N21", 2, -2.0001, 113.0001),   # sel sama, satelit lain: sekali
@@ -59,6 +86,10 @@ if __name__ == "__main__":
     assert KEYAKINAN_MIN == 0, "pemilik 28 Okt 2026: keyakinan rendah ikut dihitung"
     u = unik(T, lambda q: q["h"])
     assert [(q["s"], q["h"]) for q in u] == [("N20", "10-25"), ("N21", "10-25"), ("N", "10-24"), ("M", "10-25")], u
+    ym = yakin_maks(T, lambda q: q["h"])
+    assert ym[("10-25", sel(-2.0, 113.0))] == 2 and ym[("10-24", sel(-2.0, 113.0))] == 1 and ym[("10-25", sel(-3.0, 114.0))] == 0, ym   # N20 sedang dulu, N21 tinggi kemudian -> tinggi
+    sb = seri_bmkg([p("N20", 2, -2.0, 113.0), p("N20", 2, -2.0, 113.0), p("N21", 2, -2.0, 113.0), p("M", 1, -2.0, 113.0), p("N", 2, -2.0, 113.0, "10-24")], lambda q: q["h"], lambda q: "62")
+    assert sb == {"62": {"10-25": 2, "10-24": 1}}, sb   # mentah (kembaran dihitung), tinggi saja, N21 dan sedang tidak
     assert not dihitung("X", 2) and dihitung("M", 0)
     assert sel(-2.0, 113.0) == sel(-2.0001, 113.0001) != sel(-2.0, 113.01)
     print("titik_unik: uji lolos")

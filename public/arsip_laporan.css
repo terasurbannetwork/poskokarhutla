@@ -41,7 +41,7 @@
 /* tabelnya berdiri sendiri: index.html tidak memuat inti/tabel.css */
 .ar-tabel{margin-top:14px;overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:14px}
 .ar-tabel table{width:100%;border-collapse:collapse;font-size:12.5px}
-.ar-tabel th{text-align:left;font:800 10px var(--font);letter-spacing:.05em;text-transform:uppercase;color:var(--ink2);
+.ar-tabel th{text-align:center;font:800 10px var(--font);letter-spacing:.05em;text-transform:uppercase;color:var(--ink2);
   padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
 .ar-tabel td{padding:8px 12px;vertical-align:middle;border-bottom:1px solid var(--line);white-space:nowrap}
 .ar-tabel tr:last-child td{border-bottom:0}
@@ -83,3 +83,6 @@ pre.ar-teks{white-space:pre-wrap;font:inherit;background:var(--card);border:1px 
 .ar-kir .ar-ik span{overflow:hidden;text-overflow:ellipsis}
 .ar-warn{margin-top:4px;color:var(--bad,#c9503a);font-weight:700;font-size:11px}
 .ar-rinci ul.ar-kirim{display:block}   /* daftar kiriman selebar baris, bukan ikut kisi checklist */
+
+/* dibingkai Ruang Laporan (/admin/laporan#pelaporan): kelas .sematan ditambah induk; header situs disembunyikan */
+.sematan{--top:0px}.sematan header.top{display:none}

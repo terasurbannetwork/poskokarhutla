@@ -32,7 +32,7 @@
 .ak-btn:disabled{opacity:.5;cursor:default}.ak-btn:active{transform:scale(.97)}
 .ak-tabel-wadah{overflow-x:auto;margin-top:10px}
 .ak-tabel{width:100%;border-collapse:collapse;font-size:13px;min-width:900px}
-.ak-tabel th{text-align:left;color:var(--ink2);font-size:11.5px;padding:6px 8px;white-space:nowrap}
+.ak-tabel th{text-align:center;color:var(--ink2);font-size:11.5px;padding:6px 8px;white-space:nowrap}
 .ak-tabel td{padding:10px 8px;border-top:1px solid var(--line);vertical-align:top}
 .ak-tabel td small{display:block;color:var(--ink2);font-size:11.5px;overflow-wrap:anywhere}
 .ak-tabel tr.redup>td:not(:last-child){opacity:.55}

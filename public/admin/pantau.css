@@ -39,7 +39,7 @@
 .pt-rahasia-kotak{border:2px dashed var(--c2);border-radius:14px;padding:10px 12px;margin-bottom:12px}.pt-rahasia-kotak p{margin:0 0 6px;font-weight:700}
 .pt-staf{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:12px 14px}.pt-staf summary{cursor:pointer;font-weight:800;min-height:36px;display:flex;align-items:center}
 .pt-tabel-wadah{overflow-x:auto;margin:10px 0}.pt-tabel{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
-.pt-tabel th{text-align:left;color:var(--ink2);font-size:11.5px;padding:6px 8px}.pt-tabel td{padding:8px;border-top:1px solid var(--line);vertical-align:top}.pt-tabel small{display:block;color:var(--ink2)}
+.pt-tabel th{text-align:center;color:var(--ink2);font-size:11.5px;padding:6px 8px}.pt-tabel td{padding:8px;border-top:1px solid var(--line);vertical-align:top}.pt-tabel small{display:block;color:var(--ink2)}
 .pt-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));align-items:end}.pt-grid fieldset,.pt-grid .pt-pesan,.pt-grid button{grid-column:1/-1}
 @media (min-width:720px){
   .pt-ringkas{grid-template-columns:repeat(4,minmax(0,1fr))}

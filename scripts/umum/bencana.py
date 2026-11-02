@@ -183,16 +183,17 @@ def _uji():
         g = periksa(r)
         assert any(kata in s for s in g), (kata, g)
 
+    _id = lambda b, i: next(x for x in b if x["id"] == i)  # tak bergantung urutan registry
     rusak(lambda b: b[1].update(id="karhutla"), "ganda")
-    rusak(lambda b: b[2].update(rute="/gempa"), "diawali dan diakhiri")
-    rusak(lambda b: b[2].update(status="beta"), "status")
-    rusak(lambda b: b[3]["kejadian"].update(awalan="G"), "awalan")
+    rusak(lambda b: _id(b, "gempa").update(rute="/gempa"), "diawali dan diakhiri")
+    rusak(lambda b: _id(b, "gempa").update(status="beta"), "status")
+    rusak(lambda b: next(x for x in b if x["id"] == "cuaca")["kejadian"].update(awalan="G"), "awalan")  # G = awalan gempa
     rusak(lambda b: b[0].update(prioritas=["62"]), "prioritas")
     rusak(lambda b: b[1].update(data="/tidak-ada/"), "folder data")
-    rusak(lambda b: b[4].update(halaman={"simulasi": "tidak-ada.html"}), "tidak ada")
-    rusak(lambda b: b[4].update(halaman={"tabngawur": "x.html"}), "bukan tab")
-    rusak(lambda b: b[4].pop("kata"), "'kata' hilang")
-    rusak(lambda b: b[4].update(nama_en="a — b"), "em dash")
+    rusak(lambda b: _id(b, "udara").update(halaman={"simulasi": "tidak-ada.html"}), "tidak ada")
+    rusak(lambda b: _id(b, "udara").update(halaman={"tabngawur": "x.html"}), "bukan tab")
+    rusak(lambda b: _id(b, "udara").pop("kata"), "'kata' hilang")
+    rusak(lambda b: _id(b, "udara").update(nama_en="a — b"), "em dash")
     print("bencana.py: self-check lolos")
 
 

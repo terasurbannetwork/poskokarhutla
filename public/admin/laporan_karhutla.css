@@ -43,7 +43,7 @@
 .lka-banner p{margin:0}.lka-banner.galat{background:color-mix(in srgb,var(--c1) 14%,var(--card))}.lka-banner.kuning{background:color-mix(in srgb,var(--c2) 22%,var(--card))}.lka-banner.ok{background:color-mix(in srgb,var(--c4) 18%,var(--card))}
 /* tabel isi (ringkasan FS), formulir kiriman */
 .lka-tabel-wadah{overflow-x:auto}.lka-tabel{width:100%;border-collapse:collapse;font-size:13px;min-width:520px}
-.lka-tabel th{text-align:left;color:var(--ink2);font-size:11.5px;padding:6px 8px}.lka-tabel td{padding:8px;border-top:1px solid var(--line);vertical-align:top}.lka-tabel small{display:block;color:var(--ink2)}
+.lka-tabel th{text-align:center;color:var(--ink2);font-size:11.5px;padding:6px 8px}.lka-tabel td{padding:8px;border-top:1px solid var(--line);vertical-align:top}.lka-tabel small{display:block;color:var(--ink2)}
 .lka-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(135px,1fr))}
 .lka-kol{display:grid;gap:4px;font-weight:700;font-size:12.5px;min-width:0}.lka-kol input:not([type=checkbox]),.lka-kol select{height:42px;border:0;border-radius:10px;background:var(--soft);padding:0 10px;font:600 14px var(--font);color:var(--ink);min-width:0;width:100%}
 .lka-kol.cek{display:flex;gap:8px;align-items:center;min-height:40px;font-weight:600}.lka-kol.cek input{width:20px;height:20px;flex:none}

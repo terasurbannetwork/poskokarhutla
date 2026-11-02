@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 import {readFileSync, existsSync} from "node:fs";
 import path from "node:path";
 import {AKAR} from "./_bantu.mjs";
-import {periksaStatus} from "../../src/worker.js";   // worker.js SEBELUM modul yang saling mengimpor (RUTE_* dispread saat evaluasi)
+import {periksaStatus, SUMBER_STATUS, SUMBER_UJI} from "../../src/worker.js";   // worker.js SEBELUM modul yang saling mengimpor (RUTE_* dispread saat evaluasi)
 import {perbaruiTitik, jedaSensor, SNPP_BERHENTI} from "../../src/titik.js";
 import {catatRiwayatStatus} from "../../src/sla.js";
 import {siapkan, berantai, ADMIN} from "./_bnpb.mjs";
@@ -18,8 +18,14 @@ const KEP_M = "latitude,longitude,brightness,scan,track,acq_date,acq_time,satell
 const KINI_A = Date.UTC(2026, 9, 27, 11, 48), KINI_B = KINI_A + 3 * JAM;   // 27 Okt 2026 18.48 WIB, lalu putaran berikutnya
 const SEBELUM = Date.UTC(2026, 10, 1, 12, 59), SESUDAH = Date.UTC(2026, 10, 1, 13, 0);
 
+/* ASSETS deterministik: berkas hidup di public/ ditulis ulang pipeline terus, jadi "dibuat"-nya TIDAK boleh menentukan hasil uji (kasus 2 Nov 2026: udara/data/prakiraan.json
+   bertanda 1 Nov 19:30Z, lebih baru dari jam uji SEBELUM = 1 Nov 12:59Z -> umur negatif -> CHECK status_riwayat menolak seluruh batch). Jalur yang dibaca periksaStatus untuk
+   umur (sumber status, sumber uji, meta.json) disajikan fixture berjam TETAP <= SEBELUM; geo provinsi dan pusat kecamatan untuk perbaruiTitik statis, tetap berkas nyata. */
+const DIBUAT_TETAP = "2026-11-01T12:00Z", TERAKHIR_TETAP = "2026-11-01T09:00Z";
+const JALUR_WAKTU = new Set(["/data/meta.json", ...[...SUMBER_STATUS, ...SUMBER_UJI].map(s => s[1])]);
 const aset = async req => {
   const p = decodeURIComponent(new URL(req.url).pathname), f = path.join(AKAR, "public", p);
+  if (JALUR_WAKTU.has(p)) return new Response(JSON.stringify({dibuat: DIBUAT_TETAP, data_terakhir: TERAKHIR_TETAP}));
   return existsSync(f) && f.startsWith(path.join(AKAR, "public")) && !p.endsWith("/") ? new Response(readFileSync(f)) : new Response("tidak ada", {status: 404});
 };
 const ENV = DB => ({DB, ASSETS: {fetch: aset}, FIRMS_MAP_KEY: "kunci-uji"});
@@ -32,7 +38,7 @@ const stub = async (peta, fn) => {   // peta: sensor FIRMS -> teks CSV | {status
   globalThis.fetch = async u => { const s = String(u).split("/")[7], v = peta[s]; diminta.push(s); if (v instanceof Error) throw v; return typeof v === "string" ? new Response(v) : new Response(v?.teks ?? "", {status: v?.status ?? 500}); };
   try { return await fn(); } finally { globalThis.fetch = asli; }
 };
-const T = await siapkan("uji-jeda-sensor");   // satu worker + D1 untuk seluruh berkas (uji berantai); wajib di luar test() supaya after(dispose) berlaku di akhir berkas
+const T = await siapkan("uji-jeda-sensor", {asetKu: aset});   // satu worker + D1 untuk seluruh berkas (uji berantai); wajib di luar test() supaya after(dispose) berlaku di akhir berkas
 const putaran = async (DB) => JSON.parse((await DB.prepare("SELECT isi FROM titik_terbaru ORDER BY id DESC LIMIT 1").first()).isi);
 
 /* putaran A, contoh 27 Okt: N 10.32-13.57 WIB = 03:32-06:55 UTC (dipakai 06:55 supaya pembulatan tidak jatuh di .x5), M 09:40, N20 08:20 darat + 08:50 di laut, N21 09:10 */

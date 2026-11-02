@@ -11,7 +11,10 @@
     risiko: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z|M12 8v5|M12 16h.01",
     meja: "M3 7l9-4 9 4-9 4z|M3 7v10l9 4 9-4V7|M12 11v10",
     admin: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z|M9 12l2 2 4-4",
+    kinerja: "M4 20V10|M10 20V4|M16 20v-7|M22 20H2",
     kebakaran: "M12 3c1 3-1 4-1 6 0 1.5 1 2 2 2 0-1 1-2 1-2 2 1.5 3 3.5 3 6a5 5 0 0 1-10 0c0-3 3-5 5-12z",
+    logbook: "M6 3h12v18H6z|M9 8h6|M9 12h6|M9 16h3",
+    siaga: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z|M9 12l2 2 4-4",
     panah: "M5 12h14|M13 6l6 6-6 6",
   };
   const svg = n => { const s = document.createElementNS(NS, "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true");
@@ -42,6 +45,12 @@
       return i >= 0 && Array.isArray(r.baris) ? [F(r.baris.filter(b => b[i] === 3).length), "kelurahan sangat tinggi, DKI Jakarta", r.ujibalik?.lulus ? null : "hipotesis"] : null; }, null, "Dinas Gulkarmat DKI, BIG, OpenStreetMap, Google Open Buildings"],
     ["kebutuhan", "Kebutuhan musim", "/kebutuhan", "sitrep", async () => { const r = await ambil("/banjir/data/kebutuhan_musim.json"); const v = r?.nasional?.["rata|90"]?.rp_total;
       return typeof v === "number" ? ["Rp" + F(Math.round(v / 1e9)) + " miliar", "perkiraan biaya 90 hari"] : null; }, "perkiraan", "titik panas 2019–2025, rencana operasi karhutla, asumsi kerja tim Centurisk97"],
+    ["kinerja", "Kinerja BNPB", "/kinerja-bnpb", "kinerja", async () => { const r = await ambil("/data/bnpb/iku.json"); const v = r?.kapasitas?.resmi;
+      return v ? [v.persen_min_sedang + "%", "daerah berkapasitas minimal sedang, target " + v.target + "%"] : null; }, null, "LAKIP BNPB 2025, Renstra BNPB 2025-2029, NDPBA"],
+    ["logbook", "Logbook Pusdalops", "/bnpb/logbook.html", "logbook", async () => { const r = await ambil("/data/logbook_riwayat.json"); const n = Object.values(r?.nasional || {}).reduce((a, y) => a + Object.values(y).reduce((b, v) => b + v, 0), 0);
+      return n ? [F(n), `kejadian dalam arsip logbook ${Object.keys(r.nasional).sort()[0]} sampai ${Object.keys(r.nasional).sort().pop()}`] : null; }, "untuk staf Pusdalops", "Logbook harian Pusdalops BNPB"],
+    ["siaga", "Siaga pra-musim", "/bnpb/siaga.html", "siaga", async () => { const r = await ambil("/data/bnpb/siaga.json"); const n = Object.values(r?.kab || {}).filter(k => Object.keys(k.musim).length).length;
+      return n ? [F(n), "kabupaten/kota punya musim bencana berulang"] : null; }, "untuk staf Pusdalops", "Logbook harian Pusdalops BNPB 2014–2020 dan 2024–2025"],
     ["meja", "Meja kerja", "/meja", "meja", async () => { const r = await ambil("/api/meja/ringkas"); return r?.meja ? [F(jumlah(r.meja)), "catatan lapangan"] : null; }, "untuk petugas BPBD"],
   ];
 

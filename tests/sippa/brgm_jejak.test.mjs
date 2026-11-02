@@ -112,7 +112,7 @@ test("peta perakit: BRGM dimuat malas lewat sakelar, rincian punya tombol Catat 
   const peta = readFileSync(new URL("../../public/pipa/layar_peta.js", import.meta.url), "utf8"), log = readFileSync(new URL("../../public/pipa/layar_log.js", import.meta.url), "utf8");
   assert.match(peta, /JALUR\.brgm/); assert.equal([...peta.matchAll(/ambilSekali\(konteks, JALUR\.brgm/g)].length, 1, "satu pembacaan BRGM, hanya dari muatBrgm");
   assert.match(peta, /if \(t\.checked\) nanti\(muatBrgm\)/); assert.match(peta, /tombolKeputusan\(k, tulis\)/); assert.match(peta, /a === "putusan" && k && tulis/);
-  assert.match(peta, /layar_peta\.css\?v=6/);
+  assert.match(peta, /layar_peta\.css\?v=7/);
   assert.match(log, /Jejak keputusan dan perubahan/); assert.match(log, /jalurJejak\(/);
 });
 

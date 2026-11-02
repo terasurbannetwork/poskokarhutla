@@ -112,6 +112,9 @@ for n, k in enumerate(TOP):
         pr = bul((cur - prv) / prv * 100) if prv else None
         ar, ac = (('', 'A9B4C2') if v is None else ('baru', 'A9B4C2') if pr is None and cur else ('0%', '6B7280') if not pr   # 0 setelah 0 = 0%, bukan "baru"
                   else (f'▲{f0(pr)}%', 'D9600B') if pr > 0 else (f'▼{f0(-pr)}%', '2F86D1'))
+        if not BANJIR:   # karhutla: tabel slide peta tanpa persen, angka di tengah kolom (pemilik 31 Okt 2026: "jangan pakai persenan")
+            out.append(kotak(cx[j] + 27432, y, CW[j] - 27432, rh, [[('–' if v is None else f0(v), 850, True, '1A1A1A')]], algn='ctr', anchor='ctr'))
+            continue
         VW = CW[j] - 329184   # angka rata kanan di kolom tetap, persen rata kiri di kolom tetap: lurus ke bawah
         out.append(kotak(cx[j], y, VW, rh, [[('–' if v is None else f0(v), 850, True, '1A1A1A')]], algn='r', anchor='ctr'))
         out.append(kotak(cx[j] + VW + 45720, y, 329184 - 45720, rh, [[(ar, 580, True, ac)]], algn='l', anchor='ctr', wrap='none'))   # "▲3.200%" satu baris (29 Okt)
@@ -121,11 +124,13 @@ i = nid()
 out.append(f'<p:pic><p:nvPicPr><p:cNvPr id="{i}" name="Peta hotspot 20 Okt"/><p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr>'
            f'<p:blipFill><a:blip r:embed="rIdPeta"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x="{X0}" y="{Y0}"/><a:ext cx="{W}" cy="{H}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>')
 # 4) legenda di bawah panel, posisi & ukuran sama dengan slide tabel
-LEG = [('ellipse', 'D9600B', 'Ukuran lingkaran sebanding jumlah titik panas'), ('rect', '051C2C', 'Provinsi dengan titik panas'), ('rect', 'DCE1E7', 'Tanpa titik panas'),
+LEG = [('ellipse', 'D9600B', 'Ukuran lingkaran sebanding jumlah hotspot'), ('rect', '051C2C', 'Provinsi dengan hotspot'), ('rect', 'DCE1E7', 'Tanpa hotspot'),
        ('rect', 'D9600B', 'naik dari hari sebelumnya'), ('rect', '2F86D1', 'turun dari hari sebelumnya')]
 if BANJIR:
     LEG = [('ellipse', '2F6FB5', 'Ukuran lingkaran sebanding kecamatan Siaga atau Awas banjir'), ('rect', '051C2C', 'Provinsi dengan kecamatan Siaga atau Awas'),
            ('rect', 'DCE1E7', 'Tanpa kecamatan Siaga atau Awas')] + LEG[3:]
+else:
+    LEG = LEG[:3]   # tanpa persen, legenda naik/turun tak dipakai
 lw = [128016 + 91440 + round(len(t) * 750 / 100 * 0.5 * 12700) + 320040 for _, _, t in LEG]
 x = 548640 + (11094415 - sum(lw)) // 2
 for (g, col, t), w in zip(LEG, lw):

@@ -24,3 +24,8 @@
 .pr-tombol{display:flex;gap:8px}
 .pr-tombol button[data-terjadi="1"]{background:var(--brand);color:var(--paper);border-color:var(--brand)}
 @media (max-width:640px){.pr-wrap{padding:12px}.pr-grid{grid-template-columns:1fr}}
+.pr-kal{margin:8px 0}
+.pr-bars{display:flex;align-items:flex-end;gap:3px;height:56px;margin-top:4px}
+.pr-bar{flex:1;min-height:2px;background:var(--ink2);opacity:.55;border-radius:2px 2px 0 0}
+.pr-bar.ini{background:var(--accent,var(--ink));opacity:1}
+.pr-bar:hover,.pr-bar:focus{opacity:1;outline:1px solid var(--ink)}

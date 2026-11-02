@@ -110,7 +110,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .sakelar input{appearance:none;width:34px;height:20px;border-radius:10px;background:#cfc9b8;position:relative;margin:0;cursor:pointer;transition:background .15s}
 .sakelar input::after{content:"";position:absolute;left:2px;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s}
 .sakelar input:checked{background:var(--bir)}.sakelar input:checked::after{left:16px}
-table.tb{width:100%;border-collapse:collapse;font-size:12px}.tb th,.tb td{text-align:right;padding:4px 4px;border-bottom:1px solid var(--garis)}.tb th:first-child,.tb td:first-child{text-align:left}.tb th{color:var(--abu);font-weight:500}
+table.tb{width:100%;border-collapse:collapse;font-size:12px}.tb th,.tb td{text-align:center;padding:4px 4px;border-bottom:1px solid var(--garis)}.tb td:first-child{text-align:left}.tb th:first-child{text-align:center}
+.tb th:first-child{text-align:center}.tb th{color:var(--abu);font-weight:500}
 .jujur{background:#fff7e6;border:1px solid #f0dcaa;border-radius:8px;padding:9px 11px;margin:8px 0;font-size:12.5px}
 .sumber{margin:0;padding-left:16px;font-size:12px}.sumber li{margin-bottom:4px}
 

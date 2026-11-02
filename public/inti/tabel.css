@@ -4,11 +4,10 @@
 .tbar .sp{flex:1}
 .tw{overflow:auto;border-radius:var(--r);border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow)}
 table{border-collapse:collapse;width:100%;font-size:12.5px}
-thead th{position:sticky;top:0;background:var(--brand);color:#fff;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:9px 10px;text-align:left;white-space:nowrap;border-bottom:2px solid var(--accent)}
+thead th{position:sticky;top:0;background:var(--brand);color:#fff;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:9px 10px;text-align:center;white-space:nowrap;border-bottom:2px solid var(--accent)}
 :root[data-theme="dark"] thead th{color:oklch(18% .035 256)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) thead th{color:oklch(18% .035 256)}}
 thead th button{all:unset;cursor:pointer;display:inline-flex;gap:4px;align-items:center}
-thead th.n,td.n{text-align:right}
 tbody td{padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
 tbody tr:nth-child(even){background:oklch(50% .05 255 / .025)}
 tbody tr:hover{background:oklch(42% .11 255 / .06)}
@@ -62,10 +61,10 @@ details.lipat .isi{display:grid;gap:8px;padding:12px 14px 14px}
 .laci .kv{margin:0}
 table.tb2{width:100%;font-size:12.5px;border-collapse:collapse}
 table.tb2 td{padding:5px 0;border-bottom:1px solid var(--line);vertical-align:top}
-table.tb2 td.n{text-align:right;padding-left:10px;font-weight:600}
+table.tb2 td.n{text-align:center;padding-left:10px;font-weight:600}
 table.tb2 tr:last-child td{border-bottom:0}
 table.tb3{width:100%;font-size:12px;border-collapse:collapse}
-table.tb3 th{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);text-align:left;padding:4px 3px;border-bottom:1px solid var(--line);vertical-align:bottom}
+table.tb3 th{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);text-align:center;padding:4px 3px;border-bottom:1px solid var(--line);vertical-align:bottom}
 table.tb3 td{padding:6px 3px;border-bottom:1px solid var(--line);vertical-align:top}
 table.tb3 .n{text-align:right;white-space:nowrap}
 table.tb3 td small{display:block;color:var(--ink2);font-size:11px}

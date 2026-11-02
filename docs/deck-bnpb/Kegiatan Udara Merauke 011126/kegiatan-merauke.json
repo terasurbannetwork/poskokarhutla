@@ -1,0 +1,489 @@
+{
+  "_catatan": "Hasil kegiatan udara karhutla Merauke 31 Okt 2026 untuk Kepala BNPB. Dibangun dari spek/bangun_spek_merauke.py.",
+  "pesan_kunci": "Lahan di Merauke dibuka dengan api: semak dibakar dulu, pohon ditumbangkan sesudahnya; api terpusat di cluster PT Merauke Sawit Jaya.",
+  "judul_dokumen": "Kegiatan Udara Karhutla Merauke",
+  "subjek_dokumen": "Kegiatan udara 31 Oktober 2026",
+  "kajian": "merauke",
+  "format": "kajian",
+  "tanggal": "2026-11-01",
+  "cut_off": "31 Okt 2026, 23.59 WIT",
+  "bagian": [
+    {
+      "judul": "Temuan Kegiatan Udara",
+      "label": "Temuan lapangan"
+    },
+    {
+      "judul": "Metode Renlap",
+      "label": "Metode renlap"
+    }
+  ],
+  "slide": [
+    {
+      "jenis": "sampul",
+      "layout": "putih",
+      "judul_penuh": true,
+      "skala_subjudul": 0.9,
+      "foto": "foto/udara-20.jpg",
+      "kota": "Jakarta",
+      "kredit": "Foto: kegiatan udara tim BNPB",
+      "logo_kanan": "foto/berakhlak-hd.png",
+      "kepada": "Ditujukan khusus untuk Kepala BNPB",
+      "subjudul": "Kabupaten Merauke, Papua Selatan, 31 Oktober 2026",
+      "penyaji": {
+        "nama": "Tim Ahli dan Tim Sus IT BNPB",
+        "jabatan": "Badan Nasional Penanggulangan Bencana"
+      }
+    },
+    {
+      "jenis": "galeri",
+      "jenis_slide": "navigasi",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Ringkasan kegiatan",
+      "judul": "Lahan Merauke dibuka dengan api: semak dibakar dulu, pohon ditumbangkan kemudian; {{angka:mk.cp5|satuan}} di sekitar PT MSJ",
+      "cut_off": false,
+      "grup": [
+        {
+          "pil": "Hotspot 31 Oktober",
+          "nada": "data",
+          "ikon": "karhutla",
+          "kartu": [
+            {
+              "nilai": "{{angka:mk.kab31}}",
+              "label": "hotspot Kabupaten Merauke",
+              "ikon": "karhutla",
+              "warna": "navy"
+            },
+            {
+              "nilai": "{{angka:mk.jagebob31}}",
+              "label": "hotspot Kecamatan Jagebob",
+              "ikon": "wilayah",
+              "warna": "navy"
+            }
+          ]
+        },
+        {
+          "pil": "Cluster PT Merauke Sawit Jaya",
+          "nada": "perhatian",
+          "ikon": "peringatan",
+          "kartu": [
+            {
+              "nilai": "{{angka:mk.frp}}",
+              "label": "MW, FRP tertinggi di cluster",
+              "ikon": "naik",
+              "warna": "merah"
+            },
+            {
+              "nilai": "{{angka:mk.luas}}",
+              "label": "ha area ber-hotspot, batas atas",
+              "ikon": "luas",
+              "warna": "merah"
+            }
+          ]
+        }
+      ],
+      "kolom_panel": 2,
+      "panel": [
+        {
+          "judul": "Tepi lahan PT Merauke Sawit Jaya, 31 Oktober",
+          "ikon": "karhutla",
+          "kolom_foto": 1,
+          "bobot": 1,
+          "foto": [
+            {
+              "berkas": "foto/udara-04.jpg",
+              "keterangan": "Batang pohon menghitam di tepi hutan, ekskavator menumbangkan pohon di lahan terbuka"
+            }
+          ]
+        },
+        {
+          "judul": "Temuan kegiatan udara",
+          "ikon": "ringkasan",
+          "bobot": 1,
+          "temuan": [
+            {
+              "kode": "Temuan A.1",
+              "keyakinan": "terverifikasi",
+              "ikon": "karhutla",
+              "teks": "**Bakar dulu, tebang kemudian.** Semak di bawah pohon tinggi dibakar, lalu pohon yang sudah hangus ditumbangkan ekskavator."
+            },
+            {
+              "kode": "Temuan A.2",
+              "keyakinan": "terverifikasi",
+              "ikon": "peringatan",
+              "teks": "**Api dibiarkan menyebar.** Asap aktif di hutan tepi lahan terbuka sampai dekat permukiman Kurik dan Semangga."
+            },
+            {
+              "kode": "Temuan A.3",
+              "keyakinan": "resmi",
+              "ikon": "wilayah",
+              "teks": "**Terpusat di lahan PT MSJ.** {{angka:mk.cp5|satuan}} di CP-5 dan {{angka:mk.cp4|satuan}} di CP-4; sembilan check point lain paling banyak {{angka:mk.cp.lain|satuan}}."
+            },
+            {
+              "kode": "Temuan A.4",
+              "keyakinan": "terverifikasi",
+              "ikon": "kalender",
+              "teks": "**Rute tidak bisa diterbangi penuh.** Asap tebal menutup jarak pandang di {{angka:mk.cp.jumlah|satuan}} rencana."
+            }
+          ]
+        }
+      ],
+      "sumber": "NASA FIRMS (VIIRS dan MODIS), diolah BNPB, 31 Okt 2026 WIB; kegiatan udara tim BNPB, 31 Okt 2026"
+    },
+    {
+      "jenis": "daftar-isi"
+    },
+    {
+      "jenis": "pembatas-seksi",
+      "bagian": 1
+    },
+    {
+      "jenis": "galeri",
+      "jenis_slide": "panel",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Modus pembukaan lahan",
+      "judul": "Klaim \"tebang, susun, lalu bakar\" tidak sesuai lapangan: semak dibakar dulu di bawah pohon tegak, pohon ditumbangkan sesudahnya",
+      "cut_off": false,
+      "kolom_panel": 4,
+      "panel": [
+        {
+          "judul": "1. Semak dibakar",
+          "ikon": "karhutla",
+          "kolom_foto": 1,
+          "foto": [
+            {
+              "berkas": "foto/udara-26.jpg",
+              "keterangan": "Asap di lantai hutan, pohon tegak"
+            }
+          ]
+        },
+        {
+          "judul": "2. Pohon ditumbang",
+          "ikon": "peringatan",
+          "kolom_foto": 1,
+          "foto": [
+            {
+              "berkas": "foto/udara-00.jpg",
+              "keterangan": "Ekskavator di lahan baru dibuka"
+            }
+          ]
+        },
+        {
+          "judul": "3. Kayu ditumpuk",
+          "ikon": "luas",
+          "kolom_foto": 1,
+          "foto": [
+            {
+              "berkas": "foto/udara-06.jpg",
+              "keterangan": "Kayu tumbang ditumpuk berbaris"
+            }
+          ]
+        },
+        {
+          "judul": "Klaim dan kenyataan",
+          "ikon": "ringkasan",
+          "skala_huruf": 1.35,
+          "daftar": [
+            "**Klaim perusahaan:** pohon ditebang dulu, kayu disusun, baru dibakar terkendali.",
+            "**Kenyataan di udara:** batang pohon yang masih tegak menghitam setinggi semak, tanda api lewat di lantai hutan sebelum pohon ditebang.",
+            "**Pola pembakaran sengaja.** Menurut pengamatan tim, api mengikuti batas lahan yang sedang dibuka, bersebelahan dengan alat berat yang bekerja.",
+            "**Tidak terlihat dijaga.** Dari udara tidak tampak regu atau sekat bakar; api menjalar ke hutan di sekitarnya."
+          ]
+        }
+      ],
+      "sumber": "Kegiatan udara tim BNPB, 31 Okt 2026"
+    },
+    {
+      "jenis": "temuan-peta",
+      "jenis_slide": "peta",
+      "judul_bentuk": "temuan",
+      "rasio": 0.5,
+      "pesan": "Sebaran titik per check point",
+      "judul": "Hotspot 31 Oktober menumpuk di PT MSJ: {{angka:mk.cp5|satuan}} di CP-5 dan {{angka:mk.cp4|satuan}} di CP-4; sembilan check point lain paling banyak {{angka:mk.cp.lain}}",
+      "cut_off": false,
+      "grup": [
+        {
+          "pil": "Hari terbang",
+          "nada": "data",
+          "ikon": "karhutla",
+          "kartu": [
+            {
+              "nilai": "{{angka:mk.jagebob31}}",
+              "label": "hotspot Kecamatan Jagebob",
+              "ikon": "wilayah",
+              "warna": "merah"
+            },
+            {
+              "nilai": "{{angka:mk.frp}}",
+              "label": "MW, FRP tertinggi",
+              "ikon": "naik",
+              "warna": "navy"
+            }
+          ]
+        }
+      ],
+      "peta": {
+        "png": "data/merauke/peta-rute.png",
+        "legenda": {
+          "judul": "31 Oktober",
+          "item": [
+            {
+              "warna": "merah",
+              "label": "Hotspot"
+            },
+            {
+              "warna": "navy",
+              "label": "Rute rencana 30 Okt"
+            }
+          ]
+        },
+        "keyakinan": "resmi",
+        "sumber": "NASA FIRMS, diolah BNPB; citra Esri World Imagery"
+      },
+      "panel": {
+        "judul": "Hotspot dalam {{angka:mk.radius|satuan}} per check point",
+        "ikon": "wilayah",
+        "data": {
+          "csv": "data/merauke/cp.csv",
+          "kolom": [
+            {
+              "nama": "cp",
+              "kepala": "CP"
+            },
+            {
+              "nama": "lokasi",
+              "kepala": "Lokasi"
+            },
+            {
+              "nama": "titik",
+              "kepala": "Titik",
+              "fmt": "0"
+            },
+            {
+              "nama": "frp",
+              "kepala": "FRP maks (MW)",
+              "fmt": "1"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "NASA FIRMS, diolah BNPB"
+        },
+        "peringkat": false,
+        "daftar": [
+          "CP-4 dan CP-5 berjarak dekat sehingga lingkarannya bertumpang tindih; angkanya tidak dijumlahkan.",
+          "Lahan perusahaan ditentukan dari data konsesi sistem; hotspot dihitung dalam radius check point, bukan batas izin.",
+          "Lahan PT Medcopapua Alam Lestari (CP-7) tidak mencatat hotspot pada 31 Oktober."
+        ]
+      },
+      "sumber": "NASA FIRMS (VIIRS dan MODIS), diolah BNPB, 31 Okt 2026 WIB, termasuk keyakinan rendah; Renlap rute udara BNPB, 30 Okt 2026"
+    },
+    {
+      "jenis": "galeri",
+      "jenis_slide": "panel",
+      "judul_bentuk": "temuan",
+      "pesan": "Api menyebar",
+      "judul": "Api dibiarkan menjalar ke hutan dan dekat permukiman; Merauke mencatat {{angka:mk.kab31|satuan}} pada hari terbang",
+      "cut_off": false,
+      "kolom_panel": 2,
+      "panel": [
+        {
+          "judul": "Hutan di sekitar lahan terbuka",
+          "ikon": "karhutla",
+          "kolom_foto": 2,
+          "bobot": 3,
+          "foto": [
+            {
+              "berkas": "foto/udara-20.jpg",
+              "keterangan": "Kepulan asap di hutan, banyak pohon mati"
+            },
+            {
+              "berkas": "foto/udara-23.jpg",
+              "keterangan": "Asap di batas hutan dan lahan terbuka"
+            },
+            {
+              "berkas": "foto/udara-30.jpg",
+              "keterangan": "Asap di savana dekat kampung dan jalan"
+            },
+            {
+              "berkas": "foto/udara-37.jpg",
+              "keterangan": "Asap di belakang permukiman dan sawah Kurik"
+            }
+          ]
+        },
+        {
+          "judul": "Tiga hari terakhir",
+          "ikon": "naik",
+          "bobot": 2,
+          "skala_huruf": 1.5,
+          "daftar": [
+            "Hotspot Kabupaten Merauke: {{angka:mk.kab29|satuan}} pada 29 Oktober, {{angka:mk.kab30|satuan}} pada 30 Oktober, {{angka:mk.kab31|satuan}} pada 31 Oktober.",
+            "Jagebob mencatat hotspot terbanyak se-kabupaten: {{angka:mk.jagebob31|satuan}} pada 31 Oktober.",
+            "Rawa dan dasar sungai mengering, sehingga bahan bakar banyak dan sumber air untuk pemadaman makin sedikit.",
+            "Kabut asap tebal terlihat di seluruh jalur terbang.",
+            "Lahan PT Selaras Inti Semesta dan PT Medcopapua Alam Lestari hampir tanpa hotspot pada hari yang sama.",
+            "Video dari helikopter memperlihatkan banyak kepulan asap tipis sekaligus di cakrawala, di belakang kampung dan petak sawah."
+          ]
+        }
+      ],
+      "sumber": "NASA FIRMS (VIIRS dan MODIS), diolah BNPB, 31 Okt 2026 WIB; kegiatan udara tim BNPB, 31 Okt 2026"
+    },
+    {
+      "jenis": "temuan-peta",
+      "jenis_slide": "peta",
+      "judul_bentuk": "temuan",
+      "rasio": 0.56,
+      "pesan": "Rencana terbang terhambat asap",
+      "judul": "Rute {{angka:mk.cp.jumlah|satuan}} ({{angka:mk.rute.km|satuan}}) tidak bisa diterbangi penuh: api besar, jarak pandang rendah",
+      "cut_off": false,
+      "grup": [
+        {
+          "pil": "Rencana 30 Oktober",
+          "nada": "data",
+          "ikon": "kalender",
+          "kartu": [
+            {
+              "nilai": "{{angka:mk.cp.jumlah}}",
+              "label": "check point",
+              "ikon": "wilayah",
+              "warna": "navy"
+            },
+            {
+              "nilai": "{{angka:mk.rute.km}}",
+              "label": "km rute melingkar",
+              "ikon": "luas",
+              "warna": "navy"
+            },
+            {
+              "nilai": "{{angka:mk.rute.mnt}}",
+              "label": "menit terbang",
+              "ikon": "kalender",
+              "warna": "navy"
+            }
+          ]
+        }
+      ],
+      "peta": {
+        "png": "foto/renlap-udara-01.png",
+        "legenda": {
+          "judul": "Renlap 30 Oktober",
+          "item": [
+            {
+              "warna": "merah",
+              "label": "Hotspot sehari"
+            },
+            {
+              "warna": "navy",
+              "label": "Rute udara"
+            }
+          ]
+        },
+        "keyakinan": "resmi",
+        "sumber": "Renlap rute udara BNPB, 30 Okt 2026"
+      },
+      "panel": {
+        "judul": "Pelajaran dari penerbangan 31 Oktober",
+        "ikon": "peringatan",
+        "skala_huruf": 1.8,
+        "daftar": [
+          "**Api lebih besar dari perkiraan.** Saat rute disusun ada {{angka:rl.titik|satuan}} di dalam segitiga; pada hari terbang Merauke mencatat {{angka:mk.kab31|satuan}}.",
+          "**Jarak pandang rendah.** Kabut asap menutup horizon, sehingga helikopter tidak aman melintas ke semua check point.",
+          "**Data tepat sasaran.** Cluster yang dilihat tim sama dengan cluster terpadat di data satelit: {{angka:mk.cp5|satuan}} di CP-5."
+        ]
+      },
+      "sumber": "Renlap rute udara BNPB, 30 Okt 2026; kegiatan udara tim BNPB, 31 Okt 2026"
+    },
+    {
+      "jenis": "pembatas-seksi",
+      "bagian": 2
+    },
+    {
+      "jenis": "kesimpulan",
+      "jenis_slide": "navigasi",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Metode renlap berbasis data",
+      "judul": "Renlap kini disusun dari deteksi panas sampai pompa dan sumber air terdekat, sehingga regu dan pesawat tidak bergerak sembarang",
+      "cut_off": false,
+      "skala_isi": 1.15,
+      "kartu": [
+        {
+          "label": "Langkah ke-1",
+          "ikon": "karhutla",
+          "warna": "navy",
+          "judul": "Deteksi panas",
+          "sub": "Satelit, otomatis",
+          "isi": "Hotspot VIIRS dan MODIS ditarik tiap {{angka:mk.jam|satuan}}, lalu dipetakan sampai kecamatan."
+        },
+        {
+          "label": "Langkah ke-2",
+          "ikon": "wilayah",
+          "warna": "navy",
+          "judul": "Pilih api nyata",
+          "sub": "Check point",
+          "isi": "Kelompok paling sedikit {{angka:mk.min.titik|satuan}} atau FRP {{angka:mk.min.frp|satuan}} ke atas dijadikan check point."
+        },
+        {
+          "label": "Langkah ke-3",
+          "ikon": "kapasitas",
+          "warna": "navy",
+          "judul": "Rute udara",
+          "sub": "Flight plan pilot",
+          "isi": "Urutan check point, haluan, jarak, waktu, serta berkas GPX dan KML untuk pilot."
+        },
+        {
+          "label": "Langkah ke-4",
+          "ikon": "air-baku",
+          "warna": "oranye",
+          "judul": "Sumber air terdekat",
+          "sub": "Renlap darat",
+          "isi": "Untuk tiap lokasi api dicari sumber air terdekat: sungai, kanal, atau parit yang bisa dipompa."
+        },
+        {
+          "label": "Langkah ke-5",
+          "ikon": "kapasitas",
+          "warna": "oranye",
+          "judul": "Pompa dan selang",
+          "sub": "Dihitung per lokasi",
+          "isi": "Panjang selang, jumlah gulung, dan pompa tambahan dihitung dari jarak sumber air ke lokasi api."
+        },
+        {
+          "label": "Langkah ke-6",
+          "ikon": "kalender",
+          "warna": "oranye",
+          "judul": "Rencana kunjungan",
+          "sub": "Per tim dan per hari",
+          "isi": "Urutan lokasi, jarak jalan, waktu mobil, titik parkir, dan tautan Google Maps."
+        },
+        {
+          "label": "Langkah ke-7",
+          "ikon": "data",
+          "warna": "navy",
+          "judul": "Dossier di HP regu",
+          "sub": "PDF siap pakai",
+          "isi": "Peta, koordinat yang bisa diklik, dan citra tiap lokasi dikirim ke regu dan pilot."
+        },
+        {
+          "label": "Langkah ke-8",
+          "ikon": "peringatan",
+          "warna": "navy",
+          "judul": "Putuskan sore sebelumnya",
+          "sub": "Jalan atau tunda",
+          "isi": "Tiap sore sebelum berangkat, rencana dicek ulang dengan hotspot terbaru dan prakiraan asap."
+        }
+      ],
+      "arahan": {
+        "label": "Keunggulan",
+        "ikon": "data",
+        "isi_bawah": true,
+        "teks": "Satu data yang sama menunjuk api nyata, sumber air terdekat, dan jalur regu, sehingga helikopter dan regu darat tidak bergerak sembarang."
+      },
+      "sumber": "Renlap rute udara BNPB, 30 Okt 2026"
+    },
+    {
+      "jenis": "penutup",
+      "foto": "foto/udara-20.jpg",
+      "logo_kanan": "foto/berakhlak-hd.png",
+      "kredit": "Foto: kegiatan udara tim BNPB",
+      "teks": "Terima Kasih",
+      "laporan": "Kegiatan udara Kabupaten Merauke, 31 Oktober 2026"
+    }
+  ]
+}

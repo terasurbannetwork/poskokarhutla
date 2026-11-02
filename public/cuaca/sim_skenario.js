@@ -176,7 +176,7 @@
     K.tampil = true; K.pt = p;
     const vm = vmaks(p), rm = K.sik.rm, kunci = `${Math.round(p.lat * 10)},${Math.round(p.lon * 10)},${Math.round(vm)},${rm},${K.sik.jarak}`;
     if (kunci === K.kunci) return; K.kunci = kunci; /* posisi, kekuatan, dan radius sama dengan bingkai lalu: tidak digambar ulang */
-    peta.getSource("sk-pusat").setData({type: "FeatureCollection", features: [{type: "Feature", geometry: {type: "Point", coordinates: [p.lon, p.lat]}, properties: {lbl: `${K.vor.nama} · ${f0(p.kt)} knot`}}]});
+    peta.getSource("sk-pusat").setData({type: "FeatureCollection", features: [{type: "Feature", geometry: {type: "Point", coordinates: [p.lon, p.lat]}, properties: {lbl: `${K.vor.nama}, ${f0(p.kt)} knot`}}]});
     const ring = [];
     for (const kt of [34, 50, 64]) { const r = SC.radiusAngin(kt * SC.KT, vm, rm); if (r) ring.push({type: "Feature", geometry: {type: "LineString", coordinates: SC.lingkaran(p.lat, p.lon, r, 48)}, properties: {kt}}); }
     peta.getSource("sk-cincin").setData({type: "FeatureCollection", features: ring});

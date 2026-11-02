@@ -88,10 +88,10 @@
 #satelit .sd-muat{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:18px 22px;color:var(--ink2);font-size:13px}
 #satelit .sd-muat-hal{margin:8px 0;color:var(--ink2);font-size:13px}
 #satelit table.sd-t{width:100%;border-collapse:collapse;font-size:13px}
-#satelit table.sd-t th{padding:6px 10px 6px 0;background:none;border:0;border-bottom:1px solid var(--line);border-radius:0;color:var(--ink2);font:700 11px/1.3 var(--font);letter-spacing:.04em;text-transform:uppercase;text-align:left!important;vertical-align:top;position:static}
-#satelit table.sd-t th.n{text-align:right!important}
+#satelit table.sd-t th{padding:6px 10px 6px 0;background:none;border:0;border-bottom:1px solid var(--line);border-radius:0;color:var(--ink2);font:700 11px/1.3 var(--font);letter-spacing:.04em;text-transform:uppercase;text-align:center!important;vertical-align:top;position:static}
+#satelit table.sd-t th.n{text-align:center!important}
 #satelit table.sd-t td{padding:8px 10px 8px 0;border-bottom:1px solid var(--line);color:var(--ink);text-align:left;vertical-align:top}
-#satelit table.sd-t td.n{text-align:right;font-variant-numeric:tabular-nums}
+#satelit table.sd-t td.n{text-align:center;font-variant-numeric:tabular-nums}
 #satelit table.sd-t td.sd-sl{color:var(--ink2)}
 #satelit table.sd-t th:last-child,#satelit table.sd-t td:last-child{padding-right:0}
 #satelit .sd-lb{display:none}
@@ -113,14 +113,14 @@
 /* ---------- tabel Rincian = tabel popover lintasan (satelit_lintas.js: table.lp-t) tampil di halaman; gaya popover hanya berlaku di .lp-pop, jadi diulang di sini dengan skala halaman */
 #satelit .sd-ri{min-width:0;overflow-x:auto}
 #satelit .sd-ri table.lp-t{width:100%;border-collapse:collapse;font-size:13px}
-#satelit .sd-ri table.lp-t thead th{position:static;padding:6px 14px 6px 0;background:none;border:0;border-bottom:1px solid var(--line);border-radius:0;color:var(--ink2);font:700 11px/1.3 var(--font);letter-spacing:.04em;text-transform:uppercase;text-align:left!important;white-space:normal;vertical-align:top}
-#satelit .sd-ri table.lp-t thead th.t{text-align:right!important;padding-right:0}
+#satelit .sd-ri table.lp-t thead th{position:static;padding:6px 14px 6px 0;background:none;border:0;border-bottom:1px solid var(--line);border-radius:0;color:var(--ink2);font:700 11px/1.3 var(--font);letter-spacing:.04em;text-transform:uppercase;text-align:center!important;white-space:normal;vertical-align:top}
+#satelit .sd-ri table.lp-t thead th.t{text-align:center!important;padding-right:0}
 #satelit .sd-ri table.lp-t tbody td{padding:7px 14px 7px 0;border-bottom:1px solid var(--line);color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:left}
-#satelit .sd-ri table.lp-t tbody td.t{text-align:right;padding-right:0}
+#satelit .sd-ri table.lp-t tbody td.t{text-align:center;padding-right:0}
 #satelit .sd-ri table.lp-t tbody td.lp-st{white-space:normal}
 #satelit .sd-ri table.lp-t.lp-kem thead th:last-child{padding-left:14px}
 #satelit .sd-ri table.lp-t.lp-kem tbody td.lp-st{padding-left:14px}
-#satelit .sd-ri table.lp-t tbody tr.lp-pr th{padding:12px 0 4px;border-bottom:1px solid var(--line);background:none;text-align:left;font:700 11.5px/1.3 var(--font);color:var(--ink2);white-space:normal}
+#satelit .sd-ri table.lp-t tbody tr.lp-pr th{padding:12px 0 4px;border-bottom:1px solid var(--line);background:none;text-align:center;font:700 11.5px/1.3 var(--font);color:var(--ink2);white-space:normal}
 #satelit .sd-ri table.lp-t tbody tr.lp-pr th>span+span{margin-left:6px;font-weight:500;font-variant-numeric:tabular-nums}
 #satelit .sd-ri .lp-st .lp-sw{vertical-align:-3px;margin-right:6px}
 #satelit .sd-ri .lp-sl{margin-left:6px;font-size:11px;font-weight:500;color:var(--ink2)}

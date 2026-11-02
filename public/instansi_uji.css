@@ -13,7 +13,8 @@ body.uj-badan{margin:0;background:var(--paper,#f5f6f8);color:var(--ink,#101828);
 .uj details.uj-kartu>summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
 .uj-tabel-bungkus{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line,#d0d5dd);border-radius:14px;background:var(--card,#fff)}
 .uj-tabel{width:100%;border-collapse:collapse;font-size:13.5px;min-width:720px}
-.uj-tabel th,.uj-tabel td{padding:9px 10px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line,#e4e7ec)}
+.uj-tabel td{padding:9px 10px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line,#e4e7ec)}
+.uj-tabel th{padding:9px 10px;text-align:center;vertical-align:top;border-bottom:1px solid var(--line,#e4e7ec)}
 .uj-tabel th{font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink2,#475467);white-space:nowrap}
 .uj-tabel tr:last-child td{border-bottom:0}
 .uj-tabel td.angka{font-variant-numeric:tabular-nums;white-space:nowrap}

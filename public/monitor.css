@@ -196,3 +196,12 @@ th[aria-sort="descending"] .mn-urut::after{opacity:1}
 .mn-tgl b{margin-left:auto;font-size:13px;font-variant-numeric:tabular-nums}
 .mn-tgl input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0}
 @media (max-width:640px){.mn-per-tgl,.mn-tgl{width:100%}.mn-tgl{flex:1}}
+
+/* kolom Aksi deteksi: ikon rapat, rata tengah (30 Okt) */
+.mn td.mn-aksi{padding:5px 8px}
+.mn-ia{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;margin:0 1px;border-radius:8px;color:var(--brand2);cursor:pointer}
+.mn-ia:hover{background:color-mix(in oklch,var(--brand) 10%,transparent)}
+.mn-ia:focus-visible{outline:2px solid var(--brand2);outline-offset:1px}
+.mn-ia.ok{color:var(--ok);background:color-mix(in oklch,var(--ok) 14%,transparent)}
+@media(max-width:600px){.mn-ia{width:34px;height:34px}}
+.mn-aks{display:inline-flex;justify-content:flex-start;width:196px}

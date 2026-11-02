@@ -97,7 +97,7 @@ test('paritas lokasi unik dengan titik_unik.py', () => {
     const jam = -Math.round(acak() * 4800) / 100
     b.push([-6 + acak() * 12 * (i % 4 ? 0.0025 : 1), 101 + acak() * 0.03, jam, ['M', 'N', 'N20', 'N21', 'X'][i % 5], 1, i % 7 ? 1 + (i % 2) : 0, 0, jam > -24 ? '10-24' : '10-23'])
   }
-  const js = [...A.unik(b)].map(r => b.indexOf(r)).sort((x, y) => x - y)
+  const bj = b.map(r => r.slice()), js = [...A.unik(bj)].map(r => bj.indexOf(r)).sort((x, y) => x - y)
   const py = JSON.parse(execFileSync('python3', ['-c', `
 import sys, json; sys.path.insert(0, "scripts/data"); import titik_unik as T
 b = json.load(sys.stdin); i = sorted(range(len(b)), key=lambda k: b[k][2])
@@ -105,4 +105,21 @@ u = T.unik([dict(k=k, s=b[k][3], c=b[k][5], lat=b[k][0], lon=b[k][1], h=b[k][7])
 print(json.dumps(sorted(p["k"] for p in u)))`], { cwd: akar, input: JSON.stringify(b) }).toString())
   assert.ok(py.length > 50 && py.length < b.length * 0.6, `fikstur harus memuat lokasi dobel: ${py.length} dari ${b.length}`)
   assert.deepEqual(js, py, `JS ${js.length} lokasi vs Python ${py.length}; beda pertama di indeks ${js.find((x, k) => x !== py[k])}`)
+  // keyakinan sel = tertinggi di selnya (titik_unik.yakin_maks), bukan milik deteksi pertama
+  const ym = JSON.parse(execFileSync('python3', ['-c', `
+import sys, json; sys.path.insert(0, "scripts/data"); import titik_unik as T
+b = json.load(sys.stdin); i = sorted(range(len(b)), key=lambda k: b[k][2])
+t = [dict(k=k, s=b[k][3], c=b[k][5], lat=b[k][0], lon=b[k][1], h=b[k][7]) for k in i]
+m = T.yakin_maks(t, lambda p: p["h"]); u = T.unik(t, lambda p: p["h"])
+print(json.dumps({p["k"]: m[(p["h"], T.sel(p["lat"], p["lon"]))] for p in u}))`], { cwd: akar, input: JSON.stringify(b) }).toString())
+  assert.ok(Object.keys(ym).some(k => ym[k] !== b[k][5]), 'fikstur harus memuat sel yang keyakinan maksnya beda dari deteksi pertama')
+  for (const k of js) assert.equal(bj[k][5], ym[k], `baris ${k}: keyakinan JS ${bj[k][5]} vs Python ${ym[k]}`)
+})
+
+test('lokasi unik: deteksi pertama rendah lalu satelit lain tinggi di sel sama -> sel dihitung tinggi sekali', () => {
+  const b = [[-1, 101, -2, 'N', 1, 0, 0, '10-24'], [-1, 101, -1, 'N20', 1, 2, 0, '10-24'], [-1, 101, -0.5, 'N21', 1, 1, 0, '10-24']]
+  const u = [...A.unik(b)]
+  assert.equal(u.length, 1)
+  assert.deepEqual([u[0][3], u[0][5]], ['N', 2], 'yang dihitung deteksi awal (N) tetapi keyakinannya tinggi')
+  assert.equal(A.unik(b).size, 1, 'idempoten: dipanggil ulang hasilnya sama')
 })

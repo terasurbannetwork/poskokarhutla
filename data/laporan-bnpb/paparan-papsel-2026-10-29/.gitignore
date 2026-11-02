@@ -1,0 +1,10 @@
+web/
+ref/
+osm/
+ik/
+*.png
+*.svg
+*.pptx
+*.pdf
+satelit.json
+titik.json

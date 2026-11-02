@@ -19,6 +19,7 @@ import {RUTE_HUKUM} from "./hukum.js";
 import {RUTE_KONTAK} from "./kontak.js";
 import {RUTE_SITREP, arsipkanSitrep, bersihkanArsipSitrep} from "./sitrep.js";
 import {RUTE_RELAWAN, bersihkanRelawan} from "./relawan.js";
+import {RUTE_LAPANGAN, bersihkanLapangan} from "./lapangan.js";
 import {layaniKm} from "./kemitraan.js";
 import {RUTE_LAPORAN_BNPB} from "./laporan_bnpb.js";
 import {RUTE_RUMAH_RUSAK} from "./rumah_rusak.js";
@@ -45,8 +46,16 @@ import {alarmHimawari, bersihkanAlarm} from "./alarm_himawari.js";
 import {bersihkanKabar, ulangiKabar} from "./kabar.js";
 import {RUTE_UJI, jalankanUji} from "./uji_lapangan.js";
 import {RUTE_UJI_BANJIR, bersihkanUjiBanjir} from "./uji_banjir.js";
-import {RUTE_STAF, bersihkanStaf} from "./staf.js";
+import {RUTE_STAF, bersihkanStaf, stafPeran} from "./staf.js";
+import {RUTE_CC, bersihkanCc} from "./command_center.js";
 import {RUTE_AKADEMISI} from "./akademisi.js";
+import {RUTE_LOGBOOK} from "./logbook.js";
+import {RUTE_PEMULIHAN} from "./pemulihan.js";
+import {RUTE_LAPSUS} from "./lapsus.js";
+import {RUTE_ROLLCALL} from "./rollcall.js";
+import {RUTE_BERANTAI} from "./berantai.js";
+import {RUTE_MEDSOS} from "./medsos_antre.js";
+import {RUTE_SENSOR} from "./sensor.js";
 import {RUTE_MONITOR} from "./monitor.js";
 import {layaniApiV1, RUTE_KUNCI_API} from "./api_v1.js";
 import {layaniMcp} from "./mcp.js";
@@ -409,7 +418,7 @@ async function selesai(env, req, id, kini) {
 /* ADMIN_TOKEN boleh berisi beberapa token dipisah koma (satu per moderator); yang cocok -> 12 karakter awal hash-nya = moderator.
    Entri berbentuk "email:sandi" adalah akun untuk form /admin/masuk (sandi tanpa koma, tanpa spasi di ujung).
    Diterima lewat header x-admin-token / Authorization: Bearer (skrip), atau cookie sesi dari /admin/masuk (peramban). */
-const MAKS_GAGAL_ADMIN = 300;
+const MAKS_GAGAL_ADMIN = 300, MAKS_GAGAL_EMAIL_HEADER = 20;   // = MAKS_GAGAL_EMAIL di src/statistik.js
 /* kegagalan autentikasi per kunci (hash IP bergaram) di tabel laju_posko (migrasi 0019); aksi: kode_gagal, admin_gagal, foto */
 export async function gagalSudahBanyak(env, kunci, aksi, maks, kini) {
   return (await env.DB.prepare("SELECT count(*) n FROM laju_posko WHERE kunci = ? AND aksi = ? AND waktu > ?").bind(kunci, aksi, kini - JAM).first()).n >= maks;
@@ -432,8 +441,13 @@ export async function adminOK(env, req, kini = Date.now()) {
     if (env.DB && env.IP_SALT && req.headers.get("cf-connecting-ip")) {
       try {
         const k = await ipHash(env, req);
+        /* "email:sandi" lewat header juga kena batas PER AKUN yang sama dengan form /admin/masuk (kunci & batas sama, src/statistik.js),
+           supaya penebak yang memutar IP tidak lolos (uji Setneg 1 Nov 2026). Token acak tanpa ":" hanya dibatasi per IP. */
+        const i = t.indexOf(":"), email = i > 0 ? t.slice(0, i).trim().toLowerCase() : "";
+        const ka = email ? (await sha(env.IP_SALT + "|masuk|" + email)).slice(0, 32) : "";
         if (await gagalSudahBanyak(env, k, "admin_gagal", MAKS_GAGAL_ADMIN, kini)) return null;
-        if (!ok) { await catatGagal(env, k, "admin_gagal", kini); return null; }
+        if (ka && await gagalSudahBanyak(env, ka, "admin_gagal", MAKS_GAGAL_EMAIL_HEADER, kini)) return null;
+        if (!ok) { await catatGagal(env, k, "admin_gagal", kini); if (ka) await catatGagal(env, ka, "admin_gagal", kini); return null; }
       } catch (e) { if (!/no such table/i.test(String(e?.message || e))) console.error("adminOK laju", e?.message); }   // migrasi 0019 belum jalan = tanpa batas; galat lain tetap dicatat
     }
     return ok ? a.slice(0, 12) : null;
@@ -545,7 +559,7 @@ const RUTE = {
   "GET /admin": () => new Response(null, {status: 303, headers: {location: "/admin/statistik"}}),
   "GET /admin/masuk": (env, req, url, kini) => St.masuk(env, req, kini, halamanMasuk),
   "POST /admin/masuk": (env, req, url, kini) => St.masuk(env, req, kini, halamanMasuk),
-  "POST /admin/keluar": async (env, req) => { await hapusSesiPemirsa(env, req); const k = St.keluar(); k.headers.append("set-cookie", cookiePemirsa("", 0)); return k; },   // keluar = sesi admin dan pemirsa
+  "POST /admin/keluar": async (env, req) => { await hapusSesiPemirsa(env, req); const k = await St.keluar(env, req); k.headers.append("set-cookie", cookiePemirsa("", 0)); return k; },   // keluar = sesi admin dan pemirsa
   "GET /admin/statistik": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanStatistik()),
   "GET /admin/pesan": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanPesan()),
   "GET /statistik": (env, req, url, kini, ctx) => { catatHTML(env, req, "/statistik", ctx); return halamanPublik(); },
@@ -565,6 +579,7 @@ const RUTE = {
   ...RUTE_HUKUM,   // Pustaka Hukum BNPB (docs/bnpb/HUKUM.md)
   ...RUTE_KONTAK,   // buku kontak pemangku kepentingan, hanya admin (src/kontak.js)
   ...RUTE_RELAWAN,
+  ...RUTE_LAPANGAN,   // modul Pegawai dan Relawan Lapangan: petugas + panel (src/lapangan.js, migrasi 0095)
   ...RUTE_ALUN,
   ...RUTE_RISET,
   ...RUTE_MEJA,
@@ -582,6 +597,14 @@ const RUTE = {
   ...RUTE_UJI_PILOT,   // uji pilot SIPPA Kalteng tanpa login, token di fragmen #t= dan header x-uji (src/uji_pilot.js, keputusan SIPPA 59)
   ...RUTE_PENUGASAN,   // penugasan orang ke tugas api dan pelacak GPS lewat tautan /lacak/<token> (src/penugasan.js)
   ...RUTE_STAF,   // akun staf BNPB per orang dan peran (src/staf.js)
+  ...RUTE_CC,   // command center karhutla: antrean alert level 3, tindak lanjut operator, log, kontak BPBD (src/command_center.js)
+  ...RUTE_LOGBOOK,   // logbook Pusdalops: kejadian + entri, laporan harian 07.00-07.00 WIB, staf saja (src/logbook.js)
+  ...RUTE_PEMULIHAN,   // tracker pemulihan huntara/huntap/DTH/jembatan/sumur per kab, staf saja (src/pemulihan.js, migrasi 0096)
+  ...RUTE_LAPSUS,   // Laporan Khusus operasi besar: kebutuhan mendesak + 4 layanan dasar + penanda basi (src/lapsus.js)
+  ...RUTE_ROLLCALL,   // roll call radio harian dan ketaatan bulanan (src/rollcall.js)
+  ...RUTE_BERANTAI,   // peringatan berantai banjir/cuaca ke longsor/banjir susulan 3 hari, pola deskriptif (src/berantai.js, migrasi 0098)
+  ...RUTE_MEDSOS,   // antrean verifikasi pantauan medsos/TV ke logbook dan jeda ukur (src/medsos_antre.js, migrasi 0098)
+  ...RUTE_SENSOR,   // sensor lapangan: ingest HMAC per alat + status staf (src/sensor.js)
   ...RUTE_AKADEMISI,   // direktori pakar kebencanaan, hanya staf BNPB dan admin (src/akademisi.js, data di R2)
   ...RUTE_MONITOR,   // halaman staf /monitor: tanda baca peringatan, groundcheck, tindak lanjut (src/monitor.js)
   ...RUTE_PEMIRSA,   // akun pemirsa: hanya melihat tab tertentu situs Centurisk97 (src/pemirsa.js)
@@ -616,14 +639,14 @@ export const tolakOrigin = (req, url) => {
 async function rute(env, req, url, ctx) {
   /* /lacak (halaman statis; token di fragmen #<36 hex>, dibaca peramban); API-nya (/api/lacak/*) membawa token di header x-lacak */
   if (url.pathname === "/lacak" || url.pathname === "/lacak/") { const h = await halamanLacak(env, req, url); if (h) return h; }
-  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/) || jalur.match(/^(\/api\/akademisi\/gambar)\/([^/]{1,100})$/), id = tgl ? tgl[2] : nama ? nama[2] : rl ? rl[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
-  const kunci = tgl ? tgl[1] + "/:tanggal" : nama ? nama[1] + "/:nama" : oa ? oa[1] + "/:id" : rl ? `${rl[1]}/:id/${rl[3]}` : id ?jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
+  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/) || jalur.match(/^(\/api\/akademisi\/gambar)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/akademisi\/riwayat)\/(\d{1,12})$/), tn = jalur.match(/^(\/api\/logbook\/turunan)\/([a-z0-9_]{1,20})$/), lb = jalur.match(/^(\/api\/logbook\/kejadian)\/([0-9a-f]{16})\/(entri|tutup|sk)$/), id = tgl ? tgl[2] : tn ? tn[2] : nama ? nama[2] : rl ? rl[2] : lb ? lb[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
+  const kunci = tgl ? tgl[1] + "/:tanggal" : tn ? tn[1] + "/:nama" : nama ? nama[1] + "/:nama" : oa ? oa[1] + "/:id" : rl ? `${rl[1]}/:id/${rl[3]}` : lb ? `${lb[1]}/:id/${lb[3]}` : id ?jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
   const f = tabel[req.method + " " + kunci];
   if (!f) {   // jalur ada tapi metode lain: 405, bukan jatuh ke aset statis (HEAD/OPTIONS tetap lewat seperti semula)
     const ok = ["GET", "POST"].filter(m => tabel[m + " " + kunci]);
     return ok.length && req.method !== "HEAD" && req.method !== "OPTIONS" ? gagal(405, "metode tidak diizinkan", {allow: ok.join(", ")}) : null;
   }
-  if (req.method === "POST") {   // CSRF: POST dari origin lain ditolak (cookie sesi SameSite=Lax)
+  if (req.method === "POST" || req.method === "PATCH" || req.method === "DELETE") {   // CSRF: tulis dari origin lain ditolak (cookie sesi SameSite=Lax)
     const x = tolakOrigin(req, url); if (x) return x;
     if (!env.IP_SALT && !url.pathname.startsWith("/api/jejak")) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
   }
@@ -636,8 +659,11 @@ async function rute(env, req, url, ctx) {
    Syarat: wrangler.jsonc assets.html_handling = "none", supaya "/" dan "/banjir/" tidak dijawab aset otomatis.
    [pola jalur, berkas aset, kunci jalur untuk statistik (null = pakai jalur yang dinormalkan)] */
 const BNPB_BERSIH = {index: "/bnpb", relawan: "/relawan", "relawan-saya": "/relawan/saya", kampus: "/kampus", "alun-alun": "/alun-alun", riset: "/riset", mitra: "/riset/mitra",
-  meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan", kebakaran: "/risiko-kebakaran", hukum: "/bnpb/hukum", pendataan: "/pendataan"};
+  meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan", kebakaran: "/risiko-kebakaran", hukum: "/bnpb/hukum", logbook: "/bnpb/logbook", dokumen: "/bnpb/dokumen", operasi: "/bnpb/operasi", perencanaan: "/bnpb/perencanaan", pendataan: "/pendataan"};
 export const HOST_TERKUNCI = new Set(["centurisk97.id", "www.centurisk97.id"]);
+/* host yang halamannya di balik login: domain + alamat workers.dev PRODUKSI (dan pratinjau versinya "<hash>-centurisk97...").
+   Uji Setneg 1 Nov 2026: /monitor, /direktori dll. terbuka tanpa login lewat workers.dev. Host *.workers.dev lain (uji lokal) tetap terbuka. */
+export const hostTerkunci = h => HOST_TERKUNCI.has(h) || h.endsWith("centurisk97.terasurbannetwork.workers.dev");
 /* centurisk97.id tampil sama dengan centurisk97.*.workers.dev: data perusahaan, merek Centurisk97 (pemilik, 19 Okt 2026) */
 export const situsCenturisk = h => h.endsWith(".workers.dev") || HOST_TERKUNCI.has(h);
 export const HTML_RUTE = [
@@ -657,6 +683,8 @@ export const HTML_RUTE = [
   [/^\/monitor\/?$/, "/monitor.html", "/monitor"],   // monitor peringatan api untuk staf BNPB dan BPBD (public/monitor*, src/monitor.js); tetap tertutup di centurisk97.id, tiap API menjaga sesinya
   [/^\/direktori\/?$/, "/akademisi.html", "/direktori"],   // Direktori Kebencanaan (dulu /akademisi, nama diganti pemilik 30 Okt 2026): pakar, lembaga, inovasi, sistem data
   [/^\/akademisi\/?$/, "/akademisi.html", "/akademisi"],   // alamat lama, dialihkan 301 ke /direktori di layaniHTML   // direktori pakar kebencanaan (public/akademisi*, src/akademisi.js); halaman tertutup di centurisk97.id, datanya hanya lewat /api/akademisi bersesi staf
+  [/^\/petugas\/?$/, "/petugas/index.html", "/petugas"],   // modul Pegawai dan Relawan Lapangan: layar petugas berkode (/lapangan milik regu Posko lama)
+  [/^\/petugas\/panel\/?$/, "/petugas/panel.html", "/petugas/panel"],   // panel pimpinan modul Lapangan; tertutup di centurisk97.id (sesi staf), API menjaga hak
   [/^\/prediksi\/?$/, "/prediksi/index.html", "/prediksi"],   // prediksi bencana per kab (public/prediksi/, src/prediksi.js); di balik login, TIDAK di PUBLIK_TANPA_SESI
 ];
 /* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
@@ -664,6 +692,7 @@ export const HTML_RUTE = [
 /* Cakupan: gerbang ini menutup CANGKANG HALAMAN (HTML, termasuk berkas .html yang dibuka langsung lewat run_worker_first di wrangler*.jsonc),
    BUKAN /data/*.json, JS, CSS, atau gambar: itu tetap aset statis publik tanpa Worker. */
 export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk dengan KODE tanpa akun (keputusan pemilik 19 Okt 2026); kode dicek di tiap panggilan API"],
+  ["/petugas", "pegawai dan relawan masuk dengan kode pribadi tanpa akun (KEPUTUSAN-LAPANGAN D5); kode dicek di tiap panggilan API"],
   ["/daftar-kontak", "registrasi kontak pemangku kepentingan (kepala daerah, BPBD, TNI, Polri) yang tidak punya akun situs (permintaan pemilik 23 Okt 2026); hanya menulis baris menunggu, tidak membaca apa pun"],
   ["/renlap", "halaman HP Renlap SIPPA dibuka regu lapangan dengan tautan bertoken di fragmen #t=, tanpa akun (keputusan SIPPA 61, SP-140); data.json hanya terkirim bila token cocok (/api/renlap/data), halaman tanpa token kosong"],
   ["/uji-pilot", "regu uji pilot SIPPA Kalteng membuka dossier dan melapor dengan tautan bertoken, tanpa akun (keputusan pemilik 26 Okt 2026, keputusan SIPPA 59); token dicek di tiap panggilan API, halaman tanpa token kosong"],
@@ -676,6 +705,7 @@ function halamanTerkunci(url) {
   if (PUBLIK_TANPA_SESI.has(jalur)) return false;
   if (url.pathname.startsWith("/f/") || HTML_RUTE.some(([re]) => re.test(url.pathname))) return true;
   const kunci = /\/[0-9a-f]{16}$/.test(jalur) ? jalur.slice(0, -16) + ":id" : jalur;
+  if (/^\/command-center(\/|$)/.test(jalur)) return false;   // meja menjaga dirinya sendiri (src/command_center.js): tamu 303 ke /admin/pantau?ke=
   return !!tabelRute()["GET " + kunci] && !/^\/(api|admin|ews|ubin|pipa)(\/|$)/.test(jalur);   // /pipa* menjaga dirinya sendiri (src/sippa.js, DESAIN-TEKNIS SIPPA §1.4): tamu 303 ke /admin/pantau?ke=, bukan ke /admin/masuk
 }
 function catatHTML(env, req, jalur, ctx) {
@@ -710,9 +740,12 @@ async function layaniHTML(req, env, ctx, url) {
     if (pmTab) el.setAttribute("data-pemirsa-tab", pmTab);
   }}).transform(aset);
   /* HTML per orang (pemirsa) dan di balik login (host terkunci): jangan disimpan cache bersama */
-  if (pmTab || HOST_TERKUNCI.has(url.hostname) || jalur === "/uji-lapangan") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.append("vary", "cookie"); }
+  if (pmTab || hostTerkunci(url.hostname) || jalur === "/uji-lapangan") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.append("vary", "cookie"); }
+  /* /petugas dan /petugas/panel memuat data pribadi: CSP ketat (tanpa skrip/gaya inline; aset sendiri + Google Fonts) dan tanpa referrer; kode pribadi ada di fragmen #k= */
+  if (jalur === "/petugas" || jalur === "/petugas/panel") { keluaran.headers.set("content-security-policy", CSP_PETUGAS); keluaran.headers.set("referrer-policy", "no-referrer"); }
   return keluaran;
 }
+const CSP_PETUGAS = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
 
 /* ================= cache tepi untuk GET publik tanpa data per pengguna (caches.default, per pusat data Cloudflare) =================
    Hanya dipanggil dari rute GET publik di fetch() (/api/warga daftar & konfig, /api/titik, /api/status); admin, POST, dan rute
@@ -752,11 +785,21 @@ export async function halamanGalat(env, req, url, kode) {
   return new Response(kode === 404 ? "Tidak ditemukan" : "Galat server", {status: kode});
 }
 
+/* HSTS di tiap respons Worker lewat https (aset statis mendapatkannya dari public/_headers). Tanpa includeSubDomains/preload: subdomain lain belum tentu https. */
+const HSTS = "max-age=31536000";
+function denganHsts(r, url) {
+  if (!r || url.protocol !== "https:" || r.status === 101 || r.headers.has("strict-transport-security")) return r;
+  try { r.headers.set("strict-transport-security", HSTS); return r; }
+  catch { const x = new Response(r.body, r); x.headers.set("strict-transport-security", HSTS); return x; }   // header Response.redirect/ASSETS tak bisa diubah
+}
+
 const W = {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
-    try { return await W.layani(req, env, ctx, url); }
-    catch (e) { console.error("fetch", url.pathname, e); return mauHalaman(req, url) ? halamanGalat(env, req, url, 500) : gagal(500, "galat server"); }
+    let r;
+    try { r = await W.layani(req, env, ctx, url); }
+    catch (e) { console.error("fetch", url.pathname, e); r = await (mauHalaman(req, url) ? halamanGalat(env, req, url, 500) : gagal(500, "galat server")); }
+    return denganHsts(r, url);
   },
   async layani(req, env, ctx, url) {
     /* API terbuka mitra: di SEMUA host (termasuk centurisk97.id), sebelum gerbang halaman dan pencatatan pemirsa. /api = dokumentasinya (public/api.html). */
@@ -764,7 +807,7 @@ const W = {
     if (url.pathname === "/mcp" || url.pathname === "/mcp/") return layaniMcp(req, env, ctx, url);   // server MCP remote (src/mcp.js), juga di semua host
     if ((url.pathname === "/api" || url.pathname === "/api/") && (req.method === "GET" || req.method === "HEAD")) {
       /* dokumentasi di centurisk97.id hanya untuk yang masuk: admin atau akun pemirsa (pemilik 23 Okt 2026, akun mitra); endpoint /api/v1 dan /mcp tetap terbuka */
-      const kunci = HOST_TERKUNCI.has(url.hostname);
+      const kunci = hostTerkunci(url.hostname);
       if (kunci && !await adminOK(env, req) && !await pemirsaSesi(env, req)) return new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=%2Fapi", "cache-control": "no-store"}});
       const d = await env.ASSETS.fetch(new Request(new URL("/api.html", url)));
       return new Response(d.body, {status: d.status, headers: {"content-type": "text/html; charset=utf-8", "cache-control": kunci ? "private, no-store" : "public, max-age=300", "x-content-type-options": "nosniff"}});
@@ -799,7 +842,7 @@ const W = {
       const ke = BNPB_BERSIH[url.pathname.slice(6, -5)];
       return ke ? new Response(null, {status: 301, headers: {location: ke + url.search, "cache-control": "no-store"}}) : new Response("Tidak ditemukan", {status: 404});
     }
-    if (HOST_TERKUNCI.has(url.hostname) && url.pathname === "/lapangan.html") return new Response(null, {status: 303, headers: {location: "/lapangan", "cache-control": "no-store"}});   // satu pintu: /lapangan (CSP ketat)
+    if (hostTerkunci(url.hostname) && url.pathname === "/lapangan.html") return new Response(null, {status: 303, headers: {location: "/lapangan", "cache-control": "no-store"}});   // satu pintu: /lapangan (CSP ketat)
     if (url.pathname === "/instansi.html") return new Response(null, {status: 303, headers: {location: "/instansi", "cache-control": "no-store"}});
     if (url.pathname === "/renlap.html") return new Response(null, {status: 303, headers: {location: "/renlap", "cache-control": "no-store"}});   // satu pintu ber-CSP ketat (fragmen #t= ikut dibawa peramban)   // satu pintu: /instansi (CSP ketat)
     if (url.pathname === "/instansi_uji.html") return new Response(null, {status: 303, headers: {location: "/uji-lapangan", "cache-control": "no-store"}});   // satu pintu: /uji-lapangan
@@ -811,7 +854,8 @@ const W = {
       if (!await adminOK(env, req) && !await pemirsaSesi(env, req)) return new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=" + encodeURIComponent(url.pathname), "cache-control": "no-store"}});
       ujiOK = true;
     }
-    if (!ujiOK && HOST_TERKUNCI.has(url.hostname) && (req.method === "GET" || req.method === "HEAD") && halamanTerkunci(url) && !await adminOK(env, req)) {
+    if (!ujiOK && hostTerkunci(url.hostname) && (req.method === "GET" || req.method === "HEAD") && halamanTerkunci(url) && !await adminOK(env, req)
+      && !await stafPeran(env, req, ["operator_cc"])) {   // operator command center (sesi staf) melihat semua halaman terkunci, GET/HEAD saja; peran staf lain tidak
       /* akun pemirsa (src/pemirsa.js): hanya tab miliknya; halaman lain dialihkan ke tab pertamanya */
       const p = await pemirsaSesi(env, req), ke = p ? arahPemirsa(p, url.pathname) : "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search);
       if (ke) return new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store"}});
@@ -899,6 +943,7 @@ async function bersihSemua(env, sekarang) {
     try { console.log("foto", JSON.stringify(await bersihkanFoto(env))); } catch (e) { console.error("foto", e); }
     try { await bersihkanStaf(env, Date.now()); await bersihkanPantau(env, Date.now()); } catch (e) { console.error("pantau", e?.message); }   // migrasi 0030 belum jalan = cron lain tetap jalan
     try { await bersihkanPemirsa(env, Date.now()); } catch (e) { console.error("pemirsa", e?.message); }
+    try { await bersihkanCc(env, sekarang); } catch (e) { console.error("command center", e?.message); }   // migrasi 0099 belum jalan = cron lain tetap jalan; sekali sehari (jam 04 UTC): jejak/status > 2 tahun, kehadiran > 30 hari
     try { await bersihkanInstansi(env, Date.now()); } catch (e) { console.error("instansi", e?.message); }   // migrasi 0029 belum jalan = cron lain tetap jalan
     try { await bersihkanPosko(env, Date.now()); } catch (e) { console.error("posko", e?.message); }   // migrasi 0018 belum jalan = cron lain tetap jalan
     try { await isiWilayahLaporan(env, Date.now()); } catch (e) { console.error("wilayah laporan", e?.message); }   // migrasi 0027 belum jalan = cron lain tetap jalan
@@ -909,6 +954,7 @@ async function bersihSemua(env, sekarang) {
     try { await bersihkanBnpb(env, Date.now()); } catch (e) { console.error("bnpb", e?.message); }   // migrasi 0022 belum jalan = cron lain tetap jalan
     try { await segarkanRingkas(env); } catch (e) { console.error("meja ringkas", e?.message); }   // tanda berbasis waktu (logistik >24 jam dst.) di agregat Meja Kerja
     try { await bersihkanArsipSitrep(env, Date.now()); } catch (e) { console.error("arsip sitrep", e?.message); }   // retensi 400 hari
+    try { await bersihkanLapangan(env, Date.now()); } catch (e) { console.error("lapangan", e?.message); }   // wa_antre memuat kode pribadi; migrasi 0095 belum jalan = cron lain tetap jalan
     try { await bersihkanRelawan(env, Date.now()); } catch (e) { console.error("relawan", e?.message); }   // retensi UU PDP: ditolak/nonaktif > 180 hari dianonimkan
     try { await bersihkanGempa(env, Date.now()); } catch (e) { console.error("gempa", e); }
     try { await bersihkanPeringatan(env, Date.now()); } catch (e) { console.error("peringatan", e?.message); }   // migrasi 0009 belum jalan = cron lain tetap jalan

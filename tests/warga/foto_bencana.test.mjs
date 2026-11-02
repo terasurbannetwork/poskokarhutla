@@ -78,7 +78,7 @@ uji("trigger foto_kategori_sah menolak pasangan (bencana, kode) di luar tabel ru
 
 test("gagal lunak: tanpa migrasi 0013 karhutla tetap jalan, bencana lain kosong (GET) / 503 (unggah)", async () => {
   const dir = path.join(AKAR, "migrations");
-  const lama = readdirSync(dir).filter(f => f.endsWith(".sql") && !f.startsWith("0013")).sort().map(f => readFileSync(path.join(dir, f), "utf8")).join("\n");
+  const lama = readdirSync(dir).filter(f => f.endsWith(".sql") && !f.startsWith("0013") && !f.endsWith("_rujukan.sql")).sort().map(f => readFileSync(path.join(dir, f), "utf8")).join("\n");
   const m2 = new Miniflare(opsi("uji-fb-lama"));
   try {
     const d2 = await m2.getD1Database("DB"); await d2.batch(pecah(lama).map(s => d2.prepare(s)));

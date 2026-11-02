@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- TEMPLATE, belum terpasang. Pemicu jam cut-off: 12.05 WIB (harian) dan 17.05 WIB (penanganan), jam lokal mesin = WIB. Ganti __REPO__ __NODE__ __HOME__. Lihat scripts/wa/README.md. -->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>id.centurisk97.wa-cutoff</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>__NODE__</string>
+    <string>__REPO__/scripts/wa/otomatis.mjs</string>
+    <string>--cutoff</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <array>
+    <dict><key>Hour</key><integer>12</integer><key>Minute</key><integer>5</integer></dict>
+    <dict><key>Hour</key><integer>17</integer><key>Minute</key><integer>5</integer></dict>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>__REPO__</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    <key>CHROMIUM_SHELL</key>
+    <string>/Applications/Google Chrome.app/Contents/MacOS/Google Chrome</string>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>__HOME__/.wa-bot/log/cutoff.log</string>
+  <key>StandardErrorPath</key>
+  <string>__HOME__/.wa-bot/log/cutoff.err.log</string>
+</dict>
+</plist>

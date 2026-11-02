@@ -459,6 +459,7 @@ def main():
 
     print("hotspot...", file=sys.stderr)
     titik = hotspot(kunci(), w, lama=os.path.join(KELUAR, "hotspot.json"))
+    titik_mentah = titik   # sebelum buang sumber panas tetap: pembanding definisi BMKG memakai titik mentah (titik_unik.BMKG_DEFINISI)
     # Titik di sel sumber panas statis (smelter, tambang, kilang, PLTU; titik_palsu.json) bukan kebakaran: tidak dihitung untuk
     # jumlah titik, kompleks, status, dan harian30. Gunung api (kawah) tetap dihitung. Matikan: TITIK_PALSU=0.
     industri = {"aktif": False, "titik": 0, "jenis": {}}
@@ -678,14 +679,19 @@ def main():
     # ringkasan per provinsi: hitungan utama = lokasi unik per hari WIB (titik_unik.py) + FWI
     rek = {}
     dihitung = {id(p) for p in TU.unik(titik, lambda p: tgl(p["t"]))}
+    yakin_sel = TU.yakin_maks(titik, lambda p: tgl(p["t"]))   # keyakinan SEL = tertinggi di selnya, bukan milik deteksi pertama
+    yakin = lambda p: yakin_sel[(tgl(p["t"]), TU.sel(p["lat"], p["lon"]))] if id(p) in dihitung else p["c"]
     for p in titik:
         if id(p) not in dihitung:
             continue
         r = rek.setdefault(p["adm"][0], {"harian": {}, "tinggi": {}})
         d = tgl(p["t"]).isoformat()
         r["harian"][d] = r["harian"].get(d, 0) + 1
-        if p["c"] == 2:
+        if yakin(p) == 2:
             r["tinggi"][d] = r["tinggi"].get(d, 0) + 1
+    bmkg = TU.seri_bmkg(titik_mentah, lambda p: tgl(p["t"]).isoformat(), lambda p: p["adm"][0])
+    for kode, per_hari in bmkg.items():
+        rek.setdefault(kode, {"harian": {}, "tinggi": {}})["bmkg"] = dict(sorted(per_hari.items()))
     for f in fitur:
         q = f["properties"]
         r = rek.setdefault(q["prov"], {"harian": {}, "tinggi": {}})
@@ -719,7 +725,7 @@ def main():
         return {"kolom": ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib", "hitung"],
                 "acuan": akhir.isoformat(), "wilayah": tabel, "sensor_utama": list(TU.SENSOR), "keyakinan_min": TU.KEYAKINAN_MIN,
                 "satuan": "lokasi unik ~375 m per hari WIB (titik_unik.py)", **tambah,
-                "baris": [[p["lat"], p["lon"], round((p["t"] - akhir).total_seconds() / 3600, 2), p["s"], p["frp"], p["c"],
+                "baris": [[p["lat"], p["lon"], round((p["t"] - akhir).total_seconds() / 3600, 2), p["s"], p["frp"], yakin(p),
                            idx["|".join(p["adm"])], tgl(p["t"]).isoformat()[5:], int(id(p) in dihitung)] for p in titik if pilih(p)]}
     simpan("hotspot.json", titik_json(lambda p: True))
     simpan("hotspot72.json", titik_json(lambda p: p["t"] >= akhir - dt.timedelta(hours=72), jam_maks=72))
@@ -744,7 +750,9 @@ def main():
         "provinsi": PROVINSI, "prioritas": PRIORITAS, "bnpb": BNPB, "status": STATUS,
         "dbscan": {"eps_km": EPS_KM, "min_pts": MIN_PTS, "jendela_hari": JENDELA_HARI, "aktif_jam": AKTIF_JAM, "aktif_gambut_jam": AKTIF_GAMBUT_JAM, "jam_st": 48,
                    "firespot": {"ambang_medium_px": AMBANG_MEDIUM_PX, "sumber": SUMBER_FIRESPOT, "unit": "piksel unik, bukan titik"}},
-        "bara": GB.CATATAN})
+        "bara": GB.CATATAN,
+        "titik_bmkg": {"definisi": TU.BMKG_DEFINISI, "catatan": TU.BMKG_CATATAN, "lokasi": "wilayah.json[kode_provinsi].bmkg = {tanggal WIB: jumlah}",
+                       "nasional": {d: sum(v.get(d, 0) for v in bmkg.values()) for d in sorted({d for v in bmkg.values() for d in v})}}})
     from collections import Counter
     print(f"{len(titik)} titik, {len(fitur)} cluster (+{s1} titik tunggal belum dinilai), {len(grid)} sel FWI;",
           "level", dict(Counter(f["properties"]["level"] for f in fitur)), file=sys.stderr)

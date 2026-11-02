@@ -20,7 +20,7 @@
 .lp-kop,.lp-kop-garis{display:none}
 
 /* tabel: kolom teks rata kiri, angka kanan, gulir horizontal di dalam kartunya */
-.lp-tb td.n,.lp-tb th.n{text-align:right;font-variant-numeric:tabular-nums}
+.lp-tb td.n,.lp-tb th.n{text-align:center;font-variant-numeric:tabular-nums}
 #laporan .lp-tb thead th{text-transform:none;font-size:11.5px;letter-spacing:0;white-space:normal;vertical-align:bottom;line-height:1.25}
 #laporan .lp-tb thead th button{display:inline-flex;white-space:normal;text-align:inherit}
 #laporan .lp-tb thead th.n button{justify-content:flex-end}

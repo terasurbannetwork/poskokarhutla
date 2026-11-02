@@ -1,0 +1,87 @@
+{
+ "n_kab": 515,
+ "n_kejadian": 18475,
+ "rho_x_y": [
+  0.245,
+  0.161,
+  0.327
+ ],
+ "rho_x_yres": [
+  0.042,
+  -0.048,
+  0.129
+ ],
+ "rho_xlama_yres": [
+  0.066,
+  -0.026,
+  0.155
+ ],
+ "selisih_x_xlama_yres": [
+  -0.024,
+  -0.061,
+  0.012
+ ],
+ "rho_xtinggi_yres": [
+  0.077,
+  -0.011,
+  0.162
+ ],
+ "rho_penduduk_y": [
+  0.59,
+  0.525,
+  0.648
+ ],
+ "periode": {
+  "2008-2016": {
+   "n_kejadian": 5740,
+   "rho_x_yres": [
+    0.008,
+    -0.083,
+    0.095
+   ]
+  },
+  "2017-2025": {
+   "n_kejadian": 12735,
+   "rho_x_yres": [
+    0.077,
+    -0.012,
+    0.166
+   ]
+  }
+ },
+ "prf_x_yres": {
+  "presisi": 0.217,
+  "recall": 0.217,
+  "f1": 0.217,
+  "acak": 0.25
+ },
+ "prf_xlama_yres": {
+  "presisi": 0.217,
+  "recall": 0.217,
+  "f1": 0.217,
+  "acak": 0.25
+ },
+ "vonis": {
+  "V1 selaras dengan kejadian": true,
+  "V2 selaras di luar jumlah penduduk": false,
+  "V3 sebaran kelas lebih baik dari nilai tertinggi": false,
+  "V4 stabil di dua periode": false
+ },
+ "jatuh": {
+  "kecamatan_gagal": 0,
+  "tanpa_luas_atau_indeks_lama": 0,
+  "tanpa_penduduk": 0,
+  "tanpa_dibi_jadi_0": 3
+ },
+ "dibuat": "2026-10-31",
+ "pertanyaan": "Apakah kabupaten dengan zona bahaya banjir InaRISK lebih luas lebih sering mengalami banjir tercatat?",
+ "x": "persen luas kabupaten di zona bahaya banjir InaRISK sedang + tinggi",
+ "y": "kejadian banjir + banjir bandang DIBI 2008-2025 per kabupaten",
+ "y_res": "sisa log(1 + kejadian) sesudah regresi pada log penduduk",
+ "ci": "selang 95% bootstrap 2000 ulangan atas kabupaten; format [titik, bawah, atas]",
+ "batas": [
+  "DIBI dicatat per kabupaten: uji per kecamatan atau kelurahan belum mungkin.",
+  "DIBI hanya kejadian yang dilaporkan; banjir kecil di daerah sepi bisa tidak tercatat.",
+  "Korelasi antar kabupaten, bukan ketepatan batas zona di lapangan."
+ ]
+}

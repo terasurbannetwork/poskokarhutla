@@ -100,6 +100,7 @@
       kotak(kolom("Kabupaten/kota", `fs.${i}.kab`, {teks: 1, maks: 60}), kolom("Kecamatan", `fs.${i}.kec`, {teks: 1, maks: 60}), kolom("Kawasan (mis. TNTP)", `fs.${i}.kawasan`, {teks: 1, maks: 60}),
         kolom("Target (ha)", `fs.${i}.target_ha`, {angka: 1}), kolom("Padam darat (ha)", `fs.${i}.padam_darat_ha`, {angka: 1}), kolom("Padam udara (ha)", `fs.${i}.padam_udara_ha`, {angka: 1}),
         kolom("Status api", `fs.${i}.status`, {pilihan: {menyala: "Menyala", bara: "Bara", padam: "Padam"}}), h("div", {class: "lk-kol"}, h("span", {teks: "Sisa terhitung (ha)"}), h("output", {class: "lk-sisa", "data-sisa": i, teks: ""})),
+        kolom("Jalan dan kelurahan (kolom lokasi laporan BNPB)", `fs.${i}.lokasi`, {teks: 1, maks: 160}), kolom("Kendala di titik ini", `fs.${i}.kendala`, {teks: 1, maks: 200}),
         kolom("Alasan koreksi atau luasan baru", `fs.${i}.alasan`, {teks: 1, maks: 300}), kolom("Luasan kumulatif, jangan dijumlahkan", `fs.${i}.kumulatif`, {cek: 1})),
       h("div", {class: "lk-cek-baris", "data-cekfs": i}), h("button", {type: "button", class: "lk-btn kecil bahaya", "data-a": "hapus-fs", "data-i": i, disabled: !D.boleh_tulis, teks: "Hapus baris"}));
   }
@@ -132,7 +133,8 @@
       h("div", {id: "lkStatus"}), h("div", {id: "lkKonflik", class: "lk-banner galat", role: "alert", hidden: true}),
       D.wajib ? null : h("p", {class: "lk-banner kuning", teks: "Provinsi ini bukan provinsi prioritas pada hari itu, jadi laporan tidak bisa dikirim."}),
       mat, h("section", {class: "lk-hasil", "aria-live": "polite", id: "lkHasil"}),
-      h("div", {class: "lk-bar"}, h("span", {id: "lkSimpan", class: "lk-simpan " + simpanState, role: "status", teks: simpanTeks()}), h("button", {type: "button", class: "lk-btn utama", id: "lkKirim", "data-a": "kirim", disabled: !tulis || !D.wajib, teks: D.status === "terkirim" || D.status === "disetujui" ? "Kirim ulang" : "Kirim laporan"})));
+      h("div", {class: "lk-bar"}, h("span", {id: "lkSimpan", class: "lk-simpan " + simpanState, role: "status", teks: simpanTeks()}), h("button", {type: "button", class: "lk-btn utama", id: "lkKirim", "data-a": "kirim", disabled: !tulis || !D.wajib, teks: D.status === "terkirim" || D.status === "disetujui" ? "Kirim ulang" : "Kirim laporan"}),
+        h("a", {class: "lk-btn", id: "lkFormatKhusus", href: `/api/instansi/laporan/format-khusus?prov=${kode}&tanggal=${tgl}`, download: "", title: "Format resmi Pelaporan Khusus untuk BNPB, dari data yang tersimpan (simpan dulu)", teks: "Unduh format BNPB (xlsx)"})));
     gambarStatus(); sinkronTotal();
   }
   function pilihan(bagian, k, label) { const on = isi[bagian].pilihan.includes(k), c = h("input", {type: "checkbox", "data-pilih": bagian, value: k, checked: on}); return h("label", {class: "lk-kol cek"}, c, h("span", {teks: label})); }
@@ -166,7 +168,7 @@
 
   /* ---------- isian ---------- */
   const atur = (jalur, nilai) => { const p = jalur.split("."); let o = isi; for (let i = 0; i < p.length - 1; i++) { if (o[p[i]] == null) o[p[i]] = /^\d+$/.test(p[i + 1]) ? [] : {}; o = o[p[i]]; } o[p[p.length - 1]] = nilai; };
-  const fsKosong = () => ({fs_id: "", tugas_id: null, kab: "", kec: "", kawasan: "", target_ha: "", padam_darat_ha: "", padam_udara_ha: "", status: "menyala", kumulatif: false, alasan: "", kemarin: null});
+  const fsKosong = () => ({fs_id: "", tugas_id: null, kab: "", kec: "", lokasi: "", kendala: "", kawasan: "", target_ha: "", padam_darat_ha: "", padam_udara_ha: "", status: "menyala", kumulatif: false, alasan: "", kemarin: null});
   const penambah = {"tambah-fs": () => isi.fs.push(fsKosong()), "tambah-blok": () => (isi.blok ||= []).push({kawasan: "", fs: "", fs_padam: "", target_ha: "", padam_ha: ""}), "tambah-alat": () => isi.peralatan.push({kategori: "", stok: "", tambahan: ""}), "tambah-kondisi": () => isi.kondisi.push({kab: ""}),
     "hapus-fs": i => isi.fs.splice(i, 1), "hapus-blok": i => isi.blok.splice(i, 1), "hapus-alat": i => isi.peralatan.splice(i, 1), "hapus-kondisi": i => isi.kondisi.splice(i, 1)};
   const ubah = () => { hitungTunda(); simpanTunda(); };

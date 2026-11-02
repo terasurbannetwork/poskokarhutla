@@ -28,7 +28,7 @@
 .sr-tren svg{width:14px;height:14px}
 .sr-tren.buruk{color:var(--c1)}.sr-tren.baik{color:var(--c4)}
 .sr-kartu .ad-tabel-wadah{padding:0;box-shadow:none;background:none}
-.sr-kartu .ad-tabel td{text-align:left}.sr-kartu .ad-tabel td.n{text-align:right}
+.sr-kartu .ad-tabel td{text-align:left}.sr-kartu .ad-tabel td.n{text-align:center}
 
 @media print{
   @page{size:A4;margin:12mm}

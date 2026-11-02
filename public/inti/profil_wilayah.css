@@ -54,3 +54,5 @@ dialog.pw::backdrop{background:oklch(20% .05 256 / .45)}
   .pw-bn{flex-basis:76px}.pw-hb li{gap:6px}
   .pw-bd{padding:10px 10px 16px}.pw-k{padding:12px 12px 10px}.pw-t{font-size:15px}
 }
+.pw-hari{display:grid;gap:12px}
+.pw-hari{min-height:260px;align-content:start}

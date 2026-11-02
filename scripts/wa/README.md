@@ -81,3 +81,19 @@ Hanya dari nomor `PEMILIK` (boleh beberapa, dipisah koma). Pesan perintah (teks 
 - `status [tanggal]`: dari `GET /api/wa/rekap`: "N dari M laporan wajib masuk untuk DD Mon. Belum: ..." plus status kirim harian/penanganan hari ini dari `state.json`.
 - `bantuan`, atau kata awal buat/kirim/status yang tak dikenal: daftar perintah.
 - Tanggal: `hari ini` (bawaan, WIB), `kemarin`, `26 okt`, `26 oktober`, `26/10`, `2026-10-26`.
+
+## Pemicu jam cut-off (`--cutoff`)
+
+`node scripts/wa/otomatis.mjs --cutoff [--kering] [--tanggal D]`: pada jam cut-off bangun dengan bahan yang ada. Penanganan (17.00) dibangun dari data sistem walau BMKG/satgas WA belum masuk (laporan balik memuat `bahanBelumMasuk`, slide tidak diberi catatan). Harian (12.00) wajib Koordalops + BMKG; bila belum ada, PEMILIK dikabari sekali. Bahan masuk kemudian = jalan biasa membangun ulang dan mengirim "Revisi: ". Plist templat `launchd/id.centurisk97.wa-cutoff.plist` (12.05 dan 17.05, sertakan `CHROMIUM_SHELL` karena Playwright headless shell tidak terpasang). Belum dimuat: setelah pemilik setuju,
+
+```bash
+sed -e "s#__REPO__#$HOME/Documents/GitHub/poskokarhutla#" -e "s#__NODE__#$(which node)#" -e "s#__HOME__#$HOME#" scripts/wa/launchd/id.centurisk97.wa-cutoff.plist > ~/Library/LaunchAgents/id.centurisk97.wa-cutoff.plist
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/id.centurisk97.wa-cutoff.plist
+```
+
+## Logbook dari grup WA (G5)
+
+`logbook_wa.mjs`: pesan di `LOGBOOK_GRUP` diurai (`urai_laporan.py`) jadi draf entri, ringkasan dikirim ke `LOGBOOK_STAF`.
+Hanya nomor di `LOGBOOK_STAF` (perorangan, bukan grup) yang boleh membalas. Staf membalas `OK <kode>` (tambah `YAKIN` bila server menolak angka tak wajar), `BATAL <kode>`, `KOREKSI <kode>` + baris `medan=nilai`, atau `DRAF`.
+Baru sesudah OK bot masuk sebagai `LOGBOOK_USER`/`LOGBOOK_SANDI` dan POST ke `/api/logbook/kejadian` (atau `/kejadian/:id/entri` bila ada kejadian terbuka kab + jenis dengan entri terakhir <= 3 hari). Nomor HP, surel, dan nama bergelar disaring sebelum draf disimpan. Pesan di grup BPBD tetap mengalir ke jalur bahan laporan harian seperti biasa; hanya balasan staf yang dicegat penuh.
+Uji: `node --test tests/wa/logbook_wa.test.mjs`.

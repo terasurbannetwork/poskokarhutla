@@ -62,6 +62,7 @@ assert ck("Perum Bulog Nasional awasi beras") == set(), "dunia usaha tanpa kata 
 assert ck("Perum Bulog Nasional kirim beras ke korban banjir") == {("lembaga", "perum-bulog")}
 assert ck("Harian Contoh Daerah menulis soal cuaca") == set(), "media bukan dateline"
 assert ck("Budi Santoso Raharjo resmikan posko") == {("tokoh", "tk")}
+assert ck("Budi Santoso Raharjo minta maaf soal deklarasi", "polemik di Bundaran HI") == set(), "tokoh tanpa konteks kebencanaan dibuang"
 assert ck("Budi Santoso Raharjo jadi tersangka korupsi") == set() and ck("OTT KPK Badan Penanggulangan Bencana Daerah Riau") == set()
 assert RS.foto_arsip("https://img.x.id/2023/05/a.jpg", "2026") and not RS.foto_arsip("https://img.x.id/2025/05/a.jpg", "2026") and not RS.foto_arsip("https://x.id/a.jpg", "2026")
 assert RS.foto_bersih("https://img.x.id/2020/a.jpg", "2026-10-30") is None and RS.foto_bersih("ftp://x/a.jpg", "2026-10-30") is None
@@ -81,3 +82,10 @@ hb = R.Host(); hb.blok = True
 assert RS.muat("https://x.id/", hb) == (0, "")
 assert RS.urai("<rss><channel><item><title>A b</title><link>https://x.id/1?utm_x=1</link><pubDate>Thu, 29 Oct 2026 10:00:00 +0700</pubDate><media:content url='https://i.x.id/2026/a.jpg'/></item></channel></rss>")[0]["foto_url"] == "https://i.x.id/2026/a.jpg"
 print("uji_inti: OK")
+
+# panen_publik: pengurai daftar hitam inaproc (JSON di-escape di skrip Next.js); struktur berubah = None, bukan larik kosong
+import panen_publik as PP
+h = 'x = "\\"blacklists\\":{\\"blacklists\\":[{\\"skNumber\\":\\"SK1\\",\\"status\\":\\"PUBLISHED\\",\\"startDate\\":\\"2026-10-29T09:18:58Z\\",\\"expiredDate\\":\\"2028-10-29T00:00:00Z\\",\\"provider\\":{\\"name\\":\\"CV. A\\"}}],\\"total\\":1}"'
+assert PP.daftar_hitam(h) == [{"nama": "CV. A", "sk": "SK1", "status": "PUBLISHED", "mulai": "2026-10-29", "berakhir": "2028-10-29"}], PP.daftar_hitam(h)
+assert PP.daftar_hitam("<html>tanpa data</html>") is None
+print("panen_publik: OK")

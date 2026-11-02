@@ -21,4 +21,18 @@ assert a3[8] == ["T9"] and a3[15] == "diaspora", "topik kosong tak menimpa; kolo
 assert lap["baru"] == ["A7"] and n["baru_bulan_ini"] == ["A7"] and len(n["orang"]) == 4
 assert a7[9:15] == [""] * 6 and len(a7) == 15 and a7[3] == ["gempa"], "baru: SINTA kosong, rumpun dari topik"
 assert lap["naik"] == [{"id": "A1", "h_lama": 5, "h_baru": 9}] and n["diperbarui"] == "2026-10-29"
+# kolom 16 "asing": dipasang dari tahun afiliasi, dicabut bila tak lagi, SINTA dan diaspora kebal
+from perbarui import ringkas
+af = lambda idn, luar: {"affiliations": [{"institution": {"country_code": "ID"}, "years": list(range(idn))}, {"institution": {"country_code": "DE"}, "years": list(range(luar))}]}
+from perbarui import asing
+assert ringkas(af(2, 61))["th"] == [2, 61] and ringkas({})["th"] == [0, 0]
+assert asing(2, 61, True) and asing(0, 44, True) and not asing(0, 0, True) and not asing(0, 0, False)
+assert not any(asing(i, l, True) for i, l in [(9, 9), (55, 21), (30, 68), (12, 30), (0, 5), (1, 8)]), "lulusan luar negeri dan bukti tipis bukan asing"
+assert asing(12, 30, False) and asing(1, 4, False) and not asing(9, 9, False) and not asing(0, 2, False), "tanpa afiliasi: luar > ID, >= 5 tahun"
+B = lambda i, st="", ek=None: [i, "N", "K", ["gempa"], 1, 1, 1, "", ["T1"], "", "", "", "", st, ""] + ([ek] if ek is not None else [])
+ind = {"orang": [B("B1"), B("B2", "s"), B("B3", "", "diaspora"), B("B4", "", "asing"), B("B5")]}
+sa = lambda a: {**s(1, ["T1"]), "th": [0, 50] if a else [50, 0]}
+n, _ = gabung(ind, {"B1": sa(True), "B2": sa(True), "B3": sa(True), "B4": sa(False), "B5": sa(False)}, {"B1", "B2", "B3", "B4", "B5"}, [("B9", sa(True))], "2026-11", "2026-11-01")
+b1, b2, b3, b4, b5, b9 = n["orang"]
+assert b1[15] == "asing" and len(b2) == 15 and b3[15] == "diaspora" and b4[15] == "" and len(b5) == 15 and b9[15] == "asing"
 print("uji_perbarui: OK")

@@ -63,13 +63,10 @@
     },
     {
       "name": "statis",
-      "runtimeExecutable": "python3",
+      "runtimeExecutable": "node",
       "runtimeArgs": [
-        "-m",
-        "http.server",
-        "8811",
-        "--directory",
-        "public"
+        "-e",
+        "const h=require('http'),f=require('fs'),p=require('path'),R=p.resolve('public'),T={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.png':'image/png'};h.createServer((q,s)=>{let u=decodeURIComponent(q.url.split('?')[0]);if(u.endsWith('/'))u+='index.html';const x=p.join(R,u);if(!x.startsWith(R))return s.writeHead(403).end();f.readFile(x,(e,b)=>{if(e)return s.writeHead(404).end('404');s.writeHead(200,{'content-type':T[p.extname(x)]||'application/octet-stream'}).end(b)})}).listen(8799)"
       ],
       "port": 8811
     },

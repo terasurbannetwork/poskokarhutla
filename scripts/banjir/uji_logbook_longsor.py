@@ -16,6 +16,8 @@ Dampak: meninggal/rumah menurut kelas bahaya longsor kecamatan (Spearman + media
 Pakai:  python3 scripts/banjir/uji_logbook_longsor.py ambil   unduh hujan 2026 (lanjut bila putus/kuota)
         python3 scripts/banjir/uji_logbook_longsor.py         hitung -> JSON
         python3 scripts/banjir/uji_logbook_longsor.py uji     swauji luring data mainan
+        python3 scripts/banjir/uji_logbook_longsor.py --arsip uji arsip Pusdalops 2016-2022 (tanpa jaringan; hujan dari cache uji_balik)
+                                                              -> public/data/validasi_logbook_longsor_arsip.json
 """
 import datetime as dt, difflib, gzip, json, math, os, random, re, sys, time
 from collections import Counter, defaultdict
@@ -463,6 +465,96 @@ def dampak_dari(baris, ulang=500, seed=5):
     return out
 
 
+# ------------------------------------------------------------------ ARSIP Pusdalops (--arsip)
+KELUAR_ARSIP = os.path.join(AKAR, "public/data/validasi_logbook_longsor_arsip.json")
+
+
+def arsip_main():
+    """Label arsip csv (jenis longsor, positif = tgl_kejadian -1..+1, hanya hari tercakup logbook), hujan ERA5 cache uji_balik,
+    kabupaten-hari; level kab = maks sel. Memakai penolong uji_logbook.arsip_*; aturan level_longsor BERLAKU tidak diubah."""
+    import uji_logbook as ulb
+    ub = ulb.ub
+    sk, kabs, cuaca, baris, cakup = ulb.arsip_siapkan()
+    tahun = sorted(cakup)
+    print(f"arsip longsor: {len(kabs)}/{len(sk)} kab, {len(cuaca)} sel, tahun {tahun}", file=sys.stderr)
+    lab = ulb.arsip_label(baris, "longsor", lebar_jendela=1)
+    lv = ulb.arsip_level("longsor", sk, kabs, cuaca, tahun)
+    laju, hari = ulb.arsip_laju(lab, cakup, kabs)
+    q = ulb.laju_alarm_model(lv, cakup)
+    blok = ulb.arsip_blok(lv, lab, cakup, ulb.arsip_klim(laju, lab, cakup, kabs), ulb.arsip_klim_sama(laju, hari, kabs, q))
+    # AUC skor kontinu (maks sel h3*bahaya_longsor) per (kab, tahun): histogram bin, seri = 0,5
+    g = BERLAKU["geser"]
+    hist = {n: {} for n in ("h3_x_bahaya", "h3_saja", "bahaya_saja", "klimatologi_bulan")}
+    for kab in kabs:
+        for y, ada in cakup.items():
+            h = {n: (Counter(), Counter()) for n in hist}
+            for d, _ in lv[kab].items():
+                if d.year != y or d not in ada:
+                    continue
+                e, o = ub.hari_ke(d), 0 if d in lab.get(kab, ()) else 1
+                h3 = {s: sum(cuaca[s]["p"][e + g:e + g + 3]) for s in sk[kab]}
+                h["h3_x_bahaya"][o][round(max(h3[s] * b[1] for s, b in sk[kab].items()))] += 1
+                h["h3_saja"][o][round(max(h3.values()))] += 1
+                h["klimatologi_bulan"][o][round(1000 * laju[kab].get(d.month, 0))] += 1   # laju label bulan x kab, 2016-2021
+                h["bahaya_saja"][o][round(max(b[1] for b in sk[kab].values()) * 20)] += 1
+            if sum(h["h3_saja"][0].values()):
+                for n in hist:
+                    hist[n][(kab, y)] = h[n]
+    auc = {}
+    for n, hh in hist.items():
+        auc[n] = {}
+        for y in [*(str(t) for t in tahun), "gabungan", "luar_sampel_2022_2025"]:
+            sub = {k: v for k, v in hh.items() if y == "gabungan" or (y.startswith("luar") and k[1] in ulb.LUAR) or (y.isdigit() and k[1] == int(y))}
+            a, c = auc_ci(sub) if sub else (None, None)
+            auc[n][y] = {"auc": None if a is None else round(a, 3), "ci95": c}
+    # selisih AUC berpasangan (bootstrap kab-tahun sama) pada luar-sampel: model h3 x bahaya dikurangi pembanding
+    luar = sorted(k for k in hist["h3_x_bahaya"] if k[1] in ulb.LUAR)
+    def auc_lu(nama, ks):
+        p_, n_ = Counter(), Counter()
+        for k in ks:
+            p_.update(hist[nama][k][0]); n_.update(hist[nama][k][1])
+        return auc_bin(p_, n_)
+    rr, auc_selisih = random.Random(9), {}
+    for lawan in ("klimatologi_bulan", "h3_saja"):
+        xs = []
+        for _ in range(300):
+            ks = [rr.choice(luar) for _ in luar]
+            xs.append(auc_lu("h3_x_bahaya", ks) - auc_lu(lawan, ks))
+        xs.sort()
+        auc_selisih["h3_x_bahaya_minus_" + lawan] = {"selisih": round(auc_lu("h3_x_bahaya", luar) - auc_lu(lawan, luar), 3), "ci95": [round(xs[7], 3), round(xs[292], 3)]}
+    print("longsor selisih AUC luar-sampel", auc_selisih, file=sys.stderr)
+    hasil = ulb.arsip_ringkas(blok, ulang=ULANG)
+    for y, x in hasil.items():
+        w, p_ = x["waspada"], x["persisten"]
+        print(f"longsor {y:9s} kab={x['kab']:3d} kejadian-hari={x['kejadian_hari']:5d} AUC h3xb {auc['h3_x_bahaya'][y]['auc']} {auc['h3_x_bahaya'][y]['ci95']} "
+              f"h3 {auc['h3_saja'][y]['auc']} | waspada POD {w['pod']} FAR {w['far']} ETS {w['ets']} {w['ci'].get('ets')} | persisten POD {p_['pod']} FAR {p_['far']} ETS {p_['ets']} | klim POD {x['klimatologi']['pod']} FAR {x['klimatologi']['far']} ETS {x['klimatologi']['ets']} | acak POD {w['acak']['pod']}")
+    try:
+        n_lama = json.load(open(KELUAR_ARSIP)).get("sampel", {}).get("kab_dinilai") or 0
+    except (OSError, ValueError):
+        n_lama = 0
+    if len(kabs) < n_lama:
+        print(f"LEWAT: {len(kabs)} kab < {n_lama} di hasil lama; {os.path.relpath(KELUAR_ARSIP)} dibiarkan", file=sys.stderr)
+        return
+    json.dump({"dibuat": dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes"),
+               "aturan": "scripts/banjir/status.py:level_longsor, parameter " + json.dumps(BERLAKU) + " (tidak diubah)",
+               "tahun_dinilai": tahun,
+               "sampel": {"kab_dinilai": len(kabs), "kab_geo_total": len(sk), "sel": len(cuaca),
+                          "pemilihan": "kab yang semua selnya ada di cache uji_balik (bias ke kab yang sering berkejadian)"},
+               "label": "Pusdalops arsip jenis longsor, positif = tgl_kejadian -1..+1 hari, hanya hari tercakup logbook (kabupaten-hari)",
+               "utama": {"keterangan": "HEADLINE = gabungan luar-sampel 2022-2025 (BERLAKU dipilih di 2016-2021 tetapi diterima lewat uji 2022-2025 pada label DIBI di uji_balik; label logbook belum dipakai menyetel); per tahun ada di 'per_tahun'", "tahun": list(ulb.LUAR),
+                         "hasil": hasil.get("luar_sampel_2022_2025"), "auc": {n: auc[n].get("luar_sampel_2022_2025") for n in auc},
+                         "auc_selisih_berpasangan": auc_selisih,
+                         "per_tahun": {str(y): {"hasil": hasil.get(str(y)), "auc": {n: auc[n].get(str(y)) for n in auc}} for y in ulb.LUAR}},
+               "gabungan_keterangan": "blok 'gabungan' dan 2016-2021 = dalam-sampel (ikut menyetel ambang), bukan luar-sampel",
+               "hasil": hasil, "auc": auc,
+               "catatan": "Diperluas 31 Okt 2026: luar-sampel 2022-2025. Pembanding tanpa hujan: persisten (alarm bila kemarin berlabel), klimatologi (bulan dengan laju label 2016-2021 di atas rata-rata kab), acak, AUC 0,5. "
+                          "BIAS: tahun parsial (2021: 343, 2022: 272, 2023: 327 hari tercatat) hanya menilai hari tercakup logbook; 41 kab sampel dari cache uji_balik = kab sering terdampak (seleksi pada hasil), "
+                          "dipilih juga dari kejadian tahun uji 2022-2025 sehingga skor OPTIMISTIS, POD/laju dasar TIDAK nasional, FAR bukan batas atas pasti; persisten tak adil untuk jendela +-1 hari; hujan ERA5 = prakiraan sempurna. "
+                          "Aturan longsor tidak dipilih di arsip ini, tetapi uji_balik memakai 2016-2025 untuk memilih K/geser/jenuh (longsor 2024 bolong) dan menerimanya lewat uji 2022-2025 pada label DIBI: independensi tidak mutlak. AUC 'klimatologi_bulan' = skor laju label bulan x kab 2016-2021 (tanpa hujan); selisih_ets_waspada = CI berpasangan."},
+              open(KELUAR_ARSIP, "w"), ensure_ascii=False, indent=1)
+    print(os.path.relpath(KELUAR_ARSIP), "ditulis", file=sys.stderr)
+
+
 # ------------------------------------------------------------------ swauji
 def uji():
     # skor
@@ -538,6 +630,8 @@ def riwayat_baru(jalur_json, h, maks=400):
 
 def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else "hitung"
+    if mode == "--arsip":
+        return arsip_main()
     if mode == "uji":
         return uji()
     if mode == "ambil":

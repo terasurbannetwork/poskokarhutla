@@ -35,8 +35,8 @@
 .om-poligon{fill:color-mix(in srgb,var(--c2) 30%,transparent);stroke:var(--c2);stroke-width:3;stroke-linejoin:round}
 .om-simpul{fill:var(--c2);stroke:var(--card);stroke-width:2}.om-nomor{font:700 20px var(--font);fill:var(--ink)}
 .om-tabel-wadah{overflow-x:auto;border-radius:12px;box-shadow:var(--ring);background:var(--card)}
-.om-tabel{border-collapse:collapse;width:100%;font-size:12.5px}.om-tabel th,.om-tabel td{padding:8px 10px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
-.om-tabel td.angka{text-align:right}.om-tabel td.redup{color:var(--ink3)}.om-tabel td.sasaran{max-width:240px;overflow:hidden;text-overflow:ellipsis}.om-tabel td.aksi{display:flex;gap:6px}
+.om-tabel{border-collapse:collapse;width:100%;font-size:12.5px}.om-tabel td{padding:8px 10px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}.om-tabel th{padding:8px 10px;text-align:center;white-space:nowrap;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.om-tabel td.angka{text-align:center}.om-tabel td.redup{color:var(--ink3)}.om-tabel td.sasaran{max-width:240px;overflow:hidden;text-overflow:ellipsis}.om-tabel td.aksi{display:flex;gap:6px}
 .om-tabel td b{margin-right:6px}
 .om-episode{display:grid;gap:8px;min-width:0}
 .om-kartu-grid{display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}

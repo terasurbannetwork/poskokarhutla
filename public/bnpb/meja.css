@@ -8,7 +8,7 @@
 .mj-pil svg{width:13px;height:13px}
 .mj-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
 .mj-tabel{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
-.mj-tabel td.mj-angka{text-align:right;font-variant-numeric:tabular-nums}
+.mj-tabel td.mj-angka{text-align:center;font-variant-numeric:tabular-nums}
 .mj-tabel .mj-aksi{display:flex;gap:6px;flex-wrap:wrap}
 .mj-tabel .mj-tanda{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
 .mj-hal{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:10px;font-size:12.5px;color:var(--ink2)}

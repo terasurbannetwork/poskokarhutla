@@ -1,0 +1,393 @@
+{
+ "hari": "2026-11-02",
+ "cutoff": "2026-11-02T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "karhutla",
+   "prov": "93",
+   "lokasi": "",
+   "status": "berjalan",
+   "angka": {},
+   "sat": {
+    "kum": 301276,
+    "sisa": 608,
+    "hot": 173
+   },
+   "tangani": true,
+   "perhatian": true
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "62",
+   "lokasi": "",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kebakaran Hutan dan Lahan",
+   "angka": {
+    "ha": 25751.42
+   },
+   "teks": {
+    "dampak": "Luas indikatif kebakaran hutan dan lahan periode 1 Januari s.d. 31 Oktober 2026 mencapai 25.751,42 ha berdasarkan data Sipongi Kemenhut, BPBD, dan Taman Nasional Tanjung Puting. Target pemadaman per 31 Oktober 2026 sekitar ±448,69 ha.",
+    "status_darurat": "Perpanjangan kedua Tanggap Darurat 30 Oktober 2026 s.d. 30 November 2026.",
+    "kondisi": "Target pemadaman seluas 448,69 ha; telah berhasil dipadamkan 40,71 ha; sisa lahan terbakar 407,98 ha."
+   },
+   "sat": {
+    "kum": 692090,
+    "sisa": 351,
+    "hot": 294
+   },
+   "tangani": true,
+   "perhatian": true
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "81",
+   "lokasi": "",
+   "status": "berjalan",
+   "angka": {},
+   "tangani": true,
+   "perhatian": true,
+   "sat": {
+    "kum": 75424,
+    "sisa": 159,
+    "hot": 59
+   }
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "74",
+   "lokasi": "",
+   "status": "berjalan",
+   "angka": {},
+   "tangani": true,
+   "perhatian": true,
+   "sat": {
+    "kum": 30936,
+    "sisa": 103,
+    "hot": 99
+   }
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "72",
+   "lokasi": "",
+   "status": "berjalan",
+   "angka": {},
+   "tangani": true,
+   "perhatian": false,
+   "sat": {
+    "kum": 46919,
+    "sisa": 93,
+    "hot": 43
+   }
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "63",
+   "lokasi": "",
+   "status": "berjalan",
+   "angka": {},
+   "tangani": true,
+   "perhatian": false,
+   "sat": {
+    "kum": 105927,
+    "sisa": 73,
+    "hot": 40
+   }
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "16",
+   "lokasi": "",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kebakaran Hutan dan Lahan",
+   "angka": {
+    "ha": 1926.23
+   },
+   "teks": {
+    "dampak": "Luas lahan terbakar berdasarkan data Sipongi sampai dengan Juli 2026 sebesar 1.926,23 ha dan estimasi periode 1 Agustus s.d. 31 Oktober 2026 sebesar 7.733,03 ha, sehingga total mencapai 9.659,26 ha. Pada 31 Oktober 2026, luas lahan terbakar tercatat 33,25 ha.",
+    "status_darurat": "Siaga Darurat 22 April 2026 s.d. 30 November 2026.",
+    "kondisi": "Target pemadaman seluas 33,25 ha; telah berhasil dipadamkan 28,25 ha; sisa lahan terbakar 5,00 ha."
+   },
+   "sat": {
+    "kum": 213302,
+    "sisa": 56,
+    "hot": 33
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "92",
+   "lokasi": "",
+   "status": "berjalan",
+   "angka": {},
+   "tangani": true,
+   "perhatian": false,
+   "sat": {
+    "kum": 54802,
+    "sisa": 54,
+    "hot": 14
+   }
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "64",
+   "lokasi": "",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kebakaran Hutan dan Lahan",
+   "angka": {
+    "ha": 2715.76
+   },
+   "teks": {
+    "dampak": "Luas lahan terbakar berdasarkan pendataan mencapai ±2.715,76 ha berdasarkan data Sipongi periode Januari s.d. Juli 2026. Target pemadaman seluas 37,55 ha.",
+    "status_darurat": "Siaga Darurat 31 Agustus 2026 s.d. 30 November 2026.",
+    "kondisi": "Target pemadaman seluas 37,55 ha; telah berhasil dipadamkan 37,55 ha; sisa lahan terbakar nihil."
+   },
+   "sat": {
+    "kum": 128472,
+    "sisa": 33,
+    "hot": 24
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "14",
+   "lokasi": "",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kebakaran Hutan dan Lahan",
+   "angka": {
+    "ha": 20718.36
+   },
+   "teks": {
+    "dampak": "Luas lahan terbakar periode 1 Januari s.d. 1 November 2026 mencapai ±20.718,36 ha berdasarkan sumber BPBDPK Prov. Riau. Target pemadaman per 1 November 2026 sekitar ±0,5 ha.",
+    "status_darurat": "Siaga Darurat 13 Februari 2026 s.d. 30 November 2026.",
+    "kondisi": "Target pemadaman seluas 0,5 ha; telah berhasil dipadamkan 0,5 ha; sisa lahan terbakar nihil."
+   },
+   "sat": {
+    "kum": 26978,
+    "sisa": 0,
+    "hot": 0
+   },
+   "tangani": false,
+   "perhatian": false
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "73",
+   "lokasi": "Sinjai",
+   "status": "selesai",
+   "baru": true,
+   "label": "Kebakaran Hutan dan Lahan",
+   "angka": {
+    "ha": 2.0
+   },
+   "teks": {
+    "dampak": "Luas lahan terbakar sekitar ±2 ha.",
+    "status_darurat": "-",
+    "kondisi": "Api telah berhasil dipadamkan."
+   },
+   "sat": {
+    "kum": 20,
+    "sisa": 0,
+    "hot": 0
+   },
+   "tangani": false,
+   "perhatian": false,
+   "lokasi_wa": "Sinjai",
+   "sat_kab": {
+    "kum": 20,
+    "sisa": 0,
+    "hot": 0
+   }
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "73",
+   "lokasi": "Kota Pare Pare",
+   "status": "selesai",
+   "baru": true,
+   "label": "Kebakaran Hutan dan Lahan",
+   "angka": {
+    "ha": 60.0
+   },
+   "teks": {
+    "dampak": "Luas lahan terbakar sekitar ±60 ha.",
+    "status_darurat": "-",
+    "kondisi": "Api telah berhasil dipadamkan pada pukul 15.52 WITA."
+   },
+   "sat": {
+    "kum": 308,
+    "sisa": 0,
+    "hot": 0
+   },
+   "tangani": false,
+   "perhatian": false,
+   "lokasi_wa": "Kota Pare Pare",
+   "sat_kab": {
+    "kum": 308,
+    "sisa": 0,
+    "hot": 0
+   }
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Selatan",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 218.0
+   },
+   "teks": {
+    "dampak": "* Korban jiwa : 218 KK/756 jiwa terdampak (pendataan);",
+    "status_darurat": "Tanggap Darurat 30 Oktober 2026 s.d. 12 November 2026.",
+    "kondisi": "Ketinggian air di Kecamatan Trumon Tengah berkisar 20–65 cm dan Kecamatan Trumon sekitar 15 cm."
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Barat",
+   "status": "belum",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {},
+   "teks": {
+    "dampak": "* Korban jiwa : Nihil",
+    "status_darurat": "-",
+    "kondisi": "Banjir masih menggenangi wilayah terdampak akibat curah hujan yang tinggi."
+   },
+   "tangani": true,
+   "perhatian": true
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "33",
+   "lokasi": "Pekalongan",
+   "status": "belum",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 11282.0,
+    "jiwa": 36384.0
+   },
+   "teks": {
+    "dampak": "- Korban Jiwa: 11.282 KK/36.384 jiwa terdampak.",
+    "status_darurat": "Siaga Darurat TMT 1 Juni 2026 s.d. 31 Desember 2026.",
+    "kondisi": "Distribusi bantuan air bersih masih dilakukan kepada masyarakat terdampak."
+   },
+   "tangani": true,
+   "perhatian": true
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "33",
+   "lokasi": "Semarang",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 2799.0,
+    "jiwa": 7582.0,
+    "liter": 10000.0
+   },
+   "teks": {
+    "dampak": "- Korban Jiwa: 2.799 KK/7.582 jiwa terdampak;",
+    "status_darurat": "Siaga Darurat menuju Pemulihan 3 Juni 2026 s.d. 31 Januari 2027.",
+    "kondisi": "BPBD Kabupaten Semarang telah mendistribusikan bantuan air bersih sebanyak tangki atau 10.000 liter."
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "longsor",
+   "prov": "35",
+   "lokasi": "Malang",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Tanah Longsor",
+   "angka": {},
+   "teks": {
+    "dampak": "- Korban Jiwa : ±24 KK terdampak",
+    "status_darurat": "-",
+    "kondisi": "Dilakukan pembersihan material longsor dan kerja bakti bersama masyarakat."
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "35",
+   "lokasi": "Blitar",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 16043.0,
+    "jiwa": 45090.0,
+    "liter": 3076400.0
+   },
+   "teks": {
+    "dampak": "- Korban Jiwa : 16.043 KK/45.090 jiwa terdampak;",
+    "status_darurat": "Siaga Darurat 7 Oktober 2026 s.d. 1 Desember 2026.",
+    "kondisi": "Total distribusi air bersih mencapai 3.076.400 liter, terdiri atas 3.058.500 liter sampai dengan 31 Oktober 2026 dan tambahan 67.900 liter pada hari ini."
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "angin",
+   "prov": "76",
+   "lokasi": "Majene",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Angin Puting Beliung",
+   "angka": {
+    "kk": 93.0
+   },
+   "teks": {
+    "dampak": "- Korban Jiwa : ±93 KK terdampak;",
+    "status_darurat": "Tanggap Darurat 21 September 2026 s.d. 31 Desember 2026.",
+    "kondisi": "Kondisi wilayah terdampak berangsur kondusif."
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "gempabumi",
+   "prov": "53",
+   "lokasi": "",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Gempa Bumi",
+   "angka": {
+    "kk": 17707.0
+   },
+   "teks": {
+    "dampak": "- Korban Jiwa : 156 orang meninggal dunia; 1.620 orang luka-luka (pendataan); 17.707 KK terdampak (pendataan);",
+    "status_darurat": "Transisi Darurat ke Pemulihan 27 September 2026 s.d. 27 Desember 2026.",
+    "kondisi": "Progres pembangunan hunian sementara (huntara) sampai dengan 30 Oktober 2026 di 7 kabupaten terdampak sebanyak 277 unit telah selesai 100%."
+   },
+   "tangani": true,
+   "perhatian": false
+  }
+ ],
+ "prioritas_baru": [
+  "93",
+  "63",
+  "72",
+  "74",
+  "81",
+  "92"
+ ]
+}

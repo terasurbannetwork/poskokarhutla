@@ -118,8 +118,8 @@
 .lw-angka span{font-size:11.5px;color:var(--lw-ink2)}
 .lw-tabel{overflow-x:auto}
 .lw-tabel table{border-collapse:collapse;width:100%;font-size:12.5px}
-.lw-tabel th,.lw-tabel td{padding:6px 6px;border-bottom:1px solid var(--lw-line);text-align:right;white-space:nowrap}
-.lw-tabel th:first-child,.lw-tabel tbody th{text-align:left;white-space:normal;min-width:110px}
+.lw-tabel th,.lw-tabel td{padding:6px 6px;border-bottom:1px solid var(--lw-line);text-align:center;white-space:nowrap}
+.lw-tabel th:first-child,.lw-tabel tbody th{text-align:center;white-space:normal;min-width:110px}
 .lw-tabel thead th{font-size:11px;color:var(--lw-ink2);font-weight:700;vertical-align:bottom;white-space:normal}
 .lw-tabel tbody tr{cursor:pointer}.lw-tabel tbody tr:hover{background:var(--lw-surface)}
 .lw-legenda{list-style:none;padding:0;display:grid;gap:6px}

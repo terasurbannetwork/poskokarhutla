@@ -58,7 +58,7 @@ canvas.sc-angin{position:absolute;inset:0;pointer-events:none;z-index:2}
 .sc-reset{width:100%;margin-top:2px;background:var(--card);border:1px solid var(--line)}
 .sc-lbl{margin:10px 0 2px;font-size:12px;font-weight:700}
 .sc-tb{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px}
-.sc-tb th{text-align:left;font-weight:600;color:var(--ink2);font-size:11px;padding:4px 6px 4px 0}
+.sc-tb th{text-align:center;font-weight:600;color:var(--ink2);font-size:11px;padding:4px 6px 4px 0}
 .sc-tb td{padding:6px 6px 6px 0;border-top:1px solid var(--line);vertical-align:top}
 .sc-tb .n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .sc-tb small{display:block;color:var(--ink2);font-size:10.5px}

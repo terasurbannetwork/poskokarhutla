@@ -17,11 +17,12 @@ import {inventarisProvinsi} from "./inventaris.js";
 import {korbanHari} from "./korban.js";
 import {sortieHari} from "./omc.js";
 import {stafSesi, PERAN} from "./staf.js";
-import {halamanLaporanKarhutla, HALAMAN_STAF} from "./admin_halaman.js";
+import {halamanLaporanKarhutla, halamanRuangLaporan, HALAMAN_STAF} from "./admin_halaman.js";
 import {halamanAdmin} from "./statistik.js";
 import * as S from "../public/laporan_karhutla_spek.js";
 import {teksWA} from "../public/laporan_karhutla_wa.js";
 import {laju} from "./bnpb.js";
+import {buatXlsx} from "./xlsx_mini.js";
 import {buatRute as buatRuteBencana, tanpa0048} from "./laporan_bencana.js";
 
 const JAM = 3600e3, HARI = 24 * JAM, BATAS_WIB_JAM = 9;
@@ -94,7 +95,8 @@ const WIB_07 = tanggal => Date.parse(tanggal + "T07:00:00+07:00");
 const PETA_UNSUR = {bpbd: "bpbd", tni: "tni", polri: "polri", manggala_agni: "manggala_agni", mpa: "mpa", damkar: "pemda", swasta: "swasta", relawan: "relawan", lainnya: "pemda"};   // lainnya + damkar -> pemda
 async function drafProvinsi(env, tanggal, kode, dummy) {
   const td = S.tanggalData(tanggal), sumber = "prov:" + kode, kem = await kemarinDari(env, tanggal, sumber, dummy);
-  const fs = (kem?.fs ?? []).filter(f => f.sisa_ha > 0.01).map(f => ({fs_id: f.fs_id, tugas_id: f.tugas_id, kab: f.kab, kec: f.kec, lat: f.lat, lon: f.lon, kawasan: f.kawasan, target_ha: f.target_ha,
+  const lokKemarin = new Map((kem?.isi?.fs ?? []).filter(f => f.lokasi).map(f => [f.fs_id, f.lokasi]));   // jalan/kelurahan hanya ada di isi JSON, bukan lk_fs
+  const fs = (kem?.fs ?? []).filter(f => f.sisa_ha > 0.01).map(f => ({fs_id: f.fs_id, tugas_id: f.tugas_id, kab: f.kab, kec: f.kec, lokasi: lokKemarin.get(f.fs_id), lat: f.lat, lon: f.lon, kawasan: f.kawasan, target_ha: f.target_ha,
     padam_darat_ha: null, padam_udara_ha: null, status: f.status, kumulatif: !!f.kumulatif, kemarin: {target_ha: f.target_ha, padam_ha: f.padam_ha}}));
   let baru = 0;
   try {   // FS baru: tugas api yang dikonfirmasi api_ada pada jendela cut-off 24 jam sebelum 07.00 WIB hari laporan, belum tertaut ke FS mana pun
@@ -543,6 +545,45 @@ export async function butirLaporanKarhutla(env, kini, bolehDummy) {
   return out;
 }
 
+/* ================================================================ format khusus BNPB (xlsx)
+   Format resmi Pelaporan Khusus untuk BNPB (PERKEMBANGAN HARIAN SETIAP TITIK/LOKASI YANG TERBAKAR): tata letak sel sama dengan berkas resmi (judul B2, waktu H2, kepala B4:I4, kelompok per kab/kota,
+   TOTAL per kelompok, UPAYA digabung per kelompok). Sumber = kiriman provinsi hari itu (atau draf otomatis bila belum ada): tidak ada pengetikan ulang. */
+const KAB_TANPA = "TANPA KABUPATEN/KOTA";
+async function formatKhusus(env, req, url, kini) {
+  const p = await pelaku(env, req, kini); if (p instanceof Response) return p;
+  const lj = await laju(env, ("lk:" + p.oleh).slice(0, 64), "format_khusus", [[JAM, 60]], kini); if (lj) return lj;
+  const kode = url.searchParams.get("prov") || "", tanggal = url.searchParams.get("tanggal") || wib(kini);
+  if (!/^\d{2}$/.test(kode) || !S.NAMA_PROV[kode]) return gagal(400, "prov harus kode BPS dua angka provinsi karhutla (mis. 62)");
+  if (!adaTanggal(tanggal, kini)) return gagal(400, "tanggal harus YYYY-MM-DD yang sah dan tidak lebih dari besok");
+  if (p.tipe === "pemprov" && !p.cakupan.includes(kode)) return gagal(404, "tidak ditemukan");
+  const hari = await ambilHari(env, tanggal) ?? hariMaya(tanggal), sumber = "prov:" + kode;
+  const k = await env.DB.prepare("SELECT isi FROM lk_kiriman WHERE tanggal_laporan = ? AND sumber = ?").bind(tanggal, sumber).first();
+  const isi = k ? jsonDari(k.isi) : (await drafProvinsi(env, tanggal, kode, hari.dummy)).isi;
+  const lama = new Set((await env.DB.prepare("SELECT fs_id FROM lk_fs WHERE prov = ? AND tanggal_laporan < ? AND dummy = ?").bind(kode, tanggal, hari.dummy).all()).results.map(r => r.fs_id));
+  const td = (isi.tanggal_data ?? S.tanggalData(tanggal)).replace(/-/g, "");
+  const grup = new Map();
+  for (const f of isi.fs ?? []) { const g = (f.kab ?? "").trim().toUpperCase() || KAB_TANPA; if (!grup.has(g)) grup.set(g, []); grup.get(g).push(f); }
+  const upaya = [...(isi.upaya?.pilihan ?? []).map(x => S.UPAYA[x]), isi.upaya?.teks].filter(Boolean).join(", ");
+  const jam = new Date(kini + 7 * 3600e3).toISOString(), stamp = `${jam.slice(8, 10)}/${jam.slice(5, 7)}/${jam.slice(0, 4)} ${jam.slice(11, 16)} WIB`;
+  const r2 = x => Number.isFinite(x) ? Math.round(x * 100) / 100 : 0, nom = x => Number.isFinite(x) ? x : null;
+  const baris = [[], ["", "PERKEMBANGAN HARIAN SETIAP TITIK/LOKASI YANG TERBAKAR", null, null, null, null, null, stamp], [], ["", "NO.", "TITIK/LOKASI", "LUAS TERBAKAR", "LUAS DIPADAMKAN", "STATUS", "UPAYA", "KENDALA", "KET"], []];
+  const gabung = [];
+  for (const [kab, daftar] of [...grup].sort((a, b) => a[0].localeCompare(b[0], "id"))) {
+    baris.push([null, `${kab}`]);
+    const awal = baris.length + 1; let tb = 0, tp = 0;
+    daftar.forEach((f, i) => {
+      const padam = nom(f.padam_darat_ha) == null && nom(f.padam_udara_ha) == null ? null : r2((nom(f.padam_darat_ha) ?? 0) + (nom(f.padam_udara_ha) ?? 0));
+      tb += nom(f.target_ha) ?? 0; tp += padam ?? 0;
+      const idTgl = /^FS-\d{2}-(\d{8})-/.exec(f.fs_id)?.[1], lanjutan = lama.has(f.fs_id) || (idTgl != null && idTgl < td);
+      baris.push([null, i + 1, [f.lokasi, f.kec ? "Kec. " + f.kec : null].filter(Boolean).join(", ") || f.fs_id, nom(f.target_ha) ?? "-", padam ?? "-", f.status === "padam" ? "Padam" : "Belum Padam", i === 0 ? upaya : null, f.kendala || "-", lanjutan ? "Lanjutan" : "Baru"]);
+    });
+    if (upaya && daftar.length > 1) gabung.push(`G${awal}:G${awal + daftar.length - 1}`);
+    baris.push([null, "TOTAL", null, r2(tb), r2(tp)], []);
+  }
+  const bytes = buatXlsx({baris, gabung, lebar: [12, 6, 67, 18, 19, 21, 30, 51, 16], nama: "Format Khusus BNPB"});
+  return new Response(bytes, {headers: {"content-type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "content-disposition": `attachment; filename="format-khusus-bnpb-${kode}-${tanggal}.xlsx"`, "cache-control": "no-store", "x-content-type-options": "nosniff"}});
+}
+
 /* ================================================================ halaman dan tabel rute */
 /* ?bencana=<bahaya> pada tiap rute di bawah: kosong atau karhutla = alur karhutla di atas (lk_*, tak berubah); bahaya lain = src/laporan_bencana.js (lkb_*, migrasi 0048).
    Nilai di luar registri (public/laporan_karhutla_spek.js BENCANA) = 400. Tanpa 0048 hanya jalur bahaya lain yang 503; karhutla tidak terpengaruh. */
@@ -556,8 +597,10 @@ const bila = (nama, f) => async (env, req, url, kini, ctx, ...sisa) => {
 };
 /* rute digabung ke RUTE di src/worker.js. Hak diperiksa di tiap handler (pelaku): admin/moderator, sesi staf berperan, atau sesi akun instansi pemprov. */
 export const RUTE_LAPORAN_KARHUTLA = Object.fromEntries(Object.entries({
+  "GET /admin/laporan": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanRuangLaporan, Object.keys(PERAN)),   // Ruang Laporan: sidebar + iframe halaman pantau; tiap halaman terbingkai menjaga hak sendiri
   "GET /admin/laporan-karhutla": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanLaporanKarhutla, Object.keys(PERAN)),   // staf tanpa peran untuk halaman ini ke Meja Pantau, anonim ke login admin
   "GET /api/laporan-karhutla/hari": bila("hari", (env, req, url, kini) => bacaHari(env, req, url, kini)),
+  "GET /api/laporan-karhutla/format-khusus": formatKhusus,   // karhutla saja; bahaya lain tidak punya format resmi ini
   "GET /api/laporan-karhutla/kiriman": bila("kiriman", (env, req, url, kini) => bacaKiriman(env, req, url, kini)),
   "POST /api/laporan-karhutla/draf": bila("draf", (env, req, url, kini) => simpanDraf(env, req, kini)),
   "POST /api/laporan-karhutla/kirim": bila("kirim", (env, req, url, kini) => kirimKiriman(env, req, kini)),
@@ -568,6 +611,7 @@ export const RUTE_LAPORAN_KARHUTLA = Object.fromEntries(Object.entries({
   "GET /api/laporan-karhutla/snapshot/:tanggal": bila("snapshot", (env, req, url, kini, ctx, tanggal) => bacaSnapshot(env, req, url, kini, ctx, tanggal)),
   "POST /api/laporan-karhutla/dummy": bila("dummy", (env, req, url, kini) => dummy(env, req, kini)),
   /* alias untuk operator provinsi: cookie sesi_instansi hanya dikirim peramban ke /instansi dan /api/instansi (Path), jadi halaman /instansi memakai tiga jalur ini; handler sama, hak sama */
+  "GET /api/instansi/laporan/format-khusus": formatKhusus,
   "GET /api/instansi/laporan/kiriman": bila("kiriman", (env, req, url, kini) => bacaKiriman(env, req, url, kini)),
   "POST /api/instansi/laporan/draf": bila("draf", (env, req, url, kini) => simpanDraf(env, req, kini)),
   "POST /api/instansi/laporan/kirim": bila("kirim", (env, req, url, kini) => kirimKiriman(env, req, kini)),

@@ -76,7 +76,7 @@ def og_banjir(nama):
     halaman = {"/banjir/": hb}
     for tb_ in tabs:
         j, d = TAB_BANJIR.get(tb_, (tb_.capitalize(), hb["desk"]))
-        halaman["/banjir/" + tb_] = {"judul": f"{j} · Centurisk97 Banjir, Longsor & Rob", "gambar": "banjir", "desk": f"{tb}: {d}"}
+        halaman["/banjir/" + tb_] = {"judul": f"{j}, Centurisk97 Banjir & Longsor", "gambar": "banjir", "desk": f"{tb}: {d}"}
     return {"gambar": {"banjir": gb}, "halaman": halaman}
 
 
@@ -160,7 +160,7 @@ def og_cuaca(nama):
           "angka": [[angka(nh), f"provinsi hujan lebat (≥ {ah[0]} mm)", LV[2]], [angka(nc), "peringatan nowcast BMKG aktif", LV[3]], [angka(ang) + " km/j", "embusan angin terkuat", BIRU]],
           "lvProv": {k: lvh(p[0]) for k, p in P.items()}, "titik": False, "legenda": [[LV[3], f"≥ {ah[2]} mm"], [LV[2], f"≥ {ah[1]} mm"], [LV[1], f"≥ {ah[0]} mm"]], "daftarJudul": "Hujan terderas per provinsi (mm/hari)",
           "daftar": [[m["prov"].get(k, k), p[0], angka(p[0]) + " mm", lvh(p[0])] for k, p in sorted(P.items(), key=lambda x: -x[1][0])[:5]]}
-    return _og("cuaca", gb, "Centurisk97 · Cuaca ekstrem hari ini",
+    return _og("cuaca", gb, "Centurisk97, Cuaca ekstrem hari ini",
                f"{tb}: {angka(nh)} provinsi berpotensi hujan lebat (≥ {ah[0]} mm), embusan angin hingga {angka(ang)} km/jam, {angka(nc)} peringatan nowcast BMKG aktif. Sumber: prakiraan model Open-Meteo, peringatan BMKG.")
 
 
@@ -275,8 +275,8 @@ def render(M):
 
 
 # halaman yang dicap walau belum punya blok: berkas -> jalur publik (kunci M["halaman"]); None = pakai <title>/description halaman
-# cuaca/ dan udara/ sudah punya og:* tanpa penanda blok; baris meta '/cuaca/', '/udara/' dipakai Worker (src/og_meta.js), jadi tidak distempel di sini
-HALAMAN = {"index.html": "/", "privasi.html": None, **{f"{b}/index.html": f"/{b}/" for b in "banjir gempa gunungapi kekeringan".split()}}
+# udara/ sudah punya og:* tanpa penanda blok; baris meta '/udara/' dipakai Worker (src/og_meta.js), jadi tidak distempel di sini
+HALAMAN = {"index.html": "/", "privasi.html": None, **{f"{b}/index.html": f"/{b}/" for b in "banjir gempa gunungapi kekeringan cuaca".split()}}
 
 
 def blok(jalur, judul, desk, gambar, M):

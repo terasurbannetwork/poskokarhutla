@@ -1,0 +1,2152 @@
+kab_kode,prov_kode,kabkota,kecamatan,desa,n_kejadian,jenis,bulan,tahun,tahun_pertama,tahun_terakhir
+13|Agam,13,Kab. Agam,,Koto Malintang,7,banjir; cuaca; longsor,4; 10; 11,2020; 2021; 2025,2020,2025
+35|Lumajang,35,Kab. Lumajang,Candipuro,Sumberwuluh,7,cuaca; longsor,2; 3; 5; 7; 11,2015; 2016; 2019; 2022; 2025,2015,2025
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Hurung,7,banjir,2; 3; 7; 8; 10,2017; 2021; 2024,2017,2024
+11|Gayo Lues,11,Kab. Gayo Lues,,Badak,6,banjir,4; 10; 11,2022; 2025; 2026,2022,2026
+11|Gayo Lues,11,Kab. Gayo Lues,,Kendawi,6,banjir; longsor,4; 10; 11,2025; 2026,2025,2026
+13|Agam,13,Kab. Agam,,Maninjau,6,banjir,2; 10; 11,2018; 2025; 2026,2018,2026
+36|Serang,36,Kab. Serang,,Nagara,6,banjir; cuaca,1; 2; 3; 12,2017; 2020; 2026,2017,2026
+62|Murung Raya,62,Kab. Murung Raya,,Danau Usung,6,banjir,4; 5; 9; 10,2018; 2021; 2022; 2024; 2025,2018,2025
+62|Murung Raya,62,Kab. Murung Raya,,Muara Tuhup,6,banjir,4; 5; 9; 10,2018; 2021; 2022; 2024; 2025,2018,2025
+62|Murung Raya,62,Kab. Murung Raya,,Puruk Cahu Seberang,6,banjir,4; 5; 9; 10,2018; 2021; 2022; 2024; 2025,2018,2025
+62|Murung Raya,62,Kab. Murung Raya,,Tumbang Lahung,6,banjir,4; 5; 9; 10,2018; 2021; 2022; 2024; 2025,2018,2025
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Hanua,6,banjir,2; 3; 7; 10,2017; 2021; 2024,2017,2024
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Pahawan,6,banjir,2; 3; 7; 8; 10,2017; 2021; 2024,2017,2024
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Penda Barania,6,banjir,2; 3; 7; 8; 10,2017; 2021; 2024,2017,2024
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Ramang,6,banjir,2; 3; 7; 8; 10,2017; 2021; 2024,2017,2024
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Tambak,6,banjir,2; 3; 7; 8,2017; 2021; 2024,2017,2024
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Cibubukan,5,banjir,5; 10; 11,2023; 2024; 2025,2023,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Cingkam,5,banjir,5; 10; 11,2023; 2024; 2025,2023,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Kilangan,5,banjir,10; 11,2016; 2023; 2024; 2025,2016,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Kuta Simboling,5,banjir,10; 11,2016; 2023; 2024; 2025,2016,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Pasar,5,banjir,10; 11,2016; 2023; 2024; 2025,2016,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Pea Bumbung,5,banjir,10; 11,2016; 2023; 2024; 2025,2016,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Pemuka,5,banjir,10; 11,2016; 2023; 2024; 2025,2016,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Rantau Gedang,5,banjir,10; 11,2016; 2023; 2024; 2025,2016,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Rimo,5,banjir,5; 10; 11,2023; 2024; 2025,2023,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Selok Aceh,5,banjir,10; 11,2016; 2023; 2024; 2025,2016,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Suka Damai,5,banjir,10; 11,2016; 2023; 2024; 2025,2016,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Suka Makmur,5,banjir,10; 11,2016; 2023; 2024; 2025,2016,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Tanjung Mas,5,banjir,5; 10; 11,2023; 2024; 2025,2023,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Teluk Rumbia,5,banjir,10; 11,2016; 2023; 2024; 2025,2016,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Ujung,5,banjir,10; 11,2016; 2023; 2024; 2025,2016,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Ujung Bawang,5,banjir,10; 11,2016; 2023; 2024; 2025,2016,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Ujung Limus,5,banjir,5; 10; 11,2023; 2024; 2025,2023,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Leme,5,banjir; longsor,10; 11,2025; 2026,2025,2026
+11|Gayo Lues,11,Kab. Gayo Lues,,Singah Mulo,5,banjir,4; 11,2022; 2025; 2026,2022,2026
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Janji Hutanapa,5,banjir; longsor,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Janji Nagodang,5,banjir; longsor,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sampean,5,banjir; longsor,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sampetua,5,banjir; longsor,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Hutanabolon,5,banjir,2; 5; 11,2025; 2026,2025,2026
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Lopian,5,banjir,2; 5; 11,2025; 2026,2025,2026
+13|Agam,13,Kab. Agam,,Bawan,5,banjir,10; 11,2018; 2025,2018,2025
+13|Agam,13,Kab. Agam,,Dalko,5,banjir,2; 11,2025; 2026,2025,2026
+13|Agam,13,Kab. Agam,,Duo Koto,5,banjir; cuaca,4; 11,2021; 2025,2021,2025
+13|Agam,13,Kab. Agam,,Koto Rantang,5,banjir,11,2020; 2025,2020,2025
+13|Agam,13,Kab. Agam,,Salareh Aia Timur,5,banjir,2; 11,2025; 2026,2025,2026
+33|Demak,33,Kab. Demak,,Kalisari,5,banjir,1; 2; 3; 5,2024; 2025; 2026,2024,2026
+33|Demak,33,Kab. Demak,,Rejosari,5,banjir,1; 2; 3; 5,2015; 2024; 2025,2015,2025
+33|Demak,33,Kab. Demak,,Sayung,5,banjir,1; 2; 3; 5,2024; 2025; 2026,2024,2026
+33|Grobogan,33,Kab. Grobogan,,Kedungjati,5,banjir,1; 2; 3; 10,2020; 2025; 2026,2020,2026
+33|Grobogan,33,Kab. Grobogan,,Papanrejo,5,banjir,1; 2; 3; 10,2020; 2025; 2026,2020,2026
+33|Grobogan,33,Kab. Grobogan,,Wates,5,banjir,1; 2; 3; 10,2020; 2025; 2026,2020,2026
+33|Kudus,33,Kab. Kudus,,Kedungdowo,5,banjir,1; 2; 3,2024; 2025; 2026,2024,2026
+33|Kudus,33,Kab. Kudus,,Pasuruhan Lor,5,banjir,1; 2; 3,2024; 2025; 2026,2024,2026
+35|Lumajang,35,Kab. Lumajang,,Oro-Oro Ombo,5,banjir; gunungapi; lainnya,4; 7; 11; 12,2021; 2023; 2024; 2025,2021,2025
+35|Lumajang,35,Kab. Lumajang,,Penanggal,5,banjir; cuaca; gunungapi; lainnya,2; 4; 11; 12,2021; 2024; 2025,2021,2025
+36|Serang,36,Kab. Serang,,Citasuk,5,banjir,1; 3; 4; 12,2020; 2022; 2025; 2026; 2108,2020,2108
+36|Serang,36,Kab. Serang,,Ranjeng,5,banjir; cuaca,1; 3; 12,2022; 2025; 2026,2022,2026
+62|Murung Raya,62,Kab. Murung Raya,,Mangkahui,5,banjir,4; 5; 9; 10,2021; 2022; 2024; 2025,2021,2025
+62|Murung Raya,62,Kab. Murung Raya,,Tumbang Kunyi,5,banjir,4; 5; 10,2018; 2022; 2024; 2025,2018,2025
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Tanjung Sangalang,5,banjir,2; 3; 8; 10,2021; 2024,2021,2024
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Tanjung Taruna,5,banjir,2; 3; 8; 10,2021; 2024,2021,2024
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Tumbang Nusa,5,banjir,2; 3; 8; 10,2021; 2024,2021,2024
+73|Luwu,73,Kab. Luwu,,Buntu Barana,5,banjir,4; 5; 7,2024; 2025,2024,2025
+73|Luwu,73,Kab. Luwu,,Larompong,5,banjir,5; 7,2024; 2025,2024,2025
+73|Luwu,73,Kab. Luwu,,Lindajang,5,banjir,4; 5; 7,2024; 2025,2024,2025
+73|Luwu,73,Kab. Luwu,,Riwang,5,banjir,5; 7,2024; 2025,2024,2025
+73|Luwu,73,Kab. Luwu,,Sampano,5,banjir,5; 7,2024; 2025,2024,2025
+73|Luwu,73,Kab. Luwu,,Suli,5,banjir,4; 5; 7,2024; 2025,2024,2025
+74|Konawe Utara,74,Kab. Konawe Utara,,Laronanga,5,banjir,5; 6; 7,2018; 2019; 2021; 2024; 2026,2018,2026
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Baro,4,banjir,1; 7; 9; 10,2017; 2020; 2024; 2025,2017,2025
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Masen,4,banjir,7; 9; 10; 11,2016; 2020; 2024; 2025,2016,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Danau Bungara,4,banjir,10; 11,2023; 2024; 2025,2023,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Lae Riman,4,banjir,5; 11,2023; 2025,2023,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Lentong,4,banjir,10; 11,2023; 2024; 2025,2023,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Silatong,4,banjir,5; 11,2023; 2025,2023,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Takal Pasir,4,banjir,10; 11,2023; 2024; 2025,2023,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Tanah Merah,4,banjir,10; 11,2023; 2024; 2025,2023,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Teluk Ambun,4,banjir,10; 11,2023; 2024; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Kuning I,4,banjir,4; 8; 11; 12,2018; 2022; 2023; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Pinding,4,banjir,4; 8; 11; 12,2018; 2022; 2023; 2025,2018,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Agusen,4,banjir; longsor,10; 11,2025; 2026,2025,2026
+11|Gayo Lues,11,Kab. Gayo Lues,,Kala Pinang,4,banjir,10; 11,2025; 2026,2025,2026
+11|Gayo Lues,11,Kab. Gayo Lues,,Palok,4,banjir,10; 11,2025; 2026,2025,2026
+11|Gayo Lues,11,Kab. Gayo Lues,,Pasir Putih,4,banjir,4; 11,2025; 2026,2025,2026
+11|Gayo Lues,11,Kab. Gayo Lues,,Rikit Dekat,4,banjir; cuaca,5; 11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Aek Godang Arbaan,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Ambobi Paranginan,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Banuarea,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Batu Nagodang Siatas,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Bonandolok 1,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Bonandolok 2,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Hauagong,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Hutagurgur,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Hutajulu,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Janji,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Karya,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Manalu,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Onan Ganjang,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Pamopa,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Panggugunan,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Parbotihan,4,banjir; longsor,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Parmonangan,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Peadungdung,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Pulogodang,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Purba Baringin,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Purba Bersatu,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Purba Sianjur,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Rura Aek Sopang,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Rura Tanjung,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sanggaran,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sanggaran 1,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sibongkare Sianju,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sibuluan,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sihikkit,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sihombu,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sihorbo,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sihotang Hasugian Tonga,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sijarango,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Silagalaga,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Simbara,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sionom Hudon Utara,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sitapongan,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Tarabintang,4,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Tukka,4,banjir,11,2025,2025,2025
+12|Karo,12,Kab. Karo,,Beras Setepu,4,gunungapi,6,2015,2015,2015
+12|Karo,12,Kab. Karo,,Gurukinayan,4,gunungapi,6,2015,2015,2015
+12|Karo,12,Kab. Karo,,Pintu Besi,4,gunungapi,6,2015,2015,2015
+12|Karo,12,Kab. Karo,,Tiga Pancur,4,gunungapi,6,2015,2015,2015
+12|Kota Sibolga,12,Kota Sibolga,,Angin Nauli,4,banjir; longsor,11,2025,2025,2025
+12|Kota Sibolga,12,Kota Sibolga,,Pasar Baru,4,banjir; longsor,11,2025,2025,2025
+12|Kota Sibolga,12,Kota Sibolga,,Pasar Belakang,4,banjir; longsor,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Alur Gadung,4,banjir,9; 10; 11,2015; 2025; 2026,2015,2026
+12|Langkat,12,Kab. Langkat,,Buluh Telang,4,banjir,10; 11,2015; 2025,2015,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Padang Masiang,4,banjir,1; 11,2020; 2025,2020,2025
+13|Agam,13,Kab. Agam,,Balingka,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Batagak,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Biaro Gadang,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Cingkariang,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Gadut,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Kamang Anam Suku,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Kamang Hilia,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Kamang Mudiak,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Kampuang Tangah,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Koto Gadang,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Koto Tangah,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Koto Tuo,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Kubang Putiah,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Lasi,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Lawang,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Magek,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Malalak Timur,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Manggopoh,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Matua Hilia,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Matua Mudiak,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Nan Limo,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Nan Tujuah,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Padang Tarok,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Pagadih,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Paninjauan,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Panta Pauh,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Pasia Laweh,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Pauah Kamang Mudiak,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Salareh La Barat,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Salo,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Sitalang,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Sitanang,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Subarang Aia,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Sungai Batang,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Sungai Tanang,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Tabek Pajang,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Tangah,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Tangah Timur,4,banjir,11,2025,2025,2025
+13|Agam,13,Kab. Agam,,Tigo Balai,4,banjir,11,2025,2025,2025
+13|Kota Padang,13,Kota Padang,,Air Pacah,4,banjir; cuaca,8; 9; 10; 11,2018; 2024; 2026,2018,2026
+13|Kota Padang,13,Kota Padang,,Dadok Tunggul Hitam,4,banjir; cuaca,8; 9; 10; 11,2024; 2025; 2026,2024,2026
+13|Kota Padang,13,Kota Padang,,Gurun Laweh,4,banjir,10; 11,2015; 2018; 2025; 2026,2015,2026
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Campago,4,banjir,3; 9; 10; 11,2021; 2024; 2025,2021,2025
+32|Bogor,32,Kab. Bogor,,Tajur,4,banjir; cuaca; longsor,3; 8; 11,2024; 2025,2024,2025
+33|Demak,33,Kab. Demak,,Batu,4,banjir,1; 2; 3,2024; 2025; 2026,2024,2026
+33|Demak,33,Kab. Demak,,Loireng,4,banjir,1; 2; 3; 5,2024; 2025; 2026,2024,2026
+33|Demak,33,Kab. Demak,,Sidorejo,4,banjir,1; 2; 5,2015; 2024; 2025,2015,2025
+33|Demak,33,Kab. Demak,,Tlogoweru,4,banjir,1; 2; 3,2015; 2024; 2025; 2026,2015,2026
+33|Grobogan,33,Kab. Grobogan,,Cingkrong,4,banjir; cuaca,1; 2; 9; 10,2024; 2025; 2026,2024,2026
+33|Grobogan,33,Kab. Grobogan,,Jumo,4,banjir,1; 2; 3,2020; 2025; 2026,2020,2026
+33|Grobogan,33,Kab. Grobogan,,Kalimaro,4,banjir,1; 2; 3,2020; 2025; 2026,2020,2026
+33|Grobogan,33,Kab. Grobogan,,Kalongan,4,banjir; cuaca,1; 2; 3,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Klitikan,4,banjir,1; 2; 3,2020; 2025; 2026,2020,2026
+33|Grobogan,33,Kab. Grobogan,,Penadaran,4,banjir,1; 2; 3,2020; 2025; 2026,2020,2026
+33|Grobogan,33,Kab. Grobogan,,Pengkol,4,banjir; cuaca,1; 2; 9; 10,2024; 2025; 2026,2024,2026
+33|Kudus,33,Kab. Kudus,,Gamong,4,banjir,1; 2; 3,2024; 2025; 2026,2024,2026
+33|Kudus,33,Kab. Kudus,,Garung Kidul,4,banjir,1; 2; 3,2024; 2025,2024,2025
+33|Kudus,33,Kab. Kudus,,Gulang,4,banjir,1; 2; 3,2024; 2025; 2026,2024,2026
+33|Kudus,33,Kab. Kudus,,Hadiwarno,4,banjir,1; 2; 3,2024; 2025; 2026,2024,2026
+33|Kudus,33,Kab. Kudus,,Jojo,4,banjir,1; 2; 3,2024; 2025; 2026,2024,2026
+33|Kudus,33,Kab. Kudus,,Kesambi,4,banjir,1; 2; 3,2024; 2025; 2026,2024,2026
+33|Kudus,33,Kab. Kudus,,Kirig,4,banjir,1; 2; 3,2024; 2025; 2026,2024,2026
+33|Kudus,33,Kab. Kudus,,Mejobo,4,banjir,1; 2; 3,2024; 2025; 2026,2024,2026
+33|Kudus,33,Kab. Kudus,,Payaman,4,banjir,1; 2; 3,2024; 2025; 2026,2024,2026
+33|Kudus,33,Kab. Kudus,,Pladen,4,banjir,1; 2; 3,2024; 2025; 2026,2024,2026
+33|Kudus,33,Kab. Kudus,,Sadang,4,banjir,1; 2; 3,2024; 2025; 2026,2024,2026
+33|Kudus,33,Kab. Kudus,,Temulus,4,banjir,1; 2; 3,2024; 2025; 2026,2024,2026
+33|Kudus,33,Kab. Kudus,,Tenggeles,4,banjir,1; 2; 3,2024; 2025; 2026,2024,2026
+33|Pati,33,Kab. Pati,,Ketitang Wetan,4,banjir,1; 5; 10; 12,2022; 2025; 2026,2022,2026
+35|Jember,35,Kab. Jember,,Ajung,4,banjir; cuaca,1; 2; 9,2022; 2024; 2026,2022,2026
+35|Jember,35,Kab. Jember,,Rambigundam,4,banjir,1; 2,2022; 2023; 2026,2022,2026
+35|Jember,35,Kab. Jember,,Rambipuji,4,banjir,1; 2; 10,2022; 2026,2022,2026
+36|Serang,36,Kab. Serang,,Batukuwung,4,banjir,3; 9; 12,2020; 2021; 2022; 2025,2020,2025
+36|Serang,36,Kab. Serang,,Ketos,4,banjir; cuaca,1; 3,2026,2026,2026
+36|Serang,36,Kab. Serang,,Pamarayan,4,banjir; cuaca,1; 3; 12,2020; 2026,2020,2026
+52|Sumbawa Barat,52,Kab. Sumbawa Barat,,Sampir,4,banjir; cuaca,2; 12,2025,2025,2025
+61|Landak,61,Kab. Landak,,Darit,4,banjir,5; 6; 8; 9,2020; 2024; 2026,2020,2026
+62|Murung Raya,62,Kab. Murung Raya,,Bahitom,4,banjir,4; 10,2018; 2024; 2025,2018,2025
+62|Murung Raya,62,Kab. Murung Raya,,Beriwit,4,banjir,4; 10,2018; 2024; 2025,2018,2025
+62|Murung Raya,62,Kab. Murung Raya,,Cinta Budiman,4,banjir,4; 5; 9; 10,2021; 2022; 2024; 2025,2021,2025
+62|Murung Raya,62,Kab. Murung Raya,,Juking Pajang,4,banjir,5; 9; 10,2017; 2021; 2022; 2024,2017,2024
+62|Murung Raya,62,Kab. Murung Raya,,Muara Bakanon,4,banjir,4; 9; 10,2021; 2024; 2025,2021,2025
+62|Murung Raya,62,Kab. Murung Raya,,Tumbang Molut,4,banjir,4; 5; 10,2022; 2024; 2025,2022,2025
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Tangkahen,4,banjir,2; 3; 7,2017; 2024,2017,2024
+73|Luwu,73,Kab. Luwu,,Buntu Kunyi,4,banjir,4; 5; 7,2024; 2025,2024,2025
+73|Luwu,73,Kab. Luwu,,Murante,4,banjir,4; 5; 7,2024; 2025,2024,2025
+73|Luwu Utara,73,Kab. Luwu Utara,,Girikusuma,4,banjir,4; 7; 9,2016; 2021; 2024,2016,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Lawewe,4,banjir,4; 7,2016; 2024,2016,2024
+73|Sinjai,73,Kab. Sinjai,,Bulu Tellue,4,banjir; longsor,6; 7,2024; 2025,2024,2025
+74|Konawe Utara,74,Kab. Konawe Utara,,Tambakua,4,banjir,5; 6; 7,2019; 2021; 2024; 2026,2019,2026
+11|Aceh Besar,11,Kab. Aceh Besar,Lembah Seulawah,Lamtamot,3,karhutla,7; 8; 10,2016; 2018; 2023,2016,2023
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Babah Dua,3,banjir,7; 9; 10,2020; 2024; 2025,2020,2025
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Buntha,3,banjir,1; 7; 10,2017; 2020; 2025,2017,2025
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Krueng Beukah,3,banjir,1; 7; 10,2017; 2020; 2025,2017,2025
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Lhok Bot,3,banjir,7; 9; 10,2020; 2024; 2025,2020,2025
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Panggong,3,banjir,1; 7; 9,2017; 2020; 2024,2017,2024
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Paya Laot,3,banjir,7; 10; 11,2016; 2020; 2025,2016,2025
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Sapek,3,banjir,7; 8; 10,2020; 2024; 2025,2020,2025
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Ujong Rimba,3,banjir,7; 9; 10,2020; 2024; 2025,2020,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Baru,3,banjir,11,2023; 2025,2023,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Bulusema,3,banjir,10; 11,2024; 2025,2024,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Butar,3,banjir,10; 11,2024; 2025,2024,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Gosong Telaga Barat,3,banjir,11,2023; 2025,2023,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Ketapang Indah,3,banjir,11,2023; 2025,2023,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Muara Pea,3,banjir,11,2023; 2025,2023,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Serasah,3,banjir,5; 11,2023; 2025,2023,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Siti Ambia,3,banjir,10; 11,2016; 2023; 2024,2016,2024
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Tugan,3,banjir,10; 11,2024; 2025,2024,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Alas Mesikhat,3,banjir,4; 11; 12,2018; 2022; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Darul Imami,3,banjir,8; 11; 12,2018; 2023; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Kayu Mbelin,3,banjir,4; 12,2017; 2018; 2022,2017,2022
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Khutung Mbelang,3,banjir,8; 11; 12,2018; 2023; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Kuta Lesung,3,banjir,4; 8; 11,2022; 2023; 2025,2022,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Kute Rambe,3,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Lawe Hijo,3,banjir,4; 8; 12,2018; 2022; 2023,2018,2023
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Lawe Hijo Metuah,3,banjir,4; 8; 11,2022; 2023; 2025,2022,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Lawe Kinga Gabungan,3,banjir,8; 11; 12,2018; 2023; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Lawe Kinga Lapter,3,banjir,8; 11; 12,2018; 2023; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Natam Baru,3,banjir,11,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Pedesi,3,banjir; cuaca,8; 9; 11,2020; 2023; 2025,2020,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Setia Baru,3,banjir,4; 8; 11,2022; 2023; 2025,2022,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Tualang Sembilar,3,banjir,8; 11; 12,2018; 2023; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Tuhi Jongkat,3,banjir,4; 11; 12,2018; 2022; 2025,2018,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Akul,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Bacang,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Badak Uken,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Blang Temung,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Bukit,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Buntul Musara,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Cane Toa,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Durin,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Gajah,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Gumpang Lempuh,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Gumpang Pekan,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Ise Ise,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Kenyaran,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Ketukah,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Kota Lintang,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Kuala Jernih,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Kuning,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Kuning Kurnia,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Lempuh,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Lesten,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Marpunge,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Meloak Sepakat,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Panglima Linting,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Pangur,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Pasir,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Penggalangan,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Penomon,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Pepalan,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Pepelah,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Perlak,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Persiapan Jeret Onom,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Pertik,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Pinin,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Pintu Rime,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Pulo Gelim,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Pungke Jaya,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Ramung Musara,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Rema Baru,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Rema Tue,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Rempelam,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Remukut,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Rerebe,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Rigep,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Sangir,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Sekuelen,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Seneren,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Sepang,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Setui,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Suri Musara,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Telpi,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Tetingi,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Tungel,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Tungel Baru,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Ulun Tano,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Uning Gelung,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Uning Pune,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Uning Sepakat,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Uring,3,banjir,11,2025,2025,2025
+11|Gayo Lues,11,Kab. Gayo Lues,,Uyem Beriring,3,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Baringin,3,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Baringin Natam,3,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Lumban Tongatonga,3,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Nagurguran,3,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Pakkat Hauagong,3,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Pusuk Ii Simaninggir,3,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sanggaran Ii,3,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Siambaton,3,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Siambaton Pahae,3,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sibongkare,3,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sigalogo,3,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sijarango I,3,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sionom Hudon Tonga,3,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sionom Hudon Toruan,3,banjir,11,2025,2025,2025
+12|Humbang Hasundutan,12,Kab. Humbang Hasundutan,,Sipagabu,3,banjir,11,2025,2025,2025
+12|Karo,12,Kab. Karo,,Jandi,3,banjir; longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,,Juhar Perangin Angin,3,banjir; longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,,Kidupen,3,banjir; longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,,Kuta Raya,3,banjir; longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,,Namosuro,3,banjir; longsor,10,2024,2024,2024
+12|Kota Sibolga,12,Kota Sibolga,,Aek Habil,3,banjir,11,2025,2025,2025
+12|Kota Sibolga,12,Kota Sibolga,,Aek Manis,3,banjir; longsor,11,2025,2025,2025
+12|Kota Sibolga,12,Kota Sibolga,,Aek Muara Pinang,3,banjir,11,2025,2025,2025
+12|Kota Sibolga,12,Kota Sibolga,,Aek Parombunan,3,banjir; longsor,11,2025,2025,2025
+12|Kota Sibolga,12,Kota Sibolga,,Huta Tonga-Tonga,3,banjir; longsor,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Alur Dua,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Alur Dua Baru,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Ara Condong,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Baja Kuning,3,banjir,10; 11,2015; 2025,2015,2025
+12|Langkat,12,Kab. Langkat,,Banyumas,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Berandan Timur,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Berandan Timur Baru,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Besilam Bl,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Bukit Kubu,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Cempa,3,banjir,10; 11,2015; 2025,2015,2025
+12|Langkat,12,Kab. Langkat,,Dendang,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Harapan Baru,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Harapan Jaya,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Harapan Makmur,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Karang Rejo,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Kebun Kelapa,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Kwala Begumit,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Kwala Bingai,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Kwala Serapuh,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Lalang,3,banjir,10; 11,2015; 2025,2015,2025
+12|Langkat,12,Kab. Langkat,,Lama,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Lama Baru,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Mangga,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Mekar Jaya,3,banjir,9; 11,2025; 2026,2025,2026
+12|Langkat,12,Kab. Langkat,,Padang Tualang,3,banjir,10; 11,2015; 2025,2015,2025
+12|Langkat,12,Kab. Langkat,,Paluh Manis,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Pantai Gemi,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Paya Mabar,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Paya Perupuk,3,banjir,10; 11,2015; 2025,2015,2025
+12|Langkat,12,Kab. Langkat,,Pekan Gebang,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Pekubuan,3,banjir,10; 11,2015; 2025,2015,2025
+12|Langkat,12,Kab. Langkat,,Pelawi Selatan,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Pelawi Utara,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Perdamaian,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Pertumbukan,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Securai Selatan,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Securai Utara,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Sei Tualang,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Sekoci,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Selotong,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Sidomulyo,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Stabat Baru,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Tanjung Ibus,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Tanjung Putus,3,banjir,9; 11,2025; 2026,2025,2026
+12|Langkat,12,Kab. Langkat,,Telagah Jernih,3,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Teluk Bakung,3,banjir,10; 11,2015; 2025,2015,2025
+12|Langkat,12,Kab. Langkat,,Teluk Meku,3,banjir,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Aek Horsik,3,banjir,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Gunung Kelambu,3,banjir,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Hutabalang,3,banjir,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Kolang Nauli,3,banjir,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Lubuk Tukko,3,banjir,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Lumut,3,banjir,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Lumut Maju,3,banjir,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Lumut Nauli,3,banjir,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Parjalihotan Baru,3,banjir,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Pasar Baru,3,banjir,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Pasar Terandam,3,banjir,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Pasir Bidang,3,banjir,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Sibuluan Nalambok Kel. Pondok Batu,3,banjir,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Sibuluan Nauli,3,banjir,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Sibuluan Raya,3,banjir,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Sijago Jago,3,banjir,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Hutatua,3,banjir; longsor,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Manalu Purba,3,banjir; longsor,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Pertengahan,3,banjir; longsor,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Robean,3,banjir; longsor,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Simangumban Julu,3,banjir; longsor,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Siopat Bahal,3,banjir; longsor,11,2025,2025,2025
+13|Agam,13,Kab. Agam,Tanjung Raya,Tanjung Sani,3,banjir; longsor,6; 7; 11,2019; 2020; 2023,2019,2023
+13|Kota Padang,13,Kota Padang,,Bungus Barat,3,banjir,5; 8; 11,2017; 2018; 2026,2017,2026
+13|Kota Padang,13,Kota Padang,,Gunung Sarik,3,banjir; cuaca,8; 9; 10,2024; 2026,2024,2026
+13|Kota Padang,13,Kota Padang,,Lubuk Minturun,3,banjir; cuaca,8; 9; 10,2024; 2026,2024,2026
+13|Lima Puluh Kota,13,Kab. Lima Puluh,,Galugua,3,banjir; longsor,1; 2,2022; 2025,2022,2025
+13|Lima Puluh Kota,13,Kab. Lima Puluh,,Muaro Paiti,3,banjir; longsor,1; 2,2022; 2025,2022,2025
+13|Lima Puluh Kota,13,Kab. Lima Puluh,Harau,Sarilamak,3,banjir; karhutla,7; 8; 10,2023; 2025,2023,2025
+13|Lima Puluh Kota,13,Kab. Lima Puluh,,Sarilamak,3,banjir; karhutla; longsor,2; 7; 10,2024; 2025,2024,2025
+13|Lima Puluh Kota,13,Kab. Lima Puluh,,Tarantang,3,banjir; karhutla,7; 10; 12,2022; 2023; 2025,2022,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Anduriang,3,banjir,3; 9; 11,2021; 2024; 2025,2021,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Kasang,3,banjir,3; 9; 11,2021; 2024; 2025,2021,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Katapiang,3,banjir,3; 9; 11,2021; 2024; 2025,2021,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Lubuak Aluang,3,banjir,3; 9; 11,2021; 2024; 2025,2021,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Padang Bintungan,3,banjir,9; 10; 11,2021; 2024; 2025,2021,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Padang Kandang Pulau Aia,3,banjir,3; 10; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Pauah Kamba,3,banjir,3; 10; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Sandi Ulakan,3,banjir,3; 10; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Seulayat Ulakan,3,banjir,3; 10; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Sungai Buluah Selatan,3,banjir,3; 9; 11,2021; 2024; 2025,2021,2025
+14|Kampar,14,Kab. Kampar,Kampar Kiri Hulu,Kebun Tinggi,3,banjir,11; 12,2013; 2015,2013,2015
+14|Kampar,14,Kab. Kampar,Kampar Kiri Hulu,Pangkalan Kapas,3,banjir,11; 12,2013; 2015,2013,2015
+14|Kampar,14,Kab. Kampar,Kampar Kiri Hulu,Tanjung Permai,3,banjir,11; 12,2013; 2015,2013,2015
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Babussalam,3,banjir,2; 12,2016; 2021,2016,2021
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Koto Tinggi,3,banjir,2; 12,2016; 2021,2016,2021
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Pematang Berangan,3,banjir,2; 12,2016; 2021,2016,2021
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Rambah,3,banjir,11; 12,2014; 2021,2014,2021
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Rambah Hilir Timur,3,banjir,3; 12,2017; 2021,2017,2021
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Tandun,3,banjir,11; 12,2014; 2021,2014,2021
+16|Musi Banyuasin,16,Kab. Musi Banyu Asin,,Petaling,3,banjir,1; 3,2024; 2025,2024,2025
+16|Musi Banyuasin,16,Kab. Musi Banyu Asin,,Soak Baru,3,banjir,1; 3,2024; 2025,2024,2025
+16|Musi Banyuasin,16,Kab. Musi Banyu Asin,,Tanjung Agung Barat,3,banjir,1; 3,2024; 2025,2024,2025
+16|Musi Banyuasin,16,Kab. Musi Banyu Asin,,Tanjung Raya,3,banjir,1; 3,2024; 2025,2024,2025
+16|Musi Banyuasin,16,Kab. Musi Banyu Asin,,Teluk Kijing 1,3,banjir,1; 3,2024; 2025,2024,2025
+16|Musi Banyuasin,16,Kab. Musi Banyuasin,,Ulak Paceh Jaya,3,banjir,1; 3,2024; 2025,2024,2025
+32|Bandung,32,Kab. Bandung,,Bojongsoang,3,banjir,3; 5; 12,2025; 2026,2025,2026
+32|Bandung,32,Kab. Bandung,,Dayeuhkolot,3,banjir,3; 5; 12,2025; 2026,2025,2026
+32|Bandung Barat,32,Kab. Bandung Barat,,Cibedug,3,banjir; longsor,2; 12,2023; 2024; 2025,2023,2025
+32|Bogor,32,Kab. Bogor,Cigombong,Ciadeg,3,longsor,1; 6,2021; 2026,2021,2026
+32|Bogor,32,Kab. Bogor,Ciawi,Cibedug,3,cuaca; longsor,2; 4; 12,2024; 2026,2024,2026
+32|Bogor,32,Kab. Bogor,,Cimandala,3,banjir; cuaca,3; 10; 11,2024; 2025,2024,2025
+32|Bogor,32,Kab. Bogor,,Hambalang,3,cuaca; longsor,4; 11,2024; 2025,2024,2025
+32|Bogor,32,Kab. Bogor,,Karadenan,3,banjir; cuaca; longsor,3; 4; 8,2024; 2025; 2026,2024,2026
+32|Bogor,32,Kab. Bogor,,Pasir Angin,3,longsor,1; 4; 5,2024; 2026,2024,2026
+32|Bogor,32,Kab. Bogor,Caringin,Pasir Buncir,3,longsor,2; 3; 4,2025; 2026,2025,2026
+32|Bogor,32,Kab. Bogor,,Sukajaya,3,banjir; cuaca,3; 8; 11,2024; 2025,2024,2025
+32|Bogor,32,Kab. Bogor,,Sukamakmur,3,cuaca; longsor,4; 10; 11,2024; 2025; 2026,2024,2026
+32|Bogor,32,Kab. Bogor,Citeureup,Tajur,3,cuaca; longsor,2; 11; 12,2022; 2024; 2025,2022,2025
+32|Kuningan,32,Kab. Kuningan,,Pamupukan,3,longsor,2; 4; 5,2018; 2023; 2025,2018,2025
+32|Majalengka,32,Kab. Majalengka,,Margamukti,3,banjir; longsor,1; 3; 10,2022; 2026,2022,2026
+32|Majalengka,32,Kab. Majalengka,Cikijing,Sindangpanji,3,karhutla; longsor,5; 11,2019; 2020; 2025,2019,2025
+32|Sukabumi,32,Kab. Sukabumi,,Cidadap,3,banjir; longsor,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Cikahuripan,3,banjir; longsor,3; 10; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Citarik,3,banjir; longsor,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Citepus,3,banjir; longsor,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Loji,3,banjir; longsor,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Mekarsari,3,banjir; longsor,3; 9; 12,2020; 2024; 2025,2020,2025
+32|Sukabumi,32,Kab. Sukabumi,,Palabuhanratu,3,banjir; longsor,3; 12,2024; 2025,2024,2025
+32|Tasikmalaya,32,Kab. Tasikmalaya,,Cikupa,3,banjir,9; 11,2016; 2018; 2021,2016,2021
+33|Banyumas,33,Kab. Banyumas,Sumpiuh,Ketanda,3,longsor,11,2025,2025,2025
+33|Boyolali,33,Kab. Boyolali,Mojosongo,Kemiri,3,cuaca; karhutla,4; 10; 12,2025; 2026,2025,2026
+33|Cilacap,33,Kab. Cilacap,Cimanggu,Negarajati,3,cuaca; longsor,4; 11,2025; 2026,2025,2026
+33|Demak,33,Kab. Demak,,Bogosari,3,banjir,1; 2; 3,2024; 2025; 2026,2024,2026
+33|Demak,33,Kab. Demak,,Guntur,3,banjir,1; 2; 3,2024; 2025; 2026,2024,2026
+33|Demak,33,Kab. Demak,,Karangrejo,3,banjir,1; 3; 5,2024; 2025,2024,2025
+33|Demak,33,Kab. Demak,,Kebonagung,3,banjir,1; 2,2024; 2025; 2026,2024,2026
+33|Demak,33,Kab. Demak,,Lempuyang,3,banjir,2; 3; 4,2024; 2026,2024,2026
+33|Demak,33,Kab. Demak,,Ploso,3,banjir,2; 4; 5,2024; 2025; 2026,2024,2026
+33|Demak,33,Kab. Demak,,Purwosari,3,banjir,1; 3; 5,2024; 2025,2024,2025
+33|Demak,33,Kab. Demak,,Tambakroto,3,banjir,1; 3; 5,2024; 2025,2024,2025
+33|Demak,33,Kab. Demak,,Tridonorejo,3,banjir,1; 5,2025; 2026,2025,2026
+33|Demak,33,Kab. Demak,,Tugu,3,banjir,1; 3; 5,2024; 2025,2024,2025
+33|Demak,33,Kab. Demak,,Wonorejo,3,banjir,1; 2; 3,2024; 2026,2024,2026
+33|Grobogan,33,Kab. Grobogan,,Anggaswangi,3,banjir,1; 10,2020; 2025,2020,2025
+33|Grobogan,33,Kab. Grobogan,,Baturagung,3,banjir,1; 2; 3,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Boloh,3,banjir,1; 2; 3,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Deras,3,banjir,1; 2; 3,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Glapan,3,banjir,1; 2,2020; 2025; 2026,2020,2026
+33|Grobogan,33,Kab. Grobogan,,Jono,3,banjir,1; 2; 3,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Karanganyar,3,banjir,1; 2; 3,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Katong,3,banjir,1; 2; 10,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Krangganharjo,3,banjir; cuaca,1; 2,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Kronggen,3,banjir,1; 10,2023; 2025,2023,2025
+33|Grobogan,33,Kab. Grobogan,,Mangunsari,3,banjir,2; 3; 10,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Purwodadi,3,banjir,1; 2; 3,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Sukorejo,3,banjir,1; 2; 3,2020; 2025; 2026,2020,2026
+33|Grobogan,33,Kab. Grobogan,,Toko,3,banjir,1; 2; 10,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Tunggu,3,banjir,1; 2,2020; 2025; 2026,2020,2026
+33|Kebumen,33,Kab. Kebumen,,Peniron,3,banjir; longsor,10; 11,2022; 2024; 2025,2022,2025
+33|Kota Semarang,33,Kota Semarang,,Gebangsari,3,banjir,1; 3; 10,2024; 2025,2024,2025
+33|Kota Semarang,33,Kota Semarang,,Kaligawe,3,banjir,1; 3; 10,2024; 2025,2024,2025
+33|Kota Semarang,33,Kota Semarang,,Muktiharjo Lor,3,banjir,1; 3; 10,2024; 2025,2024,2025
+33|Kudus,33,Kab. Kudus,,Banget,3,banjir,1; 3,2024; 2025,2024,2025
+33|Kudus,33,Kab. Kudus,,Bulung Kulon,3,banjir,1; 3,2024; 2026,2024,2026
+33|Kudus,33,Kab. Kudus,,Jati Kulon,3,banjir,2; 3,2024; 2025,2024,2025
+33|Kudus,33,Kab. Kudus,,Jati Wetan,3,banjir,2; 3,2024; 2025,2024,2025
+33|Kudus,33,Kab. Kudus,,Jepang,3,banjir,2; 3,2024; 2025,2024,2025
+33|Kudus,33,Kab. Kudus,,Karangrowo,3,banjir,1; 3,2024; 2026,2024,2026
+33|Kudus,33,Kab. Kudus,,Pasuruhan Kidul,3,banjir,2; 3,2024; 2025,2024,2025
+33|Kudus,33,Kab. Kudus,,Setro Kalangan,3,banjir,1; 3,2021; 2024,2021,2024
+33|Kudus,33,Kab. Kudus,,Sidomulyo,3,banjir,2; 3,2024; 2025,2024,2025
+33|Kudus,33,Kab. Kudus,,Tanjung Karang,3,banjir,2; 3,2024; 2025,2024,2025
+33|Magelang,33,Kab. Magelang,,Ngablak,3,cuaca; kebakaran_permukiman,1; 9; 10,2015; 2016; 2019,2015,2019
+33|Magelang,33,Kab. Magelang,Kajoran,Wuwuharjo,3,longsor,2; 11; 12,2016; 2017; 2018,2016,2018
+33|Pati,33,Kab. Pati,,Bumirejo,3,banjir,1; 2; 12,2018; 2022; 2026,2018,2026
+33|Pati,33,Kab. Pati,,Bungasrejo,3,banjir,1; 5; 12,2022; 2025; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Doropayung,3,banjir,1; 2; 12,2018; 2022; 2026,2018,2026
+33|Pati,33,Kab. Pati,,Glonggong,3,banjir,1; 2; 12,2018; 2022; 2026,2018,2026
+33|Pati,33,Kab. Pati,,Jepuro,3,banjir,1; 2; 12,2018; 2022; 2026,2018,2026
+33|Pati,33,Kab. Pati,,Sonorejo,3,banjir,1; 5; 12,2022; 2025; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Tanjunganom,3,banjir,1; 5; 12,2022; 2025; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Widorokandang,3,banjir,1; 2; 12,2018; 2022; 2026,2018,2026
+33|Semarang,33,Kab. Semarang,Banyubiru,Wirogomo,3,longsor,5,2025; 2026,2025,2026
+33|Temanggung,33,Kab. Temanggung,Gemawang,Muncar,3,longsor,2; 4,2016; 2017,2016,2017
+35|Jember,35,Kab. Jember,,Jember Kidul,3,banjir,1; 2,2022; 2023; 2026,2022,2026
+35|Jember,35,Kab. Jember,,Kaliwates,3,banjir; cuaca,1; 10,2022; 2024; 2025,2022,2025
+35|Jember,35,Kab. Jember,Kaliwates,Kaliwates,3,cuaca; longsor,3; 11,2025,2025,2025
+35|Jember,35,Kab. Jember,,Kemiri,3,banjir,1; 10,2022,2022,2022
+35|Jember,35,Kab. Jember,,Suci,3,banjir,1; 2,2022; 2026,2022,2026
+35|Lumajang,35,Kab. Lumajang,,Mojosari,3,cuaca; gunungapi; lainnya,11; 12,2021; 2024,2021,2024
+35|Lumajang,35,Kab. Lumajang,,Pasrujambe,3,banjir; cuaca,2; 4; 11,2024; 2025,2024,2025
+35|Lumajang,35,Kab. Lumajang,,Sumberjo,3,banjir; gunungapi; lainnya,4; 12,2021; 2024,2021,2024
+35|Lumajang,35,Kab. Lumajang,,Sumbermujur,3,cuaca; gunungapi; lainnya,2; 12,2021; 2025,2021,2025
+35|Lumajang,35,Kab. Lumajang,,Sumberwuluh,3,banjir; gunungapi; lainnya,7; 12,2021; 2023,2021,2023
+35|Lumajang,35,Kab. Lumajang,,Supiturang,3,banjir; gunungapi; lainnya,7; 12,2021; 2023,2021,2023
+35|Tuban,35,Kab. Tuban,,Glagahsari,3,banjir,3; 5; 11,2016; 2024; 2025,2016,2025
+35|Tuban,35,Kab. Tuban,,Kanorejo,3,banjir,3; 5; 11,2016; 2024; 2025,2016,2025
+35|Tuban,35,Kab. Tuban,,Karangtinoto,3,banjir,3; 5; 11,2016; 2024; 2025,2016,2025
+35|Tuban,35,Kab. Tuban,,Kebomlati,3,banjir,3; 5; 11,2016; 2024; 2025,2016,2025
+35|Tuban,35,Kab. Tuban,,Kedungsoko,3,banjir,3; 5; 11,2016; 2024; 2025,2016,2025
+35|Tuban,35,Kab. Tuban,,Kendalrejo,3,banjir,3; 5; 11,2016; 2024; 2025,2016,2025
+35|Tuban,35,Kab. Tuban,,Klotok,3,banjir,3; 5; 11,2016; 2024; 2025,2016,2025
+35|Tuban,35,Kab. Tuban,,Menilo,3,banjir,3; 5; 11,2016; 2024; 2025,2016,2025
+35|Tuban,35,Kab. Tuban,,Ngadirejo,3,banjir,3; 5; 11,2016; 2024; 2025,2016,2025
+35|Tuban,35,Kab. Tuban,,Patihan,3,banjir,3; 5; 11,2016; 2024; 2025,2016,2025
+35|Tuban,35,Kab. Tuban,,Rengel,3,banjir,3; 5; 11,2016; 2024; 2025,2016,2025
+35|Tuban,35,Kab. Tuban,,Sandingrowo,3,banjir,3; 5; 11,2016; 2024; 2025,2016,2025
+35|Tuban,35,Kab. Tuban,,Sawahan,3,banjir,3; 5; 11,2016; 2024; 2025,2016,2025
+35|Tuban,35,Kab. Tuban,,Simo,3,banjir,3; 5; 11,2016; 2024; 2025,2016,2025
+35|Tuban,35,Kab. Tuban,,Simorejo,3,banjir,3; 5; 11,2016; 2024; 2025,2016,2025
+35|Tuban,35,Kab. Tuban,,Tambakrejo,3,banjir,3; 5; 11,2016; 2024; 2025,2016,2025
+36|Serang,36,Kab. Serang,,Cijeruk,3,banjir; cuaca,3; 12,2020; 2026,2020,2026
+36|Serang,36,Kab. Serang,Padarincang,Citasuk,3,banjir,2; 3; 11,2017; 2025,2017,2025
+36|Serang,36,Kab. Serang,,Pamengkang,3,banjir; cuaca,1; 3,2026,2026,2026
+36|Serang,36,Kab. Serang,,Rancasanggal,3,banjir,1; 3; 12,2022; 2025; 2026,2022,2026
+36|Serang,36,Kab. Serang,,Sukajaya,3,banjir,1; 3; 12,2025; 2026,2025,2026
+36|Serang,36,Kab. Serang,,Sukamaju,3,banjir; cuaca,2; 3,2017; 2026,2017,2026
+36|Serang,36,Kab. Serang,,Tengkurak,3,banjir,1; 9; 12,2020; 2021; 2026,2020,2026
+36|Serang,36,Kab. Serang,,Tonjong,3,banjir; cuaca,1; 3,2026,2026,2026
+51|Karangasem,51,Kab. Karangasem,Abang,Bunutan,3,longsor,4; 5; 11,2021; 2025,2021,2025
+51|Karangasem,51,Kab. Karangasem,Kubu,Tulamben,3,banjir; karhutla; longsor,4; 10; 12,2019; 2024,2019,2024
+52|Bima,52,Kab. Bima,,Monggo,3,banjir,1; 11; 12,2018; 2024; 2025,2018,2025
+52|Bima,52,Kab. Bima,,Ncandi,3,banjir,4; 11; 12,2021; 2024; 2025,2021,2025
+52|Bima,52,Kab. Bima,,Nggembe,3,banjir,2; 4; 11,2021; 2025,2021,2025
+52|Lombok Barat,52,Kab. Lombok Barat,,Banyu Urip,3,cuaca; kekeringan,1; 6; 8,2025; 2026,2025,2026
+52|Lombok Barat,52,Kab. Lombok Barat,,Sekotong Barat,3,cuaca; kekeringan,1; 6; 8,2025; 2026,2025,2026
+52|Sumbawa Barat,52,Kab. Sumbawa Barat,,Batu Putih,3,banjir; cuaca,2; 12,2025,2025,2025
+52|Sumbawa Barat,52,Kab. Sumbawa Barat,,Kuang,3,banjir; cuaca,2; 12,2025,2025,2025
+52|Sumbawa Barat,52,Kab. Sumbawa Barat,,Menala,3,cuaca,2,2025,2025,2025
+53|Belu,53,Kab. Belu,,Fatubenao,3,banjir; cuaca,2; 3; 4,2021; 2023,2021,2023
+53|Belu,53,Kab. Belu,,Manleten,3,banjir; cuaca,2; 3; 4,2021; 2023,2021,2023
+61|Bengkayang,61,Kab. Bengkayang,,Danti,3,banjir,1; 2,2021; 2025,2021,2025
+61|Bengkayang,61,Kab. Bengkayang,,Dayung,3,banjir,1; 2,2021; 2025,2021,2025
+61|Bengkayang,61,Kab. Bengkayang,,Lesabela,3,banjir,1; 2,2021; 2025,2021,2025
+61|Bengkayang,61,Kab. Bengkayang,,Rodaya,3,banjir,1; 2,2021; 2025,2021,2025
+61|Bengkayang,61,Kab. Bengkayang,,Seles,3,banjir,1; 2,2021; 2025,2021,2025
+61|Landak,61,Kab. Landak,,Ampadi,3,banjir,5; 8; 9,2020; 2024; 2026,2020,2026
+61|Landak,61,Kab. Landak,,Ansang,3,banjir,5; 6; 8,2020; 2024; 2026,2020,2026
+61|Landak,61,Kab. Landak,,Meranti,3,banjir,5; 8; 9,2020; 2024; 2026,2020,2026
+61|Landak,61,Kab. Landak,,Raja,3,banjir,2; 8; 9,2019; 2020; 2024,2019,2024
+61|Landak,61,Kab. Landak,,Songga,3,banjir,5; 6; 9,2020; 2026,2020,2026
+61|Sanggau,61,Kab. Sanggau,,Kuala Dua,3,banjir,1; 3; 8,2024; 2025,2024,2025
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,Arut Utara,Penyombaan,3,banjir; longsor,5; 8; 10,2018; 2020; 2021,2018,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,Arut Utara,Sambi,3,banjir,5; 8; 10,2020; 2021,2020,2021
+62|Murung Raya,62,Kab. Murung Raya,,Batu Bua I,3,banjir,4; 9,2021; 2025,2021,2025
+62|Murung Raya,62,Kab. Murung Raya,,Batu Putih,3,banjir,4; 10,2024; 2025,2024,2025
+62|Murung Raya,62,Kab. Murung Raya,,Bumban Tuhup,3,banjir,4; 9; 10,2021; 2024; 2025,2021,2025
+62|Murung Raya,62,Kab. Murung Raya,,Dirung,3,banjir,4; 10,2024; 2025,2024,2025
+62|Murung Raya,62,Kab. Murung Raya,,Kalapeh Baru,3,banjir,4; 10,2024; 2025,2024,2025
+62|Murung Raya,62,Kab. Murung Raya,,Kalasin,3,banjir,4; 5; 10,2022; 2024; 2025,2022,2025
+62|Murung Raya,62,Kab. Murung Raya,,Makunjung,3,banjir,4; 9; 10,2021; 2024; 2025,2021,2025
+62|Murung Raya,62,Kab. Murung Raya,,Malasan,3,banjir,4; 10,2024; 2025,2024,2025
+62|Murung Raya,62,Kab. Murung Raya,,Muara Babuat,3,banjir,4; 10,2024; 2025,2024,2025
+62|Murung Raya,62,Kab. Murung Raya,,Muara Bumban,3,banjir,4; 10,2024; 2025,2024,2025
+62|Murung Raya,62,Kab. Murung Raya,,Muara Jaan,3,banjir,4; 10,2024; 2025,2024,2025
+62|Murung Raya,62,Kab. Murung Raya,,Muara Joloi Ii,3,banjir,5; 9; 10,2021; 2022; 2024,2021,2024
+62|Murung Raya,62,Kab. Murung Raya,,Muara Laung I,3,banjir,5; 9; 10,2021; 2022; 2024,2021,2024
+62|Murung Raya,62,Kab. Murung Raya,,Muara Untu,3,banjir,4; 10,2024; 2025,2024,2025
+62|Murung Raya,62,Kab. Murung Raya,,Penyang,3,banjir,4; 10,2024; 2025,2024,2025
+62|Murung Raya,62,Kab. Murung Raya,,Teluk Jolo,3,banjir,4; 5; 10,2022; 2024; 2025,2022,2025
+62|Murung Raya,62,Kab. Murung Raya,,Tumbang Masao,3,banjir,4; 9; 10,2021; 2024; 2025,2021,2025
+62|Murung Raya,62,Kab. Murung Raya,,Tumbang Tuan,3,banjir,4; 10,2024; 2025,2024,2025
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Mekar Jaya,3,banjir,2; 3,2024,2024,2024
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Paduran Mulya,3,banjir,2; 3,2024,2024,2024
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Paduran Sebangau,3,banjir,2; 3,2024,2024,2024
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Sebangau Jaya,3,banjir,2; 3,2024,2024,2024
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Sebangau Mulya,3,banjir,2; 3,2024,2024,2024
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Sebangau Permai,3,banjir,2; 3,2024,2024,2024
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Sei Hambawang,3,banjir,2; 3,2024,2024,2024
+64|Penajam Paser Utara,64,Kab. Penajam Paser Utara,Penajam,Giripurwa,3,karhutla,1; 5; 8,2020; 2022; 2023,2020,2023
+65|Nunukan,65,Kab. Nunukan,Krayan Selatan,Long Budung,3,banjir; longsor,7; 9,2022; 2024; 2026,2022,2026
+65|Nunukan,65,Kab. Nunukan,Krayan Selatan,Long Pupung,3,banjir; longsor,7; 9,2022; 2024; 2026,2022,2026
+65|Nunukan,65,Kab. Nunukan,Nunukan Selatan,Tanjung Harapan,3,banjir; karhutla,5; 6,2026,2026,2026
+71|Bolaang Mongondow,71,Kab. Bolaang Mongondow,,Inobonto I,3,banjir; karhutla,8; 12,2021; 2024; 2026,2021,2026
+71|Bolaang Mongondow Selatan,71,Kab. Bolaang Mongondow Selatan,,Torosik,3,banjir,6; 8; 9,2021; 2024,2021,2024
+71|Kota Bitung,71,Kota Bitung,,Mawali,3,banjir; longsor,2; 4,2017; 2024,2017,2024
+71|Kota Bitung,71,Kota Bitung,,Pintu Kota,3,banjir; longsor,2; 4,2017; 2024,2017,2024
+71|Kota Bitung,71,Kota Bitung,,Tandurusa,3,banjir; longsor,2; 4; 8,2017; 2024; 2025,2017,2025
+73|Luwu,73,Kab. Luwu,,Botta,3,banjir,5; 7,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Buntu Matabing,3,banjir,5; 7,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Cakkeawo,3,banjir,5; 7,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Cimpu,3,banjir,5; 7,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Dadeko,3,banjir,5,2024; 2025,2024,2025
+73|Luwu,73,Kab. Luwu,,Kadundung,3,banjir,5,2022; 2024,2022,2024
+73|Luwu,73,Kab. Luwu,,Kaili,3,banjir,4; 5,2024; 2025,2024,2025
+73|Luwu,73,Kab. Luwu,,Malela,3,banjir,5; 7,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Muhajirin,3,banjir,4; 5,2024; 2025,2024,2025
+73|Luwu,73,Kab. Luwu,,Noling,3,banjir,5; 7,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Padang Sappa,3,banjir,5; 7,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Salubua,3,banjir,4; 5,2024; 2025,2024,2025
+73|Luwu,73,Kab. Luwu,,Saronda,3,banjir,5; 7,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Senga Selatan,3,banjir,5; 7,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Tampumia,3,banjir,5; 7,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Temboe,3,banjir,5; 7,2024,2024,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Beringin Jaya,3,banjir,4; 7,2016; 2024,2016,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Cenning,3,banjir,4; 7,2016; 2024,2016,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Hasanah,3,banjir,4,2016; 2024,2016,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Kapidi,3,banjir,4,2016; 2024,2016,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Lembang-Lembang,3,banjir,4; 7,2016; 2024,2016,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Limbong Wara,3,banjir,4; 7,2016; 2024,2016,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Marannu,3,banjir,4; 9,2021; 2024,2021,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Mekar Sari Jaya,3,banjir,4; 9,2021; 2024,2021,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Mekarjaya,3,banjir,4,2016; 2024,2016,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Mukti Jaya,3,banjir,4,2016; 2024,2016,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Pattimang,3,banjir,4; 7,2016; 2024,2016,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Pettalandung,3,banjir,4; 7,2016; 2024,2016,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Polewali,3,banjir,4,2016; 2024,2016,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Pombakka,3,banjir,4; 7,2016; 2024,2016,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Waelawi,3,banjir,4; 7,2016; 2024,2016,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Wara,3,banjir,4; 7,2016; 2024,2016,2024
+73|Sidenreng Rappang,73,Kab. Sidenreng Rappang,Pitu Riase,Leppangeng,3,longsor,5; 9; 12,2025; 2026,2025,2026
+73|Sinjai,73,Kab. Sinjai,,Bonto Salama,3,banjir; longsor,6; 7,2024; 2025,2024,2025
+73|Sinjai,73,Kab. Sinjai,,Lasiai,3,banjir; longsor,6,2024,2024,2024
+73|Sinjai,73,Kab. Sinjai,,Panaikang,3,banjir,6,2024; 2026,2024,2026
+73|Sinjai,73,Kab. Sinjai,,Pattongko,3,banjir; longsor,6,2024,2024,2024
+73|Soppeng,73,Kab. Soppeng,,Attangsalo,3,banjir,12,2021; 2022; 2024,2021,2024
+73|Soppeng,73,Kab. Soppeng,,Belo,3,banjir,12,2021; 2022; 2024,2021,2024
+73|Soppeng,73,Kab. Soppeng,,Cabenge,3,banjir,12,2021; 2022; 2024,2021,2024
+73|Soppeng,73,Kab. Soppeng,,Kaca,3,banjir,12,2021; 2022; 2024,2021,2024
+73|Soppeng,73,Kab. Soppeng,,Kebo,3,banjir,12,2021; 2022; 2024,2021,2024
+73|Soppeng,73,Kab. Soppeng,,Kessing,3,banjir,12,2021; 2022; 2024,2021,2024
+73|Soppeng,73,Kab. Soppeng,,Leworeng,3,banjir,12,2021; 2022; 2024,2021,2024
+73|Soppeng,73,Kab. Soppeng,,Limpomajang,3,banjir,12,2021; 2022; 2024,2021,2024
+73|Soppeng,73,Kab. Soppeng,,Macanre,3,banjir,12,2021; 2022; 2024,2021,2024
+73|Soppeng,73,Kab. Soppeng,,Pajalesang,3,banjir,12,2021; 2022; 2024,2021,2024
+74|Konawe Utara,74,Kab. Konawe Utara,,Labungga,3,banjir,5; 6,2018; 2019; 2026,2018,2026
+74|Konawe Utara,74,Kab. Konawe Utara,,Tapuwatu,3,banjir,5; 6,2018; 2019; 2024,2018,2024
+11|Aceh Besar,11,Kab. Aceh Besar,Lembah Seulawah,Palapa,2,karhutla,8,2018,2018,2018
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Alue Abet,2,banjir,7; 10,2020; 2025,2020,2025
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Alue Ambang,2,banjir,1; 10,2017; 2025,2017,2025
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Alue Gajah,2,banjir,9; 11,2016; 2024,2016,2024
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Alue Tho,2,banjir,7; 10,2020; 2025,2020,2025
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Baroh,2,banjir,7; 10,2020; 2025,2020,2025
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Batee Meutudong,2,banjir,7; 9,2020; 2024,2020,2024
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Curek,2,banjir,7; 10,2020; 2025,2020,2025
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Datar Luas,2,banjir,1; 7,2017; 2020,2017,2020
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Gunong Cut,2,banjir,9; 10,2024; 2025,2024,2025
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Lamteungoh,2,banjir,7; 9,2020; 2024,2020,2024
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Meudhang Ghon,2,banjir,8; 11,2016; 2024,2016,2024
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Pante Kuyun,2,banjir,7; 10,2020; 2025,2020,2025
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Panton Krueng,2,banjir,7; 10,2020; 2025,2020,2025
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Pasie Teubee,2,banjir,1; 7,2017; 2020,2017,2020
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Pasie Timon,2,banjir,1; 7,2017; 2020,2017,2020
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Paya Seumantok,2,banjir,1; 7,2017; 2020,2017,2020
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Pulo Tinggi,2,banjir,1; 7,2017; 2020,2017,2020
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Rambong Payong,2,banjir,1; 9,2017; 2024,2017,2024
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Ranto Panyang,2,banjir,9; 10,2024; 2025,2024,2025
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Rantou Panyang,2,banjir,1; 7,2017; 2020,2017,2020
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Tanoh Anoe,2,banjir,1; 7,2017; 2020,2017,2020
+11|Aceh Jaya,11,Kab. Aceh Jaya,,Tuwi Kareung,2,banjir,1; 7,2017; 2020,2017,2020
+11|Aceh Selatan,11,Kab. Aceh Selatan,,Cot Bayu,2,banjir,1; 5,2015; 2021,2015,2021
+11|Aceh Selatan,11,Kab. Aceh Selatan,,Lhok Raya,2,banjir,1; 5,2015; 2021,2015,2021
+11|Aceh Selatan,11,Kab. Aceh Selatan,,Padang Harapan,2,banjir,1; 5,2015; 2021,2015,2021
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Biskang,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Gosong Telaga Selatan,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Gosong Telaga Timur,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Gosong Telaga Utara,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Guha,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Gunung Lagan,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Kain Golong,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Kayu Menang,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Keras,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Kuala Baru Sungai,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Kuta Batu,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Labuhan Kera,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Ladang Bisik,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Lae Balno,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Lae Bangun,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Lae Pinang,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Lapahan Buaya,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Lipat Kajang,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Mukti Harapan,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Mukti Jaya,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Mukti Lincir,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Napagaluh,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Panjaitan,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Pea Jambu/Srikayu,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Pulo Sarok,2,banjir,10; 11,2023; 2024,2023,2024
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Pulo Surok,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Samar Dua,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Sianjo-Anjo,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Sidorejo,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Sikoran,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Singkohor,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Siti Ambia Das,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Situban Makmur,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Situbuh Tubuh,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Suka Jaya,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Sumber Mukti,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Suro Baru,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Tanah Bara,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Tanjung Betik,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Telaga Bhakti,2,banjir,11,2025,2025,2025
+11|Aceh Singkil,11,Kab. Aceh Singkil,,Tunas Harapan,2,banjir,11,2025,2025,2025
+11|Aceh Tengah,11,Kab. Aceh Tengah,Kebayakan,Pinangan,2,banjir,3; 5,2017; 2020,2017,2020
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Alur Buluh,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Bambel Baru,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Bambel Gabungan,2,banjir,4; 11,2022; 2025,2022,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Batu Mbulan I,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Batu Mbulan Ii,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Bener Bepapah,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Biak Muli,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Buah Pala,2,banjir,4; 8,2022; 2023,2022,2023
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Darul Amin,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Gumpang,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Gumpang Jaya,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Jambur Damar,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Jambur Lak-Lak,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Jati Sara,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Kandang Mbelang Mandiri,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Kayu Mentangur,2,banjir,11,2018,2018,2018
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Kuta Batu Ii,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Kuta Buluh,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Kuta Lang-Lang,2,banjir,8; 12,2018; 2023,2018,2023
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Kuta Lengat Selian,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Kutambaru Bencawan,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Lawe Beringin,2,banjir,4,2017; 2022,2017,2022
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Lawe Kesumpat,2,banjir,4; 8,2017; 2023,2017,2023
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Lawe Penanggalan,2,banjir,4; 11,2022; 2025,2022,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Lawe Sagu Hulu,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Lawe Serke,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Lawe Tua,2,banjir,4; 8,2017; 2023,2017,2023
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Lawe Tungkal,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Lembah Haji,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Likat,2,banjir,8; 12,2018; 2023,2018,2023
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Maha Singkil,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Mamas Baru,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Mbarung,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Mendabe,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Pulo Latong,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Pulonas Baru,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Rambah Sayang,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Salim Pipit,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Simpur Jaya,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Suka Damai,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Suka Makmur,2,banjir,4,2017; 2022,2017,2022
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Teger Miko,2,banjir,4; 8,2022; 2023,2022,2023
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Tenembak Bintang,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Terutung Payung Gabungan,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Terutung Payung Hilir,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Terutung Payung Hulu,2,banjir,8; 11,2023; 2025,2023,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Titi Harapan,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Titi Mas,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Tualang Baru,2,banjir,11; 12,2018; 2025,2018,2025
+11|Aceh Tenggara,11,Kab. Aceh Tenggara,,Ujung Barat,2,banjir,11; 12,2018; 2025,2018,2025
+11|Bener Meriah,11,Kab. Bener Meriah,Wih Pesam,Jamur Ujung,2,banjir; longsor,1; 12,2018; 2019,2018,2019
+11|Gayo Lues,11,Kab. Gayo Lues,,Tetumpun,2,banjir; longsor,10,2026,2026,2026
+11|Kota Subulussalam,11,Kota Subulussalam,,Belukur Makmur,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Binaga,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Dah,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Danau Tras,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Dasan Raja,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Jabi – Jabi,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Kuala Kepeng,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Kuta Beringin,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Lae Ikan,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Lae Mate,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Lae Pemualan,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Lae Saga,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Longkib,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Mandilam,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Muara Batu-Batu,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Oboh,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Panglima Saman,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Panji,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Pasar Rundeng,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Sepang,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Sibuasan,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Sibungke,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Sigrun,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Siperkas,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Suak Jampak,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Suka Maju,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Tanah Tumbuh,2,banjir,11,2025,2025,2025
+11|Kota Subulussalam,11,Kota Subulussalam,,Tualang,2,banjir,11,2025,2025,2025
+11|Nagan Raya,11,Kab. Nagan Raya,,Alue Wakie,2,banjir,11,2025,2025,2025
+11|Nagan Raya,11,Kab. Nagan Raya,,Babah Suak,2,banjir,11,2025,2025,2025
+11|Nagan Raya,11,Kab. Nagan Raya,,Blaang Meurandeh,2,banjir,11,2025,2025,2025
+11|Nagan Raya,11,Kab. Nagan Raya,,Blaang Puuk,2,banjir,11,2025,2025,2025
+11|Nagan Raya,11,Kab. Nagan Raya,,Geulagang Gajah,2,banjir,11,2025,2025,2025
+11|Nagan Raya,11,Kab. Nagan Raya,,Gunong Cut,2,banjir,11,2025,2025,2025
+11|Nagan Raya,11,Kab. Nagan Raya,,Kaye Unoe,2,banjir,11,2025,2025,2025
+11|Nagan Raya,11,Kab. Nagan Raya,,Kuta Teungoh,2,banjir,11,2025,2025,2025
+11|Nagan Raya,11,Kab. Nagan Raya,,Kuta Trieng,2,banjir,11,2025,2025,2025
+11|Nagan Raya,11,Kab. Nagan Raya,,Lamie,2,banjir,11,2025,2025,2025
+11|Nagan Raya,11,Kab. Nagan Raya,,Suak Palembang,2,banjir,11,2025,2025,2025
+11|Nagan Raya,11,Kab. Nagan Raya,,Tuwi Buya,2,banjir,11,2025,2025,2025
+11|Nagan Raya,11,Kab. Nagan Raya,,Ujong Lamie,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Alue Adan,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Asan,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Beureueh,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Cot Teugoeh,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Cumbok Le,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Cumbok Niwa,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Dayah,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Dayah Adan,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Dayah Tutong,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Glee Meulinteung U Gadeng,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Jeim-Jeim,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Jojo,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Jumpoih Adan,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Keudee Tangse,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Keupula,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Krueng,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Krueng Reubee,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Lada,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Mane Jambee,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Mesjid,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Meucat Adan,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Pangge Pilok,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Rambot Adan,2,banjir,11,2025,2025,2025
+11|Pidie,11,Kab. Pidie,,Ulee Tutue,2,banjir,11,2025,2025,2025
+12|Deli Serdang,12,Kab. Deli Serdang,,Percut,2,cuaca,6; 7,2025,2025,2025
+12|Deli Serdang,12,Kab. Deli Serdang,,Saentis,2,cuaca,6; 7,2025,2025,2025
+12|Deli Serdang,12,Kab. Deli Serdang,Sibolangit,Sembahe,2,longsor,10; 11,2021; 2024,2021,2024
+12|Karo,12,Kab. Karo,,Bekilang,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,Juhar,Bekilang,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,,Doulu,2,longsor,11,2024,2024,2024
+12|Karo,12,Kab. Karo,,Gundaling,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,,Gunung,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,,Jamin Ginting,2,longsor,11,2024,2024,2024
+12|Karo,12,Kab. Karo,Juhar,Jandi,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,,Juhar,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,Juhar,Juhar Ginting,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,Juhar,Juhar Perangin Angin,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,Juhar,Juhar Taringan,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,,Ketawaren,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,Juhar,Ketawaren,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,Juhar,Kidupen,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,,Kuta Gugung,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,Juhar,Kuta Gugung,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,,Lau Gumba,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,,Lau Kidupen,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,,Mbetong,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,Juhar,Mbetong,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,,Naga,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,Juhar,Naga,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,,Nageri,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,Juhar,Nageri,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,Juhar,Namo Suro,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,,Pasar Baru,2,longsor,10,2024,2024,2024
+12|Karo,12,Kab. Karo,,Semangat Gunung,2,longsor,11,2024,2024,2024
+12|Karo,12,Kab. Karo,,Serdang,2,longsor,10,2024,2024,2024
+12|Kota Sibolga,12,Kota Sibolga,,Simare-Mare,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Air Hitam,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Alur Cempedak Ds. Sei Siur,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Alur Melati,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,"Batang Serangan, Ds. Karya Jadi",2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,"Batu Melenggang, Ds. Muka Paya,",2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Beras Basah,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Besilam,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Bingai,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Bubun,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,"Bukit Jengkol,",2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Bukit Mas,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Bukit Melintang,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Bukit Selamat,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Damar Condong,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Gergas,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Gohor Lama,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Halaban,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Harapan Maju,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Hinai Kanan,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Hinai Kiri,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Jaring Halus,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Jati Sari,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Kacangan,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Karang Anyar,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Karang Gading,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Karya Maju,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Kebun Balok,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Kepala Sungai,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Kota Lama Ii,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Kuala Langkat,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,"Kwala Begumit,",2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Kwala Besar,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Kwala Besilam,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,"Kwala Musam,",2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Limau Mungkur,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Lubuk Kasih,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,"Lubuk Kertang,",2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Mekar Makmur,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Mekar Sawit,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,"Namu Sialang,",2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Palu Paki,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Pangkalan Siata,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Pantai Cermin,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Pantai Gading,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Pasar Gunung,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Pasar Rawa,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Paya Bengkuang,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Paya Kangkung,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Paya Tampak,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Paya Tusam,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Pematang Cengal,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Pematang Sere,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Pematang Tengah,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,"Perdamaian,",2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Perkebunan Damar Condong,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Perkotaan,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Pintu Air,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Pir Adb Besitang,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Pulau Kampai,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Pulau Sembilan,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Pulo Banyak,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Puraka I,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Puraka Ii,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,"Salahaji,",2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Sambirejo,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Sawit Hulu,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Secanggang,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,"Sei Bamban,",2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Sei Litur Tasik,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Sei Meran,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,"Sei Musam,",2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,"Sei Serdang,",2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,"Sendang Rejo,",2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Serang Jaya Hilir,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,"Serang Jaya,",2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Serapuh Abc,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Serapuh Asli,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Simpang Tiga,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Stabat Lama,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Stabat Lama Barat Ds. Jentera Stabat,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Stungkit,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Suka Maju,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,"Suka Makmur,",2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Suka Mulia,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Suka Ramai,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Sukajaya,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Sumber Mulyo,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Sungai Ular,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Tamaran,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Tangkahan Durian Kel. Pangkalan Susu,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,"Tanjung Jati,",2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Tanjung Pasir,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Tapak Kuda,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Tebing Tualang Selamat,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Telaga Said,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Telukdesa Cinta Raja,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Tj Beringin,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Urahan Hinai Kiri,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Urahan Pekan Besitang,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Urahan Pekan Tanjung Pura,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Urahan Sawit Seberang,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Urahan Sei Bilah,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Urahan Sei Bilah Timur,2,banjir,11,2025,2025,2025
+12|Langkat,12,Kab. Langkat,,Urahan Tanjung Selamat,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Bangun Sejati,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Barbaran Jae,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Batahan Iii,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Batahan Iv,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Batang Gadis,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Batu Sondat,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Binaga,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Bonda Kase,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Hutanamale,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Hutarimbaru,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Kase Rao Rao,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Lubuk Kapundung I,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Lubuk Kapundung Ii,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Mondan,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Muara Batang Angkola,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Patiluban Hilir,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Patiluban Mudik,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Purba Baru,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Ranto Panjang,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Sawah,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Sayurmaincat,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Sibanggar Tonga,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Sibanggor Tonga,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Sikara Kara Vi,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Simpang Talap,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Sipogu,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Tangga Bosi,2,banjir,11,2025,2025,2025
+12|Mandailing Natal,12,Kab. Mandailing Natal,,Tarlola,2,banjir,11,2025,2025,2025
+12|Nias Selatan,12,Kab. Nias Selatan,,Hilifanaluo,2,banjir; longsor,11,2025,2025,2025
+12|Nias Selatan,12,Kab. Nias Selatan,,Hilimondregeraya,2,banjir; longsor,11,2025,2025,2025
+12|Nias Selatan,12,Kab. Nias Selatan,,Orahili Gito,2,banjir; longsor,11,2025,2025,2025
+12|Nias Selatan,12,Kab. Nias Selatan,,Sinar Helaowo,2,banjir; longsor,11,2025,2025,2025
+12|Nias Selatan,12,Kab. Nias Selatan,,Togizita,2,banjir; longsor,11,2025,2025,2025
+12|Nias Selatan,12,Kab. Nias Selatan,,Ulumazo,2,banjir; longsor,11,2025,2025,2025
+12|Padang Lawas,12,Kab. Padang Lawas,,Harang Julu,2,longsor,11,2024,2024,2024
+12|Samosir,12,Kab. Samosir,,Boho,2,banjir; karhutla,8; 11,2023; 2025,2023,2025
+12|Samosir,12,Kab. Samosir,,Siboro,2,banjir; karhutla,8; 11,2023; 2025,2023,2025
+12|Samosir,12,Kab. Samosir,,Siparmahan,2,banjir; karhutla,8; 11,2023; 2025,2023,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Bonalumban,2,banjir,2; 5,2026,2026,2026
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Kolang,2,banjir,11,2025,2025,2025
+12|Tapanuli Tengah,12,Kab. Tapanuli Tengah,,Sarudik,2,banjir,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Batuarimo,2,banjir,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Dolok Sautds. Dolok Sanggul,2,banjir,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Hutajulu Parbalik,2,banjir,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Lobu Pining,2,banjir,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Pagaran,2,banjir,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Pansurnapitu,2,banjir,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Pardomuan Nauli,2,banjir,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Purba Dolok,2,banjir,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Siantar Naipospos,2,banjir,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Sibalangads. Lobu Piningds. Siantar Naiposposds. Pardomuan Naulids. Pagaran Lambung Ivds. Pagaran Lambung Iiids. Pagaran Lambung Ids. Banuaji Ids. Banuaji Iv,2,banjir,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,Simangumban,Simangumban Julu,2,banjir,4; 11,2025; 2026,2025,2026
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Sitolu Bahal,2,banjir,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Sitompul,2,banjir,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Siwaluompu,2,banjir,11,2025,2025,2025
+12|Tapanuli Utara,12,Kab. Tapanuli Utara,,Sukamaju,2,banjir,11,2025,2025,2025
+12|Toba,12,Kab. Toba,,Silalahi Dolok,2,karhutla; longsor,7; 12,2025,2025,2025
+13|Agam,13,Kab. Agam,,Koto Kaciak,2,banjir; cuaca,2; 4,2021; 2026,2021,2026
+13|Agam,11,Kab. Agam,Lubuk Basung,Lubuk Basung,2,longsor,8; 11,2020; 2021,2020,2021
+13|Agam,13,Kab. Agam,Baso,Padang Tarok,2,karhutla; longsor,4; 8,2019; 2025,2019,2025
+13|Agam,13,Kab. Agam,Palupuh,Pasia Laweh,2,longsor,4; 9,2019; 2020,2019,2020
+13|Kepulauan Mentawai,13,Kab. Kepulauan Mentawai,,Malancan,2,banjir,2; 11,2025; 2026,2025,2026
+13|Kepulauan Mentawai,13,Kab. Kepulauan Mentawai,,Saibi Samukop,2,banjir,2; 11,2025; 2026,2025,2026
+13|Kepulauan Mentawai,13,Kab. Kepulauan Mentawai,,Sotboyak,2,banjir,2; 11,2025; 2026,2025,2026
+13|Kota Padang,13,Kota Padang,,Balai Gadang,2,banjir; cuaca,9; 10,2024; 2026,2024,2026
+13|Kota Padang,13,Kota Padang,,Banuaran,2,banjir,11,2015; 2018,2015,2018
+13|Kota Padang,13,Kota Padang,,Bungo Pasang,2,banjir; cuaca,9; 10,2024; 2026,2024,2026
+13|Kota Padang,13,Kota Padang,,Bungus Timur,2,banjir,5; 8,2017; 2026,2017,2026
+13|Kota Padang,13,Kota Padang,,Indarung,2,banjir,5; 11,2015; 2017,2015,2017
+13|Kota Padang,13,Kota Padang,,Koto Panjang Ikua Koto,2,banjir,8; 10,2026,2026,2026
+13|Kota Padang,13,Kota Padang,,Kuranji,2,banjir,8; 10,2026,2026,2026
+13|Kota Padang,13,Kota Padang,,Kurao Pagang,2,banjir,8; 11,2015; 2026,2015,2026
+13|Kota Padang,13,Kota Padang,,Pagambiran Ampalu Nan Xx,2,banjir,5; 8,2017; 2026,2017,2026
+13|Kota Padang,13,Kota Padang,,Pasie Nan Tigo,2,banjir; cuaca,9; 10,2024; 2026,2024,2026
+13|Kota Padang,13,Kota Padang,,Seberang Palinggam,2,banjir,11,2015; 2018,2015,2018
+13|Kota Padang,13,Kota Padang,,Sungai Sapih,2,banjir; cuaca,8; 9,2024; 2026,2024,2026
+13|Kota Padang,13,Kota Padang,,Surau Gadang,2,banjir,8; 11,2015; 2026,2015,2026
+13|Kota Padang,13,Kota Padang,,Tabing Banda Gadang,2,banjir,8; 11,2015; 2026,2015,2026
+13|Kota Padang,13,Kota Padang,,Tarantang,2,banjir,11,2015; 2018,2015,2018
+13|Kota Padang Panjang,13,Kota Padang Panjang,,Koto Panjang,2,banjir,2; 11,2023; 2025,2023,2025
+13|Kota Padang Panjang,13,Kota Padang Panjang,,Manggis,2,banjir,2; 11,2023; 2025,2023,2025
+13|Kota Padang Panjang,13,Kota Padang Panjang,,Pasar Usang,2,banjir,2; 11,2023; 2025,2023,2025
+13|Kota Padang Panjang,13,Kota Padang Panjang,,Tanah Hitam,2,banjir,2; 11,2023; 2025,2023,2025
+13|Kota Sawahlunto,13,Kota Sawahlunto,,Air Dingin,2,longsor,5,2023,2023,2023
+13|Kota Sawahlunto,13,Kota Sawahlunto,,Aur Mulyo,2,longsor,5,2023,2023,2023
+13|Kota Sawahlunto,13,Kota Sawahlunto,,Balai Batu Sandaran,2,longsor,5,2023,2023,2023
+13|Kota Sawahlunto,13,Kota Sawahlunto,,Kubang Sikaruk Selatan,2,longsor,5,2023,2023,2023
+13|Kota Sawahlunto,13,Kota Sawahlunto,,Kubang Tangah,2,longsor,5,2023,2023,2023
+13|Kota Sawahlunto,13,Kota Sawahlunto,,Kubang Tengah,2,longsor,5,2023,2023,2023
+13|Kota Sawahlunto,13,Kota Sawahlunto,,Kubang Utara Sikabu,2,longsor,5,2023,2023,2023
+13|Kota Sawahlunto,13,Kota Sawahlunto,,Lumindai,2,longsor,5,2023,2023,2023
+13|Kota Sawahlunto,13,Kota Sawahlunto,,Muaro Kalaban,2,longsor,5,2023,2023,2023
+13|Kota Sawahlunto,13,Kota Sawahlunto,,Pasar,2,longsor,5,2023,2023,2023
+13|Kota Sawahlunto,13,Kota Sawahlunto,,Pasar Kubang,2,longsor,5,2023,2023,2023
+13|Kota Sawahlunto,13,Kota Sawahlunto,,Saringan,2,longsor,5,2023,2023,2023
+13|Kota Sawahlunto,13,Kota Sawahlunto,,Silungkang Duo,2,longsor,5,2023,2023,2023
+13|Kota Sawahlunto,13,Kota Sawahlunto,,Silungkang Oso,2,longsor,5,2023,2023,2023
+13|Kota Sawahlunto,13,Kota Sawahlunto,,Silungkang Tigo,2,longsor,5,2023,2023,2023
+13|Kota Sawahlunto,13,Kota Sawahlunto,,Tumpak Tangan,2,longsor,5,2023,2023,2023
+13|Lima Puluh Kota,13,Kab. Lima Puluh,,Durian Tinggi,2,banjir,1; 2,2022; 2025,2022,2025
+13|Lima Puluh Kota,13,Kab. Limapuluh,,Harau,2,banjir; longsor,10; 12,2023; 2024,2023,2024
+13|Lima Puluh Kota,13,Kab. Limapuluh,,Koto Alam,2,banjir; longsor,2; 12,2023; 2025,2023,2025
+13|Lima Puluh Kota,13,Kab. Lima Puluh,,Maek,2,banjir; karhutla,7; 12,2023; 2025,2023,2025
+13|Lima Puluh Kota,13,Kab. Limapuluh,,Pangkalan,2,banjir,2; 12,2023; 2025,2023,2025
+13|Lima Puluh Kota,13,Kab. Limapuluh,Guguak,Simpang Sugiran,2,banjir,3,2021,2021,2021
+13|Lima Puluh Kota,13,Kab. Lima Puluh,,Taram,2,banjir; karhutla,7; 10,2022; 2025,2022,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Balah Aia,2,banjir,3; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Balah Aia Utara,2,banjir,3; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Batu Gadang Kuranji Hulu,2,banjir,3; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Campago Barat,2,banjir,3; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Gasan Gadang,2,banjir,3; 10,2024,2024,2024
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Kampuang Galapuang Ulakan,2,banjir,10; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Kapalo Koto,2,banjir,10; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Koto Dalam Barat,2,banjir,3; 10,2024,2024,2024
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Kurai Taji,2,banjir,3; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Kuranji Hilia,2,banjir,3; 9,2021; 2024,2021,2024
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Kuranji Hilir,2,banjir,3; 10,2024,2024,2024
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Lareh Nan Panjang Selatan,2,banjir,3; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Malai V Suku Timur,2,banjir,3; 9,2021; 2024,2021,2024
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Pakandangan,2,banjir,3; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Parik Malintang,2,banjir,3; 9,2021; 2024,2021,2024
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Pilubang,2,banjir,3; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Sicincin,2,banjir,10; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Sikucua,2,banjir,3; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Sintuak,2,banjir,3; 9,2021; 2024,2021,2024
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Sungai Buluah,2,banjir,3; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Sungai Buluah Timur,2,banjir,9; 11,2021; 2025,2021,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Tandikek,2,banjir,3; 9,2021; 2024,2021,2024
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Tapakih,2,banjir,3; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Toboh Gadang Selatan,2,banjir,3; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Toboh Gadang Timur,2,banjir,3; 11,2024; 2025,2024,2025
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Toboh Ketek,2,banjir,3; 10,2024,2024,2024
+13|Padang Pariaman,13,Kab. Padang Pariaman,,Ulakan,2,banjir,3; 11,2024; 2025,2024,2025
+13|Tanah Datar,13,Kab. Tanah Datar,Padang Gantiang,Atar,2,longsor,11,2014,2014,2014
+13|Tanah Datar,13,Kab. Tanah Datar,Padang Gantiang,Koto Alam,2,longsor,11,2014,2014,2014
+13|Tanah Datar,13,Kab. Tanah Datar,,Pasie Laweh,2,banjir,5,2024; 2026,2024,2026
+14|Bengkalis,14,Kab. Bengkalis,Mandau,Pematang Pudu,2,karhutla,2; 7,2018; 2021,2018,2021
+14|Kampar,14,Kab. Kampar,Kampar Kiri Hulu,Lubuk Igau,2,banjir,12,2013,2013,2013
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Kasang Mungkal,2,banjir,3; 11,2017; 2019,2017,2019
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Kasang Padang,2,banjir,3; 11,2017; 2019,2017,2019
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Kota Lama,2,banjir,2; 11,2016; 2019,2016,2019
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Lubuk Bilang,2,banjir,12,2021,2021,2021
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Lubuk Napal,2,banjir,12,2021,2021,2021
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Lubuk Soting,2,banjir,3; 11,2017; 2019,2017,2019
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Muara Musu,2,banjir,12,2021,2021,2021
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Pasirpengaraian,2,banjir,12,2021,2021,2021
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Pekan Tabih,2,banjir,12,2021,2021,2021
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Rambah Hilir Tengah,2,banjir,12,2021,2021,2021
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Rambah Tengah Hulu,2,banjir,12,2021,2021,2021
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Tanjung Belit,2,banjir,12,2021,2021,2021
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Teluk Aur,2,banjir,12,2021,2021,2021
+14|Rokan Hulu,14,Kab. Rokan Hulu,,Teluk Sono,2,banjir,3; 11,2017; 2019,2017,2019
+16|Musi Banyuasin,16,Kab. Musi Banyu Asin,,Air Balui,2,banjir,1,2024,2024,2024
+16|Musi Banyuasin,16,Kab. Musi Banyu Asin,,Bukit Indah,2,banjir,1,2024,2024,2024
+16|Musi Banyuasin,16,Kab. Musi Banyu Asin,,Cinta Karya,2,banjir,1,2024,2024,2024
+16|Musi Banyuasin,16,Kab. Musi Banyu Asin,,Karang Ringin Ii,2,banjir,1,2024,2024,2024
+16|Musi Banyuasin,16,Kab. Musi Banyuasin,Sungai Keruh,Kertajaya,2,banjir,5; 12,2017; 2021,2017,2021
+16|Musi Banyuasin,16,Kab. Musi Banyu Asin,,Kertajaya,2,banjir,1,2024,2024,2024
+16|Musi Banyuasin,16,Kab. Musi Banyuasin,,Tanjung Durian,2,banjir,1; 3,2024; 2025,2024,2025
+16|Musi Rawas Utara,16,Kab. Musi Rawas Utara,,Batu Gajah,2,banjir,4; 5,2024; 2026,2024,2026
+16|Musi Rawas Utara,16,Kab. Musi Rawas Utara,,Batu Gajah Baru,2,banjir,4; 5,2024; 2026,2024,2026
+16|Musi Rawas Utara,16,Kab. Musi Rawas Utara,,Beringin Jaya,2,banjir,4; 5,2024; 2026,2024,2026
+16|Musi Rawas Utara,16,Kab. Musi Rawas Utara,,Bingin Rupit,2,banjir,4; 5,2024; 2026,2024,2026
+16|Musi Rawas Utara,16,Kab. Musi Rawas Utara,,Embacang Baru,2,banjir,4; 5,2024; 2026,2024,2026
+16|Musi Rawas Utara,16,Kab. Musi Rawas Utara,,Embacang Baru Ilir,2,banjir,4; 5,2024; 2026,2024,2026
+16|Musi Rawas Utara,16,Kab. Musi Rawas Utara,,Lubuk Kumbung,2,banjir,4; 5,2024; 2026,2024,2026
+16|Musi Rawas Utara,16,Kab. Musi Rawas Utara,,Maur Baru,2,banjir,4; 5,2024; 2026,2024,2026
+16|Musi Rawas Utara,16,Kab. Musi Rawas Utara,,Maur Lama,2,banjir,4; 5,2024; 2026,2024,2026
+16|Musi Rawas Utara,16,Kab. Musi Rawas Utara,,Muara Batang Empu,2,banjir,4; 5,2024; 2026,2024,2026
+16|Musi Rawas Utara,16,Kab. Musi Rawas Utara,,Muara Tiku,2,banjir,4; 5,2024; 2026,2024,2026
+16|Musi Rawas Utara,16,Kab. Musi Rawas Utara,,Noman,2,banjir,4; 5,2024; 2026,2024,2026
+16|Musi Rawas Utara,16,Kab. Musi Rawas Utara,,Noman Baru,2,banjir,4; 5,2024; 2026,2024,2026
+16|Musi Rawas Utara,16,Kab. Musi Rawas Utara,,Rantau Telang,2,banjir,4; 5,2024; 2026,2024,2026
+16|Musi Rawas Utara,16,Kab. Musi Rawas Utara,,Tanjung Agung,2,banjir,4; 5,2024; 2026,2024,2026
+16|Musi Rawas Utara,16,Kab. Musi Rawas Utara,,Tanjung Beringin,2,banjir,4; 5,2024; 2026,2024,2026
+16|Ogan Komering Ulu,16,Kab. Ogan Komering Ulu,,Air Paoh,2,banjir,2; 5,2022; 2024,2022,2024
+16|Ogan Komering Ulu,16,Kab. Ogan Komering Ulu,,Tanjung Baru,2,banjir,2; 5,2022; 2024,2022,2024
+16|Ogan Komering Ulu Selatan,16,Kab. Ogan Komering Ulu Selatan,Sindang Danau,Tanjung Harapan,2,banjir,9,2025,2025,2025
+17|Bengkulu Utara,17,Kab. Bengkulu Utara,Napal Putih,Lebong Tandai,2,longsor,9; 12,2015; 2022,2015,2022
+17|Seluma,17,Kab. Seluma,Ulu Talo,Air Keruh,2,longsor,9; 10,2025,2025,2025
+17|Seluma,17,Kab. Seluma,,Penago 1,2,banjir,4; 10,2020; 2026,2020,2026
+18|Kota Bandar Lampung,18,Kota Bandar Lampung,,Gedong Air,2,cuaca,4; 10,2025,2025,2025
+18|Kota Bandar Lampung,18,Kota Bandar Lampung,,Keteguhan,2,cuaca,4; 10,2025,2025,2025
+18|Lampung Barat,18,Kab. Lampung Barat,Suoh,Banding Agung,2,banjir; omc,9,2025,2025,2025
+19|Bangka,19,Kab. Bangka,,Banyuasin,2,banjir,12,2013,2013,2013
+19|Bangka,19,Kab. Bangka,,Deniang,2,banjir,12,2013,2013,2013
+19|Bangka,19,Kab. Bangka,,Gedong,2,banjir,12,2013,2013,2013
+19|Bangka,19,Kab. Bangka,,Kayu Besi,2,banjir,12,2013,2013,2013
+19|Bangka,19,Kab. Bangka,,Labuhan Nelayan,2,banjir,12,2013,2013,2013
+19|Bangka,19,Kab. Bangka,,Mapur,2,banjir,12,2013,2013,2013
+19|Bangka,19,Kab. Bangka,,Pamali,2,banjir,12,2013,2013,2013
+19|Bangka,19,Kab. Bangka,,Simpang Lumut,2,banjir,12,2013,2013,2013
+19|Bangka,19,Kab. Bangka,,Sinar Jaya,2,banjir,12,2013,2013,2013
+32|Bandung,32,Kab. Bandung,,Bojongsari,2,banjir,3; 12,2025,2025,2025
+32|Bandung,32,Kab. Bandung,,Cangkuang Wetan,2,banjir,3; 12,2025,2025,2025
+32|Bandung,32,Kab. Bandung,,Citeureup,2,banjir,5; 12,2025; 2026,2025,2026
+32|Bandung,32,Kab. Bandung,,Lengkong,2,banjir,3; 12,2025,2025,2025
+32|Bandung Barat,32,Kab. Bandung Barat,,Mekarwangi,2,banjir; longsor,12,2023; 2025,2023,2025
+32|Bandung Barat,32,Kab. Bandung Barat,,Rancasenggang,2,banjir; longsor,12,2023; 2025,2023,2025
+32|Bandung Barat,32,Kab. Bandung Barat,,Sirnagalih,2,banjir; longsor,2; 3,2024,2024,2024
+32|Bogor,32,Kab. Bogor,,Bojong Baru,2,banjir; cuaca,3; 4,2025,2025,2025
+32|Bogor,32,Kab. Bogor,Babakan Madang,Bojong Koneng,2,longsor,2; 9,2022; 2026,2022,2026
+32|Bogor,32,Kab. Bogor,Caringin,Caringin,2,longsor,11; 12,2024,2024,2024
+32|Bogor,32,Kab. Bogor,Gunung Sindur,Cibinong,2,banjir; cuaca,2; 9,2024; 2025,2024,2025
+32|Bogor,32,Kab. Bogor,,Cicadas,2,cuaca,10; 11,2024; 2025,2024,2025
+32|Bogor,32,Kab. Bogor,,Cijayanti,2,banjir; longsor,3; 4,2025; 2026,2025,2026
+32|Bogor,32,Kab. Bogor,,Cinagara,2,longsor,5; 11,2024; 2026,2024,2026
+32|Bogor,32,Kab. Bogor,,Cipayung Datar,2,banjir; longsor,3; 5,2024; 2025,2024,2025
+32|Bogor,32,Kab. Bogor,,Cipayung Girang,2,banjir; longsor,3,2024; 2025,2024,2025
+32|Bogor,32,Kab. Bogor,Cibinong,Ciriung,2,cuaca,4; 11,2025,2025,2025
+32|Bogor,32,Kab. Bogor,,Cisarua,2,banjir; longsor,5; 9,2021; 2026,2021,2026
+32|Bogor,32,Kab. Bogor,Megamendung,Gadog,2,banjir; longsor,2; 6,2021,2021,2021
+32|Bogor,32,Kab. Bogor,Cibinong,Karadenan,2,cuaca; longsor,4; 12,2020; 2026,2020,2026
+32|Bogor,32,Kab. Bogor,Babakan Madang,Karang Tengah,2,longsor,1; 11,2024; 2026,2024,2026
+32|Bogor,32,Kab. Bogor,,Kopo,2,banjir,3; 5,2022; 2025,2022,2025
+32|Bogor,32,Kab. Bogor,,Kuta,2,banjir; longsor,3; 5,2024; 2025,2024,2025
+32|Bogor,32,Kab. Bogor,Caringin,Lemah Duhur,2,longsor,1; 11,2025; 2026,2025,2026
+32|Bogor,32,Kab. Bogor,,Malasari,2,banjir; longsor,9; 11,2021; 2024,2021,2024
+32|Bogor,32,Kab. Bogor,Caringin,Muara Jaya,2,longsor,11; 12,2024,2024,2024
+32|Bogor,32,Kab. Bogor,,Nanggewer Mekar,2,cuaca,2; 5,2026,2026,2026
+32|Bogor,32,Kab. Bogor,,Nanggung,2,banjir; cuaca,8; 9,2021; 2024,2021,2024
+32|Bogor,32,Kab. Bogor,Sukamakmur,Pabuaran,2,longsor,2; 11,2021; 2024,2021,2024
+32|Bogor,32,Kab. Bogor,Cibinong,Pabuaran,2,cuaca; longsor,11,2024,2024,2024
+32|Bogor,32,Kab. Bogor,,Pakansari,2,banjir; cuaca,2; 3,2025; 2026,2025,2026
+32|Bogor,32,Kab. Bogor,Caringin,Pancawati,2,banjir; cuaca,4; 9,2022; 2026,2022,2026
+32|Bogor,32,Kab. Bogor,Sukaraja,Pasir Jambu,2,cuaca; longsor,2,2026,2026,2026
+32|Bogor,32,Kab. Bogor,,Pasir Muncang,2,cuaca,8; 10,2024; 2025,2024,2025
+32|Bogor,32,Kab. Bogor,Bojonggede,Rawa Panjang,2,banjir; longsor,8; 10,2021; 2025,2021,2025
+32|Bogor,32,Kab. Bogor,Dramaga,Sukadamai,2,longsor,8,2020; 2024,2020,2024
+32|Bogor,32,Kab. Bogor,,Sukadamai,2,cuaca; longsor,4; 8,2024; 2026,2024,2026
+32|Bogor,32,Kab. Bogor,,Sukahati,2,cuaca,4; 5,2025; 2026,2025,2026
+32|Bogor,32,Kab. Bogor,,Sukamahi,2,banjir; longsor,1; 5,2022; 2026,2022,2026
+32|Bogor,32,Kab. Bogor,,Sukamaju,2,banjir; cuaca,3; 9,2021; 2026,2021,2026
+32|Bogor,32,Kab. Bogor,Jonggol,Sukamaju,2,cuaca,3; 11,2024; 2026,2024,2026
+32|Bogor,32,Kab. Bogor,Megamendung,Sukamanah,2,cuaca; longsor,3; 4,2026,2026,2026
+32|Bogor,32,Kab. Bogor,,Sukamulya,2,banjir; longsor,3; 4,2025; 2026,2025,2026
+32|Bogor,32,Kab. Bogor,,Sukanegara,2,cuaca,8; 11,2024,2024,2024
+32|Bogor,32,Kab. Bogor,Jonggol,Sukanegara,2,cuaca; longsor,2,2026,2026,2026
+32|Bogor,32,Kab. Bogor,,Sukaresmi,2,cuaca; longsor,1; 11,2024; 2026,2024,2026
+32|Bogor,32,Kab. Bogor,,Sukasari,2,banjir; longsor,3; 4,2025; 2026,2025,2026
+32|Bogor,32,Kab. Bogor,Sukamakmur,Sukawangi,2,longsor,4; 11,2021; 2026,2021,2026
+32|Bogor,32,Kab. Bogor,,Tarikolot,2,banjir; cuaca,3; 8,2024; 2025,2024,2025
+32|Bogor,32,Kab. Bogor,,Tengah,2,cuaca,4; 5,2025; 2026,2025,2026
+32|Bogor,32,Kab. Bogor,,Tugu Utara,2,banjir,3; 5,2022; 2025,2022,2025
+32|Bogor,32,Kab. Bogor,,Wangunjaya,2,cuaca; longsor,11,2024,2024,2024
+32|Ciamis,32,Kab. Ciamis,Pamarican,Neglasari,2,longsor,4,2025,2025,2025
+32|Ciamis,32,Kab. Ciamis,Cihaurbeuti,Sukahurip,2,banjir; longsor,4; 9,2022; 2024,2022,2024
+32|Cianjur,32,Kab. Cianjur,,Karangsari,2,banjir; longsor,10; 12,2020; 2024,2020,2024
+32|Cianjur,32,Kab. Cianjur,,Karyamukti,2,banjir; longsor,10; 12,2020; 2024,2020,2024
+32|Cianjur,32,Kab. Cianjur,,Mekarsari,2,banjir; longsor,10; 12,2020; 2024,2020,2024
+32|Cianjur,32,Kab. Cianjur,,Neglasari,2,banjir; longsor,10; 12,2020; 2024,2020,2024
+32|Cianjur,32,Kab. Cianjur,,Pusakasari,2,banjir; longsor,10; 12,2020; 2024,2020,2024
+32|Cianjur,32,Kab. Cianjur,,Sindangsari,2,banjir; longsor,10; 12,2020; 2024,2020,2024
+32|Cianjur,32,Kab. Cianjur,,Sukajaya,2,banjir; longsor,10; 12,2020; 2024,2020,2024
+32|Cianjur,32,Kab. Cianjur,,Sukamaju,2,banjir; longsor,10; 12,2020; 2024,2020,2024
+32|Cianjur,32,Kab. Cianjur,,Sukamanah,2,banjir; longsor,10; 12,2020; 2024,2020,2024
+32|Cirebon,32,Kab. Cirebon,,Tanjung Anom,2,banjir,2,2018; 2020,2018,2020
+32|Cirebon,32,Kab. Cirebon,,Tonjong,2,banjir,2,2018; 2020,2018,2020
+32|Garut,32,Kab. Garut,,Mekarwangi,2,banjir,10; 12,2020; 2021,2020,2021
+32|Garut,32,Kab. Garut,Peundeuy,Toblong,2,banjir; longsor,9; 11,2024; 2025,2024,2025
+32|Kota Bekasi,32,Kota Bekasi,,Bojong Menteng,2,banjir; cuaca,3; 4,2025; 2026,2025,2026
+32|Kota Bekasi,32,Kota Bekasi,,Jatirasa,2,banjir; cuaca,3; 4,2025; 2026,2025,2026
+32|Kota Bogor,32,Kota Bogor,,Curug Mekar,2,cuaca,8,2025,2025,2025
+32|Kota Bogor,32,Kota Bogor,,Kayu Manis,2,cuaca,8; 10,2024; 2025,2024,2025
+32|Kota Bogor,32,Kota Bogor,,Pakuan,2,cuaca,8,2025,2025,2025
+32|Kota Bogor,32,Kota Bogor,,Situ Gede,2,cuaca,8; 10,2024; 2025,2024,2025
+32|Kota Cimahi,32,Kota Cimahi,Cimahi Tengah,Padasuka,2,cuaca; longsor,3; 7,2025; 2026,2025,2026
+32|Kuningan,32,Kab. Kuningan,Selajambe,Ciberung,2,longsor,2; 5,2020; 2025,2020,2025
+32|Kuningan,32,Kab. Kuningan,Ciwaru,Cilayung,2,longsor,12,2016,2016,2016
+32|Kuningan,32,Kab. Kuningan,Ciwaru,Citundun,2,longsor,2,2018; 2019,2018,2019
+32|Kuningan,32,Kab. Kuningan,Ciniru,Pinara,2,longsor,2; 12,2017; 2018,2017,2018
+32|Kuningan,32,Kab. Kuningan,,Pinara,2,longsor,2; 4,2018; 2023,2018,2023
+32|Majalengka,32,Kab. Majalengka,Majalengka,Cibodas,2,lainnya; longsor,1; 2,2020,2020,2020
+32|Majalengka,32,Kab. Majalengka,,Cibulan,2,longsor,3; 10,2022; 2026,2022,2026
+32|Majalengka,32,Kab. Majalengka,,Lengkong Kulon,2,banjir,1; 2,2025; 2026,2025,2026
+32|Majalengka,32,Kab. Majalengka,,Silihwangi,2,banjir; longsor,1; 3,2026,2026,2026
+32|Majalengka,32,Kab. Majalengka,,Sukadana,2,banjir; longsor,1; 3,2026,2026,2026
+32|Purwakarta,32,Kab. Purwakarta,Sukatani,Pasirmunjul,2,lainnya; longsor,4,2025,2025,2025
+32|Sukabumi,32,Kab. Sukabumi,,Bangbayang,2,banjir,9; 12,2020; 2024,2020,2024
+32|Sukabumi,32,Kab. Sukabumi,,Bojongtugu,2,banjir; longsor,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Bumisari,2,banjir; longsor,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Buniwangi,2,banjir,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Caringin,2,banjir; longsor,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Cibuntu,2,banjir,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Cicurug,2,banjir; longsor,9; 11,2020; 2024,2020,2024
+32|Sukabumi,32,Kab. Sukabumi,,Ciemas,2,banjir; longsor,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Cikakak,2,banjir,10; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Cikelat,2,banjir,10; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Cikidang,2,banjir; longsor,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Cilangkap,2,banjir,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Cileungsing,2,banjir,10; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Cimaja,2,banjir,10; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Cimanggu,2,banjir; longsor,11; 12,2024,2024,2024
+32|Sukabumi,32,Kab. Sukabumi,,Cimenteng,2,banjir; longsor,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Cisaat,2,banjir,9; 12,2020; 2024,2020,2024
+32|Sukabumi,32,Kab. Sukabumi,,Cisarua,2,banjir; longsor,6; 12,2022; 2024,2022,2024
+32|Sukabumi,32,Kab. Sukabumi,,Cisolok,2,banjir,10; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Jampangtengah,2,banjir; longsor,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Jayabakti,2,banjir,9; 12,2020; 2024,2020,2024
+32|Sukabumi,32,Kab. Sukabumi,,Jayanti,2,banjir,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Kertajaya,2,banjir; longsor,3,2025,2025,2025
+32|Sukabumi,32,Kab. Sukabumi,,Langkapjaya,2,banjir,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Lembursawah,2,banjir; longsor,11; 12,2024,2024,2024
+32|Sukabumi,32,Kab. Sukabumi,,Lengkong,2,banjir,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Margalaksana,2,banjir,10; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Mekartanjung,2,banjir; longsor,11; 12,2024,2024,2024
+32|Sukabumi,32,Kab. Sukabumi,,Neglasari,2,banjir,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Padasenang,2,banjir; longsor,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Parakansalak,2,banjir; longsor,11; 12,2024,2024,2024
+32|Sukabumi,32,Kab. Sukabumi,,Ridogalih,2,banjir,10; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Sangrawayang,2,banjir,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,Jampangtengah,Sindangresmi,2,cuaca; longsor,11,2024,2024,2024
+32|Sukabumi,32,Kab. Sukabumi,,Sirnarasa,2,banjir,10; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Sirnasari,2,banjir; longsor,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Sukajaya,2,banjir; longsor,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Sukamaju,2,banjir,10; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Sukamulya,2,longsor,3; 11,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,Curugkembar,Tanjungsari,2,longsor,11,2024,2024,2024
+32|Sukabumi,32,Kab. Sukabumi,,Tanjungsari,2,banjir; longsor,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Tonjong,2,banjir,3; 12,2024; 2025,2024,2025
+32|Sukabumi,32,Kab. Sukabumi,,Wangunsari,2,banjir,10; 12,2024; 2025,2024,2025
+32|Tasikmalaya,32,Kab. Tasikmalaya,,Ciawi,2,banjir,9; 11,2018; 2021,2018,2021
+32|Tasikmalaya,32,Kab. Tasikmalaya,,Cikuya,2,banjir,9; 11,2018; 2021,2018,2021
+32|Tasikmalaya,32,Kab. Tasikmalaya,,Cipatujah,2,banjir,9; 11,2018; 2021,2018,2021
+33|Banjarnegara,33,Kab. Banjarnegara,Purwanegara,Kaliajir,2,longsor,3; 10,2017,2017,2017
+33|Banjarnegara,33,Kab. Banjarnegara,Punggelan,Petuguran,2,longsor,5; 10,2025; 2026,2025,2026
+33|Banyumas,33,Kab. Banyumas,Pekuncen,Cibangkong,2,longsor,1; 9,2024; 2025,2024,2025
+33|Banyumas,33,Kab. Banyumas,,Gumelar,2,banjir,11,2022; 2025,2022,2025
+33|Banyumas,33,Kab. Banyumas,,Jatisaba,2,banjir; longsor,11,2025,2025,2025
+33|Banyumas,33,Kab. Banyumas,Wangon,Jurangbahas,2,cuaca,11; 12,2024; 2025,2024,2025
+33|Banyumas,33,Kab. Banyumas,,Kalikidang,2,banjir; longsor,11,2025,2025,2025
+33|Banyumas,33,Kab. Banyumas,Kebasen,Kalisalak,2,longsor,11,2025,2025,2025
+33|Banyumas,33,Kab. Banyumas,,Kalisalak,2,banjir; longsor,11,2025,2025,2025
+33|Banyumas,33,Kab. Banyumas,,Kalitapen,2,banjir; longsor,12,2024,2024,2024
+33|Banyumas,33,Kab. Banyumas,,Kaliwangi,2,banjir; longsor,12,2024,2024,2024
+33|Banyumas,33,Kab. Banyumas,,Kanding,2,banjir; longsor,11,2025,2025,2025
+33|Banyumas,33,Kab. Banyumas,,Pegalongan,2,banjir; longsor,11,2025,2025,2025
+33|Banyumas,33,Kab. Banyumas,,Pekaja,2,banjir; longsor,11,2025,2025,2025
+33|Banyumas,33,Kab. Banyumas,,Somagede,2,banjir; longsor,11,2025,2025,2025
+33|Banyumas,33,Kab. Banyumas,,Sudagaran,2,banjir; longsor,11,2025,2025,2025
+33|Banyumas,33,Kab. Banyumas,,Sumpiuh,2,banjir,11; 12,2024; 2025,2024,2025
+33|Banyumas,33,Kab. Banyumas,,Tlaga,2,banjir,11,2022; 2025,2022,2025
+33|Banyumas,33,Kab. Banyumas,,Wiradadi,2,banjir; longsor,11,2025,2025,2025
+33|Batang,33,Kab. Batang,Bawang,Pranten,2,banjir; longsor,1; 4,2020; 2026,2020,2026
+33|Boyolali,33,Kab. Boyolali,Boyolali,Kiringan,2,cuaca; longsor,2; 10,2025,2025,2025
+33|Boyolali,33,Kab. Boyolali,Boyolali,Pulisen,2,cuaca; longsor,2; 4,2025; 2026,2025,2026
+33|Cilacap,33,Kab. Cilacap,Dayeuhluhur,Datar,2,longsor,4; 11,2018; 2025,2018,2025
+33|Cilacap,33,Kab. Cilacap,Cimanggu,Kutabima,2,longsor,3,2020; 2022,2020,2022
+33|Cilacap,33,Kab. Cilacap,Cimanggu,Mandala,2,longsor,4; 12,2024; 2025,2024,2025
+33|Cilacap,33,Kab. Cilacap,,Sidamulya,2,banjir; cuaca,11; 12,2024,2024,2024
+33|Cilacap,33,Kab. Cilacap,,Sidareja,2,banjir; cuaca,11; 12,2024,2024,2024
+33|Demak,33,Kab. Demak,,Betokan,2,banjir,1; 3,2024; 2026,2024,2026
+33|Demak,33,Kab. Demak,,Bintoro,2,banjir,1; 3,2024; 2026,2024,2026
+33|Demak,33,Kab. Demak,,Bumiharjo,2,banjir,3; 4,2024; 2026,2024,2026
+33|Demak,33,Kab. Demak,,Doreng,2,banjir,2; 3,2024,2024,2024
+33|Demak,33,Kab. Demak,,Gebang,2,banjir,1; 5,2025,2025,2025
+33|Demak,33,Kab. Demak,,Gempoldenok,2,banjir,2; 3,2024,2024,2024
+33|Demak,33,Kab. Demak,,Grogol,2,banjir,3; 4,2024; 2026,2024,2026
+33|Demak,33,Kab. Demak,,Harjowinangun,2,banjir,2; 3,2024,2024,2024
+33|Demak,33,Kab. Demak,,Jleper,2,banjir,1; 4,2013; 2026,2013,2026
+33|Demak,33,Kab. Demak,,Kadilangu,2,banjir,1; 3,2024; 2026,2024,2026
+33|Demak,33,Kab. Demak,,Kalianyar,2,banjir,2; 3,2024,2024,2024
+33|Demak,33,Kab. Demak,,Karangasem,2,banjir,2; 3,2024; 2026,2024,2026
+33|Demak,33,Kab. Demak,,Kebonsari,2,banjir,2; 3,2024,2024,2024
+33|Demak,33,Kab. Demak,,Kedungori,2,banjir,2; 3,2024,2024,2024
+33|Demak,33,Kab. Demak,,Kembangan,2,banjir,1; 5,2025,2025,2025
+33|Demak,33,Kab. Demak,,Ketanjung,2,banjir,2; 3,2024,2024,2024
+33|Demak,33,Kab. Demak,,Krajanbogo,2,banjir,1; 5,2025,2025,2025
+33|Demak,33,Kab. Demak,,Kramat,2,banjir,2; 3,2024,2024,2024
+33|Demak,33,Kab. Demak,,Kuwu,2,banjir,2; 3,2024,2024,2024
+33|Demak,33,Kab. Demak,,Medini,2,banjir,2; 3,2024,2024,2024
+33|Demak,33,Kab. Demak,,Ngelokulon,2,banjir,1; 4,2013; 2026,2013,2026
+33|Demak,33,Kab. Demak,,Prampelan,2,banjir,1; 2,2025; 2026,2025,2026
+33|Demak,33,Kab. Demak,,Purworejo,2,banjir,1; 5,2025,2025,2025
+33|Demak,33,Kab. Demak,,Sambung,2,banjir,2; 3,2024,2024,2024
+33|Demak,33,Kab. Demak,,Sidoharjo,2,banjir,4; 5,2025; 2026,2025,2026
+33|Demak,33,Kab. Demak,,Sidomulyo,2,banjir,2; 3,2024,2024,2024
+33|Demak,33,Kab. Demak,,Sriwulan,2,banjir,3; 5,2024; 2025,2024,2025
+33|Demak,33,Kab. Demak,,Sumberejo,2,banjir,1; 5,2025,2025,2025
+33|Demak,33,Kab. Demak,,Tambirejo,2,banjir,2; 3,2024,2024,2024
+33|Demak,33,Kab. Demak,,Tanjunganyar,2,banjir,2; 3,2024,2024,2024
+33|Demak,33,Kab. Demak,,Timbulsloko,2,banjir,1; 5,2025,2025,2025
+33|Demak,33,Kab. Demak,,Tlogorejo,2,banjir,2; 4,2024; 2026,2024,2026
+33|Demak,33,Kab. Demak,,Trimulyo,2,banjir,4; 5,2025; 2026,2025,2026
+33|Demak,33,Kab. Demak,,Turitempel,2,banjir,3; 4,2024; 2026,2024,2026
+33|Demak,33,Kab. Demak,,Wilalung,2,banjir,2; 3,2024,2024,2024
+33|Demak,33,Kab. Demak,,Wonoagung,2,banjir,1; 5,2025,2025,2025
+33|Demak,33,Kab. Demak,,Wonokerto,2,banjir,1; 3,2024; 2025,2024,2025
+33|Grobogan,33,Kab. Grobogan,,Bugel,2,banjir,1,2023; 2025,2023,2025
+33|Grobogan,33,Kab. Grobogan,,Candisari,2,banjir,1; 10,2025,2025,2025
+33|Grobogan,33,Kab. Grobogan,,Depok,2,banjir,1; 2,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,Grobogan,Grobogan,2,banjir,1; 4,2022; 2023,2022,2023
+33|Grobogan,33,Kab. Grobogan,,Grobogan,2,banjir,1; 10,2023; 2025,2023,2025
+33|Grobogan,33,Kab. Grobogan,,Jeketro,2,banjir,1,2020; 2025,2020,2025
+33|Grobogan,33,Kab. Grobogan,,Jipang,2,banjir,1,2020; 2025,2020,2025
+33|Grobogan,33,Kab. Grobogan,,Kandangrejo,2,banjir,1; 2,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Karangpaing,2,banjir,1; 10,2025,2025,2025
+33|Grobogan,33,Kab. Grobogan,,Karangsari,2,banjir,1,2023; 2025,2023,2025
+33|Grobogan,33,Kab. Grobogan,,Karangsono,2,banjir,2; 10,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Kebonagung,2,banjir,2; 10,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Kedungrejo,2,banjir,1; 2,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Kenteng,2,banjir,1; 2,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Klampok,2,banjir,1,2023; 2025,2023,2025
+33|Grobogan,33,Kab. Grobogan,,Kramat,2,banjir,1,2020; 2025,2020,2025
+33|Grobogan,33,Kab. Grobogan,,Kunjeng,2,banjir,1,2020; 2025,2020,2025
+33|Grobogan,33,Kab. Grobogan,,Kuripan,2,banjir,1; 2,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Lemahputih,2,banjir,1; 10,2025,2025,2025
+33|Grobogan,33,Kab. Grobogan,,Leyangan,2,banjir,1; 2,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Mangin,2,banjir,1,2020; 2025,2020,2025
+33|Grobogan,33,Kab. Grobogan,,Menawan,2,banjir,1; 2,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Mojoagung,2,banjir,1; 2,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Monggot,2,banjir,1; 10,2025,2025,2025
+33|Grobogan,33,Kab. Grobogan,,Ngabenrejo,2,banjir,1,2023; 2025,2023,2025
+33|Grobogan,33,Kab. Grobogan,,Ngraji,2,banjir,1; 2,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Ngroto,2,banjir,1,2020; 2025,2020,2025
+33|Grobogan,33,Kab. Grobogan,,Padas,2,banjir,2; 3,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Ringin Kidul,2,banjir,1; 3,2025,2025,2025
+33|Grobogan,33,Kab. Grobogan,,Ringinharjo,2,banjir,1; 2,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Rowosari,2,banjir,1; 10,2025,2025,2025
+33|Grobogan,33,Kab. Grobogan,,Sedadi,2,banjir,1; 2,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Sugihan,2,banjir,1; 2,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Sugihmanik,2,banjir,1; 10,2020; 2025,2020,2025
+33|Grobogan,33,Kab. Grobogan,,Sumberjosari,2,banjir,1,2020; 2025,2020,2025
+33|Grobogan,33,Kab. Grobogan,,Tambakan,2,banjir,1; 3,2025,2025,2025
+33|Grobogan,33,Kab. Grobogan,,Tambirejo,2,banjir,1; 2,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Tanggungharjo,2,banjir,1,2023; 2025,2023,2025
+33|Grobogan,33,Kab. Grobogan,,Taruman,2,banjir,1; 10,2025,2025,2025
+33|Grobogan,33,Kab. Grobogan,,Temon,2,banjir,1,2023; 2025,2023,2025
+33|Grobogan,33,Kab. Grobogan,,Terkesi,2,banjir,1; 2,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Termas,2,banjir,1; 2,2020; 2026,2020,2026
+33|Grobogan,33,Kab. Grobogan,,Tinanding,2,banjir,1; 2,2025; 2026,2025,2026
+33|Grobogan,33,Kab. Grobogan,,Trisari,2,banjir,1,2020; 2025,2020,2025
+33|Grobogan,33,Kab. Grobogan,,Watupawon,2,banjir,1,2020; 2025,2020,2025
+33|Grobogan,33,Kab. Grobogan,,Werdoyo,2,banjir,1,2020; 2025,2020,2025
+33|Grobogan,33,Kab. Grobogan,,Winong,2,banjir,1; 10,2025,2025,2025
+33|Jepara,33,Kab. Jepara,Keling,Damarwulan,2,longsor,1; 3,2017; 2026,2017,2026
+33|Jepara,33,Kab. Jepara,,Damarwulan,2,longsor,1; 3,2025; 2026,2025,2026
+33|Jepara,33,Kab. Jepara,Pakisaji,Tanjung,2,longsor,1,2025; 2026,2025,2026
+33|Jepara,33,Kab. Jepara,,Tanjung,2,longsor,1; 3,2025; 2026,2025,2026
+33|Jepara,33,Kab. Jepara,Keling,Tempur,2,longsor,1,2025; 2026,2025,2026
+33|Karanganyar,33,Kab. Karanganyar,,Bejen,2,cuaca,3,2025,2025,2025
+33|Kebumen,33,Kab. Kebumen,,Candi,2,banjir,10; 11,2022; 2025,2022,2025
+33|Kebumen,33,Kab. Kebumen,,Sawangan,2,banjir; longsor,2; 10,2022; 2025,2022,2025
+33|Kebumen,33,Kab. Kebumen,,Seboro,2,banjir; longsor,10; 11,2022; 2024,2022,2024
+33|Kebumen,33,Kab. Kebumen,,Tanahsari,2,banjir; longsor,10; 11,2022; 2024,2022,2024
+33|Kebumen,33,Kab. Kebumen,Karanggayam,Wonotirto,2,banjir; longsor,10; 11,2021; 2025,2021,2025
+33|Kendal,33,Kab. Kendal,,Balok,2,banjir; cuaca,1; 2,2025,2025,2025
+33|Kendal,33,Kab. Kendal,,Bandengan,2,banjir,1; 6,2025,2025,2025
+33|Kendal,33,Kab. Kendal,Singorojo,Kaliputih,2,banjir; longsor,4,2016; 2017,2016,2017
+33|Kendal,33,Kab. Kendal,,Karangsari,2,banjir,1; 6,2025,2025,2025
+33|Kendal,33,Kab. Kendal,,Langenharjo,2,banjir; cuaca,1; 2,2025,2025,2025
+33|Kendal,33,Kab. Kendal,,Mororejo,2,banjir; cuaca,2; 6,2025,2025,2025
+33|Kendal,33,Kab. Kendal,,Tosari,2,banjir; cuaca,1; 2,2025,2025,2025
+33|Kota Semarang,33,Kota Semarang,,Bangetayu Kulon,2,banjir,3; 10,2024; 2025,2024,2025
+33|Kota Semarang,33,Kota Semarang,,Banjardowo,2,banjir,3; 10,2024; 2025,2024,2025
+33|Kota Semarang,33,Kota Semarang,,Genuksari,2,banjir,3; 10,2024; 2025,2024,2025
+33|Kota Semarang,33,Kota Semarang,,Karangroto,2,banjir,3; 10,2024; 2025,2024,2025
+33|Kota Semarang,33,Kota Semarang,Mijen,Kedungpane,2,kebakaran_permukiman; lainnya,9,2026,2026,2026
+33|Kota Semarang,33,Kota Semarang,,Kemijen,2,banjir,3; 10,2024; 2025,2024,2025
+33|Kota Semarang,33,Kota Semarang,,Kudu,2,banjir,3; 10,2024; 2025,2024,2025
+33|Kota Semarang,33,Kota Semarang,,Mangkang Kulon,2,banjir,3; 4,2024; 2026,2024,2026
+33|Kota Semarang,33,Kota Semarang,,Mangunharjo,2,banjir,3; 4,2024; 2026,2024,2026
+33|Kota Semarang,33,Kota Semarang,,Mlatibaru,2,banjir,3; 10,2024; 2025,2024,2025
+33|Kota Semarang,33,Kota Semarang,,Muktiharjo Kidul,2,banjir,3; 10,2024; 2025,2024,2025
+33|Kota Semarang,33,Kota Semarang,,Siwalan,2,banjir,3; 10,2024; 2025,2024,2025
+33|Kota Semarang,33,Kota Semarang,,Terboyo Kulon,2,banjir,3; 10,2024; 2025,2024,2025
+33|Kota Semarang,33,Kota Semarang,,Terboyo Wetan,2,banjir,3; 10,2024; 2025,2024,2025
+33|Kota Semarang,33,Kota Semarang,,Trimulyo,2,banjir,3; 10,2024; 2025,2024,2025
+33|Kudus,33,Kab. Kudus,,Blimbing Kidul,2,banjir,3,2024,2024,2024
+33|Kudus,33,Kab. Kudus,,Bulung Cangkring,2,banjir,3,2024,2024,2024
+33|Kudus,33,Kab. Kudus,,Golan Tepus,2,banjir,3,2024,2024,2024
+33|Kudus,33,Kab. Kudus,,Golantepus,2,banjir,1; 2,2025; 2026,2025,2026
+33|Kudus,33,Kab. Kudus,,Gondangmanis,2,banjir; longsor,1; 2,2025; 2026,2025,2026
+33|Kudus,33,Kab. Kudus,,Hadipolo,2,banjir,1; 2,2025; 2026,2025,2026
+33|Kudus,33,Kab. Kudus,,Jetis Kapuas,2,banjir,3,2024,2024,2024
+33|Kudus,33,Kab. Kudus,,Kandangmas,2,cuaca; longsor,1; 3,2017; 2026,2017,2026
+33|Kudus,33,Kab. Kudus,Gebog,Menawan,2,cuaca; longsor,2; 3,2015; 2017,2015,2017
+33|Kudus,33,Kab. Kudus,,Mijen,2,banjir,1; 2,2025; 2026,2025,2026
+33|Kudus,33,Kab. Kudus,,Ngembal Kulon,2,banjir,1; 2,2025; 2026,2025,2026
+33|Kudus,33,Kab. Kudus,,Ngembalrejo,2,banjir,1; 2,2025; 2026,2025,2026
+33|Kudus,33,Kab. Kudus,,Ngemplak,2,banjir,1; 2,2025; 2026,2025,2026
+33|Kudus,33,Kab. Kudus,,Pasuruan Lor,2,banjir,1,2021; 2026,2021,2026
+33|Kudus,33,Kab. Kudus,,Prambatan Kidul,2,banjir,1; 2,2025; 2026,2025,2026
+33|Kudus,33,Kab. Kudus,Gebog,Rahtawu,2,longsor,2; 3,2017; 2020,2017,2020
+33|Kudus,33,Kab. Kudus,,Setrokalangan,2,banjir,1,2025; 2026,2025,2026
+33|Kudus,33,Kab. Kudus,,Sidorekso,2,banjir,1; 2,2025; 2026,2025,2026
+33|Magelang,33,Kab. Magelang,Kaliangkrik,Adipuro,2,longsor,9; 10,2022; 2025,2022,2025
+33|Magelang,33,Kab. Magelang,Pakis,Gondangsari,2,longsor,3; 4,2017; 2026,2017,2026
+33|Magelang,33,Kab. Magelang,,Kenalan,2,cuaca; longsor,5; 10,2019; 2025,2019,2025
+33|Magelang,33,Kab. Magelang,,Mranggen,2,cuaca,1,2016; 2022,2016,2022
+33|Magelang,33,Kab. Magelang,Borobudur,Ngadiharjo,2,banjir; longsor,3; 4,2015; 2017,2015,2017
+33|Magelang,33,Kab. Magelang,,Ngargomulyo,2,cuaca; kebakaran_permukiman,1; 9,2015; 2016,2015,2016
+33|Magelang,33,Kab. Magelang,,Ngargosoko,2,cuaca; kebakaran_permukiman,1; 9,2015; 2016,2015,2016
+33|Magelang,33,Kab. Magelang,,Pandanretno,2,cuaca; longsor,1; 12,2016; 2024,2016,2024
+33|Magelang,33,Kab. Magelang,,Progowati,2,cuaca; longsor,3; 12,2015; 2026,2015,2026
+33|Magelang,33,Kab. Magelang,Tempuran,Ringinanom,2,cuaca,1; 3,2015; 2016,2015,2016
+33|Magelang,33,Kab. Magelang,,Salam,2,cuaca,3,2015,2015,2015
+33|Magelang,33,Kab. Magelang,Bandongan,Salamkanci,2,banjir; longsor,2,2020,2020,2020
+33|Magelang,33,Kab. Magelang,Salaman,Sidomulyo,2,cuaca,1; 3,2015; 2016,2015,2016
+33|Magelang,33,Kab. Magelang,Sawangan,Soronalan,2,longsor,4; 10,2016; 2022,2016,2022
+33|Magelang,33,Kab. Magelang,Sawangan,Wonolelo,2,longsor,1; 2,2019; 2023,2019,2023
+33|Pati,33,Kab. Pati,,Angkatan Kidul,2,banjir,1; 5,2025; 2026,2025,2026
+33|Pati,33,Kab. Pati,,Babalan,2,banjir,2; 12,2018; 2022,2018,2022
+33|Pati,33,Kab. Pati,,Banjarsari,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Banyutowo,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Dengkek,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Dukuhseti,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Gadingrejo,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Gempolsari,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Karangrowo,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Kasiyan,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Kedungmulyo,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Kosekan,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Kudukeras,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Mintomulyo,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Mustokoharjo,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Ngastorejo,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Ngening,2,banjir,1; 10,2025; 2026,2025,2026
+33|Pati,33,Kab. Pati,,Purworejo,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Sarimulyo,2,banjir,1; 2,2018; 2026,2018,2026
+33|Pati,33,Kab. Pati,,Sejomulyo,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Sembaturagung,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Sinomwidodo,2,banjir,1; 5,2025; 2026,2025,2026
+33|Pati,33,Kab. Pati,,Soko,2,banjir,2; 12,2018; 2022,2018,2022
+33|Pati,33,Kab. Pati,,Sugiharjo,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Sunggingwarno,2,banjir,2; 12,2018; 2022,2018,2022
+33|Pati,33,Kab. Pati,,Tanjang,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pati,33,Kab. Pati,,Wotan,2,banjir,1; 12,2022; 2026,2022,2026
+33|Pekalongan,33,Kab. Pekalongan,,Jeruksari,2,banjir,1; 5,2023; 2026,2023,2026
+33|Pekalongan,33,Kab. Pekalongan,Petungkriyono,Kasimpar,2,longsor,1; 11,2014; 2025,2014,2025
+33|Pekalongan,33,Kab. Pekalongan,,Tegaldowo,2,banjir,1; 5,2023; 2026,2023,2026
+33|Pekalongan,33,Kab. Pekalongan,,Wonokerto Kulon,2,banjir,1; 5,2023; 2026,2023,2026
+33|Pemalang,33,Kab. Pemalang,,Kebojongan,2,banjir; cuaca,3,2026,2026,2026
+33|Pemalang,33,Kab. Pemalang,,Kendaldoyong,2,banjir; cuaca,3,2026,2026,2026
+33|Pemalang,33,Kab. Pemalang,,Klegen,2,banjir; cuaca,3,2026,2026,2026
+33|Pemalang,33,Kab. Pemalang,,Susukan,2,banjir; cuaca,3,2026,2026,2026
+33|Pemalang,33,Kab. Pemalang,,Wonokromo,2,banjir; cuaca,3,2026,2026,2026
+33|Purbalingga,33,Kab. Purbalingga,Bobotsari,Banjarsari,2,banjir; lainnya,3,2017,2017,2017
+33|Purbalingga,33,Kab. Purbalingga,Rembang,Panusupan,2,longsor,5; 11,2024; 2026,2024,2026
+33|Purbalingga,33,Kab. Purbalingga,Karangmoncol,Sirau,2,banjir; longsor,2; 9,2017; 2025,2017,2025
+33|Purworejo,33,Kab. Purworejo,,Bapangsari,2,banjir,1; 6,2014; 2019,2014,2019
+33|Purworejo,33,Kab. Purworejo,,Krandegan,2,banjir; cuaca,2; 6,2016; 2026,2016,2026
+33|Purworejo,33,Kab. Purworejo,,Pangenjurutengah,2,banjir; cuaca,2; 6,2016; 2026,2016,2026
+33|Purworejo,33,Kab. Purworejo,,Pangenrejo,2,cuaca,1; 2,2026,2026,2026
+33|Purworejo,33,Kab. Purworejo,,Pogungkalangan,2,banjir; cuaca,2; 6,2016; 2026,2016,2026
+33|Purworejo,33,Kab. Purworejo,,Sambeng,2,banjir; cuaca,1; 6,2016; 2026,2016,2026
+33|Purworejo,33,Kab. Purworejo,,Tanjungrejo,2,banjir; cuaca,2; 6,2016; 2026,2016,2026
+33|Purworejo,33,Kab. Purworejo,,Wingkosanggrahan,2,banjir,6,2014; 2016,2014,2016
+33|Semarang,33,Kab. Semarang,,Banyubiru,2,longsor,4; 5,2025,2025,2025
+33|Sragen,33,Kab. Sragen,,Banyurip,2,cuaca; kekeringan,6; 7; 12,2018; 2025,2018,2025
+33|Sragen,33,Kab. Sragen,,Banyuurip,2,cuaca; kekeringan,6; 7; 12,2018; 2025,2018,2025
+33|Sragen,33,Kab. Sragen,Tanon,Gading,2,longsor,1; 12,2024; 2025,2024,2025
+33|Sragen,33,Kab. Sragen,,Gebang,2,cuaca; kekeringan,6; 7; 12,2018; 2025,2018,2025
+33|Sragen,33,Kab. Sragen,,Gumantar,2,kekeringan,6; 7,2018,2018,2018
+33|Sragen,33,Kab. Sragen,Kalijambe,Ngebung,2,longsor,1; 3,2025,2025,2025
+33|Sragen,33,Kab. Sragen,,Patihan,2,cuaca,2; 3,2017; 2025,2017,2025
+33|Sragen,33,Kab. Sragen,,Plosokerep,2,cuaca,9; 12,2025,2025,2025
+33|Sragen,33,Kab. Sragen,,Plumbungan,2,cuaca,3; 8,2025; 2026,2025,2026
+33|Sragen,33,Kab. Sragen,,Poleng,2,kekeringan,6; 7,2018,2018,2018
+33|Sragen,33,Kab. Sragen,,Sambirembe,2,cuaca,2; 3,2025; 2026,2025,2026
+33|Sragen,33,Kab. Sragen,,Slendro,2,kekeringan,6; 7,2018,2018,2018
+33|Sragen,33,Kab. Sragen,,Sragen Tengah,2,cuaca,8; 12,2025,2025,2025
+33|Sragen,33,Kab. Sragen,,Tangkil,2,cuaca; kekeringan,3; 6; 7,2018; 2026,2018,2026
+33|Sukoharjo,33,Kab. Sukoharjo,,Joho,2,banjir; cuaca,2; 10,2019; 2025,2019,2025
+33|Tegal,33,Kab. Tegal,,Sidaharja,2,banjir,1; 2,2025,2025,2025
+33|Temanggung,33,Kab. Temanggung,,Gesing,2,kekeringan,5; 6,2018,2018,2018
+33|Temanggung,33,Kab. Temanggung,,Jagang,2,kekeringan,5; 6,2018,2018,2018
+33|Temanggung,33,Kab. Temanggung,,Jetis,2,kekeringan,5; 6,2018,2018,2018
+33|Temanggung,33,Kab. Temanggung,,Kalimanggis,2,kekeringan,5; 6,2018,2018,2018
+33|Temanggung,33,Kab. Temanggung,Kandangan,Tlogopucang,2,kekeringan,6; 7,2018,2018,2018
+33|Temanggung,33,Kab. Temanggung,,Tlogopucang,2,kekeringan,5; 6,2018,2018,2018
+33|Wonogiri,33,Kab. Wonogiri,Giriwoyo,Girikikis,2,banjir,1; 12,2016,2016,2016
+33|Wonosobo,33,Kab. Wonosobo,Mojotengah,Derongisor,2,longsor,4; 10,2023; 2025,2023,2025
+34|Kulon Progo,34,Kab. Kulon Progo,Samigaluh,Banjarsari,2,lainnya; longsor,1; 4,2017,2017,2017
+35|Banyuwangi,35,Kab. Banyuwangi,Licin,Kluncing,2,longsor,5; 6,2020; 2025,2020,2025
+35|Blitar,35,Kab. Blitar,,Jiwut,2,cuaca,1; 11,2024; 2026,2024,2026
+35|Blitar,35,Kab. Blitar,Garum,Karangrejo,2,cuaca; longsor,2; 10,2025,2025,2025
+35|Blitar,35,Kab. Blitar,,Sukosewu,2,banjir; cuaca,1; 3,2022; 2026,2022,2026
+35|Blitar,35,Kab. Blitar,,Wlingi,2,cuaca,1; 11,2022; 2024,2022,2024
+35|Bondowoso,33,Kab. Bondowoso,Ijen,Kalianyar,2,karhutla; longsor,7; 9,2022,2022,2022
+35|Gresik,35,Kab. Gresik,,Bungah,2,banjir,2; 5,2017; 2025,2017,2025
+35|Jember,35,Kab. Jember,Patrang,Bintoro,2,longsor,1; 7,2019; 2022,2019,2022
+35|Jember,35,Kab. Jember,,Gebang,2,cuaca,1; 10,2024; 2025,2024,2025
+35|Jember,35,Kab. Jember,,Gugut,2,banjir,2; 10,2022; 2026,2022,2026
+35|Jember,35,Kab. Jember,,Karangsono,2,cuaca,9,2024,2024,2024
+35|Jember,35,Kab. Jember,,Kawangrejo,2,cuaca,9,2024,2024,2024
+35|Jember,35,Kab. Jember,,Ledokombo,2,cuaca,9,2024,2024,2024
+35|Jember,35,Kab. Jember,,Lengkong,2,cuaca,9,2024,2024,2024
+35|Jember,35,Kab. Jember,,Mangli,2,banjir,1; 2,2022; 2026,2022,2026
+35|Jember,35,Kab. Jember,,Mrawan,2,cuaca,9,2024,2024,2024
+35|Jember,35,Kab. Jember,,Pakis,2,banjir,1,2022,2022,2022
+35|Jember,35,Kab. Jember,,Pancakarya,2,cuaca,9,2024,2024,2024
+35|Jember,35,Kab. Jember,,Petung,2,banjir,1; 2,2022; 2026,2022,2026
+35|Jember,35,Kab. Jember,,Rambigudam,2,banjir,1; 10,2022,2022,2022
+35|Jember,35,Kab. Jember,,Rowotamtu,2,banjir,1; 2,2022; 2026,2022,2026
+35|Jember,35,Kab. Jember,,Sumberlesung,2,cuaca,9,2024,2024,2024
+35|Jember,35,Kab. Jember,,Tegal Besar,2,banjir; cuaca,2; 10,2025; 2026,2025,2026
+35|Kota Batu,35,Kota Batu,Junrejo,Beji,2,banjir; cuaca,1; 7,2024; 2026,2024,2026
+35|Kota Batu,35,Kota Batu,Bumiaji,Gunungsari,2,cuaca; longsor,2; 10,2019; 2021,2019,2021
+35|Kota Batu,35,Kota Batu,Bumiaji,Sumberbrantas,2,cuaca,3; 10,2019,2019,2019
+35|Kota Batu,35,Kota Batu,Bumiaji,Tulungrejo,2,longsor,3; 5,2025; 2026,2025,2026
+35|Kota Mojokerto,35,Kota Mojokerto,Prajuritkulon,Blooto,2,banjir,12,2024,2024,2024
+35|Kota Mojokerto,35,Kota Mojokerto,Prajuritkulon,Metikan,2,banjir,12,2024,2024,2024
+35|Kota Mojokerto,35,Kota Mojokerto,Prajuritkulon,Prajuritkulon,2,banjir,12,2024,2024,2024
+35|Kota Mojokerto,35,Kota Mojokerto,Prajuritkulon,Pulorejo,2,banjir,12,2024,2024,2024
+35|Lumajang,35,Kab. Lumajang,,Argoyuwono,2,gunungapi; lainnya,12,2021,2021,2021
+35|Lumajang,35,Kab. Lumajang,,Bambang,2,gunungapi; lainnya,12,2021,2021,2021
+35|Lumajang,35,Kab. Lumajang,,"Bantur,",2,gunungapi; lainnya,12,2021,2021,2021
+35|Lumajang,35,Kab. Lumajang,,Barat,2,banjir; cuaca,3; 4,2024; 2025,2024,2025
+35|Lumajang,35,Kab. Lumajang,,Candi Puro,2,gunungapi; lainnya,12,2021,2021,2021
+35|Lumajang,35,Kab. Lumajang,,Clumprit,2,gunungapi; lainnya,12,2021,2021,2021
+35|Lumajang,35,Kab. Lumajang,,Curah Kobokan,2,gunungapi; lainnya,12,2021,2021,2021
+35|Lumajang,35,Kab. Lumajang,,Dampit,2,gunungapi; lainnya,12,2021,2021,2021
+35|Lumajang,35,Kab. Lumajang,,Gadungsari,2,gunungapi; lainnya,12,2021,2021,2021
+35|Lumajang,35,Kab. Lumajang,,Jugosari,2,banjir,4; 7,2023; 2024,2023,2024
+35|Lumajang,35,Kab. Lumajang,,Karanganom,2,banjir; cuaca,4; 11,2024,2024,2024
+35|Lumajang,35,Kab. Lumajang,,Kloposawit,2,banjir,4; 7,2023; 2024,2023,2024
+35|Lumajang,35,Kab. Lumajang,,Kutorenon,2,banjir; cuaca,4; 11,2024,2024,2024
+35|Lumajang,35,Kab. Lumajang,,Panggungrejo,2,gunungapi; lainnya,12,2021,2021,2021
+35|Lumajang,35,Kab. Lumajang,,Purwodadi,2,gunungapi; lainnya,12,2021,2021,2021
+35|Lumajang,35,Kab. Lumajang,Senduro,Ranupani,2,karhutla; longsor,2; 9,2017; 2019,2017,2019
+35|Lumajang,35,Kab. Lumajang,,Rejosari,2,gunungapi; lainnya,12,2021,2021,2021
+35|Lumajang,35,Kab. Lumajang,,Sumber Urip,2,gunungapi; lainnya,12,2021,2021,2021
+35|Lumajang,35,Kab. Lumajang,,Sumbersuko,2,banjir; cuaca,4; 11,2024,2024,2024
+35|Lumajang,35,Kab. Lumajang,,Sumberurip,2,banjir,4; 7,2023; 2024,2023,2024
+35|Lumajang,35,Kab. Lumajang,,Talok,2,gunungapi; lainnya,12,2021,2021,2021
+35|Lumajang,35,Kab. Lumajang,,Tompokersan,2,banjir; cuaca,4; 11,2024,2024,2024
+35|Magetan,35,Kab. Magetan,,Kartoharjo,2,cuaca,2; 10,2024; 2025,2024,2025
+35|Malang,35,Kab. Malang,Tirtoyudo,Pujiharjo,2,banjir; longsor,6,2025,2025,2025
+35|Mojokerto,35,Kab. Mojokerto,Pacet,Kemiri,2,karhutla,7; 10,2019; 2026,2019,2026
+35|Nganjuk,35,Kab. Nganjuk,Sawahan,Ngliman,2,karhutla,8; 9,2023; 2026,2023,2026
+35|Pacitan,35,Kab. Pacitan,Tegalombo,Gedangan,2,longsor,2,2025,2025,2025
+35|Pacitan,35,Kab. Pacitan,,Gembong,2,banjir; longsor,2; 11,2017; 2025,2017,2025
+35|Pacitan,35,Kab. Pacitan,,Losari,2,banjir,10; 11,2017; 2020,2017,2020
+35|Pacitan,35,Kab. Pacitan,,Sidomulyo,2,banjir,10; 11,2017; 2020,2017,2020
+35|Pacitan,35,Kab. Pacitan,Tulakan,Wonosidi,2,longsor,2; 3,2016; 2025,2016,2025
+35|Pasuruan,35,Kab. Pasuruan,,Sumberejo,2,cuaca,3; 12,2021; 2026,2021,2026
+35|Probolinggo,35,Kab. Probolinggo,Sukapura,Sariwani,2,karhutla,9,2023; 2026,2023,2026
+35|Sampang,35,Kab. Sampang,Kota Sampang,Panggung,2,banjir,7; 10,2016,2016,2016
+35|Sampang,35,Kab. Sampang,Kota Sampang,Pasean,2,banjir,7; 10,2016,2016,2016
+35|Sampang,35,Kab. Sampang,Kota Sampang,Tanggumung,2,banjir,7; 10,2016,2016,2016
+35|Trenggalek,35,Kab. Trenggalek,,Bangun,2,banjir; longsor,5; 11,2022; 2025,2022,2025
+35|Trenggalek,35,Kab. Trenggalek,,Kertosono,2,banjir,6; 12,2013; 2025,2013,2025
+35|Trenggalek,35,Kab. Trenggalek,,Munjungan,2,banjir,6; 11,2022; 2025,2022,2025
+35|Trenggalek,35,Kab. Trenggalek,Trenggalek,Ngares,2,banjir; longsor,8; 11,2016; 2025,2016,2025
+35|Trenggalek,35,Kab. Trenggalek,,Nglebeng,2,banjir,6; 12,2013; 2025,2013,2025
+35|Trenggalek,35,Kab. Trenggalek,,Panggul,2,banjir,6; 12,2013; 2025,2013,2025
+35|Trenggalek,35,Kab. Trenggalek,,Prigi,2,banjir; longsor,5; 11,2022; 2025,2022,2025
+35|Trenggalek,35,Kab. Trenggalek,,Tawing,2,banjir,6; 11,2022; 2025,2022,2025
+35|Tuban,35,Kab. Tuban,,Bandungrejo,2,banjir,3; 11,2016; 2024,2016,2024
+35|Tuban,35,Kab. Tuban,,Banjararum,2,banjir,3; 11,2016; 2024,2016,2024
+35|Tuban,35,Kab. Tuban,,Bulurejo,2,banjir,3; 11,2016; 2024,2016,2024
+35|Tuban,35,Kab. Tuban,,Kedungrojo,2,banjir,3; 11,2016; 2024,2016,2024
+35|Tuban,35,Kab. Tuban,,Kenongosari,2,banjir,3; 5,2024; 2025,2024,2025
+35|Tuban,35,Kab. Tuban,,Maibit,2,banjir,5; 11,2016; 2025,2016,2025
+35|Tuban,35,Kab. Tuban,,Mojoagung,2,banjir,3; 11,2016; 2024,2016,2024
+35|Tuban,35,Kab. Tuban,,Ngadipuro,2,banjir,3; 11,2016; 2024,2016,2024
+35|Tuban,35,Kab. Tuban,,Pandanwangi,2,banjir,5; 11,2016; 2025,2016,2025
+35|Tuban,35,Kab. Tuban,,Plandirejo,2,banjir,3; 11,2016; 2024,2016,2024
+35|Tuban,35,Kab. Tuban,,Selogabus,2,banjir,3; 11,2016; 2024,2016,2024
+35|Tuban,35,Kab. Tuban,,Sumberejo,2,banjir,3; 11,2016; 2024,2016,2024
+35|Tuban,35,Kab. Tuban,,Widang,2,banjir,3; 11,2016; 2024,2016,2024
+36|Lebak,36,Kab. Lebak,,Cidikit,2,banjir; longsor,5; 12,2024; 2026,2024,2026
+36|Lebak,36,Kab. Lebak,,Ciherang,2,banjir; longsor,5; 12,2024; 2026,2024,2026
+36|Lebak,36,Kab. Lebak,,Cipanas,2,banjir; longsor,1; 12,2020; 2024,2020,2024
+36|Lebak,36,Kab. Lebak,,Girimukti,2,banjir; longsor,5; 12,2024; 2026,2024,2026
+36|Lebak,36,Kab. Lebak,,Hegarmanah,2,banjir; longsor,5; 12,2024; 2026,2024,2026
+36|Lebak,36,Kab. Lebak,,Neglasari,2,banjir; longsor,5; 12,2024; 2026,2024,2026
+36|Lebak,36,Kab. Lebak,,Sukarame,2,banjir; longsor,1; 12,2020; 2024,2020,2024
+36|Serang,36,Kab. Serang,,Bandulu,2,banjir,2; 5,2017; 2022,2017,2022
+36|Serang,36,Kab. Serang,,Baros,2,banjir,1; 3,2022; 2026,2022,2026
+36|Serang,36,Kab. Serang,Padarincang,Batu Kuwung,2,banjir; longsor,3,2025,2025,2025
+36|Serang,36,Kab. Serang,Padarincang,Batukuwung,2,banjir,2; 3,2017; 2025,2017,2025
+36|Serang,36,Kab. Serang,,Bojonegara,2,banjir; cuaca,3,2026,2026,2026
+36|Serang,36,Kab. Serang,,Bojong Pandan,2,banjir,9; 12,2020; 2021,2020,2021
+36|Serang,36,Kab. Serang,,Bolang,2,banjir,1; 3,2022; 2026,2022,2026
+36|Serang,36,Kab. Serang,,Bugel,2,banjir,3; 12,2022; 2025,2022,2025
+36|Serang,36,Kab. Serang,,Bumijaya,2,banjir; cuaca,1; 3,2026,2026,2026
+36|Serang,36,Kab. Serang,,Cakung,2,banjir; cuaca,3,2026,2026,2026
+36|Serang,36,Kab. Serang,,Cigelam,2,banjir,1; 12,2025; 2026,2025,2026
+36|Serang,36,Kab. Serang,,Ciherang,2,banjir,3; 12,2022; 2025,2022,2025
+36|Serang,36,Kab. Serang,,Cikande,2,banjir; cuaca,3,2026,2026,2026
+36|Serang,36,Kab. Serang,,Cikedung,2,banjir; longsor,4; 7,2016; 2108,2016,2108
+36|Serang,36,Kab. Serang,,Kadubeureum,2,banjir; longsor,1,2026,2026,2026
+36|Serang,36,Kab. Serang,,Kajaroan,2,banjir; cuaca,3,2026,2026,2026
+36|Serang,36,Kab. Serang,Tunjung Teja,Kemuning,2,banjir,3; 8,2021; 2026,2021,2026
+36|Serang,36,Kab. Serang,,Kemuning,2,banjir; cuaca,3,2026,2026,2026
+36|Serang,36,Kab. Serang,,Koper,2,banjir; cuaca,2; 3,2017; 2026,2017,2026
+36|Serang,36,Kab. Serang,,Kragilan,2,banjir,1; 3,2022; 2026,2022,2026
+36|Serang,36,Kab. Serang,,Malabar,2,banjir,9; 12,2020; 2021,2020,2021
+36|Serang,36,Kab. Serang,,Mangkunegara,2,banjir; cuaca,3,2026,2026,2026
+36|Serang,36,Kab. Serang,,Margagiri,2,banjir; cuaca,3,2026,2026,2026
+36|Serang,36,Kab. Serang,,Margasana,2,banjir,1; 3,2022; 2026,2022,2026
+36|Serang,36,Kab. Serang,,Mekarsari,2,banjir; cuaca,3,2026,2026,2026
+36|Serang,36,Kab. Serang,,Nambo Udik,2,banjir,2; 5,2017; 2022,2017,2022
+36|Serang,36,Kab. Serang,Bojonegara,Pakuncen,2,longsor,12,2025,2025,2025
+36|Serang,36,Kab. Serang,,Pasirbuyut,2,banjir; cuaca,3,2026,2026,2026
+36|Serang,36,Kab. Serang,,Pejaten,2,banjir; cuaca,3,2026,2026,2026
+36|Serang,36,Kab. Serang,,Pelamunan,2,banjir; cuaca,3,2026,2026,2026
+36|Serang,36,Kab. Serang,Cinangka,Ranca Sanggal,2,banjir,1; 12,2018; 2024,2018,2024
+36|Serang,36,Kab. Serang,,Renged,2,banjir; cuaca,3,2026,2026,2026
+36|Serang,36,Kab. Serang,,Sangiang,2,banjir,9; 12,2020; 2021,2020,2021
+36|Serang,36,Kab. Serang,,Sukatani,2,banjir,2; 5,2017; 2022,2017,2022
+36|Serang,36,Kab. Serang,,Tenjoayu,2,banjir; cuaca,3,2026,2026,2026
+36|Serang,36,Kab. Serang,,Terate,2,banjir; cuaca,3,2026,2026,2026
+36|Serang,36,Kab. Serang,,Ukirsari,2,banjir; cuaca,3,2026,2026,2026
+36|Serang,36,Kab. Serang,,Walikukun,2,banjir; cuaca,3,2026,2026,2026
+36|Tangerang,36,Kab. Tangerang,Mauk,Jatiwaringin,2,karhutla; kebakaran_permukiman,6,2026,2026,2026
+36|Tangerang,36,Kab. Tangerang,Rajeg,Tanjakan Mekar,2,karhutla; kebakaran_permukiman,6,2026,2026,2026
+51|Bangli,51,Kab. Bangli,Kintamani,Batur Selatan,2,banjir; karhutla,3; 10,2012; 2021,2012,2021
+51|Karangasem,51,Kab. Karangasem,Rendang,Besakih,2,karhutla; longsor,10; 12,2020; 2024,2020,2024
+52|Bima,52,Kab. Bima,,Belo,2,banjir,1; 11,2018; 2025,2018,2025
+52|Bima,52,Kab. Bima,,Leu,2,banjir,4; 11,2021; 2025,2021,2025
+52|Bima,52,Kab. Bima,,Monta,2,banjir,1; 4,2018; 2021,2018,2021
+52|Bima,52,Kab. Bima,,Naru,2,banjir,1; 4,2018; 2021,2018,2021
+52|Bima,52,Kab. Bima,,Nisa,2,banjir,1; 4,2018; 2021,2018,2021
+52|Bima,52,Kab. Bima,,Sakuru,2,banjir,1; 4,2018; 2021,2018,2021
+52|Bima,52,Kab. Bima,,Sie,2,banjir,1; 4,2018; 2021,2018,2021
+52|Bima,52,Kab. Bima,Monta,Simpasai,2,banjir,11; 12,2025,2025,2025
+52|Bima,52,Kab. Bima,,Tangga,2,banjir,1; 4,2018; 2021,2018,2021
+52|Bima,52,Kab. Bima,,Tonda,2,banjir,4; 11,2021; 2025,2021,2025
+52|Lombok Barat,52,Kab. Lombok Barat,,Bukit Tinggi,2,cuaca; kekeringan,1; 6,2026,2026,2026
+52|Lombok Barat,52,Kab. Lombok Barat,,Jantung,2,kekeringan,6; 8,2025; 2026,2025,2026
+52|Lombok Barat,52,Kab. Lombok Barat,,Kuripan Selatan,2,kekeringan,6; 8,2025; 2026,2025,2026
+52|Lombok Barat,52,Kab. Lombok Barat,,Kuripan Timur,2,kekeringan,6; 8,2025; 2026,2025,2026
+52|Lombok Barat,52,Kab. Lombok Barat,,Sekotong Timur,2,cuaca; kekeringan,1; 8,2025; 2026,2025,2026
+52|Lombok Barat,52,Kab. Lombok Barat,,Tempos,2,kekeringan,6; 8,2025; 2026,2025,2026
+52|Lombok Barat,52,Kab. Lombok Barat,Gerung,Tempos,2,banjir; longsor,2,2026,2026,2026
+52|Sumbawa Barat,52,Kab. Sumbawa Barat,,Bugis,2,banjir; cuaca,2; 12,2025,2025,2025
+52|Sumbawa Barat,52,Kab. Sumbawa Barat,,Poto Tano,2,cuaca,2,2025,2025,2025
+52|Sumbawa Barat,52,Kab. Sumbawa Barat,,Telaga Bertong,2,banjir; cuaca,2; 12,2025,2025,2025
+53|Belu,53,Kab. Belu,,Debululik,2,banjir; cuaca,3; 4,2021; 2023,2021,2023
+53|Belu,53,Kab. Belu,,Dualaus,2,banjir; cuaca,3; 4,2021; 2023,2021,2023
+53|Belu,53,Kab. Belu,,Fatuketi,2,banjir; cuaca,3; 4,2021; 2023,2021,2023
+53|Belu,53,Kab. Belu,,Kabuna,2,banjir; cuaca,3; 4,2021; 2023,2021,2023
+53|Belu,53,Kab. Belu,,Manumutin,2,banjir; cuaca,3; 4,2021; 2023,2021,2023
+53|Belu,53,Kab. Belu,,Naekasa,2,banjir; cuaca,3; 4,2021; 2023,2021,2023
+53|Belu,53,Kab. Belu,,Tohe,2,banjir; cuaca,3; 4,2021; 2023,2021,2023
+53|Belu,53,Kab. Belu,,Tulakadi,2,cuaca,2; 3,2023,2023,2023
+53|Belu,53,Kab. Belu,,Umaklaran,2,cuaca,2; 3,2023,2023,2023
+53|Flores Timur,53,Kab. Flores Timur,,Boru,2,gunungapi,1; 11,2024; 2025,2024,2025
+53|Flores Timur,53,Kab. Flores Timur,,Dulipali,2,gunungapi,1; 11,2024; 2025,2024,2025
+53|Flores Timur,53,Kab. Flores Timur,Ilebura,Dulipali,2,banjir,7; 12,2025,2025,2025
+53|Flores Timur,53,Kab. Flores Timur,,Hokeng Jaya,2,gunungapi,1; 11,2024; 2025,2024,2025
+53|Flores Timur,53,Kab. Flores Timur,,Klatanlo,2,gunungapi,1; 11,2024; 2025,2024,2025
+53|Flores Timur,53,Kab. Flores Timur,,Nawokote,2,gunungapi,1; 11,2024; 2025,2024,2025
+53|Flores Timur,53,Kab. Flores Timur,,Nobo,2,gunungapi,1; 11,2024; 2025,2024,2025
+53|Malaka,53,Kab. Malaka,,Lasaen,2,banjir; longsor,4; 5,2021; 2025,2021,2025
+53|Malaka,53,Kab. Malaka,,Motaain,2,banjir,1; 4,2015; 2021,2015,2021
+53|Malaka,53,Kab. Malaka,,Oan Mane,2,banjir,1; 4,2015; 2021,2015,2021
+53|Malaka,53,Kab. Malaka,,Rabasa,2,banjir; longsor,4; 5,2021; 2025,2021,2025
+53|Nagekeo,53,Kab. Nagekeo,,Aewoe,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Bela,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Degalea,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Jawapogo,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Kelewae,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Keliwatuwea,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Kotagana,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Kotakeo 1,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Ladolima Utara,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Lajawajo,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Leguderu,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Lodaolo,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Lokalaba,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Maukeli,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Mauponggo,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Nangaroro,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Nataute,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Ngera,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Odaute,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Pagomogo,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Rigi,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Sawu,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Selalejo,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Selalejo Timur,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Ua,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Ululoga,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Woewolo,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Woewutu,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Woloede,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Wolokisa,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Wololelu,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Wolotelu,2,banjir,9,2025,2025,2025
+53|Nagekeo,53,Kab. Nagekeo,,Wuliwalo,2,banjir,9,2025,2025,2025
+53|Timor Tengah Selatan,53,Kab. Timor Tengah Selatan,Kota Soe,Kota Soe,2,longsor,3,2025,2025,2025
+53|Timor Tengah Selatan,53,Kab. Timor Tengah Selatan,Kota Soe,Kuatae,2,longsor,3,2025,2025,2025
+61|Bengkayang,61,Kab. Bengkayang,,"Bana,",2,banjir,1,2025,2025,2025
+61|Bengkayang,61,Kab. Bengkayang,,Belimbing,2,banjir,1,2025,2025,2025
+61|Bengkayang,61,Kab. Bengkayang,,Gersik,2,banjir,1,2025,2025,2025
+61|Bengkayang,61,Kab. Bengkayang,,Jesape,2,banjir,1; 2,2021; 2025,2021,2025
+61|Bengkayang,61,Kab. Bengkayang,,Kumba,2,banjir,1,2025,2025,2025
+61|Bengkayang,61,Kab. Bengkayang,,Lomba Karya,2,banjir,1,2025,2025,2025
+61|Bengkayang,61,Kab. Bengkayang,,"Puteng,",2,banjir,1,2025,2025,2025
+61|Bengkayang,61,Kab. Bengkayang,,Sekida,2,banjir,1,2025,2025,2025
+61|Bengkayang,61,Kab. Bengkayang,,Seluas,2,banjir,1,2025,2025,2025
+61|Bengkayang,61,Kab. Bengkayang,,Semangat,2,banjir,1,2025,2025,2025
+61|Bengkayang,61,Kab. Bengkayang,,Siaga,2,banjir,1,2025,2025,2025
+61|Bengkayang,61,Kab. Bengkayang,,Sumber Karya,2,banjir,1,2025,2025,2025
+61|Bengkayang,61,Kab. Bengkayang,,Sungai Duri,2,banjir,1,2025,2025,2025
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Baru,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Bongkong,2,banjir,10; 11,2021,2021,2021
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Dalam,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Gudang Hilir,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Laut Tawang,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Lubuk Pengail,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Madang Permai,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Marsedan Raya,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Nanga Kenepai,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Nanga Seberuang,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Nanga Suhaid,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Nibung,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Pangeran,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Penai,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Perigi,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Semalah,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Semitau Hilir,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Semitau Hulu,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Tanjung,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Tanjung Harapan,2,banjir,10; 11,2021; 2022,2021,2022
+61|Kapuas Hulu,61,Kab. Kapuas Hulu,,Titian Kuala,2,banjir,10; 11,2021; 2022,2021,2022
+61|Landak,61,Kab. Landak,,Amboyo Utara,2,banjir,2; 5,2019; 2026,2019,2026
+61|Landak,61,Kab. Landak,,Garu,2,banjir,9; 12,2013; 2020,2013,2020
+61|Landak,61,Kab. Landak,,Hilir Kantor,2,banjir,2; 9,2019; 2020,2019,2020
+61|Landak,61,Kab. Landak,,Hilir Tengah,2,banjir,8; 9,2020; 2024,2020,2024
+61|Landak,,Kab. Landak,,Jelimpo,2,banjir,2; 5,2019; 2026,2019,2026
+61|Landak,61,Kab. Landak,,Kedama,2,banjir,2; 8,2019; 2024,2019,2024
+61|Landak,61,Kab. Landak,,Menjalin,2,banjir,9; 12,2013; 2020,2013,2020
+61|Landak,61,Kab. Landak,,Sekendal,2,banjir,2; 9,2019; 2020,2019,2020
+61|Landak,61,Kab. Landak,,Semunti,2,banjir,2; 9,2019; 2020,2019,2020
+61|Landak,,Kab. Landak,,Sidas,2,banjir,2; 6,2019; 2020,2019,2020
+61|Melawi,61,Kab. Melawi,,Balai Agas,2,banjir,1; 11,2024; 2026,2024,2026
+61|Melawi,61,Kab. Melawi,,Batu Ampar,2,banjir,1; 11,2024; 2026,2024,2026
+61|Melawi,61,Kab. Melawi,,Nanga Tikan,2,banjir,1; 11,2024; 2026,2024,2026
+61|Melawi,61,Kab. Melawi,,Upit,2,banjir,1; 11,2024; 2026,2024,2026
+61|Sambas,61,Kab. Sambas,,Selakau Tua,2,banjir; karhutla,1,2025; 2026,2025,2026
+61|Sambas,61,Kab. Sambas,,Seranggam,2,banjir; karhutla,1,2025; 2026,2025,2026
+61|Sambas,61,Kab. Sambas,,Temajuk,2,banjir; karhutla,1,2025; 2026,2025,2026
+61|Sanggau,61,Kab. Sanggau,,Bahta,2,banjir,1; 8,2024; 2025,2024,2025
+61|Sanggau,61,Kab. Sanggau,,Balai Sebut,2,banjir,1; 8,2024; 2025,2024,2025
+61|Sanggau,61,Kab. Sanggau,,Bereng Berkawat,2,banjir,1; 3,2025,2025,2025
+61|Sanggau,61,Kab. Sanggau,,Bonti,2,banjir,1; 8,2024; 2025,2024,2025
+61|Sekadau,61,Kab. Sekadau,,Mondi,2,banjir,10; 11,2021; 2024,2021,2024
+61|Sekadau,61,Kab. Sekadau,,Mungguk,2,banjir,10; 11,2021; 2024,2021,2024
+61|Sekadau,61,Kab. Sekadau,,Nanga Menterap,2,banjir,10; 11,2021; 2024,2021,2024
+61|Sekadau,61,Kab. Sekadau,,Rawak Hulu,2,banjir,10; 11,2021; 2024,2021,2024
+61|Sekadau,61,Kab. Sekadau,,Setawar,2,banjir,10; 11,2021; 2024,2021,2024
+61|Sekadau,61,Kab. Sekadau,,Sungai Sambang,2,banjir,10; 11,2021; 2024,2021,2024
+61|Sekadau,61,Kab. Sekadau,,Tapang Perodah,2,banjir,10; 11,2021; 2024,2021,2024
+61|Sekadau,61,Kab. Sekadau,,Tinting Boyok,2,banjir,10; 11,2021; 2024,2021,2024
+62|Katingan,62,Kab. Katingan,,Samba Danum,2,banjir; karhutla,1; 7,2017; 2018,2017,2018
+62|Katingan,62,Kab. Katingan,,Telok,2,banjir,6; 7,2017; 2019,2017,2019
+62|Katingan,62,Kab. Katingan,,Tumbang Hiran,2,banjir,6; 7,2017; 2019,2017,2019
+62|Katingan,62,Kab. Katingan,,Tumbang Kaman,2,banjir,6; 7,2017; 2019,2017,2019
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,Pangkalan Banteng,Amin Jaya,2,banjir; longsor,4,2017,2017,2017
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,,Gandis,2,banjir,6; 8,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,Pangkalan Banteng,Karang Mulya,2,banjir; longsor,4,2017,2017,2017
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,,Kerabu,2,banjir,6; 8,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,Arut Utara,Kerabu,2,banjir,8; 10,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,Kotawaringin Lama,Kondang,2,banjir,7; 9,2017; 2020,2017,2020
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,,Kondang,2,banjir,6; 8,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,,Kotawaringin Hilir,2,banjir,6; 8,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,,Kotawaringin Hulu,2,banjir,6; 8,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,,Kumpai Batu Bawah,2,banjir,6; 8,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,,Panahan,2,banjir,6; 8,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,Arut Utara,Panahan,2,banjir,8; 10,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,,Pandau,2,banjir,6; 8,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,,Pangkut,2,banjir,6; 8,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,Arut Utara,Pangkut,2,banjir,8; 10,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,,Raja Seberang,2,banjir,6; 8,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,,Riam,2,banjir,6; 8,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,Arut Utara,Riam,2,banjir,8; 10,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,Kotawaringin Lama,Rungun,2,banjir,7; 9,2017; 2020,2017,2020
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,,Rungun,2,banjir,6; 8,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,,Runtu,2,banjir,6; 8,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,,Sambi,2,banjir,6; 8,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,,Sukarami,2,banjir,6; 8,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,Arut Utara,Sukarami,2,banjir,8; 10,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,,Sungai Dau,2,banjir,6; 8,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,Arut Utara,Sungai Dau,2,banjir,8; 10,2020; 2021,2020,2021
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,Pangkalan Banteng,Sungai Hijau,2,banjir; longsor,4,2017,2017,2017
+62|Kotawaringin Barat,62,Kab. Kotawaringin Barat,Pangkalan Banteng,Sungai Pakit,2,banjir; longsor,4,2017,2017,2017
+62|Lamandau,62,Kab. Lamandau,Menthobi Raya,Batu Ampar,2,banjir,10; 12,2018; 2021,2018,2021
+62|Lamandau,62,Kab. Lamandau,,Bintang Mengalih,2,banjir,9,2020; 2021,2020,2021
+62|Lamandau,62,Kab. Lamandau,,Bunut,2,banjir,9,2020; 2021,2020,2021
+62|Lamandau,62,Kab. Lamandau,,Nanga Belantikan,2,banjir,9,2020; 2021,2020,2021
+62|Lamandau,62,Kab. Lamandau,,Nanga Bulik,2,banjir,9,2020; 2021,2020,2021
+62|Lamandau,62,Kab. Lamandau,,Nanga Palikodan,2,banjir,9,2020; 2021,2020,2021
+62|Lamandau,62,Kab. Lamandau,,Sungai Mentawa,2,banjir,9,2020; 2021,2020,2021
+62|Murung Raya,62,Kab. Murung Raya,,Baratu,2,banjir,4; 10,2024; 2025,2024,2025
+62|Murung Raya,62,Kab. Murung Raya,,Batu Makap,2,banjir,4; 10,2024; 2025,2024,2025
+62|Murung Raya,62,Kab. Murungraya,Murung,Juking Pajang,2,banjir,5; 8,2017,2017,2017
+62|Murung Raya,62,Kab. Murung Raya,,Juking Panjang,2,banjir,4,2025,2025,2025
+62|Murung Raya,62,Kab. Murung Raya,,Juking Sopan,2,banjir,4; 10,2024; 2025,2024,2025
+62|Murung Raya,62,Kab. Murung Raya,,Kohong,2,banjir,4,2025,2025,2025
+62|Murung Raya,62,Kab. Murung Raya,,Laas Baru,2,banjir,4; 10,2024; 2025,2024,2025
+62|Murung Raya,62,Kab. Murung Raya,,Muara Joloi 1,2,banjir,4,2025,2025,2025
+62|Murung Raya,62,Kab. Murung Raya,,Muara Joloi 2,2,banjir,4,2025,2025,2025
+62|Murung Raya,62,Kab. Murung Raya,,Muara Laung Ii,2,banjir,5; 10,2022; 2024,2022,2024
+62|Murung Raya,62,Kab. Murung Raya,,Muara Sempoi,2,banjir,5; 9,2021; 2022,2021,2022
+62|Murung Raya,62,Kab. Murung Raya,,Muara Sumpo,2,banjir,4,2025,2025,2025
+62|Murung Raya,62,Kab. Murung Raya,,Muara Sumpoi,2,banjir,4; 10,2018; 2024,2018,2024
+62|Murung Raya,62,Kab. Murung Raya,,Olung Liko,2,banjir,4,2025,2025,2025
+62|Murung Raya,62,Kab. Murung Raya,,Pantai Laga,2,banjir,4; 10,2024; 2025,2024,2025
+62|Murung Raya,62,Kab. Murung Raya,,Panu'Ut,2,banjir,4,2025,2025,2025
+62|Murung Raya,62,Kab. Murung Raya,,Purnama,2,banjir,4; 10,2024; 2025,2024,2025
+62|Murung Raya,62,Kab. Murung Raya,,Sungai Batang,2,banjir,4,2025,2025,2025
+62|Murung Raya,62,Kab. Murung Raya,,Sungai Gula,2,banjir,4,2025,2025,2025
+62|Murung Raya,62,Kab. Murung Raya,,Tumbang Bauh,2,banjir,4,2025,2025,2025
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Balukon,2,banjir,3; 10,2021,2021,2021
+62|Pulang Pisau,62,Kab. Pulang Pisau,Banama Tingang,Bawan,2,banjir,5; 7,2017,2017,2017
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Bawan,2,banjir,7; 10,2017; 2021,2017,2021
+62|Pulang Pisau,62,Kab. Pulang Pisau,Banama Tingang,Hanua,2,banjir,5; 7,2017,2017,2017
+62|Pulang Pisau,62,Kab. Pulang Pisau,Banama Tingang,Kasali Baru,2,banjir,5; 7,2017,2017,2017
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Kasali Baru,2,banjir,7; 8,2017; 2021,2017,2021
+62|Pulang Pisau,62,Kab. Pulang Pisau,Banama Tingang,Lawang Uru,2,banjir,5; 7,2017,2017,2017
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Lawang Uru,2,banjir,7; 8,2017; 2021,2017,2021
+62|Pulang Pisau,62,Kab. Pulang Pisau,Banama Tingang,Pahawan,2,banjir,5; 7,2017,2017,2017
+62|Pulang Pisau,62,Kab. Pulang Pisau,Banama Tingang,Ramang,2,banjir,5; 7,2017,2017,2017
+62|Pulang Pisau,62,Kab. Pulang Pisau,Banama Tingang,Tambak,2,banjir,5; 7,2017,2017,2017
+62|Pulang Pisau,62,Kab. Pulang Pisau,,Tangkahan,2,banjir,8; 10,2021,2021,2021
+62|Pulang Pisau,62,Kab. Pulang Pisau,Banama Tingang,Tangkahen,2,banjir,5; 7,2017,2017,2017
+63|Hulu Sungai Selatan,63,Kab. Hulu Sungai Selatan,,Halunuk,2,banjir,12,2025,2025,2025
+63|Hulu Sungai Selatan,63,Kab. Hulu Sungai Selatan,,Jambu Hilir,2,banjir,12,2025,2025,2025
+63|Hulu Sungai Selatan,63,Kab. Hulu Sungai Selatan,,Kandangan Barat,2,banjir,12,2025,2025,2025
+63|Hulu Sungai Selatan,63,Kab. Hulu Sungai Selatan,,Kandangan Kota,2,banjir,12,2025,2025,2025
+63|Hulu Sungai Selatan,63,Kab. Hulu Sungai Selatan,,Kandangan Utara,2,banjir,12,2025,2025,2025
+63|Hulu Sungai Selatan,63,Kab. Hulu Sungai Selatan,,Lumpangi,2,banjir,12,2025,2025,2025
+63|Hulu Sungai Selatan,63,Kab. Hulu Sungai Selatan,,Tumingki,2,banjir,12,2025,2025,2025
+63|Kota Banjarbaru,63,Kota Banjarbaru,Cempaka,Cempaka,2,karhutla; lainnya,6; 8,2019; 2020,2019,2020
+64|Kota Samarinda,64,Kota Samarinda,,Dadi Mulya,2,banjir,1; 9,2020; 2022,2020,2022
+64|Kota Samarinda,64,Kota Samarinda,,Jawa,2,banjir,1; 9,2020; 2022,2020,2022
+64|Kota Samarinda,64,Kota Samarinda,,Lempake,2,banjir,1; 9,2020; 2022,2020,2022
+64|Kota Samarinda,64,Kota Samarinda,,Sidodadi,2,banjir,1; 9,2020; 2022,2020,2022
+64|Kutai Kartanegara,64,Kab. Kutai Kartanegara,Muara Jawa,Muara Kembang,2,karhutla,8; 9,2026,2026,2026
+64|Kutai Timur,64,Kab. Kutai Timur,,Batu Timbau,2,banjir,4; 5,2013; 2021,2013,2021
+64|Kutai Timur,64,Kab. Kutai Timur,,Batu Timbau Ulu,2,banjir,3; 5,2021; 2022,2021,2022
+64|Kutai Timur,64,Kab. Kutai Timur,,Benhes,2,banjir,3; 5,2021; 2022,2021,2022
+64|Kutai Timur,64,Kab. Kutai Timur,,Dabeq,2,banjir,3; 5,2021; 2022,2021,2022
+64|Kutai Timur,64,Kab. Kutai Timur,,Jak Luay,2,banjir,3; 5,2021; 2022,2021,2022
+64|Kutai Timur,64,Kab. Kutai Timur,,Long Wehea,2,banjir,3; 5,2021; 2022,2021,2022
+64|Kutai Timur,64,Kab. Kutai Timur,,Muara Wahau,2,banjir,3; 5,2021; 2022,2021,2022
+64|Kutai Timur,64,Kab. Kutai Timur,,Senambah,2,banjir,4; 5,2013; 2021,2013,2021
+64|Paser,64,Kab. Paser,Batu Sopang,Batu Kajang,2,banjir,4; 11,2017; 2020,2017,2020
+64|Paser,64,Kab. Paser,,Jone,2,banjir; karhutla,2; 9,2025; 2026,2025,2026
+64|Paser,64,Kab. Paser,,Muara Kuaro,2,banjir; karhutla,3; 8,2023; 2026,2023,2026
+64|Penajam Paser Utara,64,Kab. Penajam Paser Utara,Penajam,Bukit Subur,2,banjir,2; 11,2018; 2020,2018,2020
+64|Penajam Paser Utara,64,Kab. Penajam Paser Utara,Penajam,Riko,2,banjir,2; 11,2018; 2020,2018,2020
+65|Nunukan,65,Kab. Nunukan,Krayan Selatan,Liang Lunuk,2,longsor,7; 9,2022; 2026,2022,2026
+65|Nunukan,65,Kab. Nunukan,Krayan Selatan,Long Birar,2,longsor,7; 9,2022; 2026,2022,2026
+65|Nunukan,65,Kab. Nunukan,Krayan Selatan,Long Pasia,2,longsor,7; 9,2022; 2026,2022,2026
+71|Bolaang Mongondow,71,Kab. Bolaang Mongondow,,Bakan,2,banjir; karhutla,8,2024; 2026,2024,2026
+71|Bolaang Mongondow,71,Kab. Bolaang Mongondow,Bolaang,Komangaan,2,banjir; longsor,5; 7,2021; 2026,2021,2026
+71|Bolaang Mongondow,71,Kab. Bolaang Mongondow,,Solog,2,banjir; karhutla,8; 12,2021; 2026,2021,2026
+71|Bolaang Mongondow Selatan,71,Kab. Bolaang Mongondow Selatan,,Adow,2,banjir,6; 9,2021; 2024,2021,2024
+71|Bolaang Mongondow Selatan,71,Kab. Bolaang Mongondow Selatan,,Mataindo,2,banjir,6; 8,2024,2024,2024
+71|Bolaang Mongondow Selatan,71,Kab. Bolaang Mongondow Selatan,,Mataindo Utara,2,banjir,6; 8,2024,2024,2024
+71|Bolaang Mongondow Selatan,71,Kab. Bolaang Mongondow Selatan,,Tobayagan,2,banjir,6; 8,2024,2024,2024
+71|Bolaang Mongondow Selatan,71,Kab. Bolaang Mongondow Selatan,,Tobayagan Selatan,2,banjir,6; 8,2024,2024,2024
+71|Kota Bitung,71,Kota Bitung,,Bitung Tengah,2,banjir,2; 8,2017; 2025,2017,2025
+71|Kota Bitung,71,Kota Bitung,,Kadoodan,2,banjir,4; 8,2024; 2025,2024,2025
+71|Kota Bitung,71,Kota Bitung,,Kakenturan I,2,banjir,4; 8,2024; 2025,2024,2025
+71|Kota Bitung,71,Kota Bitung,,Madidir Unet,2,banjir,4; 8,2024; 2025,2024,2025
+71|Kota Bitung,71,Kota Bitung,,Madidir Ure,2,banjir,4; 8,2024; 2025,2024,2025
+71|Kota Bitung,71,Kota Bitung,,Madidir Weru,2,banjir,4; 8,2024; 2025,2024,2025
+71|Kota Bitung,71,Kota Bitung,,Pateten Ii,2,banjir,2; 8,2017; 2025,2017,2025
+71|Kota Bitung,71,Kota Bitung,,Pateten Iii,2,banjir; longsor,2; 4,2017; 2024,2017,2024
+71|Kota Bitung,71,Kota Bitung,,Winenet I,2,banjir,2; 4,2017; 2024,2017,2024
+71|Kota Bitung,71,Kota Bitung,,Winenet Ii,2,banjir,2; 8,2017; 2025,2017,2025
+71|Kota Manado,71,Kota Manado,,Ranotana,2,banjir; longsor,3; 10,2022; 2025,2022,2025
+72|Banggai,72,Kab. Banggai,Bunta,Huhak,2,banjir,9; 10,2022; 2025,2022,2025
+72|Donggala,72,Kab. Donggala,Tanantovea,Wombo Induk,2,banjir,5; 8,2025,2025,2025
+72|Donggala,72,Kab. Donggala,Tanantovea,Wombo Kalonggo,2,banjir,5; 8,2025,2025,2025
+72|Parigi Moutong,72,Kab. Parigi Moutong,,Balinggi,2,banjir,5; 6,2023; 2025,2023,2025
+72|Parigi Moutong,72,Kab. Parigi Moutong,,Tomini,2,banjir,3; 6,2024; 2025,2024,2025
+72|Parigi Moutong,72,Kab. Parigi Moutong,,Tomini Barat,2,banjir,3; 6,2024; 2025,2024,2025
+72|Parigi Moutong,72,Kab. Parigi Moutong,,Tomini Utara,2,banjir,3; 6,2024; 2025,2024,2025
+72|Tojo Una Una,72,Kab. Tojo Una-Una,,Malotong,2,karhutla,9,2026,2026,2026
+73|Bantaeng,73,Kab. Bantaeng,,Lamalaka,2,banjir; cuaca,7; 11,2025,2025,2025
+73|Bantaeng,73,Kab. Bantaeng,,Lembang,2,banjir; cuaca,7; 11,2025,2025,2025
+73|Barru,73,Kab. Barru,,Batu Pute,2,banjir; cuaca,2; 12,2024; 2026,2024,2026
+73|Barru,73,Kab. Barru,,Coppo,2,banjir; cuaca,2; 12,2024; 2026,2024,2026
+73|Barru,73,Kab. Barru,,Garessi,2,banjir; cuaca,2; 12,2024; 2026,2024,2026
+73|Barru,73,Kab. Barru,,Mangkoso,2,banjir; cuaca,2; 12,2024; 2026,2024,2026
+73|Bulukumba,73,Kab. Bulukumba,,Bonto Bulaeng,2,banjir; cuaca,2; 7,2021; 2026,2021,2026
+73|Bulukumba,73,Kab. Bulukumba,,Dannuang,2,banjir; cuaca,2; 7,2021; 2026,2021,2026
+73|Enrekang,73,Kab. Enrekang,,Karueng,2,banjir; karhutla,4; 10,2024; 2026,2024,2026
+73|Kota Palopo,73,Kota Palopo,,Dangerakko,2,banjir,4; 12,2013; 2024,2013,2024
+73|Kota Palopo,73,Kota Palopo,,Salotellue,2,banjir,4; 12,2013; 2024,2013,2024
+73|Kota Palopo,73,Kota Palopo,,Surutanga,2,banjir,4; 12,2013; 2024,2013,2024
+73|Luwu,73,Kab. Luwu,,Balla,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Balo Balo,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,Bua,Barowa,2,banjir,4; 5,2025,2025,2025
+73|Luwu,73,Kab. Luwu,,Belopa,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Bolong,2,banjir,5; 10,2021; 2022,2021,2022
+73|Luwu,73,Kab. Luwu,,Bone Lemo,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Boneposik,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Buntu Kamiri,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Buntu Sarek,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Cilallang,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Cimpu Utara,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Gandang Batu,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Ilan Batu,2,banjir,5; 10,2021; 2022,2021,2022
+73|Luwu,73,Kab. Luwu,,Kaladi,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Komba,2,banjir,7,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Kurusu Manga,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,La'Loa,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Lambanana,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,Larompong,Larompong,2,banjir,4; 5,2025,2025,2025
+73|Luwu,73,Kab. Luwu,,Lempokasi,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Lempopacci,2,banjir,4; 7,2024; 2025,2024,2025
+73|Luwu,73,Kab. Luwu,,Libukang,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Marinding,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Mario,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,Bua,Pabbaresseng,2,banjir,4; 5,2025,2025,2025
+73|Luwu,73,Kab. Luwu,,Padang Lambe,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Padang Ma'Bud,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Pajang,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Pammanu,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Pangi,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Poringan,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Radda,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Rante Belu,2,banjir,7,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Ranteballa,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,Larompong,Riwang,2,banjir,5,2025,2025,2025
+73|Luwu,73,Kab. Luwu,,Sabe,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Salusana,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Sampeang,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,Walenrang Timur,Tabah,2,banjir,6,2025; 2026,2025,2026
+73|Luwu,73,Kab. Luwu,,Tabang,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Tabarru,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Tallang Bululawang,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Tampumia Radda,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Tanamanai,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Tanjong,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Taramatekkeng,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Tettekang,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Tirowali,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Tolajuk,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Tumbu Bara,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Ulusalu,2,banjir,5,2024,2024,2024
+73|Luwu,73,Kab. Luwu,,Wara,2,banjir,5,2024,2024,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Cendana Putih 2,2,banjir,4,2024,2024,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Lara,2,banjir,4,2024,2024,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Lino,2,banjir,4,2016; 2024,2016,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Mangalle,2,banjir,4,2016; 2024,2016,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Mario,2,banjir,4; 9,2016; 2021,2016,2021
+73|Luwu Utara,73,Kab. Luwu Utara,,Pince Pute,2,banjir,4; 9,2016; 2021,2016,2021
+73|Luwu Utara,73,Kab. Luwu Utara,,Subur,2,banjir,4; 9,2021; 2024,2021,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Sumpira,2,banjir,4,2024,2024,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Tara Tallu,2,banjir,4,2024,2024,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Terpedo Jaya,2,banjir,4; 9,2021; 2024,2021,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Tingkara,2,banjir,4,2016; 2024,2016,2024
+73|Luwu Utara,73,Kab. Luwu Utara,,Ujung Mattajeng,2,banjir,4,2024,2024,2024
+73|Pinrang,73,Kab. Pinrang,Lembang,Basseang,2,longsor,1; 9,2020; 2025,2020,2025
+73|Pinrang,73,Kab. Pinrang,,Kassa,2,banjir,5,2024,2024,2024
+73|Pinrang,73,Kab. Pinrang,,Watang Kassa,2,banjir,5,2024,2024,2024
+73|Sinjai,73,Kab. Sinjai,,Balangnipa,2,banjir; cuaca,6; 11,2025; 2026,2025,2026
+73|Sinjai,73,Kab. Sinjai,,Barambang,2,longsor,6; 7,2024; 2025,2024,2025
+73|Sinjai,73,Kab. Sinjai,,Biringere,2,banjir; cuaca,6; 11,2025; 2026,2025,2026
+73|Sinjai,73,Kab. Sinjai,,Bongki,2,banjir; cuaca,6; 11,2025; 2026,2025,2026
+73|Sinjai,73,Kab. Sinjai,,Bonto,2,longsor,6; 7,2024; 2025,2024,2025
+73|Sinjai,73,Kab. Sinjai,,Bonto Katute,2,longsor,6; 7,2024; 2025,2024,2025
+73|Sinjai,73,Kab. Sinjai,,Patongko,2,banjir,6,2024,2024,2024
+73|Sinjai,73,Kab. Sinjai,,Saukang,2,cuaca; longsor,6; 11,2024; 2025,2024,2025
+73|Sinjai,73,Kab. Sinjai,Sinjai Barat,Terasa,2,longsor,4; 7,2022; 2024,2022,2024
+73|Soppeng,73,Kab. Soppeng,,Barae,2,banjir,12,2021; 2024,2021,2024
+73|Soppeng,73,Kab. Soppeng,,Batu-Batu,2,banjir,12,2022; 2024,2022,2024
+73|Soppeng,73,Kab. Soppeng,,Donri-Donri,2,banjir,12,2022; 2024,2022,2024
+73|Soppeng,73,Kab. Soppeng,,Ganra,2,banjir,12,2021; 2024,2021,2024
+73|Soppeng,73,Kab. Soppeng,,Jampu,2,banjir,12,2021; 2024,2021,2024
+73|Soppeng,73,Kab. Soppeng,,Kampiri,2,banjir,12,2021; 2024,2021,2024
+73|Soppeng,73,Kab. Soppeng,,Lalabata,2,banjir,12,2021; 2022,2021,2022
+73|Soppeng,73,Kab. Soppeng,,Lompulle,2,banjir,12,2021; 2022,2021,2022
+73|Soppeng,73,Kab. Soppeng,,Tinco,2,banjir,12,2021; 2024,2021,2024
+73|Soppeng,73,Kab. Soppeng,,Tottong,2,banjir,12,2021; 2022,2021,2022
+73|Soppeng,73,Kab. Soppeng,,Ujung,2,banjir,12,2021; 2024,2021,2024
+73|Wajo,73,Kab. Wajo,,Ajuraja,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Assorajang,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Benteng Lompo,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Bila,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Laelo,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Liu,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Lowa,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Malakke,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Mallusesalo,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Pajalele,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Pallawarukka,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Pallimae,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Peneki,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Salomenraleng,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Tadangpalie,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Tempe,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Ugi,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Ujunge,2,banjir,5; 6,2017,2017,2017
+73|Wajo,73,Kab. Wajo,,Worongnge,2,banjir,5; 6,2017,2017,2017
+74|Konawe,74,Kab. Konawe,,Lolika,2,banjir,6; 7,2019; 2020,2019,2020
+74|Konawe,74,Kab. Konawe,,Waworaha,2,banjir,6; 7,2019; 2020,2019,2020
+74|Konawe Utara,74,Kab. Konawe Utara,,Polora,2,banjir,5; 6,2019; 2024,2019,2024
+74|Konawe Utara,74,Kab. Konawe Utara,,Polora Indah,2,banjir,5; 6,2018; 2026,2018,2026
+74|Konawe Utara,74,Kab. Konawe Utara,,Walalindu,2,banjir,6,2018; 2019,2018,2019
+75|Bone Bolango,75,Kab. Bone Bolango,,Masiaga,2,banjir,6; 8,2024,2024,2024
+75|Bone Bolango,75,Kab. Bone Bolango,Bone,Monano,2,banjir,6,2024,2024,2024
+75|Bone Bolango,75,Kab. Bone Bolango,,Muara Bone,2,banjir,6; 8,2024,2024,2024
+75|Bone Bolango,75,Kab. Bone Bolango,,Taludaa,2,banjir,6; 8,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Balatana,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Bambang,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Bambang Buda,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Bambang Timur,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Baruru,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Bujung Manurung,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Lembang Mokallang,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Limba Debata,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Masoso,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Minanga,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,Tabulahan,Pangandaran,2,banjir; longsor,6; 9,2021; 2022,2021,2022
+76|Mamasa,76,Kab. Mamasa,,Rantelemo,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Rantetalima,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Salu Kepopo,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Salualo,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Saluassing,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Saluassing Barat,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Salubulo,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Saludengen,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Salukadi,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Salumokanan,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Salumukanan,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Salururu,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Salutabang,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Sikamase,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Talipukki,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Tanete Tomba,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Tapalinna,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Uhailanu,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Ulumambi,2,longsor,5,2024,2024,2024
+76|Mamasa,76,Kab. Mamasa,,Ulumambi Barat,2,longsor,5,2024,2024,2024
+76|Mamuju,76,Kab. Mamuju,Mamuju,Mamunyu,2,banjir; longsor,1; 8,2024; 2025,2024,2025
+76|Mamuju Tengah,76,Kab. Mamuju Tengah,Topoyo,Budong-Budong,2,banjir,5; 10,2022; 2024,2022,2024
+76|Mamuju Tengah,76,Kab. Mamuju Tengah,Tobadak,Saloadak,2,banjir; lainnya,10; 11,2024,2024,2024
+81|Maluku Tenggara,81,Kab. Maluku Tenggara,Kei Besar Utara Barat,Ohoi Weer Frawav,2,banjir; longsor,7,2025,2025,2025
+81|Maluku Tenggara,81,Kab. Maluku Tenggara,Kei Besar Utara Barat,Ohoi Weerker,2,banjir; longsor,7,2025,2025,2025
+81|Maluku Tenggara,81,Kab. Maluku Tenggara,Kei Besar Utara Barat,Ohoi Weernam,2,banjir; longsor,7,2025,2025,2025
+82|Halmahera Barat,82,Kab. Halmahera Barat,,Gamlamo,2,banjir,1; 2,2021; 2026,2021,2026
+82|Halmahera Barat,82,Kab. Halmahera Barat,,Gamomeng,2,banjir; longsor,1; 7,2017; 2026,2017,2026
+82|Halmahera Barat,82,Kab. Halmahera Barat,,Idamgamlamo,2,banjir; longsor,1; 7,2017; 2026,2017,2026
+82|Halmahera Barat,82,Kab. Halmahera Barat,,Ropu Tengah Balu,2,banjir,1; 2,2021; 2026,2021,2026
+82|Halmahera Barat,82,Kab. Halmahera Barat,,Soasio,2,banjir,1; 2,2021; 2026,2021,2026
+82|Halmahera Barat,82,Kab. Halmahera Barat,,Tolofuo,2,banjir,1; 2,2021; 2026,2021,2026
+82|Halmahera Selatan,82,Kab. Halmahera Selatan,,Foya,2,banjir,6,2024; 2025,2024,2025
+82|Kota Tidore Kepulauan,82,Kota Tidore Kepulauan,Tidore Utara,Bobo,2,banjir,9,2025,2025,2025
+82|Kota Tidore Kepulauan,82,Kota Tidore Kepulauan,,Dokiri,2,banjir; longsor,12,2024,2024,2024
+82|Kota Tidore Kepulauan,82,Kota Tidore Kepulauan,,Indonesiana,2,banjir; longsor,12,2024,2024,2024
+82|Kota Tidore Kepulauan,82,Kota Tidore Kepulauan,,Ome,2,banjir; longsor,12,2024,2024,2024
+82|Kota Tidore Kepulauan,82,Kota Tidore Kepulauan,,Soasio,2,banjir; longsor,12,2024,2024,2024
+82|Kota Tidore Kepulauan,82,Kota Tidore Kepulauan,Tidore Selatan,Toloa,2,banjir,9,2025,2025,2025
+82|Kota Tidore Kepulauan,82,Kota Tidore Kepulauan,,Tosa,2,banjir; longsor,12,2024,2024,2024
+82|Kota Tidore Kepulauan,82,Kota Tidore Kepulauan,,Tuguwaji,2,banjir; longsor,12,2024,2024,2024
+91|Jayapura,91,Kab. Jayapura,,Dobonsolo,2,banjir,3,2019,2019,2019
+91|Jayapura,91,Kab. Jayapura,,Hinekombe,2,banjir,3,2019,2019,2019
+91|Jayapura,91,Kab. Jayapura,,Numbay,2,banjir,3,2019,2019,2019
+91|Jayapura,91,Kab. Jayapura,,Sentani Kota,2,banjir,3,2019,2019,2019
+95|Jayawijaya,95,Kab. Jayawijaya,,Aikima,2,banjir; longsor,4,2025,2025,2025
+95|Jayawijaya,95,Kab. Jayawijaya,,Bokiem,2,banjir; longsor,4,2025,2025,2025
+95|Jayawijaya,95,Kab. Jayawijaya,,Huluima,2,banjir; longsor,4,2025,2025,2025

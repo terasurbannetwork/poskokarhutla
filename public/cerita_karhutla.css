@@ -27,8 +27,9 @@
 .ct-tw{overflow-x:auto;margin-top:12px}
 .ct-tw.tinggi{max-height:420px;overflow-y:auto}
 .ct-tw table{border-collapse:collapse;width:100%;font-size:12px}
-.ct-tw th,.ct-tw td{padding:5px 8px;border-bottom:1px solid var(--line,#e3e7ef);text-align:right;white-space:nowrap}
-.ct-tw th:first-child,.ct-tw td:first-child,.ct-tw td:nth-child(2),.ct-tw th:nth-child(2){text-align:left}
+.ct-tw th,.ct-tw td{padding:5px 8px;border-bottom:1px solid var(--line,#e3e7ef);text-align:center;white-space:nowrap}
+.ct-tw td:first-child,.ct-tw td:nth-child(2){text-align:left}
+.ct-tw th:first-child,.ct-tw th:nth-child(2){text-align:center}
 .ct-tw thead th{position:sticky;top:0;background:var(--brand,#1d2a5c);color:#fff;border-bottom:2px solid var(--accent,#e58a45)}
 .ct-tw tr[data-kasus]{cursor:pointer}
 .ct-tw tr.on td{background:oklch(85% .08 60 / .35)}
@@ -81,7 +82,8 @@
 
 /* kartu musim 2026: tabel, garis waktu, peta bertumpuk, coming soon (13 Okt 2026) */
 .cerita [hidden]{display:none!important}
-.ct-tw.kiri th,.ct-tw.kiri td{text-align:left}
+.ct-tw.kiri td{text-align:left}
+.ct-tw.kiri th{text-align:center}
 .ct-tw.kiri .r{text-align:right}
 .ct-chips.satu{flex-wrap:nowrap;overflow-x:auto}
 .ct-chips.satu .ct-chip{white-space:nowrap;flex:none}

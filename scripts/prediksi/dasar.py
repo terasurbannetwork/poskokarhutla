@@ -23,6 +23,10 @@ DATA = os.path.join(AKAR, "public", "prediksi", "data")
 ARSIP = os.path.join(DATA, "arsip")
 WIB = dt.timezone(dt.timedelta(hours=7))
 KODE = ["HJN", "API", "BNJ", "LSR", "ASP", "ROB"]
+# Model bayangan (bayangan/model.py): dinilai berdampingan dengan model lama, TIDAK tampil di kartu Besok.
+# DASAR = kode yang labelnya dipakai menilai (BNJ/LSR = DIBI, CEX = DIBI cuaca ekstrem, KRH = >= 5 titik VIIRS S-NPP).
+KODE_B = ["BNJ_B", "LSR_B", "CEX_B", "KRH_B"]
+DASAR = {"BNJ_B": "BNJ", "LSR_B": "LSR", "CEX_B": "CEX", "KRH_B": "KRH"}
 TENGGANG = 3
 
 
@@ -175,7 +179,7 @@ def tambah_arsip(entri, folder=None):
 
 def periksa_entri(e):
     """Invarian satu baris arsip. -> pesan galat atau None."""
-    if e.get("k") not in KODE:
+    if e.get("k") not in KODE + KODE_B:
         return "kode tak dikenal"
     try:
         t = dt.date.fromisoformat(e["t"])

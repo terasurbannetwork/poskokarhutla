@@ -13,7 +13,7 @@ Pakai: python3 scripts/cuaca/siklon.py   |   python3 scripts/cuaca/siklon.py uji
 import datetime as dt, json, os, re, sys, urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from dasar import KELUAR, sekarang, simpan
+from dasar import KELUAR, jarak_km, sekarang, simpan
 
 RSS = "https://www.metoc.navy.mil/jtwc/rss/jtwc.rss"
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36"
@@ -64,7 +64,7 @@ def sistem(teks, url, acuan):
             "angin_kt": lin[0][3], "tekanan_hpa": None, "kategori": kategori(lin[0][3]), "lintasan": lin, "kerucut_km": None, "tautan": url}
 
 
-HOST_BOLEH = ("https://www.gdacs.org/", "https://www.metoc.navy.mil/")
+HOST_BOLEH = ("https://www.gdacs.org/", "https://www.metoc.navy.mil/", "https://www.jma.go.jp/")
 
 
 def unduh(url):
@@ -155,6 +155,56 @@ def unduh_json(url):
     return json.loads(unduh(url))
 
 
+JMA = "https://www.jma.go.jp/bosai/typhoon/data/"
+JMA_MAKS_KM = 500   # kecocokan posisi bila nama berbeda (JTWC memakai nama sama dengan JMA untuk sistem bernama; sistem tanpa nama dicocokkan lewat posisi)
+
+
+def norma(n):
+    return re.sub(r"[^a-z0-9]", "", (n or "").lower())
+
+
+def jma_dari(spec, tautan):
+    """specifications.json JMA satu topan -> blok `jma` (pengukuran 10 menit, bukan 1 menit JTWC) atau None bila tak ada bagian analisis."""
+    judul = next((p for p in spec if p.get("part") == "title"), {})
+    ana = next((p for p in spec if isinstance(p.get("part"), dict) and p["part"].get("en") == "Analysis"), None)
+    if not ana:
+        return None
+    iv = lambda x: int(x) if x not in (None, "", "-") else None
+    ang = lambda p: iv(((p.get("maximumWind") or {}).get("sustained") or {}).get("kt"))
+    pra = [[p["advancedHours"], *p["position"]["deg"], ang(p), iv(p.get("pressure"))] for p in spec
+           if isinstance(p.get("part"), dict) and p.get("advancedHours") and (p.get("position") or {}).get("deg")]
+    return {"nama": (judul.get("name") or {}).get("en"), "nomor": judul.get("typhoonNumber"), "kategori": (ana.get("category") or {}).get("en"),
+            "tekanan_hpa": iv(ana.get("pressure")), "angin_kt": ang(ana), "embusan_kt": iv(((ana.get("maximumWind") or {}).get("gust") or {}).get("kt")),
+            "posisi": ana["position"]["deg"], "waktu": (ana.get("validtime") or {}).get("UTC"), "keterangan": "angin maksimum rata-rata 10 menit (JMA); JTWC memakai 1 menit",
+            "prakiraan": pra, "tautan": tautan}
+
+
+def tambah_jma(aktif, unduh_json_fn):
+    """Beri blok `jma` pada sistem aktif yang cocok (nama sama, atau posisi amatan <= JMA_MAKS_KM). Gagal satu = lewati. -> (jumlah JMA dilihat, galat)"""
+    galat, dilihat = [], 0
+    daftar = unduh_json_fn(JMA + "targetTc.json")
+    for t in daftar:
+        try:
+            tc = t["tropicalCyclone"]
+            spec = unduh_json_fn(f"{JMA}{tc}/specifications.json")
+            blok = jma_dari(spec, f"https://www.jma.go.jp/bosai/map.html#contents=typhoon&tc={tc}")
+            dilihat += 1
+            if not blok:
+                continue
+            def jarak(s):
+                a = next((p for p in s["lintasan"] if p[4] == "amatan"), s["lintasan"][0])
+                return jarak_km(a[1], a[2], blok["posisi"][0], blok["posisi"][1])
+            cocok = [s for s in aktif if norma(s["nama"]) == norma(blok["nama"]) and "jma" not in s]
+            if not cocok:
+                cocok = [s for s in aktif if "jma" not in s and jarak(s) <= JMA_MAKS_KM]
+            if cocok:
+                s = min(cocok, key=jarak)
+                s["jma"] = {**blok, "selisih_posisi_km": round(jarak(s))}
+        except Exception as e:
+            galat.append(f"JMA {t.get('tropicalCyclone')}: {e}")
+    return dilihat, galat
+
+
 def main():
     acuan, gagal, aktif, dilihat, sumber = dt.datetime.now(dt.timezone.utc), [], [], 0, []
     try:
@@ -179,11 +229,17 @@ def main():
         gagal += gl
     except Exception as e:
         gagal.append(f"GDACS: {e}")
+    try:   # silang cek JMA: gagal tidak menjatuhkan keluaran JTWC/GDACS
+        n_jma, gl = tambah_jma(aktif, unduh_json)
+        sumber.append(f"JMA (jma.go.jp), {n_jma} topan dilihat")
+        gagal += gl
+    except Exception as e:
+        gagal.append(f"JMA: {e}")
     if not sumber:
         # semua sumber tak terjangkau: berkas lama dibiarkan (bukan "tidak ada siklon")
         raise RuntimeError("; ".join(gagal))
     simpan(os.path.join(KELUAR, "cuaca_siklon.json"), {"dibuat": sekarang(), "sumber": sumber, "gagal": gagal, "aktif": aktif})
-    print(f"cuaca siklon: {dilihat} peringatan JTWC, {len(aktif)} aktif di kotak; gagal {len(gagal)}", file=sys.stderr)
+    print(f"cuaca siklon: {dilihat} peringatan JTWC, {len(aktif)} aktif di kotak; gagal {len(gagal)}; berblok JMA {sum(1 for s in aktif if 'jma' in s)}", file=sys.stderr)
 
 
 CONTOH = """WTPN32 PGTW 180900
@@ -249,6 +305,25 @@ def uji():
             raise SystemExit(f"URL {jelek!r} harus ditolak")
         except ValueError:
             pass
+    # JMA: respons nyata 1 Nov 2026 (In-fa, 2631) dicocokkan lewat nama dan lewat posisi
+    spec = json.load(open(os.path.join(F, "jma_specifications_infa.json")))
+    jb = jma_dari(spec, "u")
+    assert jb["nama"] == "In-fa" and jb["tekanan_hpa"] == 950 and jb["angin_kt"] == 85 and jb["embusan_kt"] == 120 and jb["posisi"] == [22.1, 144.0] and jb["prakiraan"][0][:3] == [24, 22.7, 140.5], jb
+    mk = lambda nama, la, lo: {"id": "x", "nama": nama, "lintasan": [["t", la, lo, 80, "amatan"]]}
+    fake = lambda url: [{"tropicalCyclone": "TC2637"}] if url.endswith("targetTc.json") else spec
+    a1, a2, a3 = [mk("In-Fa", 0, 0)], [mk("Lain", 22.0, 144.2)], [mk("Lain", 0, 0)]
+    for a in (a1, a2, a3):
+        assert tambah_jma(a, fake) == (1, [])
+    assert "jma" in a1[0] and a2[0]["jma"]["selisih_posisi_km"] < 50 and "jma" not in a3[0]    # nama sama / posisi dekat cocok; jauh dan beda nama tidak
+    def rusak(url):
+        if url.endswith("targetTc.json"):
+            return [{"tropicalCyclone": "A"}, {"tropicalCyclone": "B"}]
+        if "/A/" in url:
+            raise OSError("putus")
+        return spec
+    b = [mk("In-fa", 0, 0)]
+    n, g = tambah_jma(b, rusak)
+    assert n == 1 and len(g) == 1 and "jma" in b[0]       # satu topan gagal, yang lain tetap
     print("ok siklon")
 
 

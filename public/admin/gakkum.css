@@ -38,10 +38,10 @@ body.gk-buka{overflow:hidden}
 .gk-cap{font-size:10px;text-align:right;color:#425466}
 .gk-catatan{border:1.5px solid #a4401f;border-radius:6px;padding:6px 10px;background:#fff5ef;margin:10px 0}
 .gk-kv{width:100%;border-collapse:collapse}
-.gk-kv th{text-align:left;vertical-align:top;width:34%;font-weight:700;color:#425466;padding:3px 8px 3px 0;border-bottom:1px solid #e3e8ee}
+.gk-kv th{text-align:center;vertical-align:top;width:34%;font-weight:700;color:#425466;padding:3px 8px 3px 0;border-bottom:1px solid #e3e8ee}
 .gk-kv td{padding:3px 0;border-bottom:1px solid #e3e8ee}
 .gk-tb{width:100%;border-collapse:collapse;margin-top:8px}
-.gk-tb th{background:#14202e;color:#fff;text-align:left;padding:4px 8px;font-size:10.5px}
+.gk-tb th{background:#14202e;color:#fff;text-align:center;padding:4px 8px;font-size:10.5px}
 .gk-tb td{padding:3px 8px;border-bottom:1px solid #e3e8ee}
 .gk-sub{font-size:10px;color:#425466;margin-top:6px}
 .gk-hari{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:3px}

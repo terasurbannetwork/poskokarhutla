@@ -737,8 +737,8 @@ SIANG_SIAP = dt.time(9, 30)                # FIRMS NRT terlambat ~3 jam: sesudah
 
 
 def siang_masuk(rec):
-    """True bila rekaman hari UTC (sebagian) memuat deteksi n/h NOAA-20 DAN NOAA-21 dari lintasan siang."""
-    return {s for m, s in zip(rec["m"], rec["s"]) if SIANG[0] <= m <= SIANG[1]} == {0, 1}
+    """True bila rekaman hari UTC (sebagian) memuat deteksi n/h NOAA-20 dari lintasan siang (NOAA-21 tidak wajib; pemilik, 31 Okt 2026)."""
+    return 0 in {s for m, s in zip(rec["m"], rec["s"]) if SIANG[0] <= m <= SIANG[1]}
 
 
 def belum_kini(rek, hd, akhir, sekarang, kunci, ket, wil, log=print):
@@ -750,7 +750,7 @@ def belum_kini(rek, hd, akhir, sekarang, kunci, ket, wil, log=print):
     if akhir != d - HARI or sekarang < dt.datetime.combine(d, SIANG_SIAP, UTC):
         return None
     baris, ok = unduh(d, d, kunci, ambil_pelan, BBOX, ket, famili=("VIIRS_NOAA20", "VIIRS_NOAA21"))
-    if ok.get(d) != {"VIIRS_NOAA20", "VIIRS_NOAA21"}:
+    if "VIIRS_NOAA20" not in ok.get(d, set()):   # NOAA-21 telat/hilang: NOAA-20 saja, bobot() memberinya bobot penuh di pita yang N21-nya 0 (pemilik, 31 Okt 2026)
         log(f"peta_karhutla: belum hari ini dilewati, unduhan {d} tak utuh")
         return None
     rec = rekam(baris, wil, sekarang.isoformat(timespec="seconds"), titik_palsu.sel_industri()[0]).get(d.isoformat()) or baru_rekaman(sekarang.isoformat())
@@ -1188,6 +1188,10 @@ def uji_kini(baris, wil, rek, hd, baru):
         assert jalan(dt.time(9, 0)) is None and jalan(dt.time(12, 0), d - 2 * HARI) is None, "belum hari ini sebelum lintasan siang lengkap"
         k = jalan(dt.time(12, 0))
         assert k["hari"] == d.isoformat() and k["prov"] == {p: bul(v[2]) for p, v in baru[d.isoformat()].items()}, "belum hari ini != belum hari utuh"
+        unduh = lambda *a, **k: ([x for x in noaa if x[1]["satellite"] == "N20"], {d: {"VIIRS_NOAA20"}})   # NOAA-21 telat: tetap terbit dari NOAA-20 saja
+        k1 = jalan(dt.time(12, 0))
+        n, n1 = sum(k["prov"].values()), sum(k1["prov"].values())
+        assert k1 and 0.5 * n < n1 < 2 * n, f"belum hari ini NOAA-20 saja harus terbit dan sebanding: {n1} vs {n}"
     finally:
         unduh = asli
 

@@ -34,7 +34,8 @@
 #tren tr.klik{cursor:pointer}
 #tren .tw{border:0;box-shadow:none;border-radius:12px}
 #tren .tw th,#tren .tw td{text-align:center}
-#tren .tw th.l,#tren .tw td.l{text-align:left}
+#tren .tw td.l{text-align:left}
+#tren .tw th.l{text-align:center}
 #tren .tw thead th button{justify-content:center}
 #tren .kl-tb td{vertical-align:middle}
 #tren .kl-tb th,#tren .kl-tb td{padding-left:7px;padding-right:7px}

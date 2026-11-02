@@ -132,7 +132,7 @@ button{font:inherit;color:inherit}
 .up-svg.putih{background:#fff;border-radius:10px;padding:6px;margin-top:4px}
 .up-geser{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px}
 .up-geser table{border-collapse:collapse;font-size:13px;min-width:560px;width:100%}
-.up-geser th{background:var(--surface);text-align:left;padding:8px;font-size:12px;color:var(--ink2)}
+.up-geser th{background:var(--surface);text-align:center;padding:8px;font-size:12px;color:var(--ink2)}
 .up-geser td{padding:8px;border-bottom:1px solid var(--line)}
 .up-geser td.ok{color:var(--ok);font-weight:700}.up-geser td.tidak{color:var(--bad);font-weight:700}.up-geser td.pas{color:var(--warn);font-weight:700}
 /* kelas peta dari dossier (gaya.css di generator) */

@@ -4,7 +4,9 @@
 .ak-tw td{white-space:nowrap}
 .ak-tw tbody tr[data-ak]{cursor:pointer}
 .ak-nm{font-weight:700;text-align:left}
-.ex .ak-tw th:nth-child(2),.ex .ak-tw td.ak-nm{text-align:left}.ex .ak-tw th:nth-child(2) button{justify-content:flex-start;text-align:left;margin:0}
+.ex .ak-tw td.ak-nm{text-align:left}
+.ex .ak-tw th:nth-child(2){text-align:center}
+.ex .ak-tw th:nth-child(2){text-align:center}.ex .ak-tw th:nth-child(2) button{justify-content:flex-start;text-align:left;margin:0}
 .ak-gr{color:var(--ink2);font-size:11.5px;max-width:150px;overflow:hidden;text-overflow:ellipsis}
 .ak-ng{min-width:44px}
 .ak-mt{color:var(--ink2);opacity:.7;font-size:11.5px}
@@ -77,7 +79,8 @@
 @keyframes akdn{to{box-shadow:0 0 0 22px #c9503a00}}
 @media (prefers-reduced-motion:reduce){.ak-dn{animation:none}}
 .ak-kt tbody tr{cursor:pointer}
-.ak-kt th:nth-child(2),.ak-kt td:nth-child(2){text-align:left}
+.ak-kt td:nth-child(2){text-align:left}
+.ak-kt th:nth-child(2){text-align:center}
 /* kartu negara: industri kiri, titik panas kanan bawah */
 .ak-lf{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .ak-tj{flex:none;margin-left:auto;padding:1px 7px;border-radius:999px;background:color-mix(in oklch, #c9503a 12%, transparent);color:#a63d2a;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -118,4 +121,4 @@
 .ak-kpk{margin:0 0 8px;color:var(--muted);font-size:11px;line-height:1.45}
 /* kartu Perusahaan: label periode kecil di kepala kolom angka (27 Okt 2026) */
 .ak-ph2{display:block;white-space:normal;line-height:1.25}.ak-pr{display:block;font-weight:600;font-size:10px;opacity:.7;white-space:nowrap}
-.ak-tw th.n button{justify-content:flex-end;text-align:right;margin-left:auto;max-width:132px}.ak-tw td.n,.ak-tw th.n{text-align:right;font-variant-numeric:tabular-nums}
+.ak-tw th.n button{justify-content:flex-end;text-align:right;margin-left:auto;max-width:132px}.ak-tw td.n,.ak-tw th.n{text-align:center;font-variant-numeric:tabular-nums}

@@ -347,13 +347,58 @@ def uji():
             y += langkah
         if ganda or celah or beda:
             salah.append(f"{k}: sampel titik di >1 kecamatan {ganda}, di kab tapi tanpa kecamatan {celah}, kab tak cocok {beda}")
+    salah += tally_kemendagri()
     if salah:
         sys.exit("batas uji GAGAL:\n  " + "\n  ".join(salah[:40]))
     print("batas uji: 38 provinsi, skema, cincin, tanpa silang, sampel tanpa tumpang tindih/celah, ukuran OK")
+
+
+SELISIH = os.path.join(os.path.dirname(__file__), "selisih_kemendagri.json")
+
+
+def hitung_selisih():
+    """{kunci "NN|Kab": [jumlah kecamatan BIG, jumlah kecamatan Kemendagri]} untuk kab/kota yang tidak sama. Kemendagri =
+    kode kecamatan unik (NN.NN.NN) di public/geo/desa/<kode kab>.json; peta kode di public/data/kemitraan/kode.json."""
+    big = collections.Counter()
+    for k in KODE:
+        for f in json.load(open(os.path.join(GEO, "kecamatan", k + ".json")))["features"]:
+            big[f"{k}|{f['properties']['kab']}"] += 1
+    out = {}
+    for v in json.load(open(os.path.join(AKAR, "public/data/kemitraan/kode.json"))).values():
+        p = os.path.join(GEO, "desa", f"{v.get('kemendagri')}.json")
+        if not v.get("kemendagri") or not os.path.exists(p):
+            continue
+        n = len({f["properties"]["kd"][:8] for f in json.load(open(p))["features"]})
+        if big.get(v["kunci_nama"], 0) != n:
+            out[v["kunci_nama"]] = [big.get(v["kunci_nama"], 0), n]
+    return out
+
+
+def tally_kemendagri():
+    """Batas BIG wajib tally dengan Kemendagri (pemilik 31 Okt 2026, setelah Papua Selatan tertulis 80 kecamatan padahal
+    Kemendagri 82: Tomor Birip dan Sor Ep di Asmat belum berbatas di BIG). Selisih lama tercatat di selisih_kemendagri.json
+    sebagai utang yang hanya boleh menyusut: kab/kota baru yang tidak tally, atau selisih yang membesar, GAGAL.
+    Perbarui data BIG (ambil, cocok, bangun) lalu tulis ulang berkasnya: python3 scripts/geo/batas.py selisih"""
+    lama = json.load(open(SELISIH))["kab"]
+    salah = []
+    for k, (b, n) in hitung_selisih().items():
+        if k not in lama:
+            salah.append(f"{k}: kecamatan BIG {b} != Kemendagri {n} (selisih baru; BIG harus tally dengan Kemendagri)")
+        elif abs(b - n) > abs(lama[k][0] - lama[k][1]):
+            salah.append(f"{k}: selisih BIG {b} vs Kemendagri {n} membesar dari {lama[k]}")
+    return salah
+
+
+def tulis_selisih():
+    d = {"_catatan": "Utang tally batas BIG vs Kemendagri (pemilik 31 Okt 2026). Hanya boleh menyusut; dicek batas.py uji. "
+                     "BIG 0 = biasanya nama kab beda kunci (perlu pemetaan nama), bukan poligon hilang.",
+         "kab": dict(sorted(hitung_selisih().items()))}
+    json.dump(d, open(SELISIH, "w"), ensure_ascii=False, indent=1)
+    print(f"{len(d['kab'])} kab/kota tidak tally -> {SELISIH}")
 
 
 if __name__ == "__main__":
     if sys.argv[1:] == ["bangun", "provinsi"]:  # hanya provinsi.json (menyetel INTERVAL_PROV tanpa 15 menit kecamatan)
         bangun(True)
     else:
-        {"ambil": ambil, "cocok": cocok, "bangun": bangun, "uji": uji}[sys.argv[1]]()
+        {"ambil": ambil, "cocok": cocok, "bangun": bangun, "uji": uji, "selisih": tulis_selisih}[sys.argv[1]]()

@@ -75,7 +75,8 @@ mark{background:color-mix(in srgb,var(--emas) 40%,transparent);color:inherit;bor
 .hk-tabel-sec .hk-urut{all:unset;cursor:pointer;color:#fff;font-weight:800;letter-spacing:inherit;text-transform:inherit}
 .hk-tabel-sec .hk-urut:focus-visible{outline:2px solid var(--emas);outline-offset:3px;border-radius:4px}
 .hk-tabel-sec td{vertical-align:top}
-.hk-tabel-sec td.n,.hk-tabel-sec th{text-align:left}
+.hk-tabel-sec td.n{text-align:left}
+.hk-tabel-sec th{text-align:center}
 .hk-tabel-sec td a{font-weight:700}
 .hk-tabel-sec .bn-isian{max-width:360px}
 

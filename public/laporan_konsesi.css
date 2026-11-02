@@ -49,7 +49,7 @@ main.kn{position:static;inset:auto}
 .kn-kartu h3{font:800 13px var(--display);margin:14px 0 6px;color:var(--ink)}
 .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
 .kn-tb{width:100%;border-collapse:collapse;font-size:11.5px;line-height:1.35}
-.kn-tb th{background:#0b2545;color:#fff;text-align:left;font:800 9.5px var(--font);letter-spacing:.04em;text-transform:uppercase;padding:7px 6px;white-space:nowrap;border-bottom:3px solid #6b9bd6;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.kn-tb th{background:#0b2545;color:#fff;text-align:center;font:800 9.5px var(--font);letter-spacing:.04em;text-transform:uppercase;padding:7px 6px;white-space:nowrap;border-bottom:3px solid #6b9bd6;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .kn-tb td{padding:5px 6px;border-top:1px solid var(--line);vertical-align:top}
 .kn-tb tbody tr:not(.kn-tot):hover td{background:var(--surface)}
 .kn-tb .r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -128,7 +128,7 @@ main.kn{position:static;inset:auto}
 .kn-kpi-p b{font-size:24px}
 .kn-info{display:grid;gap:10px;align-content:start}
 .kn-it{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:12.5px}
-.kn-it th{background:#0b2545;color:#fff;text-align:left;font:800 10.5px var(--font);letter-spacing:.07em;text-transform:uppercase;padding:7px 12px;border-bottom:3px solid #6b9bd6;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.kn-it th{background:#0b2545;color:#fff;text-align:center;font:800 10.5px var(--font);letter-spacing:.07em;text-transform:uppercase;padding:7px 12px;border-bottom:3px solid #6b9bd6;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .kn-it td{padding:6px 12px;border-top:1px solid var(--line);vertical-align:middle}
 .kn-it tbody tr:first-child td{border-top:0}
 .kn-it td:first-child{width:128px;color:var(--ink2);font-weight:700;font-size:11.5px;background:var(--surface);print-color-adjust:exact;-webkit-print-color-adjust:exact}

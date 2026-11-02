@@ -18,7 +18,7 @@
 .pd-hal{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--ink2)}
 .pd-kosong{color:var(--ink2);padding:14px;text-align:center;font-weight:600}
 .pd-draf{--pil:var(--c3)}.pd-terkirim{--pil:var(--c4)}.pd-unit{--pil:var(--c5)}.pd-menunggu{--pil:var(--c2)}.pd-info{--pil:var(--c6)}
-.ad-tabel td.pd-aksi{text-align:right;white-space:nowrap}
+.ad-tabel td.pd-aksi{text-align:center;white-space:nowrap}
 .ad-tabel td.pd-aksi .ad-tombol{margin:0 0 0 6px}
 
 /* pop-up lebar */

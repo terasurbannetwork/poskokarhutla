@@ -17,6 +17,17 @@ Daftar pekerjaan yang masih terbuka. Coret atau hapus baris saat selesai. Bagian
 | A8 | Selisih hot `hotspot.json` vs `peta_karhutla.json` +0,3-0,6% per hari | Dugaan NRT vs arsip SP dan jam tarik, belum dibuktikan | |
 | A9 | Komentar basi "setara SiPongi/BNPB" | `public/index.html` sekitar baris 1795 | |
 
+## A0. Batas wilayah BIG harus tally dengan Kemendagri (pemilik 31 Okt 2026)
+
+Paparan Papua Selatan menulis "dari 80 kecamatan" padahal Kemendagri 82: Tomor Birip dan Sor Ep (Asmat) belum berbatas
+di BIG, wilayahnya ikut distrik induk. Nasional: BIG 7.182 kecamatan, Kemendagri 7.268, 25 kab/kota tidak tally.
+
+| # | Pekerjaan | Status / menunggu | Rujukan |
+|---|---|---|---|
+| A0.1 | Perbarui data batas BIG (`batas.py ambil`, `cocok`, `bangun`) ke edisi terbaru, lalu `batas.py selisih` | Terbuka. Gerbang `batas.py uji` (data.yml) menolak selisih baru atau yang membesar | `scripts/geo/batas.py`, `scripts/geo/selisih_kemendagri.json` |
+| A0.2 | Kab/kota bernilai BIG 0 (Mukomuko, Pangkep, Siau Tagulandang Biaro, Toli-Toli, Kota Tanjungbalai, Kota Padangsidimpuan, Kota Parepare): kemungkinan nama kunci beda, bukan poligon hilang | Terbuka: petakan nama | `public/data/kemitraan/kode.json` `kunci_nama` |
+| A0.3 | Distrik baru yang belum ada di BIG (mis. Tomor Birip, Sor Ep): bila BIG belum terbit, deck wajib mencatat jumlah Kemendagri dan kecamatan yang belum berbatas | Aturan deck | |
+
 ## B. Git dan kebersihan repo
 
 | # | Pekerjaan | Status |

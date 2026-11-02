@@ -104,6 +104,7 @@ ulang yang berubah.
 | Mesin repo          | `.github/workflows/**`, `package.json`, `scripts/agents/**`   | —                                                   | `mekanik-mesin` |
 | Gerbang             | `tests/agen/**`, `tests/beban/**`                             | `npm run uji:agen`                                  | `penulis-gerbang` |
 | Kemitraan kampus `/kemitraan` | `public/kemitraan*`, `public/kemitraan/**`, `public/data/kemitraan/**`, `scripts/kemitraan/**`, `tests/kemitraan/**` (layar+pipeline); `src/kemitraan*.js`, `migrations/0080-0084` (warga-api) | D1 `km_*`, R2 `kemitraan/`; `kemitraan.yml` harian, `kemitraan-pakar.yml` bulanan | `kampus` |
+| Lapangan `/petugas` | `public/petugas/**`, `tests/lapangan/**`, `scripts/lapangan/**`, `data/kajian-bnpb/lapangan/**` (lapangan); `src/lapangan*.js`, `migrations/0095-0098` (warga-api) | D1 `orang`, `lp_*`, `wa_antre`; R2 `lapangan/` | `lapangan` |
 
 ### 2.1 SIPPA (pipa portabel karhutla dan banjir): baca dulu, baru bangun
 
@@ -140,6 +141,19 @@ pencocokan pakar, riset dan dana, satgas kampus, talenta), baca dokumen di
 
 Aturan berhentinya sama dengan §2.1.
 
+### 2.3 Pegawai dan Relawan Lapangan (`/petugas`): baca dulu, baru bangun
+
+Sebelum menyentuh apa pun tentang data induk pegawai dan relawan, absen pindai wajah, logbook harian lapangan, atau
+panggilan relawan lewat bot WA, baca dokumen di `data/kajian-bnpb/lapangan/` dengan urutan otoritas ini:
+
+1. `KEPUTUSAN-LAPANGAN.md`: keputusan pemilik, menang atas semuanya.
+2. `RISET.md` (+ `riset/R1-R3`): GitHub yang ditiru, praktik lazim, kode repo yang dipakai ulang.
+3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md` (sudut wajah, ambang, status absen),
+6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md` (berkas, D1 0095-0098, rute), 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LP-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Vektor wajah tidak pernah keluar dari Worker.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
@@ -154,6 +168,17 @@ Checkout utama sering dipegang beberapa sesi Claude sekaligus dan index git-nya
 dipakai bersama. Fan-out yang membaca aman di tree yang sama; fan-out yang
 menulis pakai `isolation: "worktree"`. Commit dengan path spesifik
 (`git commit -- <berkas>`), jangan `git add -A`.
+
+### 3.4 Aturan pemilik masuk gerbang, bukan memory
+
+Tiap kali pemilik bilang "catat" atau mengulang koreksi, tanya dulu apakah
+mesin bisa memeriksanya. Kalau bisa, aturannya dijadikan gerbang uji
+(`tests/agen/**`) atau hook (`.claude/settings.json`) di giliran yang sama,
+dan pelanggaran yang sudah ada dibetulkan di commit yang sama. Memory cuma
+untuk fakta, penunjuk, dan selera yang tidak terukur. Status dan to-do masuk
+docs/TIKET. Aturan yang bertentangan dengan aturan lama ditanyakan ke pemilik,
+lalu yang kalah dihapus. Latar dan rencana kerjanya ada di
+`docs/buku-pegangan/AUDIT-ATURAN-HARNESS.md`.
 
 ## 6. Review
 

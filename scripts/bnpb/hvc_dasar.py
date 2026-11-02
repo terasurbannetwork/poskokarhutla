@@ -41,8 +41,44 @@ def ambil(url, data=None, kepala=None, coba=3, batas_waktu=120, mentah=False, je
             time.sleep(10 * (i + 1))
 
 
+TAK_TERTULIS = "tahun sumber tidak tertulis"
+
+
+def tahun_data(nama, isi):
+    """Field akar `tahun_data` (REKOMENDASI-100 no. 21): tahun/rentang data sumber; tak tertulis di sumber -> dikatakan, tidak dikarang."""
+    if nama == "dibi_kab_tahun.json":
+        th = sorted({r[1] for r in isi["baris"]})
+        return f"DIBI {th[0]}-{th[-1]}"
+    if nama == "risiko_hvc.json":
+        return f"label DIBI {TAHUN_MULAI_DIBI}-{isi['uji']['pembagian']['uji'].split('-')[1]}; H InaRISK, V (kerentanan.json), C (ikd.json): {TAK_TERTULIS}"
+    if nama == "puso.json":
+        return f"BPS {isi['tahun_min']}-{isi['tahun_maks']}" if isi.get("tahun_min") else TAK_TERTULIS
+    if nama == "terpapar.json":
+        return f"Dukcapil diakses {isi['dukcapil_diakses']}; InaRISK: {TAK_TERTULIS}"
+    if nama == "rs_kapasitas.json":
+        return f"prakiraan CAMS dibuat {isi['prakiraan_dibuat']}; penduduk Dukcapil: {TAK_TERTULIS}"
+    if nama == "kerentanan.json":
+        return f"Dukcapil dan Meta RWI: {TAK_TERTULIS}; BPS kemiskinan: lihat bps"
+    return f"InaRISK raster: {TAK_TERTULIS}"   # ikd.json
+
+
+TAHUN_MULAI_DIBI = 2015   # sama dengan risiko_hvc.TAHUN_MULAI
+
+
+def sisip_tahun_data():
+    """Mode tanpa jaringan: sisipkan tahun_data ke JSON yang sudah ada tanpa menarik ulang sumber."""
+    for n in ("ikd", "risiko_hvc", "kerentanan", "terpapar", "dibi_kab_tahun", "puso", "rs_kapasitas"):
+        jalur = os.path.join(KELUAR, n + ".json")
+        d = json.load(open(jalur, encoding="utf-8"))
+        d["tahun_data"] = tahun_data(n + ".json", d)
+        s = json.dumps(d, ensure_ascii=False, separators=(",", ":"))
+        open(jalur, "w", encoding="utf-8").write(s)
+        print(n, "->", d["tahun_data"])
+
+
 def simpan_plafon(nama, isi, plafon=PLAFON):
     """-> jalur. Tulis public/data/bnpb/<nama>; gagal keras bila hasil > plafon (aturan: <= 2 MB per berkas)."""
+    isi["tahun_data"] = tahun_data(nama, isi)
     jalur = os.path.join(KELUAR, nama)
     _kej.simpan(jalur, isi)
     ukuran = os.path.getsize(jalur)
@@ -90,4 +126,4 @@ def _cek():
 
 
 if __name__ == "__main__":
-    _cek() if sys.argv[1:] == ["--cek"] else print(__doc__)
+    _cek() if sys.argv[1:] == ["--cek"] else sisip_tahun_data() if sys.argv[1:] == ["--sisip-tahun"] else print(__doc__)

@@ -68,8 +68,13 @@ def _bagian(teks, awal, akhir):
 
 
 def _total(v):
-    """Baris total provinsi ("*9 sortie/14.400 kg NaCl*") yang diikuti rincian per pesawat yang jumlahnya sama: pakai totalnya saja."""
-    return v[0] if len(v) > 1 and abs(sum(v[1:]) - v[0]) < 1 else sum(v)
+    """Baris total provinsi ("*9 sortie/14.400 kg NaCl*") yang diikuti rincian per pesawat yang jumlahnya sama: pakai totalnya saja.
+    Total bisa di depan, di belakang ("Total penyemaian ... tercatat *11.600 kg NaCl*", Kalteng 31 Okt), atau keduanya."""
+    sama = lambda a, b: abs(a - b) < 1
+    if len(v) > 1 and sama(sum(v[1:]), v[0]): return v[0]
+    if len(v) > 2 and sama(v[-1], v[0]) and sama(sum(v[1:-1]), v[0]): return v[0]
+    if len(v) > 1 and sama(sum(v[:-1]), v[-1]): return v[-1]
+    return sum(v)
 
 
 PEMILIK = {'BNPB': 'BNPB', 'TNI': 'TNI', 'KEMENHUT': 'Kemenhut', 'PEMDA': 'Pemda', 'PT SINARMAS': 'PT Sinarmas'}   # ejaan pil deck; WA 28 Okt huruf besar
@@ -126,7 +131,7 @@ def operasi(teks):
         hujan = None
         h = re.search(r'Hujan\s+\*?([^*\n]*?)\*?\s*(?:terpantau|dilaporkan|pada)[^\n]*?di \*([^*]+)\*(?:[^\n]*?pada \*?(\d+) (\w+))?', isi, re.I)   # "hujan dilaporkan" huruf kecil (Sumsel 28 Okt)
         h2 = re.search(r'Hujan\s+([a-z ]+?)\s+pada (\d+) (\w+)[^\n]*?di \*([^*]+)\*', isi)
-        h3 = re.search(r'Hujan\s+dilaporkan di ([^*\n]+?)(?: pada [^.\n]*)?\.', isi)
+        h3 = re.search(r'Hujan\s+dilaporkan(?:\s+terjadi)?\s+di ([^*\n]+?)(?:,? dengan [^.\n]*)?(?: pada [^.\n]*)?\.', isi)   # "terjadi di X dengan intensitas ..." (Sumsel 30 Okt)
         if h2:   # "Hujan <intensitas> pada <tgl> ... di *X*" (tanggal di depan)
             hujan = {'intensitas': h2.group(1).strip().lower(), 'lokasi': h2.group(4), 'tanggal': dt.date(tanggal.year, BULAN[h2.group(3).lower()], int(h2.group(2)))}
         elif h:

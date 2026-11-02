@@ -15,6 +15,7 @@ import {tx, num, wib, tglSah, RE_PROV, modOK, superOK} from "./posko.js";
 import {laju, lajuIP, kodeBaru, pemegangKode, halamanBnpbPublik} from "./bnpb.js";
 import {halamanAdmin} from "./statistik.js";
 import {halamanBnpb} from "./admin_halaman.js";
+import {salinOrang, hapusOrang} from "./lapangan.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, MAKS_SESI_MENIT = 960;
 /* daftar tetap: sama dengan CHECK/trigger di 0023 (dijaga tests/warga/relawan.test.mjs) dan public/bnpb/relawan.js (label) */
@@ -270,7 +271,8 @@ async function ubahSaya(env, req, kini) {
 /* hak UU PDP. Dikosongkan: semua identitas dan kuasi-identifier (nama, kontak, kab, organisasi, kampus_id, keahlian, ketersediaan, gol. darah, sertifikat, alasan, pembuat/pemverifikasi `oleh`,
    tanggal verifikasi) di relawan; lat/lon check-in dan `oleh` di jam; polis, catatan nilai, `oleh` di penugasan; pelatihan dihapus. Yang TETAP: prov (agregat per provinsi), jalur, menit/sah jam kerja,
    status/asuransi/nilai penugasan, dan stempel dibuat/diubah sebagai angka tanpa identitas. hash WA/email hanya dipertahankan untuk daftar_hitam (penolak pendaftaran ulang; hitam=true). */
-const anonimkan = (env, id, kini, hitam = false) => env.DB.batch([
+const anonimkan = async (env, id, kini, hitam = false) => { await anonimkanRelawan(env, id, kini, hitam); await hapusOrang(env, id); };   // + salinan modul Lapangan (0095)
+const anonimkanRelawan = (env, id, kini, hitam) => env.DB.batch([
   tutupJam(env, id, kini), batalkanTugas(env, id, kini),
   env.DB.prepare("DELETE FROM relawan_pelatihan WHERE relawan_id = ?").bind(id),
   env.DB.prepare("UPDATE relawan_jam SET lat = NULL, lon = NULL, oleh = NULL WHERE relawan_id = ?").bind(id),
@@ -389,6 +391,7 @@ async function putusKampus(env, req, id, kini) {
   const ke = aksi === "verifikasi" ? "diverifikasi" : "ditolak";
   const x = await env.DB.prepare("UPDATE relawan SET status = ?, alasan = ?, diverifikasi = ?, diubah = ?, oleh = ? WHERE id = ? AND kampus_id = ? AND status = 'terdaftar'")
     .bind(ke, aksi === "tolak" ? alasan : null, aksi === "verifikasi" ? kini : null, kini, "kampus:" + k.id, id, k.id).run();
+  if (x.meta.changes && ke === "diverifikasi") await salinOrang(env, id, kini).catch(() => {});   // modul Lapangan (0095): baris orang jenis relawan; tabel belum ada = dilewati
   return x.meta.changes ? json({id, status: ke}) : gagal(409, `relawan berstatus ${r.status}; hanya yang masih terdaftar yang bisa diputuskan`);
 }
 async function putusJam(env, req, id, kini, kampus) {
@@ -497,6 +500,7 @@ async function ubahAdmin(env, req, url, id, kini) {
         .bind(t.ke, aksi === "verifikasi" || aksi === "siap" || aksi === "aktifkan" ? null : alasan, t.ke, kini, kini, mod, id, r.status),
     ]);
   } catch (e) { if (/UNIQUE/i.test(e?.message)) return gagal(409, "nomor WA atau email ini sudah dipakai relawan aktif lain"); throw e; }
+  if (t.ke === "diverifikasi") await salinOrang(env, id, kini).catch(() => {});   // modul Lapangan (0095): baris orang jenis relawan; tabel belum ada = dilewati
   return json({id, status: t.ke});
 }
 

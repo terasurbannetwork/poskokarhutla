@@ -1,0 +1,1721 @@
+{
+ "spek": "kegiatan-merauke",
+ "pesan_kunci": "Lahan di Merauke dibuka dengan api: semak dibakar dulu, pohon ditumbangkan sesudahnya; api terpusat di cluster PT Merauke Sawit Jaya.",
+ "slide": [
+  {
+   "nomor": 1,
+   "jenis": "sampul",
+   "asal": "kegiatan-merauke#1",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    158.16,
+    410.0,
+    109.68,
+    3
+   ],
+   "peta": null,
+   "struktur": [
+    "Foto: kegiatan udara tim BNPB",
+    "Kabupaten Merauke, Papua Selatan, 31 Oktober 2026",
+    "Dipresentasikan oleh",
+    "Tim Ahli dan Tim Sus IT BNPB",
+    "Badan Nasional Penanggulangan Bencana",
+    "Jakarta, 1 November 2026",
+    "Ditujukan khusus untuk Kepala BNPB",
+    "© 2026 Badan Nasional Penanggulangan Bencana",
+    "Ketangguhan Bangsa dalam Menghadapi Bencana"
+   ],
+   "warna": [
+    [
+     "00499D",
+     "aksen"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "7F93AA",
+     "garis"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "garis"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo",
+    "logo"
+   ],
+   "panel": [],
+   "naik": 0,
+   "subjudul": [
+    43.2,
+    279.84000000000003,
+    410.0,
+    19.5
+   ]
+  },
+  {
+   "nomor": 2,
+   "jenis": "galeri",
+   "asal": "kegiatan-merauke#2",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "2",
+    "NASA FIRMS (VIIRS dan MODIS), diolah BNPB, 31 Okt 2026 WIB; kegiatan udara tim BNPB, 31 Okt 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "aksen"
+    ],
+    [
+     "C8102E",
+     "pil"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F8DDE0",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Lahan Merauke dibuka dengan api: semak dibakar dulu, pohon ditumbangkan kemudian; {{angka:mk.cp5|satuan}} di sekitar PT MSJ",
+   "pesan": "Ringkasan kegiatan",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [
+    "foto"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "foto",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     220.8,
+     431.4,
+     279.2,
+     "Tepi lahan PT Merauke Sawit Jaya, 31 Oktober"
+    ],
+    [
+     485.4,
+     220.8,
+     431.4,
+     279.2,
+     "Temuan kegiatan udara"
+    ]
+   ],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 3,
+   "jenis": "daftar-isi",
+   "asal": "kegiatan-merauke#3",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "Kegiatan Udara Karhutla Merauke",
+    "01",
+    "4–8",
+    "02",
+    "9–10",
+    "3"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo"
+   ],
+   "panel": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 4,
+   "jenis": "pembatas-seksi",
+   "asal": "kegiatan-merauke#4",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "01",
+    "01",
+    "4–8",
+    "02",
+    "9–10",
+    "4"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FDF4EC",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo"
+   ],
+   "panel": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 5,
+   "jenis": "galeri",
+   "asal": "kegiatan-merauke#5",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "5",
+    "01  ",
+    "02  ",
+    "Kegiatan udara tim BNPB, 31 Okt 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Klaim \"tebang, susun, lalu bakar\" tidak sesuai lapangan: semak dibakar dulu di bawah pohon tegak, pohon ditumbangkan sesudahnya",
+   "pesan": "Modus pembukaan lahan",
+   "jenis_slide": "panel",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [
+    "foto"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "foto",
+    "ikon",
+    "foto",
+    "ikon",
+    "foto",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     137.0,
+     210.3,
+     363.0,
+     "1. Semak dibakar"
+    ],
+    [
+     264.3,
+     137.0,
+     210.3,
+     363.0,
+     "2. Pohon ditumbang"
+    ],
+    [
+     485.4,
+     137.0,
+     210.3,
+     363.0,
+     "3. Kayu ditumpuk"
+    ],
+    [
+     706.5,
+     137.0,
+     210.3,
+     363.0,
+     "Klaim dan kenyataan"
+    ]
+   ],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 6,
+   "jenis": "temuan-peta",
+   "asal": "kegiatan-merauke#6",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": {
+    "legenda": true,
+    "unsur_peta": {
+     "sumber_batas": "Citra Esri World Imagery; rute renlap BNPB 30 Okt 2026",
+     "sistem_referensi": "WGS84",
+     "proyeksi": "Web Mercator"
+    },
+    "resmi": true,
+    "batas": [
+     112.34296754250387,
+     184.8,
+     400.0570324574961,
+     469.0
+    ],
+    "label": [],
+    "ukuran_label_pt": 9.2
+   },
+   "struktur": [
+    "6",
+    "01  ",
+    "02  ",
+    "Sumber batas: Citra Esri World Imagery; rute renlap BNPB 30 Okt 2026; WGS84; Web Mercator",
+    "NASA FIRMS (VIIRS dan MODIS), diolah BNPB, 31 Okt 2026 WIB, termasuk keyakinan rendah; Renlap rute udara BNPB, 30 Okt 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "aksen"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "EEF5FC",
+     "permukaan"
+    ],
+    [
+     "F8DDE0",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Hotspot 31 Oktober menumpuk di PT MSJ: {{angka:mk.cp5|satuan}} di CP-5 dan {{angka:mk.cp4|satuan}} di CP-4; sembilan check point lain paling banyak {{angka:mk.cp.lain}}",
+   "pesan": "Sebaran titik per check point",
+   "jenis_slide": "peta",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "peta",
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "peta",
+    "ikon"
+   ],
+   "panel": [
+    [
+     480.0,
+     220.8,
+     436.8,
+     279.2,
+     "Hotspot dalam {{angka:mk.radius|satuan}} per check point"
+    ]
+   ],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 7,
+   "jenis": "galeri",
+   "asal": "kegiatan-merauke#7",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "7",
+    "01  ",
+    "02  ",
+    "NASA FIRMS (VIIRS dan MODIS), diolah BNPB, 31 Okt 2026 WIB; kegiatan udara tim BNPB, 31 Okt 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Api dibiarkan menjalar ke hutan dan dekat permukiman; Merauke mencatat {{angka:mk.kab31|satuan}} pada hari terbang",
+   "pesan": "Api menyebar",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "foto"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "foto",
+    "foto",
+    "foto",
+    "foto",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     137.0,
+     517.7,
+     363.0,
+     "Hutan di sekitar lahan terbuka"
+    ],
+    [
+     571.7,
+     137.0,
+     345.1,
+     363.0,
+     "Tiga hari terakhir"
+    ]
+   ],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 8,
+   "jenis": "temuan-peta",
+   "asal": "kegiatan-merauke#8",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": {
+    "legenda": true,
+    "unsur_peta": {
+     "sumber_batas": "Renlap rute udara BNPB 30 Okt 2026; citra Esri World Imagery",
+     "sistem_referensi": "WGS84",
+     "proyeksi": "Web Mercator"
+    },
+    "resmi": true,
+    "batas": [
+     83.82288033298651,
+     184.8,
+     480.99311966701356,
+     469.0
+    ],
+    "label": [],
+    "ukuran_label_pt": 9.2
+   },
+   "struktur": [
+    "8",
+    "01  ",
+    "02  ",
+    "Sumber batas: Renlap rute udara BNPB 30 Okt 2026; citra Esri World Imagery; WGS84; Web Mercator",
+    "Renlap rute udara BNPB, 30 Okt 2026; kegiatan udara tim BNPB, 31 Okt 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "aksen"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Rute {{angka:mk.cp.jumlah|satuan}} ({{angka:mk.rute.km|satuan}}) tidak bisa diterbangi penuh: api besar, jarak pandang rendah",
+   "pesan": "Rencana terbang terhambat asap",
+   "jenis_slide": "peta",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "peta"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "peta",
+    "ikon"
+   ],
+   "panel": [
+    [
+     532.4,
+     220.8,
+     384.4,
+     279.2,
+     "Pelajaran dari penerbangan 31 Oktober"
+    ]
+   ],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 9,
+   "jenis": "pembatas-seksi",
+   "asal": "kegiatan-merauke#9",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "02",
+    "01",
+    "4–8",
+    "02",
+    "9–10",
+    "9"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FDF4EC",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo"
+   ],
+   "panel": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 10,
+   "jenis": "kesimpulan",
+   "asal": "kegiatan-merauke#10",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "10",
+    "01  ",
+    "02  ",
+    "Renlap rute udara BNPB, 30 Okt 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FBE7D6",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Renlap kini disusun dari deteksi panas sampai pompa dan sumber air terdekat, sehingga regu dan pesawat tidak bergerak sembarang",
+   "pesan": "Metode renlap berbasis data",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 11,
+   "jenis": "penutup",
+   "asal": "kegiatan-merauke#11",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    168,
+    410.0,
+    64.32000000000001,
+    3
+   ],
+   "peta": null,
+   "struktur": [
+    "Foto: kegiatan udara tim BNPB",
+    "Tim Ahli dan Tim Sus IT BNPB",
+    "Badan Nasional Penanggulangan Bencana",
+    "117",
+    "Graha BNPB, Jl. Pramuka Kav. 38, Jakarta Timur 13120",
+    "021 2982 7793",
+    "persuratan@bnpb.go.id",
+    "www.bnpb.go.id",
+    "Satu Data Bencana",
+    "@BNPB_Indonesia",
+    "@infoBencanaBNPB",
+    "BNPB Indonesia",
+    "@bnpbindonesia",
+    "© 2026 Badan Nasional Penanggulangan Bencana",
+    "Ketangguhan Bangsa dalam Menghadapi Bencana"
+   ],
+   "warna": [
+    [
+     "00499D",
+     "aksen"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "7F93AA",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo",
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "naik": 0,
+   "subjudul": null
+  }
+ ],
+ "angka": [
+  {
+   "kunci": "mk.cp5",
+   "opsi": "|satuan",
+   "tampil": "231 titik",
+   "nilai": 231,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#2"
+  },
+  {
+   "kunci": "mk.kab31",
+   "opsi": "|",
+   "tampil": "1.206",
+   "nilai": 1206,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#2"
+  },
+  {
+   "kunci": "mk.jagebob31",
+   "opsi": "|",
+   "tampil": "240",
+   "nilai": 240,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#2"
+  },
+  {
+   "kunci": "mk.frp",
+   "opsi": "|",
+   "tampil": "1.781",
+   "nilai": 1781,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#2"
+  },
+  {
+   "kunci": "mk.luas",
+   "opsi": "|",
+   "tampil": "sekitar 3.300",
+   "nilai": 3276,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#2"
+  },
+  {
+   "kunci": "mk.cp5",
+   "opsi": "|satuan",
+   "tampil": "231 titik",
+   "nilai": 231,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#2"
+  },
+  {
+   "kunci": "mk.cp4",
+   "opsi": "|satuan",
+   "tampil": "172 titik",
+   "nilai": 172,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#2"
+  },
+  {
+   "kunci": "mk.cp.lain",
+   "opsi": "|satuan",
+   "tampil": "14 titik",
+   "nilai": 14,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#2"
+  },
+  {
+   "kunci": "mk.cp.jumlah",
+   "opsi": "|satuan",
+   "tampil": "11 check point",
+   "nilai": 11,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renlap rute udara BNPB, 30 Okt 2026",
+   "naskah": "kegiatan-merauke#2"
+  },
+  {
+   "kunci": "mk.cp5",
+   "opsi": "|satuan",
+   "tampil": "231 titik",
+   "nilai": 231,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#6"
+  },
+  {
+   "kunci": "mk.cp4",
+   "opsi": "|satuan",
+   "tampil": "172 titik",
+   "nilai": 172,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#6"
+  },
+  {
+   "kunci": "mk.cp.lain",
+   "opsi": "|",
+   "tampil": "14",
+   "nilai": 14,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#6"
+  },
+  {
+   "kunci": "mk.jagebob31",
+   "opsi": "|",
+   "tampil": "240",
+   "nilai": 240,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#6"
+  },
+  {
+   "kunci": "mk.frp",
+   "opsi": "|",
+   "tampil": "1.781",
+   "nilai": 1781,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#6"
+  },
+  {
+   "kunci": "mk.radius",
+   "opsi": "|satuan",
+   "tampil": "6 km",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Renlap rute udara BNPB, 30 Okt 2026",
+   "naskah": "kegiatan-merauke#6"
+  },
+  {
+   "kunci": "csvteks:data/merauke/cp.csv#cp",
+   "tampil": "CP-1",
+   "nilai": null,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#titik",
+   "tampil": "6",
+   "nilai": 6.0,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#frp",
+   "tampil": "13,1",
+   "nilai": 13.1,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/merauke/cp.csv#cp",
+   "tampil": "CP-2",
+   "nilai": null,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#titik",
+   "tampil": "7",
+   "nilai": 7.0,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#frp",
+   "tampil": "6,0",
+   "nilai": 6.0,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/merauke/cp.csv#cp",
+   "tampil": "CP-3",
+   "nilai": null,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#titik",
+   "tampil": "4",
+   "nilai": 4.0,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#frp",
+   "tampil": "6,8",
+   "nilai": 6.8,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/merauke/cp.csv#cp",
+   "tampil": "CP-4",
+   "nilai": null,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#titik",
+   "tampil": "172",
+   "nilai": 172.0,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#frp",
+   "tampil": "1.781,0",
+   "nilai": 1781.0,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/merauke/cp.csv#cp",
+   "tampil": "CP-5",
+   "nilai": null,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#titik",
+   "tampil": "231",
+   "nilai": 231.0,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#frp",
+   "tampil": "1.781,0",
+   "nilai": 1781.0,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/merauke/cp.csv#cp",
+   "tampil": "CP-6",
+   "nilai": null,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#titik",
+   "tampil": "1",
+   "nilai": 1.0,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#frp",
+   "tampil": "2,7",
+   "nilai": 2.7,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/merauke/cp.csv#cp",
+   "tampil": "CP-7",
+   "nilai": null,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#titik",
+   "tampil": "0",
+   "nilai": 0.0,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#frp",
+   "tampil": "0,0",
+   "nilai": 0.0,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/merauke/cp.csv#cp",
+   "tampil": "CP-8",
+   "nilai": null,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#titik",
+   "tampil": "4",
+   "nilai": 4.0,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#frp",
+   "tampil": "7,2",
+   "nilai": 7.2,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/merauke/cp.csv#cp",
+   "tampil": "CP-9",
+   "nilai": null,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#titik",
+   "tampil": "6",
+   "nilai": 6.0,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#frp",
+   "tampil": "5,3",
+   "nilai": 5.3,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/merauke/cp.csv#cp",
+   "tampil": "CP-10",
+   "nilai": null,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#titik",
+   "tampil": "14",
+   "nilai": 14.0,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#frp",
+   "tampil": "13,2",
+   "nilai": 13.2,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/merauke/cp.csv#cp",
+   "tampil": "CP-11",
+   "nilai": null,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#titik",
+   "tampil": "14",
+   "nilai": 14.0,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/merauke/cp.csv#frp",
+   "tampil": "13,1",
+   "nilai": 13.1,
+   "naskah": "kegiatan-merauke#6",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB"
+  },
+  {
+   "kunci": "mk.kab31",
+   "opsi": "|satuan",
+   "tampil": "1.206 titik",
+   "nilai": 1206,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#7"
+  },
+  {
+   "kunci": "mk.kab29",
+   "opsi": "|satuan",
+   "tampil": "920 titik",
+   "nilai": 920,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#7"
+  },
+  {
+   "kunci": "mk.kab30",
+   "opsi": "|satuan",
+   "tampil": "685 titik",
+   "nilai": 685,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#7"
+  },
+  {
+   "kunci": "mk.kab31",
+   "opsi": "|satuan",
+   "tampil": "1.206 titik",
+   "nilai": 1206,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#7"
+  },
+  {
+   "kunci": "mk.jagebob31",
+   "opsi": "|satuan",
+   "tampil": "240 titik",
+   "nilai": 240,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#7"
+  },
+  {
+   "kunci": "mk.cp.jumlah",
+   "opsi": "|satuan",
+   "tampil": "11 check point",
+   "nilai": 11,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renlap rute udara BNPB, 30 Okt 2026",
+   "naskah": "kegiatan-merauke#8"
+  },
+  {
+   "kunci": "mk.rute.km",
+   "opsi": "|satuan",
+   "tampil": "sekitar 250 km",
+   "nilai": 250,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Renlap rute udara BNPB, 30 Okt 2026",
+   "naskah": "kegiatan-merauke#8"
+  },
+  {
+   "kunci": "mk.cp.jumlah",
+   "opsi": "|",
+   "tampil": "11",
+   "nilai": 11,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renlap rute udara BNPB, 30 Okt 2026",
+   "naskah": "kegiatan-merauke#8"
+  },
+  {
+   "kunci": "mk.rute.km",
+   "opsi": "|",
+   "tampil": "sekitar 250",
+   "nilai": 250,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Renlap rute udara BNPB, 30 Okt 2026",
+   "naskah": "kegiatan-merauke#8"
+  },
+  {
+   "kunci": "mk.rute.mnt",
+   "opsi": "|",
+   "tampil": "sekitar 74",
+   "nilai": 74,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Renlap rute udara BNPB, 30 Okt 2026",
+   "naskah": "kegiatan-merauke#8"
+  },
+  {
+   "kunci": "rl.titik",
+   "opsi": "|satuan",
+   "tampil": "158 titik",
+   "nilai": 158,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renlap rute udara BNPB, 30 Okt 2026",
+   "naskah": "kegiatan-merauke#8"
+  },
+  {
+   "kunci": "mk.kab31",
+   "opsi": "|satuan",
+   "tampil": "1.206 titik",
+   "nilai": 1206,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#8"
+  },
+  {
+   "kunci": "mk.cp5",
+   "opsi": "|satuan",
+   "tampil": "231 titik",
+   "nilai": 231,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#8"
+  },
+  {
+   "kunci": "mk.jam",
+   "opsi": "|satuan",
+   "tampil": "3 jam",
+   "nilai": 3,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "kegiatan-merauke#10"
+  },
+  {
+   "kunci": "mk.min.titik",
+   "opsi": "|satuan",
+   "tampil": "3 titik",
+   "nilai": 3,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Renlap rute udara BNPB, 30 Okt 2026",
+   "naskah": "kegiatan-merauke#10"
+  },
+  {
+   "kunci": "mk.min.frp",
+   "opsi": "|satuan",
+   "tampil": "5 MW",
+   "nilai": 5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Renlap rute udara BNPB, 30 Okt 2026",
+   "naskah": "kegiatan-merauke#10"
+  },
+  {
+   "kunci": "turunan:kegiatan-merauke#11#kontak:call-center",
+   "tampil": "117",
+   "nilai": null,
+   "naskah": "kegiatan-merauke#11",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Situs resmi BNPB, bnpb.go.id",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:kegiatan-merauke#11#kontak:telepon",
+   "tampil": "021 2982 7793",
+   "nilai": null,
+   "naskah": "kegiatan-merauke#11",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Situs resmi BNPB, bnpb.go.id",
+   "dari": []
+  }
+ ],
+ "catatan": [
+  [
+   "kegiatan-merauke#1",
+   "judul_baris",
+   2
+  ],
+  [
+   "kegiatan-merauke#2",
+   "judul_baris",
+   2
+  ],
+  [
+   "kegiatan-merauke#5",
+   "judul_baris",
+   2
+  ],
+  [
+   "kegiatan-merauke#6",
+   "judul_baris",
+   2
+  ],
+  [
+   "kegiatan-merauke#7",
+   "judul_baris",
+   2
+  ],
+  [
+   "kegiatan-merauke#8",
+   "judul_baris",
+   2
+  ],
+  [
+   "kegiatan-merauke#10",
+   "judul_baris",
+   2
+  ]
+ ],
+ "masukan": {
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/logo/sumber-bnpb.png": "6de5a478ee154a24e8e6ac891eb535339a1ba69d356f02a0638b1de10d9ec008",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/data/angka.json": "a6b9d94dccc73424a10de5a309e190187697b07247dff44b0a82c525a3fa08df",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/data/merauke/cp.csv": "8459b1ed02603c4ba77c1395629c0dfe41d31f365b106f040b485660ea8f0d61",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/data/merauke/peta-rute.json": "1aa91cdd505d10699a7ca4ca964bfb65dec06944b5c571b93693e2fd41635555",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/data/merauke/peta-rute.png": "7fbe883e9e15eb34d8cac4cbf8ea71afdaa9780bf49ffe7f58a8612b35f656d9",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/berakhlak-hd.png": "5c28e8ef6c0b71f02486173d71b3a052369c1e6658c2e40d7cee331b0d1f2eb9",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/renlap-udara-01.json": "b586f6be49ecc79fe7b631acfcb11aaec1ca284d99a871a935a9be8205aca806",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/renlap-udara-01.png": "493d131e1c75f793713790a06f92bb2b3278a2857dba620887fb7a9436ef4472",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/udara-00.jpg": "c1194b8245f8e44f979df0799757c7f7cef198daafa7129cd26811b66312b522",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/udara-04.jpg": "99569c1a9325d65ad7580a004c9e846837eeb883bb10271f3f21f5a20e0b30b9",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/udara-06.jpg": "7eec2d83578e6d9623ad0fd8034ad7a3799a4927310ba06b79ca59093dd86d22",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/udara-20.jpg": "e7febbca708f34708900332408235d5c46ddf92c4d8fdfb29d9c9eb26a508e6f",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/udara-23.jpg": "4a4edd853991975b45d8cee4cc2dc63dc5a34dd7a70c032fb6f766a627fe398b",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/udara-26.jpg": "e5e7155a81d0e952bd13b75745d679aa2e8625f837546d3870311e074ba7c0fe",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/udara-30.jpg": "b2c18fcaed809dfbb168658ee23700d5f6f8eda105918e251deca75ac42bb3c6",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/udara-37.jpg": "511d716c2f078ad57f773182408917552f556327302ec56413cdb8a45070d7ae",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/spek/kegiatan-merauke.json": "67520410cd533834aa3f543c224eb6612ac6b7497a299df690475ca10c17823d",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/tema.json": "e4fb0f89ca80c19fb0cf1a13028abc5bdefea4e74baccf51ec8a722b3f49bcbd",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262"
+ }
+}

@@ -11,6 +11,8 @@ Kejadian yang jendelanya melewati data FIRMS (CUTOFF) dibuang, bukan dipotong.
 
 Pakai:  python3 scripts/data/uji_logbook_karhutla.py        (jalan sungguhan; cache titik per kab di data/raw/logbook/)
         python3 scripts/data/uji_logbook_karhutla.py uji    (swauji mainan, tanpa berkas)
+        python3 scripts/data/uji_logbook_karhutla.py arsip [tahun..] (mode ARSIP 2014-2025: data/pusdalops/logbook_kejadian.csv vs CSV FIRMS lokal
+                                                             -> public/data/validasi_logbook_karhutla_arsip.json; keluaran 2026 tidak disentuh)
 """
 import bisect, collections, csv, datetime as dt, json, math, os, random, statistics, sys
 
@@ -412,6 +414,132 @@ def lift_riwayat(h):
             "ketat_diamati": g("ketat", A)["diamati"], "ketat_lift_A": g("ketat", A)["lift"], "ketat_lift_B": g("ketat", B)["lift"]}
 
 
+ARSIP_LOGBOOK = os.path.join(AKAR, "data/pusdalops/logbook_kejadian.csv")
+ARSIP_KELUAR = os.path.join(AKAR, "public/data/validasi_logbook_karhutla_arsip.json")
+ARSIP_TAHUN = (2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025)   # tahun logbook penuh (2011-2013 sebagian; 2026 lewat mode utama)
+TAHAP_2 = (2023, 2024, 2025)   # dilaporkan terpisah dari 2014-2022; BUKAN luar-sampel sungguhan: uji ini tidak menyetel parameter (jendela dibuat Okt 2026)
+
+
+def kejadian_arsip(berkas=ARSIP_LOGBOOK):
+    """CSV logbook arsip -> {tahun: [kejadian bentuk JSON 2026]}. kab_kode 'prov|nama' -> 'prov.00' (analisis memakai 2 digit awal);
+    jendela = tgl_kejadian-3 .. terakhir_dicatat (tak ada 'surut' di arsip, jadi durasi tidak diuji). Baris tanpa kab/tanggal dibuang."""
+    out = collections.defaultdict(list)
+    for r in csv.DictReader(open(berkas)):
+        if r["jenis"] != "karhutla" or not r["kab_kode"] or not r["tgl_kejadian"]:
+            continue
+        y = int(r["tgl_kejadian"][:4])
+        if y not in ARSIP_TAHUN:
+            continue
+        akhir = max(r["terakhir_dicatat"] or r["tgl_kejadian"], r["tgl_kejadian"])
+        out[y].append({"jenis": "karhutla", "kab": r["kabkota"], "prov": r["prov"], "kab_kode": r["prov_kode"] + ".00", "mulai": r["tgl_kejadian"],
+                       "terlihat": [r["pertama_dicatat"] or r["tgl_kejadian"], akhir], "ha": float(r["ha"]) if r["ha"] else None})
+    return out
+
+
+def berkas_firms(y):
+    """{sensor: [berkas]} yang mungkin memuat tahun y (modis_Y/viirs_Y unduhan arsip + CSV panjang 2018-12-31..2026)."""
+    pj = y >= 2019   # CSV panjang mulai 2018-12-31: tahun penuh baru 2019
+    kand = {"M": [f"modis_{y}.csv"] + ["modis.csv"] * pj, "N": [f"viirs_{y}.csv"] + ["viirs.csv"] * pj,
+            "N20": ["viirs_noaa20.csv"] * pj, "N21": ["viirs_noaa21.csv"] * pj}
+    ada = lambda n: next((j for j in (os.path.join(FIRMS, n), os.path.join(FIRMS, "arsip_281026", n)) if os.path.exists(j)), None)   # modis_2015.csv hanya di arsip_281026
+    return {s: [j for j in map(ada, ns) if j] for s, ns in kand.items()}
+
+
+def titik_tahun(y):
+    """-> ({(prov, norm kab): {hari ISO WIB: lokasi unik}}, sensor_terpakai {sensor: jumlah baris}). Cache data/raw/logbook/titik_kab_Y.json."""
+    cache = os.path.join(AKAR, f"data/raw/logbook/titik_kab_{y}.json")
+    if os.path.exists(cache):
+        j = json.load(open(cache))
+        return {tuple(k.split("|")): v for k, v in j["hari"].items()}, j["sensor"]
+    import titik_palsu as TP
+    from wilayah import Wilayah
+    industri, _ = TP.sel_industri()
+    lihat, pakai = set(), collections.Counter()
+    for s, fs in berkas_firms(y).items():
+        for f in fs:
+            for r in csv.DictReader(open(f)):
+                if not (f"{y - 1}-12-30" <= r["acq_date"] <= f"{y + 1}-01-01"):
+                    continue
+                jam = r["acq_time"].zfill(4)
+                d = (dt.datetime.fromisoformat(f"{r['acq_date']}T{jam[:2]}:{jam[2:]}") + dt.timedelta(hours=7)).date()
+                if d.year != y:
+                    continue
+                la, lo = float(r["latitude"]), float(r["longitude"])
+                if industri and TP.palsu(r["latitude"], r["longitude"], industri):
+                    continue
+                lihat.add((d, TU.sel(la, lo), la, lo, s))
+    uniq = {}
+    for d, c, la, lo, s in sorted(lihat, key=lambda t: (t[0], t[1], t[4])):
+        if (d, c) not in uniq:
+            uniq[(d, c)] = (la, lo)
+        pakai[s] += 1
+    w, adm, out = Wilayah(), {}, collections.defaultdict(collections.Counter)
+    for (d, c), (la, lo) in uniq.items():
+        if c not in adm:
+            a = w.cari(lo, la)
+            adm[c] = (a[0], norm(a[1])) if a and a[1] else None   # a[1] None = poligon tanpa nama kab (2023)
+        if adm[c]:
+            out[adm[c]][d.isoformat()] += 1
+    hari ={k: dict(v) for k, v in out.items()}
+    os.makedirs(os.path.dirname(cache), exist_ok=True)
+    json.dump({"hari": {"|".join(k): v for k, v in hari.items()}, "sensor": dict(pakai)}, open(cache, "w"), separators=(",", ":"))
+    return hari, dict(pakai)
+
+
+def ringkas_tahun(y, kej, hari, sensor):
+    """Deteksi + pembanding acak satu tahun penuh (awal 1 Jan, cutoff 31 Des). Aturan/definisi = mode 2026."""
+    h = analisis(kej, hari, {}, D(f"{y}-12-31"), D(f"{y}-01-01"))
+    nl = h["deteksi"]["model_null"]
+    if not nl:
+        return {"tahun": y, "n": 0, "dibuang": h["dibuang"], "sensor_baris": sensor}
+    A, B = "null_A_kab_sama_waktu_acak", "null_B_waktu_sama_kab_acak"
+    g = lambda j, n: {k: nl[j][n]["semua"][k] for k in ("n", "diamati", "null", "lift", "lift_ci95", "selisih", "selisih_ci95")}
+    return {"tahun": y, "n": h["jumlah_kejadian_dipakai"], "dibuang": h["dibuang"], "sensor_baris": sensor,
+            "deteksi": h["deteksi"]["semua"], "deteksi_kelas_ha": h["deteksi"]["kelas_ha"],
+            "penuh": {"null_A": g("penuh", A), "null_B": g("penuh", B)}, "ketat": {"null_A": g("ketat", A), "null_B": g("ketat", B)},
+            "vonis": h["deteksi"]["vonis_null"],
+            "kab_nol_titik_tetap_dihitung": h["dibuang"].get("kab_tak_cocok_atau_nol_titik_sepanjang_tahun", 0),
+            "vonis_lift": {n: ("lebih baik dari pembanding" if (nl["penuh"][n]["semua"]["lift_ci95"] or [0])[0] > 1 else "tidak lebih baik dari " + t)
+                           for n, t in ((A, "kab yang sama di waktu acak"), (B, "kab acak sewaktu"))}}
+
+
+def jalan_arsip(tahun=None):
+    if not os.path.exists(ARSIP_LOGBOOK):
+        return print("lewat: logbook_kejadian.csv arsip tidak ada")
+    per = []
+    for y, kej in sorted(kejadian_arsip().items()):
+        if tahun and y not in tahun:
+            continue
+        hari, sensor = titik_tahun(y)
+        if not hari:
+            print(y, "lewat: tak ada titik FIRMS lokal"); continue
+        r = ringkas_tahun(y, kej, hari, sensor)
+        per.append(r)
+        if r["n"]:
+            a = r["penuh"]["null_A"]; b = r["penuh"]["null_B"]
+            print(y, "n", r["n"], "deteksi", r["deteksi"]["laju"], "nullA", a["null"], "liftA", a["lift"], "nullB", b["null"], "liftB", b["lift"], "sensor", sensor)
+    def gabung(ok):
+        tot = sum(r["n"] for r in ok)
+        gab = lambda j, n, k: round(sum(r[j][n][k] * r["n"] for r in ok) / tot, 3) if tot else None
+        return {"tahun": [r["tahun"] for r in ok], "n": tot, "deteksi": round(sum(r["deteksi"]["laju"] * r["n"] for r in ok) / tot, 3) if tot else None,
+                "null_A": gab("penuh", "null_A", "null"), "lift_A": gab("penuh", "null_A", "lift"),
+                "null_B": gab("penuh", "null_B", "null"), "lift_B": gab("penuh", "null_B", "lift")}
+    ok = [r for r in per if r["n"]]
+    dalam, luar = [r for r in ok if r["tahun"] not in TAHAP_2], [r for r in ok if r["tahun"] in TAHAP_2]
+    out = {"dibuat": dt.date.today().isoformat(), "sumber": "logbook Pusdalops arsip (data/pusdalops/logbook_kejadian.csv) vs titik panas lokal (data/raw/firms), definisi titik_unik.py",
+           "catatan": ("LAPORAN SAJA. Deteksi = ada >=1 titik unik di kab pada [mulai-3, terakhir_dicatat]. null_A = kab sama, waktu acak jauh dari kejadian; null_B = waktu sama, kab acak sewilayah provinsi; "
+                       "lift = deteksi / null. Sensor berbeda per tahun (2014-2018: MODIS + S-NPP; 2019-2022: + NOAA-20; 2023+: + NOAA-21), jadi bandingkan lift, bukan deteksi mentah. "
+                       "Kab dicocokkan nama ke poligon kab sekarang (pemekaran dan kab tak cocok dibuang). Hari tak tercatat (2021 343, 2022 272, 2023 327 hari) ikut jadi sampel null (bias konservatif). "
+                       "Kab bernol titik sepanjang tahun TETAP dihitung (deteksi 0; angka di 'dibuang' hanya penanda). Tanpa laporan dianggap tanpa api, jadi kedua pembanding konservatif. "
+                       "Lift yang selang 95%-nya mencakup 1 = tidak lebih baik dari pembanding (lihat vonis_lift). "
+                       "Tahap 2014-2022 vs 2023-2025 dilaporkan terpisah; tidak ada parameter yang disetel (bukan dalam/luar-sampel). Angka gabungan = RATA-RATA BERBOBOT n dari lift per tahun, bukan lift terpooling dan tanpa CI; tidak ada uji selisih antartahap. NOAA-21 (sejak Mar 2023) menaikkan peluang ada titik di mana pun dan menjelaskan null A 2023 yang tinggi. 2011-2013 (sebagian) tidak diuji; 2026 hanya lewat mode utama. "
+                       "Durasi dan luas tidak diuji (arsip tanpa tanggal surut)."),
+           "tahun": per,
+           "gabungan_berbobot_n": gabung(ok), "tahap_2014_2022": gabung(dalam), "tahap_2023_2025": gabung(luar)}
+    json.dump(out, open(ARSIP_KELUAR, "w"), ensure_ascii=False, indent=1)
+    print("tahap 2014-2022", out["tahap_2014_2022"]); print("tahap 2023-2025", out["tahap_2023_2025"])
+
+
 def uji():
     assert norm("Kab. Morowali Utara") == "morowaliutara" and norm("Kota Palangka Raya") == norm("Kota Palangkaraya")
     assert kelas_ha(None) == "tanpa_ha" and kelas_ha(4.9) == "<5" and kelas_ha(5) == "5-50" and kelas_ha(500) == ">500"
@@ -512,4 +640,4 @@ def jalan():
 
 
 if __name__ == "__main__":
-    uji() if sys.argv[1:] == ["uji"] else jalan()
+    uji() if sys.argv[1:] == ["uji"] else jalan_arsip([int(x) for x in sys.argv[2:]]) if sys.argv[1:2] == ["arsip"] else jalan()
