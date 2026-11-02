@@ -28,10 +28,12 @@ import datetime as dt, json, os, sys, tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import dasar as D
+from bayangan import model as B
 
 URL = "https://api.open-meteo.com/v1/forecast"
 PER_PANGGIL = 100
 BASAH = 0.5                     # mm/jam: jam dihitung hujan (RANCANGAN "mulai = jam pertama >= 0,5 mm")
+PAST = 10
 AMBANG = [1, 20, 50]            # mm/24 jam
 # ponytail: skor mentah deterministik (rasio jumlah/ambang -> peluang), sengaja kasar; kalibrasi isotonik yang menggantinya
 DET = [(1.0, 0.8), (0.5, 0.4), (0.0, 0.05)]
@@ -96,7 +98,8 @@ def ambil_hujan(daftar):
     for i in range(0, len(daftar), PER_PANGGIL):
         b = daftar[i:i + PER_PANGGIL]
         q = {"latitude": ",".join(str(k["lat"]) for k in b), "longitude": ",".join(str(k["lon"]) for k in b),
-             "hourly": "precipitation,soil_moisture_3_to_9cm,soil_moisture_9_to_27cm", "timezone": "Asia/Jakarta", "forecast_days": 4}
+             "hourly": "precipitation,soil_moisture_3_to_9cm,soil_moisture_9_to_27cm", "timezone": "Asia/Jakarta", "forecast_days": 4,
+             "past_days": PAST}   # riwayat 10 hari untuk model bayangan; 10 + 4 = 14 hari, batas bobot 1 panggilan Open-Meteo (periksa kuota)
         r = D.per_lokasi(D.ambil(URL + "?" + "&".join(f"{k}={v}" for k, v in q.items())))
         for k, j in zip(b, r):
             h = j["hourly"]
@@ -142,8 +145,8 @@ def entri_hjn(t, daftar, hujan, ens):
             "kol": ["p1", "p20", "p50", "tot", "mulai", "lama", "puncak", "sm", "m"], "hari": hari, "kab": kab}
 
 
-def titik_kab(jalur, cari, kmin=1):
-    """titik_hari/<tgl>.json -> {id: jumlah lokasi unik keyakinan >= kmin}."""
+def titik_kab(jalur, cari, kmin=1, sensor=None):
+    """titik_hari/<tgl>.json -> {id: jumlah lokasi unik keyakinan >= kmin}. sensor ("N" = S-NPP) menyaring lewat sensor_utama."""
     d = D.baca(jalur)
     if not d:
         return None
@@ -151,12 +154,14 @@ def titik_kab(jalur, cari, kmin=1):
     ids = [cari(*w.split("|")[:2]) for w in d["wilayah"]]
     out = {}
     for r in d["baris"]:
+        if sensor and d["sensor_utama"][r[c["sensor"]]] != sensor:
+            continue
         if r[c["keyakinan"]] >= kmin and (i := ids[r[c["wilayah"]]]):
             out[i] = out.get(i, 0) + 1
     return out
 
 
-def titik_hotspot(akar, cari, kmin=1):
+def titik_hotspot(akar, cari, kmin=1, sensor=None):
     """hotspot.json (7 hari bergulir, tiap hari ada) -> {tanggal: {id: n}} untuk hari LENGKAP saja.
     Hari tanpa baris di antaranya = sepi: {} (nol sah), bukan 'tidak ada data'. Hari awal (terpotong) dan hari acuan (berjalan) dibuang."""
     d = D.baca(os.path.join(akar, "public", "data", "hotspot.json"))
@@ -178,16 +183,16 @@ def titik_hotspot(akar, cari, kmin=1):
         t = D.geser(t, 1)
     for r in d["baris"]:
         h = out.get(tgl(r[c["tgl_wib"]]))
-        if h is not None and r[c["hitung"]] == 1 and r[c["keyakinan"]] >= kmin and (i := ids[r[c["wilayah"]]]):
+        if h is not None and r[c["hitung"]] == 1 and r[c["keyakinan"]] >= kmin and (not sensor or r[c["sensor"]] == sensor) and (i := ids[r[c["wilayah"]]]):
             h[i] = h.get(i, 0) + 1
     return out
 
 
-def titik_harian(akar, cari, tgl, hot):
+def titik_harian(akar, cari, tgl, hot, sensor=None):
     """Hitungan titik per kab hari `tgl`: hotspot.json dulu, titik_hari/ (hanya hari >= 1.000 titik) sebagai cadangan hari lama. None = tak teramati."""
     if tgl in hot:
         return hot[tgl]
-    return titik_kab(os.path.join(akar, "public", "data", "titik_hari", tgl + ".json"), cari)
+    return titik_kab(os.path.join(akar, "public", "data", "titik_hari", tgl + ".json"), cari, sensor=sensor)
 
 
 def entri_api(t, daftar, akar, cari):
@@ -297,7 +302,60 @@ def entri_rob(t, akar, cari):
     return {"sumber": "Open-Meteo Marine (SMOC) muka laut + ambang p95 titik rob", "kol": ["lewat", "sel"], "hari": hari, "kab": kab} if kab else None
 
 
-def catat(t, akar=D.AKAR, folder=None, hujan=None, daftar=None):
+def ordinal(tgl):
+    return dt.date.fromisoformat(tgl).toordinal()
+
+
+def masukan_cex(akar, cari):
+    """DIBI cuaca ekstrem/angin/puting -> Kejadian (label lengkap sampai DIBI 'sampai' - 14 hari). None bila DIBI tak ada."""
+    d = D.baca(os.path.join(akar, "public", "data", "dibi_kejadian.json"))
+    if not d:
+        return None
+    per = {}
+    for r in d["kejadian"]:
+        if B.CEX_RE.search(r["jenis"].lower()) and (i := cari(r["prov_kode"], r["kab"])):
+            per.setdefault(i, []).append(ordinal(r["tanggal"]))
+    return B.Kejadian(per, ordinal(D.geser(d["sampai"], -B.MARGIN)), ordinal(d["dari"]))
+
+
+def masukan_krh(akar, cari, t, daftar):
+    """Titik VIIRS S-NPP n/h per kab untuk t-39..t-1 -> {id: {ordinal: n}}. Hari yang tak teramati TIDAK diisi (kab/tenggang dilewati)."""
+    hot = titik_hotspot(akar, cari, sensor="N")
+    out = {k["id"]: {} for k in daftar}
+    for i in range(1, 40):
+        d = D.geser(t, -i)
+        c = titik_harian(akar, cari, d, hot, sensor="N")
+        if c is not None:
+            for k in out:
+                out[k][ordinal(d)] = c.get(k, 0)
+    return out
+
+
+def catat_bayangan(t, akar, folder, daftar, cari, data, sudah):
+    """Bekukan model bayangan (BNJ_B LSR_B CEX_B KRH_B) dari riwayat hujan + prakiraan HJN hari ini. -> kode yang ditulis."""
+    pra = next((e for e in D.semua_arsip(folder) if e["t"] == t and e["k"] == "HJN"), None)
+    hist = B.baca_riwayat(data)
+    dibuat = dt.datetime.now(D.WIB).replace(microsecond=0).isoformat()
+    tulis = []
+    for k in D.KODE_B:
+        if k in sudah:
+            log(k, "sudah tercatat untuk", t, "-> tidak ditimpa")
+            continue
+        try:
+            e, cat = B.entri(k, t, daftar, hist, pra, ev=masukan_cex(akar, cari) if k == "CEX_B" else None,
+                             hs=masukan_krh(akar, cari, t, daftar) if k == "KRH_B" else None)
+        except (KeyError, ValueError, OSError) as x:
+            e, cat = None, f"gagal: {x}"
+        if not e:
+            log(k, "dilewati:", cat)
+            continue
+        if D.tambah_arsip({"t": t, "k": k, "dibuat": dibuat, **e}, folder):
+            tulis.append(k)
+            log(k, "dibekukan:", cat)
+    return tulis
+
+
+def catat(t, akar=D.AKAR, folder=None, hujan=None, daftar=None, data=None):
     """Bekukan semua kode yang belum tercatat untuk tanggal terbit t. hujan: {id: ...} (uji) atau None = unduh."""
     daftar = daftar or D.kab(akar)
     cari = D.pencari(daftar)
@@ -311,6 +369,7 @@ def catat(t, akar=D.AKAR, folder=None, hujan=None, daftar=None):
         try:
             if k == "HJN":
                 h = hujan if hujan is not None else ambil_hujan(daftar)
+                B.simpan_riwayat(h, t, data)
                 e = entri_hjn(t, daftar, h, D.baca(os.path.join(akar, "public", "banjir", "data", "hujan_ansambel.json")))
             elif k == "API":
                 e = entri_api(t, daftar, akar, cari)
@@ -329,7 +388,7 @@ def catat(t, akar=D.AKAR, folder=None, hujan=None, daftar=None):
         if D.tambah_arsip(e, folder):
             tulis.append(k)
             log(k, "dibekukan:", len(e["kab"]), "kab")
-    return tulis
+    return tulis + catat_bayangan(t, akar, folder, daftar, cari, data, sudah)
 
 
 def uji():
@@ -362,9 +421,16 @@ def uji():
         import shutil
         shutil.copy(os.path.join(D.AKAR, "scripts", "udara", "kota.json"), os.path.join(tmp, "scripts", "udara"))
         f = os.path.join(tmp, "arsip")
-        assert catat(t, tmp, f, hujan, daftar) == ["HJN"]
-        assert catat(t, tmp, f, hujan, daftar) == [], "jalan ulang hari yang sama tidak menimpa"
-        e = D.semua_arsip(f)
+        dd = os.path.join(tmp, "data")
+        assert catat(t, tmp, f, hujan, daftar, dd) == ["HJN"], "riwayat hujan kosong: model bayangan dilewati, tidak dikarang"
+        assert catat(t, tmp, f, hujan, daftar, dd) == [], "jalan ulang hari yang sama tidak menimpa"
+        # riwayat 100 hari ada -> BNJ_B dan LSR_B dibekukan; CEX_B (tanpa DIBI) dan KRH_B (tanpa titik panas) tetap dilewati
+        D.simpan(B.jalur_riwayat(dd), {"hari": {D.geser(t, -i): {daftar[0]["id"]: 4.0, daftar[1]["id"]: 0.0} for i in range(100)}})
+        assert catat(t, tmp, f, hujan, daftar, dd) == ["BNJ_B", "LSR_B"]
+        assert catat(t, tmp, f, hujan, daftar, dd) == [], "bayangan juga append-only"
+        bb = {e["k"]: e for e in D.semua_arsip(f)}
+        assert bb["BNJ_B"]["kol"] == ["p"] and set(bb["BNJ_B"]["kab"]) == {daftar[0]["id"], daftar[1]["id"]} and all(r[0] < 1 for r in bb["LSR_B"]["kab"][daftar[0]["id"]])
+        e = [x for x in D.semua_arsip(f) if x["k"] == "HJN"]
         assert len(e) == 1 and e[0]["hari"] == ["2026-10-30", "2026-10-31", "2026-11-01"]
         assert e[0]["kab"][daftar[0]["id"]][0] == [0.8, 0.05, 0.05, 9.0, 14, 3, 14, 0.4, 0]
         # masukan salah ditolak

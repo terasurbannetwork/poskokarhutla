@@ -176,7 +176,7 @@ def terbit(akar=D.AKAR, folder=None, data=None, entri=None, kini=None):
     data = data or D.DATA
     daftar = D.kab(akar)
     cari = D.pencari(daftar)
-    semua = entri if entri is not None else D.semua_arsip(folder)
+    semua = [e for e in (entri if entri is not None else D.semua_arsip(folder)) if e["k"] in D.KODE]   # model bayangan tak ikut kartu
     akhir = terakhir(semua)
     if not akhir:
         sys.exit("terbit: arsip kosong; jalankan catat.py dulu")

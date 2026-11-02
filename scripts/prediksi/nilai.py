@@ -17,10 +17,11 @@ Pakai:  python3 scripts/prediksi/nilai.py               (butuh jaringan untuk HJ
         python3 scripts/prediksi/nilai.py ujibalik [n]  uji balik retrospektif n hari (bawaan 30) -> ujibalik.json
         python3 scripts/prediksi/nilai.py uji           (tanpa jaringan)
 """
-import datetime as dt, json, os, sys
+import datetime as dt, json, os, re, sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import dasar as D
+from bayangan import model as B
 from catat import AMBANG, PER_PANGGIL, peluang_hujan, per_hari, ringkas_hujan, titik_harian, titik_hotspot
 
 ARSIP_API = "https://archive-api.open-meteo.com/v1/archive"
@@ -33,6 +34,7 @@ KLIM_MIN = 10
 SIMPAN_HARI = 90        # pasangan.json: cukup untuk 46 fit + 14 uji kalibrasi
 JENIS = {"BNJ": {"Banjir", "Banjir Bandang", "Banjir Genangan", "Banjir dan Tanah Longsor"},
          "LSR": {"Tanah Longsor", "Gerakan Tanah", "Banjir dan Tanah Longsor"}}
+CEX_RE = B.CEX_RE        # label CEX = DIBI cuaca ekstrem/angin/puting (sama dengan label lab)
 MENUNGGU = {"ASP": "belum ada stasiun PM2,5 terukur (WAQI_TOKEN/OpenAQ tidak tersedia); CAMS tidak dinilai dengan CAMS",
             "ROB": "pasut IOC belum dipanen sebagai seri harian per titik"}
 
@@ -89,11 +91,12 @@ def perbarui_hujan(entri, daftar, kini, data=None, unduh=unduh_hujan):
     return am
 
 
-def amatan_api(akar, cari, tanggal):
-    hot = titik_hotspot(akar, cari)
+def amatan_api(akar, cari, tanggal, sensor=None):
+    """sensor "N" = hanya S-NPP (label KRH_B: >= 5 titik VIIRS S-NPP n/h per kab-hari); None = semua sensor (label API)."""
+    hot = titik_hotspot(akar, cari, sensor=sensor)
     out = {}
     for t in sorted(set(tanggal) | set(hot)):
-        if (c := titik_harian(akar, cari, t, hot)) is not None:
+        if (c := titik_harian(akar, cari, t, hot, sensor)) is not None:
             out[t] = {"j": "final", "kab": c}
     return out
 
@@ -108,7 +111,7 @@ def amatan_dibi(akar, cari, kode, margin=MARGIN_DIBI):
         out[t] = {"j": "final", "kab": {}}
         t = D.geser(t, 1)
     for r in d["kejadian"]:
-        if r["jenis"] in JENIS[kode] and r["tanggal"] in out and (i := cari(r["prov_kode"], r["kab"])):
+        if (CEX_RE.search(r["jenis"].lower()) if kode == "CEX" else r["jenis"] in JENIS[kode]) and r["tanggal"] in out and (i := cari(r["prov_kode"], r["kab"])):
             out[r["tanggal"]]["kab"][i] = 1
     return out, akhir
 
@@ -160,13 +163,13 @@ def peluang_prakiraan(kode, kol, r, a_i):
     """Baris arsip -> peluang untuk ambang ke-a_i."""
     if kode == "HJN":
         return r[a_i]
-    if kode == "API":
+    if kode == "API" or kode in D.KODE_B:
         return r[0]
     lv, ps = r[0], r[1]
     return ps if ps is not None else float(lv >= 2)
 
 
-AMBANG_KODE = {"HJN": AMBANG, "API": [1], "BNJ": [1], "LSR": [1]}
+AMBANG_KODE = {"HJN": AMBANG, "API": [1], "BNJ": [1], "LSR": [1], "BNJ_B": [1], "LSR_B": [1], "CEX_B": [1], "KRH_B": [5]}
 
 
 def pasangan(entri, am, kini=None):
@@ -176,19 +179,20 @@ def pasangan(entri, am, kini=None):
     out, klim = [], {k: Klim(k, v) for k, v in am.items()}
     for e in entri:
         k = e["k"]
-        if k not in am:
+        ak = D.DASAR.get(k, k)          # model bayangan memakai amatan/baseline kode dasarnya
+        if ak not in am:
             continue
-        hk = am[k].get(D.geser(e["t"], -1))
+        hk = am[ak].get(D.geser(e["t"], -1))
         for n, t in enumerate(e["hari"]):
-            hari = am[k].get(t)
+            hari = am[ak].get(t)
             if hari is None or (kini and t >= kini):
                 continue
             for kab, rs in e["kab"].items():
                 r = rs[n]
-                v = nilai_amatan(k, hari, kab)
+                v = nilai_amatan(ak, hari, kab)
                 if r is None or v is None:
                     continue
-                vp = nilai_amatan(k, hk, kab)
+                vp = nilai_amatan(ak, hk, kab)
                 for ai, a in enumerate(AMBANG_KODE[k]):
                     p = peluang_prakiraan(k, e["kol"], r, ai)
                     if p is None:
@@ -197,7 +201,7 @@ def pasangan(entri, am, kini=None):
                     if k == "HJN" and ai == 0:
                         ek = [r[4], v[1], r[5], v[2], r[3], v[0]]
                     asal = ("lv" if r[1] is None else "ps") if k in ("BNJ", "LSR") else "p"
-                    out.append([k, a, n + 1, hari["j"], t, kab, p, kejadian(k, v, a), kejadian(k, vp, a), klim[k](kab, a, t), ek, asal])
+                    out.append([k, a, n + 1, hari["j"], t, kab, p, kejadian(ak, v, a), kejadian(ak, vp, a), klim[ak](kab, a, t), ek, asal])
     return out
 
 
@@ -260,14 +264,68 @@ def ringkas(pas, n_prakiraan, status=None):
     for x in pas:
         grup.setdefault((x[0], x[1], x[2], x[3]), []).append(x)
     kode = {}
-    for k in D.KODE:
+    for k in D.KODE + D.KODE_B:
         g = [{"ambang": a, "tenggang": n, "tahap": th, **skor_grup(v)} for (kk, a, n, th), v in sorted(grup.items()) if kk == k]
         if g:
             kode[k] = {"status": "dinilai", "prakiraan": n_prakiraan.get(k, 0), "grup": g}
         else:
             kode[k] = {"status": "menunggu", "prakiraan": n_prakiraan.get(k, 0),
-                       "alasan": (status or {}).get(k) or MENUNGGU.get(k) or "belum ada prakiraan yang matang"}
+                       "alasan": (status or {}).get(k) or (status or {}).get(D.DASAR.get(k)) or MENUNGGU.get(k) or "belum ada prakiraan yang matang"}
     return kode
+
+
+def ap(ps, os_):
+    """Average precision (AUC-PR, jumlah bertingkat seperti sklearn; skor sama dikelompokkan). None bila tak ada kejadian."""
+    pos = sum(os_)
+    if not pos:
+        return None
+    urut = sorted(zip(ps, os_), key=lambda x: -x[0])
+    tp = n = 0
+    awal = 0.0
+    hasil = 0.0
+    i = 0
+    while i < len(urut):
+        j = i
+        while j < len(urut) and urut[j][0] == urut[i][0]:
+            j += 1
+        tp += sum(o for _, o in urut[i:j])
+        n += j - i
+        hasil += (tp / pos - awal) * tp / n
+        awal = tp / pos
+        i = j
+    return round(hasil, 4)
+
+
+def bayangan(pas, n_prakiraan):
+    """Model bayangan berdampingan: per kode dan tenggang, pasangan (sasaran, kab) yang sama dengan model lama (bila ada) lawan
+    persistensi dan klimatologi. Vonis = aturan lama (Brier lebih kecil dari KEDUA baseline, n >= 30); vonis_peringkat = AP lebih tinggi
+    dari kedua baseline (bayangan mentah, belum dikalibrasi, jadi Brier bisa kalah oleh pergeseran laju sementara peringkat menang)."""
+    banding = []
+    for kb in D.KODE_B:
+        lama = B.INFO[kb]["lama"]
+        pl = {(x[2], x[4], x[5]): x[6] for x in pas if lama and x[0] == lama}
+        for n in (1, 2, 3):
+            rows = [x for x in pas if x[0] == kb and x[2] == n]
+            if lama:
+                rows = [x for x in rows if (n, x[4], x[5]) in pl]
+            if not rows:
+                continue
+            g = skor_grup(rows)
+            bd = [x for x in rows if x[8] is not None and x[9] is not None]
+            o = [x[7] for x in bd]
+            ab, ak_, ap_ = ap([x[6] for x in bd], o), ap([x[9] for x in bd], o), ap([x[8] for x in bd], o)
+            r = {"kode": kb, "lama": lama, "tenggang": n, "n": g["n"], "n_banding": g["n_banding"], "hari": g["hari"], "frek": g["frek"],
+                 "brier_bayangan": g["brier_banding"], "brier_persistensi": g["brier_persistensi"], "brier_klimatologi": g["brier_klimatologi"],
+                 "ap_bayangan": ab, "ap_persistensi": ap_, "ap_klimatologi": ak_, "vonis": g["vonis"],
+                 "pod": g["pod"], "far": g["far"]}
+            if lama:
+                r["brier_lama"] = brier([pl[(n, x[4], x[5])] for x in bd], o)
+                r["ap_lama"] = ap([pl[(n, x[4], x[5])] for x in bd], o)
+                r["menang_lama"] = None if g["n_banding"] < N_MIN else bool(r["brier_bayangan"] < r["brier_lama"])
+            r["vonis_peringkat"] = "belum teruji" if g["n_banding"] < N_MIN or sum(o) < 5 else (
+                "peringkat lebih baik dari baseline" if ab > max(ak_, ap_) else "peringkat belum lebih baik")
+            banding.append(r)
+    return {"catatan": B.CATATAN, "model": {k: {**B.INFO[k], "prakiraan": n_prakiraan.get(k, 0)} for k in D.KODE_B}, "banding": banding}
 
 
 def nilai(kini=None, akar=D.AKAR, folder=None, data=None, unduh=unduh_hujan):
@@ -281,24 +339,26 @@ def nilai(kini=None, akar=D.AKAR, folder=None, data=None, unduh=unduh_hujan):
     am, status = {}, {}
     if any(e["k"] == "HJN" for e in entri):
         am["HJN"] = perbarui_hujan(entri, daftar, kini, data, unduh)
-    tgl_api = sorted({h for e in entri if e["k"] == "API" for h in e["hari"] + [D.geser(e["t"], -1)] if h < kini})
-    if tgl_api:
-        # klimatologi butuh bulan yang sama sebelum sasaran: semua titik_hari bulan itu ikut dibaca (+ hotspot.json di amatan_api)
-        folder_t = os.path.join(akar, "public", "data", "titik_hari")
-        bulan = {t[:7] for t in tgl_api}
-        semua = sorted(f[:10] for f in os.listdir(folder_t) if f[:7] in bulan) if os.path.isdir(folder_t) else []
-        am["API"] = amatan_api(akar, cari, sorted(set(semua) | set(tgl_api)))
-    for k in ("BNJ", "LSR"):
-        if any(e["k"] == k for e in entri):
+    dasar = {D.DASAR.get(e["k"], e["k"]) for e in entri}
+    for kd, sensor in (("API", None), ("KRH", "N")):
+        tgl = sorted({h for e in entri if D.DASAR.get(e["k"], e["k"]) == kd for h in e["hari"] + [D.geser(e["t"], -1)] if h < kini})
+        if tgl:
+            # klimatologi butuh bulan yang sama sebelum sasaran: semua titik_hari bulan itu ikut dibaca (+ hotspot.json di amatan_api)
+            folder_t = os.path.join(akar, "public", "data", "titik_hari")
+            bulan = {t[:7] for t in tgl}
+            semua = sorted(f[:10] for f in os.listdir(folder_t) if f[:7] in bulan) if os.path.isdir(folder_t) else []
+            am[kd] = amatan_api(akar, cari, sorted(set(semua) | set(tgl)), sensor)
+    for k in ("BNJ", "LSR", "CEX"):
+        if k in dasar:
             am[k], akhir = amatan_dibi(akar, cari, k)
             status[k] = f"menunggu label DIBI: sasaran <= {akhir} yang dinilai (DIBI terisi susulan {MARGIN_DIBI} hari)" if akhir else "dibi_kejadian.json tidak ada"
     pas = pasangan(entri, am, kini)
     d = data or D.DATA
     batas = D.geser(kini, -SIMPAN_HARI)
     D.simpan(os.path.join(d, "pasangan.json"), {"dibuat": kini, "kol": ["kode", "ambang", "tenggang", "tahap", "sasaran", "kab", "p", "o", "pers", "klim", "ekstra", "asal"],
-                                                "baris": [x for x in pas if x[4] >= batas]})
+                                                "baris": [x for x in pas if x[4] >= batas and x[0] in D.KODE]})   # bayangan tak ikut kalibrasi.py (ukuran)
     skor = {"versi": 1, "dibuat": dt.datetime.now(D.WIB).replace(microsecond=0).isoformat(), "jenis": "prospektif",
-            "n_min": N_MIN, "kode": ringkas(pas, n_pra, status),
+            "n_min": N_MIN, "kode": ringkas(pas, n_pra, status), "bayangan": bayangan(pas, n_pra),
             "catatan": "Prospektif: prakiraan dibekukan sebelum kejadian (arsip append-only). HJN tahap 'sementara' dinilai "
                        "terhadap analisis model, bukan observasi; 'final' terhadap ERA5."}
     D.simpan(os.path.join(d, "skor.json"), skor)
@@ -432,6 +492,23 @@ def uji():
     # retro: bentuk entri sah
     e = entri_retro({1: {"2026-09-10": {"1101": [3.0, 14, 2, 14]}}, 2: {}, 3: {}})
     assert e[0]["t"] == "2026-09-09" and D.periksa_entri(dict(e[0], dibuat="x", sumber="x")) is None
+    # model bayangan berdampingan: pasangan sama dengan model lama, vonis memakai aturan baseline yang sama
+    assert ap([0.9, 0.8, 0.1], [1, 0, 1]) == 0.8333 and ap([0.5, 0.5], [0, 0]) is None
+    ev = lambda d: int(dt.date.fromisoformat(d).day % 3 == 0)
+    am_b = {"BNJ": {D.geser("2026-08-01", i): {"j": "final", "kab": {"1101": 1} if ev(D.geser("2026-08-01", i)) else {}} for i in range(100)}}
+    ent = []
+    for i in range(12, 50):
+        ti = D.geser("2026-09-01", i)
+        hr = [D.geser(ti, n) for n in (1, 2, 3)]
+        ent.append({"t": ti, "k": "BNJ", "hari": hr, "kol": ["lv", "ps"], "kab": {"1101": [[1, 0.5]] * 3}})
+        ent.append({"t": ti, "k": "BNJ_B", "hari": hr, "kol": ["p"], "kab": {"1101": [[float(ev(h))] for h in hr]}})
+        ent.append({"t": ti, "k": "CEX_B", "hari": hr, "kol": ["p", "jeda"], "kab": {"1101": [[0.5, 7]] * 3}})
+    pb = bayangan(pasangan(ent, am_b, "2026-10-30"), {})
+    r1 = next(x for x in pb["banding"] if x["kode"] == "BNJ_B" and x["tenggang"] == 1)
+    assert r1["n_banding"] >= 30 and r1["brier_bayangan"] == 0 and r1["brier_lama"] == 0.25 and r1["menang_lama"] is True and r1["vonis"] == "mengalahkan baseline", r1
+    assert r1["ap_bayangan"] == 1.0 and r1["vonis_peringkat"] == "peringkat lebih baik dari baseline", r1
+    assert not any(x["kode"] == "CEX_B" for x in pb["banding"]), "CEX_B tanpa amatan CEX: tidak dinilai, tidak dikarang"
+    assert D.DASAR["KRH_B"] == "KRH" and AMBANG_KODE["KRH_B"] == [5]
     print("nilai.py: uji lulus")
 
 
