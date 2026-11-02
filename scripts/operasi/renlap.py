@@ -10,8 +10,8 @@ Python stdlib saja, skor murni berbobot (bobot_renlap.json, HIPOTESIS), tanpa ML
 
 --tanggal = tanggal OPERASI (hari terbang, WIB). Bawaan: versi malam -> besok, versi pagi -> hari ini.
 --hotspot bawaan: public/data/hotspot72.json bila umurnya <= 72 jam, kalau tidak /api/titik (endpoint publik yang sama dengan layar).
---temuan: JSON respons GET /api/operasi/peta (atau daftar respons, atau daftar temuan); tanpa itu dan tanpa env OPERASI_COOKIE
-  (cookie sesi staf) renlap jalan tanpa temuan dan menulisnya di kaki.
+--temuan: JSON respons GET /api/operasi/peta (atau daftar respons, atau daftar temuan); tanpa itu dan env WA_MESIN
+  (env WA_MESIN + WORKER bawaan centurisk97.id untuk menarik dari /api/operasi/temuan) renlap jalan tanpa temuan dan menulisnya di kaki.
 Keluaran: public/data/operasi/renlap_<tanggal>_<versi>.json dan .txt (teks siap salin WA per base).
 """
 import argparse
@@ -20,6 +20,7 @@ import math
 import os
 import re
 import sys
+import urllib.error
 import urllib.request
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
@@ -498,6 +499,50 @@ def teks(r):
     return ("\n\n" + "=" * 40 + "\n\n").join(out) + "\n"
 
 
+# ---------------------------------------------------------------- API mesin
+def _api(jalur, isi=None):
+    req = urllib.request.Request(os.environ.get("WORKER", API) + jalur, data=None if isi is None else json.dumps(isi).encode(),
+                                 headers={"Authorization": "Bearer " + os.environ["WA_MESIN"], "Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=60) as x:
+        return json.load(x)
+
+
+def tarik_temuan(kini):
+    """GET /api/operasi/temuan untuk 48 jam: tanggal UTC kemarin sampai hari ini (maks 7 hari)."""
+    return _api("/api/operasi/temuan?dari=%s&sampai=%s" % ((kini - timedelta(days=2)).date(), kini.date()))
+
+
+def ke_body(r):
+    """Keluaran renlap -> body POST /api/operasi/renlap. Alasan teks jadi objek {teks, ...}."""
+    def tgt(c):
+        al = c.get("alasan")
+        return dict(c, alasan=dict({"teks": _alasan(c)}, **(al if isinstance(al, dict) else {})))
+    return {"tanggal": r["tanggal"], "versi": r["versi"], "dibuat": r["dibuat"], "sumber": json.dumps(r["sumber"], ensure_ascii=False, default=str),
+            "catatan": r["catatan"], "bobot_label": r["bobot_label"],
+            "base": [dict(b, patroli=[tgt(c) for c in b["patroli"]], wb=[tgt(c) for c in b["wb"]]) for b in r["base"]]}
+
+
+def cek_body(body):
+    """Cermin validasi renlapMesin (src/operasi_udara.js): bbox, maks 20 target per base, alasan objek, skor angka."""
+    assert body["versi"] in ("malam", "pagi") and body["base"] and len(body["base"]) <= 20
+    for b in body["base"]:
+        assert len(b["patroli"]) + len(b["wb"]) <= 20, b["id"]
+        for t in b["patroli"] + b["wb"]:
+            assert -11.5 <= t["lat"] <= 6.5 and 94.5 <= t["lon"] <= 141.5, t
+            assert t.get("skor") is None or isinstance(t["skor"], (int, float)), t
+            assert isinstance(t["alasan"], dict), t
+
+
+def kirim(r):
+    body = ke_body(r)
+    cek_body(body)
+    try:
+        h = _api("/api/operasi/renlap", body)
+        return "201 %d renlap, %d target" % (len(h["renlap"]), h["target"])
+    except urllib.error.HTTPError as e:
+        return "GAGAL %d %s" % (e.code, e.read()[:200].decode("utf-8", "replace"))
+
+
 # ---------------------------------------------------------------- jalan
 def utama(a):
     kini = waktu(a.kini) if a.kini else datetime.now(timezone.utc)
@@ -507,16 +552,14 @@ def utama(a):
     titik, ket_h, acuan = muat_hotspot(a.hotspot, kini, B["ambang"]["jendela_hotspot_jam"])
     sumber = {"titik_panas": "%s (acuan %s, %d titik sedang/tinggi 72 jam)" % (ket_h, acuan, len(titik))}
     jalur_temuan = a.temuan
-    if not jalur_temuan and os.environ.get("OPERASI_COOKIE"):
-        temuan = []
-        for h in (0, 1):  # peta per tanggal WIB; 48 jam = hari ini dan kemarin
-            req = urllib.request.Request("%s/api/operasi/peta?tanggal=%s" % (API, tgl_wib(kini - timedelta(days=h))), headers={"Cookie": os.environ["OPERASI_COOKIE"]})
-            temuan += temuan_dari(json.load(urllib.request.urlopen(req, timeout=30)), kini)
-        sumber["temuan"] = "GET /api/operasi/peta (%d temuan 48 jam)" % len(temuan)
+    if not jalur_temuan and os.environ.get("WA_MESIN"):
+        d = tarik_temuan(kini)
+        temuan = temuan_dari(d, kini)
+        sumber["temuan"] = "GET /api/operasi/temuan (%d temuan 48 jam)" % len(temuan)
     else:
         temuan = muat_temuan(jalur_temuan, kini)
         sumber["temuan"] = "%s (%d temuan 48 jam)" % (jalur_temuan, len(temuan)) if jalur_temuan else \
-            "TIDAK ADA (tanpa --temuan dan tanpa env OPERASI_COOKIE): titik clear tidak dikeluarkan, WB kosong"
+            "TIDAK ADA (tanpa --temuan dan tanpa env WA_MESIN): titik clear tidak dikeluarkan, WB kosong"
     ffmc, sumber["ffmc"] = muat_ffmc(kini)
     pm, sumber["pm25"] = muat_pm(tanggal)
     sumber["gambut"] = "public/data/lahan/gambut.geojson (BBSDLP 1:250.000)"
@@ -536,8 +579,10 @@ def utama(a):
     (KELUAR / (nama + ".txt")).write_text(teks(r), encoding="utf-8")
     print("ditulis public/data/operasi/%s.{json,txt}; base: %s" % (nama, ", ".join("%s p%d/w%d" % (b["id"], len(b["patroli"]), len(b["wb"])) for b in r["base"])))
     if a.kirim_api:
-        rute = any('"POST /api/operasi/renlap"' in p.read_text(encoding="utf-8") for p in (AKAR / "src").glob("*.js"))
-        print("--kirim-api: " + ("rute ada, tetapi pengirim belum dibuat (butuh token mesin)" if rute else "rute POST /api/operasi/renlap belum ada di Worker; dilewati"))
+        if not os.environ.get("WA_MESIN"):
+            print("--kirim-api: dilewati, env WA_MESIN tidak ada")
+        else:
+            print("--kirim-api: " + kirim(r))
 
 
 # ---------------------------------------------------------------- self-check
@@ -574,6 +619,25 @@ def uji():
         assert abs(la - lat) < 1 / 7200 + 1e-9 and abs(lo - lon) < 1 / 7200 + 1e-9, (lat, lon, la, lo)
     assert dms(-0.10111, 109.59278) == "S 00° 06' 04\"  E 109° 35' 34\"", dms(-0.10111, 109.59278)
     print('5. DMS bolak-balik; contoh', dms(-0.10111, 109.59278))
+    # 6. pemetaan keluaran -> body POST tanpa jaringan
+    rr = {"tanggal": "2026-11-02", "versi": "pagi", "dibuat": kini.isoformat(), "sumber": {"x": 1}, "catatan": "c", "bobot_label": "hipotesis",
+          "base": [{"id": "PNK", "patroli": [{"lat": -0.2, "lon": 109.5, "skor": 1.5, "alasan": {"titik_baru": 2, "menahun_hari": 1}}, {"lat": -0.3, "lon": 109.6, "skor": 1.0, "alasan": {"titik_baru": 0, "menahun_hari": 1}}],
+                    "wb": [{"lat": -0.4, "lon": 109.4, "skor": 3.0, "alasan": {"temuan": "fs"}}]}]}
+    body = ke_body(rr)
+    cek_body(body)
+    assert body["base"][0]["patroli"][0]["alasan"]["titik_baru"] == 2 and isinstance(body["base"][0]["wb"][0]["alasan"]["teks"], str)
+    for jelek in ({"lat": 50, "lon": 109.5, "skor": 1, "alasan": {"temuan": "fs"}}, ):
+        try:
+            cek_body(ke_body(dict(rr, base=[dict(rr["base"][0], wb=[jelek])])))
+            raise SystemExit("bbox harus menolak")
+        except AssertionError:
+            pass
+    try:
+        cek_body(ke_body(dict(rr, base=[dict(rr["base"][0], patroli=rr["base"][0]["patroli"] * 11)])))
+        raise SystemExit("maks 20 harus menolak")
+    except AssertionError:
+        pass
+    print("6. pemetaan ke body POST lolos cek bentuk; bbox dan maks 20 menolak yang salah")
     print("lulus")
 
 
