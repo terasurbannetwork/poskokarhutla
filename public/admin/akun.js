@@ -70,7 +70,7 @@
 
   /* ---------- daftar (berat: sesudah satu frame) ---------- */
   const aksesTeks = a => a?.length ? a.map(x => x.label).join(", ") : "Meja Pantau saja";
-  const aksesPil = a => h("div", {class: "ak-akses"}, ...(a || []).map(x => h("a", {class: "ak-pil akses", href: "/admin/" + x.k, teks: `${x.ikon} ${x.label}`})));
+  const aksesPil = a => h("div", {class: "ak-akses"}, ...(a || []).map(x => h("a", {class: "ak-pil akses", href: x.href || "/admin/" + x.k, teks: `${x.ikon} ${x.label}`})));
   function gambarDaftar() {
     const wadah = document.getElementById("akDaftar"); if (!wadah) return;
     const q = F.q.trim().toLowerCase();
