@@ -2281,7 +2281,10 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
       <div class="ak-saring">${segHtml("akSdCk", "Cakupan", [["", "Semua", IK_SEMUA], ["nas", "Nasional", IKON_PIN], ["intl", "Internasional", IK_DB]])}<div class="ak-alat">${cariKotak("akSdQ", "Cari sistem, pemilik, atau jenis data")}</div>
         <div class="ak-baris ak-baris3">${htmlPilih("akSdRp", IKON_PIN, "Cari rumpun")}${htmlPilih("akSdAk", IK_BAR, "Cari akses")}${htmlPilih("akSdPm", IK_GEDUNG, "Cari pemilik")}</div>
         <div class="ak-baris">${htmlPilih("akSdJn", IKL.jenis, "Cari jenis data")}</div></div>
-      <div class="ak-hasil"><h2 class="ak-judulv" id="akSdJ"></h2><div id="akSdL"></div><nav id="akSdH" class="ak-hal" aria-label="Halaman daftar sistem" aria-live="polite"></nav></div>`;
+      <div class="ak-hasil"><h2 class="ak-judulv" id="akSdJ"></h2><div id="akSdL"></div><nav id="akSdH" class="ak-hal" aria-label="Halaman daftar sistem" aria-live="polite"></nav></div><div id="akSdKode"></div>`;
+    ambilData("kode_terbuka").then(k => { const a = dlist(k?.repo).filter(r => urlOk(r.url)), el = $("akSdKode"); if (!a.length || !el) return;
+      el.innerHTML = bagW("Kode terbuka kebencanaan di GitHub", `<div class="ak-bpt"><table><thead><tr><th>Repositori</th><th>Uraian</th><th>Bintang</th><th>Bahasa</th><th>Terakhir aktif</th></tr></thead><tbody>${a.slice(0, 60).map(r => `<tr><td>${tautanLuar(urlOk(r.url), esc(r.repo))}${r.jenis_pemilik === "org" ? ` <span class="ak-mp">Organisasi</span>` : ""}</td><td>${esc(potong(r.deskripsi || "", 110))}</td><td class="ak-n">${angka(r.bintang)}</td><td>${esc(r.bahasa || "")}</td><td>${r.terakhir_aktif ? esc(tglID(r.terakhir_aktif)) : ""}</td></tr>`).join("")}</tbody></table></div>`,
+        `pencarian repositori GitHub (kata kunci BMKG, BNPB, InaSAFE, gempa, banjir, dan lainnya), disaring ke yang bertopik kebencanaan, diperiksa ${tglID(k.diperiksa)}; bintang = tanda disukai pengguna GitHub, bukan ukuran mutu`, a.length); });
     const jalan = () => { const t = ++sdtok; nanti(() => { if (t === sdtok) gambarSd(false); }); }, ubah = (k, v) => { SD[k] = v; SD.hal = 1; jalan(); }, op = (n, lab) => () => Object.entries(n).sort((a, b) => b[1] - a[1]).map(([v, c]) => [v, lab(v), c]);
     msPilih("akSdRp", "sd", "rumpun", {semua: "Semua rumpun", opsi: op(nR, r => (RUMPUN[r] || [r])[0])});
     msPilih("akSdAk", "sd", "akses", {semua: "Semua akses", opsi: op(nA, k => (AKSES[k] || [k])[0])});
@@ -2686,6 +2689,31 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
     return `<svg class="ak-peta ak-ks-peta" viewBox="0 0 ${W} ${Math.round(H)}" role="img" aria-label="Peta kesenjangan kesiapan per kab/kota">${fs.map(f => { const nm = f.properties.kab, r = ksBaris(wd, pv, nm), [l, w] = KUADRAN[r?.kuadran] || ["Data belum lengkap", "#ced4da"];
       return `<path d="${path(f.geometry)}" fill="${w}" fill-opacity=".85" stroke="#fff" stroke-width=".8" data-wlbuka="${esc(pv + "|" + nm)}"><title>${esc(nm)}: ${esc(l)}${r?.skor != null ? `, skor kesiapan ${r.skor}, indeks risiko ${String(r.risiko).replace(".", ",")}${r.kebutuhan != null ? `, kebutuhan warga ${r.kebutuhan}` : ""}` : ""}</title></path>`; }).join("")}</svg>`;
   }
+  /* layar awal tab Wilayah sebelum wilayah dipilih: peta provinsi diwarnai porsi kab/kota kuadran prioritas, klik membuka rapor provinsi,
+     lalu daftar kab/kota prioritas nasional dengan kesenjangan terbesar */
+  const PRIO_K = [[0, "#2b8a3e", "Di bawah 10%"], [10, "#e0a100", "10 sampai 24%"], [25, "#e8590c", "25 sampai 39%"], [40, "#c92a2a", "40% ke atas"]];
+  async function awalWil(el) {
+    const tok = ++renderWil.t; el.innerHTML = hantuHtml;
+    const [wd, geo] = await Promise.all([ambilData("wilayah_daya"), geoProvinsi()]);
+    if (tok !== renderWil.t) return;
+    const K = wd?.kesiapan, rows = Object.values(K?.baris || {}).filter(r => r.skor != null);
+    if (!rows.length || !geo?.features?.length) { el.innerHTML = ""; return; }
+    const per = {}; rows.forEach(r => { const p = per[r.prov] ||= {n: 0, pr: 0}; p.n++; if (r.kuadran === "prioritas") p.pr++; });
+    const warna = s => (PRIO_K.filter(([a]) => s >= a).pop() || PRIO_K[0]);
+    await new Promise(nanti); if (tok !== renderWil.t) return;
+    /* jalur SVG provinsi dihitung sekali per muat halaman (geometri 381 KB), warna saja yang dihitung tiap tampil */
+    const J = PT.petaProv ||= (() => { const fs = geo.features.filter(f => f.geometry), bb = fs.reduce((a, f) => { const b = bbox(f); return [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[2], b[2]), Math.max(a[3], b[3])]; }, [180, 90, -180, -90]);
+      const W = 960, k = W / (bb[2] - bb[0]), pt = (lo, la) => `${((lo - bb[0]) * k).toFixed(1)},${((bb[3] - la) * k).toFixed(1)}`;
+      const path = g => (g.type === "Polygon" ? [g.coordinates] : g.coordinates).map(p => p.map(r => "M" + r.map(c => pt(c[0], c[1])).join("L") + "Z").join("")).join("");
+      return {W, H: Math.round((bb[3] - bb[1]) * k), p: fs.map(f => [String(f.properties.kode), path(f.geometry)])}; })();
+    const peta = `<svg class="ak-peta ak-ks-peta" viewBox="0 0 ${J.W} ${J.H}" role="img" aria-label="Peta porsi kab/kota prioritas per provinsi">${J.p.map(([kd, d]) => { const p = per[kd], s = p ? Math.round(p.pr / p.n * 100) : null;
+      return `<path d="${d}" fill="${s == null ? "#ced4da" : warna(s)[1]}" fill-opacity=".85" stroke="#fff" stroke-width=".6" data-wl="${esc(kd)}"><title>${esc(provT(kd))}: ${p ? `${angka(p.pr)} dari ${angka(p.n)} kab/kota prioritas (${s}%)` : "data belum lengkap"}</title></path>`; }).join("")}</svg>`;
+    const leg = PRIO_K.map(([a, w, l]) => { const n = Object.values(per).filter(p => warna(Math.round(p.pr / p.n * 100))[0] === a).length; return `<span class="ak-ks-l"><i style="background:${w}"></i>${esc(l)} <b>${angka(n)} provinsi</b></span>`; }).join("");
+    const pr = rows.filter(r => r.kuadran === "prioritas").sort((a, b) => b.kesenjangan - a.kesenjangan);
+    const daftar = pr.length ? `<div class="ak-bpt"><table><thead><tr><th>Kab/kota</th><th>Provinsi</th><th>Skor kesiapan</th><th>Indeks risiko</th><th>Kesenjangan</th></tr></thead><tbody>${pr.slice(0, 15).map(r => `<tr><td><button type="button" class="ak-btn0 ak-ks-k" data-wlbuka="${esc(r.prov + "|" + ksNama(r))}">${esc(r.kab)}</button></td><td>${esc(provT(r.prov))}</td><td class="ak-n">${angka(r.skor)}</td><td class="ak-n">${String(r.risiko).replace(".", ",")}</td><td class="ak-n">+${angka(r.kesenjangan)}</td></tr>`).join("")}</tbody></table></div>` : "";
+    el.innerHTML = bagW("Kesiapan daerah se-Indonesia", `${ujiKs(K.uji) + ujiLb(K.uji_logbook)}${peta}<div class="ak-ks-leg">${leg}</div>`, `porsi kab/kota di kuadran prioritas (beban tinggi, kesiapan rendah) per provinsi; skor kesiapan direktori dari DJPK, SIRS, BPS, Bapanas, lembaga dan pakar direktori; beban dari indeks risiko kecamatan${K.hari_risiko ? " per " + tglID(K.hari_risiko) : ""}; arahkan kursor untuk rincian, klik provinsi untuk membuka rapornya`, rows.length)
+      + (daftar ? bagW("Kab/kota prioritas dengan kesenjangan terbesar", daftar, "kesenjangan = persentil beban dikurangi persentil kesiapan, dalam poin persentil; 15 teratas ditampilkan; klik nama untuk membuka rapor kab/kota", pr.length) : "");
+  }
   /* kapasitas daerah dari panen data publik 30 Okt 2026 (wilayah_daya di R2): APBD DJPK, IKD/IRB, fasilitas kritis, jalan, jembatan, SPAB */
   const ubinW = a => { a = a.filter(r => r[2] != null && r[2] !== ""); return a.length ? `<div class="ak-strip ak-wstrip ak-daya">${a.map(([ik, w, n, l]) => `<div>${ikon(ik, w)}<span><b>${esc(n)}</b><small>${esc(l)}</small></span></div>`).join("")}</div>` : ""; };
   const pctW = v => v == null ? null : Number(v).toLocaleString("id-ID", {maximumFractionDigits: 1}) + "%";
@@ -2832,9 +2860,9 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
     if (!lbArr.length) { const l = await ambilData("lembaga"); if (l) indeksLb(l); }
     const rk = await (risikoP ||= ambilJson("/banjir/data/risiko_kecamatan.json")), kb = new Map(); dlist(rk?.kec).forEach(r => kb.set(r[0] + "|" + r[1], r[1]));
     const opsi = [...Object.keys(PROV).map(k => [k, provT(k) + " (provinsi)"]), ...[...kb].map(([k, n]) => [k, `${n}, ${provT(k.split("|")[0])}`])];
-    const pilih = v => { WL.kode = v; try { const u = new URL(location.href); v ? u.searchParams.set("wilayah", v) : u.searchParams.delete("wilayah"); history.replaceState(null, "", u); } catch (e) {} if (v) nanti(() => renderWil($("akWlIsi"))); };
+    const pilih = v => { WL.kode = v; try { const u = new URL(location.href); v ? u.searchParams.set("wilayah", v) : u.searchParams.delete("wilayah"); history.replaceState(null, "", u); } catch (e) {} $("akWlIsi").innerHTML = hantuHtml; nanti(() => (v ? renderWil : awalWil)($("akWlIsi"))); };
     muatLambang(); const lab = pasangPilih("akWlP", {semua: "Pilih wilayah", nilai: () => WL.kode, opsi: () => opsi, pilih, lg: v => { const [pv, kb] = String(v).split("|"), u = lambangUrl(pv, kb || ""); return u ? [u] : null; }});
-    if (WL.kode) { lab(); nanti(() => renderWil($("akWlIsi"))); }
+    if (WL.kode) { lab(); nanti(() => renderWil($("akWlIsi"))); } else nanti(() => awalWil($("akWlIsi")));
   }
 
   /* ---- berita (L4B): daftar kartu bergaya portal berita, tertaut ke entitas ---- */

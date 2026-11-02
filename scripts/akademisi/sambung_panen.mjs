@@ -373,9 +373,9 @@ export function ujiKesiapan(baris, dibi, namaKab, dari = 2015, opsi = {}) {
 const LB_ALAM = new Set(["banjir", "cuaca", "longsor", "gempabumi", "gelombang_pasang", "gunungapi"]);
 const lbBaris = csv => { const [kep, ...isi] = String(csv).trim().split(/\r?\n/), h = kep.split(","), i = c => h.indexOf(c); return isi.map(ln => ln.split(",")).filter(f => f.length >= h.length).map(f => Object.fromEntries(h.map((c, k) => [c, f[k]]))); };
 export function logbookKeDibi(csv) {
-  const kab = new Map(), baris = [], buang = {tanpa_prov: 0, bukan_alam: 0};
+  const kab = new Map(), baris = [], buang = {tanpa_prov: 0, bukan_alam: 0, tahun_salah: 0}, kini = new Date().getUTCFullYear();
   for (const r of lbBaris(csv)) { const pv = r.prov_kode, nm = String(r.kabkota || "").split(";")[0].trim(), th = Number(String(r.tgl_kejadian).slice(0, 4)), n = c => Number(r[c]) || 0;
-    if (!/^\d{2}$/.test(pv) || !nm || !th) { buang.tanpa_prov++; continue; } if (!LB_ALAM.has(r.jenis)) { buang.bukan_alam++; continue; }
+    if (!/^\d{2}$/.test(pv) || !nm || !th) { buang.tanpa_prov++; continue; } if (th < 2011 || th > kini) { buang.tahun_salah++; continue; } /* salah ketik di logbook, mis. 9202 dan 2923 */ if (!LB_ALAM.has(r.jenis)) { buang.bukan_alam++; continue; }
     const kk = pv + "|" + nm; if (!kab.has(kk)) kab.set(kk, pv + "L" + kab.size);
     baris.push([kab.get(kk), th, r.jenis, 1, 0, 0, n("rumah_rb") + n("rumah_rs") + n("rumah_rr"), 0, n("rumah_rb")]); }
   return {kolom: ["kab", "tahun", "jenis", "kejadian", "meninggal_hilang", "luka", "terdampak", "mengungsi", "rumah_rusak_berat"], baris, buang, namaKab: Object.fromEntries([...kab].map(([kk, kode]) => [kode, kk.split("|")[1]]))};
