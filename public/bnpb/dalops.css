@@ -1,0 +1,27 @@
+/* Pantau Banjir Dalops (/bnpb/dalops). Tabel, deretan pilihan, pil nada dari logbook.css; di sini hanya tambahan. Tanpa gaya inline (CSP). */
+.dl-wrap{display:grid;gap:14px}
+.dl-wrap .bn-judul{margin:6px 0 0}
+.dl-ringkas{margin:0;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.dl-ringkas .bn-kartu h2 svg,.dl-ikon svg,.dl-salin svg,.dl-surut summary svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.dl-kab{display:grid;gap:1px;line-height:1.25}
+.dl-chips{display:flex;gap:4px;flex-wrap:wrap}
+.lb-tabel .bn-pil{white-space:nowrap}   /* tabel digeser di dalam bungkusnya; pil jangan patah per kata di ponsel */
+.dl-aksi{display:flex;gap:6px;align-items:center;justify-content:center}
+.dl-salin{display:inline-flex;gap:6px;align-items:center;white-space:nowrap}
+.dl-ikon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:10px;border:1px solid var(--line);color:var(--ink);background:var(--card)}
+.dl-ikon:hover,.dl-ikon:focus-visible{border-color:var(--c5);color:var(--c5)}
+.lb-tabel td:last-child{text-align:center}
+.dl-prov td{background:var(--surface);font-weight:800;font-size:12.5px;padding:6px 10px}
+.dl-kondisi{max-width:320px;color:var(--ink2);cursor:help}
+.dl-basi td:nth-child(3) b{color:var(--c1)}
+.dl-sorot td{background:color-mix(in srgb,var(--c1) 7%,transparent)}
+/* status banjir: sama dengan arti status di peta banjir */
+.dl-l0{--pil:var(--c4)}.dl-l1{--pil:var(--c3)}.dl-l2{--pil:var(--c2)}.dl-l3{--pil:var(--c1)}
+.dl-arti{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.dl-arti>div{display:flex;gap:8px;align-items:flex-start}
+.dl-isi{display:grid;gap:10px}
+.dl-surut summary{cursor:pointer;list-style:none}
+.dl-surut summary::-webkit-details-marker{display:none}
+.dl-surut summary h2::after{content:"Buka";margin-left:auto;font-size:12px;font-weight:700;color:var(--c5)}
+.dl-surut[open] summary h2::after{content:"Tutup"}
+@media print{.dl-aksi,.dl-seg{display:none}}

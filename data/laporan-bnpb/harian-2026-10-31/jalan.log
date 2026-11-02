@@ -1,0 +1,47 @@
+﻿website 2026-10-30 ditambahkan: Nusa Tenggara Timur
+website 2026-10-30 ditambahkan: Gorontalo
+website 2026-10-30 ditambahkan: Papua Barat
+website 2026-10-30 Papua Selatan Siaga 549 ha 88 FS -> ditangani PERHATIAN
+website 2026-10-30 Kalimantan Tengah Prioritas 467 ha 649 FS -> ditangani PERHATIAN
+website 2026-10-30 Sulawesi Tengah Prioritas 393 ha 327 FS -> ditangani PERHATIAN
+website 2026-10-30 Kalimantan Timur Siaga 320 ha 407 FS -> ditangani PERHATIAN
+website 2026-10-30 Sulawesi Tenggara Prioritas 282 ha 266 FS -> ditangani PERHATIAN
+website 2026-10-30 Kalimantan Selatan Prioritas 33 ha 121 FS -> ditangani PERHATIAN
+website 2026-10-30 Nusa Tenggara Barat Prioritas 25 ha 46 FS -> ditangani PERHATIAN
+website 2026-10-30 Kalimantan Barat Siaga 23 ha 14 FS -> ditangani 
+website 2026-10-30 Jambi Patroli 2 ha 0 FS -> ditangani 
+website 2026-10-30 Riau Aman 0 ha 0 FS -> selesai 
+website 2026-10-30 Sumatera Selatan Patroli 0 ha 20 FS -> ditangani 
+website 2026-10-30 Sulawesi Selatan Siaga 101 ha 101 FS -> ditangani PERHATIAN
+website 2026-10-30 Maluku Siaga 104 ha 32 FS -> ditangani PERHATIAN
+website 2026-10-30 Nusa Tenggara Timur Siaga 52 ha 53 FS -> ditangani 
+website 2026-10-30 Gorontalo Siaga 68 ha 76 FS -> ditangani 
+website 2026-10-30 Papua Barat Siaga 87 ha 14 FS -> ditangani 
+data kosong 2026-10-30 Jambi -> pakai 2026-10-27 19 FS 0 ha
+ok D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-10-31\Laporan Kejadian Bencana Harian 311026.pptx | hari data 2026-10-31 | cutoff 2026-10-31T07:00+07:00 | kejadian 25 karhutla 17 ditangani 15 perlu perhatian 11 selesai 5 | Prioritas ditambah ['93', '72', '74', '52', '53', '75', '92']
+karhutla 93 (prov) berjalan DITANGANI PERHATIAN {'kum': 298227, 'sisa': 549, 'hot': 88}
+karhutla 62 (prov) berjalan DITANGANI PERHATIAN {'kum': 690422, 'sisa': 467, 'hot': 649}
+karhutla 72 (prov) berjalan DITANGANI PERHATIAN {'kum': 45843, 'sisa': 393, 'hot': 327}
+karhutla 64 (prov) berjalan DITANGANI PERHATIAN {'kum': 128002, 'sisa': 320, 'hot': 407}
+karhutla 74 (prov) berjalan DITANGANI PERHATIAN {'kum': 29685, 'sisa': 282, 'hot': 266}
+karhutla 81 (prov) berjalan DITANGANI PERHATIAN {'kum': 74708, 'sisa': 104, 'hot': 32}
+karhutla 73 (prov) berjalan DITANGANI PERHATIAN {'kum': 34155, 'sisa': 101, 'hot': 101}
+karhutla 92 (prov) berjalan DITANGANI  {'kum': 54657, 'sisa': 87, 'hot': 14}
+karhutla 75 (prov) berjalan DITANGANI  {'kum': 10033, 'sisa': 68, 'hot': 76}
+karhutla 53 (prov) berjalan DITANGANI  {'kum': 57367, 'sisa': 52, 'hot': 53}
+karhutla 63 (prov) berjalan DITANGANI PERHATIAN {'kum': 105616, 'sisa': 33, 'hot': 121}
+karhutla 52 (prov) berjalan DITANGANI PERHATIAN {'kum': 27357, 'sisa': 25, 'hot': 46}
+karhutla 61 (prov) berjalan DITANGANI  {'kum': 326419, 'sisa': 23, 'hot': 14}
+karhutla 15 (prov) berjalan DITANGANI  {'kum': 35248, 'sisa': 0, 'hot': 19, 'dari': '2026-10-27'}
+karhutla 16 (prov) berjalan DITANGANI  {'kum': 212838, 'sisa': 0, 'hot': 20, 'api': '69 ha baru 30 Okt'}
+karhutla 14 (prov) berjalan selesai  {'kum': 26945, 'sisa': 0, 'hot': 0}
+karhutla 18 TN Way Kambas berjalan selesai  {'kum': 2306, 'sisa': 0, 'hot': 0}
+angin 11 Gayo Lues selesai selesai  {}
+banjir 11 Aceh Selatan belum DITANGANI PERHATIAN {}
+banjir 11 Kota Subulussalam belum DITANGANI PERHATIAN {}
+banjir 12 Mandailing Natal selesai selesai  {}
+banjir 12 Deli Serdang selesai selesai  {}
+banjir 12 Langkat berjalan DITANGANI  {}
+angin 63 Banjar berjalan DITANGANI  {}
+gempabumi 53 (prov) berjalan DITANGANI  {}
+pdf D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-10-31\Laporan Kejadian Bencana Harian 311026.pdf
