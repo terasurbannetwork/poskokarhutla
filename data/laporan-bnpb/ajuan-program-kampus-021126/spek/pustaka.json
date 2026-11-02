@@ -1,0 +1,1199 @@
+[
+ {
+  "id": "rev4",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Ajuan Program Kerja Sama BNPB dengan Perguruan Tinggi (paparan rev4)",
+  "URL": "https://bnpb.go.id",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "analisis",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Analisis ajuan program kampus dan swasta, berangkat dari kampus",
+  "URL": "https://bnpb.go.id",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "dibi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Data dan Informasi Bencana Indonesia (DIBI), rekap provinsi 2016-2025",
+  "URL": "https://dibi.bnpb.go.id",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "tdmrc-flume",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "TDMRC Universitas Syiah Kuala"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Tsunami Flume Laboratory",
+  "URL": "https://tdmrc.usk.ac.id/tsunami-flume-laboratory/",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "usk-medcom",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Medcom.id"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "12 perguruan tinggi bahu-membahu bantu korban banjir",
+  "URL": "https://www.medcom.id/pendidikan/news-pendidikan/0KvZWX9K-12-perguruan-tinggi-bahu-membahu-bantu-korban-banjir",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "usk-logistik",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Good News From Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "USK terima bantuan logistik Kemdiktisaintek untuk respons bencana",
+  "URL": "https://www.goodnewsfromindonesia.id/network/content/usk-terima-bantuan-logistik-kemdiktisaintek-untuk-respons",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "medco",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "MedcoEnergi"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "MedcoEnergi community development: bantuan banjir Aceh",
+  "URL": "https://www.medcoenergi.com/en/our-sustainability/social-and-communities/community-development-progr",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "pema",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kumparan AcehKini"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Universitas Syiah Kuala dan PEMA jalin kerja sama kelola hulu migas",
+  "URL": "https://kumparan.com/acehkini/universitas-syiah-kuala-dan-pema-jalin-kerja-sama-kelola-hulu-migas-1y",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "bsi",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "ANTARA"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "BSI hadirkan program beasiswa perguruan tinggi di Aceh",
+  "URL": "https://m.antaranews.com/amp/berita/3726738/bsi-hadirkan-program-beasiswa-perguruan-tinggi-di-aceh",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "unand-mhs",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Good News From Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "400 mahasiswa Unand terjun ke lokasi terdampak banjir",
+  "URL": "https://www.goodnewsfromindonesia.id/short/400-mahasiswa-unand-terjun-ke-lokasi-terdampak-banjir-jalankan-tuga",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "pegadaian",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Katadata"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Pegadaian dan Universitas Andalas kembangkan model kesiapsiagaan megathrust",
+  "URL": "https://katadata.co.id/berita/nasional/6a4775341ae17/pegadaian-universitas-andalas-kembangkan-model-",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "hutama",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Republika"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Hutama Karya gandeng Unand siapkan SDM sektor infrastruktur",
+  "URL": "https://ekonomi.republika.co.id/berita/tgk6kw416/hutama-karya-gandeng-unand-siapkan-sdm-sektor-infra",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "semenpadang",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Sumbarbisnis"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Semen Padang kerahkan alat berat dan personel ke Palembayan",
+  "URL": "https://www.sumbarbisnis.com/?p=54399",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "ipb-latih",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "IPB University"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "IPB latih pemadam kebakaran gambut lintas negara",
+  "URL": "https://www.ipb.ac.id/?p=89138",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "rfmrc",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "RFMRC-SEA"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2017
+    ]
+   ]
+  },
+  "title": "Regional Fire Management Resource Center Southeast Asia",
+  "URL": "https://rfmrc-sea.org/?p=11",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "saksi",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Mongabay Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018
+    ]
+   ]
+  },
+  "title": "Saksi ahli tergugat dan preseden buruk pelestarian lingkungan",
+  "URL": "https://mongabay.co.id/2018/10/21/saksi-ahli-tergugat-hukum-preseden-buruk-dan-ancaman-pelestarian-lingkungan/",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "phr",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Pertamina"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Pertamina group synergy deploys over 200 personnel to assist in fire handling",
+  "URL": "https://pertamina.com/en/news-room/news-release/pertamina-group-synergy-deploys-over-200-personnel-to-assist-i",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "asianagri",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Royal Golden Eagle"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018
+    ]
+   ]
+  },
+  "title": "Program Desa Bebas Api Asian Agri efektif cegah kebakaran",
+  "URL": "https://www.rgei.com/attachments/article/1050/03.07.18---Program-Desa-Bebas-Api-Asian-Agri-Efektif-Cegah-Kebak",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "drrc",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Antara Megapolitan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Tim DRRC UI sampaikan temuan kondisi alam Sumatera Barat",
+  "URL": "https://megapolitan.antaranews.com/berita/475543/tim-drrc-ui-sampaikan-temuan-kondisi-alam-sumatera-barat",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "drrc-phr",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Antara Megapolitan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "DRRC UI dan Pertamina Hulu Rokan kaji kelola tanggap darurat kebakaran",
+  "URL": "https://megapolitan.antaranews.com/berita/288237/drrc-ui-pertamina-hulu-rokan-kaji-kelola-tanggap-darurat-kebakaran",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "astra",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "PT Astra International Tbk"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Astra continues to provide humanitarian support for disaster",
+  "URL": "https://www.astra.co.id/en/press-release/astra-continues-to-provide-humanitarian-support-for-disaste",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "mandiri",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Bisnis.com"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Bank Mandiri percepat penyaluran 67.000 bantuan",
+  "URL": "https://finansial.bisnis.com/read/20251203/90/1933989/bank-mandiri-percepat-penyaluran-67000-bantuan",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "itb-cianjur",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Institut Teknologi Bandung"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022
+    ]
+   ]
+  },
+  "title": "ITB initiated eight actions for handling the Cianjur earthquake",
+  "URL": "https://itb.ac.id/news/itb-initiated-eights-actions-for-handling-the-cianjur-earthquake/59100",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "itb-sumatra",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Institut Teknologi Bandung"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "ITB strengthens post-disaster recovery in Sumatra through humanitarian action",
+  "URL": "https://itb.ac.id/news/itb-strengthens-post-disaster-recovery-in-sumatra-through-humanitarian-action-and-cross",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "agam",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Antara Megapolitan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "ITB serahkan program penyediaan air bersih di Agam",
+  "URL": "https://megapolitan.antaranews.com/berita/520809/itb-serahkan-program-penyediaan-air-bersih-di-agam-dukung-upa",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "paragon-sum",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Katadata"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Sosok Nurhayati Subakat dan bantuan Paragon untuk Sumatra",
+  "URL": "https://katadata.co.id/amp/finansial/korporasi/6944f7fa4e99e/sosok-nurhayati-subakat-perem",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "labtek",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Institut Teknologi Bandung"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "ITB, Pertamina, dan Paragon resmikan Gedung Labtek XV",
+  "URL": "https://itb.ac.id/berita/itb-pertamina-dan-paragon-resmikan-gedung-labtek-xv-fasilitas-ter",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "tsel-itb",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "detikInet"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Telkomsel dan ITB resmikan AI Innovation Hub",
+  "URL": "https://inet.detik.com/telecommunication/d-8263210/telkomsel-dan-itb-resmikan-ai-innovation-hub-pertama-di-ind",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "telkom-cianjur",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "PT Telkom Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022
+    ]
+   ]
+  },
+  "title": "Telkom has distributed 1 billion rupiah in aid for Cianjur",
+  "URL": "https://aro.telkom.co.id/sites/news-resources/en_US/news/telkom-has-distributed-1-billion-rupiah-in-",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "telkom-sd",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Selular.ID"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Telkom bangun fasilitas SD sementara di Cianjur",
+  "URL": "https://selular.id/2023/01/telkom-bangun-fasilitas-sd-sementara-di-cianjur/",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "telkomsat",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Selular.ID"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Pemulihan layanan TelkomGroup di Sumatra",
+  "URL": "https://selular.id/2025/12/pemulihan-layanan-telkomgroup-di-sumatra-tembus-80-tim-tambahan",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "patriot",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Telkom University"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Telkom University supports local governments through climate technology",
+  "URL": "https://sdgs.telkomuniversity.ac.id/news/telkom-university-supports-local-governments-through-climat",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "floodeye",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Katadata"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Flood Eye, riset AI untuk perkuat mitigasi banjir Semarang",
+  "URL": "https://katadata.co.id/digital/teknologi/6a9807321a5df/flood-eye-riset-ai-untuk-perkuat-mitigasi-banjir-semara",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "icl",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "International Consortium on Landslides"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Progress Report 2024 SEA Network ICL",
+  "URL": "https://landslides.org/wp-content/uploads/2024/11/Progress-Report-2024_SEA-Network-ICL-20241124.pdf",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "deru",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Universitas Gadjah Mada"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2010
+    ]
+   ]
+  },
+  "title": "DERU UGM dirikan klinik kesehatan di 8 titik pengungsian",
+  "URL": "https://ugm.ac.id/id/berita/2785-deru-ugm-dirikan-klinik-kesehatan-di-8-titik-pengungsian/",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "ugm-100",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Universitas Gadjah Mada"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2010
+    ]
+   ]
+  },
+  "title": "Cooperating with 100 universities, UGM helps reawaken life of people",
+  "URL": "https://ugm.ac.id/en/news/5958-cooperating-with-100-private-state-universities-ugm-helps-reawaken-life-of-peop",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "sidomuncul",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "BCA Sekuritas"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Sido Muncul tambah donasi untuk korban bencana Sumatera",
+  "URL": "https://bcasekuritas.co.id/latest-news/news/sido-muncul-tambah-donasi-rp500-juta-untuk-korban-bencana-di-sumat",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "bmkg",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "CNN Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Profil Teuku Faisal Fathani, pemimpin BMKG",
+  "URL": "https://www.cnnindonesia.com/teknologi/20251104101914-199-1291594/profil-teuku-faisal-fathani-pemimp",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "its-huntara",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Suara Surabaya"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018
+    ]
+   ]
+  },
+  "title": "ITS tuntaskan pembangunan 914 huntara di Lombok",
+  "URL": "https://www.suarasurabaya.net/kelanakota/2018/ITS-Tuntaskan-Pembangunan-914-Huntara-di-Lombok/",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "its-kapal",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Repositori ITS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Desain rumah sakit terapung di atas KCR 60 m",
+  "URL": "https://repository.its.ac.id/112906",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "ut-huntara",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Warta Ekonomi"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022
+    ]
+   ]
+  },
+  "title": "United Tractors serahkan 100 unit huntara korban erupsi Semeru",
+  "URL": "https://wartaekonomi.co.id/read427818/united-tractors-serahkan-100-unit-huntara-korban-erupsi-gunung-semeru-be",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "petrokimia",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "JPNN"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021
+    ]
+   ]
+  },
+  "title": "Erupsi Gunung Semeru, Petrokimia Gresik langsung bergerak",
+  "URL": "https://www.jpnn.com/news/erupsi-gunung-semeru-petrokimia-gresik-langsung-bergerak",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "amman",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "PT Amman Mineral Nusa Tenggara"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022
+    ]
+   ]
+  },
+  "title": "AMMAN distributes humanitarian aid to help Cianjur disaster victims",
+  "URL": "https://www.amman.co.id/article/amman-distributes-humanitarian-aid-to-help-cianjur-s-disaster-victim",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "ntb",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Universitas Mataram"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Unram dan Bank NTB Syariah tanda tangani MoU Tri Dharma",
+  "URL": "https://unram.ac.id/en/tag/bank-ntb-en/",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "benoa",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Antara Bali"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Kerja sama pariwisata untuk mitigasi tsunami di Tanjung Benoa",
+  "URL": "https://bali.antaranews.com/berita/365822/kerjasama-pariwisata-untuk-mitigasi-tsunami-di-tanjung-benoa",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "ppiig",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Universitas Lambung Mangkurat"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "PPIIG ULM analyzes factors causing floods in South Kalimantan",
+  "URL": "https://ulm.ac.id/en/2025/02/01/ppiig-ulm-analyzes-factors-causing-floods-in-south-kalimantan/",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "pln",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "CNBC Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021
+    ]
+   ]
+  },
+  "title": "PLN pulihkan 1.036 gardu terdampak banjir di Kalimantan Selatan",
+  "URL": "https://www.cnbcindonesia.com/news/20210118100323-4-216736/pln-pulihkan-1036-gardu-terdampak-banjir-di-kaliman",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "ulm-mangrove",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Antara Kalsel"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "ULM kelola 629 hektare mangrove kembangkan hutan pendidikan",
+  "URL": "https://kalsel.antaranews.com/berita/388038/ulm-kelola-629-hektare-mangrove-kembangkan-hutan-pendidi",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "masmindo",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Bisnis.com"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Masmindo Dwi Area gandeng Unhas untuk mitigasi bencana",
+  "URL": "https://ekonomi.bisnis.com/read/20240717/44/1783182/masmindo-dwi-area-gandeng-unhas-mitigasi-bencana",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "kalla",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Fakultas Teknik Universitas Hasanuddin"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "title": "Inauguration of the Kalla dormitory for FT-UH students",
+  "URL": "https://eng.unhas.ac.id/post/show/en/inauguration-of-the-kalla-dormitory-for-ft-uh-students",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "untad",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kompas TV"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021
+    ]
+   ]
+  },
+  "title": "Akademisi Untad Palu membuat alat deteksi likuefaksi",
+  "URL": "https://www.kompas.tv/article/145957/akademisi-untad-palu-membuat-alat-deteksi-likuefaksi",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "inpex",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Republika"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021
+    ]
+   ]
+  },
+  "title": "Tahun ketujuh program beasiswa INPEX",
+  "URL": "https://news.republika.co.id/berita/r21sgg456/tahun-ketujuh-program-beasiswa-inpex-sasar-55-mahasisw",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "tsel-bts",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Antara Ambon"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Telkomsel bangun 800 BTS baru di wilayah Maluku Papua",
+  "URL": "https://ambon.antaranews.com/berita/181707/telkomsel-bangun-800-bts-baru-di-wilayah-maluku-papua",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "ambon",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Institut Teknologi Sepuluh Nopember"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "title": "ITS sambung bantuan gempa Maluku lewat Unpatti",
+  "URL": "https://www.its.ac.id/news/its-sambung-bantuan-gempa-maluku-lewat-unpatti/",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "pmk114",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Kementerian Keuangan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Menteri Keuangan Nomor 114 Tahun 2025",
+  "URL": "https://jdih.kemenkeu.go.id/api/download/956c4a77-a4bb-4c97-a4a9-989bc6a98c79/2025pmkeuangan114.pdf",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "mf",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "VIVA; Infobanknews"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Ditjen Diktiristek buka penerimaan proposal Matching Fund",
+  "URL": "https://www.viva.co.id/edukasi/1443253-ditjen-diktiristek-buka-penerimaan-proposal-program-penelitia",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "ddtc-sd",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "DDTC News"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "PMK 81/2024 perbarui ketentuan super tax deduction litbang",
+  "URL": "https://news.ddtc.co.id/berita/nasional/1807141/pmk-812024-perbarui-ketentuan-supertax-deduction-beg",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "ddtc-wp",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "DDTC News"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Sri Mulyani sebut baru 30 WP ajukan super tax deduction",
+  "URL": "https://news.ddtc.co.id/berita/nasional/1812747/sri-mulyani-sebut-baru-30-wp-ajukan-supertax-deducti",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "agincourt",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kontan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Digugat pemerintah terkait bencana di Sumatra, begini penjelasan Agincourt Resources",
+  "URL": "https://nasional.kontan.co.id/news/digugat-pemerintah-terkait-bencana-di-sumatra-begini-penjelasan-agincourt-r",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "infomedia",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Tirto"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Kejati Jakarta tetapkan tersangka kasus kredit fiktif",
+  "URL": "https://tirto.id/kejati-jakarta-tetapkan-9-tersangka-kasus-kredit-fiktif-rp431-m-hbtL",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "pertamina-kasus",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Bisnis.com"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Kerugian korupsi minyak mentah Pertamina",
+  "URL": "https://kabar24.bisnis.com/read/20250225/16/1842494/kerugian-korupsi-minyak-mentah-pertamina-rp1937-triliun-in",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "maipark",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "ITS News"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022
+    ]
+   ]
+  },
+  "title": "ITS mitigasi risiko bencana untuk tingkatkan ketangguhan Kota Surabaya",
+  "URL": "https://www.its.ac.id/news/its-mitigasi-risiko-bencana-untuk-tingkatkan-ketangguhan-kota-surabaya/",
+  "verifikasi": "sekunder"
+ },
+ {
+  "id": "vale-pipa",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Detik Finance"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Vale buka suara soal kebocoran pipa minyak cemari sawah",
+  "URL": "https://finance.detik.com/energi/d-8079858/vale-buka-suara-soal-kebocoran-pipa-minyak-cemari-38-hektare-sawah",
+  "verifikasi": "sekunder"
+ }
+]

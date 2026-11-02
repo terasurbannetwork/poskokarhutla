@@ -1,0 +1,851 @@
+{
+ "angka": {
+  "rev4.program": {
+   "nilai": 15,
+   "satuan": "program",
+   "pustaka": "rev4",
+   "sumber": "Paparan kerja sama PT, 30 Okt 2026",
+   "keyakinan": "resmi"
+  },
+  "rev4.pilar": {
+   "nilai": 4,
+   "satuan": "pilar",
+   "pustaka": "rev4",
+   "sumber": "Paparan kerja sama PT, 30 Okt 2026",
+   "keyakinan": "resmi"
+  },
+  "rev4.koordinator": {
+   "nilai": 11,
+   "satuan": "kampus",
+   "pustaka": "rev4",
+   "sumber": "Paparan kerja sama PT, 30 Okt 2026",
+   "keyakinan": "resmi"
+  },
+  "rev4.provinsi": {
+   "nilai": 38,
+   "satuan": "provinsi",
+   "pustaka": "rev4",
+   "sumber": "Paparan kerja sama PT, 30 Okt 2026",
+   "keyakinan": "resmi"
+  },
+  "rev4.unit": {
+   "nilai": 6,
+   "satuan": "unit",
+   "pustaka": "rev4",
+   "sumber": "Paparan kerja sama PT, 30 Okt 2026",
+   "keyakinan": "resmi"
+  },
+  "ks.kampus": {
+   "nilai": 12,
+   "satuan": "kampus",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "ks.flagship": {
+   "nilai": 12,
+   "satuan": "flagship",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "ks.l1": {
+   "nilai": 9,
+   "satuan": "flagship",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026",
+   "keyakinan": "penilaian-pakar"
+  },
+  "ks.langkah": {
+   "nilai": 4,
+   "satuan": "langkah",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "ks.lapis": {
+   "nilai": 3,
+   "satuan": "lapis",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "ks.tipe": {
+   "nilai": 4,
+   "satuan": "tipe",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026",
+   "keyakinan": "penilaian-pakar"
+  },
+  "ks.aset": {
+   "nilai": 5,
+   "satuan": "jenis",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026",
+   "keyakinan": "penilaian-pakar"
+  },
+  "ks.kembar": {
+   "nilai": 3,
+   "satuan": "pasang",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "ks.swasta_kuat": {
+   "nilai": 6,
+   "satuan": "kampus",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026, jejaring swasta bernilai tiga atau lebih",
+   "keyakinan": "penilaian-pakar"
+  },
+  "ks.l3": {
+   "nilai": 3,
+   "satuan": "perusahaan",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "ks.ut": {
+   "nilai": 4,
+   "satuan": "kelompok",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "ks.pagar": {
+   "nilai": 8,
+   "satuan": "aturan",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "ks.gel1": {
+   "nilai": 5,
+   "satuan": "flagship",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026",
+   "keyakinan": "penilaian-pakar"
+  },
+  "ks.gel2": {
+   "nilai": 7,
+   "satuan": "flagship",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026",
+   "keyakinan": "penilaian-pakar"
+  },
+  "ks.tahap": {
+   "nilai": 3,
+   "satuan": "tahap",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "ks.keputusan": {
+   "nilai": 6,
+   "satuan": "langkah",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "riset.temuan": {
+   "nilai": 130,
+   "satuan": "temuan",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026, riset web empat pencari",
+   "keyakinan": "terverifikasi"
+  },
+  "riset.titik": {
+   "nilai": 61,
+   "satuan": "titik data",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026, riset.py periksa",
+   "keyakinan": "terverifikasi"
+  },
+  "riset.lembaga": {
+   "nilai": 47,
+   "satuan": "lembaga",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026, riset web empat pencari",
+   "keyakinan": "terverifikasi"
+  },
+  "usk.flume": {
+   "nilai": 60,
+   "satuan": "m",
+   "pustaka": "tdmrc-flume",
+   "sumber": "TDMRC USK",
+   "keyakinan": "terverifikasi"
+  },
+  "usk.warga": {
+   "nilai": 642,
+   "satuan": "warga",
+   "pustaka": "usk-medcom",
+   "sumber": "Medcom.id, 15 Des 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "usk.logistik": {
+   "nilai": 4114,
+   "satuan": "item",
+   "pustaka": "usk-logistik",
+   "sumber": "Good News From Indonesia, 19 Des 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "medco.air": {
+   "nilai": 25000,
+   "satuan": "liter per hari",
+   "pustaka": "medco",
+   "sumber": "MedcoEnergi, 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "bsi.kampus": {
+   "nilai": 8,
+   "satuan": "kampus",
+   "pustaka": "bsi",
+   "sumber": "ANTARA, 2023",
+   "keyakinan": "terverifikasi"
+  },
+  "unand.mhs": {
+   "nilai": 400,
+   "satuan": "mahasiswa",
+   "pustaka": "unand-mhs",
+   "sumber": "Good News From Indonesia, 2 Jan 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "unand.komponen": {
+   "nilai": 5,
+   "satuan": "komponen",
+   "pustaka": "pegadaian",
+   "sumber": "Katadata, 3 Jul 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "semenpadang.personel": {
+   "nilai": 30,
+   "satuan": "personel",
+   "pustaka": "semenpadang",
+   "sumber": "Sumbarbisnis, 2 Des 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "semenpadang.alat": {
+   "nilai": 3,
+   "satuan": "alat berat",
+   "pustaka": "semenpadang",
+   "sumber": "Sumbarbisnis, 2 Des 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "ipb.peserta": {
+   "nilai": 19,
+   "satuan": "peserta",
+   "pustaka": "ipb-latih",
+   "sumber": "IPB University, 9 Mei 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "ipb.negara": {
+   "nilai": 4,
+   "satuan": "negara",
+   "pustaka": "ipb-latih",
+   "sumber": "IPB University, 9 Mei 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "ipb.perkara": {
+   "nilai": 24,
+   "satuan": "perkara",
+   "pustaka": "saksi",
+   "sumber": "Mongabay Indonesia, 21 Okt 2018",
+   "keyakinan": "terverifikasi"
+  },
+  "phr.personel": {
+   "nilai": 200,
+   "satuan": "personel",
+   "pustaka": "phr",
+   "sumber": "Pertamina, Agt 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "asianagri.desa": {
+   "nilai": 16,
+   "satuan": "desa",
+   "pustaka": "asianagri",
+   "sumber": "Royal Golden Eagle, 3 Jul 2018",
+   "keyakinan": "terverifikasi"
+  },
+  "ui.nagari": {
+   "nilai": 3,
+   "satuan": "nagari",
+   "pustaka": "drrc",
+   "sumber": "Antara Megapolitan, 24 Des 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "astra.posko": {
+   "nilai": 19,
+   "satuan": "posko",
+   "pustaka": "astra",
+   "sumber": "Astra International, 30 Des 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "astra.paket": {
+   "nilai": 35500,
+   "satuan": "paket",
+   "pustaka": "astra",
+   "sumber": "Astra International, 30 Des 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "mandiri.bantuan": {
+   "nilai": 67000,
+   "satuan": "paket",
+   "pustaka": "mandiri",
+   "sumber": "Bisnis.com, 3 Des 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "itb.seismograf": {
+   "nilai": 6,
+   "satuan": "seismograf",
+   "pustaka": "itb-cianjur",
+   "sumber": "ITB, 2 Des 2022",
+   "keyakinan": "terverifikasi"
+  },
+  "itb.mhs": {
+   "nilai": 267,
+   "satuan": "mahasiswa",
+   "pustaka": "itb-cianjur",
+   "sumber": "ITB, 2 Des 2022",
+   "keyakinan": "terverifikasi"
+  },
+  "itb.muf": {
+   "nilai": 47,
+   "satuan": "unit",
+   "pustaka": "itb-sumatra",
+   "sumber": "ITB, 22 Jan 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "itb.lokasi": {
+   "nilai": 35,
+   "satuan": "lokasi",
+   "pustaka": "itb-sumatra",
+   "sumber": "ITB, 22 Jan 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "itb.kampus": {
+   "nilai": 14,
+   "satuan": "kampus",
+   "pustaka": "itb-sumatra",
+   "sumber": "ITB, 22 Jan 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "agam.liter": {
+   "nilai": 35000,
+   "satuan": "liter per hari",
+   "pustaka": "agam",
+   "sumber": "Antara Megapolitan, 4 Apr 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "agam.kk": {
+   "nilai": 281,
+   "satuan": "KK",
+   "pustaka": "agam",
+   "sumber": "Antara Megapolitan, 4 Apr 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "paragon.paket": {
+   "nilai": 200,
+   "satuan": "paket",
+   "pustaka": "agam",
+   "sumber": "Antara Megapolitan, 4 Apr 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "paragon.ton": {
+   "nilai": 30,
+   "satuan": "ton",
+   "pustaka": "paragon-sum",
+   "sumber": "Katadata, 19 Des 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "telkom.dana": {
+   "nilai": 1,
+   "satuan": "Rp miliar",
+   "pustaka": "telkom-cianjur",
+   "sumber": "Telkom Indonesia, 25 Nov 2022",
+   "keyakinan": "terverifikasi"
+  },
+  "telkom.paket": {
+   "nilai": 1000,
+   "satuan": "paket",
+   "pustaka": "telkom-cianjur",
+   "sumber": "Telkom Indonesia, 25 Nov 2022",
+   "keyakinan": "terverifikasi"
+  },
+  "telkomsat.unit": {
+   "nilai": 120,
+   "satuan": "unit",
+   "pustaka": "telkomsat",
+   "sumber": "Selular.ID, 11 Des 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "floodeye.titik": {
+   "nilai": 6,
+   "satuan": "titik",
+   "pustaka": "floodeye",
+   "sumber": "Katadata, 2 Sep 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "ugm.kab": {
+   "nilai": 120,
+   "satuan": "kabupaten",
+   "pustaka": "icl",
+   "sumber": "International Consortium on Landslides, 24 Nov 2024",
+   "keyakinan": "terverifikasi"
+  },
+  "ugm.klinik": {
+   "nilai": 8,
+   "satuan": "klinik",
+   "pustaka": "deru",
+   "sumber": "UGM, 8 Nov 2010",
+   "keyakinan": "terverifikasi"
+  },
+  "ugm.kampus": {
+   "nilai": 100,
+   "satuan": "kampus",
+   "pustaka": "ugm-100",
+   "sumber": "UGM, 30 Nov 2010",
+   "keyakinan": "terverifikasi"
+  },
+  "sidomuncul.donasi": {
+   "nilai": 1.4,
+   "satuan": "Rp miliar",
+   "pustaka": "sidomuncul",
+   "sumber": "BCA Sekuritas, 15 Des 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "its.huntara": {
+   "nilai": 914,
+   "satuan": "huntara",
+   "pustaka": "its-huntara",
+   "sumber": "Suara Surabaya, 4 Okt 2018",
+   "keyakinan": "terverifikasi"
+  },
+  "its.kapal": {
+   "nilai": 60,
+   "satuan": "m",
+   "pustaka": "its-kapal",
+   "sumber": "Repositori ITS, 2024",
+   "keyakinan": "terverifikasi"
+  },
+  "ut.huntara": {
+   "nilai": 100,
+   "satuan": "huntara",
+   "pustaka": "ut-huntara",
+   "sumber": "Warta Ekonomi, 15 Jul 2022",
+   "keyakinan": "terverifikasi"
+  },
+  "petrokimia.paket": {
+   "nilai": 600,
+   "satuan": "paket",
+   "pustaka": "petrokimia",
+   "sumber": "JPNN, 5 Des 2021",
+   "keyakinan": "terverifikasi"
+  },
+  "amman.personel": {
+   "nilai": 9,
+   "satuan": "personel",
+   "pustaka": "amman",
+   "sumber": "AMMAN, 5 Des 2022",
+   "keyakinan": "terverifikasi"
+  },
+  "amman.kasur": {
+   "nilai": 440,
+   "satuan": "kasur",
+   "pustaka": "amman",
+   "sumber": "AMMAN, 5 Des 2022",
+   "keyakinan": "terverifikasi"
+  },
+  "benoa.hotel": {
+   "nilai": 4,
+   "satuan": "hotel",
+   "pustaka": "benoa",
+   "sumber": "Antara Bali, 2023",
+   "keyakinan": "terverifikasi"
+  },
+  "ulm.kab": {
+   "nilai": 11,
+   "satuan": "kabupaten dan kota",
+   "pustaka": "ppiig",
+   "sumber": "ULM, 1 Feb 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "pln.gardu": {
+   "nilai": 1036,
+   "satuan": "gardu",
+   "pustaka": "pln",
+   "sumber": "CNBC Indonesia, 18 Jan 2021",
+   "keyakinan": "terverifikasi"
+  },
+  "ulm.mangrove": {
+   "nilai": 629.27,
+   "satuan": "ha",
+   "pustaka": "ulm-mangrove",
+   "sumber": "Antara Kalsel, 2023",
+   "keyakinan": "terverifikasi"
+  },
+  "kalla.asrama": {
+   "nilai": 810,
+   "satuan": "orang",
+   "pustaka": "kalla",
+   "sumber": "Fakultas Teknik Unhas, 14 Agt 2019",
+   "keyakinan": "terverifikasi"
+  },
+  "untad.akurasi": {
+   "nilai": 80,
+   "satuan": "%",
+   "pustaka": "untad",
+   "sumber": "Kompas TV, 10 Feb 2021",
+   "keyakinan": "terverifikasi"
+  },
+  "inpex.mhs": {
+   "nilai": 343,
+   "satuan": "mahasiswa",
+   "pustaka": "inpex",
+   "sumber": "Republika, 4 Nov 2021",
+   "keyakinan": "terverifikasi"
+  },
+  "tsel.bts": {
+   "nilai": 800,
+   "satuan": "BTS",
+   "pustaka": "tsel-bts",
+   "sumber": "Antara Ambon, 2023",
+   "keyakinan": "terverifikasi"
+  },
+  "ambon.mengungsi": {
+   "nilai": 148619,
+   "satuan": "jiwa",
+   "pustaka": "ambon",
+   "sumber": "ITS, Okt 2019",
+   "keyakinan": "terverifikasi"
+  },
+  "pmk114.batas": {
+   "nilai": 5,
+   "satuan": "%",
+   "pustaka": "pmk114",
+   "sumber": "PMK 114/2025 Pasal 4, 30 Des 2025",
+   "keyakinan": "resmi"
+  },
+  "mf.dana": {
+   "nilai": 750,
+   "satuan": "Rp miliar",
+   "pustaka": "mf",
+   "sumber": "Ditjen Diktiristek lewat VIVA dan Infobanknews, 2024",
+   "keyakinan": "terverifikasi"
+  },
+  "sd.persen": {
+   "nilai": 300,
+   "satuan": "%",
+   "pustaka": "ddtc-sd",
+   "sumber": "PP 45/2019 dan PMK 81/2024, lewat DDTC News 2024",
+   "keyakinan": "terverifikasi"
+  },
+  "sd.wp": {
+   "nilai": 30,
+   "satuan": "wajib pajak",
+   "pustaka": "ddtc-wp",
+   "sumber": "Menteri Keuangan lewat DDTC News, 2024",
+   "keyakinan": "terverifikasi"
+  },
+  "agincourt.gugatan": {
+   "nilai": 200.99,
+   "satuan": "Rp miliar",
+   "pustaka": "agincourt",
+   "sumber": "Kontan, 15 Jan 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "infomedia.kasus": {
+   "nilai": 431.7,
+   "satuan": "Rp miliar",
+   "pustaka": "infomedia",
+   "sumber": "Tirto, 8 Mei 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "vale.sawah": {
+   "nilai": 38,
+   "satuan": "ha",
+   "pustaka": "vale-pipa",
+   "sumber": "Detik Finance, 1 Agt 2025",
+   "keyakinan": "terverifikasi"
+  },
+  "dibi.USK.mati": {
+   "nilai": 1506,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.USK.gempa": {
+   "nilai": 106,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.USK.rumah": {
+   "nilai": 254993,
+   "satuan": "rumah",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.Unand.mati": {
+   "nilai": 1142,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.Unand.gempa": {
+   "nilai": 157,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.Unand.rumah": {
+   "nilai": 105112,
+   "satuan": "rumah",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.UI.mati": {
+   "nilai": 462,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.UI.gempa": {
+   "nilai": 331,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.UI.rumah": {
+   "nilai": 19660,
+   "satuan": "rumah",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.ITB.mati": {
+   "nilai": 1188,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.ITB.gempa": {
+   "nilai": 616,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.ITB.rumah": {
+   "nilai": 177575,
+   "satuan": "rumah",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.UGM.mati": {
+   "nilai": 583,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.UGM.gempa": {
+   "nilai": 5,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.UGM.rumah": {
+   "nilai": 61355,
+   "satuan": "rumah",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.ITS.mati": {
+   "nilai": 436,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.ITS.gempa": {
+   "nilai": 14,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.ITS.rumah": {
+   "nilai": 81040,
+   "satuan": "rumah",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.Unram.mati": {
+   "nilai": 1180,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.Unram.gempa": {
+   "nilai": 574,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.Unram.rumah": {
+   "nilai": 314825,
+   "satuan": "rumah",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.ULM.mati": {
+   "nilai": 262,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.ULM.gempa": {
+   "nilai": 0,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.ULM.rumah": {
+   "nilai": 32623,
+   "satuan": "rumah",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.Unhas.mati": {
+   "nilai": 5541,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.Unhas.gempa": {
+   "nilai": 4958,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.Unhas.rumah": {
+   "nilai": 191396,
+   "satuan": "rumah",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.Unpatti.mati": {
+   "nilai": 480,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.Unpatti.gempa": {
+   "nilai": 64,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.Unpatti.rumah": {
+   "nilai": 36719,
+   "satuan": "rumah",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.ULM.karhutla": {
+   "nilai": 50.9,
+   "satuan": "%",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.ITB.gempa_pct": {
+   "nilai": 51.9,
+   "satuan": "%",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.Unhas.gempa_pct": {
+   "nilai": 89.5,
+   "satuan": "%",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.UI.gempa_pct": {
+   "nilai": 71.6,
+   "satuan": "%",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.UGM.longsor": {
+   "nilai": 331,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.USK.banjir": {
+   "nilai": 1227,
+   "satuan": "jiwa",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.UI.banjir_pct": {
+   "nilai": 58.1,
+   "satuan": "%",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025",
+   "keyakinan": "resmi"
+  },
+  "dibi.beda": {
+   "nilai": 4,
+   "satuan": "regional",
+   "pustaka": "dibi",
+   "sumber": "DIBI BNPB 2016-2025, regional yang korban jiwanya terbanyak dari gempa dan tsunami",
+   "keyakinan": "resmi"
+  },
+  "ks.ajuan": {
+   "nilai": 36,
+   "satuan": "ajuan",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026",
+   "keyakinan": "asumsi-kebijakan"
+  },
+  "ks.pencegahan": {
+   "nilai": 15,
+   "satuan": "ajuan",
+   "pustaka": "analisis",
+   "sumber": "Analisis BNPB, 2 Nov 2026",
+   "keyakinan": "asumsi-kebijakan"
+  }
+ }
+}

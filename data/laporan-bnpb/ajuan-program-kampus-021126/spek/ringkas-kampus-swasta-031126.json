@@ -1,0 +1,997 @@
+{
+ "_catatan": "Deck ringkasan dari deck lengkap kampus-swasta-031126 (slide disalin dari spek yang sama).",
+ "pesan_kunci": "Tiap kampus koordinator memimpin satu flagship yang lahir dari asetnya sendiri, bersama perusahaan yang sudah terbukti bekerja dengannya.",
+ "judul_dokumen": "Ringkasan Ajuan Program Flagship Campus-first: Kerja Sama BNPB dengan Kampus dan Swasta",
+ "subjek_dokumen": "Usulan untuk Kepala BNPB, 3 November 2026",
+ "format": "kajian",
+ "kajian": "kampus-swasta-ringkas",
+ "tanggal": "2026-11-03",
+ "bagian": [
+  {
+   "judul": "Dua Belas Flagship Kampus",
+   "label": "Flagship"
+  },
+  {
+   "judul": "Prioritas dan Keputusan",
+   "label": "Keputusan"
+  }
+ ],
+ "arah": "Pemilik 2 Nov 2026: ikut semua usulan sesi arah (deck terpisah dari versi ide dulu, tanpa penyaji, mitra ditulis calon, desain campuran).",
+ "slide": [
+  {
+   "jenis": "sampul",
+   "layout": "putih",
+   "foto": [
+    "foto/kampus-ui.jpg",
+    "foto/kampus-itb.jpg",
+    "foto/kampus-ugm.jpg",
+    "foto/kampus-ipb.jpg"
+   ],
+   "kredit": "Foto: Ilham Kuniawan Gumilang (UI), A2613 (ITB), Alharamain354 (UGM), Davidelit (IPB); CC BY-SA 4.0, Wikimedia Commons",
+   "kota": "Jakarta",
+   "logo_kanan": "foto/berakhlak-hd.png",
+   "judul_sampul": "Ringkasan Ajuan Program Flagship Campus-first bersama Kampus dan Swasta",
+   "subjudul": "Dua belas flagship kampus koordinator, lima siap dijalankan pada 2027",
+   "kepada": "Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana",
+   "tanpa_penyaji": "pemilik 2 Nov 2026 (sesi arah no. 3): tanpa nama penyaji"
+  },
+  {
+   "jenis": "daftar-isi"
+  },
+  {
+   "jenis": "kesimpulan",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "skala_isi": 1.2,
+   "pesan": "Ringkasan ajuan flagship berangkat dari kampus",
+   "judul": "Ringkasan: tiap kampus memimpin satu flagship dari asetnya sendiri, dengan calon mitra swasta yang diutamakan dari perusahaan yang sudah bekerja dengannya",
+   "kartu": [
+    {
+     "label": "Cara berpikir",
+     "ikon": "ringkasan",
+     "warna": "navy",
+     "judul": "Kampus dulu, baru program",
+     "isi": "Aset kampus dipetakan lebih dulu. Setelah itu baru bahaya regional dicocokkan, lalu mitra swasta dipilih."
+    },
+    {
+     "label": "Aset kampus",
+     "ikon": "sekolah",
+     "warna": "navy",
+     "judul": "Kekuatan tiap kampus berbeda",
+     "isi": "Aset tiap kampus dinilai dari bukti riset, lalu dipakai untuk memilih flagship dan calon mitranya."
+    },
+    {
+     "label": "Bahaya regional",
+     "ikon": "gempa",
+     "warna": "navy",
+     "judul": "Bahaya mematikan tetap dijawab",
+     "isi": "Korban jiwa terbanyak di Sulawesi; bila aset kampus belum siap, bahaya yang paling mematikan dijawab ajuan pendukung."
+    },
+    {
+     "label": "Tipe kampus",
+     "ikon": "lembaga",
+     "warna": "navy",
+     "judul": "Tipe menentukan peran swasta",
+     "isi": "Kampus terbagi {{angka:ks.tipe}} tipe; tipenya menentukan aset swasta yang paling berguna bagi flagship."
+    },
+    {
+     "label": "Prioritas",
+     "ikon": "wilayah",
+     "warna": "oranye",
+     "judul": "Dua gelombang",
+     "isi": "{{angka:ks.gel1}} flagship paling siap untuk 2027; {{angka:ks.gel2}} lainnya masuk gelombang kedua setelah celah bukti dicek."
+    },
+    {
+     "label": "Mitra swasta",
+     "ikon": "pembiayaan",
+     "warna": "oranye",
+     "judul": "Mulai dari yang sudah bekerja",
+     "isi": "{{angka:ks.l1}} flagship berpasangan dengan calon mitra utama yang sudah punya MoU, gedung, beasiswa, atau proyek dengan kampusnya."
+    },
+    {
+     "label": "Pagar",
+     "ikon": "peringatan",
+     "warna": "merah",
+     "judul": "Aset boleh, wajah tidak",
+     "isi": "Lapis tiga hanya membawa alat atau fasilitas; {{angka:ks.ut}} kelompok calon mitra wajib uji tuntas sebelum MoU."
+    },
+    {
+     "label": "Bukti",
+     "ikon": "data",
+     "warna": "navy",
+     "judul": "Riset bersumber",
+     "isi": "{{angka:riset.temuan}} temuan bersumber dan {{angka:riset.titik}} titik data angka. Semua mitra masih berstatus calon."
+    }
+   ],
+   "arahan": {
+    "label": "Keputusan yang diminta",
+    "ikon": "regulasi",
+    "teks": "Kepala BNPB menyetujui flagship gelombang satu (Unand, ITB, USK, UGM, Unhas) sebagai isi tahap 2027, mengizinkan penjajakan calon mitra dengan uji tuntas, dan menunjuk unit BNPB pasangan tiap flagship."
+   },
+   "sumber": "Paparan kerja sama PT, 30 Okt 2026; DIBI BNPB 2016-2025; riset BNPB 2026"
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 1
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "pesan": "Program diturunkan dari aset kampus, dan mitra swasta dipilih berlapis",
+   "judul": "Program diturunkan dari kampus dalam {{angka:ks.langkah}} langkah, dan mitra swasta dipilih dari {{angka:ks.lapis}} lapis yang dimulai dari perusahaan yang sudah bekerja dengan kampusnya",
+   "rasio": 0.64,
+   "utama": {
+    "judul": "Dari kampus ke program",
+    "ikon": "ringkasan",
+    "alur": {
+     "sorot": 0,
+     "label_hasil": "Hasil",
+     "skala_huruf": 1.3,
+     "langkah": [
+      {
+       "judul": "Aset kampus",
+       "butir": [
+        "Fasilitas uji dan latih",
+        "Produk siap pakai",
+        "Tanggap darurat",
+        "Pakar dan jejaring"
+       ],
+       "pelaku": "Kampus koordinator",
+       "hasil": "Kekuatan khas"
+      },
+      {
+       "judul": "Bahaya regional",
+       "butir": [
+        "Kejadian terbanyak",
+        "Korban jiwa terbanyak",
+        "Rumah rusak",
+        "Sepuluh tahun data"
+       ],
+       "pelaku": "Data DIBI",
+       "hasil": "Bahaya sasaran"
+      },
+      {
+       "judul": "Unit BNPB",
+       "butir": [
+        "Satu dari enam unit",
+        "Kebutuhan tiap unit",
+        "Program terwujud",
+        "Unit menjadi pemilik"
+       ],
+       "pelaku": "Unit BNPB",
+       "hasil": "Pemilik di BNPB"
+      },
+      {
+       "judul": "Mitra swasta",
+       "butir": [
+        "Sudah bermitra dulu",
+        "Rekam regional",
+        "Berpagar terakhir",
+        "Uji tuntas dulu"
+       ],
+       "pelaku": "Kampus dan BNPB",
+       "hasil": "Calon mitra"
+      }
+     ]
+    }
+   },
+   "panel": {
+    "judul": "Tiga lapis calon mitra",
+    "ikon": "pembiayaan",
+    "daftar_ikon": {
+     "mode": "baris",
+     "data": {
+      "csv": "data/ks/lapis.csv",
+      "kolom": [
+       {
+        "nama": "judul"
+       },
+       {
+        "nama": "isi"
+       },
+       {
+        "nama": "ikon"
+       }
+      ],
+      "sumber": "Analisis BNPB, 2 Nov 2026",
+      "keyakinan": "asumsi-kebijakan"
+     }
+    }
+   },
+   "pita": {
+    "label": "Contoh pembacaan",
+    "nada": "data",
+    "skala": 1.15,
+    "kolom": [
+     {
+      "ikon": "tsunami",
+      "judul": "USK",
+      "isi": "Flume tsunami, bahaya tsunami Aceh, unit Pencegahan, calon mitra BSI."
+     },
+     {
+      "ikon": "air-baku",
+      "judul": "ITB",
+      "isi": "Unit ultrafiltrasi, banjir Sumatera, unit Logistik, calon mitra Paragon."
+     },
+     {
+      "ikon": "tsunami",
+      "judul": "Unand",
+      "isi": "Model megathrust untuk tsunami Padang; unit Pencegahan; calon mitra Pegadaian."
+     }
+    ]
+   },
+   "sumber": "Analisis BNPB, 2 Nov 2026; Paparan kerja sama PT, 30 Okt 2026"
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "pesan": "Tipe kampus menentukan aset swasta yang paling berguna",
+   "judul": "Kampus koordinator terbagi {{angka:ks.tipe}} tipe, dan tipenya menentukan aset swasta yang paling berguna, dari pabrik sampai karyawan relawan",
+   "rasio": 0.66,
+   "utama": {
+    "judul": "Tipe kampus dan peran swasta yang cocok",
+    "ikon": "lembaga",
+    "heatmap": {
+     "mode": "teks",
+     "skala_huruf": 1.3,
+     "data": {
+      "csv": "data/ks/tipe_kampus.csv",
+      "kolom": [
+       {
+        "nama": "tipe",
+        "kepala": "Tipe"
+       },
+       {
+        "nama": "kampus",
+        "kepala": "Kampus"
+       },
+       {
+        "nama": "aset",
+        "kepala": "Aset utama"
+       },
+       {
+        "nama": "swasta",
+        "kepala": "Peran swasta"
+       }
+      ],
+      "sumber": "Analisis BNPB, 2 Nov 2026",
+      "keyakinan": "penilaian-pakar"
+     }
+    }
+   },
+   "panel": {
+    "judul": "Mengapa swasta mau ikut",
+    "ikon": "pembiayaan",
+    "daftar_ikon": {
+     "mode": "baris",
+     "data": {
+      "csv": "data/ks/motif.csv",
+      "kolom": [
+       {
+        "nama": "judul"
+       },
+       {
+        "nama": "isi"
+       },
+       {
+        "nama": "ikon"
+       }
+      ],
+      "sumber": "Analisis BNPB, 2 Nov 2026",
+      "keyakinan": "penilaian-pakar"
+     }
+    }
+   },
+   "sumber": "Analisis BNPB, 2 Nov 2026"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Aturan sudah memberi insentif bagi swasta, tetapi jarang dipakai",
+   "judul": "Sumbangan bencana dan litbang ke kampus dapat dibiayakan hingga {{angka:pmk114.batas|persen}} penghasilan neto, tetapi insentif litbang baru dipakai sekitar {{angka:sd.wp}} wajib pajak",
+   "rasio": 0.7,
+   "tabel": {
+    "judul_panel": "Dasar hukum dan insentif bagi calon mitra",
+    "ikon": "regulasi",
+    "peringkat": false,
+    "sel_dua_baris": true,
+    "sel_maks_baris": 3,
+    "skala_huruf": 1.55,
+    "baris_maks_pt": 64,
+    "data": {
+     "csv": "data/ks/aturan.csv",
+     "kolom": [
+      {
+       "nama": "aturan",
+       "kepala": "Aturan"
+      },
+      {
+       "nama": "isi",
+       "kepala": "Isi",
+       "rata": "l"
+      },
+      {
+       "nama": "manfaat",
+       "kepala": "Manfaat bagi mitra",
+       "rata": "l"
+      }
+     ],
+     "sumber": "JDIH BNPB; JDIH Kementerian Keuangan; Kemdiktisaintek",
+     "keyakinan": "resmi"
+    }
+   },
+   "panel": {
+    "judul": "Skala insentif",
+    "ikon": "pembiayaan",
+    "angka_besar": {
+     "mode": "kartu",
+     "tata": "kisi",
+     "kolom": 1,
+     "data": {
+      "csv": "data/ks/insentif.csv",
+      "kolom": [
+       {
+        "nama": "label"
+       },
+       {
+        "nama": "nilai",
+        "kepala": "Nilai",
+        "fmt": "0"
+       },
+       {
+        "nama": "satuan"
+       },
+       {
+        "nama": "ket"
+       },
+       {
+        "nama": "ikon"
+       }
+      ],
+      "sumber": "DDTC News, 2024; VIVA dan Infobanknews, 2024",
+      "keyakinan": "terverifikasi"
+     }
+    }
+   },
+   "sumber": "PMK 114/2025; PP 45/2019 (DDTC News, 2024); VIVA, 2024; UU 24/2007"
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "peta",
+   "judul_bentuk": "temuan",
+   "pesan": "Flagship menjangkau semua regional dan sebagian besar memakai mitra yang sudah bekerja dengan kampusnya",
+   "judul": "Sulawesi mencatat korban jiwa tertinggi, {{angka:dibi.Unhas.mati}} jiwa, dan tiap regional dipimpin satu flagship; {{angka:ks.l1}} di antaranya bercalon mitra lapis satu",
+   "rasio": 0.65,
+   "utama": {
+    "judul": "Korban jiwa bencana alam per regional, 2016-2025",
+    "ikon": "wilayah",
+    "peta": {
+     "mode": "koroplet",
+     "ambang": [
+      500,
+      1000,
+      1500,
+      3000
+     ],
+     "skala": "api",
+     "satuan": "Korban jiwa",
+     "label": 0,
+     "data": {
+      "csv": "data/ks/korban_regional.csv",
+      "kolom": [
+       {
+        "nama": "provinsi"
+       },
+       {
+        "nama": "korban",
+        "kepala": "Jiwa",
+        "fmt": "0"
+       }
+      ],
+      "sumber": "DIBI BNPB 2016-2025",
+      "keyakinan": "resmi"
+     }
+    }
+   },
+   "panel": {
+    "judul": "Flagship dan lapis calon mitra utama",
+    "ikon": "sekolah",
+    "skala_huruf": 1.15,
+    "baris_maks_pt": 30,
+    "data": {
+     "csv": "data/ks/daftar_flagship.csv",
+     "kolom": [
+      {
+       "nama": "kampus",
+       "kepala": "Kampus",
+       "bobot": 0.9
+      },
+      {
+       "nama": "flagship",
+       "kepala": "Flagship",
+       "rata": "l",
+       "bobot": 1.9
+      },
+      {
+       "nama": "lapis",
+       "kepala": "Lapis",
+       "bobot": 0.6
+      }
+     ],
+     "sumber": "Analisis BNPB, 2 Nov 2026",
+     "keyakinan": "asumsi-kebijakan"
+    }
+   },
+   "sumber": "DIBI BNPB 2016-2025; Analisis BNPB, 2 Nov 2026"
+  },
+  {
+   "jenis": "galeri",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Dua belas kampus memimpin flagship masing-masing",
+   "judul": "Dua belas kampus koordinator dan flagship yang dipimpinnya",
+   "panel": [
+    {
+     "judul": "Kampus koordinator dan flagship-nya",
+     "ikon": "sekolah",
+     "kolom_foto": 6,
+     "foto": [
+      {
+       "berkas": "foto/logo-usk.png",
+       "keterangan": "USK: Uji Tsunami Nasional",
+       "kredit": "Logo: kampus masing-masing",
+       "utuh": true
+      },
+      {
+       "berkas": "foto/logo-unand.png",
+       "keterangan": "Unand: Padang Siap Megathrust",
+       "kredit": "Logo: kampus masing-masing",
+       "utuh": true
+      },
+      {
+       "berkas": "foto/logo-ui.png",
+       "keterangan": "UI: Jakarta Tetap Bekerja",
+       "kredit": "Logo: kampus masing-masing",
+       "utuh": true
+      },
+      {
+       "berkas": "foto/logo-itb.png",
+       "keterangan": "ITB: Air Bersih Siaga",
+       "kredit": "Logo: kampus masing-masing",
+       "utuh": true
+      },
+      {
+       "berkas": "foto/logo-telu.png",
+       "keterangan": "Tel-U: Sekolah Siaga VR",
+       "kredit": "Logo: kampus masing-masing",
+       "utuh": true
+      },
+      {
+       "berkas": "foto/logo-ugm.png",
+       "keterangan": "UGM: GAMA-EWS Desa Longsor",
+       "kredit": "Logo: kampus masing-masing",
+       "utuh": true
+      },
+      {
+       "berkas": "foto/logo-its.png",
+       "keterangan": "ITS: Kapal Rumah Sakit",
+       "kredit": "Logo: kampus masing-masing",
+       "utuh": true
+      },
+      {
+       "berkas": "foto/logo-unram.png",
+       "keterangan": "Unram: Rumah Ferosemen",
+       "kredit": "Logo: kampus masing-masing",
+       "utuh": true
+      },
+      {
+       "berkas": "foto/logo-ulm.png",
+       "keterangan": "ULM: Peta Lahan Basah",
+       "kredit": "Logo: kampus masing-masing",
+       "utuh": true
+      },
+      {
+       "berkas": "foto/logo-unhas.png",
+       "keterangan": "Unhas: Industri Sadar Risiko",
+       "kredit": "Logo: kampus masing-masing",
+       "utuh": true
+      },
+      {
+       "berkas": "foto/logo-unpatti.png",
+       "keterangan": "Unpatti: Pulau Siaga Tsunami",
+       "kredit": "Logo: kampus masing-masing",
+       "utuh": true
+      },
+      {
+       "berkas": "foto/logo-ipb.png",
+       "keterangan": "IPB: Akademi Pemadam Gambut",
+       "kredit": "Logo: kampus masing-masing",
+       "utuh": true
+      }
+     ]
+    }
+   ],
+   "sumber": "Analisis BNPB, 2 Nov 2026; logo dari paparan kerja sama PT, 30 Okt 2026"
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 2
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "pesan": "Flagship dijalankan dalam dua gelombang menurut kesiapannya",
+   "judul": "Sebanyak {{angka:ks.gel1}} flagship paling siap dijalankan pada 2027; {{angka:ks.gel2}} lainnya masuk gelombang kedua setelah celah bukti dan calon mitranya dicek",
+   "rasio": 0.66,
+   "utama": {
+    "judul": "Kesiapan tiap flagship",
+    "ikon": "ringkasan",
+    "subjudul_grafik": "Aset kampus, calon mitra yang sudah bekerja dengan kampus, bukti lapangan, risiko reputasi rendah",
+    "harvey": {
+     "bentuk": "bola",
+     "tingkat": [
+      "Belum ada",
+      "Awal",
+      "Ada",
+      "Kuat",
+      "Sangat kuat"
+     ],
+     "skala_huruf": 1.1,
+     "data": {
+      "csv": "data/ks/prioritas.csv",
+      "kolom": [
+       {
+        "nama": "flagship"
+       },
+       {
+        "nama": "aset",
+        "kepala": "Aset",
+        "fmt": "0"
+       },
+       {
+        "nama": "mitra",
+        "kepala": "Mitra",
+        "fmt": "0"
+       },
+       {
+        "nama": "bukti",
+        "kepala": "Bukti",
+        "fmt": "0"
+       },
+       {
+        "nama": "risiko",
+        "kepala": "Aman",
+        "fmt": "0"
+       },
+       {
+        "nama": "gelombang",
+        "kepala": "Gelombang",
+        "catatan": true
+       }
+      ],
+      "sumber": "Analisis BNPB, 2 Nov 2026; riset.json",
+      "keyakinan": "penilaian-pakar"
+     }
+    }
+   },
+   "panel": {
+    "judul": "Cara memilih",
+    "ikon": "regulasi",
+    "daftar_ikon": {
+     "mode": "baris",
+     "data": {
+      "csv": "data/ks/cara_memilih.csv",
+      "kolom": [
+       {
+        "nama": "judul"
+       },
+       {
+        "nama": "isi"
+       },
+       {
+        "nama": "ikon"
+       }
+      ],
+      "sumber": "Analisis BNPB, 2 Nov 2026",
+      "keyakinan": "penilaian-pakar"
+     }
+    }
+   },
+   "sumber": "Analisis BNPB, 2 Nov 2026; riset web BNPB 2026"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Lima flagship gelombang satu dan isinya",
+   "judul": "Sebanyak {{angka:ks.gel1}} flagship gelombang satu yang diminta disetujui untuk 2027 sudah punya bukti lapangan dan calon mitra lapis satu",
+   "rasio": 0.72,
+   "tabel": {
+    "judul_panel": "Lima flagship yang diminta disetujui",
+    "ikon": "sekolah",
+    "peringkat": true,
+    "sel_dua_baris": true,
+    "sel_maks_baris": 3,
+    "skala_huruf": 1.35,
+    "baris_maks_pt": 72,
+    "data": {
+     "csv": "data/ks/lima_flagship.csv",
+     "kolom": [
+      {
+       "nama": "flagship",
+       "kepala": "Flagship",
+       "bobot": 1.2
+      },
+      {
+       "nama": "isi",
+       "kepala": "Isi program",
+       "bobot": 1.5,
+       "rata": "l"
+      },
+      {
+       "nama": "bukti",
+       "kepala": "Bukti lapangan",
+       "bobot": 1.5,
+       "rata": "l"
+      },
+      {
+       "nama": "mitra",
+       "kepala": "Calon mitra (lapis)",
+       "bobot": 1.2,
+       "rata": "l"
+      }
+     ],
+     "sumber": "Analisis BNPB, 2 Nov 2026; riset.json",
+     "keyakinan": "terverifikasi"
+    }
+   },
+   "panel": {
+    "judul": "Aset yang sudah teruji",
+    "ikon": "naik",
+    "angka_besar": {
+     "mode": "kartu",
+     "tata": "kisi",
+     "kolom": 1,
+     "data": {
+      "csv": "data/ks/lima_bukti.csv",
+      "kolom": [
+       {
+        "nama": "label"
+       },
+       {
+        "nama": "nilai",
+        "kepala": "Nilai",
+        "fmt": "0"
+       },
+       {
+        "nama": "satuan"
+       },
+       {
+        "nama": "ket"
+       },
+       {
+        "nama": "ikon"
+       }
+      ],
+      "sumber": "ITB, Jan 2026; ICL, 2024; TDMRC USK",
+      "keyakinan": "terverifikasi"
+     }
+    }
+   },
+   "sumber": "ITB, Jan 2026; ICL, 2024; TDMRC USK; riset BNPB 2026"
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "pesan": "Flagship berjalan tiga tahap",
+   "judul": "Flagship mengikuti {{angka:ks.tahap}} tahap peta jalan paparan sebelumnya: seratus hari pertama, percontohan 2027, lalu perluasan 2028 sampai 2029",
+   "utama": {
+    "judul": "Tahapan flagship",
+    "ikon": "kalender",
+    "alur": {
+     "sorot": 1,
+     "label_hasil": "Hasil",
+     "skala_huruf": 1.3,
+     "langkah": [
+      {
+       "judul": "Seratus hari pertama",
+       "butir": [
+        "Unit BNPB pasangan tiap flagship",
+        "Uji tuntas calon mitra",
+        "Surat minat ke mitra lapis satu",
+        "Cek celah bukti ke kampus"
+       ],
+       "pelaku": "BNPB dan kampus koordinator",
+       "hasil": "Calon mitra sepakat"
+      },
+      {
+       "judul": "Percontohan 2027",
+       "butir": [
+        "Satu lokasi tiap flagship",
+        "Ukuran hasil disepakati",
+        "Laporan publik pertama",
+        "MoU dengan mitra lapis satu"
+       ],
+       "pelaku": "Kampus, mitra, BNPB",
+       "hasil": "Hasil terukur"
+      },
+      {
+       "judul": "Perluasan 2028 sampai 2029",
+       "butir": [
+        "Ditiru kampus sekitar",
+        "Masuk standar dan e-Katalog",
+        "Mitra lapis dua bergabung",
+        "Laporan publik tahunan"
+       ],
+       "pelaku": "Kampus sekitar dan BPBD",
+       "hasil": "Program tetap"
+      }
+     ]
+    }
+   },
+   "pita": {
+    "label": "Ukuran hasil yang dipakai semua flagship",
+    "nada": "data",
+    "skala": 1.15,
+    "kolom": [
+     {
+      "ikon": "infrastruktur",
+      "judul": "Terpasang",
+      "isi": "Unit alat dan rumah yang dipakai warga."
+     },
+     {
+      "ikon": "kapasitas",
+      "judul": "Terlatih",
+      "isi": "Orang dan regu yang lulus latihan bersama kampus."
+     },
+     {
+      "ikon": "data",
+      "judul": "Dilaporkan",
+      "isi": "Laporan publik tahunan dengan kampus sebagai penilai."
+     }
+    ]
+   },
+   "sumber": "Paparan kerja sama PT, 30 Okt 2026; Analisis BNPB, 2 Nov 2026"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "pesan": "Calon mitra berisiko dibedakan: lapis tiga membawa aset saja, sisanya wajib uji tuntas",
+   "judul": "Sebanyak {{angka:ks.l3}} calon mitra lapis tiga hanya membawa aset, {{angka:ks.ut}} kelompok wajib uji tuntas, dan perusahaan tersanksi tidak diajukan",
+   "rasio": 0.7,
+   "tabel": {
+    "judul_panel": "Calon mitra berisiko dan aturan pakainya",
+    "ikon": "peringatan",
+    "peringkat": false,
+    "sel_dua_baris": true,
+    "sel_maks_baris": 2,
+    "skala_huruf": 1.3,
+    "baris_maks_pt": 40,
+    "data": {
+     "csv": "data/ks/pagar.csv",
+     "kolom": [
+      {
+       "nama": "mitra",
+       "kepala": "Calon mitra"
+      },
+      {
+       "nama": "isu",
+       "kepala": "Isu",
+       "rata": "l"
+      },
+      {
+       "nama": "aturan",
+       "kepala": "Aturan pakai",
+       "rata": "l"
+      }
+     ],
+     "sumber": "riset.json; Kontan; Tirto; Detik Finance; PP 28/2024",
+     "keyakinan": "terverifikasi"
+    }
+   },
+   "panel": {
+    "judul": "Isu yang tercatat",
+    "ikon": "peringatan",
+    "angka_besar": {
+     "mode": "kartu",
+     "tata": "kisi",
+     "kolom": 1,
+     "data": {
+      "csv": "data/ks/pagar_angka.csv",
+      "kolom": [
+       {
+        "nama": "label"
+       },
+       {
+        "nama": "nilai",
+        "kepala": "Nilai",
+        "fmt": "2"
+       },
+       {
+        "nama": "satuan"
+       },
+       {
+        "nama": "ket"
+       },
+       {
+        "nama": "ikon"
+       }
+      ],
+      "sumber": "Kontan, 15 Jan 2026; Tirto, 8 Mei 2025",
+      "keyakinan": "terverifikasi"
+     }
+    }
+   },
+   "sumber": "Kontan 2026; Tirto 2025; Detik Finance 2025; Bisnis.com 2025; PP 28/2024"
+  },
+  {
+   "jenis": "rekomendasi",
+   "jenis_slide": "rekomendasi",
+   "judul_bentuk": "temuan",
+   "pesan": "Keputusan Kepala BNPB untuk memulai flagship",
+   "judul": "Sebanyak {{angka:ks.keputusan}} langkah yang diminta dari Kepala BNPB untuk memulai flagship kampus dan swasta",
+   "rekomendasi": [
+    {
+     "kode": "01",
+     "jenis": "regulasi",
+     "langkah": "Setujui gelombang satu",
+     "rincian": "Lima flagship paling siap menjadi isi tahap 2027; tujuh lainnya disiapkan untuk gelombang kedua.",
+     "lembaga": [
+      "Kepala BNPB"
+     ],
+     "dasar": "slide 11",
+     "risiko": "Tanpa persetujuan, penjajakan mitra tidak punya mandat resmi."
+    },
+    {
+     "kode": "02",
+     "jenis": "kapasitas",
+     "langkah": "Tunjuk unit pasangan",
+     "rincian": "Tiap flagship mendapat satu unit BNPB penanggung jawab dan satu penghubung kampus.",
+     "lembaga": [
+      "Sekretaris Utama BNPB"
+     ],
+     "dasar": "slide 12",
+     "risiko": "Flagship tanpa pemilik di BNPB berhenti di MoU."
+    },
+    {
+     "kode": "03",
+     "jenis": "regulasi",
+     "ikon": "peringatan",
+     "langkah": "Terbitkan pedoman uji tuntas",
+     "rincian": "Aturan tiga lapis dan aturan pakai mitra berpagar menjadi lampiran tiap MoU.",
+     "lembaga": [
+      "Deputi Bidang Sistem dan Strategi BNPB"
+     ],
+     "dasar": "slide 14",
+     "risiko": "Mitra bermasalah merusak kepercayaan publik pada BNPB."
+    },
+    {
+     "kode": "04",
+     "jenis": "data",
+     "ikon": "telepon",
+     "langkah": "Kirim surat minat lapis satu",
+     "rincian": "Surat minat ke calon mitra lapis satu; lebih dulu ke Paragon, Pegadaian, Hutama Karya, BSI, Semen Tonasa; Telkom dan Masmindo setelah uji tuntas.",
+     "lembaga": [
+      "Kampus koordinator",
+      "Deputi Bidang Sistem dan Strategi BNPB"
+     ],
+     "dasar": "slide 8",
+     "risiko": "Mitra dapat menolak bila tawaran hanya meminta dana."
+    },
+    {
+     "kode": "05",
+     "jenis": "pembiayaan",
+     "langkah": "Buka meja insentif mitra",
+     "rincian": "Membantu perusahaan memakai pengurang pajak sumbangan bencana dan litbang ke kampus.",
+     "lembaga": [
+      "Deputi Bidang Sistem dan Strategi BNPB"
+     ],
+     "dasar": "slide 7",
+     "risiko": "Tanpa pendampingan, insentif pajak tetap jarang dipakai."
+    },
+    {
+     "kode": "06",
+     "jenis": "data",
+     "ikon": "ringkasan",
+     "langkah": "Hitung biaya dan cek celah",
+     "rincian": "Biaya tiap flagship gelombang satu dihitung bersama kampus, dan celah bukti di lampiran dicek sebelum MoU.",
+     "lembaga": [
+      "Kampus koordinator",
+      "Sekretaris Utama BNPB"
+     ],
+     "dasar": "slide 5",
+     "risiko": "Tanpa angka biaya, flagship sulit masuk perencanaan 2027."
+    }
+   ],
+   "sumber": "Paparan kerja sama PT, 30 Okt 2026; Analisis BNPB, 2 Nov 2026"
+  },
+  {
+   "jenis": "penutup",
+   "layout": "putih",
+   "foto": [
+    "foto/kampus-ui.jpg",
+    "foto/kampus-itb.jpg",
+    "foto/kampus-ugm.jpg",
+    "foto/kampus-ipb.jpg"
+   ],
+   "kredit": "Foto: Ilham Kuniawan Gumilang (UI), A2613 (ITB), Alharamain354 (UGM), Davidelit (IPB); CC BY-SA 4.0, Wikimedia Commons",
+   "logo_kanan": "foto/berakhlak-hd.png",
+   "laporan": "Ringkasan Ajuan Program Flagship Campus-first: Kerja Sama BNPB dengan Kampus dan Swasta",
+   "tanggal_pil": true
+  },
+  {
+   "jenis": "pembatas-lampiran",
+   "kelompok": {
+    "A": "Rincian ajuan program"
+   }
+  },
+  {
+   "jenis": "lampiran-tabel",
+   "jenis_slide": "lampiran",
+   "judul_bentuk": "deskriptif",
+   "kode": "A1",
+   "pesan": "Daftar lengkap ajuan",
+   "judul": "Daftar flagship dan ajuan pendukung beserta calon mitra",
+   "judul_daftar": "Daftar ajuan program",
+   "data": {
+    "csv": "data/ks/lampiran_ajuan.csv",
+    "kolom": [
+     {
+      "nama": "kampus",
+      "kepala": "Kampus"
+     },
+     {
+      "nama": "program",
+      "kepala": "Program"
+     },
+     {
+      "nama": "unit",
+      "kepala": "Unit BNPB"
+     },
+     {
+      "nama": "mitra",
+      "kepala": "Calon mitra (lapis)"
+     }
+    ],
+    "sumber": "Analisis BNPB, 2 Nov 2026",
+    "keyakinan": "asumsi-kebijakan"
+   },
+   "sumber": "Analisis BNPB, 2 Nov 2026"
+  },
+  {
+   "jenis": "lampiran-tabel",
+   "jenis_slide": "lampiran",
+   "judul_bentuk": "deskriptif",
+   "kode": "A2",
+   "pesan": "Celah bukti yang perlu dicek",
+   "judul": "Celah bukti yang perlu dicek ke kampus dan calon mitra sebelum MoU",
+   "judul_daftar": "Celah bukti",
+   "data": {
+    "csv": "data/ks/lampiran_celah.csv",
+    "kolom": [
+     {
+      "nama": "kampus",
+      "kepala": "Kampus"
+     },
+     {
+      "nama": "celah",
+      "kepala": "Celah"
+     },
+     {
+      "nama": "cara",
+      "kepala": "Cara cek"
+     }
+    ],
+    "sumber": "Analisis BNPB, 2 Nov 2026; riset.json",
+    "keyakinan": "penilaian-pakar"
+   },
+   "sumber": "Analisis BNPB, 2 Nov 2026; riset web BNPB 2026"
+  }
+ ]
+}
