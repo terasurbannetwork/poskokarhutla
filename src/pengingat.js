@@ -18,9 +18,10 @@ export const SEGERA_HARI = 60, SEGERA_LALU_HARI = 30;
 export const JENIS = {
   mou_relawan: "MoU relawan hampir habis", pks_riset: "PKS riset hampir habis", logistik_lambat: "Logistik belum disetujui", dsp_spj: "DSP belum SPJ",
   renkon: "Rencana kontinjensi", rehab_macet: "Rehab-rekon macet", stok_rendah: "Stok gudang menipis", bantuan_terbuka: "Butuh bantuan belum ditangani",
-  prioritas_dampak: "Prioritas dampak: kirim ke BPBD", logbook_lanjutan: "Logbook: kejadian belum diperbarui", sensor_ambang: "Sensor lapangan melewati ambang", sensor_lapor: "Laporan desa lewat radio mesh"};
+  prioritas_dampak: "Prioritas dampak: kirim ke BPBD", logbook_lanjutan: "Logbook: kejadian belum diperbarui", sensor_ambang: "Sensor lapangan melewati ambang", sensor_lapor: "Laporan desa lewat radio mesh",
+  lapangan_absen: "Petugas belum absen masuk", lapangan_logbook: "Petugas belum mengisi logbook"};
 export const DAFTAR_JENIS = Object.keys(JENIS);
-export const TANPA_DUMMY = ["sensor_ambang", "sensor_lapor"];   // lahir dari kiriman alat (src/sensor.js), bukan dari halaman bertombol dummy; logbook_lanjutan ikut tombol dummy logbook
+export const TANPA_DUMMY = ["sensor_ambang", "sensor_lapor", "lapangan_absen", "lapangan_logbook"];   // lahir dari kiriman alat (src/sensor.js), bukan dari halaman bertombol dummy; logbook_lanjutan ikut tombol dummy logbook
 export const STATUS = ["baru", "dikirim", "selesai", "abaikan"];
 const tolakMod = () => gagal(403, "hanya untuk moderator ke atas (bukan akun gerbang situs)");
 const tabelBelum = f => async (...a) => {
@@ -133,7 +134,21 @@ async function logbookLanjutan(env, kini, dummy) {
       rincian: `${tempat}; entri terakhir ${wib(k.terakhir)}, ${jam} jam lalu. ${h7 ? "Wajib ditutup: isi tanggal tuntas dan kondisi akhir, atau tambahkan entri lanjutan." : "Tambahkan entri lanjutan atau tutup kejadian."}`.slice(0, 300), prov: k.prov, kab: k.kab};
   });
 }
-const TIAP = [[["mou_relawan", "pks_riset"], perjanjian], [["logistik_lambat", "dsp_spj", "renkon", "rehab_macet", "stok_rendah"], meja], [["bantuan_terbuka"], bantuan], [["prioritas_dampak"], prioritas], [["logbook_lanjutan"], logbookLanjutan]];
+/* Lapangan (LP-044, migrasi 0097): satu kueri agregat per tugas yang berjalan hari ini (WIB), jumlah anggota tanpa absen masuk sah (absen 'tolak' tidak dihitung) dan tanpa logbook.
+   Absen: baru dinilai sesudah 10.00 WIB; logbook: sesudah 20.00 WIB. Sebelum jamnya = [] (baris basi hari lain ikut terhapus pembersih). keadaan = tanggal saja, jadi satu baris per tugas per hari; judul/jumlah ikut diperbarui selama masih 'baru' (muatan berubah, jalur `segar`).
+   Jadwal: buatPengingat harian 07.40 WIB belum melewati jam itu; worker.js perlu memanggil buatPengingat(env, kini, {hanya: ["lapangan_absen", "lapangan_logbook"]}) sekitar 10.40 dan 20.40 WIB. */
+async function lapangan(env, kini, dummy) {
+  const hari = wib(kini), jam = new Date(kini + 7 * JAM).getUTCHours(), a0 = Date.parse(hari + "T00:00:00Z") - 7 * JAM;
+  const rows = (await env.DB.prepare(`SELECT t.id, t.judul, count(*) n,
+      sum(NOT EXISTS (SELECT 1 FROM lp_absen a WHERE a.orang_id = g.orang_id AND a.tugas_id = g.tugas_id AND a.tanggal = ?1 AND a.jenis = 'masuk' AND a.status <> 'tolak')) tanpa_absen,
+      sum(NOT EXISTS (SELECT 1 FROM lp_logbook l WHERE l.orang_id = g.orang_id AND l.tugas_id = g.tugas_id AND l.tanggal = ?1)) tanpa_logbook
+    FROM lp_tugas t JOIN lp_anggota g ON g.tugas_id = t.id WHERE t.mulai < ?3 AND t.selesai >= ?2 AND t.dummy = ?4 GROUP BY t.id LIMIT ${BATAS_BACA}`).bind(hari, a0, a0 + HARI, dummy).all()).results;
+  if (rows.length >= BATAS_BACA) return null;
+  return rows.flatMap(t => [
+    ...(jam >= 10 && t.tanpa_absen ? [{jenis: "lapangan_absen", sumber_id: t.id, keadaan: hari, judul: `Tugas ${t.judul}: ${t.tanpa_absen} dari ${t.n} petugas belum absen masuk`.slice(0, 160), rincian: `Tanggal ${tgl(hari)}, batas 10.00 WIB`, prov: null, kab: null, segar: true, muatan: JSON.stringify({belum: t.tanpa_absen, dari: t.n})}] : []),
+    ...(jam >= 20 && t.tanpa_logbook ? [{jenis: "lapangan_logbook", sumber_id: t.id, keadaan: hari, judul: `Tugas ${t.judul}: ${t.tanpa_logbook} dari ${t.n} petugas belum mengisi logbook`.slice(0, 160), rincian: `Tanggal ${tgl(hari)}, batas 20.00 WIB`, prov: null, kab: null, segar: true, muatan: JSON.stringify({belum: t.tanpa_logbook, dari: t.n})}] : [])]);
+}
+const TIAP = [[["mou_relawan", "pks_riset"], perjanjian], [["logistik_lambat", "dsp_spj", "renkon", "rehab_macet", "stok_rendah"], meja], [["bantuan_terbuka"], bantuan], [["prioritas_dampak"], prioritas], [["logbook_lanjutan"], logbookLanjutan], [["lapangan_absen", "lapangan_logbook"], lapangan]];
 
 /* Cron harian (idempoten: dua kali jalan = tidak ada baris baru). dummy=1 membaca sumber dummy untuk tombol 🧪. */
 export async function buatPengingat(env, kini = Date.now(), {dummy = 0, hanya = null} = {}) {

@@ -390,7 +390,7 @@ def main(ambil_saja=False):
         "far_waspada": w.get("far"), "vonis": (hasil.get("lb_aktif") or {}).get("vonis")}]
     simpan(jalur, {
         "dibuat": sekarang.isoformat(timespec="minutes"),
-        "periode": f"{TAHUN0} .. {AKHIR - dt.timedelta(days=4)}", "aturan": BERLAKU["banjir"],
+        "periode": f"{TAHUN0} .. {AKHIR - dt.timedelta(days=3)}", "aturan": BERLAKU["banjir"],
         "sampel": {"kab_berlabel_diminta": len(lbl), "kab_berlabel_dinilai": len(lbl_ok), "kontrol_diminta": len(kontrol),
                    "kontrol_dinilai": len(kon_ok), "sel_diminta": len(sel), "sel_ada": len(cuaca), "anggaran_sel": ANGGARAN_SEL},
         "kriteria": {"ets_lulus_batas_bawah_ci": ETS_LULUS, "rho_min": RHO_MIN, "skill_loko_min": SKILL_MIN},

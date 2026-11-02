@@ -97,3 +97,8 @@ launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/id.centurisk97.wa-cutoff
 Hanya nomor di `LOGBOOK_STAF` (perorangan, bukan grup) yang boleh membalas. Staf membalas `OK <kode>` (tambah `YAKIN` bila server menolak angka tak wajar), `BATAL <kode>`, `KOREKSI <kode>` + baris `medan=nilai`, atau `DRAF`.
 Baru sesudah OK bot masuk sebagai `LOGBOOK_USER`/`LOGBOOK_SANDI` dan POST ke `/api/logbook/kejadian` (atau `/kejadian/:id/entri` bila ada kejadian terbuka kab + jenis dengan entri terakhir <= 3 hari). Nomor HP, surel, dan nama bergelar disaring sebelum draf disimpan. Pesan di grup BPBD tetap mengalir ke jalur bahan laporan harian seperti biasa; hanya balasan staf yang dicegat penuh.
 Uji: `node --test tests/wa/logbook_wa.test.mjs`.
+
+## Antrean WA modul /petugas (LP-021)
+
+`lapangan_tarik.mjs` jalan di dalam proses gateway (dimulai saat WA terhubung, bila `WA_KUNCI` terisi): tiap 60 detik `GET /api/petugas/wa/antre` (header `x-wa-kunci`), tiap pesan dikirim satu per satu lewat `sendPaced` (limiter yang sama dengan `/send`), lalu `POST /api/petugas/wa/hasil` berkelompok. Nomor tidak sah atau tidak terdaftar dilapor `ok:false`; limiter penuh atau WA putus = ditunda tanpa lapor (server menarik ulang setelah 10 menit). 401/503/jaringan putus hanya dicatat. Id yang sudah dilapor atau menunggu lapor tidak dikirim ulang. Berlaku setelah gateway dimulai ulang (belum dilakukan).
+Uji: `node --test tests/wa/lapangan_tarik.test.mjs`.

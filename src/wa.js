@@ -8,6 +8,7 @@
    Jenis: tagar #karhutla / #bencana, selain itu kata kunci karhutla di teks atau nama berkas, selain itu bencana. */
 import {json, gagal, adminOK, sha, bacaBytes} from "./worker.js";
 import {KONTROL, tglSah} from "./posko.js";
+import {balas as balasPanggilan} from "./lapangan_wa.js";
 import {JENIS_LAPORAN, kenali, tanggalIsi, tanggalNamaBerkas} from "./wa_jenis.js";
 
 export const MAKS_BERKAS = 20 * 1024 * 1024;
@@ -44,6 +45,8 @@ async function gerbang(env, req, kini) {
   if (!/^multipart\/form-data/i.test(ct)) return gagal(400, "kiriman harus multipart/form-data");
   const bytes = await bacaBytes(req, MAKS_FORM); if (bytes.galat) return gagal(bytes.status, bytes.galat);   // dibatasi juga tanpa content-length (chunked)
   let f; try { f = await new Response(bytes.b, {headers: {"content-type": ct}}).formData(); } catch { return gagal(400, "kiriman tidak terbaca"); }
+  /* LP-020 (modul /petugas): "SIAP xxxxxx" / "TIDAK xxxxxx" dari relawan yang dipanggil. Pengirim TIDAK harus di WA_IZIN: yang menjaga kode balas acak milik nomor itu (lapangan_wa.balas) */
+  const balasan = await balasPanggilan(env, req, normalNo(f.get("dari")), bersih(f.get("teks"), 200), kini); if (balasan) return balasan;
   const izin = new Set(String(env.WA_IZIN || "").split(",").map(normalNo).filter(Boolean)), dari = normalNo(f.get("dari"));
   if (!izin.has(dari)) return json({ok: true, disimpan: false});   // bukan pengirim terdaftar: diam, tidak disimpan
   const w = Number(f.get("waktu")), diterima = Number.isFinite(w) && w >= kini - 7 * 864e5 && w <= kini + 5 * 60e3 ? Math.trunc(w) : kini;

@@ -24,6 +24,8 @@ permintaan sesudahnya.
 | K8 | Riset dulu dari GitHub dan **reverse engineer** yang sudah ada, bukan mengarang | *"Lu cek github nya udah ada atau nggak dan reverse engineer dari situ"* |
 | K9 | Dibangun lengkap: riset, desain sistem, tiket, kode | *"Lu buat tiketnya, lu buat design sistemnya, lu buat semuanya"* |
 | K10 | Paket dokumen lengkap seperti SIPPA, bukan hanya tiket | *"waktu bangun sippa kayanya ga hanya tiket deh ... biar semuanya bagus"* |
+| K11 | Fitur yang sudah ada di sistem digabung ke modul ini (usulan 1 sampai 12, 2 Nov 2026): regu Posko `/lapangan`, pelacakan `/lacak`, lapor foto bergeotag (Uji Pilot, Ruang Instansi), tugas api dan konfirmasi padam, Renlap Generator, permintaan dan penugasan relawan, pelatihan relawan, kit SIPPA, pengingat, konfirmasi lapangan `/prediksi` dan uji lapangan banjir, drone gambut, sitrep dan logbook Dirdalops | *"1 2 3 4 gas, 5 gas, 5 6 7 8 9 10 11 12, yes gas"* |
+| K12 | Satu sistem desain: semua layar gabungan memakai desain `/petugas` (kepala situs bersama, token Centurisk97); logika dan data lama dipakai ulang, halaman lama dialihkan sesudah penggantinya siap | *"Sistem desainnya semua udah sama kan?"* (jawaban: belum; disamakan lewat modul ini) |
 
 ## B. Diputus perancang (sesi induk), boleh dibatalkan pemilik
 

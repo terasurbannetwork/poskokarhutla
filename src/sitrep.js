@@ -43,6 +43,24 @@ async function provNeraca(env, kini) {
   catch (e) { return []; }
 }
 
+/* LP-047: ringkasan logbook petugas /petugas per tugas untuk tanggal sitrep dan kemarin (hari penuh), agregat saja: jumlah terisi/anggota, hitungan kegiatan dan kendala.
+   Tanpa nama, uraian, hasil, atau foto. Opsional seperti neraca: tabel belum ada = tidak masuk arsip. */
+export async function logbookPetugas(env, kini) {
+  const tgl = [wibTgl(kini), wibTgl(kini - 86400e3)];
+  try {
+    const rows = (await env.DB.prepare(`SELECT l.tanggal, l.tugas_id, t.judul, t.bencana, l.kegiatan, l.kendala, (SELECT count(*) FROM lp_anggota WHERE tugas_id = t.id) anggota
+      FROM lp_logbook l JOIN lp_tugas t ON t.id = l.tugas_id WHERE l.tanggal IN (?1, ?2) AND l.dummy = 0 AND t.dummy = 0 ORDER BY l.tanggal, t.judul LIMIT 5000`).bind(...tgl).all()).results;
+    const hit = (o, k) => { o[k] = (o[k] || 0) + 1; }, per = new Map();
+    for (const r of rows) {
+      const kunci = r.tanggal + "|" + r.tugas_id, g = per.get(kunci) ?? {tanggal: r.tanggal, id: r.tugas_id, judul: r.judul, bencana: r.bencana, anggota: r.anggota, terisi: 0, kegiatan: {}, kendala: {}};
+      g.terisi++; hit(g.kegiatan, r.kegiatan);
+      try { for (const k of JSON.parse(r.kendala)) hit(g.kendala, String(k)); } catch (e) {}
+      per.set(kunci, g);
+    }
+    return {hari: tgl[0], kemarin: tgl[1], tugas: [...per.values()]};
+  } catch (e) { if (/no such table/i.test(e?.message || "")) return null; throw e; }
+}
+
 export async function arsipkanSitrep(env, kini = Date.now(), terakhir = false) {
   if (!env.MEDIA) return {lewat: "tanpa MEDIA"};
   const tgl = wibTgl(kini), kunci = kunciR2(tgl);
@@ -55,6 +73,8 @@ export async function arsipkanSitrep(env, kini = Date.now(), terakhir = false) {
   const kurang = jalur.map((x, i) => !teks[i] && i < ASET.length + API.length ? x[0] : null).filter(Boolean);
   if (kurang.length && (!terakhir || !teks[0])) return {lewat: "masukan wajib tidak terbaca: " + kurang.join(", "), tgl};
   const ada = jalur.map((x, i) => teks[i] ? JSON.stringify(x[0]) + ":" + teks[i] : null).filter(Boolean);
+  const lb = await logbookPetugas(env, kini).catch(() => null);
+  if (lb) ada.push('"/api/petugas/logbook-ringkas":' + JSON.stringify(lb));
   const gz = await gzip(`{"v":1,"tgl":"${tgl}","dibuat":${kini},"masukan":{${ada.join(",")}}}`);
   /* etagDoesNotMatch "*" = tulis hanya bila belum ada (dua cron serentak tidak saling timpa) */
   const o = await env.MEDIA.put(kunci, gz, {httpMetadata: {contentType: "application/json", contentEncoding: "gzip"}, onlyIf: {etagDoesNotMatch: "*"}});
