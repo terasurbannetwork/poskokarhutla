@@ -9547,9 +9547,226 @@
 "(keyakinan tinggi)": "(high confidence)",
 "yang dibawanya. Diperbarui harian.": "they carried. Updated daily.",
 "NASA FIRMS (arsip dan NRT), keyakinan sedang dan tinggi": "NASA FIRMS (archive and NRT), medium and high confidence",
-"NASA FIRMS (arsip dan NRT), keyakinan tinggi": "NASA FIRMS (archive and NRT), high confidence"
+"NASA FIRMS (arsip dan NRT), keyakinan tinggi": "NASA FIRMS (archive and NRT), high confidence",
+"LOLOS": "PASSED",
+"TIDAK LOLOS": "FAILED test",
+"GAGAL": "FAILED",
+"TAK TERUJI": "UNTESTED",
+"mencakup": "includes",
+"tidak mencakup": "excludes",
+", jadi ini data pantauan, bukan prediksi.": ", so this is monitoring data, not a prediction.",
+"Alert pembukaan tajuk": "Canopy-clearing alerts",
+"Alert pembukaan tajuk (GFW)": "Canopy-clearing alerts (GFW)",
+"Nasional {0} ha dalam {1} hari (keyakinan tinggi), {2} ha dalam {3} hari (semua keyakinan). Kabupaten terbesar:": "National: {0} ha in {1} days (high confidence), {2} ha in {3} days (all confidence levels). Largest regencies:",
+"ha {0} hari (keyakinan tinggi)": "ha, {0} days (high confidence)",
+"ha {0} hari (semua keyakinan)": "ha, {0} days (all confidence levels)",
+"Dalam konsesi": "In concessions",
+"ha per ubin {0}°": "ha per {0}° tile",
+"{0} hari, ubin {1}°": "{0} days, {1}° tile",
+"Data alert belum bisa dimuat.": "Alert data could not be loaded.",
+"Kolom CO satelit": "Satellite CO column",
+"Kolom CO satelit (TROPOMI)": "Satellite CO column (TROPOMI)",
+"Satelit CO": "Satellite CO",
+"CO satelit": "Satellite CO",
+"Rapor model": "Model report",
+"mol/m²": "mol/m²",
+"{0} mol/m²": "{0} mol/m²",
+"(mol/m²)": "(mol/m²)",
+"CO (mol/m²)": "CO (mol/m²)",
+"Aerosol": "Aerosol",
+"kolom CO": "CO column",
+"indeks aerosol (di atas {0} = asap)": "aerosol index (above {0} = smoke)",
+"{0} ke atas": "{0} and above",
+"Kolom CO: {0} mol/m²": "CO column: {0} mol/m²",
+"Selisih dari provinsi bersih: {0} simpangan": "Difference from clean provinces: {0} standard deviations",
+"Indeks aerosol: {0} (di atas {1} = asap)": "Aerosol index: {0} (above {1} = smoke)",
+"{0} simpangan": "{0} standard deviations",
+"dari provinsi bersih": "from clean provinces",
+"pengamatan satelit, bukan prakiraan": "satellite observation, not a forecast",
+"Galat rata-rata mutlak (MAE, µg/m³) per metode": "Mean absolute error (MAE, µg/m³) by method",
+"CAMS mentah": "Raw CAMS",
+"cams mentah": "raw CAMS",
+"MOS (CAMS dikoreksi)": "MOS (corrected CAMS)",
+"Rata-rata stasiun": "Station average",
+"rata-rata stasiun": "station average",
+"Rata-rata stasiun per jam": "Hourly station average",
+"rata-rata stasiun per jam": "hourly station average",
+"Sama seperti 24 jam lalu": "Same as 24 hours ago",
+"tebakan sama seperti 24 jam lalu": "the same-as-24-hours-ago guess",
+"Sama seperti kemarin": "Same as yesterday",
+"Gabungan": "Ensemble",
+"Gabungan + koreksi bias": "Ensemble + bias correction",
+"Gabungan CAMS dan GEOS-CF": "CAMS and GEOS-CF ensemble",
+"CAMS": "CAMS",
+"GEOS-CF": "GEOS-CF",
+"Galat rata-rata {0} µg/m³": "Mean error {0} µg/m³",
+"Koreksi MOS mengalahkan CAMS mentah (": "MOS correction beats raw CAMS (",
+"Koreksi MOS gagal mengalahkan CAMS mentah (": "MOS correction fails to beat raw CAMS (",
+"{0} lawan {1} µg/m³": "{0} vs {1} µg/m³",
+"uji pada data yang tidak dipakai melatih": "tested on data not used for training",
+", galat {0} lawan CAMS mentah {1} µg/m³.": ", error {0} vs raw CAMS {1} µg/m³.",
+"Batas:": "Limits:",
+"BMKG (pengganti, OpenAQ tidak tersedia)": "BMKG (substitute, OpenAQ unavailable)",
+"stasiun pengganti": "substitute stations",
+"dan belum bisa dipakai menilai tren": "and cannot yet be used to judge a trend",
+"Anomali termal satelit": "Satellite thermal anomaly",
+"kurang dari {0} MW": "less than {0} MW",
+"{0} MW": "{0} MW",
+"VRP harian maksimum {0} hari terakhir, puncak {1} MW": "Daily maximum VRP over the last {0} days, peak {1} MW",
+"Maksimum harian, {0} hari terkumpul (rentang vertikal {1} sampai {2} MW)": "Daily maximum, {0} days collected (vertical range {1} to {2} MW)",
+"naik di atas latar sendiri": "above its own baseline",
+"VRP {0} hari terakhir melewati kebiasaan gunung ini.": "The VRP of the last {0} days exceeds this volcano's usual level.",
+"Tidak naik di atas latar sendiri.": "Not above its own baseline.",
+"riwayat belum cukup": "not enough history",
+"Tanda naik butuh minimal {0} hari data.": "A rise flag needs at least {0} days of data.",
+"Pengamatan panas permukaan oleh satelit, bukan prakiraan letusan; tutupan awan membuat nilai {0} belum tentu tanpa panas. Sumber:": "Satellite observation of surface heat, not an eruption forecast; cloud cover means a value of {0} does not necessarily mean no heat. Source:",
+"disorot": "highlighted",
+"Sumber: Copernicus Sentinel-5P TROPOMI lewat NASA GES DISC, kontrol Centurisk97": "Source: Copernicus Sentinel-5P TROPOMI via NASA GES DISC, Centurisk97 quality control",
+"Sumber: OpenAQ dan penyedia asalnya, CAMS lewat Open-Meteo, NASA GMAO GEOS-CF; uji Centurisk97": "Source: OpenAQ and its original providers, CAMS via Open-Meteo, NASA GMAO GEOS-CF; Centurisk97 testing",
+"Sinyal komunikasi": "Communication signal",
+"Sinyal komunikasi (menara, padam internet)": "Communication signal (towers, internet outages)",
+"Proksi akses komunikasi saat bencana. Menara: sel seluler yang tercatat OpenCelliD (hasil patungan pengguna), terbanyak per provinsi:": "Proxy for communications access during disasters. Towers: cell sites recorded in OpenCelliD (crowdsourced), highest per province:",
+"sel tercatat": "cells recorded",
+"Lama (jam)": "Duration (hours)",
+"Blok /24 turun hingga": "/24 blocks down by up to",
+"Data sinyal komunikasi belum bisa dimuat.": "Communication signal data could not be loaded.",
+"TIDAK TERBUKTI": "NOT PROVEN",
+"tidak terbukti": "not proven",
+": sinyalnya lemah, jangan dibaca sebagai prediksi andal": ": the signal is weak, do not read it as a reliable prediction"
 },
 "pola": [
+[
+"^menara s\\.d\\. (\\d{1,2} \\p{L}{3,4} \\d{4}|–), padam s\\.d\\. (\\d{1,2} \\p{L}{3,4} \\d{4}|–)$",
+"towers up to $1, outages up to $2"
+],
+[
+"^Padam internet: ([\\d.,]+) peristiwa sejak (\\d{1,2} \\p{L}{3,4} \\d{4}|–)\\. Terbaru:$",
+"Internet outages: $1 events since $2. Latest:"
+],
+[
+"^Menambahkan kepadatan menara ke model bahaya padam internet ((?:LOLOS|TIDAK LOLOS|TAK TERUJI|GAGAL)) uji \\(AUC ([\\d.,]+); pembanding iklim ([\\d.,]+)\\)((?:: sinyalnya lemah, jangan dibaca sebagai prediksi andal)?)\\.$",
+"Adding tower density to the internet-outage hazard model: verdict $1 (AUC $2; climatology baseline $3)$4."
+],
+[
+"^Hubungan antara bahaya karhutla dan padam internet: (.+?) \\(p = ([\\d.,]+)\\)\\.$",
+"Relationship between wildfire hazard and internet outages: $1 (p = $2)."
+],
+[
+"^(Menambahkan .+?\\)(?:: [^.]*)?\\.)?\\s?(Hubungan antara .+?\\)\\.)?\\s?Jumlah sel mengukur kepadatan pengamatan, bukan jumlah menara sebenarnya \\(Aceh dan NTT nyaris kosong di data\\)\\. Padam = blok jaringan /24 yang tak menjawab ping, bukan bukti listrik atau seluler mati\\. Sumber: OpenCelliD \\(CC-BY-SA 4\\.0\\), unduhan (\\d{1,2} \\p{L}{3,4} \\d{4}|–); IODA, Georgia Tech, data s\\.d\\. (\\d{1,2} \\p{L}{3,4} \\d{4}|–)\\.$",
+"$1 $2 Cell counts measure observation density, not the actual number of towers (Aceh and NTT are almost empty in the data). Outage = a /24 network block that does not answer ping, not proof that power or mobile service is down. Source: OpenCelliD (CC-BY-SA 4.0), downloaded $3; IODA, Georgia Tech, data up to $4."
+],
+[
+"^sawit (\\S+), HTI (\\S+), HPH (\\S+), tambang (\\S+)$",
+"oil palm $1, HTI $2, HPH $3, mining $4"
+],
+[
+"^pantauan s\\.d\\. (\\d{1,2} \\p{L}{3,4}(?: \\d{4})?)$",
+"monitored up to $1"
+],
+[
+"^Sumber: Global Forest Watch, s\\.d\\. (\\d{1,2} \\p{L}{3,4}(?: \\d{4})?)\\. Pantauan, bukan prediksi\\.$",
+"Source: Global Forest Watch, up to $1. Monitoring data, not a prediction."
+],
+[
+"^Model prediksi dari alert ini ((?:LOLOS|TIDAK LOLOS|TAK TERUJI|GAGAL)) uji \\(AUC ([\\d.,]+) vs ([\\d.,]+) pembanding; selisih (-?[\\d.,]+)((?:, interval 95% .+? nol)?); selisih = AUC model dikurangi pembanding, negatif = model di bawah pembanding\\)(\\.|, jadi ini data pantauan, bukan prediksi\\.)$",
+"Prediction model verdict for these alerts: $1 (AUC $2 vs $3 baseline; difference $4$5; difference = model AUC minus baseline, negative = model below baseline)$6"
+],
+[
+"^, interval 95% (-?[\\d.,]+) s\\.d\\. (-?[\\d.,]+) (mencakup|tidak mencakup) nol$",
+", 95% interval $1 to $2 $3 zero"
+],
+[
+"^(Model prediksi dari alert ini .+?)\\s?Alert menandai pembukaan tajuk, bukan api\\. Pangsa gambut dan konsesi dari ([\\d.,]+) hari terakhir, bisa tumpang tindih\\. Gambut dari PRIMS 1:250\\.000, Kaltim belum lengkap\\. Sumber: Global Forest Watch, alert terintegrasi UMD GLAD-L/S2 dan WUR RADD; gambut PRIMS/BBSDLP; konsesi peta sawit, HTI, HPH, tambang 2014-2026; data s\\.d\\. (\\d{1,2} \\p{L}{3,4}(?: \\d{4})?)\\.$",
+"$1 Alerts mark canopy clearing, not fire. Peat and concession shares are from the last $2 days and may overlap. Peat from PRIMS 1:250,000, East Kalimantan incomplete. Source: Global Forest Watch, integrated alerts UMD GLAD-L/S2 and WUR RADD; peat PRIMS/BBSDLP; concessions from oil palm, HTI, HPH, mining maps 2014-2026; data up to $3."
+],
+[
+"^Alert menandai pembukaan tajuk, bukan api\\. Pangsa gambut dan konsesi dari ([\\d.,]+) hari terakhir, bisa tumpang tindih\\. Gambut dari PRIMS 1:250\\.000, Kaltim belum lengkap\\. Sumber: Global Forest Watch, alert terintegrasi UMD GLAD-L/S2 dan WUR RADD; gambut PRIMS/BBSDLP; konsesi peta sawit, HTI, HPH, tambang 2014-2026; data s\\.d\\. (\\d{1,2} \\p{L}{3,4}(?: \\d{4})?)\\.$",
+"Alerts mark canopy clearing, not fire. Peat and concession shares are from the last $1 days and may overlap. Peat from PRIMS 1:250,000, East Kalimantan incomplete. Source: Global Forest Watch, integrated alerts UMD GLAD-L/S2 and WUR RADD; peat PRIMS/BBSDLP; concessions from oil palm, HTI, HPH, mining maps 2014-2026; data up to $2."
+],
+[
+"^, (\\d{1,2} \\p{L}{3,4}(?: \\d{4})?)$",
+", $1"
+],
+[
+"^pengamatan (\\d{1,2} \\p{L}{3,4}(?: \\d{4})?)$",
+"observed $1"
+],
+[
+"^kolom CO terbaca satelit di (.+) pada (\\d{1,2} \\p{L}{3,4}(?: \\d{4})?)(,?)$",
+"CO column read by satellite in $1 on $2$3"
+],
+[
+"^Kolom CO dan indeks aerosol satelit (.+)$",
+"Satellite CO column and aerosol index, $1"
+],
+[
+"^Pengamatan (\\d{1,2} \\p{L}{3,4}(?: \\d{4})?), bukan prakiraan\\. Copernicus Sentinel-5P TROPOMI lewat NASA GES DISC\\. Model ((?:LOLOS|TIDAK LOLOS|TAK TERUJI|GAGAL))\\.$",
+"Observed $1, not a forecast. Copernicus Sentinel-5P TROPOMI via NASA GES DISC. Model: $2."
+],
+[
+"^Pengamatan (\\d{1,2} \\p{L}{3,4}(?: \\d{4})?), bukan prakiraan\\. Copernicus Sentinel-5P TROPOMI lewat NASA GES DISC\\.$",
+"Observed $1, not a forecast. Copernicus Sentinel-5P TROPOMI via NASA GES DISC."
+],
+[
+"^model ((?:LOLOS|TIDAK LOLOS|TAK TERUJI|GAGAL))$",
+"model $1"
+],
+[
+"^hanya ([\\d.,]+) hari berpasangan \\(butuh >= ([\\d.,]+) untuk membelah latih/uji\\)$",
+"only $1 paired day(s) (needs >= $2 to split into training/test)"
+],
+[
+"^Hanya ([\\d.,]+) hari terbaca; (.+?), jadi tidak ada ramalan( dan belum bisa dipakai menilai tren)?\\. Hari tanpa cukup piksel \\(kurang dari ([\\d.,]+)\\) dibuang\\. Data (.+)$",
+"Only $1 days read; $2, so there is no forecast$3. Days without enough pixels (fewer than $4) are dropped. Data $5"
+],
+[
+"^Hanya ([\\d.,]+) hari terbaca, jadi tidak ada ramalan( dan belum bisa dipakai menilai tren)?\\. Hari tanpa cukup piksel \\(kurang dari ([\\d.,]+)\\) dibuang\\. Data (.+)$",
+"Only $1 days read, so there is no forecast$2. Days without enough pixels (fewer than $3) are dropped. Data $4"
+],
+[
+"^\\), tetapi kalah dari (.+?) dan (.+?) dan (.+)$",
+"), but loses to $1, $2 and $3"
+],
+[
+"^\\), tetapi kalah dari (.+?) dan (.+)$",
+"), but loses to $1 and $2"
+],
+[
+"^\\), tetapi kalah dari (.+)$",
+"), but loses to $1"
+],
+[
+"^Galat rata-rata mutlak, MAE \\(µg/m³; makin kecil makin baik\\), ([\\d.,]+) jam uji di ([\\d.,]+) stasiun, (\\p{L}{3,4} \\d{4}) s\\.d\\. (\\p{L}{3,4} \\d{4})\\. Selisih terhadap CAMS mentah (-?[\\d.,]+) sampai (-?[\\d.,]+) µg/m³ \\(selang 95%; negatif = galat MOS lebih kecil\\)\\.$",
+"Mean absolute error, MAE (µg/m³; lower is better), $1 test hours at $2 stations, $3 to $4. Difference from raw CAMS $5 to $6 µg/m³ (95% interval; negative = MOS error smaller)."
+],
+[
+"^Galat rata-rata mutlak, MAE \\(µg/m³; makin kecil makin baik\\), ([\\d.,]+) jam uji di ([\\d.,]+) stasiun, (\\p{L}{3,4} \\d{4}) s\\.d\\. (\\p{L}{3,4} \\d{4})\\.$",
+"Mean absolute error, MAE (µg/m³; lower is better), $1 test hours at $2 stations, $3 to $4."
+],
+[
+"^: dengan koreksi bias galatnya ([\\d.,]+) µg/m³, lebih buruk dari (.+) sendiri \\(([\\d.,]+)\\)\\. ([\\d.,]+) stasiun, ([\\d.,]+) jam uji\\.$",
+": with bias correction its error is $1 µg/m³, worse than $2 alone ($3). $4 stations, $5 test hours."
+],
+[
+"^Uji ulang dengan data lebih pendek \\((.+), ([\\d.,]+) stasiun, ([\\d.,]+) jam latih\\): MOS$",
+"Re-test with shorter data ($1, $2 stations, $3 training hours): MOS"
+],
+[
+"^([\\d.,]+) dari ([\\d.,]+) stasiun ada di Jabodetabek dan Bali, jadi angka ini belum mewakili wilayah asap karhutla di Sumatera dan Kalimantan\\. Hasil di sini tidak boleh dibaca sebagai ketepatan di sana\\. Data (.+)$",
+"$1 of $2 stations are in Greater Jakarta and Bali, so this figure does not yet represent the wildfire smoke region in Sumatra and Kalimantan. Do not read these results as accuracy there. Data $3"
+],
+[
+"^stasiun tidak tersebar merata, jadi angka ini belum mewakili wilayah asap karhutla di Sumatera dan Kalimantan\\. Hasil di sini tidak boleh dibaca sebagai ketepatan di sana\\. Data (.+)$",
+"Stations are not spread evenly, so this figure does not yet represent the wildfire smoke region in Sumatra and Kalimantan. Do not read these results as accuracy there. Data $1"
+],
+[
+"^VRP terbaru, (.+)$",
+"Latest VRP, $1"
+],
+[
+"^\\(Univ\\. Turin\\), MODIS/VIIRS NASA, pengamatan (.+)$",
+"(Univ. of Turin), NASA MODIS/VIIRS, observed $1"
+],
 [
 "^(.+) \\(hari ini\\)$",
 "$1 (today)"

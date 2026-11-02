@@ -9,8 +9,8 @@
   const ha = v => !Number.isFinite(v) ? "–" : nf.format(v >= 1e4 ? Math.round(v / 100) * 100 : v > 100 ? Math.round(v / 10) * 10 : Math.round(v));
   const pct = v => !Number.isFinite(v) ? "–" : v > 0 && v < .005 ? "<1%" : Math.round(v * 100) + "%";
   const m2 = v => Number.isFinite(v) ? nf2.format(v) : "–";
-  const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
-  const tgl = s => { const m = /^(\d{4})-(\d\d)-(\d\d)/.exec(s || ""); return m ? `${+m[3]} ${BLN[+m[2] - 1]} ${m[1]}` : "–"; };
+  /* lewat toLocaleDateString("id-ID"): i18n.js menambalnya jadi en-GB saat EN, jadi bulan ikut bahasa */
+  const tgl = s => { const m = /^(\d{4})-(\d\d)-(\d\d)/.exec(s || ""); return m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])).toLocaleDateString("id-ID", {timeZone: "UTC", day: "numeric", month: "short", year: "numeric"}) : "–"; };
   const WARNA = ["#f6d9a8", "#f0b46c", "#e5853f", "#c9503a", "#8c2a22"], BATAS = [500, 1500, 3000, 6000];   /* ha90 per ubin 1 derajat */
   const kelas = h => BATAS.filter(b => h >= b).length;
   const poligon = d => ({type: "FeatureCollection", features: d.sel.map(([la, lo, h]) => ({type: "Feature", properties: {h, k: kelas(h)},
