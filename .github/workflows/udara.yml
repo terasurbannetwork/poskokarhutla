@@ -8,8 +8,10 @@ on:
     - cron: "40 6,18 * * *"
   workflow_dispatch:
 
+# Grup sendiri, bukan "data": GitHub hanya menyimpan satu run menunggu per grup, jadi jarak_pandang.yml (tiap jam) menggugurkan
+# run udara yang antre (2 Nov 19.28 dan 3 Nov 07.47 UTC batal tanpa job; PM2,5 2 Nov tidak masuk). Push sudah pull --rebase dulu.
 concurrency:
-  group: data
+  group: udara
   cancel-in-progress: false
 
 permissions:
