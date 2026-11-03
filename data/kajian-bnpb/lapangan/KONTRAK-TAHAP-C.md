@@ -1,7 +1,7 @@
 # Kontrak tahap C (2 Nov 2026)
 
 Satu sumber bentuk API untuk pengerja backend (`warga-api`), layar (`lapangan`), dan gateway (`wa-bot`).
-Migrasi tahap C: `migrations/0101_lapangan_panggil.sql` (0098 dipakai sesi Pusdalops).
+Migrasi tahap C: `migrations/0101_lapangan_panggil.sql` (0098 dipakai Pusdalops, 0099-0100 command center; dinomori ulang 2 Nov 2026).
 
 ## Tabel baru (0101)
 

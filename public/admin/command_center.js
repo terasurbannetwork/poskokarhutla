@@ -64,7 +64,7 @@
     const d = S.data, a = d.alert, hit = s => a.filter(x => x.status === s).length, final = a.filter(x => FINAL.includes(x.status)).length;
     /* tanggal bawaan = tanggal WIB hari ini menurut server, diisi SEKALI (bukan tiap jajak/aksi): tanggal yang dikosongkan operator tidak ditimpa lagi, dan pilihannya sendiri (benih = true lewat ubah()) menang */
     if (!S.log.benih) { S.log.benih = true; if (!S.log.tgl) { S.log.tgl = d.hari.tgl; if (el.lTgl) { el.lTgl.value = S.log.tgl; if (S.tab === "log") muatLog(); } } }
-    el.info.replaceChildren(h("b", {teks: `Hari ini · ${tgl(d.hari.mulai)}`}), " · ", d.saya.nama, d.saya.tulis ? " (operator)" : " (hanya melihat)");
+    el.info.replaceChildren(h("b", {teks: `Hari ini, ${tgl(d.hari.mulai)}`}), ", ", d.saya.nama, d.saya.tulis ? " (operator)" : " (hanya melihat)");
     /* hitungan dari daftar yang dipotong server (antrean_terpotong / final_terpotong) = batas bawah: ditandai "+" */
     const tanda = potong => potong ? "+" : "";
     el.chip.replaceChildren(
@@ -130,9 +130,9 @@
   const sigKartu = a => JSON.stringify([a.status, a.oleh_nama, a.sejak, a.konfirmasi_lapangan, a.aksi, a.n24, a.luas_ha, a.kec, a.kab, S.sibuk.has(a.id), S.data.saya.tulis && !FINAL.includes(a.status) ? sigKontak(a) : 0]);
   function kartu(a, sig) {
     const final = FINAL.includes(a.status), tulis = S.data.saya.tulis, sibuk = S.sibuk.has(a.id);
-    const meta = [a.prov_nama, a.n24 != null ? `${fmt(a.n24)} titik panas (24 jam)` : null, a.luas_ha != null ? `${fmt(Math.round(a.luas_ha))} ha` : null].filter(Boolean).join(" · ");
+    const meta = [a.prov_nama, a.n24 != null ? `${fmt(a.n24)} titik panas (24 jam)` : null, a.luas_ha != null ? `${fmt(Math.round(a.luas_ha))} ha` : null].filter(Boolean).join(", ");
     const pegang = a.status === "baru" ? h("p", {class: "cc-pegang belum", teks: "Belum ada yang memegang"})
-      : h("p", {class: "cc-pegang"}, final ? "Diputuskan " : "Dipegang ", h("b", {teks: a.oleh_nama ?? "operator"}), (final ? " pukul " : " sejak ") + jamTgl(a.sejak) + " · ", h("span", {"data-dari": a.sejak}), " lalu");
+      : h("p", {class: "cc-pegang"}, final ? "Diputuskan " : "Dipegang ", h("b", {teks: a.oleh_nama ?? "operator"}), (final ? " pukul " : " sejak ") + jamTgl(a.sejak) + ", ", h("span", {"data-dari": a.sejak}), " lalu");
     const bisa = tulis && a.aksi.length > 0, perluCatatan = bisa && (final || a.status === "dalam_konfirmasi");
     const cat = perluCatatan ? h("input", {class: "cc-catatan", type: "text", maxlength: "300", "data-catatan": a.id, value: S.draft.get(a.id) ?? "", autocomplete: "off",
       placeholder: final ? "Alasan koreksi (wajib, minimal 3 huruf)" : "Catatan (opsional)", "aria-label": final ? "Alasan koreksi" : "Catatan"}) : null;
@@ -140,7 +140,7 @@
       teks: final ? "Koreksi: buka kembali konfirmasi" : NAMA_AKSI[ke]}))) : null;
     return h("article", {class: "cc-kartu", "data-id": a.id, "data-status": a.status, "data-sig": sig},
       h("div", {class: "cc-kepala"}, h("h3", {teks: lokasi(a)}), h("span", {class: "cc-pil", "data-s": a.status, teks: NAMA_STATUS[a.status] ?? a.status})),
-      h("p", {class: "cc-meta"}, meta + " · dibuat " + jamTgl(a.dibuat) + " · umur ", h("span", {"data-dari": a.dibuat})),
+      h("p", {class: "cc-meta"}, meta + ", dibuat " + jamTgl(a.dibuat) + ", umur ", h("span", {"data-dari": a.dibuat})),
       pegang,
       a.konfirmasi_lapangan ? h("p", {class: "cc-lap", teks: "BPBD sudah konfirmasi lapangan"}) : null,
       tulis && !final ? kontakEl(a) : null, cat, tombol);
@@ -241,11 +241,11 @@
       h("tbody", null, ...j.ringkasan.map(o => h("tr", null, h("td", {teks: o.nama ?? o.operator}), h("td", {class: "ang", teks: fmt(o.aksi) + plus}), h("td", {class: "ang", teks: fmt(o.selesai) + plus}),
         h("td", {class: "ang", teks: o.median_respons_ms == null ? "–" : durasi(o.median_respons_ms)}), h("td", {class: "ang", teks: o.median_konfirmasi_ms == null ? "–" : durasi(o.median_konfirmasi_ms)})))));
     const tabel = h("table", {class: "cc-tabel"}, h("thead", null, h("tr", null, ...["Waktu", "Operator", "Lokasi", "Perubahan", "Durasi", "Catatan"].map(t => h("th", {teks: t})))),
-      h("tbody", null, ...j.jejak.map(x => h("tr", null, h("td", {teks: `${jam(x.waktu)} · ${pendek(x.waktu)}`}), h("td", {teks: x.operator_nama ?? x.operator}),
+      h("tbody", null, ...j.jejak.map(x => h("tr", null, h("td", {teks: `${jam(x.waktu)}, ${pendek(x.waktu)}`}), h("td", {teks: x.operator_nama ?? x.operator}),
         h("td", {teks: x.kab ? `${x.kab}, ${x.prov_nama ?? ""}`.replace(/, $/, "") : "(tugas sudah dibuang)"}),
         h("td", null, h("span", {class: "cc-pil", "data-s": x.dari, teks: NAMA_STATUS[x.dari]}), " → ", h("span", {class: "cc-pil", "data-s": x.ke, teks: NAMA_STATUS[x.ke]})),
         h("td", {class: "ang", teks: x.durasi_ms == null ? "–" : `${durasi(x.durasi_ms)} (${JENIS_DURASI[x.durasi_jenis] ?? ""})`}), h("td", {class: "cc-cat", teks: x.catatan ?? ""})))));
-    el.lIsi.replaceChildren(h("h3", {teks: `Ringkasan per operator · ${tgl(j.mulai)}`}),
+    el.lIsi.replaceChildren(h("h3", {teks: `Ringkasan per operator, ${tgl(j.mulai)}`}),
       j.ringkasan.length ? ring : h("p", {class: "cc-redup", teks: "Belum ada tindakan operator pada rentang ini."}),
       h("h3", {teks: `Jejak (${fmt(j.jejak.length)}${plus} baris)`}), j.jejak.length ? tabel : null,
       j.terpotong ? h("p", {class: "cc-spanduk galat", role: "status", teks: `Log melebihi ${fmt(j.batas)} baris dan dipotong pada ${fmt(j.batas)} baris pertama: angka bertanda + adalah batas bawah, median hanya dari baris yang terbaca, dan CSV juga hanya memuat baris ini. Persempit operator atau pilih tanggal lain.`}) : null);
