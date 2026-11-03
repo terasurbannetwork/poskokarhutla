@@ -1,0 +1,8 @@
+/* Menu atas bersama halaman Pusdalops (public/bnpb/menu_pusdalops.js). */
+.mp-menu{display:flex;gap:4px;margin-left:20px;overflow-x:auto;scrollbar-width:none;min-width:0}
+.mp-menu::-webkit-scrollbar{display:none}
+.mp-menu a{display:inline-flex;align-items:center;gap:7px;color:rgb(255 255 255 / .78);text-decoration:none;font-size:13px;font-weight:600;padding:7px 12px;border-radius:9px;white-space:nowrap}
+.mp-menu a:hover,.mp-menu a:focus-visible{color:#fff;background:rgb(255 255 255 / .1)}
+.mp-menu a[aria-current="page"]{color:#fff;background:rgb(255 255 255 / .14);box-shadow:inset 0 -2px 0 var(--emas,#c9a227)}
+.mp-menu svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;opacity:.9}
+@media (max-width:560px){.mp-menu{order:3;width:100%;margin-left:0}}

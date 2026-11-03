@@ -325,3 +325,10 @@
 .dl-wrap .bn-blok>:not(.dl-kepala){margin:14px 18px}
 .dl-wrap .bn-blok>:last-child{margin-bottom:18px}
 .dl-wrap .bn-blok>.dl-peta{margin:14px 18px}
+/* tanpa belang zebra */
+.dl-wrap .dl-tabel tbody tr,.dl-wrap .dl-tabel tbody tr:nth-child(even),.dl-dialog .dl-tabel tbody tr:nth-child(even){background:none}
+/* legenda prakiraan Siaga/Awas: segitiga sama dengan simbol di peta */
+.dl-leg-a2::before,.dl-leg-a3::before{width:13px;height:12px;border-radius:0;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.dl-leg-a2::before{background:var(--c2)}.dl-leg-a3::before{background:var(--c1)}
+.dl-pop-awas{display:grid;gap:5px;justify-items:start;font-size:12.5px}
+.dl-pop-awas small{color:var(--ink3)}
