@@ -157,13 +157,22 @@
       });
     });
   }
-  /* kartu klik di peta: kondisi, nama, dua angka, kontak BPBD dengan tombol WA dan telepon */
+  /* angka terdampak di kartu: hanya yang dilaporkan; kalau keduanya kosong, satu baris keterangan kecil (bukan "–" besar) */
+  function kotakAngka(x) {
+    const isi = [[x.kk, "KK terdampak", "sosial"], [x.jiwa, "jiwa terdampak", "personel"], [x.mengungsi, "jiwa mengungsi", "tenda"]].filter(([v]) => v != null);
+    return isi.length ? h("div", {class: "dl-tip-angka"}, isi.slice(0, 2).map(([v, t, ik]) => h("div", null, h("span", {class: "dl-tip-ik"}, ikon(ik)), h("b", {teks: F(v)}), h("span", {teks: t}))))
+      : h("p", {class: "dl-tip-kosong"}, ikon("tunggu"), "Jumlah terdampak belum dilaporkan");
+  }
+  /* menu atas Ruang BNPB: ikon garis di kiri teks, sama dengan menu peta utama */
+  const IKON_MENU = {"/bnpb/dalops": "banjir", "/bnpb/logbook": "daftar", "/bnpb/dokumen": "simpan", "/bnpb/operasi": "personel", "/?operasi": "pin", "/bnpb/siaga": "peringatan", "/bnpb/perencanaan": "kalender", "/daftar-kontak": "sinyal"};
+  document.querySelectorAll(".dl-nav a").forEach(a => { const ik = IKON_MENU[a.getAttribute("href")]; if (ik) a.prepend(ikon(ik)); });
+
+  /* kartu klik di peta: kondisi, nama, angka yang dilaporkan, kontak BPBD dengan tombol WA dan telepon */
   function kartuKab(x, k, bukaKab) {
     const rincian = h("button", {type: "button", class: "dl-pop-rinci"}, ikon("daftar"), "Rincian");
     rincian.addEventListener("click", () => bukaKab(x));
     return h("div", {class: "dl-pop"}, surutLabel(x.surut), h("b", {class: "dl-tip-nama", teks: x.nama}), h("span", {class: "dl-tip-prov", teks: namaProv(x.prov_kode, x.prov) + ", kabar terakhir " + H.tglPendek(x.terakhir)}),
-      h("div", {class: "dl-tip-angka"}, h("div", null, h("span", {class: "dl-tip-ik"}, ikon("sosial")), h("b", {teks: angka(x.kk)}), h("span", {teks: "KK terdampak"})),
-        h("div", null, h("span", {class: "dl-tip-ik"}, ikon("personel")), h("b", {teks: angka(x.jiwa)}), h("span", {teks: "jiwa terdampak"}))),
+      kotakAngka(x),
       h("div", {class: "dl-pop-kontak"}, h("span", {teks: k ? k.nama : "Nomor Pusdalops BPBD belum tercatat"}),
         h("div", {class: "dl-pop-tombol"},
           k ? h("a", {class: "dl-pop-wa", href: `https://wa.me/${k.no}?text=${encodeURIComponent(H.pesanWA({...x, kurang: x.kurang || []}))}`, target: "_blank", rel: "noopener"}, ikonWA(), "Chat") : null,
