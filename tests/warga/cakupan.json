@@ -94,7 +94,7 @@
     "POST /api/staf/admin/buat": "akun staf: hanya Super Admin",
     "GET /api/staf/admin/daftar": "akun staf: hanya Super Admin",
     "POST /api/staf/admin/:id": "cabut, reset, ubah peran",
-    "GET /admin/pantau": "halaman /admin/pantau: kerangka",
+    "GET /admin/pantau": "halaman /admin/pantau: tamu 303 ke /admin/masuk; kerangka",
     "GET /api/pantau": "matriks peran x rute",
     "POST /api/pantau/butir": "penugasan: ambil, dipegang orang lain",
     "GET /api/pantau/jejak": "penugasan: ambil, dipegang orang lain",
