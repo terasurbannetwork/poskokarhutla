@@ -103,16 +103,18 @@
 
   /* legenda (pola #legenda peta utama): kartu putih, judul LEGENDA, hanya bagian lapisan yang menyala */
   function renderLegenda() {
-    const L = (node, t) => h("span", null, node, t), dot = (bg, b) => { const i = h("i", {class: "sw"}); i.style.background = bg; if (b) i.style.border = b; return i; };
+    const sw = node => h("i", {class: "lg-sw"}, node), dot = (bg, b) => { const i = h("i", {class: "lg-d"}); i.style.background = bg; if (b) i.style.boxShadow = `inset 0 0 0 1px ${b}`; return i; };
+    const L = (node, t) => h("span", {class: "lg-i"}, node, h("em", {teks: t}));
     const baseIk = () => { const s_ = svg("svg", {viewBox: "0 0 24 24", "aria-hidden": "true", class: "ol-lg-base"}); s_.append(svg("circle", {cx: 12, cy: 12, r: 11, class: "tanah"}), svg("path", {d: "M6 17V10l6-4 6 4v7M10 17v-4h4v4", class: "garis"})); return s_; };
-    const g = (judul, ...isi) => h("div", {class: "lg-g"}, h("div", {class: "lbl", teks: judul}), h("div", {class: "leg"}, isi));
-    const prioIk = () => { const i = dot("#c9503a", "2px solid #fff"); i.classList.add("angka"); i.textContent = "2"; return i; };
-    el.legenda.replaceChildren(h("summary", {class: "lbl"}, "Legenda ", h("span", {teks: "▾"})), h("div", {class: "lg-isi"},
-      g("Base dan kegunaan armada", L(baseIk(), "Base (kode ICAO)"), ...GUNA.map(([k, t]) => L(ikonGuna(k), k === "omc" ? "OMC (modifikasi cuaca)" : t))),
-      g("Laporan pilot", L(ikonPeta("segitiga", "ol-t-api"), "Temuan api"), L(ikonPeta("lingkaran", "ol-t-clear"), "Clear"), L(ikonPeta("kotak", "ol-wb"), "Target water bombing")),
-      st.lapis.hs ? g("Umur titik panas", L(dot("#fff4a8", "1px solid #4a1209"), "< 6 jam"), L(dot("#ecaa4f"), "6–24 jam"), L(dot("#d4643c"), "1–3 hari"), L(dot("#93352c"), "> 3 hari")) : null,
-      st.lapis.kl ? g("Status cluster", L(prioIk(), "Cluster prioritas (angka = jumlah cluster)")) : null,
-      st.lapis.vis ? g("Jarak pandang bandara", L(dot("#c9503a"), "< 1,5 km"), L(dot("#e58a45"), "1,5–5 km"), L(dot("#e9c46a"), "5–8 km"), L(dot("#4fae7c"), "≥ 8 km")) : null));
+    const prioIk = () => { const i = h("i", {class: "lg-prio", teks: "2"}); return i; };
+    const g = (judul, baris, ...isi) => h("div", {class: "lg-g" + (baris ? " baris" : "")}, h("div", {class: "lbl", teks: judul}), h("div", {class: "leg"}, isi));
+    el.legenda.replaceChildren(h("summary", {class: "lbl"}, "Legenda ", h("span", {class: "pnh", teks: "▾"})), h("div", {class: "lg-isi"},
+      g("Base dan armada", false, L(sw(baseIk()), "Base (kode ICAO)"), ...GUNA.map(([k, t]) => L(sw(ikonGuna(k)), k === "omc" ? "OMC" : t))),
+      g("Laporan pilot", false, L(sw(ikonPeta("segitiga", "ol-t-api")), "Temuan api"), L(sw(ikonPeta("lingkaran", "ol-t-clear")), "Clear"), L(sw(ikonPeta("kotak", "ol-wb")), "Target WB")),
+      h("div", {class: "lg-kol"},
+        st.lapis.hs ? g("Umur titik panas", true, L(dot("#fff4a8", "#4a1209"), "< 6 j"), L(dot("#ecaa4f"), "6–24 j"), L(dot("#d4643c"), "1–3 hr"), L(dot("#93352c"), "> 3 hr")) : null,
+        st.lapis.kl ? g("Status cluster", true, L(prioIk(), "Prioritas, angka = jumlah cluster")) : null,
+        st.lapis.vis ? g("Jarak pandang", true, L(dot("#c9503a"), "< 1,5 km"), L(dot("#e58a45"), "1,5–5"), L(dot("#e9c46a"), "5–8"), L(dot("#4fae7c"), "≥ 8 km")) : null)));
   }
 
   /* ---------- kerangka: kepala navy (pola Direktori), peta citra lebar + panel melayang ---------- */
@@ -280,17 +282,31 @@
   /* tautan Google Maps ke koordinat (tab baru, tanpa rujukan) */
   const gmaps = (lat, lon, teks) => h("a", {class: "ol-gmaps", href: `https://www.google.com/maps/search/?api=1&query=${(+lat).toFixed(5)},${(+lon).toFixed(5)}`, target: "_blank", rel: "noopener noreferrer", title: "Buka di Google Maps"}, ikon("pin"), teks);
   const sel = (t, kelas) => h("span", {class: kelas || "n", teks: t});
+  /* tabel base (pola tabel provinsi peta utama): satu baris per base, singkatan di kepala dijelaskan deret kunci di atasnya.
+     STATUS = kondisi api dalam jangkauan base (Prioritas / Siaga / Aman, sama dengan pil peta utama); titik merah = pilot melapor api hari ini. */
+  const kondisiApi = x => { const p3 = x.dekat.filter(k => k.level >= 3).length, p2 = x.dekat.filter(k => k.level === 2).length;
+    return p3 ? ["Prioritas", "ol-k-3"] : p2 ? ["Siaga", "ol-k-2"] : ["Aman", "ol-k-0"]; };
   function tabelBase(d) {
-    const baris = (st.data.base || []).map(b => ringkasBase(d, b)).sort((a, b) => b.api - a.api || b.sortie - a.sortie || b.armada - a.armada || a.b.nama.localeCompare(b.b.nama));
-    const jm = k => baris.reduce((a, x) => a + x[k], 0), jg = k => baris.reduce((a, x) => a + x.guna[k], 0), nol = v => v ? O.fmt(v) : "–";
-    const kp = k => h("span", {class: "n", title: GUNA.find(x => x[0] === k)[1]}, ikonGuna(k));
-    const prio = x => x.dekat.filter(k => k.level >= 3).length;
-    return [h("div", {class: "ol-tb kepala"}, sel(""), sel("Base", ""), kp("wb"), kp("patroli"), kp("omc"), sel("Siap"), h("span", {class: "n", title: "Cluster api prioritas dalam jangkauan base"}, "Prio"), sel("Status")),
-      h("div", {class: "ol-tb total"}, sel(""), sel("Grand total", ""), sel(nol(jg("wb"))), sel(nol(jg("patroli"))), sel(nol(jg("omc"))), sel(nol(jm("siap"))), sel(st.api ? "" : "…"), sel("")),
-      ...baris.map((x, i) => { const [st_, kl] = statusBase(x);
-        return h("button", {type: "button", class: "ol-tb" + (x.b.id === st.base ? " pilih" : "") + (x.api ? " hl" : ""), "data-base": x.b.id, title: `${x.b.nama}, ${x.b.icao || x.b.id}`},
-          sel(String(i + 1), "rk"), h("span", {class: "nm"}, h("b", {teks: x.b.nama}), h("small", {teks: [x.b.icao || x.b.id, x.b.iata && x.b.iata !== x.b.id ? x.b.iata : ""].filter(Boolean).join(", ")})),
-          sel(nol(x.guna.wb)), sel(nol(x.guna.patroli)), sel(nol(x.guna.omc)), sel(nol(x.siap)), sel(st.api ? nol(prio(x)) : "…", prio(x) ? "n merah" : "n"), h("span", {class: "st"}, pil(st_, kl))); })];
+    const baris = (st.data.base || []).map(b => ringkasBase(d, b)), p3 = x => x.dekat.filter(k => k.level >= 3).length;
+    baris.sort((a, b) => b.api - a.api || p3(b) - p3(a) || b.armada - a.armada || a.b.nama.localeCompare(b.b.nama));
+    const jg = k => baris.reduce((a, x) => a + x.guna[k], 0), nol = v => v ? O.fmt(v) : "–";
+    const kunci = h("div", {class: "ol-kunci"}, GUNA.map(([k, t]) => h("span", {title: t}, ikonGuna(k), h("b", {teks: k === "wb" ? "WB" : k === "patroli" ? "PTR" : "OMC"}), k === "omc" ? "Modifikasi cuaca" : t)),
+      h("span", {title: "Cluster api prioritas dalam jangkauan base"}, h("i", {class: "ol-kunci-cl"}), h("b", {teks: "CL"}), "Cluster prioritas"));
+    return [kunci, h("div", {class: "ol-tb kepala"}, sel(""), sel("Base", ""), sel("WB"), sel("PTR"), sel("OMC"), sel("CL"), sel("Api")),
+      h("div", {class: "ol-tb total"}, sel(""), sel("Grand total", ""), sel(nol(jg("wb"))), sel(nol(jg("patroli"))), sel(nol(jg("omc"))), sel(st.api ? nol(st.api.kl.filter(k => k.level >= 3).length) : "…"), sel("")),
+      ...baris.map((x, i) => { const [t, kl] = kondisiApi(x);
+        return h("button", {type: "button", class: "ol-tb" + (x.b.id === st.base ? " pilih" : ""), "data-base": x.b.id, title: `${x.b.nama} (${x.b.icao || x.b.id}), ${O.fmt(x.siap)} dari ${O.fmt(x.armada)} armada siap`},
+          sel(String(i + 1), "rk"), h("span", {class: "nm"}, h("b", {teks: x.b.nama.split(" / ")[0]}), h("small", {teks: x.b.icao || x.b.id}), x.api ? h("i", {class: "prio", title: `Pilot melapor ${O.fmt(x.api)} titik api hari ini`}) : null),
+          sel(nol(x.guna.wb)), sel(nol(x.guna.patroli)), sel(nol(x.guna.omc)), sel(st.api ? nol(p3(x)) : "…", "n tebal"), st.api ? h("span", {class: "st"}, pil(t, kl)) : sel("…")); })];
+  }
+  /* daftar prioritas pemadaman di bawah tabel base: cluster prioritas terbesar + base terdekat yang punya armada water bombing */
+  function prioritasBawah() {
+    if (!st.api) return null;
+    const pr = st.api.kl.filter(k => k.level >= 3).sort((x, y) => y.px24 - x.px24).slice(0, 8);
+    if (!pr.length) return null;
+    const wb = (st.data.base || []).filter(b => hitungGuna((st.data.armada || []).filter(a => a.base_id === b.id)).wb);
+    return h("div", {class: "ol-prio"}, h("div", {class: "ol-sub", teks: "Prioritas pemadaman terbesar"}), ...pr.map(k => { const bs = wb.map(b => ({b, km: jarakKm(b.lat, b.lon, k.lat, k.lon)})).sort((x, y) => x.km - y.km)[0];
+      return baisKluster({...k, km: undefined, kab: `${k.kab}, ${k.kec}`, kec: "", base: bs ? `${bs.b.icao || bs.b.id} ${O.fmt(Math.round(bs.km))} km` : ""}); }));
   }
   const kartuArmada = a => h("article", {class: "ol-ar"}, gambarArmada(a),
     h("div", {class: "ol-ar-isi"}, h("div", {class: "ol-ar-atas"}, h("b", {teks: a.registrasi}), pil(O.namaArmada(a.status), O.kelasArmada(a.status))),
@@ -298,8 +314,8 @@
       h("p", {class: "ol-ar-meta", teks: [a.operator, a.bucket_liter ? `bucket ${O.fmt(a.bucket_liter)} L` : "", a.jelajah_nm ? `jelajah ${O.fmt(a.jelajah_nm)} NM` : ""].filter(Boolean).join(", ") || "Operator belum tercatat"}),
       a.alasan ? h("p", {class: "ol-ar-alasan", teks: a.alasan}) : null));
   /* baris cluster: status, lokasi (Google Maps), piksel 24 jam, umur, jarak dari base */
-  const baisKluster = k => h("div", {class: "ol-kl"}, pil(LV[k.level][0], LV[k.level][1]), h("div", {class: "ol-kl-isi"}, gmaps(k.lat, k.lon, `${k.kab}, ${k.kec}`),
-    h("small", {teks: [`${k.id}`, `${O.fmt(k.px24)} piksel 24 jam`, `${O.fmt(k.hari)} hari`, k.gambut === true ? "gambut" : "", k.km != null ? `${O.fmt(Math.round(k.km))} km dari base` : ""].filter(Boolean).join(", ")})));
+  const baisKluster = k => h("div", {class: "ol-kl"}, pil(LV[k.level][0], LV[k.level][1]), h("div", {class: "ol-kl-isi"}, gmaps(k.lat, k.lon, k.kec ? `${k.kab}, ${k.kec}` : k.kab),
+    h("small", {teks: [`${k.id}`, `${O.fmt(k.px24)} piksel 24 jam`, `${O.fmt(k.hari)} hari`, k.gambut === true ? "gambut" : "", k.km != null ? `${O.fmt(Math.round(k.km))} km dari base` : "", k.base ? `base WB terdekat ${k.base}` : ""].filter(Boolean).join(", ")})));
   function daftarApi() {
     if (!st.api) return [kosong("Memuat sumber api…")];
     const per = new Map(); for (const k of st.api.kl) { const a = per.get(k.prov) || {prov: k.prov, n: 0, px: 0, hari: 0, p3: 0, p2: 0, kl: []}; a.n++; a.px += k.px24 || 0; a.hari = Math.max(a.hari, k.hari || 0); if (k.level >= 3) a.p3++; else if (k.level === 2) a.p2++; a.kl.push(k); per.set(k.prov, a); }
@@ -323,8 +339,8 @@
     if (st.segmen === "renlap") { const rl = st.data.renlap || [];
       return el.panel.replaceChildren(h("h2", {class: "ol-judul"}, ikon("malam"), "Renlap malam"), rl.length ? tabel(["Base", "Versi", "Target"], rl.map(r => [r.base_id, r.versi, O.fmt((r.target || []).length)])) : kosong("Belum ada renlap untuk tanggal ini.")); }
     if (!b) { const tab = h("div", {class: "ol-tab", role: "group", "aria-label": "Daftar"}, [["base", "Base operasi udara"], ["api", "Sumber api"]].map(([v, t]) => h("button", {type: "button", "data-tab": v, "aria-pressed": String(st.tab === v), teks: t})));
-      return el.panel.replaceChildren(h("div", {class: "ol-panel-kepala"}, jejak(null), tab, h("p", {class: "ol-sumber", teks: st.tab === "api" ? "Cluster api aktif 24 jam per provinsi (sama dengan peta utama). Buka provinsi untuk daftar cluster prioritas." : "Klik base untuk melihat armadanya. Prio = cluster api prioritas dalam jangkauan base."})),
-        st.tab === "api" ? h("div", {class: "ol-gulir-v"}, daftarApi()) : (st.data.base || []).length ? h("div", {class: "ol-gulir-v", role: "list"}, tabelBase(d)) : kosong("Belum ada base.")); }
+      return el.panel.replaceChildren(h("div", {class: "ol-panel-kepala"}, jejak(null), tab, h("p", {class: "ol-sumber", teks: st.tab === "api" ? "Cluster api aktif 24 jam per provinsi (sama dengan peta utama). Buka provinsi untuk daftar cluster prioritas." : "Klik base untuk melihat armadanya."})),
+        st.tab === "api" ? h("div", {class: "ol-gulir-v"}, daftarApi()) : (st.data.base || []).length ? h("div", {class: "ol-gulir-v", role: "list"}, tabelBase(d), prioritasBawah()) : kosong("Belum ada base.")); }
     const db = O.dataBase(d, b.id), semua = O.dataBase(st.data, b.id).armada.slice().sort((x, y) => (O.STATUS_ARMADA[y.status]?.siap ? 1 : 0) - (O.STATUS_ARMADA[x.status]?.siap ? 1 : 0) || x.registrasi.localeCompare(y.registrasi)), x = ringkasBase(d, b);
     el.panel.replaceChildren(h("div", {class: "ol-panel-kepala"}, jejak(b),
         h("h2", {class: "ol-judul besar"}, gmaps(b.lat, b.lon, b.nama)), h("p", {class: "ol-sumber", teks: [b.icao, b.iata].filter(Boolean).join(", ")}),
