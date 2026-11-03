@@ -143,7 +143,7 @@ else {
       .bind(id, "masukstaf" + i + "xx", nama, "8000" + i + "000", `m${i}@b.id`, "62813000" + String(i).padStart(4, "0"), JSON.stringify(peran), garam, sha256(garam + sandi)).run();
     return {username: "masukstaf" + i + "xx", sandi};
   };
-  uji("cc layar masuk staf (Chrome): operator_cc saja diarahkan ke peta utama '/'; ?ke= sah menang; operator + peran lain dan koordalops tetap ke Meja Pantau", async () => {
+  uji("cc layar masuk staf (Chrome): operator_cc saja diarahkan ke peta utama '/'; ?ke= sah menang; operator + peran lain dan koordalops tetap ke Meja Pantau; Direktori saja tidak berputar di ?ke=/", async () => {
     const masuk = async (akun, ke = "") => {
       const tab = await tabBaru(1440, 900); await cookie(tab, "sesi_staf", null);
       await tab.buka(base + "/admin/masuk" + (ke ? "?ke=" + encodeURIComponent(ke) : ""), {tunggu: "#email"});
@@ -156,6 +156,9 @@ else {
     tab = await masuk(op1, "https://jahat.example/x"); await tab.tungguFungsi(`location.pathname === "/"`, 15000); assert.equal(await q(tab, "location.origin"), base, "?ke= berupa URL penuh diabaikan"); await tab.tutup();
     const campur = await stafLogin("Operator Campur", ["operator_cc", "pusdalops"]), koordP = await stafLogin("Koord Masuk", ["koordalops"]);
     for (const akun of [campur, koordP]) { tab = await masuk(akun); await tab.tungguFungsi(`document.querySelector(".pt-judul, h1, .pt-butir, .pt-kosong, .pt-bar") && location.pathname === "/admin/pantau"`, 15000); await tab.tutup(); }
+    /* akun Direktori saja dengan ?ke=/ (pantulan dari peta utama): dulu berputar di /admin/masuk?ke=%2F, sekarang mendarat di /direktori (3 Nov 2026) */
+    const dir = await stafLogin("Direktori Saja", ["direktori"]);
+    tab = await masuk(dir, "/"); await tab.tungguFungsi(`location.pathname === "/direktori"`, 15000); await tab.tutup();
   });
 
   uji("cc layar meja (Chrome): koordalops hanya melihat (tanpa tombol aksi, tanpa nomor BPBD), tanpa gerbang suara", async () => {

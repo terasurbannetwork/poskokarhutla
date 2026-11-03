@@ -268,7 +268,9 @@ export async function masuk(env, req, kini, halamanMasuk) {
       const m = email && sandi ? await cobaMasukStaf(env, req, email, sandi, kini).catch(e => (/no such table/i.test(String(e?.message || e)) ? {hasil: "salah"} : Promise.reject(e))) : {hasil: "salah"};
       if (m.hasil === "ok") {
         /* operator_cc SAJA ke peta utama "/" (dulu di form Meja Pantau), Direktori saja ke /direktori; ?ke= yang sah menang */
-        const p = m.staf.peran || [], arah = m.staf.wajib_ganti ? "/admin/pantau" : ke || (hanyaDirektori(p) ? "/direktori" : p.length === 1 && p[0] === "operator_cc" ? "/" : "/admin/pantau");
+        /* akun Direktori saja: ?ke= di luar /direktori diabaikan, kalau tidak "/" melempar balik ke /admin/masuk?ke=/ dan login berputar (3 Nov 2026) */
+        const p = m.staf.peran || [], d = hanyaDirektori(p), keSah = d && !/^\/direktori([/?#]|$)/.test(ke) ? "" : ke;
+        const arah = m.staf.wajib_ganti ? "/admin/pantau" : keSah || (d ? "/direktori" : p.length === 1 && p[0] === "operator_cc" ? "/" : "/admin/pantau");
         const r = alihkan(arah, {"set-cookie": m.cookie}); r.headers.append("set-cookie", cookie("", 0)); r.headers.append("set-cookie", cookiePemirsa("", 0)); return r;
       }
       if (kunciEmail) await catatGagal(env, kunciEmail, "admin_gagal", kini);
