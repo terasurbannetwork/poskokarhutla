@@ -47,3 +47,21 @@
 @media (max-width:640px){.bn-grid.ol-ringkas{grid-template-columns:minmax(0,1fr)}}
 #app{display:grid;gap:14px;align-content:start}
 .ol-tengah[hidden]{display:none}
+/* segmen Nilai */
+.ol-rentang{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));align-items:end}
+.ol-rentang[hidden],.ol-tgl[hidden]{display:none}
+.ol-rentang label{display:grid;gap:4px;font-size:12px;font-weight:700;color:var(--ink2)}
+.ol-rentang .ol-sumber{grid-column:1/-1}
+.bn-grid.ol-nilai{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:1000px){.bn-grid.ol-nilai{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.bn-grid.ol-nilai{grid-template-columns:minmax(0,1fr)}}
+.ol-kartu.ol-redup{opacity:.8}
+.ol-angka-kosong{margin:6px 0;font-size:15px;font-weight:700;color:var(--ink2)}
+.ol-bawah{display:grid;gap:10px;min-width:0}
+.ol-bawah:empty{display:none}
+.ol-tabel-nilai td.ol-nl{text-align:center;white-space:nowrap}
+.ol-tabel-nilai td.ol-nl b{display:block}
+.ol-tabel-nilai td.ol-nl small{display:block;font-size:11px;color:var(--ink2)}
+.ol-tabel-nilai td.ol-baik{background:color-mix(in srgb,var(--c4) 18%,transparent);box-shadow:inset 3px 0 var(--c4)}
+.ol-tabel-nilai td.ol-buruk{background:color-mix(in srgb,var(--c1) 14%,transparent);box-shadow:inset 3px 0 var(--c1)}
+.ol-baris:has(.ol-tgl[hidden]){grid-template-columns:minmax(0,1fr)}

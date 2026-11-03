@@ -1,0 +1,40 @@
+hari data website 2026-11-01
+website 2026-11-01 ditambahkan: Kalimantan Selatan
+website 2026-11-01 ditambahkan: Maluku
+website 2026-11-01 ditambahkan: Papua Barat
+website 2026-11-01 Papua Selatan Prioritas 608 ha 173 FS -> ditangani PERHATIAN
+website 2026-11-01 Kalimantan Tengah Prioritas 351 ha 294 FS -> ditangani PERHATIAN
+website 2026-11-01 Sumatera Selatan Siaga 56 ha 33 FS -> ditangani 
+website 2026-11-01 Jambi Siaga 35 ha 38 FS -> ditangani 
+website 2026-11-01 Riau Patroli 0 ha 0 FS -> selesai 
+website 2026-11-01 Sulawesi Tengah Siaga 93 ha 43 FS -> ditangani 
+website 2026-11-01 Sulawesi Tenggara Siaga 103 ha 99 FS -> ditangani PERHATIAN
+website 2026-11-01 Kalimantan Selatan Siaga 73 ha 40 FS -> ditangani 
+website 2026-11-01 Maluku Siaga 159 ha 59 FS -> ditangani PERHATIAN
+website 2026-11-01 Papua Barat Siaga 54 ha 14 FS -> ditangani 
+ok /home/runner/work/poskokarhutla/poskokarhutla/data/laporan-bnpb/harian-2026-11-03/Laporan Kejadian Bencana Harian 031126.pptx | hari data 2026-11-03 | cutoff 2026-11-03T07:00+07:00 | kejadian 22 karhutla 10 ditangani 9 perlu perhatian 7 selesai 4 | Prioritas ditambah ['93', '63', '81', '92']
+karhutla 93 (prov) berjalan DITANGANI PERHATIAN {'kum': 301276, 'sisa': 608, 'hot': 173}
+karhutla 62 (prov) berjalan DITANGANI PERHATIAN {'kum': 692090, 'sisa': 351, 'hot': 294}
+karhutla 81 (prov) berjalan DITANGANI PERHATIAN {'kum': 75424, 'sisa': 159, 'hot': 59}
+karhutla 74 (prov) berjalan DITANGANI PERHATIAN {'kum': 30936, 'sisa': 103, 'hot': 99}
+karhutla 72 (prov) berjalan DITANGANI  {'kum': 46919, 'sisa': 93, 'hot': 43}
+karhutla 63 (prov) berjalan DITANGANI  {'kum': 105927, 'sisa': 73, 'hot': 40}
+karhutla 16 (prov) berjalan DITANGANI  {'kum': 213302, 'sisa': 56, 'hot': 33}
+karhutla 92 (prov) berjalan DITANGANI  {'kum': 54802, 'sisa': 54, 'hot': 14}
+karhutla 15 (prov) berjalan DITANGANI  {'kum': 35467, 'sisa': 35, 'hot': 38}
+karhutla 14 (prov) berjalan selesai  {'kum': 26978, 'sisa': 0, 'hot': 0}
+banjir 11 Kota Subulussalam belum DITANGANI PERHATIAN {}
+banjir 11 Aceh Selatan belum DITANGANI PERHATIAN {}
+banjir 11 Gayo Lues selesai selesai  {}
+banjir 11 Aceh Barat selesai selesai  {}
+longsor 12 Simalungun berjalan DITANGANI  {}
+banjir 12 Mandailing Natal selesai selesai  {}
+cuaca 12 Dairi berjalan DITANGANI  {}
+banjir 35 Lumajang berjalan DITANGANI  {}
+longsor 35 Lumajang berjalan DITANGANI  {}
+longsor 35 Malang belum DITANGANI PERHATIAN {}
+longsor 51 Badung berjalan DITANGANI  {}
+gempabumi 53 (prov) berjalan DITANGANI  {}
+TANPA_DECK: bingkai deck.py dilewati
+mesin ok /home/runner/work/poskokarhutla/poskokarhutla/data/laporan-bnpb/harian-2026-11-03/Laporan Kejadian Bencana Harian 031126.pptx
+pdf /home/runner/work/poskokarhutla/poskokarhutla/data/laporan-bnpb/harian-2026-11-03/Laporan Kejadian Bencana Harian 031126.pdf

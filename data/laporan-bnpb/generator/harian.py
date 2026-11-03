@@ -307,7 +307,7 @@ class Deck:
             if a.get('transisi_sd'):
                 d = dt.date.fromisoformat(a['transisi_sd']); pil.append((f'Transisi s.d. {d.day} {BULAN[d.month - 1][:3]}', T_ORG, ORG, 'kalender_oranye'))
             if a.get('huntara'): pil.append((f"{f0(a['huntara'])} huntara", T_NAVY, NAVY, 'rumah_navy'))
-            stat = [((('±' if k in ('mengungsi', 'kk') else '') + f0(a[k])), lab, ik, c) for k, lab, ik, c in (('mengungsi', 'jiwa mengungsi', 'tenda_slate', SLATE), ('meninggal', 'jiwa meninggal', 'hati_merah', MERAH),
+            stat = [((('±' if k in ('mengungsi', 'kk') else '') + f0(a[k])), lab, ik, c) for k, lab, ik, c in (('mengungsi', 'jiwa mengungsi', 'tenda_slate', SLATE), ('meninggal', 'jiwa meninggal', 'hati_merah', MERAH), ('hilang', 'jiwa hilang', 'hati_merah', MERAH),
                                                                          ('rumah', 'rumah rusak', 'rumah_slate', SLATE)) if a.get(k)]
             if a.get('rumah_dampak') and len(stat) < 3: stat.append((f"±{f0(a['rumah_dampak'])}", 'rumah terdampak', 'rumah_slate', SLATE))
             if a.get('kk') and len(stat) < 3: stat.append((f"±{f0(a['kk'])}", 'KK terdampak', 'orang_slate', SLATE))
@@ -318,7 +318,8 @@ class Deck:
             return {'pil': s.ket(x), 'stat': stat}
         if x['jenis'] in ('angin', 'cuaca'):
             rusak = ', '.join(t for t in (f"{f0(a['kios'])} kios" if a.get('kios') else '', f"{f0(a['rumah'])} rumah" if a.get('rumah') else '') if t)
-            return {'pil': ([(f'{rusak} rusak', 'F7F8FA', INK, 'rumah_slate')] if rusak else [])
+            return {'pil': ([(f"{f0(a['meninggal'])} jiwa meninggal", 'F7F8FA', MERAH, 'hati_merah')] if a.get('meninggal') else [])   # 3 Nov Dairi
+                    + ([(f'{rusak} rusak', 'F7F8FA', INK, 'rumah_slate')] if rusak else [])
                     + ([(f"±{f0(a['rumah_dampak'])} rumah terdampak", 'F7F8FA', INK, 'rumah_slate')] if a.get('rumah_dampak') and not rusak else [])
                     + ([(f"±{f0(a['kk'])} KK", 'F7F8FA', INK, 'orang_slate')] if a.get('kk') else [])
                     + (s.ket(x) if s.LAMPIRAN else [('penanganan' if x['tangani'] else 'selesai', T_ORG if x['tangani'] else T_NAVY, ORG if x['tangani'] else NAVY, 'awas_oranye' if x['tangani'] else 'kalender_navy')])}

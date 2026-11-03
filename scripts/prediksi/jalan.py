@@ -93,6 +93,11 @@ def jembatan_graf(adj, sisi):
     return hasil, total
 
 
+# ruas_tunggal menghitung tiap SEGMEN antar-titik bentuk (jalan buntu 100 titik = 100), jadi bukan ukuran yang dibaca orang.
+# way_rawan = way OSM yang bila putus memisahkan >= KM_RAWAN km jalan utama: ukuran yang tampil di layar.
+KM_RAWAN = 1.0
+
+
 def ringkas(ways, b=None):
     adj, sisi = graf(ways, b)
     jb, total = jembatan_graf(adj, sisi)
@@ -105,7 +110,7 @@ def ringkas(ways, b=None):
         o["ruas"] += 1
         o["km_terisolir"] = max(o["km_terisolir"], round(kt, 2))
     top = sorted(per.values(), key=lambda o: (-o["km_terisolir"], o["way"]))
-    return {"way": len(ways), "km_jaringan": round(total, 1), "ruas_tunggal": len(jb), "way_tunggal": len(per),
+    return {"way": len(ways), "km_jaringan": round(total, 1), "ruas_tunggal": len(jb), "way_tunggal": len(per), "way_rawan": sum(o["km_terisolir"] >= KM_RAWAN for o in per.values()), "km_rawan": KM_RAWAN,
             "jembatan_tunggal": sum(o["jembatan"] for o in per.values()), "top": top[:TOP]}
 
 
@@ -144,9 +149,9 @@ def overpass(kid, b):
         return json.load(open(berkas))
     q = f'[out:json][timeout:180];way["highway"~"^({KELAS})$"]({b[0]:.4f},{b[1]:.4f},{b[2]:.4f},{b[3]:.4f});out geom;'
     data = urllib.parse.urlencode({"data": q}).encode()
-    for coba in range(6):
+    for coba in range(int(os.environ.get("JALAN_COBA", 6))):
         try:
-            req = urllib.request.Request(SERVER[coba % 2], data, headers={"User-Agent": "poskokarhutla/1.0 (peta paparan jalan; kontak timitbnpb@gmail.com)"})
+            req = urllib.request.Request(SERVER[coba % 2], data, headers={"User-Agent": "poskokarhutla/1.0 (peta paparan jalan; github.com/terasurbannetwork/poskokarhutla)"})
             raw = urllib.request.urlopen(req, timeout=240).read()
             j = json.loads(raw)
             if "remark" in j and "error" in j["remark"]:
@@ -163,7 +168,7 @@ def overpass(kid, b):
 
 def pilih(ids, kab_d, maks):
     """Giliran: kab yang belum ada dulu, lalu `dihitung` paling lama; seri diurut id (deterministik)."""
-    return sorted(ids, key=lambda i: ((kab_d.get(i) or {}).get("dihitung", ""), i))[:maks]
+    return sorted(ids, key=lambda i: ((kab_d.get(i) or {}).get("dihitung", "") if "way_rawan" in (kab_d.get(i) or {}) else "", i))[:maks]
 
 
 def jalankan(ids):
@@ -172,7 +177,13 @@ def jalankan(ids):
     kabs = {k["id"]: k for k in D.kab()}
     d = D.baca(KELUAR, None) or {"label": LABEL, "sumber": "OpenStreetMap via Overpass (ODbL, (c) kontributor OpenStreetMap), highway " + KELAS, "kab": {}}
     d["dibuat"] = D.hari_ini()
+    batas = time.time() + float(os.environ["JALAN_DETIK"]) if os.environ.get("JALAN_DETIK") else None   # anggaran waktu lari CI
+    dicoba = 0
     for i in ids:
+        if batas and time.time() > batas:
+            print(f"jalan: anggaran waktu habis, {len(ids) - dicoba} kab menunggu giliran berikut", file=sys.stderr)
+            break
+        dicoba += 1
         k = kabs.get(i)
         b = k and kotak(k["geo"])
         if not b:
@@ -185,9 +196,9 @@ def jalankan(ids):
         d["kab"][i] = {**ringkas(baca_ways(j), b), "dihitung": d["dibuat"]}
         ok += 1
         D.simpan(KELUAR, d)
-        print(f"jalan: {i} {k['nama']}: {d['kab'][i]['way']} way, {d['kab'][i]['ruas_tunggal']} ruas tunggal")
+        print(f"jalan: {i} {k['nama']}: {d['kab'][i]['way']} way, {d['kab'][i]['way_rawan']} way rawan (>= {KM_RAWAN:g} km terpisah)")
     D.simpan(KELUAR, d)
-    return ok, len(ids)
+    return ok, dicoba
 
 
 def giliran(maks=15):
@@ -198,7 +209,8 @@ def giliran(maks=15):
 
 
 def uji():
-    kd = {"1101": {"dihitung": "2026-10-01"}, "1102": {"dihitung": "2026-09-01"}, "1104": {}}
+    kd = {"1101": {"dihitung": "2026-10-01", "way_rawan": 0}, "1102": {"dihitung": "2026-09-01", "way_rawan": 0}, "1104": {}}
+    assert pilih(["1101", "1106"], {"1101": {"dihitung": "2026-10-01", "way_rawan": 0}, "1106": {"dihitung": "2026-11-01"}}, 1) == ["1106"], "entri lama tanpa way_rawan dihitung ulang dulu"
     assert pilih(["1101", "1102", "1103", "1104", "1105"], kd, 3) == ["1103", "1104", "1105"], "yang belum ada / tanpa tanggal dulu, urut id"
     assert pilih(["1101", "1102", "1103"], kd, 2) == ["1103", "1102"] and pilih(["1101", "1102"], kd, 15) == ["1102", "1101"], "terlama dulu"
     def W(i, ns, **tag):
@@ -207,6 +219,8 @@ def uji():
     ways = [W(10, [1, 2, 3, 4, 1], highway="primary"), W(20, [4, 5, 6], highway="secondary", name="Jl Ekor"), W(30, [1, 7], highway="trunk", bridge="yes", name="Jembatan X")]
     r = ringkas(ways)
     assert r["ruas_tunggal"] == 3 and r["way_tunggal"] == 2 and r["jembatan_tunggal"] == 1, r
+    pendek = {**W(30, [1, 7], highway="trunk"), "geom": [(0.0, 0.01), (0.0, 0.012)]}   # buntu ~0,2 km: bukan rawan
+    assert r["way_rawan"] == 2 and ringkas(ways[:2] + [pendek])["way_rawan"] == 1, "rawan hanya bila >= KM_RAWAN km terpisah"
     t = {o["way"]: o for o in r["top"]}
     assert t[20]["ruas"] == 2 and not t[20]["jembatan"] and t[30]["jembatan"], r
     assert t[20]["km_terisolir"] > 0 and t[30]["km_terisolir"] > 0, r

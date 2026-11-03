@@ -17,7 +17,7 @@ permissions:
 jobs:
   prediksi:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       # riwayat penuh: arsip append-only dijaga dari menyusut (keluar kode 3)
       - uses: actions/checkout@v4
@@ -55,10 +55,13 @@ jobs:
           python3 scripts/prediksi/terbit.py
           python3 scripts/prediksi/dampak.py
 
-      # Ruas jalan tunggal OSM, 15 kab per hari bergilir (yang belum/terlama dulu); Overpass publik sering 502/504, gagal = dicoba lagi besok
+      # Ruas jalan tunggal OSM, sampai 15 kab per hari dalam anggaran 15 menit, bergilir (yang belum/terlama dulu); Overpass publik sering 502/504, gagal = dicoba lagi besok
       - name: Giliran ruas jalan tunggal
         continue-on-error: true
-        timeout-minutes: 15
+        timeout-minutes: 25
+        env:
+          JALAN_COBA: "2"
+          JALAN_DETIK: "900"
         run: python3 scripts/prediksi/jalan.py giliran --maks 15
 
       - name: Commit data prediksi

@@ -95,6 +95,10 @@ launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/id.centurisk97.wa-cutoff
 
 Mati bawaan; hidup hanya bila `RENLAP=1` di `.env`. Dipanggil `otomatis.mjs` (tick launchd 10 menit yang sama, tanpa plist baru): versi malam sekali sehari sesudah 20.00 WIB, versi pagi sekali sehari sesudah 05.30 WIB (hanya sampai 12.00; lewat itu dilewati). Menjalankan `python3 scripts/operasi/renlap.py buat --versi malam|pagi --kirim-api` (Python venv `~/.wa-bot/py/bin`, env `WORKER` dari `WORKER_URL`, `WA_MESIN`); Worker menyimpan draf yang tampil di layar. TIDAK mengirim apa pun ke grup WA (keputusan K2). Idempoten lewat `state.renlap["TANGGAL:versi"]` di `~/.wa-bot/state.json`. Gagal = log + kabar `PEMILIK` sekali per versi per hari, dicoba lagi tick berikut tanpa kabar ulang. Jendela 06.00-23.00 tetap untuk laporan lain: proses launchd tetap hidup tiap 10 menit, jadi tick 05.30-05.59 hanya menjalankan renlap.
 
+## Jarak pandang BMKG (`jarak_pandang_jam.mjs`)
+
+Mati bawaan; nyalakan dengan `JARAK_PANDANG=1` di `.env`. Tick launchd yang sama: sekali per jam WIB (05.00-18.59), menjalankan `scripts/cuaca/metar.py` (Python `~/.wa-bot/py`), membaca `public/udara/data/jarak_pandang.json` dan POST ke `${WORKER_URL}/api/jarak-pandang` (Bearer `WA_MESIN`, timeout 60 dtk). Dikirim hanya bila `sumber` memuat "BMKG" (cadangan NOAA tidak menimpa data Worker). Berkas keluaran metar.py dikembalikan lewat `git checkout`. Idempoten lewat `state.jarak_pandang["YYYY-MM-DDTHH"]`. Gagal = log + kabar `PEMILIK` sekali per hari, tidak pernah ke penerima; laporan dan renlap tidak tertahan.
+
 ## Logbook dari grup WA (G5)
 
 `logbook_wa.mjs`: pesan di `LOGBOOK_GRUP` diurai (`urai_laporan.py`) jadi draf entri, ringkasan dikirim ke `LOGBOOK_STAF`.

@@ -13,6 +13,7 @@ import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { peringatanBanjir } from './peringatan_banjir.mjs'
 import { jalankanRenlap, jatuhTempo } from './renlap_jam.mjs'
+import { jalankanJarakPandang, diJendela } from './jarak_pandang_jam.mjs'
 import * as jenis from '../../src/wa_jenis.js'
 
 const kenaliAsli = jenis.kenali
@@ -210,7 +211,7 @@ export async function jalankan(opsi = {}) {
   // Penjaga jam hanya untuk jalan otomatis tanpa --tanggal.
   // Renlap (RENLAP=1) punya jendela sendiri: pagi mulai 05.30, di luar 06.00-23.00; hanya renlap yang jalan di luar jendela.
   const diLuar = !opsi.tanggal && (jamWib(now) < 6 || jamWib(now) >= 23)
-  if (diLuar && !(env.RENLAP === '1' && jatuhTempo(jamWib(now)).length)) return [{ id: '-', status: 'di luar jam 06.00-23.00 WIB' }]
+  if (diLuar && !(env.RENLAP === '1' && jatuhTempo(jamWib(now)).length) && !(env.JARAK_PANDANG === '1' && diJendela(jamWib(now)))) return [{ id: '-', status: 'di luar jam 06.00-23.00 WIB' }]
 
   const lepas = kunciProses(path.join(dasar, 'otomatis.lock'))
   if (!lepas) return [{ id: '-', status: 'masih ada proses lain' }]
@@ -233,6 +234,8 @@ export async function jalankan(opsi = {}) {
 
   try {
     if (!opsi.tanggal) hasil.push(...await jalankanRenlap({ env, now, tanggal, jam: jamWib(now), state, simpan, kering, dep, log, pemilik }))
+    // Jarak pandang BMKG (JARAK_PANDANG=1): galat tertangkap di dalam modul, tidak menahan laporan.
+    if (!opsi.tanggal) try { hasil.push(...await jalankanJarakPandang({ env, now, jam: jamWib(now), state, simpan, kering, dep, log, pemilik })) } catch (e) { log('jarak pandang tak terduga', e.message) }
     if (diLuar) return hasil
     let bahan
     try { bahan = await ambilBahan({ env, dep, tanggal, kenali, tanggalIsi, log }) } catch (e) { await galat('sistem', e.message); return [{ id: '-', status: 'galat' }] }

@@ -7,7 +7,7 @@ sehingga bangun() selalu membangun semuanya lalu menyaring --kab). Geometri murn
 Aturan: tiap blok dict {..., sumber, tanggal, yakin}; data hilang = null (bukan 0); tanpa angka karangan;
 sumber hilang -> blok null + catatan di sumber[] (D7); keluaran deterministik (tanggal = tanggal sumber).
 BPBD: email TIDAK ditulis (gerbang D5 melarang email di public/data/kemitraan/**).
-Pakai: python3 -I scripts/kemitraan/profil_daerah.py [--cek] [--kab 6211] [--akar DIR] [--keluar DIR]"""
+Pakai: python3 -I scripts/kemitraan/profil_daerah.py [--cek|--jaga] [--kab 6211] [--akar DIR] [--keluar DIR]"""
 import collections, glob, json, math, os, re, shutil, sys, tempfile
 
 AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
@@ -640,7 +640,7 @@ def b_kejadian(cx, kab, w):
            "musim_arti": "jumlah kejadian per bulan kalender (indeks 0 = Januari), jendela %s s.d. %s" % (ki[2], ki[3]) if ki else None,
            "dampak_arti": "meninggal/mengungsi/rr_* = jumlah 12 bulan; null = tak ada kejadian DIBI kab ini di jendela; kunci kosong di baris DIBI dihitung 0",
            "dampak_bahaya_arti": "dampak_12bln dipecah per bahaya platform lewat JENIS_DIBI_BAHAYA (profil_daerah.py); 'Banjir dan Tanah Longsor' dihitung di banjir DAN longsor (ganda), jadi jumlah antar bahaya bisa melebihi dampak_12bln; jenis bukan bahaya (kebakaran gedung dst) tak masuk; bahaya tanpa baris kab ini tak ada kuncinya (0 kejadian di jendela, hanya bila DIBI mencakup bahaya itu di kab lain); null = tak ada baris DIBI kab ini",
-           "total_arti": "jumlah tahun 2015-2025; jenis DIBI (semua kecuali 'semua') TANPA 2024 karena DIBI 2024 tak lengkap (nol di sumber bukan bukti tidak ada kejadian), jadi batas bawah; jenis 'semua' (CKAN) memakai 2024",
+           "total_arti": "jumlah tahun 2015-2025; jenis DIBI (semua kecuali 'semua') TANPA 2024 karena DIBI 2024 tak lengkap (nol di sumber bukan bukti tidak ada kejadian), jadi batas bawah; jenis 'semua' (CKAN) memakai 2024, tetapi seri 'semua' hanya sampai 2024 (2025 belum ada di sumber) sehingga totalnya = jumlah 2015-2024",
            "tahunan_arti": "tahun 2024 jenis DIBI di tahunan = nilai mentah sumber, sering 0 buatan, jangan dibaca sebagai nol kejadian ('semua' 2024 lengkap); bandang dan rob hanya DIBI (2018-); banjir bisa memuat bandang; tahun tiap jenis di tahunan hanya yang tercatat sumber untuk kab ini (tak ada = tidak tercatat); untuk tren, tahun yang ada di sumber tanpa baris kab ini dihitung 0 (lihat tren_arti)",
            "parsial": None, "tren": None, "tren_lereng": None,
            "tren_rentang": None,
@@ -1069,10 +1069,37 @@ def _irbi25(p):
     return (s[1], s[2]) if s else (None, None)
 
 
+def _r2(x):
+    """Skor gabungan dibulatkan 2 desimal setengah ke atas, HANYA untuk keluaran agregat (kelas tetap dari skor 4 desimal di profil kab)."""
+    return None if x is None else bulat(x * 100) / 100
+
+
+ARTI_SKOR = "skor gabungan 0-1 (rata-rata berbobot persentil komponen; bobot asumsi-kebijakan, belum dikalibrasi), dibulatkan 2 desimal setengah ke atas hanya di keluaran agregat ini (kelas P1/P2/P3 tetap dari skor 4 desimal di profil kab)"
+
+
+def _daun_angka(o, pre=""):
+    """Jalur kunci daun angka (indeks list dibuang, bool bukan angka), mengabaikan _arti/_satuan."""
+    if isinstance(o, dict):
+        for k, v in o.items():
+            if not k.startswith("_"):
+                yield from _daun_angka(v, pre + ("." if pre else "") + k)
+    elif isinstance(o, list):
+        for v in o:
+            yield from _daun_angka(v, pre)
+    elif isinstance(o, (int, float)) and not isinstance(o, bool):
+        yield pre
+
+
+def _punya_entri(jalur, kamus):
+    """Jalur (atau leluhurnya) ada di kamus."""
+    t = jalur.split(".")
+    return any(".".join(t[:i]) in kamus for i in range(1, len(t) + 1))
+
+
 def _top3(p):
     """3 bahaya skor tertinggi dari masalah_skor; skor null tidak ikut. Seri: nama bahaya menaik. Tanpa skor sama sekali -> None (bukan karangan)."""
     ada = sorted(((e["skor"], b) for b, e in (p.get("masalah_skor") or {}).items() if e.get("skor") is not None), key=lambda x: (-x[0], x[1]))
-    return [[b, sk] for sk, b in ada[:3]] or None
+    return [[b, _r2(sk)] for sk, b in ada[:3]] or None
 
 
 def _n_masalah(p):
@@ -1092,22 +1119,23 @@ def _tgl_agregat(prof):
 
 
 def ringkas(prof):
-    """514 baris untuk daftar tampilan Daerah. Kejadian = total 'semua' (CKAN, 2024 lengkap): dipilih karena jenis DIBI tanpa 2024 hanya batas bawah."""
+    """514 baris untuk daftar tampilan Daerah. Kejadian = total 'semua' (CKAN, seri berakhir 2024; 0 kab punya 2025): dipilih karena jenis DIBI tanpa 2024 hanya batas bawah."""
     baris = []
     for k in sorted(prof):
         p = prof[k]
         sk, kl = _irbi25(p)
         kj = ((p.get("kejadian") or {}).get("total_2015_2025") or {}).get("semua")
-        baris.append({"k": k, "n": p["nama"], "p": p["prov"], "i": kl, "b": _top3(p), "m": _n_masalah(p), "j": kj, "c": _kap_n(p)})
+        baris.append({"k": k, "n": p["nama"], "p": p["prov"], "i": kl, "y": (p.get("irbi") or {}).get("yakin"), "b": _top3(p), "m": _n_masalah(p), "j": kj, "c": _kap_n(p)})
     return {"v": 1, "tanggal": _tgl_agregat(prof), "tanggal_arti": "tanggal data terbaru di 514 profil daerah",
             "sumber": "Turunan 514 profil daerah (daerah/<kab4>.json): IRBI, masalah_skor, kejadian CKAN, regulasi",
             "_arti": {"k": "kode IRBI 4 digit", "n": "nama kab/kota", "p": "kode provinsi 2 digit",
                       "i": "kelas IRBI 2025: 1 = Tinggi, 0 = Sedang, null = tak ada data",
-                      "b": "hingga 3 bahaya skor masalah tertinggi [[bahaya, skor 0-1]]; urut skor menurun, seri nama bahaya menaik; bahaya berskor null tidak ikut; null = tak ada bahaya berskor (bukan karangan)",
+                      "y": "tingkat keyakinan skor IRBI kab: resmi, atau estimasi-model bila skor 2025 sama dengan >= 2 kab lain se-provinsi (kemungkinan nilai provinsi); null = tak ada data",
+                      "b": "hingga 3 bahaya skor masalah tertinggi [[bahaya, skor 0-1]]; urut skor menurun (urut dari skor 4 desimal; seri nama bahaya menaik); bahaya berskor null tidak ikut; null = tak ada bahaya berskor (bukan karangan). Skor: " + ARTI_SKOR + "",
                       "m": "[n P1, n P2, n P3] masalah otomatis; null = tak ada bahaya berskor (tak dinilai), bukan 0",
-                      "j": "jumlah kejadian 2015-2025 jenis 'semua' (CKAN, 2024 lengkap); null = tak tercatat",
-                      "c": "kapasitas tercatat 0-5 dari 5 (perda PB, perda BPBD, RPB, renkon, BPBD terbentuk); false = tak tercatat di basis regulasi; null = ada yang tak diketahui"},
-            "_satuan": {"j": "kejadian", "m": "masalah", "c": "dari 5 butir", "b": "skor persentil nasional 0-1"},
+                      "j": "jumlah kejadian 2015-2024 jenis 'semua' (CKAN; 2025 belum ada di sumber); null = tak tercatat",
+                      "c": "kapasitas tercatat 0-5 dari 5 (perda PB, perda BPBD, RPB, renkon, BPBD terbentuk); null = ada yang tak diketahui"},
+            "_satuan": {"j": "kejadian", "m": "masalah", "c": "dari 5 butir", "b": ARTI_SKOR, "i": "kelas biner IRBI (tanpa satuan)"},
             "baris": baris}
 
 
@@ -1131,8 +1159,8 @@ def prov(prof, nama_prov=None):
             m = _n_masalah(p)
             if m:
                 mn = [a + b for a, b in zip(mn, m)]
-            kab.append({"k": k, "n": p["nama"], "i": sk, "c": kl, "pd": pd, "m": m,
-                        "p1": [{"id": x["auto_id"], "j": x["judul"], "s": x["skor"]} for x in p["masalah"] if x["kelas"] == "P1"]})
+            kab.append({"k": k, "n": p["nama"], "i": sk, "c": kl, "y": (p.get("irbi") or {}).get("yakin"), "pd": pd, "m": m,
+                        "p1": [{"id": x["auto_id"], "j": x["judul"], "s": _r2(x["skor"])} for x in p["masalah"] if x["kelas"] == "P1"]})
         kab.sort(key=lambda r: (r["i"] is None, -(r["i"] or 0), r["k"]))
         n_i = sum(1 for r in kab if r["i"] is not None and r["pd"])
         keluar[nn] = {"v": 1, "prov": nn, "nama": nama_prov.get(nn), "tanggal": _tgl_agregat({k: prof[k] for k in ks}),
@@ -1141,14 +1169,31 @@ def prov(prof, nama_prov=None):
                       "n_kab": len(ks),
                       "penduduk": {"total": sum(pend) if pend else None, "n_ikut": len(pend)},
                       "irbi": {"rerata_tertimbang": bulat(tw / tp * 10) / 10 if tp else None, "n_ikut": n_i,
+                               "n_estimasi": sum(1 for r in kab if r["i"] is not None and r["pd"] and r["y"] == "estimasi-model"),
                                "tinggi_n": sum(1 for r in kab if r["c"] == 1), "sedang_n": sum(1 for r in kab if r["c"] == 0),
                                "tanpa_data_n": sum(1 for r in kab if r["c"] is None)},
                       "masalah_n": dict(zip(KELAS_M, mn)),
-                      "_arti": {"kab": "urut skor IRBI 2025 menurun (null terakhir), seri kode; k kode, n nama, i skor IRBI 2025, c kelas IRBI (1 Tinggi, 0 Sedang, null tak ada data; dipakai warna peta), pd penduduk, m [n P1,P2,P3] (null = tak dinilai), p1 masalah P1 {id, j judul, s skor}",
-                                "irbi.rerata_tertimbang": "rerata skor IRBI 2025 tertimbang penduduk, hanya kab yang punya skor dan penduduk (n_ikut); skor 2025 beberapa kab = nilai provinsi (lihat catatan_2025 di profil kab)",
-                                "penduduk.total": "jumlah penduduk kab yang punya angkanya (n_ikut dari n_kab); null kab tidak dihitung 0",
+                      "_arti": {"kab": "urut skor IRBI 2025 menurun (null terakhir), seri kode",
+                                "kab.k": "kode IRBI 4 digit", "kab.n": "nama kab/kota",
+                                "kab.i": "skor IRBI 2025 (skala baru, ambang kelas Tinggi 176); null = tak ada data",
+                                "kab.c": "kelas IRBI 2025: 1 = Tinggi, 0 = Sedang, null = tak ada data; dipakai warna peta",
+                                "kab.y": "keyakinan skor IRBI kab: resmi, atau estimasi-model bila skor 2025 sama dengan >= 2 kab lain se-provinsi (kemungkinan nilai provinsi); null = tak ada data",
+                                "kab.pd": "penduduk kab (IRBI paparan penduduk); null = tak ada data, bukan 0",
+                                "kab.m": "[n P1, n P2, n P3] masalah otomatis; null = tak ada bahaya berskor (tak dinilai), bukan 0",
+                                "kab.p1": "masalah P1 kab: id auto_id, j judul; s = " + ARTI_SKOR,
+                                "n_kab": "jumlah kab/kota provinsi ini di kode.json",
+                                "penduduk.total": "jumlah penduduk kab yang punya angkanya (n_ikut dari n_kab); kab null tidak dihitung 0",
+                                "penduduk.n_ikut": "jumlah kab yang punya angka penduduk",
+                                "irbi.rerata_tertimbang": "rerata skor IRBI 2025 tertimbang penduduk, hanya kab yang punya skor dan penduduk (n_ikut); n_estimasi di antaranya berskor estimasi-model (kemungkinan nilai provinsi, bukan nilai kab), jadi rerata ini lebih lemah bila n_estimasi besar",
+                                "irbi.n_ikut": "jumlah kab yang ikut rerata (punya skor dan penduduk)",
+                                "irbi.n_estimasi": "dari n_ikut, jumlah kab berskor estimasi-model",
+                                "irbi.tinggi_n": "jumlah kab kelas IRBI Tinggi", "irbi.sedang_n": "jumlah kab kelas IRBI Sedang",
+                                "irbi.tanpa_data_n": "jumlah kab tanpa data IRBI",
                                 "masalah_n": "jumlah masalah otomatis per kelas, hanya kab yang dinilai"},
-                      "_satuan": {"penduduk.total": "jiwa", "irbi.rerata_tertimbang": "skor IRBI 2025 (ambang kelas Tinggi 176)", "masalah_n": "masalah", "kab.pd": "jiwa", "kab.i": "skor IRBI 2025"},
+                      "_satuan": {"n_kab": "kab/kota", "penduduk.total": "jiwa", "penduduk.n_ikut": "kab", "irbi.rerata_tertimbang": "skor IRBI 2025 (ambang kelas Tinggi 176)",
+                                  "irbi.n_ikut": "kab", "irbi.n_estimasi": "kab", "irbi.tinggi_n": "kab", "irbi.sedang_n": "kab", "irbi.tanpa_data_n": "kab",
+                                  "masalah_n": "masalah", "kab.i": "skor IRBI 2025", "kab.c": "kelas biner IRBI (tanpa satuan)", "kab.pd": "jiwa", "kab.m": "masalah",
+                                  "kab.p1.s": ARTI_SKOR},
                       "kab": kab}
     return keluar
 
@@ -1160,20 +1205,24 @@ def validasi_agregat(r, pv, prof, kode):
     assert [b["k"] for b in r["baris"]] == sorted(prof), f"ringkas {len(r['baris'])} baris != {len(prof)} profil"
     for b in r["baris"]:
         p = prof[b["k"]]
-        assert "siluet" not in b and set(b) == {"k", "n", "p", "i", "b", "m", "j", "c"}, f"{b['k']}: kunci ringkas {sorted(b)} bocor/kurang"
+        assert "siluet" not in b and set(b) == {"k", "n", "p", "i", "y", "b", "m", "j", "c"}, f"{b['k']}: kunci ringkas {sorted(b)} bocor/kurang"
         ada = {x: e["skor"] for x, e in p["masalah_skor"].items() if e.get("skor") is not None}
         if not ada:
             assert b["b"] is None and b["m"] is None, f"{b['k']}: tanpa bahaya berskor tapi b={b['b']} m={b['m']} (karangan)"
         else:
-            assert b["b"] and len(b["b"]) == min(3, len(ada)) and all(ada.get(x) == s for x, s in b["b"]), f"{b['k']}: bahaya teratas {b['b']} tak cocok masalah_skor {ada}"
+            assert b["b"] and len(b["b"]) == min(3, len(ada)) and all(_r2(ada.get(x)) == s for x, s in b["b"]), f"{b['k']}: bahaya teratas {b['b']} tak cocok masalah_skor {ada}"
             sk = [s for _, s in b["b"]]
             assert sk == sorted(sk, reverse=True) and len({x for x, _ in b["b"]}) == len(b["b"]), f"{b['k']}: b tak urut/ganda {b['b']}"
-            assert min(sk) >= max([s for x, s in ada.items() if x not in {y for y, _ in b["b"]}] or [0]), f"{b['k']}: bahaya skor lebih tinggi terlewat dari {b['b']}"
+            assert min(sk) >= max([_r2(s) for x, s in ada.items() if x not in {y for y, _ in b["b"]}] or [0]), f"{b['k']}: bahaya skor lebih tinggi terlewat dari {b['b']}"
             assert sum(b["m"]) == len(p["masalah"]), f"{b['k']}: m {b['m']} != {len(p['masalah'])} masalah"
         assert b["i"] in (0, 1, None) and (b["c"] is None or 0 <= b["c"] <= 5), f"{b['k']}: i={b['i']} c={b['c']} di luar rentang"
+    for j in set(_daun_angka(r["baris"])):
+        assert _punya_entri(j, r["_satuan"]) and _punya_entri(j, r["_arti"]), f"ringkas: kunci angka '{j}' tanpa entri _satuan/_arti"
     per = collections.Counter(v["prov"] for v in kode.values())
     assert sorted(pv) == sorted(per), f"prov {sorted(pv)} != kode.json {sorted(per)}"
     for nn, q in pv.items():
+        for j in set(_daun_angka({k_: v_ for k_, v_ in q.items() if k_ != "v"})):  # v = versi skema, bukan ukuran
+            assert _punya_entri(j, q["_satuan"]) and _punya_entri(j, q["_arti"]), f"prov {nn}: kunci angka '{j}' tanpa entri _satuan/_arti"
         assert len(q["kab"]) == q["n_kab"] == per[nn], f"prov {nn}: {len(q['kab'])} kab, n_kab {q['n_kab']}, kode.json {per[nn]}"
         assert {r_["k"] for r_ in q["kab"]} == {k for k, v in kode.items() if v["prov"] == nn}, f"prov {nn}: daftar kab tak sama dengan kode.json"
         ni = [r_["i"] for r_ in q["kab"] if r_["i"] is not None]
@@ -1199,6 +1248,60 @@ def tulis_agregat(prof, keluar, akar=AKAR):
     for nn, q in pv.items():
         open(os.path.join(d, "prov", nn + ".json"), "w", encoding="utf-8").write(teks(q))
     return len(r["baris"]), len(pv)
+
+
+# ---------------------------------------------------------------- jaga (DT 7.1: dijalankan sesudah bangun penuh, sebelum commit)
+def _tgl_berkas(t):
+    """{kunci: tanggal} dari isi satu berkas JSON: 'dibangun'/'tanggal' tingkat atas + tanggal tiap sumber[] (kunci = nama)."""
+    o = json.loads(t)
+    d = {"_berkas": o.get("dibangun") or o.get("tanggal")}
+    if isinstance(o.get("sumber"), list):
+        d.update({"sumber:" + e["nama"]: e.get("tanggal") for e in o["sumber"] if isinstance(e, dict) and "nama" in e})
+    return d
+
+
+def jaga(baru, lama, n_kab, maks=None):
+    """Murni. baru/lama = {jalur relatif: isi teks}; lama tanpa jalur = berkas baru (dilewati). -> daftar masalah (kosong = aman).
+    Tolak: berkas daerah != n_kab, ringkas.json/prov hilang, ukuran > maks, tanggal MUNDUR (lebih lama dari versi lama;
+    tanggal lama ada tapi baru null juga mundur). Sama atau maju lolos."""
+    m = []
+    dae = [j for j in baru if j.startswith("daerah/")]
+    if len(dae) != n_kab:
+        m.append(f"berkas daerah {len(dae)} != {n_kab}")
+    if "ringkas.json" not in baru:
+        m.append("ringkas.json hilang")
+    pv = [j for j in baru if j.startswith("prov/")]
+    if len(pv) != 38:
+        m.append(f"berkas prov {len(pv)} != 38")
+    for j in sorted(baru):
+        n = len(baru[j].encode("utf-8"))
+        mk = maks or (MAKS_RINGKAS if j == "ringkas.json" else MAKS_PROV if j.startswith("prov/") else MAKS_BYTE)
+        if n > mk:
+            m.append(f"{j}: {n} byte > {mk}")
+        if j in lama:
+            tl, tb = _tgl_berkas(lama[j]), _tgl_berkas(baru[j])
+            for k, tgl in tl.items():
+                if tgl and (tb.get(k) or "") < tgl:
+                    m.append(f"{j}: tanggal mundur di {k}: {tgl} -> {tb.get(k)}")
+    return m
+
+
+def jaga_git(akar=AKAR):
+    import subprocess
+    d = os.path.join(akar, "public", "data", "kemitraan")
+    rel = [os.path.relpath(f, d) for f in glob.glob(os.path.join(d, "daerah", "*.json")) + glob.glob(os.path.join(d, "prov", "*.json"))]
+    if os.path.exists(os.path.join(d, "ringkas.json")):
+        rel.append("ringkas.json")
+    baru = {j: open(os.path.join(d, j), encoding="utf-8").read() for j in rel}
+    lama = {}
+    for j in baru:
+        r = subprocess.run(["git", "-C", akar, "show", "HEAD:public/data/kemitraan/" + j], capture_output=True, text=True, encoding="utf-8")
+        if r.returncode == 0:  # tak ada di HEAD = berkas baru, dilewati
+            lama[j] = r.stdout
+    m = jaga(baru, lama, len(Konteks(akar).kode))
+    if m:
+        sys.exit("JAGA TOLAK (%d masalah):\n  " % len(m) + "\n  ".join(m[:20]))
+    print(f"JAGA OK: {len(baru)} berkas, {len(lama)} dibandingkan dengan HEAD, tanggal tidak mundur, maks {max(len(t.encode()) for t in baru.values())} byte")
 
 
 # ---------------------------------------------------------------- cek
@@ -1518,6 +1621,24 @@ def cek():
     tolak(lambda x: validasi_agregat(*x, a, kode), "n_kab", u2(lambda rr, qq: qq["62"]["kab"].pop()))
     tolak(lambda x: validasi_agregat(*x, a, kode), "prov", u2(lambda rr, qq: qq.pop("62")))
     tolak(lambda x: validasi_agregat(*x, a, kode), "tak urut", u2(lambda rr, qq: qq["62"]["kab"].reverse()))
+    tolak(lambda x: validasi_agregat(*x, a, kode), "tanpa entri", u2(lambda rr, qq: qq["62"]["_satuan"].pop("irbi.n_estimasi")))
+    tolak(lambda x: validasi_agregat(*x, a, kode), "tanpa entri", u2(lambda rr, qq: qq["62"]["_arti"].pop("irbi.tinggi_n")))
+    tolak(lambda x: validasi_agregat(*x, a, kode), "tanpa entri", u2(lambda rr, qq: rr["_satuan"].pop("j")))
+    assert all(isinstance(v, int) and v >= 0 or v is None for r_ in r["baris"] for v in (r_["j"],)), "j bukan hitung kejadian"
+    # ---- KM-B05 jaga: murni, tanpa git
+    def _b(tg, nm="Z"): return json.dumps({"dibangun": tg, "sumber": [{"nama": nm, "tanggal": tg}]})
+    ok_b = {**{f"daerah/{i:04d}.json": _b("2026-11-02") for i in range(3)}, "ringkas.json": json.dumps({"tanggal": "2026-11-02"}),
+            **{f"prov/{i:02d}.json": json.dumps({"tanggal": "2026-11-02"}) for i in range(38)}}
+    ok_l = {j: (_b("2026-10-01") if j.startswith("daerah") else json.dumps({"tanggal": "2026-10-01"})) for j in ok_b}
+    assert jaga(ok_b, ok_l, 3) == [] and jaga(ok_b, ok_b, 3) == [] and jaga(ok_b, {}, 3) == [], "sama/maju/baru harus lolos"
+    assert any("daerah 3 != 514" in x for x in jaga(ok_b, ok_l, 514)), "berkas kurang harus ditolak"
+    assert any("prov 37" in x for x in jaga({j: t for j, t in ok_b.items() if j != "prov/00.json"}, ok_l, 3))
+    assert any("ringkas.json hilang" in x for x in jaga({j: t for j, t in ok_b.items() if j != "ringkas.json"}, ok_l, 3))
+    mundur = dict(ok_b, **{"daerah/0001.json": _b("2026-09-01")})
+    assert any("daerah/0001.json: tanggal mundur" in x for x in jaga(mundur, ok_l, 3)), "tanggal mundur harus ditolak"
+    assert any("mundur" in x for x in jaga(dict(ok_b, **{"ringkas.json": json.dumps({"tanggal": "2026-09-01"})}), ok_l, 3)), "tanggal ringkas mundur"
+    assert any("mundur" in x for x in jaga(dict(ok_b, **{"daerah/0001.json": json.dumps({"dibangun": "2026-11-02", "sumber": [{"nama": "Z", "tanggal": None}]})}), ok_l, 3)), "tanggal sumber hilang = mundur"
+    assert any("byte >" in x for x in jaga(ok_b, ok_l, 3, maks=10)), "ukuran > maks harus ditolak"
     mx = max(len(t.encode()) for t in ta.values())
     nul = {b: sum(1 for p in a.values() if p[b] is None) for b in BLOK_DICT + ("riwayat_luar",)}
     print(f"OK profil_daerah.py: {len(a)} kab, maks {mx} byte, deterministik, fixture 3 kab; null per blok {nul}")
@@ -1527,11 +1648,14 @@ if __name__ == "__main__":
     import argparse
     ap = argparse.ArgumentParser(description=__doc__.split("Pakai:")[0].strip())
     ap.add_argument("--cek", action="store_true", help="self-check D1-D5, D7 + penolakan input salah; tidak menulis")
+    ap.add_argument("--jaga", action="store_true", help="sesudah bangun penuh, sebelum commit: tolak (keluar 1) bila < 514 berkas, ringkas/prov hilang, tanggal mundur vs HEAD, atau > MAKS_BYTE; tidak menulis")
     ap.add_argument("--kab", help="cetak satu kab (kode IRBI 4 digit) ke stdout, tanpa menulis")
     ap.add_argument("--akar", default=AKAR, help="akar repo sumber (default: repo ini)")
     ap.add_argument("--keluar", default=AKAR, help="akar keluaran (default: repo ini)")
     ag = ap.parse_args()  # argumen tak dikenal -> keluar 2 sebelum menulis apa pun
-    if ag.cek:
+    if ag.jaga:
+        jaga_git(ag.akar)
+    elif ag.cek:
         cek()
     else:
         prof = bangun(ag.akar, ag.kab)
