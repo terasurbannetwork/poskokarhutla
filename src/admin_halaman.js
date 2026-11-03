@@ -13,7 +13,7 @@ const kepala = judul => `<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="/admin/admin.css?v=8" rel="stylesheet">
+<link href="/admin/admin.css?v=9" rel="stylesheet">
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], labelfoto: ["🏷️", "Label kerusakan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
@@ -35,15 +35,25 @@ export const aksesStaf = peran => [...Object.keys(HALAMAN_STAF).filter(k => bole
 /* null = semua peran KECUALI 'direktori' (peran itu hanya membuka Direktori, src/staf.js hanyaDirektori) */
 export const bolehStaf = (k, peran) => Object.hasOwn(HALAMAN_STAF, k) && (HALAMAN_STAF[k] === null ? peran.some(p => p !== "direktori") : peran.some(p => HALAMAN_STAF[k].includes(p)));
 const subNav = (aktif, ctx) => SUB.includes(aktif) && !ctx ? `<nav class="ad-sub" aria-label="Ruang Koordinasi">${SUB.map(k => `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${HAL[k][0]} ${HAL[k][1]}</a>`).join("")}</nav>` : "";
+/* Nav atas berkelompok (pemilik, 3 Nov 2026): tautan sejenis disatukan dalam satu menu tarik-turun seperti Direktori dan Dalops.
+   Butir: [k, ikon, label, href]. Kelompok berisi satu butir tampil sebagai tautan biasa. <details name> = hanya satu menu terbuka, tanpa JS (CSP). */
+const butirAdmin = k => [k, ...HAL[k], "/admin/" + k];
+const GRUP_ADMIN = [
+  ["Publik", "🌐", ["statistik", "pesan", "foto", "sosmed"].map(butirAdmin)],
+  ["Ruang kerja", "🏛️", [["koordinasi", "🏛️", "Ruang Koordinasi", "/admin/" + BNPB[0]], ["dalops", "🌊", "Ruang Pusdalops", "/bnpb/dalops"], ["direktori", "📚", "Direktori", "/direktori"],
+    ...["posko", "pipa", "command-center"].map(butirAdmin)]],
+  ["Pengaturan", "⚙️", ["akun", "kunci-api", "kontak"].map(butirAdmin)]];
+const GRUP_STAF = [["Ruang Koordinasi", "🏛️", SUB], ["Ruang kerja", "🧰", ["posko", "pipa", "command-center"]]];
+const butirNav = ([k, ik, l, href], kini) => `<a href="${href}" ${kini(k) ? 'aria-current="page"' : ""}>${ik} ${l}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`;
+const navGrup = (grup, kini) => grup.filter(g => g[2].length).map(([judul, ik, isi]) => isi.length === 1 ? butirNav(isi[0], kini)
+  : `<details class="ad-grup" name="ad-grup"><summary ${isi.some(b => kini(b[0])) ? 'aria-current="page"' : ""}>${ik} ${judul}</summary><div class="ad-grup-isi">${isi.map(b => butirNav(b, kini)).join("")}</div></details>`).join("");
 const atas = (aktif, ctx) => ctx ? `<header class="ad-top">
   <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a><span class="ad-sep staf">Staf</span>
-  <nav aria-label="Halaman staf">${Object.keys(HALAMAN_STAF).filter(k => bolehStaf(k, ctx.peran)).map(k => `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${HAL[k][0]} ${HAL[k][1]}</a>`).join("")}</nav>
+  <nav aria-label="Halaman staf">${navGrup(GRUP_STAF.map(([j, ik, ks]) => [j, ik, ks.filter(k => bolehStaf(k, ctx.peran)).map(butirAdmin)]), k => k === aktif)}</nav>
   ${ctx.nama ? `<span class="ad-staf-nama">${esc(ctx.nama)}</span><button class="ad-keluar" type="button" data-staf-keluar>Keluar</button>` : ""}
 </header>` : `<header class="ad-top">
   <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a><span class="ad-sep">Admin</span>
-  <nav>${Object.entries(HAL).filter(([k]) => k !== "labelfoto" && (!BNPB.includes(k) || k === BNPB[0])).map(([k, [ik, l]]) => BNPB.includes(k)
-    ? `<a href="/admin/${k}" ${BNPB.includes(aktif) || aktif === "instansi" ? 'aria-current="page"' : ""}>🏛️ Ruang Koordinasi</a>`
-    : `<a href="/admin/${k}" ${aktif === k || (k === "foto" && aktif === "labelfoto") ? 'aria-current="page"' : ""}>${ik} ${l}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`).join("")}</nav>
+  <nav aria-label="Halaman admin">${navGrup(GRUP_ADMIN, k => k === aktif || (k === "foto" && aktif === "labelfoto") || (k === "koordinasi" && (BNPB.includes(aktif) || aktif === "instansi")))}</nav>
   <form method="post" action="/admin/keluar"><button class="ad-keluar" type="submit">Keluar</button></form>
 </header>`;
 /* Kerangka bersama: header, judul halaman (ikon + judul + slot aksi kanan #aksiJudul), lalu isi #app yang diisi skripnya. */

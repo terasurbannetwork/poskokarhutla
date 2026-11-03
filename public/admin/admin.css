@@ -253,6 +253,23 @@ button{-webkit-tap-highlight-color:transparent}
 .ad-top form{margin-left:auto}
 @media (max-width:560px){.ad-top nav{position:static;transform:none;max-width:none}}
 
+/* nav berkelompok (pemilik, 3 Nov 2026): menu tarik-turun; nav tidak boleh memotong panelnya */
+.ad-top nav:has(>.ad-grup){overflow:visible;flex-wrap:wrap;justify-content:center}
+.ad-grup{position:relative}
+.ad-grup>summary{list-style:none;cursor:pointer;color:rgb(255 255 255 / .8);font-weight:700;font-size:13px;padding:7px 13px;border-radius:999px;white-space:nowrap;display:inline-flex;gap:6px;align-items:center}
+.ad-grup>summary::-webkit-details-marker{display:none}
+.ad-grup>summary::after{content:"";width:6px;height:6px;border:solid currentColor;border-width:0 2px 2px 0;transform:translateY(-2px) rotate(45deg);opacity:.75}
+.ad-grup[open]>summary::after{transform:translateY(1px) rotate(-135deg)}
+.ad-grup>summary[aria-current],.ad-grup[open]>summary{color:#fff;background:rgb(255 255 255 / .15)}
+.ad-grup>summary[aria-current]{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--emas) 55%,transparent)}
+@media (hover:hover) and (pointer:fine){.ad-grup>summary:not([aria-current]):hover{color:#fff;background:rgb(255 255 255 / .08)}}
+.ad-grup:has(.ad-badge:not([hidden]))>summary::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c1)}
+.ad-grup-isi{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:20;min-width:220px;display:grid;gap:2px;padding:6px;background:var(--card);border-radius:14px;box-shadow:var(--bayang),0 16px 32px -12px rgb(11 37 69 / .35)}
+.ad-top nav .ad-grup-isi a{color:var(--ink);border-radius:10px;padding:9px 12px}
+.ad-top nav .ad-grup-isi a[aria-current]{color:var(--ink);background:var(--soft);box-shadow:inset 3px 0 0 var(--emas)}
+@media (hover:hover) and (pointer:fine){.ad-top nav .ad-grup-isi a:not([aria-current]):hover{color:var(--ink);background:var(--soft)}}
+@media (max-width:560px){.ad-grup-isi{left:0;transform:none}}
+
 /* baris kontrol: rentang jadi segmen, pemisah tipis, tanggal & halaman sejajar */
 .ad-seg{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:var(--surface)}
 .ad-seg button{height:32px;border:0;background:none;border-radius:999px;padding:0 15px;cursor:pointer;font-weight:700;font-size:12.5px;color:var(--ink2);white-space:nowrap}
