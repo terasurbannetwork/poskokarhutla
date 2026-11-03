@@ -1,6 +1,6 @@
 /* Kerusakan bangunan dan korban jiwa dari PGA: kurva kerapuhan lognormal per kelas bangunan (HAZUS-MH, FEMA 2003) + satu pengali
    median yang disetel ke kejadian nyata (data/kalibrasi_kerusakan.json, scripts/gempa/kalibrasi_kerusakan.mjs).
-   GempaKerusakan.atur(kalibrasi)  ·  .sebaran(ctx, sk, r, jg, win)  ·  .taksir(sebaran, jg, m, jam)  ·  .dampak(ctx, sk)
+   GempaKerusakan.atur(kalibrasi);  .sebaran(ctx, sk, r, jg, win);  .taksir(sebaran, jg, m, jam);  .dampak(ctx, sk)
    Hasil taksir = {rb, rs, rr, jiwa, rumah}, tiap angka [rendah, tengah, tinggi].
    Pita: PGA digeser +-tau antar-kejadian (guncangan sama untuk seluruh kecamatan); sebaran antar-kecamatan (phi) masuk ke beta kerapuhan
    (beta_eff = sqrt(beta^2 + phi^2)); ketidakpastian kerapuhan dan letalitas digabung di ruang log: sqrt(0,35^2 + faktor-galat-LOO^2).

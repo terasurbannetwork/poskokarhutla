@@ -22,12 +22,12 @@
     /* satu gunung dari pop-up peta: Bagikan.bagi({...Bagikan.konteks("gunung", g), lainnya: () => Bagikan.buka()}) */
     konteks(jenis, g, {o}) {
       if (jenis !== "gunung") return null;
-      return {judul: g.nama + " · Centurisk97", teks: `${g.nama} (${g.prov}): ${lv(g)} menurut PVMBG. Pantau gunung api di Centurisk97:`, url: o + (Kejadian.kode(g) ? "/gunungapi/k/" + Kejadian.kode(g) : "/gunungapi/peta"), kampanye: "gunungapi-gunung"};
+      return {judul: g.nama + ", Centurisk97", teks: `${g.nama} (${g.prov}): ${lv(g)} menurut PVMBG. Pantau gunung api di Centurisk97:`, url: o + (Kejadian.kode(g) ? "/gunungapi/k/" + Kejadian.kode(g) : "/gunungapi/peta"), kampanye: "gunungapi-gunung"};
     },
     data() {
       const n = S.n, A = aktif();
       return {tpl: "ringkas", prov: "", lv: 0, label: "Ringkasan harian", judul: "Status gunung api hari ini",
-        sub: `Indonesia · ${Bagikan.n(n[4] + n[3] + n[2])} gunung berstatus Waspada ke atas`,
+        sub: `Indonesia, ${Bagikan.n(n[4] + n[3] + n[2])} gunung berstatus Waspada ke atas`,
         kpi: [
           {l: "Level IV (Awas)", s: "Awas", v: Bagikan.n(n[4]), ket: "gunung berstatus Awas", ks: "status PVMBG", w: WARNA_LV[4]},
           {l: "Level III (Siaga)", s: "Siaga", v: Bagikan.n(n[3]), ket: "gunung berstatus Siaga", ks: "status PVMBG", w: WARNA_LV[3]},

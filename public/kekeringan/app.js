@@ -102,5 +102,5 @@ async function muatData() {
   /* lencana ENSO di kepala, sama dengan karhutla (lapisan5.js lencanaIklim): El Niño = kemarau lebih kering */
   const e = meta.enso; if (e?.status && !$(".l5-iklim")) { const o = e.oni, kuat = o >= 2 ? " sangat kuat" : o >= 1.5 ? " kuat" : o >= 1 ? " sedang" : o >= .5 ? " lemah" : "", kering = e.status === "El Niño" || e.iod === "IOD positif";
     const el = document.createElement("span"); el.className = "l5-iklim" + (kering ? " kering" : ""); el.textContent = e.status === "El Niño" ? "El Niño" + kuat : e.status === "La Niña" ? "La Niña" : "ENSO netral";
-    el.title = `ONI ${e.musim} ${e.tahun}: ${o > 0 ? "+" : ""}${F2(o)} °C${e.dmi != null ? ` · DMI ${e.dmi > 0 ? "+" : ""}${F2(e.dmi)} °C` : ""}${e.cpc ? " · " + e.cpc : ""}`; $("#upd").before(el); }
+    el.title = `ONI ${e.musim} ${e.tahun}: ${o > 0 ? "+" : ""}${F2(o)} °C${e.dmi != null ? `, DMI ${e.dmi > 0 ? "+" : ""}${F2(e.dmi)} °C` : ""}${e.cpc ? ", " + e.cpc : ""}`; $("#upd").before(el); }
 }

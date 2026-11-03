@@ -24,7 +24,7 @@
       <header><b>${esc(p.nama || "(tanpa nama)")}</b>${p.instansi ? `<span class="ad-redup">${esc(p.instansi)}</span>` : ""}<span class="ad-pil">${esc(K[p.kategori])}</span>
         <span class="ad-pil ${p.status}">${p.status}</span><span class="ad-redup kecil">${waktu(p.dibuat)}</span></header>
       <div class="isi">${esc(p.isi)}</div>
-      <div class="ad-redup kecil">${esc(p.email)}${p.tautan ? ` · <a href="${esc(p.tautan)}" target="_blank" rel="noopener noreferrer">tampilan yang dibuka</a>` : ""}</div>
+      <div class="ad-redup kecil">${esc(p.email)}${p.tautan ? `, <a href="${esc(p.tautan)}" target="_blank" rel="noopener noreferrer">tampilan yang dibuka</a>` : ""}</div>
       <div class="aksi"><a class="ad-tombol kecil utama" href="${balas(p)}" data-baca>📧 Balas lewat email</a>
         ${p.status !== "dibaca" ? `<button class="ad-tombol kecil" data-ke="dibaca">📖 Tandai dibaca</button>` : `<button class="ad-tombol kecil" data-ke="baru">✉️ Tandai belum dibaca</button>`}
         ${p.status !== "arsip" ? `<button class="ad-tombol kecil" data-ke="arsip">🗄️ Arsipkan</button>` : `<button class="ad-tombol kecil" data-ke="dibaca">↩️ Keluarkan dari arsip</button>`}</div>

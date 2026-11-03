@@ -155,8 +155,8 @@ const Simulasi = {
       sungai: geser("smS", "Debit sungai", 2, 3, 1, o.sungai, v => v === 3 ? "Q20" : "Q5"),
     };
     const hariOpt = [["maks", "4 hari ke depan"], ...S.st.hari.map((t, i) => [i, tglPendek(t)])];
-    el.innerHTML = `<div class="lbl">Simulasi skenario 4 hari · model</div><h2>${esc(wil)}</h2>
-      <div style="font-size:12.5px;color:var(--ink2)">${this.kab ? esc(namaProv(this.kode)) : esc(fmt(kabs.length) + " kabupaten/kota")} · <span class="pill l${tinggi}">${LEVEL[tinggi]}</span></div>
+    el.innerHTML = `<div class="lbl">Simulasi skenario 4 hari, model</div><h2>${esc(wil)}</h2>
+      <div style="font-size:12.5px;color:var(--ink2)">${this.kab ? esc(namaProv(this.kode)) : esc(fmt(kabs.length) + " kabupaten/kota")}, <span class="pill l${tinggi}">${LEVEL[tinggi]}</span></div>
       ${this.awalHtml()}
       ${window.SimTampak ? this.modeHtml() : ""}
       <label class="fld"><span class="lbl">Provinsi</span><select id="smProv" aria-label="Provinsi">${Object.entries(S.meta.provinsi).map(([k, n]) => `<option value="${k}" ${k === this.prov ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></label>
@@ -188,7 +188,7 @@ const Simulasi = {
     el.scrollTop = atas; this.legenda(); },
   legenda() {
     const nm = this.b === "b" ? "banjir" : "longsor", s = SKEN.find(x => x.id === this.lihat);
-    $("#simLegenda").innerHTML = `<div class="lbl" style="margin-bottom:4px"><span>Status ${nm}</span> · <span>${s.n}</span></div><div class="leg row">${LEVEL.map((n, i) => `<span><i class="sw" style="background:${WARNA_LV[i]}"></i>${n}</span>`).join("")}<span><i class="sw" style="background:none;border:2px solid var(--ink)"></i>berubah dari prakiraan</span></div>`; },
+    $("#simLegenda").innerHTML = `<div class="lbl" style="margin-bottom:4px"><span>Status ${nm}</span>, <span>${s.n}</span></div><div class="leg row">${LEVEL.map((n, i) => `<span><i class="sw" style="background:${WARNA_LV[i]}"></i>${n}</span>`).join("")}<span><i class="sw" style="background:none;border:2px solid var(--ink)"></i>berubah dari prakiraan</span></div>`; },
   hasilHtml(ks) {
     const D = this.dasar, R = this.hasil, u = this.preset(this.lihat), nm = this.b === "b" ? "banjir" : "longsor", hit = r => { const n = [0, 0, 0, 0]; ks.forEach(k => n[this.lv(r, k)]++); return n; }, n0 = hit(D), n1 = hit(R);
     const berubah = ks.filter(k => this.lv(D, k) !== this.lv(R, k)).map(k => ({k, c: this.kec[k], a: this.lv(D, k), z: this.lv(R, k)})).sort((x, y) => y.z - x.z || (y.z - y.a) - (x.z - x.a) || x.c.nama.localeCompare(y.c.nama));
@@ -204,17 +204,17 @@ const Simulasi = {
         <table class="simangka"><tr><td>Awas</td><td>Siaga</td><td>Waspada</td></tr><tr>${[3, 2, 1].map(i => `<td>${fmt(n[i])}${id === "dasar" ? "" : `<small>${d(i) >= 0 ? "+" : ""}${fmt(d(i))}</small>`}</td>`).join("")}</tr></table>
         <span class="fnd">${id === "dasar" ? "Status prakiraan" : `${fmt(ub)} kecamatan berubah status`}</span></button>`; }).join("");
     return `<span class="pill l3">Model, belum divalidasi</span>
-      <div class="simringkas"><div class="lbl"><span>Ringkasan</span> · <span>${SKEN.find(x => x.id === this.lihat).n}</span></div>
+      <div class="simringkas"><div class="lbl"><span>Ringkasan</span>, <span>${SKEN.find(x => x.id === this.lihat).n}</span></div>
       <p>${!bag.length ? `Ini status prakiraan ${nm} ${hariT}: ${fmt(s0)} kecamatan Siaga atau Awas di ${wil}.` :
         `Bila ${bag.join(", ")}, kecamatan Siaga atau Awas ${nm} di ${wil} ${s1 === s0 ? `tetap <b>${fmt(s0)}</b>` : `${s1 > s0 ? "naik" : "turun"} dari <b>${fmt(s0)}</b> menjadi <b>${fmt(s1)}</b>`} ${hariT}.
         ${berubah.length ? `${fmt(berubah.length)} kecamatan berubah status, terbanyak di ${esc(kabTop[0])} (${fmt(kabTop[1])}).` : "Tidak ada kecamatan yang berubah status."}
         ${kb1 ? `${fmt(kb1)} kabupaten/kota perlu menyiapkan posko (prakiraan: ${fmt(kb0)}).` : ""}`}</p>
 </div>
       <div class="simkartu-daftar">${kartu}</div>
-      <div class="lbl" style="margin-top:12px"><span>Kecamatan yang berubah status</span> · <span>${SKEN.find(x => x.id === this.lihat).n}</span></div>
+      <div class="lbl" style="margin-top:12px"><span>Kecamatan yang berubah status</span>, <span>${SKEN.find(x => x.id === this.lihat).n}</span></div>
       ${!berubah.length ? `<p class="fnd">Belum ada perubahan.</p>` : `<table class="tb3" style="margin-top:4px"><thead><tr><th>Kecamatan</th><th>Prakiraan → skenario</th><th class="n">Hujan 3h</th></tr></thead><tbody>
       ${berubah.slice(0, 30).map(x => { const d = D[x.k], r = R[x.k], sebab = [r.h3 !== d.h3 && `hujan ${fmt(d.h3)}→${fmt(r.h3)} mm`, r.rk !== d.rk && r.rk >= 0 && `sungai kelas ${r.rk}`, r.a7 !== d.a7 && "tanah jenuh", this.b === "b" && u.pasang && this.kec[x.k].pantai && "pesisir saat pasang"].filter(Boolean).join(", ");
-        return `<tr><td>${esc(x.c.nama)}<small>${esc(x.c.kab)} · bahaya ${nm} ${fmt(this.b === "b" ? x.c.bb : x.c.bl)}</small></td><td>${pill(x.a)} → ${pill(x.z)}<small>${sebab}</small></td><td class="n num">${fmt(r.h3)}</td></tr>`; }).join("")}</tbody></table>
+        return `<tr><td>${esc(x.c.nama)}<small>${esc(x.c.kab)}, bahaya ${nm} ${fmt(this.b === "b" ? x.c.bb : x.c.bl)}</small></td><td>${pill(x.a)} → ${pill(x.z)}<small>${sebab}</small></td><td class="n num">${fmt(r.h3)}</td></tr>`; }).join("")}</tbody></table>
       ${berubah.length > 30 ? `<p class="fnd">${fmt(30)} dari ${fmt(berubah.length)}</p>` : ""}`}
       <div class="lbl" style="margin-top:12px">Per hari: prakiraan → skenario</div><table class="tb3" style="margin-top:4px"><thead><tr><th>Hari</th><th class="n">Awas</th><th class="n">Siaga</th><th class="n">Waspada</th></tr></thead><tbody>
         ${S.st.hari.map((t, d) => { const [a, b] = per(d); return `<tr><td>${tglPendek(t)}</td>${[3, 2, 1].map(i => `<td class="n num">${fmt(a[i])} → <b>${fmt(b[i])}</b></td>`).join("")}</tr>`; }).join("")}</tbody></table>

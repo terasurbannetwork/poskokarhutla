@@ -129,7 +129,7 @@ function batangProv(rows, W = 1300, mxG = 0) {
   const kem = i > 0 ? tgl(D.hari[i - 1]) : "";
   return `<div class="lp-gr lp-gr-h"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas per provinsi">${rows.map((r, j) => {
     const y = j * (bh + g) + 3, w = Math.max(3, (W - x0 - 330) * r.t / mx), ub = (n, q) => q == null ? "–" : !q ? (n ? "▲ baru" : "–") : (v => v > 0 ? `▲ ${fmt(v)}%` : v < 0 ? `▼ ${fmt(-v)}%` : "0%")(Math.round((n - q) / q * 100));
-    const tip = `<b>${r.nama}</b> · ${tgl(st.hari)}<br>Titik panas: ${fmt(r.t)}${kem ? `<br>Titik ${kem}: ${fmt(r.tp)}<br>Perubahan hotspot: ${ub(r.t, r.tp)}` : ""}<br>Kejadian api: ${fmt(r.kompleks)}<br>Tingkat perhatian: ${LEVEL[r.level] || "–"}`;
+    const tip = `<b>${r.nama}</b>, ${tgl(st.hari)}<br>Titik panas: ${fmt(r.t)}${kem ? `<br>Titik ${kem}: ${fmt(r.tp)}<br>Perubahan hotspot: ${ub(r.t, r.tp)}` : ""}<br>Kejadian api: ${fmt(r.kompleks)}<br>Tingkat perhatian: ${LEVEL[r.level] || "–"}`;
     let x = x0 + w + 8, o = `<g data-tip="${esc(tip)}"><text x="${x0 - 10}" y="${y + bh / 2 + 4}" text-anchor="end" font-size="12.5" font-weight="600">${esc(r.nama)}</text>`
       + `<rect x="${x0}" y="${y}" width="${w}" height="${bh}" rx="6" style="fill:${WARNA_TOT}"/>`;
     const [a, wa] = Kartu.pil(x, y + 4, fmt(r.t) + " titik", "#0b2545", "#fff", 11.5); o += a; x += wa + 6;
@@ -204,7 +204,7 @@ function modelPK(P) {
     m === "luas" ? tetap("Perkiraan satelit per provinsi memakai titik NOAA-20/21 x porsi; tidak sebanding dengan angka resmi BNPB") : null,
     mt[m] ? [I.pil + ":"] : null, mt[m] ? [mt[m]] : null, ...(mt.catatan || []).map(c => [c])].filter(Boolean);
   return {rows, j, ctl: R.kontrol(PKD, pet, ref), pakaiB: false, dft: rows.slice(0, 10), ey: P.length ? "Peta " + namaWil(P) : "Peta provinsi", sat: m === "hot" ? " titik" : " ha",
-    kepala: `<div class="lp-rkh"><span>Provinsi · ${R.STOK.has(m) ? "per " + R.label(PKD, "hari", r.i1, r.i1, true) : R.label(PKD, pet.mode, r.i0, r.i1, true)}</span><b style="--mk:${warna};--mu:${muda}">${I.pil} <small>(${I.sat})</small></b></div>`,
+    kepala: `<div class="lp-rkh"><span>Provinsi, ${R.STOK.has(m) ? "per " + R.label(PKD, "hari", r.i1, r.i1, true) : R.label(PKD, pet.mode, r.i0, r.i1, true)}</span><b style="--mk:${warna};--mu:${muda}">${I.pil} <small>(${I.sat})</small></b></div>`,
     ket: `${nm} ${w}${PKD.cutoff ? ` <span class="lp-co">Cut-off ${jamWIB(PKD.cutoff)}</span>` : ""}`,
     cetak: [PKD.cutoff ? `Cut-off ${jamWIB(PKD.cutoff)}.` : "", mt.catatan?.[0] || ""].filter(Boolean).map(esc).join(" "),   /* cetak: satu baris catatan agar perkiraan tetap tertulis di kertas */
     aria: `Peta ${m === "hot" ? "titik panas" : nm.toLowerCase()} tiap provinsi ${wTeks}`,
@@ -519,7 +519,7 @@ function kartuKurva() {
     const tip = esc(`<b>${y}</b>${on ? ` s.d. ${tgl(st.hari)}` : ""}<br>Total: ${fmt(akhir)} titik panas`);
     if (on) g += `<path d="${d}L${X_(keKabisat(y, S[y].length - 1)).toFixed(1)} ${Y_(0)}L${X_(0)} ${Y_(0)}Z" fill="${WARNA_SEL}" opacity=".08"/>`;
     g += `<g data-tip="${tip}"><path d="${d}" fill="none" stroke="${on ? WARNA_SEL : warna(y)}" stroke-width="${on ? 3.6 : 1.8}" stroke-linejoin="round" stroke-linecap="round"/><path d="${d}" fill="none" stroke="transparent" stroke-width="12"/></g>`;
-    lbl.push({y, on, x0: X_(keKabisat(y, S[y].length - 1)), y0: Y_(akhir), x: X_(keKabisat(y, S[y].length - 1)) + 14, v: Y_(akhir) - 10, t: `${y} · ${fmt(akhir)} titik`});
+    lbl.push({y, on, x0: X_(keKabisat(y, S[y].length - 1)), y0: Y_(akhir), x: X_(keKabisat(y, S[y].length - 1)) + 14, v: Y_(akhir) - 10, t: `${y}, ${fmt(akhir)} titik`});
   }
   /* label akhir garis: saling dijauhkan minimal 21 px vertikal supaya tidak bertumpuk */
   lbl.sort((a, b) => a.v - b.v); lbl.forEach((a, i, r) => { if (i && a.v < r[i - 1].v + 21) a.v = r[i - 1].v + 21; });
@@ -541,7 +541,7 @@ function kepala() {
   const opsi = hs.map(h => [h, tgl(h)]);
   document.title = `Laporan Karhutla ${namaWil()} ${tglP(st.hari)}`;   /* nama berkas bawaan "Simpan sebagai PDF" */
   const fokus = document.activeElement?.closest?.("#lpKepala") ? document.activeElement : null, fk = fokus?.classList.contains("pc-btn") ? ".pc-btn" : "";   /* innerHTML membuang fokus: kembalikan di bawah */
-  $("#lpKepala").innerHTML = `<div class="lp-jd"><h1>Laporan Harian Karhutla${provKepala().length ? " · " + esc(namaWil()) : ""}</h1>
+  $("#lpKepala").innerHTML = `<div class="lp-jd"><h1>Laporan Harian Karhutla${provKepala().length ? ", " + esc(namaWil()) : ""}</h1>
     <div class="lp-pils"><span class="lp-pil">${tglPanjang(st.hari)}</span><span class="lp-pil ${sm ? "sm" : "ok"}">Cut-off ${cutoff(st.hari)}</span>${!sm && iB() > 0 ? `<span class="lp-pil sm">Cut-off ${cutoff(D.hari[iB()])}</span>` : ""}</div></div>
     <div class="lp-aksi">${selPilih("prov")}<button class="lp-cetak" type="button" id="lpCetak" aria-label="Cetak atau unduh PDF" title="Cetak atau unduh PDF">${IK_CETAK}</button>${Kartu.seg("hari", opsi, st)}</div>`;
   if (fk) $("#lpKepala").querySelector(fk)?.focus({preventScroll: true});
@@ -579,13 +579,13 @@ function semua() {
   /* laporan bertanggal hari dicetak (WIB); hari data dan status finalnya ada di kanan */
   const cetak = tglPanjang(new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10));
   /* kop berlogo = kepala tiap halaman (position:fixed di cetak); baris kecilnya: tanggal cetak + cut-off tiap hari laporan */
-  const kanan = [st.hari, ...(iB() > 0 ? [D.hari[iB()]] : [])].map(h => `Cut-off ${tgl(h)}: ${cutoff(h).replace(tgl(h) + " ", "")}`).join("  ·  ");
+  const kanan = [st.hari, ...(iB() > 0 ? [D.hari[iB()]] : [])].map(h => `Cut-off ${tgl(h)}: ${cutoff(h).replace(tgl(h) + " ", "")}`).join(", ");
   /* kop tiap halaman = SVG berukuran tetap di kotak margin @page (elemen fixed salah letak di Chrome, gambar tanpa ukuran membesar) */
   const xe = t => String(T(t)).replace(/&/g, "&amp;").replace(/</g, "&lt;");
   /* kiri: logo + nama + judul; kanan: tanggal cetak + pil cut-off tiap hari (hijau = final, oranye = berjalan) */
   const kiri = `<svg xmlns="http://www.w3.org/2000/svg" width="340" height="26" viewBox="0 0 340 26">${LOGO.replace("<svg ", '<svg x="0" y="1" width="24" height="24" ')}`
     + `<g font-family="Inter,system-ui,sans-serif" fill="#0b2545"><text x="31" y="11" font-size="10.5" font-weight="800">${MEREK}</text>`
-    + `<text x="31" y="22" font-size="8" font-weight="700">${xe("Laporan Harian Kebakaran Hutan dan Lahan")}${provKepala().length ? ` · <tspan fill="#c9503a">${xe(namaWil())}</tspan>` : ""}</text></g></svg>`;
+    + `<text x="31" y="22" font-size="8" font-weight="700">${xe("Laporan Harian Kebakaran Hutan dan Lahan")}${provKepala().length ? `, <tspan fill="#c9503a">${xe(namaWil())}</tspan>` : ""}</text></g></svg>`;
   const pil = [[st.hari, sementara() ? "#d2772c" : "#2b8c86"], ...(iB() > 0 ? [[D.hari[iB()], "#d2772c"]] : [])]
     .map(([h, w]) => [T(`Cut-off ${tgl(h)}: ${cutoff(h).replace(tgl(h) + " ", "")}`), w]);
   if (sementara() || iB() > 0) pil.push([T("Data belum final"), "#c9503a"]);

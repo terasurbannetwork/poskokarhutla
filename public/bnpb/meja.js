@@ -68,7 +68,7 @@
   const ringkasIsi = r => {
     const kolom = M().kolom.filter(k => !k.tahap || r.data[k.nama] != null);
     const isi = kolom.filter(k => r.data[k.nama] != null && r.data[k.nama] !== "" && !(Array.isArray(r.data[k.nama]) && !r.data[k.nama].length)).slice(0, 4);
-    return isi.map(k => `<span>${esc(k.label)}: <b>${nilaiF(k, r.data[k.nama])}</b></span>`).join(" · ");
+    return isi.map(k => `<span>${esc(k.label)}: <b>${nilaiF(k, r.data[k.nama])}</b></span>`).join(", ");
   };
   const wilayahF = r => esc([r.desa, r.kec].filter(Boolean).join(", ") || r.kab);
   const urutan = {wilayah: r => [r.desa, r.kec, r.kab].filter(Boolean).join(" ").toLowerCase(), status: r => r.status_efektif, diubah: r => r.diubah};
@@ -82,8 +82,8 @@
       <td>${pil(r.status_efektif)}${r.status_efektif !== r.status ? ` ${pil(r.status)}` : ""}</td><td>${esc(waktuF(r.diubah))}</td>
       <td><div class="mj-aksi">${aksi}${stokAksi}<button class="mj-btn kecil" data-rinci="1">${IK.riwayat}Rincian</button>${lain}</div></td></tr>${rin ? rinci(r, rin) : ""}`;
   };
-  const rinci = (r, d) => `<tr><td colspan="5"><div class="mj-rincian">${M().kolom.filter(k => r.data[k.nama] != null && r.data[k.nama] !== "").map(k => `${esc(k.label)}: <b>${nilaiF(k, r.data[k.nama])}</b>`).join(" · ")}</div>
-    <ol class="mj-jejak">${d.jejak.map(j => `<li>${esc(label(j.ke))}${j.dari ? ` (dari ${esc(label(j.dari))})` : ""} · ${esc(waktuF(j.waktu))}${j.catatan ? ` · ${esc(j.catatan)}` : ""}</li>`).join("")}</ol></td></tr>`;
+  const rinci = (r, d) => `<tr><td colspan="5"><div class="mj-rincian">${M().kolom.filter(k => r.data[k.nama] != null && r.data[k.nama] !== "").map(k => `${esc(k.label)}: <b>${nilaiF(k, r.data[k.nama])}</b>`).join(", ")}</div>
+    <ol class="mj-jejak">${d.jejak.map(j => `<li>${esc(label(j.ke))}${j.dari ? ` (dari ${esc(label(j.dari))})` : ""}, ${esc(waktuF(j.waktu))}${j.catatan ? `, ${esc(j.catatan)}` : ""}</li>`).join("")}</ol></td></tr>`;
   const panelForm = () => {
     if (form.mode === "stok") return `<form class="bn-blok mj-form" id="mjForm" autocomplete="off" novalidate><h2>${IK.tambah}${esc(label(form.jenis))}: ${esc(form.baris.data.gudang)}, ${esc(label(form.baris.data.barang).toLowerCase())}</h2>
       <div class="bn-baris"><label class="bn-isian">Jumlah *<input name="_jumlah" inputmode="numeric" autocomplete="off"></label><label class="bn-isian">Catatan (opsional)<input name="_catatan" maxlength="200" autocomplete="off"></label></div>

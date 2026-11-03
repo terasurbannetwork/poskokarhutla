@@ -81,7 +81,7 @@
         <div class="rs-aksi"><button class="ad-tombol utama" type="submit">Buat kode mitra</button>${csv("mitra")}</div></form>
       ${tabel(["Institusi", "PIC (hanya admin)", "PKS", "Usulan", "Kode", ""], d.mitra.map(m => { const p = PKS[m.pks.s];
         return `<tr data-id="${esc(m.id)}"${m.dicabut ? ' class="rs-redam"' : ""}><td><b>${esc(m.institusi)}</b>${dummyPil(m)}<br><span class="rs-redup">${esc(m.unit || "")}</span></td>
-        <td>${esc(m.pic_nama)}<br><span class="rs-redup">${esc(m.pic_email || "–")} · ${esc(m.pic_wa || "–")}</span></td>
+        <td>${esc(m.pic_nama)}<br><span class="rs-redup">${esc(m.pic_email || "–")}, ${esc(m.pic_wa || "–")}</span></td>
         <td>${esc(m.pks_nomor || "–")}<br>${pil(p[0], p[1] + (m.pks.sisa != null && m.pks.s !== "kedaluwarsa" ? ` (${angka(m.pks.sisa)} hari)` : ""), p[2])}<br><span class="rs-redup">${tgl(m.pks_mulai)}–${tgl(m.pks_sampai)}</span></td>
         <td>${angka(m.usulan)}</td><td>${m.dicabut ? pil("silang", "Dicabut " + wkt(m.dicabut), "abu") : pil("centang", "Aktif", "hijau")}</td>
         <td class="a"><button class="ad-tombol kecil" data-aksi="pks">Perbarui PKS</button>${m.dicabut ? "" : ' <button class="ad-tombol kecil bahaya" data-aksi="cabut">Cabut kode</button>'}</td></tr>`; }), "Belum ada mitra.")}`;
@@ -99,7 +99,7 @@
       const baris = d.usulan.filter(cocok).map(u => { const s = STATUS[u.status], jj = d.jejak.filter(j => j.usulan_id === u.id), kk = d.kemajuan.filter(k => k.usulan_id === u.id);
         const aksi = Object.entries(d.enum.alur[u.status]).filter(([, p]) => p === "admin").map(([ke]) => `<button class="ad-tombol kecil ${ke === "disetujui" ? "utama" : ke === "ditolak" ? "bahaya" : ""}" data-aksi="telaah" data-ke="${ke}">${esc(AKSI_NAMA[ke])}</button>`).join(" ");
         return `<tr data-id="${esc(u.id)}"><td><details><summary><b>${esc(u.judul)}</b>${dummyPil(u)}</summary><div class="rs-detail">
-          <p><b>Metode:</b> ${esc(u.metode)}</p><p><b>Anggota:</b> ${esc(u.anggota || "–")}</p><p><b>Wilayah:</b> ${esc(u.wilayah)} · <b>Jadwal:</b> ${tgl(u.mulai)}–${tgl(u.selesai)}</p>
+          <p><b>Metode:</b> ${esc(u.metode)}</p><p><b>Anggota:</b> ${esc(u.anggota || "–")}</p><p><b>Wilayah:</b> ${esc(u.wilayah)}, <b>Jadwal:</b> ${tgl(u.mulai)}–${tgl(u.selesai)}</p>
           <p><b>Agenda:</b> ${esc(u.agenda || "–")}</p><p><b>Data dibutuhkan:</b> ${esc(u.data_butuh.map(i => (d.enum.katalog.find(k => k.id === i) || {}).nama || i).join(", ") || "–")}</p><p><b>Luaran rencana:</b> ${esc(u.luaran_rencana)}</p>
           ${u.catatan ? `<p><b>Catatan telaah:</b> ${esc(u.catatan)}</p>` : ""}
           ${kk.length ? `<p><b>Laporan:</b></p><ul>${kk.map(k => `<li>${wkt(k.waktu)} ${k.jenis === "akhir" ? "(akhir) " : ""}${esc(k.isi)} ${k.tautan ? lnk(k.tautan, "dokumen") : ""}</li>`).join("")}</ul>` : ""}

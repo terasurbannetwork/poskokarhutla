@@ -24,7 +24,7 @@
   const terbaik = xs => xs.find(h => !viirs(h) && h.awan_pct <= 50) || xs.find(h => !viirs(h)) || xs[0];
   /* keterangan citra sebagai label-label kecil; awan diberi warna sesuai kejernihan */
   const sub = h => { const aw = h.awan_pct, w = aw == null ? "" : aw <= 30 ? "ok" : aw <= 70 ? "sedang" : "buruk";
-    return `<span class="ct-lb">${esc(h.satelit)}</span><span class="ct-lb">${tg(h.tgl)} · ${lalu(h.tgl)}</span>${wib(h) ? `<span class="ct-lb">${wib(h)}</span>` : ""}<span class="ct-lb ${w}">${awan(h)}</span><span class="ct-lb">kotak ${h.km} km</span>`; };
+    return `<span class="ct-lb">${esc(h.satelit)}</span><span class="ct-lb">${tg(h.tgl)}, ${lalu(h.tgl)}</span>${wib(h) ? `<span class="ct-lb">${wib(h)}</span>` : ""}<span class="ct-lb ${w}">${awan(h)}</span><span class="ct-lb">kotak ${h.km} km</span>`; };
 
   /* ================================================================ laci */
   const _buka = Laci.buka.bind(Laci);
@@ -56,7 +56,7 @@
     const xs = D.kompleks[id], p = S.kluster.features.find(f => f.properties.id === id)?.properties || {}, d = $("#dlg");
     const st = {m: mode, ses: i, seb: null, api: false};
     const pasangan = () => xs.map((h, j) => j).filter(j => j !== st.ses && xs[j].km === xs[st.ses].km && xs[j].tgl < xs[st.ses].tgl);
-    const opsi = (js, v) => js.map(j => `<option value="${j}" ${j === v ? "selected" : ""}>${tg(xs[j].tgl)} · ${esc(xs[j].satelit)} · ${awan(xs[j])}</option>`).join("");
+    const opsi = (js, v) => js.map(j => `<option value="${j}" ${j === v ? "selected" : ""}>${tg(xs[j].tgl)}, ${esc(xs[j].satelit)}, ${awan(xs[j])}</option>`).join("");
     const titik = h => { const [w, s, e, n] = h.bbox; return (p.api24 || []).filter(([x, y]) => x > w && x < e && y > s && y < n)
       .map(([x, y]) => `<circle cx="${((x - w) / (e - w) * 100).toFixed(2)}" cy="${((n - y) / (n - s) * 100).toFixed(2)}" r="${h.km > 20 ? .6 : 1.4}"/>`).join(""); };
     const gambar = () => {
@@ -70,7 +70,7 @@
         ${st.api ? `<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${titik(h)}</svg>` : ""}
         ${b ? `<i class="ct-garis" style="--x:50%"></i><input type="range" min="0" max="100" value="50" aria-label="Geser pembanding sebelum dan sesudah">` : ""}`;
       d.querySelector(".ct-sub").innerHTML = b ? `<span class="ct-lb-j">Sebelum</span>${sub(b)}<br><span class="ct-lb-j">Sesudah</span>${sub(h)}` : sub(h);
-      d.querySelector(".ct-kr").innerHTML = "Sumber: " + [...new Set([h, b].filter(Boolean).map(kredit))].map(x => x.replace("Sumber: ", "")).join(" · ");
+      d.querySelector(".ct-kr").innerHTML = "Sumber: " + [...new Set([h, b].filter(Boolean).map(kredit))].map(x => x.replace("Sumber: ", "")).join(", ");
     };
     d.innerHTML = `<div class="dh"><div><h3 id="dlgJudul">Citra satelit, ${esc(p.kec || id)}${p.kab ? ", " + esc(p.kab) : ""}</h3><p>Cluster ${esc(id)}, ${xs.length} citra dalam ${D.hari} hari terakhir</p></div><button aria-label="Tutup" data-tutup>×</button></div>
       <div class="db ct-dlg"><div class="ct-ctl"></div><div class="ct-banding"></div><p class="ct-meta ct-sub"></p>${LEG}
@@ -117,7 +117,7 @@
         return this.ex(`Potret perbandingan warna asli dan SWIR di ${this.hl(fmt(ks.length) + " cluster prioritas")}; ${this.hl(fmt(bersih))} terpotret cukup jernih dalam ${D.hari} hari terakhir`,
           "Kondisi terbaru dari satelit", `Potongan ± ${D.kotak_km} × ${D.kotak_km} km berpusat di tiap cluster, urut prioritas. Klik gambar untuk membuka cluster dan membandingkan tanggal.`,
           `<div class="ct-galeri2">${kartu || '<p class="ct-kosong">Belum ada citra cluster prioritas di provinsi ini.</p>'}</div>${pg}${LEG}`,
-          `Sumber: ${esc(D.atribusi.Sentinel)} · ${esc(D.atribusi.VIIRS)} · diperbarui ${new Date(D.dibuat).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})} WIB`,
+          `Sumber: ${esc(D.atribusi.Sentinel)}, ${esc(D.atribusi.VIIRS)}, diperbarui ${new Date(D.dibuat).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})} WIB`,
           this.selProvMulti("citraProv", [...new Set(Object.entries(D.kompleks).filter(([, xs]) => xs.length).map(([id]) => provDari(id)).filter(Boolean))]
             .sort((x, y) => namaProv(x).localeCompare(namaProv(y))))); };
       document.addEventListener("click", e => { const b = e.target.closest(".ct-tg [data-ci]"); if (!b) return;

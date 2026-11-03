@@ -20,7 +20,7 @@
       const n = nas(), [aw, si, wa] = tp();
       const P = Object.entries(S.wil.prov).map(([k, v]) => ({k, n: v.jiwa[2], lv: v.lv})).filter(x => x.n > 0).sort((a, b) => b.n - a.n).slice(0, 5);
       return {tpl: "ringkas", prov: "", lv: 0, label: "Ringkasan harian", judul: "Kekeringan hari ini",
-        sub: `Indonesia · ${Bagikan.n(n.kab_n[2])} kabupaten/kota Awas · SPI ${spiBulan()}`,
+        sub: `Indonesia, ${Bagikan.n(n.kab_n[2])} kabupaten/kota Awas, SPI ${spiBulan()}`,
         kpi: [
           {l: "Kabupaten/kota Awas", s: "Awas", v: Bagikan.n(aw), ket: "kabupaten/kota berstatus Awas", ks: "status Awas", w: WARNA_LV[3]},
           {l: "Kabupaten/kota Siaga", s: "Siaga", v: Bagikan.n(si), ket: "kabupaten/kota berstatus Siaga", ks: "status Siaga", w: WARNA_LV[2]},

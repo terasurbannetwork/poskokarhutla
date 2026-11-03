@@ -39,7 +39,7 @@
     gabung._t = setTimeout(() => { try { hitung(); peta.getSource("titik")?.setData(Peta.geoTitik()); Peta.aturWilayah(false); Kini?.segarkan?.(); } catch (e) { console.warn("titik_live", e); } }, 1500);
     const el = document.getElementById("upd"), diolah = Math.max(Date.parse(S.meta?.dibuat) || 0, S.titikDiambil || 0);
     if (el) { el.innerHTML = labelJam(S.acuan);      // jam data = deteksi terbaru (S.acuan sudah maju), bukan acuan harian
-      if (diolah) el.title = `Lintasan satelit terakhir; diolah ${jamWIB(diolah)} · ${tambah.length} titik baru dari FIRMS NRT`; }
+      if (diolah) el.title = `Lintasan satelit terakhir; diolah ${jamWIB(diolah)}, ${tambah.length} titik baru dari FIRMS NRT`; }
   }
   /* Worker cron (:15 tiap 3 jam) dan titik.yml (:40 tiap 3 jam, terbit statis) mengambil FIRMS yang sama: selama data statis
      < 3,5 jam, /api/titik hampir tidak menambah titik tapi memakan satu pemanggilan Worker per kunjungan. Baru dipanggil bila

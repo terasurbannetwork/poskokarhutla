@@ -41,7 +41,7 @@
   const tunggu = () => { A.muat(); return `<article class="ex"><div class="kosong"><div class="spin"></div>Memuat data perusahaan…</div></article>`; };
   /* tooltip perusahaan (kartu rata kiri): logo + nama + grup, ubin titik panas di konsesi, pemegang saham asing, catatan */
   A.tip = p => { const ok = p.cek?.poligon && p.cek.lokasi !== "beda", ps = (p.pemegang || []).filter(x => x.negara !== "ID");
-    return `<div class="tp2-h ak-tch">${A.logo(p.grup[0] || p.nama, 26)}<span><b>${esc(p.nama)}</b><small>${esc([p.grup.join(", "), p.prov].filter(Boolean).join(" · "))}</small></span></div>`
+    return `<div class="tp2-h ak-tch">${A.logo(p.grup[0] || p.nama, 26)}<span><b>${esc(p.nama)}</b><small>${esc([p.grup.join(", "), p.prov].filter(Boolean).join(", "))}</small></span></div>`
       + (ok ? `<div class="ak-tcs"><span><b>${fmt(p.cek.titik_viirs ?? 0)}</b>titik panas Jan–Agu</span>${p.cek.titik_terkini != null ? `<span${p.cek.titik_terkini ? ' class="ak-tck"' : ""}><b>${fmt(p.cek.titik_terkini)}</b>titik terkini</span>` : ""}</div>`
         : `<div class="ak-tcm">${!p.cek?.poligon ? "Tidak ada di peta konsesi" : "Poligon senama di peta ada di provinsi lain"}</div>`)
       + (ps.length ? `<div class="ak-tcl"><small>Pemegang saham</small>${ps.map(x => `<span>${bendera(x.negara, 11)}${esc(x.nama)}</span>`).join("")}</div>` : "")
@@ -139,8 +139,8 @@
     const P = A.d.psn, en = P.energi.reduce((a, x) => a + x.titik, 0), pg = P.pangan.reduce((a, x) => a + x.titik, 0), mx = Math.max(...[...P.energi, ...P.pangan].map(x => x.titik));
     /* nama | grup atau pengampu (kolom sendiri, tidak terpotong) | batang | pil */
     const baris = (nm, sub, n, w, kiri) => `<div class="ak-br ak-br4" data-tip="<b>${esc(nm)}</b><br>${esc(sub)}<br>${fmt(n)} titik panas"><span class="ak-bl">${kiri}${esc(nm)}</span><span class="ak-sub">${esc(sub)}</span><i><b style="width:${n / mx * 100}%;background:${w}"></b></i><span class="ak-pl">${fmt(n)}</span></div>`;
-    const isi = `<div class="ak-psn"><div><div class="ak-sb">Energy estate · ${fmt(en)} titik</div><div class="ak-bar">${P.energi.map(x => baris(x.nama, x.grup, x.titik, "#c98a3c", bendera(x.negara, 12))).join("")}</div></div>
-      <div><div class="ak-sb">Food estate · ${fmt(pg)} titik</div><div class="ak-bar">${P.pangan.map(x => baris(x.nama, x.pengampu, x.titik, "#7a4bb0", "")).join("")}</div></div></div>`;
+    const isi = `<div class="ak-psn"><div><div class="ak-sb">Energy estate, ${fmt(en)} titik</div><div class="ak-bar">${P.energi.map(x => baris(x.nama, x.grup, x.titik, "#c98a3c", bendera(x.negara, 12))).join("")}</div></div>
+      <div><div class="ak-sb">Food estate, ${fmt(pg)} titik</div><div class="ak-bar">${P.pangan.map(x => baris(x.nama, x.pengampu, x.titik, "#7a4bb0", "")).join("")}</div></div></div>`;
     return this.ex(`${this.hl(fmt(pg) + " dari " + fmt(P.total))} titik panas PSN Pangan dan Energi Merauke ada di klaster food estate yang diampu pemerintah`, "", "", isi,
       ""   /* nama kajian sumber tidak ditampilkan (pemilik, 17 Okt 2026) */); };
 
@@ -187,7 +187,7 @@
     if (p.kosong || !p.cek?.poligon) isi = `<p class="fnd">Tidak ada di peta konsesi.</p>`;
     else {
       const har = p.harian || [], tot = har.reduce((a, x) => a + x[1], 0), puncak = har.reduce((a, x) => x[1] > (a?.[1] || 0) ? x : a, null);
-      const lini = har.length ? `<div class="ak-ml"><span class="ak-pl">${fmt(tot)}</span> titik panas${puncak ? ` · puncak <b>${tgl(puncak[0])}</b> (${fmt(puncak[1])})` : ""}</div>${A.grafikHarian(har, Math.max(hariIniWIB(), hariKe(har[har.length - 1][0])))}`
+      const lini = har.length ? `<div class="ak-ml"><span class="ak-pl">${fmt(tot)}</span> titik panas${puncak ? `, puncak <b>${tgl(puncak[0])}</b> (${fmt(puncak[1])})` : ""}</div>${A.grafikHarian(har, Math.max(hariIniWIB(), hariKe(har[har.length - 1][0])))}`
         : `<p class="fnd">Belum ada titik panas di konsesi ini sepanjang 2026.</p>`;
       const kom = (p.kompleks || []).length ? `<div class="tw ak-tw ak-kt"><table><thead><tr><th class="n">No</th><th>Cluster</th><th class="n">Titik panas</th><th>Rentang</th></tr></thead><tbody>${p.kompleks.map((k, i) => `<tr data-kom="${esc(k.id)}" tabindex="0"><td class="n">${i + 1}</td><td>${esc(k.id)}</td><td class="n">${fmt(k.n)}</td><td class="ak-mt">${rentang(k.dari, k.sampai)}</td></tr>`).join("")}</tbody></table></div>`
         : `<p class="fnd">Tidak ada cluster aktif di konsesi ini dalam 7 hari terakhir.</p>`;
@@ -248,7 +248,7 @@
   A.kartuPoligon = p => {
     const w = A.d && !A.d.gagal ? A.per[A.d.poligon[p.id]] : null, ng = w ? w.negara : [A.d?.grup_negara?.[p.grup]].filter(Boolean);
     const gr = w?.grup?.length ? w.grup.join(", ") : p.grup;   /* poligon milik perusahaan WALHI: grup menurut WALHI, bukan peta (pemilik, 17 Okt 2026) */
-    const sub = [gr, p.kab].filter(Boolean).map(esc).join(" · ");
+    const sub = [gr, p.kab].filter(Boolean).map(esc).join(", ");
     return `<div class="tp2-h tp2-only"><div class="tp2-hr">${A.logo(w?.grup?.[0] || p.grup, 20)}<b>${benderaDaf(ng, 11)}${esc(p.nama || "Areal konsesi")}</b></div><small>${sub}</small>${w && w.cek?.titik_viirs != null && w.cek.lokasi !== "beda" ? `<small class="ak-tw2">${fmt(w.cek.titik_viirs)} titik panas Jan–Agu 2026 (VIIRS)</small>` : ""}</div>`; };
   /* perusahaan di kompleks api: poligon konsesi yang beririsan dengan poligon kompleks, dihitung di peramban
      (kompleks_konsesi.json sengaja tanpa nama). Laci "Lahan & penanggung jawab" + tooltip kompleks (pemilik, 19 Okt 2026). */
@@ -287,9 +287,9 @@
     const ub = (n, l, c = "") => `<span${c ? ` class="${c}"` : ""}><b>${n}</b>${l}</span>`;
     const ps = (w?.pemegang || []).filter(x => x.negara !== "ID");
     return `<div class="ak-kp"${w ? ` data-ak-buka="${esc(p.nama)}" tabindex="0" role="button" title="Buka rincian perusahaan"` : ""}>
-      <div class="tp2-h ak-tch">${A.logo(gr || p.nama, 28)}<span><b>${benderaDaf(ngA, 11)}${esc(p.nama)}</b><small>${esc([gr || "Grup belum teridentifikasi", (r?.kab || [p.kab]).filter(Boolean).join(", ")].join(" · "))}</small></span></div>
+      <div class="tp2-h ak-tch">${A.logo(gr || p.nama, 28)}<span><b>${benderaDaf(ngA, 11)}${esc(p.nama)}</b><small>${esc([gr || "Grup belum teridentifikasi", (r?.kab || [p.kab]).filter(Boolean).join(", ")].join(", "))}</small></span></div>
       <div class="ak-kpm"><span class="ak-j" style="--w:${j[1]}">${esc(j[0])}</span>${r ? rspo(r) : ""}${r?.titik_7h ? `<span class="ak-rs ak-rsa">● Masih ada api</span>` : ""}</div>
-      <div class="ak-kps">${ub(luas != null ? fmt(luas) : "–", "ha konsesi")}${ub(r?.gambut_ha != null ? fmt(r.gambut_ha) : "–", `ha gambut${r?.gambut_ha && luas ? ` · ${pc(r.gambut_ha / luas)}` : ""}`)}
+      <div class="ak-kps">${ub(luas != null ? fmt(luas) : "–", "ha konsesi")}${ub(r?.gambut_ha != null ? fmt(r.gambut_ha) : "–", `ha gambut${r?.gambut_ha && luas ? `, ${pc(r.gambut_ha / luas)}` : ""}`)}
         ${r ? ub(fmt(r.titik), "titik panas 2026") + ub(fmt(lama(r)), "titik > 2 hari") + ub(fmt(r.titik_7h || 0), "titik 7 hari", r.titik_7h ? "ak-tck" : "")
           + ub(fmt((r.kejadian || []).length), "cluster") + ub(fmt(r.luas_bakar_ha || 0), `ha terbakar, ${pc(r.persen_bakar)} konsesi`, "ak-kpl") : ""}</div>
       ${r ? "" : `<p class="ak-kpk">Tidak ada titik panas di konsesi ini sepanjang 2026.</p>`}

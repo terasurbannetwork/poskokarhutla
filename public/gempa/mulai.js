@@ -17,7 +17,7 @@ async function muatData() {
 $("#cari").addEventListener("input", e => {
   const q = e.target.value.trim().toLowerCase(), h = $("#hasil"); if (q.length < 2) { h.hidden = true; return; }
   const prov = Object.entries(S.nama).filter(([, n]) => n.toLowerCase().includes(q)).slice(0, 6).map(([k, n]) => `<button data-k="${esc(k)}">${esc(n)}<br><small>Provinsi</small></button>`),
-    gem = S.gempa.filter(g => g.wilayah.toLowerCase().includes(q)).slice(0, 6).map(g => `<button data-g="${esc(g.id)}">${esc(wilayahPendek(g.wilayah))}<br><small>${mTulis(g.m)} · ${esc(waktuGempa(g.waktu))}</small></button>`);
+    gem = S.gempa.filter(g => g.wilayah.toLowerCase().includes(q)).slice(0, 6).map(g => `<button data-g="${esc(g.id)}">${esc(wilayahPendek(g.wilayah))}<br><small>${mTulis(g.m)}, ${esc(waktuGempa(g.waktu))}</small></button>`);
   h.innerHTML = [...prov, ...gem].join("") || `<div class="kosong" style="padding:12px">Tidak ditemukan.</div>`; h.hidden = false; });
 $("#hasil").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $("#hasil").hidden = true; $("#cari").value = "";
   if (b.dataset.k) return turun(b.dataset.k);

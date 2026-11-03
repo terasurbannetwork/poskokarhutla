@@ -90,7 +90,7 @@
   function tampil(nama) {
     for (const n of ["Cari", "Tanya", "Dok"]) $("p" + n).hidden = n !== nama;
     for (const b of $("tab").children) b.setAttribute("aria-pressed", String(nama !== "Dok" && b.dataset.t === tabAktif));
-    if (nama !== "Dok") document.title = "Pustaka Hukum BNPB · Centurisk97";
+    if (nama !== "Dok") document.title = "Pustaka Hukum BNPB, Centurisk97";
   }
 
   /* =================== CARI =================== */
@@ -159,7 +159,7 @@
     const d = D.dok || D, seg = D.segmen || d.segmen || [], rel = D.relasi || d.relasi || {};
     const keluar = D.keluar || rel.keluar || (Array.isArray(rel) ? rel.filter(r => r.dari === id) : []), masuk = D.masuk || rel.masuk || (Array.isArray(rel) ? rel.filter(r => r.ke === id) : []);
     const nama = `${d.jenis || ""} Nomor ${d.nomor} Tahun ${d.tahun}`.trim();
-    document.title = `${sebut(d)} · Pustaka Hukum BNPB`;
+    document.title = `${sebut(d)}, Pustaka Hukum BNPB`;
     const pdf = Array.isArray(d.pdf) ? d.pdf : d.pdf ? [d.pdf] : [];
     const pils = [pilW("dokumen", nama, "c5"), pilStatus(d.status)];
     if (d.tgl_tetap) pils.push(pilW("kalender", "Ditetapkan " + tgl(d.tgl_tetap), "ink3"));
@@ -192,7 +192,7 @@
       const per = {}; for (const r of daftar) (per[r.jenis] = per[r.jenis] || []).push(r);
       return Object.keys(NAMA_RELASI).filter(j => per[j]).map(j => h("div", {class: "hk-relasi"}, h("h3", {teks: NAMA_RELASI[j][sisi]}),
         h("ul", null, ...per[j].map(r => { const lain = r.id ?? (sisi ? r.dari : r.ke), jud = r.judul || (sisi ? r.dari_judul : r.ke_judul) || lain;
-          return h("li", null, (sisi || r.terdaftar) ? h("a", {href: tautanDok(lain)}, jud) : h("span", {teks: jud}), (!sisi && !r.terdaftar) ? h("span", {class: "hk-redup", teks: " · belum ada di pustaka ini"}) : null); }))));
+          return h("li", null, (sisi || r.terdaftar) ? h("a", {href: tautanDok(lain)}, jud) : h("span", {teks: jud}), (!sisi && !r.terdaftar) ? h("span", {class: "hk-redup", teks: ", belum ada di pustaka ini"}) : null); }))));
     };
     const blokRel = D.relasi_tersedia === false ? [h("p", {class: "hk-redup", teks: "Relasi belum tersedia."})] : [...kolomRelasi(keluar, 0), ...kolomRelasi(masuk, 1)];
     const sisi = h("div", {class: "hk-sisi"}, details);

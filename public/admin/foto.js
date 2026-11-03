@@ -7,7 +7,7 @@
   const jam = t => new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB";
   /* nama kategori per bencana dari registry (public/bencana.json: foto_kategori); sebelum termuat / gagal = kategori karhutla */
   let KAT = {karhutla: {api: "Api", asap: "Asap", padam: "Pemadaman", dampak: "Dampak", lainnya: "Lainnya"}}, NAMA = {};
-  const namaKat = f => { const b = f.bencana || "karhutla", k = KAT[b]?.[f.kategori] || f.kategori; return b === "karhutla" ? k : `${NAMA[b] || b} · ${k}`; };
+  const namaKat = f => { const b = f.bencana || "karhutla", k = KAT[b]?.[f.kategori] || f.kategori; return b === "karhutla" ? k : `${NAMA[b] || b}, ${k}`; };
   let tab = "menunggu";
   const kirim = (url, body) => fetch(url, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify(body)}).then(async r => ({ok: r.ok, j: await r.json().catch(() => ({}))}));
 
@@ -23,10 +23,10 @@
   }
   const kartu = f => `<article class="af-k" data-id="${f.id}">
     <a class="af-media" href="${API}/media/${f.id}" target="_blank" rel="noopener">${f.jenis === "video" ? `<video src="${API}/media/${f.id}" controls preload="metadata" poster="${API}/thumb/${f.id}"></video>` : `<img alt="" loading="lazy" src="${API}/thumb/${f.id}">`}</a>
-    <div class="af-isi"><div class="af-atas"><b>${esc(namaKat(f))}${f.jenis === "video" ? ` · video ${Math.round(f.durasi)} dtk` : ""}</b><span>${jam(f.dibuat)}</span></div>
+    <div class="af-isi"><div class="af-atas"><b>${esc(namaKat(f))}${f.jenis === "video" ? `, video ${Math.round(f.durasi)} dtk` : ""}</b><span>${jam(f.dibuat)}</span></div>
       <p class="af-ket">${esc(f.keterangan) || '<i class="af-redup">tanpa keterangan</i>'}</p>
-      <p class="af-wil">Kec. ${esc(f.kec)}, ${esc(f.kab)} · <a href="https://www.google.com/maps?q=${f.lat},${f.lon}" target="_blank" rel="noopener">${(+f.lat).toFixed(5)}, ${(+f.lon).toFixed(5)}</a></p>
-      <p class="af-redup">Diambil ${jam(f.diambil)} · ${f.nama ? esc(f.nama) + (f.tampil_nama ? " (kredit tampil)" : " (anonim)") : "tanpa nama"}${f.email ? " · " + esc(f.email) : ""} · pengirim ${f.pengirim} · ${Math.round(f.ukuran / 1024)} KB</p>
+      <p class="af-wil">Kec. ${esc(f.kec)}, ${esc(f.kab)}, <a href="https://www.google.com/maps?q=${f.lat},${f.lon}" target="_blank" rel="noopener">${(+f.lat).toFixed(5)}, ${(+f.lon).toFixed(5)}</a></p>
+      <p class="af-redup">Diambil ${jam(f.diambil)}, ${f.nama ? esc(f.nama) + (f.tampil_nama ? " (kredit tampil)" : " (anonim)") : "tanpa nama"}${f.email ? ", " + esc(f.email) : ""}, pengirim ${f.pengirim}, ${Math.round(f.ukuran / 1024)} KB</p>
       <div class="af-lencana">${lencana(f)}</div>
       ${f.alasan ? `<p class="af-redup">Alasan: ${esc(f.alasan)}</p>` : ""}
       <div class="af-aksi">${tab !== "tayang" ? '<button class="ad-tombol utama" data-a="setujui">✅ Setujui</button>' : ""}${tab !== "ditolak" ? '<button class="ad-tombol" data-a="tolak">⛔ Tolak</button>' : ""}<button class="ad-tombol bahaya" data-a="hapus">🗑️ Hapus</button>

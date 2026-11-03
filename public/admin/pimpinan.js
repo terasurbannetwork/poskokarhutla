@@ -114,7 +114,7 @@
     if (g || !j) return isi("aln", kosong(g?.includes("belum diaktifkan") ? "Alun-alun belum diaktifkan." : "Belum ada data."));
     const t = (j.bantuan || []).filter(u => u.bantuan === "terbuka"), lama = j.stat?.bantuan_terbuka_24j ?? 0, kini = Date.now();
     isi("aln", `<div class="pm-ukurbaris">${ukur(N0.format(t.length), "terbuka")}${ukur(N0.format(lama), "lebih dari 24 jam", lama ? "bahaya" : "ok")}</div>
-      ${t.length ? `<ul class="pm-daftar">${t.slice(0, 2).map(u => `<li><b>${esc(u.judul)}</b><small>${esc([u.kab, u.prov_nama].filter(Boolean).join(", "))} · ${esc(jam(kini - u.dibuat))} lalu</small></li>`).join("")}</ul>` : `<p class="pm-pils">${pil("Tidak ada yang menunggu", "ok", "ok")}</p>`}
+      ${t.length ? `<ul class="pm-daftar">${t.slice(0, 2).map(u => `<li><b>${esc(u.judul)}</b><small>${esc([u.kab, u.prov_nama].filter(Boolean).join(", "))}, ${esc(jam(kini - u.dibuat))} lalu</small></li>`).join("")}</ul>` : `<p class="pm-pils">${pil("Tidak ada yang menunggu", "ok", "ok")}</p>`}
       ${sumber("Alun-alun, utas butuh bantuan berstatus terbuka")}`);
   }
 
@@ -137,7 +137,7 @@
     const semua = Array.isArray(j) ? j : j.antrean || j.pengingat || j.daftar || [], tutup = ["terkirim", "dikirim", "selesai", "ditolak", "dilewati", "dibatalkan"];
     const t = semua.filter(x => !tutup.includes(x.status) && (dummy() || !x.dummy));
     isi("png", `<div class="pm-ukurbaris">${ukur(N0.format(t.length), "menunggu kamu", t.length ? "tunggu" : "ok")}</div>
-      ${t.length ? `<ul class="pm-daftar">${t.slice(0, 2).map(x => `<li><b>${esc(x.judul || x.pesan || x.jenis || "Pengingat")}</b><small>${esc([x.kab, x.jenis].filter(Boolean).join(" · "))}</small></li>`).join("")}</ul>` : `<p class="pm-pils">${pil("Tidak ada yang menunggu", "ok", "ok")}</p>`}
+      ${t.length ? `<ul class="pm-daftar">${t.slice(0, 2).map(x => `<li><b>${esc(x.judul || x.pesan || x.jenis || "Pengingat")}</b><small>${esc([x.kab, x.jenis].filter(Boolean).join(", "))}</small></li>`).join("")}</ul>` : `<p class="pm-pils">${pil("Tidak ada yang menunggu", "ok", "ok")}</p>`}
       ${sumber("antrean pengingat (admin yang menekan kirim)")}`);
   }
 
@@ -165,7 +165,7 @@
 
   /* ---------- mulai ---------- */
   app.className = "ad-isi pm";
-  app.innerHTML = `<p class="pm-kop-cetak">Layar Pimpinan · Centurisk97 · Ruang Koordinasi</p>
+  app.innerHTML = `<p class="pm-kop-cetak">Layar Pimpinan, Centurisk97, Ruang Koordinasi</p>
     <div class="pm-grid">${KARTU.slice(0, 4).map(kartuHtml).join("")}<div class="pm-baris3">${KARTU.slice(4).map(kartuHtml).join("")}</div></div>
     <div class="pm-bar"><p id="pmWaktu" class="pm-redup"></p>${dummy() ? pil("memuat data dummy", "info", "tunggu") : ""}<p id="pmPesan" class="pm-pesan" role="status"></p></div>`;
   document.getElementById("pmWaktu").textContent = "Diperbarui " + wib(Date.now());

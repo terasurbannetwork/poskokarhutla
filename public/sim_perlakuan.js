@@ -46,13 +46,13 @@ Object.assign(Sim, {
       const regu = s.jenis === "daops" ? (S.daops.find(d => d.kode === s.kode)?.regu || 1) : (() => { const x = S.semuaPosko?.get(s.kode); return x?.kompleks ? reguPosko(x) : 1; })();
       const T0 = PKA.mob + s.jam;
       out.push({jenis: "regu", n: s.jenis === "daops" ? `Regu ${s.nama}` : `Regu posko ${s.nama}`, sumber: s,
-        sub: `${fmt(regu)} regu · ${bulat(s.km)} km ${s.rute ? "jalan/sungai" : "garis lurus × 1,4"} · tiba ${jamT(T0)}`,
+        sub: `${fmt(regu)} regu, ${bulat(s.km)} km ${s.rute ? "jalan/sungai" : "garis lurus × 1,4"}, tiba ${jamT(T0)}`,
         tim: [{jenis: "regu", n: s.nama, T0, regu, Pper: L}]});
     }
     /* MPA desa terdekat dengan api */
     const ds = K.desa.map(x => ({...x, d: km(lat0, lon0, x.lat, x.lon)})).sort((a, b) => a.d - b.d)[0];
     if (ds && ds.d <= 25) { const T0 = .5 + ds.d * KELOK / PKA.lajuMpa;
-      out.push({jenis: "mpa", n: `MPA desa ${ds.nama}`, sub: `1 regu warga · ${bulat(ds.d, 1)} km dari api · tiba ${jamT(T0)}`, tim: [{jenis: "mpa", n: "MPA " + ds.nama, T0, regu: 1, Pper: PKA.Lmpa}]}); }
+      out.push({jenis: "mpa", n: `MPA desa ${ds.nama}`, sub: `1 regu warga, ${bulat(ds.d, 1)} km dari api, tiba ${jamT(T0)}`, tim: [{jenis: "mpa", n: "MPA " + ds.nama, T0, regu: 1, Pper: PKA.Lmpa}]}); }
     /* heli: jarak isi air dari sungai/danau OSM terdekat dengan pusat api (kisi), cadangan asumsi berkas udara */
     let dAir = Infinity; for (let k = 0; k < K.air.length; k++) if (K.air[k]) dAir = Math.min(dAir, Math.hypot(k % n + .5 - cx, ((k / n) | 0) + .5 - cy) * K.d / 1000);
     const airAsumsi = !isFinite(dAir); if (airAsumsi) dAir = data.ud?.asumsi_jarak_air_km ?? 5;
@@ -64,7 +64,7 @@ Object.assign(Sim, {
       const jamEf = Math.max(0, ASUMSI.heliJamHari - 2 * h.d / PKA.lajuHeli); if (jamEf < .5 || h.d > 500) continue;
       const T0 = PKA.mobHeli + (h.d + (h.aju ? h.ke_utama_km || 0 : 0)) / PKA.lajuHeli;
       out.push({jenis: "heli", n: `Heli dari ${h.aju ? "pangkalan aju " : ""}${h.icao ? h.icao + " " : ""}${h.nama}`, pangkalan: h,
-        sub: `1 heli · ${bulat(h.d)} km · tiba ${jamT(T0)} · ± ${bulat(siramJam, 1)} siraman/jam terbang, air ${airAsumsi ? "± " + bulat(dAir) + " km (asumsi)" : bulat(dAir, 1) + " km"}`,
+        sub: `1 heli, ${bulat(h.d)} km, tiba ${jamT(T0)}, ± ${bulat(siramJam, 1)} siraman/jam terbang, air ${airAsumsi ? "± " + bulat(dAir) + " km (asumsi)" : bulat(dAir, 1) + " km"}`,
         tim: [{jenis: "heli", n: h.icao || h.nama, T0, unit: 1, Pper: siramJam * PKA.mSiram * jamEf / 24 * faktorGb, jamEf}]});
     }
     /* sekat bakar di sisi hilir angin, dibangun oleh tim tercepat; jarak dipilih supaya selesai sebelum api tiba */
@@ -173,7 +173,7 @@ Object.assign(Sim, {
       P.B = this.ukur(K, SKEN[0], {mid: dasar.r, lo: dlo, hi: dhi}, W0, P.cu0.tab, fuel0, null);
       for (const c of P.C.slice(0, PKA.topRentang)) { await langkah(`Rentang ${c.n}…`, (ke += 2) / total); await this.pkRentang(c); }
       this.pkUrut(); P.ms = performance.now() - t0;
-      st.textContent = `${C.length} perlakuan diuji dalam ${(P.ms / 1000).toFixed(1).replace(".", ",")} detik · cuaca ${this.cuaca.sumber}`;
+      st.textContent = `${C.length} perlakuan diuji dalam ${(P.ms / 1000).toFixed(1).replace(".", ",")} detik, cuaca ${this.cuaca.sumber}`;
       this.pkLihat(P.C[0].id, false);
       this.pkRender();
     } catch (e) { if (e.message !== "batal") { console.error(e); st.textContent = "Uji perlakuan gagal: " + e.message; } }
@@ -205,12 +205,12 @@ Object.assign(Sim, {
   pkPanel() {
     const box = document.createElement("section"); box.className = "pk"; box.id = "pkBox";
     const P = this.pk?.id === this.k ? this.pk : null;
-    Sim._dl ||= S.kluster.features.filter(f => f.properties.level >= 1).slice(0, 2500).map(f => `<option value="${f.properties.id} · ${esc(f.properties.kec)}, ${esc(f.properties.kab)}">`).join("");
+    Sim._dl ||= S.kluster.features.filter(f => f.properties.level >= 1).slice(0, 2500).map(f => `<option value="${f.properties.id}, ${esc(f.properties.kec)}, ${esc(f.properties.kab)}">`).join("");
     box.innerHTML = `<div class="pk-kepala"><span class="lbl">Perlakuan</span><h3>Apa yang paling efektif untuk ${esc(this.k)}?</h3>
       <p class="fnd">Menguji regu dari posko dan Daops terdekat, MPA desa, helikopter water bombing, sekat bakar, modifikasi cuaca, dan gabungannya, memakai waktu tempuh dan jumlah regu dari data. Pilih cluster lain lewat daftar di atas, kotak cari, atau klik titik cluster di peta.</p></div>
       <label class="fld"><span class="lbl">Cari cluster (ID atau kecamatan)</span><input id="pkCari" list="pkDaftar" placeholder="mis. K0039 atau Katingan" autocomplete="off"></label><datalist id="pkDaftar">${Sim._dl}</datalist>
       <button class="btn pri" id="pkJalan" style="width:100%">${P ? "Uji ulang semua perlakuan" : "Uji semua perlakuan"}</button>
-      <div class="simprog" id="pkProg" hidden><i></i></div><p class="fnd" id="pkStatus" aria-live="polite">${P ? `${P.C.length} perlakuan diuji · cuaca ${esc(this.cuaca?.sumber || "")}` : ""}</p>
+      <div class="simprog" id="pkProg" hidden><i></i></div><p class="fnd" id="pkStatus" aria-live="polite">${P ? `${P.C.length} perlakuan diuji, cuaca ${esc(this.cuaca?.sumber || "")}` : ""}</p>
       <div id="pkHasil"></div>`;
     $("#simPanel").appendChild(box);
     const cari = $("#pkCari"); cari.onchange = () => { const m = cari.value.trim().match(/^K\d+/i); if (!m) return; const id = m[0].toUpperCase();
@@ -241,12 +241,12 @@ Object.assign(Sim, {
         <text x="${Math.min(334, X(c.selamat.mid) + 4)}" y="${y + 11}" text-anchor="${X(c.selamat.mid) > 290 ? "end" : "start"}" class="v">${bulat(c.selamat.mid)}</text></g>`; }).join("")}
       <text x="140" y="${C.length * rh + 14}" class="ax">0</text><text x="330" y="${C.length * rh + 14}" text-anchor="end" class="ax">${bulat(mx)} ha</text></svg>`;
     const baris = C.map((c, i) => `<tr data-pk="${c.id}" class="${c.id === pilih.id ? "on" : ""}" tabindex="0"><td class="num">${i + 1}</td>
-      <td><i class="pk-sw" style="background:${c.w}"></i><b>${esc(c.n)}</b><small>${c.sub ? esc(c.sub) : ""}${c.sekat ? `${c.sub ? " · " : ""}${c.sekat.ok ? `${fmt(c.sekat.D)} km di depan api, selesai jam ${bulat(c.sekat.siap)}` : "tidak sempat selesai"}` : ""}${c.omc ? `peluang hujan buatan ${Math.round(c.omc.p * 100)}%, hujan ± jam ke-${fmt(c.omc.lag)}` : ""}</small><small>${tahanT(c)}</small></td>
-      <td class="n num">${bulat(c.selamat.mid)}<small>${pc(c.selamat.mid)}%${c.rentang ? ` · ${bulat(c.selamat.min)}–${bulat(c.selamat.max)}` : ""}</small></td>
+      <td><i class="pk-sw" style="background:${c.w}"></i><b>${esc(c.n)}</b><small>${c.sub ? esc(c.sub) : ""}${c.sekat ? `${c.sub ? ", " : ""}${c.sekat.ok ? `${fmt(c.sekat.D)} km di depan api, selesai jam ${bulat(c.sekat.siap)}` : "tidak sempat selesai"}` : ""}${c.omc ? `peluang hujan buatan ${Math.round(c.omc.p * 100)}%, hujan ± jam ke-${fmt(c.omc.lag)}` : ""}</small><small>${tahanT(c)}</small></td>
+      <td class="n num">${bulat(c.selamat.mid)}<small>${pc(c.selamat.mid)}%${c.rentang ? `, ${bulat(c.selamat.min)}–${bulat(c.selamat.max)}` : ""}</small></td>
       <td class="n num">${rp(c.biaya)}<small>${c.perJuta > 0 ? bulat(c.perJuta, c.perJuta < 10 ? 2 : 0) + " ha/jt" : "–"}</small></td></tr>`).join("");
     el.innerHTML = `<div class="pk-rek">${rek}</div>
-      <div class="lbl" style="margin-top:12px">Luas diselamatkan dalam 72 jam (ha)${C.some(c => c.rentang) ? " · garis = rentang laju api ±20%" : ""}</div>${grafik}
-      <div class="lbl" style="margin-top:10px">Peringkat · klik untuk melihat di peta</div>
+      <div class="lbl" style="margin-top:12px">Luas diselamatkan dalam 72 jam (ha)${C.some(c => c.rentang) ? ", garis = rentang laju api ±20%" : ""}</div>${grafik}
+      <div class="lbl" style="margin-top:10px">Peringkat, klik untuk melihat di peta</div>
       <table class="tb3 pk-tb"><thead><tr><th>#</th><th>Perlakuan</th><th class="n">Selamat (ha)</th><th class="n">Biaya</th></tr></thead><tbody>${baris}</tbody></table>
       ${this.pkRinci(pilih)}
       <div class="lbl" style="margin-top:12px">Mengapa pilihan lain kalah</div><ul class="pk-alasan">${C.filter(c => c !== best).slice(0, 8).map(c => `<li><b>${esc(c.n)}</b>: ${this.pkAlasan(c, best)}</li>`).join("")}</ul>
@@ -268,9 +268,9 @@ Object.assign(Sim, {
     const isian = [...c.tim.map((t, i) => `<div class="pk-baris"><b>${esc(t.jenis === "heli" ? "Heli " + t.n : t.n)}</b>${f("Tiba jam ke", `T0.${i}`, t.T0, 0, 72, .5)}${t.jenis === "heli" ? f("Jumlah heli", `unit.${i}`, t.unit, 1, 6, 1) : f("Jumlah regu", `regu.${i}`, t.regu, 1, 30, 1)}</div>`),
       c.omc ? `<div class="pk-baris"><b>Modifikasi cuaca</b>${f("Peluang berhasil (%)", "p", c.omc.p * 100, 0, 100, 5)}${f("Hujan jam ke", "lag", c.omc.lag, 1, 71, 1)}</div>` : "",
       c.sekat && c.jenis === "sekat" ? `<div class="pk-baris"><b>Sekat bakar</b>${f("Selesai jam ke", "siap", c.sekat.siap, 0, 72, .5)}</div>` : ""].join("");
-    return `<div class="pk-rinci" style="--w:${c.w}"><div class="lbl">${esc(JENIS[c.jenis])} · tampil di peta</div><b>${esc(c.n)}</b>
+    return `<div class="pk-rinci" style="--w:${c.w}"><div class="lbl">${esc(JENIS[c.jenis])}, tampil di peta</div><b>${esc(c.n)}</b>
       <table class="simangka"><tr><td>Terbakar 24 j</td><td>48 j</td><td>72 j</td></tr><tr><td>${ls(24)}</td><td>${ls(48)}</td><td>${ls(72)}</td></tr></table>
-      <p class="fnd">Desa terhindar: ${fmt(c.desaHindar)} · gambut terselamatkan ± ${bulat(c.gambutSelamat)} ha · ${c.biayaRinci.map(esc).join("; ") || "tanpa biaya"}. Biru di peta = terbakar bila tanpa perlakuan, tidak bila dengan perlakuan ini.</p>
+      <p class="fnd">Desa terhindar: ${fmt(c.desaHindar)}, gambut terselamatkan ± ${bulat(c.gambutSelamat)} ha, ${c.biayaRinci.map(esc).join("; ") || "tanpa biaya"}. Biru di peta = terbakar bila tanpa perlakuan, tidak bila dengan perlakuan ini.</p>
       ${isian ? `<details class="simatur"><summary class="lbl">Ubah perlakuan ini lalu hitung ulang</summary>${isian}<button class="btn sec" id="pkUlang" style="height:32px;font-size:12.5px;margin-top:6px">Hitung ulang perlakuan ini</button></details>` : ""}</div>`;
   },
   pkUbahIkat(c) {
@@ -280,7 +280,7 @@ Object.assign(Sim, {
         if (j != null) { const t = c.tim[+j]; t[k] = v; if (k !== "T0") t[k] = Math.max(1, Math.round(v)); }
         else if (k === "p") c.omc.p = v / 100; else if (k === "lag") c.omc.lag = Math.round(v);
         else if (k === "siap") { c.sekat.siap = v; c.sekat.ok = c.sekat.tiba >= v && c.sekat.D != null; } });
-      c.sub = c.jenis === "kombo" ? c.sub : c.tim[0] ? c.sub.replace(/^\d+ (regu|heli)/, m => `${c.tim[0].jenis === "heli" ? c.tim[0].unit + " heli" : c.tim[0].regu + " regu"}`).replace(/tiba [^·]*[^·\s]/, `tiba ${jamT(c.tim[0].T0)}`) : c.sub;
+      c.sub = c.jenis === "kombo" ? c.sub : c.tim[0] ? c.sub.replace(/^\d+ (regu|heli)/, m => `${c.tim[0].jenis === "heli" ? c.tim[0].unit + " heli" : c.tim[0].regu + " regu"}`).replace(/tiba [^,·]*[^,·\s]/, `tiba ${jamT(c.tim[0].T0)}`) : c.sub;
       c.n = c.n.replace(/ \(diubah\)$/, "") + " (diubah)"; c._mid = null;
       nanti(async () => { try { await this.pkRentang(c); this.pkUrut(); this.pkLihat(c.id); } catch (e) { console.error(e); toast("Hitung ulang gagal: " + e.message); } }); };
   },

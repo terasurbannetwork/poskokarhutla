@@ -23,7 +23,7 @@
     data() {
       const n = nas(), P = Object.entries(S.uk.prov).map(([k, hs]) => ({k, p: hs[S.h0], t: ts(hs[S.h0])})).filter(x => x.t > 0).sort((a, b) => b.t - a.t);
       return {tpl: "ringkas", prov: "", lv: 0, label: "Ringkasan harian", judul: "Kualitas udara hari ini",
-        sub: `Indonesia · ${kj(ts(n))} jiwa terpapar udara tidak sehat (perkiraan model CAMS, belum dikoreksi)`,
+        sub: `Indonesia, ${kj(ts(n))} jiwa terpapar udara tidak sehat (perkiraan model CAMS, belum dikoreksi)`,
         kpi: [
           {l: "Jiwa terpapar udara tidak sehat", s: "Tidak sehat", v: kj(ts(n)), ket: "PM2,5 di atas batas tidak sehat", ks: "model CAMS, belum dikoreksi", w: Bagikan.LV[2]},
           {l: "Sangat tidak sehat atau berbahaya", s: "Sangat tidak sehat", v: kj(n[3] + n[4]), ket: "jiwa pada kategori terburuk", ks: "kategori terburuk", w: Bagikan.LV[3]},

@@ -25,9 +25,9 @@
   const nIni = p => !mdr ? p.ini || 0 : mdr.kemarin ? p.kmrn || 0 : 0;
   const kepalaK = () => th("k sp-kl", ["#", "Kabupaten, kecamatan", "Provinsi", "Sejak", "Titik 7 hari", mdr ? tgl(mdr.hari) : "Hari ini", "Cluster di kec.", "Menyala", "Gambut", "Lokasi"], [4, 5, 6], [2, 3, 4, 6, 8]);
   /* baris = div berperan tombol, karena di dalamnya ada tautan Maps / WA / Lapor WA (aksiLokasi di index.html) */
-  const baris = (p, i) => `<div class="sp-k sp-kl" role="button" tabindex="0" data-k="${esc(p.id)}"><i>${i + 1}</i><span class="sp-nm1" translate="no"><b>${esc(p.kab)}</b>${p.kec ? `<span> · ${esc(p.kec)}</span>` : ""}</span>
+  const baris = (p, i) => `<div class="sp-k sp-kl" role="button" tabindex="0" data-k="${esc(p.id)}"><i>${i + 1}</i><span class="sp-nm1" translate="no"><b>${esc(p.kab)}</b>${p.kec ? `, <span>${esc(p.kec)}</span>` : ""}</span>
     <em class="sp-p prov sp-mh">${esc(namaProv(p.prov))}</em><span class="sp-mh">${tgl(p.awal)}</span><b class="sp-ka sp-mh">${fmt(p.n)}</b><b class="sp-ka">${mdr ? (mdr.kemarin ? fmt(p.kmrn || 0) : "–") : `${fmt(p.ini || 0)} ${arahD((p.ini || 0) - (p.kmrn || 0))}`}</b>
-    <b class="sp-ka sp-mh">${fmt(kecN.get(`${p.kab}|${p.kec}`) || 1)}</b><em class="sp-p merah">${fmt(p.hari)} hari</em>${p.gambut ? `<em class="sp-p gambut sp-mh">${ik("daun")}Gambut</em>` : `<em class="sp-mh"></em>`}${aksiLokasi(p.lat, p.lon, `Cluster ${p.id} · ${p.kec ? p.kec + ", " : ""}${p.kab}`, true)}</div>`;
+    <b class="sp-ka sp-mh">${fmt(kecN.get(`${p.kab}|${p.kec}`) || 1)}</b><em class="sp-p merah">${fmt(p.hari)} hari</em>${p.gambut ? `<em class="sp-p gambut sp-mh">${ik("daun")}Gambut</em>` : `<em class="sp-mh"></em>`}${aksiLokasi(p.lat, p.lon, `Cluster ${p.id}, ${p.kec ? p.kec + ", " : ""}${p.kab}`, true)}</div>`;
   const tabelK = (xs, N = 8) => `<div class="sp-ks rata">${kepalaK()}${xs.slice(0, N).map(baris).join("")}</div>${xs.length > N ? `<p>Dan ${fmt(xs.length - N)} cluster lain, semuanya tampil di peta.</p>` : ""}`;
   /* rincian provinsi: kategori pil -> [warna, ikon, kalimat] */
   const KAT = {api: ["oranye", "api", "cluster dengan titik panas hari ini"], baru: ["prov", "", "cluster baru muncul dalam 24 jam terakhir"],
@@ -103,9 +103,9 @@
     /* sel asap provinsi: pil status (warna skala P.14/2020) + PM2,5 rata-rata 24 jam kab/kota terburuk */
     const NM = ["Baik", "Tidak sehat", "Sangat tidak sehat", "Berbahaya"];
     const selAsap = o => { const a = o.as; if (!a) return `<span class="sp-nol">–</span>`;
-      return `<em class="sp-p as${a.lv}" title="PM2,5 rata-rata 24 jam tertinggi di ${esc(a.nama)}${a.n ? `; ${fmt(a.n)} kab/kota tidak sehat, ${fmt(a.jiwa)} jiwa` : ""}">${ik("asap")}${NM[a.lv]} · ${fmt(a.r24[h.A.hi])}</em>`; };
+      return `<em class="sp-p as${a.lv}" title="PM2,5 rata-rata 24 jam tertinggi di ${esc(a.nama)}${a.n ? `; ${fmt(a.n)} kab/kota tidak sehat, ${fmt(a.jiwa)} jiwa` : ""}">${ik("asap")}${NM[a.lv]}, ${fmt(a.r24[h.A.hi])}</em>`; };
     const barisPv = o => { const d = mdr ? 0 : o.ini - o.kmrn;
-      return `<div class="sp-pr"><button class="sp-pn" data-sppv="${esc(o.k)}" data-kat="api">${esc(namaProv(o.k))}</button>${o.ini ? pilPv(o, "api", `${fmt(o.ini)}${d ? ` · ${d > 0 ? "▲" : "▼"} ${fmt(Math.abs(d))}` : ""}`) : `<span class="sp-nol">${mdr && !mdr.kemarin ? "–" : "0 titik"}</span>`}${selPv(o, "baru")}${selPv(o, "lama")}${selPv(o, "gambut")}${h.A ? selAsap(o) : ""}</div><div class="sp-pd" hidden></div>`; };
+      return `<div class="sp-pr"><button class="sp-pn" data-sppv="${esc(o.k)}" data-kat="api">${esc(namaProv(o.k))}</button>${o.ini ? pilPv(o, "api", `${fmt(o.ini)}${d ? `, ${d > 0 ? "▲" : "▼"} ${fmt(Math.abs(d))}` : ""}`) : `<span class="sp-nol">${mdr && !mdr.kemarin ? "–" : "0 titik"}</span>`}${selPv(o, "baru")}${selPv(o, "lama")}${selPv(o, "gambut")}${h.A ? selAsap(o) : ""}</div><div class="sp-pd" hidden></div>`; };
     const jiwaAsap = h.kabAsapN.reduce((s, x) => s + (x.jiwa || 0), 0);
     const sek = (judul, isi) => `<section class="sp-sek"><h4>${judul}</h4>${isi}</section>`;
     const kab = topKab(h.baru, 5), maks = kab[0]?.n || 1, kmrnKab = new Map();

@@ -1,6 +1,6 @@
 /* cerita_karhutla.js — cerita data di bagian bawah tab Insight. Kartu berurutan:
-   25 tahun · musim 2026 (video sebaran: label provinsi muncul sesuai tanggal, kartu samping, kontrol di dasar peta, putar ulang peristiwa) ·
-   pendorong (coming soon) · model sebaran (coming soon) · uji model (tersembunyi bila sebaran_kasus.json tidak ada).
+   25 tahun, musim 2026 (video sebaran: label provinsi muncul sesuai tanggal, kartu samping, kontrol di dasar peta, putar ulang peristiwa)
+   pendorong (coming soon), model sebaran (coming soon), uji model (tersembunyi bila sebaran_kasus.json tidak ada).
    Semua angka dibaca dari berkas data (tren_karhutla, musim_awal, sebaran_cerita, sebaran_kasus, model_sebaran);
    judul dirangkai dari angka itu, bukan ketikan tangan. Butuh maplibregl (sudah dimuat index.html). */
 (function () {
@@ -133,7 +133,7 @@ const Cerita = {
     const tick = [151, 181, 212, 243, 273].filter(d => d <= this.DMAX).map(d => `<i class="ct-scr-t" style="left:${f(d)}"></i><span class="ct-scr-b" style="left:${f(d)}">${hariKe(d)}</span>`).join("");
     const marks = this.ev.map(x => `<i class="ct-mk ${x.jenis}" style="left:${f(x.d)};--c:${WP[x.pk] || "#c9503a"}" data-hari="${x.d}" data-t="${es(x.jenis === "awal" ? `${hariKe(x.d)}, awal musim ${x.prov}` : `${hariKe(x.d)}, cluster besar ${x.kab || x.prov} (${nf(x.ha)} ha)`)}">${x.jenis === "besar" ? API : ""}</i>`).join("");
     this.urutRe = R.map((r, i) => i).sort((a, b) => R[b].ha - R[a].ha);
-    const pilih = `<select data-ubah="peristiwa" aria-label="Lihat peristiwa terbesar"><option value="-1">Lihat peristiwa terbesar</option>${this.urutRe.map(i => `<option value="${i}">${es(R[i].kab || nmP(R[i].prov))} · ${tglID(R[i].t0)} · ${nf(R[i].ha)} ha</option>`).join("")}</select>`;
+    const pilih = `<select data-ubah="peristiwa" aria-label="Lihat peristiwa terbesar"><option value="-1">Lihat peristiwa terbesar</option>${this.urutRe.map(i => `<option value="${i}">${es(R[i].kab || nmP(R[i].prov))}, ${tglID(R[i].t0)}, ${nf(R[i].ha)} ha</option>`).join("")}</select>`;
     return this.bab("Musim 2026", "musim", "Video sebaran api wilayah Indonesia di 2026",
       `<div class="ct-vid" id="ct-vid"><div class="ct-peta" data-peta="musim"></div>
         <div class="ct-ovl" id="ct-ovl"></div>
@@ -198,7 +198,7 @@ const Cerita = {
     const R = K.ringkasan;
     const ci = x => x ? `${nf(x[0], 2)} (${nf(x[1], 2)}–${nf(x[2], 2)})` : "–";
     return this.bab("Uji model", "uji", `Diuji pada ${hl(R.n + " kejadian")} lalu: model menebak benar ${hl(pc(R.lepas_akurasi?.[0]))} titik yang akan lolos atau padam, tetapi bentuk perimeternya masih kasar`,
-      `<div class="ct-kontrol"><select data-ubah="kasus" aria-label="Kasus">${K.kasus.map((x, i) => `<option value="${i}" ${i === this.st.kasus ? "selected" : ""}>${x.th} · ${es(x.nama_prov)} · ${x.kelas} · ${nf(x.ha_akhir)} ha</option>`).join("")}</select></div>
+      `<div class="ct-kontrol"><select data-ubah="kasus" aria-label="Kasus">${K.kasus.map((x, i) => `<option value="${i}" ${i === this.st.kasus ? "selected" : ""}>${x.th}, ${es(x.nama_prov)}, ${x.kelas}, ${nf(x.ha_akhir)} ha</option>`).join("")}</select></div>
       <div class="ct-dua rapat"><div><div class="ct-sub">Teramati (VIIRS)</div><div class="ct-peta" data-peta="uji-obs"></div></div><div><div class="ct-sub">Ramalan model (peluang 72 jam)</div><div class="ct-peta" data-peta="uji-pred"></div></div></div>
       <div id="ct-ujiInfo" class="ct-chips"></div>
       <div class="ct-chips">${chip("IoU 24 jam (95%)", ci(R.iou_24))}${chip("F1 sel baru 24 jam", ci(R.f1_24))}${chip("salah arah", nf(R.arah_err?.[0]) + "°")}${chip("luas 72 jam dalam P10–P90 (ideal 80%)", pc(R.cakupan_72))}</div>
@@ -216,7 +216,7 @@ const Cerita = {
     for (const [id, data, paint] of [["uji-obs", obs, isiO], ["uji-pred", pred, isiP]]) { const m = this.peta[id]; if (!m) continue;
       m.siap.then(() => { setSumber(m, "k", fc(data), [{id: "k", type: "fill", paint}]); m.jumpTo({center: [c.lon0, c.lat0], zoom: c.kelas === "besar" ? 10.5 : 12}); }); }
     const info = $q("#ct-ujiInfo", this.el);
-    if (info) info.innerHTML = chip(`${es(c.nama_prov)}, mulai ${tglID(c.t0)} (${c.gambut ? "gambut" : "mineral"})`, c.th) + chip(`angin ${nf(c.cuaca.ws, 1)} km/jam · RH min ${c.cuaca.rh_min}% · FFMC ${nf(c.cuaca.ffmc, 1)} · DC ${nf(c.cuaca.dc)} · ${c.cuaca.hari_kering} hari kering`)
+    if (info) info.innerHTML = chip(`${es(c.nama_prov)}, mulai ${tglID(c.t0)} (${c.gambut ? "gambut" : "mineral"})`, c.th) + chip(`angin ${nf(c.cuaca.ws, 1)} km/jam, RH min ${c.cuaca.rh_min}%, FFMC ${nf(c.cuaca.ffmc, 1)}, DC ${nf(c.cuaca.dc)}, ${c.cuaca.hari_kering} hari kering`)
       + chip("teramati 24/48/72 jam", c.obs_ha.map(v => nf(v)).join(" / ") + " ha") + chip("ramalan median", c.pred_ha.map(v => nf(v[1])).join(" / ") + " ha") + chip(`P(lolos) → ${c.lepas ? "memang lolos" : "tetap kecil"} ${c.lepas_benar ? "(benar)" : "(salah)"}`, pc(c.p_lepas));
   },
 
@@ -228,7 +228,7 @@ const Cerita = {
     const g = top.map((k, i) => { const y = 2 + i * rh, b = X(k.n), w = WP[k.prov] || "#1d4e89";
       return `<text x="20" y="${y + 20}" text-anchor="end" font-size="12" font-weight="800" opacity=".5">${i + 1}</text>
         <text x="32" y="${y + 20}" font-size="13" font-weight="600">${es(k.kab)}</text>
-        <rect x="${L}" y="${y + 6}" width="${Math.max(2, b - L)}" height="${rh - 12}" rx="4" fill="${w}" data-tip="${es(`<b>${k.kab}</b> · ${nmP(k.prov)}<br>Peristiwa ≥ 1.000 ha: ${nf(k.n)}`)}"/>
+        <rect x="${L}" y="${y + 6}" width="${Math.max(2, b - L)}" height="${rh - 12}" rx="4" fill="${w}" data-tip="${es(`<b>${k.kab}</b>, ${nmP(k.prov)}<br>Peristiwa ≥ 1.000 ha: ${nf(k.n)}`)}"/>
         ${pil(b + 6, y + (rh - 18) / 2, nf(k.n), w, "#fff", 11, 18)[0]}`; }).join("");
     const prov = [...new Set(top.map(k => k.prov))];
     return this.bab("Penempatan regu", "regu", `${es(k0.kab)} dan ${es(k1.kab)} paling sering mengalami kebakaran besar (≥ 1.000 ha) sejak 2015: ${hl(nf(k0.n))} dan ${hl(nf(k1.n))} peristiwa`,
@@ -250,8 +250,8 @@ const Cerita = {
   kamera(x) { const m = this.peta.musim; if (!this.kam || !m?.sedia || this.st.mode !== "nas") return; this.zoom = true; const q = this.pad(); m.easeTo({center: [x.lon, x.lat], zoom: x.jenis === "besar" ? 6.2 : 5.2, offset: [(q.left - q.right) / 2, (q.top - q.bottom) / 2], duration: 1500}); },
   labelPeta(m) { /* penanda bernama: titik kecil selalu ada; kartu nama hanya untuk 3 peristiwa terbaru, ditata agar tidak bertumpuk */
     this.lb = this.ev.map(x => {
-      const el = document.createElement("div"), judul = x.jenis === "awal" ? x.prov + " · awal musim " + tglP(x.iso) : (x.kab || x.prov) + ", " + x.prov + " · " + nf(x.ha) + " ha";
-      el.className = "ct-lbw"; x.l1 = x.jenis === "awal" ? x.prov : x.kab || x.prov; x.l2 = x.jenis === "awal" ? "Awal musim · " + tglP(x.iso) : x.prov + " · " + nf(x.ha) + " ha";
+      const el = document.createElement("div"), judul = x.jenis === "awal" ? x.prov + ", awal musim " + tglP(x.iso) : (x.kab || x.prov) + ", " + x.prov + ", " + nf(x.ha) + " ha";
+      el.className = "ct-lbw"; x.l1 = x.jenis === "awal" ? x.prov : x.kab || x.prov; x.l2 = x.jenis === "awal" ? "Awal musim, " + tglP(x.iso) : x.prov + ", " + nf(x.ha) + " ha";
       el.innerHTML = `<div class="ct-lb ${x.jenis}" style="--c:${WP[x.pk] || "#c9503a"}"><i class="ln"></i><span class="pin" title="${es(judul)}">${x.jenis === "besar" ? API : ""}</span><span class="tx"><b>${es(x.l1)}</b><small>${es(x.l2)}</small></span></div>`;
       new maplibregl.Marker({element: el, anchor: "center"}).setLngLat([x.lon, x.lat]).addTo(m);
       return el.firstChild; });
@@ -396,7 +396,7 @@ const Cerita = {
     this.henti(); const r = this.D.c.replay[i], st = this.st, n = r.hari.length;
     st.mode = "re"; st.replay = i; st.hariRe = 1; this.tf = 1;
     const rank = this.urutRe.indexOf(i), ak = r.hari.at(-1).tgl;
-    this.capTxt = null; this.setCap(`<b>${rank === 0 ? "Peristiwa terbesar" : "Peristiwa besar"}</b> · ${es(r.kab || nmP(r.prov))}, ${tglP(r.t0)}–${tglID(ak)} · ${nf(r.ha)} ha dalam ${n} hari`);
+    this.capTxt = null; this.setCap(`<b>${rank === 0 ? "Peristiwa terbesar" : "Peristiwa besar"}</b>, ${es(r.kab || nmP(r.prov))}, ${tglP(r.t0)}–${tglID(ak)}, ${nf(r.ha)} ha dalam ${n} hari`);
     this.tampilMode(); this.gambarSebar(true); this.kepala();
     if (n > 1) this.putar();
   },
@@ -453,7 +453,7 @@ Cerita.rekamVideo = async function (onProg) {
     const g = x.createLinearGradient(0, 0, W, 300); g.addColorStop(0, "#1d4e89"); g.addColorStop(1, "#0b2545");
     x.fillStyle = "#eef2f7"; x.fillRect(0, 0, W, H); x.fillStyle = g; x.fillRect(0, 0, W, 300);
     if (logo) x.drawImage(logo, 60, 50, 64, 64);
-    x.fillStyle = "#fff"; x.font = "800 30px Inter, sans-serif"; x.fillText(window.Bagikan?.K?.nama || "Centurisk97 · Karhutla", 140, 84);
+    x.fillStyle = "#fff"; x.font = "800 30px Inter, sans-serif"; x.fillText(window.Bagikan?.K?.nama || "Centurisk97, Karhutla", 140, 84);
     x.font = "800 46px Inter, sans-serif"; bungkus(judul, W - 120).forEach((l, i) => x.fillText(l, 60, 175 + i * 54));
     /* peta, dipotong cover ke kotak 960×860 */
     const bx = 60, by = 330, bw = 960, bh = 860, s = Math.max(bw / src.width, bh / src.height), sw = bw / s, sh = bh / s;

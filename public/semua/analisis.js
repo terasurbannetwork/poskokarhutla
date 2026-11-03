@@ -93,7 +93,7 @@ function kartuBerantai(O) {
     return `<g class="gy" style="--i:${i}" data-tip="${esc(tip)}"><text x="${L - 12}" y="${y + 23}" text-anchor="end" font-size="${M ? 10.5 : 12.5}" font-weight="600" fill="currentColor">${esc(k(p.a))} → ${esc(k(p.b))}</text>
       <rect x="${L}" y="${y + 7}" width="${X(p.frac) - L}" height="${h - 16}" rx="4" fill="${i ? "#4f8fc4" : MERAH}" opacity="${i ? .8 : 1}"/>
       <line x1="${X(p.peluang_acak)}" x2="${X(p.peluang_acak)}" y1="${y + 3}" y2="${y + h - 5}" stroke="currentColor" stroke-width="2" opacity=".7"/>
-      <text x="${X(p.frac) + 8}" y="${y + 23}" font-size="${M ? 10.5 : 12}" font-weight="800" fill="currentColor" pointer-events="none">${ang(p.frac * 100)}% · ${ang(p.lift, 1)}${M ? "×" : " kali"}</text>
+      <text x="${X(p.frac) + 8}" y="${y + 23}" font-size="${M ? 10.5 : 12}" font-weight="800" fill="currentColor" pointer-events="none">${ang(p.frac * 100)}%, ${ang(p.lift, 1)}${M ? "×" : " kali"}</text>
       <rect x="0" y="${y}" width="${W}" height="${h}" fill="transparent"/></g>`; }).join("");
   const svg = `<div class="tw"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Pasangan bencana berantai"><line x1="${L}" x2="${L}" y1="${T}" y2="${H - 4}" stroke="currentColor" opacity=".3"/>${g}</svg></div>`;
   return Kartu.kartu("Bencana berantai", jd, svg, "DIBI BNPB tiga tahun terakhir", "", [[MERAH, "Disusul bencana kedua dalam 30 hari"], ["currentColor", "Peluang kebetulan"]]);

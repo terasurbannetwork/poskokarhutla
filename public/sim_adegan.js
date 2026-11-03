@@ -326,7 +326,7 @@ const ik = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="
 
 function kerangkaDOM() {
   const r = document.createElement("div"); r.className = "sa"; r.setAttribute("aria-label", "Adegan 3D simulasi");
-  r.innerHTML = `<div class="sa-lbl"></div><div class="sa-lbu"></div><span class="sa-msg s3-pill">${ik}<span>Menyiapkan adegan…</span></span><span class="sa-attr">Medan © Mapzen, NASA SRTM, USGS · Adegan 3D bergaya, bukan citra</span>
+  r.innerHTML = `<div class="sa-lbl"></div><div class="sa-lbu"></div><span class="sa-msg s3-pill">${ik}<span>Menyiapkan adegan…</span></span><span class="sa-attr">Medan © Mapzen, NASA SRTM, USGS, Adegan 3D bergaya, bukan citra</span>
     <div class="sa-kmp" aria-hidden="true"><svg viewBox="0 0 40 40" width="38" height="38"><circle cx="20" cy="20" r="18" fill="rgba(255,255,255,.85)" stroke="rgba(29,29,29,.25)"/><path d="M20 6l5 14h-10z" fill="#c9503a"/><path d="M20 34l-5-14h10z" fill="#8a8a8a"/></svg><b>U</b></div>`;
   return r;
 }
@@ -413,7 +413,7 @@ async function bangun(tok) {
         mm.receiveShadow = true; mm.frustumCulled = false; scene.add(mm); };
       const mn = (arr, m) => arr.map(g => ({...g, lebar: Math.max(g.lebar, m)})); /* lebar dunia adaptif: minimal ~2-3 piksel dari jarak pandang awal */
       pita(mn(garis.filter(g => g.tipe === 2), Wm * .0012), "#6e5a3b", 2.4, 3, 1, 0); pita(mn(garis.filter(g => g.tipe <= 2), Wm * .0016), "#3f7390", 1, 5, .6, 0); pita(mn(garis.filter(g => g.tipe === 3), Wm * .0011), "#5b5d60", 1, 4, .9, 0); pita(mn(garis.filter(g => g.tipe === 4), Wm * .0008), "#b8a072", 1, 4, 1, 0); }
-    A.root.querySelector(".sa-attr").textContent = `Medan © Mapzen, SRTM · ${A.sumber.vektor.startsWith("OSM") ? "Sungai, kanal, jalan © OpenStreetMap · " : "Jalan/sungai situs, kanal perkiraan · "}Gambut, konsesi, kawasan hutan: data situs${A.sumber.hilang ? " · Hutan hilang: GFW" : ""} · Adegan bergaya, bukan citra`;
+    A.root.querySelector(".sa-attr").textContent = `Medan © Mapzen, SRTM, ${A.sumber.vektor.startsWith("OSM") ? "Sungai, kanal, jalan © OpenStreetMap, " : "Jalan/sungai situs, kanal perkiraan, "}Gambut, konsesi, kawasan hutan: data situs${A.sumber.hilang ? ", Hutan hilang: GFW" : ""}, Adegan bergaya, bukan citra`;
     /* --- kamera, kendali, komposer --- */
     const cam = A.cam = new T.PerspectiveCamera(hp ? 52 : 45, 1, 30, 130000);
     const rc = A.rc = rencanaKamera(); const ctl = A.controls = new OrbitControls(cam, cv);
@@ -553,7 +553,7 @@ function bangunOverlay(T) {
       cincin = new T.Mesh(new T.RingGeometry(.8, 1, 40), new T.MeshBasicMaterial({color: new T.Color(2.4, .15, .1), transparent: true, depthWrite: false, side: T.DoubleSide})); cincin.rotation.x = -Math.PI / 2;
     bola.position.set(a0.x, y + 30, a0.z); cincin.position.set(a0.x, y + 25, a0.z); for (const o of [bola, cincin]) { o.frustumCulled = false; A.scene.add(o); A.ov.push(o); } A.ign = {bola, cincin, r: Math.max(40, W * .0028)}; }
   const ip = M.ipuncak, gx = ip % M.g, gz = (ip / M.g) | 0, px = (gx / (M.g - 1) - .5) * W, pz = -(gz / (M.g - 1) - .5) * W;
-  label(px, M.Y[ip] + 120, pz, `<span class="sa-pk">▲ Puncak · ${idr(M.puncak)} m</span>`, -1);
+  label(px, M.Y[ip] + 120, pz, `<span class="sa-pk">▲ Puncak, ${idr(M.puncak)} m</span>`, -1);
   A.kotor = true;
 }
 function bangunPartikel(T) {
@@ -599,7 +599,7 @@ function segarUnit(sec) {
   for (const u of L) { const q = keDunia(K, vt, u.lon, u.lat); if (Math.abs(q.x) > M.W / 2 || Math.abs(q.z) > M.W / 2) continue; lihat.add(u.kode);
     let e = ada.get(u.kode); if (!e) { const jm = JENIS_UNIT(u), g = modelUnit(A.T, jm); g.userData.kode = u.kode; A.scene.add(g); const el = document.createElement("button"); el.type = "button"; el.className = "sa-un"; el.textContent = u.kode; el.addEventListener("click", ev => { ev.stopPropagation(); pilihUnit(u.kode); }); lbu.append(el);
       e = {g, el, p: new A.T.Vector3(), jm}; ada.set(u.kode, e); }
-    const y = tinggiDi(M, q.x, q.z) + (udara(u) ? Math.max(u.alt, 0) + 30 : 6); e.g.position.set(q.x, y, q.z); e.g.rotation.y = -(u.arah ?? 0) * Math.PI / 180; e.g.visible = true; e.u = u; e.p.set(q.x, y + (SKU[e.jm] || 14) * 1.6 + 40, q.z); e.el.classList.toggle("on", !!u.terpilih || A.ikut === u.kode); e.el.title = `${u.kode} · ${u.status}`; }
+    const y = tinggiDi(M, q.x, q.z) + (udara(u) ? Math.max(u.alt, 0) + 30 : 6); e.g.position.set(q.x, y, q.z); e.g.rotation.y = -(u.arah ?? 0) * Math.PI / 180; e.g.visible = true; e.u = u; e.p.set(q.x, y + (SKU[e.jm] || 14) * 1.6 + 40, q.z); e.el.classList.toggle("on", !!u.terpilih || A.ikut === u.kode); e.el.title = `${u.kode}, ${u.status}`; }
   for (const [k, e] of ada) { const on = lihat.has(k); e.g.visible = on; e.el.style.display = on ? "" : "none"; e.vis = on; }
   A.unitL = L; if (A.ikut && !lihat.has(A.ikut)) A.ikut = null;
 }

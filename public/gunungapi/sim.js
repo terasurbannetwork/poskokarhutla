@@ -326,7 +326,7 @@ function panel() {
   const s = S, g = s.g, p = s.p;
   $("#smJudul").textContent = "Simulasi erupsi " + g.nama;
   $("#smBd").innerHTML = `
-    <div class="sm-fld"><select id="smGn" aria-label="Gunung api">${s.st.gunung.slice().sort((a, b) => a.nama.localeCompare(b.nama)).map(x => `<option value="${slug(x.nama)}"${x === g ? " selected" : ""}>${esc(x.nama)} · Level ${["I", "II", "III", "IV"][x.level - 1]}</option>`).join("")}</select></div>
+    <div class="sm-fld"><select id="smGn" aria-label="Gunung api">${s.st.gunung.slice().sort((a, b) => a.nama.localeCompare(b.nama)).map(x => `<option value="${slug(x.nama)}"${x === g ? " selected" : ""}>${esc(x.nama)}, Level ${["I", "II", "III", "IV"][x.level - 1]}</option>`).join("")}</select></div>
     <div class="sm-fld">${pil("Mulai", "#6b7a90")}<span style="font-size:12.5px">Sekarang, ${esc(jamWIB(Date.now()))}</span></div>
     <div class="sm-fld">${pil("Tinggi kolom di atas puncak", "#e8743b")}${seg("kolom", KOLOM.map(k => [k, k + " km"]), p.kolom)}</div>
     <div class="sm-fld">${pil("Lama erupsi", "#c9503a")}${seg("durasi", DURASI.map(k => [k, k + " jam"]), p.durasi)}</div>
@@ -517,7 +517,7 @@ function waktu() {
   const s = S, el = $("#smWaktu"), IK = {main: '<path d="M7 5l12 7-12 7z"/>', jeda: '<path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/>'};
   el.innerHTML = `<button type="button" class="sm-main" id="smMain" aria-label="Putar"><svg viewBox="0 0 24 24" aria-hidden="true">${IK.main}</svg></button><b id="smJam"></b>
     <input id="smT" type="range" min="0" max="72" step="0.25" value="0" aria-label="Jam sejak erupsi (0 sampai 72)"><button type="button" class="btn sec" id="smAwan" style="height:32px;padding:0 12px">Lihat awan</button>${seg("kec", [[0.25, "0,25 jam/dtk"], [1, "1 jam/dtk"], [3, "3 jam/dtk"], [12, "12 jam/dtk"]], 3)}`;
-  const label = () => { const ms = (s.angin ? Date.parse(s.angin.mulai) : Date.now()) + s.t * 36e5; $("#smJam").textContent = `Jam ${fmt(s.t)} · ${jamWIB(ms)}`; };
+  const label = () => { const ms = (s.angin ? Date.parse(s.angin.mulai) : Date.now()) + s.t * 36e5; $("#smJam").textContent = `Jam ${fmt(s.t)}, ${jamWIB(ms)}`; };
   const atur = t => { s.t = Math.max(0, Math.min(72, t)); $("#smT").value = s.t; label(); };
   const gambar = () => { gambarAbu(); gambarLahar(); };
   $("#smT").oninput = e => { s.t = +e.target.value; label(); cancelAnimationFrame(s.rafG); s.rafG = requestAnimationFrame(gambar); };

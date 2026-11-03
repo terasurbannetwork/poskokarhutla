@@ -68,7 +68,7 @@ const Dampak = (() => {
     if (!L.length) return "";
     const nS = L.reduce((a, x) => a + x.s, 0), nF = L.reduce((a, x) => a + x.f, 0);
     return bag("fas", `${Kartu.hl(fmt(nS) + " sekolah")} dan ${Kartu.hl(fmt(nF) + " fasilitas kesehatan")} berada di KRB III atau II ${fmt(L.length)} gunung api; terbanyak di ${esc(L[0].g.nama)}`,
-      hbar(L.slice(0, 12).map(x => ({n: x.g.nama, v: x.s + x.f, txt: `${fmt(x.s)} sekolah · ${fmt(x.f)} faskes`, w: WARNA_LV[lv(x.g.id)], tip: `<b>${esc(x.g.nama)}</b><br>KRB III dan II<br>${fmt(x.s)} sekolah, ${fmt(x.f)} fasilitas kesehatan`})), 170),
+      hbar(L.slice(0, 12).map(x => ({n: x.g.nama, v: x.s + x.f, txt: `${fmt(x.s)} sekolah, ${fmt(x.f)} faskes`, w: WARNA_LV[lv(x.g.id)], tip: `<b>${esc(x.g.nama)}</b><br>KRB III dan II<br>${fmt(x.s)} sekolah, ${fmt(x.f)} fasilitas kesehatan`})), 170),
       "Dari OpenStreetMap, bisa kurang lengkap. Sumber: OpenStreetMap, KRB PVMBG 2018 (ESDM)"); }
   /* jalur evakuasi dan waktu tempuh */
   function evak() {
@@ -82,7 +82,7 @@ const Dampak = (() => {
     const B = (A?.bandara_terdampak || []).filter(b => b.jam_tiba != null).sort((a, b) => a.jam_tiba - b.jam_tiba); if (!B.length) return "";
     const nmG = id => S.st.gunung.find(g => idGn(g.nama) === id)?.nama || id;
     return bag("band", `${Kartu.hl(fmt(B.length) + " bandara")} berada di jalur abu skenario 72 jam; tercepat ${esc(B[0].iata || B[0].icao)} dalam ${Kartu.hl(fmt(B[0].jam_tiba) + " jam")}`,
-      hbar(B.slice(0, 12).map(b => ({n: `${b.iata || b.icao} · ${nmG(b.gunung)}`, v: b.jam_tiba, txt: "jam ke-" + fmt(b.jam_tiba), w: b.jam_tiba <= 6 ? "#d64545" : b.jam_tiba <= 24 ? "#e8743b" : "#e0b400", tip: `<b>${esc(b.nama)}</b><br>Abu dari ${esc(nmG(b.gunung))} tiba jam ke-${fmt(b.jam_tiba)}`}))),
+      hbar(B.slice(0, 12).map(b => ({n: `${b.iata || b.icao}, ${nmG(b.gunung)}`, v: b.jam_tiba, txt: "jam ke-" + fmt(b.jam_tiba), w: b.jam_tiba <= 6 ? "#d64545" : b.jam_tiba <= 24 ? "#e8743b" : "#e0b400", tip: `<b>${esc(b.nama)}</b><br>Abu dari ${esc(nmG(b.gunung))} tiba jam ke-${fmt(b.jam_tiba)}`}))),
       "Skenario jika meletus sekarang, bukan prakiraan letusan dan bukan advisory VAAC. Sumber: model abu Centurisk97, OurAirports"); }
   const gambar = () => [terpapar(), krb(), fas(), evak(), band(), hist()].filter(Boolean).join("");
   const BAGIAN = {krb, hist};

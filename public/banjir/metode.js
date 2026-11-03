@@ -159,7 +159,7 @@ function renderMetode() {
         ["in", "Hujan 7 hari terakhir", "jumlah hujan teramati model 7 hari sebelum hari ini", mtA(m.g.a7) + " mm"],
         ["in", "Hujan terderas per jam hari ini", "rata-rata kotak 28 km; badai lokal bisa jauh lebih deras", mtA(m.g.imax?.[m.i0]) + " mm/jam"],
         ["in", "Kebasahan tanah 3–27 cm hari ini", "porsi air dalam tanah; ≥ 0,45 dianggap jenuh (lihat bagian 5)", mtA(m.g.sm?.[m.i0], 3) + " m³/m³"],
-        ["hasil", "Hari terbasah 7 hari ke depan", "kelas BMKG: ringan &lt; 20, sedang 20–50, lebat 50–100, sangat lebat 100–150, ekstrem &gt; 150 mm/hari", `${mtA(mx)} mm · ${kelasHujan(mx)}`]]);
+        ["hasil", "Hari terbasah 7 hari ke depan", "kelas BMKG: ringan &lt; 20, sedang 20–50, lebat 50–100, sangat lebat 100–150, ekstrem &gt; 150 mm/hari", `${mtA(mx)} mm, ${kelasHujan(mx)}`]]);
     },
     teknis: `<p><code>scripts/banjir/hujan.py</code>. Kisi 0,25°: pusat sel 11,125 LS–6,375 LU, 94,875–141,375 BT. Sel dianggap darat bila pusatnya atau salah satu dari empat titik geser ±0,08° jatuh di poligon kecamatan Kemendagri. Open-Meteo Forecast, <code>past_days=7</code>, <code>forecast_days=7</code>, zona Asia/Jakarta, 100 lokasi per permintaan.</p>
     ${tb(["Medan", "Isi", "Satuan"], [["h", "hujan harian, 3 hari lalu s.d. hari ini + 6 (10 nilai)", "mm"], ["h3", "jumlah 3 hari bergeser terbesar, hari ini s.d. + 6; nilai kosong = 0", "mm"], ["a7", "jumlah 7 hari teramati, H−7 s.d. H−1", "mm"],
@@ -198,7 +198,7 @@ function renderMetode() {
       const m = await mtMasukan(k), st = S.st.kec[k], d = st.b.indexOf(Math.max(...st.b)), x = mtHari(m, d), bh = m.b.banjir || 0;
       const awas = x.rk === 3 || (x.h3 >= AMBANG_B[2] && bh >= .66), siaga = x.rk === 2 || (bh >= .33 && (x.h3 >= AMBANG_B[1] || (x.im || 0) >= 30 || (x.p3 || 0) >= .5)),
         wsp = x.rk === 1 || x.h3 >= AMBANG_B[0] || (x.im || 0) >= 20 || ((x.cape || 0) >= 2500 && x.h3 >= AMBANG_B[0]), lv = levelBanjir(x.h3, bh, x.rk, x.im, x.cape, x.p3);
-      return mtTangga(`${mtNamaKec(k)} · ${tglPendek(S.st.hari[d])}`, "Kecamatan berstatus banjir tertinggi minggu ini, pada hari puncaknya. Semua angka diambil ulang dari berkas data, lalu aturan dijalankan di peramban ini.", [
+      return mtTangga(`${mtNamaKec(k)}, ${tglPendek(S.st.hari[d])}`, "Kecamatan berstatus banjir tertinggi minggu ini, pada hari puncaknya. Semua angka diambil ulang dari berkas data, lalu aturan dijalankan di peramban ini.", [
         ["in", "Hujan 3 hari: sehari sebelum, hari itu, sehari sesudah", `${[-1, 0, 1].map(i => mtA(x.h[m.i0 + d + i])).join(" + ")} mm`, mtA(x.h3) + " mm"],
         ["in", "Kerawanan banjir InaRISK", "0 aman … 1 paling rawan", mtA(bh, 2)],
         ["in", "Sungai besar terdekat", mtRk(m, x.rk), x.rk == null ? "–" : MT_RK[x.rk]],
@@ -232,7 +232,7 @@ Normal   selain itu`)}
       const m = await mtMasukan(k), st = S.st.kec[k], d = st.l.indexOf(Math.max(...st.l)), x = mtHari(m, d), bl = m.b.longsor || 0, a7 = m.g.a7 || 0;
       const jenuh = x.sm != null ? x.sm >= .45 && a7 >= A7_BASAH : a7 >= 150, lv = levelLongsor(x.h3, a7, bl, x.sm, x.im), [lw, ls, la] = AMBANG_L;
       const awas = x.h3 >= la && jenuh && bl >= .66, siaga = (x.h3 >= ls && jenuh && bl >= .66) || (x.h3 >= la && bl >= .33) || ((x.im || 0) >= 20 && bl >= .66);
-      return mtTangga(`${mtNamaKec(k)} · ${tglPendek(S.st.hari[d])}`, "Kecamatan berstatus longsor tertinggi minggu ini, pada hari puncaknya.", [
+      return mtTangga(`${mtNamaKec(k)}, ${tglPendek(S.st.hari[d])}`, "Kecamatan berstatus longsor tertinggi minggu ini, pada hari puncaknya.", [
         ["in", "Hujan 3 hari: sehari sebelum, hari itu, sehari sesudah", `${[-1, 0, 1].map(i => mtA(x.h[m.i0 + d + i])).join(" + ")} mm`, mtA(x.h3) + " mm"],
         ["in", "Hujan 7 hari terakhir", "teramati model", mtA(a7) + " mm"],
         ["in", "Kebasahan tanah 3–27 cm", "hari itu", x.sm == null ? "tidak ada" : mtA(x.sm, 3) + " m³/m³"],
@@ -263,7 +263,7 @@ Waspada  H3 ≥ 30 dan B ≥ 0,33`)}
       const E = await mtJSON("data/hujan_ansambel.json"), e0 = E.hari.indexOf(S.hujan.hari_ini);
       if (e0 < 0) throw new Error("berkas ansambel bukan untuk hari ini, jalur P3 sedang tidak dipakai");
       const g = E.grid.reduce((m, x) => (x.p3[e0] || 0) > (m.p3[e0] || 0) ? x : m), n = E.anggota || 51;
-      return mtTangga(`Titik ${mtA(g.lat, 3)}°, ${mtA(g.lon, 3)}° (${esc(namaProv(g.prov))}) · ${tglPendek(E.hari[e0])}`, `Titik dengan peluang tertinggi hari ini dari ${fmt(E.grid.length)} titik. Nilainya berlaku untuk kotak 1° (± 110 km) di sekitarnya.`, [
+      return mtTangga(`Titik ${mtA(g.lat, 3)}°, ${mtA(g.lon, 3)}° (${esc(namaProv(g.prov))}), ${tglPendek(E.hari[e0])}`, `Titik dengan peluang tertinggi hari ini dari ${fmt(E.grid.length)} titik. Nilainya berlaku untuk kotak 1° (± 110 km) di sekitarnya.`, [
         ["in", "Jumlah skenario", `model ${esc(E.model || "ecmwf_ifs025")}`, fmt(n)],
         ["", "Skenario dengan hujan ≥ 100 mm dalam 3 hari", `± ${mtP(g.p3[e0])} × ${n}`, "± " + fmt(Math.round(g.p3[e0] * n))],
         ["in", "Peluang hujan ≥ 50 mm dalam sehari (lebat)", "porsi skenario hari ini", mtP(g.p50[e0])],
@@ -300,9 +300,9 @@ p3   = porsi anggota dengan jumlah hari d, d+1, d+2 ≥ 100 mm   (anggota tanpa 
         `Hanya ${fmt(T.length)} dari ${fmt(S.sungai.titik.length)} titik yang sudah punya ambang; titik lain ditambah 6 per hari karena unduhan 29 tahun mahal kuota.`);
     },
     teknis: `<p><code>scripts/banjir/sungai.py</code>. <b>Langkah A</b> (sekali): kisi darat 0,25° dikirim ke Open-Meteo Flood API, yang memakai sel GloFAS 0,05° terdekat; sel dipertahankan bila median debit 14 hari terakhir &gt; 30 m³/dtk, sel kembar dibuang. <b>Langkah B</b> (bertahap, 6 titik per hari): debit harian 1997-01-01 s.d. 2025-12-31 (1984–1996 kosong di Open-Meteo), maksimum tiap tahun yang punya ≥ 300 hari data, minimal 10 tahun, lalu distribusi Gumbel metode momen. <b>Langkah C</b> (harian): <code>river_discharge</code> (anggota kendali) dan <code>river_discharge_max</code>, 3 hari lalu + 7 hari.</p>
-    ${rumus(`α   = s · √6 / π              s = simpangan baku maksimum tahunan (n − 1)
-u   = rata-rata − 0,5772 · α
-Q_T = u − α · ln(−ln(1 − 1/T))  →  Q2 = u + 0,3665 α,  Q5 = u + 1,5000 α,  Q20 = u + 2,9702 α
+    ${rumus(`α   = s × √6 / π              s = simpangan baku maksimum tahunan (n − 1)
+u   = rata-rata − 0,5772 × α
+Q_T = u − α × ln(−ln(1 − 1/T))  →  Q2 = u + 0,3665 α,  Q5 = u + 1,5000 α,  Q20 = u + 2,9702 α
 kelas (per jendela 3 hari di status.py, 7 hari di tab Sungai):
   debit tertinggi ≥ Q20 → Awas,  ≥ Q5 → Siaga,  ≥ Q2 → Waspada,  selain itu Normal;  kosong bila belum berambang`)}
     <p>Ambang dan prakiraan berasal dari model yang sama, jadi bias model terhadap debit nyata saling meniadakan. Kecamatan memakai titik sungai terdekat ≤ 25 km dari titik tengahnya. Saat ini ${fmt(M.titik_sungai_berambang)} dari ${fmt(M.titik_sungai)} titik berambang.</p>`,
@@ -319,7 +319,7 @@ kelas (per jendela 3 hari di status.py, 7 hari di tab Sungai):
       const iH = Math.max(0, R.hari.indexOf(S.hujan.hari_ini)), A = R.titik.filter(t => t.p95 != null); if (!A.length) throw new Error("belum ada titik rob berambang");
       const rasio = t => Math.max(...t.h.slice(iH).map(v => v == null ? -9 : v / t.p95)), t = A.reduce((m, x) => rasio(x) > rasio(m) ? x : m);
       const hs = t.h.slice(iH), j = iH + hs.indexOf(Math.max(...hs.filter(v => v != null))), hh = t.h[j], w = t.w[j], awas = Math.max(t.p99 + .1, t.amax);
-      return mtTangga(`Kec. ${esc(t.kec)}, ${esc(t.kab)} · ${tglPendek(R.hari[j])}`, `Titik pantai yang muka lautnya paling dekat ke ambang dalam 10 hari, dari ${fmt(A.length)} titik berambang. Tinggi terhadap muka laut rata-rata global model, bukan patok lokal.`, [
+      return mtTangga(`Kec. ${esc(t.kec)}, ${esc(t.kab)}, ${tglPendek(R.hari[j])}`, `Titik pantai yang muka lautnya paling dekat ke ambang dalam 10 hari, dari ${fmt(A.length)} titik berambang. Tinggi terhadap muka laut rata-rata global model, bukan patok lokal.`, [
         ["in", "Muka laut tertinggi hari itu", "pasang + dorongan angin dan tekanan udara", mtA(hh, 2) + " m"],
         ["in", "Ambang Waspada (persentil 95)", "5% hari sejak Nov 2022 lebih tinggi dari ini", mtA(t.p95, 2) + " m"],
         ["in", "Ambang Siaga (persentil 99)", "1% hari lebih tinggi dari ini", mtA(t.p99, 2) + " m"],
@@ -375,7 +375,7 @@ PSS  = POD − POFD   (skor Peirce)`)}
       const W = await mtJSON("data/peringatan.json"), kini = Date.now(), hr = S.hujan.hari_ini, N = W.nowcast || [], G = W.gelombang || [], RB = S.rob?.bmkg?.rob || [];
       const aktif = N.filter(x => new Date(x.selesai) > kini), robHari = RB.filter(x => x.tanggal_mulai <= hr && hr <= (x.tanggal_selesai || x.tanggal_mulai));
       const nG = z => G.reduce((a, x) => a + (x[z] || []).length, 0);
-      return mtTangga(`Peringatan BMKG · ${mtTgl(hr)}`, `Diunduh ${W.dibuat ? jamWIB(W.dibuat) : "–"}${(W.gagal || []).length ? `; gagal: ${esc(W.gagal.join(", "))}` : ""}.`, [
+      return mtTangga(`Peringatan BMKG, ${mtTgl(hr)}`, `Diunduh ${W.dibuat ? jamWIB(W.dibuat) : "–"}${(W.gagal || []).length ? `; gagal: ${esc(W.gagal.join(", "))}` : ""}.`, [
         ["in", "Nowcast cuaca di berkas", "peringatan terbaru di RSS BMKG saat diunduh", fmt(N.length)],
         ["", "Yang masih berlaku saat halaman ini dibuka", "jam berakhir lebih lambat dari sekarang", fmt(aktif.length)],
         ["in", "Peringatan rob BMKG yang mencakup hari ini", `dari ${fmt(RB.length)} baris di PDF BMKG Maritim`, fmt(robHari.length)],
@@ -400,7 +400,7 @@ PSS  = POD − POFD   (skor Peirce)`)}
     contoh: async () => {
       await Posko.muat(); const P = S.posko, L = P.lapangan, x = L.find(y => y.jenis === "permanen"); if (!x) throw new Error("posko.json tanpa posko permanen");
       const sePr = L.filter(y => y.jenis === "permanen" && y.prov === x.prov), a = L.find(y => y.jenis !== "permanen") || null, ind = a && P.kabupaten.find(k => k.id === a.induk);
-      const t1 = mtTangga(`${x.id} · ${mtNamaKec(x.prov + "|" + x.kab + "|" + x.kec)}`, "Posko permanen nomor satu se-Indonesia (kabupaten dengan kejadian terbanyak).", [
+      const t1 = mtTangga(`${x.id}, ${mtNamaKec(x.prov + "|" + x.kab + "|" + x.kec)}`, "Posko permanen nomor satu se-Indonesia (kabupaten dengan kejadian terbanyak).", [
         ["in", "Kejadian banjir di kabupaten", "BNPB/DIBI, semua tahun tercatat", fmt(x.kejadian_banjir)],
         ["in", "Kejadian longsor di kabupaten", "", fmt(x.kejadian_longsor)],
         ["", "Jumlah", `${fmt(x.kejadian_banjir)} + ${fmt(x.kejadian_longsor)}`, fmt(x.kejadian)],
@@ -409,7 +409,7 @@ PSS  = POD − POFD   (skor Peirce)`)}
         mtCek(sePr.length <= (P.per_prov ?? 3), `Paling banyak ${P.per_prov ?? 3} per provinsi?`, `${esc(namaProv(x.prov))}: ${fmt(sePr.length)} posko permanen`),
         ["hasil", "Lokasi", x.desa ? `dipindah ke desa terdekat (≤ 8 km)` : "titik tengah kecamatan", x.desa ? "Desa " + esc(x.desa) : "Kec. " + esc(x.kec)]]);
       if (!a) return t1;
-      return t1 + `<div style="height:14px"></div>` + mtTangga(`${a.id} · ${mtNamaKec(a.prov + "|" + a.kab + "|" + a.kec)}`, "Pos lapangan sementara pertama dalam daftar, dan jaraknya ke pos komando kabupaten.", [
+      return t1 + `<div style="height:14px"></div>` + mtTangga(`${a.id}, ${mtNamaKec(a.prov + "|" + a.kab + "|" + a.kec)}`, "Pos lapangan sementara pertama dalam daftar, dan jaraknya ke pos komando kabupaten.", [
         ["in", "Status tertinggi 4 hari", `banjir ${LEVEL[a.b]}, longsor ${LEVEL[a.l]}${a.r ? ", rob " + LEVEL[a.r] : ""}`, pill(Math.max(a.b, a.l, a.r))],
         ["no", "Ada posko permanen ≤ 15 km di kabupaten yang sama?", "bila ada, kecamatan ini dilayani posko itu", "tidak"],
         ["in", "Kecamatan yang dilayani", "kecamatan berstatus yang ≤ 15 km ikut posko ini", fmt(a.layan.length)],
@@ -439,8 +439,8 @@ titik tengah kecamatan = titik berat luas cincin terbesar; dipindah ke desa OSM 
       await Posko.muat(); const X = [...S.semuaPosko.values()].filter(y => y.tingkat === 2 && aktifPosko(y)).sort((p, q) => lvPosko(q) - lvPosko(p) || p.id.localeCompare(q.id));
       const x = X[0] || [...S.semuaPosko.values()].find(y => y.tingkat === 2); if (!x) throw new Error("tidak ada posko lapangan");
       const a = anggaran(x), A = ASUMSI, n = x.nlv;
-      return mtTangga(`${x.id} · ${mtNamaKec(x.prov + "|" + x.kab + "|" + x.kec)}`, "Posko lapangan aktif dengan status tertinggi. Memakai asumsi yang sedang aktif di tab Posko (bisa diubah di sana).", [
-        ["in", "Kecamatan dilayani menurut status", `Awas ${n[3]} · Siaga ${n[2]} · Waspada ${n[1]}${x.r >= 2 ? " · rob ≥ Siaga" : ""}`, fmt(x.layan.length)],
+      return mtTangga(`${x.id}, ${mtNamaKec(x.prov + "|" + x.kab + "|" + x.kec)}`, "Posko lapangan aktif dengan status tertinggi. Memakai asumsi yang sedang aktif di tab Posko (bisa diubah di sana).", [
+        ["in", "Kecamatan dilayani menurut status", `Awas ${n[3]}, Siaga ${n[2]}, Waspada ${n[1]}${x.r >= 2 ? ", rob ≥ Siaga" : ""}`, fmt(x.layan.length)],
         ["", "Regu penyelamat", `Awas × 1 + Siaga × ½ + Waspada × ¼${x.r >= 2 ? " + 1 (rob)" : ""}, dibulatkan ke atas, 1–6 regu`, fmt(a.regu) + " regu"],
         ["", "Perkiraan pengungsi", `median pengungsi per kejadian ${esc(x.bahaya)} di provinsi × kecamatan Siaga/Awas; minimal ${fmt(A.minUngsi)}`, fmt(a.ungsi) + " orang"],
         ["", "Petugas", `${fmt(a.regu)} regu × ${fmt(A.orangRegu)} orang + dapur, kesehatan, logistik, koordinator`, fmt(a.org) + " orang"],
@@ -472,7 +472,7 @@ total     = alat + operasional harian × hari + logistik`)}
       if (!Keputusan.d) await Keputusan.render(); if (!Keputusan.d) throw new Error("data keputusan belum tersedia");
       const K = Keputusan, r = K.nilai(K.prov), t = r.tengah, Mt = r.Y.mB + r.Y.mD;
       if (!r.P.prior.length) throw new Error("provinsi ini belum punya kejadian per kabupaten");
-      return mtTangga(`${esc(r.P.nama)} · ${K.tahun === "harapan" ? "tahun rata-rata" : esc(K.tahun)}`, `Provinsi yang sedang dipilih di tab Keputusan. Hitungan acak diulang saat contoh ini dibuat, jadi peluangnya bisa beda 1–2 poin dari tab Keputusan.`, [
+      return mtTangga(`${esc(r.P.nama)}, ${K.tahun === "harapan" ? "tahun rata-rata" : esc(K.tahun)}`, `Provinsi yang sedang dipilih di tab Keputusan. Hitungan acak diulang saat contoh ini dibuat, jadi peluangnya bisa beda 1–2 poin dari tab Keputusan.`, [
         ["in", "Dampak dasar per tahun", `${fmt(Math.round(r.Y.u))} mengungsi, ${fmt(Math.round(r.Y.r))} rumah rusak, rata-rata ${r.ys.length} tahun`, mtA(Mt) + " meninggal"],
         ["", "Biaya B per tahun", `${fmt(K.ews)} sirene + alat ukur air per kabupaten di ${r.P.prior.length} kabupaten, posko siaga, latihan evakuasi`, rp(t[1].biaya)],
         ["", "Nyawa yang diperkirakan terselamatkan", `cakupan ${mtP(r.P.cakupan)} kejadian × efek peringatan dini (asumsi lemah)`, mtA(t[1].nyawa) + " jiwa"],
@@ -482,7 +482,7 @@ total     = alat + operasional harian × hari + logistik`)}
         mtCek(r.pakaiB, "B positif di ≥ 70% hitungan?", "syarat menyetujui B"),
         mtCek(r.pakaiC, "Tambahan C (pompa & drainase) positif di ≥ 70%?", `dibanding B: ${mtP(r.mc.inkrPos[2])}`),
         mtCek(r.pakaiD, "Tambahan D (SAR & logistik) positif di ≥ 70%?", `dibanding B: ${mtP(r.mc.inkrPos[3])}`),
-        ["hasil", "Pilihan yang disarankan", "", `${OPSI_B[r.terbaik][0]} · ${esc(OPSI_B[r.terbaik][1])}`]]);
+        ["hasil", "Pilihan yang disarankan", "", `${OPSI_B[r.terbaik][0]}, ${esc(OPSI_B[r.terbaik][1])}`]]);
     },
     teknis: `<p>Objek <code>Keputusan</code> di halaman ini; parameter dari <code>param_banjir.json</code> ditambah asumsi halaman (<code>PAR_B</code>), format [tengah, rendah, tinggi, satuan, sumber, catatan].</p>
     ${rumus(`dampak    = rata-rata per tahun banjir + bandang + rob (BNPB/DIBI) provinsi; pilihan: rata-rata, tahun biasa, 3 tahun terberat, 2025
@@ -498,7 +498,7 @@ x = tinggi − √((1 − u)·(tinggi − rendah)·(tinggi − tengah))  selain 
 Setujui B bila P(manfaat bersih B > 0) ≥ 70%;  C dan D bila B disetujui dan P(tambahan terhadap B > 0) ≥ 70%`)}
     ${rumus(`Peringkat multikriteria (SMAA), pembanding saja:
 kriteria = manfaat bersih tanpa nilai nyawa, nyawa terselamatkan, kekuatan bukti (A 1, B 0,35, C 0,2, D 0,2)
-skor_j   = Σ w_k · (x_jk − min_k) ÷ (max_k − min_k);   w ~ Dirichlet(20 × bobot/100) lewat sampel Gamma, bawaan 40/30/30`)}`,
+skor_j   = Σ w_k × (x_jk − min_k) ÷ (max_k − min_k);   w ~ Dirichlet(20 × bobot/100) lewat sampel Gamma, bawaan 40/30/30`)}`,
     batas: ["Efek peringatan dini pada kematian banjir di Indonesia belum punya studi kausal; angkanya dipinjam dari Bangladesh, Jerman, dan perbandingan antarnegara.", "Lama mengungsi dan pecahan rumah rusak berat/sedang/ringan adalah asumsi.",
       "Manfaat tanggul, isi rumah, usaha, infrastruktur, dan longsor tidak dihitung, jadi manfaat cenderung terlalu rendah.", "DIBI mencatat per kabupaten: satu banjir lintas kabupaten bisa terhitung lebih dari sekali."]});
 
@@ -510,7 +510,7 @@ skor_j   = Σ w_k · (x_jk − min_k) ÷ (max_k − min_k);   w ~ Dirichlet(20 �
       const k = mtKec("b"); if (!k) throw new Error("status.json kosong");
       const m = await mtMasukan(k), st = S.st.kec[k], d = st.b.indexOf(Math.max(...st.b)), x = mtHari(m, d), y = mtHari(m, d, 1.5), bh = m.b.banjir || 0;
       const l0 = levelBanjir(x.h3, bh, x.rk, x.im, x.cape, x.p3), l1 = levelBanjir(y.h3, bh, y.rk, y.im, y.cape, y.p3);
-      return mtTangga(`${mtNamaKec(k)} · ${tglPendek(S.st.hari[d])} · hujan × 1,5`, "Kecamatan yang sama dengan contoh bagian 4.", [
+      return mtTangga(`${mtNamaKec(k)}, ${tglPendek(S.st.hari[d])}, hujan × 1,5`, "Kecamatan yang sama dengan contoh bagian 4.", [
         ["in", "Hujan 3 hari prakiraan", "", mtA(x.h3) + " mm"],
         ["", "Hujan 3 hari skenario", `${mtA(x.h3)} × 1,5`, mtA(y.h3) + " mm"],
         ["", "Hujan per jam skenario", `${mtA(x.im)} × 1,5`, mtA(y.im) + " mm/jam"],
@@ -535,14 +535,14 @@ skor_j   = Σ w_k · (x_jk − min_k) ÷ (max_k − min_k);   w ~ Dirichlet(20 �
       const R = await Riwayat.muat(), J = R.jenis.banjir, k = mtKec("b") || Object.keys(J.kec)[0], kb = k.split("|").slice(0, 2).join("|"), r = J.kab[kb];
       if (!r) throw new Error("kabupaten contoh tidak ada di riwayat.json");
       const n = J.tahun_cakup.length, W = J.bobot, kc = J.kec[k], hk = (await mtBahaya())[k]?.banjir ?? 0, sk = W.kekerapan * r.fK + W.besaran * r.fB + W.tren * r.fT + W.inarisk * r.h;
-      return mtTangga(`Banjir · ${esc(/^Kota /.test(kb.split("|")[1]) ? kb.split("|")[1] : "Kab. " + kb.split("|")[1])} (${esc(namaProv(kb.split("|")[0]))})`, `Kabupaten tempat kecamatan contoh bagian 4. Tahun dinilai ${J.tahun_cakup[0]}–${J.tahun_cakup.at(-1)} (${n} tahun).`, [
+      return mtTangga(`Banjir, ${esc(/^Kota /.test(kb.split("|")[1]) ? kb.split("|")[1] : "Kab. " + kb.split("|")[1])} (${esc(namaProv(kb.split("|")[0]))})`, `Kabupaten tempat kecamatan contoh bagian 4. Tahun dinilai ${J.tahun_cakup[0]}–${J.tahun_cakup.at(-1)} (${n} tahun).`, [
         ["", "Kekerapan", `berkejadian ${r.tahun} dari ${n} tahun = ${mtA(r.fK, 3)}; × ${W.kekerapan}`, mtA(W.kekerapan * r.fK)],
         ["", "Besaran", `ln(1 + ${fmt(r.total)} kejadian) ÷ ln(1 + ${fmt(J.maks)}, terbanyak se-Indonesia) = ${mtA(r.fB, 3)}; × ${W.besaran}`, mtA(W.besaran * r.fB)],
         ["", "Tren", `${J.tahun_baru[0]}–${J.tahun_baru.at(-1)} dibanding tahun sebelumnya, dibagi kenaikan nasional: × ${mtA(r.tren, 2)} → ${mtA(r.fT, 3)}; × ${W.tren}`, mtA(W.tren * r.fT)],
         ["", "Kerawanan InaRISK", `rata-rata indeks banjir kecamatannya ${mtA(r.h, 2)}; × ${W.inarisk}`, mtA(W.inarisk * r.h)],
         mtCek(Math.round(sk) === r.skor, "Jumlahnya sama dengan skor di berkas?", `${mtA(sk)} dibulatkan; riwayat.json ${r.skor}`, "sama", "berbeda"),
         ["hasil", "Skor kabupaten", KELAS_R[r.lv], fmt(r.skor)],
-        kc && ["", `Skor ${mtNamaKec(k)}`, `${r.skor} × (0,4 + 0,6 × bahaya kecamatan ${mtA(hk, 2)}), kelas dinilai antarkecamatan`, `${fmt(kc[0])} · ${KELAS_R[kc[1]]}`]]);
+        kc && ["", `Skor ${mtNamaKec(k)}`, `${r.skor} × (0,4 + 0,6 × bahaya kecamatan ${mtA(hk, 2)}), kelas dinilai antarkecamatan`, `${fmt(kc[0])}, ${KELAS_R[kc[1]]}`]]);
     },
     teknis: `<p><code>scripts/banjir/riwayat.py</code>, setara skor riwayat karhutla.</p>
     ${rumus(`fK = tahun berkejadian ÷ tahun tercakup     (berkejadian: ≥ 1 kejadian untuk kab/kota, ≥ 10 untuk provinsi banjir & longsor)
@@ -565,7 +565,7 @@ kelas: 10% teratas sangat tinggi, 10–30% tinggi, 30–60% sedang, sisanya rend
     contoh: async () => {
       const R = await Riwayat.muat(), Mu = R.musim?.banjir || {}, k = mtKec("b"), p = k && Mu[k.split("|")[0]] ? k.split("|")[0] : Object.keys(Mu)[0];
       if (!p) throw new Error("kalender musim belum ada"); const o = Mu[p], i = dasKini(), th = R.musim.banjir_tahun || [];
-      return mtTangga(`Banjir · ${esc(namaProv(p))} · ${DAS(i)}`, `Provinsi kecamatan contoh bagian 4. Kejadian ${th[0] ?? ""}–${th.at(-1) ?? ""}.`, [
+      return mtTangga(`Banjir, ${esc(namaProv(p))}, ${DAS(i)}`, `Provinsi kecamatan contoh bagian 4. Kejadian ${th[0] ?? ""}–${th.at(-1) ?? ""}.`, [
         ["in", "Ambang dasarian sibuk", "persentil 90 jumlah kejadian semua dasarian provinsi ini", fmt(o.ambang) + " kejadian"],
         ["in", "Rata-rata kejadian dasarian ini", "per tahun", mtA(o.rata[i])],
         ["", "Peluang dasarian ini sibuk, semua tahun", "porsi tahun dengan kejadian ≥ ambang", mtP(o.p_semua[i])],
@@ -631,7 +631,7 @@ peluang(jendela h, tingkat) = skenario yang lolos ambang di SALAH SATU hari 0..h
         ["", "ETS: CSI setelah membuang kebetulan", `kena yang diharapkan secara kebetulan ${mtA(ar, 1)}`, mtA(ets, 3)],
         mtCek(Math.abs(pod - z.pod) < .001 && Math.abs(far - z.far) < .001, "Hitungan ulang sama dengan validasi.json?", `berkas mencatat POD ${mtA(z.pod, 3)}, FAR ${mtA(z.far, 3)}`, "sama", "berbeda"),
         ["in", "Catatan prospektif yang sudah terkumpul", Pr ? `${fmt(Pr.n_kab)} kabupaten dalam satuan penilaian` : "prospektif.json belum ada", fmt(nT) + " tanggal terbit"],
-        ["hasil", "Siaga banjir menangkap sebagian kecil kejadian", `selang 95% POD ${mtA(z.ci.pod[0], 3)} sampai ${mtA(z.ci.pod[1], 3)}`, `POD ${mtA(pod, 2)} · FAR ${mtA(far, 2)}`]],
+        ["hasil", "Siaga banjir menangkap sebagian kecil kejadian", `selang 95% POD ${mtA(z.ci.pod[0], 3)} sampai ${mtA(z.ci.pod[1], 3)}`, `POD ${mtA(pod, 2)}, FAR ${mtA(far, 2)}`]],
         "FAR setinggi ini sebagian karena DIBI tidak mencatat banjir kecil, jadi bukan seluruhnya salah alarm.");
     },
     teknis: `<p><code>scripts/banjir/uji_balik.py</code> (hasil di <code>validasi.json</code>, catatan lengkap di RISET-UJI-BALIK.md) dan <code>scripts/banjir/prospektif.py</code>. Latih 2016-2021, uji 2022-2025; longsor tanpa 2024 (hanya 219 kejadian tercatat).</p>
@@ -707,10 +707,10 @@ gelap baru S1 = persen sel sah yang sesudahnya < −17 dB tetapi sebelumnya ≥ 
       "<b>Sungai.</b> Titik sungai.json terdekat ≤ 25 km yang jatuh di kotak. Yang masuk hanya <b>luapan = debit − Q2</b> (alur penuh sekitar sekali 1,5 sampai 2 tahun; DEM tidak punya alur sungai), disuntik di sel berakumulasi terbesar dalam radius 3 km.",
       "<b>Laut.</b> Muka laut maksimum harian dari rob.json (titik ≤ 50 km), per jam berbentuk kosinus M2 (12,42 jam) dengan tunggang 1 m (asumsi; fase tidak diketahui). Tanpa titik rob tetapi ada laut di kotak: maksimum 0,5 m, ditandai di layar."])}
     ${h("Mesin aliran")}${rumus(`inersia lokal (Bates, Horritt, Fewtrell 2010) dengan pemusatan q de Almeida dkk. 2012:
-q' = (θ·q + (1 − θ)/2 · (q_kiri + q_kanan) − g · hf · Δt · ∂η/∂x) ÷ (1 + g · Δt · n² · |q| ÷ hf^(7/3))
-n Manning = per sel (rata-rata n² kedua sel di tiap sisi), 0,06 bila lahan tak termuat;   Δt = α · dx ÷ √(g · h_acuan), α = 0,7, paling besar 30 dtk;   θ = 0,9
+q' = (θ·q + (1 − θ)/2 × (q_kiri + q_kanan) − g × hf × Δt × ∂η/∂x) ÷ (1 + g × Δt × n² × |q| ÷ hf^(7/3))
+n Manning = per sel (rata-rata n² kedua sel di tiap sisi), 0,06 bila lahan tak termuat;   Δt = α × dx ÷ √(g × h_acuan), α = 0,7, paling besar 30 dtk;   θ = 0,9
 h_acuan = maks(kedalaman maksimum langkah lalu, kedalaman sel suntikan + debit × 30 dtk ÷ luas sel)
-tepi terbuka: q = h^(5/3) · √S ÷ n, S = max(0,001, lereng dasar keluar)`)}
+tepi terbuka: q = h^(5/3) × √S ÷ n, S = max(0,001, lereng dasar keluar)`)}
     <p>Pembatas fluks: air yang keluar dari sel dalam satu langkah tidak boleh melebihi isinya, jadi kedalaman tidak pernah negatif dan massa kekal. Neraca massa ditampilkan: masuk (limpasan + luapan sungai + air laut) = keluar (tepi + kembali ke laut + pompa) + tersimpan; galat di uji ± 10⁻¹⁴. Itu galat numerik hitungan (massa yang hilang oleh algoritma), bukan akurasi model terhadap kenyataan. Kedalaman acuan memuat suntikan sungai supaya langkah waktu tidak terlalu besar saat debit tinggi: pada debit 400 m³/dtk hasil dengan α 0,7 dan 0,35 berbeda kurang dari 10%. θ = 0,9 dipakai supaya uji mangkuk paraboloid tertutup tetap stabil 48 jam dan muka airnya cocok dengan hitungan analitik (tests/banjir/sim_genangan.test.mjs).</p>
     ${h("Perlakuan dan penduduk")}${ul(["Tanggul: garis yang menaikkan DEM n meter (garis 8-tersambung, kedap bagi mesin 4 sisi). Pompa: membuang laju × waktu dari selnya ke luar area; bila sumur kering pompa berhenti dan layar melapor persentase kerjanya. Laju pompa (0,1 sampai 3 m³/dtk) adalah masukan bebas dari kamu, tanpa angka yang bersumber; hasilnya menjawab \"bila laju sekian\", bukan kapasitas pompa nyata. Pintu air tertutup: sel laut dan 7 × 7 sel keluaran utama di tepi menjadi dinding.",
       "Penduduk di genangan = luas puncak × kepadatan rata-rata, dibulatkan satu angka penting (orde besaran). Kecamatan: rentang antara kepadatan sel WorldPop 0,25° terdekat dan rata-rata kecamatan (penduduk.json). Titik pilihan: hanya sel 0,25° (± 770 km²) yang diketahui, jadi rentang dilebarkan 1/3 sampai 3 kali (asumsi). Permukiman sebenarnya mengumpul, jadi ini orde besaran, bukan hitungan."])}
@@ -753,12 +753,12 @@ tepi terbuka: q = h^(5/3) · √S ÷ n, S = max(0,001, lereng dasar keluar)`)}
         ["", "Lereng gagal bila kohesi di bawah, m = 1", `B − A × tan 31° = ${mtA(B0, 1)} − ${mtA(Ak(1), 2)} × ${mtA(tn, 2)}`, mtA(bata(1), 1) + " kPa"],
         ["", "Indeks m = 1, hitungan tangan", `(${mtA(bata(1), 1)} − 2) ÷ (10 − 2)`, mtA(pr(bata(1)), 2)],
         ["", "Indeks m = 0,3, hitungan tangan", `batas kohesi ${mtA(bata(.3), 1)} kPa`, mtA(pr(bata(.3)), 2)],
-        L && ["in", "Indeks oleh mesin (semua sudut gesek)", `m = 1, m = 0,3, dan m jam 0 (${mtA(m0, 2)})`, `${mtA(pen(1), 2)} · ${mtA(pen(.3), 2)} · ${mtA(pen(m0), 2)}`],
+        L && ["in", "Indeks oleh mesin (semua sudut gesek)", `m = 1, m = 0,3, dan m jam 0 (${mtA(m0, 2)})`, `${mtA(pen(1), 2)}, ${mtA(pen(.3), 2)}, ${mtA(pen(m0), 2)}`],
         ["hasil", "Hujan menambah air, indeks naik", "lereng yang sama", `${mtA(pr(bata(.3)), 2)} → ${mtA(pr(bata(1)), 2)}`]]);
     },
     teknis: `<p><code>public/banjir/sim_longsor.js</code>, model lereng tak-hingga (Hammond dkk. 1992; Montgomery &amp; Dietrich 1994; Pack, Tarboton, Goodwin 1998, SINMAP).</p>
-    ${rumus(`FS = [c' + (γs − m·γw) · z · cos²β · tan φ] ÷ (γs · z · sin β · cos β)
-m  = (A + resapan) ÷ (z · (n − θfc)),  dipotong 0..1       model ember; z (n − θfc) = 1,5 m × 0,15 = 0,225 m = 225 mm
+    ${rumus(`FS = [c' + (γs − m·γw) × z × cos²β × tan φ] ÷ (γs × z × sin β × cos β)
+m  = (A + resapan) ÷ (z × (n − θfc)),  dipotong 0..1       model ember; z (n − θfc) = 1,5 m × 0,15 = 0,225 m = 225 mm
 A  = a7 × (1 − HILANG),  HILANG = 0,5                    bila jenuh menurut status.py: A = a7
 resapan = hujan − limpasan SCS-CN, kumulatif sejak jam 0
 β  = kemiringan sel, dipotong 45°;   γs 19, γw 9,81 kN/m³;   z 1,5 m;   porositas n 0,45;   θfc 0,3 m³/m³
@@ -775,7 +775,7 @@ indeks = bagian ruang (c', φ) seragam dengan FS &lt; 1;   c' 2-10 kPa, φ 26-36
       const D = await mtJSON("data/dampak.json"), T = D.terpapar, C = D.cakupan;
       document.querySelectorAll('[data-mt="prov"]').forEach(e => e.textContent = fmt((C.prov_sekolah || []).length)); document.querySelectorAll('[data-mt="cocok"]').forEach(e => e.textContent = mtP(C.sekolah_cocok));
       const ps = Object.entries(T.prov || {}).sort(([, a], [, b]) => b.penduduk - a.penduduk)[0];
-      return mtTangga(`Dampak banjir · ${mtTgl(D.hari)}`, "Kecamatan Siaga atau Awas banjir saat ini, dari dampak.json.", [
+      return mtTangga(`Dampak banjir, ${mtTgl(D.hari)}`, "Kecamatan Siaga atau Awas banjir saat ini, dari dampak.json.", [
         ["in", "Kecamatan Siaga atau Awas", "dari status.json", fmt(T.kec)],
         ["in", "Penduduk semua kecamatan itu", "WorldPop; seluruh penghuni kecamatan, bukan area tergenang", fmt(T.penduduk)],
         ps && ["in", "Provinsi dengan penduduk terpapar terbanyak", `${fmt(ps[1].kec)} kecamatan`, `${esc(namaProv(ps[0]))}: ${fmt(ps[1].penduduk)}`],
@@ -873,10 +873,10 @@ indeks = bobot diurnal x D + bobot semi-diurnal x S,  D dan S dibagi maksimumnya
       "Tidak memuat unsur non-astronomis yang ikut menentukan rob: muka laut musiman, tekanan udara, angin, gelombang, dan penurunan tanah. Itu ada di bagian rob dari model laut."]});
 
   /* ---------------------------------------------------------------- gambaran besar */
-  const SUMBER = [["hujan", "Open-Meteo", "hujan, hujan per jam, kebasahan tanah · 0,25°"], ["dadu", "ECMWF ansambel", "51 skenario hujan"], ["sungai", "GloFAS Copernicus", "debit sungai besar"],
+  const SUMBER = [["hujan", "Open-Meteo", "hujan, hujan per jam, kebasahan tanah, 0,25°"], ["dadu", "ECMWF ansambel", "51 skenario hujan"], ["sungai", "GloFAS Copernicus", "debit sungai besar"],
     ["ombak", "Open-Meteo Marine + IOC", "muka laut, gelombang, alat ukur pasang"], ["perisai", "InaRISK BNPB", "peta bahaya banjir, longsor, gelombang"], ["berkas", "BNPB / DIBI", "kejadian 2008–sekarang"], ["lonceng", "BMKG", "peringatan cuaca, rob, gelombang"]];
-  const PROSES = [["hitung", "Hujan per kecamatan", "3 hari ke depan, 7 hari lalu · bagian 2"], ["centang", "Status banjir & longsor", "Normal–Awas, 4 hari · bagian 4–5"], ["sungai", "Sungai dibanding sejarahnya", "banjir 2/5/20 tahunan · bagian 7"],
-    ["ombak", "Rob dibanding sejarahnya", "persentil 95/99 · bagian 8–9"], ["dadu", "Peluang dan ketepatan", "3 hari ke depan, uji balik · bagian 17–18"], ["tenda", "Posko dan anggaran", "lokasi, jenjang, biaya · bagian 11–12"], ["gedung", "Dampak dan laporan harian", "penduduk, sekolah, jalan · bagian 22–23"], ["perisai", "Uji otomatis", "gagal uji = tidak terbit · bagian 1"]];
+  const PROSES = [["hitung", "Hujan per kecamatan", "3 hari ke depan, 7 hari lalu, bagian 2"], ["centang", "Status banjir & longsor", "Normal–Awas, 4 hari, bagian 4–5"], ["sungai", "Sungai dibanding sejarahnya", "banjir 2/5/20 tahunan, bagian 7"],
+    ["ombak", "Rob dibanding sejarahnya", "persentil 95/99, bagian 8–9"], ["dadu", "Peluang dan ketepatan", "3 hari ke depan, uji balik, bagian 17–18"], ["tenda", "Posko dan anggaran", "lokasi, jenjang, biaya, bagian 11–12"], ["gedung", "Dampak dan laporan harian", "penduduk, sekolah, jalan, bagian 22–23"], ["perisai", "Uji otomatis", "gagal uji = tidak terbit, bagian 1"]];
   const TAB = [["peta", "Peta", "status, hujan, sungai, rob, posko, riwayat"], ["insight", "Insight", "kesimpulan penting dalam grafik"], ["prakiraan", "Prakiraan", "4 hari per provinsi"], ["posko", "Posko", "lokasi, jenjang, dan anggaran"],
     ["daftar", "Wilayah siaga", "kecamatan berstatus, paling mendesak dulu"], ["provinsi", "Provinsi", "rekomendasi per provinsi"], ["rob", "Rob", "titik pantai dan peringatan BMKG"], ["sungai", "Sungai", "debit dan ambang"],
     ["tren", "Tren", "skor risiko dan kalender musim"], ["keputusan", "Keputusan", "empat paket kesiapsiagaan"], ["simulasi", "Simulasi", "bagaimana bila"], ["sarana", "Sarana", "kesiapan alat posko"]];

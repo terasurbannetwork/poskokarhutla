@@ -430,7 +430,7 @@
       if (t.length > 1) s += '<polyline fill="none" stroke="' + WARNA[k] + '" stroke-width="2" stroke-linejoin="round" points="' + t.map(x => X(x.iso).toFixed(1) + "," + Y(x.median / 60).toFixed(1)).join(" ") + '"/>';
       t.forEach(x => {
         s += '<circle cx="' + X(x.iso).toFixed(1) + '" cy="' + Y(x.median / 60).toFixed(1) + '" r="5" fill="' + WARNA[k] + '" stroke="var(--card)" stroke-width="1.5"' +
-          lazyTip(() => tipKv(tn(NAMA_PENDEK[k] + " · " + tglPendek(x.iso)), [["Median", esc(durasi(x.median))], ["P90", esc(durasi(x.p90))], ["Terpanjang", esc(durasi(x.maks))], ["Jumlah granul FIRMS", id(x.n)]])) + "/>";
+          lazyTip(() => tipKv(tn(NAMA_PENDEK[k] + ", " + tglPendek(x.iso)), [["Median", esc(durasi(x.median))], ["P90", esc(durasi(x.p90))], ["Terpanjang", esc(durasi(x.maks))], ["Jumlah granul FIRMS", id(x.n)]])) + "/>";
       });
     });
     s += "</svg>";
@@ -468,7 +468,7 @@
           const baris = [["Deteksi", id(o[q])]];
           if (q === "M" && (o.T || o.A)) baris.push([tn("Terra"), id(o.T)], [tn("Aqua"), id(o.A)]);
           if (parsial(k)) baris.push(["Hari terhitung", id(o.hari)]);
-          return tipKv(tn(NAMA_PENDEK[q]) + " · " + tj, baris);
+          return tipKv(tn(NAMA_PENDEK[q]) + ", " + tj, baris);
         }) + "/>";
       });
       if (ks.length <= 31 || bulanan) s += Kartu.pil(x + bw / 2 - (id(o.total).length * 7.2 + 16) / 2, y - 24, id(o.total), "var(--card)", "var(--ink)", 12)[0];

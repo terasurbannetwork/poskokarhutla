@@ -282,7 +282,7 @@ function gambar(paksa) {
   const N = R.nx * R.ny, a = Math.floor(t), b = Math.min(J, a + 1), f = t - a, K = R.kedalaman;
   lukis("gn-air", N, k => warnaAir(K[a * N + k] * (1 - f) + K[b * N + k] * f));
   const lk = Math.round(t) + "|" + T.nJalan; if (T.lapis.longsor && (paksa || lk !== T.lsKunci)) { T.lsKunci = lk; const L = petaLongsor(t); lukis("gn-longsor", N, k => warnaLongsor(L[k])); }
-  const lb = $("#gnJam"); if (lb) lb.textContent = `+${a} j · ${pukul(a)}`;
+  const lb = $("#gnJam"); if (lb) lb.textContent = `+${a} j, ${pukul(a)}`;
   const lu = $("#gnLuasT"); if (lu) lu.textContent = `${bulat(ha(R.luas[a]))} ha tergenang`;
   const g = $("#gnT"); if (g && +g.value !== a) g.value = a;
   return performance.now() - t0;
@@ -297,7 +297,7 @@ function tip() {
   const w = el.offsetWidth || 220, hgt = el.offsetHeight || 70, x = e.originalEvent.clientX, y = e.originalEvent.clientY;
   const k = j * D.nx + i, a = Math.floor(T.t), kunci = k + "|" + a + "|" + T.lihat + "|" + T.nJalan;
   if (kunci !== T.tipKunci) { T.tipKunci = kunci; const N = D.nx * D.ny, d = R.kedalaman[a * N + k], p = SL.peluang(T.prep.lr[k], mJam(a));
-    el.innerHTML = T.prep.laut[k] ? "<b>Laut</b>" : `<b>${d >= .02 ? `Air ${angka1(d)} m` : "Kering"}</b><br>Ketinggian tanah ${angka1(T.prep.z[k])} m (DEM simulasi) · air maks 72 jam ${angka1(R.hmaks[k])} m<br>Lereng ${bulat(T.prep.lr[k])}° · indeks kerawanan longsor ${F2(p)} (relatif)`; }
+    el.innerHTML = T.prep.laut[k] ? "<b>Laut</b>" : `<b>${d >= .02 ? `Air ${angka1(d)} m` : "Kering"}</b><br>Ketinggian tanah ${angka1(T.prep.z[k])} m (DEM simulasi), air maks 72 jam ${angka1(R.hmaks[k])} m<br>Lereng ${bulat(T.prep.lr[k])}°, indeks kerawanan longsor ${F2(p)} (relatif)`; }
   el.classList.add("on"); el.style.left = Math.min(innerWidth - w - 8, x + 14) + "px"; el.style.top = Math.max(8, y - hgt - 12) + "px";
 }
 
@@ -353,20 +353,20 @@ function aturHtml() {
     ansambel: `<p class="fnd">Hujan harian pada peluang ansambel ≥ 10 % (batas bawah P90 per hari, bukan P90 total). Hari yang peluangnya di bawah 10 % tetap memakai prakiraan.</p>`}[T.sk];
   return g ? `<div class="simatur">${g}</div>` : "";
 }
-const rangkumPl = () => [T.tanggul.length && `${fmt(T.tanggul.length)} tanggul`, T.pompa.length && `${fmt(T.pompa.length)} pompa`, T.pintu && "pintu air tertutup"].filter(Boolean).join(" · ") || "Belum ada perlakuan.";
+const rangkumPl = () => [T.tanggul.length && `${fmt(T.tanggul.length)} tanggul`, T.pompa.length && `${fmt(T.pompa.length)} pompa`, T.pintu && "pintu air tertutup"].filter(Boolean).join(", ") || "Belum ada perlakuan.";
 const sumber = () => { const H = S.hujan, basi = H.hari_ini !== hariIniWIB();
   return `<p class="fnd" id="gnData">Data s.d. ${tglPendek(H.hari_ini)}${basi ? ` <span class="pill l2" style="height:17px;font-size:9.5px">bukan hari ini</span> jam 0 = ${tglPendek(H.hari_ini)} 00.00 WIB, prakiraan terbaru belum masuk` : ""}</p>`; };
 function panel() {
   const el = $("#simPanel"); if (!el) return; autoSisi(); const atas = el.scrollTop, P = pusat(), H = T.hasil;
   const kecs = Object.entries(Simulasi.kec || {}).sort((a, b) => a[1].kab.localeCompare(b[1].kab) || a[1].nama.localeCompare(b[1].nama)), ens = adaEns();
   if (T.sk === "ansambel" && !ens) T.sk = "dasar";
-  el.innerHTML = `<div class="lbl">Simulasi genangan 72 jam · model</div><h2><span translate="no">${esc(P?.nama || "Pilih area")}</span></h2>
-    <div style="font-size:12.5px;color:var(--ink2)"><span translate="no">${esc(P?.kab || "")}</span>${T.dem ? ` · sel ${bulat(T.dem.dx)} m · ketinggian ×${fmt(T.ex)}` : ""}</div>
+  el.innerHTML = `<div class="lbl">Simulasi genangan 72 jam, model</div><h2><span translate="no">${esc(P?.nama || "Pilih area")}</span></h2>
+    <div style="font-size:12.5px;color:var(--ink2)"><span translate="no">${esc(P?.kab || "")}</span>${T.dem ? `, sel ${bulat(T.dem.dx)} m, ketinggian ×${fmt(T.ex)}` : ""}</div>
     ${sumber()}
     ${Simulasi.awalHtml(T.titik ? "-" : T.k)}
     ${Simulasi.modeHtml()}
     <label class="fld"><span class="lbl">Provinsi</span><select id="gnProv" aria-label="Provinsi">${Object.entries(S.meta.provinsi).map(([k, n]) => `<option value="${k}" ${k === Simulasi.prov ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></label>
-    <label class="fld"><span class="lbl">Kecamatan</span><select id="gnKec" aria-label="Kecamatan">${T.titik ? `<option value="" selected>Titik pilihan</option>` : ""}${kecs.map(([k, c]) => `<option value="${esc(k)}" ${!T.titik && k === T.k ? "selected" : ""}>${esc(c.nama)} · ${esc(c.kab)}</option>`).join("")}</select></label>
+    <label class="fld"><span class="lbl">Kecamatan</span><select id="gnKec" aria-label="Kecamatan">${T.titik ? `<option value="" selected>Titik pilihan</option>` : ""}${kecs.map(([k, c]) => `<option value="${esc(k)}" ${!T.titik && k === T.k ? "selected" : ""}>${esc(c.nama)}, ${esc(c.kab)}</option>`).join("")}</select></label>
     <div class="simchips" style="margin-top:8px"><button type="button" data-alat="titik" aria-pressed="${T.alat === "titik"}">Pilih titik di peta</button><span></span></div>
     ${geser("gnSisi", "Lebar area", 3, 30, 1, T.sisi / 1000, v => fmt(v) + " km")}
     <div class="lbl" style="margin:12px 0 6px">Skenario</div>
@@ -600,7 +600,7 @@ async function tanggap() {
 function tanggapHtml() {
   const g = T.tg; if (!g) return ""; if (!g.ada) return `<p class="fnd" style="margin-top:6px">${esc(g.alasan)}</p>`;
   const [a, b] = [g.snapshot[0], g.snapshot.at(-1)], dua = g.snapshot.length > 1, A = STg().ASUMSI;
-  const baris = u => `<tr><td>${esc(namaUnit(u))}<small>${NAMA_JENIS[u.jenis]} · ${fmt(Math.round(u.km))} km${u.luarKm ? `, ${fmt(Math.round(u.luarKm))} km jalan ke tepi area` : ", di dalam area"}</small></td>${[a, ...(dua ? [b] : [])].map(s => { const x = s.unit.find(y => y.nama === u.nama && y.jenis === u.jenis); return `<td class="n num">${waktu(x.tiba)}</td>`; }).join("")}</tr>`;
+  const baris = u => `<tr><td>${esc(namaUnit(u))}<small>${NAMA_JENIS[u.jenis]}, ${fmt(Math.round(u.km))} km${u.luarKm ? `, ${fmt(Math.round(u.luarKm))} km jalan ke tepi area` : ", di dalam area"}</small></td>${[a, ...(dua ? [b] : [])].map(s => { const x = s.unit.find(y => y.nama === u.nama && y.jenis === u.jenis); return `<td class="n num">${waktu(x.tiba)}</td>`; }).join("")}</tr>`;
   return `<table class="tb3" style="margin-top:6px"><thead><tr><th>Pangkalan</th><th class="n">Jam +${fmt(a.jam)}</th>${dua ? `<th class="n">Jam +${fmt(b.jam)}</th>` : ""}</tr></thead><tbody>${g.unit.map(baris).join("") || `<tr><td colspan="3">Tidak ada pangkalan BPBD, Basarnas atau pos dalam 150 km.</td></tr>`}</tbody></table>
     <p class="fnd" style="margin-top:4px">Waktu tiba di permukiman tergenang; kolom kedua memakai jalan yang terendam pada jam puncak.</p>
     <table class="tb2" style="margin-top:6px"><tbody>

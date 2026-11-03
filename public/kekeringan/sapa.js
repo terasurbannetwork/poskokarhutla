@@ -27,7 +27,7 @@
       const lap = Sapa.kartu("laporan", "#1d4e89", "Laporan harian", `<a href="/kekeringan/laporan.html" style="color:inherit;text-decoration:underline">Buka laporan harian kekeringan</a>`);
       return Sapa.rangka({ikon: "kering", eyebrow: "Situasi kekeringan hari ini",
         judul: `<b>${fmt(h.N.kab_n[1])}</b> kabupaten/kota berstatus Siaga atau Awas kekeringan`,
-        chips: [["awas", `${fmt(h.tp[0])} Awas · ${fmt(h.tp[1])} Siaga`], ["kering", `${jt(h.N.jiwa[2])} jiwa di kecamatan Awas`], ["musim", `Hujan SPI ${spiBulan()}`]],
+        chips: [["awas", `${fmt(h.tp[0])} Awas, ${fmt(h.tp[1])} Siaga`], ["kering", `${jt(h.N.jiwa[2])} jiwa di kecamatan Awas`], ["musim", `Hujan SPI ${spiBulan()}`]],
         bagian: [
           h.prov.length && ["Provinsi perlu perhatian", "ps", h.prov.map(o => Sapa.provBaris(esc(namaProv(o.k)), [o.n[0] ? Sapa.pil(`${fmt(o.n[0])} kab/kota Awas`, "merah", "kering") : "", o.n[1] ? Sapa.pil(`${fmt(o.n[1])} Siaga`, "oranye") : "", o.jiwa ? Sapa.pil(`${jt(o.jiwa)} jiwa`, "prov") : ""].filter(Boolean))).join("")],
           h.kab.length && ["Kabupaten/kota status tertinggi", "ks", h.kab.map((x, i) => { const p = x.k.split("|");

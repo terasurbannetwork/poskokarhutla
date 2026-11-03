@@ -46,7 +46,7 @@
         <div class="bn-label">Sumber: ${esc(D.dasar.titik_panas)}; ${esc(D.dasar.operasi)}; ${esc(D.dasar.penduduk)}; tarif dan koefisien asumsi kerja tim Centurisk97.</div>
         <div class="kb-rincian"><span class="bn-pil" data-w="c3">${ikon("heli")}Heli ${rpK(n.rp_heli)}</span><span class="bn-pil" data-w="c4">${ikon("regu")}Regu ${rpK(n.rp_regu)}</span><span class="bn-pil" data-w="c1">${ikon("masker")}Masker ${rpK(n.rp_masker)}</span></div></section>`
       + k("heli", "Water bombing", fmt(n.jam_terbang) + " jam", `terbang, ${fmt(n.kompleks)} cluster`, "c3")
-      + k("regu", "Regu darat", bulat(n.regu_rata) + " regu", `rata-rata siaga · ${fmt(n.regu_hari)} regu-hari`, "c4")
+      + k("regu", "Regu darat", bulat(n.regu_rata) + " regu", `rata-rata siaga, ${fmt(n.regu_hari)} regu-hari`, "c4")
       + k("masker", "Masker N95", fmt(n.masker) + " masker", `untuk ${fmt(n.terdampak)} warga terdampak asap`, "c1")
       ;
     el("kartu").querySelectorAll("[data-w]").forEach(x => x.style.setProperty("--pil", `var(--${x.dataset.w})`));
@@ -74,7 +74,7 @@
       ["Sewa helikopter", rp(t.heli_jam.nilai), t.heli_jam.satuan, t.heli_jam.sumber],
       ["Uang harian (bawaan)", rp(uh.bawaan), uh.satuan, uh.sumber],
       ["Porsi uang harian penuh", fmt(t.porsi_bko.nilai), t.porsi_bko.satuan, t.porsi_bko.sumber],
-      ["Porsi MPA dan honornya", `${fmt(t.porsi_mpa.nilai)} · ${rp(t.honor_mpa.nilai)}`, t.honor_mpa.satuan, t.honor_mpa.sumber],
+      ["Porsi MPA dan honornya", `${fmt(t.porsi_mpa.nilai)}, ${rp(t.honor_mpa.nilai)}`, t.honor_mpa.satuan, t.honor_mpa.sumber],
       ["Konsumsi", rp(t.konsumsi.nilai), t.konsumsi.satuan, t.konsumsi.sumber],
       ["Harga masker N95", rp(t.harga_masker.nilai), t.harga_masker.satuan, t.harga_masker.sumber],
       ...Object.entries(k).map(([id, v]) => [{orang_per_regu: "Orang per regu", jam_heli_per_api: "Jam heli per cluster prioritas", rotasi: "Rotasi regu", masker_per_orang: "Masker per warga terdampak"}[id] || id, fmt(v.nilai), v.satuan, v.sumber]),

@@ -356,11 +356,11 @@ function dLoop(ts) {
     pip.querySelectorAll(".sf-seg button").forEach(b => b.classList.toggle("on", b.dataset.a.toUpperCase() === D.mode)); pip.querySelector("[data-a=pal]").textContent = D.mode === "IR" ? (D.pal === "ironbow" ? "Ironbow" : "White-hot") : "Citra";
     pip.querySelector("#sfZm").textContent = n1(D.zoom) + "×"; pip.querySelector("#sfPipN").textContent = `${DR[sel].kode} ${DR[sel].nama}`;
     const lat = tgt[1], lon = tgt[0], rng = Math.hypot(p.tx - p.x, p.ty - p.y, p.alt);
-    pip.querySelector("#sfHud").innerHTML = `<div class="tl"><i class="rec"></i>REC ${mmss(p.menit)}<br>${DR[sel].kode}<br>${D.mode === "IR" ? "IR · " + (D.pal === "ironbow" ? "IRONBOW" : "WHITE-HOT") : "EO · CITRA"}</div>
+    pip.querySelector("#sfHud").innerHTML = `<div class="tl"><i class="rec"></i>REC ${mmss(p.menit)}<br>${DR[sel].kode}<br>${D.mode === "IR" ? "IR, " + (D.pal === "ironbow" ? "IRONBOW" : "WHITE-HOT") : "EO, CITRA"}</div>
       <div class="tr">${wibTgl(ctx.mulai, t + sec / 3600)}<br>${esc(DR[sel].misi.toUpperCase())}</div>${compas(p.gim)}<div class="ch"></div>
       <div class="bl">ALT ${n0(p.alt)} M AGL<br>GS ${n0(p.kmj)} KM/J<br>HDG ${n0(p.arah)}°</div>
-      <div class="br">BAT ${n0(p.bat)}%<br>LNK ${n0(p.dbm)} DBM<br>ZOOM ${n1(D.zoom)}× · ${A.FOV}° FOV</div>
-      <div class="bc">SPI ${koor(lat, lon)}<br>RNG ${n0(rng)} M · ${D.mode === "IR" ? "MAKS " + n0(pan.maks) + " °C" : "EO"}</div>`;
+      <div class="br">BAT ${n0(p.bat)}%<br>LNK ${n0(p.dbm)} DBM<br>ZOOM ${n1(D.zoom)}×, ${A.FOV}° FOV</div>
+      <div class="bc">SPI ${koor(lat, lon)}<br>RNG ${n0(rng)} M, ${D.mode === "IR" ? "MAKS " + n0(pan.maks) + " °C" : "EO"}</div>`;
   }
   D.panel -= 1; if (D.panel <= 0) { D.panel = 5; dPanel(ctx, ps, sec); }
 }
@@ -388,17 +388,17 @@ function dPanel(ctx, ps, sec) {
     <div class="sf-card"><div class="sf-hd"><b>${c.kode} ${c.nama}</b><span class="sf-pillb">${p.st}</span></div>
       <div class="sf-grid"><div><small>Ketinggian</small><b>${n0(p.alt)}</b><small>m di atas tanah</small></div><div><small>Kecepatan</small><b>${n0(p.kmj)}</b><small>km/jam</small></div><div><small>Arah</small><b>${n0(p.arah)}°</b><small>${arah8(p.arah)}</small></div>
         <div><small>Baterai</small><b>${n0(p.bat)}%</b><small>± ${n0(Math.max(0, (p.bat - 20) / 100 * A.BAT_HABIS_MENIT))} menit sampai ganti</small></div><div><small>Sinyal</small><b>${n0(p.dbm)}</b><small>dBm</small></div><div><small>Waktu terbang</small><b>${mmss(p.menit)}</b><small>sortie ini</small></div></div>
-      <dl class="sf-dl"><dt>Pesawat</dt><dd>${c.jenis}</dd><dt>Misi</dt><dd><b>${c.misi}</b></dd><dt>Tugas</dt><dd>${c.tugas}</dd><dt>Sensor</dt><dd>EO/IR, zoom hingga 8×</dd><dt>Posisi</dt><dd>${koor(ll[1], ll[0])}</dd><dt>Gimbal</dt><dd>${n0(p.gim)}° · ${n0(p.pitch)}° · ${n1(D.zoom)}×</dd></dl>
+      <dl class="sf-dl"><dt>Pesawat</dt><dd>${c.jenis}</dd><dt>Misi</dt><dd><b>${c.misi}</b></dd><dt>Tugas</dt><dd>${c.tugas}</dd><dt>Sensor</dt><dd>EO/IR, zoom hingga 8×</dd><dt>Posisi</dt><dd>${koor(ll[1], ll[0])}</dd><dt>Gimbal</dt><dd>${n0(p.gim)}°, ${n0(p.pitch)}°, ${n1(D.zoom)}×</dd></dl>
       <div class="sf-btn"><button type="button" class="sf-b pri" data-a="kamera">${IKN.penuh}Kamera penuh</button><button type="button" class="sf-b" data-a="termal">Termal</button></div></div>`;
   /* grafik 60 detik terakhir drone terpilih (dihitung dari fungsi posisi, bukan buffer) */
   const sec0 = sec, S = Array.from({length: 61}, (_, q) => sec0 - 60 + q), mine = S.map(s => dronePos(K, H, sel, t, s));
   const alt = mine.map(q => q.alt), bat = mine.map(q => q.bat), tm = S.map((s, q) => mine[q].udara ? pandang(K, H, t, mine[q], D.zoom).maks : wx(H, hh(t), "tc") ?? 30);
   const lain = DR.map((_, i) => i === sel ? null : {a: S.map(s => dronePos(K, H, i, t, s).alt), w: "#8a96aa", tebal: 1, redup: true}).filter(Boolean);
-  D.bawah.querySelector("#sfDrGr").innerHTML = chart("Ketinggian (m)", `${c.kode} · ${n0(p.alt)} m`, [...lain, {a: alt, w: "#e5603f", tebal: 2}], {ymin: 0, ymax: 800, x0: "−60 d", x1: "kini"})
+  D.bawah.querySelector("#sfDrGr").innerHTML = chart("Ketinggian (m)", `${c.kode}, ${n0(p.alt)} m`, [...lain, {a: alt, w: "#e5603f", tebal: 2}], {ymin: 0, ymax: 800, x0: "−60 d", x1: "kini"})
     + chart("Suhu maks di pandangan (°C)", `${n0(pandang(K, H, t, p, D.zoom).maks)} °C`, [{a: tm, w: "#e5603f", tebal: 2}], {ymin: 0, ymax: 1000, x0: "−60 d", x1: "kini", isi: 1})
-    + chart("Baterai (%)", `${c.kode} · ${n0(p.bat)}%`, [{a: bat, w: "#e5603f", tebal: 2}], {ymin: 0, ymax: 100, x0: "−60 d", x1: "kini", isi: 1});
+    + chart("Baterai (%)", `${c.kode}, ${n0(p.bat)}%`, [{a: bat, w: "#e5603f", tebal: 2}], {ymin: 0, ymax: 100, x0: "−60 d", x1: "kini", isi: 1});
   const det = deteksi(K, H).filter(x => x.h <= t).reverse(); D.bawah.querySelector("#sfDetN").textContent = String(det.length);
-  const kt = det.slice(0, 20).map(x => `${x.i}|${x.k}`).join(); if (kt !== D.detTampil) { D.detTampil = kt; D.bawah.querySelector("#sfDet").innerHTML = det.slice(0, 20).map(x => `<div class="sf-dr"><i></i><span><b>Titik panas · ${n0(x.suhu)} °C</b><small>${DR[x.i].kode} · ${koor(x.lat, x.lon)}</small></span><time>${wibJam(ctx.mulai, x.h)}</time></div>`).join("") || `<p class="sf-nol">Belum ada titik panas terdeteksi sampai jam ini.</p>`; }
+  const kt = det.slice(0, 20).map(x => `${x.i}|${x.k}`).join(); if (kt !== D.detTampil) { D.detTampil = kt; D.bawah.querySelector("#sfDet").innerHTML = det.slice(0, 20).map(x => `<div class="sf-dr"><i></i><span><b>Titik panas, ${n0(x.suhu)} °C</b><small>${DR[x.i].kode}, ${koor(x.lat, x.lon)}</small></span><time>${wibJam(ctx.mulai, x.h)}</time></div>`).join("") || `<p class="sf-nol">Belum ada titik panas terdeteksi sampai jam ini.</p>`; }
 }
 const TAB_D = {id: "drones", nama: "Drones", ikon: IKN.drone,
   lencana: ctx => { if (!ctx?.H || !ctx.K) return null; let q = 0; for (let i = 0; i < DR.length; i++) if (dronePos(ctx.K, ctx.H, i, ctx.t || 0, 0).udara) q++; return q; },
@@ -448,8 +448,8 @@ function rDraw() {
 function rPanel(ctx, U, ST) {
   const {K, H} = ctx, t = R.t, aktif = ST.filter(s => s.st !== "Siaga").length, udara = U.filter(u => u.grup === "udara"), naik = udara.filter((u, i) => ST[U.indexOf(u)].st !== "Siaga").length;
   const vol = U.reduce((s, u) => s + (u.ev ? volumeSd(u, t) : 0), 0), gar = U.reduce((s, u, i) => s + (ST[i].L || 0), 0), per = U.reduce((s, u) => s + (t >= u.tMob ? u.pers : 0), 0), gp = [["udara", "Pesawat"], ["darat", "Engine & tangki"], ["kru", "Kru & dozer"]];
-  const baris = (u, i) => `<button type="button" class="sf-row sf-ru${R.sel === u.kode ? " on" : ""}" data-u="${u.kode}"><i class="ik">${IKJ[u.jenis]}</i><span class="nm"><b>${u.kode} ${esc(u.ln)}</b><small><i class="sd" data-s="${ST[i].st.split(" ")[0]}"></i>${ST[i].st}${u.nyata ? "" : " · simulasi"}</small></span><span class="st"><small>${u.kap ? n0(u.kap) + " L" : n0(u.pers) + " pers."}</small></span></button>`;
-  R.root.innerHTML = `<div class="sf-hd"><b>Sumber daya</b><span class="sf-ket">${U.length} unit · ${aktif} aktif</span><span class="sf-sim">SIMULASI</span></div>
+  const baris = (u, i) => `<button type="button" class="sf-row sf-ru${R.sel === u.kode ? " on" : ""}" data-u="${u.kode}"><i class="ik">${IKJ[u.jenis]}</i><span class="nm"><b>${u.kode} ${esc(u.ln)}</b><small><i class="sd" data-s="${ST[i].st.split(" ")[0]}"></i>${ST[i].st}${u.nyata ? "" : ", simulasi"}</small></span><span class="st"><small>${u.kap ? n0(u.kap) + " L" : n0(u.pers) + " pers."}</small></span></button>`;
+  R.root.innerHTML = `<div class="sf-hd"><b>Sumber daya</b><span class="sf-ket">${U.length} unit, ${aktif} aktif</span><span class="sf-sim">SIMULASI</span></div>
     <div class="sf-ring"><div><b>${naik}/${udara.length}</b><small>pesawat mengudara</small></div><div><b>${vol >= 1e4 ? n0(vol / 1e3) + " rb" : n0(vol)}</b><small>L air/retardan</small></div><div><b>${n1(gar / 1000)}</b><small>km garis</small></div><div><b>${n0(per)}</b><small>personel</small></div></div>
     ${gp.map(([k, jd]) => `<div class="sf-gt">${jd}</div>${U.map((u, i) => u.grup === k ? baris(u, i) : "").join("")}`).join("")}
     <div class="sf-card"><div class="sf-hd"><b>Operasi</b><span class="sf-ket">${aktif ? "operasi berjalan" : "belum ada unit tiba"}</span></div>
@@ -471,7 +471,7 @@ function rBawah(ctx, U) {
     + chart("Garis kendali dibangun (km)", `${n1(d.gar[Math.min(72, Math.round(t))])} km`, [{a: d.gar, w: "#8a7a3a", tebal: 2}], {x0: "jam 0", x1: "jam 72", isi: 1, kursor: x, fmt: v => n1(v)})
     + chart("Personel ditugaskan", `${n0(d.per[Math.min(72, Math.round(t))])} orang`, [{a: d.per, w: "#5a9e74", tebal: 2}], {x0: "jam 0", x1: "jam 72", isi: 1, kursor: x});
   R.bawah.querySelector("#sfLogN").textContent = String(lg.length); const g = geo(K), kt = lg.slice(0, 14).map(e => e.u.kode + e.tj).join();
-  if (kt !== R.logT) { R.logT = kt; R.bawah.querySelector("#sfLog").innerHTML = lg.slice(0, 14).map(e => { const ll = g.ll(e.x, e.y); return `<div class="sf-dr"><i class="${e.u.jenis === "AT" ? "mr" : "bl"}"></i><span><b>${e.u.kode} · ${n0(e.vol)} L ${e.u.jenis === "AT" ? "retardan" : "air"}</b><small>${koor(ll[1], ll[0])}</small></span><time>${wibJam(ctx.mulai, e.tj)}</time></div>`; }).join("") || `<p class="sf-nol">Belum ada siraman sampai jam ini.</p>`; }
+  if (kt !== R.logT) { R.logT = kt; R.bawah.querySelector("#sfLog").innerHTML = lg.slice(0, 14).map(e => { const ll = g.ll(e.x, e.y); return `<div class="sf-dr"><i class="${e.u.jenis === "AT" ? "mr" : "bl"}"></i><span><b>${e.u.kode}, ${n0(e.vol)} L ${e.u.jenis === "AT" ? "retardan" : "air"}</b><small>${koor(ll[1], ll[0])}</small></span><time>${wibJam(ctx.mulai, e.tj)}</time></div>`; }).join("") || `<p class="sf-nol">Belum ada siraman sampai jam ini.</p>`; }
 }
 const TAB_R = {id: "resources", nama: "Resources", ikon: IKN.engine,
   lencana: ctx => { if (!ctx?.H || !ctx.K) return null; const U = rUnits({...ctx, t: ctx.t}); let q = 0; for (const u of U) if (unitKe(ctx.K, ctx.H, U, u, ctx.t || 0).st !== "Siaga") q++; return q; },

@@ -71,7 +71,7 @@
     const kepala = h("tr", null, ...KOLOM.map(([k, l]) => h("th", {"aria-sort": k === urutKolom ? (urutArah > 0 ? "ascending" : "descending") : "none"},
       h("button", {type: "button", class: "rs-urut", "data-k": k}, l, k === urutKolom ? " " + (urutArah > 0 ? "▲" : "▼") : ""))));
     const baris = r.slice(hal * HALAMAN, hal * HALAMAN + HALAMAN).map(x => { const s = STATUS[x.status];
-      return h("tr", null, h("td", {"data-label": "Riset", class: "rs-judul"}, h("b", {teks: x.judul}), h("span", {class: "rs-redup", teks: [x.wilayah, tgl(x.mulai) + " - " + tgl(x.selesai)].join(" · ")})),
+      return h("tr", null, h("td", {"data-label": "Riset", class: "rs-judul"}, h("b", {teks: x.judul}), h("span", {class: "rs-redup", teks: [x.wilayah, tgl(x.mulai) + " - " + tgl(x.selesai)].join(", ")})),
         h("td", {"data-label": "Institusi"}, x.institusi, x.unit ? h("span", {class: "rs-redup", teks: x.unit}) : null),
         h("td", {"data-label": "Bencana"}, pil("api", D.bencana[x.bencana] || x.bencana, "abu")),
         h("td", {"data-label": "Status"}, pil(s[0], s[1], s[2])),

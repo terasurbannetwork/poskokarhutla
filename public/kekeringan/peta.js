@@ -131,16 +131,16 @@ const Peta = {
   /* kartu hover satu baris berikon (inti/peta/lapis.js); stat tanpa nilai dibuang */
   kartuWilayah(f) { const p = f.properties, a = (S.jalur.length ? S.wil.kab : S.wil.prov)[p.kunci], W = WARNA_LV, pd = S.mode === "padi" && padiWil(p.kunci);
     if (pd) { const bd = padiBanding(pd); return PI.kartuTip({judul: esc(p.nama), kepala: S.jalur.length ? lambang(S.jalur[0], p.nama) : lambang(p.kunci), stat: bd ? [["debit", fmt(Math.round(bd.v)) + "%", `${PADI_BESARAN(bd.j)} (normal ${fmt(Math.round(bd.n))}%, ${poinTxt(bd.d)})`, "#c9503a", bd.d >= 10]] : [["debit", fmt(Math.round(pd.turun_med)) + "%", "penurunan hasil median", "#c9503a"]]}); }
-    const stat = [["perisai", LEVEL[p.lv], "status", W[p.lv], p.lv >= 2], ...(a ? [["mata", rb(a.jiwa[0]), "jiwa kering", "#c9a24b"], ...(a.spi3 != null ? [["hujan", F2(a.spi3), `SPI ${spiBulan()} · ${katSpi(a.spi3)}`, "#3f7fb8"]] : []), ...(a.mm3 != null ? [["hujan", fmt(a.mm3) + " mm", "hujan 3 bulan", "#3f7fb8"]] : [])] : [])];
+    const stat = [["perisai", LEVEL[p.lv], "status", W[p.lv], p.lv >= 2], ...(a ? [["mata", rb(a.jiwa[0]), "jiwa kering", "#c9a24b"], ...(a.spi3 != null ? [["hujan", F2(a.spi3), `SPI ${spiBulan()}, ${katSpi(a.spi3)}`, "#3f7fb8"]] : []), ...(a.mm3 != null ? [["hujan", fmt(a.mm3) + " mm", "hujan 3 bulan", "#3f7fb8"]] : [])] : [])];
     return PI.kartuTip({judul: esc(p.nama), kepala: S.jalur.length ? lambang(S.jalur[0], p.nama) : lambang(p.kunci), stat}); },
   kartuHth(r) { const k = KELAS_HTH()[r[3]] || "";
     return PI.kartuTip({judul: "Hari tanpa hujan", sub: `<small>${F2(Math.abs(r[0]))}° ${r[0] < 0 ? "LS" : "LU"}, ${F2(r[1])}° BT</small>`, stat: [["hujan", fmt(r[2]) + " hari", k.toLowerCase(), warnaHth(r[2]) || "#9ccfae", r[3] >= 4]]}); },
   kartuPrak(r) { const t = titikPrak(r), ls = t?.[2] || [], bl = BLN_PRAK();
-    return PI.kartuTip({judul: "Prakiraan SEAS5", sub: `<small>${BELUM_UJI.toLowerCase()}</small>`, stat: ls.map((l, i) => ["hujan", fmt(l[3]) + "%", `${bl[i] || ""} SPI-3 ≤ −1${BASELINE_PRAK("pk1", i) != null ? " · " + selisihTxt(l[3], BASELINE_PRAK("pk1", i)) : ""}`, warnaBatas(WARNA_PRAK, l[3]) , i === S.bln && l[3] >= 50])}); },
+    return PI.kartuTip({judul: "Prakiraan SEAS5", sub: `<small>${BELUM_UJI.toLowerCase()}</small>`, stat: ls.map((l, i) => ["hujan", fmt(l[3]) + "%", `${bl[i] || ""} SPI-3 ≤ −1${BASELINE_PRAK("pk1", i) != null ? ", " + selisihTxt(l[3], BASELINE_PRAK("pk1", i)) : ""}`, warnaBatas(WARNA_PRAK, l[3]) , i === S.bln && l[3] >= 50])}); },
   kartuSel(r) { if (S.mode === "hth") return this.kartuHth(r); if (S.mode === "prakiraan") return this.kartuPrak(r);
     const W = WARNA_LV, lv = r[7] || 0, tanah = r[4] ?? r[3];
     return PI.kartuTip({judul: esc(namaProv(r[2])), sub: `<small>${F2(Math.abs(r[0]))}° ${r[0] < 0 ? "LS" : "LU"}, ${F2(r[1])}° BT</small>`, stat: [["perisai", LEVEL[lv], "status", W[lv], lv >= 2],
-      ...(r[6] != null ? [["hujan", F2(r[6]), `SPI ${spiBulan()} · ${katSpi(r[6])}`, "#3f7fb8"]] : []), ...(r[9] != null ? [["hujan", fmt(r[9]) + " mm", "hujan 3 bulan", "#3f7fb8"]] : []), ...(tanah != null ? [["rasio", fmt(tanah), "persentil tanah", "#8a6d4e"]] : []), ...(r[5] != null ? [["debit", fmt(Math.round(r[5])), "kode DC", "#c9a24b"]] : [])]}); },
+      ...(r[6] != null ? [["hujan", F2(r[6]), `SPI ${spiBulan()}, ${katSpi(r[6])}`, "#3f7fb8"]] : []), ...(r[9] != null ? [["hujan", fmt(r[9]) + " mm", "hujan 3 bulan", "#3f7fb8"]] : []), ...(tanah != null ? [["rasio", fmt(tanah), "persentil tanah", "#8a6d4e"]] : []), ...(r[5] != null ? [["debit", fmt(Math.round(r[5])), "kode DC", "#c9a24b"]] : [])]}); },
   interaksi() {
     if (this._ia) return; this._ia = true;
     let hov = null, hovG = null; const tip = () => PI?.sembunyiTip();
@@ -194,7 +194,7 @@ $("#handle").onclick = () => $("#panel").classList.toggle("min");
 /* ---------- cari: provinsi dan kabupaten yang berstatus */
 $("#cari").addEventListener("input", e => {
   const q = e.target.value.trim().toLowerCase(), h = $("#hasil"); if (q.length < 2) { h.hidden = true; return; }
-  const idx = [...Object.entries(S.meta.provinsi).map(([k, n]) => ({k, n, j: "Provinsi"})), ...Object.keys(S.wil.kab).map(k => { const p = k.split("|"); return {k, n: p[1], j: "Kab. · " + namaProv(p[0])}; })];
+  const idx = [...Object.entries(S.meta.provinsi).map(([k, n]) => ({k, n, j: "Provinsi"})), ...Object.keys(S.wil.kab).map(k => { const p = k.split("|"); return {k, n: p[1], j: "Kab., " + namaProv(p[0])}; })];
   const hs = idx.filter(i => i.n.toLowerCase().includes(q)).slice(0, 12);
   h.innerHTML = hs.length ? hs.map(i => `<button data-k="${esc(i.k)}">${esc(i.n)}<br><small>${esc(i.j)}</small></button>`).join("") : `<div class="kosong" style="padding:12px">Tidak ditemukan.</div>`; h.hidden = false; });
 $("#hasil").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $("#hasil").hidden = true; $("#cari").value = ""; const p = b.dataset.k.split("|");
@@ -251,7 +251,7 @@ const Analisa = {
     d.querySelector("[data-tutup]").onclick = () => d.close(); d.onclick = e => { if (e.target === d) d.close(); }; d.showModal(); },
   wilayah(kunci) {
     const p = kunci.split("|"), kab = p.length === 2, a = (kab ? S.wil.kab : S.wil.prov)[kunci] || (kab && (S.hth?.kab?.[kunci] || S.prak?.kab?.[kunci]) ? {lv: 0, jiwa: [0, 0, 0], total: (S.hth?.kab?.[kunci] || S.prak?.kab?.[kunci]).total || 0} : null); if (!a) return;   /* kabupaten tanpa status tetap punya HTH, prakiraan, padi */
-    const nama = kab ? p[1] : namaProv(p[0]), sub = kab ? "Kabupaten/kota · " + namaProv(p[0]) : "Provinsi", sp = S.meta.spi;
+    const nama = kab ? p[1] : namaProv(p[0]), sub = kab ? "Kabupaten/kota, " + namaProv(p[0]) : "Provinsi", sp = S.meta.spi;
     const kepala = `${kab ? lambang(p[0], p[1]) : lambang(p[0])}<div><h3 id="dlgJudul">${esc(nama)}</h3><p>${esc(sub)}</p></div>`;
     const dasar = `<div class="grid g4">${kot("Status", `<span style="color:${WARNA_LV[a.lv]}">${LEVEL[a.lv]}</span>`, ["tidak kering", "kering", "kering parah", "kering berat"][a.lv])}
       ${kot("Jiwa di wilayah kering", rb(a.jiwa[0]), `dari ${rb(a.total)} jiwa`)}${kot("Jiwa Awas", a.jiwa[2] ? rb(a.jiwa[2]) : "–", "di kecamatan Awas")}
@@ -267,8 +267,8 @@ const Analisa = {
     if (H && H.maks > 0) out.push(blk("Hari tanpa hujan", `<div class="grid g4">${kot("HTH terpanjang", fmt(H.maks) + " hari", (KELAS_HTH()[klsHth(H.maks)] || "").toLowerCase())}${kot("Jiwa HTH 31 hari atau lebih", rb(H.j31), `${fmt(Math.round(H.j31 / (H.total || 1) * 100))}% penduduk`)}${kot("Jiwa HTH 61 hari atau lebih", rb(H.j61), "")}</div><p class="fnd">Hujan di bawah ${fmt(S.hth.ambang_mm)} mm dihitung tanpa hujan; model Open-Meteo, bukan pos BMKG</p>`));
     const P = S.prak && (kab ? S.prak.kab : S.prak.prov)[kunci];
     if (prakAda(P)) out.push(blk(`Prakiraan 3 bulan <em class="sp-p oranye">${BELUM_UJI}</em>`, `<div class="bk-t">${P.lead.map((l, i) => { const bs = BASELINE_PRAK("pk1", i);
-      return `<div><b>${esc(BLN_PRAK()[i] || "")}</b><span>${fmt(Math.round(l.pk1))}% SPI-3 ≤ −1${bs != null ? ` <small>(${selisihTxt(l.pk1, bs)} dari baseline ${fmt(Math.round(bs))}%)</small>` : ""}</span><span>${fmt(Math.round(l.pk15))}% ≤ −1,5 · ${fmt(Math.round(l.pk2))}% ≤ −2</span><span>median SPI-3 ${F2(l.spi3)}</span></div>`; }).join("")}</div>
-      <p class="fnd">ECMWF SEAS5, 51 anggota; ${esc(BIAS_TXT())}${P.p31 != null ? ` · peluang HTH 31 hari atau lebih ${fmt(Math.round(P.p31))}%, 61 hari ${fmt(Math.round(P.p61))}%` : ""}</p>`));
+      return `<div><b>${esc(BLN_PRAK()[i] || "")}</b><span>${fmt(Math.round(l.pk1))}% SPI-3 ≤ −1${bs != null ? ` <small>(${selisihTxt(l.pk1, bs)} dari baseline ${fmt(Math.round(bs))}%)</small>` : ""}</span><span>${fmt(Math.round(l.pk15))}% ≤ −1,5, ${fmt(Math.round(l.pk2))}% ≤ −2</span><span>median SPI-3 ${F2(l.spi3)}</span></div>`; }).join("")}</div>
+      <p class="fnd">ECMWF SEAS5, 51 anggota; ${esc(BIAS_TXT())}${P.p31 != null ? `, peluang HTH 31 hari atau lebih ${fmt(Math.round(P.p31))}%, 61 hari ${fmt(Math.round(P.p61))}%` : ""}</p>`));
     const D = padiWil(kunci);
     if (D) { const bd = padiBanding(D);
       out.push(blk("Padi tadah hujan", `<div class="grid g4">${kab ? kot("Peluang gagal panen", fmt(D.gagal) + "%", "hasil turun 50% atau lebih") : ""}${bd ? kot(PADI_BESARAN(bd.j)[0].toUpperCase() + PADI_BESARAN(bd.j).slice(1), fmt(Math.round(bd.v)) + "%", `normal ${fmt(Math.round(bd.n))}% (${poinTxt(bd.d)})`) : kot("Penurunan hasil median", fmt(Math.round(D.turun_med)) + "%", "")}${bd?.j === "median" ? kot("Peluang hasil turun 25% atau lebih", fmt(Math.round(D.turun25)) + "%", D.fase_terberat ? "fase terberat: " + esc(D.fase_terberat) : "") : kot("Penurunan hasil median", fmt(Math.round(D.turun_med)) + "%", D.fase_terberat ? "fase terberat: " + esc(D.fase_terberat) : "")}</div><p class="fnd">Indikator cekaman air, bukan data puso; tanam ${D.tanam ? esc(tglPendek(D.tanam)) + " (asumsi)" : "mengikuti onset hujan (asumsi)"}, tanpa irigasi, tanpa data sawah</p>`)); }

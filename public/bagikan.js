@@ -8,7 +8,7 @@
 const SITUS_W = document.documentElement.dataset.situs === "w";   /* *.workers.dev: merek Centurisk97, tanpa akun Teras Urban (pemilik, 17 Okt 2026) */
 const Bagikan = {
   hal: "karhutla", dasar: "", tema: {}, reg: null, tab: "gambar", tpl: "ringkas", uk: "feed", prov: "", exId: "", pakaiPeta: true,
-  UK: {feed: [1080, 1350, "Feed 4:5"], story: [1080, 1920, "Story · TikTok 9:16"], kotak: [1080, 1080, "Kotak 1:1"]},
+  UK: {feed: [1080, 1350, "Feed 4:5"], story: [1080, 1920, "Story, TikTok 9:16"], kotak: [1080, 1080, "Kotak 1:1"]},
   TPL: [["kompleks", "Cluster ini"], ["ringkas", "Ringkasan hari ini"], ["provinsi", "Provinsi"], ["ex", "Grafik Insight"]],
   C: {navy: "#0b2545", navy2: "#1d4e89", kertas: "#f3f6fa", tinta: "#0b2545", tinta2: "#5b6b82", garis: "#dde4ee", jalur: "#edf1f6", hl: "#ffb37a"},
   LV: ["#5a9e74", "#e3b94e", "#e58a45", "#c9503a"],
@@ -33,7 +33,7 @@ const Bagikan = {
       ? {nama: "Centurisk97: Banjir & Longsor", pendek: "Centurisk97", tema: "banjir & longsor", sumber: "Sumber: Open-Meteo, Copernicus GloFAS, BMKG Maritim, BNPB",
         tagar: ["#banjir", "#longsor", "#rob", "#cuacaekstrem", "#siagabencana"], akhir: "#Centurisk97"}
       : this.T ? {nama: "Centurisk97", pendek: "Centurisk97", sumber: "", tagar: [], akhir: "#Centurisk97"}
-      : {nama: "Centurisk97 · Karhutla", pendek: "Centurisk97", tema: "kebakaran hutan dan lahan", sumber: "Sumber: NASA FIRMS, BMKG/Open-Meteo, BNPB",
+      : {nama: "Centurisk97, Karhutla", pendek: "Centurisk97", tema: "kebakaran hutan dan lahan", sumber: "Sumber: NASA FIRMS, BMKG/Open-Meteo, BNPB",
         tagar: ["#karhutla", "#kabutasap", "#kebakaranhutan", "#titikpanas"], akhir: "#Centurisk97"};
     return r ? {...a, nama: r.nama, sumber: "Sumber: " + r.sumber, tagar: r.tagar} : a;
   },
@@ -111,15 +111,15 @@ const Bagikan = {
     const kep = t.querySelectorAll("thead th")[j]?.textContent || "";
     /* nama ringkas: "Selasa, 13 Oktober 2026" -> "13 Okt"; tanda bulatan di depan keterangan dibuang */
     const ringkas = t => String(t).replace(/^[A-Za-z]+,\s*(\d{1,2})\s+([A-Za-z]{3})[A-Za-z]*\s+\d{4}$/, "$1 $2").replace(/^[•●·\s]+/, "").trim();
-    const top = rs.map(r => ({n: ringkas(r.children[0].textContent) + (kep && !rasio(j) ? " · " + ringkas(kep) : ""), v: r.children[j]?.textContent || "", a: angka(r.children[j]?.textContent)}))
+    const top = rs.map(r => ({n: ringkas(r.children[0].textContent) + (kep && !rasio(j) ? ", " + ringkas(kep) : ""), v: r.children[j]?.textContent || "", a: angka(r.children[j]?.textContent)}))
       .filter(q => q.v && q.v !== "–" && q.a > 0).sort((p, q) => q.a - p.a).slice(0, 3);
     return top.length > 1 ? top : []; },
-  /* daftar video (a.vd-k): 5 video yang sedang tampil jadi tabel Video | Kanal · tanggal | Tayangan */
+  /* daftar video (a.vd-k): 5 video yang sedang tampil jadi tabel Video | Kanal, tanggal | Tayangan */
   tabelVideo(art) {
     const ks = [...art.querySelectorAll("a.vd-k")].slice(0, 5); if (!ks.length) return null;
     const pt = (t, n) => t.length > n ? t.slice(0, n - 1).trimEnd() + "…" : t, t = document.createElement("table");
-    t.innerHTML = `<thead><tr><th>Video</th><th>Kanal · tanggal</th><th>Tayangan</th></tr></thead><tbody>${ks.map(k => {
-      const tt = k.querySelector(".vd-tt")?.textContent.replace(/\s*tayangan\s*$/, "").trim() || "–", kt = (k.querySelector("small")?.textContent || "").replace(/\s*·\s*[\d.,]+\s*kali ditonton\s*$/, "").trim();
+    t.innerHTML = `<thead><tr><th>Video</th><th>Kanal, tanggal</th><th>Tayangan</th></tr></thead><tbody>${ks.map(k => {
+      const tt = k.querySelector(".vd-tt")?.textContent.replace(/\s*tayangan\s*$/, "").trim() || "–", kt = (k.querySelector("small")?.textContent || "").replace(/\s*[·,]\s*[\d.,]+\s*kali ditonton\s*$/, "").trim();
       return `<tr><td>${esc(pt(k.querySelector("b")?.textContent.trim() || "", 40))}</td><td>${esc(pt(kt, 26))}</td><td>${esc(tt)}</td></tr>`; }).join("")}</tbody>`;
     return t;
   },
@@ -269,7 +269,7 @@ const Bagikan = {
         p.wt.akhir ? `musim sampai ${new Date(p.wt.akhir + "T00:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "UTC"})}` : null,
         p.wt.k >= 2 ? "sering kambuh, mop-up 14 hari" : null].filter(Boolean).join(", ") + "."}] : [])];
     return {tpl: "kompleks", prov: p.prov, lv: p.level, label: `Cluster ${p.id}`, judul: `${p.kec}, ${p.kab}`,
-      sub: `${namaProv(p.prov)} · status ${S.meta.status[p.level].toLowerCase()} · ${fmt(p.n)} deteksi VIIRS 7 hari`,
+      sub: `${namaProv(p.prov)}, status ${S.meta.status[p.level].toLowerCase()}, ${fmt(p.n)} deteksi VIIRS 7 hari`,
       kpi, bar: {judul: "Unit pemadam terdekat (jarak lurus)", pendek: "Unit terdekat", rows}, rek, legenda: [[this.LV[3], "Prioritas"], [this.LV[2], "Siaga"], [this.LV[1], "Patroli"]], petaKet: `Cluster ${p.id}`};
   },
   async buka(tpl, exId) {
@@ -382,7 +382,7 @@ const Bagikan = {
     if (jenis === "artikel") { const [j, url, kamp] = a, hr = new Date().toLocaleDateString(E ? "en-GB" : "id-ID", {day: "numeric", month: "short", timeZone: "Asia/Jakarta"});
       return {judul: j, teks: `${Bagi.potong(j, 180)} (${hr}). ${E ? "More:" : "Selengkapnya:"}`, url, kampanye: kamp}; }
     const k = jenis === "prov" ? a : "";
-    return {judul: k ? namaProv(k) + " · " + this.K.pendek : document.title, teks: this.teksWil(k) + " " + L, url: o + location.pathname + (k ? "?wil=" + k : ""), kampanye: k ? "provinsi" : "ringkasan"};
+    return {judul: k ? namaProv(k) + ", " + this.K.pendek : document.title, teks: this.teksWil(k) + " " + L, url: o + location.pathname + (k ? "?wil=" + k : ""), kampanye: k ? "provinsi" : "ringkasan"};
   },
   /* tombol bagikan di bagian halaman yang dirender ulang sendiri: diamati, dipasang sekali per elemen */
   pasangCepat() {
@@ -484,7 +484,7 @@ const Bagikan = {
     const lv = n[3] ? 3 : n[2] ? 2 : n[1] ? 1 : 0;
     let rows, jb, jp;
     const kpi = [
-      {l: "Kecamatan berstatus banjir", s: "Kec. berstatus", v: fmt(n[1] + n[2] + n[3]), ket: `${fmt(n[3])} awas · ${fmt(n[2])} siaga · ${fmt(n[1])} waspada`, ks: `${fmt(n[3])} awas · ${fmt(n[2])} siaga`, w: this.LV[lv]},
+      {l: "Kecamatan berstatus banjir", s: "Kec. berstatus", v: fmt(n[1] + n[2] + n[3]), ket: `${fmt(n[3])} awas, ${fmt(n[2])} siaga, ${fmt(n[1])} waspada`, ks: `${fmt(n[3])} awas, ${fmt(n[2])} siaga`, w: this.LV[lv]},
       {l: "Hujan 3 hari maksimum", s: "Hujan 3 hari", v: fmt(Math.round(h3)) + " mm", ket: basah ? (k ? "kelas " + kelasHujan(h3) : "di " + namaProv(basah.prov)) : "–", ks: kelasHujan(h3), w: "#4f8fc4"},
       {l: "Sungai di atas ambang", s: "Sungai > Q2", v: fmt(sg), ket: `dari ${fmt(sgT.length)} titik GloFAS`, ks: `dari ${fmt(sgT.length)} titik`, w: "#5f6fb0"},
       {l: "Titik pantai rob", s: "Titik rob", v: fmt(rob), ket: "waspada ke atas, 10 hari", ks: "10 hari ke depan", w: "#2b8c86"},
@@ -503,7 +503,7 @@ const Bagikan = {
     }
     return {tpl: k ? "provinsi" : "ringkas", prov: k, lv, label: k ? "Ringkasan provinsi" : "Ringkasan harian",
       judul: k ? namaProv(k) : "Situasi banjir hari ini",
-      sub: k ? `Status ${LEVEL[lv].toLowerCase()} · ${fmt(n[1] + n[2] + n[3])} kecamatan berstatus hari ini` : `Indonesia · ${fmt(n[1] + n[2] + n[3])} kecamatan berstatus waspada ke atas`,
+      sub: k ? `Status ${LEVEL[lv].toLowerCase()}, ${fmt(n[1] + n[2] + n[3])} kecamatan berstatus hari ini` : `Indonesia, ${fmt(n[1] + n[2] + n[3])} kecamatan berstatus waspada ke atas`,
       kpi, bar: {judul: jb, pendek: jp, rows}, rek, legenda: [[this.LV[3], "Awas"], [this.LV[2], "Siaga"], [this.LV[1], "Waspada"]], petaKet: "Status banjir per provinsi"};
   },
   /* grafik insight: karhutla dirender di luar layar dari Insight.gambar(); banjir disalin dari tab Insight */
@@ -562,8 +562,8 @@ const Bagikan = {
       const n = L.halaman.length, i = Math.min(this.halEx || 0, Math.max(0, n - 1)), lebih = L.tabel && L.tabel.querySelectorAll("tbody tr").length > 36;
       L.sorot ||= this.sorotDari(L.svgs?.slice(0, 1)); L.tabelTip ??= L.tabel ? null : this.tabelDariTip(L.svgs?.slice(0, 1));
       const grafik1 = L.svgs?.length && i === (L.dom ? L.dom.length : 0) + (L.peta ? 1 : 0) + (L.galeri ? 1 : 0);
-      return {tpl: "ex", id: "luar", label: L.label + (n > 1 ? ` · ${i + 1}/${n}` : ""), judul: L.judul, judulSeg: L.judulSeg, sub: "", unit: "", img: L.halaman[i] || null, halaman: {i, n}, sorot: grafik1 ? L.sorot : [], tabelTip: grafik1 ? L.tabelTip : null,   /* sorotan & tabel isi hanya di halaman grafik pertama */
-        fn: [L.fn, lebih || L.tabel ? `Lihat data lengkap di https://${this.situs()}` : ""].filter(Boolean).join(" · ")}; }
+      return {tpl: "ex", id: "luar", label: L.label + (n > 1 ? `, ${i + 1}/${n}` : ""), judul: L.judul, judulSeg: L.judulSeg, sub: "", unit: "", img: L.halaman[i] || null, halaman: {i, n}, sorot: grafik1 ? L.sorot : [], tabelTip: grafik1 ? L.tabelTip : null,   /* sorotan & tabel isi hanya di halaman grafik pertama */
+        fn: [L.fn, lebih || L.tabel ? `Lihat data lengkap di https://${this.situs()}` : ""].filter(Boolean).join(", ")}; }
     const L = await this._exP || await this.daftarEx(), e = L.find(z => z.id === id) || L[0];
     if (!e) return {tpl: "ex", label: "Grafik Insight", judul: "Grafik Insight belum tersedia", kosong: true};
     const h3 = e.art.querySelector("h3"), tx = s => e.art.querySelector(s)?.textContent.replace(/\s+/g, " ").trim() || "";
@@ -744,7 +744,7 @@ const Bagikan = {
     x.fillStyle = g; x.fillRect(0, 0, W, bawah);
     this.logo(x, P, atas, 76);
     x.textBaseline = "alphabetic"; x.fillStyle = "#fff"; this.f(x, 800, 32, true); x.fillText(this.K.nama, P + 98, atas + 34);
-    this.f(x, 500, 23); x.fillStyle = "rgba(255,255,255,.78)"; x.fillText(this.potong(x, d.label + " · " + this.tglPanjang(), lebar - 98), P + 98, atas + 68);
+    this.f(x, 500, 23); x.fillStyle = "rgba(255,255,255,.78)"; x.fillText(this.potong(x, d.label + ", " + this.tglPanjang(), lebar - 98), P + 98, atas + 68);
     this.f(x, 800, u, true);
     /* judul rata kanan-kiri: baris selain yang terakhir dibentang, sisa ruang dibagi ke spasi (pemilik, 15 Okt 2026) */
     ln.forEach((l, i) => { const akhir = i === ln.length - 1, sp = l.filter(k => k.t === " ").length, isi = l.reduce((a, k) => a + x.measureText(k.t).width, 0);
@@ -854,7 +854,7 @@ const Bagikan = {
     const snap = this.pakaiPeta && d.prov && S.jalur?.[0] === d.prov ? await this.tangkap() : null;
     if (snap) this.tempel(x, snap, a, b, w, h); else this.gambarPeta(x, a, b, w, h, d.prov);
     x.restore();
-    const isi = snap ? [["", "Tampilan peta saat ini · © OpenFreeMap © OpenStreetMap"]] : [["", d.petaKet + ":"], ...d.legenda];
+    const isi = snap ? [["", "Tampilan peta saat ini, © OpenFreeMap © OpenStreetMap"]] : [["", d.petaKet + ":"], ...d.legenda];
     this.f(x, 600, 18); let cw = 28; isi.forEach(([c, t]) => cw += x.measureText(t).width + (c ? 30 : 12));
     cw = Math.min(cw, w - 32);
     x.fillStyle = "rgba(11,37,69,.82)"; x.beginPath(); x.roundRect(a + 16, b + h - 56, cw, 40, 20); x.fill();
@@ -880,13 +880,13 @@ const Bagikan = {
     const tx = ix + (ikon ? ik + 24 : 0), tw = w - (tx - a) - qs - 20;
     x.fillStyle = this.C.tinta2; this.f(x, 600, 21); x.fillText(this.potong(x, this.en() ? "Full data & live map" : "Data lengkap & peta langsung", tw), tx, yC + 62);
     x.fillStyle = this.C.navy2; this.pas(x, this.situs(), tw, 800, 40, true, 24); x.fillText(this.situs(), tx, yC + 108);
-    this.f(x, 500, 18); x.fillStyle = this.C.tinta2; const fn = d.fn ? this.baris(x, d.fn.replace(/\s*·?\s*Lihat data lengkap di \S+/, ""), w).slice(0, 2) : [], yF = yC - 20 - fn.length * 26;
+    this.f(x, 500, 18); x.fillStyle = this.C.tinta2; const fn = d.fn ? this.baris(x, d.fn.replace(/[,·\s]*Lihat data lengkap di \S+/, ""), w).slice(0, 2) : [], yF = yC - 20 - fn.length * 26;
     fn.forEach((l, i) => x.fillText(l, a, yF + 18 + i * 26));
     /* sorotan di atas grafik */
     const sor = (d.sorot || []).slice(0, 3), tS = 162, gS = 32, ruang0 = yF - 24 - y, pakai = sor.length > 1 && ruang0 - tS - gS > d.img.height * Math.min(1, w / d.img.width) * .5;
     /* kotak sorotan gaya Oyenza: panel putih tanpa garis, nomor urut dalam lingkaran lembut, angka besar + satuan kecil, nama di bawah */
     if (pakai) { const g = 18, cw = (w - g * (sor.length - 1)) / sor.length;
-      sor.forEach((q, i) => { const xx = a + i * (cw + g), m = String(q.v).match(/^([\d.,]+)\s*(.*)$/) || [0, q.v, ""], [nm, ...ket] = String(q.n).split(" · ");
+      sor.forEach((q, i) => { const xx = a + i * (cw + g), m = String(q.v).match(/^([\d.,]+)\s*(.*)$/) || [0, q.v, ""], [nm, ...ket] = String(q.n).split(", ");
         /* kotak sorotan: label kecil abu di atas, angka besar dengan satuan menempel (±58% ukuran angka, satu garis dasar), keterangan abu di bawah (pemilik, 15 Okt 2026) */
         x.fillStyle = "#f5f6f8"; x.beginPath(); x.roundRect(xx, y, cw, tS, 26); x.fill();
         this.f(x, 700, 23); x.fillStyle = this.C.tinta2; x.fillText(this.potong(x, nm, cw - 52), xx + 26, y + 42);
@@ -894,7 +894,7 @@ const Bagikan = {
         while (u > 28 && uk() > lb) u -= 2;
         this.f(x, 800, u, true); x.fillStyle = this.C.navy2; x.fillText(m[1], xx + 26, y + 108);
         if (m[2]) { const nw = x.measureText(m[1]).width; this.f(x, 800, Math.round(u * .58), true); x.fillText(this.potong(x, m[2], cw - 52 - nw - 3), xx + 26 + nw + 3, y + 108); }
-        if (ket.length) { this.f(x, 500, 17); x.fillStyle = this.C.tinta2; x.fillText(this.potong(x, ket.join(" · ").replace(/^[•●\s]+/, ""), cw - 52), xx + 26, y + 142); } });
+        if (ket.length) { this.f(x, 500, 17); x.fillStyle = this.C.tinta2; x.fillText(this.potong(x, ket.join(", ").replace(/^[•●\s]+/, ""), cw - 52), xx + 26, y + 142); } });
       y += tS + gS; }
     const ruang = yF - 24 - y, s = Math.min(w / d.img.width, ruang / d.img.height), iw = d.img.width * s, ih = d.img.height * s;
     /* ruang tegak berlebih (story, grafik lebar): isi dengan tabel angka grafik itu sendiri di bawahnya (pemilik, 15 Okt 2026) */
@@ -944,7 +944,7 @@ const Bagikan = {
     const tagar = [...this.K.tagar, ...prov.map(tag), this.K.akhir].join(" ");
     /* caption: kalimat utama, konteks dari kartu, sumber + tanggal, lalu ajakan membuka situs. Tanpa emoji dan basa-basi (pemilik, 14 Okt 2026) */
     const titik = t => { t = String(t || "").replace(/\s+/g, " ").trim(); return t && !/[.!?]$/.test(t) ? t + "." : t; };
-    const sumber = (d.fn || "").match(/Sumber:\s*([^·\n]+)/)?.[1]?.trim(), konteks = [d.sub, (d.fn || "").replace(/Sumber:[^·\n]+/, "").replace(/^[\s·]+|[\s·]+$/g, "")].map(titik).filter(Boolean).join(" ");
+    const sumber = (d.fn || "").match(/Sumber:\s*([^·\n]+)/)?.[1]?.replace(/,?\s*Lihat data lengkap.*$/, "").trim(), konteks = [d.sub, (d.fn || "").replace(/Sumber:[^·\n]+/, "").replace(/^[\s·]+|[\s·]+$/g, "")].map(titik).filter(Boolean).join(" ");
     if (d.tpl === "ex") return `${titik(d.judul)}${konteks ? `\n\n${konteks}` : ""}\n\nData per ${tg}${sumber ? `, diolah dari ${sumber}` : ""}. ${this.T ? "Peta dan grafik lengkapnya" : "Peta titik panas dan grafik lengkapnya"} bisa dibuka di https://${this.situs()}\n\n${tagar}`;
     const K = d.kpi.map(q => q.v), top = (d.bar?.rows || []).slice(0, 3).map(r => `${r.n} (${r.t})`).join(", ");
     let isi;
@@ -986,7 +986,7 @@ const Bagikan = {
       if (jenis === "pdf") await this.muatLib("tabel");
       st.textContent = "Menyusun berkas…"; await new Promise(r => setTimeout(r, 30));
       const r = await this[{xlsx: "keExcel", pdf: "kePdf", pptx: "kePptx"}[jenis]]();
-      this.simpan(r.blob, r.nama); st.textContent = `${r.nama} · ${Math.round(r.blob.size / 1024)} KB · ${r.info}`;
+      this.simpan(r.blob, r.nama); st.textContent = `${r.nama}, ${Math.round(r.blob.size / 1024)} KB, ${r.info}`;
     } catch (e) { console.error(e); st.textContent = "Ekspor gagal: " + e.message; }
     finally { tb.forEach(b => b.disabled = false); }
   },
@@ -1064,7 +1064,7 @@ const Bagikan = {
       if (baris.length) ws["!autofilter"] = {ref: ws["!ref"]};
       X.utils.book_append_sheet(wb, ws, nama); info.push(`${nama} ${fmt(baris.length)}`);
     };
-    const meta = [["Judul", `${this.K.nama} · ekspor data`], ["Dibuat", new Date().toLocaleString("id-ID", {timeZone: "Asia/Jakarta"}) + " WIB"], ["Data diperbarui", jamWIB(S.meta.dibuat)], ["Hari data (WIB)", S.meta.hari_wib], ["Tautan", this.tautan()]];
+    const meta = [["Judul", `${this.K.nama}, ekspor data`], ["Dibuat", new Date().toLocaleString("id-ID", {timeZone: "Asia/Jakarta"}) + " WIB"], ["Data diperbarui", jamWIB(S.meta.dibuat)], ["Hari data (WIB)", S.meta.hari_wib], ["Tautan", this.tautan()]];
     if (this.hal === "banjir") {
       const hr = S.st.hari, K = Object.entries(S.st.kec);
       tambah("Status kecamatan", ["Provinsi", "Kode prov", "Kab/Kota", "Kecamatan", ...hr.map(t => "Banjir " + t), "Banjir maks (0-3)", ...hr.map(t => "Longsor " + t), "Longsor maks (0-3)", "Hujan 3 hari (mm)", "Hujan 7 hari lalu (mm)", "Bahaya banjir InaRISK"],
@@ -1108,7 +1108,7 @@ const Bagikan = {
     meta.push(...this.catatanMetode().map((t, i) => ["Metode " + (i + 1), t]));
     tambah("Metadata", ["Kunci", "Nilai"], meta);
     const ab = X.write(wb, {bookType: "xlsx", type: "array", compression: true});
-    return {blob: new Blob([ab], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}), nama: this.namaEkspor("xlsx"), info: info.join(" · ")};
+    return {blob: new Blob([ab], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}), nama: this.namaEkspor("xlsx"), info: info.join(", ")};
   },
 
   async kePdf() {
@@ -1118,7 +1118,7 @@ const Bagikan = {
     const d = this.data(""), tg = this.tglPanjang(), judulLap = this.hal === "banjir" ? "Banjir & longsor" : "Kebakaran hutan dan lahan";
     const kepala = j => { doc.setFillColor(...NAVY); doc.rect(0, 0, W, 17, "F"); doc.setFillColor(229, 138, 69); doc.rect(0, 17, W, .8, "F");
       doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(12.5); doc.text(T(j), M, 11);
-      doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.text(T(`${this.K.nama} · ${tg}`), W - M, 11, {align: "right"}); doc.setTextColor(...NAVY); return 27; };
+      doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.text(T(`${this.K.nama}, ${tg}`), W - M, 11, {align: "right"}); doc.setTextColor(...NAVY); return 27; };
     const tabel = (j, t, startY, opsi = {}) => doc.autoTable({head: [t.kepala.map(T)], body: t.baris.map(r => r.map(v => T(typeof v === "number" ? fmt(v) : v))), startY, margin: {top: 26, left: M, right: M, bottom: 18},
       styles: {font: "helvetica", fontSize: 8, cellPadding: 1.6, textColor: NAVY, lineColor: [221, 228, 238], lineWidth: .1}, headStyles: {fillColor: NAVY, textColor: 255, fontStyle: "bold"},
       alternateRowStyles: {fillColor: [243, 246, 250]}, columnStyles: Object.fromEntries(t.angka.map(i => [i, {halign: "right"}])),
@@ -1127,9 +1127,9 @@ const Bagikan = {
     for (let i = 0; i < 60; i++) { const t = i / 59; doc.setFillColor(...NAVY2.map((v, j) => Math.round(v + (NAVY[j] - v) * t))); doc.rect(0, i * 1.6, W, 1.7, "F"); }
     doc.addImage(this.logoUrl(), "PNG", M, 16, 14, 14);
     doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.text(T(this.K.nama), M + 18, 22);
-    doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(210, 222, 238); doc.text(T("Laporan harian · " + tg), M + 18, 27.5);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(210, 222, 238); doc.text(T("Laporan harian, " + tg), M + 18, 27.5);
     doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(26); doc.text(T("Laporan harian"), M, 52); doc.setFontSize(18); doc.text(T(judulLap), M, 62);
-    doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(210, 222, 238); doc.text(T(`Data diperbarui ${jamWIB(S.meta.dibuat)} · ${this.situs()}`), M, 71);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(210, 222, 238); doc.text(T(`Data diperbarui ${jamWIB(S.meta.dibuat)}, ${this.situs()}`), M, 71);
     const kw = (LW - 3 * 4) / 4;
     d.kpi.forEach((q, i) => { const x = M + i * (kw + 4), y = 80; doc.setFillColor(255); doc.setDrawColor(221, 228, 238); doc.roundedRect(x, y, kw, 30, 2.5, 2.5, "FD");
       doc.setFillColor(...rgb(q.w)); doc.rect(x, y + 4, 1.2, 22, "F");
@@ -1183,16 +1183,16 @@ const Bagikan = {
     doc.setFontSize(8.5); doc.setTextColor(...ABU); doc.text(doc.splitTextToSize(T(`Dibuat otomatis dari ${this.tautan()} pada ${new Date().toLocaleString("id-ID", {timeZone: "Asia/Jakarta"})} WIB. Angka mengikuti data saat laporan dibuat.`), LW), M, y + 4);
     const n = doc.getNumberOfPages();
     for (let i = 1; i <= n; i++) { doc.setPage(i); doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.setTextColor(...ABU);
-      doc.text(T(`${this.K.sumber} · ${this.situs()}`), M, 291); doc.text(`Halaman ${i} dari ${n}`, W - M, 291, {align: "right"}); }
+      doc.text(T(`${this.K.sumber}, ${this.situs()}`), M, 291); doc.text(`Halaman ${i} dari ${n}`, W - M, 291, {align: "right"}); }
     return {blob: doc.output("blob"), nama: this.namaEkspor("pdf"), info: `${n} halaman`, halaman: n};
   },
 
   async kePptx() {
     const p = new window.PptxGenJS(), d = this.data(""), tg = this.tglPanjang(), FONT = "Arial", N = "0B2545", ABU = "5B6B82", hx = h => h.replace("#", "").toUpperCase();
-    p.layout = "LAYOUT_WIDE"; p.author = this.K.nama; p.title = `${this.K.nama} · laporan harian ${this.tanggal()}`;
+    p.layout = "LAYOUT_WIDE"; p.author = this.K.nama; p.title = `${this.K.nama}, laporan harian ${this.tanggal()}`;
     p.defineSlideMaster({title: "ISI", background: {color: "FFFFFF"}, objects: [
       {rect: {x: 0, y: 0, w: 13.333, h: .82, fill: {color: N}}}, {rect: {x: 0, y: .82, w: 13.333, h: .05, fill: {color: "E58A45"}}},
-      {text: {text: `${this.K.sumber} · ${this.situs()} · data ${jamWIB(S.meta.dibuat)}`, options: {x: .5, y: 7.06, w: 11, h: .3, fontFace: FONT, fontSize: 9, color: ABU}}}],
+      {text: {text: `${this.K.sumber}, ${this.situs()}, data ${jamWIB(S.meta.dibuat)}`, options: {x: .5, y: 7.06, w: 11, h: .3, fontFace: FONT, fontSize: 9, color: ABU}}}],
       slideNumber: {x: 12.35, y: 7.06, w: .6, h: .3, fontFace: FONT, fontSize: 9, color: ABU}});
     const isi = j => { const s = p.addSlide({masterName: "ISI"}); s.addText(j, {x: .5, y: .1, w: 12.3, h: .62, fontFace: FONT, fontSize: 22, bold: true, color: "FFFFFF", fit: "shrink"}); return s; };
     /* judul */
@@ -1200,12 +1200,12 @@ const Bagikan = {
     s0.addShape(p.ShapeType.rect, {x: 0, y: 6.9, w: 13.333, h: .6, fill: {color: "1D4E89"}});
     s0.addImage({data: this.logoUrl(), x: .8, y: .8, w: .85, h: .85});
     s0.addText(this.K.nama, {x: 1.85, y: .85, w: 9, h: .4, fontFace: FONT, fontSize: 16, bold: true, color: "FFFFFF"});
-    s0.addText("Laporan harian · " + tg, {x: 1.85, y: 1.25, w: 9, h: .35, fontFace: FONT, fontSize: 12, color: "C9D6E8"});
+    s0.addText("Laporan harian, " + tg, {x: 1.85, y: 1.25, w: 9, h: .35, fontFace: FONT, fontSize: 12, color: "C9D6E8"});
     s0.addText(this.hal === "banjir" ? "Situasi banjir, longsor & rob" : "Situasi kebakaran hutan dan lahan", {x: .8, y: 2.6, w: 11.5, h: 1.4, fontFace: FONT, fontSize: 40, bold: true, color: "FFFFFF"});
     s0.addText(d.sub, {x: .8, y: 4.0, w: 11.5, h: .5, fontFace: FONT, fontSize: 18, color: "FFB37A"});
-    s0.addText(`Data diperbarui ${jamWIB(S.meta.dibuat)} · ${this.K.sumber}`, {x: .8, y: 6.95, w: 11.7, h: .5, fontFace: FONT, fontSize: 11, color: "DDE6F2"});
+    s0.addText(`Data diperbarui ${jamWIB(S.meta.dibuat)}, ${this.K.sumber}`, {x: .8, y: 6.95, w: 11.7, h: .5, fontFace: FONT, fontSize: 11, color: "DDE6F2"});
     /* KPI + grafik batang native (bisa disunting) */
-    const s1 = isi("Situasi hari ini · " + tg);
+    const s1 = isi("Situasi hari ini, " + tg);
     d.kpi.forEach((q, i) => { const x = .5 + i * 3.1;
       s1.addShape(p.ShapeType.roundRect, {x, y: 1.2, w: 2.9, h: 2.0, fill: {color: "F3F6FA"}, line: {color: "DDE4EE", width: .75}, rectRadius: .12});
       s1.addShape(p.ShapeType.rect, {x, y: 1.4, w: .07, h: 1.6, fill: {color: hx(q.w)}, line: {color: hx(q.w), width: 0}});
@@ -1220,7 +1220,7 @@ const Bagikan = {
     /* peta */
     const pt = await this.petaDok(1716, 800), s2 = isi(this.hal === "banjir" ? "Peta status hari ini" : "Peta cluster aktif");
     s2.addImage({data: pt.url, x: .5, y: 1.05, w: 12.33, h: 5.75});
-    s2.addText(pt.snap ? "Tampilan peta saat ini · peta dasar © OpenFreeMap © OpenStreetMap" : `${d.petaKet}: ${d.legenda.map(l => l[1]).join(", ")}`, {x: .5, y: 6.78, w: 12.3, h: .28, fontFace: FONT, fontSize: 9, color: ABU});
+    s2.addText(pt.snap ? "Tampilan peta saat ini, peta dasar © OpenFreeMap © OpenStreetMap" : `${d.petaKet}: ${d.legenda.map(l => l[1]).join(", ")}`, {x: .5, y: 6.78, w: 12.3, h: .28, fontFace: FONT, fontSize: 9, color: ABU});
     /* tabel provinsi */
     const tp = this.tabelProv(), s3 = isi("Ringkasan per provinsi"), nb = 14;
     s3.addTable([tp.kepala.map(t => ({text: t, options: {bold: true, color: "FFFFFF", fill: {color: N}}})), ...tp.baris.slice(0, nb).map((r, i) => r.map((v, j) => ({text: typeof v === "number" ? fmt(v) : String(v ?? "–"), options: {align: tp.angka.includes(j) ? "right" : "left", fill: {color: i % 2 ? "F3F6FA" : "FFFFFF"}}})))],

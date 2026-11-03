@@ -189,13 +189,13 @@
     const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.galat || "galat " + r.status); return j; };
 
   /* ---------------- pilih penanda: kartu ringkas -> panel rincian ---------------- */
-  const judulF = p => `${esc(K.JENIS[p.jenis].nama)} · ${esc(K.JENIS[p.jenis].sub[p.sub][0])}`;
+  const judulF = p => `${esc(K.JENIS[p.jenis].nama)}, ${esc(K.JENIS[p.jenis].sub[p.sub][0])}`;
   function pilih(id) {
     const f = dataMentah.find(x => x.id === id); if (!f) return;
     terpilih = id; peta.setFilter("lw-pilih", ["==", ["get", "id"], id]);
     const p = f.properties, w = K.WARNA[K.JENIS[p.jenis].sub[p.sub][1]];
     const isi = `<div class="lw-k-kepala"><span class="lw-titikw" style="background:${w}"></span><b>${judulF(p)}</b></div>
-      <div class="lw-k-waktu">${lalu(p.dibuat)}${p.titik_panas ? ` · <span class="lw-lencana">Terkonfirmasi satelit</span>` : ""}</div>
+      <div class="lw-k-waktu">${lalu(p.dibuat)}${p.titik_panas ? `, <span class="lw-lencana">Terkonfirmasi satelit</span>` : ""}</div>
       ${p.teks ? `<p class="lw-k-teks">${esc(p.teks)}</p>` : ""}<hr><button class="lw-tautan" data-lengkap>Lihat selengkapnya ${svg(UI.panah, 15)}</button>`;
     if (kecil()) {
       tutupKartu(); pilih._pop = new maplibregl.Popup({closeButton: true, maxWidth: "260px", offset: 18, className: "lw-pop"}).setLngLat(f.geometry.coordinates).setHTML(isi).addTo(peta);
@@ -232,7 +232,7 @@
       `<button class="lw-btn" data-lanjut="${s}"><span class="lw-titikw" style="background:${K.WARNA[k]}"></span>${s === "hidup" ? "Sudah hidup" : esc(n)}</button>`).join("")}<button class="lw-btn" data-lanjut="${p.sub}">Masih ${esc(J.sub[p.sub][0].toLowerCase())}</button></div></div>` : "";
     const laciL = p.laci ? (HAL === "karhutla" ? `<a href="/k/${esc(p.laci)}" data-laci="${esc(p.laci)}">lihat cluster ${esc(p.laci)}</a>` : `<a href="${AKAR}#k/${esc(p.laci)}">lihat cluster ${esc(p.laci)}</a>`) : "";
     bukaPanel("rinci", `
-      <div class="lw-p-kepala">${chip(p.jenis, 24)}<div><h3>${judulF(p)}</h3><p>${lalu(p.dibuat)} · ${jamWIB(p.dibuat)}${w ? ` · Kec. ${esc(w.kec)}, ${esc(w.kab)}` : ""}</p></div></div>
+      <div class="lw-p-kepala">${chip(p.jenis, 24)}<div><h3>${judulF(p)}</h3><p>${lalu(p.dibuat)}, ${jamWIB(p.dibuat)}${w ? `, Kec. ${esc(w.kec)}, ${esc(w.kab)}` : ""}</p></div></div>
       ${p.kedaluwarsa_lewat ? `<p class="lw-catatan">Laporan ini sudah kedaluwarsa (lebih dari ${J.umur} jam).</p>` : ""}
       ${p.digantikan ? `<p class="lw-catatan">Sudah ada status yang lebih baru di titik ini. <button class="lw-tautan" data-buka="${p.digantikan}">Buka yang terbaru</button></p>` : ""}
       ${durTeks}
@@ -245,7 +245,7 @@
       ${lanjut}
       ${J.bantuan && p.kontak ? `<div class="lw-blok"><h4>Kontak pelapor</h4><p class="lw-kecil">Nomor hanya ditampilkan bila diminta, dibatasi per orang, dan dihapus otomatis 72 jam setelah laporan dibuat.</p><div id="lwKontak"><button class="lw-btn lw-utama" data-kontak>Tampilkan kontak WhatsApp</button></div></div>` : ""}
       ${S.token[p.id] && J.bantuan ? `<div class="lw-blok"><button class="lw-btn" data-selesai>Tandai sudah terpenuhi / selesai</button></div>` : ""}
-      ${p.riwayat?.length ? `<div class="lw-blok"><h4>Riwayat di titik ini</h4><ol class="lw-riwayat">${p.riwayat.map(r => `<li><span class="lw-titikw" style="background:${K.WARNA[J.sub[r.sub]?.[1]] || "#999"}"></span>${esc(J.sub[r.sub]?.[0] || r.sub)} · ${lalu(r.dibuat)}${r.teks ? ` · ${esc(r.teks)}` : ""}</li>`).join("")}</ol></div>` : ""}
+      ${p.riwayat?.length ? `<div class="lw-blok"><h4>Riwayat di titik ini</h4><ol class="lw-riwayat">${p.riwayat.map(r => `<li><span class="lw-titikw" style="background:${K.WARNA[J.sub[r.sub]?.[1]] || "#999"}"></span>${esc(J.sub[r.sub]?.[0] || r.sub)}, ${lalu(r.dibuat)}${r.teks ? `, ${esc(r.teks)}` : ""}</li>`).join("")}</ol></div>` : ""}
       <div class="lw-blok lw-bawah"><button class="lw-tautan" data-bagikan>Salin tautan laporan</button>
         <details class="lw-aduan"><summary>Laporkan penyalahgunaan</summary><div class="lw-pil">${[["spam", "Spam / iklan"], ["palsu", "Info palsu"], ["kasar", "Kasar / SARA"], ["pribadi", "Data pribadi"], ["lainnya", "Lainnya"]].map(([k, n]) => `<button class="lw-btn" data-aduan="${k}">${n}</button>`).join("")}</div><div class="lw-ts"></div></details></div>`);
     const P = $("#lwPanel");
@@ -302,7 +302,7 @@
       <fieldset><legend>Kondisi <span class="lw-wajib">wajib</span></legend>${pilihan("sub", J.sub, "radio", true)}</fieldset>
       ${Object.entries(J.isian || {}).map(([k, s]) => `<fieldset><legend>${esc(s.label)}${s.wajib ? ' <span class="lw-wajib">wajib</span>' : ""}</legend>${s.tipe === "ya" ? `<label class="lw-opsi"><input type="checkbox" name="${k}"><span>Ya</span></label>` : pilihan(k, s.nilai, s.tipe === "multi" ? "checkbox" : "radio", s.wajib)}</fieldset>`).join("")}
       ${J.jumlah ? `<label class="lw-medan">${esc(J.jumlah)}<input type="number" name="jumlah" min="1" max="100000" inputmode="numeric"></label>` : ""}
-      <label class="lw-medan">${jenis === "info" ? 'Pesan <span class="lw-wajib">wajib</span>' : "Keterangan (opsional)"}<textarea name="teks" maxlength="280" rows="3" placeholder="${jenis === "info" ? "Tulis informasi untuk warga sekitar" : "Contoh: padam sejak subuh, satu RT"}"></textarea><small class="lw-hitung">0/280 · tautan dan nomor HP otomatis dihapus</small></label>
+      <label class="lw-medan">${jenis === "info" ? 'Pesan <span class="lw-wajib">wajib</span>' : "Keterangan (opsional)"}<textarea name="teks" maxlength="280" rows="3" placeholder="${jenis === "info" ? "Tulis informasi untuk warga sekitar" : "Contoh: padam sejak subuh, satu RT"}"></textarea><small class="lw-hitung">0/280, tautan dan nomor HP otomatis dihapus</small></label>
       ${J.bantuan ? `<label class="lw-medan">Nomor WhatsApp (opsional)<input type="tel" name="kontak" placeholder="0812xxxxxxx" autocomplete="tel"><small>Nomor ini <b>bisa dilihat penolong</b> yang menekan "Tampilkan kontak" (dibatasi per orang) dan dihapus otomatis setelah 72 jam. Jangan tulis nomor di kolom keterangan.</small></label>` : ""}
       ${J.bulat ? `<p class="lw-catatan">Lokasi satwa dibulatkan ±1 km. Laporkan juga ke BKSDA setempat; jangan mendekati satwa.</p>` : ""}
       ${awal.induk ? "" : `<fieldset><legend>Lokasi</legend><p class="lw-lok" id="lwLok"></p><div class="lw-pil"><button type="button" class="lw-btn" id="lwPakaiSaya">${svg(UI.lokasi, 16)} Lokasi saya</button><button type="button" class="lw-btn" id="lwPilihPeta">Pilih di peta</button></div></fieldset>`}
@@ -312,9 +312,9 @@
       <p class="lw-kecil">Tanpa akun. Laporan tampil untuk publik; status hilang otomatis setelah ${J.umur < 168 ? J.umur + " jam" : "7 hari atau saat ditandai selesai"}. Jangan unggah data pribadi orang lain.</p>
       <p class="lw-kecil">Pemberitahuan privasi (UU PDP No. 27/2022): lokasi, isi laporan, dan nomor WhatsApp (bila diisi) diproses hanya untuk menghubungkan warga yang butuh dan yang bisa membantu. Nomor dihapus otomatis setelah 72 jam atau saat laporan ditandai selesai; alamat IP tidak disimpan, hanya sidik acaknya (hash bergaram, paling lama 14 hari) untuk mencegah spam. <a href="${AKAR}privasi.html" target="_blank" rel="noopener">Rincian & permintaan hapus</a></p></form>`);
     const F = $("#lwForm");
-    const tulisLok = () => { const w = wilayahDari(lok.lat, lok.lon), el = $("#lwLok"); if (el) el.textContent = `${lok.lat.toFixed(5)}, ${lok.lon.toFixed(5)}${w ? ` · Kec. ${w.kec}, ${w.kab}` : ""}`; };
+    const tulisLok = () => { const w = wilayahDari(lok.lat, lok.lon), el = $("#lwLok"); if (el) el.textContent = `${lok.lat.toFixed(5)}, ${lok.lon.toFixed(5)}${w ? `, Kec. ${w.kec}, ${w.kab}` : ""}`; };
     tulisLok();
-    F.teks.oninput = () => F.querySelector(".lw-hitung").textContent = `${F.teks.value.length}/280 · tautan dan nomor HP otomatis dihapus`;
+    F.teks.oninput = () => F.querySelector(".lw-hitung").textContent = `${F.teks.value.length}/280, tautan dan nomor HP otomatis dihapus`;
     $("#lwBatal").onclick = tutupPanel;
     $("#lwPakaiSaya")?.addEventListener("click", async () => { const p = await lokasiSaya(true); if (p) { lok = {...p}; tulisLok(); } });
     $("#lwPilihPeta")?.addEventListener("click", () => { peta.easeTo({center: [lok.lon, lok.lat], zoom: Math.max(peta.getZoom(), 15)}); bidik(true, (la, lo) => { lok = {lat: la, lon: lo}; tulisLok(); }); });
@@ -362,7 +362,7 @@
     }
     const baris = [...per.entries()].filter(([, r]) => r.n).sort((a, b) => b[1].n - a[1].n).slice(0, 25);
     const tot = Object.fromEntries(KOLOM.map(([k]) => [k, baris.reduce((a, [, r]) => a + (r[k] || 0), 0)]));
-    bukaPanel("ringkas", `<div class="lw-p-kepala"><div><h3>Ringkasan ${lv === "kab" ? "kabupaten/kota" : "kecamatan"}</h3><p>Laporan aktif di area peta, ${RENTANG.find(x => x[0] === S.jam)[2]} terakhir · ${esc(K.BAHAYA[S.bahaya])}</p></div></div>
+    bukaPanel("ringkas", `<div class="lw-p-kepala"><div><h3>Ringkasan ${lv === "kab" ? "kabupaten/kota" : "kecamatan"}</h3><p>Laporan aktif di area peta, ${RENTANG.find(x => x[0] === S.jam)[2]} terakhir, ${esc(K.BAHAYA[S.bahaya])}</p></div></div>
       <div class="lw-pil" role="group" aria-label="Tingkat wilayah"><button class="lw-btn" data-lv="kab" aria-pressed="${lv === "kab"}">Kab/Kota</button><button class="lw-btn" data-lv="kec" aria-pressed="${lv === "kec"}">Kecamatan</button></div>
       <div class="lw-angka">${KOLOM.map(([k, n]) => `<div><b>${k === "api" ? `${tot.api}` : tot[k]}</b><span>${n}</span></div>`).join("")}</div>
       ${baris.length ? `<div class="lw-tabel"><table><thead><tr><th>Wilayah</th>${KOLOM.map(([, n]) => `<th>${n}</th>`).join("")}</tr></thead><tbody>${baris.map(([nama, r]) =>
@@ -381,7 +381,7 @@
       <p>Tandai kondisi di sekitar kamu supaya tetangga, relawan, dan posko tahu: listrik, sinyal, BBM/LPG, kebutuhan bantuan, dan kondisi bencana.</p>
       <h4>Warna penanda</h4><ul class="lw-legenda">${[["buruk", "Mati / habis / parah"], ["sedang", "Terbatas / genset / lemah"], ["baik", "Normal / hidup / lancar"], ["minta", "Minta bantuan"], ["tawar", "Tawaran bantuan"], ["info", "Pesan"]].map(([k, n]) =>
         `<li><span class="lw-titikw" style="background:${pastel(K.WARNA[k], .5)};border:2px solid ${K.WARNA[k]}"></span>${n}</li>`).join("")}</ul>
-      <h4>Jenis laporan</h4><ul class="lw-legenda">${K.jenisUntuk(S.bahaya).map(j => `<li>${chip(j, 15)}${esc(K.JENIS[j].nama)} <small>· berlaku ${K.JENIS[j].bantuan ? "s.d. selesai/7 hari" : K.JENIS[j].umur >= 168 ? "7 hari" : K.JENIS[j].umur + " jam"}</small></li>`).join("")}</ul>
+      <h4>Jenis laporan</h4><ul class="lw-legenda">${K.jenisUntuk(S.bahaya).map(j => `<li>${chip(j, 15)}${esc(K.JENIS[j].nama)}, <small>berlaku ${K.JENIS[j].bantuan ? "s.d. selesai/7 hari" : K.JENIS[j].umur >= 168 ? "7 hari" : K.JENIS[j].umur + " jam"}</small></li>`).join("")}</ul>
       <h4>Aturan</h4><ul><li>Tanpa akun. Satu perangkat paling banyak 10 laporan per jam.</li><li>Status memudar setelah separuh masa berlakunya lalu hilang otomatis.</li>
       <li>Tautan dan nomor HP di keterangan dihapus otomatis. Nomor WhatsApp hanya untuk permintaan/tawaran bantuan, ditampilkan bila diminta, dihapus setelah 72 jam.</li>
       <li>Laporan yang diadukan 3 orang disembunyikan untuk ditinjau.</li><li>Foto belum didukung (risiko moderasi).</li>

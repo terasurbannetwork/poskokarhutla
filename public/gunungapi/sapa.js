@@ -29,7 +29,7 @@
       const siaga = h.tinggi.filter(g => g.level >= 3), daftar = (siaga.length ? siaga : h.tinggi).slice(0, 6);
       return Sapa.rangka({ikon: "gunung", eyebrow: "Situasi gunung api " + labelHari(S.st.dibuat),
         judul: `<b>${fmt(h.tinggi.length)}</b> gunung api berstatus Waspada ke atas dari ${fmt(g0.length)} yang dipantau`,
-        chips: [["awas", `${fmt(n[4])} Awas · ${fmt(n[3])} Siaga`], ["erupsi", `${fmt(h.erupsi.length)} erupsi · 24 jam`], h.ubah.length && ["jam", `${fmt(h.ubah.length)} perubahan status · 72 jam`], h.bandara.length && ["asap", `skenario: ${fmt(h.bandara.length)} bandara di jalur abu`]],
+        chips: [["awas", `${fmt(n[4])} Awas, ${fmt(n[3])} Siaga`], ["erupsi", `${fmt(h.erupsi.length)} erupsi, 24 jam`], h.ubah.length && ["jam", `${fmt(h.ubah.length)} perubahan status, 72 jam`], h.bandara.length && ["asap", `skenario: ${fmt(h.bandara.length)} bandara di jalur abu`]],
         bagian: [
           ["Perubahan status 72 jam", "cs", ubah],
           [siaga.length ? "Gunung Siaga dan Awas" : "Gunung berstatus tertinggi", "ks", daftar.map((g, i) => Sapa.item(esc(g.nama), i + 1, esc(g.nama), esc(g.prov),

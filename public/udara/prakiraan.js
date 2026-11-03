@@ -84,15 +84,15 @@ const Prak = {
       const r = `<rect x="${x}" y="0" width="${Math.max(1, w - 1)}" height="${tinggi}" fill="${warnaBag(s, i)}" data-tip="${tip}"/>${w > 34 ? `<text x="${x + w / 2}" y="${tinggi / 2 + 4}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${fmt(s.persen)}%</text>` : ""}`; x += w; return r; }).join(""); },
 
   /* atribusi di laci: CAMS dan model berdampingan; kota tak terpercaya tanpa persen */
-  bagianAtribusi(a, kom) { const cm = `<p class="fnd">PM2,5 CAMS besok <b>${fmt(a.pm)} µg/m³</b>${a.model != null ? ` · model sumber <b>${fmt(a.model)} µg/m³</b>` : ""}</p>`;
+  bagianAtribusi(a, kom) { const cm = `<p class="fnd">PM2,5 CAMS besok <b>${fmt(a.pm)} µg/m³</b>${a.model != null ? `, model sumber <b>${fmt(a.model)} µg/m³</b>` : ""}</p>`;
     if (a.terpercaya === false) return `<p class="fnd">Asal asap besok:</p>${cm}<p class="fnd">Model jauh di atas CAMS, porsi tak dihitung.${a.alasan ? " " + esc(a.alasan) : ""}</p>`;
     return `<p class="fnd">Asal asap besok:</p>${cm}<svg viewBox="0 0 420 22" width="100%" role="img" aria-label="Asal PM2,5">${this.batangAtribusi(a)}</svg>
-      <div class="legd">${M.normBagian(a.bagian || []).map((b, j) => `<span class="kt" style="--c:${warnaBag(b, j)};--f:#fff;text-transform:none" translate="no">${esc(namaBag(b))} · ${fmt(b.persen)}%</span>`).join(" ")}</div>
+      <div class="legd">${M.normBagian(a.bagian || []).map((b, j) => `<span class="kt" style="--c:${warnaBag(b, j)};--f:#fff;text-transform:none" translate="no">${esc(namaBag(b))}, ${fmt(b.persen)}%</span>`).join(" ")}</div>
       ${kom.length ? `<p class="fnd">Cluster di karhutla: ${kom.map(b => `<a href="/?k=${encodeURIComponent(b.id)}" translate="no">${esc(b.id)}</a>`).join(", ")}</p>` : ""}`; },
   laciKota(i) { const k = S.prak.kota[i]; if (!k) return; const a = atrKota(k.kode), hr = S.prak.hari;
     const kom = a && a.terpercaya !== false ? M.normBagian(a.bagian || []).filter(b => b.jenis === "api" && b.id) : [];
     Laci.buka("Kota", `<span translate="no">${esc(k.nama)}</span>`, pilKor(),
-      `<div class="grid g4">${hr.map((t, h) => { const s = M.statusHari(k, h), w = M.ST_WARNA[s || "normal"]; return kot(tglSing(t), `<span style="color:${w}">${fmt(k.r24[h])} µg/m³</span>`, M.labelStatus(s) + ` · api ${k.asap?.[h] == null ? "–" : fmt(Math.round(k.asap[h] * 100)) + "%"}`); }).join("")}</div>
+      `<div class="grid g4">${hr.map((t, h) => { const s = M.statusHari(k, h), w = M.ST_WARNA[s || "normal"]; return kot(tglSing(t), `<span style="color:${w}">${fmt(k.r24[h])} µg/m³</span>`, M.labelStatus(s) + `, api ${k.asap?.[h] == null ? "–" : fmt(Math.round(k.asap[h] * 100)) + "%"}`); }).join("")}</div>
       <p class="fnd">PM2,5 per jam, 72 jam ke depan${k.mentah?.some((v, j) => v !== k.pm[j]) ? " (garis tebal terkoreksi, putus-putus mentah)" : ""}:</p>${this.garis72(k, true)}
       ${a ? this.bagianAtribusi(a, kom) : ""}
       <p class="fnd">Sumber: Copernicus CAMS lewat Open-Meteo${terkoreksi() ? ", stasiun pemantau" : ""}. ${terkoreksi() ? "" : "Perkiraan model, belum dikoreksi ke alat ukur. "}Data ${jamWIB(S.prak.dibuat)}</p>`);
@@ -122,13 +122,13 @@ const Prak = {
     const top = [...ok.slice(0, tk.length ? 7 : 10), ...tk.slice(0, 3)], t0 = top.find(k => k.terpercaya !== false), api0 = t0 && M.normBagian(t0.bagian).find(b => b.jenis === "api");
     const mobil = innerWidth < 640, W = mobil ? 520 : 940, L = mobil ? 120 : 190, rh = 32, bw = W - L - (mobil ? 215 : 230);
     const nm = k => esc(k.nama.replace(/^(Kota|Kab\.?|Kabupaten) /, ""));
-    const g = top.map((k, i) => { const w = M.ST_WARNA[M.statusDari(Math.max(k.pm, k.model || 0))], teks = `CAMS ${fmt(k.pm)}${k.model != null ? ` · model ${fmt(k.model)}` : ""} µg/m³`;
+    const g = top.map((k, i) => { const w = M.ST_WARNA[M.statusDari(Math.max(k.pm, k.model || 0))], teks = `CAMS ${fmt(k.pm)}${k.model != null ? `, model ${fmt(k.model)}` : ""} µg/m³`;
       return `<g transform="translate(0,${i * rh})"><text x="${L - 10}" y="19" text-anchor="end" font-size="${mobil ? 13 : 12.5}" font-weight="600" translate="no">${nm(k)}</text>
       ${k.terpercaya === false ? `<text x="${L}" y="19" font-size="12" opacity=".75" data-tip="${esc(k.alasan || "")}">Model jauh di atas CAMS, porsi tak dihitung</text>` : `<g transform="translate(${L},5)">${this.batangAtribusi(k, bw, 22)}</g>`}
       ${Kartu.pil(L + bw + 8, 5, teks, w, "#fff", 11)[0]}</g>`; }).join("");
     const kom = new Map(); top.forEach(k => k.terpercaya !== false && k.bagian.forEach(b => { if (b.jenis === "api" && b.id && !kom.has(b.id)) kom.set(b.id, b); }));
     Kartu.leg([[WARNA_API[0], "api"], [WARNA_JENIS.pltu, "PLTU"], [WARNA_JENIS.lain, "sumber lain"], [WARNA_JENIS.latar, "latar"]]);
-    const tautan = [...kom.values()].slice(0, 8).map(b => `<a class="kt" style="--c:#3f4a5e;--f:#fff;text-transform:none" href="/?k=${encodeURIComponent(b.id)}" translate="no">${esc(b.id)}${b.konsesi?.length ? " · " + esc(b.konsesi[0]) : ""}</a>`).join(" ");
+    const tautan = [...kom.values()].slice(0, 8).map(b => `<a class="kt" style="--c:#3f4a5e;--f:#fff;text-transform:none" href="/?k=${encodeURIComponent(b.id)}" translate="no">${esc(b.id)}${b.konsesi?.length ? ", " + esc(b.konsesi[0]) : ""}</a>`).join(" ");
     return this.ex("atr", "Sumber asap", t0 ? (api0 ? `${Kartu.hl(esc(api0.nama))} menyumbang ${api0.tinggi - api0.rendah >= 80 ? `antara ${Kartu.hl(fmt(api0.rendah))} dan ${Kartu.hl(fmt(api0.tinggi) + "%")}` : `${Kartu.hl(fmt(api0.persen) + "%")} (${fmt(api0.rendah)} sampai ${fmt(api0.tinggi)}%)`} PM2,5 ${nm(t0)} besok, menurut model` : `Model sumber asap besok: ${Kartu.hl(nm(t0))} paling tinggi di antara kota yang dihitung`) : "Besok, model sumber asap jauh di atas CAMS di kota teratas, porsi tak dihitung",
       `<svg viewBox="0 0 ${W} ${top.length * rh}" role="img" aria-label="Asal PM2,5 per kota">${g}</svg>${tautan ? `<div class="legd" style="margin-top:8px">${tautan}</div>` : ""}`,
       `Prakiraan besok. Angka di kanan: PM2,5 CAMS dan total model sumber, µg/m³. Sumber: titik panas NASA FIRMS, angin Open-Meteo, daftar PLTU WRI; perkiraan, rentang di tooltip`); },

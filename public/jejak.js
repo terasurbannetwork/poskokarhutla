@@ -102,7 +102,7 @@
     bungkus(W, "bukaTab", () => setTimeout(gantiTab, 0));
     bungkus(W, "turun", k => { const p = String(k).split("|"); catat("provinsi", p[0]); if (p.length > 1) catat("wilayah", k); });
     bungkus(ada("Laci"), "buka", id => catat("kompleks", id));
-    bungkus(ada("Sim"), "jalan", function () { const S = ada("S"); catat("sim", `${S?.pilihK || "-"} · ${[...(this.op?.on || [])].join("+") || "dasar"}`); });
+    bungkus(ada("Sim"), "jalan", function () { const S = ada("S"); catat("sim", `${S?.pilihK || "-"}, ${[...(this.op?.on || [])].join("+") || "dasar"}`); });
     const B = ada("Bagikan");
     bungkus(B, "buka", tpl => catat("bagikan", "templat " + tpl)); bungkus(B, "salin", () => catat("bagikan", "salin tautan"));
     bungkus(N, "share", () => catat("bagikan", "bagikan perangkat"));

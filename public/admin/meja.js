@@ -48,7 +48,7 @@
   };
 
   /* ---------- tab meja ---------- */
-  const ringkasIsi = r => M().kolom.filter(k => r.data[k.nama] != null && r.data[k.nama] !== "").slice(0, 4).map(k => `<span>${esc(k.label)}: <b>${nilaiF(k, r.data[k.nama])}</b></span>`).join(" · ");
+  const ringkasIsi = r => M().kolom.filter(k => r.data[k.nama] != null && r.data[k.nama] !== "").slice(0, 4).map(k => `<span>${esc(k.label)}: <b>${nilaiF(k, r.data[k.nama])}</b></span>`).join(", ");
   const urutan = {wilayah: r => `${r.prov} ${r.kab} ${r.desa || ""}`.toLowerCase(), status: r => r.status_efektif, diubah: r => r.diubah};
   const barisT = r => {
     const m = M(), tanda = r.tanda.map(t => pil(t, m.bahaya[t] || label(t), "bahaya")).join("");
@@ -60,9 +60,9 @@
       <td>${esc(waktuF(r.diubah))}<br><span class="mj-redup">${esc(umur(r.diubah))}</span></td>
       <td><div class="mj-aksi">${aksi}${stokAksi}<button class="mj-btn kecil" data-rinci="1">${IK.riwayat}Riwayat</button></div></td></tr>${rin ? rincian(r, rin) : ""}`;
   };
-  const rincian = (r, d) => `<tr class="mj-rincian"><td colspan="5">${M().kolom.filter(k => r.data[k.nama] != null && r.data[k.nama] !== "").map(k => `${esc(k.label)}: <b>${k.tipe === "gudang" ? esc(r.gudang_asal_nama || "gudang") : nilaiF(k, r.data[k.nama])}</b>`).join(" · ")}${r.kaji_id ? ` · Kaji cepat induk: <b>${esc(r.kaji_id)}</b>` : ""}
-    ${d.transaksi ? `<ol>${d.transaksi.map(t => `<li>${esc(label(t.jenis))} ${ID.format(t.delta)} · saldo ${ID.format(t.saldo)} · ${esc(waktuF(t.waktu))} · ${esc(t.oleh || "")}${t.catatan ? ` · ${esc(t.catatan)}` : ""}</li>`).join("")}</ol>` : ""}
-    <ol>${d.jejak.map(j => `<li>${esc(label(j.ke))}${j.dari ? ` (dari ${esc(label(j.dari))})` : ""} · ${esc(waktuF(j.waktu))} · ${esc(j.oleh || "")}${j.catatan ? ` · ${esc(j.catatan)}` : ""}</li>`).join("")}</ol></td></tr>`;
+  const rincian = (r, d) => `<tr class="mj-rincian"><td colspan="5">${M().kolom.filter(k => r.data[k.nama] != null && r.data[k.nama] !== "").map(k => `${esc(k.label)}: <b>${k.tipe === "gudang" ? esc(r.gudang_asal_nama || "gudang") : nilaiF(k, r.data[k.nama])}</b>`).join(", ")}${r.kaji_id ? `, Kaji cepat induk: <b>${esc(r.kaji_id)}</b>` : ""}
+    ${d.transaksi ? `<ol>${d.transaksi.map(t => `<li>${esc(label(t.jenis))} ${ID.format(t.delta)}, saldo ${ID.format(t.saldo)}, ${esc(waktuF(t.waktu))}, ${esc(t.oleh || "")}${t.catatan ? `, ${esc(t.catatan)}` : ""}</li>`).join("")}</ol>` : ""}
+    <ol>${d.jejak.map(j => `<li>${esc(label(j.ke))}${j.dari ? ` (dari ${esc(label(j.dari))})` : ""}, ${esc(waktuF(j.waktu))}, ${esc(j.oleh || "")}${j.catatan ? `, ${esc(j.catatan)}` : ""}</li>`).join("")}</ol></td></tr>`;
   function rekapHtml() {
     const m = M(), per = (rekapD?.per_kab?.[m.id]) || {}, ent = Object.entries(per);
     const cols = m.rekap.map(c => m.kolom.find(k => k.nama === c));

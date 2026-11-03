@@ -56,7 +56,7 @@ const Berita = {
     const ctl = `<div class="seg">${[[1, "Hari ini"], [3, "3 hari"], [7, "7 hari"], [30, "1 bulan"]].map(([v, n]) => `<button data-br="sorotHari" data-v="${v}" aria-pressed="${hr === v}">${n}</button>`).join("")}</div>`;
     return this.kartu("Sorotan", `Cerita paling ramai ${nmR}: ${Kartu.hl(esc(C[0].judul))}`, `<div class="br-sorot">${C.map((c, i) => { const a = art.get(c.id) || {};
       return `<a class="br-kartu" href="${escUrl(a.url)}" target="_blank" rel="noopener"><span class="br-no">${i + 1}</span><span class="br-isi"><b>${esc(c.judul)}</b>
-        <small>${this.ikon(this.dom(a))}${fmt(c.n_media)} media · ${esc((c.media || []).slice(0, 3).join(", "))}${c.media?.length > 3 ? " …" : ""}</small>
+        <small>${this.ikon(this.dom(a))}${fmt(c.n_media)} media: ${esc((c.media || []).slice(0, 3).join(", "))}${c.media?.length > 3 ? " …" : ""}</small>
         <span class="br-chip">${(a.topik || c.topik || []).map(t => TOPIK_B[t] ? `<i style="--w:${WARNA_T[t]}">${TOPIK_B[t]}</i>` : "").join("")}</span></span>${this.thumb({...a, gambar: a.gambar})}</a>`; }).join("")}</div>`, this.SM, ctl); },
 
   /* 4. topik dan media */
@@ -72,7 +72,7 @@ const Berita = {
         <span class="br-n"><b>${fmt(n)}</b><small>${Math.round(n / tot * 100)}%</small></span>${garis(t.v, w)}<span class="br-d" style="color:${t.d > .1 ? "#c9503a" : t.d < -.1 ? "#2b8c86" : "var(--ink2)"}">${t.d > 0 ? "▲" : "▼"} ${fmt(Math.abs(Math.round(t.d * 100)))}%</span></button>`; }).join("");
     const domM = Object.fromEntries(D.artikel.filter(a => a.domain).map(a => [a.sumber, a.domain]));
     const media = M.map(x => `<button class="br-row br-row-m" data-media="${esc(x.sumber)}"><span class="br-nm">${this.ikon(domM[x.sumber])}${esc(x.sumber)}</span><span class="br-bar"><i style="width:${x.n / mm * 100}%;background:${this.BIRU}"></i></span><span class="br-n"><b>${fmt(x.n)}</b></span></button>`).join("");
-    return this.kartu("Topik", `Topik terbanyak 30 hari: ${Kartu.hl(TOPIK_B[T[0][0]])}`, `<div class="grid g2" style="gap:22px"><div><div class="lbl">Topik · 30 hari</div><div class="br-rows">${baris}</div></div><div><div class="lbl">Media · 120 hari</div><div class="br-rows">${media}</div></div></div>`, this.SM); },
+    return this.kartu("Topik", `Topik terbanyak 30 hari: ${Kartu.hl(TOPIK_B[T[0][0]])}`, `<div class="grid g2" style="gap:22px"><div><div class="lbl">Topik, 30 hari</div><div class="br-rows">${baris}</div></div><div><div class="lbl">Media, 120 hari</div><div class="br-rows">${media}</div></div></div>`, this.SM); },
   dlg(judul, sub, isi) { const d = $("#dlg");
     d.innerHTML = `<div class="dh"><div><h3 id="dlgJudul">${judul}</h3>${sub ? `<div class="dh-cs"><span class="dh-c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7"/></svg>${sub}</span></div>` : ""}</div><button aria-label="Tutup" data-tutup>×</button></div><div class="db">${isi}</div>`;
     d.querySelector("[data-tutup]").onclick = () => d.close(); d.onclick = ev => { if (ev.target === d) d.close(); }; d.showModal(); },
@@ -89,8 +89,8 @@ const Berita = {
     const urut = [...A].sort((a, b) => b.tgl.localeCompare(a.tgl)).slice(0, 60), grp = {}; urut.forEach(a => (grp[a.tgl.slice(0, 10)] ||= []).push(a));
     const gb = a => { const t = this.thumb(a); return t ? t.replace('class="br-thumb', 'class="br-pt') : `<i class="br-pt kosong"></i>`; };
     const daftar = Object.entries(grp).map(([t, xs], gi) => `<details class="br-grp"${gi ? "" : " open"}><summary>${this.tgP(t, {weekday: "long", day: "numeric", month: "long"})}<em>${fmt(xs.length)} berita</em></summary><div class="br-pop-l br-dlg-l">${xs.map(a =>
-      `<a href="${escUrl(a.url_asli || a.url)}" target="_blank" rel="noopener">${gb(a)}<span>${esc(a.judul)}</span><small>${esc(a.sumber)} · ${a.tgl.slice(11, 16)} WIB</small><small class="br-pop-lb">${(a.topik || []).slice(0, 2).map(k => this.pl(TOPIK_B[k] || k, WARNA_T[k] || "#8a96a8")).join("")}</small></a>`).join("")}</div></details>`).join("");
-    this.dlg(judul, `${fmt(A.length)} berita · arsip 120 hari`, sek("Berita per hari · 30 hari", `<svg viewBox="0 0 ${W} 120" style="width:100%" role="img" aria-label="Berita per hari">${g}</svg>`)
+      `<a href="${escUrl(a.url_asli || a.url)}" target="_blank" rel="noopener">${gb(a)}<span>${esc(a.judul)}</span><small>${esc(a.sumber)}, ${a.tgl.slice(11, 16)} WIB</small><small class="br-pop-lb">${(a.topik || []).slice(0, 2).map(k => this.pl(TOPIK_B[k] || k, WARNA_T[k] || "#8a96a8")).join("")}</small></a>`).join("")}</div></details>`).join("");
+    this.dlg(judul, `${fmt(A.length)} berita, arsip 120 hari`, sek("Berita per hari, 30 hari", `<svg viewBox="0 0 ${W} 120" style="width:100%" role="img" aria-label="Berita per hari">${g}</svg>`)
       + `<div class="grid g2" style="gap:12px">${sek("Provinsi paling sering disebut", PV.length ? batangB(PV.map(([k, v]) => [esc(namaProv(k)), v, "#2b8c86"])) : "Tidak ada lokasi.")}${sek("Topik", batangB(TP.map(([k, v]) => [TOPIK_B[k], v, WARNA_T[k]])))}</div>` + sek("Berita terbaru", daftar)); },
 
   /* 5. daftar berita berpaginasi */
@@ -107,7 +107,7 @@ const Berita = {
     $("#brList").innerHTML = `<div class="br-list">${hal.map(a => { const th = this.thumb(a);
       return `<div class="br-item${th ? " br-tb" : ""}"><a href="${escUrl(a.url)}" target="_blank" rel="noopener"><b>${esc(a.judul)}</b></a>
         <small class="br-meta">${this.ikon(this.dom(a))}<span class="br-src">${esc(a.sumber)}</span></small>
-        <span class="br-meta2">${this.pl(this.tgP(a.tgl, {day: "numeric", month: "short"}) + " · " + a.tgl.slice(11, 16).replace(":", ".") + " WIB", "#5b6782")}${a.kab?.length ? this.pl(esc(a.kab[0].split("|")[1]), "#2b8c86") : a.prov?.length ? this.pl(esc(namaProv(a.prov[0])), "#2b8c86") : ""}</span>
+        <span class="br-meta2">${this.pl(this.tgP(a.tgl, {day: "numeric", month: "short"}) + ", " + a.tgl.slice(11, 16).replace(":", ".") + " WIB", "#5b6782")}${a.kab?.length ? this.pl(esc(a.kab[0].split("|")[1]), "#2b8c86") : a.prov?.length ? this.pl(esc(namaProv(a.prov[0])), "#2b8c86") : ""}</span>
         <span class="br-chip">${(a.topik || []).filter(t => TOPIK_B[t]).map(t => `<i style="--w:${WARNA_T[t]}">${TOPIK_B[t]}</i>`).join("")}</span>${th}</div>`; }).join("") || `<p class="kosong">Tidak ada berita yang cocok.</p>`}</div>${paginasi(this.f.hal, R.length, per, "berita")}`; },
 
   ikat() {

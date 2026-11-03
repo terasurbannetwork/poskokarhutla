@@ -77,7 +77,7 @@
 
     /* ---- form dari daftar tetap ---- */
     for (const [k, v] of Object.entries(TINGKAT)) {
-      const l = buat("label", null, "rr-pil " + k), i = document.createElement("input"), s = buat("span"), b = buat("b", `${v.kode} · ${v.nama}`);
+      const l = buat("label", null, "rr-pil " + k), i = document.createElement("input"), s = buat("span"), b = buat("b", `${v.kode}, ${v.nama}`);
       i.type = "radio"; i.name = "tingkat"; i.value = k; s.append(b, buat("small", v.tips)); l.append(i, s); $("tingkat").append(l);
     }
     $("tanggal").value = $("rSampai").value = $("rDari").value = hariIni(); $("tanggal").max = hariIni();
@@ -169,7 +169,7 @@
       if (!r.j.laporan.length) ul.append(buat("li", "Belum ada laporan."));
       for (const x of r.j.laporan.slice(0, 50)) {
         const li = buat("li"), tg = TINGKAT[x.tingkat];
-        li.append(buat("span", tg.kode, "rr-lencana " + x.tingkat), buat("span", `${x.kec}, ${x.kab}`), buat("span", `${x.bencana} · ${x.tanggal}${x.foto ? " · foto" : ""}`, "rr-kecil"));
+        li.append(buat("span", tg.kode, "rr-lencana " + x.tingkat), buat("span", `${x.kec}, ${x.kab}`), buat("span", `${x.bencana}, ${x.tanggal}${x.foto ? ", foto" : ""}`, "rr-kecil"));
         if (x.status !== "sah") li.append(buat("span", "ditolak admin", "rr-lencana ditolak"));
         ul.append(li);
       }
@@ -201,7 +201,7 @@
       if (r.s === 403) return tanpaAkses();
       if (r.s !== 200) return void ($("siapa").textContent = "Server tidak terjangkau; muat ulang.");
       $("siapa").textContent = "Akses terverifikasi";
-      if (kode) api("/api/lapangan/saya").then(x => { if (x.s === 200) $("siapa").textContent = `${x.j.regu.nama} · ${x.j.regu.unsur} · ${x.j.regu.kab}`; }).catch(() => {});
+      if (kode) api("/api/lapangan/saya").then(x => { if (x.s === 200) $("siapa").textContent = `${x.j.regu.nama}, ${x.j.regu.unsur}, ${x.j.regu.kab}`; }).catch(() => {});
       muatSaya();
     })();
   }

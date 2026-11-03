@@ -166,7 +166,7 @@
   function figur(c, judul) {
     const src = c?.f ? (/^(\/|https?:)/.test(c.f) ? c.f : "/data/" + c.f) : "";
     return `<figure class="gk-fig">${src ? `<img src="${esc(src)}" alt="${esc(judul)}, ${esc(tgl(c.tgl))}" loading="lazy">` : `<div class="gk-nocitra">Tidak ada citra bersih</div>`}
-      <figcaption><b>${esc(judul)}</b>${c?.tgl ? ` ${esc(tgl(c.tgl))}` : ""}${c?.satelit ? ` · ${esc(c.satelit)}` : ""}${c?.awan != null ? ` · awan ${fmt(c.awan)}%` : ""}${c?.bakar_pct != null ? ` · bekas bakar ${fmt(c.bakar_pct, 1)}% area` : ""}</figcaption></figure>`;
+      <figcaption><b>${esc(judul)}</b>${c?.tgl ? ` ${esc(tgl(c.tgl))}` : ""}${c?.satelit ? `, ${esc(c.satelit)}` : ""}${c?.awan != null ? `, awan ${fmt(c.awan)}%` : ""}${c?.bakar_pct != null ? `, bekas bakar ${fmt(c.bakar_pct, 1)}% area` : ""}</figcaption></figure>`;
   }
   function lembar(r) {
     const e = RIW[r.id], cj = (CITJ[r.id] || []).slice().sort((a, b) => a.tgl.localeCompare(b.tgl)).slice(0, 4);
@@ -177,17 +177,17 @@
     const sebelum = c => c.tgl < r.pertama ? "Sebelum api" : "Sesudah api mulai";
     const sk = IDX.sumber_konsesi[r.jenis];
     return `<article class="gk-lembar" id="gkLembar">
-      <header class="gk-kop"><div><p class="gk-kicker">Berkas indikasi karhutla · bahan awal</p><h2>${esc(r.nama)}</h2><p>${esc(JENIS[r.jenis] || r.jenis)} · ${esc((r.kab || []).join(", "))}, ${esc(IDX.prov.find(p => p.kode === prov)?.nama || "")}</p></div>
+      <header class="gk-kop"><div><p class="gk-kicker">Berkas indikasi karhutla, bahan awal</p><h2>${esc(r.nama)}</h2><p>${esc(JENIS[r.jenis] || r.jenis)}, ${esc((r.kab || []).join(", "))}, ${esc(IDX.prov.find(p => p.kode === prov)?.nama || "")}</p></div>
         <div class="gk-cap"><b>Dibuat</b> ${esc(wib(new Date().toISOString()))}<br><b>Data titik</b> sampai ${esc(sam(IDX.sampai))}</div></header>
       <p class="gk-catatan"><b>Bahan awal, bukan alat bukti sah tanpa verifikasi lapangan.</b> Tumpang tindih lokasi dan waktu tidak menunjukkan siapa yang membakar.</p>
       <h3>1. Identitas konsesi</h3>
       <table class="gk-kv"><tbody>${baris("Nama", esc(r.nama))}${baris("ID data", esc(r.id))}${baris("Jenis izin", esc(JENIS[r.jenis] || r.jenis))}${baris("Pemegang atau grup (catatan publik)", esc(pemegang))}
         ${baris("Luas konsesi", `${fmt(r.luas_ha)} ha (peta tahun ${esc(r.tahun_data || "–")})`)}${baris("Kabupaten", esc((r.kab || []).join(", ")))}${baris("Kecamatan terdampak", esc((r.kec || []).join("; ")))}
-        ${baris("Kawasan hutan", kaw)}${baris("Gambut", r.gambut != null ? `${pct(r.gambut)} luas · ${fmt(r.gambut_ha)} ha` : "")}${baris("Sanksi tercatat", sanksi)}</tbody></table>
+        ${baris("Kawasan hutan", kaw)}${baris("Gambut", r.gambut != null ? `${pct(r.gambut)} luas, ${fmt(r.gambut_ha)} ha` : "")}${baris("Sanksi tercatat", sanksi)}</tbody></table>
       <h3>2. Kronologi titik api 2026</h3>
       <table class="gk-kv"><tbody>${baris("Titik api pertama", esc(tgl(r.pertama)))}${baris("Titik api terakhir", esc(tgl(r.terakhir)))}${baris("Hari aktif", `${fmt(r.hari_aktif)} hari dalam rentang ${fmt(r.rentang_hari)} hari`)}
         ${baris("Total titik panas", `<b>${fmt(r.titik)}</b> titik (${fmt(r.titik_7h)} dalam 7 hari terakhir)`)}${baris("Hari puncak", r.puncak ? `${esc(tgl(r.puncak[0]))}: ${fmt(r.puncak[1])} titik` : "")}
-        ${baris("Daya api (FRP)", `maks ${fmt(r.frp_maks, 1)} MW · total ${fmt(r.frp_total)} MW`)}${baris("Keyakinan titik", esc(sumT(IDX.sumber_titik)))}</tbody></table>
+        ${baris("Daya api (FRP)", `maks ${fmt(r.frp_maks, 1)} MW, total ${fmt(r.frp_total)} MW`)}${baris("Keyakinan titik", esc(sumT(IDX.sumber_titik)))}</tbody></table>
       ${kej.length ? `<table class="gk-tb"><thead><tr><th>Kejadian</th><th>Mulai</th><th>Selesai</th><th>Hari</th><th>Titik</th></tr></thead><tbody>${kej.map((k, i) => `<tr><td>${i + 1}</td><td>${esc(tgl(k[0]))}</td><td>${esc(tgl(k[1]))}</td><td>${fmt(k[2])}</td><td>${fmt(k[3])}</td></tr>`).join("")}</tbody></table>` : ""}
       ${harian.length ? `<p class="gk-sub">Jumlah titik per hari (tanggal: titik)</p><div class="gk-hari">${harian.map(h => `<span>${esc(tgl(h[0]).replace(/ \d{4}$/, ""))}<b>${fmt(h[1])}</b></span>`).join("")}</div>` : ""}
       <h3>3. Luas terbakar indikatif</h3>

@@ -54,7 +54,7 @@
       g.status === "diterima" || g.status === "bertugas" ? `<button class="bn-tombol" data-a="masuk" data-id="${esc(g.id)}">Check-in</button><button class="bn-tombol sekunder" data-a="keluar" data-id="${esc(g.id)}">Check-out</button>
         <label class="rl-cek"><input type="checkbox" class="gps"> Sertakan lokasiku saat check-in</label>` : "";
     return `<article class="bn-kartu rl-penugasan"><h3>${esc(g.judul)} ${sp(PENUGASAN[g.status])}</h3>
-      <div class="rl-kecil">${esc(g.kab)} · ${esc(d.provinsi[g.prov] || g.prov)} · ${tgl(g.mulai)} sampai ${tgl(g.selesai)}</div>${g.catatan ? `<div class="rl-kecil">${esc(g.catatan)}</div>` : ""}
+      <div class="rl-kecil">${esc(g.kab)}, ${esc(d.provinsi[g.prov] || g.prov)}, ${tgl(g.mulai)} sampai ${tgl(g.selesai)}</div>${g.catatan ? `<div class="rl-kecil">${esc(g.catatan)}</div>` : ""}
       <div class="rl-kecil">Asuransi: ${esc({belum: "belum diurus", diajukan: "sedang diajukan", aktif: "aktif", tidak_perlu: "tidak perlu"}[g.asuransi] || g.asuransi)}</div><div class="rl-aksi">${aksi}</div></article>`;
   }
   function gambar(x) {

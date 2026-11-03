@@ -97,7 +97,7 @@ var Operasi = typeof document === "undefined" ? null : (() => {
     const omcProv = provs.filter(({k, b}) => b.regu && omcHari(k).length >= 2).map(({k}) => k);
     el.innerHTML = `
     <div class="head"><div><h2>Rencana operasi & kebutuhan sumber daya</h2>
-      <p>Berapa regu, personel, pompa, selang, titik bor, helikopter, dan hari modifikasi cuaca yang dibutuhkan agar front api aktif terkurung dalam <b>${T} hari</b> dan bara gambut padam ${H.k("hari_mopup", s)} hari sesudahnya. Data satelit ${esc(D.per || "")} · dihitung ${esc((D.dibuat || "").slice(0, 16).replace("T", " "))} WIB.
+      <p>Berapa regu, personel, pompa, selang, titik bor, helikopter, dan hari modifikasi cuaca yang dibutuhkan agar front api aktif terkurung dalam <b>${T} hari</b> dan bara gambut padam ${H.k("hari_mopup", s)} hari sesudahnya. Data satelit ${esc(D.per || "")}, dihitung ${esc((D.dibuat || "").slice(0, 16).replace("T", " "))} WIB.
       Label angka: ${tag("resmi")} rekap BNPB atau pernyataan pemerintah, ${tag("satelit")} NASA FIRMS, ${tag("model")} hitungan platform dari koefisien terbuka.</p></div></div>
     <div class="op-kendali card">
       <label class="op-slider"><span class="lbl">Target front terkurung</span><input type="range" min="1" max="14" step="1" value="${T}" data-op="T" aria-label="Target hari terkurung"><b>${T} hari</b></label>
@@ -111,8 +111,8 @@ var Operasi = typeof document === "undefined" ? null : (() => {
       ${kpi("Target realistis", tReal ? tReal + " hari" : "> 14 hari", `dengan ${resmiP != null ? fmt(resmiP) : "?"} personel yang sudah ada`, tReal && tReal <= 3 ? W.hijau : W.merah)}
       ${kpi("Pompa jinjing/induk", fmt(nas.pompa), `selang ± ${km(nas.selang)} ${tag("model")}`, W.biru)}
       ${kpi("Titik bor air", fmt(nas.bor), `untuk ± ${fmt(D.rekonsiliasi.bara_ha[s])} ha bara gambut ${tag("model")}`, W.teal)}
-      ${kpi("Heli water bombing", fmt(nas.heli), `butuh (front tak terjangkau ≥ ${H.k("jam_tiba", s)} jam) · ada ${wbResmi ?? "?"} ${tag("resmi")}`, W.ungu)}
-      ${kpi("Modifikasi cuaca", fmt(omcProv.length) + " provinsi", `punya ≥ 2 hari awal berpeluang hujan 15–60% · pesawat OMC ada ${omcResmi ?? "?"} ${tag("resmi")}`, "#0b2545")}
+      ${kpi("Heli water bombing", fmt(nas.heli), `butuh (front tak terjangkau ≥ ${H.k("jam_tiba", s)} jam), ada ${wbResmi ?? "?"} ${tag("resmi")}`, W.ungu)}
+      ${kpi("Modifikasi cuaca", fmt(omcProv.length) + " provinsi", `punya ≥ 2 hari awal berpeluang hujan 15–60%, pesawat OMC ada ${omcResmi ?? "?"} ${tag("resmi")}`, "#0b2545")}
     </div>
     <div class="grid g2">
       <section class="card op-blok"><h3>Logistik per hari ${tag("model")}</h3>
@@ -197,9 +197,9 @@ var Operasi = typeof document === "undefined" ? null : (() => {
           </ol></div>
         <div><span class="lbl">Paket dari satelit (semua cluster TN) ${tag("model")}</span>
           <table class="op-tb"><tbody><tr><td>Regu (rotasi termasuk)</td><td class="n"><b>${fmt(t.regu)}</b></td></tr><tr><td>Personel</td><td class="n"><b>${fmt(t.personel)}</b></td></tr>
-          <tr><td>Pompa · selang</td><td class="n">${fmt(t.pompa)} · ${km(t.pompa * H.koef.selang_pompa.hi)}</td></tr><tr><td>Titik bor</td><td class="n">${fmt(t.bor)}</td></tr><tr><td>Heli WB (front tak terjangkau)</td><td class="n">${fmt(t.heli)}</td></tr></tbody></table>
+          <tr><td>Pompa, selang</td><td class="n">${fmt(t.pompa)}, ${km(t.pompa * H.koef.selang_pompa.hi)}</td></tr><tr><td>Titik bor</td><td class="n">${fmt(t.bor)}</td></tr><tr><td>Heli WB (front tak terjangkau)</td><td class="n">${fmt(t.heli)}</td></tr></tbody></table>
           <p class="op-cat">Akses: dari Kumai/Pangkalan Bun lewat Sungai Sekonyer dengan klotok, lalu jalan kaki di rawa; Daops Pangkalanbun (PKB-05) dan Balai TN Tanjung Puting memimpin, dibantu TNI, Polri, MPA desa penyangga, dan perusahaan sawit di batas timur (Permentan 5/2018). Waktu tempuh sungai belum dimodelkan untuk semua cluster.</p>
-          <div class="op-kl">${L.slice(0, 8).map(c => `<button class="btn sec" data-opk="${c.id}">${c.id} · ${fmt(c.px)} piksel</button>`).join("")}</div></div>
+          <div class="op-kl">${L.slice(0, 8).map(c => `<button class="btn sec" data-opk="${c.id}">${c.id}, ${fmt(c.px)} piksel</button>`).join("")}</div></div>
       </div></section>`;
   }
 
@@ -295,7 +295,7 @@ var Operasi = typeof document === "undefined" ? null : (() => {
     const bi = biaya(k, b, T, s), om = omcHari(k);
     dlg(`${esc(nP(k))}: kebutuhan operasi ${T} hari`, `${fmt(b.kompleks)} cluster aktif, skenario ${SKEN[s].toLowerCase()}, ${b.ada ? `terjun ${fmt(b.ada.personel)} (${esc(b.ada.sumber)})` : "personel terjun tidak dilaporkan"}`,
       `<div class="grid g4 op-kpi">${kpi("Personel", fmt(b.personel), `${fmt(b.regu)} regu`, W.ungu)}${kpi("Tambah", fmt(b.tambahPersonel), `${fmt(b.tambahRegu)} regu`, b.tambahPersonel ? W.merah : W.hijau)}
-        ${kpi("Pompa · selang", fmt(b.pompa), km(b.selang), W.biru)}${kpi("Titik bor · heli", `${fmt(b.bor)} · ${fmt(b.heli)}`, `OMC layak ${om.length} hari`, W.teal)}</div>
+        ${kpi("Pompa, selang", fmt(b.pompa), km(b.selang), W.biru)}${kpi("Titik bor, heli", `${fmt(b.bor)}, ${fmt(b.heli)}`, `OMC layak ${om.length} hari`, W.teal)}</div>
       <p><b>${esc(kalimat(k, T))}</b>. Perkiraan biaya ${bi.hari} hari: ${rp(bi.total)}.</p>
       <h4>Rumus provinsi</h4><ol class="op-rumus">
         <li>Regu garis = Σ (front km × faktor ISI ÷ produksi garis) ÷ ${T} hari = <b>${fmt(b.regu_garis)}</b></li>
@@ -318,7 +318,7 @@ var Operasi = typeof document === "undefined" ? null : (() => {
     const g = c.kmrn ? Math.min(k("tumbuh_maks"), Math.max(1, (c.ini || 0) / c.kmrn)) : 1, fi = 1 + Math.max(0, (c.isi || 0) - k("isi_ambang")) / 8, r = k("garis_" + c.jenis);
     const tiba = c.jam == null ? "tidak ada rute jalan/sungai ≤ 18 jam" : `${f1(c.jam)} jam dari ${esc(c.dari)}${c.jsum === "perkiraan" ? " (perkiraan garis lurus × 1,3 ÷ 30 km/jam + 1 jam)" : " (graf jalan & sungai OSM)"}`;
     const heliOk = c.wh[s] > 0, siklus = 2 * k("jarak_air_heli") / 150 * 60 + 3, kmHeli = k("heli_jam_hari") * 60 / siklus * k("m_per_drop") / 1000;
-    dlg(`${c.id}: rumus langkah demi langkah`, `${esc(c.kab || "")}${c.kec ? ", " + esc(c.kec) : ""} · ${esc(nP(c.prov))} · ${JENIS[c.jenis]} (gambut ${Math.round(c.ps * 100)}% titik) · ${esc(c.pj || "")} · target ${T} hari, skenario ${SKEN[s].toLowerCase()}`,
+    dlg(`${c.id}: rumus langkah demi langkah`, `${esc(c.kab || "")}${c.kec ? ", " + esc(c.kec) : ""}, ${esc(nP(c.prov))}, ${JENIS[c.jenis]} (gambut ${Math.round(c.ps * 100)}% titik), ${esc(c.pj || "")}, target ${T} hari, skenario ${SKEN[s].toLowerCase()}`,
       `<ol class="op-rumus op-langkah">
         <li><b>Keliling cluster</b> dari poligon ${tag("satelit")}: ${f1(c.kel)} km. Luas jejak 7 hari ${fmt(Math.round(c.luas))} ha.</li>
         <li><b>Front aktif</b>: ${fmt(c.px)} piksel VIIRS 24 jam × 14 ha = ${f1(pxKm)} km² → bila lingkaran, keliling 2√(π × ${f1(pxKm)}) = ${f1(ling)} km; diambil yang lebih kecil dari ini dan keliling cluster = ${f1(Math.min(ling, c.kel))} km.

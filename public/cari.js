@@ -31,11 +31,11 @@
   /* indeks besar: tiap sumber berdiri sendiri (satu gagal, yang lain tetap masuk); selesai memuat memicu ulang hasil ketikan */
   const kap = s => (s || "").toLowerCase().replace(/(^|[\s(.\/-])\p{Ll}/gu, c => c.toUpperCase());
   const SUMBER = {
-    "data/desa_cari.json": d => d.baris.map(([kd, n, kc]) => ({t: "desa", n, p: kd.slice(0, 2), k: [kc && "Kec. " + kc, d.kab[kd.slice(0, 5)]].filter(Boolean).join(" · "), id: kd})),
+    "data/desa_cari.json": d => d.baris.map(([kd, n, kc]) => ({t: "desa", n, p: kd.slice(0, 2), k: [kc && "Kec. " + kc, d.kab[kd.slice(0, 5)]].filter(Boolean).join(", "), id: kd})),
     "data/daops.json": d => d.map(x => ({t: "daops", n: x.nama, p: x.prov, k: x.kab, c: [x.lon, x.lat], x: [["Balai", x.balai], ["Brigdalkarhutla", x.brigdal], ["Regu", x.regu], ["Alamat", x.alamat]]})),
     "data/posko.json": d => [...d.pusat.map(x => ({t: "posko", n: "Posko Pusat " + x.nama, p: x.prov, c: [x.lon, x.lat], x: [["Tingkat", "Pusat (provinsi)"]]})),
       ...d.menengah.map(x => ({t: "posko", n: "Posko Menengah " + x.nama, p: x.prov, k: x.kab, c: [x.lon, x.lat], x: [["Tingkat", "Menengah (kabupaten)"]]})),
-      ...d.posko.map(x => ({t: "posko", n: "Posko " + x.nama.split(",")[0], p: x.prov, k: [x.nama.split(", ")[1], x.kab].filter(Boolean).join(" · "), c: [x.lon, x.lat],
+      ...d.posko.map(x => ({t: "posko", n: "Posko " + x.nama.split(",")[0], p: x.prov, k: [x.nama.split(", ")[1], x.kab].filter(Boolean).join(", "), c: [x.lon, x.lat],
         x: [["Tingkat", x.jenis_posko === "aju" ? "Lapangan (aju)" : "Lapangan"]]}))],
     "data/bpbd.json": d => d.kantor.filter(x => x.prov).map(x => ({t: "bpbd", n: /provinsi/i.test(x.nama) ? "BPBD Provinsi " + namaProv(x.prov) : "BPBD " + kap(x.nama).replace(/^Kab\.?\s+/, ""), p: x.prov, k: x.kab,
       c: [x.lon, x.lat], x: [["Alamat", x.alamat], ["Pusdalops", /^[\d\s()+'/-]{6,}$/.test(x.pusdalops) ? x.pusdalops.replace(/'/g, "") : ""]]})),
@@ -43,7 +43,7 @@
       .map(x => ({t: "faskes", n: x.nama.length > 12 && x.nama === x.nama.toUpperCase() ? kap(x.nama) : x.nama, p: x.prov, c: [x.lon, x.lat], x: [["Data", "OpenStreetMap"]]})),
     "data/metar.json": d => d.map(x => ({t: "bandara", n: x.nama, p: x.prov, c: [x.lon, x.lat], x: [["ICAO", x.icao], ["Jarak pandang", x.vis_m != null ? `${fmt(x.vis_m / 1000)} km (METAR ${x.waktu?.slice(11, 16)} UTC)` : ""]]})),
     "data/sekolah.json": d => { const K = Object.fromEntries(d.kolom.map((c, k) => [c, k]));
-      return d.baris.map(r => ({t: "sekolah", n: r[K.nama], p: r[K.prov], k: [r[K.desa] === r[K.desa]?.toUpperCase() ? kap(r[K.desa]) : r[K.desa], r[K.kab]].filter(Boolean).join(" · "), c: [r[K.lon], r[K.lat]],
+      return d.baris.map(r => ({t: "sekolah", n: r[K.nama], p: r[K.prov], k: [r[K.desa] === r[K.desa]?.toUpperCase() ? kap(r[K.desa]) : r[K.desa], r[K.kab]].filter(Boolean).join(", "), c: [r[K.lon], r[K.lat]],
         x: [["Jenjang", r[K.jenjang]], ["Status", {N: "Negeri", S: "Swasta"}[r[K.status]] || r[K.status]], ["Siswa", r[K.siswa] ? fmt(r[K.siswa]) : ""], ["NPSN", r[K.npsn]]]})); },
   };
   /* fetch langsung, bukan muatJSON: data wilayah/fasilitas tanpa teks WALHI, dan tanpaWalhi atas 240 ribu baris makan ratusan ms */
@@ -64,7 +64,7 @@
   }
   /* chip tengah: jenis hanya di grup campuran (Kawasan konservasi); grup sejenis sudah bernama di judulnya */
   const chip = s => s ? `<span class="hs-in"><i>${esc(s)}</i></span>` : "<span></span>";
-  const baris = (i, k) => `<button class="hs-c" data-cari="${k}"><b>${esc(i.n)}</b>${chip(KAW.has(i.t) && !i.k ? (GRUP.some(g => g[0] === i.t) ? "" : JENIS[i.t]) : [i.g, i.k].filter(Boolean).join(" · "))}<span class="hs-lv hs-provinsi">${esc(namaProv(i.p))}</span></button>`;
+  const baris = (i, k) => `<button class="hs-c" data-cari="${k}"><b>${esc(i.n)}</b>${chip(KAW.has(i.t) && !i.k ? (GRUP.some(g => g[0] === i.t) ? "" : JENIS[i.t]) : [i.g, i.k].filter(Boolean).join(", "))}<span class="hs-lv hs-provinsi">${esc(namaProv(i.p))}</span></button>`;
   let daftar = [], tRender = 0, qJadi = "", hJadi = "", segera = false;
   /* dipanggil dari penanganan input di index.html; mengembalikan HTML tambahan untuk #hasil.
      Pindai 240 ribu nama ditunda 120 ms setelah ketikan terakhir (wadah #cariLain diisi kemudian); picu dari dalam (Lihat semua, indeks selesai dimuat) langsung */
@@ -124,7 +124,7 @@
   const jenisOsm = p => OSM[p.osm_value] || OSM[p.osm_key] || "Tempat";
   const kapital = s => (s || "").replace(/(^|\s)\p{Ll}/gu, c => c.toUpperCase());
   function fotoHtml() { return foto.length ? `<div class="hs-jd">Cari tempat</div>` + foto.map((f, k) => { const p = f.properties;
-    return `<button class="hs-c" data-foto="${k}"><b>${esc(p.name || "")}</b>${chip([p.city || p.county, p.state].filter(Boolean).map(kapital).join(" · "))}<span class="hs-lv hs-kecamatan">${esc(jenisOsm(p))}</span></button>`; }).join("") + `<div class="hs-atr">© OpenStreetMap, Photon</div>` : ""; }
+    return `<button class="hs-c" data-foto="${k}"><b>${esc(p.name || "")}</b>${chip([p.city || p.county, p.state].filter(Boolean).map(kapital).join(", "))}<span class="hs-lv hs-kecamatan">${esc(jenisOsm(p))}</span></button>`; }).join("") + `<div class="hs-atr">© OpenStreetMap, Photon</div>` : ""; }
   async function cariFoto(q) {
     if (norm(q).length < 3) return; ctrl?.abort(); ctrl = new AbortController();
     try { const r = await fetch(`${PHOTON}?q=${encodeURIComponent(q)}&lat=-2&lon=118&limit=5&lang=default&bbox=94,-11.5,141.5,6.5`, {signal: ctrl.signal});
@@ -255,11 +255,11 @@
       if (!terpilih || terpilih.i !== i) return;
       const p = pabrik.get(i.id) || {}, [lo, la] = i.c;
       peta.fitBounds([tujuan(la, lo, 55, 270), tujuan(la, lo, 55, 90)].reduce((b, c) => b.extend(c), new maplibregl.LngLatBounds()).extend(tujuan(la, lo, 55, 0)).extend(tujuan(la, lo, 55, 180)), {padding: kiriPad(), duration: 700});
-      bukaKartu(i.n, [["Perusahaan", p.perusahaan], ["Grup", p.grup || i.g], ["Kapasitas", p.kapasitas ? `${fmt(p.kapasitas)} ${p.kapasitas_satuan || ""}` : ""], ["Tahun (data Trase)", p.tahun], ["Lokasi", [i.k, namaProv(i.p)].filter(Boolean).join(", ")]], "Trase (CC BY 4.0) · titik panas: NASA FIRMS");
+      bukaKartu(i.n, [["Perusahaan", p.perusahaan], ["Grup", p.grup || i.g], ["Kapasitas", p.kapasitas ? `${fmt(p.kapasitas)} ${p.kapasitas_satuan || ""}` : ""], ["Tahun (data Trase)", p.tahun], ["Lokasi", [i.k, namaProv(i.p)].filter(Boolean).join(", ")]], "Trase (CC BY 4.0), titik panas: NASA FIRMS");
       gambar(); nanti(statistik); return; }
     if (TITIK.has(i.t)) { const [lo, la] = i.c, km = BUFJ[i.t][2] + 5;
       peta.fitBounds([tujuan(la, lo, km, 270), tujuan(la, lo, km, 90)].reduce((b, c) => b.extend(c), new maplibregl.LngLatBounds()).extend(tujuan(la, lo, km, 0)).extend(tujuan(la, lo, km, 180)), {padding: kiriPad(), duration: 700});
-      bukaKartu(i.n, [["Jenis", JENIS[i.t]], ...i.x, ["Lokasi", [i.k, namaProv(i.p)].filter(Boolean).join(", ")]], ATR[i.t] + " · titik panas: NASA FIRMS");
+      bukaKartu(i.n, [["Jenis", JENIS[i.t]], ...i.x, ["Lokasi", [i.k, namaProv(i.p)].filter(Boolean).join(", ")]], ATR[i.t] + ", titik panas: NASA FIRMS");
       gambar(); nanti(statistik); return; }
     kartuMuat(i);
     if (KAW.has(i.t)) {
@@ -268,7 +268,7 @@
       terpilih.poli = f; terpilih.bb = f ? bboxPoli(polys(f.geometry)) : i.b;
       const b = terpilih.bb; peta.fitBounds([[b[0], b[1]], [b[2], b[3]]], {padding: kiriPad(), maxZoom: 12, duration: 700});
       bukaKartu(i.n, [["Jenis", JENIS[i.t] + (i.r ? `, radius ${i.r} km dari puncak` : "")], ["Lokasi", i.t === "desa" ? i.k : ""], ["Provinsi", namaProv(i.p)]],
-        `Batas: ${esc(i.t === "desa" ? "Kepmendagri 300.2.2-2430/2025 lewat cahyadsn/wilayah_boundaries (MIT), disederhanakan" : i.sb)} · titik panas: NASA FIRMS`);
+        `Batas: ${esc(i.t === "desa" ? "Kepmendagri 300.2.2-2430/2025 lewat cahyadsn/wilayah_boundaries (MIT), disederhanakan" : i.sb)}, titik panas: NASA FIRMS`);
       gambar(); nanti(statistik); muatTitik(168); return; }   /* belum padam butuh 36 jam ke belakang: hotspot.json 7 hari; selesai memuat memanggil Cari.segar */
     try { kons ||= await (Lapis.cache.konsesiP ||= muatJSON("data/lahan/konsesi.geojson").then(d => Lapis.cache.konsesi = d));
       if (!catatan) catatan = await muatJSON("data/kompleks_konsesi.json").then(d => d.catatan || "").catch(() => "");
@@ -277,7 +277,7 @@
     const f = kons?.features.find(x => x.properties.id === i.id); terpilih.poli = f || null; terpilih.bb = f ? bboxPoli(polys(f.geometry)) : i.b;
     const b = terpilih.bb || i.b; if (b) peta.fitBounds([[b[0], b[1]], [b[2], b[3]]], {padding: kiriPad(), maxZoom: 13, duration: 700}); else peta.flyTo({center: i.c, zoom: 10});
     const pr = f?.properties || {};
-    bukaKartu(i.n, [["Jenis", JENIS[i.t]], ["Grup", i.g || pr.grup], ["Lokasi", [i.k, namaProv(i.p)].filter(Boolean).join(", ")], ["Luas peta", pr.luas_peta_ha ? fmt(pr.luas_peta_ha) + " ha" : ""], ["Data tahun", pr.tahun_data]], "Batas konsesi: Kemenhut/GFW, Trase (CC BY 4.0) · titik panas: NASA FIRMS");
+    bukaKartu(i.n, [["Jenis", JENIS[i.t]], ["Grup", i.g || pr.grup], ["Lokasi", [i.k, namaProv(i.p)].filter(Boolean).join(", ")], ["Luas peta", pr.luas_peta_ha ? fmt(pr.luas_peta_ha) + " ha" : ""], ["Data tahun", pr.tahun_data]], "Batas konsesi: Kemenhut/GFW, Trase (CC BY 4.0), titik panas: NASA FIRMS");
     gambar(); nanti(statistik); }
   /* poligon kawasan: OSM (kawasan_cari.geojson), KHG (lahan/khg.geojson), gunung = lingkaran dari puncak, metro = gabungan kab/kota */
   async function poliKawasan(i) {

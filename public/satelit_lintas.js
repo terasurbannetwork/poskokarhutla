@@ -253,7 +253,7 @@
     return r;
   }
   /* kalimat jeda di kaki (r = ringkasJeda). Semua bawaan = "jeda aman VIIRS 3 jam, MODIS 2 jam (latensi FIRMS, diukur ...); bisa lebih lama bila satelit telat." (selera-angka 28 Okt: bawaan disebut "latensi FIRMS");
-     huruf kecil di kartu (sesudah " · "), kapital di popover (awal kalimat). Ada yang terukur: "waktu sampai data tampil di aplikasi, median 14 hari terakhir (14 Okt sampai 27 Okt 2026;
+     huruf kecil di kartu (sesudah ", "), kapital di popover (awal kalimat). Ada yang terukur: "waktu sampai data tampil di aplikasi, median 14 hari terakhir (14 Okt sampai 27 Okt 2026;
      aplikasi mengambil data tiap 3 jam): VIIRS 3,5 jam, MODIS 2,5 jam. Bisa lebih lama bila satelit telat."; satelit bawaan menyusul sebagai kalimat sendiri */
   function htmlJeda(r, kapital) {
     var item = function (g, nilai) { return "<span>" + esc(g.nama) + " " + nilai + " jam</span>"; };
@@ -339,7 +339,7 @@
       '<span translate="no">' + esc(namaWilayah()) + "</span></span></div>" + htmlSegKartu(tab) +
       '<div class="lk-isi">' + isiKartu(h, tab, now, jd) + "</div>" +
       '<div style="margin-top:6px;font-size:10.5px"><span>Sumber: elemen orbit CelesTrak (epoch tertua</span> <span translate="no">' + esc(bln + " " + jam(epoch)) +
-      " WIB</span><span>), dihitung di peramban</span> · " + htmlJeda(jd, false) + "</div></div>";
+      " WIB</span><span>), dihitung di peramban</span>, " + htmlJeda(jd, false) + "</div></div>";
   }
 
   /* ---------- muat malas */
@@ -780,7 +780,7 @@
   /* ---------- tampilan Kemarin dan Besok: ringkasan, grafik 00.00 sampai 24.00 WIB, lalu SEMUA lintasan hari itu urut waktu per periode 6 jam */
   var angka = function (n) { return Number(n).toLocaleString("id-ID"); };
   var chip = function (teks, kelas) { return '<span class="lp-c' + (kelas ? " " + kelas : "") + '">' + teks + "</span>"; };
-  var PISAH = ' <span class="lp-sep" aria-hidden="true">·</span> ';
+  var PISAH = ", ";
   var rentangJam = function (x) { return x.awal === x.akhir ? jam(x.awal) : jam(x.awal) + " sampai " + jam(x.akhir); };   // satu lintasan: satu jam saja
   var ringKosong = function (teks) { return '<p class="lp-ring"><span>' + teks + "</span></p>"; };
   /* Kemarin: cacah lintasan, yang membawa deteksi (+ total deteksi), tanpa deteksi, tertunda; menunggu dan belum termuat hanya bila ada; lalu satelit penyumbang deteksi terbanyak.

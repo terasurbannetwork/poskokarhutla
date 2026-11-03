@@ -49,7 +49,7 @@ const kartu = {
   fasilitas: p => {
     const nama = `<span translate="no">${esc(p.n)}</span>`;
     if (p.t !== "sekolah") return kartuTip({judul: nama, sub: `<small>${p.t === "rs" ? "Rumah sakit" : "Fasilitas kesehatan"}</small>`});
-    return kartuTip({judul: nama, sub: `<small>${esc(p.j)} · ${p.st === "N" ? "Negeri" : "Swasta"}${p.w ? " · " + esc(p.w) : ""}</small>`,
+    return kartuTip({judul: nama, sub: `<small>${esc(p.j)}, ${p.st === "N" ? "Negeri" : "Swasta"}${p.w ? ", " + esc(p.w) : ""}</small>`,
       stat: p.sw == null || p.sw === "null" ? [] : [["orang", angka(p.sw), "siswa", W_JENJANG[p.g] || W.lain]]});
   },
 };

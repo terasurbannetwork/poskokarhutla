@@ -70,7 +70,7 @@
       ${pts.length ? `<path d="M${pts[0][0]},${y(0)} L${pts.map(p => p.join(",")).join(" L")} L${pts.at(-1)[0]},${y(0)}Z" fill="#4f8fc4" opacity=".16"/>
       <polyline points="${pts.map(p => p.join(",")).join(" ")}" fill="none" stroke="#4f8fc4" stroke-width="2" stroke-linejoin="round"/>` : ""}
       ${n[puncak] ? `<circle cx="${x(puncak + .5)}" cy="${y(n[puncak])}" r="4.5" fill="#c9503a" stroke="#fff" stroke-width="1.5"/>
-        <text x="${Math.min(w - 60, x(puncak + .5) + 8)}" y="${Math.max(14, y(n[puncak]) - 8)}" class="kuat">puncak ${n[puncak]} · ${jam(puncak)}</text>` : ""}
+        <text x="${Math.min(w - 60, x(puncak + .5) + 8)}" y="${Math.max(14, y(n[puncak]) - 8)}" class="kuat">puncak ${n[puncak]}, ${jam(puncak)}</text>` : ""}
       <g class="ad-hov" hidden><line y1="6" y2="${h - bawah}"/><circle r="4.5"/></g>
       <rect class="ad-tangkap" x="${kiri}" y="0" width="${w - kiri}" height="${h - bawah}"/>
     </svg><div class="ad-tip" hidden></div></div>`;
@@ -113,7 +113,7 @@
     const pusat = {}; if (geo) for (const f of geo.features) { const c = (f.geometry.type === "Polygon" ? [f.geometry.coordinates] : f.geometry.coordinates).flat(2); let a = [999, 999, -999, -999];
       for (const [lo, la] of c) a = [Math.min(a[0], lo), Math.min(a[1], la), Math.max(a[2], lo), Math.max(a[3], la)]; pusat[f.properties.kode] = [(a[1] + a[3]) / 2, (a[0] + a[2]) / 2]; }
     const prov = baris("provinsi").filter(([k]) => pusat[k]).map(([k, n]) => ({j: namaProv(k), la: pusat[k][0], lo: pusat[k][1], n}));
-    const kk = kluster ? baris("kompleks").filter(([k]) => kluster[k]).map(([k, n]) => ({j: k + " · " + kluster[k][2], la: kluster[k][0], lo: kluster[k][1], n})) : [];
+    const kk = kluster ? baris("kompleks").filter(([k]) => kluster[k]).map(([k, n]) => ({j: k + ", " + kluster[k][2], la: kluster[k][0], lo: kluster[k][1], n})) : [];
     return `<div class="ad-peta-w"><svg viewBox="${VB}" role="img" aria-label="Peta cluster dan provinsi paling dibuka">${dasar()}${kotak}${gelembung(prov, "#5a9e74")}${gelembung(kk, "#c9503a")}</svg>${sel.length + prov.length + kk.length ? "" : '<span class="ad-peta-kosong">Belum ada data</span>'}</div>`;
   }
 
@@ -139,11 +139,11 @@
     </div>
     <div class="ad-kpi">
       ${[["Kunjungan", fmt(R.kunjungan), "kunjungan baru setelah 30 menit pergi", W[4]], ["Kembali", R.orang ? Math.round(R.kembali / R.orang * 100) + "%" : "–", `${fmt(R.kembali)} orang pernah datang sebelumnya`, W[3]],
-        ["Tampilan halaman", per(R.tampilan, R.orang), `per orang · ${fmt(R.tampilan)} total`, W[5]], ["Interaksi", per(R.klik, R.orang), `klik per orang · ${fmt(R.klik)} total`, W[1]],
+        ["Tampilan halaman", per(R.tampilan, R.orang), `per orang, ${fmt(R.tampilan)} total`, W[5]], ["Interaksi", per(R.klik, R.orang), `klik per orang, ${fmt(R.klik)} total`, W[1]],
         ["Waktu aktif", R.orang ? f1(R.detik / R.orang / 60) + " mnt" : "–", "rata-rata per orang, saat halaman terlihat", W[6]]]
         .map(([j, v, s, c]) => `<section class="ad-kartu"><div class="ad-garis" data-c="${c}"></div><span class="ad-ey">${j}</span><b>${v}</b><small>${s}</small></section>`).join("")}
     </div>
-    <section class="ad-kartu ad-grafik"><header><h2>Orang di peta</h2><span class="ad-redup kecil">per 10 menit · ${d.sampai} · jam WIB</span></header>${grafikSlot()}
+    <section class="ad-kartu ad-grafik"><header><h2>Orang di peta</h2><span class="ad-redup kecil">per 10 menit, ${d.sampai}, jam WIB</span></header>${grafikSlot()}
       <div class="ad-leg"><span><i data-c="#4f8fc4"></i>orang aktif</span><span><i data-c="#c9503a"></i>puncak</span><span><i data-c="rgba(201,80,58,.25)"></i>data/pembaruan terlambat (cek tiap jam)</span></div></section>
     ${d.hari > 1 ? `<section class="ad-kartu ad-grafik"><header><h2>Orang per hari</h2><span class="ad-redup kecil">${d.dari} s.d. ${d.sampai}</span></header>${grafikHari()}
       <div class="ad-leg"><span><i data-c="#4f8fc4"></i>orang</span><span><i data-c="rgba(11,37,69,.55)"></i>pengunjung kembali</span></div></section>` : ""}
@@ -152,16 +152,16 @@
     <div class="ad-grid">
       ${daftar("Tab", "tab", {label: namaTab, warna: W[4]})}
       ${daftar("Provinsi", "provinsi", {label: namaProv, warna: W[3]})}
-      ${daftar("Cluster api", "kompleks", {warna: W[0], label: k => kluster?.[k] ? `${k} · ${kluster[k][2]}` : k})}
+      ${daftar("Cluster api", "kompleks", {warna: W[0], label: k => kluster?.[k] ? `${k}, ${kluster[k][2]}` : k})}
       ${daftar("Kabupaten / kecamatan", "wilayah", {label: namaWil, warna: W[3]})}
-      ${daftar("Eksibit yang dilihat", "ex_lihat", {warna: W[5], label: k => k.replace(/^(\w+):/, (_, t) => namaTab(t) + " ·")})}
+      ${daftar("Eksibit yang dilihat", "ex_lihat", {warna: W[5], label: k => k.replace(/^(\w+):/, (_, t) => namaTab(t) + ": ")})}
       ${daftar("Simulasi dijalankan", "sim", {warna: W[1]})}
       ${daftar("Unduhan (brief, PDF, CSV, XLSX, PPTX)", "unduh", {warna: W[6]})}
       ${daftar("Bagikan / ekspor", "bagikan", {warna: W[6]})}
       ${daftar("Laporan warga dikirim", "laporan_kirim", {warna: W[7]})}
       ${daftar("Pencarian wilayah", "cari", {warna: W[5]})}
       ${daftar("Lapisan peta dinyalakan", "lapisan", {warna: W[2]})}
-      ${daftar("Kontrol grafik & filter", "kontrol", {warna: W[5], label: k => k.replace(/^(\w+):/, (_, t) => namaTab(t) + " · ")})}
+      ${daftar("Kontrol grafik & filter", "kontrol", {warna: W[5], label: k => k.replace(/^(\w+):/, (_, t) => namaTab(t) + ": ")})}
       ${daftar("Slider Operasi", "operasi", {warna: W[1]})}
       ${daftar("Kirim pesan dibuka", "pesan_buka", {label: k => "dari " + namaTab(k)})}
       ${daftar("Kirim pesan terkirim", "pesan_kirim")}
@@ -195,7 +195,7 @@
       ${daftar("Tab pertama", "masuk_tab", {label: namaTab})}${daftar("Tab terakhir", "keluar_tab", {label: namaTab})}
       ${daftar("Waktu per tab (rata-rata)", "tab_detik", {label: namaTab, rata: 1, satuan: " dtk", warna: W[6]})}${daftar("Kedalaman gulir per tab", "gulir", {label: namaTab, rata: 1, satuan: "%", warna: W[6]})}
       ${daftar("Lama sesi", "durasi_sesi", {warna: W[4], maks: 7})}${daftar("Pantul (pergi tanpa interaksi)", "pantul", {label: namaTab, warna: W[0]})}
-      ${daftar("Tingkat zoom peta", "zoom", {warna: W[2], maks: 12})}${daftar("Ganti tema · layar besar", "tema")}${daftar("Laporan warga dibuka", "laporan_lihat")}${daftar("Bahasa berita", "berita_bahasa")}
+      ${daftar("Tingkat zoom peta", "zoom", {warna: W[2], maks: 12})}${daftar("Ganti tema layar besar", "tema")}${daftar("Laporan warga dibuka", "laporan_lihat")}${daftar("Bahasa berita", "berita_bahasa")}
     </div>
 
     </section>
@@ -204,7 +204,7 @@
       const kelas = v == null ? "" : v <= baik ? "baik" : v <= buruk ? "perlu" : "buruk", ujung = buruk * 1.5;   // skala Web Vitals Google; CLS disimpan ×1000
       return `<section class="ad-kartu ad-vital ${kelas}"><span class="ad-ey">${j} rata-rata</span><b>${v == null ? "–" : k === "cls" ? (v / 1000).toFixed(3) : fmt(v) + " " + u}</b>
         <span class="ad-skala" aria-hidden="true"><i data-w="${(baik / ujung * 100).toFixed(1)}"></i><i data-w="${((buruk - baik) / ujung * 100).toFixed(1)}"></i><i></i>${v == null ? "" : `<em data-x="${Math.min(100, v / ujung * 100).toFixed(1)}"></em>`}</span>
-        <small>${v == null ? "belum ada sampel" : `${{baik: "baik", perlu: "perlu perbaikan", buruk: "buruk"}[kelas]} · ${fmt(vit.find(x => x[0] === k)?.[1] || 0)} sampel`}</small></section>`; }).join("")}</div>
+        <small>${v == null ? "belum ada sampel" : `${{baik: "baik", perlu: "perlu perbaikan", buruk: "buruk"}[kelas]}, ${fmt(vit.find(x => x[0] === k)?.[1] || 0)} sampel`}</small></section>`; }).join("")}</div>
     <div class="ad-grid">
       ${daftar("Kelas Web Vitals", "vital_kelas", {maks: 15, warna: W[3]})}${daftar("Galat JavaScript", "galat_js", {warna: W[0]})}${daftar("Berkas gagal dimuat", "gagal_muat", {warna: W[0]})}${daftar("Umur data yang dilihat", "umur_data", {warna: W[2]})}
     </div>
@@ -221,8 +221,8 @@
     const el = $("#langsung"); if (!el || !L) return;
     el.innerHTML = `<span class="ad-ey">Saat ini (perkiraan)</span><div title="Dari kiriman 5 menit terakhir; peramban mengirim saat halaman ditutup/disembunyikan, jadi angka ini tertinggal."><span class="ad-titik"></span><b>${fmt(L.sekarang)}</b> peta terbuka saat ini</div>
       <div class="ad-redup">${fmt(L.n30)} dalam 30 menit terakhir</div>
-      <div class="ad-hal">${Object.entries(L.per_hal || {}).map(([k, v]) => `<span>${HALN[k] || k}: ${v.sekarang} · ${v.n30}</span>`).join("") || "<span>belum ada yang aktif</span>"}</div>
-      <p class="ad-catat">Diperbarui tiap 15 detik · ${new Date(L.kini + WIB).toISOString().slice(11, 19)} WIB</p>`;
+      <div class="ad-hal">${Object.entries(L.per_hal || {}).map(([k, v]) => `<span>${HALN[k] || k}: sekarang ${v.sekarang}, 30 menit ${v.n30}</span>`).join("") || "<span>belum ada yang aktif</span>"}</div>
+      <p class="ad-catat">Diperbarui tiap 15 detik, ${new Date(L.kini + WIB).toISOString().slice(11, 19)} WIB</p>`;
   }
   async function muat() {
     try { sessionStorage.setItem("ad-stat", JSON.stringify(st)); } catch (e) {}

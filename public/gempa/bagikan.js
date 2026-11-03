@@ -30,7 +30,7 @@
       const rows = Object.entries(per).sort((a, b) => b[1].n - a[1].n || b[1].m - a[1].m).slice(0, 5)
         .map(([p, o]) => ({n: p === "-" ? "Perairan lepas" : S.nama[p] || p, k: p, v: o.n, t: fmt(o.n) + " gempa", w: warnaM(o.m)}));
       return {tpl: "ringkas", prov: "", lv: 0, label: "Ringkasan harian", judul: "Gempa bumi 7 hari terakhir",
-        sub: `Indonesia · ${fmt(A.length)} gempa M 5+${k ? " · terkuat " + mTulis(k.m) : ""}`,
+        sub: `Indonesia, ${fmt(A.length)} gempa M 5+${k ? ", terkuat " + mTulis(k.m) : ""}`,
         kpi: [
           {l: "Gempa M 5+ (7 hari)", s: "Gempa M 5+", v: fmt(A.length), ket: `${fmt(A.filter(g => g.m >= 6).length)} di antaranya M 6 atau lebih`, ks: "7 hari terakhir", ik: "gempa", w: Bagikan.LV[2]},
           {l: "Gempa terkuat", s: "Terkuat", v: k ? mTulis(k.m) : "–", ket: k ? wilayahPendek(k.wilayah) : "–", ks: k ? waktuGempa(k.waktu) : "–", ik: "gempa", w: k ? warnaM(k.m) : Bagikan.LV[0]},

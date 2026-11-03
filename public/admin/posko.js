@@ -66,9 +66,9 @@
     const batas = p.status === "dipanggil" && p.batas ? `<b class="pk-mundur ${p.terlambat ? "lewat" : ""}" data-batas="${p.batas}"></b>` : p.batas && !["selesai", "abaikan"].includes(p.status) ? `<span class="pk-redup">batas ${jam(p.batas)}</span>` : "";
     return `<article class="pk-kartu ${p.terlambat ? "terlambat" : ""}" data-id="${esc(p.id)}">
       <div class="pk-kepala"><b>${esc(p.nama_pt)}</b>${pil("s-" + p.status, STATUS_P[p.status])}${p.dummy ? pil("dummy", "DUMMY") : ""}${batas}</div>
-      <p class="pk-meta">${esc(p.kab)} · prov ${esc(p.prov)} · ${esc(p.tanggal)} · <b>${p.titik_n}</b> titik panas · terdeteksi ${jam(p.terdeteksi)}${p.lat != null ? ` · <a href="https://www.google.com/maps?q=${p.lat},${p.lon}" target="_blank" rel="noopener noreferrer">peta</a>` : ""}</p>
-      <p class="pk-meta">${p.dipanggil_pada ? `Dipanggil ${jam(p.dipanggil_pada)} lewat ${esc(p.saluran)}` : "Belum dipanggil"}${p.direspons_pada ? ` · direspons ${jam(p.direspons_pada)}` : ""}${p.dicek_pada ? ` · dicek ${jam(p.dicek_pada)}` : ""}
-        · ${p.lapangan_n} laporan regu di kabupaten ini hari itu${!p.ada_email && !p.ada_wa && !p.ada_telepon ? ' · <b class="pk-lewat">belum ada kontak (tab Kontak PT)</b>' : ""}</p>
+      <p class="pk-meta">${esc(p.kab)}, prov ${esc(p.prov)}, ${esc(p.tanggal)}, <b>${p.titik_n}</b> titik panas, terdeteksi ${jam(p.terdeteksi)}${p.lat != null ? `, <a href="https://www.google.com/maps?q=${p.lat},${p.lon}" target="_blank" rel="noopener noreferrer">peta</a>` : ""}</p>
+      <p class="pk-meta">${p.dipanggil_pada ? `Dipanggil ${jam(p.dipanggil_pada)} lewat ${esc(p.saluran)}` : "Belum dipanggil"}${p.direspons_pada ? `, direspons ${jam(p.direspons_pada)}` : ""}${p.dicek_pada ? `, dicek ${jam(p.dicek_pada)}` : ""}
+        , ${p.lapangan_n} laporan regu di kabupaten ini hari itu${!p.ada_email && !p.ada_wa && !p.ada_telepon ? ', <b class="pk-lewat">belum ada kontak (tab Kontak PT)</b>' : ""}</p>
       ${p.hasil ? `<p class="pk-meta">Hasil: ${esc(p.hasil)}</p>` : ""}${p.catatan ? `<p class="pk-meta">Catatan: ${esc(p.catatan)}</p>` : ""}
       ${p.status === "selesai" ? "" : `<div class="pk-baris"><input class="pk-isian" data-f="hasil" maxlength="300" placeholder="Hasil / jawaban perusahaan (opsional)" value="${esc(p.hasil || "")}"><input class="pk-isian" data-f="pesan" maxlength="300" placeholder="Tambahan pesan untuk email / WhatsApp (opsional)"></div>`}
       <div class="pk-aksi">${tombol}</div></article>`;
@@ -77,7 +77,7 @@
     antrean = await ambil(`${API}/panggilan${semua ? "?semua=1" : ""}`);
     const d = antrean, terlambat = d.panggilan.filter(p => p.terlambat).length, baru = d.panggilan.filter(p => p.status === "baru").length;
     return `<div class="pk-bar"><label class="pk-cek"><input type="checkbox" id="pkSemua" ${semua ? "checked" : ""}> tampilkan selesai & diabaikan</label>
-      <span class="pk-redup">${baru} baru · ${terlambat ? `<b class="pk-lewat">${terlambat} lewat batas</b>` : "tidak ada yang lewat batas"} · email ${d.email_siap ? "siap (Resend)" : "belum siap"} · tidak ada kiriman otomatis: Anda yang menekan kirim</span></div>
+      <span class="pk-redup">${baru} baru, ${terlambat ? `<b class="pk-lewat">${terlambat} lewat batas</b>` : "tidak ada yang lewat batas"}, email ${d.email_siap ? "siap (Resend)" : "belum siap"}, tidak ada kiriman otomatis: Anda yang menekan kirim</span></div>
       <div class="pk-daftar">${d.panggilan.length ? d.panggilan.map(p => kartuPanggilan(p, d)).join("") : kosong("Antrean kosong. Titik api di dalam konsesi masuk otomatis tiap 3 jam.")}</div>`;
   }
 

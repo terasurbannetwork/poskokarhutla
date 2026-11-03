@@ -187,7 +187,7 @@
   function isiKartu() {
     const d = K.d, k = kartuEl(), a = x => k.querySelector(`[data-r7="${x}"]`), P = d.keandalan?.prospektif;
     a("pil").textContent = teksLencana(P?.lolos);
-    a("wkt").textContent = `Berlaku ${K.rt}${TGL.test(d.terbit || "") ? ` · terbit ${tg(d.terbit, {day: "numeric", month: "short", year: "numeric"})}` : ""}`;
+    a("wkt").textContent = `Berlaku ${K.rt}${TGL.test(d.terbit || "") ? `, terbit ${tg(d.terbit, {day: "numeric", month: "short", year: "numeric"})}` : ""}`;
     const cat = [d.terlambat === true && "Terbit terlambat: dibuat sesudah minggunya mulai, jadi tidak ikut dinilai.",
       hariWIB() > d.berlaku[1] && "Masa berlaku sudah lewat dan ramalan minggu berikutnya belum terbit."].filter(Boolean);
     a("cat").hidden = !cat.length; a("cat").innerHTML = cat.map(t => `<span>${t}</span>`).join("");
@@ -199,7 +199,7 @@
   }
 
   /* ---------- legenda: kelas warna (ditempel di akhir legenda bawaan, pola peta_kab.js) ---------- */
-  const kepalaLeg = `<div class="lbl">Peluang api 7 hari · eksperimental</div>`;
+  const kepalaLeg = `<div class="lbl">Peluang api 7 hari, eksperimental</div>`;
   const legenda = () => `<div class="lg-g">${kepalaLeg}<div class="leg">${KELAS.map(x => `<span><i class="sw" style="background:${x[1]}"></i>${x[3]}</span>`).join("")}`
     + `<span class="r7-cat-leg">Berlaku ${K.rt}. Warna = peringkat sel di dalam provinsinya, bukan peluang mutlak. Sel tanpa warna: peluang di bawah 0,1% dan di luar ${TERATAS}% teratas.</span></div></div>`;
   const legendaBelum = () => `<div class="lg-g">${kepalaLeg}<div class="leg"><span class="r7-cat-leg">Belum ada ramalan yang terbit.</span></div></div>`;

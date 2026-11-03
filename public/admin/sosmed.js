@@ -26,9 +26,9 @@
     if (r.status === 403) { location.href = "/admin/masuk"; return; }
     const {post = []} = await r.json().catch(() => ({}));
     daftar.innerHTML = post.length ? post.map(p => `<article class="sm-k ${p.tampil ? "" : "sembunyi"}" data-id="${esc(p.id)}">
-      <div class="sm-isi"><b>${esc(NAMA[p.platform] || p.platform)}${p.akun ? " · " + esc(p.akun) : ""}${p.prov ? " · prov " + esc(p.prov) : ""}</b>
+      <div class="sm-isi"><b>${esc(NAMA[p.platform] || p.platform)}${p.akun ? ", " + esc(p.akun) : ""}${p.prov ? ", prov " + esc(p.prov) : ""}</b>
         <p>${p.teks ? esc(p.teks) : '<i class="ad-redup">tanpa teks</i>'}</p>
-        <p class="sm-meta"><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Buka post</a> · ${esc(jam(p.dibuat))} · ${esc(p.bencana)}${p.tampil ? "" : " · disembunyikan"}</p></div>
+        <p class="sm-meta"><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Buka post</a>, ${esc(jam(p.dibuat))}, ${esc(p.bencana)}${p.tampil ? "" : ", disembunyikan"}</p></div>
       <button class="ad-tombol" data-tampil="${p.tampil ? 0 : 1}">${p.tampil ? "🙈 Sembunyikan" : "👁️ Tampilkan"}</button></article>`).join("")
       : '<p class="ad-redup">Belum ada post. Tempel URL di atas.</p>';
   }

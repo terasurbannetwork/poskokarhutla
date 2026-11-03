@@ -1,10 +1,16 @@
-name: Nowcast bandang (uji tarik GSMaP, manual)
+name: Nowcast bandang (GSMaP per jam, arsip prospektif)
 
-# Satu tarikan GSMaP NRT per jam lewat scripts/banjir/nowcast_bandang.py untuk mengukur latensi nyata
-# (umur jam terbaru) sebelum PRAREG-BANDANG dibekukan. Akun FTP JAXA hanya ada sebagai secret.
-# Tidak meng-commit apa pun: fitur diunggah sebagai artifact 7 hari, latensi dibaca dari log.
+# Tiap jam: tarik GSMaP NRT 30 jam terakhir lewat scripts/banjir/nowcast_bandang.py, lalu arsipkan fitur_<UTC>.json
+# ke R2 arsip/nowcast_bandang/ tanpa menimpa (scripts/banjir/arsip_nowcast.py, PRAREG-BANDANG §5).
+# Latensi NRT terukur 2 Nov 2026: umur jam terbaru 4,0 jam. Tidak meng-commit apa pun dan tidak tayang.
 on:
+  schedule:
+    - cron: "25 * * * *"
   workflow_dispatch:
+
+concurrency:
+  group: nowcast-bandang
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -18,15 +24,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python3 scripts/banjir/nowcast_bandang.py uji
+      - run: |
+          python3 scripts/banjir/nowcast_bandang.py uji
+          python3 scripts/banjir/arsip_nowcast.py uji
       - name: Tarik 30 jam NRT
         env:
           GSMAP_USER: ${{ secrets.GSMAP_USER }}
           GSMAP_PASS: ${{ secrets.GSMAP_PASS }}
         run: python3 scripts/banjir/nowcast_bandang.py tarik
-      - uses: actions/upload-artifact@v4
-        with:
-          name: fitur-nowcast-bandang
-          path: data/raw/banjir/nowcast_bandang/
-          retention-days: 7
-          if-no-files-found: warn
+      - name: Arsip ke R2 (tanpa menimpa)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: python3 scripts/banjir/arsip_nowcast.py

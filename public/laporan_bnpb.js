@@ -143,7 +143,7 @@ function tabelHtml(b) {
    mendatar (rincian entri laphar: 16 medan, sebagian paragraf). Larik dan indeksnya sama dengan tabel. */
 const judulKartu = (x, i) => {
   const jn = (LB.JENIS[x.jenis] || {}).nama || "Kejadian", di = tulisTempat(x);
-  return `${x.entry_no == null || x.entry_no === "" ? `#${i + 1}` : `Entry ${x.entry_no}`} · ${jn}${di ? " di " + di : ""}`;
+  return `${x.entry_no == null || x.entry_no === "" ? `#${i + 1}` : `Entry ${x.entry_no}`}, ${jn}${di ? " di " + di : ""}`;
 };
 const tulisTempat = x => String(x.tempat || x.lokasi || "").trim() || S.prov[x.prov] || "";
 function kartuHtml(b) {
@@ -225,8 +225,8 @@ function pasangHasil(h, asal) {
   const k = h.kejadian || [], sd = h.status_daerah || [];
   pv.hidden = false;
   pv.textContent = [
-    ...k.map(x => `kejadian  ${String(x.entry_no ?? "-").padStart(3)}  ${(S.prov[x.prov] || x.prov || "?")} · ${(LB.JENIS[x.jenis] || {}).nama || x.jenis}${x.lokasi ? " · " + x.lokasi : ""}`),
-    ...sd.map(x => `status    ${(S.prov[x.prov] || x.prov_teks || "?")}${x.kabkota ? " · " + x.kabkota : ""} · ${x.macam || "-"} · ${x.masa || "-"}`),
+    ...k.map(x => `kejadian  ${String(x.entry_no ?? "-").padStart(3)}  ${(S.prov[x.prov] || x.prov || "?")}, ${(LB.JENIS[x.jenis] || {}).nama || x.jenis}${x.lokasi ? ", " + x.lokasi : ""}`),
+    ...sd.map(x => `status    ${(S.prov[x.prov] || x.prov_teks || "?")}${x.kabkota ? ", " + x.kabkota : ""}, ${x.macam || "-"}, ${x.masa || "-"}`),
   ].join("\n");
   uraiSt(`${asal}: ${k.length} kejadian, ${sd.length} baris status daerah.${(h.lewat || []).length ? " Catatan: " + h.lewat.slice(0, 3).join("; ") : ""} Periksa daftarnya, lalu tekan Masukkan ke isian.`);
 }

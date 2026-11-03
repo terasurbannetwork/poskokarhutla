@@ -30,7 +30,7 @@ const Tren = {
     const dari = this.st.dalam === "5" ? new Date(this.akhir).getUTCFullYear() - 4 : 2000, c = [0, 0, 0];
     for (const b of this.R.baris) if (+b[0].slice(0, 4) >= dari && b[3] != null) c[kelasDalam(b[3])]++;
     const tot = c[0] + c[1] + c[2]; if (!tot) return "";
-    const rows = KELAS_DALAM.map(([n, w, r], i) => ({nama: innerWidth < 640 ? n : `${n} (${r.replace(" sampai ", "-")})`, v: c[i], warna: w, pil: [[Math.round(c[i] / tot * 100) + "%", w]], tip: `<b>${n}</b> · ${r}<br>Gempa M 5+: ${fmt(c[i])}<br>Bagian: ${Math.round(c[i] / tot * 100)}%`}));
+    const rows = KELAS_DALAM.map(([n, w, r], i) => ({nama: innerWidth < 640 ? n : `${n} (${r.replace(" sampai ", "-")})`, v: c[i], warna: w, pil: [[Math.round(c[i] / tot * 100) + "%", w]], tip: `<b>${n}</b> (${r})<br>Gempa M 5+: ${fmt(c[i])}<br>Bagian: ${Math.round(c[i] / tot * 100)}%`}));
     return Kartu.kartu("Kedalaman", `${Kartu.hl(Math.round(c[0] / tot * 100) + "%")} gempa M 5+ di Indonesia sejak ${dari} berpusat dangkal (kurang dari 60 km): ${Kartu.hl(fmt(c[0]) + " gempa")}`,
       KG.mendatar(rows, {akhir: 70}), "USGS", Kartu.seg("dalam", [["2000", "Sejak 2000"], ["5", "5 tahun terakhir"]], this.st)); },
 
@@ -50,7 +50,7 @@ const Tren = {
     const F = await muatJSON("data/factsheet_gempa.json").catch(() => null), K = (F?.kasus || []).filter(k => k.meninggal > 0 && k.sumber && k.tanggal); if (!K.length) return "";
     const top = [...K].sort((a, b) => b.meninggal - a.meninggal)[0], th = k => k.tanggal.slice(0, 4);
     const rows = [...K].sort((a, b) => a.tanggal.localeCompare(b.tanggal)).map(k => ({nama: esc(`${th(k)} ${k.nama.split(",")[0].replace(/^Kepulauan /, "").replace(/^Donggala dan /, "")}`), v: k.meninggal, teks: fmt(k.meninggal) + " jiwa", warna: KG.MERAH,
-      pil: [[mTulis(k.m), warnaM(k.m)], ...(k.tsunami ? [["Tsunami", KG.BIRU]] : [])], tip: `<b>${esc(k.nama)}</b><br>${KG.tgl(k.tanggal + "T12:00:00+07:00", {day: "numeric", month: "short", year: "numeric"})} · ${mTulis(k.m)}<br>Meninggal: ${fmt(k.meninggal)} jiwa<br>Sumber: ${esc(this.situs(k.sumber))}`}));
+      pil: [[mTulis(k.m), warnaM(k.m)], ...(k.tsunami ? [["Tsunami", KG.BIRU]] : [])], tip: `<b>${esc(k.nama)}</b><br>${KG.tgl(k.tanggal + "T12:00:00+07:00", {day: "numeric", month: "short", year: "numeric"})}, ${mTulis(k.m)}<br>Meninggal: ${fmt(k.meninggal)} jiwa<br>Sumber: ${esc(this.situs(k.sumber))}`}));
     return Kartu.kartu("Gempa merusak", `${Kartu.hl(fmt(top.meninggal) + " jiwa")} meninggal pada gempa ${Kartu.hl(mTulis(top.m))} ${esc(top.nama)} ${th(top)}, yang terbanyak dari ${Kartu.hl(K.length + " gempa merusak")} yang dikurasi sejak 2005`,
       KG.mendatar(rows, {akhir: 130}), [...new Set(K.map(k => this.situs(k.sumber)))].join(", ")); },
 

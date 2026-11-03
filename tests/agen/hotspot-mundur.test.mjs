@@ -285,11 +285,11 @@ test('legenda: saat mundur judulnya bertanggal (data terakhir) tanpa catatan umu
 });
 
 test('legenda "Api baru" (Himawari-9): hari biasa persis "Api baru"; jendela waktu HANYA saat tabel mundur', () => {
-  const HIMAWARI = /Himawari-9/, kecil = 'index.html renderLegenda(): ketHw = !S.hotMundur || acuan belum termuat ? "Api baru" : "Api baru · Himawari-9, <tgl> <jam awal>–<jam acuan> WIB".';
+  const HIMAWARI = /Himawari-9/, kecil = 'index.html renderLegenda(): ketHw = !S.hotMundur || acuan belum termuat ? "Api baru" : "Api baru, Himawari-9, <tgl> <jam awal>–<jam acuan> WIB".';
   const biasa = legenda({ hwMeta: HW });
   assert.match(biasa, /<\/i>Api baru<\/span>/, pesan('Hari biasa (tidak mundur) butir Deteksi Api Baru harus persis "Api baru" tanpa embel-embel.', kecil));
   assert.doesNotMatch(biasa, HIMAWARI, pesan('Hari biasa (tidak mundur) legenda tidak boleh menyebut Himawari-9 dan jendelanya: aturan pemilik 28 Okt 2026, jendela hanya disebut saat Hotspot mundur.', kecil));
-  assert.match(legenda({ hwMeta: HW, hotMundur: mundur('2026-10-27') }), /<\/i>Api baru · Himawari-9, Rab 28 Okt 01\.40–04\.40 WIB<\/span>/,
+  assert.match(legenda({ hwMeta: HW, hotMundur: mundur('2026-10-27') }), /<\/i>Api baru, Himawari-9, Rab 28 Okt 01\.40–04\.40 WIB<\/span>/,
     pesan('Saat tabel mundur, "Api baru" (satu-satunya api yang lebih baru dari data FIRMS terakhir) harus menyebut sumber Himawari-9 dan jendela waktunya.', kecil));
   assert.match(legenda({ hwMeta: { acuan: '2026-10-27T18:10:00Z', jam: 3 }, hotMundur: mundur('2026-10-27') }), /Himawari-9, Sel 27 Okt 22\.10–Rab 28 Okt 01\.10 WIB/,
     pesan('Saat mundur, jendela yang melewati tengah malam harus menyebut dua tanggal.', kecil));

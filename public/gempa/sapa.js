@@ -25,7 +25,7 @@
       const nm = k => k === "-" ? "Perairan lepas" : S.nama[k] || k, g0 = h.kuat[0];
       let perhatian = [...h.tsu.slice(0, 2).map(g => Sapa.kartu("awas", TSUNAMI[g.tsunami.kode][1], TSUNAMI[g.tsunami.kode][0] + " (BMKG)", `<span translate="no">${mTulis(g.m)} ${esc(wilayahPendek(g.wilayah))}, ${esc(waktuGempa(g.waktu))}</span>`)),
         h.rasa.length && (() => { const t = [...h.rasa].sort((a, b) => b.mmi_maks - a.mmi_maks || b.m - a.m)[0];
-          return Sapa.kartu("dirasa", "#d4802f", "Dirasakan warga", `<b>${fmt(h.rasa.length)}</b> gempa dalam 24 jam; terkuat: <span translate="no">MMI ${rom(t.mmi_maks)} · ${esc(wilayahPendek(t.wilayah))}</span>`); })()].filter(Boolean).join("");
+          return Sapa.kartu("dirasa", "#d4802f", "Dirasakan warga", `<b>${fmt(h.rasa.length)}</b> gempa dalam 24 jam; terkuat: <span translate="no">MMI ${rom(t.mmi_maks)}, ${esc(wilayahPendek(t.wilayah))}</span>`); })()].filter(Boolean).join("");
       /* status tsunami resmi BMKG apa adanya (label BMKG + jam); kode 0 "tidak berpotensi"; null tidak pernah "aman" */
       const r = h.resmi, adaTsu = h.tsu.length > 0;
       const resmiKartu = !r || adaTsu ? "" : Sapa.kartu("jam", "#5b6575", "Status tsunami, BMKG", r.tsunami.kode === 0 ? `BMKG: tidak berpotensi tsunami untuk <span translate="no">${mTulis(r.m)} ${esc(wilayahPendek(r.wilayah))}</span>, ${esc(waktuGempa(r.waktu))}`

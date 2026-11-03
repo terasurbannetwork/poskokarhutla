@@ -41,7 +41,7 @@
   };
   const kalimatUji = u => { const k = U && U.vonis.per_kelompok && U.vonis.per_kelompok[u === "banjir" ? "banjir_longsor" : u === "gempa" ? "gempa" : ""]; return k ? k.kalimat : ""; };
   const namaB = b => D.bencana.find(x => x.id === b).nama;
-  const pilKelas = s => `<span class="rk-kls ${kls(s)}">${s == null ? "Tanpa data" : bil(s) + " · " + D.kelas[kelas(s)]}</span>`;
+  const pilKelas = s => `<span class="rk-kls ${kls(s)}">${s == null ? "Tanpa data" : bil(s) + ", " + D.kelas[kelas(s)]}</span>`;
 
   /* ---------- kontrol */
   function gambarKontrol() {
@@ -129,7 +129,7 @@
   /* skor tanpa relawan berdampingan bila kapasitas dinamis mengubahnya (daftar prioritas selalu tanpa relawan) */
   function tanpaRelawan(r, s) {
     const t = skor(r, true);
-    return t.s == null || s.s == null || t.s === s.s ? "" : `<p class="rk-catatan">Skor dengan relawan siap: ${bil(s.s)} · tanpa relawan (dipakai daftar prioritas): ${bil(t.s)}. Pendaftaran relawan hanya menurunkan skor tampilan ini, bukan daftar waspada.</p>`;
+    return t.s == null || s.s == null || t.s === s.s ? "" : `<p class="rk-catatan">Skor dengan relawan siap: ${bil(s.s)}, tanpa relawan (dipakai daftar prioritas): ${bil(t.s)}. Pendaftaran relawan hanya menurunkan skor tampilan ini, bukan daftar waspada.</p>`;
   }
 
   /* ---------- pop-up rincian */

@@ -90,7 +90,7 @@ const panel0 = Sim.panel;
 Sim.panel = function (...a) {
   const r = panel0.apply(this, a), pa = $("#simPanel"), sel = pa.querySelector("#simK");
   if (!sel || !this.f) return r;
-  if (TG.f) { const q = TG.f.properties; sel.insertAdjacentHTML("afterbegin", `<option value="titik" ${this.k === "titik" ? "selected" : ""}>Titik pilihan · ${esc(q.kab)}</option>`); if (this.k === "titik") sel.value = "titik"; }
+  if (TG.f) { const q = TG.f.properties; sel.insertAdjacentHTML("afterbegin", `<option value="titik" ${this.k === "titik" ? "selected" : ""}>Titik pilihan, ${esc(q.kab)}</option>`); if (this.k === "titik") sel.value = "titik"; }
   if (this.k === "titik") { const info = pa.querySelector("h2 + div"); if (info) info.innerHTML = `<span class="s3-pill s3-sim">${ik(P.api)}SIMULASI</span> ${esc(namaProv(this.f.properties.prov) || "Indonesia")}`; }
   sel.closest("label").insertAdjacentHTML("beforebegin", `<button type="button" class="s3-pill" id="s3Pilih" aria-pressed="${TG.on}" style="margin-top:12px">${ik(P.tengah)}Pilih titik api</button>`);
   $("#s3Pilih").onclick = e => {
@@ -389,7 +389,7 @@ function kejadian(S, H) {
     if (mn <= 72) ev.push({jam: Math.ceil(mn), n: "Mencapai tepi kisi", d: "luas sebenarnya bisa lebih besar", w: "#a8842e"}); }
   return ev.sort((a, b) => a.jam - b.jam);
 }
-const kjHTML = (S, ev) => `<span class="s3-pill s3-jdl">Kejadian kunci</span>` + ev.map(e => `<button type="button" class="s3-kjb" data-jam="${e.jam}" style="--w:${e.w}"><i></i><span class="s3-kn">${e.n}</span><span class="s3-kd">+${e.jam} j · ${wib(S, e.jam)}</span><span class="s3-kv">${e.esc ? esc(e.d) : e.d}</span></button>`).join("");
+const kjHTML = (S, ev) => `<span class="s3-pill s3-jdl">Kejadian kunci</span>` + ev.map(e => `<button type="button" class="s3-kjb" data-jam="${e.jam}" style="--w:${e.w}"><i></i><span class="s3-kn">${e.n}</span><span class="s3-kd">+${e.jam} j, ${wib(S, e.jam)}</span><span class="s3-kv">${e.esc ? esc(e.d) : e.d}</span></button>`).join("");
 function tandaiKj(t) { document.querySelectorAll(".s3-kjb").forEach(b => b.classList.toggle("on", +b.dataset.jam <= t && !(b.nextElementSibling && +b.nextElementSibling.dataset.jam <= t))); }
 function ticksHTML(S, H, ev) { /* label hari+jam WIB tiap 6 jam (hari tebal di 00:00), penanda kejadian berwarna, pita laju tumbuh di lintasan */
   const L = lajuDari(H), mx = Math.max(...L, 1e-6), band = `linear-gradient(90deg,${L.map((v, h) => `rgba(201,80,58,${(.06 + .8 * v / mx).toFixed(2)}) ${(h / 72 * 100).toFixed(1)}%`).join(",")})`;
@@ -640,7 +640,7 @@ function putar() {
 /* ---------- pasang DOM sekali ---------- */
 if (hal && wk) {
   hal.insertAdjacentHTML("beforeend", `<div class="s3-mode s3-m" id="s3Mode" role="group" aria-label="Tampilan peta"><button type="button" data-m="2d" aria-pressed="true">2D</button><button type="button" data-m="3d" aria-pressed="false">3D</button><button type="button" id="s3Citra" aria-pressed="false" hidden>Citra</button><span class="s3-ex" id="s3Ex" hidden></span></div>
-    <div class="s3-label" id="s3Label" hidden title="Data insiden buatan; cuaca dari prakiraan nyata"><span class="s3-pill s3-sim">${ik(P.api)}SIMULASI, BUKAN PENGAMATAN · insiden buatan</span></div>
+    <div class="s3-label" id="s3Label" hidden title="Data insiden buatan; cuaca dari prakiraan nyata"><span class="s3-pill s3-sim">${ik(P.api)}SIMULASI, BUKAN PENGAMATAN, insiden buatan</span></div>
     <div class="s3-bar s3f-only" id="s3Bar"><b class="s3-nm" id="s3Nm">Insiden simulasi</b><span class="s3-info" id="s3Lok"></span><span class="s3-info" id="s3Rg"></span>
       <div class="s3-tabs" id="s3Tabs" role="tablist" aria-label="Tab insiden"></div><span class="s3-pill s3-sim">${ik(P.api)}SIMULASI</span><span class="s3-sp"></span>
       <button type="button" class="s3-pill" id="s3Gear" aria-pressed="false" title="Pengaturan skenario">${ik(P.atur)}Skenario</button>

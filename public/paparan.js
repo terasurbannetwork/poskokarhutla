@@ -160,7 +160,7 @@ async function awal() {
     S.D = {laporan}; S.templat = templat; S.susunan = susun(templat); laporan.hari_pilihan = laporan.hari;
     S.tgl = laporan.hari.includes(laporan.hari_lengkap) ? laporan.hari_lengkap : laporan.hari.at(-1); hitungB();
     S.prov = S.SB.pilihPrioritas(laporan, S.tgl, 1)[0] || Object.keys(laporan.prov)[0];
-    document.title = `Paparan Rakor ${S.namaB} · ${merek}`; $("#p-paparan h1").textContent = `Paparan Rakor ${S.namaB}`;
+    document.title = `Paparan Rakor ${S.namaB}, ${merek}`; $("#p-paparan h1").textContent = `Paparan Rakor ${S.namaB}`;
   } else {
     let kumulatif, sejarah, kompleks, operasi, fs;
     [laporan, kumulatif, sejarah, kompleks, operasi, templat, , , fs] = await Promise.all([muatJSON("/data/laporan.json"), opsi("/data/kumulatif.json"), muatJSON("/data/sejarah.json"), muatJSON("/data/kompleks_konsesi.json"), opsi("/data/operasi_resmi.json"), muatTemplat(), muatLogo(), muatFoto(), opsi("/data/factsheet_karhutla.json")]);

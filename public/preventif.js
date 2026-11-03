@@ -35,7 +35,7 @@ const P = window.Preventif = {
   kontrol(st) { if (!this.siap) return "";
     return `<select data-set="kecAksi" aria-label="Saring jenis tindakan"><option value="">Semua tindakan</option>${Object.entries(JENIS).filter(([k]) => k !== "dini")
       .map(([k, [n]]) => `<option value="${k}" ${st.kecAksi === k ? "selected" : ""}>Tindakan: ${n}</option>`).join("")}</select>`; },
-  judulKolom(x) { return this.siap ? `<text x="${x}" y="14" font-size="11" font-weight="700" opacity=".75">Pencegahan utama · anggaran</text>` : ""; },
+  judulKolom(x) { return this.siap ? `<text x="${x}" y="14" font-size="11" font-weight="700" opacity=".75">Pencegahan utama, anggaran</text>` : ""; },
   sel(kunci, x, y, rh) {
     const r = this.k(kunci); if (!r) return `<text x="${x}" y="${y + rh / 2 + 4}" font-size="11.5" opacity=".5">belum dianalisis</text>`;
     const t = r.tindakan[0], [n, w] = JENIS[t.kode] || [t.kode, "#5f6fb0"];
@@ -53,7 +53,7 @@ const P = window.Preventif = {
       <p class="fnd">Dari ${fmt(daf.reduce((a, [, q]) => a + q.n, 0))} kecamatan langganan yang dianalisis. Anggaran = perkiraan biaya awal + satu musim, bukan RAB. Tenggat = dua bulan sebelum awal musim paling dini di provinsi itu.</p>
       <div class="tw pv-tw"><table><thead><tr><th>Provinsi</th><th class="n">Kecamatan</th><th>Pola dominan</th><th>3 tindakan terbanyak</th><th class="n">Anggaran (perkiraan)</th><th>Tenggat persiapan</th></tr></thead><tbody>
       ${daf.map(([k, q]) => `<tr><td><b>${esc(typeof namaProv === "function" ? namaProv(k) : q.nama)}</b></td><td class="n num">${fmt(q.n)}</td>
-        <td><span class="pv-pola" style="--w:${POLA[q.pola[0][0]] || "#5f6fb0"}">${esc(q.pola[0][0])}</span> <small class="pv-s">${q.pola[0][1]} dari ${q.n}${q.pola[1] ? ` · lalu ${esc(q.pola[1][0].toLowerCase())}` : ""}</small></td>
+        <td><span class="pv-pola" style="--w:${POLA[q.pola[0][0]] || "#5f6fb0"}">${esc(q.pola[0][0])}</span> <small class="pv-s">${q.pola[0][1]} dari ${q.n}${q.pola[1] ? `, lalu ${esc(q.pola[1][0].toLowerCase())}` : ""}</small></td>
         <td class="pv-wrap">${q.aksi.map((a, i) => `${i + 1}. ${esc(a)}`).join("<br>")}</td>
         <td class="n num">${rentang(q.biaya)}</td><td>${this.tenggat(q, BLN)}</td></tr>`).join("")}
       </tbody>${daf.length > 1 ? `<tfoot><tr><td>Jumlah</td><td></td><td></td><td></td><td class="n num">${rentang(tot)}</td><td></td></tr></tfoot>` : ""}</table></div></div>`; },
@@ -69,7 +69,7 @@ const P = window.Preventif = {
   grafikTahun(v, th) {
     if (!v) return "";
     const W = 200, c = W / v.length;
-    return `<svg viewBox="0 0 ${W} 34" width="100%" role="img" aria-label="Tahun terbakar">${v.map((x, j) => `<rect x="${j * c + 1}" y="2" width="${c - 2}" height="18" rx="2" fill="${x >= 10 ? "#c9503a" : x > 0 ? "#e3b94e" : "var(--surface)"}" opacity="${x >= 10 ? Math.min(1, .45 + x / 400) : 1}" data-tip="<b>${th[j]}</b><br>${fmt(x)} titik${x >= 10 ? " · terbakar" : ""}"/>`).join("")}
+    return `<svg viewBox="0 0 ${W} 34" width="100%" role="img" aria-label="Tahun terbakar">${v.map((x, j) => `<rect x="${j * c + 1}" y="2" width="${c - 2}" height="18" rx="2" fill="${x >= 10 ? "#c9503a" : x > 0 ? "#e3b94e" : "var(--surface)"}" opacity="${x >= 10 ? Math.min(1, .45 + x / 400) : 1}" data-tip="<b>${th[j]}</b><br>${fmt(x)} titik${x >= 10 ? ", terbakar" : ""}"/>`).join("")}
       <text x="0" y="32" font-size="9" opacity=".65">${th[0]}</text><text x="${W}" y="32" font-size="9" opacity=".65" text-anchor="end">${th.at(-1)}</text></svg>
       <p class="pv-cat">${v.filter(x => x >= 10).length} dari ${v.length} tahun ≥ 10 titik (merah); kuning = ada titik tapi < 10</p>`; },
   grafikBulan(r) {
@@ -77,9 +77,9 @@ const P = window.Preventif = {
     const ms = new Set(bulanDi(M.awal, M.akhir)), aksi = new Set(bulanDi(M.tenggat, (M.awal + 11) % 12));
     return `<svg viewBox="0 0 ${W} ${H + 14}" width="100%" role="img" aria-label="Musim titik panas per bulan">
       ${[...aksi].map(i => `<rect x="${i * c}" y="0" width="${c}" height="${H}" fill="#5a9e74" opacity=".16"/>`).join("")}
-      ${b.map((x, i) => { const h = x / m * (H - 6); return `<rect x="${i * c + 3}" y="${H - h}" width="${c - 6}" height="${Math.max(1, h)}" rx="2" fill="${i === M.puncak ? "#7a2b2b" : ms.has(i) ? "#c9503a" : "#e3b94e"}" data-tip="<b>${BLN[i]}</b><br>${fmt(x)} titik 2002–kini${i === M.puncak ? " · puncak" : ms.has(i) ? " · musim api" : aksi.has(i) ? " · jendela persiapan" : ""}"/>`; }).join("")}
+      ${b.map((x, i) => { const h = x / m * (H - 6); return `<rect x="${i * c + 3}" y="${H - h}" width="${c - 6}" height="${Math.max(1, h)}" rx="2" fill="${i === M.puncak ? "#7a2b2b" : ms.has(i) ? "#c9503a" : "#e3b94e"}" data-tip="<b>${BLN[i]}</b><br>${fmt(x)} titik 2002–kini${i === M.puncak ? ", puncak" : ms.has(i) ? ", musim api" : aksi.has(i) ? ", jendela persiapan" : ""}"/>`; }).join("")}
       ${BLN.map((n, i) => `<text x="${i * c + c / 2}" y="${H + 11}" text-anchor="middle" font-size="7.5" opacity="${aksi.has(i) ? 1 : .6}" font-weight="${aksi.has(i) ? 700 : 400}">${n[0]}</text>`).join("")}</svg>
-      <p class="pv-cat"><i style="background:#5a9e74;opacity:.45"></i>persiapan ${BLN[M.tenggat]}–${BLN[(M.awal + 11) % 12]} · <i style="background:#c9503a"></i>musim ${BLN[M.awal]}–${BLN[M.akhir]} · <i style="background:#7a2b2b"></i>puncak ${BLN[M.puncak]}</p>`; },
+      <p class="pv-cat"><i style="background:#5a9e74;opacity:.45"></i>persiapan ${BLN[M.tenggat]}–${BLN[(M.awal + 11) % 12]}, <i style="background:#c9503a"></i>musim ${BLN[M.awal]}–${BLN[M.akhir]}, <i style="background:#7a2b2b"></i>puncak ${BLN[M.puncak]}</p>`; },
   lahan(r) {
     const kon = Object.entries(r.konsesi).sort((a, b) => b[1] - a[1]), hut = (r.kawasan.HK || 0) + (r.kawasan.HL || 0), prod = (r.kawasan.HP || 0) + (r.kawasan.HPT || 0) + (r.kawasan.HPK || 0);
     const baris = [["Gambut", r.gambut, "#2b8c86"], ...kon.map(([j, v]) => ["Konsesi " + (j === "hph" ? "HPH/PBPH" : j), v, "#5f6fb0"]),
@@ -103,13 +103,13 @@ const P = window.Preventif = {
         <div><h5>Tahun terbakar (≥ 10 titik)</h5>${this.grafikTahun(rv, th)}</div>
         <div><h5>Titik panas per bulan, 2002–kini</h5>${this.grafikBulan(r)}</div>
         <div><h5>Di mana titik panas jatuh <span class="pv-s" style="display:inline">(bisa tumpang tindih)</span></h5>${this.lahan(r)}</div></div>
-      <p class="fnd"><span class="pv-pola" style="--w:${POLA[r.pola] || "#5f6fb0"}">${esc(r.pola)}</span> · ${fakta.join(" · ")}.</p>
+      <p class="fnd"><span class="pv-pola" style="--w:${POLA[r.pola] || "#5f6fb0"}">${esc(r.pola)}</span>, ${fakta.join(", ")}.</p>
       <ol class="pv-daf">${r.tindakan.map(t => { const [n, w] = JENIS[t.kode] || [t.kode, "#5f6fb0"]; return `<li style="--w:${w}">
         <div class="pv-t"><b>${esc(t.tindakan)}</b><span class="pv-tag">${esc(n)}</span></div>
         <p class="pv-al">${esc(t.alasan)}</p>
         <dl><div><dt>Kapan</dt><dd>${esc(t.kapan)}</dd></div><div><dt>Penanggung jawab</dt><dd>${esc(t.pj)}</dd></div>
           <div><dt>Indikator berhasil</dt><dd>${esc(t.indikator)}</dd></div>
-          <div><dt>Perkiraan biaya</dt><dd><b>${rentang(t.biaya)}</b>${t.unit ? ` <span class="pv-s" style="display:inline">· ${fmt(t.unit)} ${esc(t.satuan)}</span>` : ""}</dd></div></dl>
+          <div><dt>Perkiraan biaya</dt><dd><b>${rentang(t.biaya)}</b>${t.unit ? `, <span class="pv-s" style="display:inline">${fmt(t.unit)} ${esc(t.satuan)}</span>` : ""}</dd></div></dl>
         <small class="pv-src">Dasar biaya: ${esc(this.d.sumber_biaya?.[t.sumber] || t.sumber)}</small></li>`; }).join("")}</ol>
       <p class="fnd">Rekomendasi disusun dengan aturan terbuka dari data titik panas MODIS ${th[0]}–${th.at(-1)}, peta gambut, konsesi, kawasan hutan, kanal dan desa OSM; bukan hasil survei lapangan. Titik MODIS meleset hingga ±1 km. Pemegang izin yang areal kerjanya memuat titik panas belum tentu pembakarnya. Biaya adalah perkiraan untuk perencanaan, perlu dihitung ulang dalam RAB. Data ${esc(this.d.dibuat)}.</p>`; },
 
@@ -117,7 +117,7 @@ const P = window.Preventif = {
   async buka(kunci) {
     await this.muat(); const r = this.k(kunci); if (!r) return typeof Riwayat !== "undefined" && Riwayat.buka(kunci);
     const [pv, kab, kec] = kunci.split("|"), rv = (typeof S !== "undefined" && S.riw?.[kunci]?.v) || null, d = document.getElementById("dlg");
-    d.innerHTML = `<div class="dh"><div><h3 id="dlgJudul">Rencana pencegahan · ${esc(kec)}</h3><p>Kecamatan · ${esc(kab)} · ${esc(typeof namaProv === "function" ? namaProv(pv) : pv)}</p></div><button aria-label="Tutup" data-tutup>×</button></div>
+    d.innerHTML = `<div class="dh"><div><h3 id="dlgJudul">Rencana pencegahan, ${esc(kec)}</h3><p>Kecamatan, ${esc(kab)}, ${esc(typeof namaProv === "function" ? namaProv(pv) : pv)}</p></div><button aria-label="Tutup" data-tutup>×</button></div>
       <div class="db">${this.isi(kunci, rv)}<button class="btn sec" data-pv-riw style="justify-self:start">Buka analisa riwayat lengkap</button></div>`;
     d.querySelector("[data-tutup]").onclick = () => d.close();
     d.onclick = e => { if (e.target === d) return d.close(); if (e.target.closest("[data-pv-riw]")) { d.close(); Riwayat.buka(kunci); } };
@@ -137,7 +137,7 @@ if (typeof Tren !== "undefined" && typeof Tren.rinci === "function") {
       const d = document.getElementById("dlg"), db = d?.querySelector(".db");
       if (!d?.open || !db || !P.k(r.kunci) || db.querySelector(".pv-sek") || d.querySelector("#dlgJudul")?.textContent !== r.nama) return;
       const sek = document.createElement("details"); sek.className = "lipat pv-sek"; sek.open = true;
-      sek.innerHTML = `<summary>Rencana pencegahan <span>· tindakan sebelum musim api berikutnya</span></summary><div class="isi">${P.isi(r.kunci, r.v)}</div>`;
+      sek.innerHTML = `<summary>Rencana pencegahan, <span>tindakan sebelum musim api berikutnya</span></summary><div class="isi">${P.isi(r.kunci, r.v)}</div>`;
       const sumber = [...db.children].reverse().find(x => x.matches("p.fnd")); db.insertBefore(sek, sumber || null); });
     return hasil; };
 }

@@ -1,7 +1,7 @@
 /* Persetujuan penyimpanan & analitik (dimuat SEBELUM jejak.js). Pilihan disimpan di localStorage "pb_persetujuan" bersama versi
    kebijakan dan tanggal; ditanya ulang setelah 12 bulan atau saat VERSI berubah. Analitik mati sampai pengunjung memilih
    "Terima semua" atau menyalakannya di "Atur"; Do Not Track / Global Privacy Control selalu memaksanya mati.
-   Juga menggambar pil header "N online · N tampilan · Statistik →" dari atribut <html data-pb-*> yang diisi Worker. */
+   Juga menggambar pil header "N online, N tampilan, Statistik →" dari atribut <html data-pb-*> yang diisi Worker. */
 (() => {
   const D = document, W = window, N = navigator, KUNCI = "pb_persetujuan", VERSI = "2026-10", UMUR = 365 * 864e5;
   const dnt = N.doNotTrack === "1" || W.doNotTrack === "1" || N.globalPrivacyControl === true;
@@ -80,7 +80,7 @@
     const a = D.documentElement.dataset, tema = D.getElementById("tema");
     if (true || !tema || a.pbOnline == null || D.querySelector(".pb-pil")) return; /* pil statistik disembunyikan dulu (pemilik, 14 Okt 2026) */
     const f = n => Number(n || 0).toLocaleString("id-ID");
-    tema.parentElement.insertAdjacentHTML("afterbegin", `<a class="pb-pil" href="/statistik" title="Statistik pengunjung"><i aria-hidden="true"></i>${f(a.pbOnline)} online<span class="pb-pil-l"> · ${f(a.pbTampil)} tampilan · Statistik →</span></a>`);
+    tema.parentElement.insertAdjacentHTML("afterbegin", `<a class="pb-pil" href="/statistik" title="Statistik pengunjung"><i aria-hidden="true"></i>${f(a.pbOnline)} online, <span class="pb-pil-l">${f(a.pbTampil)} tampilan, Statistik →</span></a>`);
   }
   D.addEventListener("click", e => { if (e.target.closest?.("[data-pv-buka]")) { e.preventDefault(); atur(); } });   // tautan "Pengaturan privasi" di mana pun
   /* spanduk persetujuan: disembunyikan 14 Okt 2026, dinyalakan 19 Okt, dihapus 20 Okt 2026 (pemilik). Tanpa pilihan, analitik nyala;

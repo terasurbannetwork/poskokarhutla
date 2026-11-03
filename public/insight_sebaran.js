@@ -37,7 +37,7 @@ Insight.exSebMusim = function () {
         <circle cx="${X(a)}" cy="${y}" r="7" fill="${w}" data-tip="${esc(o.nama)} 2026: mulai ${esc(o.awal_2026)}${o.selisih_hari != null ? `, ${Math.abs(o.selisih_hari)} hari ${o.selisih_hari < 0 ? "lebih awal" : "lebih lambat"} dari biasa` : ""}${p1 ? `<br>Cluster besar pertama: ${esc(p1.kab || "")}, ${new Date(p1.t0).toLocaleDateString("id-ID", {day: "numeric", month: "short"})} (${fmt(p1.ha)} ha)` : ""}<br>Klik untuk rincian" data-sebprov="${o.k}"/>`; }).join("")}</svg>`;
   const cepat = ur.filter(o => o.selisih_hari != null).sort((a, b) => a.selisih_hari - b.selisih_hari)[0];
   return this.ex(`Musim 2026 mulai di ${this.hl(esc(ur[0].nama))} pada ${esc(ur[0].awal_2026)}; ${esc(cepat.nama)} ${this.hl(Math.abs(cepat.selisih_hari) + " hari")} lebih awal dari biasanya`,
-    "Hari pertama jumlah titik 7 hari bertahan di atas 2× median 2015–2025 selama ≥ 14 hari", "bulat = 2026, lingkaran kosong = median 2015–2025 · klik untuk cluster besar pertama", svg,
+    "Hari pertama jumlah titik 7 hari bertahan di atas 2× median 2015–2025 selama ≥ 14 hari", "bulat = 2026, lingkaran kosong = median 2015–2025, klik untuk cluster besar pertama", svg,
     `${esc(M.narasi)} Sumber: NASA FIRMS VIIRS S-NPP 2015–2026; celah data 8 Mei–1 Jun 2026.`);
 };
 
@@ -66,7 +66,7 @@ Insight.exSebDorong = function () {
   const top = baris[0], imp = (P.gbdt?.permutasi || []).slice(0, 4).map(x => x.nama).join(", ");
   return this.ex(mode === "lahan" ? `Titik panas di ${this.hl(esc(top?.l.split(" vs ")[0].toLowerCase() || ""))} ${this.hl(kali(top?.v))} lebih mungkin membesar` : `Cuaca: ${this.hl(esc(top?.l || ""))} menaikkan peluang membesar ${this.hl(kali(top?.v))}`,
     `Dari ${fmt(P.n_peristiwa)} titik panas baru (9 provinsi, Jul–Nov), ${pc(P.laju_dasar, 1)} membesar menjadi ${esc(P.definisi_lolos)}`,
-    "rasio peluang membesar, skala log · garis = selang 95% bootstrap · arahkan kursor untuk luas & jarak menjalar per hari", svg,
+    "rasio peluang membesar, skala log, garis = selang 95% bootstrap, arahkan kursor untuk luas & jarak menjalar per hari", svg,
     `Variabel terpenting di model boosting (penurunan AUC bila diacak): ${esc(imp)}. Rasio dari tabel silang: variabel saling terkait (sawit di gambut juga jauh dari jalan), jadi ini hubungan, bukan sebab. Sanksi dihitung hanya bila sudah dijatuhkan pada tahun api. Sumber: NASA FIRMS, ERA5, olahan Centurisk97.`,
     this.seg("sebDorong", [["lahan", "Lahan & konsesi"], ["cuaca", "Cuaca & api"]]));
 };
@@ -104,7 +104,7 @@ function dialogKasus(i) {
   const obs = kanvas(f => { s.awal.forEach(k => f(k, HARI[0])); s.obs.forEach((xs, d) => xs.forEach(k => f(k, HARI[d + 1]))); });
   const pred = kanvas(f => { Object.entries(s.frek).forEach(([k, v]) => { const p = v[2] / 40; f(+k, `rgba(198,59,47,${Math.min(1, .15 + p)})`); }); s.awal.forEach(k => f(k, HARI[0])); });
   const d = $("#dlg");
-  d.innerHTML = `<div class="dh"><div><h3 id="dlgJudul">${x.th} · ${esc(x.nama_prov)} · ${x.kelas}</h3><p>Mulai ${new Date(x.t0).toLocaleString("id-ID", {dateStyle: "medium", timeStyle: "short"})} UTC · ${x.gambut ? "gambut" : "tanah mineral"} · model ${x.model === "lipat" ? "tanpa tahun ini (lipatan)" : "2015–2022"}</p></div><button aria-label="Tutup" data-tutup>×</button></div>
+  d.innerHTML = `<div class="dh"><div><h3 id="dlgJudul">${x.th}, ${esc(x.nama_prov)}, ${x.kelas}</h3><p>Mulai ${new Date(x.t0).toLocaleString("id-ID", {dateStyle: "medium", timeStyle: "short"})} UTC, ${x.gambut ? "gambut" : "tanah mineral"}, model ${x.model === "lipat" ? "tanpa tahun ini (lipatan)" : "2015–2022"}</p></div><button aria-label="Tutup" data-tutup>×</button></div>
     <div class="db"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><figure style="margin:0"><img src="${obs}" alt="Sel teramati" style="width:100%;image-rendering:pixelated;border-radius:8px"><figcaption class="fnd">Teramati VIIRS: hitam = awal, kuning/oranye/merah = hari 1/2/3</figcaption></figure>
       <figure style="margin:0"><img src="${pred}" alt="Peluang ramalan" style="width:100%;image-rendering:pixelated;border-radius:8px"><figcaption class="fnd">Ramalan: makin merah = makin mungkin terbakar dalam 72 jam (40 kemungkinan)</figcaption></figure></div>
       <p>Teramati 24/48/72 jam: <b>${x.obs_ha.map(fmt).join(" / ")} ha</b>; ramalan median ${x.pred_ha.map(v => fmt(v[1])).join(" / ")} ha (P10–P90 72 j: ${fmt(x.pred_ha[2][0])}–${fmt(x.pred_ha[2][2])}). IoU ${x.iou.map(v => fmt(Math.round(v * 100) / 100)).join(" / ")}, F1 ${x.f1.map(v => fmt(Math.round(v * 100) / 100)).join(" / ")}${x.arah_err != null ? `, salah arah ${fmt(Math.round(x.arah_err))}°` : ""}.
@@ -147,7 +147,7 @@ Insight.exSebGalat = function () {
   const u = G.uji?.ringkas, persen = b => (b > 0 ? "+" : "") + fmt(Math.round((Math.exp(b) - 1) * 100)) + "%";
   return this.ex(`Sebelum diperbaiki model melebihkan luas 72 jam ${this.hl(persen(r.bias_rata))} (validasi 2023)${u ? `; sesudah kalibrasi ulang per strata, di uji 2024–2026 ${this.hl(persen(u.bias_rata))}` : ""}. Yang masih terlewat: api tertutup awan/asap dan api yang 'meloncat'`,
     `${fmt(G.val.n)} titik awal validasi; ${pc(r.porsi_celah_2, 1)} kehilangan ≥ 2 lintasan VIIRS, ${pc(r.porsi_lompat_20, 1)} tumbuh lewat loncatan > 1,9 km`,
-    "merah = ramalan terlalu besar, biru = terlalu kecil · pilih variabel", isi,
+    "merah = ramalan terlalu besar, biru = terlalu kecil, pilih variabel", isi,
     "Perbaikan yang diterapkan dari analisis ini: pergeseran logit per strata (gambut/mineral/sabana) agar bias luas validasi ≈ 0, dan pemilihan model per strata (sabana memakai McArthur bila lebih baik di validasi). Yang belum bisa diperbaiki dengan data ini: pemadaman (tidak ada data operasi), awan/asap (butuh Himawari), api yang dinyalakan baru di dekatnya. Sumber: NASA FIRMS, ERA5, olahan Centurisk97.",
     this.seg("sebGalat", [["prov", "Provinsi"], ["gambut", "Gambut"], ["konsesi", "Konsesi"], ["celah", "Awan/asap"], ["lompat", "Loncat"], ["awal", "Ukuran awal"], ["dc", "DC"], ["ws", "Angin"], ["hujan24", "Hujan"]]));
 };
@@ -176,10 +176,10 @@ Insight.exSebModelLama = function () {
 document.addEventListener("click", e => {
   const k = e.target.closest?.("[data-sebkasus]"); if (k) return dialogKasus(+k.dataset.sebkasus);
   const p = e.target.closest?.("[data-sebprov]"); if (p && SEB.d?.musim) { const o = SEB.d.musim.prov[p.dataset.sebprov], d = $("#dlg");
-    d.innerHTML = `<div class="dh"><div><h3 id="dlgJudul">${esc(o.nama)}: musim 2026</h3><p>Mulai ${esc(o.awal_2026 || "–")} · puncak ${esc(o.puncak_2026 || "–")} · ${fmt(o.titik_2026)} titik VIIRS</p></div><button aria-label="Tutup" data-tutup>×</button></div>
+    d.innerHTML = `<div class="dh"><div><h3 id="dlgJudul">${esc(o.nama)}: musim 2026</h3><p>Mulai ${esc(o.awal_2026 || "–")}, puncak ${esc(o.puncak_2026 || "–")}, ${fmt(o.titik_2026)} titik VIIRS</p></div><button aria-label="Tutup" data-tutup>×</button></div>
       <div class="db"><div class="tw"><table><thead><tr><th>Cluster besar</th><th>Mulai</th><th class="n">ha</th><th class="n">hari aktif</th></tr></thead><tbody>
       ${[...(o.pertama || []).map(x => ({...x, jenis: "pertama"})), ...(o.terbesar || []).map(x => ({...x, jenis: "terbesar"}))].map(x => `<tr><td>${esc(x.kab || "")}, ${esc(x.kec || "")} <small>(${x.jenis})</small></td><td>${new Date(x.t0).toLocaleDateString("id-ID", {day: "numeric", month: "short"})}</td><td class="n num">${fmt(x.ha)}</td><td class="n num">${x.hari}</td></tr>`).join("")}</tbody></table></div>
-      <p class="fnd">Awal musim per tahun: ${Object.entries(o.per_tahun || {}).map(([y, v]) => `${y} ${v.awal || "–"}`).join(" · ")}</p></div>`;
+      <p class="fnd">Awal musim per tahun: ${Object.entries(o.per_tahun || {}).map(([y, v]) => `${y} ${v.awal || "–"}`).join(", ")}</p></div>`;
     d.querySelector("[data-tutup]").onclick = () => d.close(); d.onclick = ev => { if (ev.target === d) d.close(); }; return d.showModal(); }
   const b = e.target.closest?.("[data-sebke]"); if (b) { if (b.dataset.sebke === "sim") return bukaTab("sim");
     const box = document.querySelector('[data-ex="cerita"]') || document.querySelector('[data-ex="sebModel"]'); Cerita.buka(box).then(() => document.getElementById("ct-model")?.scrollIntoView()); }

@@ -88,8 +88,8 @@ const Peta = {
     Laci.buka("Provinsi", `<span translate="no">${esc(namaProv(kode))}</span>`, PIL_MODEL,
       `<div class="grid g4">${hr.slice(0, 4).map(i => kot(labelHari(i), `<span style="color:${KAT[kat(H[i][5])].w}">${fmt(Math.round(H[i][5]))} µg/m³</span>`, KAT[kat(H[i][5])].n)).join("")}</div>
       <p class="fnd">Jiwa menurut kategori ${S.uk.hari[S.hari] === tglWIB(SEKARANG()) && S.hari === S.h0 ? "hari ini" : tglPendek(S.uk.hari[S.hari])}:</p>
-      <div class="legd">${KAT.map((k, c) => p[c] ? `<span class="kt" style="--c:${k.w};--f:${k.fg}">${k.n} · ${jiwa(p[c])}</span>` : "").join(" ")}</div>
-      ${kab.length ? `<p class="fnd">Kabupaten/kota paling terpapar:</p><div class="legd">${kab.map(r => `<span class="kt" style="--c:#3f4a5e;--f:#fff;text-transform:none" translate="no">${esc(r[1])} · ${fmt(Math.round(r[2]))} µg/m³</span>`).join(" ")}</div>` : ""}
+      <div class="legd">${KAT.map((k, c) => p[c] ? `<span class="kt" style="--c:${k.w};--f:${k.fg}">${k.n}, ${jiwa(p[c])}</span>` : "").join(" ")}</div>
+      ${kab.length ? `<p class="fnd">Kabupaten/kota paling terpapar:</p><div class="legd">${kab.map(r => `<span class="kt" style="--c:#3f4a5e;--f:#fff;text-transform:none" translate="no">${esc(r[1])}, ${fmt(Math.round(r[2]))} µg/m³</span>`).join(" ")}</div>` : ""}
       <p class="fnd">Sumber: Copernicus CAMS lewat Open-Meteo, WorldPop. Perkiraan model, belum dikoreksi ke alat ukur.</p><p class="fnd">Data ${jamWIB(S.uk.dibuat)}</p>`); },
   interaksi() {
     if (this._ia) return; this._ia = true; let diTitik = false;
@@ -160,7 +160,7 @@ $("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");
 function renderLegenda() {
   const adaMetar = metarSegar().length > 0;   /* tanpa stasiun segar, keterangannya dibuang (A18) */
   $("#legenda").innerHTML = `<details ${legBuka ? "open" : ""} id="legDet"><summary class="lbl">Legenda <span>▾</span></summary><div class="lg-isi">
-    ${Peta.terlihat("pm25") ? `<div class="lbl">PM2,5 rata-rata 24 jam <span style="text-transform:none">(µg/m³)</span></div><div class="leg" style="margin:4px 0 8px">${KAT.map(k => `<span><i class="sw" style="background:${k.w}"></i>${k.n} · ${k.r}</span>`).join("")}</div>` : ""}
+    ${Peta.terlihat("pm25") ? `<div class="lbl">PM2,5 rata-rata 24 jam <span style="text-transform:none">(µg/m³)</span></div><div class="leg" style="margin:4px 0 8px">${KAT.map(k => `<span><i class="sw" style="background:${k.w}"></i>${k.n}, ${k.r}</span>`).join("")}</div>` : ""}
     ${S.prak && Peta.terlihat("kota") ? `<div class="lbl">Status kota (rata-rata 24 jam)</div><div class="leg" style="margin:4px 0 8px">${Murni.ST.map(k => `<span><i class="sw dot" style="background:${Murni.ST_WARNA[k]}"></i>${Murni.ST_NAMA[k]}</span>`).join("")}</div>` : ""}
     ${adaMetar && Peta.terlihat("metar") ? `<div class="lbl">Jarak pandang bandara (METAR)</div><div class="leg" style="margin:4px 0 8px">${JP.map(j => `<span><i class="sw dot" style="background:${j.w}"></i>${j.n}</span>`).join("")}</div>` : ""}
     ${Peta.terlihat("tropomi") ? Satelit.legenda() : ""}

@@ -1,6 +1,6 @@
 /* Model guncangan (GMPE + GMICE) di peramban: kembaran scripts/gempa/guncangan.py, parameter dari data/model_guncangan.json.
    Pakai:  const M = GempaGuncangan.pasang(await (await fetch("/gempa/data/model_guncangan.json")).json());
-           M.mmi(m, repiKm, dalamKm, jenis?)  ·  M.jendelaKm(m, dalamKm, jenis?)  ·  M.kecamatan({lat, lon, m, dalam, jenis?}, pusat)
+           M.mmi(m, repiKm, dalamKm, jenis?);  M.jendelaKm(m, dalamKm, jenis?);  M.kecamatan({lat, lon, m, dalam, jenis?}, pusat)
    Kesetaraan dijaga scripts/gempa/uji_js_guncangan.py. Sitasi dan batas model ada di berkas JSON. Tanpa status tsunami. */
 (function (g) {
   "use strict";

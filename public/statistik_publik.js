@@ -18,7 +18,7 @@
   function batang(t) {
     const K = ["manusia", "ai_jawab", "ai_crawl", "mesin_cari"], v = {manusia: t.tampilan, ai_jawab: t.ai_jawab, ai_crawl: t.ai_crawl, mesin_cari: t.mesin_cari}, tot = K.reduce((s, k) => s + (v[k] || 0), 0);
     return {tot, html: `<div class="pb-tumpuk" role="img" aria-label="${K.map(k => `${NAMA[k]} ${pct(v[k], tot)}%`).join(", ")}">${K.map(k => `<i data-w="${tot ? (v[k] || 0) / tot * 100 : 0}" data-c="${WARNA[k]}"></i>`).join("")}</div>
-      <div class="ad-leg pb-leg">${K.map(k => `<span><i data-c="${WARNA[k]}"></i>${NAMA[k]} <b>${fmt(v[k])}</b> · ${pct(v[k], tot)}%</span>`).join("")}</div>`};
+      <div class="ad-leg pb-leg">${K.map(k => `<span><i data-c="${WARNA[k]}"></i>${NAMA[k]} <b>${fmt(v[k])}</b>, ${pct(v[k], tot)}%</span>`).join("")}</div>`};
   }
   function daftar(judul, baris, o = {}) {
     const m = Math.max(1, ...baris.map(x => x[1]));
@@ -45,7 +45,7 @@
     const kanal = Object.fromEntries(D.kanal || []), dariAI = kanal["Dari jawaban AI"] || 0;
     const sampel = [t7, ts].some(x => x.sampel != null && x.sampel < 1);
     app.innerHTML = `
-    <section class="pb-hero"><span class="ad-ey">Statistik pengunjung · Centurisk97</span>
+    <section class="pb-hero"><span class="ad-ey">Statistik pengunjung, Centurisk97</span>
       <h1>Manusia dan AI, dihitung terpisah.</h1>
       <p>Halaman ini dibuka oleh orang, oleh asisten AI yang sedang menjawab pertanyaan seseorang (ChatGPT, Claude, Perplexity), dan oleh perayap yang mengindeks atau mengumpulkan halaman untuk mesin pencari dan pelatihan AI. Ketiganya kami hitung terpisah, supaya angka "pembaca" benar-benar orang.${sampel ? " <b>Sebagian angka adalah perkiraan (sampel)</b> karena lalu lintas hari itu melewati batas pencatatan gratis." : ""}</p></section>
 
@@ -56,27 +56,27 @@
     </section>
 
     <h2 class="ad-seksi">Total</h2>
-    <section class="ad-kartu pb-total"><div class="pb-angka"><b>${fmt(b7.tot)}</b><span class="ad-ey">halaman dibaca · 7 hari terakhir</span></div>${b7.html}</section>
-    <section class="ad-kartu pb-total"><div class="pb-angka"><b>${fmt(bs.tot)}</b><span class="ad-ey">halaman dibaca · sejak ${tglID(d.mulai)}</span></div>${bs.html}</section>
+    <section class="ad-kartu pb-total"><div class="pb-angka"><b>${fmt(b7.tot)}</b><span class="ad-ey">halaman dibaca, 7 hari terakhir</span></div>${b7.html}</section>
+    <section class="ad-kartu pb-total"><div class="pb-angka"><b>${fmt(bs.tot)}</b><span class="ad-ey">halaman dibaca, sejak ${tglID(d.mulai)}</span></div>${bs.html}</section>
 
     <div class="pb-dua">
       <section class="ad-kartu"><span class="ad-ey pb-label" data-c="${WARNA.manusia}">Manusia</span><div class="pb-kpi">
-        <div><b>${fmt(t7.tampilan)}</b><small>tayangan halaman · 7 hari</small></div><div><b>${fmt(t7.orang)}</b><small>pengunjung · 7 hari (jumlah harian)</small></div>
+        <div><b>${fmt(t7.tampilan)}</b><small>tayangan halaman, 7 hari</small></div><div><b>${fmt(t7.orang)}</b><small>pengunjung, 7 hari (jumlah harian)</small></div>
         <div><b>${fmt(ts.tampilan)}</b><small>tayangan sejak ${tglID(d.mulai)}</small></div></div></section>
       <section class="ad-kartu"><span class="ad-ey pb-label" data-c="${WARNA.ai_jawab}">AI</span><div class="pb-kpi">
-        <div><b>${fmt(t7.ai_jawab)}</b><small>jawaban AI · 7 hari: asisten AI membuka halaman untuk menjawab seseorang</small></div>
-        <div><b>${fmt(t7.ai_crawl)}</b><small>crawl pencarian AI · 7 hari: halaman yang dibaca ke indeks pencarian & pelatihan AI</small></div>
+        <div><b>${fmt(t7.ai_jawab)}</b><small>jawaban AI, 7 hari: asisten AI membuka halaman untuk menjawab seseorang</small></div>
+        <div><b>${fmt(t7.ai_crawl)}</b><small>crawl pencarian AI, 7 hari: halaman yang dibaca ke indeks pencarian & pelatihan AI</small></div>
         <div><b>${fmt(ts.ai_jawab)}</b><small>jawaban AI sejak ${tglID(d.mulai)}</small></div></div></section>
     </div>
 
     <div class="ad-kontrol pb-rentang" role="radiogroup" aria-label="Rentang waktu">${RENT.map(([k, l]) => `<button class="ad-chip" role="radio" data-r="${k}" aria-checked="${k === r}" aria-pressed="${k === r}">${l}</button>`).join("")}</div>
-    <div class="pb-dua">${grafik(seriM, seriL, WARNA.manusia, `Manusia · tayangan halaman ${per.toLowerCase()}`)}${grafik(seriA, seriL, WARNA.ai_jawab, `Jawaban AI ${per.toLowerCase()}`)}</div>
+    <div class="pb-dua">${grafik(seriM, seriL, WARNA.manusia, `Manusia, tayangan halaman ${per.toLowerCase()}`)}${grafik(seriA, seriL, WARNA.ai_jawab, `Jawaban AI ${per.toLowerCase()}`)}</div>
 
-    <h2 class="ad-seksi">Manusia · ${rl === "SEPANJANG WAKTU" ? "90 hari terakhir (rincian)" : rl + " terakhir"}</h2>
+    <h2 class="ad-seksi">Manusia, ${rl === "SEPANJANG WAKTU" ? "90 hari terakhir (rincian)" : rl + " terakhir"}</h2>
     <div class="pb-dua">${daftar("Halaman paling banyak dibaca", D.halaman || [], {label: halaman})}${daftar("Dari mana mereka datang", D.rujukan || [])}</div>
     <div class="pb-tiga">${daftar("Kanal", D.kanal || [], {warna: "rgba(95,111,176,.18)"})}${daftar("Negara", D.negara || [], {warna: "rgba(43,140,134,.18)"})}${daftar("Perangkat", D.perangkat || [], {warna: "rgba(227,185,78,.25)"})}</div>
 
-    <h2 class="ad-seksi">AI · ${rl === "SEPANJANG WAKTU" ? "90 hari terakhir (rincian)" : rl + " terakhir"}</h2>
+    <h2 class="ad-seksi">AI, ${rl === "SEPANJANG WAKTU" ? "90 hari terakhir (rincian)" : rl + " terakhir"}</h2>
     <div class="pb-dua">
       <section class="ad-kartu"><h3 class="ad-ey">Asisten AI yang menjawab seseorang dengan halaman ini</h3>${agen.length ? `<ol class="pb-rank">${agen.map(([nama, n, v]) => `<li><i data-w="${n / agen[0][1] * 100}" data-c="rgba(201,80,58,.14)"></i>
         <span class="k">${esc(nama)} <em class="pb-tag">menjawab seseorang</em>${v === "terverifikasi" ? ` <em class="pb-tag ok" title="IP cocok dengan daftar resmi operator">terverifikasi</em>` : ""}</span><b>${fmt(n)}</b></li>`).join("")}</ol>` : `<p class="ad-kosong">Belum ada.</p>`}</section>
@@ -87,7 +87,7 @@
       ${perayap.map(p => `<tr><td>${esc(p.nama)}</td><td>${p.j === "AI" ? "Pencarian & pelatihan AI" : "Mesin pencari"}</td><td>${p.v === "terverifikasi" ? `<em class="pb-tag ok">terverifikasi</em>` : `<em class="pb-tag">belum bisa diverifikasi</em>`}</td><td class="n">${fmt(p.n)}</td></tr>`).join("")}
       </tbody></table></div>` : `<p class="ad-kosong">Belum ada.</p>`}</section>
 
-    <section class="ad-kartu"><h3 class="ad-ey">Menurut jenis · 7 hari</h3><div class="pb-kpi pb-kpi4">
+    <section class="ad-kartu"><h3 class="ad-ey">Menurut jenis, 7 hari</h3><div class="pb-kpi pb-kpi4">
       ${["manusia", "ai_jawab", "ai_crawl", "mesin_cari"].map(k => `<div><b>${fmt(k === "manusia" ? t7.tampilan : t7[k])}</b><small>${NAMA[k]}</small></div>`).join("")}
       <div><b>${fmt(dariAI)}</b><small>orang datang dari jawaban AI (${rl.toLowerCase()})</small></div></div></section>
 
@@ -101,7 +101,7 @@
         <p><b>Sedang membaca</b> = orang berbeda yang membuka halaman dalam 5 menit terakhir, beserta halaman terakhir yang dibukanya. <b>Negara</b> dibaca dari lokasi jaringan di tepi Cloudflare, bukan GPS.</p>
         <p><b>Sampel.</b> Situs ini berjalan di paket gratis. Bila tayangan hari itu sangat banyak, hanya sebagian yang dicatat (dipilih tetap per pengunjung) lalu dikalikan kembali; angkanya ditandai perkiraan.</p></section>
     </div>
-    <p class="pb-kaki">Dihitung sejak ${tglID(d.mulai)} · waktu dalam WIB · diperbarui langsung (tembolok 1 menit) · <a href="/privasi.html#statistik">privasi</a></p>`;
+    <p class="pb-kaki">Dihitung sejak ${tglID(d.mulai)}, waktu dalam WIB, diperbarui langsung (tembolok 1 menit), <a href="/privasi.html#statistik">privasi</a></p>`;
     lukis(app);
     app.querySelectorAll("[data-r]").forEach(b => b.onclick = () => { r = b.dataset.r; try { sessionStorage.setItem("pb-r", r); } catch (e) {} muat(); });
   }

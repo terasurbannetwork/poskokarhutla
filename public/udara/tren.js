@@ -40,14 +40,14 @@ const Tren = {
     const nama = i => Grafik.tgl(D[i].t, {weekday: "long", day: "numeric", month: "long"});
     return this.kartu("Jiwa terpapar", `${Kartu.hl(jiwa(tot[pk]))} menghirup udara tidak sehat pada ${Kartu.hl(Grafik.tgl(D[pk].t))}, tertinggi dalam ${fmt(D.length)} hari${ini ? `; ${Grafik.tgl(ini.t) === Grafik.tgl(D[pk].t) ? "itu juga" : "hari ini"} ${Kartu.hl(jiwa(ini.ts))}` : ""}`,
       Grafik.kolom({cat: D.map(d => Grafik.tgl(d.t)), seri: [["Tidak sehat", KAT[2].w], ["Sangat tidak sehat atau berbahaya", KAT[3].w]], nilai, aria: "Jiwa terpapar udara tidak sehat per hari", pudar: i => D[i].depan,
-        tip: i => `<b>${nama(i)}</b>${D[i].depan ? " · prakiraan" : ""}<br>Tidak sehat atau lebih: ${jiwa(tot[i])}<br>Sangat tidak sehat atau berbahaya: ${jiwa(nilai[i][1])}<br>PM2,5 rata-rata: ${fmt(Math.round(D[i].rata))} µg/m³`}),
+        tip: i => `<b>${nama(i)}</b>${D[i].depan ? " (prakiraan)" : ""}<br>Tidak sehat atau lebih: ${jiwa(tot[i])}<br>Sangat tidak sehat atau berbahaya: ${jiwa(nilai[i][1])}<br>PM2,5 rata-rata: ${fmt(Math.round(D[i].rata))} µg/m³`}),
       "Copernicus CAMS lewat Open-Meteo, WorldPop; batang pudar = prakiraan", this.segRentang(), [[KAT[2].w, "tidak sehat"], [KAT[3].w, "sangat tidak sehat atau berbahaya"]]); },
   exRata() {
     const D = this.deret(); if (D.length < 2) return "";
     const v = D.map(d => d.rata), mx = Math.max(...v), pk = v.indexOf(mx), ini = D.find(d => d.t === tglWIB(SEKARANG())) || D.filter(d => !d.depan).at(-1);
     return this.kartu("PM2,5", `PM2,5 rata-rata nasional tertinggi ${Kartu.hl(fmt(Math.round(mx)) + " µg/m³")} pada ${Kartu.hl(Grafik.tgl(D[pk].t))}${ini ? `, ${Grafik.tgl(ini.t) === Grafik.tgl(D[pk].t) ? "itu juga hari ini" : `hari ini ${Kartu.hl(fmt(Math.round(ini.rata)) + " µg/m³")}`}` : ""}`,
       Grafik.kolom({cat: D.map(d => Grafik.tgl(d.t)), seri: [["PM2,5", KAT[2].w]], nilai: D.map(d => [Math.round(d.rata)]), aria: "PM2,5 rata-rata nasional per hari", fmtNilai: x => fmt(Math.round(x)), pudar: i => D[i].depan,
-        tip: i => `<b>${Grafik.tgl(D[i].t, {weekday: "long", day: "numeric", month: "long"})}</b>${D[i].depan ? " · prakiraan" : ""}<br>PM2,5 rata-rata berbobot jiwa: ${fmt(Math.round(D[i].rata))} µg/m³<br>Kategori: ${KAT[kat(D[i].rata)].n}`}),
+        tip: i => `<b>${Grafik.tgl(D[i].t, {weekday: "long", day: "numeric", month: "long"})}</b>${D[i].depan ? " (prakiraan)" : ""}<br>PM2,5 rata-rata berbobot jiwa: ${fmt(Math.round(D[i].rata))} µg/m³<br>Kategori: ${KAT[kat(D[i].rata)].n}`}),
       "Copernicus CAMS lewat Open-Meteo, WorldPop; batang pudar = prakiraan; µg/m³", this.segRentang(), null); },
   /* provinsi: berapa hari rata-rata 24 jam melewati batas Baik dan Sedang dalam rentang */
   exProvinsi() {

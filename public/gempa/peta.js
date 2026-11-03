@@ -202,7 +202,7 @@ function renderPita() {
   const [nama, w] = TSUNAMI[a.tsunami.kode];
   el.style.setProperty("--w", w);
   el.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/></svg>
-    <b>BMKG: ${nama}</b><span>${mTulis(a.m)} · ${esc(wilayahPendek(a.wilayah))} · ${esc(waktuGempa(a.waktu))}</span>`;
+    <b>BMKG: ${nama}</b><span>${mTulis(a.m)}, ${esc(wilayahPendek(a.wilayah))}, ${esc(waktuGempa(a.waktu))}</span>`;
   el.onclick = () => Peta.pilih(a); }
 
 /* ---------- Overlay ---------- */

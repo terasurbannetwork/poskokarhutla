@@ -55,7 +55,7 @@ export async function pasang(el) {
     cocok.sort((a, b) => arah * (NILAI[urut](a) < NILAI[urut](b) ? -1 : NILAI[urut](a) > NILAI[urut](b) ? 1 : 0));
     const total = Math.max(1, Math.ceil(cocok.length / UKURAN)); hal = Math.min(hal, total - 1);
     const kolom = [["nama", "Institusi"], ["pic", "PIC (hanya admin)"], ["relawan", "Relawan"], ["riset", "Riset"], [null, "Aksi"]];
-    const baris = cocok.slice(hal * UKURAN, (hal + 1) * UKURAN).map(i => `<tr data-id="${esc(i.id)}"><td><b>${esc(i.nama)}</b>${i.dummy ? ' <span class="in-pil in-ungu">Dummy</span>' : ""}<br><span class="in-redup">${esc([i.singkatan, JENIS[i.jenis], d.provinsi[i.prov]].filter(Boolean).join(" · "))}</span></td>
+    const baris = cocok.slice(hal * UKURAN, (hal + 1) * UKURAN).map(i => `<tr data-id="${esc(i.id)}"><td><b>${esc(i.nama)}</b>${i.dummy ? ' <span class="in-pil in-ungu">Dummy</span>' : ""}<br><span class="in-redup">${esc([i.singkatan, JENIS[i.jenis], d.provinsi[i.prov]].filter(Boolean).join(", "))}</span></td>
       <td>${esc(i.pic_nama)}<br><span class="in-redup">${esc(i.pic_jabatan || "")}</span><br><span class="in-redup">${esc(i.pic_email || "–")} ${esc(i.pic_wa || "")}</span></td>
       <td>${ringkasPj(i.mou, i.mou ? `<br>${angka(i.terisi)} / ${angka(i.mou.kuota)} relawan, ${angka(i.antre)} antre` : "")}<br>${i.kode_aktif ? pil("hijau", "kunci", "Kode koordinator aktif") : pil("abu", "x", "Tanpa kode koordinator")}</td>
       <td>${ringkasPj(i.pks)}<br>${i.kode_riset ? pil("hijau", "kunci", `${angka(i.kode_riset)} kode mitra aktif`) : pil("abu", "x", "Tanpa kode mitra")}<br><span class="in-redup">${angka(i.usulan)} usulan</span></td>

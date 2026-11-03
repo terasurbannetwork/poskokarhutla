@@ -32,7 +32,7 @@ const Ringkasan = (() => {
   };
 
   /* ---------- pembantu tampilan ---------- */
-  const n = (v, sumber, jenis) => `<span class="rk-n" tabindex="0" data-tip="${esc(`<b>${JENIS[jenis]}</b> · ${sumber}`)}">${v}</span>`;
+  const n = (v, sumber, jenis) => `<span class="rk-n" tabindex="0" data-tip="${esc(`<b>${JENIS[jenis]}</b>, ${sumber}`)}">${v}</span>`;
   const tag = jenis => `<span class="rk-j">${JENIS[jenis].toLowerCase()}</span>`;
   const pct = p => p == null ? "–" : Math.round(p * 100) + "%";
   const lencana = lv => `<span class="rk-lv lv${lv}">${TINGKAT[lv]}</span>`;
@@ -249,7 +249,7 @@ const Ringkasan = (() => {
     },
     bukaBukti(i) {
       const c = this.D.kartu[i]; if (!c) return; const b = c.bukti;
-      Berita.dlg(esc(b.judul), `${esc(c.siapa)} · ${c.apa}`, b.isi() + (b.prov ? `<div><button class="btn sec" data-rk-prov="${b.prov}">Buka ${esc(namaProv(b.prov))} di peta</button></div>` : "")
+      Berita.dlg(esc(b.judul), `${esc(c.siapa)}, ${c.apa}`, b.isi() + (b.prov ? `<div><button class="btn sec" data-rk-prov="${b.prov}">Buka ${esc(namaProv(b.prov))} di peta</button></div>` : "")
         + (b.kom && !/data-kom/.test(b.isi()) ? `<button class="btn sec" data-kom="${esc(b.kom)}">Buka cluster di peta</button>` : ""));
       this.ikatDlg();
     },
@@ -287,7 +287,7 @@ const Ringkasan = (() => {
       const dar = D.hit(3).map(x => namaProv(x.k));
       const sub = `${dar.length ? `Tingkat perhatian 3: ${esc(daftar(dar))}. ` : ""}${fmt(D.nS)} provinsi tingkat perhatian 2, ${fmt(D.nW)} tingkat 1.`;
       return `<header class="rk-hero">
-        <div class="rk-hero-l"><p class="mt-lbl rk-eb">Situasi nasional · ${esc(tglPanjang(Date.now()))}</p>
+        <div class="rk-hero-l"><p class="mt-lbl rk-eb">Situasi nasional, ${esc(tglPanjang(Date.now()))}</p>
           <p class="rk-st"><span class="rk-tag lv${D.lvNas}">${TINGKAT[D.lvNas]}</span><span>tingkat perhatian platform (nasional)</span></p>
           <h1 class="rk-lead">${kal}</h1><p class="rk-sub">${sub}</p>
           <details class="mt-tek rk-why-st"><summary>Mengapa ${TINGKAT[D.lvNas].toLowerCase()}? Lihat hitungannya</summary><div class="mt-tekisi mt-contoh">${mtTangga(`Tingkat nasional hari ini: ${TINGKAT[D.lvNas]}`, "Dihitung dari tingkat tiap provinsi; ambang lengkap di Aturan status.", [
@@ -298,8 +298,8 @@ const Ringkasan = (() => {
             D.lvNas < 3 ? mtCek(D.nD >= 1 || D.nS >= 3, "Ada provinsi tingkat 3, atau 3 provinsi tingkat 2 atau lebih?", "syarat tingkat nasional 2") : null,
             ["hasil", "Tingkat perhatian nasional", "indeks pemantauan platform, bukan status hukum", TINGKAT[D.lvNas]]]).replace("Contoh dengan data hari ini", "Hitungan dengan data hari ini")}</div></details></div>
         <div class="rk-hero-r">
-          <details class="rk-segar"><summary><i class="rk-dot s${buruk}" aria-hidden="true"></i>Data per <b>${esc(jamWIB(D.asOf))}</b><span class="sr"> · ${["semua sumber segar", "ada sumber terlambat", "ada sumber basi"][buruk]}; buka rincian</span></summary>
-            <div class="rk-pop"><p>Kesegaran data per sumber</p><ul>${sg.map(([nm, t, j, s, u]) => `<li><i class="rk-dot s${s}" aria-hidden="true"></i><span>${nm}<small>${t ? esc(jamWIB(t)) : "–"} · diharapkan ≤ ${j} jam</small></span><b>${u}</b></li>`).join("")}</ul></div></details>
+          <details class="rk-segar"><summary><i class="rk-dot s${buruk}" aria-hidden="true"></i>Data per <b>${esc(jamWIB(D.asOf))}</b>, <span class="sr">${["semua sumber segar", "ada sumber terlambat", "ada sumber basi"][buruk]}; buka rincian</span></summary>
+            <div class="rk-pop"><p>Kesegaran data per sumber</p><ul>${sg.map(([nm, t, j, s, u]) => `<li><i class="rk-dot s${s}" aria-hidden="true"></i><span>${nm}<small>${t ? esc(jamWIB(t)) : "–"}, diharapkan ≤ ${j} jam</small></span><b>${u}</b></li>`).join("")}</ul></div></details>
           <div class="rk-aksi"><button class="btn pri" data-rk="cetak">Unduh brief</button><button class="btn sec" data-rk="dinding" aria-pressed="${!!this.dinding}">Layar besar</button></div>
           <button class="rk-lnk" data-rk="aturan">Aturan status</button></div></header>`;
     },
@@ -310,14 +310,14 @@ const Ringkasan = (() => {
       const spark = this.spark(K.titikHari);
       const H = D.dp?.udara?.hari || [], aj = H.map((_, i) => PRIO.reduce((a, k) => { const j = D.dp.udara.prov?.[k]?.jiwa?.[i]; return a + (j ? j[2] + j[3] + j[4] : 0); }, 0)), am = Math.max(...aj, 1);
       const asap = D.adaAsap && aj.length ? `<div class="rk-cols" aria-hidden="true">${aj.map((v, i) => `<i style="--h:${Math.max(4, v / am * 100)}%" title="${hariN(H[i])}: ${rb(v)}"></i>`).join("")}</div><span>prakiraan ${fmt(aj.length)} hari</span>` : "";
-      const tot = K.naik + K.turun, split = tot ? `<div class="rk-split" aria-hidden="true"><i style="flex:${K.naik}"></i><i style="flex:${K.turun}"></i></div><span>membesar · mengecil</span>` : "";
+      const tot = K.naik + K.turun, split = tot ? `<div class="rk-split" aria-hidden="true"><i style="flex:${K.naik}"></i><i style="flex:${K.turun}"></i></div><span>membesar, mengecil</span>` : "";
       const sk = L ? L[2] * 1.05 : 1, rng = L ? `<div class="rk-rng" aria-hidden="true"><i style="left:${L[0] / sk * 100}%;width:${(L[2] - L[0]) / sk * 100}%"></i><b style="left:${L[1] / sk * 100}%"></b></div><span>rentang perkiraan, bukan angka resmi</span>` : "";
       return [
-        kp("sensor", "Titik panas 24 jam", fmt(K.h24), "titik", "satelit", `${SUMBER.titik}; 24 jam s.d. ${jamWIB(D.asOf)}; normal = median VIIRS 2015–2025`, [K.rasio != null ? `${desimal(K.rasio)}× normal` : "", dk != null ? `${ubahKata(dk)} kemarin` : ""].filter(Boolean).join(" · "), spark),
+        kp("sensor", "Titik panas 24 jam", fmt(K.h24), "titik", "satelit", `${SUMBER.titik}; 24 jam s.d. ${jamWIB(D.asOf)}; normal = median VIIRS 2015–2025`, [K.rasio != null ? `${desimal(K.rasio)}× normal` : "", dk != null ? `${ubahKata(dk)} kemarin` : ""].filter(Boolean).join(", "), spark),
         kp("kelompok", "Cluster prioritas", fmt(K.k3), "cluster", "satelit", SUMBER.kompleks, `front membesar di ${fmt(K.naik)}, mengecil di ${fmt(K.turun)}`, split),
         kp("awan", "Terpapar asap karhutla", D.adaAsap ? rb(K.jiwaPrio) : "–", D.adaAsap ? "jiwa" : "", "model", `${SUMBER.asap}; provinsi yang sering mengalami karhutla; seluruh Indonesia ${rb(K.jiwaNas)} jiwa`,
-          D.adaAsap ? `provinsi yang sering mengalami karhutla${jb != null ? ` · besok ${Math.abs(jb) < .005 ? "tetap" : (jb > 0 ? "naik " : "turun ") + pct(Math.abs(jb))}` : ""}` : "data asap belum tersedia", asap),
-        kp("grafik", "Perkiraan luas terbakar " + (K.luasSd || "").slice(0, 4), L ? "sekitar " + jt(L[1]) : "–", L ? "juta ha" : "", "model", SUMBER.luas, L ? `rentang ${jt(L[0])}–${jt(L[2])} juta ha, bukan angka resmi${K.luasSd ? " · sampai " + hariN(K.luasSd) : ""}` : "", rng),
+          D.adaAsap ? `provinsi yang sering mengalami karhutla${jb != null ? `, besok ${Math.abs(jb) < .005 ? "tetap" : (jb > 0 ? "naik " : "turun ") + pct(Math.abs(jb))}` : ""}` : "data asap belum tersedia", asap),
+        kp("grafik", "Perkiraan luas terbakar " + (K.luasSd || "").slice(0, 4), L ? "sekitar " + jt(L[1]) : "–", L ? "juta ha" : "", "model", SUMBER.luas, L ? `rentang ${jt(L[0])}–${jt(L[2])} juta ha, bukan angka resmi${K.luasSd ? ", sampai " + hariN(K.luasSd) : ""}` : "", rng),
       ].join("");
     },
     hSek(D) {
@@ -325,7 +325,7 @@ const Ringkasan = (() => {
       return [
         s(n(fmt(D.nD + D.nS), "Aturan tingkat Posko (lihat Aturan status) dari cluster, asap, dan cuaca", "model"), "provinsi tingkat perhatian 2 atau 3", `${fmt(D.nD)} tingkat 3, ${fmt(D.nS)} tingkat 2, ${fmt(D.nW)} tingkat 1`),
         s(n(fmt(K.k2), SUMBER.kompleks, "satelit"), "cluster tingkat 2", "di luar cluster prioritas"),
-        s(n(fmt(K.kj7.length), SUMBER.pesawat, "berita"), "gangguan penerbangan, 7 hari", `${fmt(K.bandara7)} bandara${dp != null ? ` · ${ubahKata(dp)} pekan sebelumnya` : ""}`),
+        s(n(fmt(K.kj7.length), SUMBER.pesawat, "berita"), "gangguan penerbangan, 7 hari", `${fmt(K.bandara7)} bandara${dp != null ? `, ${ubahKata(dp)} pekan sebelumnya` : ""}`),
         s(n(K.bnpbHa != null ? rb(K.bnpbHa) : "–", SUMBER.bnpb + ", lahan terbakar indikatif", "resmi"), "ha terbakar menurut BNPB", "laporan resmi, 6 provinsi"),
       ].join("");
     },
@@ -377,7 +377,7 @@ const Ringkasan = (() => {
         const taruh = (e, h) => { tip.innerHTML = h; tip.classList.add("on"); tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, e.originalEvent.clientX + 14) + "px"; tip.style.top = Math.max(8, e.originalEvent.clientY - tip.offsetHeight - 12) + "px"; m.getCanvas().style.cursor = "pointer"; };
         m.on("mousemove", "rkProv", e => { if (m.queryRenderedFeatures(e.point, {layers: ["rkKom"]}).length) return; const x = D.P[e.features[0].properties.k];
           taruh(e, `<b>${esc(namaProv(x.k))}</b>, ${TINGKAT[x.lv]}<br>${fmt(x.p3)} cluster prioritas<br>${rb(x.jiwa)} jiwa udara tidak sehat (model)<br><small>klik untuk buka di peta</small>`); });
-        m.on("mousemove", "rkKom", e => { const p = e.features[0].properties; taruh(e, `<b>${esc(p.id)}</b> · ${esc(p.kec)}, ${esc(p.kab)}<br>${fmt(p.px)} piksel aktif 24 jam (satelit)<br><small>klik untuk rincian</small>`); });
+        m.on("mousemove", "rkKom", e => { const p = e.features[0].properties; taruh(e, `<b>${esc(p.id)}</b>, ${esc(p.kec)}, ${esc(p.kab)}<br>${fmt(p.px)} piksel aktif 24 jam (satelit)<br><small>klik untuk rincian</small>`); });
         ["rkProv", "rkKom"].forEach(l => m.on("mouseleave", l, () => { tip.classList.remove("on"); m.getCanvas().style.cursor = ""; }));
         m.on("click", e => { tip.classList.remove("on"); const k = m.queryRenderedFeatures(e.point, {layers: ["rkKom"]})[0]; if (k) { bukaTab("peta"); return Laci.buka(k.properties.id); }
           const p = m.queryRenderedFeatures(e.point, {layers: ["rkProv"]})[0]; if (p) this.keProv(p.properties.k); });
@@ -404,7 +404,7 @@ const Ringkasan = (() => {
       return `<header class="rk-sh"><h2 id="rkAkJ">${judul}</h2><p>Semua angka ${tag("resmi")} dari laporan BNPB dan SiPongi${nb ? `; ${fmt(nb)} provinsi belum melaporkan sebagian sumber daya` : ""}</p></header>
         <div class="rk-kartu-p"><div class="rk-tw"><table class="rk-t rk-akun"><thead><tr><th>Provinsi</th><th>Dansatgas</th><th class="n">Regu terlapor</th><th class="n">Heli water bombing</th><th>Catatan</th></tr></thead><tbody>
         ${R.map(({a, ada, belum}) => `<tr><td><button class="link" data-rk-prov="${a.k}">${esc(namaProv(a.k))}</button> ${lencana(a.x.lv)}</td>
-            <td><span tabindex="0" data-tip="${esc(`Gubernur menetapkan status · Dansatgas: Danrem ${KOREM[a.k] || "–"}${a.pusat ? ` · posko provinsi ${a.pusat.nama}` : ""}`)}">Danrem ${esc(KOREM[a.k] || "–")}</span></td>
+            <td><span tabindex="0" data-tip="${esc(`Gubernur menetapkan status, Dansatgas: Danrem ${KOREM[a.k] || "–"}${a.pusat ? `, posko provinsi ${a.pusat.nama}` : ""}`)}">Danrem ${esc(KOREM[a.k] || "–")}</span></td>
             <td class="n">${n(a.setara == null ? fmt(ada) + "+" : fmt(ada), `Manggala Agni ${fmt(a.reguMA)} regu (SiPongi)${a.setara != null ? ` + personel gabungan BNPB ${fmt(a.personel)} orang ÷ 15` : "; personel gabungan tidak dilaporkan"}`, "resmi")}</td>
             <td class="n">${a.wb == null ? n("–", "Di luar pantauan harian BNPB", "resmi") : n(fmt(a.wb), SUMBER.bnpb + ": WB beroperasi + siaga", "resmi")}</td>
             <td>${belum.length ? `<span class="rk-mute">${belum.join(" dan ")} belum dilaporkan</span>` : ""}</td></tr>`).join("")}</tbody></table></div>
@@ -467,9 +467,9 @@ const Ringkasan = (() => {
           <p>${fmt(X.n3)} berita karhutla dalam 3 hari terakhir ${tag("berita")}</p></header>
         <div class="rk-kartu-p rk-sg">
           <div>${J("Yang diminta publik, 7 hari")}<ul class="rk-bars">${X.minta.map(m => baris(esc(m.nm), n(fmt(m.n), `${fmt(X.nTuntut)} judul memuat kata desak/minta/tuntut/harap/perlu`, "berita"), m.n / mm,
-              m.contoh ? `<a href="${escUrl(m.contoh.url)}" target="_blank" rel="noopener" class="rk-con">${esc(m.contoh.judul)} · ${esc(m.contoh.sumber)}</a>` : "")).join("") || "<li>Tidak ada tuntutan yang menonjol.</li>"}</ul></div>
+              m.contoh ? `<a href="${escUrl(m.contoh.url)}" target="_blank" rel="noopener" class="rk-con">${esc(m.contoh.judul)}, ${esc(m.contoh.sumber)}</a>` : "")).join("") || "<li>Tidak ada tuntutan yang menonjol.</li>"}</ul></div>
           <div>${J("Topik utama, 3 hari")}<ul class="rk-bars">${X.topik.map(([k, v]) => baris(esc(TOPIK_B[k] || k), n(pct(v / tot), src, "berita"), v / tot)).join("")}</ul>
-            <div class="rk-duo"><div>${J("Nada judul")}<p>Marah ${n(pct(X.marah / tot), src + "; kamus kata (kecam, desak, lamban…)", "berita")} · cemas ${n(pct(X.cemas / tot), src + "; kamus kata (ancam, waspada, bahaya…)", "berita")}</p></div>
+            <div class="rk-duo"><div>${J("Nada judul")}<p>Marah ${n(pct(X.marah / tot), src + "; kamus kata (kecam, desak, lamban…)", "berita")}, cemas ${n(pct(X.cemas / tot), src + "; kamus kata (ancam, waspada, bahaya…)", "berita")}</p></div>
               <div>${J("Media luar negeri, 7 hari")}<p>${n(fmt(X.nInt) + " berita", SUMBER.berita + "; media luar negeri", "berita")}${di != null ? `, ${ubahKata(di)} pekan sebelumnya` : ""}${X.neg.length ? `<small>terbanyak ${X.neg.map(([c, v]) => `${esc(c)} ${fmt(v)}`).join(", ")}</small>` : ""}</p></div></div></div>
           <div>${J("Usulan bahan komunikasi publik")}<ol class="rk-kom">${this.poinKomunikasi().map(t => `<li>${t}</li>`).join("")}</ol>
             ${J("Perlu diklarifikasi")}${X.mis.length ? `<ul class="rk-mis">${X.mis.map(m => `<li><a href="${escUrl(m.a.url)}" target="_blank" rel="noopener">${esc(m.a.judul)}</a> <small>${esc(m.a.sumber)}, ${m.a.tgl.slice(8, 10)}/${m.a.tgl.slice(5, 7)}</small><br>Satelit masih mendeteksi ${n(fmt(m.h) + " titik", SUMBER.titik + "; 24 jam terakhir", "satelit")} dalam 24 jam di ${esc(m.wil)}${m.k ? ` dan ${fmt(m.k)} cluster prioritas` : ""}.</li>`).join("")}</ul>
@@ -562,7 +562,7 @@ const Ringkasan = (() => {
     geser(d) { if (!this.dinding) return; this.dinding.i = (this.dinding.i + d + this.PANEL.length) % this.PANEL.length; clearInterval(this._jam); this._jam = setInterval(() => { if (this.dinding && !this.dinding.jeda) this.geser(1); }, 20000); this.tampilPanel(); },
     tampilPanel() {
       const i = this.dinding.i; document.querySelectorAll("#ringkasan .rk-p").forEach(p => p.classList.toggle("rk-aktif", +p.dataset.p === i)); if (i === 2 && this._petaD !== i) { this._petaD = i; this.petaMini(); } else if (i !== 2) this._petaD = null;
-      $("#rk-dbar").innerHTML = `<span class="rk-dprog${this.dinding.jeda ? " jeda" : ""}" key="${Date.now()}"></span><b aria-live="polite">${i + 1}/${this.PANEL.length} · ${this.PANEL[i]}</b>
+      $("#rk-dbar").innerHTML = `<span class="rk-dprog${this.dinding.jeda ? " jeda" : ""}" key="${Date.now()}"></span><b aria-live="polite">${i + 1}/${this.PANEL.length}, ${this.PANEL[i]}</b>
         <button class="btn sec" data-d="p" aria-label="Panel sebelumnya">‹</button><button class="btn sec" data-d="j">${this.dinding.jeda ? "Lanjut" : "Jeda"}</button><button class="btn sec" data-d="n" aria-label="Panel berikutnya">›</button><button class="btn sec" data-d="x">Keluar</button>`;
     },
     keluarDinding() {

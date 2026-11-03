@@ -47,7 +47,7 @@
     nama = Object.fromEntries(rel.map(r => [r.id, r.nama]));
     $("isi").hidden = false;
     $("isi").innerHTML = `<div class="bn-judul"><h1>${esc(k.nama)}</h1><div class="bn-aksi">${sp(MOU[k.status])}<button class="bn-tombol sekunder" id="unduh" type="button">Unduh rekap CSV</button><button class="bn-tombol sekunder" type="button" data-keluar>Keluar</button></div></div>
-      <p class="rl-kecil">${esc(k.no_mou)} · ${tgl(k.mulai)} sampai ${tgl(k.berakhir)}${k.status === "segera_habis" ? ` · berakhir ${angka(k.sisa_hari)} hari lagi` : ""}${k.status === "habis" ? ". Kampus tidak menerima pendaftar baru; relawan yang sudah ada tetap bisa kamu kelola." : ""}</p>
+      <p class="rl-kecil">${esc(k.no_mou)}, ${tgl(k.mulai)} sampai ${tgl(k.berakhir)}${k.status === "segera_habis" ? `, berakhir ${angka(k.sisa_hari)} hari lagi` : ""}${k.status === "habis" ? ". Kampus tidak menerima pendaftar baru; relawan yang sudah ada tetap bisa kamu kelola." : ""}</p>
       <section class="bn-grid">${kartu("orang", `${angka(k.terisi)} / ${angka(k.kuota)}`, "Kuota terisi", "p-biru")}${kartu("jam", angka(rel.filter(r => r.status === "terdaftar").length), "Perlu diverifikasi", "p-kuning")}
         ${kartu("centang", jam(sahMenit), "Jam kerja tervalidasi", "p-hijau")}${kartu("jam", jam(menunggu), "Jam menunggu validasi", "p-oranye")}</section>
       <h2>${pil("p-biru", "orang", "Relawan kampusmu")}</h2><div id="tRel"></div>

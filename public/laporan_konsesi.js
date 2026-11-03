@@ -80,7 +80,7 @@
   const rentang = (a, b) => a === b ? tgl(a) : a.slice(5, 7) === b.slice(5, 7) ? `${+a.slice(8)}–${tgl(b)}` : `${tgl(a)} – ${tgl(b)}`;
   const ha = n => fmt(Math.round(n));
   const pct = p => p == null ? "–" : p > 0 && p < .005 ? "< 1%" : Math.round(p * 100) + "%";
-  const bumnPil = r => r.bumn ? `<span class="kn-bumn" title="Badan Usaha Milik Negara · ${esc(r.bumn)}">BUMN</span>` : "";
+  const bumnPil = r => r.bumn ? `<span class="kn-bumn" title="Badan Usaha Milik Negara, ${esc(r.bumn)}">BUMN</span>` : "";
   const SNK = {perdata: "Gugatan perdata", pidana: "Pidana korporasi", administratif: "Sanksi administratif", penyegelan: "Penyegelan"};
   const jenisPil = j => `<span class="kn-j" style="--w:${JN[j]?.[1] || "#888"}">${JN[j]?.[0] || j}</span>`;
 
@@ -267,22 +267,22 @@
     const x = jumlah(rs);
     const chip = (ik, v, l, cls = "") => `<span class="kn-chip ${cls}"><i aria-hidden="true">${IKON_KPI[ik]}</i><b>${v}</b>${l}</span>`;
     const lb = LAMBANG[`${k}|${kb}`];
-    return `<div class="kn-kabh">${lb ? `<img class="kn-kabh-lg" src="/lambang/kabkota/${lb}.png" alt="Lambang ${esc(kb)}" width="40" height="40">` : ""}<div class="kn-kabh-t"><span class="lbl">${esc(namaProv(k))} · Kabupaten/kota</span><h2>${esc(kb)}</h2></div>
+    return `<div class="kn-kabh">${lb ? `<img class="kn-kabh-lg" src="/lambang/kabkota/${lb}.png" alt="Lambang ${esc(kb)}" width="40" height="40">` : ""}<div class="kn-kabh-t"><span class="lbl">${esc(namaProv(k))}, Kabupaten/kota</span><h2>${esc(kb)}</h2></div>
       <div class="kn-chips">${chip("konsesi", fmt(rs.length), "perusahaan")}${chip("titik", fmt(x.t), "titik panas")}${chip("luas", ha(x.l), "ha terbakar")}${x.a ? chip("api", fmt(x.a), "masih ada api", "kn-chip-a") : ""}</div></div>`;
   }
   /* kepala bagian provinsi: kartu navy berlogo; satu provinsi = tampil di atas ringkasan & peta */
   const kepalaProv = k => `<header class="kn-provh"><img class="kn-provh-lg" src="/lambang/provinsi/${k}.png" alt="Lambang ${esc(namaProv(k))}" width="44" height="44" onerror="this.src='/img/logo.svg?v=2'">
-    <div class="kn-provh-t"><span class="lbl">Provinsi</span><h2>${esc(namaProv(k))}</h2><small>Laporan Konsesi Terbakar 2026 · data s.d. ${tglT(IDX.sampai.slice(0, 10))}</small></div>
+    <div class="kn-provh-t"><span class="lbl">Provinsi</span><h2>${esc(namaProv(k))}</h2><small>Laporan Konsesi Terbakar 2026, data s.d. ${tglT(IDX.sampai.slice(0, 10))}</small></div>
     <button type="button" class="kn-mini kn-utama" data-pdf="${k}"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Unduh PDF ${esc(namaProv(k))}</button></header>`;
   function kpi(rs) {
     const T = jumlah(rs), t7 = rs.reduce((a, r) => a + r.titik_7h, 0), top = rs.reduce((a, r) => r.titik > a.titik ? r : a, rs[0]);
     const pj = Object.keys(JN).map(j => [j, rs.filter(r => r.jenis === j).length]).filter(([, n]) => n);
     const ubin = (ik, lbl, nilai, ket, cls = "") => `<div class="${cls}"><span class="kn-kpi-ik" aria-hidden="true">${IKON_KPI[ik]}</span><span class="kn-kpi-l">${lbl}</span><b>${nilai}</b><small>${ket}</small></div>`;
     return `<section class="kn-kpi">
-      ${ubin("konsesi", "Konsesi terbakar", fmt(rs.length), pj.map(([j, n]) => `${JN[j][0]} ${fmt(n)}`).join(" · "))}
+      ${ubin("konsesi", "Konsesi terbakar", fmt(rs.length), pj.map(([j, n]) => `${JN[j][0]} ${fmt(n)}`).join(", "))}
       ${ubin("titik", "Titik panas", fmt(T.t), `terbanyak di ${esc(top.nama)} (${fmt(top.titik)})`)}
       ${ubin("luas", "Indikasi luas terbakar", `${ha(T.l)}<em> ha</em>`, `${pct(T.k ? T.l / T.k : 0)} dari ${ha(T.k)} ha luas konsesi`)}
-      ${ubin("api", "Masih ada api", fmt(T.a), `konsesi · ${fmt(t7)} titik 7 hari terakhir`, "kn-kpi-a")}</section>`;
+      ${ubin("api", "Masih ada api", fmt(T.a), `konsesi, ${fmt(t7)} titik 7 hari terakhir`, "kn-kpi-a")}</section>`;
   }
   const batang = (v, mx, w = "#d9534f") => `<span class="kn-bt"><i style="width:${mx ? Math.max(2, v / mx * 100) : 0}%;background:${w}"></i></span>`;
   function tabelJenis(rs) {
@@ -297,7 +297,7 @@
   /* halaman pemisah tiap kab/kota di kertas cetak (model sampul ekspor KDMP Pangantara): logo, merek, provinsi, nama besar, kotak navy */
   function sampulKab(k, kb, rs) {
     const x = jumlah(rs), jn = Object.keys(JN).map(j => [j, rs.filter(r => r.jenis === j).length]).filter(([, n]) => n);
-    const kotak = [["Perusahaan", fmt(rs.length), jn.map(([j, n]) => `${JN[j][0]} ${n}`).join(" · ")], ["Titik panas 2026", fmt(x.t), `terbanyak ${rs[0].nama}`],
+    const kotak = [["Perusahaan", fmt(rs.length), jn.map(([j, n]) => `${JN[j][0]} ${n}`).join(", ")], ["Titik panas 2026", fmt(x.t), `terbanyak ${rs[0].nama}`],
       ["Indikasi terbakar", ha(x.l) + " ha", `dari ${ha(x.k)} ha konsesi`], ["Masih ada api", fmt(x.a) + " konsesi", "titik dalam 7 hari terakhir"]];
     return `<div class="kn-sampul"><img src="/img/logo.svg?v=2" alt="" width="64" height="64"><b class="kn-sp-m">CENTURISK97</b><span class="kn-sp-t">Laporan Konsesi Terbakar 2026</span>
       <span class="kn-sp-p">${esc(namaProv(k))}</span><h2 class="kn-sp-n">${esc(kb)}</h2><i class="kn-sp-g"></i>
@@ -431,7 +431,7 @@
   function render() {
     daftar = saring();
     const P = [...S.prov].map(namaProv);
-    $("#knJudul").textContent = "Laporan Konsesi Terbakar 2026" + (P.length === 1 ? " · " + P[0] : "");
+    $("#knJudul").textContent = "Laporan Konsesi Terbakar 2026" + (P.length === 1 ? ", " + P[0] : "");
     $("#knPils").innerHTML = `<span class="lp-pil">1 Jan – ${tglT(IDX.sampai.slice(0, 10))}</span><span class="lp-pil ok">Data s.d. ${esc(IDX.sampai.slice(11))}</span>${P.length > 1 ? `<span class="lp-pil">${fmt(P.length)} provinsi</span>` : ""}`;
     document.title = `Laporan Konsesi Terbakar 2026 ${P.length === 1 ? P[0] : ""}`.trim();
     if (!daftar.length) { $("#knIsi").innerHTML = `<div class="kosong">${S.prov.size ? "Tidak ada areal konsesi dengan hotspot untuk pilihan ini." : "Pilih minimal satu provinsi."}</div>`; return; }
@@ -510,7 +510,7 @@
     const blabel = Array.from({length: nb}, (_, i) => { const x0 = L + (Date.parse(`2026-${String(i + 1).padStart(2, "0")}-01`) - a) / 864e5 * bw, x1 = i + 1 < nb ? L + (Date.parse(`2026-${String(i + 2).padStart(2, "0")}-01`) - a) / 864e5 * bw : W - R, xm = (x0 + x1) / 2;
       return `<line x1="${x0}" x2="${x0}" y1="${T + ih}" y2="${T + ih + 5}" class="kn-ax"/><text x="${xm}" y="${T + ih + 19}" text-anchor="middle" class="kn-ml">${BLN[i]}</text>${nilaiB(xm, T + ih + 38, bul[i + 1], kjB(i + 1))}`; }).join("");
     const px = x(r.puncak[0]) + bw * .39, py = y(r.puncak[1]), kiri = px > W - 170;
-    const pk = `<circle cx="${px}" cy="${py - 4}" r="3" class="kn-pkc"/><text x="${kiri ? px - 8 : px + 8}" y="${py - 1}" text-anchor="${kiri ? "end" : "start"}" class="kn-pkt">Puncak ${tgl(r.puncak[0])} · ${fmt(r.puncak[1])} titik</text>`;
+    const pk = `<circle cx="${px}" cy="${py - 4}" r="3" class="kn-pkc"/><text x="${kiri ? px - 8 : px + 8}" y="${py - 1}" text-anchor="${kiri ? "end" : "start"}" class="kn-pkt">Puncak ${tgl(r.puncak[0])}, ${fmt(r.puncak[1])} titik</text>`;
     return `<svg class="kn-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas harian 2026, puncak ${tgl(r.puncak[0])}">${grid}<line x1="${L}" x2="${W - R}" y1="${T + ih}" y2="${T + ih}" class="kn-ax"/><g class="kn-br">${bar}</g>${pk}${blabel}</svg>
       <div class="kn-leg"><span><i class="kn-lg-t" style="background:#d9534f;border-radius:2px"></i>Titik panas per hari</span><span><i class="kn-lg-t" style="background:#8f1d14;border-radius:2px"></i>7 hari terakhir</span><span><i class="kn-lg-mt"></i>titik panas sebulan</span><span><i class="kn-lg-mk"></i>cluster (kejadian) yang menyala di bulan itu</span></div>`;
   }
@@ -547,7 +547,7 @@
   function kejadianTabel(r) {
     const b7 = new Date(Date.parse(IDX.sampai.slice(0, 10)) - 6 * 864e5).toISOString().slice(0, 10);
     const mxT = Math.max(...r.kejadian.map(e => e[3]));
-    const kj = `<section class="kn-sek"><div class="kn-band"><b>Kejadian kebakaran</b><span>${r.kejadian.length} kejadian · jeda ≤ ${IDX.jeda_kejadian} hari tanpa hotspot dihitung satu kejadian</span></div>
+    const kj = `<section class="kn-sek"><div class="kn-band"><b>Kejadian kebakaran</b><span>${r.kejadian.length} kejadian, jeda ≤ ${IDX.jeda_kejadian} hari tanpa hotspot dihitung satu kejadian</span></div>
       <div class="tw"><table class="kn-tb kn-kj"><thead><tr><th>No</th><th>Periode</th><th class="r">Lama</th><th class="r">Titik panas</th><th class="r" title="Daya api (FRP) tertinggi selama periode itu">FRP maks (MW)</th><th>Keparahan</th><th>Status</th></tr></thead><tbody>
       ${r.kejadian.map((e, j) => `<tr${e[3] === mxT ? ' class="kn-pk"' : ""}><td>${j + 1}</td><td class="kn-nw"><b>${rentang(e[0], e[1])}</b></td>
         <td class="r">${fmt(e[2])} hari</td><td class="r"><b>${fmt(e[3])}</b></td>${selFrpParah(r, e)}
@@ -595,7 +595,7 @@
     const bagian = [`Terbakar <b>${fmt(w.a)}</b> dari ${fmt(D.n)} tahun`,
       w.tr ? `tren <b>${w.tr}</b>${w.rt != null ? ` ${d1(w.rt)}×` : ""}` : "tren belum dinilai",
       w.el != null ? `El Niño <b>${d1(w.el)}×</b>` : "",
-      w.yd[1] ? `${th1} <b>${d1(w.yd[0] / w.yd[1])}×</b> rata-rata` : `${th1} <b>${fmt(w.yd[0])}</b> titik`].filter(Boolean).join(" · ");
+      w.yd[1] ? `${th1} <b>${d1(w.yd[0] / w.yd[1])}×</b> rata-rata` : `${th1} <b>${fmt(w.yd[0])}</b> titik`].filter(Boolean).join(", ");
     const bar = w.ym.map((v, i) => `<i style="height:${v ? Math.max(8, v / mx * 100) : 0}%" class="${D.thm0 + i === th1 ? "kn-rw-ini" : EL_RW.includes(D.thm0 + i) ? "kn-rw-el" : ""}" title="${D.thm0 + i}: ${fmt(v)} titik MODIS${D.thm0 + i === th1 ? " (belum lengkap)" : ""}"></i>`).join("");
     return `<div class="kn-rw"><span class="kn-rw-t">${bagian}</span><span class="kn-rw-b" aria-label="Titik panas MODIS per tahun ${D.thm0} sampai ${th1}">${bar}</span><small>MODIS ${D.thm0}–${th1}</small></div>`;
   }
@@ -627,10 +627,10 @@
             ["Grup usaha", r.grup ? `<span class="kn-isi"><span class="kn-gr">${logo(r.grup, 20)}<b>${esc(r.grup)}</b></span>${(r.negara || []).map(k => `<span class="kn-ngp">${bendera(k, 12)}${NEG[k] || k}</span>`).join("")}${r.induk ? `<span class="kn-ngp" title="Induk usaha (${esc(r.induk_nm)}) berkantor pusat di ${NEG[r.induk]}">${bendera(r.induk, 12)}induk di ${NEG[r.induk]}</span>` : ""}${r.grup_asal === "greenpeace" ? `<small title="Grup berasal dari laporan Greenpeace dan Pantau Gambut 2026">grup menurut Greenpeace</small>` : ""}</span>` : `<span class="kn-mt">Belum teridentifikasi</span>`],
             ...(r.unit ? [["Unit usaha", `<span class="kn-isi"><span class="kn-gr">${logo(r.unit, 20)}<b>${esc(r.unit)}</b></span><span class="kn-ngp kn-ngp-j">${JN[r.jenis][0]}</span></span>`]] : []),
             ...(ps.length ? [["Pemegang saham", ps.map(x => `<span class="kn-ps">${bendera(x.negara, 11)}${esc(x.nama)}</span>`).join("")]] : []),
-            ...((r.tokoh || []).length ? [["Tokoh terkait", r.tokoh.map(t => `<span class="kn-ps"><b>${esc(t.nama)}</b> · ${esc(t.peran)}<small>${esc(t.kaitan)}</small></span>`).join("")]] : []),
+            ...((r.tokoh || []).length ? [["Tokoh terkait", r.tokoh.map(t => `<span class="kn-ps"><b>${esc(t.nama)}</b>, ${esc(t.peran)}<small>${esc(t.kaitan)}</small></span>`).join("")]] : []),
             ...(r.rspo ? [["RSPO", `<b>Anggota</b> lewat ${esc(r.rspo.grup)}${r.rspo.sejak ? ` sejak ${esc(r.rspo.sejak)}` : ""}; unit ${r.rspo.sertifikat ? "<b>bersertifikat</b>" : "belum bersertifikat"} <small>data RSPO 2020 via GFW</small>`]]
               : r.jenis === "sawit" ? [["RSPO", `<span class="kn-mt">Tidak tercatat sebagai anggota (data RSPO 2020)</span>`]] : []),
-            ...((r.sanksi || []).length ? [["Sanksi karhutla", r.sanksi.map(x => `<span class="kn-ps"><b>${esc(SNK[x.jenis] || x.jenis)}</b>${x.tahun ? ` ${x.tahun}` : ""}${x.nilai ? ` · Rp${fmt(Math.round(x.nilai / 1e9))} miliar` : ""}${x.perkara ? ` · ${esc(x.perkara)}` : ""}<small>${esc(x.status)} · <a class="kn-ln" href="${esc(x.url)}" target="_blank" rel="noopener">sumber</a></small></span>`).join("")]] : []),
+            ...((r.sanksi || []).length ? [["Sanksi karhutla", r.sanksi.map(x => `<span class="kn-ps"><b>${esc(SNK[x.jenis] || x.jenis)}</b>${x.tahun ? ` ${x.tahun}` : ""}${x.nilai ? `, Rp${fmt(Math.round(x.nilai / 1e9))} miliar` : ""}${x.perkara ? `, ${esc(x.perkara)}` : ""}<small>${esc(x.status)}, <a class="kn-ln" href="${esc(x.url)}" target="_blank" rel="noopener">sumber</a></small></span>`).join("")]] : []),
             ["Luas konsesi", `<b>${ha(r.luas_ha)} ha</b>${tag("konsesi", "Blok", fmt(r.blok))}${tag("tgl", "Peta", r.tahun_data || "–")}`],
             ["Sumber peta", `<span class="kn-sb">${SB[r.jenis]?.[0] || "–"}</span> <small>${SB[r.jenis]?.[1] || ""}</small>`],
             ...(r.gp ? [["Greenpeace 2026", `${r.gp_titik != null ? `<b>${fmt(r.gp_titik)} titik sumber asap</b>${r.gp_hari != null ? `, ${fmt(r.gp_hari)} hari asap` : ""} <small>(8 Agu–1 Okt)</small>` : ""}${(r.gp_tabel || []).map(t => `<span class="kn-ngp">${esc(t)}</span>`).join(" ")}${r.gp_ket ? ` <small>${esc(r.gp_ket)}</small>` : ""}`]] : []),
@@ -645,17 +645,17 @@
             ["Kejadian terlama", `<b>${rentang(terlama[0], terlama[1])}</b>${tag("jam", "Durasi", fmt(terlama[2]) + " hari")}${tag("titik", "Titik", fmt(terlama[3]))}`],
             ["Lahan gambut", r.gambut_ha == null ? `<b>${pct(r.gambut)}</b>${tag("titik", "Porsi", "titik di gambut")}`
               : `<b>${ha(r.gambut_ha)} ha</b>${tag("luas", "Porsi konsesi", pct(r.luas_ha ? r.gambut_ha / r.luas_ha : null))}`],
-            ...(r.gambut_titik ? [["Api di gambut", `<b>${fmt(r.gambut_titik)} titik</b>${tag("titik", "Porsi titik", pct(r.gambut))}${tag("api", "Terbakar", `${ha(r.gambut_bakar_ha)} ha · ${pct(r.luas_bakar_ha ? r.gambut_bakar_ha / r.luas_bakar_ha : null)}`)}`]] : []),
+            ...(r.gambut_titik ? [["Api di gambut", `<b>${fmt(r.gambut_titik)} titik</b>${tag("titik", "Porsi titik", pct(r.gambut))}${tag("api", "Terbakar", `${ha(r.gambut_bakar_ha)} ha, ${pct(r.luas_bakar_ha ? r.gambut_bakar_ha / r.luas_bakar_ha : null)}`)}`]] : []),
             ["Status kawasan", esc(kw)],
             ["Daya api (FRP)", `${tag("daya", "Maks", fmt(r.frp_maks) + " MW")}${tag("daya", "Total", fmt(r.frp_total) + " MW")}`]])}
         </div>
         <div class="kn-kanan"><figure><div class="kn-img" data-k="0">${g ? `<img src="${g[0]}" alt="">` : `<span>Menggambar peta…</span>`}</div>
-          <figcaption class="kn-cap"><span class="kn-src">${S.dasar === "google" ? "Google Satelit" : S.dasar === "esri" ? "Citra Esri" : "OpenStreetMap"}</span><span>Batas konsesi · <b>${fmt(r.titik)}</b> titik panas 2026</span></figcaption></figure>${legenda()}</div>
+          <figcaption class="kn-cap"><span class="kn-src">${S.dasar === "google" ? "Google Satelit" : S.dasar === "esri" ? "Citra Esri" : "OpenStreetMap"}</span><span>Batas konsesi, <b>${fmt(r.titik)}</b> titik panas 2026</span></figcaption></figure>${legenda()}</div>
       </div>
-      <section class="kn-sek kn-pasang"><div class="kn-band"><b>Citra Sentinel-2 paling jelas: api &amp; bekas bakar</b><span>kiri citra dasar + titik 14 hari sebelumnya · kanan SWIR Sentinel-2 20 m</span></div>
-        <div class="kn-ps-grid">${pasangan(r).map(({d, n, c, jelas}, j) => `<div class="kn-ps-row"><div class="kn-ps-h"><b>${tglT(d)}${jelas ? ' <span class="kn-jl">Jelas</span>' : ""}</b><span>${API}${fmt(n)} titik${jelas ? " · 14 hari" : ""}</span></div>
+      <section class="kn-sek kn-pasang"><div class="kn-band"><b>Citra Sentinel-2 paling jelas: api &amp; bekas bakar</b><span>kiri citra dasar + titik 14 hari sebelumnya, kanan SWIR Sentinel-2 20 m</span></div>
+        <div class="kn-ps-grid">${pasangan(r).map(({d, n, c, jelas}, j) => `<div class="kn-ps-row"><div class="kn-ps-h"><b>${tglT(d)}${jelas ? ' <span class="kn-jl">Jelas</span>' : ""}</b><span>${API}${fmt(n)} titik${jelas ? ", 14 hari" : ""}</span></div>
           <figure><div class="kn-img" data-k="${1 + 2 * j}">${g ? `<img src="${g[1 + 2 * j]}" alt="">` : `<span>Menggambar…</span>`}</div><figcaption>${S.dasar === "google" ? "Google Satelit" : S.dasar === "esri" ? "Citra Esri" : "Peta jalan"} + titik ${jelas ? `s.d. ${tgl(d)}` : tgl(d)}</figcaption></figure>
-          <figure><div class="kn-img" data-k="${2 + 2 * j}">${g ? `<img src="${g[2 + 2 * j]}" alt="">` : `<span>Menggambar…</span>`}</div><figcaption>${c ? `SWIR ${esc(c.satelit)} ${tgl(c.tgl)} · awan ${c.awan}%${c.bakar_pct != null ? ` · lahan hangus ${fmt(c.bakar_pct)}%` : ""}` : "SWIR VIIRS (Sentinel-2 belum ada)"}</figcaption></figure></div>`).join("")}</div>
+          <figure><div class="kn-img" data-k="${2 + 2 * j}">${g ? `<img src="${g[2 + 2 * j]}" alt="">` : `<span>Menggambar…</span>`}</div><figcaption>${c ? `SWIR ${esc(c.satelit)} ${tgl(c.tgl)}, awan ${c.awan}%${c.bakar_pct != null ? `, lahan hangus ${fmt(c.bakar_pct)}%` : ""}` : "SWIR VIIRS (Sentinel-2 belum ada)"}</figcaption></figure></div>`).join("")}</div>
         ${LEG_SWIR}
       </section>
       ${harian(r)}
@@ -836,7 +836,7 @@
     return `<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>${xml(judul)}</name>
 <Style id="k"><LineStyle><color>ffffe500</color><width>2.5</width></LineStyle><PolyStyle><color>2effe500</color></PolyStyle></Style>
 <Style id="t"><IconStyle><color>ff00ccff</color><scale>.6</scale><Icon><href>http://maps.google.com/mapfiles/kml/shapes/shaded_dot.png</href></Icon></IconStyle></Style>
-${rs.map(r => `<Folder><name>${xml(r.nama)}</name><Placemark><name>${xml(r.nama)}</name><description>${xml(`${JN[r.jenis]?.[0]} · ${r.grup || "grup belum teridentifikasi"} · luas ${ha(r.luas_ha)} ha · ${fmt(r.titik)} titik panas 2026 · indikasi terbakar ${ha(r.luas_bakar_ha)} ha`)}</description><styleUrl>#k</styleUrl><MultiGeometry>${r.geom.map(pol).join("")}</MultiGeometry></Placemark>
+${rs.map(r => `<Folder><name>${xml(r.nama)}</name><Placemark><name>${xml(r.nama)}</name><description>${xml(`${JN[r.jenis]?.[0]}, ${r.grup || "grup belum teridentifikasi"}, luas ${ha(r.luas_ha)} ha, ${fmt(r.titik)} titik panas 2026, indikasi terbakar ${ha(r.luas_bakar_ha)} ha`)}</description><styleUrl>#k</styleUrl><MultiGeometry>${r.geom.map(pol).join("")}</MultiGeometry></Placemark>
 <Folder><name>Titik panas (${r.titik})</name>${r.pt.map(p => `<Placemark><TimeStamp><when>2026-${p[2].slice(0, 5)}T${p[2].slice(6)}:00+07:00</when></TimeStamp><description>${p[2]} WIB, ${p[3]} MW</description><styleUrl>#t</styleUrl><Point><coordinates>${p[1]},${p[0]},0</coordinates></Point></Placemark>`).join("")}</Folder></Folder>`).join("\n")}
 </Document></kml>`;
   }
@@ -904,7 +904,7 @@ ${rs.map(r => `<Folder><name>${xml(r.nama)}</name><Placemark><name>${xml(r.nama)
     const wil = k ? namaProv(k) : [...S.prov].length === 1 ? namaProv([...S.prov][0]) : "";
     const kiri = `<svg xmlns="http://www.w3.org/2000/svg" width="380" height="26" viewBox="0 0 380 26">${LOGO_SVG.replace("<svg ", '<svg x="0" y="1" width="24" height="24" ')}`
       + `<g font-family="Inter,system-ui,sans-serif" fill="#0b2545"><text x="31" y="11" font-size="10.5" font-weight="800">Centurisk97</text>`
-      + `<text x="31" y="22" font-size="8" font-weight="700">Laporan Konsesi Terbakar 2026${wil ? ` · <tspan fill="#c9503a">${xe(wil)}</tspan>` : ""}</text></g></svg>`;
+      + `<text x="31" y="22" font-size="8" font-weight="700">Laporan Konsesi Terbakar 2026${wil ? `, <tspan fill="#c9503a">${xe(wil)}</tspan>` : ""}</text></g></svg>`;
     const cetakTgl = tglT(new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10)), pil = `Data s.d. ${tglT(IDX.sampai.slice(0, 10))} ${IDX.sampai.slice(11)}`, lw = pil.length * 4.3 + 12;
     const kanan = `<svg xmlns="http://www.w3.org/2000/svg" width="380" height="26" viewBox="0 0 380 26"><g font-family="Inter,system-ui,sans-serif">`
       + `<text x="380" y="9" font-size="8.5" font-weight="800" fill="#0b2545" text-anchor="end">Dicetak ${xe(cetakTgl)}</text>`

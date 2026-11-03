@@ -41,7 +41,7 @@ const Laporan = (() => {
   const sumberNama = D => esc((D.sumber || []).map(s => s.nama).filter(Boolean).join(", ") || "data bencana");
   const kartu = (ey, judul, isi, D, ctl = "") => Kartu.kartu(ey, judul, isi, sumberNama(D), ctl);
   const kosong = t => `<div class="kosong">${esc(t)}</div>`;
-  const dgn = c => c.wil ? " · " + esc(c.wil) : "";
+  const dgn = c => c.wil ? ", " + esc(c.wil) : "";
 
   /* ---- tabel yang bisa diurut (Per provinsi, Per kab/kota) ---- */
   const barisData = (c, o) => { const v = {}; c.ms.forEach(m => { v[m.k] = A(o, m.k, c.n)[c.i]; });
@@ -78,7 +78,7 @@ const Laporan = (() => {
     let s = `<defs><pattern id="lpHatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#d2772c" fill-opacity=".25"/><line x1="0" y1="0" x2="0" y2="6" stroke="#d2772c" stroke-width="3"/></pattern></defs>`;
     for (let k = 0; k <= 4; k++) { const x = top * k / 4, y = ya(x); s += `<line class="lp-gl" x1="${pl}" x2="${W - pr}" y1="${y}" y2="${y}"/><text class="lp-gp" x="${pl - 6}" y="${y + 4}" text-anchor="end" font-size="11">${angka(x, td)}</text>`; }
     for (let j = dari; j < c.n; j++) { const h = D.hari[j], x = pl + (j - dari) * slot, val = v[j], brj = c.brj(h), on = h === S.hari;
-      const tip = `<b>${esc(tgl(h, 1))}</b>${brj ? " · berjalan" : ""}<br>${esc(u.label)}: ${esc(ada(val) ? angka(val, d) + " " + (u.satuan || "") : "tidak ada data")}`;
+      const tip = `<b>${esc(tgl(h, 1))}</b>${brj ? " (berjalan)" : ""}<br>${esc(u.label)}: ${esc(ada(val) ? angka(val, d) + " " + (u.satuan || "") : "tidak ada data")}`;
       const y = ada(val) ? ya(val) : H - pb;
       s += `<g data-tip="${esc(tip)}"><rect x="${x}" y="${pt}" width="${slot}" height="${H - pt - pb}" fill="transparent"/>`
         + (ada(val) ? `<rect class="lp-bar${on ? " on" : ""}${brj ? " lp-sm" : ""}" x="${x + (slot - bw) / 2}" y="${y}" width="${bw}" height="${Math.max(0, H - pb - y)}" rx="2"/>` : "")
@@ -118,7 +118,7 @@ const Laporan = (() => {
       return kartu("Prakiraan", esc(P.judul || "Prakiraan"), isi, c.D); },
     prov(c) {
       const tf = c.S.prov ? "" : (r => `<tfoot>${sel(c, r)}</tfoot>`)({nama: "Nasional", ...barisData(c, c.D.nasional)});
-      return kartu("Per provinsi", `Per provinsi, ${esc(tgl(c.S.hari))}${c.S.prov ? " · " + esc(c.wil) : ""}`, tabelUrut(c, "prov", "Provinsi", tf), c.D); },
+      return kartu("Per provinsi", `Per provinsi, ${esc(tgl(c.S.hari))}${c.S.prov ? ", " + esc(c.wil) : ""}`, tabelUrut(c, "prov", "Provinsi", tf), c.D); },
     naik(c) {
       const {u, i, n} = c, d = u.desimal | 0, k = c.D.kab || [];
       const l = i < 1 ? [] : k.filter(o => !c.S.prov || o.prov === c.S.prov).map(o => { const s = A(o, u.k, n); return {o, a: s[i], b: s[i - 1]}; })
@@ -126,7 +126,7 @@ const Laporan = (() => {
       const isi = l.length ? `<div class="tw"><table class="lp-tb"><thead><tr><th class="n">#</th><th>Kab/kota</th><th>Provinsi</th><th class="n">Kemarin</th><th class="n">Hari ini</th><th class="n">Naik</th></tr></thead><tbody>${l.map((x, j) =>
         `<tr><td class="n">${j + 1}</td><td>${esc(x.o.nama)}</td><td>${esc(nama(c.D, x.o.prov))}</td><td class="n">${angka(x.b, d)}</td><td class="n">${angka(x.a, d)}</td><td class="n"><span class="naik">▲ ${angka(x.a - x.b, d)}</span></td></tr>`).join("")}</tbody></table></div>` : kosong("Tidak ada kab/kota yang naik dibanding kemarin.");
       return kartu("Kenaikan terbesar", l.length ? `Kenaikan terbesar ${esc(u.label)} per kab/kota${dgn(c)}` : "Tidak ada kab/kota yang naik dibanding kemarin", isi, c.D); },
-    kab: c => kartu("Per kab/kota", `Per kab/kota, ${esc(tgl(c.S.hari))}${c.S.prov ? " · " + esc(c.wil) : ""}`, tabelUrut(c, "kab", "Kab/kota"), c.D),
+    kab: c => kartu("Per kab/kota", `Per kab/kota, ${esc(tgl(c.S.hari))}${c.S.prov ? ", " + esc(c.wil) : ""}`, tabelUrut(c, "kab", "Kab/kota"), c.D),
     tambahan: c => (c.D.tambahan || []).map(t => { const nm = x => typeof x === "number" ? angka(x, Number.isInteger(x) ? 0 : 1) : x == null ? "–" : esc(x);
       return kartu("Tambahan", esc(t.judul), `<div class="tw"><table class="lp-tb"><thead><tr>${(t.kolom || []).map((k, j) => `<th${(t.baris || []).some(r => typeof r[j] === "number") ? ' class="n"' : ""}>${esc(k)}</th>`).join("")}</tr></thead><tbody>${(t.baris || []).map(r =>
         `<tr>${r.map(x => `<td${typeof x === "number" ? ' class="n"' : ""}>${nm(x)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${t.catatan ? `<p class="lp-cat">${esc(t.catatan)}</p>` : ""}`, c.D); }).join(""),
@@ -156,7 +156,7 @@ const Laporan = (() => {
       catch (e) { host.innerHTML = '<div class="kosong" role="alert">Laporan belum bisa dimuat. Coba lagi nanti.</div>'; return; }
       const gal = cek(D); if (gal) { host.innerHTML = `<div class="kosong" role="alert">${esc(gal)}</div>`; return; }
       const S = awal(D, location.search);
-      document.title = D.judul + " · Centurisk97";
+      document.title = D.judul + ", Centurisk97";
       const upd = document.getElementById("upd"); if (upd) upd.textContent = "Data s.d. " + wkt(D.cutoff);
       host.innerHTML = `<div id="insight" class="lp">${URUT.map(k => `<div data-ex="${k}"></div>`).join("")}</div>`;
       const isi = k => { const e = host.querySelector(`[data-ex="${k}"]`); e.innerHTML = bagian(D, S, k);

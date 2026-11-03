@@ -64,7 +64,7 @@ function htmlAnalisis(c, t) {
   const H = c.H, W = H.W, L = luasH(c), tot = L.kum.reduce((s, a) => s + a[t], 0), nama = f => f ? sing(BAHAN[FUEL[f - 1]]?.n) : "Lain", warna = f => f ? BAHAN[FUEL[f - 1]]?.warna : "#8a96aa";
   const baris = L.kum.map((a, f) => ({f, ha: a[t], t0: L.t0[f]})).filter(x => x.ha > 0).sort((a, b) => b.ha - a.ha);
   const bar = baris.map(x => { const pr = tot > 0 ? x.ha / tot * 100 : 0, laju = x.ha / Math.max(1, t - Math.ceil(x.t0)); /* ha/jam rata-rata sejak sel bahan itu pertama tersulut */
-    return `<div class="sp-r"><span class="sp-rn">${esc(nama(x.f))}</span><b>${nf(bulat(x.ha))} ha · ${nf(Math.round(pr))}%</b><i class="sp-bar"><u style="width:${pr.toFixed(1)}%;background:${warna(x.f)}"></u></i><small>${t > 0 ? `${nf(laju < 10 ? Math.round(laju * 10) / 10 : Math.round(laju), 1)} ha/jam` : "belum menyebar"}</small></div>`; }).join("");
+    return `<div class="sp-r"><span class="sp-rn">${esc(nama(x.f))}</span><b>${nf(bulat(x.ha))} ha, ${nf(Math.round(pr))}%</b><i class="sp-bar"><u style="width:${pr.toFixed(1)}%;background:${warna(x.f)}"></u></i><small>${t > 0 ? `${nf(laju < 10 ? Math.round(laju * 10) / 10 : Math.round(laju), 1)} ha/jam` : "belum menyebar"}</small></div>`; }).join("");
   /* keselarasan dengan angin */
   const pts = SimFT.jalur(H), p0 = pts?.[0], pk = pts && posJalur(pts, t), am = anginMenuju(W, Math.min(72, t));
   let sel = "";
@@ -103,14 +103,14 @@ function itemBukti(c, hs) {
   if (hs) { const a = +hs.acuan, dekat = [];
     for (const r of hs.rows) { const d = km(p.lat, p.lon, r[0], r[1]); if (d <= RADIUS_TITIK_KM) dekat.push({ms: a + r[2] * 36e5, d, s: r[3], lat: r[0], lon: r[1]}); }
     dekat.sort((x, y) => x.ms - y.ms); const tampil = dekat.slice(-MAKS_PER_JENIS);
-    for (const x of tampil) out.push({ms: x.ms, h: jamKe(x.ms), ik: "sat", jd: `Titik panas · ${nf(x.d, 1)} km`, sm: `${BANTU[x.s] || esc(x.s)} (FIRMS)`, lat: x.lat, lon: x.lon});
+    for (const x of tampil) out.push({ms: x.ms, h: jamKe(x.ms), ik: "sat", jd: `Titik panas, ${nf(x.d, 1)} km`, sm: `${BANTU[x.s] || esc(x.s)} (FIRMS)`, lat: x.lat, lon: x.lon});
     if (dekat.length > tampil.length) out.push({ms: tampil[0].ms - 1, h: 0, ik: "sat", jd: `${nf(dekat.length - tampil.length)} titik panas lebih lama`, sm: `dalam ${RADIUS_TITIK_KM} km`, lat: p.lat, lon: p.lon}); }
   const inti = window.SimArmada?.inti; if (inti?.deteksi) aman(() => { const det = inti.deteksi(K, H);
-    for (const x of det.slice(0, MAKS_PER_JENIS)) out.push({ms: mulai + x.h * 36e5, h: x.h, ik: "drone", jd: `Deteksi drone · ${nf(Math.round(x.suhu))} °C`, sm: `${inti.DR[x.i].kode} (simulasi)`, lat: x.lat, lon: x.lon}); });
+    for (const x of det.slice(0, MAKS_PER_JENIS)) out.push({ms: mulai + x.h * 36e5, h: x.h, ik: "drone", jd: `Deteksi drone, ${nf(Math.round(x.suhu))} °C`, sm: `${inti.DR[x.i].kode} (simulasi)`, lat: x.lat, lon: x.lon}); });
   const cuaca = /^Open-Meteo/.test(Sim.cuaca.sumber || "") ? "Open-Meteo" : Sim.cuaca.sumber || "Open-Meteo";
   for (let h = 0; h <= 72; h += 6) { let hj = 0; for (let q = Math.max(0, h - 5); q <= h; q++) hj += W.hujan[q];
-    out.push({ms: mulai + h * 36e5, h, ik: "cuaca", jd: `Angin ${nf(Math.round(W.ws[h]))} km/j · RH ${nf(Math.round(W.rh[h]))}%`, sm: `${cuaca} · hujan 6 j ${hj >= .1 ? nf(Math.round(hj * 10) / 10, 1) + " mm" : "0 mm"}`, lat: p.lat, lon: p.lon}); }
-  for (const d of H.desa) out.push({ms: mulai + d.eta * 36e5, h: Math.min(72, Math.ceil(d.eta)), ik: "desa", jd: `${esc(d.nama)} tercapai api`, sm: `model sebaran · ± ${nf(Math.round(d.km * 10) / 10, 1)} km`, lat: d.lat, lon: d.lon});
+    out.push({ms: mulai + h * 36e5, h, ik: "cuaca", jd: `Angin ${nf(Math.round(W.ws[h]))} km/j, RH ${nf(Math.round(W.rh[h]))}%`, sm: `${cuaca}, hujan 6 j ${hj >= .1 ? nf(Math.round(hj * 10) / 10, 1) + " mm" : "0 mm"}`, lat: p.lat, lon: p.lon}); }
+  for (const d of H.desa) out.push({ms: mulai + d.eta * 36e5, h: Math.min(72, Math.ceil(d.eta)), ik: "desa", jd: `${esc(d.nama)} tercapai api`, sm: `model sebaran, ± ${nf(Math.round(d.km * 10) / 10, 1)} km`, lat: d.lat, lon: d.lon});
   if (Sim.k !== "titik") { const n = Number.isFinite(p.n) ? p.n : p.api24?.length; if (n > 0) out.push({ms: mulai, h: 0, ik: "api", jd: `${nf(n)} titik panas 24 jam`, sm: `cluster ${esc(p.kec || p.id)} (FIRMS)`, lat: p.lat, lon: p.lon}); }
   return out.sort((a, b) => a.ms - b.ms || a.h - b.h);
 }
@@ -134,7 +134,7 @@ function htmlCatatan(c, t) {
   return `<section class="s3-sec"><h3>${ik(IK.catatan)}Catatan <small>${nf(a.length)} tersimpan di peramban ini</small></h3>
     <textarea class="sp-ta" id="spTa" rows="3" maxlength="500" placeholder="Tulis catatan insiden ini" aria-label="Catatan insiden"></textarea>
     <div class="sp-aksi"><button type="button" class="sp-btn" data-aksi="tandai">${ik(IK.jam, 12)}Tandai jam ini</button><button type="button" class="sp-btn sp-pr" data-aksi="simpan">Simpan</button></div>
-    <div class="sp-cl">${a.map(n => `<div class="sp-cn"><p>${esc(n.teks)}</p><small>${jamW(n.ts)} · simulasi +${nf(n.jam)} j</small><button type="button" class="sp-x" data-hapus="${esc(n.id)}" aria-label="Hapus catatan">${ik(IK.hapus, 13)}</button></div>`).join("") || `<p class="sp-nol">Belum ada catatan.</p>`}</div></section>`;
+    <div class="sp-cl">${a.map(n => `<div class="sp-cn"><p>${esc(n.teks)}</p><small>${jamW(n.ts)}, simulasi +${nf(n.jam)} j</small><button type="button" class="sp-x" data-hapus="${esc(n.id)}" aria-label="Hapus catatan">${ik(IK.hapus, 13)}</button></div>`).join("") || `<p class="sp-nol">Belum ada catatan.</p>`}</div></section>`;
 }
 function aksiCatatan(a) {
   const ta = $1("spTa"), k = kunciCat(); if (!k) return;

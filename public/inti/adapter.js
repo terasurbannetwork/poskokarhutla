@@ -17,7 +17,7 @@ export const ADAPTOR = {
   async banjir(b) {
     const d = await ambil("/banjir/data/kejadian_aktif_awal.json"), k = d.kejadian || [], prov = new Set(k.flatMap(x => x.prov || []));
     const jiwa = k.reduce((a, x) => a + (x.penduduk || 0), 0);
-    return {titik: k.filter(x => x.pusat).map(x => [x.pusat[1], x.pusat[0], 9 + Math.min(8, x.n_kec), `${x.kode} · ${x.n_kec} kecamatan`]),
+    return {titik: k.filter(x => x.pusat).map(x => [x.pusat[1], x.pusat[0], 9 + Math.min(8, x.n_kec), `${x.kode}, ${x.n_kec} kecamatan`]),
       judul: k.length ? `${hl(k.length)} kejadian banjir aktif di ${hl(prov.size)} provinsi` : "Tidak ada kecamatan berstatus Siaga atau Awas hari ini",
       pil: [...(k.length ? [[`${fmt(k.length)} kejadian aktif`, b.warna]] : []), ...(jiwa ? [[`${rb(jiwa)} jiwa di kecamatan terdampak`, "#e58a45"]] : []), ...(d.dibuat ? [dataPil(d.dibuat)] : [])],
       sumber: b.bagikan?.sumber || "Open-Meteo, Copernicus GloFAS, BNPB", legenda: [[b.warna, "Kejadian banjir aktif"]]};
@@ -25,7 +25,7 @@ export const ADAPTOR = {
   async gempa(b) {
     const d = await ambil("/api/gempa/terbaru?jam=24"), g = d.gempa || [], kuat = g.reduce((a, x) => !a || x.m > a.m ? x : a, null), m5 = g.filter(x => x.m >= 5).length;
     const wil = t => String(t || "").replace(/^Pusat gempa berada di\s*/i, "").trim() || "Perairan Indonesia";   /* sama dengan wilayahPendek di public/gempa/kata.js */
-    return {titik: g.map(x => [x.lon, x.lat, 3 + Math.max(0, x.m - 3) * 2.5, `M ${fmt(x.m)} · ${wil(x.wilayah)}`]),
+    return {titik: g.map(x => [x.lon, x.lat, 3 + Math.max(0, x.m - 3) * 2.5, `M ${fmt(x.m)}, ${wil(x.wilayah)}`]),
       judul: kuat ? `${hl(g.length)} gempa tercatat dalam 24 jam, terkuat M ${Kartu.hl(fmt(kuat.m))} di <span translate="no">${esc(wil(kuat.wilayah))}</span>` : "Tidak ada gempa tercatat dalam 24 jam terakhir",
       pil: [...(g.length ? [[`${fmt(g.length)} gempa`, b.warna]] : []), ...(m5 ? [[`${fmt(m5)} gempa M 5 atau lebih`, "#c9503a"]] : []), ...(d.dibuat ? [dataPil(d.dibuat)] : [])],
       sumber: b.bagikan?.sumber || "BMKG, USGS", legenda: [[b.warna, "Gempa 24 jam (ukuran = magnitudo)"]]};
@@ -35,7 +35,7 @@ export const ADAPTOR = {
     if (!G.length) return null;
     const n = {1: 0, 2: 0, 3: 0, 4: 0}; G.forEach(g => n[g.level]++);   /* hitungan dari daftar, sama dengan halaman gunung api */
     const sa = n[3] + n[4], LV = {2: "II Waspada", 3: "III Siaga", 4: "IV Awas"};
-    return {titik: G.filter(g => g.level >= 2).map(g => [g.lon, g.lat, 4 + g.level * 2, `${g.nama} · Level ${LV[g.level]}`]),
+    return {titik: G.filter(g => g.level >= 2).map(g => [g.lon, g.lat, 4 + g.level * 2, `${g.nama}, Level ${LV[g.level]}`]),
       judul: sa ? `${Kartu.hl(fmt(sa) + " gunung")} berstatus Siaga atau Awas hari ini, ${fmt(n[2])} lainnya Waspada` : `Tidak ada gunung berstatus Siaga atau Awas hari ini; ${Kartu.hl(fmt(n[2]) + " gunung")} Waspada`,
       pil: [...(sa ? [[`${fmt(sa)} Siaga atau Awas`, "#e8743b"]] : []), [`${fmt(n[2])} Waspada`, "#e0b400"], ...(d.dibuat ? [dataPil(d.dibuat)] : [])],
       sumber: b.bagikan?.sumber || "PVMBG (MAGMA Indonesia)", legenda: [[b.warna, "Gunung berstatus Waspada atau lebih (ukuran = level)"]]};

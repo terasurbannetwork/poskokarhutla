@@ -154,7 +154,7 @@ const Keputusan = {
     const statT = v => { const a = ys.map(y => y[v]); return [a.reduce((x, y) => x + y, 0) / Math.max(1, a.length), persentil(a, .5), persentil(a, .9), Math.max(...a)]; };
     const terburuk = v => { const y = ys.reduce((b, y) => y[v] > b[v] ? y : b, ys[0]); return y ? y.th : "–"; };
     const nyawaTeks = {nol: "tidak diberi nilai uang", rendah: `Rp${ff(pr.nilai_nyawa_statistik[1] / 1e9)} M per jiwa (transfer Bank Dunia)`, tengah: `Rp${ff(pr.nilai_nyawa_statistik[0] / 1e9)} M per jiwa (Viscusi & Masterman, diskalakan)`, tinggi: `Rp${ff(pr.nilai_nyawa_statistik[2] / 1e9)} M per jiwa (studi hedonik)`}[this.nyawa];
-    el.innerHTML = `<div class="head"><div><h2>Keputusan musim banjir · ${esc(P.nama)}</h2><p>Bandingkan empat paket kesiapsiagaan untuk satu musim hujan. Dampak dasar dari riwayat BNPB, uang dari parameter bersumber, ketidakpastian dari ${fmt(this.n)} simulasi.</p></div>
+    el.innerHTML = `<div class="head"><div><h2>Keputusan musim banjir, ${esc(P.nama)}</h2><p>Bandingkan empat paket kesiapsiagaan untuk satu musim hujan. Dampak dasar dari riwayat BNPB, uang dari parameter bersumber, ketidakpastian dari ${fmt(this.n)} simulasi.</p></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><select id="kbProv" class="btn sec" aria-label="Provinsi">${provs.map(k => `<option value="${k}" ${k === kode ? "selected" : ""}>${esc(namaProv(k))}</option>`).join("")}</select>
       <div class="seg" id="kbTahun">${[["harapan", "Tahun rata-rata"], ["biasa", "Tahun biasa"], ["berat", "Tahun berat"], ["2025", "Kilas balik 2025"]].map(([v, n]) => `<button data-v="${v}" aria-pressed="${this.tahun === v}">${n}</button>`).join("")}</div></div></div>
     ${!P.prior.length ? `<div class="card pad kosong">Belum ada kejadian banjir tercatat per kabupaten untuk provinsi ini.</div>` : `
@@ -174,7 +174,7 @@ const Keputusan = {
         <li><b>Efek pompa & drainase</b> (opsi C) dan <b>efek SAR siaga</b> (opsi D) belum pernah diukur; manfaat tanggul tidak dihitung sama sekali.</li>
         <li>Harga sirene + AWLR dan pompa mobile masih estimasi. Kerugian isi rumah, usaha, infrastruktur, dan longsor tidak dihitung, jadi manfaat cenderung terlalu rendah.</li></ul></div>
     <div class="grid g4" style="margin-bottom:14px">${[["Meninggal per tahun", fmt(Math.round(M * 10) / 10), `median ${fmt(statT("mB")[1] + statT("mD")[1])}, terburuk ${terburuk("mB")}`],
-      ["Mengungsi per tahun", rb(Y.u), `P90 ${rb(statT("u")[2])} · ${fmt(Math.round(P.uPerK))} per kejadian`], ["Rumah rusak per tahun", rb(Y.r), `P90 ${rb(statT("r")[2])}`],
+      ["Mengungsi per tahun", rb(Y.u), `P90 ${rb(statT("u")[2])}, ${fmt(Math.round(P.uPerK))} per kejadian`], ["Rumah rusak per tahun", rb(Y.r), `P90 ${rb(statT("r")[2])}`],
       ["Cakupan kabupaten prioritas", Math.round(P.cakupan * 100) + "%", `kejadian 2008–${this.AKHIR} di ${P.prior.length} dari ${P.kab.length} kabupaten`]].map(([l, v, s]) => kot(l, v, s)).join("")}</div>
     <div class="grid g2" style="margin-bottom:14px">
       <div class="card pad"><h3 style="font-size:15px">Dampak dasar per tahun (A, tanpa tambahan)</h3>
@@ -188,7 +188,7 @@ const Keputusan = {
         <p class="fnd" style="margin-top:8px">Banjir + bandang + rob, BNPB/DIBI. DIBI mencatat per kabupaten, jadi satu banjir lintas kabupaten bisa terhitung lebih dari sekali; pencatatan makin lengkap di tahun-tahun akhir.</p></div>
       <div class="card pad"><h3 style="font-size:15px">Kabupaten prioritas</h3>
         <table class="tb3" style="margin-top:6px"><thead><tr><th>Kabupaten/kota</th><th class="n">Kejadian 2008–${this.AKHIR}</th><th>Paket</th></tr></thead><tbody>
-        ${[...new Set([...P.prior, ...P.sasaran])].map(x => `<tr><td>${esc(x.nama)}</td><td class="n num">${fmt(x.n)}${x.rob ? `<small>${fmt(x.rob)} rob</small>` : ""}</td><td>${[P.prior.includes(x) && "B, D", P.sasaran.includes(x) && "C"].filter(Boolean).join(" · ")}</td></tr>`).join("")}</tbody></table>
+        ${[...new Set([...P.prior, ...P.sasaran])].map(x => `<tr><td>${esc(x.nama)}</td><td class="n num">${fmt(x.n)}${x.rob ? `<small>${fmt(x.rob)} rob</small>` : ""}</td><td>${[P.prior.includes(x) && "B, D", P.sasaran.includes(x) && "C"].filter(Boolean).join(", ")}</td></tr>`).join("")}</tbody></table>
         <p class="fnd" style="margin-top:8px">B dan D di ${P.prior.length} kabupaten dengan kejadian terbanyak (${Math.round(P.cakupan * 100)}% kejadian). C di kota atau kabupaten berriwayat rob (${Math.round(P.cakupanC * 100)}% kejadian).</p></div></div>
     <div class="tw" style="margin-bottom:8px"><table><thead><tr><th>Pilihan</th><th class="n">Biaya tambahan</th><th class="n">Nyawa diselamatkan</th><th class="n">Rumah terhindar</th><th class="n">Manfaat uang</th><th class="n">Nilai nyawa</th><th class="n">Manfaat bersih</th><th class="n">Rentang 80%</th><th class="n">Peluang positif</th><th class="n">Peringkat 1 (multikriteria)</th><th>Bukti</th></tr></thead><tbody>
       ${OPSI_B.map((o, j) => { const x = tengah[j]; return `<tr${j === terbaik ? ' style="background:oklch(42% .11 255 / .08)"' : ""}><td style="white-space:normal;min-width:220px"><b>${o[0]}</b> ${esc(o[1])}<br><small style="color:var(--ink2)">${esc(o[2])}</small></td>
@@ -236,7 +236,7 @@ const Keputusan = {
     <div class="head"><div><h2>Asumsi dan sumber</h2><p>Bertanda asumsi atau lemah: belum ada bukti terukur di Indonesia. Bertanda kebijakan: angka pilihan, bukan hasil ukur.</p></div></div>
     <div class="tw"><table><thead><tr><th>Parameter</th><th class="n">Tengah</th><th class="n">Rendah</th><th class="n">Tinggi</th><th>Satuan</th><th>Sumber</th></tr></thead><tbody>
       ${PAKAI_B.map(k => [k, prm(k)]).map(([k, v]) => `<tr><td>${NM_B[k] || k}${badge(k)}</td>
-        ${v.slice(0, 3).map(x => `<td class="n num">${x >= 1e5 ? rp(x) : fmt(x)}</td>`).join("")}<td style="white-space:normal;min-width:140px">${esc(v[3])}</td><td style="white-space:normal;min-width:260px">${tautan(v[4])}${v[5] ? ` · <span style="color:var(--ink2)">${esc(v[5])}</span>` : ""}</td></tr>`).join("")}
+        ${v.slice(0, 3).map(x => `<td class="n num">${x >= 1e5 ? rp(x) : fmt(x)}</td>`).join("")}<td style="white-space:normal;min-width:140px">${esc(v[3])}</td><td style="white-space:normal;min-width:260px">${tautan(v[4])}${v[5] ? `, <span style="color:var(--ink2)">${esc(v[5])}</span>` : ""}</td></tr>`).join("")}
       <tr><td>Desain paket</td><td colspan="5" style="white-space:normal">${DESAIN_B.posko} petugas posko, ${DESAIN_B.sar} petugas SAR, ${DESAIN_B.setSar} set perahu per kabupaten; ${DESAIN_B.pompa} pompa mobile per kota; stok ${DESAIN_B.hariStok} hari. Harga sarana dari param_banjir.json (Perka BNPB 10/2008 dan 17/2009, harga pasar; sebagian estimasi).</td></tr></tbody></table></div>`}`;
     $("#kbProv").onchange = e => { this.prov = e.target.value; this.pagu = null; nanti(() => this.render()); };
     $("#kbTahun").onclick = e => { const b = e.target.closest("button"); if (!b) return; this.tahun = b.dataset.v; $("#kbTahun").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => this.render()); };
