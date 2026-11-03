@@ -42,7 +42,8 @@ uji("T1: /admin/instansi untuk staf berperan memakai kerangka staf; peran lain k
   const omc = await api("GET", "/admin/omc", undefined, tmc); assert.equal(omc.s, 200); assert.match(omc.t, /data-masuk="1"/);
   /* halaman Ruang Koordinasi lain: staf tanpa peran yang cocok ke Meja Pantau, anonim ke login admin (bukan kerangka kosong) */
   for (const [j, boleh, tolak] of [["/admin/omc", tmc, ver], ["/admin/inventaris", ver, tmc]]) { assert.equal((await api("GET", j, undefined, boleh)).s, 200, j); const sal = await man(j, tolak); assert.equal(sal.s, 303, j); assert.equal(sal.h.get("location"), "/admin/pantau", j + " peran tak cocok"); const an2 = await man(j); assert.equal(an2.s, 303, j); assert.match(an2.h.get("location"), /\/admin\/masuk/, j + " anonim"); }
-  assert.equal((await man("/admin/laporan-karhutla", tmc)).s, 200, "laporan karhutla: semua staf"); assert.equal((await man("/admin/laporan-karhutla")).s, 303); assert.equal((await api("GET", "/admin/pantau")).s, 200, "Meja Pantau tetap memuat layar masuk staf");
+  assert.equal((await man("/admin/laporan-karhutla", tmc)).s, 200, "laporan karhutla: semua staf"); assert.equal((await man("/admin/laporan-karhutla")).s, 303); const pt = await man("/admin/pantau"); assert.equal(pt.s, 303, "Meja Pantau: tamu ke satu pintu masuk"); assert.equal(pt.h.get("location"), "/admin/masuk?ke=%2Fadmin%2Fpantau");
+  assert.equal((await man("/admin/omc?x=1")).h.get("location"), "/admin/masuk?ke=%2Fadmin%2Fomc%3Fx%3D1", "tamu kembali ke halaman asal sesudah masuk");
 });
 uji("Ruang Laporan: /admin/laporan memuat sidebar + iframe; halaman terbingkai boleh dibingkai sesama asal saja", async () => {
   const tmc = await bikin(["tmc"]), man = async (j, h = {}) => { const r = await U.mf.dispatchFetch("http://bnpb.lokal" + j, {headers: h, redirect: "manual"}); await r.text(); return {s: r.status, csp: r.headers.get("content-security-policy") || "", h: r.headers}; };

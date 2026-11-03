@@ -136,7 +136,7 @@ else {
     await tab.tutup();
   });
 
-  /* masuk lewat form staf (/admin/pantau): operator_cc SAJA ke peta utama "/", ?ke= yang sah menang, peran lain tetap di Meja Pantau */
+  /* masuk lewat satu pintu /admin/masuk: operator_cc SAJA ke peta utama "/", ?ke= yang sah menang, peran lain tetap di Meja Pantau */
   const stafLogin = async (nama, peran) => {
     const i = ++n, id = "6" + i.toString(16).padStart(3, "0") + "f".repeat(12), garam = "h".repeat(32), sandi = "sandi-uji-" + i;
     await DB.prepare("INSERT INTO staf (id, username, nama, nip, unit, email, wa, peran, wilayah, garam, sandi_sha, wajib_ganti, dibuat, dibuat_oleh, dummy) VALUES (?, ?, ?, ?, 'Unit Uji', ?, ?, ?, '[]', ?, ?, 0, 1, 'tes', 0)")
@@ -144,10 +144,10 @@ else {
     return {username: "masukstaf" + i + "xx", sandi};
   };
   uji("cc layar masuk staf (Chrome): operator_cc saja diarahkan ke peta utama '/'; ?ke= sah menang; operator + peran lain dan koordalops tetap ke Meja Pantau", async () => {
-    const masuk = async (akun, ke = "", tungguSel = ".pt-masuk") => {
+    const masuk = async (akun, ke = "") => {
       const tab = await tabBaru(1440, 900); await cookie(tab, "sesi_staf", null);
-      await tab.buka(base + "/admin/pantau" + (ke ? "?ke=" + encodeURIComponent(ke) : ""), {tunggu: "#ptUser"});
-      await tab.eval(`(() => { document.getElementById("ptUser").value = ${JSON.stringify(akun.username)}; document.getElementById("ptSandi").value = ${JSON.stringify(akun.sandi)}; document.querySelector(".pt-form button[type=submit]").click(); })()`);
+      await tab.buka(base + "/admin/masuk" + (ke ? "?ke=" + encodeURIComponent(ke) : ""), {tunggu: "#email"});
+      await tab.eval(`(() => { document.getElementById("email").value = ${JSON.stringify(akun.username)}; document.getElementById("sandi").value = ${JSON.stringify(akun.sandi)}; document.querySelector(".ad-tombol-masuk").click(); })()`);
       return tab;
     };
     const op1 = await stafLogin("Operator Saja", ["operator_cc"]);
@@ -155,7 +155,7 @@ else {
     tab = await masuk(op1, "/command-center"); await tab.tungguFungsi(`location.pathname === "/command-center"`, 15000); await tab.tutup();
     tab = await masuk(op1, "https://jahat.example/x"); await tab.tungguFungsi(`location.pathname === "/"`, 15000); assert.equal(await q(tab, "location.origin"), base, "?ke= berupa URL penuh diabaikan"); await tab.tutup();
     const campur = await stafLogin("Operator Campur", ["operator_cc", "pusdalops"]), koordP = await stafLogin("Koord Masuk", ["koordalops"]);
-    for (const akun of [campur, koordP]) { tab = await masuk(akun); await tab.tungguFungsi(`document.querySelector(".pt-judul, h1, .pt-butir, .pt-kosong, .pt-bar") && location.pathname === "/admin/pantau" && !document.getElementById("ptUser")`, 15000); await tab.tutup(); }
+    for (const akun of [campur, koordP]) { tab = await masuk(akun); await tab.tungguFungsi(`document.querySelector(".pt-judul, h1, .pt-butir, .pt-kosong, .pt-bar") && location.pathname === "/admin/pantau"`, 15000); await tab.tutup(); }
   });
 
   uji("cc layar meja (Chrome): koordalops hanya melihat (tanpa tombol aksi, tanpa nomor BPBD), tanpa gerbang suara", async () => {

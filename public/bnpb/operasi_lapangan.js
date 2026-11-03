@@ -41,7 +41,7 @@
   }
   function masuk(s) {
     app.replaceChildren(h("div", {class: "bn-blok"}, h("h2", {teks: "Masuk staf"}), h("p", {teks: s === 403 ? "Akunmu belum berhak membuka halaman ini. Hanya staf Pusdalops, Koordalops, Pimpinan, Udara, dan TMC." : "Halaman operasi hanya untuk staf. Masuk dulu."}),
-      h("a", {class: "bn-tombol", href: "/admin/pantau", teks: "Masuk staf"})));
+      h("a", {class: "bn-tombol", href: "/admin/masuk?ke=" + encodeURIComponent(location.pathname + location.search), teks: "Masuk staf"})));
   }
 
   /* ---------- muat data ---------- */

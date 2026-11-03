@@ -989,8 +989,8 @@ uji("cc halaman menu: entri Command center di menu admin untuk operator_cc, koor
   assert.match((await man("/admin/statistik", ADMIN)).t, /href="\/admin\/command-center"/);
   const src = teks("public/admin/pantau.js"), m = src.match(/const KE_PIPA = (\/\^[^\n;]+\/);/); assert.ok(m); const re = eval(m[1]);
   for (const ok of ["/command-center", "/command-center?x=1", "/pipa/peta", "/admin/drone"]) assert.ok(re.test(ok), ok);
-  /* masuk staf: operator_cc SAJA (peran tunggal) ke "/", sesudah ?ke= sah; perilaku di peramban ada di command_center_layar.test.mjs */
-  assert.match(src, /pergiPipa\(\) \|\| pergiPeta\(r\.j\.staf\?\.peran\) \|\| muat\(\)/); assert.match(src, /peran\.length !== 1 \|\| peran\[0\] !== "operator_cc"\) return false; location\.href = "\/"/);
+  /* masuk staf (/admin/masuk): operator_cc SAJA (peran tunggal) ke "/", sesudah ?ke= sah; perilaku di peramban ada di command_center_layar.test.mjs */
+  assert.match(teks("src/statistik.js"), /p\.length === 1 && p\[0\] === "operator_cc" \? "\/" : "\/admin\/pantau"/, "satu pintu /admin/masuk: operator_cc saja ke peta utama");
   for (const salah of ["/command-centerX", "//command-center", "https://x.id/command-center", "/x/command-center", "/\\command-center", "command-center"]) assert.ok(!re.test(salah), salah);
 });
 

@@ -50,7 +50,7 @@ uji("cron menit 17: laju_bnpb lebih tua dari 2 hari dibuang", async () => {
 });
 
 uji("halaman Ruang Koordinasi tanpa modul (/risiko /sitrep /bnpb): 200, CSP ketat tanpa inline", async () => {
-  for (const j of ["/risiko", "/sitrep", "/bnpb", "/kebutuhan", "/risiko-kebakaran"]) {
+  for (const j of ["/risiko", "/sitrep", "/bnpb", "/kebutuhan", "/risiko-kebakaran", "/bnpb/siaga"]) {
     const r = await U.api("GET", j);
     assert.equal(r.s, 200, j + " " + r.t.slice(0, 80));
     const csp = r.h.get("content-security-policy");
@@ -64,6 +64,8 @@ uji("berkas /bnpb/*.html dibuka langsung: 301 ke jalur bersih ber-CSP, berkas ta
   const r = await buka("/bnpb/relawan-saya.html");
   assert.equal(r.status, 301); assert.equal(r.headers.get("location"), "/relawan/saya");
   assert.equal((await buka("/bnpb/index.html")).headers.get("location"), "/bnpb");
+  assert.equal((await buka("/bnpb/siaga.html")).headers.get("location"), "/bnpb/siaga");
+  assert.equal((await buka("/bnpb/kontak.html")).headers.get("location"), "/daftar-kontak");
   assert.equal((await buka("/bnpb/tidakada.html")).status, 404);
 });
 

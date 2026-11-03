@@ -267,7 +267,8 @@ export async function masuk(env, req, kini, halamanMasuk) {
       /* akun staf (src/staf.js) lewat pintu yang sama: satu halaman masuk untuk admin, pemirsa, dan staf (perintah pemilik 3 Nov 2026). Penguncian staf ikut aturan staf. */
       const m = email && sandi ? await cobaMasukStaf(env, req, email, sandi, kini).catch(e => (/no such table/i.test(String(e?.message || e)) ? {hasil: "salah"} : Promise.reject(e))) : {hasil: "salah"};
       if (m.hasil === "ok") {
-        const arah = m.staf.wajib_ganti ? "/admin/pantau" : ke || (hanyaDirektori(m.staf.peran) ? "/direktori" : "/admin/pantau");
+        /* operator_cc SAJA ke peta utama "/" (dulu di form Meja Pantau), Direktori saja ke /direktori; ?ke= yang sah menang */
+        const p = m.staf.peran || [], arah = m.staf.wajib_ganti ? "/admin/pantau" : ke || (hanyaDirektori(p) ? "/direktori" : p.length === 1 && p[0] === "operator_cc" ? "/" : "/admin/pantau");
         const r = alihkan(arah, {"set-cookie": m.cookie}); r.headers.append("set-cookie", cookie("", 0)); r.headers.append("set-cookie", cookiePemirsa("", 0)); return r;
       }
       if (kunciEmail) await catatGagal(env, kunciEmail, "admin_gagal", kini);
@@ -285,14 +286,14 @@ export async function keluar(env, req, kini = Date.now()) {
     catch (e) { console.error("sesi cabut tulis", e?.message); }
   return alihkan("/admin/masuk", {"set-cookie": cookie("", 0)});
 }
-/* Kerangka halaman admin: undefined = admin penuh (token, akun gerbang, atau sesi admin); {nama, peran} = sesi staf; staf tak masuk = {nama: null, peran: []} (layar masuk staf ada di halaman Meja Pantau). */
+/* Kerangka halaman admin: undefined = admin penuh (token, akun gerbang, atau sesi admin); {nama, peran} = sesi staf; staf tak masuk = {nama: null, peran: []} (masuk lewat /admin/masuk, satu pintu). */
 export async function kerangka(env, req, kini = Date.now()) {
   if (await adminOK(env, req, kini)) return undefined;
   const s = await stafSesi(env, req, kini);
   return {nama: s?.nama ?? null, peran: s?.peran ?? []};
 }
 /* isi = HTML, atau fungsi (kerangka) => HTML. bolehStaf = peran staf yang boleh membuka halaman ini (null = admin saja).
-   Admin: halaman penuh. Staf berperan: halaman dengan kerangka staf. Staf tanpa peran yang cocok: ke Meja Pantau (bukan login admin). Belum masuk: login admin seperti semula. */
+   Admin: halaman penuh. Staf berperan: halaman dengan kerangka staf. Staf tanpa peran yang cocok: ke Meja Pantau (bukan login admin). Belum masuk: /admin/masuk?ke=<halaman ini>. */
 export async function halamanAdmin(env, req, kini, isi, bolehStaf = null) {
   const buat = k => html(typeof isi === "function" ? isi(k) : isi);
   if (await adminOK(env, req, kini)) return buat(undefined);
@@ -300,7 +301,7 @@ export async function halamanAdmin(env, req, kini, isi, bolehStaf = null) {
     const s = await stafSesi(env, req, kini);
     if (s) return s.peran.some(p => bolehStaf.includes(p)) ? buat({nama: s.nama, peran: s.peran}) : alihkan("/admin/pantau");
   }
-  return alihkan("/admin/masuk");
+  const u = new URL(req.url); return alihkan("/admin/masuk?ke=" + encodeURIComponent(u.pathname + u.search));
 }
 
 /* ================================================================ kotak pesan */

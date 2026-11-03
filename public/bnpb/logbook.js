@@ -35,7 +35,7 @@
   function kartuMasuk(s) {
     app.replaceChildren(h("div", {class: "bn-blok"}, h("h2", {teks: "Masuk staf"}),
       h("p", {class: "lb-p", teks: s === 403 ? "Akunmu belum berhak mengisi logbook. Hanya peran Pusdalops, Koordinator Pusdalops, dan Pimpinan yang boleh. Minta Super Admin menambah perannya." : "Logbook hanya untuk staf Pusdalops BNPB. Masuk dulu dengan akun staf, lalu buka halaman ini lagi."}),
-      h("a", {class: "bn-tombol", href: "/admin/pantau", teks: "Masuk staf"})));
+      h("a", {class: "bn-tombol", href: "/admin/masuk?ke=" + encodeURIComponent(location.pathname + location.search), teks: "Masuk staf"})));
   }
 
 

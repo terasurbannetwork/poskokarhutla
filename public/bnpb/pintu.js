@@ -52,7 +52,7 @@
       return n ? [F(n), `kejadian dalam arsip logbook ${Object.keys(r.nasional).sort()[0]} sampai ${Object.keys(r.nasional).sort().pop()}`] : null; }, "untuk staf Pusdalops", "Logbook harian Pusdalops BNPB"],
     ["dalops", "Pantau Banjir Dalops", "/bnpb/dalops", "banjir", async () => { const r = await ambil("/api/dalops/banjir"); if (!r?.hari || !Array.isArray(r.kejadian)) return null;   // staf saja: tamu dapat 401 -> "belum ada data"
       const awal = new Date(Date.parse(r.hari) - 6 * 864e5).toISOString().slice(0, 10); return [F(r.kejadian.filter(k => k.terakhir >= awal).length), "laporan banjir sepekan sampai logbook " + r.hari.split("-").reverse().join("/")]; }, "untuk staf Pusdalops", "Logbook harian Pusdalops BNPB, status banjir Centurisk97"],
-    ["siaga", "Siaga pra-musim", "/bnpb/siaga.html", "siaga", async () => { const r = await ambil("/data/bnpb/siaga.json"); const n = Object.values(r?.kab || {}).filter(k => Object.keys(k.musim).length).length;
+    ["siaga", "Siaga pra-musim", "/bnpb/siaga", "siaga", async () => { const r = await ambil("/data/bnpb/siaga.json"); const n = Object.values(r?.kab || {}).filter(k => Object.keys(k.musim).length).length;
       return n ? [F(n), "kabupaten/kota punya musim bencana berulang"] : null; }, "untuk staf Pusdalops", "Logbook harian Pusdalops BNPB 2014–2020 dan 2024–2025"],
     ["meja", "Meja kerja", "/meja", "meja", async () => { const r = await ambil("/api/meja/ringkas"); return r?.meja ? [F(jumlah(r.meja)), "catatan lapangan"] : null; }, "untuk petugas BPBD"],
   ];
