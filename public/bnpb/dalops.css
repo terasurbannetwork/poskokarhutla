@@ -1,27 +1,85 @@
-/* Pantau Banjir Dalops (/bnpb/dalops). Tabel, deretan pilihan, pil nada dari logbook.css; di sini hanya tambahan. Tanpa gaya inline (CSP). */
-.dl-wrap{display:grid;gap:14px}
-.dl-wrap .bn-judul{margin:6px 0 0}
-.dl-ringkas{margin:0;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
-.dl-ringkas .bn-kartu h2 svg,.dl-ikon svg,.dl-salin svg,.dl-surut summary svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+/* Pantau Banjir Dalops (/bnpb/dalops). Token dari admin.css, tabel dasar dari logbook.css; di sini tambahan dan versi ringan
+   tabelnya (kepala terang, baris rapat). Tanpa gaya inline (CSP). */
+.dl-wrap{display:grid;gap:16px;max-width:1280px}
+.dl-wrap svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* kepala */
+.dl-judul{display:grid;gap:4px;margin-top:6px}
+.dl-judul h1{font:800 26px/1.15 var(--display);letter-spacing:-.02em}
+.dl-sub{display:flex;align-items:center;gap:6px;margin:0;color:var(--ink2);font-size:13.5px}
+.dl-judul .dl-sub svg{width:14px;height:14px}
+.dl-basi-data{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;font-size:13.5px;font-weight:600;
+  background:color-mix(in srgb,var(--c2) 12%,var(--card));color:color-mix(in srgb,var(--c2) 45%,var(--ink));border:1px solid color-mix(in srgb,var(--c2) 30%,transparent)}
+
+/* ringkasan: empat angka selebar halaman, tiap kartu lompat ke bagiannya */
+.dl-ringkas{display:grid;gap:12px;grid-template-columns:repeat(4,minmax(0,1fr))}
+.dl-angka{display:grid;gap:2px;align-content:start;padding:14px 16px;border-radius:14px;background:var(--card);box-shadow:var(--bayang);color:var(--ink);text-decoration:none;
+  border:1px solid transparent;transition:border-color .15s,transform .15s}
+.dl-angka:hover,.dl-angka:focus-visible{border-color:color-mix(in srgb,var(--c5) 45%,transparent)}
+.dl-angka:active{transform:scale(.98)}
+.dl-angka-label{font-size:12px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em}
+.dl-angka b{font:800 34px/1.1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.dl-angka-ket{font-size:12.5px;color:var(--ink3)}
+.dl-angka.dl-utama{background:var(--navy);color:#fff;border-color:color-mix(in srgb,var(--c5) 35%,transparent)}
+.dl-angka.dl-utama .dl-angka-label,.dl-angka.dl-utama .dl-angka-ket{color:rgb(255 255 255 / .72)}
+@media (max-width:820px){.dl-ringkas{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* bagian */
+.dl-wrap .bn-blok{scroll-margin-top:16px}
+.dl-kepala{display:grid;gap:4px}
+.dl-kepala h2{font-size:16px}
+
+/* tabel versi ringan */
+.dl-wrap .lb-tabel{font-size:13.5px}
+.dl-wrap .lb-tabel th{background:none;color:var(--ink3);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+  padding:8px 12px;border-bottom:1px solid var(--line)}
+.dl-wrap .lb-tabel td{padding:10px 12px;vertical-align:middle}
+.dl-wrap .lb-tabel tbody tr:hover td{background:var(--paper)}
+.dl-wrap .lb-tabel tr:last-child td{border-bottom:0}
+.dl-wrap .lb-tabel td.n{color:var(--ink2)}
 .dl-kab{display:grid;gap:1px;line-height:1.25}
-.dl-chips{display:flex;gap:4px;flex-wrap:wrap}
-.lb-tabel .bn-pil{white-space:nowrap}   /* tabel digeser di dalam bungkusnya; pil jangan patah per kata di ponsel */
-.dl-aksi{display:flex;gap:6px;align-items:center;justify-content:center}
-.dl-salin{display:inline-flex;gap:6px;align-items:center;white-space:nowrap}
-.dl-ikon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:10px;border:1px solid var(--line);color:var(--ink);background:var(--card)}
-.dl-ikon:hover,.dl-ikon:focus-visible{border-color:var(--c5);color:var(--c5)}
-.lb-tabel td:last-child{text-align:center}
-.dl-prov td{background:var(--surface);font-weight:800;font-size:12.5px;padding:6px 10px}
+.dl-kab b{font-weight:700}
+.dl-kab .bn-label{font-weight:500}
+.dl-prov td{background:var(--surface);font-weight:800;font-size:12px;padding:6px 12px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink2)}
+.dl-wrap .lb-tabel tbody tr.dl-prov:hover td{background:var(--surface)}
 .dl-kondisi{max-width:320px;color:var(--ink2);cursor:help}
-.dl-basi td:nth-child(3) b{color:var(--c1)}
-.dl-sorot td{background:color-mix(in srgb,var(--c1) 7%,transparent)}
-/* status banjir: sama dengan arti status di peta banjir */
+.dl-sorot td{background:color-mix(in srgb,var(--c1) 6%,transparent)}
+
+/* kabar terakhir: lama tanpa kabar diberi nada */
+.dl-umur{display:inline-grid;text-align:left;min-width:92px;gap:1px;line-height:1.25;padding-left:10px;border-left:3px solid var(--line)}
+.dl-umur b{font-weight:700}
+.dl-umur span{font-size:12px;color:var(--ink3)}
+.dl-u3{border-color:var(--c1)}.dl-u3 b{color:var(--c1)}
+.dl-u2{border-color:var(--c2)}.dl-u2 b{color:color-mix(in srgb,var(--c2) 70%,var(--ink))}
+
+/* tag angka yang belum ada */
+.dl-chips{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.dl-tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:600;white-space:nowrap;background:var(--soft);color:var(--ink2)}
+.dl-tag-merah{background:color-mix(in srgb,var(--c1) 12%,transparent);color:color-mix(in srgb,var(--c1) 80%,var(--ink))}
+.dl-redup{color:var(--ink3);font-size:12.5px}
+
+/* status banjir: titik + nama, arti sama dengan peta banjir */
+.dl-st{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.dl-st::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--pil)}
 .dl-l0{--pil:var(--c4)}.dl-l1{--pil:var(--c3)}.dl-l2{--pil:var(--c2)}.dl-l3{--pil:var(--c1)}
+.dl-l0{color:var(--ink3)}
+
+/* aksi per baris */
+.dl-aksi{display:flex;gap:6px;align-items:center;justify-content:center}
+.dl-salin{display:inline-flex;gap:6px;align-items:center;white-space:nowrap;height:32px;padding:0 12px;border-radius:9px;cursor:pointer;
+  border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 13px var(--font)}
+.dl-salin:hover,.dl-salin:focus-visible{border-color:var(--c5);color:var(--c5)}
+.dl-salin:active{transform:scale(.97)}
+.dl-salin svg{width:14px;height:14px}
+.dl-ikon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9px;border:1px solid var(--line);color:var(--ink2);background:var(--card)}
+.dl-ikon:hover,.dl-ikon:focus-visible{border-color:var(--c5);color:var(--c5)}
+
 .dl-arti{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-.dl-arti>div{display:flex;gap:8px;align-items:flex-start}
+.dl-arti>div{display:flex;gap:10px;align-items:baseline}
 .dl-isi{display:grid;gap:10px}
 .dl-surut summary{cursor:pointer;list-style:none}
 .dl-surut summary::-webkit-details-marker{display:none}
 .dl-surut summary h2::after{content:"Buka";margin-left:auto;font-size:12px;font-weight:700;color:var(--c5)}
 .dl-surut[open] summary h2::after{content:"Tutup"}
+@media (prefers-reduced-motion:reduce){.dl-angka,.dl-salin{transition:none}.dl-angka:active,.dl-salin:active{transform:none}}
 @media print{.dl-aksi,.dl-seg{display:none}}

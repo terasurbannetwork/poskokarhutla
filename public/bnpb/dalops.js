@@ -5,8 +5,9 @@
   "use strict";
   const {ikon, h, F, PROV} = window.Wilayah, H = window.DalopsHitung;
   const app = document.getElementById("app");
-  const KURANG = {kabar: "Kabar lebih dari sehari", kk: "KK", jiwa: "Jiwa", tinggi: "Tinggi air"};
-  const pil = (teks, kelas, ik) => h("span", {class: "bn-pil " + kelas}, ik ? ikon(ik) : null, teks);
+  const KURANG = {kk: "KK", jiwa: "Jiwa", tinggi: "Tinggi air"};
+  const status = b => h("span", {class: "dl-st dl-l" + b, teks: H.NAMA_LEVEL[b]});   // titik warna + nama, sama arti dengan peta banjir
+  const nadaUmur = u => u >= 7 ? "dl-u3" : u >= 3 ? "dl-u2" : "dl-u1";
   const tinggi = t => !t ? "–" : t[0] === t[1] ? F(t[0]) + " cm" : `${F(t[0])}–${F(t[1])} cm`;
   const wibHari = () => new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
   const peta = x => x.kab_kode ? h("a", {class: "dl-ikon", href: "/banjir/peta?wil=" + encodeURIComponent(x.kab_kode), target: "_blank", rel: "noopener", "aria-label": "Lihat " + x.nama + " di peta banjir", "data-tip": "<b>Lihat di peta banjir</b>"}, ikon("pin")) : null;
@@ -15,6 +16,7 @@
   const td = (isi, n) => h("td", {class: n ? "n" : null}, isi);
   const sumber = t => h("div", {class: "lb-kaki bn-label", teks: "Sumber: " + t});
   const blok = (ik, judul, ...isi) => h("section", {class: "bn-blok"}, h("h2", {class: "lb-judul-blok"}, ikon(ik), judul), ...isi);
+  const blokId = (id, ...a) => { const b = blok(...a); b.id = id; return b; };
   const kosong = (ik, teks) => h("div", {class: "lb-kosong"}, ikon(ik), h("span", {teks}));
   const pesan = (teks, tautan) => app.replaceChildren(h("div", {class: "bn-blok"}, h("p", {class: "lb-p", teks}), tautan || null));
 
@@ -27,7 +29,7 @@
   async function salin(tombol, teks) {
     try { await navigator.clipboard.writeText(teks); tombol.replaceChildren(ikon("ok"), "Tersalin"); }
     catch (e) { tombol.replaceChildren(ikon("peringatan"), "Gagal menyalin"); }
-    setTimeout(() => tombol.replaceChildren(ikon("simpan"), "Salin pesan"), 2500);
+    setTimeout(() => tombol.replaceChildren(ikon("daftar"), "Salin pesan"), 2500);
   }
 
   /* ---------- bagian ---------- */
@@ -35,17 +37,19 @@
     if (!daftar.length) return blok("ok", "Semua wilayah belum surut sudah berkabar lengkap", kosong("ok", "Tidak ada yang perlu ditanya hari ini."));
     const baris = daftar.map((x, i) => {
       /* status.json hanya memuat kecamatan berlevel > 0 (scripts/banjir/status.py): kab tak tercantum = Aman */
-      const b = st ? (sk[x.kab_kode]?.b?.[1] ?? 0) : null, tombol = h("button", {type: "button", class: "bn-tombol dl-salin"}, ikon("simpan"), "Salin pesan");
+      const b = st ? (sk[x.kab_kode]?.b?.[1] ?? 0) : null, tombol = h("button", {type: "button", class: "dl-salin", "data-tip": "<b>Salin teks permintaan pembaruan</b><br>untuk grup WA BPBD"}, ikon("daftar"), "Salin pesan");
       tombol.addEventListener("click", () => salin(tombol, H.pesanWA(x)));
-      return h("tr", {class: x.umur >= 3 ? "dl-basi" : null}, td(F(i + 1), true), h("td", null, kab(x)),
-        td(h("div", {class: "dl-kab"}, h("b", {teks: H.tglPendek(x.terakhir)}), h("span", {class: "bn-label", teks: x.umur < 1 ? "logbook terakhir" : F(x.umur) + " hari sebelumnya"})), true),
-        h("td", null, h("div", {class: "dl-chips"}, x.kurang.map(k => pil(KURANG[k], k === "kabar" ? "lb-t-bahaya" : "lb-t-tunggu", k === "kabar" ? "tunggu" : "peringatan")))),
-        td(b == null ? "–" : pil(H.NAMA_LEVEL[b], "dl-l" + b), true),
+      const angka = x.kurang.filter(k => k !== "kabar");
+      return h("tr", null, td(F(i + 1), true), h("td", null, kab(x)),
+        td(h("div", {class: "dl-umur " + nadaUmur(x.umur)}, h("b", {teks: x.umur < 1 ? "Hari ini" : F(x.umur) + " hari lalu"}), h("span", {teks: H.tglPendek(x.terakhir)})), true),
+        td(angka.length ? h("div", {class: "dl-chips"}, angka.map(k => h("span", {class: "dl-tag", teks: KURANG[k]}))) : h("span", {class: "dl-redup", teks: "Angka lengkap"}), true),
+        td(b == null ? "–" : status(b), true),
         h("td", null, h("div", {class: "dl-aksi"}, tombol, peta(x))));
     });
-    return blok("tunggu", `${F(daftar.length)} wilayah perlu ditanya ke BPBD`,
-      h("p", {class: "lb-p", teks: `Banjir yang belum dilaporkan surut, kabarnya lebih dari sehari atau angkanya belum lengkap, per logbook ${H.tglPanjang(hari)}. Kabar paling lama di atas. Tombol Salin pesan menyiapkan teks permintaan pembaruan untuk grup WA BPBD.`}),
-      tabel(["No", "Kab/kota", "Kabar terakhir", "Yang kurang", "Status besok", "Tindak lanjut"], baris), sumber("Logbook Pusdalops BNPB, status banjir Centurisk97"));
+    return h("section", {class: "bn-blok dl-utama", id: "tanya"},
+      h("div", {class: "dl-kepala"}, h("h2", {class: "lb-judul-blok"}, ikon("tunggu"), `${F(daftar.length)} wilayah perlu ditanya ke BPBD`),
+        h("p", {class: "dl-sub", teks: `Banjir belum dilaporkan surut yang kabarnya lebih dari sehari atau angkanya bolong, per logbook ${H.tglPanjang(hari)}. Paling lama tanpa kabar di atas.`})),
+      tabel(["No", "Kab/kota", "Kabar terakhir", "Angka belum ada", "Status besok", ""], baris), sumber("Logbook Pusdalops BNPB, status banjir Centurisk97"));
   }
 
   function tabelKejadian(daftar, hari) {
@@ -66,8 +70,8 @@
     const daftar = H.siaga(sk, sudah, min), hari = hariStatus || [];
     const dua = daftar.filter(x => x.sudah && x.maks >= 2).length;
     const baris = daftar.map((x, i) => h("tr", {class: x.sudah && x.maks >= 2 ? "dl-sorot" : null}, td(F(i + 1), true), h("td", null, kab(x)),
-      td(x.sudah ? pil("Sudah banjir", "lb-t-bahaya", "banjir") : h("span", {class: "bn-label", teks: "Belum"}), true),
-      ...hari.map((_, j) => td(pil(H.NAMA_LEVEL[x.b[j] ?? 0], "dl-l" + (x.b[j] ?? 0)), true)), td(x.h3 == null ? "–" : F(Math.round(x.h3)), true), h("td", null, peta(x))));
+      td(x.sudah ? h("span", {class: "dl-tag dl-tag-merah", teks: "Sudah banjir"}) : h("span", {class: "dl-redup", teks: "Belum"}), true),
+      ...hari.map((_, j) => td(status(x.b[j] ?? 0), true)), td(x.h3 == null ? "–" : F(Math.round(x.h3)), true), h("td", null, peta(x))));
     wadah.replaceChildren(
       h("p", {class: "lb-p", teks: daftar.length ? `${F(daftar.length)} kab/kota berstatus ${min >= 2 ? "Siaga atau Awas" : "Waspada, Siaga, atau Awas"} pada salah satu hari sampai ${H.tglPanjang(hari[hari.length - 1])}${dua ? `, ${F(dua)} di antaranya sudah banjir sepekan ini (baris disorot)` : ""}.` : "Tidak ada kab/kota berstatus itu."}),
       daftar.length ? tabel(["No", "Kab/kota", "Banjir sepekan", ...hari.map(H.tglPendek), "Hujan tiga hari, mm", "Peta"], baris) : null);
@@ -75,7 +79,7 @@
 
   function bagianArti() {
     return h("div", {class: "dl-arti"}, [[1, "Hujan tiga hari 40 mm atau lebih, atau sungai mulai naik."], [2, "Hujan tiga hari 80 mm di wilayah rawan banjir, atau debit sungai tinggi."], [3, "Hujan tiga hari 120 mm di wilayah sangat rawan, atau sungai meluap."]]
-      .map(([l, t]) => h("div", null, pil(H.NAMA_LEVEL[l], "dl-l" + l), h("span", {class: "bn-label", teks: t}))));
+      .map(([l, t]) => h("div", null, status(l), h("span", {class: "bn-label", teks: t}))));
   }
 
   function render(d, st) {
@@ -85,7 +89,8 @@
     const nSiaga = st ? H.siaga(sk, sudah, 2).length : null, laporan = d.kejadian.filter(k => H.selisih(hari, k.terakhir) <= H.SEPEKAN).length;
     const telat = H.selisih(wibHari(), hari);
 
-    const angka = (n, label, ik) => h("div", {class: "bn-kartu"}, h("h2", null, ikon(ik), label), h("div", {class: "bn-angka", teks: n == null ? "–" : F(n)}));
+    const angka = (n, label, ket, ke, nada) => h("a", {class: "dl-angka " + (nada || ""), href: "#" + ke},
+      h("span", {class: "dl-angka-label", teks: label}), h("b", {teks: n == null ? "–" : F(n)}), h("span", {class: "dl-angka-ket", teks: ket}));
     const siagaWadah = h("div", {class: "dl-isi"});
     const seg = h("div", {class: "lb-seg dl-seg", role: "radiogroup", "aria-label": "Status yang ditampilkan"},
       [[2, "Siaga dan Awas", "peringatan"], [1, "Termasuk Waspada", "daftar"]].map(([v, t, ik]) => h("label", null, h("input", {type: "radio", name: "dl-min", value: String(v), checked: v === 2}), ikon(ik), t)));
@@ -93,14 +98,16 @@
     if (st) bagianSiaga(sk, sudah, hariSt, siagaWadah, 2);
 
     app.replaceChildren(
-      h("div", {class: "bn-judul"}, h("h1", {teks: "Pantau Banjir Dalops"}),
-        h("div", {class: "bn-aksi"}, pil(`Logbook per ${H.tglPanjang(hari)}`, telat > 1 ? "lb-t-bahaya" : "lb-t-info", "kalender"), telat > 1 ? pil(`Data tertinggal ${F(telat)} hari, jalankan ulang dalops_banjir.py`, "lb-t-bahaya", "peringatan") : null)),
-      h("div", {class: "bn-grid bn-ringkas dl-ringkas"}, angka(laporan, "Laporan banjir sepekan", "banjir"), angka(belum.length, "Wilayah belum dilaporkan surut", "tunggu"),
-        angka(tanya.length, "Wilayah perlu ditanya", "peringatan"), angka(nSiaga, "Siaga atau Awas sampai " + (hariSt.length ? H.tglPendek(hariSt[hariSt.length - 1]) : "–"), "kalender")),
+      h("div", {class: "dl-judul"}, h("h1", {teks: "Pantau Banjir Dalops"}),
+        h("p", {class: "dl-sub"}, ikon("kalender"), `Logbook Pusdalops per ${H.tglPanjang(hari)}`)),
+      telat > 1 ? h("div", {class: "dl-basi-data", role: "status"}, ikon("peringatan"), h("span", {teks: `Logbook belum diperbarui ${F(telat)} hari. Angka di bawah bisa sudah berubah.`})) : null,
+      h("div", {class: "dl-ringkas"}, angka(tanya.length, "Perlu ditanya", "wilayah, kabar lama atau angka bolong", "tanya", "dl-utama"),
+        angka(belum.length, "Belum surut", "wilayah belum dilaporkan surut", "belum"), angka(nSiaga, "Siaga atau Awas", "wilayah sampai " + (hariSt.length ? H.tglPanjang(hariSt[hariSt.length - 1]) : "–"), "siaga"),
+        angka(laporan, "Laporan sepekan", "kejadian banjir di logbook", "surut")),
       bagianTanya(tanya, sk, st, hari),
-      blok("banjir", `${F(belum.length)} wilayah belum dilaporkan surut`, belum.length ? tabelKejadian(belum, hari) : kosong("ok", "Semua banjir sepekan ini sudah dilaporkan surut."), sumber("Logbook Pusdalops BNPB")),
-      blok("peringatan", st ? `${F(nSiaga)} wilayah Siaga atau Awas sampai ${H.tglPanjang(hariSt[hariSt.length - 1])}` : "Status banjir belum termuat", st ? seg : null, st ? siagaWadah : kosong("peringatan", "status.json gagal dimuat, coba muat ulang."), st ? bagianArti() : null, sumber("Status banjir Centurisk97, logbook Pusdalops BNPB")),
-      h("details", {class: "bn-blok dl-surut"}, h("summary", null, h("h2", {class: "lb-judul-blok"}, ikon("ok"), `${F(sudahSurut.length)} wilayah sudah dilaporkan surut`)),
+      blokId("belum", "banjir", `${F(belum.length)} wilayah belum dilaporkan surut`, belum.length ? tabelKejadian(belum, hari) : kosong("ok", "Semua banjir sepekan ini sudah dilaporkan surut."), sumber("Logbook Pusdalops BNPB")),
+      blokId("siaga", "peringatan", st ? `${F(nSiaga)} wilayah Siaga atau Awas sampai ${H.tglPanjang(hariSt[hariSt.length - 1])}` : "Status banjir belum termuat", st ? seg : null, st ? siagaWadah : kosong("peringatan", "status.json gagal dimuat, coba muat ulang."), st ? bagianArti() : null, sumber("Status banjir Centurisk97, logbook Pusdalops BNPB")),
+      h("details", {class: "bn-blok dl-surut", id: "surut"}, h("summary", null, h("h2", {class: "lb-judul-blok"}, ikon("ok"), `${F(sudahSurut.length)} wilayah sudah dilaporkan surut`)),
         sudahSurut.length ? tabelKejadian(sudahSurut, hari) : kosong("tunggu", "Belum ada yang dilaporkan surut sepekan ini."), sumber("Logbook Pusdalops BNPB")));
     pasangTip();
   }
