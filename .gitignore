@@ -98,3 +98,6 @@ scripts/data/sippa/pilot/dossier.*
 scripts/data/sippa/pilot/kerja/
 !scripts/wa/.env.contoh
 node_modules*/
+
+# worktree sementara agen (git worktree), bukan isi repo
+.claude/worktrees/
