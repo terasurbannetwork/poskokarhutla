@@ -134,7 +134,8 @@
     el.chip = h("div", {class: "ol-chip", "aria-label": "Ringkasan hari ini"});
     document.getElementById("kepala").replaceChildren(h("div", {class: "ol-kendali"}, el.tgl, el.rentang, el.seg), el.chip, el.dummy);   // satu baris di bar atas (pemilik 3 Nov 2026)
     el.legenda = h("details", {class: "ol-legenda", open: ""});
-    app.replaceChildren(el.pesan, el.bandera, el.kartu, el.tengah = h("div", {class: "ol-tengah"}, el.peta, el.dasar, el.panel, el.tarik, el.legenda), el.bawah, el.kaki);
+    /* pesan dan spanduk dummy melayang di atas peta: tinggi peta tepat satu layar, legenda dan overlay tidak terpotong */
+    app.replaceChildren(el.kartu, el.tengah = h("div", {class: "ol-tengah"}, el.peta, el.dasar, el.panel, el.tarik, el.legenda, h("div", {class: "ol-atas-peta"}, el.pesan, el.bandera)), el.bawah, el.kaki);
     el.seg.addEventListener("change", e => { if (e.target.name === "segmen") { st.segmen = e.target.value; const n = st.segmen === "nilai"; el.rentang.hidden = !n; el.tgl.hidden = n; render(); } });   // radio sudah dicat peramban; render berat sesudah frame
     const gantiRentang = ubah => { const r = O.klampRentang(el.dari.value || st.rentang.dari, el.sampai.value || st.rentang.sampai, ubah);
       el.dari.value = r.dari; el.sampai.value = r.sampai; st.rentang = r; st.nilai = null; if (st.segmen === "nilai") render(); };   // chrome dicat dulu; fetch sesudah rAF di render
@@ -157,7 +158,7 @@
     sesudahFrame(async () => { try {
       const r = await api("GET", "/api/operasi/peta?tanggal=" + encodeURIComponent(st.tanggal)); if (n !== nomor) return;
       if (!r.ok) { if (r.s === 401 || r.s === 403) return masuk(r.s); st.data = null; el.bandera.hidden = true; el.tengah.hidden = true; el.kaki.textContent = ""; return tampil(galatTeks(r), false); }
-      tampil(""); el.tengah.hidden = false; st.data = r.j; render();
+      tampil(""); el.tengah.hidden = false; st.data = r.j; ukurAtas(); render();
     } finally { selesai(); } });
   });
 
@@ -214,7 +215,9 @@
       peta.on("error", () => {});   // gaya dasar atau ubin citra gagal (offline): penanda tetap tampil
       peta.touchZoomRotate.disableRotation();
       peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right"); peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-right");
-      peta.on("style.load", pasangCitra); }
+      peta.on("style.load", pasangCitra);
+      /* zoom jauh: lencana kegunaan disembunyikan supaya base yang berdekatan tidak bertumpuk (rincian tetap di kartu hover) */
+      const jauh = () => el.peta.classList.toggle("jauh", peta.getZoom() < 6); peta.on("zoom", jauh); peta.once("load", jauh); }
     bersihPeta(); const batas = new maplibregl.LngLatBounds(), tambah = (lon, lat) => batas.extend([lon, lat]);
     for (const b of st.data.base || []) {
       const ar = (st.data.armada || []).filter(a => a.base_id === b.id), node = h("div", {class: "ol-m ol-base" + (b.id === st.base ? " pilih" : ""), "data-base": b.id});
@@ -392,6 +395,8 @@
     el.tarik.addEventListener("pointerdown", e => { e.preventDefault(); x0 = e.clientX; w0 = w = el.panel.offsetWidth; el.tarik.classList.add("aktif"); addEventListener("pointermove", gerak); addEventListener("pointerup", lepas); });
     el.tarik.addEventListener("keydown", e => { if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return; e.preventDefault(); w = setLebar(el.panel.offsetWidth + (e.key === "ArrowRight" ? 24 : -24)); try { localStorage.setItem(KUNCI_LEBAR, String(w)); } catch (x) {} });
   }
-  const ukurAtas = () => document.documentElement.style.setProperty("--tinggi-atas", (document.querySelector(".ad-top")?.offsetHeight || 56) + "px");
+  /* tinggi di atas peta diukur dari posisi peta sendiri (bar atas + celah apa pun), supaya peta pas satu layar */
+  const ukurAtas = () => { const t = el.tengah && !el.tengah.hidden ? el.tengah.getBoundingClientRect().top + scrollY : document.querySelector(".ad-top")?.offsetHeight || 56;
+    document.documentElement.style.setProperty("--tinggi-atas", Math.round(t) + "px"); };
   kerangka(); renderLegenda(); pasangTarik(); ukurAtas(); addEventListener("resize", ukurAtas); muat(); tombolDummy();
 })();

@@ -205,7 +205,7 @@
 .ol-lg-base{width:15px;height:15px}.ol-lg-base .tanah{fill:#0b2545;stroke:#fff;stroke-width:1.4}.ol-lg-base .garis{fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
 @media (max-width:1000px){.ol-legenda{position:static;margin:8px 12px 0;max-width:none;width:auto}}
 /* overlay: salinan panel Overlay (#lapis) peta utama, ubin bergambar */
-.ol-overlay{width:262px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 28px -12px rgb(0 0 0 / .45);padding:10px 12px;max-height:calc(100% - 24px);overflow:auto}
+.ol-overlay{width:262px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 28px -12px rgb(0 0 0 / .45);padding:10px 12px;max-height:calc(100dvh - var(--tinggi-atas,56px) - 120px);overflow:auto}
 .ol-ov-hd{margin:-10px -12px 6px;padding:8px 12px;border-radius:13px 13px 0 0;background:oklch(25.5% .075 256);color:#fff;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;text-align:center}
 .ol-overlay details{border-top:1px solid var(--line);padding:3px 0 1px;margin-top:3px}
 .ol-overlay .ol-ov-hd+details{border-top:0;margin-top:0}
@@ -224,7 +224,7 @@
 .ol-overlay label.ubin:has(input:checked) .ub-th::after{content:"✓";position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;background:#2b8c86;color:#fff;font-size:9px;font-weight:900;display:grid;place-items:center;box-shadow:0 0 0 2px var(--card)}
 .ol-overlay label.ubin:has(input:checked) span{color:var(--ink);font-weight:800}
 .ol-overlay label.ubin:has(input:focus-visible) .ub-th{outline:2px solid var(--c5);outline-offset:3px}
-.ol-kanan{bottom:12px;align-content:start}
+.ol-kanan{align-content:start}
 @media (max-width:1000px){.ol-kanan{position:static;margin:8px 12px 0}.ol-overlay{width:auto}}
 /* jejak navigasi */
 .ol-jejak{display:flex;align-items:center;gap:6px;font:700 13px var(--font);flex-wrap:wrap}
@@ -250,3 +250,18 @@
 .ol-atas .ol-aksi{flex:none}
 @media (max-width:1280px){.ol-c small{display:none}}
 @media (max-width:860px){.ol-chip{margin-left:0;flex-wrap:wrap}}
+/* perapian 3 Nov: peta tepat satu layar, base di atas gelembung cluster, lencana hanya saat zoom dekat */
+.ol-atas-peta{position:absolute;z-index:7;top:12px;left:50%;transform:translateX(-50%);display:grid;gap:6px;justify-items:center;pointer-events:none;max-width:50%}
+.ol-atas-peta>*{pointer-events:auto;margin:0}
+.ol-atas-peta .bn-pesan:empty,.ol-atas-peta .ol-dummy[hidden]{display:none}
+.ol-atas-peta .ol-dummy{background:#fff;padding:5px 12px;font-size:11.5px;box-shadow:0 4px 12px rgb(0 0 0 / .3)}
+.ol-atas-peta .bn-pesan{background:#fff;border-radius:999px;padding:5px 14px;box-shadow:0 4px 12px rgb(0 0 0 / .3)}
+.ol-base{z-index:3!important;gap:3px}
+.ol-base svg{width:30px;height:30px;filter:drop-shadow(0 2px 4px rgb(0 0 0 / .55))}
+.ol-base .tanah{stroke-width:1.6}
+.ol-nama{background:rgb(11 37 69 / .9);color:#fff!important;text-shadow:none!important;border-radius:6px;padding:2px 5px;font-size:10px}
+.ol-peta.jauh .ol-guna{display:none}
+.ol-guna{gap:2px}
+.ol-guna span{padding:1px 5px 1px 3px;font-size:10px}
+.ol-legenda:not([open]){padding-bottom:6px}
+#app.ol-wrap{gap:0}
