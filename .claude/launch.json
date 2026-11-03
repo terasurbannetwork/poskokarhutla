@@ -215,15 +215,6 @@
         "/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/97ceb9e2-a06b-41b8-a855-d20a7aec52da/scratchpad/uji.vars"
       ],
       "port": 8791
-    },
-    {
-      "name": "dirtiruan",
-      "runtimeExecutable": "node",
-      "runtimeArgs": [
-        "/private/tmp/claude-501/-Users-priyankaalfatehan28-Developer-poskokarhutla/1063709a-06f0-4666-86ab-672979f138be/scratchpad/srv.js",
-        "public"
-      ],
-      "port": 8813
     }
   ]
 }
