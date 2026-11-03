@@ -196,9 +196,23 @@
   let dialog;
   function bukaHistori(x, sub) {
     const rw = (x.riwayat || []).slice().reverse(), denganKondisi = !x.provinsi;
-    const histori = rw.length ? h("table", {class: "dl-mini"}, h("thead", null, h("tr", null, ["Tanggal", "KK", "Jiwa", "Kec", "Desa", "Tinggi air", ...(denganKondisi ? ["Kondisi"] : [])].map(k => h("th", {teks: k})))),
-      h("tbody", null, rw.map(r => h("tr", null, h("td", {class: "dl-tgl", teks: H.tglPendek(r.tgl)}), td(angka(r.kk), true), td(angka(r.jiwa), true), td(angka(r.n_kec), true), td(angka(r.n_desa), true), td(tinggi(r.tinggi_cm), true),
-        denganKondisi ? h("td", {class: "dl-kondisi"}, r.surut ? label("Surut", "ok", "biru") : null, h("span", {teks: r.kondisi || "–"})) : null)))) : h("p", {class: "dl-redup", teks: "Histori harian belum ada."});
+    const maksKK = Math.max(1, ...rw.map(r => r.kk || 0));
+    /* ringkasan: angka terakhir yang terisi, perubahan dari laporan sebelumnya yang terisi */
+    const ringkas = (f, judul, ik) => {
+      const ada = rw.filter(r => r[f] != null), kini = ada[0]?.[f], lalu = ada[1]?.[f];
+      const beda = !x.provinsi && kini != null && lalu != null ? kini - lalu : null;   // provinsi: tak semua kab melapor tiap hari, selisih menyesatkan
+      return h("div", {class: "dl-hs-kotak"}, h("span", {class: "dl-tip-ik"}, ikon(ik)), h("span", {class: "dl-hs-label", teks: judul}), h("b", {teks: angka(kini)}),
+        beda ? h("span", {class: "dl-hs-beda " + (beda > 0 ? "naik" : "turun"), teks: (beda > 0 ? "naik " : "turun ") + F(Math.abs(beda)) + " dari laporan sebelumnya"}) : h("span", {class: "dl-hs-beda", teks: x.provinsi ? "jumlah kab/kota yang melapor hari itu" : beda === 0 ? "tetap" : "belum ada pembanding"}));
+    };
+    const th = (teks, att) => h("th", {scope: "col", ...att, teks});
+    const histori = rw.length ? h("div", {class: "ad-tabel-wadah dl-tabel-wadah dl-hs-wadah"}, h("table", {class: "ad-tabel dl-tabel dl-hs"},
+      h("thead", null, h("tr", null, th("Tanggal", {rowspan: "2", "data-i": "0"}), th("Terdampak", {colspan: "2"}), th("Wilayah", {colspan: "2"}), th("Tinggi air", {rowspan: "2", "data-i": "5"}), denganKondisi ? th("Kondisi", {rowspan: "2"}) : null),
+        h("tr", {class: "dl-th-sub"}, th("KK", {"data-i": "1"}), th("Jiwa", {"data-i": "2"}), th("Kec", {"data-i": "3"}), th("Desa", {"data-i": "4"}))),
+      h("tbody", null, rw.map(r => h("tr", null, h("td", {class: "dl-tgl", "data-v": r.tgl.replace(/-/g, ""), teks: H.tglPendek(r.tgl)}),
+        h("td", {class: "n dl-hs-kk", "data-v": r.kk ?? ""}, h("span", {class: "dl-hs-batang"}, h("i", {class: "dl-hs-isi", "data-w": r.kk ? String(Math.round(r.kk / maksKK * 100)) : "0"})), h("b", {teks: angka(r.kk)})),
+        tdv(angka(r.jiwa), r.jiwa), tdv(angka(r.n_kec), r.n_kec), tdv(angka(r.n_desa), r.n_desa), tdv(tinggi(r.tinggi_cm), r.tinggi_cm?.[1]),
+        denganKondisi ? h("td", {class: "dl-kondisi"}, r.surut ? label("Surut", "ok", "biru") : null, h("span", {teks: r.kondisi || "–"})) : null)))))
+      : h("p", {class: "dl-redup", teks: "Histori harian belum ada."});
     if (!dialog) {
       dialog = h("dialog", {class: "dl-dialog", "aria-labelledby": "dl-dialog-judul"});
       dialog.addEventListener("click", e => { if (e.target === dialog) dialog.close(); });
@@ -206,9 +220,16 @@
     }
     const tutup = h("button", {type: "button", class: "dl-ikon dl-tutup-dialog", "aria-label": "Tutup"}, ikon("tambah"));
     tutup.addEventListener("click", () => dialog.close());
-    dialog.replaceChildren(h("div", {class: "dl-dialog-kepala"}, h("div", null, h("h2", {id: "dl-dialog-judul"}, ikon("kalender"), "Histori harian " + x.nama),
-      h("p", {class: "dl-sub", teks: sub || `${namaProv(x.prov_kode, x.prov)}, banjir sejak ${H.tglPanjang(x.mulai)}, kabar terakhir ${H.tglPanjang(x.terakhir)}`})), tutup),
+    dialog.replaceChildren(h("div", {class: "dl-dialog-kepala"}, h("span", {class: "dl-hs-lencana"}, ikon("kalender")),
+        h("div", null, h("h2", {id: "dl-dialog-judul", teks: "Histori harian " + x.nama}),
+          h("p", {class: "dl-sub", teks: sub || `${namaProv(x.prov_kode, x.prov)}, banjir sejak ${H.tglPanjang(x.mulai)}, kabar terakhir ${H.tglPanjang(x.terakhir)}`})), tutup),
+      rw.length ? h("div", {class: "dl-hs-ringkas"}, ringkas("kk", "KK terdampak", "sosial"), ringkas("jiwa", "Jiwa terdampak", "personel"),
+        h("div", {class: "dl-hs-kotak"}, h("span", {class: "dl-tip-ik"}, ikon("kalender")), h("span", {class: "dl-hs-label", teks: "Hari tercatat"}), h("b", {teks: F(rw.length)}),
+          h("span", {class: "dl-hs-beda", teks: `${H.tglPendek(rw[rw.length - 1].tgl)} sampai ${H.tglPendek(rw[0].tgl)}`}))) : null,
       h("div", {class: "dl-gulir"}, histori));
+    /* lebar batang lewat CSSOM (bukan atribut style), aman untuk CSP */
+    dialog.querySelectorAll(".dl-hs-isi").forEach(i => { i.style.width = i.dataset.w + "%"; });
+    dialog.querySelectorAll("table.dl-hs").forEach(pasangUrut);
     dialog.showModal();
   }
 
