@@ -322,3 +322,11 @@
 .ol-tb{grid-template-columns:minmax(0,1fr) repeat(4,30px) 72px!important}
 .ol-tb.api{grid-template-columns:minmax(0,1fr) repeat(3,minmax(38px,auto)) 92px!important}
 .ol-tb.kepala > span:nth-child(1),.ol-tb.total > span:nth-child(1){text-align:left}
+/* tabel base: kolom Provinsi, urut per kolom (standar tabel pemilik), nama tidak tebal, tanpa elipsis */
+.ol-tb{grid-template-columns:minmax(0,1fr) 54px repeat(4,30px) 76px!important}
+.ol-tb .nm b{font-weight:500;overflow:visible;text-overflow:clip;white-space:nowrap}
+.ol-tb .prov{font-size:11.5px;color:var(--ink2)}
+.ol-tb.kepala [data-urut]{cursor:pointer;user-select:none}
+.ol-tb.kepala [data-urut]:hover,.ol-tb.kepala .urut{color:oklch(85% .08 70)}
+.ol-tb.kepala .urut::after{content:" ▾"}
+.ol-tb.kepala .urut[data-arah="1"]::after{content:" ▴"}

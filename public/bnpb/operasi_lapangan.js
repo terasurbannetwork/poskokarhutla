@@ -144,6 +144,9 @@
     el.tgl.addEventListener("change", () => { if (/^\d{4}-\d{2}-\d{2}$/.test(el.tgl.value)) { st.tanggal = el.tgl.value; st.base = null; muat(); } });
 
     el.panel.addEventListener("click", e => { if (e.target.closest("[data-semua]")) return pilihBase(null);
+      const ur = e.target.closest("[data-urut]");
+      if (ur) { const k = ur.dataset.urut, lama = st.urutBase || {k: "api", arah: -1}; st.urutBase = {k, arah: lama.k === k ? -lama.arah : (k === "base" || k === "prov" ? 1 : -1)};
+        return sesudahFrame(() => renderPanel(O.saringSegmen(st.data, st.segmen))); }
       const t = e.target.closest("[data-tab]"); if (t) { st.tab = t.dataset.tab; for (const x of t.parentNode.children) x.setAttribute("aria-pressed", String(x === t)); return sesudahFrame(() => renderPanel(O.saringSegmen(st.data, st.segmen))); }
       const r = e.target.closest("[data-base]"); if (r) pilihBase(r.dataset.base); });
   }
@@ -285,27 +288,27 @@
      STATUS = kondisi api dalam jangkauan base (Prioritas / Siaga / Aman, sama dengan pil peta utama); titik merah = pilot melapor api hari ini. */
   const kondisiApi = x => { const p3 = x.dekat.filter(k => k.level >= 3).length, p2 = x.dekat.filter(k => k.level === 2).length;
     return p3 ? ["Prioritas", "ol-k-3"] : p2 ? ["Siaga", "ol-k-2"] : ["Aman", "ol-k-0"]; };
+  /* singkatan provinsi sama dengan peta utama (index.html PROV_PENDEK) */
+  const PROV_PDK = {11: "Aceh", 12: "Sumut", 13: "Sumbar", 14: "Riau", 15: "Jambi", 16: "Sumsel", 17: "Bengkulu", 18: "Lampung", 19: "Babel", 21: "Kepri", 31: "DKI", 32: "Jabar", 33: "Jateng", 34: "DIY", 35: "Jatim", 36: "Banten", 51: "Bali", 52: "NTB", 53: "NTT",
+    61: "Kalbar", 62: "Kalteng", 63: "Kalsel", 64: "Kaltim", 65: "Kaltara", 71: "Sulut", 72: "Sulteng", 73: "Sulsel", 74: "Sultra", 75: "Gorontalo", 76: "Sulbar", 81: "Maluku", 82: "Malut", 91: "Papua", 92: "Pabar", 93: "Papsel", 94: "Papteng", 95: "Pappeg", 96: "PBD"};
+  /* kolom tabel base: [kunci, judul, judul lengkap, nilai urut]. Semua kolom bisa diurutkan (standar tabel pemilik), klik kepala kolom; klik lagi membalik arah */
+  const KOLOM_BASE = [["base", "Base", "Nama base dan kode ICAO", x => x.b.nama], ["prov", "Prov", "Provinsi", x => PROV_PDK[x.b.prov] || ""],
+    ["wb", "WB", "Water bombing", x => x.guna.wb], ["ptr", "PTR", "Patroli", x => x.guna.patroli], ["omc", "OMC", "Modifikasi cuaca", x => x.guna.omc],
+    ["cl", "CL", "Cluster prioritas dalam jangkauan", x => x.dekat.filter(k => k.level >= 3).length], ["api", "Api", "Kondisi api dalam jangkauan", x => x.dekat.reduce((m, k) => Math.max(m, k.level), 0) * 1e4 + x.api]];
   function tabelBase(d) {
     const baris = (st.data.base || []).map(b => ringkasBase(d, b)), p3 = x => x.dekat.filter(k => k.level >= 3).length;
-    baris.sort((a, b) => b.api - a.api || p3(b) - p3(a) || b.armada - a.armada || a.b.nama.localeCompare(b.b.nama));
+    const u = st.urutBase || {k: "api", arah: -1}, kol = KOLOM_BASE.find(c => c[0] === u.k) || KOLOM_BASE[6];
+    baris.sort((a, b) => { const x = kol[3](a), y = kol[3](b); return (typeof x === "string" ? x.localeCompare(y) : x - y) * u.arah || a.b.nama.localeCompare(b.b.nama); });
     const jg = k => baris.reduce((a, x) => a + x.guna[k], 0), nol = v => v ? O.fmt(v) : "–";
     const kunci = h("div", {class: "ol-kunci"}, GUNA.map(([k, t]) => h("span", {title: t}, ikonGuna(k), h("b", {teks: k === "wb" ? "WB" : k === "patroli" ? "PTR" : "OMC"}), k === "omc" ? "Modifikasi cuaca" : t)),
       h("span", {title: "Cluster api prioritas dalam jangkauan base"}, h("i", {class: "ol-kunci-cl"}), h("b", {teks: "CL"}), "Cluster prioritas"));
-    return [kunci, h("div", {class: "ol-tb kepala"}, sel("Base", ""), sel("WB"), sel("PTR"), sel("OMC"), sel("CL"), sel("Api")),
-      h("div", {class: "ol-tb total"}, sel("Grand total", ""), sel(nol(jg("wb"))), sel(nol(jg("patroli"))), sel(nol(jg("omc"))), sel(st.api ? nol(st.api.kl.filter(k => k.level >= 3).length) : "…"), sel("")),
+    const kepala = h("div", {class: "ol-tb kepala"}, KOLOM_BASE.map(([k, t, lengkap]) => h("span", {class: (k === "base" ? "" : "n") + (u.k === k ? " urut" : ""), "data-urut": k, "data-arah": u.k === k ? String(u.arah) : "", title: `Urutkan menurut ${lengkap.toLowerCase()}`, role: "button", tabindex: "0", teks: t})));
+    return [kunci, kepala,
+      h("div", {class: "ol-tb total"}, sel("Grand total", ""), sel(""), sel(nol(jg("wb"))), sel(nol(jg("patroli"))), sel(nol(jg("omc"))), sel(st.api ? nol(st.api.kl.filter(k => k.level >= 3).length) : "…"), sel("")),
       ...baris.map(x => { const [t, kl] = kondisiApi(x);
         return h("button", {type: "button", class: "ol-tb" + (x.b.id === st.base ? " pilih" : ""), "data-base": x.b.id, title: `${x.b.nama} (${x.b.icao || x.b.id}), ${O.fmt(x.siap)} dari ${O.fmt(x.armada)} armada siap`},
           h("span", {class: "nm"}, h("b", {teks: x.b.nama.split(" / ")[0]}), h("small", {teks: x.b.icao || x.b.id}), x.api ? h("i", {class: "prio", title: `Pilot melapor ${O.fmt(x.api)} titik api hari ini`}) : null),
-          sel(nol(x.guna.wb)), sel(nol(x.guna.patroli)), sel(nol(x.guna.omc)), sel(st.api ? nol(p3(x)) : "…", "n tebal"), st.api ? h("span", {class: "st"}, pil(t, kl)) : sel("…")); })];
-  }
-  /* daftar prioritas pemadaman di bawah tabel base: cluster prioritas terbesar + base terdekat yang punya armada water bombing */
-  function prioritasBawah() {
-    if (!st.api) return null;
-    const pr = st.api.kl.filter(k => k.level >= 3).sort((x, y) => y.px24 - x.px24).slice(0, 8);
-    if (!pr.length) return null;
-    const wb = (st.data.base || []).filter(b => hitungGuna((st.data.armada || []).filter(a => a.base_id === b.id)).wb);
-    return h("div", {class: "ol-prio"}, h("div", {class: "ol-sub", teks: "Prioritas pemadaman terbesar"}), ...pr.map(k => { const bs = wb.map(b => ({b, km: jarakKm(b.lat, b.lon, k.lat, k.lon)})).sort((x, y) => x.km - y.km)[0];
-      return baisKluster({...k, km: undefined, kab: `${k.kab}, ${k.kec}`, kec: "", base: bs ? `${bs.b.icao || bs.b.id} ${O.fmt(Math.round(bs.km))} km` : ""}); }));
+          sel(PROV_PDK[x.b.prov] || "–", "n prov"), sel(nol(x.guna.wb)), sel(nol(x.guna.patroli)), sel(nol(x.guna.omc)), sel(st.api ? nol(p3(x)) : "…", "n tebal"), st.api ? h("span", {class: "st"}, pil(t, kl)) : sel("…")); })];
   }
   const kartuArmada = a => h("article", {class: "ol-ar"}, gambarArmada(a),
     h("div", {class: "ol-ar-isi"}, h("div", {class: "ol-ar-atas"}, h("b", {teks: a.registrasi}), pil(O.namaArmada(a.status), O.kelasArmada(a.status))),
@@ -339,7 +342,7 @@
       return el.panel.replaceChildren(h("h2", {class: "ol-judul"}, ikon("malam"), "Renlap malam"), rl.length ? tabel(["Base", "Versi", "Target"], rl.map(r => [r.base_id, r.versi, O.fmt((r.target || []).length)])) : kosong("Belum ada renlap untuk tanggal ini.")); }
     if (!b) { const tab = h("div", {class: "ol-tab", role: "group", "aria-label": "Daftar"}, [["base", "Base operasi udara"], ["api", "Sumber api"]].map(([v, t]) => h("button", {type: "button", "data-tab": v, "aria-pressed": String(st.tab === v), teks: t})));
       return el.panel.replaceChildren(h("div", {class: "ol-panel-kepala"}, jejak(null), tab, h("p", {class: "ol-sumber", teks: st.tab === "api" ? "Cluster api aktif 24 jam per provinsi (sama dengan peta utama). Buka provinsi untuk daftar cluster prioritas." : "Klik base untuk melihat armadanya."})),
-        st.tab === "api" ? h("div", {class: "ol-gulir-v"}, daftarApi()) : (st.data.base || []).length ? h("div", {class: "ol-gulir-v", role: "list"}, tabelBase(d), prioritasBawah()) : kosong("Belum ada base.")); }
+        st.tab === "api" ? h("div", {class: "ol-gulir-v"}, daftarApi()) : (st.data.base || []).length ? h("div", {class: "ol-gulir-v", role: "list"}, tabelBase(d)) : kosong("Belum ada base.")); }
     const db = O.dataBase(d, b.id), semua = O.dataBase(st.data, b.id).armada.slice().sort((x, y) => (O.STATUS_ARMADA[y.status]?.siap ? 1 : 0) - (O.STATUS_ARMADA[x.status]?.siap ? 1 : 0) || x.registrasi.localeCompare(y.registrasi)), x = ringkasBase(d, b);
     el.panel.replaceChildren(h("div", {class: "ol-panel-kepala"}, jejak(b),
         h("h2", {class: "ol-judul besar"}, gmaps(b.lat, b.lon, b.nama)), h("p", {class: "ol-sumber", teks: [b.icao, b.iata].filter(Boolean).join(", ")}),
