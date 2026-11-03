@@ -47,13 +47,14 @@
     return out.sort((a, b) => b.umur - a.umur || a.nama.localeCompare(b.nama));
   }
 
-  /* status.json per kecamatan -> per kab: level harian = tertinggi di kecamatannya, h3 = tertinggi */
+  /* status.json per kecamatan -> per kab: level harian = tertinggi di kecamatannya, h3 = tertinggi, h3d = hujan tiga hari per tanggal (tertinggi) */
   function statusKab(st) {
     const out = {};
     for (const [k, v] of Object.entries(st?.kec || {})) {
-      const [p, kab] = k.split("|"), kode = p + "|" + kab, x = out[kode] || (out[kode] = {kab_kode: kode, prov_kode: p, nama: kab, b: [], h3: null});
+      const [p, kab] = k.split("|"), kode = p + "|" + kab, x = out[kode] || (out[kode] = {kab_kode: kode, prov_kode: p, nama: kab, b: [], h3: null, h3d: []});
       (v.b || []).forEach((l, i) => { if (l != null && !(x.b[i] >= l)) x.b[i] = l; });
       if (v.h3 != null && !(x.h3 >= v.h3)) x.h3 = v.h3;
+      (v.h3d || []).forEach((m, i) => { if (m != null && !(x.h3d[i] >= m)) x.h3d[i] = m; });
     }
     return out;
   }
@@ -61,6 +62,19 @@
   function siaga(sk, sudahBanjir, min = 2) {
     return Object.values(sk).map(x => ({...x, maks: Math.max(...x.b.map(l => l ?? 0)), sudah: sudahBanjir.has(x.kab_kode)}))
       .filter(x => x.maks >= min).sort((a, b) => b.maks - a.maks || b.sudah - a.sudah || (b.h3 ?? 0) - (a.h3 ?? 0) || a.nama.localeCompare(b.nama));
+  }
+
+  /* ringkasan per provinsi dari baris sepekan (satu kab bisa dua baris: surut dan belum): kab unik, kab belum surut, jumlah KK/jiwa/mengungsi,
+     kejadian = banyak id logbook. Urut kejadian terbanyak. */
+  function perProv(pekan) {
+    const m = new Map();
+    for (const x of pekan) {
+      const r = m.get(x.prov_kode) || m.set(x.prov_kode, {prov_kode: x.prov_kode, prov: x.prov, kab: new Set(), belum: new Set(), kk: 0, jiwa: 0, mengungsi: 0, kejadian: 0, baris: []}).get(x.prov_kode);
+      const kunci = x.kab_kode || x.nama;
+      r.kab.add(kunci); if (!x.surut) r.belum.add(kunci);
+      r.kk += x.kk || 0; r.jiwa += x.jiwa || 0; r.mengungsi += x.mengungsi || 0; r.kejadian += x.id.length; r.baris.push(x);
+    }
+    return [...m.values()].map(r => ({...r, nKab: r.kab.size, nBelum: r.belum.size})).sort((a, b) => b.kejadian - a.kejadian || a.prov_kode.localeCompare(b.prov_kode));
   }
 
   const BLN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -76,6 +90,6 @@
       `Bila ada kebutuhan mendesak (logistik, perahu, pompa, alat berat), mohon disampaikan sekalian. Terima kasih.`;
   }
 
-  const X = {SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perluDitanya, statusKab, siaga, pesanWA, tglPanjang, tglPendek, namaKab};
+  const X = {SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perluDitanya, statusKab, siaga, pesanWA, tglPanjang, tglPendek, namaKab};
   g.DalopsHitung = X;
 })(globalThis);

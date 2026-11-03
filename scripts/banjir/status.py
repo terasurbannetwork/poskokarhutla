@@ -36,7 +36,7 @@ Bahaya = indeks InaRISK tertinggi yang dicuplik di kecamatan (lihat bahaya.py). 
 lebih kecil dari hujan stasiun). Ambang dipilih dengan ERA5 sebagai prakiraan sempurna: bila prakiraan IFS lebih basah
 daripada ERA5, status akan lebih sering naik daripada di uji balik.
 
-status.json: {"hari": [4 tanggal], "kec": {"prov|kab|kec": {"b": [4 level], "l": [4 level], "h3": mm terbesar dari 4 jendela,
+status.json: {"hari": [4 tanggal], "kec": {"prov|kab|kec": {"b": [4 level], "l": [4 level], "h3": mm terbesar dari 4 jendela, "h3d": hujan tiga hari per tanggal (mm),
               "a7": mm, "sg": indeks titik sungai.json atau null}}}  -- hanya kecamatan dengan level > 0.
 Pakai:  python3 scripts/data/status.py        |  python3 scripts/data/status.py uji
 """
@@ -256,7 +256,7 @@ def main():
             hitung["banjir"][d][lb[d]] += 1
             hitung["longsor"][d][ll[d]] += 1
         if max(lb) or max(ll):
-            out[k] = {"b": lb, "l": ll, "h3": max(h3s), "a7": a7, "sg": sg}
+            out[k] = {"b": lb, "l": ll, "h3": max(h3s), "h3d": [round(x or 0, 1) for x in h3s], "a7": a7, "sg": sg}
     simpan(os.path.join(KELUAR, "status.json"), {"hari": hari, "kec": out})
     sekarang = dt.datetime.now(WIB)
     rob = baca(os.path.join(KELUAR, "rob.json"))
