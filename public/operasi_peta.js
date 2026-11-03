@@ -187,6 +187,9 @@
       /* lapisan operasi dinyalakan: Warna wilayah dimatikan supaya base terbaca (pemilik 3 Nov 2026) */
       const w = L.querySelector('input[data-l="wilayah"]'); if (e.target.checked && w?.checked) { w.checked = false; w.dispatchEvent(new Event("change", {bubbles: true})); }
       nanti(() => { terapkanLihat(); renderLegenda(); }); }, true);
+    /* tab Operasi menyalakan lapisan Base & armada (pemilik 3 Nov 2026); centang lewat jalur change yang sama */
+    pm?.addEventListener("click", e => { if (!e.target.closest('[data-m="ops"]')) return; const c = L?.querySelector('input[data-l="opsbase"]');
+      if (c && !c.checked) { c.checked = true; c.dispatchEvent(new Event("change", {bubbles: true})); } });
     /* panel Operasi: baris base membuka laci (fase tangkap supaya penangan baris wilayah peta utama tidak ikut) */
     $("#rows").addEventListener("click", e => { const r = e.target.closest("[data-ops]"); if (!r) return; e.stopImmediatePropagation(); bukaBase(r.dataset.ops); }, true);
     /* bungkus renderDaftar dan renderLegenda milik peta utama */
