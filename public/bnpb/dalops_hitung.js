@@ -90,6 +90,14 @@
       `Bila ada kebutuhan mendesak (logistik, perahu, pompa, alat berat), mohon disampaikan sekalian. Terima kasih.`;
   }
 
-  const X = {SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perluDitanya, statusKab, siaga, pesanWA, tglPanjang, tglPendek, namaKab};
+  /* pesan peringatan dini untuk kab berstatus Waspada ke atas: status dan hujan tiga hari per tanggal, minta siaga dan kabar bila banjir */
+  function pesanSiaga(x, hari) {
+    const baris = hari.map((t, i) => `${i + 1}. ${tglPanjang(t)}: ${NAMA_LEVEL[x.b[i] ?? 0]}${x.h3d?.[i] != null ? `, hujan tiga hari ${Math.round(x.h3d[i])} mm` : ""}`);
+    return `Yth. rekan BPBD ${x.nama}. Pusdalops BNPB menyampaikan prakiraan status banjir ${x.nama}:\n${baris.join("\n")}\n` +
+      (x.sudah ? "Banjir sepekan ini sudah tercatat di logbook. Mohon kabar kondisi terkini dan apakah sudah surut.\n" : "") +
+      `Mohon kesiapsiagaan, dan bila terjadi banjir atau genangan mohon dikabarkan lokasi, jumlah KK dan jiwa terdampak, serta tinggi air. Terima kasih.`;
+  }
+
+  const X = {SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perluDitanya, statusKab, siaga, pesanWA, pesanSiaga, tglPanjang, tglPendek, namaKab};
   g.DalopsHitung = X;
 })(globalThis);

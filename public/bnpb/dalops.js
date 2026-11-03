@@ -19,8 +19,8 @@
   const ikonWA = () => { const s = document.createElementNS(NS, "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true"); s.setAttribute("class", "dl-wa-ikon");
     const p = document.createElementNS(NS, "path"); p.setAttribute("d", "M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2.01-1.42.25-.7.25-1.29.17-1.42-.07-.12-.27-.2-.57-.35zM12.05 21.79h-.01a9.870 9.870 0 0 1-5.030-1.380l-.36-.21-3.740.98 1-3.650-.24-.37a9.860 9.860 0 0 1-1.510-5.260c0-5.450 4.440-9.890 9.890-9.890a9.820 9.820 0 0 1 6.990 2.900 9.830 9.830 0 0 1 2.890 6.990c0 5.450-4.440 9.890-9.880 9.890zm8.410-18.300A11.810 11.810 0 0 0 12.050 0C5.500 0 .160 5.340.160 11.890c0 2.100.550 4.140 1.590 5.950L.060 24l6.300-1.650a11.880 11.880 0 0 0 5.680 1.450h.01c6.550 0 11.890-5.340 11.890-11.890a11.820 11.820 0 0 0-3.480-8.410z");
     s.appendChild(p); return s; };
-  const tombolWA = x => h("a", {class: "dl-ikon dl-wa", href: "https://wa.me/?text=" + encodeURIComponent(H.pesanWA(x)), target: "_blank", rel: "noopener",
-    "aria-label": "Kirim permintaan pembaruan " + x.nama + " lewat WhatsApp", "data-tip": "<b>Kirim lewat WhatsApp</b><br>teks permintaan pembaruan, pilih grup BPBD-nya"}, ikonWA());
+  const tombolWA = (x, teks, apa) => h("a", {class: "dl-ikon dl-wa", href: "https://wa.me/?text=" + encodeURIComponent(teks), target: "_blank", rel: "noopener",
+    "aria-label": `Kirim ${apa} ${x.nama} lewat WhatsApp`, "data-tip": `<b>Kirim lewat WhatsApp</b><br>${apa}, pilih grup BPBD-nya`}, ikonWA());
   const kab = (x, prov) => h("div", {class: "dl-kab"}, h("b", {teks: x.nama}), prov ? h("span", {class: "bn-label", teks: namaProv(x.prov_kode, x.prov)}) : null);
   const td = (isi, n) => h("td", {class: n ? "n" : null}, isi);
   const sumber = t => h("div", {class: "lb-kaki bn-label", teks: "Sumber: " + t});
@@ -159,7 +159,7 @@
           td(h("div", {class: "dl-umur " + nadaUmur(x.umur)}, h("b", {teks: x.umur < 1 ? "Hari ini" : F(x.umur) + " hari lalu"}), h("span", {teks: H.tglPendek(x.terakhir)})), true),
           td(angka.length ? h("div", {class: "dl-chips"}, angka.map(k => h("span", {class: "dl-tag", teks: KURANG[k]}))) : h("span", {class: "dl-redup", teks: "Angka lengkap"}), true),
           td(b == null ? "–" : status(b), true),
-          h("td", null, h("div", {class: "dl-aksi"}, tombolWA(x), peta(x))));
+          h("td", null, h("div", {class: "dl-aksi"}, tombolWA(x, H.pesanWA(x), "permintaan pembaruan"), peta(x))));
       })}));
     return kepalaBlok("tanya", "tunggu", `${F(daftar.length)} wilayah perlu ditanya ke BPBD`,
       `Banjir belum dilaporkan surut yang kabarnya lebih dari sehari atau angkanya bolong, per logbook ${H.tglPanjang(hari)}. Klik provinsi untuk membuka kab/kotanya, lalu ikon WhatsApp untuk mengirim permintaan pembaruan.`,
@@ -191,10 +191,10 @@
       judul: namaProv(p), meta: `${F(xs.length)} kab/kota`,
       baris: xs.map(x => h("tr", {class: x.sudah && x.maks >= 2 ? "dl-sorot" : null}, td(F(++n), true), h("td", null, kab(x)),
         td(x.sudah ? h("span", {class: "dl-tag dl-tag-merah", teks: "Sudah banjir"}) : h("span", {class: "dl-redup", teks: "Belum"}), true),
-        ...hari.map((_, j) => td(sel(x, j), true)), perHari ? null : td(x.h3 == null ? "–" : F(Math.round(x.h3)), true), h("td", null, peta(x))))}));
+        ...hari.map((_, j) => td(sel(x, j), true)), perHari ? null : td(x.h3 == null ? "–" : F(Math.round(x.h3)), true), h("td", null, h("div", {class: "dl-aksi"}, tombolWA(x, H.pesanSiaga(x, hari), "peringatan dini"), peta(x)))))}));
     wadah.replaceChildren(
       h("p", {class: "lb-p", teks: daftar.length ? `${F(daftar.length)} kab/kota berstatus ${min >= 2 ? "Siaga atau Awas" : "Waspada, Siaga, atau Awas"} pada salah satu hari sampai ${H.tglPanjang(hari[hari.length - 1])}${dua ? `, ${F(dua)} di antaranya sudah banjir sepekan ini (baris disorot)` : ""}.${perHari ? " Angka di bawah status = hujan tiga hari pada tanggal itu." : ""}` : "Tidak ada kab/kota berstatus itu."}),
-      daftar.length ? tabelGrup(["No", "Kab/kota", "Banjir sepekan", ...hari.map(H.tglPendek), ...(perHari ? [] : ["Hujan tiga hari, mm"]), "Peta"], grup, 3 + hari.length + (perHari ? 1 : 2)) : null);
+      daftar.length ? tabelGrup(["No", "Kab/kota", "Banjir sepekan", ...hari.map(H.tglPendek), ...(perHari ? [] : ["Hujan tiga hari, mm"]), "Kirim"], grup, 3 + hari.length + (perHari ? 1 : 2)) : null);
   }
 
   function bagianArti() {
