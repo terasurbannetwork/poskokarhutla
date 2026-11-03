@@ -52,3 +52,17 @@ test("teks WA: menyebut kab, tanggal, daftar yang diminta bernomor, tanpa sapaan
   assert.match(t, /1\. Kondisi terkini dan apakah banjir sudah surut\n2\. Jumlah jiwa terdampak\n3\. Tinggi genangan \(cm\)\n4\. Jumlah warga mengungsi/);
   assert.doesNotMatch(t, /KK terdampak/, "KK sudah ada, tidak diminta"); assert.doesNotMatch(t, /Bapak|Pak |·/);
 });
+
+test("ringkasan per provinsi: kab unik, belum surut unik, jumlah angka, kejadian = banyak id; urut kejadian terbanyak (deck 2 Nov: Sumut 12 kejadian, 10 kab)", () => {
+  const S = (id, kab, mulai, terakhir, surut, x = {}) => ({...K(id, kab, mulai, terakhir, surut, x), prov: "Sumatera Utara", prov_kode: "12", kab: ["Kab. " + kab], kab_kode: ["12|" + kab]});
+  const kel = H.kelompok([S("a", "Langkat", "2026-10-28", "2026-11-01", true, {kk: 3157}), S("b", "Langkat", "2026-10-29", "2026-10-30", false, {kk: 310}),
+    S("c", "Dairi", "2026-10-23", "2026-10-26", false), K("d", "Aceh Jaya", "2026-10-31", "2026-11-01", false, {jiwa: 9, mengungsi: 2})], HARI);
+  const p = H.perProv(H.sepekan(kel, HARI));
+  assert.deepEqual(p.map(r => [r.prov_kode, r.kejadian, r.nKab, r.nBelum, r.kk, r.jiwa, r.mengungsi]), [["12", 3, 2, 2, 3467, 0, 0], ["11", 1, 1, 1, 0, 9, 2]]);
+});
+
+test("hujan tiga hari per tanggal per kab = tertinggi di kecamatannya; status.json lama tanpa h3d tetap jalan", () => {
+  const sk = H.statusKab({hari: ["a", "b"], kec: {"11|X|A": {b: [1, 2], h3: 90, h3d: [50, 90]}, "11|X|B": {b: [2, 0], h3: 80, h3d: [80, 10]}, "11|Y|A": {b: [1, 1], h3: 40}}});
+  assert.deepEqual(sk["11|X"].h3d, [80, 90]);
+  assert.deepEqual(sk["11|Y"].h3d, []);
+});
