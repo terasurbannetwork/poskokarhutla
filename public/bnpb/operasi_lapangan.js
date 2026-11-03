@@ -291,11 +291,11 @@
     const jg = k => baris.reduce((a, x) => a + x.guna[k], 0), nol = v => v ? O.fmt(v) : "–";
     const kunci = h("div", {class: "ol-kunci"}, GUNA.map(([k, t]) => h("span", {title: t}, ikonGuna(k), h("b", {teks: k === "wb" ? "WB" : k === "patroli" ? "PTR" : "OMC"}), k === "omc" ? "Modifikasi cuaca" : t)),
       h("span", {title: "Cluster api prioritas dalam jangkauan base"}, h("i", {class: "ol-kunci-cl"}), h("b", {teks: "CL"}), "Cluster prioritas"));
-    return [kunci, h("div", {class: "ol-tb kepala"}, sel(""), sel("Base", ""), sel("WB"), sel("PTR"), sel("OMC"), sel("CL"), sel("Api")),
-      h("div", {class: "ol-tb total"}, sel(""), sel("Grand total", ""), sel(nol(jg("wb"))), sel(nol(jg("patroli"))), sel(nol(jg("omc"))), sel(st.api ? nol(st.api.kl.filter(k => k.level >= 3).length) : "…"), sel("")),
-      ...baris.map((x, i) => { const [t, kl] = kondisiApi(x);
+    return [kunci, h("div", {class: "ol-tb kepala"}, sel("Base", ""), sel("WB"), sel("PTR"), sel("OMC"), sel("CL"), sel("Api")),
+      h("div", {class: "ol-tb total"}, sel("Grand total", ""), sel(nol(jg("wb"))), sel(nol(jg("patroli"))), sel(nol(jg("omc"))), sel(st.api ? nol(st.api.kl.filter(k => k.level >= 3).length) : "…"), sel("")),
+      ...baris.map(x => { const [t, kl] = kondisiApi(x);
         return h("button", {type: "button", class: "ol-tb" + (x.b.id === st.base ? " pilih" : ""), "data-base": x.b.id, title: `${x.b.nama} (${x.b.icao || x.b.id}), ${O.fmt(x.siap)} dari ${O.fmt(x.armada)} armada siap`},
-          sel(String(i + 1), "rk"), h("span", {class: "nm"}, h("b", {teks: x.b.nama.split(" / ")[0]}), h("small", {teks: x.b.icao || x.b.id}), x.api ? h("i", {class: "prio", title: `Pilot melapor ${O.fmt(x.api)} titik api hari ini`}) : null),
+          h("span", {class: "nm"}, h("b", {teks: x.b.nama.split(" / ")[0]}), h("small", {teks: x.b.icao || x.b.id}), x.api ? h("i", {class: "prio", title: `Pilot melapor ${O.fmt(x.api)} titik api hari ini`}) : null),
           sel(nol(x.guna.wb)), sel(nol(x.guna.patroli)), sel(nol(x.guna.omc)), sel(st.api ? nol(p3(x)) : "…", "n tebal"), st.api ? h("span", {class: "st"}, pil(t, kl)) : sel("…")); })];
   }
   /* daftar prioritas pemadaman di bawah tabel base: cluster prioritas terbesar + base terdekat yang punya armada water bombing */
@@ -323,8 +323,8 @@
     const pr = st.api.kl.filter(k => k.level >= 3).sort((x, y) => y.px24 - x.px24);
     return [pr.length ? h("div", {class: "ol-prio"}, h("h3", {class: "ol-sub", teks: `Prioritas pemadaman (${O.fmt(pr.length)})`}), ...pr.slice(0, 8).map(k => { const bs = (st.data.base || []).map(b => ({b, km: jarakKm(b.lat, b.lon, k.lat, k.lon)})).sort((x, y) => x.km - y.km)[0];
         return baisKluster({...k, km: undefined, kab: `${k.kab}${bs ? ` (base terdekat ${bs.b.icao || bs.b.id}, ${O.fmt(Math.round(bs.km))} km)` : ""}`}); })) : null,
-      h("div", {class: "ol-tb kepala api"}, sel(""), sel("Provinsi", ""), sel("Cluster"), sel("Piksel 24j"), sel("Hari"), sel("Status")),
-      ...baris.map((a, i) => h("details", {class: "ol-prov"}, h("summary", {class: "ol-tb api"}, sel(String(i + 1), "rk"), h("span", {class: "nm"}, h("b", {teks: window.Wilayah.PROV[a.prov] || a.prov})),
+      h("div", {class: "ol-tb kepala api"}, sel("Provinsi", ""), sel("Cluster"), sel("Piksel 24j"), sel("Hari"), sel("Status")),
+      ...baris.map(a => h("details", {class: "ol-prov"}, h("summary", {class: "ol-tb api"}, h("span", {class: "nm"}, h("b", {teks: window.Wilayah.PROV[a.prov] || a.prov})),
           sel(O.fmt(a.n)), sel(O.fmt(a.px)), sel(O.fmt(a.hari)), h("span", {class: "st"}, a.p3 ? pil(`${O.fmt(a.p3)} prioritas`, "ol-k-3") : a.p2 ? pil(`${O.fmt(a.p2)} siaga`, "ol-k-2") : pil("Awal", "ol-k-1"))),
         h("div", {class: "ol-kl-daftar"}, a.kl.slice().sort((x, y) => y.level - x.level || y.px24 - x.px24).slice(0, 10).map(baisKluster))))];
   }
