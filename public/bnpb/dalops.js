@@ -120,7 +120,7 @@
   }
 
   /* ---------- peta sepekan (MapLibre, bisa zoom dan geser): kab merah belum surut, biru sudah surut ---------- */
-  async function gambarPeta(wadah, pekan, bukaKab) {
+  async function gambarPeta(wadah, pekan, bukaKab, kontrol) {
     if (!window.maplibregl) { wadah.replaceChildren(kosong("peringatan", "Peta gagal dimuat, coba muat ulang.")); return; }
     const ambil = u => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
     const kodeProv = [...new Set(pekan.map(x => x.prov_kode))];
@@ -140,7 +140,7 @@
     const peta = new maplibregl.Map({container: wadah, style: "https://tiles.openfreemap.org/styles/positron", bounds: [[94.8, -11.2], [141.2, 6.2]],
       fitBoundsOptions: {padding: 16}, minZoom: 3, maxZoom: 13, dragRotate: false, pitchWithRotate: false, attributionControl: {compact: true}});
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-right");
-    wadah.append(legenda);   // kartu legenda di dalam peta, pojok kiri bawah
+    wadah.append(legenda, ...(kontrol ? [kontrol] : []));   // legenda tengah bawah; tombol Buka semua di samping +/−
     peta.touchZoomRotate.disableRotation();
     const css = getComputedStyle(document.documentElement), warna = n => css.getPropertyValue(n).trim();
     peta.on("load", () => {
@@ -290,7 +290,11 @@
       t.buka(true); t.tr.scrollIntoView({block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
     };
     const wadahPeta = h("div", {class: "dl-peta"}, h("p", {class: "bn-pesan", teks: "Memuat peta…"}));
-    requestAnimationFrame(() => gambarPeta(wadahPeta, pekan, bukaKab));   // MapLibre butuh wadah yang sudah terpasang dan berukuran
+    requestAnimationFrame(() => {   // MapLibre butuh wadah yang sudah terpasang dan berukuran
+      const semua = wadahPeta.closest("section")?.querySelector(".dl-kepala .dl-semua");
+      semua?.remove(); semua?.classList.add("dl-semua-peta");
+      gambarPeta(wadahPeta, pekan, bukaKab, semua);
+    });
     return bagian("peta", "banjir", "Banjir sepekan per wilayah", null,
       wadahPeta,
       tabel);
