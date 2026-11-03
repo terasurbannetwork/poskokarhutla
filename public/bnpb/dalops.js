@@ -208,8 +208,9 @@
       peta.on("mousemove", "kab-isi", e => { const id = e.features[0].id; if (sorot !== null && sorot !== id) peta.setFeatureState({source: "kab", id: sorot}, {sorot: false}); sorot = id; peta.setFeatureState({source: "kab", id}, {sorot: true}); peta.getCanvas().style.cursor = "pointer"; });
       peta.on("mouseleave", "kab-isi", () => { if (sorot !== null) peta.setFeatureState({source: "kab", id: sorot}, {sorot: false}); sorot = null; peta.getCanvas().style.cursor = ""; });
       /* kartu muncul saat kursor melewati kab; tetap terbuka selama kursor di kab atau di kartunya (supaya tombol bisa diklik) */
-      const pop = new maplibregl.Popup({closeButton: false, closeOnClick: false, maxWidth: "290px", offset: 12, className: "dl-popup"});
+      const pop = new maplibregl.Popup({closeButton: true, closeOnClick: false, maxWidth: "290px", offset: 12, className: "dl-popup"});
       let kodePop = null, tunda = null;
+      pop.on("close", () => { kodePop = null; });   // tombol x: kab yang sama bisa dibuka lagi
       const tutup = () => { clearTimeout(tunda); tunda = setTimeout(() => { pop.remove(); kodePop = null; }, 250); };
       const tahan = () => clearTimeout(tunda);
       const tampil = e => {
