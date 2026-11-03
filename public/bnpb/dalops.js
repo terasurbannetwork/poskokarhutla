@@ -8,7 +8,8 @@
   "use strict";
   const {ikon, h, F, PROV} = window.Wilayah, H = window.DalopsHitung;
   const app = document.getElementById("app"), NS = "http://www.w3.org/2000/svg";
-  const KURANG = {kk: ["KK", "sosial"], jiwa: ["Jiwa", "personel"], tinggi: ["Tinggi air", "air"]};
+  const KURANG = {kk: ["KK terdampak", "sosial"], jiwa: ["Jiwa terdampak", "personel"], kk_u: ["KK pengungsi", "tenda"], mengungsi: ["Jiwa pengungsi", "tenda"], tinggi: ["Tinggi air", "air"]};
+  const URUT_KURANG = ["kk", "jiwa", "kk_u", "mengungsi", "tinggi"];
   const IK_LEVEL = ["ok", "peringatan", "peringatan", "peringatan"];
   const status = b => h("span", {class: "dl-st dl-l" + b}, ikon(IK_LEVEL[b]), H.NAMA_LEVEL[b]);   // prakiraan: ikon + nama, warna sama dengan peta banjir
   const label = (teks, ik, nada) => h("span", {class: "dl-tag" + (nada ? " dl-tag-" + nada : "")}, ikon(ik), teks);
@@ -58,10 +59,10 @@
         th.setAttribute("aria-sort", arah === 1 ? "ascending" : "descending");
         const tbodies = [...t.tBodies], kunciTb = [];
         for (const tb of tbodies) {
-          const prov = tb.querySelector(":scope > tr.dl-prov"), kel = [];
-          for (const tr of tb.rows) { if (tr === prov) continue; if (tr.classList.contains("dl-kec-baris") || tr.classList.contains("dl-desa-baris")) kel[kel.length - 1]?.push(tr); else kel.push([tr]); }
+          const prov = tb.querySelector(":scope > tr.dl-prov"), sub = tb.querySelector(":scope > tr.dl-subtotal"), kel = [];
+          for (const tr of tb.rows) { if (tr === prov || tr === sub) continue; if (tr.classList.contains("dl-kec-baris") || tr.classList.contains("dl-desa-baris")) kel[kel.length - 1]?.push(tr); else kel.push([tr]); }
           kel.sort((a, b) => banding(kunci(a[0].cells[i]), kunci(b[0].cells[i]), arah));
-          tb.append(...kel.flat());
+          tb.append(...kel.flat(), ...(sub ? [sub] : []));   // sub total tetap di bawah kelompoknya
           const sel = prov && prov.cells.length > 1 ? prov.cells[i] : kel[0]?.[0].cells[i];
           kunciTb.push([tb, kunci(sel)]);
         }
@@ -264,12 +265,6 @@
     const rw = (x.riwayat || []).slice().reverse(), denganKondisi = !x.provinsi;
     const maksKK = Math.max(1, ...rw.map(r => r.kk || 0));
     /* ringkasan: angka terakhir yang terisi, perubahan dari laporan sebelumnya yang terisi */
-    const ringkas = (f, judul, ik) => {
-      const ada = rw.filter(r => r[f] != null), kini = ada[0]?.[f], lalu = ada[1]?.[f];
-      const beda = !x.provinsi && kini != null && lalu != null ? kini - lalu : null;   // provinsi: tak semua kab melapor tiap hari, selisih menyesatkan
-      return h("div", {class: "dl-hs-kotak"}, h("span", {class: "dl-tip-ik"}, ikon(ik)), h("span", {class: "dl-hs-label", teks: judul}), h("b", {teks: angka(kini)}),
-        beda ? h("span", {class: "dl-hs-beda " + (beda > 0 ? "naik" : "turun"), teks: (beda > 0 ? "naik " : "turun ") + F(Math.abs(beda)) + " dari laporan sebelumnya"}) : h("span", {class: "dl-hs-beda", teks: x.provinsi ? "jumlah kab/kota yang melapor hari itu" : beda === 0 ? "tetap" : "belum ada pembanding"}));
-    };
     const th = (teks, att) => h("th", {scope: "col", ...att, teks});
     const histori = rw.length ? h("div", {class: "ad-tabel-wadah dl-tabel-wadah dl-hs-wadah"}, h("table", {class: "ad-tabel dl-tabel dl-hs"},
       h("thead", null, h("tr", null, th("Tanggal", {rowspan: "2", "data-i": "0"}), th("Terdampak", {colspan: "2"}), th("Wilayah", {colspan: "2"}), th("Tinggi air", {rowspan: "2", "data-i": "5"}), denganKondisi ? th("Kondisi", {rowspan: "2"}) : null),
@@ -289,9 +284,6 @@
     dialog.replaceChildren(h("div", {class: "dl-dialog-kepala"}, h("span", {class: "dl-hs-lencana"}, ikon("kalender")),
         h("div", null, h("h2", {id: "dl-dialog-judul", teks: "Histori harian " + x.nama}),
           h("p", {class: "dl-sub", teks: sub || `${namaProv(x.prov_kode, x.prov)}, banjir sejak ${H.tglPanjang(x.mulai)}, kabar terakhir ${H.tglPanjang(x.terakhir)}`})), tutup),
-      rw.length ? h("div", {class: "dl-hs-ringkas"}, ringkas("kk", "KK terdampak", "sosial"), ringkas("jiwa", "Jiwa terdampak", "personel"),
-        h("div", {class: "dl-hs-kotak"}, h("span", {class: "dl-tip-ik"}, ikon("kalender")), h("span", {class: "dl-hs-label", teks: "Hari tercatat"}), h("b", {teks: F(rw.length)}),
-          h("span", {class: "dl-hs-beda", teks: `${H.tglPendek(rw[rw.length - 1].tgl)} sampai ${H.tglPendek(rw[0].tgl)}`}))) : null,
       h("div", {class: "dl-gulir"}, histori));
     /* lebar batang lewat CSSOM (bukan atribut style), aman untuk CSP */
     dialog.querySelectorAll(".dl-hs-isi").forEach(i => { i.style.width = i.dataset.w + "%"; });
@@ -333,6 +325,9 @@
         baris.push(tr, ...kecBaris.flatMap(k => [k.trk, ...k.desa]));
       }
       const latest = r.baris.reduce((m, x) => x.terakhir > m ? x.terakhir : m, "");
+      /* sub total per provinsi di bawah kab/kotanya (pemilik 3 Nov 2026) */
+      baris.push(h("tr", {class: "dl-subtotal"}, h("td", {class: "dl-wil", teks: "Sub total " + namaProv(r.prov_kode, r.prov)}), td(F(r.kejadian), true), td(`${F(r.nBelum)} belum, ${F(r.nKab - r.nBelum)} sudah`, true), td("", true),
+        td(F(r.kk), true), td(F(r.jiwa), true), td(F(r.kk_u), true), td(F(r.mengungsi), true), td("", true), td(H.tglPendek(latest), true), td("", true)));
       const nama = namaProv(r.prov_kode, r.prov), gab = {nama, provinsi: true, riwayat: r.baris.reduce((a, x) => H.gabungRiwayat(a, x.riwayat || []), [])};
       const aksi = h("div", {class: "dl-aksi"}, tombolHistori(gab, `Jumlah ${F(r.nKab)} kab/kota per hari logbook`),
         r.nBelum ? tombolWA({nama: "Provinsi " + nama}, H.pesanProv(nama, r.baris), "permintaan pembaruan") : null);
@@ -373,7 +368,7 @@
     const tb = kelompokProv(daftar, (a, b) => b[1][0].umur - a[1][0].umur || b[1].length - a[1].length).map(([p, xs]) =>
       tbodyProv(namaProv(p, xs[0].prov), `${F(xs.length)} kab/kota`, null, 7, xs.map(x => {
         /* status.json hanya memuat kecamatan berlevel > 0 (scripts/banjir/status.py): kab tak tercantum = Aman */
-        const b = st ? (sk[x.kab_kode]?.b?.[1] ?? 0) : null, kurang = x.kurang.filter(k => k !== "kabar");
+        const b = st ? (sk[x.kab_kode]?.b?.[1] ?? 0) : null, kurang = [...x.kurang.filter(k => k !== "kabar"), ...["kk_u", "mengungsi"].filter(f => x[f] == null)].sort((a, b) => URUT_KURANG.indexOf(a) - URUT_KURANG.indexOf(b));   // pengungsi: tampil saja, bukan syarat ditanya
         return h("tr", null, td(F(++n), true), h("td", null, kab(x)),
           tdv(h("b", {class: "dl-umur " + nadaUmur(x.umur), teks: x.umur < 1 ? "Hari ini" : F(x.umur) + " hari"}), x.umur), tdv(H.tglPendek(x.terakhir), x.terakhir.replace(/-/g, "")),
           tdv(kurang.length ? h("div", {class: "dl-chips"}, kurang.map(k => label(KURANG[k][0], KURANG[k][1], "kuning"))) : label("Angka lengkap", "ok", "hijau"), kurang.length),
@@ -410,7 +405,7 @@
 
   function bagianArti() {
     return h("div", {class: "dl-arti"}, h("b", {class: "dl-arti-judul", teks: "Arti prakiraan"}), [[1, "Hujan tiga hari 40 mm atau lebih, atau sungai mulai naik."], [2, "Hujan tiga hari 80 mm di wilayah rawan banjir, atau debit sungai tinggi."], [3, "Hujan tiga hari 120 mm di wilayah sangat rawan, atau sungai meluap."]]
-      .map(([l, t]) => h("div", null, status(l), h("span", {class: "bn-label", teks: t}))));
+      .map(([l, t]) => h("div", {class: "dl-arti-l" + l}, status(l), h("span", {class: "bn-label", teks: t}))));
   }
 
   function render(d, st) {

@@ -349,10 +349,6 @@
 .dl-wrap .dl-tabel-wadah{border:1px solid var(--line);border-radius:12px;background:var(--card)}
 
 /* legenda prakiraan: satu baris ringkas */
-.dl-arti{display:flex!important;flex-wrap:wrap;align-items:center;gap:8px 18px;padding:10px 14px;border-radius:12px;background:var(--paper);border:1px solid var(--line)}
-.dl-arti>div{background:none!important;padding:0!important;gap:8px;align-items:center}
-.dl-arti .bn-label{font-size:12px;font-weight:500}
-.dl-arti-judul{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--ink)}
 .dl-lengkap{justify-self:end;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--c5);text-decoration:none}
 .dl-lengkap:hover,.dl-lengkap:focus-visible{text-decoration:underline}
 .dl-wrap .dl-lengkap svg{width:14px;height:14px}
@@ -363,3 +359,20 @@
 .dl-saring-btn{border:0;background:none;color:#0b2545;border-radius:6px;padding:5px 10px;font:600 12px var(--font);cursor:pointer;white-space:nowrap}
 .dl-saring-btn:hover,.dl-saring-btn:focus-visible{background:#eef1f6}
 .dl-saring-btn[aria-pressed="true"]{background:#0b2545;color:#fff}
+/* kepala pop-up histori: pita gelap seperti kepala bagian halaman */
+.dl-dialog .dl-dialog-kepala{background:var(--gradien);color:#fff;border-bottom:2px solid var(--emas);padding:16px 20px;margin-bottom:14px}
+.dl-dialog .dl-dialog-kepala h2{color:#fff}
+.dl-dialog .dl-dialog-kepala .dl-sub{color:rgb(255 255 255 / .75)}
+.dl-dialog .dl-hs-lencana{background:rgb(255 255 255 / .12)}
+.dl-dialog .dl-tutup-dialog{color:#fff;background:rgb(255 255 255 / .12);border-color:transparent}
+.dl-dialog .dl-tutup-dialog:hover,.dl-dialog .dl-tutup-dialog:focus-visible{background:rgb(255 255 255 / .22);color:#fff}
+/* sub total per provinsi */
+.dl-wrap .dl-tabel tr.dl-subtotal td{background:color-mix(in srgb,var(--navy) 6%,var(--card));font-weight:800;color:var(--ink);border-top:1px solid color-mix(in srgb,var(--navy) 25%,transparent)}
+.dl-wrap .dl-tabel tr.dl-subtotal td.dl-wil{padding-left:18px}
+/* arti prakiraan: tiga kartu, garis kiri warna level, ambang hujan terbaca */
+.dl-wrap .dl-arti{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0;background:none;border:0}
+.dl-arti-judul{grid-column:1/-1;font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--ink)}
+.dl-wrap .dl-arti>div{display:grid;gap:8px;align-content:start;justify-items:start;padding:12px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--pil)}
+.dl-arti-l1{--pil:var(--c3)}.dl-arti-l2{--pil:var(--c2)}.dl-arti-l3{--pil:var(--c1)}
+.dl-arti .bn-label{font-size:12.5px;line-height:1.45;color:var(--ink2);font-weight:500}
+@media (max-width:820px){.dl-wrap .dl-arti{grid-template-columns:1fr}}
