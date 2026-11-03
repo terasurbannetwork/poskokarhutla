@@ -40,6 +40,11 @@ def bingkai(pptx, format, judul=None, subjudul=None, tanggal=None, sampul=True, 
     isi = pptx[:-5] + ' (isi).pptx'
     shutil.copyfile(pptx, isi)
     tanggal = tanggal or dt.date.today()
+    if format == 'penanganan':
+        # pemilik 3 Nov 2026: "untuk laporan karhutla gausah pake cover depan belakang". Sampul dan penutup selalu dibuang,
+        # juga bila pemanggil masih menyusunnya.
+        sampul = False
+        susun = [b for b in susun if b.get('jenis') not in ('sampul', 'penutup')] if susun is not None else None
     fotos, kredit = foto
     slide = []
     for n, teks in urutan_slide(isi):
