@@ -1,0 +1,1 @@
+../../../docs/pedoman-deck/ppt-format-bnpb.md
