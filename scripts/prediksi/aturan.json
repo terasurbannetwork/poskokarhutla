@@ -16,7 +16,7 @@
         {"v": "HJN.tot", "op": ">=", "nilai": 50, "sumber": "BMKG: hujan lebat >= 50 mm/24 jam"},
         {"v": "HJN.sm", "op": ">=", "nilai": 0.45, "sumber": "tanah jenuh: kelembapan 3-27 cm >= 0,45 m3/m3 (ambang status.py SM_JENUH)"}
       ],
-      "paparan": {"jenis": "kec_bahaya", "bahaya": "banjir", "ambang": 0.666, "sumber": "kecamatan berindeks bahaya banjir InaRISK tinggi (>= 0,666, nilai tertinggi 10 titik per kecamatan); seluruh penduduk kecamatan itu = batas atas"},
+      "paparan": {"jenis": "kec_bahaya", "bahaya": "banjir", "ambang": 0.666, "jiwa_dari": "paparan_kab.json", "sumber": "jiwa: penduduk WorldPop 2026 di zona bahaya banjir tinggi InaRISK, porsi luas kecamatan (paparan_kab.json, sama dengan lapisan dampak banjir); sekolah dan faskes: kecamatan berindeks bahaya >= 0,666"},
       "mengungsi": {"jenis_dibi": ["Banjir", "Banjir Bandang", "Banjir Genangan", "Banjir dan Tanah Longsor"]}
     },
     {

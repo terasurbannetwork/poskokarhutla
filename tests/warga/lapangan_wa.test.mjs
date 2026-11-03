@@ -6,6 +6,7 @@ import "../../src/worker.js";
 import {siapkan, berantai, ADMIN, MOD2, sha256} from "./_bnpb.mjs";
 import {badanPanjang} from "./_bantu.mjs";
 import {bersihkanLapangan} from "../../src/lapangan_panel.js";
+import {hapusOrang} from "../../src/lapangan.js";
 
 const U = await siapkan("uji-lapangan-c", {r2: true, ikat: {WA_KUNCI: "kunci-wa-uji"}}), uji = berantai(), DB = U.DB;
 const PB = {"x-pb": "1"}, MENIT = 60e3, JAM = 3600e3, HARI = 24 * JAM, KUNCI = {"x-wa-kunci": "kunci-wa-uji"};
@@ -255,12 +256,14 @@ uji("daftar orang menurut keahlian (LP-046) dan penanda keahlian: hanya Super Ad
   // batas 10 penanda per orang, lalu hapus
   for (let i = 0; i < 9; i++) assert.equal((await keA({orang_id: A.id, keahlian: "ahli_" + "abcdefghi"[i]})).s, 200);
   assert.equal((await keA({orang_id: A.id, keahlian: "ahli_z"})).s, 409, "penanda ke-11");
+  assert.equal(await satu("SELECT count(*) n FROM orang_keahlian WHERE orang_id = ?", A.id).then(x => x.n), 10, "ke-11 tidak tertulis (batas atomik)");
+  assert.equal((await keA({orang_id: A.id, keahlian: "pompa", bukti: "perbarui di batas"})).s, 200, "memperbarui penanda yang ada tetap boleh di batas 10");
   assert.equal((await keA({orang_id: A.id, keahlian: "pompa"}, PIMPINAN, "DELETE")).s, 403);
   assert.equal((await keA({orang_id: A.id, keahlian: "pompa"}, ADMIN, "DELETE")).s, 200);
   assert.equal((await api("GET", "/api/petugas/panel/orang?keahlian=pompa", undefined, PIMPINAN)).j.orang.length, 0);
 });
 
-uji("label.json (LP-023): hanya token admin; hanya terverifikasi, bukan dummy; sejak menyaring", async () => {
+uji("label.json (LP-023): hanya Super Admin; hanya terverifikasi, bukan dummy; sejak menyaring", async () => {
   const lb = async (tanggal) => { const id = id16(); await DB.prepare("INSERT INTO lp_logbook (id, orang_id, tugas_id, tanggal, kegiatan, waktu, diubah) VALUES (?, ?, ?, ?, 'Patroli', 1, 1)").bind(id, B.id, TUGAS, tanggal).run(); return id; };
   const label = async (sumber, jenis, ver, waktu, dummy = 0) => DB.prepare("INSERT INTO lapangan_label (id, sumber_id, jenis, nilai, lat, lon, waktu, terverifikasi, dummy) VALUES (?, ?, ?, '{\"kondisi_api\":\"menyala\"}', -2.3, 114.4, ?, ?, ?)").bind(id16(), sumber, jenis, waktu, ver, dummy).run();
   await label(await lb("2026-10-01"), "api", 1, 1000); await label(await lb("2026-10-02"), "api", 0, 2000); await label(await lb("2026-10-03"), "banjir", 1, 3000, 1); await label(await lb("2026-10-04"), "banjir", 1, 4000);
@@ -272,6 +275,10 @@ uji("label.json (LP-023): hanya token admin; hanya terverifikasi, bukan dummy; s
   assert.deepEqual(Object.keys(r.j.label[0]).sort(), ["id", "jenis", "lat", "lon", "nilai", "waktu"]); assert.equal(r.j.label[0].nilai.kondisi_api, "menyala");
   assert.deepEqual((await api("GET", "/api/petugas/label.json?sejak=2000", undefined, ADMIN)).j.label.map(x => x.waktu), [4000]);
   assert.equal((await api("GET", "/api/petugas/label.json?sejak=abc", undefined, ADMIN)).s, 400);
+  assert.equal((await api("GET", "/api/petugas/label.json", undefined, MOD2)).s, 403, "token admin biasa (bukan Super Admin) ditolak");
+  /* laju per IP: 60 per jam (4 panggilan sah di atas sudah dihitung); sesudahnya 429 */
+  let s429 = 0; for (let i = 0; i < 60; i++) if ((await api("GET", "/api/petugas/label.json", undefined, ADMIN)).s === 429) s429++;
+  assert.ok(s429 >= 1, "laju label.json per IP");
 });
 
 uji("retensi foto 2 tahun (LP-049): foto R2 lama dihapus dan foto_key jadi 'dihapus', baris tetap; foto baru utuh", async () => {
@@ -301,6 +308,85 @@ uji("laju balasan per nomor: balasan beruntun dari satu nomor berhenti di 429; s
   assert.ok(s429 >= 4, `429 muncul sesudah 20 per jam: ${s429}`);
   assert.equal((await balasWA(NOMOR.r1, "SIAP BBBBBB")).s, 200, "nomor lain tidak ikut terhalang");
   for (const t of SEMUA) { assert.ok(!/vektor"\s*:/.test(t), "vektor tidak muncul"); assert.ok(!t.includes(A.kode) && !t.includes(sha256(A.kode)), "kode pribadi tidak muncul"); }
+});
+
+uji("kit logbook (0101): isian liar ditolak D1, kunci unik, hapus logbook ikut menghapus kit", async () => {
+  const lb = id16(); await DB.prepare("INSERT INTO lp_logbook (id, orang_id, tugas_id, tanggal, kegiatan, waktu, diubah) VALUES (?, ?, ?, '2026-09-01', 'Patroli', 1, 1)").bind(lb, A.id, TUGAS).run();
+  const kit = (k, j = 1, l = lb) => DB.prepare("INSERT INTO lp_logbook_kit (logbook_id, kit_id, jumlah) VALUES (?, ?, ?)").bind(l, k, j).run();
+  await kit("pompa", 2); await kit("selang");
+  for (const [k, j, l] of [["pompa", 1, lb], ["x", 0, lb], ["x", 10000, lb], ["", 1, lb], ["x", 1, "f".repeat(16)]]) await assert.rejects(kit(k, j, l), /UNIQUE|CHECK|FOREIGN KEY|constraint/i, `${k}/${j}`);
+  assert.equal(await satu("SELECT count(*) n FROM lp_logbook_kit WHERE logbook_id = ?", lb).then(x => x.n), 2);
+  await DB.prepare("DELETE FROM lp_logbook WHERE id = ?").bind(lb).run();
+  assert.equal(await satu("SELECT count(*) n FROM lp_logbook_kit WHERE logbook_id = ?", lb).then(x => x.n), 0);
+});
+
+uji("retensi penerima panggilan: baris penerima dengan batas panggilan lewat 30 hari dibuang, yang lebih baru tetap", async () => {
+  const mk = async (batas) => { const id = id16(); await DB.prepare("INSERT INTO lp_panggil (id, tugas_id, keahlian, prov, kab, kuota, batas, pesan, status, dibuat_oleh, dibuat, dummy) VALUES (?, ?, '[\"x\"]', '62', NULL, 1, ?, NULL, 'tutup', 'uji', 1, 0)").bind(id, TUGAS, batas).run();
+    await DB.prepare("INSERT INTO lp_panggil_penerima (panggil_id, relawan_id, kode_balas, status, waktu) VALUES (?, ?, ?, 'terkirim', 1)").bind(id, id16(), batas > Date.now() - 30 * HARI ? "RTBAAA" : "RTBBBB").run(); return id; };
+  const tua = await mk(Date.now() - 31 * HARI), baru = await mk(Date.now() - 29 * HARI);
+  await bersihkanLapangan({DB}, Date.now());
+  assert.equal(await satu("SELECT count(*) n FROM lp_panggil_penerima WHERE panggil_id = ?", tua).then(x => x.n), 0, "batas > 30 hari lalu dibuang");
+  assert.equal(await satu("SELECT count(*) n FROM lp_panggil_penerima WHERE panggil_id = ?", baru).then(x => x.n), 1, "29 hari tetap");
+});
+
+uji("temuan pengulas tahap C: hapusOrang juga membuang wa_antre panggil/panggil_info relawannya; gerbang tidak menarik pesan dummy; panggilan dummy menghasilkan pesan dummy", async () => {
+  const lain = `${P1}.${R.r1}`, saya = `${P1}.${R.r3}`;
+  for (const [jenis, rujukan] of [["panggil", saya], ["panggil_info", saya], ["panggil", lain]]) await DB.prepare("INSERT INTO wa_antre (id, tujuan, pesan, jenis, rujukan, status, percobaan, dibuat, dummy) VALUES (?, ?, 'SIAP KODE', ?, ?, 'antre', 0, ?, 0)").bind(id16(), NOMOR.r3, jenis, rujukan, Date.now()).run();
+  const n = rj => satu("SELECT count(*) n FROM wa_antre WHERE rujukan = ?", rj).then(x => x.n);
+  assert.ok(await n(saya) >= 2 && await n(lain) >= 1);
+  await hapusOrang({DB}, R.r3);
+  assert.equal(await n(saya), 0, "pesan bermuatan kode balas milik relawan itu ikut terhapus");
+  assert.ok(await n(lain) >= 1, "pesan relawan lain tidak tersentuh");
+  /* gerbang hanya menarik dummy = 0 */
+  await DB.prepare("INSERT INTO wa_antre (id, tujuan, pesan, jenis, status, percobaan, dibuat, dummy) VALUES (?, ?, 'PESAN-CONTOH', 'uji', 'antre', 0, 1, 1)").bind(id16(), NOMOR.a).run();
+  assert.ok(!JSON.stringify((await GW("GET", "/api/petugas/wa/antre")).j).includes("PESAN-CONTOH"), "dummy tidak ditarik gerbang");
+  /* panggilan pada tugas dummy: pesan dummy, penerima relawan dummy */
+  const td = id16(), rd = await relawan("Relawan Contoh", "6281100000040", {keahlian: ["pendidikan_anak"]});
+  await DB.batch([DB.prepare("UPDATE relawan SET dummy = 1 WHERE id = ?").bind(rd),
+    DB.prepare("INSERT INTO lp_tugas (id, judul, bencana, lat, lon, radius_m, mulai, selesai, dibuat, dummy) VALUES (?, 'Tugas contoh', 'karhutla', -2.3, 114.4, 500, ?, ?, 1, 1)").bind(td, Date.now() - HARI, Date.now() + 3 * HARI)]);
+  const pd = await api("POST", "/api/petugas/panel/panggil", {tugas_id: td, keahlian: ["pendidikan_anak"], prov: "62", kuota: 1, batas_jam: 5}, ADMIN); assert.equal(pd.s, 201, pd.t); assert.equal(pd.j.penerima, 1);
+  assert.equal(await satu("SELECT dummy FROM wa_antre WHERE rujukan = ?", `${pd.j.id}.${rd}`).then(x => x.dummy), 1, "pesan panggilan tugas dummy bertanda dummy");
+  assert.ok(!JSON.stringify((await GW("GET", "/api/petugas/wa/antre")).j).includes("Tugas contoh"), "tidak ditarik gerbang");
+});
+
+uji("laju balasan: yang dihitung per NOMOR lalu plafon global; ember per IP (milik gateway) tidak lagi dipakai; plafon global 5000 per jam menolak 429", async () => {
+  await balasWA("6289900000021", "SIAP AAAAAA");
+  assert.equal(await satu("SELECT count(*) n FROM laju_bnpb WHERE aksi = 'lapangan.balas'").then(x => x.n), 0, "tidak ada ember per IP");
+  assert.ok(await satu("SELECT count(*) n FROM laju_bnpb WHERE aksi = 'lapangan.balas_no'").then(x => x.n) > 0);
+  const kini = Date.now();
+  await DB.prepare("WITH RECURSIVE c(i) AS (SELECT 1 UNION ALL SELECT i + 1 FROM c WHERE i < 5000) INSERT INTO laju_bnpb (kunci, aksi, waktu) SELECT 'global', 'lapangan.balas_semua', ?1 - i FROM c").bind(kini).run();
+  const r = await balasWA("6289900000022", "SIAP AAAAAA"); assert.equal(r.s, 429, "plafon global habis");
+  await DB.prepare("DELETE FROM laju_bnpb WHERE aksi = 'lapangan.balas_semua'").run();
+  assert.equal((await balasWA("6289900000023", "SIAP AAAAAA")).s, 200, "pulih sesudah plafon dibersihkan");
+});
+
+uji("SIAP: salinOrang gagal = tidak ada yang setengah jadi (status penerima tetap, tanpa anggota atau penugasan), balas ulang sesudah pulih berhasil", async () => {
+  const r8 = await relawan("Relawan Delapan", "6281100000008", {keahlian: ["bahasa_isyarat"]});
+  const p = await api("POST", "/api/petugas/panel/panggil", {tugas_id: TUGAS, keahlian: ["bahasa_isyarat"], prov: "62", kab: "Kapuas", kuota: 1, batas_jam: 5}, ADMIN); assert.equal(p.s, 201, p.t); assert.equal(p.j.penerima, 1);
+  const kode = (await satu("SELECT kode_balas FROM lp_panggil_penerima WHERE panggil_id = ?", p.j.id)).kode_balas;
+  await DB.exec("CREATE TRIGGER uji_salin_gagal BEFORE INSERT ON orang BEGIN SELECT RAISE(ABORT, 'uji: salin gagal'); END");
+  try {
+    const x = await balasWA("6281100000008", `SIAP ${kode}`); assert.ok(x.s >= 500, "galat server, bukan diterima: " + x.t);
+    assert.equal((await satu("SELECT status FROM lp_panggil_penerima WHERE panggil_id = ?", p.j.id)).status, "antre", "status tidak berubah jadi siap");
+    assert.equal(await baris("SELECT 1 FROM relawan_penugasan WHERE relawan_id = ?", r8).then(a => a.length), 0);
+    assert.equal((await satu("SELECT status FROM relawan WHERE id = ?", r8)).status, "siap_tugas");
+  } finally { await DB.exec("DROP TRIGGER uji_salin_gagal"); }
+  const ok = await balasWA("6281100000008", `SIAP ${kode}`); assert.equal(ok.j.diterima, true, ok.t);
+  assert.equal(await baris("SELECT 1 FROM relawan_penugasan WHERE relawan_id = ?", r8).then(a => a.length), 1);
+});
+
+uji("panggilan: pesan bebas dibersihkan dari tautan dan nomor HP; plafon 300 penerima per jam per moderator", async () => {
+  const sah = {tugas_id: TUGAS, keahlian: ["kosongsaja"], prov: "62", kab: "Kapuas", kuota: 1, batas_jam: 5};
+  const k = await api("POST", "/api/petugas/panel/panggil", {...sah, pesan: "Daftar di https://evil.example/x atau hubungi 081234567890 sekarang"}, ADMIN); assert.equal(k.s, 201, k.t);
+  const tersimpan = (await satu("SELECT pesan FROM lp_panggil WHERE id = ?", k.j.id)).pesan;
+  assert.ok(!/evil\.example|https?:|081234567890/.test(tersimpan), "tautan dan nomor dibuang: " + tersimpan);
+  /* plafon: 300 baris penerima dari panggilan buatan moderator yang sama dalam sejam terakhir */
+  const mod = sha256("rahasia-admin").slice(0, 12), pid = id16(), huruf = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  await DB.prepare("INSERT INTO lp_panggil (id, tugas_id, keahlian, prov, kab, kuota, batas, pesan, status, dibuat_oleh, dibuat, dummy) VALUES (?, ?, '[\"x\"]', '62', NULL, 1, ?, NULL, 'buka', ?, ?, 0)").bind(pid, TUGAS, Date.now() + HARI, mod, Date.now()).run();
+  await DB.prepare("WITH RECURSIVE c(i) AS (SELECT 0 UNION ALL SELECT i + 1 FROM c WHERE i < 299) INSERT INTO lp_panggil_penerima (panggil_id, relawan_id, kode_balas, status, waktu) SELECT ?1, printf('c%015x', i), 'Q' || substr(?2, i / 24 + 1, 1) || substr(?2, i % 24 + 1, 1) || 'XXX', 'antre', 1 FROM c").bind(pid, huruf).run();
+  const x = await api("POST", "/api/petugas/panel/panggil", sah, ADMIN); assert.equal(x.s, 429, x.t); assert.match(x.j.galat ?? x.t, /penerima/);
+  assert.equal(await satu("SELECT count(*) n FROM lp_panggil WHERE tugas_id = ? AND keahlian = ?", TUGAS, JSON.stringify(sah.keahlian)).then(a => a.n), 1, "yang ditolak tidak menulis (hanya panggilan pembersih URL di atas)");
+  await DB.prepare("DELETE FROM lp_panggil WHERE id = ?").bind(pid).run();
 });
 
 uji("tanpa tabel 0101 rute panggilan menjawab 503 dan balasan WA tidak melempar (pola tahap B)", async () => {

@@ -4,7 +4,8 @@
 (() => {
   "use strict";
   const {ikon, h} = window.Wilayah, O = window.OperasiLapangan, app = document.getElementById("app"), NS = "http://www.w3.org/2000/svg";
-  const st = {tanggal: O.hariIniWIB(), segmen: "pagi", base: null, data: null, super: false};
+  const st = {tanggal: O.hariIniWIB(), segmen: "pagi", base: null, data: null, super: false, ...{rentang: O.rentangBawaan()}, nilai: null};
+  let nomorNilai = 0;
   let nomor = 0, peta = null, lapis = [], el = {};
 
   const api = async (m, u, b) => {
@@ -25,12 +26,17 @@
   function kerangka() {
     el.tgl = h("input", {type: "date", class: "ol-tgl", value: st.tanggal, "aria-label": "Tanggal operasi"});
     el.seg = h("div", {class: "ol-pilih ol-seg", role: "radiogroup", "aria-label": "Waktu"}, O.SEGMEN.map(([v, t, ik]) => h("label", null, h("input", {type: "radio", name: "segmen", value: v, ...(v === st.segmen ? {checked: ""} : {})}), ikon(ik), t)));
-    el.pesan = h("p", {class: "bn-pesan", role: "status"}); el.dummy = h("div", {class: "ol-aksi"}); el.bandera = h("p", {class: "ol-dummy", hidden: "", teks: "DATA DUMMY ditampilkan, bukan laporan nyata."});
+    el.dari = h("input", {type: "date", class: "ol-tgl", value: st.rentang.dari, "aria-label": "Dari tanggal"}); el.sampai = h("input", {type: "date", class: "ol-tgl", value: st.rentang.sampai, "aria-label": "Sampai tanggal"});
+    el.rentang = h("div", {class: "ol-rentang", hidden: ""}, h("label", null, "Dari", el.dari), h("label", null, "Sampai", el.sampai), h("p", {class: "ol-sumber", teks: "Rentang paling lama 31 hari."}));
+    el.pesan = h("p", {class: "bn-pesan", role: "status"}); el.bawah = h("div", {class: "ol-bawah"}); el.dummy = h("div", {class: "ol-aksi"}); el.bandera = h("p", {class: "ol-dummy", hidden: "", teks: "DATA DUMMY ditampilkan, bukan laporan nyata."});
     el.kartu = h("div", {class: "bn-grid ol-ringkas"}); el.peta = h("div", {class: "ol-peta", role: "application", "aria-label": "Peta operasi udara"}); el.panel = h("div", {class: "ol-panel"}); el.kaki = h("p", {class: "ol-sumber"});
     app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Operasi"}), h("div", {class: "bn-aksi"}, el.dummy)),
-      h("section", {class: "bn-blok"}, h("div", {class: "ol-baris"}, el.tgl, el.seg), el.pesan), el.bandera, el.kartu,
-      el.tengah = h("div", {class: "ol-tengah"}, el.peta, el.panel), el.kaki);
-    el.seg.addEventListener("change", e => { if (e.target.name === "segmen") { st.segmen = e.target.value; render(); } });   // radio sudah dicat peramban; render berat sesudah frame
+      h("section", {class: "bn-blok"}, h("div", {class: "ol-baris"}, el.tgl, el.seg), el.rentang, el.pesan), el.bandera, el.kartu,
+      el.tengah = h("div", {class: "ol-tengah"}, el.peta, el.panel), el.bawah, el.kaki);
+    el.seg.addEventListener("change", e => { if (e.target.name === "segmen") { st.segmen = e.target.value; const n = st.segmen === "nilai"; el.rentang.hidden = !n; el.tgl.hidden = n; render(); } });   // radio sudah dicat peramban; render berat sesudah frame
+    const gantiRentang = ubah => { const r = O.klampRentang(el.dari.value || st.rentang.dari, el.sampai.value || st.rentang.sampai, ubah);
+      el.dari.value = r.dari; el.sampai.value = r.sampai; st.rentang = r; st.nilai = null; if (st.segmen === "nilai") render(); };   // chrome dicat dulu; fetch sesudah rAF di render
+    el.dari.addEventListener("change", () => gantiRentang("dari")); el.sampai.addEventListener("change", () => gantiRentang("sampai"));
     el.tgl.addEventListener("change", () => { if (/^\d{4}-\d{2}-\d{2}$/.test(el.tgl.value)) { st.tanggal = el.tgl.value; st.base = null; muat(); } });
   }
   function masuk(s) {
@@ -58,6 +64,8 @@
     });
   }
   function renderKartu(d) {
+    if (st.segmen === "nilai") return renderNilai();
+    el.bawah.replaceChildren(); el.kaki.hidden = false; el.kartu.className = "bn-grid ol-ringkas";
     const r = O.ringkas(d), seg = st.segmen;
     const temuanKartu = h("article", {class: "bn-kartu ol-kartu"}, h("h2", null, ikon("peringatan"), "Temuan patroli"), h("div", {class: "bn-angka", teks: O.fmt(r.temuanTotal)}),
       h("div", {class: "ol-pils"}, O.URUT_TEMUAN.map(s => pil(`${O.STATUS_TEMUAN[s].nama} ${O.fmt(r.temuan[s])}`, O.kelasTemuan(s)))), h("p", {class: "ol-sumber", teks: "Sumber: " + O.sumberTeks(d, "temuan")}));
@@ -102,12 +110,15 @@
     peta.resize();
   }
   function pilihBase(id) {   // chrome dulu: sorot base langsung; panel sesudah frame
-    st.base = id; for (const n of el.peta.querySelectorAll(".ol-base")) n.classList.toggle("pilih", n.dataset.base === id);
-    sesudahFrame(() => renderPanel(O.saringSegmen(st.data, st.segmen)));
+    st.base = id === st.base && st.segmen === "nilai" ? null : id; for (const n of el.peta.querySelectorAll(".ol-base")) n.classList.toggle("pilih", n.dataset.base === st.base);
+    sesudahFrame(() => { renderPanel(O.saringSegmen(st.data, st.segmen)); if (st.segmen === "nilai") tampilNilai(); });
   }
   function renderPanel(d) {
     const out = [], b = (st.data.base || []).find(x => x.id === st.base);
-    if (st.segmen === "nilai") return el.panel.replaceChildren(h("h2", {class: "ol-judul"}, ikon("ok"), "Nilai efektivitas"), kosong("Belum ada nilai efektivitas untuk tanggal ini."));
+    if (st.segmen === "nilai") { const nb = (st.data.base || []).find(x => x.id === st.base);
+      return el.panel.replaceChildren(h("h2", {class: "ol-judul"}, ikon("pin"), nb ? `Disaring: ${nb.nama}` : "Semua base"),
+        kosong(nb ? "Kartu dan tabel pesawat hanya untuk base ini." : "Klik sebuah base di peta untuk menyaring kartu dan tabel pesawat."),
+        ...nb ? [h("button", {class: "ad-tombol", type: "button", "data-semua": "1", teks: "Tampilkan semua base"})] : []); }
     if (st.segmen === "renlap") { const rl = st.data.renlap || [];
       return el.panel.replaceChildren(h("h2", {class: "ol-judul"}, ikon("malam"), "Renlap malam"), rl.length ? tabel(["Base", "Versi", "Target"], rl.map(r => [r.base_id, r.versi, O.fmt((r.target || []).length)])) : kosong("Belum ada renlap untuk tanggal ini.")); }
     if (!b) return el.panel.replaceChildren(h("h2", {class: "ol-judul"}, ikon("pin"), "Base"), kosong((st.data.base || []).length ? "Klik sebuah base di peta untuk melihat armada, gerak, dan temuannya." : "Belum ada base."));
@@ -120,6 +131,35 @@
     out.push(db.temuan.length ? tabel(["Armada", "Status", "Lokasi"], db.temuan.map(t => [t.registrasi, pil(O.STATUS_TEMUAN[t.status]?.nama || t.status, O.kelasTemuan(t.status)), [t.lokasi, O.klaimTeks(t)].filter(Boolean).join(", ")])) : kosong("Tidak ada temuan oleh armada base ini."));
     el.panel.replaceChildren(...out);
   }
+  /* ---------- segmen Nilai: GET /api/operasi/nilai?dari=&sampai= ---------- */
+  function renderNilai() {
+    el.kaki.hidden = true; el.bandera.hidden = true;
+    if (st.nilai) return tampilNilai();
+    const n = ++nomorNilai, {dari, sampai} = st.rentang; tampil("Memuat nilai…"); el.kartu.replaceChildren(); el.bawah.replaceChildren();
+    sesudahFrame(async () => { const r = await api("GET", `/api/operasi/nilai?dari=${dari}&sampai=${sampai}`);
+      if (n !== nomorNilai || st.segmen !== "nilai") return;
+      if (!r.ok) { st.nilai = null; return tampil(r.s === 400 ? "Rentang tanggal tidak sah." : galatTeks(r), false); }
+      tampil(""); st.nilai = r.j; tampilNilai(); });
+  }
+  function tampilNilai() {
+    const v = st.nilai; if (!v) return;
+    const dummyAda = !!v.dummy; el.bandera.hidden = !dummyAda;
+    const metrik = (st.base ? (v.base || {})[st.base] : v.semua) || {}, judul = st.base ? ((st.data.base || []).find(b => b.id === st.base) || {}).nama : "Semua base";
+    el.kartu.className = "bn-grid ol-nilai";
+    el.kartu.replaceChildren(...O.KODE_NILAI.map(k => { const m = O.METRIK[k], t = O.tampilMetrik(k, metrik[k]);
+      return h("article", {class: "bn-kartu ol-kartu" + (t.kosong ? " ol-redup" : "")}, h("h2", null, ikon(m.ikon), m.nama), pil(k, "ol-s-belum"),
+        t.kosong ? h("div", {class: "ol-angka-kosong", teks: t.pesan}) : h("div", {class: "bn-angka", teks: t.angka}), h("p", {class: "ol-sumber", teks: t.rincian || judul || ""})); }));
+    const reg = O.registrasiBase(st.data.armada, st.base), armada = Object.fromEntries((st.data.armada || []).map(a => [a.registrasi, a.tipe]));
+    const bagian = (ikn, teks, peta, label) => { const kunci = O.urutKunci(peta);
+      return [h("h2", {class: "ol-judul"}, ikon(ikn), teks), kunci.length ? tabelNilai(peta, kunci, label) : kosong("Belum ada nilai untuk bagian ini.")]; };
+    const namaBase = id => ((st.data.base || []).find(b => b.id === id) || {}).nama || id;
+    el.bawah.replaceChildren(...bagian("pin", "Nilai per base", v.base || {}, k => namaBase(k)), ...bagian("personel", "Nilai per pesawat", O.saringPeta(v.registrasi || {}, reg), k => armada[k] ? `${k}, ${armada[k]}` : k));
+    el.bawah.append(h("p", {class: "ol-sumber", teks: `Rentang ${O.tanggalIndo(v.dari)} sampai ${O.tanggalIndo(v.sampai)}, ${O.fmt(v.hari)} hari. Dihitung dari laporan WA satgas udara. Sel kosong berarti data kurang atau belum tersedia. Hijau terbaik, merah terendah di kolomnya.${v.galat_titik ? " Titik panas sistem tidak terbaca, padam bertahan tidak dinilai." : ""}`}));
+  }
+  const tabelNilai = (peta, kunci, label) => { const baris = O.tabelNilai(peta, kunci);
+    return h("div", {class: "ol-gulir"}, h("table", {class: "ol-tabel ol-tabel-nilai"}, h("thead", null, h("tr", null, h("th", {teks: "Nama"}), O.KODE_TABEL.map(k => h("th", {title: O.METRIK[k].nama, teks: O.METRIK[k].pendek})))),
+      h("tbody", null, baris.map(b => h("tr", null, h("td", {teks: label(b.kunci)}), b.sel.map(c => h("td", {class: "ol-nl" + (c.sorot ? " ol-" + c.sorot : ""), title: c.rincian}, h("b", {teks: c.teks}), c.n ? h("small", {teks: `n=${O.fmt(c.n)}`}) : null)))))));
+  };
   const tabel = (kepala, baris) => h("div", {class: "ol-gulir"}, h("table", {class: "ol-tabel"}, h("thead", null, h("tr", null, kepala.map(t => h("th", {teks: t})))),
     h("tbody", null, baris.map(b => h("tr", null, b.map(c => h("td", {...(c instanceof Node ? {} : {teks: c == null ? "" : String(c)})}, c instanceof Node ? c : null)))))));
 
@@ -140,5 +180,5 @@
     el.dummy.addEventListener("click", e => { const b = e.target.closest("[data-dummy]"); if (b && !b.disabled) dummy(b.dataset.dummy); });
   }
 
-  kerangka(); muat(); tombolDummy();
+  kerangka(); el.panel.addEventListener("click", e => { if (e.target.closest("[data-semua]")) pilihBase(st.base); }); muat(); tombolDummy();
 })();

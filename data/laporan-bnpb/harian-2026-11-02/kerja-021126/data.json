@@ -316,7 +316,9 @@
    "status": "berjalan",
    "baru": true,
    "label": "Tanah Longsor",
-   "angka": {},
+   "angka": {
+    "kk": 24.0
+   },
    "teks": {
     "dampak": "- Korban Jiwa : ±24 KK terdampak",
     "status_darurat": "-",

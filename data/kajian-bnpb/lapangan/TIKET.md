@@ -64,7 +64,7 @@ KEAMANAN-PRIVASI > RENCANA-UJI > TIKET). Versi 1.0, 1 Nov 2026.
 |---|---|---|---|---|---|
 | LP-020 | Migrasi 0098 panggilan + `src/lapangan_wa.js` (antre, hasil, balas SIAP/TIDAK) + kait di `src/wa.js` | `migrations/0098_*.sql`, `src/lapangan_wa.js`, `src/wa.js` | ALUR A10; ALG §8 | U-14 | M |
 | LP-021 | Gateway menarik `wa_antre` lewat limiter | `scripts/wa/lapangan_tarik.mjs`, `tests/wa/lapangan_tarik.test.mjs` (pengerja `wa-bot`) | DT §4 | `npm run uji:wa` | M |
-| LP-022 | Bot WA kirim Renlap dan penugasan saat anggota ditambahkan; tanya kondisi lapangan harian | `src/lapangan_panel.js`, `src/lapangan_wa.js` | ALUR A4; PRD F-14 | uji rute | M |
+| LP-022 | Bot WA kirim Renlap dan penugasan saat anggota ditambahkan (SELESAI); tanya kondisi lapangan harian (SELESAI 2 Nov: `tanyaKondisi` cron 16.05 WIB, balasan `API <kondisi> <kode>` / `GENANGAN <cm> <kode>`, `tests/warga/lapangan_kondisi.test.mjs`) | `src/lapangan_panel.js`, `src/lapangan_wa.js` | ALUR A4; PRD F-14 | uji rute | M |
 | LP-023 | Ekspor label harian untuk model | `scripts/lapangan/ekspor_label.py` (pengerja `pipa-data`), `data.yml` (pengerja `mekanik-mesin`) | DT §6 | self-check Python | S |
 | LP-024 | Rekap per tugas + ekspor CSV tanpa vektor | `src/lapangan_panel.js` | PRD F-17; KM §2 | U-11 | S |
 | LP-025 | Kalibrasi ambang dari 200 pasang sah | `scripts/lapangan/kalibrasi.py` | ALG §3 | hasil ke KP | S |
@@ -77,5 +77,5 @@ KEAMANAN-PRIVASI > RENCANA-UJI > TIKET). Versi 1.0, 1 Nov 2026.
 | LP-045 | Isian genangan dan hujan lokal mengalir ke konfirmasi `/prediksi` dan uji lapangan banjir | `src/lapangan.js`, kait `src/prediksi.js` | ALG §7 | uji label | M |
 | LP-046 | Penanda keahlian drone di data induk; panel drone gambut bisa memanggil petugas berlisensi | `src/lapangan_panel.js`, `public/petugas/panel.*` | KP K11 | uji | S |
 | LP-047 | Logbook harian petugas tampil di sitrep; panel memantau pengisian logbook Dirdalops | `src/lapangan_panel.js`, kait `src/sitrep.js` | PRD F-12 | uji | M |
-| LP-048 | Alihkan halaman lama (regu `/lapangan`, `/lacak` petugas, relawan-saya) ke `/petugas` sesudah setara; satu desain | `src/worker.js`, `public/petugas/**` | KP K12 | uji alih + CSP | M |
+| LP-048 | Alihkan halaman lama (regu `/lapangan`, `/lacak` petugas, relawan-saya) ke `/petugas` sesudah setara; satu desain (CEK 2 Nov: belum ada yang setara, tidak ada yang dialihkan; lihat KEPUTUSAN-LAPANGAN.md bagian D) | `src/worker.js`, `public/petugas/**` | KP K12 | uji alih + CSP | M |
 | LP-049 | Retensi 2 tahun: cron menit 17 menghapus foto absen/logbook (R2) yang lebih tua dari 2 tahun dan mengosongkan `foto_key`, baris tetap; label dan agregat tidak ikut. Janji ini sudah tertulis di teks persetujuan wajah dan KEAMANAN-PRIVASI §2 butir 5, tetapi belum ada kodenya | `src/lapangan_panel.js` (`bersihkanLapangan`), `migrations/` (foto_key nullable bila perlu) | KP §2.5 | uji miniflare: baris lama kehilangan foto, baris baru utuh | S |

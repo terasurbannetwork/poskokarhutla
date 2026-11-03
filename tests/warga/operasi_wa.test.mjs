@@ -60,6 +60,7 @@ uji("pesan pelaksanaan H-3217 -> 7 temuan; kiriman ulang dan pesan sama beda wak
   const j = await peta(); assert.equal(j.temuan.length, 7);
   const t0 = j.temuan.find(x => x.lokasi === "Rasau, Kubu Raya"); assert.deepEqual([t0.registrasi, t0.status, t0.lat, t0.lon], ["H-3217", "clear", -0.27103, 109.36153]);
   assert.ok(t0.wa_id > 0, "wa_id terisi");
+  assert.equal(t0.jam_utc, new Date(w0 + 7 * 36e5).toISOString().slice(0, 10) === TGL ? w0 : null, "jam temuan = jam pesan diterima bila hari terima = hari operasi (bahan M7)");
   const ulang = await kirim(P("h3217_pelaksanaan").teks, w0);   // kiriman ulang gerbang: baris wa_masuk sama dikembalikan, tanpa operasi
   assert.equal(ulang.j.id, r.j.id); assert.equal(await n("wa_masuk"), 1);
   await kirim(P("h3217_pelaksanaan").teks + " ", Date.now() - 60e3);   // pesan lain (teks beda) dengan isi titik sama: UNIQUE menahan

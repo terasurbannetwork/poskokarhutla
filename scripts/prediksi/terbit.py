@@ -5,8 +5,8 @@ tanggal lamanya, bukan disamarkan). Peluang diganti versi kalibrasi HANYA untuk 
 jumlah & lama hujan dikali rasio provinsi yang "dipakai". Tiap angka membawa vonis grupnya dari skor.json
 ("belum teruji" bila belum ada / n < 30).
 
-Dampak (aturan.json): jiwa terpapar = penduduk kecamatan berbahaya tinggi (public/data/penduduk.json x
-public/banjir/data/bahaya.json); sekolah & murid dari public/data/sekolah.json; faskes/RS dari public/data/fasilitas.json
+Dampak (aturan.json): jiwa terpapar banjir = paparan_kab.json (scripts/banjir/dampak_kab.py: penduduk x porsi luas zona
+bahaya tinggi), longsor = penduduk kecamatan berbahaya tinggi (public/data/penduduk.json x public/banjir/data/bahaya.json); sekolah & murid dari public/data/sekolah.json; faskes/RS dari public/data/fasilitas.json
 (ke pusat kecamatan terdekat di provinsi yang sama). Mengungsi = jiwa terpapar x laju DIBI sum(mengungsi)/sum(terdampak)
 (kab bila >= 3 kejadian bertercatat, selain itu nasional). Kebutuhan harian Sphere 2018. Semua berlabel perkiraan.
 
@@ -118,6 +118,15 @@ def paparan(akar, daftar, cari, aturan):
                 x["sekolah"] += sekolah.get(kec, [0, 0])[0]
                 x["murid"] += sekolah.get(kec, [0, 0])[1]
                 x["faskes"] += faskes.get(kec, 0)
+        if p.get("jiwa_dari"):  # satu sumber jiwa: penduduk zona bahaya tinggi porsi luas (dampak_kab.py), bukan seluruh kecamatan
+            zona = D.baca(os.path.join(akar, "public", "banjir", "data", p["jiwa_dari"]), {}).get("kab", {})
+            if not zona:
+                raise SystemExit(f"{p['jiwa_dari']} kosong/hilang: jiwa terpapar {p['bahaya']} tidak boleh jatuh ke metode lama")
+            for k in daftar:
+                if k["geo"] in zona:   # tanpa kecamatan berbahaya tinggi: hanya jiwa (sekolah/faskes tak dihitung, bukan nol)
+                    out[k["id"]].setdefault(p["bahaya"], {})["jiwa"] = zona[k["geo"]][0]
+                else:                  # kab tak ada di paparan: jangan tampilkan angka metode lama berlabel zona
+                    out[k["id"]].pop(p["bahaya"], None)
     return out
 
 

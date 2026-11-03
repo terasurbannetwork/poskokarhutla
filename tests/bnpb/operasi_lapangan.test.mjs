@@ -47,3 +47,40 @@ test("halaman tanpa skrip/gaya inline dan tanpa tanda pemisah titik tengah", () 
   for (const f of ["operasi_lapangan.js", "operasi_lapangan_hitung.js", "operasi_lapangan.css"]) assert.doesNotMatch(readFileSync(new URL("../../public/bnpb/" + f, import.meta.url), "utf8"), /·/, f);
   assert.doesNotMatch(readFileSync(new URL("../../public/bnpb/operasi_lapangan.js", import.meta.url), "utf8"), /innerHTML/);
 });
+
+/* ---------- segmen Nilai ---------- */
+const M = (nilai, n, jumlah, extra = {}) => ({nilai, n, jumlah, ...extra});
+test("nilai: persen gaya Indonesia, pembilang dan n selalu tampil", () => {
+  const t = O.tampilMetrik("M1", M(13 / 22, 22, 13)); assert.deepEqual([t.kosong, t.angka, t.rincian], [false, "59,1%", "13 dari 22 temuan"]);
+  assert.equal(O.tampilMetrik("M2", M(0.5, 1200, 600)).rincian, "600 dari 1.200 target renlap"); assert.equal(O.persen(0), "0%"); assert.equal(O.persen(1), "100%");
+});
+test("nilai: M7 dalam menit dengan tanpa respons; M4 menyebut yang belum bisa dinilai", () => {
+  const t = O.tampilMetrik("M7", M(42.5, 8, 8, {satuan: "menit (median)", tanpa_respons: 2})); assert.deepEqual([t.angka, t.rincian], ["42,5 menit", "median dari 8 temuan berasap, 2 tanpa respons"]);
+  assert.match(O.tampilMetrik("M4", M(0.8, 10, 8, {tak_dinilai: 3})).rincian, /8 dari 10 temuan clear, 3 belum bisa dinilai/);
+});
+test("nilai: metrik null tidak pernah jadi 0", () => {
+  assert.deepEqual(O.tampilMetrik("M1", M(null, 2, 1, {catatan: "data kurang"})), {kosong: true, pesan: "Data kurang (n=2)", rincian: ""});
+  assert.equal(O.tampilMetrik("M5", M(null, 0, 0, {alasan: "data belum tersedia"})).pesan, "Data belum tersedia");
+  const t = O.tampilMetrik("M4", M(null, 0, 0, {alasan: "jendela 48 jam titik panas belum tertutup data", tak_dinilai: 4})); assert.equal(t.kosong, true); assert.equal(t.angka, undefined);
+  const t7 = O.tampilMetrik("M7", M(null, 3, 3, {catatan: "data kurang", tanpa_respons: 1})); assert.deepEqual([t7.pesan, t7.rincian], ["Data kurang (n=3)", "1 tanpa respons"]);
+  assert.equal(O.tampilMetrik("M1", undefined).kosong, true);
+});
+test("nilai: urutan kunci menurut banyak data lalu abjad; sorotan hanya bila beda dan >= 2 sel", () => {
+  const peta = {B: {M1: M(0.9, 10, 9), M3: M(0.5, 10, 5)}, A: {M1: M(0.4, 10, 4), M3: M(0.5, 10, 5)}, C: {M1: M(null, 1, 0, {catatan: "data kurang"})}};
+  assert.deepEqual(O.urutKunci(peta), ["A", "B", "C"]);
+  assert.deepEqual(O.sorotKolom("M1", peta, ["A", "B", "C"]), {B: "baik", A: "buruk"}); assert.deepEqual(O.sorotKolom("M3", peta, ["A", "B"]), {});
+  const r = {B: {M3: M(0.1, 9, 1)}, A: {M3: M(0.6, 9, 5)}}; assert.deepEqual(O.sorotKolom("M3", r, ["A", "B"]), {B: "baik", A: "buruk"});   // M3 rendah = baik
+  assert.deepEqual(O.sorotKolom("M5", {A: {M5: M(1, 9, 9)}, B: {M5: M(2, 9, 9)}}, ["A", "B"]), {});
+  const tb = O.tabelNilai(peta, ["A", "C"]); assert.equal(tb[0].sel[0].teks, "40%"); assert.equal(tb[1].sel[0].teks, "–"); assert.equal(tb[1].sel[0].n, 1); assert.equal(tb[0].sel.length, O.KODE_TABEL.length);
+});
+test("nilai: saring pesawat menurut base", () => {
+  const ar = [{registrasi: "X", base_id: "PNK"}, {registrasi: "Y", base_id: "KTG"}], pt = {X: {}, Y: {}, Z: {}};
+  assert.equal(O.registrasiBase(ar, null), null); assert.deepEqual(Object.keys(O.saringPeta(pt, O.registrasiBase(ar, "PNK"))), ["X"]); assert.equal(O.saringPeta(pt, null), pt);
+});
+test("nilai: rentang bawaan 7 hari WIB dan maks 31 hari", () => {
+  const b = O.rentangBawaan(Date.parse("2026-11-02T10:00:00Z")); assert.deepEqual(b, {dari: "2026-10-27", sampai: "2026-11-02"});
+  assert.deepEqual(O.klampRentang("2026-10-01", "2026-11-02", "dari"), {dari: "2026-10-01", sampai: "2026-10-31"});
+  assert.deepEqual(O.klampRentang("2026-10-01", "2026-11-02", "sampai"), {dari: "2026-10-03", sampai: "2026-11-02"});
+  assert.deepEqual(O.klampRentang("2026-11-05", "2026-11-02", "dari"), {dari: "2026-11-05", sampai: "2026-11-05"});
+  assert.deepEqual(O.klampRentang("2026-11-05", "2026-11-02", "sampai"), {dari: "2026-11-02", sampai: "2026-11-02"});
+});

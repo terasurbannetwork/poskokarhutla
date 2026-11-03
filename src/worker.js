@@ -20,6 +20,7 @@ import {RUTE_KONTAK} from "./kontak.js";
 import {RUTE_SITREP, arsipkanSitrep, bersihkanArsipSitrep} from "./sitrep.js";
 import {RUTE_RELAWAN, bersihkanRelawan} from "./relawan.js";
 import {RUTE_LAPANGAN, bersihkanLapangan} from "./lapangan.js";
+import {tanyaKondisi} from "./lapangan_wa.js";
 import {layaniKm} from "./kemitraan.js";
 import {RUTE_LAPORAN_BNPB} from "./laporan_bnpb.js";
 import {RUTE_RUMAH_RUSAK} from "./rumah_rusak.js";
@@ -66,6 +67,7 @@ import {RUTE_INVENTARIS} from "./inventaris.js";
 import {RUTE_KORBAN} from "./korban.js";
 import {RUTE_OMC} from "./omc.js";
 import {RUTE_OPERASI} from "./operasi_udara.js";
+import {RUTE_JARAK_PANDANG} from "./jarak_pandang.js";
 import {RUTE_LAPORAN_KARHUTLA, buatDrafLaporanKarhutla} from "./laporan_karhutla.js";
 import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.js";
 import {perbaruiNowcast, layaniNowcast, nowcastDibuat} from "./nowcast.js";
@@ -614,6 +616,7 @@ const RUTE = {
   ...RUTE_INVENTARIS,   // inventaris peralatan pemadam per pihak dan gudang (src/inventaris.js)
   ...RUTE_KORBAN,   // laporan korban jiwa: instansi dan Pusdalops melapor, verifikasi, butir Meja Pantau (src/korban.js)
   ...RUTE_OMC,   // catatan sortie OMC: staf TMC mengisi, GET /api/omc/sortie publik untuk pipeline (src/omc.js)
+  ...RUTE_JARAK_PANDANG,   // jarak pandang BMKG dari bot Mac mini -> R2, GET publik (src/jarak_pandang.js)
   ...RUTE_OPERASI,   // peta operasi lapangan khusus staf (src/operasi_udara.js)
   ...RUTE_LAPORAN_KARHUTLA,   // Laporan Karhutla otomatis: draf, kirim, verifikasi, kunci, ralat, snapshot (src/laporan_karhutla.js)
   ...RUTE_PANTAU,   // Meja Pantau: antrean kerja harian staf (src/pantau.js)
@@ -919,6 +922,8 @@ const W = {
       if (w.getUTCHours() === 0 && (m === 5 || m === 35)) try { console.log("sitrep", JSON.stringify(await arsipkanSitrep(env, sekarang, m === 35))); } catch (e) { console.error("sitrep", e?.message); }   // arsip sitrep 07 WIB (menit 35 = ulang bila gagal)
       if (w.getUTCHours() === 0 && (m === 1 || m === 31)) try { console.log("laporan karhutla", JSON.stringify(await buatDrafLaporanKarhutla(env, sekarang))); } catch (e) { console.error("laporan karhutla", e?.message); }   // draf harian 07.01 WIB (menit 31 = ulang bila gagal; idempoten)
       if (w.getUTCHours() === 0 && m === 40) try { console.log("pengingat", JSON.stringify(await buatPengingat(env, sekarang))); } catch (e) { console.error("pengingat", e?.message); }   // antrean pengingat 07.40 WIB (idempoten)
+      if (m === 40 && (w.getUTCHours() === 3 || w.getUTCHours() === 13)) try { console.log("pengingat lapangan", JSON.stringify(await buatPengingat(env, sekarang, {hanya: ["lapangan_absen", "lapangan_logbook"]}))); } catch (e) { console.error("pengingat lapangan", e?.message); }   // petugas belum absen (10.40 WIB) / belum isi logbook (20.40 WIB)
+      if (w.getUTCHours() === 9 && (m === 5 || m === 35)) try { console.log("tanya kondisi", JSON.stringify(await tanyaKondisi(env, sekarang))); } catch (e) { if (!/no such table/i.test(e?.message || "")) console.error("tanya kondisi", e?.message); }   // LP-022: 16.05 WIB (menit 35 = ulang bila gagal; idempoten per orang per hari)
       if (m === 55 && w.getUTCHours() % 6 === 0) try { console.log("pengingat prioritas", JSON.stringify(await buatPengingatPrioritas(env, sekarang))); } catch (e) { console.error("pengingat prioritas", e?.message); }   // F2 jam 00/06/12/18 UTC menit 55, sesudah titik.yml menerbitkan risiko_prioritas.json (idempoten)
       if (m === 19) try { const h = await ringkasGranul(env, sekarang); if (!h.lewat) console.log("satelit ringkas", JSON.stringify(h)); } catch (e) { console.error("satelit ringkas", e?.message); }   // ringkasan jeda satelit 30 hari: jam 13 UTC, atau bila belum ada / > 25 jam (src/satelit.js); invokasi sendiri, tabel 0075 belum ada = dilewati
       if (m === 20) try { console.log("uji lapangan", JSON.stringify(await jalankanUji(env, sekarang))); } catch (e) { console.error("uji lapangan", e?.message); }   // sampel kontrol mingguan, kedaluwarsa kontrol, penilaian api terlewat (Q2); tiap jam, murah bila tak ada pekerjaan

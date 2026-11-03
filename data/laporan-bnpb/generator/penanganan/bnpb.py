@@ -113,10 +113,21 @@ def ganti_tabel(s, lib, top6, bm):
         else:
             s = pasang(s, lib, X_PM, y, 'rendah', f'PM2.5 &lt; {round(bm["pm_ke10"])}')
         h, a = k in bm['hujan'] or k in bm['lebat'], k in bm['angin']
-        s = pasang(s, lib, X_CU, y, 'hujan' if h else 'angin' if a else 'cerah',
-                   ('HUJAN LEBAT' if k in bm['lebat'] else 'HUJAN, ANGIN' if a else 'HUJAN SEDANG') if h else 'ANGIN KENCANG' if a else 'CERAH BERAWAN')
+        if 'mm' in bm:
+            # 2 Nov 2026 (klarifikasi pemilik "HUJAN SEDANG"): kelas resmi BMKG dari hujan model 24 jam, angka mm ikut tampil supaya
+            # gerimis model 1-3 mm tidak terbaca sebagai hujan berarti
+            import pil_sendiri
+            v = bm['mm'].get(k, 0.0); kl = pil_sendiri.kelas_hujan(v)
+            mm = f'{v:.1f}'.replace('.', ',') if v < 10 else f'{round(v)}'
+            s = pasang(s, lib, X_CU, y, 'hujan' if kl else 'angin' if a else 'cerah',
+                       # pil selebar "HUJAN SEDANG": ikon awan hujan sudah berkata "hujan", jadi teks = kelas + mm ("RINGAN 2,1 MM")
+                       ('SGT LEBAT' if kl == 'sangat lebat' else 'EKSTREM') if kl in ('sangat lebat', 'ekstrem') else f'{kl.upper()} {mm} MM' if kl else 'ANGIN KENCANG' if a else 'TIDAK HUJAN')
+        else:   # WA BMKG pagi = peringatan potensi hujan untuk beberapa hari ke depan, bukan hujan yang sudah terjadi
+            s = pasang(s, lib, X_CU, y, 'hujan' if h else 'angin' if a else 'cerah',
+                       ('POTENSI HUJAN LEBAT' if k in bm['lebat'] else 'POTENSI HUJAN') if h else 'ANGIN KENCANG' if a else 'CERAH BERAWAN')
     # legenda biru = pil cuaca saja (pemilik 27 Okt 2026: "bukannya prakiraan cuaca?"); tanggal PM2,5 pil_sendiri (hari sebelumnya) tak ditulis
-    return rep(s, '<a:t>prakiraan cuaca 20–22 Okt</a:t>', f'<a:t>prakiraan cuaca {bm["periode"]}</a:t>')
+    leg = f'hujan 24 jam {bm["periode_hujan"]}' if 'periode_hujan' in bm else f'prakiraan BMKG {bm["periode"]}'
+    return rep(s, '<a:t>prakiraan cuaca 20–22 Okt</a:t>', f'<a:t>{leg}</a:t>')
 
 
 

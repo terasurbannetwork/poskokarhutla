@@ -53,3 +53,15 @@ permintaan sesudahnya.
 | U6 | Nama resmi program relawan | Sayap BNPB, Korps Relawan Gerak Cepat |
 | U7 | Data induk pegawai dari Biro SDM | impor CSV sekali, lalu dijaga di sistem |
 | U8 | Migrasi D1 produksi | diterapkan pemilik (memori ruang-bnpb) |
+
+## D. LP-048 hasil cek setara (2 Nov 2026)
+
+Aturan K12: halaman lama dialihkan (301) HANYA bila fitur `/petugas` sudah setara. Hasil pemeriksaan kode (`src/penugasan.js`, `src/posko.js`, `src/relawan.js`, `public/**`):
+
+| Halaman lama | Dilayani | Setara di `/petugas`? | Yang kurang | Tindakan |
+|---|---|---|---|---|
+| `/relawan/saya` (relawan-saya, kode pribadi) | status siap/istirahat, terima/tolak penugasan, check-in/out jam layanan (antre luring, GPS opsional), jam tervalidasi, pelatihan, ketersediaan (hari/minggu, luar provinsi), hapus data (UU PDP) | Tidak | `/petugas` hanya absen wajah, logbook, pantau regu; belum ada ketersediaan, siap tugas, terima/tolak, jam layanan, hapus data | Dibiarkan |
+| `/lacak#<token>` (petugas tugas api) | pelacakan GPS terus-menerus tiap 45 dtk, navigasi, peringatan angin, tiba/selesai, lapor foto dari lokasi (`/api/lacak/*`, `x-lacak`) | Tidak | pelacakan posisi, navigasi, angin, alur tiba/selesai tugas api; token berbeda dari kode pribadi | Dibiarkan |
+| `/lapangan#k=<kode regu>` (regu Posko) | laporan regu bergeotag + foto, draf luring `klien_id`, tugas regu (`/api/lapangan/*`, `x-kode-regu`) | Tidak | `/petugas` menulis `lp_logbook`, bukan `posko_laporan`; laporan regu tidak tampil di Posko pusat; tautan regu lama dibagikan lewat WA | Dibiarkan; `/api/posko` tidak diubah |
+
+Hasil: tidak satu pun dialihkan, jadi `src/worker.js` tidak diubah untuk LP-048. Uji `tests/warga/lapangan_kondisi.test.mjs` ("halaman lama belum dialihkan") menjaga ini: bila seseorang menambah 301 sebelum tabel di atas berubah, uji gagal. Alihkan satu per satu setelah kolom "yang kurang" terpenuhi dan tabel ini diperbarui.

@@ -179,7 +179,7 @@ lewat_deck.bingkai(nama, 'harian', 'Laporan Kejadian Bencana Harian', 'Periode 1
            {'halaman': 4, 'bagian': 3, 'sumber': f'{SK}; {SG}'}, {'halaman': 5, 'bagian': 4, 'sumber': 'PVMBG Badan Geologi, 2 Nov 2026 06.00 WIB'},
            {'jenis': 'penutup'}])
 print('mesin ok', nama)
-import kris; kris.pasang_logo_semua(nama); kris.besar_logo_bnpb(nama)   # 2 Nov pemilik: logo KRIS resmi di sampul dan penutup; logo BNPB diperbesar
+# KRIS di sampul dan penutup serta logo BNPB 1,3x kini bawaan mesin ppt-konsultan (deck.py pasang_kris, skala_logo_bnpb), bukan tempelan repo
 # 2 Nov: data website mengeja "Kota Pare Pare" (kunci pencocokan); di slide tampil ejaan resmi "Kota Parepare"
 import zipfile as Z
 _t = nama + '.tmp'
