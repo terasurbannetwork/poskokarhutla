@@ -79,3 +79,16 @@ KEAMANAN-PRIVASI > RENCANA-UJI > TIKET). Versi 1.0, 1 Nov 2026.
 | LP-047 | Logbook harian petugas tampil di sitrep; panel memantau pengisian logbook Dirdalops | `src/lapangan_panel.js`, kait `src/sitrep.js` | PRD F-12 | uji | M |
 | LP-048 | Alihkan halaman lama (regu `/lapangan`, `/lacak` petugas, relawan-saya) ke `/petugas` sesudah setara; satu desain (CEK 2 Nov: belum ada yang setara, tidak ada yang dialihkan; lihat KEPUTUSAN-LAPANGAN.md bagian D) | `src/worker.js`, `public/petugas/**` | KP K12 | uji alih + CSP | M |
 | LP-049 | Retensi 2 tahun: cron menit 17 menghapus foto absen/logbook (R2) yang lebih tua dari 2 tahun dan mengosongkan `foto_key`, baris tetap; label dan agregat tidak ikut. Janji ini sudah tertulis di teks persetujuan wajah dan KEAMANAN-PRIVASI §2 butir 5, tetapi belum ada kodenya | `src/lapangan_panel.js` (`bersihkanLapangan`), `migrations/` (foto_key nullable bila perlu) | KP §2.5 | uji miniflare: baris lama kehilangan foto, baris baru utuh | S |
+
+## Outstanding (pemilik 3 Nov 2026: "nanti dulu, catat sebagai outstanding")
+
+Tahap A sampai C sudah tayang di centurisk97.id (deploy b02f6632). Sisa di bawah ditunda atas keputusan pemilik; jangan dikerjakan sebelum pemilik membukanya lagi.
+
+| Kode | Sisa | Siapa | Catatan |
+|---|---|---|---|
+| OS-1 | Isi `WA_KUNCI` di layanan launchd `id.centurisk97.wa-gateway` (nilai sama dengan secret Worker) | pemilik | tanpa ini gateway menyala tetapi tidak menarik antrean pesan `/petugas` (panggilan, penugasan, tanya kondisi) |
+| OS-2 | Buat secret GitHub Actions `LAPANGAN_TOKEN` (token Super Admin) | pemilik | tanpa ini langkah ekspor label harian di `data.yml` tidak berbuat apa-apa |
+| OS-3 | Uji daftar wajah dan absen di 2 sampai 3 HP Android kelas menengah, tanda yaw/pitch (U-07), lalu setel ambang wajah dan MiniFASNet (LP-017, LP-025, U-20) | pemilik + agent `lapangan` | ambang anti-palsu sementara 0,50 |
+| OS-4 | LP-048: gabung `/relawan/saya`, `/lacak`, regu `/lapangan` ke `/petugas` | menunggu keputusan lingkup pemilik | belum setara; daftar yang kurang di KEPUTUSAN-LAPANGAN.md bagian D |
+| OS-5 | Rute langsung ringkasan logbook petugas untuk sitrep hari berjalan | `warga-api` | sekarang kartu sitrep hanya tampil di arsip 07.00 WIB |
+| OS-6 | Gateway WA masih dijalankan dari salinan iCloud `~/Documents/GitHub/poskokarhutla/scripts/wa/gateway`; pindahkan ke `~/Developer/poskokarhutla` | pemilik + agent `wa-bot` | iCloud sempat mengosongkan 1.111 berkas pustakanya |
