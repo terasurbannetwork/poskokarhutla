@@ -304,3 +304,21 @@
 .dl-peta .dl-semua-peta{position:absolute;top:10px;right:50px;z-index:2;margin:0;border:0;background:#fff;color:#0b2545;box-shadow:0 0 0 2px rgb(0 0 0 / .1);border-radius:8px;padding:6px 10px;font:600 12px var(--font)}
 .dl-peta .dl-semua-peta:hover,.dl-peta .dl-semua-peta:focus-visible{color:var(--c5)}
 .dl-peta .dl-semua-peta svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* label jumlah kab/kota lurus ke bawah */
+.dl-buka-prov{display:grid;grid-template-columns:150px auto 1fr;align-items:center;gap:10px}
+.dl-buka-prov b{overflow:hidden;text-overflow:ellipsis}
+.dl-buka-prov .dl-jml{justify-self:start;padding:1px 8px;font-size:11.5px}
+.dl-buka-prov .dl-ket{color:var(--ink3);font-size:12px;font-weight:500}
+
+/* kepala bagian: pita navy bergaris emas, seragam di semua bagian */
+.dl-wrap .bn-blok{padding:0;overflow:hidden;gap:0}
+.dl-wrap .bn-blok>.dl-kepala{margin:0;padding:12px 18px;background:var(--gradien);border-bottom:2px solid var(--emas)}
+.dl-wrap .bn-blok>.dl-kepala h2{color:#fff;font:800 16px/1.25 var(--display)}
+.dl-wrap .bn-blok>.dl-kepala h2 svg{color:var(--emas)}
+.dl-wrap .bn-blok>.dl-kepala .dl-sub{color:rgb(255 255 255 / .75)}
+.dl-wrap .bn-blok>.dl-kepala .dl-semua{background:rgb(255 255 255 / .12);color:#fff;border:0}
+.dl-wrap .bn-blok>.dl-kepala .dl-semua:hover,.dl-wrap .bn-blok>.dl-kepala .dl-semua:focus-visible{background:rgb(255 255 255 / .2);color:#fff}
+.dl-wrap .bn-blok>:not(.dl-kepala){margin:14px 18px}
+.dl-wrap .bn-blok>:last-child{margin-bottom:18px}
+.dl-wrap .bn-blok>.dl-peta{margin:14px 18px}

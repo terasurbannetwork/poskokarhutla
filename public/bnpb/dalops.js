@@ -80,7 +80,10 @@
 
   /* ---------- kelompok provinsi: baris provinsi selebar tabel (atau dengan sel jumlah), tertutup sampai diklik ---------- */
   function tbodyProv(judul, meta, sel, lebarJudul, baris) {
-    const tombol = h("button", {type: "button", class: "dl-buka", "aria-expanded": "false"}, h("b", {teks: judul}), meta ? h("span", {teks: meta}) : null);
+    /* nama provinsi selebar tetap, jumlah kab/kota jadi label supaya lurus ke bawah antarbaris; sisa keterangan sesudahnya */
+    const [jml, ...ket] = String(meta || "").split(", ");
+    const tombol = h("button", {type: "button", class: "dl-buka dl-buka-prov", "aria-expanded": "false"}, h("b", {teks: judul}),
+      jml ? h("span", {class: "dl-tag dl-tag-biru dl-jml", teks: jml}) : null, ket.length ? h("span", {class: "dl-ket", teks: ket.join(", ")}) : null);
     const kepala = h("tr", {class: "dl-prov"}, h("td", {colspan: String(lebarJudul)}, tombol), ...(sel || []));
     const tb = h("tbody", {class: "dl-grup dl-tutup"}, kepala, baris);
     kepala.addEventListener("click", e => { if (e.target.closest("a")) return; const buka = tb.classList.toggle("dl-tutup") === false; tombol.setAttribute("aria-expanded", String(buka)); });
@@ -148,6 +151,17 @@
       peta.addLayer({id: "kab-isi", type: "fill", source: "kab", paint: {"fill-color": ["match", ["get", "st"], "belum", warna("--c1") || "#c9503a", warna("--c5") || "#4f8fc4"],
         "fill-opacity": ["case", ["boolean", ["feature-state", "sorot"], false], .9, .7]}});
       peta.addLayer({id: "kab-garis", type: "line", source: "kab", paint: {"line-color": ["case", ["boolean", ["feature-state", "sorot"], false], "#0b2545", "#ffffff"], "line-width": ["case", ["boolean", ["feature-state", "sorot"], false], 2, .8]}});
+      /* batas wilayah seluruh Indonesia: provinsi tebal gelap, kab/kota tipis abu; dimuat sesudah lapisan banjir supaya peta cepat tampil */
+      const SEMUA_PROV = ["11","12","13","14","15","16","17","18","19","21","31","32","33","34","35","36","51","52","53","61","62","63","64","65","71","72","73","74","75","76","81","82","91","92","93","94","95","96"];
+      Promise.all([ambil("/geo/provinsi.json"), ...SEMUA_PROV.map(p => kodeProv.includes(p) ? Promise.resolve(kabs[kodeProv.indexOf(p)]) : ambil(`/geo/kabupaten/${p}.json`))]).then(([prov, ...semuaKab]) => {
+        const sebelum = peta.getLayer("kab-isi") ? "kab-isi" : undefined;
+        peta.addSource("batas-kab", {type: "geojson", data: {type: "FeatureCollection", features: semuaKab.flatMap(g => g?.features || [])}});
+        peta.addLayer({id: "batas-kab", type: "line", source: "batas-kab", paint: {"line-color": "#8a93a8", "line-width": ["interpolate", ["linear"], ["zoom"], 4, .3, 8, .9], "line-opacity": .7}}, sebelum);
+        if (prov) {
+          peta.addSource("batas-prov", {type: "geojson", data: prov});
+          peta.addLayer({id: "batas-prov", type: "line", source: "batas-prov", paint: {"line-color": "#0b2545", "line-width": ["interpolate", ["linear"], ["zoom"], 4, .9, 8, 2], "line-opacity": .75}});
+        }
+      });
       let sorot = null;
       peta.on("mousemove", "kab-isi", e => { const id = e.features[0].id; if (sorot !== null && sorot !== id) peta.setFeatureState({source: "kab", id: sorot}, {sorot: false}); sorot = id; peta.setFeatureState({source: "kab", id}, {sorot: true}); peta.getCanvas().style.cursor = "pointer"; });
       peta.on("mouseleave", "kab-isi", () => { if (sorot !== null) peta.setFeatureState({source: "kab", id: sorot}, {sorot: false}); sorot = null; peta.getCanvas().style.cursor = ""; });
