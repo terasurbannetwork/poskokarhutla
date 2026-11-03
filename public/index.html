@@ -3138,7 +3138,7 @@ function renderLegenda() {
      Api baru = Himawari-9 (/api/himawari: acuan = pindaian terbaru, jam = lebar jendela): jendelanya disebut HANYA saat hotMundur (opsi 3 pemilik); hari biasa cukup "Api baru" */
   const jm = ms => new Date(ms).toLocaleTimeString("id-ID", {...WIB, hour: "2-digit", minute: "2-digit"}), hm = S.hotMundur,
     hw = Lapis.cache.hwMeta, h1 = hw?.acuan ? Date.parse(hw.acuan) : NaN, h0 = h1 - (hw?.jam || 3) * 36e5, hr = ms => new Date(ms + 7 * 36e5).toISOString().slice(0, 10),
-    ketHw = !hm || isNaN(h1) ? "Api baru" : `Api baru · Himawari-9, ${hr(h0) === hr(h1) ? `${tglLain(hr(h1))} ${jm(h0)}–${jm(h1)}` : `${tglLain(hr(h0))} ${jm(h0)}–${tglLain(hr(h1))} ${jm(h1)}`} WIB`;
+    ketHw = !hm || isNaN(h1) ? "Api baru" : `Api baru, Himawari-9, ${hr(h0) === hr(h1) ? `${tglLain(hr(h1))} ${jm(h0)}–${jm(h1)}` : `${tglLain(hr(h0))} ${jm(h0)}–${tglLain(hr(h1))} ${jm(h1)}`} WIB`;
   $("#legenda").innerHTML = `<details ${S.legBuka === false ? "" : "open"} id="legDet"><summary class="lbl">Legenda <span>▾</span></summary><div class="lg-isi">
     ${S.panel === "riw" || !Peta.lihat("titik") || (Kini.on && z < 6.5) ? "" : `<div class="lbl">${hm ? `Titik panas ${tglLain(hm.hari)} (data terakhir)` : "Umur titik panas"}</div>
     <div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#fff4a8;border:1px solid #4a1209"></i>&lt; 6 jam</span>
