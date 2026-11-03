@@ -171,7 +171,7 @@ def bmkg(teks):
     for m in re.finditer(r'^[\s*\-]*([A-Za-z][A-Za-z0-9 .]*?)\s*:?\s*(\d+(?:[.,]\d+)?)\s*(?:µg/m³)?\s*\(([^)]+)\)', t, re.M):
         nama = m.group(1).strip()
         pm.append((KOTA.get(nama.lower(), nama.title()), float(m.group(2).replace(',', '.')), m.group(3).strip()))
-    daftar = lambda pola: [re.sub(r'^dan\s+', '', p.strip()) for p in re.split(r',', (re.search(pola, t, re.S) or [None, ''])[1]) if p.strip()]
+    daftar = lambda pola: [re.sub(r'^dan\s+', '', p.strip()) for p in re.split(r',|\s+dan\s+', (re.search(pola, t, re.S) or [None, ''])[1]) if p.strip()]   # 3 Nov: "A dan B" = dua provinsi
     jam = re.search(r'Tertinggi pada hari (.+?WIB)', t)
     per = re.search(r'Periode\s+(.+?\d{4})', t)
     return {'jam': jam[1] if jam else '', 'pm': pm, 'periode': per[1] if per else '',

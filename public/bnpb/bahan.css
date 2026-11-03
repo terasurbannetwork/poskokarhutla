@@ -1,0 +1,49 @@
+/* Bahan Laporan Harian (/bnpb/bahan). Token dan komponen dari bnpb.css/admin.css; tanpa gaya inline (CSP). */
+[hidden]{display:none!important}
+.bh-kolom{display:grid;gap:14px;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);align-items:start}
+.bh-kolom>*{min-width:0}
+@media (max-width:980px){.bh-kolom{grid-template-columns:1fr}}
+.bh-form{display:grid;gap:14px}
+.bh-panel{position:sticky;top:12px;display:grid;gap:14px}
+@media (max-width:980px){.bh-panel{position:static}}
+.bh-judul{display:flex;align-items:center;gap:8px}
+.bh-judul svg,.bh-seg svg,.bh-chips svg,.bn-tombol svg,.bh-kartu-kepala svg,.bh-kosong svg,.bh-ikon svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.bh-p{margin:0 0 12px;color:var(--ink2);font-size:13.5px}
+.bh-cat{margin:0;color:var(--ink2);font-size:12.5px;font-weight:600}
+.bh-aksi{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.bh-aksi .bn-tombol,.bh-daftar>.bn-tombol{display:inline-flex;gap:6px;align-items:center;justify-content:center}
+/* tombol pilihan: penuh lebar, dibagi rata, berikon (gaya tab Logbook) */
+.bh-seg{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:0 0 14px}
+.bh-seg label,.bh-chips label,.bh-kartu-kepala label{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:12px;padding:9px 10px;font-size:12.5px;font-weight:700;cursor:pointer;background:var(--card);line-height:1.2}
+.bh-seg label{justify-content:center;text-align:center}
+.bh-seg input,.bh-chips input,.bh-kartu-kepala input{position:absolute;opacity:0;pointer-events:none}
+.bh-seg label:has(input:checked),.bh-chips label:has(input:checked),.bh-kartu-kepala label:has(input:checked){background:color-mix(in srgb,var(--c5) 14%,transparent);border-color:color-mix(in srgb,var(--c5) 55%,transparent);color:var(--ink)}
+.bh-seg label:has(input:focus-visible),.bh-chips label:has(input:focus-visible),.bh-kartu-kepala label:has(input:focus-visible){outline:2px solid var(--c5);outline-offset:1px}
+.bh-chips{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));padding-top:10px}
+.bh-prov{border:1px solid var(--line);border-radius:12px;padding:9px 12px}
+.bh-prov>summary{cursor:pointer;font-weight:700;font-size:13.5px}
+/* kartu kejadian / gunung */
+.bh-kartu-daftar{display:grid;gap:14px}
+.bh-kartu{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:10px;background:var(--card);min-width:0}
+.bh-kartu h3{margin:4px 0 0;font-size:13.5px;font-weight:800}
+.bh-kartu-kepala{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.bh-kartu-kepala label{flex:none}
+.bh-angka{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(128px,1fr))}
+.bh-angka input{text-align:right}
+/* baris dinamis */
+.bh-daftar{display:grid;gap:10px;min-width:0}
+.bh-baris{display:grid;gap:10px;grid-template-columns:minmax(0,1fr) auto;align-items:end;min-width:0}
+.bh-baris>:first-child{min-width:0}
+.bh-baris>.bh-kartu{align-self:stretch}
+.bh-gempa,.bh-omc{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+.bh-kat{align-self:center;font-size:12.5px;font-weight:700;color:var(--ink2)}
+.bh-ikon{all:unset;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;cursor:pointer;color:var(--ink2)}
+.bh-ikon:hover:not(:disabled),.bh-ikon:focus-visible{color:var(--c1)}
+.bh-ikon:disabled{opacity:.35;cursor:not-allowed}
+.bh-kosong{display:grid;gap:6px;justify-items:center;text-align:center;padding:24px 12px;color:var(--ink2);font-weight:600}
+.bh-kosong svg{width:30px;height:30px;stroke:var(--ink3);stroke-width:1.5}
+/* pratinjau teks WA */
+.bh-wa{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;background:var(--soft);border-radius:12px;padding:12px;max-height:60vh;overflow:auto;min-height:80px}
+.bh-wa:empty::before{content:"Pratinjau muncul saat isian sudah lengkap.";color:var(--ink3)}
+@media (max-width:640px){.bh-angka,.bh-gempa,.bh-omc{grid-template-columns:repeat(2,minmax(0,1fr))}.bh-baris{grid-template-columns:minmax(0,1fr) auto}}
+@media print{.ad-top,.bh-aksi{display:none}}

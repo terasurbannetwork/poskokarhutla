@@ -76,7 +76,7 @@ async function gerbang(env, req, kini) {
   /* plafon harian menurut waktu terima (hari WIB ini), lewat indeks wa_masuk_diterima: pemalsu pengirim terdaftar berhenti di sini */
   const awal = Date.parse(hariWib(kini)) - 7 * 3600e3;
   if (dariGrup) { if ((await env.DB.prepare("SELECT count(*) n FROM wa_masuk WHERE dari = ?1 AND diterima >= ?2 AND diterima < ?3").bind(dari, awal, awal + 864e5).first()).n >= MAKS_GRUP) return gagal(429, "plafon pesan grup operasi hari ini tercapai"); }
-  else if ((await env.DB.prepare("SELECT count(*) n FROM wa_masuk WHERE diterima >= ?1 AND diterima < ?2 AND dari NOT LIKE '%@g.us'").bind(awal, awal + 864e5).first()).n >= MAKS_HARI) return gagal(429, "plafon pesan WA hari ini tercapai");
+  else if ((await env.DB.prepare("SELECT count(*) n FROM wa_masuk WHERE diterima >= ?1 AND diterima < ?2 AND dari NOT LIKE '%@g.us' AND dari <> 'form'").bind(awal, awal + 864e5).first()).n >= MAKS_HARI) return gagal(429, "plafon pesan WA hari ini tercapai");
   let kunci = null, tipe = null, isiBerkas = null;
   if (b) {
     isiBerkas = new Uint8Array(await b.arrayBuffer());

@@ -11,7 +11,7 @@ BULAN = {b: i + 1 for i, b in enumerate(('januari', 'februari', 'maret', 'april'
 STASIUN = {'PANGKALAN': '62', 'PALANGKA': '62', 'SAMPIT': '62', 'MUARA TEWEH': '62', 'JAMBI': '15', 'PALEMBANG': '16', 'SAMARINDA': '64', 'BALIKPAPAN': '64',
            'SINTANG': '61', 'KUBU RAYA': '61', 'MEMPAWAH': '61', 'PONTIANAK': '61', 'KETAPANG': '61', 'BANJAR': '63', 'SORONG': '96', 'PEKANBARU': '14',
            'DUMAI': '14', 'SEMARANG': '33', 'KEMAYORAN': '31', 'MAROS': '73', 'LORE LINDU': '72', 'PALU': '72', 'MERAUKE': '93', 'PANGKAL PINANG': '19', 'BANDAR LAMPUNG': '18',
-           'KOTOTABANG': '13', 'KOTABARU': '63'}
+           'KOTOTABANG': '13', 'KOTABARU': '63', 'PESAWARAN': '18', 'MEDAN': '12', 'MALANG': '35', 'BATAM': '21'}   # 3 Nov: stasiun yang muncul di WA 23 Okt-3 Nov
 
 
 def _kunci(n):
@@ -49,9 +49,10 @@ def bmkg(teks):
             pm[k] = (v, kat, st)
     if len(nilai) < 5:
         raise SystemExit('BMKG: daftar PM2.5 tidak terbaca')
-    per = re.search(r'Periode\s+(\d+)\s*[–-]\s*(\d+)\s+(\w+)', teks)
-    cuaca = lambda pola: {kode(n) for n in _daftar(re.search(pola, teks, re.S).group(1))}
-    return {'pm': pm, 'pm_ke10': sorted(nilai)[0], 'periode': f'{per.group(1)}–{per.group(2)} {per.group(3)[:3]}',
+    per = re.search(r'Periode\s+(\d+)(?:\s+([A-Za-z]+))?\s*[–-]\s*(\d+)\s+(\w+)', teks)   # 3 Nov (form bahan): lintas bulan "31 Oktober – 3 November"
+    # baris cuaca yang tidak ada = tidak ada provinsi (form bahan tidak menulis baris kosong); WA lama selalu memuat ketiganya
+    cuaca = lambda pola: (lambda m: {kode(n) for n in _daftar(m.group(1))} if m else set())(re.search(pola, teks, re.S))
+    return {'pm': pm, 'pm_ke10': sorted(nilai)[0], 'periode': f"{per.group(1)}{' ' + per.group(2)[:3] if per.group(2) else ''}–{per.group(3)} {per.group(4)[:3]}",
             'hujan': cuaca(r'intensitas sedang yang terjadi di (.+?)\.\s*\n'), 'lebat': cuaca(r'Siaga \(hujan lebat[^)]*\)\*?:\s*(.+?)\n'),
             'angin': cuaca(r'Angin Kencang\*?:\s*(.+?)\n')}
 

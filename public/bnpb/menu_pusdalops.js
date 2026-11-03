@@ -5,7 +5,7 @@
 (() => {
   "use strict";
   const IKON = {"banjir": "M3 17c2 0 2-2 4.5-2S10 17 12 17s2.5-2 4.5-2S19 17 21 17|M3 21c2 0 2-2 4.5-2S10 21 12 21s2.5-2 4.5-2S19 21 21 21|M12 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.500 2-5 5-9z", "daftar": "M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01", "simpan": "M5 3h11l3 3v15H5z|M8 3v6h7V3M8 21v-7h8v7", "personel": "M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z|M4 21a8 8 0 0 1 16 0", "pin": "M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z|M12 12a2.500 2.500 0 1 0 0-5 2.500 2.500 0 0 0 0 5z", "peringatan": "M12 3l9 16H3z|M12 10v4M12 17v.5", "kalender": "M4 6h16v15H4zM4 10h16M8 3v4M16 3v4", "sinyal": "M4 20l.01 0M8 16a5.500 5.500 0 0 1 8 0M5 12.500a10 10 0 0 1 14 0|M3 3l18 18"};
-  const MENU = [["/bnpb/dalops", "Pantau Banjir", "banjir"], ["/bnpb/logbook", "Logbook", "daftar"], ["/bnpb/dokumen", "Dokumen", "simpan"], ["/bnpb/operasi", "Operasi", "personel"],
+  const MENU = [["/bnpb/dalops", "Pantau Banjir", "banjir"], ["/bnpb/logbook", "Logbook", "daftar"], ["/bnpb/bahan", "Bahan laporan", "daftar"], ["/bnpb/dokumen", "Dokumen", "simpan"], ["/bnpb/operasi", "Operasi", "personel"],
     ["/?operasi", "Operasi lapangan", "pin"], ["/bnpb/siaga", "Siaga", "peringatan"], ["/bnpb/perencanaan", "Perencanaan", "kalender"], ["/daftar-kontak", "Kontak", "sinyal"]];
   const NS = "http://www.w3.org/2000/svg";
   const ikon = n => { const s = document.createElementNS(NS, "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true");
