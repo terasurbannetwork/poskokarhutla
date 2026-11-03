@@ -59,10 +59,14 @@
 .dl-redup{color:var(--ink3);font-size:12.5px}
 
 /* status banjir: titik + nama, arti sama dengan peta banjir */
-.dl-st{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;white-space:nowrap}
-.dl-st::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--pil)}
+.dl-st{display:inline-flex;align-items:center;gap:5px;padding:3px 9px 3px 7px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;
+  background:color-mix(in srgb,var(--pil) 16%,transparent);color:color-mix(in srgb,var(--pil) 75%,var(--ink))}
+.dl-wrap .dl-st svg{width:13px;height:13px;stroke-width:2.2}
 .dl-l0{--pil:var(--c4)}.dl-l1{--pil:var(--c3)}.dl-l2{--pil:var(--c2)}.dl-l3{--pil:var(--c1)}
-.dl-l0{color:var(--ink3)}
+.dl-l0{background:none;color:var(--ink3);font-weight:600}
+.dl-l2,.dl-l3{background:var(--pil);color:#fff}
+.dl-hari{display:inline-grid;justify-items:center;gap:3px}
+.dl-mm{font-size:12px;font-weight:600;color:var(--ink2);font-variant-numeric:tabular-nums}
 
 /* aksi per baris */
 .dl-aksi{display:flex;gap:6px;align-items:center;justify-content:center}
@@ -73,6 +77,44 @@
 .dl-salin svg{width:14px;height:14px}
 .dl-ikon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9px;border:1px solid var(--line);color:var(--ink2);background:var(--card)}
 .dl-ikon:hover,.dl-ikon:focus-visible{border-color:var(--c5);color:var(--c5)}
+.dl-wa{color:#1f9d55}
+.dl-wa:hover,.dl-wa:focus-visible{border-color:#25d366;color:#fff;background:#25d366}
+.dl-wrap svg.dl-wa-ikon{width:17px;height:17px;fill:currentColor;stroke:none}
+
+/* kelompok provinsi: satu baris selebar tabel, tertutup sampai diklik */
+.dl-prov{cursor:pointer}
+.dl-wrap .lb-tabel .dl-prov td{background:var(--surface);border-bottom:1px solid var(--line);padding:9px 12px;text-transform:none;letter-spacing:0;font-size:13.5px;color:var(--ink)}
+.dl-wrap .lb-tabel tbody tr.dl-prov:hover td{background:color-mix(in srgb,var(--c5) 10%,var(--surface))}
+.dl-buka{display:flex;align-items:center;gap:10px;border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer;text-align:left;width:100%}
+.dl-buka b{font-weight:800}
+.dl-buka span{color:var(--ink2);font-size:12.5px;font-weight:500}
+.dl-wrap .dl-buka svg{width:15px;height:15px;transition:transform .15s}
+.dl-buka[aria-expanded="true"] svg{transform:rotate(90deg)}
+.dl-buka:focus-visible{outline:2px solid var(--c5);outline-offset:3px;border-radius:4px}
+.dl-wrap .dl-prov td.n{font-weight:800;color:var(--ink)}
+.dl-tutup tr:not(.dl-prov){display:none}
+.dl-kepala-baris{display:flex;align-items:center;gap:12px}
+.dl-semua{margin-left:auto;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:9px;padding:6px 12px;font:600 12.5px var(--font);cursor:pointer;white-space:nowrap}
+.dl-semua:hover,.dl-semua:focus-visible{border-color:var(--c5);color:var(--c5)}
+
+/* peta sepekan + ringkasan per provinsi */
+.dl-peta-isi{display:grid;gap:16px}
+.dl-peta{min-height:180px}
+.dl-wrap svg.dl-peta-svg{width:100%;height:auto;display:block;stroke-width:1}
+.dl-peta-dasar{fill:var(--soft);stroke:var(--card);stroke-width:.6}
+.dl-peta-kab{stroke:var(--card);stroke-width:.5;cursor:help}
+.dl-peta-belum{fill:var(--c1)}
+.dl-peta-surut{fill:var(--c5)}
+.dl-peta-kab:hover{stroke:var(--ink);stroke-width:1}
+.dl-peta-label rect{fill:var(--card);stroke:var(--ink3);stroke-width:.8}
+.dl-peta-label text{font:800 12px var(--font);fill:var(--ink)}
+.dl-legenda{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;font-size:12.5px;font-weight:600;color:var(--ink2);margin-top:6px}
+.dl-leg{display:inline-flex;align-items:center;gap:6px}
+.dl-leg::before{content:"";width:12px;height:12px;border-radius:3px}
+.dl-leg-belum::before{background:var(--c1)}.dl-leg-surut::before{background:var(--c5)}
+.dl-no{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--navy);color:#fff;font-size:11px;font-weight:800}
+.dl-wrap .lb-tabel tfoot td{background:var(--navy);color:#fff;font-weight:800;border:0}
+.dl-wrap .lb-tabel tfoot td.n{color:#fff}
 
 .dl-arti{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 .dl-arti>div{display:flex;gap:10px;align-items:baseline}
