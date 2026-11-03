@@ -1,7 +1,7 @@
 /* Pustaka Hukum BNPB (publik). Data dari /api/hukum/* dan /data/bnpb/hukum/katalog.json.
    Semua teks dari server masuk lewat textContent; penanda [[ ]] cuplikan diubah jadi <mark> lewat DOM. Tanpa riwayat tanya yang disimpan. */
 (() => {
-  const $ = id => document.getElementById(id), NS = "http://www.w3.org/2000/svg", PER = 20, TABEL_HAL = 10;
+  const $ = id => document.getElementById(id), NS = "http://www.w3.org/2000/svg", PER = 20;
   const IKON = {
     cari: "M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16z|M21 21l-4.3-4.3",
     tanya: "M12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18z|M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7|M12 17h.01",
@@ -72,7 +72,7 @@
   const tautanDok = (id, pasal) => "#d=" + encodeURIComponent(id) + (pasal ? "&p=" + encodeURIComponent(pasal) : "");
 
   /* ---- rute berbasis hash ---- */
-  const TAB = [["cari", "cari", "Cari"], ["tanya", "tanya", "Tanya"], ["relasi", "relasi", "Relasi"]];
+  const TAB = [["cari", "cari", "Cari"], ["tanya", "tanya", "Tanya"]];
   let tabAktif = "cari", dokDimuat = null;
   const param = () => new URLSearchParams(location.hash.slice(1));
   function bangunTab() {
@@ -82,13 +82,13 @@
   function rute() {
     const p = param(), d = p.get("d");
     if (d) { tampil("Dok"); bukaDok(d, p.get("p")); return; }
+    if (p.get("t") === "relasi") { location.replace("/direktori?tampil=pustaka&sub=relasi"); return; }   /* relasi antarperaturan pindah ke Direktori > Pustaka (3 Nov 2026) */
     const t = TAB.some(x => x[0] === p.get("t")) ? p.get("t") : tabAktif;
-    tabAktif = t; tampil(t === "cari" ? "Cari" : t === "tanya" ? "Tanya" : "Relasi");
-    if (t === "relasi") muatRelasi();
+    tabAktif = t; tampil(t === "cari" ? "Cari" : "Tanya");
     if (t === "cari" && p.get("q") && p.get("q") !== stCari.q) { $("q").value = p.get("q"); stCari.q = p.get("q"); cari(0); }
   }
   function tampil(nama) {
-    for (const n of ["Cari", "Tanya", "Relasi", "Dok"]) $("p" + n).hidden = n !== nama;
+    for (const n of ["Cari", "Tanya", "Dok"]) $("p" + n).hidden = n !== nama;
     for (const b of $("tab").children) b.setAttribute("aria-pressed", String(nama !== "Dok" && b.dataset.t === tabAktif));
     if (nama !== "Dok") document.title = "Pustaka Hukum BNPB · Centurisk97";
   }
@@ -260,75 +260,7 @@
     $("tanya").addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); kirimTanya(); } });
   }
 
-  /* =================== RELASI =================== */
-  let K = null, katalogMuat = false;
-  const peta = new Map(); /* wadah -> {kolom, baris, urut, arah, hal} */
-  function tabel(wadah, kolom, baris, awal) {
-    let s = peta.get(wadah); if (!s) { s = {urut: awal.urut, arah: awal.arah, hal: 0}; peta.set(wadah, s); }
-    s.kolom = kolom; s.baris = baris; s.kosong = awal.kosong; gambarTabel(wadah);
-  }
-  function gambarTabel(wadah) {
-    const s = peta.get(wadah), w = $(wadah), k0 = s.kolom.find(k => k.k === s.urut) || s.kolom[0];
-    const b = [...s.baris].sort((a, c) => { const x = k0.v(a), y = k0.v(c); return (x > y ? 1 : x < y ? -1 : 0) * s.arah; });
-    if (!b.length) return w.replaceChildren(h("p", {class: "hk-kosong", teks: s.kosong || "Belum ada data."}));
-    const mak = Math.max(0, Math.ceil(b.length / TABEL_HAL) - 1); s.hal = Math.min(s.hal, mak);
-    const kepala = h("tr", null, ...s.kolom.map(k => h("th", {"aria-sort": k.k === s.urut ? (s.arah > 0 ? "ascending" : "descending") : "none"}, h("button", {type: "button", class: "hk-urut", "data-k": k.k}, k.l, k.k === s.urut ? (s.arah > 0 ? " ▲" : " ▼") : ""))));
-    const isi = b.slice(s.hal * TABEL_HAL, (s.hal + 1) * TABEL_HAL).map(r => h("tr", null, ...s.kolom.map(k => h("td", {"data-label": k.l, class: k.n ? "n" : null}, k.f(r)))));
-    w.replaceChildren(...[h("div", {class: "ad-tabel-wadah"}, h("table", {class: "ad-tabel"}, h("thead", null, kepala), h("tbody", null, ...isi))),
-      mak ? h("div", {class: "hk-hal"}, h("button", {type: "button", class: "bn-tombol sekunder", "data-h": "-1", disabled: s.hal === 0, teks: "Sebelumnya"}),
-        h("span", {teks: `Halaman ${angka(s.hal + 1)} dari ${angka(mak + 1)} (${angka(b.length)} baris)`}), h("button", {type: "button", class: "bn-tombol sekunder", "data-h": "1", disabled: s.hal >= mak, teks: "Berikutnya"})) : null].filter(Boolean));
-  }
-  function pasangRelasi() {
-    $("relasi").addEventListener("click", e => {
-      const sec = e.target.closest("[data-w]"); if (!sec) return; const s = peta.get(sec.dataset.w), u = e.target.closest(".hk-urut"), p = e.target.closest("[data-h]");
-      if (u) { s.arah = s.urut === u.dataset.k ? -s.arah : 1; s.urut = u.dataset.k; s.hal = 0; gambarTabel(sec.dataset.w); }
-      else if (p) { s.hal += +p.dataset.h; gambarTabel(sec.dataset.w); }
-    });
-    $("relasi").addEventListener("input", e => { if (e.target.id === "cariIstilah") { stIstilah = e.target.value.trim().toLowerCase(); isiIstilah(); } });
-  }
-  let stIstilah = "";
-  async function muatRelasi() {
-    if (katalogMuat) return; katalogMuat = true; $("pesanRelasi").textContent = "";
-    $("relasi").replaceChildren(h("div", {class: "bn-kartu"}, h("div", {class: "hk-memuat"})));
-    try { const r = await fetch("/data/bnpb/hukum/katalog.json"); if (!r.ok) throw new Error(r.status); K = await r.json(); }
-    catch (e) { K = null; }
-    if (!K || !Array.isArray(K.dok)) { katalogMuat = false; bersih("relasi"); $("relasi").append(h("p", {class: "hk-kosong", teks: "Katalog peraturan belum tersedia. Relasi antarperaturan akan muncul di sini setelah pustaka diisi."})); return; }
-    const dm = new Map(K.dok.map(d => [d.id, d]));
-    const judul = (id, fallback) => { const d = dm.get(id); return d ? sebut(d) : fallback || id; };
-    const link = (id, teks, ada) => ada ? h("a", {href: tautanDok(id), teks}) : h("span", {teks});
-
-    /* paling sering dirujuk */
-    const hit = new Map(); for (const r of K.relasi || []) { const e = hit.get(r.ke) || {id: r.ke, n: 0, ke_judul: r.ke_judul, terdaftar: r.terdaftar}; e.n++; hit.set(r.ke, e); }
-    const A = [...hit.values()];
-    /* diganti atau dicabut */
-    const B = (K.relasi || []).filter(r => r.jenis === "mengganti" || r.jenis === "mencabut" || r.jenis === "mengubah");
-    const kos = {"relA": "Belum ada rujukan antardokumen.", "relB": "Belum ada dokumen yang tercatat diganti atau dicabut."};
-    $("relasi").replaceChildren(
-      h("section", {class: "hk-tabel-sec", "data-w": "relA"}, h("h2", null, "Paling sering dirujuk"), h("div", {id: "relA"})),
-      h("section", {class: "hk-tabel-sec", "data-w": "relB", style: null}, h("h2", null, "Diganti, dicabut, atau diubah"), h("div", {id: "relB"})),
-      h("section", {class: "hk-tabel-sec", "data-w": "relC"}, h("h2", null, "Definisi istilah"), h("label", {class: "bn-isian"}, "Cari istilah", h("input", {id: "cariIstilah", type: "search", placeholder: "Contoh: bencana", autocomplete: "off"})), h("div", {id: "relC"})));
-    tabel("relA", [
-      {k: "ke", l: "Dokumen", v: r => (dm.get(r.id) ? sebut(dm.get(r.id)) : r.ke_judul || r.id).toLowerCase(), f: r => h("span", null, link(r.id, judul(r.id, r.ke_judul), !!dm.get(r.id)), dm.get(r.id) ? h("div", {class: "hk-redup", teks: dm.get(r.id).judul}) : null)},
-      {k: "st", l: "Status", v: r => dm.get(r.id)?.status || "", f: r => dm.get(r.id) ? h("span", {class: "hk-pils"}, pilStatus(dm.get(r.id).status), tidakResmi(dm.get(r.id)) ? pilTakResmi(dm.get(r.id)) : null) : h("span", {class: "hk-redup", teks: "Belum ada di pustaka"})},
-      {k: "n", l: "Dirujuk oleh", n: true, v: r => r.n, f: r => angka(r.n) + " dokumen"}], A, {urut: "n", arah: -1, kosong: kos.relA});
-    const JN = {mengganti: "Diganti oleh", mencabut: "Dicabut oleh", mengubah: "Diubah oleh"};
-    tabel("relB", [
-      {k: "ke", l: "Dokumen lama", v: r => (r.ke_judul || r.ke).toLowerCase(), f: r => link(r.ke, judul(r.ke, r.ke_judul), r.terdaftar)},
-      {k: "jenis", l: "Keterangan", v: r => r.jenis, f: r => pilW("peringatan", JN[r.jenis], r.jenis === "mengubah" ? "c5" : "c3")},
-      {k: "dari", l: "Peraturan penggantinya", v: r => r.dari, f: r => link(r.dari, judul(r.dari), !!dm.get(r.dari))}], B, {urut: "ke", arah: 1, kosong: kos.relB});
-    isiIstilah();
-  }
-  function isiIstilah() {
-    if (!K) return;
-    const dm = new Map(K.dok.map(d => [d.id, d]));
-    const D = (K.definisi || []).filter(x => !stIstilah || (x.istilah || "").toLowerCase().includes(stIstilah));
-    tabel("relC", [
-      {k: "istilah", l: "Istilah", v: r => (r.istilah || "").toLowerCase(), f: r => h("b", {teks: r.istilah})},
-      {k: "teks", l: "Definisi", v: r => r.teks || "", f: r => h("span", {teks: (r.teks || "").length > 260 ? r.teks.slice(0, 257) + "..." : r.teks})},
-      {k: "dok", l: "Sumber", v: r => r.dok + r.label, f: r => h("a", {href: tautanDok(r.dok, r.label), teks: `${r.label} ${dm.get(r.dok) ? sebut(dm.get(r.dok)) : r.dok}`})}], D, {urut: "istilah", arah: 1, kosong: stIstilah ? "Tidak ada istilah yang cocok." : "Belum ada definisi istilah."});
-  }
-
   /* =================== mulai =================== */
-  bangunTab(); isiFilter(); pasangCari(); pasangTanya(); pasangRelasi();
+  bangunTab(); isiFilter(); pasangCari(); pasangTanya();
   addEventListener("hashchange", rute); rute();
 })();

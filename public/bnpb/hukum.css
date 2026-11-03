@@ -5,8 +5,8 @@
 .ad-tabs button svg,.bn-pil svg,.bn-tombol svg,.ad-tombol svg,.hk-cari svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .bn-pil svg{width:13px;height:13px}
 .bn-kartu h2 svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-#dok,#jawab,#relasi{display:grid;gap:14px;align-content:start}
-#tab{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-flow:row}
+#dok,#jawab{display:grid;gap:14px;align-content:start}
+#tab{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-flow:row}
 
 .hk-hero{background:var(--card);border-radius:18px;box-shadow:var(--bayang);padding:26px clamp(16px,4vw,40px);display:grid;gap:12px;justify-items:center;text-align:center}
 .hk-hero h1{font:800 clamp(22px,3.4vw,32px)/1.2 var(--display);letter-spacing:-.02em}
@@ -69,16 +69,6 @@ mark{background:color-mix(in srgb,var(--emas) 40%,transparent);color:inherit;bor
 .hk-relasi a{font-weight:700}
 .hk-redup{color:var(--ink2);font-size:12px;font-weight:500}
 
-/* tabel */
-.hk-tabel-sec{display:grid;gap:10px}
-.hk-tabel-sec h2{font:800 18px var(--display)}
-.hk-tabel-sec .hk-urut{all:unset;cursor:pointer;color:#fff;font-weight:800;letter-spacing:inherit;text-transform:inherit}
-.hk-tabel-sec .hk-urut:focus-visible{outline:2px solid var(--emas);outline-offset:3px;border-radius:4px}
-.hk-tabel-sec td{vertical-align:top}
-.hk-tabel-sec td.n{text-align:left}
-.hk-tabel-sec th{text-align:center}
-.hk-tabel-sec td a{font-weight:700}
-.hk-tabel-sec .bn-isian{max-width:360px}
 
 @media (max-width:900px){.hk-isi{grid-template-columns:1fr}.hk-toc{position:static;max-height:none}}
 @media (max-width:640px){.hk-saring{grid-template-columns:1fr}.hk-cari{flex-direction:column}.hk-cari .bn-tombol{height:46px}.hk-hero{padding:18px 14px;text-align:left;justify-items:stretch}.hk-contoh{justify-content:flex-start}.ad-tabs button{padding:0 8px;font-size:12.5px}}

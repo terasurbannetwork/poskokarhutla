@@ -2485,3 +2485,19 @@ button.ak-r[data-kh] small{font-weight:800;color:var(--ink2)}
 button.ak-r[data-kh][aria-pressed="true"]{border-color:var(--w0,var(--brand2));box-shadow:0 0 0 2px color-mix(in oklab,var(--w0,var(--brand2)) 25%,transparent)}
 .ak-kh-bukti{margin-top:8px}
 @media (max-width:640px){.ak-kh-baris{grid-template-columns:1fr;gap:4px}}
+
+/* relasi antarperaturan (Pustaka > Relasi peraturan) */
+.ak-rlalat{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.ak-rlalat .ak-kampus-pilih{flex:1 1 220px;max-width:320px}
+.ak-rltop{font-size:13px;line-height:1.45;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ak-rldef{margin:0;font-size:13.5px;line-height:1.55;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.ak-rlr .ak-dokm b{font-family:var(--display);font-size:15px;line-height:1.35}
+.ak-rlr .ak-mp .ak-ikon{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2}
+.ak-rlsum{text-decoration:none;color:var(--brand2);font-weight:700}.ak-rlsum:hover{background:color-mix(in oklch,var(--brand2) 12%,var(--card))}
+.ak-rlhit{display:grid;justify-items:end;min-width:96px;text-align:right}
+.ak-rlhit b{font-family:var(--display);font-size:24px;line-height:1;font-weight:800;color:var(--brand);font-variant-numeric:tabular-nums}
+.ak-rlhit small{font-size:11.5px;color:var(--ink2);font-weight:600;margin-top:4px}
+.ak-rlke{display:grid;gap:3px;justify-items:end;text-align:right;max-width:280px;padding-left:14px;border-left:1px solid var(--line)}
+.ak-rlke small{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.ak-rlke b{font-family:var(--display);font-size:14.5px}.ak-rlke b a{color:var(--ink);text-decoration:none}.ak-rlke b a:hover{color:var(--brand2)}
+@media (max-width:600px){.ak-rlhit,.ak-rlke{grid-column:1/-1;justify-items:start;text-align:left;max-width:none}.ak-rlhit{display:flex;gap:6px;align-items:baseline}.ak-rlke{padding:10px 0 0;border-left:0;border-top:1px solid var(--line)}.ak-rlalat .ak-kampus-pilih{max-width:none}}

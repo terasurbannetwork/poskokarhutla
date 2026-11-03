@@ -2423,8 +2423,9 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
     puArr = dlist(Array.isArray(d) ? d : d?.dokumen).filter(x => x && x.judul).map(x => Object.assign(x, {_cari: [x.judul, x.jenis, ...wilDok(x).map(w => w.kab)].filter(Boolean).join(" ").toLowerCase()})).sort((a, b) => (b.tahun || 0) - (a.tahun || 0));
     Object.assign(PU, {fs: {jenis: new Set(), prov: new Set(), tahun: new Set()}, q: "", hal: 1}); MSG.pu = {st: PU.fs, f: ["jenis", "prov", "tahun"], h: () => { PU.hal = 1; }, g: () => gambarPu(false), lab: (f, v) => f === "prov" ? provT(v) : String(v)};
     const hit = f => { const n = {}; puArr.forEach(x => { for (const k of [].concat(f(x))) if (k) n[k] = (n[k] || 0) + 1; }); return n; }, nJ = hit(x => x.jenis), nP = hit(x => wilDok(x).map(w => String(w.prov))), nT = hit(x => x.tahun);
-    p.innerHTML = `${segHtml("akPuS", "Sub-tampilan pustaka", [["buku", "Buku", IKJ], ["dok", "Dokumen", IKJ]])}<div id="akPuDok" class="ak-tampilan" hidden></div><div id="akPuBuku" class="ak-tampilan"></div>`;
-    $("akPuS").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; setSeg("akPuS", b.dataset.v); $("akPuDok").hidden = b.dataset.v !== "dok"; $("akPuBuku").hidden = b.dataset.v !== "buku"; if (b.dataset.v === "buku" && !$("akBkJ")) nanti(() => bangunBuku($("akPuBuku"))); });
+    p.innerHTML = `${segHtml("akPuS", "Sub-tampilan pustaka", [["buku", "Buku", IKJ], ["dok", "Dokumen", IKJ], ["relasi", "Relasi peraturan", IKJ]])}<div id="akPuDok" class="ak-tampilan" hidden></div><div id="akPuBuku" class="ak-tampilan"></div><div id="akPuRel" class="ak-tampilan" hidden></div>`;
+    $("akPuS").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; const v = b.dataset.v; setSeg("akPuS", v); $("akPuDok").hidden = v !== "dok"; $("akPuBuku").hidden = v !== "buku"; $("akPuRel").hidden = v !== "relasi";
+      if (v === "buku" && !$("akBkJ")) nanti(() => bangunBuku($("akPuBuku"))); if (v === "relasi" && !$("akRlJ")) nanti(() => bangunRelasi($("akPuRel"))); });
     $("akPuDok").innerHTML = `<div class="ak-saring"><div class="ak-alat">${cariKotak("akPuQ", "Cari judul atau kab/kota")}</div><div class="ak-baris ak-baris3">${htmlPilih("akPuJn", IKL.jenis, "Cari jenis dokumen")}${htmlPilih("akPuP", IKON_PIN, "Cari provinsi")}${htmlPilih("akPuT", IKL.tahun, "Cari tahun")}</div></div>
       <div class="ak-hasil"><h2 class="ak-judulv" id="akPuJ"></h2><div id="akPuL"></div><nav id="akPuH" class="ak-hal" aria-label="Halaman daftar dokumen" aria-live="polite"></nav></div>`;
     const jalan = () => { const t = ++putok; nanti(() => { if (t === putok) gambarPu(false); }); }, ubah = (k, v) => { PU[k] = v; PU.hal = 1; jalan(); };
@@ -2434,6 +2435,68 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
     let tt = 0; $("akPuQ").addEventListener("input", e => { clearTimeout(tt); tt = setTimeout(() => ubah("q", e.target.value.trim()), 250); });
     pasangHal("akPuH", h => { PU.hal = h; gambarPu(true); });
     gambarPu(false);
+  }
+
+  /* ---- relasi antarperaturan: katalog Pustaka Hukum BNPB (statis publik, jdih.bnpb.go.id); dipindah dari tab Relasi /bnpb/hukum 3 Nov 2026 ---- */
+  const RL = {m: "rujuk", fs: {jenis: new Set()}, q: "", hal: 1}, RLPER = 20;
+  let rlData = null, rlHasil = [], rltok = 0;
+  const RL_J = [[/^undang-undang$/i, "UU", "Undang-Undang"], [/^peraturan pemerintah pengganti/i, "Perppu", "Perppu"], [/^peraturan pemerintah$/i, "PP", "Peraturan Pemerintah"], [/^peraturan presiden$/i, "Perpres", "Peraturan Presiden"], [/^keputusan presiden$/i, "Keppres", "Keputusan Presiden"],
+    [/^peraturan kepala (badan|bnpb)/i, "Perka", "Peraturan Kepala BNPB"], [/^keputusan kepala (badan|bnpb)/i, "Kepka", "Keputusan Kepala BNPB"], [/^peraturan (badan|bnpb)/i, "Perban", "Peraturan BNPB"], [/^peraturan menteri/i, "", "Peraturan Menteri"], [/^keputusan menteri/i, "", "Keputusan Menteri"], [/^petunjuk pelaksanaan/i, "Juklak", "Petunjuk Pelaksanaan"], [/^petunjuk teknis/i, "Juknis", "Petunjuk Teknis"], [/^pedoman/i, "Pedoman", "Pedoman"]];
+  const RL_JN = {mencabut: ["Dicabut oleh", "#c92a2a"], mengganti: ["Diganti oleh", "#e8590c"], mengubah: ["Diubah oleh", "#1c7ed6"]};
+  const IK_RL = '<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M8 7.5l3 8M16 7.5l-3 8M8.5 6h7"/>', IK_GANTI = '<path d="M4 8h13l-3-3M20 16H7l3 3"/>', IK_DOKR = '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>';
+  const rlJenis = s => RL_J.find(([re]) => re.test(String(s || "").trim()));
+  const rlUrl = (id, pasal) => "/bnpb/hukum#d=" + encodeURIComponent(id) + (pasal ? "&p=" + encodeURIComponent(pasal) : "");
+  const rlRapi = s => s === s.toUpperCase() ? kapital(s.toLowerCase()) : s;
+  /* judul panjang dipecah jadi nama pendek (Perban 4/2019) + pokok (setelah "tentang") */
+  function rlDok(id, judul) {
+    const d = rlData.dm.get(id), s = String(d ? d.judul : judul || id).replace(/\s+/g, " ").trim(), m = s.match(/^(.*?)\s+nomor\s+([\w.\/-]+)\s+tahun\s+(\d{4})(?:\s+tentang\s+(.*))?/i);
+    const top = m && m[4] ? rlRapi(m[4]).replace(/\s+BAB\s+I\b.*$/i, "").slice(0, 200) : d && m ? m[1] : "";
+    if (d) { const j = rlJenis(d.jenis); return {id, ada: true, pendek: `${d.singkatan ? kapital(String(d.singkatan).toLowerCase()) : j?.[1] || "Dokumen"} ${d.nomor}/${d.tahun}`, topik: top, jenis: j?.[2] || d.jenis || "Lainnya", tahun: d.tahun, status: d.status}; }
+    if (!m) return {id, ada: false, pendek: s.slice(0, 160), topik: "", jenis: "Lainnya"};
+    const j = rlJenis(m[1]); return {id, ada: false, pendek: `${j?.[1] || rlRapi(m[1])} ${m[2]}/${m[3]}`, topik: top, jenis: j?.[2] || "Lainnya", tahun: +m[3]};
+  }
+  const rlJudul = o => o.ada ? `<a href="${esc(rlUrl(o.id))}" ${LUAR}>${esc(o.pendek)}</a>` : esc(o.pendek);
+  const rlSt = o => o.ada ? `<span class="ak-izin" style="background:${o.status === "BERLAKU" ? "#2b8a3e" : "#6b7280"}">${esc(kapital(String(o.status || "status belum tercatat").toLowerCase()))}</span>` : '<span class="ak-mp" title="Teksnya belum dipanen ke Pustaka Hukum">Belum ada di pustaka</span>';
+  const rlBaris = (ik, o, kanan, tambah = "") => `<li class="ak-dokr ak-rlr"><span class="ak-dikon" aria-hidden="true">${ikon(ik, "currentColor")}</span><div class="ak-dokm"><b>${rlJudul(o)}</b>${o.topik ? `<span class="ak-rltop">${esc(o.topik)}</span>` : ""}<div class="ak-pil"><span class="ak-prodi">${esc(o.jenis)}</span>${tahunPil(o)}${rlSt(o)}${tambah}</div></div>${kanan}</li>`;
+  const tahunPil = o => o.tahun ? `<span class="ak-mp">${ikon(IKL.tahun, "currentColor")}${esc(o.tahun)}</span>` : "";
+  const RL_BARIS = {
+    rujuk: r => rlBaris(IK_DOKR, r, `<div class="ak-rlhit" title="Dirujuk oleh ${angka(r.n)} dokumen di pustaka"><b>${angka(r.n)}</b><small>dokumen merujuk</small></div>`),
+    ubah: r => rlBaris(IK_GANTI, r.lama, `<div class="ak-rlke"><small style="color:${RL_JN[r.jn[0]][1]}">${kapital(r.jn.map(j => RL_JN[j][0].split(" ")[0].toLowerCase()).join(" dan ") + " oleh")}</small><b>${rlJudul(r.baru)}</b>${r.baru.topik ? `<span class="ak-lper">${esc(r.baru.topik.length > 70 ? r.baru.topik.slice(0, 68) + "…" : r.baru.topik)}</span>` : ""}</div>`),
+    istilah: r => `<li class="ak-dokr ak-rlr"><span class="ak-dikon" aria-hidden="true">${ikon(IKJ, "currentColor")}</span><div class="ak-dokm"><b>${esc(r.x.istilah)}</b><p class="ak-rldef">${esc(r.x.teks || "")}</p><div class="ak-pil"><a class="ak-mp ak-rlsum" href="${esc(rlUrl(r.x.dok, r.x.label))}" ${LUAR}>${esc([r.x.label, r.src.pendek].filter(Boolean).join(", "))}</a><span class="ak-prodi">${esc(r.src.jenis)}</span></div></div></li>`};
+  const RL_NOUN = {rujuk: ["peraturan paling sering dirujuk", "peraturan"], ubah: ["peraturan yang diganti, dicabut, atau diubah", "perubahan"], istilah: ["definisi istilah", "istilah"]};
+  async function rlMuat() {
+    if (rlData) return rlData;
+    const K = await ambilJson("/data/bnpb/hukum/katalog.json"); if (!K || !Array.isArray(K.dok)) return null;
+    rlData = {K, dm: new Map(K.dok.map(d => [d.id, d]))};
+    const hit = new Map(); for (const r of dlist(K.relasi)) { const e = hit.get(r.ke) || {ke: r.ke, j: r.ke_judul, n: 0}; e.n++; hit.set(r.ke, e); }
+    const cari = (o, ...t) => Object.assign(o, {_cari: t.filter(Boolean).join(" ").toLowerCase()});
+    rlData.rujuk = [...hit.values()].map(e => { const o = Object.assign(rlDok(e.ke, e.j), {n: e.n}); return cari(o, o.pendek, o.topik, o.jenis); }).map(o => Object.assign(o, {_jenis: o.jenis})).sort((a, b) => b.n - a.n);
+    const pas = new Map(); for (const r of dlist(K.relasi)) if (RL_JN[r.jenis]) { const k = r.ke + "|" + r.dari, e = pas.get(k) || {r, jn: new Set()}; e.jn.add(r.jenis); pas.set(k, e); }   /* satu pasangan lama-baru bisa tercatat dicabut sekaligus diganti: satu baris */
+    rlData.ubah = [...pas.values()].map(({r, jn}) => { const lama = rlDok(r.ke, r.ke_judul), baru = rlDok(r.dari), j = ["mencabut", "mengganti", "mengubah"].filter(x => jn.has(x)); return cari({lama, baru, jn: j, _jenis: lama.jenis}, lama.pendek, lama.topik, baru.pendek, baru.topik); }).sort((a, b) => (b.baru.tahun || 0) - (a.baru.tahun || 0) || a.lama.pendek.localeCompare(b.lama.pendek, "id"));
+    const kunciIs = t => String(t).replace(/^["'“”‘’\s]+/, "").toLowerCase();   /* tanda kutip di depan tidak ikut diurutkan */
+    rlData.istilah = dlist(K.definisi).filter(x => x && x.istilah && !/^\d+[.)]\s/.test(x.istilah)).map(x => { const src = rlDok(x.dok); return cari({x, src, _jenis: src.jenis}, x.istilah, x.teks, src.pendek); }).sort((a, b) => kunciIs(a.x.istilah).localeCompare(kunciIs(b.x.istilah), "id"));
+    return rlData;
+  }
+  function gambarRl(gulir) {
+    const q = RL.q.toLowerCase(); rlHasil = rlData[RL.m].filter(x => dalam(RL.fs.jenis, [x._jenis]) && (!q || x._cari.includes(q)));
+    const n = rlHasil.length, a = (RL.hal - 1) * RLPER;
+    $("akRlJ").innerHTML = `<b>${angka(n)}</b> ${RL_NOUN[RL.m][0]}${msAda("rl") ? " " + msChips("rl") : ""}`; msTandai("rl");
+    $("akRlL").innerHTML = n ? `<ul class="ak-dokl">${rlHasil.slice(a, a + RLPER).map(RL_BARIS[RL.m]).join("")}</ul>` : `<div class="ak-hampa2"><p class="ak-khampa">Tidak ada ${RL_NOUN[RL.m][1]} yang cocok dengan saringan ini.</p><div class="ak-pil"><button type="button" class="ak-rbtn" data-hapussaring="1">Hapus semua saringan</button></div></div>`;
+    $("akRlH").innerHTML = navHal(RL.hal, n, RLPER, RL_NOUN[RL.m][1]);
+    if (gulir) gulirKe("akRlJ");
+  }
+  async function bangunRelasi(el) {
+    el.innerHTML = hantuHtml + hantuHtml;
+    const d = await rlMuat(); if (!d) { el.innerHTML = '<div class="ak-hampa2"><p class="ak-khampa">Katalog peraturan belum tersedia.</p></div>'; return; }
+    Object.assign(RL, {m: "rujuk", fs: {jenis: new Set()}, q: "", hal: 1}); MSG.rl = {st: RL.fs, f: ["jenis"], h: () => { RL.hal = 1; }, g: () => gambarRl(false), lab: (f, v) => v};
+    el.innerHTML = `<div class="ak-saring"><div class="ak-alat">${cariKotak("akRlQ", "Cari nama peraturan, pokok, atau istilah")}</div><div class="ak-rlalat">${segHtml("akRlS", "Jenis relasi", [["rujuk", "Paling dirujuk", IK_RL], ["ubah", "Perubahan", IK_GANTI], ["istilah", "Istilah", IKJ]])}${htmlPilih("akRlJn", IKL.jenis, "Cari jenis peraturan")}</div></div>
+      <div class="ak-hasil"><h2 class="ak-judulv" id="akRlJ"></h2><div id="akRlL"></div><nav id="akRlH" class="ak-hal" aria-label="Halaman relasi peraturan" aria-live="polite"></nav><small class="ak-lper">Sumber: katalog Pustaka Hukum BNPB (jdih.bnpb.go.id), ${angka(d.K.dok.length)} dokumen, dibangun ${esc(tglID(String(d.K.dibangun || "").slice(0, 10)))}. Hitungan rujukan dari konsiderans dan isi dokumen di pustaka; peraturan di luar pustaka belum bisa dibuka teksnya.</small></div>`;
+    const jalan = () => { const t = ++rltok; nanti(() => { if (t === rltok) gambarRl(false); }); };
+    msPilih("akRlJn", "rl", "jenis", {semua: "Semua jenis peraturan", opsi: () => { const n = {}; rlData[RL.m].forEach(x => { n[x._jenis] = (n[x._jenis] || 0) + 1; }); return Object.entries(n).sort((a, b) => b[1] - a[1]).map(([v, c]) => [v, v, c]); }});
+    $("akRlS").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b || b.dataset.v === RL.m) return; setSeg("akRlS", b.dataset.v); RL.m = b.dataset.v; RL.fs.jenis = new Set(); RL.hal = 1; jalan(); });
+    let tt = 0; $("akRlQ").addEventListener("input", e => { clearTimeout(tt); tt = setTimeout(() => { RL.q = e.target.value.trim(); RL.hal = 1; jalan(); }, 250); });
+    pasangHal("akRlH", h => { RL.hal = h; gambarRl(true); });
+    gambarRl(false);
   }
 
   /* ---- profil wilayah ---- */
@@ -3427,9 +3490,9 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
     el.textContent = t[0] + "."; el.hidden = false; ambilData(t[1]).then(d => { const a = dlist(Array.isArray(d) ? d : d && Object.values(d).find(Array.isArray)), tg = a.map(x => String(x?.diperiksa || "")).filter(Boolean).sort().pop(); if (tampilSkrg === v) el.textContent = t[0] + (tg ? `; diperiksa ${tglID(tg)}` : "") + "."; }); }
   /* 8 tab utama; Pustaka dan Riset punya sub-tab. ?tampil= lama (berita, riset, kejadian, pusat, aset) diarahkan ke tab+sub baru */
   const TABS = ["pakar", "lembaga", "wilayah", "inovasi", "riset", "sistem_data", "pendanaan", "donasi", "pustaka"], TAB_LABEL = {riset: "Riset"};
-  const SUBTAB = {pustaka: [["buku", "Buku", "pustaka"], ["dok", "Dokumen", "pustaka"], ["berita", "Berita", "berita"]], riset: [["riset", "Riset daerah", "riset"], ["kejadian", "Kejadian besar", "kejadian"], ["pusat", "Pusat studi", "pusat"], ["aset", "Aset riset", "pusat"]]};
-  const LAMA = {berita: ["pustaka", "berita"], riset: ["riset", "riset"], kejadian: ["riset", "kejadian"], pusat: ["riset", "pusat"], aset: ["riset", "aset"], pustaka: ["pustaka", "dok"], buku: ["pustaka", "buku"], dokumen: ["pustaka", "dok"], tokoh: ["pakar", ""]};
-  let tabSkrg = "pakar";
+  const SUBTAB = {pustaka: [["buku", "Buku", "pustaka"], ["dok", "Dokumen", "pustaka"], ["relasi", "Relasi peraturan", "pustaka"], ["berita", "Berita", "berita"]], riset: [["riset", "Riset daerah", "riset"], ["kejadian", "Kejadian besar", "kejadian"], ["pusat", "Pusat studi", "pusat"], ["aset", "Aset riset", "pusat"]]};
+  const LAMA = {berita: ["pustaka", "berita"], riset: ["riset", "riset"], kejadian: ["riset", "kejadian"], pusat: ["riset", "pusat"], aset: ["riset", "aset"], pustaka: ["pustaka", "dok"], buku: ["pustaka", "buku"], dokumen: ["pustaka", "dok"], relasi: ["pustaka", "relasi"], tokoh: ["pakar", ""]};
+  let tabSkrg = "pakar", puRel = false;
   const sinkron = (id, val, n = 0) => { const b = document.querySelector(`#${id} [data-v="${val}"]`); if (b) { if (b.getAttribute("aria-pressed") !== "true") b.click(); } else if (n < 40) setTimeout(() => sinkron(id, val, n + 1), 150); };
   /* urutan: tab utama, sub-tab (sub-tab di dalam panel ikut dihitung), baru pilihan bencana */
   /* segmen sub-tampilan tiap view (Peta/Daftar/Proyek mitra, Skema/Proyek/Negara donor, dst.) dipindah ke wadah kepala navy, hanya yang view aktif tampil; panel bencana tetap di bawah kepala */
@@ -3440,7 +3503,7 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
       f.dataset.heroView = vw; f.classList.remove("ak-segmeng"); nav.append(f); } });
     nav.querySelectorAll("[data-hero-view]").forEach(e => { e.hidden = e.dataset.heroView !== tampilSkrg; });
     if (ak.firstElementChild !== bp) ak.prepend(bp);
-    bp.hidden = !BENCANA_VIEW.has(tampilSkrg) || (tampilSkrg === "pakar" && pkSub === "tokoh");   // satu-satunya penentu visibilitas panel bencana
+    bp.hidden = !BENCANA_VIEW.has(tampilSkrg) || (tampilSkrg === "pakar" && pkSub === "tokoh") || (tampilSkrg === "pustaka" && puRel);   // relasi peraturan tidak disaring bencana   // satu-satunya penentu visibilitas panel bencana
     if (bp.hidden && GL.set.size) nanti(() => { if (bp.hidden && GL.set.size) setBencanaSet([]); }); }   // panel tersembunyi = saringan bencana dilepas, ?bencana= tidak terbawa ke tab lain
   /* panel diisi asinkron: tiap kali isi panel tingkat atas berganti, letak pilihan bencana dihitung ulang */
   const amatPanel = new MutationObserver(() => letakBencana());
@@ -3448,7 +3511,7 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
   function tampil(v, sub) {
     if (sub === "analisa") sub = "daftar"; if (v === "lembaga" && sub === "proyek") { v = "pendanaan"; sub = "proyek"; PD.sub = "proyek"; }
     const [tab, sb] = LAMA[v] || [v, ""], sl = SUBTAB[tab]; sub = sub || sb; if (sl && !sl.some(x => x[0] === sub)) sub = sl[0][0];
-    const view = sl ? sl.find(x => x[0] === sub)[2] : tab; tabSkrg = tab;
+    const view = sl ? sl.find(x => x[0] === sub)[2] : tab; tabSkrg = tab; puRel = tab === "pustaka" && sub === "relasi";
     tampilSkrg = view;
     $("akTampil").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.t === tab)));
     $("akTampil").querySelector(`[aria-pressed=true]`)?.scrollIntoView({block: "nearest", inline: "center"});
@@ -3458,7 +3521,7 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
     nanti(() => { dpSegarkan(); setBuka(view); segarBencana(); if (view === "pakar" && saringKotor) { saringKotor = false; saring(); } });
     try { const u = new URL(location.href); if (tab === "pakar") u.searchParams.delete("tampil"); else u.searchParams.set("tampil", tab); sl ? u.searchParams.set("sub", sub) : u.searchParams.delete("sub"); history.replaceState(null, "", u); localStorage.setItem(TAMPIL_KEY, tab); } catch (e) {}
     pasangPkSeg(view); letakBencana(); { const bp = document.querySelector(".ak-bpanel"); if (bp) bp.classList.toggle("ak-sembunyi", view === "wilayah"); } if (view !== "pakar") nanti(async () => { await bukaView(view); letakBencana(); });
-    if (sub === "dok" || sub === "buku") sinkron("akPuS", sub); else if (sub === "pusat" || sub === "aset") sinkron("akPS", sub);
+    if (sub === "dok" || sub === "buku" || sub === "relasi") sinkron("akPuS", sub); else if (sub === "pusat" || sub === "aset") sinkron("akPS", sub);
   }
 
   /* ----- baru bulan ini: pil di kartu dan saringan ----- */
