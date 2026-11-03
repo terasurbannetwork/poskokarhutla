@@ -193,11 +193,25 @@
   const IKON_MENU = {"/bnpb/dalops": "banjir", "/bnpb/logbook": "daftar", "/bnpb/dokumen": "simpan", "/bnpb/operasi": "personel", "/?operasi": "pin", "/bnpb/siaga": "peringatan", "/bnpb/perencanaan": "kalender", "/daftar-kontak": "sinyal"};
   document.querySelectorAll(".dl-nav a").forEach(a => { const ik = IKON_MENU[a.getAttribute("href")]; if (ik) a.prepend(ikon(ik)); });
 
+  /* lambang kab/kota di kepala kartu (/lambang, sama dengan /bnpb/relawan); belum termuat atau tak ada: lambang provinsi, gagal: disembunyikan */
+  let LAMBANG = {};
+  fetch("/lambang/kabkota.json").then(r => r.json()).then(d => { LAMBANG = d; }).catch(() => {});
+  const lambangKab = x => {
+    const slug = LAMBANG[x.prov_kode + "|" + x.nama];
+    const img = h("img", {class: "dl-pop-lambang", alt: "", loading: "lazy", src: slug ? `/lambang/kabkota/${slug}.png` : `/lambang/provinsi/${x.prov_kode}.png`});
+    img.addEventListener("error", () => { img.hidden = true; }, {once: true});
+    return img;
+  };
+
   /* kartu klik di peta: kondisi, nama, angka yang dilaporkan, kontak BPBD dengan tombol WA dan telepon */
   function kartuKab(x, k, bukaKab) {
     const rincian = h("button", {type: "button", class: "dl-pop-rinci"}, ikon("daftar"), "Rincian");
     rincian.addEventListener("click", () => bukaKab(x));
-    return h("div", {class: "dl-pop"}, surutLabel(x.surut), h("b", {class: "dl-tip-nama", teks: x.nama}), h("span", {class: "dl-tip-prov", teks: namaProv(x.prov_kode, x.prov) + ", kabar terakhir " + H.tglPendek(x.terakhir)}),
+    return h("div", {class: "dl-pop"},
+      h("div", {class: "dl-pop-kepala"}, lambangKab(x),
+        h("div", null, h("b", {class: "dl-tip-nama", teks: x.nama}),
+          h("div", {class: "dl-pop-label"}, label(namaProv(x.prov_kode, x.prov), "pin", "abu"), surutLabel(x.surut)))),
+      h("span", {class: "dl-tip-prov", teks: "Kabar terakhir " + H.tglPendek(x.terakhir)}),
       kotakAngka(x),
       h("div", {class: "dl-pop-kontak"}, h("span", {teks: k ? k.nama : "Nomor Pusdalops BPBD belum tercatat"}),
         h("div", {class: "dl-pop-tombol"},
