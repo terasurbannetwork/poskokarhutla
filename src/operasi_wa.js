@@ -94,7 +94,7 @@ export function urai(teks, {tanggal, armada = []} = {}) {
 
   const kembali = t.match(/Back\s+To\s+Base\s+Due\s+To\s+(.+?)\s+ETA\s+(\d{1,2})[.:](\d{2})\s*WIB/i);
   const tiba = !kembali && /MOVEMENT\s+ARRIVAL|MVT\s+ARRIVAL/i.test(t);
-  const berangkat = !tiba && /DEPARTURE\s+MOVEMENT|MVT\s+DEPARTURE|Movement\s+Departure/i.test(t);
+  const berangkat = !tiba && /DEPARTURE\s+MOVEMENT|MVT\s+DEPARTURE|Movement\s+Departure|Departure\s+MVT/i.test(t);
   const rencana = !berangkat && !tiba && /MVT\s+PLAN|rencana\s+penerbangan|Rencana\s+Patroli|Plan\s+Mov/i.test(t);
   /* OMC dan pindah armada diperiksa lebih dulu: pesan OMC sering menyebut "Patroli", pesan demobilisasi menyebut tujuan */
   const misi = /\bOMC\b|Modifikasi\s+Cuaca|Bahan\s+Semai/i.test(t) ? "omc" : /Demobili[sz]ation|Demobilisasi/i.test(t) ? "demobilisasi"
@@ -119,7 +119,9 @@ export function urai(teks, {tanggal, armada = []} = {}) {
     }
     else {
       const ru = t.match(/Hasil\s+Patroli[^\n]*?\b((?:PK|VH|VN|HA|UR|ZK|RA)-[A-Z0-9]{2,5})\b/i); if (ru) g.rujukan = ru[1].toUpperCase();
-      const k = koordinat(t), L = t.split("\n"), i = L.findIndex(l => /target/i.test(l)), lok = i >= 0 ? L.slice(i + 1).find(l => l.replace(/[*_\s]/g, "") && !RE_KASAR.test(l)) : null;
+      /* lokasi target = baris bermakna terakhir SEBELUM koordinat pertama (bukan baris pertama sesudah "target": "PLM - TARGET FIRE SPOT- PLM" diikuti jam Eng.Start, pesan Mi-8 3 Nov) */
+      const k = koordinat(t), L = t.split("\n"), iK = L.findIndex(l => RE_KASAR.test(l)), i = L.findIndex(l => /target/i.test(l));
+      const lok = i >= 0 && iK > i ? L.slice(i + 1, iK).reverse().find(l => l.replace(/[*_\s]/g, "") && !RE_JUNK.test(l) && !/#|:\s*\d/.test(l)) : null;
       const titik = titikRute(t); if (titik.length > 1) g.rute = JSON.stringify(titik);
       if (titik.length) g.target = {...(titik[0].lokasi ? {lokasi: titik[0].lokasi} : {}), lat: titik[0].lat, lon: titik[0].lon};
       else if (k) g.target = {...(lok ? {lokasi: judulKasus(lok)} : {}), ...k}; else if (RE_KASAR.test(t)) hasil.tertahan.push({alasan: "koordinat"});

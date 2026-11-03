@@ -1,5 +1,5 @@
 {
-  "_catatan": "Pesan WA grup satgas udara 3 Nov 2026 tanpa nama kru. Mencakup rencana patroli banyak titik (PK-IKC, PK-FPA), keberangkatan 15 titik (PK-RTQ, dipotong 2), demobilisasi N-4875A, ferry RDPL-34194, OMC PK-SNK, dan jam Z pagi WITA yang jatuh ke hari UTC sebelumnya. 'harap' dibekukan dari keluaran pengurai sesudah diperiksa tangan (sesi induk 3 Nov).",
+  "_catatan": "Pesan WA grup satgas udara 3 Nov 2026 tanpa nama kru. Mencakup rencana patroli banyak titik (PK-IKC, PK-FPA), keberangkatan 15 titik (PK-RTQ, dipotong 2), demobilisasi N-4875A, ferry RDPL-34194, OMC PK-SNK, dan jam Z pagi WITA yang jatuh ke hari UTC sebelumnya. 'harap' dibekukan dari keluaran pengurai sesudah diperiksa tangan (sesi induk 3 Nov). Ditambah siang 3 Nov: temuan PK-RTQ Tapin, rencana sortie 2 PK-ALE (8 titik), \"Departure MVT\" PK-RTY (titik 7 berlintang E salah ketik dibuang, tidak ditebak), pesan persiapan tanpa isi, WB Mi-8 RA-22747 dengan lokasi target sebelum koordinat.",
   "armada": [
     "H-3217",
     "PK-FPA",
@@ -10,7 +10,10 @@
     "RDPL-34194",
     "PK-SNK",
     "VH-HGM",
-    "HA-5234"
+    "HA-5234",
+    "PK-ALE",
+    "PK-RTY",
+    "RA-22747"
   ],
   "pesan": [
     {
@@ -186,6 +189,108 @@
               "lokasi": "Sungai Bulan, Sungai Raya, Kubu Raya",
               "lat": -0.31111,
               "lon": 109.49833
+            }
+          }
+        ],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "rtq_sawaja",
+      "teks": "*DITEMUKAN FS 4 BY PK-RTQ*\n*6. SAWAJA*\nKEC. CANDI LARAS UTARA\nKAB. TAPIN\nS 02°36′53″ \nE 114°52′55″ \nR 010\nD 50 Nm From BDM\n\nRemark\nFS BERASAP\nLUASAN LAHAN ±5 HA\nLOW VISIBILITY DI AREA \n\nRegards,\n*PT.APD/OPS-BDJ FIRE PATROL/PK-RTQ*",
+      "harap": {
+        "dikenali": "temuan",
+        "temuan": [
+          {
+            "registrasi": "PK-RTQ",
+            "lokasi": "Sawaja, Kec. Candi Laras Utara, Kab. Tapin",
+            "lat": -2.61472,
+            "lon": 114.88194,
+            "status": "fs",
+            "luas_klaim_ha": 5
+          }
+        ],
+        "gerak": [],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "ale_rencana_sortie2",
+      "teks": "Ijin Menyampaikan Rencana\nPatroli Udara BELL 206 L4 PK-ALE/BNPB\n\n*FSC UH 4644-26*\n \n*Sortie 2*\n\nHari/Tanggal : Selasa 03 November 2026\n\n```ENG ON    :  ``` \n```ETD KTG   : 03.45z/10.45lt```\n```ETA KTG   : 06.45z/13.45lt```\n```ENG OFF   : ```\n\n*Block Fuel* = 750 Lbs\n\nMisi: Patroli Udara \n\n*Route Terbang:*\n\n*DEP KTG (WIOK)* \n\n*1.Randai, Marau, Ketapang*\n02°07′16.79″ S 110°32′31.52″ E\nR 117°\nD 39 Nm Fr VOR KTG\n\n *2.Perigi, jelai hulu, ketapang*\n02°00′26.68″ S 110°47′34.37″ E\nR 102°\nD 50 Nm Fr VOR KTG\n\n*3. Harapan Baru, Air Upas, Ketapang*\n02°13′18.44″ S 110°52′47.82″ E\nR 113°\nD 60 Nm Fr Vor KTG\n\n*4. Sukaharapan, Kendawangan, Ketapang*\n02°18′06.41″ S 110°39′08.78″ E\nR 125°\nD 50 Nm Fr VOR KTG\n\n*5. Air durian Jaya, Air Upas, Ketapang*\n02°22′15.60″ S 110°50′13.31″ E\nR 122°\nD 61 Nm Fr VOR KTG\n\n*6. Pembedilan2, Kendawangan, Ketapang*\n02°43′02.24″ S 110°30′03.17″ E\nR 149°\nD 62 Nm Fr VOR KTG\n\n*7. Pembedilan, kendawangan, Ketapang*\n02°57′03.67″ S 110°20′48.01″ E\nR 161°\nD 71 Nm Fr VOR KTG\n\n*8.Pematang, Gadung, Matan Hilir Selatan, ketapang*\n01°59′34.55″ S 110°07′55.47″ E\nR 136°\nD 14 Nm Fr VOR KTG\n\n*ARR KTG (WIOK)*\n\nTotal Distance : 215 Nm\n\nRegard, \n*PT. AAI/OPS PK-ALE/KTG*",
+      "harap": {
+        "dikenali": "rencana",
+        "temuan": [],
+        "gerak": [
+          {
+            "registrasi": "PK-ALE",
+            "jenis": "rencana",
+            "jam_utc": "2026-11-03T03:45Z",
+            "misi": "patroli",
+            "rute": "[{\"urut\":1,\"lokasi\":\"Randai, Marau, Ketapang\",\"lat\":-2.12133,\"lon\":110.54209},{\"urut\":2,\"lokasi\":\"Perigi, jelai hulu, ketapang\",\"lat\":-2.00741,\"lon\":110.79288},{\"urut\":3,\"lokasi\":\"Harapan Baru, Air Upas, Ketapang\",\"lat\":-2.22179,\"lon\":110.87995},{\"urut\":4,\"lokasi\":\"Sukaharapan, Kendawangan, Ketapang\",\"lat\":-2.30178,\"lon\":110.65244},{\"urut\":5,\"lokasi\":\"Air durian Jaya, Air Upas, Ketapang\",\"lat\":-2.371,\"lon\":110.83703},{\"urut\":6,\"lokasi\":\"Pembedilan2, Kendawangan, Ketapang\",\"lat\":-2.71729,\"lon\":110.50088},{\"urut\":7,\"lokasi\":\"Pembedilan, kendawangan, Ketapang\",\"lat\":-2.95102,\"lon\":110.34667},{\"urut\":8,\"lokasi\":\"Pematang, Gadung, Matan Hilir Selatan, ketapang\",\"lat\":-1.99293,\"lon\":110.13208}]",
+            "target": {
+              "lokasi": "Randai, Marau, Ketapang",
+              "lat": -2.12133,
+              "lon": 110.54209
+            }
+          }
+        ],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "rty_departure_mvt",
+      "teks": "*Departure MVT*\n\n*Selasa, 03 November 2026*\n\n*_HELICOPTER PATROLI/AS365-N2/ PK-RTY SATGAS UDARA (BNPB)_*\n\n*Sortie 1*\n\n*FSC : UJ 5327-26*\nAOC : PT.GENESA DIRGANTARA \n\nENG ON   : *02:29z/09:29LT* \nATD SMH : *02:37z/09:37LT*\nETA SMH : *06:30z/13:30LT*\n\n*Fuel  :  1.048 Liter*\n\nRute :\nPLM - OKI - OKUT - MUARA ENIM - PLM\nRute Terbang :\n= LANUD SMH (PLM/WIPP)=\n\n1.AIR SUGIHAN,OKI\nS 02°36′05.23″\nE 105°24′03.29″\nR 070° (SEKTOR 1)\nD 48 NM FROM PLB\n\n2.PANGKALAM LAMPAM,OKI\nS 03°08′14.00″\nE 105°00′43.00″\nR 126° (SEKTOR 1)\nD 26 NM FROM PLB\n\n3.CENGAL, OKI\nS 03°25′14.16″\nE 105°30′23.58″\nR 122° (SEKTOR 1)\nD 61 NM FROM PLB\n\n4.SUNGAI MENANG, OKI\nS 03°54′47.34″\nE 105°46′07.50″\nR 133° (SEKTOR 1)\nD 91 NM FROM PLB\n\n5.PEDAMARAN, OKI\nS 03°36′54.29″\nE 105°08′28.28″\nR 146° (SEKTOR 1)\nD 53 NM FROM PLB\n\n6.SEMENDAWAI, OKUT\nS 03°50′24.47″\nE 104°51′56.38″\nR 167° (SEKTOR 2)\nD 59 NM FROM PLB\n\n7.RAMBANG, MUARA ENIM\nE 03°33′24.41″\nE 104°10′57.54″\nR 216° (SEKTOR 2)\nD 49 NM FROM PLB\n\n8.SUNGAI ROTAN, MUARA ENIM\nS 03°08′38.89″\nE 104°17′02.91″\nR 234° (SEKTOR 3)\nD 27 NM FROM PLB\n\n9.GELUMBANG, MUARA ENIM\nS 03°12′02.00″\nE 104°30′14.00″\nR 205° (SEKTOR 2)\nD 63 NM FROM PLB\n\n= LANUD SMH (PLM/WIPP)=\n\nRemarks :\nTotal Distance : 320 Nm\nEET : 04 Jam 00 Menit\n\nRegards,\n*PT.GENESA DIRGANTARA/PK-RTY/BNPB-OPS*",
+      "harap": {
+        "dikenali": "berangkat",
+        "temuan": [],
+        "gerak": [
+          {
+            "registrasi": "PK-RTY",
+            "jenis": "berangkat",
+            "jam_utc": "2026-11-03T02:37Z",
+            "misi": "patroli",
+            "rute": "[{\"urut\":1,\"lokasi\":\"Air Sugihan, oki\",\"lat\":-2.60145,\"lon\":105.40091,\"sektor\":1},{\"urut\":2,\"lokasi\":\"Pangkalam Lampam, oki\",\"lat\":-3.13722,\"lon\":105.01194,\"sektor\":1},{\"urut\":3,\"lokasi\":\"Cengal, Oki\",\"lat\":-3.4206,\"lon\":105.50655,\"sektor\":1},{\"urut\":4,\"lokasi\":\"Sungai Menang, Oki\",\"lat\":-3.91315,\"lon\":105.76875,\"sektor\":1},{\"urut\":5,\"lokasi\":\"Pedamaran, Oki\",\"lat\":-3.61508,\"lon\":105.14119,\"sektor\":1},{\"urut\":6,\"lokasi\":\"Semendawai, Okut\",\"lat\":-3.84013,\"lon\":104.86566,\"sektor\":2},{\"urut\":7,\"lokasi\":\"Sungai Rotan, Muara Enim\",\"lat\":-3.14414,\"lon\":104.28414,\"sektor\":3},{\"urut\":8,\"lokasi\":\"Gelumbang, Muara Enim\",\"lat\":-3.20056,\"lon\":104.50389,\"sektor\":2}]",
+            "target": {
+              "lokasi": "Air Sugihan, oki",
+              "lat": -2.60145,
+              "lon": 105.40091
+            }
+          }
+        ],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "ale_persiapan",
+      "teks": "Selamat Siang\nMohon ijin\nPK-ALE \nPersiapan Sortie 1\nTerima kasih\nAAI/KTG-OPS/PK-ALE",
+      "harap": {
+        "dikenali": null,
+        "temuan": [],
+        "gerak": [],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "ra22747_wb_target",
+      "teks": "*MOVEMENT DEPARTURE*\n*MI-8AMT/RA-22747*\n*Waterbombing for BNPB*\n*Selasa, 03 November 2026*\n\n*PLM - TARGET FIRE SPOT- PLM*\n\nEng.Start.  : 03:13 z / 10:13 LT\nATD PLM   : 03:19 z / 10:19 LT\nETA PLM   : 07:45 z / 14:45 LT\n\n*TARGET FIRE SPOT 🔥*\n*#REFF FS BY TEAM DARAT*\n*TANAH PILIH, BANYUASIN*\nS 01°49′19.00″\nE 104°16′09.00″\nR 340° (Sektor 6)\nD 67 NM From PLB\n\nNo.SFC : SK25180\nFuel Uplift: 3.430 ltr\nEET : 04:30 Hrs\n\nRegards,\n*PT.Langit Biru Aviasi/OPS RA-22747*",
+      "harap": {
+        "dikenali": "berangkat",
+        "temuan": [],
+        "gerak": [
+          {
+            "registrasi": "RA-22747",
+            "jenis": "berangkat",
+            "jam_utc": "2026-11-03T03:19Z",
+            "misi": "wb",
+            "target": {
+              "lokasi": "Tanah Pilih, Banyuasin",
+              "lat": -1.82194,
+              "lon": 104.26917
             }
           }
         ],

@@ -125,6 +125,9 @@ test("urai 3 Nov: rencana banyak titik, demobilisasi, ferry RDPL, OMC, jam Z pag
   assert.equal(JSON.parse(g("ikc_rencana").rute).length, 2, "rencana PK-IKC menyimpan semua titik");
   assert.equal(g("snk_omc").jam_utc, "2026-11-02T23:05Z", "23.05Z = 07.05 WITA 3 Nov, masih 2 Nov di UTC");
   assert.equal(g("rdpl_ferry").registrasi, "RDPL-34194");
+  assert.deepEqual([g("rty_departure_mvt").jenis, g("rty_departure_mvt").jam_utc, JSON.parse(g("rty_departure_mvt").rute).length], ["berangkat", "2026-11-03T02:37Z", 8], "\"Departure MVT\" dikenali; titik berlintang E salah ketik dibuang");
+  assert.equal(g("ra22747_wb_target").target.lokasi, "Tanah Pilih, Banyuasin", "lokasi target = baris sebelum koordinat, bukan jam Eng.Start");
+  assert.equal(JSON.parse(g("ale_rencana_sortie2").rute).length, 8);
 });
 
 uji("rencana banyak titik tersimpan di rute; demobilisasi menjadikan armada tidak siap", async () => {

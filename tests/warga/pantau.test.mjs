@@ -400,8 +400,10 @@ uji("dummy: hanya Super Admin; menumbuhkan seluruh rantai (tiap jenis butir teri
 });
 
 /* ================================================================ halaman dan gaya */
-uji("halaman /admin/pantau: kerangka tanpa data dengan CSP ketat; berkas klien ada; tanpa pemisah titik tengah", async () => {
-  const r = await U.mf.dispatchFetch("http://bnpb.lokal/admin/pantau");
+uji("halaman /admin/pantau: tamu 303 ke /admin/masuk; kerangka tanpa data dengan CSP ketat; berkas klien ada; tanpa pemisah titik tengah", async () => {
+  const tamu = await U.mf.dispatchFetch("http://bnpb.lokal/admin/pantau", {redirect: "manual"}); await tamu.text();
+  assert.equal(tamu.status, 303); assert.equal(tamu.headers.get("location"), "/admin/masuk?ke=%2Fadmin%2Fpantau", "satu pintu masuk: tamu ke /admin/masuk");
+  const r = await U.mf.dispatchFetch("http://bnpb.lokal/admin/pantau", {headers: ADMIN});
   assert.equal(r.status, 200); const html = await r.text();
   assert.match(r.headers.get("content-security-policy"), /script-src 'self'/); assert.match(r.headers.get("content-security-policy"), /frame-ancestors 'self'/); assert.equal(r.headers.get("cache-control"), "no-store");
   assert.ok(html.includes("/admin/pantau.js") && html.includes("/admin/pantau.css") && html.includes("/admin/bersama.js") && html.includes('id="aksiJudul"'));
