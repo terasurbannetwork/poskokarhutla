@@ -4,7 +4,7 @@ const path = require('path');
 const L = require('./nk_lib');
 const { A, H, par, pasal } = L;
 
-const isi = [...L.kepala('lambang')];
+const isi = [...L.kepala('logo', '[[logo BRIN]]')];   // kop BNPB (pemilik 3 Nov 2026)
 ['NOTA KESEPAHAMAN', 'ANTARA', 'BADAN NASIONAL PENANGGULANGAN BENCANA', 'DENGAN', 'BADAN RISET DAN INOVASI NASIONAL', 'TENTANG',
   'RISET DAN INOVASI UNTUK PENANGGULANGAN BENCANA'].forEach((t, i, a) => isi.push(L.tengah(t, i === a.length - 1 ? 200 : 60)));
 isi.push(L.nomor('NOMOR\t: [[...]]/KA BNPB/KS.01.01/[[bulan]]/[[tahun]]'));
