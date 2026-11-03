@@ -23,7 +23,8 @@ const api = async (m, u, b) => {
 
 /* ---------- komponen isian: tiap isian menulis langsung ke objek state, lalu menjadwalkan pratinjau ---------- */
 let aktif = null;                       // tab yang sedang dibuka
-const ubah = tunda(() => pratinjau(), 200);
+const jadwal = tunda(() => pratinjau(), 200);
+const ubah = () => { if (aktif) aktif.sentuh = true; jadwal(); };
 const lbl = (judul, el) => h("label", {class: "bn-isian"}, judul, el);
 function isian(judul, o, k, a = {}, area = false) {
   const i = h(area ? "textarea" : "input", {autocomplete: "off", "aria-label": judul, ...a});
@@ -43,17 +44,19 @@ function centang(teks, o, k, ik, balik) {
 }
 /* daftar baris yang bisa ditambah/dihapus; kolom(item) -> elemen. Hanya daftar ini yang digambar ulang saat tambah/hapus. */
 function daftar(arr, kolom, baru, tambah, min = 0, maks = 99) {
-  const w = h("div", {class: "bh-daftar"});
-  const gambar = () => {
-    const tb = h("button", {type: "button", class: "bn-tombol sekunder"}, ikon("tambah"), tambah); tb.disabled = arr.length >= maks;
-    tb.addEventListener("click", () => { arr.push(baru()); gambar(); ubah(); });
-    w.replaceChildren(...arr.map((it, i) => {
-      const hapus = h("button", {type: "button", class: "bh-ikon", "aria-label": "Hapus baris", title: "Hapus baris"}, ikon("sapu")); hapus.disabled = arr.length <= min;
-      hapus.addEventListener("click", () => { arr.splice(i, 1); gambar(); ubah(); });
-      return h("div", {class: "bh-baris"}, kolom(it), hapus);
-    }), tb);
+  const w = h("div", {class: "bh-daftar"}), tb = h("button", {type: "button", class: "bn-tombol sekunder"}, ikon("tambah"), tambah);
+  const atur = () => { tb.disabled = arr.length >= maks; for (const x of w.querySelectorAll(":scope > .bh-baris > .bh-ikon")) x.disabled = arr.length <= min; };
+  const baris = it => {
+    const hapus = h("button", {type: "button", class: "bh-ikon", "aria-label": "Hapus baris", title: "Hapus baris"}, ikon("sapu")), r = h("div", {class: "bh-baris"}, kolom(it), hapus);
+    hapus.addEventListener("click", () => {
+      const i = arr.indexOf(it); if (i < 0) return; arr.splice(i, 1);
+      const fokus = r.nextElementSibling?.querySelector(":scope > .bh-ikon") || r.previousElementSibling?.querySelector(":scope > .bh-ikon") || tb;
+      r.remove(); atur(); (fokus.disabled ? tb : fokus).focus(); ubah();
+    });
+    return r;
   };
-  gambar(); return w;
+  tb.addEventListener("click", () => { const it = baru(); arr.push(it); const r = baris(it); w.insertBefore(r, tb); atur(); r.querySelector("input,select,textarea")?.focus(); ubah(); });
+  w.append(...arr.map(baris), tb); atur(); return w;
 }
 /* pemilih banyak provinsi: lipatan berisi kotak centang; arr tetap berurutan menurut kode */
 function provBanyak(judul, arr) {
@@ -83,15 +86,19 @@ const koordalops = {
     const isiKartu = h("div", {class: "bh-kartu-daftar"}), pes = h("p", {class: "bn-pesan", role: "status"});
     const lap = angka("Jumlah laporan kejadian", s, "laporan", {inputmode: "numeric"}), lapIn = lap.querySelector("input");
     const hit = () => { lapIn.placeholder = `Bawaan ${s.kej.filter(x => x.ikut).length}`; };
-    const gambar = () => {
-      isiKartu.replaceChildren(...(s.kej.length ? s.kej.map(e => h("section", {class: "bh-kartu"},
+    let tok = 0;
+    const kartu = e => h("section", {class: "bh-kartu"},
         h("div", {class: "bh-kartu-kepala"}, centang("Ikut laporan", e, "ikut", "ok", hit), h("strong", {teks: `${S.JENIS[e.jenis]}, ${[e.kab, PROV[e.prov]].filter(Boolean).join(", ")}`})),
         pilih("Jenis laporan", e, "bs", [["baru", "Kejadian baru"], ["pengkinian", "Pengkinian data"]]),
         h("div", {class: "bh-angka"}, ANGKA.map(k => angka(LABEL[k], e, k))),
         h("div", {class: "bn-baris"}, isian("Penetapan status", e, "status_darurat"), isian("Pendampingan BNPB", e, "pendampingan")),
-        isian("Kondisi mutakhir", e, "kondisi", {rows: 3}, true), isian("Detail (sumber)", e, "detail")))
-        : [kosongBox("daftar", "Belum ada kejadian. Tekan Ambil dari Logbook untuk menarik entri periode 07.00 sampai 07.00 WIB.", h("a", {href: "/bnpb/logbook", teks: "Buka Logbook untuk mencatat kejadian"}))]));
-      hit();
+        isian("Kondisi mutakhir", e, "kondisi", {rows: 3}, true), isian("Detail (sumber)", e, "detail"));
+    const gambar = () => {
+      const my = ++tok; hit();
+      if (!s.kej.length) return isiKartu.replaceChildren(kosongBox("daftar", "Belum ada kejadian. Tekan Ambil dari Logbook untuk menarik entri periode 07.00 sampai 07.00 WIB.", h("a", {href: "/bnpb/logbook", teks: "Buka Logbook untuk mencatat kejadian"})));
+      isiKartu.replaceChildren(); let i = 0;   // 10 kartu per frame
+      const langkah = () => { if (my !== tok) return; isiKartu.append(...s.kej.slice(i, i + 10).map(kartu)); i += 10; if (i < s.kej.length) requestAnimationFrame(langkah); };
+      langkah();
     };
     const ambil = h("button", {type: "button", class: "bn-tombol"}, ikon("unduh"), "Ambil dari Logbook");
     ambil.addEventListener("click", async () => {
@@ -103,7 +110,7 @@ const koordalops = {
       const d = S.dariLogbook(r.j.entri || r.j.daftar || [], sk.ok ? sk.j.sk || [] : [], s.sampai);
       s.kej = d.kejadian.map(kartuDari); s.laporan = ""; lapIn.value = "";
       pes.textContent = d.kejadian.length ? `${d.kejadian.length} kejadian dari Logbook. Sunting seperlunya, hapus centang bagian yang tidak ikut.` : "Logbook kosong untuk periode ini."; pes.className = "bn-pesan" + (d.kejadian.length ? " ok" : " galat");
-      gambar(); ubah();
+      requestAnimationFrame(() => gambar()); ubah();
     });
     const tg = isian("Tanggal laporan (periode 07.00 WIB hari sebelumnya s.d. 07.00 WIB tanggal ini)", s, "sampai", {type: "date", max: geser(wibHari(), 1)});
     gambar();
@@ -202,29 +209,32 @@ function kartuMasuk(s) {
 const pesan = (t, ok) => { el.pesan.textContent = t; el.pesan.className = "bn-pesan " + (ok ? "ok" : "galat"); };
 function pratinjau() {
   const r = S.susun(aktif.kunci, aktif.keIsi(aktif.s));
-  el.galat.textContent = r.galat || ""; el.galat.hidden = !r.galat;
+  const tampil = r.galat && aktif.sentuh;   // keadaan awal: petunjuk netral (placeholder CSS), galat merah hanya sesudah pengguna mengisi atau menekan Kirim
+  el.galat.textContent = tampil ? r.galat : ""; el.galat.hidden = !tampil;
   el.teks.textContent = r.galat ? "" : r.teks;
   el.tgl.textContent = r.galat ? "" : `Tanggal laporan: ${tglId(r.tanggal)}`;
 }
 function pasang(t) {
   aktif = t; t.s ||= t.baru();
-  el.form.replaceChildren(...t.bangun(t.s));
-  el.pesan.textContent = ""; el.pesan.className = "bn-pesan";
-  pratinjau();
+  const my = ++pasangKe; el.form.setAttribute("aria-busy", "true"); el.pesan.textContent = ""; el.pesan.className = "bn-pesan";
+  /* chrome tab urgent; bangun form + pratinjau ditunda dua frame (setTimeout 120 jaring bila tab tersembunyi) */
+  let jalan = false; const kerja = () => { if (jalan || my !== pasangKe) return; jalan = true; el.form.replaceChildren(...t.bangun(t.s)); el.form.removeAttribute("aria-busy"); pratinjau(); };
+  requestAnimationFrame(() => requestAnimationFrame(kerja)); setTimeout(kerja, 120);
 }
-function isiKembali(isi) { aktif.s = aktif.dariIsi(isi); pasang(aktif); }
+let pasangKe = 0;
+function isiKembali(isi) { aktif.sentuh = true; aktif.s = aktif.dariIsi(isi); pasang(aktif); }
 async function salinTerakhir() {
   el.salin.disabled = true; pesan("Mengambil isian terakhir…", true);
   const r = await api("GET", "/api/wa/form/terakhir?kunci=" + aktif.kunci); el.salin.disabled = false;
   if (!r.ok) return pesan(r.j.galat || `Isian terakhir belum bisa dimuat (${r.s}).`, false);
   if (!r.j.isi) return pesan("Belum ada isian terakhir untuk jenis ini.", false);
-  const info = [r.j.oleh && `oleh ${r.j.oleh}`, r.j.waktu && tglId(String(r.j.waktu).slice(0, 10))].filter(Boolean).join(", ");
+  const info = [r.j.waktu && tglId(String(r.j.waktu).slice(0, 10))].filter(Boolean).join(", ");
   try { isiKembali(r.j.isi); pesan(`Isian terakhir disalin${info ? " (" + info + ")" : ""}. Sesuaikan tanggal dan angkanya.`, true); }
   catch (e) { pesan("Isian terakhir tidak cocok dengan bentuk form sekarang.", false); }
 }
 async function kirim() {
   const r = S.susun(aktif.kunci, aktif.keIsi(aktif.s));
-  if (r.galat) { pratinjau(); return pesan("Perbaiki isian dulu: " + r.galat, false); }
+  if (r.galat) { aktif.sentuh = true; pratinjau(); return pesan("Perbaiki isian dulu: " + r.galat, false); }
   el.kirim.disabled = true; pesan("Mengirim…", true);
   const k = await api("POST", "/api/wa/form", {kunci: aktif.kunci, isi: r.isi}); el.kirim.disabled = false;
   if (!k.ok) return pesan(k.j.galat || `Gagal mengirim (${k.s}).`, false);

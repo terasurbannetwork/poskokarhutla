@@ -39,7 +39,8 @@ test("layar /bnpb/bahan: empat tab, dummy, pratinjau, kirim, logbook, konsol ber
       for (const k of ["rekap_koordalops_24", "bmkg_pagi", "pvmbg_pagi", "satgas"]) {
         await t.eval(`document.querySelector('input[name=tab][value=${k}]').click()`);
         await t.eval("document.querySelector('[data-dummy=isi]').click()");
-        await t.tungguFungsi("document.querySelector('.bh-wa').textContent.length > 200");
+        await t.tungguFungsi(`!document.querySelector('.bh-form[aria-busy]') && document.querySelector('.bh-wa').textContent.length > 200 && document.querySelector('input[name=tab][value=${k}]').checked`);
+        await t.tungguFungsi(`document.querySelector('.bh-wa').textContent.includes(${JSON.stringify({rekap_koordalops_24: "Koordalops", bmkg_pagi: "BMKG", pvmbg_pagi: "PVMBG", satgas: "SATGAS"}[k])})`);
         assert.equal(await t.eval("document.querySelector('.bn-pesan.galat[role=alert]').hidden"), true, `galat pratinjau ${k} @${w}`);
       }
       assert.ok(await t.eval("/Satgas|SATGAS/.test(document.querySelector('.bh-wa').textContent)"), "teks satgas");

@@ -251,3 +251,4 @@
 {"t":"2026-11-02T02:16:58.530+07:00","berkas":"public/petugas/luring.js","blob":"cd02feacc3ad1c1fc267fd60ec65d9300120dbd0","aturan":"66be650bc38b","vonis":"bersih","ringkas":"tanpa handler klik","sha":"7867da33"}
 {"t":"2026-11-02T02:16:58.583+07:00","berkas":"public/petugas/umum.js","blob":"47a6268313044eebb8c04ed09a644bac9386c534","aturan":"66be650bc38b","vonis":"bersih","ringkas":"nanti dua rAF + timeout 120","sha":"7867da33"}
 {"t":"2026-11-02T02:16:58.635+07:00","berkas":"public/petugas/lapangan.css","blob":"e65bc5b7998d26894367f855462eb0f9fac5fe51","aturan":"66be650bc38b","vonis":"temuan","ringkas":".lp-x 24 px < 48","sha":"7867da33"}
+{"t":"2026-11-03T18:23:00.249+07:00","berkas":"public/bnpb/bahan.js","blob":"473333c8f8f535f3dab4b6109f1b601a05cd9b0d","aturan":"66be650bc38b","vonis":"temuan","ringkas":"tab radio dan tambah/hapus baris membangun ulang DOM sinkron di handler; ketik/debounce 200 ms aman","sha":"c671b2aa0"}

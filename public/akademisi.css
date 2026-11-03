@@ -2501,3 +2501,6 @@ button.ak-r[data-kh][aria-pressed="true"]{border-color:var(--w0,var(--brand2));b
 .ak-rlke small{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
 .ak-rlke b{font-family:var(--display);font-size:14.5px}.ak-rlke b a{color:var(--ink);text-decoration:none}.ak-rlke b a:hover{color:var(--brand2)}
 @media (max-width:600px){.ak-rlhit,.ak-rlke{grid-column:1/-1;justify-items:start;text-align:left;max-width:none}.ak-rlhit{display:flex;gap:6px;align-items:baseline}.ak-rlke{padding:10px 0 0;border-left:0;border-top:1px solid var(--line)}.ak-rlalat .ak-kampus-pilih{max-width:none}}
+/* tab tampilan direktori pindah ke menu atas (nav.tabs), menggantikan menu karhutla */
+nav.tabs#akTampil button[aria-pressed="true"]{opacity:1;background:oklch(100% 0 0 / .16)}
+@media (max-width:1280px){nav.tabs#akTampil button[aria-pressed="true"]{background:var(--surface);color:var(--accent,var(--ink))}}

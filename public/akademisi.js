@@ -3508,7 +3508,7 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
     $("akSubTab").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (b) tampil(tabSkrg, b.dataset.v); });
     document.querySelectorAll(".ak-tabpanah").forEach(b => b.addEventListener("click", () => $("akTampil").scrollBy({left: +b.dataset.d * 220, behavior: "smooth"})));
     $("akTampil").hidden = false;
-    $("akTampil").addEventListener("click", e => { const b = e.target.closest("button[data-t]"); if (b) tampil(b.dataset.t); });
+    $("akTampil").addEventListener("click", e => { const b = e.target.closest("button[data-t]"); if (!b) return; document.querySelector("header.top")?.classList.remove("buka"); $("burger")?.setAttribute("aria-expanded", "false"); tampil(b.dataset.t); });
     tampil(VIEW[v] || LAMA[v] ? v : "pakar", sub);
   }
   const INTRO = {pakar: "Pakar kebencanaan dari OpenAlex, SINTA, dan ORCID, dengan kontak dari laman resmi kampus.", lembaga: ["Lembaga mitra kebencanaan dari laman resmi, BNPB GIS, SIMZAT Kemenag, dan IATI", "lembaga"], wilayah: "Profil satu wilayah dari indeks risiko, DIBI BNPB, direktori lembaga, dan proyek donor; tiap bagian menyebut sumbernya.",
