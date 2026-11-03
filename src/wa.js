@@ -15,7 +15,7 @@ import {simpanFoto} from "./operasi_hasil.js";
 import {JENIS_LAPORAN, kenali, tanggalIsi, tanggalNamaBerkas} from "./wa_jenis.js";
 
 export const MAKS_BERKAS = 20 * 1024 * 1024;
-const MAKS_TEKS = 65536, MAKS_HARI = 500;
+const MAKS_TEKS = 65536, MAKS_HARI = 500, MAKS_GRUP = 150;   // MAKS_GRUP: plafon harian sendiri untuk baris grup operasi supaya foto grup tidak menghabiskan plafon pengirim terdaftar
 const RE_KARHUTLA = /karhutla|kebakaran\s+(hutan|lahan)|pemadaman|water\s*bombing|titik\s+panas|hotspot|firespot|modifikasi\s+cuaca|\bomc\b/i;
 const TIPE_AMAN = /^(application\/pdf|image\/(png|jpeg|webp)|text\/plain|application\/vnd\.openxmlformats-officedocument\.[a-z.]+|application\/(msword|vnd\.ms-excel))$/;
 
@@ -75,11 +75,16 @@ async function gerbang(env, req, kini) {
   if (ada) return json({ok: true, disimpan: true, id: ada.id, tanggal: ada.tanggal, jenis: ada.jenis});
   /* plafon harian menurut waktu terima (hari WIB ini), lewat indeks wa_masuk_diterima: pemalsu pengirim terdaftar berhenti di sini */
   const awal = Date.parse(hariWib(kini)) - 7 * 3600e3;
-  if ((await env.DB.prepare("SELECT count(*) n FROM wa_masuk WHERE diterima >= ?1 AND diterima < ?2").bind(awal, awal + 864e5).first()).n >= MAKS_HARI) return gagal(429, "plafon pesan WA hari ini tercapai");
+  if (dariGrup) { if ((await env.DB.prepare("SELECT count(*) n FROM wa_masuk WHERE dari = ?1 AND diterima >= ?2 AND diterima < ?3").bind(dari, awal, awal + 864e5).first()).n >= MAKS_GRUP) return gagal(429, "plafon pesan grup operasi hari ini tercapai"); }
+  else if ((await env.DB.prepare("SELECT count(*) n FROM wa_masuk WHERE diterima >= ?1 AND diterima < ?2 AND dari NOT LIKE '%@g.us'").bind(awal, awal + 864e5).first()).n >= MAKS_HARI) return gagal(429, "plafon pesan WA hari ini tercapai");
   let kunci = null, tipe = null, isiBerkas = null;
   if (b) {
-    kunci = `wa/${hariWib(kini)}/${kini}-${crypto.randomUUID().slice(0, 8)}`; tipe = (b.type || "application/octet-stream").toLowerCase();
-    isiBerkas = new Uint8Array(await b.arrayBuffer()); await env.MEDIA.put(kunci, isiBerkas, {httpMetadata: {contentType: tipe}});
+    isiBerkas = new Uint8Array(await b.arrayBuffer());
+    /* foto grup: isi harus benar-benar JPEG/PNG/WebP (tanda tangan berkas), bukan sekadar label tipe dari pengirim */
+    const m = isiBerkas, gambarAsli = (m[0] === 0xff && m[1] === 0xd8 && m[2] === 0xff) || (m[0] === 0x89 && m[1] === 0x50 && m[2] === 0x4e && m[3] === 0x47)
+      || (m[0] === 0x52 && m[1] === 0x49 && m[2] === 0x46 && m[3] === 0x46 && m[8] === 0x57 && m[9] === 0x45 && m[10] === 0x42 && m[11] === 0x50);
+    if (dariGrup && !gambarAsli) { if (!teks) return json({ok: true, disimpan: false}); b = null; isiBerkas = null; }
+    else { kunci = `wa/${hariWib(kini)}/${kini}-${crypto.randomUUID().slice(0, 8)}`; tipe = (b.type || "application/octet-stream").toLowerCase(); await env.MEDIA.put(kunci, isiBerkas, {httpMetadata: {contentType: tipe}}); }
   }
   /* tanggal laporan itu sendiri menang bila wajar (14 hari ke belakang sampai besok WIB); kiriman ulang laporan lama jatuh ke harinya, bukan hari terima */
   const jk = kenali(teks, namaBerkas), isi = jk === "laphar_pdf" ? tanggalNamaBerkas(namaBerkas) : tanggalIsi(teks, jk), hariIni = Date.parse(hariWib(diterima));
@@ -89,7 +94,7 @@ async function gerbang(env, req, kini) {
   /* OP-2: pesan satgas udara -> tabel operasi; galat apa pun (termasuk migrasi 0103 belum ada) tidak menggagalkan pesan yang sudah tersimpan */
   let operasi = null; if (teks) try { operasi = await catatOperasi(env, {id: r.meta.last_row_id, teks, tanggal, diterima}); } catch (e) { console.error("operasi_wa", String(e?.message || e)); }
   /* foto grup operasi -> indeks op_foto (stempel dibaca Workers AI bila ada, pemasangan ke aksi); galat/tabel 0106 belum ada tidak menggagalkan pesan */
-  let foto = null; if (grup && gambar && b && isiBerkas) try { foto = await simpanFoto(env, {waId: r.meta.last_row_id, bytes: isiBerkas, diterima, teks: caption}); } catch (e) { console.error("operasi_foto", String(e?.message || e).slice(0, 120)); }
+  let foto = null; if (grup && gambar && b && isiBerkas && kunci) try { foto = await simpanFoto(env, {waId: r.meta.last_row_id, bytes: isiBerkas, diterima, teks: caption}); } catch (e) { console.error("operasi_foto", String(e?.message || e).slice(0, 120)); }
   return json({ok: true, disimpan: true, id: r.meta.last_row_id, tanggal, jenis, ...(operasi ? {operasi} : {}), ...(foto ? {foto} : {})});
 }
 

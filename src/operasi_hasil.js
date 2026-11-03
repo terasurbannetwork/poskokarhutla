@@ -64,7 +64,7 @@ export async function lengkapi(env, kini) {
   const sejak = hariWib(kini - 3 * 864e5), Q = (sql, ...b) => env.DB.prepare(sql).bind(...b).all().then(r => r.results), st = [];
   const [foto, gerak] = await Promise.all([
     Q("SELECT id, registrasi, coalesce(jam_utc, diterima) jam, lat, lon FROM op_foto WHERE gerak_id IS NULL AND registrasi IS NOT NULL AND tanggal >= ?", sejak),
-    Q("SELECT id, tanggal, registrasi, jam_utc, lat, lon, lokasi FROM op_gerak WHERE jenis = 'berangkat' AND jam_utc IS NOT NULL AND tanggal >= ? ORDER BY jam_utc LIMIT 1000", sejak)]);
+    Q("SELECT id, tanggal, registrasi, jam_utc, lat, lon, lokasi FROM op_gerak WHERE jenis = 'berangkat' AND dummy = 0 AND jam_utc IS NOT NULL AND tanggal >= ? ORDER BY jam_utc LIMIT 1000", sejak)]);
   const ambilKoordinat = (g, lat, lon, sumber) => {
     g.lat = lat; g.lon = lon;
     st.push(env.DB.prepare("UPDATE op_gerak SET lat = ?2, lon = ?3 WHERE id = ?1").bind(g.id, lat, lon),

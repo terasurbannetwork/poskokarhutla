@@ -63,7 +63,7 @@ uji("foto grup tanpa keterangan: R2 + op_foto + wa_masuk tanpa nomor HP; lampira
   assert.equal((await I.DB.prepare("SELECT teks FROM wa_masuk WHERE id = ?").bind(cap.j.id).first()).teks, null, "obrolan di keterangan foto tidak disimpan");
   assert.equal(cap.j.foto.registrasi, "VH-L6T", "tetapi dipakai sebagai petunjuk registrasi");
   const dl = await I.api("GET", `/api/operasi/foto/${r.j.foto.id}`, undefined, ADMIN);
-  assert.equal(dl.s, 200); assert.equal(dl.h.get("content-type"), "image/jpeg"); assert.match(dl.h.get("cache-control"), /private/);
+  assert.equal(dl.s, 200); assert.equal(dl.h.get("content-type"), "image/jpeg"); assert.equal(dl.h.get("cache-control"), "private, no-store");
   assert.equal((await I.api("GET", "/api/operasi/foto/999999", undefined, ADMIN)).s, 404, "id tak dikenal");
   assert.equal((await I.api("GET", `/api/operasi/foto/${r.j.foto.id}`)).s, 403, "tamu");
   assert.equal((await I.api("GET", `/api/operasi/foto/${r.j.foto.id}`, undefined, GERBANG)).s, 200, "akun gerbang");

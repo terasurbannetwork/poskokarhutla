@@ -50,10 +50,10 @@ async function dummy(env, req) {
   if (!await superOK(env, req)) return gagal(403, "dummy hanya untuk Super Admin (secret SUPER_ADMIN berisi awalan akun)");
   const b = await bacaBody(req, 512); if (b.galat) return gagal(b.status || 400, b.galat);
   if (b.o.aksi === "hapus") {
-    const r = await env.DB.batch([env.DB.prepare("DELETE FROM op_temuan WHERE dummy = 1"), env.DB.prepare("DELETE FROM op_gerak WHERE dummy = 1"),
+    const r = await env.DB.batch([env.DB.prepare("DELETE FROM op_temuan WHERE dummy = 1"), env.DB.prepare("DELETE FROM op_gerak_hasil WHERE gerak_id IN (SELECT id FROM op_gerak WHERE dummy = 1)"), env.DB.prepare("UPDATE op_foto SET gerak_id = NULL WHERE gerak_id IN (SELECT id FROM op_gerak WHERE dummy = 1)"), env.DB.prepare("DELETE FROM op_gerak WHERE dummy = 1"),
       env.DB.prepare("DELETE FROM op_target WHERE renlap_id IN (SELECT id FROM op_renlap WHERE dummy = 1)"), env.DB.prepare("DELETE FROM op_renlap WHERE dummy = 1"),
       env.DB.prepare("DELETE FROM op_armada WHERE dummy = 1")]);
-    return json({ok: true, temuan: r[0].meta.changes, gerak: r[1].meta.changes});
+    return json({ok: true, temuan: r[0].meta.changes, gerak: r[3].meta.changes});
   }
   if (b.o.aksi !== "isi") return gagal(400, "aksi harus isi/hapus");
   if ((await env.DB.prepare("SELECT count(*) n FROM op_temuan WHERE dummy = 1").first()).n) return gagal(409, "data dummy operasi lapangan sudah ada; hapus dulu dengan 🧹");
@@ -230,7 +230,7 @@ async function fotoBerkas(env, req, url, kini, ctx, id) {
   if (!env.MEDIA) return gagal(503, "penyimpanan belum aktif");
   const r = await env.DB.prepare("SELECT w.berkas, w.tipe FROM op_foto f JOIN wa_masuk w ON w.id = f.wa_id WHERE f.id = ?").bind(Number(id)).first();
   const o = r?.berkas && await env.MEDIA.get(r.berkas); if (!o) return gagal(404, "foto tidak ada");
-  return new Response(o.body, {headers: {"content-type": /^image\/(jpeg|png|webp)$/.test(r.tipe || "") ? r.tipe : "application/octet-stream", "cache-control": "private, max-age=3600", "x-content-type-options": "nosniff", "content-security-policy": "sandbox"}});
+  return new Response(o.body, {headers: {"content-type": /^image\/(jpeg|png|webp)$/.test(r.tipe || "") ? r.tipe : "application/octet-stream", "cache-control": "private, no-store", "x-content-type-options": "nosniff", "content-security-policy": "sandbox"}});
 }
 
 /* digabung ke RUTE di src/worker.js; nama jalur tanpa garis (gerbang cakupan) */
