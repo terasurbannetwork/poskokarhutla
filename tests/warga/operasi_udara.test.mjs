@@ -53,14 +53,14 @@ uji("migrasi 0103 idempoten; seed 9 base dan 55 armada; CHECK dan UNIQUE menahan
 });
 
 let tmc, pimpinan, tanpaPeran;
-uji("GET /api/operasi/peta: tamu, akun gerbang, dan staf tanpa peran ditolak sebelum validasi; staf berperan dan moderator 200; tanggal ketat", async () => {
+uji("GET /api/operasi/peta: tamu dan staf tanpa peran ditolak sebelum validasi; staf berperan, moderator, dan akun centurisk97 (gerbang) 200; tanggal ketat", async () => {
   tmc = await bikin("Staf Udara", ["udara"]); pimpinan = await bikin("Pimpinan Op", ["pimpinan"]); tanpaPeran = await bikin("Kemitraan Op", ["kemitraan"]);
-  for (const [nama, h] of [["tamu", {}], ["akun gerbang", GERBANG], ["staf peran lain", tanpaPeran.h]]) {
+  for (const [nama, h] of [["tamu", {}], ["staf peran lain", tanpaPeran.h]]) {
     assert.equal((await peta(h)).s, 403, nama);
     assert.equal((await peta(h, "?tanggal=bukan")).s, 403, `${nama}: auth sebelum validasi param`);
   }
   assert.equal((await peta({cookie: tmc.h.cookie, origin: "x"}, "")).s, 200, "GET tidak butuh x-pb");
-  for (const h of [tmc.h, pimpinan.h, MOD2, ADMIN]) { const r = await peta(h); assert.equal(r.s, 200, r.t); assert.equal(r.j.tanggal, "2026-11-02"); assert.equal(r.j.base.length, 9); assert.equal(r.j.armada.length, 55); }
+  for (const h of [tmc.h, pimpinan.h, MOD2, ADMIN, GERBANG]) { const r = await peta(h); assert.equal(r.s, 200, r.t); assert.equal(r.j.tanggal, "2026-11-02"); assert.equal(r.j.base.length, 9); assert.equal(r.j.armada.length, 55); }
   assert.match(r2(await peta(tmc.h, "")).tanggal, /^\d{4}-\d\d-\d\d$/, "bawaan hari ini WIB");
   for (const q of ["?tanggal=2026-02-30", "?tanggal=2026-13-01", "?tanggal=20261102", "?tanggal=", "?tanggal=2026-11-02'--"]) assert.equal((await peta(tmc.h, q)).s, 400, q);
   const tb = r2(await peta(tmc.h)).armada.filter(a => a.base_id === null).map(a => a.registrasi).sort(); assert.deepEqual(tb, ["N61AA", "PK-SCH"], "armada tanpa base tetap keluar di peta");

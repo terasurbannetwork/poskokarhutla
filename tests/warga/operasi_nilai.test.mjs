@@ -107,12 +107,13 @@ uji("GET /api/operasi/temuan: hanya baris nyata, tanpa wa_id, rentang tanggal", 
   assert.equal((await temuan(MESIN, "?dari=2026-11-02&sampai=2026-11-02")).j.temuan.length, 0, "dummy 2 Nov tak keluar");
 });
 
-uji("GET /api/operasi/nilai: tamu, akun gerbang, staf tanpa peran 403 sebelum validasi; staf berperan 200; rentang maks 31 hari", async () => {
-  for (const [nama, h] of [["tamu", {}], ["akun gerbang", GERBANG], ["token mesin", MESIN], ["staf peran lain", tanpaPeran]]) {
+uji("GET /api/operasi/nilai: tamu, token mesin, staf tanpa peran 403 sebelum validasi; staf berperan dan akun centurisk97 (gerbang) 200; rentang maks 31 hari", async () => {
+  for (const [nama, h] of [["tamu", {}], ["token mesin", MESIN], ["staf peran lain", tanpaPeran]]) {
     assert.equal((await nilai(h)).s, 403, nama); assert.equal((await nilai(h, "?dari=x")).s, 403, `${nama}: auth dulu`);
   }
   for (const q of ["", "?dari=2026-11-01", "?dari=2026-11-04&sampai=2026-11-01", "?dari=2026-02-30&sampai=2026-03-01", "?dari=2026-10-01&sampai=2026-11-01"]) assert.equal((await nilai(staf, q)).s, 400, q);
   assert.equal((await nilai(staf, "?dari=2026-10-02&sampai=2026-11-01")).s, 200, "31 hari persis boleh");
+  assert.equal((await nilai(GERBANG, "?dari=2026-10-02&sampai=2026-11-01")).s, 200, "akun centurisk97 dari login biasa boleh membaca");
   assert.equal((await nilai(staf)).h.get("cache-control"), "no-store");
 });
 

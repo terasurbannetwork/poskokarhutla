@@ -1,10 +1,10 @@
 /* Operasi Lapangan OP-1 (spek docs/superpowers/specs/2026-11-02-operasi-lapangan.md bagian 8; skema migrations/0103_operasi_lapangan.sql).
-   Pergerakan armada = informasi operasional: KHUSUS staf (peran di PERAN_BACA, moderator ke atas); akun gerbang situs dan tamu 403; staf nyata tidak melihat baris dummy.
+   Pergerakan armada = informasi operasional: BACA peta = staf peran PERAN_BACA atau adminOK (moderator, dan akun centurisk97 AKUN_SITUS dari login biasa: perintah pemilik 3 Nov 2026); tulis tetap moderator/staf; tamu 403; staf nyata tidak melihat baris dummy.
    Respons per pengguna: tidak lewat cacheTepi. Satu kueri per tabel (kuota baca D1 Free). Tabel 0103 belum ada: 503 sopan.
    Nama kru tidak disimpan. OP-2: catatOperasi() dipanggil gerbang WA (src/wa.js) sesudah wa_masuk tersimpan; pipeline renlap menyusul di OP-4. */
-import {json, gagal, bacaBody, sha} from "./worker.js";
+import {json, gagal, bacaBody, sha, adminOK} from "./worker.js";
 import {tglSah, wib, superOK} from "./posko.js";
-import {modAtauStaf, stafNyata} from "./staf.js";
+import {stafPeran, stafNyata} from "./staf.js";
 import {urai, tanggalOperasi} from "./operasi_wa.js";
 import {hitungNilai} from "./operasi_nilai.js";
 
@@ -17,7 +17,7 @@ const bungkus = fn => async (env, req, ...sisa) => {
 };
 
 async function peta(env, req, url, kini) {
-  if (!await modAtauStaf(env, req, PERAN_BACA)) return gagal(403, "data operasi lapangan hanya untuk staf berperan atau moderator ke atas (bukan akun gerbang situs)");
+  if (!await adminOK(env, req, kini) && !await stafPeran(env, req, PERAN_BACA)) return gagal(403, "data operasi lapangan hanya untuk akun centurisk97, staf berperan, atau moderator");
   const t = url.searchParams.get("tanggal") ?? wib(kini);
   if (!tglSah(t)) return gagal(400, "tanggal harus YYYY-MM-DD yang sah");
   const dum = stafNyata(req) ? "AND dummy = 0" : "";
@@ -149,9 +149,9 @@ async function renlapMesin(env, req, url, kini) {
   return json({ok: true, tanggal, versi, renlap: ids, target: isi.reduce((a, i) => a + i.target.length, 0)}, 201);
 }
 
-/* GET /api/operasi/nilai: staf (PERAN_BACA), staf nyata tanpa dummy. Satu kueri per tabel; rentang maks 31 hari (kuota baca D1 Free). */
+/* GET /api/operasi/nilai: hak baca sama dengan peta (akun centurisk97, staf PERAN_BACA, moderator), staf nyata tanpa dummy. Satu kueri per tabel; rentang maks 31 hari (kuota baca D1 Free). */
 async function nilai(env, req, url) {
-  if (!await modAtauStaf(env, req, PERAN_BACA)) return gagal(403, "nilai operasi lapangan hanya untuk staf berperan atau moderator ke atas (bukan akun gerbang situs)");
+  if (!await adminOK(env, req) && !await stafPeran(env, req, PERAN_BACA)) return gagal(403, "nilai operasi lapangan hanya untuk akun centurisk97, staf berperan, atau moderator");
   const r = rentang(url, 31); if (r instanceof Response) return r;
   const dum = stafNyata(req), A = [r.dari, r.sampai];
   const Q = (sql, ...b) => env.DB.prepare(sql).bind(...b).all().then(x => x.results);
