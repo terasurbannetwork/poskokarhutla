@@ -77,3 +77,28 @@ Keputusan pemilik 1 Nov 2026: "pakai yang ada". Butir 1, 2, dan 4 di bawah TIDAK
 4. **Radar BMKG mentah (CMAX/QPE Cengkareng) atau GSMaP Now** (jalur FTP belum diketahui, tanya JAXA). Hujan dengan latensi < 1 jam adalah satu-satunya jalan untuk genangan lokal 1-3 jam. Radar butuh perjanjian data BMKG.
 5. **Unduhan IMERG Early arsip** 2016-11..2026-04, kotak Jakarta 7 x 7 sel: workflow `nowcast-jkt-imerg.yml` (`mekanik-mesin`) memanggil `nowcast_jkt.py imerg_unduh --bulan YYYY-MM` dengan `EARTHDATA_TOKEN`. Biayanya ~88.800 permintaan dan ~30 jam total; simpanan gzip ~3-5 MB. GSMaP arsip hanya lewat probe (PRAREG A.6).
 6. **Penjadwal tiap jam** untuk prospektif sejati (GitHub Actions atau Worker; pemilik `mekanik-mesin` / `warga-api`). Rancangan sekarang memakai putar ulang harian (PRAREG bagian 3.3), bukan terbit langsung.
+
+## 6. Hasil uji jalur A (3 Nov 2026)
+
+Jalur A memakai hujan IMERG Early 30 menit saja (PRAREG-NOWCAST-JKT, amandemen A1). Latih 2016/17-2019/20, validasi 2020/21-2021/22, uji 2022/23-2025/26 dibuka sekali (`nowcast_jkt.py nilai --jalur A`). Model dikunci di origin sebelum uji dibuka (commit abcab4cb); vonis di `scripts/banjir/nowcast_jkt_vonis.json` (commit 19a2354f). Arsip IMERG 60 bulan lengkap per sel (>= 95% slot) sebelum latih; beberapa bulan butuh dua putaran unduh ulang karena batas 40 menit per job.
+
+**Vonis: TIDAK LULUS di semua lead.** Holm 1,0 untuk lead 1, 2, 3, 4, dan 6 jam; `andal_sampai` = 0 jam. Varian tanpa saringan label juga TIDAK LULUS.
+
+| Lead | n kec-slot | Episode | Positif | Brier klimatologi | Brier persistensi | Brier hujan | BSS lawan klimatologi | p lawan persistensi | Kemiringan kalibrasi CI95 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 jam | 660.072 | 97 | 589 | 0,000893 | 0,000892 | 0,000892 | +0,0010 | 0,96 | -0,12 s.d. 0,98 |
+| 2 jam | 659.904 | 97 | 1.098 | 0,001664 | 0,001662 | 0,001662 | +0,0015 | 0,92 | -0,75 s.d. 0,60 |
+| 3 jam | 659.736 | 96 | 1.583 | 0,002399 | 0,002395 | 0,002395 | +0,0016 | 0,60 | -1,13 s.d. 0,30 |
+| 4 jam | 659.568 | 96 | 2.049 | 0,003103 | 0,003099 | 0,003099 | +0,0015 | 0,32 | 0,20 s.d. 1,71 |
+| 6 jam | 659.232 | 95 | 2.943 | 0,004454 | 0,004447 | 0,004447 | +0,0015 | 0,71 | -0,28 s.d. 0,85 |
+
+BSS lawan klimatologi per musim (lead 3 jam): 2022/23 +0,0017, 2023/24 -0,0014, 2024/25 +0,0043, 2025/26 +0,0129. Di semua lead tiga syarat gagal: p gabungan lawan klimatologi dan persistensi di atas alfa (model tidak mengalahkan persistensi), syarat 3 (CI kemiringan kalibrasi di dalam rentang PRAREG), dan syarat 4 (porsi baris hilang dan selisih hilang positif/negatif dalam batas). Syarat 0 (jumlah episode) lolos.
+
+Tafsir:
+- Hujan satelit 30 menit tidak menambah apa pun di atas persistensi ("kalau sekarang banjir, sebentar lagi masih banjir"): Brier model hujan sama dengan persistensi sampai enam desimal. Skor di atas klimatologi berasal dari persistensi, bukan dari hujan.
+- Pertanyaan "berapa jam maksimal dengan akurasi 95%": dengan hujan saja, belum ada lead yang andal.
+- Sub-sampel V07C (algoritme operasional sejak Mar 2026) hanya 5 episode dan 15 sampai 85 positif; p kecil tetapi n terlalu kecil untuk dipegang. Angka ini batas atas sebelum prospektif 2026/27.
+
+Batasan: label PetaBencana jarang dan runtuh di 2025/26; IMERG Early 0,1 derajat (49 sel) kasar untuk banjir kota yang ditentukan drainase; arsip V07B dipakai untuk latih sedangkan operasional V07C.
+
+Langkah berikut sesuai PRAREG: jalur B (TMA pos sungai + peringatan CAP BMKG) dinilai prospektif mulai musim 2026/27, karena arsip TMA baru ada sejak 19 Okt 2026. Tidak ada layar yang menampilkan nowcast jalur A.
