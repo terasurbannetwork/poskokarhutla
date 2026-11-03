@@ -68,7 +68,7 @@ uji("konstanta: peran, 15 layar, alasan transisi = pasangan CHECK 0056, hak hala
 });
 
 /* ---------------------------------------------------------------- halaman */
-uji("GET /pipa dan layar: pusdalops 200 berkepala lengkap; tamu 303 ke /admin/pantau?ke=; verifikator 403 polos tanpa Location; layar liar dan id cacat 404", async () => {
+uji("GET /pipa dan layar: pusdalops 200 berkepala lengkap; tamu 303 ke /admin/masuk?ke=; verifikator 403 polos tanpa Location; layar liar dan id cacat 404", async () => {
   const a = await man("/pipa", pus.g);
   assert.equal(a.s, 200, a.t.slice(0, 200)); assert.equal(a.h.get("cache-control"), "private, no-store"); assert.match(a.h.get("vary") || "", /cookie/i);
   assert.equal(a.h.get("x-robots-tag"), "noindex, nofollow"); assert.equal(a.h.get("referrer-policy"), "same-origin"); assert.match(a.h.get("content-type"), /^text\/html; charset=utf-8/);
@@ -81,8 +81,8 @@ uji("GET /pipa dan layar: pusdalops 200 berkepala lengkap; tamu 303 ke /admin/pa
   const pm = await man("/pipa/log", pim.g); assert.equal(pm.s, 200); assert.match(pm.t, /data-tulis="0"/, "pimpinan hanya baca");
   const ad = await man("/pipa/kit", ADMIN); assert.equal(ad.s, 200); assert.match(ad.t, /data-super="1"/); assert.match(ad.t, /data-tulis="1"/);
   const mo = await man("/pipa/kit", MOD2); assert.match(mo.t, /data-super="0"/);
-  const t = await man("/pipa/peta?x=1#a"); assert.equal(t.s, 303); assert.equal(t.h.get("location"), "/admin/pantau?ke=" + encodeURIComponent("/pipa/peta?x=1"), "tamu ke Meja Pantau (bukan /admin/masuk), jalur dan query diteruskan");
-  assert.equal(t.h.get("cache-control"), "no-store"); assert.equal((await man("/pipa")).h.get("location"), "/admin/pantau?ke=%2Fpipa");
+  const t = await man("/pipa/peta?x=1#a"); assert.equal(t.s, 303); assert.equal(t.h.get("location"), "/admin/masuk?ke=" + encodeURIComponent("/pipa/peta?x=1"), "tamu ke /admin/masuk (satu pintu), jalur dan query diteruskan");
+  assert.equal(t.h.get("cache-control"), "no-store"); assert.equal((await man("/pipa")).h.get("location"), "/admin/masuk?ke=%2Fpipa");
   const v = await man("/pipa", ver.g); assert.equal(v.s, 403); assert.equal(v.h.get("location"), null, "403 polos tanpa pengalihan (cegah pantulan)"); assert.match(v.t, /tidak punya akses SIPPA/);
   assert.equal((await man("/pipa/kit", {"x-admin-token": "salah"})).s, 303, "token salah = tamu");
   for (const j of ["/pipa/tidakada", "/pipa/x/y", "/pipa/kit/0123456789abcde", "/pipa/kit/0123456789ABCDEF", "/pipa/peta/x"]) assert.equal((await man(j, pus.g)).s, 404, j);
@@ -96,7 +96,7 @@ uji("GET /pipa/lapangan: tamu 200 dengan CSP_LAPANGAN dan no-referrer; /admin/pi
   assert.match(l.t, /<html lang="id">/); assert.match(l.t, /\/pipa\/lapangan\.js/); assert.doesNotMatch(l.t, /data-staf/, "cangkang lapangan tanpa data staf");
   const a = await man("/admin/pipa"); assert.equal(a.s, 303); assert.equal(a.h.get("location"), "/pipa"); assert.equal((await man("/admin/pipa", pus.g)).h.get("location"), "/pipa");
   const lk = "https://centurisk97.id", h = {"cf-connecting-ip": "198.51.100.77"};
-  const p = await man("/pipa", h, lk); assert.equal(p.s, 303); assert.equal(p.h.get("location"), "/admin/pantau?ke=%2Fpipa", "bukan /admin/masuk");
+  const p = await man("/pipa", h, lk); assert.equal(p.s, 303); assert.equal(p.h.get("location"), "/admin/masuk?ke=%2Fpipa", "satu pintu: /admin/masuk");
   assert.equal((await man("/pipa/lapangan", h, lk)).s, 200); assert.equal((await man("/pipa", {...h, ...pus.g}, lk)).s, 200, "staf bersesi lolos gerbang host");
   assert.equal((await man("/pipa/tidakada", h, lk)).s, 404, "bukan dialihkan: jatuh ke aset");
   assert.match(teks("src/worker.js"), /\/\^\\\/\(api\|admin\|ews\|ubin\|pipa\)\(\\\/\|\$\)\//, "regex pengecualian halamanTerkunci memuat pipa");

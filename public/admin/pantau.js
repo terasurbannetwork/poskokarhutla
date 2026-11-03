@@ -52,15 +52,10 @@
   /* ---------- masuk staf ---------- */
   function kartuMasuk(...isi) { app.replaceChildren(h("div", {class: "pt-masuk"}, ...isi)); }
   /* tertahan = {nama} dari 401 /api/pantau bila sesi sah tetapi sandi awal belum diganti (tanpa panggilan /saya tambahan) */
+  /* satu pintu masuk (3 Nov 2026): form masuk staf dihapus; tanpa sesi -> /admin/masuk?ke=<halaman ini>. Sesi bersandi awal tetap mendapat layar ganti sandi. */
   function layarMasuk(galat, tertahan) {
     if (tertahan) return layarGanti(tertahan);
-    const u = h("input", {id: "ptUser", name: "username", autocomplete: "username", autocapitalize: "none", spellcheck: "false", required: true}), p = h("input", {id: "ptSandi", name: "sandi", type: "password", autocomplete: "current-password", required: true});
-    const f = h("form", {class: "pt-form"}, h("label", {for: "ptUser", teks: "Username staf"}), u, h("label", {for: "ptSandi", teks: "Kata sandi"}), p,
-      h("p", {id: "ptGalat", class: "pt-pesan galat", role: "alert", teks: galat || ""}), tombol("Masuk", {type: "submit"}, "utama"));
-    f.addEventListener("submit", async e => { e.preventDefault(); const r = await kirim("/api/staf/masuk", {username: u.value, sandi: p.value});
-      if (r.ok) return pergiPipa() || pergiPeta(r.j.staf?.peran) || muat(); document.getElementById("ptGalat").textContent = r.j.galat || `Gagal (${r.status})`; });
-    kartuMasuk(h("h2", {teks: "Masuk staf BNPB"}), h("p", {class: "pt-redup", teks: "Akun staf dibuat Super Admin. Admin yang sudah punya akun admin masuk lewat halaman admin."}), f,
-      h("a", {class: "pt-btn", href: "/admin/masuk?ke=" + encodeURIComponent(ke ?? "/admin/pantau"), teks: "Masuk sebagai admin"}));
+    location.href = "/admin/masuk?ke=" + encodeURIComponent(location.pathname + location.search);
   }
   function layarGanti(staf) {
     const kotak = h("div"), b = tombol("Buat sandi baru", {}, "utama");

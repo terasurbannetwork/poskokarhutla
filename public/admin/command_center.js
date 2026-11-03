@@ -16,7 +16,7 @@
   const el = {};
 
   /* ---------------------------------------------------------------- kerangka */
-  const urlMasuk = () => (Admin.staf ? "/admin/pantau?ke=" : "/admin/masuk?ke=") + encodeURIComponent("/command-center");
+  const urlMasuk = () => "/admin/masuk?ke=" + encodeURIComponent("/command-center");
   function bangun() {
     document.querySelector(".ad-wrap")?.classList.add("cc-lebar");
     el.spanduk = h("div", {class: "cc-spanduk", role: "status", "aria-live": "polite", hidden: true});

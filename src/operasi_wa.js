@@ -8,7 +8,7 @@ export const ALIAS = {BYSON234: "HA-5234", COUGAR17: "H-3217"};
 export const TANDA_TANGAN = [[/Skadron\s+Udara\s+6/i, "H-3217"]];
 
 const BULAN = ["januari", "februari", "maret", "april", "mei", "juni", "juli", "agustus", "september", "oktober", "november", "desember"];
-const RE_REG = /\b(?:(?:PK|VH|VN|RA|HA|UR|ZK)-[A-Z0-9]{2,5}|H-\d{3,4}|A-\d{3,4}|N[ -]?\d{1,5} ?[A-Z]{0,2})\b/gi;
+const RE_REG = /\b(?:(?:PK|VH|VN|RA|HA|UR|ZK)-[A-Z0-9]{2,5}|RDPL-\d{3,6}|H-\d{3,4}|A-\d{3,4}|N[ -]?\d{1,5} ?[A-Z]{0,2})\b/gi;
 const RE_ALIAS = /\b(BYSON|COUGAR)\s?(\d{1,4})\b/gi;
 const RE_DMS = /(?:\b([NSEW])[ \t]*:?[ \t]*)?(\d{1,3})(?:[ \t]*[°º][ \t]*|[ \t]+)(\d{1,2})[ \t]*['′’´][ \t]*(\d{1,2}(?:[.,]\d+)?)[ \t]*(?:["″”“]|''|′′|’’)(?:[ \t]*([NSEW])\b)?/gi;
 const RE_DESIMAL = /(?:\b([NSEW])[ \t]*:?[ \t]*)?(-?\d{1,3}\.\d{3,})[ \t]*°?(?:[ \t]*([NSEW])\b)?/gi;
@@ -50,7 +50,7 @@ function judulKasus(s) {
 
 function registrasi(teks, armada) {
   const peta = new Map(armada.map(r => [String(r).toUpperCase().replace(/[^A-Z0-9]/g, ""), r]));
-  const t = teks.replace(/Hasil\s+Patroli[^\n]*/gi, ""), cari = [];
+  const t = teks.replace(/Hasil\s+Patroli[^\n]*/gi, "").replace(/\b(PK|VH|VN|RA|HA|UR|ZK|RDPL)\s+-\s*([A-Z0-9]{2,6})\b/gi, "$1-$2"), cari = [];
   for (const m of t.matchAll(RE_REG)) {
     const r = peta.get(m[0].toUpperCase().replace(/[^A-Z0-9]/g, ""));
     if (r) cari.push([m.index, r]); else if (m[0].includes("-")) cari.push([m.index, m[0].toUpperCase()]);
@@ -70,8 +70,19 @@ function statusDari(t) {
 }
 
 function jamUtc(tanggal, h, m, wib) {
-  const d = new Date(Date.parse(tanggal + "T00:00:00Z") + ((+h - (wib ? 7 : 0)) * 60 + +m) * 60e3);
+  /* jam Z >= 16 jatuh ke hari UTC sebelumnya: pagi WITA/WIT (mis. 23.05Z = 07.05 WITA) masih tanggal kemarin di UTC. ponytail: malam WIT 00-01 lokal ikut aturan ini, belum ada operasi jam segitu */
+  const geser = !wib && +h >= 16 ? -24 : 0;
+  const d = new Date(Date.parse(tanggal + "T00:00:00Z") + ((+h - (wib ? 7 : 0) + geser) * 60 + +m) * 60e3);
   return d.toISOString().slice(0, 16) + "Z";
+}
+
+/* titik bernomor dalam pesan rencana/keberangkatan -> [{urut, lokasi, lat, lon, sektor?}] (blok tanpa koordinat sah dilewati) */
+function titikRute(t) {
+  const L = t.split("\n"), awal = L.map((l, i) => RE_JUDUL.test(l) ? i : -1).filter(i => i >= 0), out = [];
+  awal.forEach((s, n) => { const b = L.slice(s, awal[n + 1] ?? L.length), k = koordinat(b.join("\n")); if (!k) return;
+    const sek = b.join(" ").match(/Sektor\s*(\d{1,2})/i), lok = judulKasus(b[0]);
+    out.push({urut: out.length + 1, ...(lok ? {lokasi: lok} : {}), ...k, ...(sek ? {sektor: +sek[1]} : {})}); });
+  return out;
 }
 
 /* teks: isi pesan. tanggal: YYYY-MM-DD hari operasi (pemanggil: tanggalOperasi(teks) ?? tanggal terima). armada: daftar registrasi seed untuk normalisasi (N814AR -> N-814AR). */
@@ -82,23 +93,39 @@ export function urai(teks, {tanggal, armada = []} = {}) {
   const reg = registrasi(t, armada);
 
   const kembali = t.match(/Back\s+To\s+Base\s+Due\s+To\s+(.+?)\s+ETA\s+(\d{1,2})[.:](\d{2})\s*WIB/i);
-  const berangkat = /DEPARTURE\s+MOVEMENT|MVT\s+DEPARTURE|Movement\s+Departure/i.test(t), rencana = !berangkat && /MVT\s+PLAN|rencana\s+penerbangan/i.test(t);
-  const misi = /Water\s*Bombing|\bWB\b|FIRE\s*SPOT/i.test(t) ? "wb" : /Patrol/i.test(t) ? "patroli" : undefined;
-  if (kembali || berangkat || rencana) {
-    hasil.dikenali = kembali ? "kembali" : berangkat ? "berangkat" : "rencana";
+  const tiba = !kembali && /MOVEMENT\s+ARRIVAL|MVT\s+ARRIVAL/i.test(t);
+  const berangkat = !tiba && /DEPARTURE\s+MOVEMENT|MVT\s+DEPARTURE|Movement\s+Departure/i.test(t);
+  const rencana = !berangkat && !tiba && /MVT\s+PLAN|rencana\s+penerbangan|Rencana\s+Patroli|Plan\s+Mov/i.test(t);
+  /* OMC dan pindah armada diperiksa lebih dulu: pesan OMC sering menyebut "Patroli", pesan demobilisasi menyebut tujuan */
+  const misi = /\bOMC\b|Modifikasi\s+Cuaca|Bahan\s+Semai/i.test(t) ? "omc" : /Demobili[sz]ation|Demobilisasi/i.test(t) ? "demobilisasi"
+    : /Mobili[sz]ation|Mobilisasi/i.test(t) ? "mobilisasi" : /Ferry\s+Flight/i.test(t) ? "ferry"
+    : /Water\s*Bombing|\bWB\b|FIRE\s*SPOT/i.test(t) ? "wb" : /Patrol/i.test(t) ? "patroli" : undefined;
+  if (kembali || tiba || berangkat || rencana) {
+    hasil.dikenali = kembali || tiba ? "kembali" : berangkat ? "berangkat" : "rencana";
     if (!reg) { hasil.tertahan.push({alasan: "registrasi"}); return hasil; }
-    const g = {registrasi: reg, jenis: kembali ? "kembali" : berangkat ? "berangkat" : "rencana"};
+    const g = {registrasi: reg, jenis: kembali || tiba ? "kembali" : berangkat ? "berangkat" : "rencana"};
     if (kembali) { g.jam_utc = jamUtc(tanggal, kembali[2], kembali[3], true); }
-    else { const j = t.match(new RegExp(`${berangkat ? "ATD" : "ETD"}[^\\n]*?(\\d{1,2})[:.](\\d{2})\\s*Z\\b`, "i")); if (j) g.jam_utc = jamUtc(tanggal, j[1], j[2], false); }
+    else {
+      const kode = tiba ? "ATA" : berangkat ? "ATD" : "(?:ETD|ATD)", j = t.match(new RegExp(`${kode}[^\\n]*?(\\d{1,2})[:.](\\d{2})\\s*Z\\b`, "i"));
+      const w = !j && t.match(new RegExp(`${kode}[^\\n]*?(\\d{1,2})[:.](\\d{2})\\s*WIB\\b`, "i"));
+      if (j) g.jam_utc = jamUtc(tanggal, j[1], j[2], false); else if (w) g.jam_utc = jamUtc(tanggal, w[1], w[2], true);
+    }
     if (misi) g.misi = misi;
     if (kembali) g.alasan = kembali[1].trim();
+    else if (tiba) { /* kedatangan: cukup jam */ }
+    else if (misi === "demobilisasi" || misi === "mobilisasi" || misi === "ferry") {
+      const r = t.match(/Route\s*:\s*\**\s*([A-Z]{3,4}(?:\s*[-–]\s*[A-Z]{3,4})+)/i); if (r) g.rute = r[1].replace(/\s+/g, "");
+      g.alasan = misi + (g.rute ? " " + g.rute : "");
+    }
     else {
       const ru = t.match(/Hasil\s+Patroli[^\n]*?\b((?:PK|VH|VN|HA|UR|ZK|RA)-[A-Z0-9]{2,5})\b/i); if (ru) g.rujukan = ru[1].toUpperCase();
       const k = koordinat(t), L = t.split("\n"), i = L.findIndex(l => /target/i.test(l)), lok = i >= 0 ? L.slice(i + 1).find(l => l.replace(/[*_\s]/g, "") && !RE_KASAR.test(l)) : null;
-      if (k) g.target = {...(lok ? {lokasi: judulKasus(lok)} : {}), ...k}; else if (RE_KASAR.test(t)) hasil.tertahan.push({alasan: "koordinat"});
+      const titik = titikRute(t); if (titik.length > 1) g.rute = JSON.stringify(titik);
+      if (titik.length) g.target = {...(titik[0].lokasi ? {lokasi: titik[0].lokasi} : {}), lat: titik[0].lat, lon: titik[0].lon};
+      else if (k) g.target = {...(lok ? {lokasi: judulKasus(lok)} : {}), ...k}; else if (RE_KASAR.test(t)) hasil.tertahan.push({alasan: "koordinat"});
     }
     hasil.gerak.push(g);
-    if (kembali) hasil.status.push({registrasi: reg, status: "tidak_siap", alasan: g.alasan});
+    if (kembali || ((misi === "demobilisasi" || misi === "mobilisasi" || misi === "ferry") && berangkat)) hasil.status.push({registrasi: reg, status: "tidak_siap", alasan: g.alasan});
     return hasil;
   }
 

@@ -44,6 +44,6 @@ uji("admin moderator, staf peran apa pun, dan akun instansi aktif membuka /admin
 
 uji("tamu ke Meja Pantau dengan ?ke= kembali ke cluster; instansi belum aktif ditolak", async () => {
   const t = await man("/admin/drone?k=K0029");
-  assert.equal(t.s, 303); assert.equal(t.h.get("location"), "/admin/pantau?ke=" + encodeURIComponent("/admin/drone?k=K0029"));
+  assert.equal(t.s, 303); assert.equal(t.h.get("location"), "/admin/masuk?ke=" + encodeURIComponent("/admin/drone?k=K0029"));
   assert.equal((await man("/admin/drone", await instansi("menunggu"))).s, 303, "instansi belum aktif diperlakukan seperti tamu");
 });

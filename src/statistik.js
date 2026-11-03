@@ -12,7 +12,7 @@
    - CPU: tanpa hash kriptografi, tanpa urai JSON besar; penggabungan JSON dikerjakan SQLite di D1. */
 import {json, gagal, sha, hex, acak, cekLaju, ipHash, gagalSudahBanyak, catatGagal, turnstileOK, adminOK, bacaBody, bacaBytes} from "./worker.js";
 import {CSP_ADMIN} from "./admin_halaman.js";
-import {stafSesi} from "./staf.js";
+import {stafSesi, cobaMasukStaf, hanyaDirektori} from "./staf.js";
 import {masukPemirsa, arahPemirsa, cookiePemirsa} from "./pemirsa.js";
 import {halStatistik} from "./bencana.js";
 
@@ -263,7 +263,16 @@ export async function masuk(env, req, kini, halamanMasuk) {
   if (!sah) {
     /* akun pemirsa (src/pemirsa.js): hanya tab tertentu; sesi admin di peramban ini dihapus supaya batasnya benar-benar berlaku */
     const p = email && sandi && await masukPemirsa(env, email, sandi, kini);
-    if (!p) { if (kunciEmail) await catatGagal(env, kunciEmail, "admin_gagal", kini); return htmlMasuk(hal("Username atau kata sandi salah."), 401); }
+    if (!p) {
+      /* akun staf (src/staf.js) lewat pintu yang sama: satu halaman masuk untuk admin, pemirsa, dan staf (perintah pemilik 3 Nov 2026). Penguncian staf ikut aturan staf. */
+      const m = email && sandi ? await cobaMasukStaf(env, req, email, sandi, kini).catch(e => (/no such table/i.test(String(e?.message || e)) ? {hasil: "salah"} : Promise.reject(e))) : {hasil: "salah"};
+      if (m.hasil === "ok") {
+        const arah = m.staf.wajib_ganti ? "/admin/pantau" : ke || (hanyaDirektori(m.staf.peran) ? "/direktori" : "/admin/pantau");
+        const r = alihkan(arah, {"set-cookie": m.cookie}); r.headers.append("set-cookie", cookie("", 0)); r.headers.append("set-cookie", cookiePemirsa("", 0)); return r;
+      }
+      if (kunciEmail) await catatGagal(env, kunciEmail, "admin_gagal", kini);
+      return m.hasil === "kunci" ? htmlMasuk(hal("Terlalu banyak percobaan untuk akun ini. Coba lagi nanti."), 429, {"retry-after": "3600"}) : htmlMasuk(hal("Username atau kata sandi salah."), 401);
+    }
     const r = alihkan((ke && !arahPemirsa(p, ke.split("?")[0]) ? ke : arahPemirsa(p, "/") ?? "/"), {"set-cookie": cookiePemirsa(p.token, p.umur)});
     r.headers.append("set-cookie", cookie("", 0)); return r;
   }

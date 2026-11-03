@@ -19,7 +19,7 @@
    ponytail: antrean dibangun dari satu batch D1 (pindai tugas 'buka' lewat indeks status) lalu di-memo di isolat (5 dtk, env CC_MEMO_DETIK; "0" mematikan) per kombinasi dummy+wilayah, supaya layar yang
    menyala terus tidak menghabiskan anggaran baca D1 Free. Memo antar isolat bisa basi sampai TTL; kebenaran tetap dijaga CAS di POST.
    - Halaman: GET /command-center (meja operator) memakai pelaku() YANG SAMA dengan API-nya, jadi halaman terbuka tepat bila API-nya menjawab.
-     Tamu: meja 303 ke /admin/pantau?ke= (masuk staf). Layar meja SENYAP total (tanpa Audio/suara). Sesi sah tanpa hak: 403 polos tanpa pengalihan (cegah pantulan, pola SIPPA).
+     Tamu: meja 303 ke /admin/masuk?ke= (masuk staf). Layar meja SENYAP total (tanpa Audio/suara). Sesi sah tanpa hak: 403 polos tanpa pengalihan (cegah pantulan, pola SIPPA).
      Berkas klien public/admin/command_*.{js,css} (vanilla; CSP tanpa skrip/gaya sebaris; teks dari API tidak pernah lewat innerHTML). Gerbang centurisk97.id tidak ikut: halamanTerkunci (src/worker.js) mengecualikan /command-center. */
 import {json, gagal, bacaBody, adminOK} from "./worker.js";
 import {modOK, tx, tglSah} from "./posko.js";
@@ -376,7 +376,7 @@ const alihkan = ke => new Response(null, {status: 303, headers: {location: ke, "
 /* pelaku() memutuskan: Response 401 = tamu (dialihkan ke layar masuk), Response lain = sesi sah tanpa hak (403 polos) */
 async function halamanMeja(env, req, url, kini) {
   const a = await pelaku(env, req, kini);
-  if (a instanceof Response) return a.status === 401 ? alihkan("/admin/pantau?ke=" + encodeURIComponent(url.pathname + url.search)) : polos403();
+  if (a instanceof Response) return a.status === 401 ? alihkan("/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search)) : polos403();
   return new Response(halamanCc(a.staf ? {nama: a.staf.nama, peran: a.staf.peran} : undefined), {headers: {...H_HAL, "content-security-policy": CSP_ADMIN}});
 }
 

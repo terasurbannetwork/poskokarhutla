@@ -75,8 +75,8 @@ export async function catatOperasi(env, {id, teks, tanggal, diterima}) {
   for (const t of h.temuan) st.push(P("INSERT OR IGNORE INTO op_temuan (tanggal, jam_utc, registrasi, lat, lon, status, luas_klaim_ha, lokasi, wa_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
     tgl, jamTemuan, t.registrasi, t.lat, t.lon, t.status, t.luas_klaim_ha ?? null, t.lokasi ?? null, id));
   for (const g of h.gerak) { const jam = g.jam_utc ? Date.parse(g.jam_utc) : null;
-    st.push(P("INSERT INTO op_gerak (tanggal, registrasi, jenis, jam_utc, misi, lokasi, lat, lon, rujukan, alasan, wa_id) SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11 WHERE NOT EXISTS (SELECT 1 FROM op_gerak WHERE tanggal = ?1 AND registrasi = ?2 AND jenis = ?3 AND jam_utc IS ?4)",
-      tgl, g.registrasi, g.jenis, jam, g.misi ?? null, g.target?.lokasi ?? null, g.target?.lat ?? null, g.target?.lon ?? null, g.rujukan ?? null, g.alasan ?? null, id)); }
+    st.push(P("INSERT INTO op_gerak (tanggal, registrasi, jenis, jam_utc, misi, lokasi, lat, lon, rujukan, alasan, wa_id, rute) SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12 WHERE NOT EXISTS (SELECT 1 FROM op_gerak WHERE tanggal = ?1 AND registrasi = ?2 AND jenis = ?3 AND jam_utc IS ?4)",
+      tgl, g.registrasi, g.jenis, jam, g.misi ?? null, g.target?.lokasi ?? null, g.target?.lat ?? null, g.target?.lon ?? null, g.rujukan ?? null, g.alasan ?? null, id, g.rute ?? null)); }
   for (const s of h.status) st.push(P("INSERT INTO op_armada_status (tanggal, registrasi, status, alasan, sumber, diubah) VALUES (?1, ?2, ?3, ?4, 'wa', ?5) ON CONFLICT (tanggal, registrasi) DO UPDATE SET status = ?3, alasan = ?4, sumber = 'wa', diubah = ?5",
     tgl, s.registrasi, s.status, s.alasan ?? null, diterima));
   if (st.length) await env.DB.batch(st);

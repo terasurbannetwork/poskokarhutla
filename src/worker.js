@@ -712,8 +712,8 @@ function halamanTerkunci(url) {
   if (PUBLIK_TANPA_SESI.has(jalur)) return false;
   if (url.pathname.startsWith("/f/") || HTML_RUTE.some(([re]) => re.test(url.pathname))) return true;
   const kunci = /\/[0-9a-f]{16}$/.test(jalur) ? jalur.slice(0, -16) + ":id" : jalur;
-  if (/^\/command-center(\/|$)/.test(jalur)) return false;   // meja menjaga dirinya sendiri (src/command_center.js): tamu 303 ke /admin/pantau?ke=
-  return !!tabelRute()["GET " + kunci] && !/^\/(api|admin|ews|ubin|pipa)(\/|$)/.test(jalur);   // /pipa* menjaga dirinya sendiri (src/sippa.js, DESAIN-TEKNIS SIPPA §1.4): tamu 303 ke /admin/pantau?ke=, bukan ke /admin/masuk
+  if (/^\/command-center(\/|$)/.test(jalur)) return false;   // meja menjaga dirinya sendiri (src/command_center.js): tamu 303 ke /admin/masuk?ke=
+  return !!tabelRute()["GET " + kunci] && !/^\/(api|admin|ews|ubin|pipa)(\/|$)/.test(jalur);   // /pipa* menjaga dirinya sendiri (src/sippa.js, DESAIN-TEKNIS SIPPA §1.4): tamu 303 ke /admin/masuk?ke= (satu pintu)
 }
 function catatHTML(env, req, jalur, ctx) {
   if (env.DB) ctx?.waitUntil?.(Pub.catatHit(env, req, jalur).catch(e => console.error("hit", e)));

@@ -54,7 +54,7 @@ async function konteks(env, req, kini) {
 
 async function halaman(env, req, url, kini) {
   const ctx = await konteks(env, req, kini);
-  if (!ctx) return new Response(null, {status: 303, headers: {location: "/admin/pantau?ke=" + encodeURIComponent(url.pathname + url.search), "cache-control": "no-store"}});
+  if (!ctx) return new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search), "cache-control": "no-store"}});
   return new Response(halamanDrone(ctx), {headers: H});
 }
 

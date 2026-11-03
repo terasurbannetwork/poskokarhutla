@@ -118,6 +118,26 @@ uji("grup operasi: anggota tak terdaftar disimpan hanya bila dikenali, tanpa nom
   assert.equal(await n("wa_masuk"), awal + 1);
 });
 
+const F3 = JSON.parse(readFileSync(path.join(AKAR, "tests/warga/fixtures/operasi_wa_031126.json"), "utf8"));
+test("urai 3 Nov: rencana banyak titik, demobilisasi, ferry RDPL, OMC, jam Z pagi WITA", () => {
+  for (const p of F3.pesan) assert.deepEqual(urai(p.teks, {tanggal: "2026-11-03", armada: F3.armada}), p.harap, p.id);
+  const g = id => urai(F3.pesan.find(p => p.id === id).teks, {tanggal: "2026-11-03", armada: F3.armada}).gerak[0];
+  assert.equal(JSON.parse(g("ikc_rencana").rute).length, 2, "rencana PK-IKC menyimpan semua titik");
+  assert.equal(g("snk_omc").jam_utc, "2026-11-02T23:05Z", "23.05Z = 07.05 WITA 3 Nov, masih 2 Nov di UTC");
+  assert.equal(g("rdpl_ferry").registrasi, "RDPL-34194");
+});
+
+uji("rencana banyak titik tersimpan di rute; demobilisasi menjadikan armada tidak siap", async () => {
+  const P3 = id => F3.pesan.find(p => p.id === id).teks;
+  const a = await kirim(P3("ikc_rencana").replace("Selasa, 3 November 2026", "Senin, 2 November 2026"));
+  const b = await kirim(P3("n4875a_demob").replace("Selasa, 3 November 2026", "Senin, 2 November 2026"));
+  assert.deepEqual([a.j.operasi.gerak, b.j.operasi.gerak, b.j.operasi.status], [1, 1, 1]);
+  const j = await peta(), r = j.gerak.find(x => x.registrasi === "PK-IKC" && x.jenis === "rencana");
+  assert.equal(JSON.parse(r.rute).length, 2);
+  assert.deepEqual([r.lat, r.lon], [JSON.parse(r.rute)[0].lat, JSON.parse(r.rute)[0].lon]);
+  const n = j.armada.find(x => x.registrasi === "N-4875A"); assert.deepEqual([n.status, n.alasan], ["tidak_siap", "demobilisasi"]);
+});
+
 uji("peta operasi tetap tertutup untuk tamu: temuan hasil WA tidak bocor", async () => {
   assert.equal((await api("GET", `/api/operasi/peta?tanggal=${TGL}`)).s, 403);
 });

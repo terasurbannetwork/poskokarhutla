@@ -104,7 +104,7 @@ async function halaman(env, req, url, layar) {
       if (!s.peran.some(p => P_SIPPA_BACA.includes(p))) return polos403();
       ctx = {nama: s.nama, peran: s.peran, tulis: s.peran.some(p => P_SIPPA_TULIS.includes(p)), mod: false, super: false};
     } else if (await pemirsaSesi(env, req)) return polos403();
-    else return alihkan("/admin/pantau?ke=" + encodeURIComponent(url.pathname + url.search));
+    else return alihkan("/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search));
   }
   return new Response(halamanSippa(layar, ctx), {headers: H_HAL});
 }

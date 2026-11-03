@@ -381,11 +381,17 @@ export async function bersihkanPantau(env, kini = Date.now()) {
   catch (e) { if (tanpaTabelStaf(e)) return {lewat: "migrasi 0030 belum diterapkan"}; throw e; }
 }
 
-/* ================================================================ halaman /admin/pantau: kerangka tanpa data (data dari /api/pantau yang dijaga sesi); masuk staf ada di halamannya sendiri */
+/* ================================================================ halaman /admin/pantau: kerangka tanpa data (data dari /api/pantau yang dijaga sesi); masuk lewat /admin/masuk (satu pintu) */
 const halaman = ctx => new Response(halamanBnpb("pantau", ctx), {headers: {"content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-frame-options": "SAMEORIGIN", "x-content-type-options": "nosniff",
   "referrer-policy": "no-referrer", "x-robots-tag": "noindex, nofollow", "content-security-policy": CSP_ADMIN}});
 export const RUTE_PANTAU = Object.fromEntries(Object.entries({
-  "GET /admin/pantau": async (env, req, url, kini) => halaman(await kerangka(env, req, kini)),
+  /* satu pintu masuk (perintah pemilik 3 Nov 2026): tamu ke /admin/masuk; staf bersandi awal tetap dilayani (layar ganti sandi); staf Direktori saja ke /direktori */
+  "GET /admin/pantau": async (env, req, url, kini) => {
+    const k = await kerangka(env, req, kini);
+    if (k === undefined || k.nama || await stafTertahan(env, req, kini)) return halaman(k);
+    if (hanyaDirektori((await stafSesiSemua(env, req, kini))?.peran)) return new Response(null, {status: 303, headers: {location: "/direktori", "cache-control": "no-store"}});
+    return new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search), "cache-control": "no-store"}});
+  },
   "GET /api/pantau": (env, req, url, kini) => baca(env, req, url, kini),
   "POST /api/pantau/butir": (env, req, url, kini) => ubahButir(env, req, url, kini),
   "GET /api/pantau/jejak": (env, req, url) => jejakButir(env, req, url),

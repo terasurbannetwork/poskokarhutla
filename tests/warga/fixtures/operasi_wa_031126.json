@@ -1,0 +1,197 @@
+{
+  "_catatan": "Pesan WA grup satgas udara 3 Nov 2026 tanpa nama kru. Mencakup rencana patroli banyak titik (PK-IKC, PK-FPA), keberangkatan 15 titik (PK-RTQ, dipotong 2), demobilisasi N-4875A, ferry RDPL-34194, OMC PK-SNK, dan jam Z pagi WITA yang jatuh ke hari UTC sebelumnya. 'harap' dibekukan dari keluaran pengurai sesudah diperiksa tangan (sesi induk 3 Nov).",
+  "armada": [
+    "H-3217",
+    "PK-FPA",
+    "PK-RTQ",
+    "PK-IKC",
+    "PK-FPU",
+    "N-4875A",
+    "RDPL-34194",
+    "PK-SNK",
+    "VH-HGM",
+    "HA-5234"
+  ],
+  "pesan": [
+    {
+      "id": "ikc_rencana",
+      "teks": "Subsatgas Udara menyampaikan Rencana Patroli Udara Cessna Caravan 208B PK-IKC\nHari : Selasa, 3 November 2026\nETD : 09.00 WIB\n1.Tungkal ilir, Banyuasin\nS 02°25′42.00″\nE 104°07′19.00″\nR 309 (Sektor 5)\nD 45 Nm From PLB\n2.karang agung, lalan, Musi Banyuasin\nS 02°22′36.00″\nE 104°21′01.00″\nR 326 (Sektor 5)\nD 37 NM From PLB",
+      "harap": {
+        "dikenali": "rencana",
+        "temuan": [],
+        "gerak": [
+          {
+            "registrasi": "PK-IKC",
+            "jenis": "rencana",
+            "jam_utc": "2026-11-03T02:00Z",
+            "misi": "patroli",
+            "rute": "[{\"urut\":1,\"lokasi\":\"Tungkal ilir, Banyuasin\",\"lat\":-2.42833,\"lon\":104.12194,\"sektor\":5},{\"urut\":2,\"lokasi\":\"karang agung, lalan, Musi Banyuasin\",\"lat\":-2.37667,\"lon\":104.35028,\"sektor\":5}]",
+            "target": {
+              "lokasi": "Tungkal ilir, Banyuasin",
+              "lat": -2.42833,
+              "lon": 104.12194
+            }
+          }
+        ],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "n4875a_demob",
+      "teks": "*MVT Departure*\n*Sikorsky UH-60L / N-4875A*\n*Demobilization for BNPB*\n*Selasa, 3 November 2026*\nStart Eng PKU : 01:58 Z / 08:58 Lt\nATD PKU : 02:08 Z / 09:08 Lt\nETA PLM : 04:30 Z / 11:30 Lt",
+      "harap": {
+        "dikenali": "berangkat",
+        "temuan": [],
+        "gerak": [
+          {
+            "registrasi": "N-4875A",
+            "jenis": "berangkat",
+            "jam_utc": "2026-11-03T02:08Z",
+            "misi": "demobilisasi",
+            "alasan": "demobilisasi"
+          }
+        ],
+        "status": [
+          {
+            "registrasi": "N-4875A",
+            "status": "tidak_siap",
+            "alasan": "demobilisasi"
+          }
+        ],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "rtq_departure",
+      "teks": "*DEPARTURE MOVEMENT SORTI 1*\n*Selasa, 03 November 2026*\n*_HELICOPTER PATROLI/AS355-F1/ PK-RTQ SATGAS UDARA (BNPB)_*\nENG ON      : 02.07 Z / 10.07 LT\nATD BDJ     : 02.12 Z / 10.12 LT\n*1. SUNGAI BATANG*\nKEC. MARTAPURA BARAT\nKAB. BANJAR\nS 03°20′18.96″\nE 114°49′05.38″\nR 042\nD 8 Nm From BDM\n*2. PENGGALAMAN*\nKEC. MARTAPURA BARAT\nKAB. BANJAR\nS 03°20′21.62″\nE 114°46′05.81″\nR 021\nD 6 Nm From BDM\nRegards,\n*PT.APD/OPS-BDJ FIRE PATROL/PK-RTQ*",
+      "harap": {
+        "dikenali": "berangkat",
+        "temuan": [],
+        "gerak": [
+          {
+            "registrasi": "PK-RTQ",
+            "jenis": "berangkat",
+            "jam_utc": "2026-11-03T02:12Z",
+            "misi": "patroli",
+            "rute": "[{\"urut\":1,\"lokasi\":\"Sungai Batang\",\"lat\":-3.3386,\"lon\":114.81816},{\"urut\":2,\"lokasi\":\"Penggalaman\",\"lat\":-3.33934,\"lon\":114.76828}]",
+            "target": {
+              "lokasi": "Sungai Batang",
+              "lat": -3.3386,
+              "lon": 114.81816
+            }
+          }
+        ],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "maliku",
+      "teks": "04.Maliku,Kab.Pulang Pisau\nS 02°51′41.80″\nE 114°04′59.54″\nR 167°\nD 37 Nm From PKY\n(Data Source by Sipongi & Fine Fuel Moisture Code)\nRMKS\n- FS berasap tipis\n- Luas area terbakar ±3 Ha",
+      "harap": {
+        "dikenali": "temuan",
+        "temuan": [],
+        "gerak": [],
+        "status": [],
+        "tertahan": [
+          {
+            "alasan": "registrasi",
+            "lokasi": "Maliku, Kab. Pulang Pisau",
+            "lat": -2.86161,
+            "lon": 114.08321,
+            "status": "berasap_tipis",
+            "luas_klaim_ha": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "olak",
+      "teks": "*2. Olak-Olak, Kubu, Kubu Raya*\n00°32'30.00\" S\n109°19'23.00\" E\nR 186°\nD 28 Nm Fr Vor PNK\n*Target Clear*\nRegards,\n*PT.FPU/Ops Fire Patrol PNK (PK-FPA)*",
+      "harap": {
+        "dikenali": "temuan",
+        "temuan": [
+          {
+            "registrasi": "PK-FPA",
+            "lokasi": "Olak-Olak, Kubu, Kubu Raya",
+            "lat": -0.54167,
+            "lon": 109.32306,
+            "status": "clear"
+          }
+        ],
+        "gerak": [],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "rdpl_ferry",
+      "teks": "*DEPARTURE MOVEMENT*\n*Ferry Flight*\nDate  : Selasa, 3 November 2026\nReg   : RDPL-34194\nRoute: *PKU-TKG*\nEng On       : 00.47 Z  / 07.47 LT\nATD            : 01.06 Z  / 08.06  LT\nRemarks   : *Mobilisasi*",
+      "harap": {
+        "dikenali": "berangkat",
+        "temuan": [],
+        "gerak": [
+          {
+            "registrasi": "RDPL-34194",
+            "jenis": "berangkat",
+            "jam_utc": "2026-11-03T01:06Z",
+            "misi": "mobilisasi",
+            "rute": "PKU-TKG",
+            "alasan": "mobilisasi PKU-TKG"
+          }
+        ],
+        "status": [
+          {
+            "registrasi": "RDPL-34194",
+            "status": "tidak_siap",
+            "alasan": "mobilisasi PKU-TKG"
+          }
+        ],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "snk_omc",
+      "teks": "MOVEMENT DEPARTURE\nOMC BNPB Kalimantan Tengah dan Kalimantan Selatan\nSelasa, 3 November 2026\nSortie 1\nCessna Caravan 208/ PK-SNK\nENG ON   :22.56z/06.56lt\nATD BDJ  :23.05z/07.05lt\nArea: Tanah Bumbu dan Kotabaru\nBahan Semai : NaCl 1.000 kg",
+      "harap": {
+        "dikenali": "berangkat",
+        "temuan": [],
+        "gerak": [
+          {
+            "registrasi": "PK-SNK",
+            "jenis": "berangkat",
+            "jam_utc": "2026-11-02T23:05Z",
+            "misi": "omc"
+          }
+        ],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "fpa_plan",
+      "teks": "Plan Mov Bell 206 B3 / PK - FPA\nSortie 1\nSelasa, 03 November 2026\nMisi : Air Patrol\nATD PNK/WIOO : 00.56Z/07.56LT\n*1. Sungai Bulan, Sungai Raya, Kubu Raya*\n00°18'40.00\" S\n109°29'54.00\" E\nR 151°\nD 15 Nm Fr Vor PNK\n*2. Olak-Olak, Kubu, Kubu Raya*\n00°32'30.00\" S\n109°19'23.00\" E\nR 186°\nD 28 Nm Fr Vor PNK\nRegards,\n*PT.FPU/Ops Fire Patrol PNK (PK-FPA)*",
+      "harap": {
+        "dikenali": "rencana",
+        "temuan": [],
+        "gerak": [
+          {
+            "registrasi": "PK-FPA",
+            "jenis": "rencana",
+            "jam_utc": "2026-11-03T00:56Z",
+            "misi": "patroli",
+            "rute": "[{\"urut\":1,\"lokasi\":\"Sungai Bulan, Sungai Raya, Kubu Raya\",\"lat\":-0.31111,\"lon\":109.49833},{\"urut\":2,\"lokasi\":\"Olak-Olak, Kubu, Kubu Raya\",\"lat\":-0.54167,\"lon\":109.32306}]",
+            "target": {
+              "lokasi": "Sungai Bulan, Sungai Raya, Kubu Raya",
+              "lat": -0.31111,
+              "lon": 109.49833
+            }
+          }
+        ],
+        "status": [],
+        "tertahan": []
+      }
+    }
+  ]
+}

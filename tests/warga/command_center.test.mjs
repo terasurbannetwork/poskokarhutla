@@ -930,7 +930,7 @@ uji("cc peran: Super Admin memberi peran operator_cc lewat API; tab pemirsa 'din
 
 /* ================================================================ halaman: meja operator (/command-center); layar dinding dibuang */
 const man = async (j, h = {}, host = "http://bnpb.lokal", metode = "GET") => { const r = await mf.dispatchFetch(host + j, {method: metode, redirect: "manual", headers: h}); return {s: r.status, h: r.headers, t: await r.text()}; };
-const SITUS = "https://centurisk97.id", KE_MEJA = "/admin/pantau?ke=%2Fcommand-center";
+const SITUS = "https://centurisk97.id", KE_MEJA = "/admin/masuk?ke=%2Fcommand-center";
 const berkasKlien = t => [...t.matchAll(/(?:src|href)="(\/[^"]+\.(?:js|css))(?:\?v=\d+)?"/g)].map(m => m[1]);
 
 uji("cc halaman meja: /command-center terbuka bagi operator, koordalops, pimpinan, moderator; tamu ke Meja Pantau; sesi tanpa hak 403 polos; CSP_ADMIN tanpa sebaris", async () => {
