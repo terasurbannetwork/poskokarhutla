@@ -128,19 +128,17 @@
     /* satu kab bisa punya kejadian surut dan belum: belum menang */
     const perKab = new Map();
     for (const x of pekan) if (x.kab_kode) { const a = perKab.get(x.kab_kode); perKab.set(x.kab_kode, !a || (a.surut && !x.surut) ? x : a); }
-    const fitur = [], kotak = [180, 90, -180, -90];
+    const fitur = [];
     kabs.forEach((g, i) => (g?.features || []).forEach(f => {
       const kode = kodeProv[i] + "|" + f.properties.kab, x = perKab.get(kode);
       if (!x) return;
-      const lompat = c => typeof c[0] === "number" ? (kotak[0] = Math.min(kotak[0], c[0]), kotak[1] = Math.min(kotak[1], c[1]), kotak[2] = Math.max(kotak[2], c[0]), kotak[3] = Math.max(kotak[3], c[1])) : c.forEach(lompat);
-      lompat(f.geometry.coordinates);
       fitur.push({type: "Feature", id: fitur.length, properties: {kode, st: x.surut ? "surut" : "belum"}, geometry: f.geometry});
     }));
     wadah.replaceChildren();
     const legenda = h("div", {class: "dl-legenda-peta"}, h("b", {teks: "Legenda"}), h("span", {class: "dl-leg dl-leg-belum", teks: "Belum dilaporkan surut"}), h("span", {class: "dl-leg dl-leg-surut", teks: "Sudah dilaporkan surut"}));
-    const gelap = matchMedia("(prefers-color-scheme: dark)").matches;
-    const peta = new maplibregl.Map({container: wadah, style: `https://tiles.openfreemap.org/styles/${gelap ? "dark" : "positron"}`, bounds: fitur.length ? [[kotak[0], kotak[1]], [kotak[2], kotak[3]]] : [[95, -11], [141, 6]],
-      fitBoundsOptions: {padding: 40}, minZoom: 3, maxZoom: 13, dragRotate: false, pitchWithRotate: false, attributionControl: {compact: true}});
+    /* bawaan: seluruh Indonesia (Aceh sampai Papua) di dasar terang, sesuai permintaan pemilik 3 Nov */
+    const peta = new maplibregl.Map({container: wadah, style: "https://tiles.openfreemap.org/styles/positron", bounds: [[94.8, -11.2], [141.2, 6.2]],
+      fitBoundsOptions: {padding: 16}, minZoom: 3, maxZoom: 13, dragRotate: false, pitchWithRotate: false, attributionControl: {compact: true}});
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-right");
     wadah.append(legenda);   // kartu legenda di dalam peta, pojok kiri bawah
     peta.touchZoomRotate.disableRotation();

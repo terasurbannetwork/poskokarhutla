@@ -296,3 +296,5 @@
 /* legenda di dalam peta, gaya kartu legenda peta utama */
 .dl-legenda-peta{position:absolute;left:12px;bottom:12px;z-index:2;display:grid;gap:6px;padding:10px 12px;border-radius:12px;background:var(--card);box-shadow:var(--bayang);font-size:12px;font-weight:600;color:var(--ink2)}
 .dl-legenda-peta b{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--ink)}
+.dl-legenda-peta{background:#fff;color:#5b6782}
+.dl-legenda-peta b{color:#0b2545}
