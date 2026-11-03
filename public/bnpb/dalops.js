@@ -238,8 +238,8 @@
     rincian.addEventListener("click", () => bukaKab(x));
     return h("div", {class: "dl-pop"},
       h("div", {class: "dl-pop-kepala"}, lambangKab(x),
-        h("div", null, h("b", {class: "dl-tip-nama", teks: x.nama}),
-          h("div", {class: "dl-pop-label"}, label(namaProv(x.prov_kode, x.prov), "pin", "abu"), surutLabel(x.surut)))),
+        h("div", null, h("div", {class: "dl-pop-judul"}, h("b", {class: "dl-tip-nama", teks: x.nama}), label(namaProv(x.prov_kode, x.prov), "pin", "abu")),
+          h("div", {class: "dl-pop-label"}, surutLabel(x.surut)))),
       h("span", {class: "dl-tip-prov", teks: "Kabar terakhir " + H.tglPendek(x.terakhir)}),
       kotakAngka(x),
       h("div", {class: "dl-pop-kontak"}, h("span", {teks: k ? k.nama : "Nomor Pusdalops BPBD belum tercatat"}),

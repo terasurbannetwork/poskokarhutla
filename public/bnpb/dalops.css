@@ -332,3 +332,10 @@
 .dl-leg-a2::before{background:var(--c2)}.dl-leg-a3::before{background:var(--c1)}
 .dl-pop-awas{display:grid;gap:5px;justify-items:start;font-size:12.5px}
 .dl-pop-awas small{color:var(--ink3)}
+/* kartu kab di peta: nama dan provinsi sebaris; angka ringkas ikon kiri, angka dan keterangan kanan (pola kartu peta banjir) */
+.dl-pop-judul{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.dl-pop .dl-tip-angka{gap:10px 14px;margin:10px 0 8px}
+.dl-pop .dl-tip-angka>div{grid-template-columns:auto 1fr;grid-template-areas:"ik b" "ik t";column-gap:9px;align-items:center;padding:0;background:none}
+.dl-pop .dl-tip-angka .dl-tip-ik{grid-area:ik;width:30px;height:30px;border-radius:9px;margin:0}
+.dl-pop .dl-tip-angka b{grid-area:b;font-size:15px}
+.dl-pop .dl-tip-angka>div>span:last-child{grid-area:t;line-height:1.25}
