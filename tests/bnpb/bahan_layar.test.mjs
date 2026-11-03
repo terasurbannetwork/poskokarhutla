@@ -33,6 +33,7 @@ test("layar /bnpb/bahan: empat tab, dummy, pratinjau, kirim, logbook, konsol ber
   try {
     for (const [w, hh] of [[1440, 900], [390, 844]]) {
       await t.ukuran(w, hh); await t.buka(asal + "/bnpb/bahan", {tunggu: '[data-dummy="isi"]'});
+      assert.equal(await t.eval("document.querySelector('.bn-pesan.galat[role=alert]').hidden"), true, `galat merah di keadaan awal @${w}`);
       /* Logbook -> draf */
       await t.eval("[...document.querySelectorAll('.bn-tombol')].find(b => /Ambil dari Logbook/.test(b.textContent)).click()");
       await t.tungguFungsi("document.querySelectorAll('.bh-kartu').length === 1 && /Kejadian baru|Pengkinian/.test(document.body.innerText)");
