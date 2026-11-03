@@ -1,5 +1,5 @@
 {
-  "_catatan": "Pesan WA grup satgas udara 3 Nov 2026 tanpa nama kru. Mencakup rencana patroli banyak titik (PK-IKC, PK-FPA), keberangkatan 15 titik (PK-RTQ, dipotong 2), demobilisasi N-4875A, ferry RDPL-34194, OMC PK-SNK, dan jam Z pagi WITA yang jatuh ke hari UTC sebelumnya. 'harap' dibekukan dari keluaran pengurai sesudah diperiksa tangan (sesi induk 3 Nov). Ditambah siang 3 Nov: temuan PK-RTQ Tapin, rencana sortie 2 PK-ALE (8 titik), \"Departure MVT\" PK-RTY (titik 7 berlintang E salah ketik dibuang, tidak ditebak), pesan persiapan tanpa isi, WB Mi-8 RA-22747 dengan lokasi target sebelum koordinat.",
+  "_catatan": "Pesan WA grup satgas udara 3 Nov 2026 tanpa nama kru. Mencakup rencana patroli banyak titik (PK-IKC, PK-FPA), keberangkatan 15 titik (PK-RTQ, dipotong 2), demobilisasi N-4875A, ferry RDPL-34194, OMC PK-SNK, dan jam Z pagi WITA yang jatuh ke hari UTC sebelumnya. 'harap' dibekukan dari keluaran pengurai sesudah diperiksa tangan (sesi induk 3 Nov). Ditambah siang 3 Nov: temuan PK-RTQ Tapin, rencana sortie 2 PK-ALE (8 titik), \"Departure MVT\" PK-RTY (titik 7 berlintang E salah ketik dibuang, tidak ditebak), pesan persiapan tanpa isi, WB Mi-8 RA-22747 dengan lokasi target sebelum koordinat. Siang 3 Nov (2): HS CLEAR Sungai Salai PK-RTQ, Water Drop N261BE tanpa koordinat di teks (koordinat hanya di foto, tidak dibaca).",
   "armada": [
     "H-3217",
     "PK-FPA",
@@ -13,7 +13,8 @@
     "HA-5234",
     "PK-ALE",
     "PK-RTY",
-    "RA-22747"
+    "RA-22747",
+    "N261BE"
   ],
   "pesan": [
     {
@@ -294,6 +295,36 @@
             }
           }
         ],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "rtq_sungai_salai_clear",
+      "teks": "*8. SUNGAI SALAI*\nKEC. CANDI LARAS UTARA \nKAB. TAPIN \nS 02°54′49″ \nE 114°53′57″ \nR 018\nD 32 Nm From BDM\n\nRemark\nHS CLEAR\n\nRegards,\n*PT.APD/OPS-BDJ FIRE PATROL/PK-RTQ*",
+      "harap": {
+        "dikenali": "temuan",
+        "temuan": [
+          {
+            "registrasi": "PK-RTQ",
+            "lokasi": "Sungai Salai, Kec. Candi Laras Utara, Kab. Tapin",
+            "lat": -2.91361,
+            "lon": 114.89917,
+            "status": "clear"
+          }
+        ],
+        "gerak": [],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "n261be_water_drop",
+      "teks": "03 November 2026\n\n*Water Drop*\nSortie 1 N261BE\nLokasi FS : *PURWASARI/TAMBAN/ BARITO KUALA*\n\nSalam Hormat,\n*TRIVEDA-OPS/Satgaskarhutla2026/BNPB/Kalsel/Waterbombing/N261BE*",
+      "harap": {
+        "dikenali": "bukti_wb",
+        "temuan": [],
+        "gerak": [],
         "status": [],
         "tertahan": []
       }
