@@ -7,7 +7,7 @@
 .ops-ringkas b small{font-size:11px;opacity:.6;font-weight:700}
 .ops-ringkas span{font-size:10.5px;color:var(--ink2);font-weight:600;line-height:1.2}
 .ops-ringkas .merah b{color:#c9503a}
-.ops-kunci{display:flex;flex-wrap:wrap;gap:3px 10px;font-size:10.5px;color:var(--ink2);margin:0 2px 6px}
+.ops-kunci{display:flex;flex-wrap:wrap;justify-content:center;gap:3px 10px;font-size:10.5px;color:var(--ink2);margin:0 2px 6px}
 .ops-kunci span{display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
 .ops-kunci b{color:var(--ink);font-weight:800}
 .ops-cl{width:8px;height:8px;border-radius:50%;background:#c9503a;display:inline-block}
@@ -18,7 +18,8 @@
 .ops-lay-layak{background:#5a9e74}.ops-lay-terbatas{background:#e58a45}.ops-lay-tidak{background:#c9503a}.ops-lay-\?{background:#b6bdc9}
 .ops-prov{font-size:11.5px;color:var(--ink2)}
 .tb.ops-pilih{background:color-mix(in srgb,#4f8fc4 16%,var(--card));box-shadow:inset 3px 0 #4f8fc4}
-.ops-kaki{margin:8px 2px 0}
+.ops-geser{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.ops-geser table.tb3{min-width:max-content}
 .pill.ops-abu{background:var(--surface);color:var(--ink2)}
 /* kartu hover base */
 .ops-pop .maplibregl-popup-content{padding:0;border-radius:14px;overflow:hidden;box-shadow:0 14px 34px -10px rgb(0 0 0 / .55);max-width:none;background:var(--card)}

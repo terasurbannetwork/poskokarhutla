@@ -292,6 +292,9 @@ def _rentang(t, terakhir=False):
     if not mulai:
         return None, None
     h = re.search(r"selama\s+(\d{1,3})\s*(?:\([^)]*\)\s*)?hari", t, re.I)
+    e = re.search(r"berakhir\s+(?:pada\s+)?(?:tanggal\s+)?(\d{1,2}\s+[A-Za-z]{3,9}\s*\d{4})", t, re.I)   # '... terhitung sejak 1 Januari 2024 dan berakhir tanggal 31 Desember 2024'
+    if e and tgl_id(e.group(1)) and tgl_id(e.group(1)) >= mulai:
+        return mulai, tgl_id(e.group(1))
     return mulai, (dt.date.fromisoformat(mulai) + dt.timedelta(days=int(h.group(1)) - 1)).isoformat() if h else None
 
 
@@ -308,6 +311,7 @@ def urai_teks(teks, berkas="", kode=None, jalur=""):
         return None, "bukan_status"   # pernyataan bupati, bukan SK penetapan
     i = re.search(r"\bTENTANG\b", t[:4000])
     judul = t[i.end():i.end() + 450] if i else t[:600]
+    judul = re.split(r"\b(?:Menimbang|Mengingat|Membaca)\b", judul)[0]   # hanya judul, bukan konsiderans
     m = re.search(r"status\s+(?:keadaan\s+)?(siaga|tanggap|transisi)", judul, re.I) or re.search(r"\b(siaga|tanggap|transisi)\s+darurat", judul, re.I)
     if not m or (not re.search(r"status", judul, re.I) and NON_STATUS.search(judul[:m.start() + 20])) or re.search(r"^\W*(pembentukan|penunjukan|masa aktif|pos komando|tim )", judul, re.I):
         return None, "bukan_status"
@@ -323,7 +327,7 @@ def urai_teks(teks, berkas="", kode=None, jalur=""):
     if not mulai and sec is not t:
         mulai, berakhir = _rentang(t)
     perkiraan = False
-    if mulai and not ("2023" <= mulai[:4] <= "2027" and (berakhir is None or mulai <= berakhir <= (dt.date.fromisoformat(mulai) + dt.timedelta(days=400)).isoformat())):
+    if mulai and not ("2018" <= mulai[:4] <= "2027" and (berakhir is None or mulai <= berakhir <= (dt.date.fromisoformat(mulai) + dt.timedelta(days=400)).isoformat())):
         mulai = berakhir = None    # salah baca pindaian (tahun 0206, rentang > 400 hari)
     pen = re.search(r"ditetapkan\s+di\s+[A-Za-z .]{2,30}?\s+pada\s+tanggal[ ,:]*(\d{1,2})\s+([A-Za-z]{3,9})\b.{0,60}?\b(20\d\d)\b", t, re.I)
     if mulai and pen and tgl_id(f"{pen.group(1)} {pen.group(2)} {pen.group(3)}") and mulai > (dt.date.fromisoformat(tgl_id(f"{pen.group(1)} {pen.group(2)} {pen.group(3)}")) + dt.timedelta(days=45)).isoformat():
@@ -339,7 +343,7 @@ def urai_teks(teks, berkas="", kode=None, jalur=""):
         if not (mulai and berakhir and berakhir >= mulai):
             return None, "tanpa_tanggal"
         perkiraan = True
-        if not "2023" <= mulai[:4] <= "2027":
+        if not "2018" <= mulai[:4] <= "2027":
             return None, "tanpa_tanggal"
     j = re.search(r"bencana\s+(?:alam\s+|non\s+alam\s+)?(.{3,120}?)(?:\s+di\s+(?:wilayah|kabupaten|kota|provinsi|kecamatan|daerah)|\s+tahun\s+\d{4}|$)", judul, re.I)
     jenis = j.group(1).strip(" ,.").title() if j else ""
@@ -385,18 +389,23 @@ def panen_drive(folder=None):
     import subprocess
     folder = folder or DRIVE_DIR
     sk, lain = [], {}
+    per = {}   # tahun-folder (komponen pertama) -> hitungan alasan
     for akar, _, fs in sorted(os.walk(folder)):
         for f in sorted(fs):
-            if not f.lower().endswith((".pdf", ".doc", ".docx")):
-                continue
             pth = os.path.join(akar, f)
-            teks = ""
-            if os.path.exists(pth + ".txt"):
-                teks = open(pth + ".txt", encoding="utf-8", errors="replace").read()
-            if len(teks.strip()) < 200 and f.lower().endswith(".pdf"):
-                teks = subprocess.run(["pdftotext", "-layout", pth, "-"], capture_output=True, text=True).stdout
-            rel = os.path.relpath(pth, folder)
+            if f.endswith(".txt"):          # teks saja (asli sudah dihapus) atau saudara berkas asli
+                if f == "INDEKS.md":
+                    continue
+                teks, nama = open(pth, encoding="utf-8", errors="replace").read(), pth[:-4]
+            elif f.lower().endswith(".pdf") and not os.path.exists(pth + ".txt"):
+                teks, nama = subprocess.run(["pdftotext", "-layout", pth, "-"], capture_output=True, text=True).stdout, pth
+            else:
+                continue
+            rel = os.path.relpath(nama, folder)
             o, why = urai_teks(teks, rel, jalur=rel)
+            th = rel.split(os.sep)[0]
+            per.setdefault(th, {}).setdefault(why or "terurai", 0)
+            per[th][why or "terurai"] += 1
             if o:
                 sk.append(o)
             else:
@@ -408,6 +417,8 @@ def panen_drive(folder=None):
         "sumber": "Drive Pusdalops BNPB, folder FILE SK (SK kepala daerah, dokumen publik), diurai lokal dari teks/OCR; mulai_perkiraan true = mulai diambil dari tanggal penetapan",
         "sk": [{k: v for k, v in o.items() if k != "berkas"} for o in sk]})
     print(f"status_darurat drive: {len(sk)} terurai, " + ", ".join(f"{k} {len(v)}" for k, v in lain.items()))
+    for th, h in sorted(per.items()):
+        print("  ", th, h)
 
 
 def baca_dibi():
@@ -482,7 +493,7 @@ def ulang():
     d["sk"], n = gabung(d["sk"], baca_drive())
     if n:
         d["sk"].sort(key=lambda x: (x["mulai"], x["nomor"]), reverse=True)
-        d["tahun"] = sorted({y for y in d["tahun"] if y >= 2023} | {int(x["mulai"][:4]) for x in d["sk"] if x["sumber_baris"] != "ckan"})
+        d["tahun"] = sorted({y for y in d["tahun"] if y >= 2018} | {int(x["mulai"][:4]) for x in d["sk"] if x["sumber_baris"] != "ckan"})
     dibi = baca_dibi()
     ringkas = perkaya(d["sk"], dibi)
     d["catatan"] = d["catatan"].split(" Masa berlaku:")[0] + catatan_masa(dibi, ringkas, sum(1 for x in d["sk"] if x["jeda_kejadian_hari"] is not None))
@@ -570,6 +581,7 @@ def uji():
     assert urai_teks(SK1.replace("tanggal 7 Januari 2026 sampai dengan 20 Januari 2026", "").replace("2026", ""), "t", KD)[1] == "tanpa_tanggal"
     assert tgl_id("17 Sepremnber 2026") == "2026-09-17" and tgl_id("29 Nopember 2024") == "2024-11-29"
     assert _rentang("tanggal 7 s.d. 20 Januari 2026") == ("2026-01-07", "2026-01-20")
+    assert _rentang("terhitung sejak tanggal 1 Januari 2024 dan berakhir tanggal 31 Desember 2024") == ("2024-01-01", "2024-12-31")
     assert peta_wilayah("WALIKOTA PASURUAN NOMOR 1 TENTANG", KD)[2] == "35.75" and peta_wilayah("BUPATI PASURUAN", KD)[2] == "35.14"
     ck = [dict(ubah(r, {}, {}), nomor="100.3.3.2/3/2026", kab_kode="11.12")]
     gb, nd = gabung(ck, [o, dict(o, nomor="Z-9")])

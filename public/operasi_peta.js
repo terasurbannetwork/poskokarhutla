@@ -68,8 +68,7 @@
     box.innerHTML = kartu + kepala + total + baris.map(x => `<button class="tb${x.lv >= 2 ? " hl" + x.lv : ""}${OP.pilih === x.b.id ? " ops-pilih" : ""}" style="${G}" role="listitem" data-ops="${esc(x.b.id)}" title="${esc(x.b.nama)}, ${fmt(x.siap)} dari ${fmt(x.n)} armada siap. ${esc(x.lay.ket)}">
       <span class="rk"></span><span class="ops-nm">${esc(x.b.nama.split(" / ")[0])}<i class="ops-icao">${esc(x.b.icao || x.b.id)}</i>${x.tem ? `<i class="prio" title="Pilot melapor ${fmt(x.tem)} titik api hari ini"></i>` : ""}<i class="ops-lay ops-lay-${x.lay.kelas}" title="${esc(x.lay.teks + ". " + x.lay.ket)}"></i></span>
       <span class="n ops-prov">${esc(PROV_PDK[x.b.prov] || x.b.prov || "–")}</span><span class="n" data-sort="${x.g.wb}">${nol(x.g.wb)}</span><span class="n" data-sort="${x.g.patroli}">${nol(x.g.patroli)}</span><span class="n" data-sort="${x.g.omc}">${nol(x.g.omc)}</span>
-      <span class="n" data-sort="${x.p3}" style="font-weight:700">${nol(x.p3)}</span><span style="text-align:right" data-sort="${x.lv}">${x.lv ? `<span class="pill l${x.lv}">${LV[x.lv]}</span>` : `<span class="pill l0">Aman</span>`}</span></button>`).join("")
-      + `<p class="fnd ops-kaki">Titik merah = pilot melapor api hari ini. Bulatan kecil = kelayakan terbang (METAR). Klik base untuk armada, aksi, foto, dan KPI.</p>`;
+      <span class="n" data-sort="${x.p3}" style="font-weight:700">${nol(x.p3)}</span><span style="text-align:right" data-sort="${x.lv}">${x.lv ? `<span class="pill l${x.lv}">${LV[x.lv]}</span>` : `<span class="pill l0">Aman</span>`}</span></button>`).join("");
     terapkanUrut();
   }
 
@@ -159,7 +158,7 @@
       ${lipat(`Aksi dan hasil (${fmt(aksi.length)})`, aksi.length ? `<div class="ops-aksi-daftar">${aksi.map(barisAksi).join("")}</div><p class="fnd">Padam = tidak ada titik panas satelit dalam 1 km selama 24 jam sesudah aksi. Foto dari grup WA satgas, ditempel lewat stempel registrasi, jam, dan koordinat.</p>`
         : `<p class="fnd">${OP.mon ? "Belum ada aksi tercatat dari laporan WA satgas untuk base ini hari ini." : "Data monitoring belum tersedia."}</p>`)}
       ${lipat(`Armada (${fmt(ar.length)})`, `<div class="ops-ar-daftar">${ar.map(kartuAr).join("") || `<p class="fnd">Belum ada armada tercatat.</p>`}</div>`)}
-      ${lipat(`Sumber api dalam ${fmt(Math.round(radiusBase(b)))} km`, dk.length ? `<table class="tb3"><thead><tr><th>Status</th><th>Cluster</th><th class="n">Jarak</th><th class="n">Tempuh</th></tr></thead><tbody>${dk.slice(0, 12).map(barisApi).join("")}</tbody></table>
+      ${lipat(`Sumber api dalam ${fmt(Math.round(radiusBase(b)))} km`, dk.length ? `<div class="ops-geser"><table class="tb3"><thead><tr><th>Status</th><th>Cluster</th><th class="n">Jarak</th><th class="n">Tempuh</th></tr></thead><tbody>${dk.slice(0, 12).map(barisApi).join("")}</tbody></table></div>
         <p class="fnd">Waktu tempuh = jarak garis lurus dibagi kecepatan jelajah kasar (heli 200 km/jam, pesawat 280 km/jam), belum termasuk ambil air.</p>` : `<p class="fnd">Tidak ada cluster siaga atau prioritas di jangkauan base ini.</p>`)}
       ${lipat("Kelayakan terbang", `<p style="margin:0;font-size:12.5px">${pilLayak(lay)} ${esc(lay.ket)}</p><p class="fnd">Layak: jarak pandang ≥ 5 km, angin ≤ 20 kt, tanpa asap atau badai petir. Terbatas: 1,5–5 km, asap, atau angin 20–30 kt. Tidak layak: &lt; 1,5 km, badai petir, atau angin &gt; 30 kt.</p>`, false)}
       <p class="fnd">Data operasi ${esc(OP.data.tanggal || "")}. Rekap kontrak 2026 dari rekapitulasi Direktorat Penanganan Darurat Wilayah I–III.</p></div>`;
@@ -184,7 +183,10 @@
       <label><input type="checkbox" data-l="opstemuan"> Temuan pilot dari laporan WA satgas</label>
       <label><input type="checkbox" data-l="opsaksi"> Aksi armada dan hasilnya (padam 24 jam)</label></details>`);
     /* centang lapisan operasi ditangani di sini (fase tangkap), bukan oleh pemetaan Overlay peta utama */
-    L?.addEventListener("change", e => { const k = e.target.closest("input")?.dataset.l; if (!LAPIS_OPS[k]) return; e.stopImmediatePropagation(); nanti(() => { terapkanLihat(); renderLegenda(); }); }, true);
+    L?.addEventListener("change", e => { const k = e.target.closest("input")?.dataset.l; if (!LAPIS_OPS[k]) return; e.stopImmediatePropagation();
+      /* lapisan operasi dinyalakan: Warna wilayah dimatikan supaya base terbaca (pemilik 3 Nov 2026) */
+      const w = L.querySelector('input[data-l="wilayah"]'); if (e.target.checked && w?.checked) { w.checked = false; w.dispatchEvent(new Event("change", {bubbles: true})); }
+      nanti(() => { terapkanLihat(); renderLegenda(); }); }, true);
     /* panel Operasi: baris base membuka laci (fase tangkap supaya penangan baris wilayah peta utama tidak ikut) */
     $("#rows").addEventListener("click", e => { const r = e.target.closest("[data-ops]"); if (!r) return; e.stopImmediatePropagation(); bukaBase(r.dataset.ops); }, true);
     /* bungkus renderDaftar dan renderLegenda milik peta utama */
