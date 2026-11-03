@@ -2,7 +2,7 @@
 /* riwayat_daerah.js: (1) kartu "Riwayat bencana di daerahmu" saat kabupaten/kota dipilih lewat pencarian atau diklik di peta,
    (2) lapisan "Musim berjalan" (jenis dominan per kabupaten untuk bulan terpilih), (3) lapisan "Langganan bencana" (banjir/longsor ada di semua tahun dasar).
    Data: data/logbook_riwayat.json (Logbook Pusdalops BNPB), dibaca apa adanya; hanya tahun_penuh (bulan lengkap, tahun dasar). Angka korban logbook TIDAK dipakai.
-   Pola sama dengan kebakaran_permukiman.js: kontrol urgent, gambar berat lewat nanti(). Dimuat sesudah kebakaran_permukiman.js. */
+   Kontrol urgent, gambar berat lewat nanti(). */
 (() => {
   /* tahun dasar dari data (tahun_penuh, bisa tidak bersambung); rentang ringkas: "2014–2020 dan 2024–2025" */
   const rentang = a => { const r = []; a.forEach((y, i) => i && y === a[i - 1] + 1 ? r[r.length - 1][1] = y : r.push([y, y]));
