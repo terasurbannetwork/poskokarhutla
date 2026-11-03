@@ -1,0 +1,93 @@
+REKAPITULASI KEGIATAN OPERASI UDARA (PATROLI UDARA DAN WATERBOMBING)
+DALAM RANGKA PENANGANAN DARURAT BENCANA DI DIREKTORAT PENANGANAN DARURAT WILAYAH II
+
+                                                                                                                                                                         JUMLAH JAM
+                                                                                                                                              REGISTRASI                   TERBANG     JAM TERBANG OPERASI
+ NO             NAMA PENYEDIA                         PERIODE OPERASI           WILAYAH OPERASI   JENIS BENCANA               TIPE PESAWAT                 KONTRAK KE-                                     JUMLAH SORTIE   JUMLAH WB   JUMLAH LITER AIR
+                                                                                                                                               PESAWAT                   MOB/DEMOB      (JAM:MENIT) METRIC
+                                                                                                                                                                         (JAM:MENIT)
+
+PROVINSI SUMATERA SELATAN
+PATROLI UDARA
+   1 PT. Trans Pacific International      7 MEI - 23 JUNI 2026             SUMATERA SELATAN       KARHUTLA        AS 355 F1                    PK-RTG           1           3.57             104.02             31
+   2 PT. Trans Pacific International      26 JUNI - 29 JULI 2026           SUMATERA SELATAN       KARHUTLA        AS 355 F1                    PK-RTG           2           3.21             104.05             30
+   3 PT. Makson Sukses Pratama            21 MEI - 24 JUNI 2026            SUMATERA SELATAN       KARHUTLA        Cessna Grand Caravan 208B    PK-SCH           1             -              102.20             28
+   4 PT. Makson Sukses Pratama            1 JULI - 29 JULI 2026            SUMATERA SELATAN       KARHUTLA        Cessna Grand Caravan 208B    PK-SCH           2             -              105.23             27
+   5 PT. Makson Sukses Pratama            30 JULI - 24 AGUSTUS 2026        SUMATERA SELATAN       KARHUTLA        Cessna Grand Caravan 208B    PK-SCH           3             -              105.05             26
+   6 PT. Makson Sukses Pratama            25 AGUSTUS -26 SEPTEMBER 2026    SUMATERA SELATAN       KARHUTLA        Cessna Grand Caravan 208B    PK-SCH           4           2.18             104.01             23
+   7 PT. Genesa Dirgantara                31 JULI - 25 AGUSTUS 2026        SUMATERA SELATAN       KARHUTLA        AS 365 N2                    PK-RTY           1           4.67             103.96             26
+   8 PT. Genesa Dirgantara                26 AGUSTUS - 26 SEPTEMBER 2026   SUMATERA SELATAN       KARHUTLA        AS 365 N2                    PK-RTY           2             -              103.48             26
+   9 PT. Genesa Dirgantara                27 SEPTEMBER 2026 - SEKARANG     SUMATERA SELATAN       KARHUTLA        AS 365 N2                    PK-RTY           3             -               30.33              9
+  11 PT. Songo Aviasi Indonesia           27 SEPTEMBER - SEKARANG          SUMATERA SELATAN       KARHUTLA        Cessna Grand Caravan 208B     PK-IKC          1                             32.50              8
+
+
+
+
+WATERBOMBING
+   1 PT. Arya Guna Aksata                 18 MEI - 20 JULI 2026            SUMATERA SELATAN       KARHUTLA        Sikorsky UH-60A Blackhawk    N360UH           1           29.87            103.65             25            896         3,584,000
+   2 PT. Arya Guna Aksata                 21 JULI - 10 AGUSTUS 2026        SUMATERA SELATAN       KARHUTLA        Sikorsky UH-60A Blackhawk    N360UH           2             -              103.17             25           1036         4,144,000
+   3 PT. Arya Guna Aksata                 12 AGUSTUS -12 SEPTEMBER 2026    SUMATERA SELATAN       KARHUTLA        Sikorsky UH-60A Blackhawk    N360UH           3             -              104.22             29            861         3,444,000
+   4 PT. Arya Guna Aksata                 12 SEPTEMBER - 3 OKTOBER 2026    SUMATERA SELATAN       KARHUTLA        Sikorsky UH-60A Blackhawk    N360UH           4           29.00            102.33             27            904         3,616,000
+   5 PT. Dwi Muda Angkasa                 14 MEI - 18 JULI 2026            SUMATERA SELATAN       KARHUTLA        Sikorsky UH-60A Blackhawk    VH-UHG           1           25.46            104.22             27            886         3,544,000
+   6 PT. Dwi Muda Angkasa                 19 JULI - 20 AGUSTUS 2026        SUMATERA SELATAN       KARHUTLA        Sikorsky UH-60A Blackhawk    VH-UHG           2             -              104.46             25            970         3,880,000
+   7 PT. Dwi Muda Angkasa                 21 AGUSTUS - 6 SEPTEMBER 2026    SUMATERA SELATAN       KARHUTLA        Sikorsky UH-60A Blackhawk    VH-UHG           3             -              104.21             27            678         2,712,000
+   8 PT. Dwi Muda Angkasa                 7 - 25 SEPTEMBER 2026            SUMATERA SELATAN       KARHUTLA        Sikorsky UH-60A Blackhawk    VH-UHG           4           24:83            102.04             25           1046         4,184,000
+   9 PT. Rajawali Pratama International   22 APRIL - 11 JULI 2026          SUMATERA SELATAN       KARHUTLA        Sikorsky UH-60L Blackhawk    VH-8UL           1                            103.92             25            781         3,124,000
+  10 PT. Rajawali Pratama International   11 JULI - 3 AGUSTUS 2026         SUMATERA SELATAN       KARHUTLA        Sikorsky UH-60L Blackhawk    VH-8UL           2             -              103.83             25           1130         4,520,000
+  11 PT. Rajawali Pratama International   3 - 19 AGUSTUS 2026              SUMATERA SELATAN       KARHUTLA        Sikorsky UH-60L Blackhawk    VH-8UL           3             -              104.03             27            902         3,608,000
+  12 PT. Rajawali Pratama International   19 AGUSTUS - 8 SEPTEMBER 2026    SUMATERA SELATAN       KARHUTLA        Sikorsky UH-60L Blackhawk    VH-8UL           4             -              104.65             26            934         3,736,000
+  13 PT. Satya Aero Indonesia             12 JUNI - 2 AGUSTUS 2026         SUMATERA SELATAN       KARHUTLA        MI 8 MSB-T                   UR-VBC           1           8.39             101.80             28            758         3,032,000
+  14 PT. Satya Aero Indonesia             2 - 22 AGUSTUS 2026              SUMATERA SELATAN       KARHUTLA        MI 8 MSB-T                   UR-VBC           2             -              104.02             29            610         2,440,000
+  15 PT. Satya Aero Indonesia             22 AGUSTUS - 15 SEPTEMBER 2026   SUMATERA SELATAN       KARHUTLA        MI 8 MSB-T                   UR-VBC           3             -              103.97             28            579         2,316,000
+  16 PT. Satya Aero Indonesia             12 OKTOBER - SEKARANG            SUMATERA SELATAN       KARHUTLA        MI 8 MSB-T                   UR-VBC           4             -               67.38             18            351         1,404,000
+  17 PT. Langit Biru Aviasi               18 JUNI - 21 JULI 2026           SUMATERA SELATAN       KARHUTLA        MI 8 AMT                    RA-22747          1           5.25             104.33             24            745         2,980,000
+  18 PT. Langit Biru Aviasi               24 JULI - 11 AGUSTUS 2026        SUMATERA SELATAN       KARHUTLA        MI 8 AMT                    RA-22747          2             -              105.33             25            801         3,204,000
+  19 PT. Langit Biru Aviasi               12 - 28 AGUSTUS 2026             SUMATERA SELATAN       KARHUTLA        MI 8 AMT                    RA-22747          3             -              103.75             25            651         2,604,000
+  20 PT. Langit Biru Aviasi               29 AGUSTUS - 14 SEPTEMBER 2026   SUMATERA SELATAN       KARHUTLA        MI 8 AMT                    RA-22747          4             -              105.42             26            587         2,348,000
+  21 PT. Langit Biru Aviasi               15 SEPTEMBER -18 OKTOBER 2026    SUMATERA SELATAN       KARHUTLA        MI 8 AMT                    RA-22747          5             -              105.25             26            517         2,068,000
+  22 PT. Langit Biru Aviasi               20 OKTOBER 2026 - SEKARANG       SUMATERA SELATAN       KARHUTLA        MI 8 AMT                    RA-22747          6             -               27.33              7            90           360,000
+  23 PT. Ksatria Buana Pratama            17 - 30 SEPTEMBER 2026           SUMATERA SELATAN       KARHUTLA        MI 8 MTV-1                  RA-22279          1           30.00            102.82             25            470         1,880,000
+  24 PT. Ksatria Buana Pratama            1 OKTOBER - SEKARANG             SUMATERA SELATAN       KARHUTLA        MI 8 MTV-1                  RA-22279          2             -               81.32             20            365         1,460,000
+  25 PT. Dominic Asasta Aviasi            15 - 21 AGUSTUS 2026             SUMATERA SELATAN       KARHUTLA        AS 332 L                     C-FPUM           1           29.78             41.60             12            430         1,720,000
+  26 PT. Krida Utama Aviasi               24 SEPTEMBER - SEKARANG          SUMATERA SELATAN       KARHUTLA        Kamov KA-32                  UR-CBH           1           5.22              96.52             34            586         2,344,000
+  27 PT. Adidaya Putra Nusantara          20 SEPTEMBER - 16 OKTOBER 2026   SUMATERA SELATAN       KARHUTLA        MI 8 AMT                    RA-22477          1           4.45             104.27             25            588         2,352,000
+  28 PT. Adidaya Putra Nusantara          17 OKTOBER - SEKARANG            SUMATERA SELATAN       KARHUTLA        MI 8 AMT                    RA-22477          2             -               58.10             14            316         1,264,000
+  29 PT. Rajawali Pratama International   11 - 24 SEPTEMBER 2026           SUMATERA SELATAN       KARHUTLA        Sikorsky UH-60L Blackhawk    VH-8HL           1           24.65             52.23             13            458         1,832,000
+     Subtotal Kegiatan Operasi Udara
+                                                                                                                                                   205.70   3605.00        926    19926   79,704,000
+     Sumatera Selatan
+
+
+PROVINSI JAMBI
+PATROLI UDARA
+   1 PT. Elang Nusantara Air           7 JUNI - 28 JULI 2026            JAMBI                KARHUTLA   Bell 505                     PK-ELS    1   10.93    103.05          33
+   2 PT. Elang Nusantara Air           29 JULI - 3 SEPTEMBER 2026       JAMBI                KARHUTLA   Bell 505                     PK-ELS    2     -      103.11          32
+   3 PT. Alkonost Aviasi Indonesia     25 JUNI - 29 JULI 2026           JAMBI                KARHUTLA   Cessna Caravan C208B         PK-ALA    1     -      104.07          26
+   4 PT. Alkonost Aviasi Indonesia     30 JULI - 5 SEPTEMBER 2026       JAMBI                KARHUTLA   Cessna Caravan C208B         PK-ALA    2     -      103.03          29
+   5 PT. Alkonost Aviasi Indonesia     6 SEPTEMBER - 19 OKTOBER 2026    JAMBI                KARHUTLA   Cessna Caravan C208B         PK-ALA    3     -      104.10          26
+   6 PT. Alkonost Aviasi Indonesia     20 OKTOBER - SEKARANG            JAMBI                KARHUTLA   Cessna Caravan C208B         PK-ALA    4     -       4.00           1
+   7 PT. Berkah Maju Sejahtera         5 SEPTEMBER - 11 OKTOBER 2026    JAMBI                KARHUTLA   Bell 505                    PK-WSA     1    4.72    102.40          34
+   8 PT. Berkah Maju Sejahtera         12 OKTOBER - SEKARANG            JAMBI                KARHUTLA   Bell 505                    PK-WSA     2     -       40.52          13
+
+
+WATERBOMBING
+   1 PT. Batavia Langit Sejahtera      10 JUNI - 9 AGUSTUS 2026         JAMBI                KARHUTLA   MI 8 AMT                    RA-22840   1    3.45    103.63          29     568     2,272,000
+   2 PT. Batavia Langit Sejahtera      9 AGUSTUS - 10 SEPTEMBER 2026    JAMBI                KARHUTLA   MI 8 AMT                    RA-22840   2     -      101.00          25     478     1,912,000
+   3 PT. Batavia Langit Sejahtera      14 SEPTEMBER - 28 OKTOBER 2026   JAMBI                KARHUTLA   MI 8 AMT                    RA-22840   3     -       49.37          12     220      880,000
+   4 PT. Transna Dirgantara Utama      29 JUNI - 2 JULI 2026            TPA JATIWARINGIN     KARHUTLA   Sikorsky UH-60A Blackhawk   N-274TH    1     -       29.55          8      327     1,308,000
+   5 PT. Transna Dirgantara Utama      4 JULI - 6 AGUSTUS 2026          JAMBI (MOBILISASI)   KARHUTLA   Sikorsky UH-60A Blackhawk   N-274TH    2   26.22       -            -       -          -
+   6 PT. Transna Dirgantara Utama      6 AGUSTUS - 5 SEPTEMBER 2026     JAMBI                KARHUTLA   Sikorsky UH-60A Blackhawk   N-274TH    3     -      103.95          25     685     2,740,000
+   7 PT. Transna Dirgantara Utama      6 SEPTEMBER - 19 OKTOBER 2026    JAMBI                KARHUTLA   Sikorsky UH-60A Blackhawk   N-274TH    4     -      101.93          25     925     3,700,000
+   8 PT. Transna Dirgantara Utama      24 OKTOBER - SEKARANG            JAMBI                KARHUTLA   Sikorsky UH-60A Blackhawk   N-274TH    5     -      104.55          22     767     3,068,000
+   9 PT. Erlangga Angkasa Nasta        31 AGUSTUS - 7 SEPTEMBER 2026    JAMBI                KARHUTLA   MI 17 IV                    VN-8414    1   16.68    102.10          27     626     2,504,000
+  10 PT. Erlangga Angkasa Nasta        19 SEPTEMBER - 14 OKTOBER 2026   JAMBI                KARHUTLA   MI 17 IV                    VN-8414    2     -      102.95          27     678     2,712,000
+  11 PT. Erlangga Angkasa Nasta        17 OKTOBER - SEKARANG            JAMBI                KARHUTLA   MI 17 IV                    VN-8414    3     -       21.05          6      151      604,000
+
+
+     Subtotal Kegiatan Operasi Udara
+                                                                                                                                                   62.00    1484.36        400    5425    21,700,000
+     Jambi
+
+
+                     Total                                                                                                                                  122144:38:24   1326   25351   101,404,000
+

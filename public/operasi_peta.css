@@ -1,0 +1,74 @@
+/* operasi_peta.css — tab dan laci Operasi udara di peta utama (operasi_peta.js). Memakai token peta utama (--card, --ink, --ink2, --line, --surface). */
+.ops-ig{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-2px}
+.ops-g-wb{color:#2f6fb3}.ops-g-patroli{color:#c77b1c}.ops-g-omc{color:#1f8f86}
+.ops-ringkas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:4px 0 8px}
+.ops-ringkas div{background:var(--surface);border-radius:10px;padding:8px 6px;display:grid;justify-items:center;text-align:center;gap:2px}
+.ops-ringkas b{font:800 18px/1 var(--display,inherit);font-variant-numeric:tabular-nums;color:var(--ink)}
+.ops-ringkas b small{font-size:11px;opacity:.6;font-weight:700}
+.ops-ringkas span{font-size:10.5px;color:var(--ink2);font-weight:600;line-height:1.2}
+.ops-ringkas .merah b{color:#c9503a}
+.ops-kunci{display:flex;flex-wrap:wrap;gap:3px 10px;font-size:10.5px;color:var(--ink2);margin:0 2px 6px}
+.ops-kunci span{display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+.ops-kunci b{color:var(--ink);font-weight:800}
+.ops-cl{width:8px;height:8px;border-radius:50%;background:#c9503a;display:inline-block}
+.ops-nm{display:flex;align-items:center;gap:6px;min-width:0;font-weight:500}
+.ops-icao{font:700 9.5px/1 var(--font,inherit);font-style:normal;letter-spacing:.04em;color:var(--ink2);background:var(--surface);border-radius:4px;padding:2px 4px;flex:none}
+.ops-nm .prio{flex:none}
+.ops-lay{width:7px;height:7px;border-radius:50%;flex:none;margin-left:auto}
+.ops-lay-layak{background:#5a9e74}.ops-lay-terbatas{background:#e58a45}.ops-lay-tidak{background:#c9503a}.ops-lay-\?{background:#b6bdc9}
+.ops-prov{font-size:11.5px;color:var(--ink2)}
+.tb.ops-pilih{background:color-mix(in srgb,#4f8fc4 16%,var(--card));box-shadow:inset 3px 0 #4f8fc4}
+.ops-kaki{margin:8px 2px 0}
+.pill.ops-abu{background:var(--surface);color:var(--ink2)}
+/* kartu hover base */
+.ops-pop .maplibregl-popup-content{padding:0;border-radius:14px;overflow:hidden;box-shadow:0 14px 34px -10px rgb(0 0 0 / .55);max-width:none;background:var(--card)}
+.ops-pop .maplibregl-popup-tip{border-top-color:var(--card)}
+.ops-hv{width:270px;font:500 12px/1.35 var(--font,inherit);color:var(--ink)}
+.ops-hv-hd{background:linear-gradient(135deg,oklch(40% .11 255),oklch(24% .07 257));color:#fff;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ops-hv-hd b{font-size:14px;font-weight:800}
+.ops-hv-hd span{font:800 10px/1 var(--font,inherit);letter-spacing:.06em;background:oklch(100% 0 0 / .16);border-radius:5px;padding:4px 6px}
+.ops-hv-g{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:10px 12px 6px}
+.ops-hv-g div{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:6px;align-items:center;background:var(--surface);border-radius:10px;padding:6px 8px}
+.ops-hv-g div.nol{opacity:.4}
+.ops-hv-g .ops-ig{grid-row:1/3;width:16px;height:16px}
+.ops-hv-g b{font-size:16px;font-weight:800;line-height:1}
+.ops-hv-g span{font-size:10px;color:var(--ink2);font-weight:700;line-height:1.1}
+.ops-hv ul{list-style:none;margin:0;padding:4px 12px;display:grid;gap:5px}
+.ops-hv li{display:grid;grid-template-columns:40px minmax(0,1fr) 9px;gap:8px;align-items:center}
+.ops-hv li img,.ops-hv-f{width:40px;height:28px;border-radius:6px;object-fit:cover;background:var(--surface);display:grid;place-items:center}
+.ops-hv li div{display:grid;min-width:0}
+.ops-hv li b{font-weight:800}
+.ops-hv li span{color:var(--ink2);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ops-hv li i{width:8px;height:8px;border-radius:50%;background:var(--w,#b6bdc9)}
+.ops-hv-lagi{margin:0;padding:2px 12px 4px 60px;font-size:11px;color:var(--ink2)}
+.ops-hv-kaki{display:grid;gap:4px;padding:8px 12px;border-top:1px solid var(--line);font-size:11.5px;font-weight:700}
+.ops-hv-kaki .merah{color:#c9503a}
+.ops-hv-klik{margin:0;padding:7px 12px 9px;font-size:11px;color:#4f8fc4;font-weight:700;background:var(--surface)}
+/* status armada */
+.ops-s-siap{--w:#5a9e74}.ops-s-op{--w:#4f8fc4}.ops-s-siaga{--w:#e3b94e}.ops-s-tidak{--w:#c9503a}.ops-s-belum{--w:#b6bdc9}
+.ops-st{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--ink2);white-space:nowrap}
+.ops-st::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--w)}
+/* laci base */
+.ops-gunaba{display:flex;gap:6px;flex-wrap:wrap}
+.ops-gunaba span{display:inline-flex;align-items:center;gap:5px;background:var(--surface);border-radius:999px;padding:4px 10px;font-size:12px;color:var(--ink2)}
+.ops-gunaba span.nol{opacity:.45}
+.ops-gunaba b{color:var(--ink);font-weight:800}
+.ops-ar-daftar,.ops-aksi-daftar{display:grid;gap:8px}
+.ops-ar{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;align-items:start;border:1px solid var(--line);border-radius:12px;padding:8px;background:var(--card)}
+.ops-ar-f{width:120px;height:78px;border-radius:8px;object-fit:cover;background:var(--surface)}
+.ops-ar-sil{display:grid;place-items:center}.ops-ar-sil .ops-ig{width:28px;height:28px}
+.ops-ar-isi{display:grid;gap:2px;min-width:0}
+.ops-ar-isi p{margin:0;font-size:12px;line-height:1.35}
+.ops-ar-atas{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ops-ar-atas b{font-size:14.5px;font-weight:800}
+.ops-red{color:var(--ink2)}
+.ops-kpi{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px!important}
+.ops-kpi span{background:var(--surface);border-radius:6px;padding:2px 6px;font-size:11px;font-weight:700}
+.ops-alasan{color:#c9503a;font-weight:600}
+.ops-aksi{border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:grid;gap:4px}
+.ops-aksi-hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px}
+.ops-aksi-hd .pill{margin-left:auto}
+.ops-aksi p{margin:0;font-size:12px}
+.ops-foto{display:flex;gap:6px;overflow-x:auto}
+.ops-foto img{height:64px;border-radius:8px;display:block}
+@media (max-width:520px){.ops-ar{grid-template-columns:88px minmax(0,1fr)}.ops-ar-f{width:88px;height:60px}.ops-ringkas{grid-template-columns:repeat(2,1fr)}}
