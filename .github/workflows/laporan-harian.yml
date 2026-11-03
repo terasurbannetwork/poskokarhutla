@@ -41,7 +41,7 @@ jobs:
         run: |
           D="data/laporan-bnpb/harian-${{ inputs.tanggal }}"
           git config user.name "github-actions[bot]"; git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
-          for f in "$D"/*.pdf "$D"/*.pptx "$D"/jalan.log; do [ -e "$f" ] && git add "$f"; done
+          for f in "$D"/*.pdf "$D"/*.pptx "$D"/jalan.log; do [ -e "$f" ] && git add "$f" || true; done
           git diff --cached --quiet && { echo "tidak ada keluaran"; exit 0; }
           git commit -m "Laporan harian ${{ inputs.tanggal }} dari Actions (tanpa bingkai deck.py)"
           for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && break; sleep 5; done
