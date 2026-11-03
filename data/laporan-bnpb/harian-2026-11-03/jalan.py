@@ -166,6 +166,8 @@ for x in D['kejadian']:
     print(x['jenis'], x['prov'], x['lokasi'] or '(prov)', x['status'], 'DITANGANI' if x['tangani'] else 'selesai', 'PERHATIAN' if x['perhatian'] else '', {k: (round(v) if isinstance(v, (int, float)) else v) for k, v in x.get('sat', {}).items()})
 # 2 Nov pemilik: baseline paparan Kepala BNPB 011126 (daftar isi, penanda bagian, kaki sumber); dibingkai mesin ppt-konsultan
 import lewat_deck
+if os.environ.get('TANPA_DECK'):   # 3 Nov: GitHub Actions tanpa skill ppt-konsultan; deck isi generator apa adanya (format templat 221026)
+    lewat_deck.bingkai = lambda *a, **k: print('TANPA_DECK: bingkai deck.py dilewati')
 SK, SG = 'Laporan Harian Dit. Koordalops BNPB, 2 Nov 2026 07.00 s.d. 3 Nov 2026 07.00 WIB', 'GIS BNPB, 2 Nov 2026'
 lewat_deck.bingkai(nama, 'harian', 'Laporan Kejadian Bencana Harian', 'Periode 2 Nov 2026, 07.00 sampai 3 Nov 2026, 07.00 WIB', T, pdf=False,
     tanpa_kepada='pemilik 2 Nov 2026: pil Disampaikan kepada dihapus, laporan harian dipresentasikan Kepala BNPB sendiri',
