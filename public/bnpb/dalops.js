@@ -151,10 +151,22 @@
       let sorot = null;
       peta.on("mousemove", "kab-isi", e => { const id = e.features[0].id; if (sorot !== null && sorot !== id) peta.setFeatureState({source: "kab", id: sorot}, {sorot: false}); sorot = id; peta.setFeatureState({source: "kab", id}, {sorot: true}); peta.getCanvas().style.cursor = "pointer"; });
       peta.on("mouseleave", "kab-isi", () => { if (sorot !== null) peta.setFeatureState({source: "kab", id: sorot}, {sorot: false}); sorot = null; peta.getCanvas().style.cursor = ""; });
-      peta.on("click", "kab-isi", e => {
-        const x = perKab.get(e.features[0].properties.kode); if (!x) return;
-        new maplibregl.Popup({closeButton: true, maxWidth: "290px", className: "dl-popup"}).setLngLat(e.lngLat).setDOMContent(kartuKab(x, kontak(daftarKantor, x), bukaKab)).addTo(peta);
-      });
+      /* kartu muncul saat kursor melewati kab; tetap terbuka selama kursor di kab atau di kartunya (supaya tombol bisa diklik) */
+      const pop = new maplibregl.Popup({closeButton: false, closeOnClick: false, maxWidth: "290px", offset: 12, className: "dl-popup"});
+      let kodePop = null, tunda = null;
+      const tutup = () => { clearTimeout(tunda); tunda = setTimeout(() => { pop.remove(); kodePop = null; }, 250); };
+      const tahan = () => clearTimeout(tunda);
+      const tampil = e => {
+        tahan();
+        const kode = e.features[0].properties.kode, x = perKab.get(kode); if (!x) return;
+        if (kode === kodePop) return;
+        kodePop = kode;
+        pop.setLngLat(e.lngLat).setDOMContent(kartuKab(x, kontak(daftarKantor, x), bukaKab)).addTo(peta);
+        const el = pop.getElement(); el.addEventListener("mouseenter", tahan); el.addEventListener("mouseleave", tutup);
+      };
+      peta.on("mousemove", "kab-isi", tampil);
+      peta.on("click", "kab-isi", tampil);   // layar sentuh: ketuk
+      peta.on("mouseleave", "kab-isi", tutup);
     });
   }
   /* angka terdampak di kartu: hanya yang dilaporkan; kalau keduanya kosong, satu baris keterangan kecil (bukan "–" besar) */
@@ -277,8 +289,7 @@
           tdv(b == null ? "–" : status(b), b),
           h("td", null, h("div", {class: "dl-aksi"}, tombolWA(x, H.pesanWA(x), "permintaan pembaruan"))));
       })));
-    return bagian("tanya", "tunggu", `${F(daftar.length)} kab/kota perlu ditanya ke BPBD`,
-      `Banjir belum dilaporkan surut yang kabarnya lebih dari sehari atau angkanya bolong, per logbook ${H.tglPanjang(hari)}. Ikon WhatsApp mengirim permintaan pembaruan ke grup BPBD.`,
+    return bagian("tanya", "tunggu", `${F(daftar.length)} kab/kota perlu ditanya ke BPBD`, null,
       tabelStd(["No", "Kab/kota", "Tanpa kabar", "Kabar terakhir", "Angka belum ada", "Prakiraan besok", "Kirim"], ...tb));
   }
 
