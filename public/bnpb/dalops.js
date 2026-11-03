@@ -137,10 +137,12 @@
       fitur.push({type: "Feature", id: fitur.length, properties: {kode, st: x.surut ? "surut" : "belum"}, geometry: f.geometry});
     }));
     wadah.replaceChildren();
+    const legenda = h("div", {class: "dl-legenda-peta"}, h("b", {teks: "Legenda"}), h("span", {class: "dl-leg dl-leg-belum", teks: "Belum dilaporkan surut"}), h("span", {class: "dl-leg dl-leg-surut", teks: "Sudah dilaporkan surut"}));
     const gelap = matchMedia("(prefers-color-scheme: dark)").matches;
     const peta = new maplibregl.Map({container: wadah, style: `https://tiles.openfreemap.org/styles/${gelap ? "dark" : "positron"}`, bounds: fitur.length ? [[kotak[0], kotak[1]], [kotak[2], kotak[3]]] : [[95, -11], [141, 6]],
       fitBoundsOptions: {padding: 40}, minZoom: 3, maxZoom: 13, dragRotate: false, pitchWithRotate: false, attributionControl: {compact: true}});
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-right");
+    wadah.append(legenda);   // kartu legenda di dalam peta, pojok kiri bawah
     peta.touchZoomRotate.disableRotation();
     const css = getComputedStyle(document.documentElement), warna = n => css.getPropertyValue(n).trim();
     peta.on("load", () => {
@@ -292,7 +294,7 @@
     const wadahPeta = h("div", {class: "dl-peta"}, h("p", {class: "bn-pesan", teks: "Memuat peta…"}));
     requestAnimationFrame(() => gambarPeta(wadahPeta, pekan, bukaKab));   // MapLibre butuh wadah yang sudah terpasang dan berukuran
     return bagian("peta", "banjir", "Banjir sepekan per wilayah", null,
-      wadahPeta, h("div", {class: "dl-legenda"}, h("span", {class: "dl-leg dl-leg-belum", teks: "Belum dilaporkan surut"}), h("span", {class: "dl-leg dl-leg-surut", teks: "Sudah dilaporkan surut"})),
+      wadahPeta,
       tabel);
   }
 
