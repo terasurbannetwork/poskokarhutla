@@ -209,7 +209,7 @@ uji("masuk: email/sandi salah ditolak, cookie HttpOnly Secure SameSite=Lax 12 ja
   const hal = await panggil("GET", "/admin/statistik", undefined, {h: {cookie: kue}});
   assert.equal(hal.status, 200); assert.match(hal.teks, /admin\/statistik\.js/); assert.match(hal.h.get("content-security-policy"), /script-src 'self'/);
   assert.equal((await panggil("GET", "/admin/statistik")).status, 303, "tanpa sesi dialihkan ke /admin/masuk");
-  assert.equal((await panggil("GET", "/admin/pesan")).h.get("location"), "/admin/masuk");
+  assert.equal((await panggil("GET", "/admin/pesan")).h.get("location"), "/admin/masuk?ke=%2Fadmin%2Fpesan", "tamu kembali ke halaman asal sesudah masuk");
   assert.equal((await panggil("GET", "/admin/masuk")).status, 200);
 });
 
