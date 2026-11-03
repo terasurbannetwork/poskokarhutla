@@ -323,7 +323,7 @@
       semua?.remove(); semua?.classList.add("dl-semua-peta");
       gambarPeta(wadahPeta, pekan, bukaKab, semua);
     });
-    return bagian("peta", "banjir", "Banjir sepekan per wilayah", null,
+    return bagian("peta", "banjir", "Kondisi Banjir Terkini", null,
       wadahPeta,
       tabel);
   }

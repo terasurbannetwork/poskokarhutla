@@ -318,6 +318,7 @@
 .dl-wrap .bn-blok>.dl-kepala{margin:0;padding:12px 18px;background:var(--gradien);border-bottom:2px solid var(--emas)}
 .dl-wrap .bn-blok>.dl-kepala h2{color:#fff;font:800 16px/1.25 var(--display)}
 .dl-wrap .bn-blok>.dl-kepala h2 svg{color:var(--emas)}
+.dl-wrap #peta>.dl-kepala .dl-kepala-baris{justify-content:center}
 .dl-wrap .bn-blok>.dl-kepala .dl-sub{color:rgb(255 255 255 / .75)}
 .dl-wrap .bn-blok>.dl-kepala .dl-semua{background:rgb(255 255 255 / .12);color:#fff;border:0}
 .dl-wrap .bn-blok>.dl-kepala .dl-semua:hover,.dl-wrap .bn-blok>.dl-kepala .dl-semua:focus-visible{background:rgb(255 255 255 / .2);color:#fff}
