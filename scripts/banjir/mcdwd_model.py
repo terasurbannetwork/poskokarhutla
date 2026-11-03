@@ -504,11 +504,11 @@ def prakira(model):
 
 def tulis(hasil_latih, validasi, model=None):
     isi = {"dibuat": dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="seconds"),
-           "sasaran": f"P(>= {MIN_PX} piksel banjir MODIS ~2 km terdeteksi di kabupaten pada hari d+1 | tutupan >= {MIN_TUTUPAN})",
+           "sasaran": f"P(>= {MIN_PX} piksel banjir MODIS ~2 km terdeteksi di kabupaten pada hari d+1), terdeteksi tanpa syarat; hari berawan dihitung 0",
            "fitur": FITUR, "model": hasil_latih, "validasi_aturan_status": validasi,
-           "pembagian": {"latih": f"label <= {LATIH_AKHIR}", "uji": "label >= 2024-01-01 s.d. 2025-12-30"},
+           "pembagian": {"latih": f"hari fitur d <= {LATIH_AKHIR} (label d+1)", "uji": "hari fitur d >= 2024-01-01, label s.d. 2025-12-31"},
            "batas": ["sampel kabupaten rawan (dipilih dari jumlah hari kejadian DIBI), bukan acak", "hujan latih ERA5 vs produksi hujan.json (prakiraan): bias basah",
-                     "a7 produksi = 7 hari sebelum hari ini, latih = d-9..d-3: tidak identik", "kabupaten tanpa titik sungai memakai dq=0"],
+                     "a7 produksi = 7 hari sebelum hari ini, latih = d-9..d-3: tidak identik", "kabupaten tanpa titik sungai memakai dq=0", "sasaran = kelas Flood + Recurring flood MCDWD (MIN_PX=2, piksel ~2 km), lazimnya didominasi genangan berulang sawah/rawa", "vonis hanya berlaku terhadap label MCDWD, bukan kejadian DIBI atau banjir berdampak", "label hari berawan = negatif (derau label)", "model tanpa intersep per kabupaten, klimatologi memakainya: selisih AUC sebagian mengukur beda laju dasar antar kabupaten; \"GloFAS+ERA5 tanpa sinyal\" belum terbukti"],
            "atribusi": "NASA LANCE MCDWD via GIBS; Open-Meteo (ERA5, GloFAS, CC BY 4.0)"}
     simpan(KELUARAN, isi)
     return isi
