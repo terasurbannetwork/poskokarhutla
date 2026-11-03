@@ -318,7 +318,7 @@
 .dl-wrap .bn-blok>.dl-kepala{margin:0;padding:12px 18px;background:var(--gradien);border-bottom:2px solid var(--emas)}
 .dl-wrap .bn-blok>.dl-kepala h2{color:#fff;font:800 16px/1.25 var(--display)}
 .dl-wrap .bn-blok>.dl-kepala h2 svg{color:#fff}
-.dl-wrap #peta>.dl-kepala .dl-kepala-baris{justify-content:center}
+.dl-wrap .bn-blok>.dl-kepala .dl-kepala-baris{display:grid;grid-template-columns:1fr auto 1fr;align-items:center} .dl-wrap .bn-blok>.dl-kepala .dl-kepala-baris>h2{grid-column:2;text-align:center} .dl-wrap .bn-blok>.dl-kepala .dl-kepala-baris>.dl-semua{grid-column:3;justify-self:end} .dl-wrap .bn-blok>.dl-kepala .dl-sub{text-align:center}
 .dl-wrap .bn-blok>.dl-kepala .dl-sub{color:rgb(255 255 255 / .75)}
 .dl-wrap .bn-blok>.dl-kepala .dl-semua{background:rgb(255 255 255 / .12);color:#fff;border:0}
 .dl-wrap .bn-blok>.dl-kepala .dl-semua:hover,.dl-wrap .bn-blok>.dl-kepala .dl-semua:focus-visible{background:rgb(255 255 255 / .2);color:#fff}
@@ -356,3 +356,10 @@
 .dl-lengkap{justify-self:end;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--c5);text-decoration:none}
 .dl-lengkap:hover,.dl-lengkap:focus-visible{text-decoration:underline}
 .dl-wrap .dl-lengkap svg{width:14px;height:14px}
+/* alat kanan atas peta: saring status + Tutup semua, satu baris di samping +/- */
+.dl-peta .dl-peta-alat{position:absolute;top:10px;right:50px;z-index:2;display:flex;align-items:center;gap:8px}
+.dl-peta .dl-peta-alat .dl-semua-peta{position:static}
+.dl-saring{display:inline-flex;gap:2px;padding:2px;border-radius:8px;background:#fff;box-shadow:0 0 0 2px rgb(0 0 0 / .1)}
+.dl-saring-btn{border:0;background:none;color:#0b2545;border-radius:6px;padding:5px 10px;font:600 12px var(--font);cursor:pointer;white-space:nowrap}
+.dl-saring-btn:hover,.dl-saring-btn:focus-visible{background:#eef1f6}
+.dl-saring-btn[aria-pressed="true"]{background:#0b2545;color:#fff}

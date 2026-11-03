@@ -174,13 +174,22 @@
     const peta = new maplibregl.Map({container: wadah, style: "https://tiles.openfreemap.org/styles/positron", bounds: [[94.8, -11.2], [141.2, 6.2]],
       fitBoundsOptions: {padding: 16}, minZoom: 3, maxZoom: 13, dragRotate: false, pitchWithRotate: false, attributionControl: {compact: true}});
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-right");
-    wadah.append(legenda, ...(kontrol ? [kontrol] : []));   // legenda tengah bawah; tombol Buka semua di samping +/−
+    /* saring status di samping Tutup semua: klik = hanya status itu (tombol hitam), klik lagi = semua */
+    let saring = null;
+    const terapSaring = () => { for (const id of ["kab-isi", "kab-garis"]) if (peta.getLayer(id)) peta.setFilter(id, saring ? ["==", ["get", "st"], saring] : null); };
+    const tSaring = [["surut", "Sudah surut"], ["belum", "Belum surut"]].map(([v, t]) => {
+      const b = h("button", {type: "button", class: "dl-saring-btn", "aria-pressed": "false", teks: t});
+      b.addEventListener("click", () => { saring = saring === v ? null : v; tSaring.forEach(x => x.setAttribute("aria-pressed", String(x === b && saring === v))); terapSaring(); });
+      return b;
+    });
+    wadah.append(legenda, h("div", {class: "dl-peta-alat"}, h("div", {class: "dl-saring", role: "group", "aria-label": "Saring status surut"}, tSaring), ...(kontrol ? [kontrol] : [])));   // legenda tengah bawah; tombol Buka semua di samping +/−
     peta.touchZoomRotate.disableRotation();
     const css = getComputedStyle(document.documentElement), warna = n => css.getPropertyValue(n).trim();
     peta.on("load", () => {
       peta.addSource("kab", {type: "geojson", data: {type: "FeatureCollection", features: fitur}});
       peta.addLayer({id: "kab-isi", type: "fill", source: "kab", paint: {"fill-color": ["match", ["get", "st"], "belum", warna("--c1") || "#c9503a", warna("--c5") || "#4f8fc4"],
         "fill-opacity": ["case", ["boolean", ["feature-state", "sorot"], false], .9, .7]}});
+      peta.once("idle", terapSaring);
       peta.addLayer({id: "kab-garis", type: "line", source: "kab", paint: {"line-color": ["case", ["boolean", ["feature-state", "sorot"], false], "#0b2545", "#ffffff"], "line-width": ["case", ["boolean", ["feature-state", "sorot"], false], 2, .8]}});
       /* batas wilayah seluruh Indonesia: provinsi tebal gelap, kab/kota tipis abu; dimuat sesudah lapisan banjir supaya peta cepat tampil */
       const SEMUA_PROV = ["11","12","13","14","15","16","17","18","19","21","31","32","33","34","35","36","51","52","53","61","62","63","64","65","71","72","73","74","75","76","81","82","91","92","93","94","95","96"];
@@ -332,7 +341,7 @@
         tdv(F(r.kk), r.kk), tdv(F(r.jiwa), r.jiwa), tdv(F(r.kk_u), r.kk_u), tdv(F(r.mengungsi), r.mengungsi), td("", true), tdv(H.tglPendek(latest), latest.replace(/-/g, "")), h("td", null, aksi)], 1, baris);
     });
     const jml = k => prov.reduce((s, r) => s + r[k], 0);
-    const kaki = h("tfoot", null, h("tr", null, h("td", {teks: "Jumlah"}), td(F(jml("kejadian")), true), td(`${F(jml("nBelum"))} belum, ${F(jml("nKab") - jml("nBelum"))} sudah`, true), td("", true), td(F(jml("kk")), true), td(F(jml("jiwa")), true), td(F(jml("kk_u")), true), td(F(jml("mengungsi")), true), td("", true), td("", true), td("", true)));
+    const kaki = h("tfoot", null, h("tr", null, h("td", {teks: "Jumlah"}), td(F(jml("kejadian")), true), h("td", null, h("div", {class: "dl-chips"}, label(`${F(jml("nBelum"))} belum surut`, "banjir", "merah"), label(`${F(jml("nKab") - jml("nBelum"))} sudah surut`, "ok", "biru"))), td("", true), td(F(jml("kk")), true), td(F(jml("jiwa")), true), td(F(jml("kk_u")), true), td(F(jml("mengungsi")), true), td("", true), td("", true), td("", true)));
     /* kepala dua tingkat: Terdampak dan Pengungsi masing-masing KK dan Jiwa */
     const th = (teks, att) => h("th", {scope: "col", ...att, teks});
     const kepala = h("thead", null, h("tr", null, ...["Wilayah", "Kejadian", "Status", "Lama, hari"].map((k, i) => th(k, {rowspan: "2", "data-i": String(i)})),
