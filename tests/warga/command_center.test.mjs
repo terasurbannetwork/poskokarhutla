@@ -905,6 +905,11 @@ uji("cc gerbang: sesi staf operator_cc melihat halaman terkunci centurisk97.id (
     if (nama !== "pemirsa peta") assert.match(r.headers.get("location"), /^\/admin\/masuk\?ke=%2Fmonitor/, nama);
   }
   assert.equal((await situs("/monitor", {cookie: pPeta.h.cookie})).headers.get("location"), "/peta");
+  /* menu Pusdalops + peta utama: staf pusdalops/koordalops/pimpinan (akun Dirdalops) lolos; tmc dan kemitraan tidak */
+  for (const j of ["/", "/bnpb/dalops", "/bnpb/logbook", "/bnpb/dokumen", "/bnpb/operasi", "/bnpb/siaga", "/bnpb/perencanaan"])
+    for (const [nama, h] of [["pusdalops", pusd.cookie], ["koordalops", koord.cookie], ["pimpinan", pim.cookie]]) assert.notEqual((await situs(j, {cookie: h})).status, 303, `${nama} ${j}`);
+  for (const h of [tmc.cookie, kampus.cookie, ""]) assert.equal((await situs("/bnpb/dalops", h ? {cookie: h} : {})).status, 303);
+  assert.equal((await situs("/bnpb/hukum", {cookie: pim.cookie})).status, 303, "halaman di luar menu tetap terkunci");
   /* sesi staf yang dicabut atau kedaluwarsa tidak lagi lolos */
   await DB.prepare("UPDATE staf_sesi SET kedaluwarsa = 2 WHERE staf_id = ?").bind(op2.id).run(); assert.equal((await situs("/monitor", {cookie: op2.cookie})).status, 303);
   const cabut = await staf(DB, "Operator Cabut", ["operator_cc"]); assert.equal((await situs("/monitor", {cookie: cabut.cookie})).status, 200);

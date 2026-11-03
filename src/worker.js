@@ -50,7 +50,10 @@ import {RUTE_UJI_BANJIR, bersihkanUjiBanjir} from "./uji_banjir.js";
 import {RUTE_STAF, bersihkanStaf, stafPeran} from "./staf.js";
 import {RUTE_CC, bersihkanCc} from "./command_center.js";
 import {RUTE_AKADEMISI, P_AKADEMISI} from "./akademisi.js";
-import {RUTE_DALOPS} from "./dalops.js";
+import {RUTE_DALOPS, PERAN_DALOPS} from "./dalops.js";
+/* menu atas Pusdalops (public/bnpb/menu_pusdalops.js) + peta utama (tab Operasi lapangan di "/?operasi"): staf Pusdalops, Koordalops, Pimpinan
+   (mis. akun Dirdalops) membuka halamannya di centurisk97.id; API tiap halaman tetap menjaga haknya sendiri (permintaan pemilik 3 Nov 2026) */
+const MENU_PUSDALOPS = /^\/(bnpb\/(dalops|logbook|dokumen|operasi|siaga|perencanaan)\/?)?$/;
 import {RUTE_LOGBOOK} from "./logbook.js";
 import {RUTE_PEMULIHAN} from "./pemulihan.js";
 import {RUTE_LAPSUS} from "./lapsus.js";
@@ -871,7 +874,7 @@ const W = {
       ujiOK = true;
     }
     if (!ujiOK && hostTerkunci(url.hostname) && (req.method === "GET" || req.method === "HEAD") && halamanTerkunci(url) && !await adminOK(env, req)
-      && !await stafPeran(env, req, /^\/direktori\/?$/.test(url.pathname) ? ["operator_cc", ...P_AKADEMISI] : ["operator_cc"])) {   // operator command center (sesi staf) melihat semua halaman terkunci, GET/HEAD saja; staf berperan Direktori (P_AKADEMISI) membuka /direktori saja
+      && !await stafPeran(env, req, /^\/direktori\/?$/.test(url.pathname) ? ["operator_cc", ...P_AKADEMISI] : MENU_PUSDALOPS.test(url.pathname) ? ["operator_cc", ...PERAN_DALOPS] : ["operator_cc"])) {   // operator command center (sesi staf) melihat semua halaman terkunci, GET/HEAD saja; staf berperan Direktori (P_AKADEMISI) membuka /direktori saja
       /* akun pemirsa (src/pemirsa.js): hanya tab miliknya; halaman lain dialihkan ke tab pertamanya */
       const p = await pemirsaSesi(env, req), ke = p ? arahPemirsa(p, url.pathname) : "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search);
       if (ke) return new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store"}});
