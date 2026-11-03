@@ -66,3 +66,14 @@ test("hujan tiga hari per tanggal per kab = tertinggi di kecamatannya; status.js
   assert.deepEqual(sk["11|X"].h3d, [80, 90]);
   assert.deepEqual(sk["11|Y"].h3d, []);
 });
+
+test("rincian kab: kecamatan digabung, desa dikelompokkan per kecamatan, histori dua kejadian dijumlah per tanggal", () => {
+  const kel = H.kelompok([K("a", "Aceh Selatan", "2026-10-28", "2026-10-30", false, {kec: ["Trumon Tengah"], desa: [{nama: "Lhok Raya", kec: null, kk: 30, jiwa: 112, tinggi_cm: null}],
+      riwayat: [{tgl: "2026-10-29", kk: 30, jiwa: 112, tinggi_cm: [30, 40], surut: false, kondisi: "a"}]}),
+    K("b", "Aceh Selatan", "2026-10-29", "2026-11-01", false, {kec: ["Trumon", "Trumon Tengah"], desa: [{nama: "Padang Harapan", kec: "Trumon", kk: null, jiwa: null, tinggi_cm: [30, 60]}],
+      riwayat: [{tgl: "2026-10-29", kk: 10, jiwa: 20, tinggi_cm: [10, 60], surut: false, kondisi: "b"}, {tgl: "2026-11-01", kk: 5, jiwa: null, tinggi_cm: null, surut: false, kondisi: "c"}]})], HARI);
+  assert.equal(kel.length, 1);
+  assert.deepEqual(kel[0].kec, ["Trumon Tengah", "Trumon"]);
+  assert.deepEqual(kel[0].riwayat.map(r => [r.tgl, r.kk, r.jiwa, r.tinggi_cm]), [["2026-10-29", 40, 132, [10, 60]], ["2026-11-01", 5, null, null]]);
+  assert.deepEqual(H.perKec(kel[0]).map(k => [k.nama, k.desa.map(d => d.nama)]), [["Trumon Tengah", []], ["Trumon", ["Padang Harapan"]], [null, ["Lhok Raya"]]]);
+});

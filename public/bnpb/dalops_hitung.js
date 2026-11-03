@@ -14,15 +14,41 @@
   /* satu baris per kab/kota DAN status surut (sama dengan deck Situasi Banjir Sepekan): mulai paling awal, kabar paling akhir,
      angka dari kejadian terakhir yang mengisinya. Satu kab bisa muncul di dua kelompok (Langkat: satu kejadian surut, satu belum).
      Kejadian yang kabarnya lebih tua dari sepekan dikelompokkan terpisah (senyap), supaya tidak memanjangkan lama banjir kejadian pekan ini. */
+  /* histori harian dua kejadian sekab: angka dijumlah per tanggal, tinggi diambil rentang terlebar, kondisi dari yang terakhir */
+  function gabungRiwayat(a, b) {
+    const m = new Map(a.map(r => [r.tgl, {...r}]));
+    for (const r of b) {
+      const x = m.get(r.tgl);
+      if (!x) { m.set(r.tgl, {...r}); continue; }
+      for (const f of ["kk", "jiwa", "kk_u", "jiwa_u", "n_kec", "n_desa"]) if (r[f] != null) x[f] = (x[f] || 0) + r[f];
+      if (r.tinggi_cm) x.tinggi_cm = x.tinggi_cm ? [Math.min(x.tinggi_cm[0], r.tinggi_cm[0]), Math.max(x.tinggi_cm[1], r.tinggi_cm[1])] : r.tinggi_cm;
+      x.surut = x.surut && r.surut; if (r.kondisi) x.kondisi = r.kondisi;
+    }
+    return [...m.values()].sort((p, q) => p.tgl < q.tgl ? -1 : 1);
+  }
+  /* desa per kecamatan untuk rincian: kecamatan dari daftar logbook + yang disebut di teks; desa tanpa kecamatan dikumpulkan terpisah */
+  function perKec(x) {
+    const m = new Map((x.kec || []).map(k => [k.toLowerCase(), {nama: k, desa: []}]));
+    const lain = {nama: null, desa: []};
+    for (const d of x.desa || []) {
+      const k = d.kec && (m.get(d.kec.toLowerCase()) || m.set(d.kec.toLowerCase(), {nama: d.kec, desa: []}).get(d.kec.toLowerCase()));
+      (k || lain).desa.push(d);
+    }
+    return [...m.values(), ...(lain.desa.length ? [lain] : [])];
+  }
+
   function kelompok(kejadian, h) {
     const m = new Map();
     for (const k of [...kejadian].sort((a, b) => (a.terakhir > b.terakhir) - (a.terakhir < b.terakhir))) {
       const kode = (k.kab_kode || [])[0] || "", kunci = (kode || "?" + namaKab("", k.kab)) + "|" + (k.surut ? 1 : 0) + "|" + (selisih(h, k.terakhir) > SEPEKAN ? "senyap" : "pekan");
       const x = m.get(kunci) || {kunci, kab_kode: kode, nama: namaKab(kode, k.kab), prov: k.prov, prov_kode: k.prov_kode, surut: k.surut, mulai: k.mulai, terakhir: k.terakhir,
-        kk: null, jiwa: null, mengungsi: null, rumah_terendam: null, tinggi_cm: null, kondisi: "", id: []};
+        kk: null, jiwa: null, mengungsi: null, kk_u: null, rumah_terendam: null, tinggi_cm: null, kondisi: "", id: [], kec: [], desa: [], riwayat: []};
       if (k.mulai && k.mulai < x.mulai) x.mulai = k.mulai;
       if (k.terakhir > x.terakhir) x.terakhir = k.terakhir;
-      for (const f of ["kk", "jiwa", "mengungsi", "rumah_terendam", "tinggi_cm"]) if (k[f] != null) x[f] = k[f];
+      for (const f of ["kk", "jiwa", "mengungsi", "kk_u", "rumah_terendam", "tinggi_cm"]) if (k[f] != null) x[f] = k[f];
+      for (const c of k.kec || []) if (!x.kec.includes(c)) x.kec.push(c);
+      for (const d of k.desa || []) { const ada = x.desa.find(y => y.nama.toLowerCase() === d.nama.toLowerCase()); if (ada) Object.assign(ada, Object.fromEntries(Object.entries(d).filter(([, v]) => v != null))); else x.desa.push({...d}); }
+      x.riwayat = gabungRiwayat(x.riwayat, k.riwayat || []);
       if (k.kondisi) x.kondisi = k.kondisi;
       x.id.push(k.id); m.set(kunci, x);
     }
@@ -69,10 +95,10 @@
   function perProv(pekan) {
     const m = new Map();
     for (const x of pekan) {
-      const r = m.get(x.prov_kode) || m.set(x.prov_kode, {prov_kode: x.prov_kode, prov: x.prov, kab: new Set(), belum: new Set(), kk: 0, jiwa: 0, mengungsi: 0, kejadian: 0, baris: []}).get(x.prov_kode);
+      const r = m.get(x.prov_kode) || m.set(x.prov_kode, {prov_kode: x.prov_kode, prov: x.prov, kab: new Set(), belum: new Set(), kk: 0, jiwa: 0, kk_u: 0, mengungsi: 0, kejadian: 0, baris: []}).get(x.prov_kode);
       const kunci = x.kab_kode || x.nama;
       r.kab.add(kunci); if (!x.surut) r.belum.add(kunci);
-      r.kk += x.kk || 0; r.jiwa += x.jiwa || 0; r.mengungsi += x.mengungsi || 0; r.kejadian += x.id.length; r.baris.push(x);
+      r.kk += x.kk || 0; r.jiwa += x.jiwa || 0; r.kk_u += x.kk_u || 0; r.mengungsi += x.mengungsi || 0; r.kejadian += x.id.length; r.baris.push(x);
     }
     return [...m.values()].map(r => ({...r, nKab: r.kab.size, nBelum: r.belum.size})).sort((a, b) => b.kejadian - a.kejadian || a.prov_kode.localeCompare(b.prov_kode));
   }
@@ -98,6 +124,14 @@
       `Mohon kesiapsiagaan, dan bila terjadi banjir atau genangan mohon dikabarkan lokasi, jumlah KK dan jiwa terdampak, serta tinggi air. Terima kasih.`;
   }
 
-  const X = {SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perluDitanya, statusKab, siaga, pesanWA, pesanSiaga, tglPanjang, tglPendek, namaKab};
+  /* pesan per provinsi ke Pusdalops BPBD provinsi: daftar kab/kota belum surut dengan kabar terakhirnya */
+  function pesanProv(prov, xs) {
+    const belum = xs.filter(x => !x.surut);
+    return `Yth. rekan Pusdalops BPBD Provinsi ${prov}. Pusdalops BNPB mencatat banjir belum dilaporkan surut di ${belum.length} kab/kota:\n` +
+      belum.map((x, i) => `${i + 1}. ${x.nama}, sejak ${tglPanjang(x.mulai)}, kabar terakhir ${tglPanjang(x.terakhir)}`).join("\n") +
+      `\nMohon pembaruan kondisi terkini tiap kab/kota: apakah sudah surut, jumlah KK dan jiwa terdampak, warga mengungsi, tinggi genangan, serta desa/kelurahan terdampak. Terima kasih.`;
+  }
+
+  const X = {SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perKec, gabungRiwayat, perluDitanya, statusKab, siaga, pesanWA, pesanSiaga, pesanProv, tglPanjang, tglPendek, namaKab};
   g.DalopsHitung = X;
 })(globalThis);
