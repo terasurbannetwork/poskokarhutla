@@ -160,11 +160,12 @@ let kabarPenuh = false
 
 async function simpanKeOutbox(m) {
   const k = m.key
-  const { teks, media, adaDok } = isiPesan(m)
+  const { c, teks, media: mediaAda, adaDok } = isiPesan(m)
+  const media = mediaAda && (!GRUP_OPS.has(k.remoteJid) || IZIN.has(pengirim(k)) || c.imageMessage) ? mediaAda : null // grup operasi: hanya foto (dokumen grup tetap dibuang)
   const dari = pengirim(k)
   const grupOps = !!dari && !IZIN.has(dari) && GRUP_OPS.has(k.remoteJid)
   if (!dari || (!IZIN.has(dari) && !grupOps)) return
-  if (!teks.trim() && (!media || grupOps)) return // grup operasi: lampiran tanpa teks tidak diteruskan
+  if (!teks.trim() && !media) return // foto grup tanpa caption tetap diteruskan
   if (!media && !grupOps) { // perintah tetap (perintah.mjs): hanya dari PEMILIK, tidak jadi bahan, balasan hanya ke pengirim
     const P = await import('../perintah.mjs')
     const cmd = P.cegat({ dari, teks, pemilik: process.env.PEMILIK })
@@ -179,7 +180,7 @@ async function simpanKeOutbox(m) {
   const id = `${Date.now()}-${idAman(k.id)}`
   const e = { id, dari, nama: grupOps ? '' : (m.pushName || ''), teks, waktu: Number(m.messageTimestamp) * 1000 || Date.now(), ...(grupOps ? { grup: k.remoteJid } : {}) }
   let lampiran = null
-  if (media && !grupOps) {
+  if (media) {
     const tipe = media.mimetype || 'application/octet-stream'
     if (!mimeBoleh(tipe)) {
       await kabarPemilik(`Lampiran dari ${dari} (${tipe}) jenisnya tidak diizinkan, hanya teks yang diteruskan.`)
