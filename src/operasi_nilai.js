@@ -7,13 +7,23 @@ export const KM = 1, NM_KM = 1.852, JELAJAH_NM = 120, MIN_N = 5, JAM = 3600e3;
 const NULL_DATA = {nilai: null, n: 0, jumlah: 0, alasan: "data belum tersedia"};
 const rad = x => x * Math.PI / 180;
 export const jarakKm = (a, b, c, d) => { const h = Math.sin(rad(c - a) / 2) ** 2 + Math.cos(rad(a)) * Math.cos(rad(c)) * Math.sin(rad(d - b) / 2) ** 2; return 12742 * Math.asin(Math.sqrt(h)); };
-const dekat = (p, q, km = KM) => Math.abs(p.lat - q.lat) < 0.2 && jarakKm(p.lat, p.lon, q.lat, q.lon) <= km;
+export const dekat = (p, q, km = KM) => Math.abs(p.lat - q.lat) < 0.2 && jarakKm(p.lat, p.lon, q.lat, q.lon) <= km;
 const bulat = (x, d = 3) => Math.round(x * 10 ** d) / 10 ** d;
-const median = a => { const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+export const median = a => { const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
 const akhirHari = t => Date.parse(`${t}T00:00:00+07:00`) + 24 * JAM;
 /* bungkus: n < MIN_N -> nilai null (kejadian tetap dilaporkan di n dan jumlah) */
 const rasio = (jumlah, n, extra = {}) => n < MIN_N ? {nilai: null, n, jumlah, catatan: "data kurang", ...extra} : {nilai: bulat(jumlah / n), n, jumlah, ...extra};
 const tidakBerlaku = alasan => ({nilai: null, n: 0, jumlah: 0, alasan});
+
+/* temuan berasap berjam -> gerak WB berangkat pertama dalam 24 jam yang menuju <= 1 km atau berrujukan registrasi pelapor: menit per temuan; tanpa = temuan tanpa respons. Dipakai M7 dan /api/operasi/monitor. */
+export function menitRespons(tem, wb) {
+  const menit = []; let tanpa = 0;
+  for (const t of tem.filter(t => t.status === "berasap" && Number.isFinite(t.jam_utc))) {
+    const c = wb.filter(w => w.jam_utc >= t.jam_utc && w.jam_utc - t.jam_utc <= 24 * JAM && (w.rujukan === t.registrasi || (w.lat != null && dekat(w, t))));
+    if (c.length) menit.push((Math.min(...c.map(w => w.jam_utc)) - t.jam_utc) / 60e3); else tanpa++;
+  }
+  return {menit, tanpa};
+}
 
 /* satu kelompok. g = {regs: Set|null (null = semua), targets: [..]|null (null = tak berlaku)}; D = bahan global (lihat hitungNilai) */
 function kelompok(g, D) {
@@ -46,11 +56,7 @@ function kelompok(g, D) {
   const sta = D.status.filter(s => ada(s.registrasi) && ["siap", "operasi", "siaga"].includes(s.status));
   m.M6 = rasio(sta.filter(s => D.berangkat.has(`${s.tanggal}|${s.registrasi}`)).length, sta.length);
   // M7 waktu respons: temuan berasap (berjam) -> gerak berangkat WB <= 1 km atau rujukan = registrasi patroli, menit
-  const menit = []; let tanpa = 0;
-  for (const t of tem.filter(t => t.status === "berasap" && Number.isFinite(t.jam_utc))) {
-    const c = D.wb.filter(w => w.jam_utc >= t.jam_utc && w.jam_utc - t.jam_utc <= 24 * JAM && (w.rujukan === t.registrasi || (w.lat != null && dekat(w, t))));
-    if (c.length) menit.push((Math.min(...c.map(w => w.jam_utc)) - t.jam_utc) / 60e3); else tanpa++;
-  }
+  const {menit, tanpa} = menitRespons(tem, D.wb);
   m.M7 = menit.length < MIN_N ? {nilai: null, n: menit.length, jumlah: menit.length, catatan: "data kurang", tanpa_respons: tanpa}
     : {nilai: bulat(median(menit), 1), n: menit.length, jumlah: menit.length, satuan: "menit (median)", tanpa_respons: tanpa};
   m.M8 = NULL_DATA; m.M9 = NULL_DATA; m.M10 = NULL_DATA;

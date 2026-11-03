@@ -11,6 +11,7 @@ import {KONTROL, tglSah} from "./posko.js";
 import {balas as balasPanggilan} from "./lapangan_wa.js";
 import {catatOperasi} from "./operasi_udara.js";
 import {urai} from "./operasi_wa.js";
+import {simpanFoto} from "./operasi_hasil.js";
 import {JENIS_LAPORAN, kenali, tanggalIsi, tanggalNamaBerkas} from "./wa_jenis.js";
 
 export const MAKS_BERKAS = 20 * 1024 * 1024;
@@ -51,16 +52,21 @@ async function gerbang(env, req, kini) {
   const balasan = await balasPanggilan(env, req, normalNo(f.get("dari")), bersih(f.get("teks"), 200), kini); if (balasan) return balasan;
   const izin = new Set(String(env.WA_IZIN || "").split(",").map(normalNo).filter(Boolean));
   /* Grup operasi (OPERASI_GRUP di .env gateway): gateway yang berkunci WA_KUNCI menandai pesan grup satgas dengan `grup`, apa pun pengirimnya.
-     Dari grup hanya pesan yang DIKENALI (pengurai operasi atau jenis laporan) yang disimpan; obrolan dan lampiran dibuang.
-     `dari` diganti id grup: nomor HP anggota grup (pilot, operator) tidak masuk D1. ponytail: foto bergeotag grup dibuang dulu, ambil saat OCR stempel ada. */
+     Dari grup hanya pesan yang DIKENALI (pengurai operasi atau jenis laporan) yang disimpan; obrolan dibuang; lampiran GAMBAR grup disimpan semua (indeks op_foto, src/operasi_hasil.js), lampiran lain dibuang.
+     `dari` diganti id grup: nomor HP anggota grup (pilot, operator) tidak masuk D1. */
   const grup = /^[\d-]{5,40}@g\.us$/.test(String(f.get("grup") || "")) ? String(f.get("grup")) : null, nomor = normalNo(f.get("dari"));
   if (!izin.has(nomor) && !grup) return json({ok: true, disimpan: false});   // bukan pengirim terdaftar: diam, tidak disimpan
   const w = Number(f.get("waktu")), diterima = Number.isFinite(w) && w >= kini - 7 * 864e5 && w <= kini + 5 * 60e3 ? Math.trunc(w) : kini;
-  const teks = bersih(f.get("teks"), MAKS_TEKS) || null, namaKirim = bersih(f.get("nama"), 100) || null;
+  let teks = bersih(f.get("teks"), MAKS_TEKS) || null; const namaKirim = bersih(f.get("nama"), 100) || null, caption = teks;
   const dariGrup = grup && !izin.has(nomor), dari = dariGrup ? grup : nomor, nama = dariGrup ? null : namaKirim;   // nama tampilan anggota grup juga tidak disimpan
-  if (dariGrup && !(teks && (urai(teks, {tanggal: hariWib(diterima)}).dikenali || kenali(teks, null)))) return json({ok: true, disimpan: false});
-  let b = dariGrup ? null : f.get("berkas"); if (typeof b === "string" || !b?.size) b = null;
+  let b = f.get("berkas"); if (typeof b === "string" || !b?.size) b = null;
+  /* foto grup operasi: SEMUA gambar grup disimpan (perintah pemilik 3 Nov 2026), dengan atau tanpa keterangan; lampiran grup selain gambar tetap dibuang */
+  const gambar = !!b && (/^image\/(png|jpeg|webp)$/i.test(b.type || "") || (!b.type || b.type === "application/octet-stream") && /\.(jpe?g|png|webp)$/i.test(b.name || ""));
+  if (dariGrup && !gambar) b = null;
   if (b && (b.size > MAKS_BERKAS || !(TIPE_TERIMA.test(b.type || "") || (!b.type || b.type === "application/octet-stream") && EKS_TERIMA.test(b.name || "")))) b = null;   // tipe dikenal, atau tipe kosong/umum dengan ekstensi dikenal
+  const dikenali = !!(teks && (urai(teks, {tanggal: hariWib(diterima)}).dikenali || kenali(teks, null)));
+  if (dariGrup && !dikenali && !b) return json({ok: true, disimpan: false});
+  if (dariGrup && !dikenali) teks = null;   // obrolan di keterangan foto tidak disimpan; keterangan dipakai sebagai petunjuk registrasi (caption)
   const namaBerkas = b ? bersih(b.name || "berkas", 200).replace(/[\\/]/g, "_") : null;
   if (!teks && !b) return json({ok: true, disimpan: false});
   /* kiriman ulang dari outbox gerbang: baris identik dikembalikan (indeks wa_masuk_dedup), SEBELUM plafon supaya ulangan sesudah plafon tetap dapat id lama.
@@ -70,10 +76,10 @@ async function gerbang(env, req, kini) {
   /* plafon harian menurut waktu terima (hari WIB ini), lewat indeks wa_masuk_diterima: pemalsu pengirim terdaftar berhenti di sini */
   const awal = Date.parse(hariWib(kini)) - 7 * 3600e3;
   if ((await env.DB.prepare("SELECT count(*) n FROM wa_masuk WHERE diterima >= ?1 AND diterima < ?2").bind(awal, awal + 864e5).first()).n >= MAKS_HARI) return gagal(429, "plafon pesan WA hari ini tercapai");
-  let kunci = null, tipe = null;
+  let kunci = null, tipe = null, isiBerkas = null;
   if (b) {
     kunci = `wa/${hariWib(kini)}/${kini}-${crypto.randomUUID().slice(0, 8)}`; tipe = (b.type || "application/octet-stream").toLowerCase();
-    await env.MEDIA.put(kunci, await b.arrayBuffer(), {httpMetadata: {contentType: tipe}});
+    isiBerkas = new Uint8Array(await b.arrayBuffer()); await env.MEDIA.put(kunci, isiBerkas, {httpMetadata: {contentType: tipe}});
   }
   /* tanggal laporan itu sendiri menang bila wajar (14 hari ke belakang sampai besok WIB); kiriman ulang laporan lama jatuh ke harinya, bukan hari terima */
   const jk = kenali(teks, namaBerkas), isi = jk === "laphar_pdf" ? tanggalNamaBerkas(namaBerkas) : tanggalIsi(teks, jk), hariIni = Date.parse(hariWib(diterima));
@@ -82,7 +88,9 @@ async function gerbang(env, req, kini) {
     .bind(diterima, tanggal, jenis, dari, nama, teks, kunci, namaBerkas, tipe).run();
   /* OP-2: pesan satgas udara -> tabel operasi; galat apa pun (termasuk migrasi 0103 belum ada) tidak menggagalkan pesan yang sudah tersimpan */
   let operasi = null; if (teks) try { operasi = await catatOperasi(env, {id: r.meta.last_row_id, teks, tanggal, diterima}); } catch (e) { console.error("operasi_wa", String(e?.message || e)); }
-  return json({ok: true, disimpan: true, id: r.meta.last_row_id, tanggal, jenis, ...(operasi ? {operasi} : {})});
+  /* foto grup operasi -> indeks op_foto (stempel dibaca Workers AI bila ada, pemasangan ke aksi); galat/tabel 0106 belum ada tidak menggagalkan pesan */
+  let foto = null; if (grup && gambar && b && isiBerkas) try { foto = await simpanFoto(env, {waId: r.meta.last_row_id, bytes: isiBerkas, diterima, teks: caption}); } catch (e) { console.error("operasi_foto", String(e?.message || e).slice(0, 120)); }
+  return json({ok: true, disimpan: true, id: r.meta.last_row_id, tanggal, jenis, ...(operasi ? {operasi} : {}), ...(foto ? {foto} : {})});
 }
 
 /* pembaca: admin ATAU mesin (Authorization: Bearer WA_MESIN, banding konstan lewat sha; WA_MESIN kosong = hanya admin) */

@@ -99,7 +99,7 @@ uji("koordinat rusak ditahan di respons tanpa menulis; bukan operasi dan bukti W
   assert.equal(await n("op_temuan"), before);
 });
 
-uji("grup operasi: anggota tak terdaftar disimpan hanya bila dikenali, tanpa nomor HP, nama, dan lampiran", async () => {
+uji("grup operasi: anggota tak terdaftar disimpan hanya bila dikenali, tanpa nomor HP dan nama; foto grup disimpan", async () => {
   const G = "120363012345678901@g.us";
   const kirimGrup = async (teks, {grup = G, dari = "6289900001111", berkas} = {}) => {
     const f = new FormData(); f.set("dari", dari); f.set("nama", "Capt. Anggota"); f.set("teks", teks); if (grup) f.set("grup", grup);
@@ -114,7 +114,8 @@ uji("grup operasi: anggota tak terdaftar disimpan hanya bila dikenali, tanpa nom
   const r = await kirimGrup(P("byson_tanda_panggil").teks + "\nSenin, 2 November 2026", {berkas: true});
   assert.equal(r.s, 200); assert.equal(r.j.disimpan, true); assert.equal(r.j.operasi.temuan, 1);
   const row = await DB.prepare("SELECT dari, nama, berkas FROM wa_masuk WHERE id = ?").bind(r.j.id).first();
-  assert.deepEqual([row.dari, row.nama, row.berkas], [G, null, null], "pengirim diganti id grup; nama dan lampiran tidak disimpan");
+  assert.deepEqual([row.dari, row.nama, typeof row.berkas], [G, null, "string"], "pengirim diganti id grup; nama tidak disimpan; lampiran GAMBAR grup disimpan (keputusan pemilik 3 Nov 2026)");
+  assert.equal(r.j.foto.registrasi, "HA-5234", "foto diindeks (op_foto) dan diberi registrasi dari keterangan/teks"); assert.equal(await n("op_foto"), 1);
   assert.equal(await n("wa_masuk"), awal + 1);
 });
 
@@ -138,7 +139,7 @@ uji("rencana banyak titik tersimpan di rute; demobilisasi menjadikan armada tida
   const j = await peta(), r = j.gerak.find(x => x.registrasi === "PK-IKC" && x.jenis === "rencana");
   assert.equal(JSON.parse(r.rute).length, 2);
   assert.deepEqual([r.lat, r.lon], [JSON.parse(r.rute)[0].lat, JSON.parse(r.rute)[0].lon]);
-  const n = j.armada.find(x => x.registrasi === "N-4875A"); assert.deepEqual([n.status, n.alasan], ["tidak_siap", "demobilisasi"]);
+  const n = j.armada.find(x => x.registrasi === "N4875A"); assert.deepEqual([n.status, n.alasan], ["tidak_siap", "demobilisasi"]);
 });
 
 uji("peta operasi tetap tertutup untuk tamu: temuan hasil WA tidak bocor", async () => {

@@ -1050,7 +1050,7 @@
     "table lp_panggil_penerima": "balasan SIAP/TIDAK (U-14)",
     "table orang_keahlian": "daftar orang menurut keahlian (LP-046) dan penanda keahlian",
     "table lp_logbook_kit": "logbook: kit (LP-043)",
-    "GET /api/operasi/peta": "GET /api/operasi/peta: tamu, akun gerbang",
+    "GET /api/operasi/peta": "GET /api/operasi/peta: tamu dan staf tanpa peran ditolak",
     "POST /api/operasi/dummy": "dummy: hanya Super Admin",
     "GET /api/operasi/temuan": "auth mesin: GET /api/operasi/temuan dan POST /api/operasi/renlap menolak",
     "POST /api/operasi/renlap": "POST /api/operasi/renlap validasi ketat",
@@ -1061,7 +1061,11 @@
     "table op_renlap": "migrasi 0103 idempoten",
     "table op_target": "migrasi 0103 idempoten",
     "table op_gerak": "migrasi 0103 idempoten",
-    "table op_temuan": "migrasi 0103 idempoten"
+    "table op_temuan": "migrasi 0103 idempoten",
+    "GET /api/operasi/monitor": "GET /api/operasi/monitor: auth",
+    "GET /api/operasi/foto/:id": "foto grup tanpa keterangan: R2 + op_foto",
+    "table op_foto": "migrasi 0106 idempoten",
+    "table op_gerak_hasil": "migrasi 0106 idempoten"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

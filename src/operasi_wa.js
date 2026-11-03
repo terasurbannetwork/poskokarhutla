@@ -4,6 +4,8 @@
 
 /* tanda panggil -> registrasi (seed op_armada). Tanda panggil lain tidak ditebak: pesan tertahan "registrasi". */
 export const ALIAS = {BYSON234: "HA-5234", COUGAR17: "H-3217"};
+/* base rujukan VOR di teks -> pesawat patroli base itu. ponytail: PNK juga dipakai H-3217 (patroli_wb), pesan tanpa registrasi dianggap PK-FPA; KTG hanya PK-ALE. */
+export const VOR_PATROLI = {KTG: "PK-ALE", PNK: "PK-FPA"};
 /* tanda tangan operator tanpa registrasi di teks. ponytail: satu pesawat per skadron; ganti bila Skadud 6 menurunkan lebih dari satu. */
 export const TANDA_TANGAN = [[/Skadron\s+Udara\s+6/i, "H-3217"]];
 
@@ -25,7 +27,7 @@ export function tanggalOperasi(teks) {
   return Number.isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== iso ? null : iso;
 }
 
-function koordinat(blok) {
+export function koordinat(blok) {
   const it = [];
   for (const m of blok.matchAll(RE_DMS)) {
     const mn = +m[3], dt = +m[4].replace(",", ".");
@@ -48,9 +50,9 @@ function judulKasus(s) {
   return h.replace(/,(?=\S)/g, ", ").replace(/\b(Kab|Kec)\.(?=\S)/gi, (_, a) => a[0].toUpperCase() + a.slice(1).toLowerCase() + ". ").replace(/\s+/g, " ");
 }
 
-function registrasi(teks, armada) {
+export function registrasi(teks, armada) {
   const peta = new Map(armada.map(r => [String(r).toUpperCase().replace(/[^A-Z0-9]/g, ""), r]));
-  const t = teks.replace(/Hasil\s+Patroli[^\n]*/gi, "").replace(/\b(PK|VH|VN|RA|HA|UR|ZK|RDPL)\s+-\s*([A-Z0-9]{2,6})\b/gi, "$1-$2"), cari = [];
+  const t = teks.replace(/Hasil\s+Patroli[^\n]*/gi, "").replace(/\b(PK|VH|VN|RA|HA|UR|ZK|RDPL)\s*-\s*([A-Z0-9]{2,6})\b/gi, "$1-$2"), cari = [];
   for (const m of t.matchAll(RE_REG)) {
     const r = peta.get(m[0].toUpperCase().replace(/[^A-Z0-9]/g, ""));
     if (r) cari.push([m.index, r]); else if (m[0].includes("-")) cari.push([m.index, m[0].toUpperCase()]);
@@ -58,7 +60,8 @@ function registrasi(teks, armada) {
   for (const m of t.matchAll(RE_ALIAS)) { const r = ALIAS[(m[1] + m[2]).toUpperCase()]; if (r) cari.push([m.index, r]); }
   if (cari.length) return cari.sort((a, b) => a[0] - b[0])[0][1];
   for (const [re, r] of TANDA_TANGAN) if (re.test(t)) return r;
-  return null;
+  const v = t.match(/\b(?:VOR|Nm\s+from)\s+([A-Z]{3})\b/i);   // hasil patroli satu titik tanpa registrasi: rujukan VOR/base = pesawat patroli base itu
+  return v && VOR_PATROLI[v[1].toUpperCase()] || null;
 }
 
 function statusDari(t) {
@@ -88,12 +91,31 @@ function titikRute(t) {
 /* teks: isi pesan. tanggal: YYYY-MM-DD hari operasi (pemanggil: tanggalOperasi(teks) ?? tanggal terima). armada: daftar registrasi seed untuk normalisasi (N814AR -> N-814AR). */
 export function urai(teks, {tanggal, armada = []} = {}) {
   const hasil = {dikenali: null, temuan: [], gerak: [], status: [], tertahan: []};
-  const t = String(teks ?? "").replace(/[​-‏⁠‪-‮﻿]/g, "").replace(/ /g, " ").replace(/\*\*(?=\d{1,2}\s*[.)])/g, "*\n*");
+  let t = String(teks ?? "").replace(/[​-‏⁠‪-‮﻿]/g, "").replace(/ /g, " ").replace(/\*\*(?=\d{1,2}\s*[.)])/g, "*\n*");
+  /* "*FS Enroute*" di atas judul bernomor = titik itu berstatus fs; penanda dibuang supaya tidak menempel ke blok sebelumnya */
+  const enroute = new Set();
+  t = t.replace(/^[ \t]*\W*FS[ \t]+Enroute\W*\n(\W{0,3}\d{1,2}\s*[.)][^\n]*)$/gim, (_, j) => { enroute.add(j.trim()); return j; });
   if (!t.trim() || !/^\d{4}-\d\d-\d\d$/.test(tanggal || "")) return hasil;
   const reg = registrasi(t, armada);
 
+  /* laporan hasil water bombing ("After WB", "Water Drop"): satu aksi drop = gerak berangkat misi wb bertanda tindakan "drop" (jam = jam pesan, diisi catatOperasi) */
+  if (/\bAfter\s+WB\b|Water\s*Drop\b/i.test(t) && !/Before\s+WB/i.test(t)) {
+    hasil.dikenali = "water_drop";
+    if (!reg) { hasil.tertahan.push({alasan: "registrasi"}); return hasil; }
+    const g = {registrasi: reg, jenis: "berangkat", misi: "wb", tindakan: "drop"}, num = (re, ribu) => { const m = t.match(re); return m ? (ribu ? parseInt(m[1].replace(/[.,]/g, ""), 10) : +m[1].replace(",", ".")) : null; };
+    const lm = t.match(/\b(?:LOC|Lokasi(?:\s+FS)?)\s*:\s*\**\s*([^\n]+)/i), lok = lm && judulKasus(lm[1].replace(/[*_]/g, "").replace(/\s*\/\s*/g, ", ")), k = RE_KASAR.test(t) ? koordinat(t) : null;
+    if (lok || k) g.target = {...(lok ? {lokasi: lok} : {}), ...(k || {})};
+    const dr = num(/(\d+)\s*[xX]\s*WB/), li = num(/([\d.,]+)\s*Liter/i, true), tb = num(/lahan\s+yang\s+terbakar\s*(?:\+-|±|-\+)?\s*(\d+(?:[.,]\d+)?)\s*ha/i), pd = num(/lahan\s+yang\s+dipadamkan\s*(?:\+-|±|-\+)?\s*(\d+(?:[.,]\d+)?)\s*ha/i);
+    if (dr != null) g.drops = dr; if (li != null) g.liter = li; if (tb != null) g.luas_terbakar_ha = tb; if (pd != null) g.luas_padam_ha = pd;
+    if (/HS\s+Masih\s+Berasap/i.test(t)) g.lapor = "masih_berasap"; else if (/HS\s+(?:Clear|Padam)/i.test(t)) g.lapor = "padam";
+    hasil.gerak.push(g);
+    const eta = t.match(/ETA[^\n]*?(\d{1,2})[:.](\d{2})\s*Z\b/i);
+    if (eta) hasil.gerak.push({registrasi: reg, jenis: "kembali", misi: "wb", jam_utc: jamUtc(tanggal, eta[1], eta[2], false)});
+    return hasil;
+  }
+
   const kembali = t.match(/Back\s+To\s+Base\s+Due\s+To\s+(.+?)\s+ETA\s+(\d{1,2})[.:](\d{2})\s*WIB/i);
-  const tiba = !kembali && /MOVEMENT\s+ARRIVAL|MVT\s+ARRIVAL/i.test(t);
+  const tiba = !kembali && /MOVEMENT\s+ARRIVAL|MVT\s+ARRIVAL|Arr(?:ival)?\s+Mov/i.test(t);
   const berangkat = !tiba && /DEPARTURE\s+MOVEMENT|MVT\s+DEPARTURE|Movement\s+Departure|Departure\s+MVT/i.test(t);
   const rencana = !berangkat && !tiba && /MVT\s+PLAN|rencana\s+penerbangan|Rencana\s+Patroli|Plan\s+Mov/i.test(t);
   /* OMC dan pindah armada diperiksa lebih dulu: pesan OMC sering menyebut "Patroli", pesan demobilisasi menyebut tujuan */
@@ -109,6 +131,7 @@ export function urai(teks, {tanggal, armada = []} = {}) {
       const kode = tiba ? "ATA" : berangkat ? "ATD" : "(?:ETD|ATD)", j = t.match(new RegExp(`${kode}[^\\n]*?(\\d{1,2})[:.](\\d{2})\\s*Z\\b`, "i"));
       const w = !j && t.match(new RegExp(`${kode}[^\\n]*?(\\d{1,2})[:.](\\d{2})\\s*WIB\\b`, "i"));
       if (j) g.jam_utc = jamUtc(tanggal, j[1], j[2], false); else if (w) g.jam_utc = jamUtc(tanggal, w[1], w[2], true);
+      const ft = tiba && t.match(/Flight\s+Time\s*:?\s*\**\s*(\d{1,2}):(\d{2})/i); if (ft && +ft[2] < 60) g.menit_terbang = +ft[1] * 60 + +ft[2];
     }
     if (misi) g.misi = misi;
     if (kembali) g.alasan = kembali[1].trim();
@@ -128,21 +151,21 @@ export function urai(teks, {tanggal, armada = []} = {}) {
     }
     hasil.gerak.push(g);
     if (kembali || ((misi === "demobilisasi" || misi === "mobilisasi" || misi === "ferry") && berangkat)) hasil.status.push({registrasi: reg, status: "tidak_siap", alasan: g.alasan});
-    return hasil;
+    if (!tiba) return hasil;   // Arr Mov memuat hasil tiap titik patroli: lanjut membaca temuan di bawah
   }
 
   const L = t.split("\n"), judul = L.map((l, i) => RE_JUDUL.test(l) ? i : -1).filter(i => i >= 0);
   const blok = judul.length >= 2 ? judul.map((s, n) => L.slice(s, judul[n + 1] ?? L.length)) : [L], lihat = new Map();
   for (const b of blok) {
-    const isi = b.join("\n"), st = statusDari(isi);
+    const isi = b.join("\n"), st = statusDari(isi) ?? (enroute.has(b[0].trim()) ? "fs" : null);
     if (!st) continue;
     const k = koordinat(isi);
     if (!k && !RE_KASAR.test(isi)) continue;   // status tanpa letak sama sekali (mis. laporan RTB): bukan temuan
     const iK = b.findIndex(l => RE_KASAR.test(l)), depan = b.slice(0, iK < 0 ? b.length : iK), iJ = depan.findLastIndex(l => RE_JUDUL.test(l));
-    const lok = judulKasus((iJ >= 0 ? depan.slice(iJ) : depan.filter(l => l.replace(/[*_\s]/g, "") && !RE_JUNK.test(l) && !(registrasi(l, armada) && !/^\W*\d/.test(l))).slice(-3)).map(judulKasus).filter(Boolean).join(", "));
+    const lok = judulKasus((iJ >= 0 ? depan.slice(iJ) : depan.filter(l => l.replace(/[*_\s]/g, "") && !RE_JUNK.test(l) && !(registrasi(l, armada) && !/^\W*\d/.test(l))).slice(-3)).map(judulKasus).filter(Boolean).join(", ")).replace(/^New Hs On Route,?\s*/i, "");
     const lu = isi.match(/(?:±|\+-|-\+|luas[^\n\d]{0,30})\s*(\d+(?:[.,]\d+)?)\s*ha\b/i);
     const e = {registrasi: reg, ...(lok ? {lokasi: lok} : {}), ...(k || {}), status: st, ...(lu ? {luas_klaim_ha: +lu[1].replace(",", ".")} : {})};
-    hasil.dikenali = "temuan";
+    hasil.dikenali ||= "temuan";
     if (!k) hasil.tertahan.push({alasan: "koordinat", ...(lok ? {lokasi: lok} : {})});
     else if (!reg) { const {registrasi: _, ...sisa} = e; hasil.tertahan.push({alasan: "registrasi", ...sisa}); }
     else lihat.set(`${reg}|${k.lat}|${k.lon}`, e);   // blok tertempel ganda: yang terakhir menggantikan
@@ -150,4 +173,22 @@ export function urai(teks, {tanggal, armada = []} = {}) {
   hasil.temuan = [...lihat.values()];
   if (!hasil.dikenali && /BEFORE\s+WB|Water\s+Source|Water\s+Drop/i.test(t)) hasil.dikenali = "bukti_wb";
   return hasil;
+}
+
+/* stempel foto lapangan ("3 Nov 2026 11.17.48 / 1°6'41"S 110°4'46"E / ... / VH-L6T/PT.EDC/OPS", 12 PM dibolehkan) -> {jam_utc, lat, lon, registrasi}; yang tak terbaca = null, tidak ditebak.
+   Zona jam stempel = zona lokasi (bujur < 114,5 WIB, < 135 WITA, selain itu WIT); tanpa koordinat dipilih yang paling dekat dengan waktu terima. Stempel > 3 hari dari waktu terima dibuang (jam perangkat salah). */
+const BLN = {jan: 1, feb: 2, mar: 3, apr: 4, mei: 5, may: 5, jun: 6, jul: 7, agu: 8, aug: 8, sep: 9, okt: 10, oct: 10, nov: 11, des: 12, dec: 12};
+export function uraiStempel(teks, {armada = [], diterima = null} = {}) {
+  const t = String(teks ?? "").replace(/[​-‏⁠‪-‮﻿]/g, ""), out = {jam_utc: null, lat: null, lon: null, registrasi: registrasi(t, armada)};
+  const k = koordinat(t); if (k) { out.lat = k.lat; out.lon = k.lon; }
+  const m = t.match(/\b(\d{1,2})\s+(jan|feb|mar|apr|mei|may|jun|jul|agu|aug|sep|okt|oct|nov|des|dec)[a-z]*\.?\s+(\d{4})\s+(\d{1,2})[.:](\d{2})(?:[.:](\d{2}))?\s*(AM|PM)?/i);
+  if (m) {
+    let h = +m[4]; const pm = m[7]?.toUpperCase(); if (pm === "PM" && h < 12) h += 12; if (pm === "AM" && h === 12) h = 0;
+    if (h < 24 && +m[5] < 60) {
+      const lokal = Date.UTC(+m[3], BLN[m[2].toLowerCase()] - 1, +m[1], h, +m[5], +(m[6] || 0)), dari = z => lokal - z * 36e5;
+      const zona = k ? (k.lon < 114.5 ? 7 : k.lon < 135 ? 8 : 9) : diterima ? [7, 8, 9].reduce((a, z) => Math.abs(dari(z) - diterima) < Math.abs(dari(a) - diterima) ? z : a) : 7;
+      const j = dari(zona); if (diterima == null || Math.abs(j - diterima) <= 3 * 864e5) out.jam_utc = j;
+    }
+  }
+  return out;
 }

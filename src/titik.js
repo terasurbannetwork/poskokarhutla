@@ -6,6 +6,7 @@
    wilayah dicari dari geo/provinsi.json + pusat kecamatan terdekat (banjir/data/pusat_kec.json), bukan poligon
    kecamatan penuh, jadi titik di pantai/perbatasan bisa sedikit berbeda dari data harian. */
 import {alarmTitikSippa} from "./sippa_titik.js";
+import {nilaiAksi, titikDariPutaran} from "./operasi_hasil.js";
 import {catatGranul, JENDELA_URAI_JAM} from "./satelit.js";
 export const SENSOR = {VIIRS_SNPP_NRT: "N", VIIRS_NOAA20_NRT: "N20", VIIRS_NOAA21_NRT: "N21", MODIS_NRT: "M"};
 export const SENSOR_UTAMA = ["M", "N", "N20", "N21"];   // semua dihitung sebagai lokasi unik di peramban (AngkaKawasan.unik), sama dengan hotspot.json
@@ -138,6 +139,8 @@ export async function perbaruiTitik(env, kini = Date.now()) {
     env.DB.prepare("INSERT INTO titik_terbaru (dibuat, isi) VALUES (?, ?)").bind(kini, teks),
     env.DB.prepare(`DELETE FROM titik_terbaru WHERE id NOT IN (SELECT id FROM titik_terbaru ORDER BY id DESC LIMIT ${SIMPAN})`),
   ]);
+  /* monitoring operasi udara: nilai aksi wb 48 jam terakhir terhadap putaran ini (hanya satu putaran disimpan, jadi bertahap); galat tak menahan putaran */
+  let operasi = null; try { operasi = await nilaiAksi(env, titikDariPutaran(isi), kini); } catch (e) { console.error("titik: nilai aksi operasi", String(e?.message || e).slice(0, 120)); }
   let sippa; try { sippa = await alarmTitikSippa(env, titik, sebelumnya, kini);
     if (!sippa.lewat) await env.DB.prepare("INSERT INTO titik_proses_sippa (id, putaran) VALUES (1, (SELECT max(id) FROM titik_terbaru)) ON CONFLICT (id) DO UPDATE SET putaran = excluded.putaran").run(); }
   catch (e) { sippa = {galat: String(e?.message || e).slice(0, 120)}; console.error("titik: alarm SIPPA", sippa.galat); }   // tabel 0067 belum ada = galat dicatat, putaran tetap sah
@@ -145,7 +148,7 @@ export async function perbaruiTitik(env, kini = Date.now()) {
      batch TERPISAH dari titik_terbaru dan tidak pernah melempar (tabel belum ada / galat D1 = satu console.warn), supaya putaran titik tetap sah. Sensor galat tidak menyumbang baris. */
   const granul = await catatGranul(env, hasil, kini);
   if (!masker) console.error("titik: masker titik_palsu.json tak terbaca, putaran tetap disimpan tanpa penyaringan");
-  return {titik: isi.baris.length, palsu, ...(masker ? {} : {masker: "tak terbaca"}), rusak: hasil.reduce((a, h) => a + h.rusak, 0), galat, sippa, granul};
+  return {titik: isi.baris.length, palsu, ...(masker ? {} : {masker: "tak terbaca"}), rusak: hasil.reduce((a, h) => a + h.rusak, 0), galat, sippa, granul, ...(operasi ? {operasi} : {})};
 }
 
 export async function titikTerbaru(env) {

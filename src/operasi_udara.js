@@ -6,7 +6,8 @@ import {json, gagal, bacaBody, sha, adminOK} from "./worker.js";
 import {tglSah, wib, superOK} from "./posko.js";
 import {stafPeran, stafNyata} from "./staf.js";
 import {urai, tanggalOperasi} from "./operasi_wa.js";
-import {hitungNilai} from "./operasi_nilai.js";
+import {hitungNilai, menitRespons, median} from "./operasi_nilai.js";
+import {gunaAksi, lengkapi} from "./operasi_hasil.js";
 
 export const PERAN_BACA = ["udara", "pusdalops", "koordalops", "pimpinan", "tmc"];
 const tanpaTabel = e => /no such table: op_/i.test(String(e?.message || e));
@@ -74,12 +75,16 @@ export async function catatOperasi(env, {id, teks, tanggal, diterima}) {
   const jamTemuan = tgl === wib(diterima) ? diterima : null;
   for (const t of h.temuan) st.push(P("INSERT OR IGNORE INTO op_temuan (tanggal, jam_utc, registrasi, lat, lon, status, luas_klaim_ha, lokasi, wa_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
     tgl, jamTemuan, t.registrasi, t.lat, t.lon, t.status, t.luas_klaim_ha ?? null, t.lokasi ?? null, id));
-  for (const g of h.gerak) { const jam = g.jam_utc ? Date.parse(g.jam_utc) : null;
+  for (const g of h.gerak) { const drop = g.tindakan === "drop", jam = g.jam_utc ? Date.parse(g.jam_utc) : drop ? diterima : null;   // aksi drop: jam = jam pesan diterima
     st.push(P("INSERT INTO op_gerak (tanggal, registrasi, jenis, jam_utc, misi, lokasi, lat, lon, rujukan, alasan, wa_id, rute) SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12 WHERE NOT EXISTS (SELECT 1 FROM op_gerak WHERE tanggal = ?1 AND registrasi = ?2 AND jenis = ?3 AND jam_utc IS ?4)",
-      tgl, g.registrasi, g.jenis, jam, g.misi ?? null, g.target?.lokasi ?? null, g.target?.lat ?? null, g.target?.lon ?? null, g.rujukan ?? null, g.alasan ?? null, id, g.rute ?? null)); }
+      tgl, g.registrasi, g.jenis, jam, g.misi ?? null, g.target?.lokasi ?? null, g.target?.lat ?? null, g.target?.lon ?? null, g.rujukan ?? null, drop ? "water_drop" : g.alasan ?? null, id, g.rute ?? null));
+    if (["drops", "liter", "lapor", "luas_terbakar_ha", "luas_padam_ha", "menit_terbang"].some(k => g[k] != null))
+      st.push(P("INSERT INTO op_gerak_hasil (gerak_id, drops, liter, lapor, luas_terbakar_ha, luas_padam_ha, menit_terbang) SELECT id, ?5, ?6, ?7, ?8, ?9, ?10 FROM op_gerak WHERE tanggal = ?1 AND registrasi = ?2 AND jenis = ?3 AND jam_utc IS ?4 ORDER BY id LIMIT 1 ON CONFLICT (gerak_id) DO UPDATE SET drops = ?5, liter = ?6, lapor = ?7, luas_terbakar_ha = ?8, luas_padam_ha = ?9, menit_terbang = ?10",
+        tgl, g.registrasi, g.jenis, jam, g.drops ?? null, g.liter ?? null, g.lapor ?? null, g.luas_terbakar_ha ?? null, g.luas_padam_ha ?? null, g.menit_terbang ?? null)); }
   for (const s of h.status) st.push(P("INSERT INTO op_armada_status (tanggal, registrasi, status, alasan, sumber, diubah) VALUES (?1, ?2, ?3, ?4, 'wa', ?5) ON CONFLICT (tanggal, registrasi) DO UPDATE SET status = ?3, alasan = ?4, sumber = 'wa', diubah = ?5",
     tgl, s.registrasi, s.status, s.alasan ?? null, diterima));
   if (st.length) await env.DB.batch(st);
+  try { await lengkapi(env, diterima); } catch (e) { if (!tanpaTabel(e)) throw e; }   // 0106 belum ada: pesan tetap tercatat tanpa pemasangan foto/koordinat
   return {tanggal: tgl, dikenali: h.dikenali, temuan: h.temuan.length, gerak: h.gerak.length, status: h.status.length, tertahan: h.tertahan.map(({alasan, lokasi}) => ({alasan, ...(lokasi ? {lokasi} : {})}))};
 }
 
@@ -176,6 +181,58 @@ async function nilai(env, req, url) {
     ...hitungNilai({base, armada, status, gerak, temuan, renlap, target, titik}), ...alasanTitik ? {galat_titik: alasanTitik} : {}});
 }
 
+/* ================================================================ monitoring operasi udara: aksi, hasil (padam/masih_api), foto, KPI */
+const bulat = (x, d = 3) => Math.round(x * 10 ** d) / 10 ** d;
+const SIAP = ["siap", "operasi", "siaga"];
+function hitungK({aks, status, tem, menitTerbang}) {
+  const n = h => aks.filter(a => a.hasil === h).length, padam = n("padam"), masih = n("masih_api"), dinilai = padam + masih;
+  const terbang = new Set(aks.map(a => `${a.tanggal}|${a.registrasi}`)), siap = status.filter(s => SIAP.includes(s.status));
+  const wb = aks.filter(a => a.guna === "wb" && Number.isFinite(a.jam_utc)).map(a => ({jam_utc: a.jam_utc, lat: a.lat, lon: a.lon, rujukan: a.rujukan})), {menit} = menitRespons(tem, wb);
+  const berfoto = aks.filter(a => a.foto.length).length, jumlah = k => aks.reduce((s, a) => s + (a[k] ?? 0), 0);
+  return {sortie: aks.filter(a => a.jenis === "berangkat").length, aksi_wb: aks.filter(a => a.guna === "wb").length, dinilai, padam, masih_api: masih, menunggu: n("menunggu"),
+    persen_padam: dinilai ? bulat(padam / dinilai) : null, respons_median_menit: menit.length ? bulat(median(menit), 1) : null,
+    hari_siap: siap.length, hari_terbang: terbang.size, utilisasi: siap.length ? bulat(siap.filter(s => terbang.has(`${s.tanggal}|${s.registrasi}`)).length / siap.length) : null,
+    aksi_berfoto: berfoto, persen_berfoto: aks.length ? bulat(berfoto / aks.length) : null, drop_total: jumlah("drop"), liter_total: jumlah("liter"), menit_terbang: menitTerbang};
+}
+
+/* GET /api/operasi/monitor?dari=&sampai= (default hari ini WIB, maks 31 hari). Hak baca = nilai/peta. Aksi = gerak berangkat (sortie atau laporan drop) bermisi wb/patroli/omc;
+   hasil hanya dinilai untuk wb (padam/masih_api dari cron FIRMS, tanpa baris hasil: menunggu bila koordinat+jam ada), patroli dan omc = tak_dinilai. */
+async function monitor(env, req, url, kini) {
+  if (!await adminOK(env, req) && !await stafPeran(env, req, PERAN_BACA)) return gagal(403, "monitor operasi udara hanya untuk akun centurisk97, staf berperan, atau moderator");
+  const u = new URL(url); for (const k of ["dari", "sampai"]) if (!u.searchParams.has(k)) u.searchParams.set(k, wib(kini));
+  const r = rentang(u, 31); if (r instanceof Response) return r;
+  const nd = stafNyata(req) ? "AND g.dummy = 0" : "", A = [r.dari, r.sampai], Q = (sql, ...b) => env.DB.prepare(sql).bind(...b).all().then(x => x.results);
+  const [armada, gerak, foto, status, tem] = await Promise.all([
+    Q(`SELECT registrasi, base_id, peran FROM op_armada ${nd ? "WHERE dummy = 0" : ""}`),
+    Q(`SELECT g.id, g.tanggal, g.registrasi, g.jenis, g.jam_utc, g.misi, g.lokasi, g.lat, g.lon, g.rujukan, g.alasan, h.sumber_lokasi, h.hasil, h.titik_dekat, h.drops, h.liter, h.lapor, h.luas_terbakar_ha, h.luas_padam_ha, h.menit_terbang
+      FROM op_gerak g LEFT JOIN op_gerak_hasil h ON h.gerak_id = g.id WHERE g.tanggal BETWEEN ?1 AND ?2 ${nd} ORDER BY g.jam_utc, g.id LIMIT 3000`, ...A),
+    Q("SELECT id, gerak_id, coalesce(jam_utc, diterima) jam_utc, lat, lon FROM op_foto WHERE gerak_id IN (SELECT id FROM op_gerak WHERE tanggal BETWEEN ?1 AND ?2) ORDER BY 3, id LIMIT 5000", ...A),
+    Q("SELECT tanggal, registrasi, status FROM op_armada_status WHERE tanggal BETWEEN ?1 AND ?2", ...A),
+    Q(`SELECT tanggal, jam_utc, registrasi, lat, lon, status FROM op_temuan g WHERE tanggal BETWEEN ?1 AND ?2 ${nd} LIMIT 5000`, ...A)]);
+  const am = new Map(armada.map(a => [a.registrasi, a]));
+  const aksi = gerak.filter(g => g.jenis === "berangkat").flatMap(g => {
+    const guna = gunaAksi(g.misi, am.get(g.registrasi)?.peran); if (!guna) return [];
+    const ada = g.lat != null && g.jam_utc != null, hasil = g.hasil ?? (guna === "wb" && ada && kini - g.jam_utc <= 48 * 36e5 ? "menunggu" : "tak_dinilai");
+    return [{id: g.id, tanggal: g.tanggal, registrasi: g.registrasi, base_id: am.get(g.registrasi)?.base_id ?? null, guna, jenis: g.alasan === "water_drop" ? "drop" : "berangkat", jam_utc: g.jam_utc, lokasi: g.lokasi,
+      lat: g.lat, lon: g.lon, sumber_lokasi: g.lat == null ? null : g.sumber_lokasi ?? "teks", hasil, titik_dekat: hasil === "tak_dinilai" ? null : g.titik_dekat ?? 0,
+      drop: g.drops, liter: g.liter, lapor_akhir: g.lapor, luas_terbakar_ha: g.luas_terbakar_ha, luas_padam_ha: g.luas_padam_ha, rujukan: g.rujukan,
+      foto: foto.filter(f => f.gerak_id === g.id).map(f => ({id: f.id, url: `/api/operasi/foto/${f.id}`, jam_utc: f.jam_utc, lat: f.lat, lon: f.lon}))}];
+  });
+  const menit = gerak.filter(g => g.menit_terbang != null), pada = (cocok) => ({aks: aksi.filter(a => cocok(a.registrasi)), status: status.filter(s => cocok(s.registrasi)), tem, menitTerbang: menit.filter(g => cocok(g.registrasi)).reduce((s, g) => s + g.menit_terbang, 0)});
+  const regs = [...new Set([...aksi.map(a => a.registrasi), ...status.map(s => s.registrasi)])].sort(), bases = [...new Set(regs.map(x => am.get(x)?.base_id).filter(Boolean))].sort();
+  return json({dari: r.dari, sampai: r.sampai, aksi: aksi.map(({rujukan, ...a}) => a),
+    kpi: {semua: hitungK(pada(() => true)), base: Object.fromEntries(bases.map(b => [b, hitungK(pada(x => am.get(x)?.base_id === b))])), armada: Object.fromEntries(regs.map(x => [x, hitungK(pada(y => y === x))]))}}, 200, {"cache-control": "no-store"});
+}
+
+/* GET /api/operasi/foto/:id -> byte foto dari R2. Hak baca sama; privat (data operasional). */
+async function fotoBerkas(env, req, url, kini, ctx, id) {
+  if (!await adminOK(env, req) && !await stafPeran(env, req, PERAN_BACA)) return gagal(403, "foto operasi hanya untuk akun centurisk97, staf berperan, atau moderator");
+  if (!env.MEDIA) return gagal(503, "penyimpanan belum aktif");
+  const r = await env.DB.prepare("SELECT w.berkas, w.tipe FROM op_foto f JOIN wa_masuk w ON w.id = f.wa_id WHERE f.id = ?").bind(Number(id)).first();
+  const o = r?.berkas && await env.MEDIA.get(r.berkas); if (!o) return gagal(404, "foto tidak ada");
+  return new Response(o.body, {headers: {"content-type": /^image\/(jpeg|png|webp)$/.test(r.tipe || "") ? r.tipe : "application/octet-stream", "cache-control": "private, max-age=3600", "x-content-type-options": "nosniff", "content-security-policy": "sandbox"}});
+}
+
 /* digabung ke RUTE di src/worker.js; nama jalur tanpa garis (gerbang cakupan) */
 export const RUTE_OPERASI = Object.fromEntries(Object.entries({
   "GET /api/operasi/peta": peta,
@@ -183,4 +240,6 @@ export const RUTE_OPERASI = Object.fromEntries(Object.entries({
   "GET /api/operasi/temuan": temuanMesin,
   "POST /api/operasi/renlap": renlapMesin,
   "GET /api/operasi/nilai": nilai,
+  "GET /api/operasi/monitor": monitor,
+  "GET /api/operasi/foto/:id": fotoBerkas,
 }).map(([k, f]) => [k, bungkus(f)]));

@@ -1,5 +1,5 @@
 {
-  "_catatan": "Pesan WA grup satgas udara 3 Nov 2026 tanpa nama kru. Mencakup rencana patroli banyak titik (PK-IKC, PK-FPA), keberangkatan 15 titik (PK-RTQ, dipotong 2), demobilisasi N-4875A, ferry RDPL-34194, OMC PK-SNK, dan jam Z pagi WITA yang jatuh ke hari UTC sebelumnya. 'harap' dibekukan dari keluaran pengurai sesudah diperiksa tangan (sesi induk 3 Nov). Ditambah siang 3 Nov: temuan PK-RTQ Tapin, rencana sortie 2 PK-ALE (8 titik), \"Departure MVT\" PK-RTY (titik 7 berlintang E salah ketik dibuang, tidak ditebak), pesan persiapan tanpa isi, WB Mi-8 RA-22747 dengan lokasi target sebelum koordinat. Siang 3 Nov (2): HS CLEAR Sungai Salai PK-RTQ, Water Drop N261BE tanpa koordinat di teks (koordinat hanya di foto, tidak dibaca).",
+  "_catatan": "Pesan WA grup satgas udara 3 Nov 2026 tanpa nama kru. Mencakup rencana patroli banyak titik (PK-IKC, PK-FPA), keberangkatan 15 titik (PK-RTQ, dipotong 2), demobilisasi N-4875A, ferry RDPL-34194, OMC PK-SNK, dan jam Z pagi WITA yang jatuh ke hari UTC sebelumnya. 'harap' dibekukan dari keluaran pengurai sesudah diperiksa tangan (sesi induk 3 Nov). Ditambah siang 3 Nov: temuan PK-RTQ Tapin, rencana sortie 2 PK-ALE (8 titik), \"Departure MVT\" PK-RTY (titik 7 berlintang E salah ketik dibuang, tidak ditebak), pesan persiapan tanpa isi, WB Mi-8 RA-22747 dengan lokasi target sebelum koordinat. Siang 3 Nov (2): HS CLEAR Sungai Salai PK-RTQ, Water Drop N261BE tanpa koordinat di teks (koordinat hanya di foto, tidak dibaca). Siang 3 Nov (3): 10 pesan nyata tambahan (nama kru diganti X/Y): hasil patroli satu titik tanpa registrasi (rujukan VOR KTG -> PK-ALE), After WB VN-8416 (17 drop, 68.000 liter, HS masih berasap, 8 ha terbakar, 3 ha dipadamkan, ETA 06:10Z), Plan Mov PK-FPA 8 titik (titik 2 koordinat rusak dibuang), FS Enroute, Arr Mov PK-FPA (flight time 03:15 = 195 menit; dua titik koordinat rusak ditahan), dan Water Drop VH-L6T. 'harap' dibekukan dari keluaran pengurai sesudah diperiksa tangan; n261be_water_drop kini menghasilkan gerak drop (bukan lagi bukti_wb).",
   "armada": [
     "H-3217",
     "PK-FPA",
@@ -322,9 +322,292 @@
       "id": "n261be_water_drop",
       "teks": "03 November 2026\n\n*Water Drop*\nSortie 1 N261BE\nLokasi FS : *PURWASARI/TAMBAN/ BARITO KUALA*\n\nSalam Hormat,\n*TRIVEDA-OPS/Satgaskarhutla2026/BNPB/Kalsel/Waterbombing/N261BE*",
       "harap": {
-        "dikenali": "bukti_wb",
+        "dikenali": "water_drop",
         "temuan": [],
+        "gerak": [
+          {
+            "registrasi": "N261BE",
+            "jenis": "berangkat",
+            "misi": "wb",
+            "tindakan": "drop",
+            "target": {
+              "lokasi": "Purwasari, Tamban, Barito Kuala"
+            }
+          }
+        ],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "ale_hs_sukaharapan",
+      "teks": "*4. Sukaharapan, Kendawangan, Ketapang*\n02°18′06.41″ S 110°39′08.78″ E\nR 125°\nD 50 Nm Fr VOR KTG\n*RMK : Target Clear*",
+      "harap": {
+        "dikenali": "temuan",
+        "temuan": [
+          {
+            "registrasi": "PK-ALE",
+            "lokasi": "Sukaharapan, Kendawangan, Ketapang",
+            "lat": -2.30178,
+            "lon": 110.65244,
+            "status": "clear"
+          }
+        ],
         "gerak": [],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "vn8416_after_wb",
+      "teks": "*After WB  / 3 November 2026*\n\n*Sortie 1*\n\n*Reg. : VN-8416*\n*Loc : Air Hitam Besar, Kec. Kendawangan, Kab. Ketapang*\n\n- 17 X WB\n- 68.000 Liter Air \n- HS Masih Berasap\n- *Back to base due to Endurance*\n- ⁠Luas lahan yang terbakar +- 8 Ha\n- ⁠Luas lahan yang dipadamkan +- 3 Ha\n- ETA KTG : 13:10 LT / 06:10 Z\n\n_*PT. Buana Multi Techindo/VN-8416/OPSKTG*_",
+      "harap": {
+        "dikenali": "water_drop",
+        "temuan": [],
+        "gerak": [
+          {
+            "registrasi": "VN-8416",
+            "jenis": "berangkat",
+            "misi": "wb",
+            "tindakan": "drop",
+            "target": {
+              "lokasi": "Air Hitam Besar, Kec. Kendawangan, Kab. Ketapang"
+            },
+            "drops": 17,
+            "liter": 68000,
+            "luas_terbakar_ha": 8,
+            "luas_padam_ha": 3,
+            "lapor": "masih_berasap"
+          },
+          {
+            "registrasi": "VN-8416",
+            "jenis": "kembali",
+            "misi": "wb",
+            "jam_utc": "2026-11-03T06:10Z"
+          }
+        ],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "fpa_plan_sortie2",
+      "teks": "Dear All\nSelamat Siang\n\nPlan  Mov Bell 206 B3 / PK - FPA\nSortie 2\nSelasa, 03 November 2026\nMisi : Air Patrol\nFSC : UJ 4748-26\n\nCrew :\nPIC.  : Capt. X\nHLO :  Y\n\nPax : Nil\n\nENG ON.  :  \nETD PNK/WIOO : 05.30Z/12.30LT\nETA PNK/WIOO : 08.00Z/15.00LT\nENG OFF  :  \n\nRute: \n*Dept.Lanud SPO*\n\n*1. Rantau Panjang, Sebangki, Landak*\n00°03'45.00\" N\n109°30'45.00\" E\nR 044°\nD 12 Nm Fr Vor PNK \n\n*2. Rabak, Sengah Temila,  Landak*\n00°28'.33.49\" N\n109°40'53.98\" E\nR 029°\nD 38 Nm Fr Vor PNK \n\n*3. Puteng, Teriak, Bengkayang*\n00°46'48.72\" N\n109°37'02.89\" E\nR 015°\nD 53 Nm Fr Vor PNK \n\n*4. Balai Gemuruh, Subah, Sambas*\n01°06'09.54\" N\n109°26'46.21\" E\nR 003°\nD 71 Nm Fr Vor PNK \n\n*5. Maribas, Tebas, Sambas*\n01°05'37.39\" N\n109°07'26.15\" E\nR 347°\nD 72 Nm Fr Vor PNK \n\n*6. Panjitan, Singkawang Timur, Singkawang*\n00°54'33.05\" N\n109°03'08.28\" E\nR 341°\nD 62 Nm Fr Vor PNK\n\n*7. Bukit Batu, Sungai Kunyit, Mempawah*\n00°32'40.45\" N\n109°00'32.33\" E\nR 329°\nD 43 Nm Fr Vor PNK\n\n*7. Kubu Padi, Kuala Mandor, Kubu Raya*\n00°08'25.00\" N\n109°24'52.00\" E\nR 010°\nD 13 Nm Fr Vor PNK \n\n*Land. Lanud SPO*\n\nDistance : 200 Nm\n\nRegards,\n*PT.FPU/Ops Fire Patrol PNK (PK-FPA)*",
+      "harap": {
+        "dikenali": "rencana",
+        "temuan": [],
+        "gerak": [
+          {
+            "registrasi": "PK-FPA",
+            "jenis": "rencana",
+            "jam_utc": "2026-11-03T05:30Z",
+            "misi": "patroli",
+            "rute": "[{\"urut\":1,\"lokasi\":\"Rantau Panjang, Sebangki, Landak\",\"lat\":0.0625,\"lon\":109.5125},{\"urut\":2,\"lokasi\":\"Puteng, Teriak, Bengkayang\",\"lat\":0.7802,\"lon\":109.61747},{\"urut\":3,\"lokasi\":\"Balai Gemuruh, Subah, Sambas\",\"lat\":1.10265,\"lon\":109.44617},{\"urut\":4,\"lokasi\":\"Maribas, Tebas, Sambas\",\"lat\":1.09372,\"lon\":109.12393},{\"urut\":5,\"lokasi\":\"Panjitan, Singkawang Timur, Singkawang\",\"lat\":0.90918,\"lon\":109.0523},{\"urut\":6,\"lokasi\":\"Bukit Batu, Sungai Kunyit, Mempawah\",\"lat\":0.54457,\"lon\":109.00898},{\"urut\":7,\"lokasi\":\"Kubu Padi, Kuala Mandor, Kubu Raya\",\"lat\":0.14028,\"lon\":109.41444}]",
+            "target": {
+              "lokasi": "Rantau Panjang, Sebangki, Landak",
+              "lat": 0.0625,
+              "lon": 109.5125
+            }
+          }
+        ],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "fs_enroute_bengkarek",
+      "teks": "*FS Enroute*\n*1. Bengkarek, Sungai Ambawang, Kubu Raya*\n00°07'32.00\" S\n109°30'40.00\" E\nR 108°\nD 08 Nm Fr Vor PNK\n*Estimasi Lahan Terbakar -+ 500 M*",
+      "harap": {
+        "dikenali": "temuan",
+        "temuan": [
+          {
+            "registrasi": "PK-FPA",
+            "lokasi": "Bengkarek, Sungai Ambawang, Kubu Raya",
+            "lat": -0.12556,
+            "lon": 109.51111,
+            "status": "fs"
+          }
+        ],
+        "gerak": [],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "fpa_arr_mov_sortie1",
+      "teks": "Dear All\nSelamat Siang\n\nArr Mov Bell 206 B3 / PK - FPA\nSortie 1\nSelasa, 03 November 2026\nMisi : Air Patrol\nFSC : UJ 4748-26\n\nCrew :\nPIC.  : Capt. X\nHLO :  Y\n\nPax : Nil\n\nENG ON.  : 00.53Z/07.53LT\nATD PNK/WIOO : 00.56Z/07.56LT\nATA PNK/WIOO : 04.11Z/11.11LT\nENG OFF  : 04.13Z/11.13LT\n  \nFlight Time : *03:15 Hrs*\nBlok Time   : *03:20 Hrs*\n\nRute: \n*Dept.Lanud SPO*\n\n*1. Sungai Bulan, Sungai Raya, Kubu Raya*\n00°18'40.00\" S\n109°29'54.00\" E\nR 151°\nD 15 Nm Fr Vor PNK \n*Target Clear*\n\n*2. Olak-Olak, Kubu, Kubu Raya*\n00°32'30.00\" S\n109°19'23.00\" E\nR 186°\nD 28 Nm Fr Vor PNK\n*Target Clear*\n\n*3. Muara Tiga, Batu Ampar, Kubu Raya*\n00°41'12.48\" S\n109°49'06.27 E\nR 143°\nD 45 Nm Fr Vor PNK \n*Target Clear*\n\n*4. Tj.Harapan, Batu Ampar, Kubu Raya*\n00°50'33.73\" S\n109°29'46.87\" E\nR 170°\nD 48 Nm Fr Vor PNK\n*Target Clear*\n\n*5. Batu Barat, Simpang Hilir, Kayong Utara*\n01°07'23.88\" S\n110°04'15.56\" E\nR 146°\nD 75 Nm Fr Vor PNK\n*Target Berasap*\n*Estimasi Lahan Terbakar -+ 8 Ha*\n\n*6. Pandu Banjar, Simpang Hilir, Kayong Utara*\n00°50'59.10\" S\n110°08'07.37\" E\nR 135°\nD 65 Nm Fr Vor PNK\n*Target Clear*\n\n*7. Tlk.Bakung, Sungai Ambawang, Kubu Raya*\n00°00'12.46° N\n109°48'05.65\" E\nR 079°\nD 26 Nm Fr Vor PNK\n*Target Clear*\n\n*8. Pasak, Sungai Ambawang, Kubu Raya*\n00°05'53.00\" S\n109°35'38.00\" E\nR 095°\nD 13 Nm Fr Vor PNK \n*Target Berasap*\n*Estimasi Lahan Terbakar -+ 1 Ha*\n\n*FS Enroute*\n*1. Bengkarek, Sungai Ambawang, Kubu Raya*\n00°07'32.00\" S\n109°30'40.00\" E\nR 108°\nD 08 Nm Fr Vor PNK\n*Estimasi Lahan Terbakar -+ 1 Ha*\n\n*Land. Lanud SPO*\n\nTotal Distance : 220 NM\n\nRegards,\n*PT.FPU/Ops Fire Patrol PNK (PK-FPA)*",
+      "harap": {
+        "dikenali": "kembali",
+        "temuan": [
+          {
+            "registrasi": "PK-FPA",
+            "lokasi": "Sungai Bulan, Sungai Raya, Kubu Raya",
+            "lat": -0.31111,
+            "lon": 109.49833,
+            "status": "clear"
+          },
+          {
+            "registrasi": "PK-FPA",
+            "lokasi": "Olak-Olak, Kubu, Kubu Raya",
+            "lat": -0.54167,
+            "lon": 109.32306,
+            "status": "clear"
+          },
+          {
+            "registrasi": "PK-FPA",
+            "lokasi": "Tj.Harapan, Batu Ampar, Kubu Raya",
+            "lat": -0.8427,
+            "lon": 109.49635,
+            "status": "clear"
+          },
+          {
+            "registrasi": "PK-FPA",
+            "lokasi": "Batu Barat, Simpang Hilir, Kayong Utara",
+            "lat": -1.1233,
+            "lon": 110.07099,
+            "status": "berasap",
+            "luas_klaim_ha": 8
+          },
+          {
+            "registrasi": "PK-FPA",
+            "lokasi": "Pandu Banjar, Simpang Hilir, Kayong Utara",
+            "lat": -0.84975,
+            "lon": 110.13538,
+            "status": "clear"
+          },
+          {
+            "registrasi": "PK-FPA",
+            "lokasi": "Pasak, Sungai Ambawang, Kubu Raya",
+            "lat": -0.09806,
+            "lon": 109.59389,
+            "status": "berasap",
+            "luas_klaim_ha": 1
+          },
+          {
+            "registrasi": "PK-FPA",
+            "lokasi": "Bengkarek, Sungai Ambawang, Kubu Raya",
+            "lat": -0.12556,
+            "lon": 109.51111,
+            "status": "fs",
+            "luas_klaim_ha": 1
+          }
+        ],
+        "gerak": [
+          {
+            "registrasi": "PK-FPA",
+            "jenis": "kembali",
+            "jam_utc": "2026-11-03T04:11Z",
+            "menit_terbang": 195,
+            "misi": "patroli"
+          }
+        ],
+        "status": [],
+        "tertahan": [
+          {
+            "alasan": "koordinat",
+            "lokasi": "Muara Tiga, Batu Ampar, Kubu Raya"
+          },
+          {
+            "alasan": "koordinat",
+            "lokasi": "Tlk.Bakung, Sungai Ambawang, Kubu Raya"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ale_hs_harapan_baru",
+      "teks": "*3. Harapan Baru, Air Upas, Ketapang*\n02°13′18.44″ S 110°52′47.82″ E\nR 113°\nD 60 Nm Fr Vor KTG\n*RMK : Target Clear*",
+      "harap": {
+        "dikenali": "temuan",
+        "temuan": [
+          {
+            "registrasi": "PK-ALE",
+            "lokasi": "Harapan Baru, Air Upas, Ketapang",
+            "lat": -2.22179,
+            "lon": 110.87995,
+            "status": "clear"
+          }
+        ],
+        "gerak": [],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "ale_new_hs_biku",
+      "teks": "*1.NEW HS ON ROUTE*\n*Biku Sarana, Jelai Hulu, Ketapang*\n02°09′25.00″ S 110°52′10.00″ E\nRad. 110°\nDist. 58 Nm from KTG\n*RMK : Target Berasap*\n*Perkiraan Luas Area Terbakar ± 1 Ha*",
+      "harap": {
+        "dikenali": "temuan",
+        "temuan": [
+          {
+            "registrasi": "PK-ALE",
+            "lokasi": "Biku Sarana, Jelai Hulu, Ketapang",
+            "lat": -2.15694,
+            "lon": 110.86944,
+            "status": "berasap",
+            "luas_klaim_ha": 1
+          }
+        ],
+        "gerak": [],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "ale_hs_perigi",
+      "teks": "*2.Perigi, jelai hulu, ketapang*\n02°00′26.68″ S 110°47′34.37″ E\nR 102°\nD 50 Nm Fr VOR KTG\n*RMK : Target Clear*",
+      "harap": {
+        "dikenali": "temuan",
+        "temuan": [
+          {
+            "registrasi": "PK-ALE",
+            "lokasi": "Perigi, jelai hulu, ketapang",
+            "lat": -2.00741,
+            "lon": 110.79288,
+            "status": "clear"
+          }
+        ],
+        "gerak": [],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "ale_hs_randai",
+      "teks": "*1.Randai, Marau, Ketapang*\n02°07′16.79″ S 110°32′31.52″ E\nR 117°\nD 39 Nm Fr VOR KTG\n*RMK : Target Clear*",
+      "harap": {
+        "dikenali": "temuan",
+        "temuan": [
+          {
+            "registrasi": "PK-ALE",
+            "lokasi": "Randai, Marau, Ketapang",
+            "lat": -2.12133,
+            "lon": 110.54209,
+            "status": "clear"
+          }
+        ],
+        "gerak": [],
+        "status": [],
+        "tertahan": []
+      }
+    },
+    {
+      "id": "vhl6t_water_drop",
+      "teks": "*Water Drop / 3 November 2026*\n\n*Sortie 1*\n\n*REG : VH-L6T*\n*LOC : Batu Barat, Simpang Hilir, Kayong Utara*\n\n*EDC-OPS/SatgasKarhutla2026/BNPB/Kalbar/Waterbombing/VH-L6T*",
+      "harap": {
+        "dikenali": "water_drop",
+        "temuan": [],
+        "gerak": [
+          {
+            "registrasi": "VH-L6T",
+            "jenis": "berangkat",
+            "misi": "wb",
+            "tindakan": "drop",
+            "target": {
+              "lokasi": "Batu Barat, Simpang Hilir, Kayong Utara"
+            }
+          }
+        ],
         "status": [],
         "tertahan": []
       }
