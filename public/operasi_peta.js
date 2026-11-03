@@ -62,13 +62,7 @@
       const lv = p3 ? 3 : p2 ? 2 : dk.length ? 1 : 0, tem = (OP.data.temuan || []).filter(t => ar.some(a => a.registrasi === t.registrasi) && t.status !== "clear").length;
       return {b, g, p3, lv, tem, siap: ar.filter(a => ["siap", "operasi", "siaga"].includes(a.status)).length, n: ar.length, lay: kelayakan(b)}; });
     const jm = f => baris.reduce((a, x) => a + f(x), 0), nol = v => v ? fmt(v) : "–";
-    const ag = OP.mon?.kpi?.semua, sortie = ag?.sortie ?? (OP.data.gerak || []).filter(x => x.jenis === "berangkat").length;
-    const kartu = `<div class="ops-ringkas">
-      <div><b>${fmt(jm(x => x.siap))}<small>/${fmt(jm(x => x.n))}</small></b><span>armada siap</span></div>
-      <div><b>${fmt(sortie)}</b><span>sortie hari ini</span></div>
-      <div><b>${ag ? fmt(ag.aksi_wb) : "–"}</b><span>aksi water bombing</span></div>
-      <div class="${ag?.persen_padam != null && ag.persen_padam < .5 ? "merah" : ""}"><b>${ag ? persen(ag.persen_padam) : "–"}</b><span>padam ≥ 24 jam</span></div></div>
-      <div class="ops-kunci">${GUNA.map(([k, s, t]) => `<span>${ikG(k)}<b>${s}</b>${t}</span>`).join("")}<span><i class="ops-cl"></i><b>CL</b>cluster prioritas di jangkauan</span></div>`;
+        const kartu = `<div class="ops-kunci">${GUNA.map(([k, s, t]) => `<span>${ikG(k)}<b>${s}</b>${t}</span>`).join("")}<span><i class="ops-cl"></i><b>CL</b>cluster prioritas di jangkauan</span></div>`;
     const kepala = `<div class="tb kepala" style="${G}"><span></span><span>Base</span><span class="n">Prov</span><span class="n" title="Water bombing">WB</span><span class="n" title="Patroli">PTR</span><span class="n" title="Modifikasi cuaca">OMC</span><span class="n" title="Cluster prioritas dalam jangkauan">CL</span><span>Api</span></div>`;
     const total = `<div class="tb tb-total" style="${G}"><span></span><span>Grand total</span><span></span><span class="n">${nol(jm(x => x.g.wb))}</span><span class="n">${nol(jm(x => x.g.patroli))}</span><span class="n">${nol(jm(x => x.g.omc))}</span><span class="n">${nol(klusterAktif().filter(k => k.level >= 3).length)}</span><span></span></div>`;
     box.innerHTML = kartu + kepala + total + baris.map(x => `<button class="tb${x.lv >= 2 ? " hl" + x.lv : ""}${OP.pilih === x.b.id ? " ops-pilih" : ""}" style="${G}" role="listitem" data-ops="${esc(x.b.id)}" title="${esc(x.b.nama)}, ${fmt(x.siap)} dari ${fmt(x.n)} armada siap. ${esc(x.lay.ket)}">
