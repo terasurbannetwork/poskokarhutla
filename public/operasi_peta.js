@@ -178,7 +178,7 @@
     if (typeof UBIN === "object") Object.assign(UBIN, {opsbase: ["#0b2545", "#3b6fb0", "pesawat"], opstemuan: ["#7a1d10", "#f2693f", "api"], opsaksi: ["#1d4e89", "#5fd0c5", "titik"]});
     if (typeof UBIN_PENDEK === "object") Object.assign(UBIN_PENDEK, {opsbase: "Base & armada", opstemuan: "Temuan pilot", opsaksi: "Aksi & hasil"});
     const L = $("#lapis");
-    if (L && !L.querySelector('[data-l="opsbase"]')) L.querySelector("details")?.insertAdjacentHTML("beforebegin", `<details open><summary>Operasi udara</summary><!-- bawaan tidak tercentang (pemilik 3 Nov 2026) -->
+    if (L && !L.querySelector('[data-l="opsbase"]')) L.insertAdjacentHTML("beforeend", `<details open><summary>Operasi udara</summary><!-- grup paling bawah, bawaan tidak tercentang (pemilik 3 Nov 2026) -->
       <label><input type="checkbox" data-l="opsbase"> Base dan armada (water bombing, patroli, OMC)</label>
       <label><input type="checkbox" data-l="opstemuan"> Temuan pilot dari laporan WA satgas</label>
       <label><input type="checkbox" data-l="opsaksi"> Aksi armada dan hasilnya (padam 24 jam)</label></details>`);
