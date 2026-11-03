@@ -258,7 +258,7 @@
     };
     const wadahPeta = h("div", {class: "dl-peta"}, h("p", {class: "bn-pesan", teks: "Memuat peta…"}));
     requestAnimationFrame(() => gambarPeta(wadahPeta, pekan, bukaKab));   // MapLibre butuh wadah yang sudah terpasang dan berukuran
-    return bagian("peta", "banjir", "Banjir sepekan per wilayah", "Klik provinsi untuk kab/kota, kab/kota untuk kecamatan, kecamatan untuk desa/kelurahan. Klik kepala kolom untuk mengurutkan. Klik wilayah di peta untuk kontak BPBD dan rinciannya.",
+    return bagian("peta", "banjir", "Banjir sepekan per wilayah", null,
       wadahPeta, h("div", {class: "dl-legenda"}, h("span", {class: "dl-leg dl-leg-belum", teks: "Belum dilaporkan surut"}), h("span", {class: "dl-leg dl-leg-surut", teks: "Sudah dilaporkan surut"})),
       tabel);
   }
