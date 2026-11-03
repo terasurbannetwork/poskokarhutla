@@ -10,9 +10,9 @@ Sunting di `.docx`; `.pdf` untuk edaran dan paraf. Penyusun ulang ada di `penyus
 
 ```
 cd penyusun
-NODE_PATH=C:/Users/USER/laporan_bulanan/node_modules node nk_payung_kemdiktisaintek.js
-NODE_PATH=C:/Users/USER/laporan_bulanan/node_modules node nk_brin.js
-NODE_PATH=C:/Users/USER/laporan_bulanan/node_modules node nk_kampus.js
+NODE_PATH=<folder node_modules laporan_bulanan> node nk_payung_kemdiktisaintek.js
+NODE_PATH=<folder node_modules laporan_bulanan> node nk_brin.js
+NODE_PATH=<folder node_modules laporan_bulanan> node nk_kampus.js
 ```
 
 PDF dibuat dengan LibreOffice headless (`soffice --headless --convert-to pdf`). Isian berstabilo kuning dalam kurung siku wajib dilengkapi.
