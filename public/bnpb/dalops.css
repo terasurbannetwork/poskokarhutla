@@ -317,7 +317,7 @@
 .dl-wrap .bn-blok{padding:0;overflow:hidden;gap:0}
 .dl-wrap .bn-blok>.dl-kepala{margin:0;padding:12px 18px;background:var(--gradien);border-bottom:2px solid var(--emas)}
 .dl-wrap .bn-blok>.dl-kepala h2{color:#fff;font:800 16px/1.25 var(--display)}
-.dl-wrap .bn-blok>.dl-kepala h2 svg{color:var(--emas)}
+.dl-wrap .bn-blok>.dl-kepala h2 svg{color:#fff}
 .dl-wrap #peta>.dl-kepala .dl-kepala-baris{justify-content:center}
 .dl-wrap .bn-blok>.dl-kepala .dl-sub{color:rgb(255 255 255 / .75)}
 .dl-wrap .bn-blok>.dl-kepala .dl-semua{background:rgb(255 255 255 / .12);color:#fff;border:0}
@@ -339,3 +339,20 @@
 .dl-pop .dl-tip-angka .dl-tip-ik{grid-area:ik;width:30px;height:30px;border-radius:9px;margin:0}
 .dl-pop .dl-tip-angka b{grid-area:b;font-size:15px}
 .dl-pop .dl-tip-angka>div>span:last-child{grid-area:t;line-height:1.25}
+
+/* tabel mengikuti tabel peta utama: kepala navy polos, garis tipis biru di bawah, baris putih bergaris tipis */
+.dl-wrap .dl-tabel thead tr,.dl-dialog .dl-tabel thead tr{background:var(--navy)}
+.dl-wrap .dl-tabel th,.dl-dialog .dl-tabel th{background:var(--navy);border-bottom:2px solid color-mix(in srgb,var(--c5) 70%,transparent);font-size:10.5px;letter-spacing:.08em;padding-top:10px;padding-bottom:10px}
+.dl-wrap .dl-tabel .dl-th-sub th{border-bottom:2px solid color-mix(in srgb,var(--c5) 70%,transparent)}
+.dl-wrap .dl-tabel thead tr:first-child th[colspan]{border-bottom:1px solid rgb(255 255 255 / .2)}
+.dl-wrap .dl-tabel td{border-bottom:1px solid var(--line);padding-top:9px;padding-bottom:9px}
+.dl-wrap .dl-tabel-wadah{border:1px solid var(--line);border-radius:12px;background:var(--card)}
+
+/* legenda prakiraan: satu baris ringkas */
+.dl-arti{display:flex!important;flex-wrap:wrap;align-items:center;gap:8px 18px;padding:10px 14px;border-radius:12px;background:var(--paper);border:1px solid var(--line)}
+.dl-arti>div{background:none!important;padding:0!important;gap:8px;align-items:center}
+.dl-arti .bn-label{font-size:12px;font-weight:500}
+.dl-arti-judul{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--ink)}
+.dl-lengkap{justify-self:end;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--c5);text-decoration:none}
+.dl-lengkap:hover,.dl-lengkap:focus-visible{text-decoration:underline}
+.dl-wrap .dl-lengkap svg{width:14px;height:14px}
