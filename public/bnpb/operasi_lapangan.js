@@ -133,9 +133,8 @@
     el.dasar = h("div", {class: "ol-kanan"}, el.lapisKartu);
     el.lapisKartu.addEventListener("change", e => { const k = e.target.dataset.lapis; if (!k) return; st.lapis[k] = e.target.checked;   // ubin dicat dulu, lapisan sesudah frame
       if (k === "citra") { st.dasar = e.target.checked ? "citra" : "peta"; return sesudahFrame(pasangCitra); } sesudahFrame(() => { terapkanLapis(k); renderLegenda(); }); });
-    el.chip = h("div", {class: "ol-chip", "aria-label": "Ringkasan hari ini"});
-    document.getElementById("kepala").replaceChildren(h("div", {class: "ol-kendali"}, el.tgl, el.rentang, el.seg), el.chip, el.dummy);   // satu baris di bar atas (pemilik 3 Nov 2026)
-    el.legenda = h("details", {class: "ol-legenda", open: ""});
+    document.getElementById("kepala").replaceChildren(h("div", {class: "ol-kendali"}, el.tgl, el.rentang, el.seg), el.dummy);   // satu baris di bar atas (pemilik 3 Nov 2026)
+    el.legenda = h("details", {class: "ol-legenda", ...(innerWidth >= 1300 ? {open: ""} : {})});   // layar sempit: terlipat bawaan
     /* pesan dan spanduk dummy melayang di atas peta: tinggi peta tepat satu layar, legenda dan overlay tidak terpotong */
     app.replaceChildren(el.kartu, el.tengah = h("div", {class: "ol-tengah"}, el.peta, el.dasar, el.panel, el.tarik, el.legenda, h("div", {class: "ol-atas-peta"}, el.pesan, el.bandera)), el.bawah, el.kaki);
     el.seg.addEventListener("change", e => { if (e.target.name === "segmen") { st.segmen = e.target.value; const n = st.segmen === "nilai"; el.rentang.hidden = !n; el.tgl.hidden = n; render(); } });   // radio sudah dicat peramban; render berat sesudah frame
@@ -176,11 +175,6 @@
   function renderKartu(d) {
     el.kartu.hidden = st.segmen !== "nilai"; if (st.segmen === "nilai") return renderNilai();
     el.bawah.replaceChildren(); el.kaki.hidden = false;
-    /* ringkasan di sisi kanan bar atas (pola chip El Nino / Data di peta utama) */
-    const r = O.ringkas(d), api_ = r.temuan.fs + r.temuan.berasap + r.temuan.berasap_tipis, pr = st.api ? st.api.kl.filter(k => k.level >= 3).length : null;
-    const c = (ik, n, t, kelas) => h("span", {class: "ol-c " + (kelas || ""), title: t}, ikon(ik), h("b", {teks: n}), h("small", {teks: t}));
-    el.chip.replaceChildren(c("personel", `${O.fmt(r.siap)}/${O.fmt(r.armada)}`, "armada siap"), c("lanjut", O.fmt(r.sortie), "sortie"), c("peringatan", O.fmt(api_), "temuan api", api_ ? "merah" : ""),
-      c("karhutla", pr == null ? "…" : O.fmt(pr), "cluster prioritas", pr ? "merah" : ""));
   }
 
   /* peta: citra satelit Esri (pola peta utama) di bawah label; penanda DOM jalan walau gaya dasar gagal dimuat */
@@ -196,19 +190,24 @@
   /* kartu hover base: dibangun saat kursor masuk (bukan saat render), satu popup bersama */
   let popHover = null;
   const hover = (m, isi) => { const el_ = m.getElement();
-    el_.addEventListener("mouseenter", () => { popHover ||= new maplibregl.Popup({closeButton: false, closeOnClick: false, offset: 18, className: "ol-pop ol-pop-kartu", maxWidth: "320px"});
+    el_.addEventListener("mouseenter", () => { popHover ||= new maplibregl.Popup({closeButton: false, closeOnClick: false, offset: 18, className: "ol-pop-kartu", maxWidth: "none"});
       popHover.setLngLat(m.getLngLat()).setDOMContent(isi()).addTo(peta); });
     el_.addEventListener("mouseleave", () => popHover && popHover.remove()); };
   function kartuHover(b, ar) {
     const g = hitungGuna(ar), r = O.ringkas({armada: ar}), dk = apiDekat(b), pr = dk.filter(k => k.level >= 3).length, sg = dk.filter(k => k.level === 2).length;
-    const urut = ar.slice().sort((x, y) => (x.peran || "").localeCompare(y.peran || "") || x.registrasi.localeCompare(y.registrasi));
-    return h("div", {class: "ol-hv"}, h("div", {class: "ol-hv-kepala"}, h("b", {teks: b.nama}), h("span", {teks: b.icao || b.id})),
-      h("div", {class: "ol-hv-guna"}, GUNA.map(([k, t]) => h("div", {class: g[k] ? "" : "nol"}, ikonGuna(k), h("b", {teks: O.fmt(g[k])}), h("span", {teks: k === "omc" ? "OMC" : t})))),
-      h("ul", {class: "ol-hv-ar"}, urut.slice(0, 8).map(a => h("li", null, h("i", {class: O.kelasArmada(a.status)}), h("b", {teks: a.registrasi}), h("span", {teks: a.tipe && !/tidak diketahui/i.test(a.tipe) ? a.tipe : ""})))),
-      urut.length > 8 ? h("p", {class: "ol-hv-lagi", teks: `+${O.fmt(urut.length - 8)} armada lain`}) : null,
-      h("div", {class: "ol-hv-kaki"}, h("span", {teks: `${O.fmt(r.siap)} siap dari ${O.fmt(ar.length)}`}),
-        st.api ? h("span", {class: pr ? "merah" : "", teks: `${O.fmt(pr)} prioritas, ${O.fmt(sg)} siaga ≤ ${O.fmt(Math.round(radiusBase(b)))} km`}) : null),
-      h("p", {class: "ol-hv-klik", teks: "Klik untuk rincian armada"}));
+    const urut = ar.slice().sort((x, y) => (FOTO.has(y.registrasi) ? 1 : 0) - (FOTO.has(x.registrasi) ? 1 : 0) || (x.peran || "").localeCompare(y.peran || "") || x.registrasi.localeCompare(y.registrasi));
+    const guna1 = a => a.peran === "omc" ? "omc" : a.peran === "patroli" ? "patroli" : "wb";
+    const mini = a => FOTO.has(a.registrasi) ? h("img", {class: "ol-hv-foto", src: `/img/armada/${a.registrasi}.webp`, alt: "", loading: "lazy", width: 40, height: 28}) : h("span", {class: "ol-hv-foto kosong"}, ikonGuna(guna1(a)));
+    return h("div", {class: "ol-hv"},
+      h("div", {class: "ol-hv-kepala"}, h("b", {teks: b.nama}), h("span", {teks: b.icao || b.id})),
+      h("div", {class: "ol-hv-guna"}, GUNA.map(([k, t]) => h("div", {class: g[k] ? "" : "nol"}, ikonGuna(k), h("b", {teks: O.fmt(g[k])}), h("span", {teks: k === "wb" ? "WB" : k === "patroli" ? "Patroli" : "OMC"})))),
+      h("ul", {class: "ol-hv-ar"}, urut.slice(0, 6).map(a => h("li", null, mini(a), h("div", null, h("b", {teks: a.registrasi}), h("span", {teks: a.tipe && !/tidak diketahui/i.test(a.tipe) ? a.tipe : "tipe belum tercatat"})),
+        h("i", {class: "st " + O.kelasArmada(a.status), title: O.namaArmada(a.status)})))),
+      urut.length > 6 ? h("p", {class: "ol-hv-lagi", teks: `dan ${O.fmt(urut.length - 6)} armada lain`}) : null,
+      h("div", {class: "ol-hv-kaki"},
+        h("span", null, ikon("personel"), `${O.fmt(r.siap)} dari ${O.fmt(ar.length)} siap`),
+        st.api ? h("span", {class: pr ? "merah" : ""}, ikon("karhutla"), pr || sg ? `${pr ? O.fmt(pr) + " prioritas" : ""}${pr && sg ? ", " : ""}${sg ? O.fmt(sg) + " siaga" : ""}` : "Aman", h("small", {teks: ` ≤ ${O.fmt(Math.round(radiusBase(b)))} km`})) : null),
+      h("p", {class: "ol-hv-klik", teks: "Klik base untuk rincian armada"}));
   }
   let batasSemua = null;
   function renderPeta(d) {
