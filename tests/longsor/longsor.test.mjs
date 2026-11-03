@@ -38,3 +38,25 @@ test("kejadian.json: tiap baris DIBI menunjuk kabupaten yang ada", () => {
   for (const r of j.dibi) assert.ok(r[1] >= 0 && r[1] < j.kab.length, `indeks kab ${r[1]}`);
   assert.ok(j.dibi.length > 1000 && j.glc.length > 100);
 });
+
+// Koreksi audit 3 Nov 2026: hari DIBI "Banjir dan Tanah Longsor" (gab=1) bukan negatif uji, bukan positif.
+test("label uji: hari gab=1 dikeluarkan dari negatif, gab=0 tetap positif", () => {
+  const out = JSON.parse(py("-c", `
+import sys, json; sys.path.insert(0, 'scripts/longsor')
+import model
+pos, buang = model.label_dibi([['2022-01-01', 0, 1, 0], ['2022-01-02', 0, 1, 1], ['2022-01-03', 1, 1, 0], ['2022-01-03', 1, 1, 1]])
+print(json.dumps({'pos': sorted(map(list, pos)), 'buang': sorted(map(list, buang))}))`));
+  assert.deepEqual(out.pos, [[0, "2022-01-01"], [1, "2022-01-03"]]);
+  assert.deepEqual(out.buang, [[0, "2022-01-02"]], "hari gab=1 murni harus dibuang; hari gab=0+gab=1 tetap positif (bukan buang)");
+});
+
+// Guard (lolos sebelum dan sesudah): kab bersel hujan tanpa baris DIBI longsor = nol nyata, bukan salah cocok nama.
+test("kejadian.json: tiap nama kab DIBI persis nama poligon peta (tak ada salah cocok)", () => {
+  const j = baca("kejadian.json");
+  const poli = new Set(JSON.parse(py("-c", `
+import sys, json; sys.path.insert(0, 'scripts/longsor')
+from dasar import daftar_kec
+print(json.dumps(sorted({f"{k['prov']}|{k['kab']}" for k in daftar_kec()})))`)));
+  const asing = j.kab.filter((n) => !poli.has(n));
+  assert.deepEqual(asing, [], `${asing.length} nama kab DIBI tak ada di poligon: ${asing.slice(0, 5)}`);
+});
