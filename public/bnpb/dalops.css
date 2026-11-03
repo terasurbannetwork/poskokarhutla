@@ -288,3 +288,8 @@
 .dl-hs .dl-kondisi{min-width:260px;font-size:12.5px;line-height:1.45}
 @media (max-width:640px){.dl-hs-ringkas{grid-template-columns:1fr}}
 .dl-dialog svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* halaman dan peta lebih lebar */
+.dl-wrap{max-width:1600px}
+.dl-peta{height:600px}
+@media (max-width:1100px){.dl-peta{height:480px}}
