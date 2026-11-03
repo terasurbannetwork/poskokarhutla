@@ -23,7 +23,7 @@ CUTOFF = '07:00'   # pemilik 27 Okt: "jadikan waktu cutoff hari ini juga jam 7"
 def angka_web(kej, web, tanggal, jam):
     hasil = asli(kej, web, tanggal, CUTOFF)
     P, K, WL = web['peta_karhutla.json'], web['peta_karhutla_kab.json'], web['peta_karhutla_wil.json']
-    i, i0 = P['hari'].index((tanggal - dt.timedelta(days=1)).isoformat()), P['hari'].index(WL['hari0'])
+    i, i0 = P['hari'].index(min((tanggal - dt.timedelta(days=1)).isoformat(), P['hari'][-1])), P['hari'].index(WL['hari0'])   # 3 Nov: data.yml 2 Nov batal, website s.d. 1 Nov
     def sisa_web(x):
         if not x['lokasi']: return P['prov'].get(x['prov'], {'belum': [0] * 999})['belum'][i] or 0
         if x['lokasi'] in harian.KAWASAN:
@@ -82,7 +82,9 @@ for x in D['kejadian']:
 # Provinsi Prioritas pada tabel itu wajib masuk (Kaltim, Sulsel). Dalam penanganan bila belum padam > 0 atau Prioritas;
 # Prioritas = perlu perhatian; belum padam 0 = selesai. Kawasan/kabupaten tanpa status website sendiri tetap ikut satelit.
 import urllib.request
-H_SISA = (T - dt.timedelta(days=1)).isoformat()
+H_SISA = min((T - dt.timedelta(days=1)).isoformat(), web['peta_karhutla.json']['hari'][-1])   # 3 Nov: website belum terbit 2 Nov -> hari terakhir yang terbit
+print('hari data website', H_SISA)
+HL = f"{int(H_SISA[8:])} {harian.BULAN[int(H_SISA[5:7]) - 1][:3].upper()}"
 KH = json.loads(urllib.request.urlopen(urllib.request.Request(f'https://centurisk97.id/data/kluster_hari/{H_SISA}.json', headers={'User-Agent': 'Mozilla/5.0'}), timeout=120).read())
 json.dump(KH, open(os.path.join(ke, 'web', f'kluster_hari-{H_SISA}.json'), 'w'))
 W_ = lambda kk: KH['w'].get(kk) or [0] * 7
@@ -160,7 +162,7 @@ nama = os.path.join(OUT, 'Laporan Kejadian Bencana Harian 031126.pptx')
 dk = harian.Deck(ke, D, wa, w, T, None); dk.BJ = None   # 29 Okt pemilik: "format seperti biasa" = 4 slide, tanpa slide status banjir
 dk.LAMPIRAN = True; dk.SIAGA = True; dk.GA_GAYAS = ['lingkaran']   # 2 Nov pemilik memilih desain lingkaran (mistar dan teks dibuang)   # 2 Nov pemilik: gunung api ke bagian Status siaga bencana   # 30 Okt manager: "ada keterangan kejadian baru, sisanya taro di lampiran"
 dk.GA = wa_harian.pvmbg(open(f'{S}/wa-pvmbg.txt', encoding='utf-8').read())   # 30 Okt: status gunung api PVMBG wajib tampil
-dk.lbl_kolom, dk.lbl_hot, dk.lbl_kum = 'FIRESPOT DAN SISA 2 NOV', 'firespot', 'TERBAKAR 1 JAN–2 NOV'; dk.bangun(tpl, nama)
+dk.lbl_kolom, dk.lbl_hot, dk.lbl_kum = f'FIRESPOT DAN SISA {HL}', 'firespot', f'TERBAKAR 1 JAN–{HL}'; dk.bangun(tpl, nama)
 print('ok', nama, '| hari data', D['hari'], '| cutoff', D['cutoff'], '| kejadian', dk.N_TOT, 'karhutla', len(dk.KH), 'ditangani', len(dk.KH_T), 'perlu perhatian', len(dk.SER), 'selesai', dk.N_SEL, '| Prioritas ditambah', D['prioritas_baru'])
 for x in D['kejadian']:
     print(x['jenis'], x['prov'], x['lokasi'] or '(prov)', x['status'], 'DITANGANI' if x['tangani'] else 'selesai', 'PERHATIAN' if x['perhatian'] else '', {k: (round(v) if isinstance(v, (int, float)) else v) for k, v in x.get('sat', {}).items()})
@@ -168,7 +170,7 @@ for x in D['kejadian']:
 import lewat_deck
 if os.environ.get('TANPA_DECK'):   # 3 Nov: GitHub Actions tanpa skill ppt-konsultan; deck isi generator apa adanya (format templat 221026)
     lewat_deck.bingkai = lambda *a, **k: print('TANPA_DECK: bingkai deck.py dilewati')
-SK, SG = 'Laporan Harian Dit. Koordalops BNPB, 2 Nov 2026 07.00 s.d. 3 Nov 2026 07.00 WIB', 'GIS BNPB, 2 Nov 2026'
+SK, SG = 'Laporan Harian Dit. Koordalops BNPB, 2 Nov 2026 07.00 s.d. 3 Nov 2026 07.00 WIB', f'GIS BNPB, {HL.title()} 2026'
 lewat_deck.bingkai(nama, 'harian', 'Laporan Kejadian Bencana Harian', 'Periode 2 Nov 2026, 07.00 sampai 3 Nov 2026, 07.00 WIB', T, pdf=False,
     tanpa_kepada='pemilik 2 Nov 2026: pil Disampaikan kepada dihapus, laporan harian dipresentasikan Kepala BNPB sendiri',
     bagian=[{'judul': 'Ringkasan Situasi', 'label': 'Ringkasan', 'halaman_tetap': [2]}, {'judul': 'Kejadian Baru', 'label': 'Kejadian baru', 'halaman_tetap': [3]},
