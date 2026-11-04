@@ -246,7 +246,7 @@
     const kontrakTot = (OP.rekap?.total || []).reduce((a, x) => ({jam: a.jam + (x.jam_operasi_menit || 0), sortie: a.sortie + (x.sortie || 0), wb: a.wb + (x.wb_drop || 0), n: a.n + (x.kontrak || 0)}), {jam: 0, sortie: 0, wb: 0, n: 0});
     const angka = (n, t, k) => `<div><b>${n}</b><span>${t}${k ? `<em>${k}</em>` : ""}</span></div>`;
     const ringkas = `<div class="ops-lap-angka">${[
-      angka(fmt(base.length), "base operasi udara"), angka(`${fmt(siap)}<small>/${fmt(ar.length)}</small>`, "armada siap hari ini", `WB ${fmt(g.wb)} · PTR ${fmt(g.patroli)} · OMC ${fmt(g.omc)}`),
+      angka(fmt(base.length), "base operasi udara"), angka(`${fmt(siap)}<small>/${fmt(ar.length)}</small>`, "armada siap hari ini", `WB ${fmt(g.wb)}, PTR ${fmt(g.patroli)}, OMC ${fmt(g.omc)}`),
       angka(nol(K.sortie), "sortie hari ini"), angka(nol(K.aksi_wb), "aksi water bombing", K.drop_total ? `${fmt(K.drop_total)} kali jatuhan` : ""),
       angka(persen(K.persen_padam), "padam ≥ 24 jam", K.dinilai ? `${fmt(K.padam)} dari ${fmt(K.dinilai)} dinilai` : "belum ada yang dinilai"),
       angka(nol(temApi), "temuan api pilot", `${fmt((d.temuan || []).length)} temuan total`)].join("")}</div>`;
