@@ -49,7 +49,7 @@ async function isiPanel(p, sumber, url, contoh, render) {
 
 const tabel = ({kolom, baris}, numDari = 0) => h("div", {class: "ad-tabel-wadah sh-tabel-wadah"}, h("table", {class: "ad-tabel"},
   h("thead", null, h("tr", null, kolom.map(k => h("th", {scope: "col", teks: k.replace(/_/g, " ")})))),
-  h("tbody", null, baris.map(b => h("tr", null, b.map((c, i) => h("td", {class: i >= numDari && /^-?[\d.]+(,\d+)?%?$/.test(c) ? "sh-num" : null, teks: c})))))));
+  h("tbody", null, baris.map(b => h("tr", null, b.map((c, i) => h("td", {class: i >= numDari && /^-?[\d.]+(,\d+)?%?$/.test(c) ? "sh-num" : null, "data-label": kolom[i]?.replace(/_/g, " ") ?? "", teks: c})))))));
 
 function renderInfo(j) {
   const r = H.ringkasInfo(j.data); if (!r.sorot.length && !r.lain.length) return null;
@@ -109,7 +109,7 @@ async function cari() {
   if (q.length < 2) { batal.cari?.abort(); el.hasil.replaceChildren(); return; }
   if (st.dummy) { const ds = CONTOH.hasil.filter(x => (x.kode + x.nama).toLowerCase().includes(q.toLowerCase())); tampilHasil(ds); if (!ds.length) { el.pesan.textContent = "Tidak ada emiten contoh yang cocok."; } return; }
   const r = await api("cari", "/api/saham/cari?q=" + encodeURIComponent(q)); if (!r) return;
-  if (r.s === 401 || r.s === 403) return kartuMasuk(r.s);
+  if ((r.s === 401 || r.s === 403) && r.j.kode !== "akses_belum_dibuka") return kartuMasuk(r.s);   // 403 akses_belum_dibuka = penyedia, bukan hak staf
   if (!r.j.ok) { const g = H.petaGalat(r.j, r.s); el.pesan.textContent = g.pesan; el.pesan.className = "bn-pesan" + (g.jenis === "belum" ? "" : " galat"); el.hasil.replaceChildren(); return; }
   if (!r.j.hasil?.length) { el.hasil.replaceChildren(); el.pesan.textContent = `Tidak ada emiten untuk "${q}".`; return; }
   tampilHasil(r.j.hasil);
