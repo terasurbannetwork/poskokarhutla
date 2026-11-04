@@ -1,0 +1,674 @@
+{
+ "_catatan": "Deck ringkasan dari flagship-031126.json, dibangun spek/bangun_spek_ringkasan.py (pemilik 2 Nov 2026).",
+ "pesan_kunci": "Tiap kampus koordinator memimpin satu flagship bersama mitra swasta yang rekam jejaknya terbukti; swasta membawa pabrik, platform, armada, dan karyawan, bukan hanya dana.",
+ "judul_dokumen": "Ringkasan Program Flagship Kerja Sama BNPB dengan Perguruan Tinggi dan Dunia Usaha",
+ "subjek_dokumen": "Usulan untuk Kepala BNPB, 3 November 2026",
+ "format": "kajian",
+ "kajian": "flagship",
+ "tanggal": "2026-11-03",
+ "arah": "Pemilik 2 Nov 2026: ikut semua usulan sesi arah (20 pertanyaan, desain campuran, rekomendasi tambahan).",
+ "bagian": [
+  {
+   "judul": "Usulan dan Sebaran Flagship",
+   "label": "Usulan"
+  },
+  {
+   "judul": "Syarat Mitra dan Keputusan",
+   "label": "Keputusan"
+  }
+ ],
+ "slide": [
+  {
+   "jenis": "sampul",
+   "layout": "putih",
+   "foto": [
+    "foto/kampus-ui.jpg",
+    "foto/kampus-itb.jpg",
+    "foto/kampus-ugm.jpg",
+    "foto/kampus-ipb.jpg"
+   ],
+   "kredit": "Foto: Ilham Kuniawan Gumilang (UI), A2613 (ITB), Alharomain354 (UGM), Davidelit (IPB); CC BY-SA 4.0, Wikimedia Commons",
+   "kota": "Jakarta",
+   "logo_kanan": "foto/berakhlak-hd.png",
+   "judul_sampul": "Ringkasan Program Flagship Kampus dan Dunia Usaha",
+   "subjudul": "Halaman inti dari deck lengkap untuk dibaca cepat sebelum rapat pimpinan",
+   "kepada": "Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana",
+   "tanpa_penyaji": "pemilik 2 Nov 2026 (sesi arah no. 2): pil Disampaikan kepada Kepala BNPB, tanpa nama penyaji"
+  },
+  {
+   "jenis": "daftar-isi"
+  },
+  {
+   "jenis": "kesimpulan",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "skala_isi": 1.22,
+   "pesan": "Ringkasan usulan flagship",
+   "judul": "Ringkasan: tiap kampus koordinator memimpin satu proyek bernama bersama mitra swasta, dengan kampus sebagai penjamin mutu",
+   "kartu": [
+    {
+     "label": "Celah",
+     "ikon": "ringkasan",
+     "warna": "navy",
+     "judul": "Program masih berupa wadah",
+     "isi": "Paparan sebelumnya memuat {{angka:rev4.program}} program dalam {{angka:rev4.pilar}} pilar; belum ada proyek bernama yang bisa diresmikan dan diukur."
+    },
+    {
+     "label": "Model tiga pihak",
+     "ikon": "lembaga",
+     "warna": "navy",
+     "judul": "Aset yang saling melengkapi",
+     "isi": "Kampus menguji dan memverifikasi; swasta membawa pabrik, platform, armada, dan karyawan; BNPB membawa mandat dan data."
+    },
+    {
+     "label": "Alasan swasta ikut",
+     "ikon": "pembiayaan",
+     "warna": "navy",
+     "judul": "Pajak dan reputasi",
+     "isi": "Sumbangan bencana lewat BNPB dan sumbangan litbang ke kampus dapat dikurangkan, paling tinggi {{angka:pmk114.batas|persen}} penghasilan neto."
+    },
+    {
+     "label": "Brainstorming",
+     "ikon": "data",
+     "warna": "navy",
+     "judul": "Ide disaring dulu",
+     "isi": "{{angka:ide.total}} ide dinilai dengan {{angka:ide.kriteria}} kriteria; {{angka:ide.lolos}} ide lolos ambang dan menjadi bahan flagship."
+    },
+    {
+     "label": "Flagship",
+     "ikon": "wilayah",
+     "warna": "oranye",
+     "judul": "Satu identitas per kampus",
+     "isi": "{{angka:fs.jumlah}} flagship: satu untuk tiap kampus koordinator, ditambah Telkom University di regional Jawa Barat."
+    },
+    {
+     "label": "Lintas regional",
+     "ikon": "satu-data",
+     "warna": "oranye",
+     "judul": "Dijalankan semua kampus",
+     "isi": "{{angka:lintas.jumlah}} program bersama, dari pesan siaga di aplikasi sampai asuransi bencana daerah."
+    },
+    {
+     "label": "Pagar",
+     "ikon": "peringatan",
+     "warna": "merah",
+     "judul": "Uji tuntas sebelum MoU",
+     "isi": "{{angka:pagar.jumlah}} syarat menjaga BNPB dari mitra tersanksi kebakaran, tambang di DAS banjir, dan tembakau."
+    },
+    {
+     "label": "Tahapan",
+     "ikon": "kalender",
+     "warna": "navy",
+     "judul": "Dari percontohan ke perluasan",
+     "isi": "Penjajakan 100 hari, percontohan 2027, lalu perluasan sesuai peta jalan sampai {{angka:rev4.mitra2029}} kampus mitra pada 2029."
+    }
+   ],
+   "arahan": {
+    "label": "Keputusan yang diminta",
+    "ikon": "regulasi",
+    "teks": "Kepala BNPB diminta menyetujui daftar flagship (termasuk status Telkom University), menunjuk unit pasangan, dan mengizinkan penjajakan calon mitra dengan uji tuntas."
+   },
+   "sumber": "Paparan kerja sama perguruan tinggi, 30 Okt 2026; Brainstorm ide BNPB, 2 Nov 2026; PMK 114/2025"
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 1
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "pesan": "Paparan sebelumnya belum punya proyek bernama dan memperlakukan swasta hanya sebagai sumber dana",
+   "judul": "Paparan sebelumnya memuat {{angka:rev4.program}} program dalam {{angka:rev4.pilar}} pilar, tetapi program masih berupa wadah dan swasta hanya hadir sebagai sumber dana",
+   "rasio": 0.68,
+   "utama": {
+    "judul": "Dari wadah program ke proyek bernama",
+    "ikon": "ringkasan",
+    "banding": {
+     "kiri": {
+      "judul": "Paparan sebelumnya"
+     },
+     "kanan": {
+      "judul": "Usulan flagship"
+     },
+     "baris": [
+      {
+       "label": "Bentuk program",
+       "kiri": "Wadah: Ruang Inovasi, Simpul riset, Korps Relawan",
+       "kanan": "Proyek bernama dengan mitra dan target; tiap proyek punya unit BNPB pasangan"
+      },
+      {
+       "label": "Peran swasta",
+       "kiri": "Sumber dana TJSL dan CSR",
+       "kanan": "Pembawa aset: pabrik, platform, armada, gedung, dan karyawan"
+      },
+      {
+       "label": "Identitas kampus",
+       "kiri": "Semua kampus koordinator menjalankan daftar program yang sama",
+       "kanan": "Satu flagship per kampus sesuai bahaya regional dan kekuatannya"
+      },
+      {
+       "label": "Peran kampus",
+       "kiri": "Pelaksana riset dan pengabdian",
+       "kanan": "Penguji dan verifikator yang membuat program swasta dipercaya"
+      },
+      {
+       "label": "Ukuran hasil",
+       "kiri": "Jumlah hibah dan artikel",
+       "kanan": "Unit terpasang, desa terverifikasi, kit teruji di kejadian nyata"
+      }
+     ]
+    }
+   },
+   "panel": {
+    "judul": "Fondasi yang sudah ada",
+    "ikon": "lembaga",
+    "angka_besar": {
+     "mode": "kartu",
+     "data": {
+      "csv": "data/flagship/fondasi.csv",
+      "kolom": [
+       {
+        "nama": "label"
+       },
+       {
+        "nama": "nilai",
+        "kepala": "Nilai",
+        "fmt": "0"
+       },
+       {
+        "nama": "satuan"
+       },
+       {
+        "nama": "ket"
+       },
+       {
+        "nama": "ikon"
+       }
+      ],
+      "sumber": "Paparan kerja sama perguruan tinggi, 30 Okt 2026",
+      "keyakinan": "resmi"
+     }
+    }
+   },
+   "sumber": "Paparan kerja sama perguruan tinggi, 30 Okt 2026"
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "peta",
+   "judul_bentuk": "temuan",
+   "pesan": "Flagship tersebar di semua regional dan bisa ditiru kampus sekitar",
+   "judul": "Dua belas flagship dipimpin {{angka:rev4.koordinator}} kampus koordinator dan Telkom University, dan dapat ditiru {{angka:rev4.sekitar}} kampus di sekitarnya",
+   "rasio": 0.56,
+   "utama": {
+    "judul": "Kampus koordinator dan kampus sekitar yang dibina",
+    "ikon": "wilayah",
+    "peta": {
+     "mode": "titik",
+     "skala": "netral",
+     "satuan": "Kampus sekitar",
+     "label": 10,
+     "data": {
+      "csv": "data/flagship/titik_kampus.csv",
+      "kolom": [
+       {
+        "nama": "kampus"
+       },
+       {
+        "nama": "sekitar",
+        "kepala": "Kampus sekitar",
+        "fmt": "0"
+       },
+       {
+        "nama": "lon",
+        "fmt": "2"
+       },
+       {
+        "nama": "lat",
+        "fmt": "2"
+       }
+      ],
+      "sumber": "Paparan kerja sama perguruan tinggi, 30 Okt 2026",
+      "keyakinan": "resmi"
+     }
+    }
+   },
+   "panel": {
+    "judul": "Nama flagship tiap kampus",
+    "ikon": "sekolah",
+    "skala_huruf": 1.2,
+    "baris_maks_pt": 40,
+    "data": {
+     "csv": "data/flagship/daftar_flagship.csv",
+     "kolom": [
+      {
+       "nama": "kampus",
+       "kepala": "Kampus"
+      },
+      {
+       "nama": "flagship",
+       "kepala": "Flagship"
+      }
+     ],
+     "sumber": "Brainstorm ide BNPB, 2 Nov 2026",
+     "keyakinan": "asumsi-kebijakan"
+    }
+   },
+   "sumber": "Paparan kerja sama perguruan tinggi, 30 Okt 2026; Brainstorm ide BNPB, 2 Nov 2026"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Flagship dipilih dari ide lolos menurut bahaya regional dan bukti kampus",
+   "judul": "Sepuluh flagship diambil dari {{angka:ide.lolos}} ide lolos; flagship Sulawesi serta Maluku diambil dari daftar panjang karena bahayanya belum terjawab",
+   "tabel": {
+    "judul_panel": "Dari ide lolos ke kampus",
+    "ikon": "sekolah",
+    "peringkat": false,
+    "skala_huruf": 1.25,
+    "baris_maks_pt": 40,
+    "data": {
+     "csv": "data/flagship/jembatan.csv",
+     "kolom": [
+      {
+       "nama": "kampus",
+       "kepala": "Kampus"
+      },
+      {
+       "nama": "bahaya",
+       "kepala": "Bahaya utama regional"
+      },
+      {
+       "nama": "bukti",
+       "kepala": "Bukti yang sudah ada"
+      },
+      {
+       "nama": "ide",
+       "kepala": "Ide terpilih (kode)"
+      }
+     ],
+     "sumber": "Brainstorm ide BNPB, 2 Nov 2026; riset web BNPB",
+     "keyakinan": "penilaian-pakar"
+    }
+   },
+   "pita": {
+    "label": "Aturan pemilihan",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "wilayah",
+      "judul": "Cocok bahaya regional",
+      "isi": "Ide lolos dipakai bila menjawab bahaya utama regional kampus itu."
+     },
+     {
+      "ikon": "satu-data",
+      "judul": "Ide lolos lainnya",
+      "isi": "A5 dan C3 jadi program lintas; B2, B5, E5, F1, G1 jadi pendukung."
+     },
+     {
+      "ikon": "peringatan",
+      "judul": "Pengecualian",
+      "isi": "Sulawesi dan Maluku memakai daftar panjang; dinilai ulang saat percontohan."
+     }
+    ]
+   },
+   "sumber": "Brainstorm ide BNPB, 2 Nov 2026; riset web BNPB, 2 Nov 2026; kode ide di Lampiran A1"
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 2
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "pesan": "Semua calon mitra wajib lolos uji tuntas dulu",
+   "judul": "Semua calon mitra wajib lolos {{angka:pagar.jumlah}} syarat uji tuntas, karena {{angka:sanksi.2026}} perusahaan dikenai sanksi atas kebakaran 2026",
+   "rasio": 0.62,
+   "utama": {
+    "judul": "Syarat mitra dalam MoU",
+    "ikon": "peringatan",
+    "daftar_ikon": {
+     "mode": "baris",
+     "data": {
+      "csv": "data/flagship/pagar.csv",
+      "kolom": [
+       {
+        "nama": "judul"
+       },
+       {
+        "nama": "isi"
+       },
+       {
+        "nama": "ikon"
+       }
+      ],
+      "sumber": "Brainstorm ide BNPB, 2 Nov 2026",
+      "keyakinan": "asumsi-kebijakan"
+     }
+    }
+   },
+   "panel": {
+    "judul": "Mengapa pagar perlu",
+    "ikon": "peringatan",
+    "angka_besar": {
+     "mode": "kartu",
+     "data": {
+      "csv": "data/flagship/pagar_angka.csv",
+      "kolom": [
+       {
+        "nama": "label"
+       },
+       {
+        "nama": "nilai",
+        "kepala": "Nilai",
+        "fmt": "0"
+       },
+       {
+        "nama": "satuan"
+       },
+       {
+        "nama": "ket"
+       },
+       {
+        "nama": "ikon"
+       }
+      ],
+      "sumber": "Kementerian Kehutanan lewat Katadata, 19 Okt 2026; KLH dikutip media, 24 Agt 2026",
+      "keyakinan": "terverifikasi"
+     }
+    }
+   },
+   "pita": {
+    "label": "Cara menerapkan",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "regulasi",
+      "judul": "Lampiran MoU",
+      "isi": "Tujuh syarat menjadi lampiran baku tiap MoU flagship."
+     },
+     {
+      "ikon": "data",
+      "judul": "Status calon mitra",
+      "isi": "Semua mitra di slide flagship berstatus calon sampai lolos uji."
+     },
+     {
+      "ikon": "peringatan",
+      "judul": "Bila dilanggar",
+      "isi": "Kerja sama ditunda sampai sanksi atau sengketa selesai."
+     }
+    ]
+   },
+   "sumber": "Kementerian Kehutanan lewat Katadata, 19 Okt 2026; KLH dikutip media, 24 Agt 2026; PP 28/2024"
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "pesan": "Flagship berjalan tiga tahap",
+   "judul": "Flagship berjalan tiga tahap, dari penjajakan 100 hari sampai perluasan ke {{angka:rev4.mitra2028}} kampus mitra pada 2028 dan {{angka:rev4.mitra2029}} kampus pada 2029",
+   "utama": {
+    "judul": "Tahapan flagship",
+    "ikon": "kalender",
+    "alur": {
+     "sorot": 1,
+     "label_hasil": "Hasil",
+     "langkah": [
+      {
+       "judul": "Penjajakan 100 hari",
+       "butir": [
+        "SK tim dan unit pasangan",
+        "Uji tuntas calon mitra",
+        "Surat minat dan rancangan MoU"
+       ],
+       "pelaku": "BNPB dan kampus koordinator",
+       "hasil": "Mitra sepakat"
+      },
+      {
+       "judul": "Percontohan 2027",
+       "butir": [
+        "Satu lokasi tiap flagship",
+        "Ukuran hasil disepakati",
+        "Laporan publik pertama"
+       ],
+       "pelaku": "Kampus, mitra, BNPB",
+       "hasil": "Hasil terukur"
+      },
+      {
+       "judul": "Perluasan 2028–2029",
+       "butir": [
+        "Ditiru {{angka:rev4.mitra2028}} lalu {{angka:rev4.mitra2029}} kampus mitra",
+        "Spesifikasi generik jadi standar BNPB",
+        "Mitra baru lewat pintu dunia usaha"
+       ],
+       "pelaku": "Kampus sekitar dan BPBD",
+       "hasil": "Program tetap"
+      }
+     ]
+    }
+   },
+   "pita": {
+    "label": "Bila keputusan ditunda",
+    "nada": "aksi",
+    "kolom": [
+     {
+      "ikon": "kalender",
+      "judul": "Percontohan mundur",
+      "isi": "Lokasi 2027 belum siap sebelum musim kemarau 2027."
+     },
+     {
+      "ikon": "pembiayaan",
+      "judul": "Anggaran mitra lewat",
+      "isi": "Rencana TJSL 2027 disusun perusahaan pada akhir 2026."
+     },
+     {
+      "ikon": "regulasi",
+      "judul": "Insentif tak terpakai",
+      "isi": "Pengurang pajak dihitung per tahun pajak berjalan."
+     }
+    ]
+   },
+   "sumber": "Paparan kerja sama perguruan tinggi, 30 Okt 2026; Brainstorm ide BNPB, 2 Nov 2026"
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "pesan": "Status Telkom University perlu diputuskan dengan pembanding",
+   "logo_kampus": [
+    "foto/logo/tel-u.png",
+    "foto/logo/itb.png"
+   ],
+   "judul": "Telkom University berada di regional ITB yang memuat {{angka:itb.sekitar}} kampus sekitar; usulan: memimpin flagship tambahan dengan afiliasi Telkom diumumkan",
+   "rasio": 0.66,
+   "utama": {
+    "judul": "Dua pilihan status Telkom University",
+    "ikon": "sekolah",
+    "banding": {
+     "kiri": {
+      "judul": "Pilihan A: memimpin flagship tambahan"
+     },
+     "kanan": {
+      "judul": "Pilihan B: pelaksana di bawah ITB"
+     },
+     "baris": [
+      {
+       "label": "Aset",
+       "kiri": "Laboratorium VR dan Flood Eye dipakai penuh",
+       "kanan": "Aset tetap dipakai, arah dari ITB"
+      },
+      {
+       "label": "Afiliasi",
+       "kiri": "Hubungan dengan Telkom diumumkan; penilai hasil dari kampus lain",
+       "kanan": "Risiko afiliasi lebih kecil karena ITB memimpin"
+      },
+      {
+       "label": "Koordinasi",
+       "kiri": "Dua pemimpin flagship di satu regional",
+       "kanan": "Satu pintu koordinasi Jawa Barat"
+      },
+      {
+       "label": "Kecepatan",
+       "kiri": "Lebih cepat, Tel-U memegang anggaran sendiri",
+       "kanan": "Mengikuti jadwal koordinasi ITB"
+      },
+      {
+       "label": "Risiko",
+       "kiri": "Telkom juga calon mitra; konflik kepentingan perlu dijaga",
+       "kanan": "Aset Tel-U kurang dipakai; beban ITB bertambah"
+      }
+     ]
+    }
+   },
+   "panel": {
+    "judul": "Usulan",
+    "ikon": "regulasi",
+    "daftar": [
+     "Pilihan A untuk percontohan 2027: Telkom University punya laboratorium VR dan riset VR gempa.",
+     "Syarat: afiliasi dengan Telkom diumumkan dan perangkat dibeli lewat pengadaan terbuka.",
+     "Hasil belajar siswa dinilai kampus lain di regional Jawa Barat secara terbuka.",
+     "Status dinilai ulang saat perluasan 2028 bersama ITB sebagai koordinator regional."
+    ]
+   },
+   "sumber": "Paparan kerja sama perguruan tinggi, 30 Okt 2026; Brainstorm ide BNPB, 2 Nov 2026"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Daftar flagship yang dimintakan persetujuan",
+   "judul": "Daftar {{angka:fs.jumlah}} flagship yang dimintakan persetujuan, dengan usulan unit BNPB pasangan dan ukuran hasil percontohan 2027",
+   "tabel": {
+    "judul_panel": "Unit pasangan dan ukuran hasil tiap flagship",
+    "ikon": "regulasi",
+    "peringkat": true,
+    "skala_huruf": 1.2,
+    "baris_maks_pt": 40,
+    "data": {
+     "csv": "data/flagship/daftar_keputusan.csv",
+     "kolom": [
+      {
+       "nama": "kampus",
+       "kepala": "Kampus"
+      },
+      {
+       "nama": "flagship",
+       "kepala": "Flagship"
+      },
+      {
+       "nama": "unit",
+       "kepala": "Unit pasangan usulan"
+      },
+      {
+       "nama": "hasil",
+       "kepala": "Ukuran hasil 2027"
+      }
+     ],
+     "sumber": "Brainstorm ide BNPB, 2 Nov 2026",
+     "keyakinan": "asumsi-kebijakan"
+    }
+   },
+   "sumber": "Brainstorm ide BNPB, 2 Nov 2026; unit dari paparan kerja sama perguruan tinggi, 30 Okt 2026"
+  },
+  {
+   "jenis": "rekomendasi",
+   "jenis_slide": "rekomendasi",
+   "judul_bentuk": "temuan",
+   "keputusan": true,
+   "pesan": "Keputusan Kepala BNPB untuk memulai flagship",
+   "judul": "Sebanyak {{angka:keputusan.kepala}} keputusan diminta dari Kepala BNPB, lalu {{angka:tindak.unit}} tindak lanjut dijalankan unit BNPB untuk memulai flagship",
+   "rekomendasi": [
+    {
+     "kode": "01",
+     "jenis": "regulasi",
+     "langkah": "Setujui daftar flagship",
+     "waktu": "100-hari",
+     "rincian": "Usulan: Telkom University memimpin flagship tambahan; alternatif: pelaksana di bawah koordinasi ITB.",
+     "lembaga": [
+      "Kepala BNPB"
+     ],
+     "dasar": "slide 12",
+     "risiko": "Tanpa persetujuan, penjajakan mitra tidak punya mandat resmi."
+    },
+    {
+     "kode": "02",
+     "jenis": "kapasitas",
+     "langkah": "Tunjuk unit pasangan",
+     "waktu": "100-hari",
+     "rincian": "Tiap flagship mendapat satu unit BNPB penanggung jawab dan satu penghubung kampus.",
+     "lembaga": [
+      "Kepala BNPB"
+     ],
+     "dasar": "slide 12",
+     "risiko": "Flagship tanpa pemilik di BNPB berhenti di MoU."
+    },
+    {
+     "kode": "03",
+     "jenis": "regulasi",
+     "langkah": "Izinkan penjajakan calon mitra",
+     "waktu": "100-hari",
+     "rincian": "Penjajakan hanya dengan calon mitra yang lolos tujuh syarat uji tuntas.",
+     "lembaga": [
+      "Kepala BNPB"
+     ],
+     "dasar": "slide 9",
+     "risiko": "Mitra bermasalah merusak kepercayaan publik pada BNPB."
+    },
+    {
+     "kode": "04",
+     "jenis": "pembiayaan",
+     "langkah": "Buka meja insentif mitra",
+     "waktu": "2026-2027",
+     "rincian": "Membantu perusahaan memakai pengurang pajak: sumbangan bencana lewat BNPB, litbang lewat kampus.",
+     "lembaga": [
+      "Deputi Bidang Sistem dan Strategi BNPB"
+     ],
+     "dasar": "{{angka:pmk114.batas}}",
+     "risiko": "Tanpa pendampingan, insentif pajak tetap jarang dipakai."
+    },
+    {
+     "kode": "05",
+     "jenis": "regulasi",
+     "langkah": "Terbitkan pedoman uji tuntas",
+     "waktu": "100-hari",
+     "rincian": "Tujuh syarat mitra masuk pedoman dan menjadi lampiran tiap MoU.",
+     "lembaga": [
+      "Deputi Bidang Sistem dan Strategi BNPB"
+     ],
+     "dasar": "slide 9",
+     "risiko": "Calon mitra dapat menolak bila tawaran hanya meminta dana."
+    },
+    {
+     "kode": "06",
+     "jenis": "data",
+     "langkah": "Laporan publik tahunan",
+     "waktu": "2026-2027",
+     "rincian": "Laporan pertama akhir 2027, lalu tiap tahun; hasil diukur kampus dan diumumkan.",
+     "lembaga": [
+      "Pusdatinkom BNPB",
+      "Kampus koordinator"
+     ],
+     "dasar": "slide 9",
+     "risiko": "Tanpa laporan, flagship sulit dipertahankan saat anggaran berganti."
+    }
+   ],
+   "sumber": "Paparan kerja sama perguruan tinggi, 30 Okt 2026; Brainstorm ide BNPB, 2 Nov 2026"
+  },
+  {
+   "jenis": "penutup",
+   "layout": "putih",
+   "foto": [
+    "foto/kampus-ui.jpg",
+    "foto/kampus-itb.jpg",
+    "foto/kampus-ugm.jpg",
+    "foto/kampus-ipb.jpg"
+   ],
+   "kredit": "Foto: Ilham Kuniawan Gumilang (UI), A2613 (ITB), Alharomain354 (UGM), Davidelit (IPB); CC BY-SA 4.0, Wikimedia Commons",
+   "logo_kanan": "foto/berakhlak-hd.png",
+   "laporan": "Ringkasan Program Flagship Kerja Sama BNPB dengan Perguruan Tinggi dan Dunia Usaha",
+   "tanggal_pil": true
+  }
+ ]
+}

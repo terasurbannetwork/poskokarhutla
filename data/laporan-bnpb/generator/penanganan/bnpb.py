@@ -166,6 +166,13 @@ def pasang_sp(s, x, y, proto, label):
     return ubah_sp(s, x, y, label, cx=lebar_pil(label))
 
 
+def label_hujan(h):
+    """Pil hujan slide operasi (pemilik 3 Nov, dari Bang Ghozi "Hujan = hujan ringan aja"): intensitas yang disebut laporan satgas
+    ditulis apa adanya ("HUJAN LEBAT", "HUJAN RINGAN–SEDANG"); laporan yang hanya menyebut "hujan" ditulis "HUJAN RINGAN"."""
+    i = (h.get('intensitas') or '').strip().upper().replace(' HINGGA ', '–')
+    return f'HUJAN {i}' if i else 'HUJAN RINGAN'
+
+
 def ganti_operasi(s, op):
     # judul dan pil ARMADA UDARA = tanggal laporan WA (pemilik 28 Okt 2026: "bukannya udah ada tanggal 28?"); pil OMC DAN HUJAN dan SEMAI
     # OMC = hari kegiatan WB/OMC/hujan di isinya (1 Nov 2026: "Water bombing dan OMC nya kan tanggal 31 Okt kan?")
@@ -196,7 +203,7 @@ def ganti_operasi(s, op):
         o = op['omc'].get(nama) or {'sortie': 0, 'hujan': None, 'sasaran': ''}
         s = teks(s, ls, singkat(o['sasaran']) if o['sasaran'] else 'tidak ada sortie')
         h = o['hujan']
-        label = ('HUJAN ' + h['intensitas'].upper().replace(' HINGGA ', '–')).strip() if h else 'BELUM HUJAN'
+        label = label_hujan(h) if h else 'BELUM HUJAN'
         s = pasang_sp(s, 3561885, yp, pil['biru' if h else 'abu'], label)
         s = teks(s, lh, ('di ' + singkat(h['lokasi'], 40)) if h else f'belum ada laporan hujan {bln(K)}')
         for e, f in sp_di(s, 676656, yd): s = s[:e] + re.sub(r'val="(4A9BE0|C4CAD3)"', f'val="{"4A9BE0" if h else "C4CAD3"}"', s[e:f]) + s[f:]
@@ -220,13 +227,13 @@ def ganti_operasi(s, op):
         s = re.sub(rf'(<a:off x="795528" y="{5340096 if yp == 5401818 else 5783580}"/>(?:(?!</p:sp>).)*?<a:t>){ln}(</a:t>)', rf'\g<1>{nama}\2', s, count=1, flags=re.S)
         s = teks(s, lkg, f'{rb(o["nacl"] + o["dryice"])} kg'); s = teks(s, lso, f'{o["sortie"]} sortie')
         h = o['hujan']
-        label = 'HUJAN' if h else 'JARAK PANDANG NAIK' if o['jarak_pandang'] else 'BELUM HUJAN'
+        label = label_hujan(h) if h else 'JARAK PANDANG NAIK' if o['jarak_pandang'] else 'BELUM HUJAN'
         s = pasang_sp(s, 3561885, yp, pil['abu' if label == 'BELUM HUJAN' else 'biru'], label)
         kom = ', '.join(x for x in (f'NaCl {rb(o["nacl"])} kg' if o['nacl'] else '', f'dry ice {rb(o["dryice"])} kg' if o['dryice'] else '') if x)
         s = teks(s, lh, ('di ' + singkat(h['lokasi'], 40)) if h else kom)
     jumlah = op.get('pemilik') or {}
     assert not jumlah or sum(jumlah.values()) == pat + wb, f'pemilik {jumlah} tidak berjumlah {pat + wb} unit armada'
-    return pemilik(armada(tanpa_instansi(s), ARMADA, 5990000 if jumlah else 6300000), jumlah)
+    return kepala_omc(pemilik(armada(tanpa_instansi(s), ARMADA, 5990000 if jumlah else 6300000), jumlah))
 
 
 def rapat_omc(s, ada):
@@ -341,3 +348,94 @@ def armada(s, ARMADA, batas=6300000):
     return re.sub(r'<a:off x="(\d+)" y="(\d+)"/><a:ext cx="(\d+)" cy="(\d+)"/>', geser, s)
 
 
+# Kepala kolom panel MODIFIKASI CUACA (SASARAN OMC, bahan semai, HASIL): kapital polos rata tengah tanpa jarak huruf (pemilik 26 Okt
+# "Catat agar semua header rata tengah"; 28 Okt charSpacing 0; 3 Nov "header tabel2 untuk section modifikasi cuaca ikuti panduan").
+# 3 Nov (contoh pemilik: tabel LANGKAH | RINCIAN | PENANGGUNG JAWAB, "ada bar hitamnya"): kepala = pita navy 14 pt bersudut 3 pt
+# selebar panel, tulisan putih tebal rata tengah per kolom (sama dengan 'Pita kepala tabel' deck.py), plus kepala PROVINSI di kolom
+# pertama. Kolom: provinsi [676.656, 2.027.869), sasaran/bahan [2.027.869, 3.561.885), hasil [3.561.885, 5.899.252).
+KOLOM_OMC = {2027869: (2027869, 3561885 - 2027869), 3561885: (3561885, 5899252 - 3561885)}   # x kotak kepala templat: (x, lebar) baru
+PITA_OMC = {2962656: 2944368, 5193792: 5175504}   # y kepala templat: y pita (di antara judul baris OMC/SEMAI dan baris pertama)
+X_PANEL, W_PANEL, H_PITA = 676656, 5899252 - 676656, 177800   # 14 pt
+
+
+def kepala_omc(s):
+    nid = [max(map(int, re.findall(r'<p:cNvPr id="(\d+)"', s)))]
+    def baru_id(b):
+        nid[0] += 1
+        return re.sub(r'<p:cNvPr id="\d+"', f'<p:cNvPr id="{nid[0]}"', b, count=1)
+    def ubah(m):
+        sp = m.group(0)
+        o = re.search(r'<a:off x="(\d+)" y="(\d+)"/><a:ext cx="(\d+)" cy="(\d+)"/>', sp)
+        if not o or int(o.group(1)) not in KOLOM_OMC or int(o.group(2)) not in PITA_OMC:
+            return sp
+        yp = PITA_OMC[int(o.group(2))]
+        def kotak(b, x, cx):
+            b = b.replace(o.group(0), f'<a:off x="{x}" y="{yp}"/><a:ext cx="{cx}" cy="{H_PITA}"/>', 1)
+            b = re.sub(r'(<a:rPr [^>]*?)spc="-?\d+"', r'\1spc="0"', b).replace('<a:srgbClr val="6B7280"/>', '<a:srgbClr val="FFFFFF"/>')
+            b = re.sub(r'anchor="\w+"', 'anchor="ctr"', b)
+            return re.sub(r'<a:pPr(?! algn)', '<a:pPr algn="ctr"', b)
+        n[0] += 1
+        x, cx = KOLOM_OMC[int(o.group(1))]
+        if int(o.group(1)) != 2027869:
+            return kotak(sp, x, cx)
+        pita = baru_id(f'<p:sp><p:nvSpPr><p:cNvPr id="0" name="Pita kepala tabel"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr>'
+                       f'<a:xfrm><a:off x="{X_PANEL}" y="{yp}"/><a:ext cx="{W_PANEL}" cy="{H_PITA}"/></a:xfrm>'
+                       f'<a:prstGeom prst="roundRect"><a:avLst><a:gd name="adj" fmla="val 21429"/></a:avLst></a:prstGeom>'
+                       f'<a:solidFill><a:srgbClr val="051C2C"/></a:solidFill><a:ln><a:noFill/></a:ln></p:spPr>'
+                       f'<p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="en-US" dirty="0"/></a:p></p:txBody></p:sp>')
+        prov = baru_id(re.sub(r'<a:t>[^<]*</a:t>', '<a:t>PROVINSI</a:t>', kotak(sp, X_PANEL, 2027869 - X_PANEL), count=1))
+        return pita + prov + kotak(sp, x, cx)
+    n = [0]
+    s2 = re.sub(r'<p:sp>(?:(?!</p:sp>).)*?</p:sp>', ubah, s, flags=re.S)
+    assert n[0] == 4, f'kepala panel OMC: {n[0]} dari 4 ditemukan'
+    return rapikan_omc(s2)
+
+
+def rapikan_omc(s):
+    """3 Nov (pemilik: "spacingnya masih berantakan yang di tabel omc, ga proporsional"): bagian OMC DAN HUJAN dan SEMAI OMC disusun
+    ulang dengan satu irama: garis bagian, celah G, baris judul, celah G, pita kepala, baris berjarak sama P di kedua bagian (baris
+    OMC sebelumnya 591.312, SEMAI 443.484), garis pemisah tipis antarbaris seperti tabel contoh pemilik."""
+    G, HT, HB, HN, BAWAH = 64008, 201168, H_PITA, 443484, 2212848 + 4142232 - 91440   # BAWAH: dasar panel dikurangi 7,2 pt
+    blok = [(m.start(), m.end(), m.group(0)) for m in re.finditer(r'<p:(sp|pic)>.*?</p:\1>', s, re.S)]   # pic: ikon judul bagian
+    pos = lambda b: tuple(map(int, re.search(r'<a:off x="(\d+)" y="(\d+)"/>\s*<a:ext cx="(\d+)" cy="(\d+)"', b).groups()))
+    def di_panel(b):
+        o = re.search(r'<a:off x="(\d+)" y="(\d+)"/>\s*<a:ext cx="(\d+)" cy="(\d+)"', b)
+        return o and int(o.group(1)) < 6100000 and 2600000 < int(o.group(2)) < 6400000
+    garis = sorted(pos(b)[1] for *_, b in blok if di_panel(b) and pos(b)[0] == 676656 and pos(b)[2] == 5222596 and pos(b)[3] == 0)
+    assert len(garis) == 2, f'garis bagian panel OMC: {garis}'
+    nama = sorted(pos(b)[1] for *_, b in blok if di_panel(b) and pos(b)[0] == 795528 and pos(b)[3] == HN)
+    bag = [[y for y in nama if y < garis[1]], [y for y in nama if y > garis[1]]]
+    assert bag[0] and bag[1], f'baris OMC/SEMAI: {bag}'
+    P = min(548640, (BAWAH - garis[0] - 2 * (G + HT + G + HB)) // len(nama))
+    geser, sekat, y = {}, [], garis[0]   # geser: (y_lama_awal, y_lama_akhir) -> dy
+    for i, rows in enumerate(bag):
+        if i: geser[(garis[1], garis[1] + 1)] = y - garis[1]
+        judul_lama = garis[i] + 45720   # lingkaran ikon judul bagian (templat: garis + 45.720)
+        geser[(judul_lama, judul_lama + 100000)] = y + G - judul_lama
+        pita_lama = PITA_OMC[(2962656, 5193792)[i]]
+        y_pita = y + G + HT + G
+        geser[(pita_lama, pita_lama + 1)] = y_pita - pita_lama
+        y = y_pita + HB
+        for k, yn in enumerate(rows):
+            if k: sekat.append(y)
+            geser[(yn, yn + 400000)] = y + (P - HN) // 2 - yn   # nama, sasaran, pil, titik, keterangan, pil sortie satu baris
+            y += P
+    def ubah(b):
+        if not di_panel(b): return b
+        x, y0, cx, cy = pos(b)
+        d = next((dy for (a, z), dy in geser.items() if a <= y0 < z), None)
+        return b if d is None else b.replace(f'<a:off x="{x}" y="{y0}"/>', f'<a:off x="{x}" y="{y0 + d}"/>', 1)
+    hasil, akhir = [], 0
+    for a, z, b in blok:
+        hasil += [s[akhir:a], ubah(b)]; akhir = z
+    s = ''.join(hasil) + s[akhir:]
+    # garis pemisah antarbaris: salinan garis bagian, 0,5 pt warna garis (BFC5CC)
+    contoh = next(b for *_, b in blok if di_panel(b) and pos(b)[1] == garis[1] and pos(b)[3] == 0)
+    contoh = re.sub(r'<a:ln\b[^>]*?(/>|>.*?</a:ln>)', '<a:ln w="6350"><a:solidFill><a:srgbClr val="BFC5CC"/></a:solidFill></a:ln>', contoh, count=1, flags=re.S)
+    nid = max(map(int, re.findall(r'<p:cNvPr id="(\d+)"', s)))
+    tambah = ''
+    for k, ys in enumerate(sekat, 1):
+        b = contoh.replace(f'y="{garis[1]}"', f'y="{ys}"', 1)
+        tambah += re.sub(r'<p:cNvPr id="\d+"', f'<p:cNvPr id="{nid + k}"', b, count=1)
+    assert y <= BAWAH, f'panel OMC meluap: {y} > {BAWAH}'
+    return s.replace('</p:spTree>', tambah + '</p:spTree>')

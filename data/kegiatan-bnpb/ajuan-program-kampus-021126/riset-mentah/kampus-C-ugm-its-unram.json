@@ -1,0 +1,746 @@
+{
+ "topik": "Inventaris kekuatan kebencanaan UGM, ITS, dan Unram beserta mitra swasta yang sudah ada dan kandidat regional, untuk deck ajuan program BNPB-perguruan tinggi-swasta; riset web 2 November 2026, 31 pencarian/fetch, melanjutkan riset-3 dan riset-4 tanpa mengulang.",
+ "catatan_metode": "Klaim yang sudah ada di riset-mentah ajuan-program-pt-swasta-021126 (riset-1 A9, riset-3 C17-C36, riset-4 D9-D20, riset-5 E43) hanya dirujuk, tidak diulang. Tanggal halaman tak bertanggal ditulis sebagai perkiraan dan ditandai di teks; tanggal 2026-11-02 berarti tanggal akses. Klaim dari cuplikan mesin pencari yang halamannya belum dibuka diberi status celah.",
+ "kampus": {
+  "UGM": {
+   "ringkas": "UGM punya produk kebencanaan paling matang di antara tiga kampus ini: GAMA-EWS longsor yang sudah jadi standar ISO, dihilirkan lewat perusahaan kampus, dan penemunya kini Kepala BMKG. Rekam tanggap darurat panjang (DERU sejak Merapi 2010, Lombok 2018, ERU Sumatra 2025), PSBA untuk SPAB sekolah, dan prodi Magister Manajemen Bencana. Mitra industrinya kuat tetapi hampir tidak ada yang berlabel kebencanaan, kecuali kerja sama EWS megathrust dengan Telkom.",
+   "aset": [
+    "GAMA-EWS: peringatan dini longsor, ISO 22327:2018/22328-2:2024, hilir lewat PT Gama Multi Usaha Mandiri dan Gama Inatek (C1, C2; riset-3 C17-C18)",
+    "Pakar: Teuku Faisal Fathani, penemu GAMA-EWS, Kepala BMKG sejak November 2025 (C3)",
+    "EWS gempa megathrust berbasis kabel laut optik bersama Telkom (C4)",
+    "PSBA UGM: SPAB di sekolah bersama BPBD Bantul (C13)",
+    "Prodi S2 Magister Manajemen Bencana, akreditasi A (C15)",
+    "DERU/ERU UGM: Merapi 2010 (3 posko kampus, 8 klinik, ~100 kampus mitra pemulihan), Lombok 2018, Sumatra 2025 (C16-C20; riset-3 C19)",
+    "AI Joint Center UGM-IOH-NVIDIA, program Tech4Disaster (riset-5 E43)"
+   ],
+   "mitra_swasta_ada": [
+    "Telkom Indonesia: EWS gempa megathrust kabel laut optik, diapresiasi BMKG 2025-05-30 (C4)",
+    "PT INTI: MoU produksi dan pemasangan alat pengamatan cuaca bandara hasil riset UGM, 2018 (C5)",
+    "Sido Muncul: awal kemitraan riset herbal dan superfood, 2024-09 (C6)",
+    "PT Amman Mineral Nusa Tenggara: MoU 2023-11, lanjutan kajian sosial dan mitigasi Batu Hijau/Blok Elang (C9)",
+    "Pertamina EP Asset 1: seismik pasif FMIPA, 2025-01; Pertamina Foundation: lingkungan, 2026-02 (C10, C11)",
+    "ParagonCorp: Co-Learning Center di GIK UGM, 2025-04-16 (riset-1 A9)",
+    "Indosat Ooredoo Hutchison dan NVIDIA: AI Joint Center, Tech4Disaster (riset-5 E43)",
+    "BPD DIY: perbankan sejak 2008 dan CSR Rp160 juta (celah, C12)"
+   ],
+   "kandidat_swasta_regional": [
+    "Telkom Indonesia (paling kuat: sudah ada produk EWS bersama UGM dan kanal kabel laut)",
+    "Sido Muncul (rekam tanggap Sumatra ~Rp1,4 miliar, sudah mendekat ke UGM lewat riset herbal; cocok untuk logistik kesehatan dan psikososial)",
+    "Grup Astra/United Tractors (huntara Semeru, 35.500 paket Sumatra di riset-3)",
+    "ParagonCorp (sudah punya ruang di GIK UGM)",
+    "PT INTI atau Gama Inatek untuk produksi massal EWS (pola MoU 2018)",
+    "Djarum, Gudang Garam: hanya untuk lingkungan/penghijauan, bukan program sekolah (risiko)"
+   ],
+   "kampus_sekitar": [
+    "UII: Barrataga rumah rakyat tahan gempa, Prof. Sarwidi, CEEDEDS (C57)",
+    "Undip: kerja sama dengan PT Djarum soal lingkungan, 2024 (riset-3 C22)",
+    "UNS: belum diverifikasi"
+   ]
+  },
+  "ITS": {
+   "ringkas": "ITS kuat di rekayasa: pusat kebencanaan sejak 2004 (kini Puslit MKPI), pemodelan tsunami untuk InaTEWS Merah Putih, dan sensor cerdas bersama BPBD Jatim dan Jepang. Kekhasan yang tidak dimiliki kampus lain adalah teknik perkapalan: desain kapal rumah sakit untuk gempa-tsunami di atas platform kapal PT PAL. Rekam lapangannya nyata (914 huntara direncanakan di Lombok 2018, konsep huntara-huntap hibrida Semeru 2021), tetapi kerja sama industrinya belum ada yang berlabel kebencanaan kecuali MAIPARK.",
+   "aset": [
+    "Puslit MKPI ITS (2004 pusat studi bencana, 2012 PSKBPI, 2020 MKPI) (C24)",
+    "Pemodelan tsunami tektonik, genangan, dan atipikal untuk InaTEWS Merah Putih (C25, C26)",
+    "Sensor cerdas EWS bersama BPBD Jatim, METI Jepang, AOTS (riset-3 C25)",
+    "Desain kapal rumah sakit bencana: monohull 78 m (2015) dan rumah sakit terapung di KCR 60 m PAL (2024), konversi kapal semi RS COVID-19 (C31, C32, C33, C34)",
+    "Huntara Lombok 2018 (914 direncanakan, 100 unit tahap 1) dan konsep huntara-huntap hibrida Semeru (C27, C28)",
+    "Robot RAISA bersama Unair (riset-3 C31)",
+    "Rapid Visual Screening ITS untuk pemeriksaan bangunan pascagempa (dari cuplikan, belum dibuka)"
+   ],
+   "mitra_swasta_ada": [
+    "PT PAL Indonesia: kerja sama strategis riset dan pendidikan maritim 2026-07 (riset-3 C28); platform KCR 60 m dipakai dalam desain RS terapung ITS (C32)",
+    "PT Reasuransi MAIPARK: MoU ketangguhan Surabaya berbasis asuransi, 2022 (riset-3 C27)",
+    "Petrokimia Gresik: MoU inovasi dan SDM 2021, riset Battery Swap Station 2024 (riset-3 C32)",
+    "Pertamina EP: reprocessing seismik, sekitar 2026-09 (celah, C35)"
+   ],
+   "kandidat_swasta_regional": [
+    "PT PAL Indonesia (paling kuat: mitra ITS paling dalam, punya lini kapal rumah sakit; rangkai dengan RS Kapal Unair)",
+    "Petrokimia Gresik (mitra ITS sejak 2021, cepat turun di Semeru dengan 600 paket)",
+    "SIG/Semen Indonesia (bantuan Semeru Rp100 juta dan Mamuju; cocok untuk material huntap, tetapi belum ada MoU riset dengan ITS)",
+    "MAIPARK (pembiayaan risiko bencana kota)",
+    "United Tractors/Astra (100 huntara Semeru)",
+    "Sampoerna, Wings: rekam bencana tidak ditemukan; Sampoerna juga rokok (risiko)"
+   ],
+   "kampus_sekitar": [
+    "Unair: RS Kapal Ksatria Airlangga, layanan di Agam dan Aceh Tamiang Desember 2025 (riset-3 C35)",
+    "UB: belum diverifikasi"
+   ]
+  },
+  "Unram": {
+   "ringkas": "Unram adalah kampus tuan rumah gempa Lombok 2018: posko gabungan dan pemimpin koordinasi identifikasi wilayah bagi ITS dan UGM, plus posko bersama ITB di Lombok Utara. Kekuatan kebencanaannya tersebar di Magister Teknik Sipil (rumah dan sekolah tahan gempa ferosemen, desa tangguh tsunami Labuhan Haji, kerentanan gedung) dan kajian kesiapsiagaan Kuta Mandalika; laman pusat studi bencana dan prodi magister mitigasi bencana tidak ditemukan. Mitra swastanya regional: AMMAN (riset tambang dan merkuri) dan Bank NTB Syariah (MoU Tri Dharma 2026).",
+   "aset": [
+    "Peran koordinator kampus di gempa Lombok 2018 (C20; riset-4 D9)",
+    "Magister Teknik Sipil: rumah dan sekolah tahan gempa ferosemen di Lombok Utara, desa tangguh tsunami Labuhan Haji (C48, C49)",
+    "Kajian kerentanan gedung kampus dan kesiapsiagaan Kuta Mandalika (C50, C51)",
+    "Alat analisis metil merkuri hibah AMNT (celah, C44)"
+   ],
+   "mitra_swasta_ada": [
+    "PT Amman Mineral Nusa Tenggara: riset stockpile dan logam berat 2024, MoU merkuri PETI bersama Nexus3, pertemuan KSB 2026-07, hibah alat Tekran (riset-4 D14-D16; C44)",
+    "Bank NTB Syariah: MoU Tri Dharma 2026-05-18 dan CSR kendaraan (C42, C43)"
+   ],
+   "kandidat_swasta_regional": [
+    "PT Amman Mineral Nusa Tenggara (paling kuat: sudah mitra riset Unram, punya tim tanggap darurat yang pernah turun di Lombok 2018, Cianjur, Majene, Bima; perlu uji tuntas tambang)",
+    "Bank NTB Syariah (MoU 2026 baru; cocok untuk dana desa tangguh dan literasi asuransi mikro)",
+    "InJourney/ITDC Mandalika (Tsunami Ready kawasan wisata; InJourney sudah bermitra dengan Unud)",
+    "Hotel Bali: AYANA dan hotel Tanjung Benoa sebagai tempat evakuasi vertikal (C54; riset-4 D17)",
+    "PT Freeport Indonesia (pernah turun ke gempa Flores 2026, riset-4 D30; risiko tinggi)"
+   ],
+   "kampus_sekitar": [
+    "Unud: MoU InJourney Hospitality 2025-12, kerja sama kesiapsiagaan gunung api dengan Geofisika UGM (C53, C55)",
+    "Undana: belum diverifikasi (celah, C56)"
+   ]
+  }
+ },
+ "klaim": [
+  {
+   "id": "C1",
+   "subjek": "UGM",
+   "kategori": "pusat",
+   "teks": "Hilirisasi GAMA-EWS (sistem peringatan dini longsor UGM) berjalan lewat PT Gama Multi Usaha Mandiri (GMUM) sebagai perusahaan hilir dan distributor; halaman ini tidak memuat jumlah unit, paten, atau TKT.",
+   "angka": "",
+   "url": "https://ditpui.ugm.ac.id/gama-ews-2/",
+   "lembaga": "Direktorat Pengembangan Usaha dan Inkubasi UGM",
+   "tanggal": "2024-06-27",
+   "status": "temuan"
+  },
+  {
+   "id": "C2",
+   "subjek": "UGM",
+   "kategori": "inovasi",
+   "teks": "Cuplikan pencarian dari halaman-halaman UGM menyebut GAMA-EWS punya sekitar 35 varian alat dan 5 paten, lisensi dipegang direktorat inkubasi UGM dan PT Gama Inatek Grafika, pernah dipakai di area tambang United Mercury Group di Myanmar (2012), lebih dari 100 unit di 14 provinsi, dan rencana ekspor ke Vietnam serta Kroasia. Halaman persis untuk tiap angka belum dibuka; angka sebaran terbaru (33 provinsi, 120 kabupaten) sudah ada di riset-3 C18.",
+   "angka": "35 varian; 5 paten; >100 unit; 14 provinsi (versi lama)",
+   "url": "https://sustainabledevelopment.ugm.ac.id/?p=619",
+   "lembaga": "UGM (cuplikan, belum dibuka)",
+   "tanggal": "2026-11-02",
+   "status": "celah"
+  },
+  {
+   "id": "C3",
+   "subjek": "UGM",
+   "kategori": "prodi",
+   "teks": "Teuku Faisal Fathani, guru besar Teknik Sipil UGM dan penemu GAMA-EWS, dilantik menjadi Kepala BMKG menggantikan Dwikorita Karnawati (yang juga mantan Rektor UGM).",
+   "angka": "",
+   "url": "https://www.cnnindonesia.com/teknologi/20251104101914-199-1291594/profil-teuku-faisal-fathani-pemimpin-anyar-bmkg-pengganti-dwikorita",
+   "lembaga": "CNN Indonesia",
+   "tanggal": "2025-11-04",
+   "status": "temuan"
+  },
+  {
+   "id": "C4",
+   "subjek": "UGM",
+   "kategori": "mitra_ada",
+   "teks": "BMKG mengapresiasi kerja sama UGM dan Telkom Indonesia mengembangkan sistem peringatan dini gempa megathrust berbasis kabel laut optik untuk mendukung InaTEWS; teknologi masih harus lulus uji kelayakan dan standar nasional. Lokasi, jumlah sensor, dan nama pakar tidak disebut.",
+   "angka": "",
+   "url": "https://www.bmkg.go.id/siaran-pers/bmkg-apresiasi-inisiatif-ugm-dan-telkom-untuk-perkuat-sistem-peringatan-dini-tsunami-nasional",
+   "lembaga": "BMKG",
+   "tanggal": "2025-05-30",
+   "status": "temuan"
+  },
+  {
+   "id": "C5",
+   "subjek": "UGM",
+   "kategori": "mitra_ada",
+   "teks": "UGM, BMKG, KNKT, dan PT INTI (BUMN telekomunikasi) menandatangani MoU pengembangan perangkat pengamatan cuaca bandara: UGM meriset, BMKG-KNKT menguji dan menyertifikasi, PT INTI memproduksi, memasang, dan melayani purnajual. Pola pembagian peran ini bisa ditiru untuk produksi massal alat peringatan dini.",
+   "angka": "",
+   "url": "https://ugm.ac.id/?p=11889",
+   "lembaga": "Universitas Gadjah Mada",
+   "tanggal": "2018-09-13",
+   "status": "temuan"
+  },
+  {
+   "id": "C6",
+   "subjek": "UGM",
+   "kategori": "mitra_ada",
+   "teks": "Dirut Sido Muncul Irwan Hidayat berkunjung ke UGM dan menawarkan dukungan penuh riset temulawak, jahe, kunyit, dan superfood, termasuk menyumbang sumber daya perusahaan; disebut awal kemitraan strategis, tanpa angka dana.",
+   "angka": "",
+   "url": "https://ugm.ac.id/id/berita/ugm-dan-sidomuncul-kolaborasi-riset-studi-herbal-dan-superfood/",
+   "lembaga": "Universitas Gadjah Mada",
+   "tanggal": "2024-09-05",
+   "status": "temuan"
+  },
+  {
+   "id": "C7",
+   "subjek": "Sido Muncul",
+   "kategori": "mitra_regional",
+   "teks": "Sido Muncul (Semarang, Jawa Tengah) menyalurkan bantuan CSR Rp900 juta untuk korban banjir Sumatra dan Aceh lewat IDI, Kodam/Polda, dan PMI.",
+   "angka": "Rp900 juta",
+   "url": "https://bcasekuritas.co.id/latest-news/news/sido-muncul-salurkan-bantuan-untuk-korban-bencana-di-sumatera-dan-aceh",
+   "lembaga": "BCA Sekuritas (rangkuman berita)",
+   "tanggal": "2025-12-03",
+   "status": "temuan"
+  },
+  {
+   "id": "C8",
+   "subjek": "Sido Muncul",
+   "kategori": "mitra_regional",
+   "teks": "Sido Muncul menambah donasi Rp500 juta untuk korban bencana Aceh, Sumut, dan Sumbar di forum Kementerian Sosial, sehingga total sekitar Rp1,4 miliar (tanggal perkiraan pertengahan Desember 2025).",
+   "angka": "Rp500 juta; total ~Rp1,4 miliar",
+   "url": "https://bcasekuritas.co.id/latest-news/news/sido-muncul-tambah-donasi-rp500-juta-untuk-korban-bencana-di-sumatera",
+   "lembaga": "BCA Sekuritas (rangkuman berita)",
+   "tanggal": "2025-12-15",
+   "status": "temuan"
+  },
+  {
+   "id": "C9",
+   "subjek": "UGM",
+   "kategori": "mitra_ada",
+   "teks": "UGM dan PT Amman Mineral Nusa Tenggara meneken MoU (Rektor Ova Emilia dan Presdir Rachmat Makkasau) yang memperkuat kerja sama lama: PSPK UGM dan Fakultas Psikologi pernah mengerjakan perencanaan mitigasi Blok Elang, kajian dampak sosial Tambang Batu Hijau, dan konseling pensiunan (2017); bidang MoU mencakup sosial, teknologi, sains, kesehatan, pertanian.",
+   "angka": "",
+   "url": "https://ugm.ac.id/en/news/universitas-gadjah-mada-and-pt-amman-mineral-nusa-tenggara-strengthen-collaboration/",
+   "lembaga": "Universitas Gadjah Mada",
+   "tanggal": "2023-11-30",
+   "status": "temuan"
+  },
+  {
+   "id": "C10",
+   "subjek": "UGM",
+   "kategori": "mitra_ada",
+   "teks": "Kerja sama PT Pertamina EP Asset 1 dengan FMIPA UGM untuk akuisisi dan pemrosesan seismik pasif struktur Ketaling Timur dan Sungai Gelam Timur resmi dimulai; ini kerja sama eksplorasi, bukan kebencanaan.",
+   "angka": "",
+   "url": "https://geofisika.ugm.ac.id/2025/01/21/tahun-baru-lapangan-baru-inovasi-metode-seismik-pasif-siap-terjun-ke-lapangan",
+   "lembaga": "Departemen Geofisika UGM",
+   "tanggal": "2025-01-21",
+   "status": "temuan"
+  },
+  {
+   "id": "C11",
+   "subjek": "UGM",
+   "kategori": "mitra_ada",
+   "teks": "Dalam Dies Natalis Universitas Pertamina dan HUT Pertamina Foundation, Pertamina Foundation menjalin kerja sama dengan sejumlah kampus termasuk UGM di bidang pelestarian lingkungan; isi perjanjian tidak dirinci.",
+   "angka": "",
+   "url": "https://kabar24.bisnis.com/read/20260214/79/1952974/dies-natalis-universitas-pertamina-dan-hut-pertamina-foundation-momentum-perkuat-kolaborasi",
+   "lembaga": "Bisnis.com",
+   "tanggal": "2026-02-14",
+   "status": "temuan"
+  },
+  {
+   "id": "C12",
+   "subjek": "UGM",
+   "kategori": "mitra_ada",
+   "teks": "Cuplikan berita UGM menyebut kerja sama keuangan BPD DIY dan UGM berjalan sejak 2008 (payroll, pengelolaan keuangan, cash management) dan CSR kendaraan kebersihan senilai Rp160 juta; halaman dan tanggal persis belum dibuka.",
+   "angka": "Rp160 juta; sejak 2008",
+   "url": "",
+   "lembaga": "",
+   "tanggal": "",
+   "status": "celah"
+  },
+  {
+   "id": "C13",
+   "subjek": "UGM",
+   "kategori": "pusat",
+   "teks": "PSBA UGM merintis Satuan Pendidikan Aman Bencana (SPAB) di SMP dan SMA Kesatuan Bangsa Yogyakarta bersama unit keselamatan UGM dan BPBD Bantul; mitra PSBA yang tercatat adalah BNPB, BPBD (Morowali Utara sejak 2017, Kebumen, Dumai), dan lembaga internasional, tanpa mitra swasta (tanggal halaman perkiraan).",
+   "angka": "",
+   "url": "https://ugm.ac.id/id/berita/psba-ugm-rintis-program-satuan-pendidikan-aman-bencana-di-sekolah-sekolah/",
+   "lembaga": "Universitas Gadjah Mada",
+   "tanggal": "2026-11-02",
+   "status": "temuan"
+  },
+  {
+   "id": "C14",
+   "subjek": "UGM",
+   "kategori": "mitra_regional",
+   "teks": "Tidak ditemukan mitra swasta PSBA UGM; jalur SPAB PSBA adalah tempat paling wajar untuk sponsor edukasi sekolah, asalkan bukan industri rokok (lihat klaim risiko).",
+   "angka": "",
+   "url": "https://ugm.ac.id/id/berita/psba-ugm-rintis-program-satuan-pendidikan-aman-bencana-di-sekolah-sekolah/",
+   "lembaga": "Universitas Gadjah Mada",
+   "tanggal": "2026-11-02",
+   "status": "inferensi"
+  },
+  {
+   "id": "C15",
+   "subjek": "UGM",
+   "kategori": "prodi",
+   "teks": "Pascasarjana UGM menjalankan Program Studi S2 Magister Manajemen Bencana (MMB) yang disebut terakreditasi A (dari cuplikan; halaman tak bertanggal, tanggal = tanggal akses).",
+   "angka": "",
+   "url": "https://mmb.pasca.ugm.ac.id/?p=3245",
+   "lembaga": "Sekolah Pascasarjana UGM",
+   "tanggal": "2026-11-02",
+   "status": "temuan"
+  },
+  {
+   "id": "C16",
+   "subjek": "UGM",
+   "kategori": "tanggap",
+   "teks": "Saat erupsi Merapi 2010 UGM meliburkan kegiatan akademik sampai 13 November 2010 dan membuka posko pengungsian di Gelanggang Mahasiswa, Pusat Kebudayaan Koesnadi Hardjasoemantri, dan lapangan tenis indoor di bawah koordinasi DERU (tanggal perkiraan awal November 2010).",
+   "angka": "3 posko kampus",
+   "url": "https://ugm.ac.id/id/berita/2776-ugm-liburkan-kegiatan-akademik-sampai-dengan-13-november-2010/",
+   "lembaga": "Universitas Gadjah Mada",
+   "tanggal": "2010-11-05",
+   "status": "temuan"
+  },
+  {
+   "id": "C17",
+   "subjek": "UGM",
+   "kategori": "tanggap",
+   "teks": "DERU UGM mendirikan klinik kesehatan di 8 titik pengungsian Merapi 2010 (tanggal perkiraan).",
+   "angka": "8 klinik",
+   "url": "https://ugm.ac.id/id/berita/2785-deru-ugm-dirikan-klinik-kesehatan-di-8-titik-pengungsian/",
+   "lembaga": "Universitas Gadjah Mada",
+   "tanggal": "2010-11-08",
+   "status": "temuan"
+  },
+  {
+   "id": "C18",
+   "subjek": "UGM",
+   "kategori": "tanggap",
+   "teks": "UGM menggandeng sekitar 100 perguruan tinggi negeri dan swasta untuk memulihkan kehidupan warga sekitar Merapi pascaerupsi 2010 (tanggal perkiraan).",
+   "angka": "~100 kampus",
+   "url": "https://ugm.ac.id/en/news/5958-cooperating-with-100-private-state-universities-ugm-helps-reawaken-life-of-people-around-merapi/",
+   "lembaga": "Universitas Gadjah Mada",
+   "tanggal": "2010-11-30",
+   "status": "temuan"
+  },
+  {
+   "id": "C19",
+   "subjek": "UGM",
+   "kategori": "tanggap",
+   "teks": "Pers mahasiswa Balairung mengutip relawan Gelanggang Emergency Response: 768 pengungsi di Gelanggang, lebih dari 200 relawan terdaftar, dan 100 relawan unit kesehatan DERU; angka UGM sendiri berbeda (236 sampai >350 pengungsi) dan halaman persisnya belum dipastikan.",
+   "angka": "768 pengungsi; >200 relawan",
+   "url": "https://balairungpress.com/?p=11794",
+   "lembaga": "Balairung Press (cuplikan)",
+   "tanggal": "2010-11-05",
+   "status": "celah"
+  },
+  {
+   "id": "C20",
+   "subjek": "UGM; ITS; Unram",
+   "kategori": "tanggap",
+   "teks": "Pada gempa Lombok 2018, tim ITS dan UGM bertemu di Posko Tanggap Bencana Gempa Lombok di Unram dan sepakat menetapkan Unram sebagai pemimpin identifikasi wilayah; ITS mendapat Ampenan dan Sekarbela, UGM mendapat Mataram dan Selaparang.",
+   "angka": "2 tim utama ITS",
+   "url": "https://www.its.ac.id/kemanusiaan/?p=320",
+   "lembaga": "ITS (Satgas Kemanusiaan)",
+   "tanggal": "2018-08-10",
+   "status": "temuan"
+  },
+  {
+   "id": "C21",
+   "subjek": "Djarum Foundation",
+   "kategori": "mitra_regional",
+   "teks": "Skripsi Undip menyebut tim Djarum Bakti Sosial pernah merespons kekeringan, kebakaran, dan erupsi Merapi, tanpa tahun; bantuan Djarum untuk bencana 2025 (Sumatra) tidak ditemukan.",
+   "angka": "",
+   "url": "https://eprints2.undip.ac.id/id/eprint/18170/3/bab%202%20jadi.pdf",
+   "lembaga": "Repositori Undip (skripsi)",
+   "tanggal": "2026-11-02",
+   "status": "celah"
+  },
+  {
+   "id": "C22",
+   "subjek": "Industri rokok (Djarum, Gudang Garam, Sampoerna)",
+   "kategori": "risiko",
+   "teks": "PP 28/2024 mengatur ketat iklan, promosi, dan sponsor produk tembakau; mendanai program edukasi bencana anak sekolah (SPAB, VR ke sekolah) dari induk rokok berisiko regulasi dan reputasi. Rincian sudah ada di riset-3.",
+   "angka": "",
+   "url": "https://www.cnbcindonesia.com/news/20240731134211-4-559197/ini-poin-poin-penting-pp-kesehatan-terkait-rokok-tembakau",
+   "lembaga": "CNBC Indonesia",
+   "tanggal": "2024-07-31",
+   "status": "risiko"
+  },
+  {
+   "id": "C23",
+   "subjek": "UGM; BMKG",
+   "kategori": "risiko",
+   "teks": "Penemu GAMA-EWS kini Kepala BMKG; pengadaan atau penggandaan GAMA-EWS lewat program BNPB perlu proses terbuka agar tidak dibaca sebagai benturan kepentingan (inferensi dari klaim C3).",
+   "angka": "",
+   "url": "https://www.cnnindonesia.com/teknologi/20251104101914-199-1291594/profil-teuku-faisal-fathani-pemimpin-anyar-bmkg-pengganti-dwikorita",
+   "lembaga": "CNN Indonesia",
+   "tanggal": "2025-11-04",
+   "status": "risiko"
+  },
+  {
+   "id": "C24",
+   "subjek": "ITS",
+   "kategori": "pusat",
+   "teks": "Pusat kebencanaan ITS berdiri 2004 sebagai pusat studi bencana, menjadi Pusat Studi Kebumian, Bencana dan Perubahan Iklim (PSKBPI) pada 2012, lalu Pusat Penelitian Mitigasi Kebencanaan dan Perubahan Iklim (MKPI) sejak 2020; mitranya Gubernur Jatim, BNPB, BPBD Jatim dan kabupaten/kota, serta badan PBB (halaman tak bertanggal, tanggal = akses).",
+   "angka": "berdiri 2004",
+   "url": "https://www.its.ac.id/mkpi/id/sejarah-mkpi",
+   "lembaga": "Puslit MKPI ITS",
+   "tanggal": "2026-11-02",
+   "status": "temuan"
+  },
+  {
+   "id": "C25",
+   "subjek": "ITS",
+   "kategori": "inovasi",
+   "teks": "ITS menjadi tim pelaksana InaTEWS Merah Putih bersama UI, UGM, dan ITB atas ajakan BMKG; lingkup ITS: pemodelan tsunami tektonik, pemodelan genangan, dan pengamatan tsunami atipikal.",
+   "angka": "",
+   "url": "https://www.its.ac.id/mkpi/id/2023/04/20/its-terlibat-dalam-pengembangan-inatews-merah-putih/",
+   "lembaga": "Puslit MKPI ITS",
+   "tanggal": "2023-04-20",
+   "status": "temuan"
+  },
+  {
+   "id": "C26",
+   "subjek": "ITS",
+   "kategori": "pusat",
+   "teks": "MKPI ITS dan BMKG membahas riset sistem peringatan dini tsunami.",
+   "angka": "",
+   "url": "https://www.its.ac.id/mkpi/id/2023/06/11/mkpi-dan-bmkg-bahas-riset-early-warning-system-tsunami/",
+   "lembaga": "Puslit MKPI ITS",
+   "tanggal": "2023-06-11",
+   "status": "temuan"
+  },
+  {
+   "id": "C27",
+   "subjek": "ITS",
+   "kategori": "tanggap",
+   "teks": "Pascagempa Lombok 2018 ITS merencanakan 914 hunian sementara di Desa Rempek Darussalam, Gangga, Lombok Utara; tahap ITS 1.0 sebanyak 100 unit (23 sudah dihuni saat berita). Dana dari masyarakat, swasta, dan BUMN yang tidak disebut namanya, dengan laman pelacakan rumah donasi. Kepala PSKBPI saat itu Lalu Muhammad Jaelani.",
+   "angka": "914 huntara direncanakan; 100 unit tahap 1; 23 dihuni",
+   "url": "https://www.suarasurabaya.net/kelanakota/2018/ITS-Tuntaskan-Pembangunan-914-Huntara-di-Lombok/",
+   "lembaga": "Suara Surabaya",
+   "tanggal": "2018-10-04",
+   "status": "temuan"
+  },
+  {
+   "id": "C28",
+   "subjek": "ITS",
+   "kategori": "tanggap",
+   "teks": "Pascaerupsi Semeru 2021, peneliti Puslit MKPI ITS merumuskan konsep hibrida huntara yang dapat dikembangkan warga menjadi huntap, cepat dibangun dan mudah dipindah (tanggal perkiraan Desember 2021).",
+   "angka": "",
+   "url": "https://www.its.ac.id/news/tanggapi-semeru-its-gagas-konsep-hunian-secara-hybrid/",
+   "lembaga": "ITS News",
+   "tanggal": "2021-12-15",
+   "status": "temuan"
+  },
+  {
+   "id": "C29",
+   "subjek": "ITS",
+   "kategori": "tanggap",
+   "teks": "Tim KKN ITS berkolaborasi dengan PTN Jawa Timur untuk Semeru; tim Teknik Geomatika ITS membawa total station untuk program relokasi hunian warga.",
+   "angka": "",
+   "url": "https://www.its.ac.id/news/en/2021/12/20/its-kkn-team-collaborates-with-ptn-jatim-to-care-for-semeru/",
+   "lembaga": "ITS News",
+   "tanggal": "2021-12-20",
+   "status": "temuan"
+  },
+  {
+   "id": "C30",
+   "subjek": "ITS",
+   "kategori": "tanggap",
+   "teks": "Cuplikan pencarian menyebut Satgas Kemanusiaan ITS menopang dapur umum Desa Supiturang, Pronojiwo, sebanyak 200 porsi per hari dan punya 35 relawan mahasiswa aktif untuk Semeru; halaman persisnya belum dibuka.",
+   "angka": "200 porsi/hari; 35 relawan",
+   "url": "https://www.its.ac.id/kemanusiaan/?p=445",
+   "lembaga": "ITS (cuplikan)",
+   "tanggal": "2021-12-15",
+   "status": "celah"
+  },
+  {
+   "id": "C31",
+   "subjek": "ITS",
+   "kategori": "inovasi",
+   "teks": "Tugas akhir Teknik Perkapalan ITS merancang kapal rumah sakit monohull untuk respons gempa dan tsunami di perairan Indonesia (Lwl 78 m, B 13,2 m, T 4,3 m); masih tingkat desain akademik.",
+   "angka": "Lwl 78 m",
+   "url": "https://repository.its.ac.id/71917",
+   "lembaga": "Repositori ITS",
+   "tanggal": "2015-07-01",
+   "status": "temuan"
+  },
+  {
+   "id": "C32",
+   "subjek": "ITS; PT PAL Indonesia",
+   "kategori": "inovasi",
+   "teks": "Tugas akhir Desain Produk ITS mengadaptasi kapal cepat KCR 60 m buatan PT PAL menjadi rumah sakit terapung dua dek (triase, rawat inap, ICU, CT scan, ruang operasi minor) untuk respons gempa-tsunami pesisir (tanggal perkiraan 2024).",
+   "angka": "KCR 60 m",
+   "url": "https://repository.its.ac.id/112906",
+   "lembaga": "Repositori ITS",
+   "tanggal": "2024-07-01",
+   "status": "temuan"
+  },
+  {
+   "id": "C33",
+   "subjek": "ITS",
+   "kategori": "inovasi",
+   "teks": "Mahasiswa Teknik Perkapalan ITS mengonversi kapal perintis menjadi kapal semi rumah sakit untuk pasien COVID-19 (tanggal perkiraan 2020).",
+   "angka": "",
+   "url": "https://www.its.ac.id/news/?p=51252",
+   "lembaga": "ITS News",
+   "tanggal": "2020-08-01",
+   "status": "temuan"
+  },
+  {
+   "id": "C34",
+   "subjek": "ITS; PT PAL Indonesia; Unair",
+   "kategori": "inovasi",
+   "teks": "Desain kapal rumah sakit ITS di atas platform PAL, ditambah operasi RS Kapal Ksatria Airlangga Unair (riset-3 C35) dan lini kapal rumah sakit PAL (riset-3 C29), membentuk rantai desain-bangun-operasi yang sudah ada di Jawa Timur; belum ada perjanjian bertiga yang ditemukan.",
+   "angka": "",
+   "url": "https://repository.its.ac.id/112906",
+   "lembaga": "Repositori ITS",
+   "tanggal": "2024-07-01",
+   "status": "inferensi"
+  },
+  {
+   "id": "C35",
+   "subjek": "ITS; Pertamina EP",
+   "kategori": "mitra_ada",
+   "teks": "Cuplikan pencarian menyebut kemitraan industri ITS dengan Pertamina EP untuk reprocessing seismik (sekitar September 2026); halaman dan isi belum dibuka.",
+   "angka": "",
+   "url": "https://www.its.ac.id/tgeofisika/?p=14769",
+   "lembaga": "ITS (cuplikan)",
+   "tanggal": "2026-09-01",
+   "status": "celah"
+  },
+  {
+   "id": "C36",
+   "subjek": "SIG (Semen Indonesia)",
+   "kategori": "mitra_regional",
+   "teks": "SIG Peduli menyalurkan bahan makanan dan perlengkapan senilai Rp100 juta untuk pengungsi Semeru di Lumajang, berkoordinasi dengan BPBD Lumajang dan Satgas BUMN; tidak ditemukan bantuan huntap atau semen untuk Semeru.",
+   "angka": "Rp100 juta",
+   "url": "https://ekonomi.republika.co.id/berita//r3r72y416/sig-pasok-makanan-dan-perlengkapan-untuk-pengungsi-semeru",
+   "lembaga": "Republika",
+   "tanggal": "2021-12-08",
+   "status": "temuan"
+  },
+  {
+   "id": "C37",
+   "subjek": "SIG (Semen Indonesia)",
+   "kategori": "mitra_regional",
+   "teks": "SIG memprioritaskan bantuan medis untuk korban gempa Mamuju (tanggal perkiraan Januari 2021).",
+   "angka": "",
+   "url": "https://wartaekonomi.co.id/read324063/sig-prioritaskan-bantuan-medis-untuk-korban-gempa-mamuju",
+   "lembaga": "Warta Ekonomi",
+   "tanggal": "2021-01-20",
+   "status": "temuan"
+  },
+  {
+   "id": "C38",
+   "subjek": "Petrokimia Gresik",
+   "kategori": "mitra_regional",
+   "teks": "Petrokimia Gresik menyalurkan 600 paket sembako untuk korban erupsi Semeru pada 5 Desember 2021; Petrokimia juga punya MoU inovasi dan SDM dengan ITS sejak 2021 (riset-3 C32).",
+   "angka": "600 paket",
+   "url": "https://www.jpnn.com/news/erupsi-gunung-semeru-petrokimia-gresik-langsung-bergerak",
+   "lembaga": "JPNN",
+   "tanggal": "2021-12-05",
+   "status": "temuan"
+  },
+  {
+   "id": "C39",
+   "subjek": "United Tractors (Grup Astra)",
+   "kategori": "mitra_regional",
+   "teks": "United Tractors menyerahkan 100 unit huntara kepada korban erupsi Semeru di Lumajang sebagai program CSR kebencanaan (tanggal perkiraan Juli 2022).",
+   "angka": "100 huntara",
+   "url": "https://wartaekonomi.co.id/read427818/united-tractors-serahkan-100-unit-huntara-korban-erupsi-gunung-semeru-begini-respons-bupati-lumajang",
+   "lembaga": "Warta Ekonomi",
+   "tanggal": "2022-07-15",
+   "status": "temuan"
+  },
+  {
+   "id": "C40",
+   "subjek": "Sampoerna; Wings",
+   "kategori": "mitra_regional",
+   "teks": "Rekam bantuan Sampoerna dan Wings untuk Semeru 2021 atau bencana Jawa Timur lain tidak muncul dalam pencarian ini.",
+   "angka": "",
+   "url": "",
+   "lembaga": "",
+   "tanggal": "",
+   "status": "celah"
+  },
+  {
+   "id": "C41",
+   "subjek": "SIG (Semen Indonesia)",
+   "kategori": "mitra_ada",
+   "teks": "MoU riset ITS-SIG 2025-2026 tetap tidak ditemukan; mitra riset SIG yang tercatat adalah BRIN, LPDP (Januari 2023), dan Semen Baturaja (ICRI).",
+   "angka": "",
+   "url": "https://bcasekuritas.co.id/latest-news/news/sig-gandeng-brin-demi-pengembangan-produk-berkelanjutan",
+   "lembaga": "BCA Sekuritas (rangkuman berita)",
+   "tanggal": "2026-11-02",
+   "status": "celah"
+  },
+  {
+   "id": "C42",
+   "subjek": "Unram; Bank NTB Syariah",
+   "kategori": "mitra_ada",
+   "teks": "Unram dan PT Bank NTB Syariah menandatangani MoU pelaksanaan Tri Dharma (pendidikan, penelitian, pengabdian) di ruang rapat rektor; Unram siap mendukung bank lewat program akademik dan SDM. Tanggal 18 Mei 2026 berasal dari cuplikan pencarian karena halaman gagal dibuka (404 saat diambil).",
+   "angka": "",
+   "url": "https://unram.ac.id/en/tag/bank-ntb-en/",
+   "lembaga": "Universitas Mataram",
+   "tanggal": "2026-05-18",
+   "status": "temuan"
+  },
+  {
+   "id": "C43",
+   "subjek": "Unram; Bank NTB Syariah",
+   "kategori": "mitra_ada",
+   "teks": "Cuplikan pencarian menyebut Dirut Bank NTB Syariah menyerahkan dua unit kendaraan roda tiga sebagai CSR untuk Unram (sekitar 2024); halaman dan tanggal belum diverifikasi.",
+   "angka": "2 kendaraan roda tiga",
+   "url": "https://unram.ac.id/en/tag/bank-ntb-en/",
+   "lembaga": "Universitas Mataram (cuplikan)",
+   "tanggal": "2024-01-01",
+   "status": "celah"
+  },
+  {
+   "id": "C44",
+   "subjek": "Unram; PT Amman Mineral Nusa Tenggara",
+   "kategori": "mitra_ada",
+   "teks": "Cuplikan seminar menyebut AMNT menyerahkan hibah alat Tekran Series 2700 Automated Methyl Mercury Analyzer kepada Unram; tanggal belum diverifikasi. Ini melengkapi MoU AMMAN-Unram-Nexus3 soal merkuri PETI di riset-4 D16.",
+   "angka": "1 alat analisis metil merkuri",
+   "url": "https://unram.ac.id/en/tag/pt-amnt-en",
+   "lembaga": "Universitas Mataram (cuplikan)",
+   "tanggal": "2026-11-02",
+   "status": "celah"
+  },
+  {
+   "id": "C45",
+   "subjek": "PT Amman Mineral Nusa Tenggara",
+   "kategori": "mitra_regional",
+   "teks": "AMMAN meluncurkan Beasiswa Mekanik Alat Berat Batch I untuk talenta lokal Sumbawa Barat (pendaftaran 11-31 Maret 2026), tanpa mitra kampus yang disebut.",
+   "angka": "Batch I",
+   "url": "https://www.amman.co.id/article/amman-launches-heavy-equipment-scholarship-batch-i-for-local-talent",
+   "lembaga": "PT Amman Mineral Nusa Tenggara",
+   "tanggal": "2026-03-11",
+   "status": "temuan"
+  },
+  {
+   "id": "C46",
+   "subjek": "Unram",
+   "kategori": "prodi",
+   "teks": "Pencarian di laman Pascasarjana Unram tidak menemukan prodi Magister Mitigasi Bencana (yang disebut sebagai inferensi di riset-4 D10); yang muncul antara lain Magister Pendidikan IPA. Keberadaan prodi kebencanaan Unram perlu ditanyakan langsung.",
+   "angka": "",
+   "url": "https://pasca.unram.ac.id/magipa/latest-news/page/2/",
+   "lembaga": "Pascasarjana Unram",
+   "tanggal": "2026-11-02",
+   "status": "celah"
+  },
+  {
+   "id": "C47",
+   "subjek": "Unram",
+   "kategori": "pusat",
+   "teks": "Pencarian tidak menemukan laman resmi pusat studi kebencanaan Unram; kekuatan kebencanaan Unram tersebar di Magister Teknik Sipil (bangunan tahan gempa, tsunami) dan pengabdian FKIP.",
+   "angka": "",
+   "url": "",
+   "lembaga": "",
+   "tanggal": "",
+   "status": "celah"
+  },
+  {
+   "id": "C48",
+   "subjek": "Unram",
+   "kategori": "pusat",
+   "teks": "Pengabdian dosen Magister Teknik Sipil Unram membangun Desa Labuhan Haji, Lombok Timur, sebagai desa tangguh bencana tsunami karena posisinya menghadap Selat Alas/Sumbawa (tanggal perkiraan 2024).",
+   "angka": "",
+   "url": "https://journal.unram.ac.id/index.php/portalabdimas/article/view/4388",
+   "lembaga": "Jurnal Portal Abdimas Unram",
+   "tanggal": "2024-06-01",
+   "status": "temuan"
+  },
+  {
+   "id": "C49",
+   "subjek": "Unram",
+   "kategori": "inovasi",
+   "teks": "Magister Teknik Sipil Unram melatih warga Desa Gondang, Lombok Utara, membangun rumah dan sekolah tahan gempa dengan teknik pelapisan dinding ferosemen (tanggal perkiraan).",
+   "angka": "",
+   "url": "https://journal.unram.ac.id/index.php/pepadu/article/download/2155/864",
+   "lembaga": "Prosiding PEPADU LPPM Unram",
+   "tanggal": "2020-11-01",
+   "status": "temuan"
+  },
+  {
+   "id": "C50",
+   "subjek": "Unram",
+   "kategori": "pusat",
+   "teks": "Fakultas Teknik Unram meneliti kerentanan gedung kampusnya sendiri sebagai bagian mitigasi gempa (tanggal perkiraan).",
+   "angka": "",
+   "url": "https://scholar.unram.ac.id/papers/W4213160343",
+   "lembaga": "Unram Scholar",
+   "tanggal": "2022-01-01",
+   "status": "temuan"
+  },
+  {
+   "id": "C51",
+   "subjek": "Unram",
+   "kategori": "pusat",
+   "teks": "Kajian mahasiswa Unram tentang mitigasi dan kesiapsiagaan bencana di kawasan wisata Kuta Mandalika, Lombok Tengah, terbit Desember 2025.",
+   "angka": "",
+   "url": "https://resiprokal.unram.ac.id/index.php/RESIPROKAL/article/download/862/114/2218",
+   "lembaga": "Jurnal Resiprokal Unram",
+   "tanggal": "2025-12-01",
+   "status": "temuan"
+  },
+  {
+   "id": "C52",
+   "subjek": "Unram; ITDC/InJourney",
+   "kategori": "mitra_regional",
+   "teks": "KEK Mandalika dikelola grup InJourney (ITDC); kajian Unram tentang kesiapsiagaan Kuta Mandalika membuka jalan program Tsunami Ready kawasan wisata dengan dana pengelola KEK. Belum ditemukan kerja sama Unram-ITDC.",
+   "angka": "",
+   "url": "https://resiprokal.unram.ac.id/index.php/RESIPROKAL/article/download/862/114/2218",
+   "lembaga": "Jurnal Resiprokal Unram",
+   "tanggal": "2025-12-01",
+   "status": "inferensi"
+  },
+  {
+   "id": "C53",
+   "subjek": "Unud; InJourney Hospitality",
+   "kategori": "sekitar",
+   "teks": "PT Hotel Indonesia Natour (InJourney Hospitality) dan Universitas Udayana meneken MoU riset dan pengabdian untuk taman etnobotani di KEK Kesehatan Sanur; bukan kebencanaan, tetapi membuktikan jalur kerja sama Unud-InJourney sudah terbuka.",
+   "angka": "",
+   "url": "https://bcasekuritas.co.id/en/latest-news/news/injourney-kolaborasi-riset-dengan-universitas-udayana",
+   "lembaga": "BCA Sekuritas (rangkuman berita)",
+   "tanggal": "2025-12-17",
+   "status": "temuan"
+  },
+  {
+   "id": "C54",
+   "subjek": "Hotel Bali (Tanjung Benoa)",
+   "kategori": "mitra_regional",
+   "teks": "Hotel di Tanjung Benoa (Grand Mirage Resort, Ion Bali Benoa, The Sakala Resort, Novotel) bersedia membuka gedungnya untuk evakuasi warga saat tsunami, meski kapasitas jauh di bawah penduduk lebih dari 5.000 jiwa (tanggal perkiraan).",
+   "angka": ">5.000 penduduk; 4 hotel",
+   "url": "https://bali.antaranews.com/berita/365822/kerjasama-pariwisata-untuk-mitigasi-tsunami-di-tanjung-benoa",
+   "lembaga": "Antara Bali",
+   "tanggal": "2023-01-01",
+   "status": "temuan"
+  },
+  {
+   "id": "C55",
+   "subjek": "Unud",
+   "kategori": "sekitar",
+   "teks": "Prodi Geofisika UGM bekerja sama dengan Fakultas Pariwisata dan Fakultas Teknik Unud untuk kesiapsiagaan kawasan lereng gunung api.",
+   "angka": "",
+   "url": "https://geofisika.ugm.ac.id/2025/01",
+   "lembaga": "Departemen Geofisika UGM",
+   "tanggal": "2025-01-15",
+   "status": "temuan"
+  },
+  {
+   "id": "C56",
+   "subjek": "Undana",
+   "kategori": "sekitar",
+   "teks": "Kekuatan kebencanaan Undana (kekeringan NTT, Seroja 2021) tidak sempat dicari dalam batas panggilan ini.",
+   "angka": "",
+   "url": "",
+   "lembaga": "",
+   "tanggal": "",
+   "status": "celah"
+  },
+  {
+   "id": "C57",
+   "subjek": "UII",
+   "kategori": "sekitar",
+   "teks": "Barrataga (Bangunan Rakyat Tahan Gempa) dikembangkan guru besar Teknik Sipil UII Sarwidi setelah gempa Yogyakarta 2006; CEEDEDS UII melatih tukang. Jumlah rumah Barrataga terbangun di Lombok atau Cianjur tidak ditemukan; rekonstruksi Lombok dan Cianjur lebih banyak memakai RISHA (tanggal halaman perkiraan).",
+   "angka": "",
+   "url": "https://www.medcom.id/properti/arsitektur/4ba5eVJb-yuk-mengenal-risha-rika-dan-ruspin",
+   "lembaga": "Medcom.id",
+   "tanggal": "2022-12-01",
+   "status": "temuan"
+  },
+  {
+   "id": "C58",
+   "subjek": "PT Amman Mineral Nusa Tenggara",
+   "kategori": "risiko",
+   "teks": "UGM pernah menjadi pelaksana kajian dampak sosial Tambang Batu Hijau dan perencanaan mitigasi Blok Elang untuk Newmont/AMMAN; bila AMMAN mendanai program kebencanaan yang dinilai kampus yang sama, independensi kajian perlu dijaga. Uji tuntas lingkungan AMMAN tetap merujuk riset-4.",
+   "angka": "",
+   "url": "https://ugm.ac.id/en/news/universitas-gadjah-mada-and-pt-amman-mineral-nusa-tenggara-strengthen-collaboration/",
+   "lembaga": "Universitas Gadjah Mada",
+   "tanggal": "2023-11-30",
+   "status": "risiko"
+  },
+  {
+   "id": "C99",
+   "subjek": "ITS",
+   "kategori": "mitra_ada",
+   "teks": "ITS menandatangani MoU dan PKS dengan PT Reasuransi MAIPARK Indonesia untuk ketangguhan Kota Surabaya melalui manajemen risiko berbasis asuransi (diambil dari riset sesi ide-dulu, riset-3 C27).",
+   "angka": "",
+   "url": "https://www.its.ac.id/news/its-mitigasi-risiko-bencana-untuk-tingkatkan-ketangguhan-kota-surabaya/",
+   "lembaga": "ITS News",
+   "tanggal": "2022-08-10",
+   "status": "temuan"
+  }
+ ]
+}
