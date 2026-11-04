@@ -1,0 +1,14 @@
+{
+  "description": "Jumlah kejadian per bulan per jenis selama tujuh tahun logbook lengkap.",
+  "fixed": true,
+  "source": {
+    "kind": "file",
+    "name": "musiman.csv",
+    "url": "/_blob/d3871d56061080bc78cf7ee76c3d1015"
+  },
+  "title": "Kejadian per bulan 2014–2020",
+  "updated": {
+    "at": "2026-11-01T00:10:00+07:00",
+    "by": "Claude, dari data/pusdalops/logbook_kejadian.csv"
+  }
+}

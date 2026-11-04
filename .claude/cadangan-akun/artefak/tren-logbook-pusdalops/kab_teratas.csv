@@ -1,0 +1,26 @@
+kab_kode,kab_kota,kejadian_2014_2020,banjir,longsor,cuaca,kebakaran_permukiman,karhutla,jenis_terbanyak
+32|Bogor,Kab. Bogor,678,99,260,227,58,2,Tanah longsor
+33|Kota Semarang,Kota Semarang,640,72,202,109,238,4,Kebakaran permukiman
+33|Cilacap,Kab. Cilacap,625,110,207,204,82,1,Tanah longsor
+31|Kota Administrasi Jakarta Timur,Kota Jakarta Timur,608,93,5,3,494,0,Kebakaran permukiman
+31|Kota Administrasi Jakarta Barat,Kota Jakarta Barat,556,56,0,2,482,0,Kebakaran permukiman
+31|Kota Administrasi Jakarta Selatan,Kota Jakarta Selatan,533,88,12,7,415,0,Kebakaran permukiman
+33|Magelang,Kab. Magelang,521,24,238,141,56,32,Tanah longsor
+33|Temanggung,Kab. Temanggung,493,23,190,113,112,15,Tanah longsor
+33|Banyumas,Kab. Banyumas,479,50,188,92,120,10,Tanah longsor
+31|Kota Administrasi Jakarta Utara,Kota Jakarta Utara,469,34,1,2,420,0,Kebakaran permukiman
+32|Sukabumi,Kab. Sukabumi,388,45,151,82,80,6,Tanah longsor
+35|Situbondo,Kab. Situbondo,363,29,24,85,105,94,Kebakaran permukiman
+33|Wonogiri,Kab. Wonogiri,356,40,132,106,23,40,Tanah longsor
+31|Kota Administrasi Jakarta Pusat,Kota Jakarta Pusat,352,22,0,2,315,0,Kebakaran permukiman
+35|Ponorogo,Kab. Ponorogo,343,46,126,46,37,79,Tanah longsor
+36|Serang,Kab. Serang,337,63,25,95,84,46,Cuaca ekstrem
+35|Trenggalek,Kab. Trenggalek,307,46,162,39,6,31,Tanah longsor
+35|Mojokerto,Kab. Mojokerto,270,72,21,40,59,65,Banjir
+35|Sidoarjo,Kab. Sidoarjo,268,42,3,55,123,40,Kebakaran permukiman
+32|Kota Bogor,Kota Bogor,261,23,136,69,26,2,Tanah longsor
+32|Bandung,Kab. Bandung,255,98,62,37,37,10,Banjir
+33|Pati,Kab. Pati,250,73,22,61,74,6,Kebakaran permukiman
+32|Kuningan,Kab. Kuningan,248,16,139,36,23,25,Tanah longsor
+35|Kota Batu,Kota Batu,237,44,77,41,31,32,Tanah longsor
+35|Lumajang,Kab. Lumajang,237,33,47,58,57,22,Cuaca ekstrem

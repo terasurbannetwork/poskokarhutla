@@ -1,0 +1,406 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Elemen Grafis BNPB</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,400&family=Roboto+Mono:wght@400;500&display=swap">
+<style>
+/* Tata letak: pita kepala navy, lalu aturan dua kolom, lalu katalog kartu satu sampai dua kolom. Palet lembaga BNPB. */
+:root {
+  --bg: #ffffff; --bidang: #f3f5f8; --garis: #dce3eb; --teks: #1a1a1a; --teks-2: #4b5563;
+  --navy: #051c2c; --oranye: #d9600b; --biru: #00499d; --di-navy: #c9d1e3;
+  --f-teks: "Roboto", "Helvetica Neue", Arial, sans-serif; --f-kode: "Roboto Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0b141c; --bidang: #121e29; --garis: #22313f; --teks: #e8edf2; --teks-2: #a8b4c2;
+  --navy: #051c2c; --oranye: #f07a2a; --biru: #5b9be6; --di-navy: #c9d1e3; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0b141c; --bidang: #121e29; --garis: #22313f; --teks: #e8edf2; --teks-2: #a8b4c2;
+  --navy: #051c2c; --oranye: #f07a2a; --biru: #5b9be6; --di-navy: #c9d1e3; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--teks); font: 16px/1.55 var(--f-teks); }
+.bungkus { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header { background: var(--navy); color: #fff; }
+header .bungkus { padding-block: 48px 40px; }
+.label { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--di-navy); font-weight: 500; }
+h1 { font-size: clamp(32px, 5vw, 52px); font-weight: 900; line-height: 1.05; margin: 10px 0 14px; text-wrap: balance; }
+h1 span { color: #f28c28; }
+header p { max-width: 62ch; color: var(--di-navy); margin: 0; }
+.angka { display: flex; gap: 32px; flex-wrap: wrap; margin-top: 28px; }
+.angka div { display: grid; }
+.angka b { font-size: 30px; font-weight: 900; color: #fff; font-variant-numeric: tabular-nums; }
+.angka small { color: var(--di-navy); font-size: 13px; }
+main .bungkus { padding-block: 40px 64px; display: grid; gap: 48px; }
+h2 { font-size: 24px; font-weight: 700; margin: 0 0 6px; }
+h2 + p { color: var(--teks-2); margin: 0 0 20px; max-width: 70ch; }
+.aturan { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; counter-reset: a; }
+.aturan li { list-style: none; background: var(--bidang); border-left: 3px solid var(--oranye); padding: 14px 16px; counter-increment: a; min-width: 0; }
+.aturan li strong { display: block; margin-bottom: 2px; }
+.aturan li strong::before { content: counter(a) ". "; color: var(--oranye); }
+.aturan ul { padding: 0; margin: 0; display: contents; }
+pre { background: var(--bidang); border: 1px solid var(--garis); padding: 14px 16px; overflow-x: auto; font: 13px/1.6 var(--f-kode); margin: 0; }
+.pemetaan { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--garis); }
+th { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--teks-2); font-weight: 500; }
+td code, .kepala code { font: 13px var(--f-kode); color: var(--biru); }
+.panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; }
+figure img { width: 100%; height: auto; border: 1px solid var(--garis); display: block; }
+figcaption { font-size: 14px; color: var(--teks-2); }
+figcaption b { color: var(--teks); }
+.katalog { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr)); gap: 20px; }
+.kartu { border: 1px solid var(--garis); background: var(--bg); display: grid; min-width: 0; }
+.kartu img { width: 100%; height: auto; display: block; background: #f3f5f8; }
+.kartu .isi { padding: 14px 16px 16px; display: grid; gap: 6px; }
+.kepala { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.kepala h3 { margin: 0; font-size: 18px; }
+.kartu p { margin: 0; color: var(--teks-2); font-size: 15px; }
+.salin { justify-self: start; margin-top: 4px; font: 500 13px var(--f-teks); color: var(--biru); background: none; border: 1px solid var(--garis); padding: 6px 12px; cursor: pointer; }
+.salin:hover { border-color: var(--biru); }
+.salin:focus-visible, a:focus-visible { outline: 2px solid var(--oranye); outline-offset: 2px; }
+.palet { list-style: none; padding: 0; margin: 0 0 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.palet li { display: flex; gap: 12px; align-items: center; min-width: 0; }
+.cip { width: 44px; height: 44px; flex: none; border: 1px solid var(--garis); }
+.palet div { display: grid; min-width: 0; }
+.palet b { font-size: 14px; }
+.palet code { font: 12px var(--f-kode); color: var(--teks-2); }
+.palet small { font-size: 12px; color: var(--teks-2); }
+.larangan { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.larangan > div { background: var(--bidang); padding: 14px 16px; }
+.larangan ul { margin: 6px 0 0; padding-left: 18px; color: var(--teks-2); font-size: 14px; }
+a { color: var(--biru); }
+footer { border-top: 1px solid var(--garis); }
+footer .bungkus { padding-block: 20px 32px; font-size: 13px; color: var(--teks-2); }
+</style>
+
+<header>
+  <div class="bungkus">
+    <div class="label">Badan Nasional Penanggulangan Bencana · Pustaka desain deck</div>
+    <h1>Elemen Grafis <span>BNPB</span></h1>
+    <p>Bentuk geometris plug-and-play untuk sampul, penutup, daftar isi, dan pembatas deck BNPB. Tiap elemen membawa makna kebencanaan, memakai palet lembaga, dan dibangun sebagai bentuk native PowerPoint yang bisa disunting.</p>
+    <div class="angka">
+      <div><b>27</b><small>elemen</small></div>
+      <div><b>4</b><small>varian warna per elemen</small></div>
+      <div><b>4</b><small>warna bingkai</small></div>
+      <div><b>2</b><small>opsi panel daftar isi</small></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="bungkus">
+    <section>
+      <h2>Aturan penempatan</h2>
+      <p>Mesin deck BNPB menjalankan aturan ini otomatis. Hiasan manual tetap tunduk pada aturan yang sama.</p>
+      <ol class="aturan">
+        <li><strong>Hanya halaman bingkai</strong>Sampul, penutup, daftar isi, dan pembatas bagian. Slide isi data tidak dihias.</li>
+        <li><strong>Satu elemen per deck</strong>Jenis yang sama dipakai di semua halaman bingkai, seperti pedoman HUT RI ke-79.</li>
+        <li><strong>Zona tetap</strong>Daftar isi dan pembatas: pojok kiri bawah panel. Sampul dan penutup: hanya gugus kotak di tepi bawah sambungan, tidak di atas foto.</li>
+        <li><strong>Selalu berjangkar</strong>Menempel tepi slide, tepi panel, atau celah foto. Gugus kotak bersentuhan sudut ke sudut.</li>
+        <li><strong>Warna palet hiasan</strong>Oranye, navy, dan abu-biru di latar terang. Putih dengan satu aksen oranye di atas foto. Tidak transparan, tanpa biru lembaga dan merah.</li>
+        <li><strong>Jauh dari teks dan logo</strong>Tidak bersinggungan dengan teks, logo, pil, atau kredit foto. Tanpa segitiga yang menyerupai lambang.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Palet sistem</h2>
+      <p>Semua warna adalah token tema deck. Halaman bingkai hanya memakai putih, navy, oranye, dan abu-biru; warna data tetap di slide isi.</p>
+      <ul class="palet">
+          <li><span class="cip" style="background:#FFFFFF"></span><div><b>Dasar terang</b><code>kertas · #FFFFFF</code><small>latar halaman, sampul, penutup</small></div></li>
+          <li><span class="cip" style="background:#F3F5F8"></span><div><b>Bidang</b><code>tint.netral.muda · #F3F5F8</code><small>panel daftar isi, kotak latar</small></div></li>
+          <li><span class="cip" style="background:#E6EAF0"></span><div><b>Bidang kedua</b><code>tint.netral.pita · #E6EAF0</code><small>pita, pil redup</small></div></li>
+          <li><span class="cip" style="background:#FDF4EC"></span><div><b>Sorot baris</b><code>tint.api.muda · #FDF4EC</code><small>baris aktif daftar isi</small></div></li>
+          <li><span class="cip" style="background:#1A1A1A"></span><div><b>Teks utama</b><code>teks · #1A1A1A</code><small>judul dan isi</small></div></li>
+          <li><span class="cip" style="background:#2E3440"></span><div><b>Teks kedua</b><code>teks-2 · #2E3440</code><small>subjudul, jabatan</small></div></li>
+          <li><span class="cip" style="background:#6B7280"></span><div><b>Teks redup</b><code>teks-3 · #6B7280</code><small>sumber, kredit</small></div></li>
+          <li><span class="cip" style="background:#051C2C"></span><div><b>Identitas gelap</b><code>navy · #051C2C</code><small>pil tanggal, kepala tabel, panel gelap</small></div></li>
+          <li><span class="cip" style="background:#D9600B"></span><div><b>Aksen tunggal</b><code>oranye · #D9600B</code><small>nomor bagian, garis aksen, hiasan</small></div></li>
+          <li><span class="cip" style="background:#AEBBCB"></span><div><b>Pendamping netral</b><code>skala.netral.2 · #AEBBCB</code><small>hiasan kedua, garis rambut</small></div></li>
+          <li><span class="cip" style="background:#00499D"></span><div><b>Nama lembaga</b><code>biru-lembaga · #00499D</code><small>hanya teks nama lembaga</small></div></li>
+          <li><span class="cip" style="background:#C8102E"></span><div><b>Bahaya</b><code>merah · #C8102E</code><small>hanya status bahaya pada data</small></div></li>
+      </ul>
+      <div class="larangan">
+        <div><b>Jangan bersebelahan</b><ul><li>Oranye dengan merah: kontras 1,6:1, terbaca kotor.</li><li>Biru lembaga dengan biru data: 2,2:1.</li><li>Dua aksen hangat di satu halaman.</li></ul></div>
+        <div><b>Kontras teks</b><ul><li>Navy di atas putih 17,4:1.</li><li>Teks redup di atas putih 4,8:1.</li><li>Oranye di atas putih 3,7:1: hanya teks besar, garis, dan bentuk.</li><li>Oranye di atas navy 4,7:1.</li></ul></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Pemilihan otomatis dari judul deck</h2>
+      <p>Mesin membaca judul deck (kata utuh) dan memilih satu elemen. Spek boleh menimpa dengan <code>"elemen": "nama"</code> atau mematikan dengan <code>"elemen": ""</code>.</p>
+      <div class="pemetaan">
+        <table>
+          <thead><tr><th>Kata di judul deck</th><th>Elemen</th></tr></thead>
+          <tbody>
+            <tr><td>kerja sama, koordinasi</td><td><code>kotak_tumpuk</code></td></tr>
+            <tr><td>karhutla, kebakaran, titik panas</td><td><code>piksel</code></td></tr>
+            <tr><td>gempa</td><td><code>gelombang</code></td></tr>
+            <tr><td>tsunami, banjir, air</td><td><code>setengah</code></td></tr>
+            <tr><td>cuaca, iklim, kekeringan</td><td><code>pelangi</code></td></tr>
+            <tr><td>peringatan dini</td><td><code>sinyal</code></td></tr>
+            <tr><td>satelit</td><td><code>orbit</code></td></tr>
+            <tr><td>peta jalan</td><td><code>simpul</code></td></tr>
+            <tr><td>lainnya</td><td><code>kotak</code> (gugus kotak bertangga)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Cara memasang di spek</h2>
+      <p>Pada halaman bingkai mesin memasang sendiri. Untuk halaman lain, misalnya pesan kunci, tulis di spek slide:</p>
+      <pre>"hiasan": [{"jenis": "gelombang", "x": 760, "y": 360, "w": 180, "h": 160, "warna": ["oranye", "navy"]}]</pre>
+    </section>
+
+    <section>
+      <h2>Opsi panel daftar isi dan pembatas</h2>
+      <p>Pilih lewat <code>"panel_sisi"</code> di spek deck. Foto diambil dari foto sampul.</p>
+      <div class="panel">
+        <figure><img src="img/panel-gelap.png" alt="Daftar isi dengan panel foto bergradien navy dan teks putih" loading="lazy"><figcaption><b>Gelap</b>: foto penuh panel, gradien navy menipis ke bawah, teks dan angka putih, tangga piksel di sambungan</figcaption></figure>
+        <figure><img src="img/panel-terang.png" alt="Daftar isi dengan panel abu muda dan foto di bagian bawah" loading="lazy"><figcaption><b>Terang</b>: panel abu muda, foto di dasar memudar ke atas, teks navy, tangga piksel di sambungan</figcaption></figure>
+      </div>
+    </section>
+
+    <section>
+      <h2>Katalog</h2>
+      <p>Tiap kartu menampilkan empat varian dari palet hiasan: oranye dan navy, navy dan oranye, navy dan abu-biru, serta putih di atas foto. Enam elemen terakhir adalah keluarga piksel, yang bisa saling menggantikan dalam satu deck.</p>
+      <div class="katalog">
+      <article class="kartu" id="kotak_tangga">
+        <img src="img/e1.jpg" alt="Kotak tangga: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Kotak tangga</h3><code>kotak_tangga</code></div>
+          <p>Langkah bertahap dan eskalasi penanganan</p>
+          <button type="button" class="salin" data-jenis="kotak_tangga">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="piksel">
+        <img src="img/e2.jpg" alt="Piksel: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Piksel</h3><code>piksel</code></div>
+          <p>Citra satelit, titik panas, pemantauan data</p>
+          <button type="button" class="salin" data-jenis="piksel">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="gelombang">
+        <img src="img/e3.jpg" alt="Gelombang: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Gelombang</h3><code>gelombang</code></div>
+          <p>Episentrum gempa dan sinyal peringatan dini</p>
+          <button type="button" class="salin" data-jenis="gelombang">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="bilah">
+        <img src="img/e4.jpg" alt="Bilah: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Bilah</h3><code>bilah</code></div>
+          <p>Seismograf, curah hujan, data terukur</p>
+          <button type="button" class="salin" data-jenis="bilah">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="chevron">
+        <img src="img/e5.jpg" alt="Chevron: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Chevron</h3><code>chevron</code></div>
+          <p>Prabencana, tanggap darurat, pascabencana</p>
+          <button type="button" class="salin" data-jenis="chevron">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="halftone">
+        <img src="img/e6.jpg" alt="Halftone: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Halftone</h3><code>halftone</code></div>
+          <p>Sebaran, kepadatan, dan cakupan layanan</p>
+          <button type="button" class="salin" data-jenis="halftone">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="arsir">
+        <img src="img/e7.jpg" alt="Arsir: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Arsir</h3><code>arsir</code></div>
+          <p>Pita peringatan dan zona bahaya</p>
+          <button type="button" class="salin" data-jenis="arsir">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="seperempat">
+        <img src="img/e8.jpg" alt="Seperempat: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Seperempat</h3><code>seperempat</code></div>
+          <p>Radius dampak dan jangkauan layanan</p>
+          <button type="button" class="salin" data-jenis="seperempat">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="silang">
+        <img src="img/e9.jpg" alt="Silang: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Silang</h3><code>silang</code></div>
+          <p>Titik koordinat, posko, dan lokasi</p>
+          <button type="button" class="salin" data-jenis="silang">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="cincin_target">
+        <img src="img/e10.jpg" alt="Cincin target: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Cincin target</h3><code>cincin_target</code></div>
+          <p>Radius bahaya dan zona evakuasi</p>
+          <button type="button" class="salin" data-jenis="cincin_target">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="lingkaran_tangga">
+        <img src="img/e11.jpg" alt="Lingkaran tangga: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Lingkaran tangga</h3><code>lingkaran_tangga</code></div>
+          <p>Eskalasi dan tahapan</p>
+          <button type="button" class="salin" data-jenis="lingkaran_tangga">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="sinyal">
+        <img src="img/e12.jpg" alt="Sinyal: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Sinyal</h3><code>sinyal</code></div>
+          <p>Peringatan dini dan siaran informasi</p>
+          <button type="button" class="salin" data-jenis="sinyal">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="orbit">
+        <img src="img/e13.jpg" alt="Orbit: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Orbit</h3><code>orbit</code></div>
+          <p>Pemantauan satelit</p>
+          <button type="button" class="salin" data-jenis="orbit">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="kotak_garis">
+        <img src="img/e14.jpg" alt="Kotak garis: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Kotak garis</h3><code>kotak_garis</code></div>
+          <p>Wilayah dan cakupan berlapis</p>
+          <button type="button" class="salin" data-jenis="kotak_garis">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="siku_fokus">
+        <img src="img/e15.jpg" alt="Siku fokus: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Siku fokus</h3><code>siku_fokus</code></div>
+          <p>Fokus wilayah prioritas</p>
+          <button type="button" class="salin" data-jenis="siku_fokus">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="setengah">
+        <img src="img/e16.jpg" alt="Setengah: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Setengah</h3><code>setengah</code></div>
+          <p>Gelombang laut, bentuk geometris</p>
+          <button type="button" class="salin" data-jenis="setengah">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="pelangi">
+        <img src="img/e17.jpg" alt="Pelangi: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Pelangi</h3><code>pelangi</code></div>
+          <p>Cuaca dan iklim</p>
+          <button type="button" class="salin" data-jenis="pelangi">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="horizon">
+        <img src="img/e18.jpg" alt="Horizon: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Horizon</h3><code>horizon</code></div>
+          <p>Cakrawala dan permukaan air</p>
+          <button type="button" class="salin" data-jenis="horizon">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="simpul">
+        <img src="img/e19.jpg" alt="Simpul: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Simpul</h3><code>simpul</code></div>
+          <p>Tahapan waktu dan peta jalan</p>
+          <button type="button" class="salin" data-jenis="simpul">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="progres_batang">
+        <img src="img/e20.jpg" alt="Progres batang: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Progres batang</h3><code>progres_batang</code></div>
+          <p>Capaian dan kemajuan</p>
+          <button type="button" class="salin" data-jenis="progres_batang">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="kotak_tumpuk">
+        <img src="img/e21.jpg" alt="Kotak tumpuk: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Kotak tumpuk</h3><code>kotak_tumpuk</code></div>
+          <p>Koordinasi lintas lembaga</p>
+          <button type="button" class="salin" data-jenis="kotak_tumpuk">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="piksel_tangga">
+        <img src="img/e22.jpg" alt="Piksel tangga: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Piksel tangga</h3><code>piksel_tangga</code></div>
+          <p>Eskalasi dan peningkatan status</p>
+          <button type="button" class="salin" data-jenis="piksel_tangga">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="piksel_sebaran">
+        <img src="img/e23.jpg" alt="Piksel sebaran: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Piksel sebaran</h3><code>piksel_sebaran</code></div>
+          <p>Sebaran titik panas dan dampak</p>
+          <button type="button" class="salin" data-jenis="piksel_sebaran">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="piksel_pita">
+        <img src="img/e24.jpg" alt="Piksel pita: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Piksel pita</h3><code>piksel_pita</code></div>
+          <p>Aliran data dan linimasa</p>
+          <button type="button" class="salin" data-jenis="piksel_pita">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="piksel_sudut">
+        <img src="img/e25.jpg" alt="Piksel sudut: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Piksel sudut</h3><code>piksel_sudut</code></div>
+          <p>Bingkai wilayah pantauan</p>
+          <button type="button" class="salin" data-jenis="piksel_sudut">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="piksel_radius">
+        <img src="img/e26.jpg" alt="Piksel radius: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Piksel radius</h3><code>piksel_radius</code></div>
+          <p>Radius dampak versi citra</p>
+          <button type="button" class="salin" data-jenis="piksel_radius">Salin kode hiasan</button>
+        </div>
+      </article>
+      <article class="kartu" id="piksel_kolom">
+        <img src="img/e27.jpg" alt="Piksel kolom: empat varian warna" loading="lazy" width="1324" height="504">
+        <div class="isi">
+          <div class="kepala"><h3>Piksel kolom</h3><code>piksel_kolom</code></div>
+          <p>Data terukur dan curah hujan</p>
+          <button type="button" class="salin" data-jenis="piksel_kolom">Salin kode hiasan</button>
+        </div>
+      </article>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="bungkus">Kode: <code>bnpb/scripts/elemen.py</code> di skill ppt-konsultan. Arsip katalog PDF dan PPTX: <a href="https://github.com/terasurbannetwork/poskokarhutla/pull/3">poskokarhutla, docs/deck-bnpb/Elemen Grafis BNPB 311026</a>. Disusun 31 Oktober 2026.</div>
+</footer>
+
+<script>
+document.querySelectorAll('.salin').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var teks = '"hiasan": [{"jenis": "' + b.dataset.jenis + '", "x": 0, "y": 0, "w": 120, "h": 120, "warna": ["oranye", "navy"]}]';
+    var asli = b.textContent;
+    function selesai(t) { b.textContent = t; setTimeout(function () { b.textContent = asli; }, 1600); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(teks).then(function () { selesai('Tersalin'); }, function () { selesai(teks); });
+    } else { selesai(teks); }
+  });
+});
+</script>
+
+</body></html>

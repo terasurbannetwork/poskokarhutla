@@ -1,0 +1,2 @@
+- [Sidebar bisa ditarik, gaya peta utama](sidebar-bisa-ditarik.md) — panel peta wajib bisa ditarik; overlay/legenda tiru index.html
+- [Ikon tanpa garis luar](ikon-tanpa-garis-luar.md) — tombol ikon polos, tanpa border/kotak/latar

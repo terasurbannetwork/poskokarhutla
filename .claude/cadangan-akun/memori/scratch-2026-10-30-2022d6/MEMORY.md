@@ -1,0 +1,4 @@
+- [PPT variasi tata letak](ppt-variasi-tata-letak.md) — BNPB deck jangan seragam tabel+panel; pilih exhibit per pertanyaan
+- [PPT elemen grafis gagal](ppt-elemen-grafis-gagal.md) — ornamen buatan kode di sampul BNPB ditolak; elemen merek harus dari vektor desainer
+- [Elemen grafis BNPB](elemen-grafis-bnpb.md) — desain BNPB wajib baca palet + katalog elemen (artifact, repo, skill)
+- [Logo BNPB alas](logo-bnpb-alas.md) — logo polos di latar terang, lingkaran putih hanya di foto/gelap

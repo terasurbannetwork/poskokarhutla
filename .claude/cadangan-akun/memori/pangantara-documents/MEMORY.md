@@ -1,0 +1,48 @@
+- [Mesin 24 jam Mac mini](mesin-24-jam-mac-mini.md) — Mac mini ini = mesin 24 jam sejak 5 Sep 2026; repo jadi ~/Documents/GitHub/pangantara (12 Sep), iCloud+TCC, launchd ditolak; rtk belum ada
+- [Titik SPPG Google 2026-09](titik-sppg-google-2026-09.md) — geocoding+Places 5 Sep 2026 dari Mac mini, kunci di .env.local, sb_secret pernah lewat chat
+- [Hermes + neo MCP](hermes-neo-mcp-2026-09.md) — Hermes Agent & BrowserOS neo tersambung ke Claude Code sejak 5 Sep 2026; cara add non-interaktif
+- [Panen Radar MBG lewat BrowserOS neo](radar-mbg-panen-neo.md) — CloakBrowser ditolak; sesi mbg_ts 15 menit; runtime ~/bgn-radar; agent pemanen-radar
+- [Izin bypass total](izin-bypass-2026-09.md) — pemilik mau nol dialog; bypassPermissions TIDAK bisa dari settings.json, cuma dari flag peluncuran
+- [Caps lock dilarang](caps-lock-dilarang.md) — tidak ada teks KAPITAL penuh di layar maupun kertas; sudah 3x divonis, gerbangnya gerbang-caps-lock
+- [Rahasia lewat chat](rahasia-lewat-chat.md) — pemilik menempel token ke chat; sediakan perintah tempel-sendiri lebih dulu, jangan menunggu
+- [Scribd unduh massal kena ban](scribd-unduh-massal-kena-ban.md) — 8 unduhan beruntun = 403 harian; jalur utama sekarang BACA penampil (baca-viewer.mjs), ganti IP & situs pengunduh ditolak
+- [Prioritas data SPPG 2026-09](prioritas-data-sppg-2026-09.md) — alamat/kontak/yayasan dulu, dokumen 2026 dulu; malam mandiri hemat token, detail ke Opus, jaringan Mac mini rawan putus
+- [Routine per akun × org](routine-per-akun-org.md) — jadwal routine di claude-code-sessions/<akun>/<org>/scheduled-tasks.json, SKILL.md bukan bukti; 12 Sep 2026 Mac mini daftar ulang, registri lama enabled:false
+- [Hemat token tanpa turun standar](hemat-token-tanpa-turun-standar.md) — vonis 12 Sep 2026; ujinya "ditahan gerbang atau cuma prosa"; indeks boleh pindah, kemampuan jangan dicabut
+- [Menu Personalia belum ada](menu-personalia-2026-09.md) — vonis 14 Sep 2026: absensi/gaji tercecer di Keuangan + /absensi yang tertutup dari Super Admin; Job Desc nanti pindah ke sana
+- [OCR PDF pindaian lewat Swift Vision](ocr-pdf-pindaian-swift-vision.md) — pdftotext nol kata; render PDFKit + VNRecognizeTextRequest, awas berkas 7 byte saat paralel
+- [41 SOP BGN masuk](sop-bgn-41-2026-09.md) — vonis 15 Sep 2026: ikut SOP, ambang per ISI bukan per alat; istilah Pengawas; siklus menu tetap; SIPGN masih kosong
+- [Katalog per kab/kota](katalog-per-kab-kota.md) — vonis 15 Sep 2026: katalog seragam dulu, nanti foto/jenis/harga/profit/supplier beda per kab-kota; supplier warisan lintas wilayah mengunci diri
+- [Sesi paralel lintas mesin](sesi-paralel-lintas-mesin.md) — peer di mesin lain kerja di main yang sama; cek ListAgents + pg_proc/schema_migrations sebelum fungsi DB/komponen bersama (PGRST203 21 Sep)
+- [Nama resep satu masakan](nama-resep-satu-masakan.md) — vonis 23 Sep: label/bahan/lauk dibuang dari nama menu, kembaran digabung mesin (resep_nama_baku + resep_kunci)
+- [KDMP penjual warga desa](kdmp-penjual-warga.md) — vonis 23 Sep: Uang ke Warga Desa terpisah, ambang Rp 1 juta/bulan, tunai+tempo, tanpa P-IRT
+- [Dokumen Kemanggisan](dokumen-kemanggisan-2026-09.md) — vonis 23 Sep: ~60 template zip jadi form+ekspor, histori SPPG 8410, impor AI di semua tab Operasional, admin_sppg
+- [Kepala SPPG = SPPI](kepala-sppg-sama-sppi.md) — vonis 24 Sep: satu nama satu WA, trigger sppg_bgn_kepala_satu, label SPPI per dapur jadi Kepala SPPG
+- [Nav Ka SPPG vs KDMP](nav-sppg-kdmp-2026-09.md) — vonis 23 Sep + revisi 25 Sep: KDMP lihat Resep/Kalender baca-saja (nav_peran), menu KDMP paling akhir, Belajar balik; supplier Umum vs Lokal; ≤10 menu satu baris
+- [KDMP×SPPG diintegrasikan](kdmp-sppg-integrasi-2026-09.md) — vonis 25 Sep: balik "berdiri sendiri"; jembatan otomatis, KDMP agregator semua supplier dapur, invoice dapur = invoice KDMP
+- [Kesiapan Provinsi](kesiapan-provinsi-2026-09.md) — vonis 25 Sep: 12 langkah peluncuran per provinsi di /admin?tab=kesiapan, Super Admin saja; langkah 4/8/9 manual
+- [Menu HR & bagan organisasi](hr-bagan-organisasi-2026-09.md) — vonis 25 Sep: /hr lahir, sebutan kursi ikut bagan Pangantara (CEO/CFO/COO, Area, Regional), kunci jabatan tetap, akun via link aktivasi
+- [Cermin Bahan ↔ Ops](cermin-bahan-ops.md) — vonis 26 Sep: semua layar Bahan Baku wajib sama utuh di Barang Ops; sapu seluruh sub-tab sekaligus, pasang gerbang
+- [Akun pihak luar](akun-pihak-luar-2026-09.md) — vonis 26 Sep: supplier dapat akun + portal /mitra, tanpa user_profiles, link token tetap hidup; fase 2 pihak luar lain
+- [Nama SPPG dalam kecamatan](nama-sppg-dalam-kecamatan.md) — vonis 26 Sep: di bawah grup kecamatan cukup "Air Itam"; standar tabel hari itu (grup kota→kec, rounded, sort, Bahan|Ops)
+- [Masukan & bug = tiket_bantuan](masukan-bug-tiket-bantuan.md) — vonis 26 Sep: request fitur/lapor bug diperluas dari tiket_bantuan, papan IT /admin?tab=masukan, tombol Masukan di header; jangan bikin tabel kedua
+- [Audit RLS 26 Sep 2026](audit-rls-2026-09-26.md) — anon rapat; celah: is_staff() = punya profil, 28 rb kdmp_admin baca sppg/suppliers(no_rekening)/yayasan nasional; usulan policy restriktif + pisah kolom rekening
+- [Standar tabel SPPG 27 Sep](standar-tabel-sppg-2026-09-27.md) — diulang pemilik: rincian 1 tingkat di bawah cakupan, Kota→Kecamatan lipat, lencana kode+nama, picker cakupan lebar penuh, Bahan|Ops, Excel+PDF
+- [Menu fokus per jabatan](nav-fokus-jabatan-2026-09.md) — vonis 27 Sep: Finance/Procurement/HR provinsi cuma menu tupoksi, GM semua; lib/nav-fokus-jabatan.ts
+- [Bagan GMR 26 Sep](bagan-gmr-2026-09.md) — 21 wilayah GMR, kursi & rasio, jabatan dicabut, akun uji tes123!! di produksi, Koordinasi Tim Wilayah
+- [Tabel kosong tetap tampil](tabel-kosong-tetap-tampil.md) — vonis 28 Sep, diulang final 7 Okt: kartu bertabel tidak diganti EmptyState saat kosong; kepala kolom + satu baris "Belum ada …", seluruh app
+- [Armada agent proyek baru](armada-agent-proyek-baru.md) — vonis 28 Sep: tiap repo baru dipasangi roster + agent bermodel + ilmu sejak awal; ~/.claude/AGEN.md, rujukan gemah-ripah
+- [Rantai KDMP 1 Okt](kdmp-rantai-vonis-2026-10-01.md) — vonis 1 Okt: order dapur otomatis jadi draf PO KDMP, agregator ditagih kdmp_tagihan (supplier langsung ditutup), gerbang aktif koperasi dilonggarkan
+- [Audit Opus 5.5 + sampel](audit-opus55-sampel-2026-10.md) — vonis 1 Okt: sampel mana diambil, tampilan tetap model app sekarang, utang tersisa
+- [Lihat sebagai = sesi asli](lihat-sebagai-sesi-asli.md) — vonis 3 Okt: masuk sebagai akun uji kursi itu (sesi+RLS), boleh tulis, tercatat audit_log
+- [KDMP niaga umum](kdmp-niaga-umum-2026-10.md) — vonis 3 Okt: pelanggan non-MBG ala Gemah Ripah, rel tagihan terpisah, driver link WA, 6 fase; rentang harga disetujui GM+PM
+- [Toko Desa KDMP](kdmp-toko-desa-2026-10.md) — vonis 4 Okt: toko publik /toko/<kode> ala Astro/Alfagift, satu sistem pintu terpisah, tanpa OTP, harga kdmp_harga, semua warga, stok manual
+- [Toko Desa otonom](kdmp-toko-desa-otonom.md) — 4 Okt malam: lanjut fase 1-4 tanpa tanya, target pagi; berhenti hanya untuk akun pihak luar
+- [Tujuh gerai KDMP](kdmp-tujuh-gerai.md) — 5 Okt: 7 gerai Kopdes semua terhubung; usulan kdmp-tujuh-gerai, gerai kesehatan tunggu vonis
+- [Ojek Desa KDMP](kdmp-ojek-desa.md) — vonis 5 Okt: Gojek desa, driver mitra warga + sopir, 4 layanan, ongkir tunai + potongan utang; sirkular/resi gudang/PPOB ditahan
+- [Resep lintas komponen](resep-lintas-komponen-2026-10.md) — vonis 5 Okt: pecah sayur+buah, Lalapan X, Susu UHT, tumis pepaya sayur, jasuke tetap susu
+- [Beranda KDMP digabung Dashboard](kdmp-beranda-gabung-dashboard.md) — vonis 5 Okt: satu pintu, Perlu Tindakan di atas, ringkasan gaya Gemah Ripah
+- [Yon TP lewat KDMP](yon-tp-2026-10.md) — vonis 7 Okt: Batalyon TP = produsen hulu via KDMP kab/kota sama, koperasi batalyon ditagih, link WA, pilot 845 Beltim; fase 1 jalan
+- [KDMP tiru Admin Gemah Ripah](kdmp-admin-gemah-ripah.md) — vonis 5 Okt: Admin/Stok/Akuntansi Gemah Ripah ke KDMP, tanpa Sortir, akuntansi terintegrasi
+- [Kaki modal tombol penuh](kaki-modal-tombol-penuh.md) — vonis 7 Okt: tombol kaki popup sebaris, sama lebar, ujung ke ujung; Batal/Hapus tombol berbingkai
+- [Grup wilayah tertutup](grup-wilayah-tertutup.md) — vonis 7 Okt: tabel kab/kota→kecamatan lahir tertutup, cuma daftar kab/kota terlihat; useGrupTertutup bakuTutup

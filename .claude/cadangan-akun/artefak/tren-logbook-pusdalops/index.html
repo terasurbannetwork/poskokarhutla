@@ -1,0 +1,285 @@
+<meta name="dash-one-writer">
+<style>
+.lx { display: grid; gap: var(--cds-gap-lg); font-family: var(--font-anthropic-sans); }
+.lx-head h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0 0 var(--cds-gap-xs); text-wrap: balance; }
+.lx-head p { margin: 0; color: var(--color-fg-muted); max-width: 70ch; line-height: 1.55; text-align: justify; }
+.lx-head b, .lx-card b { font-weight: var(--cds-font-weight-medium); color: var(--color-fg); font-variant-numeric: tabular-nums; }
+.lx-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr)); gap: var(--cds-gap-md); }
+.lx-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: grid; gap: var(--cds-gap-sm); min-width: 0; }
+.lx-card h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
+.lx-note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 0; line-height: 1.5; }
+.lx-chart { position: relative; min-height: 300px; }
+.lx-musim { position: relative; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr)); gap: var(--cds-gap-md); min-height: 130px; }
+.lx-prov { position: relative; min-height: 320px; }
+.lx-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm) var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 0; padding: 0; list-style: none; }
+.lx-legend li { display: inline-flex; align-items: center; gap: var(--cds-gap-xs); }
+.lx-sw { width: 0.7rem; height: 0.7rem; border-radius: 2px; display: inline-block; }
+.lx-seg { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); overflow: hidden; }
+.lx-seg button { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); background: transparent; color: var(--color-fg-muted); border: 0; border-right: 1px solid var(--color-border-line); cursor: pointer; }
+.lx-seg button:last-child { border-right: 0; }
+.lx-seg button[aria-pressed="true"] { background: var(--color-bg); color: var(--color-fg); font-weight: var(--cds-font-weight-medium); }
+.lx-seg button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: -2px; }
+.lx-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); line-height: 1.5; white-space: nowrap; z-index: 2; }
+.lx-tip .k { color: var(--cds-text-secondary); }
+.lx-tablebox { max-height: 30rem; overflow: auto; }
+.lx-table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.lx-table th { position: sticky; top: 0; background: var(--color-panel); text-align: center; font-weight: var(--cds-font-weight-medium); padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); }
+.lx-table td { padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); text-align: right; }
+.lx-table td:first-child, .lx-table td:last-child { text-align: left; }
+.lx-list { margin: 0; padding-left: 1.1rem; display: grid; gap: var(--cds-gap-xs); line-height: 1.55; text-align: justify; }
+@media (max-width: 40rem) { .lx-hide-sm { display: none; } }
+[data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+[data-dash-source-state=empty] { color: transparent; }
+</style>
+
+<div class="lx">
+  <header class="lx-head">
+    <h1>Tren kejadian bencana dari logbook Pusdalops BNPB 2011–2022</h1>
+    <p>Banjir yang dicatat Pusdalops naik dari <b data-draw="angka" data-source="tahunan" data-field="setara_365_hari" data-where="tahun=2014&amp;jenis=banjir">—</b> kejadian pada 2014 menjadi <b data-draw="angka" data-source="tahunan" data-field="setara_365_hari" data-where="tahun=2020&amp;jenis=banjir">—</b> pada 2020. Karhutla memuncak pada 2019 dengan <b data-draw="angka" data-source="tahunan" data-field="setara_365_hari" data-where="tahun=2019&amp;jenis=karhutla">—</b> kejadian, sementara kebakaran permukiman tercatat <b data-draw="angka" data-source="tahunan" data-field="setara_365_hari" data-where="tahun=2015&amp;jenis=kebakaran_permukiman">—</b> kejadian pada 2015 tetapi hanya muncul 121 kali dalam 272 hari tercatat pada 2022.</p>
+  </header>
+
+  <section class="lx-card" id="tahunan">
+    <h2>Kejadian per tahun</h2>
+    <p class="lx-note">Hitungan kejadian unik per jenis, disetarakan ke 365 hari. Titik kosong menandai tahun yang logbooknya tidak lengkap (2011–2013 dan 2022). Logbook 2021 belum ada.</p>
+    <ul class="lx-legend" id="legend-tahunan">
+      <li><span class="lx-sw" data-jenis="banjir"></span>Banjir</li>
+      <li><span class="lx-sw" data-jenis="longsor"></span>Tanah longsor</li>
+      <li><span class="lx-sw" data-jenis="cuaca"></span>Cuaca ekstrem</li>
+      <li><span class="lx-sw" data-jenis="karhutla"></span>Karhutla</li>
+      <li><span class="lx-sw" data-jenis="kebakaran_permukiman"></span>Kebakaran permukiman</li>
+      <li><span class="lx-sw" data-jenis="gempabumi"></span>Gempa bumi</li>
+    </ul>
+    <div class="lx-chart" data-draw="tahunan" data-source="tahunan"></div>
+  </section>
+
+  <section class="lx-card" id="musiman">
+    <h2>Pola bulanan, 2014–2020</h2>
+    <p class="lx-note">Jumlah kejadian per bulan selama tujuh tahun dengan logbook lengkap. Tiap jenis memakai skalanya sendiri; bulan tersibuk ditandai warna penuh.</p>
+    <div class="lx-musim" data-draw="musiman" data-source="musiman"></div>
+  </section>
+
+  <div class="lx-grid">
+    <section class="lx-card" id="provinsi">
+      <h2>Provinsi dengan kejadian terbanyak, 2014–2020</h2>
+      <div class="lx-seg" role="group" aria-label="Jenis bencana">
+        <button type="button" data-jenis="banjir" aria-pressed="true">Banjir</button>
+        <button type="button" data-jenis="longsor" aria-pressed="false">Tanah longsor</button>
+        <button type="button" data-jenis="cuaca" aria-pressed="false">Cuaca ekstrem</button>
+        <button type="button" data-jenis="karhutla" aria-pressed="false">Karhutla</button>
+        <button type="button" data-jenis="kebakaran_permukiman" aria-pressed="false">Kebakaran permukiman</button>
+        <button type="button" data-jenis="gempabumi" aria-pressed="false">Gempa bumi</button>
+      </div>
+      <div class="lx-prov" data-draw="provinsi" data-source="provinsi"></div>
+      <p class="lx-note">Sepuluh provinsi teratas. Satu kejadian lintas provinsi dihitung di tiap provinsi.</p>
+    </section>
+
+    <section class="lx-card" id="kabkota">
+      <h2>Kabupaten/kota dengan kejadian terbanyak, 2014–2020</h2>
+      <div class="lx-tablebox">
+        <table class="lx-table" data-source="kab" data-row-key="kab_kode">
+          <thead><tr>
+            <th data-field="kab_kota">Kab/kota</th>
+            <th data-field="kejadian_2014_2020">Semua jenis</th>
+            <th data-field="banjir">Banjir</th>
+            <th data-field="longsor">Longsor</th>
+            <th data-field="cuaca" class="lx-hide-sm">Cuaca</th>
+            <th data-field="kebakaran_permukiman" class="lx-hide-sm">Kebakaran permukiman</th>
+            <th data-field="jenis_terbanyak">Terbanyak</th>
+          </tr></thead>
+          <tbody data-draw="kab"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <section class="lx-card" id="catatan">
+    <h2>Cara membaca</h2>
+    <ul class="lx-list">
+      <li>Sumbernya logbook harian Pusdalops BNPB, satu dokumen per hari. Laporan lanjutan atas kejadian yang sama digabung jadi satu kejadian.</li>
+      <li>Logbook mencatat apa yang dilaporkan ke Pusdalops. Jawa mendominasi karena pelaporan BPBD di Jawa paling rutin, belum tentu karena bencananya paling banyak.</li>
+      <li>Karhutla di logbook adalah kejadian yang dilaporkan daerah, bukan luas terbakar. Kebakaran besar Kalimantan dan Sumatra 2015 dan 2019 dipantau lewat titik panas, jadi angka logbook bukan ukuran besarnya musim api.</li>
+      <li>Kebakaran permukiman 2022 jauh di bawah 2014–2020. Kemungkinan cara pencatatannya berubah, tetapi sebabnya belum dipastikan, jadi angka 2022 jangan dibaca sebagai penurunan kejadian.</li>
+      <li>Angka korban tidak ditampilkan. Satu bencana besar bisa tercatat beberapa kali di logbook, sehingga jumlah korbannya terhitung ganda. Angka korban resmi tetap memakai DIBI.</li>
+      <li>Logbook 2011–2012 sebagian besar rusak sejak di arsip sumber, sehingga hanya 50 dan 79 hari yang terbaca.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+(() => {
+  const fmt = new Intl.NumberFormat('id-ID');
+  const JENIS = ['banjir', 'longsor', 'cuaca', 'karhutla', 'kebakaran_permukiman', 'gempabumi'];
+  const warna = (j) => dash.colors[JENIS.indexOf(j) % dash.colors.length];
+  const BULAN = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+  window.__lxProv = 'banjir';
+
+  const tip = (box) => {
+    let t = box.querySelector('.lx-tip');
+    if (!t) { t = document.createElement('div'); t.className = 'lx-tip'; t.hidden = true; box.appendChild(t); }
+    return t;
+  };
+  const taruh = (box, t, x, y) => {
+    const w = t.offsetWidth, W = box.clientWidth;
+    t.style.left = Math.max(0, Math.min(W - w, x + 12)) + 'px';
+    t.style.top = Math.max(0, y - 10) + 'px';
+  };
+
+  dash.onData(() => {
+    document.querySelectorAll('.lx-sw[data-jenis]').forEach((s) => { s.style.background = warna(s.dataset.jenis); });
+  });
+
+  document.querySelectorAll('.lx-seg button').forEach((b) => {
+    b.addEventListener('click', () => {
+      window.__lxProv = b.dataset.jenis;
+      document.querySelectorAll('.lx-seg button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      dash.draw('provinsi');
+    });
+  });
+
+  dash.draw('angka', (el) => {
+    const d = dash.data('tahunan');
+    if (d.status !== 'ok') { el.textContent = '—'; return; }
+    const w = new URLSearchParams(el.dataset.where);
+    const r = d.data.find((x) => x.tahun === w.get('tahun') && x.jenis === w.get('jenis'));
+    el.textContent = r && r.setara_365_hari !== '' ? fmt.format(Number(r.setara_365_hari)) : '—';
+  });
+
+  dash.draw('tahunan', (el) => {
+    const d = dash.data('tahunan');
+    el.replaceChildren();
+    if (d.status !== 'ok') { el.textContent = '—'; return; }
+    const kosong = (x) => x === '' || x === null || x === undefined;
+    const rows = d.data.map((r) => {
+      const hari = Number(r.hari_tercatat) || 0;
+      return { ...r, hari, v: hari === 0 || kosong(r.setara_365_hari) ? null : Number(r.setara_365_hari), n: kosong(r.kejadian) ? null : Number(r.kejadian) };
+    });
+    const tahun = [...new Set(rows.map((r) => r.tahun))];
+    const W = el.clientWidth, H = 300, m = { t: 12, r: 12, b: 26, l: 44 };
+    const x = d3.scalePoint(tahun, [m.l, W - m.r]).padding(0.3);
+    const y = d3.scaleLinear([0, d3.max(rows, (r) => r.v) * 1.08], [H - m.b, m.t]).nice();
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Kejadian per tahun per jenis');
+    svg.append('g').selectAll('line').data(y.ticks(5)).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y).attr('stroke', 'var(--cds-chart-grid)');
+    const ay = svg.append('g').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(0).tickFormat((v) => fmt.format(v)));
+    ay.attr('font-size', null).attr('font-family', null).select('.domain').remove();
+    ay.selectAll('text').attr('fill', 'var(--color-fg-muted)').attr('font-size', 'var(--cds-font-size-caption)');
+    const ax = svg.append('g').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickSize(0).tickPadding(8).tickFormat((t) => (W < 520 ? "'" + t.slice(2) : t)));
+    ax.attr('font-size', null).attr('font-family', null).select('.domain').attr('stroke', 'var(--cds-chart-axis)');
+    ax.selectAll('text').attr('fill', 'var(--color-fg-muted)').attr('font-size', 'var(--cds-font-size-caption)');
+    const line = d3.line().defined((r) => r.v !== null).x((r) => x(r.tahun)).y((r) => y(r.v));
+    for (const j of JENIS) {
+      const s = rows.filter((r) => r.jenis === j);
+      svg.append('path').datum(s).attr('d', line).attr('fill', 'none').attr('stroke', warna(j)).attr('stroke-width', 2).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round');
+      svg.append('g').selectAll('circle').data(s.filter((r) => r.v !== null)).join('circle')
+        .attr('cx', (r) => x(r.tahun)).attr('cy', (r) => y(r.v)).attr('r', 3.2)
+        .attr('fill', (r) => (r.lengkap === 'ya' ? warna(j) : 'var(--color-panel)')).attr('stroke', warna(j)).attr('stroke-width', 1.5);
+    }
+    const rule = svg.append('line').attr('y1', m.t).attr('y2', H - m.b).attr('stroke', 'var(--cds-chart-reference)').attr('visibility', 'hidden');
+    const t = tip(el);
+    const step = x.step();
+    svg.append('g').selectAll('rect').data(tahun).join('rect')
+      .attr('x', (k) => x(k) - step / 2).attr('width', step).attr('y', m.t).attr('height', H - m.t - m.b).attr('fill', 'transparent')
+      .on('pointerenter pointermove', (ev, k) => {
+        const s = rows.filter((r) => r.tahun === k);
+        rule.attr('x1', x(k)).attr('x2', x(k)).attr('visibility', 'visible');
+        const hari = s[0].hari;
+        t.replaceChildren();
+        const h = document.createElement('div'); h.className = 'k';
+        h.textContent = hari ? `${k}, ${fmt.format(hari)} hari tercatat` : `${k}, logbook belum ada`;
+        t.appendChild(h);
+        for (const r of [...s].sort((a, b) => (b.v ?? 0) - (a.v ?? 0))) {
+          if (r.v === null) continue;
+          const row = document.createElement('div');
+          const sw = document.createElement('span'); sw.className = 'lx-sw'; sw.style.background = warna(r.jenis); sw.style.marginRight = '6px';
+          row.append(sw, `${r.jenis_label}: ${fmt.format(r.n)}` + (r.lengkap === 'ya' ? '' : ` (setara ${fmt.format(r.v)})`));
+          t.appendChild(row);
+        }
+        t.hidden = false;
+        const [px, py] = d3.pointer(ev, el);
+        taruh(el, t, px, py);
+      })
+      .on('pointerleave', () => { t.hidden = true; rule.attr('visibility', 'hidden'); });
+  });
+
+  dash.draw('musiman', (el) => {
+    const d = dash.data('musiman');
+    el.replaceChildren();
+    if (d.status !== 'ok') { el.textContent = '—'; return; }
+    const t = tip(el);
+    const kotak = [];
+    for (const j of JENIS) {
+      const s = d.data.filter((r) => r.jenis === j).map((r) => ({ ...r, b: Number(r.bulan), n: Number(r.kejadian_2014_2020) }));
+      if (!s.length) continue;
+      const box = document.createElement('div'); box.style.minWidth = '0'; el.insertBefore(box, t);
+      kotak.push([j, s, box]);
+    }
+    for (const [j, s, box] of kotak) {
+      const W = Math.max(160, box.clientWidth), H = 130, m = { t: 22, r: 4, b: 18, l: 4 };
+      const x = d3.scaleBand(d3.range(1, 13), [m.l, W - m.r]).padding(0.18);
+      const y = d3.scaleLinear([0, d3.max(s, (r) => r.n)], [H - m.b, m.t]);
+      const puncak = d3.max(s, (r) => r.n);
+      const svg = d3.select(box).append('svg').attr('width', '100%').attr('height', H).attr('viewBox', `0 0 ${W} ${H}`);
+      svg.append('text').attr('x', m.l).attr('y', 13).attr('fill', 'var(--color-fg)').attr('font-size', 'var(--cds-font-size-caption)').attr('font-weight', 500).text(s[0].jenis_label);
+      svg.append('g').selectAll('rect').data(s).join('rect')
+        .attr('x', (r) => x(r.b)).attr('width', x.bandwidth()).attr('y', (r) => y(r.n)).attr('height', (r) => H - m.b - y(r.n)).attr('rx', 2)
+        .attr('fill', warna(j)).attr('fill-opacity', (r) => (r.n === puncak ? 1 : 0.38))
+        .on('pointerenter pointermove', (ev, r) => {
+          t.replaceChildren();
+          const h = document.createElement('div'); h.className = 'k'; h.textContent = `${s[0].jenis_label}, ${BULAN[r.b - 1]}`;
+          const v = document.createElement('div'); v.textContent = `${fmt.format(r.n)} kejadian (2014–2020)`;
+          t.append(h, v); t.hidden = false;
+          const [px, py] = d3.pointer(ev, el); taruh(el, t, px, py);
+        })
+        .on('pointerleave', () => { t.hidden = true; });
+      svg.append('g').selectAll('text').data([1, 4, 7, 10]).join('text')
+        .attr('x', (b) => x(b) + x.bandwidth() / 2).attr('y', H - 4).attr('text-anchor', 'middle')
+        .attr('fill', 'var(--color-fg-muted)').attr('font-size', 'var(--cds-font-size-caption)').text((b) => BULAN[b - 1]);
+    }
+  });
+
+  dash.draw('provinsi', (el) => {
+    const d = dash.data('provinsi');
+    el.replaceChildren();
+    if (d.status !== 'ok') { el.textContent = '—'; return; }
+    const j = window.__lxProv;
+    const s = d.data.filter((r) => r.jenis === j).map((r) => ({ ...r, n: Number(r.kejadian_2014_2020) })).sort((a, b) => b.n - a.n).slice(0, 10);
+    const W = el.clientWidth, bar = 22, gap = 8, m = { t: 4, r: 52, l: 4 };
+    const H = m.t + s.length * (bar + gap);
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
+    const lab = svg.append('g').selectAll('text').data(s).join('text').attr('fill', 'var(--color-fg)').attr('font-size', 'var(--cds-font-size-caption)')
+      .attr('x', m.l).attr('y', (r, i) => m.t + i * (bar + gap) + bar / 2 + 4).text((r) => r.provinsi);
+    const lw = d3.max(lab.nodes(), (n) => n.getComputedTextLength()) + 10;
+    const x = d3.scaleLinear([0, d3.max(s, (r) => r.n) || 1], [m.l + lw, W - m.r]);
+    const t = tip(el);
+    svg.append('g').selectAll('rect').data(s).join('rect')
+      .attr('x', x(0)).attr('y', (r, i) => m.t + i * (bar + gap)).attr('height', bar).attr('width', (r) => Math.max(1, x(r.n) - x(0))).attr('rx', 3)
+      .attr('fill', warna(j)).attr('fill-opacity', (r, i) => (i === 0 ? 1 : 0.55))
+      .on('pointerenter pointermove', (ev, r) => {
+        t.replaceChildren();
+        const h = document.createElement('div'); h.className = 'k'; h.textContent = `${r.provinsi}, ${r.jenis_label}`;
+        const v = document.createElement('div'); v.textContent = `${fmt.format(r.n)} kejadian 2014–2020, rata-rata ${fmt.format(Math.round(r.n / 7))} per tahun`;
+        t.append(h, v); t.hidden = false;
+        const [px, py] = d3.pointer(ev, el); taruh(el, t, px, py);
+      })
+      .on('pointerleave', () => { t.hidden = true; });
+    svg.append('g').selectAll('text').data(s).join('text').attr('fill', 'var(--color-fg-muted)').attr('font-size', 'var(--cds-font-size-caption)')
+      .attr('x', (r) => x(r.n) + 6).attr('y', (r, i) => m.t + i * (bar + gap) + bar / 2 + 4).text((r) => fmt.format(r.n));
+  });
+
+  dash.draw('kab', (el) => {
+    const d = dash.data('kab');
+    el.replaceChildren();
+    if (d.status !== 'ok') return;
+    const kol = ['kab_kota', 'kejadian_2014_2020', 'banjir', 'longsor', 'cuaca', 'kebakaran_permukiman', 'jenis_terbanyak'];
+    for (const r of d.data) {
+      const tr = document.createElement('tr'); tr.dataset.key = r.kab_kode;
+      for (const k of kol) {
+        const td = document.createElement('td');
+        if (k === 'cuaca' || k === 'kebakaran_permukiman') td.className = 'lx-hide-sm';
+        td.textContent = k === 'kab_kota' || k === 'jenis_terbanyak' ? r[k] : fmt.format(Number(r[k]));
+        tr.appendChild(td);
+      }
+      el.appendChild(tr);
+    }
+  });
+})();
+</script>

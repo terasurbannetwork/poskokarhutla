@@ -1,0 +1,41 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="id">
+<head><meta charset="utf-8"><title>BNPB</title>
+<style>
+  html,body{margin:0;height:100%}
+  body{background:var(--kertas);color:var(--teks);font-family:var(--font-roboto);overflow:hidden}
+  .cover{position:relative;height:288px;overflow:hidden}
+  .art{position:absolute;top:0;left:480px;width:480px;height:288px}
+  .art svg{display:block;width:480px;height:288px}
+  .navy{fill:var(--navy)} .ora{fill:var(--oranye)} .tint{fill:var(--tint-netral-muda)} .abu{fill:var(--skala-netral-2)} .pita{fill:var(--tint-netral-pita)}
+  .words{position:absolute;left:43px;bottom:32px;max-width:440px}
+  .name{margin:0;font-size:120px;line-height:.92;font-weight:700;letter-spacing:-.02em;color:var(--navy)}
+  .tag{margin:10px 0 0 4px;font-size:14px;line-height:20px;color:var(--teks-2)}
+</style></head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 288" width="480" height="288">
+<!--
+  blocks      tint-netral-muda panel 200x288 (the left daftar-isi panel), navy 180x200 slab bled off the right, oranye 96x96 (the single accent), tint-netral-pita 120x72 — about 45% of 960x288
+  arrangement one tall navy slab bled off the right with a light panel beside it, like the daftar isi page; corners square because every BNPB element is square
+  pattern     piksel tangga: squares touching corner to corner in oranye, navy and skala-netral-2, from Elemen Grafis' own pixel family (the deck's signature motif)
+  scales      sides in multiples of 10.8 (jarak-blok) rounded to 12/24; no radius
+-->
+<rect class="tint" x="0" y="0" width="200" height="288"/>
+<rect class="navy" x="300" y="0" width="180" height="200"/>
+<rect class="ora" x="204" y="200" width="96" height="88"/>
+<rect class="pita" x="360" y="216" width="120" height="72"/>
+<rect class="ora" x="176" y="120" width="24" height="24"/>
+<rect class="navy" x="200" y="144" width="24" height="24"/>
+<rect class="abu" x="224" y="168" width="24" height="24"/>
+<rect class="ora" x="276" y="0" width="24" height="24"/>
+<rect class="abu" x="252" y="24" width="24" height="24"/>
+<rect class="ora" x="300" y="200" width="24" height="24"/>
+</svg>
+</div>
+<div class="words"><h1 class="name">BNPB</h1><p class="tag">Sistem desain deck dan laporan Badan Nasional Penanggulangan Bencana.</p></div>
+</div>
+<script></script>
+</body></html>

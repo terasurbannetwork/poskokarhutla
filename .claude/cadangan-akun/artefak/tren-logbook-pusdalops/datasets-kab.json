@@ -1,0 +1,14 @@
+{
+  "description": "Kabupaten/kota dengan kejadian terbanyak 2014–2020, dirinci per jenis utama.",
+  "fixed": true,
+  "source": {
+    "kind": "file",
+    "name": "kab_teratas.csv",
+    "url": "/_blob/a92360d8e456470ae2d270e315bd62b2"
+  },
+  "title": "25 kab/kota teratas 2014–2020",
+  "updated": {
+    "at": "2026-11-01T00:10:00+07:00",
+    "by": "Claude, dari data/pusdalops/logbook_kejadian.csv"
+  }
+}

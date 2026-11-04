@@ -1,0 +1,14 @@
+{
+  "description": "Jumlah kejadian per provinsi per jenis bencana, 2014–2020; kejadian lintas provinsi dihitung di tiap provinsi.",
+  "fixed": true,
+  "source": {
+    "kind": "file",
+    "name": "provinsi.csv",
+    "url": "/_blob/790f0a4813dcb0a7e6ab5517dcb9ad32"
+  },
+  "title": "Kejadian per provinsi 2014–2020",
+  "updated": {
+    "at": "2026-11-01T00:10:00+07:00",
+    "by": "Claude, dari data/pusdalops/logbook_kejadian.csv"
+  }
+}

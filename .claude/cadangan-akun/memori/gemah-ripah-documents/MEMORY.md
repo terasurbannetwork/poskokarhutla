@@ -1,0 +1,4 @@
+- [Selera tabel & UI](selera-tabel-ui.md) — checklist tabel/kartu yang pemilik tegur berulang: nol '…', status ikon+legenda, Rp kiri angka kanan, putih satu warna
+- [Pelajaran ke pangantara](pelajaran-ke-pangantara.md) — tugas tertunda: setelah GR sempurna, jadikan knowledge/selera kamus untuk pangantara (kecuali warna)
+- [Restrukturisasi nav](restrukturisasi-nav.md) — susunan menu disetujui + revisi (Pembayaran per tujuan ala pangantara, piutang ke Invoice, bank ke Akuntansi, arsip hanya di Admin)
+- [Git cuma main](git-cuma-main.md) — pemilik tidak mau branch/worktree tersisa; agent wajib hapus sesudah push

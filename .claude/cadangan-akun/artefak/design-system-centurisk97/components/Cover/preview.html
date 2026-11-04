@@ -1,0 +1,52 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Centurisk97</title>
+<style>
+  html,body{margin:0;height:100%}
+  body{background:var(--paper);color:var(--ink);font-family:var(--font-sans);overflow:hidden}
+  .cover{position:relative;height:288px;overflow:hidden}
+  .art{position:absolute;top:0;left:480px;width:480px;height:288px;overflow:hidden}
+  .art svg{display:block;width:480px;height:288px}
+  .navy{fill:var(--brand)} .navy2{fill:var(--brand2)} .ora{fill:var(--f2)} .tint{fill:var(--surface)} .red{fill:var(--f3)}
+  .blk{rx:var(--r)}
+  .ring{fill:none;stroke:var(--card);stroke-width:4}
+  .ring.thin{stroke-width:3;opacity:.6}
+  .sweep{fill:var(--f2)}
+  .dot{fill:var(--card)}
+  .words{position:absolute;left:28px;bottom:28px;max-width:440px}
+  .name{margin:0;font-family:var(--font-display);font-size:64px;line-height:.92;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
+  .tag{margin:10px 0 0 3px;font-size:14px;line-height:20px;color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 288" width="480" height="288">
+<!--
+  blocks      brand 216x264 slab bled off the top (identity navy, largest) + brand2 236x126 bled off the right + f2 126x72 (key-number orange) + surface 108x72 tint + f3 60x14 small (danger only) — about 40% of 960x288
+  arrangement one tall navy slab with satellites, bottoms on one line, gutters space-4 (14) rounded to 16
+  pattern     radar arcs from the logo: two rings + a quarter sweep in f2 on the slab, because the brand's only motif is the radar badge
+  scales      corners r (16px), pill rx 7 (half of 14); rings at 36/68 = space-6 multiples, stroke from card
+-->
+<rect class="navy blk" x="16" y="-16" width="216" height="264" rx="16"/>
+<circle class="ring" cx="124" cy="120" r="68"/>
+<circle class="ring thin" cx="124" cy="120" r="36"/>
+<path class="sweep" d="M124 120 124 52A68 68 0 0 1 188 97Z"/>
+<circle class="dot" cx="124" cy="120" r="8"/>
+<rect class="navy2 blk" x="248" y="56" width="236" height="126" rx="16"/>
+<rect class="ora blk" x="248" y="198" width="126" height="72" rx="16"/>
+<rect class="tint blk" x="390" y="198" width="108" height="72" rx="16"/>
+<rect class="red" x="16" y="260" width="60" height="14" rx="7"/>
+</svg>
+</div>
+<div class="words">
+<h1 class="name">Centurisk97</h1>
+<p class="tag">Peta dan analisis risiko bencana Indonesia.</p>
+</div>
+</div>
+<script></script>
+</body>
+</html>

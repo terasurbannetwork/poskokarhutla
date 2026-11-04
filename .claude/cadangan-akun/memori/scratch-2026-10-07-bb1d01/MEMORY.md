@@ -1,0 +1,1 @@
+- [Commit saat agent paralel](commit-saat-agent-paralel.md) — commit berpath eksplisit di foreground; lint-staged bisa menimpa editan agent; iCloud dataless

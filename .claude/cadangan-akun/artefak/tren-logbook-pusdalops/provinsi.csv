@@ -1,0 +1,328 @@
+jenis,jenis_label,provinsi,kejadian_2014_2020
+banjir,Banjir,Jawa Timur,1049
+banjir,Banjir,Jawa Tengah,996
+banjir,Banjir,Jawa Barat,705
+banjir,Banjir,Aceh,536
+banjir,Banjir,Sumatera Barat,258
+banjir,Banjir,Sumatera Utara,244
+banjir,Banjir,Sulawesi Selatan,234
+banjir,Banjir,Kalimantan Tengah,205
+banjir,Banjir,DKI Jakarta,173
+banjir,Banjir,Banten,161
+banjir,Banjir,Kalimantan Selatan,146
+banjir,Banjir,Kalimantan Timur,138
+banjir,Banjir,Nusa Tenggara Barat,134
+banjir,Banjir,Sulawesi Tengah,132
+banjir,Banjir,Kalimantan Barat,129
+banjir,Banjir,Jambi,118
+banjir,Banjir,Sumatera Selatan,109
+banjir,Banjir,Lampung,98
+banjir,Banjir,Gorontalo,96
+banjir,Banjir,Riau,96
+banjir,Banjir,Sulawesi Tenggara,77
+banjir,Banjir,Sulawesi Utara,75
+banjir,Banjir,Bengkulu,67
+banjir,Banjir,Maluku,56
+banjir,Banjir,Papua,53
+banjir,Banjir,Maluku Utara,50
+banjir,Banjir,Bali,46
+banjir,Banjir,Nusa Tenggara Timur,42
+banjir,Banjir,Kep. Bangka Belitung,39
+banjir,Banjir,Sulawesi Barat,39
+banjir,Banjir,Papua Barat,35
+banjir,Banjir,DI Yogyakarta,22
+banjir,Banjir,Kepulauan Riau,18
+banjir,Banjir,Kalimantan Utara,16
+banjir,Banjir,Sumatra Utara,6
+banjir,Banjir,Sumatra Barat,5
+banjir,Banjir,Sumatra Selatan,3
+banjir,Banjir,Kalimatan Tengah,3
+banjir,Banjir,Jwa Timur,2
+banjir,Banjir,Kalimatan Selatan,2
+banjir,Banjir,Kalimatan Timur,2
+banjir,Banjir,Jawa Tegah,2
+banjir,Banjir,Jaw Tengah,2
+banjir,Banjir,kalimatan Selatan,1
+banjir,Banjir,Jawa Teimur,1
+banjir,Banjir,Jawa Tenggah,1
+banjir,Banjir,Sumatara Barat,1
+banjir,Banjir,Kalimantan Selantan,1
+banjir,Banjir,Sulawewsi Tenggara,1
+banjir,Banjir,Sumatara Utara,1
+banjir,Banjir,Kalimanrtan tengah,1
+banjir,Banjir,DIY. Yogyakarta,1
+banjir,Banjir,Kalimantan Tengan,1
+banjir,Banjir,Ach,1
+banjir,Banjir,Sulwesi Utara,1
+banjir,Banjir,Kalimatan Barat,1
+banjir,Banjir,Jawa Baat,1
+banjir,Banjir,Kep. Babel,1
+banjir,Banjir,Kalimatan Utara,1
+banjir,Banjir,Nusa Tenggara Batat,1
+banjir,Banjir,Kalimantyan Tengah,1
+banjir,Banjir,Grontalo,1
+banjir,Banjir,Sumaetra Barat,1
+banjir,Banjir,Kalimanta Barat,1
+cuaca,Cuaca ekstrem,Jawa Tengah,1781
+cuaca,Cuaca ekstrem,Jawa Timur,1233
+cuaca,Cuaca ekstrem,Jawa Barat,873
+cuaca,Cuaca ekstrem,Aceh,319
+cuaca,Cuaca ekstrem,Sulawesi Selatan,249
+cuaca,Cuaca ekstrem,Sumatera Barat,201
+cuaca,Cuaca ekstrem,Sumatera Utara,199
+cuaca,Cuaca ekstrem,Banten,143
+cuaca,Cuaca ekstrem,Kalimantan Selatan,132
+cuaca,Cuaca ekstrem,Bali,113
+cuaca,Cuaca ekstrem,DI Yogyakarta,108
+cuaca,Cuaca ekstrem,Nusa Tenggara Barat,82
+cuaca,Cuaca ekstrem,Lampung,60
+cuaca,Cuaca ekstrem,Sumatera Selatan,56
+cuaca,Cuaca ekstrem,Kalimantan Barat,55
+cuaca,Cuaca ekstrem,Riau,53
+cuaca,Cuaca ekstrem,Kep. Bangka Belitung,51
+cuaca,Cuaca ekstrem,Nusa Tenggara Timur,50
+cuaca,Cuaca ekstrem,Kepulauan Riau,49
+cuaca,Cuaca ekstrem,Sulawesi Tenggara,41
+cuaca,Cuaca ekstrem,Sulawesi Utara,39
+cuaca,Cuaca ekstrem,Jambi,37
+cuaca,Cuaca ekstrem,Kalimantan Timur,29
+cuaca,Cuaca ekstrem,Kalimantan Tengah,26
+cuaca,Cuaca ekstrem,Sulawesi Barat,24
+cuaca,Cuaca ekstrem,Maluku,22
+cuaca,Cuaca ekstrem,DKI Jakarta,20
+cuaca,Cuaca ekstrem,Bengkulu,19
+cuaca,Cuaca ekstrem,Maluku Utara,16
+cuaca,Cuaca ekstrem,Sulawesi Tengah,11
+cuaca,Cuaca ekstrem,Gorontalo,9
+cuaca,Cuaca ekstrem,Kalimantan Utara,9
+cuaca,Cuaca ekstrem,Sumatra Utara,5
+cuaca,Cuaca ekstrem,Papua,5
+cuaca,Cuaca ekstrem,Sumatra Selatan,3
+cuaca,Cuaca ekstrem,Jawa Tegah,3
+cuaca,Cuaca ekstrem,D.I.Y,2
+cuaca,Cuaca ekstrem,Sumatra Barat,2
+cuaca,Cuaca ekstrem,Kalimatan Barat,2
+cuaca,Cuaca ekstrem,Slawesi Selatan,2
+cuaca,Cuaca ekstrem,DI. Yogyaklarta,1
+cuaca,Cuaca ekstrem,Sumuatera Utara,1
+cuaca,Cuaca ekstrem,Kalimanta Timur,1
+cuaca,Cuaca ekstrem,D.I.Yogyakarta,1
+cuaca,Cuaca ekstrem,Jawa Tenga,1
+cuaca,Cuaca ekstrem,Kalimatan Selatan,1
+cuaca,Cuaca ekstrem,Baten,1
+cuaca,Cuaca ekstrem,NTTKab. Sumba Timur,1
+cuaca,Cuaca ekstrem,Jwaa Timur,1
+cuaca,Cuaca ekstrem,Sulawsi Selatan,1
+cuaca,Cuaca ekstrem,Jawa Tenagh,1
+cuaca,Cuaca ekstrem,Sulewasi Barat,1
+cuaca,Cuaca ekstrem,Sumateara Selatan,1
+cuaca,Cuaca ekstrem,Jawa Baat,1
+cuaca,Cuaca ekstrem,Selawesi Selatan,1
+cuaca,Cuaca ekstrem,Jaw Barat,1
+cuaca,Cuaca ekstrem,Jaw Timur,1
+cuaca,Cuaca ekstrem,Papua Barat,1
+cuaca,Cuaca ekstrem,Sumaterah Selatan,1
+cuaca,Cuaca ekstrem,Kalimantam Selatan,1
+cuaca,Cuaca ekstrem,Jawa Bart,1
+cuaca,Cuaca ekstrem,Sulawesi Tengara,1
+gempabumi,Gempa bumi,Maluku,312
+gempabumi,Gempa bumi,Sulawesi Utara,197
+gempabumi,Gempa bumi,Papua,130
+gempabumi,Gempa bumi,Maluku Utara,126
+gempabumi,Gempa bumi,Aceh,103
+gempabumi,Gempa bumi,Bengkulu,103
+gempabumi,Gempa bumi,Nusa Tenggara Timur,95
+gempabumi,Gempa bumi,Jawa Barat,68
+gempabumi,Gempa bumi,Sumatera Utara,62
+gempabumi,Gempa bumi,Nusa Tenggara Barat,59
+gempabumi,Gempa bumi,Jawa Timur,58
+gempabumi,Gempa bumi,Sumatera Barat,48
+gempabumi,Gempa bumi,Sulawesi Tengah,47
+gempabumi,Gempa bumi,Lampung,42
+gempabumi,Gempa bumi,Banten,38
+gempabumi,Gempa bumi,Papua Barat,29
+gempabumi,Gempa bumi,Gorontalo,24
+gempabumi,Gempa bumi,Bali,23
+gempabumi,Gempa bumi,Jawa Tengah,19
+gempabumi,Gempa bumi,DI Yogyakarta,18
+gempabumi,Gempa bumi,Sulawesi Barat,15
+gempabumi,Gempa bumi,Sulawesi Selatan,8
+gempabumi,Gempa bumi,Malut,7
+gempabumi,Gempa bumi,Sulawesi Tenggara,6
+gempabumi,Gempa bumi,Sumatera Selatan,3
+gempabumi,Gempa bumi,Kalimantan Utara,2
+gempabumi,Gempa bumi,Kalimantan Timur,2
+gempabumi,Gempa bumi,Jambi,2
+gempabumi,Gempa bumi,Malauku Utara,1
+gempabumi,Gempa bumi,Sumatra Utara,1
+gempabumi,Gempa bumi,DKI Jakarta,1
+gempabumi,Gempa bumi,Sumatara Utara,1
+gempabumi,Gempa bumi,Kalimantan Tengah,1
+gempabumi,Gempa bumi,Riau,1
+gempabumi,Gempa bumi,Jaw Barat,1
+gempabumi,Gempa bumi,Selawesi Tengah,1
+gempabumi,Gempa bumi,MALUT,1
+gempabumi,Gempa bumi,Sulawesu Utara,1
+gempabumi,Gempa bumi,Sumtera Barat,1
+gempabumi,Gempa bumi,Sulaewsi SulutUtara,1
+gempabumi,Gempa bumi,Silawesi Utara,1
+karhutla,Karhutla,Jawa Timur,658
+karhutla,Karhutla,Jawa Tengah,236
+karhutla,Karhutla,Aceh,226
+karhutla,Karhutla,Jawa Barat,125
+karhutla,Karhutla,Kalimantan Selatan,120
+karhutla,Karhutla,Kalimantan Timur,104
+karhutla,Karhutla,Riau,97
+karhutla,Karhutla,Kalimantan Tengah,78
+karhutla,Karhutla,Sumatera Selatan,64
+karhutla,Karhutla,Banten,51
+karhutla,Karhutla,Kalimantan Utara,39
+karhutla,Karhutla,Lampung,36
+karhutla,Karhutla,Sumatera Utara,32
+karhutla,Karhutla,Jambi,30
+karhutla,Karhutla,Bali,25
+karhutla,Karhutla,Sulawesi Selatan,24
+karhutla,Karhutla,Kepulauan Riau,22
+karhutla,Karhutla,Sumatera Barat,16
+karhutla,Karhutla,Kalimantan Barat,16
+karhutla,Karhutla,Kep. Bangka Belitung,14
+karhutla,Karhutla,Nusa Tenggara Barat,13
+karhutla,Karhutla,Bengkulu,8
+karhutla,Karhutla,Nusa Tenggara Timur,8
+karhutla,Karhutla,DI Yogyakarta,5
+karhutla,Karhutla,Maluku,5
+karhutla,Karhutla,Gorontalo,4
+karhutla,Karhutla,Sulawesi Tenggara,4
+karhutla,Karhutla,Sulawesi Tengah,4
+karhutla,Karhutla,Kalimatan Tengah,2
+karhutla,Karhutla,Papua Barat,2
+karhutla,Karhutla,Maluku Utara,2
+karhutla,Karhutla,Sumatra Utara,1
+karhutla,Karhutla,Kalimatan Barat,1
+karhutla,Karhutla,Sulawesi Utara,1
+karhutla,Karhutla,Kalimantan,1
+karhutla,Karhutla,Jawa Tegal,1
+karhutla,Karhutla,Jwa Timur,1
+karhutla,Karhutla,Sumaetara Selatan,1
+karhutla,Karhutla,Kalimatan Timur,1
+karhutla,Karhutla,Jaw Timur,1
+kebakaran_permukiman,Kebakaran permukiman,DKI Jakarta,2201
+kebakaran_permukiman,Kebakaran permukiman,Jawa Tengah,1387
+kebakaran_permukiman,Kebakaran permukiman,Jawa Timur,1106
+kebakaran_permukiman,Kebakaran permukiman,Jawa Barat,384
+kebakaran_permukiman,Kebakaran permukiman,Kalimantan Timur,320
+kebakaran_permukiman,Kebakaran permukiman,Aceh,252
+kebakaran_permukiman,Kebakaran permukiman,Banten,158
+kebakaran_permukiman,Kebakaran permukiman,Kalimantan Selatan,133
+kebakaran_permukiman,Kebakaran permukiman,Sumatera Utara,93
+kebakaran_permukiman,Kebakaran permukiman,Kalimantan Tengah,81
+kebakaran_permukiman,Kebakaran permukiman,Bali,54
+kebakaran_permukiman,Kebakaran permukiman,Sumatera Selatan,53
+kebakaran_permukiman,Kebakaran permukiman,Sulawesi Selatan,50
+kebakaran_permukiman,Kebakaran permukiman,DI Yogyakarta,43
+kebakaran_permukiman,Kebakaran permukiman,Kepulauan Riau,32
+kebakaran_permukiman,Kebakaran permukiman,Sumatera Barat,31
+kebakaran_permukiman,Kebakaran permukiman,Riau,22
+kebakaran_permukiman,Kebakaran permukiman,Jambi,19
+kebakaran_permukiman,Kebakaran permukiman,Lampung,17
+kebakaran_permukiman,Kebakaran permukiman,Kalimantan Barat,13
+kebakaran_permukiman,Kebakaran permukiman,Maluku,12
+kebakaran_permukiman,Kebakaran permukiman,Kep. Bangka Belitung,10
+kebakaran_permukiman,Kebakaran permukiman,Nusa Tenggara Barat,9
+kebakaran_permukiman,Kebakaran permukiman,Papua Barat,8
+kebakaran_permukiman,Kebakaran permukiman,Kalimantan Utara,7
+kebakaran_permukiman,Kebakaran permukiman,Papua,6
+kebakaran_permukiman,Kebakaran permukiman,Sulawesi Barat,6
+kebakaran_permukiman,Kebakaran permukiman,Sumatra Barat,5
+kebakaran_permukiman,Kebakaran permukiman,Kalimatan Timur,5
+kebakaran_permukiman,Kebakaran permukiman,Gorontalo,5
+kebakaran_permukiman,Kebakaran permukiman,Sulawesi Tenggara,5
+kebakaran_permukiman,Kebakaran permukiman,Sumatra Utara,4
+kebakaran_permukiman,Kebakaran permukiman,Sulawesi Utara,4
+kebakaran_permukiman,Kebakaran permukiman,Nusa Tenggara Timur,3
+kebakaran_permukiman,Kebakaran permukiman,DKI Jakara,3
+kebakaran_permukiman,Kebakaran permukiman,Maluku Utara,2
+kebakaran_permukiman,Kebakaran permukiman,Jawa Tenggah,2
+kebakaran_permukiman,Kebakaran permukiman,Bengkulu,2
+kebakaran_permukiman,Kebakaran permukiman,Jawa Tegah,2
+kebakaran_permukiman,Kebakaran permukiman,Sulawesi Tengah,2
+kebakaran_permukiman,Kebakaran permukiman,Kalimanatan Timur,2
+kebakaran_permukiman,Kebakaran permukiman,D.I.Y,2
+kebakaran_permukiman,Kebakaran permukiman,Kalimatan Selatan,2
+kebakaran_permukiman,Kebakaran permukiman,DKI Jakarata,2
+kebakaran_permukiman,Kebakaran permukiman,Kalimatan Tengah,2
+kebakaran_permukiman,Kebakaran permukiman,Kalutara,1
+kebakaran_permukiman,Kebakaran permukiman,Jakarta Timur,1
+kebakaran_permukiman,Kebakaran permukiman,D.I.Yogyakarta,1
+kebakaran_permukiman,Kebakaran permukiman,DKI Jakrta,1
+kebakaran_permukiman,Kebakaran permukiman,D.I Yogyakara,1
+kebakaran_permukiman,Kebakaran permukiman,Sumateara Utara,1
+kebakaran_permukiman,Kebakaran permukiman,Jawa Tmur,1
+kebakaran_permukiman,Kebakaran permukiman,Kaimantan Timur,1
+kebakaran_permukiman,Kebakaran permukiman,Kalimantan Tengan,1
+kebakaran_permukiman,Kebakaran permukiman,Sumataera Utara,1
+kebakaran_permukiman,Kebakaran permukiman,Aveh,1
+kebakaran_permukiman,Kebakaran permukiman,Klimantan Timur,1
+kebakaran_permukiman,Kebakaran permukiman,DKI Jakarat,1
+kebakaran_permukiman,Kebakaran permukiman,Umatera Selatan,1
+kebakaran_permukiman,Kebakaran permukiman,Sumatera elatan,1
+kebakaran_permukiman,Kebakaran permukiman,Jawa Tngah,1
+kebakaran_permukiman,Kebakaran permukiman,DKI Jakrat,1
+longsor,Tanah longsor,Jawa Tengah,2227
+longsor,Tanah longsor,Jawa Barat,1357
+longsor,Tanah longsor,Jawa Timur,1025
+longsor,Tanah longsor,Sulawesi Selatan,176
+longsor,Tanah longsor,Sumatera Barat,168
+longsor,Tanah longsor,Aceh,135
+longsor,Tanah longsor,Bali,106
+longsor,Tanah longsor,Sumatera Utara,88
+longsor,Tanah longsor,DI Yogyakarta,84
+longsor,Tanah longsor,Kalimantan Timur,62
+longsor,Tanah longsor,Banten,61
+longsor,Tanah longsor,Sulawesi Utara,57
+longsor,Tanah longsor,Sumatera Selatan,52
+longsor,Tanah longsor,Bengkulu,45
+longsor,Tanah longsor,Lampung,37
+longsor,Tanah longsor,Kalimantan Selatan,33
+longsor,Tanah longsor,Jambi,33
+longsor,Tanah longsor,Maluku,32
+longsor,Tanah longsor,Riau,29
+longsor,Tanah longsor,Kalimantan Tengah,23
+longsor,Tanah longsor,Kalimantan Barat,22
+longsor,Tanah longsor,Nusa Tenggara Barat,20
+longsor,Tanah longsor,Sulawesi Tenggara,20
+longsor,Tanah longsor,DKI Jakarta,18
+longsor,Tanah longsor,Nusa Tenggara Timur,18
+longsor,Tanah longsor,Papua,15
+longsor,Tanah longsor,Sulawesi Barat,10
+longsor,Tanah longsor,Sulawesi Tengah,9
+longsor,Tanah longsor,Maluku Utara,9
+longsor,Tanah longsor,Gorontalo,8
+longsor,Tanah longsor,Kepulauan Riau,8
+longsor,Tanah longsor,Papua Barat,7
+longsor,Tanah longsor,Kep. Bangka Belitung,6
+longsor,Tanah longsor,Kalimantan Utara,5
+longsor,Tanah longsor,Jwa Tengah,5
+longsor,Tanah longsor,D.I.Y,3
+longsor,Tanah longsor,Sumatra Utara,2
+longsor,Tanah longsor,Jawa Tegah,2
+longsor,Tanah longsor,Sumatra Barat,1
+longsor,Tanah longsor,Sumatra Selatan,1
+longsor,Tanah longsor,DIY Yogyakarta,1
+longsor,Tanah longsor,Tengah,1
+longsor,Tanah longsor,Jawa Tmur,1
+longsor,Tanah longsor,D.I Yoyakarta,1
+longsor,Tanah longsor,DIY Yogayakarta,1
+longsor,Tanah longsor,Kalimtan Selatan,1
+longsor,Tanah longsor,Jawa Bogor,1
+longsor,Tanah longsor,Sumateri Barat,1
+longsor,Tanah longsor,D.I. Ypgyakarta,1
+longsor,Tanah longsor,DIY. Yogyakarta,1
+longsor,Tanah longsor,Sumatyera Selatan,1
+longsor,Tanah longsor,Magelang,1
+longsor,Tanah longsor,Sulawei Tenggara,1
+longsor,Tanah longsor,DKI Jakrta,1
+longsor,Tanah longsor,Jawa Baat,1
+longsor,Tanah longsor,Sumatera Salatan,1
+longsor,Tanah longsor,Jaw Tengah,1
+longsor,Tanah longsor,Jawa Banjar,1

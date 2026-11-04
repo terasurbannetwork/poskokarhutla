@@ -1,0 +1,71 @@
+- [Aturan ke gerbang](aturan-ke-gerbang.md) — every new owner rule becomes a gate test or hook first; memory only for facts, pointers, unmeasurable taste (audit 30 Oct)
+- [Gaya kartu Insight](gaya-kartu-insight.md) — owner wants Insight card format, pill labels, no subtitles/KPI boxes, no "9 provinsi prioritas"
+- [Fitur disembunyikan](fitur-disembunyikan.md) — ledger of everything owner asked to hide on Pantau Bencana, for later restore
+- [Aturan berulang](aturan-berulang.md) — 25 rules owner repeated (A1–A25), check every UI change; reduce and unify
+- [Kendali mutu](kendali-mutu.md) — perfectionist owner; review every agent diff yourself + clean verifier before commit
+- [Plug and play](plug-and-play.md) — new hazards plug karhutla modules per MODUL-PLUG-AND-PLAY.md; no copies, no invented models
+- [Terbit gagal](terbit-gagal.md) — after push wait for terbit.yml success + check live asset and /api/status before saying 'tayang'
+- [Hanya main](hanya-main.md) — no worktrees/agent branches; staging branch deleted 17 Oct, no exceptions
+- [iCloud Documents](icloud-documents.md) — repo in iCloud Documents: deleted files resurrect, git hangs; stage explicit paths only
+- [Dua worker](dua-worker.md) — production worker centurisk97; site now centurisk97.id, pantau.terasurban.com released 22 Oct on purpose
+- [Stop hook global](stop-hook-global.md) — spinner-after-done caused by pangantara Stop hooks; removed 19 Oct, mesin:pasang re-adds
+- [Gas menyapu](gas-menyapu.md) — owner GitHub Desktop "gas" commits sweep all sessions uncommitted edits and push; never hold unsafe edits in tree
+- [Kekeringan hipotesis](kekeringan-hipotesis.md) — drought thresholds fail backtest (FAR 97%); owner: keep numbers visible with clear hipotesis pill, retune in model block
+- [Ruang BNPB](ruang-bnpb.md) — owner is staf ahli BNPB; /bnpb systems built 19 Oct; prod D1 migrations must be applied by owner
+- [Ruang Instansi](ruang-instansi.md) — 21 Okt program: akun pemda/TNI/Polri, tugas api, laporan otomatis, konpers, OMC, inventaris, akun BNPB; checklist
+- [Tanpa titik tengah](tanpa-titik-tengah.md) — never separate text with "·"; comma, plain sentence, own label or new line; key number first
+- [Api padam](api-padam.md) — Fase 0+1 done 22 Oct; owner decisions (level 3 + level 2 bersyarat, Himawari ke Posko pusat, rute berbayar boleh); open items
+- [Rencana lanjut](rencana-lanjut.md) — 22 Oct advanced program live (kinerja dashboard, Himawari alarm, CAP, offline crew); owner to-dos
+- [Laporan harian BNPB](laporan-harian-bnpb.md) — daily BNPB deck engine in ~/Documents/Laporan-Harian-BNPB/mesin; start there, never from scratch
+- [Panel presiden](panel-presiden.md) — /presiden cards+map for presidential dashboard (22 Oct); public, iframe, no WALHI; local data stale by design
+- [Program 15 jam](program-15-jam.md) — 22 Oct: prod at migration 0035, zero accounts; /kabar and aktivasi.sh built, /kabar awaits public decision
+- [Multi-bencana tugas](multi-bencana-tugas.md) — 22 Oct karhutla ops made generic for all hazards; prod migrations 0047-0049 + policy numbers pending owner
+- [PPT konsultan](ppt-konsultan.md) — every deck via skill ppt-konsultan (14 favorites, final tanpa revisi); handbook parent artifact unreadable 25 Oct
+- [PPT keputusan selera](ppt-keputusan-selera.md) — Roboto only, no dark backgrounds, Indonesian default, dense composites; BCG/KPMG terms block library use
+- [Merek BNPB PPT](ppt-merek-bnpb.md) — BNPB PPT identity as merek "bnpb" in ppt-konsultan; draft, needs vector logo
+- [Gaya kajian BNPB](ppt-gaya-kajian-bnpb.md) — owner's preferred BNPB deck style; small fonts OK, fill whitespace with more data; no 'Pesan Kunci:' titles, no 'DIBI mencatat'
+- [Format PPT per lembaga](ppt-format-lembaga.md) — BNPB/PNRE/METI formats merged into ppt-konsultan 26 Oct (one skill); open conflicts (dark closings etc.)
+- [PPT tabel dan cut off](ppt-tabel-dan-cutoff.md) — headers centered; CUT OFF pill only daily decks, cover subtitle no repeat, closing only Terima Kasih, kepada+BerAKHLAK on cover, "Tim Ahli dan Tim Sus IT BNPB" never bare "Tim IT": all gated in deck.py 1 Nov
+- [PPT audiens asing](ppt-audiens-asing.md) — foreign-partner decks: English end to end, no Indonesian weakness, content not speech lines
+- [Deck urgen di berkas](deck-urgen-kerjakan-di-berkas.md) — 26 Oct: edit owner's uploaded deck in place, no rebuild; no cover/closing for Presiden; no "Pantau Bencana"; give ETA, send interim
+- [Generator Penanganan offline](penanganan-generator-offline.md) — fast 10 s run: web kluster_hari firespot + FIRMS cache; path/python/playwright fixes
+- [Aturan deck 26 Okt rinci](aturan-deck-26-okt-rinci.md) — all 26 Oct instructions: Australia slide 7, Presiden 3 pages, banjir page rules, Papua report, file locations
+- [Selera deck Malaysia](selera-deck-malaysia.md) — 26 Oct: dictated plain titles, "bantuan" not "aset", Indonesia in control, delete pita/cards, left-aligned tables, icon rows, map labels+legend thresholds
+- [Selera PPT final](selera-ppt-final.md) — pointer: all PPT taste rules live only in skill keputusan-pemilik.md + handbook items 1-45
+- [Karhutla dari sistem](karhutla-data-sistem.md) — hotspot/firespot/luas/belum padam/terdampak ONLY from our system, never Koordalops even when owner pastes it
+- [Pendataan Satu Data](pendataan-satu-data.md) — /pendataan Fase 1 live 26 Oct; 10 target units, self-signup, Lainnya everywhere; Turnstile off, Fase 2 pending
+- [Dossier lapangan](dossier-lapangan.md) — field dossier rules: plain language, SWIR fire imagery, one hose line, numbered route, clickable coords, legend only drawn
+- [Uji pilot web](uji-pilot-web.md) — /uji-pilot token link no-login page, reports with geotagged photos; live 27 Oct; deploy gates to remember
+- [Buku pegangan inisiatif](buku-pegangan-inisiatif.md) — write every new owner taste/correction to handbook + keputusan-pemilik and republish, unasked
+- [Buku pegangan rujukan](buku-pegangan-rujukan.md) — where the handbook source, build, artifact URL and routine live; Downloads export was empty
+- [Banjir paritas 27 Okt](banjir-paritas-27-okt.md) — karhutla changes ported to banjir 27 Oct; D1 0064/0065 + /uji-lapangan gate pending owner
+- [Autostash bentrok](autostash-bentrok.md) — pull --autostash in shared tree conflicts on ilmu-agent files; union, unstage, drop stash
+- [Peluang bisnis data](peluang-bisnis-data.md) — 28 Oct: 40 swakelola + 23 non-swakelola offers, owner picks (2,4 gas), build all together later
+- [Kuota baca D1](d1-kuota-baca.md) — prod D1 Free tier 5M reads/day; 28 Oct SIHKA status + tugas_api scans took the whole site down; check d1 insights before adding cron queries
+- [Grand Design kampus](grand-design-kampus.md) — 28 Oct BNPB x perguruan tinggi 30-page deck; builder in proyek-kampus, owner decisions, open items
+- [Kepala situs wajib](kepala-situs-wajib.md) — every centurisk97.id page uses the shared navy site header + Centurisk97 tokens, never a page-local palette
+- [Direktori akademisi](direktori-akademisi.md) — /akademisi staff-only expert directory; data in R2 not repo; harvest scripts in session scratchpad
+- [Genangan Jakarta J3/J4](genangan-jakarta-j3-j4.md) — J4 prospective test LOCKED 28 Oct; sidik freezes shared banjir files (sim_genangan.js, umum.py) until Apr 2027
+- [SIPPA program 61](sippa-program-61.md) — 46 SIPPA recommendations built 27-28 Oct; owner still must apply migrations 0070/0072-0074, upload 7-province R2 data, set Renlap secrets
+- [Keyakinan rendah + drone gambut](keyakinan-rendah-drone-gambut.md) — 28 Oct: hotspot counts include low-confidence (luas/cluster stay n/h); bara needs night; /admin/drone built, KMZ untested
+- [Selera teks dan grafik](selera-teks-grafik.md) — paragraphs justified; every chart/figure interactive with hover tooltip (29 Oct)
+- [Hemat token & model](hemat-token-model.md) — Opus plans only; Haiku first, else Sonnet; levers applied 29 Oct (cavemem, 209 skills, rea+hermes off, browseros-neo kept); see HEMAT-TOKEN.md
+- [Direktori tanpa kasus KPK](direktori-tanpa-kasus-kpk.md) — /direktori excludes KPK-linked people, Suharyanto, the deceased; check every harvest
+- [Tanpa Pantau Bencana](tanpa-pantau-bencana.md) — never write "Pantau Bencana" in UI/docs/decks; say Centurisk97
+- [Deretan pilihan ujung ke ujung](deretan-pilihan-ujung-ke-ujung.md) — choice rows/segments/filter pills full width, evenly divided, iconed; status colors + Indonesian labels
+- [Direktori semua terhubung](direktori-semua-terhubung.md) — every /direktori record cross-links; person = one profile; new datasets go through hubung.mjs + graf
+- [Bagian dalam kartu](bagian-dalam-kartu.md) — every profile section is its own card; compact rows, icon buttons, no filler, full-width stats
+- [Kita BNPB](kita-bnpb.md) — BNPB and BPBD are "us", never partner strategis; directory framed from BNPB view
+- [Panel bencana direktori](panel-bencana-direktori.md) — /direktori disaster chips multi-select; hidden on tokoh/wilayah/riset/inovasi; single source letakBencana
+- [Ekspor PDF pangantara](ekspor-pdf-pangantara.md) — PDF exports copy pangantara lib/pdf/kit.ts look with images; ALL table headers centered
+- [Direktori data strategis](direktori-data-strategis.md) — 30-31 Oct: public datasets harvested and live via sambung_panen.mjs; re-download R2 before re-merge; auto-update pending
+- [Bahasa lugas](bahasa-lugas.md) — no poetic/AI-slop phrasing in decks; titles = fact + number + source (gated in bahasa.py)
+- [Direktori jejak, TKT, riwayat](direktori-jejak-tkt-riwayat.md) — 30 Oct: Riwayat BNPB (D1 0087), jejak 12 kejadian, TKT inovasi; migration 0087 applied 1 Nov
+- [Nama pemilik](nama-pemilik.md) — Alfatehan Septianta, Staf Ahli BNPB; use as deck presenter
+- [Jangan hapus LibreOffice](jangan-hapus-libreoffice.md) — LibreOffice.app + its profile never removable in disk cleanups; deck engine and .doc conversion need it
+
+- [Kunci BPS dan OpenAlex](kunci-bps.md) — BPS + OpenAlex API keys in macOS Keychain (bps-webapi, openalex-api), never in files; not GitHub secrets yet
+- [Gelar Kepala BNPB](kepala-bnpb-gelar.md) — write "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si., M.Si. (Han)", full title, never bare
+- [Sapaan pemilik](sapaan-pemilik.md) — never call owner "Bapak"/"Pak" in chat; casual gw/lu
+- [PPT putaran 5](ppt-putaran-5.md) — 1-3 Nov engine program done/remaining; templat s5-s6 + redo blocked on disk/iCloud; owner decisions pending
+- [Galeri templat BNPB](galeri-templat-bnpb.md) — 322 numbered T-sN-NN slide templates, gate decisions 2-3 Nov (15% layout, D-50/D-51), 5 decks (s1/s2) left failing on purpose

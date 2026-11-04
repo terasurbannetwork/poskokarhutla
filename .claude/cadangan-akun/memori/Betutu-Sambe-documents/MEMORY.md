@@ -1,0 +1,10 @@
+- [Fondasi Betutu Sambe](betutu-sambe-fondasi.md) — keputusan 3 Okt 2026: salin GR, WIB, Supabase Free mzssrcsleuopqfkhrwgj, jalan sendiri sampai tayang
+- [Selera tabel & UI](selera-tabel-ui.md) — dari GR: checklist tabel/kartu/ikon/dokumen cetak yang pemilik tegur berulang (berlaku semua proyek)
+- [Git cuma main](git-cuma-main.md) — worktree/branch agent dihapus sesudah push
+- [Caps lock dilarang](caps-lock-dilarang.md) — nol teks KAPITAL di layar & kertas (nama menu dari xlsx/PDF wajib dirapikan)
+- [Tabel kosong tetap tampil](tabel-kosong-tetap-tampil.md) — kepala kolom + baris "Belum ada …", bukan EmptyState
+- [Rahasia lewat chat](rahasia-lewat-chat.md) — sediakan perintah tempel-sendiri untuk token/kunci
+- [Hemat token](hemat-token-tanpa-turun-standar.md) — tekan ongkos tanpa turunkan kualitas
+- [Nama resep satu masakan](nama-resep-satu-masakan.md) — label/bahan tidak menempel di nama menu
+- [Commit path & berkas baru](commit-path-berkas-baru.md) — git add dulu sebelum git commit -- path, kalau tidak berkas baru tertinggal
+- [Pilihan penuh lebar](pilihan-penuh-lebar.md) — chip/pil/tab/segmen pilihan selalu grid penuh ujung ke ujung, bukan pil rata kiri

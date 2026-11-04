@@ -1,0 +1,4 @@
+- [Satu clone di Developer](satu-clone-di-developer.md) — Worth It hanya di ~/Developer/worth-it; clone Documents (iCloud) dilarang
+- [Panen: terima risiko ToS](panen-terima-risiko-tos.md) — 11 Okt: boleh panen portal ToS-melarang, tanpa akali dinding bot; target 1 jt data
+- [Anti ruang kosong](anti-ruang-kosong.md) — pemilik anti white space; panel kanan sejajar judul, tak ada kanan kosong
+- [Selera UI pemilik](selera-ui-pemilik.md) — lembar audit UI: pil navy, kepala berikon, pil lebar penuh, meta dibedakan, anti ruang kosong

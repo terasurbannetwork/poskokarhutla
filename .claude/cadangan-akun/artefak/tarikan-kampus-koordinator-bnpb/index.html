@@ -1,0 +1,589 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Tarikan Kampus Koordinator BNPB</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap">
+<style>
+/* Tata letak: dokumen kajian satu kolom, pita bab bernomor sesuai urutan analisis, tabel lebar bergulir di wadahnya sendiri */
+:root{
+  --bg:#ffffff; --surface:#f3f6fa; --line:#dfe5ee; --fg:#14202e; --muted:#5b6878;
+  --navy:#00499D; --navy-ink:#0b2a52; --oranye:#D9600B; --oranye-soft:#fdf0e6;
+  --ok:#1d7a46; --ok-soft:#e6f4ec; --warn:#9a6200; --warn-soft:#fff4dc; --abu:#6b7280; --abu-soft:#eef0f3;
+  --h1:2rem; --h2:1.45rem; --h3:1.08rem; --body:0.98rem; --small:0.84rem;
+  --font:"Roboto",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --mono:"Roboto Mono",ui-monospace,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0d1520; --surface:#152131; --line:#26364a; --fg:#e6edf5; --muted:#9aa9ba;
+  --navy:#6ea8ff; --navy-ink:#cfe1ff; --oranye:#ff9a52; --oranye-soft:#3a2614;
+  --ok:#6fd39a; --ok-soft:#14301f; --warn:#f2c060; --warn-soft:#352a10; --abu:#a3adba; --abu-soft:#1f2b3a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d1520; --surface:#152131; --line:#26364a; --fg:#e6edf5; --muted:#9aa9ba;
+  --navy:#6ea8ff; --navy-ink:#cfe1ff; --oranye:#ff9a52; --oranye-soft:#3a2614;
+  --ok:#6fd39a; --ok-soft:#14301f; --warn:#f2c060; --warn-soft:#352a10; --abu:#a3adba; --abu-soft:#1f2b3a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:var(--body);line-height:1.6;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-block:40px 80px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{text-wrap:balance;line-height:1.25;margin:0}
+h1{font-size:var(--h1);font-weight:700;color:var(--navy-ink)}
+h2{font-size:var(--h2);font-weight:700;color:var(--navy-ink)}
+h3{font-size:var(--h3);font-weight:700}
+p{margin:0;max-width:72ch}
+a{color:var(--navy)}
+.eyebrow{font-size:var(--small);letter-spacing:.08em;text-transform:uppercase;color:var(--oranye);font-weight:700}
+.lead{font-size:1.08rem;color:var(--muted);max-width:70ch}
+header.top{display:grid;gap:14px;padding-bottom:28px;border-bottom:3px solid var(--navy)}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:var(--small);color:var(--muted)}
+section{display:grid;gap:18px;padding-top:44px}
+.bab{display:flex;gap:14px;align-items:baseline}
+.bab .no{font-family:var(--mono);font-size:var(--small);color:var(--oranye);font-weight:500;min-width:2.2em}
+.kunci{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.kunci .k{background:var(--surface);border-radius:6px;padding:16px;display:grid;gap:6px;align-content:start}
+.kunci .angka{font-size:1.7rem;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;line-height:1.1}
+.kunci .k p{font-size:.92rem}
+ul.butir{margin:0;padding-left:1.15em;display:grid;gap:8px;max-width:78ch}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:.9rem;font-variant-numeric:tabular-nums}
+th,td{padding:9px 11px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{background:var(--surface);font-weight:500;color:var(--muted);font-size:.8rem;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.n{text-align:right;white-space:nowrap}
+.skor{display:inline-grid;place-items:center;width:30px;height:26px;border-radius:4px;font-weight:700;font-size:.88rem}
+.s1{background:var(--abu-soft);color:var(--abu)}
+.s2{background:color-mix(in srgb,var(--navy) 10%,var(--bg));color:var(--navy)}
+.s3{background:color-mix(in srgb,var(--navy) 22%,var(--bg));color:var(--navy-ink)}
+.s4{background:color-mix(in srgb,var(--navy) 45%,var(--bg));color:var(--navy-ink)}
+.s5{background:var(--navy);color:var(--bg)}
+.tipe{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.78rem;font-weight:500;white-space:nowrap}
+.t-nas{background:var(--navy);color:var(--bg)}
+.t-reg{background:color-mix(in srgb,var(--navy) 18%,var(--bg));color:var(--navy-ink)}
+.t-bina{background:var(--oranye-soft);color:var(--oranye)}
+.pil{display:inline-block;padding:1px 8px;border-radius:999px;font-size:.75rem;font-weight:500;white-space:nowrap;vertical-align:1px}
+.p-ok{background:var(--ok-soft);color:var(--ok)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-abu{background:var(--abu-soft);color:var(--abu)}
+.bar-row{display:grid;grid-template-columns:150px 1fr 1fr 1fr;gap:6px 16px;align-items:center;font-size:.86rem}
+.bar-row.head{color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+.bar{display:flex;align-items:center;gap:8px;min-width:0}
+.bar i{display:block;height:12px;background:var(--navy);border-radius:2px;flex:none}
+.bar.hl i{background:var(--oranye)}
+.bar span{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--muted)}
+.bars{display:grid;gap:8px;border:1px solid var(--line);border-radius:6px;padding:16px;overflow-x:auto}
+.bars .inner{display:grid;gap:9px;min-width:640px}
+.kampus{border:1px solid var(--line);border-radius:8px;display:grid;gap:0;overflow:hidden}
+.kampus .kepala{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:14px 18px;background:var(--surface);border-bottom:1px solid var(--line)}
+.kampus .kepala h3{font-size:1.12rem}
+.kampus .kepala .wil{color:var(--muted);font-size:var(--small)}
+.kampus .isi{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.kampus .kol{padding:16px 18px;display:grid;gap:10px;align-content:start;min-width:0}
+.kampus .kol + .kol{border-left:1px solid var(--line)}
+.kampus h4{margin:0;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.kampus ul{margin:0;padding-left:1.1em;display:grid;gap:6px;font-size:.92rem}
+.prog{display:grid;gap:10px}
+.prog .pg{display:grid;gap:4px;padding:10px 12px;border-radius:6px;background:var(--surface)}
+.prog .pg.fl{background:color-mix(in srgb,var(--oranye) 9%,var(--bg));border-left:3px solid var(--oranye)}
+.prog .pg b{font-size:.95rem}
+.prog .pg p{font-size:.88rem}
+.prog .mitra{font-size:.82rem;color:var(--muted)}
+.cat{font-size:var(--small);color:var(--muted)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.box{border:1px solid var(--line);border-radius:6px;padding:16px;display:grid;gap:8px;align-content:start;min-width:0}
+.box.bukti{border-left:3px solid var(--ok)}
+.box.belum{border-left:3px solid var(--warn)}
+.alur{display:grid;grid-template-columns:repeat(3,1fr) auto 1fr;gap:10px;align-items:stretch}
+.alur .a{background:var(--surface);border-radius:6px;padding:14px;display:grid;gap:4px;align-content:start}
+.alur .a b{color:var(--navy-ink)}
+.alur .op{display:grid;place-items:center;color:var(--oranye);font-weight:700;font-size:1.3rem}
+.alur .hasil{background:var(--navy);color:var(--bg);border-radius:6px;padding:14px;display:grid;gap:4px;align-content:start}
+.sumber{font-size:.8rem;color:var(--muted)}
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);font-size:.82rem;color:var(--muted);display:grid;gap:6px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.88rem}
+nav.toc a{text-decoration:none}
+nav.toc a:hover,nav.toc a:focus-visible{text-decoration:underline}
+a:focus-visible{outline:2px solid var(--oranye);outline-offset:2px}
+@media (max-width:760px){
+  .kampus .isi,.duo{grid-template-columns:1fr}
+  .kampus .kol + .kol{border-left:0;border-top:1px solid var(--line)}
+  .alur{grid-template-columns:1fr}
+  .alur .op{transform:rotate(90deg)}
+  :root{--h1:1.6rem;--h2:1.25rem}
+}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">Bahan sesi analisis, sebelum deck dibangun</div>
+  <h1>Tarikan 11 kampus koordinator dan mitra swasta untuk ajuan program kerja sama BNPB dengan perguruan tinggi</h1>
+  <p class="lead">Analisis ini menilai kekuatan tiap kampus koordinator di paparan 30 Oktober 2026 (rev4), mencocokkannya dengan beban bencana regionalnya dan mitra swasta yang rekam jejaknya terbukti, lalu menurunkan program flagship per kampus. Swasta memberi dana atau fasilitas; kampus memberi riset dan mahasiswa; BNPB dan BPBD memegang substansi dan lapangan.</p>
+  <div class="meta">
+    <span>Disusun 2 November 2026</span>
+    <span>275 temuan bersumber dari 71 lembaga</span>
+    <span>Data bencana: DIBI 2016 sampai 2025</span>
+    <span>Status: draf analisis, belum deck</span>
+  </div>
+  <nav class="toc" aria-label="Isi">
+    <a href="#ringkas">Ringkasan</a><a href="#cara">Cara menilai</a><a href="#risiko">Beban risiko</a><a href="#skor">Skor tarikan</a><a href="#pola">Pola lintas kampus</a><a href="#kampus">Profil dan program per kampus</a><a href="#swasta">Peta mitra swasta</a><a href="#nasional">Program lintas regional</a><a href="#cepat">Hasil cepat 100 hari</a><a href="#dasar">Dasar hukum dan pagar</a><a href="#celah">Celah data</a>
+  </nav>
+</header>
+
+<section id="ringkas">
+  <div class="bab"><span class="no">01</span><h2>Ringkasan</h2></div>
+  <div class="kunci">
+    <div class="k"><div class="angka">4 dari 11</div><p>kampus sudah layak menjadi jangkar nasional (UGM, ITB, UI, IPB); 4 jangkar regional siap (USK, Unand, ITS, Unhas); 3 perlu dibina kampus pasangan (Unram, ULM, Unpatti).</p></div>
+    <div class="k"><div class="angka">Beasiswa, bukan bencana</div><p>Hampir semua swasta yang dekat dengan kampus koordinator masuk lewat beasiswa atau gedung: Adaro ke ULM Rp11,26 miliar, Inpex ke Unpatti 343 penerima, Pertamina dan Paragon ke gedung riset ITB. Ajuan tercepat menambahkan komponen kebencanaan pada hubungan itu.</p></div>
+    <div class="k"><div class="angka">3 pola segitiga</div><p>Pola BNPB/BPBD, kampus, dan swasta sudah terbukti tetapi masih satu lokasi: TOA dengan FMIPA UI di satu SD Serang, Pegadaian dengan Unand di satu kota, VR ITS di satu taman edukasi. Programnya memperbesar, bukan mencari dari nol.</p></div>
+    <div class="k"><div class="angka">42,3%</div><p>korban meninggal nasional 2016 sampai 2025 jatuh di regional Sulawesi (Unhas). Regional Bali dan Nusa Tenggara (Unram) mencatat rumah rusak terbanyak: 314.938 unit. Kampus di dua regional ini paling perlu diperkuat.</p></div>
+  </div>
+  <ul class="butir">
+    <li><b>Contoh Paragon dan ITB terbukti sebagian.</b> Kedekatannya nyata (pendiri alumna Farmasi ITB dan doktor kehormatan 2019, mitra gedung riset ITB 2025 bersama Pertamina, ITB Hub 2024), dan Paragon mengirim bantuan Sumatra 2025 dengan dua pesawat kargo. Program kebencanaan bersama ITB belum ada, jadi diajukan sebagai flagship baru: air bersih dan higiene darurat.</li>
+    <li><b>Contoh VR Telkom belum ada sebagai program jadi, tetapi bahannya lengkap.</b> Telkom University punya VR gempa SIGAP dan pusat metaverse MREC, Telkom punya MetaNesia, dan ITS sudah meluncurkan TENPINA VR bersama BPBD Jawa Timur yang dipakai 1.000 siswa. Usulan: satu platform VR edukasi bencana nasional, konten dari Tel-U dan ITS, platform dan kanal sekolah dari Telkom.</li>
+    <li><b>Swasta paling aktif saat darurat, jarang sebelum bencana.</b> Di Sumatra 2025 BUMN menghimpun lebih dari Rp72 miliar dan Telkom mengerahkan lebih dari 320 teknisi. Perka BNPB 12/2014 Pasal 4 membuka peran prabencana (peringatan dini, budaya sadar bencana, latihan), jadi flagship diarahkan ke sana.</li>
+    <li><b>Mobilisasi mahasiswa sudah ribuan.</b> USK 2.124 mahasiswa KKN pascabencana (Juli 2026), UGM 7.162 mahasiswa KKN di 35 provinsi (2024), Unand 497 mahasiswa KKN kebencanaan (2025). Korps Relawan dan KKN tematik tidak mulai dari nol; yang kurang adalah asuransi, alat, dan pencatatan.</li>
+  </ul>
+</section>
+
+<section id="cara">
+  <div class="bab"><span class="no">02</span><h2>Cara menilai: flagship lahir dari titik temu tiga hal</h2></div>
+  <div class="alur">
+    <div class="a"><b>Beban risiko regional</b><span class="cat">Kejadian, korban meninggal, dan rumah rusak DIBI 2016 sampai 2025 per wilayah koordinasi</span></div>
+    <div class="a"><b>Keunggulan kampus</b><span class="cat">Lima dimensi, skor 1 sampai 5 dari bukti riset: riset dan inovasi terpakai, pendidikan kebencanaan, mobilisasi mahasiswa, jejaring pemerintah dan donor, jejaring swasta</span></div>
+    <div class="a"><b>Mitra swasta terbukti</b><span class="cat">Perusahaan yang sudah bekerja dengan kampus itu, atau sudah aktif di bencana di wilayahnya</span></div>
+    <div class="op" aria-hidden="true">=</div>
+    <div class="hasil"><b>Flagship kampus</b><span>Satu program unggulan dan dua ajuan pendukung per kampus</span></div>
+  </div>
+  <p class="cat">Skor kampus adalah penilaian penyusun dari 275 temuan bersumber (status inferensi). Status mitra: <span class="pil p-ok">Terbukti</span> sudah bekerja bersama di kebencanaan; <span class="pil p-warn">Terbukti, belum bencana</span> sudah bermitra dengan kampus di bidang lain; <span class="pil p-abu">Kandidat</span> aktif di bencana di wilayah itu, belum bermitra dengan kampus.</p>
+</section>
+
+<section id="risiko">
+  <div class="bab"><span class="no">03</span><h2>Beban bencana tiap regional berbeda jenis dan berbeda takaran</h2></div>
+  <div class="bars" role="figure" aria-label="Kejadian, korban meninggal, dan rumah rusak per regional 2016 sampai 2025">
+    <div class="inner">
+      <div class="bar-row head"><span>Regional (koordinator)</span><span>Kejadian</span><span>Meninggal</span><span>Rumah rusak</span></div>
+      <div class="bar-row"><span>Aceh, Sumut (USK)</span><div class="bar"><i style="width:calc(4050/7562*70%)"></i><span>4.050</span></div><div class="bar"><i style="width:calc(1373/4763*70%)"></i><span>1.373</span></div><div class="bar"><i style="width:calc(255175/314938*70%)"></i><span>255.175</span></div></div>
+      <div class="bar-row"><span>Sumatera lain (Unand)</span><div class="bar"><i style="width:calc(6972/7562*70%)"></i><span>6.972</span></div><div class="bar"><i style="width:calc(964/4763*70%)"></i><span>964</span></div><div class="bar"><i style="width:calc(105624/314938*70%)"></i><span>105.624</span></div></div>
+      <div class="bar-row"><span>DKI, Banten (UI)</span><div class="bar"><i style="width:calc(1229/7562*70%)"></i><span>1.229</span></div><div class="bar"><i style="width:calc(447/4763*70%)"></i><span>447</span></div><div class="bar"><i style="width:calc(19827/314938*70%)"></i><span>19.827</span></div></div>
+      <div class="bar-row"><span>Jawa Barat (ITB)</span><div class="bar"><i style="width:calc(6992/7562*70%)"></i><span>6.992</span></div><div class="bar"><i style="width:calc(1125/4763*70%)"></i><span>1.125</span></div><div class="bar"><i style="width:calc(178059/314938*70%)"></i><span>178.059</span></div></div>
+      <div class="bar-row"><span>Jateng, DIY (UGM)</span><div class="bar hl"><i style="width:calc(7562/7562*70%)"></i><span>7.562</span></div><div class="bar"><i style="width:calc(521/4763*70%)"></i><span>521</span></div><div class="bar"><i style="width:calc(61719/314938*70%)"></i><span>61.719</span></div></div>
+      <div class="bar-row"><span>Jawa Timur (ITS)</span><div class="bar"><i style="width:calc(4078/7562*70%)"></i><span>4.078</span></div><div class="bar"><i style="width:calc(376/4763*70%)"></i><span>376</span></div><div class="bar"><i style="width:calc(81159/314938*70%)"></i><span>81.159</span></div></div>
+      <div class="bar-row"><span>Bali, Nusra (Unram)</span><div class="bar"><i style="width:calc(2443/7562*70%)"></i><span>2.443</span></div><div class="bar"><i style="width:calc(1112/4763*70%)"></i><span>1.112</span></div><div class="bar hl"><i style="width:calc(314938/314938*70%)"></i><span>314.938</span></div></div>
+      <div class="bar-row"><span>Kalimantan (ULM)</span><div class="bar"><i style="width:calc(5018/7562*70%)"></i><span>5.018</span></div><div class="bar"><i style="width:calc(235/4763*70%)"></i><span>235</span></div><div class="bar"><i style="width:calc(32689/314938*70%)"></i><span>32.689</span></div></div>
+      <div class="bar-row"><span>Sulawesi (Unhas)</span><div class="bar"><i style="width:calc(3817/7562*70%)"></i><span>3.817</span></div><div class="bar hl"><i style="width:calc(4763/4763*70%)"></i><span>4.763</span></div><div class="bar"><i style="width:calc(191642/314938*70%)"></i><span>191.642</span></div></div>
+      <div class="bar-row"><span>Maluku, Papua (Unpatti)</span><div class="bar"><i style="width:calc(1127/7562*70%)"></i><span>1.127</span></div><div class="bar"><i style="width:calc(343/4763*70%)"></i><span>343</span></div><div class="bar"><i style="width:calc(36787/314938*70%)"></i><span>36.787</span></div></div>
+    </div>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>Regional</th><th>Jenis terbanyak (kejadian)</th><th>Makna untuk program</th></tr></thead>
+    <tbody>
+      <tr><td>Aceh, Sumut</td><td>Banjir 1.384; karhutla 1.117; cuaca ekstrem 1.072</td><td>Pemulihan pascabanjir 2025 dan kesiapsiagaan tsunami</td></tr>
+      <tr><td>Sumatera lain</td><td>Banjir 2.216; karhutla 2.197; cuaca ekstrem 1.736</td><td>Gambut di Riau, Jambi, Sumsel; megathrust di pesisir barat</td></tr>
+      <tr><td>DKI, Banten</td><td>Banjir 612; cuaca ekstrem 392; longsor 137</td><td>Kejadian sedikit; nilai UI ada di kebijakan, kesehatan, dan pesisir Selat Sunda</td></tr>
+      <tr><td>Jawa Barat</td><td>Cuaca ekstrem 2.592; longsor 2.406; banjir 1.391</td><td>Longsor dan gempa darat (Cianjur 2022, Sumedang 2024)</td></tr>
+      <tr><td>Jateng, DIY</td><td>Cuaca ekstrem 2.773; longsor 2.463; banjir 1.468</td><td>Longsor desa; kejadian terbanyak nasional tetapi korban rendah</td></tr>
+      <tr><td>Jawa Timur</td><td>Cuaca ekstrem 1.450; banjir 1.235; longsor 627</td><td>Gunung api (Semeru) dan edukasi sekolah padat penduduk</td></tr>
+      <tr><td>Bali, Nusra</td><td>Banjir 782; cuaca ekstrem 732; longsor 435; gempa berdampak terbesar</td><td>Rumah dan sekolah tahan gempa (Lombok 2018, Flores Agustus 2026)</td></tr>
+      <tr><td>Kalimantan</td><td>Karhutla 2.485; banjir 1.564; cuaca ekstrem 479</td><td>Lahan basah: api di musim kering, banjir di musim hujan</td></tr>
+      <tr><td>Sulawesi</td><td>Banjir 1.747; cuaca ekstrem 1.157; gempa dan likuefaksi berdampak terbesar</td><td>Layanan medis darurat dan peringatan dini gempa (Palu 2018, Sulbar 2021)</td></tr>
+      <tr><td>Maluku, Papua</td><td>Banjir 604; cuaca ekstrem 157; longsor 133; gempa 60</td><td>Pulau kecil dan akses mahal; 56 dari 63 kabupaten/kota berkelas risiko tinggi (IRBI 2025)</td></tr>
+    </tbody>
+  </table></div>
+  <p class="sumber">Sumber: DIBI BNPB, kejadian hidrometeorologi dan geologi 2016 sampai 2025 per kabupaten, diagregasi ke 10 regional (registri mesin deck, diolah 2 Nov 2026); IRBI 2025 BNPB, metode baru. Kejadian lintas kabupaten dibagi rata ke kabupaten terdampak, jadi angka bisa bernilai pecahan sebelum dibulatkan.</p>
+</section>
+
+<section id="skor">
+  <div class="bab"><span class="no">04</span><h2>Skor tarikan: UGM, ITB, dan USK paling siap; Unpatti, ULM, dan Unram perlu kampus pasangan</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Kampus</th><th>Riset dan inovasi terpakai</th><th>Pendidikan kebencanaan</th><th>Mobilisasi mahasiswa</th><th>Pemerintah dan donor</th><th>Jejaring swasta</th><th>Total</th><th>Tipe</th></tr></thead>
+    <tbody>
+      <tr><td><b>UGM</b></td><td><span class="skor s5">5</span></td><td><span class="skor s4">4</span></td><td><span class="skor s5">5</span></td><td><span class="skor s5">5</span></td><td><span class="skor s5">5</span></td><td class="n"><b>24</b></td><td><span class="tipe t-nas">Jangkar nasional</span></td></tr>
+      <tr><td><b>ITB</b></td><td><span class="skor s5">5</span></td><td><span class="skor s3">3</span></td><td><span class="skor s4">4</span></td><td><span class="skor s4">4</span></td><td><span class="skor s4">4</span></td><td class="n"><b>20</b></td><td><span class="tipe t-nas">Jangkar nasional</span></td></tr>
+      <tr><td><b>USK</b></td><td><span class="skor s4">4</span></td><td><span class="skor s5">5</span></td><td><span class="skor s5">5</span></td><td><span class="skor s4">4</span></td><td><span class="skor s1">1</span></td><td class="n"><b>19</b></td><td><span class="tipe t-reg">Jangkar regional</span></td></tr>
+      <tr><td><b>UI</b></td><td><span class="skor s3">3</span></td><td><span class="skor s4">4</span></td><td><span class="skor s4">4</span></td><td><span class="skor s4">4</span></td><td><span class="skor s3">3</span></td><td class="n"><b>18</b></td><td><span class="tipe t-nas">Jangkar nasional</span></td></tr>
+      <tr><td><b>IPB</b> (tematik)</td><td><span class="skor s5">5</span></td><td><span class="skor s3">3</span></td><td><span class="skor s3">3</span></td><td><span class="skor s4">4</span></td><td><span class="skor s2">2</span></td><td class="n"><b>17</b></td><td><span class="tipe t-nas">Jangkar nasional</span></td></tr>
+      <tr><td><b>ITS</b></td><td><span class="skor s4">4</span></td><td><span class="skor s2">2</span></td><td><span class="skor s4">4</span></td><td><span class="skor s4">4</span></td><td><span class="skor s3">3</span></td><td class="n"><b>17</b></td><td><span class="tipe t-reg">Jangkar regional</span></td></tr>
+      <tr><td><b>Unand</b></td><td><span class="skor s3">3</span></td><td><span class="skor s2">2</span></td><td><span class="skor s4">4</span></td><td><span class="skor s5">5</span></td><td><span class="skor s2">2</span></td><td class="n"><b>16</b></td><td><span class="tipe t-reg">Jangkar regional</span></td></tr>
+      <tr><td><b>Unhas</b></td><td><span class="skor s3">3</span></td><td><span class="skor s3">3</span></td><td><span class="skor s4">4</span></td><td><span class="skor s3">3</span></td><td><span class="skor s3">3</span></td><td class="n"><b>16</b></td><td><span class="tipe t-reg">Jangkar regional</span></td></tr>
+      <tr><td><b>Unram</b></td><td><span class="skor s2">2</span></td><td><span class="skor s2">2</span></td><td><span class="skor s3">3</span></td><td><span class="skor s3">3</span></td><td><span class="skor s3">3</span></td><td class="n"><b>13</b></td><td><span class="tipe t-bina">Perlu dibina</span></td></tr>
+      <tr><td><b>ULM</b></td><td><span class="skor s2">2</span></td><td><span class="skor s1">1</span></td><td><span class="skor s2">2</span></td><td><span class="skor s3">3</span></td><td><span class="skor s4">4</span></td><td class="n"><b>12</b></td><td><span class="tipe t-bina">Perlu dibina</span></td></tr>
+      <tr><td><b>Unpatti</b></td><td><span class="skor s2">2</span></td><td><span class="skor s1">1</span></td><td><span class="skor s2">2</span></td><td><span class="skor s2">2</span></td><td><span class="skor s3">3</span></td><td class="n"><b>10</b></td><td><span class="tipe t-bina">Perlu dibina</span></td></tr>
+    </tbody>
+  </table></div>
+  <div class="duo">
+    <div class="box"><h3>Pasangan pembina yang sudah punya preseden</h3>
+      <ul class="butir">
+        <li>UGM membina Unram: perjanjian tiga pihak UGM, Unram, dan Pemprov NTB (Agustus 2015, program StIRRRD) dan pelatihan 150 fasilitator RISHA (2018).</li>
+        <li>UGM dan ITS membina Unpatti: MoU UGM dan Unpatti sejak 2014, diperbarui Juli 2024; ITS menyalurkan bantuan gempa Ambon 2019 lewat Fakultas Teknik Unpatti.</li>
+        <li>Unhas membina ULM: ULM meminta pendampingan riset internasional dan akreditasi kepada Unhas (Januari 2025).</li>
+        <li>IPB dan Unri untuk gambut lintas regional: sudah melepas 62 mahasiswa bersama dalam program gambut BRGM (2022).</li>
+      </ul></div>
+    <div class="box"><h3>Yang dibaca dari skor</h3>
+      <ul class="butir">
+        <li>Jejaring swasta adalah dimensi terlemah di hampir semua kampus; hanya UGM yang punya mitra swasta khusus kebencanaan lebih dari satu.</li>
+        <li>USK kuat di semua dimensi kecuali swasta (skor 1): flagship USK perlu merintis mitra baru, kandidatnya BUMN yang sudah turun di Aceh 2025.</li>
+        <li>ULM terbalik: swastanya kuat (Adaro, Bank Kalsel, PLN) tetapi kapasitas kebencanaannya tipis. Uang tersedia, keahlian dipinjam dari Unhas, IPB, dan UPR.</li>
+      </ul></div>
+  </div>
+</section>
+
+<section id="pola">
+  <div class="bab"><span class="no">05</span><h2>Enam pola lintas kampus yang menentukan bentuk ajuan</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Pola</th><th>Bukti</th><th>Akibatnya untuk ajuan</th></tr></thead>
+    <tbody>
+      <tr><td><b>Swasta dekat kampus lewat beasiswa dan gedung</b></td><td>Adaro ke ULM Rp11,26 miliar (2024); Inpex ke Unpatti 343 penerima sejak 2014; Vale dan Huayou laboratorium bersama dengan Unhas (2025); Amman dan Sumbawa Timur Mining dengan Unram; Pertamina dan Paragon gedung riset ITB (2025)</td><td>Ajuan pertama ke tiap perusahaan: tambahkan komponen kebencanaan pada hubungan yang ada, bukan kerja sama baru</td></tr>
+      <tr><td><b>Swasta paling aktif saat darurat</b></td><td>Sumatra 2025: BUMN lebih dari Rp72 miliar, Pertamina lebih dari 84 ribu jiwa, Telkom lebih dari 320 teknisi; gempa NTT 2026: Freeport Rp2,5 miliar dan 4 sekolah darurat</td><td>Arahkan ke prabencana sesuai Perka BNPB 12/2014 Pasal 4: peringatan dini, edukasi, latihan</td></tr>
+      <tr><td><b>Pola segitiga terbukti tetapi kecil</b></td><td>TOA, FMIPA UI, BPBD Serang di satu SD (Juli 2026); Pegadaian dan Unand di Kota Padang (Juni 2026); TENPINA VR ITS dan BPBD Jatim di satu taman edukasi (Desember 2024)</td><td>Flagship memperbesar pola yang sudah jalan; angka target jelas karena unit dasarnya sudah ada</td></tr>
+      <tr><td><b>Kampus timur ikut jadi korban</b></td><td>Gedung Unram rusak 2018; Unpatti terdampak gempa Ambon 2019; gedung Untad hasil rekonstruksi rusak lagi Juni 2026; gerbang kampus ULM tergenang 2021</td><td>Kampus Aman Bencana diprioritaskan di timur, dan tiap kampus timur punya kampus pasangan yang bisa mengambil alih saat lumpuh</td></tr>
+      <tr><td><b>Mahasiswa sudah turun ribuan</b></td><td>USK 2.124 KKN pascabencana; UGM 7.162 KKN di 35 provinsi; Unand 497 KKN kebencanaan; ITS Satgas Kemanusiaan ber-SK Rektor (2022)</td><td>Korps Relawan memakai arus KKN yang ada; swasta menanggung asuransi dan alat (contoh Zurich Syariah untuk 8.000 mahasiswa KKN UGM)</td></tr>
+      <tr><td><b>Konflik kepentingan di gambut</b></td><td>Ahli IPB menjadi saksi ahli dalam 24 perkara karhutla dan digugat perusahaan (2018, 2024); APP dan APRIL menjalankan program desa api tetapi tanpa keterlibatan IPB yang terbukti</td><td>Dana korporasi kehutanan masuk lewat skema terbuka yang dikelola BNPB atau dana lingkungan, bukan kontrak langsung dengan ahli</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="kampus">
+  <div class="bab"><span class="no">06</span><h2>Profil dan ajuan program per kampus koordinator</h2></div>
+  <p class="cat">Kotak oranye adalah flagship. Mitra swasta diberi status bukti. Target angka adalah usulan untuk dibahas, bukan komitmen mitra.</p>
+
+  <!-- USK -->
+  <article class="kampus">
+    <div class="kepala"><h3>Universitas Syiah Kuala (USK)</h3><span class="wil">Aceh, Sumatera Utara</span><span class="tipe t-reg">Jangkar regional</span></div>
+    <div class="isi">
+      <div class="kol">
+        <h4>Kekuatan yang terbukti</h4>
+        <ul>
+          <li>TDMRC lahir dari tsunami 2004; disebut Dirjen Dikti sebagai praktik baik kampus berdampak (Februari 2025); bermitra dengan BMKG dan IRIDeS Tohoku lewat proyek IDRIP.</li>
+          <li>Jenjang pendidikan paling lengkap: Magister Ilmu Kebencanaan sejak 2011, Doktor dalam pengembangan, BPBA berminat mengirim pegawai.</li>
+          <li>Pelatihan geohazard internasional LMI-SIR: 223 peserta dari 9 negara (Oktober 2026).</li>
+          <li>Banjir Aceh 2025: 719 mahasiswa KKN tematik dan 1.050 Mahasiswa Berdampak, lalu 2.124 mahasiswa KKN pascabencana (Juli 2026).</li>
+          <li>TDMRC menyusun KRB Kota Lhokseumawe 2026 sampai 2030.</li>
+        </ul>
+        <h4>Celah</h4>
+        <ul><li>Tidak ada mitra swasta kebencanaan yang terbukti; Bank Aceh, BSI, Medco, dan Pertamina belum tercatat bermitra dengan USK.</li></ul>
+      </div>
+      <div class="kol prog">
+        <div class="pg fl"><b>Akademi Tsunami dan Pemulihan Aceh</b><p>Pelatihan LMI-SIR dijadikan pelatihan tahunan BPBD se-Indonesia, digabung jalur Magister dan Doktor bagi pegawai BPBD.</p><span class="mitra">Kampus: TDMRC USK, IRIDeS Tohoku. Pemerintah: BMKG, BPBA, LPDP. Swasta: Pertamina <span class="pil p-abu">Kandidat</span> (memulihkan 12 sumur di Aceh, 2025)</span></div>
+        <div class="pg"><b>KKN Pemulihan Pascabencana Aceh dan Sumut</b><p>Arus 2.000-an mahasiswa KKN per angkatan diarahkan ke pemulihan sekolah dan air bersih.</p><span class="mitra">Swasta: BRI Peduli <span class="pil p-abu">Kandidat</span> (memulihkan SD di Aceh Tamiang, 2026); Bakti BCA <span class="pil p-abu">Kandidat</span> (sumur bor dan MCK di Aceh Tamiang, 2025)</span></div>
+        <div class="pg"><b>Pendampingan KRB kabupaten Aceh dan Sumut</b><p>Model KRB Lhokseumawe diperluas ke kabupaten lain, bersama naskah akademik pendidikan kebencanaan Banda Aceh.</p><span class="mitra">Pemerintah: BPBD kabupaten dan kota, Pemkot Banda Aceh</span></div>
+      </div>
+    </div>
+  </article>
+
+  <!-- Unand -->
+  <article class="kampus">
+    <div class="kepala"><h3>Universitas Andalas (Unand)</h3><span class="wil">Sumbar, Riau, Kepri, Jambi, Sumsel, Babel, Bengkulu, Lampung</span><span class="tipe t-reg">Jangkar regional</span></div>
+    <div class="isi">
+      <div class="kol">
+        <h4>Kekuatan yang terbukti</h4>
+        <ul>
+          <li>Ditetapkan BNPB sebagai Center of Excellence penanggulangan bencana (Februari 2025).</li>
+          <li>Hibah BNPB lewat SIAP SIAGA DFAT untuk riset megathrust Sumatera, dengan buku dan konferensi internasional; diperluas 2026 sampai 2027.</li>
+          <li>PKS dengan Bappenas (Januari 2026) untuk Satu Data kebencanaan dan Rencana Induk RR.</li>
+          <li>Galodo Sumbar 2025: posko koordinasi kampus, 497 mahasiswa KKN kebencanaan, tim medis spesialis.</li>
+          <li>Riset Pegadaian Peduli: cetak biru lima instrumen (masjid sebagai shelter, peringatan dini buatan lokal, evakuasi komunitas, SOP, simulasi), diserahkan ke Wali Kota Padang 29 Juni 2026.</li>
+        </ul>
+        <h4>Celah</h4>
+        <ul><li>Wilayahnya didominasi karhutla gambut, tetapi keunggulan Unand ada di gempa dan megathrust; simpul gambut terkuat di regional ini Universitas Riau (PUI-GK, Center of Excellence 2024).</li></ul>
+      </div>
+      <div class="kol prog">
+        <div class="pg fl"><b>Masjid Siaga Megathrust</b><p>Cetak biru Pegadaian dan Unand diperluas dari Padang ke kota pesisir barat Sumatera: Bengkulu, Mentawai, pesisir Lampung.</p><span class="mitra">Swasta: Pegadaian <span class="pil p-ok">Terbukti</span>. Donor: SIAP SIAGA DFAT. Pemerintah: BPBD dan Pemkot pesisir</span></div>
+        <div class="pg"><b>Satu Data dan Rencana Induk RR Sumbar</b><p>PKS Bappenas dijadikan model data pascabencana untuk regional, dengan BPBD sebagai pemakai.</p><span class="mitra">Pemerintah: Bappenas, BPBD Sumbar; BUMN dan TNI AU untuk survei geospasial (disebut di PKS)</span></div>
+        <div class="pg"><b>Simpul gambut Riau bersama Unri</b><p>Unri memimpin pilar gambut regional, dirangkai dengan IPB sebagai koordinator tematik.</p><span class="mitra">Kampus: Unri PUI-GK, IPB. Swasta: APRIL FFVP <span class="pil p-abu">Kandidat</span> (angka perusahaan, perlu verifikasi)</span></div>
+      </div>
+    </div>
+  </article>
+
+  <!-- UI -->
+  <article class="kampus">
+    <div class="kepala"><h3>Universitas Indonesia (UI)</h3><span class="wil">DKI Jakarta, Banten</span><span class="tipe t-nas">Jangkar nasional</span></div>
+    <div class="isi">
+      <div class="kol">
+        <h4>Kekuatan yang terbukti</h4>
+        <ul>
+          <li>Kesehatan dan psikososial darurat: tim ILUNI, FKUI, dan RSCM 30 orang di Cianjur 2022; Fakultas Psikologi melatih 62 relawan PFA untuk Sumatra 2025; FKG UI memulihkan RSUD Aceh Tamiang.</li>
+          <li>Magister Manajemen Bencana SIL UI sejak 2021/2022; DRRC UI (SK Rektor 2020).</li>
+          <li>COVENT-20: 300 unit lewat BNPB ke lebih dari 180 rumah sakit; Adaro mendanai 100 unit senilai Rp2,5 miliar (2020).</li>
+          <li>Pendampingan BNPB untuk regulasi dana bersama (pooling fund) penanggulangan bencana (Agustus 2023).</li>
+          <li>FMIPA UI bersama TOA dan BPBD Serang memasang peringatan dini gempa di SDN Pasauran 1 (Juli 2026).</li>
+        </ul>
+        <h4>Celah</h4>
+        <ul><li>Kemitraan kebencanaan UI dengan BNI, Mandiri, Astra, dan Unilever tidak ditemukan; regional DKI dan Banten mencatat kejadian paling sedikit kedua.</li></ul>
+      </div>
+      <div class="kol prog">
+        <div class="pg fl"><b>Sekolah Siaga Tsunami Selat Sunda</b><p>Pola TOA, FMIPA UI, BPBD Serang, dan BNPB diperluas dari satu SD ke sekolah pesisir Banten yang terdampak tsunami Selat Sunda 2018.</p><span class="mitra">Swasta: TOA Indonesia <span class="pil p-ok">Terbukti</span>. Pemerintah: BPBD Banten, Serang, Pandeglang</span></div>
+        <div class="pg"><b>Tim Medis dan Psikososial Darurat Kampus</b><p>Modul PFA Fakultas Psikologi UI menjadi kurikulum nasional Korps Relawan; FKUI dan RSCM menjadi rujukan tim medis kampus.</p><span class="mitra">Swasta: Adaro <span class="pil p-warn">Terbukti, belum bencana alam</span> (COVENT-20 lewat UI)</span></div>
+        <div class="pg"><b>Pembiayaan risiko bencana</b><p>Lanjutan pendampingan pooling fund dan beasiswa Magister Manajemen Bencana bagi pegawai BNPB dan BPBD.</p><span class="mitra">Pemerintah: BNPB, Kemenkeu, LPDP</span></div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ITB -->
+  <article class="kampus">
+    <div class="kepala"><h3>Institut Teknologi Bandung (ITB)</h3><span class="wil">Jawa Barat; satelit Telkom University, Unpad, UPI</span><span class="tipe t-nas">Jangkar nasional</span></div>
+    <div class="isi">
+      <div class="kol">
+        <h4>Kekuatan yang terbukti</h4>
+        <ul>
+          <li>Membran ultrafiltrasi (MUF) untuk air darurat: 47 unit ke Sumatra 2025, perangkat air di 35 dari 50 lokasi rencana, sistem 7.000 liter per jam di Aceh Tamiang.</li>
+          <li>Seismograf respons cepat: 13 unit di Lombok 2018, 6 di Cianjur 2022, 22 di Sumedang 2024.</li>
+          <li>Penggerak konsorsium: lokakarya pemulihan Sumatra diikuti 14 universitas (Januari 2026).</li>
+          <li>Jejaring kemanusiaan berlapis: IA-ITB, YPM Salman, Rumah Amal Salman, KMPA, LAPI ITB.</li>
+          <li>Mitra swasta: Pertamina (gedung riset TJSL 2025; pusat riset Rp5 miliar 2014), Paragon (mitra gedung yang sama, ITB Hub 2024), Daewoong (lembaga riset farmasi 2024).</li>
+        </ul>
+        <h4>Celah</h4>
+        <ul><li>MoU ITB dan BNPB tidak ditemukan. Beasiswa Perintis 2021 (Paragon dan Salman) sempat dikritik soal syarat agama; program BNPB harus terbuka bagi semua.</li></ul>
+      </div>
+      <div class="kol prog">
+        <div class="pg fl"><b>Air Bersih dan Higiene Darurat</b><p>Unit MUF ITB disiagakan di gudang regional BNPB; Paragon menyumbang paket higiene dan riset higiene darurat bersama Farmasi ITB; Pertamina menanggung unit lewat TJSL.</p><span class="mitra">Swasta: Paragon <span class="pil p-warn">Terbukti, belum bencana bersama ITB</span>; Pertamina <span class="pil p-warn">Terbukti, belum bencana bersama ITB</span>. Pemerintah: BNPB Deputi Logistik dan Peralatan</span></div>
+        <div class="pg"><b>Jaringan Seismograf Respons Cepat</b><p>Satu kit seismograf siaga per regional, dipasang dalam 48 jam setelah gempa merusak, data dikirim ke BMKG.</p><span class="mitra">Kampus: PUI Kegempaan ITB. Swasta: Telkomsel <span class="pil p-abu">Kandidat</span> (konektivitas)</span></div>
+        <div class="pg"><b>Platform VR Edukasi Bencana (Telkom University)</b><p>Contoh pemilik: VR gempa SIGAP Tel-U sebagai konten, MetaNesia Telkom sebagai platform, TJSL pendidikan TelkomGroup sebagai kanal ke sekolah Jawa Barat.</p><span class="mitra">Swasta: Telkom dan Telkomsel <span class="pil p-warn">Terbukti, belum bencana</span> (kerja sama Tel-U 2019; TJSL guru pascagempa NTT 2026)</span></div>
+      </div>
+    </div>
+  </article>
+
+  <!-- UGM -->
+  <article class="kampus">
+    <div class="kepala"><h3>Universitas Gadjah Mada (UGM)</h3><span class="wil">Jawa Tengah, DI Yogyakarta</span><span class="tipe t-nas">Jangkar nasional</span></div>
+    <div class="isi">
+      <div class="kol">
+        <h4>Kekuatan yang terbukti</h4>
+        <ul>
+          <li>GAMA-EWS longsor menjadi ISO 22327 (Maret 2018); dikembangkan bersama BNPB sejak 2007, diuji di lebih dari 150 lokasi, terpasang di 30 provinsi.</li>
+          <li>KKN-PPM 7.162 mahasiswa di 261 unit di 35 provinsi (2024, rekor MURI).</li>
+          <li>MoU dengan BNPB sejak 2011; PSBA menyusun RPB kabupaten dan memelopori SPAB di DIY; program StIRRRD bersama Selandia Baru sejak 2011.</li>
+          <li>Swasta khusus kebencanaan: Zurich Syariah mengasuransikan lebih dari 8.000 mahasiswa KKN dan memberi 500 jaket pelampung (2026); Telkom memakai kabel laut untuk deteksi gempa bersama UGM (2025); Pertamina Geothermal memakai EWS UGM (2013).</li>
+        </ul>
+        <h4>Celah</h4>
+        <ul><li>Perawatan alat EWS setelah dipasang tidak terdokumentasi; angka 32 provinsi hanya ada di laman tanpa tanggal.</li></ul>
+      </div>
+      <div class="kol prog">
+        <div class="pg fl"><b>KKN Desa Siaga Longsor</b><p>Tiap unit KKN-PPM di desa rawan longsor memasang, melatih, dan merawat GAMA-EWS, sehingga celah perawatan alat tertutup oleh arus mahasiswa tiap periode.</p><span class="mitra">Swasta: Zurich Syariah <span class="pil p-ok">Terbukti</span> (asuransi KKN); Pertamina Geothermal <span class="pil p-ok">Terbukti</span> (pemakai EWS). Pemerintah: BNPB Direktorat Kesiapsiagaan, BPBD</span></div>
+        <div class="pg"><b>Deteksi gempa kabel laut</b><p>Riset Telkom dan UGM memakai kabel optik bawah laut sebagai sensor gempa diperluas dengan BMKG dan BNPB untuk selatan Jawa dan Nusa Tenggara.</p><span class="mitra">Swasta: Telkom <span class="pil p-ok">Terbukti</span>. Pemerintah: BMKG</span></div>
+        <div class="pg"><b>Pendampingan RPB dan pembinaan kampus timur</b><p>PSBA mendampingi BPBD Jateng dan DIY menyusun RPB; UGM menjadi kampus pembina Unram dan Unpatti.</p><span class="mitra">Pemerintah: BPBD Jateng dan DIY. Kampus: Unram, Unpatti, UPN Veteran Yogyakarta</span></div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ITS -->
+  <article class="kampus">
+    <div class="kepala"><h3>Institut Teknologi Sepuluh Nopember (ITS)</h3><span class="wil">Jawa Timur</span><span class="tipe t-reg">Jangkar regional</span></div>
+    <div class="isi">
+      <div class="kol">
+        <h4>Kekuatan yang terbukti</h4>
+        <ul>
+          <li>TENPINA VR bersama BPBD Jatim (Desember 2024): simulasi banjir, kebakaran, dan gempa; Gerakan Seribu Siswa Sahabat Tangguh Bencana untuk 1.000 siswa dari 6 kabupaten dan kota (Oktober 2026).</li>
+          <li>Puslit MKPI sejak 2004, peringkat 1 SPMI 2024, mitra 13 instansi termasuk BNPB dan BMKG.</li>
+          <li>Satgas Kemanusiaan ber-SK Rektor (2022); 239 hunian sementara di Lombok 2018; Semeru 2021 (35 relawan) dan 2025 (posko 373 pengungsi).</li>
+          <li>Proyek sensor cerdas bersama METI dan AOTS Jepang (2025); prototipe rumah berisolator dasar bersama Rabasa Beton.</li>
+        </ul>
+        <h4>Celah</h4>
+        <ul><li>Sebagian besar inovasi masih prototipe atau taman edukasi; TENPINA tanpa sponsor swasta; MoU ITS dengan BNPB pusat tidak ditemukan.</li></ul>
+      </div>
+      <div class="kol prog">
+        <div class="pg fl"><b>VR Tangguh Bencana untuk Sekolah</b><p>TENPINA VR dan Gerakan Seribu Siswa diperbesar ke sekolah Jawa Timur, lalu kontennya masuk platform VR nasional bersama Telkom.</p><span class="mitra">Swasta: Petrokimia Gresik <span class="pil p-warn">Terbukti, belum bencana</span> (mitra MKPI, MoU 2021); Telkom <span class="pil p-abu">Kandidat</span>. Pemerintah: BPBD Jatim, Dinas Pendidikan</span></div>
+        <div class="pg"><b>Rumah tahan gempa berisolator dasar</b><p>Prototipe Ponorogo diuji di NTT bersama Unram dan Undana.</p><span class="mitra">Swasta: Rabasa Beton <span class="pil p-ok">Terbukti</span> (mitra prototipe)</span></div>
+        <div class="pg"><b>Satgas Kemanusiaan ITS sebagai model Satgas kampus</b><p>SK, struktur, dan dapur umum Satgas ITS dijadikan templat Satgas Bencana Mahasiswa, Alumni, dan Perguruan Tinggi.</p><span class="mitra">Alumni: IKA ITS (ikut mendanai respons Semeru 2021)</span></div>
+      </div>
+    </div>
+  </article>
+
+  <!-- Unram -->
+  <article class="kampus">
+    <div class="kepala"><h3>Universitas Mataram (Unram)</h3><span class="wil">Bali, NTB, NTT</span><span class="tipe t-bina">Perlu dibina</span></div>
+    <div class="isi">
+      <div class="kol">
+        <h4>Kekuatan yang terbukti</h4>
+        <ul>
+          <li>Koordinator kampus saat gempa Lombok 2018: ITS dan UGM menetapkan Unram memimpin identifikasi kerusakan; posko bersama ITB di Lombok Utara.</li>
+          <li>150 mahasiswa teknik Unram dan UGM dilatih menjadi fasilitator RISHA (2018).</li>
+          <li>Perjanjian pengurangan risiko bencana dengan UGM dan Pemprov NTB (2015); KKN mitigasi bersama BPBD Lombok Utara dan Lombok Tengah.</li>
+          <li>Swasta: Amman Mineral (MoU perikanan dan riset tambang 2024; penanganan merkuri bersama Nexus3 2019), Sumbawa Timur Mining (MoU 2023, lebih dari 40 beasiswa).</li>
+        </ul>
+        <h4>Celah</h4>
+        <ul><li>Pusat studi kebencanaan aktif dan MoU dengan BNPB tidak ditemukan; gedung kampus ikut rusak 2018. Regionalnya mencatat rumah rusak terbanyak nasional dan 21 dari 41 kabupaten/kota berkelas risiko tinggi (IRBI 2025).</li></ul>
+      </div>
+      <div class="kol prog">
+        <div class="pg fl"><b>Rumah dan Sekolah Tahan Gempa Nusa Tenggara</b><p>Pusat pelatihan tukang dan fasilitator rumah tahan gempa di Unram, dibina UGM dan ITS, menjawab gempa Flores Agustus 2026.</p><span class="mitra">Swasta: Amman Mineral dan Sumbawa Timur Mining <span class="pil p-warn">Terbukti, belum bencana</span>; Freeport <span class="pil p-abu">Kandidat</span> (4 sekolah darurat dan 5 hunian sementara di NTT, 2026)</span></div>
+        <div class="pg"><b>Kampus Aman Bencana Unram</b><p>Audit struktur gedung, rencana kontinjensi, dan simulasi evakuasi kampus sebagai percontohan kampus timur.</p><span class="mitra">Kampus: Teknik Sipil Unram dibina ITB</span></div>
+        <div class="pg"><b>KKN mitigasi gempa dan kekeringan</b><p>KKN kecil bersama BPBD Lombok Utara dan Lombok Tengah dijadikan KKN tematik regional, termasuk Undana di NTT dan Unud di Bali.</p><span class="mitra">Pemerintah: BPBD NTB dan NTT</span></div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ULM -->
+  <article class="kampus">
+    <div class="kepala"><h3>Universitas Lambung Mangkurat (ULM)</h3><span class="wil">Lima provinsi Kalimantan</span><span class="tipe t-bina">Perlu dibina</span></div>
+    <div class="isi">
+      <div class="kol">
+        <h4>Kekuatan yang terbukti</h4>
+        <ul>
+          <li>Lahan basah: MoU dengan KLH/BPLH (Februari 2025); pendampingan Desa Mandiri Peduli Gambut di 7 desa di 3 kabupaten (2023); pusat riset mangrove di Kotabaru.</li>
+          <li>Peringkat 1 Sinta se-Kalimantan (974.031 poin).</li>
+          <li>Swasta terkuat di antara kampus timur: Adaro beasiswa Rp11,26 miliar untuk 100 mahasiswa (2024) dan kendaraan lapangan mangrove; Bank Kalsel (2024); PLN UIP3B Kalimantan (2025).</li>
+          <li>Satelit UPR: pusat drone termal pemantau karhutla gambut CIMTROP (2021).</li>
+        </ul>
+        <h4>Celah</h4>
+        <ul><li>Pusat studi kebencanaan dan posko banjir Kalsel 2021 tidak ditemukan; akreditasi institusi sedang diupayakan kembali Unggul.</li></ul>
+      </div>
+      <div class="kol prog">
+        <div class="pg fl"><b>Lahan Basah Tangguh Api dan Banjir</b><p>Desa gambut dampingan ULM menjadi desa siaga api di musim kering dan siaga banjir di musim hujan; sebagian beasiswa Adaro diarahkan ke riset dan relawan lahan basah.</p><span class="mitra">Swasta: Adaro <span class="pil p-warn">Terbukti, belum bencana</span>; Bank Kalsel dan PLN <span class="pil p-warn">Terbukti, belum bencana</span>. Kampus: UPR, IPB</span></div>
+        <div class="pg"><b>Peringatan dini banjir DAS Barito</b><p>Kajian curah hujan banjir Januari 2021 (633.723 jiwa terdampak, kerugian Rp1,127 triliun) dijadikan dasar peringatan dini bersama BMKG dan BPBD Kalsel.</p><span class="mitra">Pemerintah: BMKG, BPBD Kalsel, BWS</span></div>
+        <div class="pg"><b>Pembinaan oleh Unhas dan IPB</b><p>Unhas mendampingi riset dan akreditasi; IPB dan UPR mendampingi karhutla.</p><span class="mitra">Kampus: Unhas, IPB, UPR</span></div>
+      </div>
+    </div>
+  </article>
+
+  <!-- Unhas -->
+  <article class="kampus">
+    <div class="kepala"><h3>Universitas Hasanuddin (Unhas)</h3><span class="wil">Enam provinsi Sulawesi, bersama Untad</span><span class="tipe t-reg">Jangkar regional</span></div>
+    <div class="isi">
+      <div class="kol">
+        <h4>Kekuatan yang terbukti</h4>
+        <ul>
+          <li>Tim Bantuan Medis FK Unhas turun 3 gelombang pascagempa Sulbar 2021 dan melayani sekitar 1.217 pasien; Semen Indonesia ikut membantu penanganan medis bersama Unhas.</li>
+          <li>Pusat Studi Kebencanaan LPPM berkontrak dengan BPBD Mamuju Tengah (Januari 2025): peringatan dini, pelatihan, riset.</li>
+          <li>Fakultas Teknik bekerja sama dengan BBMKG Wilayah IV, termasuk stasiun MKG di kampus (2023).</li>
+          <li>Pascagempa Palu 2018 menampung 1.680 mahasiswa Untad; divisi Manajemen Bencana menghasilkan 18 tesis pada 2025.</li>
+          <li>Swasta: Vale dan Huayou (MoU tiga pihak, laboratorium bersama, 2025).</li>
+        </ul>
+        <h4>Celah</h4>
+        <ul><li>MoU dengan BNPB dan BRIN tidak ditemukan. Gedung Untad hasil rekonstruksi rusak lagi oleh gempa M6,7 Juni 2026.</li></ul>
+      </div>
+      <div class="kol prog">
+        <div class="pg fl"><b>Tim Medis Darurat Kampus Sulawesi</b><p>TBM FK Unhas dibakukan menjadi tim medis kampus siap kirim untuk enam provinsi, berlatih bersama dinas kesehatan dan BPBD.</p><span class="mitra">Swasta: Semen Indonesia <span class="pil p-ok">Terbukti</span> (medis gempa Sulbar 2021); Vale <span class="pil p-warn">Terbukti, belum bencana</span></span></div>
+        <div class="pg"><b>Peringatan dini gempa dan likuefaksi Sulawesi</b><p>Stasiun MKG kampus, detektor likuefaksi Untad (akurasi uji laboratorium 80 persen), dan kontrak BPBD Mamuju Tengah dirangkai menjadi satu jaringan.</p><span class="mitra">Pemerintah: BBMKG Wilayah IV, BPBD Sulteng dan Sulbar. Swasta: Vale dan Huayou <span class="pil p-abu">Kandidat</span> (laboratorium bersama)</span></div>
+        <div class="pg"><b>Kampus Aman Bencana Untad</b><p>Audit mutu gedung pascarekonstruksi Untad, pelajaran untuk rekonstruksi fasilitas pendidikan di daerah lain.</p><span class="mitra">Kampus: Untad, ITB. Pemerintah: Kementerian PU</span></div>
+      </div>
+    </div>
+  </article>
+
+  <!-- Unpatti -->
+  <article class="kampus">
+    <div class="kepala"><h3>Universitas Pattimura (Unpatti)</h3><span class="wil">Maluku, Maluku Utara, enam provinsi Papua</span><span class="tipe t-bina">Perlu dibina</span></div>
+    <div class="isi">
+      <div class="kol">
+        <h4>Kekuatan yang terbukti</h4>
+        <ul>
+          <li>Kajian gempa dan tsunami pulau kecil: enam celah kesiapsiagaan penyintas gempa Ambon 2019 (IJDRR 2024); peta kerawanan tsunami Teluk Elpaputih, kelas tinggi sekitar 3.429 ha (2026).</li>
+          <li>Gagasan Archipelagic Centre of Excellence (2025).</li>
+          <li>Swasta paling mapan: Inpex beasiswa untuk 343 mahasiswa sejak 2014 dan tim kajian Blok Masela dari 9 fakultas (Februari 2025); Pertamina Sobat Bumi (2024).</li>
+          <li>Satelit Unkhair: Pusat Studi Bencana bermitra dengan UGM dan BPBD Ternate sejak 2015.</li>
+        </ul>
+        <h4>Celah</h4>
+        <ul><li>Pusat studi kebencanaan, MoU dengan BNPB, BPBD, atau BMKG tidak ditemukan; kampus ikut terdampak gempa 2019; masih PTN-BLU; 56 dari 63 kabupaten/kota regional ini berkelas risiko tinggi (IRBI 2025).</li></ul>
+      </div>
+      <div class="kol prog">
+        <div class="pg fl"><b>Ketangguhan Pulau Kecil Maluku</b><p>Tim kajian Masela ditambah modul kajian risiko bencana; peta tsunami dan enam celah kesiapsiagaan menjadi dasar desa pesisir siaga di koridor Masela.</p><span class="mitra">Swasta: Inpex <span class="pil p-warn">Terbukti, belum bencana</span>. Kampus pembina: UGM, ITS. Pemerintah: BPBD Maluku</span></div>
+        <div class="pg"><b>Simpul Papua lewat Uncen</b><p>Uncen menjadi simpul Papua di bawah koordinasi Unpatti.</p><span class="mitra">Swasta: Freeport <span class="pil p-warn">Terbukti, belum bencana bersama kampus</span> (Gedung Pusat Sains Uncen 2025; respons banjir Sentani 2019)</span></div>
+        <div class="pg"><b>Pendirian Pusat Studi Kebencanaan Unpatti</b><p>Didampingi UGM (MoU 2024) dan ITS; Unkhair memimpin topik gunung api Maluku Utara.</p><span class="mitra">Kampus: UGM, ITS, Unkhair</span></div>
+      </div>
+    </div>
+  </article>
+
+  <!-- IPB -->
+  <article class="kampus">
+    <div class="kepala"><h3>IPB University</h3><span class="wil">Koordinator tematik karhutla dan gambut, lintas regional</span><span class="tipe t-nas">Jangkar nasional</span></div>
+    <div class="isi">
+      <div class="kol">
+        <h4>Kekuatan yang terbukti</h4>
+        <ul>
+          <li>RFMRC-SEA (2017, bersama GFMC); jaringan kebakaran vegetasi Asia Tenggara dikoordinasikan dari IPB sejak 2011.</li>
+          <li>Forensik kebakaran terpakai di pengadilan: saksi ahli 24 perkara; kerugian lingkungan Rp366 miliar dalam satu perkara di Aceh dikuatkan sampai kasasi.</li>
+          <li>Pelatihan pemadaman gambut di lapangan Ketapang bersama Manggala Agni: 19 peserta dari 4 negara (Mei 2025), dijadwalkan tiap tahun selama 4 tahun.</li>
+          <li>Platform KMSTROPER bersama BRG; program gambut bersama Unri (62 mahasiswa, 2022).</li>
+        </ul>
+        <h4>Celah</h4>
+        <ul><li>Laboratorium kebakaran pernah digugat soal akreditasi; BRGM bubar akhir 2024; keterlibatan IPB di DMPA (APP) dan FFVP (APRIL) tidak terbukti.</li></ul>
+      </div>
+      <div class="kol prog">
+        <div class="pg fl"><b>Akademi Pemadaman dan Forensik Kebakaran Gambut</b><p>Pelatihan Ketapang menjadi akademi tahunan bagi Manggala Agni, BPBD, dan regu desa; laboratorium forensik diakreditasi agar kesaksian ahli kuat di pengadilan.</p><span class="mitra">Kampus: Unri PUI-GK, UPR. Pemerintah: Kemenhut, Manggala Agni. Swasta: dana lewat skema terbuka <span class="pil p-abu">Kandidat</span> (APP menyiapkan US$30 juta per tahun untuk restorasi, Oktober 2025)</span></div>
+        <div class="pg"><b>Evaluasi independen desa bebas api</b><p>IPB dan Unri mengukur hasil DMPA (312 desa) dan FFVP (42 desa) dengan data hotspot sistem kita, sehingga klaim perusahaan menjadi angka terverifikasi.</p><span class="mitra">Swasta: APP, APRIL sebagai pihak yang dievaluasi, bukan pemberi dana evaluasi</span></div>
+        <div class="pg"><b>Evaluasi operasi modifikasi cuaca</b><p>Menilai efektivitas pembasahan gambut sebelum puncak kemarau bersama BNPB dan BMKG.</p><span class="mitra">Pemerintah: BNPB, BMKG</span></div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section id="swasta">
+  <div class="bab"><span class="no">07</span><h2>Peta mitra swasta: siapa yang terbukti dan cocok dengan kampus mana</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Perusahaan</th><th>Rekam jejak bencana atau kemanusiaan</th><th>Hubungan kampus terbukti</th><th>Bisa menyumbang</th><th>Pasangan usulan</th></tr></thead>
+    <tbody>
+      <tr><td><b>Pertamina dan Pertamina Foundation</b></td><td>Sumatra 2025: lebih dari 84 ribu jiwa, 12 sumur air Aceh; PANAH KESATRIA sekolah peringatan dini bersama BPBD Indramayu (127 siswa, 2026); Desa Tangguh Bencana</td><td>Gedung riset ITB (TJSL 2025); beasiswa Sobat Bumi Unpatti</td><td>Dana TJSL, sekolah, air</td><td>ITB, USK, Unpatti</td></tr>
+      <tr><td><b>Telkom dan Telkomsel</b></td><td>Sumatra 2025: lebih dari 320 teknisi, 17 posko WiFi; NTT 2026 layanan pulih sekitar 3 hari; TJSL guru pascagempa NTT</td><td>Deteksi gempa kabel laut bersama UGM (2025); kerja sama Telkomsel dan Tel-U (2019)</td><td>Platform metaverse, konektivitas posko, kanal sekolah</td><td>Tel-U (ITB), UGM, ITS</td></tr>
+      <tr><td><b>Paragon</b></td><td>Sumatra 2025: 2 pesawat kargo, 3.050 paket makanan, 14 paket filter air</td><td>Gedung riset ITB (2025), ITB Hub (2024), dua PKS dengan UGM (April 2025)</td><td>Higiene, logistik, riset produk</td><td>ITB, UGM</td></tr>
+      <tr><td><b>Freeport Indonesia</b></td><td>Gempa NTT 2026: Rp2,5 miliar, 4 sekolah darurat, tim medis merawat sekitar 500 pasien; banjir Sentani 2019</td><td>Gedung Pusat Sains Uncen (2025)</td><td>Logistik udara, tim tanggap darurat, gedung</td><td>Unpatti lewat Uncen, Unram (NTT)</td></tr>
+      <tr><td><b>TOA Indonesia</b></td><td>CSR Sekolah Siaga Bencana: alat peringatan dini gempa di SD Serang (2026)</td><td>FMIPA UI (2026)</td><td>Sirine dan pengeras suara peringatan dini</td><td>UI, lalu kampus pesisir lain</td></tr>
+      <tr><td><b>Pegadaian</b></td><td>Pegadaian Peduli mendanai riset kesiapsiagaan megathrust (2026)</td><td>Unand (2026)</td><td>Dana riset terapan komunitas</td><td>Unand</td></tr>
+      <tr><td><b>Zurich Syariah</b></td><td>Asuransi lebih dari 8.000 mahasiswa KKN dan 500 jaket pelampung (2026)</td><td>UGM (2026)</td><td>Asuransi relawan dan peserta KKN</td><td>Seluruh Korps Relawan Kampus</td></tr>
+      <tr><td><b>Semen Indonesia (SIG)</b></td><td>Bantuan medis gempa Sulbar 2021 bersama Unhas</td><td>Unhas (2021)</td><td>Dukungan medis, bahan bangunan</td><td>Unhas</td></tr>
+      <tr><td><b>Adaro</b></td><td>Mendanai 100 ventilator COVENT-20 Rp2,5 miliar (2020)</td><td>ULM beasiswa Rp11,26 miliar (2024); UI (2020)</td><td>Beasiswa, kendaraan lapangan</td><td>ULM, UI</td></tr>
+      <tr><td><b>Inpex</b></td><td>Belum ada program bencana tercatat</td><td>Unpatti: 343 beasiswa, tim kajian Masela (2025)</td><td>Dana kajian, beasiswa</td><td>Unpatti</td></tr>
+      <tr><td><b>Vale Indonesia</b></td><td>Belum ada program bencana tercatat</td><td>Unhas: MoU 2025, laboratorium bersama dengan Huayou</td><td>Laboratorium, beasiswa riset</td><td>Unhas</td></tr>
+      <tr><td><b>Amman Mineral</b></td><td>Bantuan gempa Cianjur (rilis perusahaan)</td><td>Unram (2019, 2024); UGM termasuk mitigasi Blok Elang (MoU 2023)</td><td>Dana riset, wilayah uji Sumbawa</td><td>Unram</td></tr>
+      <tr><td><b>Astra (Nurani Astra)</b></td><td>Ditunjuk Kemenko PMK sebagai penggerak sektor usaha untuk kesiapsiagaan (Indonesia Rescue Summit, November 2025); 1.515 desa binaan</td><td>Belum ada kerja sama kampus kebencanaan</td><td>Jaringan desa, kompetisi keselamatan</td><td>Lintas regional, Korps Relawan</td></tr>
+      <tr><td><b>BUMN Peduli (Danantara)</b></td><td>Lebih dari Rp72 miliar untuk Sumatra 2025; sekitar 1.066 relawan BUMN</td><td>Belum lewat kampus</td><td>Dana TJSL terkoordinasi, relawan karyawan</td><td>Korps Relawan, KKN tematik</td></tr>
+      <tr><td><b>APP Sinar Mas, APRIL</b></td><td>DMPA 312 desa; FFVP 42 desa, klaim penurunan kebakaran lebih dari 90 persen (angka perusahaan)</td><td>Tidak terbukti dengan IPB</td><td>Dana restorasi lewat skema terbuka</td><td>IPB dan Unri sebagai evaluator</td></tr>
+    </tbody>
+  </table></div>
+  <div class="duo">
+    <div class="box bukti"><h3>Contoh pemilik 1: Paragon dan ITB</h3><p>Terbukti sebagian. Kedekatan kelembagaan dan respons bencana Paragon nyata; program kebencanaan bersama ITB belum ada. Pintu masuk paling kuat adalah air bersih dan higiene darurat, karena MUF ITB dan paket higiene Paragon sama-sama sudah turun di Sumatra 2025. Pagar: program terbuka untuk semua, tidak lewat jalur beasiswa yang pernah dipersoalkan.</p></div>
+    <div class="box belum"><h3>Contoh pemilik 2: VR Telkom</h3><p>Belum ada sebagai program jadi, dan VR edukasi bencana yang dibiayai CSR belum ditemukan di Indonesia. Bahannya lengkap: SIGAP Tel-U, TENPINA ITS, MetaNesia dan Metaverse Office Telkom, serta TJSL BUMN yang menurut PER-1/MBU/03/2023 Pasal 20 ayat (3) mengutamakan pendidikan. Diajukan sebagai program baru, tidak diklaim sebagai rekam jejak.</p></div>
+  </div>
+</section>
+
+<section id="nasional">
+  <div class="bab"><span class="no">08</span><h2>Tiga program lintas regional yang dipegang swasta nasional</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Program</th><th>Isi</th><th>Kampus</th><th>Swasta</th><th>Pilar di rev4</th></tr></thead>
+    <tbody>
+      <tr><td><b>Platform VR Edukasi Bencana</b></td><td>Satu platform VR dan 360 derajat untuk sekolah; konten gempa, banjir, kebakaran, tsunami; mahasiswa turun ke sekolah sebagai fasilitator</td><td>Tel-U, ITS; satelit di tiap regional</td><td>Telkom (platform, kanal TJSL sekolah)</td><td>Pengabdian; Ruang Inovasi</td></tr>
+      <tr><td><b>Air Bersih dan Higiene Darurat</b></td><td>Unit MUF siaga di gudang regional BNPB, paket higiene, riset higiene darurat</td><td>ITB; kampus koordinator sebagai operator lokal</td><td>Paragon, Pertamina</td><td>Ruang Inovasi; Satgas Bencana</td></tr>
+      <tr><td><b>Korps Relawan Kampus terlindungi</b></td><td>Asuransi, alat, dan pencatatan relawan kampus; karyawan BUMN ikut latihan bersama mahasiswa</td><td>Semua koordinator</td><td>Zurich Syariah, BUMN Peduli, Astra</td><td>Korps Relawan; KKN Tematik</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="cepat">
+  <div class="bab"><span class="no">09</span><h2>Hasil cepat 100 hari: lima program yang ketiga pihaknya sudah pernah bekerja bersama</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Program</th><th>Yang sudah ada</th><th>Langkah 100 hari</th></tr></thead>
+    <tbody>
+      <tr><td><b>Masjid Siaga Megathrust</b> (Unand)</td><td>Cetak biru Pegadaian dan Unand, Padang, Juni 2026</td><td>MoU tiga pihak BNPB, Unand, Pegadaian; pilih dua kota pesisir berikutnya</td></tr>
+      <tr><td><b>Sekolah Siaga Tsunami</b> (UI)</td><td>TOA, FMIPA UI, BPBD Serang, satu SD, Juli 2026</td><td>Daftar sekolah pesisir Banten; MoU tiga pihak dengan TOA</td></tr>
+      <tr><td><b>KKN Desa Siaga Longsor</b> (UGM)</td><td>GAMA-EWS ISO 22327; asuransi KKN Zurich Syariah 2026</td><td>Petakan desa rawan longsor di lokasi KKN periode berikutnya</td></tr>
+      <tr><td><b>VR Tangguh Bencana</b> (ITS dan Tel-U)</td><td>TENPINA VR dan 1.000 siswa; SIGAP Tel-U; MetaNesia</td><td>Audiensi Telkom; uji satu sekolah di Bandung dan satu di Surabaya</td></tr>
+      <tr><td><b>Air Bersih dan Higiene Darurat</b> (ITB)</td><td>47 unit MUF di Sumatra 2025; bantuan Paragon Sumatra 2025; gedung riset Pertamina dan Paragon di ITB</td><td>Audiensi Paragon dan Pertamina; hitung kebutuhan unit per gudang regional</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="dasar">
+  <div class="bab"><span class="no">10</span><h2>Dasar hukum dan pagar kerja sama dengan swasta</h2></div>
+  <ul class="butir">
+    <li><b>UU 24/2007 Pasal 28 dan 29</b> menjadi dasar peran lembaga usaha dalam penanggulangan bencana.</li>
+    <li><b>Peraturan Kepala BNPB 12/2014</b> tentang Peran Serta Lembaga Usaha: Pasal 4 ayat (2) memasukkan pemasangan dan pengujian peringatan dini, budaya sadar bencana, serta pelatihan dan gladi ke kegiatan prabencana lembaga usaha; Pasal 5 mewajibkan nota kesepahaman, kerangka acuan, dan rencana kegiatan bersama BNPB atau BPBD. Akibatnya tiap flagship diikat MoU tiga pihak, bukan hanya MoU kampus dan perusahaan.</li>
+    <li><b>UU 40/2007 Pasal 74 dan PP 47/2012</b>: perseroan di bidang sumber daya alam wajib menjalankan TJSL (relevan untuk Adaro, Inpex, Vale, Amman, Freeport).</li>
+    <li><b>Permen BUMN PER-1/MBU/03/2023</b>: Pasal 20 ayat (3) mengutamakan TJSL untuk pendidikan, lingkungan, dan usaha mikro kecil; Pasal 35 membolehkan TJSL dikerjasamakan dengan badan hukum lain. Statusnya setelah Danantara dan BP BUMN perlu dicek.</li>
+    <li><b>Pagar</b>: program terbuka bagi semua mahasiswa; dana korporasi kehutanan untuk gambut lewat skema terbuka; angka program perusahaan (FFVP, DMPA) tidak dikutip sebagai fakta sebelum diverifikasi; logo mitra tidak lebih besar dari logo BNPB.</li>
+  </ul>
+</section>
+
+<section id="celah">
+  <div class="bab"><span class="no">11</span><h2>Celah data sebelum deck dibangun</h2></div>
+  <ul class="butir">
+    <li>MoU ITB dengan BNPB dan peran ITB di Peta Gempa 2024 belum terbukti.</li>
+    <li>Jumlah mahasiswa ULM, Unhas, Unpatti, USK, dan IPB perlu ditarik dari PDDikti.</li>
+    <li>Nilai rupiah riset Pegadaian dan Unand tidak disebut di sumber.</li>
+    <li>Sepuluh klaim UGM dan Unram berasal dari cuplikan hasil pencarian; laman aslinya perlu dibuka sebelum dikutip di deck.</li>
+    <li>Kemitraan kebencanaan Bank Aceh, BSI, Bank Kalsel, Bank Sulselbar, Bosowa, Kalla, KPC, dan Arutmin belum ditemukan; bila pemilik punya kontak, ini kandidat untuk USK, ULM, dan Unhas.</li>
+    <li>Wadah dunia usaha PRB (Planas PRB, jejaring ARISE UNDRR di Indonesia) belum terverifikasi; ARISE yang ditemukan adalah sistem risiko fiskal Kemenkeu bersama ITB (Agustus 2026).</li>
+  </ul>
+</section>
+
+<footer>
+  <span>Sumber: riset web 2 November 2026 atas 11 kampus koordinator dan 25 perusahaan (laman resmi kampus, perusahaan, BNPB, kementerian, Antara, Kompas, Katadata, Mongabay, Bisnis Indonesia, jurnal), 275 klaim temuan dari 71 lembaga, lolos pemeriksa riset mesin deck; DIBI dan IRBI BNPB dari registri mesin deck; paparan Ajuan Program Kerja Sama BNPB dengan Perguruan Tinggi, 30 Oktober 2026, rev4.</span>
+  <span>Skor kampus dan usulan program adalah analisis penyusun. Target angka program adalah usulan untuk dibahas, belum komitmen mitra.</span>
+</footer>
+</div>
+
+</body></html>

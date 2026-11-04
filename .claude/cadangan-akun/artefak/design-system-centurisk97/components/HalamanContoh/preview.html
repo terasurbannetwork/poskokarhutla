@@ -1,0 +1,113 @@
+<!-- @dsCard group="Contoh" height=1140 width=1240 page subtitle="Semua komponen dalam satu layar Insight karhutla" -->
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><title>Halaman contoh</title>
+<style>
+  .hc-top{display:flex;align-items:center;gap:12px}
+  .hc-top .bencana .menu{display:none}
+  .hc-top .bencana[open] .menu{display:grid}
+  .hc-top .jam{font-family:var(--font-display);font-weight:700;font-size:14px;white-space:nowrap}
+  .hc-wrap{max-width:1180px;margin:0 auto;padding:18px;display:grid;gap:16px}
+  .hc-grid{display:grid;grid-template-columns:340px minmax(0,1fr);gap:16px;align-items:start}
+  .hc-panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:14px;display:grid;gap:12px}
+  .hc-panel h2{font-size:15px}
+  .hc-ctl{margin-top:12px}
+  .hc-bar{cursor:pointer}
+  .hc-bar:hover{opacity:.82}
+  .hc-aksi{display:flex;align-items:center;gap:10px}
+  .hc-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);height:34px;padding:0 14px;border-radius:999px;font-weight:700;font-size:12.5px;cursor:pointer;box-shadow:var(--shadow);display:inline-flex;align-items:center;gap:6px}
+  .hc-btn svg{width:14px;height:14px}
+  .hc-btn:hover{border-color:var(--brand2)}
+  #hcTip{position:fixed;z-index:60;pointer-events:none;opacity:0;transition:opacity .12s}
+  #hcTip.on{opacity:1}
+  #hcToast{position:fixed}
+  .tw tbody tr{cursor:pointer}
+  p.rata{margin:0;text-align:justify;color:var(--ink2);font-size:13px;line-height:1.55}
+</style></head>
+<body>
+<header class="c97-top hc-top">
+  <div class="mark"><img src="/_blob/25924401da9d2aa2b62c79da093b3cc3" alt="Centurisk97"><div><b>Centurisk97</b></div></div>
+  <details class="bencana"><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg>Karhutla</summary>
+    <div class="menu">
+      <a href="#" aria-current="page"><svg class="bc-ik" viewBox="0 0 24 24"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg>Karhutla</a>
+      <a href="#"><svg class="bc-ik" viewBox="0 0 24 24"><path fill="#4f9be0" d="M12 2.5s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/></svg>Banjir</a>
+      <a class="segera" aria-disabled="true" tabindex="-1"><svg class="bc-ik" viewBox="0 0 24 24"><path fill="#8a6d4e" d="M2 13h4l2-5 3 10 3-12 2 7h6v2h-7l-1-3-3 11-3-10-1 3H2z"/></svg>Gempa<em class="bc-segera">Soon</em></a>
+    </div></details>
+  <nav aria-label="Menu utama"><a href="#">Peta</a><a href="#" aria-current="page">Insight</a><a href="#">Tabel</a><a href="#">Metode</a></nav>
+  <span class="jam num">14.00 WIB</span>
+  <button class="iconbtn" id="hcTema" aria-label="Ganti tema terang atau gelap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+</header>
+
+<div class="hc-wrap">
+  <section class="ins-hero"><img src="/_blob/17d24bf959371a43ed8ac15bcb8766a4" alt="Asap dari bara di lahan gambut yang terbakar">
+    <small>Foto: DenY Krisbiyantoro, CC BY-SA 4.0</small>
+    <div><h2>1.204 titik panas dalam 24 jam, 61% di lahan gambut</h2><p>Kalimantan Barat menyumbang 512 titik, tertinggi di Indonesia.</p></div></section>
+
+  <div class="hc-grid">
+    <aside class="hc-panel">
+      <nav class="crumb" aria-label="Wilayah"><button>Indonesia</button><button aria-current="page">Kalimantan Barat</button></nav>
+      <div class="cari"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" placeholder="Cari kabupaten atau kota" aria-label="Cari wilayah"></div>
+      <div class="kpis"><div class="kpi"><span class="lbl">Titik panas</span><b>512</b><small>24 jam terakhir</small></div><div class="kpi"><span class="lbl">Belum padam</span><b>38</b><small>kluster aktif</small></div></div>
+      <div><span class="lbl">Status provinsi</span><div style="margin-top:6px"><span class="pill f3">Sangat tinggi</span></div></div>
+      <label class="fld" style="margin:0"><span class="lbl">Bahan bakar</span><select><option>Gambut</option><option>Semak belukar</option><option>Lainnya</option></select></label>
+      <p class="rata">Angka titik panas memakai deteksi VIIRS semua tingkat keyakinan. Luas dan kluster hanya memakai keyakinan sedang dan tinggi.</p>
+    </aside>
+
+    <article class="ex">
+      <div class="ex-hd"><span class="ex-ey">Karhutla</span>
+        <h3><span class="hl">512</span> titik panas di Kalimantan Barat, Ketapang terbanyak dengan 214</h3>
+        <div class="hc-ctl"><div class="seg penuh" role="group" id="hcSeg"><button aria-pressed="true">24 jam</button><button aria-pressed="false">7 hari</button><button aria-pressed="false">30 hari</button></div></div></div>
+      <div class="ex-bd"><svg id="hcChart" viewBox="0 0 640 150" role="img" aria-label="Titik panas per kabupaten"></svg></div>
+      <div class="ex-ft"><div class="ex-leg"><span><i style="background:var(--f3)"></i>Sangat tinggi</span><span><i style="background:var(--f2)"></i>Tinggi</span><span><i style="background:var(--f1)"></i>Sedang</span><span><i style="background:var(--f0)"></i>Rendah</span></div><em>Sumber: NASA FIRMS VIIRS, diolah Centurisk97</em></div>
+    </article>
+  </div>
+
+  <section style="display:grid;gap:10px">
+    <div class="hc-aksi"><h3 style="font-size:17px;flex:1">Kabupaten dan kota</h3>
+      <button class="pc-btn" style="min-width:180px"><span>Kalimantan Barat</span><i></i></button>
+      <button class="hc-btn" id="hcBagi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>Salin tautan</button></div>
+    <div class="tw"><table><thead><tr><th>Kabupaten/kota</th><th>Titik panas</th><th>Kemarin</th><th>Di gambut</th><th>Status</th></tr></thead><tbody id="hcRows"></tbody></table></div>
+    <nav class="pgn" aria-label="Halaman"><p id="hcInfo"></p><div id="hcPg"></div></nav>
+  </section>
+</div>
+
+<div class="c97-tip" id="hcTip" role="tooltip"></div>
+<div class="toast" id="hcToast" role="status">Tautan disalin</div>
+
+<script>
+(function(){
+  var D={
+    "24 jam":[["Ketapang",214,167,71],["Kubu Raya",98,120,64],["Sanggau",61,44,22],["Sintang",48,51,18],["Kayong Utara",33,20,80],["Melawi",22,25,9],["Sambas",14,9,41],["Landak",11,12,5],["Sekadau",7,3,0],["Bengkayang",4,6,0]],
+    "7 hari":[["Ketapang",1302,1104,69],["Kubu Raya",688,701,61],["Sanggau",402,350,20],["Sintang",311,260,15],["Kayong Utara",205,190,77],["Melawi",140,151,8],["Sambas",96,88,39],["Landak",80,72,6],["Sekadau",45,40,0],["Bengkayang",30,33,0]],
+    "30 hari":[["Ketapang",4820,3990,68],["Kubu Raya",2510,2260,60],["Sanggau",1490,1302,19],["Sintang",1102,980,14],["Kayong Utara",790,640,75],["Melawi",501,530,8],["Sambas",360,300,37],["Landak",280,265,6],["Sekadau",170,160,1],["Bengkayang",120,118,0]]
+  };
+  var fmt=function(n){return n.toLocaleString("id-ID")};
+  var kelas=function(n,m){var r=n/m;return r>.6?["f3","Sangat tinggi"]:r>.3?["f2","Tinggi"]:r>.1?["f1","Sedang"]:["f0","Rendah"]};
+  var rentang="24 jam",hal=1,PER=5;
+  var tip=document.getElementById("hcTip");
+  function isiTip(r){var d=r[2]?Math.round((r[1]-r[2])/r[2]*100):0;
+    tip.innerHTML='<div class="tp2-h"><b>Kab. '+r[0]+'</b><small>Kalimantan Barat</small></div><div class="tp2-n"><b>'+fmt(r[1])+'</b><span>titik panas, '+rentang+'</span></div><div class="tp2-kv"><span>Periode sebelumnya</span><b>'+fmt(r[2])+'</b><span>Perubahan</span><b class="'+(d>=0?"naik":"turun")+'">'+(d>=0?"+":"")+d+'%</b><span>Di gambut</span><b>'+r[3]+'%</b></div>'}
+  function tunjuk(e,r){isiTip(r);tip.classList.add("on");var x=Math.min(e.clientX+14,innerWidth-310),y=Math.min(e.clientY+14,innerHeight-150);tip.style.left=x+"px";tip.style.top=y+"px"}
+  function sembunyi(){tip.classList.remove("on")}
+  function grafik(){var rows=D[rentang].slice(0,5),m=rows[0][1],s="";
+    rows.forEach(function(r,i){var k=kelas(r[1],m),w=Math.max(6,r[1]/m*420),y=i*30;
+      s+='<g class="hc-bar" data-i="'+i+'" font-size="12" fill="currentColor"><text x="0" y="'+(y+16)+'">'+r[0]+'</text><rect x="130" y="'+(y+5)+'" width="'+w+'" height="15" rx="4" style="fill:var(--'+k[0]+')"/><text class="num" x="'+(138+w)+'" y="'+(y+17)+'">'+fmt(r[1])+'</text></g>'});
+    var c=document.getElementById("hcChart");c.innerHTML=s;
+    c.querySelectorAll(".hc-bar").forEach(function(g){var r=rows[+g.dataset.i];g.addEventListener("mousemove",function(e){tunjuk(e,r)});g.addEventListener("mouseleave",sembunyi)})}
+  function tabel(){var rows=D[rentang],m=rows[0][1],n=Math.ceil(rows.length/PER),a=(hal-1)*PER,b=Math.min(a+PER,rows.length),h="";
+    rows.slice(a,b).forEach(function(r,i){var k=kelas(r[1],m);h+='<tr data-i="'+(a+i)+'"><td><a href="#">'+r[0]+'</a></td><td class="n">'+fmt(r[1])+'</td><td class="n">'+fmt(r[2])+'</td><td class="n">'+r[3]+'%</td><td style="text-align:center"><span class="pill '+k[0]+'">'+k[1]+'</span></td></tr>'});
+    var tb=document.getElementById("hcRows");tb.innerHTML=h;
+    tb.querySelectorAll("tr").forEach(function(tr){var r=rows[+tr.dataset.i];tr.addEventListener("mousemove",function(e){tunjuk(e,r)});tr.addEventListener("mouseleave",sembunyi)});
+    document.getElementById("hcInfo").textContent="Menampilkan "+(a+1)+"–"+b+" dari "+rows.length+" kabupaten/kota";
+    var p='<button class="pgn-b" data-p="'+(hal-1)+'"'+(hal<2?" disabled":"")+' aria-label="Sebelumnya">‹</button>';
+    for(var i=1;i<=n;i++)p+='<button class="pgn-b'+(i===hal?" on":"")+'" data-p="'+i+'"'+(i===hal?' aria-current="page"':"")+'>'+i+'</button>';
+    p+='<button class="pgn-b" data-p="'+(hal+1)+'"'+(hal>=n?" disabled":"")+' aria-label="Berikutnya">›</button>';
+    document.getElementById("hcPg").innerHTML=p}
+  document.getElementById("hcPg").addEventListener("click",function(e){var b=e.target.closest("button");if(!b||b.disabled)return;hal=+b.dataset.p;tabel()});
+  document.getElementById("hcSeg").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;this.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed",x===b)});rentang=b.textContent;hal=1;grafik();tabel()});
+  document.getElementById("hcTema").addEventListener("click",function(){var h=document.documentElement;h.dataset.theme=h.dataset.theme==="dark"?"light":"dark"});
+  var toast=document.getElementById("hcToast"),t0;
+  document.getElementById("hcBagi").addEventListener("click",function(){toast.classList.add("on");clearTimeout(t0);t0=setTimeout(function(){toast.classList.remove("on")},2200)});
+  grafik();tabel();
+})();
+</script>
+</body></html>

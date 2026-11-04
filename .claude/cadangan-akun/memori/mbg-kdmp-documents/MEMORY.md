@@ -1,0 +1,9 @@
+- [Mesin 24 jam Mac mini](mesin-24-jam-mac-mini.md) — Mac mini ini = mesin 24 jam sejak 5 Sep 2026; repo jadi ~/Documents/GitHub/pangantara (12 Sep), iCloud+TCC, launchd ditolak; rtk belum ada
+- [Titik SPPG Google 2026-09](titik-sppg-google-2026-09.md) — geocoding+Places 5 Sep 2026 dari Mac mini, kunci di .env.local, sb_secret pernah lewat chat
+- [Hermes + neo MCP](hermes-neo-mcp-2026-09.md) — Hermes Agent & BrowserOS neo tersambung ke Claude Code sejak 5 Sep 2026; cara add non-interaktif
+- [Panen Radar MBG lewat BrowserOS neo](radar-mbg-panen-neo.md) — CloakBrowser ditolak; sesi mbg_ts 15 menit; runtime ~/bgn-radar; agent pemanen-radar
+- [Izin bypass total](izin-bypass-2026-09.md) — pemilik mau nol dialog; bypassPermissions TIDAK bisa dari settings.json, cuma dari flag peluncuran
+- [Caps lock dilarang](caps-lock-dilarang.md) — tidak ada teks KAPITAL penuh di layar maupun kertas; sudah 3x divonis, gerbangnya gerbang-caps-lock
+- [Rahasia lewat chat](rahasia-lewat-chat.md) — pemilik menempel token ke chat; sediakan perintah tempel-sendiri lebih dulu, jangan menunggu
+- [Scribd unduh massal kena ban](scribd-unduh-massal-kena-ban.md) — 8 unduhan beruntun = 403 harian; jalur utama sekarang BACA penampil (baca-viewer.mjs), ganti IP & situs pengunduh ditolak
+- [Prioritas data SPPG 2026-09](prioritas-data-sppg-2026-09.md) — alamat/kontak/yayasan dulu, dokumen 2026 dulu; malam mandiri hemat token, detail ke Opus, jaringan Mac mini rawan putus

@@ -1,0 +1,14 @@
+{
+  "description": "Hitungan kejadian unik per jenis bencana per tahun dari logbook harian Pusdalops BNPB, dengan jumlah hari tercatat dan nilai setara 365 hari. 2021 belum ada.",
+  "fixed": true,
+  "source": {
+    "kind": "file",
+    "name": "tahunan.csv",
+    "url": "/_blob/4602571fecf297e8a9254c7599099aef"
+  },
+  "title": "Kejadian per tahun per jenis",
+  "updated": {
+    "at": "2026-11-01T00:10:00+07:00",
+    "by": "Claude, dari data/pusdalops/logbook_kejadian.csv"
+  }
+}

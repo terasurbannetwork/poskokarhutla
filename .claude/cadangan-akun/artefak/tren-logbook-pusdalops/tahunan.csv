@@ -1,0 +1,73 @@
+tahun,hari_tercatat,lengkap,jenis,jenis_label,kejadian,setara_365_hari
+2011,50,tidak,banjir,Banjir,40,292
+2011,50,tidak,longsor,Tanah longsor,12,88
+2011,50,tidak,cuaca,Cuaca ekstrem,33,241
+2011,50,tidak,karhutla,Karhutla,14,102
+2011,50,tidak,kebakaran_permukiman,Kebakaran permukiman,2,15
+2011,50,tidak,gempabumi,Gempa bumi,30,219
+2012,79,tidak,banjir,Banjir,83,383
+2012,79,tidak,longsor,Tanah longsor,30,139
+2012,79,tidak,cuaca,Cuaca ekstrem,45,208
+2012,79,tidak,karhutla,Karhutla,1,5
+2012,79,tidak,kebakaran_permukiman,Kebakaran permukiman,15,69
+2012,79,tidak,gempabumi,Gempa bumi,43,199
+2013,175,tidak,banjir,Banjir,398,830
+2013,175,tidak,longsor,Tanah longsor,188,392
+2013,175,tidak,cuaca,Cuaca ekstrem,132,275
+2013,175,tidak,karhutla,Karhutla,1,2
+2013,175,tidak,kebakaran_permukiman,Kebakaran permukiman,77,161
+2013,175,tidak,gempabumi,Gempa bumi,102,213
+2014,365,ya,banjir,Banjir,653,653
+2014,365,ya,longsor,Tanah longsor,626,626
+2014,365,ya,cuaca,Cuaca ekstrem,558,558
+2014,365,ya,karhutla,Karhutla,85,85
+2014,365,ya,kebakaran_permukiman,Kebakaran permukiman,1067,1067
+2014,365,ya,gempabumi,Gempa bumi,235,235
+2015,365,ya,banjir,Banjir,619,619
+2015,365,ya,longsor,Tanah longsor,667,667
+2015,365,ya,cuaca,Cuaca ekstrem,624,624
+2015,365,ya,karhutla,Karhutla,133,133
+2015,365,ya,kebakaran_permukiman,Kebakaran permukiman,1309,1309
+2015,365,ya,gempabumi,Gempa bumi,206,206
+2016,366,ya,banjir,Banjir,1084,1081
+2016,366,ya,longsor,Tanah longsor,1124,1121
+2016,366,ya,cuaca,Cuaca ekstrem,852,850
+2016,366,ya,karhutla,Karhutla,60,60
+2016,366,ya,kebakaran_permukiman,Kebakaran permukiman,1148,1145
+2016,366,ya,gempabumi,Gempa bumi,189,188
+2017,365,ya,banjir,Banjir,1101,1101
+2017,365,ya,longsor,Tanah longsor,1127,1127
+2017,365,ya,cuaca,Cuaca ekstrem,919,919
+2017,365,ya,karhutla,Karhutla,170,170
+2017,365,ya,kebakaran_permukiman,Kebakaran permukiman,974,974
+2017,365,ya,gempabumi,Gempa bumi,211,211
+2018,365,ya,banjir,Banjir,856,856
+2018,365,ya,longsor,Tanah longsor,821,821
+2018,365,ya,cuaca,Cuaca ekstrem,980,980
+2018,365,ya,karhutla,Karhutla,512,512
+2018,365,ya,kebakaran_permukiman,Kebakaran permukiman,1002,1002
+2018,365,ya,gempabumi,Gempa bumi,305,305
+2019,365,ya,banjir,Banjir,819,819
+2019,365,ya,longsor,Tanah longsor,724,724
+2019,365,ya,cuaca,Cuaca ekstrem,1276,1276
+2019,365,ya,karhutla,Karhutla,786,786
+2019,365,ya,kebakaran_permukiman,Kebakaran permukiman,712,712
+2019,365,ya,gempabumi,Gempa bumi,276,276
+2020,366,ya,banjir,Banjir,1336,1332
+2020,366,ya,longsor,Tanah longsor,966,963
+2020,366,ya,cuaca,Cuaca ekstrem,970,967
+2020,366,ya,karhutla,Karhutla,347,346
+2020,366,ya,kebakaran_permukiman,Kebakaran permukiman,381,380
+2020,366,ya,gempabumi,Gempa bumi,227,226
+2021,0,tidak,banjir,Banjir,,
+2021,0,tidak,longsor,Tanah longsor,,
+2021,0,tidak,cuaca,Cuaca ekstrem,,
+2021,0,tidak,karhutla,Karhutla,,
+2021,0,tidak,kebakaran_permukiman,Kebakaran permukiman,,
+2021,0,tidak,gempabumi,Gempa bumi,,
+2022,272,tidak,banjir,Banjir,1237,1660
+2022,272,tidak,longsor,Tanah longsor,563,755
+2022,272,tidak,cuaca,Cuaca ekstrem,839,1126
+2022,272,tidak,karhutla,Karhutla,164,220
+2022,272,tidak,kebakaran_permukiman,Kebakaran permukiman,121,162
+2022,272,tidak,gempabumi,Gempa bumi,148,199

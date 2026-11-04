@@ -1,0 +1,5 @@
+<!-- @dsCard group="Kontrol" height=110 -->
+<!doctype html><html><head><meta charset="utf-8"><title>Segmented</title></head><body style="padding:16px;display:grid;gap:12px">
+<div class="seg" role="group"><button aria-pressed="true">24 jam</button><button aria-pressed="false">7 hari</button><button aria-pressed="false">30 hari</button></div>
+<div class="seg penuh" role="group"><button aria-pressed="false">Titik panas</button><button aria-pressed="true">Luas terbakar</button><button aria-pressed="false">Belum padam</button></div>
+<script>document.querySelectorAll('.seg').forEach(s=>s.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;s.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b))}))</script></body></html>

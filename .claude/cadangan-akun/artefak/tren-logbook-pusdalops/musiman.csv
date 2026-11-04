@@ -1,0 +1,73 @@
+jenis,jenis_label,bulan,kejadian_2014_2020
+banjir,Banjir,1,894
+banjir,Banjir,2,943
+banjir,Banjir,3,742
+banjir,Banjir,4,631
+banjir,Banjir,5,447
+banjir,Banjir,6,405
+banjir,Banjir,7,274
+banjir,Banjir,8,152
+banjir,Banjir,9,245
+banjir,Banjir,10,363
+banjir,Banjir,11,655
+banjir,Banjir,12,716
+longsor,Tanah longsor,1,821
+longsor,Tanah longsor,2,896
+longsor,Tanah longsor,3,739
+longsor,Tanah longsor,4,587
+longsor,Tanah longsor,5,375
+longsor,Tanah longsor,6,267
+longsor,Tanah longsor,7,153
+longsor,Tanah longsor,8,151
+longsor,Tanah longsor,9,224
+longsor,Tanah longsor,10,400
+longsor,Tanah longsor,11,691
+longsor,Tanah longsor,12,749
+cuaca,Cuaca ekstrem,1,886
+cuaca,Cuaca ekstrem,2,675
+cuaca,Cuaca ekstrem,3,720
+cuaca,Cuaca ekstrem,4,473
+cuaca,Cuaca ekstrem,5,335
+cuaca,Cuaca ekstrem,6,254
+cuaca,Cuaca ekstrem,7,238
+cuaca,Cuaca ekstrem,8,249
+cuaca,Cuaca ekstrem,9,308
+cuaca,Cuaca ekstrem,10,452
+cuaca,Cuaca ekstrem,11,826
+cuaca,Cuaca ekstrem,12,762
+karhutla,Karhutla,1,48
+karhutla,Karhutla,2,112
+karhutla,Karhutla,3,98
+karhutla,Karhutla,4,26
+karhutla,Karhutla,5,40
+karhutla,Karhutla,6,102
+karhutla,Karhutla,7,317
+karhutla,Karhutla,8,441
+karhutla,Karhutla,9,458
+karhutla,Karhutla,10,339
+karhutla,Karhutla,11,101
+karhutla,Karhutla,12,9
+kebakaran_permukiman,Kebakaran permukiman,1,396
+kebakaran_permukiman,Kebakaran permukiman,2,287
+kebakaran_permukiman,Kebakaran permukiman,3,408
+kebakaran_permukiman,Kebakaran permukiman,4,437
+kebakaran_permukiman,Kebakaran permukiman,5,632
+kebakaran_permukiman,Kebakaran permukiman,6,704
+kebakaran_permukiman,Kebakaran permukiman,7,861
+kebakaran_permukiman,Kebakaran permukiman,8,813
+kebakaran_permukiman,Kebakaran permukiman,9,694
+kebakaran_permukiman,Kebakaran permukiman,10,588
+kebakaran_permukiman,Kebakaran permukiman,11,434
+kebakaran_permukiman,Kebakaran permukiman,12,339
+gempabumi,Gempa bumi,1,146
+gempabumi,Gempa bumi,2,124
+gempabumi,Gempa bumi,3,150
+gempabumi,Gempa bumi,4,137
+gempabumi,Gempa bumi,5,119
+gempabumi,Gempa bumi,6,140
+gempabumi,Gempa bumi,7,136
+gempabumi,Gempa bumi,8,134
+gempabumi,Gempa bumi,9,145
+gempabumi,Gempa bumi,10,125
+gempabumi,Gempa bumi,11,138
+gempabumi,Gempa bumi,12,155

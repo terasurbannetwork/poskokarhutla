@@ -1,0 +1,1 @@
+- [Tanpa branch](tanpa-branch.md) — kerja langsung di main, jangan buat branch/worktree
