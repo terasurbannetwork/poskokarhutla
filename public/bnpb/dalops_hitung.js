@@ -15,6 +15,7 @@
      angka dari kejadian terakhir yang mengisinya. Satu kab bisa muncul di dua kelompok (Langkat: satu kejadian surut, satu belum).
      Kejadian yang kabarnya lebih tua dari sepekan dikelompokkan terpisah (senyap), supaya tidak memanjangkan lama banjir kejadian pekan ini. */
   /* histori harian dua kejadian sekab: angka dijumlah per tanggal, tinggi diambil rentang terlebar, kondisi dari yang terakhir */
+  const TINDAK = ["upaya", "terlibat", "kebutuhan", "kendala"];   // daftar teks tindakan dari logbook (scripts/data/dalops_banjir.py butir())
   function gabungRiwayat(a, b) {
     const m = new Map(a.map(r => [r.tgl, {...r}]));
     for (const r of b) {
@@ -24,6 +25,7 @@
       if (r.tinggi_cm) x.tinggi_cm = x.tinggi_cm ? [Math.min(x.tinggi_cm[0], r.tinggi_cm[0]), Math.max(x.tinggi_cm[1], r.tinggi_cm[1])] : r.tinggi_cm;
       x.surut = x.surut && r.surut; if (r.kondisi) x.kondisi = r.kondisi;
       if (r.desa) x.desa = [...(x.desa || []), ...r.desa];
+      for (const f of TINDAK) if (r[f]?.length) x[f] = [...new Set([...(x[f] || []), ...r[f]])];
     }
     return [...m.values()].sort((p, q) => p.tgl < q.tgl ? -1 : 1);
   }
@@ -43,7 +45,8 @@
     for (const k of [...kejadian].sort((a, b) => (a.terakhir > b.terakhir) - (a.terakhir < b.terakhir))) {
       const kode = (k.kab_kode || [])[0] || "", kunci = (kode || "?" + namaKab("", k.kab)) + "|" + (k.surut ? 1 : 0) + "|" + (selisih(h, k.terakhir) > SEPEKAN ? "senyap" : "pekan");
       const x = m.get(kunci) || {kunci, kab_kode: kode, nama: namaKab(kode, k.kab), prov: k.prov, prov_kode: k.prov_kode, surut: k.surut, mulai: k.mulai, terakhir: k.terakhir,
-        kk: null, jiwa: null, mengungsi: null, kk_u: null, rumah_terendam: null, tinggi_cm: null, kondisi: "", id: [], kec: [], desa: [], riwayat: []};
+        kk: null, jiwa: null, mengungsi: null, kk_u: null, rumah_terendam: null, tinggi_cm: null, kondisi: "", id: [], kec: [], desa: [], riwayat: [],
+        upaya: [], terlibat: [], kebutuhan: [], kendala: [], upaya_tgl: null};
       if (k.mulai && k.mulai < x.mulai) x.mulai = k.mulai;
       if (k.terakhir > x.terakhir) x.terakhir = k.terakhir;
       for (const f of ["kk", "jiwa", "mengungsi", "kk_u", "rumah_terendam", "tinggi_cm"]) if (k[f] != null) x[f] = k[f];
@@ -51,6 +54,9 @@
       for (const d of k.desa || []) { const ada = x.desa.find(y => y.nama.toLowerCase() === d.nama.toLowerCase()); if (ada) Object.assign(ada, Object.fromEntries(Object.entries(d).filter(([, v]) => v != null))); else x.desa.push({...d}); }
       x.riwayat = gabungRiwayat(x.riwayat, k.riwayat || []);
       if (k.kondisi) x.kondisi = k.kondisi;
+      /* tindakan: dari kejadian terakhir yang mengisinya (urutan kabar naik, jadi yang terbaru menang) */
+      for (const f of TINDAK) if (k[f]?.length) x[f] = k[f];
+      if (k.upaya_tgl && (!x.upaya_tgl || k.upaya_tgl >= x.upaya_tgl)) x.upaya_tgl = k.upaya_tgl;
       x.id.push(k.id); m.set(kunci, x);
     }
     return [...m.values()].sort((a, b) => a.prov_kode.localeCompare(b.prov_kode) || a.nama.localeCompare(b.nama));
@@ -107,7 +113,7 @@
   const BLN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
   const tglPanjang = s => s ? `${+s.slice(8, 10)} ${BLN[+s.slice(5, 7) - 1]} ${s.slice(0, 4)}` : "–";
   const tglPendek = s => s ? `${+s.slice(8, 10)} ${BLN[+s.slice(5, 7) - 1].slice(0, 3)}` : "–";
-  const NAMA_KURANG = {kabar: "kondisi terkini dan apakah banjir sudah surut", kk: "jumlah KK terdampak", jiwa: "jumlah jiwa terdampak", tinggi: "tinggi genangan (cm)"};
+  const NAMA_KURANG = {kabar: "kondisi terkini dan apakah banjir sudah surut", kk: "jumlah KK terdampak", jiwa: "jumlah jiwa terdampak", tinggi: "tinggi genangan (cm)", upaya: "upaya penanganan yang sudah dilakukan"};
   /* pesan siap tempel ke grup WA BPBD: netral-formal, tanpa sapaan nama */
   function pesanWA(x) {
     const minta = [...new Set(["kabar", ...x.kurang])].map(k => NAMA_KURANG[k]);

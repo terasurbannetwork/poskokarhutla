@@ -380,3 +380,10 @@
 .dl-arti-l1{--pil:var(--c3)}.dl-arti-l2{--pil:var(--c2)}.dl-arti-l3{--pil:var(--c1)}
 .dl-arti .bn-label{font-size:12.5px;line-height:1.45;color:var(--ink2);font-weight:500}
 @media (max-width:820px){.dl-wrap .dl-arti{grid-template-columns:1fr}}
+
+/* upaya penanganan (bagian Upaya penanganan dan kolom Histori): daftar butir rata kiri, label boleh melipat */
+.dl-tindak{text-align:left;vertical-align:top}
+.dl-upaya{margin:0;padding-left:16px;display:grid;gap:3px;min-width:260px;max-width:520px;font-size:12.5px;line-height:1.45;color:var(--ink2)}
+.dl-upaya-lain summary{cursor:pointer;color:var(--c5);font-weight:600;font-size:12px;margin-top:4px}
+.dl-tindak .dl-chips{justify-content:flex-start}
+.dl-tindak .dl-tag{white-space:normal;text-align:left}

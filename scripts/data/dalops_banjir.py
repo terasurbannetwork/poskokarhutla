@@ -166,7 +166,8 @@ def laphar_banjir(teks):
                     "mulai": tgl_iso(bag.get("kronologis", "")), "kecamatan": kec, "desa_teks": [lok_desa, kor_desa, kon_desa],
                     "kk_terdampak": _bil(ter.group(1)) if ter else None, "orang_terdampak": _bil(ter.group(2)) if ter and ter.group(2) else None,
                     "kk_mengungsi": _bil(ung.group(1)) if ung and ung.group(1) else None, "orang_mengungsi": _bil(ung.group(2)) if ung and ung.group(2) else None,
-                    "kondisi": re.sub(r"^-\s*", "", kon, flags=re.M)})
+                    "kondisi": re.sub(r"^-\s*", "", kon, flags=re.M),
+                    **{f: bag.get(f, "") for f in ("upaya", "kebutuhan", "kendala")}})
     return out
 
 
@@ -208,7 +209,18 @@ def satukan_laphar(kejadian, laporan, entri, kode_kab):
         k["n_laporan"] = (k.get("n_laporan") or 0) + 1
         laporan.setdefault(k["id_kejadian"], []).append({"tgl_logbook": e["tgl_logbook"], "id_kejadian": k["id_kejadian"], "jenis": "banjir", "kecamatan": e["kecamatan"],
             "n_kec": len(e["kecamatan"]) or None, "kk_terdampak": e["kk_terdampak"], "orang_terdampak": e["orang_terdampak"], "kk_mengungsi": e["kk_mengungsi"],
-            "orang_mengungsi": e["orang_mengungsi"], "dampak_teks": "\n".join(e["desa_teks"][:2]), "kondisi": e["kondisi"], "_desa_kondisi": e["desa_teks"][2]})
+            "orang_mengungsi": e["orang_mengungsi"], "dampak_teks": "\n".join(e["desa_teks"][:2]), "kondisi": e["kondisi"], "_desa_kondisi": e["desa_teks"][2],
+            **{f: e.get(f, "") for f in ("upaya", "kebutuhan", "kendala")}})
+
+
+def butir(t, maks=8, panjang=240):
+    """Teks bebas logbook (upaya, pihak, kebutuhan, kendala) -> daftar baris bersih: tanpa penanda butir, tanpa ganda, dibatasi jumlah dan panjangnya."""
+    out = []
+    for l in str(t or "").splitlines():
+        l = re.sub(r"^\s*(?:[-•●◦▪➢*]|\d+[.)])\s*", "", l).strip(" .;")
+        if len(l) > 2 and l.lower() not in (x.lower() for x in out) and l.lower() not in ("-", "nihil", "tidak ada", "belum ada"):
+            out.append(l if len(l) <= panjang else l[:panjang - 1].rstrip() + "…")
+    return out[:maks]
 
 
 def riwayat(laporan, bersih=lambda t: t):
@@ -224,7 +236,9 @@ def riwayat(laporan, bersih=lambda t: t):
                     "n_kec": _n(r.get("n_kec")), "n_desa": _n(r.get("n_desa")), "tinggi_cm": tinggi_cm(kon + " " + (r.get("dampak_teks") or "")),
                     "surut": surut(kon), "kondisi": bersih_kondisi(kon),
                     # desa hari itu, untuk histori per kecamatan di layar
-                    "desa": rincian_desa(bersih((r.get("dampak_teks") or "") + "\n" + (r.get("_desa_kondisi") or r.get("kondisi") or "")))})
+                    "desa": rincian_desa(bersih((r.get("dampak_teks") or "") + "\n" + (r.get("_desa_kondisi") or r.get("kondisi") or ""))),
+                    # tindakan hari itu: upaya penanganan, pihak terlibat, kebutuhan, kendala (layar Upaya penanganan dan Histori)
+                    **{f: butir(bersih(r.get(f) or ""), 12 if f == "terlibat" else 8) for f in ("upaya", "terlibat", "kebutuhan", "kendala")}})
     return out
 
 
@@ -290,6 +304,10 @@ def rakit(kejadian, hari, kode_kab, bersih=lambda t: t, laporan=None):
             for r in b["riwayat"]:
                 for d in r["desa"]:
                     d["kec"] = d["kec"] or kec_desa.get(d["nama"].lower())
+            # tindakan: tiap kolom dari laporan terakhir yang mengisinya (laporan harian PDF tidak memuat pihak terlibat); tanggal = upaya terakhir
+            for f in ("upaya", "terlibat", "kebutuhan", "kendala"):
+                b[f] = next((r[f] for r in reversed(b["riwayat"]) if r[f]), [])
+            b["upaya_tgl"] = next((r["tgl"] for r in reversed(b["riwayat"]) if r["upaya"]), None)
             # angka baris = laporan harian terakhir yang mengisinya (rekap kejadian kadang tertinggal satu-dua hari)
             for f, g in (("kk", "kk"), ("jiwa", "jiwa"), ("kk_u", "kk_u"), ("mengungsi", "jiwa_u"), ("tinggi_cm", "tinggi_cm")):
                 for r in reversed(b["riwayat"]):
@@ -382,6 +400,7 @@ def uji():
     rw = riwayat([{"tgl_logbook": "2026-10-29", "kk_terdampak": "60", "orang_terdampak": "232", "kk_mengungsi": "75", "orang_mengungsi": "264", "n_kec": "2", "kondisi": "air 30 s/d 40 cm, belum surut"},
                   {"tgl_logbook": "2026-10-28", "kk_terdampak": "30", "kondisi": "masih tergenang"}])
     assert [(x["tgl"], x["kk"], x["jiwa_u"], x["tinggi_cm"]) for x in rw] == [("2026-10-28", 30, None, None), ("2026-10-29", 60, 264, [30, 40])], rw
+    assert butir("- TRC melakukan asesmen\n● Pendataan.\n- TRC melakukan asesmen\nNihil") == ["TRC melakukan asesmen", "Pendataan"]
     rw = riwayat([{"tgl_logbook": "2026-10-29", "dampak_teks": "Kec. Trumon\nGp. Padang Harapan: 25 KK / 120 jiwa", "kondisi": "belum surut"}])
     assert [(x["nama"], x["kec"], x["kk"]) for x in rw[0]["desa"]] == [("Padang Harapan", "Trumon", 25)], rw
     # laporan harian PDF: potongan nyata 2 Nov 2026 (Aceh Selatan), bentuk keluaran pdftotext -layout

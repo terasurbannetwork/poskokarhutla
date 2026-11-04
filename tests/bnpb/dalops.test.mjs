@@ -77,3 +77,12 @@ test("rincian kab: kecamatan digabung, desa dikelompokkan per kecamatan, histori
   assert.deepEqual(kel[0].riwayat.map(r => [r.tgl, r.kk, r.jiwa, r.tinggi_cm]), [["2026-10-29", 40, 132, [10, 60]], ["2026-11-01", 5, null, null]]);
   assert.deepEqual(H.perKec(kel[0]).map(k => [k.nama, k.desa.map(d => d.nama)]), [["Trumon Tengah", []], ["Trumon", ["Padang Harapan"]], [null, ["Lhok Raya"]]]);
 });
+
+test("tindakan: upaya, pihak, kebutuhan, kendala dari kejadian terbaru yang mengisinya; histori harian menggabungkan upaya per tanggal", () => {
+  const kel = H.kelompok([K("a", "Aceh Selatan", "2026-10-28", "2026-10-30", false, {upaya: ["Asesmen"], terlibat: ["TNI"], upaya_tgl: "2026-10-30", riwayat: [{tgl: "2026-10-30", upaya: ["Asesmen"]}]}),
+    K("b", "Aceh Selatan", "2026-10-29", "2026-11-01", false, {upaya: ["Evakuasi"], terlibat: [], upaya_tgl: "2026-11-01", riwayat: [{tgl: "2026-10-30", upaya: ["Pendataan"]}]})], HARI);
+  assert.equal(kel.length, 1);
+  assert.deepEqual([kel[0].upaya, kel[0].terlibat, kel[0].upaya_tgl], [["Evakuasi"], ["TNI"], "2026-11-01"], "pihak kosong di kejadian terbaru tidak menghapus yang lama");
+  assert.deepEqual(kel[0].riwayat.find(r => r.tgl === "2026-10-30").upaya, ["Asesmen", "Pendataan"]);
+  assert.match(H.pesanWA({...kel[0], kurang: ["upaya"]}), /Upaya penanganan yang sudah dilakukan/);
+});
