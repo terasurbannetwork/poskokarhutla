@@ -1,0 +1,38 @@
+/* Data saham (/bnpb/saham). Token dan komponen dari bnpb.css/admin.css; tanpa gaya inline (CSP). */
+[hidden]{display:none!important}
+.sh-p{margin:0;color:var(--ink2);font-size:13.5px}
+.sh-cari{display:flex;gap:8px;align-items:center}
+.sh-cari input{flex:1;min-width:0;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:11px 14px;font-size:14.5px;color:var(--ink)}
+.sh-cari input:focus-visible{outline:2px solid var(--c5);outline-offset:1px;border-color:transparent}
+.sh-hasil{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.sh-hasil button{all:unset;box-sizing:border-box;cursor:pointer;display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:var(--card);box-shadow:var(--ring)}
+.sh-hasil button:hover,.sh-hasil button[aria-pressed="true"]{background:color-mix(in srgb,var(--c5) 12%,var(--card))}
+.sh-hasil button:focus-visible{outline:2px solid var(--c5);outline-offset:1px}
+.sh-hasil b{font-size:14px}.sh-hasil span{font-size:12.5px;color:var(--ink2);overflow-wrap:anywhere}
+.sh-panel{display:grid;gap:14px;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+.sh-panel>*{min-width:0}
+.sh-lebar{grid-column:1/-1}
+@media (max-width:980px){.sh-panel{grid-template-columns:1fr}}
+.sh-judul{display:flex;align-items:center;gap:8px}
+.sh-judul svg,.sh-kosong svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.sh-sumber{margin:0;color:var(--ink3);font-size:12px}
+.sh-sorot{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.sh-sorot div{background:var(--soft);border-radius:12px;padding:10px 12px;display:grid;gap:2px}
+.sh-sorot small{color:var(--ink2);font-size:12px;font-weight:600}.sh-sorot b{font-size:20px}
+.sh-kv{display:grid;gap:4px 14px;grid-template-columns:max-content minmax(0,1fr);margin:0;font-size:13px}
+.sh-kv dt{color:var(--ink2);text-transform:capitalize}.sh-kv dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.sh-seg{display:flex;gap:6px;flex-wrap:wrap}
+.sh-seg button{border:0;border-radius:999px;padding:7px 12px;font-size:12.5px;font-weight:700;cursor:pointer;background:var(--soft);color:var(--ink)}
+.sh-seg button[aria-pressed="true"]{background:var(--c5);color:#fff}
+.sh-seg button:focus-visible{outline:2px solid var(--c5);outline-offset:1px}
+.sh-garis{width:100%;height:200px;display:block}
+.sh-garis polyline{fill:none;stroke:var(--c5);stroke-width:2;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.sh-skala{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--ink2)}
+.sh-kosong{display:grid;gap:6px;justify-items:center;text-align:center;padding:22px 12px;color:var(--ink2);font-weight:600;font-size:13.5px;background:var(--soft);border-radius:12px}
+.sh-kosong svg{width:28px;height:28px;stroke:var(--ink3);stroke-width:1.5}
+.sh-contoh{display:inline-block;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;background:color-mix(in srgb,var(--c3,#d97706) 18%,transparent);color:var(--ink)}
+.sh-tabel-wadah{max-height:60vh;overflow:auto}
+.sh-num{text-align:right;font-variant-numeric:tabular-nums}
+@media print{.ad-top{display:none}}
+.sh-dummy{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;font-size:18px;cursor:pointer;border-radius:12px}
+.sh-dummy:hover{background:var(--soft)}.sh-dummy:focus-visible{outline:2px solid var(--c5);outline-offset:1px}
