@@ -970,12 +970,50 @@
    "sumber": "UU 24/2007; PP 23/2008; PP 4/2018; PP 45/2021"
   },
   {
+   "jenis": "temuan-visual",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Prinsip dasar dan kalimat kunci",
+   "judul": "Prinsip dasar kemitraan luar negeri: bantuan disambut dengan apresiasi, kedaulatan operasional tetap prioritas utama",
+   "utama": {
+    "judul": "Prinsip dasar dan kalimat kunci",
+    "ikon": "ringkasan",
+    "kolom_teks": {
+     "mode": "kartu",
+     "kolom": [
+      {
+       "judul": "Prinsip dasar",
+       "ikon": "lembaga",
+       "isi": [
+        "Bantuan kemanusiaan dari luar negeri disambut dengan apresiasi dan disikapi secara cermat.",
+        "Operasi bantuan dapat dimanfaatkan untuk mengukur kapasitas respons dan memetakan wilayah.",
+        "Kepentingan nasional dan kedaulatan operasional adalah prioritas utama.",
+        "Kemitraan dengan negara sahabat tetap dijalankan secara setara."
+       ]
+      },
+      {
+       "judul": "Kalimat kunci",
+       "ikon": "regulasi",
+       "isi": [
+        "Kami terbuka untuk kemitraan yang setara dan saling menghormati.",
+        "Kedaulatan operasional berada di bawah BNPB sesuai ketentuan hukum Indonesia.",
+        "Hal itu amanat undang-undang dan tidak dapat dinegosiasikan.",
+        "Seluruh bantuan bekerja di bawah komando pemerintah Indonesia."
+       ]
+      }
+     ],
+     "huruf_maks": 30
+    }
+   },
+   "sumber": "Panduan kemitraan luar negeri BNPB, Nov 2026; UU 24/2007"
+  },
+  {
    "jenis": "rekomendasi",
    "jenis_slide": "rekomendasi",
    "judul_bentuk": "deskriptif",
    "seri": "panduan",
    "pesan": "Sepuluh saran panduan 1",
-   "judul": "Sepuluh saran panduan kemitraan luar negeri: {{sorot:BNPB koordinator tunggal}} dan bantuan masuk satu pintu",
+   "judul": "Sepuluh saran panduan kemitraan luar negeri {{sorot:(1/2)}}",
    "sumber": "UU 24/2007; PP 23/2008; PP 4/2018; panduan kemitraan luar negeri BNPB, Nov 2026",
    "rekomendasi": [
     {
@@ -1038,7 +1076,7 @@
    "judul_bentuk": "deskriptif",
    "seri": "panduan",
    "pesan": "Sepuluh saran panduan 2",
-   "judul": "Sepuluh saran panduan kemitraan luar negeri: akses wilayah dan informasi serta laporan ke {{sorot:pimpinan}}",
+   "judul": "Sepuluh saran panduan kemitraan luar negeri {{sorot:(2/2)}}",
    "sumber": "UU 24/2007; PP 23/2008; PP 4/2018; panduan kemitraan luar negeri BNPB, Nov 2026",
    "rekomendasi": [
     {
@@ -1101,51 +1139,53 @@
    "judul_bentuk": "deskriptif",
    "seri": "garis-merah",
    "pesan": "Garis merah 1",
-   "judul": "Batas yang tidak boleh dilanggar saat menerima bantuan negara lain: penerbangan, data, pangkalan, syarat, dan dana",
+   "judul": "Batas yang tidak boleh dilanggar saat menerima bantuan negara lain {{sorot:(1/2)}}",
    "utama": {
     "judul": "Yang tidak dapat diizinkan",
     "ikon": "peringatan",
-    "daftar_ikon": {
-     "mode": "baris",
+    "banding": {
+     "kiri": {
+      "judul": "Tidak diizinkan"
+     },
+     "kanan": {
+      "judul": "Ketentuan"
+     },
+     "skala_huruf": 1.3,
      "baris": [
       {
+       "label": "Penerbangan",
        "ikon": "wilayah",
-       "judul": "Penerbangan bebas",
-       "isi": "Semua penerbangan wajib punya rencana terbang yang disetujui BNPB dan TNI AU; pemetaan bebas atas wilayah Sumatra hingga Papua tidak dibenarkan."
+       "kiri": "Pesawat negara lain terbang bebas memetakan wilayah",
+       "kanan": "Rencana terbang wajib disetujui BNPB dan TNI AU"
       },
       {
+       "label": "Data",
        "ikon": "data",
-       "judul": "Penyerahan data mentah",
-       "isi": "Data hotspot waktu nyata dan peta konsesi, juga data kekuatan TNI maupun sentimen publik, tidak diserahkan ke pihak luar."
+       "kiri": "Data hotspot waktu nyata dan peta konsesi diserahkan ke pihak luar",
+       "kanan": "Data kekuatan TNI maupun sentimen publik tetap di dalam negeri"
       },
       {
+       "label": "Pangkalan",
        "ikon": "infrastruktur",
-       "judul": "Pangkalan terpisah",
-       "isi": "Pihak negara lain tidak boleh membangun basecamp atau gudang sendiri, apalagi pos komando terpisah dari BNPB."
+       "kiri": "Basecamp atau gudang sendiri di luar posko BNPB",
+       "kanan": "Semua tim bekerja dari pos komando BNPB"
       },
       {
+       "label": "Syarat",
        "ikon": "pembiayaan",
-       "judul": "Bantuan bersyarat",
-       "isi": "Bantuan yang mensyaratkan akses tambang atau konsesi baru, maupun perubahan kebijakan, tidak diterima."
+       "kiri": "Bantuan dengan syarat akses tambang atau konsesi baru",
+       "kanan": "Bantuan diterima tanpa syarat politik maupun ekonomi"
       },
       {
+       "label": "Dana",
        "ikon": "pembiayaan",
-       "judul": "Dana dikelola LSM negara lain",
-       "isi": "Seluruh dana bantuan dikelola melalui mekanisme pemerintah untuk mencegah penyalahgunaan."
+       "kiri": "Dana bantuan dikelola langsung LSM negara lain",
+       "kanan": "Dana dikelola melalui mekanisme pemerintah"
       }
      ]
     }
    },
-   "sumber": "Panduan kemitraan luar negeri BNPB, Nov 2026",
-   "panel": {
-    "judul": "Kalimat kunci",
-    "ikon": "ringkasan",
-    "daftar": [
-     "Kami terbuka untuk kemitraan yang setara dan saling menghormati.",
-     "Kedaulatan operasional berada di bawah BNPB sesuai ketentuan hukum Indonesia.",
-     "Hal itu amanat undang-undang dan tidak dapat dinegosiasikan."
-    ]
-   }
+   "sumber": "Panduan kemitraan luar negeri BNPB, Nov 2026"
   },
   {
    "jenis": "temuan-visual",
@@ -1153,51 +1193,53 @@
    "judul_bentuk": "deskriptif",
    "seri": "garis-merah",
    "pesan": "Garis merah 2",
-   "judul": "Batas yang tidak boleh dilanggar saat menerima bantuan negara lain: sensor, kesepakatan, korban, militer, dan akses jangka panjang",
+   "judul": "Batas yang tidak boleh dilanggar saat menerima bantuan negara lain {{sorot:(2/2)}}",
    "utama": {
     "judul": "Yang tidak dapat diizinkan",
     "ikon": "peringatan",
-    "daftar_ikon": {
-     "mode": "baris",
+    "banding": {
+     "kiri": {
+      "judul": "Tidak diizinkan"
+     },
+     "kanan": {
+      "judul": "Ketentuan"
+     },
+     "skala_huruf": 1.3,
      "baris": [
       {
+       "label": "Sensor",
        "ikon": "peringatan",
-       "judul": "Drone dan sensor pribadi",
-       "isi": "Drone dan sensor termal milik pihak negara lain, termasuk pemetaan LIDAR, tidak diizinkan tanpa izin dan pendampingan."
+       "kiri": "Drone dan sensor termal maupun LIDAR tanpa izin",
+       "kanan": "Hanya dengan izin dan pendampingan aparat"
       },
       {
+       "label": "Kesepakatan",
        "ikon": "regulasi",
-       "judul": "Kesepakatan lisan",
-       "isi": "Setiap komitmen dituangkan tertulis dan ditelaah paling sedikit tujuh hari oleh Kemlu dan Kemhan bersama KL terkait."
+       "kiri": "Komitmen lisan atau tanda tangan saat audiensi",
+       "kanan": "Tertulis dan ditelaah paling sedikit tujuh hari oleh Kemlu dan Kemhan"
       },
       {
+       "label": "Wawancara",
        "ikon": "jiwa",
-       "judul": "Wawancara korban tanpa pendamping",
-       "isi": "Wawancara korban oleh pihak negara lain selalu didampingi otoritas resmi atau BNPB."
+       "kiri": "Wawancara korban tanpa pendamping",
+       "kanan": "Didampingi otoritas resmi atau BNPB"
       },
       {
+       "label": "Militer",
        "ikon": "peringatan",
-       "judul": "Tim militer bersenjata",
-       "isi": "Tanpa senjata kecuali disetujui Presiden dan Mabes TNI; wilayah Otsus Papua dan perbatasan Laut China Selatan bukan lokasi percontohan."
+       "kiri": "Tim bersenjata atau proyek di wilayah sensitif",
+       "kanan": "Perlu persetujuan Presiden dan Mabes TNI; Otsus Papua dan Laut China Selatan dikecualikan"
       },
       {
+       "label": "Akses",
        "ikon": "lembaga",
-       "judul": "Akses jangka panjang",
-       "isi": "Pusat bantuan permanen atau pangkalan gabungan tidak disetujui; pernyataan yang menggambarkan Indonesia lemah dihindari."
+       "kiri": "Pusat bantuan permanen atau pangkalan gabungan",
+       "kanan": "Tidak disetujui; hindari citra Indonesia lemah"
       }
      ]
     }
    },
-   "sumber": "Panduan kemitraan luar negeri BNPB, Nov 2026",
-   "panel": {
-    "judul": "Prinsip dasar",
-    "ikon": "ringkasan",
-    "daftar": [
-     "Bantuan kemanusiaan dari luar negeri disambut dengan apresiasi dan disikapi secara cermat.",
-     "Operasi bantuan dapat dimanfaatkan untuk mengukur kapasitas respons dan memetakan wilayah.",
-     "Kepentingan nasional dan kedaulatan operasional adalah prioritas utama."
-    ]
-   }
+   "sumber": "Panduan kemitraan luar negeri BNPB, Nov 2026"
   },
   {
    "jenis": "temuan-visual",
@@ -1215,19 +1257,17 @@
        "judul": "MoU kemanusiaan",
        "ikon": "lembaga",
        "isi": [
-        "Kerja sama sipil tanpa imunitas militer.",
+        "Memorandum of Understanding: nota kesepahaman kerja sama sipil, tanpa imunitas militer.",
         "Ditandatangani BNPB dengan lembaga mitra.",
-        "Mengatur jenis bantuan dan jangka waktunya, termasuk pendampingan.",
-        "Mekanisme yang seharusnya dipakai BNPB."
+        "Mekanisme yang dipakai BNPB."
        ]
       },
       {
        "judul": "SOFA",
        "ikon": "peringatan",
        "isi": [
-        "Perjanjian antarnegara tentang status hukum personel militer negara lain.",
+        "Status of Forces Agreement: perjanjian antarnegara tentang status hukum personel militer negara lain di Indonesia.",
         "Menyangkut yurisdiksi dan kedaulatan.",
-        "Berat dan politis.",
         "Tidak ditandatangani di level BNPB."
        ]
       },
@@ -1235,7 +1275,7 @@
        "judul": "VFA",
        "ikon": "peringatan",
        "isi": [
-        "Mirip SOFA, untuk kunjungan latihan militer sementara.",
+        "Visiting Forces Agreement: perjanjian kunjungan latihan militer sementara, mirip SOFA.",
         "Diputuskan pemerintah pusat melalui Kemlu dan Kemhan.",
         "Bukan kewenangan BNPB."
        ]
@@ -1261,107 +1301,265 @@
    "jenis_slide": "panel",
    "judul_bentuk": "temuan",
    "pesan": "Operasi bantuan Australia di Kaltim",
-   "judul": "Australia mengoperasikan {{angka:aus.pesawat}} pesawat Hercules, {{angka:aus.sorti_hari}} sorti per hari selama {{angka:aus.hari}} hari, dalam operasi bersama BNPB dan Pemprov Kalimantan Timur",
+   "judul": "Australia mendukung operasi pemerintah di Kalimantan Timur dengan {{angka:aus.pesawat}} pesawat Hercules, {{angka:aus.sorti_hari}} sorti per hari selama {{angka:aus.hari}} hari",
    "utama": {
-    "judul": "Rencana operasi Australia di Kalimantan Timur",
-    "ikon": "air-baku",
-    "kisi_ikon": {
-     "kolom": 3,
-     "sorot": -1,
-     "kartu": [
+    "judul": "Narasi bantuan Australia",
+    "ikon": "ringkasan",
+    "kolom_teks": {
+     "mode": "kartu",
+     "huruf_maks": 18,
+     "kolom": [
       {
-       "ikon": "infrastruktur",
-       "nilai": "{{angka:aus.pesawat}}",
-       "label": "pesawat Hercules"
+       "judul": "Apresiasi negara sahabat",
+       "ikon": "lembaga",
+       "isi": [
+        "Pemerintah mengapresiasi bantuan negara sahabat, termasuk Australia.",
+        "Bantuan ini bentuk kerja sama bilateral yang baik."
+       ]
       },
       {
-       "ikon": "kalender",
-       "nilai": "{{angka:aus.hari}}",
-       "label": "hari operasi, awal November"
+       "judul": "Kolaborasi tiga pihak",
+       "ikon": "jiwa",
+       "isi": [
+        "Operasi dijalankan BNPB bersama Australia.",
+        "Pemerintah Provinsi Kalimantan Timur ikut dalam operasi."
+       ]
       },
       {
-       "ikon": "air-baku",
-       "nilai": "{{angka:aus.sorti_total}}",
-       "label": "sorti water bombing direncanakan"
+       "judul": "Sesuai nota diplomatik",
+       "ikon": "regulasi",
+       "isi": [
+        "Operasi berjalan sesuai tawaran dalam nota diplomatik Pemerintah Australia.",
+        "Jadwal operasi pada awal November."
+       ]
+      },
+      {
+       "judul": "Mendukung operasi pemerintah",
+       "ikon": "tanggap-darurat",
+       "isi": [
+        "Kehadiran Australia melengkapi operasi pemerintah yang sudah berjalan di Kalimantan Timur.",
+        "Komando tetap di tangan BNPB."
+       ]
       }
      ]
     }
    },
-   "panel": {
-    "judul": "Narasi",
-    "ikon": "ringkasan",
-    "daftar": [
-     "Pemerintah mengapresiasi bantuan negara sahabat, termasuk Australia, sebagai bentuk kerja sama bilateral yang baik.",
-     "Operasi ini kolaborasi BNPB dan Australia bersama Pemerintah Provinsi Kalimantan Timur.",
-     "Operasi berjalan sesuai tawaran dalam nota diplomatik Pemerintah Australia.",
-     "Kehadiran Australia mendukung operasi pemerintah Indonesia yang sudah berjalan di Kalimantan Timur."
-    ]
-   },
-   "sumber": "Nota diplomatik Pemerintah Australia, rencana operasi 6–12 Nov 2026"
-  },
-  {
-   "jenis": "rekomendasi",
-   "jenis_slide": "rekomendasi",
-   "judul_bentuk": "deskriptif",
-   "pesan": "Talking points penyambutan misi Australia",
-   "judul": "Talking points Kepala BNPB: penyambutan misi bantuan Australia untuk karhutla Kalimantan Timur di Lanud Halim Perdanakusuma",
-   "sumber": "Naskah talking points Kepala BNPB, Nov 2026; Bakom 15 Okt 2026; Setkab 21 Sep 2026",
-   "rekomendasi": [
+   "sumber": "Nota diplomatik Pemerintah Australia, rencana operasi 6–12 Nov 2026",
+   "grup": [
     {
-     "kode": "T1",
-     "jenis": "kapasitas",
-     "langkah": "Apresiasi dan solidaritas",
-     "rincian": "Terima kasih kepada pemerintah dan rakyat Australia atas tawaran bantuan yang cepat dan tulus; cermin persahabatan dan saling percaya.",
-     "lembaga": [
-      "Kepala BNPB"
-     ]
-    },
-    {
-     "kode": "T2",
-     "jenis": "regulasi",
-     "langkah": "Mendukung respons yang dipimpin Indonesia",
-     "rincian": "Bantuan Australia dan negara mitra disambut sebagai pelengkap operasi yang dipimpin pemerintah Indonesia.",
-     "lembaga": [
-      "Kepala BNPB"
-     ]
-    },
-    {
-     "kode": "T3",
-     "jenis": "regulasi",
-     "langkah": "BNPB koordinator dalam satu komando",
-     "rincian": "Seluruh aset mitra masuk sistem komando nasional dengan pendampingan TNI dan rencana terbang yang disetujui BNPB.",
-     "lembaga": [
-      "Kepala BNPB"
-     ]
-    },
-    {
-     "kode": "T4",
-     "jenis": "kapasitas",
-     "langkah": "Dukungan operasional yang melengkapi",
-     "rincian": "Bantuan memperkuat water bombing dan melengkapi pemadaman darat serta OMC.",
-     "lembaga": [
-      "Kepala BNPB"
-     ]
-    },
-    {
-     "kode": "T5",
-     "jenis": "kapasitas",
-     "langkah": "Komitmen nasional",
-     "rincian": "Pemerintah telah mengerahkan {{angka:karhutla.personel_total}} personel gabungan dan {{angka:karhutla.setkab.pesawat}} pesawat dari Sumatra hingga Papua.",
-     "lembaga": [
-      "Kepala BNPB"
-     ]
-    },
-    {
-     "kode": "T6",
-     "jenis": "data",
-     "langkah": "Situasi dan ke depan",
-     "rincian": "Kualitas udara mulai membaik; pemadaman tetap prioritas, dan kerja sama diharapkan berlanjut memperkuat ketangguhan kawasan.",
-     "lembaga": [
-      "Kepala BNPB"
+     "pil": "Rencana operasi",
+     "nada": "data",
+     "ikon": "air-baku",
+     "kartu": [
+      {
+       "nilai": "{{angka:aus.pesawat}}",
+       "label": "pesawat Hercules",
+       "ikon": "infrastruktur",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:aus.sorti_hari}}",
+       "label": "sorti per hari",
+       "ikon": "air-baku",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:aus.hari}}",
+       "label": "hari operasi",
+       "ikon": "kalender",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:aus.sorti_total}}",
+       "label": "sorti direncanakan",
+       "ikon": "data",
+       "warna": "navy"
+      }
      ]
     }
-   ]
+   ],
+   "pita": {
+    "label": "Pengaturan operasi",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "jiwa",
+      "judul": "Pendampingan",
+      "isi": "Awak dan pesawat didampingi personel BNPB dan TNI selama operasi."
+     },
+     {
+      "ikon": "wilayah",
+      "judul": "Rencana terbang",
+      "isi": "Setiap sorti memakai rencana terbang yang disetujui BNPB dan TNI AU."
+     },
+     {
+      "ikon": "data",
+      "judul": "Laporan",
+      "isi": "Hasil operasi dilaporkan setiap hari ke pos komando BNPB."
+     }
+    ]
+   }
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "deskriptif",
+   "seri": "talking-point",
+   "pesan": "Talking point 1",
+   "judul": "Talking Point: Penyambutan Misi Bantuan Australia untuk Penanganan Karhutla di Kalimantan Timur {{sorot:(1/3)}}",
+   "sumber": "Naskah talking points Kepala BNPB, Nov 2026; Bakom 15 Okt 2026; Setkab 21 Sep 2026",
+   "utama": {
+    "judul": "Halim Perdanakusuma Air Base, Jakarta",
+    "ikon": "ringkasan",
+    "kolom_teks": {
+     "mode": "kartu",
+     "kutipan": true,
+     "huruf_maks": 24,
+     "kolom": [
+      {
+       "judul": "Appreciation and Solidarity",
+       "ikon": "lembaga",
+       "isi": "On behalf of the Government and people of Indonesia, I wish to convey our heartfelt appreciation to the Government and people of Australia for the timely and generous offer of assistance in response to the forest and land fires currently affecting our country. This gesture of solidarity speaks volumes about the depth of friendship, mutual trust, and good neighbourliness that has long characterised the relationship between Indonesia and Australia, particularly in times of adversity."
+      },
+      {
+       "judul": "Assistance as Support to an Indonesian-Led Response",
+       "ikon": "regulasi",
+       "isi": "We are deeply grateful for this support, and we would like to respectfully underline that assistance from Australia, as well as from other partner countries, is most welcome as a complement to the response operations led and conducted by the Government of the Republic of Indonesia. This approach ensures coherence, accountability, and effectiveness on the ground, while allowing us to make the best possible use of the valuable contributions of our partners."
+      }
+     ],
+     "kotak": true
+    }
+   },
+   "pita": {
+    "label": "Inti pesan",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "lembaga",
+      "judul": "Apresiasi",
+      "isi": "Terima kasih kepada pemerintah dan rakyat Australia atas tawaran bantuan yang cepat."
+     },
+     {
+      "ikon": "regulasi",
+      "judul": "Dipimpin Indonesia",
+      "isi": "Bantuan mitra melengkapi operasi yang dipimpin pemerintah Indonesia."
+     },
+     {
+      "ikon": "data",
+      "judul": "Tepat guna",
+      "isi": "Bantuan dipakai sebaik mungkin sesuai kebutuhan lapangan."
+     }
+    ]
+   }
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "deskriptif",
+   "seri": "talking-point",
+   "pesan": "Talking point 2",
+   "judul": "Talking Point: Penyambutan Misi Bantuan Australia untuk Penanganan Karhutla di Kalimantan Timur {{sorot:(2/3)}}",
+   "sumber": "Naskah talking points Kepala BNPB, Nov 2026; Bakom 15 Okt 2026; Setkab 21 Sep 2026",
+   "utama": {
+    "judul": "Halim Perdanakusuma Air Base, Jakarta",
+    "ikon": "ringkasan",
+    "kolom_teks": {
+     "mode": "kartu",
+     "kutipan": true,
+     "huruf_maks": 24,
+     "kolom": [
+      {
+       "judul": "BNPB as Coordinating Authority within a Single Command System",
+       "ikon": "tanggap-darurat",
+       "isi": "In accordance with the Law on Disaster Management of 2007, operational coordination for disaster response in Indonesia rests with the National Disaster Management Authority, BNPB. Accordingly, all personnel, aircraft, equipment, and logistics from partner countries will be fully integrated into our national command system, accompanied at all times by BNPB and Indonesian National Armed Forces personnel, and will operate on the basis of flight plans and operational plans approved by BNPB and the Indonesian Air Force. This arrangement is intended to ensure safety, coordination, and the optimal use of all available resources."
+      },
+      {
+       "judul": "Focused and Complementary Operational Support",
+       "ikon": "air-baku",
+       "isi": "We are pleased that Australian assistance will complement our ongoing national efforts, particularly in strengthening aerial water-bombing operations. To date, our helicopters have flown {{angka:karhutla.wb_sorti}} water-bombing sorties and released water {{angka:karhutla.wb_drop}} times, supported by {{angka:karhutla.omc_sorti}} weather modification sorties. These contributions will add significant value to our integrated operations, which also include ground firefighting, weather modification, and joint patrols, and will help accelerate our collective progress on the ground."
+      }
+     ],
+     "kotak": true
+    }
+   },
+   "pita": {
+    "label": "Inti pesan",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "tanggap-darurat",
+      "judul": "Satu komando",
+      "isi": "Seluruh aset mitra masuk sistem komando nasional di bawah BNPB."
+     },
+     {
+      "ikon": "wilayah",
+      "judul": "Rencana terbang",
+      "isi": "Penerbangan memakai rencana yang disetujui BNPB dan TNI AU."
+     },
+     {
+      "ikon": "air-baku",
+      "judul": "Water bombing",
+      "isi": "Bantuan memperkuat operasi udara yang sudah berjalan."
+     }
+    ]
+   }
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "deskriptif",
+   "seri": "talking-point",
+   "pesan": "Talking point 3",
+   "judul": "Talking Point: Penyambutan Misi Bantuan Australia untuk Penanganan Karhutla di Kalimantan Timur {{sorot:(3/3)}}",
+   "sumber": "Naskah talking points Kepala BNPB, Nov 2026; Bakom 15 Okt 2026; Setkab 21 Sep 2026",
+   "utama": {
+    "judul": "Halim Perdanakusuma Air Base, Jakarta",
+    "ikon": "ringkasan",
+    "kolom_teks": {
+     "mode": "kartu",
+     "kutipan": true,
+     "huruf_maks": 24,
+     "kolom": [
+      {
+       "judul": "Indonesia's National Commitment",
+       "ikon": "jiwa",
+       "isi": "I would like to share with Your Excellency the scale of Indonesia's national response. To date, the Government has mobilised {{angka:karhutla.personel_total}} joint personnel and {{angka:karhutla.setkab.pesawat}} aircraft across Sumatra, Kalimantan, and Papua, from the Armed Forces and the Police to local governments, private-sector crews, volunteers, and community fire brigades. This mobilisation reflects the full commitment of the Government of Indonesia to addressing this challenge with all available national capacities, and with the strong support of our partners. Around {{angka:karhutla.personel_nonpem_persen|fmt=1|persen}} of these personnel come from communities and the private sector, reflecting a truly whole-of-society effort."
+      },
+      {
+       "judul": "Current Situation and Continued Priorities",
+       "ikon": "peringatan",
+       "isi": "While air quality in several affected areas has begun to show encouraging signs of improvement, we remain fully vigilant. Weekly fire detections have fallen by {{angka:fs.pekan_turun_abs|fmt=1|persen}} from their peak in early October as the rainy season begins. Fire suppression and the prevention of further spread continue to be our foremost priorities. The Government of Indonesia remains firmly committed to managing this situation in a swift, measured, and transparent manner, while placing the safety of our communities and the preservation of our national sovereignty at the centre of all our efforts."
+      },
+      {
+       "judul": "Moving Forward",
+       "ikon": "kalender",
+       "isi": "Over the coming days, the Australian Hercules will fly {{angka:aus.sorti_hari}} sorties a day for {{angka:aus.hari}} days in East Kalimantan, working side by side with our national fleet and the Provincial Government of East Kalimantan under a single command. In closing, we express our sincere hope that this cooperation will extend well and deepen our partnership. We are confident that through continued collaboration, we can further strengthen the resilience of both our peoples and the wider region."
+      }
+     ],
+     "kotak": true
+    }
+   },
+   "pita": {
+    "label": "Inti pesan",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "jiwa",
+      "judul": "Komitmen nasional",
+      "isi": "Pemerintah mengerahkan seluruh kapasitas nasional."
+     },
+     {
+      "ikon": "peringatan",
+      "judul": "Tetap waspada",
+      "isi": "Pemadaman dan pencegahan meluasnya api tetap prioritas."
+     },
+     {
+      "ikon": "kalender",
+      "judul": "Kemitraan berlanjut",
+      "isi": "Kerja sama diharapkan memperkuat ketangguhan kawasan."
+     }
+    ]
+   }
   },
   {
    "jenis": "kesimpulan",
