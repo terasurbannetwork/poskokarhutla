@@ -35,7 +35,7 @@ fi
 tmp=$(mktemp -d "${TMPDIR:-/tmp}/uji-push.XXXXXX") || exit 1
 rmdir "$tmp"
 bersih() { git worktree remove --force "$tmp" >/dev/null 2>&1; rm -rf "$tmp"; git worktree prune; }
-trap bersih EXIT INT TERM
+trap bersih EXIT INT TERM HUP
 git worktree add --detach "$tmp" "$sha_dorong" >/dev/null 2>&1 || { echo "pre-push: gagal membuat worktree uji." >&2; exit 1; }
 # node_modules terlacak git sebagai symlink relatif ke node_modules.nosync (trik iCloud). Jangan sentuh symlink terlacak itu
 # (gerbang jalur mutlak membacanya); sediakan node_modules.nosync di worktree yang menunjuk ke modul nyata checkout utama.
