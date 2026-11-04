@@ -87,9 +87,9 @@ uji("GET /bnpb/operasi: kerangka publik tanpa cache, tak boleh dibingkai, .html 
   const c = await man("https://centurisk97.id", "/bnpb/operasi"); assert.equal(c.status, 303); assert.match(c.headers.get("location"), /\/admin\/masuk/);
 });
 
-uji("GET /bnpb/operasi-lapangan: dialihkan ke tab Operasi peta utama (/?operasi); .html ikut; di centurisk97.id anonim tetap ke login", async () => {
+uji("GET /bnpb/operasi-lapangan: dialihkan ke tab Operasi peta utama (/operasi); .html ikut; di centurisk97.id anonim tetap ke login", async () => {
   const man = async (asal, j) => { const r = await U.mf.dispatchFetch(asal + j, {redirect: "manual"}); await r.text(); return r; };
-  const r = await man("http://bnpb.lokal", "/bnpb/operasi-lapangan"); assert.equal(r.status, 302); assert.equal(r.headers.get("location"), "/?operasi"); assert.match(r.headers.get("cache-control"), /no-store/);
+  const r = await man("http://bnpb.lokal", "/bnpb/operasi-lapangan"); assert.equal(r.status, 302); assert.equal(r.headers.get("location"), "/operasi"); assert.match(r.headers.get("cache-control"), /no-store/);
   const h = await man("http://bnpb.lokal", "/bnpb/operasi_lapangan.html"); assert.equal(h.status, 301); assert.equal(new URL(h.headers.get("location"), "http://bnpb.lokal").pathname, "/bnpb/operasi-lapangan");
   const c = await man("https://centurisk97.id", "/bnpb/operasi-lapangan"); assert.equal(c.status, 303); assert.match(c.headers.get("location"), /\/admin\/masuk/);
 });

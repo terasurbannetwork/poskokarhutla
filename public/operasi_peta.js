@@ -4,7 +4,7 @@
    lapisan base/temuan/aksi dipasang ulang tiap style.load, rincian base memakai #laci yang sama dengan laci cluster.
    Data: /api/operasi/peta (akun centurisk97, staf berperan, moderator; selain itu 403 = tab tidak muncul), /api/operasi/monitor (aksi + hasil padam + KPI),
    /data/operasi/rekap_udara.json (rekap kontrak 2026, tanpa nama dan nomor kru), /api/jarak-pandang dan data/metar.json (kelayakan terbang).
-   Buka langsung: /?operasi. */
+   Buka langsung: /operasi (menu Operasi di navbar) atau /?operasi. */
 (() => {
   "use strict";
   const OP = {data: null, mon: null, rekap: null, vis: null, metar: null, siap: false, pilih: null};
@@ -198,7 +198,9 @@
     const rl = renderLegenda; renderLegenda = function () { rl.apply(this, arguments); legenda(); };
     peta.on("style.load", () => setTimeout(pasang, 0));
     pasang(); pasangInteraksi(); legenda();
-    if (new URLSearchParams(location.search).has("operasi")) pm?.querySelector('[data-m="ops"]')?.click();
+    /* menu Operasi di navbar (pemilik 4 Nov 2026): tersembunyi untuk tamu, muncul begitu /api/operasi/peta boleh dibaca */
+    const nav = $('#tabs [data-t="operasi"]'); if (nav) nav.hidden = false;
+    if (location.pathname === "/operasi" || new URLSearchParams(location.search).has("operasi")) pm?.querySelector('[data-m="ops"]')?.click();
   }
   function legenda() {
     const isi = $("#legenda .lg-isi"); if (!isi || !OP.data || isi.querySelector(".ops-lg")) return;

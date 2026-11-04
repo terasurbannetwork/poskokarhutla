@@ -15,6 +15,7 @@ export default {
       "tab": [
         "ringkasan",
         "peta",
+        "operasi",
         "insight",
         "berita",
         "tren",

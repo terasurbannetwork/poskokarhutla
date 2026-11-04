@@ -4,7 +4,7 @@
 import REGISTRY from "./bencana.generated.js";
 
 /* tab karhutla lama yang dilayani di akar walau tidak ada di `tab` registry (tautan lama tetap hidup) */
-export const TAB_LAMA = ["keputusan", "prioritas", "sarana", "operasi"];
+export const TAB_LAMA = ["keputusan", "prioritas", "sarana"];
 export const HAL_TETAP = ["warga", "tentang", "privasi", "statistik"];
 
 export const hidup = (B = REGISTRY) => B.bencana.filter(b => b.status !== "mati");

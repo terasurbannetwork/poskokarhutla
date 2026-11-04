@@ -52,7 +52,7 @@ import {RUTE_STAF, bersihkanStaf, stafPeran} from "./staf.js";
 import {RUTE_CC, bersihkanCc} from "./command_center.js";
 import {RUTE_AKADEMISI, P_AKADEMISI} from "./akademisi.js";
 import {RUTE_DALOPS, PERAN_DALOPS} from "./dalops.js";
-/* menu atas Pusdalops (public/bnpb/menu_pusdalops.js) + peta utama (tab Operasi lapangan di "/?operasi"): staf Pusdalops, Koordalops, Pimpinan
+/* menu atas Pusdalops (public/bnpb/menu_pusdalops.js) + peta utama (tab Operasi lapangan di "/operasi"): staf Pusdalops, Koordalops, Pimpinan
    (mis. akun Dirdalops) membuka halamannya di centurisk97.id; API tiap halaman tetap menjaga haknya sendiri (permintaan pemilik 3 Nov 2026) */
 const MENU_PUSDALOPS = /^\/(bnpb\/(dalops|logbook|dokumen|operasi|siaga|perencanaan)\/?)?$/;
 import {RUTE_LOGBOOK} from "./logbook.js";
