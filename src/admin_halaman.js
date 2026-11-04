@@ -41,7 +41,7 @@ const butirAdmin = k => [k, ...HAL[k], "/admin/" + k];
 const GRUP_ADMIN = [
   ["Publik", "🌐", ["statistik", "pesan", "foto", "sosmed"].map(butirAdmin)],
   ["Ruang kerja", "🏛️", [["koordinasi", "🏛️", "Ruang Koordinasi", "/admin/" + BNPB[0]], ["dalops", "🌊", "Ruang Pusdalops", "/bnpb/dalops"], ["direktori", "📚", "Direktori", "/direktori"],
-    ...["posko", "pipa", "command-center"].map(butirAdmin)]],
+    ...["posko", "instansi", "pipa", "command-center"].map(butirAdmin)]],
   ["Pengaturan", "⚙️", ["akun", "kunci-api", "kontak"].map(butirAdmin)]];
 const GRUP_STAF = [["Ruang Koordinasi", "🏛️", SUB], ["Ruang kerja", "🧰", ["posko", "pipa", "command-center"]]];
 const butirNav = ([k, ik, l, href], kini) => `<a href="${href}" ${kini(k) ? 'aria-current="page"' : ""}>${ik} ${l}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`;

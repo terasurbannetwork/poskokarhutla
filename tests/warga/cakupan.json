@@ -943,6 +943,7 @@
     "POST /api/sensor/lapor": "sensor: lapor dari gateway tersimpan",
     "POST /api/logbook/dummy": "logbook: dummy hanya Super Admin",
     "GET /bnpb/dokumen": "GET /bnpb/dokumen: kerangka publik tanpa cache",
+    "GET /bnpb/bahan": "GET /bnpb/dokumen: kerangka publik tanpa cache",
     "GET /bnpb/perencanaan": "GET /bnpb/perencanaan: kerangka publik tanpa cache",
     "GET /bnpb/operasi": "GET /bnpb/operasi: kerangka publik tanpa cache",
     "GET /bnpb/operasi-lapangan": "GET /bnpb/operasi-lapangan: dialihkan ke tab Operasi peta utama",
