@@ -27,6 +27,8 @@ async function panggil(env, secret, jalur, params) {
 }
 const perlu = (x, larik) => { if (larik ? !Array.isArray(x) : (typeof x !== "object" || !x || Array.isArray(x))) throw new Gagal("penyedia_galat"); return x; };
 const teks = x => (typeof x === "string" ? x : x == null ? "" : String(x)).slice(0, 200);
+/* "4,920" / "4910.000000" / "+80.00" / 1.65 -> angka; selain itu null */
+const angka = x => { const n = typeof x === "number" ? x : typeof x === "string" && x.trim() ? Number(x.replace(/,/g, "")) : NaN; return Number.isFinite(n) ? n : null; };
 
 /* jenis -> d => [secret, jalur, params, susun(payload), detik cache]. d = hasil validasi masukan() */
 const JENIS = {
@@ -38,10 +40,25 @@ const JENIS = {
     const r = perlu(j?.data?.data ?? j?.data), tanggal = r.date?.data?.data;
     return {ringkas: perlu(r.summary?.data), riwayat: perlu(tanggal ?? [], true).slice(0, 200).map(x => ({tanggal: x.div_date, nilai: x.div_amount, jenis: x.div_payment_type, bayar: x.pay_date, yield: x.yield ?? null}))};
   }, 86400],
-  /* ponytail: payload info diteruskan utuh (bentuk provider belum diketahui); daftar-putih bidang bila bentuknya sudah terlihat */
-  info: d => ["STELLAR_KEY_STOCKBIT", `/stockbit/${d.kode}/info`, {}, j => ({data: perlu(j?.data?.provider_payload?.data)}), 60],
-  transaksi: d => ["STELLAR_KEY_STOCKBIT", `/stockbit/${d.kode}/running-trade`, {sort: "DESC", limit: d.limit, order_by: "RUNNING_TRADE_ORDER_BY_TIME"}, j => ({data: perlu(j?.data?.provider_payload)}), 60],
-  grafik: d => ["STELLAR_KEY_STOCKBIT", `/stockbit/${d.kode}/running-trade/chart`, {period: "RT_PERIOD_" + d.periode, investor_type: "INVESTOR_TYPE_ALL", market_board: "BOARD_TYPE_REGULAR"}, j => ({data: perlu(j?.data?.provider_payload)}), 60],
+  /* Stockbit: daftar-putih bidang (bentuk nyata 4 Nov 2026). Payload asli memuat bidang akun gateway (is_holding_exist, is_price_alert_exist, followed): tidak diteruskan. */
+  info: d => ["STELLAR_KEY_STOCKBIT", `/stockbit/${d.kode}/info`, {}, j => {
+    const x = perlu(j?.data?.provider_payload?.data), ob = x.orderbook || {};
+    return {data: {nama: teks(x.name), kode: teks(x.symbol), bursa: teks(x.exchange), sektor: teks(x.sector), sub_sektor: teks(x.sub_sector), jenis: teks(x.type_company),
+      harga: angka(x.price), perubahan: angka(x.change), perubahan_persen: angka(x.percentage), volume: angka(x.volume), sebelumnya: angka(x.previous), rata_rata: angka(x.average),
+      bid_harga: angka(ob.bid?.price), bid_volume: angka(ob.bid?.volume), offer_harga: angka(ob.offer?.price), offer_volume: angka(ob.offer?.volume),
+      status_pasar: teks(x.market_hour?.status), diperbarui: teks(x.updated)}};
+  }, 60],
+  transaksi: d => ["STELLAR_KEY_STOCKBIT", `/stockbit/${d.kode}/running-trade`, {sort: "DESC", limit: d.limit, order_by: "RUNNING_TRADE_ORDER_BY_TIME"}, j => {
+    const x = perlu(j?.data?.provider_payload?.data);
+    return {data: {tanggal: teks(x.date), pasar_buka: !!x.is_open_market, baris: perlu(x.running_trade ?? [], true).slice(0, 200).map(r => ({waktu: teks(r.time),
+      sisi: r.action === "buy" ? "Beli" : r.action === "sell" ? "Jual" : teks(r.action), harga: angka(r.price), lot: angka(r.lot), nilai: angka(r.value?.raw), papan: teks(r.market_board)}))}};
+  }, 60],
+  grafik: d => ["STELLAR_KEY_STOCKBIT", `/stockbit/${d.kode}/running-trade/chart`, {period: "RT_PERIOD_" + d.periode, investor_type: "INVESTOR_TYPE_ALL", market_board: "BOARD_TYPE_REGULAR"}, j => {
+    const x = perlu(j?.data?.provider_payload?.data);
+    const deret = perlu(x.price_chart_data ?? [], true).slice(0, 2000).map(r => ({t: /^\d{4}-\d\d-\d\d$/.test(r.date) && /^\d\d:\d\d$/.test(r.time) ? `${r.date}T${r.time}:00+07:00` : teks(r.date),
+      harga: angka(r.value?.raw), buka: angka(r.open?.raw), tertinggi: angka(r.high?.raw), terendah: angka(r.low?.raw)})).filter(r => r.harga !== null);
+    return {data: {dari: teks(x.from), sampai: teks(x.to), sesi: teks(x.date_session_info), deret}};
+  }, 60],
 };
 
 /* objek masukan bersih, atau string pesan galat (400) */

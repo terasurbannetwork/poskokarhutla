@@ -20,7 +20,9 @@ export function tglId(t) { const m = /^(\d{4})-(\d\d)-(\d\d)(?:[T ](\d\d):(\d\d)
 /* peta label Indonesia; kunci tak dikenal tampil apa adanya (garis bawah jadi spasi) */
 export const LABEL = {name: "nama", symbol: "kode", exchange: "bursa", sector: "sektor", industry: "industri", currency: "mata uang", country: "negara", market_cap: "kapitalisasi pasar",
   open: "buka", high: "tertinggi", low: "terendah", close: "tutup", previous_close: "tutup sebelumnya", time: "waktu", date: "tanggal", price: "harga", last: "harga", volume: "volume", lot: "lot", side: "sisi", action: "sisi",
-  buy: "beli", sell: "jual", value: "nilai", frequency: "frekuensi", waktu: "waktu", harga: "harga", sisi: "sisi", tanggal: "tanggal", nilai: "nilai", jenis: "jenis", bayar: "tanggal bayar", yield: "yield"};
+  buy: "beli", sell: "jual", value: "nilai", frequency: "frekuensi", waktu: "waktu", harga: "harga", sisi: "sisi", tanggal: "tanggal", nilai: "nilai", jenis: "jenis", bayar: "tanggal bayar", yield: "yield",
+  kode: "kode", nama: "nama", bursa: "bursa", sektor: "sektor", sub_sektor: "subsektor", jenis: "jenis", sebelumnya: "tutup sebelumnya (Rp)", rata_rata: "rata-rata (Rp)",
+  bid_harga: "bid (Rp)", bid_volume: "volume bid (lembar)", offer_harga: "offer (Rp)", offer_volume: "volume offer (lembar)", status_pasar: "status pasar", diperbarui: "diperbarui", papan: "papan"};
 export const label = k => LABEL[String(k).toLowerCase()] || String(k).replace(/_/g, " ");
 const KOLOM_RUPIAH = /^(price|last|harga|open|high|low|close|value|nilai)$/i;
 
@@ -84,7 +86,7 @@ export function titikGaris(deret, lebar = 640, tinggi = 200, pad = 8) {
 
 /* info: ambil harga/perubahan/volume bila ada (nama kunci bervariasi), sisanya jadi daftar bidang skalar berlabel Indonesia */
 const SOROT = [["Harga terakhir", ["last", "last_price", "price", "close", "harga"], v => rupiah(v)],
-  ["Perubahan", ["change", "perubahan"], v => tanda(v, x => rupiah(x, 2))], ["Perubahan (%)", ["change_percent", "percent_change", "pct_change"], v => tanda(v, x => persen(x))],
+  ["Perubahan", ["change", "perubahan"], v => tanda(v, x => rupiah(x, 2))], ["Perubahan (%)", ["perubahan_persen", "change_percent", "percent_change", "pct_change"], v => tanda(v, x => persen(x))],
   ["Volume", ["volume", "vol"], v => angka(v, 0) + " lembar"]];
 export function ringkasInfo(data) {
   const o = data && typeof data === "object" && !Array.isArray(data) ? data : {};
@@ -94,7 +96,7 @@ export function ringkasInfo(data) {
     const k = ks.find(x => lc[x] != null && typeof lc[x] !== "object");
     if (k) { dipakai.add(k); sorot.push({nama, nilai: num(lc[k]) !== null ? f(num(lc[k])) : String(lc[k])}); }
   }
-  for (const k of ["change", "perubahan", "change_percent", "percent_change", "pct_change", "volume", "vol", "last", "last_price", "price", "close", "harga"]) dipakai.add(k);   // sudah disorot atau duplikat sorotan
+  for (const k of ["change", "perubahan", "perubahan_persen", "change_percent", "percent_change", "pct_change", "volume", "vol", "last", "last_price", "price", "close", "harga"]) dipakai.add(k);   // sudah disorot atau duplikat sorotan
   const lain = Object.keys(o).filter(k => !dipakai.has(k.toLowerCase()) && o[k] != null && typeof o[k] !== "object")
     .map(k => ({nama: label(k), nilai: typeof o[k] === "number" ? angka(o[k], Number.isInteger(o[k]) ? 0 : 2) : tglId(o[k])}));
   return {sorot, lain};

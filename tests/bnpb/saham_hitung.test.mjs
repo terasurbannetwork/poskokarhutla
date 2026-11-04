@@ -50,3 +50,15 @@ test("tglId, labelSkala, rupiah", () => {
   const l = H.labelSkala(H.uraiDeret(CONTOH.grafik)); assert.equal(l.length, 2); assert.match(l[1], /Nov 2026/);
   assert.equal(H.labelSkala([{t: 0, v: 1}, {t: 1, v: 2}]), null);
 });
+
+test("bentuk nyata hasil rute (Stockbit dinormalkan Worker, 4 Nov 2026) terurai layar", () => {
+  const info = H.ringkasInfo({nama: "Bank Central Asia Tbk.", kode: "BBCA", harga: 4920, perubahan: 80, perubahan_persen: 1.65, volume: 191269500, sebelumnya: 4840, bid_harga: 4910, status_pasar: "open"});
+  assert.deepEqual(info.sorot.map(x => x.nama + "=" + x.nilai), ["Harga terakhir=Rp 4.920", "Perubahan=+Rp 80,00", "Perubahan (%)=+1,65%", "Volume=191.269.500 lembar"]);
+  assert.ok(info.lain.some(x => x.nama === "tutup sebelumnya (Rp)" && x.nilai === "4.840"));
+  assert.ok(!info.lain.some(x => /perubahan/.test(x.nama)), "persen tidak dobel di daftar lain");
+  const t = H.uraiTabel({tanggal: "2026-11-04", pasar_buka: true, baris: [{waktu: "14:35:23", sisi: "Beli", harga: 4920, lot: 20, nilai: 9840000, papan: "RG"}]});
+  assert.deepEqual(t.kolom, ["waktu", "sisi", "harga (Rp)", "lot", "nilai (Rp)", "papan"]); assert.deepEqual(t.baris[0], ["14:35:23", "Beli", "4.920", "20", "9.840.000", "RG"]);
+  const d = H.uraiDeret({dari: "2026-11-03", deret: [{t: "2026-11-03T09:00:00+07:00", harga: 5025}, {t: "2026-11-03T09:01:00+07:00", harga: 5050}]});
+  assert.deepEqual(d.map(x => x.v), [5025, 5050]); assert.equal(d[1].t - d[0].t, 60e3);
+  assert.deepEqual(H.labelSkala(d), ["09:00 WIB", "09:01 WIB"]);
+});

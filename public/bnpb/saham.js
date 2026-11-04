@@ -1,7 +1,7 @@
 /* Data saham (/bnpb/saham): cari emiten, lalu panel Info, Grafik, Transaksi, Dividen dari gateway Stellar Data lewat Worker (/api/saham/*).
    Tiap panel memuat dan gagal sendiri; "akses belum dibuka" ditampilkan sebagai keadaan biasa, bukan galat. Chrome kontrol urgent,
    panel berat ditunda satu frame (INP). Tombol dummy (Super Admin) mengisi contoh lokal tanpa memanggil API. Tanpa gaya/skrip inline (CSP). */
-import * as H from "/bnpb/saham_hitung.js";
+import * as H from "/bnpb/saham_hitung.js?v=2";
 import {CONTOH} from "/bnpb/saham_contoh.js";
 
 const {ikon, h} = window.Wilayah;

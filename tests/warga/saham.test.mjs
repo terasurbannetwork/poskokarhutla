@@ -70,16 +70,24 @@ uji("saham: cari sukses dipetakan dan kunci Investing terkirim sebagai header", 
 });
 
 uji("saham: dividen, info, transaksi, grafik memakai jalur, parameter, dan kunci yang benar", async () => {
-  minta = []; jawab = u => u.pathname === "/investing/dividends" ? ok(DIV) : ok(PP({data: {symbol: "BBCA"}, message: "x"}));
+  /* bentuk nyata Stockbit via Stellar Data (4 Nov 2026), dipangkas */
+  const INFO = {data: {name: "Bank Central Asia Tbk.", symbol: "BBCA", exchange: "IDX", sector: "Keuangan", sub_sector: "Bank", type_company: "Saham", price: "4920", change: "+80.00", percentage: 1.65, previous: "4840", average: "220770108.00", volume: "191269500",
+    orderbook: {bid: {price: "4910.000000", volume: "3069200.000000"}, offer: {price: "4920.000000", volume: "169900.000000"}}, market_hour: {status: "open"}, updated: "2026-11-04T08:00:02+07:00", is_holding_exist: true, is_price_alert_exist: true, followed: 0}, message: "ok"};
+  const RT = {data: {is_open_market: true, date: "2026-11-04", running_trade: [{time: "14:35:23", action: "buy", code: "BBCA", price: "4,920", change: "+1.65%", lot: "20", market_board: "RG", value: {raw: 9840000, formatted: "9.8M"}}, {time: "14:35:20", action: "sell", price: "4,910", lot: "5", market_board: "RG", value: {raw: 2455000}}]}, message: "ok"};
+  const CH = {data: {from: "2026-11-03", to: "2026-11-03", date_session_info: "3 Nov 2026", price_chart_data: [{date: "2026-11-03", time: "09:00", value: {raw: "5025"}, open: {raw: "5050"}, high: {raw: "5050"}, low: {raw: "5025"}}, {date: "2026-11-03", time: "09:01", value: {raw: "5050"}, open: null, high: null, low: null}]}, message: "ok"};
+  minta = []; jawab = u => u.pathname === "/investing/dividends" ? ok(DIV) : ok(PP(u.pathname.endsWith("/info") ? INFO : u.pathname.endsWith("/chart") ? CH : RT));
   const d = await api("/api/saham/dividen?pair_id=252");
   assert.equal(d.status, 200); assert.deepEqual(d.j, {ok: true, ringkas: {annualized_payout: 3.92, dividend_yield: 0.75}, riwayat: [{tanggal: "2026-11-19T00:00:00Z", nilai: 0.98, jenis: "Quarterly", bayar: "2026-12-10T00:00:00Z", yield: 0.75}]});
   assert.equal(minta[0].u.searchParams.get("pair_id"), "252"); assert.equal(minta[0].kunci, KEY_I);
   const i = await api("/api/saham/bbca/info");   // huruf kecil dinaikkan
-  assert.deepEqual(i.j, {ok: true, data: {symbol: "BBCA"}}); assert.equal(minta[1].u.pathname, "/stockbit/BBCA/info"); assert.equal(minta[1].kunci, KEY_S);
+  assert.deepEqual(i.j, {ok: true, data: {nama: "Bank Central Asia Tbk.", kode: "BBCA", bursa: "IDX", sektor: "Keuangan", sub_sektor: "Bank", jenis: "Saham", harga: 4920, perubahan: 80, perubahan_persen: 1.65, volume: 191269500, sebelumnya: 4840, rata_rata: 220770108,
+    bid_harga: 4910, bid_volume: 3069200, offer_harga: 4920, offer_volume: 169900, status_pasar: "open", diperbarui: "2026-11-04T08:00:02+07:00"}}, "daftar-putih: bidang akun gateway (is_holding_exist dst.) tidak diteruskan");
+  assert.equal(minta[1].u.pathname, "/stockbit/BBCA/info"); assert.equal(minta[1].kunci, KEY_S);
   const t = await api("/api/saham/BBCA/transaksi?limit=7");
-  assert.deepEqual(t.j, {ok: true, data: {data: {symbol: "BBCA"}, message: "x"}});
+  assert.deepEqual(t.j, {ok: true, data: {tanggal: "2026-11-04", pasar_buka: true, baris: [{waktu: "14:35:23", sisi: "Beli", harga: 4920, lot: 20, nilai: 9840000, papan: "RG"}, {waktu: "14:35:20", sisi: "Jual", harga: 4910, lot: 5, nilai: 2455000, papan: "RG"}]}});
   assert.equal(minta[2].u.pathname, "/stockbit/BBCA/running-trade"); assert.equal(minta[2].u.searchParams.get("limit"), "7"); assert.equal(minta[2].u.searchParams.get("sort"), "DESC");
   const g = await api("/api/saham/BBCA/grafik?periode=LAST_1_MONTH");
+  assert.deepEqual(g.j, {ok: true, data: {dari: "2026-11-03", sampai: "2026-11-03", sesi: "3 Nov 2026", deret: [{t: "2026-11-03T09:00:00+07:00", harga: 5025, buka: 5050, tertinggi: 5050, terendah: 5025}, {t: "2026-11-03T09:01:00+07:00", harga: 5050, buka: null, tertinggi: null, terendah: null}]}});
   assert.equal(g.status, 200); assert.equal(minta[3].u.pathname, "/stockbit/BBCA/running-trade/chart"); assert.equal(minta[3].u.searchParams.get("period"), "RT_PERIOD_LAST_1_MONTH");
   await api("/api/saham/BBCA/grafik"); assert.equal(minta[4].u.searchParams.get("period"), "RT_PERIOD_LAST_1_DAY");
 });
