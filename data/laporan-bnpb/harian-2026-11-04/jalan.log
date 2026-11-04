@@ -1,0 +1,53 @@
+ok C:\Users\USER\AppData\Local\Temp\lewat-deck-ljcyrnlj\Laporan Kejadian Bencana Harian 041126.pptx  {"slide": 6, "huruf_terkecil_pt": 6.5, "warna": 35, "angka_diperiksa": 191}
+mode simpanan
+pakai simpanan website D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-04\kerja-041126\web
+deteksi hari laporan Pulau Taliabu 0 -> selesai
+hari data website 2026-11-03
+website 2026-11-03 ditambahkan: Nusa Tenggara Timur
+website 2026-11-03 ditambahkan: Kalimantan Selatan
+website 2026-11-03 ditambahkan: Maluku
+website 2026-11-03 Kalimantan Tengah Siaga 664 ha 425 FS -> ditangani PERHATIAN
+website 2026-11-03 Jambi Siaga 403 ha 150 FS -> ditangani PERHATIAN
+website 2026-11-03 Kalimantan Timur Siaga 216 ha 85 FS -> ditangani PERHATIAN
+website 2026-11-03 Sumatera Selatan Siaga 105 ha 60 FS -> ditangani PERHATIAN
+website 2026-11-03 Kalimantan Barat Patroli 4 ha 4 FS -> ditangani 
+website 2026-11-03 Riau Patroli 0 ha 0 FS -> selesai 
+website 2026-11-03 Sulawesi Selatan Siaga 52 ha 19 FS -> ditangani 
+website 2026-11-03 Sulawesi Tenggara Siaga 81 ha 22 FS -> ditangani 
+website 2026-11-03 Sulawesi Tengah Siaga 97 ha 46 FS -> ditangani 
+website 2026-11-03 Maluku Utara Siaga 87 ha 12 FS -> ditangani 
+website 2026-11-03 Papua Selatan Prioritas 653 ha 120 FS -> ditangani PERHATIAN
+website 2026-11-03 Nusa Tenggara Timur Siaga 66 ha 24 FS -> ditangani 
+website 2026-11-03 Kalimantan Selatan Siaga 112 ha 37 FS -> ditangani PERHATIAN
+website 2026-11-03 Maluku Siaga 106 ha 69 FS -> ditangani PERHATIAN
+ok D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-04\Laporan Kejadian Bencana Harian 041126.pptx | hari data 2026-11-04 | cutoff 2026-11-04T07:00+07:00 | kejadian 27 karhutla 16 ditangani 13 perlu perhatian 10 selesai 5 | Prioritas ditambah ['53', '63', '81']
+karhutla 62 (prov) berjalan DITANGANI PERHATIAN {'kum': 694906, 'sisa': 664, 'hot': 425}
+karhutla 93 (prov) berjalan DITANGANI PERHATIAN {'kum': 304206, 'sisa': 653, 'hot': 120}
+karhutla 15 (prov) berjalan DITANGANI PERHATIAN {'kum': 36362, 'sisa': 403, 'hot': 150}
+karhutla 64 (prov) berjalan DITANGANI PERHATIAN {'kum': 129533, 'sisa': 216, 'hot': 85}
+karhutla 63 (prov) berjalan DITANGANI PERHATIAN {'kum': 106252, 'sisa': 112, 'hot': 37}
+karhutla 81 (prov) berjalan DITANGANI PERHATIAN {'kum': 76175, 'sisa': 106, 'hot': 69}
+karhutla 16 (prov) berjalan DITANGANI PERHATIAN {'kum': 214089, 'sisa': 105, 'hot': 60}
+karhutla 72 (prov) berjalan DITANGANI  {'kum': 47650, 'sisa': 97, 'hot': 46}
+karhutla 82 (prov) berjalan DITANGANI  {'kum': 40754, 'sisa': 87, 'hot': 12, 'padam_sat': 1}
+karhutla 74 (prov) berjalan DITANGANI  {'kum': 31581, 'sisa': 81, 'hot': 22}
+karhutla 53 (prov) berjalan DITANGANI  {'kum': 58919, 'sisa': 66, 'hot': 24}
+karhutla 73 (prov) berjalan DITANGANI  {'kum': 34928, 'sisa': 52, 'hot': 19}
+karhutla 61 (prov) berjalan DITANGANI  {'kum': 326999, 'sisa': 4, 'hot': 4}
+karhutla 14 (prov) berjalan selesai  {'kum': 26990, 'sisa': 0, 'hot': 0}
+karhutla 33 Batang selesai selesai  {'kum': 148, 'sisa': 0, 'hot': 0}
+karhutla 95 Jayawijaya selesai selesai  {'kum': 5963, 'sisa': 0, 'hot': 0}
+banjir 11 Aceh Barat selesai selesai  {}
+banjir 11 Aceh Selatan belum DITANGANI PERHATIAN {}
+banjir 11 Pidie Jaya selesai selesai  {}
+banjir 13 Solok berjalan DITANGANI  {}
+cuaca 33 Brebes belum DITANGANI PERHATIAN {}
+kekeringan 33 Klaten berjalan DITANGANI  {}
+kekeringan 35 Blitar berjalan DITANGANI  {}
+cuaca 35 Sumenep berjalan DITANGANI  {}
+banjir 35 Lumajang berjalan DITANGANI  {}
+longsor 35 Malang belum DITANGANI PERHATIAN {}
+gempabumi 53 (prov) berjalan DITANGANI  {}
+mesin ok D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-04\Laporan Kejadian Bencana Harian 041126.pptx
+PDF utama sedang terbuka di aplikasi lain; disimpan sebagai D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-04\Laporan Kejadian Bencana Harian 041126 0916.pdf
+pdf D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-04\Laporan Kejadian Bencana Harian 041126 0916.pdf
