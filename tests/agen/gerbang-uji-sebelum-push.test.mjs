@@ -52,6 +52,22 @@ test("terbit.yml: permissions issues: write, langkah failure() terbit-gagal, lan
   assert.doesNotMatch(t, /always\(\)/, "run dibatalkan tidak boleh memberi tahu");
 });
 
+// 4 Nov 2026: uji macet menghabiskan batas job lalu berakhir "cancelled", dan failure() tidak menyala. Tiap langkah uji wajib
+// punya batas waktu sendiri (langkah lewat batas = gagal), dan jumlahnya harus muat di batas job.
+test("terbit.yml: tiap langkah uji punya timeout-minutes sendiri yang muat di batas job", () => {
+  const t = baca(W + "terbit.yml");
+  const job = Number(t.match(/^ {4}timeout-minutes:\s*(\d+)/m)?.[1]);
+  const langkah = [...t.matchAll(/- name: [^\n]+\n((?: {8}[^\n]*\n)*?) {8}run: npm run (uji:[\w-]+)/g)];
+  assert.ok(langkah.length >= 3, "langkah uji tidak ditemukan");
+  let jumlah = 0;
+  for (const [, badan, u] of langkah) {
+    const m = badan.match(/timeout-minutes:\s*(\d+)/);
+    assert.ok(m, `langkah ${u} tanpa timeout-minutes`);
+    jumlah += Number(m[1]);
+  }
+  assert.ok(jumlah + 10 <= job, `batas langkah uji (${jumlah} menit) + 10 menit sisa harus <= batas job ${job}`);
+});
+
 test("pre-push: rentang yang hanya menyentuh dokumen keluar 0 tanpa menjalankan uji", () => {
   const d = mkdtempSync(join(tmpdir(), "pp-"));
   const g = (...a) => execFileSync("git", a, {cwd: d, encoding: "utf8"}).trim();

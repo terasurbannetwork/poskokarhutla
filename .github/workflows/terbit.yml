@@ -21,7 +21,7 @@ concurrency:
 jobs:
   terbit:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
@@ -33,11 +33,16 @@ jobs:
           cache: npm
       - name: Pasang dependensi uji
         run: npm ci
+      # Batas waktu PER LANGKAH (4 Nov 2026): uji yang macet (Chrome yatim memegang pipa) dulu menghabiskan 25 menit job lalu
+      # berakhir "cancelled", sehingga pemberitahuan failure() tidak menyala. Langkah yang lewat batasnya berstatus gagal.
       - name: Uji agen (gerbang)
+        timeout-minutes: 8
         run: npm run uji:agen
       - name: Uji worker (D1, route, foto)
+        timeout-minutes: 18
         run: npm run uji:warga
       - name: Uji SIPPA (klien dan gerbang)
+        timeout-minutes: 5
         run: npm run uji:sippa
 
       - name: Pulihkan data karhutla terakhir
