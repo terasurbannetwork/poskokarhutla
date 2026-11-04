@@ -1003,7 +1003,7 @@
      "kode": "03",
      "jenis": "kapasitas",
      "langkah": "Menerima bantuan secara berimbang",
-     "rincian": "Bantuan negara sahabat sebaiknya diterima bersamaan agar tidak ada satu negara yang dipersepsikan paling dominan.",
+     "rincian": "Bantuan Amerika Serikat dan Tiongkok hingga Jepang, Malaysia, Australia, serta Singapura diterima bersamaan agar tidak ada yang paling dominan.",
      "lembaga": [
       "Kemlu",
       "BNPB"
@@ -1066,7 +1066,7 @@
      "kode": "08",
      "jenis": "regulasi",
      "langkah": "Mengendalikan komunikasi publik",
-     "rincian": "Rilis media melalui BNPB dengan menonjolkan kapasitas nasional; dinamika internal tidak dibahas dengan pihak negara lain.",
+     "rincian": "Rilis media melalui BNPB dan forum Intermestik menonjolkan kapasitas nasional; kelemahan logistik maupun sistem data tidak dibahas dengan pihak negara lain.",
      "lembaga": [
       "BNPB",
       "Badan Komunikasi Pemerintah"
@@ -1086,7 +1086,7 @@
      "kode": "10",
      "jenis": "data",
      "langkah": "Melibatkan KL lain dan melapor ke pimpinan",
-     "rincian": "Data dan peta pihak negara lain diperiksa sebelum dibawa ke luar negeri; hasil dilaporkan ke Presiden melalui Menko.",
+     "rincian": "Data pihak negara lain diperiksa sebelum dibawa ke luar negeri; hasil dilapor ke Presiden melalui Menko, tanpa komitmen bilateral baru sebelum disetujui pusat.",
      "lembaga": [
       "BNPB",
       "Kemenko PMK",
@@ -1178,7 +1178,7 @@
       {
        "ikon": "peringatan",
        "judul": "Tim militer bersenjata",
-       "isi": "Tim bantuan tidak membawa senjata kecuali disetujui Presiden dan Mabes TNI; Papua dan perbatasan Laut China Selatan bukan lokasi proyek percontohan."
+       "isi": "Tanpa senjata kecuali disetujui Presiden dan Mabes TNI; wilayah Otsus Papua dan perbatasan Laut China Selatan bukan lokasi percontohan."
       },
       {
        "ikon": "lembaga",
