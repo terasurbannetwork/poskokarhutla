@@ -18,9 +18,11 @@ BUCKET, PREFIKS = "poskokarhutla-foto", "beku/"   # wrangler.jsonc binding MEDIA
 BATAS_GB = 5
 SUMBER_SIDIK = "scripts/banjir/model_kab_campur.py"
 FOLDER = ["data/raw/banjir/" + d for d in ("jam_era5", "q2_pusat", "koreksi_bias", "label_kec", "fitur", "iklim", "model_kab_campur")] \
-    + ["data/raw/longsor", "data/raw/logbook"]
+    + ["data/raw/longsor", "data/raw/logbook", "data/raw/publik", "data/raw/banjir/gfm/ref"]   # publik: sumber yang bisa hilang (COOLR, GFD, Mendeley, PetaBencana), ~270 MB; gfm/ref kecil (3.8 MB)
+# GFM: hanya hasil (kab_hari.csv.gz + manifest.jsonl); cache/ (tif sementara) dan panen.log sengaja tidak dicadangkan
 # masukan sidik longsor (PRAREG-LHASA2 §327) yang berada di luar folder di atas
-TAMBAHAN = ["public/longsor/data/pvmbg.json", "public/longsor/data/kerentanan.json", "public/data/bnpb/kerentanan.json",
+TAMBAHAN = ["data/raw/banjir/gfm/kab_hari.csv.gz", "data/raw/banjir/gfm/manifest.jsonl",
+            "public/longsor/data/pvmbg.json", "public/longsor/data/kerentanan.json", "public/data/bnpb/kerentanan.json",
             "public/data/penduduk.json", "public/data/neraca_air/grace.json"]
 LEWATI = re.compile(r"(^|/)(venv|\.venv|__pycache__|\.git|node_modules)(/|$)|\.(part|tmp|lock|crdownload|pyc)$|(^|/)\.DS_Store$|~$")
 TUNGGU_DETIK = 300   # berkas diubah <5 menit lalu dianggap unduhan yang masih berjalan
