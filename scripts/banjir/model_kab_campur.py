@@ -504,20 +504,34 @@ def iklim_lag(seri, tahun, bulan, kunci):
     return seri.get(geser_bulan(tahun, bulan, JENDELA[kunci]))
 
 
+_DERET = []
+_AN_CACHE = {}
+
+
+def _modul_deret():
+    if not _DERET:
+        import importlib.util
+        jalur = os.path.join(AKAR, "scripts/air/neraca/deret.py")
+        spec = importlib.util.spec_from_file_location("deret_neraca", jalur)
+        sys.path.insert(0, os.path.dirname(jalur))
+        try:
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+        finally:
+            sys.path.pop(0)
+        _DERET.append(mod)
+    return _DERET[0]
+
+
 def sa_neraca(deret_s, tahun, bulan, acuan):
     """Anomali S bulan m-4: S(m-4) - rerata bulan-kalender yang sama atas TAHUN `acuan` (deret.anomali). deret_s: {'YYYY-MM': S|None}."""
-    import importlib.util
-    jalur = os.path.join(AKAR, "scripts/air/neraca/deret.py")
-    spec = importlib.util.spec_from_file_location("deret_neraca", jalur)
-    sys.path.insert(0, os.path.dirname(jalur))
-    try:
-        mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(mod)
-    finally:
-        sys.path.pop(0)
+    mod = _modul_deret()
     y, m = geser_bulan(tahun, bulan, JENDELA["neraca_lag"])
-    an = mod.anomali(deret_s, sorted(acuan))
-    return an.get(f"{y}-{m:02d}")
+    kunci = (id(deret_s), tuple(sorted(acuan)), hash(tuple(deret_s.items())))
+    if kunci not in _AN_CACHE:
+        _AN_CACHE.clear() if len(_AN_CACHE) > 64 else None
+        _AN_CACHE[kunci] = mod.anomali(deret_s, sorted(acuan))
+    return _AN_CACHE[kunci].get(f"{y}-{m:02d}")
 
 
 def twsa_fitur(tws, waktu, tahun, bulan, acuan, minimal=4):
@@ -1019,7 +1033,7 @@ BERKAS_SIDIK = {   # relatif AKAR; wajib = tanpa itu sidik ditolak; ekstensi = b
               "scripts/banjir/umum.py", "scripts/banjir/uji_balik.py", "data/banjir/kab2_ops/sampel.json", "scripts/banjir/model_kab_hulu.py",
               "scripts/banjir/fitur_banjir.py", "scripts/sebaran/gbdt.py"],
     "ekstensi": ["scripts/banjir/koreksi_bias.py", "public/banjir/data/koreksi_bias.json", "public/data/neraca_air/grace.json", "scripts/banjir/pasang_astro.py",
-                 "scripts/air/neraca/deret.py", "data/raw/banjir/iklim/oni.ascii.txt", "data/raw/banjir/iklim/dmi.had.long.data",
+                 "scripts/air/neraca/deret.py", "data/raw/banjir/model_kab_campur/kedap.json", "data/raw/banjir/q2_pusat/manifest.json", "scripts/banjir/q2_pusat.py", "scripts/banjir/kedap_kab.py", "data/raw/banjir/iklim/oni.ascii.txt", "data/raw/banjir/iklim/dmi.had.long.data",
                  "data/raw/banjir/label_bersatu_v2/kab_hari.csv.gz", "data/raw/banjir/label_bersatu_v2/cakupan_hari.csv.gz", "data/raw/banjir/model_kab_campur/label_latih.json", "data/raw/banjir/model_kab_campur/label_26.json", "data/raw/banjir/dibi_tanggal.json"],
     "label_hidup": ["public/data/logbook_kejadian.json", "public/data/dibi_kejadian.json", "data/raw/banjir/dibi_tanggal.json"]}
 
@@ -1081,7 +1095,7 @@ def cek_ekstensi():
             cek[nama] = None
         except DataBelumAda as e:
             cek[nama] = str(e)
-    coba("E_kedap", lambda: sumber_tak_ada("E_kedap", "cache WorldCover data/raw/banjir/fitur/ belum ada") if not os.path.isdir(os.path.join(AKAR, "data/raw/banjir/fitur")) else None)
+    coba("E_kedap", lambda: sumber_tak_ada("E_kedap", "kedap.json (kedap_kab.py unduh/hitung) belum ada") if not os.path.exists(J("kedap.json")) else None)
     coba("E_pasang", lambda: sumber_tak_ada("E_pasang", "daftar kab pesisir (latih.json bagian pesisir / pesisir.json) belum ada") if not os.path.exists(J("pesisir.json")) else None)
     coba("E_hulu", lambda: sumber_tak_ada("E_hulu", "CHIRPS hulu (model_kab_hulu/chirps) belum ada") if not os.path.isdir(HU.CHIRPS_DIR) else None)
     coba("E_neraca", lambda: sumber_tak_ada("E_neraca", "deret_bulanan.json belum ada") if not os.path.exists(DERET_BULANAN) else None)
@@ -1106,9 +1120,80 @@ def pemblokir():
         s[6] = ("siap", "peta nama kab -> kode BPS terbentuk (UL.kode_geo)")
     except DataBelumAda as e:
         s[6] = ("BLOK", str(e))
+    try:
+        sam_ = json.load(open(SAMPEL))
+        sk_ = {k: [tuple(x[:2]) for x in v] for k, v in sam_["sk"].items()}
+        sel_ = {x for v in sk_.values() for x in v}
+        hil = []
+        for x in sorted(sel_):
+            try:
+                cuaca_satu(x)
+            except DataBelumAda:
+                hil.append(x)
+        s[9] = ("siap", f"hujan jam-an + sm: {len(sel_)} sel utuh") if not hil else ("BLOK", f"hujan jam-an + sm belum utuh untuk {len(hil)} dari {len(sel_)} sel (jam_era5.py panen hujan, sm_era5.py panen)")
+    except (OSError, KeyError, ValueError) as e:
+        s[9] = ("BLOK", f"sampel/ERA5 tak terbaca: {e}")
+    s[10] = ("siap", "q2_pusat utuh") if os.path.exists(os.path.join(AKAR, "data/raw/banjir/q2_pusat/manifest.json")) else ("BLOK-ringan", "q2_pusat belum tuntas: q_q2/q_ant/dq/qa dicopot dari model tayang (A-11)")
     s[7] = ("siap", "guard terpasang (uji: pastikan_label_terpotong, gerbang_buka)")
     s[8] = ("BLOK" if cek["E_cs"] else "siap", cek["E_cs"] or "angin ada")
     return s, cek
+
+
+GEO_KAB = os.path.join(AKAR, "public/geo/kabupaten")
+PESISIR_AMBANG_KM = 5.0          # tepi luar >= 5 km (setelah buang batas negara darat) = menyentuh garis pantai
+SNAP_DESIMAL = 4                 # simpul dibulatkan 1e-4 derajat (~11 m) agar tepi bersama antar-kab terpasang
+BATAS_NEGARA = [   # (awalan provinsi, lon_min, lon_maks, lat_min, lat_maks): tepi luar di kotak ini dianggap batas darat, bukan pantai
+    (("61",), 109.4, 114.5, 0.8, 2.3),       # Kalbar-Sarawak (pantai Sambas lon < 109,4 tetap dihitung)
+    (("64", "65"), 114.0, 117.3, 0.8, 4.6),  # Kaltim/Kaltara-Sabah/Sarawak (pantai timur Tarakan lon > 117,3 tetap)
+    (("91", "92", "93", "94", "95", "96"), 140.98, 141.02, -9.2, -2.5),   # Papua-PNG di bujur 141
+    (("53",), 124.0, 127.0, -9.6, -9.1)]     # NTT-Timor Leste: PERKIRAAN kasar, kab terdampak ditampilkan untuk ditinjau
+
+
+def km_tepi(a, b):
+    return math.hypot((b[0] - a[0]) * 111.32 * math.cos(math.radians((a[1] + b[1]) / 2)), (b[1] - a[1]) * 110.57)
+
+
+def tepi_luar(fitur, desimal=None):
+    """fitur: [(kunci 'pp|Nama', geometry)] -> {kunci: (km tepi luar, km tepi luar di batas negara)}. Tepi luar = segmen yang HANYA dipakai satu poligon
+    satu kali (setelah snapping simpul); segmen di kotak BATAS_NEGARA dihitung terpisah."""
+    n = SNAP_DESIMAL if desimal is None else desimal
+    pakai = defaultdict(list)
+    for kunci, g in fitur:
+        polys = [g["coordinates"]] if g["type"] == "Polygon" else g["coordinates"]
+        for poly in polys:
+            for ring in poly:
+                for a, b in zip(ring, ring[1:]):
+                    ea, eb = (round(a[0], n), round(a[1], n)), (round(b[0], n), round(b[1], n))
+                    if ea != eb:
+                        pakai[tuple(sorted((ea, eb)))].append(kunci)
+    out = {k: [0.0, 0.0] for k, _ in fitur}
+    for e, ks in pakai.items():
+        if len(ks) != 1:
+            continue
+        k, mx, my = ks[0], (e[0][0] + e[1][0]) / 2, (e[0][1] + e[1][1]) / 2
+        neg = any(k.split("|", 1)[0] in pv and x0 <= mx <= x1 and y0 <= my <= y1 for pv, x0, x1, y0, y1 in BATAS_NEGARA)
+        out[k][1 if neg else 0] += km_tepi(*e)
+    return {k: (v[0], v[1]) for k, v in out.items()}
+
+
+def susun_pesisir(tulis=True):
+    """pesisir.json: kab (poligon nasional public/geo/kabupaten) dengan tepi luar >= PESISIR_AMBANG_KM. Dikunci di latih.json oleh latih_nyata."""
+    fitur = []
+    for f in sorted(os.listdir(GEO_KAB)):
+        for ft in json.load(open(os.path.join(GEO_KAB, f)))["features"]:
+            fitur.append((f"{f[:-5]}|{ft['properties']['kab']}", ft["geometry"]))
+    tl = tepi_luar(fitur)
+    sam = json.load(open(SAMPEL))["kab"]
+    pes = sorted(k for k, (a, _) in tl.items() if a >= PESISIR_AMBANG_KM)
+    out = {"metode": f"tepi poligon yang dipakai satu kab saja (simpul dibulatkan {SNAP_DESIMAL} desimal) dikurangi kotak BATAS_NEGARA; pesisir bila >= {PESISIR_AMBANG_KM} km",
+           "sumber": "public/geo/kabupaten/*.json", "sha256_sumber": hashlib.sha256(b"".join(open(os.path.join(GEO_KAB, f), "rb").read() for f in sorted(os.listdir(GEO_KAB)))).hexdigest(),
+           "batas_negara": BATAS_NEGARA, "n_kab": len(tl), "n_pesisir": len(pes), "pesisir": pes, "km": {k: [round(a, 1), round(b, 1)] for k, (a, b) in tl.items()},
+           "sampel": {"n": len(sam), "pesisir": [k for k in sam if k in pes], "n_pesisir": sum(1 for k in sam if k in pes), "tidak_terpetakan": [k for k in sam if k not in tl]},
+           "terdampak_batas_negara": sorted(k for k, (a, b) in tl.items() if b > 0 and a < PESISIR_AMBANG_KM <= a + b)}
+    if tulis:
+        os.makedirs(KELUAR, exist_ok=True)
+        json.dump(out, open(J("pesisir.json"), "w"), separators=(",", ":"))
+    return out
 
 
 def baris():
@@ -1177,37 +1262,91 @@ def potong_sumber_label(lb, dibi):
     return [e for e in lb if f(e["mulai"])], [e for e in dibi if f(e["tanggal"])]
 
 
-def konteks_nyata():
-    """Adaptor data nyata: tabel kab-hari 2016-2026-10-18 (semua hari; w>0 hanya baris latih berlabel v2), fitur berstatistik tahun-acuan,
-    label eval gab_mulai (ye) dan DIBI (y_dibi). Fitur tanpa data (q_*, hx, qa, pa, hu3, kd, swi, cs, iklim) TIDAK masuk `tersedia` (dihapus, dicatat)."""
+AKHIR_DATA = dt.date(2026, 10, 18)             # akhir hujan jam-an jam_era5.py; hari terakhir yang bisa dinilai = AKHIR_DATA - 2 (butuh e+1 dan cadangan)
+SM_ERA5 = os.path.join(AKAR, "data/raw/banjir/sm_era5")
+
+
+def harian_dari_jam(jam):
+    """Hujan jam-an (mm/jam, mulai 2015-01-01 00:00 WIB) -> (p harian WIB, imax = maks jam per hari WIB) sejak ub.AWAL. Identik dengan cache uji_balik
+    (selisih 0 pada sel yang ada di keduanya; hari dengan jam None dihitung 0 untuk p dan dilewati untuk im)."""
+    d0 = (ub.AWAL - dt.date(2015, 1, 1)).days
+    p, im = [], []
+    for d in range(d0, len(jam) // 24):
+        h = jam[24 * d:24 * d + 24]
+        v = [x for x in h if x is not None]
+        p.append(sum(v))
+        im.append(max(v) if v else None)
+    return p, im
+
+
+def cuaca_satu(s):
+    """{p, im, sm} sel s dari ub.AWAL sampai AKHIR_DATA: p/im dari jam-an, sm dari cache uji_balik (<= ub.AKHIR) + sm_era5 (sisanya). Data hilang -> DataBelumAda."""
+    import gzip
+    p, im = harian_dari_jam(jam_hujan(s))
+    ke = os.path.join(SM_ERA5, f"{s[0]:.3f}_{s[1]:.3f}.json.gz")
+    if not os.path.exists(ke):
+        raise DataBelumAda(f"sm_era5 sel {s} belum diunduh ({ke}): `sm_era5.py panen`")
+    ext = json.load(gzip.open(ke, "rt"))
+    sm = (ub.deret(json.load(gzip.open(ub.jalur(*s), "rt")))["sm"] if os.path.exists(ub.jalur(*s)) else []) + ext["sm"]
+    if os.path.exists(ub.jalur(*s)) and ext["awal"] != str(ub.AKHIR + dt.timedelta(1)):
+        raise DataBelumAda(f"sm_era5 sel {s} mulai {ext['awal']}, harus {ub.AKHIR + dt.timedelta(1)}")
+    n = (AKHIR_DATA - ub.AWAL).days + 1
+    if min(len(p), len(sm)) < n:
+        raise DataBelumAda(f"deret sel {s} pendek: p {len(p)}, sm {len(sm)}, perlu {n}")
+    return {"p": p[:n], "im": im[:n], "sm": sm[:n]}
+
+
+def konteks_nyata(kering=False):
+    """Adaptor data nyata: tabel kab-hari 2016-2026-10-16 (semua hari; w>0 hanya baris latih berlabel v2), fitur berstatistik tahun-acuan,
+    label eval gab_mulai (ye) dan DIBI (y_dibi). Fitur tanpa data (q_*, hx, qa, pa, hu3, kd, swi, cs) TIDAK masuk `tersedia` (dihapus, dicatat).
+    Hujan: jam-an ERA5 (jam_era5.py) -> p/imax harian; sm: cache uji_balik + sm_era5. Tanpa itu: kering memakai cache uji_balik apa adanya (tanpa 2026)."""
     K2.pasang()
     sam = json.load(open(SAMPEL))
     kabs, sk = K2.sk_dari(sam)
+    sel_semua = sorted({x for k in kabs for x in sk[k]})
+    cu, alasan = {}, None
+    for x in sel_semua:
+        try:
+            cu[x] = cuaca_satu(x)
+        except DataBelumAda as e:
+            alasan = alasan or str(e)
+    lengkap = [k for k in kabs if all(x in cu for x in sk[k])]
+    ada26 = bool(lengkap)
+    if len(lengkap) < len(kabs):
+        if not kering:
+            raise DataBelumAda(f"{len(kabs) - len(lengkap)} dari {len(kabs)} kab belum punya hujan jam-an + sm lengkap: {alasan}")
+        if not lengkap:                                      # dry-run tanpa jam-an: cache uji_balik apa adanya, 2016-2025
+            lengkap = [k for k in kabs if all(os.path.exists(ub.jalur(*x)) for x in sk[k])]
+        kabs = lengkap
     sel = sorted({x for k in kabs for x in sk[k]})
     dibi = [r for r in json.load(open(K2.DIBI_TGL)) if r[3] <= "2025-12-31"]
-    cuaca = MKD.cuaca_sampai(sel, K2.AKHIR_26)
+    cuaca = {x: cu[x] for x in sel} if ada26 else MK.muat_cuaca(sel)
     pers = MK.persentil_batas(cuaca)
     penuh, eks = MK.frekuensi(ub.peristiwa(dibi), kabs, MK.laju_awal(dibi, kabs))
     Bs = [MK.bangun(cuaca, sk, kabs, {"banjir": {}, "longsor": {}}, LATIH, pers, penuh, eks)]
-    with HU.tambal_ub(akhir=K2.AKHIR_26):
-        B6 = MK.bangun(cuaca, sk, kabs, {"banjir": {}, "longsor": {}}, range(2026, 2027), pers, penuh, {})
-    lo, hi = ub.hari_ke(dt.date(2026, 1, 1)), ub.hari_ke(LABEL_AKHIR)
-    ix6 = [i for i, e in enumerate(B6["e"]) if lo <= e <= hi]
-    Bs.append({k: [v[i] for i in ix6] for k, v in B6.items()})
+    if ada26:
+        with HU.tambal_ub(akhir=AKHIR_DATA):
+            B6 = MK.bangun(cuaca, sk, kabs, {"banjir": {}, "longsor": {}}, range(2026, 2027), pers, penuh, {})
+        lo, hi = ub.hari_ke(dt.date(2026, 1, 1)), ub.hari_ke(LABEL_AKHIR)
+        ix6 = [i for i, e in enumerate(B6["e"]) if lo <= e <= hi]
+        Bs.append({k: [v[i] for i in ix6] for k, v in B6.items()})
     B = {k: sum((b[k] for b in Bs), []) for k in Bs[0]}
     n = len(B["e"])
     tgl = [K2.tgl_e(e) for e in B["e"]]
     pastikan_label_terpotong(tgl)
-    # label v2 (latih) dan label eval
-    baris_, pb = K2.baca_v2()
-    labv2, st = K2.label_kab(baris_, pb, V2.hari_j3(), set(kabs), K2.hari_latih())
-    lb_, db_ = potong_sumber_label(json.load(open(UL.LB))["kejadian"], json.load(open(UL.DIBI))["kejadian"])
-    ke = {v: k for k, v in K2.peta_kode(kabs).items()}
-    lab_e, _ = UL.label_dari(lb_, db_, akhir=LABEL_AKHIR)
-    jadi = lambda nm: {(ke[k], UL.AWAL + dt.timedelta(i)) for k, v in lab_e[nm].items() if k in ke for i in v}
-    gab, dibi_set = jadi("gab_mulai"), jadi("dibi")
+    # label v2 (latih) dan label eval. kering=True: dry-run adaptor TANPA label v2 dan TANPA berkas label hidup (proksi DIBI <= 2025 dari dibi_tanggal.json)
     tl = {(f"{p_}|{n_}", dt.date.fromisoformat(t)) for jenis, p_, n_, t, v_ in dibi if v_ >= 1 and {"banjir", "bandang"} & set(jenis) and f"{p_}|{n_}" in set(kabs)}
-    gab, dibi_set = gab | tl, dibi_set | tl                                                      # A-8: DIBI <= 2025 dari dibi_tanggal.json (berkas publik hanya memuat 2025+)
+    if kering:
+        labv2 = {(k, d): ((1, 1.0) if (k, d) in tl else (0, 1.0)) for k in kabs for d in K2.hari_latih()}
+        st, gab, dibi_set = {"proksi": "DRY-RUN: DIBI <= 2025 sebagai pengganti label v2"}, set(tl), set(tl)
+    else:
+        baris_, pb = K2.baca_v2()
+        labv2, st = K2.label_kab(baris_, pb, V2.hari_j3(), set(kabs), K2.hari_latih())
+        lb_, db_ = potong_sumber_label(json.load(open(UL.LB))["kejadian"], json.load(open(UL.DIBI))["kejadian"])
+        ke = {v: k for k, v in K2.peta_kode(kabs).items()}
+        lab_e, _ = UL.label_dari(lb_, db_, akhir=LABEL_AKHIR)
+        jadi = lambda nm: {(ke[k], UL.AWAL + dt.timedelta(i)) for k, v in lab_e[nm].items() if k in ke for i in v}
+        gab, dibi_set = jadi("gab_mulai") | tl, jadi("dibi") | tl            # A-8: DIBI <= 2025 dari dibi_tanggal.json (berkas publik hanya memuat 2025+)
     pastikan_label_terpotong([d for _, d in gab | dibi_set])
     T = {"kab": B["kab"], "tahun": B["tahun"], "bulan": B["bulan"], "e": B["e"], "level": B["level"], "uji": [], "y": [], "w": [], "ye": [], "y_dibi": []}
     for k, d, th in zip(B["kab"], tgl, B["tahun"]):
@@ -1223,15 +1362,19 @@ def konteks_nyata():
     wilayah = sorted(set(T["wil"]))
     # fitur per sel: seri harian, batas persentil berstatistik `acuan`
     hari = [e for e in sorted(set(B["e"]))]
-    with HU.tambal_ub(akhir=K2.AKHIR_26):
-        seri = {s: MK.seri_sel(cuaca[s], MK.hari_tahun(range(2016, 2027))) for s in sel}
+    with HU.tambal_ub(akhir=AKHIR_DATA if ada26 else ub.AKHIR):
+        seri = {s: MK.seri_sel(cuaca[s], MK.hari_tahun(range(2016, 2027 if ada26 else 2026))) for s in sel}
     kabsel = {k: list(sk[k]) for k in kabs}
     tahun_e = {e: MK.tahun_dari(e) for e in seri[sel[0]]}
     p7 = {s: {e: sum(cuaca[s]["p"][e + JENDELA["p_ant"][0]:e + JENDELA["p_ant"][1] + 1]) for e in seri[s]} for s in sel}
     kode_kab = K2.peta_kode(kabs)
     neraca = json.load(open(DERET_BULANAN))["kab"] if os.path.exists(DERET_BULANAN) else None
     grace = json.load(open(GRACE)) if os.path.exists(GRACE) else None
-    tersedia = set(S0) | {"p_ant"} | ({"sa"} if neraca else set()) | ({"twsa"} if grace else set())
+    try:
+        oni_d, dmi_d = baca_iklim()
+    except DataBelumAda:
+        oni_d = dmi_d = None
+    tersedia = set(S0) | {"p_ant"} | ({"sa"} if neraca else set()) | ({"twsa"} if grace else set()) | ({"oni", "dmi"} if oni_d else set())
     # anomali sm di SEMUA kab-hari (bukan hanya baris berlabel) dipetakan ke baris
 
     def bangun(acuan):
@@ -1262,12 +1405,38 @@ def konteks_nyata():
                 kd = (kode_kab.get(T["kab"][i]) or "").replace(".", "")
                 if kd in grace["kab"] and T["wil"][i] == "Jawa":
                     F["twsa"][i] = twsa_fitur(grace["kab"][kd]["tws_cm"], grace["meta"]["waktu"], T["tahun"][i], T["bulan"][i], acuan)
+        if oni_d:                                            # E_iklim: indeks bulan b-3 (ONI) dan b-6 (DMI); murni fungsi bulan, tak bergantung acuan
+            F["oni"] = [iklim_lag(oni_d, T["tahun"][i], T["bulan"][i], "oni_lag") for i in range(n)]
+            F["dmi"] = [iklim_lag(dmi_d, T["tahun"][i], T["bulan"][i], "dmi_lag") for i in range(n)]
         return F
     X = [[B["X"][i][j] for j in K2.AKTIF] for i in range(n)]
     ctx = Konteks(T, bangun, wilayah, X_lr1=X, tersedia=tersedia)
     ctx.wilayah_info = gw
-    ctx.catatan = {"tersedia": sorted(tersedia), "label_v2": st, "tanpa_data": sorted(set(URUT_FITUR) - tersedia)}
+    ctx.catatan = {"era5_2026": ada26, "tersedia": sorted(tersedia), "label_v2": st, "tanpa_data": sorted(set(URUT_FITUR) - tersedia)}
     return ctx
+
+
+def dry_run_nyata():
+    """`latih --nyata-kering`: adaptor data nyata end-to-end TANPA menulis apa pun, TANPA label v2, TANPA berkas label hidup (proksi DIBI <= 2025), TANPA sidik.
+    Mencetak waktu, baris per wilayah, P_w/T_w (proksi), fitur tersedia/dihapus, dan satu pencocokan model S0(+p_ant,sa,twsa) pada 2016-2021."""
+    import time
+    t0 = time.time()
+    ctx = konteks_nyata(kering=True)
+    print(f"adaptor: {ctx.n} baris, {len(set(ctx.T['kab']))} kab, {time.time() - t0:.0f} dtk; tersedia {sorted(ctx.tersedia)}; tanpa data {ctx.catatan['tanpa_data']}")
+    T = ctx.T
+    for wl in ctx.wilayah:
+        ix = [i for i in range(ctx.n) if T["wil"][i] == wl]
+        lat = [i for i in ix if T["w"][i] > 0]
+        print(f"  {wl}: baris {len(ix)}, latih {len(lat)}, positif proksi {sum(T['y'][i] for i in lat)}")
+    print("  P_w/T_w (proksi DIBI, BUKAN label v2):", json.dumps({c: (v["P_w"], v["T_w"], v["lolos"]) for c, v in ctx.wilayah_info["rincian"].items()}))
+    nm = [f for f in ("pers_h3", "lh3", "limax", "sm", "h3_sm", "p_ant") if f in ctx.tersedia]
+    t1 = time.time()
+    F = ctx.F(frozenset(range(2016, 2022)))
+    print(f"fitur acuan 2016-2021: {len(F)} kolom, {time.time() - t1:.0f} dtk; hilang per kolom: {json.dumps({k: sum(v is None for v in c) for k, c in F.items()})}")
+    t2 = time.time()
+    mod = cocok(ctx, frozenset(range(2016, 2022)), cfg_dari(ctx, nm, 0.1, 0.05))
+    print(f"cocok S0+p_ant 2016-2021: {mod['n_latih']} baris latih, iter {mod['iter']}, koef wilayah pertama {[round(c, 3) for c in mod['koef'][0]]}, {time.time() - t2:.0f} dtk")
+    print(f"dry-run OK ({time.time() - t0:.0f} dtk total); tidak menulis apa pun")
 
 
 def tambah_jejak(baris_):
@@ -1308,7 +1477,9 @@ def latih_nyata(ulang=False):
         sys.exit("kandidat.json sudah ada: latih ulang butuh --ulang")
     ctx = konteks_nyata()
     os.makedirs(KELUAR, exist_ok=True)
-    json.dump({"wilayah": ctx.wilayah_info, "catatan": ctx.catatan, "A_durasi": durasi_A(False)}, open(J("latih.json"), "w"), separators=(",", ":"))
+    pes = json.load(open(J("pesisir.json"))) if os.path.exists(J("pesisir.json")) else None
+    json.dump({"wilayah": ctx.wilayah_info, "catatan": ctx.catatan, "A_durasi": durasi_A(False),
+               "pesisir": pes and {k: pes[k] for k in ("metode", "sha256_sumber", "n_pesisir", "sampel", "pesisir")}}, open(J("latih.json"), "w"), separators=(",", ":"))
     daftar_buka(tulis=True)
     pil = pilih_semua(ctx, evaluator(ctx), ctx.wilayah_info["urutan"], ctx.wilayah_info["cw_sekunder"])
     cfg = {"tau": pil["tau"], "tau_w": pil["tau_w"], "set": pil["set"]}
@@ -1886,6 +2057,33 @@ def uji():
     assert pastikan_label_terpotong([dt.datetime(2026, 10, 18, 23, 0)]) is None
     _tolak(lambda: pastikan_label_terpotong([dt.datetime(2026, 10, 19, 0, 0)]), "DILARANG")
     assert set(gw["koreksi_bias"]) == set(gw["peta"].values()) and gw["koreksi_bias"]["Bali-NT"] == "Lainnya" and gw["koreksi_bias"]["Jawa"] == "Jawa" and gw["koreksi_bias"][PENAMPUNG] == "Lainnya"
+    # 23. pesisir: tepi bersama bukan pantai, tepi luar dihitung, batas negara dikurangi
+    kot = lambda x0, y0, x1, y1: {"type": "Polygon", "coordinates": [[[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]]}
+    tl_ = tepi_luar([("32|A", kot(107, -7, 108, -6)), ("32|B", kot(108, -7, 109, -6))])
+    assert abs(tl_["32|A"][0] - (3 * 111.0)) < 15 and tl_["32|A"][1] == 0.0                         # 3 sisi luar (sisi bersama dibuang)
+    tl2 = tepi_luar([("32|A", kot(107, -7, 108, -6)), ("32|B", kot(108.00001, -7, 109, -6))])        # snapping 1e-4: celah 1e-5 tetap dianggap berbagi
+    assert tl2["32|A"][0] < tl_["32|A"][0] + 1 and tl2["32|A"][0] > 2 * 100
+    tl3 = tepi_luar([("61|A", kot(110, 1.0, 111, 2.0)), ("61|B", kot(107, -1, 108, 0))])             # kotak A di lintasan batas negara Kalbar-Sarawak
+    assert tl3["61|A"][0] < 1e-6 and tl3["61|A"][1] > 300 and tl3["61|B"][0] > 300 and tl3["61|B"][1] == 0.0
+    # 24. hujan harian/imax dari jam-an identik cache uji_balik (sel yang ada di kedua cache), toy + nyata bila ada
+    jm = [0.0] * 24 + [1.0] * 24 + [None] * 23 + [3.0]
+    jm0 = [0.0] * ((ub.AWAL - dt.date(2015, 1, 1)).days * 24)
+    pj, ij = harian_dari_jam(jm0 + jm)
+    assert pj == [0.0, 24.0, 3.0] and ij == [0.0, 1.0, 3.0] and harian_dari_jam(jm0 + [None] * 24)[1] == [None]
+    cocok_n = 0
+    if os.path.isdir(os.path.join(JAM_ERA5, "hujan")):
+        import gzip
+        for dn in sorted(os.listdir(os.path.join(JAM_ERA5, "hujan")))[:40]:
+            sl = tuple(float(v) for v in dn.split("_"))
+            if cocok_n >= 3 or not os.path.exists(ub.jalur(*sl)):
+                continue
+            try:
+                pj, ij = harian_dari_jam(jam_hujan(sl))
+            except DataBelumAda:
+                continue
+            c = ub.deret(json.load(gzip.open(ub.jalur(*sl), "rt")))
+            assert all(abs(a - b) < 1e-9 for a, b in zip(pj, c["p"])) and all(a == b for a, b in zip(ij, c["im"])), sl
+            cocok_n += 1
     print("ok model_kab_campur")
 
 
@@ -1906,8 +2104,16 @@ def main():
             print(f"  {k}: {'siap' if v is None else v}")
     elif m == "baris":
         baris()
+    elif m == "pesisir":
+        o = susun_pesisir()
+        print(f"{o['n_pesisir']} dari {o['n_kab']} kab pesisir; sampel {o['sampel']['n_pesisir']} dari {o['sampel']['n']}: {o['sampel']['pesisir']}; terdampak batas negara: {o['terdampak_batas_negara']}")
     elif m == "latih" and "--kering" in sys.argv:
         latih_kering()
+    elif m == "latih" and "--nyata-kering" in sys.argv:
+        try:
+            dry_run_nyata()
+        except DataBelumAda as e:
+            sys.exit(f"dry-run ditolak, data belum ada: {e}")
     elif m in ("latih", "gerbang", "sidik", "buka", "nilai"):
         if m == "buka" and "--kering" in sys.argv:
             sys.exit("buka --kering: butuh kandidat.json (belum ada; `latih` nyata belum boleh dijalankan)")

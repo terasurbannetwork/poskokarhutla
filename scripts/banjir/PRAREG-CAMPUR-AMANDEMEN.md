@@ -32,3 +32,11 @@ data sintetis. `PRAREG-CAMPUR.md` tidak disunting; berkas ini dikunci di `.sidik
   menjadi ~0,016 pada tau_w = 0,02. Uji: kasus ber-mask memulihkan efek sebenarnya (>= 0,8 x kasus wilayah tunggal).
 - **A-10 (4 Nov 2026).** Jendela fitur yang keluar dari awal deret (e + batas bawah < 0) tidak membungkus ke ekor deret: `p_ant`, `cs` -> hilang (baris dibuang/netral sesuai aturan fitur hilang);
   `q_ant_*`/`dq` -> 0 (netral, sesuai "nol bila salah satu hilang").
+- **A-11 (4 Nov 2026; belum ada skor uji yang dilihat). Titik debit dan Q2.** `model_kab_debit/titik.json` asli tidak ada dan tidak dapat dipulihkan (berkas mentah di-gitignore, tidak ada di riwayat git
+  maupun bundle cadangan). `scripts/banjir/data/titik_glofas_kab.json` (satu titik per kab, 514 kode BPS) BUKAN padanannya (dasar kab, bukan sel; tidak di kisi 0,05 derajat) dan tidak dipakai.
+  Keputusan: titik latih = PUSAT SEL yang sama dengan arsip (§4.3 aturan 2), sehingga titik latih dan arsip identik. Q2 dihitung ulang dari deret GloFAS harian 2016-2025 di pusat sel
+  (`scripts/banjir/q2_pusat.py`, ~27 rb bobot, idempoten, jalan sesudah `jam_era5.py`). Hash manifest `q2_pusat/manifest.json` dikunci di `.sidik`. SIDIK TIDAK MENUNGGU unduhan ini:
+  bila belum tuntas (104 sel utuh) saat sidik, berlaku aturan dokumen: `q_q2`, `q_ant_mx`, `q_ant_mn`, `dq`, `qa` dicopot dari model TAYANG (hanya P1/model penuh), dan `latih` mencatat
+  sel yang belum utuh di `latih.json`.
+- **A-12 (4 Nov 2026).** `E_kedap`: porsi kelas 50 (built-up) WorldCover v200 2021 per kab sampel dari fraksi blok 20x20 piksel (~220 m), rerata sel berpusat di dalam poligon
+  `public/geo/kabupaten`; hash ubin dan metode di `kedap.json`, dikunci di `latih.json`/`.sidik`. Pendekatan blok 220 m menjadi toleransi batas kab.
