@@ -17,6 +17,7 @@ export default {
         "peta",
         "operasi",
         "insight",
+        "saham",
         "berita",
         "tren",
         "kompleks",

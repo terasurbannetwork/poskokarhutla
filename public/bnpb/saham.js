@@ -6,6 +6,9 @@ import {CONTOH} from "/bnpb/saham_contoh.js";
 
 const {ikon, h} = window.Wilayah;
 const app = document.getElementById("app");
+/* tertanam = tab Saham di peta utama (index.html, iframe): kepala halaman disembunyikan, peta sudah punya navbar */
+const TERTANAM = new URLSearchParams(location.search).has("tertanam");
+if (TERTANAM) document.documentElement.classList.add("sh-tertanam");
 const NS = "http://www.w3.org/2000/svg";
 const PERIODE = [["RT_PERIOD_LAST_1_DAY", "1 hari"], ["RT_PERIOD_LAST_7_DAYS", "7 hari"], ["RT_PERIOD_LAST_1_MONTH", "1 bulan"], ["RT_PERIOD_LAST_3_MONTHS", "3 bulan"], ["RT_PERIOD_YEAR_TO_DATE", "Tahun berjalan"], ["RT_PERIOD_LAST_1_YEAR", "1 tahun"]];
 const SUMBER = {stockbit: "Sumber: Stockbit via Stellar Data", investing: "Sumber: Investing.com via Stellar Data"};
@@ -98,8 +101,17 @@ function pilih(x) {
   st.pilih = x; el.hasil.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.kode === x.kode && b.dataset.pair === String(x.pair_id))));
   muatSemua();
 }
+/* logo emiten: Bursa Efek Indonesia dari aset logo Stockbit (CSP img-src saham di src/bnpb.js); bursa lain atau gambar gagal = inisial kode */
+function logo(x) {
+  const w = h("span", {class: "sh-logo", "aria-hidden": "true", teks: (x.kode || "?").slice(0, 2)});
+  if (/jakarta|idx/i.test(x.bursa || "") && /^[A-Z]{4}$/.test(x.kode || "")) {
+    const img = h("img", {src: `https://assets.stockbit.com/logos/companies/${x.kode}.png`, alt: "", width: "32", height: "32", decoding: "async"});
+    img.addEventListener("load", () => w.replaceChildren(img), {once: true});
+  }
+  return w;
+}
 function tampilHasil(daftar) {
-  el.hasil.replaceChildren(...daftar.map(x => { const b = h("button", {type: "button", "data-kode": x.kode, "data-pair": String(x.pair_id), "aria-pressed": "false"}, h("b", {teks: x.kode}), h("span", {teks: `${x.nama || ""}${x.bursa ? ", " + x.bursa : ""}`}));
+  el.hasil.replaceChildren(...daftar.map(x => { const b = h("button", {type: "button", "data-kode": x.kode, "data-pair": String(x.pair_id), "aria-pressed": "false"}, logo(x), h("b", {teks: x.kode}), h("span", {teks: `${x.nama || ""}${x.bursa ? ", " + x.bursa : ""}`}));
     b.addEventListener("click", () => pilih(x)); return b; }));
 }
 
@@ -117,7 +129,7 @@ async function cari() {
 function kartuMasuk(s) {
   app.replaceChildren(h("div", {class: "bn-blok"}, h("h2", {teks: "Masuk staf"}),
     h("p", {class: "sh-p", teks: s === 403 ? "Akunmu belum berhak membuka halaman ini." : "Data saham hanya untuk staf. Masuk dulu dengan akun staf, lalu buka halaman ini lagi."}),
-    h("a", {class: "bn-tombol", href: "/admin/masuk?ke=" + encodeURIComponent(location.pathname), teks: "Masuk staf"})));
+    h("a", {class: "bn-tombol", href: "/admin/masuk?ke=" + encodeURIComponent(TERTANAM ? "/saham" : location.pathname), target: TERTANAM ? "_top" : null, teks: "Masuk staf"})));
 }
 
 /* ---------- dummy (Super Admin saja): isi contoh lokal di layar, tidak memanggil API ---------- */
