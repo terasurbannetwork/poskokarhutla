@@ -1657,6 +1657,7 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
   <!-- ================= LAPORAN: pintu ke tiga generator yang sudah ada (pemilik 25 Okt 2026) ================= -->
   <section class="page scroll" id="p-pelaporan" aria-label="Laporan"><div class="wrap lp-wrap"><h2 class="lp-jd">Laporan</h2><p class="lp-sub">Pilih laporan yang mau dibuat. Angkanya diambil dari data situs ini.</p><div class="lp-grid"><a class="box lp-k" href="/laporan-bnpb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Laporan bencana harian</b><span>Laporan Kejadian Bencana Harian BNPB: isi angka kejadian, pratinjau, lalu unduh.</span><small>PPTX · PDF</small></a><a class="box lp-k" href="/laporan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Laporan karhutla harian</b><span>Titik panas, luas terbakar, belum padam, dan status per provinsi dan kabupaten untuk hari terpilih.</span><small>Cetak · PDF</small></a><a class="box lp-k" href="/paparan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Laporan per daerah</b><span>Paparan karhutla satu provinsi: pilih provinsi dan tanggal, susun slide, lalu unduh.</span><small>PPTX · PDF</small></a></div><div id="arsipLaporan"></div></div></section>
   <!-- ================= TREN ================= -->
+  <section class="page scroll" id="p-operasi" aria-label="Laporan operasi udara"><div class="wrap" id="opsLaporan"></div></section><!-- menu Operasi = laporan tanpa peta (pemilik 4 Nov 2026); isinya dari operasi_peta.js -->
   <section class="page scroll" id="p-tren" aria-label="Tren dan riwayat titik panas"><div class="wrap"><div id="tren"></div></div></section>
   <!-- ================= SATELIT (tab tersembunyi /satelit: riwayat lintasan, kedatangan data, deteksi per satelit; satelit_data.js dimuat malas oleh muatSatelit) ================= -->
   <section class="page scroll" id="p-satelit" aria-label="Data satelit"><div class="wrap"><div id="satelit"></div></div></section>
@@ -1743,7 +1744,7 @@ const namaProvHtml = k => SINGKAT_PROV[k] ? `<span class="nm-pjg">${esc(namaProv
 
 /* ================================================================ tabs (chrome urgent, isi deferred) */
 const TABS = [["ringkasan", "Dashboard"], ["peta", "Peta"], ["operasi", "Operasi"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["satelit", "Satelit"], ["kompleks", "Cluster"], ["posko", "Posko"], ["dampak", "Dampak"], ["metode", "Metode"], ["sim", "Simulasi"], ["monitor", "Monitor"], ["informasi", "Informasi"], ["foto", "Foto"], ["pelaporan", "Laporan"], ["tentang", "Tentang"]];
-/* tab lama yang sudah digabung: Prioritas -> Kompleks api; Sarana -> Posko (tautan lama tetap jalan). /operasi = menu Operasi: peta + panel Operasi udara (pemilik 4 Nov 2026) */
+/* tab lama yang sudah digabung: Prioritas -> Kompleks api; Sarana -> Posko (tautan lama tetap jalan). /operasi = menu Operasi: laporan operasi udara tanpa peta (pemilik 4 Nov 2026); panel Operasi di peta tetap lewat tab panel Peta */
 const ALIAS = {prioritas: ["kompleks"], sarana: ["posko", "sarana"], keputusan: ["posko", "keputusan"]};
 S.poskoSub = "posko";
 function bukaSub(sub) { S.poskoSub = sub;
@@ -1770,20 +1771,19 @@ function muatSatelit() {
 /* akun pemirsa (src/pemirsa.js): worker menulis tab yang boleh dilihat di <html data-pemirsa-tab>; tab lain disembunyikan dan dialihkan ke tab pertamanya */
 const PEMIRSA = document.documentElement.dataset.pemirsaTab?.split(",").filter(Boolean) || null;
 function bukaTab(id, dorong = true) {
-  const ops = id === "operasi"; if (ops) id = "peta";
   if (PEMIRSA && !PEMIRSA.includes(id === "kompleks" ? "insight" : ALIAS[id]?.[0] ?? id)) id = PEMIRSA[0];
   if (id !== "ringkasan") lengkapiKluster();
   const dl = document.querySelector("#dlgLaci"); if (dl?.open) dl.close();
   if (ALIAS[id]) { const [t, sub] = ALIAS[id]; if (sub) S.poskoSub = sub; id = t; }
   /* /kompleks sekarang bagian bawah Insight */
   if (id === "kompleks") { bukaTab("insight", dorong); return setTimeout(() => $("#insightKompleks")?.scrollIntoView({behavior: "smooth"}), 400); }
-  document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === (ops ? "operasi" : id) ? "page" : "false"));
+  document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
   document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === "p-" + id));
   /* tautan bersih tanpa tagar: /peta, /kompleks, /sim/K0001 (worker mengarahkan path ini ke index.html) */
-  if (dorong) history.replaceState(null, "", id === "ringkasan" ? "/" : "/" + (ops ? "operasi" : id) + (id === "sim" && S.pilihK ? "/" + S.pilihK : ""));
+  if (dorong) history.replaceState(null, "", id === "ringkasan" ? "/" : "/" + id + (id === "sim" && S.pilihK ? "/" + S.pilihK : ""));
   nanti(() => {
     if (id === "peta" && peta) { peta.resize(); lebarPanel(); }
-    if (ops) $('#panelMode [data-m="ops"]')?.click(); else if (id === "peta" && S.panel === "ops") $('#panelMode [data-m="wil"]').click();
+    if (id === "operasi") window.OperasiLaporan?.render();
     if (id === "sim") lengkapiKluster().then(() => Sim.buka());
     if (id === "insight") { Tabel.render(); if (!sudah.prioritas) { sudah.prioritas = 1; renderPrioritas(); } }
     if (id === "posko") bukaSub(S.poskoSub);
@@ -2825,8 +2825,6 @@ function terapkanUrut() {
 }
 S.panel = "wil";
 $("#panelMode").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.panel = b.dataset.m;
-  /* navbar ikut panel: Operasi menyala saat panel Operasi, Peta untuk panel lain */
-  if ($("#p-peta").classList.contains("on")) { const t = S.panel === "ops" ? "operasi" : "peta"; document.querySelectorAll("#tabs button").forEach(x => x.setAttribute("aria-current", x.dataset.t === t ? "page" : "false")); history.replaceState(null, "", "/" + t + location.search); }
   $("#panelMode").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
   nanti(async () => { if (S.panel === "riw" && !S.riw) { $("#rows").innerHTML = `<div class="kosong"><div class="spin"></div>Memuat arsip 2002–2026…</div>`; await Riwayat.muat(); await Peta.aturWilayah(false); }
     Peta.warnaWil(); renderDaftar(); renderLegenda(); }); });
@@ -7145,7 +7143,7 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="konsesi.js"></script>
 <script src="aktor.js"></script>
 <script src="operasi.js"></script>
-<script src="operasi_peta.js?v=4"></script><!-- Operasi udara di peta utama: tab Operasi, overlay, laci base (pemilik 3 Nov 2026) -->
+<script src="operasi_peta.js?v=5"></script><!-- Operasi udara: menu Operasi = laporan tanpa peta; panel Operasi, overlay, laci base di peta (pemilik 3-4 Nov 2026) -->
 <script src="ringkasan.js"></script>
 <script src="inti/sapa.js"></script>
 <script src="sapa.js"></script>
