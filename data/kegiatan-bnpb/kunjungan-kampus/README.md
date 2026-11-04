@@ -4,17 +4,19 @@ Satu deck induk (ITB, rev6) diturunkan per kampus. Satu folder per kampus.
 
 | Folder | Deck | Catatan |
 | --- | --- | --- |
-| `ITB/` | rev6 (`PROGRES.md`, `rapor-rev6.md`) | deck induk, Jakarta 4 Nov 2026 |
+| `ITB/` | rev8 terbaru (`PROGRES.md` untuk riwayat rev6) | deck induk, Jakarta 4 Nov 2026 |
 | `UGM/` | Paparan Kerja Sama BNPB dengan UGM 041126 | Yogyakarta, 4 Nov 2026 |
 | `UII/` | Paparan Kerja Sama BNPB dengan UII 041126 | Yogyakarta, 4 Nov 2026 |
 | `UNY/` | Paparan Kerja Sama BNPB dengan UNY 041126 | Yogyakarta, 4 Nov 2026 |
 | `UMY/` | Paparan Kerja Sama BNPB dengan UMY 041126 | Yogyakarta, 4 Nov 2026 |
 | `UPNVY/` | Paparan Kerja Sama BNPB dengan UPNVY 041126 | Yogyakarta, 4 Nov 2026 |
 
-Yang berbeda per kampus: sampul dan penutup (judul, logo, empat foto kampus, kredit), peta slide 4
-(kampus tujuan oranye; UII, UNY, UMY, UPNVY ditambahkan sebagai titik ke-13), judul penyaji slide 6,
-contoh pusat studi slide 12, slide 13 riset dan inovasi kampus (empat kartu berfoto dan pita peluang),
-dan foto kartu Program 1, 3, 4 di slide 19. Slide lain sama dengan ITB rev6.
+Kelima deck kampus Yogyakarta dibangun ulang 5 Nov 2026 mengikuti ITB rev8. Yang berbeda per kampus: sampul
+dan penutup (judul, logo, empat foto kampus, kredit), slide 4 (wilayah kampus tujuan oranye, logo hanya kampus
+yang dipaparkan; di wilayah Jawa Tengah dan DIY kampus tujuan disebut setelah UGM dan dua contoh rev5 masuk
+hitungan "kampus lainnya", diasumsikan kampus tujuan termasuk kampus sekitar rev5), foto latar lajur profil
+slide 6 (foto sampul kampus; foto gedung BNPB belum ada), slide 13 riset dan inovasi kampus, dan foto kartu
+Program 1, 3, 4 di slide 19. Slide lain sama dengan ITB rev8.
 
 `bahan-kampus.json` di tiap folder = salinan `kampus/<KODE>/data.json` di skill: URL sumber tiap riset,
 lisensi foto, dan catatan hal yang belum terverifikasi.
