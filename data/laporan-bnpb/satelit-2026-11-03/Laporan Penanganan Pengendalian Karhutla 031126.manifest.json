@@ -3305,7 +3305,7 @@
   },
   {
    "kunci": "turunan:spek#3#impor118.0",
-   "tampil": "1",
+   "tampil": "1.800",
    "nilai": null,
    "naskah": "spek#3",
    "keyakinan": "resmi",
@@ -3313,17 +3313,8 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#3#impor119.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "spek#3",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari Laporan Upaya Pemadaman Satgas Karhutla, 3 Nov 2026 (kegiatan 2 Nov 2026)",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#3#impor120.0",
-   "tampil": "1",
+   "kunci": "turunan:spek#3#impor121.0",
+   "tampil": "2",
    "nilai": null,
    "naskah": "spek#3",
    "keyakinan": "resmi",
@@ -3358,7 +3349,34 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#3#impor127.2",
+   "kunci": "turunan:spek#3#impor128.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Upaya Pemadaman Satgas Karhutla, 3 Nov 2026 (kegiatan 2 Nov 2026)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor129.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Upaya Pemadaman Satgas Karhutla, 3 Nov 2026 (kegiatan 2 Nov 2026)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor130.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Upaya Pemadaman Satgas Karhutla, 3 Nov 2026 (kegiatan 2 Nov 2026)",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor132.2",
    "tampil": "2026",
    "nilai": null,
    "naskah": "spek#3",
@@ -3367,7 +3385,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#3#impor128.0",
+   "kunci": "turunan:spek#3#impor133.0",
    "tampil": "3",
    "nilai": null,
    "naskah": "spek#3",
@@ -3409,7 +3427,7 @@
   "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\logo\\sumber-bnpb.png": "40625fac249ac73b97d4b25bcd29b48961037a80bf49ae2a789877db29bacb64",
   "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\tema.json": "e6594fae0cc2d74401922f76d2a2cb9e86f7203bc87a46248837217bc9c6c546",
   "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262",
-  "isi.pptx": "e72e5629ff44d52d0a9841f00ff28c3bad71acd589aa287bd55120991ee57866",
-  "spek.json": "51b6126a96e0dad521d189be1d852e246a4d8d63c4e6152e42a2e4853f6d2a54"
+  "isi.pptx": "b285e88c97bbc9cd654e8b7b9b9780ca12b1db08c4036f1d9ead7a933105b344",
+  "spek.json": "1940478d023ffbe40aa2589ef819e31ef063bdfc130c5f04c6706c586bd5db3e"
  }
 }

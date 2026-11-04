@@ -25,3 +25,7 @@ Bangun ulang: `PYTHONUTF8=1 C:/Python314/python jalan.py`, lalu
     "HUJAN RINGAN" (`generator/penanganan/bnpb.py` label_hujan). Hari ini: Kalteng dan Kalsel HUJAN RINGAN, Sumsel HUJAN LEBAT.
   - "spacingnya masih berantakan yang di tabel omc": baris OMC dan SEMAI kini berjarak sama, celah judul, kepala, dan baris seragam,
     garis pemisah tipis antarbaris (`rapikan_omc`).
+- Revisi 4 Nov (pertanyaan penerima "8 sortie atau 10 sortie, 16.200 atau 18.000 kg?"; pemilik: "tampilkan semua aja"): panel SEMAI OMC
+  kini memuat semua provinsi ber-OMC (Kalteng 6/10.600 kg, Sumsel 2/5.600 kg, Kalsel 2/1.800 kg = 10 sortie/18.000 kg, sama dengan
+  lencana). Baris ke-3 dst disalin dari baris templat (`baris_semai`). Titik baris dibesarkan 5,76 -> 6,12 pt karena deck.py
+  `salin_slide` membuang bentuk kosong <= 6 pt dalam 36 pt di atas garis kaki.
