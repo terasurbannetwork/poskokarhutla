@@ -101,3 +101,6 @@ node_modules*/
 
 # worktree sementara agen (git worktree), bukan isi repo
 .claude/worktrees/
+
+# Renlap PDF penerbangan: folder kerja + cache ubin citra (renlap_pdf.py)
+scripts/operasi/kerja/

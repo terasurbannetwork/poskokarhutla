@@ -209,7 +209,7 @@ export async function jalankan(opsi = {}) {
   const hasil = []
 
   // Penjaga jam hanya untuk jalan otomatis tanpa --tanggal.
-  // Renlap (RENLAP=1) punya jendela sendiri: pagi mulai 05.30, di luar 06.00-23.00; hanya renlap yang jalan di luar jendela.
+  // Renlap (RENLAP=1) punya jendela sendiri: malam 20.00-24.00 dan pagi 07.00-12.00; di luar 06.00-23.00 hanya renlap yang jalan.
   const diLuar = !opsi.tanggal && (jamWib(now) < 6 || jamWib(now) >= 23)
   if (diLuar && !(env.RENLAP === '1' && jatuhTempo(jamWib(now)).length) && !(env.JARAK_PANDANG === '1' && diJendela(jamWib(now)))) return [{ id: '-', status: 'di luar jam 06.00-23.00 WIB' }]
 
