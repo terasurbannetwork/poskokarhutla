@@ -27,14 +27,14 @@ Asal folder memori (di `~/.claude/projects/`):
 
 | Folder di sini | Folder asli |
 | --- | --- |
-| `poskokarhutla` | `-Users-priyankaalfatehan28-Developer-poskokarhutla` |
-| `poskokarhutla-documents` | `-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla` |
-| `pangantara-documents` | `-Users-priyankaalfatehan28-Documents-GitHub-pangantara` |
-| `mbg-kdmp-documents` | `-Users-priyankaalfatehan28-Documents-GitHub-mbg-kdmp` |
-| `Betutu-Sambe-documents` | `-Users-priyankaalfatehan28-Documents-GitHub-Betutu-Sambe` |
-| `gemah-ripah-documents` | `-Users-priyankaalfatehan28-Documents-GitHub-gemah-ripah` |
-| `worth-it` | `-Users-priyankaalfatehan28-Developer-worth-it` |
-| `worth-it-documents` | `-Users-priyankaalfatehan28-Documents-GitHub-worth-it` |
+| `poskokarhutla` | `-Users-<nama>-Developer-poskokarhutla` |
+| `poskokarhutla-documents` | `-Users-<nama>-Documents-GitHub-poskokarhutla` |
+| `pangantara-documents` | `-Users-<nama>-Documents-GitHub-pangantara` |
+| `mbg-kdmp-documents` | `-Users-<nama>-Documents-GitHub-mbg-kdmp` |
+| `Betutu-Sambe-documents` | `-Users-<nama>-Documents-GitHub-Betutu-Sambe` |
+| `gemah-ripah-documents` | `-Users-<nama>-Documents-GitHub-gemah-ripah` |
+| `worth-it` | `-Users-<nama>-Developer-worth-it` |
+| `worth-it-documents` | `-Users-<nama>-Documents-GitHub-worth-it` |
 | `scratch-*` | folder kerja sementara aplikasi Claude |
 
 ## Artefak
@@ -59,7 +59,7 @@ Memori lokal Claude Code tidak ikut akun, tapi bila `~/.claude/` kosong, salin
 balik satu proyek begini (contoh repo ini):
 
 ```bash
-mkdir -p ~/.claude/projects/-Users-priyankaalfatehan28-Developer-poskokarhutla/memory && cp -R .claude/cadangan-akun/memori/poskokarhutla/. .claude/cadangan-akun/memori/poskokarhutla-documents/. ~/.claude/projects/-Users-priyankaalfatehan28-Developer-poskokarhutla/memory/
+mkdir -p ~/.claude/projects/-Users-<nama>-Developer-poskokarhutla/memory && cp -R .claude/cadangan-akun/memori/poskokarhutla/. .claude/cadangan-akun/memori/poskokarhutla-documents/. ~/.claude/projects/-Users-<nama>-Developer-poskokarhutla/memory/
 ```
 
 Kedua folder sama-sama punya `MEMORY.md`; perintah di atas menimpa yang pertama,
