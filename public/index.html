@@ -743,17 +743,17 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 #insightKompleks .tbar > *:not(#tq):not(.sp):not([hidden]){flex:none}
 #insight > *{min-width:0}
 #insight > [data-ex]:empty{display:none}
-#insight .ex,#dampak .ex,#berita .ex,#tren .ex,#prioritas .ex,#metode .ex{margin:0;padding:0;border-radius:18px;overflow:hidden}
-#insight .ex-hd,#dampak .ex-hd,#berita .ex-hd,#tren .ex-hd,#prioritas .ex-hd,#metode .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
-#insight .ex-bd,#dampak .ex-bd,#berita .ex-bd,#tren .ex-bd,#prioritas .ex-bd,#metode .ex-bd{padding:16px 22px 10px}
+#insight .ex,#dampak .ex,#berita .ex,#tren .ex,#prioritas .ex,#metode .ex,#opsLaporan .ex{margin:0;padding:0;border-radius:18px;overflow:hidden}
+#insight .ex-hd,#dampak .ex-hd,#berita .ex-hd,#tren .ex-hd,#prioritas .ex-hd,#metode .ex-hd,#opsLaporan .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
+#insight .ex-bd,#dampak .ex-bd,#berita .ex-bd,#tren .ex-bd,#prioritas .ex-bd,#metode .ex-bd,#opsLaporan .ex-bd{padding:16px 22px 10px}
 /* legenda kartu rata tengah sebaris penuh, sumber di bawahnya */
 .ex-ft .ex-leg{flex:1 1 100%;justify-content:center}
-#insight .ex-ft,#dampak .ex-ft,#berita .ex-ft,#tren .ex-ft,#prioritas .ex-ft,#metode .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
-#insight .ex-ft em,#dampak .ex-ft em,#berita .ex-ft em,#tren .ex-ft em,#prioritas .ex-ft em,#metode .ex-ft em{font-style:italic;opacity:.9}
-#insight .ex-ey,#dampak .ex-ey,#berita .ex-ey,#tren .ex-ey,#prioritas .ex-ey,#metode .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
-#insight .ex-ey:empty,#dampak .ex-ey:empty,#berita .ex-ey:empty,#tren .ex-ey:empty,#prioritas .ex-ey:empty,#metode .ex-ey:empty{display:none}
+#insight .ex-ft,#dampak .ex-ft,#berita .ex-ft,#tren .ex-ft,#prioritas .ex-ft,#metode .ex-ft,#opsLaporan .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
+#insight .ex-ft em,#dampak .ex-ft em,#berita .ex-ft em,#tren .ex-ft em,#prioritas .ex-ft em,#metode .ex-ft em,#opsLaporan .ex-ft em{font-style:italic;opacity:.9}
+#insight .ex-ey,#dampak .ex-ey,#berita .ex-ey,#tren .ex-ey,#prioritas .ex-ey,#metode .ex-ey,#opsLaporan .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
+#insight .ex-ey:empty,#dampak .ex-ey:empty,#berita .ex-ey:empty,#tren .ex-ey:empty,#prioritas .ex-ey:empty,#metode .ex-ey:empty,#opsLaporan .ex-ey:empty{display:none}
 #metode{display:grid;gap:18px}
-#metode .ex{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+#metode .ex,#opsLaporan .ex{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
 #metode .mt-sek:last-child{margin-bottom:0}
 /* kartu provinsi Kompleks: statistik berikon seperti kartu hover peta */
 .pr-isi .ex svg.pr-hr,.pr-isi svg.pr-hr{width:100%;height:auto;max-height:170px;display:block;margin-top:4px}
@@ -881,13 +881,13 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 #kompleks #tjudul{font-family:var(--display);font-size:18px!important;font-weight:800}
 .ex-jd{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
 .ex-jd > select{flex:none;margin-top:2px;box-shadow:none;background-color:var(--card)}
-#insight .ex h3,#dampak .ex h3,#berita .ex h3,#tren .ex h3,#prioritas .ex h3,#metode .ex h3{font-size:21px;line-height:1.3;max-width:none;letter-spacing:-.01em}
-#insight .ex .sub,#dampak .ex .sub,#berita .ex .sub,#tren .ex .sub,#prioritas .ex .sub,#metode .ex .sub{margin:6px 0 0;font-weight:600;font-size:13px;color:var(--ink2)}
-#insight .ex .unit,#dampak .ex .unit,#berita .ex .unit,#tren .ex .unit,#prioritas .ex .unit,#metode .ex .unit{font-size:12px;margin:2px 0 0;color:var(--ink2)}
-#insight .ex .ctl,#dampak .ex .ctl,#berita .ex .ctl,#tren .ex .ctl,#prioritas .ex .ctl,#metode .ex .ctl{margin:12px 0 0}
-#insight .ex .ctl .seg,#dampak .ex .ctl .seg,#berita .ex .ctl .seg,#tren .ex .ctl .seg,#prioritas .ex .ctl .seg,#metode .ex .ctl .seg{display:flex;width:100%}
-#insight .ex .ctl .seg button,#dampak .ex .ctl .seg button,#berita .ex .ctl .seg button,#tren .ex .ctl .seg button,#prioritas .ex .ctl .seg button,#metode .ex .ctl .seg button{flex:1;text-align:center}
-#insight .ex .bg-ex,#dampak .ex .bg-ex,#berita .ex .bg-ex,#tren .ex .bg-ex,#insightKompleks .ex .bg-ex,#metode .ex .bg-ex{margin:14px 16px 0 0}
+#insight .ex h3,#dampak .ex h3,#berita .ex h3,#tren .ex h3,#prioritas .ex h3,#metode .ex h3,#opsLaporan .ex h3{font-size:21px;line-height:1.3;max-width:none;letter-spacing:-.01em}
+#insight .ex .sub,#dampak .ex .sub,#berita .ex .sub,#tren .ex .sub,#prioritas .ex .sub,#metode .ex .sub,#opsLaporan .ex .sub{margin:6px 0 0;font-weight:600;font-size:13px;color:var(--ink2)}
+#insight .ex .unit,#dampak .ex .unit,#berita .ex .unit,#tren .ex .unit,#prioritas .ex .unit,#metode .ex .unit,#opsLaporan .ex .unit{font-size:12px;margin:2px 0 0;color:var(--ink2)}
+#insight .ex .ctl,#dampak .ex .ctl,#berita .ex .ctl,#tren .ex .ctl,#prioritas .ex .ctl,#metode .ex .ctl,#opsLaporan .ex .ctl{margin:12px 0 0}
+#insight .ex .ctl .seg,#dampak .ex .ctl .seg,#berita .ex .ctl .seg,#tren .ex .ctl .seg,#prioritas .ex .ctl .seg,#metode .ex .ctl .seg,#opsLaporan .ex .ctl .seg{display:flex;width:100%}
+#insight .ex .ctl .seg button,#dampak .ex .ctl .seg button,#berita .ex .ctl .seg button,#tren .ex .ctl .seg button,#prioritas .ex .ctl .seg button,#metode .ex .ctl .seg button,#opsLaporan .ex .ctl .seg button{flex:1;text-align:center}
+#insight .ex .bg-ex,#dampak .ex .bg-ex,#berita .ex .bg-ex,#tren .ex .bg-ex,#insightKompleks .ex .bg-ex,#metode .ex .bg-ex,#opsLaporan .ex .bg-ex{margin:14px 16px 0 0}
 .ex2{display:grid;grid-template-columns:1fr;gap:18px}
 @media (min-width:1000px){.ex2{grid-template-columns:1fr 1fr}.ex2 .ex{margin-bottom:0}}
 .foto{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:0 0 18px}
@@ -7143,7 +7143,7 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="konsesi.js"></script>
 <script src="aktor.js"></script>
 <script src="operasi.js"></script>
-<script src="operasi_peta.js?v=5"></script><!-- Operasi udara: menu Operasi = laporan tanpa peta; panel Operasi, overlay, laci base di peta (pemilik 3-4 Nov 2026) -->
+<script src="operasi_peta.js?v=7"></script><!-- Operasi udara: menu Operasi = laporan tanpa peta; panel Operasi, overlay, laci base di peta (pemilik 3-4 Nov 2026) -->
 <script src="ringkasan.js"></script>
 <script src="inti/sapa.js"></script>
 <script src="sapa.js"></script>
