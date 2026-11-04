@@ -224,6 +224,16 @@
         "public"
       ],
       "port": 8813
+    },
+    {
+      "name": "lokal-8791",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "scripts/agents/dev_lokal.mjs",
+        "8791"
+      ],
+      "port": 8791,
+      "autoPort": false
     }
   ]
 }
