@@ -1,5 +1,5 @@
 {
- "dibuat": "2026-11-04T08:06:12+00:00",
+ "dibuat": "2026-11-04T13:48:11+00:00",
  "bucket": "poskokarhutla-foto",
  "berkas": {
   "data/banjir/kab2_ops/sampel.json": {
@@ -4705,6 +4705,930 @@
    "mtime": 1793771989.1332867,
    "kunci": "beku/93ef3e7febf548b63fef18bbd3b94ae345ba45439362863fa4d5a7e219f758e1",
    "diunggah": "2026-11-04"
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_105.000/2015.json.gz": {
+   "sha256": "296f1949c666c9329d3169950a77fdf84b6bd9b7e6e6f76b14b8e5c711f70694",
+   "ukuran": 37145,
+   "mtime": 1793779633.1193867,
+   "kunci": "beku/296f1949c666c9329d3169950a77fdf84b6bd9b7e6e6f76b14b8e5c711f70694",
+   "diunggah": "2026-11-04"
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_105.000/2016.json.gz": {
+   "sha256": "14a3595ba0f2dc7fc54201ce8772e6cb9abedad57e52050326a42acd42ca379d",
+   "ukuran": 37095,
+   "mtime": 1793779633.1338923,
+   "kunci": "beku/14a3595ba0f2dc7fc54201ce8772e6cb9abedad57e52050326a42acd42ca379d",
+   "diunggah": "2026-11-04"
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_105.000/2017.json.gz": {
+   "sha256": "847143c5f03a683cabb2610442e89831a042f716daa5585833c7c2ee223f0085",
+   "ukuran": 37491,
+   "mtime": 1793779633.1484368,
+   "kunci": "beku/847143c5f03a683cabb2610442e89831a042f716daa5585833c7c2ee223f0085",
+   "diunggah": "2026-11-04"
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_105.000/2018.json.gz": {
+   "sha256": "fcf9e27a788f61ce6f982753004bf477817d4d577733d07fa060f135dd375c2b",
+   "ukuran": 37305,
+   "mtime": 1793779633.163418,
+   "kunci": "beku/fcf9e27a788f61ce6f982753004bf477817d4d577733d07fa060f135dd375c2b",
+   "diunggah": "2026-11-04"
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_105.000/2019.json.gz": {
+   "sha256": "69d3bfe527a6539cf1897e2b66376cef9ea5831dab0ee66da1e8e81899668811",
+   "ukuran": 37154,
+   "mtime": 1793779633.1776395,
+   "kunci": "beku/69d3bfe527a6539cf1897e2b66376cef9ea5831dab0ee66da1e8e81899668811",
+   "diunggah": "2026-11-04"
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_105.000/2020.json.gz": {
+   "sha256": "4b6560d2942bc9db0ed8de5e612b4470283adfe756c352680a9685eb77a71efb",
+   "ukuran": 37808,
+   "mtime": 1793779633.1921494,
+   "kunci": "beku/4b6560d2942bc9db0ed8de5e612b4470283adfe756c352680a9685eb77a71efb",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_105.000/2021.json.gz": {
+   "sha256": "99bbd61333c14577dd4ea5a059349bd831d927b1052840ea6e607ca6e3a09daa",
+   "ukuran": 37537,
+   "mtime": 1793779633.2062778,
+   "kunci": "beku/99bbd61333c14577dd4ea5a059349bd831d927b1052840ea6e607ca6e3a09daa",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_105.000/2022.json.gz": {
+   "sha256": "c4daf14df1ec59b0874f4285c16bdb17af861f4347c1aa4b2113c03cf90a431f",
+   "ukuran": 40065,
+   "mtime": 1793779633.220899,
+   "kunci": "beku/c4daf14df1ec59b0874f4285c16bdb17af861f4347c1aa4b2113c03cf90a431f",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_105.000/2023.json.gz": {
+   "sha256": "f8b49c09a31c0d213ac7bfc2d1187a310f9211d7d518bbab8fdde9ad030b94af",
+   "ukuran": 37763,
+   "mtime": 1793779633.234882,
+   "kunci": "beku/f8b49c09a31c0d213ac7bfc2d1187a310f9211d7d518bbab8fdde9ad030b94af",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_105.000/2024.json.gz": {
+   "sha256": "c381423d857fb6c61a594c0dd8af367c014a85c6af8ad80a8912d2497f0d4bbb",
+   "ukuran": 39248,
+   "mtime": 1793779633.2485764,
+   "kunci": "beku/c381423d857fb6c61a594c0dd8af367c014a85c6af8ad80a8912d2497f0d4bbb",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_105.000/2025.json.gz": {
+   "sha256": "8c4c6b64769a519900d5382704d8fac72c0ef167559c37117cc8945d8cf04320",
+   "ukuran": 40251,
+   "mtime": 1793779633.263023,
+   "kunci": "beku/8c4c6b64769a519900d5382704d8fac72c0ef167559c37117cc8945d8cf04320",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_105.000/2026.json.gz": {
+   "sha256": "b5d1aa09866de5a89bc4dd016e9e926e1a5244123fd02d66d477ac6a90264797",
+   "ukuran": 31614,
+   "mtime": 1793779633.2740057,
+   "kunci": "beku/b5d1aa09866de5a89bc4dd016e9e926e1a5244123fd02d66d477ac6a90264797",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_106.000/2015.json.gz": {
+   "sha256": "2608a8936bd9a1b2862b9706559307935ce6006a827c1b76acbde0511c90ccab",
+   "ukuran": 37535,
+   "mtime": 1793779633.2895644,
+   "kunci": "beku/2608a8936bd9a1b2862b9706559307935ce6006a827c1b76acbde0511c90ccab",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_106.000/2016.json.gz": {
+   "sha256": "cde8d86a751cca018ed6429bd2b7eaf3ce1eb352964f5372c266dc7ae0d9b26e",
+   "ukuran": 37522,
+   "mtime": 1793779633.3041432,
+   "kunci": "beku/cde8d86a751cca018ed6429bd2b7eaf3ce1eb352964f5372c266dc7ae0d9b26e",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_106.000/2017.json.gz": {
+   "sha256": "e3351ba4c3768fa9cb6c8e14788007a5cdea16d072fd0a2d3411827223b2452f",
+   "ukuran": 38197,
+   "mtime": 1793779633.318339,
+   "kunci": "beku/e3351ba4c3768fa9cb6c8e14788007a5cdea16d072fd0a2d3411827223b2452f",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_106.000/2018.json.gz": {
+   "sha256": "f418318493c5640e82834ccda1d9279d9b5301379986df9394c42fa8388d98cc",
+   "ukuran": 37644,
+   "mtime": 1793779633.3321276,
+   "kunci": "beku/f418318493c5640e82834ccda1d9279d9b5301379986df9394c42fa8388d98cc",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_106.000/2019.json.gz": {
+   "sha256": "415b07f361e023953f15b78fbf4de421418f1da7320cc9962a23063bef44c9f4",
+   "ukuran": 37384,
+   "mtime": 1793779633.346596,
+   "kunci": "beku/415b07f361e023953f15b78fbf4de421418f1da7320cc9962a23063bef44c9f4",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_106.000/2020.json.gz": {
+   "sha256": "14ccdf0ddce492f4b88cfaeeea483bdbc11da10f1d423260ea465434c7f64e8f",
+   "ukuran": 38309,
+   "mtime": 1793779633.360494,
+   "kunci": "beku/14ccdf0ddce492f4b88cfaeeea483bdbc11da10f1d423260ea465434c7f64e8f",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_106.000/2021.json.gz": {
+   "sha256": "af823b1b0379d30cecdfaaadf7db003917529b8a4f94b2bba82628335bf286ec",
+   "ukuran": 37920,
+   "mtime": 1793779633.3767564,
+   "kunci": "beku/af823b1b0379d30cecdfaaadf7db003917529b8a4f94b2bba82628335bf286ec",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_106.000/2022.json.gz": {
+   "sha256": "45e427d266c614275770d202f7a2edc1701292aee38fd1c6e2cf15cd417371af",
+   "ukuran": 40348,
+   "mtime": 1793779633.3920348,
+   "kunci": "beku/45e427d266c614275770d202f7a2edc1701292aee38fd1c6e2cf15cd417371af",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_106.000/2023.json.gz": {
+   "sha256": "79c72a4e806d50d803aa045c49b3281f06c5a4baff5d037011c4a370c1ec8acf",
+   "ukuran": 38122,
+   "mtime": 1793779633.406782,
+   "kunci": "beku/79c72a4e806d50d803aa045c49b3281f06c5a4baff5d037011c4a370c1ec8acf",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_106.000/2024.json.gz": {
+   "sha256": "fb80c01bd6b9dffbd8070a3eb27492dd2e4d4efec3ca0c64c26bd7d5f538f359",
+   "ukuran": 39678,
+   "mtime": 1793779633.421028,
+   "kunci": "beku/fb80c01bd6b9dffbd8070a3eb27492dd2e4d4efec3ca0c64c26bd7d5f538f359",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_106.000/2025.json.gz": {
+   "sha256": "e61c441c1f8db8e4d03d8f9aaea27fd604c54b57238eb6a6755fb40da5303213",
+   "ukuran": 40580,
+   "mtime": 1793779633.4353297,
+   "kunci": "beku/e61c441c1f8db8e4d03d8f9aaea27fd604c54b57238eb6a6755fb40da5303213",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_106.000/2026.json.gz": {
+   "sha256": "51fce626b9b84962e274dfb104d117543a931874091a04c979acbb7bf60f6089",
+   "ukuran": 31822,
+   "mtime": 1793779633.4464664,
+   "kunci": "beku/51fce626b9b84962e274dfb104d117543a931874091a04c979acbb7bf60f6089",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_107.000/2015.json.gz": {
+   "sha256": "6c5e1020ed2dfcec8d519548fd8e2547cf65de9acd920ca8777037428bb29c7f",
+   "ukuran": 37664,
+   "mtime": 1793779633.4608734,
+   "kunci": "beku/6c5e1020ed2dfcec8d519548fd8e2547cf65de9acd920ca8777037428bb29c7f",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_107.000/2016.json.gz": {
+   "sha256": "cbcf11ae33d847d9e6ef01a66922b7c74936b7d4454a5395dd4cd721c97fd00e",
+   "ukuran": 37557,
+   "mtime": 1793779633.475413,
+   "kunci": "beku/cbcf11ae33d847d9e6ef01a66922b7c74936b7d4454a5395dd4cd721c97fd00e",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_107.000/2017.json.gz": {
+   "sha256": "6707b9ae5881127435ebe5a8cd498a03925a7a78b23db6afa004fcb3a723ac05",
+   "ukuran": 38152,
+   "mtime": 1793779633.489725,
+   "kunci": "beku/6707b9ae5881127435ebe5a8cd498a03925a7a78b23db6afa004fcb3a723ac05",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_107.000/2018.json.gz": {
+   "sha256": "19fee60a200348bb1ea255ec89bdad5f795a4092873db8a66fde0861e5e16693",
+   "ukuran": 37771,
+   "mtime": 1793779633.5039277,
+   "kunci": "beku/19fee60a200348bb1ea255ec89bdad5f795a4092873db8a66fde0861e5e16693",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_107.000/2019.json.gz": {
+   "sha256": "c2b7a7f45e5dea6b8c519fc2416b6f01526649d719bf57c5d8126e8b0e25139f",
+   "ukuran": 37260,
+   "mtime": 1793779633.51815,
+   "kunci": "beku/c2b7a7f45e5dea6b8c519fc2416b6f01526649d719bf57c5d8126e8b0e25139f",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_107.000/2020.json.gz": {
+   "sha256": "c0e5ef22302e44210033009bf4af1e9031837b342d86cef60ae66f2f67115314",
+   "ukuran": 38168,
+   "mtime": 1793779633.532852,
+   "kunci": "beku/c0e5ef22302e44210033009bf4af1e9031837b342d86cef60ae66f2f67115314",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_107.000/2021.json.gz": {
+   "sha256": "59806c2e012ef1671400886f3ca19c95124d5e0962a08a7df0a1a2d03a898108",
+   "ukuran": 37688,
+   "mtime": 1793779633.5480907,
+   "kunci": "beku/59806c2e012ef1671400886f3ca19c95124d5e0962a08a7df0a1a2d03a898108",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_107.000/2022.json.gz": {
+   "sha256": "ab0a3a42fcb7320cd57c224d5fc5e1cf4f148abaf993aa4502deed4c758e4eef",
+   "ukuran": 40240,
+   "mtime": 1793779633.562583,
+   "kunci": "beku/ab0a3a42fcb7320cd57c224d5fc5e1cf4f148abaf993aa4502deed4c758e4eef",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_107.000/2023.json.gz": {
+   "sha256": "930b048481f708f4296b00670add2dd95b5d0351c354871d248967409c83c524",
+   "ukuran": 38178,
+   "mtime": 1793779633.5771537,
+   "kunci": "beku/930b048481f708f4296b00670add2dd95b5d0351c354871d248967409c83c524",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_107.000/2024.json.gz": {
+   "sha256": "25c4719e8f63cfbc6ea72f94ddecd1e1f4bc710b746c48c9e75cd87b4ec5608b",
+   "ukuran": 39766,
+   "mtime": 1793779633.5915768,
+   "kunci": "beku/25c4719e8f63cfbc6ea72f94ddecd1e1f4bc710b746c48c9e75cd87b4ec5608b",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_107.000/2025.json.gz": {
+   "sha256": "b6acd350ccee0886458a83a4e7b0aef2c75297d796fb2bae781976958c765798",
+   "ukuran": 40445,
+   "mtime": 1793779633.606012,
+   "kunci": "beku/b6acd350ccee0886458a83a4e7b0aef2c75297d796fb2bae781976958c765798",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_107.000/2026.json.gz": {
+   "sha256": "0a55828de0ac880135b809104c20fe882708c2281c10e52e60b756f85f816701",
+   "ukuran": 31751,
+   "mtime": 1793779633.6171153,
+   "kunci": "beku/0a55828de0ac880135b809104c20fe882708c2281c10e52e60b756f85f816701",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_108.000/2015.json.gz": {
+   "sha256": "385f28bffd38c982e36adb4f66a50e93fda8cbd494b07899f31a0b6c15685bb2",
+   "ukuran": 38041,
+   "mtime": 1793779633.631398,
+   "kunci": "beku/385f28bffd38c982e36adb4f66a50e93fda8cbd494b07899f31a0b6c15685bb2",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_108.000/2016.json.gz": {
+   "sha256": "15e18ed555dc0b0c0460d3a5f75a2672b1d241ac99b9ce48053f106170fa1b48",
+   "ukuran": 37721,
+   "mtime": 1793779633.6463482,
+   "kunci": "beku/15e18ed555dc0b0c0460d3a5f75a2672b1d241ac99b9ce48053f106170fa1b48",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_108.000/2017.json.gz": {
+   "sha256": "6f61c44d9ae79a8be69241ea589ad5f7e5879396c5e2c6e919ff808cd0e89683",
+   "ukuran": 38169,
+   "mtime": 1793779633.6607223,
+   "kunci": "beku/6f61c44d9ae79a8be69241ea589ad5f7e5879396c5e2c6e919ff808cd0e89683",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_108.000/2018.json.gz": {
+   "sha256": "948bb65c8fd1c26e31a94ae9b64505a82d721cdf025afbc51fd42eb8adf58e57",
+   "ukuran": 38115,
+   "mtime": 1793779633.6750562,
+   "kunci": "beku/948bb65c8fd1c26e31a94ae9b64505a82d721cdf025afbc51fd42eb8adf58e57",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_108.000/2019.json.gz": {
+   "sha256": "ed279d70a2a1ed1be65d048ab3faae9c42b293aa224c559dd51a5cd6da3468b7",
+   "ukuran": 37835,
+   "mtime": 1793779633.689486,
+   "kunci": "beku/ed279d70a2a1ed1be65d048ab3faae9c42b293aa224c559dd51a5cd6da3468b7",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_108.000/2020.json.gz": {
+   "sha256": "6333b4008b764a55789884eff15cc2331ae7fc10da4a394c8a6cac5ac0da7172",
+   "ukuran": 38299,
+   "mtime": 1793779633.704601,
+   "kunci": "beku/6333b4008b764a55789884eff15cc2331ae7fc10da4a394c8a6cac5ac0da7172",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_108.000/2021.json.gz": {
+   "sha256": "bf646ab8622cdefcedfa067252bf14a63ab68051ebdb8ff7f03cce58ed0c2eda",
+   "ukuran": 37845,
+   "mtime": 1793779633.7193267,
+   "kunci": "beku/bf646ab8622cdefcedfa067252bf14a63ab68051ebdb8ff7f03cce58ed0c2eda",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_108.000/2022.json.gz": {
+   "sha256": "ef3d4ff45b16e18539e513d9c260d2b58bb2692502128cdf75d5ab46a3164d42",
+   "ukuran": 40319,
+   "mtime": 1793779633.7344847,
+   "kunci": "beku/ef3d4ff45b16e18539e513d9c260d2b58bb2692502128cdf75d5ab46a3164d42",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_108.000/2023.json.gz": {
+   "sha256": "3c23962658cabf7f226f2771d71b6d6d82f27cc3980406bab834bc82c591665c",
+   "ukuran": 38247,
+   "mtime": 1793779633.7490432,
+   "kunci": "beku/3c23962658cabf7f226f2771d71b6d6d82f27cc3980406bab834bc82c591665c",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_108.000/2024.json.gz": {
+   "sha256": "756b3221b975bd38b1099914a0ad9f8d1490194e9ef6dc4fcb614db44328b172",
+   "ukuran": 39834,
+   "mtime": 1793779633.7633383,
+   "kunci": "beku/756b3221b975bd38b1099914a0ad9f8d1490194e9ef6dc4fcb614db44328b172",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_108.000/2025.json.gz": {
+   "sha256": "71fbf8f91f9c5730a52caa040789ccedf230569e90d69848b9af6331eaf5ae03",
+   "ukuran": 40763,
+   "mtime": 1793779633.7792323,
+   "kunci": "beku/71fbf8f91f9c5730a52caa040789ccedf230569e90d69848b9af6331eaf5ae03",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_108.000/2026.json.gz": {
+   "sha256": "83f57b5408379ca42cd67f17abbf30e86a517f2bf1238a0030dcc7d26e3f6ae9",
+   "ukuran": 32126,
+   "mtime": 1793779633.7915988,
+   "kunci": "beku/83f57b5408379ca42cd67f17abbf30e86a517f2bf1238a0030dcc7d26e3f6ae9",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_109.000/2015.json.gz": {
+   "sha256": "3ccd44137885668b2e9fcfac428c962f87d22916b9c8807ef728d30b5cba8486",
+   "ukuran": 32664,
+   "mtime": 1793779633.8067017,
+   "kunci": "beku/3ccd44137885668b2e9fcfac428c962f87d22916b9c8807ef728d30b5cba8486",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_109.000/2016.json.gz": {
+   "sha256": "382c03f45392fc2d9f63f2b7771ac86ae21dac6145231b38f5b725d6eec227af",
+   "ukuran": 32382,
+   "mtime": 1793779633.821125,
+   "kunci": "beku/382c03f45392fc2d9f63f2b7771ac86ae21dac6145231b38f5b725d6eec227af",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_109.000/2017.json.gz": {
+   "sha256": "bbb80fe885e2b42f322565abfa0f95b938ead7dd13d657ead00643fb9b0d7136",
+   "ukuran": 32893,
+   "mtime": 1793779633.835584,
+   "kunci": "beku/bbb80fe885e2b42f322565abfa0f95b938ead7dd13d657ead00643fb9b0d7136",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_109.000/2018.json.gz": {
+   "sha256": "8ee509498167111eac74eea0daea1df88e373f613a219048c40f553322a46027",
+   "ukuran": 33077,
+   "mtime": 1793779633.8500187,
+   "kunci": "beku/8ee509498167111eac74eea0daea1df88e373f613a219048c40f553322a46027",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_109.000/2019.json.gz": {
+   "sha256": "1cd6c80b76101c7eaa58e728597880770837f61e2082bf1d8aac92119a0ca6a5",
+   "ukuran": 32616,
+   "mtime": 1793779633.8643875,
+   "kunci": "beku/1cd6c80b76101c7eaa58e728597880770837f61e2082bf1d8aac92119a0ca6a5",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_109.000/2020.json.gz": {
+   "sha256": "8903c06f39bf67d9e18905a26d77dd589ea4f7b4a41f062d48db155e1763747e",
+   "ukuran": 32635,
+   "mtime": 1793779633.8787756,
+   "kunci": "beku/8903c06f39bf67d9e18905a26d77dd589ea4f7b4a41f062d48db155e1763747e",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_109.000/2021.json.gz": {
+   "sha256": "dc332ee6e0f9c8413a825ce74a1164ef736382944068388c4cdf3bdac5a94ca4",
+   "ukuran": 32991,
+   "mtime": 1793779633.8947523,
+   "kunci": "beku/dc332ee6e0f9c8413a825ce74a1164ef736382944068388c4cdf3bdac5a94ca4",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_109.000/2022.json.gz": {
+   "sha256": "f7cdbdc93fbc114efbf6f3659c105ef101ec765e0c6c42b93ecbc0fbdfcd62dd",
+   "ukuran": 36653,
+   "mtime": 1793779633.9106495,
+   "kunci": "beku/f7cdbdc93fbc114efbf6f3659c105ef101ec765e0c6c42b93ecbc0fbdfcd62dd",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_109.000/2023.json.gz": {
+   "sha256": "42871b9a5d277c79f6568e6b7377075429779a2df89da5c115a3ba865ac09d34",
+   "ukuran": 33000,
+   "mtime": 1793779633.9257536,
+   "kunci": "beku/42871b9a5d277c79f6568e6b7377075429779a2df89da5c115a3ba865ac09d34",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_109.000/2024.json.gz": {
+   "sha256": "f992c877bbd442815714229dc0dfd10d2bb7f8fd23ff702a350ea3e29d68ed77",
+   "ukuran": 35487,
+   "mtime": 1793779633.9411657,
+   "kunci": "beku/f992c877bbd442815714229dc0dfd10d2bb7f8fd23ff702a350ea3e29d68ed77",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_109.000/2025.json.gz": {
+   "sha256": "2880cffe4c76e3bf5b23067f209aae40bf4e1ce10b0058113b57e8d36689ff26",
+   "ukuran": 37057,
+   "mtime": 1793779633.9561994,
+   "kunci": "beku/2880cffe4c76e3bf5b23067f209aae40bf4e1ce10b0058113b57e8d36689ff26",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_109.000/2026.json.gz": {
+   "sha256": "481d72a663cd6de58565367fd459037ad218ddafafb913b81ebdd51e235d93d8",
+   "ukuran": 29783,
+   "mtime": 1793779633.9679432,
+   "kunci": "beku/481d72a663cd6de58565367fd459037ad218ddafafb913b81ebdd51e235d93d8",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_110.000/2015.json.gz": {
+   "sha256": "36851c32db189ce85faa3a6faee31c6710158435d62b484b95bed61707ad61d6",
+   "ukuran": 28685,
+   "mtime": 1793780494.8194933,
+   "kunci": "beku/36851c32db189ce85faa3a6faee31c6710158435d62b484b95bed61707ad61d6",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_110.000/2016.json.gz": {
+   "sha256": "9a6d01ab76c48f30d8b55215ef7e299349971fc13865b09e715626c52b3e6fb6",
+   "ukuran": 28926,
+   "mtime": 1793780494.832341,
+   "kunci": "beku/9a6d01ab76c48f30d8b55215ef7e299349971fc13865b09e715626c52b3e6fb6",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_110.000/2017.json.gz": {
+   "sha256": "f616c7adaae8b8345fad3ee7afc606103aebd382d92dd98ef33c01f9ec0532f7",
+   "ukuran": 28882,
+   "mtime": 1793780494.844644,
+   "kunci": "beku/f616c7adaae8b8345fad3ee7afc606103aebd382d92dd98ef33c01f9ec0532f7",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_110.000/2018.json.gz": {
+   "sha256": "5d0fc9ca48741746e56675d0230a5de151d65d357af203d1ed0fc391867740c2",
+   "ukuran": 29002,
+   "mtime": 1793780494.858111,
+   "kunci": "beku/5d0fc9ca48741746e56675d0230a5de151d65d357af203d1ed0fc391867740c2",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_110.000/2019.json.gz": {
+   "sha256": "a5831f78e8b1039972114a5ea8e35d8ded147fd52d7daa7a29d01d9fa16985ff",
+   "ukuran": 29001,
+   "mtime": 1793780494.870562,
+   "kunci": "beku/a5831f78e8b1039972114a5ea8e35d8ded147fd52d7daa7a29d01d9fa16985ff",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_110.000/2020.json.gz": {
+   "sha256": "376a0dbf12f4ecedd52b81726a8924a279185eccd8cceee6e3fe1a114bca8660",
+   "ukuran": 28868,
+   "mtime": 1793780494.8831859,
+   "kunci": "beku/376a0dbf12f4ecedd52b81726a8924a279185eccd8cceee6e3fe1a114bca8660",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_110.000/2021.json.gz": {
+   "sha256": "a633e6a8122b87b374384741fc3189dd1052841f62209a14e2822c144e8d4102",
+   "ukuran": 28904,
+   "mtime": 1793780494.896543,
+   "kunci": "beku/a633e6a8122b87b374384741fc3189dd1052841f62209a14e2822c144e8d4102",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_110.000/2022.json.gz": {
+   "sha256": "007e53933986ec1c634e38bced0ab023d311ce8ba74047c0d4e2e3f02376fbf0",
+   "ukuran": 33356,
+   "mtime": 1793780494.911905,
+   "kunci": "beku/007e53933986ec1c634e38bced0ab023d311ce8ba74047c0d4e2e3f02376fbf0",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_110.000/2023.json.gz": {
+   "sha256": "14c6c291263b9d2b7b27adfc52c9a559774e2c25cf1cdb676bd286204a3c09c6",
+   "ukuran": 29146,
+   "mtime": 1793780494.9244168,
+   "kunci": "beku/14c6c291263b9d2b7b27adfc52c9a559774e2c25cf1cdb676bd286204a3c09c6",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_110.000/2024.json.gz": {
+   "sha256": "c6689a5834968628d66e8b9febe908d6c912a5002c77f24f0d26c3afe1154b5f",
+   "ukuran": 32232,
+   "mtime": 1793780494.9381702,
+   "kunci": "beku/c6689a5834968628d66e8b9febe908d6c912a5002c77f24f0d26c3afe1154b5f",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_110.000/2025.json.gz": {
+   "sha256": "b2f91d800be5850f6052940b95cfbb0f91bd765f596c5ed4f7ab64289db5f317",
+   "ukuran": 33513,
+   "mtime": 1793780494.9531205,
+   "kunci": "beku/b2f91d800be5850f6052940b95cfbb0f91bd765f596c5ed4f7ab64289db5f317",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_110.000/2026.json.gz": {
+   "sha256": "00a57be2f1b995b8fed640523bd7defeb30553554b7dea6adad8718a6a6730d3",
+   "ukuran": 26841,
+   "mtime": 1793780494.9639559,
+   "kunci": "beku/00a57be2f1b995b8fed640523bd7defeb30553554b7dea6adad8718a6a6730d3",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_111.000/2015.json.gz": {
+   "sha256": "0ba5c8885ae3e67d9de655ab2d93c4ada6eb8cee2948594837304c4e0a690a41",
+   "ukuran": 27736,
+   "mtime": 1793780494.9764946,
+   "kunci": "beku/0ba5c8885ae3e67d9de655ab2d93c4ada6eb8cee2948594837304c4e0a690a41",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_111.000/2016.json.gz": {
+   "sha256": "651ddaeea2a8af2fa017902f678fa866f993bb392b3dcf968c2b33ccd609a313",
+   "ukuran": 27590,
+   "mtime": 1793780494.9888823,
+   "kunci": "beku/651ddaeea2a8af2fa017902f678fa866f993bb392b3dcf968c2b33ccd609a313",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_111.000/2017.json.gz": {
+   "sha256": "f7a530787d10727bdda205de90789abbee583e394e951eb72ee73ff03cb1dc10",
+   "ukuran": 28128,
+   "mtime": 1793780495.0012784,
+   "kunci": "beku/f7a530787d10727bdda205de90789abbee583e394e951eb72ee73ff03cb1dc10",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_111.000/2018.json.gz": {
+   "sha256": "79961a9fb3f6df2a2b18e51652b75074f262bbbbd2d97782f92d78f11365deee",
+   "ukuran": 28086,
+   "mtime": 1793780495.0144284,
+   "kunci": "beku/79961a9fb3f6df2a2b18e51652b75074f262bbbbd2d97782f92d78f11365deee",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_111.000/2019.json.gz": {
+   "sha256": "a8fc76174aa24f8acd0b55b3d104fb8bdbbca0d019e68d4566cfd3d3cdd9fa52",
+   "ukuran": 27794,
+   "mtime": 1793780495.0276024,
+   "kunci": "beku/a8fc76174aa24f8acd0b55b3d104fb8bdbbca0d019e68d4566cfd3d3cdd9fa52",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_111.000/2020.json.gz": {
+   "sha256": "1d5c07f91ce7c06931afd626d26bfd87241f2707c1229d68868cb230e2e7aeca",
+   "ukuran": 27961,
+   "mtime": 1793780495.0401738,
+   "kunci": "beku/1d5c07f91ce7c06931afd626d26bfd87241f2707c1229d68868cb230e2e7aeca",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_111.000/2021.json.gz": {
+   "sha256": "0624173bab0e10c82879afc7405630700b1f2332a41df39ff7dca1878acc4890",
+   "ukuran": 28011,
+   "mtime": 1793780495.0526128,
+   "kunci": "beku/0624173bab0e10c82879afc7405630700b1f2332a41df39ff7dca1878acc4890",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_111.000/2022.json.gz": {
+   "sha256": "aa954d32a9eff70c17ff4770877780de6f7cf41e2abbdb63030d269cc54cf499",
+   "ukuran": 32778,
+   "mtime": 1793780495.0660942,
+   "kunci": "beku/aa954d32a9eff70c17ff4770877780de6f7cf41e2abbdb63030d269cc54cf499",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_111.000/2023.json.gz": {
+   "sha256": "2b58c6abeb895e9c3d9e1005e3b00b0e797526f6be0705bbd298014438fc07bf",
+   "ukuran": 28235,
+   "mtime": 1793780495.078594,
+   "kunci": "beku/2b58c6abeb895e9c3d9e1005e3b00b0e797526f6be0705bbd298014438fc07bf",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_111.000/2024.json.gz": {
+   "sha256": "e138fdfda59c5be91ccc8fb5c98ad9828ea6559a0a8992b0f98e7b4f36b114d4",
+   "ukuran": 31066,
+   "mtime": 1793780495.092019,
+   "kunci": "beku/e138fdfda59c5be91ccc8fb5c98ad9828ea6559a0a8992b0f98e7b4f36b114d4",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_111.000/2025.json.gz": {
+   "sha256": "e399b644b3d54e0f34724008b420fe90a8c6a57ad56921d99c8371422e39c97f",
+   "ukuran": 32680,
+   "mtime": 1793780495.1059315,
+   "kunci": "beku/e399b644b3d54e0f34724008b420fe90a8c6a57ad56921d99c8371422e39c97f",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_111.000/2026.json.gz": {
+   "sha256": "1dc579b4dce45d1447ba160236830c7c2910cba48104771ff7d430e05314a651",
+   "ukuran": 26255,
+   "mtime": 1793780495.1165895,
+   "kunci": "beku/1dc579b4dce45d1447ba160236830c7c2910cba48104771ff7d430e05314a651",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_112.000/2015.json.gz": {
+   "sha256": "03bb0fda3293f2ead02eff967fe63039ea9ac2bf251ae7fe5f1c87722303f6eb",
+   "ukuran": 27685,
+   "mtime": 1793780495.1293747,
+   "kunci": "beku/03bb0fda3293f2ead02eff967fe63039ea9ac2bf251ae7fe5f1c87722303f6eb",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_112.000/2016.json.gz": {
+   "sha256": "19e99b25d0c751c24da894c9d4c7ffdabb0399b331fcd44d0f7d82f9c0e55646",
+   "ukuran": 27495,
+   "mtime": 1793780495.1417327,
+   "kunci": "beku/19e99b25d0c751c24da894c9d4c7ffdabb0399b331fcd44d0f7d82f9c0e55646",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_112.000/2017.json.gz": {
+   "sha256": "547a08e9ded26d02f67121cdd0b8168d66b3df1984f194eb397854609137ac61",
+   "ukuran": 27989,
+   "mtime": 1793780495.1548128,
+   "kunci": "beku/547a08e9ded26d02f67121cdd0b8168d66b3df1984f194eb397854609137ac61",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_112.000/2018.json.gz": {
+   "sha256": "2c912b0fbe5c6424bcba35ba290db9b407cd42657270b189e75141774cdfafd8",
+   "ukuran": 28255,
+   "mtime": 1793780495.1670816,
+   "kunci": "beku/2c912b0fbe5c6424bcba35ba290db9b407cd42657270b189e75141774cdfafd8",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_112.000/2019.json.gz": {
+   "sha256": "93a62f81db8e45fae5b7a1fb65865ab07901ea305015e72e4791718c749a2902",
+   "ukuran": 28029,
+   "mtime": 1793780495.1800306,
+   "kunci": "beku/93a62f81db8e45fae5b7a1fb65865ab07901ea305015e72e4791718c749a2902",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_112.000/2020.json.gz": {
+   "sha256": "2b000cb2f0db530a3794c55d540bf2938a14f3ced4729c3e81a50257530a04f1",
+   "ukuran": 27681,
+   "mtime": 1793780495.19233,
+   "kunci": "beku/2b000cb2f0db530a3794c55d540bf2938a14f3ced4729c3e81a50257530a04f1",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_112.000/2021.json.gz": {
+   "sha256": "e0cccae38e4fdc4f298eda07a374636e7ca5aa8f4e7487a82c71caf4e441a643",
+   "ukuran": 27771,
+   "mtime": 1793780495.2049022,
+   "kunci": "beku/e0cccae38e4fdc4f298eda07a374636e7ca5aa8f4e7487a82c71caf4e441a643",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_112.000/2022.json.gz": {
+   "sha256": "19e400f40abfbd075abb65bf454a9ff1b4a04f89b80ff308c4977904926add28",
+   "ukuran": 32652,
+   "mtime": 1793780495.2183945,
+   "kunci": "beku/19e400f40abfbd075abb65bf454a9ff1b4a04f89b80ff308c4977904926add28",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_112.000/2023.json.gz": {
+   "sha256": "84732fe88494c3b98b5597a63d6a83c15a55a6eaa95da6f75e8c398774efc40d",
+   "ukuran": 28266,
+   "mtime": 1793780495.2325165,
+   "kunci": "beku/84732fe88494c3b98b5597a63d6a83c15a55a6eaa95da6f75e8c398774efc40d",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_112.000/2024.json.gz": {
+   "sha256": "b854f6f30b3bff42b79c6d4ef52d6a8c7091cad1e8d6bb67527bd7be7a145d2c",
+   "ukuran": 30933,
+   "mtime": 1793780495.2457445,
+   "kunci": "beku/b854f6f30b3bff42b79c6d4ef52d6a8c7091cad1e8d6bb67527bd7be7a145d2c",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_112.000/2025.json.gz": {
+   "sha256": "a9f3517f6f3f35ee7716e5458a72aa62b80db4f3c14171c364348830bcbf013d",
+   "ukuran": 32838,
+   "mtime": 1793780495.2592618,
+   "kunci": "beku/a9f3517f6f3f35ee7716e5458a72aa62b80db4f3c14171c364348830bcbf013d",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_112.000/2026.json.gz": {
+   "sha256": "20830704a3ba97271cd10a9210bd12bd218e8696f1a2f7f989cea41d9f1273e4",
+   "ukuran": 26490,
+   "mtime": 1793780495.2700148,
+   "kunci": "beku/20830704a3ba97271cd10a9210bd12bd218e8696f1a2f7f989cea41d9f1273e4",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_113.000/2015.json.gz": {
+   "sha256": "fcf01693738dc3e44f70dfbce9d6eaca0351ab813bc5fc091ed9001479d9b0e6",
+   "ukuran": 26217,
+   "mtime": 1793780495.2818658,
+   "kunci": "beku/fcf01693738dc3e44f70dfbce9d6eaca0351ab813bc5fc091ed9001479d9b0e6",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_113.000/2016.json.gz": {
+   "sha256": "5e623ec918507f03c5edf8f700b24f96fee3d660ada827fcb71f604e8f71f77d",
+   "ukuran": 25618,
+   "mtime": 1793780495.2941055,
+   "kunci": "beku/5e623ec918507f03c5edf8f700b24f96fee3d660ada827fcb71f604e8f71f77d",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_113.000/2017.json.gz": {
+   "sha256": "55f399a650f75d6913713e37a0238bc7785bc6aa29df55a24bad1649c11a269d",
+   "ukuran": 26387,
+   "mtime": 1793780495.30629,
+   "kunci": "beku/55f399a650f75d6913713e37a0238bc7785bc6aa29df55a24bad1649c11a269d",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_113.000/2018.json.gz": {
+   "sha256": "fd0172326e8a41cb5f6394db9dd9e1e47b7857a4093db206c9e9a3336776b7e3",
+   "ukuran": 26356,
+   "mtime": 1793780495.3180547,
+   "kunci": "beku/fd0172326e8a41cb5f6394db9dd9e1e47b7857a4093db206c9e9a3336776b7e3",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_113.000/2019.json.gz": {
+   "sha256": "552a0e648e45350701a084080a86f4dee2314d74dd20289c3ba93158befda46d",
+   "ukuran": 26347,
+   "mtime": 1793780495.3309643,
+   "kunci": "beku/552a0e648e45350701a084080a86f4dee2314d74dd20289c3ba93158befda46d",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_113.000/2020.json.gz": {
+   "sha256": "6959339b0521311ac42872a41522c848d3d569fe132e50e7ac9d92966033237e",
+   "ukuran": 25861,
+   "mtime": 1793780495.3427494,
+   "kunci": "beku/6959339b0521311ac42872a41522c848d3d569fe132e50e7ac9d92966033237e",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_113.000/2021.json.gz": {
+   "sha256": "5f92e95dbfdedd4368dfdb526049f3dd7bf6eeea1de863b1f876b9071d048b23",
+   "ukuran": 26132,
+   "mtime": 1793780495.3546646,
+   "kunci": "beku/5f92e95dbfdedd4368dfdb526049f3dd7bf6eeea1de863b1f876b9071d048b23",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_113.000/2022.json.gz": {
+   "sha256": "82a2ae971e6975143b97570d68e82789f989531351cf06722705a7a08878864a",
+   "ukuran": 31022,
+   "mtime": 1793780495.3676958,
+   "kunci": "beku/82a2ae971e6975143b97570d68e82789f989531351cf06722705a7a08878864a",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_113.000/2023.json.gz": {
+   "sha256": "d22199bdc4e5194855d83bbfbc8fb358200ac0bd417783ffa6c9416a757c4534",
+   "ukuran": 26643,
+   "mtime": 1793780495.3801184,
+   "kunci": "beku/d22199bdc4e5194855d83bbfbc8fb358200ac0bd417783ffa6c9416a757c4534",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_113.000/2024.json.gz": {
+   "sha256": "b9f6f20d83805a510d5d21166f5e3135e2d9ba4a128383574c362f47b8443e09",
+   "ukuran": 29354,
+   "mtime": 1793780495.3925412,
+   "kunci": "beku/b9f6f20d83805a510d5d21166f5e3135e2d9ba4a128383574c362f47b8443e09",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_113.000/2025.json.gz": {
+   "sha256": "6cdc11d3832e259d3c804e544fb08d2a55de9001d6efe9d7e7598c1f7e6b8a9e",
+   "ukuran": 31107,
+   "mtime": 1793780495.4056382,
+   "kunci": "beku/6cdc11d3832e259d3c804e544fb08d2a55de9001d6efe9d7e7598c1f7e6b8a9e",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_113.000/2026.json.gz": {
+   "sha256": "f5435503da7053521df9bd12f8d4ab1ac8091b2807b20a0091485a41d618e2f7",
+   "ukuran": 25474,
+   "mtime": 1793780495.4160008,
+   "kunci": "beku/f5435503da7053521df9bd12f8d4ab1ac8091b2807b20a0091485a41d618e2f7",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_114.000/2015.json.gz": {
+   "sha256": "11e7fc93f33d93bc1f634c059fddfaeaa0354429930656deb2194a623566caa4",
+   "ukuran": 25393,
+   "mtime": 1793780495.4276254,
+   "kunci": "beku/11e7fc93f33d93bc1f634c059fddfaeaa0354429930656deb2194a623566caa4",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_114.000/2016.json.gz": {
+   "sha256": "f55172f1618c13701fd925d3f5ba79e0a2920b3c039f357e4b184382ae464199",
+   "ukuran": 24755,
+   "mtime": 1793780495.439674,
+   "kunci": "beku/f55172f1618c13701fd925d3f5ba79e0a2920b3c039f357e4b184382ae464199",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_114.000/2017.json.gz": {
+   "sha256": "e6a35548a22e3fce3826991e5b0ab818b98acef2cd160a297094b8da7b6af210",
+   "ukuran": 25382,
+   "mtime": 1793780495.451816,
+   "kunci": "beku/e6a35548a22e3fce3826991e5b0ab818b98acef2cd160a297094b8da7b6af210",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_114.000/2018.json.gz": {
+   "sha256": "f3cfbcaaeef36aee8af80cae7eb9720c7f40bff175ee27538887b1d14e5ce4db",
+   "ukuran": 25476,
+   "mtime": 1793780495.4641526,
+   "kunci": "beku/f3cfbcaaeef36aee8af80cae7eb9720c7f40bff175ee27538887b1d14e5ce4db",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_114.000/2019.json.gz": {
+   "sha256": "88f9b4c6ffbdca25b7c9de3f26308e4d9e6dabbd42216270639bc34baa638f12",
+   "ukuran": 25341,
+   "mtime": 1793780495.4758909,
+   "kunci": "beku/88f9b4c6ffbdca25b7c9de3f26308e4d9e6dabbd42216270639bc34baa638f12",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_114.000/2020.json.gz": {
+   "sha256": "b76e26bb1dffa112a57bb28d6dc5fb2d3f529c80fb3687e9a75bcf6580af6106",
+   "ukuran": 25026,
+   "mtime": 1793780495.4876454,
+   "kunci": "beku/b76e26bb1dffa112a57bb28d6dc5fb2d3f529c80fb3687e9a75bcf6580af6106",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_114.000/2021.json.gz": {
+   "sha256": "30541f971b9b82d4f9c9982ab537a2667f1216d0eb9b2c33c483ab6ab86f3cc6",
+   "ukuran": 25097,
+   "mtime": 1793780495.4996858,
+   "kunci": "beku/30541f971b9b82d4f9c9982ab537a2667f1216d0eb9b2c33c483ab6ab86f3cc6",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_114.000/2022.json.gz": {
+   "sha256": "f8ac955dadf7e49fa2da0813bc490e55ce74f55d7aa27bf2d005453e4e0ed3ac",
+   "ukuran": 30111,
+   "mtime": 1793780495.5140865,
+   "kunci": "beku/f8ac955dadf7e49fa2da0813bc490e55ce74f55d7aa27bf2d005453e4e0ed3ac",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_114.000/2023.json.gz": {
+   "sha256": "adcc29e4ec02e2c1e12fdf25a365cbf923042247a03d2cdac2a9ce9d89b11701",
+   "ukuran": 25407,
+   "mtime": 1793780495.527146,
+   "kunci": "beku/adcc29e4ec02e2c1e12fdf25a365cbf923042247a03d2cdac2a9ce9d89b11701",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_114.000/2024.json.gz": {
+   "sha256": "1a9550502b290b14f13d182c083429411fd9d81c4b68e208c008a005f2136a92",
+   "ukuran": 28414,
+   "mtime": 1793780495.5395105,
+   "kunci": "beku/1a9550502b290b14f13d182c083429411fd9d81c4b68e208c008a005f2136a92",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_114.000/2025.json.gz": {
+   "sha256": "eb41460fe6644a5b428f3c4604beb3b36ffa1b5f7875446ee00204df99bf65a9",
+   "ukuran": 30054,
+   "mtime": 1793780495.553521,
+   "kunci": "beku/eb41460fe6644a5b428f3c4604beb3b36ffa1b5f7875446ee00204df99bf65a9",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_114.000/2026.json.gz": {
+   "sha256": "f95858152b161f3dec0517984ad96c103f83508570a069b12c0cb4eee23d70a0",
+   "ukuran": 24654,
+   "mtime": 1793780495.5643702,
+   "kunci": "beku/f95858152b161f3dec0517984ad96c103f83508570a069b12c0cb4eee23d70a0",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_115.000/2015.json.gz": {
+   "sha256": "ea8813546ba4bb731054541d4ffd903154950433982d4b6f9787dad1aa4f00a7",
+   "ukuran": 27032,
+   "mtime": 1793780671.4654882,
+   "kunci": "beku/ea8813546ba4bb731054541d4ffd903154950433982d4b6f9787dad1aa4f00a7",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_115.000/2016.json.gz": {
+   "sha256": "6b9d2107d2379d924f7b6e8403a38167dc553196644c2af21c3c71b1eb083ef3",
+   "ukuran": 26684,
+   "mtime": 1793780671.4769478,
+   "kunci": "beku/6b9d2107d2379d924f7b6e8403a38167dc553196644c2af21c3c71b1eb083ef3",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_115.000/2017.json.gz": {
+   "sha256": "a1f69b52a4c96b8f278d73aa6d8a17ccc1902bd0286ba0af437330c62f7db6e7",
+   "ukuran": 26847,
+   "mtime": 1793780671.4882333,
+   "kunci": "beku/a1f69b52a4c96b8f278d73aa6d8a17ccc1902bd0286ba0af437330c62f7db6e7",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_115.000/2018.json.gz": {
+   "sha256": "a527373e42b3baa8afba2d4dc0c186d4ddfcc48ea80d8f7699f0a1d39c529419",
+   "ukuran": 26877,
+   "mtime": 1793780671.499616,
+   "kunci": "beku/a527373e42b3baa8afba2d4dc0c186d4ddfcc48ea80d8f7699f0a1d39c529419",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_115.000/2019.json.gz": {
+   "sha256": "0bff1ed062249883549a4932c5b4971c112fce122f4fc6b2ac7464e72d037450",
+   "ukuran": 27064,
+   "mtime": 1793780671.5110588,
+   "kunci": "beku/0bff1ed062249883549a4932c5b4971c112fce122f4fc6b2ac7464e72d037450",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_115.000/2020.json.gz": {
+   "sha256": "eaaf0881f145fe6d969ab71b0b126768bf130766698bec5565bcee8435568453",
+   "ukuran": 26896,
+   "mtime": 1793780671.522437,
+   "kunci": "beku/eaaf0881f145fe6d969ab71b0b126768bf130766698bec5565bcee8435568453",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_115.000/2021.json.gz": {
+   "sha256": "a2a618ade7a591d0cc2f729ec57440eb4035121754b305b3cbb1c10cafb4fdb8",
+   "ukuran": 26441,
+   "mtime": 1793780671.533632,
+   "kunci": "beku/a2a618ade7a591d0cc2f729ec57440eb4035121754b305b3cbb1c10cafb4fdb8",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_115.000/2022.json.gz": {
+   "sha256": "2230758384a96443f0994e7fa4120d932da59cfe82b145d68005012bae39a805",
+   "ukuran": 31603,
+   "mtime": 1793780671.546297,
+   "kunci": "beku/2230758384a96443f0994e7fa4120d932da59cfe82b145d68005012bae39a805",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_115.000/2023.json.gz": {
+   "sha256": "81158b798e4cb5b34bda95f702598c8c5e166f7a86311c3798134c1cefbeb833",
+   "ukuran": 26798,
+   "mtime": 1793780671.5576782,
+   "kunci": "beku/81158b798e4cb5b34bda95f702598c8c5e166f7a86311c3798134c1cefbeb833",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_115.000/2024.json.gz": {
+   "sha256": "6f03aa9686cb82f6d5939d8bd46b69ed6337db1c8857ba0107a0b5e5556d29b8",
+   "ukuran": 30075,
+   "mtime": 1793780671.569786,
+   "kunci": "beku/6f03aa9686cb82f6d5939d8bd46b69ed6337db1c8857ba0107a0b5e5556d29b8",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_115.000/2025.json.gz": {
+   "sha256": "a0c8647ebf34edb010a46210949764082eea7ed89e2a3452c34d0a4d223f178a",
+   "ukuran": 31431,
+   "mtime": 1793780671.5824766,
+   "kunci": "beku/a0c8647ebf34edb010a46210949764082eea7ed89e2a3452c34d0a4d223f178a",
+   "diunggah": null
+  },
+  "data/raw/banjir/jam_era5/angin/0.000_115.000/2026.json.gz": {
+   "sha256": "64de1e909bf4c1421e1793ef5464c10c8c0228060bd29530690fe9931ce37dcb",
+   "ukuran": 25649,
+   "mtime": 1793780671.5924578,
+   "kunci": "beku/64de1e909bf4c1421e1793ef5464c10c8c0228060bd29530690fe9931ce37dcb",
+   "diunggah": null
   },
   "data/raw/banjir/jam_era5/hujan/-0.375_100.125/2015.json.gz": {
    "sha256": "f2c67226fd7953708d0394469f7e9d47857709103d088f54e23f26186f0a2342",
@@ -13443,11 +14367,11 @@
    "diunggah": "2026-11-04"
   },
   "data/raw/banjir/jam_era5/manifest.json": {
-   "sha256": "ec5d9c2312b25cffc11e26461d8b79b85abd7e0204fd4ac260a95844e86660a1",
-   "ukuran": 200092,
-   "mtime": 1793778686.0103245,
-   "kunci": "beku/ec5d9c2312b25cffc11e26461d8b79b85abd7e0204fd4ac260a95844e86660a1",
-   "diunggah": "2026-11-04"
+   "sha256": "48d5b79a0b8b5ad3e98733efef56fe166ec8f8bf4ddc8384b12887654d494bf4",
+   "ukuran": 213820,
+   "mtime": 1793780678.524159,
+   "kunci": "beku/48d5b79a0b8b5ad3e98733efef56fe166ec8f8bf4ddc8384b12887654d494bf4",
+   "diunggah": null
   },
   "data/raw/banjir/koreksi_bias/2024_2024-12-31_b00.json": {
    "sha256": "9e07f0daab359873b4b7358f389ee1a57d29fc3ff8f68e1b0031efd1fb0875cc",
@@ -14336,84 +15260,84 @@
    "ukuran": 26879485,
    "mtime": 1774033876.0,
    "kunci": "beku/3a49a5388c4d861bbd8f1165841cf6382e577dde028a8f4d2778d1aacf3ccec0",
-   "diunggah": null
+   "diunggah": "2026-11-04"
   },
   "data/raw/publik/nasa_glc/coolr/COOLR.gdb/a00000009.gdbtablx": {
    "sha256": "72c5bbdd490834a08dafbb8b1e3ef5eee717d2b8892a63aeeea11ea196f6b78c",
    "ukuran": 204832,
    "mtime": 1774033876.0,
    "kunci": "beku/72c5bbdd490834a08dafbb8b1e3ef5eee717d2b8892a63aeeea11ea196f6b78c",
-   "diunggah": null
+   "diunggah": "2026-11-04"
   },
   "data/raw/publik/nasa_glc/coolr/COOLR.gdb/a00000009.horizon": {
    "sha256": "9fab34115b351a30fb6adb5818d8f08e4dd3a024b7247dbbc61c56929ab6e223",
    "ukuran": 32,
    "mtime": 1767717939.0,
    "kunci": "beku/9fab34115b351a30fb6adb5818d8f08e4dd3a024b7247dbbc61c56929ab6e223",
-   "diunggah": null
+   "diunggah": "sama-isi"
   },
   "data/raw/publik/nasa_glc/coolr/COOLR.gdb/a00000009.spx": {
    "sha256": "b15c47f7b499651bf43b132fc7c5cc3bc708930a9c0428b4de7af540d88dc72d",
    "ukuran": 499734,
    "mtime": 1767717939.0,
    "kunci": "beku/b15c47f7b499651bf43b132fc7c5cc3bc708930a9c0428b4de7af540d88dc72d",
-   "diunggah": null
+   "diunggah": "2026-11-04"
   },
   "data/raw/publik/nasa_glc/coolr/COOLR.gdb/a0000000a.freelist": {
    "sha256": "5fde28b2a792bacc9f25dd597bc99ea3e372847d3d00e18b254e738fc9e19623",
    "ukuran": 33112,
    "mtime": 1767728312.0,
    "kunci": "beku/5fde28b2a792bacc9f25dd597bc99ea3e372847d3d00e18b254e738fc9e19623",
-   "diunggah": null
+   "diunggah": "2026-11-04"
   },
   "data/raw/publik/nasa_glc/coolr/COOLR.gdb/a0000000a.gdbindexes": {
    "sha256": "1ac18e6ed03c8c681c664e4891377f95e89ce2dacd129fdb792fb954cd34391c",
    "ukuran": 116,
    "mtime": 1767717939.0,
    "kunci": "beku/1ac18e6ed03c8c681c664e4891377f95e89ce2dacd129fdb792fb954cd34391c",
-   "diunggah": null
+   "diunggah": "sama-isi"
   },
   "data/raw/publik/nasa_glc/coolr/COOLR.gdb/a0000000a.gdbtable": {
    "sha256": "2ea58d730d159eeacff85131b5ab1ed9d7532703e18495f5ec5d217a4adda5f0",
    "ukuran": 17279160,
    "mtime": 1767718338.0,
    "kunci": "beku/2ea58d730d159eeacff85131b5ab1ed9d7532703e18495f5ec5d217a4adda5f0",
-   "diunggah": null
+   "diunggah": "2026-11-04"
   },
   "data/raw/publik/nasa_glc/coolr/COOLR.gdb/a0000000a.gdbtablx": {
    "sha256": "0ce22f17dd354928fb363c7d51f2dbfe9e77bf3042b7d4d24c8588e1aabc61bf",
    "ukuran": 112672,
    "mtime": 1767718338.0,
    "kunci": "beku/0ce22f17dd354928fb363c7d51f2dbfe9e77bf3042b7d4d24c8588e1aabc61bf",
-   "diunggah": null
+   "diunggah": "2026-11-04"
   },
   "data/raw/publik/nasa_glc/coolr/COOLR.gdb/a0000000a.horizon": {
    "sha256": "9fab34115b351a30fb6adb5818d8f08e4dd3a024b7247dbbc61c56929ab6e223",
    "ukuran": 32,
    "mtime": 1767717939.0,
    "kunci": "beku/9fab34115b351a30fb6adb5818d8f08e4dd3a024b7247dbbc61c56929ab6e223",
-   "diunggah": null
+   "diunggah": "sama-isi"
   },
   "data/raw/publik/nasa_glc/coolr/COOLR.gdb/a0000000a.spx": {
    "sha256": "d3cc0fdd35f76eec4b1c7b11ea47ec63d2927dad76124940a313716a316499fa",
    "ukuran": 483350,
    "mtime": 1767717939.0,
    "kunci": "beku/d3cc0fdd35f76eec4b1c7b11ea47ec63d2927dad76124940a313716a316499fa",
-   "diunggah": null
+   "diunggah": "2026-11-04"
   },
   "data/raw/publik/nasa_glc/coolr/COOLR.gdb/a0000000b.freelist": {
    "sha256": "bfa8707221a25e842e7b40610ae9128f481eaeff22f373b91c5e2ff1a04748ff",
    "ukuran": 4440,
    "mtime": 1767728834.0,
    "kunci": "beku/bfa8707221a25e842e7b40610ae9128f481eaeff22f373b91c5e2ff1a04748ff",
-   "diunggah": null
+   "diunggah": "2026-11-04"
   },
   "data/raw/publik/nasa_glc/coolr/COOLR.gdb/a0000000b.gdbindexes": {
    "sha256": "1ac18e6ed03c8c681c664e4891377f95e89ce2dacd129fdb792fb954cd34391c",
    "ukuran": 116,
    "mtime": 1767717939.0,
    "kunci": "beku/1ac18e6ed03c8c681c664e4891377f95e89ce2dacd129fdb792fb954cd34391c",
-   "diunggah": null
+   "diunggah": "sama-isi"
   },
   "data/raw/publik/nasa_glc/coolr/COOLR.gdb/a0000000b.gdbtable": {
    "sha256": "2c852ebb4b9a395b3880abbc83dcbda7fd2692d4f2632633b01ddfe7d1cf54ae",
