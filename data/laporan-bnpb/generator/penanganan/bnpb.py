@@ -209,7 +209,7 @@ def ganti_operasi(s, op):
         for e, f in sp_di(s, 676656, yd): s = s[:e] + re.sub(r'val="(4A9BE0|C4CAD3)"', f'val="{"4A9BE0" if h else "C4CAD3"}"', s[e:f]) + s[f:]
     s = rapat_omc(s, ada)
     # ---- semai: 2 provinsi berbahan terbanyak (baris templat Kalteng, Sumsel)
-    dua = sorted(((n, o) for n, o in omc.items() if o['sortie']), key=lambda kv: -(kv[1]['nacl'] + kv[1]['dryice']))[:2]
+    dua = sorted(((n, o) for n, o in omc.items() if o['sortie']), key=lambda kv: -(kv[1]['nacl'] + kv[1]['dryice']))   # semua, urut bahan terbanyak
     s = teks(s, 'SEMAI DRY ICE', 'SEMAI OMC'); s = teks(s, 'BAHAN SEMAI', 'DRY ICE + NaCl' if any(o['dryice'] for o in op['omc'].values()) else 'NaCl')
     s = teks(s, '20 Okt', bln(D), 2)
     # pil tanggal ARMADA UDARA (panel kanan, x >= 6164428) = tanggal rekap gelar pesawat, bisa sehari sesudah operasi (28 Okt 2026);
@@ -222,18 +222,59 @@ def ganti_operasi(s, op):
     lab = f'{tot_s} sortie, {rb(tot_kg)} kg'
     cx = lebar_pil(lab) - 60000
     s = ubah_sp(s, 4856836, 4983480, lab, x_baru=4856836 + 1042416 - cx, cx=cx)
-    for (nama, o), (ln, lkg, lso, yp, lh) in zip(dua, (('Kalimantan Tengah', '3.900 kg', '5 sortie', 5401818, 'pagi, 1.907 ke 1.200'),
-                                                       ('Sumatera Selatan', '800 kg', '1 sortie', 5845302, 'Palembang, 700 m ke 7.000 m'))):
-        s = re.sub(rf'(<a:off x="795528" y="{5340096 if yp == 5401818 else 5783580}"/>(?:(?!</p:sp>).)*?<a:t>){ln}(</a:t>)', rf'\g<1>{nama}\2', s, count=1, flags=re.S)
-        s = teks(s, lkg, f'{rb(o["nacl"] + o["dryice"])} kg'); s = teks(s, lso, f'{o["sortie"]} sortie')
+    # 4 Nov (pemilik, sesudah pertanyaan "8 sortie atau 10 sortie?"): SEMUA provinsi ber-OMC tampil sebagai baris, supaya jumlah baris
+    # sama dengan lencana total. Baris ke-3 dst disalin dari baris templat kedua; rapikan_omc menyusun jaraknya.
+    if dua:
+        s = baris_semai(s, len(dua))
+    for k, (nama, o) in enumerate(dua):
+        ln, lkg, lso, lh = SEMAI_TEKS[min(k, 1)]
+        yn = SEMAI_Y[0] if k == 0 else SEMAI_Y[1] + (k - 1) * SEMAI_P
         h = o['hujan']
-        label = label_hujan(h) if h else 'JARAK PANDANG NAIK' if o['jarak_pandang'] else 'BELUM HUJAN'
-        s = pasang_sp(s, 3561885, yp, pil['abu' if label == 'BELUM HUJAN' else 'biru'], label)
         kom = ', '.join(x for x in (f'NaCl {rb(o["nacl"])} kg' if o['nacl'] else '', f'dry ice {rb(o["dryice"])} kg' if o['dryice'] else '') if x)
-        s = teks(s, lh, ('di ' + singkat(h['lokasi'], 40)) if h else kom)
+        ganti = {ln: nama, lkg: f'{rb(o["nacl"] + o["dryice"])} kg', lso: f'{o["sortie"]} sortie',
+                 lh: ('di ' + singkat(h['lokasi'], 40)) if h else kom}
+        s = di_baris(s, yn, lambda b: re.sub(r'<a:t>([^<]*)</a:t>', lambda m: f'<a:t>{ganti.get(m.group(1), m.group(1))}</a:t>', b))
+        label = label_hujan(h) if h else 'JARAK PANDANG NAIK' if o['jarak_pandang'] else 'BELUM HUJAN'
+        s = pasang_sp(s, 3561885, yn + 61722, pil['abu' if label == 'BELUM HUJAN' else 'biru'], label)
     jumlah = op.get('pemilik') or {}
     assert not jumlah or sum(jumlah.values()) == pat + wb, f'pemilik {jumlah} tidak berjumlah {pat + wb} unit armada'
     return kepala_omc(pemilik(armada(tanpa_instansi(s), ARMADA, 5990000 if jumlah else 6300000), jumlah))
+
+
+SEMAI_Y, SEMAI_P = (5340096, 5783580), 443484   # y nama baris semai templat (Kalteng, Sumsel); jarak baris templat
+SEMAI_TEKS = [('Kalimantan Tengah', '3.900 kg', '5 sortie', 'pagi, 1.907 ke 1.200'),
+              ('Sumatera Selatan', '800 kg', '1 sortie', 'Palembang, 700 m ke 7.000 m')]   # teks templat: nama, bahan, sortie, hasil
+
+
+def _blok_baris(s, yn):
+    """[(awal, akhir)] <p:sp>/<p:pic> panel kiri (x < 6.100.000) milik baris bernama di y yn: nama, bahan, pil sortie, pil hasil,
+    titik, keterangan (y yn s.d. yn + 400.000)."""
+    hasil = []
+    for m in re.finditer(r'<p:(sp|pic)>.*?</p:\1>', s, re.S):
+        o = re.search(r'<a:off x="(\d+)" y="(\d+)"/>', m.group(0))
+        if o and int(o.group(1)) < 6100000 and yn <= int(o.group(2)) < yn + 400000: hasil.append(m.span())
+    return hasil
+
+
+def di_baris(s, yn, f):
+    for a, b in reversed(_blok_baris(s, yn)): s = s[:a] + f(s[a:b]) + s[b:]
+    return s
+
+
+def baris_semai(s, n):
+    """Baris SEMAI OMC jadi n: baris templat kedua disalin (geser SEMAI_P per salinan) atau dibuang bila n == 1."""
+    blok = [s[a:b] for a, b in _blok_baris(s, SEMAI_Y[1])]
+    assert len(blok) >= 6, f'baris semai templat kedua: {len(blok)} bentuk'
+    if n == 1:
+        for a, b in reversed(_blok_baris(s, SEMAI_Y[1])): s = s[:a] + s[b:]
+        return s
+    nid = max(map(int, re.findall(r'<p:cNvPr id="(\d+)"', s)))
+    tambah = ''
+    for k in range(1, n - 1):
+        for b in blok:
+            b = re.sub(r'<a:off x="(\d+)" y="(\d+)"/>', lambda m: f'<a:off x="{m.group(1)}" y="{int(m.group(2)) + k * SEMAI_P}"/>', b)
+            nid += 1; tambah += re.sub(r'<p:cNvPr id="\d+"', f'<p:cNvPr id="{nid}"', b, count=1)
+    return s.replace('</p:spTree>', tambah + '</p:spTree>')
 
 
 def rapat_omc(s, ada):
@@ -395,12 +436,15 @@ def rapikan_omc(s):
     """3 Nov (pemilik: "spacingnya masih berantakan yang di tabel omc, ga proporsional"): bagian OMC DAN HUJAN dan SEMAI OMC disusun
     ulang dengan satu irama: garis bagian, celah G, baris judul, celah G, pita kepala, baris berjarak sama P di kedua bagian (baris
     OMC sebelumnya 591.312, SEMAI 443.484), garis pemisah tipis antarbaris seperti tabel contoh pemilik."""
-    G, HT, HB, HN, BAWAH = 64008, 201168, H_PITA, 443484, 2212848 + 4142232 - 91440   # BAWAH: dasar panel dikurangi 7,2 pt
+    # 4 Nov: G 5 pt -> 3,6 pt dan sisa dasar panel 7,2 pt -> 3,6 pt, supaya 6 baris (OMC 3 + SEMAI 3) tetap lega antara pil hasil
+    # dan garis pemisah
+    G, HT, HB, HN, BAWAH = 45720, 201168, H_PITA, 443484, 2212848 + 4142232 - 45720
     blok = [(m.start(), m.end(), m.group(0)) for m in re.finditer(r'<p:(sp|pic)>.*?</p:\1>', s, re.S)]   # pic: ikon judul bagian
     pos = lambda b: tuple(map(int, re.search(r'<a:off x="(\d+)" y="(\d+)"/>\s*<a:ext cx="(\d+)" cy="(\d+)"', b).groups()))
     def di_panel(b):
         o = re.search(r'<a:off x="(\d+)" y="(\d+)"/>\s*<a:ext cx="(\d+)" cy="(\d+)"', b)
-        return o and int(o.group(1)) < 6100000 and 2600000 < int(o.group(2)) < 6400000
+        # isi panel kiri mulai x 676.656 (kaki slide di x 548.640); y tanpa batas bawah: salinan baris semai bisa di bawah slide dulu
+        return o and 600000 <= int(o.group(1)) < 6100000 and int(o.group(2)) > 2600000
     garis = sorted(pos(b)[1] for *_, b in blok if di_panel(b) and pos(b)[0] == 676656 and pos(b)[2] == 5222596 and pos(b)[3] == 0)
     assert len(garis) == 2, f'garis bagian panel OMC: {garis}'
     nama = sorted(pos(b)[1] for *_, b in blok if di_panel(b) and pos(b)[0] == 795528 and pos(b)[3] == HN)
@@ -424,7 +468,13 @@ def rapikan_omc(s):
         if not di_panel(b): return b
         x, y0, cx, cy = pos(b)
         d = next((dy for (a, z), dy in geser.items() if a <= y0 < z), None)
-        return b if d is None else b.replace(f'<a:off x="{x}" y="{y0}"/>', f'<a:off x="{x}" y="{y0 + d}"/>', 1)
+        if d is None: return b
+        if x == 676656 and cx == cy == 73152 and 'prst="ellipse"' in b:
+            # titik baris 5,76 pt dibesarkan ke 6,12 pt (pusat tetap): deck.py salin_slide membuang bentuk kosong selebar <= 6 pt
+            # dalam 36 pt di atas garis kaki sebagai "bilah penanda catatan lama" (titik baris SEMAI ketiga hilang, 4 Nov)
+            return re.sub(r'<a:off x="676656" y="\d+"/>(\s*)<a:ext cx="73152" cy="73152"/>',
+                          lambda m: f'<a:off x="{676656 - 2286}" y="{y0 + d - 2286}"/>{m.group(1)}<a:ext cx="77724" cy="77724"/>', b, count=1)
+        return b.replace(f'<a:off x="{x}" y="{y0}"/>', f'<a:off x="{x}" y="{y0 + d}"/>', 1)
     hasil, akhir = [], 0
     for a, z, b in blok:
         hasil += [s[akhir:a], ubah(b)]; akhir = z
