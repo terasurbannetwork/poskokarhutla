@@ -5,7 +5,7 @@
  "status": "draf",
  "sumber": {
   "titik_panas": "hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-03T22:44:00.000Z, 4583 titik sedang/tinggi 72 jam)",
-  "temuan": "TIDAK ADA (tanpa --temuan dan tanpa env WA_MESIN): titik clear tidak dikeluarkan, WB kosong",
+  "temuan": "GET /api/operasi/temuan (3 temuan 48 jam)",
   "ffmc": "fwi.json hari_ini 2026-10-12",
   "pm25": "prakiraan.json dibuat 2026-11-03T11:39Z",
   "gambut": "public/data/lahan/gambut.geojson (BBSDLP 1:250.000)",
@@ -450,7 +450,33 @@
      "urut": 8
     }
    ],
-   "wb": [],
+   "wb": [
+    {
+     "lat": -2.39778,
+     "lon": 110.79333,
+     "skor": 4.2,
+     "alasan": {
+      "temuan": "berasap",
+      "oleh": "VN-8416",
+      "lokasi_laporan": "Eng OFF : 10:23 Z / 17:23 LT, ====================, Air Upas, Kec. Air Upas, Kab. Ketapang",
+      "luas_klaim_ha": 6,
+      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
+     },
+     "jenis": "wb",
+     "dms": "S 02° 23' 52\"  E 110° 47' 36\"",
+     "radial": 125,
+     "jarak_vor_nm": 61,
+     "rujukan": "KTG (base, VOR tidak diseed)",
+     "rd": "R 125 D 61 Nm Fr KTG (base, VOR tidak diseed)",
+     "dari_base_nm": 61,
+     "tempat": "Desa Air Upas, Kec. Air Upas, Kab. Ketapang",
+     "udara": {
+      "pm25_maks": 60,
+      "kab": "Kab. Sukamara"
+     },
+     "urut": 1
+    }
+   ],
    "kandidat_dalam_radius": 31
   },
   {
@@ -766,7 +792,33 @@
     "HA-5235"
    ],
    "patroli": [],
-   "wb": [],
+   "wb": [
+    {
+     "lat": -2.39778,
+     "lon": 110.79333,
+     "skor": 4.2,
+     "alasan": {
+      "temuan": "berasap",
+      "oleh": "VN-8416",
+      "lokasi_laporan": "Eng OFF : 10:23 Z / 17:23 LT, ====================, Air Upas, Kec. Air Upas, Kab. Ketapang",
+      "luas_klaim_ha": 6,
+      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
+     },
+     "jenis": "wb",
+     "dms": "S 02° 23' 52\"  E 110° 47' 36\"",
+     "radial": 299,
+     "jarak_vor_nm": 120,
+     "rujukan": "KLP (base, VOR tidak diseed)",
+     "rd": "R 299 D 120 Nm Fr KLP (base, VOR tidak diseed)",
+     "dari_base_nm": 120,
+     "tempat": "Desa Air Upas, Kec. Air Upas, Kab. Ketapang",
+     "udara": {
+      "pm25_maks": 60,
+      "kab": "Kab. Sukamara"
+     },
+     "urut": 1
+    }
+   ],
    "kandidat_dalam_radius": 94
   },
   {
@@ -1325,8 +1377,59 @@
      "urut": 8
     }
    ],
-   "wb": [],
-   "kandidat_dalam_radius": 335
+   "wb": [
+    {
+     "lat": -1.82194,
+     "lon": 104.26917,
+     "skor": 17.0,
+     "alasan": {
+      "temuan": "berasap",
+      "oleh": "RA-22747",
+      "lokasi_laporan": "Eng.Off : 08:01 z / 15:01 LT, #reff Fs By Team Darat, Tanah Pilih, Banyuasin",
+      "luas_klaim_ha": 13,
+      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
+     },
+     "jenis": "wb",
+     "dms": "S 01° 49' 19\"  E 104° 16' 09\"",
+     "radial": 340,
+     "jarak_vor_nm": 67,
+     "rujukan": "VOR PLB",
+     "rd": "R 340 D 67 Nm Fr VOR PLB",
+     "dari_base_nm": 70,
+     "tempat": "Kec. Bayung Lencir, Kab. Musi Banyuasin",
+     "udara": {
+      "pm25_maks": 50,
+      "kab": "Kota Jambi"
+     },
+     "urut": 1
+    },
+    {
+     "lat": -3.4206,
+     "lon": 105.50655,
+     "skor": 5.0,
+     "alasan": {
+      "temuan": "berasap",
+      "oleh": "RA-22477",
+      "lokasi_laporan": "Block Time : 04:43 Hrs, Fire Spot Location 1🔥, Cengal, Oki",
+      "luas_klaim_ha": 10,
+      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
+     },
+     "jenis": "wb",
+     "dms": "S 03° 25' 14\"  E 105° 30' 24\"",
+     "radial": 122,
+     "jarak_vor_nm": 61,
+     "rujukan": "VOR PLB",
+     "rd": "R 122 D 61 Nm Fr VOR PLB",
+     "dari_base_nm": 58,
+     "tempat": "Desa Pelimbangan, Kec. Cengal, Kab. Ogan Komering Ilir",
+     "udara": {
+      "pm25_maks": 16,
+      "kab": "Kab. Ogan Komering Ilir"
+     },
+     "urut": 2
+    }
+   ],
+   "kandidat_dalam_radius": 334
   },
   {
    "id": "DJB",
@@ -1563,7 +1666,7 @@
      "urut": 7
     },
     {
-     "lat": -3.22537,
+     "lat": -3.22538,
      "lon": 103.8762,
      "skor": 13.0,
      "alasan": {
@@ -1594,8 +1697,34 @@
      "urut": 8
     }
    ],
-   "wb": [],
-   "kandidat_dalam_radius": 159
+   "wb": [
+    {
+     "lat": -1.82194,
+     "lon": 104.26917,
+     "skor": 17.0,
+     "alasan": {
+      "temuan": "berasap",
+      "oleh": "RA-22747",
+      "lokasi_laporan": "Eng.Off : 08:01 z / 15:01 LT, #reff Fs By Team Darat, Tanah Pilih, Banyuasin",
+      "luas_klaim_ha": 13,
+      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
+     },
+     "jenis": "wb",
+     "dms": "S 01° 49' 19\"  E 104° 16' 09\"",
+     "radial": 106,
+     "jarak_vor_nm": 39,
+     "rujukan": "VOR JMB",
+     "rd": "R 106 D 39 Nm Fr VOR JMB",
+     "dari_base_nm": 39,
+     "tempat": "Kec. Bayung Lencir, Kab. Musi Banyuasin",
+     "udara": {
+      "pm25_maks": 50,
+      "kab": "Kota Jambi"
+     },
+     "urut": 1
+    }
+   ],
+   "kandidat_dalam_radius": 158
   },
   {
    "id": "PKU",

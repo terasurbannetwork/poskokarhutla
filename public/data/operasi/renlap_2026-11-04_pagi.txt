@@ -94,7 +94,11 @@ TARGET PATROLI (berurut dari base)
    Udara pagi (06-10 WIB): PM2,5 prakiraan maks 23 ug/m3 (Kab. Lamandau); jarak pandang tidak tersedia
 
 TARGET WATER BOMBING (FS terkonfirmasi)
-  tidak ada usulan
+1. Desa Air Upas, Kec. Air Upas, Kab. Ketapang
+   S 02° 23' 52"  E 110° 47' 36"
+   R 125 D 61 Nm Fr KTG (base, VOR tidak diseed)
+   Alasan: temuan berasap oleh VN-8416, laporan menyebut Eng OFF : 10:23 Z / 17:23 LT, ====================, Air Upas, Kec. Air Upas, Kab. Ketapang; klaim 6 ha; jarak sumber air: tidak tersedia
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 60 ug/m3 (Kab. Sukamara); jarak pandang tidak tersedia
 
 Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-03T22:44:00.000Z, 4583 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
 
@@ -180,7 +184,11 @@ TARGET PATROLI (berurut dari base)
   tidak ada usulan
 
 TARGET WATER BOMBING (FS terkonfirmasi)
-  tidak ada usulan
+1. Desa Air Upas, Kec. Air Upas, Kab. Ketapang
+   S 02° 23' 52"  E 110° 47' 36"
+   R 299 D 120 Nm Fr KLP (base, VOR tidak diseed)
+   Alasan: temuan berasap oleh VN-8416, laporan menyebut Eng OFF : 10:23 Z / 17:23 LT, ====================, Air Upas, Kec. Air Upas, Kab. Ketapang; klaim 6 ha; jarak sumber air: tidak tersedia
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 60 ug/m3 (Kab. Sukamara); jarak pandang tidak tersedia
 
 Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-03T22:44:00.000Z, 4583 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
 
@@ -300,7 +308,16 @@ TARGET PATROLI (berurut dari base)
    Udara pagi (06-10 WIB): PM2,5 prakiraan maks 101 ug/m3 (Kab. Tanjung Jabung Timur); jarak pandang tidak tersedia
 
 TARGET WATER BOMBING (FS terkonfirmasi)
-  tidak ada usulan
+1. Kec. Bayung Lencir, Kab. Musi Banyuasin
+   S 01° 49' 19"  E 104° 16' 09"
+   R 340 D 67 Nm Fr VOR PLB
+   Alasan: temuan berasap oleh RA-22747, laporan menyebut Eng.Off : 08:01 z / 15:01 LT, #reff Fs By Team Darat, Tanah Pilih, Banyuasin; klaim 13 ha; jarak sumber air: tidak tersedia
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 50 ug/m3 (Kota Jambi); jarak pandang tidak tersedia
+2. Desa Pelimbangan, Kec. Cengal, Kab. Ogan Komering Ilir
+   S 03° 25' 14"  E 105° 30' 24"
+   R 122 D 61 Nm Fr VOR PLB
+   Alasan: temuan berasap oleh RA-22477, laporan menyebut Block Time : 04:43 Hrs, Fire Spot Location 1🔥, Cengal, Oki; klaim 10 ha; jarak sumber air: tidak tersedia
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 16 ug/m3 (Kab. Ogan Komering Ilir); jarak pandang tidak tersedia
 
 Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-03T22:44:00.000Z, 4583 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
 
@@ -360,7 +377,11 @@ TARGET PATROLI (berurut dari base)
    Udara pagi (06-10 WIB): PM2,5 prakiraan maks 14 ug/m3 (Kab. Penukal Abab Lematang Ilir); jarak pandang tidak tersedia
 
 TARGET WATER BOMBING (FS terkonfirmasi)
-  tidak ada usulan
+1. Kec. Bayung Lencir, Kab. Musi Banyuasin
+   S 01° 49' 19"  E 104° 16' 09"
+   R 106 D 39 Nm Fr VOR JMB
+   Alasan: temuan berasap oleh RA-22747, laporan menyebut Eng.Off : 08:01 z / 15:01 LT, #reff Fs By Team Darat, Tanah Pilih, Banyuasin; klaim 13 ha; jarak sumber air: tidak tersedia
+   Udara pagi (06-10 WIB): PM2,5 prakiraan maks 50 ug/m3 (Kota Jambi); jarak pandang tidak tersedia
 
 Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-03T22:44:00.000Z, 4583 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
 

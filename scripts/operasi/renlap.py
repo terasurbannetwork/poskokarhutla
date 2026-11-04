@@ -502,7 +502,8 @@ def teks(r):
 # ---------------------------------------------------------------- API mesin
 def _api(jalur, isi=None):
     req = urllib.request.Request(os.environ.get("WORKER", API) + jalur, data=None if isi is None else json.dumps(isi).encode(),
-                                 headers={"Authorization": "Bearer " + os.environ["WA_MESIN"], "Content-Type": "application/json"})
+                                 headers={"Authorization": "Bearer " + os.environ["WA_MESIN"], "Content-Type": "application/json",
+                                          "User-Agent": "centurisk97-renlap/1"})  # tanpa UA: Cloudflare 403 untuk Python-urllib
     with urllib.request.urlopen(req, timeout=60) as x:
         return json.load(x)
 

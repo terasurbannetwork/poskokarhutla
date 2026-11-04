@@ -113,9 +113,10 @@ def muat_titik(kini):
 
 
 # ---------------------------------------------------------------- rute
-def susun_rute(b, v_kmj):
-    """Base -> CP sesuai urutan renlap -> kembali ke base. Jarak dan waktu kumulatif termasuk orbit tiap CP."""
-    cp = [dict(c, kode=f"CP{c['urut']}") for c in b["patroli"] + [dict(w, urut=len(b["patroli"]) + w["urut"]) for w in b.get("wb", [])]]
+def susun_rute(b, v_kmj, jenis="patroli"):
+    """Satu sortie: base -> target `jenis` (patroli = CP, wb = WB) sesuai urutan renlap -> kembali ke base.
+    Patroli dan water bombing sortie terpisah (pesawat berbeda). Jarak dan waktu kumulatif termasuk orbit tiap target."""
+    cp = [dict(c, kode=f"{'WB' if jenis == 'wb' else 'CP'}{c['urut']}") for c in b.get(jenis) or []]
     base = {"kode": b["id"], "lat": b["lat"], "lon": b["lon"], "tempat": f"Base {b['nama']}"}
     titik = [base] + cp + [dict(base, tempat=f"kembali ke Base {b['nama']}")]
     leg, kum_km, kum_mnt = [], 0.0, 0.0
@@ -236,7 +237,8 @@ def kepala(ey, judul, meta, kanan=None):
             f'<div class="per">{kanan}</div></div>')
 
 
-def halaman_base(b, titik, leg, panas, meta, kerja, cache):
+def halaman_base(b, titik, leg, panas, meta, kerja, cache, jenis="patroli"):
+    misi = "water bombing" if jenis == "wb" else "patroli"
     ey = f"BNPB, RENCANA LAPANGAN UDARA, BASE {b['nama'].upper()} ({b['id']})"
     cp = titik[1:-1]
     semua = [(t["lat"], t["lon"]) for t in titik]
@@ -250,7 +252,7 @@ def halaman_base(b, titik, leg, panas, meta, kerja, cache):
             break
         z -= 1
     clat, clon = (la0 + la1) / 2, (lo0 + lo1) / 2
-    P = bingkai(clat, clon, z, W, H, cache, kerja / f"{b['id']}_rute.jpg")
+    P = bingkai(clat, clon, z, W, H, cache, kerja / f"{b['id']}_{jenis}_rute.jpg")
     dalam = [t for t in panas if 0 <= P(t["lat"], t["lon"])[0] <= W and 0 <= P(t["lat"], t["lon"])[1] <= H]
     s = svg_rute(P, titik, W, H) + titik_svg(P, dalam, 6)
     s += penanda(P, titik[0], 15, base=True, label=f"Base {b['nama']}")
@@ -270,12 +272,12 @@ def halaman_base(b, titik, leg, panas, meta, kerja, cache):
                      f'<td class="n"><a href="{gmaps(t["lat"], t["lon"])}">{t["lat"]:.4f}, {t["lon"]:.4f}</a></td>'
                      f'<td class="n" style="color:#e8590c;font-weight:700">{n}</td><td class="n">{ang(t["kum_km"])} km</td><td class="n">+{ang(t["kum_mnt"])} mnt</td></tr>')
     kpi = (f'<div class="kpi"><div class="o"><b>{ang(sum(n24))}</b><span>titik panas 24 jam dalam {RADIUS_KM} km dari check point</span></div>'
-           f'<div><b>{ang(len(cp))} check point</b><span>usulan patroli{" dan water bombing" if b.get("wb") else ""}, urut tetangga terdekat dari base</span></div>'
+           f'<div><b>{ang(len(cp))} {"target" if jenis == "wb" else "check point"}</b><span>{"sortie water bombing ke temuan lapangan terkonfirmasi" if jenis == "wb" else "sortie patroli, urut tetangga terdekat dari base"}</span></div>'
            f'<div><b>± {ang(total_km)} km</b><span>loop base, semua CP, kembali ke base ({ang(total_km / R.NM_KM)} NM)</span></div>'
            f'<div class="o"><b>± {ang(total_mnt)} menit</b><span>pada {ang(meta["v"])} km/jam, termasuk orbit {ORBIT_MNT} menit tiap CP</span></div></div>')
-    judul = "Rencana rute udara patroli karhutla dari " + b["nama"]
+    judul = f"Rencana rute udara {misi} karhutla dari " + b["nama"]
     h1 = (f'<section class="hal">{kepala(ey, judul, meta)}{kpi}'
-          f'<div class="dua"><div><div class="peta" style="height:118mm"><img src="{b["id"]}_rute.jpg">{"".join(s)}</div>'
+          f'<div class="dua"><div><div class="peta" style="height:118mm"><img src="{b["id"]}_{jenis}_rute.jpg">{"".join(s)}</div>'
           f'<div class="leg"><span><i style="background:#ef4444"></i>Titik panas 24 jam</span><span><i style="background:#facc15"></i>24–48 jam</span>'
           f'<span><i style="background:#e8590c"></i>Check point</span><span><i style="background:#0b2545"></i>Base</span><span style="color:#0284c7">— Rute dan arah terbang</span></div></div>'
           f'<div class="kartu"><h3>Urutan check point, klik koordinat untuk Google Maps</h3><table><thead><tr><th></th><th>Titik</th><th class="n">Koordinat</th>'
@@ -284,7 +286,7 @@ def halaman_base(b, titik, leg, panas, meta, kerja, cache):
     # halaman 2: leg pilot
     rd = {c["kode"]: c.get("rd", "") for c in cp}
     lb = "".join(f'<tr><td>{x["no"]}</td><td style="white-space:nowrap"><b>{x["dari"]}</b> ke <b>{x["ke"]}</b></td><td class="mono">{R.dms(x["lat"], x["lon"])}</td>'
-                 f'<td class="mono">{html.escape(rd.get(x["ke"], "")) or "–"}</td>'
+                 f'<td class="mono" style="white-space:normal;max-width:42mm">{html.escape(rd.get(x["ke"], "")) or "–"}</td>'
                  f'<td class="n"><a href="{gmaps(x["lat"], x["lon"])}">{x["lat"]:.4f}, {x["lon"]:.4f}</a></td>'
                  f'<td class="n"><b>{round(x["haluan"]) % 360 or 360:03d}°</b></td><td class="n">{ang(x["km"], 1)} km</td><td class="n">{ang(x["nm"], 1)} NM</td>'
                  f'<td class="n">{"&lt; 1" if x["mnt"] < 1 else ang(x["mnt"])} mnt</td></tr>' for x in leg)
@@ -302,9 +304,13 @@ def halaman_base(b, titik, leg, panas, meta, kerja, cache):
             bag.append(f'permukiman {ang(a["permukiman_km"], 1)} km')
         if a.get("gambut"):
             bag.append("di gambut")
+        if c.get("jenis") == "wb":
+            bag.insert(0, f'WATER BOMBING: temuan lapangan {a.get("temuan", "")} oleh {a.get("oleh", "")}'
+                          + (f', klaim {ang(a["luas_klaim_ha"])} ha' if a.get("luas_klaim_ha") else ""))
         alasan.append(f'<li><b>{c["kode"]}</b> {html.escape(c.get("tempat") or "")}: {", ".join(bag) or "titik panas 24–48 jam, belum ada temuan lapangan"}.</li>')
-    udara = [f'{c["kode"]} PM2,5 maks {ang(c["udara"]["pm25_maks"])} µg/m³' for c in cp if (c.get("udara") or {}).get("pm25_maks") is not None]
-    h2 = (f'<section class="hal">{kepala(ey, "Flight plan: leg, haluan, dan jarak antar check point", meta)}'
+    pm = [(c["udara"]["pm25_maks"], c["kode"]) for c in cp if (c.get("udara") or {}).get("pm25_maks") is not None]
+    udara = [f"PM2,5 prakiraan tertinggi {ang(max(pm)[0])} µg/m³ di {max(pm)[1]}"] if pm else []
+    h2 = (f'<section class="hal">{kepala(ey, "Flight plan " + misi + ": leg, haluan, dan jarak", meta)}'
           f'<div class="dua" style="grid-template-columns:190mm 1fr"><div class="kartu"><h3>Tabel leg untuk pilot</h3><table><thead><tr><th>Leg</th><th>Dari ke</th>'
           f'<th>Koordinat tujuan (DMS)</th><th>Radial/jarak VOR</th><th class="n">Google Maps</th><th class="n">Haluan sejati</th><th class="n">Jarak</th><th class="n">NM</th>'
           f'<th class="n">Waktu</th></tr></thead><tbody>{lb}</tbody></table><p class="fnd">Waktu leg pada {ang(meta["v"])} km/jam tanpa angin, belum termasuk orbit '
@@ -312,7 +318,7 @@ def halaman_base(b, titik, leg, panas, meta, kerja, cache):
           f'<div style="display:grid;gap:4mm;align-content:start"><div class="kartu"><h3>Kenapa check point ini</h3><ul>{"".join(alasan)}</ul></div>'
           f'<div class="kartu"><h3>Yang perlu diputuskan</h3><ol><li>Jenis pesawat dan kecepatan jelajah: hitungan memakai {ang(meta["v"])} km/jam; pilot menyesuaikan.</li>'
           f'<li>Urutan CP boleh diubah komando; jarak dan waktu dihitung ulang.</li>'
-          f'<li>Udara pagi: {"; ".join(udara) or "data PM2,5 tidak tersedia"}. Jarak pandang METAR belum tersedia di renlap ini.</li>'
+          f'<li>Udara pagi (06–10 WIB): {"; ".join(udara) or "data PM2,5 tidak tersedia"}. Jarak pandang METAR belum tersedia.</li>'
           f'<li>Ketinggian orbit dan izin wilayah udara (NOTAM) ditetapkan pilot dan Baseops.</li></ol></div></div></div>{kaki(meta)}</section>')
     return h1 + h2
 
@@ -340,8 +346,11 @@ def halaman_cp(b, titik, i, panas, meta, kerja, cache):
     tb = tb or '<tr><td colspan="5">Tidak ada titik panas 24 jam dalam radius ini; target dari titik 24–48 jam atau api menahun.</td></tr>'
     hal = lambda a, b_: R.baringan(a["lat"], a["lon"], b_["lat"], b_["lon"])
     jk = lambda a, b_: km((a["lat"], a["lon"]), (b_["lat"], b_["lon"]))
-    kanan = (f'<span class="pil">{ang(len(dekat))} titik panas 24 jam</span><span class="pil abu">+{ang(c["kum_mnt"])} menit dari base</span>')
-    return (f'<section class="hal"><div class="kepala"><div class="nocp"><span class="bul">{c["urut"]}</span><div><div class="ey">Check point {c["urut"]} dari {len(titik) - 2}, '
+    al = c.get("alasan") or {}
+    wb = c.get("jenis") == "wb"
+    kanan = ((f'<span class="pil" style="background:#dbeafe;color:#1e3a8a">Water bombing: {html.escape(str(al.get("temuan", "")))} oleh {html.escape(str(al.get("oleh", "")))}'
+              f'{", " + ang(al["luas_klaim_ha"]) + " ha" if al.get("luas_klaim_ha") else ""}</span>') if wb else "") + (f'<span class="pil">{ang(len(dekat))} titik panas 24 jam</span><span class="pil abu">+{ang(c["kum_mnt"])} menit dari base</span>')
+    return (f'<section class="hal"><div class="kepala"><div class="nocp"><span class="bul">{c["urut"]}</span><div><div class="ey">{"Target water bombing" if c["kode"].startswith("WB") else "Check point"} {c["urut"]} dari {len(titik) - 2}, '
             f'rute udara base {html.escape(b["nama"])}</div><h1>{html.escape(c.get("tempat") or c["kode"])}</h1></div></div><div class="per">{kanan}</div></div>'
             f'<div class="dua cp"><div><div class="peta" style="height:150mm;width:150mm"><img src="{b["id"]}_{c["kode"]}.jpg">{"".join(s)}</div>'
             f'<div class="leg"><span><i style="background:#ef4444"></i>Titik panas 24 jam</span><span><i style="background:#facc15"></i>24–48 jam</span>'
@@ -377,21 +386,35 @@ def buat(a):
     kerja.mkdir(parents=True, exist_ok=True)
     cache.mkdir(parents=True, exist_ok=True)
     pilih = set(a.base.split(",")) if a.base else None
-    chrome, hasil = cari_chrome(), []
+    chrome, hasil, semua = cari_chrome(), [], []
+
+    def cetak(nama, judul, isi):
+        hf = kerja / f"{nama}.html"
+        hf.write_text(f'<!doctype html><html lang="id"><head><meta charset="utf-8"><title>{html.escape(judul)}</title><style>{CSS}</style></head><body>{isi}</body></html>')
+        pdf = kerja / f"Renlap {nama} {a.tanggal} {a.versi}.pdf"
+        subprocess.run([chrome, "--headless=new", "--disable-gpu", "--no-pdf-header-footer", "--virtual-time-budget=10000",
+                        f"--print-to-pdf={pdf}", hf.as_uri()], check=True, capture_output=True, timeout=600)
+        return pdf
+
     for b in d["base"]:
         if (pilih and b["id"] not in pilih) or not (b["patroli"] or b.get("wb")):
             continue
-        titik, leg = susun_rute(b, a.kecepatan)
-        isi = halaman_base(b, titik, leg, panas, meta, kerja, cache)
-        isi += "".join(halaman_cp(b, titik, i, panas, meta, kerja, cache) for i in range(1, len(titik) - 1))
-        judul = f"Renlap rute udara {b['nama']} {a.tanggal} {a.versi}"
-        hf = kerja / f"{b['id']}.html"
-        hf.write_text(f'<!doctype html><html lang="id"><head><meta charset="utf-8"><title>{html.escape(judul)}</title><style>{CSS}</style></head><body>{isi}</body></html>')
-        pdf = kerja / f"Renlap {b['id']} {a.tanggal} {a.versi}.pdf"
-        subprocess.run([chrome, "--headless=new", "--disable-gpu", "--no-pdf-header-footer", "--virtual-time-budget=10000",
-                        f"--print-to-pdf={pdf}", hf.as_uri()], check=True, capture_output=True, timeout=180)
+        isi, ring = "", []
+        for jenis in ("patroli", "wb"):
+            if not b.get(jenis):
+                continue
+            titik, leg = susun_rute(b, a.kecepatan, jenis)
+            isi += halaman_base(b, titik, leg, panas, meta, kerja, cache, jenis)
+            isi += "".join(halaman_cp(b, titik, i, panas, meta, kerja, cache) for i in range(1, len(titik) - 1))
+            ring.append(f"{'WB' if jenis == 'wb' else 'patroli'} {len(titik) - 2} target, {ang(titik[-1]['kum_km'])} km, ± {ang(titik[-1]['kum_mnt'])} mnt")
+        semua.append(isi)
+        pdf = cetak(b["id"], f"Renlap rute udara {b['nama']} {a.tanggal} {a.versi}", isi)
         hasil.append(pdf)
-        print(f"{b['id']}: {len(titik) - 2} CP, {ang(titik[-1]['kum_km'])} km, ± {ang(titik[-1]['kum_mnt'])} mnt -> {pdf}")
+        print(f"{b['id']}: {'; '.join(ring)} -> {pdf}")
+    if len(semua) > 1:  # satu berkas untuk dikirim bot: batas gateway 8 pesan per nomor per hari
+        pdf = cetak("semua base", f"Renlap rute udara semua base {a.tanggal} {a.versi}", "".join(semua))
+        hasil.append(pdf)
+        print(f"GABUNGAN {len(semua)} base -> {pdf}")
     if not hasil:
         print("tidak ada base bertarget", file=sys.stderr)
     return hasil
@@ -406,6 +429,10 @@ def uji():
     assert abs(titik[-1]["kum_mnt"] - (sum(x["mnt"] for x in leg) + 2 * ORBIT_MNT)) < 1e-9, "orbit dihitung sekali per CP"
     assert 70 < leg[0]["haluan"] < 80, leg[0]["haluan"]
     assert ang(1234.56, 1) == "1.234,6" and ang(3) == "3"
+    b["wb"] = [{"lat": -0.12, "lon": 109.5, "urut": 1}]
+    t2, _ = susun_rute(b, 200, "wb")
+    assert [t["kode"] for t in t2] == ["PNK", "WB1", "PNK"], "water bombing sortie sendiri, tidak menempel di rute patroli"
+    assert [t["kode"] for t in susun_rute(b, 200)[0]] == ["PNK", "CP1", "CP2", "PNK"]
     x, y = gpx(0, 0, 1)
     assert (x, y) == (256, 256)
     panas = [{"lat": -0.10, "lon": 109.61, "umur": 5}, {"lat": -0.10, "lon": 109.70, "umur": 5}, {"lat": -0.10, "lon": 109.605, "umur": 30}]

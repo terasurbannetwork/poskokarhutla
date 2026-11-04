@@ -20,7 +20,7 @@ function dunia(env = {}, { gagal, gagalPdf } = {}) {
       if (gagal) throw Object.assign(new Error('x'), { stderr: 'baris\nWorker menolak 401' })
       if (args[0].endsWith('renlap_pdf.py')) {
         if (gagalPdf) throw Object.assign(new Error('x'), { stderr: 'Chrome tidak ditemukan (set CHROME)' })
-        return { stdout: 'PLM: 8 CP, 787 km, ± 252 mnt -> /k/Renlap PLM 2026-11-02 pagi.pdf\nPKU: 5 CP -> /k/Renlap PKU 2026-11-02 pagi.pdf\n' }
+        return { stdout: 'PLM: 8 CP, 787 km, ± 252 mnt -> /k/Renlap PLM 2026-11-02 pagi.pdf\nPKU: 5 CP -> /k/Renlap PKU 2026-11-02 pagi.pdf\nGABUNGAN 2 base -> /k/Renlap semua base 2026-11-02 pagi.pdf\n' }
       }
       return { stdout: '' }
     },
@@ -29,7 +29,7 @@ function dunia(env = {}, { gagal, gagalPdf } = {}) {
   }
   const e = { PENERIMA: '6281,120@g.us', PEMILIK: '6299', WORKER_URL: 'http://w', WA_MESIN: 'k', LAPORAN_BANJIR: '0', ...env }
   const jalan = (jam) => jalankan({ env: e, dep, rumah, log: () => {}, kenali: () => null, tanggalIsi: () => TGL, now: wibKe(jam) })
-  return { k, jalan }
+  return { k, jalan, rumah }
 }
 
 test('jam pemicu: pagi 07.00-12.00, malam 20.00-24.00', () => {
@@ -49,9 +49,10 @@ test('pagi 07.00: draf lalu PDF, PDF hanya ke PEMILIK, tidak ke penerima', async
   const h = await d.jalan(7.1)
   assert.deepEqual(h.slice(0, 2).map((x) => x.id), ['renlap:pagi', 'renlap-pdf:pagi'])
   assert.deepEqual(d.k.exec[0].args, ['scripts/operasi/renlap.py', 'buat', '--versi', 'pagi', '--kirim-api'])
-  assert.deepEqual(d.k.exec[1].args, ['scripts/operasi/renlap_pdf.py', 'buat', '--versi', 'pagi'])
+  assert.deepEqual(d.k.exec[1].args.slice(0, 5), ['scripts/operasi/renlap_pdf.py', 'buat', '--versi', 'pagi', '--out'])
+  assert.ok(d.k.exec[1].args[5].endsWith(path.join('keluaran', TGL, 'renlap-pagi')) && d.k.exec[1].args[5].startsWith(d.rumah))   // gateway hanya kirim dari keluaran
   assert.equal(d.k.exec[0].o.env.WORKER, 'http://w'); assert.equal(d.k.exec[0].o.env.WA_MESIN, 'k')
-  assert.deepEqual(d.k.file, [{ t: '6299', p: '/k/Renlap PLM 2026-11-02 pagi.pdf', mime: 'application/pdf' }, { t: '6299', p: '/k/Renlap PKU 2026-11-02 pagi.pdf', mime: 'application/pdf' }])
+  assert.deepEqual(d.k.file, [{ t: '6299', p: '/k/Renlap semua base 2026-11-02 pagi.pdf', mime: 'application/pdf' }])   // satu pesan, bukan per base
   assert.equal(d.k.teks.length, 0)
 })
 
@@ -64,7 +65,8 @@ test('PDF gagal: draf tetap tercatat, kabar PEMILIK sekali, tick berikut hanya m
   assert.equal(d.k.file.length, 0)
 })
 
-test('pdfDari hanya mengambil baris berakhiran .pdf', () => {
+test('pdfDari: gabungan saja; satu base = PDF tunggal; abaikan selain .pdf', () => {
+  assert.deepEqual(pdfDari('PNK: 5 CP -> /a/P.pdf\nPLM: 8 CP -> /a/L.pdf\nGABUNGAN 2 base -> /a/semua.pdf\n'), ['/a/semua.pdf'])
   assert.deepEqual(pdfDari('peringatan: x\nPNK: 5 CP -> /a/b c.pdf\nselesai -> /a/x.json\n'), ['/a/b c.pdf'])
   assert.deepEqual(pdfDari(undefined), [])
 })

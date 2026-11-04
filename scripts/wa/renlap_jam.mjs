@@ -14,12 +14,17 @@ export const VERSI = [
   { versi: 'malam', dari: 20, sampai: 24 },
   { versi: 'pagi', dari: 7, sampai: 12 },
 ]
-// Baris "... -> <jalur>.pdf" dari renlap_pdf.py.
-export const pdfDari = (stdout) => String(stdout || '').split('\n').map((l) => l.match(/ -> (.+\.pdf)$/)?.[1]).filter(Boolean)
+// PDF yang dikirim dari keluaran renlap_pdf.py: baris "GABUNGAN ... -> <jalur>.pdf" saja (satu pesan; gateway membatasi
+// 8 pesan per nomor per hari), atau PDF tunggal bila hanya satu base bertarget.
+export const pdfDari = (stdout) => {
+  const baris = String(stdout || '').split('\n').map((l) => [l.startsWith('GABUNGAN'), l.match(/ -> (.+\.pdf)$/)?.[1]]).filter((x) => x[1])
+  const gab = baris.filter((x) => x[0]).map((x) => x[1])
+  return gab.length ? gab : baris.map((x) => x[1]).slice(0, 1)
+}
 export const jatuhTempo = (jam) => VERSI.filter((v) => jam >= v.dari && jam < v.sampai)
 
 // `state` = isi state.json (dimutasi), `simpan` menulisnya. Mengembalikan daftar hasil per versi.
-export async function jalankanRenlap({ env, now, tanggal, jam, state, simpan, kering, dep, log, pemilik }) {
+export async function jalankanRenlap({ env, now, tanggal, jam, state, simpan, kering, dep, log, pemilik, dasar = RUMAH }) {
   if (env.RENLAP !== '1') return []
   state.renlap ||= {}; state.gagal ||= {}
   const hasil = []
@@ -34,11 +39,12 @@ export async function jalankanRenlap({ env, now, tanggal, jam, state, simpan, ke
     const langkah = [
       ['renlap:' + versi, kunci, () => dep.exec(py, ['scripts/operasi/renlap.py', 'buat', '--versi', versi, '--kirim-api'], o)],
       // PDF menyusul draf: gagal PDF tidak membatalkan draf, dicoba lagi tick berikut dengan kunci sendiri.
+      // Ditulis di <rumah>/keluaran: gateway hanya mau mengirim berkas dari sana.
       ['renlap-pdf:' + versi, kunci + ':pdf', async () => {
-        const r = await dep.exec(py, ['scripts/operasi/renlap_pdf.py', 'buat', '--versi', versi], { ...o, timeout: 15 * 60e3 })
+        const r = await dep.exec(py, ['scripts/operasi/renlap_pdf.py', 'buat', '--versi', versi, '--out', path.join(dasar, 'keluaran', tanggal, 'renlap-' + versi)], { ...o, timeout: 15 * 60e3 })
         const pdf = pdfDari(r?.stdout)
         if (!pdf.length) throw new Error('renlap_pdf tidak menghasilkan PDF')
-        if (pemilik) for (const p of pdf) await dep.kirimFile(pemilik, p, path.basename(p), `Renlap ${versi} ${tanggal}: ${path.basename(p, '.pdf')}`, 'application/pdf')
+        if (pemilik) for (const p of pdf) await dep.kirimFile(pemilik, p, path.basename(p), `Renlap ${versi} ${tanggal}, semua base. PDF per base ada di ${path.dirname(p)}`, 'application/pdf')
       }],
     ]
     for (const [id, k, jalan] of langkah) {

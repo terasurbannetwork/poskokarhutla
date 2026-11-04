@@ -233,7 +233,7 @@ export async function jalankan(opsi = {}) {
   }
 
   try {
-    if (!opsi.tanggal) hasil.push(...await jalankanRenlap({ env, now, tanggal, jam: jamWib(now), state, simpan, kering, dep, log, pemilik }))
+    if (!opsi.tanggal) hasil.push(...await jalankanRenlap({ env, now, tanggal, jam: jamWib(now), state, simpan, kering, dep, log, pemilik, dasar }))
     // Jarak pandang BMKG (JARAK_PANDANG=1): galat tertangkap di dalam modul, tidak menahan laporan.
     if (!opsi.tanggal) try { hasil.push(...await jalankanJarakPandang({ env, now, jam: jamWib(now), state, simpan, kering, dep, log, pemilik })) } catch (e) { log('jarak pandang tak terduga', e.message) }
     if (diLuar) return hasil
