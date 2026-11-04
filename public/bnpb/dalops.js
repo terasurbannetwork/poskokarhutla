@@ -99,17 +99,15 @@
     });
     return b;
   }
-  /* kartu laporan standar .ex-std (public/inti/kartu.css): pil kategori berikon, judul kalimat temuan (angka .hl), isi, kaki keterangan + sumber */
+  /* kartu laporan standar .ex-std (public/inti/kartu.css): pil kategori berikon, judul kalimat temuan (angka .hl), isi; tanpa kaki keterangan/sumber (pemilik 4 Nov 2026) */
   const hl = t => h("span", {class: "hl", teks: t});
-  const bagian = (id, ik, ey, judul, ket, sumber, ...isi) => {
+  const bagian = (id, ik, ey, judul, ...isi) => {
     const s = h("section", {class: "ex ex-std", id});
     s.append(h("header", {class: "ex-hd"}, h("span", {class: "ex-ey"}, ikon(ik), ey),
         h("div", {class: "ex-jd"}, h("h3", null, ...[].concat(judul)), isi.some(x => x?.querySelector?.(".dl-grup")) ? bukaSemua(s) : null)),
-      h("div", {class: "ex-bd"}, ...isi.filter(Boolean)),
-      ket || sumber ? h("footer", {class: "ex-ft"}, ket ? h("span", {teks: ket}) : null, sumber ? h("em", {teks: "Sumber: " + sumber}) : null) : null);
+      h("div", {class: "ex-bd"}, ...isi.filter(Boolean)));
     return s;
   };
-  const SB_LOGBOOK = "logbook Pusdalops BNPB dari laporan BPBD", SB_PRA = "prakiraan banjir Centurisk97 (hujan ensemble tiga hari, debit sungai)";
   const kelompokProv = (daftar, urut) => {
     const m = new Map();
     for (const x of daftar) (m.get(x.prov_kode) || m.set(x.prov_kode, []).get(x.prov_kode)).push(x);
@@ -376,14 +374,13 @@
     const nBelum = jml("nBelum"), nKab = jml("nKab");
     return bagian("peta", "banjir", "Kondisi banjir terkini",
       nBelum ? [hl(`${F(nBelum)} dari ${F(nKab)} kab/kota`), ` banjir sepekan belum surut, `, hl(`${F(jml("jiwa"))} jiwa`), " terdampak"] : [hl(`${F(nKab)} kab/kota`), " banjir sepekan, semuanya sudah surut"],
-      "Klik baris provinsi untuk membuka kab/kota, kecamatan, dan desa.", SB_LOGBOOK,
       wadahPeta,
       tabel);
   }
 
   /* ---------- perlu ditanya ---------- */
   function bagianTanya(daftar, sk, st, hari) {
-    if (!daftar.length) return bagian("tanya", "ok", "Kelengkapan data", "Semua wilayah belum surut sudah berkabar lengkap", "", SB_LOGBOOK, kosong("ok", "Tidak ada yang perlu ditanya hari ini."));
+    if (!daftar.length) return bagian("tanya", "ok", "Kelengkapan data", "Semua wilayah belum surut sudah berkabar lengkap", kosong("ok", "Tidak ada yang perlu ditanya hari ini."));
     let n = 0;
     const tb = kelompokProv(daftar, (a, b) => b[1][0].umur - a[1][0].umur || b[1].length - a[1].length).map(([p, xs]) =>
       tbodyProv(namaProv(p, xs[0].prov), `${F(xs.length)} kab/kota`, null, 7, xs.map(x => {
@@ -396,8 +393,7 @@
           tdv(b == null ? "–" : status(b), b),
           h("td", null, h("div", {class: "dl-aksi"}, tombolHistori(x), tombolWA(x, H.pesanWA(x), "permintaan pembaruan"))));
       })));
-    return bagian("tanya", "tunggu", "Kelengkapan data", [hl(`${F(daftar.length)} kab/kota`), " perlu ditanya kabar atau angkanya"],
-      "Urut dari yang paling lama tanpa kabar. Tombol WA menyiapkan pesan permintaan pembaruan ke BPBD.", SB_LOGBOOK,
+    return bagian("tanya", "tunggu", "Kelengkapan data", ["Terdapat ", hl(`${F(daftar.length)} kab/kota`), " di ", hl(`${F(tb.length)} provinsi`), " yang perlu dilakukan konfirmasi data dan informasi"],
       tabelStd(["No", "Kab/kota", "Tanpa kabar", "Kabar terakhir", "Data belum ada", "Prakiraan besok", "Aksi"], ...tb));
   }
 
@@ -445,8 +441,8 @@
     app.replaceChildren(
       bagianWilayah(pekan, prov, hari, sk, hariSt),
       bagianTanya(tanya, sk, st, hari),
-      st ? bagian("prakiraan", "peringatan", "Peringatan dini", siagaJudul(H.siaga(sk, sudah, 2)), "", SB_PRA, wadahPra, bagianArti())
-        : bagian("prakiraan", "peringatan", "Peringatan dini", "Prakiraan banjir belum termuat", "", "", kosong("peringatan", "status.json gagal dimuat, coba muat ulang.")));
+      st ? bagian("prakiraan", "peringatan", "Peringatan dini", siagaJudul(H.siaga(sk, sudah, 2)), wadahPra, bagianArti())
+        : bagian("prakiraan", "peringatan", "Peringatan dini", "Prakiraan banjir belum termuat", kosong("peringatan", "status.json gagal dimuat, coba muat ulang.")));
     /* tombol Buka semua bagian prakiraan dipasang setelah tabelnya ada */
     const pra = document.getElementById("prakiraan");
     if (pra && !pra.querySelector(".dl-semua") && pra.querySelector(".dl-grup")) pra.querySelector(".ex-jd").append(bukaSemua(pra));

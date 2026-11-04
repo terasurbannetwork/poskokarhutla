@@ -1,6 +1,6 @@
 /* Gerbang kartu laporan standar .ex-std (keputusan pemilik 4 Nov 2026: "ini standar ke depannya").
    Tiap bagian layar laporan = satu kartu: pil kategori, judul kalimat temuan dengan angka .hl, isi (tabel menempel penuh),
-   kaki keterangan + sumber miring. Gaya tunggalnya di public/inti/kartu.css; layar laporan memakainya, bukan membuat kepala sendiri.
+   tanpa kaki keterangan/sumber (pemilik 4 Nov 2026: "hilangkan"). Gaya tunggalnya di public/inti/kartu.css; layar laporan memakainya, bukan membuat kepala sendiri.
    Layar laporan baru: tambahkan ke LAYAR di bawah (skrip + halaman HTML yang memuatnya).
    ponytail: statis (cari kelas di sumber), tidak merender; uji layar di peramban kalau perlu bukti tampilan. */
 import {test} from 'node:test'
@@ -17,7 +17,7 @@ const LAYAR = [
 
 test('kartu.css memuat semua bagian kartu standar', () => {
   const css = baca('public/inti/kartu.css').replace(/\/\*[\s\S]*?\*\//g, '')
-  for (const sel of ['.ex.ex-std', '.ex-std>.ex-hd', '.ex-std .ex-ey', '.ex-std .ex-jd>h3', '.ex-std .hl', '.ex-std>.ex-bd', '.ex-std .ex-tabel', '.ex-std>.ex-ft'])
+  for (const sel of ['.ex.ex-std', '.ex-std>.ex-hd', '.ex-std .ex-ey', '.ex-std .ex-jd>h3', '.ex-std .hl', '.ex-std>.ex-bd', '.ex-std .ex-tabel'])
     assert.ok(css.includes(sel + '{') || css.includes(sel + ','), `kartu.css tidak punya aturan ${sel}`)
 })
 
@@ -27,7 +27,7 @@ for (const l of LAYAR) {
     assert.match(js, /ex-std/, 'bagian layar harus dibungkus kartu .ex-std')
     assert.match(js, /ex-ey/, 'kartu harus punya pil kategori .ex-ey')
     assert.match(js, /class:\s*"hl"|class="hl"|\bhl\(/, 'judul kartu harus menyorot angka temuan dengan .hl')
-    assert.match(js, /Sumber: /, 'kaki kartu harus menyebut sumber')
+    assert.doesNotMatch(js, /Sumber: |class:\s*"ex-ft"/, 'kartu standar tanpa kaki keterangan/sumber (pemilik 4 Nov 2026)')
     for (const re of l.lama) assert.doesNotMatch(js, re, `pola kepala lama ${re} masih dipakai`)
     assert.match(baca(l.html), /\/inti\/kartu\.css/, `${l.html} harus memuat /inti/kartu.css`)
   })

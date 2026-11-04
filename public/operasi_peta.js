@@ -228,8 +228,8 @@
   const sel = (v, kelas = "n num") => `<td class="${kelas}">${v}</td>`;
   const nol = v => v ? fmt(v) : "–";
   const PERAN = {wb: "Water bombing", patroli: "Patroli", patroli_wb: "Patroli + WB", omc: "Modifikasi cuaca"};
-  /* kartu gaya Insight/Tren/Dampak (Kartu.ex di public/inti/kartu.js): pil kategori, judul kalimat beraksen angka, isi, kaki keterangan + sumber miring */
-  const bagian = (ey, judul, isi, ket = "", sumber = "") => Kartu.ex(judul, "", "", isi, `${ket}${sumber ? ` Sumber: ${sumber}` : ""}`).replace('<article class="ex">', '<article class="ex ex-std">').replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`);
+  /* kartu gaya Insight/Tren/Dampak (Kartu.ex di public/inti/kartu.js): pil kategori, judul kalimat beraksen angka, isi; tanpa kaki keterangan/sumber (pemilik 4 Nov 2026) */
+  const bagian = (ey, judul, isi) => Kartu.ex(judul, "", "", isi, "").replace('<article class="ex">', '<article class="ex ex-std">').replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`);
   const hl = t => `<span class="hl">${t}</span>`;
   const tabelH = (kepala, baris, kosong) => baris.length ? `<div class="tw ops-tw ex-tabel"><table><thead><tr>${kepala.map(k => `<th${k.startsWith("#") ? ' class="n"' : ""}>${k.replace(/^#/, "")}</th>`).join("")}</tr></thead><tbody>${baris.join("")}</tbody></table></div>`
     : `<p class="ops-kosong">${kosong}</p>`;
