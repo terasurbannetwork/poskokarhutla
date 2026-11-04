@@ -175,6 +175,10 @@ tempat kerja sementara: begitu kerjanya selesai, merge ke `main` lalu hapus
 branch + worktree-nya di sesi yang sama. Jangan bikin branch "patok"
 (`panen/*`, `integrasi-*`) yang dibiarkan hidup. Sapuan aman (hanya branch yang
 sudah masuk `main`, worktree tanpa `--force`): `bash scripts/agents/sapu-branch.sh`.
+Sapuan itu jalan sendiri di hook `Stop` tiap giliran selesai (gerbang
+`tests/agen/gerbang-sapu-branch.test.mjs`). Worktree pengerja (`isolation: "worktree"`)
+yang masih terkunci dilepas dulu (`git worktree unlock`) begitu agentnya selesai, lalu
+cek `git branch` hanya menyisakan `main` sebelum lapor selesai (4 Nov 2026).
 
 ### 3.4 Aturan pemilik masuk gerbang, bukan memory
 

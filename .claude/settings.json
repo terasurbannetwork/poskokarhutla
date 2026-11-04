@@ -23,6 +23,17 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/agents/sapu-branch.sh\" >/dev/null 2>&1 || true",
+            "timeout": 20
+          }
+        ]
+      }
     ]
   }
 }
