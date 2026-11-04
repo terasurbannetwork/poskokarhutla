@@ -270,13 +270,13 @@
      "kartu": [
       {
        "nilai": "{{angka:fs.top10_persen|fmt=1|persen}}",
-       "label": "porsi sepuluh provinsi teratas",
+       "label": "firespot berada di sepuluh provinsi teratas",
        "ikon": "data",
        "warna": "navy"
       },
       {
        "nilai": "{{angka:fs.kalimantan_persen|fmt=1|persen}}",
-       "label": "porsi empat provinsi Kalimantan",
+       "label": "firespot berada di empat provinsi Kalimantan",
        "ikon": "wilayah",
        "warna": "navy"
       }
@@ -352,6 +352,11 @@
         "nama": "Okt",
         "kepala": "Okt",
         "fmt": "0"
+       },
+       {
+        "nama": "Nov",
+        "kepala": "Nov*",
+        "fmt": "0"
        }
       ],
       "keyakinan": "terverifikasi",
@@ -359,7 +364,8 @@
      }
     },
     "daftar": [
-     "{{angka:fs.agu_okt_persen|fmt=1|persen}} firespot tahun ini terjadi pada Agustus sampai Oktober."
+     "{{angka:fs.agu_okt_persen|fmt=1|persen}} firespot tahun ini terjadi pada Agustus sampai Oktober.",
+     "*Bulan berjalan, data hingga 2 November."
     ]
    },
    "sumber": "Diolah BNPB dari NASA FIRMS VIIRS, klasifikasi firespot sistem, 1 Jan–2 Nov"
