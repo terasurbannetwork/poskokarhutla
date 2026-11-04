@@ -3,13 +3,10 @@
   "configurations": [
     {
       "name": "lokal",
-      "runtimeExecutable": "npx",
+      "runtimeExecutable": "sh",
       "runtimeArgs": [
-        "wrangler",
-        "dev",
-        "--local",
-        "--port",
-        "8788"
+        "-c",
+        "exec npx wrangler dev --local --port 8788 </dev/null"
       ],
       "port": 8788
     },

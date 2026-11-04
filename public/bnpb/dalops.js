@@ -252,7 +252,7 @@
       h("div", {class: "dl-pop-kepala"}, lambangKab(x),
         h("div", null, h("div", {class: "dl-pop-judul"}, h("b", {class: "dl-tip-nama", teks: x.nama}), label(namaProv(x.prov_kode, x.prov), "pin", "abu")),
           h("div", {class: "dl-pop-label"}, surutLabel(x.surut),
-            Object.assign(label(H.tglPendek(x.terakhir), "kalender", "abu"), {title: "Kabar terakhir " + H.tglPendek(x.terakhir)})))),
+            Object.assign(label(H.tglPendek(x.terakhir), "kalender", "garis"), {title: "Kabar terakhir " + H.tglPendek(x.terakhir)})))),
       kotakAngka(x),
       h("div", {class: "dl-pop-kontak"},
         h("div", {class: "dl-pop-tombol"},
@@ -269,12 +269,12 @@
     /* ringkasan: angka terakhir yang terisi, perubahan dari laporan sebelumnya yang terisi */
     const th = (teks, att) => h("th", {scope: "col", ...att, teks});
     const histori = rw.length ? h("div", {class: "ad-tabel-wadah dl-tabel-wadah dl-hs-wadah"}, h("table", {class: "ad-tabel dl-tabel dl-hs"},
-      h("thead", null, h("tr", null, th("Tanggal", {rowspan: "2", "data-i": "0"}), th("Terdampak", {colspan: "2"}), th("Wilayah", {colspan: "2"}), th("Tinggi air", {rowspan: "2", "data-i": "5"}), denganKondisi ? th("Kondisi", {rowspan: "2"}) : null),
+      h("thead", null, h("tr", null, th("Tanggal", {rowspan: "2", "data-i": "0"}), th("Terdampak", {colspan: "2"}), th("Wilayah", {colspan: "2"}), th("Tinggi air", {rowspan: "2", "data-i": "5"}), denganKondisi ? th("Status", {rowspan: "2"}) : null, denganKondisi ? th("Kondisi", {rowspan: "2"}) : null),
         h("tr", {class: "dl-th-sub"}, th("KK", {"data-i": "1"}), th("Jiwa", {"data-i": "2"}), th("Kec", {"data-i": "3"}), th("Desa", {"data-i": "4"}))),
       h("tbody", null, rw.map(r => h("tr", null, h("td", {class: "dl-tgl", "data-v": r.tgl.replace(/-/g, ""), teks: H.tglPendek(r.tgl)}),
         h("td", {class: "n dl-hs-kk", "data-v": r.kk ?? ""}, h("span", {class: "dl-hs-batang"}, h("i", {class: "dl-hs-isi", "data-w": r.kk ? String(Math.round(r.kk / maksKK * 100)) : "0"})), h("b", {teks: angka(r.kk)})),
         tdv(angka(r.jiwa), r.jiwa), tdv(angka(r.n_kec), r.n_kec), tdv(angka(r.n_desa), r.n_desa), tdv(tinggi(r.tinggi_cm), r.tinggi_cm?.[1]),
-        denganKondisi ? h("td", {class: "dl-kondisi"}, r.surut ? label("Surut", "ok", "biru") : null, h("span", {teks: r.kondisi || "–"})) : null)))))
+        denganKondisi ? h("td", null, surutLabel(r.surut)) : null, denganKondisi ? h("td", {class: "dl-kondisi", teks: r.kondisi || "–"}) : null)))))
       : h("p", {class: "dl-redup", teks: "Histori harian belum ada."});
     if (!dialog) {
       dialog = h("dialog", {class: "dl-dialog", "aria-labelledby": "dl-dialog-judul"});
@@ -285,7 +285,8 @@
     tutup.addEventListener("click", () => dialog.close());
     dialog.replaceChildren(h("div", {class: "dl-dialog-kepala"}, h("span", {class: "dl-hs-lencana"}, ikon("kalender")),
         h("div", null, h("h2", {id: "dl-dialog-judul", teks: "Histori harian " + x.nama}),
-          h("p", {class: "dl-sub", teks: sub || `${namaProv(x.prov_kode, x.prov)}, banjir sejak ${H.tglPanjang(x.mulai)}, kabar terakhir ${H.tglPanjang(x.terakhir)}`})), tutup),
+          sub ? h("p", {class: "dl-sub", teks: sub}) : h("div", {class: "dl-sub dl-dialog-info"}, label(namaProv(x.prov_kode, x.prov), "pin"),
+            label("Banjir sejak " + H.tglPendek(x.mulai), "banjir"), label("Kabar terakhir " + H.tglPendek(x.terakhir), "kalender"))), tutup),
       h("div", {class: "dl-gulir"}, histori));
     /* lebar batang lewat CSSOM (bukan atribut style), aman untuk CSP */
     dialog.querySelectorAll(".dl-hs-isi").forEach(i => { i.style.width = i.dataset.w + "%"; });
@@ -301,6 +302,8 @@
     const a = h("a", {class: "dl-ikon", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q), target: "_blank", rel: "noopener", "aria-label": "Buka " + q + " di Google Maps", "data-tip": "<b>Google Maps</b><br>lihat lokasinya"}, ikon("pin"));
     a.addEventListener("click", e => e.stopPropagation()); return a; };
 
+  /* kab di peta banjir: /banjir/peta?wil=<kab_kode> langsung masuk kab itu */
+  const tombolPetaBanjir = x => h("a", {class: "dl-ikon", href: "/banjir/peta?wil=" + encodeURIComponent(x.kab_kode), target: "_blank", rel: "noopener", "aria-label": "Buka " + x.nama + " di peta banjir", "data-tip": "<b>Peta banjir</b><br>status per kecamatan"}, ikon("banjir"));
   const chipSurut = r => h("div", {class: "dl-chips"}, r.nBelum ? label(F(r.nBelum) + " belum", "banjir", "merah") : null, r.nKab - r.nBelum ? label(F(r.nKab - r.nBelum) + " sudah", "ok", "biru") : null);
 
   function bagianWilayah(pekan, prov, hari, sk = {}, hariSt = []) {
@@ -390,16 +393,18 @@
   }
 
   /* ---------- prakiraan banjir per hari + hujan tiga hari per tanggal ---------- */
-  function bagianPrakiraan(sk, sudah, hariStatus, wadah, min) {
+  function bagianPrakiraan(sk, sudah, hariStatus, wadah, min, pekan = []) {
     const daftar = H.siaga(sk, sudah, min), hari = hariStatus || [], perHari = daftar.some(x => x.h3d?.length);
     const dua = daftar.filter(x => x.sudah && x.maks >= 2).length;
+    /* histori banjir sepekan kab itu (kalau sudah banjir); kab yang muncul di dua kelompok surut digabung */
+    const histori = x => { const ks = pekan.filter(k => k.kab_kode === x.kab_kode); return ks.length ? tombolHistori({...ks[0], riwayat: ks.reduce((a, k) => H.gabungRiwayat(a, k.riwayat || []), [])}) : null; };
     let n = 0;
     const sel = (x, j) => tdv(h("div", {class: "dl-hari"}, status(x.b[j] ?? 0), perHari ? h("span", {class: "dl-mm", teks: x.h3d[j] == null ? "–" : F(Math.round(x.h3d[j])) + " mm"}) : null), (x.b[j] ?? 0) * 1e4 + (x.h3d?.[j] || 0));
     const tb = kelompokProv(daftar, (a, b) => Math.max(...b[1].map(x => x.maks)) - Math.max(...a[1].map(x => x.maks)) || b[1].length - a[1].length).map(([p, xs]) =>
       tbodyProv(namaProv(p), `${F(xs.length)} kab/kota`, ringkasProv(xs), 2, xs.map(x => h("tr", {class: x.sudah && x.maks >= 2 ? "dl-sorot" : null}, td(F(++n), true), h("td", null, kab(x)),
         tdv(x.sudah ? label("Sudah banjir", "banjir", "merah") : label("Normal", "ok", "hijau"), x.sudah ? 1 : 0),
         ...hari.map((_, j) => sel(x, j)), perHari ? null : tdv(x.h3 == null ? "–" : F(Math.round(x.h3)), x.h3),
-        h("td", null, h("div", {class: "dl-aksi"}, tombolWA(x, H.pesanSiaga(x, hari), "peringatan dini")))))));
+        h("td", null, h("div", {class: "dl-aksi"}, histori(x), tombolPetaBanjir(x), tombolWA(x, H.pesanSiaga(x, hari), "peringatan dini")))))));
     /* baris provinsi: banjir sepekan, status tertinggi dan hujan tiga hari tertinggi tiap tanggal (seperti tabel Wilayah Siaga peta banjir) */
     function ringkasProv(xs) {
       const nBanjir = xs.filter(x => x.sudah).length;
@@ -409,7 +414,7 @@
         perHari ? null : tdv(F(Math.round(Math.max(0, ...xs.map(x => x.h3 || 0)))), Math.max(0, ...xs.map(x => x.h3 || 0))), td("", true)].filter(Boolean);
     }
     wadah.replaceChildren(
-      daftar.length ? tabelStd(["No", "Kab/kota", "Banjir sepekan", ...hari.map(H.tglPendek), ...(perHari ? [] : ["Hujan tiga hari, mm"]), "Kirim"], ...tb) : null);
+      daftar.length ? tabelStd(["No", "Kab/kota", "Banjir sepekan", ...hari.map(H.tglPendek), ...(perHari ? [] : ["Hujan tiga hari, mm"]), "Aksi"], ...tb) : null);
     wadah.closest?.("section")?.querySelectorAll(".dl-semua span").forEach(s => { s.textContent = "Buka semua"; });
   }
 
@@ -422,16 +427,14 @@
     const hari = d.hari, kel = H.kelompok(d.kejadian, hari), pekan = H.sepekan(kel, hari), prov = H.perProv(pekan);
     const tanya = H.perluDitanya(kel, hari);
     const sk = st ? H.statusKab(st) : {}, sudah = new Set(pekan.map(x => x.kab_kode)), hariSt = st?.hari || [];
-    const nSiaga = st ? H.siaga(sk, sudah, 2).length : null;
-    const akhirSt = hariSt.length ? H.tglPanjang(hariSt[hariSt.length - 1]) : "–";
 
     const wadahPra = h("div", {class: "dl-isi"});
-    if (st) bagianPrakiraan(sk, sudah, hariSt, wadahPra, 2);
+    if (st) bagianPrakiraan(sk, sudah, hariSt, wadahPra, 2, pekan);
 
     app.replaceChildren(
       bagianWilayah(pekan, prov, hari, sk, hariSt),
       bagianTanya(tanya, sk, st, hari),
-      st ? bagian("prakiraan", "peringatan", `Peringatan Dini Banjir (${F(nSiaga)} kab/kota Siaga atau Awas sampai ${akhirSt})`, null, wadahPra, bagianArti(), h("a", {class: "dl-lengkap", href: "/banjir/", target: "_blank", rel: "noopener"}, ikon("lanjut"), "Lihat lengkap semua wilayah siaga di peta banjir"))
+      st ? bagian("prakiraan", "peringatan", "Peringatan Dini Banjir", null, wadahPra, bagianArti())
         : bagian("prakiraan", "peringatan", "Prakiraan banjir belum termuat", null, kosong("peringatan", "status.json gagal dimuat, coba muat ulang.")));
     /* tombol Buka semua bagian prakiraan dipasang setelah tabelnya ada */
     const pra = document.getElementById("prakiraan");

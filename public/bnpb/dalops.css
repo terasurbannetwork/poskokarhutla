@@ -103,6 +103,7 @@
 .dl-wrap .dl-tag svg{width:13px;height:13px;stroke-width:2}
 .dl-tag-merah{--t:var(--c1)}.dl-tag-biru{--t:var(--c5)}.dl-tag-hijau{--t:var(--c4)}.dl-tag-kuning{--t:var(--c3)}.dl-tag-abu{--t:var(--ink3)}
 .dl-tag-kuning{color:color-mix(in srgb,var(--c3) 45%,var(--ink))}
+.dl-tag-garis{background:none;box-shadow:inset 0 0 0 1px var(--line)}
 .dl-redup{color:var(--ink3);font-size:12.5px;margin:0}
 
 /* prakiraan banjir: ikon + nama, arti sama dengan peta banjir; Aman hijau */
@@ -267,7 +268,7 @@
 .dl-tip-angka:has(>div:only-child){grid-template-columns:1fr}
 
 /* pop-up histori, versi rapi */
-.dl-dialog{width:min(980px,calc(100vw - 32px));border-radius:20px;overflow:hidden}
+.dl-dialog{width:min(1470px,calc(100vw - 32px));border-radius:20px;overflow:hidden}
 .dl-dialog-kepala{align-items:center;gap:14px;padding:18px 20px 14px;border-bottom:0}
 .dl-hs-lencana{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--gradien);color:#fff;flex:none}
 .dl-dialog-kepala h2{font:800 17px/1.2 var(--display);margin:0 0 3px}
@@ -350,9 +351,6 @@
 .dl-wrap .dl-tabel-wadah{border:1px solid var(--line);border-radius:12px;background:var(--card)}
 
 /* legenda prakiraan: satu baris ringkas */
-.dl-lengkap{justify-self:end;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--c5);text-decoration:none}
-.dl-lengkap:hover,.dl-lengkap:focus-visible{text-decoration:underline}
-.dl-wrap .dl-lengkap svg{width:14px;height:14px}
 /* alat kanan atas peta: saring status + Tutup semua, satu baris di samping +/- */
 .dl-peta .dl-peta-alat{position:absolute;top:10px;right:50px;z-index:2;display:flex;align-items:center;gap:8px}
 .dl-peta .dl-peta-alat .dl-semua-peta{position:static}
@@ -367,6 +365,8 @@
 .dl-dialog .dl-dialog-kepala{background:var(--gradien);color:#fff;border-bottom:2px solid var(--emas);padding:16px 20px;margin-bottom:14px}
 .dl-dialog .dl-dialog-kepala h2{color:#fff}
 .dl-dialog .dl-dialog-kepala .dl-sub{color:rgb(255 255 255 / .75)}
+.dl-dialog-info{flex-wrap:wrap;gap:6px;margin-top:4px}
+.dl-dialog .dl-dialog-kepala .dl-tag{background:rgb(255 255 255 / .12);color:#fff}
 .dl-dialog .dl-hs-lencana{background:rgb(255 255 255 / .12)}
 .dl-dialog .dl-tutup-dialog{color:#fff;background:rgb(255 255 255 / .12);border-color:transparent}
 .dl-dialog .dl-tutup-dialog:hover,.dl-dialog .dl-tutup-dialog:focus-visible{background:rgb(255 255 255 / .22);color:#fff}

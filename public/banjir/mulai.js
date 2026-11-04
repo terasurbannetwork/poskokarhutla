@@ -31,7 +31,9 @@ const BASI_TAMPIL = false; /* spanduk merah "Prakiraan terakhir diperbarui": dis
   /* /banjir/<tab> (bersih) atau #tab lama (dialihkan ke /banjir/<tab>); tab tanpa isi jatuh ke Peta */
   const j = location.pathname.replace(/^\/banjir\/?/, "").replace(/\/+$/, "").replace(/^index\.html$/, ""), hs = location.hash.slice(1), h = ID_JADI(j || hs);
   const kj = KejAktif.dariUrl();   /* /banjir/k/B0007 atau /banjir/?k=B0007: peta + laci kejadian */
-  if (kj) nanti(() => KejAktif.buka(kj, false));
+  const wil = new URLSearchParams(location.search).get("wil");   /* /banjir/peta?wil=11|Aceh Barat: langsung masuk kab itu (tautan dari /bnpb/dalops) */
+  if (wil) { S.jalur = wil.split("|").slice(0, 2); bukaTab("peta", false); Peta.aturWilayah(); }
+  else if (kj) nanti(() => KejAktif.buka(kj, false));
   else if (TABS.some(t => t[0] === h) && halamanAda(h)) bukaTab(h, !j || ID_JADI(j) !== j || !!hs);
   else if (j) history.replaceState(null, "", "/banjir/peta");
 })();
