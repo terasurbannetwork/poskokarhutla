@@ -985,24 +985,48 @@
        "judul": "Prinsip dasar",
        "ikon": "lembaga",
        "isi": [
-        "Bantuan kemanusiaan dari luar negeri disambut dengan apresiasi dan disikapi secara cermat.",
-        "Operasi bantuan dapat dimanfaatkan untuk mengukur kapasitas respons dan memetakan wilayah.",
-        "Kepentingan nasional dan kedaulatan operasional adalah prioritas utama.",
-        "Kemitraan dengan negara sahabat tetap dijalankan secara setara."
+        {
+         "ikon": "lembaga",
+         "teks": "Bantuan kemanusiaan dari luar negeri disambut dengan apresiasi dan disikapi secara cermat."
+        },
+        {
+         "ikon": "kapasitas",
+         "teks": "Operasi bantuan dapat dimanfaatkan untuk mengukur kapasitas respons dan memetakan wilayah."
+        },
+        {
+         "ikon": "peringatan",
+         "teks": "Kepentingan nasional dan kedaulatan operasional adalah prioritas utama."
+        },
+        {
+         "ikon": "jiwa",
+         "teks": "Kemitraan dengan negara sahabat tetap dijalankan secara setara."
+        }
        ]
       },
       {
        "judul": "Kalimat kunci",
        "ikon": "regulasi",
        "isi": [
-        "Kami terbuka untuk kemitraan yang setara dan saling menghormati.",
-        "Kedaulatan operasional berada di bawah BNPB sesuai ketentuan hukum Indonesia.",
-        "Hal itu amanat undang-undang dan tidak dapat dinegosiasikan.",
-        "Seluruh bantuan bekerja di bawah komando pemerintah Indonesia."
+        {
+         "ikon": "jiwa",
+         "teks": "Kami terbuka untuk kemitraan yang setara dan saling menghormati."
+        },
+        {
+         "ikon": "regulasi",
+         "teks": "Kedaulatan operasional berada di bawah BNPB sesuai ketentuan hukum Indonesia."
+        },
+        {
+         "ikon": "regulasi",
+         "teks": "Hal itu amanat undang-undang dan tidak dapat dinegosiasikan."
+        },
+        {
+         "ikon": "tanggap-darurat",
+         "teks": "Seluruh bantuan bekerja di bawah komando pemerintah Indonesia."
+        }
        ]
       }
      ],
-     "huruf_maks": 30
+     "huruf_maks": 22
     }
    },
    "sumber": "Panduan kemitraan luar negeri BNPB, Nov 2026; UU 24/2007"
@@ -1137,9 +1161,8 @@
    "jenis": "temuan-visual",
    "jenis_slide": "tabel",
    "judul_bentuk": "deskriptif",
-   "seri": "garis-merah",
-   "pesan": "Garis merah 1",
-   "judul": "Batas yang tidak boleh dilanggar saat menerima bantuan negara lain {{sorot:(1/2)}}",
+   "pesan": "Batas penerimaan bantuan",
+   "judul": "Batas yang tidak boleh dilanggar saat menerima bantuan negara lain",
    "utama": {
     "judul": "Yang tidak dapat diizinkan",
     "ikon": "peringatan",
@@ -1150,7 +1173,7 @@
      "kanan": {
       "judul": "Ketentuan"
      },
-     "skala_huruf": 1.3,
+     "skala_huruf": 1.1,
      "baris": [
       {
        "label": "Penerbangan",
@@ -1181,31 +1204,7 @@
        "ikon": "pembiayaan",
        "kiri": "Dana bantuan dikelola langsung LSM negara lain",
        "kanan": "Dana dikelola melalui mekanisme pemerintah"
-      }
-     ]
-    }
-   },
-   "sumber": "Panduan kemitraan luar negeri BNPB, Nov 2026"
-  },
-  {
-   "jenis": "temuan-visual",
-   "jenis_slide": "tabel",
-   "judul_bentuk": "deskriptif",
-   "seri": "garis-merah",
-   "pesan": "Garis merah 2",
-   "judul": "Batas yang tidak boleh dilanggar saat menerima bantuan negara lain {{sorot:(2/2)}}",
-   "utama": {
-    "judul": "Yang tidak dapat diizinkan",
-    "ikon": "peringatan",
-    "banding": {
-     "kiri": {
-      "judul": "Tidak diizinkan"
-     },
-     "kanan": {
-      "judul": "Ketentuan"
-     },
-     "skala_huruf": 1.3,
-     "baris": [
+      },
       {
        "label": "Sensor",
        "ikon": "peringatan",
@@ -1228,7 +1227,7 @@
        "label": "Militer",
        "ikon": "peringatan",
        "kiri": "Tim bersenjata atau proyek di wilayah sensitif",
-       "kanan": "Perlu persetujuan Presiden dan Mabes TNI; Otsus Papua dan Laut China Selatan dikecualikan"
+       "kanan": "Izin Presiden dan Mabes TNI; Papua dan Laut China Selatan tertutup"
       },
       {
        "label": "Akses",
@@ -1254,33 +1253,58 @@
      "mode": "kartu",
      "kolom": [
       {
-       "judul": "MoU kemanusiaan",
+       "judul": "MoU",
        "ikon": "lembaga",
        "isi": [
-        "Memorandum of Understanding: nota kesepahaman kerja sama sipil, tanpa imunitas militer.",
-        "Ditandatangani BNPB dengan lembaga mitra.",
-        "Mekanisme yang dipakai BNPB."
+        {
+         "teks": "**Memorandum of Understanding**: nota kesepahaman kerja sama sipil, tanpa imunitas militer."
+        },
+        {
+         "ikon": "regulasi",
+         "teks": "Ditandatangani BNPB dengan lembaga mitra."
+        },
+        {
+         "ikon": "lembaga",
+         "teks": "Mekanisme yang dipakai BNPB."
+        }
        ]
       },
       {
        "judul": "SOFA",
        "ikon": "peringatan",
        "isi": [
-        "Status of Forces Agreement: perjanjian antarnegara tentang status hukum personel militer negara lain di Indonesia.",
-        "Menyangkut yurisdiksi dan kedaulatan.",
-        "Tidak ditandatangani di level BNPB."
+        {
+         "teks": "**Status of Forces Agreement**: perjanjian antarnegara tentang status hukum personel militer negara lain selama berada di Indonesia."
+        },
+        {
+         "ikon": "regulasi",
+         "teks": "Menyangkut yurisdiksi dan kedaulatan."
+        },
+        {
+         "ikon": "lembaga",
+         "teks": "Tidak ditandatangani di level BNPB."
+        }
        ]
       },
       {
        "judul": "VFA",
        "ikon": "peringatan",
        "isi": [
-        "Visiting Forces Agreement: perjanjian kunjungan latihan militer sementara, mirip SOFA.",
-        "Diputuskan pemerintah pusat melalui Kemlu dan Kemhan.",
-        "Bukan kewenangan BNPB."
+        {
+         "teks": "**Visiting Forces Agreement**: perjanjian kunjungan pasukan negara lain untuk latihan militer sementara, mirip SOFA."
+        },
+        {
+         "ikon": "regulasi",
+         "teks": "Diputuskan pemerintah pusat melalui Kemlu dan Kemhan."
+        },
+        {
+         "ikon": "lembaga",
+         "teks": "Bukan kewenangan BNPB."
+        }
        ]
       }
-     ]
+     ],
+     "huruf_maks": 16
     }
    },
    "panel": {
@@ -1294,7 +1318,7 @@
     ]
    },
    "sumber": "UU 24/2007; panduan kemitraan luar negeri BNPB, Nov 2026",
-   "rasio": 0.6
+   "rasio": 0.68
   },
   {
    "jenis": "temuan-visual",
@@ -1313,32 +1337,56 @@
        "judul": "Apresiasi negara sahabat",
        "ikon": "lembaga",
        "isi": [
-        "Pemerintah mengapresiasi bantuan negara sahabat, termasuk Australia.",
-        "Bantuan ini bentuk kerja sama bilateral yang baik."
+        {
+         "ikon": "lembaga",
+         "teks": "Pemerintah mengapresiasi bantuan negara sahabat, termasuk Australia."
+        },
+        {
+         "ikon": "jiwa",
+         "teks": "Bantuan ini bentuk kerja sama bilateral yang baik."
+        }
        ]
       },
       {
        "judul": "Kolaborasi tiga pihak",
        "ikon": "jiwa",
        "isi": [
-        "Operasi dijalankan BNPB bersama Australia.",
-        "Pemerintah Provinsi Kalimantan Timur ikut dalam operasi."
+        {
+         "ikon": "jiwa",
+         "teks": "Operasi dijalankan BNPB bersama Australia."
+        },
+        {
+         "ikon": "wilayah",
+         "teks": "Pemerintah Provinsi Kalimantan Timur ikut dalam operasi."
+        }
        ]
       },
       {
        "judul": "Sesuai nota diplomatik",
        "ikon": "regulasi",
        "isi": [
-        "Operasi berjalan sesuai tawaran dalam nota diplomatik Pemerintah Australia.",
-        "Jadwal operasi pada awal November."
+        {
+         "ikon": "regulasi",
+         "teks": "Operasi berjalan sesuai tawaran dalam nota diplomatik Pemerintah Australia."
+        },
+        {
+         "ikon": "kalender",
+         "teks": "Jadwal operasi pada awal November."
+        }
        ]
       },
       {
        "judul": "Mendukung operasi pemerintah",
        "ikon": "tanggap-darurat",
        "isi": [
-        "Kehadiran Australia melengkapi operasi pemerintah yang sudah berjalan di Kalimantan Timur.",
-        "Komando tetap di tangan BNPB."
+        {
+         "ikon": "tanggap-darurat",
+         "teks": "Kehadiran Australia melengkapi operasi pemerintah yang sudah berjalan di Kalimantan Timur."
+        },
+        {
+         "ikon": "peringatan",
+         "teks": "Komando tetap di tangan BNPB."
+        }
        ]
       }
      ]
