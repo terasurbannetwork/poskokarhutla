@@ -234,6 +234,16 @@
       ],
       "port": 8791,
       "autoPort": false
+    },
+    {
+      "name": "saham",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "scripts/agents/dev_lokal.mjs",
+        "8815"
+      ],
+      "port": 8815,
+      "autoPort": false
     }
   ]
 }
