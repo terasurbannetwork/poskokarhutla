@@ -1,7 +1,9 @@
 ---
 name: deck-bnpb
-description: Pedoman final dan mesin lengkap untuk membuat deck presentasi (PPTX + PDF) Badan Nasional Penanggulangan Bencana dengan gaya rumah BNPB, setara deck Grand Design kajian BNPB Oktober 2026. Pakai skill ini SETIAP KALI diminta membuat, mengubah, atau memeriksa slide untuk BNPB atau Kepala BNPB, termasuk paparan, PPT, deck, bahan tayang, laporan kejadian bencana harian, laporan penanganan pengendalian karhutla, paparan wilayah atau provinsi, paparan kepada Presiden, deck kajian atau Grand Design, deck pembaruan (update) kajian, atau "bikin slide" bertema bencana Indonesia, walau kata BNPB tidak disebut tetapi isinya penanggulangan bencana pemerintah. Memuat aturan pemilik S1 sampai S39, angka dan copy, anti-slop, pembangun deck.py di templat BNPB dengan token angka dari registri, gerbang QA sampai 0 GAGAL, dan contoh spek nyata.
+description: PENSIUN 4 Nov 2026, JANGAN DIPAKAI. Salinan mesin deck lama tanpa sampul berpenyaji, daftar isi, dan pembatas seksi. Semua slide, PPT, deck, paparan BNPB memakai skill ppt-konsultan (~/.claude/skills/ppt-konsultan).
 ---
+
+> **PENSIUN 4 Nov 2026, JANGAN DIPAKAI. Salinan mesin deck lama tanpa sampul berpenyaji, daftar isi, dan pembatas seksi. Semua slide, PPT, deck, paparan BNPB memakai skill ppt-konsultan (~/.claude/skills/ppt-konsultan).**
 
 # Deck BNPB
 

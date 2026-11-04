@@ -1,7 +1,9 @@
 ---
 name: ppt-format-bnpb
-description: Format baku presentasi BNPB (Badan Nasional Penanggulangan Bencana) untuk laporan karhutla dan kebencanaan. Dipakai setiap kali membuat, menyusun, merapikan, atau mengedit PPT, slide, deck, bahan paparan, laporan harian, laporan penanganan, paparan wilayah, paparan pimpinan, atau deck kajian atas nama BNPB, walaupun templat tidak disebut.
+description: PENSIUN 4 Nov 2026, JANGAN DIPAKAI. Salinan mesin deck lama tanpa sampul berpenyaji, daftar isi, dan pembatas seksi. Semua slide, PPT, deck, paparan BNPB memakai skill ppt-konsultan (~/.claude/skills/ppt-konsultan).
 ---
+
+> **PENSIUN 4 Nov 2026, JANGAN DIPAKAI. Salinan mesin deck lama tanpa sampul berpenyaji, daftar isi, dan pembatas seksi. Semua slide, PPT, deck, paparan BNPB memakai skill ppt-konsultan (~/.claude/skills/ppt-konsultan).**
 
 # Format PPT BNPB
 

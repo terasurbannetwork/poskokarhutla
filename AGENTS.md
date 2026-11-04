@@ -24,7 +24,7 @@ tidak) · BUKTI SIAP (perintah yang membuktikan selesai).
 | Migrasi D1                                         | `warga-api` → `migrasi-idempoten`           |
 | Kartu, pop-up, angka di layar                      | `layar-peta` → `selera-angka` + `inp-reviewer` |
 | Layar `/pipa` (SIPPA), uji `tests/sippa`           | `sippa` → `inp-reviewer` + `selera-angka`   |
-| Slide, PPT, deck, paparan, presentasi              | Skill `deck-bnpb` + `docs/pedoman-deck/ppt-format-bnpb.md`; mesin `data/kajian-bnpb/bangun/pptx/deck.py`, bukan HTML |
+| Slide, PPT, deck, paparan, presentasi              | Skill `ppt-konsultan` (`~/.claude/skills/ppt-konsultan`, mesin `bnpb/scripts/deck.py`): sampul + penyaji, daftar isi, pembatas seksi. Skill `deck-bnpb` dan `ppt-format-bnpb` PENSIUN; bukan HTML |
 | Aturan baru butuh gerbang / uji integrasi          | `penulis-gerbang`                           |
 | Workflow, package.json, settings, mesin agent      | `mekanik-mesin`                             |
 | Sebelum commit besar                               | `higiene-repo`                              |

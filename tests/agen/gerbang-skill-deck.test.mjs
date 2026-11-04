@@ -1,4 +1,6 @@
-// Gerbang: skill deck BNPB terdaftar dan diingatkan tiap kali slide diminta (pemilik 3 Nov 2026).
+// Gerbang: deck BNPB selalu lewat skill ppt-konsultan dan diingatkan tiap kali slide diminta (pemilik 3 dan 4 Nov 2026).
+// Kasus 4 Nov: brief narasi karhutla dibangun ulang dengan skill deck-bnpb (mesin lama) sehingga sampul tanpa penyaji,
+// tanpa daftar isi, tanpa pembatas seksi. deck-bnpb dan ppt-format-bnpb kini pensiun dan diumumkan pensiun di frontmatter.
 // Kasus asal: deck brief narasi karhutla dibuat dari HTML tanpa logo/footer BNPB karena skill-nya
 // hanya ada di data/kajian-bnpb/skill dan docs/pedoman-deck, tidak terlihat di daftar skill agent.
 import {test} from "node:test";
@@ -30,10 +32,23 @@ test("pola menangkap permintaan slide pemilik, dan tidak menangkap prompt lain",
     assert.ok(POLA.test(p), `tidak terpicu: "${p}"`);
   for (const p of ["hitung firespot dulu", "buatkan narasi publik", "fix bug peta"])
     assert.ok(!POLA.test(p), `salah picu: "${p}"`);
-  assert.match(PESAN, /deck-bnpb/);
+  assert.match(PESAN, /Skill ppt-konsultan/);
+  assert.match(PESAN, /daftar-isi/);
+  assert.match(PESAN, /Kristomei/);
+  assert.match(PESAN, /deck-bnpb dan ppt-format-bnpb .*PENSIUN/);
   assert.match(PESAN, /Dilarang membangun deck dari HTML/);
 });
 
-test("router AGENTS.md mengarahkan slide ke skill deck-bnpb", () => {
-  assert.match(readFileSync(AKAR + "AGENTS.md", "utf8"), /\| Slide, PPT, deck, paparan, presentasi .*deck-bnpb/);
+test("router AGENTS.md mengarahkan slide ke skill ppt-konsultan, bukan deck-bnpb", () => {
+  const baris = readFileSync(AKAR + "AGENTS.md", "utf8").split("\n").find(l => l.startsWith("| Slide, PPT, deck, paparan, presentasi"));
+  assert.ok(baris, "baris router slide hilang dari AGENTS.md");
+  assert.match(baris, /Skill `ppt-konsultan`/);
+  assert.match(baris, /`deck-bnpb` dan `ppt-format-bnpb` PENSIUN/);
+});
+
+test("skill lama deck-bnpb dan ppt-format-bnpb mengumumkan pensiun di description, supaya tidak dipilih agent", () => {
+  for (const jalur of [".claude/skills/deck-bnpb/SKILL.md", ".claude/skills/ppt-format-bnpb/SKILL.md"]) {
+    const desc = (readFileSync(AKAR + jalur, "utf8").match(/^description: (.*)$/m) || [])[1] || "";
+    assert.match(desc, /^PENSIUN .*JANGAN DIPAKAI.*ppt-konsultan/, `${jalur} description harus diawali PENSIUN dan menunjuk ppt-konsultan`);
+  }
 });
