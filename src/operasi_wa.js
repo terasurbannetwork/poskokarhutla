@@ -176,17 +176,34 @@ export function urai(teks, {tanggal, armada = []} = {}) {
 }
 
 /* stempel foto lapangan ("3 Nov 2026 11.17.48 / 1°6'41"S 110°4'46"E / ... / VH-L6T/PT.EDC/OPS", 12 PM dibolehkan) -> {jam_utc, lat, lon, registrasi}; yang tak terbaca = null, tidak ditebak.
-   Zona jam stempel = zona lokasi (bujur < 114,5 WIB, < 135 WITA, selain itu WIT); tanpa koordinat dipilih yang paling dekat dengan waktu terima. Stempel > 3 hari dari waktu terima dibuang (jam perangkat salah). */
+   Teks = hasil OCR gateway (macOS Vision), jadi derajat/kutip sering rusak: koordinatStempel lebih toleran daripada koordinat() tetapi tetap wajib belahan N/S/U + E/W/T, menit/detik < 60, batas Indonesia,
+   dan HANYA satu pasangan berbeda di seluruh teks (infografis penuh koordinat = null). Detik tunggal yang korup (mis. "2/,564") bisa meleset sampai ~0,014 derajat; menit/derajat yang tak terbaca = null.
+   Zona jam stempel = zona lokasi (bujur < 114,5 WIB, < 135 WITA, selain itu WIT); tanpa koordinat dipilih yang paling dekat dengan waktu terima. Stempel > 3 hari dari waktu terima dibuang (jam perangkat salah).
+   Jam wajib berdetik ("16.00 WIB" di infografis BMKG bukan stempel). */
 const BLN = {jan: 1, feb: 2, mar: 3, apr: 4, mei: 5, may: 5, jun: 6, jul: 7, agu: 8, aug: 8, sep: 9, okt: 10, oct: 10, nov: 11, des: 12, dec: 12};
+const KOMPONEN = String.raw`(\d{1,3})[ \t]*[°º:*][ \t]*(\d{1,2})[ \t]*['′’"″”]?[ \t]*(\d{1,2}(?:[ .,/]{1,2}\d{1,3})?)[ \t]*["″”'′’]?[ \t]*[Il|]?[ \t]*`;
+const RE_STEMPEL_KOORD = new RegExp(String.raw`(?<![\d.])${KOMPONEN}([NSUnsu])(?![A-Za-z])[ \t]*[,;/]?[ \t]*${KOMPONEN}([EWTewt])(?![A-Za-z])`, "g");
+export function koordinatStempel(teks) {
+  const ada = new Set(), dd = (d, mn, dt) => { const s = +dt.replace(/[ ,/]+/, "."); return +mn < 60 && s < 60 ? +d + +mn / 60 + s / 3600 : NaN; };
+  for (const m of String(teks ?? "").matchAll(RE_STEMPEL_KOORD)) {
+    const la = dd(m[1], m[2], m[3]), lo = dd(m[5], m[6], m[7]), lat = bulat(/s/i.test(m[4]) ? -la : la), lon = bulat(/w/i.test(m[8]) ? -lo : lo);
+    if (lat >= -11.5 && lat <= 6.5 && lon >= 94.5 && lon <= 141.5) ada.add(lat + "," + lon); else return null;   // satu pasangan tak sah = teks bukan stempel
+  }
+  if (ada.size !== 1) return null;   // ambigu = null
+  const [lat, lon] = [...ada][0].split(",").map(Number); return {lat, lon};
+}
+const JAM_STEMPEL = String.raw`(\d{1,2})[.: ](\d{2})[.: ]?(\d{2})\s*(AM|PM)?`, NAMA_BLN = "jan|feb|mar|apr|mei|may|jun|jul|agu|aug|sep|okt|oct|nov|des|dec";
+const RE_TGL_A = new RegExp(String.raw`\b(\d{1,2})\s+(${NAMA_BLN})[a-z]*\.?,?\s+(\d{4})\s+${JAM_STEMPEL}`, "i");   // 3 Nov 2026 15.01.55
+const RE_TGL_B = new RegExp(String.raw`\b(${NAMA_BLN})[a-z]*\.?\s+(\d{1,2}),?\s+(\d{4})\s+${JAM_STEMPEL}`, "i");   // Nov 3, 2026 15:01:55
 export function uraiStempel(teks, {armada = [], diterima = null} = {}) {
-  const t = String(teks ?? "").replace(/[​-‏⁠‪-‮﻿]/g, ""), out = {jam_utc: null, lat: null, lon: null, registrasi: registrasi(t, armada)};
-  const k = koordinat(t); if (k) { out.lat = k.lat; out.lon = k.lon; }
-  const m = t.match(/\b(\d{1,2})\s+(jan|feb|mar|apr|mei|may|jun|jul|agu|aug|sep|okt|oct|nov|des|dec)[a-z]*\.?\s+(\d{4})\s+(\d{1,2})[.:](\d{2})(?:[.:](\d{2}))?\s*(AM|PM)?/i);
+  const t = String(teks ?? "").slice(0, 1000).replace(/[ \t]+/g, " ").replace(/[​-‏⁠‪-‮﻿]/g, ""), out = {jam_utc: null, lat: null, lon: null, registrasi: registrasi(t, armada)};
+  const k = koordinatStempel(t); if (k) { out.lat = k.lat; out.lon = k.lon; }
+  const a = t.match(RE_TGL_A), b = !a && t.match(RE_TGL_B), m = a ? [0, a[1], a[2], a[3], a[4], a[5], a[6], a[7]] : b ? [0, b[2], b[1], b[3], b[4], b[5], b[6], b[7]] : null;
   if (m) {
     let h = +m[4]; const pm = m[7]?.toUpperCase(); if (pm === "PM" && h < 12) h += 12; if (pm === "AM" && h === 12) h = 0;
-    if (h < 24 && +m[5] < 60) {
-      const lokal = Date.UTC(+m[3], BLN[m[2].toLowerCase()] - 1, +m[1], h, +m[5], +(m[6] || 0)), dari = z => lokal - z * 36e5;
-      const zona = k ? (k.lon < 114.5 ? 7 : k.lon < 135 ? 8 : 9) : diterima ? [7, 8, 9].reduce((a, z) => Math.abs(dari(z) - diterima) < Math.abs(dari(a) - diterima) ? z : a) : 7;
+    if (h < 24 && +m[5] < 60 && +m[6] < 60) {
+      const lokal = Date.UTC(+m[3], BLN[m[2].toLowerCase()] - 1, +m[1], h, +m[5], +m[6]), dari = z => lokal - z * 36e5;
+      const zona = k && !(diterima && k.lon >= 113.5 && k.lon <= 116.5) ? (k.lon < 114.5 ? 7 : k.lon < 135 ? 8 : 9) : diterima ? [7, 8, 9].reduce((a, z) => Math.abs(dari(z) - diterima) < Math.abs(dari(a) - diterima) ? z : a) : 7;
       const j = dari(zona); if (diterima == null || Math.abs(j - diterima) <= 3 * 864e5) out.jam_utc = j;
     }
   }

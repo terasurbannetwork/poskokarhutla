@@ -1,5 +1,5 @@
 /* Monitoring operasi udara (src/operasi_hasil.js, src/operasi_udara.js monitor + foto, migrations/0106_operasi_monitor.sql, hook cron di src/titik.js) di workerd (Miniflare)
-   dengan D1 dan R2 sungguhan, migrasi apa adanya. Hanya Workers AI yang palsu (Miniflare tidak punya env.AI): dipanggil langsung lewat simpanFoto dengan AI buatan.
+   dengan D1 dan R2 sungguhan, migrasi apa adanya. OCR stempel dikirim gateway (field `stempel`), bukan dibaca Worker.
    Dibuktikan: foto grup (dengan/tanpa keterangan) tersimpan di R2 + diindeks; Water Drop/After WB/Arr Mov -> gerak; foto memasangkan diri ke aksi dan mengisi koordinat;
    penilaian cron padam/masih_api/menunggu dengan putaran titik panas sintetis (dan lewat perbaruiTitik sungguhan); /api/operasi/monitor (bentuk + angka KPI) dan /api/operasi/foto (auth, 404).
    Jalankan: node --test tests/warga/operasi_monitor.test.mjs */
@@ -37,9 +37,33 @@ uji("uraiStempel: format stempel nyata, zona jam menurut bujur, PM, registrasi '
   assert.equal(uraiStempel("N261BE-BNPB-SATGASKARHUTLA-KALSEL-PT. MITRA TRIVEDA AVIASI", {armada}).registrasi, "N261BE");
   const wita = uraiStempel("3 Nov 2026 12.00.00 / 3°20'0\"S 114°50'0\"E", {diterima: dr});
   assert.equal(wita.jam_utc, Date.parse("2026-11-03T04:00:00Z"), "bujur 114,83 = WITA (UTC+8)");
+  assert.equal(uraiStempel("3 Nov 2026 11.17.48 / 2°30'10\"S 115°30'0\"E", {diterima: Date.parse("2026-11-03T04:30:00Z")}).jam_utc, Date.parse("2026-11-03T04:17:48Z"), "bujur ambigu 113,5-116,5: zona terdekat dengan waktu terima (Kalteng timur WIB)");
+  const t0 = performance.now(); uraiStempel("1°2'3" + " ".repeat(3900) + "x"); uraiStempel("1°2'3" + "  ".repeat(2000) + "x"); assert.ok(performance.now() - t0 < 50, "spasi panjang tidak memicu ReDoS");
   const jauh = uraiStempel("3 Nov 2026 11.17.48 / 1°6'41\"S 110°4'46\"E", {diterima: dr + 5 * 864e5}); assert.equal(jauh.jam_utc, null, "stempel > 3 hari dari waktu terima dibuang");
   assert.deepEqual(Object.values(uraiStempel("tidak ada apa-apa")), [null, null, null, null]);
   assert.equal(uraiStempel("3 Nov 2026 25.99.00", {}).jam_utc, null, "jam tak sah tidak ditebak");
+});
+
+uji("uraiStempel atas OCR nyata 31 foto (3-4 Nov 2026): koordinat OCR rusak terurai, infografis/foto tanpa tempelan = null", () => {
+  const {blok} = JSON.parse(readFileSync(path.join(AKAR, "tests/warga/fixtures/ocr_stempel_041126.json"), "utf8")), dr = Date.parse("2026-11-04T01:00:00Z");
+  const hasil = Object.fromEntries(blok.map(b => { const r = uraiStempel(b.teks, {diterima: dr}); return [b.id, [r.lat, r.lon, r.jam_utc && new Date(r.jam_utc).toISOString().slice(0, 19)]]; }));
+  const harap = {35: [-2.9003, 104.7008, "2026-11-03T08:01:55"], 36: [-2.9006, 104.7006, "2026-11-03T09:26:03"], 38: [-1.3628, 110.7417, "2026-11-03T09:30:45"], 39: [-1.5531, 110.7378, "2026-11-03T09:37:40"],
+    40: [-1.8928, 110.5392, "2026-11-03T09:55:10"], 44: [-0.1247, 109.5092, "2026-11-03T10:11:50"], 85: [-0.1548, 109.4007, "2026-11-04T00:55:49"], 86: [-0.1547, 109.4075, "2026-11-04T01:09:28"],
+    97: [0.0647, 109.5103, "2026-11-04T01:23:41"], 98: [0.2594, 109.5714, "2026-11-04T01:35:53"], 99: [-2.9003, 104.7008, "2026-11-04T01:46:37"]};
+  for (const [id, [lat, lon, jam]] of Object.entries(harap)) {
+    assert.ok(Math.abs(hasil[id][0] - lat) < 0.01 && Math.abs(hasil[id][1] - lon) < 0.01, `foto ${id}: ${hasil[id]}`); assert.equal(hasil[id][2], jam, `jam foto ${id}`);
+  }
+  assert.ok(Math.abs(hasil[85][1] - hasil[86][1]) < 0.01, "foto 85 (detik rusak) dan 86 (bersih) satu lokasi");
+  for (const b of blok.filter(b => !(b.id in harap))) assert.deepEqual(hasil[b.id].slice(0, 2), [null, null], `foto ${b.id} tanpa koordinat stempel`);
+  for (const id of [37, 41, 42, 46, 60, 61, 62, 64, 65, 66, 67, 68, 69, 83, 87]) assert.equal(hasil[id][2], null, `foto ${id} tanpa jam`);
+  assert.deepEqual(hasil[83].slice(0, 2), [null, null], "menit rusak (109°đ9') = null, bukan tebakan");
+  // bentuk lain: tanggal bulan-dulu, belahan Indonesia, tolak sampah
+  assert.equal(uraiStempel("Nov 4,\n2026 08:46:37").jam_utc, Date.parse("2026-11-04T01:46:37Z"));
+  assert.deepEqual(Object.values(uraiStempel("1°6'41\"U 110°4'46\"T")).slice(1, 3), [1.11139, 110.07944]);
+  assert.equal(uraiStempel("1°6'41\"S 110°4'46\"").lat, null, "tanpa belahan bujur = null");
+  assert.equal(uraiStempel("1°66'41\"S 110°4'46\"E").lat, null, "menit >= 60 = null");
+  assert.equal(uraiStempel("37°44'11\"N 122°26'30\"W").lat, null, "di luar Indonesia = null");
+  assert.equal(uraiStempel("1°6'41\"S 110°4'46\"E 2°6'41\"S 111°4'46\"E").lat, null, "dua pasangan berbeda = ambigu");
 });
 
 /* ---------------- ingest lewat gerbang WA ---------------- */
@@ -91,21 +115,34 @@ uji("Arr Mov, Water Drop, After WB menulis aksi; lokasi tanpa koordinat dilengka
   void ulang;
 });
 
-uji("foto bertanda tangan stempel: koordinat aksi tanpa koordinat diisi dari foto; kegagalan AI tidak menggagalkan penyimpanan", async () => {
+uji("foto bertanda tangan stempel: koordinat aksi tanpa koordinat diisi dari stempel kiriman gateway; tanpa stempel foto tetap tersimpan", async () => {
   const jam = Date.parse("2026-11-03T04:00:00Z"), dr = Date.parse("2026-11-03T04:20:00Z");
   const ins = await I.DB.prepare("INSERT INTO op_gerak (tanggal, registrasi, jenis, jam_utc, misi, lokasi, alasan) VALUES ('2026-11-03', 'N261BE', 'berangkat', ?, 'wb', 'Purwasari, Tamban, Barito Kuala', 'water_drop')").bind(jam).run();
-  const id = ins.meta.last_row_id, panggilan = [];
-  const AI = {run: async (model, arg) => { panggilan.push([model, arg.image.length]); return {description: "3 Nov 2026 11.17.48\n1°6'41\"S 110°4'46\"E\nN261BE-BNPB-SATGASKARHUTLA-KALSEL-PT. MITRA TRIVEDA AVIASI"}; }};
-  const r = await simpanFoto({DB: I.DB, AI}, {waId: 9001, bytes: JPEG_SAH, diterima: dr, teks: null});
-  assert.equal(panggilan.length, 1); assert.match(panggilan[0][0], /llava|vision/); assert.equal(panggilan[0][1], JPEG_SAH.length);
+  const id = ins.meta.last_row_id, stempel = "3 Nov 2026 11.17.48\n1°6'41\"S 110°4'46\"E\nN261BE-BNPB-SATGASKARHUTLA-KALSEL-PT. MITRA TRIVEDA AVIASI";
+  const r = await simpanFoto({DB: I.DB}, {waId: 9001, stempel, diterima: dr, teks: null});
   assert.deepEqual([r.registrasi, r.jam_utc, r.lat, r.lon], ["N261BE", Date.parse("2026-11-03T04:17:48Z"), -1.11139, 110.07944]);
+  assert.equal((await Q("SELECT stempel FROM op_foto WHERE wa_id = 9001"))[0].stempel, stempel, "teks OCR tersimpan untuk audit");
   const g = (await Q("SELECT lat, lon FROM op_gerak WHERE id = ?", id))[0]; assert.deepEqual([g.lat, g.lon], [-1.11139, 110.07944], "koordinat aksi dari foto");
   assert.equal((await Q("SELECT sumber_lokasi FROM op_gerak_hasil WHERE gerak_id = ?", id))[0].sumber_lokasi, "foto");
   assert.equal((await Q("SELECT gerak_id FROM op_foto WHERE wa_id = 9001"))[0].gerak_id, id);
-  const rusak = await simpanFoto({DB: I.DB, AI: {run: async () => { throw new Error("model mati"); }}}, {waId: 9002, bytes: JPEG_SAH, diterima: dr, teks: "N261BE"});
-  assert.deepEqual([rusak.jam_utc, rusak.lat, rusak.registrasi], [null, null, "N261BE"], "AI gagal: kolom stempel kosong, keterangan tetap dipakai");
-  const tanpaAI = await simpanFoto({DB: I.DB}, {waId: 9003, bytes: JPEG_SAH, diterima: dr, teks: null}); assert.equal(tanpaAI.registrasi, null);
-  assert.equal(await I.n("op_foto", "wa_id IN (9001, 9002, 9003)"), 3);
+  const tanpa = await simpanFoto({DB: I.DB}, {waId: 9003, diterima: dr, teks: "N261BE"});
+  assert.deepEqual([tanpa.jam_utc, tanpa.lat, tanpa.registrasi], [null, null, "N261BE"], "tanpa stempel: kolom kosong, keterangan tetap dipakai");
+  assert.equal((await Q("SELECT stempel FROM op_foto WHERE wa_id = 9003"))[0].stempel, null);
+  assert.equal(await I.n("op_foto", "wa_id IN (9001, 9003)"), 2);
+});
+
+uji("gerbang: stempel hanya dari gateway berkunci; kunci salah ditolak dan tidak ada yang tersimpan", async () => {
+  const F = JSON.parse(readFileSync(path.join(AKAR, "tests/warga/fixtures/ocr_stempel_041126.json"), "utf8")).blok.find(b => b.id === 98).teks;
+  const kirimS = async (kunci, grup = G) => {
+    const f = new FormData(); f.set("dari", "6289900001111"); f.set("grup", grup); f.set("stempel", F); f.set("waktu", String(Date.now())); f.set("berkas", new Blob([JPEG_SAH], {type: "image/jpeg"}), "x.jpg");
+    const r = await I.mf.dispatchFetch("http://bnpb.lokal/api/wa/gateway", {method: "POST", headers: kunci ? {"x-wa-kunci": kunci} : {}, body: f}); return {s: r.status, j: await r.json()};
+  };
+  const sebelum = await I.n("op_foto");
+  assert.equal((await kirimS(null)).s, 403); assert.equal((await kirimS("kunci-salah")).s, 403);
+  assert.equal(await I.n("op_foto"), sebelum, "tanpa kunci gateway tak ada foto/stempel masuk");
+  const ok = await kirimS("kunci-wa"); assert.equal(ok.s, 200); assert.deepEqual([ok.j.foto.lat, ok.j.foto.lon], [0.25944, 109.57139]);
+  const baris = (await Q("SELECT stempel, jam_utc FROM op_foto WHERE id = ?", ok.j.foto.id))[0]; assert.equal(baris.stempel, F.slice(0, 1000)); assert.ok(baris.jam_utc);
+  const bukanGrup = await kirimS("kunci-wa", "") ; assert.equal(bukanGrup.s, 200); assert.equal(bukanGrup.j.foto, undefined, "stempel hanya untuk foto grup");
 });
 
 uji("urai: Water Drop lain dan registrasi tanpa aksi; pesan 'Before WB' tetap bukti, bukan aksi", () => {

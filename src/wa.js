@@ -59,6 +59,7 @@ async function gerbang(env, req, kini) {
   const w = Number(f.get("waktu")), diterima = Number.isFinite(w) && w >= kini - 7 * 864e5 && w <= kini + 5 * 60e3 ? Math.trunc(w) : kini;
   let teks = bersih(f.get("teks"), MAKS_TEKS) || null; const namaKirim = bersih(f.get("nama"), 100) || null, caption = teks;
   const dariGrup = grup && !izin.has(nomor), dari = dariGrup ? grup : nomor, nama = dariGrup ? null : namaKirim;   // nama tampilan anggota grup juga tidak disimpan
+  const so = f.get("stempel"), stempel = grup && typeof so === "string" ? so.normalize("NFC").replace(/\r\n?/g, "\n").replace(/[\u0000-\u0009\u000b-\u001f\u007f\u200b-\u200f\u202a-\u202e\ufeff]/g, "").slice(0, 4000).trim() || null : null;   // OCR gateway (macOS Vision); hanya kiriman berkunci sampai di sini, dan hanya untuk foto grup
   let b = f.get("berkas"); if (typeof b === "string" || !b?.size) b = null;
   /* foto grup operasi: SEMUA gambar grup disimpan (perintah pemilik 3 Nov 2026), dengan atau tanpa keterangan; lampiran grup selain gambar tetap dibuang */
   const gambar = !!b && (/^image\/(png|jpeg|webp)$/i.test(b.type || "") || (!b.type || b.type === "application/octet-stream") && /\.(jpe?g|png|webp)$/i.test(b.name || ""));
@@ -93,8 +94,8 @@ async function gerbang(env, req, kini) {
     .bind(diterima, tanggal, jenis, dari, nama, teks, kunci, namaBerkas, tipe).run();
   /* OP-2: pesan satgas udara -> tabel operasi; galat apa pun (termasuk migrasi 0103 belum ada) tidak menggagalkan pesan yang sudah tersimpan */
   let operasi = null; if (teks) try { operasi = await catatOperasi(env, {id: r.meta.last_row_id, teks, tanggal, diterima}); } catch (e) { console.error("operasi_wa", String(e?.message || e)); }
-  /* foto grup operasi -> indeks op_foto (stempel dibaca Workers AI bila ada, pemasangan ke aksi); galat/tabel 0106 belum ada tidak menggagalkan pesan */
-  let foto = null; if (grup && gambar && b && isiBerkas && kunci) try { foto = await simpanFoto(env, {waId: r.meta.last_row_id, bytes: isiBerkas, diterima, teks: caption}); } catch (e) { console.error("operasi_foto", String(e?.message || e).slice(0, 120)); }
+  /* foto grup operasi -> indeks op_foto (stempel = teks OCR dari gateway, pemasangan ke aksi); galat/tabel 0106 belum ada tidak menggagalkan pesan */
+  let foto = null; if (grup && gambar && b && isiBerkas && kunci) try { foto = await simpanFoto(env, {waId: r.meta.last_row_id, stempel, diterima, teks: caption}); } catch (e) { console.error("operasi_foto", String(e?.message || e).slice(0, 120)); }
   return json({ok: true, disimpan: true, id: r.meta.last_row_id, tanggal, jenis, ...(operasi ? {operasi} : {}), ...(foto ? {foto} : {})});
 }
 
