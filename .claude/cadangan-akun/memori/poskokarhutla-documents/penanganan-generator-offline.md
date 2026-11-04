@@ -16,7 +16,7 @@ Fast path used 26 Oct 2026, ~10 seconds:
 - Pass `--bmkg <wa.txt>` so the pils come from the BMKG WA text, not from weather data.
 
 Fixes applied that day (uncommitted at the time):
-- The scripts hard-coded `/Users/alfatehanseptianta`. Replaced with `$HOME` in `harian_peta.mjs`, `harian_ikon.mjs`, `penanganan/peta.mjs` and `penanganan/tambah_peta.py`.
+- The scripts hard-coded `/Users/<nama>`. Replaced with `$HOME` in `harian_peta.mjs`, `harian_ikon.mjs`, `penanganan/peta.mjs` and `penanganan/tambah_peta.py`.
 - Subprocess `python3` must be ≥3.12 (f-string backslash). Put the ppt-konsultan `.venv/bin/python` first in PATH as `python3`.
 - Playwright 1.63 wants chromium_headless_shell-1248. Symlinked `~/Library/Caches/ms-playwright/chromium_headless_shell-1248` → `-1243`.
 - Added `penanganan/logo/81.png` and `82.png` from `public/lambang/provinsi/` (Maluku, Maluku Utara).

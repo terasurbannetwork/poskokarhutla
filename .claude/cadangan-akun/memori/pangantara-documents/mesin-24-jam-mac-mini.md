@@ -74,7 +74,7 @@ Sebelum 5 Sep Mac mini punya NOL otomasi repo padahal ia yang hidup 24 jam.
   TIDAK ADA di mesin ini. Yang jalurnya dibakar saat pasang wajib dipasang ulang
   dari jalur baru: `bash bekal/pasang.sh` lalu `npm run mesin:pasang` (keduanya
   sudah dijalankan; 8 LaunchAgent + 6 scheduled task + tmux `mbg` hijau di
-  jalur baru). Memori proyek disalin ke slug `-Users-priyankaalfatehan28-Documents-GitHub-pangantara`.
+  jalur baru). Memori proyek disalin ke slug `-Users-<nama>-Documents-GitHub-pangantara`.
 - **Yang masih hilang di Mac mini: `rtk`** (PreToolUse `rtk hook claude` di
   `~/.claude/settings.json` no-op tanpa error, jadi penghematan token mati).
   Sumber pemasangannya tidak terdokumentasi di mana pun — tanya pemilik sebelum

@@ -8,7 +8,7 @@ metadata:
   modified: 2026-10-30T08:44:37.224Z
 ---
 
-Owner rule (30 Oct 2026, repeated): every table header is CENTER-aligned — on screen, in Excel, and in PDF. PDF exports must copy the pangantara visual language in /Users/priyankaalfatehan28/Documents/GitHub/pangantara/lib/pdf/kit.ts: navy gradient band at the top (brand label, bold title, up to 3 label/value pairs on the right), a 2px navy2 accent line, navy column headers repeated on every page, light zebra rows, label column left, numbers and other columns centered (decision 30 Oct), grid #e3e9f2, footer "Hal n dari m". Exports must include images (photos, logos), not a plain text table; short identifiers instead of long URLs.
+Owner rule (30 Oct 2026, repeated): every table header is CENTER-aligned — on screen, in Excel, and in PDF. PDF exports must copy the pangantara visual language in /Users/<nama>/Documents/GitHub/pangantara/lib/pdf/kit.ts: navy gradient band at the top (brand label, bold title, up to 3 label/value pairs on the right), a 2px navy2 accent line, navy column headers repeated on every page, light zebra rows, label column left, numbers and other columns centered (decision 30 Oct), grid #e3e9f2, footer "Hal n dari m". Exports must include images (photos, logos), not a plain text table; short identifiers instead of long URLs.
 
 **Why:** the owner judged the plain jsPDF table "masa gini doang" and has asked for centered headers many times.
 
