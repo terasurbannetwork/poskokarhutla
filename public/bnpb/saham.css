@@ -39,3 +39,16 @@
 @media print{.ad-top{display:none}}
 .sh-dummy{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;font-size:18px;cursor:pointer;border-radius:12px}
 .sh-dummy:hover{background:var(--soft)}.sh-dummy:focus-visible{outline:2px solid var(--c5);outline-offset:1px}
+/* Konsesi dan saham */
+.sh-baris{cursor:pointer}.sh-baris:hover,.sh-baris[aria-selected="true"]{background:color-mix(in srgb,var(--c5) 10%,transparent)}
+.sh-kode{all:unset;box-sizing:border-box;cursor:pointer;font-weight:800;border-radius:6px}.sh-kode:focus-visible{outline:2px solid var(--c5);outline-offset:2px}
+.sh-spark{width:90px;height:24px;display:block}.sh-spark polyline{fill:none;stroke:var(--c3,#d97706);stroke-width:1.5;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.sh-naik{color:#15803d}.sh-turun{color:#b91c1c}
+.sh-top{margin:0;padding-left:18px;font-size:13px;font-weight:600}
+.sh-lipat{margin-top:10px}.sh-lipat summary{cursor:pointer;font-weight:700;font-size:13.5px;padding:6px 0}
+.sh-detail{display:grid;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.sh-ganda{height:220px}
+.sh-bar{fill:color-mix(in srgb,var(--c3,#d97706) 70%,transparent)}
+.sh-hline{fill:none;stroke:var(--c5);stroke-width:2;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.sh-ket::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;background:var(--c3,#d97706)}.sh-ket-harga::before{background:var(--c5)}
+.sh-peringatan{margin:0;padding:10px 12px;border-radius:12px;background:var(--soft);font-size:13px;font-weight:700}
