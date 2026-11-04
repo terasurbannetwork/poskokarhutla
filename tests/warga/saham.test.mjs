@@ -5,6 +5,7 @@ import {test, before, after} from "node:test";
 const uji = test;   // gerbang cakupan (tests/warga/gerbang.test.mjs) mencari uji("<nama>")
 import assert from "node:assert/strict";
 import path from "node:path";
+import {existsSync} from "node:fs";
 import {createHash} from "node:crypto";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
@@ -150,6 +151,24 @@ uji("saham: jawaban sukses di-cache, jawaban gagal tidak", async () => {
   minta = []; jawab = () => new Response("x", {status: 500});
   await api("/api/saham/ASII/info", STAF, mfCache); await api("/api/saham/ASII/info", STAF, mfCache);
   assert.equal(minta.length, 2, "galat tidak di-cache");
+});
+
+uji("saham: konsesi anonim 401, staf 200 berisi emiten, bukan aset publik; TTL grafik panjang 6 jam", async () => {
+  minta = [];
+  assert.equal((await api("/api/saham/konsesi", {})).status, 401);
+  assert.equal((await api("/api/saham/konsesi", {cookie: "sesi_staf=" + "c".repeat(64), "x-pb": "1"})).status, 401);
+  for (const h of [STAF, ADMIN]) {
+    const r = await api("/api/saham/konsesi", h);
+    assert.equal(r.status, 200); assert.equal(r.j.ok, true); assert.ok(Array.isArray(r.j.emiten) && r.j.emiten.length > 0 && r.j.emiten[0].kode);
+    assert.ok(Array.isArray(r.j.grup_tanpa_emiten) && r.j.periode?.dari);
+  }
+  assert.equal(minta.length, 0, "tanpa gateway");
+  /* data/ di luar ./public: tidak ada jalur aset publik ke berkasnya (ASSETS uji hanya mengenal /bnpb/saham.html) */
+  for (const j of ["/data/bnpb/saham_konsesi.js", "/bnpb/saham_konsesi.js", "/saham_konsesi.js"]) assert.notEqual((await api(j, {})).status, 200, j);
+  assert.equal(existsSync(path.join(AKAR, "public/data/bnpb/saham_konsesi.js")), false);
+  const {ttlGrafik} = await import("../../src/saham.js");
+  assert.equal(ttlGrafik("LAST_1_YEAR"), 21600); assert.equal(ttlGrafik("LAST_3_MONTHS"), 21600);
+  for (const p of ["LAST_1_DAY", "LAST_7_DAYS", "LAST_1_MONTH", "YEAR_TO_DATE"]) assert.equal(ttlGrafik(p), 60, p);
 });
 
 uji("saham: batas laju per staf 429", async () => {

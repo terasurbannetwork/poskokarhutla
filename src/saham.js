@@ -7,8 +7,11 @@
 import {json, adminOK} from "./worker.js";
 import {stafSesi} from "./staf.js";
 import {laju} from "./bnpb.js";
+import KONSESI from "../data/bnpb/saham_konsesi.js";   // modul ESM keluaran pipeline; data/ di luar ./public, jadi bukan aset publik
 
 const BASE = "https://edge.stellardata.ai", TIMEOUT = 15000, KODE = /^[A-Z0-9][A-Z0-9.]{0,11}$/;
+/* grafik panjang dipakai analisa per emiten: 6 jam; selain itu 60 dtk */
+export const ttlGrafik = periode => ["LAST_1_YEAR", "LAST_3_MONTHS"].includes(periode) ? 6 * 3600 : 60;
 const PERIODE = ["LAST_1_DAY", "LAST_7_DAYS", "LAST_1_MONTH", "LAST_3_MONTHS", "YEAR_TO_DATE", "LAST_1_YEAR"];
 const STATUS = {akses_belum_dibuka: 403, masukan_salah: 400, penyedia_galat: 502};
 const PESAN = {akses_belum_dibuka: "Akses data saham belum dibuka untuk kunci ini.", penyedia_galat: "Penyedia data saham sedang bermasalah, coba lagi nanti."};
@@ -58,7 +61,7 @@ const JENIS = {
     const deret = perlu(x.price_chart_data ?? [], true).slice(0, 2000).map(r => ({t: /^\d{4}-\d\d-\d\d$/.test(r.date) && /^\d\d:\d\d$/.test(r.time) ? `${r.date}T${r.time}:00+07:00` : teks(r.date),
       harga: angka(r.value?.raw), buka: angka(r.open?.raw), tertinggi: angka(r.high?.raw), terendah: angka(r.low?.raw)})).filter(r => r.harga !== null);
     return {data: {dari: teks(x.from), sampai: teks(x.to), sesi: teks(x.date_session_info), deret}};
-  }, 60],
+  }, ttlGrafik(d.periode)],
 };
 
 /* objek masukan bersih, atau string pesan galat (400) */
@@ -75,9 +78,16 @@ function masukan(jenis, url) {
 }
 
 const BALAS = {"content-type": "application/json; charset=utf-8", "cache-control": "private, no-store", "x-content-type-options": "nosniff"};
+const siapa = async (env, req, kini) => (await adminOK(env, req, kini)) ? "admin" : await stafSesi(env, req, kini).then(s => s && "staf:" + s.id);
+const tolak = () => json({ok: false, kode: "akses_belum_dibuka", pesan: "Masuk sebagai staf dulu."}, 401);
+/* konsesi: analisa per emiten (nama perusahaan), staf saja; tanpa gateway, hanya laju */
+async function konsesi(env, req, kini) {
+  const staf = await siapa(env, req, kini); if (!staf) return tolak();
+  const lj = await laju(env, "sh:" + staf, "saham", [[60e3, 60], [3600e3, 600]], kini); if (lj) return lj;
+  return new Response(JSON.stringify({ok: true, ...KONSESI}), {headers: BALAS});
+}
 async function layani(jenis, env, req, url, kini) {
-  const staf = (await adminOK(env, req, kini)) ? "admin" : await stafSesi(env, req, kini).then(s => s && "staf:" + s.id);
-  if (!staf) return json({ok: false, kode: "akses_belum_dibuka", pesan: "Masuk sebagai staf dulu."}, 401);
+  const staf = await siapa(env, req, kini); if (!staf) return tolak();
   const d = masukan(jenis, url); if (typeof d === "string") return json({ok: false, kode: "masukan_salah", pesan: d}, 400);
   const [secret, jalur, params, susun, ttl] = JENIS[jenis](d);
   const kc = new Request("https://cache.lokal/api/saham/" + jenis + "?" + new URLSearchParams(d)), c = globalThis.caches?.default;
@@ -93,6 +103,7 @@ async function layani(jenis, env, req, url, kini) {
 }
 
 export const RUTE_SAHAM = {
+  "GET /api/saham/konsesi": (env, req, url, kini) => konsesi(env, req, kini),
   "GET /api/saham/cari": (env, req, url, kini) => layani("cari", env, req, url, kini),
   "GET /api/saham/dividen": (env, req, url, kini) => layani("dividen", env, req, url, kini),
   "GET /api/saham/:kode/info": (env, req, url, kini) => layani("info", env, req, url, kini),
