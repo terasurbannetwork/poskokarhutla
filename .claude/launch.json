@@ -3,10 +3,10 @@
   "configurations": [
     {
       "name": "lokal",
-      "runtimeExecutable": "sh",
+      "runtimeExecutable": "node",
       "runtimeArgs": [
-        "-c",
-        "exec npx wrangler dev --local --port 8788 </dev/null"
+        "scripts/agents/dev_lokal.mjs",
+        "8788"
       ],
       "port": 8788
     },
