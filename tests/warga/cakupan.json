@@ -2,7 +2,8 @@
   "_catatan": "Registri cakupan Lapor Warga + titik 3 jam. Tiap rute di src/worker.js dan tiap tabel/trigger di migrations/ WAJIB ada di 'diuji' (nilai = potongan nama uji yang benar-benar ada) atau 'dikecualikan' (nilai = alasan). 'antre' = utang eksplisit, hanya boleh menyusut (gerbang menolak kalau bertambah).",
   "diuji": {
     "GET /api/saham/cari": "saham: cari sukses dipetakan dan kunci Investing terkirim sebagai header",
-    "GET /api/saham/dividen": "saham: dividen, info, transaksi, grafik memakai jalur, parameter, dan kunci yang benar",
+    "GET /api/saham/konsesi": "saham: konsesi anonim 401, staf 200 berisi emiten, bukan aset publik; TTL grafik panjang 6 jam",
+    "GET /api/saham/dividen":"saham: dividen, info, transaksi, grafik memakai jalur, parameter, dan kunci yang benar",
     "GET /api/saham/:kode/info": "saham: dividen, info, transaksi, grafik memakai jalur, parameter, dan kunci yang benar",
     "GET /api/saham/:kode/transaksi": "saham: validasi masukan 400 masukan_salah tanpa fetch",
     "GET /api/saham/:kode/grafik": "saham: 403 penyedia dan 401 provider_unauthorized menjadi akses_belum_dibuka",

@@ -521,6 +521,7 @@ uji("status: sumber tahap uji (registry salinan dengan cuaca `uji`) basi/hilang 
   const B = structuredClone(REG); B.bencana.find(b => b.id === "cuaca").status = "uji";
   const tmp = mkdtempSync(path.join(tmpdir(), "uji-registry-"));
   cpSync(path.join(AKAR, "src"), path.join(tmp, "src"), {recursive: true});
+  mkdirSync(path.join(tmp, "data/bnpb"), {recursive: true}); copyFileSync(path.join(AKAR, "data/bnpb/saham_konsesi.js"), path.join(tmp, "data/bnpb/saham_konsesi.js"));   // src/saham.js mengimpor modul data
   mkdirSync(path.join(tmp, "public")); for (const f of ["informasi_jenis.js", "ews_tindakan.js", "laporan_karhutla_spek.js", "laporan_karhutla_wa.js", "laporan_bencana_spek.js", "laporan_bencana_wa.js"]) copyFileSync(path.join(AKAR, "public", f), path.join(tmp, "public", f));
   mkdirSync(path.join(tmp, "public/pipa")); copyFileSync(path.join(AKAR, "public/pipa/formulir.js"), path.join(tmp, "public/pipa/formulir.js"));
   copyFileSync(path.join(AKAR, "public/pipa/pelihara.js"), path.join(tmp, "public/pipa/pelihara.js"));   // src/sippa.js mengimpor fungsi pemeliharaan murni langsung (SP-093)   // src/sippa.js mengimpor formulir.js langsung (ADR-03)
