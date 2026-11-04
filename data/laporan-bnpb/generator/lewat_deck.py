@@ -12,7 +12,7 @@ sisanya masuk sebagai slide "impor" dengan urutan aslinya.
 import argparse, datetime as dt, json, os, re, shutil, subprocess, sys, zipfile
 
 SKILL = os.environ.get('DECK_BNPB', os.path.expanduser('~/.claude/skills/ppt-konsultan/bnpb'))
-KEPALA = {'nama': 'Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si., M.Si. (Han)',
+KEPALA = {'nama': 'Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)',
           'jabatan': 'Kepala Badan Nasional Penanggulangan Bencana'}
 # 2 Nov pemilik: foto sampul tetap foto pemadam lama; berkasnya di repo (generator/sampul), tidak bergantung aset mesin
 FOTO = ([os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sampul', 'media', 'image1.png').replace(os.sep, '/')], 'Foto: DenY Krisbiyantoro, CC BY-SA 4.0, Wikimedia Commons')

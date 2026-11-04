@@ -7,7 +7,7 @@ export const POLA = /\b(ppt|pptx|power ?point|slide|slides|deck|paparan|presenta
 export const PESAN = "PENGINGAT DECK BNPB (pemilik 3 dan 4 Nov 2026): semua slide/PPT/paparan WAJIB lewat Skill ppt-konsultan " +
   "(~/.claude/skills/ppt-konsultan, mesin bnpb/scripts/deck.py, akar bnpb/assets/proyek-*), satu-satunya pembangun PPT pemilik. " +
   "Skill deck-bnpb dan ppt-format-bnpb di repo ini PENSIUN (salinan mesin lama): jangan dipakai. Format baku: sampul berlogo dengan " +
-  "penyaji bernama lengkap (Kepala BNPB: Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si., M.Si. (Han)) dan kota-tanggal, " +
+  "penyaji bernama lengkap (Kepala BNPB: Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)) dan kota-tanggal, " +
   "slide daftar-isi, pembatas-seksi per bagian + penanda bagian di pita atas, footer 'Badan Nasional Penanggulangan Bencana  |  Copyright 2026' " +
   "+ nomor halaman, Roboto, grafik native, anti-AI. Dilarang membangun deck dari HTML/Chrome print-to-pdf. Kirim PPTX + PDF. " +
   "Gerbang: tests/agen/gerbang-skill-deck.test.mjs.";

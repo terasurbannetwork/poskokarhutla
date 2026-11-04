@@ -20,7 +20,7 @@ import wa_harian, banjir_data  # noqa: E402
 AKAR = wa_harian.AKAR
 BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
 HARI_ID = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']
-KEPALA_NAMA = 'Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si., M.Si. (Han)'
+KEPALA_NAMA = 'Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)'
 NAVY, ORG, MERAH, KER, SLATE, INK, ABU, TEKS = '051C2C', 'D9600B', 'C8102E', 'B08A3E', '5B7A99', '1A1A1A', '6B7280', '2E3440'
 T_NAVY, T_ORG, T_MERAH, T_KER, T_SLATE = 'E6EAF0', 'FBE7D6', 'F8DDE0', 'F4ECDC', 'E3EAF1'
 NAMA = {k: v['nama'].replace('Kepulauan ', 'Kep. ') for k, v in json.load(open(os.path.join(AKAR, 'public', 'data', 'laporan.json')))['prov'].items()}

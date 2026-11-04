@@ -35,6 +35,8 @@ test("pola menangkap permintaan slide pemilik, dan tidak menangkap prompt lain",
   assert.match(PESAN, /Skill ppt-konsultan/);
   assert.match(PESAN, /daftar-isi/);
   assert.match(PESAN, /Kristomei/);
+  assert.match(PESAN, /S\.Sos\., M\.Si\. \(Han\)/, "gelar Kepala BNPB: M.Si. sekali, yang ber-(Han) (pemilik 4 Nov 2026)");
+  assert.doesNotMatch(PESAN, /M\.Si\., M\.Si\./);
   assert.match(PESAN, /deck-bnpb dan ppt-format-bnpb .*PENSIUN/);
   assert.match(PESAN, /Dilarang membangun deck dari HTML/);
 });

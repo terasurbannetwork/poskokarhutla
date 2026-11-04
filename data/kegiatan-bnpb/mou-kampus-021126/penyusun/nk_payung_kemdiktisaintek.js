@@ -69,7 +69,7 @@ isi.push(nomor('NOMOR\t: [[nomor Kemdiktisaintek]]'));
 isi.push(kosong(200));
 
 isi.push(par('Pada hari ini [[hari]] tanggal [[tanggal terbilang]] bulan [[bulan]] tahun [[tahun terbilang]] ([[dd-mm-yyyy]]), bertempat di [[kota]], yang bertanda tangan di bawah ini:'));
-isi.push(butir('I.', '**BADAN NASIONAL PENANGGULANGAN BENCANA**, berkedudukan di Graha BNPB, Jalan Pramuka Kav. 38, Jakarta Timur 13120, diwakili oleh **Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si., M.Si. (Han)**, selaku Kepala Badan Nasional Penanggulangan Bencana, yang diangkat berdasarkan Keputusan Presiden Republik Indonesia Nomor [[nomor]] Tahun [[tahun]] tentang [[judul keputusan]], dalam hal ini bertindak untuk dan atas nama Badan Nasional Penanggulangan Bencana, selanjutnya disebut **PIHAK KESATU**.'));
+isi.push(butir('I.', '**BADAN NASIONAL PENANGGULANGAN BENCANA**, berkedudukan di Graha BNPB, Jalan Pramuka Kav. 38, Jakarta Timur 13120, diwakili oleh **Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)**, selaku Kepala Badan Nasional Penanggulangan Bencana, yang diangkat berdasarkan Keputusan Presiden Republik Indonesia Nomor [[nomor]] Tahun [[tahun]] tentang [[judul keputusan]], dalam hal ini bertindak untuk dan atas nama Badan Nasional Penanggulangan Bencana, selanjutnya disebut **PIHAK KESATU**.'));
 isi.push(butir('II.', '**KEMENTERIAN PENDIDIKAN TINGGI, SAINS, DAN TEKNOLOGI**, berkedudukan di Jalan Jenderal Sudirman, Senayan, Jakarta Pusat 10270, diwakili oleh **Brian Yuliarto** [[gelar lengkap]], selaku Menteri Pendidikan Tinggi, Sains, dan Teknologi Republik Indonesia, yang diangkat berdasarkan Keputusan Presiden Republik Indonesia Nomor [[nomor]] Tahun [[tahun]] tentang [[judul keputusan]], dalam hal ini bertindak untuk dan atas nama Kementerian Pendidikan Tinggi, Sains, dan Teknologi, selanjutnya disebut **PIHAK KEDUA**.'));
 isi.push(par('**PIHAK KESATU** dan **PIHAK KEDUA** secara bersama-sama disebut **PARA PIHAK** dan secara sendiri-sendiri disebut **PIHAK**, terlebih dahulu menerangkan hal-hal sebagai berikut:'));
 [
@@ -212,7 +212,7 @@ isi.push(new Table({
     cantSplit: true,
     children: [
       ttd(['**PIHAK KESATU**', '**KEPALA BADAN NASIONAL**', '**PENANGGULANGAN BENCANA,**', ...jeda,
-        '**Letnan Jenderal TNI**', '**Kristomei Sianturi, S.Sos.,**', '**M.Si., M.Si. (Han)**']),
+        '**Letnan Jenderal TNI**', '**Kristomei Sianturi, S.Sos.,**', '**M.Si. (Han)**']),
       ttd(['**PIHAK KEDUA**', '**MENTERI PENDIDIKAN TINGGI,**', '**SAINS, DAN TEKNOLOGI,**', ...jeda,
         '**Brian Yuliarto**', '[[gelar lengkap]]']),
     ],
