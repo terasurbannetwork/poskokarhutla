@@ -1,7 +1,7 @@
 # Katalog armada agent — pengetahuan orkestrator
 
 > DI-GENERATE dari `scripts/agents/roster.json` (`npm run agents:build`). Jangan disunting tangan.
-> Armada: **29 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
+> Armada: **30 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
 
 Cara memakai katalog ini:
 
@@ -13,13 +13,14 @@ Cara memakai katalog ini:
    muncul, panggil `general-purpose` dengan prompt "Kamu adalah <nama>: baca `.claude/agents/<nama>.md`
    dan jalankan `node scripts/agents/ilmu.mjs baca <nama>` dulu".
 
-## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (20)
+## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (21)
 
 | Agent | Model | Bisa | Tidak bisa | Wilayah |
 | --- | --- | --- | --- | --- |
 | `pipa-data` | sonnet | membangun & membetulkan skrip pipeline data karhutla dan JSON keluarannya | model ML sebaran; tampilan layar; worker Cloudflare | `scripts/data/**`, `scripts/panen/**`, `scripts/scrape/**` +16 |
 | `model-sebaran` | sonnet | membangun, melatih ulang, dan menguji model sebaran/eskalasi serta evaluator JS-nya | pipeline data mentah; worker; memverifikasi kejujuran uji baliknya sendiri (itu validasi-model) | `scripts/sebaran/**`, `public/sebaran_model.js`, `public/insight_sebaran*.js` +4 |
 | `banjir` | sonnet | membangun & membetulkan pipeline dan layar banjir/rob | karhutla; worker warga | `scripts/banjir/**`, `public/banjir/**`, `tests/banjir/**` +1 |
+| `model-banjir` | sonnet | membangun & membetulkan model statistik banjir kab-hari, label, koreksi bias, uji balik, dan dokumen pra-registrasinya | pipeline operasional & layar banjir; workflow; worker; membuka uji yang belum boleh dibuka | `scripts/banjir/model_kab*`, `scripts/banjir/model_dampak*`, `scripts/banjir/model_bahaya.py` +19 |
 | `gempa` | sonnet | membangun & membetulkan pipeline, model guncangan/susulan, dan layar modul gempa & tsunami | worker dan D1 (warga-api); karhutla; banjir; menyunting .github/workflows | `scripts/gempa/**`, `public/gempa/**`, `tests/gempa/**` |
 | `warga-api` | sonnet | membangun & membetulkan worker, route API, skema D1, alur laporan warga dan admin | pipeline data; model; deploy | `src/**`, `migrations/**`, `wrangler*.jsonc` +11 |
 | `layar-peta` | sonnet | membangun & membetulkan layar peta, kartu, pop-up, bagikan, i18n | pipeline data; model; worker & D1 | `public/*.html`, `public/*.js`, `public/*.css` +13 |
