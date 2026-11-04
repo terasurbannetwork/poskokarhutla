@@ -1,0 +1,343 @@
+{
+  "_meta": {
+    "disusun": "2026-11-02",
+    "catatan": "Riset web ~25 panggilan. Angka dari situs tiket/agregator ditandai. Jadwal KA wajib dicek ulang di Access by KAI sebelum pesan; Gapeka 2025 masih acuan durasi kecuali disebut lain."
+  },
+  "rute": [
+    {
+      "dari": "Jakarta (Halim)",
+      "ke": "Bandung (Tegalluar Summarecon / Padalarang)",
+      "moda": "Kereta cepat Whoosh",
+      "durasi_jam": 0.78,
+      "frekuensi": "62 perjalanan/hari (normal sejak 14 Mar 2026); 68/hari saat libur panjang Iduladha 2026. Jadwal sejak 18 Feb 2026: pertama dari Halim 07.25, dari Tegalluar 07.35",
+      "catatan": "Halim-Tegalluar 45-47 menit; Halim-Padalarang ~30 menit. Ke pusat kota: KA feeder Padalarang-Stasiun Bandung ~20 menit, jadwal diselaraskan dengan Whoosh, sejak Maret 2026 feeder pindah ke sisi barat Stasiun Bandung. Rute praktis ke ITB/pusat kota: Halim -> Padalarang -> feeder -> Bandung, total ~1-1,25 jam + transfer. Durasi 45-47 menit dari sumber sekunder.",
+      "url": "https://www.metrotvnews.com/read/bD2CwM04-operasional-whoosh-kembali-normal-62-perjalanan-per-hari-mulai-14-maret ; https://investortrust.id/business/95685/kcic-dan-kai-tata-ulang-akses-ka-feeder-whoosh-di-bandung ; https://whatsnewindonesia.com/bandung/feature/experience/exploring-high-speed-journey-between-jakarta-and-bandung-whoosh ; https://www.kompas.tv/lifestyle/651854/jadwal-whoosh-berubah-ka-pertama-dari-halim-berangkat-07-25-wib",
+      "lembaga": "KCIC via Metro TV, Investor Trust, Kompas TV; What's New Indonesia (durasi)",
+      "tanggal": "Mar 2026 (62 perjalanan, feeder); Feb 2026 (jadwal); durasi: tanggal terbit tidak terbaca"
+    },
+    {
+      "dari": "Jakarta (Gambir)",
+      "ke": "Semarang (Tawang)",
+      "moda": "KA Muria (gabungan Argo Muria, Argo Sindoro, Argo Merbabu)",
+      "durasi_jam": 5.3,
+      "frekuensi": "12 perjalanan/hari (6 per arah) sejak 1 Okt 2026. Gambir berangkat 06.00, 07.15, 12.00, 16.45, 19.45, 22.40; Tawang berangkat 05.50, 07.00, 14.00, 16.55, 19.00, 22.40",
+      "catatan": "Contoh KA 25 Tawang 19.00 tiba Gambir 00.20 (5 j 20 m). Tarif tercantum Rp410.000.",
+      "url": "https://investortrust.id/business/114153/kai-gabungkan-3-nama-kereta-jadi-ka-muria-ini-jadwal-12-perjalanannya ; https://www.goodnewsfromindonesia.id/2026/08/24/mulai-1-oktober-argo-muria-argo-sindoro-dan-argo-merbabu-berganti-nama-jadi-ka-muria",
+      "lembaga": "KAI via Investor Trust, GNFI",
+      "tanggal": "2026-08-24"
+    },
+    {
+      "dari": "Jakarta (Gambir)",
+      "ke": "Purwokerto",
+      "moda": "KA Cakrabuana (eksekutif)",
+      "durasi_jam": 5.0,
+      "frekuensi": "Contoh Gapeka 2025: KA 124 Gambir 19.10 tiba Purwokerto 00.08. Ada juga KA Purwojaya Gambir-Cilacap via Purwokerto (20.55-02.35 sampai Cilacap). Frekuensi total per hari tidak ketemu",
+      "catatan": "Durasi ~4 j 58 m. Jadwal Gapeka 2025 (berlaku sejak 1 Feb 2025); cek ulang jadwal 2026.",
+      "url": "https://finance.detik.com/infrastruktur/d-7740910/ini-jadwal-kereta-per-februari-sesuai-gapeka-2025",
+      "lembaga": "KAI via detikFinance",
+      "tanggal": "Jan 2025"
+    },
+    {
+      "dari": "Bandung",
+      "ke": "Yogyakarta (Tugu)",
+      "moda": "KA Argo Wilis (eksekutif); alternatif KA Lodaya",
+      "durasi_jam": 5.8,
+      "frekuensi": "Argo Wilis contoh jadwal Bandung 07.45 tiba Yogyakarta 13.34. Lodaya ada pagi dan malam (frekuensi pasti tidak ketemu)",
+      "catatan": "Durasi 5 j 49 m dari listing tiket.com (bukan jadwal resmi KAI). Sejak 1 Mei 2026 jadwal Argo Wilis dan Lodaya di Daop 5 disesuaikan; Lodaya Gapeka 2025 Solo-Bandung ~8 j.",
+      "url": "https://www.tiket.com/en-id/kereta-api/ka/argo-wilis ; https://megapolitan.antaranews.com/berita/525787/7-kereta-api-di-daop-5-alami-perubahan-jadwal-mulai-1-mei-2026 ; https://keretaapikita.com/jadwal-kereta-api-lodaya/",
+      "lembaga": "tiket.com (agregator); KAI Daop 5 via Antara; keretaapikita.com",
+      "tanggal": "listing 5 Jul 2026; Antara Apr/Mei 2026"
+    },
+    {
+      "dari": "Solo (Palur/Balapan)",
+      "ke": "Yogyakarta (Tugu)",
+      "moda": "KRL Commuter Line Yogyakarta-Palur",
+      "durasi_jam": 1.25,
+      "frekuensi": "Tidak ketemu angka pasti per hari (jadwal mingguan diterbitkan media)",
+      "catatan": "1-1,5 jam tergantung stasiun; tarif flat Rp8.000; 12-13 stasiun Palur-Tugu.",
+      "url": "https://www.metrotvnews.com/read/NG9CwWJM-jadwal-krl-jogja-solo-akhir-pekan-16-18-oktober-2026",
+      "lembaga": "Metro TV (mengutip KAI Commuter)",
+      "tanggal": "Okt 2026"
+    },
+    {
+      "dari": "Yogyakarta",
+      "ke": "Surabaya (Gubeng)",
+      "moda": "KA Sancaka (tercepat: Argo Wilis, lalu Argo Semeru)",
+      "durasi_jam": 4.0,
+      "frekuensi": "Sancaka pagi dan sore (2 pasang); frekuensi total semua KA tidak ketemu",
+      "catatan": "Gapeka 2025: SGU-YK 4 j - 4 j 5 m, YK-SGU 4 j. 311 km.",
+      "url": "https://keretaapikita.com/jadwal-kereta-api-sancaka/ ; https://keretaapikita.com/kereta-api-tercepat-surabaya-yogyakarta/",
+      "lembaga": "keretaapikita.com (rangkuman Gapeka 2025)",
+      "tanggal": "2025 (tanggal terbit tidak terbaca)"
+    },
+    {
+      "dari": "Semarang",
+      "ke": "Solo (via Salatiga)",
+      "moda": "Tol Semarang-Solo (mobil)",
+      "durasi_jam": 1.5,
+      "frekuensi": "-",
+      "catatan": "Panjang tol 72,64 km; Semarang-Solo <=1,5 jam (vs ~3 jam jalan arteri). Semarang-Salatiga ~40 km ~30-45 menit; Salatiga-Kartasura 32,6 km. Panduan 2023 memberi 1,5-2,5 jam pintu ke pintu.",
+      "url": "https://ekonomi.republika.co.id/berita/pjq0uo370/tol-semarangsolo-siap-menyambut-libur-nataru ; https://ekonomi.bisnis.com/read/20181214/45/869661/ruas-salatiga-kartasura-kelar-tol-semarang-solo-siap-untuk-libur-nataru ; https://auto2000.co.id/berita-dan-tips/semarang-solo-berapa-jam-naik-mobil-tips",
+      "lembaga": "Pemprov Jateng via Republika; Bisnis.com; Auto2000",
+      "tanggal": "2018-12-14 (Republika, Bisnis); Auto2000 ~2023"
+    },
+    {
+      "dari": "Surabaya",
+      "ke": "Malang",
+      "moda": "Tol Surabaya-Gempol-Pandaan-Malang (mobil)",
+      "durasi_jam": 1.5,
+      "frekuensi": "-",
+      "catatan": "~97 km via tol; operator tol menyebut 1-1,5 jam (vs 2-3 jam arteri, 4-6 jam jam sibuk). Gerbang: Pandaan, Purwodadi, Lawang, Singosari, Pakis, Malang. Realistis 1,5-2 jam kota ke kota.",
+      "url": "https://auto2000.co.id/berita-dan-tips/jalan-tol-pandaan-malang ; https://auto2000.co.id/berita-dan-tips/tarif-tol-surabaya-malang",
+      "lembaga": "Auto2000 (mengutip operator tol Pandaan-Malang)",
+      "tanggal": "2026 (judul 'Informasi Tol Pandaan-Malang 2026')"
+    },
+    {
+      "dari": "Surabaya (Kota/Gubeng)",
+      "ke": "Malang",
+      "moda": "KA Penataran (ekonomi) / Arjuno Ekspres / Jayabaya",
+      "durasi_jam": 2.8,
+      "frekuensi": "Penataran beberapa kali sehari (angka pasti tidak ketemu)",
+      "catatan": "Penataran 2 j 51 m - >3 j dari Surabaya Kota (sumber lain 2-2,5 j); Arjuno Ekspres <2 j. Tarif Penataran mulai Rp10.000-12.000.",
+      "url": "https://www.babelinsight.id/jadwal-terbaru-ka-penataran-surabaya-malang-2026-tiket-resmi-mulai-rp10-000 ; https://www.jawapos.com/travelling/2602160071/5-jalur-tercepat-surabaya-malang-2026-via-tol-kereta-atau-bus-ini-panduan-lengkapnya ; https://news.republika.co.id/berita/qq5lsa330/ka-arjuno-ekspres-buat-waktu-tempuh-ke-malang-hanya-dua-jam",
+      "lembaga": "Babel Insight; Jawa Pos; Republika (KAI Daop 8)",
+      "tanggal": "2026 (Babel Insight); 2026-02-16 (Jawa Pos); 2021-03-18 (Republika)"
+    },
+    {
+      "dari": "Surabaya (Juanda, SUB)",
+      "ke": "Jakarta (Soekarno-Hatta, CGK)",
+      "moda": "Pesawat",
+      "durasi_jam": 1.6,
+      "frekuensi": "~30 penerbangan/hari (214/minggu, Sep 2026); Trip.com ~30-33/hari, paling awal 05.05",
+      "catatan": "Durasi terbang 1 j 30 m - 1 j 40 m; tambah ~2-3 jam akses bandara + check-in. Halim (HLP) juga dilayani sebagian maskapai (tidak diverifikasi).",
+      "url": "https://www.popmama.com/life/health/rute-penerbangan-surabaya-ramai-dicari-02-9pk9w-qf4w2k ; https://id.trip.com/flights/airport-sub-cgk/",
+      "lembaga": "Popmama; Trip.com (agregator)",
+      "tanggal": "Sep 2026 (Popmama); Trip.com tanggal tidak tercantum"
+    },
+    {
+      "dari": "Jakarta (Gambir)",
+      "ke": "Jember",
+      "moda": "KA Pandalungan (baru)",
+      "durasi_jam": null,
+      "frekuensi": "Beroperasi sejak 18 Jun 2026; frekuensi dan durasi tidak terambil",
+      "catatan": "Opsi langsung Jakarta-Jember tanpa transit Surabaya; cek durasi di Access by KAI.",
+      "url": "https://www.kompas.tv/info-publik/674921/kai-tambah-ka-pandalungan-2-rute-gambir-jember-mulai-18-juni-2026-ini-jadwal-dan-harganya ; https://www.goodnewsfromindonesia.id/2026/06/19/resmi-kai-luncurkan-ka-pandalungan-jakarta-jember-mulai-beroperasi-18-juni-2026",
+      "lembaga": "KAI via Kompas TV, GNFI",
+      "tanggal": "2026-06-19"
+    },
+    {
+      "dari": "Surabaya (Gubeng)",
+      "ke": "Jember",
+      "moda": "KA Probowangi (ekonomi, Surabaya-Banyuwangi)",
+      "durasi_jam": null,
+      "frekuensi": "1 pasang/hari",
+      "catatan": "Melintas Jember ~10.07 arah Banyuwangi; berhenti 19 stasiun sejak Gapeka 2023; tarif Rp27.000-56.000. Durasi Surabaya-Jember tidak tercantum.",
+      "url": "https://dealls.com/pengembangan-karir/rute-ka-probowangi ; https://mojok.co/terminal/ka-probowangi-penghubung-surabaya-dan-banyuwangi/amp/",
+      "lembaga": "Dealls; Mojok",
+      "tanggal": "2026 (Dealls)"
+    }
+  ],
+  "kalender": [
+    {
+      "peristiwa": "UGM: akhir kuliah dan praktikum semester gasal 2026/2027",
+      "mulai": "2026-12-04",
+      "selesai": "2026-12-04",
+      "url": "https://web.faperta.ugm.ac.id/wp-content/uploads/sites/19/2026/08/Kalender-Akademik-Sarjana-Semester-Gasal-Tahun-Akademik-2026-2027-Fakultas-Pertanian_signed_pages_2-4.pdf",
+      "lembaga": "Fakultas Pertanian UGM",
+      "tanggal": "Agu 2026"
+    },
+    {
+      "peristiwa": "UGM: UAS semester gasal 2026/2027 (sarjana & sarjana terapan)",
+      "mulai": "2026-12-07",
+      "selesai": "2026-12-18",
+      "url": "https://biologi.ugm.ac.id/wp-content/uploads/sites/11/2026/08/2026.4887-SK-Kalender-Akademik-Program-Sarjana-Program-Studi-Biologi-Fakultas-Biologi-UGM-20262027.pdf ; https://akademik.ugm.ac.id/wp-content/uploads/sites/35/2026/03/266-2026_KEPTOR_KALENDER_AKADEMIK.pdf",
+      "lembaga": "UGM (Keputusan Rektor 266/2026; SK Fak. Biologi)",
+      "tanggal": "Mar 2026 (Keptor); Agu 2026 (Biologi)"
+    },
+    {
+      "peristiwa": "UGM: Dies Natalis (19 Des)",
+      "mulai": "2026-12-19",
+      "selesai": "2026-12-19",
+      "url": "https://ppak.feb.ugm.ac.id/wp-content/uploads/sites/85/2026/07/Kalender-Akademik-PPAk-FEB-UGM-Gasal-2026_2027.pdf",
+      "lembaga": "FEB UGM",
+      "tanggal": "Jul 2026"
+    },
+    {
+      "peristiwa": "UGM: libur semester gasal",
+      "mulai": "2026-12-21",
+      "selesai": "2027-01-31",
+      "url": "https://akademik.ugm.ac.id/wp-content/uploads/sites/35/2026/03/266-2026_KEPTOR_KALENDER_AKADEMIK.pdf",
+      "lembaga": "UGM (Keputusan Rektor 266/2026, dikutip dari cuplikan mesin pencari; PDF tak terbaca langsung)",
+      "tanggal": "Mar 2026"
+    },
+    {
+      "peristiwa": "UGM: awal semester genap 2026/2027 (perkiraan, hari kerja pertama setelah libur berakhir 31 Jan)",
+      "mulai": "2027-02-01",
+      "selesai": null,
+      "url": "https://akademik.ugm.ac.id/wp-content/uploads/sites/35/2026/03/266-2026_KEPTOR_KALENDER_AKADEMIK.pdf",
+      "lembaga": "Perkiraan dari Keputusan Rektor UGM 266/2026",
+      "tanggal": "Mar 2026"
+    },
+    {
+      "peristiwa": "Undip: UAS gasal termasuk remedi (pembanding Semarang)",
+      "mulai": "2026-12-07",
+      "selesai": "2026-12-18",
+      "url": "https://maksi.undip.ac.id/wp-content/uploads/2026/07/Kalender-Akademik-Undip-TA-2026-2027.pdf",
+      "lembaga": "Universitas Diponegoro",
+      "tanggal": "Jul 2026"
+    },
+    {
+      "peristiwa": "Unej: UAS semester gasal (pembanding Jember); semester antara Nov 2026-Feb 2027",
+      "mulai": "2026-12-07",
+      "selesai": "2026-12-18",
+      "url": "https://unej.ac.id/wp-content/uploads/2026/04/1303-SK-Kalender-Akademik-2026.pdf",
+      "lembaga": "Universitas Jember (SK 1303)",
+      "tanggal": "Apr 2026"
+    },
+    {
+      "peristiwa": "Libur nasional/cuti bersama November 2026: tidak ada",
+      "mulai": "2026-11-01",
+      "selesai": "2026-11-30",
+      "url": "https://setneg.go.id/baca/index/inilah_skb_3_menteri_libur_nasional_dan_cuti_bersama_2026",
+      "lembaga": "Kemensetneg (SKB 3 Menteri 2026)",
+      "tanggal": "2025-09-19"
+    },
+    {
+      "peristiwa": "Cuti bersama Natal (Kamis)",
+      "mulai": "2026-12-24",
+      "selesai": "2026-12-24",
+      "url": "https://setneg.go.id/baca/index/inilah_skb_3_menteri_libur_nasional_dan_cuti_bersama_2026",
+      "lembaga": "Kemensetneg (SKB 3 Menteri 2026)",
+      "tanggal": "2025-09-19"
+    },
+    {
+      "peristiwa": "Libur nasional Natal (Jumat) -> akhir pekan panjang 24-27 Des",
+      "mulai": "2026-12-25",
+      "selesai": "2026-12-25",
+      "url": "https://setneg.go.id/baca/index/inilah_skb_3_menteri_libur_nasional_dan_cuti_bersama_2026",
+      "lembaga": "Kemensetneg (SKB 3 Menteri 2026)",
+      "tanggal": "2025-09-19"
+    },
+    {
+      "peristiwa": "Libur Tahun Baru 2027 (Jumat)",
+      "mulai": "2027-01-01",
+      "selesai": "2027-01-01",
+      "url": "https://setneg.go.id/baca/index/inilah_skb_3_menteri_libur_nasional_dan_cuti_bersama_2027",
+      "lembaga": "Kemensetneg (SKB 3 Menteri No. 1205/2026, 3/2026, 2/2026)",
+      "tanggal": "2026-09-15"
+    },
+    {
+      "peristiwa": "Isra Mikraj (Selasa)",
+      "mulai": "2027-01-05",
+      "selesai": "2027-01-05",
+      "url": "https://setneg.go.id/baca/index/inilah_skb_3_menteri_libur_nasional_dan_cuti_bersama_2027",
+      "lembaga": "Kemensetneg (SKB 3 Menteri 2027)",
+      "tanggal": "2026-09-15"
+    },
+    {
+      "peristiwa": "Cuti bersama Imlek (Jumat) + Imlek 2578 (Sabtu 6 Feb) -> akhir pekan panjang 5-7 Feb",
+      "mulai": "2027-02-05",
+      "selesai": "2027-02-06",
+      "url": "https://setneg.go.id/baca/index/inilah_skb_3_menteri_libur_nasional_dan_cuti_bersama_2027",
+      "lembaga": "Kemensetneg (SKB 3 Menteri 2027)",
+      "tanggal": "2026-09-15"
+    },
+    {
+      "peristiwa": "Puncak arus Nataru pra-Natal (prediksi)",
+      "mulai": "2026-12-23",
+      "selesai": "2026-12-24",
+      "url": "https://www.rctiplus.com/news/detail/terkini/5503237/kemenhub-prediksi-puncak-arus-nataru-2026-terjadi-empat-kali",
+      "lembaga": "Kemenhub (Dirjen Hubdat Aan Suhanan, rakor 27 Okt 2026) via iNews/RCTI+",
+      "tanggal": "2026-10-27"
+    },
+    {
+      "peristiwa": "Puncak arus Nataru pasca-Natal (prediksi)",
+      "mulai": "2026-12-27",
+      "selesai": "2026-12-28",
+      "url": "https://www.rctiplus.com/news/detail/terkini/5503237/kemenhub-prediksi-puncak-arus-nataru-2026-terjadi-empat-kali",
+      "lembaga": "Kemenhub via iNews/RCTI+",
+      "tanggal": "2026-10-27"
+    },
+    {
+      "peristiwa": "Puncak arus jelang Tahun Baru (prediksi)",
+      "mulai": "2026-12-30",
+      "selesai": "2026-12-31",
+      "url": "https://www.rctiplus.com/news/detail/terkini/5503237/kemenhub-prediksi-puncak-arus-nataru-2026-terjadi-empat-kali",
+      "lembaga": "Kemenhub via iNews/RCTI+",
+      "tanggal": "2026-10-27"
+    },
+    {
+      "peristiwa": "Puncak arus balik Tahun Baru (prediksi)",
+      "mulai": "2027-01-03",
+      "selesai": "2027-01-04",
+      "url": "https://www.rctiplus.com/news/detail/terkini/5503237/kemenhub-prediksi-puncak-arus-nataru-2026-terjadi-empat-kali",
+      "lembaga": "Kemenhub via iNews/RCTI+",
+      "tanggal": "2026-10-27"
+    },
+    {
+      "peristiwa": "Awal Ramadan 1448 H (Muhammadiyah/KHGT; pemerintah menunggu sidang isbat, hisab BMKG juga mengarah 8 Feb)",
+      "mulai": "2027-02-08",
+      "selesai": null,
+      "url": "https://www.metrotvnews.com/read/kBVCM5Xl-kapan-ramadan-2027-ini-perkiraan-awal-puasa-1448-h ; https://www.metrotvnews.com/read/KYVC0XgP-prediksi-awal-ramadan-dan-lebaran-2027-versi-brin",
+      "lembaga": "Muhammadiyah (KHGT), BRIN, BMKG via Metro TV",
+      "tanggal": "2026 (tanggal terbit tidak terbaca)"
+    },
+    {
+      "peristiwa": "Nyepi 8 Mar, cuti bersama 9 Mar, Idulfitri 1448 H 10-11 Mar, cuti bersama 12 & 15 Mar 2027",
+      "mulai": "2027-03-08",
+      "selesai": "2027-03-15",
+      "url": "https://setneg.go.id/baca/index/inilah_skb_3_menteri_libur_nasional_dan_cuti_bersama_2027",
+      "lembaga": "Kemensetneg (SKB 3 Menteri 2027)",
+      "tanggal": "2026-09-15"
+    }
+  ],
+  "musim": [
+    {
+      "isi": "BMKG: puncak musim hujan 2026/2027 Desember, Januari, Februari; awal musim hujan lebih lambat dari normal; jarak awal-puncak dekat, intensitas tinggi dalam periode pendek; El Nino sangat kuat bertahan hingga awal 2027.",
+      "url": "https://infopublik.id/kategori/nasional-sosial-budaya/991951/awal-dan-puncak-musim-hujan-20262027-berdekatan-bmkg-tekankan-kesiapsiagaan",
+      "lembaga": "BMKG via InfoPublik (Kemkomdigi)",
+      "tanggal": "2026-10-02"
+    },
+    {
+      "isi": "Sebagian Jawa masuk musim hujan November 2026, sebagian besar Jawa Desember 2026; sebagian besar Jawa puncaknya Februari 2027; durasi musim hujan lebih pendek dari normal.",
+      "url": "https://www.rctiplus.com/news/detail/inews/5485714/bmkg-prediksi-musim-hujan-mulai-november-2026--ini-wilayah-yang-terdampak ; https://www.metrotvnews.com/read/b3JC54vB-bmkg-ingatkan-pemda-waspada-ancaman-bencana-di-akhir-2026",
+      "lembaga": "BMKG via iNews/RCTI+ dan Metro TV",
+      "tanggal": "Sep-Okt 2026 (tanggal persis tidak terbaca)"
+    },
+    {
+      "isi": "Gangguan lazim pantura Semarang: banjir Jalan Kaligawe (Semarang-Demak) 30-70 cm, Okt 2025; 16 perjalanan KA dibatalkan/diputar oleh Daop 4 Semarang; 63.450 jiwa terdampak.",
+      "url": "https://www.kompas.tv/regional/626350/16-perjalanan-kereta-api-dibatalkan-akibat-banjir-semarang-ini-detailnya ; https://www.metrotvnews.com/read/KRXCdA4x-63-450-jiwa-terdampak-banjir-semarang",
+      "lembaga": "KAI Daop 4 via Kompas TV, Metro TV",
+      "tanggal": "2025-10-29"
+    },
+    {
+      "isi": "Preseden Maret 2024: banjir Semarang-Demak, macet 16 km di pantura Demak, KAI mengalihkan 4 perjalanan KA.",
+      "url": "https://news.republika.co.id/berita/sab3m2423/banjir-semarang-kai-alihkan-4-perjalanan-kereta-api ; https://www.kompas.tv/regional/492738/jalan-pantura-demak-macet-sepanjang-16-kilometer-imbas-banjir-di-semarang",
+      "lembaga": "KAI via Republika, Kompas TV",
+      "tanggal": "2024-03-14"
+    },
+    {
+      "isi": "Banjir Grobogan (jalur KA Semarang-Surabaya lintas tengah) pernah menghentikan sementara perjalanan KA; 29 desa terendam.",
+      "url": "https://metrotvnews.com/read/NxGCzOza-29-desa-di-grobogan-terendam-banjir-perjalanan-ka-terhenti-sementara",
+      "lembaga": "Metro TV",
+      "tanggal": "tidak terbaca"
+    }
+  ],
+  "celah": [
+    "Jakarta-Depok (UI): tidak dicari. Perkiraan: KRL Manggarai/Sudirman-Stasiun UI/Pondok Cina 30-45 menit, KRL sangat sering (tiap ~5-10 menit jam sibuk); mobil 45-90 menit. Dasar: pengetahuan umum Commuter Line Bogor.",
+    "Jakarta-Bogor (IPB): tidak dicari. Perkiraan: KRL Manggarai-Bogor ~60-75 menit; ke IPB Dramaga + 30-45 menit angkutan/mobil; tol Jagorawi 1-1,5 jam ke kampus Baranangsiang, 1,5-2 jam ke Dramaga.",
+    "Jakarta-Tangerang (Karawaci, UPH/UMN): tidak dicari. Perkiraan: tol Jakarta-Tangerang 45-90 menit tergantung jam; KRL Duri-Tangerang ~1 jam ke Stasiun Tangerang.",
+    "Jakarta-Serang (Untirta): tidak dicari. Perkiraan: tol Jakarta-Merak ~1,5-2 jam; KA lokal Rangkasbitung/Merak tidak praktis.",
+    "Bandung-Jatinangor (Unpad, ITB Jatinangor): tidak dicari. Perkiraan: tol Padaleunyi + Cisumdawu, 30-60 menit dari pusat kota; dari Tegalluar Whoosh lebih dekat (~20-30 menit).",
+    "Jakarta-Bandung via tol Cipularang: tidak dicari. Perkiraan 2,5-3,5 jam; rawan macet akhir pekan dan libur panjang.",
+    "Purwokerto-Yogyakarta: tidak dicari. Perkiraan KA ~2,5-3 jam (banyak KA lintas selatan berhenti di Purwokerto, mis. Taksaka, Bima, Gajayana).",
+    "Semarang-Surabaya: tidak dicari. Perkiraan KA (Ambarawa Ekspres, Maharani, Argo Bromo Anggrek lintas utara) ~3,5-4,5 jam; tol Trans-Jawa ~4-5 jam.",
+    "Surabaya-Jakarta KA (Argo Bromo Anggrek Pasarturi-Gambir): durasi tidak ketemu. Perkiraan ~7,5-8,5 jam (Gapeka 2025).",
+    "Malang-Jember: tidak ketemu. Perkiraan mobil via tol Pandaan-Probolinggo + arteri 4-5 jam; KA Tawang Alun Malang-Banyuwangi via Jember ~5 jam.",
+    "Frekuensi KRL Solo-Yogya per hari tidak ketemu.",
+    "Kalender akademik UI, ITB, ITS, Unair 2026/2027: tidak ketemu (ITS: PDF resmi ditemukan tapi hasil pindai, tak terbaca: https://www.its.ac.id/tfisika/wp-content/uploads/sites/24/2026/08/Kalender_Akademik_ITS_2026-2027_FINAL_v2-1.pdf ; Unpad SK 1585/2026 ada di JDIH tapi 403). Perkiraan: PTN besar umumnya UAS gasal minggu ke-2/3 Desember s.d. awal/pertengahan Januari, libur Januari, semester genap mulai awal-pertengahan Februari 2027. ITB dan ITS biasanya UAS pertengahan Desember (pola tahun-tahun sebelumnya). Pembanding: UGM, Undip, Unej UAS 7-18 Des 2026; Udinus (swasta) UAS 11-23 Jan 2027.",
+    "Banjir Jakarta musim 2026/2027: tidak ada prakiraan spesifik. Perkiraan: banjir besar Jakarta historis memuncak Januari-Februari (2007, 2013, 2014, 2020), sejalan dengan puncak hujan BMKG Des-Feb.",
+    "Awal Ramadan versi pemerintah belum ditetapkan (sidang isbat akhir Syaban, ~7 Feb 2027). Perkiraan 8 Feb 2027 (sama dengan Muhammadiyah, hisab BMKG).",
+    "Durasi Whoosh 45-47 menit dan tol Surabaya-Malang hanya dari sumber sekunder; jadwal resmi KCIC/KAI tidak diakses langsung."
+  ]
+}

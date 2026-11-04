@@ -1,0 +1,737 @@
+{
+  "topik": "Inventaris kekuatan nyata kampus koordinator USK (Aceh-Sumut), Unand (Sumatera tengah-selatan), dan IPB (tematik karhutla-gambut) beserta mitra swasta yang sudah ada dan kandidat regional, untuk ajuan program kerja sama BNPB-perguruan tinggi-swasta. Riset web 2 November 2026, sekitar 33 panggilan, melengkapi riset-2-sumatra-ipb.json dan riset-5-lintas-regulasi.json tanpa mengulang klaimnya.",
+  "catatan_metode": "Tanggal bertanda perkiraan di teks berarti halaman tidak bertanggal atau tanggal diturunkan dari isi/ID artikel. Klaim berstatus celah tidak boleh dipakai sebagai fakta. Klaim berawalan 'Simpulan' adalah inferensi peneliti. Rujukan B*, U*, I*, C*, N* mengacu ke riset-2-sumatra-ipb.json.",
+  "kampus": {
+    "USK": {
+      "ringkas": "USK adalah kampus kebencanaan tertua di Sumatra lewat TDMRC (lahir dari tsunami 2004) dengan fasilitas fisik langka: flume tsunami 60 m, meja getar, dan laboratorium observasi gempa, ditopang jejaring IRIDeS Tohoku, UNESCO-IOC, BMKG, dan Kobe University. USK juga punya Magister Ilmu Kebencanaan sejak 2011 dengan gelar ganda Kobe. Dalam Siklon Senyar 2025 USK membentuk satgas, posko di tiga kabupaten, WebGIS logistik, dan mengambil alih RSUD Meureudu. Kelemahannya, jalur kerja sama swasta kebencanaan masih tipis: yang terbukti baru PEMA (migas), BSI (beasiswa, nilam), dan penyaluran BTN Peduli.",
+      "aset": [
+        "Laboratorium tsunami wave flume 60 x 2,5 x 1,7 m (sensor, PIV, laser bed profiler)",
+        "Laboratorium meja getar (shaking table) dan observasi gempa",
+        "TDMRC: peta risiko Aceh, SG EvaNami, SVIM, aplikasi penilaian kerusakan rumah",
+        "Magister Ilmu Kebencanaan (SK 219/E/O/2011), gelar ganda Kobe University",
+        "Jejaring IRIDeS Tohoku (AIWEST-DR), UNESCO-IOC, BMKG/IDRIP, STMKG",
+        "Rekam Satgas Senyar 2025: posko Pidie, Bireuen, Meulaboh; >642 warga dilayani RSUD Meureudu"
+      ],
+      "mitra_swasta_ada": [
+        "PT Pembangunan Aceh (PEMA): kerja sama hulu migas dan magang 5-6 bulan, tahun tidak tercantum",
+        "BSI: beasiswa Aceh (8 PT termasuk USK, sekitar 2023) dan BSI Maslahat untuk nilam bersama Atsiri Research Center",
+        "BTN Peduli: penyaluran bantuan Senyar lewat USK, Desember 2025",
+        "BPH Migas bersama Pertamina dan BPMA: MoU hilir migas, Mei 2021",
+        "PT Agro Sinergi Nusantara: MoU pendidikan, riset, magang, sekitar 2020"
+      ],
+      "kandidat_swasta_regional": [
+        "MedcoEnergi (Medco E&P Malaka): bantuan Senyar >USD 500.000 di Aceh, jalur ke USK belum ada",
+        "PEMA: BUMD Aceh, sudah bermitra dengan USK",
+        "Bank Aceh Syariah: belum ada rekam kebencanaan bersama USK",
+        "Grup Astra/Agincourt Resources (Sumut): RISIKO, operasi dihentikan dan digugat KLH Rp200,99 miliar"
+      ],
+      "kampus_sekitar": [
+        "Universitas Malikussaleh: relawan banjir Aceh Utara Desember 2025, FK Unimal 49 personel, wadah Posko Bencana Alam",
+        "USU: tim DKJPS FK USU ke Langkat; pusat studi kebencanaan belum ditemukan"
+      ]
+    },
+    "Unand": {
+      "ringkas": "Unand ditetapkan BNPB sebagai Center of Excellence manajemen bencana (Februari 2025) dan memusatkan risetnya pada megathrust Mentawai dengan hibah BNPB-DFAT, konferensi ICDMM, dan buku ancaman megathrust. Riset itu sudah turun ke masyarakat lewat model masjid-shelter dan perangkat peringatan dini tsunami buatan lokal bersama Pegadaian yang diserahkan ke Pemkot Padang Juni 2026. Pada galodo November 2025 Unand turun ke Palembayan sejak hari pertama, membuka posko komando medis, dan mengerahkan 400 mahasiswa. PSB Unand juga punya rekam program StIRRRD bersama UGM sejak 2016.",
+      "aset": [
+        "Status Center of Excellence manajemen bencana dari BNPB (2025)",
+        "Pusat Studi Bencana Unand dan konferensi ICDMM (prosiding Scopus)",
+        "Riset megathrust Mentawai hibah BNPB-DFAT SIAP SIAGA",
+        "Model masjid-shelter dan perangkat peringatan dini tsunami lokal (bersama Pegadaian)",
+        "Rekam galodo 2025: posko komando medis Agam, 400 mahasiswa"
+      ],
+      "mitra_swasta_ada": [
+        "PT Pegadaian (Persero): riset kesiapsiagaan megathrust dan tsunami, diserahkan ke Pemkot Padang 29 Juni 2026",
+        "PT Hutama Karya (Persero): MoU SDM dan riset infrastruktur, 5 Juni 2026",
+        "MIND ID: kerja sama community dan society, Juni 2022",
+        "PT Gasnet-Telemedia Dinamika: kerja sama kampus kelas dunia, tahun tidak tercantum"
+      ],
+      "kandidat_swasta_regional": [
+        "PT Semen Padang (SIG): posko Pauh dan Palembayan, 3 alat berat, 30 personel, RS Semen Padang (Desember 2025)",
+        "PT Pertamina Hulu Rokan: >200 personel pemadaman karhutla, TJSL dengan Unri di Rokan Hilir",
+        "Asian Agri: Desa Bebas Api Riau-Jambi",
+        "APP/Arara Abadi: RISIKO, sudah menggandeng Unri tetapi pemasok APP disanksi 2026"
+      ],
+      "kampus_sekitar": [
+        "Universitas Riau: Pusat Studi Gambut dan Kebencanaan (sejak 2014, nama baru 2023), MRPA, kerja sama dengan Arara Abadi dan PHR",
+        "Universitas Sriwijaya: riset restorasi gambut bersama NIFOS Korea di OKI dan Inderalaya"
+      ]
+    },
+    "IPB": {
+      "ringkas": "IPB menjadi tuan rumah RFMRC-SEA (sejak 2017), satu-satunya pusat regional Global Fire Monitoring Center di Asia Tenggara, dan pada Juni 2024 meresmikan pusat pelatihan kebakaran hutan dan gambut berteknologi tinggi pertama di kawasan. IPB melatih pemadam gambut lintas negara bersama Manggala Agni dan memiliki pakar forensik kebakaran yang sudah bersaksi di 24 perkara karhutla. Di lapangan IPB menguji peringatan dini api berbiaya rendah di Jambi bersama Waterloo (FINCAPES). Hubungan IPB dengan industri sawit/HTI ada di tingkat asosiasi (GAPKI, BPDPKS) dan beasiswa (Tanoto), bukan perjanjian karhutla dengan perusahaan.",
+      "aset": [
+        "RFMRC-SEA di Fahutan IPB (jaringan GFMC, sejak 2017)",
+        "Pusat pelatihan kebakaran hutan dan gambut berteknologi tinggi (diresmikan 24 Juni 2024)",
+        "Pakar forensik kebakaran (Bambang Hero Saharjo, Lailan Syaufina)",
+        "FFEWS dan peringatan dini api FINCAPES di Muaro Jambi",
+        "Sistem OLAP hotspot karhutla; riset gel dan foaming agent pemadam"
+      ],
+      "mitra_swasta_ada": [
+        "Tanoto Foundation: beasiswa TELADAN, IPB satu dari 10 kampus mitra (berjalan, 2025)",
+        "GAPKI: MoU riset dan pendidikan sawit berkelanjutan (sekitar 2019)",
+        "BPDPKS (BLU, bukan swasta): konsorsium I-POINTS"
+      ],
+      "kandidat_swasta_regional": [
+        "PT Pertamina Hulu Rokan: BUMN di gambut Riau, >200 personel pemadaman",
+        "Asian Agri: Desa Bebas Api sejak 2016, belum muncul di daftar sanksi",
+        "Musim Mas: Masyarakat Bebas Api, perlu uji tuntas pemasok",
+        "APRIL/Tanoto: RISIKO sedang, FFVP besar tetapi rekam konsesi terbakar 2015-2016",
+        "APP Sinar Mas: RISIKO tinggi, pemasok disanksi 2026"
+      ],
+      "kampus_sekitar": [
+        "Universitas Riau (mitra riset gambut IPB)",
+        "Universitas Jambi dan Universitas Sriwijaya sebagai lokasi lapangan gambut"
+      ]
+    }
+  },
+  "klaim": [
+    {
+      "id": "A1",
+      "subjek": "USK",
+      "kategori": "pusat",
+      "teks": "TDMRC USK memiliki laboratorium tsunami wave flume skala besar berukuran 60 m x 2,5 m x 1,7 m yang dilengkapi sensor gelombang, tekanan, dan arus, kamera PIV, serta laser bed profiler; fasilitas ini selesai sekitar 2023 (halaman tidak bertanggal, tanggal perkiraan dari makalah jurnal TDMRC 2023).",
+      "angka": "60 m x 2,5 m x 1,7 m",
+      "url": "https://tdmrc.usk.ac.id/tsunami-flume-laboratory/",
+      "lembaga": "TDMRC USK",
+      "tanggal": "2023-01-01",
+      "status": "temuan"
+    },
+    {
+      "id": "A2",
+      "subjek": "USK",
+      "kategori": "pusat",
+      "teks": "Pada Open House TDMRC 2025 pengunjung diperlihatkan tiga fasilitas: laboratorium observasi gempa, laboratorium meja getar (shaking table), dan laboratorium flume gelombang tsunami. Kombinasi flume dan shake table di satu pusat studi ini jarang dimiliki kampus lain di Sumatra.",
+      "angka": "3 laboratorium",
+      "url": "https://tdmrc.usk.ac.id/2025/11/10/tdmrc-usk-organized-open-house-2025-advanced-disaster-awareness-and-literacy-among-youth/",
+      "lembaga": "TDMRC USK",
+      "tanggal": "2025-11-10",
+      "status": "temuan"
+    },
+    {
+      "id": "A3",
+      "subjek": "USK",
+      "kategori": "pusat",
+      "teks": "TDMRC USK bersama STMKG memakai flume untuk eksperimen tsunami akibat longsor bawah laut dengan model Teluk Palu berskala dari data batimetri resmi, untuk mempelajari bencana Palu 2018.",
+      "angka": "",
+      "url": "https://tdmrc.usk.ac.id/2025/09/16/tdmrc-usk-and-stmkg-advance-tsunami-research-with-landslide-simulation-to-study-the-2018-palu-disaster/",
+      "lembaga": "TDMRC USK",
+      "tanggal": "2025-09-16",
+      "status": "temuan"
+    },
+    {
+      "id": "A4",
+      "subjek": "USK",
+      "kategori": "pusat",
+      "teks": "Delegasi pakar gempa dan tsunami UNESCO-IOC mengunjungi fasilitas riset TDMRC USK.",
+      "angka": "",
+      "url": "https://tdmrc.usk.ac.id/2024/11/14/visit-by-unesco-ioc-earthquake-and-tsunami-experts-to-tdmrc-usk-research-facilities/",
+      "lembaga": "TDMRC USK",
+      "tanggal": "2024-11-14",
+      "status": "temuan"
+    },
+    {
+      "id": "A5",
+      "subjek": "USK",
+      "kategori": "pusat",
+      "teks": "IRIDeS Tohoku University punya perjanjian pertukaran akademik dengan FMIPA USK dan TDMRC, dan konferensi AIWEST-DR TDMRC kini dikelola bersama IRIDeS dan University of Sydney; IRIDeS menjadi tuan rumah AIWEST-DR ke-12 di Sendai 2019. Ini menutup sebagian celah B9 riset sebelumnya (tanggal halaman perkiraan).",
+      "angka": "AIWEST-DR ke-12 (2019)",
+      "url": "https://irides.tohoku.ac.jp/irides_news/en/detail/---id-6710.html",
+      "lembaga": "IRIDeS Tohoku University",
+      "tanggal": "2019-08-15",
+      "status": "temuan"
+    },
+    {
+      "id": "A6",
+      "subjek": "USK",
+      "kategori": "pusat",
+      "teks": "TDMRC dan BMKG berkunjung ke IRIDeS Sendai dalam Indonesia Disaster Resilience Project (IDRIP) untuk pemodelan tsunami dan longsor kasus Palu 2018.",
+      "angka": "",
+      "url": "https://tdmrc.usk.ac.id/2024/12/02/tdmrc-and-bmkg-visit-japan-for-indonesia-disaster-resilience-project-idrip/",
+      "lembaga": "TDMRC USK",
+      "tanggal": "2024-12-02",
+      "status": "temuan"
+    },
+    {
+      "id": "A7",
+      "subjek": "USK",
+      "kategori": "inovasi",
+      "teks": "Halaman produk TDMRC mencantumkan peta risiko bencana Aceh, aplikasi seluler pemetaan dan penilaian kerusakan rumah pascabencana, SG EvaNami untuk jalur evakuasi tsunami, dan perangkat lunak SVIM untuk indeks kerentanan seismik berbasis mikrotremor (halaman tidak bertanggal, tanggal perkiraan).",
+      "angka": "4 produk",
+      "url": "https://tdmrc.usk.ac.id/what-to-visit/",
+      "lembaga": "TDMRC USK",
+      "tanggal": "2025-01-01",
+      "status": "temuan"
+    },
+    {
+      "id": "A8",
+      "subjek": "USK",
+      "kategori": "inovasi",
+      "teks": "Status paten/HKI, tingkat kesiapterapan teknologi (TKT), dan jumlah pengguna produk TDMRC (EvaNami, SVIM, aplikasi penilaian kerusakan rumah) tidak ditemukan; perlu dicek di PDKI DJKI dan ditanyakan langsung ke TDMRC.",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "celah"
+    },
+    {
+      "id": "A9",
+      "subjek": "USK",
+      "kategori": "prodi",
+      "teks": "USK menyelenggarakan Magister Ilmu Kebencanaan (MIK) berdasarkan Keputusan Mendiknas 219/E/O/2011, dengan jalur gelar ganda MSi USK dan MEng kebencanaan dari Kobe University (brosur bertanggal perkiraan Mei 2023).",
+      "angka": "SK 219/E/O/2011",
+      "url": "https://mik.usk.ac.id/wp-content/uploads/2023/05/BROSUR-MIK-B.-INDONESIA.pdf",
+      "lembaga": "Prodi Magister Ilmu Kebencanaan USK",
+      "tanggal": "2023-05-01",
+      "status": "temuan"
+    },
+    {
+      "id": "A10",
+      "subjek": "USK",
+      "kategori": "prodi",
+      "teks": "Program doktor (S3) kebencanaan di USK tidak ditemukan; pengumuman penerimaan pascasarjana 2024 hanya memuat doktor ekonomi, hukum, teknik, pertanian, dan lain-lain.",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "celah"
+    },
+    {
+      "id": "A11",
+      "subjek": "USK",
+      "kategori": "tanggap",
+      "teks": "Satgas Senyar USK dipimpin Prof. Syamsidik (Direktur TDMRC); TDMRC mengirim empat surveyor ke Pidie Jaya, USK mendirikan posko di Pidie, Bireuen, dan Meulaboh, serta membuka pusat informasi dan penggalangan bantuan di Rumah Amal USK (tanggal halaman perkiraan Desember 2025).",
+      "angka": "4 surveyor; 3 lokasi posko",
+      "url": "https://www.sonora.id/read/424328662/kemdiktisaintek-pastikan-dukungan-pemulihan-masyarakat-lewat-posko-bencana-berbasis-kampus",
+      "lembaga": "Sonora.id (rilis Kemdiktisaintek)",
+      "tanggal": "2025-12-15",
+      "status": "temuan"
+    },
+    {
+      "id": "A12",
+      "subjek": "USK",
+      "kategori": "tanggap",
+      "teks": "Tim USK mengambil alih layanan darurat RSUD Meureudu Pidie Jaya dan telah melayani lebih dari 642 warga (tanggal halaman perkiraan Desember 2025).",
+      "angka": ">642 warga",
+      "url": "https://www.medcom.id/pendidikan/news-pendidikan/0KvZWX9K-12-perguruan-tinggi-bahu-membahu-bantu-korban-banjir-sumatra",
+      "lembaga": "Medcom.id",
+      "tanggal": "2025-12-15",
+      "status": "temuan"
+    },
+    {
+      "id": "A13",
+      "subjek": "USK",
+      "kategori": "tanggap",
+      "teks": "USK menerima 4.114 item logistik tahap awal dari Kemdiktisaintek pada 18 Desember 2025 untuk respons bencana Aceh, disusul toren air bersih sehari kemudian (tanggal halaman perkiraan).",
+      "angka": "4.114 item",
+      "url": "https://www.goodnewsfromindonesia.id/network/content/usk-terima-bantuan-logistik-kemdiktisaintek-untuk-respons-bencana-aceh-Ma87Dp",
+      "lembaga": "Good News From Indonesia (jejaring konten USK)",
+      "tanggal": "2025-12-19",
+      "status": "temuan"
+    },
+    {
+      "id": "A14",
+      "subjek": "PT Pembangunan Aceh (PEMA)",
+      "kategori": "mitra_ada",
+      "teks": "USK bekerja sama dengan BUMD PT Pembangunan Aceh (PEMA) dalam pengelolaan kegiatan hulu migas di wilayah kewenangan Aceh; Rektor Marwan membuka peluang magang mahasiswa 5 sampai 6 bulan. Tanggal penandatanganan tidak tercantum.",
+      "angka": "magang 5-6 bulan",
+      "url": "https://kumparan.com/acehkini/universitas-syiah-kuala-dan-pema-jalin-kerja-sama-kelola-hulu-migas-1yfmGsE7eD7",
+      "lembaga": "Kumparan/AcehKini",
+      "tanggal": "",
+      "status": "inferensi"
+    },
+    {
+      "id": "A15",
+      "subjek": "BPH Migas, Pertamina, BPMA",
+      "kategori": "mitra_ada",
+      "teks": "BPH Migas menandatangani MoU pendidikan, penelitian, dan pengembangan ilmu hilir migas dengan Rektor USK, dalam acara yang juga melibatkan PT Pertamina dan BPMA Aceh.",
+      "angka": "",
+      "url": "https://www.cnbcindonesia.com/news/20210511141122-4-244989/kembangkan-hilir-migas-bph-migas-stakeholder-kolaborasi",
+      "lembaga": "CNBC Indonesia",
+      "tanggal": "2021-05-11",
+      "status": "temuan"
+    },
+    {
+      "id": "A16",
+      "subjek": "Bank Syariah Indonesia (BSI)",
+      "kategori": "mitra_ada",
+      "teks": "Program beasiswa BSI untuk Aceh bekerja sama dengan delapan perguruan tinggi, termasuk USK; terpisah, BSI Maslahat bekerja sama dengan Atsiri Research Center USK untuk nilam (lihat B13). Tanggal artikel beasiswa tidak tampil, perkiraan 2023.",
+      "angka": "8 perguruan tinggi",
+      "url": "https://m.antaranews.com/amp/berita/3726738/bsi-hadirkan-program-beasiswa-perguruan-tinggi-di-aceh",
+      "lembaga": "ANTARA",
+      "tanggal": "2023-09-01",
+      "status": "temuan"
+    },
+    {
+      "id": "A17",
+      "subjek": "BTN (BTN Peduli)",
+      "kategori": "mitra_ada",
+      "teks": "Bantuan BTN Peduli untuk korban Senyar di Pidie Jaya disalurkan melalui USK, UIN Ar-Raniry, dan Pemkab Pidie Jaya; ini satu-satunya donasi korporasi lewat USK yang ditemukan, nilainya tidak disebut (tanggal halaman perkiraan Desember 2025).",
+      "angka": "",
+      "url": "https://investortrust.id/esg/87262/ketika-bank-turun-ke-posko-mainan-logistik-dan-harapan-baru-untuk-pidie-jaya",
+      "lembaga": "Investortrust",
+      "tanggal": "2025-12-20",
+      "status": "temuan"
+    },
+    {
+      "id": "A18",
+      "subjek": "PT Agro Sinergi Nusantara (PT ASN)",
+      "kategori": "mitra_ada",
+      "teks": "USK (saat itu Unsyiah) menandatangani MoU dengan PT Agro Sinergi Nusantara di bidang pendidikan, penelitian, magang, dan rekrutmen (tanggal perkiraan 2020).",
+      "angka": "",
+      "url": "https://kemdiktisaintek.go.id/news/article/unsyiah-dan-pt-asn-jalin-kerja-sama-bidang-pendidikan",
+      "lembaga": "Kemdiktisaintek",
+      "tanggal": "2020-01-01",
+      "status": "temuan"
+    },
+    {
+      "id": "A19",
+      "subjek": "USK",
+      "kategori": "mitra_ada",
+      "teks": "Kerja sama USK dengan MedcoEnergi, Mubadala Energy, PT Solusi Bangun Andalas, PHE NSO, maupun Bank Aceh Syariah di bidang apa pun tidak ditemukan dalam pencarian ini; MedcoEnergi punya rekam bantuan Senyar (B10) tetapi tanpa jalur USK yang terverifikasi.",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "celah"
+    },
+    {
+      "id": "A20",
+      "subjek": "Universitas Malikussaleh (Unimal)",
+      "kategori": "sekitar",
+      "teks": "Portal berita Unimal memuat rangkaian aksi banjir Aceh Utara Desember 2025: Tim Relawan FISIP ke pos pengungsian Samudera, Tanah Pasir, Lapang, Baktiya (9 Des 2025), FK Unimal menerjunkan 49 personel ke dua titik pengungsian (25 Des 2025), dan penyaluran logistik bersama LAZISNU dan BPKH; Unimal juga punya wadah relawan Posko Bencana Alam (PBA) dari UKM SAR, TDC, PMI, Menwa dan lain-lain. URL artikel spesifik tidak bisa dibuka (HTTP 500), jadi dicantumkan portalnya.",
+      "angka": "49 personel FK",
+      "url": "https://news.unimal.ac.id/",
+      "lembaga": "Universitas Malikussaleh",
+      "tanggal": "2025-12-25",
+      "status": "inferensi"
+    },
+    {
+      "id": "A21",
+      "subjek": "Universitas Sumatera Utara (USU)",
+      "kategori": "sekitar",
+      "teks": "Tim Dukungan Kesehatan Jiwa Psikososial (DKJPS) FK USU bersama PDSKJI Sumut bergerak ke Kabupaten Langkat untuk korban banjir Sumatra akhir 2025 (tanggal halaman perkiraan).",
+      "angka": "",
+      "url": "https://www.medcom.id/pendidikan/news-pendidikan/0KvZWX9K-12-perguruan-tinggi-bahu-membahu-bantu-korban-banjir-sumatra",
+      "lembaga": "Medcom.id",
+      "tanggal": "2025-12-15",
+      "status": "temuan"
+    },
+    {
+      "id": "A22",
+      "subjek": "Universitas Sumatera Utara (USU)",
+      "kategori": "sekitar",
+      "teks": "Pusat studi kebencanaan USU dan perannya dalam respons banjir Tapanuli/Sibolga 2025 tidak ditemukan; kekuatan kebencanaan khas USU belum bisa disebut.",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "celah"
+    },
+    {
+      "id": "A23",
+      "subjek": "PT Agincourt Resources (Tambang Emas Martabe, Grup Astra/United Tractors)",
+      "kategori": "risiko",
+      "teks": "Setelah banjir bandang Garoga/Batang Toru akhir November 2025, KLH menghentikan sementara operasi tiga perusahaan di hulu DAS Batang Toru untuk audit lingkungan: PT Agincourt Resources, PTPN III, dan PT North Sumatera Hydro Energy (PLTA Batang Toru). Agincourt membantah tambangnya penyebab langsung banjir.",
+      "angka": "3 perusahaan dihentikan",
+      "url": "https://www.cnbcindonesia.com/news/20251212140648-4-693714/tambang-emas-martabe-agincourt-disetop-sementara-esdm-buka-suara",
+      "lembaga": "CNBC Indonesia",
+      "tanggal": "2025-12-12",
+      "status": "risiko"
+    },
+    {
+      "id": "A24",
+      "subjek": "PT Agincourt Resources",
+      "kategori": "risiko",
+      "teks": "KLH menggugat perdata Agincourt Resources di PN Jakarta Selatan dengan tuntutan ganti rugi sekitar Rp200,99 miliar atas dugaan kerusakan lingkungan DAS Garoga dan Batang Toru (dilaporkan Januari 2026, tanggal perkiraan). Grup Astra/UNTR jangan dirangkul untuk program Sumut lewat entitas ini sebelum perkara selesai.",
+      "angka": "Rp200,99 miliar",
+      "url": "https://nasional.kontan.co.id/news/digugat-pemerintah-terkait-bencana-di-sumatra-begini-penjelasan-agincourt-resources",
+      "lembaga": "Kontan",
+      "tanggal": "2026-01-15",
+      "status": "risiko"
+    },
+    {
+      "id": "A25",
+      "subjek": "USK",
+      "kategori": "mitra_ada",
+      "teks": "Simpulan: kekuatan USK yang paling sulit ditiru adalah kombinasi flume tsunami 60 m, shake table, dan jejaring IRIDeS/UNESCO-IOC; flagship yang cocok adalah pusat uji dan sekolah lapang tsunami Sumatra. Mitra swasta terkuat yang sudah punya jalur ke kampus adalah PEMA (BUMD Aceh, sudah ada kerja sama) dan BSI (sudah ada beasiswa dan nilam), sedangkan MedcoEnergi kuat secara rekam bencana tetapi jalurnya ke USK belum terbukti.",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "inferensi"
+    },
+    {
+      "id": "A26",
+      "subjek": "Unand",
+      "kategori": "pusat",
+      "teks": "Pusat Studi Bencana (PSB) Unand menjadi pihak MoU tripartit dengan Direktorat Kerja Sama UGM dan BPBD Sumbar pada 29 April 2016, bagian program StIRRRD 2014-2019 di empat provinsi (Sumbar, Sulteng, Bengkulu, NTB).",
+      "angka": "4 provinsi; 2014-2019",
+      "url": "https://ugm.ac.id/id/berita/11623-ugm-unand-sumatera-barat-kerja-sama-pengurangan-risiko-bencana/",
+      "lembaga": "UGM",
+      "tanggal": "2016-04-29",
+      "status": "temuan"
+    },
+    {
+      "id": "A27",
+      "subjek": "Unand",
+      "kategori": "pusat",
+      "teks": "Tahun berdiri PSB Unand, nama kepala PSB saat ini, dan laboratorium kebencanaan unik (misalnya lab gempa) tidak ditemukan.",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "celah"
+    },
+    {
+      "id": "A28",
+      "subjek": "Unand",
+      "kategori": "inovasi",
+      "teks": "Penyerahan riset Pegadaian-Unand ke Pemkot Padang (29 Juni 2026) disertai perangkat pendukung sistem peringatan dini tsunami buatan lokal yang dapat dioperasikan dan dirawat masyarakat, selain cetak biru masjid sebagai shelter (melengkapi U5; tanggal halaman perkiraan).",
+      "angka": "",
+      "url": "https://www.investortrust.id/financial/108343/pegadaian-dan-universitas-andalas-perkuat-kesiapsiagaan-masyarakat-melalui-riset-mitigasi-gempa-dan-tsunami",
+      "lembaga": "Investortrust",
+      "tanggal": "2026-06-30",
+      "status": "temuan"
+    },
+    {
+      "id": "A29",
+      "subjek": "Unand",
+      "kategori": "inovasi",
+      "teks": "Jurnal Teknosi FTI Unand memuat sistem penilai kelayakan gedung bertingkat sebagai shelter evakuasi vertikal tsunami; afiliasi penulis, status uji, dan pemakaiannya belum terverifikasi (tanggal perkiraan).",
+      "angka": "",
+      "url": "https://teknosi.fti.unand.ac.id/index.php/teknosi/article/view/2196",
+      "lembaga": "Jurnal Teknosi FTI Unand",
+      "tanggal": "2023-01-01",
+      "status": "inferensi"
+    },
+    {
+      "id": "A30",
+      "subjek": "Unand",
+      "kategori": "tanggap",
+      "teks": "Sejak hari pertama banjir bandang dan galodo Sumbar akhir November 2025, Unand bergerak ke Palembayan, Agam (salah satu titik terparah); Unand mendirikan posko tanggap darurat dan posko komando medis di Agam yang juga menjadi pusat koordinasi relawan dan kampus sekitar (tanggal halaman perkiraan).",
+      "angka": "",
+      "url": "https://www.sonora.id/read/424329121/gerak-cepat-kemdiktisaintek-bersama-perguruan-tinggi-dalam-pemulihan-sumatra-barat",
+      "lembaga": "Sonora.id (rilis Kemdiktisaintek)",
+      "tanggal": "2025-12-15",
+      "status": "temuan"
+    },
+    {
+      "id": "A31",
+      "subjek": "Unand",
+      "kategori": "tanggap",
+      "teks": "Unand mengerahkan 400 mahasiswa ke lokasi terdampak banjir mulai Jumat 2 Januari 2026 (tanggal halaman perkiraan).",
+      "angka": "400 mahasiswa",
+      "url": "https://www.goodnewsfromindonesia.id/short/400-mahasiswa-unand-terjun-ke-lokasi-terdampak-banjir-jalankan-tugas-ini",
+      "lembaga": "Good News From Indonesia",
+      "tanggal": "2026-01-02",
+      "status": "temuan"
+    },
+    {
+      "id": "A32",
+      "subjek": "Unand",
+      "kategori": "prodi",
+      "teks": "Program studi pascasarjana kebencanaan di Unand tidak ditemukan dalam pencarian ini.",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "celah"
+    },
+    {
+      "id": "A33",
+      "subjek": "PT Hutama Karya (Persero)",
+      "kategori": "mitra_ada",
+      "teks": "Hutama Karya dan Unand menandatangani nota kesepahaman pengembangan SDM dan riset sektor infrastruktur pada 5 Juni 2026.",
+      "angka": "",
+      "url": "https://ekonomi.republika.co.id/berita/tgk6kw416/hutama-karya-gandeng-unand-siapkan-sdm-sektor-infrastruktur",
+      "lembaga": "Republika",
+      "tanggal": "2026-06-13",
+      "status": "temuan"
+    },
+    {
+      "id": "A34",
+      "subjek": "MIND ID",
+      "kategori": "mitra_ada",
+      "teks": "MIND ID dan Unand bekerja sama mengembangkan community dan society (MoU Juni 2022, tanggal perkiraan).",
+      "angka": "",
+      "url": "https://news.detik.com/berita/d-6126120/mind-id-universitas-andalas-kerja-sama-kembangkan-community-dan-society",
+      "lembaga": "detik.com",
+      "tanggal": "2022-06-15",
+      "status": "temuan"
+    },
+    {
+      "id": "A35",
+      "subjek": "PT Gasnet-Telemedia Dinamika, PLN",
+      "kategori": "mitra_ada",
+      "teks": "Unand punya kerja sama dengan PT Gasnet-Telemedia Dinamika (kampus kelas dunia) dan laman global Unand menyebut PLN meninjau PLTMh kampus; tanggal dan isi perjanjian tidak tercantum.",
+      "angka": "",
+      "url": "https://megapolitan.antaranews.com/berita/261372/unand-dan-pt-gasnet-kerja-sama-dalam-rangka-wujudkan-kampus-kelas-dunia",
+      "lembaga": "ANTARA",
+      "tanggal": "",
+      "status": "inferensi"
+    },
+    {
+      "id": "A36",
+      "subjek": "PT Semen Padang (SIG)",
+      "kategori": "mitra_regional",
+      "teks": "Saat banjir bandang Sumbar akhir November 2025, Semen Padang membangun posko di Kecamatan Pauh, Padang, dengan 3 alat berat (excavator PC200, backhoe loader, skid loader), 30 personel, 2 water truck, peralatan medis dan tenaga Semen Padang Hospital, serta posko dan logistik di Nagari Salareh Aia Timur, Palembayan, Agam.",
+      "angka": "3 alat berat; 30 personel; 2 water truck",
+      "url": "https://www.sumbarbisnis.com/?p=54399",
+      "lembaga": "Sumbarbisnis",
+      "tanggal": "2025-12-02",
+      "status": "temuan"
+    },
+    {
+      "id": "A37",
+      "subjek": "PT Semen Padang dan Unand",
+      "kategori": "mitra_regional",
+      "teks": "Simpulan: Semen Padang dan Unand sama-sama turun di Palembayan, Agam, pada respons 2025, tetapi kerja sama kebencanaan langsung keduanya belum ditemukan (lihat U6); pasangan ini paling alami untuk flagship Sumbar karena Semen Padang membawa alat berat dan rumah sakit, Unand membawa riset megathrust dan relawan.",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "inferensi"
+    },
+    {
+      "id": "A38",
+      "subjek": "PT Pertamina Hulu Rokan (PHR)",
+      "kategori": "mitra_regional",
+      "teks": "Pertamina Group mengerahkan lebih dari 200 personel untuk membantu pemadaman karhutla di Riau, dan PHR menjalankan pemantauan titik panas real-time, patroli, serta sosialisasi di wilayah operasi (tanggal halaman perkiraan 2025).",
+      "angka": ">200 personel",
+      "url": "https://pertamina.com/en/news-room/news-release/pertamina-group-synergy-deploys-over-200-personnel-to-assist-in-combating-forest-and-land-fires-karhutla",
+      "lembaga": "Pertamina",
+      "tanggal": "2025-08-01",
+      "status": "temuan"
+    },
+    {
+      "id": "A39",
+      "subjek": "PT Pertamina Hulu Rokan (PHR)",
+      "kategori": "mitra_regional",
+      "teks": "Universitas Riau mencatat program bersama yang merupakan bagian TJSL PHR di Wilayah Kerja Rokan, diluncurkan Bupati Rokan Hilir Afrizal Sintong; isi program karhutlanya tidak dirinci.",
+      "angka": "",
+      "url": "https://www.unri.ac.id/en/2024/09/05/",
+      "lembaga": "Universitas Riau",
+      "tanggal": "2024-09-05",
+      "status": "temuan"
+    },
+    {
+      "id": "A40",
+      "subjek": "Universitas Riau (Unri)",
+      "kategori": "sekitar",
+      "teks": "Pusat studi kebencanaan Unri berawal dari satuan tugas bencana asap 2014, resmi menjadi Pusat Studi Bencana lewat SK rektor 22 April 2014, lalu berganti nama menjadi Pusat Studi Gambut dan Kebencanaan pada 13 April 2023; mitranya antara lain IPB, WALHI, dan Kyoto University (melengkapi N1; halaman tidak bertanggal).",
+      "angka": "berdiri 22-04-2014; ganti nama 13-04-2023",
+      "url": "https://psb.lppm.unri.ac.id/profil/",
+      "lembaga": "LPPM Universitas Riau",
+      "tanggal": "2023-04-13",
+      "status": "temuan"
+    },
+    {
+      "id": "A41",
+      "subjek": "PT Arara Abadi (APP Group) dan Unri",
+      "kategori": "sekitar",
+      "teks": "PT Arara Abadi, unit usaha APP Group, menggandeng lebih dari 200 mahasiswa dan akademisi Unri dalam sosialisasi dan simulasi pencegahan karhutla bersama Mahasiswa Relawan Peduli Api (MRPA) Unri dan CPDS LPPM Unri.",
+      "angka": ">200 mahasiswa dan akademisi",
+      "url": "https://www.detik.com/sumut/berita/d-8231643/pt-arara-abadi-gandeng-kampus-unri-mitigasi-kolaborasi-tangani-karhutla-di-riau",
+      "lembaga": "detikSumut",
+      "tanggal": "2025-11-27",
+      "status": "temuan"
+    },
+    {
+      "id": "A42",
+      "subjek": "PT Arara Abadi (APP Group)",
+      "kategori": "risiko",
+      "teks": "Kerja sama Arara Abadi-Unri membawa merek APP, yang pada 2026 pemasoknya (PT Bumi Mekar Hijau dan lain-lain) disanksi Kemenhut dan diberi Preventive Measure Notice oleh NEA Singapura (lihat risiko riset-2). Bila Unand merangkul Unri sebagai simpul Riau, jalur APP ini perlu ditahan sampai uji tuntas.",
+      "angka": "",
+      "url": "https://www.detik.com/sumut/berita/d-8231643/pt-arara-abadi-gandeng-kampus-unri-mitigasi-kolaborasi-tangani-karhutla-di-riau",
+      "lembaga": "detikSumut",
+      "tanggal": "2025-11-27",
+      "status": "risiko"
+    },
+    {
+      "id": "A43",
+      "subjek": "Universitas Sriwijaya (Unsri)",
+      "kategori": "sekitar",
+      "teks": "Unsri menjalankan riset restorasi dan konservasi gambut bersama National Institute of Forest Science (NIFOS) Korea Selatan dengan lokasi awal Desa Perigi, OKI, dan rencana perluasan ke Arboretum gambut Inderalaya yang terbakar lebih dari sebulan pada 2015 (halaman tidak bertanggal, tanggal perkiraan).",
+      "angka": "",
+      "url": "https://unsri.ac.id/en/detail-information/1388/kuliah-lapang-internasional-konservasi-dan-restorasi-gambut-sebagai-wujud-penerapan-sdgs-di-universitas-sriwijaya",
+      "lembaga": "Universitas Sriwijaya",
+      "tanggal": "2024-01-01",
+      "status": "temuan"
+    },
+    {
+      "id": "A44",
+      "subjek": "Unand",
+      "kategori": "mitra_ada",
+      "teks": "Simpulan: kekuatan khas Unand adalah status Center of Excellence BNPB plus riset megathrust Mentawai yang sudah dibiayai (DFAT/SIAP SIAGA) dan sudah diterjemahkan ke model masjid-shelter bersama Pegadaian; flagship yang cocok adalah evakuasi vertikal dan peringatan dini tsunami berbasis masjid di pesisir Sumbar. Mitra swasta terkuat: Pegadaian (kerja sama sudah terbukti sampai serah terima ke Pemkot), lalu Semen Padang (rekam tanggap darurat alat berat), dan Hutama Karya (MoU 2026, relevan untuk bangunan shelter).",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "inferensi"
+    },
+    {
+      "id": "A45",
+      "subjek": "IPB",
+      "kategori": "pusat",
+      "teks": "Regional Fire Management Resource Center - Southeast Asia (RFMRC-SEA) didirikan 2017 di Fakultas Kehutanan IPB dengan bantuan Global Fire Monitoring Center (GFMC), sebagai pusat regional keempat jaringan GFMC, diluncurkan Juli 2017 bersama KLHK, dan dipimpin Prof. Bambang Hero Saharjo (tanggal halaman perkiraan).",
+      "angka": "didirikan 2017; pusat regional ke-4 GFMC",
+      "url": "https://rfmrc-sea.org/?p=11",
+      "lembaga": "RFMRC-SEA",
+      "tanggal": "2017-07-01",
+      "status": "temuan"
+    },
+    {
+      "id": "A46",
+      "subjek": "IPB",
+      "kategori": "pusat",
+      "teks": "IPB meresmikan pusat pelatihan kebakaran hutan dan gambut berteknologi tinggi yang disebut pertama di Asia Tenggara pada 24 Juni 2024, dengan pelatihan simulator api (fire simulator).",
+      "angka": "diresmikan 24-06-2024",
+      "url": "https://rfmrc-sea.org/2024/06/",
+      "lembaga": "RFMRC-SEA",
+      "tanggal": "2024-06-28",
+      "status": "temuan"
+    },
+    {
+      "id": "A47",
+      "subjek": "IPB",
+      "kategori": "pusat",
+      "teks": "Pendana, nilai investasi, dan spesifikasi pusat pelatihan kebakaran IPB 2024 tidak tercantum di halaman yang dibuka.",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "celah"
+    },
+    {
+      "id": "A48",
+      "subjek": "IPB",
+      "kategori": "tanggap",
+      "teks": "Tim RFMRC-SEA Fahutan IPB memfasilitasi pelatihan pemadaman kebakaran gambut di Ketapang, Kalbar, untuk 19 peserta dari Filipina, Malaysia, Timor-Leste, dan Indonesia, setelah pelatihan seminggu di IPB yang dipandu tiga pakar kebakaran Prancis; praktik lapangan memakai empat regu (15 petugas) Daops IX Manggala Agni Ketapang dan drone kamera termal, dan direncanakan berulang tiap tahun selama empat tahun.",
+      "angka": "19 peserta; 4 negara; 15 petugas; 4 tahun",
+      "url": "https://www.ipb.ac.id/?p=89138",
+      "lembaga": "IPB University",
+      "tanggal": "2025-05-09",
+      "status": "temuan"
+    },
+    {
+      "id": "A49",
+      "subjek": "IPB",
+      "kategori": "prodi",
+      "teks": "Pakar kebakaran IPB Prof. Bambang Hero Saharjo tercatat KLHK telah menjadi saksi ahli dalam 24 perkara karhutla di Riau, Aceh, Sumut, Kalsel, Kalteng, dan Kaltim (per 2018).",
+      "angka": "24 perkara",
+      "url": "https://mongabay.co.id/2018/10/21/saksi-ahli-tergugat-hukum-preseden-buruk-dan-ancaman-pelestarian-lingkungan/",
+      "lembaga": "Mongabay Indonesia",
+      "tanggal": "2018-10-21",
+      "status": "temuan"
+    },
+    {
+      "id": "A50",
+      "subjek": "IPB",
+      "kategori": "prodi",
+      "teks": "PT Jatim Jaya Perkasa (sawit) menggugat Bambang Hero pada 2018 dan kembali pada 2024 soal luas lahan terbakar, lalu mencabut gugatan 2024. Artinya pakar IPB berada di sisi negara melawan perusahaan sawit di pengadilan, sehingga IPB perlu aturan konflik kepentingan bila menerima dana sawit/HTI.",
+      "angka": "",
+      "url": "https://mongabay.co.id/2024/01/22/perusahaan-sawit-cabut-gugatan-terhadap-bambang-hero-koalisi-perkuat-perlindungan-pembela-lingkungan-dan-ham/",
+      "lembaga": "Mongabay Indonesia",
+      "tanggal": "2024-01-22",
+      "status": "temuan"
+    },
+    {
+      "id": "A51",
+      "subjek": "IPB",
+      "kategori": "inovasi",
+      "teks": "Peneliti IPB mengembangkan sistem OLAP hotspot karhutla yang disebut menyempurnakan sistem milik Kementerian Kehutanan (hanya judul berita yang terbaca; tanggal perkiraan setelah nomenklatur Kemenhut 2024).",
+      "angka": "",
+      "url": "https://www.ipb.ac.id/news/index/tag/sistem-olap-hotspot-karhutla/",
+      "lembaga": "IPB University",
+      "tanggal": "2025-01-01",
+      "status": "temuan"
+    },
+    {
+      "id": "A52",
+      "subjek": "IPB",
+      "kategori": "inovasi",
+      "teks": "Repositori IPB memuat riset bahan pemadam karhutla non-air, yaitu gel dan foaming agent berbasis sawit yang diuji di gambut terbakar Riau; status paten, TKT, dan produksi tidak ditemukan, dan pemetaan judul ke nomor handle repositori belum dicek.",
+      "angka": "",
+      "url": "https://repository.ipb.ac.id/handle/123456789/108909",
+      "lembaga": "IPB University (repositori)",
+      "tanggal": "",
+      "status": "inferensi"
+    },
+    {
+      "id": "A53",
+      "subjek": "Tanoto Foundation",
+      "kategori": "mitra_ada",
+      "teks": "IPB termasuk sepuluh perguruan tinggi mitra beasiswa kepemimpinan TELADAN Tanoto Foundation (bersama ITB, UI, UGM, Undip, Unhas dan lain-lain); Tanoto Scholars Gathering 2025 dihadiri 291 penerima dari 10 kampus mitra (tanggal perkiraan Agustus 2025).",
+      "angka": "10 kampus mitra; 291 penerima",
+      "url": "https://www.tanotofoundation.org/?p=6575",
+      "lembaga": "Tanoto Foundation",
+      "tanggal": "2025-08-27",
+      "status": "temuan"
+    },
+    {
+      "id": "A54",
+      "subjek": "Tanoto Foundation / RGE (APRIL)",
+      "kategori": "risiko",
+      "teks": "Tanoto Foundation didirikan keluarga Sukanto Tanoto, pemilik grup RGE yang menaungi APRIL/RAPP; konsesi RAPP tercatat terbakar 2015-2016 dan RAPP sempat menggugat KLHK soal aturan gambut 2017. Beasiswa TELADAN di IPB aman, tetapi mengemas Tanoto sebagai sponsor program karhutla IPB perlu disampaikan terbuka.",
+      "angka": "",
+      "url": "https://mongabay.co.id/2017/12/14/gugatan-rapp-soal-aturan-gambut-berikut-penjelasan-para-pakar/amp/",
+      "lembaga": "Mongabay Indonesia",
+      "tanggal": "2017-12-14",
+      "status": "risiko"
+    },
+    {
+      "id": "A55",
+      "subjek": "GAPKI",
+      "kategori": "mitra_ada",
+      "teks": "GAPKI dan IPB menandatangani MoU riset dan pendidikan sawit berkelanjutan berbasis teknologi; tidak menyebut gambut atau kebakaran (tanggal tidak tampil, perkiraan 2019).",
+      "angka": "",
+      "url": "https://wartaekonomi.co.id/read246083/gapki-gandeng-ipb-kembangkan-sawit-berkelanjutan",
+      "lembaga": "Warta Ekonomi",
+      "tanggal": "2019-08-01",
+      "status": "temuan"
+    },
+    {
+      "id": "A56",
+      "subjek": "BPDPKS",
+      "kategori": "mitra_ada",
+      "teks": "IPB dan BPDPKS merancang konsorsium I-POINTS (Indonesia Palm Oil Industry Transitions for Sustainability) bersama kampus lain; BPDPKS adalah badan layanan umum, bukan swasta (tanggal tidak tampil).",
+      "angka": "",
+      "url": "https://industri.kontan.co.id/news/ipb-dan-bpdpks-rancang-pengembangan-industri-sawit",
+      "lembaga": "Kontan",
+      "tanggal": "",
+      "status": "inferensi"
+    },
+    {
+      "id": "A57",
+      "subjek": "IPB",
+      "kategori": "mitra_ada",
+      "teks": "Perjanjian resmi IPB dengan APP Sinar Mas, APRIL, Asian Agri, Musim Mas, Sinar Mas Agribusiness and Food, atau Astra Agro di bidang gambut dan kebakaran tidak ditemukan; beasiswa Sinar Mas Agribusiness and Food mengalir ke ITSB, bukan IPB.",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "celah"
+    },
+    {
+      "id": "A58",
+      "subjek": "Asian Agri",
+      "kategori": "mitra_regional",
+      "teks": "Program Desa Bebas Api Asian Agri berjalan sejak 2016 dan per 2018 bermitra dengan 9 desa di Riau dan 7 desa di Jambi (angka 2018; angka 2024-2025 ada di C9 riset sebelumnya).",
+      "angka": "9 desa Riau; 7 desa Jambi",
+      "url": "https://www.rgei.com/attachments/article/1050/03.07.18---Program-Desa-Bebas-Api-Asian-Agri-Efektif-Cegah-Kebakaran-Lahan.pdf",
+      "lembaga": "RGE/Asian Agri",
+      "tanggal": "2018-07-03",
+      "status": "temuan"
+    },
+    {
+      "id": "A59",
+      "subjek": "IPB",
+      "kategori": "mitra_regional",
+      "teks": "Simpulan: kekuatan IPB yang paling khas adalah satu-satunya pusat regional GFMC di Asia Tenggara (RFMRC-SEA) plus pusat latih api berteknologi tinggi dan pakar forensik kebakaran yang teruji di pengadilan. Flagship yang cocok: akademi pengendalian karhutla nasional yang melatih Manggala Agni, BPBD, MPA, dan regu perusahaan. Mitra swasta terkuat untuk jalur ini adalah Pertamina Hulu Rokan (BUMN di gambut Riau dengan rekam pemadaman >200 personel dan sudah ber-TJSL dengan kampus Riau), dengan Asian Agri sebagai mitra sawit yang sejauh ini tidak muncul di daftar sanksi; APP dan grup yang pemasoknya disanksi 2026 sebaiknya hanya diposisikan sebagai peserta pelatihan berbayar, bukan sponsor.",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "inferensi"
+    }
+  ]
+}

@@ -1,0 +1,609 @@
+{
+  "topik": "Inventaris kekuatan kebencanaan UI, ITB, dan Telkom University serta mitra swasta yang sudah dan berpeluang digandeng, untuk deck ajuan program BNPB-perguruan tinggi-swasta. Riset web per 2 November 2026 (30 pencarian/fetch), melengkapi riset-1, riset-3, dan riset-5 tanpa mengulang klaim di sana.",
+  "catatan_metode": "temuan = halaman dibuka langsung dan tanggal terbaca. inferensi = dari cuplikan hasil pencarian atau tanggal diperkirakan (ditandai di teks); cek ulang sebelum dikutip. celah = dicari tetapi tidak ditemukan bukti; jangan dipakai sebagai fakta. risiko = isu reputasi calon mitra atau kampus. Rujukan silang ke ID riset lama ditulis seperti 'C1 riset-3'.",
+  "kampus": {
+    "ITB": {
+      "ringkas": "Kekuatan ITB yang paling khas adalah respons teknis lapangan yang cepat dan terbukti dua kali: seismograf dan penilaian bangunan PPMB di Cianjur 2022, lalu puluhan instalasi air bersih ultrafiltrasi IGW (47 unit MUF di rilis Januari 2026) di Aceh, Sumut, dan Sumbar 2025. ITB juga memegang simpul koordinasi kampus: Rektor bertemu Kepala BNPB di Aceh dan ITB memimpin lokakarya konsorsium 14 kampus bersama BNPB dan JICA. Mesin penggeraknya alumni dan filantropi kampus (IA-ITB, Rumah Amal Salman, YPM Salman, Yayasan LAPI), bukan korporasi. Paragon sudah ikut di program pemulihan Agam yang dipimpin ITB, sehingga logika pemilik 'ITB ajak Paragon' punya bukti lapangan, walau peran Paragon masih logistik.",
+      "aset": [
+        "PPMB ITB (Prof. Iswandi Imran, penilaian kerentanan bangunan; analisis Sesar Cugenang)",
+        "Tim seismologi (Prof. Andri Dian Nugraha): 6 seismograf dipasang di Cianjur 2022",
+        "Membran ultrafiltrasi IGW (Prof. I Gede Wenten): IPA MUF, alat 1.000 L/jam di 35 lokasi, unit 7.000 L/jam di Aceh Tamiang",
+        "SAPPD ITB: shelter terowongan bambu, puskesmas tahan bencana Cugenang",
+        "Jaringan IA-ITB per wilayah (Aceh, Sumbar, Sumut) dan Rumah Amal Salman sebagai pelaksana lapangan",
+        "Konsorsium pemulihan 14 kampus (lokakarya 12 Januari 2026, BNPB dan JICA)",
+        "AI Innovation Hub Telkomsel-ITB di Labtek STEI (sejak 16 Desember 2025)",
+        "ARISE fiskal bersama DJPK Kemenkeu dan UNDRR (E31 riset-5)"
+      ],
+      "mitra_swasta_ada": [
+        "ParagonCorp: Labtek XV bersama Pertamina (2025), Dana Lestari sejak 2019 dan sekitar 60 beasiswa (2025), PKS FMIPA (2026), Dome Theater imersif Museum ITB (2026), beasiswa IZI-Paragon 12 mahasiswa (2026), 200 paket pangan di program air bersih ITB Agam (April 2026)",
+        "Telkomsel: MoU AI Innovation Hub 8 Agustus 2025, diresmikan 16 Desember 2025",
+        "Pertamina: Labtek XV (2025), MoU Pertamina Drilling 5 Desember 2025, MoU biofuel bersama Pindad dan BPDP 7 Agustus 2025",
+        "PT Datong Jaya Indonesia: konsorsium TEPIC bersama Tsinghua (14 November 2025)",
+        "Yayasan LAPI ITB: dukungan dana respons Cianjur 2022"
+      ],
+      "kandidat_swasta_regional": [
+        "ParagonCorp (terkuat: akar alumni, sudah ikut program bencana ITB di Agam, rekam Cianjur 2022 dan Sumatra 2025, 14.000 karyawan relawan; naikkan perannya dari logistik ke pembiayaan unit air bersih IGW dan pelatihan)",
+        "Telkomsel (sudah punya hub fisik di ITB; unit TERRA siaga bencana; kandidat untuk analitik AI kebencanaan di hub yang sama)",
+        "Bio Farma Group (Bandung; bantuan obat Sumatra 2025, inferensi riset-1)",
+        "PT Len Industri (integrator peralatan peringatan dini BMKG; belum ada kerja sama kebencanaan dengan ITB)"
+      ],
+      "kampus_sekitar": [
+        "Unpad: Pusat Riset Kebencanaan (Dr. Yoga Andriana Sendjaja), edukasi mitigasi gempa Sumedang 2024, kekuatan pemulihan trauma",
+        "UPI: kampus kependidikan di zona bahaya gempa tinggi Sesar Lembang; arsitektur UPI sudah edukasi warga Cisarua; cocok untuk modul SPAB dan guru"
+      ]
+    },
+    "Telkom University": {
+      "ringkas": "Kekuatan Tel-U yang paling khas adalah teknologi digital untuk peringatan dini: PATRIOT-Net (IoT terintegrasi BMKG dengan base station radio kognitif bergerak untuk komunikasi cadangan) dan Flood Eye/Tide Eye bersama University of Wollongong di Jawa Tengah, ditopang CoE Metaverse Research & Experience Center, CoE INTEREST (IoT), dan PUI-PT AICOMS. Rekam tanggap darurat kampusnya sendiri tidak ditemukan; yang bergerak di Cianjur dan Sumatra adalah TelkomGroup. Tel-U adalah bagian dari ekosistem Telkom (AIcosystem, Yayasan Pendidikan Telkom), sehingga skema pemilik 'program bareng Tel-U, dana atau fasilitas dari Telkom' paling mudah dijalankan lewat jalur grup. Celah terbesarnya: VR edukasi bencana ke sekolah belum pernah dijalankan Tel-U, dan status metaNesia tidak jelas.",
+      "aset": [
+        "PATRIOT-Net: pemantauan IoT banjir, longsor, gempa terintegrasi BMKG + Mobile Cognitive Radio Base Station",
+        "Flood Eye dan Tide Eye (bersama University of Wollongong, KONEKSI/DFAT, BPBD Semarang); Flood Eye target aktif akhir Oktober 2026 di 6 titik awal",
+        "CoE Metaverse Research & Experience Center",
+        "CoE INTEREST (IoT dan sistem tertanam); PUI-PT AICOMS",
+        "Aplikasi VR SIGAP simulasi gempa (riset School of Applied Science)",
+        "Rekam metaverse kampus: wisuda metaverse 2022, MyTelUVerse, kerja sama metaverse dengan BRIN (B8 riset-1)",
+        "Kampus Jakarta (lokasi MoU NUS 2026) selain Bandung"
+      ],
+      "mitra_swasta_ada": [
+        "Telkom Indonesia: induk ekosistem dan yayasan; jembatan industri MoU Tel-U-NUS (6 Juli 2026); Tel-U masuk AIcosystem TelkomGroup",
+        "Feedloop AI: MoU di kampus Bandung (25 Maret, tahun tidak terbaca)",
+        "University of Wollongong dan DFAT KONEKSI (mitra riset, bukan swasta) untuk Flood Eye"
+      ],
+      "kandidat_swasta_regional": [
+        "Telkom Indonesia (terkuat: pemilik ekosistem; rekam Cianjur Rp1 miliar, 1.000 paket, sekolah sementara SDN Cibulakan; Sumatra 118 relawan, 11 truk, psikososial anak; platform metaNesia bila masih hidup)",
+        "Telkomsel (TERRA siaga bencana, jaringan, kanal SMS/peringatan; kandidat distribusi konten edukasi)",
+        "Telkomsat (120 unit satelit cadangan Sumatra 2025, B1 riset-1) untuk konektivitas posko",
+        "Hindari Infomedia sebagai pintu masuk selama perkara pembiayaan fiktif berjalan"
+      ],
+      "kampus_sekitar": [
+        "UPI: mitra pedagogi untuk mengubah VR Tel-U menjadi modul sekolah",
+        "ITB: mitra substansi kebencanaan (PPMB, seismologi) untuk isi konten VR"
+      ]
+    },
+    "UI": {
+      "ringkas": "Kekuatan UI yang paling khas adalah kapasitas kesehatan dan kajian multidisiplin: DRRC UI dengan tim lapangan (kajian cekdam dan retakan bukit di Batipuh Selatan, Sumbar, Desember 2025), RSUI yang mengirim relawan medis bergelombang, psikolog terlatih Psychological First Aid, dan aturan kampus aman bencana (Peraturan Rektor 15/2024). UI dan ILUNI UI menerima penghargaan BNPB 2021, dan ILUNI UI adalah jaringan relawan alumni yang diakui dua kali. Mitra swasta kebencanaan UI yang terdokumentasi baru Pertamina Hulu Rokan lewat DRRC UI; kerja sama korporat UI lain (Hyundai, Honda) di otomotif. Inovasi produk kebencanaan UI terbaru dengan status paten belum ditemukan.",
+      "aset": [
+        "DRRC UI: kajian risiko multidisiplin, simulasi evakuasi 3D (kontrak PHR), tim lapangan Sumbar 2025",
+        "RSUI dan FKUI-RSCM: relawan medis bergelombang ke Aceh Tamiang",
+        "Fakultas Psikologi UI: relawan psikososial PFA",
+        "Peraturan Rektor UI 15/2024 Kampus Aman Bencana dan keberlangsungan bisnis",
+        "ILUNI UI: relawan alumni, dua kali penghargaan BNPB",
+        "UI Peduli dan DPPM UI (KKN tematik bencana)",
+        "Rekam inovasi Palu 2018: pompa air tenaga surya, komunikasi darurat LoRa"
+      ],
+      "mitra_swasta_ada": [
+        "Pertamina Hulu Rokan: kontrak DRRC UI untuk tata kelola tanggap darurat kebakaran WK Rokan (2024)",
+        "PT Hyundai Motors Indonesia: ekosistem riset otomotif (tahun belum terbaca)",
+        "PT Honda Prospect Motor: riset dan edukasi elektrifikasi (tahun belum terbaca)"
+      ],
+      "kandidat_swasta_regional": [
+        "Astra International (rekam Sumatra terverifikasi: 35.500 paket, 19 posko, 40 alat berat UT, perbaikan ambulans bersama Kemenkes; belum ada kerja sama dengan UI)",
+        "Bank Mandiri (67.000 bantuan Sumatra; kanal dana)",
+        "Pertamina Hulu Rokan (sudah kontrak dengan DRRC UI; uji tuntas tata kelola Pertamina)",
+        "Industri Banten (Krakatau Steel, Chandra Asri) belum diteliti, kandidat untuk ditelusuri bersama Untirta"
+      ],
+      "kampus_sekitar": [
+        "Untirta: pusat studi kebencanaan tidak ditemukan (celah); posisi geografis Selat Sunda tetap relevan",
+        "UNJ: belum diteliti (celah); kampus kependidikan, potensi modul sekolah DKI"
+      ]
+    }
+  },
+  "klaim": [
+    {
+      "id": "B1",
+      "subjek": "ITB",
+      "kategori": "tanggap",
+      "teks": "Saat gempa Cianjur 2022 ITB menjalankan delapan aksi: tim Prof. Andri Dian Nugraha memasang seismograf untuk memantau gempa susulan, Prof. Iswandi Imran (PPMB ITB) menilai kerentanan bangunan publik, SAPPD ITB bersama Rumah Amal Salman merancang shelter terowongan bambu, SF ITB menyuplai obat, SITH ITB membawa pelatih pemulihan trauma, mahasiswa Merdeka Belajar dikerahkan, dan air bersih disediakan dengan membran ultrafiltrasi IGW rancangan Prof. I Gede Wenten. Pendanaan oleh LPPM ITB bersama BPUDL ITB, didukung Yayasan LAPI; tidak ada perusahaan yang disebut.",
+      "angka": "6 seismograf; 4 shelter bambu; 5 pelatih trauma healing; 267 mahasiswa",
+      "url": "https://itb.ac.id/news/itb-initiated-eights-actions-for-handling-the-cianjur-earthquake/59100",
+      "lembaga": "Institut Teknologi Bandung",
+      "tanggal": "2022-12-02",
+      "status": "temuan"
+    },
+    {
+      "id": "B2",
+      "subjek": "ITB",
+      "kategori": "tanggap",
+      "teks": "LPPM ITB, SAPPD ITB, dan Rumah Amal Salman membangun puskesmas tahan bencana di Cugenang, Cianjur, yang disebut sebagai yang pertama di sana. Tanggal terbit belum terbaca dari cuplikan.",
+      "angka": "",
+      "url": "https://jabar.antaranews.com/berita/431301/ahli-itb-dan-rumah-amal-salman-bangun-puskesmas-di-cianjur?page=all",
+      "lembaga": "Antara Jabar",
+      "tanggal": "2023-01-15",
+      "status": "inferensi"
+    },
+    {
+      "id": "B3",
+      "subjek": "ITB",
+      "kategori": "pusat",
+      "teks": "Pakar ITB meneliti Sesar Cugenang yang baru teridentifikasi setelah gempa Cianjur, termasuk letak bidang sesar dan penyebab kerusakan parah; perkiraan butuh sekitar 6 minggu untuk data pasti. Tanggal perkiraan dari nomor artikel.",
+      "angka": "sekitar 6 minggu",
+      "url": "https://www.detik.com/jabar/berita/d-6460622/menyoal-sesar-cugenang-di-mata-pakar-itb",
+      "lembaga": "detikJabar",
+      "tanggal": "2022-12-10",
+      "status": "inferensi"
+    },
+    {
+      "id": "B4",
+      "subjek": "ITB",
+      "kategori": "tanggap",
+      "teks": "Untuk banjir bandang dan longsor Sumatra, ITB bekerja di lapangan bersama IA-ITB dan Rumah Amal Salman sejak 28 November 2025: mengirim 6 instalasi pengolahan air MUF (merek IGW) langsung ke Aceh dan 41 unit lagi ke Sumbar, Sumut, dan Aceh; alat air 1.000 liter/jam terpasang di 35 dari 50 lokasi rencana; unit berkapasitas hingga 7.000 liter/jam di Aceh Tamiang; ekskavator mini sejak 12 Januari 2026; dan 4 tim multidisiplin dosen-mahasiswa didanai Kemendiktisaintek. Pengiriman unit dikoordinasikan dengan BNPB dan TNI AU (Hercules). Artikel tidak menyebut perusahaan mitra.",
+      "angka": "6 + 41 IPA MUF; 35 dari 50 lokasi; 1.000 dan 7.000 liter/jam; 4 tim",
+      "url": "https://itb.ac.id/news/itb-strengthens-post-disaster-recovery-in-sumatra-through-humanitarian-action-and-cross-sector-collaboration/63234",
+      "lembaga": "Institut Teknologi Bandung",
+      "tanggal": "2026-01-22",
+      "status": "temuan"
+    },
+    {
+      "id": "B5",
+      "subjek": "ITB",
+      "kategori": "tanggap",
+      "teks": "Rektor ITB Tatacipta Dirgantara bertemu Kepala BNPB Letjen TNI Suharyanto di Aceh pada 26 Desember 2025, dan ITB menggelar lokakarya konsorsium pemulihan pada 12 Januari 2026 di Galeri Soemardja dengan pembicara BNPB dan JICA, dihadiri 14 perguruan tinggi; hubungannya koordinasi, bukan MoU tertulis.",
+      "angka": "14 perguruan tinggi",
+      "url": "https://itb.ac.id/news/itb-strengthens-post-disaster-recovery-in-sumatra-through-humanitarian-action-and-cross-sector-collaboration/63234",
+      "lembaga": "Institut Teknologi Bandung",
+      "tanggal": "2026-01-22",
+      "status": "temuan"
+    },
+    {
+      "id": "B6",
+      "subjek": "ITB-ParagonCorp",
+      "kategori": "mitra_ada",
+      "teks": "ITB menyerahkan program air bersih pascabanjir di Nagari Salareh Aia, Palembayan, Agam (Sumbar) pada 3 April 2026: jaringan pipa HDPE 4,1 km, sekitar 35.000 liter/hari, lebih dari 10 titik hidran, melayani 281 KK (sekitar 1.000 jiwa) dan Puskesmas Koto Alam. Kolaborasi dengan Ikatan Istri Dokter Indonesia (dana donasi publik), didukung IA ITB dan Rumah Amal Salman (pembangun), sementara Paragon Corp menyalurkan 200 paket bantuan pangan. Ini bukti pertama Paragon ikut dalam program pemulihan bencana yang dipimpin ITB, meski perannya masih logistik, belum riset.",
+      "angka": "4,1 km pipa; 35.000 L/hari; 281 KK; sekitar 1.000 jiwa; 200 paket Paragon; kerusakan Agam sekitar Rp7,9 triliun",
+      "url": "https://megapolitan.antaranews.com/berita/520809/itb-serahkan-program-penyediaan-air-bersih-di-agam-dukung-upaya-pemulihan-pascabencana",
+      "lembaga": "Antara Megapolitan",
+      "tanggal": "2026-04-04",
+      "status": "temuan"
+    },
+    {
+      "id": "B7",
+      "subjek": "ITB",
+      "kategori": "inovasi",
+      "teks": "Artikel yang sama menyebut 63 unit pengolahan air terpasang di Sumbar, Sumut, dan Aceh selama tanggap darurat, tetapi menulis 'IPB'; kemungkinan salah ketik untuk ITB karena konteks seluruh artikel ITB. Angka ini lebih besar dari 47 unit MUF di rilis ITB Januari 2026, wajar bila bertambah, tetapi perlu konfirmasi ke ITB sebelum dikutip.",
+      "angka": "63 unit (belum pasti)",
+      "url": "https://megapolitan.antaranews.com/berita/520809/itb-serahkan-program-penyediaan-air-bersih-di-agam-dukung-upaya-pemulihan-pascabencana",
+      "lembaga": "Antara Megapolitan",
+      "tanggal": "2026-04-04",
+      "status": "inferensi"
+    },
+    {
+      "id": "B8",
+      "subjek": "ITB",
+      "kategori": "inovasi",
+      "teks": "Teknologi air bersih ITB yang terbukti di dua bencana (Cianjur 2022 dan Sumatra 2025) adalah membran ultrafiltrasi IGW karya Prof. I Gede Wenten (FTI/Teknik Kimia ITB); halaman Teknik Kimia ITB mencatat ITB, DIKTI, dan IA-ITB memperkuat respons bencana lewat teknologi air bersih. Status paten, TKT, dan izin edar belum diverifikasi.",
+      "angka": "",
+      "url": "https://che.itb.ac.id/en/2025/12/04/itb-peduli-sumatra",
+      "lembaga": "Teknik Kimia ITB",
+      "tanggal": "2025-12-04",
+      "status": "inferensi"
+    },
+    {
+      "id": "B9",
+      "subjek": "ITB-Telkomsel",
+      "kategori": "mitra_ada",
+      "teks": "Telkomsel dan ITB menandatangani MoU AI Innovation Hub pada 8 Agustus 2025 di sela KSTI 2025 dan meresmikannya 16 Desember 2025 di lantai 4 Labtek STEI ITB sebagai hub pertama dari rangkaian hub Telkomsel; dikelola bersama Telkomsel, ITB, dan KODE by Hacktiv8, dengan sekitar 10 use case AI dari masing-masing pihak.",
+      "angka": "MoU 8 Agustus 2025; resmi 16 Desember 2025; sekitar 10 + 10 use case",
+      "url": "https://inet.detik.com/telecommunication/d-8263210/telkomsel-dan-itb-resmikan-ai-innovation-hub-pertama-di-indonesia",
+      "lembaga": "detikInet",
+      "tanggal": "2025-12-16",
+      "status": "temuan"
+    },
+    {
+      "id": "B10",
+      "subjek": "ITB-Pertamina",
+      "kategori": "mitra_ada",
+      "teks": "Pertamina Drilling Services Indonesia dan ITB menandatangani MoU pengembangan SDM dan riset teknologi migas pada 5 Desember 2025 (ditandatangani Wakil Rektor Riset dan Inovasi ITB Lavi Rizki Zuhal). Tanggal dari cuplikan hasil pencarian.",
+      "angka": "",
+      "url": "https://bcasekuritas.co.id/latest-news/news/pertamina-drilling-dan-itb-teken-mou-perkuat-riset-sdm-migas",
+      "lembaga": "BCA Sekuritas (ringkasan berita)",
+      "tanggal": "2025-12-05",
+      "status": "inferensi"
+    },
+    {
+      "id": "B11",
+      "subjek": "ITB-Pertamina-Pindad",
+      "kategori": "mitra_ada",
+      "teks": "Pertamina, Pindad, BPDP, dan ITB menandatangani MoU pengembangan industri biofuel pada 7 Agustus 2025 di KSTI 2025. Tanggal dari cuplikan hasil pencarian.",
+      "angka": "",
+      "url": "https://www.en.infosawit.com/news/16218/itb--pertamina--pindad--and-bpdp-sign-mou-to-advance-biofuel-industry",
+      "lembaga": "InfoSawit",
+      "tanggal": "2025-08-07",
+      "status": "inferensi"
+    },
+    {
+      "id": "B12",
+      "subjek": "ITB",
+      "kategori": "mitra_ada",
+      "teks": "Tidak ditemukan MoU ITB dengan PLN, Telkom (induk), atau BNI pada 2025 dalam pencarian ini; jalur Telkom Group ke ITB yang terdokumentasi adalah lewat Telkomsel.",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "celah"
+    },
+    {
+      "id": "B13",
+      "subjek": "ITB (PPMB)",
+      "kategori": "pusat",
+      "teks": "Produk inovasi kebencanaan PPMB ITB yang berstatus paten, TKT tinggi, atau unit terpasang (mis. sistem peringatan dini longsor/tsunami) tidak ditemukan dalam pencarian ini; kekuatan PPMB yang terdokumentasi adalah keahlian analisis (gempa, bangunan, sesar), bukan produk.",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "celah"
+    },
+    {
+      "id": "B14",
+      "subjek": "ITB",
+      "kategori": "mitra_regional",
+      "teks": "Pola respons ITB di Cianjur dan Sumatra selalu bertumpu pada ekosistem alumni dan filantropi kampus (IA-ITB, YPM Salman, Rumah Amal Salman, Yayasan LAPI), bukan perusahaan; Paragon (alumni Farmasi ITB) adalah satu-satunya perusahaan yang muncul di program pemulihan ITB, sehingga Paragon paling siap ditarik dari peran logistik ke pembiayaan teknologi air bersih ITB.",
+      "angka": "",
+      "url": "https://megapolitan.antaranews.com/berita/520809/itb-serahkan-program-penyediaan-air-bersih-di-agam-dukung-upaya-pemulihan-pascabencana",
+      "lembaga": "Antara Megapolitan",
+      "tanggal": "2026-04-04",
+      "status": "inferensi"
+    },
+    {
+      "id": "B15",
+      "subjek": "Telkom University",
+      "kategori": "pusat",
+      "teks": "Telkom University punya beberapa Center of Excellence yang relevan: CoE Metaverse Research & Experience Center, CoE Integrated and Embedded Systems (INTEREST, IoT dan sistem tertanam), dan AICOMS (Advanced Intelligent Communications) yang berstatus Pusat Unggulan IPTEKS Perguruan Tinggi (PUI-PT). Halaman tidak bertanggal; tanggal perkiraan.",
+      "angka": "",
+      "url": "https://telkomuniversity.ac.id/center-of-excellence",
+      "lembaga": "Telkom University",
+      "tanggal": "2025-06-01",
+      "status": "inferensi"
+    },
+    {
+      "id": "B16",
+      "subjek": "Telkom University",
+      "kategori": "inovasi",
+      "teks": "Telkom University menyatakan mengembangkan PATRIOT-Net (pemantauan IoT banjir, longsor, gempa terintegrasi BMKG, plus Mobile Cognitive Radio Base Station untuk komunikasi cadangan saat infrastruktur lumpuh), Flood Eye dan Tide Eye bersama University of Wollongong (dukungan DFAT lewat KONEKSI) di Jawa Tengah, pemantauan mangrove dan kelembapan tanah, serta aplikasi panduan jalur evakuasi. Jumlah unit, paten, dan TKT tidak disebut.",
+      "angka": "",
+      "url": "https://sdgs.telkomuniversity.ac.id/news/telkom-university-supports-local-governments-through-climate-disaster-early-warning-innovation",
+      "lembaga": "Telkom University (SDGs Center)",
+      "tanggal": "2024-09-07",
+      "status": "temuan"
+    },
+    {
+      "id": "B17",
+      "subjek": "Telkom University",
+      "kategori": "inovasi",
+      "teks": "Flood Eye (Telkom University, University of Wollongong, KONEKSI, BPBD dan Pemkot Semarang) memprediksi banjir dari radar tinggi muka air, penakar hujan, dan kamera; target peringatan 2-3 jam sebelumnya, tetapi air dari hulu selatan bisa tiba dalam sekitar 35 menit sehingga target tidak selalu tercapai. Per 2 September 2026 belum beroperasi; peluncuran ditargetkan akhir Oktober 2026 lalu alih teknologi ke Pemkot Semarang. Peneliti yang disebut: Miftadi Sudjai.",
+      "angka": "target 2-3 jam; 35 menit kasus terburuk",
+      "url": "https://katadata.co.id/digital/teknologi/6a9807321a5df/flood-eye-riset-ai-untuk-perkuat-mitigasi-banjir-semarang",
+      "lembaga": "Katadata",
+      "tanggal": "2026-09-02",
+      "status": "temuan"
+    },
+    {
+      "id": "B18",
+      "subjek": "Telkom University",
+      "kategori": "inovasi",
+      "teks": "Katadata melaporkan Semarang memasang Flood Eye dengan rencana aktivasi di 6 titik sebagai tahap awal; konfirmasi bahwa sistem sudah aktif per 2 November 2026 tidak ditemukan.",
+      "angka": "6 titik tahap awal",
+      "url": "https://katadata.co.id/ekonomi-hijau/investasi-hijau/6a96316dde8c2/rawan-banjir-semarang-pasang-ai-flood-eye-untuk-prediksi-2-3-jam-lebih-awal",
+      "lembaga": "Katadata",
+      "tanggal": "2026-08-31",
+      "status": "inferensi"
+    },
+    {
+      "id": "B19",
+      "subjek": "Telkom University",
+      "kategori": "inovasi",
+      "teks": "Aplikasi VR SIGAP (simulasi gempa berbasis VR) ditulis penulis dari School of Applied Science Telkom University, menyasar masyarakat umum terutama anak muda dan dewasa; ini masih artefak riset/jurnal, belum produk yang dipakai di sekolah. Tanggal terbit belum terbaca.",
+      "angka": "",
+      "url": "https://openlibrarypublications.telkomuniversity.ac.id/index.php/appliedscience/article/download/27724/26199/54833",
+      "lembaga": "Open Library Publications Telkom University",
+      "tanggal": "2025-01-01",
+      "status": "inferensi"
+    },
+    {
+      "id": "B20",
+      "subjek": "Telkom University",
+      "kategori": "inovasi",
+      "teks": "Program resmi Telkom University yang membawa VR/AR edukasi bencana ke sekolah tetap tidak ditemukan pada pencarian ulang 2 November 2026 (menguatkan celah B10 riset-1); contoh VR bencana di sekolah yang muncul berasal dari kampus lain (Unesa, Nagari Ulakan, SD Muhammadiyah 9 Surabaya). Ini ruang kosong yang bisa diisi program baru.",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "celah"
+    },
+    {
+      "id": "B21",
+      "subjek": "Telkom University",
+      "kategori": "tanggap",
+      "teks": "Keterlibatan Telkom University sebagai kampus (bukan PT Telkom) dalam tanggap darurat Cianjur 2022 maupun Sumatra 2025 tidak ditemukan; seluruh hasil merujuk ke PT Telkom Indonesia/TelkomGroup.",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "celah"
+    },
+    {
+      "id": "B22",
+      "subjek": "Telkom University-Telkom",
+      "kategori": "mitra_ada",
+      "teks": "Telkom University dan National University of Singapore menandatangani MoU pada 6 Juli 2026 (sertifikat pascasarjana, pertukaran, riset bersama di AI, keamanan siber, IoT, cloud) atas dorongan Kemenko Perekonomian, dengan Telkom Indonesia (Direktur Strategic & Business Development Seno Soemadji) berperan sebagai jembatan industri.",
+      "angka": "MoU 6 Juli 2026",
+      "url": "https://selular.id/2026/07/telkom-perkuat-talenta-digital-lewat-kolaborasi-telkom-university-dan-nus/",
+      "lembaga": "Selular.ID",
+      "tanggal": "2026-07-07",
+      "status": "inferensi"
+    },
+    {
+      "id": "B23",
+      "subjek": "Telkom University-Telkom",
+      "kategori": "mitra_ada",
+      "teks": "Telkom University dimasukkan ke dalam AIcosystem TelkomGroup bersama Telkom AI Center of Excellence, Telkomsel AI, NeutraDC, AI Infomedia, dan AI Digiserve; artinya kampus ini diperlakukan sebagai bagian portofolio AI grup, bukan mitra luar. Tanggal tidak terbaca dari cuplikan.",
+      "angka": "",
+      "url": "https://investortrust.id/market/105702/telkom-luncurkan-aicosystem-perkuat-ekosistem-ai-terintegrasi-untuk-berbagai-sektor-industri",
+      "lembaga": "Investor Trust",
+      "tanggal": "2026-05-01",
+      "status": "inferensi"
+    },
+    {
+      "id": "B24",
+      "subjek": "Telkom University-Telkom",
+      "kategori": "mitra_ada",
+      "teks": "Hubungan kelembagaan: Telkom University dikelola Yayasan Pendidikan Telkom milik TelkomGroup (pengetahuan umum, belum dicek ke dokumen yayasan); karena itu Telkom bukan sekadar mitra CSR tetapi pemilik ekosistem, dan sponsorship ke Tel-U lebih mudah diproses lewat jalur grup.",
+      "angka": "",
+      "url": "https://en.wikipedia.org/wiki/Telkom_University",
+      "lembaga": "Wikipedia",
+      "tanggal": "2026-01-01",
+      "status": "inferensi"
+    },
+    {
+      "id": "B25",
+      "subjek": "Telkom Indonesia",
+      "kategori": "mitra_regional",
+      "teks": "Pada gempa Cianjur 2022 Telkom menyalurkan bantuan telekomunikasi total Rp1 miliar, membuka posko di kantor Datel Cianjur, dan membagikan 1.000 paket sembako awal di Nagrak.",
+      "angka": "Rp1 miliar; 1.000 paket",
+      "url": "https://aro.telkom.co.id/sites/news-resources/en_US/news/telkom-has-distributed-1-billion-rupiah-in-aid-after-the-cianjur-earthquake-1853",
+      "lembaga": "PT Telkom Indonesia",
+      "tanggal": "2022-11-25",
+      "status": "inferensi"
+    },
+    {
+      "id": "B26",
+      "subjek": "Telkom Indonesia",
+      "kategori": "mitra_regional",
+      "teks": "Telkom membangun fasilitas sekolah sementara untuk SDN Cibulakan, Cugenang, pascagempa Cianjur; rekam ini paling dekat dengan gagasan pemilik 'turun ke sekolah' dan sudah berada di wilayah Jawa Barat.",
+      "angka": "1 sekolah (SDN Cibulakan)",
+      "url": "https://selular.id/2023/01/telkom-bangun-fasilitas-sd-sementara-di-cianjur/",
+      "lembaga": "Selular.ID",
+      "tanggal": "2023-01-15",
+      "status": "inferensi"
+    },
+    {
+      "id": "B27",
+      "subjek": "TelkomGroup",
+      "kategori": "mitra_regional",
+      "teks": "TelkomGroup bersama Danantara dan BUMN mengirim 118 relawan ke Aceh Timur dan Aceh Tamiang (Desember 2025) dan 11 truk bantuan, lalu membersihkan serta membagikan perlengkapan sekolah dan rumah ibadah di Aceh Tamiang (Januari 2026).",
+      "angka": "118 relawan; 11 truk",
+      "url": "https://selular.id/2025/12/telkomgroup-kirim-118-relawan-dan-bantuan-untuk-pemulihan-aceh/",
+      "lembaga": "Selular.ID",
+      "tanggal": "2025-12-22",
+      "status": "inferensi"
+    },
+    {
+      "id": "B28",
+      "subjek": "TelkomGroup",
+      "kategori": "mitra_regional",
+      "teks": "TelkomGroup bersama Sekar Telkom dan Relawan Telkom Peduli menjalankan kegiatan pemulihan psikososial anak di Aceh Tamiang; modal yang bisa dipadukan dengan konten edukasi bencana untuk anak sekolah.",
+      "angka": "",
+      "url": "https://www.indotelko.com/read/1767167016/telkomgroup-dukung-pemulihan-psikologis-anak-di-aceh-tamian",
+      "lembaga": "IndoTelko",
+      "tanggal": "2025-12-31",
+      "status": "inferensi"
+    },
+    {
+      "id": "B29",
+      "subjek": "Telkom (metaNesia)",
+      "kategori": "mitra_regional",
+      "teks": "Pencarian 'metaNesia Telkom 2026' tidak menemukan satu pun kabar 2025-2026; liputan terakhir yang muncul adalah Istiqlalverse (Februari 2023). Menguatkan celah B5 riset-1: status metaNesia harus dikonfirmasi langsung ke Telkom sebelum dijadikan platform program.",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "celah"
+    },
+    {
+      "id": "B30",
+      "subjek": "UI (DRRC)",
+      "kategori": "tanggap",
+      "teks": "Tim A DRRC UI dipimpin Dr. Agustino Zulys menyalurkan sembako, pakaian, obat, dan alat pertukangan pada 17 Desember 2025, lalu mengkaji tiga nagari di Batipuh Selatan (Guguak Malalo, Padang Laweh, Sumpur) di tepi Danau Singkarak: cekdam Duo Koto hancur, cekdam Batipuh Selatan rusak, dan retakan serta longsor bukit di Muaro Ambius berisiko bencana ulang. Temuan disampaikan ke Gubernur Sumbar; DRRC UI berencana memasang penjernih air RO dan akses internet akhir Desember 2025. Tidak ada perusahaan mitra yang disebut.",
+      "angka": "3 nagari; 2 cekdam rusak/hancur",
+      "url": "https://megapolitan.antaranews.com/berita/475543/tim-drrc-ui-sampaikan-temuan-kondisi-alam-sumatera-barat",
+      "lembaga": "Antara Megapolitan",
+      "tanggal": "2025-12-24",
+      "status": "temuan"
+    },
+    {
+      "id": "B31",
+      "subjek": "UI",
+      "kategori": "tanggap",
+      "teks": "Menteri Diktisaintek Brian Yuliarto menyebut tim UI melakukan intervensi kesehatan di Aceh Tamiang saat bencana Sumatra; berita Antara lain (judul) menyebut RSUI mengirim gelombang ketiga relawan medis, relawan psikososial Fakultas Psikologi UI berbekal pelatihan Psychological First Aid, dan beasiswa UI bagi mahasiswa terdampak dari 31 kabupaten/kota. Jumlah personel belum terverifikasi.",
+      "angka": "RSUI 3 gelombang; 31 kabupaten/kota (cuplikan)",
+      "url": "https://www.detik.com/edu/perguruan-tinggi/d-8268515/kemdiktisaintek-salurkan-bantuan-bencana-sumatera-beberkan-peran-kampus-kampus-ri",
+      "lembaga": "detikEdu",
+      "tanggal": "2025-12-19",
+      "status": "inferensi"
+    },
+    {
+      "id": "B32",
+      "subjek": "UI",
+      "kategori": "pusat",
+      "teks": "BNPB memberi penghargaan kepada UI (kategori PTN) dan ILUNI UI (kategori lembaga dan masyarakat, penghargaan kedua bagi ILUNI) pada Rakornas PB 5 Maret 2021, atas riset kebencanaan, pelatihan, dan KKN tematik bencana; unit yang disebut: DRRC UI, UI Peduli, dan DPPM UI.",
+      "angka": "2 penghargaan BNPB 2021",
+      "url": "https://kemdiktisaintek.go.id/news/article/universitas-indonesia-dan-iluni-ui-terima-penghargaan-bidang-penanggulangan-bencana-dari-bnpb",
+      "lembaga": "Kemdiktisaintek",
+      "tanggal": "2021-03-15",
+      "status": "temuan"
+    },
+    {
+      "id": "B33",
+      "subjek": "UI",
+      "kategori": "pusat",
+      "teks": "UI menerbitkan Peraturan Rektor Nomor 15 Tahun 2024 tentang Kampus Aman Bencana, Kesiapsiagaan Tanggap Darurat, Manajemen Krisis, dan Keberlangsungan Bisnis; UI punya kerangka internal satuan pendidikan aman bencana di tingkat perguruan tinggi. Tanggal perkiraan dari folder unggah.",
+      "angka": "",
+      "url": "https://ppid.ui.ac.id/wp-content/uploads/2024/10/PR-2024-NO-15-Tentang-Kampus-Aman-Bencana-Kesiapsiagaan-Tanggap-Darurat-Manajemen-Krisis-dan-Keberlangsungan-Bisnis_watermark.pdf",
+      "lembaga": "PPID Universitas Indonesia",
+      "tanggal": "2024-10-01",
+      "status": "inferensi"
+    },
+    {
+      "id": "B34",
+      "subjek": "UI",
+      "kategori": "inovasi",
+      "teks": "Pada gempa Palu 2018 UI mengirim tim medis dan peralatan hasil karya dosen, termasuk pompa air tenaga surya dan komunikasi darurat berbasis LoRa. Inovasi kebencanaan UI 2025-2026 dengan status paten/TKT tidak ditemukan; UI disebut ikut pameran ADEXCO 2026 tetapi produknya tidak terbaca.",
+      "angka": "",
+      "url": "https://megapolitan.antaranews.com/berita/44446/ui-kirim-tim-ke-bencana-gempa-palu",
+      "lembaga": "Antara Megapolitan",
+      "tanggal": "2018-10-01",
+      "status": "inferensi"
+    },
+    {
+      "id": "B35",
+      "subjek": "UI",
+      "kategori": "inovasi",
+      "teks": "UI disebut bersama UGM dan Unpas sebagai kampus yang memamerkan inovasi teknologi bencana (peringatan dini, desain bangunan tahan gempa, peralatan tanggap darurat) di ADEXCO 2026; produk UI yang spesifik tidak disebut di cuplikan.",
+      "angka": "",
+      "url": "https://www.goodnewsfromindonesia.id/berita/umum/adexco-2026-inovasi-perguruan-tinggi-indonesia-perkuat-ketangguhan-hadapi-bencana",
+      "lembaga": "Good News From Indonesia",
+      "tanggal": "2026-01-01",
+      "status": "inferensi"
+    },
+    {
+      "id": "B36",
+      "subjek": "UI-Hyundai",
+      "kategori": "mitra_ada",
+      "teks": "UI dan PT Hyundai Motors Indonesia membangun ekosistem riset dan teknologi otomotif nasional (judul berita Antara di halaman tag; tanggal dan bentuk program tidak terbaca). Bidang otomotif, tanpa rekam kebencanaan.",
+      "angka": "",
+      "url": "https://megapolitan.antaranews.com/tag/kerja-sama-ui/16",
+      "lembaga": "Antara Megapolitan (halaman tag)",
+      "tanggal": "2025-06-01",
+      "status": "inferensi"
+    },
+    {
+      "id": "B37",
+      "subjek": "UI-Honda",
+      "kategori": "mitra_ada",
+      "teks": "PT Honda Prospect Motor menjalin kerja sama edukasi dan riset elektrifikasi kendaraan dengan UI; tahun tidak terbaca dari cuplikan.",
+      "angka": "",
+      "url": "https://industri.kontan.co.id/news/honda-gandeng-ui-untuk-kebutuhan-riset-dan-edukasi-elektrifikasi-kendaraan",
+      "lembaga": "Kontan",
+      "tanggal": "2024-01-01",
+      "status": "inferensi"
+    },
+    {
+      "id": "B38",
+      "subjek": "UI",
+      "kategori": "mitra_ada",
+      "teks": "MoU UI dengan Astra atau Bank Mandiri 2025 (riset, beasiswa, gedung) tidak ditemukan; mitra swasta UI yang terdokumentasi di bidang kebencanaan tetap hanya Pertamina Hulu Rokan lewat DRRC UI (C1 riset-3).",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "celah"
+    },
+    {
+      "id": "B39",
+      "subjek": "UI",
+      "kategori": "mitra_regional",
+      "teks": "Karena UI belum punya mitra swasta kebencanaan selain PHR, kandidat terkuat untuk wilayah DKI-Banten diturunkan dari rekam Sumatra yang sudah terverifikasi di riset-3: Astra (35.500 paket, 19 posko, 40 alat berat UT) dan Bank Mandiri (67.000 bantuan); keduanya berkantor pusat di Jakarta tetapi belum punya kerja sama kebencanaan dengan UI.",
+      "angka": "",
+      "url": "https://www.astra.co.id/en/press-release/astra-continues-to-provide-humanitarian-support-for-disaster-affected-communities-in-sumatra",
+      "lembaga": "PT Astra International Tbk",
+      "tanggal": "2025-12-30",
+      "status": "inferensi"
+    },
+    {
+      "id": "B40",
+      "subjek": "Unpad",
+      "kategori": "sekitar",
+      "teks": "Unpad memiliki Pusat Riset Kebencanaan yang dipimpin Dr. Yoga Andriana Sendjaja, berfokus riset bencana, pendampingan masyarakat, dan pemulihan trauma; pada 2024 melakukan edukasi mitigasi gempa pascagempa Sumedang. Halaman sumber menolak dibuka (403), isi dari cuplikan.",
+      "angka": "",
+      "url": "https://sdgs.unpad.ac.id/?p=19752",
+      "lembaga": "Universitas Padjadjaran (SDGs Center)",
+      "tanggal": "2024-12-01",
+      "status": "inferensi"
+    },
+    {
+      "id": "B41",
+      "subjek": "UPI",
+      "kategori": "sekitar",
+      "teks": "Kajian UPI menunjukkan kampus utama UPI di Bandung berada pada tingkat bahaya gempa tinggi (zona merah indeks risiko gempa BNPB), dan prodi Arsitektur UPI pernah mengedukasi warga Kertawangi, Cisarua, tentang kerentanan wilayah dan bangunan di jalur Sesar Lembang; UPI sebagai kampus kependidikan cocok untuk modul sekolah. Tanggal perkiraan.",
+      "angka": "",
+      "url": "https://ejournal.upi.edu/index.php/jpis/article/view/12426/0",
+      "lembaga": "Jurnal Pendidikan Ilmu Sosial UPI",
+      "tanggal": "2018-06-01",
+      "status": "inferensi"
+    },
+    {
+      "id": "B42",
+      "subjek": "Untirta; UNJ",
+      "kategori": "sekitar",
+      "teks": "Pusat studi kebencanaan Untirta (termasuk riset tsunami Selat Sunda 2018) dan UNJ tidak ditemukan; tim yang tercatat turun di tsunami Selat Sunda 2018 adalah Pusat Studi Bencana IPB, dan ITERA bersama tiga universitas Jepang mengkaji Selat Sunda.",
+      "angka": "",
+      "url": "",
+      "lembaga": "",
+      "tanggal": "",
+      "status": "celah"
+    },
+    {
+      "id": "B43",
+      "subjek": "Telkom Indonesia (Infomedia, Telkominfra, PINS, GSD)",
+      "kategori": "risiko",
+      "teks": "Kejati DKI Jakarta menetapkan 9 tersangka pada 7 Mei 2025 (lalu tersangka ke-10 dan ke-11) dalam dugaan korupsi pembiayaan fiktif Telkom 2016-2018 senilai Rp431,7 miliar yang melibatkan empat anak usaha: Infomedia Nusantara, Telkominfra, PINS Indonesia, dan Graha Sarana Duta; Telkom menyatakan direksi kini tidak terlibat dan tidak ada dampak material. Infomedia termasuk entitas yang disebut pemilik sebagai calon mitra, jadi pilih entitas induk/Telkomsel dan sertakan klausul tata kelola.",
+      "angka": "Rp431,7 miliar; 11 tersangka",
+      "url": "https://tirto.id/kejati-jakarta-tetapkan-9-tersangka-kasus-kredit-fiktif-rp431-m-hbtL",
+      "lembaga": "Tirto",
+      "tanggal": "2025-05-08",
+      "status": "risiko"
+    },
+    {
+      "id": "B44",
+      "subjek": "Telkomsigma (TelkomGroup)",
+      "kategori": "risiko",
+      "teks": "KPK menangani perkara kerja sama fiktif pembiayaan proyek data center PT Graha Telkom Sigma TA 2017-2022 dengan kerugian negara Rp324,8 miliar, terpisah dari perkara Kejati DKI.",
+      "angka": "Rp324,8 miliar",
+      "url": "https://investortrust.id/national/63820/kpk-segera-tuntaskan-penyidikan-kasus-korupsi-di-telkomsigma",
+      "lembaga": "Investor Trust",
+      "tanggal": "2025-03-20",
+      "status": "risiko"
+    },
+    {
+      "id": "B45",
+      "subjek": "Telkom University (Flood Eye)",
+      "kategori": "risiko",
+      "teks": "Flood Eye belum beroperasi per 2 September 2026 dan target 2-3 jam tidak selalu tercapai; menjual Flood Eye sebagai sistem terpasang di deck berisiko overclaim. Sebut sebagai 'uji coba Semarang, target aktif akhir Oktober 2026'.",
+      "angka": "",
+      "url": "https://katadata.co.id/digital/teknologi/6a9807321a5df/flood-eye-riset-ai-untuk-perkuat-mitigasi-banjir-semarang",
+      "lembaga": "Katadata",
+      "tanggal": "2026-09-02",
+      "status": "risiko"
+    },
+    {
+      "id": "B46",
+      "subjek": "UI",
+      "kategori": "risiko",
+      "teks": "Polemik disertasi doktor Bahlil Lahadalia di SKSG UI: UI menangguhkan kelulusan (November 2024), empat organ UI memutuskan sanksi berupa revisi disertasi dan penundaan kenaikan pangkat promotor dan kopromotor (Maret 2025), dan MA mengabulkan kasasi UI atas sanksi promotor (2026). Isu integritas akademik ini bisa diungkit bila UI tampil sebagai koordinator program negara.",
+      "angka": "",
+      "url": "https://kabar24.bisnis.com/read/20250307/15/1859181/ui-tidak-do-bahlil-hanya-minta-perbaiki-disertasi",
+      "lembaga": "Bisnis.com",
+      "tanggal": "2025-03-07",
+      "status": "risiko"
+    },
+    {
+      "id": "B47",
+      "subjek": "ITB-Pertamina",
+      "kategori": "risiko",
+      "teks": "Mitra korporat ITB yang paling sering muncul di 2025 adalah Pertamina (Labtek XV bersama Paragon, MoU Pertamina Drilling, MoU biofuel); risiko reputasi kasus tata kelola minyak mentah Pertamina (Rp193,7 triliun untuk 2023, lihat risiko riset-3) ikut melekat bila Pertamina dipasang sebagai mitra kebencanaan ITB.",
+      "angka": "Rp193,7 triliun (2023)",
+      "url": "https://kabar24.bisnis.com/read/20250225/16/1842494/kerugian-korupsi-minyak-mentah-pertamina-rp1937-triliun-ini-perinciannya",
+      "lembaga": "Bisnis.com",
+      "tanggal": "2025-02-25",
+      "status": "risiko"
+    }
+  ]
+}
