@@ -18,7 +18,7 @@ export async function bukaPeramban(bin = cariChrome()) {
      tanpa sandbox dan tunggu sampai 30 detik; stderr Chrome dikumpulkan supaya galatnya terbaca, bukan cuma "tidak membuka port" */
   const proses = spawn(bin, ["--headless=new", "--remote-debugging-port=0", `--user-data-dir=${profil}`, "--no-first-run", "--no-default-browser-check",
     "--disable-gpu", "--disable-extensions", "--hide-scrollbars", ...(process.env.CI ? ["--no-sandbox", "--disable-dev-shm-usage"] : []), "about:blank"],
-    {stdio: ["ignore", "ignore", "pipe"]});
+    {stdio: ["ignore", "ignore", "pipe"], detached: true});   // grup proses sendiri: tutup() membunuh Chrome beserta anaknya
   let port = null, galat = "", keluar = null;
   proses.stderr.on("data", d => { galat = (galat + d).slice(-2000); });
   proses.on("exit", k => { keluar = k; });
@@ -26,7 +26,14 @@ export async function bukaPeramban(bin = cariChrome()) {
     await tidur(100);
     try { port = readFileSync(path.join(profil, "DevToolsActivePort"), "utf8").split("\n")[0]; } catch (e) {}
   }
-  const tutup = async () => { proses.kill("SIGKILL"); await tidur(100); rmSync(profil, {recursive: true, force: true}); };
+  /* CI 4 Nov 2026: anak Chrome yang selamat memegang pipa stderr (Node tak pernah keluar, job habis 25 menit) dan menulis ke profil
+     (rmSync ENOTEMPTY). Bunuh seluruh grup, tunggu keluar, lepas pipa, hapus profil dengan coba ulang. */
+  const tutup = async () => {
+    try { process.kill(-proses.pid, "SIGKILL"); } catch (e) { proses.kill("SIGKILL"); }
+    if (keluar === null) await Promise.race([new Promise(r => proses.once("exit", r)), tidur(3000)]);
+    proses.stderr.destroy(); proses.unref();
+    try { rmSync(profil, {recursive: true, force: true, maxRetries: 10, retryDelay: 100}); } catch (e) {}
+  };
   if (!port) { await tutup(); throw new Error(`Chrome tidak membuka port DevTools dalam 30 detik${keluar !== null ? ` (keluar kode ${keluar})` : ""}: ${galat.trim().split("\n").slice(-5).join(" | ")}`); }
   return {tutup, port, tab: () => bukaTab(port)};
 }
