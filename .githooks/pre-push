@@ -1,6 +1,7 @@
 #!/bin/sh
 # Gerbang pre-push (4 Nov 2026): 12 run terbit.yml gagal di langkah uji dan tak ada yang tahu ~14 jam.
-# Uji dijalankan di worktree sementara dari commit yang DIDORONG, bukan working tree (sering memuat suntingan sesi lain).
+# Uji dijalankan di clone lokal sementara dari commit yang DIDORONG, bukan working tree (sering memuat suntingan sesi lain).
+# Bukan git worktree: worktree terdaftar ikut dibersihkan proses lain di tengah uji (4 Nov 2026, dua kali "Cannot find module").
 # Lewati (hanya pemilik manusia): LEWATI_UJI=1 git push, atau git push --no-verify.
 PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 [ -n "$LEWATI_UJI" ] && exit 0
@@ -44,11 +45,13 @@ done
 echo $$ > "$kunci/pid"
 tmp=$(mktemp -d "${TMPDIR:-/tmp}/uji-push.XXXXXX") || exit 1
 rmdir "$tmp"
-bersih() { git worktree remove --force "$tmp" >/dev/null 2>&1; rm -rf "$tmp"; git worktree prune; rm -f "$kunci/pid"; rmdir "$kunci" 2>/dev/null; }
+bersih() { rm -rf "$tmp"; rm -f "$kunci/pid"; rmdir "$kunci" 2>/dev/null; }
 trap bersih EXIT INT TERM HUP
-git worktree add --detach "$tmp" "$sha_dorong" >/dev/null 2>&1 || { echo "pre-push: gagal membuat worktree uji." >&2; exit 1; }
+# git mengisi GIT_DIR dkk. untuk hook; tanpa unset, checkout dan git di dalam uji menyasar repo utama
+unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_OBJECT_DIRECTORY GIT_ALTERNATE_OBJECT_DIRECTORIES GIT_PREFIX
+{ git clone -q --shared --no-checkout "$utama" "$tmp" && git -C "$tmp" checkout -q --detach "$sha_dorong"; } >/dev/null 2>&1 || { echo "pre-push: gagal membuat salinan uji." >&2; exit 1; }
 # node_modules terlacak git sebagai symlink relatif ke node_modules.nosync (trik iCloud). Jangan sentuh symlink terlacak itu
-# (gerbang jalur mutlak membacanya); sediakan node_modules.nosync di worktree yang menunjuk ke modul nyata checkout utama.
+# (gerbang jalur mutlak membacanya); sediakan node_modules.nosync di salinan uji yang menunjuk ke modul nyata checkout utama.
 modul=$(cd "$utama/node_modules" && pwd -P) || { echo "pre-push: node_modules tidak terbaca." >&2; exit 1; }
 if [ -L "$tmp/node_modules" ]; then ln -s "$modul" "$tmp/$(readlink "$tmp/node_modules")"; else ln -s "$modul" "$tmp/node_modules"; fi
 echo "pre-push: uji di commit $(echo "$sha_dorong" | cut -c1-9) ..." >&2

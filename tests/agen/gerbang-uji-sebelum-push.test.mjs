@@ -13,9 +13,10 @@ const hook = baca(".githooks/pre-push");
 const W = ".github/workflows/";
 const HP = "core." + "hooksPath"; // dirakit supaya hook penolak tidak memblokir penulisan berkas ini
 
-test("pre-push ada, executable, menjalankan uji:agen dan uji:warga di worktree sha yang didorong", () => {
+test("pre-push ada, executable, menjalankan uji:agen dan uji:warga di clone lokal sha yang didorong", () => {
   assert.ok(statSync(".githooks/pre-push").mode & 0o100, "pre-push harus executable");
-  assert.match(hook, /git worktree add --detach "\$tmp" "\$sha_dorong"/);
+  assert.match(hook, /git clone -q --shared --no-checkout "\$utama" "\$tmp" && git -C "\$tmp" checkout -q --detach "\$sha_dorong"/);
+  assert.doesNotMatch(hook, /git worktree add/, "worktree terdaftar dibersihkan proses lain di tengah uji; pakai clone lokal");
   assert.match(hook, /npm run uji:agen/);
   assert.match(hook, /npm run uji:warga/);
   // tiap uji yang dijalankan terbit.yml sebelum deploy juga dijalankan pre-push
