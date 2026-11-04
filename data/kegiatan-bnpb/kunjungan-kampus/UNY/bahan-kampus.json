@@ -1,0 +1,98 @@
+{
+  "kode": "UNY",
+  "nama": "Universitas Negeri Yogyakarta",
+  "kota": "Yogyakarta",
+  "provinsi": "DI Yogyakarta",
+  "lon": 110.3868,
+  "lat": -7.775,
+  "logo": "kampus/UNY/logo.png",
+  "foto_kampus": [
+    "kampus/UNY/kampus-1.jpg",
+    "kampus/UNY/kampus-2.jpg",
+    "kampus/UNY/kampus-3.jpg",
+    "kampus/UNY/kampus-4.jpg"
+  ],
+  "kredit_kampus": "Foto: Rassya LN22 (Gedung Rektorat), Naufal Shidqi (Gerbang UNY), Aestvoyage (Digital Library), wowo_s (Fakultas Bahasa dan Seni), CC BY-SA 4.0 / CC BY 4.0 / CC BY 3.0, Wikimedia Commons",
+  "foto_kampus_sumber": [
+    {
+      "berkas": "kampus-1.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:State_University_of_Yogyakarta_rectorate_building.jpg",
+      "pengunggah": "Rassya LN22",
+      "lisensi": "CC BY-SA 4.0"
+    },
+    {
+      "berkas": "kampus-2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:UNY_Gate.jpg",
+      "pengunggah": "Naufal Shidqi",
+      "lisensi": "CC BY-SA 4.0"
+    },
+    {
+      "berkas": "kampus-3.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Yogyakarta_State_University_-_Digital_Library_01.jpg",
+      "pengunggah": "Aestvoyage",
+      "lisensi": "CC BY 4.0"
+    },
+    {
+      "berkas": "kampus-4.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:FBS_UNY_-_panoramio.jpg",
+      "pengunggah": "wowo_s",
+      "lisensi": "CC BY 3.0"
+    }
+  ],
+  "pusat_studi": "Pusat Mitigasi Bencana",
+  "pusat_studi_nama": "Pusat Mitigasi Bencana dan Perubahan Iklim UNY",
+  "riset": [
+    {
+      "judul": "Peringatan dini tsunami otomatis",
+      "gambar": "kampus/UNY/riset-1.jpg",
+      "unit": "FT UNY",
+      "bahaya": "Tsunami",
+      "isi": "Alat mahasiswa Pendidikan Teknik Mekatronika yang menarik data gempa BMKG tiap 5 menit untuk menyalakan pengeras suara tempat ibadah. Didanai PKM Dikti 2019.",
+      "url": "https://www.uny.ac.id/id/berita/alat-deteksi-dini-tsunami-karya-mahasiswa-uny"
+    },
+    {
+      "judul": "Deteksi dini banjir lahar dingin IoT",
+      "gambar": "kampus/UNY/riset-2.jpg",
+      "unit": "FT UNY",
+      "bahaya": "Gunung api",
+      "isi": "Sensor pelampung dan kawat baja berpenyandi putar di sungai lereng gunung api mengirim data lewat GSM ke aplikasi Android dan web, bertenaga surya. Karya mahasiswa FT UNY, 2021.",
+      "url": "https://www.uny.ac.id/id/berita/deteksi-dini-lahar-banjir-berbasis-internet-things"
+    },
+    {
+      "judul": "Pelatihan mitigasi hidrometeorologi",
+      "gambar": "kampus/UNY/riset-3.jpg",
+      "unit": "Pend. Fisika",
+      "bahaya": "Banjir, longsor",
+      "isi": "Dosen Pendidikan Fisika melatih warga Karangmojo di tepi Sungai Ciro, Sleman, membentuk kelompok siaga bencana berbasis dusun dan peta kerawanan sederhana (Juli 2025).",
+      "url": "http://www.uny.ac.id/id/berita/tingkatkan-literasi-risiko-ancaman-alam-uny-sosialisasikan-bahaya-bencana-hidrometeorologi"
+    },
+    {
+      "judul": "Flash card AR mitigasi longsor",
+      "gambar": "kampus/UNY/riset-4.jpg",
+      "unit": "PKM-RSH",
+      "bahaya": "Longsor",
+      "isi": "Kartu berbasis augmented reality dengan tradisi terasering Nyabuk Gunung, diuji di tiga SD di Kabupaten Magelang. Karya mahasiswa lintas prodi, didanai PKM-RSH 2025.",
+      "url": "http://www.uny.ac.id/id/berita/mahasiswa-uny-kembangkan-flash-card-ar-berbasis-tradisi-nyabuk-gunung-untuk-edukasi-mitigasi"
+    }
+  ],
+  "sumber_riset": "Laman resmi UNY (uny.ac.id, fp.uny.ac.id, sdgs.uny.ac.id), 2019–2026; foto dok. UNY",
+  "kredit_foto_riset": "Foto: UNY",
+  "peluang": [
+    {
+      "ikon": "peringatan",
+      "judul": "Sirene dan SMS",
+      "isi": "Uji peringatan tsunami lewat masjid bersama BPBD dan data BMKG"
+    },
+    {
+      "ikon": "gunungapi",
+      "judul": "Sensor lahar",
+      "isi": "Pasang uji sensor sungai Merapi di jaringan peringatan BPBD DIY"
+    },
+    {
+      "ikon": "sekolah",
+      "judul": "Edukasi longsor",
+      "isi": "Perluas flash card AR ke sekolah siaga bencana di daerah rawan"
+    }
+  ],
+  "catatan": "1) Foto riset semuanya dari laman resmi UNY dan berisi orang (tim mahasiswa, warga, siswa); UNY tidak menyediakan foto alat yang jernih. riset-1 sudah dipotong ke alatnya tanpa wajah; riset-2 foto potret tim (satu-satunya gambar di laman), disarankan diganti bila ada foto alat/lokasi dari Prodi Mekatronika; riset-3 foto sosialisasi warga; riset-4 foto siswa di kelas. 2) kampus-1 (1302 px) dan kampus-2 (1280 px) di bawah 1500 px, hanya itu resolusi di Commons; kampus-3 dipotong bagian bawah agar kepala orang di tepi bingkai hilang. 3) Nama pusat studi tidak seragam: sdgs.uny.ac.id menyebut Pusat Studi Mitigasi Kebencanaan (LPPM, diketuai Drs. Suhadi Purwantara, M.Sc.), berita UNY 11 Des 2024 menyebut Pusat Mitigasi Bencana dan Perubahan Iklim; singkatan resmi tidak ditemukan sehingga pusat_studi memakai nama pendek. Mohon dicek ke LPPM UNY. 4) Semua riset berskala prototipe atau pengabdian mahasiswa/departemen; belum ada bukti pemasangan operasional. Klaim 'bersama BPBD' di peluang adalah usulan, bukan kerja sama yang sudah ada. 5) Jurnal UNY (jurnal.uny.ac.id/index.php/jee/article/download/26100/12346) menyebut sistem tsunami diuji di Aula Robotika FT UNY, sumber berupa ringkasan, perlu dicek. 6) Cadangan riset terbukti: alat THOR pendeteksi retakan tanah (Jurnal Edukasi Elektro 2018, jurnal.uny.ac.id/index.php/jee/article/view/22460) dan sensor suhu guguran lava Merapi (uny.ac.id/id/berita/inovasi-mahasiswa-uny-untuk-kurangi-resiko-letusan-gunung-merapi, 2021), tetapi fotonya belum memadai (skema rangkaian; poster 480 px). 7) Logo: Logo-UNY-Corel-terbaru.png, Wikimedia Commons, CC BY-SA 4.0 (kadowisudaku), alfa transparan terverifikasi, dinaikkan ke 1024 px. 8) Koordinat lon/lat perkiraan pusat kampus Karangmalang."
+}
