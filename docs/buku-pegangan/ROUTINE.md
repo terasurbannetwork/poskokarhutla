@@ -13,7 +13,7 @@ salinan ini ikut disunting di giliran yang sama lalu diadu dengan `diff`.
 ## Prompt
 
 ```
-Repo: /Users/priyankaalfatehan28/Developer/poskokarhutla (branch main saja; jangan buat branch atau worktree). Stage path eksplisit saja, jangan git add -A. Bungkus git jaringan dengan batas waktu (perl -e 'alarm 90; exec @ARGV' git fetch).
+Repo: ~/Developer/poskokarhutla (cd ke sana dulu) (branch main saja; jangan buat branch atau worktree). Stage path eksplisit saja, jangan git add -A. Bungkus git jaringan dengan batas waktu (perl -e 'alarm 90; exec @ARGV' git fetch).
 
 Tugas: tiap malam segarkan "Buku Pegangan Pantau Bencana" di GitHub (docs/buku-pegangan/pantau-bencana.md) dan di artifact, dari tiga sumber: histori chat pemilik, memori/selera pemilik, dan histori commit GitHub (terutama perbaikan). Tujuannya Claude makin kenal pemilik: selera, keputusan, dan pola koreksi yang berulang. Hari sepi: berhenti tanpa menulis apa pun.
 
@@ -21,7 +21,7 @@ LANGKAH 0. git fetch; pastikan main lokal tidak tertinggal origin/main (git pull
 
 LANGKAH 1. Baca docs/buku-pegangan/ARTIFACT.json, entri "pantau-bencana" (url, commit, disegarkan). Kumpulkan sejak commit dan tanggal itu:
 a) Histori chat: .claude/ilmu-agent/prompt/<YYYY-MM>.jsonl (baris dengan "t" sesudah tanggal disegarkan; abaikan berkas bernama "* 2.jsonl"). Isinya prompt pemilik yang sudah disamarkan. Buang bagian <artifact-view-context>, <system-reminder>, dan tempelan panjang; ambil kalimat pemilik yang memutus, menegur, menolak, memuji, atau berkata "catat". Cari juga cepat: node scripts/agents/ilmu.mjs prompt 'catat|jangan|selalu|harus|gak suka|ga suka|salah|ulang'
-b) Memori dan selera: ~/.claude/projects/-Users-priyankaalfatehan28-Developer-poskokarhutla/memory/*.md, .claude/cadangan-akun/memori/poskokarhutla*/*.md, ~/.claude/skills/ppt-konsultan/bnpb/references/keputusan-pemilik.md (yang berubah sejak tanggal disegarkan, cek mtime atau git log).
+b) Memori dan selera: ~/.claude/projects/<folder proyek repo ini, nama berakhiran -Developer-poskokarhutla>/memory/*.md, .claude/cadangan-akun/memori/poskokarhutla*/*.md, ~/.claude/skills/ppt-konsultan/bnpb/references/keputusan-pemilik.md (yang berubah sejak tanggal disegarkan, cek mtime atau git log).
 c) Histori GitHub: git log <commit>..HEAD --no-merges --format='%ad %h %s' --date=short. Abaikan commit data otomatis (pipeline, "Data:", "Log prompt") dan pesan "gas"/"gsa"/"asg" kecuali --stat menunjukkan isi berarti. Tandai khusus commit perbaikan (perbaiki, betulkan, fix, koreksi, revert, "ditolak", "salah"): itu bahan pola koreksi pemilik.
 d) Perubahan aturan: AGENTS.md, scripts/agents/roster.json, tests/agen/*.test.mjs, data/kajian-bnpb/*/KEPUTUSAN-*.md, public/bencana.json, wrangler.jsonc, migrations/.
 Kalau tertinggal banyak (lebih dari 150 commit), kelompokkan per hari dan ambil yang paling berarti; jangan menyalin daftar commit mentah.
@@ -37,7 +37,7 @@ LANGKAH 2. Sunting docs/buku-pegangan/pantau-bencana.md:
 
 LANGKAH 3. python3 docs/buku-pegangan/bangun.py pantau-bencana
 
-LANGKAH 4. Terbitkan ulang dengan tool Artifact: publish, file_path = <akar repo>/docs/buku-pegangan/terbit/pantau-bencana.html, url = url di ARTIFACT.json (https://claude.ai/artifact/XEdp3R4s42P9kG6dvyXc1Q). Bila diminta read dulu, read url itu lalu publish lagi. TIDAK PERNAH menerbitkan sebagai artifact baru tanpa url.
+LANGKAH 4. Terbitkan ulang dengan tool Artifact: publish, file_path = path absolut dari ~/Developer/poskokarhutla/docs/buku-pegangan/terbit/pantau-bencana.html, url = url di ARTIFACT.json (https://claude.ai/artifact/XEdp3R4s42P9kG6dvyXc1Q). Bila diminta read dulu, read url itu lalu publish lagi. TIDAK PERNAH menerbitkan sebagai artifact baru tanpa url.
 
 LANGKAH 5. Perbarui "commit" (sha sungguhan HEAD) dan "disegarkan" (YYYY-MM-DD) entri pantau-bencana di ARTIFACT.json. Commit dengan path eksplisit:
 git commit -m "Buku pegangan: segarkan sampai <tanggal> (<ringkas isi>)" -- docs/buku-pegangan/pantau-bencana.md docs/buku-pegangan/terbit/pantau-bencana.html docs/buku-pegangan/ARTIFACT.json
