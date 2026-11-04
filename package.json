@@ -2,6 +2,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "prepare": "git config core.hooksPath .githooks",
     "uji:warga": "node --test --test-concurrency=1 tests/warga/*.test.mjs",
     "uji:banjir": "node --test --test-concurrency=1 tests/banjir/*.test.mjs",
     "uji:prediksi": "node --test --test-concurrency=1 tests/prediksi/*.test.mjs",

@@ -1,0 +1,51 @@
+#!/bin/sh
+# Gerbang pre-push (4 Nov 2026): 12 run terbit.yml gagal di langkah uji dan tak ada yang tahu ~14 jam.
+# Uji dijalankan di worktree sementara dari commit yang DIDORONG, bukan working tree (sering memuat suntingan sesi lain).
+# Lewati (hanya pemilik manusia): LEWATI_UJI=1 git push, atau git push --no-verify.
+PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+[ -n "$LEWATI_UJI" ] && exit 0
+
+nol=0000000000000000000000000000000000000000
+pakai=
+sha_dorong=
+while read -r lref lsha rref rsha; do
+  [ "$lsha" = "$nol" ] && continue
+  case "$rref" in refs/heads/main|refs/heads/staging) ;; *) continue ;; esac
+  if [ "$rsha" = "$nol" ] || ! git cat-file -e "$rsha" 2>/dev/null; then
+    dasar=$(git merge-base origin/main "$lsha" 2>/dev/null) || dasar=
+  else
+    dasar=$rsha
+  fi
+  if [ -z "$dasar" ]; then berkas=$(git ls-tree -r --name-only "$lsha"); else berkas=$(git diff --name-only "$dasar" "$lsha"); fi
+  # Jalur pemicu terbit (terbit_antre.yml on.push.paths) ditambah gerbang uji itu sendiri.
+  for f in $berkas; do
+    case "$f" in
+      public/data/*|public/banjir/data/*) ;;
+      public/*|src/*|wrangler.jsonc|migrations/*|tests/agen/*|tests/warga/*|tests/sippa/*|package.json|package-lock.json) pakai=1; sha_dorong=$lsha ;;
+    esac
+  done
+done
+[ -z "$pakai" ] && exit 0
+
+utama=$(git rev-parse --show-toplevel)
+if [ ! -d "$utama/node_modules" ]; then
+  echo "pre-push: node_modules tidak ada. Jalankan 'npm ci' dulu, lalu push lagi." >&2
+  exit 1
+fi
+tmp=$(mktemp -d "${TMPDIR:-/tmp}/uji-push.XXXXXX") || exit 1
+rmdir "$tmp"
+bersih() { git worktree remove --force "$tmp" >/dev/null 2>&1; rm -rf "$tmp"; git worktree prune; }
+trap bersih EXIT INT TERM
+git worktree add --detach "$tmp" "$sha_dorong" >/dev/null 2>&1 || { echo "pre-push: gagal membuat worktree uji." >&2; exit 1; }
+ln -s "$utama/node_modules" "$tmp/node_modules"
+echo "pre-push: uji di commit $(echo "$sha_dorong" | cut -c1-9) ..." >&2
+gagal=
+(cd "$tmp" && npm run uji:agen) >&2 || gagal="uji:agen"
+if [ -z "$gagal" ]; then (cd "$tmp" && npm run uji:warga) >&2 || gagal="uji:warga"; fi
+if [ -z "$gagal" ]; then (cd "$tmp" && npm run uji:sippa) >&2 || gagal="uji:sippa"; fi
+if [ -n "$gagal" ]; then
+  echo "pre-push DITOLAK: $gagal gagal. Betulkan ujinya dulu; deploy akan gagal juga di GitHub." >&2
+  echo "(Hanya pemilik manusia, darurat: LEWATI_UJI=1 git push, atau git push --no-verify.)" >&2
+  exit 1
+fi
+exit 0

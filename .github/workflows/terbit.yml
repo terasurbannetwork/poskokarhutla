@@ -9,6 +9,11 @@ name: Terbitkan tampilan
 on:
   workflow_dispatch:
 
+# issues: write untuk pemberitahuan gagal-terbit (isu berlabel terbit-gagal; GitHub mengirim surel/dorongan ke pemilik).
+permissions:
+  contents: read
+  issues: write
+
 concurrency:
   group: data
   cancel-in-progress: false
@@ -119,3 +124,30 @@ jobs:
           else
             npx --yes wrangler@4.42.0 versions upload --preview-alias staging --message "staging ${GITHUB_SHA::7}"
           fi
+
+      # Pemberitahuan (4 Nov 2026: 12 run gagal tak terlihat ~14 jam). failure() tidak menyala saat run dibatalkan (disusul push baru).
+      - name: Beri tahu terbit gagal (boleh gagal)
+        if: failure()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create terbit-gagal --color B60205 --description "Terbit tampilan gagal" || true
+          url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          badan="Run: $url"$'\n'"Commit: $GITHUB_SHA"$'\n'"Cabang: $GITHUB_REF_NAME"
+          no=$(gh issue list --label terbit-gagal --state open --json number --jq '.[0].number // empty')
+          if [ -z "$no" ]; then
+            gh issue create --title "Terbit tampilan gagal" --label terbit-gagal --body "$badan"
+          else
+            gh issue comment "$no" --body "Gagal lagi."$'\n'"$badan"
+          fi
+      - name: Tutup pemberitahuan bila terbit hijau (boleh gagal)
+        if: success()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          for no in $(gh issue list --label terbit-gagal --state open --json number --jq '.[].number'); do
+            gh issue close "$no" --comment "Terbit hijau lagi: $url"
+          done
