@@ -8,8 +8,8 @@
   "use strict";
   const {ikon, h, F, PROV} = window.Wilayah, H = window.DalopsHitung;
   const app = document.getElementById("app"), NS = "http://www.w3.org/2000/svg";
-  const KURANG = {kk: ["KK terdampak", "sosial"], jiwa: ["Jiwa terdampak", "personel"], kk_u: ["KK pengungsi", "tenda"], mengungsi: ["Jiwa pengungsi", "tenda"], tinggi: ["Tinggi air", "air"]};
-  const URUT_KURANG = ["kk", "jiwa", "kk_u", "mengungsi", "tinggi"];
+  const KURANG = {kk: ["KK terdampak", "sosial"], jiwa: ["Jiwa terdampak", "personel"], kk_u: ["KK pengungsi", "tenda"], mengungsi: ["Jiwa pengungsi", "tenda"], tinggi: ["Tinggi air", "air"], kec: ["Kecamatan", "pin"], desa: ["Desa/kel.", "pin"]};
+  const URUT_KURANG = ["kk", "jiwa", "kk_u", "mengungsi", "tinggi", "kec", "desa"];
   const IK_LEVEL = ["ok", "peringatan", "peringatan", "peringatan"];
   const status = b => h("span", {class: "dl-st dl-l" + b}, ikon(IK_LEVEL[b]), H.NAMA_LEVEL[b]);   // prakiraan: ikon + nama, warna sama dengan peta banjir
   const label = (teks, ik, nada) => h("span", {class: "dl-tag" + (nada ? " dl-tag-" + nada : "")}, ikon(ik), teks);
@@ -135,7 +135,7 @@
     }));
     const fitur = waspada.filter(x => pusat.has(x.kab_kode)).map(x => {
       const j = x.b.findIndex(l => l === x.maks);
-      return {type: "Feature", geometry: {type: "Point", coordinates: pusat.get(x.kab_kode)}, properties: {lv: x.maks, nama: x.nama, hari: hariSt[j] ? H.tglPanjang(hariSt[j]) : ""}};
+      return {type: "Feature", geometry: {type: "Point", coordinates: pusat.get(x.kab_kode)}, properties: {lv: x.maks, nama: x.nama, prov_kode: x.kab_kode.split("|")[0], hari: hariSt[j] || ""}};
     });
     const segitiga = isi => { const r = devicePixelRatio > 1 ? 2 : 1, n = 26 * r, c = document.createElement("canvas"); c.width = c.height = n;
       const g = c.getContext("2d"); g.scale(r, r); g.lineJoin = "round";
@@ -149,7 +149,8 @@
       "icon-size": ["interpolate", ["linear"], ["zoom"], 4, .75, 8, 1.1], "icon-allow-overlap": true, "symbol-sort-key": ["-", 0, ["get", "lv"]]}});
     const pop = new maplibregl.Popup({closeButton: false, closeOnClick: false, offset: 14, className: "dl-popup"});
     peta.on("mouseenter", "peringatan", e => { const p = e.features[0].properties; peta.getCanvas().style.cursor = "default";
-      pop.setLngLat(e.features[0].geometry.coordinates).setDOMContent(h("div", {class: "dl-pop-awas"}, h("b", {teks: p.nama}), status(p.lv), p.hari ? h("small", {teks: "mulai " + p.hari}) : null)).addTo(peta); });
+      pop.setLngLat(e.features[0].geometry.coordinates).setDOMContent(h("div", {class: "dl-pop dl-pop-awas"}, h("div", {class: "dl-pop-kepala"}, lambangKab(p),
+        h("div", null, h("b", {class: "dl-tip-nama", teks: p.nama}), h("div", {class: "dl-pop-label"}, status(p.lv), p.hari ? label("Mulai " + H.tglPendek(p.hari), "kalender", "abu") : null))))).addTo(peta); });
     peta.on("mouseleave", "peringatan", () => { pop.remove(); peta.getCanvas().style.cursor = ""; });
   }
   async function gambarPeta(wadah, pekan, kontrol, sk = {}, hariSt = []) {
@@ -178,8 +179,8 @@
     /* saring status di samping Tutup semua: klik = hanya status itu (tombol hitam), klik lagi = semua */
     let saring = null;
     const terapSaring = () => { for (const id of ["kab-isi", "kab-garis"]) if (peta.getLayer(id)) peta.setFilter(id, saring ? ["==", ["get", "st"], saring] : null); };
-    const tSaring = [["surut", "Sudah surut"], ["belum", "Belum surut"]].map(([v, t]) => {
-      const b = h("button", {type: "button", class: "dl-saring-btn", "aria-pressed": "false", teks: t});
+    const tSaring = [["surut", "Sudah surut", "ok"], ["belum", "Belum surut", "banjir"]].map(([v, t, ik]) => {
+      const b = h("button", {type: "button", class: "dl-saring-btn dl-saring-" + v, "aria-pressed": "false"}, ikon(ik), t);
       b.addEventListener("click", () => { saring = saring === v ? null : v; tSaring.forEach(x => x.setAttribute("aria-pressed", String(x === b && saring === v))); terapSaring(); });
       return b;
     });
@@ -251,7 +252,7 @@
       h("div", {class: "dl-pop-kepala"}, lambangKab(x),
         h("div", null, h("div", {class: "dl-pop-judul"}, h("b", {class: "dl-tip-nama", teks: x.nama}), label(namaProv(x.prov_kode, x.prov), "pin", "abu")),
           h("div", {class: "dl-pop-label"}, surutLabel(x.surut),
-            h("span", {class: "dl-pop-tgl", title: "Kabar terakhir", "aria-label": "Kabar terakhir " + H.tglPendek(x.terakhir)}, ikon("kalender"), H.tglPendek(x.terakhir))))),
+            Object.assign(label(H.tglPendek(x.terakhir), "kalender", "abu"), {title: "Kabar terakhir " + H.tglPendek(x.terakhir)})))),
       kotakAngka(x),
       h("div", {class: "dl-pop-kontak"},
         h("div", {class: "dl-pop-tombol"},
@@ -311,7 +312,7 @@
           tdv(angka(x.kk), x.kk), tdv(angka(x.jiwa), x.jiwa), tdv(angka(x.kk_u), x.kk_u), tdv(angka(x.mengungsi), x.mengungsi), tdv(tinggi(x.tinggi_cm), x.tinggi_cm?.[1]), tdv(H.tglPendek(x.terakhir), x.terakhir.replace(/-/g, "")),
           h("td", null, h("div", {class: "dl-aksi"}, tombolHistori(x), x.surut ? null : tombolWA(x, H.pesanWA({...x, kurang: []}), "permintaan pembaruan"))));
         /* kecamatan lalu desa: baris tabel bertingkat, sama dengan provinsi dan kab/kota */
-        const kecBaris = H.perKec(x).filter(k => k.desa.length).map(k => {   // kecamatan tanpa rincian desa tidak ditampilkan; kab tanpa rincian tidak bisa diklik
+        const kecBaris = H.perKec(x).filter(k => k.nama && k.desa.length).map(k => {   // kecamatan tak disebut atau tanpa rincian desa tidak ditampilkan; kab tanpa rincian tidak bisa diklik
           const jml = f => k.desa.some(d => d[f] != null) ? k.desa.reduce((s, d) => s + (d[f] || 0), 0) : null;
           const ting = k.desa.filter(d => d.tinggi_cm).map(d => d.tinggi_cm), rentang = ting.length ? [Math.min(...ting.map(t => t[0])), Math.max(...ting.map(t => t[1]))] : null;
           const kec = k.nama ? "Kecamatan " + k.nama.replace(/^(kecamatan|kec\.?)\s*/i, "") : null, kabProv = [x.nama, namaProv(x.prov_kode, x.prov)];
@@ -376,15 +377,16 @@
     const tb = kelompokProv(daftar, (a, b) => b[1][0].umur - a[1][0].umur || b[1].length - a[1].length).map(([p, xs]) =>
       tbodyProv(namaProv(p, xs[0].prov), `${F(xs.length)} kab/kota`, null, 7, xs.map(x => {
         /* status.json hanya memuat kecamatan berlevel > 0 (scripts/banjir/status.py): kab tak tercantum = Aman */
-        const b = st ? (sk[x.kab_kode]?.b?.[1] ?? 0) : null, kurang = [...x.kurang.filter(k => k !== "kabar"), ...["kk_u", "mengungsi"].filter(f => x[f] == null)].sort((a, b) => URUT_KURANG.indexOf(a) - URUT_KURANG.indexOf(b));   // pengungsi: tampil saja, bukan syarat ditanya
+        const b = st ? (sk[x.kab_kode]?.b?.[1] ?? 0) : null, kurang = [...x.kurang.filter(k => k !== "kabar"), ...["kk_u", "mengungsi"].filter(f => x[f] == null),
+          ...(x.kec.length || x.desa.some(d => d.kec) ? [] : ["kec"]), ...(x.desa.length ? [] : ["desa"])].sort((a, b) => URUT_KURANG.indexOf(a) - URUT_KURANG.indexOf(b));   // pengungsi, kecamatan, desa: tampil saja, bukan syarat ditanya
         return h("tr", null, td(F(++n), true), h("td", null, kab(x)),
           tdv(h("b", {class: "dl-umur " + nadaUmur(x.umur), teks: x.umur < 1 ? "Hari ini" : F(x.umur) + " hari"}), x.umur), tdv(H.tglPendek(x.terakhir), x.terakhir.replace(/-/g, "")),
           tdv(kurang.length ? h("div", {class: "dl-chips"}, kurang.map(k => label(KURANG[k][0], KURANG[k][1], "kuning"))) : label("Angka lengkap", "ok", "hijau"), kurang.length),
           tdv(b == null ? "–" : status(b), b),
-          h("td", null, h("div", {class: "dl-aksi"}, tombolWA(x, H.pesanWA(x), "permintaan pembaruan"))));
+          h("td", null, h("div", {class: "dl-aksi"}, tombolHistori(x), tombolWA(x, H.pesanWA(x), "permintaan pembaruan"))));
       })));
     return bagian("tanya", "tunggu", "Monitoring Kelengkapan Data", null,
-      tabelStd(["No", "Kab/kota", "Tanpa kabar", "Kabar terakhir", "Angka belum ada", "Prakiraan besok", "Kirim"], ...tb));
+      tabelStd(["No", "Kab/kota", "Tanpa kabar", "Kabar terakhir", "Data belum ada", "Prakiraan besok", "Aksi"], ...tb));
   }
 
   /* ---------- prakiraan banjir per hari + hujan tiga hari per tanggal ---------- */
