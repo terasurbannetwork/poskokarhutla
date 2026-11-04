@@ -347,4 +347,7 @@ Diputuskan:
 - **Q7** hasil nol: layar TETAP model v1 (tidak dicabut); klimatologi hanya pembanding (§5.5).
 Dari tinjauan `validasi-model`: GBDT dibuang (semua wilayah regresi nonneg berpooling); Platt pada `y0`; statis berskala peringkat nonneg; lantai hanya DIBI (logbook/GLC bukan label latih).
 
-Masih terbuka (ke pemilik): (a) ambang pemisahan wilayah `P_w >= 200`, `n_kab >= 15`, `T_w >= 4`; (b) tingkat 3-4 (1% dan 0,3% alarm) sebagai deskripsi dampak.
+- Ambang pemisahan wilayah `P_w >= 200`, `n_kab >= 15`, `T_w >= 4` DISETUJUI ("Pakai usulan", 4 Nov).
+- Tingkat 3-4 pada alarm 1% dan 0,3% kab-hari DISETUJUI (deskripsi dampak, §5.6).
+
+Tidak ada keputusan pemilik yang masih terbuka pada rev. ini.
