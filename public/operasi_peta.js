@@ -162,6 +162,7 @@
         <p class="fnd">Waktu tempuh = jarak garis lurus dibagi kecepatan jelajah kasar (heli 200 km/jam, pesawat 280 km/jam), belum termasuk ambil air.</p>` : `<p class="fnd">Tidak ada cluster siaga atau prioritas di jangkauan base ini.</p>`)}
       ${lipat("Kelayakan terbang", `<p style="margin:0;font-size:12.5px">${pilLayak(lay)} ${esc(lay.ket)}</p><p class="fnd">Layak: jarak pandang ≥ 5 km, angin ≤ 20 kt, tanpa asap atau badai petir. Terbatas: 1,5–5 km, asap, atau angin 20–30 kt. Tidak layak: &lt; 1,5 km, badai petir, atau angin &gt; 30 kt.</p>`, false)}
       <p class="fnd">Data operasi ${esc(OP.data.tanggal || "")}. Rekap kontrak 2026 dari rekapitulasi Direktorat Penanganan Darurat Wilayah I–III.</p></div>`;
+    if (el._tarik) el.appendChild(el._tarik); /* innerHTML menghapus pegangan tarik lebar */
     if (kecil) { if (el.parentNode !== dl) dl.appendChild(el); if (!dl.open) dl.showModal(); }
     el.classList.add("on");
     el.querySelector(".tutup").onclick = () => { if (dl.open) return dl.close(); el.classList.remove("on"); OP.pilih = null; };
@@ -214,7 +215,7 @@
     const t = hariWIB(), d = await ambil(`/api/operasi/peta?tanggal=${t}`);
     if (!d) return;   // tamu atau tanpa hak: tab Operasi tidak muncul
     OP.data = d;
-    const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/operasi_peta.css?v=1"; document.head.append(l);
+    const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/operasi_peta.css?v=2"; document.head.append(l);
     pasangUI();
     [OP.mon, OP.rekap, OP.vis, OP.metar] = await Promise.all([ambil(`/api/operasi/monitor?dari=${t}&sampai=${t}`), ambil("/data/operasi/rekap_udara.json"), ambil("/api/jarak-pandang"), ambil("/data/metar.json")]);
     segarkanLapis(); if (S.panel === "ops") daftar(); if (OP.pilih) bukaBase(OP.pilih);

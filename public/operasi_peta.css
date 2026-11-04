@@ -19,7 +19,7 @@
 .ops-prov{font-size:11.5px;color:var(--ink2)}
 .tb.ops-pilih{background:color-mix(in srgb,#4f8fc4 16%,var(--card));box-shadow:inset 3px 0 #4f8fc4}
 .ops-geser{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.ops-geser table.tb3{min-width:max-content}
+.ops-geser table.tb3 td small{overflow-wrap:anywhere}
 .pill.ops-abu{background:var(--surface);color:var(--ink2)}
 /* kartu hover base */
 .ops-pop .maplibregl-popup-content{padding:0;border-radius:14px;overflow:hidden;box-shadow:0 14px 34px -10px rgb(0 0 0 / .55);max-width:none;background:var(--card)}

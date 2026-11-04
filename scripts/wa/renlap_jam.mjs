@@ -1,4 +1,4 @@
-// Pemicu renlap Operasi Lapangan (spek operasi-lapangan.md bagian 6): malam sesudah 20.00 WIB, pagi sesudah 05.30 WIB, sekali sehari.
+// Pemicu renlap Operasi Lapangan (spek operasi-lapangan.md bagian 6): malam sesudah 20.00 WIB, pagi sesudah 07.00 WIB (data dipotong jam 07, pemilik 4 Nov 2026), sekali sehari.
 // MATI bawaan (env RENLAP=1). Hanya menjalankan renlap.py --kirim-api (Worker menyimpan draf, tampil di layar). TIDAK mengirim ke grup WA (keputusan K2).
 // Galat: log + kabar PEMILIK sekali per versi per hari, tidak pernah ke PENERIMA.
 import path from 'node:path'
@@ -11,7 +11,7 @@ const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 // Jendela per versi (jam WIB desimal). Pagi dibatasi sebelum 12.00: lewat itu versi pagi sudah basi, jalan berikut tidak mengejarnya.
 export const VERSI = [
   { versi: 'malam', dari: 20, sampai: 24 },
-  { versi: 'pagi', dari: 5.5, sampai: 12 },
+  { versi: 'pagi', dari: 7, sampai: 12 },
 ]
 export const jatuhTempo = (jam) => VERSI.filter((v) => jam >= v.dari && jam < v.sampai)
 

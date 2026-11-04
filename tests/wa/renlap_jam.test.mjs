@@ -24,23 +24,22 @@ function dunia(env = {}, { gagal } = {}) {
   return { k, jalan }
 }
 
-test('jam pemicu: pagi 05.30-12.00, malam 20.00-24.00', () => {
+test('jam pemicu: pagi 07.00-12.00, malam 20.00-24.00', () => {
   const v = (j) => jatuhTempo(j).map((x) => x.versi)
-  assert.deepEqual(v(5.4), []); assert.deepEqual(v(5.5), ['pagi']); assert.deepEqual(v(11.9), ['pagi']); assert.deepEqual(v(12), [])
+  assert.deepEqual(v(6.9), []); assert.deepEqual(v(7), ['pagi']); assert.deepEqual(v(11.9), ['pagi']); assert.deepEqual(v(12), [])
   assert.deepEqual(v(19.9), []); assert.deepEqual(v(20), ['malam']); assert.deepEqual(v(23.5), ['malam'])
 })
 
 test('mati tanpa RENLAP=1', async () => {
   const d = dunia()
-  await d.jalan(20.5); await d.jalan(5.6)
+  await d.jalan(20.5); await d.jalan(7.1)
   assert.equal(d.k.exec.length, 0)
 })
 
-test('pagi 05.30 di luar jendela 06-23 tetap jalan, hanya renlap, argumen benar, tanpa kirim ke penerima', async () => {
+test('pagi 07.00 jalan, argumen benar, tanpa kirim ke penerima', async () => {
   const d = dunia({ RENLAP: '1' })
-  const h = await d.jalan(5.6)
-  assert.deepEqual(h.map((x) => x.id), ['renlap:pagi'])
-  assert.equal(d.k.fetch, 0)                       // bahan WA tidak disentuh
+  const h = await d.jalan(7.1)
+  assert.equal(h[0].id, 'renlap:pagi')
   assert.deepEqual(d.k.exec[0].args, ['scripts/operasi/renlap.py', 'buat', '--versi', 'pagi', '--kirim-api'])
   assert.equal(d.k.exec[0].o.env.WORKER, 'http://w'); assert.equal(d.k.exec[0].o.env.WA_MESIN, 'k')
   assert.equal(d.k.file.length, 0); assert.equal(d.k.teks.length, 0)
@@ -48,7 +47,7 @@ test('pagi 05.30 di luar jendela 06-23 tetap jalan, hanya renlap, argumen benar,
 
 test('idempoten: dua kali jam yang sama = sekali; malam dan pagi masing-masing sekali sehari', async () => {
   const d = dunia({ RENLAP: '1' })
-  await d.jalan(5.6); await d.jalan(5.8)
+  await d.jalan(7.1); await d.jalan(7.3)
   assert.equal(d.k.exec.length, 1)
   await d.jalan(20.1); await d.jalan(20.3); await d.jalan(21)
   assert.equal(d.k.exec.length, 2)
