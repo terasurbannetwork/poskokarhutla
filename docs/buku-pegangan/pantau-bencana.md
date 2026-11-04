@@ -2333,4 +2333,4 @@ Lima buku pemilik dari proyek lain, disalin ke `docs/buku-pegangan/rujukan/` dan
 1. Keputusan baru pemilik masuk ke **Riwayat** (bertanggal, kutipan miring) lalu ke bagian aturannya, di `docs/buku-pegangan/pantau-bencana.md`.
 2. Bangun ulang: `python3 docs/buku-pegangan/bangun.py pantau-bencana`.
 3. Terbitkan ulang ke URL yang tersimpan di `docs/buku-pegangan/ARTIFACT.json`. **Jangan pernah menerbitkan sebagai artifact baru**: itu tidak gagal, ia cuma melahirkan halaman kedua dan yang lama berhenti diperbarui tanpa ada yang tahu.
-4. Routine harian yang menyapu sisanya dirumuskan di `docs/buku-pegangan/ROUTINE.md`.
+4. Routine `buku-pegangan-malam` (23.00 WIB tiap malam) menyapu histori chat, memori selera, dan commit perbaikan; promptnya di `docs/buku-pegangan/ROUTINE.md`.
