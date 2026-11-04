@@ -379,7 +379,7 @@
    "pesan": "Luas resmi melonjak di tahun kemarau panjang; gambut penentu skala",
    "jenis_slide": "panel",
    "judul_bentuk": "deskriptif",
-   "judul": "Luas terbakar resmi melonjak pada tahun kemarau panjang",
+   "judul": "Luas kebakaran hutan dan lahan melonjak pada tahun kemarau panjang (El Nino)",
    "cut_off": true,
    "grafik": {
     "judul_panel": "Luas terbakar resmi nasional",
@@ -519,7 +519,7 @@
       },
       {
        "nilai": "{{angka:karhutla.khg_titik}}",
-       "label": "di kawasan gambut",
+       "label": "hotspot berada di kawasan gambut",
        "ikon": "karhutla",
        "warna": "kategori.api"
       }
@@ -589,8 +589,8 @@
      },
      {
       "ikon": "lembaga",
-      "judul": "Modal asing",
-      "isi": "{{angka:karhutla.hukum.korporasi_asing}} korporasi tersangka bermodal asing; perlakuan hukumnya sama dengan korporasi dalam negeri."
+      "judul": "Modal negara lain",
+      "isi": "{{angka:karhutla.hukum.korporasi_asing}} korporasi tersangka bermodal negara lain; perlakuan hukumnya sama dengan korporasi dalam negeri."
      }
     ]
    },
@@ -656,17 +656,16 @@
      "sumber": "Bareskrim Polri 29 Okt 2026; Ditjen Gakkum Kemenhut 18 Okt 2026; UU 32/2009 Pasal 98, 99, 108"
     },
     "daftar": [
-     "{{angka:karhutla.hukum.korporasi_asing}} korporasi tersangka bermodal asing; perlakuan hukumnya sama dengan korporasi dalam negeri.",
-     "Usulan pencabutan izin diajukan Bareskrim Polri ke kementerian pemberi izin.",
-     "Kemenhut membekukan izin lain sambil mewajibkan pemulihan lahan.",
-     "Pembakar lapangan dipidana perorangan; pemodalnya dijerat sebagai korporasi.",
-     "Peserta regu perusahaan tetap bisa dijerat bila lahannya terbukti dibakar.",
-     "Selisih harga inilah insentif ekonomi pembakaran yang diputus lewat penegakan hukum."
+     "Bareskrim Polri mengusulkan pencabutan izin ke kementerian pemberi izin.",
+     "Kemenhut membekukan izin lain dan mewajibkan pemulihan lahan.",
+     "Pembakar dipidana sebagai perorangan; pemodalnya dijerat sebagai korporasi.",
+     "Perusahaan yang ikut memadamkan tetap dijerat bila lahannya terbukti dibakar.",
+     "Penegakan hukum memutus keuntungan ekonomi dari membakar lahan."
     ],
     "peringkat": false
    },
    "pita": {
-    "label": "Rantai yang diputus",
+    "label": "Tindakan hukum",
     "nada": "aksi",
     "kolom": [
      {
@@ -711,18 +710,18 @@
      }
     }
    },
-   "rasio": 0.66
+   "rasio": 0.68
   },
   {
    "jenis": "tabel-peringkat",
    "jenis_slide": "tabel",
    "judul_bentuk": "temuan",
-   "pesan": "Perusahaan berafiliasi grup asing di areal hotspot",
-   "judul": "Karhutla 2026 tidak hanya tanggung jawab Indonesia: {{angka:karhutla.aktor_asing}} dari {{angka:karhutla.aktor_total}} perusahaan yang konsesinya ber-hotspot terafiliasi grup usaha dengan pemegang saham asing",
+   "pesan": "Perusahaan berafiliasi grup negara lain di areal hotspot",
+   "judul": "Karhutla 2026 tidak hanya tanggung jawab Indonesia: {{angka:karhutla.aktor_asing}} dari {{angka:karhutla.aktor_total}} perusahaan yang konsesinya ber-hotspot terafiliasi grup usaha dengan pemegang saham dari negara lain",
    "cut_off": true,
    "grup": [
     {
-     "pil": "Afiliasi asing",
+     "pil": "Afiliasi negara lain",
      "nada": "perhatian",
      "ikon": "lembaga",
      "kartu": [
@@ -740,7 +739,7 @@
       },
       {
        "nilai": "{{angka:karhutla.hukum.korporasi_asing}}",
-       "label": "korporasi asing jadi tersangka",
+       "label": "korporasi negara lain jadi tersangka",
        "ikon": "regulasi",
        "warna": "merah"
       }
@@ -748,7 +747,7 @@
     }
    ],
    "tabel": {
-    "judul_panel": "Grup usaha asing dengan hotspot terbanyak di arealnya",
+    "judul_panel": "Grup usaha negara lain dengan hotspot terbanyak di arealnya",
     "ikon": "lembaga",
     "peringkat": false,
     "total": true,
@@ -761,7 +760,12 @@
       },
       {
        "nama": "negara",
-       "kepala": "Negara asal"
+       "kepala": "Negara asal",
+       "bendera": {
+        "Singapura": "sg",
+        "Malaysia": "my",
+        "Korea Selatan": "kr"
+       }
       },
       {
        "nama": "perusahaan",
@@ -783,36 +787,16 @@
     }
    },
    "panel": {
-    "judul": "Negara asal",
+    "judul": "Narasi",
     "ikon": "ringkasan",
     "keyakinan": "penilaian-pakar",
     "daftar": [
      "Sebagian besar perusahaan di areal hotspot terafiliasi grup usaha Singapura dan Malaysia.",
-     "Perlakuan hukum sama untuk modal asing dan dalam negeri.",
+     "Perlakuan hukum sama untuk modal negara lain dan dalam negeri.",
      "Hotspot di areal izin adalah indikasi lokasi; penetapan pelaku lewat penyelidikan."
-    ],
-    "s7_bendera_bulat": {
-     "bendera": [
-      {
-       "kode": "sg",
-       "label": "Singapura"
-      },
-      {
-       "kode": "my",
-       "label": "Malaysia"
-      },
-      {
-       "kode": "kr",
-       "label": "Korea Selatan"
-      }
-     ],
-     "diameter": 34,
-     "tata": "kolom",
-     "label_posisi": "kanan"
-    }
+    ]
    },
-   "sumber": "Kajian peta aktor WALHI 2026; Diolah BNPB dari NASA FIRMS VIIRS dan peta izin, 5–12 Okt; Bareskrim Polri 29 Okt",
-   "rasio": 0.75
+   "sumber": "Kajian peta aktor WALHI 2026; Diolah BNPB dari NASA FIRMS VIIRS dan peta izin, 5–12 Okt; Bareskrim Polri 29 Okt"
   },
   {
    "jenis": "pembatas-seksi",
@@ -851,10 +835,10 @@
        "angka": "{{angka:karhutla.patroli_sorti}}"
       },
       {
-       "ikon": "lembaga",
-       "judul": "Heli Jepang",
-       "isi": "Chinook bekerja di bawah komando BNPB",
-       "angka": "{{angka:karhutla.jepang.heli}}"
+       "ikon": "cuaca-ekstrem",
+       "judul": "OMC",
+       "isi": "sorti operasi modifikasi cuaca",
+       "angka": "{{angka:karhutla.omc_sorti}}"
       }
      ]
     }
@@ -926,14 +910,14 @@
    "jenis": "temuan-visual",
    "jenis_slide": "panel",
    "judul_bentuk": "deskriptif",
-   "pesan": "Bantuan asing juga sarana mengukur kemampuan Indonesia",
+   "pesan": "Bantuan negara lain juga sarana mengukur kemampuan Indonesia",
    "judul": "Bantuan dari negara lain perlu dipertimbangkan dengan hati-hati untuk mencegah adanya celah yang dapat mengganggu kedaulatan Indonesia",
    "utama": {
     "judul": "Celah yang dapat dimanfaatkan dan cara menutupnya",
     "ikon": "peringatan",
     "banding": {
      "kiri": {
-      "judul": "Yang dapat dipetakan pihak asing"
+      "judul": "Yang dapat dipetakan pihak negara lain"
      },
      "kanan": {
       "judul": "Cara pemerintah menutup celahnya"
@@ -944,19 +928,19 @@
        "label": "Respons",
        "ikon": "tanggap-darurat",
        "kiri": "Seberapa cepat Indonesia bergerak saat bencana besar terjadi",
-       "kanan": "Komando tetap di tangan BNPB, tim asing hanya membantu"
+       "kanan": "Komando tetap di tangan BNPB, tim negara lain hanya membantu"
       },
       {
        "label": "Wilayah",
        "ikon": "wilayah",
        "kiri": "Sebaran hotspot dan jalur logistik di wilayah rawan",
-       "kanan": "Setiap penerbangan asing wajib berizin dan terbang sesuai penugasan"
+       "kanan": "Setiap penerbangan negara lain wajib berizin dan terbang sesuai penugasan"
       },
       {
        "label": "Konsesi",
        "ikon": "luas",
        "kiri": "Areal konsesi dan pengawasan di wilayah perbatasan",
-       "kanan": "Tim asing hanya masuk ke lokasi tugas dan selalu didampingi aparat"
+       "kanan": "Tim negara lain hanya masuk ke lokasi tugas dan selalu didampingi aparat"
       },
       {
        "label": "Data",
@@ -973,8 +957,8 @@
       {
        "label": "Dana",
        "ikon": "pembiayaan",
-       "kiri": "Aliran dana asing ke lembaga di dalam negeri",
-       "kanan": "Lembaga dan dana asing wajib terdaftar dan berkoordinasi dengan BNPB"
+       "kiri": "Aliran dana negara lain ke lembaga di dalam negeri",
+       "kanan": "Lembaga dan dana dari negara lain wajib terdaftar dan berkoordinasi dengan BNPB"
       }
      ]
     }
@@ -1037,8 +1021,8 @@
     {
      "kode": "05",
      "jenis": "regulasi",
-     "langkah": "Atur penerbangan asing",
-     "rincian": "Pesawat asing wajib izin diplomatik dan keamanan per sorti; setiap regu penerbangan wajib menyertakan personel Indonesia.",
+     "langkah": "Atur penerbangan negara lain",
+     "rincian": "Pesawat negara lain wajib izin diplomatik dan keamanan per sorti; setiap regu penerbangan wajib menyertakan personel Indonesia.",
      "lembaga": [
       "Kemhan",
       "Kemlu",
@@ -1053,7 +1037,7 @@
    "judul_bentuk": "deskriptif",
    "seri": "bantuan",
    "pesan": "Pengamanan wilayah dan data",
-   "judul": "Pengamanan wilayah dan data selama bantuan asing bekerja: {{sorot:akses terbatas}} dan data tetap di dalam negeri",
+   "judul": "Pengamanan wilayah dan data selama bantuan negara lain bekerja: {{sorot:akses terbatas}} dan data tetap di dalam negeri",
    "sumber": "UU 24/2007; PP 23/2008; PP 4/2018; PP 45/2021; UU 3/2014; BNPB Sep 2026",
    "rekomendasi": [
     {
@@ -1090,8 +1074,8 @@
     {
      "kode": "09",
      "jenis": "regulasi",
-     "langkah": "Daftarkan lembaga dan dana asing",
-     "rincian": "Lembaga asing dan dana asing untuk penanganan karhutla wajib terdaftar dan berkoordinasi dengan BNPB.",
+     "langkah": "Daftarkan lembaga dan dana dari negara lain",
+     "rincian": "Lembaga dan dana dari negara lain untuk penanganan karhutla wajib terdaftar dan berkoordinasi dengan BNPB.",
      "lembaga": [
       "BNPB",
       "Kemendagri",
@@ -1102,7 +1086,7 @@
      "kode": "10",
      "jenis": "kapasitas",
      "langkah": "Tampilkan kekuatan nasional",
-     "rincian": "Komunikasi publik menampilkan personel dan armada nasional; dukungan asing disebut sebagai pendukung.",
+     "rincian": "Komunikasi publik menampilkan personel dan armada nasional; dukungan negara lain disebut sebagai pendukung.",
      "lembaga": [
       "BNPB",
       "Kemenko PMK",
@@ -1186,7 +1170,7 @@
      "judul": "Bantuan satu pintu",
      "isi": [
       "Bantuan negara lain masuk lewat koordinasi BNPB.",
-      "Tim asing bekerja di bawah komando pemerintah Indonesia."
+      "Tim negara lain bekerja di bawah komando pemerintah Indonesia."
      ]
     },
     {
