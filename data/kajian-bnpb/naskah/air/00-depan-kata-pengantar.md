@@ -22,4 +22,4 @@ Jakarta, Oktober 2026
 
 **Kepala Badan Nasional Penanggulangan Bencana**
 
-Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si., M.Si. (Han)
+Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)

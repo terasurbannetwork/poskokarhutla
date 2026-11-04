@@ -10,7 +10,7 @@ const D = (k, o = {}) => ({...k, dampak: /^±/.test(k.utama) ? `${k.utama} lahan
   kondisi: k.catatan || (k.status === "selesai" ? "Api sudah berhasil dipadamkan" : k.status === "belum" ? "Api belum padam" : "Pemadaman masih berlangsung"), ...o});
 window.LaporanContoh = {
   harian: (tanggal = "2026-10-21", mulai = "2026-10-20") => ({
-    mulai, jam: "07.00", laporan_masuk: 19, penyaji: "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si., M.Si. (Han)", jabatan: "Kepala BNPB",
+    mulai, jam: "07.00", laporan_masuk: 19, penyaji: "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)", jabatan: "Kepala BNPB",
     instansi: "Badan Nasional Penanggulangan Bencana", singkatan: "BNPB",
     kepada: "Kepala BNPB", tembusan: ["Unsur Pengarah BNPB", "Ess I BNPB", "Ess II BNPB", "Tenaga Ahli Ka.BNPB"], koordinator: "Jazmi",
     /* urutan = urutan kemunculan di laporan Koordalops asli (A-L); kolom sifat s.d. entry_no hanya diisi bila ada di laporan asli, sisanya turunan dari angka dan status di baris yang sama */
