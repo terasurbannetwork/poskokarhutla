@@ -224,6 +224,28 @@ async function monitor(env, req, url, kini) {
     kpi: {semua: hitungK(pada(() => true)), base: Object.fromEntries(bases.map(b => [b, hitungK(pada(x => am.get(x)?.base_id === b))])), armada: Object.fromEntries(regs.map(x => [x, hitungK(pada(y => y === x))]))}}, 200, {"cache-control": "no-store"});
 }
 
+/* GET /api/operasi/jejak?tanggal= (bawaan hari ini WIB): jejak ADS-B per armada kita. adsb_posisi (0086) tak punya registrasi: dicocokkan lewat callsign
+   (registrasi tanpa strip = flight). posisi_hari_ini = semua baris hari itu (bukti ADS-B hidup walau tak ada armada kita). Tabel belum ada = aktif:false. */
+async function jejak(env, req, url, kini) {
+  if (!await adminOK(env, req) && !await stafPeran(env, req, PERAN_BACA)) return gagal(403, "jejak ADS-B hanya untuk akun centurisk97, staf berperan, atau moderator");
+  const tanggal = url.searchParams.get("tanggal") ?? wib(kini);
+  if (!tglSah(tanggal)) return gagal(400, "tanggal harus YYYY-MM-DD yang sah");
+  const awal = Date.parse(tanggal + "T00:00:00Z") - 7 * 36e5, akhir = awal + HARI, nd = stafNyata(req) ? "AND a.dummy = 0" : "";
+  let semua, baris;
+  try {
+    [semua, baris] = await Promise.all([
+      env.DB.prepare("SELECT count(*) n FROM adsb_posisi WHERE menit >= ?1 AND menit < ?2").bind(awal, akhir).first(),
+      env.DB.prepare(`SELECT a.registrasi, p.hex, p.menit, p.lat, p.lon, p.alt, p.gs FROM adsb_posisi p JOIN op_armada a ON upper(replace(a.registrasi, '-', '')) = upper(trim(p.flight))
+        WHERE p.menit >= ?1 AND p.menit < ?2 ${nd} ORDER BY a.registrasi, p.hex, p.menit LIMIT 2000`).bind(awal, akhir).all().then(x => x.results)]);
+  } catch (e) {
+    if (/no such table: adsb_posisi/i.test(String(e?.message || e))) return json({tanggal, aktif: false, posisi_hari_ini: 0, jejak: []}, 200, {"cache-control": "no-store"});
+    throw e;
+  }
+  const per = new Map();
+  for (const b of baris) { const k = b.registrasi + "|" + b.hex; if (!per.has(k)) per.set(k, {registrasi: b.registrasi, hex: b.hex, titik: []}); per.get(k).titik.push({t: b.menit, lat: b.lat, lon: b.lon, alt: b.alt, gs: b.gs}); }
+  return json({tanggal, aktif: true, posisi_hari_ini: semua?.n ?? 0, jejak: [...per.values()]}, 200, {"cache-control": "no-store"});
+}
+
 /* GET /api/operasi/foto/:id -> byte foto dari R2. Hak baca sama; privat (data operasional). */
 async function fotoBerkas(env, req, url, kini, ctx, id) {
   if (!await adminOK(env, req) && !await stafPeran(env, req, PERAN_BACA)) return gagal(403, "foto operasi hanya untuk akun centurisk97, staf berperan, atau moderator");
@@ -241,5 +263,6 @@ export const RUTE_OPERASI = Object.fromEntries(Object.entries({
   "POST /api/operasi/renlap": renlapMesin,
   "GET /api/operasi/nilai": nilai,
   "GET /api/operasi/monitor": monitor,
+  "GET /api/operasi/jejak": jejak,
   "GET /api/operasi/foto/:id": fotoBerkas,
 }).map(([k, f]) => [k, bungkus(f)]));

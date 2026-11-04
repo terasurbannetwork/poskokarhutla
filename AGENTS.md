@@ -196,7 +196,8 @@ lalu yang kalah dihapus. Latar dan rencana kerjanya ada di
 Tiap bagian layar laporan (tab Insight/Tren/Dampak, menu Operasi, `/bnpb/*`) adalah satu
 kartu `.ex.ex-std` dari `public/inti/kartu.css`: pil kategori `.ex-ey`, judul berupa kalimat
 temuan dengan angka disorot `.hl`, isi (tabel `.ex-tabel` menempel penuh, kepala tabel biru
-tua), kaki keterangan + `Sumber:` miring. Tombol bagian (Buka semua) di kanan judul. Jangan
+tua). Tanpa kaki keterangan/sumber (pemilik 4 Nov 2026: "hilangkan"); definisi kolom masuk
+`title` kepala tabel. Tombol atau pemilih bagian di kanan judul. Jangan
 membuat kepala bagian sendiri (bilah gelap, `.head` + h2 lepas). Layar laporan baru masuk
 daftar `LAYAR` di gerbang `tests/agen/gerbang-kartu-std.test.mjs`.
 

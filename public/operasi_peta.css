@@ -75,7 +75,8 @@
 @media (max-width:520px){.ops-ar{grid-template-columns:88px minmax(0,1fr)}.ops-ar-f{width:88px;height:60px}.ops-ringkas{grid-template-columns:repeat(2,1fr)}}
 /* menu Operasi = laporan tanpa peta (#p-operasi): kartu .ex gaya Insight/Tren/Dampak; gaya kartunya ikut selektor #opsLaporan di index.html */
 #opsLaporan{display:grid;gap:18px}
-#opsLaporan .ex-bd:has(> .ops-tw){padding:0}
+#opsLaporan .ex-bd:has(> .ops-tw:only-child){padding:0}
+#opsLaporan .ex-bd:not(:has(> .ops-tw:only-child)) > .ops-tw{border:1px solid var(--line)!important;border-radius:12px!important}
 #opsLaporan .ops-tw{border:0;border-radius:0;box-shadow:none}
 #opsLaporan .ops-tw td small{display:block;color:var(--ink2);font-size:11px}
 #opsLaporan .ops-tw td .pill+small{margin-top:3px}
@@ -97,3 +98,34 @@
 .ops-redup b{font-size:14px;color:var(--ink2);font-family:inherit;font-weight:600}
 @media (max-width:900px){.ops-lap-angka{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:14px}.ops-lap-angka>div:nth-child(4){border-left:0;padding-left:0}}
 @media (max-width:520px){.ops-lap-angka{grid-template-columns:repeat(2,minmax(0,1fr))}.ops-lap-angka>div{border-left:0;padding-left:0}}
+/* laporan /operasi: bilah alat (tab Udara/Darat berikon, tanggal, salin, cetak) dan kartu fitur (public/operasi_laporan.js) */
+.ops-alat{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:0 0 18px}
+.ops-mode{padding:4px}
+.ops-mode button{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;font-size:13.5px;font-weight:700}
+.ops-mode button svg{width:18px;height:18px}
+.ops-tgl{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ink2)}
+.ops-tgl input{height:36px;border:1px solid var(--line);border-radius:999px;padding:0 12px;background:var(--card);color:var(--ink);font:inherit;font-weight:600}
+.ops-tbl{height:36px;border:1px solid var(--line);border-radius:999px;padding:0 14px;background:var(--card);color:var(--ink);font-size:12.5px;font-weight:700;cursor:pointer}
+.ops-tbl:hover,.ops-tbl:focus-visible{border-color:var(--brand2)}
+.ops-status{font-size:12px;color:var(--ink2)}
+#opsIsi{display:grid;gap:18px}
+#opsLaporan .ex-ey{display:inline-flex;align-items:center;gap:6px}
+#opsLaporan .ex-ey svg{width:12px;height:12px;flex:none}
+#opsLaporan td.ops-kiri{text-align:left}
+#opsLaporan .ex-jd select{height:34px;border:1px solid var(--line);border-radius:999px;padding:0 12px;background:var(--card);color:var(--ink);font:inherit;font-weight:600;flex:none}
+.ops-6{grid-template-columns:repeat(6,minmax(0,1fr))}
+.ops-hist-atas{display:flex;gap:14px;align-items:center}
+.ops-hist-atas img{width:140px;height:90px;object-fit:cover;border-radius:10px;flex:none}
+.ops-hist-atas p{margin:0 0 3px;font-size:13px}
+.ops-tren-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 24px;padding-bottom:6px}
+.ops-tren{display:grid;gap:4px;min-width:0}
+.ops-tren b{font-size:12.5px}
+.ops-tren svg{width:100%;height:90px;display:block;color:var(--ink2)}
+.ops-tren span{font-size:11.5px;color:var(--ink2)}
+.ops-efek{margin:0;font-size:12.5px;line-height:1.45;color:var(--ink2)}
+.ops-galeri{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;padding-bottom:6px}
+.ops-galeri a{display:grid;gap:4px;text-decoration:none;color:var(--ink)}
+.ops-galeri img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;background:var(--surface)}
+.ops-galeri span{font-size:11.5px;line-height:1.35;color:var(--ink2)}
+@media (max-width:760px){.ops-tren-grid{grid-template-columns:1fr}.ops-6{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:14px}.ops-hist-atas img{width:96px;height:64px}}
+@media print{#tabs,header,.ops-alat,.fab,[class*="chat"]{display:none!important}.page.on{position:static!important;overflow:visible!important}#opsIsi{gap:12px}.ex-std{break-inside:avoid;box-shadow:none!important}}

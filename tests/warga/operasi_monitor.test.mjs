@@ -231,6 +231,27 @@ uji("GET /api/operasi/monitor: auth (tamu 403, staf tanpa peran 403, akun gerban
   assert.equal((await M.api("GET", `/api/operasi/foto/${A.foto[0].id}`, undefined, ADMIN)).s, 404, "op_foto tanpa pesan WA/berkas: 404 sopan, bukan 500");
 });
 
+uji("GET /api/operasi/jejak: auth (tamu 403, staf peran lain 403, gerbang/moderator/staf udara 200), tanggal sah, callsign cocok ber-strip, jendela WIB, dummy tersembunyi", async () => {
+  const udara = await bikin("Staf Udara", ["udara"]), tanpa = await bikin("Kemitraan", ["kemitraan"]), J = "/api/operasi/jejak", awal = Date.parse(`${D1}T00:00:00Z`) - 7 * JAM;
+  for (const [nama, h] of [["tamu", {}], ["staf peran lain", tanpa]]) { assert.equal((await M.api("GET", J, undefined, h)).s, 403, nama); assert.equal((await M.api("GET", J + "?tanggal=bukan", undefined, h)).s, 403, `${nama}: auth sebelum validasi`); }
+  for (const h of [GERBANG, MOD2, ADMIN, udara]) assert.equal((await M.api("GET", `${J}?tanggal=${D1}`, undefined, h)).s, 200);
+  for (const bad of ["?tanggal=2026-02-30", "?tanggal=x", "?tanggal=2026-11-03x"]) assert.equal((await M.api("GET", J + bad, undefined, GERBANG)).s, 400, bad);
+  assert.equal((await M.api("GET", J, undefined, GERBANG)).j.tanggal, wib(Date.now()), "bawaan hari ini WIB");
+  await M.DB.prepare("INSERT INTO op_armada (registrasi, tipe, peran, pemilik, dummy) VALUES ('PK-DUM', 'Dummy', 'wb', 'lainnya', 1)").run();
+  const pos = (hex, menit, flight, lat) => M.DB.prepare("INSERT INTO adsb_posisi (hex, menit, wilayah, lat, lon, alt, gs, heli, flight, tipe) VALUES (?, ?, 'kalbar', ?, 110, 500, 80, 1, ?, 'S70')").bind(hex, menit, lat, flight).run();
+  await pos("aaaaaa", awal, "vhl6t", -1); await pos("aaaaaa", awal + JAM, " VHL6T ", -1.1);   // cocok: huruf kecil, spasi ujung (callsign ADS-B tanpa strip)
+  await pos("aaaaaa", awal - JAM, "VHL6T", -9); await pos("aaaaaa", awal + 24 * JAM, "VHL6T", -9);   // di luar jendela WIB
+  await pos("bbbbbb", awal + 2 * JAM, "N261BE", -2); await pos("cccccc", awal + 2 * JAM, "GIA123", -3); await pos("dddddd", awal + 2 * JAM, null, -4); await pos("eeeeee", awal + 3 * JAM, "PKDUM", -5);
+  const r = await M.api("GET", `${J}?tanggal=${D1}`, undefined, GERBANG); assert.equal(r.h.get("cache-control"), "no-store");
+  assert.deepEqual(Object.keys(r.j), ["tanggal", "aktif", "posisi_hari_ini", "jejak"]); assert.deepEqual([r.j.tanggal, r.j.aktif, r.j.posisi_hari_ini], [D1, true, 6], "6 baris dalam jendela, semua armada atau bukan");
+  assert.deepEqual(r.j.jejak.map(x => [x.registrasi, x.hex, x.titik.length]), [["N261BE", "bbbbbb", 1], ["PK-DUM", "eeeeee", 1], ["VH-L6T", "aaaaaa", 2]]);
+  assert.deepEqual(r.j.jejak[2].titik.map(t => [t.t, t.lat]), [[awal, -1], [awal + JAM, -1.1]]); assert.deepEqual(Object.keys(r.j.jejak[2].titik[0]), ["t", "lat", "lon", "alt", "gs"]);
+  assert.deepEqual((await M.api("GET", `${J}?tanggal=${D1}`, undefined, udara)).j.jejak.map(x => x.registrasi), ["N261BE", "VH-L6T"], "staf nyata tidak melihat armada dummy");
+  assert.deepEqual((await M.api("GET", `${J}?tanggal=2026-01-01`, undefined, GERBANG)).j, {tanggal: "2026-01-01", aktif: true, posisi_hari_ini: 0, jejak: []});
+  const V = await siapkan("uji-jejak-tanpa-tabel"); await V.DB.prepare("DROP TABLE adsb_posisi").run();
+  assert.deepEqual((await V.api("GET", `${J}?tanggal=${D1}`, undefined, ADMIN)).j, {tanggal: D1, aktif: false, posisi_hari_ini: 0, jejak: []}, "tabel belum ada: aktif false, bukan 500");
+});
+
 uji("503 sopan tanpa 0106 (auth tetap lebih dulu)", async () => {
   const V = await siapkan("uji-monitor-503");
   for (const t of ["op_foto", "op_gerak_hasil"]) await V.DB.prepare(`DROP TABLE ${t}`).run();
