@@ -37,7 +37,10 @@ rmdir "$tmp"
 bersih() { git worktree remove --force "$tmp" >/dev/null 2>&1; rm -rf "$tmp"; git worktree prune; }
 trap bersih EXIT INT TERM
 git worktree add --detach "$tmp" "$sha_dorong" >/dev/null 2>&1 || { echo "pre-push: gagal membuat worktree uji." >&2; exit 1; }
-ln -s "$utama/node_modules" "$tmp/node_modules"
+# node_modules terlacak git sebagai symlink relatif ke node_modules.nosync (trik iCloud). Jangan sentuh symlink terlacak itu
+# (gerbang jalur mutlak membacanya); sediakan node_modules.nosync di worktree yang menunjuk ke modul nyata checkout utama.
+modul=$(cd "$utama/node_modules" && pwd -P) || { echo "pre-push: node_modules tidak terbaca." >&2; exit 1; }
+if [ -L "$tmp/node_modules" ]; then ln -s "$modul" "$tmp/$(readlink "$tmp/node_modules")"; else ln -s "$modul" "$tmp/node_modules"; fi
 echo "pre-push: uji di commit $(echo "$sha_dorong" | cut -c1-9) ..." >&2
 gagal=
 (cd "$tmp" && npm run uji:agen) >&2 || gagal="uji:agen"
