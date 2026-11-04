@@ -17,6 +17,7 @@ const {
 } = require('@whiskeysockets/baileys')
 const limiter = require('./limiter')
 const drive = require('../drive.cjs').buat({ kabar: (t) => kabarPemilik(t) }) // Google Drive: mati sendiri bila belum dikonfigurasi
+const OCR = require('../ocr.cjs')
 const { samaAman, idAman, idSah, jalurKeluaran, mimeBoleh, ukuranBerkas, buatTerlihat, susulanBaru } = require('../aman.cjs')
 
 const PORT = Number(process.env.PORT) || 3101
@@ -130,7 +131,7 @@ app.listen(PORT, '127.0.0.1', () => log('API lokal di 127.0.0.1:' + PORT))
 // ── MASUK ───────────────────────────────────────────────────────────────
 function isiPesan(m) {
   const c = normalizeMessageContent(m.message) || {}
-  const teks = c.conversation || c.extendedTextMessage?.text || c.documentMessage?.caption || c.imageMessage?.caption || ''
+  const teks = c.conversation || c.extendedTextMessage?.text || c.documentMessage?.caption || c.imageMessage?.caption || c.videoMessage?.caption || ''
   const media = c.documentMessage || c.imageMessage || null
   return { c, teks, media, adaDok: !!c.documentMessage }
 }
@@ -158,14 +159,39 @@ function ukuranOutbox() {
 }
 let kabarPenuh = false
 
+// OCR tempelan foto grup operasi di Mac mini (Vision); buffer ditulis sementara di ~/.wa-bot/kerja dan dihapus lagi. Gagal = undefined.
+const KERJA = path.join(RUMAH, 'kerja')
+for (const f of (() => { try { return fs.readdirSync(KERJA) } catch { return [] } })()) if (/^(ocr-|vid-)/.test(f)) fs.rmSync(path.join(KERJA, f), { recursive: true, force: true }) // sisa proses mati
+async function stempelFoto(buf) {
+  fs.mkdirSync(KERJA, { recursive: true, mode: 0o700 })
+  const f = path.join(KERJA, `ocr-${Date.now()}-${process.pid}.jpg`)
+  try { tulis(f, buf); return (await OCR.bacaStempel(f)) || undefined } catch { return undefined } finally { fs.rmSync(f, { force: true }) }
+}
+// Pemanasan: panggilan Vision pertama sesudah start/kompilasi bisa > 20 dtk dan kena batas waktu; foto grup pertama jangan jadi korbannya.
+OCR.bacaStempel(path.join(__dirname, '../../../tests/wa/bahan/stempel-contoh.jpg'), 120000)
+  .then((t) => log('[ocr] siap', t ? 'ok' : 'kosong')).catch(() => {})
+
+// Video grup operasi: unduh (<= 20 MB), ambil satu frame (ffmpeg), OCR. Video asli dihapus, tidak pernah dikirim. Tanpa ffmpeg = dilewati.
+async function frameDariVideo(m, video, id) {
+  if (ukuranBerkas(video.fileLength, BATAS_BERKAS) === null) { log('[video] grup-ops dilewati: lebih dari 20 MB atau ukuran tak jelas'); return null }
+  try {
+    const buf = await downloadMediaMessage(m, 'buffer', {}, { logger: pino({ level: 'silent' }), reuploadRequest: sock.updateMediaMessage })
+    if (buf.length > BATAS_BERKAS) { log('[video] grup-ops dilewati: lebih dari 20 MB sesudah unduh'); return null }
+    const fv = await OCR.frameVideo(buf, KERJA)
+    if (!fv) log('[video] grup-ops dilewati: ffmpeg tidak ada atau tak ada frame', id)
+    return fv
+  } catch (err) { log('[video] grup-ops dilewati:', String((err && err.message) || err)); return null }
+}
+
 async function simpanKeOutbox(m) {
   const k = m.key
   const { c, teks, media: mediaAda, adaDok } = isiPesan(m)
+  const video = c.videoMessage && GRUP_OPS.has(k.remoteJid) && !IZIN.has(pengirim(k)) ? c.videoMessage : null // video grup operasi: satu frame dikirim sebagai foto
   const media = mediaAda && (!GRUP_OPS.has(k.remoteJid) || IZIN.has(pengirim(k)) || c.imageMessage) ? mediaAda : null // grup operasi: hanya foto (dokumen grup tetap dibuang)
   const dari = pengirim(k)
   const grupOps = !!dari && !IZIN.has(dari) && GRUP_OPS.has(k.remoteJid)
   if (!dari || (!IZIN.has(dari) && !grupOps)) return
-  if (!teks.trim() && !media) return // foto grup tanpa caption tetap diteruskan
+  if (!teks.trim() && !media && !video) return // foto grup tanpa caption tetap diteruskan
   if (!media && !grupOps) { // perintah tetap (perintah.mjs): hanya dari PEMILIK, tidak jadi bahan, balasan hanya ke pengirim
     const P = await import('../perintah.mjs')
     const cmd = P.cegat({ dari, teks, pemilik: process.env.PEMILIK })
@@ -192,7 +218,15 @@ async function simpanKeOutbox(m) {
       else {
         tulis(path.join(OUTBOX, id + '.bin'), buf); lampiran = buf
         e.berkas = { nama: adaDok ? (media.fileName || 'berkas') : `foto-${id}.jpg`, tipe }
+        if (grupOps && c.imageMessage) e.stempel = await stempelFoto(buf)
       }
+    }
+  } else if (video) {
+    const fv = await frameDariVideo(m, video, id)
+    if (fv) {
+      tulis(path.join(OUTBOX, id + '.bin'), fv.jpg); lampiran = fv.jpg
+      e.berkas = { nama: `frame-video-${idAman(k.id)}.jpg`, tipe: 'image/jpeg' }
+      if (fv.stempel) e.stempel = fv.stempel
     }
   }
   tulis(path.join(OUTBOX, id + '.json'), JSON.stringify(e))
@@ -238,6 +272,7 @@ async function kirimSatu(e) {
   const f = new FormData()
   f.set('dari', e.dari); f.set('nama', e.nama); f.set('teks', e.teks); f.set('waktu', String(e.waktu))
   if (e.grup) f.set('grup', e.grup)
+  if (e.stempel) f.set('stempel', String(e.stempel).slice(0, 4000))
   if (e.berkas) {
     const buf = fs.readFileSync(path.join(OUTBOX, e.id + '.bin'))
     f.set('berkas', new Blob([buf], { type: e.berkas.tipe }), e.berkas.nama)

@@ -4,7 +4,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 const src = fs.readFileSync(new URL('../../scripts/wa/gateway/index.js', import.meta.url), 'utf8')
 test('foto grup tanpa caption tidak dibuang', () => {
-  assert.match(src, /if \(!teks\.trim\(\) && !media\) return/)
+  assert.match(src, /if \(!teks\.trim\(\) && !media && !video\) return/)
   assert.doesNotMatch(src, /!media \|\| grupOps\)\) return/)
 })
 test('media diunduh juga untuk grup, hanya foto', () => {
