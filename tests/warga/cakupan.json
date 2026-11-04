@@ -1,6 +1,11 @@
 {
   "_catatan": "Registri cakupan Lapor Warga + titik 3 jam. Tiap rute di src/worker.js dan tiap tabel/trigger di migrations/ WAJIB ada di 'diuji' (nilai = potongan nama uji yang benar-benar ada) atau 'dikecualikan' (nilai = alasan). 'antre' = utang eksplisit, hanya boleh menyusut (gerbang menolak kalau bertambah).",
   "diuji": {
+    "GET /api/saham/cari": "saham: cari sukses dipetakan dan kunci Investing terkirim sebagai header",
+    "GET /api/saham/dividen": "saham: dividen, info, transaksi, grafik memakai jalur, parameter, dan kunci yang benar",
+    "GET /api/saham/:kode/info": "saham: dividen, info, transaksi, grafik memakai jalur, parameter, dan kunci yang benar",
+    "GET /api/saham/:kode/transaksi": "saham: validasi masukan 400 masukan_salah tanpa fetch",
+    "GET /api/saham/:kode/grafik": "saham: 403 penyedia dan 401 provider_unauthorized menjadi akses_belum_dibuka",
     "table prediksi_konfirmasi": "POST: kode regu sah tersimpan, kirim ulang menimpa",
     "POST /api/prediksi/konfirmasi": "POST: field salah ditolak 400 dan tidak tersimpan",
     "GET /api/prediksi/konfirmasi": "GET /api/prediksi/konfirmasi: tanpa token 401",
@@ -943,7 +948,8 @@
     "POST /api/sensor/lapor": "sensor: lapor dari gateway tersimpan",
     "POST /api/logbook/dummy": "logbook: dummy hanya Super Admin",
     "GET /bnpb/dokumen": "GET /bnpb/dokumen: kerangka publik tanpa cache",
-    "GET /bnpb/bahan": "GET /bnpb/dokumen: kerangka publik tanpa cache",
+    "GET /bnpb/saham": "saham: halaman /bnpb/saham pribadi",
+    "GET /bnpb/bahan":"GET /bnpb/dokumen: kerangka publik tanpa cache",
     "GET /bnpb/perencanaan": "GET /bnpb/perencanaan: kerangka publik tanpa cache",
     "GET /bnpb/operasi": "GET /bnpb/operasi: kerangka publik tanpa cache",
     "GET /bnpb/operasi-lapangan": "GET /bnpb/operasi-lapangan: dialihkan ke tab Operasi peta utama",
