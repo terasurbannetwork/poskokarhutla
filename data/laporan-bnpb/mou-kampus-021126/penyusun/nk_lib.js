@@ -122,9 +122,9 @@ function simpan(isi, keluar, judul) {
 }
 
 // identitas dan konsiderans BNPB yang sama di semua naskah
-const BNPB_IDENTITAS = '**BADAN NASIONAL PENANGGULANGAN BENCANA**, berkedudukan di Graha BNPB, Jalan Pramuka Kav. 38, Jakarta Timur 13120, diwakili oleh **Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si., M.Si. (Han)**, selaku Kepala Badan Nasional Penanggulangan Bencana, yang diangkat berdasarkan Keputusan Presiden Republik Indonesia Nomor [[nomor]] Tahun [[tahun]] tentang [[judul keputusan]], dalam hal ini bertindak untuk dan atas nama Badan Nasional Penanggulangan Bencana, selanjutnya disebut **PIHAK KESATU**.';
+const BNPB_IDENTITAS = '**BADAN NASIONAL PENANGGULANGAN BENCANA**, berkedudukan di Graha BNPB, Jalan Pramuka Kav. 38, Jakarta Timur 13120, diwakili oleh **Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)**, selaku Kepala Badan Nasional Penanggulangan Bencana, yang diangkat berdasarkan Keputusan Presiden Republik Indonesia Nomor [[nomor]] Tahun [[tahun]] tentang [[judul keputusan]], dalam hal ini bertindak untuk dan atas nama Badan Nasional Penanggulangan Bencana, selanjutnya disebut **PIHAK KESATU**.';
 const BNPB_KONSIDERANS = 'bahwa **PIHAK KESATU** adalah lembaga pemerintah nonkementerian sebagaimana dimaksud dalam Undang-Undang Nomor 24 Tahun 2007 tentang Penanggulangan Bencana, yang tugas dan fungsinya diatur dalam Peraturan Presiden Nomor 1 Tahun 2019 tentang Badan Nasional Penanggulangan Bencana sebagaimana telah diubah dengan Peraturan Presiden Nomor 29 Tahun 2021;';
-const BNPB_TTD = ['**PIHAK KESATU**', '**KEPALA BADAN NASIONAL**', '**PENANGGULANGAN BENCANA,**', '**Letnan Jenderal TNI**', '**Kristomei Sianturi, S.Sos.,**', '**M.Si., M.Si. (Han)**'];
+const BNPB_TTD = ['**PIHAK KESATU**', '**KEPALA BADAN NASIONAL**', '**PENANGGULANGAN BENCANA,**', '**Letnan Jenderal TNI**', '**Kristomei Sianturi,**', '**S.Sos., M.Si. (Han)**'];
 const BNPB_ALAMAT = [
   ['Alamat', 'Graha BNPB, Jalan Pramuka Kav. 38, Jakarta Timur 13120'],
   ['Telepon', '021-29827793'],
