@@ -1,7 +1,7 @@
 """python3 -I fs2.py MODE  ; MODE setara26 (S-NPP, sampai 2 Nov) | semua26 (N+N20+N21 cluster, hotspot M+N+N20+N21)
 Keluaran fs2_<mode>.json: {hari: [firespot_titik, hotspot_semua_keyakinan_sensor_mode, {prov: firespot}]}"""
 import sys, os, csv, io, glob, json, datetime as dt, collections
-AKAR = '/Users/priyankaalfatehan28/Developer/poskokarhutla'
+AKAR = os.path.abspath(os.path.join(os.path.dirname(__file__), *['..'] * 5))
 sys.path.insert(0, AKAR + '/scripts/data')
 import harian as H, aturan as A, titik_palsu as TP, titik_unik as TU
 from wilayah import Wilayah

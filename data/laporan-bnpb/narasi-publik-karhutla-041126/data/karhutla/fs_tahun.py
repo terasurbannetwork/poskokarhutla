@@ -1,7 +1,7 @@
 """Firespot (titik) nasional per hari, S-NPP saja, 1 Jan..27 Okt (+ varian). Pakai harian.firespot/dbscan/pix + titik_unik + titik_palsu + Wilayah.
 python3 -I fs_tahun.py TAHUN  -> fs_<tahun>.json"""
 import sys, os, csv, json, datetime as dt, collections
-AKAR = '/Users/priyankaalfatehan28/Developer/poskokarhutla'
+AKAR = os.path.abspath(os.path.join(os.path.dirname(__file__), *['..'] * 5))
 sys.path.insert(0, AKAR + '/scripts/data')
 import harian as H, aturan as A, titik_palsu as TP, titik_unik as TU
 from wilayah import Wilayah

@@ -13,7 +13,7 @@
 - Baris sumber tabel: PM2,5 CAMS 1 Nov (hari terakhir di riwayat.json website).
 
 Bangun ulang: `PYTHONUTF8=1 C:/Python314/python jalan.py`, lalu
-`PYTHONUTF8=1 DECK_BNPB=C:/Users/USER/.claude/skills/ppt-konsultan/bnpb C:/Python314/python bingkai.py`. Gerbang deck.py lolos (303 angka).
+`PYTHONUTF8=1 DECK_BNPB=$HOME/.claude/skills/ppt-konsultan/bnpb python bingkai.py`. Gerbang deck.py lolos (303 angka).
 
 - Revisi 3 Nov malam (pemilik):
   - "untuk laporan karhutla gausah pake cover depan belakang": deck kini 3 slide (peta, tabel, operasi). `generator/lewat_deck.py`

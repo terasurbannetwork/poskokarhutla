@@ -1,6 +1,6 @@
 import urllib.request, datetime as dt, re, os, sys
 from concurrent.futures import ThreadPoolExecutor
-K=re.search(r'^FIRMS_MAP_KEY=(\S+)',open('/Users/priyankaalfatehan28/Developer/poskokarhutla/.env').read(),re.M).group(1)
+K=re.search(r'^FIRMS_MAP_KEY=(\S+)',open(os.path.join(os.path.dirname(os.path.abspath(__file__)), *['..'] * 5, '.env')).read(),re.M).group(1)
 def ambil(a):
     src,u=a; f=f'nrt/{src}-{u}.csv'
     if os.path.exists(f): return
