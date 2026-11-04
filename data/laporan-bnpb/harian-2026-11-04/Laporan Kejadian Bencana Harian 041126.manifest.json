@@ -1505,7 +1505,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor149.31",
+   "kunci": "turunan:spek#2#impor149.34",
    "tampil": "664",
    "nilai": null,
    "naskah": "spek#2",
@@ -1514,7 +1514,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor149.47",
+   "kunci": "turunan:spek#2#impor149.50",
    "tampil": "653",
    "nilai": null,
    "naskah": "spek#2",
@@ -1523,7 +1523,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor150.32",
+   "kunci": "turunan:spek#2#impor150.34",
    "tampil": "368",
    "nilai": null,
    "naskah": "spek#2",
@@ -1532,7 +1532,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor150.52",
+   "kunci": "turunan:spek#2#impor150.54",
    "tampil": "216",
    "nilai": null,
    "naskah": "spek#2",
@@ -1541,7 +1541,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor152.45",
+   "kunci": "turunan:spek#2#impor152.49",
    "tampil": "2.5",
    "nilai": null,
    "naskah": "spek#2",
@@ -1550,7 +1550,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor152.49",
+   "kunci": "turunan:spek#2#impor152.53",
    "tampil": "781,9",
    "nilai": null,
    "naskah": "spek#2",
@@ -1559,7 +1559,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor153.26",
+   "kunci": "turunan:spek#2#impor153.28",
    "tampil": "27.148,",
    "nilai": null,
    "naskah": "spek#2",
@@ -1568,7 +1568,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor153.48",
+   "kunci": "turunan:spek#2#impor153.50",
    "tampil": "196",
    "nilai": null,
    "naskah": "spek#2",
@@ -1577,7 +1577,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor155.24",
+   "kunci": "turunan:spek#2#impor155.26",
    "tampil": "157.900",
    "nilai": null,
    "naskah": "spek#2",
@@ -1586,7 +1586,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor155.45",
+   "kunci": "turunan:spek#2#impor155.47",
    "tampil": "25.611",
    "nilai": null,
    "naskah": "spek#2",
@@ -1595,7 +1595,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor156.25",
+   "kunci": "turunan:spek#2#impor156.28",
    "tampil": "19.836",
    "nilai": null,
    "naskah": "spek#2",
@@ -3078,7 +3078,7 @@
   "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262",
   "foto0_0.png": "3c8688d68006235d198d9efb572787e5aee08d3ecece28af93e8978e9d4916c0",
   "foto5_0.png": "3c8688d68006235d198d9efb572787e5aee08d3ecece28af93e8978e9d4916c0",
-  "isi.pptx": "cdeea5cef4ca2d885d8c86ed3651af3fce2af3253856a55ae9be9b04459e7c31",
-  "spek.json": "ef4f6a9c85bfa35bced86debd19c77d54f8303270f4f3a3cbd02a1f696ebaf54"
+  "isi.pptx": "98e7ba26ffba2e1a657fca170019a2ee84e7f14967990cc99f787bccb8e183df",
+  "spek.json": "209e4b8ba3fcc03ab6b3d28525237a4b7775d82eabbc68ce7b0164d3d5c40b5c"
  }
 }

@@ -287,8 +287,8 @@ class Deck:
             s._fon = {t: ImageFont.truetype(os.path.join(d, f'Roboto-{"Bold" if t else "Regular"}.ttf'), 1000) for t in (True, False)}
         return int(sum(s._fon[bool(t)].getlength(x) for x, _, t in runs) / 1000 * sz / 100 * 12700)
 
-    def pil(s, x, y, teks, fill, warna, ikon, sz=620, h=164592, b=True):
-        sz = max(sz, 700); w = 120000 + len(teks) * sz * 62 + h * .9
+    def pil(s, x, y, teks, fill, warna, ikon, sz=620, h=164592, b=True, w=None):
+        sz = max(sz, 700); w = w or 120000 + len(teks) * sz * 62 + h * .9
         return (s.kotak(x, y, w, h, fill, 'roundRect', adj=50000) + s.gambar(x + h * .35, y + h * .2, h * .6, h * .6, ikon)
                 + s.tx(x + h * .95, y, w - h * .95, h, [teks], sz=sz, b=b, c=warna, al='ctr', an='ctr', wrap='none')), w
     def au(s, xe, y, h, angka, satuan, sz, c=INK, b=True, cs=None, bs=None, wn=700000, wu=900000):
@@ -375,42 +375,42 @@ class Deck:
         kunci = lambda x: (x['prov'], x.get('lokasi') or '')
         sk = {kunci(x): (x.get('sat') or {}).get('sisa') or 0 for x in K['kej'] if x['jenis'] == 'karhutla' and x.get('tangani')}
         kini = sorted((x for x in s.KH if x['tangani'] and (not x['lokasi'] or x['lokasi'] not in KAWASAN)), key=lambda x: -x['sat']['sisa'])
-        b1 = [f"•  Perkuat pemadaman: {nm(x)} ±{f0(x['sat']['sisa'])} ha" for x in kini[:1]]
-        if len(kini) > 1: b1 = [f"•  Perkuat pemadaman: {nm(kini[0])} ±{f0(kini[0]['sat']['sisa'])} ha, {nm(kini[1])} ±{f0(kini[1]['sat']['sisa'])} ha"]
+        b1 = [f"•  Memperkuat pemadaman: {nm(x)} ±{f0(x['sat']['sisa'])} ha" for x in kini[:1]]
+        if len(kini) > 1: b1 = [f"•  Memperkuat pemadaman: {nm(kini[0])} ±{f0(kini[0]['sat']['sisa'])} ha, {nm(kini[1])} ±{f0(kini[1]['sat']['sisa'])} ha"]
         naik = [(x['sat']['sisa'] - sk.get(kunci(x), 0), x) for x in kini[2:] if x['sat']['sisa'] - sk.get(kunci(x), 0) >= 50]   # belum ditangani kemarin = naik dari 0 (Kaltim)
         naik.sort(key=lambda t: -t[0])
         jaga = [nm(x) for x in kini[2:] if x['perhatian']]
-        if sk and naik: b1.append(muat('•  Tambah pemadaman: ', [f"{nm(x)} naik {f0(d)} ha" for d, x in naik[:2]], 59))
-        elif jaga: b1.append(muat('•  Patroli, pendinginan: ', jaga[:3], 59))
-        elif len(kini) > 2: b1.append(f"•  Pantau {len(kini) - 2} provinsi lain dengan sisa api")
+        if sk and naik: b1.append(muat('•  Menambah pemadaman: ', [f"{nm(x)} naik {f0(d)} ha" for d, x in naik[:2]], 61))   # 4 Nov: 60 huruf masih muat di kolom
+        elif jaga: b1.append(muat('•  Patroli dan pendinginan: ', jaga[:3], 59))
+        elif len(kini) > 2: b1.append(f"•  Memantau {len(kini) - 2} provinsi lain dengan sisa api")
         # keselamatan warga: masker/ISPA di kota terburuk (nilai PM2.5), lalu layanan pengungsi; tanpa pengungsi, pantau udara
         pm = s.w['pm']; b2 = []
         kota = [(k, v) for k, v, kat in pm if kat.lower() in ('berbahaya', 'sangat tidak sehat')]
         if kota:
-            t_ = f"•  Masker dan layanan ISPA: {kota[0][0]} (PM2.5 {f1(kota[0][1])})"
-            b2.append(t_ if len(t_) <= 59 else f"•  Masker, ISPA: {kota[0][0]} (PM2.5 {f1(kota[0][1])})")
+            t_ = f"•  Menyediakan masker dan ISPA: {kota[0][0]} (PM2.5 {f1(kota[0][1])})"
+            b2.append(t_ if len(t_) <= 59 else f"•  Menyediakan masker: {kota[0][0]} (PM2.5 {f1(kota[0][1])})")
         ungsi = []
         for x in s.KJ:
             u_ = (x.get('teks') or {}).get('pengungsi') or ''
             m = re.search(r'([\d.]+)\s*(?:\([^)]*\)\s*)?jiwa', u_, re.I)
             if m and x['status'] != 'selesai' and not re.search(r'kembali', u_, re.I): ungsi.append((angka_id(m[1]), x['lokasi'] or PENDEK(x['prov'])))
         ungsi.sort(reverse=True)
-        if ungsi: b2.append(muat('•  Layani pengungsi: ', [f"{t} ±{f0(n)}" for n, t in ungsi[:2]], 54) + ' jiwa')
+        if ungsi: b2.append(muat('•  Melayani pengungsi: ', [f"{t} ±{f0(n)}" for n, t in ungsi[:2]], 54) + ' jiwa')
         buruk = sum(kat.lower() in ('tidak sehat', 'sangat tidak sehat', 'berbahaya') for k, v, kat in pm)
-        if len(b2) < 2 and buruk: b2.append(f"•  Pantau udara: {buruk} lokasi Tidak Sehat ke atas")
-        if not b2: b2 = ['•  Pemantauan kualitas udara di wilayah terdampak asap']
+        if len(b2) < 2 and buruk: b2.append(f"•  Memantau udara: {buruk} lokasi Tidak Sehat ke atas")
+        if not b2: b2 = ['•  Memantau kualitas udara di wilayah terdampak asap']
         # kolom ketiga: air bersih bila ada kekeringan (gaya lama), kejadian baru bila tidak, pemulihan sebagai cadangan
         br = [x for x in s.baru() if x['jenis'] != 'karhutla']
         if s.KR:
             kk = sum(x['angka'].get('kk', 0) for x in s.KR); lt = sum(x['angka'].get('liter', 0) for x in s.KR); tk = sum(x['angka'].get('tangki', 0) for x in s.KR)
-            b3 = [f"•  Lanjutkan distribusi {f0(lt)} liter untuk ±{f0(kk)} KK"] if lt else [f"•  Distribusi air bersih untuk ±{f0(kk)} KK"]
+            b3 = [f"•  Melanjutkan distribusi {f0(lt)} liter untuk ±{f0(kk)} KK"] if lt else [f"•  Mendistribusikan air bersih untuk ±{f0(kk)} KK"]
             kosong = [x['lokasi'] for x in s.KR if not x['angka'].get('liter')]
             besar = max(s.KR, key=lambda x: x['angka'].get('kk', 0))
-            b3.append(muat('•  Percepat pendataan dan distribusi: ', kosong, 59) if kosong else f"•  Prioritaskan {besar['lokasi']}: ±{f0(besar['angka'].get('kk', 0))} KK terdampak")
+            b3.append(muat('•  Mempercepat pendataan dan distribusi: ', kosong, 59) if kosong else f"•  Memprioritaskan {besar['lokasi']}: ±{f0(besar['angka'].get('kk', 0))} KK terdampak")
             k3 = ('daun_p', 'Air bersih', b3)
         elif br:
-            k3 = ('awas_p', 'Kejadian baru', [muat('•  Kaji cepat dampak: ', [f"{x['lokasi'] or PENDEK(x['prov'])} ±{f0(x['angka']['kk'])} KK" if x['angka'].get('kk') else (x['lokasi'] or PENDEK(x['prov'])) for x in br], 59),
-                                              '•  Dampingi BPBD: logistik dan pembersihan material'])
+            k3 = ('awas_p', 'Kejadian baru', [muat('•  Mengkaji cepat dampak: ', [f"{x['lokasi'] or PENDEK(x['prov'])} ±{f0(x['angka']['kk'])} KK" if x['angka'].get('kk') else (x['lokasi'] or PENDEK(x['prov'])) for x in br], 59),
+                                              '•  Mendampingi BPBD: logistik dan pembersihan material'])
         else:
             g = next((x for x in s.LN if x['tangani']), None)
             k3 = ('awas_p', 'Pemulihan', [f"•  {JENIS_LAIN[g['jenis']][0]} {NAMA[g['prov']]}: pendampingan berlanjut"] if g else ['•  Pemantauan kejadian lain berlanjut'])
@@ -554,7 +554,7 @@ class Deck:
             a = {m: sum(x['angka'].get(m, 0) for x in xs) for m in ('kk', 'rumah', 'rumah_dampak', 'mengungsi', 'jiwa', 'ha')}
             ha = f0(a['ha']) if a['ha'] == int(a['ha']) else str(round(a['ha'], 1)).replace('.', ',')   # TPA 28 Okt: ±15,5 ha, bukan "penanganan"
             return (f"{f0(a['kk'])} KK" if a['kk'] else f"{ha} ha" if a['ha'] else f"{f0(a['rumah'] or a['rumah_dampak'])} rumah" if a['rumah'] or a['rumah_dampak']
-                    else f"{f0(a['mengungsi'])} mengungsi" if a['mengungsi'] else 'penanganan')
+                    else f"{f0(a['mengungsi'])} mengungsi" if a['mengungsi'] else 'dalam pendataan')   # 4 Nov pemilik: Solok tanpa angka KK
         for n, (k, x) in enumerate(baris):
             y = 3840480 + n * rp; q = int(rp * .8)
             if n: o += s.garis(8668512, y - (rp - q) // 2, 2809951, 'F1F2F4')
@@ -678,9 +678,12 @@ class Deck:
         def pils(ps, px_, y_):
             o_ = ''
             for t, f, c, ik in reversed(ps):
-                ww = 120000 + len(t) * 700 * 62 + 164592 * .9; px_ -= ww; o_ += s.pil(px_, y_, t, f, c, ik, sz=700, h=164592)[0]; px_ -= 54864
+                ww = 120000 + len(t) * 700 * 62 + 164592 * .9
+                if KW and ik in ('awas_oranye', 'kalender_navy'): ww = KW   # 4 Nov pemilik: label keterangan selebar, pil KK sejajar
+                px_ -= ww; o_ += s.pil(px_, y_, t, f, c, ik, sz=700, h=164592, w=ww)[0]; px_ -= 54864
             return o_, px_
         lain, yy = '', 0
+        KW = max((120000 + len(t) * 700 * 62 + 164592 * .9 for x in LN for t, f, c, ik in s.ket(x) if ik in ('awas_oranye', 'kalender_navy')), default=0) if getattr(s, 'SEJAJAR', False) else 0
         JL = dict(JENIS_LAIN, **({'kekeringan': ('Kekeringan', 'daun', KER, T_KER)} if any(x['jenis'] == 'kekeringan' for x in LN) else {}))
         for jn, (nama, ikon, warna, tint) in JL.items():
             xs = [x for x in LN if x['jenis'] == jn]
@@ -765,7 +768,7 @@ class Deck:
 
     def s3(s, LN=None, KH=None):
         KH, KR, LN = s.KH if KH is None else KH, s.KR, s.LN if LN is None else LN   # 30 Okt: slide pengkinian = tanpa kejadian baru (sudah di slide 3)
-        s.KET_UMUM = not s.LAMPIRAN
+        s.KET_UMUM = not s.LAMPIRAN; s.SEJAJAR = False   # perataan pil hanya di slide kejadian baru
         s.TAMPIL_AWAL = s.LAMPIRAN and not s.GABUNG   # 31 Okt: slide pengkinian memuat tanggal laporan pertama
         try: return s._s3(KH, KR, LN)
         finally: s.TAMPIL_AWAL = False
@@ -908,7 +911,7 @@ class Deck:
         return J
 
     def s3_baru(s):
-        s.KET_UMUM = True
+        s.KET_UMUM = True; s.SEJAJAR = True   # 4 Nov pemilik: pil KK sejajar di slide kejadian baru
         # 30 Okt revisi pemilik: karhutla baru = tabel karhutla biasa (masih terbakar di atas, padam di bawah); banjir, cuaca ekstrem, dll. = box
         # "Bencana lainnya" biasa, keduanya dengan keterangan singkat BPBD; kolom kiri diisi penuh setinggi panel gunung api di kanan.
         B = s.baru(); X0, LW = 548640, 6720840
@@ -1422,6 +1425,7 @@ class Deck:
             if not x['tangani']: return 'Api sudah padam'   # 31 Okt pemilik: "api telah padam" = "api sudah berhasil dipadamkan", satu label
         for bag in re.split(r'[,;.]\s+|\s+dan\s+|:\s*', k):
             b = re.sub(r'\s+(?:oleh\s+)?(?:BPBD|Tim)\b.*$', '', bag.strip()).strip(' .')
+            if b and re.fullmatch(r'(?i)(?:dalam\s+)?penanganan', b): return 'Dalam penanganan'   # 4 Nov pemilik: Brebes "Penanganan" = Sumenep "Dalam penanganan"
             if b and len(b) <= 32 and re.search(s.KATA_KET, b, re.I): return b[0].upper() + b[1:]
         return 'Dalam penanganan' if x.get('tangani') else 'Selesai'
 
