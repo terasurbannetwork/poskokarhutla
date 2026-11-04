@@ -1,0 +1,1739 @@
+{
+ "_catatan": "Public Narrative Brief on Forest and Land Fires 2026 for the Head of BNPB, rebuilt from the 031126 deck with BNPB data as of 2 Nov 2026 and the latest official sources.",
+ "pesan_kunci": "The 2026 fire season is the worst since 2019 and is under national command; prevention targets peatland, arsonists are pursued up to corporations, and foreign help enters through one BNPB channel.",
+ "kajian": "narasi",
+ "tanggal": "2026-11-04",
+ "cut_off": "3 Nov 2026, 23.59 WIB",
+ "slide": [
+  {
+   "jenis": "sampul",
+   "layout": "putih",
+   "judul_penuh": true,
+   "foto": "foto/foto-gambut.jpg",
+   "kota": "Jakarta",
+   "logo_kanan": "foto/berakhlak-hd.png",
+   "subjudul": "Shared Homework for the Nation in 2026",
+   "tanpa_kepada": "owner, 2 Nov 2026: the presenter is the Head of BNPB himself",
+   "penyaji": {
+    "nama": "Lieutenant General TNI Kristomei Sianturi, S.Sos., M.Si. (Han)",
+    "jabatan": "Head of the National Disaster Management Agency (BNPB)"
+   }
+  },
+  {
+   "jenis": "daftar-isi"
+  },
+  {
+   "jenis": "kartu-angka",
+   "pesan": "A severe season, handled by Indonesia itself, focused on peatland and perpetrators",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "judul": "Firespots in 2026 reach {{angka:fs.kali_2019|fmt=1}} times 2019; Indonesia has deployed {{angka:karhutla.personel_total}} personnel and {{angka:karhutla.setkab.pesawat}} aircraft",
+   "cut_off": true,
+   "grup": [
+    {
+     "pil": "Season scale",
+     "nada": "data",
+     "ikon": "karhutla",
+     "kartu": [
+      {
+       "nilai": "{{angka:fs.total|ringkas}}",
+       "label": "firespots this year",
+       "ikon": "karhutla",
+       "warna": "oranye"
+      },
+      {
+       "nilai": "{{angka:fs.kalteng_persen|fmt=1|persen}}",
+       "label": "in Central Kalimantan",
+       "ikon": "data",
+       "warna": "oranye"
+      },
+      {
+       "nilai": "{{angka:karhutla.khg_persen|fmt=1|persen}}",
+       "label": "in peatland areas",
+       "ikon": "wilayah",
+       "warna": "oranye"
+      }
+     ]
+    },
+    {
+     "pil": "National strength",
+     "nada": "data",
+     "ikon": "lembaga",
+     "kartu": [
+      {
+       "nilai": "{{angka:karhutla.personel_total}}",
+       "label": "firefighting personnel",
+       "ikon": "jiwa",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:karhutla.wb_sorti}}",
+       "label": "water bombing sorties",
+       "ikon": "air-baku",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "judul_panel": "Key message",
+   "tesis": "The Government of Indonesia leads the 2026 response to forest and land fires and concentrates it on peatland areas. Individuals and corporations that deliberately burn land are pursued; foreign assistance is coordinated under government command.",
+   "temuan": [
+    {
+     "kode": "Temuan B.1",
+     "keyakinan": "terverifikasi",
+     "ikon": "karhutla",
+     "teks": "Firespots in 2026 reach {{angka:fs.kali_2019|fmt=1}} times 2019 and {{angka:fs.persen_2015|fmt=0|persen}} of 2015."
+    },
+    {
+     "kode": "Temuan B.3",
+     "keyakinan": "terverifikasi",
+     "ikon": "wilayah",
+     "teks": "One third of the points lie in peatland areas; dry peat makes fires hard to extinguish, so the response is concentrated on peatland."
+    },
+    {
+     "kode": "Temuan B.5",
+     "keyakinan": "penilaian-pakar",
+     "ikon": "regulasi",
+     "teks": "Bareskrim Polri has named {{angka:karhutla.hukum.korporasi_tersangka}} corporations and {{angka:karhutla.hukum.perorangan}} individuals as suspects in 2026 forest and land fire cases."
+    },
+    {
+     "kode": "Temuan B.6",
+     "keyakinan": "resmi",
+     "ikon": "jiwa",
+     "teks": "The response is a joint effort: {{angka:karhutla.personel_pemerintah}} personnel from government units (TNI, Polri, BPBD, local government, Manggala Agni, Forest Police) and {{angka:karhutla.personel_nonpem}} from community groups (company crews, volunteers, Fire Care Community)."
+    }
+   ],
+   "sumber": "Processed by BNPB from NASA FIRMS, 1 Jan–2 Nov; KHG to 24 Oct; Setkab; Bareskrim Polri; Bakom 15 Oct",
+   "pita": {
+    "label": "Messages for the public",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "karhutla",
+      "judul": "Scale of the 2026 season",
+      "isi": "The 2026 season is the most severe since 2019 and is handled under national command."
+     },
+     {
+      "ikon": "wilayah",
+      "judul": "Focus on peatland areas",
+      "isi": "Prevention and response are concentrated on dry peatland areas."
+     },
+     {
+      "ikon": "lembaga",
+      "judul": "Single-channel assistance",
+      "isi": "Foreign assistance enters through one BNPB channel under Indonesian government command."
+     }
+    ]
+   },
+   "kolom": 1
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 1
+  },
+  {
+   "jenis": "temuan-grafik",
+   "pesan": "The 2026 season compared with previous years",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "judul": "Firespots in 2026 reach {{angka:fs.kali_2019|fmt=1}} times 2019 and {{angka:fs.kali_2023|fmt=1}} times 2023, still below 2015",
+   "cut_off": true,
+   "grafik": {
+    "judul_panel": "National firespots",
+    "ikon": "karhutla",
+    "judul": "**Firespots**, January to end of October",
+    "keluarga": "netral",
+    "pembanding": false,
+    "data": {
+     "csv": "data/karhutla/setara_fs.csv",
+     "saring": "kunci=firespot",
+     "seri": "kolom",
+     "kolom": [
+      {
+       "nama": "y2015",
+       "kepala": "2015",
+       "fmt": "0"
+      },
+      {
+       "nama": "y2019",
+       "kepala": "2019",
+       "fmt": "0"
+      },
+      {
+       "nama": "y2023",
+       "kepala": "2023",
+       "fmt": "0"
+      },
+      {
+       "nama": "y2026",
+       "kepala": "2026",
+       "fmt": "0"
+      }
+     ],
+     "keyakinan": "terverifikasi",
+     "sumber": "Processed by BNPB from NASA FIRMS VIIRS S-NPP"
+    },
+    "persen_batang": false,
+    "ubah": false
+   },
+   "panel": {
+    "judul": "Weekly trend",
+    "ikon": "kalender",
+    "keyakinan": "terverifikasi",
+    "grafik": {
+     "judul": "**Firespots** per week",
+     "keluarga": "netral",
+     "persen_batang": true,
+     "data": {
+      "csv": "data/karhutla/mingguan_fs.csv",
+      "kolom": [
+       {
+        "nama": "pekan",
+        "kepala": "Week",
+        "ganti": {
+         "Pekan kedua September": "Sep II",
+         "Pekan ketiga September": "Sep III",
+         "Akhir September": "Sep IV",
+         "Awal Oktober": "Oct I",
+         "Pekan kedua Oktober": "Oct II",
+         "Pekan ketiga Oktober": "Oct III",
+         "Pekan keempat Oktober": "Oct IV",
+         "Sepekan terakhir": "Latest"
+        }
+       },
+       {
+        "nama": "firespot",
+        "kepala": "Firespots",
+        "fmt": "0"
+       }
+      ],
+      "keyakinan": "terverifikasi",
+      "sumber": "Processed by BNPB from NASA FIRMS"
+     },
+     "ubah": false
+    },
+    "daftar": [
+     "Peak in early October; the rainy season is starting to reduce firespot numbers."
+    ]
+   },
+   "pita": {
+    "label": "Messages for the public",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "karhutla",
+      "judul": "Scale of the 2026 season",
+      "isi": "Highest firespot count since 2019, still below 2015."
+     },
+     {
+      "ikon": "turun",
+      "judul": "Starting to ease",
+      "isi": "Latest-week firespots, {{angka:fs.pekan_turun_persen|fmt=1|persen|arah}} from the peak week; the trend continues to be monitored."
+     },
+     {
+      "ikon": "wilayah",
+      "judul": "Kalimantan",
+      "isi": "The five Kalimantan provinces account for {{angka:fs.kalimantan_persen|fmt=1|persen}} of national firespots this year."
+     }
+    ]
+   },
+   "sumber": "Processed by BNPB from NASA FIRMS VIIRS; firespot classification; 1 Jan–27 Oct each year, weeks to 2 Nov",
+   "grup": [
+    {
+     "pil": "This year",
+     "nada": "data",
+     "ikon": "karhutla",
+     "kartu": [
+      {
+       "nilai": "{{angka:fs.total}}",
+       "label": "firespots this year",
+       "ikon": "karhutla",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "rasio": 0.48
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "pesan": "Distribution by province and the peak already passed",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "deskriptif",
+   "judul": "Firespot Distribution by Province",
+   "cut_off": true,
+   "grup": [
+    {
+     "pil": "Distribution",
+     "nada": "data",
+     "ikon": "wilayah",
+     "kartu": [
+      {
+       "nilai": "{{angka:fs.top10_persen|fmt=1|persen}}",
+       "label": "of firespots are in the top ten provinces",
+       "ikon": "data",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:fs.kalimantan_persen|fmt=1|persen}}",
+       "label": "of firespots are in the four Kalimantan provinces",
+       "ikon": "wilayah",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "tabel": {
+    "judul_panel": "Firespots by province",
+    "ikon": "karhutla",
+    "data": {
+     "csv": "data/karhutla/provinsi_fs.csv",
+     "kolom": [
+      {
+       "nama": "provinsi",
+       "kepala": "Province"
+      },
+      {
+       "nama": "firespot",
+       "kepala": "Firespots 2026",
+       "fmt": "0",
+       "warna": "oranye",
+       "ikon": "karhutla"
+      },
+      {
+       "nama": "porsi",
+       "kepala": "National share",
+       "fmt": "1|persen",
+       "warna": "navy",
+       "ikon": "data"
+      }
+     ],
+     "keyakinan": "terverifikasi",
+     "sumber": "Processed by BNPB from NASA FIRMS VIIRS, system firespot classification"
+    },
+    "total": true,
+    "peringkat": false
+   },
+   "panel": {
+    "judul": "Firespots by month, 2026",
+    "ikon": "kalender",
+    "keyakinan": "terverifikasi",
+    "grafik": {
+     "judul": "**Firespots** per month",
+     "keluarga": "api",
+     "ubah": false,
+     "persen_batang": false,
+     "data": {
+      "csv": "data/karhutla/bulanan_fs.csv",
+      "saring": "kunci=firespot",
+      "seri": "kolom",
+      "kolom": [
+       {
+        "nama": "Jun",
+        "kepala": "Jun",
+        "fmt": "0"
+       },
+       {
+        "nama": "Jul",
+        "kepala": "Jul",
+        "fmt": "0"
+       },
+       {
+        "nama": "Agu",
+        "kepala": "Aug",
+        "fmt": "0"
+       },
+       {
+        "nama": "Sep",
+        "kepala": "Sep",
+        "fmt": "0"
+       },
+       {
+        "nama": "Okt",
+        "kepala": "Oct",
+        "fmt": "0"
+       },
+       {
+        "nama": "Nov",
+        "kepala": "Nov*",
+        "fmt": "0"
+       }
+      ],
+      "keyakinan": "terverifikasi",
+      "sumber": "Processed by BNPB from NASA FIRMS VIIRS, system firespot classification"
+     }
+    },
+    "daftar": [
+     "{{angka:fs.agu_okt_persen|fmt=1|persen}} of this year's firespots occurred between August and October.",
+     "*Current month; data to 2 November."
+    ]
+   },
+   "sumber": "Processed by BNPB from NASA FIRMS VIIRS, firespot classification, 1 Jan–2 Nov"
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 2
+  },
+  {
+   "jenis": "temuan-grafik",
+   "pesan": "Official burned area surges in a long dry year; peatland sets the scale",
+   "jenis_slide": "panel",
+   "judul_bentuk": "deskriptif",
+   "judul": "Forest and land fire area surges in a long dry year (El Nino)",
+   "cut_off": true,
+   "grafik": {
+    "judul_panel": "Official national burned area",
+    "ikon": "luas",
+    "keyakinan": "resmi",
+    "judul": "**Burned area**, ha per year, 2015–2026",
+    "keluarga": "api",
+    "data": {
+     "csv": "data/karhutla/luas.csv",
+     "saring": "kunci=ha",
+     "seri": "kolom",
+     "kolom": [
+      {
+       "nama": "2015",
+       "kepala": "2015",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2016",
+       "kepala": "2016",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2017",
+       "kepala": "2017",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2018",
+       "kepala": "2018",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2019",
+       "kepala": "2019",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2020",
+       "kepala": "2020",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2021",
+       "kepala": "2021",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2022",
+       "kepala": "2022",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2023",
+       "kepala": "2023",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2024",
+       "kepala": "2024",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2025",
+       "kepala": "2025",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2026 prakiraan",
+       "kepala": "2026*",
+       "fmt": "ringkas"
+      }
+     ],
+     "keyakinan": "resmi",
+     "sumber": "KLHK/Ministry of Forestry SiPongi via Government Communications Agency (Bakom RI) infographic, 15 Oct 2026"
+    },
+    "persen_batang": false,
+    "ubah": false
+   },
+   "panel": {
+    "judul": "Peatland",
+    "ikon": "wilayah",
+    "keyakinan": "terverifikasi",
+    "daftar": [
+     "Peat embers spread beneath the surface, so fires are hard to put out from above.",
+     "Peatland is considered degraded when its water table drops more than {{angka:karhutla.muka_air_cm|fmt=0}} cm below the surface; at that point peat is dry and burns easily.",
+     "The number of forest and land fire incidents rises sharply when average rainfall during the dry season is below {{angka:karhutla.hujan_ambang|fmt=0|satuan}}.",
+     "The 2015 losses were about US${{angka:karhutla.biaya_per_ha_2015}} per ha, with losses of US${{angka:karhutla.biaya_2015|fmt=1}} billion (World Bank); this figure is the basis of the 2026 projection."
+    ]
+   },
+   "pita": {
+    "label": "Points conveyed",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "wilayah",
+      "judul": "Dry peat",
+      "isi": "Peat left to dry out burns easily; the fire spreads beneath the surface and the smoke travels far."
+     },
+     {
+      "ikon": "kalender",
+      "judul": "Area in 2026",
+      "isi": "The 2026 bar is a satellite-based projection to 3 November; the official area follows once the season ends."
+     },
+     {
+      "ikon": "wilayah",
+      "judul": "Peatland areas",
+      "isi": "Indonesia has {{angka:karhutla.khg_n}} peatland areas covering {{angka:karhutla.khg_luas|fmt=1|satuan}}."
+     }
+    ]
+   },
+   "sumber": "SiPongi via Bakom 15 Oct; BNPB; KLHK KHG map; World Bank 2016; ACP 2018",
+   "grup": [
+    {
+     "pil": "Losses",
+     "nada": "data",
+     "ikon": "pembiayaan",
+     "kartu": [
+      {
+       "nilai": "{{angka:karhutla.kerugian_2026_miliar}}",
+       "label": "billion US dollars, projected 2026 losses",
+       "ikon": "pembiayaan",
+       "warna": "navy"
+      }
+     ]
+    },
+    {
+     "pil": "Peatland",
+     "nada": "perhatian",
+     "ikon": "wilayah",
+     "kartu": [
+      {
+       "nilai": "{{angka:karhutla.khg_persen|fmt=1|persen}}",
+       "label": "of 2026 hotspots in peatland areas",
+       "ikon": "wilayah",
+       "warna": "kategori.api"
+      },
+      {
+       "nilai": "{{angka:karhutla.khg_titik}}",
+       "label": "hotspots in peatland areas",
+       "ikon": "karhutla",
+       "warna": "kategori.api"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "jenis": "temuan-grafik",
+   "pesan": "Hotspots in concession areas and corporate responsibility",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "judul": "In the October peak week, {{angka:karhutla.izin_dalam_persen|fmt=1|persen}} of hotspots were inside concessions; most in industrial timber, then oil palm",
+   "cut_off": true,
+   "grup": [
+    {
+     "pil": "Inside concessions",
+     "nada": "perhatian",
+     "ikon": "data",
+     "kartu": [
+      {
+       "nilai": "{{angka:karhutla.izin_dalam}}",
+       "label": "hotspots in concession areas",
+       "ikon": "karhutla",
+       "warna": "merah"
+      },
+      {
+       "nilai": "{{angka:karhutla.hukum.korporasi_tersangka}}",
+       "label": "corporate suspects",
+       "ikon": "lembaga",
+       "warna": "merah"
+      },
+      {
+       "nilai": "{{angka:karhutla.hukum.usul_cabut}}",
+       "label": "corporations proposed for licence revocation",
+       "ikon": "regulasi",
+       "warna": "merah"
+      }
+     ]
+    }
+   ],
+   "panel": {
+    "judul": "Narrative",
+    "ikon": "ringkasan",
+    "keyakinan": "penilaian-pakar",
+    "daftar": [
+     "Licence holders must prevent and extinguish fires in their areas.",
+     "Hotspots in concession areas are the basis for investigation by Forestry law enforcement and Bareskrim Polri.",
+     "Industrial timber plantations account for the most concession hotspots; oil palm plantations come second.",
+     "Oil palm is a strategic commodity; action is taken against individuals who burn, especially on peatland."
+    ]
+   },
+   "sumber": "Processed by BNPB from NASA FIRMS VIIRS and the concession map (GFW, Trase), 6–12 Oct",
+   "pita": {
+    "label": "Supporting facts",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "wilayah",
+      "judul": "Water table for everyone",
+      "isi": "The duty to maintain peatland water levels applies to all land managers."
+     },
+     {
+      "ikon": "regulasi",
+      "judul": "Licences revoked",
+      "isi": "The Ministry of Forestry has revoked {{angka:karhutla.hukum.izin_dicabut}} licences of companies whose areas burned."
+     },
+     {
+      "ikon": "lembaga",
+      "judul": "Foreign capital",
+      "isi": "{{angka:karhutla.hukum.korporasi_asing}} suspect corporations have foreign capital and face the same law as domestic ones."
+     }
+    ]
+   },
+   "grafik": {
+    "judul_panel": "Hotspots in concession areas by licence type",
+    "ikon": "data",
+    "keyakinan": "terverifikasi",
+    "judul": "**Hotspots**, peak week of October",
+    "keluarga": "netral",
+    "arah": "horizontal",
+    "seragam": true,
+    "data": {
+     "csv": "data/karhutla/izin_konsesi.csv",
+     "kolom": [
+      {
+       "nama": "lokasi",
+       "kepala": "Location"
+      },
+      {
+       "nama": "titik",
+       "kepala": "Hotspots",
+       "fmt": "0"
+      }
+     ],
+     "keyakinan": "terverifikasi",
+     "sumber": "Processed by BNPB from NASA FIRMS VIIRS and the Ministry of Forestry licence map via GFW, Trase"
+    },
+    "ubah": false,
+    "persen_batang": false
+   }
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 3
+  },
+  {
+   "jenis": "temuan-visual",
+   "pesan": "Economic incentives for burning and 2026 law enforcement",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "judul": "Data show that land burned and then planted sells for US${{angka:karhutla.lahan.tanam}} per ha, {{angka:karhutla.lahan.kali_tebas|fmt=1}} times land cleared by felling only",
+   "cut_off": true,
+   "panel": {
+    "judul": "2026 law enforcement",
+    "ikon": "regulasi",
+    "keyakinan": "penilaian-pakar",
+    "data": {
+     "csv": "data/karhutla/hukum.csv",
+     "kolom": [
+      {
+       "nama": "tahap",
+       "kepala": "Stage"
+      },
+      {
+       "nama": "jumlah",
+       "kepala": "Total",
+       "fmt": "0",
+       "warna": "merah",
+       "ikon": "regulasi"
+      }
+     ],
+     "keyakinan": "penilaian-pakar",
+     "sumber": "Bareskrim Polri 29 Oct 2026; Directorate General of Law Enforcement, Ministry of Forestry, 18 Oct 2026; Law 32/2009 Articles 98, 99, 108"
+    },
+    "daftar": [
+     "Bareskrim Polri proposes licence revocation to the licensing ministries.",
+     "The Ministry of Forestry freezes other licences and requires land restoration.",
+     "Burners are prosecuted as individuals; their financiers are charged as corporations.",
+     "Companies that helped extinguish fires are still charged if their land is proven to have been burned.",
+     "Law enforcement removes the economic gain from burning land."
+    ],
+    "peringkat": false
+   },
+   "pita": {
+    "label": "Legal action",
+    "nada": "aksi",
+    "kolom": [
+     {
+      "ikon": "jiwa",
+      "judul": "Burners",
+      "isi": "Individual criminal charges for those paid to set fires."
+     },
+     {
+      "ikon": "lembaga",
+      "judul": "Financiers",
+      "isi": "Corporations that fund burning are pursued whoever owns them."
+     },
+     {
+      "ikon": "luas",
+      "judul": "Land",
+      "isi": "Land that is deliberately burned may not become a new plantation; the licence is revoked."
+     }
+    ]
+   },
+   "sumber": "Purnomo et al. 2017; Bareskrim Polri 29 Oct; Kemenhut law enforcement 18 Oct",
+   "utama": {
+    "judul": "Land sale price, US$ per ha",
+    "ikon": "pembiayaan",
+    "keyakinan": "penilaian-pakar",
+    "waterfall": {
+     "akhir": "Burned then planted",
+     "data": {
+      "csv": "data/karhutla/lahan_wf.csv",
+      "kolom": [
+       {
+        "nama": "tahap",
+        "kepala": "Stage"
+       },
+       {
+        "nama": "nilai",
+        "kepala": "US$ per ha",
+        "fmt": "0"
+       }
+      ],
+      "keyakinan": "penilaian-pakar",
+      "sumber": "Purnomo dkk. 2017, Forest Policy and Economics 78"
+     }
+    }
+   },
+   "rasio": 0.68
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Companies affiliated with foreign groups in hotspot areas",
+   "judul": "Responsibility for the fires extends beyond Indonesia: {{angka:karhutla.aktor_asing}} of {{angka:karhutla.aktor_total}} companies with hotspots in their concessions belong to groups with foreign shareholders",
+   "cut_off": true,
+   "grup": [
+    {
+     "pil": "Foreign affiliation",
+     "nada": "perhatian",
+     "ikon": "lembaga",
+     "kartu": [
+      {
+       "nilai": "{{angka:karhutla.aktor_sg}}",
+       "label": "Singapore-group companies",
+       "ikon": "lembaga",
+       "warna": "merah"
+      },
+      {
+       "nilai": "{{angka:karhutla.aktor_my}}",
+       "label": "Malaysia-group companies",
+       "ikon": "lembaga",
+       "warna": "merah"
+      },
+      {
+       "nilai": "{{angka:karhutla.hukum.korporasi_asing}}",
+       "label": "foreign corporations named suspects",
+       "ikon": "regulasi",
+       "warna": "merah"
+      }
+     ]
+    }
+   ],
+   "tabel": {
+    "judul_panel": "Foreign business groups with the most hotspots in their areas",
+    "ikon": "lembaga",
+    "peringkat": false,
+    "total": true,
+    "data": {
+     "csv": "data/karhutla/grup_asing.csv",
+     "kolom": [
+      {
+       "nama": "grup",
+       "kepala": "Business group"
+      },
+      {
+       "nama": "negara",
+       "kepala": "Country of origin",
+       "bendera": {
+        "Singapore": "sg",
+        "Malaysia": "my",
+        "South Korea": "kr"
+       }
+      },
+      {
+       "nama": "perusahaan",
+       "kepala": "Companies",
+       "fmt": "0",
+       "warna": "navy",
+       "ikon": "lembaga"
+      },
+      {
+       "nama": "hotspot",
+       "kepala": "Hotspots",
+       "fmt": "0",
+       "warna": "merah",
+       "ikon": "karhutla"
+      }
+     ],
+     "keyakinan": "penilaian-pakar",
+     "sumber": "Processed by BNPB from the WALHI 2026 actor map study and NASA FIRMS VIIRS"
+    }
+   },
+   "panel": {
+    "judul": "Narrative",
+    "ikon": "ringkasan",
+    "keyakinan": "penilaian-pakar",
+    "daftar": [
+     "Most companies in hotspot areas are affiliated with Singapore and Malaysia business groups.",
+     "The same legal treatment applies to companies with foreign capital and to companies with domestic capital.",
+     "Hotspots in licensed areas indicate locations; perpetrators are determined through investigation."
+    ]
+   },
+   "sumber": "WALHI 2026 actor map study; Processed by BNPB from NASA FIRMS VIIRS and the licence map, 5–12 Oct; Bareskrim Polri 29 Oct"
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 4
+  },
+  {
+   "jenis": "temuan-visual",
+   "pesan": "National strength and non-government units",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "judul": "Fire suppression in 2026 involves {{angka:karhutla.personel_total}} personnel; {{angka:karhutla.setkab.pesawat}} aircraft serve patrols, weather modification (OMC) and water bombing",
+   "cut_off": true,
+   "panel": {
+    "judul": "Air fleet",
+    "ikon": "air-baku",
+    "keyakinan": "resmi",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "infrastruktur",
+       "judul": "Air fleet",
+       "isi": "helicopters and aircraft deployed",
+       "angka": "{{angka:karhutla.setkab.pesawat}}"
+      },
+      {
+       "ikon": "air-baku",
+       "judul": "Water bombing",
+       "isi": "water drops by helicopter in {{angka:karhutla.wb_sorti}} sorties",
+       "angka": "{{angka:karhutla.wb_drop}}"
+      },
+      {
+       "ikon": "data",
+       "judul": "Air patrols",
+       "isi": "fire monitoring sorties",
+       "angka": "{{angka:karhutla.patroli_sorti}}"
+      },
+      {
+       "ikon": "cuaca-ekstrem",
+       "judul": "OMC",
+       "isi": "weather modification sorties",
+       "angka": "{{angka:karhutla.omc_sorti}}"
+      }
+     ]
+    }
+   },
+   "sumber": "Bakom 15 Oct 2026; Setkab 21 Sep 2026; BNPB air ops recap to 25 Oct",
+   "utama": {
+    "judul": "Firefighting personnel by unit: government and community",
+    "ikon": "jiwa",
+    "keyakinan": "resmi",
+    "kisi_ikon": {
+     "kolom": 3,
+     "kartu": [
+      {
+       "ikon": "lembaga",
+       "nilai": "{{angka:karhutla.personel.tni}}",
+       "label": "TNI, {{angka:karhutla.personel.tni_persen|fmt=1|persen}}",
+       "logo": "logo-lembaga/tni.png"
+      },
+      {
+       "ikon": "regulasi",
+       "nilai": "{{angka:karhutla.personel.polri}}",
+       "label": "Polri, {{angka:karhutla.personel.polri_persen|fmt=1|persen}}",
+       "logo": "logo-lembaga/polri.png"
+      },
+      {
+       "ikon": "tanggap-darurat",
+       "nilai": "{{angka:karhutla.personel.bpbd}}",
+       "label": "BPBD, {{angka:karhutla.personel.bpbd_persen|fmt=1|persen}}",
+       "logo": "logo-lembaga/bpbd.png"
+      },
+      {
+       "ikon": "wilayah",
+       "nilai": "{{angka:karhutla.personel.pemerintah_daerah}}",
+       "label": "Local government, {{angka:karhutla.personel.pemerintah_daerah_persen|fmt=1|persen}}"
+      },
+      {
+       "ikon": "karhutla",
+       "nilai": "{{angka:karhutla.personel.manggala_agni}}",
+       "label": "Manggala Agni, {{angka:karhutla.personel.manggala_agni_persen|fmt=1|persen}}",
+       "logo": "logo-lembaga/manggala.png"
+      },
+      {
+       "ikon": "luas",
+       "nilai": "{{angka:karhutla.personel.polisi_hutan}}",
+       "label": "Forest Police, {{angka:karhutla.personel.polisi_hutan_persen|fmt=1|persen}}"
+      },
+      {
+       "ikon": "pembiayaan",
+       "nilai": "{{angka:karhutla.personel.perusahaan}}",
+       "label": "Companies, {{angka:karhutla.personel.perusahaan_persen|fmt=1|persen}}"
+      },
+      {
+       "ikon": "jiwa",
+       "nilai": "{{angka:karhutla.personel.relawan}}",
+       "label": "Volunteers, {{angka:karhutla.personel.relawan_persen|fmt=1|persen}}"
+      },
+      {
+       "ikon": "rumah",
+       "nilai": "{{angka:karhutla.personel.masyarakat_peduli_api}}",
+       "label": "Fire Care Community (MPA), {{angka:karhutla.personel.masyarakat_peduli_api_persen|fmt=1|persen}}"
+      }
+     ],
+     "sorot": -1
+    }
+   },
+   "rasio": 0.62
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 5
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "panel",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Foreign assistance can also gauge Indonesia's capability",
+   "judul": "Foreign assistance needs careful handling to avoid gaps that could affect Indonesia's sovereignty",
+   "utama": {
+    "judul": "Gaps that could be exploited and how to close them",
+    "ikon": "peringatan",
+    "banding": {
+     "kiri": {
+      "judul": "What other countries can map"
+     },
+     "kanan": {
+      "judul": "How the government closes the gaps"
+     },
+     "skala_huruf": 1.3,
+     "baris": [
+      {
+       "label": "Response",
+       "ikon": "tanggap-darurat",
+       "kiri": "How quickly Indonesia moves when a major disaster occurs",
+       "kanan": "Command stays with BNPB; foreign teams only assist"
+      },
+      {
+       "label": "Territory",
+       "ikon": "wilayah",
+       "kiri": "Hotspot distribution and logistics routes in vulnerable areas",
+       "kanan": "Every flight by another country requires a permit and follows its assigned task"
+      },
+      {
+       "label": "Concessions",
+       "ikon": "luas",
+       "kiri": "Concession areas and oversight in border regions",
+       "kanan": "Foreign teams enter only the assigned site and are always accompanied by officials"
+      },
+      {
+       "label": "Data",
+       "ikon": "data",
+       "kiri": "Strength of data centres and the national logistics chain",
+       "kanan": "Imagery and operational data are handed to the government and processed domestically"
+      },
+      {
+       "label": "Opinion",
+       "ikon": "peringatan",
+       "kiri": "Extent of public concern over smoke",
+       "kanan": "The government speaks with one voice, with open official data"
+      },
+      {
+       "label": "Funding",
+       "ikon": "pembiayaan",
+       "kiri": "Foreign fund flows to domestic institutions",
+       "kanan": "Foreign institutions and funds must register and coordinate with BNPB"
+      }
+     ]
+    }
+   },
+   "sumber": "Law 24/2007; GR 23/2008; GR 4/2018; GR 45/2021"
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Basic principles and key sentences",
+   "judul": "Overseas partnership: assistance is welcomed with appreciation, and operational sovereignty comes first",
+   "utama": {
+    "judul": "Basic principles and key sentences",
+    "ikon": "ringkasan",
+    "kolom_teks": {
+     "mode": "kartu",
+     "kolom": [
+      {
+       "judul": "Basic principles",
+       "ikon": "lembaga",
+       "isi": [
+        {
+         "ikon": "lembaga",
+         "teks": "Humanitarian assistance from abroad is welcomed with appreciation and handled with care."
+        },
+        {
+         "ikon": "kapasitas",
+         "teks": "Assistance operations can be used to gauge response capacity and map territory."
+        },
+        {
+         "ikon": "peringatan",
+         "teks": "National interest and operational sovereignty are the first priority."
+        },
+        {
+         "ikon": "jiwa",
+         "teks": "Partnerships with friendly countries continue on an equal footing."
+        }
+       ]
+      },
+      {
+       "judul": "Key sentences",
+       "ikon": "regulasi",
+       "isi": [
+        {
+         "ikon": "jiwa",
+         "teks": "We are open to partnerships that are equal and mutually respectful."
+        },
+        {
+         "ikon": "regulasi",
+         "teks": "Operational sovereignty rests with BNPB in accordance with Indonesian law."
+        },
+        {
+         "ikon": "regulasi",
+         "teks": "This is a mandate of the law and is not negotiable."
+        },
+        {
+         "ikon": "tanggap-darurat",
+         "teks": "All assistance works under the command of the Government of Indonesia."
+        }
+       ]
+      }
+     ],
+     "huruf_maks": 22
+    }
+   },
+   "sumber": "BNPB foreign partnership guide, Nov 2026; Law 24/2007"
+  },
+  {
+   "jenis": "rekomendasi",
+   "jenis_slide": "rekomendasi",
+   "judul_bentuk": "deskriptif",
+   "seri": "panduan",
+   "pesan": "Ten guideline recommendations 1",
+   "judul": "Ten recommendations for overseas partnership guidelines {{sorot:(1/2)}}",
+   "sumber": "Law 24/2007; GR 23/2008; GR 4/2018; BNPB foreign partnership guide, Nov 2026",
+   "rekomendasi": [
+    {
+     "kode": "01",
+     "jenis": "regulasi",
+     "langkah": "Affirm BNPB as the single coordinator",
+     "rincian": "BNPB leads coordination under the Disaster Management Law; other countries act as supporters.",
+     "lembaga": [
+      "BNPB",
+      "Kemenko PMK"
+     ]
+    },
+    {
+     "kode": "02",
+     "jenis": "pembiayaan",
+     "langkah": "Apply a single-channel policy",
+     "rincian": "Water bombing aircraft, logistics, funds and personnel are recorded through BNPB; direct channels to regional governments or NGOs are avoided.",
+     "lembaga": [
+      "BNPB",
+      "Kemensetneg",
+      "Ministry of Finance"
+     ]
+    },
+    {
+     "kode": "03",
+     "jenis": "kapasitas",
+     "langkah": "Accept assistance in a balanced way",
+     "rincian": "Assistance from the United States and China as well as Japan, Malaysia, Australia and Singapore is accepted together so that none becomes dominant.",
+     "lembaga": [
+      "Kemlu",
+      "BNPB"
+     ]
+    },
+    {
+     "kode": "04",
+     "jenis": "data",
+     "langkah": "Request lists of personnel and equipment",
+     "rincian": "Names, identities, equipment, sensors, drones, radio frequencies and flight routes are submitted before operations begin.",
+     "lembaga": [
+      "BNPB",
+      "TNI",
+      "Kemlu"
+     ]
+    },
+    {
+     "kode": "05",
+     "jenis": "kapasitas",
+     "langkah": "Require accompaniment by Indonesian personnel",
+     "rincian": "Every team from another country is accompanied by BNPB or TNI personnel in the field, including an official interpreter.",
+     "lembaga": [
+      "BNPB",
+      "TNI"
+     ]
+    }
+   ]
+  },
+  {
+   "jenis": "rekomendasi",
+   "jenis_slide": "rekomendasi",
+   "judul_bentuk": "deskriptif",
+   "seri": "panduan",
+   "pesan": "Ten guideline recommendations 2",
+   "judul": "Ten recommendations for overseas partnership guidelines {{sorot:(2/2)}}",
+   "sumber": "Law 24/2007; GR 23/2008; GR 4/2018; BNPB foreign partnership guide, Nov 2026",
+   "rekomendasi": [
+    {
+     "kode": "06",
+     "jenis": "regulasi",
+     "langkah": "Set limits on areas of access",
+     "rincian": "Papua and border regions, including sensitive concession areas, may be entered only with written permission from the competent authority or the Head of BNPB.",
+     "lembaga": [
+      "BNPB",
+      "TNI",
+      "Ministry of Forestry"
+     ]
+    },
+    {
+     "kode": "07",
+     "jenis": "pembiayaan",
+     "langkah": "Prioritise local products and services",
+     "rincian": "Assistance uses local logistics, food, fuel and labour to support the domestic economy.",
+     "lembaga": [
+      "BNPB",
+      "Ministry of Industry"
+     ]
+    },
+    {
+     "kode": "08",
+     "jenis": "regulasi",
+     "langkah": "Control public communication",
+     "rincian": "Media releases through BNPB and the Intermestic forum highlight national capacity; weaknesses in logistics and data systems are not discussed with other countries.",
+     "lembaga": [
+      "BNPB",
+      "Government Communications Agency"
+     ]
+    },
+    {
+     "kode": "09",
+     "jenis": "kapasitas",
+     "langkah": "Promote technology transfer and time limits",
+     "rincian": "Assistance comes with training for Indonesian personnel and agreed start and end dates.",
+     "lembaga": [
+      "BNPB",
+      "Kemlu"
+     ]
+    },
+    {
+     "kode": "10",
+     "jenis": "data",
+     "langkah": "Involve other ministries and report to leadership",
+     "rincian": "Foreign data is checked before it leaves Indonesia; results are reported to the President through the Coordinating Minister, with no new bilateral commitments before central approval.",
+     "lembaga": [
+      "BNPB",
+      "Kemenko PMK",
+      "Kemlu"
+     ]
+    }
+   ]
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Limits on accepting assistance",
+   "judul": "Limits that must not be crossed when accepting foreign assistance",
+   "utama": {
+    "judul": "What cannot be permitted",
+    "ikon": "peringatan",
+    "banding": {
+     "kiri": {
+      "judul": "Not permitted"
+     },
+     "kanan": {
+      "judul": "Provisions"
+     },
+     "skala_huruf": 1.1,
+     "baris": [
+      {
+       "label": "Flights",
+       "ikon": "wilayah",
+       "kiri": "Aircraft of other countries fly freely to map territory",
+       "kanan": "Flight plans must be approved by BNPB and the Air Force"
+      },
+      {
+       "label": "Data",
+       "ikon": "data",
+       "kiri": "Real-time hotspot data and concession maps handed to outside parties",
+       "kanan": "TNI strength data and public sentiment stay within the country"
+      },
+      {
+       "label": "Bases",
+       "ikon": "infrastruktur",
+       "kiri": "Own base camp or warehouse outside BNPB posts",
+       "kanan": "All teams work from the BNPB command post"
+      },
+      {
+       "label": "Conditions",
+       "ikon": "pembiayaan",
+       "kiri": "Assistance conditional on access to new mines or concessions",
+       "kanan": "Assistance accepted without political or economic conditions"
+      },
+      {
+       "label": "Funding",
+       "ikon": "pembiayaan",
+       "kiri": "Assistance funds managed directly by foreign NGOs",
+       "kanan": "Funds managed through government mechanisms"
+      },
+      {
+       "label": "Sensors",
+       "ikon": "peringatan",
+       "kiri": "Drones or thermal and LIDAR sensors without permission",
+       "kanan": "Only with permits and official escort"
+      },
+      {
+       "label": "Agreements",
+       "ikon": "regulasi",
+       "kiri": "Verbal commitments or signatures during an audience",
+       "kanan": "Written, reviewed at least seven days by Foreign and Defence Ministries"
+      },
+      {
+       "label": "Interviews",
+       "ikon": "jiwa",
+       "kiri": "Interviews with victims without an escort",
+       "kanan": "Accompanied by official authorities or BNPB"
+      },
+      {
+       "label": "Military",
+       "ikon": "peringatan",
+       "kiri": "Armed teams or projects in sensitive areas",
+       "kanan": "Approval of President and TNI HQ; Papua, South China Sea closed"
+      },
+      {
+       "label": "Access",
+       "ikon": "lembaga",
+       "kiri": "Permanent assistance hubs or joint bases",
+       "kanan": "Not approved; avoid the image of a weak Indonesia"
+      }
+     ]
+    }
+   },
+   "sumber": "BNPB foreign partnership guide, Nov 2026"
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Guide to three types of documents",
+   "judul": "Humanitarian operations use civil MoUs under BNPB; SOFA and VFA are matters for the central government",
+   "utama": {
+    "judul": "Guide to three types of documents",
+    "ikon": "regulasi",
+    "kolom_teks": {
+     "mode": "kartu",
+     "kolom": [
+      {
+       "judul": "MoU",
+       "ikon": "lembaga",
+       "isi": [
+        {
+         "teks": "**Memorandum of Understanding**: a civil cooperation memorandum, without military immunity."
+        },
+        {
+         "ikon": "regulasi",
+         "teks": "Signed by BNPB with partner institutions."
+        },
+        {
+         "ikon": "lembaga",
+         "teks": "The mechanism BNPB uses."
+        }
+       ]
+      },
+      {
+       "judul": "SOFA",
+       "ikon": "peringatan",
+       "isi": [
+        {
+         "teks": "**Status of Forces Agreement**: an agreement between states on the legal status of foreign military personnel while in Indonesia."
+        },
+        {
+         "ikon": "regulasi",
+         "teks": "Concerns jurisdiction and sovereignty."
+        },
+        {
+         "ikon": "lembaga",
+         "teks": "Not signed at BNPB level."
+        }
+       ]
+      },
+      {
+       "judul": "VFA",
+       "ikon": "peringatan",
+       "isi": [
+        {
+         "teks": "**Visiting Forces Agreement**: an agreement on visits by foreign forces for temporary military exercises, similar to a SOFA."
+        },
+        {
+         "ikon": "regulasi",
+         "teks": "Decided by the central government through the Foreign and Defence Ministries."
+        },
+        {
+         "ikon": "lembaga",
+         "teks": "Not within BNPB's authority."
+        }
+       ]
+      }
+     ],
+     "huruf_maks": 16
+    }
+   },
+   "panel": {
+    "judul": "Key sentences if offered a SOFA",
+    "ikon": "ringkasan",
+    "daftar": [
+     "We greatly appreciate the offer of assistance.",
+     "For humanitarian operations, we use civil mechanisms under BNPB in accordance with the Disaster Management Law.",
+     "Agreements on the status of forces are the authority of the central government through the Foreign and Defence Ministries, and are not decided in a disaster management partnership forum.",
+     "The offer of assistance continues to be processed through BNPB's civil mechanisms."
+    ]
+   },
+   "sumber": "Law 24/2007; BNPB foreign partnership guide, Nov 2026",
+   "rasio": 0.68
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "pesan": "Australian assistance operation in East Kalimantan",
+   "judul": "Australia supports the East Kalimantan operation with {{angka:aus.pesawat}} Hercules aircraft, {{angka:aus.sorti_hari}} sorties a day for {{angka:aus.hari}} days",
+   "utama": {
+    "judul": "Australian assistance narrative",
+    "ikon": "ringkasan",
+    "kolom_teks": {
+     "mode": "kartu",
+     "huruf_maks": 18,
+     "kolom": [
+      {
+       "judul": "Thanks to a friendly nation",
+       "ikon": "lembaga",
+       "isi": [
+        {
+         "ikon": "lembaga",
+         "teks": "The government appreciates assistance from friendly countries, including Australia."
+        },
+        {
+         "ikon": "jiwa",
+         "teks": "This assistance is a good form of bilateral cooperation."
+        }
+       ]
+      },
+      {
+       "judul": "Three-party collaboration",
+       "ikon": "jiwa",
+       "isi": [
+        {
+         "ikon": "jiwa",
+         "teks": "The operation is run by BNPB together with Australia."
+        },
+        {
+         "ikon": "wilayah",
+         "teks": "The East Kalimantan Provincial Government takes part in the operation."
+        }
+       ]
+      },
+      {
+       "judul": "In line with the diplomatic note",
+       "ikon": "regulasi",
+       "isi": [
+        {
+         "ikon": "regulasi",
+         "teks": "The operation follows the offer in the diplomatic note of the Government of Australia."
+        },
+        {
+         "ikon": "kalender",
+         "teks": "The operation is scheduled for early November."
+        }
+       ]
+      },
+      {
+       "judul": "Supporting government operations",
+       "ikon": "tanggap-darurat",
+       "isi": [
+        {
+         "ikon": "tanggap-darurat",
+         "teks": "Australia's presence complements the government operation already under way in East Kalimantan."
+        },
+        {
+         "ikon": "peringatan",
+         "teks": "Command remains with BNPB."
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "sumber": "Australian diplomatic note, operation plan 6–12 Nov 2026",
+   "grup": [
+    {
+     "pil": "Operation plan",
+     "nada": "data",
+     "ikon": "air-baku",
+     "kartu": [
+      {
+       "nilai": "{{angka:aus.pesawat}}",
+       "label": "Hercules aircraft",
+       "ikon": "infrastruktur",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:aus.sorti_hari}}",
+       "label": "sorties per day",
+       "ikon": "air-baku",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:aus.hari}}",
+       "label": "operation days",
+       "ikon": "kalender",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:aus.sorti_total}}",
+       "label": "sorties planned",
+       "ikon": "data",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "pita": {
+    "label": "Operational arrangements",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "jiwa",
+      "judul": "Accompaniment",
+      "isi": "Crews and aircraft are accompanied by BNPB and TNI personnel throughout the operation."
+     },
+     {
+      "ikon": "wilayah",
+      "judul": "Flight plan",
+      "isi": "Every sortie uses a flight plan approved by BNPB and the Air Force."
+     },
+     {
+      "ikon": "data",
+      "judul": "Reporting",
+      "isi": "Operation results are reported daily to the BNPB command post."
+     }
+    ]
+   }
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "deskriptif",
+   "seri": "talking-point",
+   "pesan": "Talking point 1",
+   "judul": "Talking Point: Welcoming Australian Assistance for Forest and Land Fire Response in East Kalimantan {{sorot:(1/3)}}",
+   "sumber": "Head of BNPB talking points, Nov 2026; Bakom 15 Oct 2026; Setkab 21 Sep 2026",
+   "utama": {
+    "judul": "Halim Perdanakusuma Air Base, Jakarta",
+    "ikon": "ringkasan",
+    "kolom_teks": {
+     "mode": "kartu",
+     "kutipan": true,
+     "huruf_maks": 24,
+     "kolom": [
+      {
+       "judul": "Appreciation and Solidarity",
+       "ikon": "lembaga",
+       "isi": "On behalf of the Government and people of Indonesia, I wish to convey our heartfelt appreciation to the Government and people of Australia for the timely and generous offer of assistance in response to the forest and land fires currently affecting our country. This gesture of solidarity speaks volumes about the depth of friendship, mutual trust, and good neighbourliness that has long characterised the relationship between Indonesia and Australia, particularly in times of adversity."
+      },
+      {
+       "judul": "Assistance as Support to an Indonesian-Led Response",
+       "ikon": "regulasi",
+       "isi": "We are deeply grateful for this support, and we would like to respectfully underline that assistance from Australia, as well as from other partner countries, is most welcome as a complement to the response operations led and conducted by the Government of the Republic of Indonesia. This approach ensures coherence, accountability, and effectiveness on the ground, while allowing us to make the best possible use of the valuable contributions of our partners."
+      }
+     ],
+     "kotak": true
+    }
+   },
+   "pita": {
+    "label": "Key messages",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "lembaga",
+      "judul": "Appreciation",
+      "isi": "Thanks to the government and people of Australia for the prompt offer of assistance."
+     },
+     {
+      "ikon": "regulasi",
+      "judul": "Indonesian-led",
+      "isi": "Partner assistance complements operations led by the Government of Indonesia."
+     },
+     {
+      "ikon": "data",
+      "judul": "Well targeted",
+      "isi": "Assistance is put to the best use according to field needs."
+     }
+    ]
+   }
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "deskriptif",
+   "seri": "talking-point",
+   "pesan": "Talking point 2",
+   "judul": "Talking Point: Welcoming Australian Assistance for Forest and Land Fire Response in East Kalimantan {{sorot:(2/3)}}",
+   "sumber": "Head of BNPB talking points, Nov 2026; Bakom 15 Oct 2026; Setkab 21 Sep 2026",
+   "utama": {
+    "judul": "Halim Perdanakusuma Air Base, Jakarta",
+    "ikon": "ringkasan",
+    "kolom_teks": {
+     "mode": "kartu",
+     "kutipan": true,
+     "huruf_maks": 24,
+     "kolom": [
+      {
+       "judul": "BNPB as Coordinating Authority within a Single Command System",
+       "ikon": "tanggap-darurat",
+       "isi": "In accordance with the Law on Disaster Management of 2007, operational coordination for disaster response in Indonesia rests with the National Disaster Management Authority, BNPB. Accordingly, all personnel, aircraft, equipment, and logistics from partner countries will be fully integrated into our national command system, accompanied at all times by BNPB and Indonesian National Armed Forces personnel, and will operate on the basis of flight plans and operational plans approved by BNPB and the Air Force. This arrangement is intended to ensure safety, coordination, and the optimal use of all available resources."
+      },
+      {
+       "judul": "Focused and Complementary Operational Support",
+       "ikon": "air-baku",
+       "isi": "We are pleased that Australian assistance will complement our ongoing national efforts, particularly in strengthening aerial water-bombing operations. To date, our helicopters have flown {{angka:karhutla.wb_sorti}} water-bombing sorties and released water {{angka:karhutla.wb_drop}} times, supported by {{angka:karhutla.omc_sorti}} weather modification sorties. These contributions will add significant value to our integrated operations, which also include ground firefighting, weather modification, and joint patrols, and will help accelerate our collective progress on the ground."
+      }
+     ],
+     "kotak": true
+    }
+   },
+   "pita": {
+    "label": "Key messages",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "tanggap-darurat",
+      "judul": "Single command",
+      "isi": "All partner assets enter the national command system under BNPB."
+     },
+     {
+      "ikon": "wilayah",
+      "judul": "Flight plan",
+      "isi": "Flights use plans approved by BNPB and the Air Force."
+     },
+     {
+      "ikon": "air-baku",
+      "judul": "Water bombing",
+      "isi": "Assistance strengthens the air operations already under way."
+     }
+    ]
+   }
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "deskriptif",
+   "seri": "talking-point",
+   "pesan": "Talking point 3",
+   "judul": "Talking Point: Welcoming Australian Assistance for Forest and Land Fire Response in East Kalimantan {{sorot:(3/3)}}",
+   "sumber": "Head of BNPB talking points, Nov 2026; Bakom 15 Oct 2026; Setkab 21 Sep 2026",
+   "utama": {
+    "judul": "Halim Perdanakusuma Air Base, Jakarta",
+    "ikon": "ringkasan",
+    "kolom_teks": {
+     "mode": "kartu",
+     "kutipan": true,
+     "huruf_maks": 24,
+     "kolom": [
+      {
+       "judul": "Indonesia's National Commitment",
+       "ikon": "jiwa",
+       "isi": "I would like to share with Your Excellency the scale of Indonesia's national response. To date, the Government has mobilised {{angka:karhutla.personel_total}} joint personnel and {{angka:karhutla.setkab.pesawat}} aircraft across Sumatra, Kalimantan, and Papua, from the Armed Forces and the Police to local governments, private-sector crews, volunteers, and community fire brigades. This mobilisation reflects the full commitment of the Government of Indonesia to addressing this challenge with all available national capacities, and with the strong support of our partners. Around {{angka:karhutla.personel_nonpem_persen|fmt=1|persen}} of these personnel come from communities and the private sector, reflecting a truly whole-of-society effort."
+      },
+      {
+       "judul": "Current Situation and Continued Priorities",
+       "ikon": "peringatan",
+       "isi": "While air quality in several affected areas has begun to show encouraging signs of improvement, we remain fully vigilant. Weekly fire detections have fallen by {{angka:fs.pekan_turun_abs|fmt=1|persen}} from their peak in early October as the rainy season begins. Fire suppression and the prevention of further spread continue to be our foremost priorities. The Government of Indonesia remains firmly committed to managing this situation in a swift, measured, and transparent manner, while placing the safety of our communities and the preservation of our national sovereignty at the centre of all our efforts."
+      },
+      {
+       "judul": "Moving Forward",
+       "ikon": "kalender",
+       "isi": "Over the coming days, the Australian Hercules will fly {{angka:aus.sorti_hari}} sorties a day for {{angka:aus.hari}} days in East Kalimantan, working side by side with our national fleet and the Provincial Government of East Kalimantan under a single command. In closing, we express our sincere hope that this cooperation will extend well and deepen our partnership. We are confident that through continued collaboration, we can further strengthen the resilience of both our peoples and the wider region."
+      }
+     ],
+     "kotak": true
+    }
+   },
+   "pita": {
+    "label": "Key messages",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "jiwa",
+      "judul": "National commitment",
+      "isi": "The government mobilises all national capacity."
+     },
+     {
+      "ikon": "peringatan",
+      "judul": "Remaining vigilant",
+      "isi": "Suppression and preventing the fire from spreading remain the priority."
+     },
+     {
+      "ikon": "kalender",
+      "judul": "Continuing partnership",
+      "isi": "The cooperation is expected to strengthen regional resilience."
+     }
+    ]
+   }
+  },
+  {
+   "jenis": "kesimpulan",
+   "pesan": "Eight messages for public communication",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "cut_off": true,
+   "judul": "Conclusions",
+   "kartu": [
+    {
+     "label": "Scale",
+     "ikon": "karhutla",
+     "warna": "oranye",
+     "judul": "Most severe season since 2019",
+     "isi": [
+      "Firespots in 2026 reach {{angka:fs.kali_2019|fmt=1}} times 2019.",
+      "Still below the major fires of 2015."
+     ]
+    },
+    {
+     "label": "Trend",
+     "ikon": "turun",
+     "warna": "biru",
+     "judul": "Starting to ease",
+     "isi": [
+      "Latest-week firespots, {{angka:fs.pekan_turun_persen|fmt=1|persen|arah}} from the peak week.",
+      "The rainy season is starting to suppress fires; the trend continues to be monitored."
+     ]
+    },
+    {
+     "label": "Response",
+     "ikon": "lembaga",
+     "warna": "navy",
+     "judul": "National command",
+     "isi": [
+      "{{angka:karhutla.personel_total}} government and community personnel.",
+      "{{angka:karhutla.setkab.pesawat}} helicopters and aircraft under a single command."
+     ]
+    },
+    {
+     "label": "Aggravating factor",
+     "ikon": "wilayah",
+     "warna": "navy",
+     "judul": "Dry peat",
+     "isi": [
+      "One third of hotspots are in peatland areas.",
+      "Peat that dries out burns easily and is hard to extinguish."
+     ]
+    },
+    {
+     "label": "Oil palm",
+     "ikon": "data",
+     "warna": "navy",
+     "judul": "Strategic commodity",
+     "isi": [
+      "{{angka:karhutla.izin_dalam_persen|fmt=1|persen}} of peak-week hotspots are in concession areas.",
+      "Licence holders must prevent and extinguish fires."
+     ]
+    },
+    {
+     "label": "Perpetrators",
+     "ikon": "regulasi",
+     "warna": "navy",
+     "judul": "The chain of burners",
+     "isi": [
+      "{{angka:karhutla.hukum.korporasi_tersangka}} corporations and {{angka:karhutla.hukum.perorangan}} individuals are suspects.",
+      "Burners and their financiers are pursued."
+     ]
+    },
+    {
+     "label": "Assistance",
+     "ikon": "lembaga",
+     "warna": "navy",
+     "judul": "Single-channel assistance",
+     "isi": [
+      "Foreign assistance enters through BNPB coordination.",
+      "Foreign teams work under the command of the Government of Indonesia."
+     ]
+    },
+    {
+     "label": "Together",
+     "ikon": "jiwa",
+     "warna": "navy",
+     "judul": "Working together",
+     "isi": [
+      "{{angka:karhutla.personel_nonpem_persen|fmt=1|persen}} of personnel come from community groups.",
+      "Government and community work under one command."
+     ]
+    }
+   ],
+   "sumber": "Processed by BNPB from NASA FIRMS; Setkab; Bareskrim Polri; Bakom 15 Oct"
+  },
+  {
+   "jenis": "penutup",
+   "foto": "foto/foto-pemadam.jpg",
+   "logo_kanan": "foto/berakhlak-hd.png",
+   "teks": "Thank You",
+   "laporan": "Public Narrative Brief: Forest and Land Fires 2026, Jakarta, 4 November 2026"
+  }
+ ],
+ "format": "kajian",
+ "judul_dokumen": "Public Narrative Brief: Forest and Land Fires 2026",
+ "subjek_dokumen": "Presentation by the Head of BNPB, 4 November 2026",
+ "bagian": [
+  {
+   "judul": "Scale of the 2026 Season",
+   "label": "Season scale"
+  },
+  {
+   "judul": "Peatland and Oil Palm",
+   "label": "Peatland and oil palm"
+  },
+  {
+   "judul": "Law Enforcement",
+   "label": "Law enforcement"
+  },
+  {
+   "judul": "National Strength",
+   "label": "National strength"
+  },
+  {
+   "judul": "International Assistance and Sovereignty",
+   "label": "Assistance and sovereignty"
+  }
+ ],
+ "pil_draf": "DRAFT FOR REVIEW|4 Nov 2026",
+ "tanpa_alur": "owner, 4 Nov 2026: the decision band in the Conclusions is removed",
+ "slogan": "A Resilient Nation Facing Disasters"
+}
