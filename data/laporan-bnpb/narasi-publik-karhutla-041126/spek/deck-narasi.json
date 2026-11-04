@@ -973,63 +973,60 @@
    "jenis": "rekomendasi",
    "jenis_slide": "rekomendasi",
    "judul_bentuk": "deskriptif",
-   "seri": "bantuan",
-   "pesan": "Kedaulatan dan satu pintu",
-   "judul": "Bantuan dari negara lain masuk {{sorot:satu pintu}} dengan koordinasi BNPB dan bekerja di bawah komando pemerintah Indonesia",
-   "sumber": "UU 24/2007; PP 23/2008; PP 4/2018; PP 45/2021; UU 3/2014; BNPB Sep 2026",
+   "seri": "panduan",
+   "pesan": "Sepuluh saran panduan 1",
+   "judul": "Sepuluh saran panduan kemitraan luar negeri: {{sorot:BNPB koordinator tunggal}} dan bantuan masuk satu pintu",
+   "sumber": "UU 24/2007; PP 23/2008; PP 4/2018; panduan kemitraan luar negeri BNPB, Nov 2026",
    "rekomendasi": [
     {
      "kode": "01",
      "jenis": "regulasi",
-     "langkah": "Komando di tangan pemerintah Indonesia",
-     "rincian": "BNPB memegang fungsi koordinasi bersama Kemlu untuk penanganan darurat; tim dan aset bantuan dari negara lain hanya pendukung dalam sistem komando nasional.",
+     "langkah": "Menegaskan BNPB sebagai koordinator tunggal",
+     "rincian": "BNPB memimpin koordinasi sesuai Undang-Undang Penanggulangan Bencana; pihak negara lain berperan sebagai pendukung.",
      "lembaga": [
       "BNPB",
-      "Kemenko PMK",
-      "Kemlu"
+      "Kemenko PMK"
      ]
     },
     {
      "kode": "02",
      "jenis": "pembiayaan",
-     "langkah": "Semua bantuan lewat satu pintu",
-     "rincian": "Pesawat, peralatan, masker, dan dana dari negara lain masuk lewat pemerintah dengan koordinasi BNPB.",
+     "langkah": "Menerapkan kebijakan satu pintu",
+     "rincian": "Pesawat water bombing, logistik, dana, dan personel tercatat melalui BNPB; jalur langsung ke pemda atau LSM dihindari.",
      "lembaga": [
       "BNPB",
       "Kemensetneg",
-      "Kemlu",
       "Kemenkeu"
      ]
     },
     {
      "kode": "03",
      "jenis": "kapasitas",
-     "langkah": "Terima bantuan bersama, bebas aktif",
-     "rincian": "Tawaran beberapa negara diterima dalam satu skema bersama, sehingga tidak ada negara yang diposisikan paling berjasa.",
+     "langkah": "Menerima bantuan secara berimbang",
+     "rincian": "Bantuan negara sahabat sebaiknya diterima bersamaan agar tidak ada satu negara yang dipersepsikan paling dominan.",
      "lembaga": [
       "Kemlu",
-      "Kemensetneg",
       "BNPB"
      ]
     },
     {
      "kode": "04",
-     "jenis": "pembiayaan",
-     "langkah": "Utamakan produk dalam negeri",
-     "rincian": "Belanja dari hibah memakai produk dan penyedia dalam negeri bila tersedia.",
+     "jenis": "data",
+     "langkah": "Meminta daftar personel dan peralatan",
+     "rincian": "Nama, identitas, peralatan, sensor, drone, frekuensi radio, dan rute terbang diserahkan sebelum operasi dimulai.",
      "lembaga": [
       "BNPB",
-      "Kemenperin"
+      "TNI",
+      "Kemlu"
      ]
     },
     {
      "kode": "05",
-     "jenis": "regulasi",
-     "langkah": "Atur penerbangan negara lain",
-     "rincian": "Pesawat negara lain wajib izin diplomatik dan keamanan per sorti; setiap regu penerbangan wajib menyertakan personel Indonesia.",
+     "jenis": "kapasitas",
+     "langkah": "Mewajibkan pendampingan unsur Indonesia",
+     "rincian": "Setiap tim negara lain didampingi personel BNPB atau TNI selama di lapangan, termasuk penerjemah resmi.",
      "lembaga": [
-      "Kemhan",
-      "Kemlu",
+      "BNPB",
       "TNI"
      ]
     }
@@ -1039,62 +1036,329 @@
    "jenis": "rekomendasi",
    "jenis_slide": "rekomendasi",
    "judul_bentuk": "deskriptif",
-   "seri": "bantuan",
-   "pesan": "Pengamanan wilayah dan data",
-   "judul": "Pengamanan wilayah dan data selama bantuan negara lain bekerja: {{sorot:akses terbatas}} dan data tetap di dalam negeri",
-   "sumber": "UU 24/2007; PP 23/2008; PP 4/2018; PP 45/2021; UU 3/2014; BNPB Sep 2026",
+   "seri": "panduan",
+   "pesan": "Sepuluh saran panduan 2",
+   "judul": "Sepuluh saran panduan kemitraan luar negeri: akses wilayah dan informasi serta laporan ke {{sorot:pimpinan}}",
+   "sumber": "UU 24/2007; PP 23/2008; PP 4/2018; panduan kemitraan luar negeri BNPB, Nov 2026",
    "rekomendasi": [
     {
      "kode": "06",
-     "jenis": "data",
-     "langkah": "Larang pengambilan data dan citra",
-     "rincian": "Tim negara lain tidak diperbolehkan mengambil data dan citra pemetaan selama operasi berlangsung.",
+     "jenis": "regulasi",
+     "langkah": "Menetapkan batas wilayah akses",
+     "rincian": "Papua dan wilayah perbatasan, termasuk areal konsesi sensitif, hanya dapat dimasuki dengan izin tertulis otoritas resmi atau Kepala BNPB.",
      "lembaga": [
-      "BIG",
-      "BNPB"
+      "BNPB",
+      "TNI",
+      "Kemenhut"
      ]
     },
     {
      "kode": "07",
-     "jenis": "kapasitas",
-     "langkah": "Batasi akses wilayah strategis",
-     "rincian": "Tim negara lain bekerja hanya di lokasi tugas yang diizinkan, termasuk di areal konsesi dan wilayah perbatasan.",
+     "jenis": "pembiayaan",
+     "langkah": "Mengutamakan produk dan jasa lokal",
+     "rincian": "Bantuan memakai logistik, pangan, bahan bakar, dan tenaga kerja lokal untuk mendukung perekonomian domestik.",
      "lembaga": [
-      "TNI",
-      "BNPB"
+      "BNPB",
+      "Kemenperin"
      ]
     },
     {
      "kode": "08",
-     "jenis": "data",
-     "langkah": "Data konsesi tidak dibagikan",
-     "rincian": "Informasi konsesi dan ekonomi strategis tidak dibagikan kepada tim dan pemerintah negara lain.",
+     "jenis": "regulasi",
+     "langkah": "Mengendalikan komunikasi publik",
+     "rincian": "Rilis media melalui BNPB dengan menonjolkan kapasitas nasional; dinamika internal tidak dibahas dengan pihak negara lain.",
      "lembaga": [
-      "Kemenhut",
-      "ATR/BPN",
-      "Kemlu"
+      "BNPB",
+      "Badan Komunikasi Pemerintah"
      ]
     },
     {
      "kode": "09",
-     "jenis": "regulasi",
-     "langkah": "Daftarkan lembaga dan dana dari negara lain",
-     "rincian": "Lembaga dan dana dari negara lain untuk penanganan karhutla wajib terdaftar dan berkoordinasi dengan BNPB.",
+     "jenis": "kapasitas",
+     "langkah": "Mendorong alih teknologi dan batas waktu",
+     "rincian": "Bantuan disertai pelatihan personel Indonesia serta tanggal mulai dan tanggal berakhir yang disepakati.",
      "lembaga": [
       "BNPB",
-      "Kemendagri",
       "Kemlu"
      ]
     },
     {
      "kode": "10",
-     "jenis": "kapasitas",
-     "langkah": "Tampilkan kekuatan nasional",
-     "rincian": "Komunikasi publik menampilkan personel dan armada nasional; dukungan negara lain disebut sebagai pendukung.",
+     "jenis": "data",
+     "langkah": "Melibatkan KL lain dan melapor ke pimpinan",
+     "rincian": "Data dan peta pihak negara lain diperiksa sebelum dibawa ke luar negeri; hasil dilaporkan ke Presiden melalui Menko.",
      "lembaga": [
       "BNPB",
       "Kemenko PMK",
-      "Badan Komunikasi Pemerintah"
+      "Kemlu"
+     ]
+    }
+   ]
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "deskriptif",
+   "seri": "garis-merah",
+   "pesan": "Garis merah 1",
+   "judul": "Batas yang tidak boleh dilanggar saat menerima bantuan negara lain: penerbangan, data, pangkalan, syarat, dan dana",
+   "utama": {
+    "judul": "Yang tidak dapat diizinkan",
+    "ikon": "peringatan",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "wilayah",
+       "judul": "Penerbangan bebas",
+       "isi": "Semua penerbangan wajib punya rencana terbang yang disetujui BNPB dan TNI AU; pemetaan bebas atas wilayah Sumatra hingga Papua tidak dibenarkan."
+      },
+      {
+       "ikon": "data",
+       "judul": "Penyerahan data mentah",
+       "isi": "Data hotspot waktu nyata dan peta konsesi, juga data kekuatan TNI maupun sentimen publik, tidak diserahkan ke pihak luar."
+      },
+      {
+       "ikon": "infrastruktur",
+       "judul": "Pangkalan terpisah",
+       "isi": "Pihak negara lain tidak boleh membangun basecamp atau gudang sendiri, apalagi pos komando terpisah dari BNPB."
+      },
+      {
+       "ikon": "pembiayaan",
+       "judul": "Bantuan bersyarat",
+       "isi": "Bantuan yang mensyaratkan akses tambang atau konsesi baru, maupun perubahan kebijakan, tidak diterima."
+      },
+      {
+       "ikon": "pembiayaan",
+       "judul": "Dana dikelola LSM negara lain",
+       "isi": "Seluruh dana bantuan dikelola melalui mekanisme pemerintah untuk mencegah penyalahgunaan."
+      }
+     ]
+    }
+   },
+   "sumber": "Panduan kemitraan luar negeri BNPB, Nov 2026",
+   "panel": {
+    "judul": "Kalimat kunci",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Kami terbuka untuk kemitraan yang setara dan saling menghormati.",
+     "Kedaulatan operasional berada di bawah BNPB sesuai ketentuan hukum Indonesia.",
+     "Hal itu amanat undang-undang dan tidak dapat dinegosiasikan."
+    ]
+   }
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "deskriptif",
+   "seri": "garis-merah",
+   "pesan": "Garis merah 2",
+   "judul": "Batas yang tidak boleh dilanggar saat menerima bantuan negara lain: sensor, kesepakatan, korban, militer, dan akses jangka panjang",
+   "utama": {
+    "judul": "Yang tidak dapat diizinkan",
+    "ikon": "peringatan",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "peringatan",
+       "judul": "Drone dan sensor pribadi",
+       "isi": "Drone dan sensor termal milik pihak negara lain, termasuk pemetaan LIDAR, tidak diizinkan tanpa izin dan pendampingan."
+      },
+      {
+       "ikon": "regulasi",
+       "judul": "Kesepakatan lisan",
+       "isi": "Setiap komitmen dituangkan tertulis dan ditelaah paling sedikit tujuh hari oleh Kemlu dan Kemhan bersama KL terkait."
+      },
+      {
+       "ikon": "jiwa",
+       "judul": "Wawancara korban tanpa pendamping",
+       "isi": "Wawancara korban oleh pihak negara lain selalu didampingi otoritas resmi atau BNPB."
+      },
+      {
+       "ikon": "peringatan",
+       "judul": "Tim militer bersenjata",
+       "isi": "Tim bantuan tidak membawa senjata kecuali disetujui Presiden dan Mabes TNI; Papua dan perbatasan Laut China Selatan bukan lokasi proyek percontohan."
+      },
+      {
+       "ikon": "lembaga",
+       "judul": "Akses jangka panjang",
+       "isi": "Pusat bantuan permanen atau pangkalan gabungan tidak disetujui; pernyataan yang menggambarkan Indonesia lemah dihindari."
+      }
+     ]
+    }
+   },
+   "sumber": "Panduan kemitraan luar negeri BNPB, Nov 2026",
+   "panel": {
+    "judul": "Prinsip dasar",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Bantuan kemanusiaan dari luar negeri disambut dengan apresiasi dan disikapi secara cermat.",
+     "Operasi bantuan dapat dimanfaatkan untuk mengukur kapasitas respons dan memetakan wilayah.",
+     "Kepentingan nasional dan kedaulatan operasional adalah prioritas utama."
+    ]
+   }
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Panduan tiga jenis dokumen",
+   "judul": "Operasi kemanusiaan memakai MoU sipil di bawah BNPB; SOFA dan VFA adalah kewenangan pemerintah pusat",
+   "utama": {
+    "judul": "Panduan tiga jenis dokumen",
+    "ikon": "regulasi",
+    "kolom_teks": {
+     "mode": "kartu",
+     "kolom": [
+      {
+       "judul": "MoU kemanusiaan",
+       "ikon": "lembaga",
+       "isi": [
+        "Kerja sama sipil tanpa imunitas militer.",
+        "Ditandatangani BNPB dengan lembaga mitra.",
+        "Mengatur jenis bantuan dan jangka waktunya, termasuk pendampingan.",
+        "Mekanisme yang seharusnya dipakai BNPB."
+       ]
+      },
+      {
+       "judul": "SOFA",
+       "ikon": "peringatan",
+       "isi": [
+        "Perjanjian antarnegara tentang status hukum personel militer negara lain.",
+        "Menyangkut yurisdiksi dan kedaulatan.",
+        "Berat dan politis.",
+        "Tidak ditandatangani di level BNPB."
+       ]
+      },
+      {
+       "judul": "VFA",
+       "ikon": "peringatan",
+       "isi": [
+        "Mirip SOFA, untuk kunjungan latihan militer sementara.",
+        "Diputuskan pemerintah pusat melalui Kemlu dan Kemhan.",
+        "Bukan kewenangan BNPB."
+       ]
+      }
+     ]
+    }
+   },
+   "panel": {
+    "judul": "Kalimat kunci bila ditawari SOFA",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Kami sangat mengapresiasi tawaran bantuan tersebut.",
+     "Untuk operasi kemanusiaan, kami menggunakan mekanisme sipil di bawah BNPB sesuai Undang-Undang Penanggulangan Bencana.",
+     "Perjanjian mengenai status pasukan merupakan kewenangan pemerintah pusat melalui Kemlu dan Kemhan, dan tidak diputuskan dalam forum kemitraan penanggulangan bencana.",
+     "Tawaran bantuan tetap diproses lewat mekanisme sipil BNPB."
+    ]
+   },
+   "sumber": "UU 24/2007; panduan kemitraan luar negeri BNPB, Nov 2026",
+   "rasio": 0.6
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "pesan": "Operasi bantuan Australia di Kaltim",
+   "judul": "Australia mengoperasikan {{angka:aus.pesawat}} pesawat Hercules, {{angka:aus.sorti_hari}} sorti per hari selama {{angka:aus.hari}} hari, dalam operasi bersama BNPB dan Pemprov Kalimantan Timur",
+   "utama": {
+    "judul": "Rencana operasi Australia di Kalimantan Timur",
+    "ikon": "air-baku",
+    "kisi_ikon": {
+     "kolom": 3,
+     "sorot": -1,
+     "kartu": [
+      {
+       "ikon": "infrastruktur",
+       "nilai": "{{angka:aus.pesawat}}",
+       "label": "pesawat Hercules"
+      },
+      {
+       "ikon": "kalender",
+       "nilai": "{{angka:aus.hari}}",
+       "label": "hari operasi, awal November"
+      },
+      {
+       "ikon": "air-baku",
+       "nilai": "{{angka:aus.sorti_total}}",
+       "label": "sorti water bombing direncanakan"
+      }
+     ]
+    }
+   },
+   "panel": {
+    "judul": "Narasi",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Pemerintah mengapresiasi bantuan negara sahabat, termasuk Australia, sebagai bentuk kerja sama bilateral yang baik.",
+     "Operasi ini kolaborasi BNPB dan Australia bersama Pemerintah Provinsi Kalimantan Timur.",
+     "Operasi berjalan sesuai tawaran dalam nota diplomatik Pemerintah Australia.",
+     "Kehadiran Australia mendukung operasi pemerintah Indonesia yang sudah berjalan di Kalimantan Timur."
+    ]
+   },
+   "sumber": "Nota diplomatik Pemerintah Australia, rencana operasi 6–12 Nov 2026"
+  },
+  {
+   "jenis": "rekomendasi",
+   "jenis_slide": "rekomendasi",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Talking points penyambutan misi Australia",
+   "judul": "Talking points Kepala BNPB: penyambutan misi bantuan Australia untuk karhutla Kalimantan Timur di Lanud Halim Perdanakusuma",
+   "sumber": "Naskah talking points Kepala BNPB, Nov 2026; Bakom 15 Okt 2026; Setkab 21 Sep 2026",
+   "rekomendasi": [
+    {
+     "kode": "T1",
+     "jenis": "kapasitas",
+     "langkah": "Apresiasi dan solidaritas",
+     "rincian": "Terima kasih kepada pemerintah dan rakyat Australia atas tawaran bantuan yang cepat dan tulus; cermin persahabatan dan saling percaya.",
+     "lembaga": [
+      "Kepala BNPB"
+     ]
+    },
+    {
+     "kode": "T2",
+     "jenis": "regulasi",
+     "langkah": "Mendukung respons yang dipimpin Indonesia",
+     "rincian": "Bantuan Australia dan negara mitra disambut sebagai pelengkap operasi yang dipimpin pemerintah Indonesia.",
+     "lembaga": [
+      "Kepala BNPB"
+     ]
+    },
+    {
+     "kode": "T3",
+     "jenis": "regulasi",
+     "langkah": "BNPB koordinator dalam satu komando",
+     "rincian": "Seluruh aset mitra masuk sistem komando nasional dengan pendampingan TNI dan rencana terbang yang disetujui BNPB.",
+     "lembaga": [
+      "Kepala BNPB"
+     ]
+    },
+    {
+     "kode": "T4",
+     "jenis": "kapasitas",
+     "langkah": "Dukungan operasional yang melengkapi",
+     "rincian": "Bantuan memperkuat water bombing dan melengkapi pemadaman darat serta OMC.",
+     "lembaga": [
+      "Kepala BNPB"
+     ]
+    },
+    {
+     "kode": "T5",
+     "jenis": "kapasitas",
+     "langkah": "Komitmen nasional",
+     "rincian": "Pemerintah telah mengerahkan {{angka:karhutla.personel_total}} personel gabungan dan {{angka:karhutla.setkab.pesawat}} pesawat dari Sumatra hingga Papua.",
+     "lembaga": [
+      "Kepala BNPB"
+     ]
+    },
+    {
+     "kode": "T6",
+     "jenis": "data",
+     "langkah": "Situasi dan ke depan",
+     "rincian": "Kualitas udara mulai membaik; pemadaman tetap prioritas, dan kerja sama diharapkan berlanjut memperkuat ketangguhan kawasan.",
+     "lembaga": [
+      "Kepala BNPB"
      ]
     }
    ]

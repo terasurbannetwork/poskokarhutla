@@ -1,5 +1,5 @@
 {
- "_catatan": "Registri angka deck Brief Narasi Publik Karhutla 041126 (subset dari akar ppt-konsultan proyek-narasi)",
+ "_catatan": "Registri angka deck Brief Narasi Publik Karhutla 041126",
  "angka": {
   "karhutla.jawa.luas_2019": {
    "nilai": 38021,
@@ -48,6 +48,358 @@
    "keyakinan": "resmi",
    "sumber": "Pengolahan data sistem BNPB dari SiPongi Kementerian Kehutanan",
    "catatan": "olah(resmi): 49.498,32 / 71.109,63 ha (T4.7)"
+  },
+  "aus.tawaran.citation": {
+   "nilai": 2,
+   "satuan": "pesawat",
+   "pustaka": "bnpb-butir-wicara-australia-2026-10-26",
+   "sumber": "Butir wicara Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.tawaran.kingair": {
+   "nilai": 1,
+   "satuan": "pesawat",
+   "pustaka": "bnpb-butir-wicara-australia-2026-10-26",
+   "sumber": "Butir wicara Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.tawaran.bell412": {
+   "nilai": 1,
+   "satuan": "helikopter",
+   "pustaka": "bnpb-butir-wicara-australia-2026-10-26",
+   "sumber": "Butir wicara Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.tawaran.bell412_liter": {
+   "nilai": 4200,
+   "satuan": "liter",
+   "pustaka": "bnpb-butir-wicara-australia-2026-10-26",
+   "sumber": "Butir wicara Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi",
+   "catatan": "belly tank berkapasitas sekitar 4.200 liter"
+  },
+  "aus.tawaran.aset_udara": {
+   "nilai": 4,
+   "satuan": "aset udara",
+   "pustaka": "bnpb-butir-wicara-australia-2026-10-26",
+   "sumber": "Butir wicara Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi",
+   "catatan": "2 Citation, 1 King Air, 1 Bell 412"
+  },
+  "aus.koordinasi.tahap": {
+   "nilai": 5,
+   "satuan": "tahap",
+   "pustaka": "bnpb-butir-wicara-australia-2026-10-26",
+   "sumber": "Butir wicara Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi",
+   "catatan": "7 Sep sampai 23 Okt 2026"
+  },
+  "aus.koordinasi.hari": {
+   "nilai": 49,
+   "satuan": "hari",
+   "pustaka": "bnpb-butir-wicara-australia-2026-10-26",
+   "sumber": "Butir wicara Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi",
+   "catatan": "7 Sep 2026 (nota diplomatik) sampai 26 Okt 2026"
+  },
+  "aus.2015.pesawat": {
+   "nilai": 2,
+   "satuan": "pesawat",
+   "pustaka": "bnpb-butir-wicara-australia-2026-10-26",
+   "sumber": "Butir wicara Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi",
+   "catatan": "L-100 Hercules Thor dan Turbo Commander 690B Birddog"
+  },
+  "aus.dibi2026.kejadian": {
+   "berkas": "dibi/rekap_nasional_tahunan.csv",
+   "jalur": "[tahun=2026,klasifikasi=semua,cakupan=bencana].kejadian",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2026 (sementara, ditarik 23 Okt 2026)"
+  },
+  "aus.dibi2026.meninggal": {
+   "berkas": "dibi/rekap_nasional_tahunan.csv",
+   "jalur": "[tahun=2026,klasifikasi=semua,cakupan=bencana].meninggal",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2026 (sementara, ditarik 23 Okt 2026)"
+  },
+  "aus.dibi2026.mengungsi": {
+   "berkas": "dibi/rekap_nasional_tahunan.csv",
+   "jalur": "[tahun=2026,klasifikasi=semua,cakupan=bencana].mengungsi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2026 (sementara, ditarik 23 Okt 2026)"
+  },
+  "aus.dibi2026.rumah_rusak": {
+   "berkas": "dibi/rekap_nasional_tahunan.csv",
+   "jalur": "[tahun=2026,klasifikasi=semua,cakupan=bencana].rumah_rusak",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2026 (sementara, ditarik 23 Okt 2026)"
+  },
+  "aus.dibi2026.karhutla": {
+   "berkas": "dibi/rekap_nasional_tahunan.csv",
+   "jalur": "[tahun=2026,klasifikasi=alam,cakupan=bencana,kategori_dibi=Kebakaran hutan dan lahan].kejadian",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2026 (sementara, ditarik 23 Okt 2026)"
+  },
+  "aus.ntt.meninggal": {
+   "nilai": 156,
+   "satuan": "jiwa",
+   "pustaka": "bnpb-laporan-harian-2026-10-24",
+   "sumber": "Laporan Kejadian Bencana Harian BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.ntt.mengungsi": {
+   "nilai": 27563,
+   "satuan": "jiwa",
+   "pustaka": "bnpb-laporan-harian-2026-10-24",
+   "sumber": "Laporan Kejadian Bencana Harian BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.lh24.menonjol": {
+   "nilai": 22,
+   "satuan": "kejadian",
+   "pustaka": "bnpb-laporan-harian-2026-10-24",
+   "sumber": "Laporan Kejadian Bencana Harian BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.lh24.provinsi": {
+   "nilai": 18,
+   "satuan": "provinsi",
+   "pustaka": "bnpb-laporan-harian-2026-10-24",
+   "sumber": "Laporan Kejadian Bencana Harian BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.lh24.karhutla": {
+   "nilai": 19,
+   "satuan": "kejadian",
+   "pustaka": "bnpb-laporan-harian-2026-10-24",
+   "sumber": "Laporan Kejadian Bencana Harian BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.lh24.karhutla_proses": {
+   "nilai": 15,
+   "satuan": "kejadian",
+   "pustaka": "bnpb-laporan-harian-2026-10-24",
+   "sumber": "Laporan Kejadian Bencana Harian BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.titik.2026": {
+   "nilai": 1286973,
+   "satuan": "titik panas",
+   "pustaka": "pantau-bencana-titik-kumulatif-2026-10-24",
+   "sumber": "Hitungan satelit NASA FIRMS olahan BNPB, Oktober 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "aus.titik.kali_2019": {
+   "nilai": 2.15,
+   "satuan": "kali",
+   "pustaka": "pantau-bencana-titik-kumulatif-2026-10-24",
+   "sumber": "Hitungan satelit NASA FIRMS olahan BNPB, Oktober 2026",
+   "keyakinan": "terverifikasi",
+   "catatan": "1.286.973 dibagi 599.510 (2019, tanggal yang sama)"
+  },
+  "aus.titik.kali_rerata": {
+   "nilai": 4.91,
+   "satuan": "kali",
+   "pustaka": "pantau-bencana-titik-kumulatif-2026-10-24",
+   "sumber": "Hitungan satelit NASA FIRMS olahan BNPB, Oktober 2026",
+   "keyakinan": "terverifikasi",
+   "catatan": "terhadap rerata 2019–2025 tanggal yang sama"
+  },
+  "aus.titik.hari_24okt": {
+   "nilai": 12890,
+   "satuan": "titik panas",
+   "pustaka": "pantau-bencana-titik-kumulatif-2026-10-24",
+   "sumber": "Hitungan satelit NASA FIRMS olahan BNPB, Oktober 2026",
+   "keyakinan": "terverifikasi"
+  },
+  "aus.status.provinsi": {
+   "nilai": 6,
+   "satuan": "provinsi",
+   "pustaka": "bnpb-paparan-kepala-2026-10-18",
+   "sumber": "Paparan Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi",
+   "catatan": "Kalteng tanggap darurat; Kalbar, Sumsel, Jambi, Kaltim, Riau siaga darurat"
+  },
+  "aus.luas.12prov": {
+   "nilai": 2099692,
+   "satuan": "ha",
+   "pustaka": "bnpb-laporan-harian-2026-10-24",
+   "sumber": "Laporan Kejadian Bencana Harian BNPB, Oktober 2026",
+   "keyakinan": "resmi",
+   "catatan": "jumlah 14 provinsi di laporan harian 24 Okt, 1 Jan sampai 23 Okt 2026; bukan total nasional"
+  },
+  "aus.luas.kalteng": {
+   "nilai": 742664,
+   "satuan": "ha",
+   "pustaka": "bnpb-laporan-harian-2026-10-24",
+   "sumber": "Laporan Kejadian Bencana Harian BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.sisa.kalteng": {
+   "nilai": 20532,
+   "satuan": "ha",
+   "pustaka": "bnpb-laporan-harian-2026-10-24",
+   "sumber": "Laporan Kejadian Bencana Harian BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.sisa.tujuh_prov": {
+   "nilai": 28016,
+   "satuan": "ha",
+   "pustaka": "bnpb-laporan-harian-2026-10-24",
+   "sumber": "Laporan Kejadian Bencana Harian BNPB, Oktober 2026",
+   "keyakinan": "resmi",
+   "catatan": "jumlah sisa belum padam tujuh provinsi perlu perhatian"
+  },
+  "aus.tanjungputing.sisa": {
+   "nilai": 1407,
+   "satuan": "ha",
+   "pustaka": "bnpb-laporan-harian-2026-10-24",
+   "sumber": "Laporan Kejadian Bencana Harian BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.upaya.heli": {
+   "nilai": 30,
+   "satuan": "helikopter",
+   "pustaka": "bnpb-paparan-kepala-2026-10-18",
+   "sumber": "Paparan Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.upaya.personel": {
+   "nilai": 60177,
+   "satuan": "personel",
+   "pustaka": "bnpb-paparan-kepala-2026-10-18",
+   "sumber": "Paparan Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi",
+   "catatan": "enam provinsi; infografis 15 Okt mencatat 53.828"
+  },
+  "aus.upaya.wb_liter": {
+   "nilai": 1135000,
+   "satuan": "liter per hari",
+   "pustaka": "bakom-infografis-karhutla-2026-10-15",
+   "sumber": "Infografis Data Karhutla 2026, Badan Komunikasi Pemerintah RI",
+   "keyakinan": "resmi"
+  },
+  "aus.upaya.omc_sorti": {
+   "nilai": 7,
+   "satuan": "sorti per hari",
+   "pustaka": "bakom-infografis-karhutla-2026-10-15",
+   "sumber": "Infografis Data Karhutla 2026, Badan Komunikasi Pemerintah RI",
+   "keyakinan": "resmi"
+  },
+  "aus.upaya.omc_kg": {
+   "nilai": 6800,
+   "satuan": "kg bahan semai per hari",
+   "pustaka": "bakom-infografis-karhutla-2026-10-15",
+   "sumber": "Infografis Data Karhutla 2026, Badan Komunikasi Pemerintah RI",
+   "keyakinan": "resmi"
+  },
+  "aus.luas.n_prov": {
+   "nilai": 14,
+   "satuan": "provinsi",
+   "pustaka": "bnpb-laporan-harian-2026-10-24",
+   "sumber": "Laporan Kejadian Bencana Harian BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.upaya.padam_ha": {
+   "nilai": 454,
+   "satuan": "ha",
+   "pustaka": "bnpb-paparan-kepala-2026-10-18",
+   "sumber": "Paparan Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi",
+   "catatan": "padam 18 Okt 2026"
+  },
+  "aus.upaya.target_ha": {
+   "nilai": 1024,
+   "satuan": "ha",
+   "pustaka": "bnpb-paparan-kepala-2026-10-18",
+   "sumber": "Paparan Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi",
+   "catatan": "target padam 18 Okt 2026"
+  },
+  "aus.upaya.drone": {
+   "nilai": 21,
+   "satuan": "drone pemadam",
+   "pustaka": "bnpb-paparan-kepala-2026-10-18",
+   "sumber": "Paparan Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi",
+   "catatan": "Kemhan, Kalimantan Tengah"
+  },
+  "aus.upaya.pompa": {
+   "nilai": 75,
+   "satuan": "pompa Alkon",
+   "pustaka": "bnpb-paparan-kepala-2026-10-18",
+   "sumber": "Paparan Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.upaya.ekskavator": {
+   "nilai": 20,
+   "satuan": "ekskavator",
+   "pustaka": "bnpb-paparan-kepala-2026-10-18",
+   "sumber": "Paparan Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi",
+   "catatan": "bantuan Presiden lewat Kemhan, Sumatera Selatan"
+  },
+  "aus.pekalongan.kk": {
+   "nilai": 11202,
+   "satuan": "KK",
+   "pustaka": "bnpb-laporan-harian-2026-10-24",
+   "sumber": "Laporan Kejadian Bencana Harian BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.jateng.kk": {
+   "nilai": 44045,
+   "satuan": "KK",
+   "pustaka": "bnpb-laporan-harian-2026-10-23",
+   "sumber": "Laporan Kejadian Bencana Harian BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.jateng.kab": {
+   "nilai": 5,
+   "satuan": "kabupaten",
+   "pustaka": "bnpb-laporan-harian-2026-10-23",
+   "sumber": "Laporan Kejadian Bencana Harian BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.tpa.ha": {
+   "nilai": 15.5,
+   "satuan": "ha",
+   "pustaka": "bnpb-laporan-harian-2026-10-24",
+   "sumber": "Laporan Kejadian Bencana Harian BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.nswrfs.spesialis": {
+   "nilai": 3,
+   "satuan": "spesialis",
+   "pustaka": "bnpb-butir-wicara-australia-2026-10-26",
+   "sumber": "Butir wicara Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.kedubes.delegasi": {
+   "nilai": 3,
+   "satuan": "orang",
+   "pustaka": "bnpb-butir-wicara-australia-2026-10-26",
+   "sumber": "Butir wicara Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi"
+  },
+  "aus.mitra.lembaga": {
+   "nilai": 2,
+   "satuan": "lembaga",
+   "pustaka": "bnpb-butir-wicara-australia-2026-10-26",
+   "sumber": "Butir wicara Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi",
+   "catatan": "BMKG dan BRIN"
+  },
+  "aus.topik.pertukaran": {
+   "nilai": 8,
+   "satuan": "topik",
+   "pustaka": "bnpb-butir-wicara-australia-2026-10-26",
+   "sumber": "Butir wicara Kepala BNPB, Oktober 2026",
+   "keyakinan": "resmi"
   },
   "karhutla.titik_2026": {
    "berkas": "karhutla/ringkas.json",
@@ -878,6 +1230,41 @@
    "satuan": "%",
    "keyakinan": "terverifikasi",
    "sumber": "Diolah BNPB dari NASA FIRMS VIIRS S-NPP, klasifikasi firespot sistem, 1 Jan–27 Okt tiap tahun"
+  },
+  "karhutla.omc_sorti": {
+   "berkas": "karhutla/sumber/omc_hasil.json",
+   "jalur": "sortie",
+   "satuan": "sorti",
+   "keyakinan": "resmi",
+   "sumber": "Rekap sorti OMC BNPB, diolah BNPB, s.d. 3 Nov 2026"
+  },
+  "aus.pesawat": {
+   "nilai": 1,
+   "pustaka": "nota-aus-2026",
+   "satuan": "pesawat",
+   "keyakinan": "resmi",
+   "sumber": "Nota diplomatik Pemerintah Australia, rencana operasi 6–12 Nov 2026"
+  },
+  "aus.sorti_hari": {
+   "nilai": 6,
+   "pustaka": "nota-aus-2026",
+   "satuan": "sorti per hari",
+   "keyakinan": "resmi",
+   "sumber": "Nota diplomatik Pemerintah Australia, rencana operasi 6–12 Nov 2026"
+  },
+  "aus.hari": {
+   "nilai": 7,
+   "pustaka": "nota-aus-2026",
+   "satuan": "hari",
+   "keyakinan": "resmi",
+   "sumber": "Nota diplomatik Pemerintah Australia, rencana operasi 6–12 Nov 2026"
+  },
+  "aus.sorti_total": {
+   "nilai": 42,
+   "pustaka": "nota-aus-2026",
+   "satuan": "sorti",
+   "keyakinan": "resmi",
+   "sumber": "Nota diplomatik Pemerintah Australia, rencana operasi 6–12 Nov 2026 (olah: 6 x 7)"
   }
  }
 }
