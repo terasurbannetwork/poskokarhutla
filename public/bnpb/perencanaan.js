@@ -148,7 +148,7 @@
   }
   el.tab = seg("tab", TAB, st.tab, {role: "tablist", label: "Bagian perencanaan"});
   el.pesan = h("p", {class: "bn-pesan", role: "status"}); el.isi = h("div", {class: "pr-isi"});
-  app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Perencanaan Pusdalops"}), h("div", {class: "bn-aksi"}, h("a", {class: "bn-tombol sekunder", href: "/bnpb/logbook"}, ikon("daftar"), "Kembali ke logbook"))),
+  app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Perencanaan Pusdalops"}), h("div", {class: "bn-aksi"})),
     h("section", {class: "bn-blok"}, el.tab, el.pesan), el.isi);
   el.tab.addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (b && b.dataset.k !== st.tab) { st.tab = b.dataset.k; tandai(el.tab, st.tab, "aria-selected"); segarkan(); } });
   segarkan();

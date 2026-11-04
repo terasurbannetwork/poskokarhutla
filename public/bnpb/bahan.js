@@ -254,7 +254,7 @@ async function tombolDummy(wadah) {
 async function mulai() {
   const cek = await api("GET", "/api/wa/form/terakhir?kunci=" + koordalops.kunci);
   if (cek.s === 401 || cek.s === 403) return kartuMasuk(cek.s);
-  const aksi = h("div", {class: "bn-aksi"}, h("a", {class: "bn-tombol sekunder", href: "/bnpb/logbook"}, ikon("daftar"), "Logbook"), h("a", {class: "bn-tombol sekunder", href: "/bnpb/dokumen"}, ikon("simpan"), "Dokumen"));
+  const aksi = h("div", {class: "bn-aksi"});
   el.form = h("div", {class: "bh-form"});
   el.galat = h("p", {class: "bn-pesan galat", role: "alert", hidden: true}); el.teks = h("pre", {class: "bh-wa"}); el.tgl = h("p", {class: "bh-cat"});
   el.pesan = h("p", {class: "bn-pesan", role: "status"});

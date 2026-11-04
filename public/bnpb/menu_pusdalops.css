@@ -7,3 +7,8 @@
 .mp-menu svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;opacity:.9}
 @media (max-width:560px){.mp-menu{order:3;width:100%;margin-left:0}}
 
+/* 14 butir tidak muat sebaris: menu mengisi sisa kepala dan turun ke baris kedua, bukan tersembunyi di kanan */
+@media (min-width:561px){
+  .ad-top .mp-menu{position:static;transform:none;max-width:none;flex:1;flex-wrap:wrap;justify-content:center;overflow:visible;margin:0 12px;row-gap:2px}
+  .mp-menu a{padding:6px 10px;font-size:12.5px;gap:6px}
+}

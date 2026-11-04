@@ -251,7 +251,7 @@
     const sb = h("div", {class: "sg-bulan", role: "radiogroup", "aria-label": "Bulan"});
     BLN.forEach((n, i) => { const r = h("input", {type: "radio", name: "sgbln", value: i + 1, checked: i + 1 === bulan}); r.addEventListener("change", () => { bulan = i + 1; ref = i + 1 === kini.getUTCMonth() + 1 ? new Date(Date.UTC(kini.getUTCFullYear(), kini.getUTCMonth(), kini.getUTCDate())) : new Date(Date.UTC(kini.getUTCFullYear() + (i + 1 < kini.getUTCMonth() + 1 ? 1 : 0), i, 1)); gambarIsi(); }); sb.append(h("label", null, r, n.slice(0, 3))); });
     boxIsi = h("div", {class: "bn-form"});
-    const aksi = h("div", {class: "bn-aksi"}, h("a", {class: "bn-tombol sekunder", href: "/bnpb/logbook.html"}, ikon("daftar"), "Logbook"));
+    const aksi = h("div", {class: "bn-aksi"});
     app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Siaga pra-musim"}), sedangDummy ? pil("data dummy aktif", "info", "uji") : null, aksi),
       h("section", {class: "bn-blok sg-pilih sg-tidakcetak"}, h("div", {class: "bn-baris"}, h("label", {class: "bn-isian"}, "Provinsi", sProv), h("label", {class: "bn-isian"}, "Kabupaten/kota", sKab)), sb), boxIsi);
     gambarSekarang();

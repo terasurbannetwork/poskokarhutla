@@ -274,7 +274,7 @@
   function kerangka() {
     el.tab = h("div", {class: "op-seg op-tabs", role: "tablist", "aria-label": "Bagian operasi"}, TAB.map(([k, t, ik]) => h("button", {type: "button", role: "tab", "data-tab": k, "aria-selected": String(k === st.tab), class: "op-tab"}, ikon(ik), t)));
     el.pesan = h("p", {class: "bn-pesan", role: "status"}); el.dummy = h("div", {class: "op-tak-cetak op-aksi"}); el.isi = h("div", {class: "op-isi", role: "tabpanel"}); el.bandera = h("p", {class: "op-dummy op-tak-cetak", hidden: true, teks: "DATA DUMMY ditampilkan, bukan laporan nyata."});
-    app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Operasi Pusdalops"}), h("div", {class: "bn-aksi"}, h("a", {class: "bn-tombol sekunder", href: "/bnpb/logbook"}, ikon("daftar"), "Kembali ke logbook"), el.dummy)),
+    app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Operasi Pusdalops"}), h("div", {class: "bn-aksi"}, el.dummy)),
       h("section", {class: "bn-blok op-tak-cetak"}, el.tab, el.pesan), el.bandera, el.isi);
     el.tab.addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b && b.dataset.tab !== st.tab) { st.tab = b.dataset.tab; el.tab.querySelectorAll("[data-tab]").forEach(x => x.setAttribute("aria-selected", String(x === b))); segarkan(); } });
   }

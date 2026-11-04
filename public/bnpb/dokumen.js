@@ -213,7 +213,7 @@
     el.wa = h("textarea", {class: "dk-wa", readonly: true, rows: "10", "aria-label": "Teks WA"});
     el.cetak = h("button", {type: "button", class: "bn-tombol"}, ikon("simpan"), "Cetak atau PDF");
     el.salin = h("button", {type: "button", class: "bn-tombol sekunder"}, ikon("daftar"), "Salin teks WA");
-    app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Dokumen Pusdalops"}), h("div", {class: "bn-aksi"}, h("a", {class: "bn-tombol sekunder", href: "/bnpb/logbook"}, ikon("daftar"), "Kembali ke logbook"))),
+    app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Dokumen Pusdalops"}), h("div", {class: "bn-aksi"})),
       h("section", {class: "bn-blok dk-tak-cetak"}, el.tab, el.kontrol, el.pilihan, h("div", {class: "dk-aksi"}, el.cetak, el.salin), el.pesan),
       el.kertas, h("section", {class: "bn-blok dk-tak-cetak"}, h("h2", {teks: "Teks WA"}), el.wa));
     el.tab.addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b && b.dataset.tab !== st.tab) { st.tab = b.dataset.tab; tandaiTab(); gambarKontrol(); segarkan(); } });
