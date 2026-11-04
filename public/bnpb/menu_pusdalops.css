@@ -7,4 +7,3 @@
 .mp-menu svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;opacity:.9}
 @media (max-width:560px){.mp-menu{order:3;width:100%;margin-left:0}}
 
-/* grup Laporan dan Operasi memakai daftar turun admin (.ad-grup di public/admin/admin.css) supaya sama dengan menu admin */

@@ -5,11 +5,11 @@
 (() => {
   "use strict";
   const IKON = {"banjir": "M3 17c2 0 2-2 4.5-2S10 17 12 17s2.5-2 4.5-2S19 17 21 17|M3 21c2 0 2-2 4.5-2S10 21 12 21s2.5-2 4.5-2S19 21 21 21|M12 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.500 2-5 5-9z", "daftar": "M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01", "simpan": "M5 3h11l3 3v15H5z|M8 3v6h7V3M8 21v-7h8v7", "personel": "M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z|M4 21a8 8 0 0 1 16 0", "pin": "M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z|M12 12a2.500 2.500 0 1 0 0-5 2.500 2.500 0 0 0 0 5z", "peringatan": "M12 3l9 16H3z|M12 10v4M12 17v.5", "kalender": "M4 6h16v15H4zM4 10h16M8 3v4M16 3v4", "sinyal": "M4 20l.01 0M8 16a5.500 5.500 0 0 1 8 0M5 12.500a10 10 0 0 1 14 0|M3 3l18 18", "meja": "M9 3h6v3H9z|M6 5h12v16H6z|M9 11h6M9 15h4", "awan": "M7 18a4 4 0 0 1 0-8 5 5 0 0 1 9.600-1.500A3.500 3.500 0 0 1 17 18z"};
-  /* semua halaman kerja dan laporan Dalops di satu menu (pemilik 4 Nov 2026); laporan langsung di navbar (pemilik 4 Nov 2026), grup = [judul, ikon, [butir]] tampil sebagai daftar turun */
+  /* semua halaman kerja dan laporan Dalops di satu menu (pemilik 4 Nov 2026); semua butir langsung di navbar, tanpa daftar turun (pemilik 4 Nov 2026) */
   const MENU = [["/bnpb/dalops", "Pantau Banjir", "banjir"], ["/admin/pantau", "Meja Pantau", "meja"],
     ["/bnpb/logbook", "Logbook", "daftar"], ["/bnpb/bahan", "Bahan laporan", "daftar"], ["/admin/laporan-karhutla", "Laporan Karhutla", "simpan"],
     ["/admin/omc", "Sortie OMC", "awan"], ["/laporan-bnpb", "Laporan Koordalops", "simpan"], ["/pelaporan", "Laporan dan arsip", "simpan"], ["/bnpb/dokumen", "Dokumen", "simpan"],
-    ["Operasi", "personel", [["/bnpb/operasi", "Operasi", "personel"], ["/?operasi", "Operasi lapangan", "pin"], ["/bnpb/perencanaan", "Perencanaan", "kalender"]]],
+    ["/bnpb/operasi", "Operasi", "personel"], ["/?operasi", "Operasi lapangan", "pin"], ["/bnpb/perencanaan", "Perencanaan", "kalender"],
     ["/bnpb/siaga", "Siaga", "peringatan"], ["/daftar-kontak", "Kontak", "sinyal"]];
   const NS = "http://www.w3.org/2000/svg";
   const ikon = n => { const s = document.createElementNS(NS, "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true");
@@ -22,17 +22,6 @@
   nav.className = "mp-menu"; nav.setAttribute("aria-label", "Halaman Pusdalops");
   const tautan = ([href, teks, ik]) => { const a = document.createElement("a"); a.href = href; a.append(ikon(ik), teks);
     if (href === kini) a.setAttribute("aria-current", "page"); return a; };
-  for (const m of MENU) {
-    if (!Array.isArray(m[2])) { nav.append(tautan(m)); continue; }
-    const d = document.createElement("details"), s = document.createElement("summary"), isi = document.createElement("div");
-    d.className = "ad-grup"; d.setAttribute("name", "mp-grup"); isi.className = "ad-grup-isi";
-    s.append(ikon(m[1]), m[0]); isi.append(...m[2].map(tautan));
-    if (m[2].some(b => b[0] === kini)) s.setAttribute("aria-current", "page");
-    d.append(s, isi); nav.append(d);
-  }
-  /* klik di luar atau Esc menutup daftar turun yang terbuka */
-  const tutup = () => nav.querySelectorAll("details[open]").forEach(d => d.removeAttribute("open"));
-  document.addEventListener("click", e => { if (!nav.contains(e.target)) tutup(); });
-  document.addEventListener("keydown", e => { if (e.key === "Escape") tutup(); });
+  nav.append(...MENU.map(tautan));
   (kepala.querySelector(".ad-logo") || kepala.firstChild).after(nav);
 })();
