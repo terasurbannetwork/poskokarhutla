@@ -32,9 +32,19 @@ if [ ! -d "$utama/node_modules" ]; then
   echo "pre-push: node_modules tidak ada. Jalankan 'npm ci' dulu, lalu push lagi." >&2
   exit 1
 fi
+# Satu uji push sekaligus per repo: beberapa sesi yang mendorong bersamaan membuat uji peramban lewat batas waktu (4 Nov 2026).
+# Kunci = direktori berisi pid; kunci milik proses yang sudah mati diambil alih.
+kunci="$(git rev-parse --git-common-dir)/uji-push.kunci"
+until mkdir "$kunci" 2>/dev/null; do
+  lain=$(cat "$kunci/pid" 2>/dev/null)
+  if [ -n "$lain" ] && ! kill -0 "$lain" 2>/dev/null; then rm -f "$kunci/pid"; rmdir "$kunci" 2>/dev/null; continue; fi
+  [ -z "$tunggu" ] && { echo "pre-push: menunggu uji push lain selesai ..." >&2; tunggu=1; }
+  sleep 5
+done
+echo $$ > "$kunci/pid"
 tmp=$(mktemp -d "${TMPDIR:-/tmp}/uji-push.XXXXXX") || exit 1
 rmdir "$tmp"
-bersih() { git worktree remove --force "$tmp" >/dev/null 2>&1; rm -rf "$tmp"; git worktree prune; }
+bersih() { git worktree remove --force "$tmp" >/dev/null 2>&1; rm -rf "$tmp"; git worktree prune; rm -f "$kunci/pid"; rmdir "$kunci" 2>/dev/null; }
 trap bersih EXIT INT TERM HUP
 git worktree add --detach "$tmp" "$sha_dorong" >/dev/null 2>&1 || { echo "pre-push: gagal membuat worktree uji." >&2; exit 1; }
 # node_modules terlacak git sebagai symlink relatif ke node_modules.nosync (trik iCloud). Jangan sentuh symlink terlacak itu
