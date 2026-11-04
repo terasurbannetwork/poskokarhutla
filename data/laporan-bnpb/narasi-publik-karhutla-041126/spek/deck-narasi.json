@@ -1,0 +1,1234 @@
+{
+ "_catatan": "Brief Narasi Publik Karhutla 2026 untuk Kepala BNPB, dibangun ulang dari deck 031126 dengan data BNPB per 2 Nov 2026 dan sumber resmi terbaru.",
+ "pesan_kunci": "Musim karhutla 2026 terberat sejak 2019 dan ditangani di bawah komando nasional; pencegahan dipusatkan di gambut, pembakar dikejar sampai korporasinya, dan bantuan sahabat masuk lewat satu pintu BNPB.",
+ "kajian": "narasi",
+ "tanggal": "2026-11-04",
+ "cut_off": "3 Nov 2026, 23.59 WIB",
+ "slide": [
+  {
+   "jenis": "sampul",
+   "layout": "putih",
+   "judul_penuh": true,
+   "foto": "foto/foto-gambut.jpg",
+   "kota": "Jakarta",
+   "logo_kanan": "foto/berakhlak-hd.png",
+   "subjudul": "Pekerjaan Rumah Bersama dari Bencana Karhutla",
+   "tanpa_kepada": "pemilik 2 Nov 2026: penyaji Kepala BNPB sendiri",
+   "penyaji": {
+    "nama": "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)",
+    "jabatan": "Kepala Badan Nasional Penanggulangan Bencana"
+   }
+  },
+  {
+   "jenis": "daftar-isi"
+  },
+  {
+   "jenis": "kartu-angka",
+   "pesan": "Musim berat, ditangani sendiri, fokus ke gambut dan pelaku",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "judul": "Firespot 2026 mencapai {{angka:fs.kali_2019|fmt=1}} kali 2019; negara telah mengerahkan {{angka:karhutla.personel_total}} personel dan {{angka:karhutla.setkab.pesawat}} pesawat dalam operasi penanganan dan pengendalian karhutla",
+   "cut_off": true,
+   "grup": [
+    {
+     "pil": "Skala musim",
+     "nada": "data",
+     "ikon": "karhutla",
+     "kartu": [
+      {
+       "nilai": "{{angka:fs.total|ringkas}}",
+       "label": "firespot tahun ini",
+       "ikon": "karhutla",
+       "warna": "oranye"
+      },
+      {
+       "nilai": "{{angka:fs.kalteng_persen|fmt=1|persen}}",
+       "label": "di Kalimantan Tengah",
+       "ikon": "data",
+       "warna": "oranye"
+      },
+      {
+       "nilai": "{{angka:karhutla.khg_persen|fmt=1|persen}}",
+       "label": "di kawasan gambut",
+       "ikon": "wilayah",
+       "warna": "oranye"
+      }
+     ]
+    },
+    {
+     "pil": "Kekuatan nasional",
+     "nada": "data",
+     "ikon": "lembaga",
+     "kartu": [
+      {
+       "nilai": "{{angka:karhutla.personel_total}}",
+       "label": "personel pemadam",
+       "ikon": "jiwa",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:karhutla.wb_sorti}}",
+       "label": "sorti water bombing",
+       "ikon": "air-baku",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "judul_panel": "Pesan kunci",
+   "tesis": "Pemerintah Indonesia memimpin penanganan karhutla 2026 dan memusatkannya di kawasan gambut. Oknum individu maupun korporasi yang sengaja membakar lahan dikejar; bantuan negara lain dikoordinasikan di bawah komando pemerintah.",
+   "temuan": [
+    {
+     "kode": "Temuan B.1",
+     "keyakinan": "terverifikasi",
+     "ikon": "karhutla",
+     "teks": "Firespot 2026 mencapai {{angka:fs.kali_2019|fmt=1}} kali 2019 dan {{angka:fs.persen_2015|fmt=0|persen}} dari 2015."
+    },
+    {
+     "kode": "Temuan B.3",
+     "keyakinan": "terverifikasi",
+     "ikon": "wilayah",
+     "teks": "Sepertiga titik berada di kawasan gambut; gambut kering membuat api sulit dipadamkan, sehingga penanganan dipusatkan di gambut."
+    },
+    {
+     "kode": "Temuan B.5",
+     "keyakinan": "penilaian-pakar",
+     "ikon": "regulasi",
+     "teks": "Bareskrim Polri telah menyatakan {{angka:karhutla.hukum.korporasi_tersangka}} korporasi dan {{angka:karhutla.hukum.perorangan}} orang sebagai tersangka dalam perkara karhutla 2026."
+    },
+    {
+     "kode": "Temuan B.6",
+     "keyakinan": "resmi",
+     "ikon": "jiwa",
+     "teks": "Penanganan dikerjakan bersama: {{angka:karhutla.personel_pemerintah}} personel unsur pemerintah (TNI, Polri, BPBD, pemerintah daerah, Manggala Agni, Polisi Hutan) dan {{angka:karhutla.personel_nonpem}} dari kelompok masyarakat (regu perusahaan, relawan, Masyarakat Peduli Api)."
+    }
+   ],
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–2 Nov; KHG s.d. 24 Okt; Setkab; Bareskrim Polri; Bakom 15 Okt",
+   "pita": {
+    "label": "Pesan untuk publik",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "karhutla",
+      "judul": "Skala musim 2026",
+      "isi": "Musim 2026 terberat sejak 2019 dan ditangani di bawah komando nasional."
+     },
+     {
+      "ikon": "wilayah",
+      "judul": "Fokus kawasan gambut",
+      "isi": "Pencegahan dan penanganan dipusatkan pada kawasan gambut kering."
+     },
+     {
+      "ikon": "lembaga",
+      "judul": "Bantuan satu pintu",
+      "isi": "Bantuan negara lain masuk satu pintu dengan koordinasi BNPB, di bawah komando pemerintah Indonesia."
+     }
+    ]
+   },
+   "kolom": 1
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 1
+  },
+  {
+   "jenis": "temuan-grafik",
+   "pesan": "Skala musim 2026 dibanding tahun sebelumnya",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "judul": "Firespot 2026 mencapai {{angka:fs.kali_2019|fmt=1}} kali 2019 dan {{angka:fs.kali_2023|fmt=1}} kali 2023, masih di bawah 2015",
+   "cut_off": true,
+   "grafik": {
+    "judul_panel": "Firespot nasional",
+    "ikon": "karhutla",
+    "judul": "**Firespot**, Januari sampai akhir Oktober",
+    "keluarga": "netral",
+    "pembanding": false,
+    "data": {
+     "csv": "data/karhutla/setara_fs.csv",
+     "saring": "kunci=firespot",
+     "seri": "kolom",
+     "kolom": [
+      {
+       "nama": "y2015",
+       "kepala": "2015",
+       "fmt": "0"
+      },
+      {
+       "nama": "y2019",
+       "kepala": "2019",
+       "fmt": "0"
+      },
+      {
+       "nama": "y2023",
+       "kepala": "2023",
+       "fmt": "0"
+      },
+      {
+       "nama": "y2026",
+       "kepala": "2026",
+       "fmt": "0"
+      }
+     ],
+     "keyakinan": "terverifikasi",
+     "sumber": "Diolah BNPB dari NASA FIRMS VIIRS S-NPP"
+    },
+    "persen_batang": false,
+    "ubah": false
+   },
+   "panel": {
+    "judul": "Tren per pekan",
+    "ikon": "kalender",
+    "keyakinan": "terverifikasi",
+    "grafik": {
+     "judul": "**Firespot** per pekan",
+     "keluarga": "netral",
+     "persen_batang": true,
+     "data": {
+      "csv": "data/karhutla/mingguan_fs.csv",
+      "kolom": [
+       {
+        "nama": "pekan",
+        "kepala": "Pekan",
+        "ganti": {
+         "Pekan kedua September": "Sep II",
+         "Pekan ketiga September": "Sep III",
+         "Akhir September": "Sep IV",
+         "Awal Oktober": "Okt I",
+         "Pekan kedua Oktober": "Okt II",
+         "Pekan ketiga Oktober": "Okt III",
+         "Pekan keempat Oktober": "Okt IV",
+         "Sepekan terakhir": "Terakhir"
+        }
+       },
+       {
+        "nama": "firespot",
+        "kepala": "Firespot",
+        "fmt": "0"
+       }
+      ],
+      "keyakinan": "terverifikasi",
+      "sumber": "Diolah BNPB dari NASA FIRMS"
+     },
+     "ubah": false
+    },
+    "daftar": [
+     "Puncak pada awal Oktober; musim hujan mulai menekan jumlah firespot."
+    ]
+   },
+   "pita": {
+    "label": "Pesan untuk publik",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "karhutla",
+      "judul": "Skala musim 2026",
+      "isi": "Firespot tertinggi sejak 2019, masih di bawah 2015."
+     },
+     {
+      "ikon": "turun",
+      "judul": "Mulai melandai",
+      "isi": "Firespot sepekan terakhir {{angka:fs.pekan_turun_persen|fmt=1|persen|arah}} dari pekan puncak; tren terus dipantau."
+     },
+     {
+      "ikon": "wilayah",
+      "judul": "Kalimantan",
+      "isi": "Lima provinsi Kalimantan menyumbang {{angka:fs.kalimantan_persen|fmt=1|persen}} firespot nasional tahun ini."
+     }
+    ]
+   },
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS; klasifikasi firespot sistem; 1 Jan–27 Okt tiap tahun, pekan hingga 2 Nov",
+   "grup": [
+    {
+     "pil": "Tahun ini",
+     "nada": "data",
+     "ikon": "karhutla",
+     "kartu": [
+      {
+       "nilai": "{{angka:fs.total}}",
+       "label": "firespot tahun ini",
+       "ikon": "karhutla",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "rasio": 0.48
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "pesan": "Sebaran provinsi dan puncak yang sudah lewat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "deskriptif",
+   "judul": "Sebaran Firespot per Provinsi",
+   "cut_off": true,
+   "grup": [
+    {
+     "pil": "Sebaran",
+     "nada": "data",
+     "ikon": "wilayah",
+     "kartu": [
+      {
+       "nilai": "{{angka:fs.top10_persen|fmt=1|persen}}",
+       "label": "porsi sepuluh provinsi teratas",
+       "ikon": "data",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:fs.kalimantan_persen|fmt=1|persen}}",
+       "label": "porsi empat provinsi Kalimantan",
+       "ikon": "wilayah",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "tabel": {
+    "judul_panel": "Firespot per provinsi",
+    "ikon": "karhutla",
+    "data": {
+     "csv": "data/karhutla/provinsi_fs.csv",
+     "kolom": [
+      {
+       "nama": "provinsi",
+       "kepala": "Provinsi"
+      },
+      {
+       "nama": "firespot",
+       "kepala": "Firespot 2026",
+       "fmt": "0",
+       "warna": "oranye",
+       "ikon": "karhutla"
+      },
+      {
+       "nama": "porsi",
+       "kepala": "Porsi nasional",
+       "fmt": "1|persen",
+       "warna": "navy",
+       "ikon": "data"
+      }
+     ],
+     "keyakinan": "terverifikasi",
+     "sumber": "Diolah BNPB dari NASA FIRMS VIIRS, klasifikasi firespot sistem"
+    },
+    "total": true,
+    "peringkat": false
+   },
+   "panel": {
+    "judul": "Firespot per bulan 2026",
+    "ikon": "kalender",
+    "keyakinan": "terverifikasi",
+    "grafik": {
+     "judul": "**Firespot** per bulan",
+     "keluarga": "api",
+     "ubah": false,
+     "persen_batang": false,
+     "data": {
+      "csv": "data/karhutla/bulanan_fs.csv",
+      "saring": "kunci=firespot",
+      "seri": "kolom",
+      "kolom": [
+       {
+        "nama": "Jun",
+        "kepala": "Jun",
+        "fmt": "0"
+       },
+       {
+        "nama": "Jul",
+        "kepala": "Jul",
+        "fmt": "0"
+       },
+       {
+        "nama": "Agu",
+        "kepala": "Agu",
+        "fmt": "0"
+       },
+       {
+        "nama": "Sep",
+        "kepala": "Sep",
+        "fmt": "0"
+       },
+       {
+        "nama": "Okt",
+        "kepala": "Okt",
+        "fmt": "0"
+       }
+      ],
+      "keyakinan": "terverifikasi",
+      "sumber": "Diolah BNPB dari NASA FIRMS VIIRS, klasifikasi firespot sistem"
+     }
+    },
+    "daftar": [
+     "{{angka:fs.agu_okt_persen|fmt=1|persen}} firespot tahun ini terjadi pada Agustus sampai Oktober."
+    ]
+   },
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS, klasifikasi firespot sistem, 1 Jan–2 Nov"
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 2
+  },
+  {
+   "jenis": "temuan-grafik",
+   "pesan": "Luas resmi melonjak di tahun kemarau panjang; gambut penentu skala",
+   "jenis_slide": "panel",
+   "judul_bentuk": "deskriptif",
+   "judul": "Luas terbakar resmi melonjak pada tahun kemarau panjang",
+   "cut_off": true,
+   "grafik": {
+    "judul_panel": "Luas terbakar resmi nasional",
+    "ikon": "luas",
+    "keyakinan": "resmi",
+    "judul": "**Luas terbakar**, ha per tahun, 2015–2026",
+    "keluarga": "api",
+    "data": {
+     "csv": "data/karhutla/luas.csv",
+     "saring": "kunci=ha",
+     "seri": "kolom",
+     "kolom": [
+      {
+       "nama": "2015",
+       "kepala": "2015",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2016",
+       "kepala": "2016",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2017",
+       "kepala": "2017",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2018",
+       "kepala": "2018",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2019",
+       "kepala": "2019",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2020",
+       "kepala": "2020",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2021",
+       "kepala": "2021",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2022",
+       "kepala": "2022",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2023",
+       "kepala": "2023",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2024",
+       "kepala": "2024",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2025",
+       "kepala": "2025",
+       "fmt": "ringkas"
+      },
+      {
+       "nama": "2026 prakiraan",
+       "kepala": "2026*",
+       "fmt": "ringkas"
+      }
+     ],
+     "keyakinan": "resmi",
+     "sumber": "KLHK/Kemenhut SiPongi via Infografis Bakom RI 15 Okt 2026"
+    },
+    "persen_batang": false,
+    "ubah": false
+   },
+   "panel": {
+    "judul": "Gambut",
+    "ikon": "wilayah",
+    "keyakinan": "terverifikasi",
+    "daftar": [
+     "Bara gambut menjalar di bawah permukaan, sehingga api sulit dipadamkan dari atas.",
+     "Gambut dianggap rusak bila airnya surut lebih dari {{angka:karhutla.muka_air_cm|fmt=0}} cm di bawah permukaan; saat itu gambut kering dan mudah terbakar.",
+     "Jumlah kejadian karhutla meningkat tajam bila rata-rata curah hujan selama musim kemarau di bawah {{angka:karhutla.hujan_ambang|fmt=0|satuan}}.",
+     "Kerugian 2015 sekitar US${{angka:karhutla.biaya_per_ha_2015}} per ha dari total US${{angka:karhutla.biaya_2015|fmt=1}} miliar (Bank Dunia); angka ini dasar prakiraan 2026."
+    ]
+   },
+   "pita": {
+    "label": "Yang disampaikan",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "wilayah",
+      "judul": "Gambut kering",
+      "isi": "Gambut yang dibiarkan mengering mudah terbakar; apinya menjalar di bawah permukaan dan asapnya meluas."
+     },
+     {
+      "ikon": "kalender",
+      "judul": "Luas 2026",
+      "isi": "Batang 2026 adalah prakiraan dari satelit hingga 3 November; luas resmi menyusul setelah musim berakhir."
+     },
+     {
+      "ikon": "wilayah",
+      "judul": "Kawasan gambut",
+      "isi": "Indonesia punya {{angka:karhutla.khg_n}} kawasan gambut seluas {{angka:karhutla.khg_luas|fmt=1|satuan}}."
+     }
+    ]
+   },
+   "sumber": "SiPongi via Bakom 15 Okt; BNPB; peta KHG KLHK; Bank Dunia 2016; ACP 2018",
+   "grup": [
+    {
+     "pil": "Kerugian",
+     "nada": "data",
+     "ikon": "pembiayaan",
+     "kartu": [
+      {
+       "nilai": "{{angka:karhutla.kerugian_2026_miliar}}",
+       "label": "miliar dolar AS, prakiraan kerugian 2026",
+       "ikon": "pembiayaan",
+       "warna": "navy"
+      }
+     ]
+    },
+    {
+     "pil": "Gambut",
+     "nada": "perhatian",
+     "ikon": "wilayah",
+     "kartu": [
+      {
+       "nilai": "{{angka:karhutla.khg_persen|fmt=1|persen}}",
+       "label": "hotspot 2026 di kawasan gambut",
+       "ikon": "wilayah",
+       "warna": "kategori.api"
+      },
+      {
+       "nilai": "{{angka:karhutla.khg_titik}}",
+       "label": "di kawasan gambut",
+       "ikon": "karhutla",
+       "warna": "kategori.api"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "jenis": "temuan-grafik",
+   "pesan": "Hotspot di areal konsesi dan tanggung jawab perusahaan",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "judul": "Pada sepekan puncak Oktober, {{angka:karhutla.izin_dalam_persen|fmt=1|persen}} hotspot berada di dalam areal konsesi; terbanyak di hutan tanaman industri, disusul kebun sawit",
+   "cut_off": true,
+   "grup": [
+    {
+     "pil": "Di dalam konsesi",
+     "nada": "perhatian",
+     "ikon": "data",
+     "kartu": [
+      {
+       "nilai": "{{angka:karhutla.izin_dalam}}",
+       "label": "hotspot di areal konsesi",
+       "ikon": "karhutla",
+       "warna": "merah"
+      },
+      {
+       "nilai": "{{angka:karhutla.hukum.korporasi_tersangka}}",
+       "label": "korporasi tersangka",
+       "ikon": "lembaga",
+       "warna": "merah"
+      },
+      {
+       "nilai": "{{angka:karhutla.hukum.usul_cabut}}",
+       "label": "korporasi diusulkan dicabut izinnya",
+       "ikon": "regulasi",
+       "warna": "merah"
+      }
+     ]
+    }
+   ],
+   "panel": {
+    "judul": "Narasi",
+    "ikon": "ringkasan",
+    "keyakinan": "penilaian-pakar",
+    "daftar": [
+     "Perusahaan pemegang izin wajib mencegah dan memadamkan api di arealnya.",
+     "Hotspot di areal konsesi menjadi dasar penyelidikan Gakkum Kemenhut dan Bareskrim Polri.",
+     "Hutan tanaman industri menyumbang hotspot konsesi terbanyak; kebun sawit di urutan kedua.",
+     "Sawit komoditas strategis; yang ditindak adalah oknum yang membakar, terutama di gambut."
+    ]
+   },
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS dan peta izin GFW, Trase, 6–12 Okt",
+   "pita": {
+    "label": "Fakta pendukung",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "wilayah",
+      "judul": "Muka air untuk semua",
+      "isi": "Kewajiban menjaga muka air gambut berlaku untuk semua pengelola lahan."
+     },
+     {
+      "ikon": "regulasi",
+      "judul": "Izin dicabut",
+      "isi": "Kemenhut sudah mencabut {{angka:karhutla.hukum.izin_dicabut}} izin perusahaan yang arealnya terbakar."
+     },
+     {
+      "ikon": "lembaga",
+      "judul": "Modal asing",
+      "isi": "{{angka:karhutla.hukum.korporasi_asing}} korporasi tersangka bermodal asing; perlakuan hukumnya sama dengan korporasi dalam negeri."
+     }
+    ]
+   },
+   "grafik": {
+    "judul_panel": "Hotspot di areal konsesi per jenis izin",
+    "ikon": "data",
+    "keyakinan": "terverifikasi",
+    "judul": "**Hotspot**, sepekan puncak Oktober",
+    "keluarga": "netral",
+    "arah": "horizontal",
+    "seragam": true,
+    "data": {
+     "csv": "data/karhutla/izin_konsesi.csv",
+     "kolom": [
+      {
+       "nama": "lokasi",
+       "kepala": "Lokasi"
+      },
+      {
+       "nama": "titik",
+       "kepala": "Hotspot",
+       "fmt": "0"
+      }
+     ],
+     "keyakinan": "terverifikasi",
+     "sumber": "Diolah BNPB dari NASA FIRMS VIIRS dan peta izin Kemenhut via GFW, Trase"
+    },
+    "ubah": false,
+    "persen_batang": false
+   }
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 3
+  },
+  {
+   "jenis": "temuan-visual",
+   "pesan": "Insentif ekonomi pembakaran dan penegakan hukum 2026",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "judul": "Berdasarkan data, lahan yang dibakar lalu ditanami dijual US${{angka:karhutla.lahan.tanam}} per ha, {{angka:karhutla.lahan.kali_tebas|fmt=1}} kali lahan yang dibuka dengan metode hanya ditebang",
+   "cut_off": true,
+   "panel": {
+    "judul": "Penegakan hukum 2026",
+    "ikon": "regulasi",
+    "keyakinan": "penilaian-pakar",
+    "data": {
+     "csv": "data/karhutla/hukum.csv",
+     "kolom": [
+      {
+       "nama": "tahap",
+       "kepala": "Tahap"
+      },
+      {
+       "nama": "jumlah",
+       "kepala": "Jumlah",
+       "fmt": "0",
+       "warna": "merah",
+       "ikon": "regulasi"
+      }
+     ],
+     "keyakinan": "penilaian-pakar",
+     "sumber": "Bareskrim Polri 29 Okt 2026; Ditjen Gakkum Kemenhut 18 Okt 2026; UU 32/2009 Pasal 98, 99, 108"
+    },
+    "daftar": [
+     "{{angka:karhutla.hukum.korporasi_asing}} korporasi tersangka bermodal asing; perlakuan hukumnya sama dengan korporasi dalam negeri.",
+     "Usulan pencabutan izin diajukan Bareskrim Polri ke kementerian pemberi izin.",
+     "Kemenhut membekukan izin lain sambil mewajibkan pemulihan lahan.",
+     "Pembakar lapangan dipidana perorangan; pemodalnya dijerat sebagai korporasi.",
+     "Peserta regu perusahaan tetap bisa dijerat bila lahannya terbukti dibakar.",
+     "Selisih harga inilah insentif ekonomi pembakaran yang diputus lewat penegakan hukum."
+    ],
+    "peringkat": false
+   },
+   "pita": {
+    "label": "Rantai yang diputus",
+    "nada": "aksi",
+    "kolom": [
+     {
+      "ikon": "jiwa",
+      "judul": "Pembakar",
+      "isi": "Pidana perorangan bagi yang dibayar menyalakan api."
+     },
+     {
+      "ikon": "lembaga",
+      "judul": "Pemodal",
+      "isi": "Korporasi yang mendanai pembakaran dikejar siapa pun pemiliknya."
+     },
+     {
+      "ikon": "luas",
+      "judul": "Lahan",
+      "isi": "Lahan yang sengaja dibakar tidak boleh menjadi kebun baru; izin dicabut."
+     }
+    ]
+   },
+   "sumber": "Purnomo dkk. 2017; Bareskrim Polri 29 Okt; Gakkum Kemenhut 18 Okt",
+   "utama": {
+    "judul": "Harga jual lahan, US$ per ha",
+    "ikon": "pembiayaan",
+    "keyakinan": "penilaian-pakar",
+    "waterfall": {
+     "akhir": "Dibakar lalu ditanami",
+     "data": {
+      "csv": "data/karhutla/lahan_wf.csv",
+      "kolom": [
+       {
+        "nama": "tahap",
+        "kepala": "Tahap"
+       },
+       {
+        "nama": "nilai",
+        "kepala": "US$ per ha",
+        "fmt": "0"
+       }
+      ],
+      "keyakinan": "penilaian-pakar",
+      "sumber": "Purnomo dkk. 2017, Forest Policy and Economics 78"
+     }
+    }
+   },
+   "rasio": 0.66
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Perusahaan berafiliasi grup asing di areal hotspot",
+   "judul": "Karhutla 2026 tidak hanya tanggung jawab Indonesia: {{angka:karhutla.aktor_asing}} dari {{angka:karhutla.aktor_total}} perusahaan yang konsesinya ber-hotspot terafiliasi grup usaha dengan pemegang saham asing",
+   "cut_off": true,
+   "grup": [
+    {
+     "pil": "Afiliasi asing",
+     "nada": "perhatian",
+     "ikon": "lembaga",
+     "kartu": [
+      {
+       "nilai": "{{angka:karhutla.aktor_sg}}",
+       "label": "perusahaan grup Singapura",
+       "ikon": "lembaga",
+       "warna": "merah"
+      },
+      {
+       "nilai": "{{angka:karhutla.aktor_my}}",
+       "label": "perusahaan grup Malaysia",
+       "ikon": "lembaga",
+       "warna": "merah"
+      },
+      {
+       "nilai": "{{angka:karhutla.hukum.korporasi_asing}}",
+       "label": "korporasi asing jadi tersangka",
+       "ikon": "regulasi",
+       "warna": "merah"
+      }
+     ]
+    }
+   ],
+   "tabel": {
+    "judul_panel": "Grup usaha asing dengan hotspot terbanyak di arealnya",
+    "ikon": "lembaga",
+    "peringkat": false,
+    "total": true,
+    "data": {
+     "csv": "data/karhutla/grup_asing.csv",
+     "kolom": [
+      {
+       "nama": "grup",
+       "kepala": "Grup usaha"
+      },
+      {
+       "nama": "negara",
+       "kepala": "Negara asal"
+      },
+      {
+       "nama": "perusahaan",
+       "kepala": "Perusahaan",
+       "fmt": "0",
+       "warna": "navy",
+       "ikon": "lembaga"
+      },
+      {
+       "nama": "hotspot",
+       "kepala": "Hotspot",
+       "fmt": "0",
+       "warna": "merah",
+       "ikon": "karhutla"
+      }
+     ],
+     "keyakinan": "penilaian-pakar",
+     "sumber": "Diolah BNPB dari kajian peta aktor WALHI 2026 dan NASA FIRMS VIIRS"
+    }
+   },
+   "panel": {
+    "judul": "Negara asal",
+    "ikon": "ringkasan",
+    "keyakinan": "penilaian-pakar",
+    "daftar": [
+     "Sebagian besar perusahaan di areal hotspot terafiliasi grup usaha Singapura dan Malaysia.",
+     "Perlakuan hukum sama untuk modal asing dan dalam negeri.",
+     "Hotspot di areal izin adalah indikasi lokasi; penetapan pelaku lewat penyelidikan."
+    ],
+    "s7_bendera_bulat": {
+     "bendera": [
+      {
+       "kode": "sg",
+       "label": "Singapura"
+      },
+      {
+       "kode": "my",
+       "label": "Malaysia"
+      },
+      {
+       "kode": "kr",
+       "label": "Korea Selatan"
+      }
+     ],
+     "diameter": 34,
+     "tata": "kolom",
+     "label_posisi": "kanan"
+    }
+   },
+   "sumber": "Kajian peta aktor WALHI 2026; Diolah BNPB dari NASA FIRMS VIIRS dan peta izin, 5–12 Okt; Bareskrim Polri 29 Okt",
+   "rasio": 0.75
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 4
+  },
+  {
+   "jenis": "temuan-visual",
+   "pesan": "Kekuatan nasional dan unsur nonpemerintah",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "judul": "Pemadaman karhutla 2026 melibatkan {{angka:karhutla.personel_total}} personel pemerintah dan masyarakat; {{angka:karhutla.setkab.pesawat}} heli dan pesawat dikerahkan untuk patroli, OMC, hingga water bombing",
+   "cut_off": true,
+   "panel": {
+    "judul": "Armada udara",
+    "ikon": "air-baku",
+    "keyakinan": "resmi",
+    "daftar_ikon": {
+     "mode": "baris",
+     "baris": [
+      {
+       "ikon": "infrastruktur",
+       "judul": "Armada udara",
+       "isi": "heli dan pesawat dikerahkan",
+       "angka": "{{angka:karhutla.setkab.pesawat}}"
+      },
+      {
+       "ikon": "air-baku",
+       "judul": "Water bombing",
+       "isi": "sorti heli pengebom air",
+       "angka": "{{angka:karhutla.wb_sorti}}"
+      },
+      {
+       "ikon": "air-baku",
+       "judul": "Jatuhan air",
+       "isi": "kali air dijatuhkan dari udara",
+       "angka": "{{angka:karhutla.wb_drop}}"
+      },
+      {
+       "ikon": "data",
+       "judul": "Patroli udara",
+       "isi": "sorti pemantauan api",
+       "angka": "{{angka:karhutla.patroli_sorti}}"
+      }
+     ]
+    }
+   },
+   "sumber": "Bakom 15 Okt 2026; Setkab 21 Sep 2026; rekap udara PDW BNPB s.d. 25 Okt",
+   "utama": {
+    "judul": "Personel pemadam per unsur: pemerintah dan masyarakat",
+    "ikon": "jiwa",
+    "keyakinan": "resmi",
+    "kisi_ikon": {
+     "kolom": 3,
+     "kartu": [
+      {
+       "ikon": "lembaga",
+       "nilai": "{{angka:karhutla.personel.tni}}",
+       "label": "TNI, {{angka:karhutla.personel.tni_persen|fmt=1|persen}}"
+      },
+      {
+       "ikon": "regulasi",
+       "nilai": "{{angka:karhutla.personel.polri}}",
+       "label": "Polri, {{angka:karhutla.personel.polri_persen|fmt=1|persen}}"
+      },
+      {
+       "ikon": "tanggap-darurat",
+       "nilai": "{{angka:karhutla.personel.bpbd}}",
+       "label": "BPBD, {{angka:karhutla.personel.bpbd_persen|fmt=1|persen}}"
+      },
+      {
+       "ikon": "wilayah",
+       "nilai": "{{angka:karhutla.personel.pemerintah_daerah}}",
+       "label": "Pemerintah daerah, {{angka:karhutla.personel.pemerintah_daerah_persen|fmt=1|persen}}"
+      },
+      {
+       "ikon": "karhutla",
+       "nilai": "{{angka:karhutla.personel.manggala_agni}}",
+       "label": "Manggala Agni, {{angka:karhutla.personel.manggala_agni_persen|fmt=1|persen}}"
+      },
+      {
+       "ikon": "luas",
+       "nilai": "{{angka:karhutla.personel.polisi_hutan}}",
+       "label": "Polisi Hutan, {{angka:karhutla.personel.polisi_hutan_persen|fmt=1|persen}}"
+      },
+      {
+       "ikon": "pembiayaan",
+       "nilai": "{{angka:karhutla.personel.perusahaan}}",
+       "label": "Perusahaan, {{angka:karhutla.personel.perusahaan_persen|fmt=1|persen}}"
+      },
+      {
+       "ikon": "jiwa",
+       "nilai": "{{angka:karhutla.personel.relawan}}",
+       "label": "Relawan, {{angka:karhutla.personel.relawan_persen|fmt=1|persen}}"
+      },
+      {
+       "ikon": "rumah",
+       "nilai": "{{angka:karhutla.personel.masyarakat_peduli_api}}",
+       "label": "Masyarakat Peduli Api, {{angka:karhutla.personel.masyarakat_peduli_api_persen|fmt=1|persen}}"
+      }
+     ],
+     "sorot": -1
+    }
+   },
+   "rasio": 0.62
+  },
+  {
+   "jenis": "pembatas-seksi",
+   "bagian": 5
+  },
+  {
+   "jenis": "temuan-visual",
+   "jenis_slide": "panel",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Bantuan asing juga sarana mengukur kemampuan Indonesia",
+   "judul": "Bantuan dari negara lain perlu dipertimbangkan dengan hati-hati untuk mencegah adanya celah yang dapat mengganggu kedaulatan Indonesia",
+   "utama": {
+    "judul": "Celah yang dapat dimanfaatkan dan cara menutupnya",
+    "ikon": "peringatan",
+    "banding": {
+     "kiri": {
+      "judul": "Yang dapat dipetakan pihak asing"
+     },
+     "kanan": {
+      "judul": "Cara pemerintah menutup celahnya"
+     },
+     "skala_huruf": 1.3,
+     "baris": [
+      {
+       "label": "Respons",
+       "ikon": "tanggap-darurat",
+       "kiri": "Seberapa cepat Indonesia bergerak saat bencana besar terjadi",
+       "kanan": "Komando tetap di tangan BNPB, tim asing hanya membantu"
+      },
+      {
+       "label": "Wilayah",
+       "ikon": "wilayah",
+       "kiri": "Sebaran hotspot dan jalur logistik di wilayah rawan",
+       "kanan": "Setiap penerbangan asing wajib berizin dan terbang sesuai penugasan"
+      },
+      {
+       "label": "Konsesi",
+       "ikon": "luas",
+       "kiri": "Areal konsesi dan pengawasan di wilayah perbatasan",
+       "kanan": "Tim asing hanya masuk ke lokasi tugas dan selalu didampingi aparat"
+      },
+      {
+       "label": "Data",
+       "ikon": "data",
+       "kiri": "Kekuatan pusat data dan rantai logistik nasional",
+       "kanan": "Citra dan data operasi diserahkan ke pemerintah dan diolah di dalam negeri"
+      },
+      {
+       "label": "Opini",
+       "ikon": "peringatan",
+       "kiri": "Besarnya keresahan publik akibat asap",
+       "kanan": "Pemerintah bicara satu suara dengan data resmi yang terbuka"
+      },
+      {
+       "label": "Dana",
+       "ikon": "pembiayaan",
+       "kiri": "Aliran dana asing ke lembaga di dalam negeri",
+       "kanan": "Lembaga dan dana asing wajib terdaftar dan berkoordinasi dengan BNPB"
+      }
+     ]
+    }
+   },
+   "sumber": "UU 24/2007; PP 23/2008; PP 4/2018; PP 45/2021"
+  },
+  {
+   "jenis": "rekomendasi",
+   "jenis_slide": "rekomendasi",
+   "judul_bentuk": "deskriptif",
+   "seri": "bantuan",
+   "pesan": "Kedaulatan dan satu pintu",
+   "judul": "Bantuan dari negara lain masuk {{sorot:satu pintu}} dengan koordinasi BNPB dan bekerja di bawah komando pemerintah Indonesia",
+   "sumber": "UU 24/2007; PP 23/2008; PP 4/2018; PP 45/2021; UU 3/2014; BNPB Sep 2026",
+   "rekomendasi": [
+    {
+     "kode": "01",
+     "jenis": "regulasi",
+     "langkah": "Komando di tangan pemerintah Indonesia",
+     "rincian": "BNPB memegang fungsi koordinasi bersama Kemlu untuk penanganan darurat; tim dan aset bantuan dari negara lain hanya pendukung dalam sistem komando nasional.",
+     "lembaga": [
+      "BNPB",
+      "Kemenko PMK",
+      "Kemlu"
+     ]
+    },
+    {
+     "kode": "02",
+     "jenis": "pembiayaan",
+     "langkah": "Semua bantuan lewat satu pintu",
+     "rincian": "Pesawat, peralatan, masker, dan dana dari negara lain masuk lewat pemerintah dengan koordinasi BNPB.",
+     "lembaga": [
+      "BNPB",
+      "Kemensetneg",
+      "Kemlu",
+      "Kemenkeu"
+     ]
+    },
+    {
+     "kode": "03",
+     "jenis": "kapasitas",
+     "langkah": "Terima bantuan bersama, bebas aktif",
+     "rincian": "Tawaran beberapa negara diterima dalam satu skema bersama, sehingga tidak ada negara yang diposisikan paling berjasa.",
+     "lembaga": [
+      "Kemlu",
+      "Kemensetneg",
+      "BNPB"
+     ]
+    },
+    {
+     "kode": "04",
+     "jenis": "pembiayaan",
+     "langkah": "Utamakan produk dalam negeri",
+     "rincian": "Belanja dari hibah memakai produk dan penyedia dalam negeri bila tersedia.",
+     "lembaga": [
+      "BNPB",
+      "Kemenperin"
+     ]
+    },
+    {
+     "kode": "05",
+     "jenis": "regulasi",
+     "langkah": "Atur penerbangan asing",
+     "rincian": "Pesawat asing wajib izin diplomatik dan keamanan per sorti; setiap regu penerbangan wajib menyertakan personel Indonesia.",
+     "lembaga": [
+      "Kemhan",
+      "Kemlu",
+      "TNI"
+     ]
+    }
+   ]
+  },
+  {
+   "jenis": "rekomendasi",
+   "jenis_slide": "rekomendasi",
+   "judul_bentuk": "deskriptif",
+   "seri": "bantuan",
+   "pesan": "Pengamanan wilayah dan data",
+   "judul": "Pengamanan wilayah dan data selama bantuan asing bekerja: {{sorot:akses terbatas}} dan data tetap di dalam negeri",
+   "sumber": "UU 24/2007; PP 23/2008; PP 4/2018; PP 45/2021; UU 3/2014; BNPB Sep 2026",
+   "rekomendasi": [
+    {
+     "kode": "06",
+     "jenis": "data",
+     "langkah": "Larang pengambilan data dan citra",
+     "rincian": "Tim negara lain tidak diperbolehkan mengambil data dan citra pemetaan selama operasi berlangsung.",
+     "lembaga": [
+      "BIG",
+      "BNPB"
+     ]
+    },
+    {
+     "kode": "07",
+     "jenis": "kapasitas",
+     "langkah": "Batasi akses wilayah strategis",
+     "rincian": "Tim negara lain bekerja hanya di lokasi tugas yang diizinkan, termasuk di areal konsesi dan wilayah perbatasan.",
+     "lembaga": [
+      "TNI",
+      "BNPB"
+     ]
+    },
+    {
+     "kode": "08",
+     "jenis": "data",
+     "langkah": "Data konsesi tidak dibagikan",
+     "rincian": "Informasi konsesi dan ekonomi strategis tidak dibagikan kepada tim dan pemerintah negara lain.",
+     "lembaga": [
+      "Kemenhut",
+      "ATR/BPN",
+      "Kemlu"
+     ]
+    },
+    {
+     "kode": "09",
+     "jenis": "regulasi",
+     "langkah": "Daftarkan lembaga dan dana asing",
+     "rincian": "Lembaga asing dan dana asing untuk penanganan karhutla wajib terdaftar dan berkoordinasi dengan BNPB.",
+     "lembaga": [
+      "BNPB",
+      "Kemendagri",
+      "Kemlu"
+     ]
+    },
+    {
+     "kode": "10",
+     "jenis": "kapasitas",
+     "langkah": "Tampilkan kekuatan nasional",
+     "rincian": "Komunikasi publik menampilkan personel dan armada nasional; dukungan asing disebut sebagai pendukung.",
+     "lembaga": [
+      "BNPB",
+      "Kemenko PMK",
+      "Badan Komunikasi Pemerintah"
+     ]
+    }
+   ]
+  },
+  {
+   "jenis": "kesimpulan",
+   "pesan": "Delapan pesan untuk komunikasi publik",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "cut_off": true,
+   "judul": "Kesimpulan",
+   "kartu": [
+    {
+     "label": "Skala",
+     "ikon": "karhutla",
+     "warna": "oranye",
+     "judul": "Musim terberat sejak 2019",
+     "isi": [
+      "Firespot 2026 mencapai {{angka:fs.kali_2019|fmt=1}} kali 2019.",
+      "Masih di bawah kebakaran besar 2015."
+     ]
+    },
+    {
+     "label": "Tren",
+     "ikon": "turun",
+     "warna": "biru",
+     "judul": "Mulai melandai",
+     "isi": [
+      "Firespot sepekan terakhir {{angka:fs.pekan_turun_persen|fmt=1|persen|arah}} dari pekan puncak.",
+      "Musim hujan mulai menekan api; tren terus dipantau."
+     ]
+    },
+    {
+     "label": "Respons",
+     "ikon": "lembaga",
+     "warna": "navy",
+     "judul": "Komando nasional",
+     "isi": [
+      "{{angka:karhutla.personel_total}} personel pemerintah dan masyarakat.",
+      "{{angka:karhutla.setkab.pesawat}} heli dan pesawat di bawah satu komando."
+     ]
+    },
+    {
+     "label": "Pemberat",
+     "ikon": "wilayah",
+     "warna": "navy",
+     "judul": "Gambut kering",
+     "isi": [
+      "Sepertiga hotspot berada di kawasan gambut.",
+      "Gambut yang mengering mudah terbakar dan sulit dipadamkan."
+     ]
+    },
+    {
+     "label": "Sawit",
+     "ikon": "data",
+     "warna": "navy",
+     "judul": "Komoditas strategis",
+     "isi": [
+      "{{angka:karhutla.izin_dalam_persen|fmt=1|persen}} hotspot sepekan puncak berada di areal konsesi.",
+      "Pemegang izin wajib mencegah dan memadamkan api."
+     ]
+    },
+    {
+     "label": "Pelaku",
+     "ikon": "regulasi",
+     "warna": "navy",
+     "judul": "Rantai pembakar",
+     "isi": [
+      "{{angka:karhutla.hukum.korporasi_tersangka}} korporasi dan {{angka:karhutla.hukum.perorangan}} orang menjadi tersangka.",
+      "Pembakar dan pemodalnya dikejar."
+     ]
+    },
+    {
+     "label": "Bantuan",
+     "ikon": "lembaga",
+     "warna": "navy",
+     "judul": "Bantuan satu pintu",
+     "isi": [
+      "Bantuan negara lain masuk lewat koordinasi BNPB.",
+      "Tim asing bekerja di bawah komando pemerintah Indonesia."
+     ]
+    },
+    {
+     "label": "Bersama",
+     "ikon": "jiwa",
+     "warna": "navy",
+     "judul": "Kerja bersama",
+     "isi": [
+      "{{angka:karhutla.personel_nonpem_persen|fmt=1|persen}} personel dari kelompok masyarakat.",
+      "Pemerintah dan masyarakat bekerja dalam satu komando."
+     ]
+    }
+   ],
+   "sumber": "Diolah BNPB dari NASA FIRMS; Setkab; Bareskrim Polri; Bakom 15 Okt"
+  },
+  {
+   "jenis": "penutup",
+   "foto": "foto/foto-pemadam.jpg",
+   "logo_kanan": "foto/berakhlak-hd.png",
+   "teks": "Terima Kasih",
+   "laporan": "Brief Narasi Publik Karhutla 2026, Jakarta, 4 November 2026"
+  }
+ ],
+ "format": "kajian",
+ "judul_dokumen": "Brief Narasi Publik Karhutla 2026",
+ "subjek_dokumen": "Paparan Kepala BNPB, 4 November 2026",
+ "bagian": [
+  {
+   "judul": "Skala Musim 2026",
+   "label": "Skala musim"
+  },
+  {
+   "judul": "Gambut dan Sawit",
+   "label": "Gambut dan sawit"
+  },
+  {
+   "judul": "Penegakan Hukum",
+   "label": "Penegakan hukum"
+  },
+  {
+   "judul": "Kekuatan Nasional",
+   "label": "Kekuatan nasional"
+  },
+  {
+   "judul": "Bantuan Internasional dan Kedaulatan",
+   "label": "Bantuan dan kedaulatan"
+  }
+ ],
+ "pil_draf": "DRAF REVIEW|4 Nov 2026",
+ "tanpa_alur": "pemilik 4 Nov 2026: pita keputusan di Kesimpulan dihapus"
+}

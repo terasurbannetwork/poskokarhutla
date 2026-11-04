@@ -1,0 +1,883 @@
+{
+ "_catatan": "Registri angka deck Brief Narasi Publik Karhutla 041126 (subset dari akar ppt-konsultan proyek-narasi)",
+ "angka": {
+  "karhutla.jawa.luas_2019": {
+   "nilai": 38021,
+   "pustaka": "kemenhut-sipongi",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari SiPongi Kementerian Kehutanan",
+   "catatan": "olah(resmi): jumlah enam provinsi Jawa di riset/mentah/sipongi_luas_2015_2026.json"
+  },
+  "karhutla.jawa.luas_2023": {
+   "nilai": 71109.63,
+   "pustaka": "kemenhut-sipongi",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari SiPongi Kementerian Kehutanan",
+   "catatan": "olah(resmi): jumlah enam provinsi Jawa; terbesar 2015–2026"
+  },
+  "karhutla.jatim.luas_2023": {
+   "nilai": 49498.32,
+   "pustaka": "kemenhut-sipongi",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "SiPongi Kementerian Kehutanan",
+   "catatan": "Jawa Timur 2023; 69,6% dari luas Jawa"
+  },
+  "karhutla.jawa.luas_2026_juli": {
+   "nilai": 13684.5,
+   "pustaka": "kemenhut-sipongi",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari SiPongi Kementerian Kehutanan",
+   "catatan": "olah(resmi): 2026 sampai Juli (field last)"
+  },
+  "karhutla.jawa.luas_2015": {
+   "nilai": 13574.54,
+   "pustaka": "kemenhut-sipongi",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari SiPongi Kementerian Kehutanan",
+   "catatan": "olah(resmi): jumlah enam provinsi Jawa 2015 dari riset/mentah/sipongi_luas_2015_2026.json (T4.7)"
+  },
+  "karhutla.jatim.porsi_2023_persen": {
+   "nilai": 69.6,
+   "pustaka": "kemenhut-sipongi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari SiPongi Kementerian Kehutanan",
+   "catatan": "olah(resmi): 49.498,32 / 71.109,63 ha (T4.7)"
+  },
+  "karhutla.titik_2026": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "titik_2026",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.titik_2019": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "titik_2019",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.titik_2023": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "titik_2023",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.titik_2025": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "titik_2025",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.kali_2019": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "kali_2019",
+   "satuan": "kali",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.kali_2023": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "kali_2023",
+   "satuan": "kali",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.kali_rerata": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "kali_rerata",
+   "satuan": "kali",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.pekan_akhir": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "pekan_akhir",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.pekan_puncak": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "pekan_puncak",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.pekan_turun_persen": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "pekan_turun_persen",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.puncak_okt": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "puncak_okt",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.agu_okt": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "agu_okt",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.agu_okt_persen": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "agu_okt_persen",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.prov_n": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "prov_n",
+   "satuan": "provinsi",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.top10_persen": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "top10_persen",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.kalteng_titik": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "kalteng_titik",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.kalteng_persen": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "kalteng_persen",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.kalimantan_persen": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "kalimantan_persen",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS, 1 Jan–3 Nov",
+   "catatan": "lokasi unik ~375 m per hari WIB, MODIS + VIIRS (S-NPP, NOAA-20, NOAA-21), semua keyakinan, tanpa sumber panas tetap"
+  },
+  "karhutla.setara15_2026": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "setara15_2026",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS MODIS + VIIRS S-NPP, 1 Jan–27 Okt",
+   "catatan": "sensor yang sama dengan 2015"
+  },
+  "karhutla.setara15_2015": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "setara15_2015",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS MODIS + VIIRS S-NPP, 1 Jan–27 Okt",
+   "catatan": "sensor yang sama dengan 2015"
+  },
+  "karhutla.setara15_persen": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "setara15_persen",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS MODIS + VIIRS S-NPP, 1 Jan–27 Okt",
+   "catatan": "sensor yang sama dengan 2015"
+  },
+  "karhutla.setara15_2019": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "setara15_2019",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS MODIS + VIIRS S-NPP, 1 Jan–27 Okt",
+   "catatan": "sensor yang sama dengan 2015"
+  },
+  "karhutla.setara15_2023": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "setara15_2023",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS MODIS + VIIRS S-NPP, 1 Jan–27 Okt",
+   "catatan": "sensor yang sama dengan 2015"
+  },
+  "karhutla.kali_setara_2019": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "kali_setara_2019",
+   "satuan": "kali",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS MODIS + VIIRS S-NPP, 1 Jan–27 Okt",
+   "catatan": "sensor yang sama dengan 2015"
+  },
+  "karhutla.kali_setara_2023": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "kali_setara_2023",
+   "satuan": "kali",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS MODIS + VIIRS S-NPP, 1 Jan–27 Okt",
+   "catatan": "sensor yang sama dengan 2015"
+  },
+  "karhutla.khg_titik": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "khg_titik",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS dan peta KHG KLHK, 1 Jan–24 Okt"
+  },
+  "karhutla.khg_persen": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "khg_persen",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS dan peta KHG KLHK, 1 Jan–24 Okt"
+  },
+  "karhutla.izin_total": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "izin_total",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS dan peta izin Kemenhut 2012/2014 (GFW), Trase; 7 x 24 jam s.d. 12 Okt",
+   "catatan": "indikasi lokasi titik, bukan penetapan pelaku"
+  },
+  "karhutla.izin_dalam": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "izin_dalam",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS dan peta izin Kemenhut 2012/2014 (GFW), Trase; 7 x 24 jam s.d. 12 Okt",
+   "catatan": "indikasi lokasi titik, bukan penetapan pelaku"
+  },
+  "karhutla.izin_dalam_persen": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "izin_dalam_persen",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS dan peta izin Kemenhut 2012/2014 (GFW), Trase; 7 x 24 jam s.d. 12 Okt",
+   "catatan": "indikasi lokasi titik, bukan penetapan pelaku"
+  },
+  "karhutla.izin_luar": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "izin_luar",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS dan peta izin Kemenhut 2012/2014 (GFW), Trase; 7 x 24 jam s.d. 12 Okt",
+   "catatan": "indikasi lokasi titik, bukan penetapan pelaku"
+  },
+  "karhutla.izin_luar_persen": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "izin_luar_persen",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS dan peta izin Kemenhut 2012/2014 (GFW), Trase; 7 x 24 jam s.d. 12 Okt",
+   "catatan": "indikasi lokasi titik, bukan penetapan pelaku"
+  },
+  "karhutla.izin_sawit": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "izin_sawit",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS dan peta izin Kemenhut 2012/2014 (GFW), Trase; 7 x 24 jam s.d. 12 Okt",
+   "catatan": "indikasi lokasi titik, bukan penetapan pelaku"
+  },
+  "karhutla.izin_sawit_persen": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "izin_sawit_persen",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS dan peta izin Kemenhut 2012/2014 (GFW), Trase; 7 x 24 jam s.d. 12 Okt",
+   "catatan": "indikasi lokasi titik, bukan penetapan pelaku"
+  },
+  "karhutla.izin_hti": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "izin_hti",
+   "satuan": "titik",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS dan peta izin Kemenhut 2012/2014 (GFW), Trase; 7 x 24 jam s.d. 12 Okt",
+   "catatan": "indikasi lokasi titik, bukan penetapan pelaku"
+  },
+  "karhutla.luas_bnpb_okt": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "luas_bnpb_okt",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026, Dashboard Karhutla BNPB (sementara)"
+  },
+  "karhutla.luas_2015": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "luas_2015",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "KLHK/Kemenhut SiPongi via Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.luas_2019": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "luas_2019",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "KLHK/Kemenhut SiPongi via Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.luas_2023": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "luas_2023",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "KLHK/Kemenhut SiPongi via Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.luas_2025": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "luas_2025",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "KLHK/Kemenhut SiPongi via Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.luas_2026_jul": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "luas_2026_jul",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "KLHK/Kemenhut SiPongi via Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel_total": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "personel_total",
+   "satuan": "personel",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026, Dashboard Karhutla BNPB"
+  },
+  "karhutla.personel_nonpem": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "personel_nonpem",
+   "satuan": "personel",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026, Dashboard Karhutla BNPB"
+  },
+  "karhutla.personel_nonpem_persen": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "personel_nonpem_persen",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026, Dashboard Karhutla BNPB"
+  },
+  "karhutla.personel_tni_polri": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "personel_tni_polri",
+   "satuan": "personel",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026, Dashboard Karhutla BNPB"
+  },
+  "karhutla.wb_sorti": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "wb_sorti",
+   "satuan": "sorti",
+   "keyakinan": "resmi",
+   "sumber": "Rekap patroli udara dan water bombing PDW BNPB, enam provinsi, s.d. 25 Okt"
+  },
+  "karhutla.wb_drop": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "wb_drop",
+   "satuan": "kali jatuhan",
+   "keyakinan": "resmi",
+   "sumber": "Rekap patroli udara dan water bombing PDW BNPB, enam provinsi, s.d. 25 Okt"
+  },
+  "karhutla.patroli_sorti": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "patroli_sorti",
+   "satuan": "sorti",
+   "keyakinan": "resmi",
+   "sumber": "Rekap patroli udara dan water bombing PDW BNPB, enam provinsi, s.d. 25 Okt"
+  },
+  "karhutla.heli_kontrak": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "heli_kontrak",
+   "satuan": "kontrak",
+   "keyakinan": "resmi",
+   "sumber": "Rekap patroli udara dan water bombing PDW BNPB, enam provinsi, s.d. 25 Okt"
+  },
+  "karhutla.udara_prov": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "udara_prov",
+   "satuan": "provinsi",
+   "keyakinan": "resmi",
+   "sumber": "Rekap patroli udara dan water bombing PDW BNPB, enam provinsi, s.d. 25 Okt"
+  },
+  "karhutla.setkab.personel": {
+   "nilai": 54394,
+   "pustaka": "setkab-2026-karhutla",
+   "satuan": "personel",
+   "keyakinan": "resmi",
+   "sumber": "Sekretariat Kabinet RI, 21 Sep 2026"
+  },
+  "karhutla.setkab.pesawat": {
+   "nilai": 64,
+   "pustaka": "setkab-2026-karhutla",
+   "satuan": "pesawat",
+   "keyakinan": "resmi",
+   "sumber": "Sekretariat Kabinet RI, 21 Sep 2026"
+  },
+  "karhutla.hukum.korporasi_tersangka": {
+   "nilai": 20,
+   "pustaka": "bareskrim-2026-karhutla",
+   "satuan": "korporasi",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Bareskrim Polri, keterangan pers 29 Okt 2026"
+  },
+  "karhutla.hukum.korporasi_asing": {
+   "nilai": 4,
+   "pustaka": "bareskrim-2026-karhutla",
+   "satuan": "korporasi",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Bareskrim Polri, keterangan pers 29 Okt 2026"
+  },
+  "karhutla.hukum.perorangan": {
+   "nilai": 245,
+   "pustaka": "bareskrim-2026-karhutla",
+   "satuan": "tersangka",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Bareskrim Polri, keterangan pers 29 Okt 2026"
+  },
+  "karhutla.hukum.usul_cabut": {
+   "nilai": 23,
+   "pustaka": "bareskrim-2026-cabut",
+   "satuan": "korporasi",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Bareskrim Polri, keterangan pers 29 Okt 2026"
+  },
+  "karhutla.hukum.sanksi_adm": {
+   "nilai": 26,
+   "pustaka": "kemenhut-2026-gakkum",
+   "satuan": "subjek hukum",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Ditjen Gakkum Kemenhut, 17–18 Okt 2026"
+  },
+  "karhutla.hukum.izin_dicabut": {
+   "nilai": 5,
+   "pustaka": "kemenhut-2026-gakkum",
+   "satuan": "izin",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Ditjen Gakkum Kemenhut, 17–18 Okt 2026"
+  },
+  "karhutla.lahan.tebas": {
+   "nilai": 665,
+   "pustaka": "purnomo-2017",
+   "satuan": "US$/ha",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Purnomo dkk. 2017, Forest Policy and Economics 78"
+  },
+  "karhutla.lahan.bakar": {
+   "nilai": 856,
+   "pustaka": "purnomo-2017",
+   "satuan": "US$/ha",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Purnomo dkk. 2017, Forest Policy and Economics 78"
+  },
+  "karhutla.lahan.tanam": {
+   "nilai": 3800,
+   "pustaka": "purnomo-2017",
+   "satuan": "US$/ha",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Purnomo dkk. 2017, Forest Policy and Economics 78"
+  },
+  "karhutla.lahan.kali": {
+   "nilai": 4.4,
+   "pustaka": "purnomo-2017",
+   "satuan": "kali",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Purnomo dkk. 2017, Forest Policy and Economics 78",
+   "catatan": "olah: 3.800 / 856"
+  },
+  "karhutla.biaya_2015": {
+   "nilai": 16.1,
+   "pustaka": "bankdunia-2016",
+   "satuan": "miliar US$",
+   "keyakinan": "terverifikasi",
+   "sumber": "Bank Dunia 2016, Indonesia Economic Quarterly"
+  },
+  "karhutla.aerosol_gambut": {
+   "nilai": 85,
+   "pustaka": "acp-2018-singapura",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Atmospheric Chemistry and Physics 18, 2018",
+   "catatan": "aerosol karbon Singapura Sep 2014–Okt 2015, radiokarbon"
+  },
+  "karhutla.hujan_ambang": {
+   "nilai": 4,
+   "pustaka": "field-2016",
+   "satuan": "mm/hari",
+   "keyakinan": "terverifikasi",
+   "sumber": "Field dkk. 2016, PNAS 113"
+  },
+  "karhutla.khg_luas": {
+   "nilai": 24.7,
+   "pustaka": "klhk-2017-khg",
+   "satuan": "juta ha",
+   "keyakinan": "resmi",
+   "sumber": "KLHK, peta KHG nasional 2017"
+  },
+  "karhutla.khg_n": {
+   "nilai": 865,
+   "pustaka": "klhk-2017-khg",
+   "satuan": "KHG",
+   "keyakinan": "resmi",
+   "sumber": "KLHK, peta KHG nasional 2017"
+  },
+  "karhutla.muka_air": {
+   "nilai": 0.4,
+   "pustaka": "pp-57-2016",
+   "satuan": "m",
+   "keyakinan": "resmi",
+   "sumber": "PP 57/2016 Pasal 23"
+  },
+  "karhutla.jepang.heli": {
+   "nilai": 3,
+   "pustaka": "bnpb-2026-jepang",
+   "satuan": "helikopter",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "BNPB, rilis operasi bantuan Jepang Sep 2026 (dikutip Katadata)"
+  },
+  "karhutla.jepang.ton": {
+   "nilai": 220,
+   "pustaka": "bnpb-2026-jepang",
+   "satuan": "ton air",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "BNPB, rilis operasi bantuan Jepang Sep 2026 (dikutip Katadata)"
+  },
+  "karhutla.personel_pemerintah": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "personel_pemerintah",
+   "satuan": "personel",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026, Dashboard Karhutla BNPB"
+  },
+  "karhutla.luas_kita": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "luas_kita",
+   "satuan": "ha",
+   "keyakinan": "estimasi-model",
+   "sumber": "Diolah BNPB dari NASA FIRMS NOAA-20/21, faktor luas resmi 2019–2025, 1 Jan–3 Nov",
+   "catatan": "uji tinggalkan satu tahun meleset rata-rata 13,5%; Jan–Jul +8,5% vs SiPongi"
+  },
+  "karhutla.muka_air_cm": {
+   "nilai": 40,
+   "pustaka": "pp-57-2016",
+   "satuan": "cm",
+   "keyakinan": "resmi",
+   "sumber": "PP 57/2016 Pasal 23"
+  },
+  "karhutla.biaya_per_ha_2015": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "biaya_per_ha_2015",
+   "satuan": "US$/ha",
+   "keyakinan": "terverifikasi",
+   "sumber": "Olah BNPB: Bank Dunia 2016 (US$16,1 miliar) dibagi luas terbakar resmi 2015",
+   "catatan": "16,1 miliar / 2.611.411 ha"
+  },
+  "karhutla.lahan.kali_tebas": {
+   "nilai": 5.7,
+   "pustaka": "purnomo-2017",
+   "satuan": "kali",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Purnomo dkk. 2017, Forest Policy and Economics 78",
+   "catatan": "olah: 3.800 / 665"
+  },
+  "karhutla.aktor_total": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "aktor_total",
+   "satuan": "perusahaan",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Diolah BNPB dari kajian peta aktor WALHI 2026, peta izin, dan NASA FIRMS VIIRS 5–12 Okt",
+   "catatan": "afiliasi grup dari kajian WALHI; hotspot di dalam batas izin = indikasi lokasi, bukan penetapan pelaku"
+  },
+  "karhutla.aktor_asing": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "aktor_asing",
+   "satuan": "perusahaan",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Diolah BNPB dari kajian peta aktor WALHI 2026, peta izin, dan NASA FIRMS VIIRS 5–12 Okt",
+   "catatan": "afiliasi grup dari kajian WALHI; hotspot di dalam batas izin = indikasi lokasi, bukan penetapan pelaku"
+  },
+  "karhutla.aktor_hotspot_asing": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "aktor_hotspot_asing",
+   "satuan": "hotspot",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Diolah BNPB dari kajian peta aktor WALHI 2026, peta izin, dan NASA FIRMS VIIRS 5–12 Okt",
+   "catatan": "afiliasi grup dari kajian WALHI; hotspot di dalam batas izin = indikasi lokasi, bukan penetapan pelaku"
+  },
+  "karhutla.aktor_hotspot_bernama": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "aktor_hotspot_bernama",
+   "satuan": "hotspot",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Diolah BNPB dari kajian peta aktor WALHI 2026, peta izin, dan NASA FIRMS VIIRS 5–12 Okt",
+   "catatan": "afiliasi grup dari kajian WALHI; hotspot di dalam batas izin = indikasi lokasi, bukan penetapan pelaku"
+  },
+  "karhutla.aktor_hotspot_asing_persen": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "aktor_hotspot_asing_persen",
+   "satuan": "%",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Diolah BNPB dari kajian peta aktor WALHI 2026, peta izin, dan NASA FIRMS VIIRS 5–12 Okt",
+   "catatan": "afiliasi grup dari kajian WALHI; hotspot di dalam batas izin = indikasi lokasi, bukan penetapan pelaku"
+  },
+  "karhutla.aktor_sg": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "aktor_sg",
+   "satuan": "perusahaan",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Diolah BNPB dari kajian peta aktor WALHI 2026, peta izin, dan NASA FIRMS VIIRS 5–12 Okt",
+   "catatan": "afiliasi grup dari kajian WALHI; hotspot di dalam batas izin = indikasi lokasi, bukan penetapan pelaku"
+  },
+  "karhutla.aktor_my": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "aktor_my",
+   "satuan": "perusahaan",
+   "keyakinan": "penilaian-pakar",
+   "sumber": "Diolah BNPB dari kajian peta aktor WALHI 2026, peta izin, dan NASA FIRMS VIIRS 5–12 Okt",
+   "catatan": "afiliasi grup dari kajian WALHI; hotspot di dalam batas izin = indikasi lokasi, bukan penetapan pelaku"
+  },
+  "karhutla.personel.tni": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=TNI].personel",
+   "satuan": "personel",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel.tni_persen": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=TNI].porsi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel.perusahaan": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=Perusahaan].personel",
+   "satuan": "personel",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel.perusahaan_persen": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=Perusahaan].porsi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel.polri": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=Polri].personel",
+   "satuan": "personel",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel.polri_persen": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=Polri].porsi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel.relawan": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=Relawan].personel",
+   "satuan": "personel",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel.relawan_persen": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=Relawan].porsi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel.pemerintah_daerah": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=Pemerintah daerah].personel",
+   "satuan": "personel",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel.pemerintah_daerah_persen": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=Pemerintah daerah].porsi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel.masyarakat_peduli_api": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=Masyarakat Peduli Api].personel",
+   "satuan": "personel",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel.masyarakat_peduli_api_persen": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=Masyarakat Peduli Api].porsi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel.bpbd": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=BPBD].personel",
+   "satuan": "personel",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel.bpbd_persen": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=BPBD].porsi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel.polisi_hutan": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=Polisi Hutan].personel",
+   "satuan": "personel",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel.polisi_hutan_persen": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=Polisi Hutan].porsi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel.manggala_agni": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=Manggala Agni].personel",
+   "satuan": "personel",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.personel.manggala_agni_persen": {
+   "berkas": "karhutla/personel.csv",
+   "jalur": "[unsur=Manggala Agni].porsi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Infografis Bakom RI 15 Okt 2026"
+  },
+  "karhutla.kerugian_2026_miliar": {
+   "berkas": "karhutla/ringkas.json",
+   "jalur": "kerugian_2026_miliar",
+   "satuan": "miliar dolar AS",
+   "keyakinan": "estimasi-model",
+   "sumber": "Olah BNPB: kerugian per ha 2015 (Bank Dunia 2016) x prakiraan luas terbakar 2026 hingga 3 Nov",
+   "catatan": "asumsi kerugian per ha sama dengan 2015, tanpa penyesuaian harga"
+  },
+  "fs.total": {
+   "berkas": "karhutla/firespot.json",
+   "jalur": "total",
+   "satuan": "firespot",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS, klasifikasi firespot sistem (pola Kemenhut SIPANTAU), 1 Jan–2 Nov"
+  },
+  "fs.pekan_puncak": {
+   "berkas": "karhutla/firespot.json",
+   "jalur": "pekan_puncak",
+   "satuan": "firespot",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS, klasifikasi firespot sistem (pola Kemenhut SIPANTAU), 1 Jan–2 Nov"
+  },
+  "fs.pekan_akhir": {
+   "berkas": "karhutla/firespot.json",
+   "jalur": "pekan_akhir",
+   "satuan": "firespot",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS, klasifikasi firespot sistem (pola Kemenhut SIPANTAU), 1 Jan–2 Nov"
+  },
+  "fs.pekan_turun_persen": {
+   "berkas": "karhutla/firespot.json",
+   "jalur": "pekan_turun_persen",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS, klasifikasi firespot sistem (pola Kemenhut SIPANTAU), 1 Jan–2 Nov"
+  },
+  "fs.kalteng_persen": {
+   "berkas": "karhutla/firespot.json",
+   "jalur": "kalteng_persen",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS, klasifikasi firespot sistem (pola Kemenhut SIPANTAU), 1 Jan–2 Nov"
+  },
+  "fs.kalimantan_persen": {
+   "berkas": "karhutla/firespot.json",
+   "jalur": "kalimantan_persen",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS, klasifikasi firespot sistem (pola Kemenhut SIPANTAU), 1 Jan–2 Nov"
+  },
+  "fs.top10_persen": {
+   "berkas": "karhutla/firespot.json",
+   "jalur": "top10_persen",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS, klasifikasi firespot sistem (pola Kemenhut SIPANTAU), 1 Jan–2 Nov"
+  },
+  "fs.agu_okt_persen": {
+   "berkas": "karhutla/firespot.json",
+   "jalur": "agu_okt_persen",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS, klasifikasi firespot sistem (pola Kemenhut SIPANTAU), 1 Jan–2 Nov"
+  },
+  "fs.kali_2019": {
+   "berkas": "karhutla/firespot.json",
+   "jalur": "kali_2019",
+   "satuan": "kali",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS S-NPP, klasifikasi firespot sistem, 1 Jan–27 Okt tiap tahun"
+  },
+  "fs.kali_2023": {
+   "berkas": "karhutla/firespot.json",
+   "jalur": "kali_2023",
+   "satuan": "kali",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS S-NPP, klasifikasi firespot sistem, 1 Jan–27 Okt tiap tahun"
+  },
+  "fs.persen_2015": {
+   "berkas": "karhutla/firespot.json",
+   "jalur": "persen_2015",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Diolah BNPB dari NASA FIRMS VIIRS S-NPP, klasifikasi firespot sistem, 1 Jan–27 Okt tiap tahun"
+  }
+ }
+}

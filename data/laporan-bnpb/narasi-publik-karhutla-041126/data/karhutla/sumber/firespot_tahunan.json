@@ -1,0 +1,167 @@
+{
+ "definisi": "Firespot dalam TITIK: lokasi unik ~375 m per hari WIB (TU.sel) yang berada di cluster ST-DBSCAN (harian.dbscan, jendela 7 hari berakhir hari itu, titik VIIRS keyakinan >= nominal, tanpa gunung api/sumber statis, di dalam wilayah Indonesia) yang lolos harian.firespot()==\"ya\" (pola HH/H/MH/MMM, AMBANG_MEDIUM_PX=4). Tanpa FWI/cuaca dan tanpa pembuangan cluster kecil level-0 (itu bergantung FWI).",
+ "sensor": "Seri tahunan: cluster dari VIIRS S-NPP saja (basis setara, MODIS tidak pernah membentuk cluster di mesin); MODIS hanya ikut di pembilang hotspot M+N. Seri semua-satelit 2026: S-NPP + NOAA-20 + NOAA-21, titik unik lintas satelit.",
+ "periode": "1 Jan s.d. 27 Okt tiap tahun (2026 diperpanjang ke 2 Nov di blok terpisah)",
+ "tahun": {
+  "2015": 400378,
+  "2019": 179208,
+  "2023": 65362,
+  "2026": 304643
+ },
+ "tahun_tanpa_cluster_kecil_3titik": {
+  "2015": 394210,
+  "2019": 176195,
+  "2023": 62692,
+  "2026": 300671
+ },
+ "rasio": {
+  "2026/2019": 1.7,
+  "2026/2023": 4.66,
+  "2026/2015": 0.76
+ },
+ "porsi_firespot_per_hotspot": {
+  "hotspot_M_N_kumulatif_json": {
+   "2015": 46.3,
+   "2019": 44.3,
+   "2023": 27.6,
+   "2026": 46.2
+  },
+  "hotspot_hanya_SNPP_semua_keyakinan_sebasis": {
+   "2015": 54.7,
+   "2019": 52.7,
+   "2023": 33.2,
+   "2026": 55.6
+  },
+  "hotspot_SNPP": {
+   "2015": 732090,
+   "2019": 340006,
+   "2023": 196801,
+   "2026": 547863
+  },
+  "hotspot_M_N_kumulatif_json_angka": {
+   "2015": 865219,
+   "2019": 404165,
+   "2023": 236842,
+   "2026": 659271
+  }
+ },
+ "setara_2026_sd_2_nov": {
+  "firespot": 308990,
+  "hotspot_M_N": 670812
+ },
+ "setara_per_bulan_Jan_Okt": {
+  "2019": [
+   169,
+   1920,
+   4080,
+   987,
+   748,
+   474,
+   3551,
+   23919,
+   109795,
+   33565
+  ],
+  "2026": [
+   955,
+   926,
+   2396,
+   663,
+   357,
+   922,
+   4722,
+   64392,
+   114568,
+   118069
+  ]
+ },
+ "setara_2026_pekan_puncak_6_12_Okt": 41495,
+ "setara_2026_pekan_terakhir_27Okt_2Nov": 4910,
+ "setara_2026_per_pekan_8_terakhir": {
+  "2026-09-08..2026-09-14": 24489,
+  "2026-09-15..2026-09-21": 35110,
+  "2026-09-22..2026-09-28": 21844,
+  "2026-09-29..2026-10-05": 27494,
+  "2026-10-06..2026-10-12": 41495,
+  "2026-10-13..2026-10-19": 24738,
+  "2026-10-20..2026-10-26": 27054,
+  "2026-10-27..2026-11-02": 4910
+ },
+ "semua_satelit_2026": {
+  "firespot_1Jan_2Nov": 812271,
+  "hotspot_semua_satelit_1Jan_2Nov": 1396023,
+  "per_bulan_Jan_Okt": [
+   3360,
+   2451,
+   6918,
+   2290,
+   1609,
+   3909,
+   19567,
+   166172,
+   294699,
+   308073
+  ],
+  "per_pekan_8_terakhir": {
+   "2026-09-08..2026-09-14": 64728,
+   "2026-09-15..2026-09-21": 83682,
+   "2026-09-22..2026-09-28": 60607,
+   "2026-09-29..2026-10-05": 77057,
+   "2026-10-06..2026-10-12": 97532,
+   "2026-10-13..2026-10-19": 70772,
+   "2026-10-20..2026-10-26": 70192,
+   "2026-10-27..2026-11-02": 14765
+  },
+  "prov_10_teratas": [
+   [
+    "62",
+    263483
+   ],
+   [
+    "61",
+    110564
+   ],
+   [
+    "93",
+    106676
+   ],
+   [
+    "16",
+    71949
+   ],
+   [
+    "64",
+    40313
+   ],
+   [
+    "63",
+    36809
+   ],
+   [
+    "81",
+    29145
+   ],
+   [
+    "92",
+    23540
+   ],
+   [
+    "72",
+    13095
+   ],
+   [
+    "82",
+    12303
+   ]
+  ]
+ },
+ "catatan": [
+  "Mesin diimpor dari scripts/data/harian.py (dbscan, firespot, pix, tgl), titik_unik, titik_palsu, aturan.gunung_api, wilayah; aturan tidak ditulis ulang.",
+  "Beda dengan produksi: tanpa FWI, jadi pembuangan cluster <3 titik level 0 tidak diterapkan (varian tahun_tanpa_cluster_kecil_3titik = batas bawah, selisih 1-4%).",
+  "Titik keyakinan rendah tidak ikut membentuk cluster (sama firespot_hari.py) tapi ikut hotspot; porsi firespot/hotspot dengan pembagi kumulatif.json M+N sedikit tidak sebasis (pembilang S-NPP saja); kolom hotspot_SNPP sebasis.",
+  "Kode provinsi 62 Kalteng, 61 Kalbar, 93 Papua Selatan, 16 Sumsel, 64 Kaltim, 63 Kalsel, 81 Maluku, 92 Papua Barat, 72 Sulteng, 82 Maluku Utara.",
+  "28 Okt-2 Nov 2026 dari FIRMS NRT (diunduh ke scratchpad/nrt), sebelumnya arsip SP; 2 Nov terakhir dihitung per 4 Nov.",
+  "Uji silang: fs2 setara 2026 s.d. 27 Okt = 304.719 vs fs_tahun 304.643 (selisih 0,03%)."
+ ],
+ "perintah_ulang": "cd scratchpad/firespot; for y in 2015 2019 2023 2026: python3 -I fs_tahun.py $y; python3 -I dl.py (NRT 26 Okt-2 Nov); python3 -I fs2.py setara26; python3 -I fs2.py semua26; python3 -I rakit.py"
+}
