@@ -19,6 +19,8 @@ let mesinStatus = 204;
 const U = await siapkan("uji-sippa-fase3", {r2: true, luar, ikat: {RENLAP_KUNCI: "kunci-renlap-uji"}}), {mf, DB, api} = U;
 const sip = (m, j, b, h) => api(m, "/api/sippa" + j, b, h);
 const R2 = await mf.getR2Bucket("MEDIA");
+/* semua siapkan() di atas test pertama: await di antara test() membiarkan root selesai dan after() membuang mf (balapan di mesin sibuk) */
+const mf2 = await siapkan("uji-sippa-fase3-gh", {r2: true, luar, ikat: {RENLAP_KUNCI: "kunci-renlap-uji", GITHUB_TOKEN: "ghp_uji_token"}});
 let ip = 0;
 const bikin = async (peran, wilayah = []) => {
   const r = await api("POST", "/api/staf/admin/buat", {nama: "Staf " + peran[0], nip: `1982${++ip}0012005`, unit: "BPBD", email: `f3${ip}@bnpb.go.id`, wa: "081234567890", peran, wilayah}, ADMIN);
@@ -123,7 +125,6 @@ uji("Renlap validasi: 1..10 id, bentuk K..., satu provinsi, wilayah dari server,
   assert.equal((await renlap({kompleks_ids: ["K0129"]}, pim.h)).s, 403); assert.equal((await renlap({kompleks_ids: ["K0129"]}, p16b.h)).s, 403); assert.equal((await renlap({kompleks_ids: ["K0129"]}, {})).s, 401);
   assert.equal((await renlap({kompleks_ids: ["K0777"]}, nas.h)).s, 201, "akun nasional boleh di provinsi mana pun");
 });
-const mf2 = await siapkan("uji-sippa-fase3-gh", {r2: true, luar, ikat: {RENLAP_KUNCI: "kunci-renlap-uji", GITHUB_TOKEN: "ghp_uji_token"}});
 uji("Renlap dengan GITHUB_TOKEN: workflow_dispatch renlap.yml dengan input renlap_id dan kompleks_ids (koma); gagal pemicu = tetap antre dengan galat", async () => {
   const s = (m, j, b, h) => mf2.api(m, "/api/sippa" + j, b, h);
   const h = MOD2;

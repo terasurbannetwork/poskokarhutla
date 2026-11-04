@@ -98,12 +98,12 @@ else {
     await DB.prepare("UPDATE cc_status SET sejak = ? WHERE tugas_id = ?").bind(Date.now() - 2 * 24 * JAM, T3).run(); await jajakUlang(tab);
     await tab.tungguFungsi(`/Dipegang Citra Dewi sejak \\d{1,2} \\p{L}+ \\d\\d\\.\\d\\d/u.test(document.querySelector('.cc-kartu[data-id="${T3}"]').innerText)`);
     await DB.prepare("UPDATE cc_status SET sejak = ? WHERE tugas_id = ?").bind(Date.now() - 8 * MENIT, T3).run(); await jajakUlang(tab);
-    await tab.tungguFungsi(`/Dipegang Citra Dewi sejak \\d\\d\\.\\d\\d ·/.test(document.querySelector('.cc-kartu[data-id="${T3}"]').innerText)`);
+    await tab.tungguFungsi(`/Dipegang Citra Dewi sejak \\d\\d\\.\\d\\d,/.test(document.querySelector('.cc-kartu[data-id="${T3}"]').innerText)`);
     /* dibuat 2 HARI lalu (alert tampil sampai 7 hari): baris "dibuat" bertanggal seperti "Dipegang", bukan jam yang terbaca pagi ini; hari ini tetap hanya jam. Kartu sementara, dibuang sebelum langkah berikut. */
     const T4 = await tugas(0x3004, {kab: "Aceh Jaya", kec: "Teunom", dibuat: Date.now() - 2 * 24 * JAM}); await jajakUlang(tab);
     await tab.tungguFungsi(`document.querySelector('.cc-kartu[data-id="${T4}"]')`);
-    assert.match(await q(tab, `q('.cc-kartu[data-id="${T4}"] .cc-meta').innerText`), /dibuat \d{1,2} \p{L}+ \d\d\.\d\d · umur/u, "alert kemarin: tanggal ikut tampil");
-    assert.match(await q(tab, `q('.cc-kartu[data-id="${T1}"] .cc-meta').innerText`), /dibuat \d\d\.\d\d · umur/, "alert hari ini: jam saja");
+    assert.match(await q(tab, `q('.cc-kartu[data-id="${T4}"] .cc-meta').innerText`), /dibuat \d{1,2} \p{L}+ \d\d\.\d\d, umur/u, "alert kemarin: tanggal ikut tampil");
+    assert.match(await q(tab, `q('.cc-kartu[data-id="${T1}"] .cc-meta').innerText`), /dibuat \d\d\.\d\d, umur/, "alert hari ini: jam saja");
     await DB.prepare("DELETE FROM tugas_api WHERE id = ?").bind(T4).run(); await jajakUlang(tab);
     await tab.tungguFungsi(`!document.querySelector('.cc-kartu[data-id="${T4}"]')`);
     /* ambil alert pertama */
