@@ -5,7 +5,7 @@
 import {registrasi, uraiStempel} from "./operasi_wa.js";
 import {jarakKm} from "./operasi_nilai.js";
 
-const JAM = 36e5, KM_PADAM = 1, JENDELA_NILAI = 24 * JAM, MAKS_OCR = 700e3, MAKS_NILAI = 200;
+const JAM = 36e5, KM_PADAM = 1, JENDELA_NILAI = 24 * JAM, MAKS_NILAI = 200;
 export const GUNA_PERAN = {wb: "wb", omc: "omc", patroli: "patroli", patroli_wb: "patroli"};
 const OPERASIONAL = new Set(["wb", "omc", "patroli"]);
 /* misi gerak (atau peran armada bila misi kosong) -> guna aksi; mobilisasi/demobilisasi/ferry bukan aksi (null) */
@@ -34,25 +34,13 @@ export async function nilaiAksi(env, titik, kini) {
   return {diperiksa: baris.length, padam, masih_api: masih};
 }
 
-/* Workers AI membaca stempel di foto. Gagal/tak ada AI/foto terlalu besar = null (foto tetap disimpan). ponytail: array byte besar memakan CPU, batas 700 KB; pindahkan ke cron bila foto resmi lebih besar. */
-export async function bacaStempel(env, bytes) {
-  if (typeof env.AI?.run !== "function" || bytes.length > MAKS_OCR) return null;
-  try {
-    const r = await Promise.race([env.AI.run("@cf/llava-hf/llava-1.5-7b-hf", {image: [...bytes], max_tokens: 200,
-      prompt: "Transcribe exactly the white text overlay (date, time, GPS coordinates, aircraft registration) printed on this photo. Output only the text."}),
-      new Promise((_, no) => setTimeout(() => no(new Error("batas waktu OCR")), 20000))]);
-    const teks = typeof r === "string" ? r : r?.description ?? r?.response ?? "";
-    return String(teks).slice(0, 600) || null;
-  } catch (e) { console.error("operasi_foto ocr", String(e?.message || e).slice(0, 120)); return null; }
-}
-
 /* foto grup: indeks di op_foto (berkas R2 sudah disimpan pemanggil di wa_masuk). Galat tabel (0106 belum ada) dilempar ke pemanggil yang menelannya. */
-export async function simpanFoto(env, {waId, bytes, diterima, teks}) {
+export async function simpanFoto(env, {waId, stempel, diterima, teks}) {
   const armada = (await env.DB.prepare("SELECT registrasi FROM op_armada").all()).results.map(r => r.registrasi);
-  const stempel = bytes ? await bacaStempel(env, bytes) : null, s = uraiStempel(stempel, {armada, diterima});
+  const s = uraiStempel(stempel, {armada, diterima}), teksOcr = stempel && (s.jam_utc != null || s.lat != null || s.registrasi) ? String(stempel).slice(0, 1000) : null;   // infografis (bisa memuat nama) tidak disimpan   // stempel = teks mentah OCR kiriman gateway Mac mini (x-wa-kunci), tak ada OCR di Worker
   const reg = s.registrasi ?? (teks ? registrasi(teks, armada) : null);
   const r = await env.DB.prepare("INSERT OR IGNORE INTO op_foto (wa_id, diterima, tanggal, registrasi, jam_utc, lat, lon, stempel) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)")
-    .bind(waId, diterima, hariWib(s.jam_utc ?? diterima), reg, s.jam_utc, s.lat, s.lon, stempel).run();
+    .bind(waId, diterima, hariWib(s.jam_utc ?? diterima), reg, s.jam_utc, s.lat, s.lon, teksOcr).run();
   await lengkapi(env, diterima);
   return {id: r.meta.last_row_id, registrasi: reg, jam_utc: s.jam_utc, lat: s.lat, lon: s.lon};
 }
