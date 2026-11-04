@@ -33,7 +33,7 @@ def status_dari(kondisi, prov_level):
     Urutan: kata 'masih/belum dapat/pendinginan' -> belum; ada sisa belum padam > 0 ha -> belum (kabupaten) atau berjalan (provinsi, sisa
     tersebar di banyak lokasi); 'berhasil dipadamkan/sudah padam/surut' -> selesai; selain itu berjalan."""
     k = kondisi.lower()
-    if re.search(r'masih dilakukan|masih pemadaman|belum dapat|pendinginan|muncul kembali|masih terlihat|masih terpantau|masih berlangsung|masih menggenang|belum surut|berangsur surut', k):
+    if re.search(r'masih dilakukan|masih pemadaman|belum dapat|pendinginan|muncul kembali|masih terlihat|masih terpantau|masih berlangsung|masih menggenang|belum surut|berangsur surut|perlahan surut|rumah warga tergenang', k):   # 4 Nov Aceh Selatan: "air perlahan surut ... rumah warga tergenang 10-60 cm"
         return 'belum'
     m = re.search(r'sisa[^,.]*?(?:padam\s*)?(?:luas\s*)?±?\s*(\d[\d.,]*)\s*ha', k)
     if m and angka(m.group(1).rstrip('.,')) > 0:
@@ -103,8 +103,8 @@ def koordalops(teks, pagi=True):
     mulai, sampai = f'{m[3]}-{m[2]}-{m[1]} {m[4]}', f'{m[7]}-{m[6]}-{m[5]} {m[8]}'
     if pagi and not sampai.endswith('07.00'):   # pagi=False: laporan sela 19.00 (pemilik 27 Okt memakainya untuk harian 271026)
         raise ValueError(f'pakai laporan pagi (s.d. 07.00), bukan {sampai}')
-    out = {'mulai': mulai, 'sampai': sampai, 'laporan': int(re.search(r'Laporan kejadian bencana sejumlah\s+(\d+)', t, re.I)[1]),
-           'menonjol': int(re.search(r'berdampak signifikan sejumlah\s+(\d+)', t, re.I)[1]), 'kejadian': []}
+    out = {'mulai': mulai, 'sampai': sampai, 'laporan': int(re.search(r'Laporan kejadian bencana sejumlah\s+(?:kejadian\s+)?(\d+)', t, re.I)[1]),   # 4 Nov: "sejumlah kejadian 31"
+           'menonjol': int(re.search(r'berdampak signifikan sejumlah\s+(?:kejadian\s+)?(\d+)', t, re.I)[1]), 'kejadian': []}
     for blok in re.split(r'\n\*[A-Z]\.\s*', t)[1:]:
         prov = kode_prov(blok.split('*', 1)[0])
         for e in re.split(r'\n\d+\.(?:\s+|(?=[A-Z]))', '\n' + blok.split('*', 1)[1])[1:]:   # WA 26 Okt: "1.Bencana" tanpa spasi
@@ -118,7 +118,9 @@ def koordalops(teks, pagi=True):
             jenis, lok = _jenis_lokasi(judul)
             out['kejadian'].append({'jenis': jenis, 'prov': prov, 'lokasi': lok, 'status': status_dari(kondisi, not lok), 'baru': baru,
                                     'label': re.split(r'\s+di\s+', judul, maxsplit=1)[0].strip(),
-                                    'angka': _angka_kejadian(jenis, dampak, kondisi, sd), 'teks': {'dampak': dampak, 'status_darurat': sd, 'kondisi': kondisi}})
+                                    'angka': _angka_kejadian(jenis, dampak, kondisi, sd), 'teks': {'dampak': dampak, 'status_darurat': sd, 'kondisi': kondisi,
+                                    # 4 Nov: butir "* Pengungsi ; ..." di bawah Dampak (dampak hanya menangkap butir pertama, Korban Jiwa)
+                                    'pengungsi': (lambda m: m.group(1).strip() if m else '')(re.search(r'\*\s*Pengungsi\s*[;:]\s*(.*)', e, re.I))}})
     if len(out['kejadian']) != out['menonjol']:
         raise ValueError(f"terurai {len(out['kejadian'])} kejadian, laporan menyebut {out['menonjol']} menonjol")
     return out
