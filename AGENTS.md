@@ -191,6 +191,15 @@ docs/TIKET. Aturan yang bertentangan dengan aturan lama ditanyakan ke pemilik,
 lalu yang kalah dihapus. Latar dan rencana kerjanya ada di
 `docs/buku-pegangan/AUDIT-ATURAN-HARNESS.md`.
 
+### 3.5 Kartu laporan standar (4 Nov 2026)
+
+Tiap bagian layar laporan (tab Insight/Tren/Dampak, menu Operasi, `/bnpb/*`) adalah satu
+kartu `.ex.ex-std` dari `public/inti/kartu.css`: pil kategori `.ex-ey`, judul berupa kalimat
+temuan dengan angka disorot `.hl`, isi (tabel `.ex-tabel` menempel penuh, kepala tabel biru
+tua), kaki keterangan + `Sumber:` miring. Tombol bagian (Buka semua) di kanan judul. Jangan
+membuat kepala bagian sendiri (bilah gelap, `.head` + h2 lepas). Layar laporan baru masuk
+daftar `LAYAR` di gerbang `tests/agen/gerbang-kartu-std.test.mjs`.
+
 ## 6. Review
 
 | Permukaan berubah                          | Pengulas                                  |

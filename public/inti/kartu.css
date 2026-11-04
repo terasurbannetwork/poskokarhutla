@@ -77,3 +77,25 @@
 .pgn-b.on{background:linear-gradient(135deg,oklch(32% .09 256),oklch(22% .07 256));color:#fff;box-shadow:var(--shadow)}
 .pgn-b:disabled{opacity:.35;cursor:default}
 .pgn-j{color:var(--ink2);padding:0 4px}
+
+/* ===== kartu laporan standar .ex-std (pemilik 4 Nov 2026: "ini standar ke depannya") =====
+   Gabungan kartu Insight (pil kategori, judul kalimat temuan beraksen angka .hl, kaki keterangan + sumber miring)
+   dan kelebihan /bnpb/dalops (kepala tabel biru tua, subtotal, tombol Buka semua di kepala kartu).
+   Pakai: <section class="ex ex-std"><header class="ex-hd"><span class="ex-ey">Kategori</span><div class="ex-jd"><h3>… <span class="hl">angka</span> …</h3>[tombol]</div></header>
+          <div class="ex-bd">isi</div><footer class="ex-ft"><span>keterangan</span><em>Sumber: …</em></footer></section>
+   Tabel langsung di dalam .ex-bd menempel penuh (tanpa bingkai ganda). Gerbang: tests/agen/gerbang-kartu-std.test.mjs. */
+.ex.ex-std{background:var(--card,#fff);border:1px solid var(--line,#e3e8f0);border-radius:18px;box-shadow:var(--shadow,var(--bayang,0 2px 14px rgb(11 37 69 / .08)));padding:0;margin:0;overflow:hidden;display:block}
+.ex-std>.ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface,#eef2f8),color-mix(in oklch,var(--surface,#eef2f8) 40%,var(--card,#fff)));border-bottom:1px solid var(--line,#e3e8f0)}
+.ex-std .ex-ey{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2,var(--navy2,#1d4e89));background:color-mix(in oklch,var(--brand2,var(--navy2,#1d4e89)) 12%,transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
+.ex-std .ex-ey:empty{display:none}
+.ex-std .ex-ey svg{width:12px!important;height:12px!important}
+.ex-std .ex-jd{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.ex-std .ex-jd>h3{margin:0;font:800 21px/1.3 var(--display,inherit);letter-spacing:-.01em;color:var(--ink,#0b2545);max-width:none}
+.ex-std .hl{color:var(--bad,#c9503a)}
+.ex-std>.ex-bd{padding:16px 22px 12px;display:grid;gap:14px;min-width:0}
+.ex-std>.ex-bd:has(>.ex-tabel:only-child){padding:0}
+.ex-std .ex-tabel{border:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important}
+.ex-std>.ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line,#e3e8f0);font-size:11.5px;color:var(--ink2,#5b6b85)}
+.ex-std>.ex-ft:empty{display:none}
+.ex-std>.ex-ft em{font-style:italic;opacity:.9;margin-left:auto}
+@media (max-width:640px){.ex-std>.ex-hd{padding:14px 16px 12px}.ex-std>.ex-bd{padding:12px 16px 10px}.ex-std>.ex-ft{padding:9px 16px 12px}.ex-std .ex-jd>h3{font-size:18px}}

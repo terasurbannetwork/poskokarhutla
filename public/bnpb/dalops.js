@@ -99,12 +99,17 @@
     });
     return b;
   }
-  const bagian = (id, ik, judul, sub, ...isi) => {
-    const s = h("section", {class: "bn-blok", id});
-    s.append(h("div", {class: "dl-kepala"}, h("div", {class: "dl-kepala-baris"}, h("h2", {class: "lb-judul-blok"}, ikon(ik), judul), isi.some(x => x?.querySelector?.(".dl-grup")) ? bukaSemua(s) : null),
-      sub ? h("p", {class: "dl-sub", teks: sub}) : null), ...isi);
+  /* kartu laporan standar .ex-std (public/inti/kartu.css): pil kategori berikon, judul kalimat temuan (angka .hl), isi, kaki keterangan + sumber */
+  const hl = t => h("span", {class: "hl", teks: t});
+  const bagian = (id, ik, ey, judul, ket, sumber, ...isi) => {
+    const s = h("section", {class: "ex ex-std", id});
+    s.append(h("header", {class: "ex-hd"}, h("span", {class: "ex-ey"}, ikon(ik), ey),
+        h("div", {class: "ex-jd"}, h("h3", null, ...[].concat(judul)), isi.some(x => x?.querySelector?.(".dl-grup")) ? bukaSemua(s) : null)),
+      h("div", {class: "ex-bd"}, ...isi.filter(Boolean)),
+      ket || sumber ? h("footer", {class: "ex-ft"}, ket ? h("span", {teks: ket}) : null, sumber ? h("em", {teks: "Sumber: " + sumber}) : null) : null);
     return s;
   };
+  const SB_LOGBOOK = "logbook Pusdalops BNPB dari laporan BPBD", SB_PRA = "prakiraan banjir Centurisk97 (hujan ensemble tiga hari, debit sungai)";
   const kelompokProv = (daftar, urut) => {
     const m = new Map();
     for (const x of daftar) (m.get(x.prov_kode) || m.set(x.prov_kode, []).get(x.prov_kode)).push(x);
@@ -364,18 +369,21 @@
     const tabel = h("div", {class: "ad-tabel-wadah dl-tabel-wadah"}, t);
     const wadahPeta = h("div", {class: "dl-peta"}, h("p", {class: "bn-pesan", teks: "Memuat peta…"}));
     requestAnimationFrame(() => {   // MapLibre butuh wadah yang sudah terpasang dan berukuran
-      const semua = wadahPeta.closest("section")?.querySelector(".dl-kepala .dl-semua");
+      const semua = wadahPeta.closest("section")?.querySelector(".ex-hd .dl-semua");
       semua?.remove(); semua?.classList.add("dl-semua-peta");
       gambarPeta(wadahPeta, pekan, semua, sk, hariSt);
     });
-    return bagian("peta", "banjir", "Kondisi Banjir Terkini", null,
+    const nBelum = jml("nBelum"), nKab = jml("nKab");
+    return bagian("peta", "banjir", "Kondisi banjir terkini",
+      nBelum ? [hl(`${F(nBelum)} dari ${F(nKab)} kab/kota`), ` banjir sepekan belum surut, `, hl(`${F(jml("jiwa"))} jiwa`), " terdampak"] : [hl(`${F(nKab)} kab/kota`), " banjir sepekan, semuanya sudah surut"],
+      "Klik baris provinsi untuk membuka kab/kota, kecamatan, dan desa.", SB_LOGBOOK,
       wadahPeta,
       tabel);
   }
 
   /* ---------- perlu ditanya ---------- */
   function bagianTanya(daftar, sk, st, hari) {
-    if (!daftar.length) return bagian("tanya", "ok", "Semua wilayah belum surut sudah berkabar lengkap", null, kosong("ok", "Tidak ada yang perlu ditanya hari ini."));
+    if (!daftar.length) return bagian("tanya", "ok", "Kelengkapan data", "Semua wilayah belum surut sudah berkabar lengkap", "", SB_LOGBOOK, kosong("ok", "Tidak ada yang perlu ditanya hari ini."));
     let n = 0;
     const tb = kelompokProv(daftar, (a, b) => b[1][0].umur - a[1][0].umur || b[1].length - a[1].length).map(([p, xs]) =>
       tbodyProv(namaProv(p, xs[0].prov), `${F(xs.length)} kab/kota`, null, 7, xs.map(x => {
@@ -388,7 +396,8 @@
           tdv(b == null ? "–" : status(b), b),
           h("td", null, h("div", {class: "dl-aksi"}, tombolHistori(x), tombolWA(x, H.pesanWA(x), "permintaan pembaruan"))));
       })));
-    return bagian("tanya", "tunggu", "Monitoring Kelengkapan Data", null,
+    return bagian("tanya", "tunggu", "Kelengkapan data", [hl(`${F(daftar.length)} kab/kota`), " perlu ditanya kabar atau angkanya"],
+      "Urut dari yang paling lama tanpa kabar. Tombol WA menyiapkan pesan permintaan pembaruan ke BPBD.", SB_LOGBOOK,
       tabelStd(["No", "Kab/kota", "Tanpa kabar", "Kabar terakhir", "Data belum ada", "Prakiraan besok", "Aksi"], ...tb));
   }
 
@@ -418,6 +427,8 @@
     wadah.closest?.("section")?.querySelectorAll(".dl-semua span").forEach(s => { s.textContent = "Buka semua"; });
   }
 
+  const siagaJudul = xs => { const dua = xs.filter(x => x.sudah).length;
+    return xs.length ? [hl(`${F(xs.length)} kab/kota`), " berstatus Siaga atau Awas dalam tiga hari ke depan", ...dua ? [", ", hl(`${F(dua)}`), " di antaranya sudah banjir"] : []] : "Tidak ada kab/kota berstatus Siaga atau Awas tiga hari ke depan"; };
   function bagianArti() {
     return h("div", {class: "dl-arti"}, h("b", {class: "dl-arti-judul", teks: "Arti prakiraan"}), [[1, "Hujan tiga hari 40 mm atau lebih, atau sungai mulai naik."], [2, "Hujan tiga hari 80 mm di wilayah rawan banjir, atau debit sungai tinggi."], [3, "Hujan tiga hari 120 mm di wilayah sangat rawan, atau sungai meluap."]]
       .map(([l, t]) => h("div", {class: "dl-arti-l" + l}, status(l), h("span", {class: "bn-label", teks: t}))));
@@ -434,11 +445,11 @@
     app.replaceChildren(
       bagianWilayah(pekan, prov, hari, sk, hariSt),
       bagianTanya(tanya, sk, st, hari),
-      st ? bagian("prakiraan", "peringatan", "Peringatan Dini Banjir", null, wadahPra, bagianArti())
-        : bagian("prakiraan", "peringatan", "Prakiraan banjir belum termuat", null, kosong("peringatan", "status.json gagal dimuat, coba muat ulang.")));
+      st ? bagian("prakiraan", "peringatan", "Peringatan dini", siagaJudul(H.siaga(sk, sudah, 2)), "", SB_PRA, wadahPra, bagianArti())
+        : bagian("prakiraan", "peringatan", "Peringatan dini", "Prakiraan banjir belum termuat", "", "", kosong("peringatan", "status.json gagal dimuat, coba muat ulang.")));
     /* tombol Buka semua bagian prakiraan dipasang setelah tabelnya ada */
     const pra = document.getElementById("prakiraan");
-    if (pra && !pra.querySelector(".dl-semua") && pra.querySelector(".dl-grup")) pra.querySelector(".dl-kepala-baris").append(bukaSemua(pra));
+    if (pra && !pra.querySelector(".dl-semua") && pra.querySelector(".dl-grup")) pra.querySelector(".ex-jd").append(bukaSemua(pra));
     pasangTip();
   }
 
