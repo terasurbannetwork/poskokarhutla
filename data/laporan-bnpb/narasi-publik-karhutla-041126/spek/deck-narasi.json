@@ -835,13 +835,7 @@
       {
        "ikon": "air-baku",
        "judul": "Water bombing",
-       "isi": "sorti heli pengebom air",
-       "angka": "{{angka:karhutla.wb_sorti}}"
-      },
-      {
-       "ikon": "air-baku",
-       "judul": "Jatuhan air",
-       "isi": "kali air dijatuhkan dari udara",
+       "isi": "kali air dijatuhkan heli dalam {{angka:karhutla.wb_sorti}} sorti penerbangan",
        "angka": "{{angka:karhutla.wb_drop}}"
       },
       {
@@ -849,6 +843,12 @@
        "judul": "Patroli udara",
        "isi": "sorti pemantauan api",
        "angka": "{{angka:karhutla.patroli_sorti}}"
+      },
+      {
+       "ikon": "lembaga",
+       "judul": "Heli Jepang",
+       "isi": "Chinook bekerja di bawah komando BNPB",
+       "angka": "{{angka:karhutla.jepang.heli}}"
       }
      ]
     }
