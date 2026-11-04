@@ -56,12 +56,16 @@ const atas = (aktif, ctx) => ctx ? `<header class="ad-top">
   <nav aria-label="Halaman admin">${navGrup(GRUP_ADMIN, k => k === aktif || (k === "foto" && aktif === "labelfoto") || (k === "koordinasi" && (BNPB.includes(aktif) || aktif === "instansi")))}</nav>
   <form method="post" action="/admin/keluar"><button class="ad-keluar" type="submit">Keluar</button></form>
 </header>`;
+/* halaman admin yang ada di menu Pusdalops: kepalanya memakai menu Pusdalops (public/bnpb/menu_pusdalops.js), tanpa sub-menu Ruang Koordinasi,
+   supaya pindah dari Pantau Banjir ke sini tidak terasa pindah situs (pemilik 4 Nov 2026) */
+const MENU_PUSDALOPS = new Set(["pantau", "laporan-karhutla", "omc"]);
+const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=4" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=5"></script>';
 /* Kerangka bersama: header, judul halaman (ikon + judul + slot aksi kanan #aksiJudul), lalu isi #app yang diisi skripnya. */
 const halaman = (k, memuat, ekor, ctx) => `${kepala(`${HAL[k][1]} · Centurisk97`)}
 <body${ctx ? ` data-staf="1" data-peran="${esc(ctx.peran.join(","))}"${ctx.nama ? ' data-masuk="1"' : ""}` : ""}>
-${atas(k, ctx)}
+${atas(k, ctx)}${MENU_PUSDALOPS.has(k) ? menuPusdalops : ""}
 <main class="ad-wrap">
-  ${subNav(k, ctx)}
+  ${MENU_PUSDALOPS.has(k) ? "" : subNav(k, ctx)}
   <div class="ad-judul"><span class="ad-ikon" aria-hidden="true">${HAL[k][0]}</span><h1>${HAL[k][1]}</h1><div class="ad-judul-aksi" id="aksiJudul"></div></div>
   <div class="ad-isi" id="app"><p class="ad-redup">${memuat}</p></div>
 </main>

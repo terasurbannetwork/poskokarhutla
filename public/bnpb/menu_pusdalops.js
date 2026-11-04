@@ -23,5 +23,7 @@
   const tautan = ([href, teks, ik]) => { const a = document.createElement("a"); a.href = href; a.append(ikon(ik), teks);
     if (href === kini) a.setAttribute("aria-current", "page"); return a; };
   nav.append(...MENU.map(tautan));
+  /* halaman admin di menu ini (Meja Pantau, Laporan Karhutla, Sortie OMC): nav admin bawaannya diganti menu ini; tombol Keluar tetap */
+  if (MENU.some(m => m[0] === kini)) kepala.querySelector("nav:not(.mp-menu)")?.remove();
   (kepala.querySelector(".ad-logo") || kepala.firstChild).after(nav);
 })();
