@@ -357,7 +357,7 @@
 .dl-saring{display:inline-flex;gap:2px;padding:2px;border-radius:8px;background:#fff;box-shadow:0 0 0 2px rgb(0 0 0 / .1)}
 .dl-saring-btn{display:inline-flex;align-items:center;gap:5px;border:0;background:none;color:#0b2545;border-radius:6px;padding:5px 10px 5px 8px;font:600 12px var(--font);cursor:pointer;white-space:nowrap}
 .dl-wrap .dl-saring-btn svg{width:14px;height:14px;stroke-width:2}
-.dl-saring-surut svg{color:var(--c5)}.dl-saring-belum svg{color:var(--c1)}
+.dl-saring-surut svg{color:var(--c5)}.dl-saring-belum svg{color:var(--c1)}.dl-saring-prakiraan svg{color:var(--c2)}
 .dl-saring-btn[aria-pressed="true"] svg{color:#fff}
 .dl-saring-btn:hover,.dl-saring-btn:focus-visible{background:#eef1f6}
 .dl-saring-btn[aria-pressed="true"]{background:#0b2545;color:#fff}

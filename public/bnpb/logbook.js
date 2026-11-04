@@ -377,7 +377,7 @@
   async function mulai() {
     const cek0 = await api("GET", "/api/logbook/hari?tgl=" + tgl);
     if (cek0.s === 401 || cek0.s === 403) return kartuMasuk(cek0.s);
-    const aksi = h("div", {class: "bn-aksi"}, h("a", {class: "bn-tombol sekunder", href: "/bnpb/dokumen"}, ikon("daftar"), "Dokumen"), h("a", {class: "bn-tombol sekunder", href: "/bnpb/perencanaan"}, ikon("kalender"), "Perencanaan"), h("a", {class: "bn-tombol sekunder", href: "/bnpb/operasi"}, ikon("tenda"), "Operasi")); boxHari = h("div");
+    const aksi = h("div", {class: "bn-aksi"}); boxHari = h("div");   // wadah tombol dummy Super Admin; Dokumen, Perencanaan, Operasi ada di menu Pusdalops atas
     const tglIn = h("input", {type: "date", value: tgl, max: wibHari(), "aria-label": "Tanggal laporan"});
     tglIn.addEventListener("change", () => { if (tglIn.value) { tgl = tglIn.value; muatHari(); } });
     const kolom = h("div", {class: "lb-kolom"}, bentuk(), h("section", {class: "bn-blok"}, h("h2", {class: "lb-judul-blok"}, ikon("daftar"), "Entri periode laporan", h("span", {class: "lb-kanan"}, tglIn)), boxHari));

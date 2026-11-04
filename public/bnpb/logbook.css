@@ -86,3 +86,19 @@
 .lb-sk{margin:0;padding-left:18px;font-size:13px}
 .lb-sk-form{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
 @media (max-width:640px){.lb-korban{grid-template-columns:minmax(64px,1fr) repeat(6,minmax(0,1fr));gap:4px}}
+
+/* tampilan seragam dengan Pantau Banjir (/bnpb/dalops): kepala kartu pita navy bergaris emas, tab satu baris (pemilik 4 Nov 2026) */
+.lb-turunan[hidden]{display:none}
+.lb-wrap .bn-blok{padding:0 0 18px;overflow:hidden}
+.lb-wrap .bn-blok>:not(.lb-judul-blok){margin-inline:18px}
+.lb-wrap .bn-blok>.lb-judul-blok{margin:0;padding:12px 18px;background:var(--gradien);border-bottom:2px solid var(--emas);color:#fff;font:800 16px/1.25 var(--display);min-height:50px}
+.lb-wrap .bn-blok>.lb-judul-blok svg{color:#fff}
+.lb-wrap .bn-blok>.lb-judul-blok input{border:0;border-radius:8px;padding:5px 8px;font:600 13px var(--font);color:var(--ink);background:#fff}
+.lb-wrap details.bn-blok:not([open]){padding-bottom:0}
+.lb-wrap details.bn-blok>summary.lb-judul-blok{cursor:pointer;list-style:none}
+.lb-wrap .lb-tab{display:flex;gap:6px;overflow-x:auto;padding:4px;border-radius:14px;background:var(--card);box-shadow:var(--bayang);scrollbar-width:none}
+.lb-wrap .lb-tab label{flex:1 0 auto;border:0;border-radius:10px;padding:9px 14px;white-space:nowrap;color:var(--ink2)}
+.lb-wrap .lb-tab label:hover{background:var(--soft);color:var(--ink)}
+.lb-wrap .lb-tab label:has(input:checked){background:var(--navy);color:#fff;box-shadow:inset 0 -2px 0 var(--emas)}
+.lb-wrap .lb-seg:not(.lb-tab){grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.lb-wrap .lb-seg:not(.lb-tab) label{justify-content:flex-start;text-align:left;min-height:46px;padding:8px 12px}

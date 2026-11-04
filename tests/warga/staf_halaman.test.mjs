@@ -67,7 +67,8 @@ uji("GET /bnpb/dokumen: kerangka publik tanpa cache, tak boleh dibingkai, .html 
   assert.match(r.headers.get("cache-control"), /no-store/); assert.match(r.headers.get("referrer-policy"), /no-referrer/); assert.match(r.headers.get("x-robots-tag"), /noindex/);
   assert.match(r.headers.get("content-security-policy"), /frame-ancestors 'none'/);
   const h = await man("http://bnpb.lokal", "/bnpb/dokumen.html"); assert.equal(h.status, 301); assert.equal(new URL(h.headers.get("location"), "http://bnpb.lokal").pathname, "/bnpb/dokumen");
-  for (const j of ["/bnpb/logbook", "/bnpb/dokumen"]) { const c = await man("https://centurisk97.id", j); assert.equal(c.status, 303, j); assert.match(c.headers.get("location"), /\/admin\/masuk/, j); }
+  const b = await man("http://bnpb.lokal", "/bnpb/bahan"); assert.equal(b.status, 200, "menu Bahan laporan punya rute"); assert.match(b.headers.get("cache-control"), /no-store/);
+  for (const j of ["/bnpb/logbook", "/bnpb/dokumen", "/bnpb/bahan"]) { const c = await man("https://centurisk97.id", j); assert.equal(c.status, 303, j); assert.match(c.headers.get("location"), /\/admin\/masuk/, j); }
 });
 
 uji("GET /bnpb/perencanaan: kerangka publik tanpa cache, tak boleh dibingkai, .html dialihkan; di centurisk97.id anonim ke login", async () => {

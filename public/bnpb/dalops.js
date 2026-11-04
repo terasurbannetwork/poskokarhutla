@@ -178,8 +178,8 @@
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-right");
     /* saring status di samping Tutup semua: klik = hanya status itu (tombol hitam), klik lagi = semua */
     let saring = null;
-    const terapSaring = () => { for (const id of ["kab-isi", "kab-garis"]) if (peta.getLayer(id)) peta.setFilter(id, saring ? ["==", ["get", "st"], saring] : null); };
-    const tSaring = [["surut", "Sudah surut", "ok"], ["belum", "Belum surut", "banjir"]].map(([v, t, ik]) => {
+    const terapSaring = () => { for (const id of ["kab-isi", "kab-garis"]) if (peta.getLayer(id)) peta.setFilter(id, saring ? ["==", ["get", "st"], saring] : null); };   // prakiraan: st tak pernah "prakiraan", jadi kab disembunyikan dan hanya penanda siaga tampil
+    const tSaring = [["surut", "Sudah surut", "ok"], ["belum", "Belum surut", "banjir"], ["prakiraan", "Prakiraan", "peringatan"]].map(([v, t, ik]) => {
       const b = h("button", {type: "button", class: "dl-saring-btn dl-saring-" + v, "aria-pressed": "false"}, ikon(ik), t);
       b.addEventListener("click", () => { saring = saring === v ? null : v; tSaring.forEach(x => x.setAttribute("aria-pressed", String(x === b && saring === v))); terapSaring(); });
       return b;
