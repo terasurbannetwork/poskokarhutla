@@ -854,17 +854,20 @@
       {
        "ikon": "lembaga",
        "nilai": "{{angka:karhutla.personel.tni}}",
-       "label": "TNI, {{angka:karhutla.personel.tni_persen|fmt=1|persen}}"
+       "label": "TNI, {{angka:karhutla.personel.tni_persen|fmt=1|persen}}",
+       "logo": "logo-lembaga/tni.png"
       },
       {
        "ikon": "regulasi",
        "nilai": "{{angka:karhutla.personel.polri}}",
-       "label": "Polri, {{angka:karhutla.personel.polri_persen|fmt=1|persen}}"
+       "label": "Polri, {{angka:karhutla.personel.polri_persen|fmt=1|persen}}",
+       "logo": "logo-lembaga/polri.png"
       },
       {
        "ikon": "tanggap-darurat",
        "nilai": "{{angka:karhutla.personel.bpbd}}",
-       "label": "BPBD, {{angka:karhutla.personel.bpbd_persen|fmt=1|persen}}"
+       "label": "BPBD, {{angka:karhutla.personel.bpbd_persen|fmt=1|persen}}",
+       "logo": "logo-lembaga/bpbd.png"
       },
       {
        "ikon": "wilayah",
@@ -874,7 +877,8 @@
       {
        "ikon": "karhutla",
        "nilai": "{{angka:karhutla.personel.manggala_agni}}",
-       "label": "Manggala Agni, {{angka:karhutla.personel.manggala_agni_persen|fmt=1|persen}}"
+       "label": "Manggala Agni, {{angka:karhutla.personel.manggala_agni_persen|fmt=1|persen}}",
+       "logo": "logo-lembaga/manggala.png"
       },
       {
        "ikon": "luas",
