@@ -61,6 +61,7 @@ export const RUTE_BNPB = {
   "GET /bnpb/operasi-lapangan": () => new Response(null, {status: 302, headers: {location: "/operasi", "cache-control": "no-store"}}),   // layar staf: peta operasi udara harian (OP-3), data dari /api/operasi/peta
   "GET /bnpb/dokumen": (env, req, url) => halamanBnpbPublik(env, url, "dokumen", {pribadi: true}),   // layar staf: BAST, Laporan Menonjol, Shift, Rekap Mingguan dari logbook
   "GET /bnpb/bahan": (env, req, url) => halamanBnpbPublik(env, url, "bahan", {pribadi: true}),   // layar staf: bahan laporan harian dari logbook, kirim ke WA (menu Pusdalops)
+  "GET /bnpb/saham": (env, req, url) => halamanBnpbPublik(env, url, "saham", {pribadi: true}),   // layar staf: data saham lewat proksi /api/saham/* (src/saham.js)
   "GET /bnpb/perencanaan": (env, req, url) => halamanBnpbPublik(env, url, "perencanaan", {pribadi: true}),   // layar staf: kab prioritas (beban laporan), kalender operasi, stok pra-musim
   "GET /bnpb": (env, req, url) => halamanBnpbPublik(env, url, "index"),
   "GET /risiko": (env, req, url) => halamanBnpbPublik(env, url, "risiko"),
