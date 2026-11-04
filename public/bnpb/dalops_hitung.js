@@ -23,6 +23,7 @@
       for (const f of ["kk", "jiwa", "kk_u", "jiwa_u", "n_kec", "n_desa"]) if (r[f] != null) x[f] = (x[f] || 0) + r[f];
       if (r.tinggi_cm) x.tinggi_cm = x.tinggi_cm ? [Math.min(x.tinggi_cm[0], r.tinggi_cm[0]), Math.max(x.tinggi_cm[1], r.tinggi_cm[1])] : r.tinggi_cm;
       x.surut = x.surut && r.surut; if (r.kondisi) x.kondisi = r.kondisi;
+      if (r.desa) x.desa = [...(x.desa || []), ...r.desa];
     }
     return [...m.values()].sort((p, q) => p.tgl < q.tgl ? -1 : 1);
   }

@@ -222,7 +222,9 @@ def riwayat(laporan, bersih=lambda t: t):
         out.append({"tgl": tgl, "kk": angka(_n(r.get("kk_terdampak")), _n(r.get("kk"))), "jiwa": angka(_n(r.get("orang_terdampak")), _n(r.get("jiwa"))),
                     "kk_u": angka(_n(r.get("kk_mengungsi"))), "jiwa_u": angka(_n(r.get("orang_mengungsi")), _n(r.get("mengungsi"))),
                     "n_kec": _n(r.get("n_kec")), "n_desa": _n(r.get("n_desa")), "tinggi_cm": tinggi_cm(kon + " " + (r.get("dampak_teks") or "")),
-                    "surut": surut(kon), "kondisi": bersih_kondisi(kon)})
+                    "surut": surut(kon), "kondisi": bersih_kondisi(kon),
+                    # desa hari itu, untuk histori per kecamatan di layar
+                    "desa": rincian_desa(bersih((r.get("dampak_teks") or "") + "\n" + (r.get("_desa_kondisi") or r.get("kondisi") or "")))})
     return out
 
 
@@ -283,6 +285,11 @@ def rakit(kejadian, hari, kode_kab, bersih=lambda t: t, laporan=None):
             b["kec"] = kec
             b["desa"] = rincian_desa(*[bersih((r.get("dampak_teks") or "") + "\n" + (r.get("_desa_kondisi") or r.get("kondisi") or "")) for r in sorted(lp, key=lambda r: r.get("tgl_logbook") or "")])
             b["riwayat"] = riwayat(lp, bersih)
+            # desa harian yang teks hari itu tidak menyebut kecamatannya: ambil dari rincian gabungan
+            kec_desa = {d["nama"].lower(): d["kec"] for d in b["desa"] if d["kec"]}
+            for r in b["riwayat"]:
+                for d in r["desa"]:
+                    d["kec"] = d["kec"] or kec_desa.get(d["nama"].lower())
             # angka baris = laporan harian terakhir yang mengisinya (rekap kejadian kadang tertinggal satu-dua hari)
             for f, g in (("kk", "kk"), ("jiwa", "jiwa"), ("kk_u", "kk_u"), ("mengungsi", "jiwa_u"), ("tinggi_cm", "tinggi_cm")):
                 for r in reversed(b["riwayat"]):
@@ -375,6 +382,8 @@ def uji():
     rw = riwayat([{"tgl_logbook": "2026-10-29", "kk_terdampak": "60", "orang_terdampak": "232", "kk_mengungsi": "75", "orang_mengungsi": "264", "n_kec": "2", "kondisi": "air 30 s/d 40 cm, belum surut"},
                   {"tgl_logbook": "2026-10-28", "kk_terdampak": "30", "kondisi": "masih tergenang"}])
     assert [(x["tgl"], x["kk"], x["jiwa_u"], x["tinggi_cm"]) for x in rw] == [("2026-10-28", 30, None, None), ("2026-10-29", 60, 264, [30, 40])], rw
+    rw = riwayat([{"tgl_logbook": "2026-10-29", "dampak_teks": "Kec. Trumon\nGp. Padang Harapan: 25 KK / 120 jiwa", "kondisi": "belum surut"}])
+    assert [(x["nama"], x["kec"], x["kk"]) for x in rw[0]["desa"]] == [("Padang Harapan", "Trumon", 25)], rw
     # laporan harian PDF: potongan nyata 2 Nov 2026 (Aceh Selatan), bentuk keluaran pdftotext -layout
     lh = laphar_banjir("""LAPORAN HARIAN
                      Senin, 02 November 2026

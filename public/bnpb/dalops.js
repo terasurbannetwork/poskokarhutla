@@ -152,7 +152,7 @@
       pop.setLngLat(e.features[0].geometry.coordinates).setDOMContent(h("div", {class: "dl-pop-awas"}, h("b", {teks: p.nama}), status(p.lv), p.hari ? h("small", {teks: "mulai " + p.hari}) : null)).addTo(peta); });
     peta.on("mouseleave", "peringatan", () => { pop.remove(); peta.getCanvas().style.cursor = ""; });
   }
-  async function gambarPeta(wadah, pekan, bukaKab, kontrol, sk = {}, hariSt = []) {
+  async function gambarPeta(wadah, pekan, kontrol, sk = {}, hariSt = []) {
     if (!window.maplibregl) { wadah.replaceChildren(kosong("peringatan", "Peta gagal dimuat, coba muat ulang.")); return; }
     const ambil = u => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
     const kodeProv = [...new Set(pekan.map(x => x.prov_kode))];
@@ -218,7 +218,7 @@
         const kode = e.features[0].properties.kode, x = perKab.get(kode); if (!x) return;
         if (kode === kodePop) return;
         kodePop = kode;
-        pop.setLngLat(e.lngLat).setDOMContent(kartuKab(x, kontak(daftarKantor, x), bukaKab)).addTo(peta);
+        pop.setLngLat(e.lngLat).setDOMContent(kartuKab(x, kontak(daftarKantor, x))).addTo(peta);
         const el = pop.getElement(); el.addEventListener("mouseenter", tahan); el.addEventListener("mouseleave", tutup);
       };
       peta.on("mousemove", "kab-isi", tampil);
@@ -244,16 +244,16 @@
   };
 
   /* kartu klik di peta: kondisi, nama, angka yang dilaporkan, kontak BPBD dengan tombol WA dan telepon */
-  function kartuKab(x, k, bukaKab) {
-    const rincian = h("button", {type: "button", class: "dl-pop-rinci"}, ikon("daftar"), "Rincian");
-    rincian.addEventListener("click", () => bukaKab(x));
+  function kartuKab(x, k) {
+    const rincian = h("button", {type: "button", class: "dl-pop-rinci"}, ikon("kalender"), "Histori");
+    rincian.addEventListener("click", () => bukaHistori(x));
     return h("div", {class: "dl-pop"},
       h("div", {class: "dl-pop-kepala"}, lambangKab(x),
         h("div", null, h("div", {class: "dl-pop-judul"}, h("b", {class: "dl-tip-nama", teks: x.nama}), label(namaProv(x.prov_kode, x.prov), "pin", "abu")),
-          h("div", {class: "dl-pop-label"}, surutLabel(x.surut)))),
-      h("span", {class: "dl-tip-prov", teks: "Kabar terakhir " + H.tglPendek(x.terakhir)}),
+          h("div", {class: "dl-pop-label"}, surutLabel(x.surut),
+            h("span", {class: "dl-pop-tgl", title: "Kabar terakhir", "aria-label": "Kabar terakhir " + H.tglPendek(x.terakhir)}, ikon("kalender"), H.tglPendek(x.terakhir))))),
       kotakAngka(x),
-      h("div", {class: "dl-pop-kontak"}, k ? h("span", {teks: k.nama}) : null,
+      h("div", {class: "dl-pop-kontak"},
         h("div", {class: "dl-pop-tombol"},
           k ? h("a", {class: "dl-pop-wa", href: `https://wa.me/${k.no}?text=${encodeURIComponent(H.pesanWA({...x, kurang: x.kurang || []}))}`, target: "_blank", rel: "noopener"}, ikonWA(), "Chat") : null,
           k ? h("a", {class: "dl-pop-telp", href: "tel:+" + k.no}, ikon("sinyal"), "Telepon") : null, rincian)));
@@ -263,7 +263,7 @@
   /* histori harian satu kab dalam pop-up (dialog bawaan peramban: Esc dan klik latar menutup) */
   let dialog;
   function bukaHistori(x, sub) {
-    const rw = (x.riwayat || []).slice().reverse(), denganKondisi = !x.provinsi;
+    const rw = (x.riwayat || []).slice().reverse(), denganKondisi = !x.provinsi && !x.tingkatKec;
     const maksKK = Math.max(1, ...rw.map(r => r.kk || 0));
     /* ringkasan: angka terakhir yang terisi, perubahan dari laporan sebelumnya yang terisi */
     const th = (teks, att) => h("th", {scope: "col", ...att, teks});
@@ -292,11 +292,17 @@
     dialog.showModal();
   }
 
-  const tombolHistori = (x, sub) => { const b = h("button", {type: "button", class: "dl-ikon", "aria-label": "Histori harian " + x.nama, "data-tip": "<b>Histori harian</b><br>angka" + (x.provinsi ? " semua kab/kota" : " dan kondisi") + " tiap hari logbook"}, ikon("kalender"));
+  const tombolHistori = (x, sub) => { const b = h("button", {type: "button", class: "dl-ikon", "aria-label": "Histori harian " + x.nama, "data-tip": "<b>Histori harian</b><br>angka" + (x.provinsi ? " semua kab/kota" : x.tingkatKec ? " desa kecamatan ini" : " dan kondisi") + " tiap hari logbook"}, ikon("kalender"));
     b.addEventListener("click", e => { e.stopPropagation(); bukaHistori(x, sub); }); return b; };
 
+  /* kecamatan dan desa: buka lokasinya di Google Maps (tab baru) */
+  const tombolMaps = (...bagian) => { const q = bagian.filter(Boolean).join(", ");
+    const a = h("a", {class: "dl-ikon", href: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q), target: "_blank", rel: "noopener", "aria-label": "Buka " + q + " di Google Maps", "data-tip": "<b>Google Maps</b><br>lihat lokasinya"}, ikon("pin"));
+    a.addEventListener("click", e => e.stopPropagation()); return a; };
+
+  const chipSurut = r => h("div", {class: "dl-chips"}, r.nBelum ? label(F(r.nBelum) + " belum", "banjir", "merah") : null, r.nKab - r.nBelum ? label(F(r.nKab - r.nBelum) + " sudah", "ok", "biru") : null);
+
   function bagianWilayah(pekan, prov, hari, sk = {}, hariSt = []) {
-    const petaKab = new Map();
     const tbodies = prov.map((r, i) => {
       const baris = [];
       for (const x of r.baris.slice().sort((a, b) => a.surut - b.surut || a.nama.localeCompare(b.nama))) {
@@ -308,10 +314,19 @@
         const kecBaris = H.perKec(x).filter(k => k.desa.length).map(k => {   // kecamatan tanpa rincian desa tidak ditampilkan; kab tanpa rincian tidak bisa diklik
           const jml = f => k.desa.some(d => d[f] != null) ? k.desa.reduce((s, d) => s + (d[f] || 0), 0) : null;
           const ting = k.desa.filter(d => d.tinggi_cm).map(d => d.tinggi_cm), rentang = ting.length ? [Math.min(...ting.map(t => t[0])), Math.max(...ting.map(t => t[1]))] : null;
+          const kec = k.nama ? "Kecamatan " + k.nama.replace(/^(kecamatan|kec\.?)\s*/i, "") : null, kabProv = [x.nama, namaProv(x.prov_kode, x.prov)];
+          const aksi = (...q) => h("td", null, h("div", {class: "dl-aksi"}, tombolMaps(...q, ...kabProv)));
+          /* histori kecamatan: desa kecamatan ini di tiap hari logbook, dijumlah */
+          const rwKec = k.nama ? (x.riwayat || []).map(r => {
+            const ds = (r.desa || []).filter(d => (d.kec || "").toLowerCase() === k.nama.toLowerCase()); if (!ds.length) return null;
+            const n = f => ds.some(d => d[f] != null) ? ds.reduce((a, d) => a + (d[f] || 0), 0) : null, t = ds.filter(d => d.tinggi_cm).map(d => d.tinggi_cm);
+            return {tgl: r.tgl, kk: n("kk"), jiwa: n("jiwa"), n_kec: 1, n_desa: ds.length, tinggi_cm: t.length ? [Math.min(...t.map(v => v[0])), Math.max(...t.map(v => v[1]))] : null};
+          }).filter(Boolean) : [];
           const tk = h("button", {type: "button", class: "dl-buka dl-buka-kec", "aria-expanded": "false"}, h("b", {teks: k.nama ? "Kec. " + k.nama.replace(/^(kecamatan|kec\.?)\s*/i, "") : "Kecamatan tidak disebut"}),
-            k.desa.length ? h("span", {teks: `${F(k.desa.length)} desa/kel.`}) : null);
-          const trk = h("tr", {class: "dl-kec-baris", hidden: true}, h("td", {class: "dl-wil"}, tk), td("", true), td("", true), td("", true), td(angka(jml("kk")), true), td(angka(jml("jiwa")), true), td("", true), td("", true), td(tinggi(rentang), true), td("", true), td("", true));
-          const desa = k.desa.map(d => h("tr", {class: "dl-desa-baris", hidden: true}, h("td", {class: "dl-wil", teks: d.nama}), td("", true), td("", true), td("", true), td(angka(d.kk), true), td(angka(d.jiwa), true), td("", true), td("", true), td(tinggi(d.tinggi_cm), true), td("", true), td("", true)));
+            k.desa.length ? label(`${F(k.desa.length)} desa/kel.`, "pin", "abu") : null);
+          const trk = h("tr", {class: "dl-kec-baris", hidden: true}, h("td", {class: "dl-wil"}, tk), td("", true), td("", true), td("", true), td(angka(jml("kk")), true), td(angka(jml("jiwa")), true), td("", true), td("", true), td(tinggi(rentang), true), td("", true),
+            kec ? h("td", null, h("div", {class: "dl-aksi"}, rwKec.length ? tombolHistori({nama: kec, tingkatKec: true, riwayat: rwKec}, `${kec}, ${x.nama}, per hari logbook`) : null, tombolMaps(kec, ...kabProv))) : td("", true));
+          const desa = k.desa.map(d => h("tr", {class: "dl-desa-baris", hidden: true}, h("td", {class: "dl-wil", teks: d.nama}), td("", true), td("", true), td("", true), td(angka(d.kk), true), td(angka(d.jiwa), true), td("", true), td("", true), td(tinggi(d.tinggi_cm), true), td("", true), aksi(d.nama, kec)));
           const bukaKec = jadi => { desa.forEach(r => r.hidden = !jadi); tk.setAttribute("aria-expanded", String(jadi)); };
           if (desa.length) trk.addEventListener("click", () => bukaKec(tk.getAttribute("aria-expanded") !== "true")); else trk.classList.add("dl-tanpa");
           return {trk, desa, bukaKec};
@@ -322,18 +337,16 @@
           tombol.setAttribute("aria-expanded", String(jadi)); tr.classList.toggle("dl-aktif", jadi);
         };
         if (kecBaris.length) tr.addEventListener("click", e => { if (!e.target.closest("a,button.dl-ikon")) buka(); }); else tr.classList.add("dl-tanpa");
-        if (x.kab_kode && (!petaKab.has(x.kab_kode) || !x.surut)) petaKab.set(x.kab_kode, {tr, buka});
         baris.push(tr, ...kecBaris.flatMap(k => [k.trk, ...k.desa]));
       }
       const latest = r.baris.reduce((m, x) => x.terakhir > m ? x.terakhir : m, "");
       /* sub total per provinsi di bawah kab/kotanya (pemilik 3 Nov 2026) */
-      baris.push(h("tr", {class: "dl-subtotal"}, h("td", {class: "dl-wil", teks: "Sub total " + namaProv(r.prov_kode, r.prov)}), td(F(r.kejadian), true), td(`${F(r.nBelum)} belum, ${F(r.nKab - r.nBelum)} sudah`, true), td("", true),
+      baris.push(h("tr", {class: "dl-subtotal"}, h("td", {class: "dl-wil", teks: "Sub total " + namaProv(r.prov_kode, r.prov)}), td(F(r.kejadian), true), h("td", null, chipSurut(r)), td("", true),
         td(F(r.kk), true), td(F(r.jiwa), true), td(F(r.kk_u), true), td(F(r.mengungsi), true), td("", true), td(H.tglPendek(latest), true), td("", true)));
       const nama = namaProv(r.prov_kode, r.prov), gab = {nama, provinsi: true, riwayat: r.baris.reduce((a, x) => H.gabungRiwayat(a, x.riwayat || []), [])};
       const aksi = h("div", {class: "dl-aksi"}, tombolHistori(gab, `Jumlah ${F(r.nKab)} kab/kota per hari logbook`),
         r.nBelum ? tombolWA({nama: "Provinsi " + nama}, H.pesanProv(nama, r.baris), "permintaan pembaruan") : null);
-      const st = h("div", {class: "dl-chips"}, r.nBelum ? label(F(r.nBelum) + " belum", "banjir", "merah") : null, r.nKab - r.nBelum ? label(F(r.nKab - r.nBelum) + " sudah", "ok", "biru") : null);
-      return tbodyProv(nama, `${F(r.nKab)} kab/kota`, [tdv(F(r.kejadian), r.kejadian), tdv(st, r.nBelum), td("", true),
+      return tbodyProv(nama, `${F(r.nKab)} kab/kota`, [tdv(F(r.kejadian), r.kejadian), tdv(chipSurut(r), r.nBelum), td("", true),
         tdv(F(r.kk), r.kk), tdv(F(r.jiwa), r.jiwa), tdv(F(r.kk_u), r.kk_u), tdv(F(r.mengungsi), r.mengungsi), td("", true), tdv(H.tglPendek(latest), latest.replace(/-/g, "")), h("td", null, aksi)], 1, baris);
     });
     const jml = k => prov.reduce((s, r) => s + r[k], 0);
@@ -345,17 +358,11 @@
       h("tr", {class: "dl-th-sub"}, th("KK", {"data-i": "4"}), th("Jiwa", {"data-i": "5"}), th("KK", {"data-i": "6"}), th("Jiwa", {"data-i": "7"})));
     const t = h("table", {class: "ad-tabel dl-tabel"}, kepala); t.append(...tbodies, kaki); pasangUrut(t);
     const tabel = h("div", {class: "ad-tabel-wadah dl-tabel-wadah"}, t);
-    /* klik kab di peta: buka provinsinya, buka rincian kab, gulir ke sana */
-    const bukaKab = x => {
-      const t = petaKab.get(x.kab_kode); if (!t) return;
-      const tb = t.tr.closest("tbody"); tb.classList.remove("dl-tutup"); tb.querySelector(".dl-buka").setAttribute("aria-expanded", "true");
-      t.buka(true); t.tr.scrollIntoView({block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
-    };
     const wadahPeta = h("div", {class: "dl-peta"}, h("p", {class: "bn-pesan", teks: "Memuat peta…"}));
     requestAnimationFrame(() => {   // MapLibre butuh wadah yang sudah terpasang dan berukuran
       const semua = wadahPeta.closest("section")?.querySelector(".dl-kepala .dl-semua");
       semua?.remove(); semua?.classList.add("dl-semua-peta");
-      gambarPeta(wadahPeta, pekan, bukaKab, semua, sk, hariSt);
+      gambarPeta(wadahPeta, pekan, semua, sk, hariSt);
     });
     return bagian("peta", "banjir", "Kondisi Banjir Terkini", null,
       wadahPeta,
@@ -376,7 +383,7 @@
           tdv(b == null ? "–" : status(b), b),
           h("td", null, h("div", {class: "dl-aksi"}, tombolWA(x, H.pesanWA(x), "permintaan pembaruan"))));
       })));
-    return bagian("tanya", "tunggu", `Monitoring Kelengkapan Data (${F(daftar.length)} kab/kota)`, null,
+    return bagian("tanya", "tunggu", "Monitoring Kelengkapan Data", null,
       tabelStd(["No", "Kab/kota", "Tanpa kabar", "Kabar terakhir", "Angka belum ada", "Prakiraan besok", "Kirim"], ...tb));
   }
 
