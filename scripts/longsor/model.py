@@ -89,6 +89,13 @@ def klimatologi(dibi, kab_idx, bulan_hari, latih):
     return {key: len(v) / bulan_hari[key[1]] for key, v in ada.items()}
 
 
+def label_dibi(dibi):
+    """-> (pos, buang) himpunan (kab_idx, tgl). pos = hari ada longsor murni (g=0). buang = hari yang HANYA 'Banjir dan Tanah Longsor' (g=1):
+    longsor mungkin terjadi tapi tak terhitung di sasaran, jadi bukan negatif dan bukan positif (tak dinilai)."""
+    pos = {(r[1], r[0]) for r in dibi if r[3] == 0}
+    return pos, {(r[1], r[0]) for r in dibi if r[3] == 1} - pos
+
+
 def uji_balik(kej=None, kecs=None, kerent=None, hujan=None, varian="v1", hanya_pv=False):
     kej = kej or json.load(open(os.path.join(KELUAR, "kejadian.json")))
     kecs = kecs or daftar_kec()
@@ -109,7 +116,7 @@ def uji_balik(kej=None, kecs=None, kerent=None, hujan=None, varian="v1", hanya_p
     if hanya_pv:   # subset adil: kabupaten dengan >= 1 kecamatan tercakup layanan PVMBG
         kab_kec = {kb: v for kb, v in kab_kec.items() if any(x[3] is not None for x in v)}
     kab_i = {n: i for i, n in enumerate(kej["kab"])}
-    pos ={(r[1], r[0]) for r in kej["dibi"] if r[3] == 0}
+    pos, buang = label_dibi(kej["dibi"])
     bulan_hari = {m: 0 for m in range(1, 13)}
     d = LATIH[0]
     while d <= LATIH[1]:
@@ -127,8 +134,8 @@ def uji_balik(kej=None, kecs=None, kerent=None, hujan=None, varian="v1", hanya_p
             while d.year == th and d <= akhir:
                 i = (d - awal).days
                 tt = [(s, r7[c][i] / 10 / p95[c], s1, zv) for s, c, s1, zv in daftar if r7[c][i] is not None and p95[c] > 0]
-                if tt:
-                    ada = (ki, d.isoformat()) in pos if ki is not None else False
+                if tt and (ki, d.isoformat()) not in buang:
+                    ada =(ki, d.isoformat()) in pos if ki is not None else False
                     sk = max(rumus.skor(s, t) for s, t, _, _ in tt)
                     kl = max(rumus.bahaya(s, t) for s, t, _, _ in tt)
                     rs = max(t for _, t, _, _ in tt)

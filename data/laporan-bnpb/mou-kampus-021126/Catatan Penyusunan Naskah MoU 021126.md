@@ -2,17 +2,17 @@
 
 | Naskah | Berkas | Pasal | Halaman | Kepala |
 |---|---|---|---|---|
-| NK payung BNPB dan Kemdiktisaintek | `Draf NK BNPB dan Kemdiktisaintek 021126.docx/.pdf` | 15 | 7 | Lambang Negara |
-| NK BNPB dan BRIN | `Draf NK BNPB dan BRIN 021126.docx/.pdf` | 15 | 7 | Lambang Negara |
+| NK payung BNPB dan Kemdiktisaintek | `Draf NK BNPB dan Kemdiktisaintek 021126.docx/.pdf` | 15 | 7 | Kop BNPB (logo BNPB dan logo mitra) |
+| NK BNPB dan BRIN | `Draf NK BNPB dan BRIN 021126.docx/.pdf` | 15 | 7 | Kop BNPB (logo BNPB dan logo mitra) |
 | Templat NK BNPB dan Perguruan Tinggi Koordinator | `Templat NK BNPB dan Perguruan Tinggi Koordinator 021126.docx/.pdf` | 14 | 6 | Logo BNPB dan logo kampus |
 
 Sunting di `.docx`; `.pdf` untuk edaran dan paraf. Penyusun ulang ada di `penyusun/` (`nk_lib.js` pustaka bersama):
 
 ```
 cd penyusun
-NODE_PATH=<folder node_modules laporan_bulanan> node nk_payung_kemdiktisaintek.js
-NODE_PATH=<folder node_modules laporan_bulanan> node nk_brin.js
-NODE_PATH=<folder node_modules laporan_bulanan> node nk_kampus.js
+NODE_PATH=C:/Users/USER/laporan_bulanan/node_modules node nk_payung_kemdiktisaintek.js
+NODE_PATH=C:/Users/USER/laporan_bulanan/node_modules node nk_brin.js
+NODE_PATH=C:/Users/USER/laporan_bulanan/node_modules node nk_kampus.js
 ```
 
 PDF dibuat dengan LibreOffice headless (`soffice --headless --convert-to pdf`). Isian berstabilo kuning dalam kurung siku wajib dilengkapi.
@@ -21,9 +21,9 @@ PDF dibuat dengan LibreOffice headless (`soffice --headless --convert-to pdf`). 
 
 **Ketiga naskah:** nomor BNPB (`.../KA BNPB/KS.01.01/bulan/tahun`), hari dan tanggal, kota, Keppres pengangkatan Kepala BNPB.
 
-**Payung Kemdiktisaintek:** Lambang Negara, nomor Kemdiktisaintek, gelar lengkap Menteri dan Keppres pengangkatannya, kontak Kemdiktisaintek.
+**Payung Kemdiktisaintek:** logo Kemdiktisaintek, nomor Kemdiktisaintek, gelar lengkap Menteri dan Keppres pengangkatannya, kontak Kemdiktisaintek.
 
-**BRIN:** Lambang Negara, nomor BRIN, gelar lengkap Kepala BRIN, judul Keppres 123/P Tahun 2025, kontak dan unit kerja sama BRIN.
+**BRIN:** logo BRIN, nomor BRIN, gelar lengkap Kepala BRIN, judul Keppres 123/P Tahun 2025, kontak dan unit kerja sama BRIN.
 
 **Templat kampus:**
 - logo kampus, nama kampus, alamat, nama dan gelar rektor;

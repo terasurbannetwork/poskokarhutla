@@ -1,5 +1,5 @@
 // Penyusun naskah Nota Kesepahaman BNPB dan Kemdiktisaintek (draf 2 Nov 2026).
-// Jalankan: NODE_PATH=<folder node_modules laporan_bulanan> node nk_payung_kemdiktisaintek.js
+// Jalankan: NODE_PATH=C:/Users/USER/laporan_bulanan/node_modules node nk_payung_kemdiktisaintek.js
 // Pola mengikuti NK BNPB dengan UMY (2024) dan Unpad (2026); kerangka 14 pasal dari deck
 // "Arsitektur MoU Kerja Sama BNPB dan Perguruan Tinggi 021126", Lampiran A.
 // Isian yang belum pasti ditandai stabilo kuning dan ditulis dalam kurung siku.
@@ -54,7 +54,8 @@ const pasal = (no, judul, badan) => {
 };
 
 // ---------- kepala ----------
-isi.push(tengah('[[Lambang Negara]]', 240, false));
+// kop BNPB: logo BNPB kiri, logo mitra kanan (pemilik 3 Nov 2026: "pake kop BNPB")
+isi.push(...require('./nk_lib').kepala('logo', '[[logo Kemdiktisaintek]]'));
 ['NOTA KESEPAHAMAN', 'ANTARA', 'BADAN NASIONAL PENANGGULANGAN BENCANA', 'DENGAN',
   'KEMENTERIAN PENDIDIKAN TINGGI, SAINS, DAN TEKNOLOGI', 'TENTANG',
   'PENGUATAN PERAN PENDIDIKAN TINGGI, SAINS, DAN TEKNOLOGI', 'DALAM PENANGGULANGAN BENCANA'].forEach((t, i, a) =>
