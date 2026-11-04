@@ -1,8 +1,8 @@
 /* Data saham (/bnpb/saham): cari emiten, lalu panel Info, Grafik, Transaksi, Dividen dari gateway Stellar Data lewat Worker (/api/saham/*).
    Tiap panel memuat dan gagal sendiri; "akses belum dibuka" ditampilkan sebagai keadaan biasa, bukan galat. Chrome kontrol urgent,
    panel berat ditunda satu frame (INP). Tombol dummy (Super Admin) mengisi contoh lokal tanpa memanggil API. Tanpa gaya/skrip inline (CSP). */
-import * as H from "/bnpb/saham_hitung.js?v=2";
-import {CONTOH} from "/bnpb/saham_contoh.js";
+import * as H from "/bnpb/saham_hitung.js?v=4";
+import {CONTOH, KONSESI, grafikSintetis, infoSintetis} from "/bnpb/saham_contoh.js?v=3";
 
 const {ikon, h} = window.Wilayah;
 const app = document.getElementById("app");
@@ -115,6 +115,115 @@ function tampilHasil(daftar) {
     b.addEventListener("click", () => pilih(x)); return b; }));
 }
 
+/* ---------- Konsesi dan saham (fokus halaman): titik panas di konsesi emiten + harga per baris + analisa keterkaitan ---------- */
+const K = {gen: 0, dgen: 0, antre: [], jalan: 0, io: null, ac: null};
+const HUBUNGAN = {langsung: "Langsung", induk: "Induk di luar IDX", rantai_pasok: "Rantai pasok"};
+const BELUM_HARGA = "belum tersedia dari penyedia";
+function sparkline(m) {
+  const pts = H.titikGaris(m.map((x, i) => ({t: i, v: x.titik})), 90, 24, 2); if (!pts) return h("span", {class: "sh-sub", teks: "–"});
+  const svg = document.createElementNS(NS, "svg"); svg.setAttribute("viewBox", "0 0 90 24"); svg.setAttribute("class", "sh-spark"); svg.setAttribute("role", "img");
+  svg.setAttribute("aria-label", `Titik panas mingguan, ${m.length} minggu, tertinggi ${H.angka(Math.max(...m.map(x => x.titik)), 0)}`);
+  const pl = document.createElementNS(NS, "polyline"); pl.setAttribute("points", pts); svg.append(pl); return svg;
+}
+function isiHarga(td, v) { td.textContent = v.harga == null ? BELUM_HARGA : `${H.rupiah(v.harga)} (${H.persenTanda(v.persen)})`; td.classList.toggle("sh-naik", v.persen > 0); td.classList.toggle("sh-turun", v.persen < 0); }
+/* antrean harga per baris, paling banyak 3 permintaan sekaligus; usang (gen berubah) dibuang */
+function pompa() {
+  while (K.jalan < 3 && K.antre.length) {
+    const t = K.antre.shift(); if (t.gen !== K.gen) continue; K.jalan++;
+    fetch(`/api/saham/${encodeURIComponent(t.kode)}/info`, {signal: K.ac.signal}).then(r => r.json().catch(() => ({}))).then(j => {
+      if (t.gen !== K.gen) return; const v = j.ok ? H.hargaInfo(j.data) : {harga: null}; isiHarga(t.td, v);
+    }).catch(e => { if (e.name !== "AbortError" && t.gen === K.gen) t.td.textContent = BELUM_HARGA; }).finally(() => { K.jalan--; pompa(); });
+  }
+}
+function mintaHarga(e, td) {
+  if (!H.adaDiIdx(e.bursa)) { td.textContent = "di luar IDX"; return; }
+  if (st.dummy) { isiHarga(td, H.hargaInfo(infoSintetis(e.kode))); return; }
+  td.textContent = "memuat…"; K.antre.push({kode: e.kode, td, gen: K.gen}); pompa();
+}
+const svgEl = (tag, att) => { const e = document.createElementNS(NS, tag); for (const k in att) e.setAttribute(k, att[k]); return e; };
+/* grafik dua sumbu: batang titik mingguan (sumbu kiri) + garis penutupan mingguan (sumbu kanan, terputus di minggu tanpa harga) */
+function grafikGanda(gab) {
+  const W = 640, T = 220, pad = 10, n = gab.length, lebar = (W - 2 * pad) / n;
+  const tmax = Math.max(1, ...gab.map(x => x.titik)), hs = gab.filter(x => x.harga != null).map(x => x.harga);
+  const svg = svgEl("svg", {viewBox: `0 0 ${W} ${T}`, preserveAspectRatio: "none", class: "sh-garis sh-ganda", role: "img",
+    "aria-label": `Titik panas mingguan (batang) dan harga penutupan mingguan (garis), ${n} minggu`});
+  gab.forEach((x, i) => { const t = x.titik / tmax * (T - 2 * pad); if (t > 0) svg.append(svgEl("rect", {class: "sh-bar", x: (pad + i * lebar + 0.5).toFixed(1), y: (T - pad - t).toFixed(1), width: Math.max(1, lebar - 1).toFixed(1), height: t.toFixed(1)})); });
+  if (hs.length >= 2) {
+    const h0 = Math.min(...hs), dh = Math.max(...hs) - h0 || 1; let run = [];
+    const tutup = () => { if (run.length >= 2) svg.append(svgEl("polyline", {class: "sh-hline", points: run.join(" ")})); run = []; };
+    gab.forEach((x, i) => { if (x.harga == null) return tutup(); run.push(`${(pad + (i + 0.5) * lebar).toFixed(1)},${(T - pad - (x.harga - h0) / dh * (T - 2 * pad)).toFixed(1)}`); }); tutup();
+  }
+  const skala = [`Titik per minggu, tertinggi ${H.angka(tmax, 0)}`, hs.length >= 2 ? `Penutupan mingguan ${H.rupiah(Math.min(...hs))} sampai ${H.rupiah(Math.max(...hs))}` : "Harga belum tersedia dari penyedia"];
+  return h("div", null, svg, h("div", {class: "sh-skala"}, h("span", {class: "sh-ket sh-ket-titik", teks: skala[0]}), h("span", {class: "sh-ket sh-ket-harga", teks: skala[1]})),
+    h("div", {class: "sh-skala"}, h("span", {teks: H.tglId(gab[0].minggu)}), h("span", {teks: H.tglId(gab.at(-1).minggu)})));
+}
+function renderAnalisa(a, ketHarga) {
+  const rho = a.rho === null ? "–" : H.angka(a.rho, 2), h1 = a.peristiwa.h1;
+  return h("div", {class: "sh-analisa"}, h("div", {class: "sh-sorot"},
+    [["Korelasi Spearman", rho], ["Minggu berpasangan (n)", H.angka(a.n, 0)], ["Minggu lonjakan", H.angka(a.peristiwa.n, 0)], ["Selisih return 1 minggu", h1 ? H.persenTanda(h1.selisih).replace("%", " poin") : "–"]].map(([n, v]) => h("div", null, h("small", {teks: n}), h("b", {teks: v})))),
+    ketHarga ? h("p", {class: "sh-sumber", teks: ketHarga}) : null,
+    a.narasi.map((t, i) => h("p", {class: i === a.narasi.length - 1 ? "sh-peringatan" : "sh-p", teks: t})));
+}
+async function muatDetail(e, gen) {
+  const wadah = el.kDetail, mode = st.dummy; let harga = [], ket = "";
+  if (!H.adaDiIdx(e.bursa)) ket = "Harga: di luar IDX, tidak dimuat.";
+  else if (st.dummy) harga = H.hargaMingguan(grafikSintetis(e.kode).deret);
+  else {
+    const r = await api("detail", `/api/saham/${encodeURIComponent(e.kode)}/grafik?periode=LAST_1_YEAR`); if (!r || gen !== K.dgen || mode !== st.dummy) return;
+    if (r.j.ok) harga = H.hargaMingguan(r.j.data?.deret); if (harga.length < 2) ket = "Harga: belum tersedia dari penyedia.";
+  }
+  const gab = H.gabungMingguan(e.mingguan, harga), a = H.analisa(e.mingguan, harga);
+  wadah.replaceChildren(
+    h("p", {class: "sh-p"}, h("b", {teks: "Dasar keterkaitan: "}), e.dasar || "–"),
+    h("p", {class: "sh-sumber", teks: `Konsesi: ${H.angka(e.konsesi?.jumlah, 0)} izin, ${H.angka(e.konsesi?.luas_ha, 0)} ha. Grup: ${e.grup || "–"}.`}),
+    gab.length >= 2 ? grafikGanda(gab) : keadaan("kosong", "Titik mingguan belum cukup untuk digambar."), renderAnalisa(a, ket));
+}
+function pilihKonsesi(e, baris) {
+  /* urgent: sorot baris dan judul seketika; panel berat menyusul sesudah satu frame */
+  el.kBadan.querySelectorAll("tr[aria-selected]").forEach(r => r.setAttribute("aria-selected", String(r === baris)));
+  const gen = ++K.dgen;
+  el.kDetailJudul.textContent = `${e.kode}, ${e.nama}`; el.kDetailWadah.hidden = false;
+  el.kDetail.replaceChildren(h("p", {class: "sh-p", role: "status", teks: "Memuat…"}));
+  nanti(() => muatDetail(e, gen));
+}
+function tampilKonsesi(j) {
+  K.ac?.abort(); K.ac = new AbortController(); K.antre = []; K.io?.disconnect(); K.dgen++; const gen = ++K.gen; el.kDetailWadah.hidden = true;
+  const em = [...(j.emiten || [])].sort((a, b) => (b.titik?.d30 ?? 0) - (a.titik?.d30 ?? 0));
+  /* emiten satu grup berbagi deret titik grup: jumlahkan per GRUP UNIK, jangan per emiten */
+  const grupMap = new Map(); for (const x of em) { const k = x.grup || x.kode, g = grupMap.get(k) || {grup: k, kode: [], d30: 0}; g.kode.push(x.kode); g.d30 = Math.max(g.d30, x.titik?.d30 ?? 0); grupMap.set(k, g); }
+  const grupUnik = [...grupMap.values()].sort((a, b) => b.d30 - a.d30), jml = grupUnik.reduce((s, g) => s + g.d30, 0);
+  el.kRingkas.replaceChildren(...[["Emiten terpantau", H.angka(em.length, 0)], ["Titik 30 hari di konsesi (grup unik)", H.angka(jml, 0)]].map(([n, v]) => h("div", null, h("small", {teks: n}), h("b", {teks: v}))),
+    h("div", null, h("small", {teks: "Tiga grup teratas (30 hari)"}), h("ol", {class: "sh-top"}, grupUnik.slice(0, 3).map(g => h("li", {teks: `${g.grup} (${g.kode.join(", ")}), ${H.angka(g.d30, 0)} titik`})))));
+  if (!em.length) el.kTabel.replaceChildren(keadaan("kosong", "Belum ada emiten yang konsesinya terkena titik panas."));
+  else {
+    K.io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { K.io.unobserve(x.target); const e = x.target.__e; if (gen === K.gen) mintaHarga(e, x.target.querySelector("[data-harga]")); } }), {rootMargin: "120px"});
+    const kol = ["Kode", "Nama", "Grup", "Hubungan", "Bursa", "Titik 7 hari", "Titik 30 hari", "Total 2026", "Tren mingguan", "Harga"];
+    el.kBadan = h("tbody", null, em.map(e => { const tr = h("tr", {"data-kode": e.kode, "aria-selected": "false", class: "sh-baris"},
+      h("td", {"data-label": kol[0]}, h("button", {type: "button", class: "sh-kode", teks: e.kode})), h("td", {"data-label": kol[1], teks: e.nama}), h("td", {"data-label": kol[2]}, e.grup || "–", (grupMap.get(e.grup || e.kode)?.kode.length > 1) ? h("small", {class: "sh-sub", teks: " (deret grup bersama)"}) : null), h("td", {"data-label": kol[3], teks: HUBUNGAN[e.hubungan] || "–"}), h("td", {"data-label": kol[4], teks: e.bursa || "–"}),
+      h("td", {class: "sh-num", "data-label": kol[5], teks: H.angka(e.titik?.d7, 0)}), h("td", {class: "sh-num", "data-label": kol[6], teks: H.angka(e.titik?.d30, 0)}), h("td", {class: "sh-num", "data-label": kol[7], teks: H.angka(e.titik?.total, 0)}),
+      h("td", {"data-label": kol[8]}, sparkline(e.mingguan || [])), h("td", {"data-label": kol[9], "data-harga": "1", class: "sh-num", teks: "…"}));
+      tr.__e = e; K.io.observe(tr); return tr; }));
+    el.kBadan.addEventListener("click", ev => { const tr = ev.target.closest("tr[data-kode]"); if (tr) pilihKonsesi(tr.__e, tr); });
+    el.kTabel.replaceChildren(h("div", {class: "ad-tabel-wadah sh-tabel-wadah"}, h("table", {class: "ad-tabel"}, h("thead", null, h("tr", null, kol.map(k => h("th", {scope: "col", teks: k})))), el.kBadan)),
+      h("p", {class: "sh-sumber", teks: `Titik 7 dan 30 hari dihitung s.d. ${H.tglId(j.periode?.sampai)}. Data VIIRS S-NPP berakhir 1 Nov 2026. Emiten satu grup berbagi deret titik grup.`}));
+  }
+  const g = j.grup_tanpa_emiten || [];
+  el.kGrup.replaceChildren(...(g.length ? [h("details", {class: "sh-lipat"}, h("summary", {teks: `Grup tanpa emiten (${H.angka(g.length, 0)})`}),
+    h("div", {class: "ad-tabel-wadah"}, h("table", {class: "ad-tabel"}, h("thead", null, h("tr", null, ["Grup", "Alasan", "Titik 7 hari", "Titik 30 hari", "Total 2026"].map(k => h("th", {scope: "col", teks: k})))),
+      h("tbody", null, g.map(x => h("tr", null, h("td", {"data-label": "Grup", teks: x.grup}), h("td", {"data-label": "Alasan", teks: x.alasan || "–"}), h("td", {class: "sh-num", "data-label": "Titik 7 hari", teks: H.angka(x.titik?.d7, 0)}),
+        h("td", {class: "sh-num", "data-label": "Titik 30 hari", teks: H.angka(x.titik?.d30, 0)}), h("td", {class: "sh-num", "data-label": "Total 2026", teks: H.angka(x.titik?.total, 0)})))))))] : []));
+  const p = j.periode || {};
+  el.kKaki.replaceChildren(`Periode ${H.tglId(p.dari)} sampai ${H.tglId(p.sampai)}. Sumber: ${(j.sumber || []).join(", ") || "–"}. ${j.catatan || ""} Harga: Stockbit via Stellar Data.`, ...(st.dummy ? [" ", h("span", {class: "sh-contoh", teks: "Data contoh"})] : []));
+}
+async function muatKonsesi() {
+  const mode = st.dummy; el.kTabel.replaceChildren(h("p", {class: "sh-p", role: "status", teks: "Memuat…"}));
+  if (st.dummy) return nanti(() => tampilKonsesi(KONSESI));
+  const r = await api("konsesi", "/api/saham/konsesi"); if (!r || mode !== st.dummy) return;
+  if ((r.s === 401 || r.s === 403) && r.j.kode !== "akses_belum_dibuka") return kartuMasuk(r.s);
+  if (!r.j.ok) { const g = H.petaGalat(r.j, r.s); el.kTabel.replaceChildren(keadaan(g.jenis, g.pesan)); return; }
+  nanti(() => { if (mode === st.dummy) tampilKonsesi(r.j); });
+}
+
 /* ---------- pencarian ---------- */
 async function cari() {
   const q = el.q.value.trim(); el.pesan.textContent = ""; el.pesan.className = "bn-pesan";
@@ -140,8 +249,8 @@ async function tombolDummy(wadah) {
     h("button", {class: "sh-dummy", type: "button", "data-dummy": "hapus", title: "Hapus data contoh", "aria-label": "Hapus data dummy"}, "🧹"));
   wadah.addEventListener("click", e => { const b = e.target.closest("[data-dummy]"); if (!b) return;
     for (const k in batal) batal[k]?.abort();
-    if (b.dataset.dummy === "isi") { st.dummy = true; el.q.value = ""; el.pesan.textContent = ""; tampilHasil(CONTOH.hasil); pilih(CONTOH.hasil[0]); }
-    else { st.dummy = false; st.pilih = null; el.hasil.replaceChildren(); el.judulPilih.hidden = true; bangunPanel(); } });
+    if (b.dataset.dummy === "isi") { st.dummy = true; el.q.value = ""; el.pesan.textContent = ""; tampilHasil(CONTOH.hasil); pilih(CONTOH.hasil[0]); muatKonsesi(); }
+    else { st.dummy = false; st.pilih = null; el.hasil.replaceChildren(); el.judulPilih.hidden = true; bangunPanel(); muatKonsesi(); } });
 }
 
 function mulai() {
@@ -151,9 +260,14 @@ function mulai() {
   el.judulPilih = h("h2", {class: "sh-judul", hidden: true});
   el.q.addEventListener("input", tunda(cari, 300));
   bangunPanel();
-  app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Data Saham"}), aksi),
-    h("p", {class: "sh-p", teks: "Cari emiten, lalu lihat info, grafik, transaksi, dan dividen. Data dari penyedia luar lewat gateway Stellar Data; sebagian akses belum dibuka."}),
+  el.kRingkas = h("div", {class: "sh-sorot"}); el.kTabel = h("div"); el.kGrup = h("div"); el.kKaki = h("p", {class: "sh-sumber"});
+  el.kDetailJudul = h("h3", {class: "sh-judul"}); el.kDetail = h("div", {class: "sh-info"}); el.kDetailWadah = h("div", {class: "sh-detail", hidden: true}, el.kDetailJudul, el.kDetail);
+  const konsesi = h("section", {class: "bn-blok", "data-panel": "konsesi"}, h("h2", {class: "sh-judul"}, ikon("pin"), "Konsesi dan saham"),
+    h("p", {class: "sh-p", teks: "Perusahaan tercatat yang konsesinya terkena titik panas, diurut titik 30 hari. Klik baris untuk melihat grafik dan analisa."}),
+    el.kRingkas, el.kTabel, el.kGrup, el.kDetailWadah, el.kKaki);
+  app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Data Saham"}), aksi), konsesi,
+    h("p", {class: "sh-p", teks: "Cari emiten lain, lalu lihat info, grafik, transaksi, dan dividen. Data dari penyedia luar lewat gateway Stellar Data; sebagian akses belum dibuka."}),
     h("section", {class: "bn-blok"}, h("div", {class: "sh-cari"}, el.q), el.pesan, el.hasil), el.judulPilih, el.panel);
-  tombolDummy(aksi);
+  tombolDummy(aksi); muatKonsesi();
 }
 mulai();
