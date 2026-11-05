@@ -11,6 +11,7 @@ test("tanggal_bulan_berikut: selalu bulan berikutnya, tahun berganti", () => {
   assert.equal(h("dsp_laporan_perkembangan", "2026-01-05"), "2026-02-05"); // bukan hari itu juga
   assert.equal(h("dsp_laporan_perkembangan", "2026-12-10"), "2027-01-05");
   assert.equal(h("dsp_laporan_perkembangan", "2026-12-31"), "2027-01-05");
+  assert.equal(h("dsp_laporan_perkembangan", "2026-01-03"), "2026-02-05"); // mulai sebelum tgl 5 tetap bulan berikutnya (uji mutasi RU-006)
 });
 
 test("bulan: tanggal sama, dipangkas ke akhir bulan", () => {
@@ -99,5 +100,6 @@ test("periksa() menolak satuan asing, asumsi tanpa catatan, kunci kembar, tanpa 
   assert.throws(() => periksa([{ ...dasar, catatan: undefined }]), /tanpa catatan/);
   assert.throws(() => periksa([dasar, dasar]), /kembar/);
   assert.throws(() => periksa([{ ...dasar, asumsi: false }]), /tanpa acuan/);
+  assert.throws(() => periksa([{ ...dasar, asumsi: false, acuan: "perban-4-2020", letak: "Pasal 21 ayat (1)" }]), /kutipan/); // acuan ada, kutipan tidak (uji mutasi RU-006)
   assert.ok(ATURAN.length >= 11);
 });
