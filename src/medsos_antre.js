@@ -3,7 +3,7 @@
 import {json, gagal, NO_JSON, HARI, MENIT, cek, tolak, teks, teksOpsi, tglWIB, kodeProv, kabKunci, pilih, idSah, luarWilayah, acak, tabelBelum3, bacaStaf, tulisStaf, dummyStaf, lajuTulis} from "./pusdalops_umum.js";
 import {JENIS, buatKejadian, wilayahKejadian} from "./logbook.js";
 import {laju} from "./bnpb.js";
-import {stafOK} from "./staf.js";
+import {modAtauStaf} from "./staf.js";
 
 const SUMBER = ["medsos", "tv"], STATUS = ["baru", "terverifikasi", "ditolak", "jadi_kejadian"], MAKS_ANTRE = 100, MAKS_JEDA = 5000;
 const KOLOM = "id, sumber, tautan, judul, prov, kab, jenis, waktu_pantau, status, kejadian_id, catatan, dibuat, diverifikasi, dummy";
@@ -96,7 +96,7 @@ async function antrean(env, req, url, kini) {
 const median = a => { const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length ? Math.round(s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2) : null; };
 /* median menit dari waktu_pantau ke kejadian dibuat, per bulan WIB (12 bulan terakhir). Kejadian yang sudah ada SEBELUM pantauan (jeda negatif) dihitung terpisah: logbook lebih dulu. */
 async function jeda(env, req, kini) {
-  const oleh = await stafOK(env, req, ["pusdalops", "koordalops", "pimpinan"]); if (!oleh) return gagal(403, "hanya staf Pusdalops, Koordalops, atau Pimpinan");
+  const oleh = await modAtauStaf(env, req, ["pusdalops", "koordalops", "pimpinan"]); if (!oleh) return gagal(403, "hanya staf Pusdalops, Koordalops, atau Pimpinan");
   const lj = await laju(env, "pd:" + String(oleh).slice(0, 64), "pusdalops_baca", [[3600e3, 120]], kini); if (lj) return lj;
   const r = (await env.DB.prepare(`SELECT b.waktu_pantau w, k.dibuat d FROM medsos_butir b JOIN logbook_kejadian k ON k.id = b.kejadian_id WHERE b.kejadian_id IS NOT NULL AND b.waktu_pantau >= ? ORDER BY b.waktu_pantau DESC LIMIT ${MAKS_JEDA + 1}`).bind(kini - 366 * HARI).all()).results;
   const bulan = new Map(), semua = [];

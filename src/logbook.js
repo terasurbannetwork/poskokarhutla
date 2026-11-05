@@ -3,7 +3,7 @@
    Semua rute: stafOK(pusdalops|koordalops|pimpinan) PERTAMA, sebelum body/D1. Wilayah = kunci "prov|nama" (prov 2 angka), sama dengan public/data/logbook_riwayat.json.
    Pengingat lanjutan (24/72 jam tanpa entri baru) dibuat src/pengingat.js lewat pendeteksi `logbookLanjutan` memakai logbook_kejadian.terakhir (indeks status, terakhir). */
 import {json, gagal, acak, bacaBody} from "./worker.js";
-import {stafOK, dalamWilayahStaf} from "./staf.js";
+import {modAtauStaf, dalamWilayahStaf} from "./staf.js";
 import {superOK} from "./posko.js";
 import {laju} from "./bnpb.js";
 import {PROV} from "./alun.js";
@@ -206,7 +206,7 @@ const kolEnt = () => (JK_ADA ? [...BASE_ENT, "j.kib_entri AS kib", ...JK.map(c =
 const luarWilayah = (req, provs) => provs.every(p => dalamWilayahStaf(req, [p])) && dalamWilayahStaf(req, provs) ? null : gagal(403, "provinsi di luar wilayah staf");
 const BATAS_TULIS = [[3600e3, 120]];   // tulis logbook per pelaku per jam
 const lajuTulis = (env, oleh, kini) => laju(env, "lb:" + oleh, "logbook_tulis", BATAS_TULIS, kini);
-const pintu = async (env, req) => { const oleh = await stafOK(env, req, PERAN); return oleh ? String(oleh).slice(0, 64) : null; };
+const pintu = async (env, req) => { const oleh = await modAtauStaf(env, req, PERAN); return oleh ? String(oleh).slice(0, 64) : null; };
 const baca = async req => { const b = await bacaBody(req, MAKS_BODY); return b.galat ? {r: gagal(b.status || 400, b.galat)} : {o: b.o}; };
 
 async function buat(env, req, kini) {
