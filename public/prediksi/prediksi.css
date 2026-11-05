@@ -48,7 +48,7 @@
 @media (max-width:900px){.lp-grid{grid-template-columns:1fr}}
 @media print{
   @page{size:A4 landscape;margin:10mm}
-  header.top,.lp-kendali,#tip,.lp-ext,.lp-batas{display:none!important}
+  header.top,.lp-kendali,#tip,.lp-batas{display:none!important}
   main .page{display:none!important}
   main #p-laporan{display:block!important;overflow:visible!important;height:auto!important;position:static!important}
   .lp-grid{grid-template-columns:repeat(3,1fr);gap:8px}

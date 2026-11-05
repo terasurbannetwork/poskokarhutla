@@ -30,12 +30,12 @@
   const KELAS = {
     hujan: {batas: [1, 20, 50, 100, 150], warna: ["#eef2f7", "#c6dbef", "#6baed6", "#2171b5", "#08306b", "#54278f"],
       label: ["<1", "1–20", "20–50", "50–100", "100–150", "≥150"]},
-    lengas: {batas: [0.15, 0.25, 0.35, 0.45], warna: ["#a6611a", "#dfc27d", "#e9eef3", "#80cdc1", "#018571"],
+    lengas: {batas: [0.15, 0.25, 0.35, 0.45], warna: ["#a6611a", "#dfc27d", "#b9dcc4", "#5fb3a6", "#018571"],
       label: ["<0,15", "0,15–0,25", "0,25–0,35", "0,35–0,45", "≥0,45"]},
     ambang: {batas: [40, 60, 80, 120], warna: ["#7a0177", "#c51b8a", "#f768a1", "#fbb4b9", "#fde0dd"],
       label: ["<40", "40–60", "60–80", "80–120", "≥120"]},
-    lebih: {batas: [0.5, 10, 25, 50], warna: ["#eef2f7", "#fee391", "#fe9929", "#d95f0e", "#993404"],
-      label: ["tidak lewat", "0,5–10", "10–25", "25–50", "≥50"]},
+    lebih: {batas: [0.1, 10, 25, 50], warna: ["#eef2f7", "#fee391", "#fe9929", "#d95f0e", "#993404"],
+      label: ["tidak lewat", "<10", "10–25", "25–50", "≥50"]},   // lebihan dibulatkan 1 desimal: >0 berarti >=0,1
     level: {batas: [1, 2, 3], warna: ["#e2e8f0", "#f2c94c", "#f2994a", "#c9503a"], label: ["Normal", "Waspada", "Siaga", "Awas"]},
   };
   const TANPA = "#cbd5e1";

@@ -7,7 +7,8 @@
 const LP = window.LaporanProv;
 const kartuLap = (ey, judul, isi, kls = "") => `<article class="ex ex-std ${kls}"><header class="ex-hd"><span class="ex-ey">${ey}</span><div class="ex-jd"><h3>${judul}</h3></div></header><div class="ex-bd">${isi}</div></article>`;
 const pilHip = ap => ap?.pakai === true ? "" : `<span class="pr-pil buruk" title="Ambang belum lolos uji. Uji 2024–2025 ambang Waspada: ${persen(ap?.uji_2024_2025?.persentil?.waspada?.far)} alarm tanpa kejadian tercatat (FAR)">hipotesis</span>`;
-const mmLap = v => v == null ? "tanpa data" : `${fmt(Math.round(v))} mm`;
+const bul = v => fmt(Math.round(v) || 0);   // || 0: Math.round(-0,4) = -0 tampil "-0"
+const mmLap = v => v == null ? "tanpa data" : `${bul(v)} mm`;
 const lgs = v => v == null ? "–" : v.toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2});
 function legendaLap(k) {
   const K = LP.KELAS[k];
@@ -59,7 +60,7 @@ async function gambarLaporan() {
   const panel = [
     kartuLap("Kemarin", `Hujan ${s.amatan ? esc(tgl(s.amatan.hari)) : "kemarin"} ${tahapA}`,
       petaLap(pt, s, "hujan", b => b.hujan, b => `hujan: ${mmLap(b.hujan)}`)),
-    kartuLap("Kini", `Lengas tanah ${lengas ? esc(tgl(lengas.hari)) : ""}`,
+    kartuLap("Kini", `Lengas tanah (fraksi 0–1) ${lengas ? esc(tgl(lengas.hari)) : ""}`,
       petaLap(pt, s, "lengas", b => b.lengas, b => b.lengas == null ? "tanpa data" : `lengas: ${lgs(b.lengas)}`)),
     kartuLap("Besok", `Prakiraan hujan ${hj ? esc(tgl(hj.hari[0])) : ""} ${pil(hj?.vonis["p50|1"])}`,
       petaLap(pt, s, "hujan", b => b.prak, b => `total: ${mmLap(b.prak)}\npeluang ≥50 mm: ${persen(b.p50)}`)),
@@ -67,22 +68,22 @@ async function gambarLaporan() {
       petaLap(pt, s, "ambang", b => b.ambang, b => `ambang Waspada: ${mmLap(b.ambang)}${b.sumberAmbang === "nasional" ? "\nangka nasional" : ""}`)),
     kartuLap("Besok", `Prakiraan hujan lewat ambang ${pilHip(ap)}`,
       petaLap(pt, s, "lebih", b => b.lebih == null ? null : Math.max(0, b.lebih),
-        b => b.lebih == null ? "tanpa data" : b.lebih <= 0 ? `${fmt(Math.round(-b.lebih))} mm di bawah ambang` : `${fmt(Math.round(b.lebih))} mm di atas ambang`)),
+        b => b.lebih == null ? "tanpa data" : b.lebih <= 0 ? `${bul(-b.lebih)} mm di bawah ambang` : b.lebih < 1 ? "kurang dari 1 mm di atas ambang" : `${bul(b.lebih)} mm di atas ambang`)),
     ...[1, 2, 3].map(n => kartuLap(n === 1 ? "Besok" : `+${n} hari`, `Peluang banjir ${bn ? esc(tgl(bn.hari[n - 1])) : ""} ${pil(bn?.vonis[`ps|${n}`])}`,
       petaLap(pt, s, "level", b => b.lv[n - 1],
-        b => `${b.lv[n - 1] == null ? "tanpa data" : LEVEL[b.lv[n - 1]]}${b.ps[n - 1] != null ? `\npeluang Siaga: ${persen(b.ps[n - 1])}` : ""}`), n > 1 ? "lp-ext" : "")),
+        b => `${b.lv[n - 1] == null ? "tanpa data" : LEVEL[b.lv[n - 1]]}${b.ps[n - 1] != null ? `\npeluang Siaga: ${persen(b.ps[n - 1])}` : ""}`))),
   ];
-  const tb = LP.tabel(s.baris), sel = v => v == null ? "–" : fmt(Math.round(v));
-  const tabel = tb.length ? `<div class="tw ex-tabel"><table><thead><tr><th>Kab/kota</th><th title="Hujan hari terakhir di arsip pengamatan">Hujan kemarin (mm)</th><th title="Fraksi volume 3 sampai 27 cm">Lengas</th><th title="Total prakiraan hujan besok">Prakiraan besok (mm)</th><th title="Ambang Waspada, hipotesis; * = angka nasional">Ambang (mm)</th><th title="Prakiraan dikurangi ambang">Lebihan (mm)</th><th>Banjir +1</th><th>Banjir +2</th><th>Banjir +3</th></tr></thead><tbody>${tb.map(b =>
+  const tb = LP.tabel(s.baris), sel = v => v == null ? "–" : bul(v);
+  const tabel = tb.length ? `<div class="tw ex-tabel"><table><thead><tr><th>Kab/kota</th><th title="Hujan hari terakhir di arsip pengamatan">Hujan kemarin (mm)</th><th title="Fraksi volume 3 sampai 27 cm">Lengas (fraksi)</th><th title="Total prakiraan hujan besok">Prakiraan besok (mm)</th><th title="Ambang Waspada, hipotesis; * = angka nasional">Ambang (mm)</th><th title="Prakiraan dikurangi ambang">Lebihan (mm)</th><th>Banjir +1</th><th>Banjir +2</th><th>Banjir +3</th></tr></thead><tbody>${tb.map(b =>
     `<tr><td>${esc(b.nama)}</td><td class="n">${sel(b.hujan)}</td><td class="n">${lgs(b.lengas)}</td><td class="n">${sel(b.prak)}</td><td class="n">${sel(b.ambang)}${b.sumberAmbang === "nasional" ? "*" : ""}</td><td class="n">${sel(b.lebih)}</td>${b.lv.map(v => `<td>${v == null ? "–" : LEVEL[v]}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : "";
-  /* jumlah kab per level untuk +1..+3: baris = hari, kolom = Waspada/Siaga/Awas */
-  const ringkas = `<div class="tw ex-tabel"><table><thead><tr><th>Hari</th>${LEVEL.slice(1).map(l => `<th>${l}</th>`).join("")}</tr></thead><tbody>${[1, 2, 3].map(n =>
-    `<tr><td>${bn ? esc(tgl(bn.hari[n - 1])) : `+${n}`}</td>${[1, 2, 3].map(l => `<td class="n">${fmt(s.baris.filter(b => b.lv[n - 1] === l).length)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
-  $("#laporanIsi").innerHTML =`<header class="lp-kepala"><h2>Laporan prediksi banjir ${esc(s.nama)}</h2><p class="pr-kecil">Terbit ${esc(jamWIB(PR.d.dibuat))}. Alat bantu staf, tidak untuk disebar ke publik.</p></header>
+  /* jumlah kab per level untuk +1..+3: baris = hari; kolom pertama = Waspada atau lebih (sama dengan judul), lalu per level tepat */
+  const ringkas = `<div class="tw ex-tabel"><table><thead><tr><th>Hari</th><th>Waspada atau lebih</th>${LEVEL.slice(1).map(l => `<th>${l}</th>`).join("")}</tr></thead><tbody>${[1, 2, 3].map(n =>
+    `<tr><td>${bn ? esc(tgl(bn.hari[n - 1])) : `+${n}`}</td><td class="n">${fmt(LP.waspada(s.baris, n).length)}</td>${[1, 2, 3].map(l => `<td class="n">${fmt(s.baris.filter(b => b.lv[n - 1] === l).length)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  $("#laporanIsi").innerHTML = `${defsLap(pt)}<header class="lp-kepala"><h2>Laporan prediksi banjir ${esc(s.nama)}</h2><p class="pr-kecil">Terbit ${esc(jamWIB(PR.d.dibuat))}. Alat bantu staf, tidak untuk disebar ke publik.</p></header>
     <details class="pr-kecil lp-batas"><summary>Batasan</summary><ul>${PR.d.batasan.map(b => `<li>${esc(b)}</li>`).join("")}<li>Ambang hujan pemicu belum lolos uji; kab/kota di luar sampel memakai angka nasional (bertanda *).</li></ul></details>
     ${kartuLap("Ringkasan", `<span class="hl">${fmt(w.length)} dari ${fmt(s.n)}</span> kab/kota ${esc(s.nama)} berpeluang banjir Waspada atau lebih besok`, ringkas)}
     <div class="lp-grid">${panel.join("")}</div>
-    ${tabel ? kartuLap("Rincian", `Kab/kota berlevel Waspada atau lebih dalam 3 hari: <span class="hl">${fmt(tb.length)}</span>`, tabel, "lp-rinci") : ""}`;
+    ${tabel ? kartuLap("Rincian", `Kab/kota berlevel Waspada atau lebih dalam 3 hari: <span class="hl">${fmt(tb.length)}</span> ${tahapA} ${pilHip(ap)}`, tabel, "lp-rinci") : ""}`;
 }
 
 $("#lpProv").addEventListener("change", gambarLaporan);
