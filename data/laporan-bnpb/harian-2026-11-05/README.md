@@ -23,3 +23,8 @@
   - Atasan sore: label banjir selesai yang BPBD-nya menulis surut diseragamkan jadi "Banjir sudah surut" (`keterangan()`);
     nama + pil tanggal kekeringan satu blok di tengah baris; lampiran berjudul "Lampiran: Perbandingan Hari Sebelumnya" dan
     tidak masuk indikator bagian.
+  - Atasan ("jangan perbandingan, daftar kejadian yang sudah selesai aja"; "bulan yang sedang berjalan, nambah terus"): lampiran
+    jadi "Lampiran: Daftar Kejadian Selesai November 2026" (`harian.Deck.lampiran_selesai_bulan`, menggantikan `lampiran_selesai`).
+    Riwayat dari `data.json` tiap laporan harian 1 bulan ini s.d. hari sebelum laporan + hari laporan; yang sudah selesai di hari
+    terakhir bulan lalu tidak dihitung; yang kembali ditangani keluar. 1-5 Nov: 12 kejadian (6 karhutla, 6 banjir), dua kolom
+    dibagi rata, slide tambahan (1/2, 2/2) bila lebih dari dua kali baris per kolom.

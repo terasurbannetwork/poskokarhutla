@@ -1,9 +1,9 @@
-﻿C:\Python314\python : ok C:\Users\USER\AppData\Local\Temp\lewat-deck-zztlgqzc\Laporan Kejadian Bencana Harian 
-051126.pptx  {"slide": 7, "huruf_terkecil_pt": 6.5, "warna": 34, "angka_diperiksa": 198}
+﻿C:\Python314\python : ok C:\Users\USER\AppData\Local\Temp\lewat-deck-d_cfzosp\Laporan Kejadian Bencana Harian 
+051126.pptx  {"slide": 7, "huruf_terkecil_pt": 6.5, "warna": 34, "angka_diperiksa": 188}
 At line:1 char:78
 + ... ltan\bnpb"; C:\Python314\python data\laporan-bnpb\harian-2026-11-05\j ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (ok C:\Users\USE...iperiksa": 198}:String) [], RemoteException
+    + CategoryInfo          : NotSpecified: (ok C:\Users\USE...iperiksa": 188}:String) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
  
 mode simpanan
@@ -47,13 +47,4 @@ kekeringan 73 Bone berjalan DITANGANI  {}
 kekeringan 73 Takalar berjalan DITANGANI  {}
 gempabumi 53 (prov) berjalan DITANGANI  {}
 mesin ok D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-05\Laporan Kejadian Bencana Harian 051126.pptx
-Traceback (most recent call last):
-  File "D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-05\jalan.py", line 202, in <module>
-    import pdf; print('pdf', pdf.ke_pdf(nama))   # 30 Okt: PDF langsung (soffice, atau PowerPoint di Windows)
-                             ~~~~~~~~~~^^^^^^
-  File "D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\generator\pdf.py", line 28, in ke_pdf
-    if os.path.exists(pdf): os.remove(pdf)   # PDF lama tidak boleh lolos sebagai hasil konversi gagal
-                            ~~~~~~~~~^^^^^
-PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 
-'D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\harian-2026-11-05\\Laporan Kejadian Bencana Harian 
-051126.pdf'
+pdf D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-05\Laporan Kejadian Bencana Harian 051126.pdf

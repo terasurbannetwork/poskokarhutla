@@ -166,10 +166,15 @@ nama = os.path.join(OUT, 'Laporan Kejadian Bencana Harian 051126.pptx')
 dk = harian.Deck(ke, D, wa, w, T, None); dk.BJ = None   # 29 Okt pemilik: "format seperti biasa" = 4 slide, tanpa slide status banjir
 dk.LAMPIRAN = True; dk.SIAGA = True; dk.GA_GAYAS = ['lingkaran']   # 2 Nov pemilik memilih desain lingkaran (mistar dan teks dibuang)   # 2 Nov pemilik: gunung api ke bagian Status siaga bencana   # 30 Okt manager: "ada keterangan kejadian baru, sisanya taro di lampiran"
 dk.GA = wa_harian.pvmbg(open(f'{S}/wa-pvmbg.txt', encoding='utf-8').read())   # 30 Okt: status gunung api PVMBG wajib tampil
-# 5 Nov atasan ("oke buat lampiran aja"): lampiran (tanpa indikator bagian, pemilik 5 Nov) perubahan status selesai dibanding laporan kemarin (data.json kemarin)
-T0 = T - dt.timedelta(days=1); D0_ = os.path.join(S, '..', f'harian-{T0.isoformat()}', f'kerja-{T0:%d%m%y}', 'data.json')
-if os.path.exists(D0_): dk.LAMP_TAMBAH = [dk.lampiran_selesai(json.load(open(D0_, encoding='utf-8')), T0, HL.title())]
-else: print('lampiran selesai dilewati: tidak ada', D0_)
+# 5 Nov atasan ("daftar kejadian yang sudah selesai aja", "bulan yang sedang berjalan, nambah terus"): lampiran sesudah penutup,
+# tanpa indikator bagian, berisi kejadian selesai 1 bulan ini s.d. T dari data.json tiap laporan harian bulan ini
+def data_hari(t):
+    f = os.path.join(S, '..', f'harian-{t.isoformat()}', f'kerja-{t:%d%m%y}', 'data.json')
+    if not os.path.exists(f): print('lampiran: tidak ada data harian', t); return []
+    return json.load(open(f, encoding='utf-8'))['kejadian']
+T1 = T.replace(day=1)
+riwayat = [(T1 + dt.timedelta(days=n), data_hari(T1 + dt.timedelta(days=n))) for n in range(T.day - 1)]
+dk.LAMP_TAMBAH = dk.lampiran_selesai_bulan(riwayat, data_hari(T1 - dt.timedelta(days=1)))
 dk.lbl_kolom, dk.lbl_hot, dk.lbl_kum = f'FIRESPOT DAN SISA {HL}', 'firespot', f'TERBAKAR 1 JAN–{HL}'; dk.bangun(tpl, nama)
 print('ok', nama, '| hari data', D['hari'], '| cutoff', D['cutoff'], '| kejadian', dk.N_TOT, 'karhutla', len(dk.KH), 'ditangani', len(dk.KH_T), 'perlu perhatian', len(dk.SER), 'selesai', dk.N_SEL, '| Prioritas ditambah', D['prioritas_baru'])
 for x in D['kejadian']:
@@ -187,7 +192,7 @@ lewat_deck.bingkai(nama, 'harian', 'Laporan Kejadian Bencana Harian', 'Periode 4
     susun=[{'jenis': 'sampul'},
            {'halaman': 2, 'bagian': 1, 'sumber': f'{SK}; {SG}'}, {'halaman': 3, 'bagian': 2, 'sumber': f'{SK}; {SG}'},
            {'halaman': 4, 'bagian': 3, 'sumber': f'{SK}; {SG}'}, {'halaman': 5, 'bagian': 4, 'sumber': 'PVMBG Badan Geologi, 5 Nov 2026 06.00 WIB'},
-           {'jenis': 'penutup'}] + ([{'halaman': 7, 'sumber': f'{SK}; laporan harian {T0.day} {harian.BULAN[T0.month - 1][:3]} {T0.year}; {SG}'}] if getattr(dk, 'LAMP_TAMBAH', None) else []))
+           {'jenis': 'penutup'}] + [{'halaman': 7 + n, 'sumber': f'Laporan Harian Dit. Koordalops BNPB, 1 s.d. {T.day} {harian.BULAN[T.month - 1][:3]} {T.year}; {SG}'} for n in range(len(dk.LAMP_TAMBAH))])
 print('mesin ok', nama)
 # KRIS di sampul dan penutup serta logo BNPB 1,3x kini bawaan mesin ppt-konsultan (deck.py pasang_kris, skala_logo_bnpb), bukan tempelan repo
 # 2 Nov: data website mengeja "Kota Pare Pare" (kunci pencocokan); di slide tampil ejaan resmi "Kota Parepare"
