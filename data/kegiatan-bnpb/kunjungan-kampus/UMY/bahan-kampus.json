@@ -18,25 +18,29 @@
       "berkas": "kampus-1.jpg",
       "url": "https://commons.wikimedia.org/wiki/File:Masjid_K.H._Ahmad_Dahlan.jpg",
       "pengunggah": "Mhdfardhan",
-      "lisensi": "CC0"
+      "lisensi": "CC0",
+      "objek": "Masjid K.H. Ahmad Dahlan (tampak atas plaza dan masjid)"
     },
     {
       "berkas": "kampus-2.jpg",
       "url": "https://commons.wikimedia.org/wiki/File:UMY_Student_Dormitory_%26_Djarnawi_Hadikusuma.jpg",
       "pengunggah": "Mhdfardhan",
-      "lisensi": "CC0"
+      "lisensi": "CC0",
+      "objek": "UMY Student Dormitory (asrama mahasiswa)"
     },
     {
       "berkas": "kampus-3.jpg",
       "url": "https://commons.wikimedia.org/wiki/File:Universitas_Muhammadiyah_Yogyakarta_Admission_Building.jpg",
       "pengunggah": "Mhdfardhan",
-      "lisensi": "CC0"
+      "lisensi": "CC0",
+      "objek": "Gedung Admisi UMY"
     },
     {
       "berkas": "kampus-4.jpg",
       "url": "https://commons.wikimedia.org/wiki/File:Sportorium_Universitas_Muhammadiyah_Yogyakarta.jpg",
       "pengunggah": "Mhdfardhan",
-      "lisensi": "CC0"
+      "lisensi": "CC0",
+      "objek": "Sportorium UMY"
     }
   ],
   "pusat_studi": "EDGSC",
@@ -96,5 +100,5 @@
       "isi": "Sensor hujan dan getaran dapat melengkapi pos pantau BPBD di Merapi"
     }
   ],
-  "catatan": "1) riset-1 hanya 720 px lebar (foto umy.ac.id terbesar yang tersedia); kampus-3 1280 px dan kampus-4 960 px karena Commons hanya punya ukuran itu. 2) riset-2 dan riset-4 berupa foto orang berpose (serah terima alat; peluncuran aplikasi): disarankan diganti foto alat bila pemilik punya. riset-3 adalah diagram blok sistem dari jurnal (CC BY 4.0), bukan foto lapangan, 1101 px. 3) Judul riset-1 ditulis pada tahun publikasi berita 2025 (14 Juli); tanggal pemasangan tidak disebut. 4) SIGUMI hanya terverifikasi dari satu sumber berita (Harian Jogja), belum dari laman resmi UMY. 5) Logo asli Commons 504x495 (CC0) diperbesar ke 1024 px; sebaiknya diganti berkas vektor resmi UMY. 6) Nama gedung kampus-1 sesuai judul berkas Commons (Masjid K.H. Ahmad Dahlan); koordinat lon/lat diperkirakan untuk Kampus Terpadu Tamantirto dan belum dicek peta. 7) Gedung AR Fachruddin hanya ada 720 px di Commons sehingga tidak dipakai. 8) Klaim peluang adalah usulan penyusun, bukan pernyataan UMY."
+  "catatan": "1) riset-1 hanya 720 px lebar (foto umy.ac.id terbesar yang tersedia); kampus-3 1280 px dan kampus-4 960 px karena Commons hanya punya ukuran itu. 2) riset-2 dan riset-4 berupa foto orang berpose (serah terima alat; peluncuran aplikasi): disarankan diganti foto alat bila pemilik punya. riset-3 adalah diagram blok sistem dari jurnal (CC BY 4.0), bukan foto lapangan, 1101 px. 3) Judul riset-1 ditulis pada tahun publikasi berita 2025 (14 Juli); tanggal pemasangan tidak disebut. 4) SIGUMI hanya terverifikasi dari satu sumber berita (Harian Jogja), belum dari laman resmi UMY. 5) Logo asli Commons 504x495 (CC0) diperbesar ke 1024 px; sebaiknya diganti berkas vektor resmi UMY. 6) Nama gedung kampus-1 sesuai judul berkas Commons (Masjid K.H. Ahmad Dahlan); koordinat lon/lat diperkirakan untuk Kampus Terpadu Tamantirto dan belum dicek peta. 7) Gedung AR Fachruddin hanya ada 720 px di Commons sehingga tidak dipakai. 8) Klaim peluang adalah usulan penyusun, bukan pernyataan UMY. 9) Telaah ulang 5 Nov 2026: Commons hanya punya 4 foto bangunan UMY yang layak (selain Twin Tower K.H. Ibrahim 678 px dan foto demo berbahaya Umy.jpg); laman umy.ac.id menolak akses otomatis (403/404), sehingga empat foto dipertahankan. Pemilik sebaiknya menyediakan foto Gedung AR Fachruddin atau gerbang kampus terpadu bila ingin mengganti kampus-2 (asrama) atau kampus-3 (admisi)."
 }

@@ -10,6 +10,7 @@ Satu deck induk (ITB, rev6) diturunkan per kampus. Satu folder per kampus.
 | `UNY/` | Paparan Kerja Sama BNPB dengan UNY 041126 | Yogyakarta, 4 Nov 2026 |
 | `UMY/` | Paparan Kerja Sama BNPB dengan UMY 041126 | Yogyakarta, 4 Nov 2026 |
 | `UPNVY/` | Paparan Kerja Sama BNPB dengan UPNVY 041126 | Yogyakarta, 4 Nov 2026 |
+| `Tel-U/` | Paparan Kerja Sama BNPB dengan Telkom University 041126 | Bandung, 4 Nov 2026 (kode kampus `Tel-U`, kunci token `telu`) |
 
 Kelima deck kampus Yogyakarta dibangun ulang 5 Nov 2026 mengikuti ITB rev8. Yang berbeda per kampus: sampul
 dan penutup (judul, logo, empat foto kampus, kredit), slide 4 (wilayah kampus tujuan oranye, logo hanya kampus
