@@ -56,6 +56,31 @@ test("longsor dan karhutla (pemilik 5 Nov 2026): satu rute per jenis, kunci R2 t
   assert.equal((await mf.dispatchFetch("http://dalops.lokal/api/dalops/gempa", {headers: STAF})).status, 404, "jenis lain tidak punya rute");
 });
 
+test("RU-109: akun gerbang AKUN_SITUS* ditolak 401 tanpa badan data di ketiga jenis; staf sah dan moderator tetap 200", async () => {
+  /* Miniflare kedua: hanya ini yang membawa AKUN_SITUS_UJI, supaya opsi suite lain tidak berubah */
+  const m2 = new Miniflare({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
+    compatibilityDate: "2024-09-23", d1Databases: {DB: "uji-dalops-gerbang"}, r2Buckets: ["MEDIA"],
+    bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin", AKUN_SITUS_UJI: "gerbang@x:sandi"},
+    serviceBindings: {ASSETS: () => new Response("tidak ada", {status: 404})}, cache: false});
+  try {
+    const d2 = await m2.getD1Database("DB"); await d2.batch(pecah(migrasi()).map(s => d2.prepare(s)));
+    const r2 = await m2.getR2Bucket("MEDIA");
+    await d2.batch([d2.prepare(`INSERT INTO staf (id, username, nama, nip, unit, email, wa, peran, wilayah, garam, sandi_sha, wajib_ganti, dibuat, dibuat_oleh, dummy)
+      VALUES ('k1k1k1k1k1k1k1k1', 'koordalopsa', 'Nama', '20001234', 'Unit', 'k@b.id', '628120000000', '["koordalops"]', '[]', 'gggggggggggggggggggggggggggggggg', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 0, 1, 'tes', 0)`),
+      d2.prepare("INSERT INTO staf_sesi (token_sha, staf_id, dibuat, kedaluwarsa) VALUES (?, 'k1k1k1k1k1k1k1k1', 1, ?)").bind(sha(TOK), Date.now() + 3600e3)]);
+    for (const j of ["banjir", "longsor", "karhutla"]) {
+      await r2.put(`dalops/${j}.json`, JSON.stringify({v: 1, kejadian: [{id: "RAHASIA-" + j}]}));
+      const url = "http://dalops.lokal/api/dalops/" + j;
+      const g = await m2.dispatchFetch(url, {headers: {"x-admin-token": "gerbang@x:sandi"}});
+      const teks = await g.text();
+      assert.equal(g.status, 401, `akun gerbang harus 401 di ${j}, dapat ${g.status}`);
+      assert.ok(!teks.includes("RAHASIA"), `badan 401 ${j} membocorkan data staf`);
+      assert.equal((await m2.dispatchFetch(url, {headers: STAF})).status, 200, "staf sah " + j);
+      assert.equal((await m2.dispatchFetch(url, {headers: ADMIN})).status, 200, "moderator " + j);
+    }
+  } finally { await m2.dispose(); }
+});
+
 test("/bnpb/dalops.html dialihkan ke jalur bersih /bnpb/dalops", async () => {
   const r = await mf.dispatchFetch("http://dalops.lokal/bnpb/dalops.html", {redirect: "manual"});
   assert.equal(r.status, 301); assert.equal(r.headers.get("location"), "/bnpb/dalops");
