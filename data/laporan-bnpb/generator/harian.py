@@ -685,6 +685,18 @@ class Deck:
         lain, yy = '', 0
         KW = max((120000 + len(t) * 700 * 62 + 164592 * .9 for x in LN for t, f, c, ik in s.ket(x) if ik in ('awas_oranye', 'kalender_navy')), default=0) if getattr(s, 'SEJAJAR', False) else 0
         JL = dict(JENIS_LAIN, **({'kekeringan': ('Kekeringan', 'daun', KER, T_KER)} if any(x['jenis'] == 'kekeringan' for x in LN) else {}))
+        def ujung_nama(x):   # ujung kanan nama (+ pil kalender) di versi ringkas
+            nm = [(NAMA[x['prov']], INK, True)] + ([(', ' + x['lokasi'], INK, False)] if x['lokasi'] else [])
+            xn = XL + 400000 + int(sum(len(t) for t, _, _ in nm) * 760 * 56)
+            if getattr(s, 'TAMPIL_AWAL', False) and s.teks_awal(x):
+                xa = XL + 400000 + s.lebar_runs(nm, 760) + 54864
+                xn = max(xn, int(xa + s.pil(0, 0, s.teks_awal(x).replace('Laporan pertama ', ''), T_NAVY, NAVY, 'kalender_navy', sz=700, h=164592, b=False)[1] + 45720))
+            return xn
+        def stat_ringkas(dt_): return [(f"{v} {lab.replace(' terdampak', '').replace('jiwa ', '')}", 'F7F8FA', c, ik) for v, lab, ik, c in dt_.get('stat', [])]
+        # 5 Nov pemilik ("samain antara banjir sudah surut dan air sudah surut"): bila satu kejadian berketerangan + angka harus
+        # dua baris (Kota Subulussalam), semua kejadian berketerangan + angka ikut dua baris (Pidie Jaya), supaya pilnya sejajar
+        DUA = ringkas and any(s.detail(x).get('pil') and x_st and pils(s.detail(x)['pil'] + x_st, XR - 18288, 9144)[1] <= ujung_nama(x)
+                              for x in LN for x_st in [stat_ringkas(s.detail(x))])
         for jn, (nama, ikon, warna, tint) in JL.items():
             xs = [x for x in LN if x['jenis'] == jn]
             if not xs: continue
@@ -709,7 +721,7 @@ class Deck:
                         pa, wa_ = s.pil(xa, 9144, s.teks_awal(x).replace('Laporan pertama ', ''), T_NAVY, NAVY, 'kalender_navy', sz=700, h=164592, b=False)
                         lain += pa; xn = max(xn, int(xa + wa_ + 45720))
                     satu, px_ = pils(dt_.get('pil', []) + st, XR - 18288, 9144)
-                    if px_ > xn: lain += satu + '@@'; yy += 182880 + (9144 if s.LAMPIRAN else 27432); continue
+                    if px_ > xn and not (DUA and dt_.get('pil') and st): lain += satu + '@@'; yy += 182880 + (9144 if s.LAMPIRAN else 27432); continue
                     p1, px1 = pils(dt_.get('pil', []), XR - 18288, 9144)
                     if px1 > xn:
                         lain += p1 + '@@'; yy += 182880 + 9144
@@ -812,9 +824,11 @@ class Deck:
             tot = len(xs) > 1
             def baris_air(y, kk, jw, liter, tangki, garis_c, b=True):
                 # pemilik 27 Okt: kolom diberi ruang (tanpa ikon per baris di TERDAMPAK); liter dan tangki dua label berikon
-                r = (s.au(9000000, y, rp, *s.pecah(kk), 800, wn=380000, wu=200000) if s.pecah(kk) else s.tx(8650000, y, 600000, rp, [kk], sz=800, b=True, an='ctr', wrap='none'))
-                r += s.au(9640000, y, rp, *(s.pecah(jw) or ('–', 'jiwa')), 800, c=TEKS, b=False, wn=400000, wu=260000) if s.pecah(jw) or jw == 'jiwa –' else s.tx(9150000, y, 700000, rp, [jw], sz=800, c=TEKS, an='ctr', wrap='none')
                 ph_, yp = 164592, y + (rp - 164592) / 2; pl, lc = s.pecah(liter), '8A6A2E' if not b else INK
+                # 5 Nov pemilik ("ini bukannya pakai label ya?"): TERDAMPAK jadi label berbingkai berikon orang, sejajar pil BANTUAN AIR
+                r = s.kotak(8640000, yp, 9890000 - 8640000, ph_, 'FFFFFF', 'roundRect', ln=garis_c, adj=50000) + s.gambar(8675000, yp + 32000, 100584, 100584, 'orang_k')
+                r += (s.au(9150000, yp, ph_, *s.pecah(kk), 720, c=lc, wn=330000, wu=200000) if s.pecah(kk) else s.tx(8810000, yp, 1050000, ph_, [kk], sz=720, b=True, c=lc, an='ctr', wrap='none'))
+                if s.pecah(kk): r += s.au(9650000, yp, ph_, *(s.pecah(jw) or ('–', 'jiwa')), 720, c=TEKS, b=False, wn=330000, wu=230000) if s.pecah(jw) or jw == 'jiwa –' else s.tx(9300000, yp, 580000, ph_, [jw], sz=720, c=TEKS, an='ctr', wrap='none')
                 tk = re.search(r'([\d.]+)', tangki)
                 pw = 880000 if pl or tk else 10870000 + 608463 - 9930000   # 28 Okt pemilik: tanpa data = "dalam proses pendataan", pil melebar ke kolom tangki
                 r += s.kotak(9930000, yp, pw, ph_, 'FFFFFF', 'roundRect', ln=garis_c, adj=50000) + s.gambar(9985000, yp + 32000, 100584, 100584, 'tetes_k')
@@ -975,6 +989,73 @@ class Deck:
         return J + [P(f", {lv.get('Waspada', 0)} Waspada, {lv.get('Normal', 0)} Normal")] if st else J + [P('tidak ada gunung api berstatus Siaga atau Awas')]
     def s_siaga(s):
         return s.panel_ga(548640, 1325880, 11094415, 6007608 - 1325880, kolom=3)
+
+    def lampiran_selesai(s, D0, t0, lbl):
+        """5 Nov atasan ("oke buat lampiran aja"): lampiran yang menjelaskan kenapa jumlah selesai berubah dari laporan kemarin.
+        Selesai dihitung per hari dari kejadian yang masih dilaporkan, bukan kumulatif. D0 = data.json kemarin, t0 = tanggal kemarin,
+        lbl = label hari data karhutla website ('4 Nov'). Kembali (judul, fungsi isi, catatan pembicara)."""
+        kunci = lambda x: (x['jenis'], x['prov'], x['lokasi'] or '')
+        K0 = {kunci(x): x for x in D0['kejadian']}; K1 = {kunci(x): x for x in s.KJ}
+        sel0 = [x for x in D0['kejadian'] if not x.get('tangani')]
+        lagi = [x for x in sel0 if kunci(x) not in K1]
+        kembali = [K1[kunci(x)] for x in sel0 if kunci(x) in K1 and K1[kunci(x)].get('tangani')]
+        sel1 = [x for x in s.KJ if not x['tangani']]
+        tetap = {kunci(x) for x in sel0}
+        n0, n1, s0, s1 = len(D0['kejadian']), len(s.KJ), len(sel0), len(sel1)
+        baru_sel = [x for x in sel1 if kunci(x) not in tetap]
+        h0, h1 = f'{t0.day} {BULAN[t0.month - 1][:3]}', f'{s.tanggal.day} {BULAN[s.tanggal.month - 1][:3]}'
+        nm = lambda x: [(NAMA[x['prov']], INK, True)] + ([(', ' + x['lokasi'], INK, False)] if x['lokasi'] else [])
+        nm_t = lambda x: NAMA[x['prov']] + (f", {x['lokasi']}" if x['lokasi'] else '')
+        def alasan(x, hari_ini=True):
+            if x['jenis'] == 'karhutla':
+                sa = x.get('sat') or {}
+                if x.get('tangani'): return f"Sisa ± {f0(sa.get('sisa') or 0)} ha, {f0(sa.get('hot') or 0)} firespot ({lbl})", 'api_oranye', T_ORG, ORG
+                return f"Sisa 0 ha, firespot {f0(sa.get('hot') or 0)} ({lbl})", 'cek_navy', T_NAVY, NAVY
+            if hari_ini:
+                p = (s.detail(x).get('pil') or [])
+                if p: return p[0][0], 'cek_navy', T_NAVY, NAVY
+            return 'Selesai', 'cek_navy', T_NAVY, NAVY
+        P, H = (lambda t: (t, INK, True)), (lambda t: (t, ORG, True))
+        judul = [P('Lampiran: '), H(f'{s1} dari {n1}'), P(f' kejadian selesai ({h1}), sebelumnya '), H(f'{s0} dari {n0}'), P(f' ({h0})')]
+        sebab = ([f'{len(lagi)} tidak dilaporkan lagi'] if lagi else []) + ([f'{len(kembali)} kembali ditangani'] if kembali else []) + ([f'{len(baru_sel)} baru selesai'] if baru_sel else [])
+        catatan = [f'Jumlah selesai dihitung per hari dari kejadian yang masih dilaporkan, bukan kumulatif. Tanggal {h0}: {s0} dari {n0} ({", ".join(nm_t(x) for x in sel0)}).',
+                   *( [f'Tidak dilaporkan lagi pada {h1}: {", ".join(nm_t(x) for x in lagi)}.'] if lagi else []),
+                   *( [f'Kembali ditangani: {", ".join(nm_t(x) + " (" + alasan(x)[0] + ")" for x in kembali)}.'] if kembali else []),
+                   *( [f'Baru selesai: {", ".join(nm_t(x) for x in baru_sel)}.'] if baru_sel else []),
+                   f'Tanggal {h1}: {s1} dari {n1}.']
+        def isi():
+            X0, W, Y = 548640, 11094415, 1325880; o = ''
+            # baris kartu: tanggal sebelumnya, perubahan, tanggal laporan
+            tanda = lambda n, t: f'{t}{n}' if n else '0'
+            kt = [('cek_p', NAVY, f'{s0} / {n0}', f'selesai {h0}', NAVY), ('awas_b', T_SLATE, tanda(len(lagi), '−'), 'tidak dilaporkan lagi', SLATE),
+                  ('api_o', T_ORG, tanda(len(kembali), '−'), 'kembali ditangani', ORG), ('cek_navy', T_NAVY, tanda(len(baru_sel), '+'), 'baru selesai', NAVY),
+                  ('cek_p', NAVY, f'{s1} / {n1}', f'selesai {h1}', NAVY)]
+            kw = (W - 4 * 91440) // 5
+            for i, (ik, tint, v, lab, w_) in enumerate(kt):
+                o += s.kartu(X0 + i * (kw + 91440), Y, ik, tint, v, lab, w_, w=kw)
+            # tiga kolom rincian
+            Y2 = Y + 512064 + 182880; cw = (W - 2 * 137160) // 3
+            # panel setinggi isinya (pemilik 24 Okt), paling tinggi sampai batas isi slide
+            HB = min(6007608 - Y2, 365760 + 137160 + max(1, len(sel1), len(lagi), len(kembali)) * (228600 + 164592 + 137160) + 45720)
+            kol = [(f'Selesai {h1}', NAVY, T_NAVY, 'cek_p', sel1, True), (f'Selesai {h0}, tidak dilaporkan lagi', SLATE, T_SLATE, 'awas_p2', lagi, False),
+                   (f'Selesai {h0}, kembali ditangani', ORG, T_ORG, 'api_p', kembali, True)]
+            for i, (jd, w_, tint, ik, xs, hari_ini) in enumerate(kol):
+                x0 = X0 + i * (cw + 137160)
+                o += s.kotak(x0, Y2, cw, HB, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=3000) + s.kepala(x0, Y2, cw, w_, tint, ik, jd, len(xs), h=365760)
+                y = Y2 + 365760 + 137160
+                if not xs: o += s.tx(x0 + 164592, y, cw - 329184, 228600, ['Tidak ada'], sz=850, c=ABU)
+                for n, x in enumerate(xs):
+                    if n: o += s.garis(x0 + 137160, y - 45720, cw - 274320, 'EEF0F3')
+                    jl = JENIS_LAIN.get(x['jenis'], ('', 'api', ORG, T_ORG)) if x['jenis'] != 'karhutla' else ('Karhutla', 'api', ORG, T_ORG)
+                    if x['jenis'] == 'kekeringan': jl = ('Kekeringan', 'daun', KER, T_KER)
+                    o += s.status_ikon(x0 + 137160, y + 18288, 146304, bool(x.get('tangani')))
+                    o += s.kotak(x0 + 329184, y + 18288, 146304, 146304, jl[2], 'ellipse') + s.gambar(x0 + 356616, y + 45720, 91440, 91440, f'{jl[1]}_putih')
+                    o += s.tx(x0 + 530352, y, cw - 640080, 182880, [nm(x)], sz=850, an='ctr', wrap='none')
+                    t_, ikp, f_, c_ = alasan(x, hari_ini) if hari_ini else (f'Selesai {h0}, tidak ada di laporan {h1}', 'kalender_slate', T_SLATE, SLATE)
+                    o += s.pil(x0 + 530352, y + 228600, t_, f_, c_, ikp, sz=700, h=164592, b=False)[0]
+                    y += 228600 + 164592 + 137160
+            return o
+        return judul, isi, catatan
 
     def panel_ga(s, QX, QY, QW, QH, kolom=1):
         # 30 Okt revisi pemilik: kartu gunung api untuk publik (status, radius, sektor, ancaman, kawasan, imbauan); status PVMBG sebagai pil;
@@ -1600,7 +1681,7 @@ class Deck:
             baru_ = f'<p:sldId id="{sldid}" r:id="{rid}"/>'.encode()
             F['ppt/presentation.xml'] = (F['ppt/presentation.xml'].replace(b'<p:sldId id="259" r:id="rId5"/>', baru_ + b'<p:sldId id="259" r:id="rId5"/>', 1) if sebelum_penutup
                                          else F['ppt/presentation.xml'].replace(b'</p:sldIdLst>', baru_ + b'</p:sldIdLst>', 1))
-        LAMP, hal = [], 4
+        LAMP, hal = list(getattr(s, 'LAMP_TAMBAH', None) or []), 4   # 5 Nov: lampiran dari pemanggil (perubahan status selesai)
         if s.LAMPIRAN and not s.GABUNG:   # 30 Okt revisi pemilik: kejadian sebelumnya bukan lampiran, tepat sesudah slide kejadian baru (slide 4)
             kunci = {(b['jenis'], b['prov'], b['lokasi']) for b in s.baru()}
             LN_p = [x for x in s.LN if (x['jenis'], x['prov'], x['lokasi']) not in kunci]
@@ -1618,7 +1699,7 @@ class Deck:
             par = ''.join(f'<a:p><a:r><a:rPr lang="id-ID" dirty="0"/><a:t>{escape(b)}</a:t></a:r></a:p>' if b else '<a:p><a:endParaRPr lang="id-ID"/></a:p>' for b in s.catatan_ga())
             F['ppt/notesSlides/notesSlide3.xml'] = re.sub(r'(<p:ph type="body" idx="1"/>.*?<a:lstStyle/>).*?(</p:txBody>)', lambda m: m[1] + par + m[2], F['ppt/notesSlides/notesSlide3.xml'].decode(), count=1, flags=re.S).encode()
         for n, (judul, fn, cat) in enumerate(LAMP):
-            klon(6 + n, judul, fn, hal0 + n, False, 261 + n, catatan=cat)
+            klon(20 + n, judul, fn, hal0 + n, False, 280 + n, catatan=cat)   # 5 Nov: nomor 6/7 sudah dipakai pengkinian dan gunung api
         mulai = dt.datetime.strptime(s.wa['mulai'], '%Y-%m-%d %H.%M'); sampai = dt.datetime.strptime(s.wa['sampai'], '%Y-%m-%d %H.%M')
         jam = lambda t: f'{t.day} {BULAN[t.month - 1][:3]} {t.year}, {t:%H.%M}'
         GANTI = {1: [('21 Okt 2026, 07.00  –  22 Okt 2026, 07.00 WIB', f'{jam(mulai)}  –  {jam(sampai)} WIB'), ('Kamis, 22 Oktober 2026', f'{HARI_ID[s.tanggal.weekday()]}, {tgl_id(s.tanggal)}')],

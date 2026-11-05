@@ -1,9 +1,9 @@
-﻿C:\Python314\python : ok C:\Users\USER\AppData\Local\Temp\lewat-deck-0vnqexen\Laporan Kejadian Bencana Harian 
-051126.pptx  {"slide": 6, "huruf_terkecil_pt": 6.5, "warna": 34, "angka_diperiksa": 183}
-At line:1 char:418
+﻿C:\Python314\python : ok C:\Users\USER\AppData\Local\Temp\lewat-deck-jhj6a4zg\Laporan Kejadian Bencana Harian 
+051126.pptx  {"slide": 7, "huruf_terkecil_pt": 6.5, "warna": 34, "angka_diperiksa": 211}
+At line:1 char:78
 + ... ltan\bnpb"; C:\Python314\python data\laporan-bnpb\harian-2026-11-05\j ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (ok C:\Users\USE...iperiksa": 183}:String) [], RemoteException
+    + CategoryInfo          : NotSpecified: (ok C:\Users\USE...iperiksa": 211}:String) [], RemoteException
     + FullyQualifiedErrorId : NativeCommandError
  
 mode simpanan

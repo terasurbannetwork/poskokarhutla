@@ -12,3 +12,11 @@
 - PDF gagal di run pertama karena `pdf.py` di `main` masih memakai `file://C:\...` untuk profil LibreOffice; perbaikan URI
   (`Path.as_uri()`) sudah ada di berkas kerja, konversi diulang.
 - Jalankan: `$env:PYTHONUTF8=1; $env:DECK_BNPB="$HOME\.claude\skills\ppt-konsultan\bnpb"; C:\Python314\python data\laporan-bnpb\harian-2026-11-05\jalan.py`
+- Revisi 5 Nov siang:
+  - Atasan ("ini bukannya pakai label?"): kolom TERDAMPAK panel Kekeringan jadi label berbingkai berikon orang (KK + jiwa),
+    sejajar pil BANTUAN AIR.
+  - Atasan ("samain antara banjir sudah surut dan air sudah surut"): di Bencana lainnya versi ringkas, bila satu kejadian
+    berketerangan + angka harus dua baris (Kota Subulussalam), semua kejadian sejenis ikut dua baris (Pidie Jaya).
+  - Atasan ("oke buat lampiran aja", soal selesai 5 jadi 3): lampiran halaman 7 sesudah penutup, `harian.Deck.lampiran_selesai`.
+    Membandingkan `data.json` kemarin: selesai kemarin, tidak dilaporkan lagi, kembali ditangani, baru selesai, selesai hari laporan.
+    `jalan.py` mencari `harian-<kemarin>/kerja-<ddmmyy>/data.json`; bila tidak ada, lampiran dilewati.
