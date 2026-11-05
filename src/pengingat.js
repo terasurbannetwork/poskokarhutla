@@ -52,15 +52,21 @@ async function meja(env, kini, dummy) {
   for (const r of rows) {
     const d = JSON.parse(r.data), rec = {status: r.status, data: r.stok == null ? d : {...d, stok: r.stok}, dibuat: r.dibuat}, tanda = tandaBahaya(r.meja, rec, kini), w = {sumber_id: r.id, prov: r.prov, kab: r.kab};
     if (r.meja === "logistik" && tanda.includes("belum_disetujui"))
-      out.push({...w, jenis: "logistik_lambat", keadaan: "diminta", judul: `Logistik ${String(d.barang).replace(/_/g, " ")} diminta lebih dari ${AMBANG.logistik_setuju_jam} jam belum disetujui`, rincian: `${d.jumlah_diminta} ${d.satuan} untuk ${d.posko}`});
-    else if (r.meja === "dsp" && tanda.includes("spj_terlambat"))
-      out.push({...w, jenis: "dsp_spj", keadaan: `cair:${d.tgl_cair}`, judul: `DSP cair ${tgl(d.tgl_cair)} belum SPJ lebih dari ${AMBANG.dsp_spj_hari} hari`, rincian: `Permohonan ${d.nomor_permohonan}, ${d.kejadian}`});
+      out.push({...w, jenis: "logistik_lambat", keadaan: "diminta", judul: `Logistik ${String(d.barang).replace(/_/g, " ")} diminta lebih dari ${AMBANG.logistik_setuju_jam} jam belum disetujui (asumsi internal)`, rincian: `${d.jumlah_diminta} ${d.satuan} untuk ${d.posko}`});
+    else if (r.meja === "dsp" && (tanda.includes("spj_terlambat") || tanda.includes("laporan_terlambat"))) {
+      const rin = `Permohonan ${d.nomor_permohonan}, ${d.kejadian}`;
+      if (tanda.includes("spj_terlambat"))
+        out.push({...w, jenis: "dsp_spj", keadaan: `cair:${d.tgl_cair}`, judul: `DSP cair ${tgl(d.tgl_cair)} belum SPJ lewat ${AMBANG.dsp_spj_bulan} bulan sesudah status berakhir ${tgl(d.tgl_status_berakhir)}`, rincian: rin});
+      // jenis tetap dsp_spj (CHECK 0028 tidak melebar); keadaan berbeda = baris sendiri per jatuh tempo
+      if (tanda.includes("laporan_terlambat"))
+        out.push({...w, jenis: "dsp_spj", keadaan: `laporan:${d.laporan_terakhir || d.tgl_cair}`, judul: `Laporan perkembangan DSP jatuh tempo tanggal ${AMBANG.dsp_lapor_tanggal} belum masuk (DSP cair ${tgl(d.tgl_cair)})`, rincian: rin});
+    }
     else if (r.meja === "renkon") {
       const se = statusEfektif("renkon", rec, kini);
       if (se === "segera_habis" || se === "kedaluwarsa")
         out.push({...w, jenis: "renkon", keadaan: `${se}:${d.berlaku_sampai}`, judul: `Rencana kontinjensi ${d.judul} ${se === "kedaluwarsa" ? "sudah kedaluwarsa" : "segera habis"} (${tgl(d.berlaku_sampai)})`, rincian: `Bencana ${String(d.bencana).replace(/_/g, " ")}`});
     } else if (r.meja === "rehab" && tanda.includes("macet"))
-      out.push({...w, jenis: "rehab_macet", keadaan: `macet:${r.status}`, judul: `Rehab-rekon macet di tahap ${r.status} lebih dari ${AMBANG.rehab_macet_hari} hari`, rincian: `${(d.rumah_rb || 0) + (d.rumah_rs || 0) + (d.rumah_rr || 0)} rumah diusulkan`});
+      out.push({...w, jenis: "rehab_macet", keadaan: `macet:${r.status}`, judul: `Rehab-rekon macet di tahap ${r.status} lebih dari ${AMBANG.rehab_macet_hari} hari (asumsi internal)`, rincian: `${(d.rumah_rb || 0) + (d.rumah_rs || 0) + (d.rumah_rr || 0)} rumah diusulkan`});
     else if (r.meja === "gudang" && tanda.includes("stok_rendah"))
       out.push({...w, jenis: "stok_rendah", keadaan: "menipis", judul: `Stok ${String(d.barang).replace(/_/g, " ")} di ${d.gudang} sama dengan atau di bawah ambang`, rincian: `Sisa ${rec.data.stok} ${d.satuan}, ambang ${d.ambang_min}`});
   }
