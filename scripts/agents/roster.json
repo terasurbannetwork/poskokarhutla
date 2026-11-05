@@ -285,6 +285,28 @@
       ]
     },
     {
+      "nama": "ai-internal",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja layar AI internal BNPB /ai: pembuat agen, percakapan, mode penalaran, pilih model, pengetahuan, tata kelola, gelembung chat; meniru platform agen AI di docs/ai-internal/PETA-FITUR.md.",
+      "kapan": "public/ai/**, tests/ai/**, atau docs/ai-internal/** disentuh atau rusak",
+      "fokus": [
+        "Rancangan dan urutan bangun di docs/ai-internal/PETA-FITUR.md; fitur di luar peta tidak dibuat",
+        "public/ai/** terbit sebagai aset publik: hanya kode dan teks antarmuka, data dari /api/ai/* dengan sesi staf",
+        "Tiap angka di jawaban AI berasal dari alat (MCP kita), bersumber dan bertanggal; AI tidak mengarang angka",
+        "Kepala situs navy bersama dan token Centurisk97; tombol ikon polos; tanpa titik tengah; tanpa kata Pantau Bencana",
+        "Tidak menyalin teks, nama, atau data pelanggan platform pembanding"
+      ],
+      "larangan": "Jangan menyentuh src/**, migrations/** (minta ke warga-api). Jangan deploy, commit, push, atau melonggarkan gerbang.",
+      "bisa": "membangun dan membetulkan layar /ai, klien percakapan dan formulir agen, dokumen docs/ai-internal, dan uji tests/ai",
+      "tidak": "worker dan D1 (warga-api); memeriksa kerjanya sendiri",
+      "milik": [
+        "public/ai/**",
+        "tests/ai/**",
+        "docs/ai-internal/**"
+      ]
+    },
+    {
       "nama": "mekanik-mesin",
       "kelas": "platform",
       "model": "sonnet",

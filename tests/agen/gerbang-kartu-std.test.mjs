@@ -13,6 +13,7 @@ const baca = p => readFileSync(ROOT + p, 'utf8')
 const LAYAR = [
   {skrip: 'public/bnpb/dalops.js', html: 'public/bnpb/dalops.html', lama: [/dl-kepala/, /class:\s*"bn-blok",\s*id/]},
   {skrip: 'public/operasi_laporan.js', html: 'public/index.html', lama: []},
+  {skrip: 'public/prediksi/laporan_layar.js', html: 'public/prediksi/index.html', lama: []},
 ]
 
 test('kartu.css memuat semua bagian kartu standar', () => {

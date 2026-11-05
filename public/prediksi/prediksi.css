@@ -30,3 +30,29 @@
 .pr-bar.ini{background:var(--accent,var(--ink));opacity:1}
 .pr-bar:hover,.pr-bar:focus{opacity:1;outline:1px solid var(--ink)}
 .pr-k ol{margin:.3rem 0 0;padding-left:1.2rem}
+/* Tab Laporan provinsi (gaya FFGS BMKG): kisi 3 kolom panel peta, legenda kelas, cetak A4 lanskap. */
+.lp-kendali{display:flex;gap:8px;align-items:center}
+.lp-kendali select{flex:1}
+.lp-kendali .iconbtn{border:0;background:none;box-shadow:none}
+.lp-kepala h2{margin:4px 0}
+.lp-batas{margin:6px 0 14px}
+.lp-grid{display:grid;gap:14px;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:14px}
+.lp-peta{width:100%;height:auto;max-height:340px;display:block}
+.lp-defs{position:absolute;width:0;height:0;overflow:hidden}
+.lp-peta use{stroke:#fff;stroke-width:.6;vector-effect:non-scaling-stroke}
+.lp-peta use:hover{stroke:var(--ink);stroke-width:1.5}
+.lp-leg{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:11px;color:var(--ink2)}
+.lp-leg span{display:inline-flex;align-items:center;gap:4px}
+.lp-leg i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.lp-grid .ex-std .ex-jd>h3{font-size:15px}
+@media (max-width:900px){.lp-grid{grid-template-columns:1fr}}
+@media print{
+  @page{size:A4 landscape;margin:10mm}
+  header.top,.lp-kendali,#tip,.lp-ext,.lp-batas{display:none!important}
+  main .page{display:none!important}
+  main #p-laporan{display:block!important;overflow:visible!important;height:auto!important;position:static!important}
+  .lp-grid{grid-template-columns:repeat(3,1fr);gap:8px}
+  .lp-grid .ex-std{break-inside:avoid;box-shadow:none}
+  .lp-peta{max-height:62mm}
+  body{background:#fff}
+}

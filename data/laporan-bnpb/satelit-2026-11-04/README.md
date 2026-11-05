@@ -18,5 +18,5 @@
   - Data hari-hari lama tidak berubah.
   - `penanganan/bnpb.py`: pemilik swasta baru (PT LNG) memakai pil PT Sinarmas. Bila enam pil tidak muat, bantalan tulisan dikecilkan.
 
-Bangun ulang: `PYTHONUTF8=1 C:/Python314/python jalan.py`, lalu
-`PYTHONUTF8=1 DECK_BNPB=C:/Users/USER/.claude/skills/ppt-konsultan/bnpb C:/Python314/python bingkai.py`. Gerbang deck.py lolos (315 angka).
+Bangun ulang: `PYTHONUTF8=1 python jalan.py`, lalu
+`PYTHONUTF8=1 DECK_BNPB=$HOME/.claude/skills/ppt-konsultan/bnpb python bingkai.py`. Gerbang deck.py lolos (315 angka).

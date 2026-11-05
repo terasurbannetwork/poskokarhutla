@@ -1,7 +1,7 @@
 # Katalog armada agent — pengetahuan orkestrator
 
 > DI-GENERATE dari `scripts/agents/roster.json` (`npm run agents:build`). Jangan disunting tangan.
-> Armada: **30 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
+> Armada: **31 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
 
 Cara memakai katalog ini:
 
@@ -13,7 +13,7 @@ Cara memakai katalog ini:
    muncul, panggil `general-purpose` dengan prompt "Kamu adalah <nama>: baca `.claude/agents/<nama>.md`
    dan jalankan `node scripts/agents/ilmu.mjs baca <nama>` dulu".
 
-## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (21)
+## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (22)
 
 | Agent | Model | Bisa | Tidak bisa | Wilayah |
 | --- | --- | --- | --- | --- |
@@ -27,6 +27,7 @@ Cara memakai katalog ini:
 | `inti-layar` | sonnet | membangun dan memecah modul inti layar, registry bencana, halaman bencana berkerangka | pipeline data; worker & D1; workflow | `public/inti/**`, `public/bencana.json`, `public/semua/**` |
 | `pipa-umum` | sonnet | membangun dan menguji pustaka pipeline bersama, subperintah bencana.py | layar; worker; workflow; logika domain satu bencana | `scripts/umum/**`, `scripts/berita/**`, `public/data/foto_dasar.json` +6 |
 | `sippa` | sonnet | membangun dan membetulkan layar /pipa, fungsi hitung murni JS, mesin Studio, adegan 3D, laporan PDF, dan uji tests/sippa | worker dan D1; pipeline Python; vendor pustaka (layar-peta); memeriksa kerjanya sendiri | `public/pipa/**`, `tests/sippa/**` |
+| `ai-internal` | sonnet | membangun dan membetulkan layar /ai, klien percakapan dan formulir agen, dokumen docs/ai-internal, dan uji tests/ai | worker dan D1 (warga-api); memeriksa kerjanya sendiri | `public/ai/**`, `tests/ai/**`, `docs/ai-internal/**` |
 | `cuaca-udara` | sonnet | membangun pipeline dan layar modul cuaca ekstrem dan udara | worker dan D1 (warga-api); karhutla; banjir; gempa; menyunting .github/workflows | `scripts/cuaca/**`, `scripts/udara/**`, `public/cuaca/**` +7 |
 | `gunungapi-kering` | sonnet | membangun pipeline dan layar modul gunung api dan kekeringan | worker dan D1 (warga-api); karhutla; banjir; gempa; menyunting .github/workflows | `scripts/gunungapi/**`, `scripts/kekeringan/**`, `public/gunungapi/**` +3 |
 | `ruang-bnpb` | sonnet | membangun halaman publik Ruang Koordinasi BNPB dan pipeline indeks risiko/kebutuhan | worker & D1; model sebaran; deploy | `public/bnpb/**`, `scripts/bnpb/**`, `tests/bnpb/**` +4 |

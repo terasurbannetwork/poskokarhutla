@@ -17,9 +17,11 @@
 <link rel="stylesheet" href="../inti/tema.css">
 <link rel="stylesheet" href="../inti/gaya.css">
 <link rel="stylesheet" href="../inti/tabel.css">
+<link rel="stylesheet" href="../inti/kartu.css">
 <link rel="stylesheet" href="prediksi.css">
 </head>
 <body>
+<div id="tip" role="tooltip"></div>
 <header class="top">
   <div class="mark">
     <button class="iconbtn" id="burger" aria-label="Buka menu" aria-expanded="false" aria-controls="tabs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
@@ -30,6 +32,7 @@
     <button type="button" data-tab="besok" aria-current="page">Besok</button>
     <button type="button" data-tab="rapor">Rapor</button>
     <button type="button" data-tab="dampak">Dampak</button>
+    <button type="button" data-tab="laporan">Laporan provinsi</button>
     <button type="button" data-tab="konfirmasi">Konfirmasi</button>
   </nav>
   <div class="stat"><span class="upd" id="upd">Memuat data…</span></div>
@@ -72,6 +75,16 @@
     </div>
   </section>
 
+  <section class="page scroll" id="p-laporan" aria-label="Laporan provinsi">
+    <div class="wrap pr-wrap">
+      <div class="tbar lp-kendali">
+        <select id="lpProv" aria-label="Provinsi"></select>
+        <button type="button" class="iconbtn" id="lpCetak" aria-label="Unduh PDF" title="Unduh PDF (cetak A4 lanskap)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></button>
+      </div>
+      <div id="laporanIsi"><p class="kosong">Memuat laporan…</p></div>
+    </div>
+  </section>
+
   <section class="page scroll" id="p-konfirmasi" aria-label="Konfirmasi lapangan">
     <div class="wrap pr-wrap">
       <div class="card pad">
@@ -103,6 +116,9 @@
 </main>
 
 <script src="../inti/format.js"></script>
+<script src="../inti/tip.js"></script>
+<script src="laporan_prov.js"></script>
 <script src="prediksi.js"></script>
+<script src="laporan_layar.js"></script>
 </body>
 </html>
