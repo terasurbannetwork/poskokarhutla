@@ -9,6 +9,7 @@ import {json, gagal, acak, sha, bacaBody, adminOK} from "./worker.js";
 import {laju} from "./bnpb.js";
 import {stafSesi, stafSesiSemua, stafTertahan, jejakStmt} from "./staf.js";
 import {alatPublik, jalankanAlat} from "./mcp.js";
+import {bolehStaf} from "./admin_halaman.js";
 
 const JAM = 3600e3, WIB = 7 * JAM;
 const MAKS_PUTARAN = 5, MAKS_PANGGILAN_PUTARAN = 3, MAKS_RIWAYAT = 20, MAKS_PESAN = 4000, MAKS_HASIL_MODEL = 6000, MAKS_DAFTAR = 100, MAKS_PESAN_TAMPIL = 500;
@@ -87,8 +88,8 @@ async function putaran(env, url, {model, sistem, riwayat, alatOk, suhu, kini, la
 /* ---------------- bantuan ---------------- */
 const tabelBelum = e => /no such table: ai_/i.test(String(e?.message || e));
 async function denganStaf(env, req, isi) {
-  const s = await stafSesi(env, req);
-  if (!s) {   // sesi sah tapi tak berhak (peran direktori saja, atau sandi awal belum diganti): 403, bukan 401, supaya layar tidak memantul terus ke halaman masuk (public/admin/bersama.js keMasuk)
+  const s0 = await stafSesi(env, req), s = s0 && bolehStaf("ai", s0.peran) ? s0 : null;
+  if (!s) {   // sesi sah tapi tak berhak (peran direktori saja, operator_cc baca saja, atau sandi awal belum diganti): 403, bukan 401, supaya layar tidak memantul terus ke halaman masuk (public/admin/bersama.js keMasuk)
     if (await stafSesiSemua(env, req) || await stafTertahan(env, req)) return gagal(403, "akunmu tidak berhak memakai Asisten AI (peran tidak cukup atau sandi awal belum diganti)");
     return gagal(401, "perlu masuk sebagai staf");
   }

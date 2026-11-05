@@ -29,7 +29,7 @@ export const SEMUA_PERAN = ["verifikator", "pusdalops", "analis_konsesi", "udara
 export const HALAMAN_STAF = {pantau: null, kinerja: SEMUA_PERAN, instansi: ["verifikator", "pusdalops", "analis_konsesi"], inventaris: ["pusdalops", "verifikator", "pimpinan", "koordalops", "operator_cc"], korban: ["pusdalops", "verifikator", "pimpinan", "koordalops"], "laporan-karhutla": null, laporan: null, omc: ["tmc", "koordalops", "pimpinan", "operator_cc"], posko: ["analis_konsesi"],
   pipa: ["pusdalops", "koordalops", "pimpinan"],   // SIPPA = P_SIPPA_BACA (src/sippa.js; dijaga tests/warga/staf_halaman.test.mjs); GET /admin/pipa hanya 303 ke /pipa
   "command-center": ["operator_cc", "koordalops", "pimpinan"],   // meja operator = pelaku() src/command_center.js (dijaga tests/warga/command_center.test.mjs); GET /admin/command-center hanya 303 ke /command-center
-  ai: null};   // Asisten AI: semua staf (kecuali peran direktori saja) = stafSesi di src/ai.js; GET /admin/ai hanya 303 ke /ai
+  ai: [...SEMUA_PERAN.filter(p => p !== "operator_cc"), "kemitraan"]};   // Asisten AI: semua peran kerja kecuali operator_cc (baca saja; obrolan menulis ke D1) dan direktori saja; src/ai.js memakai bolehStaf("ai") yang sama; GET /admin/ai hanya 303 ke /ai
 /* halaman yang dibuka sekumpulan peran staf: [{k, ikon, label}] (layar /admin/akun menampilkannya sebagai "Akses") */
 export const aksesStaf = peran => [...Object.keys(HALAMAN_STAF).filter(k => bolehStaf(k, peran)).map(k => ({k, ikon: HAL[k][0], label: HAL[k][1]})),
   ...(peran.includes("direktori") ? [{k: "direktori", ikon: "📇", label: "Direktori", href: "/direktori"}] : [])];

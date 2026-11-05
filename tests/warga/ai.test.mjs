@@ -292,13 +292,13 @@ uji("sesi sah tapi tak berhak (peran direktori saja, sandi awal belum diganti) d
     await DB.prepare("INSERT INTO staf_sesi (token_sha, staf_id, dibuat, kedaluwarsa) VALUES (?, ?, 1, ?)").bind(sha256(k.repeat(64)), id, Date.now() + 3600e3).run();
     return {cookie: "sesi_staf=" + k.repeat(64), "x-pb": "1", "x-ai": "teks"};
   };
-  for (const [k, peran, wajib] of [["d", ["direktori"], 0], ["e", ["pusdalops"], 1]]) {
+  for (const [k, peran, wajib] of [["d", ["direktori"], 0], ["e", ["pusdalops"], 1], ["f", ["operator_cc"], 0]]) {
     const h = await buat(k, peran, wajib);
     for (const [m, j, b] of [["GET", "/api/ai/agen"], ["POST", "/api/ai/agen", AGEN()], ["POST", "/api/ai/obrol", {agen_id: "a".repeat(16), pesan: "halo"}], ["GET", "/api/ai/model"]]) {
       const r = await api(m, j, b, h); assert.equal(r.s, 403, `${peran} ${m} ${j}: ${r.t}`); assert.match(r.j.galat, /tidak berhak/);
     }
   }
-  assert.equal(await n("ai_agen", "pemilik IN ('dddddddddddddddd', 'eeeeeeeeeeeeeeee')"), 0);
+  assert.equal(await n("ai_agen", "pemilik IN ('dddddddddddddddd', 'eeeeeeeeeeeeeeee', 'ffffffffffffffff')"), 0);
 });
 
 uji("kelas penolakan HTTP: halaman /ai di centurisk97.id tanpa sesi 303 ke masuk; 405 metode salah; Origin asing 403; body 20001 byte 413", async () => {
