@@ -61,10 +61,12 @@ KONST = {
     "DONOR": {"COCOK_MIN": 0.5, "TENGGAT_HARI": 21},                                           # ALG §8
     "PANGGIL": {"KM_SKALA": 100, "JAM_MAKS": 200},                                             # ALG §9
     "PERJANJIAN": {"SEGERA_HABIS_HARI": 60},                                                   # RU A13
+    "UJI": {"MASALAH": 60, "PER_ASPEK": 6, "POOL": 15, "NDCG_K": 10, "MARJIN": 0.10, "KAPPA_MIN": 0.4,
+            "MAKS_PER_KAB": 3, "MIN_DIPAKAI": 50, "MIN_BERTITIK": 10, "BOOT": 2000},  # ALG §11, RU §2.9
     "KM_MAKS_POSTING": 20000,                                                                  # DT §5.2
     "JAM_PER_SKS": 170,                                                                        # ALUR: jam/170 per SKS, asumsi-kebijakan
     "ASUMSI_KEBIJAKAN": ["BOBOT", "KELAS", "MASALAH", "ATURAN", "BM25", "PAKAR", "SOLUSI", "PANDUAN",
-                         "AKTIF", "DONOR", "PANGGIL", "PERJANJIAN", "KM_MAKS_POSTING", "JAM_PER_SKS"],
+                         "AKTIF", "DONOR", "PANGGIL", "PERJANJIAN", "UJI", "KM_MAKS_POSTING", "JAM_PER_SKS"],
 }
 
 # nama pintas yang dipakai skrip pipeline
