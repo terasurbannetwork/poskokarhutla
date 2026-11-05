@@ -64,14 +64,13 @@ export function periksaEntri(e, katalog, segmen) {
   return []
 }
 
-// tenggat bernama tertanam: `xxx_hari: 30`, `jam = 72`, objek literal `AMBANG = {` (AMBANG_INTERNAL dikecualikan)
-const POLA_ANGKA = /(hari|jam|bulan)\s*[:=]\s*(24|72|90|30)\b/   // tanpa \b depan: nama bergaris bawah (dsp_spj_hari) harus kena
-const POLA_AMBANG = /\bAMBANG\s*=\s*\{/
+// tenggat bernama tertanam: `xxx_hari: 30`, `jam = 72`, di dalam objek AMBANG juga (nilai("kunci") lolos; AMBANG_INTERNAL dikecualikan)
+const POLA_ANGKA = /(hari|jam|bulan)\s*[:=]\s*(24|72|90|30|365)\b/   // tanpa \b depan: nama bergaris bawah (dsp_spj_hari) harus kena
 export function pindaiTertanam(berkas, isi, pengecualian = {}) {
   if (pengecualian[berkas]) return []
   return isi.split('\n').flatMap((b, i) => {
     if (/AMBANG_INTERNAL|\bRAPOR\b/.test(b)) return []   // RAPOR = bobot/jendela rapor staf, bukan tenggat berpasal
-    return POLA_ANGKA.test(b) || POLA_AMBANG.test(b)
+    return POLA_ANGKA.test(b)
       ? [`jam-aturan: ${berkas}:${i + 1} menanam angka tenggat (${b.trim().slice(0, 80)}); satu sumber angka aturan hanya jam_aturan.json (nilai("kunci")); ganti dengan pembacaan Jam Aturan`]
       : []
   })
@@ -131,11 +130,13 @@ test('G-1 pemeriksa: menolak tanpa pasal dan tanpa asumsi; asumsi tanpa catatan'
   assert.match(periksaEntri({ kunci: 'x', nilai: 1, satuan: 'hari', asumsi: true, catatan: '  ' }, KAT, SEG)[0], /catatan kosong/)
 })
 
-test('G-1 pemindai: menolak dsp_spj_hari: 30 dan objek AMBANG = {, membiarkan AMBANG_INTERNAL dan pengecualian bertanggal', () => {
+test('G-1 pemindai: menolak dsp_spj_hari: 30 dan angka di objek AMBANG, membiarkan nilai(),  AMBANG_INTERNAL dan pengecualian bertanggal', () => {
   const r = pindaiTertanam('src/x.js', 'a\nconst c = {dsp_spj_hari: 30}\nb')
   assert.equal(r.length, 1)
   assert.match(r[0], /src\/x.js:2 /)
-  assert.equal(pindaiTertanam('src/y.js', 'export const AMBANG = {a: 1}').length, 1)
+  assert.deepEqual(pindaiTertanam('src/y.js', 'export const AMBANG = {\n  kaji_awal_jam: nilai("kaji_awal"),\n};'), [])
+  assert.equal(pindaiTertanam('src/y.js', 'export const AMBANG = {\n  kaji_verifikasi_jam: 72,\n};').length, 1)
+  assert.equal(pindaiTertanam('src/y.js', 'const AMBANG = {\n  renkon_uji_hari: 365,\n};').length, 1)
   assert.deepEqual(pindaiTertanam('src/z.js', 'const AMBANG_INTERNAL = {renkon_segera_hari: 90}'), [])
   assert.deepEqual(pindaiTertanam('src/x.js', 'jam: 72', { 'src/x.js': 'RU-039' }), [])
 })
