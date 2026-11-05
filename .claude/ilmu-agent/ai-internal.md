@@ -42,3 +42,4 @@ Tabel D1 (langkah 1): `ai_agen` (agen buatan staf: nama, avatar, suhu, instruksi
 - Pemeriksa: `guard-api` + `security-reviewer` untuk rute, `migrasi-idempoten` untuk migrasi, `inp-reviewer` + `selera-angka` untuk layar.
 
 ## Kasus
+- 2026-11-05 · 5 Nov 2026 langkah 1 /ai: kirim pesan hanya append balon (INP), konfirmasi lewat dialog tanya(), 401 dialihkan sekali per sesi lalu 403 = pesan; label pembaca layar pakai aria-label karena .sr salinan ditolak gerbang-inti
