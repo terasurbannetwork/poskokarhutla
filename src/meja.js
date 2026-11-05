@@ -90,7 +90,7 @@ function luring(o, kini) {
   if (w != null && !Number.isFinite(w)) return {galat: "waktu_klien harus angka (ms)"};
   return {klien: o.klien_id ?? null, waktu: w != null && w <= kini + 5 * MENIT && w >= kini - 14 * HARI ? Math.round(w) : kini};
 }
-const UNIK = {rehab: "kaji cepat ini sudah punya catatan rehab-rekon", gudang: "gudang dan barang itu sudah tercatat di kabupaten ini"};
+const UNIK = {rehab: "kaji cepat atau kejadian ini sudah punya catatan rehab-rekon", gudang: "gudang dan barang itu sudah tercatat di kabupaten ini"};
 async function buat(env, req, kini) {
   const p = await pelaku(env, req); if (p instanceof Response) return p;
   const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
@@ -111,14 +111,15 @@ async function buat(env, req, kini) {
   }
   let wl = wilayahTeks(b.o, M); if (wl.galat) return gagal(400, wl.galat);
   const v = validasi(M.id, b.o.data, null, kini); if (v.galat) return gagal(400, v.galat);
-  /* rehab: wajib tertaut ke kaji cepat masuk_jitupasna di kabupaten yang sama; wilayah (kec, desa) disalin dari kaji cepat itu */
+  /* rehab: kaji cepat induk OPSIONAL (0110, F0-3). Bila diisi: wajib masuk_jitupasna di kabupaten yang sama, wilayah (kec, desa) disalin darinya. */
   let kajiId = null;
-  if (M.tautKaji) {
-    if (typeof b.o.kaji_id !== "string" || !RE_ID.test(b.o.kaji_id)) return gagal(400, "kaji_id wajib: id catatan kaji cepat (16 hex)");
+  if (b.o.kaji_id != null) {
+    if (!M.tautKaji) return gagal(400, "kaji_id hanya untuk meja Rehab-rekon");
+    if (typeof b.o.kaji_id !== "string" || !RE_ID.test(b.o.kaji_id)) return gagal(400, "kaji_id: id catatan kaji cepat (16 hex)");
     const kj = await env.DB.prepare("SELECT meja, status, prov, kab, kec, desa, dummy FROM meja_catatan WHERE id = ?").bind(b.o.kaji_id).first();
     if (!kj || kj.meja !== "kaji_cepat" || kj.status !== "masuk_jitupasna" || kj.prov !== prov || kj.kab !== kab || kj.dummy) return gagal(400, "kaji_id harus catatan kaji cepat berstatus masuk_jitupasna di kabupaten ini");
     kajiId = b.o.kaji_id; wl = {kec: kj.kec, desa: kj.desa};
-  } else if (b.o.kaji_id != null) return gagal(400, "kaji_id hanya untuk meja Rehab-rekon");
+  }
   if (p.petugas) { const l = await laju(env, p.petugas.id, "meja.tulis", LAJU_TULIS, kini); if (l) return l; }
   const id = acak(8);
   try {
@@ -471,7 +472,7 @@ function barisDummy(kini, id) {
   const ds = (extra = {}) => ({kejadian: "Banjir Contoh", nomor_permohonan: "DSP/CONTOH/" + (Object.keys(extra).length + 1), nilai_diajukan: 500000000, tgl_ajuan: t(60), ...extra});
   add("dsp", A, "diajukan", 20, ds());
   add("dsp", A, "disetujui", 100, ds({nilai_disetujui: 400000000, tgl_setuju: t(45)}));
-  add("dsp", A, "cair", 960, ds({nilai_disetujui: 400000000, tgl_setuju: t(50), nilai_cair: 400000000, tgl_cair: t(40)}));   // 40 hari belum SPJ: tanda bahaya
+  add("dsp", A, "cair", 960, ds({nilai_disetujui: 400000000, tgl_setuju: t(50), nilai_cair: 400000000, tgl_cair: t(40), tgl_status_berakhir: t(120)}));   // status darurat berakhir 120 hari lalu, belum SPJ (> 3 bulan): spj_terlambat
   add("dsp", B, "cair", 240, ds({nilai_disetujui: 300000000, tgl_setuju: t(15), nilai_cair: 300000000, tgl_cair: t(10)}));
   add("dsp", B, "spj", 150, ds({nilai_disetujui: 300000000, tgl_setuju: t(30), nilai_cair: 300000000, tgl_cair: t(20), realisasi: 280000000, tgl_spj: t(5)}));
   add("dsp", B, "selesai", 100, ds({nilai_disetujui: 250000000, tgl_setuju: t(60), nilai_cair: 250000000, tgl_cair: t(50), realisasi: 250000000, tgl_spj: t(30), tgl_selesai: t(2)}));
@@ -487,12 +488,12 @@ function barisDummy(kini, id) {
   add("rehab", A, "ditolak", 300, rh(40, {nilai_usulan: 900000000, tgl_usulan: t(30), alasan: "Data penerima belum lengkap"}), null, null, {kaji: "kjA7"});
   add("rehab", A, "usulan", 1800, rh(90, {nilai_usulan: 800000000, tgl_usulan: t(75)}), null, null, {kaji: "kjA8"});   // 75 hari di tahap usulan: macet
   add("rehab", B, "cair", 400, rh(70, {nilai_usulan: 800000000, tgl_usulan: t(50), nilai_disetujui: 700000000, tgl_setuju: t(30), nilai_cair: 600000000, tgl_cair: t(20)}), null, null, {kaji: "kjB1"});
-  const rk = (bencana, sah, sampai, uji) => ({bencana, judul: "Renkon " + bencana + " Contoh", tgl_sah: t(sah), berlaku_sampai: wib(kini + sampai * HARI), ...(uji == null ? {} : {uji_terakhir: t(uji)}), tautan: "https://contoh.invalid/renkon"});
+  const rk = (bencana, sah, sampai, uji) => ({bencana, judul: "Renkon " + bencana + " Contoh", tgl_sah: t(sah), berlaku_sampai: wib(kini + sampai * HARI), ...(uji == null ? {} : {reviu_terakhir: t(uji)}), tautan: "https://contoh.invalid/renkon"});
   add("renkon", A, "tercatat", 5000, rk("banjir", 300, 400, 30));   // berlaku
   add("renkon", A, "tercatat", 5000, rk("karhutla", 300, 40, 30));   // segera_habis
   add("renkon", B, "tercatat", 5000, rk("banjir", 800, -10, 400));   // kedaluwarsa
-  add("renkon", C, "tercatat", 5000, rk("gempa", 100, 500, null));   // belum_diuji
-  const dt = (kelas, keg) => ({kelas, tahun_dibentuk: 2018, indikator: ["tim_siaga", "peta_risiko", "jalur_evakuasi"], ...(keg == null ? {} : {kegiatan_terakhir: t(keg)})});
+  add("renkon", C, "tercatat", 5000, rk("gempa", 300, 500, null));   // perlu_reviu (tanpa reviu, sah 300 hari lalu)
+  const dt = (kelas, keg) => ({kelas, tahun_dibentuk: 2018, ...(keg == null ? {} : {kegiatan_terakhir: t(keg)})});
   add("destana", A, "tercatat", 5000, dt("utama", 30), "Desa Tangguh Satu", "Kec. Contoh");   // aktif
   add("destana", B, "tercatat", 5000, dt("madya", 400), "Desa Tangguh Dua", "Kec. Contoh");   // pasif
   add("destana", C, "tercatat", 5000, dt("pratama", null), "Desa Tangguh Tiga", "Kec. Contoh");   // pasif
