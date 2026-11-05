@@ -24,6 +24,7 @@
   const stAr = s => STATUS_AR[s] || ["Belum lapor", "ops-s-belum"];
   const HASIL = {padam: ["Padam", "l0"], masih_api: ["Masih ada api", "l3"], menunggu: ["Menunggu 24 jam", "l1"], tak_dinilai: ["Tak dinilai", "ops-abu"]};
   const LV = ["Rutin", "Patroli", "Siaga", "Prioritas"];
+  const METAR_BASI_JAM = 3;   // METAR terbit tiap 30-60 menit; > 3 jam = kondisi tidak lagi mewakili "kini"
   const RADIUS_KM = 200;   // ponytail: jangkauan base bila jelajah armada belum tercatat; ganti per base bila ada data jelajah resmi
   const KECEPATAN = t => /Cessna|Caravan|CASA|CN-?295|Hercules|C-130/i.test(t || "") ? 280 : 200;   // km/jam jelajah kasar: pesawat sayap tetap vs heli
   const gmaps = (lat, lon) => `https://www.google.com/maps?q=${(+lat).toFixed(5)},${(+lon).toFixed(5)}`;
@@ -45,7 +46,9 @@
     const st = [...(OP.vis?.stasiun || []).map(s => { const j = (s.jam || []).filter(x => x.vis_m != null).pop(); return j ? {icao: s.icao, lat: s.lat, lon: s.lon, vis: j.vis_m, wx: j.wx || "", t: j.t} : null; }).filter(Boolean),
       ...(OP.metar || []).map(m => ({icao: m.icao, lat: m.lat, lon: m.lon, vis: m.vis_m, wx: m.wx || "", raw: m.raw, t: m.waktu}))];
     const s = st.filter(x => km(b.lat, b.lon, x.lat, x.lon) <= 60).sort((x, y) => (y.t || "").localeCompare(x.t || ""))[0];
-    if (!s) return {kelas: "?", teks: "Tanpa METAR", ket: "Tidak ada stasiun METAR dalam 60 km dari base."};
+    if (!s) return {kelas: "?", teks: "Tanpa METAR", ket: OP.vis?.cadangan ? "Feed BMKG terputus; cadangan NOAA tidak memuat bandara ini." : "Tidak ada stasiun METAR dalam 60 km dari base."};
+    const umurJam = (Date.now() - Date.parse(s.t)) / 36e5;
+    if (!(umurJam <= METAR_BASI_JAM)) return {kelas: "?", teks: "METAR basi", ket: `${s.icao}: laporan terakhir ${jamWIB(Date.parse(s.t))} WIB, lebih dari ${METAR_BASI_JAM} jam lalu.`};
     const raw = (OP.metar || []).find(m => m.icao === s.icao)?.raw || "", ang = /(\d{3}|VRB)(\d{2,3})(?:G(\d{2,3}))?KT/.exec(raw), kt = ang ? Math.max(+ang[2], +(ang[3] || 0)) : null;
     const ts = /TS/.test(s.wx), asap = /FU|HZ/.test(s.wx), v = s.vis;
     const kelas = v < 1500 || ts || (kt != null && kt > 30) ? "tidak" : v < 5000 || asap || (kt != null && kt > 20) ? "terbatas" : "layak";

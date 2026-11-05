@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0b2545">
+<title>AI Internal, Centurisk97</title>
+<link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="/bnpb/bnpb.css" rel="stylesheet">
+<link href="/ai/ai.css?v=2" rel="stylesheet">
+</head>
+<body>
+<header class="ad-top">
+  <button type="button" class="ai-ik ai-burger" id="aiBurger" aria-label="Buka panel riwayat dan agen" aria-expanded="false" aria-controls="aiPanel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a>
+  <span class="ad-sep">AI Internal</span>
+  <nav aria-label="Bagian AI internal"><a href="#">Obrolan</a><a href="#agen">Kelola agen</a></nav>
+</header>
+
+<main class="ai" id="aiApp" aria-busy="true">
+  <p class="ad-galat ai-galat" id="aiGalat" role="alert" hidden></p>
+
+  <div class="ai-obrol-view" id="aiObrolView">
+    <aside class="ai-panel" id="aiPanel" aria-label="Riwayat percakapan dan daftar agen">
+      <section class="ai-bagian">
+        <h2>Riwayat percakapan</h2>
+        <label class="ai-cari"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input aria-label="Cari percakapan" id="aiCariRiwayat" type="search" autocomplete="off" placeholder="Cari percakapan"></label>
+        <ul class="ai-daftar" id="aiRiwayat"></ul>
+      </section>
+      <section class="ai-bagian">
+        <div class="ai-bagian-kepala"><h2>Agen</h2><button type="button" class="ai-ik" data-agen-baru aria-label="Agen baru" title="Agen baru"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></div>
+        <label class="ai-cari"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input aria-label="Cari agen" id="aiCariAgen" type="search" autocomplete="off" placeholder="Cari agen"></label>
+        <ul class="ai-daftar" id="aiAgen"></ul>
+      </section>
+    </aside>
+
+    <section class="ai-ruang" aria-label="Ruang obrol">
+      <div class="ai-kepala">
+        <span class="ai-avatar besar" id="aiAvatarAktif"></span>
+        <div class="ai-judul"><h1 id="aiNamaAgen">Memuat…</h1><span class="ai-pembuat"><span class="bn-pil ai-pil-staf" id="aiPilStaf" title="Agen ini dibuat staf, bukan rujukan resmi BNPB" hidden>Agen buatan staf</span><span id="aiPembuat" hidden></span></span></div>
+        <label class="ai-model"><select id="aiModel" aria-label="Pilih model"></select></label>
+        <label class="ai-sakelar"><input type="checkbox" id="aiNalar" role="switch"><span>Mode penalaran</span></label>
+        <button type="button" class="ai-ik" id="aiBaru" aria-label="Percakapan baru" title="Percakapan baru"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v7M12 8v8M8 12h8"/></svg></button>
+      </div>
+      <div class="ai-pesan-wadah" id="aiPesan" aria-live="polite"></div>
+      <p class="ai-privasi">Jangan masukkan data pribadi warga (NIK, nomor HP, alamat).</p>
+      <form class="ai-tulis" id="aiFormKirim">
+                <textarea id="aiTulis" aria-label="Tulis pesan" rows="2" placeholder="Tulis pertanyaan" title="Enter untuk kirim, Shift+Enter untuk baris baru"></textarea>
+        <button type="submit" class="ai-ik ai-kirim" id="aiKirim" aria-label="Kirim pesan" title="Kirim pesan" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12 20 4l-6 16-3-7z"/></svg></button>
+      </form>
+    </section>
+  </div>
+
+  <section class="ai-kelola" id="aiKelolaView" hidden>
+    <div class="bn-judul"><h1>Kelola agen</h1><div class="bn-aksi"><button type="button" class="bn-tombol" data-agen-baru>Agen baru</button></div></div>
+    <label class="ai-cari ai-cari-lebar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input aria-label="Cari agen" id="aiCariKelola" type="search" autocomplete="off" placeholder="Cari nama, deskripsi, atau pembuat"></label>
+    <div class="ad-tabel-wadah">
+      <table class="ad-tabel">
+        <thead><tr><th>Nama</th><th>Visibilitas</th><th title="Jumlah alat yang boleh dipakai agen">Alat</th><th>Deskripsi</th><th>Dibuat</th><th>Pembuat</th><th>Aksi</th></tr></thead>
+        <tbody id="aiTabel"></tbody>
+      </table>
+    </div>
+    <div class="ai-paging">
+      <button type="button" class="ai-ik" id="aiHalKiri" aria-label="Halaman sebelumnya" title="Halaman sebelumnya"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button>
+      <span id="aiHal" role="status"></span>
+      <button type="button" class="ai-ik" id="aiHalKanan" aria-label="Halaman berikutnya" title="Halaman berikutnya"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+    </div>
+  </section>
+</main>
+
+<dialog class="ai-dialog" id="aiForm" aria-labelledby="aiFormJudul">
+  <form method="dialog" novalidate>
+    <h2 id="aiFormJudul">Agen baru</h2>
+    <p class="ai-muat" id="aiFormMuat" role="status" hidden>Memuat data agen…</p>
+    <fieldset>
+      <label class="bn-isian">Nama agen<input name="nama" maxlength="80" autocomplete="off" required></label>
+      <span class="ai-galat-isian" data-galat="nama" hidden></span>
+
+      <div class="ai-grup" role="radiogroup" aria-label="Avatar">
+        <span class="ai-label">Avatar</span>
+        <div class="ai-seg">
+          <label><input type="radio" name="avatar" value="klasik" checked><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4M9 12h.01M15 12h.01M9 16h6"/></svg>Bot klasik</label>
+          <label><input type="radio" name="avatar" value="otak"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V5a2 2 0 0 0-3-1ZM15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1"/></svg>Otak cerdas</label>
+          <label><input type="radio" name="avatar" value="asisten"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7M17 3l.7 1.5L19 5l-1.3.6L17 7l-.7-1.4L15 5l1.3-.5z"/></svg>Asisten</label>
+        </div>
+        <span class="ai-galat-isian" data-galat="avatar" hidden></span>
+      </div>
+
+      <div class="ai-grup">
+        <label class="ai-label" for="aiSuhu">Suhu <output id="aiSuhuNilai"></output></label>
+        <input type="range" id="aiSuhu" name="suhu" min="0" max="2" step="0.1" value="0.3">
+        <div class="ai-skala" aria-hidden="true"><span>Fokus</span><span>Seimbang</span><span>Kreatif</span></div>
+        <span class="ai-galat-isian" data-galat="suhu" hidden></span>
+      </div>
+
+      <label class="ai-sakelar ai-sakelar-baris"><input type="checkbox" name="alih_manusia" role="switch"><span>Alih ke petugas<small>Bila pengguna minta bicara dengan petugas, percakapan diteruskan ke operator.</small></span></label>
+
+      <div class="ai-grup" role="radiogroup" aria-label="Visibilitas">
+        <span class="ai-label">Visibilitas</span>
+        <div class="ai-seg ai-seg-jelas">
+          <label><input type="radio" name="visibilitas" value="pribadi" checked><b>Pribadi</b><small>Hanya kamu yang bisa memakai.</small></label>
+          <label><input type="radio" name="visibilitas" value="unit"><b>Unit</b><small>Semua staf di unitmu.</small></label>
+          <label><input type="radio" name="visibilitas" value="semua"><b>Semua staf</b><small>Semua staf BNPB dan BPBD.</small></label>
+        </div>
+        <span class="ai-galat-isian" data-galat="visibilitas" hidden></span>
+      </div>
+
+      <label class="bn-isian">Deskripsi<textarea name="deskripsi" rows="2" maxlength="500" placeholder="Apa yang dikerjakan agen ini, satu atau dua kalimat."></textarea></label>
+
+      <div class="ai-grup">
+        <div class="ai-bagian-kepala"><label class="ai-label" for="aiInstruksi">Instruksi sistem</label><button type="button" class="bn-tombol sekunder ai-tombol-kecil" id="aiTulisAI">Tulis instruksi dengan AI</button></div>
+        <textarea id="aiInstruksi" name="instruksi" rows="6" required class="ai-area"></textarea>
+        <div class="ai-hitung"><span id="aiHitung"></span><span class="ai-kurang" id="aiKurang" hidden>Instruksi kurang dari 10 kata. Tambah arahan supaya agen bekerja dengan benar.</span></div>
+        <span class="ai-galat-isian" data-galat="instruksi" hidden></span>
+      </div>
+
+      <div class="ai-pratinjau"><span class="ai-label">Pratinjau perilaku</span><p id="aiPratinjau"></p></div>
+
+      <div class="ai-grup">
+        <div class="ai-bagian-kepala"><span class="ai-label">Alat</span><span class="ai-butir-sub" id="aiAlatHitung"></span></div>
+        <div class="ai-alat-kendali">
+          <label class="ai-cari"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input aria-label="Cari alat" id="aiCariAlat" name="cari_alat" type="search" autocomplete="off" placeholder="Cari alat"></label>
+          <button type="button" class="bn-tombol sekunder ai-tombol-kecil" id="aiPilihSemua">Pilih semua</button>
+          <button type="button" class="bn-tombol sekunder ai-tombol-kecil" id="aiKosongkan">Kosongkan</button>
+        </div>
+        <div class="ai-alat-daftar" id="aiAlatDaftar"></div>
+        <span class="ai-galat-isian" data-galat="alat" hidden></span>
+      </div>
+    </fieldset>
+    <p class="bn-pesan galat" id="aiFormPesan" role="alert"></p>
+    <div class="ai-dialog-aksi">
+      <button type="button" class="bn-tombol sekunder" id="aiBatal">Tutup</button>
+      <button type="submit" class="bn-tombol" id="aiSimpan">Simpan agen</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="ai-dialog ai-tanya" id="aiTanya" aria-labelledby="aiTanyaTeks">
+  <form method="dialog">
+    <p id="aiTanyaTeks"></p>
+    <div class="ai-dialog-aksi"><button type="submit" value="batal" class="bn-tombol sekunder">Batal</button><button type="submit" value="ya" class="bn-tombol" id="aiTanyaYa">Ya</button></div>
+  </form>
+</dialog>
+
+<script src="/inti/nanti.js"></script>
+<script type="module" src="/ai/ai.js?v=2"></script>
+</body>
+</html>

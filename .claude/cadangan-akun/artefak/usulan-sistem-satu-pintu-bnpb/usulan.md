@@ -104,6 +104,13 @@ AI dirancang sebagai agen seperti Claude: ia merencanakan langkah, memakai alat,
 | Sub-agen | Tugas besar dipecah ke beberapa agen yang bekerja paralel |
 | Pratinjau | PPT, Word, grafik, dan peta tampil di portal sebelum diunduh |
 | Ruang kerja | Per unit atau per kejadian, berisi dokumen dan percakapan bersama |
+| Pembuat agen tanpa kode | Admin unit membuat agen sendiri lewat formulir: nama, instruksi, tingkat kreativitas, sumber pengetahuan, dan siapa yang boleh memakai (pribadi, unit, atau publik) |
+| Sumber pengetahuan per agen | Tiap agen hanya diberi sumber yang dipilih: unggahan PDF, DOCX, XLSX, tampilan basis data, REST API, atau server MCP. Agen Pusdalops tidak otomatis membaca berkas Inspektorat |
+| Kotak uji agen | Agen dicoba dulu di ruang uji sebelum dibuka ke pengguna; mode penalaran menampilkan langkah, sumber, dan alasan jawabannya untuk audit |
+| Ganti model per percakapan | Pengguna bisa memilih model (cepat atau teliti) dari daftar yang disediakan gerbang model |
+| Saluran pakai | Selain portal, agen bisa disematkan di situs BPBD (iframe atau gelembung chat) dan disambungkan ke nomor WhatsApp resmi unit |
+| Obrolan suara | Bicara langsung dengan agen, berguna di posko atau di jalan |
+| Brankas kredensial | Kunci API dan akun layanan disimpan terpisah dari agen, dikelola admin, tidak pernah tampil ke pengguna |
 
 Contoh: "Buatkan paparan banjir Jawa Tengah lima tahun, bandingkan dengan Pulau Jawa, untuk rapim besok." Agen menarik data DIBI dan BPBD, mencari rilis BMKG terbaru, menghitung tren dengan Python, merakit PPT dari templat BNPB, menjalankan gerbang QA, membetulkan yang gagal, lalu menyerahkan PPT dan PDF untuk dicek penyusun.
 
@@ -209,16 +216,19 @@ Prototipe bisa dibuat sekarang dengan perangkat yang sudah ada, sehingga pimpina
 
 ## Perbandingan dengan produk vendor
 
-Lapisan chat AI boleh dibeli, tetapi inti data harus milik BNPB. Contoh produk yang ada di pasar adalah KnowgenAI dari PT Metrodata Electronics Tbk. Produk ini memusatkan data perusahaan, menyambungkan aplikasi, lalu menjawab pertanyaan pengguna lewat chat. Menunya: Dashboard, Chatbot, Training Data, Integration, Datasource, dan User Management.
+Lapisan chat AI boleh dibeli, tetapi inti data harus milik BNPB. Contoh produk yang ada di pasar adalah KnowgenAI dari PT Metrodata Electronics Tbk. Produk ini adalah platform pembuat agen AI: admin membuat agen, memberinya sumber pengetahuan, mengatur siapa yang boleh memakai, lalu menyematkannya di situs atau WhatsApp. Sumber pengetahuannya berupa unggahan PDF, DOCX, dan XLSX, basis data BigQuery, REST API, server MCP, serta alat bawaan (cuaca, Google Search, Wikipedia). Hak aksesnya tiga peran (pengguna, admin, super admin) yang bisa disetel per menu, dikelompokkan per organisasi. Login, basis data, dan akun layanannya bertumpu pada Google Cloud.
 
-| Kebutuhan BNPB | Produk AI perusahaan umum | Sistem yang diusulkan |
+| Kebutuhan BNPB | Produk pembuat agen AI | Sistem yang diusulkan |
 | --- | --- | --- |
 | Tanya jawab dan laporan dari data | Ada | Ada |
-| Sambungan ke banyak sumber data | Ada | Ada, termasuk SPLP dan API BPBD |
-| Hak akses berjenjang BNPB, provinsi, kabupaten/kota | Per departemen dalam satu perusahaan | Per kode wilayah, ikut menyaring jawaban AI |
-| Peta dan data lokasi | Tidak terlihat | PostGIS dan peta di tiap layar |
-| Status draf dan terverifikasi | Tidak terlihat | Ada |
-| Pengisian luring di lapangan | Tidak terlihat | Ada |
+| Sambungan ke banyak sumber data | Ada: berkas, BigQuery, REST API, MCP | Ada, ditambah SPLP, API BPBD, dan PostgreSQL |
+| Pembuat agen, kotak uji, sematan web dan WhatsApp | Ada | Ada, ditiru (lihat bagian Agen AI) |
+| Hak akses berjenjang BNPB, provinsi, kabupaten/kota | Per peran dan per menu dalam organisasi | Per kode wilayah, ikut menyaring jawaban AI |
+| Berjalan di server internal tanpa internet | Tidak disebut; login, basis data, dan akun layanan memakai Google Cloud | Wajib |
+| Peta dan data lokasi | Tidak ada | PostGIS dan peta di tiap layar |
+| Status draf dan terverifikasi | Tidak ada | Ada |
+| Pengisian luring di lapangan | Tidak ada | Ada |
+| Penyusun paparan dan laporan dari templat BNPB | Tidak ada; keluarannya teks chat | Ada |
 | Kepemilikan data dan kode | Milik vendor | Milik BNPB |
 
 **Opsi:**

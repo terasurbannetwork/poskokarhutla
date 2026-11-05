@@ -31,6 +31,14 @@ test("tiap jenis dikenali dari kepalanya, selain itu null", () => {
   assert.deepEqual(JENIS_LAPORAN.filter(j => j.wajib).map(j => j.kunci), ["rekap_koordalops_24", "laphar_pdf", "karhutla_mensesneg", "satgas", "bmkg_pagi", "pvmbg_pagi"]);
 });
 
+/* obrolan staf yang MENYEBUT laporan karhutla bukan laporannya (grup BNPB IT 25 Okt-2 Nov 2026): dulu terhitung "Karhutla Mensesneg masuk" */
+test("obrolan yang menyebut laporan karhutla tidak dikenali", () => {
+  for (const t of ["@Hudio Bro jangan lupa laporan karhutla ya. Cut off jam 3 ini", "kriirmin laporan karhutla kemarin dong", "laporan karhutla hari ini broku",
+    "btw ini buat bikin laporan karhutla tuh harus narik data open meteo 92 hari ya?", "Laporan karhutla", "*LAPORAN KARHUTLA*",
+    "laporan karhutla nanti cut off datanya masih sampai 18.00?"]) assert.equal(kenali(t, null), null, t);
+  assert.equal(kenali("*LAPORAN PENANGANAN KARHUTLA DI ENAM PROVINSI PRIORITAS*\n_4 November 2026_\n\n***A. SITUASI UMUM***", null), "karhutla_mensesneg");
+});
+
 const uji = berantai();
 const U = await siapkan("uji-wa-jenis", {r2: true, ikat: {WA_KUNCI: "kunci-wa", WA_IZIN: "628123"}}), {api} = U;
 const kirim = async o => { const f = new FormData(); f.set("dari", "628123"); f.set("teks", o.message ?? ""); return (await U.mf.dispatchFetch("http://bnpb.lokal/api/wa/gateway", {method: "POST", headers: {"x-wa-kunci": "kunci-wa"}, body: f})).text(); };

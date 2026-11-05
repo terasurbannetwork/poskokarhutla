@@ -107,11 +107,14 @@
     const u = U(), P = D.peta, base = P.base || [], ar = P.armada || [], g = u.hitungGuna(ar), lapor = ar.filter(a => a.status).length, siap = ar.filter(a => SIAP.includes(a.status)).length;
     const H = D.hari, temApi = (P.temuan || []).filter(x => x.status !== "clear").length, tgl = esc(tglPanjang(D.t));
     const angka = (n, t, k) => `<div><b>${n}</b><span>${t}${k ? `<em>${k}</em>` : ""}</span></div>`;
-    const ringkas = `<div class="ops-lap-angka">${[angka(fmt(base.length), "base operasi udara"),
-      angka(`${fmt(siap)}<small>/${fmt(ar.length)}</small>`, "armada siap", `WB ${fmt(g.wb)}, PTR ${fmt(g.patroli)}, OMC ${fmt(g.omc)}`),
-      angka(nol(H.sortie), "sortie"), angka(nol(H.wb), "aksi water bombing", H.drop ? `${fmt(H.drop)} kali jatuhan` : ""),
-      angka(u.persen(H.persen), "padam ≥ 24 jam", H.dinilai ? `${fmt(H.padam)} dari ${fmt(H.dinilai)} dinilai` : "belum ada yang dinilai"),
-      angka(nol(temApi), "temuan api pilot", `${fmt((P.temuan || []).length)} temuan total`)].join("")}</div>`;
+    /* belum lapor != nol siap: tanpa laporan gelar armada, siap ditulis "–"; kotak tanpa isi diganti satu baris keterangan */
+    const kegiatan = [H.sortie && angka(fmt(H.sortie), "sortie"), H.wb && angka(fmt(H.wb), "aksi water bombing", H.drop ? `${fmt(H.drop)} kali jatuhan` : ""),
+      H.dinilai && angka(u.persen(H.persen), "padam ≥ 24 jam", `${fmt(H.padam)} dari ${fmt(H.dinilai)} dinilai`),
+      (P.temuan || []).length && angka(nol(temApi), "temuan api pilot", `${fmt(P.temuan.length)} temuan total`)].filter(Boolean);
+    const kosong = [!lapor && "status armada (laporan gelar armada WA)", !H.sortie && "sortie", !(P.temuan || []).length && "temuan api pilot"].filter(Boolean);
+    const ringkas = `<div class="ops-lap-angka" style="--n:${Math.max(4, 2 + kegiatan.length)}">${[angka(fmt(base.length), "base operasi udara"),
+      angka(`${lapor ? fmt(siap) : "–"}<small>/${fmt(ar.length)}</small>`, "armada siap", lapor ? `WB ${fmt(g.wb)}, PTR ${fmt(g.patroli)}, OMC ${fmt(g.omc)}` : `belum lapor; WB ${fmt(g.wb)}, PTR ${fmt(g.patroli)}, OMC ${fmt(g.omc)}`),
+      ...kegiatan].join("")}</div>${kosong.length ? `<p class="ops-kosong">Belum ada ${kosong.join(", ")} untuk ${tgl}.</p>` : ""}`;
     return [
       bagian(`${ik("udara")} Operasi udara`, lapor ? `${hl(`${fmt(siap)} dari ${fmt(ar.length)}`)} armada siap di ${fmt(base.length)} base, ${H.sortie ? `${hl(fmt(H.sortie))} sortie` : "belum ada sortie"} pada ${tgl}`
         : `${hl(fmt(ar.length))} armada di ${fmt(base.length)} base; status harian ${tgl} belum dilaporkan`, ringkas),
@@ -122,13 +125,20 @@
     const u = U(), adaKl = !!S.kluster?.features?.length;
     const baris = (D.peta.base || []).map(b => { const a = (D.peta.armada || []).filter(x => x.base_id === b.id), gg = u.hitungGuna(a), k = D.hitung(D.baseAksi(b.id)), lay = u.kelayakan(b);
       const dk = adaKl ? u.apiDekat(b) : null, p3 = dk ? dk.filter(c => c.level >= 3).length : null, lv = dk ? (p3 ? 3 : dk.some(c => c.level === 2) ? 2 : dk.length ? 1 : 0) : null;
-      return {p3: p3 || 0, html: `<tr>${kiri(`<b>${esc(b.nama.split(" / ")[0])}</b><small>${esc(b.icao || b.id)}</small>`)}<td>${esc(u.PROV_PDK[b.prov] || b.prov || "–")}</td>
-        ${sel(nol(gg.wb))}${sel(nol(gg.patroli))}${sel(nol(gg.omc))}${sel(`${fmt(a.filter(x => SIAP.includes(x.status)).length)}/${fmt(a.length)}`)}${sel(nol(k.sortie))}${sel(nol(k.wb))}${sel(u.persen(k.persen))}
-        ${sel(p3 == null ? "–" : `<b>${nol(p3)}</b>`)}<td>${lv == null ? "–" : lv ? `<span class="pill l${lv}">${u.LV[lv]}</span>` : `<span class="pill l0">Aman</span>`}</td><td>${u.pilLayak(lay)}<small>${esc(lay.ket)}</small></td></tr>`}; }).sort((x, y) => y.p3 - x.p3);
+      const lapor = a.some(x => x.status);
+      return {p3: p3 || 0, lv, sel: [kiri(`<b>${esc(b.nama.split(" / ")[0])}</b><small>${esc(b.icao || b.id)}</small>`), `<td>${esc(u.PROV_PDK[b.prov] || b.prov || "–")}</td>`,
+        sel(nol(gg.wb)), sel(nol(gg.patroli)), sel(nol(gg.omc)), sel(`${lapor ? fmt(a.filter(x => SIAP.includes(x.status)).length) : "–"}/${fmt(a.length)}`), sel(nol(k.sortie)), sel(nol(k.wb)), sel(u.persen(k.persen)),
+        sel(p3 == null ? "–" : `<b>${nol(p3)}</b>`), `<td>${lv == null ? "–" : lv ? `<span class="pill l${lv}">${u.LV[lv]}</span>` : `<span class="pill l0">Aman</span>`}</td>`, `<td>${u.pilLayak(lay)}<small>${esc(lay.ket)}</small></td>`]}; }).sort((x, y) => y.p3 - x.p3);
+    const kepala = ["Base", "Prov", "#WB", "#PTR", "#OMC", "#Siap|Armada siap dari laporan gelar armada WA; – = belum lapor", "#Sortie", "#Aksi WB", "#Padam|Tidak ada titik panas satelit dalam 1 km selama 24 jam sesudah water bombing",
+      `#Cluster prioritas|Cluster prioritas aktif dalam jangkauan jelajah armada (bawaan ${fmt(u.RADIUS_KM)} km), kondisi kini`,
+      `Status api|Level cluster tertinggi dalam jangkauan jelajah armada: ${u.LV.slice(1).join(", ")}; Aman = tidak ada cluster aktif`, "Kelayakan terbang|METAR terdekat ≤ 60 km, kondisi kini; basi bila lebih dari 3 jam"];
+    /* kolom kegiatan (sortie, aksi WB, padam, cluster) yang kosong di semua base dilipat */
+    const lipat = new Set([6, 7, 8, 9].filter(i => baris.every(x => />–(<\/b>)?<\/td>$/.test(x.sel[i]))));
     const nP = baris.filter(x => x.p3).length;
-    return bagian("Base", nP ? `${hl(fmt(nP))} dari ${fmt(baris.length)} base punya cluster prioritas dalam jangkauan` : "Belum ada cluster prioritas dalam jangkauan base",
-      tabelH(["Base", "Prov", "#WB", "#PTR", "#OMC", "#Siap", "#Sortie", "#Aksi WB", "#Padam|Tidak ada titik panas satelit dalam 1 km selama 24 jam sesudah water bombing",
-        `#Cluster prioritas|Cluster prioritas aktif dalam jangkauan jelajah armada (bawaan ${fmt(u.RADIUS_KM)} km), kondisi kini`, "Status api", "Kelayakan terbang|METAR terdekat ≤ 60 km, kondisi kini"], baris.map(x => x.html), "Belum ada base tercatat."));
+    const perLv = [2, 1].map(l => [l, baris.filter(x => x.lv === l).length]).filter(([, n]) => n).map(([l, n]) => `${hl(fmt(n))} base ${u.LV[l]}`);
+    const judul = nP ? `${hl(fmt(nP))} dari ${fmt(baris.length)} base punya cluster prioritas dalam jangkauan`
+      : perLv.length ? `${perLv.join(", ")}; belum ada cluster prioritas dalam jangkauan` : "Belum ada cluster prioritas dalam jangkauan base";
+    return bagian("Base", judul, tabelH(kepala.filter((_, i) => !lipat.has(i)), baris.map(x => `<tr>${x.sel.filter((_, i) => !lipat.has(i)).join("")}</tr>`), "Belum ada base tercatat."));
   }
 
   /* fitur 4 + 5: renlap lawan realisasi, dengan alasan tiap target */
@@ -182,7 +192,7 @@
     const u = U(), ar = (D.peta.armada || []).slice().sort((x, y) => x.registrasi.localeCompare(y.registrasi)), aktif = new Set(D.aksi30.map(a => a.registrasi));
     /* pilihan pengguna dipertahankan antar-tanggal; tanpa pilihan = armada pertama yang beraksi dalam 30 hari */
     const reg = st.reg && ar.some(a => a.registrasi === st.reg) ? st.reg : (ar.find(a => aktif.has(a.registrasi)) || ar[0])?.registrasi || "";
-    const a = ar.find(x => x.registrasi === reg), pilih = `<select data-reg aria-label="Pilih armada">${ar.map(x => `<option value="${esc(x.registrasi)}"${x.registrasi === reg ? " selected" : ""}>${esc(x.registrasi)}${aktif.has(x.registrasi) ? " ●" : ""}</option>`).join("")}</select>`;
+    const a = ar.find(x => x.registrasi === reg), pilih = `<select data-reg aria-label="Pilih armada">${kelompokBase(ar, D.peta.base).map(g => `<optgroup label="${esc(g.nama)}">${g.regs.map(r => `<option value="${esc(r)}"${r === reg ? " selected" : ""}>${esc(r)}${aktif.has(r) ? " ●" : ""}</option>`).join("")}</optgroup>`).join("")}</select>`;
     if (!a) return `<div id="opsHistori">${bagian("Histori armada", "Belum ada armada tercatat", "")}</div>`;
     const ak = D.aksi30.filter(x => x.registrasi === a.registrasi).sort((x, y) => (y.jam_utc || 0) - (x.jam_utc || 0)), k = D.mon?.kpi?.armada?.[a.registrasi], kt = u.kontrak(a.registrasi), s = u.stAr(a.status);
     const jam = kt.reduce((t, x) => t + (x.jam_operasi_menit || 0), 0), hh = D.hitung(ak);
@@ -244,11 +254,21 @@
       `${efek}${tabelH(["Tanggal", "#Jam WIB", "Pesawat", "Bahan", "#Bahan", "Sasaran"], baris, "")}`);
   }
 
+  /* armada dikelompokkan per base (pemilik 5 Nov 2026); base dari peta.armada[].base_id + peta.base[].nama, tanpa data = "Base belum tercatat" paling akhir */
+  function kelompokBase(armada, base) {
+    const nama = id => ((base || []).find(b => b.id === id)?.nama || "").split(" / ")[0], g = new Map();
+    for (const a of armada || []) { const n = nama(a.base_id), k = n ? a.base_id : ""; if (!g.has(k)) g.set(k, {id: k, nama: n || "Base belum tercatat", regs: []}); g.get(k).regs.push(a.registrasi); }
+    return [...g.values()].map(x => ({...x, regs: x.regs.sort()})).sort((x, y) => (!x.id) - (!y.id) || x.nama.localeCompare(y.nama));
+  }
+
   /* fitur 15: galeri foto dokumentasi dari laporan WA satgas (30 hari) */
   function kartuGaleri(D) {
     const u = U(), semua = D.aksi30.flatMap(a => (a.foto || []).map(f => ({...f, reg: a.registrasi, tanggal: a.tanggal, lokasi: a.lokasi, guna: a.guna, hasil: a.hasil}))).sort((x, y) => (y.jam_utc || 0) - (x.jam_utc || 0));
-    const regs = [...new Set(semua.map(f => f.reg))].sort(), pilih = st.galeri && regs.includes(st.galeri) ? st.galeri : "", foto = pilih ? semua.filter(f => f.reg === pilih) : semua;
-    const saring = regs.length > 1 ? `<select data-galeri aria-label="Saring armada"><option value="">Semua armada</option>${regs.map(r => `<option${r === pilih ? " selected" : ""}>${esc(r)}</option>`).join("")}</select>` : "";
+    const regs = [...new Set(semua.map(f => f.reg))].sort(), grup = kelompokBase(regs.map(r => ({registrasi: r, base_id: D.reg2base[r]})), D.peta.base);
+    const ok = new Set([...regs, ...grup.map(g => "base:" + g.id)]), pilih = st.galeri && ok.has(st.galeri) ? st.galeri : "";
+    const boleh = pilih.startsWith("base:") ? new Set(grup.find(g => "base:" + g.id === pilih).regs) : pilih ? new Set([pilih]) : null, foto = boleh ? semua.filter(f => boleh.has(f.reg)) : semua;
+    const opsi = (v, t) => `<option value="${esc(v)}"${v === pilih ? " selected" : ""}>${esc(t)}</option>`;
+    const saring = regs.length > 1 ? `<select data-galeri aria-label="Saring armada atau base"><option value="">Semua armada</option>${grup.map(g => `<optgroup label="${esc(g.nama)}">${g.regs.length > 1 ? opsi("base:" + g.id, "Semua armada di " + g.nama) : ""}${g.regs.map(r => opsi(r, r)).join("")}</optgroup>`).join("")}</select>` : "";
     return `<div id="opsGaleri">${bagian("Dokumentasi", semua.length ? `${hl(fmt(semua.length))} foto dokumentasi dari ${fmt(regs.length)} armada dalam 30 hari` : "Belum ada foto dokumentasi dalam 30 hari",
       foto.length ? `<div class="ops-galeri">${foto.slice(0, 60).map(f => `<a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer"><img src="${esc(f.url)}" alt="Dokumentasi ${esc(f.reg)} ${esc(f.tanggal)}" loading="lazy"><span><b>${esc(f.reg)}</b> ${esc(tglPendek(f.tanggal))}, ${u.jamWIB(f.jam_utc)} WIB${f.lokasi ? `<br>${esc(f.lokasi)}` : ""}</span></a>`).join("")}</div>`
         : `<p class="ops-kosong">Foto dari grup WA satgas udara muncul di sini begitu ditempel ke aksi armada.</p>`, saring)}</div>`;
@@ -326,6 +346,6 @@
     setTimeout(() => status(""), 3000);
   }
 
-  window.OperasiLaporan = {render};
+  window.OperasiLaporan = {render, kelompokBase};
   if (document.querySelector("#p-operasi.on")) render();
 })();

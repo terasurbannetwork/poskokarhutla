@@ -97,7 +97,7 @@
     for (let i = 0; i < n - 1; i++) d += ` C${t[i][0] + dx[i] / 3},${t[i][1] + (tg[i] || 0) * dx[i] / 3} ${t[i + 1][0] - dx[i] / 3},${t[i + 1][1] - (tg[i + 1] || 0) * dx[i] / 3} ${t[i + 1][0]},${t[i + 1][1]}`;
     const langkah = Math.max(1, Math.ceil(n / 14)), iMaks = seri.findIndex(x => x[1] === maks), tandai = i => i % langkah === 0 || i === n - 1 || i === iMaks;
     const g = "g" + Math.random().toString(36).slice(2, 8), lebar = rentang === 0 ? W : (W - kiri - kanan) / rentang, j = esc(judul), sat = satuan ? " " + esc(satuan) : "";
-    return `<figure class="ak-grafik${KUNCI.has(slug(kunci)) ? " km-w-" + slug(kunci) : ""}" data-seri="${esc(JSON.stringify(seri.map(([th2, v], i) => [th2, v, t[i][0], t[i][1]])))}" data-w="${W}" data-h="${H}"><figcaption>${j}</figcaption><div class="ak-gcap"><em>${seri[0][0]} sampai ${seri[n - 1][0]}</em><span>Puncak ${seri[iMaks][0]}: <b>${fmt(maks)}</b>${sat}</span></div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${j}">
+    return `<figure class="ak-grafik${KUNCI.has(slug(kunci)) ? " km-w-" + slug(kunci) : ""}" data-seri="${esc(JSON.stringify(seri.map(([th2, v], i) => [th2, v, t[i][0], t[i][1]])))}" data-w="${W}" data-h="${H}"><figcaption>${j}</figcaption><div class="ak-gcap"><em>${seri[0][0] === seri[n - 1][0] ? seri[0][0] : seri[0][0] + " sampai " + seri[n - 1][0]}</em><span>Puncak ${seri[iMaks][0]}: <b>${fmt(maks)}</b>${sat}</span></div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${j}">
       <defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${w}" stop-opacity=".26"/><stop offset="1" stop-color="${w}" stop-opacity="0"/></linearGradient></defs>
       ${[.5, 1].map(f => `<line x1="${kiri}" x2="${W - kanan}" y1="${Y(maks * f)}" y2="${Y(maks * f)}" class="ak-gr-garis"/>`).join("")}
       <line x1="${kiri}" x2="${W - kanan}" y1="${dasar}" y2="${dasar}" class="ak-gr-dasar"/>
@@ -185,6 +185,7 @@
   KM.tampil = tampil;
 
   async function mulai() {
+    if (!$("kmMuat")) return;   // halaman cetak (buku) memakai helper KM tanpa cangkang layar
     $("kmMuat").innerHTML = '<div class="ak-hantu"></div>'.repeat(6); $("kmMuat").hidden = false;
     let s = null;
     try { const r = await fetch("/api/kemitraan/saya", {credentials: "same-origin", headers: {accept: "application/json"}}); s = r.ok ? await r.json() : null; } catch (e) { s = null; }

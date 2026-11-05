@@ -45,6 +45,17 @@ test("tanpa sesi dan peran lain ditolak; koordalops dan admin dapat isi R2 apa a
   }
 });
 
+test("longsor dan karhutla (pemilik 5 Nov 2026): satu rute per jenis, kunci R2 terpisah, gerbang staf sama, tidak bocor antarjenis", async () => {
+  const jenis = j => mf.dispatchFetch("http://dalops.lokal/api/dalops/" + j, {headers: STAF}).then(async r => ({status: r.status, j: await r.json().catch(() => null)}));
+  assert.equal((await jenis("longsor")).status, 404, "longsor belum diunggah = 404, bukan isi banjir");
+  const ls = {v: 1, hari: "2026-11-04", kejadian: [{id: "WA26-110403", kab_kode: ["11|Gayo Lues"], surut: false}]};
+  await R2.put("dalops/longsor.json", JSON.stringify(ls));
+  assert.deepEqual((await jenis("longsor")).j, ls);
+  assert.equal((await jenis("karhutla")).status, 404);
+  assert.equal((await mf.dispatchFetch("http://dalops.lokal/api/dalops/karhutla", {headers: LUAR})).status, 401, "verifikator tidak berhak");
+  assert.equal((await mf.dispatchFetch("http://dalops.lokal/api/dalops/gempa", {headers: STAF})).status, 404, "jenis lain tidak punya rute");
+});
+
 test("/bnpb/dalops.html dialihkan ke jalur bersih /bnpb/dalops", async () => {
   const r = await mf.dispatchFetch("http://dalops.lokal/bnpb/dalops.html", {redirect: "manual"});
   assert.equal(r.status, 301); assert.equal(r.headers.get("location"), "/bnpb/dalops");

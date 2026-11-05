@@ -89,7 +89,8 @@ test('prediksi.json: 514 kab, peluang 0..1 dan menurun menurut ambang', () => {
 test('halaman memuat inti, bukan salinan', () => {
   const html = readFileSync(join(ROOT, 'public/prediksi/index.html'), 'utf8')
   for (const f of ['../inti/tema.css', '../inti/gaya.css', '../inti/format.js']) assert.ok(html.includes(f), `index.html tidak memuat ${f}`)
-  for (const id of ['p-besok', 'p-rapor', 'p-dampak', 'p-konfirmasi']) assert.ok(html.includes(`id="${id}"`), `tab ${id} hilang`)
+  for (const id of ['p-besok', 'p-rapor', 'p-dampak', 'p-konfirmasi', 'p-laporan']) assert.ok(html.includes(`id="${id}"`), `tab ${id} hilang`)
+  for (const f of ['../inti/kartu.css', '../inti/tip.js', 'laporan_prov.js', 'laporan_layar.js']) assert.ok(html.includes(f), `index.html tidak memuat ${f}`)
   const js = readFileSync(join(ROOT, 'public/prediksi/prediksi.js'), 'utf8')
   assert.match(js, /x-kode-regu/)
   assert.match(js, /\/api\/prediksi\/konfirmasi/)
@@ -152,4 +153,15 @@ test('jalan.json: ruas tunggal <= jumlah way, top terurut menurun', () => {
     assert.ok(k.way_tunggal <= k.way && k.ruas_tunggal >= k.way_tunggal, id)
     k.top.slice(1).forEach((o, i) => assert.ok(o.km_terisolir <= k.top[i].km_terisolir, `${id} top tak terurut`))
   }
+})
+
+test('tab Laporan provinsi: data dimuat malas, teks lewat esc(), pil hipotesis membaca pakai', () => {
+  const js = readFileSync(join(ROOT, 'public/prediksi/prediksi.js'), 'utf8')
+  assert.ok(!/lengas\.json|amatan\/HJN\.json|ambang_persentil/.test(js), 'data laporan hanya ditarik laporan_layar.js saat tab dibuka')
+  assert.match(js, /if \(t === "laporan"\) muatLaporan\(\)/)
+  const g = readFileSync(join(ROOT, 'public/prediksi/laporan_layar.js'), 'utf8')
+  assert.doesNotMatch(g.slice(0, g.indexOf('async function muatLaporan')), /ambil\(|fetch\(/, 'laporan_layar.js tidak boleh menarik data sebelum tab dibuka')
+  assert.match(g, /\.pakai/, 'pil hipotesis harus membaca ambang_persentil.pakai, bukan angka tetap')
+  assert.match(g, /window\.print\(\)/)
+  for (const f of ['b.nama', 's.nama']) assert.ok(g.includes(`esc(${f}`), `${f} tanpa esc di tab Laporan`)
 })

@@ -2504,3 +2504,5 @@ button.ak-r[data-kh][aria-pressed="true"]{border-color:var(--w0,var(--brand2));b
 /* tab tampilan direktori pindah ke menu atas (nav.tabs), menggantikan menu karhutla */
 nav.tabs#akTampil button[aria-pressed="true"]{opacity:1;background:oklch(100% 0 0 / .16)}
 @media (max-width:1280px){nav.tabs#akTampil button[aria-pressed="true"]{background:var(--surface);color:var(--accent,var(--ink))}}
+/* navbar direktori selalu berikon, seperti navbar peta (pemilik 5 Nov 2026); gaya.css menyembunyikan ikon bila tab >= 9 di 1281-1500px, di sini bilah bisa digeser jadi ikon tetap muat */
+nav.tabs#akTampil button svg{display:block!important;width:16px;height:16px;flex:none}

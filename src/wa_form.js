@@ -24,7 +24,8 @@ async function kirim(env, req, kini) {
   const b = await bacaBody(req, MAKS_BODY); if (b.galat) return gagal(b.status || 400, b.galat);
   const kunci = b.o?.kunci, r = susun(kunci, b.o?.isi); if (r.galat) return gagal(400, r.galat);
   /* penjaga kontrak: teks susunan harus dikenali sebagai jenis yang sama dan bertanggal sama, kalau tidak bot tidak akan memilihnya */
-  if (kenali(r.teks, null) !== kunci || tanggalIsi(r.teks, kunci) !== r.tanggal) return gagal(400, "teks bebas memuat frasa judul laporan WA lain (mis. \"laporan karhutla\"); ubah kalimatnya");
+  /* "laporan karhutla" ditolak di mana pun walau kenali() kini hanya membaca judul (b8f58f18): pembaca lama (bot Mac mini sebelum diperbarui) masih mencocokkan frasa itu di tengah teks */
+  if (kenali(r.teks, null) !== kunci || tanggalIsi(r.teks, kunci) !== r.tanggal || /laporan karhutla/i.test(r.teks.replace(/[*_]/g, "").replace(/\s+/g, " "))) return gagal(400, "teks bebas memuat frasa judul laporan WA lain (mis. \"laporan karhutla\"); ubah kalimatnya");
   const hari = Date.parse(hariWib(kini)), t = Date.parse(r.tanggal);
   if (t < hari - 14 * HARI || t > hari + HARI) return gagal(400, "tanggal laporan harus dalam 14 hari terakhir sampai besok");
   if (r.teks.length > MAKS_TEKS) return gagal(400, `teks susunan melewati ${MAKS_TEKS} karakter; kurangi kejadian atau kalimat`);

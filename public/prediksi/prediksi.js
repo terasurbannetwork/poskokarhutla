@@ -2,7 +2,7 @@
 /* /prediksi: tab Besok (kartu per kab), Rapor (skor vs baseline), Dampak (paparan statis), Konfirmasi (POST /api/prediksi/konfirmasi).
    Data: data/prediksi.json, skor.json, ujibalik.json, kalibrasi.json, lalu.json (scripts/prediksi/*.py).
    $, fmt, esc, rb dari ../inti/format.js. Angka: format id-ID, peluang dibulatkan ke 5% (tidak ada presisi palsu). */
-const PR = {dampak: null, jalan: null, d: null, skor: null, uji: null, kal: null, lalu: null, kalender: null, n: 60, tab: "besok"};
+const PR = {dampak: null, jalan: null, d: null, skor: null, uji: null, kal: null, lalu: null, kalender: null, n: 60, tab: "besok", lap: undefined, geo: {}};
 const LEVEL = ["Normal", "Waspada", "Siaga", "Awas"];
 const ISPU = ["Baik/Sedang", "Tidak sehat", "Sangat tidak sehat", "Berbahaya"];
 const KODE_NAMA = {HJN: "Hujan", API: "Titik panas", BNJ: "Banjir", LSR: "Longsor", ASP: "Asap PM2,5", ROB: "Rob"};
@@ -233,7 +233,8 @@ function pilihTab(t) {
   document.querySelectorAll("main .page").forEach(s => s.classList.toggle("on", s.id === "p-" + t));
   if (t === "rapor" && !$("#rapor table, #rapor section")) gambarRapor();
   if (t === "dampak") muatDampak();
-  history.replaceState(null, "", t === "besok" ? "./" : "#" + t);
+  if (t === "laporan") muatLaporan();   // laporan_layar.js; hash #laporan/<prov> diatur di sana
+  else history.replaceState(null, "", t === "besok" ? "./" : "#" + t);
 }
 
 async function ambil(f) { try { const r = await fetch("data/" + f, {cache: "no-cache"}); return r.ok ? r.json() : null; } catch { return null; } }
@@ -252,8 +253,8 @@ async function mulai() {
   Object.assign($("#kTgl"), {max: kini, min: new Date(Date.now() + 7 * 36e5 - 7 * 864e5).toISOString().slice(0, 10), value: kini});
   try { $("#kRegu").value = localStorage.getItem("prediksi.regu") || ""; } catch {}
   gambarBesok();
-  const tab = location.hash.slice(1);
-  if (["rapor", "dampak", "konfirmasi"].includes(tab)) pilihTab(tab);
+  const tab = location.hash.slice(1).split("/")[0];
+  if (["rapor", "dampak", "konfirmasi", "laporan"].includes(tab)) pilihTab(tab);
 }
 
 let tunda;

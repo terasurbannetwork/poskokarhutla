@@ -1,0 +1,406 @@
+{
+  "umum": [
+    {"id": "1u-01", "teks": "Data kami menunjukkan skor IRBI terakhir {wilayah} sebesar {skor_irbi}, kelas {kelas_irbi}. Apakah gambaran itu sesuai dengan keadaan di lapangan?", "arah": "konfirmasi", "isian": ["wilayah", "skor_irbi", "kelas_irbi"], "syarat": null, "prioritas": 2},
+    {"id": "1u-02", "teks": "Data kami mencatat sekitar {jiwa_rentan} balita dan lansia di {wilayah}. Apakah angka itu mendekati catatan setempat?", "arah": "konfirmasi", "isian": ["jiwa_rentan", "wilayah"], "syarat": null, "prioritas": 2},
+    {"id": "1u-03", "teks": "Menurut pengalaman setempat, masalah kebencanaan apa yang paling sering berulang di {wilayah}, dan apa penyebab utamanya?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+    {"id": "1u-04", "teks": "Dokumen perencanaan bencana apa saja yang sudah dimiliki {wilayah} dan masih berlaku?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+    {"id": "1u-05", "teks": "Berapa orang yang bekerja penuh waktu di BPBD {wilayah}, dan bidang apa yang paling kekurangan tenaga?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+    {"id": "1u-06", "teks": "Upaya pengurangan risiko bencana apa yang pernah dicoba di {wilayah} dalam lima tahun terakhir, dan apa hasilnya?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+    {"id": "1u-07", "teks": "Data atau kajian apa yang paling dibutuhkan agar keputusan penanggulangan bencana di {wilayah} lebih tepat?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+    {"id": "1u-08", "teks": "Kemampuan atau peralatan apa yang paling kurang saat ini untuk menangani bencana di {wilayah}?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+    {"id": "1u-09", "teks": "Dalam bentuk apa dukungan perguruan tinggi paling berguna bagi {wilayah}: kajian, pelatihan, pendampingan, atau lainnya?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+    {"id": "1u-10", "teks": "Kampus terdekat dari {wilayah} adalah {kampus_terdekat}. Kerja sama apa yang pernah atau bisa dijalin dengan kampus itu?", "arah": "harapan", "isian": ["wilayah", "kampus_terdekat"], "syarat": null, "prioritas": 1}
+  ],
+  "B": {
+    "banjir": [
+      {"id": "2b-banjir-1", "teks": "Data kami mencatat {n_kejadian} pada {periode} di {wilayah}. Apakah angka itu sesuai dengan catatan setempat, dan adakah kejadian yang tidak tercatat?", "arah": "konfirmasi", "isian": ["n_kejadian", "periode", "wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-banjir-2", "teks": "Kecenderungan kejadian banjir di {wilayah} adalah {tren_kata}. Menurut pengalaman setempat, apa penyebab utamanya: hujan, sungai, drainase, atau perubahan lahan?", "arah": "akar", "isian": ["wilayah", "tren_kata"], "syarat": null, "prioritas": 1},
+      {"id": "2b-banjir-3", "teks": "Alat pemantau dan peringatan banjir apa yang sudah berfungsi di {wilayah}, dan siapa yang merawatnya?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-banjir-4", "teks": "Upaya pengendalian banjir apa yang pernah dicoba di {wilayah}, dan mana yang berhasil atau gagal?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "2b-banjir-5", "teks": "Data menempatkan {kec_teratas} sebagai kecamatan paling berbahaya banjir di {wilayah}. Kecamatan lain mana yang perlu didahulukan, dan kajian apa yang paling dibutuhkan di sana?", "arah": "kebutuhan", "isian": ["kec_teratas", "wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "2b-banjir-6", "teks": "Dukungan apa dari perguruan tinggi yang paling diharapkan untuk mengurangi risiko banjir di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "longsor": [
+      {"id": "2b-longsor-1", "teks": "Data kami mencatat {n_kejadian} pada {periode} di {wilayah}. Apakah ada titik longsor lama yang belum tercatat?", "arah": "konfirmasi", "isian": ["n_kejadian", "periode", "wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-longsor-2", "teks": "Kecenderungan kejadian longsor di {wilayah} adalah {tren_kata}. Apa yang menurut pengalaman setempat memicunya: lereng terbuka, hujan, pemotongan tebing, atau hal lain?", "arah": "akar", "isian": ["wilayah", "tren_kata"], "syarat": null, "prioritas": 1},
+      {"id": "2b-longsor-3", "teks": "Kawasan rawan longsor di {wilayah} sudah ditandai dan dipantau oleh siapa?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-longsor-4", "teks": "Upaya pencegahan longsor apa yang pernah dicoba di {wilayah}, misalnya penanaman, terasering, atau relokasi?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "2b-longsor-5", "teks": "Data atau kajian longsor apa yang paling dibutuhkan di {wilayah}: peta rawan yang lebih rinci, curah hujan lokal, atau kondisi lereng?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "2b-longsor-6", "teks": "Bantuan apa dari perguruan tinggi yang diharapkan untuk menilai dan memantau lereng rawan di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "gempa": [
+      {"id": "2b-gempa-1", "teks": "Data kami mencatat {n_kejadian} pada {periode} di sekitar {wilayah}. Gempa mana yang menurut warga setempat paling merusak?", "arah": "konfirmasi", "isian": ["n_kejadian", "periode", "wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-gempa-2", "teks": "Apa yang membuat gempa menimbulkan kerusakan di {wilayah}: mutu bangunan, jenis tanah, atau lokasi permukiman?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "2b-gempa-3", "teks": "Berapa bangunan penting di {wilayah}, seperti sekolah, puskesmas, dan kantor, yang sudah dinilai ketahanannya terhadap gempa?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-gempa-4", "teks": "Pelatihan atau perbaikan bangunan apa yang pernah dilakukan di {wilayah} untuk menghadapi gempa?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "2b-gempa-5", "teks": "Kajian apa yang paling dibutuhkan agar {wilayah} lebih siap menghadapi gempa: kondisi tanah, kerentanan bangunan, atau rencana evakuasi?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "2b-gempa-6", "teks": "Bantuan apa dari perguruan tinggi yang diharapkan untuk menilai ketahanan bangunan terhadap gempa di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "tsunami": [
+      {"id": "2b-tsunami-1", "teks": "Kawasan pesisir mana di {wilayah} yang menurut catatan setempat pernah atau mungkin terdampak tsunami atau gelombang besar?", "arah": "konfirmasi", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-tsunami-2", "teks": "Apa yang membuat warga pesisir {wilayah} sulit menyelamatkan diri saat ada peringatan tsunami: jarak ke tempat tinggi, jalur, atau kepercayaan pada peringatan?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "2b-tsunami-3", "teks": "Jalur dan tempat evakuasi tsunami apa yang sudah tersedia di {wilayah}, dan kapan terakhir diperiksa?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-tsunami-4", "teks": "Latihan evakuasi tsunami apa yang pernah dilakukan di {wilayah}, dan berapa warga yang ikut?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "2b-tsunami-5", "teks": "Kajian apa yang paling dibutuhkan agar jalur dan tempat evakuasi tsunami di {wilayah} lebih tepat?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "2b-tsunami-6", "teks": "Dukungan apa dari perguruan tinggi yang diharapkan untuk menyiapkan evakuasi tsunami di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "gunungapi": [
+      {"id": "2b-gunungapi-1", "teks": "Gunung api mana yang paling memengaruhi {wilayah}, dan seberapa sering aktivitasnya mengganggu warga?", "arah": "konfirmasi", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-gunungapi-2", "teks": "Apa yang membuat warga di sekitar gunung api {wilayah} sulit mengungsi tepat waktu?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "2b-gunungapi-3", "teks": "Jalur evakuasi, tempat pengungsian, dan sistem peringatan apa yang tersedia untuk warga zona rawan gunung api di {wilayah}?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-gunungapi-4", "teks": "Latihan atau pengungsian apa yang pernah dijalankan di {wilayah} saat status gunung api naik?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "2b-gunungapi-5", "teks": "Data apa yang paling dibutuhkan agar kawasan rawan gunung api di {wilayah} lebih jelas dan mudah dipahami warga?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "2b-gunungapi-6", "teks": "Bantuan apa dari perguruan tinggi yang diharapkan untuk memantau dan menjelaskan risiko gunung api di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "kekeringan": [
+      {"id": "2b-kekeringan-1", "teks": "Data kami mencatat {n_kejadian} pada {periode} di {wilayah}. Apakah angka itu sesuai dengan catatan setempat tentang musim kering yang parah?", "arah": "konfirmasi", "isian": ["n_kejadian", "periode", "wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-kekeringan-2", "teks": "Kecenderungan kejadian kekeringan di {wilayah} adalah {tren_kata}. Apa penyebab utamanya menurut pengalaman setempat: curah hujan, sumber air, atau pola tanam?", "arah": "akar", "isian": ["wilayah", "tren_kata"], "syarat": null, "prioritas": 1},
+      {"id": "2b-kekeringan-3", "teks": "Sumber air cadangan apa yang tersedia di {wilayah} saat kemarau, dan siapa yang mengelolanya?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-kekeringan-4", "teks": "Upaya mengatasi kekeringan apa yang pernah dicoba di {wilayah}, misalnya sumur, embung, atau bantuan air?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "2b-kekeringan-5", "teks": "Data apa yang paling dibutuhkan untuk memperkirakan kekeringan di {wilayah}: curah hujan, debit sumber air, atau kebutuhan air warga?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "2b-kekeringan-6", "teks": "Dukungan apa dari perguruan tinggi yang diharapkan untuk memperkirakan dan mengelola kekeringan di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "karhutla": [
+      {"id": "2b-karhutla-1", "teks": "Data satelit mencatat {n_kejadian} pada {periode} di {wilayah}. Titik mana yang benar-benar menjadi kebakaran, dan mana yang bukan?", "arah": "konfirmasi", "isian": ["n_kejadian", "periode", "wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-karhutla-2", "teks": "Kecenderungan titik panas di {wilayah} adalah {tren_kata}. Apa pemicu kebakaran yang paling sering di lapangan: pembukaan lahan, gambut kering, atau hal lain?", "arah": "akar", "isian": ["wilayah", "tren_kata"], "syarat": null, "prioritas": 1},
+      {"id": "2b-karhutla-3", "teks": "Regu pemadam, peralatan, dan sumber air apa yang siaga di {wilayah} pada musim kebakaran?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-karhutla-4", "teks": "Upaya pencegahan kebakaran apa yang pernah dicoba di {wilayah}, misalnya pembasahan gambut, patroli, atau sekat kanal?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "2b-karhutla-5", "teks": "Data apa yang paling dibutuhkan untuk mencegah kebakaran di {wilayah}: peta gambut, tinggi muka air, atau peta kepemilikan lahan?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "2b-karhutla-6", "teks": "Bantuan apa dari perguruan tinggi yang diharapkan untuk mencegah dan memantau kebakaran lahan di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "cuaca_ekstrem": [
+      {"id": "2b-cuaca_ekstrem-1", "teks": "Data kami mencatat {n_kejadian} pada {periode} di {wilayah}. Apakah angka itu sesuai dengan catatan setempat tentang angin kencang, puting beliung, atau hujan lebat?", "arah": "konfirmasi", "isian": ["n_kejadian", "periode", "wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-cuaca_ekstrem-2", "teks": "Kecenderungan kejadian cuaca ekstrem di {wilayah} adalah {tren_kata}. Jenis kejadian apa yang paling merusak, dan mengapa?", "arah": "akar", "isian": ["wilayah", "tren_kata"], "syarat": null, "prioritas": 1},
+      {"id": "2b-cuaca_ekstrem-3", "teks": "Bagaimana warga di {wilayah} mendapat peringatan cuaca ekstrem, dan seberapa cepat peringatan itu sampai?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-cuaca_ekstrem-4", "teks": "Upaya apa yang pernah dilakukan di {wilayah} untuk mengurangi kerusakan akibat angin kencang atau hujan lebat?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "2b-cuaca_ekstrem-5", "teks": "Data atau alat apa yang paling dibutuhkan agar peringatan cuaca ekstrem di {wilayah} lebih tepat sasaran?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "2b-cuaca_ekstrem-6", "teks": "Dukungan apa dari perguruan tinggi yang diharapkan untuk memperbaiki peringatan cuaca ekstrem di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "abrasi_rob": [
+      {"id": "2b-abrasi_rob-1", "teks": "Data kami mencatat {n_kejadian} pada {periode} di {wilayah}. Garis pantai mana yang menurut warga paling cepat berubah?", "arah": "konfirmasi", "isian": ["n_kejadian", "periode", "wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-abrasi_rob-2", "teks": "Apa penyebab utama abrasi dan rob di {wilayah} menurut pengalaman setempat: penurunan tanah, hilangnya mangrove, atau bangunan di pantai?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "2b-abrasi_rob-3", "teks": "Struktur pelindung pantai apa yang ada di {wilayah}, dan bagaimana kondisinya?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-abrasi_rob-4", "teks": "Upaya penahan abrasi atau rob apa yang pernah dicoba di {wilayah}, dan bertahan berapa lama?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "2b-abrasi_rob-5", "teks": "Data apa yang paling dibutuhkan untuk menangani abrasi dan rob di {wilayah}: laju perubahan garis pantai, penurunan tanah, atau pasang tertinggi?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "2b-abrasi_rob-6", "teks": "Bantuan apa dari perguruan tinggi yang diharapkan untuk memantau dan menangani abrasi serta rob di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "udara": [
+      {"id": "2b-udara-1", "teks": "Kapan terakhir kualitas udara di {wilayah} terasa mengganggu kesehatan warga, dan di mana paling terasa?", "arah": "konfirmasi", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-udara-2", "teks": "Apa sumber utama asap atau polusi udara di {wilayah} pada musim terburuk?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "2b-udara-3", "teks": "Layanan kesehatan dan sarana apa yang siap menangani gangguan pernapasan akibat asap di {wilayah}?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-udara-4", "teks": "Imbauan atau tindakan apa yang pernah dijalankan di {wilayah} saat kualitas udara memburuk, dan apa hasilnya?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "2b-udara-5", "teks": "Data atau alat pemantau kualitas udara apa yang paling dibutuhkan di {wilayah}?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "2b-udara-6", "teks": "Dukungan apa dari perguruan tinggi yang diharapkan untuk memantau kualitas udara dan melindungi kesehatan warga {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "multi": [
+      {"id": "2b-multi-1", "teks": "Dari semua bahaya yang tercatat di {wilayah}, mana yang menurut pelaku setempat paling sering terjadi bersamaan atau beruntun?", "arah": "konfirmasi", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-multi-2", "teks": "Mengapa bahaya yang berbeda di {wilayah} sering berdampak lebih parah ketika terjadi bersamaan?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "2b-multi-3", "teks": "Bagaimana BPBD {wilayah} membagi sumber daya ketika dua bahaya terjadi hampir bersamaan?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "2b-multi-4", "teks": "Kerja sama lintas dinas apa yang pernah dijalankan di {wilayah} untuk bencana yang datang beruntun?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "2b-multi-5", "teks": "Informasi apa yang paling dibutuhkan agar {wilayah} dapat menilai risiko beberapa bahaya sekaligus?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "2b-multi-6", "teks": "Dukungan apa dari perguruan tinggi yang diharapkan untuk menyusun penilaian risiko lintas bahaya di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ]
+  },
+  "A": {
+    "A1": [
+      {"id": "3a-A01-1", "teks": "Peta atau kajian bahaya apa yang saat ini dipakai {wilayah}, dan tahun berapa dibuat?", "arah": "konfirmasi", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A01-2", "teks": "Mengapa peta bahaya {wilayah} belum rinci sampai tingkat desa?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A01-3", "teks": "Siapa di {wilayah} yang mampu membaca dan memperbarui peta bahaya?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A01-4", "teks": "Kajian bahaya apa yang pernah dikerjakan sendiri atau bersama pihak luar di {wilayah}?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "3a-A01-5", "teks": "Kajian bahaya apa yang paling mendesak dibuat atau diperbarui di {wilayah}?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A01-6", "teks": "Bagaimana perguruan tinggi dapat membantu {wilayah} membuat kajian bahaya yang lebih rinci?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "A2": [
+      {"id": "3a-A02-1", "teks": "Sistem peringatan dini apa yang saat ini berjalan di {wilayah}, dan siapa yang menerima peringatannya?", "arah": "konfirmasi", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A02-2", "teks": "Mengapa peringatan dini yang ada belum sampai ke seluruh warga di {wilayah}?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A02-3", "teks": "Siapa yang bertugas memantau dan menyebarkan peringatan dini di {wilayah}, dan bagaimana giliran jaganya?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A02-4", "teks": "Uji coba atau simulasi peringatan dini apa yang pernah dilakukan di {wilayah}?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "3a-A02-5", "teks": "Alat, sinyal, atau data apa yang paling dibutuhkan agar peringatan dini {wilayah} lebih tepat waktu?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A02-6", "teks": "Bantuan apa dari perguruan tinggi yang diharapkan untuk menguji dan memperbaiki ambang peringatan dini di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "A3": [
+      {"id": "3a-A03-1", "teks": "Bangunan pengendali bahaya apa yang ada di {wilayah}, seperti tanggul, drainase, atau penahan lereng, dan bagaimana kondisinya?", "arah": "konfirmasi", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A03-2", "teks": "Mengapa bangunan pengendali bahaya di {wilayah} cepat rusak atau tidak berfungsi sebagaimana mestinya?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A03-3", "teks": "Siapa yang bertanggung jawab merawat bangunan pengendali bahaya di {wilayah}, dan dari anggaran mana?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A03-4", "teks": "Perbaikan atau pembangunan apa yang pernah diusulkan di {wilayah}, dan apa yang terjadi pada usulan itu?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "3a-A03-5", "teks": "Bangunan pengendali apa yang paling mendesak dibangun atau diperbaiki di {wilayah}?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A03-6", "teks": "Bantuan teknis apa dari perguruan tinggi yang diharapkan untuk merancang dan menilai bangunan pengendali di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "A4": [
+      {"id": "3a-A04-1", "teks": "Apakah rencana tata ruang {wilayah} sudah memuat kawasan rawan bencana, dan tahun berapa disahkan?", "arah": "konfirmasi", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A04-2", "teks": "Mengapa permukiman tetap tumbuh di kawasan rawan bencana di {wilayah}?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A04-3", "teks": "Siapa yang mengawasi pemanfaatan ruang di kawasan rawan bencana di {wilayah}?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A04-4", "teks": "Relokasi, pembatasan izin, atau penataan kawasan apa yang pernah dicoba di {wilayah}?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "3a-A04-5", "teks": "Data apa yang dibutuhkan agar keputusan izin bangunan di {wilayah} mempertimbangkan risiko bencana?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A04-6", "teks": "Dukungan apa dari perguruan tinggi yang diharapkan untuk mengaitkan peta risiko dengan tata ruang {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "A5": [
+      {"id": "3a-A05-1", "teks": "Basis data kami belum mencatat {dokumen_kurang} untuk {wilayah}. Apakah dokumen itu memang belum ada, atau sudah ada tetapi belum tercatat?", "arah": "konfirmasi", "isian": ["dokumen_kurang", "wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A05-2", "teks": "Mengapa rencana penanggulangan bencana (RPB) {wilayah} belum tercatat atau belum diperbarui?", "arah": "akar", "isian": ["wilayah"], "syarat": "rpb == false", "prioritas": 1},
+      {"id": "3a-A05-3", "teks": "Siapa yang memegang naskah asli dokumen rencana bencana {wilayah}, dan di mana disimpan?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A05-4", "teks": "Penyusunan atau pembaruan dokumen apa yang sedang atau pernah dikerjakan di {wilayah}, dan apa hambatannya?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "3a-A05-5", "teks": "Dokumen apa yang paling mendesak disusun atau diperbarui di {wilayah}, dan bantuan apa yang dibutuhkan?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A05-6", "teks": "Pendampingan seperti apa dari perguruan tinggi yang diharapkan dalam menyusun dokumen rencana bencana {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "A6": [
+      {"id": "3a-A06-1", "teks": "Berapa desa di {wilayah} yang memiliki program desa tangguh bencana, dan berapa yang masih aktif?", "arah": "konfirmasi", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A06-2", "teks": "Mengapa kegiatan kesiapsiagaan warga di {wilayah} sulit bertahan setelah pelatihan selesai?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A06-3", "teks": "Siapa tokoh atau kelompok warga di {wilayah} yang bisa menggerakkan kesiapsiagaan, dan apa yang mereka butuhkan?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A06-4", "teks": "Latihan, simulasi, atau penyuluhan apa yang pernah dilakukan di {wilayah} dalam dua tahun terakhir?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "3a-A06-5", "teks": "Bahan, pelatihan, atau pendamping apa yang paling dibutuhkan warga {wilayah} untuk siap menghadapi bencana?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A06-6", "teks": "Peran apa yang diharapkan dari mahasiswa dan dosen untuk menguatkan kesiapsiagaan warga {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "A7": [
+      {"id": "3a-A07-1", "teks": "Data kami mencatat sekitar {jiwa_rentan} balita dan lansia di {wilayah}. Apakah ada data setempat yang lebih rinci, misalnya sampai tingkat desa?", "arah": "konfirmasi", "isian": ["jiwa_rentan", "wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A07-2", "teks": "Mengapa balita, lansia, dan penyandang disabilitas paling sulit terjangkau saat bencana di {wilayah}?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A07-3", "teks": "Layanan kesehatan dan sosial apa yang siap menjangkau kelompok rentan saat bencana di {wilayah}?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A07-4", "teks": "Program khusus apa yang pernah dijalankan untuk melindungi kelompok rentan saat bencana di {wilayah}?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "3a-A07-5", "teks": "Data atau sarana apa yang paling dibutuhkan untuk melindungi kelompok rentan di {wilayah}?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A07-6", "teks": "Bantuan apa dari perguruan tinggi bidang kesehatan dan sosial yang diharapkan untuk kelompok rentan di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "A8": [
+      {"id": "3a-A08-1", "teks": "Gudang, kendaraan, dan peralatan apa yang tercatat milik BPBD {wilayah}, dan bagaimana kondisinya?", "arah": "konfirmasi", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A08-2", "teks": "Mengapa bantuan logistik di {wilayah} sering terlambat sampai ke lokasi terdampak?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A08-3", "teks": "Siapa yang mengelola stok logistik di {wilayah}, dan seberapa sering stok diperiksa?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A08-4", "teks": "Pemetaan atau perbaikan jalur logistik apa yang pernah dilakukan di {wilayah}?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "3a-A08-5", "teks": "Peralatan atau sarana apa yang paling kurang untuk menjangkau wilayah terpencil di {wilayah}?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A08-6", "teks": "Dukungan apa dari perguruan tinggi yang diharapkan untuk menata logistik kebencanaan di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "A9": [
+      {"id": "3a-A09-1", "teks": "Dalam 12 bulan terakhir tercatat {dampak_12bln} di {wilayah}. Apakah catatan itu lengkap, dan apa yang belum masuk?", "arah": "konfirmasi", "isian": ["dampak_12bln", "wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A09-2", "teks": "Mengapa pemulihan setelah bencana di {wilayah} sering berjalan lambat?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A09-3", "teks": "Siapa yang menangani pengkajian kebutuhan pascabencana di {wilayah}, dan seberapa terlatih timnya?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A09-4", "teks": "Rehabilitasi dan rekonstruksi apa yang pernah dijalankan di {wilayah}, dan mana yang belum selesai?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "3a-A09-5", "teks": "Bantuan apa yang paling dibutuhkan agar pemulihan di {wilayah} lebih cepat: data kerusakan, dana, atau pendampingan teknis?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A09-6", "teks": "Peran apa yang diharapkan dari perguruan tinggi dalam pengkajian dan pemulihan pascabencana di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "A10": [
+      {"id": "3a-A10-1", "teks": "Berapa anggaran penanggulangan bencana {wilayah} pada tahun berjalan, dan dari sumber mana saja?", "arah": "konfirmasi", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A10-2", "teks": "Mengapa anggaran penanggulangan bencana di {wilayah} sulit mencukupi kebutuhan?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A10-3", "teks": "Siapa yang menyusun dan mengawal usulan anggaran kebencanaan di {wilayah}?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "3a-A10-4", "teks": "Sumber dana lain apa yang pernah dicoba di {wilayah}, misalnya hibah, dana desa, atau tanggung jawab sosial perusahaan?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "3a-A10-5", "teks": "Kegiatan kebencanaan apa yang paling perlu didanai lebih dulu di {wilayah}?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "3a-A10-6", "teks": "Bantuan apa dari perguruan tinggi yang diharapkan untuk menyusun usulan dana bersama bagi {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ]
+  },
+  "narasumber": {
+    "bpbd": [
+      {"id": "4n-bpbd-1", "teks": "Bagaimana susunan BPBD {wilayah} saat ini: jumlah pegawai, bidang, dan pelaksana lapangan?", "arah": "konfirmasi", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "4n-bpbd-2", "teks": "Dalam 12 bulan terakhir tercatat {dampak_12bln} di {wilayah}. Apakah itu sesuai dengan laporan BPBD?", "arah": "konfirmasi", "isian": ["dampak_12bln", "wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "4n-bpbd-3", "teks": "Menurut BPBD, apa hambatan utama yang membuat penanganan bencana di {wilayah} belum berjalan sebagaimana mestinya?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "4n-bpbd-4", "teks": "Berapa kali BPBD {wilayah} menetapkan status darurat dalam lima tahun terakhir, dan bagaimana kesiapan sumber dayanya saat itu?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "4n-bpbd-5", "teks": "Kerja sama dengan perguruan tinggi atau lembaga lain apa yang pernah dijalankan BPBD {wilayah}, dan apa hasilnya?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "4n-bpbd-6", "teks": "Tiga masalah kebencanaan apa yang paling ingin BPBD {wilayah} selesaikan dalam dua tahun ke depan?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "4n-bpbd-7", "teks": "Data apa yang BPBD {wilayah} perlukan tetapi belum punya?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "4n-bpbd-8", "teks": "Bentuk kerja sama dengan perguruan tinggi seperti apa yang paling berguna bagi BPBD {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "bappeda": [
+      {"id": "4n-bappeda-1", "teks": "Apakah ada dokumen perencanaan daerah {wilayah} yang memuat program pengurangan risiko bencana, dan tahun berapa berlaku?", "arah": "konfirmasi", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "4n-bappeda-2", "teks": "Data kami mencatat skor IRBI {wilayah} sebesar {skor_irbi}, kelas {kelas_irbi}. Apakah angka itu dipakai dalam perencanaan daerah?", "arah": "konfirmasi", "isian": ["wilayah", "skor_irbi", "kelas_irbi"], "syarat": null, "prioritas": 2},
+      {"id": "4n-bappeda-3", "teks": "Mengapa usulan program kebencanaan di {wilayah} sering tidak masuk prioritas pembangunan?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "4n-bappeda-4", "teks": "Siapa di Bappeda yang menangani kebencanaan, dan bagaimana koordinasinya dengan BPBD?", "arah": "kapasitas", "isian": [], "syarat": null, "prioritas": 2},
+      {"id": "4n-bappeda-5", "teks": "Program lintas dinas apa yang pernah dirancang di {wilayah} untuk mengurangi risiko bencana?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "4n-bappeda-6", "teks": "Data atau kajian apa yang Bappeda butuhkan untuk menimbang risiko bencana dalam rencana pembangunan {wilayah}?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": "perda_pb == false", "prioritas": 1},
+      {"id": "4n-bappeda-7", "teks": "Data kami belum mencatat perda penanggulangan bencana untuk {wilayah}. Dukungan kajian apa yang dibutuhkan untuk menyusunnya?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "4n-bappeda-8", "teks": "Bantuan apa dari perguruan tinggi yang paling membantu Bappeda {wilayah} dalam perencanaan berbasis risiko?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "pu": [
+      {"id": "4n-pu-1", "teks": "Apakah dinas memiliki daftar terbaru saluran, tanggul, bendungan, dan jalan penting di {wilayah} yang rawan rusak oleh bencana?", "arah": "konfirmasi", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "4n-pu-2", "teks": "Data kami menempatkan {kec_teratas} sebagai kecamatan paling berisiko di {wilayah}. Apakah itu sesuai dengan laporan kerusakan sarana oleh dinas?", "arah": "konfirmasi", "isian": ["kec_teratas", "wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "4n-pu-3", "teks": "Apa penyebab utama kerusakan sarana air dan jalan akibat bencana di {wilayah}?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "4n-pu-4", "teks": "Bagaimana dinas merawat dan memeriksa sarana pengendali air dan jalan di {wilayah}, dan seberapa sering?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "4n-pu-5", "teks": "Perbaikan atau pembangunan sarana pengendali bencana apa yang pernah dikerjakan dinas di {wilayah}?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "4n-pu-6", "teks": "Sarana apa yang paling mendesak diperbaiki atau dibangun di {wilayah} untuk mengurangi risiko bencana?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "4n-pu-7", "teks": "Data teknis apa yang dibutuhkan dinas untuk merancang sarana yang tahan bencana di {wilayah}, misalnya debit, kondisi tanah, atau peta genangan?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "4n-pu-8", "teks": "Bantuan teknis apa dari perguruan tinggi yang diharapkan dinas PU di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "dinkes": [
+      {"id": "4n-dinkes-1", "teks": "Data kami mencatat sekitar {jiwa_rentan} balita dan lansia di {wilayah}. Apakah dinas memiliki data kelompok itu yang lebih rinci?", "arah": "konfirmasi", "isian": ["jiwa_rentan", "wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "4n-dinkes-2", "teks": "Fasilitas kesehatan apa saja di {wilayah} yang pernah terganggu oleh bencana?", "arah": "konfirmasi", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "4n-dinkes-3", "teks": "Apa kendala utama layanan kesehatan saat bencana di {wilayah}?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "4n-dinkes-4", "teks": "Tenaga dan perlengkapan kesehatan apa yang siap digerakkan saat bencana di {wilayah}?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "4n-dinkes-5", "teks": "Layanan kesehatan darurat atau pemulihan apa yang pernah dijalankan dinas di {wilayah}?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "4n-dinkes-6", "teks": "Penyakit apa yang paling sering muncul setelah bencana di {wilayah}, dan pencegahan apa yang dibutuhkan?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "4n-dinkes-7", "teks": "Data apa yang dibutuhkan dinas untuk menyiapkan layanan kesehatan sebelum musim bencana di {wilayah}?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "4n-dinkes-8", "teks": "Dukungan apa dari perguruan tinggi bidang kesehatan yang diharapkan dinas di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ],
+    "dinsos": [
+      {"id": "4n-dinsos-1", "teks": "Dalam 12 bulan terakhir tercatat {dampak_12bln} di {wilayah}. Apakah itu sesuai dengan data dinas?", "arah": "konfirmasi", "isian": ["dampak_12bln", "wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "4n-dinsos-2", "teks": "Berapa lama rata-rata warga mengungsi setelah bencana di {wilayah}, menurut catatan dinas?", "arah": "konfirmasi", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "4n-dinsos-3", "teks": "Apa penyebab utama pengungsi di {wilayah} sulit kembali ke kehidupan normal?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "4n-dinsos-4", "teks": "Bagaimana dinas mendata dan melayani pengungsi dan kelompok rentan saat bencana di {wilayah}?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "4n-dinsos-5", "teks": "Bantuan sosial atau pemberdayaan apa yang pernah dijalankan untuk warga terdampak bencana di {wilayah}?", "arah": "upaya", "isian": ["wilayah"], "syarat": null, "prioritas": 3},
+      {"id": "4n-dinsos-6", "teks": "Bantuan atau layanan apa yang paling kurang bagi warga terdampak di {wilayah}?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "4n-dinsos-7", "teks": "Data apa yang dibutuhkan dinas untuk menentukan warga yang paling perlu dibantu setelah bencana?", "arah": "kebutuhan", "isian": [], "syarat": null, "prioritas": 1},
+      {"id": "4n-dinsos-8", "teks": "Bantuan apa dari perguruan tinggi yang diharapkan dinas sosial, misalnya pendataan atau pendampingan psikososial?", "arah": "harapan", "isian": [], "syarat": null, "prioritas": 1}
+    ],
+    "kades": [
+      {"id": "4n-kades-1", "teks": "Kejadian bencana apa saja yang paling diingat warga desa ini dalam sepuluh tahun terakhir?", "arah": "konfirmasi", "isian": [], "syarat": null, "prioritas": 2},
+      {"id": "4n-kades-2", "teks": "Data kami menyebut {kec_teratas} sebagai kecamatan paling berisiko di {wilayah}. Apakah desa ini termasuk wilayah yang paling sering terdampak?", "arah": "konfirmasi", "isian": ["kec_teratas", "wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "4n-kades-3", "teks": "Menurut warga desa, mengapa bencana di sini sering menimbulkan kerugian besar?", "arah": "akar", "isian": [], "syarat": null, "prioritas": 1},
+      {"id": "4n-kades-4", "teks": "Siapa di desa yang bisa menggerakkan warga saat bencana, dan alat apa yang tersedia?", "arah": "kapasitas", "isian": [], "syarat": null, "prioritas": 2},
+      {"id": "4n-kades-5", "teks": "Kegiatan bersama warga apa yang pernah dilakukan desa untuk mengurangi dampak bencana?", "arah": "upaya", "isian": [], "syarat": null, "prioritas": 3},
+      {"id": "4n-kades-6", "teks": "Apa yang paling dibutuhkan desa ini agar warganya lebih siap menghadapi bencana?", "arah": "kebutuhan", "isian": [], "syarat": null, "prioritas": 1},
+      {"id": "4n-kades-7", "teks": "Informasi apa yang paling ingin diterima desa dari pemerintah daerah sebelum bencana datang?", "arah": "kebutuhan", "isian": [], "syarat": null, "prioritas": 1},
+      {"id": "4n-kades-8", "teks": "Bantuan apa yang diharapkan desa dari mahasiswa atau dosen yang datang membantu?", "arah": "harapan", "isian": [], "syarat": null, "prioritas": 1}
+    ],
+    "warga": [
+      {"id": "4n-warga-1", "teks": "Bencana apa yang paling sering dialami warga di sekitar sini dalam sepuluh tahun terakhir?", "arah": "konfirmasi", "isian": [], "syarat": null, "prioritas": 2},
+      {"id": "4n-warga-2", "teks": "Kapan terakhir bencana mengenai rumah atau keluarga di sini, dan apa yang terjadi?", "arah": "konfirmasi", "isian": [], "syarat": null, "prioritas": 2},
+      {"id": "4n-warga-3", "teks": "Menurut warga, mengapa kerusakan akibat bencana di sini bisa separah itu?", "arah": "akar", "isian": [], "syarat": null, "prioritas": 1},
+      {"id": "4n-warga-4", "teks": "Dari mana warga biasanya mendapat kabar peringatan bencana, dan apakah selalu sampai tepat waktu?", "arah": "kapasitas", "isian": [], "syarat": null, "prioritas": 2},
+      {"id": "4n-warga-5", "teks": "Apa yang dilakukan warga sendiri untuk melindungi rumah dan keluarga dari bencana?", "arah": "upaya", "isian": [], "syarat": null, "prioritas": 3},
+      {"id": "4n-warga-6", "teks": "Bantuan apa yang paling dibutuhkan warga sebelum, saat, dan sesudah bencana?", "arah": "kebutuhan", "isian": [], "syarat": null, "prioritas": 1},
+      {"id": "4n-warga-7", "teks": "Apakah warga tahu tempat dan jalur evakuasi terdekat? Jika belum, informasi apa yang diperlukan?", "arah": "kebutuhan", "isian": [], "syarat": null, "prioritas": 1},
+      {"id": "4n-warga-8", "teks": "Apa yang diharapkan warga dari pemerintah dan perguruan tinggi agar kehidupan di sini lebih aman?", "arah": "harapan", "isian": [], "syarat": null, "prioritas": 1}
+    ],
+    "usaha": [
+      {"id": "4n-usaha-1", "teks": "Kerugian usaha akibat bencana apa yang pernah dialami pelaku usaha di {wilayah}, dan berapa lama usaha terhenti?", "arah": "konfirmasi", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "4n-usaha-2", "teks": "Apakah usaha ini berada di kawasan yang disebut rawan oleh data kami, seperti kecamatan {kec_teratas} di {wilayah}?", "arah": "konfirmasi", "isian": ["kec_teratas", "wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "4n-usaha-3", "teks": "Apa penyebab utama usaha sulit pulih setelah bencana di {wilayah}?", "arah": "akar", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "4n-usaha-4", "teks": "Rencana kelangsungan usaha atau asuransi apa yang sudah dimiliki pelaku usaha di {wilayah}?", "arah": "kapasitas", "isian": ["wilayah"], "syarat": null, "prioritas": 2},
+      {"id": "4n-usaha-5", "teks": "Kerja sama dengan pemerintah atau kampus apa yang pernah dijalankan usaha ini untuk menghadapi bencana?", "arah": "upaya", "isian": [], "syarat": null, "prioritas": 3},
+      {"id": "4n-usaha-6", "teks": "Informasi atau layanan apa yang paling dibutuhkan pelaku usaha {wilayah} untuk mengurangi kerugian bencana?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "4n-usaha-7", "teks": "Dukungan pembiayaan atau pelatihan apa yang dibutuhkan agar usaha di {wilayah} bisa cepat pulih?", "arah": "kebutuhan", "isian": ["wilayah"], "syarat": null, "prioritas": 1},
+      {"id": "4n-usaha-8", "teks": "Peran apa yang diharapkan pelaku usaha dari perguruan tinggi dalam kesiapsiagaan bencana di {wilayah}?", "arah": "harapan", "isian": ["wilayah"], "syarat": null, "prioritas": 1}
+    ]
+  },
+  "data_diminta": {
+    "A1": [
+      {"id": "d-A01-1", "teks": "Peta bahaya dan kajian risiko terbaru {wilayah}, beserta tahun pembuatannya", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A01-2", "teks": "Catatan kejadian bencana tingkat desa dan kecamatan {wilayah} yang belum masuk basis data nasional", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A01-3", "teks": "Data curah hujan, debit sungai, atau muka air dari pos pemantau di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A01-4", "teks": "Laporan kajian atau penelitian bahaya yang pernah dikerjakan pihak luar di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A01-5", "teks": "Peta batas wilayah dan penggunaan lahan terbaru {wilayah} dalam format digital", "arah": null, "isian": ["wilayah"], "syarat": null}
+    ],
+    "A2": [
+      {"id": "d-A02-1", "teks": "Daftar alat peringatan dini yang terpasang di {wilayah}, lokasi, dan kondisinya", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A02-2", "teks": "Prosedur penyebaran peringatan dini dan daftar penerimanya di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A02-3", "teks": "Catatan peringatan yang pernah dikeluarkan dan waktu sampainya ke warga di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A02-4", "teks": "Ambang batas peringatan yang dipakai di {wilayah}, beserta dasar penetapannya", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A02-5", "teks": "Catatan simulasi atau uji sistem peringatan dini di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null}
+    ],
+    "A3": [
+      {"id": "d-A03-1", "teks": "Daftar tanggul, drainase, penahan lereng, dan bangunan pengendali lain di {wilayah} beserta kondisinya", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A03-2", "teks": "Anggaran dan jadwal perawatan bangunan pengendali bahaya di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A03-3", "teks": "Gambar teknis atau laporan perancangan bangunan pengendali yang tersedia di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A03-4", "teks": "Catatan kerusakan bangunan pengendali pada kejadian terakhir di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A03-5", "teks": "Daftar usulan pembangunan bangunan pengendali yang belum terlaksana di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null}
+    ],
+    "A4": [
+      {"id": "d-A04-1", "teks": "Dokumen rencana tata ruang wilayah {wilayah} beserta petanya", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A04-2", "teks": "Peta kawasan rawan bencana yang termuat dalam rencana tata ruang {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A04-3", "teks": "Data izin mendirikan bangunan di kawasan rawan bencana di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A04-4", "teks": "Daftar permukiman di zona merah dan rencana penataannya di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A04-5", "teks": "Peta tutupan dan perubahan penggunaan lahan di {wilayah} dalam sepuluh tahun terakhir", "arah": null, "isian": ["wilayah"], "syarat": null}
+    ],
+    "A5": [
+      {"id": "d-A05-1", "teks": "Dokumen rencana penanggulangan bencana (RPB) terakhir {wilayah} dan tahun pengesahannya", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A05-2", "teks": "Dokumen rencana kontinjensi {wilayah} untuk bahaya utama, beserta tahun penyusunannya", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A05-3", "teks": "Peraturan daerah tentang penanggulangan bencana dan pembentukan BPBD {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A05-4", "teks": "Struktur organisasi, daftar pegawai, dan tugas pokok BPBD {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A05-5", "teks": "Kajian risiko bencana daerah {wilayah} yang terakhir disahkan", "arah": null, "isian": ["wilayah"], "syarat": null}
+    ],
+    "A6": [
+      {"id": "d-A06-1", "teks": "Daftar desa tangguh bencana di {wilayah}, status aktif, dan kegiatan terakhirnya", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A06-2", "teks": "Catatan latihan, simulasi, dan penyuluhan kebencanaan di {wilayah} dua tahun terakhir", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A06-3", "teks": "Daftar relawan dan kelompok siaga bencana di {wilayah} beserta koordinatornya", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A06-4", "teks": "Bahan edukasi kebencanaan yang dipakai di sekolah dan desa di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A06-5", "teks": "Peta jalur dan tempat evakuasi yang sudah ditetapkan di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null}
+    ],
+    "A7": [
+      {"id": "d-A07-1", "teks": "Data kelompok rentan {wilayah} per desa: balita, lansia, penyandang disabilitas, dan ibu hamil", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A07-2", "teks": "Daftar fasilitas kesehatan di {wilayah} beserta kapasitas dan jalur menuju lokasi rawan", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A07-3", "teks": "Data penyakit yang meningkat setelah bencana di {wilayah} dalam tiga tahun terakhir", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A07-4", "teks": "Daftar sekolah dan panti di kawasan rawan di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A07-5", "teks": "Data program layanan psikososial dan bantuan khusus bagi kelompok rentan di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null}
+    ],
+    "A8": [
+      {"id": "d-A08-1", "teks": "Daftar gudang logistik, kendaraan, dan peralatan milik BPBD {wilayah} beserta kondisinya", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A08-2", "teks": "Stok logistik dan jadwal pemeriksaannya di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A08-3", "teks": "Peta jalan, jembatan, dan titik pengungsian yang dipakai saat bencana di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A08-4", "teks": "Daftar wilayah di {wilayah} yang sulit dijangkau saat bencana dan waktu tempuhnya", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A08-5", "teks": "Kesepakatan pinjam alat atau kendaraan dengan pihak lain saat bencana di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null}
+    ],
+    "A9": [
+      {"id": "d-A09-1", "teks": "Laporan kerusakan dan kerugian pada kejadian terbesar terakhir di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A09-2", "teks": "Daftar rumah rusak dan status perbaikannya setelah kejadian terakhir di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A09-3", "teks": "Dokumen pengkajian kebutuhan pascabencana (Jitupasna) yang pernah disusun di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A09-4", "teks": "Rencana rehabilitasi dan rekonstruksi yang belum selesai di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A09-5", "teks": "Data bantuan yang sudah disalurkan kepada warga terdampak di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null}
+    ],
+    "A10": [
+      {"id": "d-A10-1", "teks": "Anggaran penanggulangan bencana {wilayah} lima tahun terakhir, per sumber dana", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A10-2", "teks": "Realisasi dana siap pakai atau dana darurat di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A10-3", "teks": "Daftar proposal bantuan dana kebencanaan yang pernah diajukan {wilayah} beserta hasilnya", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A10-4", "teks": "Data kerugian ekonomi akibat bencana di {wilayah} yang tercatat dinas terkait", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "d-A10-5", "teks": "Daftar mitra swasta dan lembaga donor yang pernah membantu kebencanaan di {wilayah}", "arah": null, "isian": ["wilayah"], "syarat": null}
+    ]
+  },
+  "riset": {
+    "A1": [
+      {"id": "r-A01-1", "teks": "Faktor apa yang paling menjelaskan perbedaan tingkat bahaya {bahaya} antar kecamatan di {wilayah} pada {periode}?", "arah": null, "isian": ["bahaya", "wilayah", "periode"], "syarat": null},
+      {"id": "r-A01-2", "teks": "Seberapa akurat peta bahaya {bahaya} yang ada dibandingkan kejadian nyata di {wilayah} pada {periode}?", "arah": null, "isian": ["bahaya", "wilayah", "periode"], "syarat": null},
+      {"id": "r-A01-3", "teks": "Data lapangan apa yang paling memperbaiki pemodelan bahaya {bahaya} di {wilayah}?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null},
+      {"id": "r-A01-4", "teks": "Apa penyebab lokal perubahan kejadian {bahaya} di {wilayah}, dan bagaimana mengukurnya?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null}
+    ],
+    "A2": [
+      {"id": "r-A02-1", "teks": "Berapa lama peringatan dini {bahaya} yang realistis dapat diberikan di {wilayah}, dan data apa yang diperlukan?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null},
+      {"id": "r-A02-2", "teks": "Ambang apa yang paling tepat untuk memicu peringatan {bahaya} di {wilayah}, bila diuji pada kejadian {periode}?", "arah": null, "isian": ["bahaya", "wilayah", "periode"], "syarat": null},
+      {"id": "r-A02-3", "teks": "Saluran apa yang paling cepat dan paling dipercaya warga {wilayah} untuk menerima peringatan {bahaya}?", "arah": null, "isian": ["wilayah", "bahaya"], "syarat": null},
+      {"id": "r-A02-4", "teks": "Seberapa sering peringatan {bahaya} di {wilayah} meleset, dan apa penyebabnya?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null}
+    ],
+    "A3": [
+      {"id": "r-A03-1", "teks": "Bangunan pengendali apa yang paling menurunkan kerugian {bahaya} per rupiah di {wilayah}?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null},
+      {"id": "r-A03-2", "teks": "Seberapa besar kapasitas struktur pengendali {bahaya} di {wilayah} dibandingkan kejadian terbesar pada {periode}?", "arah": null, "isian": ["bahaya", "wilayah", "periode"], "syarat": null},
+      {"id": "r-A03-3", "teks": "Solusi tepat guna berbiaya rendah apa yang cocok untuk mengurangi dampak {bahaya} di {wilayah}?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null},
+      {"id": "r-A03-4", "teks": "Bagaimana perawatan bangunan pengendali {bahaya} dapat dibiayai dan dijaga berkelanjutan di {wilayah}?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null}
+    ],
+    "A4": [
+      {"id": "r-A04-1", "teks": "Berapa persen permukiman di {wilayah} berada di zona risiko {bahaya} tinggi, dan bagaimana perubahannya dalam sepuluh tahun?", "arah": null, "isian": ["wilayah", "bahaya"], "syarat": null},
+      {"id": "r-A04-2", "teks": "Perubahan penggunaan lahan apa yang paling berkaitan dengan kenaikan kejadian {bahaya} di {wilayah}?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null},
+      {"id": "r-A04-3", "teks": "Pilihan penataan ruang apa yang paling menurunkan paparan {bahaya} di {wilayah}?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null},
+      {"id": "r-A04-4", "teks": "Apa alasan warga tetap tinggal di kawasan rawan {bahaya} di {wilayah}, dan insentif apa yang mengubahnya?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null}
+    ],
+    "A5": [
+      {"id": "r-A05-1", "teks": "Apa yang menghambat penyusunan dokumen rencana bencana di {wilayah}, dan model pendampingan apa yang paling efektif?", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "r-A05-2", "teks": "Seberapa banyak isi dokumen rencana bencana {wilayah} benar-benar dijalankan?", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "r-A05-3", "teks": "Bagaimana penyusunan dokumen rencana {bahaya} di {wilayah} dapat dibuat lebih murah dan cepat tanpa mengurangi mutu?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null},
+      {"id": "r-A05-4", "teks": "Indikator apa yang paling baik menggambarkan kesiapan kelembagaan penanggulangan bencana di {wilayah}?", "arah": null, "isian": ["wilayah"], "syarat": null}
+    ],
+    "A6": [
+      {"id": "r-A06-1", "teks": "Faktor apa yang membuat program desa tangguh di {wilayah} bertahan atau berhenti?", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "r-A06-2", "teks": "Seberapa besar latihan evakuasi {bahaya} mengubah perilaku warga {wilayah} saat kejadian nyata?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null},
+      {"id": "r-A06-3", "teks": "Media dan bahasa apa yang paling efektif untuk edukasi {bahaya} di {wilayah}?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null},
+      {"id": "r-A06-4", "teks": "Peran apa yang paling efektif bagi mahasiswa dalam kesiapsiagaan {bahaya} di {wilayah}?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null}
+    ],
+    "A7": [
+      {"id": "r-A07-1", "teks": "Kelompok mana di {wilayah} yang paling sulit terjangkau saat {bahaya}, dan mengapa?", "arah": null, "isian": ["wilayah", "bahaya"], "syarat": null},
+      {"id": "r-A07-2", "teks": "Dampak kesehatan apa yang paling sering menyertai {bahaya} di {wilayah}, dan seberapa besar bebannya?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null},
+      {"id": "r-A07-3", "teks": "Bagaimana data kelompok rentan {wilayah} dapat diperbarui secara murah dan akurat?", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "r-A07-4", "teks": "Intervensi apa yang menurut penelitian menurunkan risiko kelompok rentan saat {bahaya}, dan cocokkah untuk {wilayah}?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null}
+    ],
+    "A8": [
+      {"id": "r-A08-1", "teks": "Di mana lokasi gudang logistik yang paling mempercepat bantuan {bahaya} di {wilayah}?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null},
+      {"id": "r-A08-2", "teks": "Berapa lama bantuan sampai ke wilayah terpencil saat {bahaya} di {wilayah}, dan apa penghambat terbesarnya?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null},
+      {"id": "r-A08-3", "teks": "Jenis dan jumlah stok apa yang paling tepat disiapkan untuk {bahaya} di {wilayah}?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null},
+      {"id": "r-A08-4", "teks": "Bagaimana kendaraan dan alat milik pihak lain dapat dimanfaatkan saat {bahaya} di {wilayah}?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null}
+    ],
+    "A9": [
+      {"id": "r-A09-1", "teks": "Berapa lama pemulihan rumah dan mata pencaharian setelah {bahaya} di {wilayah}, dan apa penyebab keterlambatan?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null},
+      {"id": "r-A09-2", "teks": "Seberapa akurat pendataan kerusakan awal dibandingkan hasil kajian akhir di {wilayah}?", "arah": null, "isian": ["wilayah"], "syarat": null},
+      {"id": "r-A09-3", "teks": "Pola pemulihan mana yang membuat warga {wilayah} lebih tahan terhadap {bahaya} berikutnya?", "arah": null, "isian": ["wilayah", "bahaya"], "syarat": null},
+      {"id": "r-A09-4", "teks": "Bagaimana kerugian {bahaya} di {wilayah} dapat dihitung secara seragam dan murah?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null}
+    ],
+    "A10": [
+      {"id": "r-A10-1", "teks": "Berapa kerugian ekonomi rata-rata per tahun akibat {bahaya} di {wilayah} pada {periode}?", "arah": null, "isian": ["bahaya", "wilayah", "periode"], "syarat": null},
+      {"id": "r-A10-2", "teks": "Berapa biaya pencegahan dibandingkan biaya penanganan {bahaya} di {wilayah}?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null},
+      {"id": "r-A10-3", "teks": "Sumber dana apa yang paling cocok untuk membiayai pengurangan risiko {bahaya} di {wilayah}?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null},
+      {"id": "r-A10-4", "teks": "Skema pembiayaan atau asuransi apa yang layak untuk rumah tangga dan usaha kecil terdampak {bahaya} di {wilayah}?", "arah": null, "isian": ["bahaya", "wilayah"], "syarat": null}
+    ],
+    "model": [
+      {"id": "r-model-1", "teks": "Mengapa model {bahaya} berstatus {model_status} di {wilayah}, dan data lapangan apa yang memperbaikinya?", "arah": null, "isian": ["bahaya", "model_status", "wilayah"], "syarat": "model_gagal == true"}
+    ]
+  },
+  "mengapa": ["Mengapa hal itu terjadi?", "Mengapa penyebab itu ada?", "Mengapa penyebab itu belum teratasi?"]
+}

@@ -60,6 +60,11 @@ python3 harian.py --tanggal 2026-10-25 --koordalops wa_koordalops.txt --bmkg wa_
   (pasang sekali: `npm i --prefix cache/node playwright-core@1.52.0`), dan browser di `CHROMIUM_SHELL`, headless shell
   ms-playwright, atau Chrome/Edge terpasang.
 - PDF: `pdf.py` memakai soffice bila ada, kalau tidak PowerPoint lewat COM (`python pdf.py <berkas.pptx>`).
+- **Pantau Banjir ikut diperbarui** (pemilik 5 Nov 2026): sesudah `data.json` ditulis, `jalan.py` memanggil
+  `scripts/data/dalops_banjir.py --unggah`. Kejadian banjir WA Koordalops (tanggal laphar = H-1) menimpa kondisi, angka terdampak,
+  pengungsi, dan status surut kab yang sama di `/bnpb/dalops`; kejadian baru jadi baris baru. Mesin tanpa arsip logbook menempel ke
+  berkas R2 yang tayang. Butuh `wrangler login`; gagal unggah tidak menghentikan laporan. Baris ini ikut tiap salinan `jalan.py`
+  (gerbang `tests/bnpb/dalops.test.mjs`).
 - `jalan.py` harian memanggil FIRMS dengan kunci `'publik'` (cache/raw diisi manual di Mac); tanpa cache itu `satelit.py` menarik
   dengan `FIRMS_MAP_KEY` dari `.env`.
 

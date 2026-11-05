@@ -88,6 +88,11 @@ def judul(b, a):
     return JUDUL[k].format(B=NAMA[b][0].upper() + NAMA[b][1:], b=NAMA[b])
 
 
+def lereng_teks(ls):
+    """Lereng Theil-Sen: 2 desimal; di bawah 0,01 ditulis 'di bawah 0,01' (bukan '0,000' yang berpura-pura teliti)."""
+    return "di bawah 0,01" if abs(ls) < 0.01 else idn(ls, 2)
+
+
 def idn(x, d=1):
     s = f"{x:,.{d}f}".replace(",", "#").replace(".", ",").replace("#", ".")
     return s
@@ -179,7 +184,7 @@ def bukti_komp(p, b, mt, c):
     if c == "T" and mt["T"] is not None:
         kata, ls = mt["ket"]["T"]
         blk = p["karhutla"] if b == "karhutla" else p["kejadian"]
-        return [bk(f"Tren kejadian {nm} 2015-2025 (Theil-Sen): {kata}, lereng {idn(ls, 3)} per tahun", ls, blk)]
+        return [bk(f"Tren kejadian {nm} 2015-2025 (Theil-Sen): {kata}, lereng {lereng_teks(ls)} per tahun", ls, blk)]
     if c == "D" and "D" in mt["ket"]:
         d = mt["ket"]["D"]
         kj = p["kejadian"]

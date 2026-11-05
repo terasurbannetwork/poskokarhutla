@@ -3,12 +3,19 @@
 import assert from "node:assert/strict";
 import {test} from "node:test";
 import {siapkan, berantai, ADMIN} from "./_bnpb.mjs";
-const {tanggalDari, jenisDari, normalNo} = await import("../../src/worker.js").then(() => import("../../src/wa.js"));   // worker dulu: wa.js dan worker.js saling impor
+const {tanggalDari, jenisDari, normalNo, hariWib} = await import("../../src/worker.js").then(() => import("../../src/wa.js"));   // worker dulu: wa.js dan worker.js saling impor
 
 const PDF = new TextEncoder().encode("%PDF-1.4 laphar uji");
 const uji = berantai();
 const U = await siapkan("uji-wa", {r2: true, ikat: {WA_KUNCI: "kunci-wa", WA_IZIN: "0812 3456 7890, 628999", WA_MESIN: "mesin-rahasia"}}), {api, n, mf} = U;
 const MESIN = {authorization: "Bearer mesin-rahasia"};
+/* tanggal relatif ke hari ini (WIB): src/wa.js membuang waktu terima > 7 hari dan tanggal isi > 14 hari, jadi tanggal tetap di uji gateway membusuk sendiri */
+const PAGI = Date.parse(hariWib(Date.now())) - 7 * 3600e3 + 3 * 3600e3;   // hari ini 10.00 WIB
+const D = n => new Date(PAGI + 7 * 3600e3 + n * 864e5), iso = n => D(n).toISOString().slice(0, 10);
+const BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+const HARI = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+const teksTgl = n => { const d = D(n); return `${HARI[d.getUTCDay()]}, ${d.getUTCDate()} ${BULAN[d.getUTCMonth()]} ${d.getUTCFullYear()}`; };
+const garis = n => iso(n).split("-").reverse().join("/"), padat = n => iso(n).split("-").reverse().join("");
 /* o = {dari, nama, teks, waktu, berkas: [byte, nama, tipe]}; kunci null = tanpa header */
 async function kirim(o, kunci = "kunci-wa") {
   const f = new FormData();
@@ -50,26 +57,27 @@ uji("tanpa WA_KUNCI gerbang 503", async () => {
 });
 
 uji("teks dari nomor terdaftar tersimpan dengan tanggal dan jenisnya", async () => {
-  const r = await kirim({dari: "6281234567890", nama: "Pusdalops", teks: "28/10/2026 Mohon izin menyampaikan hasil pemantauan Dit. Koordalops", waktu: Date.parse("2026-10-29T01:00:00Z")});
-  assert.equal(r.s, 200, r.t); assert.equal(r.j.tanggal, "2026-10-28"); assert.equal(r.j.jenis, "bencana"); assert.ok(r.j.id);
-  const k = await kirim({dari: "628999", teks: "#karhutla 28/10/2026 pemadaman darat Kalteng"});
+  const r = await kirim({dari: "6281234567890", nama: "Pusdalops", teks: `${garis(-1)} Mohon izin menyampaikan hasil pemantauan Dit. Koordalops`, waktu: PAGI});
+  assert.equal(r.s, 200, r.t); assert.equal(r.j.tanggal, iso(-1)); assert.equal(r.j.jenis, "bencana"); assert.ok(r.j.id);
+  const k = await kirim({dari: "628999", teks: `#karhutla ${garis(-1)} pemadaman darat Kalteng`});
   assert.equal(k.j.jenis, "karhutla");
 });
 
 uji("kiriman ulang laporan lama jatuh ke tanggal isinya; di luar jendela kembali ke aturan lama", async () => {
-  const waktu = Date.parse("2026-10-29T03:00:00Z"), dari = "6281234567890";
+  // waktu terima harus di jendela 7 hari src/wa.js, jadi relatif ke hari ini (10.00 WIB); selisih hari sama dengan versi lama (H-3, H, H-17, H+2, H-2)
+  const waktu = PAGI, dari = "6281234567890";
   const bmkg = h => `Selamat Pagi, *Bapak Kepala BNPB*,\nBerikut kami sampaikan Laporan Meteorologi dan Klimatologi (BMKG):\n\n1. PM2.5 pada hari ${h} pukul 06.00 WIB`;
-  const rekap = "*Yth. Kepala BNPB*\nMohon izin menyampaikan hasil pemantauan Dit. Koordalops BNPB tanggal 25/10/2026 pkl 07.00 WIB s.d 26/10/2026 pkl 07.00 WIB sebagai berikut:";
-  assert.equal((await kirim({dari, teks: rekap, waktu})).j.tanggal, "2026-10-26");
-  assert.equal((await kirim({dari, teks: bmkg("Senin, 26 Oktober 2026"), waktu})).j.tanggal, "2026-10-26");
-  assert.equal((await kirim({dari, teks: bmkg("Kamis, 29 Oktober 2026"), waktu})).j.tanggal, "2026-10-29");
-  assert.equal((await kirim({dari, teks: bmkg("Senin, 12 Oktober 2026"), waktu})).j.tanggal, "2026-10-29", "lewat 14 hari: aturan lama");
-  assert.equal((await kirim({dari, teks: bmkg("Sabtu, 31 Oktober 2026"), waktu})).j.tanggal, "2026-10-29", "lewat besok: aturan lama");
-  assert.equal((await kirim({dari, nama: "x", teks: "pdf", waktu, berkas: [PDF, "Laporan Harian Dit. Koordalops BNPB 27102026.docx.pdf", "application/pdf"]})).j.tanggal, "2026-10-27");
+  const rekap = `*Yth. Kepala BNPB*\nMohon izin menyampaikan hasil pemantauan Dit. Koordalops BNPB tanggal ${garis(-4)} pkl 07.00 WIB s.d ${garis(-3)} pkl 07.00 WIB sebagai berikut:`;
+  assert.equal((await kirim({dari, teks: rekap, waktu})).j.tanggal, iso(-3));
+  assert.equal((await kirim({dari, teks: bmkg(teksTgl(-3)), waktu})).j.tanggal, iso(-3));
+  assert.equal((await kirim({dari, teks: bmkg(teksTgl(0)), waktu})).j.tanggal, iso(0));
+  assert.equal((await kirim({dari, teks: bmkg(teksTgl(-17)), waktu})).j.tanggal, iso(0), "lewat 14 hari: aturan lama");
+  assert.equal((await kirim({dari, teks: bmkg(teksTgl(2)), waktu})).j.tanggal, iso(0), "lewat besok: aturan lama");
+  assert.equal((await kirim({dari, nama: "x", teks: "pdf", waktu, berkas: [PDF, `Laporan Harian Dit. Koordalops BNPB ${padat(-2)}.docx.pdf`, "application/pdf"]})).j.tanggal, iso(-2));
 });
 
 uji("duplikat kiriman ulang mengembalikan id yang sama", async () => {
-  const o = {dari: "6281234567890", teks: "28/10/2026 ulang outbox", waktu: Date.parse("2026-10-29T02:00:00Z")};
+  const o = {dari: "6281234567890", teks: "28/10/2026 ulang outbox", waktu: Date.now() - 3600e3};   // waktu terima harus di jendela 7 hari src/wa.js, jadi relatif ke sekarang
   const a = await kirim(o), b = await kirim(o);
   assert.equal(a.j.id, b.j.id); assert.equal(await n("wa_masuk", "teks = '28/10/2026 ulang outbox'"), 1);
 });
@@ -88,13 +96,13 @@ uji("berkas masuk R2, dibaca admin dan mesin; bearer salah 403; tipe terlarang d
     assert.equal(b.s, 200); assert.equal(b.t, "%PDF-1.4 laphar uji"); assert.match(b.h.get("content-disposition"), /^attachment/);
   }
   assert.equal((await api("GET", "/api/wa/rekap?sampai=2026-10-29&hari=1", undefined, MESIN)).s, 200);
-  const h = await api("GET", "/api/wa/masuk?tanggal=2026-10-28&jenis=karhutla", undefined, ADMIN);
+  const h = await api("GET", `/api/wa/masuk?tanggal=${iso(-1)}&jenis=karhutla`, undefined, ADMIN);
   assert.equal(h.j.pesan.length, 1); assert.match(h.j.pesan[0].teks, /pemadaman/);
   assert.equal(h.j.pesan[0].kunci, null); assert.equal(h.j.pesan[0].label, "Lain-lain"); assert.equal(h.j.pesan[0].tanggal_isi, null);
-  const lp = await kirim({dari: "6281234567890", teks: "", berkas: [PDF, "Laporan Harian Dit Koordalops 27102026.pdf", "application/pdf"]});
+  const lp = await kirim({dari: "6281234567890", teks: "", berkas: [PDF, `Laporan Harian Dit Koordalops ${padat(-2)}.pdf`, "application/pdf"]});
   const semua = await api("GET", `/api/wa/masuk?tanggal=${lp.j.tanggal}`, undefined, ADMIN);   // tanpa ?jenis= : semua baris tanggal itu
   const q = semua.j.pesan.find(m => m.nama_berkas?.startsWith("Laporan Harian"));
-  assert.ok(semua.j.pesan.length >= 2, semua.t); assert.equal(q.kunci, "laphar_pdf"); assert.equal(q.label, "Laphar PDF"); assert.equal(q.tanggal_isi, "2026-10-27");
+  assert.ok(semua.j.pesan.length >= 2, semua.t); assert.equal(q.kunci, "laphar_pdf"); assert.equal(q.label, "Laphar PDF"); assert.equal(q.tanggal_isi, iso(-2));
   const x = await kirim({dari: "6281234567890", teks: "dengan exe", berkas: [PDF, "a.exe", "application/x-msdownload"]});
   assert.equal(x.j.disimpan, true);
   const l = await api("GET", `/api/wa/masuk?tanggal=${x.j.tanggal}`, undefined, ADMIN);

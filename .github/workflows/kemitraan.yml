@@ -26,13 +26,15 @@ jobs:
           python-version: "3.12"
 
       - name: Kode wilayah
-        run: python3 -I scripts/kemitraan/kode.py --cek && python3 -I scripts/kemitraan/kode.py
+        run: python3 -I scripts/kemitraan/kode.py && python3 -I scripts/kemitraan/kode.py --cek
 
       - name: Uji mandiri geo dan masalah
         run: python3 -I scripts/kemitraan/geo.py --cek && python3 -I scripts/kemitraan/masalah.py --cek
 
       - name: Profil daerah
-        run: python3 -I scripts/kemitraan/profil_daerah.py --cek && python3 -I scripts/kemitraan/profil_daerah.py
+        # bangun DULU, baru --cek: masukan (ISPU, risiko, tanggal terbit) diperbarui pipeline lain tiap hari, jadi --cek sebelum bangun
+        # selalu merah begitu hulu berubah dan workflow ini tak pernah bisa memperbarui dirinya (merah 4-5 Nov 2026)
+        run: python3 -I scripts/kemitraan/profil_daerah.py && python3 -I scripts/kemitraan/profil_daerah.py --cek
 
       # KM-C02: tambahkan di sini `python3 -I scripts/kemitraan/pertanyaan.py --cek` (salin pertanyaan.json + kamus.json ke public/data/kemitraan).
 

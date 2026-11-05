@@ -279,7 +279,7 @@
     el.tab.addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b && b.dataset.tab !== st.tab) { st.tab = b.dataset.tab; el.tab.querySelectorAll("[data-tab]").forEach(x => x.setAttribute("aria-selected", String(x === b))); segarkan(); } });
   }
   function masuk(s) {
-    app.replaceChildren(h("div", {class: "bn-blok"}, h("h2", {teks: "Masuk staf"}), h("p", {class: "op-p", teks: s === 403 ? "Akunmu belum berhak membuka halaman ini. Hanya peran Pusdalops, Koordinator Pusdalops, dan Pimpinan." : "Halaman operasi hanya untuk staf. Masuk dulu."}), h("a", {class: "bn-tombol", href: "/admin/pantau", teks: "Masuk staf"})));
+    app.replaceChildren(h("div", {class: "bn-blok"}, h("h2", {teks: "Masuk staf"}), h("p", {class: "op-p", teks: s === 403 ? "Akunmu belum berhak membuka halaman ini. Hanya peran Pusdalops, Koordinator Pusdalops, dan Pimpinan." : "Halaman operasi hanya untuk staf. Masuk dulu."}), h("a", {class: "bn-tombol", href: "/admin/masuk?ke=" + encodeURIComponent(location.pathname + location.search), teks: "Masuk staf"})));
   }
   /* chrome urgent: tab aktif dan pesan memuat langsung; fetch dan render berat sesudah dua rAF */
   function segarkan() {
