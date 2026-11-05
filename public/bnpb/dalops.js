@@ -179,15 +179,20 @@
     const peta = new maplibregl.Map({container: wadah, style: "https://tiles.openfreemap.org/styles/positron", bounds: [[94.8, -11.2], [141.2, 6.2]],
       fitBoundsOptions: {padding: 16}, minZoom: 3, maxZoom: 13, dragRotate: false, pitchWithRotate: false, attributionControl: {compact: true}});
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-right");
-    /* saring status di samping Tutup semua: klik = hanya status itu (tombol hitam), klik lagi = semua */
-    let saring = null;
-    const terapSaring = () => { for (const id of ["kab-isi", "kab-garis"]) if (peta.getLayer(id)) peta.setFilter(id, saring ? ["==", ["get", "st"], saring] : null); };   // prakiraan: st tak pernah "prakiraan", jadi kab disembunyikan dan hanya penanda siaga tampil
-    const tSaring = [["surut", "Sudah surut", "ok"], ["belum", "Belum surut", "banjir"], ["prakiraan", "Prakiraan", "peringatan"]].map(([v, t, ik]) => {
+    /* saring di samping Tutup semua, boleh lebih dari satu (pemilik 5 Nov 2026): tak ada yang dipilih = semua tampil;
+       ada yang dipilih = hanya itu. Surut/belum menyaring wilayah kab, Siaga/Awas menyaring penanda prakiraan (lv 2/3). */
+    const saring = new Set();
+    const terapSaring = () => {
+      const st = ["surut", "belum"].filter(v => saring.has(v)), lv = [["siaga", 2], ["awas", 3]].filter(([v]) => saring.has(v)).map(([, l]) => l);
+      for (const id of ["kab-isi", "kab-garis"]) if (peta.getLayer(id)) peta.setFilter(id, saring.size ? ["in", ["get", "st"], ["literal", st]] : null);
+      if (peta.getLayer("peringatan")) peta.setFilter("peringatan", saring.size ? ["in", ["get", "lv"], ["literal", lv]] : null);
+    };
+    const tSaring = [["surut", "Sudah surut", "ok"], ["belum", "Belum surut", "banjir"], ["siaga", H.NAMA_LEVEL[2], "peringatan"], ["awas", H.NAMA_LEVEL[3], "peringatan"]].map(([v, t, ik]) => {
       const b = h("button", {type: "button", class: "dl-saring-btn dl-saring-" + v, "aria-pressed": "false"}, ikon(ik), t);
-      b.addEventListener("click", () => { saring = saring === v ? null : v; tSaring.forEach(x => x.setAttribute("aria-pressed", String(x === b && saring === v))); terapSaring(); });
+      b.addEventListener("click", () => { saring.has(v) ? saring.delete(v) : saring.add(v); b.setAttribute("aria-pressed", String(saring.has(v))); terapSaring(); });
       return b;
     });
-    wadah.append(legenda, h("div", {class: "dl-peta-alat"}, h("div", {class: "dl-saring", role: "group", "aria-label": "Saring status surut"}, tSaring), ...(kontrol ? [kontrol] : [])));   // legenda tengah bawah; tombol Buka semua di samping +/−
+    wadah.append(legenda, h("div", {class: "dl-peta-alat"}, h("div", {class: "dl-saring", role: "group", "aria-label": "Saring peta: status surut dan prakiraan"}, tSaring), ...(kontrol ? [kontrol] : [])));   // legenda tengah bawah; tombol Buka semua di samping +/−
     peta.touchZoomRotate.disableRotation();
     const css = getComputedStyle(document.documentElement), warna = n => css.getPropertyValue(n).trim();
     peta.on("load", () => {
@@ -207,6 +212,7 @@
           peta.addLayer({id: "batas-prov", type: "line", source: "batas-prov", paint: {"line-color": "#0b2545", "line-width": ["interpolate", ["linear"], ["zoom"], 4, .9, 8, 2], "line-opacity": .75}});
         }
         pasangPeringatan(peta, waspada, semuaKab, SEMUA_PROV, hariSt, warna);
+        terapSaring();   // penanda dipasang belakangan: saring yang sudah dipilih ikut berlaku
       });
       let sorot = null;
       peta.on("mousemove", "kab-isi", e => { const id = e.features[0].id; if (sorot !== null && sorot !== id) peta.setFeatureState({source: "kab", id: sorot}, {sorot: false}); sorot = id; peta.setFeatureState({source: "kab", id}, {sorot: true}); peta.getCanvas().style.cursor = "pointer"; });
@@ -483,7 +489,7 @@
   function panelLaporan(p) {
     p.append(h("div", {class: "dl-lp-grid"}, ...KARTU_LAPORAN.map(([href, judul, isi, jenis]) =>
       h("a", {class: "dl-lp-k", href}, ikon("simpan"), h("b", {teks: judul}), h("span", {teks: isi}), h("small", {teks: jenis})))),
-      h("h3", {class: "dl-lp-jd", teks: "Arsip laporan harian"}), h("div", {id: "arsipLaporan"}));
+      h("div", {id: "arsipLaporan"}));   // judul "Arsip laporan harian" dari arsip_laporan.js sendiri
   }
   function bukaLaporan() {
     if (arsipDimuat) return window.ArsipLaporan?.muat();
