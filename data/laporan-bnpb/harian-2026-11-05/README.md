@@ -20,3 +20,6 @@
   - Atasan ("oke buat lampiran aja", soal selesai 5 jadi 3): lampiran halaman 7 sesudah penutup, `harian.Deck.lampiran_selesai`.
     Membandingkan `data.json` kemarin: selesai kemarin, tidak dilaporkan lagi, kembali ditangani, baru selesai, selesai hari laporan.
     `jalan.py` mencari `harian-<kemarin>/kerja-<ddmmyy>/data.json`; bila tidak ada, lampiran dilewati.
+  - Atasan sore: label banjir selesai yang BPBD-nya menulis surut diseragamkan jadi "Banjir sudah surut" (`keterangan()`);
+    nama + pil tanggal kekeringan satu blok di tengah baris; lampiran berjudul "Lampiran: Perbandingan Hari Sebelumnya" dan
+    tidak masuk indikator bagian.

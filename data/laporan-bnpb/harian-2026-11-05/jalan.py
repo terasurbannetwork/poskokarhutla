@@ -166,7 +166,7 @@ nama = os.path.join(OUT, 'Laporan Kejadian Bencana Harian 051126.pptx')
 dk = harian.Deck(ke, D, wa, w, T, None); dk.BJ = None   # 29 Okt pemilik: "format seperti biasa" = 4 slide, tanpa slide status banjir
 dk.LAMPIRAN = True; dk.SIAGA = True; dk.GA_GAYAS = ['lingkaran']   # 2 Nov pemilik memilih desain lingkaran (mistar dan teks dibuang)   # 2 Nov pemilik: gunung api ke bagian Status siaga bencana   # 30 Okt manager: "ada keterangan kejadian baru, sisanya taro di lampiran"
 dk.GA = wa_harian.pvmbg(open(f'{S}/wa-pvmbg.txt', encoding='utf-8').read())   # 30 Okt: status gunung api PVMBG wajib tampil
-# 5 Nov atasan ("oke buat lampiran aja"): lampiran perubahan status selesai dibanding laporan kemarin (data.json kemarin)
+# 5 Nov atasan ("oke buat lampiran aja"): lampiran (tanpa indikator bagian, pemilik 5 Nov) perubahan status selesai dibanding laporan kemarin (data.json kemarin)
 T0 = T - dt.timedelta(days=1); D0_ = os.path.join(S, '..', f'harian-{T0.isoformat()}', f'kerja-{T0:%d%m%y}', 'data.json')
 if os.path.exists(D0_): dk.LAMP_TAMBAH = [dk.lampiran_selesai(json.load(open(D0_, encoding='utf-8')), T0, HL.title())]
 else: print('lampiran selesai dilewati: tidak ada', D0_)
@@ -181,14 +181,13 @@ lewat_deck.bingkai(nama, 'harian', 'Laporan Kejadian Bencana Harian', 'Periode 4
     tanpa_kepada='pemilik 2 Nov 2026: pil Disampaikan kepada dihapus, laporan harian dipresentasikan Kepala BNPB sendiri',
     bagian=[{'judul': 'Ringkasan Situasi', 'label': 'Ringkasan', 'halaman_tetap': [2]}, {'judul': 'Kejadian Baru', 'label': 'Kejadian baru', 'halaman_tetap': [3]},
             {'judul': 'Pengkinian Kejadian Sebelumnya', 'label': 'Pengkinian', 'halaman_tetap': [4]},
-            {'judul': 'Status Siaga Bencana', 'label': 'Status siaga', 'halaman_tetap': [5]},
-            {'judul': 'Lampiran', 'label': 'Lampiran', 'halaman_tetap': [7]}],   # halaman_tetap: tanpa pembatas (mesin)
+            {'judul': 'Status Siaga Bencana', 'label': 'Status siaga', 'halaman_tetap': [5]}],   # halaman_tetap: tanpa pembatas (mesin)
     spek_tambah={'panel_sisi': 'gelap'},   # baseline paparan Kepala 011126: panel kiri daftar isi dan pembatas berfoto sampul, gradien navy
     # 2 Nov pemilik: laporan harian tanpa slide daftar isi dan pembatas bagian; penanda bagian di atas slide tetap
     susun=[{'jenis': 'sampul'},
            {'halaman': 2, 'bagian': 1, 'sumber': f'{SK}; {SG}'}, {'halaman': 3, 'bagian': 2, 'sumber': f'{SK}; {SG}'},
            {'halaman': 4, 'bagian': 3, 'sumber': f'{SK}; {SG}'}, {'halaman': 5, 'bagian': 4, 'sumber': 'PVMBG Badan Geologi, 5 Nov 2026 06.00 WIB'},
-           {'jenis': 'penutup'}] + ([{'halaman': 7, 'bagian': 5, 'sumber': f'{SK}; laporan harian {T0.day} {harian.BULAN[T0.month - 1][:3]} {T0.year}; {SG}'}] if getattr(dk, 'LAMP_TAMBAH', None) else []))
+           {'jenis': 'penutup'}] + ([{'halaman': 7, 'sumber': f'{SK}; laporan harian {T0.day} {harian.BULAN[T0.month - 1][:3]} {T0.year}; {SG}'}] if getattr(dk, 'LAMP_TAMBAH', None) else []))
 print('mesin ok', nama)
 # KRIS di sampul dan penutup serta logo BNPB 1,3x kini bawaan mesin ppt-konsultan (deck.py pasang_kris, skala_logo_bnpb), bukan tempelan repo
 # 2 Nov: data website mengeja "Kota Pare Pare" (kunci pencocokan); di slide tampil ejaan resmi "Kota Parepare"

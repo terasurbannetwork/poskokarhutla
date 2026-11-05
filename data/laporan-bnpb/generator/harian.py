@@ -848,9 +848,11 @@ class Deck:
                 # menimpa angka KK (mulai ~8,62 jt EMU) -> pil turun ke bawah nama bila ujungnya lewat batas kolom TERDAMPAK
                 lewat = ta and (XL + 228600 + s.lebar_runs([(x['lokasi'], INK, True)], 850) + 45720 + s.pil(0, 0, ta, T_NAVY, NAVY, 'kalender_navy', sz=700, h=128016, b=False)[1]) > 8570000
                 if ta and (rp >= 290000 or (lewat and rp >= 230000)):   # 4 Nov pemilik: kekeringan ikut pil kalender laporan pertama; di bawah nama (kolom LOKASI sempit)
-                    ny = min(rp * .52, rp - 128016 - 18288)   # baris rendah: pil tetap di dalam barisnya
-                    o += s.status_ikon(XL, y + (rp - 164592) / 2, 164592, True) + s.tx(XL + 228600, y, 1100000, ny, [x['lokasi']], sz=850 if len(x['lokasi']) < 15 else 750, b=True, an='b')
-                    o += s.pil(XL + 228600, y + ny + 9144, ta, T_NAVY, NAVY, 'kalender_navy', sz=700, h=128016, b=False)[0]
+                    # 5 Nov atasan ("spacingnya berantakan"): nama + pil satu blok di tengah baris, tidak keluar ke baris atas
+                    nh, ph, gp = (137160, 128016, 18288) if rp >= 290000 else (118872, 118872, 9144)
+                    yb = y + (rp - nh - gp - ph) / 2
+                    o += s.status_ikon(XL, y + (rp - 164592) / 2, 164592, True) + s.tx(XL + 228600, yb, 1100000, nh, [x['lokasi']], sz=(850 if rp >= 290000 else 800) if len(x['lokasi']) < 15 else 750, b=True, an='ctr', wrap='none')
+                    o += s.pil(XL + 228600, yb + nh + gp, ta, T_NAVY, NAVY, 'kalender_navy', sz=700, h=ph, b=False)[0]
                 else:
                     o += s.status_ikon(XL, y + (rp - 164592) / 2, 164592, True) + s.tx(XL + 228600, y, 1100000, rp, [x['lokasi']], sz=850 if len(x['lokasi']) < 15 else 750, b=True, an='ctr')
                     if ta: o += s.pil(XL + 228600 + s.lebar_runs([(x['lokasi'], INK, True)], 850) + 45720, y + (rp - 128016) / 2, ta, T_NAVY, NAVY, 'kalender_navy', sz=700, h=128016, b=False)[0]
@@ -1016,7 +1018,7 @@ class Deck:
                 if p: return p[0][0], 'cek_navy', T_NAVY, NAVY
             return 'Selesai', 'cek_navy', T_NAVY, NAVY
         P, H = (lambda t: (t, INK, True)), (lambda t: (t, ORG, True))
-        judul = [P('Lampiran: '), H(f'{s1} dari {n1}'), P(f' kejadian selesai ({h1}), sebelumnya '), H(f'{s0} dari {n0}'), P(f' ({h0})')]
+        judul = [P('Lampiran: '), H('Perbandingan Hari Sebelumnya')]   # 5 Nov pemilik: judul tetap; angkanya di baris kartu
         sebab = ([f'{len(lagi)} tidak dilaporkan lagi'] if lagi else []) + ([f'{len(kembali)} kembali ditangani'] if kembali else []) + ([f'{len(baru_sel)} baru selesai'] if baru_sel else [])
         catatan = [f'Jumlah selesai dihitung per hari dari kejadian yang masih dilaporkan, bukan kumulatif. Tanggal {h0}: {s0} dari {n0} ({", ".join(nm_t(x) for x in sel0)}).',
                    *( [f'Tidak dilaporkan lagi pada {h1}: {", ".join(nm_t(x) for x in lagi)}.'] if lagi else []),
@@ -1507,6 +1509,9 @@ class Deck:
             if x['tangani'] and bpbd_selesai: return 'Satelit masih mendeteksi api'
             if not x['tangani'] and not bpbd_selesai: return 'Satelit tidak mendeteksi api'
             if not x['tangani']: return 'Api sudah padam'   # 31 Okt pemilik: "api telah padam" = "api sudah berhasil dipadamkan", satu label
+        # 5 Nov atasan ("kata-katanya bener-bener samain aja"): banjir selesai yang BPBD-nya menulis surut ("Air sudah mulai surut",
+        # "Banjir sudah surut", "Sungai Mas air sudah surut") satu label
+        if x.get('jenis') == 'banjir' and not x.get('tangani') and re.search(r'surut', k, re.I): return 'Banjir sudah surut'
         for bag in re.split(r'[,;.]\s+|\s+dan\s+|:\s*', k):
             b = re.sub(r'\s+(?:oleh\s+)?(?:BPBD|Tim)\b.*$', '', bag.strip()).strip(' .')
             if b and re.fullmatch(r'(?i)(?:dalam\s+)?penanganan', b): return 'Dalam penanganan'   # 4 Nov pemilik: Brebes "Penanganan" = Sumenep "Dalam penanganan"
