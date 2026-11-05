@@ -1,7 +1,7 @@
 /* Bantu bersama modul operasi Pusdalops Gelombang 2 (src/pemulihan.js, src/lapsus.js, src/rollcall.js; migrasi 0096; spek 2026-11-01-pusdalops-standar.md).
-   Gerbang urut: stafOK(pusdalops|koordalops|pimpinan) PERTAMA -> body -> validasi -> laju tulis -> D1. Tabel belum ada (migrasi 0096 belum diterapkan) = 503 jelas, rute lain tak terpengaruh. */
+   Gerbang urut: modAtauStaf(pusdalops|koordalops|pimpinan) PERTAMA -> body -> validasi -> laju tulis -> D1. Tabel belum ada (migrasi 0096 belum diterapkan) = 503 jelas, rute lain tak terpengaruh. */
 import {json, gagal, acak, bacaBody} from "./worker.js";
-import {stafOK, dalamWilayahStaf} from "./staf.js";
+import {modAtauStaf, dalamWilayahStaf} from "./staf.js";
 import {superOK} from "./posko.js";
 import {laju} from "./bnpb.js";
 import {PROV} from "./alun.js";
@@ -63,7 +63,7 @@ export const angka = (v, nama, maks, { bulat = false } = {}) => {
 };
 export const pilih = (v, sah, nama) => { if (!sah.includes(v)) tolak(`${nama} harus salah satu: ${sah.join(", ")}`); return v; };
 
-export const pintu = async (env, req) => { const o = await stafOK(env, req, PERAN); return o ? String(o).slice(0, 64) : null; };
+export const pintu = async (env, req) => { const o = await modAtauStaf(env, req, PERAN); return o ? String(o).slice(0, 64) : null; };
 const TOLAK_STAF = () => gagal(403, "hanya staf Pusdalops, Koordalops, atau Pimpinan");
 export const lajuTulis = (env, oleh, kini) => laju(env, "pd:" + oleh, "pusdalops_tulis", [[3600e3, 120]], kini);
 

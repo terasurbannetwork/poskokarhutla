@@ -9,7 +9,7 @@
     info: svg('<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'), maju: svg('<path d="M5 12h14M13 6l6 6-6 6"/>'), riwayat: svg('<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5M12 8v5l3 2"/>'),
     unduh: svg('<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>'), orang: svg('<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>'), rapor: svg('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'), tambah: svg('<path d="M12 5v14M5 12h14"/>')};
   const TON = {dilaporkan: "tunggu", diverifikasi: "info", masuk_jitupasna: "ok", diminta: "tunggu", disetujui: "info", dikirim: "info", diterima: "ok", diajukan: "tunggu", cair: "info", spj: "info", selesai: "ok", ditolak: "bahaya",
-    tercatat: "info", berlaku: "ok", segera_habis: "tunggu", kedaluwarsa: "bahaya", belum_diuji: "tunggu", aktif: "ok", pasif: "bahaya"};
+    tercatat: "info", berlaku: "ok", segera_habis: "tunggu", kedaluwarsa: "bahaya", perlu_reviu: "tunggu", penilaian_kedaluwarsa: "bahaya", aktif: "ok", pasif: "bahaya"};
   const label = s => { const t = String(s).replace(/_/g, " "); return t[0].toUpperCase() + t.slice(1); };
   const pil = (s, teks, ton) => { const t = ton || TON[s] || "info"; return `<span class="mj-pil t-${t}">${IK[t] || ""}${esc(teks ?? label(s))}</span>`; };
   const tglF = t => t ? new Date(t + "T00:00:00Z").toLocaleDateString("id-ID", {timeZone: "UTC", day: "numeric", month: "short", year: "numeric"}) : "";

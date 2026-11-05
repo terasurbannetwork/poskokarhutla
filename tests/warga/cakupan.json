@@ -38,7 +38,7 @@
     "GET /api/wa/berkas": "berkas masuk R2, dibaca admin dan mesin",
     "POST /api/jarak-pandang": "jarak pandang POST: tanpa token dan token salah 403 sebelum body dibaca",
     "GET /api/jarak-pandang": "jarak pandang: simpan lalu GET mengembalikan isi R2 dengan umur_menit",
-"POST /api/wa/form": "rute: staf saja, isian salah 400, isian sah masuk wa_masuk dan dipilih bot",
+    "POST /api/wa/form": "rute: staf saja, isian salah 400, isian sah masuk wa_masuk dan dipilih bot",
     "GET /api/wa/form/terakhir": "rute: staf saja, isian salah 400, isian sah masuk wa_masuk dan dipilih bot",
     "POST /api/wa/hasil": "hasil WA: POST hanya bearer mesin, magic byte, dua berkas wajib, timpa menyimpan revisi terbaru",
     "GET /api/wa/hasil": "hasil WA: daftar rentang tanggal dan parameter buruk 400",
@@ -972,7 +972,7 @@
     "POST /api/logbook/dummy": "logbook: dummy hanya Super Admin",
     "GET /bnpb/dokumen": "GET /bnpb/dokumen: kerangka publik tanpa cache",
     "GET /bnpb/saham": "saham: halaman /bnpb/saham pribadi",
-    "GET /bnpb/bahan":"GET /bnpb/dokumen: kerangka publik tanpa cache",
+    "GET /bnpb/bahan": "GET /bnpb/dokumen: kerangka publik tanpa cache",
     "GET /bnpb/perencanaan": "GET /bnpb/perencanaan: kerangka publik tanpa cache",
     "GET /bnpb/operasi": "GET /bnpb/operasi: kerangka publik tanpa cache",
     "GET /bnpb/operasi-lapangan": "GET /bnpb/operasi-lapangan: dialihkan ke tab Operasi peta utama",
@@ -1108,7 +1108,8 @@
     "table logbook_kejadian_cad": "salinan sementara migrasi 0091, dibuang di akhir; hasilnya diuji logbook: tiga jenis panduan resmi",
     "table logbook_entri_cad": "salinan sementara migrasi 0091, dibuang di akhir; hasilnya diuji logbook: tiga jenis panduan resmi",
     "table pengingat_cad": "salinan sementara migrasi 0088, dibuang di akhir; hasilnya diuji 'migrasi 0088: pengingat dibangun ulang'",
-    "table korban_cadang": "daftar tetap: JS == CHECK migrasi == klien"
+    "table meja_catatan_cadang": "tabel cadangan sementara di migrations/0110_meja_rehab_lepas.sql: dibuat dan dibuang di migrasi yang sama saat meja_catatan dibangun ulang (F0-3, RU-009); salin-pulih datanya diuji tests/warga/unit_skema.test.mjs R1-R10",
+    "table meja_jejak_cadang": "tabel cadangan sementara di migrations/0110_meja_rehab_lepas.sql: dibuat dan dibuang di migrasi yang sama saat meja_catatan dibangun ulang (F0-3, RU-009); salin-pulih datanya diuji tests/warga/unit_skema.test.mjs R1-R10"
   },
   "antre": {
     "batas global 600 laporan/jam": "butuh 600 baris jejak; tambahkan uji yang menyemai jejak langsung"

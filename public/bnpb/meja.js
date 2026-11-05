@@ -10,7 +10,7 @@
     info: svg('<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'), tambah: svg('<path d="M12 5v14M5 12h14"/>'), riwayat: svg('<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5M12 8v5l3 2"/>'),
     ubah: svg('<path d="M4 20h4L19 9l-4-4L4 16z"/>'), maju: svg('<path d="M5 12h14M13 6l6 6-6 6"/>'), keluar: svg('<path d="M10 4H5v16h5M15 8l4 4-4 4M19 12H9"/>'), kab: svg('<path d="M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>')};
   const TON = {dilaporkan: "tunggu", diverifikasi: "info", masuk_jitupasna: "ok", diminta: "tunggu", disetujui: "info", dikirim: "info", diterima: "ok", diajukan: "tunggu", cair: "info", spj: "info", selesai: "ok", ditolak: "bahaya",
-    tercatat: "info", berlaku: "ok", segera_habis: "tunggu", kedaluwarsa: "bahaya", belum_diuji: "tunggu", aktif: "ok", pasif: "bahaya"};
+    tercatat: "info", berlaku: "ok", segera_habis: "tunggu", kedaluwarsa: "bahaya", perlu_reviu: "tunggu", belum_diuji: "tunggu", aktif: "ok", pasif: "bahaya"};
   const label = s => { const t = String(s).replace(/_/g, " "); return t[0].toUpperCase() + t.slice(1); };
   const pil = (s, teks) => { const t = TON[s] || "info"; return `<span class="mj-pil t-${t}">${IK[t]}${esc(teks ?? label(s))}</span>`; };
   const tglF = t => t ? new Date(t + "T00:00:00Z").toLocaleDateString("id-ID", {timeZone: "UTC", day: "numeric", month: "short", year: "numeric"}) : "";
@@ -84,6 +84,7 @@
   };
   const rinci = (r, d) => `<tr><td colspan="5"><div class="mj-rincian">${M().kolom.filter(k => r.data[k.nama] != null && r.data[k.nama] !== "").map(k => `${esc(k.label)}: <b>${nilaiF(k, r.data[k.nama])}</b>`).join(", ")}</div>
     <ol class="mj-jejak">${d.jejak.map(j => `<li>${esc(label(j.ke))}${j.dari ? ` (dari ${esc(label(j.dari))})` : ""}, ${esc(waktuF(j.waktu))}${j.catatan ? `, ${esc(j.catatan)}` : ""}</li>`).join("")}</ol></td></tr>`;
+  const opsKaji = () => `<option value="">Tanpa kaji cepat induk</option>${kajiOps.map(x => `<option value="${esc(x.id)}">${esc(x.desa || x.kab)}: ${esc(label(x.data.kejadian))}, ${esc(tglF(x.data.tanggal))}</option>`).join("")}`;
   const panelForm = () => {
     if (form.mode === "stok") return `<form class="bn-blok mj-form" id="mjForm" autocomplete="off" novalidate><h2>${IK.tambah}${esc(label(form.jenis))}: ${esc(form.baris.data.gudang)}, ${esc(label(form.baris.data.barang).toLowerCase())}</h2>
       <div class="bn-baris"><label class="bn-isian">Jumlah *<input name="_jumlah" inputmode="numeric" autocomplete="off"></label><label class="bn-isian">Catatan (opsional)<input name="_catatan" maxlength="200" autocomplete="off"></label></div>
@@ -94,7 +95,7 @@
       ${m.wilayah.kec ? `<label class="bn-isian">Kecamatan *<input name="_kec" maxlength="60" autocomplete="off" value="${esc(r?.kec ?? "")}"></label>` : ""}</div>`;
     const judul = t === "baru" ? `Tambah ${m.nama.toLowerCase()}` : t === "ubah" ? `Ubah ${m.nama.toLowerCase()}` : `Pindah ke ${label(form.ke).toLowerCase()}`;
     return `<form class="bn-blok mj-form" id="mjForm" autocomplete="off" novalidate><h2>${IK.tambah}${esc(judul)}</h2>${wil}
-      ${t === "baru" && m.tautKaji ? `<label class="bn-isian">Kaji cepat induk (sudah masuk JITUPASNA) *<select name="_kaji"><option value="">${kajiOps.length ? "Pilih kaji cepat…" : "Belum ada kaji cepat yang siap"}</option>${kajiOps.map(x => `<option value="${esc(x.id)}">${esc(x.desa || x.kab)}: ${esc(label(x.data.kejadian))}, ${esc(tglF(x.data.tanggal))}</option>`).join("")}</select></label>` : ""}
+      ${t === "baru" && m.tautKaji ? `<label class="bn-isian">Kaji cepat induk (opsional, yang sudah masuk JITUPASNA)<select name="_kaji">${opsKaji()}</select></label>` : ""}
       <div class="bn-baris">${kolom.map(k => isian(k, r?.data?.[k.nama])).join("")}</div>
       ${t === "status" ? `<label class="bn-isian">Catatan (opsional)<input name="_catatan" maxlength="200" autocomplete="off"></label>` : ""}
       <div class="mj-aksi"><button class="mj-btn utama" type="submit">Simpan</button><button class="mj-btn" type="button" data-batal="1">Batal</button></div></form>`;
@@ -117,7 +118,10 @@
     if (!r.ok) { lapor(r.j.galat || `Gagal memuat (${r.s})`, false); daftar = []; } else daftar = r.j.catatan;
     buka = new Map(); gambar();
   }
-  const salah = (r, t) => { lapor(r.j.galat || `${t} (${r.s})`, false); gambar(); };
+  const salah = (r, t) => {   // galat di tempat: isian form tetap
+    lapor(r.j.galat || `${t} (${r.s})`, false);
+    const p = app.querySelector(".mj-pesan"); if (p) { p.className = "mj-pesan galat"; p.textContent = pesanT; } else gambar();
+  };
 
   /* ---------- peristiwa ---------- */
   app.addEventListener("click", async e => {
@@ -128,12 +132,14 @@
     if (t.dataset.urut) { arah = urut === t.dataset.urut ? -arah : 1; urut = t.dataset.urut; return gambar(); }
     if (t.dataset.hal) { hal += +t.dataset.hal; return gambar(); }
     if (t.dataset.baru) {
-      form = {mode: "baru"};
-      if (M().tautKaji) {   // kaji cepat siap rehab yang belum punya catatan rehab
+      if (form) return;   // ketuk ganda
+      t.disabled = true; form = {mode: "baru"}; kajiOps = []; const f0 = form; gambar();
+      if (M().tautKaji) {   // kaji cepat siap rehab yang belum punya catatan rehab; form sudah tampil, hanya <select> diisi menyusul
         const [k, rh] = await Promise.all([api("GET", "/api/meja/catatan?meja=kaji_cepat&status=masuk_jitupasna&untuk=rehab"), api("GET", "/api/meja/catatan?meja=rehab")]);
-        const dipakai = new Set((rh.j.catatan || []).map(x => x.kaji_id)); kajiOps = (k.j.catatan || []).filter(x => !dipakai.has(x.id));
+        const dipakai = new Set((rh.j.catatan || []).map(x => x.kaji_id).filter(Boolean)); kajiOps = (k.j.catatan || []).filter(x => !dipakai.has(x.id));
+        const sel = form === f0 && app.querySelector('select[name="_kaji"]'); if (sel) sel.innerHTML = opsKaji();
       }
-      return gambar();
+      return;
     }
     if (t.dataset.stok && r) { form = {mode: "stok", baris: r, jenis: t.dataset.stok}; return gambar(); }
     if (t.dataset.batal) { form = null; return gambar(); }
@@ -153,7 +159,7 @@
     }
     const kolom = m.kolom.filter(k => (k.tahap ?? null) === (form.mode === "status" ? form.ke : null)), data = ambil(f, kolom);
     const wil = {...(f.elements._desa ? {desa: f.elements._desa.value.trim() || undefined} : {}), ...(f.elements._kec ? {kec: f.elements._kec.value.trim() || undefined} : {})};
-    const r = form.mode === "baru" ? await antre.kirim("POST", "/api/meja/catatan", {meja, ...wil, ...(m.tautKaji ? {kaji_id: f.elements._kaji.value} : {}), data})
+    const r = form.mode === "baru" ? await antre.kirim("POST", "/api/meja/catatan", {meja, ...wil, ...(m.tautKaji && f.elements._kaji?.value ? {kaji_id: f.elements._kaji.value} : {}), data})
       : form.mode === "ubah" ? await antre.kirim("POST", `/api/meja/catatan/${form.baris.id}`, {aksi: "ubah", ...wil, data})
       : await antre.kirim("POST", `/api/meja/catatan/${form.baris.id}`, {aksi: "status", ke: form.ke, data, ...(f.elements._catatan.value.trim() ? {catatan: f.elements._catatan.value.trim()} : {})});
     if (!r.ok) { tombol.disabled = false; return salah(r, "Gagal menyimpan"); }

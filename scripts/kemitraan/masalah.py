@@ -26,6 +26,8 @@ JUDUL = {"A5": "{B} berisiko tinggi, belum tercatat dokumen rencana", "A1": "Kej
          "A7": "Kelompok rentan banyak di wilayah {b}", "A3k": "Karhutla di lahan gambut, pembasahan belum efektif",
          "A3g": "Bangunan di zona {b} perlu dinilai ketahanannya"}
 VONIS_AWAL = "Vonis NASIONAL"
+LABEL_UJI = {"banjir_longsor": "banjir dan longsor", "karhutla_sebaran_sel": "sebaran karhutla per sel", "karhutla_sebaran_luas": "sebaran karhutla per luas",
+             "karhutla_jejak_api": "jejak api karhutla", "karhutla_peluang": "peluang karhutla"}  # kunci internal uji balik -> teks manusia
 RE_ANGKA = re.compile(r"\d")
 MASALAH_ARTI = ("komponen H F T D P K = persentil nasional 0-1 (peringkat terendah untuk nilai kembar, per komponen dan bahaya), K = 1 - tercatat/5 langsung; "
                 "bobot dan ambang = asumsi-kebijakan (konst.py), belum dikalibrasi; skor null bila < 4 komponen tersedia; masalah dibentuk hanya bila skor >= 0,40; "
@@ -229,7 +231,7 @@ def vonis(p, b):
     u = md.get("uji") or {}
     if not all(u.get(s) == "gagal" for s in sub):
         return None
-    return bk(f"{VONIS_AWAL} uji balik model {NAMA[b]}: gagal ({', '.join(sub)}); bukan hasil uji per kabupaten", "gagal", md)
+    return bk(f"{VONIS_AWAL} uji balik model {NAMA[b]}: gagal ({', '.join(LABEL_UJI.get(x, x.replace('_', ' ')) for x in sub)}); bukan hasil uji per kabupaten", "gagal", md)
 
 
 # ---------------------------------------------------------------- nasional

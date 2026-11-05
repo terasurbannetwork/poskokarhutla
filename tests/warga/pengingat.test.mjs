@@ -91,8 +91,9 @@ uji("pendeteksi: tiap jenis terdeteksi tepat di tepi ambang (dalam/luar satu sat
   /* meja kerja */
   const lg = (umurMenit, status = "diminta") => mj("logistik", "Kab Uji", status, {barang: "beras", jumlah_diminta: 500, satuan: "kg", posko: "Posko Uji", kebutuhan_untuk: 100}, {dibuat: kini - umurMenit * MENIT});
   const L1 = lg(24 * 60 + 1), L2 = lg(24 * 60 - 1), L3 = lg(48 * 60, "disetujui");
-  const ds = (hari, status = "cair") => mj("dsp", "Kab Uji", status, {kejadian: "Banjir Uji", nomor_permohonan: "DSP/UJI/" + hari, nilai_diajukan: 1000, nilai_disetujui: 1000, nilai_cair: 1000, tgl_ajuan: tg(-90), tgl_setuju: tg(-80), tgl_cair: tg(-hari)});
-  const D1 = ds(31), D2 = ds(30), D3 = ds(60, "spj");
+  /* F0-2: DSP memakai pasal (Perban 4/2020 Pasal 21), bukan 30 hari: SPJ 3 bulan sesudah status berakhir, laporan perkembangan tanggal 5 bulan berikutnya */
+  const ds = (hari, status = "cair", extra = {}) => mj("dsp", "Kab Uji", status, {kejadian: "Banjir Uji", nomor_permohonan: "DSP/UJI/" + hari, nilai_diajukan: 1000, nilai_disetujui: 1000, nilai_cair: 1000, tgl_ajuan: tg(-90), tgl_setuju: tg(-80), tgl_cair: tg(-hari), ...extra});
+  const D1 = ds(5, "cair", {tgl_status_berakhir: tg(-200)}), D2 = ds(5, "cair", {tgl_status_berakhir: tg(-30)}), D3 = ds(60, "spj"), D4 = ds(40);
   const rk = h => mj("renkon", "Kab Uji", "tercatat", {bencana: "banjir", judul: "Renkon Banjir Uji", tgl_sah: tg(-300), berlaku_sampai: tg(h), uji_terakhir: tg(-10)});
   const R1 = rk(90), R2 = rk(91), R3 = rk(-1);
   const kj = n => mj("kaji_cepat", "Kab Uji", "masuk_jitupasna", {kejadian: "banjir", tanggal: tg(-100)}, {desa: "Desa " + n});
@@ -101,8 +102,8 @@ uji("pendeteksi: tiap jenis terdeteksi tepat di tepi ambang (dalam/luar satu sat
   const H1 = rh(K1.id, 61), H2 = rh(K2.id, 60);
   const gd = (nama, stok) => mj("gudang", "Kab Uji", "tercatat", {gudang: nama, barang: "beras", satuan: "kg", ambang_min: 100, stok_awal: stok}, {stok});
   const G1 = gd("Gudang Tepi", 100), G2 = gd("Gudang Aman", 101);   // stok == ambang (terpicu) dan ambang + 1 (tidak)
-  await U.DB.batch([...st, ...[K1, K2, L1, L2, L3, D1, D2, D3, R1, R2, R3, H1, H2, G1, G2].map(x => x.st)]);
-  Object.assign(S, {L1: L1.id, L2: L2.id, L3: L3.id, D1: D1.id, D2: D2.id, R1: R1.id, R2: R2.id, R3: R3.id, H1: H1.id, H2: H2.id, G1: G1.id, G2: G2.id});
+  await U.DB.batch([...st, ...[K1, K2, L1, L2, L3, D1, D2, D3, D4, R1, R2, R3, H1, H2, G1, G2].map(x => x.st)]);
+  Object.assign(S, {L1: L1.id, L2: L2.id, L3: L3.id, D1: D1.id, D2: D2.id, D4: D4.id, R1: R1.id, R2: R2.id, R3: R3.id, H1: H1.id, H2: H2.id, G1: G1.id, G2: G2.id});
   /* Alun-alun: butuh_bantuan terbuka > 24 jam, lewat API lalu umur dimundurkan */
   const baru = async (judul, mundurMenit, bantuan = "terbuka") => { const a = await U.api("POST", "/api/alun", {jenis: "butuh_bantuan", judul, teks: "Kami butuh bantuan segera.", bencana: "banjir", prov: "33", kab: "Kabupaten Demak"}, {"cf-connecting-ip": "10.7.0." + (1 + mundurMenit % 200)});
     assert.equal(a.s, 201, a.t); await U.DB.prepare("UPDATE alun_utas SET dibuat = ?, bantuan = ? WHERE id = ?").bind(kini - mundurMenit * MENIT, bantuan, a.j.id).run(); return a.j.id; };
@@ -110,7 +111,7 @@ uji("pendeteksi: tiap jenis terdeteksi tepat di tepi ambang (dalam/luar satu sat
 
   const p = await periksa();
   assert.equal(p.s, 200, p.t);
-  const harus = {[S.mouIn]: "mou_relawan", [S.mouHabis]: "mou_relawan", [S.pks]: "pks_riset", [S.L1]: "logistik_lambat", [S.D1]: "dsp_spj", [S.R1]: "renkon", [S.R3]: "renkon", [S.H1]: "rehab_macet", [S.G1]: "stok_rendah", [S.A1]: "bantuan_terbuka"};
+  const harus = {[S.mouIn]: "mou_relawan", [S.mouHabis]: "mou_relawan", [S.pks]: "pks_riset", [S.L1]: "logistik_lambat", [S.D1]: "dsp_spj", [S.D4]: "dsp_spj", [S.R1]: "renkon", [S.R3]: "renkon", [S.H1]: "rehab_macet", [S.G1]: "stok_rendah", [S.A1]: "bantuan_terbuka"};
   const l = await daftar();
   assert.equal(l.j.pengingat.length, Object.keys(harus).length, JSON.stringify(l.j.pengingat.map(x => [x.jenis, x.judul])));
   assert.equal(p.j.dibuat, Object.keys(harus).length);
@@ -125,13 +126,17 @@ uji("pendeteksi: tiap jenis terdeteksi tepat di tepi ambang (dalam/luar satu sat
   assert.match(dariD1[await idMou(S.mouIn)].keadaan, /^segera_habis:/); assert.match(dariD1[await idMou(S.mouHabis)].keadaan, /^habis:/);
   assert.deepEqual(Object.keys(p.j.per_jenis), DAFTAR_JENIS); assert.equal(p.j.per_jenis.renkon, 2);
   assert.equal(l.j.per_jenis.renkon, 2); assert.equal(l.j.email_siap, true);
+  /* F0-2: dua DSP terlambat dengan alasan berbeda (SPJ vs laporan perkembangan); tanda ambang internal memuat "asumsi" */
+  const dspJudul = l.j.pengingat.filter(x => x.jenis === "dsp_spj").map(x => x.judul).sort();
+  assert.equal(dspJudul.length, 2); assert.ok(dspJudul.some(j => /belum SPJ lewat 3 bulan sesudah status berakhir/.test(j)), dspJudul.join("|")); assert.ok(dspJudul.some(j => /Laporan perkembangan DSP jatuh tempo tanggal 5/.test(j)), dspJudul.join("|"));
+  for (const jn of ["logistik_lambat", "rehab_macet"]) assert.match(l.j.pengingat.find(x => x.jenis === jn).judul, /asumsi/, `${jn} adalah ambang internal`);
   for (const x of l.j.pengingat) { assert.equal(x.status, "baru"); assert.ok(!("sumber_id" in x) && !("keadaan" in x)); }
   assert.deepEqual(luarLog, [], "periksa/cron tidak boleh mengirim apa pun ke luar");
 });
 
 uji("dedup: dua kali jalan tidak menambah; baris baru hanya bila keadaan sumber berubah; kondisi hilang = baris ikut hilang; selesai/abaikan bertahan", async () => {
   const idA = (await U.DB.prepare("SELECT id FROM pengingat WHERE jenis = 'logistik_lambat'").first()).id;
-  const p2 = await periksa(); assert.equal(p2.j.dibuat, 0); assert.equal(p2.j.dihapus, 0); assert.equal(await U.n("pengingat"), 10);
+  const p2 = await periksa(); assert.equal(p2.j.dibuat, 0); assert.equal(p2.j.dihapus, 0); assert.equal(await U.n("pengingat"), 11);
   assert.equal((await U.adm("POST", `/api/pengingat/admin/${idA}`, {aksi: "selesai"})).s, 200);
   const idB = (await U.DB.prepare("SELECT id FROM pengingat WHERE jenis = 'dsp_spj'").first()).id;
   assert.equal((await U.adm("POST", `/api/pengingat/admin/${idB}`, {aksi: "abaikan"})).s, 200);
@@ -140,16 +145,16 @@ uji("dedup: dua kali jalan tidak menambah; baris baru hanya bila keadaan sumber 
   /* keadaan berubah: MoU segera_habis -> habis = baris BARU (lama diganti) */
   const mid = (await U.DB.prepare("SELECT id FROM institusi_perjanjian WHERE institusi_id = ?").bind(S.mouIn).first()).id;
   await U.DB.prepare("UPDATE institusi_perjanjian SET berakhir = ? WHERE id = ?").bind(wib(Date.now() - 2 * HARI), mid).run();
-  const p4 = await periksa(); assert.equal(p4.j.dibuat, 1); assert.equal(p4.j.dihapus, 1); assert.equal(await U.n("pengingat"), 10);
+  const p4 = await periksa(); assert.equal(p4.j.dibuat, 1); assert.equal(p4.j.dihapus, 1); assert.equal(await U.n("pengingat"), 11);
   assert.match((await U.DB.prepare("SELECT keadaan FROM pengingat WHERE sumber_id = ?").bind(mid).first()).keadaan, /^habis:/);
   /* kondisi hilang: logistik disetujui, gudang diisi ulang, utas ditangani */
   await U.DB.batch([U.DB.prepare("UPDATE meja_catatan SET status = 'disetujui' WHERE id = ?").bind(S.L1), U.DB.prepare("UPDATE meja_catatan SET stok = 500 WHERE id = ?").bind(S.G1), U.DB.prepare("UPDATE alun_utas SET bantuan = 'ditangani' WHERE id = ?").bind(S.A1)]);
-  const p5 = await periksa(); assert.equal(p5.j.dibuat, 0); assert.equal(p5.j.dihapus, 3); assert.equal(await U.n("pengingat"), 7);
+  const p5 = await periksa(); assert.equal(p5.j.dibuat, 0); assert.equal(p5.j.dihapus, 3); assert.equal(await U.n("pengingat"), 8);
   assert.equal(await U.n("pengingat", "jenis IN ('logistik_lambat', 'stok_rendah', 'bantuan_terbuka')"), 0);
   /* kambuh: stok turun lagi -> muncul lagi (barisnya dulu sudah dihapus) */
   await U.DB.prepare("UPDATE meja_catatan SET stok = 50 WHERE id = ?").bind(S.G1).run();
   assert.equal((await periksa()).j.dibuat, 1);
-  assert.equal(await U.n("pengingat"), 8);
+  assert.equal(await U.n("pengingat"), 9);
 });
 
 uji("modul sumber belum dimigrasi: jenisnya dilewati tanpa 500, jenis lain tetap diproses", async () => {

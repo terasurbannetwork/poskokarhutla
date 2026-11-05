@@ -174,7 +174,7 @@ async function cariPeraturan(env, url, a) {
   return {total: d.total, ditampilkan: d.hasil.length, hasil: d.hasil, catatan: "cuplikan memberi tanda [[kata]] pada kata yang cocok. Kutip sebagai 'label pasal + id dokumen' (mis. Pasal 5 perban-1-2026). Baca penuh dengan baca_peraturan_bnpb."};
 }
 async function bacaPeraturan(env, url, a) {
-  const d = hukumOk(await bacaDok(env, a.id, a.pasal)), meta = {id: d.id, judul: d.judul, jenis: d.jenis, nomor: d.nomor, tahun: d.tahun, status: d.status, resmi: d.resmi, sumber: d.sumber, url: d.url, pdf: d.pdf};
+  const d = hukumOk(await bacaDok(env, a.id, a.pasal)), meta = {id: d.id, judul: d.judul, jenis: d.jenis, nomor: d.nomor, tahun: d.tahun, status: d.status, resmi: d.resmi, sumber: d.sumber, url: d.url, pdf: d.pdf, dicabut_oleh: d.dicabut_oleh};
   if (a.pasal) return {...meta, segmen: d.segmen.map(s => ({label: s.label, bab: s.bab, halaman: s.halaman, teks: s.teks}))};
   let sisa = 16000; const segmen = [];
   for (const s of d.segmen) { if (sisa <= 0) break; const t = s.teks.slice(0, sisa); sisa -= t.length; segmen.push({label: s.label, bab: s.bab, halaman: s.halaman, teks: t}); }
