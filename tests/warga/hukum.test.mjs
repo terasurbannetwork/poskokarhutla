@@ -5,7 +5,7 @@ import {siapkan, berantai} from "./_bnpb.mjs";
 import {readFileSync} from "node:fs";
 import path from "node:path";
 import {AKAR, pecah} from "./_bantu.mjs";
-import {verifikasiKutipan, kueriFts, normTeks} from "../../src/hukum_spek.js";
+import {SQL_DICABUT, verifikasiKutipan, kueriFts, normTeks} from "../../src/hukum_spek.js";
 
 const uji = berantai();
 const U = await siapkan("uji-hukum", {skrip: "tests/warga/_hukum_worker.mjs"});
@@ -128,6 +128,26 @@ uji("dok: metadata + segmen berurut + relasi keluar/masuk; tidak ada = 404; id l
   assert.deepEqual(r.j.relasi.masuk.map(x => x.id), ["juknis-5-2023"]);
   assert.equal((await api("GET", "/api/hukum/dok?id=tidak-ada-1-2000", undefined, ip())).s, 404);
   for (const id of ["", "A_B", "x", "../etc"]) assert.equal((await api("GET", "/api/hukum/dok?id=" + encodeURIComponent(id), undefined, ip())).s, 400, id);
+});
+
+uji("RU-003 dicabut_oleh: mencabut/mengganti dari dokumen BERLAKU = ya; mengubah, merujuk, mengingat, pencabut tak BERLAKU = tidak; cari dan dok sepakat; indeks hukum_relasi_ke dipakai", async () => {
+  const dok = async id => (await api("GET", "/api/hukum/dok?id=" + id, undefined, ip())).j;
+  // fixture: perka-2-2012 dicabut perban-1-2026 (BERLAKU, dari seed). Tambah: juknis mengubah perban-1 (BUKAN pencabutan); perban-1 mengganti juknis? tidak: pakai dok baru.
+  await DB.batch([
+    DB.prepare("INSERT INTO hukum_dok (id, judul, status, singkatan, tahun) VALUES ('perban-9-2026', 'Pengganti Juknis', 'BERLAKU', 'PERBAN', 2026)"),
+    DB.prepare("INSERT INTO hukum_dok (id, judul, status, singkatan, tahun) VALUES ('perban-8-2026', 'Pencabut Mati', 'DICABUT', 'PERBAN', 2026)"),
+    DB.prepare("INSERT INTO hukum_relasi (dari, ke, jenis, terdaftar) VALUES ('perban-9-2026', 'juknis-5-2023', 'mengganti', 1)"),
+    DB.prepare("INSERT INTO hukum_relasi (dari, ke, jenis, terdaftar) VALUES ('perban-9-2026', 'perban-1-2026', 'mengubah', 1)"),
+    DB.prepare("INSERT INTO hukum_relasi (dari, ke, jenis, terdaftar) VALUES ('perban-8-2026', 'perban-1-2026', 'mencabut', 1)")]);
+  assert.deepEqual((await dok("perka-2-2012")).dicabut_oleh, ["perban-1-2026"], "mencabut oleh dokumen BERLAKU");
+  assert.deepEqual((await dok("juknis-5-2023")).dicabut_oleh, ["perban-9-2026"], "mengganti juga dihitung");
+  assert.deepEqual((await dok("perban-1-2026")).dicabut_oleh, [], "hanya diubah (mengubah), dirujuk (merujuk), dan dicabut oleh dokumen DICABUT: kosong");
+  const c = await cari("q=" + encodeURIComponent("rencana kontingensi")); assert.deepEqual(c.j.hasil.find(h => h.dok === "perka-2-2012").dicabut_oleh, ["perban-1-2026"]);
+  const p = await cari("q=" + encodeURIComponent("penyaluran diprioritaskan")); assert.deepEqual(p.j.hasil[0].dicabut_oleh, [], "larik, bukan null");
+  const m = JSON.parse((await alat("baca_peraturan_bnpb", {id: "perka-2-2012"})).content[0].text); assert.ok(Array.isArray(m.dicabut_oleh) || m.dicabut_oleh === undefined);
+  const rencana = (await DB.prepare(`EXPLAIN QUERY PLAN SELECT ${SQL_DICABUT} FROM hukum_dok d WHERE d.id = 'perka-2-2012'`).all()).results.map(r => r.detail).join(" | ");
+  assert.match(rencana, /hukum_relasi_ke/, "subkueri harus memakai indeks, bukan scan: " + rencana);
+  await DB.batch([DB.prepare("DELETE FROM hukum_relasi WHERE dari IN ('perban-9-2026','perban-8-2026')"), DB.prepare("DELETE FROM hukum_dok WHERE id IN ('perban-9-2026','perban-8-2026')")]);
 });
 
 uji("tanya tanpa AI: segmen teratas, model null, tidak ada jawaban karangan", async () => {

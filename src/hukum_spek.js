@@ -49,3 +49,6 @@ export function verifikasiKutipan(klaim, kirim) {
   }
   return {sah, dibuang};
 }
+
+// RU-003 F0-1 (DT §3.1): subkueri `dicabut_oleh`, murni string supaya uji bisa EXPLAIN tanpa memuat worker.
+export const SQL_DICABUT = "(SELECT group_concat(DISTINCT r.dari) FROM hukum_relasi r JOIN hukum_dok p ON p.id = r.dari WHERE r.ke = d.id AND r.jenis IN ('mencabut', 'mengganti') AND upper(p.status) = 'BERLAKU')";
