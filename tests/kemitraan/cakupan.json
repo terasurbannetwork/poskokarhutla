@@ -24,6 +24,8 @@
     "py:cocok_pakar.py": "uji:cocok_pakar",
     "py:uji_cocok.py": "uji:uji_cocok",
     "src:kemitraan.js": "peran terdeteksi benar: SA, ST, PM, KK, AG, BP, PL",
+    "src:kemitraan_akun.js": "daftar kampus: valid 201",
+    "kemitraan_hitung.statusPerjanjian": "statusPerjanjian cocok dengan kasus acuan A13",
     "js:inti.js": "cangkang KM staf: delapan segmen",
     "js:daerah.js": "cangkang KM tampilan: tiap berkas mendaftar",
     "js:masalah.js": "cangkang KM tampilan: tiap berkas mendaftar",
