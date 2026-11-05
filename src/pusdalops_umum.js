@@ -1,5 +1,5 @@
 /* Bantu bersama modul operasi Pusdalops Gelombang 2 (src/pemulihan.js, src/lapsus.js, src/rollcall.js; migrasi 0096; spek 2026-11-01-pusdalops-standar.md).
-   Gerbang urut: stafOK(pusdalops|koordalops|pimpinan) PERTAMA -> body -> validasi -> laju tulis -> D1. Tabel belum ada (migrasi 0096 belum diterapkan) = 503 jelas, rute lain tak terpengaruh. */
+   Gerbang urut: modAtauStaf(pusdalops|koordalops|pimpinan) PERTAMA -> body -> validasi -> laju tulis -> D1. Tabel belum ada (migrasi 0096 belum diterapkan) = 503 jelas, rute lain tak terpengaruh. */
 import {json, gagal, acak, bacaBody} from "./worker.js";
 import {modAtauStaf, dalamWilayahStaf} from "./staf.js";
 import {superOK} from "./posko.js";
