@@ -57,15 +57,21 @@ uji("teks dari nomor terdaftar tersimpan dengan tanggal dan jenisnya", async () 
 });
 
 uji("kiriman ulang laporan lama jatuh ke tanggal isinya; di luar jendela kembali ke aturan lama", async () => {
-  const waktu = Date.parse("2026-10-29T03:00:00Z"), dari = "6281234567890";
+  // waktu terima harus di jendela 7 hari src/wa.js, jadi relatif ke hari ini (10.00 WIB); selisih hari sama dengan versi lama (H-3, H, H-17, H+2, H-2)
+  const waktu = Date.parse(hariWib(Date.now())) - 7 * 3600e3 + 3 * 3600e3, dari = "6281234567890";
+  const D = n => new Date(waktu + 7 * 3600e3 + n * 864e5), iso = n => D(n).toISOString().slice(0, 10);
+  const BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+  const HARI = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+  const teksTgl = n => { const d = D(n); return `${HARI[d.getUTCDay()]}, ${d.getUTCDate()} ${BULAN[d.getUTCMonth()]} ${d.getUTCFullYear()}`; };
+  const garis = n => iso(n).split("-").reverse().join("/"), padat = n => iso(n).split("-").reverse().join("");
   const bmkg = h => `Selamat Pagi, *Bapak Kepala BNPB*,\nBerikut kami sampaikan Laporan Meteorologi dan Klimatologi (BMKG):\n\n1. PM2.5 pada hari ${h} pukul 06.00 WIB`;
-  const rekap = "*Yth. Kepala BNPB*\nMohon izin menyampaikan hasil pemantauan Dit. Koordalops BNPB tanggal 25/10/2026 pkl 07.00 WIB s.d 26/10/2026 pkl 07.00 WIB sebagai berikut:";
-  assert.equal((await kirim({dari, teks: rekap, waktu})).j.tanggal, "2026-10-26");
-  assert.equal((await kirim({dari, teks: bmkg("Senin, 26 Oktober 2026"), waktu})).j.tanggal, "2026-10-26");
-  assert.equal((await kirim({dari, teks: bmkg("Kamis, 29 Oktober 2026"), waktu})).j.tanggal, "2026-10-29");
-  assert.equal((await kirim({dari, teks: bmkg("Senin, 12 Oktober 2026"), waktu})).j.tanggal, "2026-10-29", "lewat 14 hari: aturan lama");
-  assert.equal((await kirim({dari, teks: bmkg("Sabtu, 31 Oktober 2026"), waktu})).j.tanggal, "2026-10-29", "lewat besok: aturan lama");
-  assert.equal((await kirim({dari, nama: "x", teks: "pdf", waktu, berkas: [PDF, "Laporan Harian Dit. Koordalops BNPB 27102026.docx.pdf", "application/pdf"]})).j.tanggal, "2026-10-27");
+  const rekap = `*Yth. Kepala BNPB*\nMohon izin menyampaikan hasil pemantauan Dit. Koordalops BNPB tanggal ${garis(-4)} pkl 07.00 WIB s.d ${garis(-3)} pkl 07.00 WIB sebagai berikut:`;
+  assert.equal((await kirim({dari, teks: rekap, waktu})).j.tanggal, iso(-3));
+  assert.equal((await kirim({dari, teks: bmkg(teksTgl(-3)), waktu})).j.tanggal, iso(-3));
+  assert.equal((await kirim({dari, teks: bmkg(teksTgl(0)), waktu})).j.tanggal, iso(0));
+  assert.equal((await kirim({dari, teks: bmkg(teksTgl(-17)), waktu})).j.tanggal, iso(0), "lewat 14 hari: aturan lama");
+  assert.equal((await kirim({dari, teks: bmkg(teksTgl(2)), waktu})).j.tanggal, iso(0), "lewat besok: aturan lama");
+  assert.equal((await kirim({dari, nama: "x", teks: "pdf", waktu, berkas: [PDF, `Laporan Harian Dit. Koordalops BNPB ${padat(-2)}.docx.pdf`, "application/pdf"]})).j.tanggal, iso(-2));
 });
 
 uji("duplikat kiriman ulang mengembalikan id yang sama", async () => {
