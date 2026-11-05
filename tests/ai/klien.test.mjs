@@ -65,6 +65,10 @@ test("labelSuhu: batas Fokus, Seimbang, Kreatif", () => {
   assert.deepEqual([0, 0.3, 0.6, 0.7, 1.3, 1.4, 2].map(labelSuhu), ["Fokus", "Fokus", "Fokus", "Seimbang", "Seimbang", "Kreatif", "Kreatif"]);
 });
 
+test("formatSumber: kutipan berkas menyebut nama berkas dan tanggal unggah", () => {
+  assert.equal(formatSumber({berkas: "Prosedur Pos", ringkas: "laporan sebelum 16.00 WIB", tanggal: "2026-11-05"}), "Berkas Prosedur Pos: laporan sebelum 16.00 WIB, diunggah 5 Nov 2026");
+});
+
 test("formatSumber: alat, ringkas, tanggal format Indonesia", () => {
   assert.equal(formatSumber({alat: "titik_panas", ringkas: "412 titik", tanggal: "2026-11-04"}), "Titik panas: 412 titik, 4 Nov 2026");
   assert.equal(formatSumber({alat: "status_wilayah", tanggal: "2026-11-04T06:05:00Z"}), "Status wilayah, 4 Nov 2026 13.05 WIB");
