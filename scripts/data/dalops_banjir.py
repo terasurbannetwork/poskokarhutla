@@ -25,8 +25,10 @@ import re
 import subprocess
 
 AKAR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-KELUAR = os.path.join(AKAR, "data/raw/dalops/banjir.json")
-KUNCI_R2 = "poskokarhutla-foto/dalops/banjir.json"
+JENIS = "banjir"   # diganti --jenis: banjir, longsor, karhutla (pemilik 5 Nov 2026: Pantau = Karhutla, Banjir, Longsor)
+JENIS_BOLEH = ("banjir", "longsor", "karhutla")
+keluar = lambda: os.path.join(AKAR, f"data/raw/dalops/{JENIS}.json")
+kunci_r2 = lambda: f"poskokarhutla-foto/dalops/{JENIS}.json"
 SEPEKAN, BUKA_MAKS = 6, 30   # hari sebelum hari logbook terakhir
 
 
@@ -50,6 +52,23 @@ def surut(teks):
         # "sudah surut di sebagian besar wilayah" dengan sisa genangan tetap belum; kecuali kalimat surutnya tegas tanpa sisa
         return False
     return bool(SUDAH.search(t))
+
+
+# longsor: tertangani bila akses/jalan sudah bisa dilalui atau material sudah dibersihkan, tanpa sisa yang masih tertutup
+LONGSOR_SELESAI = re.compile(r"\b(sudah|telah)\s+(dapat|bisa)\s+dilalui|\b(sudah|telah)\s+(normal|lancar|terbuka)|\bmaterial\s+(longsor\s+)?(sudah|telah)\s+(di)?bersih|\bpenanganan\s+(sudah|telah)\s+selesai")
+LONGSOR_BELUM = re.compile(r"\bbelum\s+(dapat|bisa)\s+dilalui|\btidak\s+(dapat|bisa)\s+dilalui|\blumpuh|\bterputus|\bterisolir|\bmasih\s+(tertutup|tertimbun|dalam\s+pencarian|dilakukan\s+pembersihan)|\bpencarian")
+# karhutla: padam bila teks menyatakan api sudah padam tanpa sisa yang masih terbakar (angka luas tetap dari sistem kita, bukan dari teks)
+KARHUTLA_PADAM = re.compile(r"\b(sudah|telah|berhasil)\s+(di)?padam|\bapi\s+padam\b|\bsisa\s+(masih\s+terbakar\s+)?0([.,]0+)?\s*ha")
+KARHUTLA_BELUM = re.compile(r"\bmasih\s+terbakar\s+[±]?\s*[1-9]|\bbelum\s+padam|\bmasih\s+(ada\s+)?(api|asap|titik)|\bpendinginan")
+
+
+def selesai(teks):
+    """status kejadian per jenis, disimpan di kolom 'surut' supaya layar satu bentuk: banjir surut, longsor tertangani, karhutla padam."""
+    if JENIS == "banjir":
+        return surut(teks)
+    t = (teks or "").lower()
+    s, b = (LONGSOR_SELESAI, LONGSOR_BELUM) if JENIS == "longsor" else (KARHUTLA_PADAM, KARHUTLA_BELUM)
+    return not b.search(t) and bool(s.search(t))
 
 
 RE_TINGGI = re.compile(r"(\d+(?:[.,]\d+)?)\s*(?:(?:s/d|s\.d\.?|sd|-|–|hingga|sampai|sampai dengan)\s*(\d+(?:[.,]\d+)?)\s*)?(cm|centimeter|sentimeter|m|meter)\b", re.I)
@@ -234,7 +253,7 @@ def riwayat(laporan, bersih=lambda t: t):
         out.append({"tgl": tgl, "kk": angka(_n(r.get("kk_terdampak")), _n(r.get("kk"))), "jiwa": angka(_n(r.get("orang_terdampak")), _n(r.get("jiwa"))),
                     "kk_u": angka(_n(r.get("kk_mengungsi"))), "jiwa_u": angka(_n(r.get("orang_mengungsi")), _n(r.get("mengungsi"))),
                     "n_kec": _n(r.get("n_kec")), "n_desa": _n(r.get("n_desa")), "tinggi_cm": tinggi_cm(kon + " " + (r.get("dampak_teks") or "")),
-                    "surut": surut(kon), "kondisi": bersih_kondisi(kon),
+                    "surut": selesai(kon), "kondisi": bersih_kondisi(kon),
                     # desa hari itu, untuk histori per kecamatan di layar
                     "desa": rincian_desa(bersih((r.get("dampak_teks") or "") + "\n" + (r.get("_desa_kondisi") or r.get("kondisi") or ""))),
                     # tindakan hari itu: upaya penanganan, pihak terlibat, kebutuhan, kendala (layar Upaya penanganan dan Histori)
@@ -275,7 +294,7 @@ def baris(k, kode_kab, bersih):
             "kk": angka(k.get("kk_terdampak"), k.get("kk")), "jiwa": angka(k.get("orang_terdampak"), k.get("jiwa")),
             "mengungsi": angka(k.get("orang_mengungsi"), k.get("mengungsi")), "kk_u": angka(k.get("kk_mengungsi")), "rumah_terendam": angka(k.get("rumah_terendam")),
             "n_kec": k.get("n_kec_total") or k.get("n_kec"), "n_desa": k.get("n_desa_total") or k.get("n_desa"),
-            "tinggi_cm": tinggi_cm(teks + " " + (k.get("dampak_teks_terakhir") or "")), "surut": surut(teks), "kondisi": bersih_kondisi(teks)}
+            "tinggi_cm": tinggi_cm(teks + " " + (k.get("dampak_teks_terakhir") or "")), "surut": selesai(teks), "kondisi": bersih_kondisi(teks)}
 
 
 def rakit(kejadian, hari, kode_kab, bersih=lambda t: t, laporan=None):
@@ -285,7 +304,7 @@ def rakit(kejadian, hari, kode_kab, bersih=lambda t: t, laporan=None):
     awal_buka = (dt.date.fromisoformat(hari) - dt.timedelta(days=BUKA_MAKS)).isoformat()
     out = []
     for k in kejadian:
-        if k.get("jenis") != "banjir" or not k.get("kabkota") or not k.get("terakhir_dicatat") or k["terakhir_dicatat"] > hari:
+        if k.get("jenis") != JENIS or not k.get("kabkota") or not k.get("terakhir_dicatat") or k["terakhir_dicatat"] > hari:
             continue
         b = baris(k, kode_kab, bersih)
         # mulai > 30 hari lalu dibuang: entri status tanggap/transisi panjang (mis. Solok sejak 21 Sep berisi catatan rapat) bukan genangan
@@ -332,7 +351,7 @@ def wa_entri(d, kode_kab):
     tgl = (dt.date.fromisoformat(d["hari"]) - dt.timedelta(days=1)).isoformat()
     out = []
     for k in d.get("kejadian", []):
-        if k.get("jenis") != "banjir" or not k.get("lokasi"):
+        if k.get("jenis") != JENIS or not k.get("lokasi"):
             continue
         kode = (kode_kab({"kabkota": [k["lokasi"]], "prov_kode": [k["prov"]]}) or [""])[0]
         if not kode:
@@ -371,7 +390,7 @@ def perbarui_wa(rows, entri, nama_prov=lambda kode: kode):
             rows.append(r)
         kon = e["kondisi"]
         h = {"tgl": tgl, "kk": e["kk"], "jiwa": e["jiwa"], "kk_u": e["kk_u"], "jiwa_u": e["jiwa_u"], "n_kec": None, "n_desa": None,
-             "tinggi_cm": tinggi_cm(kon), "surut": surut(kon), "kondisi": bersih_kondisi(kon), "desa": rincian_desa(kon),
+             "tinggi_cm": tinggi_cm(kon), "surut": selesai(kon), "kondisi": bersih_kondisi(kon), "desa": rincian_desa(kon),
              "upaya": [], "terlibat": [], "kebutuhan": [], "kendala": []}
         lama = [x for x in r["riwayat"] if x["tgl"] != tgl]
         r["n_laporan"] = (r.get("n_laporan") or 0) + (len(lama) == len(r["riwayat"]))
@@ -404,18 +423,22 @@ def entri_wa_semua(kode_kab, sesudah=""):
 
 
 def tulis(isi, unggah):
-    os.makedirs(os.path.dirname(KELUAR), exist_ok=True)
-    with open(KELUAR, "w", encoding="utf-8") as f:
+    os.makedirs(os.path.dirname(keluar()), exist_ok=True)
+    with open(keluar(), "w", encoding="utf-8") as f:
         json.dump(isi, f, ensure_ascii=False, separators=(",", ":"))
     if unggah:
-        subprocess.run(["npx", "--yes", "wrangler@4.42.0", "r2", "object", "put", KUNCI_R2, "--file", KELUAR,
+        subprocess.run(["npx", "--yes", "wrangler@4.42.0", "r2", "object", "put", kunci_r2(), "--file", keluar(),
                         "--content-type", "application/json", "--remote"], cwd=AKAR, check=True)
 
 
 def main_wa(o, LB):
     """Mesin tanpa arsip logbook: ambil berkas R2 yang tayang, tempel bahan WA laporan harian, tulis (dan unggah) lagi."""
-    r = subprocess.run(["npx", "--yes", "wrangler@4.42.0", "r2", "object", "get", KUNCI_R2, "--remote", "--pipe"], cwd=AKAR, capture_output=True, text=True, check=True)
-    d = json.loads(r.stdout)
+    r = subprocess.run(["npx", "--yes", "wrangler@4.42.0", "r2", "object", "get", kunci_r2(), "--remote", "--pipe"], cwd=AKAR, capture_output=True, text=True)
+    try:
+        d = json.loads(r.stdout)
+    except ValueError:   # belum pernah diunggah untuk jenis ini: mulai kosong, jendela 30 hari ke belakang dari hari ini
+        print(f"{kunci_r2()} belum ada di R2, mulai dari bahan WA saja")
+        d = {"v": 1, "hari": (dt.date.today() - dt.timedelta(days=1)).isoformat(), "sumber": "WA Koordalops", "kejadian": []}
     rows, prov = d["kejadian"], {x["prov_kode"]: x["prov"] for x in d["kejadian"]}
     entri = entri_wa_semua(LB.kode_kab, (dt.date.fromisoformat(d["hari"]) - dt.timedelta(days=BUKA_MAKS)).isoformat())
     perbarui_wa(rows, entri, lambda k: prov.get(k, k))
@@ -423,11 +446,13 @@ def main_wa(o, LB):
     rows = saring(rows, hari)
     kini = dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes")
     tulis({**d, "dibuat": kini, "hari": hari, "sumber": "Logbook Pusdalops BNPB + WA Koordalops", "kejadian": rows}, o.unggah)
-    print(f"WA: {len(entri)} entri banjir, hari {hari}: {sum(not r['surut'] for r in rows)} belum surut dari {len(rows)} -> {os.path.relpath(KELUAR, AKAR)}")
+    print(f"{JENIS} WA: {len(entri)} entri, hari {hari}: {sum(not r['surut'] for r in rows)} belum surut dari {len(rows)} -> {os.path.relpath(keluar(), AKAR)}")
 
 
 def main():
+    global JENIS
     a = argparse.ArgumentParser()
+    a.add_argument("--jenis", choices=JENIS_BOLEH + ("semua",), default="semua", help="bawaan semua: banjir, longsor, karhutla berturut-turut")
     a.add_argument("--wa", action="store_true", help="tanpa arsip logbook: perbarui berkas R2 dengan bahan WA laporan harian di git")
     a.add_argument("--hari", help="hari logbook terakhir yang dipakai (bawaan: paling akhir di arsip)")
     a.add_argument("--unggah", action="store_true", help="unggah ke R2 (wrangler, --remote)")
@@ -437,6 +462,11 @@ def main():
         return uji()
     LB = _muat("logbook_bersih", "scripts/data/logbook_bersih.py")
     LP = _muat("logbook_pusdalops", "scripts/data/logbook_pusdalops.py")
+    for JENIS in (JENIS_BOLEH if o.jenis == "semua" else (o.jenis,)):
+        satu(o, LB, LP)
+
+
+def satu(o, LB, LP):
     th = sorted(glob.glob(os.path.join(AKAR, "data/raw/logbook/arsip/20??/kejadian.jsonl")))[-2:]   # tahun ini + lalu (awal Januari)
     if o.wa or not th:   # arsip logbook tidak ada di mesin ini: perbarui berkas yang tayang dengan bahan WA saja
         return main_wa(o, LB)
@@ -446,11 +476,11 @@ def main():
         if os.path.exists(f):
             for l in open(f, encoding="utf-8"):
                 r = json.loads(l)
-                if r.get("jenis") == "banjir" and r.get("id_kejadian"):
+                if r.get("jenis") == JENIS and r.get("id_kejadian"):
                     laporan.setdefault(r["id_kejadian"], []).append(r)
 
     # laporan harian PDF Dit. Koordalops yang lebih baru dari logbook .docx: data/raw/dalops/laphar/*.pdf (ikut .gitignore)
-    for f in sorted(glob.glob(os.path.join(os.path.dirname(KELUAR), "laphar", "*.pdf"))):
+    for f in sorted(glob.glob(os.path.join(os.path.dirname(keluar()), "laphar", "*.pdf"))) if JENIS == "banjir" else []:   # pengurai PDF hanya mengenali judul Banjir
         e = laphar_banjir(baca_pdf(f))
         satukan_laphar(kejadian, laporan, e, LB.kode_kab)
         print(f"laporan harian {os.path.basename(f)}: {len(e)} entri banjir")
@@ -466,8 +496,8 @@ def main():
     tulis({"v": 1, "dibuat": kini, "hari": hari, "sumber": "Logbook Pusdalops BNPB" + (" + WA Koordalops" if entri else ""), "kejadian": rows}, o.unggah)
     awal = (dt.date.fromisoformat(hari) - dt.timedelta(days=SEPEKAN)).isoformat()
     pekan = [r for r in rows if r["terakhir"] >= awal]
-    print(f"hari {hari}: {len(pekan)} laporan sepekan ({len(entri)} entri WA), {sum(not r['surut'] for r in rows)} belum surut, "
-          f"{sum(r['surut'] for r in pekan)} sudah surut -> {os.path.relpath(KELUAR, AKAR)}")
+    print(f"{JENIS} hari {hari}: {len(pekan)} laporan sepekan ({len(entri)} entri WA), {sum(not r['surut'] for r in rows)} belum surut, "
+          f"{sum(r['surut'] for r in pekan)} sudah surut -> {os.path.relpath(keluar(), AKAR)}")
 
 
 def uji():
@@ -574,6 +604,18 @@ def uji():
     perbarui_wa(r2, [dict(wa[0], kab_kode="11|Aceh Barat", tgl="2026-11-01", baru=True)])
     assert len(r2) == 1 and r2[0]["riwayat"][0]["tgl"] == "2026-11-01" and r2[0]["terakhir"] == "2026-11-02", r2
     assert not surut("Air sudah mulai surut, genangan kecil dan lumpur masih ada, Infrastruktur rusak")   # Pidie Jaya, WA 5 Nov
+    # selesai per jenis: longsor tertangani, karhutla padam (kalimat nyata WA Koordalops Nov 2026)
+    global JENIS
+    JENIS = "longsor"
+    assert not selesai("Jalan lintas Blangkejeren - Kutacane dan Blangkejeren - Blangpidie lumpuh total, tidak bisa dilalui kendaraan roda empat dan roda dua.")   # Gayo Lues
+    assert selesai("Material longsor sudah dibersihkan, jalan sudah dapat dilalui kendaraan roda dua dan roda empat")
+    assert not selesai("Jalan sudah dapat dilalui roda dua, namun masih tertutup material untuk roda empat")
+    JENIS = "karhutla"
+    assert selesai("Api sudah padam, dilakukan pendinginan")  is False   # pendinginan = belum selesai
+    assert selesai("Api berhasil dipadamkan oleh tim gabungan")
+    assert not selesai("berhasil dipadamkan ±11,3 ha dan sisa masih terbakar ±18,2 ha")   # Kalbar 3 Nov
+    assert selesai("berhasil dipadamkan ± 1.5 ha dan sisa luas lahan masih terbakar 0 ha")
+    JENIS = "banjir"
     print("uji dalops_banjir: lulus")
 
 
