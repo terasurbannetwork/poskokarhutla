@@ -403,3 +403,5 @@
 .dl-lp-k span{color:var(--ink2);font-size:13.5px;line-height:1.5}
 .dl-lp-k small{color:var(--navy);font-weight:700;font-size:12.5px}
 @media (max-width:600px){.dl-seg button{padding:8px 14px;font-size:13px}}
+/* tab Longsor: kolom Tinggi air (kolom ke-9 tabel wilayah; baris provinsi = 1 sel judul + 10 sel) tidak berlaku */
+.dl-tanpa-tinggi thead tr:first-child th:nth-child(7),.dl-tanpa-tinggi tbody td:nth-child(9),.dl-tanpa-tinggi tfoot td:nth-child(9){display:none}
