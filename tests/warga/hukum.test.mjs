@@ -5,7 +5,7 @@ import {siapkan, berantai} from "./_bnpb.mjs";
 import {readFileSync} from "node:fs";
 import path from "node:path";
 import {AKAR, pecah} from "./_bantu.mjs";
-import {SQL_DICABUT, verifikasiKutipan, kueriFts, normTeks} from "../../src/hukum_spek.js";
+import {SQL_DICABUT, sqlCariHalaman, verifikasiKutipan, kueriFts, normTeks} from "../../src/hukum_spek.js";
 
 const uji = berantai();
 const U = await siapkan("uji-hukum", {skrip: "tests/warga/_hukum_worker.mjs"});
@@ -139,15 +139,35 @@ uji("RU-003 dicabut_oleh: mencabut/mengganti dari dokumen BERLAKU = ya; mengubah
     DB.prepare("INSERT INTO hukum_relasi (dari, ke, jenis, terdaftar) VALUES ('perban-9-2026', 'juknis-5-2023', 'mengganti', 1)"),
     DB.prepare("INSERT INTO hukum_relasi (dari, ke, jenis, terdaftar) VALUES ('perban-9-2026', 'perban-1-2026', 'mengubah', 1)"),
     DB.prepare("INSERT INTO hukum_relasi (dari, ke, jenis, terdaftar) VALUES ('perban-8-2026', 'perban-1-2026', 'mencabut', 1)")]);
-  assert.deepEqual((await dok("perka-2-2012")).dicabut_oleh, ["perban-1-2026"], "mencabut oleh dokumen BERLAKU");
-  assert.deepEqual((await dok("juknis-5-2023")).dicabut_oleh, ["perban-9-2026"], "mengganti juga dihitung");
-  assert.deepEqual((await dok("perban-1-2026")).dicabut_oleh, [], "hanya diubah (mengubah), dirujuk (merujuk), dan dicabut oleh dokumen DICABUT: kosong");
-  const c = await cari("q=" + encodeURIComponent("rencana kontingensi")); assert.deepEqual(c.j.hasil.find(h => h.dok === "perka-2-2012").dicabut_oleh, ["perban-1-2026"]);
-  const p = await cari("q=" + encodeURIComponent("penyaluran diprioritaskan")); assert.deepEqual(p.j.hasil[0].dicabut_oleh, [], "larik, bukan null");
-  const m = JSON.parse((await alat("baca_peraturan_bnpb", {id: "perka-2-2012"})).content[0].text); assert.ok(Array.isArray(m.dicabut_oleh) || m.dicabut_oleh === undefined);
-  const rencana = (await DB.prepare(`EXPLAIN QUERY PLAN SELECT ${SQL_DICABUT} FROM hukum_dok d WHERE d.id = 'perka-2-2012'`).all()).results.map(r => r.detail).join(" | ");
-  assert.match(rencana, /hukum_relasi_ke/, "subkueri harus memakai indeks, bukan scan: " + rencana);
-  await DB.batch([DB.prepare("DELETE FROM hukum_relasi WHERE dari IN ('perban-9-2026','perban-8-2026')"), DB.prepare("DELETE FROM hukum_dok WHERE id IN ('perban-9-2026','perban-8-2026')")]);
+  try {
+    assert.deepEqual((await dok("perka-2-2012")).dicabut_oleh, ["perban-1-2026"], "mencabut oleh dokumen BERLAKU");
+    assert.deepEqual((await dok("juknis-5-2023")).dicabut_oleh, ["perban-9-2026"], "mengganti juga dihitung");
+    assert.deepEqual((await dok("perban-1-2026")).dicabut_oleh, [], "hanya diubah (mengubah), dirujuk (merujuk), dan dicabut oleh dokumen DICABUT: kosong");
+    const c = await cari("q=" + encodeURIComponent("rencana kontingensi")); assert.deepEqual(c.j.hasil.find(h => h.dok === "perka-2-2012").dicabut_oleh, ["perban-1-2026"]);
+    const p = await cari("q=" + encodeURIComponent("penyaluran diprioritaskan")); assert.deepEqual(p.j.hasil[0].dicabut_oleh, [], "larik, bukan null");
+    const m = JSON.parse((await alat("baca_peraturan_bnpb", {id: "perka-2-2012"})).content[0].text); assert.deepEqual(m.dicabut_oleh, ["perban-1-2026"], "meta MCP memuat dicabut_oleh");
+    const rencana = (await DB.prepare(`EXPLAIN QUERY PLAN SELECT ${SQL_DICABUT} FROM hukum_dok d WHERE d.id = 'perka-2-2012'`).all()).results.map(r => r.detail).join(" | ");
+    assert.match(rencana, /hukum_relasi_ke/, "subkueri harus memakai indeks, bukan scan: " + rencana);
+  } finally {
+    await DB.batch([DB.prepare("DELETE FROM hukum_relasi WHERE dari IN ('perban-9-2026','perban-8-2026')"), DB.prepare("DELETE FROM hukum_dok WHERE id IN ('perban-9-2026','perban-8-2026')")]);
+  }
+});
+
+uji("RU-003 cari: hukum_relasi hilang -> dicabut_oleh null + dicabut_tersedia false (bukan []); galat lain tidak ditelan; subkueri dicabut hanya untuk baris halaman", async () => {
+  await DB.prepare("ALTER TABLE hukum_relasi RENAME TO hukum_relasi_x").run();
+  try {
+    const c = await cari("q=" + encodeURIComponent("rencana kontingensi")); assert.equal(c.s, 200, c.t);
+    assert.equal(c.j.dicabut_tersedia, false); assert.ok(c.j.hasil.length >= 1); for (const h of c.j.hasil) assert.equal(h.dicabut_oleh, null, "null, bukan []");
+    const d = (await api("GET", "/api/hukum/dok?id=perka-2-2012", undefined, ip())).j; assert.equal(d.dicabut_oleh, null); assert.equal(d.dicabut_tersedia, false);
+  } finally { await DB.prepare("ALTER TABLE hukum_relasi_x RENAME TO hukum_relasi").run(); }
+  const ok = (await cari("q=" + encodeURIComponent("rencana kontingensi"))).j; assert.equal(ok.dicabut_tersedia, true);
+  // bukti: di rencana kueri utuh, subkueri dicabut (hukum_relasi) tidak berada di bawah pemindaian FTS/LIMIT dalam, tapi di luar subkueri halaman
+  const rows = (await DB.prepare("EXPLAIN QUERY PLAN " + sqlCariHalaman("FROM hukum_fts JOIN hukum_segmen s ON s.id = hukum_fts.rowid JOIN hukum_dok d ON d.id = s.dok WHERE hukum_fts MATCH ?")).bind("kontingensi", 20, 0).all()).results;
+  const rel = rows.find(r => /hukum_relasi/.test(r.detail)), fts = rows.find(r => /hukum_fts/.test(r.detail));
+  const leluhur = (r, acc = []) => { const p = rows.find(x => x.id === r.parent); return p ? leluhur(p, [...acc, p.id]) : acc; };
+  assert.ok(rel && fts, JSON.stringify(rows));
+  assert.ok(!leluhur(rel).includes(fts.id) && !leluhur(fts).includes(rel.id), "subkueri dicabut bersaudara dengan pemindaian FTS, bukan di dalamnya: " + JSON.stringify(rows.map(r => [r.id, r.parent, r.detail])));
+  assert.ok(rows.some(r => /CORRELATED/.test(r.detail) && !leluhur(r).some(a => rows.find(x => x.id === a && /hukum_fts/.test(x.detail)))), "subkueri berkorelasi di luar jalur FTS: " + JSON.stringify(rows.map(r => [r.id, r.parent, r.detail])));
 });
 
 uji("tanya tanpa AI: segmen teratas, model null, tidak ada jawaban karangan", async () => {

@@ -3,7 +3,7 @@
    Konsep: konteks kecil per pasal; model hanya boleh menjawab dari segmen bernomor yang kita kirim, dan tiap kutipannya wajib substring segmen itu (verifikasiKutipan). */
 import {json, gagal, bacaBody, cacheTepi} from "./worker.js";
 import {halamanBnpbPublik, lajuIP, laju} from "./bnpb.js";
-import {kueriFts, normTeks, verifikasiKutipan, SQL_DICABUT} from "./hukum_spek.js";
+import {kueriFts, normTeks, verifikasiKutipan, SQL_DICABUT, sqlCariHalaman} from "./hukum_spek.js";
 export {kueriFts, normTeks, verifikasiKutipan};
 
 const JAM = 3600e3, HARI = 24 * JAM, PER_HAL = 20, MAKS_Q = 200, MAKS_SEGMEN_TANYA = 8, MAKS_TEKS_KIRIM = 1800, BATAS_GLOBAL_TANYA = 300;
@@ -33,15 +33,14 @@ export function cariHukum(env, {q, jenis, tahun, status, hal = 1, limit = PER_HA
     if (status) { w.push("upper(d.status) = ?"); b.push(status.toUpperCase()); }
     const dari = `FROM hukum_fts JOIN hukum_segmen s ON s.id = hukum_fts.rowid JOIN hukum_dok d ON d.id = s.dok WHERE ${w.join(" AND ")}`;
     const total = (await env.DB.prepare(`SELECT count(*) n ${dari}`).bind(...b).first()).n;
-    const kolom = x => `SELECT s.id segmen, d.id dok, d.judul, d.singkatan, d.nomor, d.tahun, d.status, d.resmi, d.sumber, ${x} dicabut_oleh, s.label, s.bab,
-      snippet(hukum_fts, 0, '[[', ']]', '...', 24) cuplikan ${dari} ORDER BY bm25(hukum_fts, 1.0, 3.0, 1.0) LIMIT ? OFFSET ?`;
     const pakai = [...b, limit, ((h ?? 1) - 1) * limit];
-    let results; try { ({results} = await env.DB.prepare(kolom(DICABUT)).bind(...pakai).all()); }
-    catch (e) { ({results} = await env.DB.prepare(kolom("NULL")).bind(...pakai).all()); }   // hukum_relasi belum ada: tetap melayani, seperti rute dok
-    results = results.map(r => ({...r, dicabut_oleh: larik(r.dicabut_oleh)}));
+    let results, dicabut_tersedia = true;
+    try { ({results} = await env.DB.prepare(sqlCariHalaman(dari)).bind(...pakai).all()); }
+    catch (e) { if (!/no such table/i.test(String(e?.message || e))) throw e; dicabut_tersedia = false; ({results} = await env.DB.prepare(sqlCariHalaman(dari, "NULL")).bind(...pakai).all()); }   // hukum_relasi belum ada: tetap melayani, seperti rute dok
+    results = results.map(r => ({...r, dicabut_oleh: dicabut_tersedia ? larik(r.dicabut_oleh) : null}));
     const wj = w.filter(x => !x.startsWith("(lower(d.singkatan)")), bj = jenis ? b.filter((_, i) => i !== 1 && i !== 2) : b;   // hitungan per jenis abaikan filter jenis
     const pj = await env.DB.prepare(`SELECT upper(d.singkatan) j, count(*) n FROM hukum_fts JOIN hukum_segmen s ON s.id = hukum_fts.rowid JOIN hukum_dok d ON d.id = s.dok WHERE ${wj.join(" AND ")} GROUP BY 1 ORDER BY 2 DESC`).bind(...bj).all();
-    return {total, hal: h ?? 1, per_hal: limit, per_jenis: Object.fromEntries(pj.results.filter(r => r.j).map(r => [r.j, r.n])), hasil: results};
+    return {total, hal: h ?? 1, per_hal: limit, dicabut_tersedia, per_jenis: Object.fromEntries(pj.results.filter(r => r.j).map(r => [r.j, r.n])), hasil: results};
   });
 }
 const NORM_LABEL = s => String(s ?? "").toLowerCase().replace(/\s+/g, " ").trim();
@@ -57,8 +56,10 @@ export function bacaDok(env, id, pasal) {
       if (!segmen.length) return {galat: `'${String(pasal).slice(0, 60)}' tidak ada di ${id}`, status: 404};
     }
     let pdf = []; try { pdf = JSON.parse(dok.pdf || "[]"); } catch (e) {}
-    let dicabut_oleh = []; try { dicabut_oleh = larik((await env.DB.prepare(`SELECT ${DICABUT} dicabut_oleh FROM hukum_dok d WHERE d.id = ?`).bind(id).first())?.dicabut_oleh); } catch (e) {}
-    return {...dok, pdf, segmen, dicabut_oleh};
+    let dicabut_oleh = null, dicabut_tersedia = true;
+    try { dicabut_oleh = larik((await env.DB.prepare(`SELECT ${DICABUT} dicabut_oleh FROM hukum_dok d WHERE d.id = ?`).bind(id).first())?.dicabut_oleh); }
+    catch (e) { if (!/no such table/i.test(String(e?.message || e))) throw e; dicabut_tersedia = false; }
+    return {...dok, pdf, segmen, dicabut_oleh, dicabut_tersedia};
   });
 }
 export function bacaRelasi(env, id) {
