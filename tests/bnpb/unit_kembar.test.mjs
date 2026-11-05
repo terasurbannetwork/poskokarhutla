@@ -2,6 +2,7 @@
 // Sisi Python dan acuan.json menyusul di RU-016; berkas ini hanya sisi JS.
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { ATURAN, aturan, nilai, periksa, tenggat } from "../../public/inti/jam_aturan.js";
 
 const h = (k, m) => tenggat(k, m).hasil;
@@ -91,6 +92,17 @@ test("berkas: kunci meja lengkap, asumsi bercatatan, pasal bersitasi", () => {
   assert.equal(nilai("renkon_berlaku"), 3);
   assert.equal(nilai("dsp_laporan_perkembangan"), 5);
   assert.throws(() => nilai("tidak_ada"), /tidak dikenal/);
+});
+
+test("ATURAN literal di JS sama dengan kembar jam_aturan.json", () => {
+  const json = JSON.parse(readFileSync(new URL("../../public/inti/jam_aturan.json", import.meta.url), "utf8"));
+  assert.equal(ATURAN.length, json.length, `jumlah entri JS=${ATURAN.length} JSON=${json.length}`);
+  json.forEach((e, i) => {
+    const j = ATURAN[i];
+    for (const k of new Set([...Object.keys(e), ...Object.keys(j ?? {})])) {
+      assert.deepEqual(j?.[k], e[k], `entri ${i} (${e.kunci}) kunci "${k}" beda: JS=${JSON.stringify(j?.[k])} JSON=${JSON.stringify(e[k])}`);
+    }
+  });
 });
 
 test("periksa() menolak satuan asing, asumsi tanpa catatan, kunci kembar, tanpa pasal", () => {

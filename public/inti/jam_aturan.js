@@ -3,10 +3,21 @@
    Tafsir kita (bukan pasal): "N bulan" = tanggal sama N bulan kemudian, dipangkas ke hari terakhir bulan;
    "N tahun" = 12 x N bulan; "x 24 jam" dari cap waktu; tanggal diturunkan di WIB (UTC+7). */
 
-/* Node dan Worker mengimpor JSON; peramban mengambilnya (top-level await). */
-export const ATURAN = typeof document === "undefined"
-  ? (await import("./jam_aturan.json", { with: { type: "json" } })).default
-  : await (await fetch(new URL("./jam_aturan.json", import.meta.url))).json();
+/* Data ditulis literal (tanpa import JSON/fetch/top-level await) supaya termuat sama di Node, Miniflare, Worker, peramban.
+   Kembarannya jam_aturan.json (Python + gerbang G-1); uji unit_kembar menjaga keduanya sama. Sunting KEDUANYA. */
+export const ATURAN = [
+  {"kunci":"kaji_awal","jenis":"tenggat","nilai":24,"satuan":"jam","sejak":"tiba di lokasi kejadian","acuan":"juklak-3-2022","letak":"hal. 16","kutipan":"paling lambat 1 x 24 jam setelah tiba di lokasi kejadian","asumsi":false,"catatan":"Dihitung dari cap waktu, bukan tanggal. Sampai WIL-3 menyimpan waktu tiba, meja memakai waktu catat sebagai pengganti."},
+  {"kunci":"kaji_lanjutan","jenis":"tenggat","nilai":72,"satuan":"jam","sejak":"tiba di lokasi kejadian","acuan":"juklak-3-2022","letak":"hal. 16","kutipan":"paling lambat 3 x 24 jam setelah tiba di lokasi kejadian","asumsi":false,"catatan":"3 x 24 jam ditulis 72 jam; dihitung dari cap waktu."},
+  {"kunci":"dsp_laporan_perkembangan","jenis":"tenggat","nilai":5,"satuan":"tanggal_bulan_berikut","sejak":"BPP BNPB/BPBD menerima pemindahbukuan DSP, lalu tiap bulan","acuan":"perban-4-2020","letak":"Pasal 21 ayat (1)","kutipan":"paling lambat setiap tanggal 5 (lima) bulan berikutnya","asumsi":false,"catatan":"Selalu bulan berikutnya, walau tanggal mulai jatuh sebelum tanggal 5: cair 2026-01-05 memberi 2026-02-05."},
+  {"kunci":"dsp_spj","jenis":"tenggat","nilai":3,"satuan":"bulan","sejak":"masa status keadaan darurat bencana berakhir","acuan":"perban-4-2020","letak":"Pasal 21 ayat (2)","kutipan":"paling lambat 3 (tiga) bulan setelah masa status keadaan darurat bencana berakhir","asumsi":false,"catatan":"Tafsir kita: tanggal yang sama N bulan kemudian, dipangkas ke hari terakhir bulan bila tanggalnya tidak ada (2025-11-30 + 3 bulan = 2026-02-28)."},
+  {"kunci":"renkon_berlaku","jenis":"tenggat","nilai":3,"satuan":"tahun","sejak":"penetapan","acuan":"perban-2-2023","letak":"Pasal 21 ayat (1)","kutipan":"berlaku untuk jangka waktu 3 (tiga) tahun","asumsi":false,"catatan":"Tafsir kita: 12 x N bulan dengan pangkas akhir bulan (2024-02-29 + 3 tahun = 2027-02-28). Pemutakhiran memperbarui masa berlaku (ayat 5)."},
+  {"kunci":"renkon_reviu","jenis":"tenggat","nilai":6,"satuan":"bulan","sejak":"penetapan atau reviu terakhir","acuan":"perban-2-2023","letak":"Pasal 21 ayat (2)","kutipan":"paling sedikit 6 (enam) bulan sekali","asumsi":false,"catatan":"Pasal berbunyi 'dapat dilakukan reviu secara berkala'; kita memperlakukannya sebagai tanda kerja, bukan kewajiban hukum. Pangkas akhir bulan seperti dsp_spj."},
+  {"kunci":"destana_penilaian","jenis":"tenggat","nilai":3,"satuan":"tahun","sejak":"penilaian terakhir","acuan":"perban-7-2025","letak":"Pasal 14 ayat (5)","kutipan":"paling sedikit setiap 3 (tiga) tahun","asumsi":false,"catatan":"Pasal 14 ayat (1) berbunyi 'dapat dilakukan' penilaian; ayat (5) menetapkan jarak paling sedikit 3 tahun."},
+  {"kunci":"logistik_setuju_jam","jenis":"ambang","nilai":24,"satuan":"jam","sejak":"permintaan logistik diajukan","acuan":null,"letak":null,"kutipan":null,"asumsi":true,"catatan":"Tanda internal meja, tidak ada pasalnya."},
+  {"kunci":"renkon_segera_hari","jenis":"ambang","nilai":90,"satuan":"hari","sejak":"sisa masa berlaku renkon","acuan":null,"letak":null,"kutipan":null,"asumsi":true,"catatan":"Tanda internal: renkon berstatus segera_habis bila sisa masa berlaku tinggal 90 hari. Tidak ada pasalnya."},
+  {"kunci":"destana_pasif_bulan","jenis":"ambang","nilai":12,"satuan":"bulan","sejak":"aktivitas terakhir desa/kelurahan tangguh bencana","acuan":null,"letak":null,"kutipan":null,"asumsi":true,"catatan":"Tanda internal (riset/2 temuan 5), tidak ada pasalnya."},
+  {"kunci":"rehab_macet_hari","jenis":"ambang","nilai":60,"satuan":"hari","sejak":"perkembangan terakhir rehabilitasi","acuan":null,"letak":null,"kutipan":null,"asumsi":true,"catatan":"Tanda internal meja, tidak ada pasalnya."},
+];
 
 export const SATUAN = ["jam", "hari", "hari_kerja", "hari_kalender", "bulan", "tahun", "tanggal_bulan_berikut",
   "kg_orang_hari", "l_orang_hari", "m2_orang", "orang_per_unit", "kk_per_unit_per_3hari", "kg_orang_bulan", "persen", "jiwa_per_paket", "jp_per_tahun"];
