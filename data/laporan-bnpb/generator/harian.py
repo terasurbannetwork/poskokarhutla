@@ -830,8 +830,11 @@ class Deck:
                 y = 2304288 + (n + tot) * rp; a = x['angka']
                 if n: o += s.garis(XL, y, XR - XL, 'EEF0F3')
                 ta = s.teks_awal(x).replace('Laporan pertama ', '') if getattr(s, 'TAMPIL_AWAL', False) else ''
-                if ta and rp >= 290000:   # 4 Nov pemilik: kekeringan ikut pil kalender laporan pertama; di bawah nama (kolom LOKASI sempit)
-                    ny = rp * .52
+                # 5 Nov: 6 kekeringan + total, baris ~262 rb EMU: pil sebaris sesudah nama panjang (Pemalang, Temanggung, Grobogan)
+                # menimpa angka KK (mulai ~8,62 jt EMU) -> pil turun ke bawah nama bila ujungnya lewat batas kolom TERDAMPAK
+                lewat = ta and (XL + 228600 + s.lebar_runs([(x['lokasi'], INK, True)], 850) + 45720 + s.pil(0, 0, ta, T_NAVY, NAVY, 'kalender_navy', sz=700, h=128016, b=False)[1]) > 8570000
+                if ta and (rp >= 290000 or (lewat and rp >= 230000)):   # 4 Nov pemilik: kekeringan ikut pil kalender laporan pertama; di bawah nama (kolom LOKASI sempit)
+                    ny = min(rp * .52, rp - 128016 - 18288)   # baris rendah: pil tetap di dalam barisnya
                     o += s.status_ikon(XL, y + (rp - 164592) / 2, 164592, True) + s.tx(XL + 228600, y, 1100000, ny, [x['lokasi']], sz=850 if len(x['lokasi']) < 15 else 750, b=True, an='b')
                     o += s.pil(XL + 228600, y + ny + 9144, ta, T_NAVY, NAVY, 'kalender_navy', sz=700, h=128016, b=False)[0]
                 else:
