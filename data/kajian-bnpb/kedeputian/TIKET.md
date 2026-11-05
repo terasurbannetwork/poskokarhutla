@@ -94,20 +94,20 @@ Urutan baris = urutan nomor; urutan ambil yang disarankan ada di kolom Gel. (§4
 
 | ID | Judul | Pengerja | Pemeriksa | Gel. | Ukuran | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| RU-000 | [induk] Kontrak, rakitan, putusan §0.2 | sesi induk | pemilik | 0 | S | belum |
-| RU-001 | F0-1 pembaca daftar pencabutan di `hukum.py` | `ruang-bnpb` | `penulis-gerbang` | 1 | S | belum |
-| RU-002 | F0-1 bangun ulang katalog dan seed | `ruang-bnpb` | `higiene-repo` | 2 | S | belum |
-| RU-003 | F0-1 `dicabut_oleh` di `src/hukum.js` | `warga-api` | `guard-api` | 3 | S | belum |
-| RU-004 | F0-1 pil "dicabut menurut teks" di layar hukum | `ruang-bnpb` | `selera-angka`, `security-reviewer` | 3 | S | belum |
-| RU-005 | G-2 gerbang status hukum | `penulis-gerbang` | `general-purpose` baru | 3 | S | belum |
-| RU-006 | MB-2 kerangka Jam Aturan berisi kunci meja | `inti-layar` | `penulis-gerbang` | 1 | S | belum |
-| RU-007 | G-1 gerbang Jam Aturan | `penulis-gerbang` | `general-purpose` baru | 3 | M | belum |
-| RU-008 | F0-2 ambang meja dan pengingat dari Jam Aturan | `warga-api` | `guard-api` | 2 | M | belum |
-| RU-009 | F0-3 migrasi 0110 dan uji skema R1-R10 | `warga-api` | `migrasi-idempoten` | 1 | M | belum |
-| RU-010 | F0-3 rute meja rehab tanpa kaji cepat | `warga-api` | `guard-api` | 2 | S | belum |
-| RU-011 | Layar meja `/bnpb` untuk F0-2 dan F0-3 | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 3 | S | belum |
+| RU-000 | [induk] Kontrak, rakitan, putusan §0.2 | sesi induk | pemilik | 0 | S | selesai 5 Nov |
+| RU-001 | F0-1 pembaca daftar pencabutan di `hukum.py` | `ruang-bnpb` | `penulis-gerbang` | 1 | S | selesai 5 Nov |
+| RU-002 | F0-1 bangun ulang katalog dan seed | `ruang-bnpb` | `higiene-repo` | 2 | S | selesai 5 Nov |
+| RU-003 | F0-1 `dicabut_oleh` di `src/hukum.js` | `warga-api` | `guard-api` | 3 | S | selesai 5 Nov |
+| RU-004 | F0-1 pil "dicabut menurut teks" di layar hukum | `ruang-bnpb` | `selera-angka`, `security-reviewer` | 3 | S | selesai 5 Nov |
+| RU-005 | G-2 gerbang status hukum | `penulis-gerbang` | `general-purpose` baru | 3 | S | selesai 5 Nov |
+| RU-006 | MB-2 kerangka Jam Aturan berisi kunci meja | `inti-layar` | `penulis-gerbang` | 1 | S | selesai 5 Nov |
+| RU-007 | G-1 gerbang Jam Aturan | `penulis-gerbang` | `general-purpose` baru | 3 | M | selesai 5 Nov |
+| RU-008 | F0-2 ambang meja dan pengingat dari Jam Aturan | `warga-api` | `guard-api` | 2 | M | selesai 5 Nov |
+| RU-009 | F0-3 migrasi 0110 dan uji skema R1-R10 | `warga-api` | `migrasi-idempoten` | 1 | M | selesai 5 Nov |
+| RU-010 | F0-3 rute meja rehab tanpa kaji cepat | `warga-api` | `guard-api` | 2 | S | selesai 5 Nov |
+| RU-011 | Layar meja `/bnpb` untuk F0-2 dan F0-3 | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 3 | S | selesai 5 Nov |
 | RU-012 | [induk] Commit F0, terap produksi, terbit | sesi induk | `higiene-repo` | 3 | S | belum |
-| RU-013 | `migrasi_beku.json` sesudah 0110 diterapkan | `warga-api` | `migrasi-idempoten` | 4 | S | belum |
+| RU-013 | `migrasi_beku.json` sesudah 0110 diterapkan | `warga-api` | `migrasi-idempoten` | 4 | S | selesai 5 Nov |
 | RU-014 | MB-1 status `tidak_bisa_dicek` | `ruang-bnpb` | `penulis-gerbang` | 4 | S | belum |
 | RU-015 | MB-2 lengkap: semua kunci dan `tenggat()` | `inti-layar` | `penulis-gerbang` | 4 | M | belum |
 | RU-016 | MB-2 pembaca Python dan uji kembar | `ruang-bnpb` | `penulis-gerbang` | 5 | S | belum |
@@ -203,7 +203,7 @@ Urutan baris = urutan nomor; urutan ambil yang disarankan ada di kolom Gel. (§4
 | RU-106 | DIK-4 bank tenaga pengajar | `ruang-bnpb` | `security-reviewer` | 12 | S | belum |
 | RU-107 | JF-2 hitung kebutuhan formasi | `ruang-bnpb` | `selera-angka`, `inp-reviewer` | 12 | M | belum |
 | RU-108 | [induk] Tinjauan dan terbit F2 Maret | sesi induk | pemeriksa per lapisan | 12 | S | belum |
-| RU-109 | F0 akun gerbang `AKUN_SITUS*` ditolak di data staf (Dalops, Ruang Unit) | `warga-api` | `guard-api`, `security-reviewer` | 1 | S | belum |
+| RU-109 | F0 akun gerbang `AKUN_SITUS*` ditolak di data staf (Dalops, Ruang Unit) | `warga-api` | `guard-api`, `security-reviewer` | 1 | S | selesai 5 Nov |
 
 Jumlah: 110 tiket (RU-000 sampai RU-109): 15 F0 (RU-000 sampai RU-013, RU-109), 23 mesin dan kerangka (RU-014 sampai RU-036), 21 F1 (RU-037 sampai RU-057), 51 F2 (RU-058 sampai RU-108). Semua 15 sistem F1 dan 31 sistem F2 KA §5.1 punya tiket.
 
@@ -1857,3 +1857,11 @@ Dikerjakan di tiket yang disebut; sesi yang mengambil tiket itu wajib menutupnya
 - [ ] Tiket KPOD-3: jalur commit otomatis dari Mac mini tidak boleh menyapu atau tersapu commit "gas" pemilik; tulis ke R2, bukan ke git.
 - [ ] RU-022 dan RU-054: cek dulu `gh secret list`; `statis.yml` sudah memakai `secrets.BPS_KEY`, jadi aksi pemilik "menambah secret" mungkin sudah tidak perlu.
 - [ ] RU-056 (KEU-1) tertahan sampai pemilik memberi draf LAKIP; tandai di papan saat diambil.
+
+## Catatan sesi induk F0 (5 Nov 2026)
+
+- RU-109b (tambahan): akun gerbang juga ditolak di `src/logbook.js`, `src/pusdalops_umum.js` (ikut rollcall, pemulihan, lapsus, berantai), `src/wa_form.js`, `src/medsos_antre.js`, `src/sensor.js`; uji `tests/warga/gerbang_bukan_staf.test.mjs`. `src/akademisi.js` (13 pemanggil `stafOK`) menunggu keputusan pemilik: akun gerbang boleh membaca direktori atau tidak.
+- Jam Aturan: data ditulis literal di `public/inti/jam_aturan.js` karena Miniflare tidak memuat impor JSON; `jam_aturan.json` tetap sebagai kembar untuk Python dan G-1, dijaga uji kembar di `tests/bnpb/unit_kembar.test.mjs`.
+- Migrasi 0110 sudah dibekukan di `tests/warga/migrasi_beku.json`; penerapan ke D1 produksi tetap aksi pemilik (RU-012).
+- `tests/bnpb/hukum_pil.test.mjs` adalah draf gagal yang belum dilacak git; hapus dengan izin pemilik (`/allow-test-change`), penggantinya `tests/bnpb/hukum_pil_layar.test.mjs`.
+- Ilmu `warga-api` melewati plafon 40 KB; bagian Kasus perlu diringkas (`mekanik-mesin`) sebelum kasus baru bisa dicatat.
