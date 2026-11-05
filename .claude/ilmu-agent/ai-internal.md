@@ -43,3 +43,5 @@ Tabel D1 (langkah 1): `ai_agen` (agen buatan staf: nama, avatar, suhu, instruksi
 
 ## Kasus
 - 2026-11-05 · 5 Nov 2026 langkah 1 /ai: kirim pesan hanya append balon (INP), konfirmasi lewat dialog tanya(), 401 dialihkan sekali per sesi lalu 403 = pesan; label pembaca layar pakai aria-label karena .sr salinan ditolak gerbang-inti
+- 2026-11-05 · 5 Nov 2026 langkah 2 pengetahuan: tanpa Vectorize, FTS5 (ai_potongan, pola hukum_fts) + bm25 cukup dan tak butuh binding baru; router worker.js mengenali :id hanya lewat regex 'lb' (tambah sufiks baru di sana, kalau tidak 404 bukan 401); gerbang cakupan.json tak menangkap CREATE VIRTUAL TABLE; unggah dibatasi 2 MB karena CPU Worker; pesan uji dengan nama berkas pendek (<3 huruf) kena validasi nama dulu
+- 2026-11-05 · 5 Nov 2026 review langkah 2: berkas pengetahuan wajib tak lebih sempit dari agen (cukupLuas) DAN kutipan disaring hak penanya; zip: total terurai 8 MB + nama kembar + data sama ditolak; laju unggah paling depan; Assertion Guardian menolak melonggarkan/mengganti asersi tes yang ada, jadi ubah kode agar cocok atau tambah asersi baru, jangan sunting yang lama
