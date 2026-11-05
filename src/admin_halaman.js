@@ -17,7 +17,7 @@ const kepala = judul => `<!doctype html>
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], labelfoto: ["🏷️", "Label kerusakan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
-  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Karhutla"], omc: ["🌧️", "Sortie OMC"], laporan: ["📋", "Ruang Laporan"], kinerja: ["📈", "Kinerja pemantauan"], akun: ["👥", "Akun & Akses"], "kunci-api": ["🔑", "Kunci API"], kontak: ["📇", "Buku kontak"], pipa: ["💧", "SIPPA"], pendataan: ["🗃️", "Pendataan"], "command-center": ["🎛️", "Command center"]};
+  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Karhutla"], omc: ["🌧️", "Sortie OMC"], laporan: ["📋", "Ruang Laporan"], kinerja: ["📈", "Kinerja pemantauan"], akun: ["👥", "Akun & Akses"], "kunci-api": ["🔑", "Kunci API"], kontak: ["📇", "Buku kontak"], pipa: ["💧", "SIPPA"], pendataan: ["🗃️", "Pendataan"], "command-center": ["🎛️", "Command center"], ai: ["🤖", "Asisten AI"]};
 /* halaman Ruang Koordinasi BNPB: SATU entri di nav atas, lalu sub-nav di bawahnya (nav atas tetap muat di 1440) */
 const BNPB = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum", "pantau", "inventaris", "korban", "laporan-karhutla", "omc", "laporan", "kinerja", "pendataan"];
 /* sub-nav yang sama juga tampil di Akun Instansi (kerja harian staf: Laporan Karhutla, OMC, Inventaris, Meja Pantau) */
@@ -28,7 +28,8 @@ const SUB = BNPB.flatMap(k => k === "pantau" ? [k, "instansi"] : [k]);
 export const SEMUA_PERAN = ["verifikator", "pusdalops", "analis_konsesi", "udara", "tmc", "koordalops", "pimpinan", "operator_cc"];   // sengaja TANPA kemitraan: peran modul Kemitraan Kampus tidak membuka /admin/kinerja dan /api/sla; operator_cc ikut (melihat semuanya, baca saja)
 export const HALAMAN_STAF = {pantau: null, kinerja: SEMUA_PERAN, instansi: ["verifikator", "pusdalops", "analis_konsesi"], inventaris: ["pusdalops", "verifikator", "pimpinan", "koordalops", "operator_cc"], korban: ["pusdalops", "verifikator", "pimpinan", "koordalops"], "laporan-karhutla": null, laporan: null, omc: ["tmc", "koordalops", "pimpinan", "operator_cc"], posko: ["analis_konsesi"],
   pipa: ["pusdalops", "koordalops", "pimpinan"],   // SIPPA = P_SIPPA_BACA (src/sippa.js; dijaga tests/warga/staf_halaman.test.mjs); GET /admin/pipa hanya 303 ke /pipa
-  "command-center": ["operator_cc", "koordalops", "pimpinan"]};   // meja operator = pelaku() src/command_center.js (dijaga tests/warga/command_center.test.mjs); GET /admin/command-center hanya 303 ke /command-center
+  "command-center": ["operator_cc", "koordalops", "pimpinan"],   // meja operator = pelaku() src/command_center.js (dijaga tests/warga/command_center.test.mjs); GET /admin/command-center hanya 303 ke /command-center
+  ai: null};   // Asisten AI: semua staf (kecuali peran direktori saja) = stafSesi di src/ai.js; GET /admin/ai hanya 303 ke /ai
 /* halaman yang dibuka sekumpulan peran staf: [{k, ikon, label}] (layar /admin/akun menampilkannya sebagai "Akses") */
 export const aksesStaf = peran => [...Object.keys(HALAMAN_STAF).filter(k => bolehStaf(k, peran)).map(k => ({k, ikon: HAL[k][0], label: HAL[k][1]})),
   ...(peran.includes("direktori") ? [{k: "direktori", ikon: "📇", label: "Direktori", href: "/direktori"}] : [])];
@@ -41,9 +42,9 @@ const butirAdmin = k => [k, ...HAL[k], "/admin/" + k];
 const GRUP_ADMIN = [
   ["Publik", "🌐", ["statistik", "pesan", "foto", "sosmed"].map(butirAdmin)],
   ["Ruang kerja", "🏛️", [["koordinasi", "🏛️", "Ruang Koordinasi", "/admin/" + BNPB[0]], ["dalops", "🌊", "Ruang Pusdalops", "/bnpb/dalops"], ["direktori", "📚", "Direktori", "/direktori"],
-    ...["posko", "instansi", "pipa", "command-center"].map(butirAdmin)]],
+    ...["posko", "instansi", "pipa", "command-center", "ai"].map(butirAdmin)]],
   ["Pengaturan", "⚙️", ["akun", "kunci-api", "kontak"].map(butirAdmin)]];
-const GRUP_STAF = [["Ruang Koordinasi", "🏛️", SUB], ["Ruang kerja", "🧰", ["posko", "pipa", "command-center"]]];
+const GRUP_STAF = [["Ruang Koordinasi", "🏛️", SUB], ["Ruang kerja", "🧰", ["posko", "pipa", "command-center", "ai"]]];
 const butirNav = ([k, ik, l, href], kini) => `<a href="${href}" ${kini(k) ? 'aria-current="page"' : ""}>${ik} ${l}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`;
 const navGrup = (grup, kini) => grup.filter(g => g[2].length).map(([judul, ik, isi]) => isi.length === 1 ? butirNav(isi[0], kini)
   : `<details class="ad-grup" name="ad-grup"><summary ${isi.some(b => kini(b[0])) ? 'aria-current="page"' : ""}>${ik} ${judul}</summary><div class="ad-grup-isi">${isi.map(b => butirNav(b, kini)).join("")}</div></details>`).join("");

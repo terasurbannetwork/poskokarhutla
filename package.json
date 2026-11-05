@@ -8,6 +8,7 @@
     "uji:prediksi": "node --test --test-concurrency=1 tests/prediksi/*.test.mjs",
     "uji:udara": "node --test --test-concurrency=1 tests/udara/*.test.mjs",
     "uji:sippa": "node --test --test-concurrency=1 tests/sippa/*.test.mjs",
+    "uji:ai": "node --test tests/ai/*.test.mjs",
     "uji:wa": "python3 -I scripts/wa/uji_urai_laporan.py uji && node --test tests/wa/lapangan_tarik.test.mjs",
     "uji:kemitraan": "python3 -I scripts/kemitraan/konst.py --cek && python3 -I scripts/kemitraan/kode.py --cek && python3 -I scripts/kemitraan/geo.py --cek && python3 -I scripts/kemitraan/masalah.py --cek && python3 -I scripts/kemitraan/profil_daerah.py --cek && node --test --test-concurrency=1 tests/kemitraan/*.test.mjs tests/warga/kemitraan_*.test.mjs",
     "uji": "npm run uji:agen; a=$?; npm run uji:warga; b=$?; npm run uji:sippa; e=$?; npm run uji:banjir; c=$?; npm run uji:udara; d=$?; npm run uji:prediksi; f=$?; npm run uji:wa; g=$?; [ $a$b$e$c$d$f$g = 0000000 ]",

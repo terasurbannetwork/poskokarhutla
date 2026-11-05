@@ -66,6 +66,7 @@ import {RUTE_SENSOR} from "./sensor.js";
 import {RUTE_MONITOR} from "./monitor.js";
 import {layaniApiV1, RUTE_KUNCI_API} from "./api_v1.js";
 import {layaniMcp} from "./mcp.js";
+import {RUTE_AI} from "./ai.js";
 import {RUTE_PEMIRSA, bersihkanPemirsa, pemirsaSesi, arahPemirsa, hapusSesiPemirsa, cookiePemirsa} from "./pemirsa.js";
 import {RUTE_PANTAU, bersihkanPantau} from "./pantau.js";
 import {RUTE_INVENTARIS} from "./inventaris.js";
@@ -596,6 +597,7 @@ const RUTE = {
   ...RUTE_UJI,   // uji lapangan karhutla: GET /api/uji-lapangan agregat Q1-Q5, tanpa data pribadi (src/uji_lapangan.js)
   ...RUTE_INSTANSI,   // akun instansi (pemda, polisi, TNI) dan tugas api per kompleks (src/instansi.js)
   ...RUTE_SLA,   // analitik SLA + data dummy (src/sla.js, 0042/0043)
+  ...RUTE_AI,   // asisten AI internal: agen, percakapan, obrol dengan alat MCP, sesi staf saja (src/ai.js, migrasi 0107)
   ...RUTE_PREDIKSI,   // /prediksi fase 2: konfirmasi lapangan (src/prediksi.js)
   ...RUTE_LABEL,   // label harian teranonim, Bearer PIPA_TOKEN (src/label.js)
   ...RUTE_PIPA,   // isian lapangan teranonim untuk pipeline, Bearer PIPA_TOKEN (src/pipa.js)
@@ -653,7 +655,7 @@ export const tolakOrigin = (req, url) => {
 async function rute(env, req, url, ctx) {
   /* /lacak (halaman statis; token di fragmen #<36 hex>, dibaca peramban); API-nya (/api/lacak/*) membawa token di header x-lacak */
   if (url.pathname === "/lacak" || url.pathname === "/lacak/") { const h = await halamanLacak(env, req, url); if (h) return h; }
-  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/) || jalur.match(/^(\/api\/akademisi\/gambar)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/akademisi\/riwayat)\/(\d{1,12})$/) || jalur.match(/^(\/api\/operasi\/foto)\/(\d{1,12})$/), tn = jalur.match(/^(\/api\/logbook\/turunan)\/([a-z0-9_]{1,20})$/), sh = jalur.match(/^(\/api\/saham)\/[^/]{1,60}\/(info|transaksi|grafik)$/), lb = jalur.match(/^(\/api\/logbook\/kejadian)\/([0-9a-f]{16})\/(entri|tutup|sk)$/), id = tgl ? tgl[2] : tn ? tn[2] : nama ? nama[2] : rl ? rl[2] : lb ? lb[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
+  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/) || jalur.match(/^(\/api\/akademisi\/gambar)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/akademisi\/riwayat)\/(\d{1,12})$/) || jalur.match(/^(\/api\/operasi\/foto)\/(\d{1,12})$/), tn = jalur.match(/^(\/api\/logbook\/turunan)\/([a-z0-9_]{1,20})$/), sh = jalur.match(/^(\/api\/saham)\/[^/]{1,60}\/(info|transaksi|grafik)$/), lb = jalur.match(/^(\/api\/logbook\/kejadian)\/([0-9a-f]{16})\/(entri|tutup|sk)$/) || jalur.match(/^(\/api\/ai\/(?:agen|percakapan))\/([0-9a-f]{16})\/(hapus)$/), id = tgl ? tgl[2] : tn ? tn[2] : nama ? nama[2] : rl ? rl[2] : lb ? lb[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
   const kunci = sh ? `${sh[1]}/:kode/${sh[2]}` : tgl ? tgl[1] + "/:tanggal" : tn ? tn[1] + "/:nama" : nama ? nama[1] + "/:nama" : oa ? oa[1] + "/:id" : rl ? `${rl[1]}/:id/${rl[3]}` : lb ? `${lb[1]}/:id/${lb[3]}` : id ?jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
   const f = tabel[req.method + " " + kunci];
   if (!f) {   // jalur ada tapi metode lain: 405, bukan jatuh ke aset statis (HEAD/OPTIONS tetap lewat seperti semula)
@@ -699,6 +701,7 @@ export const HTML_RUTE = [
   [/^\/akademisi\/?$/, "/akademisi.html", "/akademisi"],   // alamat lama, dialihkan 301 ke /direktori di layaniHTML   // direktori pakar kebencanaan (public/akademisi*, src/akademisi.js); halaman tertutup di centurisk97.id, datanya hanya lewat /api/akademisi bersesi staf
   [/^\/petugas\/?$/, "/petugas/index.html", "/petugas"],   // modul Pegawai dan Relawan Lapangan: layar petugas berkode (/lapangan milik regu Posko lama)
   [/^\/petugas\/panel\/?$/, "/petugas/panel.html", "/petugas/panel"],   // panel pimpinan modul Lapangan; tertutup di centurisk97.id (sesi staf), API menjaga hak
+  [/^\/ai\/?$/, "/ai/index.html", "/ai"],   // Asisten AI internal staf (public/ai/, src/ai.js); tertutup di centurisk97.id, tiap API /api/ai/* menjaga sesi staf
   [/^\/prediksi\/?$/, "/prediksi/index.html", "/prediksi"],   // prediksi bencana per kab (public/prediksi/, src/prediksi.js); login hanya di hostTerkunci (seperti /monitor), TIDAK di PUBLIK_TANPA_SESI; data JSON statis publik
 ];
 /* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
