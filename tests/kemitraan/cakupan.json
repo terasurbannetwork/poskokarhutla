@@ -14,6 +14,7 @@
     "py:teks.py": "uji:teks",
     "py:indeks_bm25.py": "uji:indeks_bm25",
     "py:cocok_pakar.py": "uji:cocok_pakar",
+    "py:uji_cocok.py": "uji:uji_cocok",
     "src:kemitraan.js": "peran terdeteksi benar: SA, ST, PM, KK, AG, BP, PL",
     "js:inti.js": "cangkang KM staf: delapan segmen",
     "js:daerah.js": "cangkang KM tampilan: tiap berkas mendaftar",

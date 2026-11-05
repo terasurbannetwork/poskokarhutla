@@ -14,12 +14,14 @@ import geo  # noqa: E402
 import indeks_bm25 as ib  # noqa: E402
 import korpus as kp  # noqa: E402
 import teks  # noqa: E402
+import uji_cocok  # noqa: E402
 
 PK, BOBOT, SO = KONST["PAKAR"], KONST["BOBOT"]["pakar"], KONST["SOLUSI"]
 KOMP = ("teks", "R", "L", "Q", "J", "E")
 DAERAH = os.path.join(AKAR, "public", "data", "kemitraan", "daerah")
 LABEL = "Kutipan dari abstrak, bukan rekomendasi BNPB"
 BELUM_DIUJI = "Belum diuji: skor pakar belum lolos uji relevansi (uji_cocok.json)"
+TERUJI = "Teruji: skor pakar lolos uji relevansi (uji_cocok.json)"
 
 
 # ---------------------------------------------------------------- murni (acuan A6, A7)
@@ -125,7 +127,7 @@ def proses_kab(profil, kode, prov_nama, pakar, cache, kini=None):
         top, sk, mx, mentah = cocok(cache[b], q, kab4, prov, pusat)
         hasil.append({"auto_id": m.get("auto_id"), "B": b, "A": m["A"], "judul": m.get("judul"), "bm25_maks": round(mx, 4),
                       "pakar": [kartu(cache[b], d, sk, q, pusat, mentah, wil) for d in top]})
-    return {"v": 1, "kab": kab4, "rekam_dimuat": any(p.get("rekam_dimuat") for p in pakar), "dibangun": (kini or datetime.date.today()).isoformat(), "label_kutipan": LABEL, "status": BELUM_DIUJI, "masalah": hasil}
+    return {"v": 1, "kab": kab4, "rekam_dimuat": any(p.get("rekam_dimuat") for p in pakar), "dibangun": (kini or datetime.date.today()).isoformat(), "label_kutipan": LABEL, "status": TERUJI if uji_cocok.status_pakar() else BELUM_DIUJI, "masalah": hasil}
 
 
 B_JUDUL, B25 = KONST["BM25"]["BOBOT_JUDUL"], KONST["BM25"]
@@ -176,6 +178,7 @@ def cek():
     dt = time.monotonic() - t0
     assert dt <= 2.0, f"satu kab {dt:.2f} dtk > 2 dtk"
     assert dok["rekam_dimuat"] is True and proses_kab(profil, kode, prov, ib.siapkan_pakar(orang, kamp, korp, None, ib.frasa_wilayah(kode, prov)), {})["rekam_dimuat"] is False
+    assert dok["status"] == (TERUJI if uji_cocok.status_pakar() else BELUM_DIUJI) and (dok["status"] == BELUM_DIUJI or uji_cocok.verifikasi(json.load(open(uji_cocok.UJI_JSON)))), "status harus mengikuti uji_cocok.json terverifikasi"
     assert dok["kab"] == "6211" and len(dok["masalah"]) == len(profil["masalah"]) and dok["label_kutipan"] == LABEL
     ban = next(m for m in dok["masalah"] if m["B"] == "banjir")
     ids = [x["id"] for x in ban["pakar"]]

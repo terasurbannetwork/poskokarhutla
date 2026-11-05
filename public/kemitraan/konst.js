@@ -241,6 +241,18 @@ const KM_KONST = {
   "PERJANJIAN": {
     "SEGERA_HABIS_HARI": 60
   },
+  "UJI": {
+    "MASALAH": 60,
+    "PER_ASPEK": 6,
+    "POOL": 15,
+    "NDCG_K": 10,
+    "MARJIN": 0.1,
+    "KAPPA_MIN": 0.4,
+    "MAKS_PER_KAB": 3,
+    "MIN_DIPAKAI": 50,
+    "MIN_BERTITIK": 10,
+    "BOOT": 2000
+  },
   "KM_MAKS_POSTING": 20000,
   "JAM_PER_SKS": 170,
   "ASUMSI_KEBIJAKAN": [
@@ -256,6 +268,7 @@ const KM_KONST = {
     "DONOR",
     "PANGGIL",
     "PERJANJIAN",
+    "UJI",
     "KM_MAKS_POSTING",
     "JAM_PER_SKS"
   ]
