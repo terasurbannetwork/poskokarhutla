@@ -31,6 +31,16 @@ const Peluang = (() => {
   /* entri bulanan (jarak antar entri >= 28 hari): label sumbu "Nov 2026" */
   const bulanan = H => H.length > 1 && H.slice(1).every((h, k) => (Date.parse(h.t) - Date.parse(H[k].t)) / 864e5 >= 28);
 
+  const IKON_API = '<path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2.5 1.5-4 2.5-5.5.5 1.5 1.5 2.5 2.5 2.5 0-2.5-1-4.5 0-7z"/>';
+  /* judul pendek gaya B: "Puncak 9% wilayah pada Kamis, 5 November, lalu 4% pada Rabu, 11 November"; null bila tak ada angka (judul vonis dipakai) */
+  function judulB(w, i) {
+    const H = (w.hari || []).filter(h => h.p?.[i] != null); if (!H.length) return null;
+    const bln = bulanan(w.hari), kpn = h => { const t = tgl(h.t); return bln ? `${BLN[+h.t.slice(5, 7) - 1]} ${h.t.slice(0, 4)}` : `${t.hari}, ${t.tg} ${BLN[+h.t.slice(5, 7) - 1]}`; };
+    const pk = H.reduce((a, h) => h.p[i] > a.p[i] ? h : a, H[0]), akhir = H[H.length - 1];
+    if (!(pk.p[i] > 0)) return `Peluang ${Kartu.hl("0%")} wilayah sampai ${kpn(akhir)}`;
+    const lalu = akhir !== pk && pct(akhir.p[i]) !== pct(pk.p[i]) ? `, lalu ${Kartu.hl(esc(pct(akhir.p[i])))} pada ${kpn(akhir)}` : "";
+    return `Puncak ${Kartu.hl(esc(pct(pk.p[i])))} wilayah pada ${kpn(pk)}${lalu}`; }
+
   function tip(d, h, i, bln) {
     const t = tgl(h.t), B = d.besaran || {}, des = B.desimal ?? 1, u = B.satuan ? " " + B.satuan : "";
     let o = `<b>${bln ? BLN[+h.t.slice(5, 7) - 1] + " " + h.t.slice(0, 4) : `${t.hari}, ${t.tg} ${t.bln}`}</b>`;
@@ -66,7 +76,10 @@ const Peluang = (() => {
       const seg = pil.length > 1 ? Kartu.seg(k + "A", pil.map(i => [d.ambang[i].k, esc(pendek(d.ambang[i], d.besaran))]), {[k + "A"]: d.ambang[idx].k}) : "";
       const jd = esc(vonis1(w.vonis || w.nama || "")).replace(/(?:&gt;|&lt;)?\d[\d.,]*\s?%/g, Kartu.hl);
       const aria = `Peluang ${o.kejadian || ""} per hari, ${d.ambang[idx].label}, ${w.nama}`.replace(/\s+/g, " ");
-      return Kartu.kartu(o.ey || "Peluang", jd, grafik(d, w, idx, aria), o.sumber ?? d.sumber ?? "", sel + seg, [...pil.map(i => [WARNA[i % WARNA.length], esc(d.ambang[i].label)]), ...((w.hari || []).some(h => h.p_dasar) ? [["#8a8f98", "normal"]] : [])]); },
+      const html = Kartu.kartu(o.ey || "Peluang", (o.judulPendek && judulB(w, idx)) || jd, grafik(d, w, idx, aria), o.sumber ?? d.sumber ?? "", sel + seg, [...pil.map(i => [WARNA[i % WARNA.length], esc(d.ambang[i].label)]), ...((w.hari || []).some(h => h.p_dasar) ? [["#8a8f98", "normal"]] : [])]);
+      /* kepala gaya B (pemilik 5 Nov 2026): ubin ikon kiri, pil kategori + pil tingkat ambang; judul pendek (puncak lalu arah) hanya bila o.judulPendek, selain itu judul = vonis */
+      const tk = (String(d.ambang[idx].label).match(/\(([^)]+)\)/) || [])[1];
+      return html.replace(/<span class="ex-ey">([\s\S]*?)<\/span>/, (m, ey) => `<span class="ex-ik" aria-hidden="true"><svg viewBox="0 0 24 24">${o.ikon || IKON_API}</svg></span><div class="ex-pl"><span class="ex-ey">${ey}</span>${tk ? `<span class="ex-tk">${esc(tk)}</span>` : ""}</div>`); },
 
     /* bab Metode: batasan[] + uji_balik; "" bila keduanya kosong */
     batasan(d, o = {}) {

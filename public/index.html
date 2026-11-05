@@ -4382,7 +4382,7 @@ const Insight = {
   exPeluang() { const d = this.data.pel, kini = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
     /* ansambel FWI > 2 hari = tenggang prakiraan basi; berkas lama tanpa ansambel_dibuat ikut disembunyikan */
     if (!d || !(Date.now() - Date.parse(d.ansambel_dibuat) <= 2 * 864e5) || !Object.values(d.wilayah).some(w => (w.hari || []).some(h => h.t >= kini))) return "";
-    return Peluang.kartu(d, {ey: this.LABEL.peluang, st: this.st, kejadian: "karhutla"}); },
+    return Peluang.kartu(d, {ey: this.LABEL.peluang, st: this.st, kejadian: "karhutla", judulPendek: true}); },
   /* Titik panas kumulatif tahun berjalan vs pembanding per minggu (public/data/kumulatif.json; dua dasar sensor tidak dicampur) */
   exKumulatif() {
     const K = this.data.kum, st = this.st; if (!K?.nasional?.kurva) return "";
