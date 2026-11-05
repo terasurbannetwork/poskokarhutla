@@ -1,6 +1,6 @@
 /* Kemitraan Kampus, komponen peta SVG .km-peta-wil (KM-B07, DS §5.7). Tanpa MapLibre; pola proyeksi dari public/bnpb/risiko.js:61 (hitungPeta/jalur).
    KM.peta(el, {geo, kelas, titik, arsir, sorot, kunci, label, judul}) menggambar kab/kec/prov dari fitur GeoJSON (public/geo/*).
-   Bagian murni (proyeksi, jalur, html) diekspor untuk uji node (tests/kemitraan/peta.test.mjs); tooltip lewat [data-tt] yang ditangani inti.js (#kmTip). */
+   Bagian murni (proyeksi, jalur, html) diekspor untuk uji node (tests/kemitraan/peta.test.mjs); tooltip lewat [data-tt] yang ditangani daerah.js (KM.tipData, #kmTip). */
 (() => {
   "use strict";
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
