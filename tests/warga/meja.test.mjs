@@ -420,7 +420,8 @@ uji("sempurna: enum spek rehab dan gudang sama dengan CHECK/trigger migrasi; tau
   const coba = async (sqlText, ...a) => { try { await DB.prepare(sqlText).bind(...a).run(); return true; } catch (e) { return false; } };
   const kj = async (status = "masuk_jitupasna", kab = "Kab Tautan", meja = "kaji_cepat") => { const id = hex(); await DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, kec, desa, data, status, dibuat, diubah) VALUES (?, ?, '71', ?, NULL, 'Desa D', '{}', ?, 1, 1)").bind(id, meja, kab, status).run(); return id; };
   const rh = (id, kaji, kab = "Kab Tautan", dummy = 0) => coba("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah, kaji_id, dummy) VALUES (?, 'rehab', '71', ?, '{}', 'jitupasna', 1, 1, ?, ?)", id, kab, kaji, dummy);
-  assert.equal(await rh(hex(), null), false, "rehab tanpa kaji_id");
+  // F0-3 (migrasi 0110, KEPUTUSAN-AWAL §5.0, tiket RU-009): rehab tanpa kaji cepat induk kini DITERIMA (dulu ditolak). Tautan liar tetap ditolak di bawah.
+  assert.equal(await rh(hex(), null), true, "rehab tanpa kaji_id (F0-3)");
   assert.equal(await rh(hex(), hex()), false, "kaji_id liar");
   assert.equal(await rh(hex(), await kj("diverifikasi")), false, "kaji belum masuk_jitupasna");
   assert.equal(await rh(hex(), await kj("masuk_jitupasna", "Kab Lain")), false, "kaji kab lain");
