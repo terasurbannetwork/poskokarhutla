@@ -12,7 +12,7 @@
     "kampus/UPNVY/kampus-3.jpg",
     "kampus/UPNVY/kampus-4.jpg"
   ],
-  "kredit_kampus": "Foto: UPN Veteran Yogyakarta (Rektorat, FISIP, Gedung A.F. Lasut)",
+  "kredit_kampus": "Foto: UPN Veteran Yogyakarta (Rektorat, FISIP, Fakultas Pertanian, Gedung A.F. Lasut)",
   "foto_kampus_sumber": [
     {
       "berkas": "kampus-1.jpg",
@@ -30,10 +30,10 @@
     },
     {
       "berkas": "kampus-3.jpg",
-      "url": "https://fisip.upnyk.ac.id/",
-      "pengunggah": "UPN Veteran Yogyakarta (FISIP)",
+      "url": "https://upnyk.ac.id",
+      "pengunggah": "UPN Veteran Yogyakarta",
       "lisensi": "Laman resmi kampus (tanpa lisensi terbuka)",
-      "objek": "Papan nama UPN \"Veteran\" Yogyakarta - FISIP"
+      "objek": "Gedung Fakultas Pertanian"
     },
     {
       "berkas": "kampus-4.jpg",
