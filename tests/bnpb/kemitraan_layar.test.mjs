@@ -98,8 +98,8 @@ if (!CHROME) {
       assert.deepEqual(await tombol(), TAMPILAN, `${uk[0]}: segmen tampilan staf`);
       const p = await tab.eval(`({n: document.querySelectorAll('#kmAngka > div').length, b: [...document.querySelectorAll('#kmAngka b')].map(x => x.textContent), lbl: document.querySelector('#kmAngka span').textContent,
         tampil: [...document.querySelectorAll('.ak-tampilan:not([hidden])')].map(x => x.id), kosong: document.querySelectorAll('#kmv-daerah .ak-kosong').length, tekan: document.querySelector('#kmTampil [aria-pressed=true]').dataset.t})`);
-      assert.equal(p.n, 4, `${uk[0]}: pita harus 4 butir`); assert.deepEqual(p.b, ["–", "–", "–", "–"], `${uk[0]}: null harus en dash, bukan nol: ${p.b}`);
-      assert.equal(p.lbl, "Kab/kota berprofil"); assert.deepEqual(p.tampil, ["kmv-daerah"]); assert.equal(p.kosong, 1, "kosongHtml tidak tampil di panel daerah"); assert.equal(p.tekan, "daerah");
+      assert.equal(p.n, 4, `${uk[0]}: pita harus 4 butir`); assert.deepEqual(p.b.slice(2), ["–", "–"], `${uk[0]}: null harus en dash, bukan nol: ${p.b}`);   // tervalidasi dan kunjungan menunggu API (KM-B06 mengisi dua angka pertama dari ringkas.json)
+      assert.equal(p.lbl, "Kab/kota berprofil"); assert.deepEqual(p.tampil, ["kmv-daerah"]); assert.equal(p.tekan, "daerah");
       assert.deepEqual(tab.galat().filter(bukanFavicon), [], `${uk[0]}: galat konsol/CSP`);
       assert.ok(!TERLARANG.test(await tab.teks()), `${uk[0]}: teks terlarang`);
       const lb = await tab.lebihLebar(); assert.ok(lb.sw <= uk[0] + 1, `${uk[0]}: scroll horizontal ${lb.sw}`);
@@ -141,11 +141,62 @@ if (!CHROME) {
     assert.deepEqual([a.galat, a.seg, a.panel], [true, false, 0], "AG: " + JSON.stringify(a)); assert.match(a.teks, /Saya/);
   });
 
+  test("cangkang KM L1: tampilan daerah memuat pita, kartu 24 per halaman, cari 'pulang' satu kartu, tanpa galat", async () => {
+    await staf();
+    for (const uk of UKURAN) {
+      await buka("/kemitraan?tampil=daerah", uk);
+      await tab.tungguFungsi("document.querySelectorAll('#kmv-daerah .km-daerah').length > 0");
+      const k = await tab.eval(`({pita: [...document.querySelectorAll('#kmAngka b')].map(x => x.textContent), kartu: document.querySelectorAll('#kmv-daerah .km-daerah').length, hal: !!document.querySelector('#kmDHal [data-h="2"]'), chip: document.querySelectorAll('#kmv-daerah .ak-chip button').length})`);
+      assert.ok(k.pita[0] !== "–" && k.pita[1] !== "–", `${uk[0]}: dua angka pita pertama harus terisi: ${k.pita}`);
+      assert.equal(k.kartu, 24, `${uk[0]}: halaman pertama harus 24 kartu, dapat ${k.kartu}`); assert.ok(k.hal && k.chip >= 6, `${uk[0]}: paginasi atau chip hilang ${JSON.stringify(k)}`);
+      await tab.eval(`(() => { const i = document.getElementById("kmDQ"); i.value = "pulang"; i.dispatchEvent(new Event("input", {bubbles: true})); })()`);
+      await tab.tungguFungsi("document.querySelectorAll('#kmv-daerah .km-daerah').length === 1");
+      assert.match(await tab.eval("document.querySelector('#kmv-daerah .km-daerah h3').textContent"), /Pulang Pisau/);
+      assert.deepEqual(tab.galat().filter(bukanFavicon), [], `${uk[0]}: galat konsol/CSP`);
+      assert.ok(!TERLARANG.test(await tab.teks()), `${uk[0]}: teks terlarang di daerah`);
+      const lb = await tab.lebihLebar(); assert.ok(lb.sw <= uk[0] + 1, `${uk[0]}: scroll horizontal ${lb.sw}`);
+    }
+  });
+
+  test("cangkang KM L2: lembar daerah menampilkan kepala di bawah 100 ms, tab bab berisi, ikon Buku menuju /kemitraan/buku", async () => {
+    await staf();
+    for (const uk of UKURAN) {
+      await buka("/kemitraan?tampil=daerah", uk);
+      await tab.tungguFungsi("document.querySelectorAll('#kmv-daerah .km-daerah').length > 0");
+      const o = await tab.eval(`(async () => { const kartu = document.querySelector('#kmv-daerah .km-daerah[data-kab="6211"]') || document.querySelector('#kmv-daerah .km-daerah'); const t0 = performance.now(); kartu.click();
+        while (document.querySelector('#kmSheet').hidden || !document.querySelector('#kmSheet .ak-dkepala h2')) await new Promise(r => requestAnimationFrame(() => r()));
+        return {dt: performance.now() - t0, nama: document.querySelector('#kmSheet .ak-dkepala h2').textContent, buku: document.querySelector('#kmSheet .ak-dkepala a.km-ik').getAttribute('href'), kab: new URL(location.href).searchParams.get('kab')}; })()`);
+      assert.ok(o.dt < 100, `${uk[0]}: kepala lembar tampil ${o.dt.toFixed(1)} ms >= 100 ms`);
+      assert.match(o.buku, /^\/kemitraan\/buku\?kab=\d{4}$/); assert.equal(o.buku.slice(-4), o.kab, "?kab= harus mengikuti lembar");
+      for (const bab of ["1", "2", "3", "4", "5", "6", "7", "9"]) {
+        await tab.tungguFungsi(`!!document.querySelector('#kmSheet .km-bab [data-bab="${bab}"]')`);   // kerangka lembar dipasang lewat KM.nanti
+        await tab.klik(`#kmSheet .km-bab [data-bab="${bab}"]`);
+        await tab.tungguFungsi(`document.querySelector('#kmBabIsi') && document.querySelector('#kmBabIsi').children.length > 0 && !document.querySelector('#kmBabIsi .ak-hantu')`);
+        const t = await tab.eval("document.querySelector('#kmBabIsi').textContent");
+        assert.ok(t.trim().length > 20 && !TERLARANG.test(t) && !/\{|\[object/.test(t), `${uk[0]}: bab ${bab} kosong atau bocor: ${t.slice(0, 120)}`);
+      }
+      const lb = await tab.lebihLebar(); assert.ok(lb.sw <= uk[0] + 1, `${uk[0]}: scroll horizontal ${lb.sw}`);
+      assert.deepEqual(tab.galat().filter(bukanFavicon), [], `${uk[0]}: galat konsol/CSP di lembar`);
+    }
+    /* buka kab, tutup, buka kab yang sama lagi: data sudah di memo, lembar tidak boleh macet di kerangka .ak-hantu */
+    await buka("/kemitraan?tampil=daerah&q=pulang", UKURAN[0]);   // ?q= menyaring ke satu kartu (6211 tidak di halaman pertama)
+    await tab.tungguFungsi("document.querySelectorAll('#kmv-daerah .km-daerah').length > 0");
+    for (const putaran of [1, 2, 3]) {
+      await tab.eval(`document.querySelector('#kmv-daerah .km-daerah[data-kab="6211"]').click()`);
+      await tab.tungguFungsi("document.querySelector('#kmBabIsi') && document.querySelector('#kmBabIsi').children.length > 0 && !document.querySelector('#kmBabIsi .ak-hantu')");
+      assert.ok((await tab.eval("document.querySelector('#kmBabIsi').textContent")).trim().length > 20, `buka ke-${putaran}: bab 1 kosong`);
+      await tab.eval("KM.tutupSheet()");
+    }
+    await buka("/kemitraan?tampil=daerah&kab=6211", UKURAN[0]);   // ?kab= membuka lembar langsung
+    await tab.tungguFungsi("!document.querySelector('#kmSheet').hidden && document.querySelector('#kmBabIsi') && !document.querySelector('#kmBabIsi .ak-hantu')");
+    assert.match(await tab.eval("document.querySelector('#kmSheet .ak-dkepala h2').textContent"), /Pulang Pisau/);
+  });
+
   /* kontras WCAG dari computed style: warna apa pun yang diterima canvas (oklch, color-mix) diubah ke sRGB lewat piksel */
   const KONTRAS = `(sel) => { const cv = document.createElement("canvas").getContext("2d", {willReadFrequently: true});
     const rgb = c => { cv.clearRect(0, 0, 1, 1); cv.fillStyle = "#000"; cv.fillStyle = c; cv.fillRect(0, 0, 1, 1); return [...cv.getImageData(0, 0, 1, 1).data].slice(0, 3); };
     const lum = ([r, g, b]) => { const f = v => (v /= 255) <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; return .2126 * f(r) + .7152 * f(g) + .0722 * f(b); };
-    return [...document.querySelectorAll(sel)].map(e => { const kartu = e.closest(".ak-panel"); const a = lum(rgb(getComputedStyle(e).color)), b = lum(rgb(getComputedStyle(kartu).backgroundColor));
+    return [...document.querySelectorAll(sel)].map(e => { const kartu = e.closest(".ak-panel, .ak-orang"); const a = lum(rgb(getComputedStyle(e).color)), b = lum(rgb(getComputedStyle(kartu).backgroundColor));
       return {sel: e.tagName + "." + kartu.className, kontras: (Math.max(a, b) + .05) / (Math.min(a, b) + .05)}; }); }`;
   test("cangkang KM L8: tema gelap kontras teks kartu minimal 4,5:1 (juga terang)", async () => {
     await staf();
@@ -153,11 +204,11 @@ if (!CHROME) {
     for (const tema of ["dark", "light"]) {
       await tab.eval(`document.documentElement.dataset.theme = ${JSON.stringify(tema)}`);
       await new Promise(r => setTimeout(r, 200));
-      const k = await tab.eval(`(${KONTRAS})("#kmv-daerah .ak-kosong h2, #kmv-daerah .ak-kosong p")`);
+      const k = await tab.eval(`(${KONTRAS})("#kmv-daerah .ak-orang h3, #kmv-daerah .ak-orang .ak-mlabel, #kmv-daerah .ak-orang .ak-metrik b")`);
       assert.ok(k.length >= 2, `${tema}: tidak ada teks kartu untuk diukur`);
       for (const x of k) assert.ok(x.kontras >= 4.5, `${tema}: kontras ${x.kontras.toFixed(2)} < 4,5 pada ${x.sel}`);
     }
-    assert.equal(await tab.eval("getComputedStyle(document.querySelector('#kmv-daerah .ak-panel')).backgroundColor !== getComputedStyle(document.body).backgroundColor"), true, "kartu harus beda dari latar halaman di tema terang");
+    assert.equal(await tab.eval("getComputedStyle(document.querySelector('#kmv-daerah .ak-orang')).backgroundColor !== getComputedStyle(document.body).backgroundColor"), true, "kartu harus beda dari latar halaman di tema terang");
   });
 
   test("cangkang KM L9: klik segmen ke bingkai berikutnya di bawah 100 ms", async () => {

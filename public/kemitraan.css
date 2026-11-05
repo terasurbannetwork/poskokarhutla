@@ -20,3 +20,42 @@
 .km-w-p1{--w:var(--bad);--w0:var(--bad);--gw:var(--bad)}
 .km-w-p2{--w:var(--warn);--w0:var(--warn);--gw:var(--warn)}
 .km-w-p3{--w:var(--info);--w0:var(--info);--gw:var(--info)}
+
+/* ---- KM-B06: Daerah (DS 5.1) dan lembar profil ---- */
+.km-l-irbi.t1{background:var(--bad)}
+.km-l-irbi.t0{background:var(--info)}
+.km-l-irbi.tx{background:var(--ink2)}
+.km-ik{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:50%;flex:none;margin-left:auto;color:var(--brand);background:none;border:0;cursor:pointer;text-decoration:none}
+.km-ik:hover{background:var(--surface)}
+.km-ik svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.km-daerah .ak-nama{flex:1;min-width:0}
+.km-daerah .ak-pil .ak-r{border:0;font-family:inherit;cursor:pointer}
+.km-tog{justify-content:center;width:100%}
+.km-chip3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:600px){.km-chip3{grid-template-columns:minmax(0,1fr)}}
+.km-kepala .ak-pil{justify-content:flex-end;margin-top:-6px}
+.ak-dkepala .km-ik{color:#fff;margin-left:0}
+.ak-dkepala .km-ik:hover{background:oklch(100% 0 0 / .14)}
+.km-bab{overflow-x:auto}
+.km-bab button{flex:1 0 auto}
+.km-t{font-size:15px;line-height:1.35;text-transform:none;letter-spacing:0;font-weight:700;color:var(--ink);display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.ak-dbagian h3.km-t{font-size:15px;text-transform:none;letter-spacing:0;color:var(--ink)}
+.km-kosong{color:var(--ink2);margin:0}
+.km-kv{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px 18px;margin:0}
+.km-kv div{display:grid;gap:2px;border-top:1px solid var(--line);padding-top:8px;min-width:0}
+.km-kv dt{font-size:12px;color:var(--ink2)}
+.km-kv dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.km-babisi{display:grid;gap:12px;margin-top:12px}
+.km-babisi .ak-t2{min-width:0}
+.km-bahaya > summary,.km-masalah > summary{gap:10px;justify-content:flex-start}
+.km-bahaya > summary h3,.km-masalah > summary h3{flex:1;min-width:0;font-size:14px;text-transform:none;letter-spacing:0;color:var(--ink)}
+.km-bahaya > summary .ak-ikon{width:18px;height:18px;stroke:var(--w0,currentColor)}
+.km-bahaya > summary::after,.km-masalah > summary::after{margin-left:auto}
+.km-kelas{font-style:normal;font-size:11px;line-height:18px;font-weight:800;color:#fff;background:var(--w);border-radius:999px;padding:0 9px}
+.km-masalah > summary small{color:var(--ink2);font-size:12px}
+.km-bukti{margin:0;padding-left:18px;display:grid;gap:6px}
+.km-cek{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.km-cek li{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:8px}
+.km-cek li b{flex:1 1 220px}
+.km-cek .ak-ikon{width:16px;height:16px;stroke:var(--ok)}
+.km-cek li:not(.ya) span{color:var(--ink2)}
