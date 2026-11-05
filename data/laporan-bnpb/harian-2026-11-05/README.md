@@ -28,3 +28,5 @@
     Riwayat dari `data.json` tiap laporan harian 1 bulan ini s.d. hari sebelum laporan + hari laporan; yang sudah selesai di hari
     terakhir bulan lalu tidak dihitung; yang kembali ditangani keluar. 1-5 Nov: 12 kejadian (6 karhutla, 6 banjir), dua kolom
     dibagi rata, slide tambahan (1/2, 2/2) bila lebih dari dua kali baris per kolom.
+  - Atasan ("pengkategorian provinsi, kayak Aceh baru bawahnya kota apa aja"): lampiran dikelompokkan per provinsi (baris induk
+    + jumlah kejadian, anak kabupaten/kota); grup urut tanggal selesai terbaru, dua kolom dipotong di batas grup.

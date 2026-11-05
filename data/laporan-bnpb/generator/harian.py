@@ -1020,18 +1020,45 @@ class Deck:
             j = JN.get(x['jenis'], ('Lainnya', 'awas', SLATE, T_SLATE)); per_jenis[x['jenis']] = per_jenis.get(x['jenis'], 0) + 1
         X0, W, Y = 548640, 11094415, 1325880; KP, PAD, KK, RH = 365760, 137160, 182880, 237744
         cw = (W - 3 * PAD) // 2; PER = (6007608 - Y - KP - PAD - KK - 45720 - 91440) // RH   # baris per kolom
-        hal = [rows[i:i + 2 * PER] for i in range(0, len(rows), 2 * PER)] or [[]]
+        # 5 Nov atasan ("pengkategorian provinsi, kayak Aceh baru bawahnya kota apa aja"): baris induk provinsi, anak kabupaten/kota.
+        # Grup urut tanggal selesai terbaru di dalamnya; baris = induk (1) + anak. Kolom diisi per grup, grup tidak dipotong kecuali
+        # lebih panjang dari satu kolom (lanjutan diberi induk ulang "(lanjutan)").
+        grup = {}
+        for t, x in rows: grup.setdefault(x['prov'], []).append((t, x))
+        GR = sorted(grup.items(), key=lambda kv: (-max(t for t, _ in kv[1]).toordinal(), NAMA[kv[0]]))
+        def potong(gr):   # [(prov, anak, lanjutan)] per kolom, kapasitas PER baris
+            kol, cur, isi_ = [], [], 0
+            for p, anak in gr:
+                anak = list(anak); lanj = False
+                while anak:
+                    muat = PER - isi_ - 1
+                    if muat < 1 or (muat < len(anak) and len(anak) <= PER - 1 and cur):   # grup utuh pindah ke kolom baru
+                        kol.append(cur); cur, isi_ = [], 0; continue
+                    cur.append((p, anak[:muat], lanj)); isi_ += 1 + len(anak[:muat]); anak = anak[muat:]; lanj = True
+            if cur: kol.append(cur)
+            return kol
+        def seimbang(gr):   # dua kolom: titik potong antargrup yang paling rata
+            L = [1 + len(a) for _, a in gr]; tot = sum(L); best = None
+            for k in range(1, len(gr)):
+                a_, b_ = sum(L[:k]), tot - sum(L[:k])
+                if a_ <= PER and b_ <= PER and (best is None or max(a_, b_) < best[0]): best = (max(a_, b_), k)
+            if best: return [[(p, a, False) for p, a in gr[:best[1]]], [(p, a, False) for p, a in gr[best[1]:]]]
+            return None
+        tot_baris = sum(1 + len(a) for _, a in GR)
+        kolom = (seimbang(GR) if len(GR) > 1 and tot_baris <= 2 * PER else None) or potong(GR) or [[]]
+        hal = [kolom[i:i + 2] for i in range(0, len(kolom), 2)]
         P, H = (lambda t: (t, INK, True)), (lambda t: (t, ORG, True))
         out = []
-        for h_, isi_h in enumerate(hal):
+        for h_, kol_h in enumerate(hal):
             judul = [P('Lampiran: '), H(f'Daftar Kejadian Selesai {bln} {th}')] + ([P(f' ({h_ + 1}/{len(hal)})')] if len(hal) > 1 else [])
-            catatan = ([f'Kejadian yang selesai {rentang_}: {len(rows)} kejadian ('
-                        + ', '.join(f'{v} {JN.get(k, ("lainnya",))[0].lower()}' for k, v in per_jenis.items()) + ').',
-                        'Daftar bertambah tiap hari sampai akhir bulan; kejadian yang kembali ditangani dikeluarkan dari daftar.']
-                       + [f'{tgl(t)}: ' + NAMA[x['prov']] + (f", {x['lokasi']}" if x['lokasi'] else '') + f' ({JN.get(x["jenis"], ("lainnya",))[0].lower()}), {ket(x)}' for t, x in isi_h])
-            def isi(isi_h=isi_h):
-                PK = max(1, -(-len(isi_h) // 2))   # 5 Nov: baris dibagi rata ke dua kolom (12 kejadian = 6 + 6), bukan kiri penuh dulu
-                n_baris = PK
+            catatan = [f'Kejadian yang selesai {rentang_}: {len(rows)} kejadian di {len(grup)} provinsi ('
+                       + ', '.join(f'{v} {JN.get(k, ("lainnya",))[0].lower()}' for k, v in per_jenis.items()) + ').',
+                       'Daftar bertambah tiap hari sampai akhir bulan; kejadian yang kembali ditangani dikeluarkan dari daftar.']
+            for kol in kol_h:
+                for p, anak, lanj in kol:
+                    if not lanj: catatan.append(NAMA[p] + ': ' + '; '.join((x['lokasi'] or 'tingkat provinsi') + f' ({JN.get(x["jenis"], ("lainnya",))[0].lower()}, {tgl(t)}, {ket(x)})' for t, x in grup[p]))
+            def isi(kol_h=kol_h):
+                n_baris = max([sum(1 + len(a) for _, a, _ in k) for k in kol_h] + [1])
                 HB = KP + PAD + KK + 45720 + n_baris * RH + 91440   # panel setinggi isinya (pemilik 24 Okt)
                 kpl = f'Kejadian selesai, {rentang_}'
                 o = s.kotak(X0, Y, W, HB, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=3000) + s.kepala(X0, Y, W, NAVY, T_NAVY, 'cek_p', kpl, len(rows), h=KP)
@@ -1040,28 +1067,33 @@ class Deck:
                     j = JN.get(jn_, ('Lainnya', 'awas', SLATE, T_SLATE))
                     p_, pw = s.pil(px, Y + (KP - 164592) / 2, f'{v} {j[0].lower()}', 'FFFFFF', j[2], IK_PIL.get(j[1], 'cek_navy'), sz=700, h=164592)
                     o += p_; px += pw + 54864
-                if not isi_h:
+                if not rows:
                     return o + s.tx(X0 + PAD, Y + KP + PAD, W - 2 * PAD, RH, [f'Belum ada kejadian selesai pada {rentang_}'], sz=850, c=ABU, an='ctr')
-                for c in range(2):
-                    bag = isi_h[c * PK:(c + 1) * PK]
-                    if not bag: continue
+                for c, kol in enumerate(kol_h):
                     x0 = X0 + PAD + c * (cw + PAD); y = Y + KP + PAD
                     cL, cS = cw * .50, cw * .15   # LOKASI, SELESAI; sisanya KETERANGAN
                     o += s.kotak(x0, y, cw, KK, NAVY, 'roundRect', adj=12000)
                     for t_, xx, ww, al in (('LOKASI', x0 + 91440, cL - 91440, 'l'), ('SELESAI', x0 + cL, cS, 'ctr'), ('KETERANGAN', x0 + cL + cS, cw - cL - cS - 91440, 'r')):
                         o += s.tx(xx, y, ww, KK, [t_], sz=620, b=True, c='FFFFFF', spc=60, al=al, an='ctr')
                     y += KK + 45720
-                    for n, (t, x) in enumerate(bag):
-                        if n: o += s.garis(x0, y, cw, 'EEF0F3')
-                        j = JN.get(x['jenis'], ('Lainnya', 'awas', SLATE, T_SLATE)); yc = y + (RH - 137160) / 2
-                        o += s.status_ikon(x0 + 45720, yc, 137160, False)
-                        o += s.kotak(x0 + 228600, yc, 137160, 137160, j[2], 'ellipse') + s.gambar(x0 + 253746, y + (RH - 86868) / 2, 86868, 86868, f'{j[1]}_putih')
-                        o += s.tx(x0 + 420624, y, cL - 420624, RH, [nm(x)], sz=800, an='ctr', wrap='none')
-                        pw = s.pil(0, 0, tgl(t), T_NAVY, NAVY, 'kalender_navy', sz=700, h=146304, b=False)[1]
-                        o += s.pil(x0 + cL + (cS - pw) / 2, y + (RH - 146304) / 2, tgl(t), T_NAVY, NAVY, 'kalender_navy', sz=700, h=146304, b=False)[0]
-                        kt = ket(x); kw = s.pil(0, 0, kt, 'F3F5F8', INK, 'cek_navy', sz=700, h=146304, b=False)[1]
-                        o += s.pil(x0 + cw - kw, y + (RH - 146304) / 2, kt, 'F3F5F8', INK, 'cek_navy', sz=700, h=146304, b=False)[0]
+                    for g, (p, anak, lanj) in enumerate(kol):
+                        # baris induk provinsi: latar abu tipis, nama tebal + jumlah kejadian
+                        o += s.kotak(x0, y + 18288, cw, RH - 36576, 'F3F5F8', 'roundRect', adj=20000)
+                        o += s.tx(x0 + 91440, y, cL, RH, [[(NAMA[p], INK, True)] + ([(' (lanjutan)', ABU, False)] if lanj else [])], sz=820, an='ctr', wrap='none')
+                        n_ = len(grup[p]); o += s.tx(x0 + cw - 1200000 - 91440, y, 1200000, RH, [f'{n_} kejadian'], sz=700, c=ABU, al='r', an='ctr', wrap='none')
                         y += RH
+                        for n, (t, x) in enumerate(anak):
+                            if n: o += s.garis(x0 + 228600, y, cw - 228600, 'EEF0F3')
+                            j = JN.get(x['jenis'], ('Lainnya', 'awas', SLATE, T_SLATE)); yc = y + (RH - 137160) / 2
+                            o += s.status_ikon(x0 + 228600, yc, 137160, False)
+                            o += s.kotak(x0 + 411480, yc, 137160, 137160, j[2], 'ellipse') + s.gambar(x0 + 436626, y + (RH - 86868) / 2, 86868, 86868, f'{j[1]}_putih')
+                            lok = x['lokasi'] or f"{j[0]} tingkat provinsi"
+                            o += s.tx(x0 + 603504, y, cL - 603504, RH, [lok], sz=800, an='ctr', wrap='none')
+                            pw = s.pil(0, 0, tgl(t), T_NAVY, NAVY, 'kalender_navy', sz=700, h=146304, b=False)[1]
+                            o += s.pil(x0 + cL + (cS - pw) / 2, y + (RH - 146304) / 2, tgl(t), T_NAVY, NAVY, 'kalender_navy', sz=700, h=146304, b=False)[0]
+                            kt = ket(x); kw = s.pil(0, 0, kt, 'F3F5F8', INK, 'cek_navy', sz=700, h=146304, b=False)[1]
+                            o += s.pil(x0 + cw - kw, y + (RH - 146304) / 2, kt, 'F3F5F8', INK, 'cek_navy', sz=700, h=146304, b=False)[0]
+                            y += RH
                 return o
             out.append((judul, isi, catatan))
         return out
