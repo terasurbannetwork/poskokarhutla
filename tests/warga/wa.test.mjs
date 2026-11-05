@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import {test} from "node:test";
 import {siapkan, berantai, ADMIN} from "./_bnpb.mjs";
-const {tanggalDari, jenisDari, normalNo} = await import("../../src/worker.js").then(() => import("../../src/wa.js"));   // worker dulu: wa.js dan worker.js saling impor
+const {tanggalDari, jenisDari, normalNo, hariWib} = await import("../../src/worker.js").then(() => import("../../src/wa.js"));   // worker dulu: wa.js dan worker.js saling impor
 
 const PDF = new TextEncoder().encode("%PDF-1.4 laphar uji");
 const uji = berantai();
@@ -69,7 +69,7 @@ uji("kiriman ulang laporan lama jatuh ke tanggal isinya; di luar jendela kembali
 });
 
 uji("duplikat kiriman ulang mengembalikan id yang sama", async () => {
-  const o = {dari: "6281234567890", teks: "28/10/2026 ulang outbox", waktu: Date.parse("2026-10-29T02:00:00Z")};
+  const o = {dari: "6281234567890", teks: "28/10/2026 ulang outbox", waktu: Date.now() - 3600e3};   // waktu terima harus di jendela 7 hari src/wa.js, jadi relatif ke sekarang
   const a = await kirim(o), b = await kirim(o);
   assert.equal(a.j.id, b.j.id); assert.equal(await n("wa_masuk", "teks = '28/10/2026 ulang outbox'"), 1);
 });
