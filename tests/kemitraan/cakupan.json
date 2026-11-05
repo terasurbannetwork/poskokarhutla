@@ -13,6 +13,7 @@
     "js:daerah.js": "cangkang KM tampilan: tiap berkas mendaftar",
     "js:masalah.js": "cangkang KM tampilan: tiap berkas mendaftar",
     "js:riset.js": "cangkang KM tampilan: tiap berkas mendaftar",
+    "js:peta.js": "proyeksi equirectangular: titik pojok bbox",
     "js:dana.js": "cangkang KM tampilan: tiap berkas mendaftar",
     "js:satgas.js": "cangkang KM tampilan: tiap berkas mendaftar",
     "js:talenta.js": "cangkang KM tampilan: tiap berkas mendaftar",

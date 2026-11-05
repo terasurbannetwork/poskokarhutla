@@ -59,3 +59,16 @@
 .km-cek li b{flex:1 1 220px}
 .km-cek .ak-ikon{width:16px;height:16px;stroke:var(--ok)}
 .km-cek li:not(.ya) span{color:var(--ink2)}
+/* KM-B07 peta wilayah SVG (public/kemitraan/peta.js) */
+.km-peta-wil{display:block;width:100%;height:auto;max-height:380px}
+.km-peta-wil path{fill-rule:evenodd;stroke:var(--card);stroke-width:1;stroke-linejoin:round}
+.km-peta-wil path.kn{fill:var(--surface)}
+.km-peta-wil path.k0{fill:var(--f0)}
+.km-peta-wil path.k1{fill:var(--f1)}
+.km-peta-wil path.k2{fill:var(--f2)}
+.km-peta-wil path.k3{fill:var(--f3)}
+.km-peta-wil path.pilih{stroke:var(--brand);stroke-width:3}
+.km-peta-wil path.km-celah{pointer-events:none;stroke:none}
+.km-peta-wil path:not(.km-celah):hover{filter:brightness(1.08)}
+.km-titik-kampus{fill:var(--brand);stroke:var(--card);stroke-width:2}
+.km-titik-desa{fill:var(--accent);stroke:var(--card);stroke-width:1.5}
