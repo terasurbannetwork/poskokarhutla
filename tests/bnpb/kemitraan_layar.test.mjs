@@ -46,7 +46,7 @@ test("cangkang KM statis: tiap .km-w-<kunci> di kemitraan.css cocok KM.RUMPUN da
 });
 
 test("cangkang KM tampilan: tiap berkas mendaftar KM.tampilan dengan bangun dan angka (4 butir) dan menampilkan kosongHtml", () => {
-  assert.deepEqual(readdirSync(AKAR + "public/kemitraan").filter(n => /\.js$/.test(n) && !["inti.js", "konst.js", "hitung.js"].includes(n)).sort(), TAMPILAN.map(t => t + ".js").sort(), "berkas tampilan di public/kemitraan tidak sama dengan 8 tampilan DS §3");
+  assert.deepEqual(readdirSync(AKAR + "public/kemitraan").filter(n => /\.js$/.test(n) && !["inti.js", "konst.js", "hitung.js", "peta.js", "panduan.js"].includes(n)).sort(), TAMPILAN.map(t => t + ".js").sort(), "berkas tampilan di public/kemitraan tidak sama dengan 8 tampilan DS §3");
   for (const t of TAMPILAN) {
     const s = baca(`public/kemitraan/${t}.js`);
     assert.match(s, new RegExp(`KM\\.tampilan\\.${t}\\s*=\\s*\\{`), `${t}.js tidak mendaftar KM.tampilan.${t}`);
@@ -190,6 +190,34 @@ if (!CHROME) {
     await buka("/kemitraan?tampil=daerah&kab=6211", UKURAN[0]);   // ?kab= membuka lembar langsung
     await tab.tungguFungsi("!document.querySelector('#kmSheet').hidden && document.querySelector('#kmBabIsi') && !document.querySelector('#kmBabIsi .ak-hantu')");
     assert.match(await tab.eval("document.querySelector('#kmSheet .ak-dkepala h2').textContent"), /Pulang Pisau/);
+  });
+
+  test("cangkang KM L2b: bab Wilayah menggambar peta provinsi dengan kab terpilih disorot, bab Panduan memuat daftar pertanyaan tanpa slot kosong", async () => {
+    await staf();
+    for (const uk of UKURAN) {
+      await buka("/kemitraan?tampil=daerah&kab=6211", uk);
+      await tab.tungguFungsi("!!document.querySelector('#kmBabIsi svg.km-peta-wil')");
+      const pt = await tab.eval(`(() => { const s = document.querySelector('#kmBabIsi svg.km-peta-wil'); return {n: s.querySelectorAll('path:not(.km-celah)').length, pilih: s.querySelectorAll('path.pilih').length, tt: s.querySelector('path.pilih')?.dataset.tt, akhir: s.lastElementChild === s.querySelector('path.pilih'), w: s.getBoundingClientRect().width}; })()`);
+      assert.ok(pt.n >= 5, `${uk[0]}: peta hanya ${pt.n} kab`);
+      assert.equal(pt.pilih, 1, `${uk[0]}: harus tepat satu kab disorot`);
+      assert.ok(pt.akhir, `${uk[0]}: kab terpilih harus digambar terakhir supaya garis tebalnya tidak tertimpa`);
+      assert.match(pt.tt, /Pulang Pisau/, `${uk[0]}: tooltip kab terpilih: ${pt.tt}`);
+      assert.ok(pt.w > 100 && pt.w <= uk[0], `${uk[0]}: lebar peta ${pt.w}`);
+      await tab.klik('#kmSheet .km-bab [data-bab="9"]');
+      await tab.tungguFungsi("document.querySelectorAll('#kmBabIsi ol.km-tanya > li').length > 20");
+      const t = await tab.eval("document.querySelector('#kmBabIsi').textContent");
+      assert.ok(!TERLARANG.test(t) && !/[{}]|\[object/.test(t), `${uk[0]}: panduan bocor: ${t.slice(0, 120)}`);
+      assert.deepEqual(await tab.eval("[...document.querySelectorAll('#kmBabIsi a[href^=\"/kemitraan/panduan\"]')].every(a => /^\\/kemitraan\\/panduan\\?kab=6211(&masalah=[^&\\s]+)?$/.test(a.getAttribute('href')))"), true, "tautan cetak panduan harus ?kab=&masalah=");
+      assert.deepEqual(tab.galat().filter(bukanFavicon), [], `${uk[0]}: galat konsol/CSP di bab peta/panduan`);
+    }
+    /* halaman cetak /kemitraan/panduan: dengan masalah (judul masalah + riset) dan tanpa kab (pesan, bukan galat) */
+    await buka("/kemitraan/panduan?kab=6211", UKURAN[0]);
+    await tab.tungguFungsi("document.querySelectorAll('#pdIsi ol.km-tanya > li').length > 20");
+    const pd = await tab.eval("({h1: document.querySelector('#pdJudul').textContent, teks: document.querySelector('#pdIsi').textContent, ns: document.querySelectorAll('#pdIsi details').length})");
+    assert.match(pd.h1, /Pulang Pisau/); assert.equal(pd.ns, 8, "8 narasumber"); assert.ok(!TERLARANG.test(pd.teks) && !/[{}]/.test(pd.teks), "panduan cetak bocor");
+    await buka("/kemitraan/panduan", UKURAN[0]);
+    await tab.tungguFungsi("document.querySelector('#pdIsi .ak-kosong')");
+    assert.deepEqual(tab.galat().filter(bukanFavicon), [], "galat konsol/CSP di halaman panduan");
   });
 
   /* kontras WCAG dari computed style: warna apa pun yang diterima canvas (oklch, color-mix) diubah ke sRGB lewat piksel */
