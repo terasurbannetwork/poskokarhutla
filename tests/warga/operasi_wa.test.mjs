@@ -142,6 +142,35 @@ uji("rencana banyak titik tersimpan di rute; demobilisasi menjadikan armada tida
   const n = j.armada.find(x => x.registrasi === "N4875A"); assert.deepEqual([n.status, n.alasan], ["tidak_siap", "demobilisasi"]);
 });
 
+/* kesiapan armada dari laporan harian satgas (baris nyata ekspor WA KARHUTLA 6 PROVINSI, 21 Ags-5 Nov 2026, tanpa nama kru) */
+const LAPORAN_SIAP = `Ijin melaporkan kegiatan Pendampingan Penanganan Karhutla di Provinsi Sumatera Selatan pada hari Senin, 2 November 2026, sbb :
+a. Hely Patroli: Tipe Cessna Grand Caravan Reg. PK-SNM (Serviceable) dan Tipe Bell 206 L4 Reg. Pk-ZGK (Unserviceable)
+b) Heli MI-8AMT Reg. RA-22747: 2 Sortie (09 jam 35 menit / 50x WB)
+5) Heli MI8 MSB-T Reg. UR-VBC: Unserviceable (7 Consecutive day) dan maintenance 500 jam.
+4) Heli Tipe UH-60L Reg. N4875A (Unserviceable: Maintenance 500 hours: estimasi 9 hari)
+- Helikopter Mi-17-1V // Reg VN-8414 //  Standby // SERVICEABLE
+4. RDPL34194 hari ini tidak operasional karena 7 consecutive days for air crew
+Luas lahan 4 ha, dg16x WB. Fs masih berasap. Desa HA-KOTA bukan registrasi.`;
+test("status armada: serviceable = siap, sortie = operasi, unserviceable = tidak_siap beralasan tetap; HA-<huruf> bukan registrasi", () => {
+  const h = urai(LAPORAN_SIAP, {tanggal: TGL, armada: ARMADA}), s = Object.fromEntries(h.status.map(x => [x.registrasi, x]));
+  assert.equal(h.dikenali, "status_armada");
+  assert.deepEqual(Object.keys(s).sort(), ["N4875A", "PK-SNM", "PK-ZGK", "RA-22747", "RDPL-34194", "UR-VBC", "VN-8414"], "tiap registrasi bersama kata status di baris yang sama terbaca, tidak lebih");
+  assert.deepEqual([s["PK-SNM"].status, s["PK-ZGK"].status], ["siap", "tidak_siap"], "dua pesawat satu baris: status dipotong per registrasi");
+  assert.equal(s["RA-22747"].status, "operasi"); assert.equal(s["VN-8414"].status, "siap");
+  assert.deepEqual([s["UR-VBC"].alasan, s["N4875A"].alasan, s["RDPL-34194"].alasan], ["batas 7 hari berturut-turut kru", "perawatan atau kerusakan", "batas 7 hari berturut-turut kru"]);
+  assert.ok(h.status.every(x => !x.alasan || ["batas 7 hari berturut-turut kru", "perawatan atau kerusakan", "tidak laik operasi"].includes(x.alasan)), "alasan hanya dari daftar tetap, bukan teks bebas");
+  assert.equal(urai("Kebakaran di HA-KOTA dan HA-DUMAI, 1 Sortie", {tanggal: TGL, armada: ARMADA}).status.length, 0, "HA-<huruf> ditolak sebagai registrasi");
+  assert.deepEqual(urai("Hari ini Armada udara WB yg Serviceable hanya 2", {tanggal: TGL, armada: ARMADA}).status, [], "kata status tanpa registrasi tidak ditebak");
+});
+
+uji("laporan harian satgas lewat gerbang WA menulis status armada per tanggal laporan", async () => {
+  const r = await kirim(LAPORAN_SIAP);
+  assert.equal(r.j.operasi.status, 7, JSON.stringify(r.j.operasi));
+  const j = await peta(), a = Object.fromEntries(j.armada.map(x => [x.registrasi, x]));
+  assert.deepEqual([a["RA-22747"].status, a["N4875A"].status, a["N4875A"].alasan, a["N4875A"].sumber], ["operasi", "tidak_siap", "perawatan atau kerusakan", "wa"]);
+  assert.equal(await n("op_armada_status", `tanggal = '${TGL}' AND registrasi = 'PK-ZGK'`), 1, "registrasi di luar seed tetap tersimpan untuk riwayat");
+});
+
 uji("peta operasi tetap tertutup untuk tamu: temuan hasil WA tidak bocor", async () => {
   assert.equal((await api("GET", `/api/operasi/peta?tanggal=${TGL}`)).s, 403);
 });

@@ -10,7 +10,8 @@ export const VOR_PATROLI = {KTG: "PK-ALE", PNK: "PK-FPA"};
 export const TANDA_TANGAN = [[/Skadron\s+Udara\s+6/i, "H-3217"]];
 
 const BULAN = ["januari", "februari", "maret", "april", "mei", "juni", "juli", "agustus", "september", "oktober", "november", "desember"];
-const RE_REG = /\b(?:(?:PK|VH|VN|RA|HA|UR|ZK)-[A-Z0-9]{2,5}|RDPL-\d{3,6}|H-\d{3,4}|A-\d{3,4}|N[ -]?\d{1,5} ?[A-Z]{0,2})\b/gi;
+/* RA (Rusia) dan HA (TNI AD) di grup satgas selalu berangka: "HA-KOTA", "HA-DUMAI" (ha = hektare di teks) bukan registrasi (ekspor WA 21 Ags-5 Nov 2026) */
+const RE_REG = /\b(?:(?:PK|VH|VN|UR|ZK)-[A-Z0-9]{2,5}|(?:RA|HA)-\d{3,5}|RDPL-?\d{3,6}|H-\d{3,4}|A-\d{3,4}|N[ -]?\d{1,5} ?[A-Z]{0,2})\b/gi;
 const RE_ALIAS = /\b(BYSON|COUGAR)\s?(\d{1,4})\b/gi;
 const RE_DMS = /(?:\b([NSEW])[ \t]*:?[ \t]*)?(\d{1,3})(?:[ \t]*[°º][ \t]*|[ \t]+)(\d{1,2})[ \t]*['′’´][ \t]*(\d{1,2}(?:[.,]\d+)?)[ \t]*(?:["″”“]|''|′′|’’)(?:[ \t]*([NSEW])\b)?/gi;
 const RE_DESIMAL = /(?:\b([NSEW])[ \t]*:?[ \t]*)?(-?\d{1,3}\.\d{3,})[ \t]*°?(?:[ \t]*([NSEW])\b)?/gi;
@@ -50,15 +51,44 @@ function judulKasus(s) {
   return h.replace(/,(?=\S)/g, ", ").replace(/\b(Kab|Kec)\.(?=\S)/gi, (_, a) => a[0].toUpperCase() + a.slice(1).toLowerCase() + ". ").replace(/\s+/g, " ");
 }
 
-export function registrasi(teks, armada) {
-  const peta = new Map(armada.map(r => [String(r).toUpperCase().replace(/[^A-Z0-9]/g, ""), r]));
-  const t = teks.replace(/Hasil\s+Patroli[^\n]*/gi, "").replace(/\b(PK|VH|VN|RA|HA|UR|ZK|RDPL)\s*-\s*([A-Z0-9]{2,6})\b/gi, "$1-$2"), cari = [];
+/* semua registrasi di teks, urut letak: [[indeks, registrasi]]. Yang tak ada di seed dipakai apa adanya hanya bila bertanda hubung. */
+function semuaReg(t, armada) {
+  const peta = new Map(armada.map(r => [String(r).toUpperCase().replace(/[^A-Z0-9]/g, ""), r])), cari = [];
   for (const m of t.matchAll(RE_REG)) {
     const r = peta.get(m[0].toUpperCase().replace(/[^A-Z0-9]/g, ""));
     if (r) cari.push([m.index, r]); else if (m[0].includes("-")) cari.push([m.index, m[0].toUpperCase()]);
   }
   for (const m of t.matchAll(RE_ALIAS)) { const r = ALIAS[(m[1] + m[2]).toUpperCase()]; if (r) cari.push([m.index, r]); }
-  if (cari.length) return cari.sort((a, b) => a[0] - b[0])[0][1];
+  return cari.sort((a, b) => a[0] - b[0]);
+}
+const rapikanReg = t => t.replace(/\b(PK|VH|VN|RA|HA|UR|ZK|RDPL)\s*-\s*([A-Z0-9]{2,6})\b/gi, "$1-$2");
+
+/* kesiapan armada dari laporan satgas ("Reg. RA-22729 (serviceable)", "N4875A Unserviceable, karena ...", "Reg. UR-VBC: 2 Sortie") -> [{registrasi, status, alasan?}].
+   Per baris, dipotong di tiap registrasi: kata status harus SESUDAH registrasinya. Alasan hanya dari daftar tetap (teks bebas bisa memuat nama kru). Satu registrasi satu status: operasi > tidak_siap > siap. */
+const PERINGKAT = {operasi: 3, tidak_siap: 2, siap: 1};
+export function statusArmada(teks, armada = []) {
+  const per = new Map();
+  for (const baris of rapikanReg(String(teks ?? "")).split("\n")) {
+    const reg = semuaReg(baris, armada);
+    reg.forEach(([i, r], n) => {
+      const s = baris.slice(i, reg[n + 1]?.[0] ?? baris.length);
+      let st = null, alasan;
+      const sortie = s.match(/\b(\d{1,2})\s*(?:x\s*)?sorti(?:e)?s?\b/i);
+      if (sortie && +sortie[1] > 0) st = "operasi";
+      else if (/\bunserviceable\b|\bU\/S\b|tidak\s+operasional|tidak\s+(?:dapat|bisa)\s+(?:terbang|beroperasi)|\bgrounded\b|\bAOG\b/i.test(s)) {
+        st = "tidak_siap";
+        alasan = /consecutive/i.test(s) ? "batas 7 hari berturut-turut kru" : /maint|perawatan|pemeliharaan|inspeksi|spare\s*part|crack|rotor|\bwire\b|tali/i.test(s) ? "perawatan atau kerusakan" : "tidak laik operasi";
+      }
+      else if (/\bserviceable\b|\bstand\s?by\b|\bS\/O\b/i.test(s)) st = "siap";
+      if (st && (PERINGKAT[st] > (PERINGKAT[per.get(r)?.status] || 0))) per.set(r, {registrasi: r, status: st, ...(alasan ? {alasan} : {})});
+    });
+  }
+  return [...per.values()];
+}
+
+export function registrasi(teks, armada) {
+  const t = rapikanReg(teks.replace(/Hasil\s+Patroli[^\n]*/gi, "")), cari = semuaReg(t, armada);
+  if (cari.length) return cari[0][1];
   for (const [re, r] of TANDA_TANGAN) if (re.test(t)) return r;
   const v = t.match(/\b(?:VOR|Nm\s+from)\s+([A-Z]{3})\b/i);   // hasil patroli satu titik tanpa registrasi: rujukan VOR/base = pesawat patroli base itu
   return v && VOR_PATROLI[v[1].toUpperCase()] || null;
@@ -171,6 +201,9 @@ export function urai(teks, {tanggal, armada = []} = {}) {
     else lihat.set(`${reg}|${k.lat}|${k.lon}`, e);   // blok tertempel ganda: yang terakhir menggantikan
   }
   hasil.temuan = [...lihat.values()];
+  /* laporan harian satgas per provinsi: kesiapan tiap pesawat */
+  hasil.status = statusArmada(t, armada);
+  if (hasil.status.length) hasil.dikenali ||= "status_armada";
   if (!hasil.dikenali && /BEFORE\s+WB|Water\s+Source|Water\s+Drop/i.test(t)) hasil.dikenali = "bukti_wb";
   return hasil;
 }
