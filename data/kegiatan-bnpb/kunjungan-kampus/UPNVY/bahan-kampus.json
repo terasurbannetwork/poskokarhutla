@@ -12,31 +12,35 @@
     "kampus/UPNVY/kampus-3.jpg",
     "kampus/UPNVY/kampus-4.jpg"
   ],
-  "kredit_kampus": "Foto: UPN Veteran Yogyakarta (Rektorat, Fakultas Pertanian, FTME)",
+  "kredit_kampus": "Foto: UPN Veteran Yogyakarta (Rektorat, FISIP, Gedung A.F. Lasut)",
   "foto_kampus_sumber": [
     {
       "berkas": "kampus-1.jpg",
-      "url": "https://www.upnyk.ac.id/page/pendidikan",
+      "url": "https://fisip.upnyk.ac.id/",
       "pengunggah": "UPN Veteran Yogyakarta",
-      "lisensi": "Laman resmi kampus (tanpa lisensi terbuka)"
+      "lisensi": "Laman resmi kampus (tanpa lisensi terbuka)",
+      "objek": "Gedung Rektorat, kampus Condongcatur"
     },
     {
       "berkas": "kampus-2.jpg",
-      "url": "https://tambang.upnyk.ac.id/",
-      "pengunggah": "UPN Veteran Yogyakarta (Teknik Pertambangan)",
-      "lisensi": "Laman resmi kampus (tanpa lisensi terbuka)"
+      "url": "https://fisip.upnyk.ac.id/",
+      "pengunggah": "UPN Veteran Yogyakarta (FISIP)",
+      "lisensi": "Laman resmi kampus (tanpa lisensi terbuka)",
+      "objek": "Gedung FISIP beratap limas, kampus Babarsari"
     },
     {
       "berkas": "kampus-3.jpg",
-      "url": "https://www.upnyk.ac.id/page/pendidikan",
-      "pengunggah": "UPN Veteran Yogyakarta",
-      "lisensi": "Laman resmi kampus (tanpa lisensi terbuka)"
+      "url": "https://fisip.upnyk.ac.id/",
+      "pengunggah": "UPN Veteran Yogyakarta (FISIP)",
+      "lisensi": "Laman resmi kampus (tanpa lisensi terbuka)",
+      "objek": "Papan nama UPN \"Veteran\" Yogyakarta - FISIP"
     },
     {
       "berkas": "kampus-4.jpg",
       "url": "https://www.upnyk.ac.id/page/pendidikan",
       "pengunggah": "UPN Veteran Yogyakarta",
-      "lisensi": "Laman resmi kampus (tanpa lisensi terbuka)"
+      "lisensi": "Laman resmi kampus (tanpa lisensi terbuka)",
+      "objek": "Gedung Aree Frederik Lasut"
     }
   ],
   "pusat_studi": "PSMB",
@@ -94,6 +98,6 @@
       "isi": "Gravimeter dan seismograf untuk mikrozonasi gempa daerah"
     }
   ],
-  "catatan": "Commons nyaris tanpa foto kampus (hanya foto kegiatan WikiLatih), jadi empat foto kampus diambil dari laman resmi upnyk.ac.id dan belum berlisensi terbuka; mohon izin atau pakai kredit saja. Logo dari berkas Wikipedia Indonesia (berstatus nonbebas, 977x974 diberi padding ke 1024). Koordinat kampus perkiraan. riset-3 (2017) beresolusi rendah hasil pembesaran dan memuat orang; riset-4 adalah ilustrasi grafis dari rilis kampus (asli 700 px, dibesarkan ke 1000 px); riset-1 dan riset-2 memuat orang berpose. Dua riset longsor sengaja dipilih karena itu bukti terkuat; belum ditemukan riset UPNVY terbaru (2025-2026) untuk gunung api, banjir, atau karhutla. Keempat butir belum dikonfirmasi ke peneliti/PSMB, dan ADPD (2019-2020) perlu dicek masih beroperasi.",
+  "catatan": "Commons nyaris tanpa foto kampus (hanya foto kegiatan WikiLatih), jadi empat foto kampus diambil dari laman resmi upnyk.ac.id (kampus-1 s.d. kampus-3 dari slider situs fisip.upnyk.ac.id, 5000-6000 px diperkecil ke 2400 px; kampus-4 dari upnyk.ac.id/page/pendidikan, 1000 px) dan belum berlisensi terbuka; mohon izin atau pakai kredit saja. Logo dari berkas Wikipedia Indonesia (berstatus nonbebas, 977x974 diberi padding ke 1024). Koordinat kampus perkiraan. riset-3 (2017) beresolusi rendah hasil pembesaran dan memuat orang; riset-4 adalah ilustrasi grafis dari rilis kampus (asli 700 px, dibesarkan ke 1000 px); riset-1 dan riset-2 memuat orang berpose. Dua riset longsor sengaja dipilih karena itu bukti terkuat; belum ditemukan riset UPNVY terbaru (2025-2026) untuk gunung api, banjir, atau karhutla. Keempat butir belum dikonfirmasi ke peneliti/PSMB, dan ADPD (2019-2020) perlu dicek masih beroperasi.",
   "nama_daftar": "UPN Veteran Yogyakarta"
 }
