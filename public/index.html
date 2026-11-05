@@ -1874,7 +1874,7 @@ async function muatData() {
   if (false && umur > 26) { /* spanduk "data basi" disembunyikan dulu (pemilik, 14 Okt 2026) */ $("#basi").hidden = false; $("#basi").textContent = `Data terakhir diperbarui ${Math.round(umur)} jam lalu (${jamWIB(meta.dibuat)}). ${S.basi ? "Status cluster tidak boleh dipakai untuk keputusan sampai data diperbarui." : "Periksa pembaruan otomatis."}`; }
 }
 
-/* titik di hari terpilih? SATU hari kalender WIB (setara SiPongi/BNPB), tanpa akumulasi. S.hariPilih = "MM-DD" hari itu (kolom b[7]);
+/* titik di hari terpilih? SATU hari kalender WIB (lokasi unik 375 m, bukan jumlah tanda SiPongi), tanpa akumulasi. S.hariPilih = "MM-DD" hari itu (kolom b[7]);
    hari lebih lama dari kemarin hanya ada di hotspot.json (muatTitik). S.rentang = pilihan di kontrol (langsung berubah saat diklik);
    S.rentangHit = hari yang SEDANG dipegang S.hit/S.hariPilih (diisi hitung()): semua label angka membaca ini supaya tidak ada
    label hari baru di atas angka hari lama selama hotspot.json belum termuat */
