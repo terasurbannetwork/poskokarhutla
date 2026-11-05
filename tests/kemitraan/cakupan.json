@@ -1,7 +1,14 @@
 {
   "_catatan": "Registri cakupan Kemitraan Kampus di luar worker dan D1 (TEST.md, RU §1). Tiap ekspor public/kemitraan/hitung.js dan src/kemitraan_hitung.js, tiap modul public/kemitraan/*.js (js:<berkas>), tiap src/kemitraan*.js (src:<berkas>), dan tiap skrip scripts/kemitraan/*.py (py:<berkas>) WAJIB ada di 'diuji' (nilai = potongan nama uji yang benar-benar ada di tests/kemitraan/*.test.mjs, tests/warga/kemitraan_*.test.mjs, tests/bnpb/kemitraan_*.test.mjs; atau 'uji:<skrip>' untuk self-check --cek) atau 'dikecualikan' (nilai = alasan >= 15 huruf). 'antre' hanya boleh menyusut (BATAS_ANTRE di gerbang-cakupan.test.mjs, sekarang 0). Dijaga oleh tests/kemitraan/gerbang-cakupan.test.mjs.",
   "diuji": {
-    "hitung.js": "hitung syarat: semua kasus acuan.json (A9) benar",
+    "hitung.syarat": "hitung syarat: semua kasus acuan.json (A9) benar",
+    "hitung.susunPanduan": "hitung susunPanduan: slot kosong membuang templat",
+    "hitung.nilaiDariProfil": "paritas pertanyaan Py=JS: seluruh 514 kab",
+    "hitung.panduan": "hitung panduan L5: atas 12 profil nyata",
+    "hitung.panduanHtml": "hitung panduanHtml: nama wilayah berbahaya lolos esc",
+    "hitung.idn": "hitung idn: setengah-genap seperti Python",
+    "hitung.statusModel": "hitung statusModel dan UJI_BAHAYA",
+    "hitung.UJI_BAHAYA": "hitung statusModel dan UJI_BAHAYA",
     "js:panduan.js": "cangkang KM L2b",
     "py:konst.py": "uji:konst",
     "py:kode.py": "uji:kode",

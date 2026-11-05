@@ -112,3 +112,21 @@ test("hitung panduanHtml: nama wilayah berbahaya lolos esc, tidak jadi tag", () 
   assert.ok(!/<img|<b>P/.test(h), "tag dari data lolos ke HTML");
   assert.match(h, /<ol class="km-tanya">/);
 });
+
+test("hitung statusModel dan UJI_BAHAYA: gagal hanya bila semua sub-uji gagal, campuran belum lengkap, bahaya tanpa uji null", () => {
+  const p = (uji) => ({ model: { uji } });
+  const semua = (v) => Object.fromEntries(H.UJI_BAHAYA.karhutla.map((k) => [k, v]));
+  assert.equal(H.UJI_BAHAYA.karhutla.length, 4, "karhutla dinilai dari empat sub-uji");
+  assert.equal(H.statusModel(p(semua("gagal")), "karhutla"), "gagal uji balik nasional");
+  assert.equal(H.statusModel(p(semua("lolos")), "karhutla"), "lolos uji balik nasional");
+  assert.equal(H.statusModel(p({ ...semua("gagal"), karhutla_peluang: "lolos" }), "karhutla"), "belum teruji lengkap", "satu sub-uji lolos tidak boleh jadi gagal");
+  assert.equal(H.statusModel(p({ banjir_longsor: "gagal" }), "banjir"), "gagal uji balik nasional");
+  assert.equal(H.statusModel(p({ banjir_longsor: "gagal" }), "gunungapi"), null, "bahaya tanpa uji balik tidak boleh diberi status");
+  assert.equal(H.statusModel(p({}), "banjir"), null, "uji kosong = null, bukan gagal");
+  assert.equal(H.statusModel({}, "banjir"), null);
+  assert.equal(H.statusModel(p({ constructor: "gagal" }), "constructor"), null, "kunci prototipe tidak dianggap bahaya");
+  for (const kab of ["3374", "6211"]) {
+    const d = profil(kab);
+    for (const b of Object.keys(H.UJI_BAHAYA)) assert.ok([null, "gagal uji balik nasional", "lolos uji balik nasional", "belum teruji lengkap"].includes(H.statusModel(d, b)), `${kab} ${b}: status di luar daftar`);
+  }
+});
