@@ -1,7 +1,6 @@
 /* Layar staf /ai. Token, kepala navy, tabel, tombol dari /bnpb/bnpb.css (yang memuat admin.css); di sini hanya tata letak /ai. */
 [hidden]{display:none!important}
 .ai-dialog textarea{font:14px/1.5 var(--font)}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .ai{max-width:1440px;margin:0 auto;padding:16px 20px 24px}
 .ai-galat{margin:0 0 12px}
 

@@ -29,12 +29,12 @@
     <aside class="ai-panel" id="aiPanel" aria-label="Riwayat percakapan dan daftar agen">
       <section class="ai-bagian">
         <h2>Riwayat percakapan</h2>
-        <label class="ai-cari"><span class="sr">Cari percakapan</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="aiCariRiwayat" type="search" autocomplete="off" placeholder="Cari percakapan"></label>
+        <label class="ai-cari"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input aria-label="Cari percakapan" id="aiCariRiwayat" type="search" autocomplete="off" placeholder="Cari percakapan"></label>
         <ul class="ai-daftar" id="aiRiwayat"></ul>
       </section>
       <section class="ai-bagian">
         <div class="ai-bagian-kepala"><h2>Agen</h2><button type="button" class="ai-ik" data-agen-baru aria-label="Agen baru" title="Agen baru"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></div>
-        <label class="ai-cari"><span class="sr">Cari agen</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="aiCariAgen" type="search" autocomplete="off" placeholder="Cari agen"></label>
+        <label class="ai-cari"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input aria-label="Cari agen" id="aiCariAgen" type="search" autocomplete="off" placeholder="Cari agen"></label>
         <ul class="ai-daftar" id="aiAgen"></ul>
       </section>
     </aside>
@@ -43,15 +43,14 @@
       <div class="ai-kepala">
         <span class="ai-avatar besar" id="aiAvatarAktif"></span>
         <div class="ai-judul"><h1 id="aiNamaAgen">Memuat…</h1><span class="ai-pembuat"><span class="bn-pil ai-pil-staf" id="aiPilStaf" title="Agen ini dibuat staf, bukan rujukan resmi BNPB" hidden>Agen buatan staf</span><span id="aiPembuat" hidden></span></span></div>
-        <label class="ai-model"><span class="sr">Model</span><select id="aiModel" aria-label="Pilih model"></select></label>
+        <label class="ai-model"><select id="aiModel" aria-label="Pilih model"></select></label>
         <label class="ai-sakelar"><input type="checkbox" id="aiNalar" role="switch"><span>Mode penalaran</span></label>
         <button type="button" class="ai-ik" id="aiBaru" aria-label="Percakapan baru" title="Percakapan baru"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v7M12 8v8M8 12h8"/></svg></button>
       </div>
       <div class="ai-pesan-wadah" id="aiPesan" aria-live="polite"></div>
       <p class="ai-privasi">Jangan masukkan data pribadi warga (NIK, nomor HP, alamat).</p>
       <form class="ai-tulis" id="aiFormKirim">
-        <label class="sr" for="aiTulis">Tulis pesan</label>
-        <textarea id="aiTulis" rows="2" placeholder="Tulis pertanyaan" title="Enter untuk kirim, Shift+Enter untuk baris baru"></textarea>
+                <textarea id="aiTulis" aria-label="Tulis pesan" rows="2" placeholder="Tulis pertanyaan" title="Enter untuk kirim, Shift+Enter untuk baris baru"></textarea>
         <button type="submit" class="ai-ik ai-kirim" id="aiKirim" aria-label="Kirim pesan" title="Kirim pesan" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12 20 4l-6 16-3-7z"/></svg></button>
       </form>
     </section>
@@ -59,7 +58,7 @@
 
   <section class="ai-kelola" id="aiKelolaView" hidden>
     <div class="bn-judul"><h1>Kelola agen</h1><div class="bn-aksi"><button type="button" class="bn-tombol" data-agen-baru>Agen baru</button></div></div>
-    <label class="ai-cari ai-cari-lebar"><span class="sr">Cari agen</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="aiCariKelola" type="search" autocomplete="off" placeholder="Cari nama, deskripsi, atau pembuat"></label>
+    <label class="ai-cari ai-cari-lebar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input aria-label="Cari agen" id="aiCariKelola" type="search" autocomplete="off" placeholder="Cari nama, deskripsi, atau pembuat"></label>
     <div class="ad-tabel-wadah">
       <table class="ad-tabel">
         <thead><tr><th>Nama</th><th>Visibilitas</th><th title="Jumlah alat yang boleh dipakai agen">Alat</th><th>Deskripsi</th><th>Dibuat</th><th>Pembuat</th><th>Aksi</th></tr></thead>
@@ -125,7 +124,7 @@
       <div class="ai-grup">
         <div class="ai-bagian-kepala"><span class="ai-label">Alat</span><span class="ai-butir-sub" id="aiAlatHitung"></span></div>
         <div class="ai-alat-kendali">
-          <label class="ai-cari"><span class="sr">Cari alat</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="aiCariAlat" name="cari_alat" type="search" autocomplete="off" placeholder="Cari alat"></label>
+          <label class="ai-cari"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input aria-label="Cari alat" id="aiCariAlat" name="cari_alat" type="search" autocomplete="off" placeholder="Cari alat"></label>
           <button type="button" class="bn-tombol sekunder ai-tombol-kecil" id="aiPilihSemua">Pilih semua</button>
           <button type="button" class="bn-tombol sekunder ai-tombol-kecil" id="aiKosongkan">Kosongkan</button>
         </div>
