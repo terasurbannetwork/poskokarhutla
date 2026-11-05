@@ -125,6 +125,8 @@
   function susunPanduan(templat, nilai, mengapa, maks) {
     maks = maks == null ? PD.MAKS_PER_NARASUMBER : maks;
     let ok = templat.map(t => [t, isi(t, nilai)]).filter(x => x[1] !== null);
+    const lihat = new Set(); /* salinan _tanpa_kembar (pertanyaan.py): arah + himpunan slot data selain wilayah sama dengan yang terdahulu = kembar, dibuang */
+    ok = ok.filter(([t]) => { const ds = (t.isian || []).filter(k => k !== "wilayah"); if (!ds.length) return true; const kunci = t.arah + "|" + [...new Set(ds)].sort().join(","); if (lihat.has(kunci)) return false; lihat.add(kunci); return true; });
     if (ok.length > maks) ok = ok.sort((a, b) => ((a[0].prioritas ?? 2) - (b[0].prioritas ?? 2)) || (ARAH.indexOf(a[0].arah) - ARAH.indexOf(b[0].arah)) || urut(a[0].id, b[0].id)).slice(0, maks);
     ok.sort((a, b) => (ARAH.indexOf(a[0].arah) - ARAH.indexOf(b[0].arah)) || urut(a[0].id, b[0].id));
     const sub = (mengapa || []).slice(0, PD.MAKS_MENGAPA);
