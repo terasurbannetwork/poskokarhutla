@@ -1722,3 +1722,14 @@
 {"t":"2026-11-05T10:24:39.139+07:00","sesi":"42cde277","prompt":"Langsung di sini","label":[],"berkas":[]}
 {"t":"2026-11-05T12:16:30.619+07:00","sesi":"171ac05b","prompt":"Push sekarang","label":[],"berkas":[]}
 {"t":"2026-11-05T12:19:11.724+07:00","sesi":"171ac05b","prompt":"Izinkan, gw ketik","label":[],"berkas":[]}
+{"t":"2026-11-05T12:29:13.263+07:00","sesi":"e47021d2","prompt":"bro hari ini lu ada dapat laporan harian bencana kan ya? Disuruh buat laporan harian bencana> Sama kemarin juga","label":[],"berkas":[]}
+{"t":"2026-11-05T12:30:17.902+07:00","sesi":"e47021d2","prompt":"Oke agar jika ada perintah untuk buat laporan ini kan informasinya lu bisa gunakan untuk update kondisi banjir ya.","label":["banjir"],"berkas":[]}
+{"t":"2026-11-05T12:30:31.979+07:00","sesi":"e47021d2","prompt":"Disini","label":[],"berkas":[]}
+{"t":"2026-11-05T12:31:49.306+07:00","sesi":"e47021d2","prompt":"Bro ini dia ga ada detailnya ya untuk setiap kecamatannya kenapa bisa diklik ya? Harusnya kan ga bisa.","label":[],"berkas":[]}
+{"t":"2026-11-05T12:32:26.357+07:00","sesi":"e47021d2","prompt":"Ini agar letak paling bawah","label":[],"berkas":[]}
+{"t":"2026-11-05T12:33:02.842+07:00","sesi":"e47021d2","prompt":"Meja pantau kenapa gini","label":[],"berkas":[]}
+{"t":"2026-11-05T12:33:33.916+07:00","sesi":"e47021d2","prompt":"Ini kenapa ga otomatis masuk ya?","label":[],"berkas":[]}
+{"t":"2026-11-05T12:33:50.720+07:00","sesi":"e47021d2","prompt":"Kenapa ga otomatis masuk?","label":[],"berkas":[]}
+{"t":"2026-11-05T12:35:12.579+07:00","sesi":"e47021d2","prompt":"Ini yang pelaporan dipindah aja ke bnpb/dalops. Jadi ga harus ngarah ke halaman lain","label":[],"berkas":[]}
+{"t":"2026-11-05T12:36:36.616+07:00","sesi":"2f081dcc","prompt":"Bro btw ada ga ya yang terkait bot untuk parsing semua info terkait laporan harian? Dia udah diinvite di grup","label":[],"berkas":[]}
+{"t":"2026-11-05T12:38:14.875+07:00","sesi":"2f081dcc","prompt":"oke ini untuk yang monitoring apakah sistem sudah terima laporan harian hari ini sudah ada ga?","label":[],"berkas":[]}

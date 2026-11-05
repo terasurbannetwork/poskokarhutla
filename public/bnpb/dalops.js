@@ -328,14 +328,15 @@
             const ds = (r.desa || []).filter(d => (d.kec || "").toLowerCase() === k.nama.toLowerCase()); if (!ds.length) return null;
             const n = f => ds.some(d => d[f] != null) ? ds.reduce((a, d) => a + (d[f] || 0), 0) : null, t = ds.filter(d => d.tinggi_cm).map(d => d.tinggi_cm);
             return {tgl: r.tgl, kk: n("kk"), jiwa: n("jiwa"), n_kec: 1, n_desa: ds.length, tinggi_cm: t.length ? [Math.min(...t.map(v => v[0])), Math.max(...t.map(v => v[1]))] : null};
-          }).filter(Boolean) : [];
+          }).filter(r => r && H.adaAngka(r)) : [];   // hari tanpa angka tidak masuk histori; tanpa satu hari pun, tombol histori hilang
           const tk = h("button", {type: "button", class: "dl-buka dl-buka-kec", "aria-expanded": "false"}, h("b", {teks: k.nama ? "Kec. " + k.nama.replace(/^(kecamatan|kec\.?)\s*/i, "") : "Kecamatan tidak disebut"}),
             k.desa.length ? label(`${F(k.desa.length)} desa/kel.`, "pin", "abu") : null);
           const trk = h("tr", {class: "dl-kec-baris", hidden: true}, h("td", {class: "dl-wil"}, tk), td("", true), td("", true), td("", true), td(angka(jml("kk")), true), td(angka(jml("jiwa")), true), td("", true), td("", true), td(tinggi(rentang), true), td("", true),
             kec ? h("td", null, h("div", {class: "dl-aksi"}, rwKec.length ? tombolHistori({nama: kec, tingkatKec: true, riwayat: rwKec}, `${kec}, ${x.nama}, per hari logbook`) : null, tombolMaps(kec, ...kabProv))) : td("", true));
-          const desa = k.desa.map(d => h("tr", {class: "dl-desa-baris", hidden: true}, h("td", {class: "dl-wil", teks: d.nama}), td("", true), td("", true), td("", true), td(angka(d.kk), true), td(angka(d.jiwa), true), td("", true), td("", true), td(tinggi(d.tinggi_cm), true), td("", true), aksi(d.nama, kec)));
+          // desa tanpa satu angka pun (KK, jiwa, tinggi air) tidak dibuka: baris isinya cuma tanda "–" (pemilik 5 Nov 2026)
+          const desa = k.desa.filter(H.adaAngka).map(d => h("tr", {class: "dl-desa-baris", hidden: true}, h("td", {class: "dl-wil", teks: d.nama}), td("", true), td("", true), td("", true), td(angka(d.kk), true), td(angka(d.jiwa), true), td("", true), td("", true), td(tinggi(d.tinggi_cm), true), td("", true), aksi(d.nama, kec)));
           const bukaKec = jadi => { desa.forEach(r => r.hidden = !jadi); tk.setAttribute("aria-expanded", String(jadi)); };
-          if (desa.length) trk.addEventListener("click", () => bukaKec(tk.getAttribute("aria-expanded") !== "true")); else trk.classList.add("dl-tanpa");
+          if (desa.length) trk.addEventListener("click", () => bukaKec(tk.getAttribute("aria-expanded") !== "true")); else { trk.classList.add("dl-tanpa"); tk.removeAttribute("aria-expanded"); tk.disabled = true; }
           return {trk, desa, bukaKec};
         });
         const buka = paksa => {
@@ -464,10 +465,10 @@
 
     app.replaceChildren(
       bagianWilayah(pekan, prov, hari, sk, hariSt),
-      bagianUpaya(pekan, hari),
       bagianTanya(tanya, sk, st, hari),
       st ? bagian("prakiraan", "peringatan", "Peringatan dini", siagaJudul(H.siaga(sk, sudah, 2)), wadahPra, bagianArti())
-        : bagian("prakiraan", "peringatan", "Peringatan dini", "Prakiraan banjir belum termuat", kosong("peringatan", "status.json gagal dimuat, coba muat ulang.")));
+        : bagian("prakiraan", "peringatan", "Peringatan dini", "Prakiraan banjir belum termuat", kosong("peringatan", "status.json gagal dimuat, coba muat ulang.")),
+      bagianUpaya(pekan, hari));   // upaya penanganan paling bawah (pemilik 5 Nov 2026)
     /* tombol Buka semua bagian prakiraan dipasang setelah tabelnya ada */
     const pra = document.getElementById("prakiraan");
     if (pra && !pra.querySelector(".dl-semua") && pra.querySelector(".dl-grup")) pra.querySelector(".ex-jd").append(bukaSemua(pra));

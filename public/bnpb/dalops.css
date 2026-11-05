@@ -220,6 +220,7 @@
 .dl-wrap .dl-tabel .dl-prov td,.dl-wrap .dl-tabel .dl-prov:hover td{background:none;border-bottom:1px solid var(--line)}
 .dl-wrap .dl-tabel .dl-prov td:first-child{font-weight:800}
 .dl-kab-baris.dl-tanpa{cursor:default}
+.dl-tanpa .dl-buka{cursor:default}
 .dl-wil{padding-left:28px!important}
 .dl-kec-baris .dl-wil{padding-left:44px!important}
 .dl-desa-baris .dl-wil{padding-left:60px!important}

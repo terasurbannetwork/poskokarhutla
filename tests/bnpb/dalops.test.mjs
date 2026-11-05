@@ -3,6 +3,7 @@
    Jalan: node --test tests/bnpb/dalops.test.mjs */
 import {test} from "node:test";
 import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
 import "../../public/bnpb/dalops_hitung.js";
 const H = globalThis.DalopsHitung, HARI = "2026-11-01";
 const K = (id, kab, mulai, terakhir, surut, x = {}) => ({id, prov: "Aceh", prov_kode: "11", kab: ["Kab. " + kab], kab_kode: ["11|" + kab], mulai, pertama: mulai, terakhir,
@@ -76,6 +77,31 @@ test("rincian kab: kecamatan digabung, desa dikelompokkan per kecamatan, histori
   assert.deepEqual(kel[0].kec, ["Trumon Tengah", "Trumon"]);
   assert.deepEqual(kel[0].riwayat.map(r => [r.tgl, r.kk, r.jiwa, r.tinggi_cm]), [["2026-10-29", 40, 132, [10, 60]], ["2026-11-01", 5, null, null]]);
   assert.deepEqual(H.perKec(kel[0]).map(k => [k.nama, k.desa.map(d => d.nama)]), [["Trumon Tengah", []], ["Trumon", ["Padang Harapan"]], [null, ["Lhok Raya"]]]);
+});
+
+test("laporan harian terbaru memperbarui Pantau Banjir: jalan.py memanggil dalops_banjir.py --unggah (pemilik 5 Nov 2026)", async () => {
+  const {readdirSync} = await import("node:fs");
+  const akar = new URL("../../data/laporan-bnpb/", import.meta.url);
+  // folder harian-YYYY-MM-DD dengan jalan.py, mulai 5 Nov 2026 (sebelumnya belum ada aturannya)
+  const hari = readdirSync(akar).filter(n => /^harian-\d{4}-\d{2}-\d{2}$/.test(n) && n >= "harian-2026-11-05").sort();
+  const terbaru = hari.reverse().find(n => { try { readFileSync(new URL(n + "/jalan.py", akar)); return true; } catch { return false; } });
+  assert.ok(terbaru, "tidak ada data/laporan-bnpb/harian-*/jalan.py sejak 5 Nov 2026");
+  assert.match(readFileSync(new URL(terbaru + "/jalan.py", akar), "utf8"), /dalops_banjir\.py['"],\s*['"]--unggah/,
+    `${terbaru}/jalan.py tidak memanggil scripts/data/dalops_banjir.py --unggah: kondisi banjir WA tidak sampai ke /bnpb/dalops`);
+});
+
+test("desa tanpa angka tidak bisa dibuka: adaAngka butuh KK, jiwa, atau tinggi air (pemilik 5 Nov 2026)", () => {
+  assert.equal(H.adaAngka({nama: "Napai", kk: null, jiwa: null, tinggi_cm: null}), false);
+  assert.equal(H.adaAngka({nama: "Napai"}), false);
+  assert.equal(H.adaAngka({kk: 30, jiwa: null, tinggi_cm: null}), true);
+  assert.equal(H.adaAngka({kk: null, jiwa: null, tinggi_cm: [10, 15]}), true);
+  // gerbang layar: baris desa dan histori kecamatan disaring adaAngka, kecamatan tanpa desa berangka tidak bisa diklik
+  const src = readFileSync(new URL("../../public/bnpb/dalops.js", import.meta.url), "utf8");
+  assert.match(src, /k\.desa\.filter\(H\.adaAngka\)/, "baris desa harus disaring H.adaAngka");
+  assert.match(src, /filter\(r => r && H\.adaAngka\(r\)\)/, "histori kecamatan harus disaring H.adaAngka");
+  // kartu Upaya penanganan paling bawah
+  const urut = src.slice(src.lastIndexOf("bagianWilayah(pekan, prov, hari"));   // panggilan di render(), bukan definisinya
+  assert.ok(urut.indexOf("bagianUpaya(") > urut.indexOf("Peringatan dini"), "bagianUpaya harus sesudah Peringatan dini");
 });
 
 test("tindakan: upaya, pihak, kebutuhan, kendala dari kejadian terbaru yang mengisinya; histori harian menggabungkan upaya per tanggal", () => {

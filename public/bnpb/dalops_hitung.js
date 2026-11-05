@@ -40,6 +40,9 @@
     return [...m.values(), ...(lain.desa.length ? [lain] : [])];
   }
 
+  /* desa atau hari histori yang punya minimal satu angka (KK, jiwa, tinggi air); tanpa angka = baris berisi "–" saja */
+  const adaAngka = d => d.kk != null || d.jiwa != null || !!d.tinggi_cm;
+
   function kelompok(kejadian, h) {
     const m = new Map();
     for (const k of [...kejadian].sort((a, b) => (a.terakhir > b.terakhir) - (a.terakhir < b.terakhir))) {
@@ -139,6 +142,6 @@
       `\nMohon pembaruan kondisi terkini tiap kab/kota: apakah sudah surut, jumlah KK dan jiwa terdampak, warga mengungsi, tinggi genangan, serta desa/kelurahan terdampak. Terima kasih.`;
   }
 
-  const X = {SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perKec, gabungRiwayat, perluDitanya, statusKab, siaga, pesanWA, pesanSiaga, pesanProv, tglPanjang, tglPendek, namaKab};
+  const X = {SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perKec, adaAngka, gabungRiwayat, perluDitanya, statusKab, siaga, pesanWA, pesanSiaga, pesanProv, tglPanjang, tglPendek, namaKab};
   g.DalopsHitung = X;
 })(globalThis);
