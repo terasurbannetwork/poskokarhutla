@@ -16,7 +16,7 @@
   /* satu bentuk layar untuk banjir dan longsor (pemilik 5 Nov 2026: Pantau = Karhutla, Banjir, Longsor); kolom data 'surut' = selesai menurut jenisnya */
   const JN = {
     banjir: {kata: "banjir", ik: "banjir", ya: "Sudah surut", tidak: "Belum surut", ya_k: "sudah surut", tidak_k: "belum surut", lv: "b", tinggi: true},
-    longsor: {kata: "longsor", ik: "longsor", ya: "Tertangani", tidak: "Masih ditangani", ya_k: "tertangani", tidak_k: "masih ditangani", lv: "l", tinggi: false}};
+    longsor: {kata: "longsor", ik: "longsor", ya: "Tertangani", tidak: "Masih ditangani", ya_k: "sudah tertangani", tidak_k: "masih ditangani", lv: "l", tinggi: false}};
   let J = JN.banjir;
   const surutLabel = s => s ? label(J.ya, "ok", "biru") : label(J.tidak, J.ik, "merah");
   const nadaUmur = u => u >= 7 ? "dl-u3" : u >= 3 ? "dl-u2" : "dl-u1";
@@ -107,7 +107,7 @@
   /* kartu laporan standar .ex-std (public/inti/kartu.css): pil kategori berikon, judul kalimat temuan (angka .hl), isi; tanpa kaki keterangan/sumber (pemilik 4 Nov 2026) */
   const hl = t => h("span", {class: "hl", teks: t});
   const bagian = (id, ik, ey, judul, ...isi) => {
-    const s = h("section", {class: "ex ex-std", id: J.kata === "banjir" ? id : J.kata + "-" + id});   // banjir tetap id lama (tautan #peta dsb.)
+    const s = h("section", {class: "ex ex-std", id: J.kata === "banjir" || id.includes("-") ? id : J.kata + "-" + id});   // id berawalan jenis (karhutla-*) dipakai apa adanya   // banjir tetap id lama (tautan #peta dsb.)
     s.append(h("header", {class: "ex-hd"}, h("span", {class: "ex-ey"}, ikon(ik), ey),
         h("div", {class: "ex-jd"}, h("h3", null, ...[].concat(judul)), isi.some(x => x?.querySelector?.(".dl-grup")) ? bukaSemua(s) : null)),
       h("div", {class: "ex-bd"}, ...isi.filter(Boolean)));
@@ -484,6 +484,7 @@
     /* tombol Buka semua bagian prakiraan dipasang setelah tabelnya ada */
     const pra = panel[jenis].querySelector("section[id$='prakiraan']");
     if (pra && !pra.querySelector(".dl-semua") && pra.querySelector(".dl-grup")) pra.querySelector(".ex-jd").append(bukaSemua(pra));
+    J = JN[aktif] || J;   // render tab yang selesai dimuat di latar tidak mengganti kata jenis tab yang sedang tampil
     pasangTip();
   }
 
@@ -510,11 +511,13 @@
   const TAB = [["karhutla", "Karhutla", "karhutla"], ["banjir", "Banjir", "banjir"], ["longsor", "Longsor", "longsor"], ["laporan", "Laporan", "simpan"]];
   const panel = Object.fromEntries(TAB.map(([k]) => [k, h("div", {class: "dl-panel", id: "tab-" + k, role: "tabpanel", hidden: true})]));
   const sudahBuka = new Set();
+  let aktif = "banjir";   // tab yang tampil: J dikembalikan ke jenis ini sesudah tab lain selesai dimuat di latar
   function pilihTab(k, tombol) {
     tombol.forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === k)));
     for (const [n, p] of Object.entries(panel)) p.hidden = n !== k;
     if (location.hash.slice(1) !== k) history.replaceState(null, "", "#" + k);
-    if (JN[k]) J = JN[k];
+    aktif = k; if (JN[k]) J = JN[k];
+    if (k === "karhutla") window.DalopsKarhutla?.tampil();   // peta yang lahir di panel tersembunyi diukur ulang
     if (k === "laporan") { if (!sudahBuka.has(k)) panelLaporan(panel.laporan); bukaLaporan(); }
     else if (!sudahBuka.has(k)) muat(k);
     sudahBuka.add(k);

@@ -21,22 +21,21 @@
       const per = new Map(d.map(e => [e[0], e])), kini = per.get(akhir), belum = kini?.[2] || 0;
       let lama = 0;
       for (let i = akhir; i >= awal && (per.get(i)?.[2] || 0) > 0; i--) lama++;
-      const terakhirApi = Math.max(...d.filter(e => e[1] > 0 || e[2] > 0).map(e => e[0]));
       out.push({kab_kode: kode, nama: v.nama, prov_kode: v.prov, luas: kini?.[1] || 0, belum, padam: belum === 0, lama,
-        api_terakhir: kab.hari[terakhirApi], harian: [...Array(PEKAN)].map((_, j) => { const i = awal + j, e = per.get(i); return {tgl: kab.hari[i], luas: e?.[1] || 0, belum: e?.[2] || 0}; }),
+        harian: [...Array(PEKAN)].map((_, j) => { const i = awal + j, e = per.get(i); return {tgl: kab.hari[i], luas: e?.[1] || 0, belum: e?.[2] || 0}; }),
         kabar: wa.get(kode) || null});
     }
     return {hari: hariAkhir, baris: out.sort((a, b) => b.belum - a.belum || b.luas - a.luas || a.nama.localeCompare(b.nama))};
   }
 
-  /* belum padam tanpa kabar BPBD hari ini atau kemarin: perlu ditanya. umur = hari sejak kabar terakhir (null = belum pernah). */
+  /* belum padam yang kabar BPBD-nya bukan dari hari data (sama dengan ambang banjir, dalops_hitung.js): perlu ditanya. umur = hari sejak kabar terakhir (null = belum pernah). */
   function perluDitanya(baris, hari) {
     const hariKe = s => Math.round((Date.parse(hari) - Date.parse(s)) / 864e5);
     return baris.filter(x => !x.padam).map(x => ({...x, umur: x.kabar ? hariKe(x.kabar.terakhir) : null}))
       .filter(x => x.umur == null || x.umur >= 1).sort((a, b) => (b.umur ?? 99) - (a.umur ?? 99) || b.belum - a.belum);
   }
 
-  const pesanWA = (x, hari, tgl) => `Yth. rekan BPBD ${x.nama}. Data satelit Pusdalops BNPB per ${tgl(hari)} mencatat api belum padam sekitar ${x.belum} ha di ${x.nama}` +
+  const pesanWA = (x, hari, tgl) => `Yth. rekan BPBD ${x.nama}. Menurut data satelit NOAA-20/21 (sistem Centurisk97) per ${tgl(hari)}, api belum padam sekitar ${x.belum.toLocaleString("id-ID")} ha di ${x.nama}` +
     (x.lama > 1 ? `, ${x.lama} hari berturut-turut` : "") + `${x.kabar ? `, kabar BPBD terakhir ${tgl(x.kabar.terakhir)}` : ", belum ada kabar BPBD"}.\n` +
     "Mohon pembaruan:\n1. Kondisi api terkini, sudah padam atau belum\n2. Luas yang sudah dipadamkan dan sisa yang masih terbakar\n3. Upaya pemadaman dan personel di lapangan\n" +
     "Bila ada kebutuhan mendesak (pompa, selang, water bombing, logistik regu), mohon disampaikan sekalian. Terima kasih.";
@@ -78,7 +77,7 @@
       });
     const th = (t, i, tip) => h("th", {scope: "col", teks: t, "data-i": i == null ? null : String(i), title: tip || null});
     const t = h("table", {class: "ad-tabel dl-tabel"}, h("thead", null, h("tr", null, th("Wilayah", 0), th("Status", 1), th("Lama, hari", 2, "hari berturut-turut sampai hari data terakhir dengan api belum padam"),
-      th("Luas terbakar, ha", 3, `luas terbakar hari ${tgl(hari)} menurut satelit NOAA-20/21, sistem Centurisk97`), th("Belum padam, ha", 4, `sisa api belum padam hari ${tgl(hari)}, sistem Centurisk97`),
+      th("Luas terbakar, ha", 3, `luas terbakar hari ${tgl(hari)}, data satelit NOAA-20/21 (sistem Centurisk97)`), th("Belum padam, ha", 4, `sisa api belum padam hari ${tgl(hari)}, data satelit NOAA-20/21 (sistem Centurisk97)`),
       th("Kabar BPBD", 5, "tanggal kabar terakhir BPBD di logbook atau WA Koordalops"), th("Aksi"))));
     t.append(...tbodies); pasangUrut(t);
     const wadahPeta = h("div", {class: "dl-peta"}, h("p", {class: "bn-pesan", teks: "Memuat peta…"}));
@@ -89,24 +88,27 @@
     const tTanya = tanya.length ? h("div", {class: "ad-tabel-wadah dl-tabel-wadah"}, (() => { const tb = h("table", {class: "ad-tabel dl-tabel"}, h("thead", null, h("tr", null, th("No"), th("Kab/kota", 1), th("Provinsi", 2), th("Belum padam, ha", 3), th("Kabar BPBD terakhir", 4), th("Kirim"))),
       h("tbody", null, ...tanya.map((x, i) => h("tr", null, td(F(i + 1), true), h("td", null, h("b", {teks: x.nama})), td(namaProv(x.prov_kode)), tdv(ha(x.belum), x.belum),
         tdv(x.umur == null ? "belum ada" : `${tgl(x.kabar.terakhir)}, ${F(x.umur)} hari lalu`, x.umur ?? 999), h("td", null, h("div", {class: "dl-aksi"}, tombolWA(x, pesanWA(x, hari, tgl), "permintaan pembaruan")))))));
-      pasangUrut(tb); return tb; })()) : kosong("ok", "Semua kab/kota belum padam sudah berkabar sehari terakhir.");
+      pasangUrut(tb); return tb; })()) : kosong("ok", "Tidak ada kab/kota belum padam yang tanpa kabar BPBD.");
 
     /* upaya penanganan dari kabar BPBD (logbook + WA) */
     const kabar = (d.kejadian || []).slice().sort((a, b) => (a.surut - b.surut) || b.terakhir.localeCompare(a.terakhir));
     const tUpaya = kabar.length ? h("div", {class: "ad-tabel-wadah dl-tabel-wadah"}, (() => { const tb = h("table", {class: "ad-tabel dl-tabel"}, h("thead", null, h("tr", null, th("Kab/kota", 0), th("Status BPBD", 1), th("Kondisi terakhir"), th("Upaya"), th("Kabar", 4))),
       h("tbody", null, ...kabar.map(k => h("tr", null, h("td", null, h("b", {teks: (k.kab || [""])[0]}), h("div", {class: "bn-label", teks: namaProv(k.prov_kode, k.prov)})),
         tdv(k.surut ? label("Padam", "ok", "biru") : label("Belum padam", "karhutla", "merah"), k.surut ? 0 : 1), h("td", {class: "dl-kondisi", teks: k.kondisi || "–"}),
-        h("td", {class: "dl-tindak"}, (k.upaya || []).length ? h("ul", null, ...k.upaya.slice(0, 4).map(u => h("li", {teks: u}))) : "–"), tdv(tgl(k.terakhir), k.terakhir.replace(/-/g, ""))))));
+        h("td", {class: "dl-tindak"}, (k.upaya || []).length ? h("ul", null, ...k.upaya.slice(0, 4).map(u => h("li", {teks: u})), k.upaya.length > 4 ? h("li", {class: "bn-label", teks: `+${F(k.upaya.length - 4)} lainnya`}) : null) : "–"), tdv(tgl(k.terakhir), k.terakhir.replace(/-/g, ""))))));
       pasangUrut(tb); return tb; })()) : kosong("ok", "Belum ada kabar karhutla dari BPBD sepekan ini.");
 
+    /* tabel utama dan peta dulu; Kelengkapan data dan Upaya menyusul sesudah frame berikut supaya tab tidak beku di HP */
     p.replaceChildren(
       bagian("karhutla-peta", "karhutla", "Kondisi karhutla terkini",
         belum.length ? [hl(`${F(belum.length)} kab/kota`), " masih ada api belum padam, ", hl(`${F(totBelum)} ha`), ` belum padam per ${tgl(hari)}`]
           : [hl(`${F(baris.length)} kab/kota`), ` terbakar sepekan, semuanya padam per ${tgl(hari)}`],
-        wadahPeta, h("div", {class: "ad-tabel-wadah dl-tabel-wadah"}, t)),
-      bagian("karhutla-tanya", "tunggu", "Kelengkapan data", tanya.length ? [hl(`${F(tanya.length)} kab/kota`), " belum padam tanpa kabar BPBD sehari terakhir"] : "Semua wilayah belum padam sudah berkabar", tTanya),
-      bagian("karhutla-upaya", "personel", "Upaya penanganan", kabar.length ? [hl(`${F(kabar.length)} kab/kota`), " berkabar karhutla dari BPBD sepekan ini"] : "Belum ada kabar BPBD sepekan ini", tUpaya));
+        wadahPeta, h("div", {class: "ad-tabel-wadah dl-tabel-wadah"}, t)));
     pasangTip();
+    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
+    p.append(
+      bagian("karhutla-tanya", "tunggu", "Kelengkapan data", tanya.length ? [hl(`${F(tanya.length)} kab/kota`), ` belum padam tanpa kabar BPBD pada ${tgl(hari)}`] : `Semua kab/kota belum padam sudah berkabar pada ${tgl(hari)}`, tTanya),
+      bagian("karhutla-upaya", "personel", "Upaya penanganan", kabar.length ? [hl(`${F(kabar.length)} kab/kota`), " berkabar karhutla dari BPBD sepekan ini"] : "Belum ada kabar BPBD sepekan ini", tUpaya));
   }
 
   /* peta: kab terbakar sepekan, merah = belum padam (makin pekat makin luas), biru = sudah padam; arahkan kursor untuk angka */
@@ -119,7 +121,7 @@
     const fitur = [];
     geo.forEach((gj, i) => (gj?.features || []).forEach(f => { const x = per.get(provs[i] + "|" + f.properties.kab); if (x) fitur.push({type: "Feature", id: fitur.length, properties: {kode: x.kab_kode, belum: x.belum}, geometry: f.geometry}); }));
     wadah.replaceChildren(h("div", {class: "dl-legenda-peta"}, h("b", {teks: "Legenda"}), h("span", {class: "dl-leg dl-leg-belum", teks: "Belum padam"}), h("span", {class: "dl-leg dl-leg-surut", teks: "Padam"})));
-    const m = new g.maplibregl.Map({container: wadah, style: "https://tiles.openfreemap.org/styles/positron", bounds: [[94.8, -11.2], [141.2, 6.2]], fitBoundsOptions: {padding: 16},
+    const m = petaKini = new g.maplibregl.Map({container: wadah, trackResize: false,   // panel bisa hidden: ukur ulang saat tab tampil (tampil()) style: "https://tiles.openfreemap.org/styles/positron", bounds: [[94.8, -11.2], [141.2, 6.2]], fitBoundsOptions: {padding: 16},
       minZoom: 3, maxZoom: 13, dragRotate: false, pitchWithRotate: false, attributionControl: {compact: true}});
     m.addControl(new g.maplibregl.NavigationControl({showCompass: false}), "top-right");
     m.touchZoomRotate.disableRotation();
@@ -130,12 +132,17 @@
       m.addLayer({id: "kab-isi", type: "fill", source: "kab", paint: {"fill-color": ["case", [">", ["get", "belum"], 0], c1, c5],
         "fill-opacity": ["case", [">", ["get", "belum"], 0], ["interpolate", ["linear"], ["get", "belum"], 1, .45, 100, .7, 1000, .9], .55]}});
       m.addLayer({id: "kab-garis", type: "line", source: "kab", paint: {"line-color": "#ffffff", "line-width": .8}});
-      m.on("mousemove", "kab-isi", e => { const x = per.get(e.features[0].properties.kode); m.getCanvas().style.cursor = "pointer";
+      let kodeLama = null;   // isi pop-up dibangun hanya saat kab berganti; selain itu cukup geser posisinya
+      m.on("mousemove", "kab-isi", e => { const kode = e.features[0].properties.kode, x = per.get(kode); m.getCanvas().style.cursor = "pointer";
+        if (kode === kodeLama) return void pop.setLngLat(e.lngLat);
+        kodeLama = kode;
         pop.setLngLat(e.lngLat).setDOMContent(h("div", {class: "dl-pop"}, h("b", {teks: x.nama}), h("div", {teks: x.padam ? "Padam" : `Belum padam ${F(x.belum)} ha`}),
           h("div", {class: "bn-label", teks: `Luas terbakar ${x.luas ? F(x.luas) + " ha" : "–"}`}))).addTo(m); });
-      m.on("mouseleave", "kab-isi", () => { m.getCanvas().style.cursor = ""; pop.remove(); });
+      m.on("mouseleave", "kab-isi", () => { m.getCanvas().style.cursor = ""; pop.remove(); kodeLama = null; });
     });
   }
 
-  g.DalopsKarhutla = {rakit, perluDitanya, render};
+  let petaKini = null;
+  const tampil = () => petaKini && requestAnimationFrame(() => petaKini.resize());
+  g.DalopsKarhutla = {rakit, perluDitanya, render, tampil};
 })(globalThis);
