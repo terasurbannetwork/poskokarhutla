@@ -1733,3 +1733,14 @@
 {"t":"2026-11-05T12:35:12.579+07:00","sesi":"e47021d2","prompt":"Ini yang pelaporan dipindah aja ke bnpb/dalops. Jadi ga harus ngarah ke halaman lain","label":[],"berkas":[]}
 {"t":"2026-11-05T12:36:36.616+07:00","sesi":"2f081dcc","prompt":"Bro btw ada ga ya yang terkait bot untuk parsing semua info terkait laporan harian? Dia udah diinvite di grup","label":[],"berkas":[]}
 {"t":"2026-11-05T12:38:14.875+07:00","sesi":"2f081dcc","prompt":"oke ini untuk yang monitoring apakah sistem sudah terima laporan harian hari ini sudah ada ga?","label":[],"berkas":[]}
+{"t":"2026-11-05T12:39:18.435+07:00","sesi":"e47021d2","prompt":"Ini yang terkait longsor agar masuk ke yang Pantau Banjir aja. Jadi Pantau Banjir itu jadi ada\n\n1. Karhutla\n2. Banjir\n3. Longsor","label":["banjir","longsor"],"berkas":[]}
+{"t":"2026-11-05T12:39:51.203+07:00","sesi":"e47021d2","prompt":"Dibuat gini aja. Bisa pilih jadinya","label":[],"berkas":[]}
+{"t":"2026-11-05T12:40:02.592+07:00","sesi":"2f081dcc","prompt":"nama linknya apa","label":[],"berkas":[]}
+{"t":"2026-11-05T12:40:45.105+07:00","sesi":"e47021d2","prompt":"Agar dibagi per base nya","label":[],"berkas":[]}
+{"t":"2026-11-05T12:41:11.304+07:00","sesi":"3b65740e","prompt":"Apa yang bisa ditingkatkan dari halaman Operasi ini ya?","label":[],"berkas":[]}
+{"t":"2026-11-05T12:43:05.583+07:00","sesi":"2f081dcc","prompt":"Oke gw mau ngisi ini dengan gw kasih semua histori chat yang ada medianya. Lu bisa analisis semua ga?","label":[],"berkas":[]}
+{"t":"2026-11-05T12:47:51.484+07:00","sesi":"3b65740e","prompt":"Semua poin","label":[],"berkas":[]}
+{"t":"2026-11-05T12:49:11.780+07:00","sesi":"2f081dcc","prompt":"Oke btw dari semua data di laporan harian ini lu bisa buat kaya form inputannya ga ya? Atau udah ada? Form inputannya yang secara online","label":[],"berkas":[]}
+{"t":"2026-11-05T12:51:00.136+07:00","sesi":"2f081dcc","prompt":"Semuanya udah ada ya?","label":[],"berkas":[]}
+{"t":"2026-11-05T12:51:36.121+07:00","sesi":"2f081dcc","prompt":"@\"~/Downloads/WhatsApp Chat - BNPB IT.zip\"\nIni analisa ya. Sama dokumen\" nya. Filenya ada di Download","label":["wa-bot"],"berkas":[]}
+{"t":"2026-11-05T12:55:05.900+07:00","sesi":"2f081dcc","prompt":"Betulkan pengenal dulu","label":[],"berkas":[]}

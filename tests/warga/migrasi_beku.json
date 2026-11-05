@@ -108,5 +108,6 @@
   "0104_staf_peran_lengkap.sql": "1d62ba3188df16f8ea9fca35d633afac4bee40766cead05ce5d848d5ad06ed0b",
   "0105_pengingat_lapangan.sql": "d3c876f16eeaf883c40ac915be6840aa6ef16191963434f3a9b33e061461667f",
   "0106_operasi_monitor.sql": "40c93f8e38bf834da47b6887b5b94964906e61da997fe4e738c2fa4a294070ee",
-  "0107_ai_agen.sql": "82288ac472c36aabdd2a3b9ece049297e7c39ed7b303c26504a2203b8d9ca473"
+  "0107_ai_agen.sql": "82288ac472c36aabdd2a3b9ece049297e7c39ed7b303c26504a2203b8d9ca473",
+  "0108_icao_jambi.sql": "f64de05852f1b7e6ce1f70f1649ab8576a2d3daf87480c6e541fe0e4d5fbd9c1"
 }

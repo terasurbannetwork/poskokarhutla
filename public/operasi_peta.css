@@ -81,7 +81,7 @@
 #opsLaporan .ops-tw td small{display:block;color:var(--ink2);font-size:11px}
 #opsLaporan .ops-tw td .pill+small{margin-top:3px}
 .ops-kosong{margin:2px 0 6px;color:var(--ink2);font-size:13px}
-.ops-lap-angka{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;padding:4px 0 8px}
+.ops-lap-angka{display:grid;grid-template-columns:repeat(var(--n,6),minmax(0,1fr));gap:0;padding:4px 0 8px}
 .ops-lap-angka>div{display:flex;flex-direction:column;gap:3px;padding:2px 16px;border-left:1px solid var(--line);min-width:0}
 .ops-lap-angka>div:first-child{border-left:0;padding-left:0}
 .ops-lap-angka b{font-family:var(--display);font-size:26px;font-weight:800;line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}

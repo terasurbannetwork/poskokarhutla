@@ -463,7 +463,7 @@
     const wadahPra = h("div", {class: "dl-isi"});
     if (st) bagianPrakiraan(sk, sudah, hariSt, wadahPra, 2, pekan);
 
-    app.replaceChildren(
+    panel.banjir.replaceChildren(
       bagianWilayah(pekan, prov, hari, sk, hariSt),
       bagianTanya(tanya, sk, st, hari),
       st ? bagian("prakiraan", "peringatan", "Peringatan dini", siagaJudul(H.siaga(sk, sudah, 2)), wadahPra, bagianArti())
@@ -475,13 +475,62 @@
     pasangTip();
   }
 
+  /* ---------- tab Laporan (pemilik 5 Nov 2026: isi /pelaporan pindah ke sini): tiga kartu buat laporan + arsip laporan harian (public/arsip_laporan.js) ---------- */
+  const KARTU_LAPORAN = [["/laporan-bnpb", "Laporan bencana harian", "Laporan Kejadian Bencana Harian BNPB: isi angka kejadian, pratinjau, lalu unduh.", "PPTX, PDF"],
+    ["/laporan", "Laporan karhutla harian", "Titik panas, luas terbakar, belum padam, dan status per provinsi dan kabupaten untuk hari terpilih.", "Cetak, PDF"],
+    ["/paparan", "Laporan per daerah", "Paparan karhutla satu provinsi: pilih provinsi dan tanggal, susun slide, lalu unduh.", "PPTX, PDF"]];
+  let arsipDimuat = false;
+  function panelLaporan(p) {
+    p.append(h("div", {class: "dl-lp-grid"}, ...KARTU_LAPORAN.map(([href, judul, isi, jenis]) =>
+      h("a", {class: "dl-lp-k", href}, ikon("simpan"), h("b", {teks: judul}), h("span", {teks: isi}), h("small", {teks: jenis})))),
+      h("h3", {class: "dl-lp-jd", teks: "Arsip laporan harian"}), h("div", {id: "arsipLaporan"}));
+  }
+  function bukaLaporan() {
+    if (arsipDimuat) return window.ArsipLaporan?.muat();
+    arsipDimuat = true;   // skrip arsip memasang pendengar klik pada #arsipLaporan saat dimuat, jadi dimuat sesudah wadahnya ada
+    document.head.append(h("link", {rel: "stylesheet", href: "/arsip_laporan.css"}));
+    const s = h("script", {src: "/arsip_laporan.js"}); s.addEventListener("load", () => window.ArsipLaporan?.muat()); document.body.append(s);
+  }
+
+  /* ---------- pemilih jenis (gaya Operasi Udara | Operasi Darat): satu panel per jenis, dirender sekali saat pertama dibuka, ganti tab hanya mengganti hidden ---------- */
+  const TAB = [["banjir", "Banjir", "banjir"], ["laporan", "Laporan", "simpan"]];
+  const panel = Object.fromEntries(TAB.map(([k]) => [k, h("div", {class: "dl-panel", id: "tab-" + k, role: "tabpanel", hidden: true})]));
+  const sudahBuka = new Set();
+  function pilihTab(k, tombol) {
+    tombol.forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === k)));
+    for (const [n, p] of Object.entries(panel)) p.hidden = n !== k;
+    if (location.hash.slice(1) !== k) history.replaceState(null, "", "#" + k);
+    if (k === "laporan") { if (!sudahBuka.has(k)) panelLaporan(panel.laporan); bukaLaporan(); }
+    if (k === "banjir" && !sudahBuka.has(k)) muatBanjir();
+    sudahBuka.add(k);
+  }
+  function kerangka() {
+    const tombol = TAB.map(([k, t, ik]) => h("button", {type: "button", role: "tab", "data-tab": k, "aria-selected": "false", "aria-controls": "tab-" + k}, ikon(ik), t));
+    const seg = h("div", {class: "dl-seg", role: "tablist", "aria-label": "Jenis pantauan"}, ...tombol);
+    seg.addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b) pilihTab(b.dataset.tab, tombol); });
+    app.replaceChildren(seg, ...Object.values(panel));
+    const awal = TAB.some(([k]) => k === location.hash.slice(1)) ? location.hash.slice(1) : "banjir";
+    pilihTab(awal, tombol);
+  }
+
+  let jawabAwal = null;   // jawaban /api/dalops/banjir dari pemeriksaan akses, dipakai sekali oleh panel Banjir
+  async function muatBanjir() {
+    const p = panel.banjir, tulis = teks => p.replaceChildren(h("div", {class: "bn-blok"}, h("p", {class: "lb-p", teks})));
+    tulis("Memuat data banjir…");
+    let r = jawabAwal; jawabAwal = null;
+    try { r = r || await fetch("/api/dalops/banjir", {credentials: "same-origin"}); } catch (e) { return tulis("Tidak ada sinyal. Muat ulang halaman ini."); }
+    if (r.status === 404) return tulis("Data logbook banjir belum diunggah. Jalankan python3 scripts/data/dalops_banjir.py --unggah di mesin Pusdalops.");
+    if (!r.ok) return tulis("Data gagal dimuat (" + r.status + "). Muat ulang halaman ini.");
+    const d = await r.json(), st = await fetch("/banjir/data/status.json").then(x => x.ok ? x.json() : null).catch(() => null);
+    render(d, st);
+  }
+
   (async () => {
+    /* akses dulu lewat data Banjir; jawabannya dipakai ulang panel Banjir supaya tidak diambil dua kali */
     let r;
     try { r = await fetch("/api/dalops/banjir", {credentials: "same-origin"}); } catch (e) { return pesan("Tidak ada sinyal. Muat ulang halaman ini."); }
     if (r.status === 401 || r.status === 403) return kartuMasuk(r.status);
-    if (r.status === 404) return pesan("Data logbook banjir belum diunggah. Jalankan python3 scripts/data/dalops_banjir.py --unggah di mesin Pusdalops.");
-    if (!r.ok) return pesan("Data gagal dimuat (" + r.status + "). Muat ulang halaman ini.");
-    const d = await r.json(), st = await fetch("/banjir/data/status.json").then(x => x.ok ? x.json() : null).catch(() => null);
-    render(d, st);
+    jawabAwal = r;
+    kerangka();
   })();
 })();
