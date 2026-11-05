@@ -3,7 +3,9 @@
    Isi tiap tampilan diuji di tiket tampilannya (L1-L6); di sini hanya cangkang. Nama uji ditulis literal: cakupan.json menunjuk potongan namanya. */
 import {test, before, after} from "node:test";
 import assert from "node:assert/strict";
-import {readFileSync, readdirSync} from "node:fs";
+import {readFileSync, readdirSync, writeFileSync} from "node:fs";
+import {tmpdir} from "node:os";
+import {join} from "node:path";
 import vm from "node:vm";
 import {bukaPeramban, cariChrome} from "./_peramban.mjs";
 import {buatDunia} from "./_dunia.mjs";
@@ -46,7 +48,7 @@ test("cangkang KM statis: tiap .km-w-<kunci> di kemitraan.css cocok KM.RUMPUN da
 });
 
 test("cangkang KM tampilan: tiap berkas mendaftar KM.tampilan dengan bangun dan angka (4 butir) dan menampilkan kosongHtml", () => {
-  assert.deepEqual(readdirSync(AKAR + "public/kemitraan").filter(n => /\.js$/.test(n) && !["inti.js", "konst.js", "hitung.js", "peta.js", "panduan.js"].includes(n)).sort(), TAMPILAN.map(t => t + ".js").sort(), "berkas tampilan di public/kemitraan tidak sama dengan 8 tampilan DS §3");
+  assert.deepEqual(readdirSync(AKAR + "public/kemitraan").filter(n => /\.js$/.test(n) && !["inti.js", "konst.js", "hitung.js", "peta.js", "panduan.js", "buku.js"].includes(n)).sort(), TAMPILAN.map(t => t + ".js").sort(), "berkas tampilan di public/kemitraan tidak sama dengan 8 tampilan DS §3");
   for (const t of TAMPILAN) {
     const s = baca(`public/kemitraan/${t}.js`);
     assert.match(s, new RegExp(`KM\\.tampilan\\.${t}\\s*=\\s*\\{`), `${t}.js tidak mendaftar KM.tampilan.${t}`);
@@ -218,6 +220,47 @@ if (!CHROME) {
     await buka("/kemitraan/panduan", UKURAN[0]);
     await tab.tungguFungsi("document.querySelector('#pdIsi .ak-kosong')");
     assert.deepEqual(tab.galat().filter(bukanFavicon), [], "galat konsol/CSP di halaman panduan");
+  });
+
+  test("cangkang KM L3: buku profil daerah punya 9 bab h1, A4, tanpa slot bocor, render di bawah 3 dtk, PDF 3 kab minimal 8 halaman", async () => {
+    await staf();
+    const galatBuku = () => tab.galat().filter(g => bukanFavicon(g) && !/\/pakar|status of (401|404|501|503)/.test(g));   // probe bab 8 (rute pakar C08 belum ada) boleh gagal
+    for (const uk of UKURAN) {
+      const t0 = Date.now();
+      await buka("/kemitraan/buku?kab=6211", uk);
+      await tab.tungguFungsi("!!document.querySelector('#bab-9 ol.km-tanya') && !!document.querySelector('#bkPeta svg.km-peta-wil')", 6000);
+      assert.ok(Date.now() - t0 < 3000 + 900, `${uk[0]}: buku render ${Date.now() - t0} ms (batas 3 dtk + jeda uji 0,9 dtk)`);   // buka() menunggu 900 ms tetap
+      const o = await tab.eval(`({h1: [...document.querySelectorAll('#bkIsi h1')].map(h => h.textContent), kaki: document.querySelectorAll('#bkIsi footer.km-kaki').length, teks: document.querySelector('#bkIsi').textContent, lebar: document.querySelector('#bkIsi').getBoundingClientRect().width,
+        terbuka: [...document.querySelectorAll('#bkIsi details')].every(d => d.open), sw: document.documentElement.scrollWidth, tema: document.documentElement.dataset.theme, logo: !!document.querySelector('#bkIsi img'), halaman: getComputedStyle(document.body).display,
+        page: [...document.styleSheets].some(ss => { try { return [...ss.cssRules].some(r => r.type === CSSRule.PAGE_RULE && /A4/i.test(r.cssText)); } catch (e) { return false; } })})`);
+      assert.ok(o.h1.length >= 9, `${uk[0]}: hanya ${o.h1.length} h1 bab: ${o.h1}`);
+      assert.match(o.h1.join("|"), /Pulang Pisau/); assert.ok(o.h1.some(h => /Panduan pendataan$/.test(h)) && o.h1.includes("Lampiran") && o.h1.includes("Ringkasan"));
+      assert.ok(o.kaki >= 9, `${uk[0]}: kaki sumber per bab ${o.kaki}`);
+      assert.ok(!/\bNaN\b|\bundefined\b|[{]|\[object|\bnull\b|—|Pantau Bencana|\bAnda\b/.test(o.teks), `${uk[0]}: teks bocor: ${(/.{30}(NaN|undefined|[{]|\[object|null|—|Pantau Bencana).{30}/.exec(o.teks) || [""])[0]}`);
+      assert.ok(o.terbuka && !o.logo && o.tema === "light" && o.page, `${uk[0]}: ${JSON.stringify({terbuka: o.terbuka, logo: o.logo, tema: o.tema, page: o.page})}`);
+      assert.ok(o.sw <= uk[0] + 1, `${uk[0]}: scroll horizontal ${o.sw}`);
+      assert.deepEqual(galatBuku(), [], `${uk[0]}: galat konsol/CSP di buku`);
+    }
+    /* kab bernilai gelap (tanpa masalah, tanpa data) dan kode asing tidak boleh merusak halaman */
+    await buka("/kemitraan/buku?kab=abcd", UKURAN[0]);
+    assert.equal(await tab.eval("!!document.querySelector('#bkIsi .ak-kosong')"), true, "kode bukan 4 digit harus pesan, bukan buku");
+    await buka("/kemitraan/buku?kab=9999", UKURAN[0]);
+    await tab.tungguFungsi("!!document.querySelector('#bkIsi .ak-kosong')");
+    /* PDF cetak 3 kab: >= 8 halaman, disimpan sebagai artefak (KM_PDF_DIR, bawaan folder sementara) */
+    const dir = process.env.KM_PDF_DIR || tmpdir();
+    for (const k of ["6211", "3171", "7271"]) {
+      await buka(`/kemitraan/buku?kab=${k}`, UKURAN[0]);
+      await tab.tungguFungsi("!!document.querySelector('#bab-9 ol.km-tanya') && !!document.querySelector('#bkPeta svg.km-peta-wil')", 6000);
+      const pdf = await tab.kirim("Page.printToPDF", {preferCSSPageSize: true, printBackground: true});
+      const buf = Buffer.from(pdf.data, "base64"), n = (buf.toString("latin1").match(/\/Type\s*\/Page[^s]/g) || []).length;
+      writeFileSync(join(dir, `km-buku-${k}.pdf`), buf);
+      assert.ok(n >= 8, `${k}: PDF hanya ${n} halaman (minimal 8)`);
+    }
+    /* buku provinsi */
+    await buka("/kemitraan/buku?prov=62", UKURAN[0]);
+    await tab.tungguFungsi("document.querySelectorAll('#bkIsi h1').length >= 3 && !!document.querySelector('#bkPeta svg.km-peta-wil')", 6000);
+    assert.match(await tab.eval("document.querySelector('#bkIsi').textContent"), /Kalimantan Tengah/);
+    assert.deepEqual(galatBuku(), [], "galat konsol/CSP di buku provinsi");
   });
 
   /* kontras WCAG dari computed style: warna apa pun yang diterima canvas (oklch, color-mix) diubah ke sRGB lewat piksel */

@@ -12,7 +12,7 @@
   const BH = {banjir: ["Banjir", "banjir"], longsor: ["Tanah longsor", "longsor"], gempa: ["Gempa bumi", "gempa"], tsunami: ["Tsunami", "tsunami"], gunungapi: ["Gunung api", "gunung api"],
     kekeringan: ["Kekeringan", "kekeringan"], karhutla: ["Karhutla", "karhutla"], cuaca_ekstrem: ["Cuaca ekstrem", "hidrometeorologi"], abrasi_rob: ["Abrasi dan rob", "pesisir"], udara: ["Udara", "udara"], multi: ["Multi bahaya", "multi"]};
   const bh = k => Object.hasOwn(BH, k) ? BH[k] : null;   // k bisa datang dari URL atau data: jangan baca prototipe (constructor, __proto__)
-  const bl = k => (bh(k) || [String(k).replace(/_/g, " ")])[0];
+  const bl = k => k == null ? "–" : (bh(k) || [String(k).replace(/_/g, " ")])[0];
   const ikB = k => { const rk = (bh(k) || [])[1], p = ((KM.RUMPUN[rk] || KM.EXTRA[rk]) || [])[1] || ""; return p ? ikon(p, rk) : ""; };
   const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
   const tgl = v => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(v ?? "")); return m ? `${+m[3]} ${BLN[+m[2] - 1]} ${m[1]}` : String(v ?? "–"); };   // 2026-10-28 -> 28 Okt 2026
@@ -121,6 +121,8 @@
   const kv = rows => `<dl class="km-kv">${rows.map(([a, v]) => `<div><dt>${esc(a)}</dt><dd>${v}</dd></div>`).join("")}</dl>`;
   const bar = (label, v, mx, rk, txt) => `<div class="ak-br${bh(rk) ? " km-w-" + slug(bh(rk)[1]) : ""}" tabindex="0"><span class="ak-bl">${esc(label)}</span><span class="ak-bt"><i data-w="${mx > 0 ? Math.max(3, Math.round(v / mx * 100)) : 0}"></i></span><span class="ak-bv"><b>${esc(txt)}</b></span></div>`;
   const th = n => nf(n, 0);
+  /* skor 0-1 dua desimal; dalam 0,005 dari ambang kelas (P1/P2) atau ambang pembuatan masalah tampil tiga desimal supaya "0,50" tidak tampak lolos ambang 0,5. Satu aturan untuk lembar dan buku */
+  const sk = v => { const K = window.KM_KONST, t = K ? [K.KELAS.P1_S, K.KELAS.P2_S, K.MASALAH.S_MIN] : []; return v != null && t.some(a => Math.abs(v - a) < 0.005 && v !== a) ? nf(v, 3) : nf(v, 2); };
   const jd = (ok, judul, tak) => ok ? judul : tak;   // judul temuan hanya bila angkanya ada
   /* pil uji balik dari vonis model.uji (global, sama untuk semua kab): "Uji balik nasional: gagal"; tanpa vonis = Belum diuji */
   /* satu sumber vonis: KM.hitung.statusModel + UJI_BAHAYA (hitung.js); bahaya tanpa uji balik = null, tidak ditampilkan */
@@ -130,6 +132,8 @@
   const JK = {banjir: "Banjir", cuaca: "Cuaca ekstrem", gelombang: "Gelombang ekstrem", kering: "Kekeringan", longsor: "Tanah longsor", rob: "Rob", semua: "Semua jenis"};
   const seriKj = (kj, j) => (kj?.tahunan?.[j] || []).filter(([t]) => t >= 2015 && t <= 2025 && !(t === 2024 && j !== "semua"));   // 2024 jenis DIBI = nol buatan (tahunan_arti)
 
+  /* nilai bukti tampil bila belum tertulis di teks (mis. "mengungsi: 3.326"); nilai teks (vonis) tidak diulang */
+  const buktiNilai = x => typeof x.nilai === "number" && Number.isFinite(x.nilai) && !String(x.teks ?? "").includes(nf(x.nilai)) ? `: ${esc(nf(x.nilai))}` : "";
   const BAB = {
     1(d, r) {
       const w = d.wilayah, p = d.penduduk, s = d.sosek;
@@ -155,7 +159,7 @@
       if (!lis.length) return tanpa("skor bahaya");
       return lis.map((k, n) => {
         const m = ms[k], i = ik[IKK[k]], kk = KJK[k], rows = [];
-        if (m) rows.push(["Skor masalah (0–1)", `${E(m.skor, 2)}, kelas ${esc(m.kelas || "–")}`]);
+        if (m) rows.push(["Skor masalah (0–1)", `${esc(sk(m.skor))}, kelas ${esc(m.kelas || "–")}`]);
         if (i) rows.push(["Kecamatan InaRISK tinggi, sedang", `${E(i.tinggi, 0)}, ${E(i.sedang, 0)}`]);
         if (kk) rows.push(["Kejadian 2015–2025, tanpa 2024", E(kj.total_2015_2025?.[kk], 0)], ["Tren kejadian", esc(TREN[kj.tren?.[kk]] || "–")]);
         if (ujiTeks(uji, k)) rows.push(["Uji balik nasional", esc(ujiTeks(uji, k))]);
@@ -165,7 +169,7 @@
         if (k === "karhutla" && kr) { const yb = kr.yakin_bagian; rows.push(["Gambut (ha, dibulatkan ke 1.000 ha)", E(kr.gambut_ha, 0) + pilB(yb, "gambut")], ["Titik panas El Nino dibanding tahun biasa (kali; 1 = normal)", E(kr.rasio_elnino)], ["Puncak titik panas VIIRS", (pk ? `${esc(pk[0])}, ${E(pk[1], 0)} titik` : "–") + pilB(yb, "titik_panas")]); }
         if (k === "kekeringan" && ke) rows.push(["Tingkat kini", esc(ke.level_label || "–")], ["SPI 3 bulan", E(ke.spi3, 2)], ["Bulan siaga atau lebih", E(ke.riwayat?.bulan_siaga, 0)]);
         if (k === "abrasi_rob" && ps) rows.push(["Abrasi (m per tahun)", E(ps.abrasi_m_th)], ["Transek", E(ps.transek_n, 0)]);
-        if (k === "udara" && ud) rows.push([`PM2,5 provinsi, rerata ${nf(ud.n_hari, 0)} hari (µg/m³)`, E(ud.pm25_rerata) + '<em class="ak-pl">Estimasi model</em>'], ["Hari PM2,5 provinsi di atas 55,4 µg/m³", E(ud.hari_rerata_di_atas_55_4, 0) + pilY(ud)]);
+        if (k === "udara" && ud) rows.push([`PM2,5 provinsi, rerata ${nf(ud.n_hari, 0)} hari (µg/m³)`, E(ud.pm25_rerata) + '<em class="ak-pl">Estimasi model</em>'], ["Hari PM2,5 provinsi di atas 55,4 µg/m³ (hari)", E(ud.hari_rerata_di_atas_55_4, 0) + pilY(ud)]);
         const musim = kj.musim?.[kk], mm = musim ? Math.max(...musim) : 0;
         const tanpaTh = [tp.viirs_tahun_sebagian, tp.tahun_belum_lengkap].filter(Boolean).join(" dan "), tab = k === "karhutla" && kr ? grafik(vi, `Titik panas VIIRS per tahun${tanpaTh ? ", tanpa " + tanpaTh + " (tahun belum penuh)" : ""}`, "karhutla", {satuan: "titik"}) : kk ? grafik(seriKj(kj, kk), "Kejadian per tahun, tanpa 2024 (DIBI 2024 tak lengkap)", bh(k)?.[1] || k, {satuan: "kejadian"}) : "";
         const kec = i?.teratas?.length ? tabelHtml([["Kecamatan"], ["Indeks", "r"]], i.teratas.map(([a, v]) => [esc(a), nf(v, 2)])) : "";
@@ -196,13 +200,13 @@
       const ada = (v, y, t) => v === true ? `${ikon(IK.cek, "")}<span>${y}</span>` : v === false ? `<span>${t || "Tidak tercatat di basis regulasi"}</span>` : "<span>Tidak diketahui</span>";
       const b = k.bpbd, lis = (a, f) => a?.length ? a.map(f).join(", ") : "–";
       return bag(r?.c == null ? "Kapasitas daerah belum bisa dihitung penuh" : `${r.c} dari 5 butir kapasitas tercatat`, `<ul class="km-cek">${[["Perda penanggulangan bencana", k.perda_pb], ["Perda BPBD", k.perda_bpbd], ["Rencana penanggulangan bencana (RPB)", k.rpb], ["Rencana kontinjensi (renkon)", k.renkon], ["BPBD terbentuk", b ? b.status === "Terbentuk" : null]].map(([a, v]) => `<li class="${v === true ? "ya" : ""}"><b>${esc(a)}</b>${ada(v, "Tercatat")}</li>`).join("")}</ul>`, k)
-        + bag("Kontak dan sumber daya", kv([["Status BPBD", esc(b?.status || "–")], ["Alamat BPBD", esc(b?.alamat || "–")], ["Telepon BPBD", esc(b?.telp || "–")], ["Status darurat terakhir", esc(k.status_darurat_terakhir || "–")], ["Indeks kapasitas daerah", E(k.ikd)], ["Relawan aktif", E(k.relawan_aktif, 0)], ["Kampus terdekat", esc(lis(k.kampus_terdekat, x => `${x.nama} (${nf(x.km, 0)} km)`))], ["Kampus pendamping", esc(lis(k.kampus_pendamping, x => x.nama || x))], ["Desa binaan", E(k.desa_binaan_n, 0)]]), k);
+        + bag("Kontak dan sumber daya", kv([["Status BPBD", esc(b?.status === "Terbentuk" || !k.false_arti ? (b?.status || "–") : "Tidak tercatat di basis regulasi")], ["Alamat BPBD", esc(b?.alamat || "–")], ["Telepon BPBD", esc(b?.telp || "–")], ["Status darurat terakhir", esc(k.status_darurat_terakhir || "–")], ["Indeks kapasitas daerah", E(k.ikd)], ["Relawan aktif", E(k.relawan_aktif, 0)], ["Kampus terdekat", esc(lis(k.kampus_terdekat, x => `${x.nama} (${nf(x.km, 0)} km)`))], ["Kampus pendamping", esc(lis(k.kampus_pendamping, x => x.nama || x))], ["Desa binaan", E(k.desa_binaan_n, 0)]]), k);
     },
     7(d) {
       const ms = d.masalah || [], uji = d.model?.uji; if (!ms.length) return tanpa("masalah prioritas");
       const n = c => ms.filter(m => m.kelas === c).length;
       return bag(`${n("P1")} masalah P1, ${n("P2")} P2, ${n("P3")} P3`, '<p><em class="ak-pl">Otomatis, belum divalidasi</em> Prioritas dihitung otomatis dari data dan menunggu pengesahan BPBD.</p>')
-        + ms.map((m, i) => `<details class="ak-dbagian km-masalah"${i === 0 ? " open" : ""}><summary><em class="km-kelas km-w-${esc(String(m.kelas || "p3").toLowerCase())}">${esc(m.kelas || "–")}</em><h3>${esc(m.judul)}</h3><small>${esc(bl(m.B))}, skor ${nf(m.skor, 2)} dari 1</small>${ujiPil(uji, m.B)}</summary><div class="ak-disi"><ul class="km-bukti">${(m.bukti || []).map(x => `<li title="${esc(tip(x))}">${esc(x.teks)}${pilY(x)}</li>`).join("")}</ul></div></details>`).join("");
+        + ms.map((m, i) => `<details class="ak-dbagian km-masalah"${i === 0 ? " open" : ""}><summary><em class="km-kelas km-w-${esc(String(m.kelas || "p3").toLowerCase())}">${esc(m.kelas || "–")}</em><h3>${esc(m.judul)}</h3><small>${esc(bl(m.B))}, skor ${sk(m.skor)} dari 1</small>${ujiPil(uji, m.B)}</summary><div class="ak-disi"><ul class="km-bukti">${(m.bukti || []).map(x => `<li title="${esc(tip(x))}">${esc(x.teks)}${buktiNilai(x)}${pilY(x)}</li>`).join("")}</ul></div></details>`).join("");
     },
     9(d, r, bank) {
       if (!bank || !KM.hitung) return kosongHtml("Panduan pendataan belum tersedia", "Daftar pertanyaan belum bisa dimuat. Muat ulang halaman atau coba lagi nanti.");
@@ -223,18 +227,22 @@
   /* nama di geo/kabupaten dan kode.json beda ejaan pada beberapa kab (Kep./Kepulauan, Tanjung Balai/Tanjungbalai): samakan sebelum mencocokkan */
   const nz = s => String(s).toLowerCase().replace(/\bkep\b\.?/g, "kepulauan").replace(/\bdan\b/g, "").replace(/[^a-z]/g, "");
   const petaCache = new Map();   // kab -> HTML peta jadi; buka ulang tanpa hitung proyeksi lagi
+  /* menggambar peta provinsi p ke el; r = baris ringkas kab yang disorot (atau null: peta provinsi tanpa sorotan); geo = fitur provinsi, kode = kode.json. Dipakai lembar dan buku */
+  function isiPeta(el, p, r, geo, kode) {
+    if (!geo?.features?.length || !kode || !KM.peta) { el.innerHTML = '<p class="km-kosong">Peta provinsi belum tersedia.</p>'; return; }
+    const nm = k => nz(((kode[k]?.kunci_nama || "").split("|")[1]) || ""), baris_ = R.filter(x => x.p === p), ada = new Map(baris_.map(x => [nm(x.k), x]));
+    const kelas = Object.create(null); for (const [n, x] of ada) if (x.i != null) kelas[n] = x.i === 1 ? 3 : 1;
+    const svg = KM.peta(el, {geo: geo.features, kelas, kunci: f => nz(f.properties.kab), sorot: r ? nm(r.k) : null, judul: `Peta ${PROV[p] || "provinsi"}${r ? ", " + r.n + " disorot" : ""}`,
+      label: f => { const x = ada.get(nz(f.properties.kab)); return x ? `${x.n}: ${x.i === 1 ? "IRBI 2025 Tinggi" : x.i === 0 ? "IRBI 2025 Sedang" : "tanpa data IRBI"}` : String(f.properties.kab); }});
+    const pilih = svg?.querySelector("path.pilih"); if (pilih) pilih.parentNode.appendChild(pilih);   // garis tebal tidak tertimpa tetangga
+    if (r && !el.querySelector("path.pilih") && svg) el.insertAdjacentHTML("beforeend", `<p class="km-ket">${esc(r.n)} tidak punya batas di peta provinsi ini.</p>`);
+  }
   async function petaKab(mine, tk) {
     const r = baris(mine.kab); if (!r || !/^\d{2}$/.test(r.p)) return;
     if (petaCache.has(mine.kab)) { const e = $("kmPeta"); if (e) e.innerHTML = petaCache.get(mine.kab); return; }
     const [geo, kode] = await Promise.all([ambilJson(`/geo/kabupaten/${r.p}.json`), ambilJson("/data/kemitraan/kode.json")]);
     const el = $("kmPeta"); if (!el || kini !== mine || tk !== mine.tk) return;
-    if (!geo?.features?.length || !kode || !KM.peta) { el.innerHTML = '<p class="km-kosong">Peta provinsi belum tersedia.</p>'; return; }
-    const nm = k => nz(((kode[k]?.kunci_nama || "").split("|")[1]) || ""), baris_ = R.filter(x => x.p === r.p), ada = new Map(baris_.map(x => [nm(x.k), x]));
-    const kelas = Object.create(null); for (const [n, x] of ada) if (x.i != null) kelas[n] = x.i === 1 ? 3 : 1;
-    const svg = KM.peta(el, {geo: geo.features, kelas, kunci: f => nz(f.properties.kab), sorot: nm(r.k), judul: `Peta ${PROV[r.p] || "provinsi"}, ${r.n} disorot`,
-      label: f => { const x = ada.get(nz(f.properties.kab)); return x ? `${x.n}: ${x.i === 1 ? "IRBI 2025 Tinggi" : x.i === 0 ? "IRBI 2025 Sedang" : "tanpa data IRBI"}` : String(f.properties.kab); }});
-    const pilih = svg?.querySelector("path.pilih"); if (pilih) pilih.parentNode.appendChild(pilih);   // garis tebal tidak tertimpa tetangga
-    if (!el.querySelector("path.pilih") && svg) el.insertAdjacentHTML("beforeend", `<p class="km-ket">${esc(r.n)} tidak punya batas di peta provinsi ini.</p>`);
+    isiPeta(el, r.p, r, geo, kode);
     petaCache.set(mine.kab, el.innerHTML);
   }
 
@@ -279,6 +287,10 @@
     const t0 = KM.tutupSheet;
     KM.tutupSheet = () => { t0(); kini = null; const u = new URL(location.href); if (u.searchParams.has("kab")) { u.searchParams.delete("kab"); history.replaceState(null, "", u); } };
   }
+
+  /* dipakai halaman cetak buku (buku.js): bab yang sama dengan lembar, tanpa menyalin logikanya */
+  KM.daerahBuku = {BAB, atur: (rk, prov) => { R = rk; PROV = prov || {}; }, peta: async (el, p, kab) => { const [geo, kode] = await Promise.all([ambilJson(`/geo/kabupaten/${p}.json`), ambilJson("/data/kemitraan/kode.json")]); isiPeta(el, p, kab ? baris(kab) : null, geo, kode); },
+    nf, tgl, bl, ikB, irbi, bag, kv, tip, E, th, sk, TIDAK, YK};
 
   KM.tampilan.daerah = {
     bangun(el) {
