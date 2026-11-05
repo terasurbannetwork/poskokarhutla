@@ -1,0 +1,100 @@
+{
+  "kode": "UMY",
+  "nama": "Universitas Muhammadiyah Yogyakarta",
+  "kota": "Yogyakarta",
+  "provinsi": "DI Yogyakarta",
+  "lon": 110.3197,
+  "lat": -7.8165,
+  "logo": "kampus/UMY/logo.png",
+  "foto_kampus": [
+    "kampus/UMY/kampus-1.jpg",
+    "kampus/UMY/kampus-2.jpg",
+    "kampus/UMY/kampus-3.jpg",
+    "kampus/UMY/kampus-4.jpg"
+  ],
+  "kredit_kampus": "Foto: Mhdfardhan (Masjid K.H. Ahmad Dahlan, UMY Student Dormitory, Gedung Admisi, Sportorium), CC0, Wikimedia Commons",
+  "foto_kampus_sumber": [
+    {
+      "berkas": "kampus-1.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Masjid_K.H._Ahmad_Dahlan.jpg",
+      "pengunggah": "Mhdfardhan",
+      "lisensi": "CC0"
+    },
+    {
+      "berkas": "kampus-2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:UMY_Student_Dormitory_%26_Djarnawi_Hadikusuma.jpg",
+      "pengunggah": "Mhdfardhan",
+      "lisensi": "CC0"
+    },
+    {
+      "berkas": "kampus-3.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Universitas_Muhammadiyah_Yogyakarta_Admission_Building.jpg",
+      "pengunggah": "Mhdfardhan",
+      "lisensi": "CC0"
+    },
+    {
+      "berkas": "kampus-4.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Sportorium_Universitas_Muhammadiyah_Yogyakarta.jpg",
+      "pengunggah": "Mhdfardhan",
+      "lisensi": "CC0"
+    }
+  ],
+  "pusat_studi": "EDGSC",
+  "pusat_studi_nama": "Environment, Disaster, and Geo-Spatial Center",
+  "riset": [
+    {
+      "judul": "Detektor gempa berbasis Arduino",
+      "gambar": "kampus/UMY/riset-1.jpg",
+      "unit": "Teknik Mesin",
+      "bahaya": "Gempa",
+      "isi": "Alat peringatan gempa murah dengan Arduino Nano dan sensor getaran SW-420 yang membunyikan sirene. Dipasang di tiga titik Desa Geblagan, Tamantirto, Bantul (2025).",
+      "url": "https://www.umy.ac.id/umy-dorong-mitigasi-bencana-lewat-inovasi-detektor-gempa-berbasis-arduino/"
+    },
+    {
+      "judul": "EWS longsor Dusun Sonyo",
+      "gambar": "kampus/UMY/riset-2.jpg",
+      "unit": "Teknik Elektro",
+      "bahaya": "Longsor",
+      "isi": "Alat peringatan dini longsor bertenaga surya yang membunyikan sirene saat tanah bergetar. Dipasang KKN UMY di Dusun Sonyo, Jatimulyo, Kulon Progo pada 21 Februari 2020.",
+      "url": "https://www.umy.ac.id/en/potensi-tanah-longsor-kkn-072-umy-lakukan-penyuluhan-dan-pemasangan-alat-early-warning-system-di-dusun-sonyo-jatimulyo/"
+    },
+    {
+      "judul": "EWS banjir lahar dingin Merapi",
+      "gambar": "kampus/UMY/riset-3.jpg",
+      "unit": "Teknik Elektro",
+      "bahaya": "Gunung api",
+      "isi": "Sistem IoT dengan penakar hujan dan sensor getaran geofon yang mengirim peringatan lewat pesan singkat. Diterapkan di Gunung Merapi bersama forum PRB setempat (publikasi 2021).",
+      "url": "https://ijournalse.org/index.php/ESJ/article/view/670",
+      "kredit": "Gambar: Suwarno dkk. (2021), CC BY"
+    },
+    {
+      "judul": "Aplikasi SIGUMI mitigasi Rinjani",
+      "gambar": "kampus/UMY/riset-4.jpg",
+      "unit": "FISIPOL",
+      "bahaya": "Multibahaya",
+      "isi": "Aplikasi komunikasi mitigasi bencana kawasan wisata Rinjani dengan fitur pelacakan pendaki, dikembangkan UMY bersama UMS dan Undip. Diperkenalkan di Lombok Timur, 14 Oktober 2026.",
+      "url": "https://www.harianjogja.com/r-1275026/umy-ums-dan-undip-perkenalkan-sigumi-untuk-mitigasi-bencana-rinjani",
+      "kredit": "Foto: Harian Jogja"
+    }
+  ],
+  "sumber_riset": "Laman resmi UMY (umy.ac.id, ijournalse.org), 2020–2026; foto dok. UMY",
+  "kredit_foto_riset": "Foto: UMY",
+  "peluang": [
+    {
+      "ikon": "gempa",
+      "judul": "Sirine desa siaga",
+      "isi": "Detektor murah dapat dipasang BPBD di desa rawan gempa selatan Jawa"
+    },
+    {
+      "ikon": "longsor",
+      "judul": "EWS longsor BPBD",
+      "isi": "Rancangan EWS surya dapat dikalibrasi untuk lereng rawan Kulon Progo"
+    },
+    {
+      "ikon": "peringatan",
+      "judul": "Peringatan lahar Merapi",
+      "isi": "Sensor hujan dan getaran dapat melengkapi pos pantau BPBD di Merapi"
+    }
+  ],
+  "catatan": "1) riset-1 hanya 720 px lebar (foto umy.ac.id terbesar yang tersedia); kampus-3 1280 px dan kampus-4 960 px karena Commons hanya punya ukuran itu. 2) riset-2 dan riset-4 berupa foto orang berpose (serah terima alat; peluncuran aplikasi): disarankan diganti foto alat bila pemilik punya. riset-3 adalah diagram blok sistem dari jurnal (CC BY 4.0), bukan foto lapangan, 1101 px. 3) Judul riset-1 ditulis pada tahun publikasi berita 2025 (14 Juli); tanggal pemasangan tidak disebut. 4) SIGUMI hanya terverifikasi dari satu sumber berita (Harian Jogja), belum dari laman resmi UMY. 5) Logo asli Commons 504x495 (CC0) diperbesar ke 1024 px; sebaiknya diganti berkas vektor resmi UMY. 6) Nama gedung kampus-1 sesuai judul berkas Commons (Masjid K.H. Ahmad Dahlan); koordinat lon/lat diperkirakan untuk Kampus Terpadu Tamantirto dan belum dicek peta. 7) Gedung AR Fachruddin hanya ada 720 px di Commons sehingga tidak dipakai. 8) Klaim peluang adalah usulan penyusun, bukan pernyataan UMY."
+}

@@ -1,0 +1,99 @@
+{
+  "kode": "UPNVY",
+  "nama": "Universitas Pembangunan Nasional Veteran Yogyakarta",
+  "kota": "Yogyakarta",
+  "provinsi": "DI Yogyakarta",
+  "lon": 110.4097,
+  "lat": -7.7617,
+  "logo": "kampus/UPNVY/logo.png",
+  "foto_kampus": [
+    "kampus/UPNVY/kampus-1.jpg",
+    "kampus/UPNVY/kampus-2.jpg",
+    "kampus/UPNVY/kampus-3.jpg",
+    "kampus/UPNVY/kampus-4.jpg"
+  ],
+  "kredit_kampus": "Foto: UPN Veteran Yogyakarta (Rektorat, Fakultas Pertanian, FTME)",
+  "foto_kampus_sumber": [
+    {
+      "berkas": "kampus-1.jpg",
+      "url": "https://www.upnyk.ac.id/page/pendidikan",
+      "pengunggah": "UPN Veteran Yogyakarta",
+      "lisensi": "Laman resmi kampus (tanpa lisensi terbuka)"
+    },
+    {
+      "berkas": "kampus-2.jpg",
+      "url": "https://tambang.upnyk.ac.id/",
+      "pengunggah": "UPN Veteran Yogyakarta (Teknik Pertambangan)",
+      "lisensi": "Laman resmi kampus (tanpa lisensi terbuka)"
+    },
+    {
+      "berkas": "kampus-3.jpg",
+      "url": "https://www.upnyk.ac.id/page/pendidikan",
+      "pengunggah": "UPN Veteran Yogyakarta",
+      "lisensi": "Laman resmi kampus (tanpa lisensi terbuka)"
+    },
+    {
+      "berkas": "kampus-4.jpg",
+      "url": "https://www.upnyk.ac.id/page/pendidikan",
+      "pengunggah": "UPN Veteran Yogyakarta",
+      "lisensi": "Laman resmi kampus (tanpa lisensi terbuka)"
+    }
+  ],
+  "pusat_studi": "PSMB",
+  "pusat_studi_nama": "Pusat Studi Manajemen Bencana",
+  "riset": [
+    {
+      "judul": "Alat peringatan dini longsor (ADPD)",
+      "gambar": "kampus/UPNVY/riset-1.jpg",
+      "unit": "Geologi",
+      "bahaya": "Longsor",
+      "isi": "Alat deteksi pergeseran dan rekahan tanah yang membunyikan sirene dan mengirim pesan ke perangkat dusun. Dipasang di Purworejo dan Banjarnegara pada 2019 hingga 2020.",
+      "url": "https://upnyk.ac.id/berita/peneliti-upnvy-pasang-empat-alat-deteksi-longsor"
+    },
+    {
+      "judul": "Pemetaan longsor Makam Imogiri",
+      "gambar": "kampus/UPNVY/riset-2.jpg",
+      "unit": "FTME",
+      "bahaya": "Longsor",
+      "isi": "Tim PKM memadukan geologi, geografi, geofisika, dan geoteknik untuk memetakan kerentanan dan bidang gelincir longsor di kawasan Makam Raja Imogiri, Bantul (pendanaan 2021).",
+      "url": "https://www.upnyk.ac.id/berita/integrated-4g-kolaborasikan-disiplin-ilmu-untuk-mitigasi-bencana"
+    },
+    {
+      "judul": "Ekspedisi paleotsunami Maluku Barat Daya",
+      "gambar": "kampus/UPNVY/riset-3.jpg",
+      "unit": "Geologi",
+      "bahaya": "Tsunami",
+      "isi": "Dosen UPNVY bersama Brigham Young University dan BPBD Maluku menelusuri endapan tsunami purba di Kabupaten Maluku Barat Daya (2017).",
+      "url": "https://upnyk.ac.id/berita/indonesia-darurat-bencana-upn-veteran-yogyakarta-turut-andil-dalam-ekspedisi-paleotsunami"
+    },
+    {
+      "judul": "Hibah gravimeter dan seismograf PSG",
+      "gambar": "kampus/UPNVY/riset-4.jpg",
+      "unit": "FTME",
+      "bahaya": "Gempa",
+      "isi": "Pada Juni 2026 FTME menerima hibah gravimeter dan seismograf dari Pusat Survei Geologi untuk riset kebumian dan mitigasi bencana.",
+      "url": "https://www.upnyk.ac.id/berita/dukung-pendidikan-dan-riset-upn-veteran-yogyakarta-terima-hibah-alat-sensor-gempa-dari-pusat-survei-geologi"
+    }
+  ],
+  "sumber_riset": "Laman resmi UPN Veteran Yogyakarta (upnyk.ac.id), 2017–2026; foto dok. UPN Veteran Yogyakarta",
+  "kredit_foto_riset": "Foto: UPN Veteran Yogyakarta",
+  "peluang": [
+    {
+      "ikon": "longsor",
+      "judul": "ADPD desa rawan",
+      "isi": "Pasang ADPD di desa rawan longsor binaan BPBD"
+    },
+    {
+      "ikon": "tsunami",
+      "judul": "Riwayat tsunami",
+      "isi": "Endapan tsunami purba melengkapi kajian risiko pesisir"
+    },
+    {
+      "ikon": "gempa",
+      "judul": "Data seismik",
+      "isi": "Gravimeter dan seismograf untuk mikrozonasi gempa daerah"
+    }
+  ],
+  "catatan": "Commons nyaris tanpa foto kampus (hanya foto kegiatan WikiLatih), jadi empat foto kampus diambil dari laman resmi upnyk.ac.id dan belum berlisensi terbuka; mohon izin atau pakai kredit saja. Logo dari berkas Wikipedia Indonesia (berstatus nonbebas, 977x974 diberi padding ke 1024). Koordinat kampus perkiraan. riset-3 (2017) beresolusi rendah hasil pembesaran dan memuat orang; riset-4 adalah ilustrasi grafis dari rilis kampus (asli 700 px, dibesarkan ke 1000 px); riset-1 dan riset-2 memuat orang berpose. Dua riset longsor sengaja dipilih karena itu bukti terkuat; belum ditemukan riset UPNVY terbaru (2025-2026) untuk gunung api, banjir, atau karhutla. Keempat butir belum dikonfirmasi ke peneliti/PSMB, dan ADPD (2019-2020) perlu dicek masih beroperasi.",
+  "nama_daftar": "UPN Veteran Yogyakarta"
+}
