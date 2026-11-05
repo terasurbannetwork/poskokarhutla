@@ -54,7 +54,7 @@ KONST = {
               "KAMPUS_TANPA_TITIK": 0.3, "REKAM_CATAT": 1.0, "REKAM_LENCANA": 0.5,
               "KORPUS_KARYA": 25, "KORPUS_SITASI": 15, "KORPUS_BARU": 10, "KORPUS_TAHUN": 2018,
               "MUTU_TAHUN": 2021},                                                              # ALG §4.1, §4.4, §4.5
-    "SOLUSI": {"BOBOT_PENANDA": 2, "PENALTI_LATAR": 0.5, "SKOR_MIN": 3, "MAKS_KALIMAT": 2, "KARYA": 3},  # ALG §5
+    "SOLUSI": {"BOBOT_PENANDA": 2, "PENALTI_LATAR": 0.5, "SKOR_MIN": 3, "MAKS_KALIMAT": 2, "KARYA": 3, "KARYA_REL": 0.5},  # ALG §5
     "PANDUAN": {"MAKS_PER_NARASUMBER": 40, "MAKS_MENGAPA": 3, "SARAN_SKOR_MIN": 2},            # ALG §2.3, §6.2
     "AKTIF": {"masalah": 5, "proposal": 3, "magang": 20, "desa": 10, "luaran": 5, "jam": 2000,
               "HARI": 365},                                                                    # ALG §7 (batas atas)

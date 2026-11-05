@@ -213,7 +213,8 @@ const KM_KONST = {
     "PENALTI_LATAR": 0.5,
     "SKOR_MIN": 3,
     "MAKS_KALIMAT": 2,
-    "KARYA": 3
+    "KARYA": 3,
+    "KARYA_REL": 0.5
   },
   "PANDUAN": {
     "MAKS_PER_NARASUMBER": 40,
