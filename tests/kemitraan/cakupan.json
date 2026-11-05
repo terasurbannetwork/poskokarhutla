@@ -3,6 +3,7 @@
   "diuji": {
     "hitung.js": "hitung syarat: semua kasus acuan.json (A9) benar",
     "js:panduan.js": "cangkang KM L2b",
+    "js:buku.js": "cangkang KM L3",
     "py:konst.py": "uji:konst",
     "py:kode.py": "uji:kode",
     "js:konst.js": "konst.py dan konst.js identik",
