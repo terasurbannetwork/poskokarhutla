@@ -62,7 +62,7 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 | KM-B08 | Buku profil daerah | kampus | L | L | selesai |
 | KM-C01 | Bank templat pertanyaan | kampus | P | L | selesai |
 | KM-C02 | Generator pertanyaan + halaman panduan | kampus | P + L | M | selesai |
-| KM-C03 | Rute masalah, kunjungan, jawaban, koreksi | warga-api | W | L | belum |
+| KM-C03 | Rute masalah, kunjungan, jawaban, koreksi | warga-api | W | L | selesai |
 | KM-C04 | Tampilan Masalah | kampus | L | L | belum |
 | KM-C05 | Formulir pendataan luring (halaman saya BP) | kampus | L | M | belum |
 | KM-C06 | Korpus OpenAlex `korpus.py` | kampus | P | M | selesai |
