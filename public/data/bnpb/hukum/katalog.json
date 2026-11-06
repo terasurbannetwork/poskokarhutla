@@ -1,6 +1,6 @@
 {
  "versi": 1,
- "dibangun": "2026-11-05T13:46:20Z",
+ "dibangun": "2026-11-06T03:24:56Z",
  "sumber": "jdih.bnpb.go.id",
  "dok": [
   {
@@ -950,7 +950,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -1004,7 +1004,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -1030,7 +1030,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -1056,7 +1056,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -1082,7 +1082,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -1164,7 +1164,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -1498,7 +1498,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -1580,7 +1580,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -1606,7 +1606,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -1632,7 +1632,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -1658,7 +1658,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -2478,7 +2478,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -3662,7 +3662,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -4056,7 +4056,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -4394,7 +4394,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -4478,7 +4478,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -4534,7 +4534,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -4562,7 +4562,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "TIDAK BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -4618,7 +4618,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -4646,7 +4646,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "TIDAK BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -4898,7 +4898,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "TIDAK BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5010,7 +5010,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5066,7 +5066,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5094,7 +5094,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5150,7 +5150,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5178,7 +5178,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5206,7 +5206,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "TIDAK BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5346,7 +5346,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5488,7 +5488,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "TIDAK BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5516,7 +5516,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "TIDAK BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5656,7 +5656,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5684,7 +5684,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5712,7 +5712,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "TIDAK BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5740,7 +5740,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5768,7 +5768,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "TIDAK BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5796,7 +5796,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5824,7 +5824,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5852,7 +5852,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -5908,7 +5908,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "TIDAK BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -6132,7 +6132,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "TIDAK BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -6160,7 +6160,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "TIDAK BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {
@@ -6414,7 +6414,7 @@
    "halaman_ocr": 0,
    "mutu": null,
    "n_segmen": 1,
-   "status_teks": "BERLAKU",
+   "status_teks": "TIDAK_BISA_DICEK",
    "dicabut_oleh": []
   },
   {

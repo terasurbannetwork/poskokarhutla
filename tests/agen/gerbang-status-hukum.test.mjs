@@ -19,12 +19,21 @@ const jam = () => JSON.parse(readFileSync(join(ROOT, 'public/inti/jam_aturan.jso
 
 const terisi = (a) => Array.isArray(a) && a.length > 0
 
+// Nilai status_teks yang dikenal (scripts/bnpb/hukum.py status_menurut_teks). Nilai baru wajib didaftarkan di sini dengan sadar.
+const STATUS_TEKS = ['BERLAKU', 'TIDAK BERLAKU', 'DICABUT', 'TIDAK_BISA_DICEK']
+
 // (a) dicabut menurut teks tetapi JDIH BERLAKU wajib di konflik, dengan pencabut yang sama
 export function periksaKonflik(kat) {
   const konflik = new Map((kat.konflik || []).map((k) => [k.dok, k]))
   const gagal = []
   for (const d of kat.dok || []) {
-    const dicabut = terisi(d.dicabut_oleh) || (d.status_teks && d.status_teks !== d.status)
+    if (d.status_teks != null && !STATUS_TEKS.includes(d.status_teks)) {
+      gagal.push(`status-hukum: ${d.id} status_teks "${d.status_teks}" di luar daftar dikenal ${JSON.stringify(STATUS_TEKS)}; status baru harus didaftarkan di gerbang ini dan dipastikan tidak membuat dokumen tercabut tampak berlaku`)
+    }
+    if (d.status_teks === 'TIDAK_BISA_DICEK' && d.halaman > 0) {
+      gagal.push(`status-hukum: ${d.id} TIDAK_BISA_DICEK padahal punya ${d.halaman} halaman isi; status itu hanya untuk dokumen tanpa isi, akibatnya pencabutan di teksnya tak diperiksa. Periksa status_menurut_teks di scripts/bnpb/hukum.py`)
+    }
+    const dicabut = terisi(d.dicabut_oleh) || d.status_teks === 'DICABUT'
     if (d.status !== 'BERLAKU' || !dicabut) continue
     const k = konflik.get(d.id)
     if (!k) {
@@ -94,6 +103,14 @@ test('G-2 pemeriksa: pencabut di konflik beda dari dokumen, id konflik yatim, da
   assert.match(periksaKonflik({ ...FIX, konflik: [...FIX.konflik, { dok: 'hantu', dicabut_oleh: [] }] })[0], /hantu yang tidak ada/)
   const hanyaTeks = { dok: [{ id: 'q', status: 'BERLAKU', status_teks: 'DICABUT', dicabut_oleh: [] }], konflik: [] }
   assert.equal(periksaKonflik(hanyaTeks).length, 1)
+})
+
+test('G-2 pemeriksa: TIDAK_BISA_DICEK bukan konflik; DICABUT tanpa konflik tetap ditolak; status asing dan TIDAK_BISA_DICEK ber-isi ditolak', () => {
+  const dok = (o) => ({ dok: [{ id: 'x', status: 'BERLAKU', status_teks: 'BERLAKU', dicabut_oleh: [], halaman: 3, ...o }], konflik: [] })
+  assert.deepEqual(periksaKonflik(dok({ status_teks: 'TIDAK_BISA_DICEK', halaman: 0 })), [])
+  assert.equal(periksaKonflik(dok({ status_teks: 'DICABUT' })).length, 1)
+  assert.match(periksaKonflik(dok({ status_teks: 'BARU_ANEH' }))[0], /x status_teks "BARU_ANEH" di luar daftar/)
+  assert.match(periksaKonflik(dok({ status_teks: 'TIDAK_BISA_DICEK' }))[0], /x TIDAK_BISA_DICEK padahal punya 3 halaman/)
 })
 
 test('G-2 pemeriksa: acuan Jam Aturan ke dokumen konflik, TIDAK BERLAKU, atau tak terdaftar ditolak', () => {
