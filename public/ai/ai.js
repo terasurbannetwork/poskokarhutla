@@ -36,9 +36,12 @@ export function fmtTanggal(t) {
 /* nama alat mesin ("titik_panas") jadi label ("Titik panas") */
 export const namaAlat = n => (s => s.charAt(0).toUpperCase() + s.slice(1))(String(n ?? "").replace(/[_-]+/g, " ").trim());
 
-/* satu sumber: "Titik panas: 412 titik, 4 Nov 2026" */
+/* satu sumber: "Titik panas: 412 titik, 4 Nov 2026"; kutipan berkas pengetahuan: "Berkas Panduan: ringkas, 4 Nov 2026" */
 export function formatSumber(s = {}) {
-  if (s.berkas) return `Berkas ${s.berkas}${s.ringkas ? `: ${s.ringkas}` : ""}, diunggah ${fmtTanggal(s.tanggal)}`.trimEnd();   // kutipan pengetahuan (langkah 2)
+  if (s.berkas && !s.alat) {   // kutipan pengetahuan (langkah 2): tanggal = tanggal unggah berkas
+    const k = "Berkas " + s.berkas + (s.ringkas ? `: ${s.ringkas}` : ""), t = fmtTanggal(s.tanggal);
+    return t ? `${k}, diunggah ${t}` : k;
+  }
   const kepala = namaAlat(s.alat) + (s.ringkas ? `: ${s.ringkas}` : "");
   const tgl = fmtTanggal(s.tanggal);
   return tgl ? `${kepala}, ${tgl}` : `${kepala}, tanggal data tidak disebut`;
@@ -113,6 +116,55 @@ export function pratinjau(d = {}) {
   return bagian.join(" ");
 }
 
+/* ---------- pengetahuan (PETA-FITUR §2.2) ---------- */
+export const STATUS_SUMBER = {antre: "Antre", diproses: "Diproses", selesai: "Selesai", gagal: "Gagal"};
+export const labelStatus = v => (typeof v === "string" && Object.hasOwn(STATUS_SUMBER, v)) ? STATUS_SUMBER[v] : "Tidak diketahui";
+export const statusAkhir = v => v === "selesai" || v === "gagal";
+export const JENIS_BAWAAN = ["txt", "md", "csv", "json", "docx", "pptx", "xlsx"], MAKS_BERKAS_BAWAAN = 2 * 1024 * 1024;
+export const ekstensi = nama => { const m = /\.([A-Za-z0-9]+)$/.exec(String(nama ?? "").trim()); return m ? m[1].toLowerCase() : ""; };
+export function fmtUkuran(b) {
+  b = Number(b);
+  if (!(b >= 0)) return "";
+  return b < 1024 ? `${fmtAngka(b, 0)} B` : b < 1048576 ? `${fmtAngka(b / 1024)} KB` : `${fmtAngka(b / 1048576)} MB`;
+}
+/* langkah 1: berkas (d.berkas = nama, d.ukuran = byte); langkah 2: nama, deskripsi, visibilitas. Pesan menyebut angka batasnya, sama dengan server. */
+export function validasiUnggah(d = {}, {jenis = JENIS_BAWAAN, maks = MAKS_BERKAS_BAWAAN} = {}) {
+  const galat = {}, ext = ekstensi(d.berkas);
+  if (!String(d.berkas ?? "").trim()) galat.berkas = "Pilih satu berkas dulu.";
+  else if (!jenis.includes(ext)) galat.berkas = `Jenis berkas tidak didukung. Pakai salah satu: ${jenis.join(", ")}.`;
+  else if (!(Number(d.ukuran) > 0)) galat.berkas = "Berkas kosong.";
+  else if (Number(d.ukuran) > maks) galat.berkas = `Berkas ${fmtUkuran(d.ukuran)} melebihi batas ${fmtUkuran(maks)}.`;
+  if (d.nama !== undefined) {
+    const n = [...String(d.nama).trim()].length;
+    if (n < 3 || n > 120) galat.nama = `Nama harus 3 sampai 120 karakter, sekarang ${n} karakter.`;
+    if (String(d.deskripsi ?? "").trim().length > 500) galat.deskripsi = "Deskripsi paling panjang 500 karakter.";
+    if (!visibilitasSah(d.visibilitas)) galat.visibilitas = "Pilih siapa yang boleh melihat berkas ini.";
+  }
+  return {ok: !Object.keys(galat).length, galat};
+}
+/* alamat unggah: metadata di query, badan = byte berkas */
+export const alamatUnggah = d => "/api/ai/pengetahuan?" + new URLSearchParams({berkas: d.berkas, nama: String(d.nama).trim(), deskripsi: String(d.deskripsi || "").trim(), visibilitas: d.visibilitas}).toString();
+/* status dari server -> teks untuk pengguna; berkas gagal menampilkan alasannya */
+export const teksStatus = x => x?.status === "gagal" ? `Gagal: ${x.galat || "alasan tidak disebut"}` : labelStatus(x?.status) + (x?.status === "selesai" && x.potongan != null ? `, ${fmtAngka(x.potongan, 0)} potongan` : "");
+
+/* Penjaga angkatan: maju() mengembalikan nomor baru; sah(g) benar hanya bila g masih yang terakhir. Dipakai membatalkan polling/muat basi. */
+export function penjaga() { let n = 0; return {maju: () => ++n, sah: g => g === n}; }
+/* Poll status sampai selesai/gagal. Berhenti (null) bila angkatan basi atau lewat batas; galat dilempar setelah gagalMaks gagal BERUNTUN. */
+export async function tungguStatus(ambil, {sah = () => true, jeda = 2000, maks = 60, gagalMaks = 3, tidur = ms => new Promise(r => setTimeout(r, ms)), tampilkan} = {}) {
+  let gagal = 0;
+  for (let i = 0; i < maks; i++) {
+    if (!sah()) return null;
+    let x;
+    try { x = await ambil(); gagal = 0; }
+    catch (e) { if (++gagal >= gagalMaks) throw e; await tidur(jeda); continue; }
+    if (!sah()) return null;
+    tampilkan?.(x);
+    if (statusAkhir(x.status)) return x;
+    await tidur(jeda);
+  }
+  return null;
+}
+
 export const saring = (daftar, q, kunci) => {
   const t = String(q ?? "").trim().toLowerCase();
   return t ? daftar.filter(x => kunci.some(k => String(x[k] ?? "").toLowerCase().includes(t))) : daftar;
@@ -153,6 +205,7 @@ function mulai() {
     lihat: '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
     sunting: '<path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"/>',
     hapus: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+    ulang: '<path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/>',
   };
   const svg = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${IKON[k]}</svg>`;
   const ikonAvatar = v => avatarSah(v) ? v : "klasik";
@@ -185,14 +238,28 @@ function mulai() {
     try { r = await fetch(url, body === undefined ? {cache: "no-store"} : {method: "POST", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify(body)}); }
     catch (e) { throw new Error("Tidak tersambung ke server. Periksa jaringan lalu coba lagi."); }
     if (r.ok) { if (bacaTanda()) tulisTanda(false); return r.json().catch(() => ({})); }
-    const aksi = aksiGalat(r.status, bacaTanda());
-    if (aksi === "masuk") { tulisTanda(true); location.href = "/admin/masuk?ke=" + encodeURIComponent(location.pathname + location.hash); throw new Error("Sesi staf habis. Mengalihkan ke halaman masuk."); }
-    if (aksi === "tolak") throw new Error(PESAN_TOLAK);
-    const j = await r.json().catch(() => ({}));
-    throw new Error(j.galat || `Permintaan gagal (kode ${r.status}).`);
+    throw galatHttp(r.status, await r.json().catch(() => ({})));
+  }
+  function galatHttp(status, j) {
+    const aksi = aksiGalat(status, bacaTanda());
+    if (aksi === "masuk") { tulisTanda(true); location.href = "/admin/masuk?ke=" + encodeURIComponent(location.pathname + location.hash); return new Error("Sesi staf habis. Mengalihkan ke halaman masuk."); }
+    if (aksi === "tolak") return new Error(PESAN_TOLAK);
+    return new Error(j.galat || `Permintaan gagal (kode ${status}).`);
+  }
+  /* unggah byte berkas: XMLHttpRequest karena fetch belum melaporkan kemajuan unggah */
+  function kirimBerkas(url, berkas, kemajuan, pegang) {
+    return new Promise((ok, tidak) => {
+      const x = new XMLHttpRequest(); pegang?.(x);
+      x.onabort = () => tidak(new Error("Unggah dibatalkan."));
+      x.open("POST", url); x.setRequestHeader("x-pb", "1"); x.setRequestHeader("content-type", "application/octet-stream");
+      x.upload.onprogress = e => e.lengthComputable && kemajuan(Math.round(e.loaded / e.total * 100));
+      x.onerror = () => tidak(new Error("Tidak tersambung ke server. Periksa jaringan lalu coba lagi."));
+      x.onload = () => { let j = {}; try { j = JSON.parse(x.responseText); } catch (e) {} if (x.status >= 200 && x.status < 300) { if (bacaTanda()) tulisTanda(false); ok(j); } else tidak(galatHttp(x.status, j)); };
+      x.send(berkas);
+    });
   }
 
-  const S = {model: [], agen: [], percakapan: [], alat: null, agenAktif: null, pid: null, pesan: [], menunggu: false, hal: 1};
+  const S = {model: [], agen: [], percakapan: [], alat: null, agenAktif: null, pid: null, pesan: [], menunggu: false, hal: 1, sumber: [], jenisOk: JENIS_BAWAAN, maks: MAKS_BERKAS_BAWAAN};
   const pesanGalat = t => { const g = $("#aiGalat"); g.textContent = t || ""; g.hidden = !t; };
 
   /* ---------- panel kiri ---------- */
@@ -344,10 +411,127 @@ function mulai() {
     catch (e) { pesanGalat(e.message); }
   }
   const tampil = () => {
-    const kelola = location.hash === "#agen";
-    $("#aiObrolView").hidden = kelola; $("#aiKelolaView").hidden = !kelola;
-    document.querySelectorAll(".ad-top nav a").forEach(x => x.toggleAttribute("aria-current", (x.getAttribute("href") === "#agen") === kelola));
+    const h = location.hash, kelola = h === "#agen", peng = h === "#pengetahuan";
+    $("#aiObrolView").hidden = kelola || peng; $("#aiKelolaView").hidden = !kelola; $("#aiPengView").hidden = !peng;
+    document.querySelectorAll(".ad-top nav a").forEach(x => x.toggleAttribute("aria-current", x.getAttribute("href") === (peng ? "#pengetahuan" : kelola ? "#agen" : "#")));
+    if (peng) muatSumber().catch(e => pesanGalat(e.message));
   };
+
+  /* ---------- pengetahuan ---------- */
+  const urutSumber = penjaga();   /* respons basi (mis. berkas yang baru dihapus) tidak boleh menimpa yang lebih baru */
+  async function muatSumber() {
+    const g = urutSumber.maju(), j = await api("/api/ai/pengetahuan");
+    if (!urutSumber.sah(g)) return;
+    S.sumber = j.sumber || []; if (Array.isArray(j.jenis)) S.jenisOk = j.jenis; if (j.maks_ukuran > 0) S.maks = j.maks_ukuran;
+    gambarSumber(); gambarPilihSumber();
+  }
+  function gambarSumber() {
+    const d = saring(S.sumber, $("#aiCariPeng").value, ["nama", "berkas", "deskripsi", "pemilik_nama"]), tb = $("#aiPengTabel");
+    $("#aiPengInfo").textContent = `Jenis yang didukung: ${S.jenisOk.join(", ")}. Ukuran paling besar ${fmtUkuran(S.maks)} per berkas.`;
+    if (!d.length) return tb.replaceChildren(el("tr", {}, el("td", {colspan: "9", class: "ai-kosong", teks: S.sumber.length ? "Tidak ada berkas yang cocok." : "Belum ada pengetahuan. Unggah berkas pertama."})));
+    tb.replaceChildren(...d.map(x => el("tr", {"data-id": x.id},
+      el("td", {"data-label": "Nama"}, el("span", {teks: x.nama}), x.deskripsi ? el("span", {class: "ai-butir-sub", teks: x.deskripsi}) : null),
+      el("td", {"data-label": "Jenis", teks: x.jenis || ""}),
+      el("td", {"data-label": "Ukuran", class: "n", teks: fmtUkuran(x.ukuran)}),
+      el("td", {"data-label": "Status indeks"}, el("span", {class: "ai-status " + (Object.hasOwn(STATUS_SUMBER, x.status) ? x.status : "gagal"), teks: teksStatus(x)})),
+      el("td", {"data-label": "Visibilitas", teks: VISIBILITAS[x.visibilitas]?.[0] || x.visibilitas || ""}),
+      el("td", {"data-label": "Agen", class: "n", teks: fmtAngka(x.jumlah_agen || 0, 0)}),
+      el("td", {"data-label": "Pemilik", teks: [x.pemilik_nama, x.unit].filter(Boolean).join(", ")}),
+      el("td", {"data-label": "Diubah", class: "w", teks: fmtTanggal(x.diubah)}),
+      el("td", {class: "a"},
+        x.milik_saya ? tombolIkon("ulang", "Indeks ulang", () => indeksUlang(x)) : null,
+        x.milik_saya ? tombolIkon("hapus", "Hapus pengetahuan", () => hapusSumber(x)) : null))));
+  }
+  const tungguIndeks = (id, tampilkan, sah) => tungguStatus(async () => (await api(`/api/ai/pengetahuan/${encodeURIComponent(id)}`)).sumber, {tampilkan, sah});
+  const diikuti = new Set();
+  async function ikutiBaris(id) {
+    if (diikuti.has(id)) return;
+    diikuti.add(id);
+    try { await tungguIndeks(id, null, () => location.hash === "#pengetahuan"); }
+    catch (e) { pesanGalat(e.message); }
+    finally { diikuti.delete(id); }
+    if (location.hash === "#pengetahuan") muatSumber().catch(() => {});
+  }
+  async function indeksUlang(x) {
+    pesanGalat("");
+    try { await api(`/api/ai/pengetahuan/${encodeURIComponent(x.id)}/indeks-ulang`, {}); }
+    catch (e) { return pesanGalat(e.message); }
+    x.status = "antre"; x.galat = null; gambarSumber();   /* umpan balik langsung, polling menyusul */
+    ikutiBaris(x.id);
+  }
+  async function hapusSumber(x) {
+    if (!await tanya(`Hapus pengetahuan "${x.nama}"? ${x.jumlah_agen ? `Berkas ini dilepas dari ${fmtAngka(x.jumlah_agen, 0)} agen. ` : ""}Yang dihapus tidak bisa dikembalikan.`, "Hapus")) return;
+    try { await api(`/api/ai/pengetahuan/${encodeURIComponent(x.id)}/hapus`, {}); }
+    catch (e) { return pesanGalat(e.message); }
+    urutSumber.maju(); S.sumber = S.sumber.filter(y => y.id !== x.id); gambarSumber(); gambarPilihSumber();
+  }
+
+  /* dialog unggah dua langkah */
+  const U = $("#aiUnggah");
+  let langkahU = 1, sibukU = false, xhrU = null;
+  const genU = penjaga();
+  /* tutup lewat Tutup, Esc, atau program: batalkan unggah dan polling yang masih jalan */
+  U.addEventListener("close", () => { genU.maju(); xhrU?.abort(); xhrU = null; sibukU = false; });
+  const galatU = g => U.querySelectorAll("[data-ug]").forEach(e => { e.textContent = g[e.dataset.ug] || ""; e.hidden = !g[e.dataset.ug]; });
+  const nilaiU = () => { const f = $("#aiBerkas").files[0]; return {berkas: f?.name || "", ukuran: f?.size || 0, nama: $("#aiUgNama").value, deskripsi: $("#aiUgDesk").value, visibilitas: U.querySelector("[name=ug_vis]:checked")?.value}; };
+  function aturLangkahU(n) {
+    langkahU = n;
+    $("#aiLangkah").textContent = n === 1 ? "Langkah 1 dari 2: pilih berkas" : "Langkah 2 dari 2: informasi berkas";
+    $("#aiLangkah1").hidden = n !== 1; $("#aiLangkah2").hidden = n !== 2; $("#aiUgKembali").hidden = n !== 2;
+    $("#aiUgLanjut").textContent = n === 1 ? "Lanjut" : "Unggah";
+  }
+  function bukaUnggah() {
+    $("#aiBerkas").value = ""; $("#aiUgNama").value = ""; $("#aiUgDesk").value = ""; U.querySelector("[name=ug_vis][value=pribadi]").checked = true;
+    galatU({}); $("#aiUgPesan").textContent = ""; $("#aiProgres").hidden = true; sibukU = false; $("#aiUgLanjut").disabled = false;
+    $("#aiBerkasBantu").textContent = `Jenis: ${S.jenisOk.join(", ")}. Paling besar ${fmtUkuran(S.maks)}.`;
+    genU.maju(); aturLangkahU(1); U.showModal();
+  }
+  async function lanjutUnggah(e) {
+    e.preventDefault();
+    if (sibukU) return;
+    const opsi = {jenis: S.jenisOk, maks: S.maks};
+    if (langkahU === 1) {
+      const v = validasiUnggah({...nilaiU(), nama: undefined}, opsi); galatU(v.galat);
+      if (!v.ok) return;
+      if (!$("#aiUgNama").value) $("#aiUgNama").value = nilaiU().berkas.replace(/\.[^.]+$/, "");
+      aturLangkahU(2); return $("#aiUgNama").focus();
+    }
+    const d = nilaiU(), v = validasiUnggah(d, opsi); galatU(v.galat);
+    if (!v.ok) return;
+    sibukU = true; $("#aiUgLanjut").disabled = true; $("#aiUgKembali").hidden = true; $("#aiUgPesan").textContent = "";
+    const teks = $("#aiProgresTeks"), bar = $("#aiProgresBar"), g = genU.maju();
+    $("#aiProgres").hidden = false; bar.value = 0; teks.textContent = "Mengunggah…";   /* cat dulu, kirim sesudah frame berikutnya */
+    nanti(async () => {
+      if (!genU.sah(g)) return;
+      const selesai = (pesan, sembunyi) => {
+        if (!genU.sah(g)) return; sibukU = false; $("#aiUgLanjut").disabled = false; $("#aiUgKembali").hidden = false; $("#aiUgPesan").textContent = pesan; if (sembunyi) $("#aiProgres").hidden = true; };
+      let id;
+      try { id = (await kirimBerkas(alamatUnggah(d), $("#aiBerkas").files[0], p => { if (genU.sah(g)) { bar.value = p; teks.textContent = `Mengunggah, ${fmtAngka(p, 0)}%`; } }, h => { xhrU = h; })).id; }
+      catch (er) { return selesai(er.message, true); }
+      xhrU = null;
+      bar.removeAttribute("value"); teks.textContent = "Berkas diterima. Menunggu pengindeksan…";
+      muatSumber().catch(() => {});
+      let x;
+      try { x = await tungguIndeks(id, r => { teks.textContent = "Pengindeksan: " + teksStatus(r); }, () => genU.sah(g)); }
+      catch (er) { return selesai(er.message, false); }
+      if (!genU.sah(g)) return;
+      if (!x) return selesai("Pengindeksan belum selesai. Tutup dialog ini, statusnya tetap diperbarui di daftar.", false);
+      muatSumber().catch(() => {});
+      if (x.status === "gagal") return selesai(`Pengindeksan gagal: ${x.galat || "alasan tidak disebut"}. Tutup dialog, lalu pakai Indeks ulang atau hapus dan unggah lagi.`, false);
+      U.close();
+    });
+  }
+
+  /* pemilih pengetahuan di formulir agen */
+  let pilihSumber = new Set();
+  const hitungSumber = () => { $("#aiSumberHitung").textContent = `${fmtAngka(pilihSumber.size, 0)} dari ${fmtAngka(S.sumber.length, 0)} dipilih`; };
+  function gambarPilihSumber() {
+    hitungSumber();
+    $("#aiSumberDaftar").replaceChildren(...(S.sumber.length ? S.sumber.map(x => el("label", {class: "ai-alat"},
+      el("input", {type: "checkbox", value: x.id, checked: pilihSumber.has(x.id), onchange: e => { e.target.checked ? pilihSumber.add(x.id) : pilihSumber.delete(x.id); hitungSumber(); }}),
+      el("span", {}, el("strong", {teks: x.nama}), el("span", {class: "ai-butir-sub", teks: [VISIBILITAS[x.visibilitas]?.[0], labelStatus(x.status)].filter(Boolean).join(", ")})))) : [el("p", {class: "ai-kosong", teks: "Belum ada pengetahuan. Unggah dulu di bagian Pengetahuan."})]));
+  }
+  const galatSumber = t => { const g = $("#aiSumberGalat"); g.textContent = t || ""; g.hidden = !t; };
 
   /* ---------- formulir agen ---------- */
   const F = $("#aiForm"), fm = F.querySelector("form"), fs = F.querySelector("fieldset");
@@ -384,20 +568,22 @@ function mulai() {
 
   async function bukaForm(a, mode) {
     modeForm = a ? mode : "baru"; idForm = a?.id || null;
-    fm.reset(); galatIsian({}); $("#aiFormPesan").textContent = "";
+    fm.reset(); galatIsian({}); galatSumber(""); $("#aiFormPesan").textContent = "";
     $("#aiFormJudul").textContent = {baru: "Agen baru", sunting: "Sunting agen", lihat: "Lihat agen"}[modeForm];
     $("#aiSimpan").hidden = modeForm === "lihat";
-    fs.disabled = true; $("#aiFormMuat").hidden = false; $("#aiAlatDaftar").replaceChildren();
+    fs.disabled = true; $("#aiFormMuat").hidden = false; $("#aiAlatDaftar").replaceChildren(); $("#aiSumberDaftar").replaceChildren(); pilihSumber = new Set();
     F.showModal();   /* chrome dulu; isi menyusul sesudah fetch */
     let d = {nama: "", avatar: "klasik", suhu: SUHU_BAWAAN, instruksi: "", deskripsi: "", visibilitas: "pribadi", alat: [], alih_manusia: false};
     try {
-      if (!S.alat) S.alat = (await api("/api/ai/alat")).alat || [];
-      if (a) { const j = await api(`/api/ai/agen/${encodeURIComponent(a.id)}`); d = {...d, ...a, ...(j.agen || j)}; }
+      const [alat, , j] = await Promise.all([S.alat ? null : api("/api/ai/alat"), muatSumber().catch(() => {}), a ? api(`/api/ai/agen/${encodeURIComponent(a.id)}`) : null]);
+      if (alat) S.alat = alat.alat || [];
+      if (j) d = {...d, ...a, ...(j.agen || j)};
     } catch (e) { $("#aiFormMuat").hidden = true; $("#aiFormPesan").textContent = e.message; return; }
     if (!F.open) return;
     fm.nama.value = d.nama || ""; fm.suhu.value = d.suhu ?? SUHU_BAWAAN; fm.instruksi.value = d.instruksi || ""; fm.deskripsi.value = d.deskripsi || "";
     fm.avatar.value = avatarSah(d.avatar) ? d.avatar : "klasik"; fm.visibilitas.value = visibilitasSah(d.visibilitas) ? d.visibilitas : "pribadi";
     fm.alih_manusia.checked = !!d.alih_manusia; pilihAlat = new Set(d.alat || []);
+    pilihSumber = new Set((d.sumber || []).map(x => x.id)); galatSumber(""); gambarPilihSumber();
     $("#aiCariAlat").value = ""; gambarAlat(); segarForm();
     $("#aiFormMuat").hidden = true; fs.disabled = modeForm === "lihat";
     if (modeForm !== "lihat") fm.nama.focus();
@@ -410,7 +596,14 @@ function mulai() {
     if (!v.ok) return fm.elements[Object.keys(v.galat)[0]]?.focus?.();
     const t = $("#aiSimpan"); t.disabled = true;
     try {
-      await api(idForm ? `/api/ai/agen/${encodeURIComponent(idForm)}` : "/api/ai/agen", d);
+      const j = await api(idForm ? `/api/ai/agen/${encodeURIComponent(idForm)}` : "/api/ai/agen", d);
+      const id = idForm || j.id;
+      try { if (id) await api(`/api/ai/agen/${encodeURIComponent(id)}/sumber`, {sumber: [...pilihSumber]}); }
+      catch (er) {
+        /* agen sudah tersimpan; alasan penolakan (mis. 409 visibilitas berkas lebih sempit) tampil di bagian Pengetahuan, formulir tetap terbuka */
+        idForm = id; modeForm = "sunting"; $("#aiFormJudul").textContent = "Sunting agen";
+        galatSumber(`Agen tersimpan, tetapi pengetahuan belum terpasang: ${er.message}`); await muatAgen(); return;
+      }
       F.close(); await muatAgen();
     } catch (er) { $("#aiFormPesan").textContent = er.message; }
     finally { t.disabled = false; }
@@ -448,6 +641,11 @@ function mulai() {
   fm.addEventListener("submit", simpanForm);
   $("#aiBatal").addEventListener("click", () => F.close());
   $("#aiTulisAI").addEventListener("click", tulisInstruksi);
+  $("#aiUnggahBuka").addEventListener("click", bukaUnggah);
+  $("#aiCariPeng").addEventListener("input", tunda(gambarSumber, 150));
+  $("#aiUgTutup").addEventListener("click", () => U.close());
+  $("#aiUgKembali").addEventListener("click", () => { galatU({}); aturLangkahU(1); });
+  U.querySelector("form").addEventListener("submit", lanjutUnggah);
   $("#aiCariAlat").addEventListener("input", tunda(gambarAlat, 120));
   $("#aiPilihSemua").addEventListener("click", () => centangSemua(true));
   $("#aiKosongkan").addEventListener("click", () => centangSemua(false));

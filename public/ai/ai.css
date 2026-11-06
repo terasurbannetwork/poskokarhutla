@@ -153,3 +153,11 @@
 @media (max-width:560px){
   .ai-obrol-view{height:calc(100dvh - 118px)}
 }
+
+/* pengetahuan */
+.ai-status{font-size:12.5px;font-weight:600}
+.ai-status.selesai{color:var(--ok,#14733c)}
+.ai-status.gagal{color:var(--bahaya,#b3261e)}
+.ai-status.antre,.ai-status.diproses{color:var(--ink2)}
+#aiProgres progress{width:100%;height:8px}
+#aiProgresTeks{font-size:13px;color:var(--ink2);margin:6px 0 0}
