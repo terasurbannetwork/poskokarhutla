@@ -21,7 +21,8 @@ concurrency:
 jobs:
   terbit:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    # 25 menit memotong run 42062436264 (5 Nov 2026) tepat sesudah wrangler deploy: uji node kini memakan sebagian besar job.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
