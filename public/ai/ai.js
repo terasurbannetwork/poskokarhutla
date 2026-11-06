@@ -38,9 +38,9 @@ export const namaAlat = n => (s => s.charAt(0).toUpperCase() + s.slice(1))(Strin
 
 /* satu sumber: "Titik panas: 412 titik, 4 Nov 2026"; kutipan berkas pengetahuan: "Berkas Panduan: ringkas, 4 Nov 2026" */
 export function formatSumber(s = {}) {
-  if (s.berkas && !s.alat) {
+  if (s.berkas && !s.alat) {   // kutipan pengetahuan (langkah 2): tanggal = tanggal unggah berkas
     const k = "Berkas " + s.berkas + (s.ringkas ? `: ${s.ringkas}` : ""), t = fmtTanggal(s.tanggal);
-    return t ? `${k}, ${t}` : k;
+    return t ? `${k}, diunggah ${t}` : k;
   }
   const kepala = namaAlat(s.alat) + (s.ringkas ? `: ${s.ringkas}` : "");
   const tgl = fmtTanggal(s.tanggal);

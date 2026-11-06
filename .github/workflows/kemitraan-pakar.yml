@@ -1,0 +1,112 @@
+name: Kemitraan Kampus, pencocokan pakar bulanan
+
+# Tanggal 2 tiap bulan 03.00 UTC (DT §7.2): korpus OpenAlex per pakar -> indeks BM25 -> cocok per kab, semuanya ke R2
+# (poskokarhutla-foto, kemitraan/...). Data pakar TIDAK di repo. Satu-satunya yang di-commit: public/data/kemitraan/uji_cocok.json.
+# Job bisa berjam-jam (korpus dicicil, status di R2 kemitraan/korpus/_status.json), jadi grup concurrency SENDIRI agar
+# tidak menahan grup `data`; commit memakai pull --rebase seperti workflow lain.
+# cocok_baru.py (masalah antre harian, KM-C07) BELUM ada: tambahkan ke kemitraan.yml bila sudah, bukan di sini.
+on:
+  schedule:
+    - cron: "0 3 2 * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Coba saja: 20 pakar, tulis lokal, tanpa unggah ke R2 dan tanpa commit"
+        type: boolean
+        default: true
+
+concurrency:
+  group: kemitraan-pakar
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  pakar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      # jadwal = sungguhan; dispatch = ikut input (default coba saja)
+      DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      # secret tak bisa dipakai langsung di `if:`; ekspos hanya bendera ada/tidaknya
+      ADA_KUNCI: ${{ secrets.OPENALEX_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Uji mandiri
+        run: |
+          for s in korpus indeks_bm25 cocok_pakar uji_cocok; do python3 -I scripts/kemitraan/$s.py --cek; done
+
+      - name: Pasang wrangler (korpus.py memanggil npx wrangler)
+        run: npm install --no-save --no-package-lock wrangler@4.42.0
+
+      - name: Ambil direktori pakar dan kampus dari R2
+        run: |
+          mkdir -p "$RUNNER_TEMP/km"
+          for b in induk kampus; do
+            npx wrangler r2 object get "poskokarhutla-foto/akademisi/$b.json" --file "$RUNNER_TEMP/km/$b.json" --remote
+          done
+
+      - name: Korpus OpenAlex
+        # korpus.py menolak jalan di CI tanpa kunci; tanpa secret langkah ini dilewati (lihat langkah berikutnya).
+        if: env.ADA_KUNCI == 'true'
+        env:
+          OPENALEX_KEY: ${{ secrets.OPENALEX_KEY }}
+        run: |
+          if [ "$DRY" = true ]; then ARGS="--keluar $RUNNER_TEMP/korpus --maks 20"; else ARGS="--keluar $RUNNER_TEMP/korpus --r2 --detik 18000"; fi
+          rc=0
+          python3 -I scripts/kemitraan/korpus.py --induk "$RUNNER_TEMP/km/induk.json" $ARGS || rc=$?
+          # 2 = batas waktu/kuota, dicicil: lanjut dengan korpus sebagian, bulan depan melanjutkan
+          if [ "$rc" = 2 ]; then echo "::warning title=Korpus dicicil::berhenti di batas; dilanjutkan jalan berikutnya"; elif [ "$rc" != 0 ]; then exit "$rc"; fi
+
+      # Tanpa OPENALEX_KEY: korpus TIDAK ditarik; pakai korpus yang sudah ada di R2 (bila ada). Tak ada = indeks dan cocok dilewati.
+      - name: Pakai korpus R2 yang ada (tanpa OPENALEX_KEY)
+        if: env.ADA_KUNCI != 'true'
+        run: |
+          echo "::warning title=OPENALEX_KEY kosong::korpus.py dilewati; indeks dan cocok memakai korpus lama di R2 bila ada"
+          mkdir -p "$RUNNER_TEMP/korpus"; n=0
+          for i in $(seq 0 63); do
+            npx wrangler r2 object get "poskokarhutla-foto/kemitraan/korpus/$i.json" --file "$RUNNER_TEMP/korpus/$i.json" --remote > "$RUNNER_TEMP/r2.log" 2>&1 \
+              && n=$((n+1)) || { rm -f "$RUNNER_TEMP/korpus/$i.json"; grep -qiE "does not exist|NoSuchKey|10007|not found" "$RUNNER_TEMP/r2.log" || { cat "$RUNNER_TEMP/r2.log"; exit 1; }; }
+          done
+          echo "pecahan korpus dari R2: $n"
+          [ "$n" -gt 0 ] && echo "ADA_KORPUS=true" >> "$GITHUB_ENV" || echo "::warning title=Korpus R2 kosong::indeks dan cocok dilewati sampai OPENALEX_KEY dipasang"
+
+      - name: Indeks BM25
+        if: env.ADA_KUNCI == 'true' || env.ADA_KORPUS == 'true'
+        run: |
+          [ "$DRY" = true ] && R2="" || R2="--r2"
+          python3 -I scripts/kemitraan/indeks_bm25.py --induk "$RUNNER_TEMP/km/induk.json" --kampus "$RUNNER_TEMP/km/kampus.json" \
+            --korpus "$RUNNER_TEMP/korpus" --keluar "$RUNNER_TEMP/indeks" $R2
+
+      - name: Cocok pakar per kab
+        if: env.ADA_KUNCI == 'true' || env.ADA_KORPUS == 'true'
+        run: |
+          [ "$DRY" = true ] && R2="" || R2="--r2"
+          python3 -I scripts/kemitraan/cocok_pakar.py --induk "$RUNNER_TEMP/km/induk.json" --kampus "$RUNNER_TEMP/km/kampus.json" \
+            --korpus "$RUNNER_TEMP/korpus" --keluar "$RUNNER_TEMP/cocok" $R2
+
+      # Tanpa berkas label manusia: tulis status belum_ada_label dan lolos (rc 0).
+      - name: Uji kualitas pencocokan
+        run: python3 -I scripts/kemitraan/uji_cocok.py --bila-ada-label
+
+      - name: Commit uji_cocok.json
+        if: env.DRY != 'true'
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/data/kemitraan/uji_cocok.json
+          git diff --cached --quiet -- public/data/kemitraan/uji_cocok.json && { echo "uji_cocok tidak berubah"; exit 0; }
+          git commit -q -m "data: uji cocok pakar kemitraan $(TZ=Asia/Jakarta date +%F)" -- public/data/kemitraan/uji_cocok.json
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::error title=Push uji_cocok gagal::git push ke main gagal 3x"
+          exit 1

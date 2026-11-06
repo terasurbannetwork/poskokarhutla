@@ -1,0 +1,99 @@
+{
+  "kode": "Tel-U",
+  "nama": "Telkom University",
+  "kota": "Bandung",
+  "provinsi": "Jawa Barat",
+  "lon": 107.63,
+  "lat": -6.973,
+  "logo": "kampus/Tel-U/logo.png",
+  "foto_kampus": [
+    "kampus/Tel-U/kampus-1.jpg",
+    "kampus/Tel-U/kampus-2.jpg",
+    "kampus/Tel-U/kampus-3.jpg"
+  ],
+  "kredit_kampus": "Foto: Meilinaekaa (Bandung Techno Park), Meilinaayuningtyas (Danau Galau dan Open Library), CC BY-SA 4.0, Wikimedia Commons",
+  "foto_kampus_sumber": [
+    {
+      "berkas": "kampus-1.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Bandung_Techno_Park_Telkom_University_View.jpg",
+      "pengunggah": "Meilinaekaa",
+      "lisensi": "CC BY-SA 4.0",
+      "objek": "Bandung Techno Park dari udara"
+    },
+    {
+      "berkas": "kampus-2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Open_Library_Telkom_University.jpg",
+      "pengunggah": "Meilinaayuningtyas",
+      "lisensi": "CC BY-SA 4.0",
+      "objek": "Open Library Telkom University"
+    },
+    {
+      "berkas": "kampus-3.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Bandung_Techno_Park_Telkom_University_Tampak_Samping.jpg",
+      "pengunggah": "Meilinaekaa",
+      "lisensi": "CC BY-SA 4.0",
+      "objek": "Bandung Techno Park tampak samping dari udara"
+    }
+  ],
+  "pusat_studi": "PUI-PT AICOMS",
+  "pusat_studi_nama": "PUI-PT Advanced Intelligent Communications (AICOMS)",
+  "riset": [
+    {
+      "judul": "PATRIOT-Net, deteksi dini bencana",
+      "gambar": "kampus/Tel-U/riset-1.jpg",
+      "unit": "PUI-PT AICOMS",
+      "bahaya": "Multibencana",
+      "isi": "Sensor IoT dan aplikasi seluler untuk deteksi dini bencana geologi dan hidrometeorologi, terhubung ke pusat kendali pemerintah. Diuji di Kota Padang bersama BPBD dan diluncurkan di Bandung pada 14 Februari 2023.",
+      "url": "https://telkomuniversity.ac.id/en/telkom-university-launches-patriot-net-for-disaster-mitigation/",
+      "kredit": "Foto: Telkom University"
+    },
+    {
+      "judul": "MCRBS, stasiun pangkalan seluler darurat",
+      "gambar": "kampus/Tel-U/riset-2.jpg",
+      "unit": "PUI-PT AICOMS",
+      "bahaya": "Komunikasi darurat",
+      "isi": "Stasiun pangkalan seluler bergerak yang bisa dipasang di kendaraan dan tersambung ke jaringan seluler generasi lama sampai terbaru. Dayanya bisa dari generator atau panel surya, sehingga tetap jalan di daerah tanpa listrik.",
+      "url": "https://io.telkomuniversity.ac.id/?p=10922",
+      "kredit": "Foto: Telkom University"
+    },
+    {
+      "judul": "Tide Eye, pemantau banjir rob",
+      "gambar": "kampus/Tel-U/riset-3.jpg",
+      "unit": "Telkom University dan UOW",
+      "bahaya": "Banjir rob",
+      "isi": "Kamera visual dan radar di empat rumah pompa pantura Jawa Tengah; datanya diolah AI untuk membaca dan memprediksi banjir rob. Dibiayai program KONEKSI dan dipakai BBWS Pemali Juana.",
+      "url": "https://jateng.antaranews.com/berita/552199/telkom-university-kembangkan-deteksi-dini-banjir-dan-rob",
+      "kredit": "Foto: ANTARA"
+    },
+    {
+      "judul": "Flood Eye, prediksi banjir Semarang",
+      "gambar": "kampus/Tel-U/riset-4.jpg",
+      "unit": "Telkom University dan UOW",
+      "bahaya": "Banjir",
+      "isi": "Radar muka air dan penakar hujan memperkirakan luas serta tinggi genangan, sedangkan kamera sungai ikut memantau. Ditargetkan beroperasi akhir Oktober 2026, lalu diserahkan ke Pemkot Semarang.",
+      "url": "https://katadata.co.id/digital/teknologi/6a9807321a5df/flood-eye-riset-ai-untuk-perkuat-mitigasi-banjir-semarang",
+      "kredit": "Foto: KONEKSI"
+    }
+  ],
+  "sumber_riset": "Laman resmi Telkom University (telkomuniversity.ac.id, io.telkomuniversity.ac.id), ANTARA Jateng (3 Okt 2024), Katadata (2 Sep 2026)",
+  "kredit_foto_riset": "Foto: Telkom University, ANTARA, KONEKSI",
+  "peluang": [
+    {
+      "ikon": "peringatan-dini",
+      "judul": "Pasang di daerah",
+      "isi": "PATRIOT-Net dipasang di kabupaten dan kota rawan pilihan BPBD, seperti uji di Padang."
+    },
+    {
+      "ikon": "banjir",
+      "judul": "Banjir rob pesisir",
+      "isi": "Data Tide Eye dan Flood Eye masuk ke pemantauan banjir BPBD di pantura Jawa Tengah."
+    },
+    {
+      "ikon": "jejaring",
+      "judul": "Komunikasi darurat",
+      "isi": "MCRBS melengkapi jaringan komunikasi tanggap darurat saat sinyal seluler terputus."
+    }
+  ],
+  "catatan": "1) Telkom University tidak punya pusat studi khusus kebencanaan yang ditemukan; pusat terdekat adalah PUI-PT AICOMS (komunikasi cerdas, pengembang PATRIOT-Net dan MCRBS) dan PUI Intelligent Sensing-IoT (tim Tide Eye). Nama pusat di pusat_studi perlu dicek ke LPPM. 2) riset-1 dan riset-2 berasal dari satu foto peluncuran PATRIOT-Net (1920x1080); riset-2 adalah potongan bagian menara dan kendaraan MCRBS, diperbesar, ada orang di tepi bingkai dan bilah merah bermerek Telkom University di kanan. Foto asli MCRBS di situs International Office hanya 240x300 sehingga tidak dipakai; cari foto pengganti bila perlu. 3) riset-3 foto jumpa pers Tide Eye (ada empat orang, poster latar sebagian terpotong); riset-4 foto lapangan Flood Eye 960x640 berupa kolase tiga foto dengan logo KONEKSI di sudut dan ada orang. Kedua foto bersumber dari berita, hak cipta ANTARA dan Katadata/KONEKSI, belum ada izin reuse. 4) Tanggal: PATRIOT-Net diluncurkan 14 Februari 2023; keterkaitannya dengan BMKG disebut di laman SDGs Telkom University (7 Sep 2024) tetapi tidak dicantumkan di slide karena tidak ada sumber BMKG sendiri (siaran pers BMKG 30 Mei 2025 soal UGM dan Telkom adalah Telkom Indonesia, bukan Telkom University). 5) Status Flood Eye: target operasional akhir Oktober 2026 menurut Katadata; belum terverifikasi apakah sudah berjalan per 5 Nov 2026. Waktu tempuh banjir 35 menit dan target prediksi 2 sampai 3 jam tidak dicantumkan. 6) Status operasional PATRIOT-Net dan MCRBS sekarang belum terverifikasi; uji ketiga MCRBS Februari 2021 (sumber lain menulis uji Padang 2019). 7) Angka hibah Tide Eye (AUD 350 ribu) dan 491 bencana Padang 2022 tidak dicantumkan karena tidak berasal dari sumber primer yang seragam. 8) Foto kampus: kampus-1 dan kampus-2 sama-sama gedung Bandung Techno Park (menara obelisk) dari sudut berbeda; kampus-3 (Danau Galau) dan kampus-4 (interior Open Library) bersifat suasana kampus, bukan fasad. Gedung lain seperti TULT atau Gedung Damar belum ada foto lisensi terbuka yang layak. 9) Logo dari Commons (Logo Telkom University potrait.png, CC BY-SA 4.0, pengunggah Hilfans), versi tegak lambang plus tulisan, ditaruh di kanvas persegi 1024 px transparan; tidak ada versi lanskap. 10) Titik koordinat kampus Bandung (Dayeuhkolot, Jl. Telekomunikasi) dibulatkan dari perkiraan, belum dicek ke peta. Pemilik 5 Nov 2026: foto sampul lama (menara BTP dua kali dan Danau Galau) dinilai kembar dan kurang menarik; diganti tiga foto: BTP dari udara (dua sudut) dan Open Library. Foto lain di Commons (TULT berlatar Gunung Malabar, asrama, foto udara kota) tidak layak. Logo dipotong rapat supaya sebanding dengan logo BNPB. Cadangan di cadangan-051126/.",
+  "logo_bertulisan": true
+}

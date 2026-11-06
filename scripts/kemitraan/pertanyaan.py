@@ -151,10 +151,24 @@ def _isi(t, nilai):
     return None if "{" in teks or "}" in teks else teks
 
 
+def _tanpa_kembar(ok):
+    """Templat dengan arah dan himpunan slot data (selain wilayah) sama dengan templat sebelumnya = pertanyaan kembar atas angka yang sama: yang kemudian dibuang.
+    Urutan masukan = umum, bahaya, aspek, narasumber (id 1u..4n), jadi yang umum menang. Salinan JS: hitung.js susunPanduan."""
+    lihat, out = set(), []
+    for t, s in ok:
+        ds = frozenset(t.get("isian") or ()) - {"wilayah"}
+        if ds and (t["arah"], ds) in lihat:
+            continue
+        lihat.add((t["arah"], ds))
+        out.append((t, s))
+    return out
+
+
 def susun_panduan(templat, nilai, mengapa=None, maks=None):
     """Templat pertanyaan -> [{id, teks, arah, sub}] urut arah (ARAH) lalu id; batas `maks` per narasumber buang prioritas rendah dulu."""
     maks = PD["MAKS_PER_NARASUMBER"] if maks is None else maks
     ok = [(t, s) for t in templat for s in [_isi(t, nilai)] if s is not None]
+    ok = _tanpa_kembar(ok)
     if len(ok) > maks:
         ok = sorted(ok, key=lambda x: (x[0].get("prioritas", 2), ARAH.index(x[0]["arah"]), x[0]["id"]))[:maks]
     ok.sort(key=lambda x: (ARAH.index(x[0]["arah"]), x[0]["id"]))

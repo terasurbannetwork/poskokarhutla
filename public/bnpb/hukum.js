@@ -35,6 +35,12 @@
   const pilW = (i, t, w) => warnaPil(pil(i, t, w));
   const tidakResmi = x => !!x && (x.resmi === false || x.resmi === 0 || x.resmi === "0");
   const pilTakResmi = x => pilW("peringatan", "Salinan tidak resmi" + (x.sumber ? " (dari " + x.sumber + ")" : ""), "c1");
+  /* RU-004 F0-1: dicabut_oleh (id pencabut yang BERLAKU, dari API) sementara status JDIH masih BERLAKU = konflik. Aman bila field belum ada. */
+  const labelCabut = id => { const m = /^(.*)-(\d+)-(\d{4})$/.exec(String(id)); return m ? `${kapital(m[1])} ${m[2]}/${m[3]}` : String(id); };
+  const pilCabut = (x, taut) => String((x && x.status) || "").toUpperCase() !== "BERLAKU" || !Array.isArray(x.dicabut_oleh) ? [] : x.dicabut_oleh.filter(Boolean).map(id => {
+    const ik = svg("silang"), t = `Dicabut oleh ${labelCabut(id)} menurut teks; JDIH masih BERLAKU`;
+    const e = taut ? h("a", {class: "bn-pil", href: tautanDok(id), "data-w": "c1", "data-cabut": id}, ik, t) : h("span", {class: "bn-pil", "data-w": "c1", "data-cabut": id}, ik, t);
+    return warnaPil(e); });
   let pKat = null; /* katalog dimuat sekali; null bila belum ada */
   const katalogPeta = () => pKat || (pKat = fetch("/data/bnpb/hukum/katalog.json").then(r => r.ok ? r.json() : null).then(k => new Map(((k && k.dok) || []).map(d => [d.id, d]))).catch(() => new Map()));
   const sebut = d => `${d.singkatan ? kapital(d.singkatan) : "Dokumen"} ${d.nomor}/${d.tahun}`;
@@ -132,7 +138,7 @@
   }
   function kartuHasil(x) {
     const a = h("a", {class: "bn-kartu hk-hit", href: tautanDok(x.dok, x.label)},
-      h("div", {class: "hk-pils"}, pilW("dokumen", `${x.singkatan || ""} ${x.nomor}/${x.tahun}`.trim(), "c5"), pilStatus(x.status), tidakResmi(x) ? pilTakResmi({sumber: null}) : null, pilW("buku", x.label || "", "ink3")),
+      h("div", {class: "hk-pils"}, pilW("dokumen", `${x.singkatan || ""} ${x.nomor}/${x.tahun}`.trim(), "c5"), pilStatus(x.status), ...pilCabut(x, false), tidakResmi(x) ? pilTakResmi({sumber: null}) : null, pilW("buku", x.label || "", "ink3")),
       h("h3", {teks: x.judul || ""}), x.bab ? h("div", {class: "hk-bab", teks: x.bab}) : null, h("p", {class: "hk-cuplik"}, bersorot(x.cuplikan)));
     return a;
   }
@@ -161,7 +167,8 @@
     const nama = `${d.jenis || ""} Nomor ${d.nomor} Tahun ${d.tahun}`.trim();
     document.title = `${sebut(d)}, Pustaka Hukum BNPB`;
     const pdf = Array.isArray(d.pdf) ? d.pdf : d.pdf ? [d.pdf] : [];
-    const pils = [pilW("dokumen", nama, "c5"), pilStatus(d.status)];
+    const pils = [pilW("dokumen", nama, "c5"), pilStatus(d.status), ...pilCabut(d, true)];
+    if (d.dicabut_tersedia === false) pils.push(pilW("peringatan", "Status pencabutan belum tersedia", "ink3"));
     if (d.tgl_tetap) pils.push(pilW("kalender", "Ditetapkan " + tgl(d.tgl_tetap), "ink3"));
     if (d.tgl_undang) pils.push(pilW("kalender", "Diundangkan " + tgl(d.tgl_undang), "ink3"));
     if (d.sumber_bn) pils.push(pilW("buku", d.sumber_bn, "ink3"));

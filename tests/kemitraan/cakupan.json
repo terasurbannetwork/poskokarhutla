@@ -10,6 +10,7 @@
     "hitung.statusModel": "hitung statusModel dan UJI_BAHAYA",
     "hitung.UJI_BAHAYA": "hitung statusModel dan UJI_BAHAYA",
     "js:panduan.js": "cangkang KM L2b",
+    "js:buku.js": "cangkang KM L3",
     "py:konst.py": "uji:konst",
     "py:kode.py": "uji:kode",
     "js:konst.js": "konst.py dan konst.js identik",
@@ -23,6 +24,8 @@
     "py:cocok_pakar.py": "uji:cocok_pakar",
     "py:uji_cocok.py": "uji:uji_cocok",
     "src:kemitraan.js": "peran terdeteksi benar: SA, ST, PM, KK, AG, BP, PL",
+    "src:kemitraan_akun.js": "daftar kampus: valid 201",
+    "kemitraan_hitung.statusPerjanjian": "statusPerjanjian cocok dengan kasus acuan A13",
     "js:inti.js": "cangkang KM staf: delapan segmen",
     "js:daerah.js": "cangkang KM tampilan: tiap berkas mendaftar",
     "js:masalah.js": "cangkang KM tampilan: tiap berkas mendaftar",
@@ -32,7 +35,9 @@
     "js:satgas.js": "cangkang KM tampilan: tiap berkas mendaftar",
     "js:talenta.js": "cangkang KM tampilan: tiap berkas mendaftar",
     "js:kampus.js": "cangkang KM tampilan: tiap berkas mendaftar",
-    "js:dasbor.js": "cangkang KM tampilan: tiap berkas mendaftar"
+    "js:dasbor.js": "cangkang KM tampilan: tiap berkas mendaftar",
+    "js:daftar.js": "cangkang KM D2 daftar",
+    "js:masuk.js": "cangkang KM D2 masuk"
   },
   "dikecualikan": {},
   "antre": {}

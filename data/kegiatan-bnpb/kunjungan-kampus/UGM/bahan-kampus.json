@@ -12,31 +12,36 @@
     "kampus/UGM/kampus-3.jpg",
     "kampus/UGM/kampus-4.jpg"
   ],
-  "kredit_kampus": "Foto: Lusia Komala Widiastuti (Gedung Pusat), Alharomain354 (Balairung), Risanprasetyo/Febri Ady Prasetyo (Grha Sabha Pramana), Ris00l may00 (Masjid Kampus), CC0, CC BY-SA 4.0, dan CC BY 4.0, Wikimedia Commons",
+  "kredit_kampus": "Foto: Lusia Komala Widiastuti (Gedung Pusat dan Gerbang UGM), Risanprasetyo/Febri Ady Prasetyo (Grha Sabha Pramana), Rahmatdenas (Masjid Kampus), CC0, CC BY-SA 4.0, dan CC BY 4.0, Wikimedia Commons",
   "foto_kampus_sumber": [
     {
       "berkas": "kampus-1.jpg",
       "url": "https://commons.wikimedia.org/wiki/File:Gedung_Pusat_(Rektorat)_UGM.jpg",
       "pengunggah": "Lusia Komala Widiastuti",
-      "lisensi": "CC0"
+      "lisensi": "CC0",
+      "objek": "Gedung Pusat (Rektorat) UGM"
     },
     {
       "berkas": "kampus-2.jpg",
-      "url": "https://commons.wikimedia.org/wiki/File:Fasad_Depan_Balairung_UGM.jpg",
-      "pengunggah": "Alharomain354",
-      "lisensi": "CC BY-SA 4.0"
+      "url": "https://commons.wikimedia.org/wiki/File:Gerbang_UGM_-_Boulevard.jpg",
+      "pengunggah": "Lusia Komala Widiastuti",
+      "lisensi": "CC0",
+      "objek": "Gerbang UGM, Boulevard",
+      "catatan": "Asli 1440x1080, diperbesar ke 1920x1440"
     },
     {
       "berkas": "kampus-3.jpg",
       "url": "https://commons.wikimedia.org/wiki/File:Gedung_Grha_Sabha_Pramana_(GSP).jpg",
       "pengunggah": "Risanprasetyo/Febri Ady Prasetyo",
-      "lisensi": "CC BY-SA 4.0"
+      "lisensi": "CC BY-SA 4.0",
+      "objek": "Grha Sabha Pramana (GSP)"
     },
     {
       "berkas": "kampus-4.jpg",
-      "url": "https://commons.wikimedia.org/wiki/File:Masjid_Kampus_UGM.jpg",
-      "pengunggah": "Ris00l may00",
-      "lisensi": "CC BY 4.0"
+      "url": "https://commons.wikimedia.org/wiki/File:Masjid_Kampus_Universitas_Gadjah_Mada_2026_oleh_Denas.jpg",
+      "pengunggah": "Rahmatdenas",
+      "lisensi": "CC BY 4.0",
+      "objek": "Masjid Kampus UGM (pandangan udara)"
     }
   ],
   "pusat_studi": "PSBA UGM",

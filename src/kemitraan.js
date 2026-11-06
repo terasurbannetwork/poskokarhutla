@@ -9,6 +9,7 @@ import {modOK, superOK} from "./posko.js";
 import {pemegangKode, CSP} from "./bnpb.js";
 import {stafSesi} from "./staf.js";
 import {lindungi} from "./relawan.js";
+import {ruteAkun, profilSaya} from "./kemitraan_akun.js";
 
 const COOKIE = "sesi_kemitraan";
 const tokenKm = req => (req.headers.get("cookie") || "").match(new RegExp(`(?:^|;\\s*)${COOKIE}=([0-9a-f]{64})(?:;|$)`))?.[1] ?? null;
@@ -66,7 +67,8 @@ async function halamanHak(env, req, url, kini, boleh, berkas) {
 /* ================================================================ API */
 async function saya(env, req, kini) {
   const h = await hakKm(env, req, kini);
-  return h.tolak ?? (h.peran ? json({jenis: h.peran}) : gagal(401, "belum masuk atau kode tidak diberikan"));
+  if (h.tolak) return h.tolak;
+  return h.peran ? json({jenis: h.peran, profil: await profilSaya(env, h)}) : gagal(401, "belum masuk atau kode tidak diberikan");
 }
 /* pemegang rute fitur yang belum dibangun: hak diperiksa dulu supaya tamu tidak bisa membedakan rute ada/tidak, lalu 501 */
 const belumAda = async (env, req, url, kini) => {
@@ -84,6 +86,7 @@ export const RUTE_KEMITRAAN = lindungi({
   "GET /kemitraan/panduan": (env, req, url, kini) => halamanHak(env, req, url, kini, ["SA", "ST"], "/kemitraan/panduan.html"),
   "GET /kemitraan/sertifikat/:id": (env, req, url) => halaman(env, url, "/kemitraan/sertifikat.html"),
   "GET /api/kemitraan/saya": (env, req, url, kini) => saya(env, req, kini),
+  ...ruteAkun(),   // daftar, masuk, atur sandi, kampus, anggota, perjanjian, kode BPBD (src/kemitraan_akun.js, KM-D01 dan KM-D05)
   /* penampung pola :kab4, :id, :aid; diganti pemilik sebenarnya oleh KM-C03 / KM-C08 */
   "GET /api/kemitraan/daerah/:kab4/pakar": belumAda,
   "POST /api/kemitraan/masalah/:id/pakar/:aid": belumAda,

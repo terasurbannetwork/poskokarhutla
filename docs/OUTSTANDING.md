@@ -73,3 +73,18 @@ bisnis karbon, catatan prospektif mingguan model risiko 7 hari.
 | C7 | Cuaca ekstrem | Tab registry, en.json, arsip nowcast per jam |
 | C8 | Kekeringan | Cache data.yml, tab simulasi di registry, i18n |
 | C9 | Kajian BNPB mitigasi dan GD pipa / SIPPA | Dikerjakan sesi lain |
+
+## E. Fitur pilihan pemilik 5 Nov 2026 (belum dibangun)
+
+Dasar: D1 produksi 5 Nov, hampir semua tabel isian manusia 0 baris (akun, meja, km_*, riset_*), pengunjung ~20 orang/hari, 0 dari mesin pencari. Fitur dipilih supaya orang bisa masuk dan data terisi tanpa form panjang.
+
+| No | Fitur | Bergantung pada | Pengerja |
+| -- | ----- | --------------- | -------- |
+| E1 | Satu akun lewat nomor WA + OTP; enam tabel akun lama (staf, pemirsa, instansi_akun, km_akun, pdt_akun, orang) dipetakan ke satu identitas + peran | gateway WA hidup | warga-api (+ guard-api, security-reviewer, migrasi-idempoten) |
+| E2 | Papan aktivasi 514 kab/kota: punya akun, terakhir aktif, tombol undangan WA dari tabel kontak | E1 | warga-api + layar-peta |
+| E3 | Isi awal km_kampus + pakar dari /direktori, /akademisi, kontak_pt (R2) | - | kampus |
+| E4 | Pelacak MoU/PKS di km_perjanjian: unggah PDF, tanggal berakhir, kewajiban, pengingat H-60 | E1 | kampus + warga-api |
+| E5 | Undang 5 pakar teratas lewat WA per masalah; nomor diisi kampus, pakar setuju dulu (PDP) | E1, E3 | kampus + wa-bot |
+| E6 | Laporan triwulan TA ke Ka BNPB (PPTX+PDF lewat ppt-konsultan): kunjungan, MoU, soal, skor, dana luar | E3, E4 | sesi induk |
+| E7 | Bahan kunjungan kerja satu klik: pilih kab, briefing 2 halaman (riwayat bencana, status hari ini, kapasitas BPBD, isu terbuka, kampus mitra) | E3 untuk kampus mitra | ruang-bnpb |
+| E8 | Cadangan air tanah GRACE-FO untuk kekeringan; resolusi asli ~300 km bulanan, telat 2-3 bulan: tampil per pulau/provinsi, bukan per kab | token Earthdata (habis ~11 Des) | gunungapi-kering |

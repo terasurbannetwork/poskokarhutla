@@ -49,3 +49,10 @@ export function verifikasiKutipan(klaim, kirim) {
   }
   return {sah, dibuang};
 }
+
+// RU-003 F0-1 (DT §3.1): subkueri `dicabut_oleh`, murni string supaya uji bisa EXPLAIN tanpa memuat worker.
+export const SQL_DICABUT = "(SELECT group_concat(DISTINCT r.dari) FROM hukum_relasi r JOIN hukum_dok p ON p.id = r.dari WHERE r.ke = d.id AND r.jenis IN ('mencabut', 'mengganti') AND upper(p.status) = 'BERLAKU')";
+// Pencarian satu halaman: FTS + bm25 + LIMIT di subkueri dalam; dicabut_oleh (atau NULL bila hukum_relasi belum ada) dihitung di luar, hanya untuk baris halaman.
+export const sqlCariHalaman = (dari, dicabut = SQL_DICABUT) => `SELECT t.segmen, t.dok, t.judul, t.singkatan, t.nomor, t.tahun, t.status, t.resmi, t.sumber, ${dicabut} dicabut_oleh, t.label, t.bab, t.cuplikan
+  FROM (SELECT s.id segmen, d.id dok, d.judul, d.singkatan, d.nomor, d.tahun, d.status, d.resmi, d.sumber, s.label, s.bab, bm25(hukum_fts, 1.0, 3.0, 1.0) rk,
+    snippet(hukum_fts, 0, '[[', ']]', '...', 24) cuplikan ${dari} ORDER BY rk LIMIT ? OFFSET ?) t JOIN hukum_dok d ON d.id = t.dok ORDER BY t.rk`;

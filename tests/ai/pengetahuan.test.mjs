@@ -49,7 +49,7 @@ test("alamatUnggah menaruh metadata di query dan meng-encode nama", () => {
 });
 
 test("formatSumber: kutipan berkas pengetahuan tampil sebagai Berkas, alat tetap seperti semula", () => {
-  assert.equal(formatSumber({berkas: "Panduan", ringkas: "pasal 3", tanggal: "2026-11-04"}), "Berkas Panduan: pasal 3, 4 Nov 2026");
+  assert.equal(formatSumber({berkas: "Panduan", ringkas: "pasal 3", tanggal: "2026-11-04"}), "Berkas Panduan: pasal 3, diunggah 4 Nov 2026");
   assert.equal(formatSumber({berkas: "Panduan"}), "Berkas Panduan");
   assert.equal(formatSumber({alat: "cuaca", berkas: "x"}), "Cuaca, tanggal data tidak disebut");
 });
