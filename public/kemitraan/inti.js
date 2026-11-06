@@ -66,7 +66,7 @@
     const label = () => { const v = nilai(); k.querySelector(".ak-kbtn > span").innerHTML = `<em>${esc(v ? (opsi().find(x => x[0] === v)?.[1] || v) : semua)}</em>`; };
     const dflt = btn.querySelector(".ak-kik")?.innerHTML || "", dik = (v, semuaOpsi) => { const sp = !semuaOpsi && ik ? ik(v) : null; return sp ? ikon(sp[0], sp[1], "ak-opik") : semuaOpsi && ik ? ikon(IK_SEMUA, "", "ak-opik") : dflt ? ikon(dflt, "", "ak-opik") : ""; };
     const isi = () => { const t = q.value.trim().toLowerCase(), cur = nilai(), o = opsi().filter(x => !t || x[1].toLowerCase().includes(t));
-      dft.innerHTML = (t ? "" : opsiBtn("", semua, null, !cur, dik(null, true))) + (o.length ? o.slice(0, 300).map(x => opsiBtn(x[0], x[1], x[2], x[0] === cur, dik(x[0]))).join("") : "<p>Tidak ada yang cocok.</p>"); };
+      dft.innerHTML = (t ? "" : opsiBtn("", semua, null, !cur, dik(null, true))) + (o.length ? o.slice(0, 60).map(x => opsiBtn(x[0], x[1], x[2], x[0] === cur, dik(x[0]))).join("") + (o.length > 60 ? "<p>Ketik untuk mempersempit.</p>" : "") : "<p>Tidak ada yang cocok.</p>"); };
     const tutupP = () => { pop.hidden = true; btn.setAttribute("aria-expanded", "false"); };
     btn.addEventListener("click", () => { const b = pop.hidden; document.querySelectorAll(".ak-kampus-pilih[data-gen]").forEach(x => x._tutup?.());
       if (b) { pop.hidden = false; btn.setAttribute("aria-expanded", "true"); q.value = ""; q.focus(); nanti(isi); } });

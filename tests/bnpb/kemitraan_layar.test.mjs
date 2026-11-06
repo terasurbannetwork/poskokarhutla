@@ -9,6 +9,7 @@ import {join} from "node:path";
 import vm from "node:vm";
 import {bukaPeramban, cariChrome} from "./_peramban.mjs";
 import {buatDunia} from "./_dunia.mjs";
+import {badanPanjang} from "../warga/_bantu.mjs";
 
 const AKAR = new URL("../../", import.meta.url).pathname;
 const baca = p => readFileSync(AKAR + p, "utf8");
@@ -48,7 +49,7 @@ test("cangkang KM statis: tiap .km-w-<kunci> di kemitraan.css cocok KM.RUMPUN da
 });
 
 test("cangkang KM tampilan: tiap berkas mendaftar KM.tampilan dengan bangun dan angka (4 butir) dan menampilkan kosongHtml", () => {
-  assert.deepEqual(readdirSync(AKAR + "public/kemitraan").filter(n => /\.js$/.test(n) && !["inti.js", "konst.js", "hitung.js", "peta.js", "panduan.js", "buku.js"].includes(n)).sort(), TAMPILAN.map(t => t + ".js").sort(), "berkas tampilan di public/kemitraan tidak sama dengan 8 tampilan DS §3");
+  assert.deepEqual(readdirSync(AKAR + "public/kemitraan").filter(n => /\.js$/.test(n) && !["inti.js", "konst.js", "hitung.js", "peta.js", "panduan.js", "buku.js", "daftar.js", "masuk.js"].includes(n)).sort(), TAMPILAN.map(t => t + ".js").sort(), "berkas tampilan di public/kemitraan tidak sama dengan 8 tampilan DS §3");
   for (const t of TAMPILAN) {
     const s = baca(`public/kemitraan/${t}.js`);
     assert.match(s, new RegExp(`KM\\.tampilan\\.${t}\\s*=\\s*\\{`), `${t}.js tidak mendaftar KM.tampilan.${t}`);
@@ -57,6 +58,17 @@ test("cangkang KM tampilan: tiap berkas mendaftar KM.tampilan dengan bangun dan 
     const a = /const angka = \(\) => \[(.*)\];/.exec(s);
     assert.ok(a && (a[1].match(/\[IK\./g) || []).length === 4, `${t}.js: angka() harus 4 butir [ikon, nilai, label] (DS §3), dapat ${a ? (a[1].match(/\[IK\./g) || []).length : "tidak ada"}`);
   }
+});
+
+test("cangkang KM D2 statis: daftar.html dan masuk.html tanpa skrip atau gaya inline, memuat kepala situs dan inti.js, tanpa mendaftar tampilan", () => {
+  for (const [h, j] of [["daftar", "daftar.js"], ["masuk", "masuk.js"]]) {
+    const t = baca(`public/kemitraan/${h}.html`), js = baca(`public/kemitraan/${j}`);
+    assert.ok(!/<script(?![^>]*\bsrc=)|\sstyle=|\sonclick=/i.test(t), `${h}.html: skrip atau gaya inline`);
+    assert.match(t, /<header class="top">/); assert.match(t, /\/kemitraan\/inti\.js/); assert.match(t, new RegExp(`/kemitraan/${j}`));
+    assert.ok(!/KM\.tampilan\./.test(js), `${j} tidak boleh mendaftar tampilan`);
+    assert.ok(!/—|\bAnda\b|·/.test(js + t), `${h}: em dash, "Anda", atau titik tengah`);
+  }
+  assert.match(baca("public/kemitraan/daftar.html"), /\/bnpb\/turnstile\.js/);
 });
 
 /* ---------------- peramban ---------------- */
@@ -261,6 +273,113 @@ if (!CHROME) {
     await tab.tungguFungsi("document.querySelectorAll('#bkIsi h1').length >= 3 && !!document.querySelector('#bkPeta svg.km-peta-wil')", 6000);
     assert.match(await tab.eval("document.querySelector('#bkIsi').textContent"), /Kalimantan Tengah/);
     assert.deepEqual(galatBuku(), [], "galat konsol/CSP di buku provinsi");
+  });
+
+  /* KM-D02: halaman daftar dan masuk (publik, tanpa sesi). Kampus aktif dibuat lewat API sungguhan (daftar multipart lalu setujui staf), bukan disisipkan ke D1. */
+  const PDF = new Uint8Array([...new TextEncoder().encode("%PDF-1.4\n1 0 obj<<>>endobj\n"), ...Array(300).fill(65)]);
+  let nD2 = 0;
+  async function kampusUji(peran = "mitra") {
+    const n = ++nD2, d = {nama: `Universitas Layar ${n} Nusantara`, singkatan: "ULN", jenis: "ptn", prov: "62", pic_nama: "Koordinator " + n, pic_jabatan: "Dosen", pic_email: `kk${n}@layar.ac.id`, pic_wa: "08127000" + String(1000 + n), setuju: true};
+    const f = new FormData(); f.append("data", JSON.stringify(d)); f.append("surat", new File([PDF], "surat.pdf", {type: "application/pdf"}));
+    const {body, headers} = await badanPanjang(f);
+    const r = await dunia.mf.dispatchFetch(dunia.base + "/api/kemitraan/daftar/kampus", {method: "POST", headers, body}); assert.equal(r.status, 201, await r.text());
+    const id = (await dunia.DB.prepare("SELECT id FROM institusi WHERE nama = ?").bind(d.nama).first()).id;
+    const s = await dunia.api("POST", `/api/kemitraan/kampus/${id}`, {aksi: "setujui", peran}); assert.equal(s.s, 200, s.t);
+    return {id, email: d.pic_email, nama: d.nama, token: s.j.token};
+  }
+  const isiForm = nilai => tab.eval(`(() => { for (const [id, v] of Object.entries(${JSON.stringify(nilai)})) { const e = document.getElementById(id); e.value = v; e.dispatchEvent(new Event("input", {bubbles: true})); } })()`);
+  const tunggu = ms => new Promise(r => setTimeout(r, ms));
+  const pilihOpsi = async (id, cari, nilai) => {
+    await tab.eval(`document.querySelector("#${id} .ak-kbtn").click()`); await tunggu(250);
+    await tab.eval(`(() => { const q = document.querySelector("#${id} input"); q.value = ${JSON.stringify(cari)}; q.dispatchEvent(new Event("input", {bubbles: true})); })()`); await tunggu(350);
+    await tab.eval(`document.querySelector('#${id} button[data-v="${nilai}"]').click()`);
+  };
+  const galatD2 = () => tab.galat().filter(wajar);
+  const jalurAktif = "[...document.querySelectorAll('[data-sebagai]')].map(b => b.dataset.sebagai + ':' + b.getAttribute('aria-pressed'))";
+
+  test("cangkang KM D2 daftar anggota: formulir terkirim menampilkan pesan sukses, 1440 dan 390 tanpa galat atau gulir mendatar", async () => {
+    await tamu();
+    const kampus = await kampusUji();
+    for (const [i, uk] of UKURAN.entries()) {
+      tab.kosongkanGalat();
+      await buka("/kemitraan/daftar", uk);
+      await tab.tungguFungsi("!!document.querySelector('#dfKampus .ak-kbtn')", 6000);
+      assert.deepEqual(await tab.eval(jalurAktif), ["anggota:true", "kampus:false"], `${uk[0]}: pilihan jalur`);
+      assert.ok(await tab.eval(`[...document.querySelectorAll('.km-bagi')].every(g => { const w = [...g.children].map(b => Math.round(b.getBoundingClientRect().width)); return Math.max(...w) - Math.min(...w) <= 2; })`), `${uk[0]}: baris pilihan tidak dibagi rata`);
+      assert.ok(await tab.eval("[...document.querySelectorAll('.km-bagi button')].every(b => b.querySelector('svg'))"), `${uk[0]}: pilihan tanpa ikon`);
+      assert.ok(!TERLARANG.test(await tab.teks()), `${uk[0]}: teks terlarang di formulir`);
+      /* kirim kosong: pesan isian, bukan permintaan */
+      await tab.eval("document.getElementById('dfKirim').click()"); await tunggu(200);
+      assert.match(await tab.eval("document.getElementById('dfPesan').textContent"), /nama/i, `${uk[0]}: pesan isian kosong`);
+      await isiForm({dfNama: `Dosen Layar ${i}`, dfWa: `08131230${i}00`, dfEmail: `dosen${i}@layar.ac.id`, dfProdi: "Kesehatan Masyarakat", dfAngkatan: "2005"});
+      await pilihOpsi("dfKampus", "Layar", kampus.id);
+      await pilihOpsi("dfKab", "Pulang Pisau", "6211");
+      await tab.eval(`document.querySelector('[data-keahlian="medis"]').click()`);
+      await tab.eval(`document.querySelector('[data-unsur="alumni"]').click()`);
+      assert.equal(await tab.eval("document.getElementById('dfAlumni').hidden"), false, `${uk[0]}: kolom alumni`);
+      await tab.eval(`document.querySelector('[data-unsur="dosen"]').click()`);
+      /* tanpa centang PDP: ditahan di klien */
+      await tab.eval("document.getElementById('dfKirim').click()"); await tunggu(200);
+      assert.match(await tab.eval("document.getElementById('dfPesan').textContent"), /persetujuan/i, `${uk[0]}: PDP wajib`);
+      const lb = await tab.lebihLebar(); assert.ok(lb.sw <= uk[0] + 1, `${uk[0]}: scroll horizontal ${lb.sw}`);
+      await tab.eval("document.getElementById('dfSetuju').click(); document.getElementById('dfKirim').click()");
+      await tab.tungguFungsi("!!document.querySelector('.km-sukses')", 8000);
+      assert.match(await tab.teks(), /Pendaftaran terkirim/);
+      assert.deepEqual(galatD2(), [], `${uk[0]}: galat konsol/CSP di halaman daftar`);
+    }
+    const n = await dunia.DB.prepare("SELECT count(*) n FROM km_anggota a JOIN relawan r ON r.id = a.relawan_id WHERE r.jalur = 'kampus' AND r.kampus_id = ?").bind(kampus.id).first();
+    assert.equal(n.n, 2, "dua pendaftaran anggota harus tersimpan di D1");
+  });
+
+  test("cangkang KM D2 daftar kampus: surat PDF terkirim, kampus berstatus menunggu; PDF terlalu besar ditahan di klien", async () => {
+    await tamu();
+    for (const [i, uk] of UKURAN.entries()) {
+      tab.kosongkanGalat();
+      await buka("/kemitraan/daftar?sebagai=kampus", uk);
+      await tab.tungguFungsi("!!document.querySelector('#dfProv .ak-kbtn')", 6000);
+      assert.deepEqual(await tab.eval(jalurAktif), ["anggota:false", "kampus:true"]);
+      await isiForm({dfNamaK: `Politeknik Layar ${i} Mandiri`, dfSingk: "PLM", dfPic: "Koordinator Layar", dfJab: "Dosen", dfWaK: `0812888${i}001`, dfEmailK: `pic${i}@poltek-layar.ac.id`});
+      await pilihOpsi("dfProv", "Kalimantan Tengah", "62");
+      await tab.eval("document.getElementById('dfSetuju').click()");
+      const pasang = (isi, ukuran) => tab.eval(`(() => { const dt = new DataTransfer(); dt.items.add(new File([${isi}], "surat.pdf", {type: "application/pdf"})); document.getElementById("dfSurat").files = dt.files; document.getElementById("dfKirim").click(); })()`);
+      await pasang(`new Uint8Array(${2 * 1048576 + 10})`); await tunggu(250);
+      assert.match(await tab.eval("document.getElementById('dfPesan').textContent"), /2 MB/, `${uk[0]}: PDF besar harus ditahan`);
+      const lb = await tab.lebihLebar(); assert.ok(lb.sw <= uk[0] + 1, `${uk[0]}: scroll horizontal ${lb.sw}`);
+      await pasang(JSON.stringify("%PDF-1.4\n1 0 obj<<>>endobj\n" + "A".repeat(300)));
+      await tab.tungguFungsi("!!document.querySelector('.km-sukses')", 8000);
+      assert.match(await tab.teks(), /Pendaftaran kampus terkirim/);
+      assert.deepEqual(galatD2(), [], `${uk[0]}: galat konsol/CSP`);
+    }
+    const n = await dunia.DB.prepare("SELECT count(*) n FROM km_kampus k JOIN institusi i ON i.id = k.institusi_id WHERE k.status = 'menunggu' AND i.nama LIKE 'Politeknik Layar%'").first();
+    assert.equal(n.n, 2, "dua kampus menunggu harus tersimpan");
+  });
+
+  test("cangkang KM D2 masuk: atur sandi lewat tautan sekali pakai, token dibuang dari alamat, lalu masuk ke tampilan Kampus; sandi salah ditolak", async () => {
+    await tamu();
+    const kampus = await kampusUji();
+    tab.kosongkanGalat();
+    await buka("/kemitraan/masuk", UKURAN[1]);
+    assert.equal(await tab.eval("!!document.getElementById('msEmail') && !!document.getElementById('msSandi') && !document.getElementById('msSandi2')"), true);
+    await isiForm({msEmail: kampus.email, msSandi: "sandi-yang-salah-1"});
+    await tab.eval("document.getElementById('msKirim').click()"); await tab.tungguFungsi("!document.getElementById('msPesan').hidden", 6000);
+    assert.match(await tab.eval("document.getElementById('msPesan').textContent"), /salah/i);
+    const lb = await tab.lebihLebar(); assert.ok(lb.sw <= 391, `390: scroll horizontal ${lb.sw}`);
+    assert.ok(!TERLARANG.test(await tab.teks()), "390: teks terlarang");
+    await buka("/kemitraan/masuk?atur=bukan-token", UKURAN[0]);
+    assert.match(await tab.teks(), /Tautan atur sandi tidak sah/);
+    await buka(`/kemitraan/masuk?atur=${kampus.token}`, UKURAN[0]);
+    assert.equal(await tab.eval("location.search"), "", "token harus dibuang dari bilah alamat");
+    await isiForm({msSandi: "sandi-koordinator-baru", msSandi2: "beda-sekali-ya"});
+    await tab.eval("document.getElementById('msKirim').click()"); await tunggu(200);
+    assert.match(await tab.eval("document.getElementById('msPesan').textContent"), /sama/);
+    await isiForm({msSandi2: "sandi-koordinator-baru"});
+    await tab.eval("document.getElementById('msKirim').click()");
+    await tab.tungguFungsi("/Sandi tersimpan/.test(document.body.innerText)", 8000);
+    await buka("/kemitraan/masuk", UKURAN[0]);
+    await isiForm({msEmail: kampus.email, msSandi: "sandi-koordinator-baru"});
+    await tab.eval("document.getElementById('msKirim').click()");
+    await tab.tungguFungsi("location.pathname === '/kemitraan' && location.search === '?tampil=kampus'", 8000);
+    assert.deepEqual(galatD2().filter(g => !/status of 40[13]/.test(g)), [], "galat konsol/CSP di alur masuk");
   });
 
   /* kontras WCAG dari computed style: warna apa pun yang diterima canvas (oklch, color-mix) diubah ke sRGB lewat piksel */

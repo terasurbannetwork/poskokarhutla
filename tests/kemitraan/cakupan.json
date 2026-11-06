@@ -35,7 +35,9 @@
     "js:satgas.js": "cangkang KM tampilan: tiap berkas mendaftar",
     "js:talenta.js": "cangkang KM tampilan: tiap berkas mendaftar",
     "js:kampus.js": "cangkang KM tampilan: tiap berkas mendaftar",
-    "js:dasbor.js": "cangkang KM tampilan: tiap berkas mendaftar"
+    "js:dasbor.js": "cangkang KM tampilan: tiap berkas mendaftar",
+    "js:daftar.js": "cangkang KM D2 daftar",
+    "js:masuk.js": "cangkang KM D2 masuk"
   },
   "dikecualikan": {},
   "antre": {}
