@@ -19,7 +19,7 @@
 
   /* kaki per bab: sumber dan tanggal blok yang dipakai bab itu. Blok dengan sumber[] berobjek {nama, tanggal, tanggal_arti} dicetak per sumber */
   const kakiHtml = (blok, catatan) => {
-    const baris = blok.filter(Boolean).flatMap(b => Array.isArray(b.sumber) ? b.sumber.filter(x => x && x.nama).map(x => `${x.nama}, ${frase(x.tanggal ?? b.tanggal, x.tanggal_arti ?? b.tanggal_arti)}`) : b.sumber ? [`${b.sumber}, ${frase(b.tanggal, b.tanggal_arti)}`] : []);
+    const baris = blok.filter(Boolean).flatMap(b => Array.isArray(b.sumber_rinci) && b.sumber_rinci.length ? b.sumber_rinci.filter(x => x && x.nama).map(x => `${x.nama}, ${frase(x.tanggal ?? b.tanggal, x.tanggal_arti ?? b.tanggal_arti)}`) : Array.isArray(b.sumber) ? b.sumber.filter(x => x && x.nama).map(x => `${x.nama}, ${frase(x.tanggal ?? b.tanggal, x.tanggal_arti ?? b.tanggal_arti)}`) : b.sumber ? [`${b.sumber}, ${frase(b.tanggal, b.tanggal_arti)}`] : []);
     const uniq = [...new Set(baris)], teks = [uniq.length ? "Sumber: " + uniq.join("; ") + "." : "", catatan || ""].filter(Boolean).join(" ");
     return teks ? `<footer class="km-kaki">${esc(teks)}${uniq.length ? " Daftar sumber lengkap ada di Lampiran." : ""}</footer>` : "";
   };
