@@ -51,10 +51,12 @@ test('buatTerlihat: id bertahan lewat restart, tercap 5000 (dibuang yang tertua)
   assert.equal(fs.statSync(f).mode & 0o777, 0o600)
 })
 
-test('susulanBaru: hanya <= 24 jam; Long/string diterima, sampah ditolak', () => {
+test('susulanBaru: hanya <= 7 hari; Long/string diterima, sampah ditolak', () => {
   const now = Date.now(), dtk = (jam) => Math.floor((now - jam * 3600e3) / 1000)
   assert.equal(susulanBaru(dtk(2), now), true)
   assert.equal(susulanBaru({ toString: () => String(dtk(23)) }, now), true)
-  assert.equal(susulanBaru(dtk(25), now), false)
+  assert.equal(susulanBaru(dtk(24 * 6), now), true)
+  assert.equal(susulanBaru(dtk(24 * 8), now), false)
+  assert.equal(susulanBaru(dtk(25), now, 1), false)
   assert.equal(susulanBaru(undefined, now), false)
 })

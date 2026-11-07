@@ -13,12 +13,13 @@ const { muatEnv, normalWa, daftar, rumah, RUMAH } = require('../umum.cjs')
 muatEnv()
 const {
   default: makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion,
-  downloadMediaMessage, normalizeMessageContent,
+  downloadMediaMessage, normalizeMessageContent, proto,
 } = require('@whiskeysockets/baileys')
 const limiter = require('./limiter')
 const drive = require('../drive.cjs').buat({ kabar: (t) => kabarPemilik(t) }) // Google Drive: mati sendiri bila belum dikonfigurasi
 const OCR = require('../ocr.cjs')
-const { samaAman, idAman, idSah, jalurKeluaran, mimeBoleh, ukuranBerkas, buatTerlihat, susulanBaru } = require('../aman.cjs')
+const { samaAman, idAman, idSah, jalurKeluaran, mimeBoleh, ukuranBerkas, buatTerlihat, putusanSusulan } = require('../aman.cjs')
+const RW = require('../riwayat.cjs')
 
 const PORT = Number(process.env.PORT) || 3101
 const TOKEN = process.env.GATEWAY_TOKEN || ''
@@ -39,6 +40,18 @@ const BATAS_BERKAS = 20 * 1024 * 1024
 const DEBOUNCE_MS = 2 * 60 * 1000
 for (const d of [RUMAH, OUTBOX, RUSAK, KELUARAN, AUTH_DIR]) { fs.mkdirSync(d, { recursive: true, mode: 0o700 }); fs.chmodSync(d, 0o700) }
 const terlihat = buatTerlihat(path.join(RUMAH, 'terlihat.json'), 5000)
+// Jangkar riwayat: pesan TERTUA yang pernah terlihat per chat relevan (grup operasi / nomor WA_IZIN); WA meminta riwayat mundur dari satu pesan.
+const BERKAS_JANGKAR = path.join(RUMAH, 'jangkar.json')
+let jangkar = {}
+try { jangkar = JSON.parse(fs.readFileSync(BERKAS_JANGKAR, 'utf8')) || {} } catch {}
+function catatJangkar(m) {
+  const k = m.key, jid = k && k.remoteJid, ts = Number(m.messageTimestamp?.toString?.() ?? m.messageTimestamp)
+  if (!jid || !k.id || !(ts > 0) || jid === 'status@broadcast') return
+  if (!GRUP_OPS.has(jid) && !(!jid.endsWith('@g.us') && IZIN.has(pengirim({ ...k, participant: undefined })))) return
+  if (jangkar[jid] && jangkar[jid].ts <= ts) return
+  jangkar[jid] = { id: k.id, fromMe: !!k.fromMe, ts }
+  try { fs.writeFileSync(BERKAS_JANGKAR, JSON.stringify(jangkar), { mode: 0o600 }); fs.chmodSync(BERKAS_JANGKAR, 0o600) } catch {}
+}
 const tulis = (f, isi) => fs.writeFileSync(f, isi, { mode: 0o600 })
 
 const log = (...a) => console.log(new Date().toISOString(), ...a)
@@ -126,6 +139,60 @@ function mulaiLapangan() {
     },
   })).catch((e) => { lapanganJalan = false; log('[lapangan] gagal muat', String(e?.message || e)) })
 }
+// Tarik riwayat sekali jalan, di dalam proses ini (satu sesi auth = satu soket). Lihat ../riwayat.cjs dan README.
+let menungguRiwayat = null
+let riwayatJalan = false
+const HALAMAN = 50, MAKS_HALAMAN = 60, JEDA_HALAMAN = 6000, JEDA_MEDIA = 1500, MAKS_MEDIA = 300
+function mintaHalaman(jid, a) {
+  return new Promise((selesai) => {
+    const t = setTimeout(() => { menungguRiwayat = null; selesai([]) }, 45000)
+    menungguRiwayat = (msgs) => { clearTimeout(t); menungguRiwayat = null; selesai(msgs) }
+    sock.fetchMessageHistory(HALAMAN, { remoteJid: jid, fromMe: a.fromMe, id: a.id }, a.ts * 1000)
+      .catch((e) => { log('[riwayat] permintaan gagal', String((e && e.message) || e)); clearTimeout(t); menungguRiwayat = null; selesai([]) })
+  })
+}
+async function tarikRiwayat(jids, r) {
+  if (!connected || !sock) throw Object.assign(new Error('wa belum terhubung'), { kode: 503 })
+  if (riwayatJalan) throw Object.assign(new Error('riwayat sedang berjalan'), { kode: 409 })
+  riwayatJalan = true
+  const ring = { diminta: 0, diterima: 0, disimpan: 0, dilewati_terlihat: 0, dilewati_rentang: 0, dilewati_lain: 0, dilewati_batas: 0, gagal: 0, tanpa_jangkar: [] }
+  let media = 0
+  try {
+    for (const jid of jids) {
+      for (let i = 0; i < MAKS_HALAMAN; i++) {
+        const a = jangkar[jid]
+        if (!a) { ring.tanpa_jangkar.push(jid); break }
+        if (a.ts * 1000 <= r.dari) break
+        const msgs = (await mintaHalaman(jid, a)).filter((m) => m.key && m.key.remoteJid === jid)
+        ring.diminta++
+        log('[riwayat]', jid, 'halaman', i + 1, 'pesan', msgs.length)
+        if (!msgs.length) break
+        ring.diterima += msgs.length
+        msgs.sort((x, y) => RW.tsMs(x.messageTimestamp) - RW.tsMs(y.messageTimestamp))
+        for (const m of msgs) {
+          catatJangkar(m)
+          if (m.key.fromMe || !m.message) continue
+          if (!RW.dalamRentang(m.messageTimestamp, r)) { ring.dilewati_rentang++; continue }
+          const dari = pengirim(m.key)
+          if (!dari || !(IZIN.has(dari) || GRUP_OPS.has(jid))) { ring.dilewati_lain++; continue }
+          if (terlihat.ada(m.key.id)) { ring.dilewati_terlihat++; continue }
+          const { media: ada } = isiPesan(m), adaMedia = !!(ada || m.message.videoMessage)
+          if (adaMedia && media >= MAKS_MEDIA) { ring.dilewati_batas++; continue }
+          if (adaMedia) { media++; await tidur(JEDA_MEDIA) }
+          try { await simpanKeOutbox(m, { lama: true }); terlihat.catat(m.key.id); ring.disimpan++ } catch (e) { ring.gagal++; log('[riwayat] galat', m.key.id, String((e && e.message) || e)) }
+        }
+        if (jangkar[jid].ts >= a.ts) break // tidak mundur: riwayat habis
+        await tidur(JEDA_HALAMAN)
+      }
+    }
+    flushOutbox().catch(() => {})
+    return ring
+  } finally { riwayatJalan = false }
+}
+app.post('/riwayat', RW.buatRute({
+  token: TOKEN, jalankan: tarikRiwayat,
+  pilih: (jid) => RW.pilihJid({ jid, grupOps: GRUP_OPS, dikenal: Object.keys(jangkar), terdaftar: new Set(Object.keys(jangkar)), izin: IZIN, nomorDari: (j) => normalWa(String(j).split('@')[0].split(':')[0]) }),
+}))
 app.listen(PORT, '127.0.0.1', () => log('API lokal di 127.0.0.1:' + PORT))
 
 // ── MASUK ───────────────────────────────────────────────────────────────
@@ -183,7 +250,8 @@ async function frameDariVideo(m, video, id) {
   } catch (err) { log('[video] grup-ops dilewati:', String((err && err.message) || err)); return null }
 }
 
-async function simpanKeOutbox(m) {
+// lama:true (susulan append / riwayat): hanya simpan ke outbox; perintah PEMILIK dan 'cari' lama tidak dieksekusi/dibalas ulang.
+async function simpanKeOutbox(m, { lama = false } = {}) {
   const k = m.key
   const { c, teks, media: mediaAda, adaDok } = isiPesan(m)
   const video = c.videoMessage && GRUP_OPS.has(k.remoteJid) && !IZIN.has(pengirim(k)) ? c.videoMessage : null // video grup operasi: satu frame dikirim sebagai foto
@@ -192,12 +260,12 @@ async function simpanKeOutbox(m) {
   const grupOps = !!dari && !IZIN.has(dari) && GRUP_OPS.has(k.remoteJid)
   if (!dari || (!IZIN.has(dari) && !grupOps)) return
   if (!teks.trim() && !media && !video) return // foto grup tanpa caption tetap diteruskan
-  if (!media && !grupOps) { // perintah tetap (perintah.mjs): hanya dari PEMILIK, tidak jadi bahan, balasan hanya ke pengirim
+  if (!media && !grupOps && !lama) { // perintah tetap (perintah.mjs): hanya dari PEMILIK, tidak jadi bahan, balasan hanya ke pengirim
     const P = await import('../perintah.mjs')
     const cmd = P.cegat({ dari, teks, pemilik: process.env.PEMILIK })
     if (cmd) { jalankanPerintah(P, cmd, dari).catch((e) => log('[perintah] galat', String((e && e.message) || e))); return }
   }
-  if (!grupOps && /^cari\s/i.test(teks)) { await balasCari(m, teks); return } // perintah Drive, bukan bahan laporan
+  if (!grupOps && !lama && /^cari\s/i.test(teks)) { await balasCari(m, teks); return } // perintah Drive, bukan bahan laporan
   if (ukuranOutbox() > BATAS_OUTBOX) {
     if (!kabarPenuh) { kabarPenuh = true; await kabarPemilik('Outbox bot WA lebih dari 500 MB, pesan baru tidak disimpan.') }
     return
@@ -353,18 +421,28 @@ async function startSock() {
   sock.ev.on('messages.upsert', async (ev) => {
     if (ev.type !== 'notify' && ev.type !== 'append') return
     for (const m of ev.messages) {
+      catatJangkar(m)
       if (m.key.fromMe || m.key.remoteJid === 'status@broadcast') continue
       const susulan = ev.type === 'append'
       if (!susulan && await logbookCegat(m)) continue
       const izin = IZIN.has(pengirim(m.key))
       const id = m.key.id
-      if (susulan && (!izin || !susulanBaru(m.messageTimestamp) || terlihat.ada(id))) continue
+      const diterima = izin || (GRUP_OPS.has(m.key.remoteJid) && !!pengirim(m.key))
+      if (susulan) { // aturan sama dengan pesan langsung, termasuk grup operasi; yang dibuang selalu dicatat beserta alasannya
+        const p = putusanSusulan({ diterima, ts: m.messageTimestamp, terlihat: terlihat.ada(id) })
+        if (!p.ok) { log('[susulan] dibuang:', p.alasan, m.key.remoteJid.endsWith('@g.us') ? m.key.remoteJid : '-', id); continue }
+      }
       const { c, teks, media } = isiPesan(m)
       const jenis = c.documentMessage ? 'dokumen' : c.imageMessage ? 'gambar' : teks ? 'teks' : 'lain:' + (Object.keys(c)[0] || 'kosong')
       log(susulan ? '[susulan]' : '[pesan]', izin ? 'izin' : GRUP_OPS.has(m.key.remoteJid) ? 'grup-ops' : 'asing', m.key.remoteJid.endsWith('@g.us') ? m.key.remoteJid : '-', jenis, media ? (media.mimetype || '?') : '-', media ? (media.fileLength?.toString?.() ?? '?') + 'B' : teks.length + ' huruf')
-      try { await simpanKeOutbox(m); if (izin && id) terlihat.catat(id) } catch (e) { log('[masuk] galat', String((e && e.message) || e)) }
+      try { await simpanKeOutbox(m, { lama: susulan }); if (diterima && id) terlihat.catat(id) } catch (e) { log('[masuk] galat', String((e && e.message) || e)) }
     }
     flushOutbox().catch(() => {})
+  })
+
+  sock.ev.on('messaging-history.set', (ev) => {
+    if (ev.syncType === proto.HistorySync.HistorySyncType.ON_DEMAND && menungguRiwayat) return menungguRiwayat(ev.messages || [])
+    for (const m of ev.messages || []) catatJangkar(m)
   })
 
   sock.ev.on('connection.update', (u) => {
