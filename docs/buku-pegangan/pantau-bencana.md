@@ -5,7 +5,7 @@ Pemantauan bencana Indonesia: karhutla, banjir, dan enam bencana lain
 Semua selera, keputusan pemilik, gerbang, dan armada yang berlaku di situs Pantau Bencana (repo `poskokarhutla`), di satu tempat. Yang baru diputus masuk ke Riwayat, lalu ke bagian aturannya.
 
 Disegarkan 7 Nov 2026\
-commit 9c6186fcb
+commit bea309468
 
 [Riwayat perubahan](#riwayat-perubahan) [Keputusan pemilik](#keputusan-pemilik) [Stack & peta repo](#stack--peta-repo) [Situs per alamat](#situs-per-alamat) [Halaman & rute](#halaman--rute) [Selera tampilan](#selera-tampilan) [Angka & copy](#angka--copy) [Selera presentasi (PPT)](#selera-presentasi-ppt) [Selera laporan (DOCX/PDF) dan visualisasi data](#selera-laporan-docx-pdf-dan-visualisasi-data) [Fitur yang disembunyikan](#fitur-yang-disembunyikan) [Model & data](#model--data) [Ruang Koordinasi BNPB](#ruang-koordinasi-bnpb) [Ruang Instansi](#ruang-instansi) [Gerbang penjaga](#gerbang-penjaga) [Insiden & pelajaran](#insiden--pelajaran) [Armada agent](#armada-agent) [Tugas pemilik](#tugas-pemilik) [Katalog modul dan design system](#katalog-modul-dan-design-system) [Rencana multi-bencana](#rencana-multi-bencana) [Cara halaman ini diperbarui](#cara-halaman-ini-diperbarui)
 
@@ -59,6 +59,7 @@ Terbaru di atas
 Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik saat menegur atau memutus.
 
 1. 7 Nov 2026
+   - **Cadangan pemicu `titik.yml` dari cron Worker** (`291f28b7`, `90631bb0`). GitHub tidak membuat run terjadwal 10.40 dan 13.40 WIB, sehingga firespot, cluster, dan harian30 tertinggal dari `/api/titik` (Papua Selatan 396 hotspot, firespot 0). `src/jaga_pipa.js` memicu `workflow_dispatch` dari cron menit 52 bila run sukses terakhir lebih dari 4 jam, run terbaru paling sedikit 3 jam, dan grup concurrency `data` tidak sedang antre atau jalan. Tanpa secret `GITHUB_TOKEN` di Worker, langkah ini lewat diam-diam. Daftar workflow grup `data` dijaga `tests/warga/jaga_titik.test.mjs`.
    - **Bot WA grup operasi** menyusulkan pesan 7 hari terakhir dan menarik riwayat per chat (`29b826cc`); `lengkapi()` ikut memproses pesan yang telat masuk (`d29b4247`).
    - **Laporan harian 061126 rev4 final**: 2 slide tanpa karhutla, data 5 sampai 6 Nov (`96bdfac7`).
 1. 6 Nov 2026
@@ -1926,6 +1927,7 @@ Semuanya: `npm run uji`. Commit hanya bila tiap suite mencetak `fail 0`; grep pa
 
 | Tanggal | Insiden | Pelajaran |
 | --- | --- | --- |
+| 7 Nov | GitHub melewatkan dua run terjadwal `titik.yml`; `jaga.yml` hanya memicu ulang run yang dibatalkan, bukan run yang tidak pernah dibuat | Cron Worker jadi cadangan pemicu `titik.yml` (`src/jaga_pipa.js`) |
 | 6 Nov | Run `terbit.yml` terpotong tepat sesudah deploy karena batas waktu 25 menit | Batas waktu 45 menit |
 | 4 Nov | LLaVA membaca 0 dari 31 foto grup operasi dan mengarang koordinat | Stempel dari OCR Vision di gateway Mac mini; pengurai menolak koordinat ambigu |
 | 4 Nov | Worktree uji pre-push dihapus proses lain di tengah uji (Cannot find module di puluhan uji), dua kali | Uji pre-push di clone lokal `--shared`, satu uji push sekaligus per repo |
@@ -1990,6 +1992,7 @@ Yang tidak bisa dikerjakan sesi agent:
 15. Putuskan apakah petugas instansi (bukan admin atau pemirsa) boleh membuka `/uji-lapangan`; Turnstile unggah foto dari form itu belum diuji.
 16. Turnstile `/pendataan` belum aktif di produksi.
 17. Branch yang tertinggal: sejak 2 Nov sesi agent boleh menyapu branch yang sudah masuk `main` lewat `scripts/agents/sapu-branch.sh`; branch yang belum di-merge tetap diputus pemilik.
+18. Pastikan secret Worker `GITHUB_TOKEN` (fine-grained, Actions read and write, repo ini saja) terpasang; tanpa itu cadangan pemicu `titik.yml` tidak jalan.
 
 ## Katalog modul dan design system
 
