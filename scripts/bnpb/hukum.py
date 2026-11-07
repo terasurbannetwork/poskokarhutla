@@ -912,6 +912,16 @@ def periksa(dok, segmen, relasi=None):
         assert r["jenis"] in JENIS_REL and r["dari"] in ids
 
 
+def status_menurut_teks(status, punya_isi, dicabut):
+    """DICABUT bila teks lawan mencabutnya; TIDAK_BISA_DICEK bila dokumen tanpa isi (hanya segmen judul), supaya tidak
+    tampak BERLAKU padahal tak ada teks yang diperiksa; selainnya status JDIH."""
+    if dicabut:
+        return "DICABUT"
+    if not punya_isi:
+        return "TIDAK_BISA_DICEK"
+    return (status or "").upper() or None
+
+
 def bangun(baca=None):
     indeks = json.load(open(f"{MENTAH}/indeks.json"))
     dok, segmen, definisi, rel_mentah = [], [], [], []
@@ -933,7 +943,7 @@ def bangun(baca=None):
                     "tgl_tetap": tanggal(m.get("Tanggal Penetapan")), "tgl_undang": tanggal(m.get("Tanggal Pengundangan")),
                     "sumber": sumber_dok(m)[0], "resmi": sumber_dok(m)[1], "sumber_bn": None if m.get("Sumber") in (None, "", "-") else m["Sumber"], "url": m.get("url"), "pdf": sumber_dok(m)[2],  # JDIH -> BPK -> bnpb.go.id -> salinan lain: yang benar-benar dipakai
                     "halaman": len(t["halaman"]) if t else 0, "halaman_ocr": len(t["ocr"]) if t else 0, "mutu": t["mutu"] if t else None,
-                    "n_segmen": len(segs)})
+                    "n_segmen": len(segs), "punya_isi": any(x["jenis"] != "judul" for x in segs)})
         for k, s in enumerate(segs):
             s["urut"] = k
         segmen += segs
@@ -949,7 +959,7 @@ def bangun(baca=None):
     konflik = konflik_status(dok, relasi)
     dicabut = {x["dok"]: x["dicabut_oleh"] for x in konflik}
     for d in dok:
-        d["status_teks"] = "DICABUT" if d["id"] in dicabut else (d["status"] or "").upper() or None
+        d["status_teks"] = status_menurut_teks(d["status"], d.pop("punya_isi"), d["id"] in dicabut)
         d["dicabut_oleh"] = dicabut.get(d["id"], [])
     dok.sort(key=lambda d: (-(d["tahun"] or 0), d["id"]))
     return {"versi": 1, "dibangun": sekarang.strftime("%Y-%m-%dT%H:%M:%SZ"), "sumber": "jdih.bnpb.go.id",
@@ -1028,6 +1038,13 @@ Tabel satu."""
 
 
 def cek():
+    # RU-014: tanpa isi -> TIDAK_BISA_DICEK; ber-isi tak terpengaruh; dicabut menang
+    assert status_menurut_teks("BERLAKU", False, False) == "TIDAK_BISA_DICEK"
+    assert status_menurut_teks("TIDAK BERLAKU", False, False) == "TIDAK_BISA_DICEK"
+    assert status_menurut_teks("BERLAKU", True, False) == "BERLAKU"
+    assert status_menurut_teks("Berlaku", True, True) == "DICABUT"
+    _, sj = urai_dok("perban-9-2026", "Judul saja", [])
+    assert all(x["jenis"] == "judul" for x in sj), sj
     # kunci kanonik: enam bentuk sitasi
     for teks_, mau in [("Undang-Undang Nomor 24 Tahun 2007", "uu-24-2007"), ("Peraturan Pemerintah Nomor 21 Tahun 2008", "pp-21-2008"),
                        ("Peraturan Presiden Nomor 1 Tahun 2019", "perpres-1-2019"),

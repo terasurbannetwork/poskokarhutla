@@ -30,16 +30,23 @@ const urai = s => { try { return JSON.parse(s); } catch (e) { return null; } };
 
 /* ---------------- bantuan ---------------- */
 /* null bila peran boleh; selain itu Response siap kirim (kode salah 403/429, tanpa kredensial 401, peran salah 403) */
-const izin = (h, boleh) => h.tolak ?? (!h.peran ? gagal(401, "belum masuk atau kode tidak diberikan") : boleh.includes(h.peran) ? null : gagal(403, "peran ini tidak berhak atas rute ini"));
+export const izin = (h, boleh) => h.tolak ?? (!h.peran ? gagal(401, "belum masuk atau kode tidak diberikan") : boleh.includes(h.peran) ? null : gagal(403, "peran ini tidak berhak atas rute ini"));
 const staf = h => h.peran === "ST" || h.peran === "SA";
-const halaman = url => { const per = Math.min(100, Math.max(1, Math.floor(Number(url.searchParams.get("per"))) || 50)), hal = Math.max(1, Math.floor(Number(url.searchParams.get("hal"))) || 1); return {per, off: (hal - 1) * per, hal}; };
+/* ?hal= dan ?per= harus bilangan bulat aman (1e400, desimal, huruf = 400); hal <= 10000, per dijepit 100. Hasil: {per, off, hal} atau {r: Response 400} */
+export const halaman = url => {
+  const baca = (nama, awal, maks) => { const v = url.searchParams.get(nama); if (v === null) return awal; const n = Number(v); return Number.isSafeInteger(n) && n >= 1 && n <= maks ? n : null; };
+  const hal = baca("hal", 1, 10000), per = baca("per", 50, 1e6);
+  if (hal === null || per === null) return {r: gagal(400, "hal harus bilangan bulat 1-10000 dan per bilangan bulat positif")};
+  const p = Math.min(100, per);
+  return {per: p, off: (hal - 1) * p, hal};
+};
 /* Satu baris jejak (ALUR: tiap tulis D1 menulis km_jejak). jikaUbah: hanya tertulis bila pernyataan SEBELUMNYA di batch mengubah baris (changes() > 0). */
 export function jejak(env, tabel, baris, aksi, oleh, kini, {dari = null, ke = null, catatan = null, jikaUbah = false} = {}) {
   return env.DB.prepare(`INSERT INTO km_jejak (tabel, baris, dari, ke, aksi, oleh, catatan, waktu) ${jikaUbah ? "SELECT ?, ?, ?, ?, ?, ?, ?, ? WHERE changes() > 0" : "VALUES (?, ?, ?, ?, ?, ?, ?, ?)"}`)
     .bind(tabel, baris, dari, ke, aksi, String(oleh).slice(0, 80), catatan, kini);
 }
 let KODE = null;   // public/data/kemitraan/kode.json: kab4 -> {nama, prov, ...}
-async function kodeKab(env, url) {
+export async function kodeKab(env, url) {
   if (KODE) return KODE;
   const r = env.ASSETS ? await env.ASSETS.fetch(new Request(new URL("/data/kemitraan/kode.json", url))) : null;
   if (!r?.ok) { r?.body?.cancel(); return null; }
@@ -251,7 +258,7 @@ const bentukPerjanjian = (r, kini) => ({id: r.id, institusi_id: r.institusi_id, 
 
 async function daftarKampusAdmin(env, req, url, kini) {
   const h = await hakKm(env, req, kini), x = izin(h, ["SA", "ST", "PM", "KK"]); if (x) return x;
-  const st = url.searchParams.get("status"), {per, off} = halaman(url);
+  const st = url.searchParams.get("status"), {per, off, r: rh} = halaman(url); if (rh) return rh;
   if (st && !["menunggu", "aktif", "ditolak", "dicabut"].includes(st)) return gagal(400, "status tidak dikenal");
   const sy = ["k.dummy = 0"], arg = [];
   if (h.peran === "KK") { sy.push("i.id = ?"); arg.push(h.institusi_id); }
@@ -276,7 +283,7 @@ async function lembarKampus(env, req, url, kini, ctx, p) {
     const agr = (await env.DB.prepare("SELECT a.unsur, count(*) n FROM relawan r JOIN km_anggota a ON a.relawan_id = r.id WHERE r.kampus_id = ? AND r.anonim = 0 AND r.status NOT IN ('ditolak', 'nonaktif') GROUP BY a.unsur").bind(p.id).all()).results;
     o.anggota_agregat = Object.fromEntries(UNSUR.map(u => { const n = agr.find(r => r.unsur === u)?.n ?? 0; return [u, n >= 5 ? n : "di bawah 5"]; }));
   } else {
-    const {per, off} = halaman(url), st = url.searchParams.get("anggota");
+    const {per, off, r: rh} = halaman(url), st = url.searchParams.get("anggota"); if (rh) return rh;
     if (st && !["terdaftar", "diverifikasi", "siap_tugas", "ditugaskan", "bertugas", "selesai", "ditolak", "nonaktif"].includes(st)) return gagal(400, "status anggota tidak dikenal");
     const sy = "r.kampus_id = ?1 AND r.anonim = 0" + (st ? " AND r.status = ?4" : ""), arg = st ? [p.id, per, off, st] : [p.id, per, off];
     const rs = await env.DB.prepare(`SELECT r.id, r.nama, r.wa, r.email, r.status, r.alasan, r.dibuat, a.unsur, a.prodi, a.angkatan, a.instansi FROM relawan r JOIN km_anggota a ON a.relawan_id = r.id WHERE ${sy} ORDER BY (r.status = 'terdaftar') DESC, r.dibuat DESC LIMIT ?2 OFFSET ?3`).bind(...arg).all();
@@ -373,7 +380,7 @@ async function suratKampus(env, req, url, kini, ctx, p) {
 /* ================================================================ perjanjian (ST semua, PM baca, KK miliknya) */
 async function daftarPerjanjian(env, req, url, kini) {
   const h = await hakKm(env, req, kini), x = izin(h, ["SA", "ST", "PM", "KK"]); if (x) return x;
-  const {per, off} = halaman(url), inst = h.peran === "KK" ? h.institusi_id : url.searchParams.get("institusi_id");
+  const {per, off, r: rh} = halaman(url), inst = h.peran === "KK" ? h.institusi_id : url.searchParams.get("institusi_id"); if (rh) return rh;
   if (inst && !RE_ID.test(inst)) return gagal(400, "institusi_id tidak sah");
   const W = inst ? "WHERE p.institusi_id = ? AND p.dummy = 0" : "WHERE p.dummy = 0", arg = inst ? [inst] : [];
   const rs = await env.DB.prepare(`SELECT p.*, i.nama kampus FROM km_perjanjian p LEFT JOIN institusi i ON i.id = p.institusi_id ${W} ORDER BY p.berakhir LIMIT ? OFFSET ?`).bind(...arg, per, off).all();

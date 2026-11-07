@@ -1,0 +1,2 @@
+{"jenis": "latih", "sidik": "b7afd76dc61da3d0", "waktu": "2026-11-06T06:05+07:00"}
+{"awal_prospektif": "2026-11-07", "jenis": "sidik", "sha256_label_hidup": {"data/raw/banjir/dibi_tanggal.json": "76f2a8feb1ab79dae990cc4f0b86e3a55e445eb3ed2ac1891e305c778d01717d", "public/data/dibi_kejadian.json": "b2282783ace3cd7a7f92bb6ed8a5f6c64322def65c2bb7bbdb12c552cd22145e", "public/data/logbook_kejadian.json": "7e9fa4914e2c3340f459317ca11f2d1e77fb872d347f4ddc4ed9c2f1c6d35c85"}, "sidik": "b7afd76dc61da3d0", "waktu": "2026-11-06T07:05:14+07:00"}
