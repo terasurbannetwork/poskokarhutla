@@ -2,6 +2,7 @@
    jadi situs tetap jalan seperti sebelumnya. Rahasia: IP_SALT (wajib untuk menulis), ADMIN_TOKEN, TURNSTILE_SECRET (opsional).
    Aturan privasi: IP mentah tidak pernah disimpan (SHA-256 bergaram), kontak WA tidak pernah ikut di daftar/rincian,
    hanya lewat POST /:id/kontak yang dibatasi lajunya, dan dihapus cron setelah 72 jam. */
+import {jagaTitik} from "./jaga_pipa.js";
 import {himawariRespons} from "./himawari.js";
 import {JENIS, BAHAYA} from "../public/informasi_jenis.js";
 import {perbaruiTitik, titikTerbaru, wilayah, cariWilayah, jedaSensor} from "./titik.js";
@@ -958,6 +959,7 @@ const W = {
         try { console.log("sihka", JSON.stringify(await perbaruiSihka(env, sekarang))); } catch (e) { console.error("sihka", e?.message); }
         if (new Date(sekarang).getUTCHours() === 20) try { console.log("sihka dasar", JSON.stringify(await dasarSihka(env, sekarang))); } catch (e) { console.error("sihka dasar", e?.message); }
       }
+      if (new Date(sekarang).getUTCMinutes() === 52) try { const h = await jagaTitik(env, sekarang); if (!h.lewat) console.log("jaga titik", JSON.stringify(h)); } catch (e) { console.error("jaga titik", e?.message); }   // cadangan titik.yml bila GitHub melewatkan jadwalnya (src/jaga_pipa.js); paling akhir, sesudah gempa/EWS/SIHKA
       return;
     }
     return bersihSemua(env, sekarang);
