@@ -8,7 +8,7 @@ Aturan: tiap blok dict {..., sumber, tanggal, yakin}; data hilang = null (bukan 
 sumber hilang -> blok null + catatan di sumber[] (D7); keluaran deterministik (tanggal = tanggal sumber).
 BPBD: email TIDAK ditulis (gerbang D5 melarang email di public/data/kemitraan/**).
 Pakai: python3 -I scripts/kemitraan/profil_daerah.py [--cek|--jaga] [--kab 6211] [--akar DIR] [--keluar DIR]"""
-import collections, glob, json, math, os, re, shutil, sys, tempfile
+import collections, datetime, glob, json, math, os, re, shutil, sys, tempfile
 
 AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 sys.path.insert(0, os.path.join(AKAR, "scripts", "umum"))  # -I tidak menambah direktori skrip
@@ -52,7 +52,7 @@ SUMBER = {
     "paparan": ("public/gunungapi/data/paparan.json", "Paparan penduduk per zona KRB gunung api (PVMBG 2018, WorldPop)", None),
     "gunung_risiko": ("public/gunungapi/data/risiko.json", "Indeks risiko gunung api (Smithsonian GVP letusan 1900-2025)", None),
     "abrasi": ("public/pesisir/data/abrasi.json", "Laju abrasi/akresi transek pantai (Landsat via Planetary Computer; garis dasar OSM)", "Landsat domain publik; garis dasar OSM ODbL"),
-    "udara": ("public/udara/data/riwayat.json", "PM2,5 harian per provinsi (jendela 37 hari)", None),
+    "udara": ("public/udara/data/riwayat.json", "PM2,5 harian per provinsi: analisis model CAMS (Copernicus Atmosphere Monitoring Service) lewat Open-Meteo", "Copernicus CAMS: terbuka, wajib sebut sumber; akses lewat Open-Meteo (CC BY 4.0)"),
     "neraca": ("public/data/neraca_air/kab.json", "Neraca air kabupaten Jawa (CHIRPS, NASA POWER; estimasi model)", None),
     "risiko_kec": ("public/banjir/data/risiko_kecamatan.json", "Indeks risiko komposit kecamatan platform (belum diuji balik)", None),
     "gerbang": ("public/data/gerbang_model.json", "Gerbang model karhutla (uji balik 123 kasus)", None),
@@ -75,7 +75,7 @@ SATUAN = {
                 "jarak_pantai_200m_km": "km, jarak terdekat ke kedalaman laut 200 m (GEBCO), minimum antar kecamatan"},
     "penduduk": {"total": "jiwa", "wanita": "jiwa", "balita": "jiwa", "lansia": "jiwa", "per_km2": "jiwa per km2",
                  "worldpop.n": "jiwa", "bangunan.n": "unit bangunan"},
-    "sosek": {"p0": "persen penduduk miskin", "miskin_ribu": "ribu jiwa", "ipm": "indeks 0-100", "air_layak": "persen",
+    "sosek": {"p0": "persen penduduk miskin", "ipm": "indeks 0-100", "air_layak": "persen",
               "sanitasi_layak": "persen", "hunian_layak": "persen", "tren_p0": "[[tahun, persen]]", "tahun": "tahun"},
     "irbi": {"seri": "[[tahun, skor IRBI, kelas, ambang kelas Tinggi]]", "bahaya": "skor IRBI 2025 per jenis bahaya"},
     "inarisk_kec": {"n_kec": "kecamatan", "tinggi": "jumlah kecamatan", "sedang": "jumlah kecamatan", "teratas": "[[kecamatan, nilai bahaya 0-1]]"},
@@ -541,6 +541,22 @@ def blok(isi, tanggal, yakin, sumber, arti="snapshot-repo"):
     return dict(isi, sumber=sumber, tanggal=tanggal, yakin=yakin, tanggal_arti=arti)
 
 
+def rinci(cx, ids):
+    """sumber[] per-sumber (nama, tanggal, tanggal_arti) untuk blok yang menggabung beberapa sumber bertanggal beda; sama dengan Lampiran (sumber[] atas)."""
+    out = []
+    for i in ids:
+        if i in BARU:
+            t, a = cx.tgl_arti(i)
+        elif i == "kejadian":  # sama dengan bangun_kab (Lampiran)
+            t, a = (cx.kejadian_idx() or (0, 0, 0, None))[3] or cx.tgl_snapshot(), "akhir-cakupan"
+        elif i == "dibi":
+            t, a = (cx.baca("dibi") or {}).get("sampai") or cx.tgl_snapshot(), "terbit"
+        else:
+            t, a = cx.tgl_snapshot(), "snapshot-repo"
+        out.append({"nama": SUMBER[i][1], "tanggal": t, "tanggal_arti": a})
+    return out
+
+
 def b_wilayah(cx, kab, w):
     md = (w or {}).get("md")
     de = (cx.desa() or {}).get(cx.kode[kab]["kemendagri"]) if cx.kode[kab]["kemendagri"] else None
@@ -572,8 +588,9 @@ def b_sosek(cx, kab, w):
     sk = (w or {}).get("sk")
     if not sk:
         return None
-    isi = {"p0": sk.get("p0"), "miskin_ribu": sk.get("mj"), "ipm": sk.get("ipm"), "air_layak": sk.get("am"),
-           "sanitasi_layak": sk.get("sn"), "hunian_layak": sk.get("hl"), "tren_p0": sk.get("tr"), "tahun": sk["th"]}
+    isi = {"p0": sk.get("p0"), "ipm": sk.get("ipm"), "air_layak": sk.get("am"),
+           "sanitasi_layak": sk.get("sn"), "hunian_layak": sk.get("hl"), "tren_p0": sk.get("tr"), "tahun": sk["th"],
+           "arti": "jumlah penduduk miskin (ribu jiwa) sengaja tidak dimuat: sumber BPS memakai basis penduduk sendiri yang tidak sama dengan penduduk IRBI di blok penduduk (rasio jumlah/persen terhadap penduduk IRBI menyebar 0,35 sampai 2,2 antar kab), jadi persen x penduduk tidak cocok dengan angka BPS; pakai persen (p0)"}
     return blok(isi, "%d-12-31" % sk["th"], "resmi", "BPS (kemiskinan, IPM, hunian layak) tahun %d" % sk["th"], "akhir-tahun-data")
 
 
@@ -684,7 +701,13 @@ def b_kapasitas(cx, kab, w):
     rg, bp = (w or {}).get("rg"), (w or {}).get("bp")
     if not rg and not bp:
         return None
-    isi = {"bpbd": {"status": bp.get("s") or None, "alamat": bp.get("a") or None, "telp": bp.get("t") or None} if bp else None,
+    st = bp.get("s") if bp else None
+    # "Belum Terbentuk" di atlas BNPB bukan pernyataan resmi (kota administrasi DKI, kab beralamat dan bertelepon pun berlabel itu): tidak diteruskan sebagai fakta
+    bpbd = {"status": None if st == "Belum Terbentuk" else (st or None), "alamat": bp.get("a") or None, "telp": bp.get("t") or None,
+            } if bp else None
+    if bpbd and st == "Belum Terbentuk":
+        bpbd.update(status_atlas=st, status_arti="tidak tercatat (bukan bukti tidak ada): atlas BNPB berlabel 'Belum Terbentuk' tanpa dokumen resmi; status null")
+    isi = {"bpbd": bpbd,
            "perda_pb": rg["pb"] if rg else None, "perda_bpbd": rg["bp"] if rg else None,
            "rpb": rg["rp"] if rg else None, "renkon": rg["rk"] if rg else None,
            "dokumen_n": (rg["n"] or None) if rg else None,
@@ -699,8 +722,29 @@ def b_riwayat_luar(cx, kab, w):
     if not rw:
         return None
     nama = {"G": "GDACS", "E": "CEMS"}
-    return [{"tgl": r[2], "jenis": r[1], "jenis_label": LABEL_JENIS.get(r[1].lower(), r[1]), "judul": re.sub(r"\s+", " ", r[3]).strip(),
-             "sumber": nama[r[0]], "tautan": r[6]} for r in rw[:25]]
+    batas = tambah_hari(cx.tgl_snapshot(), -365)  # kartu berjudul "12 bulan terakhir": peristiwa lebih tua dibuang
+    out = [{"tgl": r[2], "jenis": r[1], "jenis_label": LABEL_JENIS.get(r[1].lower(), r[1]), "judul": judul_id(r[1], r[3]),
+            "judul_asli": re.sub(r"\s+", " ", r[3]).strip(), "sumber": nama[r[0]], "tautan": r[6]}
+           for r in rw if batas < r[2] <= cx.tgl_snapshot()]
+    return out[:25] or None
+
+
+def tambah_hari(tgl, n):
+    return (datetime.date.fromisoformat(tgl) + datetime.timedelta(days=n)).isoformat()
+
+
+def judul_id(jenis, judul):
+    """Judul GDACS/CEMS berbahasa Indonesia: jenis (+ nama gunung untuk erupsi), tanpa kalimat Inggris mentah."""
+    lab = LABEL_JENIS.get(jenis.lower(), jenis)
+    lab = lab[0].upper() + lab[1:]
+    if jenis.upper() == "VO":
+        m = re.match(r"Eruption\s+(.+)", re.sub(r"\s+", " ", judul).strip())
+        if m:
+            kata = m.group(1).split()
+            h = len(kata) // 2
+            nm = " ".join(kata[:h]) if h and kata[:h] == kata[h:] else m.group(1)
+            return "Erupsi gunung api %s" % nm
+    return lab
 
 
 def theil_sen(seri):
@@ -778,7 +822,9 @@ def b_gempa(cx, kab, w):
                    "risiko = indeks USGS radius 100 km 2000-2025 (estimasi model); risiko.m_maks_100km = magnitudo maks SEMUA gempa M>=5 radius 100 km termasuk susulan "
                    "(null = tidak ada), sedangkan n_2000_2025_100km hanya gempa utama (tanpa susulan), jadi M maks bisa ada walau n 0")
     isi["yakin_bagian"] = {"katalog": "terverifikasi", "risiko": "estimasi-model" if rk else None}
-    return blokt(isi, cx.tgl_arti("gempa_m5" if gi else "gempa_risiko"), "estimasi-model" if rk else "terverifikasi", "Katalog USGS M>=5 (domain publik); indeks risiko = estimasi model")
+    b = blokt(isi, cx.tgl_arti("gempa_m5" if gi else "gempa_risiko"), "estimasi-model" if rk else "terverifikasi", "Katalog USGS M>=5 (domain publik); indeks risiko = estimasi model")
+    b["sumber_rinci"] = rinci(cx, [i for i, ada_ in (("gempa_m5", gi), ("gempa_risiko", rk), ("inarisk_gempa", ik)) if ada_])
+    return b
 
 
 def b_karhutla(cx, kab, w):
@@ -819,8 +865,10 @@ def b_karhutla(cx, kab, w):
                     "khg = KHG yang tepinya menyentuh kab (perkiraan dari titik sampel tepi), ha = luas KHG utuh")}
     if kd:  # tren titik VIIRS 2015-2025 (Theil-Sen, kata 'jarang' bila < 3 tahun berkejadian); VIIRS 2024 lengkap -> jenis 'semua'
         isi["tren_viirs"], isi["tren_viirs_lereng"] = tren_kata(isi["titik_tahun"], "semua")
-    return blokt(isi, cx.tgl_arti("karhutla" if kd else "gambut"), "estimasi-model" if (gambut_ha is not None or khg is not None) else "terverifikasi",
-                  "NASA FIRMS (MODIS, VIIRS) per kab; gambut BBSDLP via PRIMS dan KHG BRGM = estimasi")
+    b = blokt(isi, cx.tgl_arti("karhutla" if kd else "gambut"), "estimasi-model" if (gambut_ha is not None or khg is not None) else "terverifikasi",
+              "NASA FIRMS (MODIS, VIIRS) per kab; gambut BBSDLP via PRIMS dan KHG BRGM = estimasi")
+    b["sumber_rinci"] = rinci(cx, [i for i, ada_ in (("karhutla", kd), ("gambut", gambut_ha is not None), ("khg", khg is not None)) if ada_])
+    return b
 
 
 def b_kekeringan(cx, kab, w):
@@ -890,7 +938,7 @@ def b_udara(cx, kab, w):
            "jiwa_maks_di_atas_55_4": max(pv[h][0] for h in hari if pv[h][0] is not None) if any(pv[h][0] is not None for h in hari) else None,
            "n_hari": len(rr), "dari": hari[0], "sampai": hari[-1],
            "arti": "jendela %d hari terakhir, bukan klimatologi tahunan; rerata berbobot jiwa dari analisis model CAMS, tingkat PROVINSI (bukan kab); ambang 55,4 \u00b5g/m\u00b3 = batas atas kategori Sedang ISPU/AQI" % len(rr)}
-    return blokt(isi, cx.tgl_arti("udara"), "estimasi-model", "Model PM2,5 harian per provinsi (level provinsi)")
+    return blokt(isi, cx.tgl_arti("udara"), "estimasi-model", "Analisis model CAMS (Copernicus) lewat Open-Meteo, PM2,5 harian level provinsi; lisensi Copernicus, sebut sumber")
 
 
 def b_neraca(cx, kab, w):
@@ -996,6 +1044,12 @@ def bangun_kab(cx, kab, hilang):
             if i == "dibi" and cx.dibi_idx():
                 e["kembar_dibuang"] = cx.dibi_idx()[3].get(kab, 0)  # baris DIBI kembar (tanggal+jenis+kab+dampak inti sama) dihitung sekali
         p["sumber"].append(e)
+    if p["kejadian"] is not None:  # blok "kejadian 12 bulan terakhir" memuat juga riwayat_luar: sumbernya ikut tercatat
+        p["kejadian"]["sumber_rinci"] = rinci(cx, ["kejadian", "dibi"])
+        if p["riwayat_luar"]:
+            p["kejadian"]["sumber_rinci"] += [{"nama": {"GDACS": "GDACS (Global Disaster Alert and Coordination System)", "CEMS": "Copernicus EMS (Emergency Management Service)"}[n],
+                                               "tanggal": max(r["tgl"] for r in p["riwayat_luar"] if r["sumber"] == n), "tanggal_arti": "peristiwa-terakhir"}
+                                              for n in ("GDACS", "CEMS") if any(r["sumber"] == n for r in p["riwayat_luar"])]
     p["dibangun"] = max([e["tanggal"] for e in p["sumber"] if e["tanggal"]] or [""]) or None
     return p
 

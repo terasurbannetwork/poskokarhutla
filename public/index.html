@@ -1874,7 +1874,7 @@ async function muatData() {
   if (false && umur > 26) { /* spanduk "data basi" disembunyikan dulu (pemilik, 14 Okt 2026) */ $("#basi").hidden = false; $("#basi").textContent = `Data terakhir diperbarui ${Math.round(umur)} jam lalu (${jamWIB(meta.dibuat)}). ${S.basi ? "Status cluster tidak boleh dipakai untuk keputusan sampai data diperbarui." : "Periksa pembaruan otomatis."}`; }
 }
 
-/* titik di hari terpilih? SATU hari kalender WIB (setara SiPongi/BNPB), tanpa akumulasi. S.hariPilih = "MM-DD" hari itu (kolom b[7]);
+/* titik di hari terpilih? SATU hari kalender WIB (lokasi unik 375 m, bukan jumlah tanda SiPongi), tanpa akumulasi. S.hariPilih = "MM-DD" hari itu (kolom b[7]);
    hari lebih lama dari kemarin hanya ada di hotspot.json (muatTitik). S.rentang = pilihan di kontrol (langsung berubah saat diklik);
    S.rentangHit = hari yang SEDANG dipegang S.hit/S.hariPilih (diisi hitung()): semua label angka membaca ini supaya tidak ada
    label hari baru di atas angka hari lama selama hotspot.json belum termuat */
@@ -4382,7 +4382,7 @@ const Insight = {
   exPeluang() { const d = this.data.pel, kini = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
     /* ansambel FWI > 2 hari = tenggang prakiraan basi; berkas lama tanpa ansambel_dibuat ikut disembunyikan */
     if (!d || !(Date.now() - Date.parse(d.ansambel_dibuat) <= 2 * 864e5) || !Object.values(d.wilayah).some(w => (w.hari || []).some(h => h.t >= kini))) return "";
-    return Peluang.kartu(d, {ey: this.LABEL.peluang, st: this.st, kejadian: "karhutla"}); },
+    return Peluang.kartu(d, {ey: this.LABEL.peluang, st: this.st, kejadian: "karhutla", judulPendek: true}); },
   /* Titik panas kumulatif tahun berjalan vs pembanding per minggu (public/data/kumulatif.json; dua dasar sensor tidak dicampur) */
   exKumulatif() {
     const K = this.data.kum, st = this.st; if (!K?.nasional?.kurva) return "";
@@ -7146,7 +7146,7 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="aktor.js"></script>
 <script src="operasi.js"></script>
 <script src="operasi_peta.js?v=9"></script>
-<script src="operasi_laporan.js?v=1"></script><!-- menu Operasi: laporan Udara | Darat tanpa peta (pemilik 4 Nov 2026) --><!-- Operasi udara: menu Operasi = laporan tanpa peta; panel Operasi, overlay, laci base di peta (pemilik 3-4 Nov 2026) -->
+<script src="operasi_laporan.js?v=2"></script><!-- menu Operasi: laporan Udara | Darat tanpa peta (pemilik 4 Nov 2026) --><!-- Operasi udara: menu Operasi = laporan tanpa peta; panel Operasi, overlay, laci base di peta (pemilik 3-4 Nov 2026) -->
 <script src="ringkasan.js"></script>
 <script src="inti/sapa.js"></script>
 <script src="sapa.js"></script>

@@ -96,8 +96,8 @@ def gelar(teks):
     for nama, n, isi in zip(blok[1::3], blok[2::3], blok[3::3]):
         nama = ' '.join(w.capitalize() for w in nama.split()).replace(' / ', '/').replace('Ikn', 'IKN')
         pw = [0, 0]
-        for jenis, sisa in re.findall(r'^-\s*([^:\n]+):(.*)$', isi, re.M):
-            pw[jenis.strip().upper().startswith('WB')] += sum(int(x) for x in re.findall(r'(\d+) Unit', sisa, re.I))
+        for jenis, sisa in re.findall(r'^[-•]\s*([^:\n]+):(.*)$', isi, re.M):   # rekap 4 Nov memakai butir "•"
+            pw[jenis.strip().upper().startswith(('WB', 'WATER BOMBING'))] +=sum(int(x) for x in re.findall(r'(\d+) Unit', sisa, re.I))
         assert sum(pw) == int(n), f'gelar {nama}: rincian {pw} tidak berjumlah {n} unit'
         armada[nama] = pw
     tgl = re.search(r'Data: (\d+) (\w+) (\d{4})', t)
@@ -129,16 +129,17 @@ def operasi(teks):
         so = re.search(r'\*(\d+) sortie', isi)
         sas = list(dict.fromkeys(k.strip() for x in re.findall(r'(?:menyasar|wilayah sasaran|kg (?:NaCl|dry ice)\* di) \*([^*]+)\*', isi.split('Hujan')[0])   # "di *X*" hanya sesudah muatan ("1.000 kg NaCl* di *Muara Enim*", Sumsel 29 Okt), bukan "PK-SNP diperbantukan di *Lampung*" (Riau 28 Okt)
                                  for k in re.split(r',\s*(?:dan\s+)?|\s+dan\s+', x.replace('sekitar ', '')) if k.strip()))   # kab yang disasar beberapa pesawat sekali saja
-        sas = [k for i, k in enumerate(sas) if not any(a.endswith(' ' + k) for a in sas[:i])]   # "Palembang" sesudah "wilayah timur Palembang" (Sumsel 29 Okt); "OKU" sesudah "OKU Timur" tetap
+        sas = [k for i, k in enumerate(sas) if not any(a.endswith(' ' + k) and a[:-len(k)].strip()[:1].islower() for a in sas[:i])]   # "Palembang" sesudah "wilayah timur Palembang" (Sumsel 29 Okt); "OKU" sesudah "OKU Timur" dan "Banyuasin" sesudah "Musi Banyuasin" tetap (Sumsel 3 Nov)
         hujan = None
-        h = re.search(r'Hujan\s+\*?([^*\n]*?)\*?\s*(?:terpantau|dilaporkan|pada)[^\n]*?di \*([^*]+)\*(?:[^\n]*?pada \*?(\d+) (\w+))?', isi, re.I)   # "hujan dilaporkan" huruf kecil (Sumsel 28 Okt)
+        h = re.search(r'Hujan\s+\*?([^*\n]*?)\*?\s*(?:terpantau|dilaporkan|terjadi|pada)[^\n]*?di \*([^*]+)\*(?:[^\n]*?pada \*?(\d+) (\w+))?', isi, re.I)   # "hujan dilaporkan" huruf kecil (Sumsel 28 Okt); "Hujan *lebat* terjadi di" (Sumsel 3 Nov)
         h2 = re.search(r'Hujan\s+([a-z ]+?)\s+pada (\d+) (\w+)[^\n]*?di \*([^*]+)\*', isi)
         h3 = re.search(r'Hujan\s+dilaporkan(?:\s+terjadi)?\s+di ([^*\n]+?)(?:,? dengan [^.\n]*)?(?: pada [^.\n]*)?\.', isi)   # "terjadi di X dengan intensitas ..." (Sumsel 30 Okt)
         if h2:   # "Hujan <intensitas> pada <tgl> ... di *X*" (tanggal di depan)
             hujan = {'intensitas': h2.group(1).strip().lower(), 'lokasi': h2.group(4), 'tanggal': dt.date(tanggal.year, BULAN[h2.group(3).lower()], int(h2.group(2)))}
         elif h:
             hujan = {'intensitas': h.group(1).strip().lower(), 'lokasi': h.group(2).replace('Kabupaten ', ''),
-                     'tanggal': dt.date(tanggal.year, BULAN[h.group(4).lower()], int(h.group(3))) if h.group(3) else tanggal}
+                     'tanggal': dt.date(tanggal.year, BULAN[h.group(4).lower()], int(h.group(3)))
+                     if h.group(3) and h.group(4).lower() in BULAN else tanggal}   # "pada 15 FS" bukan tanggal (Kalteng 3 Nov)
         elif h3:   # "Hujan dilaporkan di sebagian besar wilayah X pada dini hari" (27 Okt): lokasi tanpa cetak tebal
             hujan = {'intensitas': '', 'lokasi': h3.group(1), 'tanggal': tanggal}
         elif h4 := re.search(r'^>\s*Hujan\s+([a-z]+(?:\s*[–-]\s*[a-z]+|\s+hingga\s+[a-z]+)?)\s+di ([^.\n]+?)(?:,? serta [^.\n]*)?\.', isi, re.M):

@@ -241,6 +241,9 @@ def terbit(akar=D.AKAR, folder=None, data=None, entri=None, kini=None):
         raise ValueError("prediksi.json tidak sah: " + "; ".join(galat[:5]))
     D.simpan(os.path.join(data, "prediksi.json"), out)
     D.simpan(os.path.join(data, "lalu.json"), lalu(semua, kini or D.hari_ini(), pk, rk))
+    lg = lengas(akhir)
+    if lg:
+        D.simpan(os.path.join(data, "lengas.json"), lg)
     return out
 
 
@@ -255,6 +258,26 @@ def lalu(semua, kini, pk, rk, hari=3):
             kab = {k: r for k in e["kab"] if (r := baris_tampil(e, k, k[:2], pk, rk)[0])}
             out.setdefault(s, {})[e["k"]] = {"terbit": e["t"], "kol": TAMPIL[e["k"]], "kab": kab}
     return {"dibuat": kini, "hari": out}
+
+
+def lengas(akhir):
+    """Lengas tanah per kab untuk tab Laporan provinsi: kolom sm (Open-Meteo soil_moisture 3-9 dan 9-27 cm, dihitung catat.py)
+    tenggang +1 dari entri HJN terakhir. -> {"dibuat", "hari", "sumber", "kab": {id: sm}} atau None bila HJN tidak ada.
+    Nilai di luar 0..1 = masukan rusak, ditolak (ValueError), tidak dipotong."""
+    e = akhir.get("HJN")
+    if not e or "sm" not in e["kol"]:
+        return None
+    i = e["kol"].index("sm")
+    kab = {}
+    for k, rows in e["kab"].items():
+        r = rows[0] if rows else None
+        if r is None or r[i] is None or r[i] == 0:   # 0 tepat = sel laut (kab kepulauan), bukan tanah kering
+            continue
+        if not 0 <= r[i] <= 1:
+            raise ValueError(f"lengas {k} = {r[i]} di luar 0..1")
+        kab[k] = round(r[i], 2)
+    return {"dibuat": dt.datetime.now(D.WIB).replace(microsecond=0).isoformat(), "hari": e["hari"][0],
+            "sumber": "Open-Meteo, lengas tanah 3 sampai 27 cm (fraksi volume), prakiraan hari pertama", "kab": kab}
 
 
 def periksa(d):
@@ -310,6 +333,20 @@ def uji():
     rb = baris_tampil(eb, "1101", "11", pb, {})
     assert rb[0] == [1, None] and rb[1] == [1, 0.3], rb  # ps kosong tidak dikalibrasi (tidak dikarang); 0,25 -> 0,3
     assert vonis({}, "HJN", 1, 1) == ["belum teruji", 0, None]
+    # lengas.json: sm tenggang +1 dari entri HJN terakhir; None dibuang, di luar 0..1 ditolak
+    eh = {"k": "HJN", "t": "2026-10-29", "hari": ["2026-10-30", "2026-10-31", "2026-11-01"], "sumber": "uji",
+          "kol": e["kol"], "kab": {"1101": [[0.8, 0.4, 0.05, 10.0, 3, 4, 5, 0.4123, 0], None, None], "1102": [None, None, None],
+                                   "1103": [[0.8, 0.4, 0.05, 10.0, 3, 4, 5, None, 0], None, None],
+                                   "3101": [[0.8, 0.4, 0.05, 10.0, 3, 4, 5, 0.0, 0], None, None]}}
+    lg = lengas({"HJN": eh})
+    assert lg["hari"] == "2026-10-30" and lg["kab"] == {"1101": 0.41}, lg
+    assert lengas({}) is None, "tanpa HJN tidak ada lengas.json"
+    eh["kab"]["1101"][0][7] = 1.7
+    try:
+        lengas({"HJN": eh})
+        raise AssertionError("sm 1,7 harus ditolak")
+    except ValueError:
+        pass
     # terbit utuh dari entri sintetis, berkas nyata repo untuk paparan; keluaran sah
     t = "2026-10-29"
     ent = [{"t": t, "k": "HJN", "dibuat": "x", "sumber": "uji", "hari": [D.geser(t, i) for i in (1, 2, 3)], "kol": e["kol"],
@@ -317,6 +354,8 @@ def uji():
     with tempfile.TemporaryDirectory() as tmp:
         o = terbit(data=tmp, entri=ent)
         assert periksa(o) == [] and len(o["kab"]) == 514
+        lj = json.load(open(os.path.join(tmp, "lengas.json")))
+        assert len(lj["kab"]) == 514 and set(lj["kab"].values()) == {0.5}, "lengas.json ikut terbit"
         assert {w["aturan"] for w in o["waspada"]} >= {"banjir", "longsor"}
         w = next(w for w in o["waspada"] if w["aturan"] == "banjir" and w["dampak"].get("jiwa"))
         assert w["dampak"]["jiwa"] > 0 and "kebutuhan" in w["dampak"], w

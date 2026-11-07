@@ -1,6 +1,6 @@
 {
  "versi": 1,
- "dibangun": "2026-10-22T23:23:26Z",
+ "dibangun": "2026-11-06T03:24:56Z",
  "sumber": "jdih.bnpb.go.id",
  "dok": [
   {
@@ -27,7 +27,9 @@
    "halaman": 278,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 310
+   "n_segmen": 310,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-4-2026",
@@ -53,7 +55,9 @@
    "halaman": 37,
    "halaman_ocr": 0,
    "mutu": 0.995,
-   "n_segmen": 71
+   "n_segmen": 71,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-5-2026",
@@ -79,7 +83,9 @@
    "halaman": 9,
    "halaman_ocr": 0,
    "mutu": 0.988,
-   "n_segmen": 17
+   "n_segmen": 17,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-6-2026",
@@ -105,7 +111,9 @@
    "halaman": 14,
    "halaman_ocr": 0,
    "mutu": 0.997,
-   "n_segmen": 26
+   "n_segmen": 26,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-7-2026",
@@ -131,7 +139,9 @@
    "halaman": 37,
    "halaman_ocr": 0,
    "mutu": 0.975,
-   "n_segmen": 60
+   "n_segmen": 60,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "pedoman-1-2026",
@@ -157,7 +167,9 @@
    "halaman": 18,
    "halaman_ocr": 17,
    "mutu": 0.969,
-   "n_segmen": 18
+   "n_segmen": 18,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-1-2026",
@@ -183,7 +195,9 @@
    "halaman": 13,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 40
+   "n_segmen": 40,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-2-2026",
@@ -209,7 +223,9 @@
    "halaman": 19,
    "halaman_ocr": 0,
    "mutu": 0.999,
-   "n_segmen": 45
+   "n_segmen": 45,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-3-2026",
@@ -235,7 +251,9 @@
    "halaman": 49,
    "halaman_ocr": 0,
    "mutu": 0.998,
-   "n_segmen": 92
+   "n_segmen": 92,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perpres-46-2026",
@@ -261,7 +279,9 @@
    "halaman": 4,
    "halaman_ocr": 0,
    "mutu": 0.968,
-   "n_segmen": 7
+   "n_segmen": 7,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-1-2025",
@@ -287,7 +307,9 @@
    "halaman": 55,
    "halaman_ocr": 0,
    "mutu": 0.997,
-   "n_segmen": 57
+   "n_segmen": 57,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-15-2025",
@@ -313,7 +335,9 @@
    "halaman": 20,
    "halaman_ocr": 0,
    "mutu": 0.977,
-   "n_segmen": 29
+   "n_segmen": 29,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-16-2025",
@@ -339,7 +363,9 @@
    "halaman": 41,
    "halaman_ocr": 3,
    "mutu": 0.997,
-   "n_segmen": 55
+   "n_segmen": 55,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-17-2025",
@@ -365,7 +391,9 @@
    "halaman": 45,
    "halaman_ocr": 7,
    "mutu": 0.99,
-   "n_segmen": 58
+   "n_segmen": 58,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-2-2025",
@@ -391,7 +419,9 @@
    "halaman": 46,
    "halaman_ocr": 0,
    "mutu": 0.992,
-   "n_segmen": 70
+   "n_segmen": 70,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-3-2025",
@@ -417,7 +447,9 @@
    "halaman": 22,
    "halaman_ocr": 0,
    "mutu": 0.997,
-   "n_segmen": 32
+   "n_segmen": 32,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-4-2025",
@@ -443,7 +475,9 @@
    "halaman": 43,
    "halaman_ocr": 0,
    "mutu": 0.999,
-   "n_segmen": 53
+   "n_segmen": 53,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-5-2025",
@@ -469,7 +503,9 @@
    "halaman": 26,
    "halaman_ocr": 0,
    "mutu": 0.994,
-   "n_segmen": 35
+   "n_segmen": 35,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-6-2025",
@@ -495,7 +531,9 @@
    "halaman": 9,
    "halaman_ocr": 0,
    "mutu": 0.999,
-   "n_segmen": 14
+   "n_segmen": 14,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-7-2025",
@@ -521,7 +559,9 @@
    "halaman": 96,
    "halaman_ocr": 0,
    "mutu": 0.997,
-   "n_segmen": 107
+   "n_segmen": 107,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "kepka-327-2025",
@@ -547,7 +587,9 @@
    "halaman": 5,
    "halaman_ocr": 5,
    "mutu": 0.991,
-   "n_segmen": 12
+   "n_segmen": 12,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "pedoman-1-2025",
@@ -573,7 +615,9 @@
    "halaman": 16,
    "halaman_ocr": 3,
    "mutu": 0.997,
-   "n_segmen": 25
+   "n_segmen": 25,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-1-2025",
@@ -599,7 +643,9 @@
    "halaman": 126,
    "halaman_ocr": 0,
    "mutu": 0.992,
-   "n_segmen": 234
+   "n_segmen": 234,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-10-2025",
@@ -625,7 +671,9 @@
    "halaman": 19,
    "halaman_ocr": 0,
    "mutu": 0.997,
-   "n_segmen": 42
+   "n_segmen": 42,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-11-2025",
@@ -651,7 +699,9 @@
    "halaman": 21,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 52
+   "n_segmen": 52,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-2-2025",
@@ -677,7 +727,9 @@
    "halaman": 17,
    "halaman_ocr": 0,
    "mutu": 0.997,
-   "n_segmen": 38
+   "n_segmen": 38,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-3-2025",
@@ -703,7 +755,9 @@
    "halaman": 35,
    "halaman_ocr": 0,
    "mutu": 0.988,
-   "n_segmen": 51
+   "n_segmen": 51,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-4-2025",
@@ -729,7 +783,9 @@
    "halaman": 56,
    "halaman_ocr": 0,
    "mutu": 0.999,
-   "n_segmen": 80
+   "n_segmen": 80,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-5-2025",
@@ -755,7 +811,9 @@
    "halaman": 202,
    "halaman_ocr": 0,
    "mutu": 0.991,
-   "n_segmen": 357
+   "n_segmen": 357,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-6-2025",
@@ -781,7 +839,9 @@
    "halaman": 38,
    "halaman_ocr": 0,
    "mutu": 0.999,
-   "n_segmen": 152
+   "n_segmen": 152,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-7-2025",
@@ -807,7 +867,9 @@
    "halaman": 10,
    "halaman_ocr": 0,
    "mutu": 0.998,
-   "n_segmen": 28
+   "n_segmen": 28,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-8-2025",
@@ -833,7 +895,9 @@
    "halaman": 7,
    "halaman_ocr": 0,
    "mutu": 0.998,
-   "n_segmen": 20
+   "n_segmen": 20,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-9-2025",
@@ -859,7 +923,9 @@
    "halaman": 11,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 35
+   "n_segmen": 35,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-2-2024",
@@ -883,7 +949,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-3-2024",
@@ -909,7 +977,9 @@
    "halaman": 19,
    "halaman_ocr": 19,
    "mutu": 0.985,
-   "n_segmen": 25
+   "n_segmen": 25,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-4-2024",
@@ -933,7 +1003,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-5-2024",
@@ -957,7 +1029,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-6-2024",
@@ -981,7 +1055,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-7-2024",
@@ -1005,7 +1081,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-8-2024",
@@ -1031,7 +1109,9 @@
    "halaman": 40,
    "halaman_ocr": 1,
    "mutu": 0.993,
-   "n_segmen": 66
+   "n_segmen": 66,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-9-2024",
@@ -1057,7 +1137,9 @@
    "halaman": 52,
    "halaman_ocr": 4,
    "mutu": 0.995,
-   "n_segmen": 67
+   "n_segmen": 67,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juknis-1-2024",
@@ -1081,7 +1163,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "pedoman-1-2024",
@@ -1107,7 +1191,9 @@
    "halaman": 16,
    "halaman_ocr": 16,
    "mutu": 0.951,
-   "n_segmen": 29
+   "n_segmen": 29,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "pedoman-2-2024",
@@ -1133,7 +1219,9 @@
    "halaman": 12,
    "halaman_ocr": 0,
    "mutu": 0.997,
-   "n_segmen": 16
+   "n_segmen": 16,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "pedoman-3-2024",
@@ -1159,7 +1247,9 @@
    "halaman": 56,
    "halaman_ocr": 1,
    "mutu": 0.985,
-   "n_segmen": 99
+   "n_segmen": 99,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-1-2024",
@@ -1185,7 +1275,9 @@
    "halaman": 10,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 33
+   "n_segmen": 33,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-2-2024",
@@ -1211,7 +1303,9 @@
    "halaman": 14,
    "halaman_ocr": 0,
    "mutu": 0.997,
-   "n_segmen": 37
+   "n_segmen": 37,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-3-2024",
@@ -1237,7 +1331,9 @@
    "halaman": 77,
    "halaman_ocr": 0,
    "mutu": 0.998,
-   "n_segmen": 131
+   "n_segmen": 131,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-4-2024",
@@ -1263,7 +1359,9 @@
    "halaman": 14,
    "halaman_ocr": 0,
    "mutu": 0.999,
-   "n_segmen": 39
+   "n_segmen": 39,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-5-2024",
@@ -1289,7 +1387,9 @@
    "halaman": 116,
    "halaman_ocr": 0,
    "mutu": 0.999,
-   "n_segmen": 197
+   "n_segmen": 197,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-6-2024",
@@ -1315,7 +1415,9 @@
    "halaman": 11,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 28
+   "n_segmen": 28,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-7-2024",
@@ -1341,7 +1443,9 @@
    "halaman": 5,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 10
+   "n_segmen": 10,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-1-2023",
@@ -1367,7 +1471,9 @@
    "halaman": 12,
    "halaman_ocr": 12,
    "mutu": 0.981,
-   "n_segmen": 17
+   "n_segmen": 17,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-10-2023",
@@ -1391,7 +1497,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-3-2023",
@@ -1417,7 +1525,9 @@
    "halaman": 26,
    "halaman_ocr": 26,
    "mutu": 0.972,
-   "n_segmen": 36
+   "n_segmen": 36,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-4-2023",
@@ -1443,7 +1553,9 @@
    "halaman": 10,
    "halaman_ocr": 10,
    "mutu": 0.971,
-   "n_segmen": 16
+   "n_segmen": 16,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-6-2023",
@@ -1467,7 +1579,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-8-2023",
@@ -1491,7 +1605,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "juknis-2-2023",
@@ -1515,7 +1631,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "juknis-5-2023",
@@ -1539,7 +1657,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "juknis-7-2023",
@@ -1565,7 +1685,9 @@
    "halaman": 52,
    "halaman_ocr": 4,
    "mutu": 0.995,
-   "n_segmen": 49
+   "n_segmen": 49,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juknis-9-2023",
@@ -1591,7 +1713,9 @@
    "halaman": 64,
    "halaman_ocr": 1,
    "mutu": 0.996,
-   "n_segmen": 78
+   "n_segmen": 78,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-1-2023",
@@ -1617,7 +1741,9 @@
    "halaman": 17,
    "halaman_ocr": 0,
    "mutu": 0.998,
-   "n_segmen": 53
+   "n_segmen": 53,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-2-2023",
@@ -1643,7 +1769,9 @@
    "halaman": 35,
    "halaman_ocr": 0,
    "mutu": 0.989,
-   "n_segmen": 58
+   "n_segmen": 58,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-2-2022",
@@ -1669,7 +1797,9 @@
    "halaman": 13,
    "halaman_ocr": 12,
    "mutu": 0.977,
-   "n_segmen": 16
+   "n_segmen": 16,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-3-2022",
@@ -1695,7 +1825,9 @@
    "halaman": 51,
    "halaman_ocr": 0,
    "mutu": 0.994,
-   "n_segmen": 87
+   "n_segmen": 87,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-1-2022",
@@ -1721,7 +1853,11 @@
    "halaman": 34,
    "halaman_ocr": 34,
    "mutu": 0.973,
-   "n_segmen": 37
+   "n_segmen": 37,
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-4-2025"
+   ]
   },
   {
    "id": "perban-2-2022",
@@ -1747,7 +1883,11 @@
    "halaman": 35,
    "halaman_ocr": 35,
    "mutu": 0.97,
-   "n_segmen": 36
+   "n_segmen": 36,
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-4-2025"
+   ]
   },
   {
    "id": "perban-3-2022",
@@ -1773,7 +1913,9 @@
    "halaman": 10,
    "halaman_ocr": 10,
    "mutu": 0.997,
-   "n_segmen": 20
+   "n_segmen": 20,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-4-2022",
@@ -1799,7 +1941,9 @@
    "halaman": 9,
    "halaman_ocr": 9,
    "mutu": 0.997,
-   "n_segmen": 20
+   "n_segmen": 20,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-5-2022",
@@ -1825,7 +1969,9 @@
    "halaman": 5,
    "halaman_ocr": 5,
    "mutu": 0.982,
-   "n_segmen": 9
+   "n_segmen": 9,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-6-2022",
@@ -1851,7 +1997,9 @@
    "halaman": 10,
    "halaman_ocr": 10,
    "mutu": 0.999,
-   "n_segmen": 19
+   "n_segmen": 19,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-7-2022",
@@ -1877,7 +2025,9 @@
    "halaman": 32,
    "halaman_ocr": 0,
    "mutu": 0.993,
-   "n_segmen": 43
+   "n_segmen": 43,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-8-2022",
@@ -1903,7 +2053,9 @@
    "halaman": 10,
    "halaman_ocr": 0,
    "mutu": 0.996,
-   "n_segmen": 30
+   "n_segmen": 30,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-1-2021",
@@ -1929,7 +2081,9 @@
    "halaman": 294,
    "halaman_ocr": 0,
    "mutu": 0.971,
-   "n_segmen": 212
+   "n_segmen": 212,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-2-2021",
@@ -1955,7 +2109,9 @@
    "halaman": 25,
    "halaman_ocr": 25,
    "mutu": 0.997,
-   "n_segmen": 55
+   "n_segmen": 55,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-5-2021",
@@ -1981,7 +2137,9 @@
    "halaman": 7,
    "halaman_ocr": 7,
    "mutu": 0.965,
-   "n_segmen": 17
+   "n_segmen": 17,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-6-2021",
@@ -2007,7 +2165,11 @@
    "halaman": 67,
    "halaman_ocr": 67,
    "mutu": 0.993,
-   "n_segmen": 89
+   "n_segmen": 89,
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-4-2025"
+   ]
   },
   {
    "id": "perban-7-2021",
@@ -2033,7 +2195,11 @@
    "halaman": 69,
    "halaman_ocr": 69,
    "mutu": 0.993,
-   "n_segmen": 89
+   "n_segmen": 89,
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-4-2025"
+   ]
   },
   {
    "id": "perban-8-2021",
@@ -2059,7 +2225,9 @@
    "halaman": 13,
    "halaman_ocr": 13,
    "mutu": 0.965,
-   "n_segmen": 20
+   "n_segmen": 20,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-1-2020",
@@ -2085,7 +2253,9 @@
    "halaman": 72,
    "halaman_ocr": 7,
    "mutu": 0.992,
-   "n_segmen": 82
+   "n_segmen": 82,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-2-2020",
@@ -2111,7 +2281,9 @@
    "halaman": 7,
    "halaman_ocr": 2,
    "mutu": 1.0,
-   "n_segmen": 12
+   "n_segmen": 12,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-3-2020",
@@ -2137,7 +2309,9 @@
    "halaman": 47,
    "halaman_ocr": 2,
    "mutu": 0.991,
-   "n_segmen": 59
+   "n_segmen": 59,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-4-2020",
@@ -2163,7 +2337,9 @@
    "halaman": 21,
    "halaman_ocr": 21,
    "mutu": 0.998,
-   "n_segmen": 34
+   "n_segmen": 34,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-5-2020",
@@ -2189,7 +2365,11 @@
    "halaman": 90,
    "halaman_ocr": 1,
    "mutu": 0.984,
-   "n_segmen": 131
+   "n_segmen": 131,
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-5-2025"
+   ]
   },
   {
    "id": "perban-6-2020",
@@ -2215,7 +2395,9 @@
    "halaman": 14,
    "halaman_ocr": 14,
    "mutu": 0.99,
-   "n_segmen": 33
+   "n_segmen": 33,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-7-2020",
@@ -2241,7 +2423,9 @@
    "halaman": 164,
    "halaman_ocr": 6,
    "mutu": 0.994,
-   "n_segmen": 146
+   "n_segmen": 146,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-8-2020",
@@ -2267,7 +2451,9 @@
    "halaman": 18,
    "halaman_ocr": 18,
    "mutu": 0.94,
-   "n_segmen": 27
+   "n_segmen": 27,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "juklak-1-2019",
@@ -2291,7 +2477,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-1-2019",
@@ -2317,7 +2505,9 @@
    "halaman": 7,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 12
+   "n_segmen": 12,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-2-2019",
@@ -2343,7 +2533,11 @@
    "halaman": 43,
    "halaman_ocr": 15,
    "mutu": 0.973,
-   "n_segmen": 69
+   "n_segmen": 69,
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-3-2024"
+   ]
   },
   {
    "id": "perban-3-2019",
@@ -2369,7 +2563,9 @@
    "halaman": 13,
    "halaman_ocr": 0,
    "mutu": 0.999,
-   "n_segmen": 23
+   "n_segmen": 23,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-4-2019",
@@ -2395,7 +2591,11 @@
    "halaman": 92,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 326
+   "n_segmen": 326,
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-6-2025"
+   ]
   },
   {
    "id": "perban-1-2018",
@@ -2421,7 +2621,9 @@
    "halaman": 14,
    "halaman_ocr": 0,
    "mutu": 0.993,
-   "n_segmen": 15
+   "n_segmen": 15,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-2-2018",
@@ -2447,7 +2649,9 @@
    "halaman": 41,
    "halaman_ocr": 0,
    "mutu": 0.999,
-   "n_segmen": 47
+   "n_segmen": 47,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-3-2018",
@@ -2473,7 +2677,9 @@
    "halaman": 16,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 35
+   "n_segmen": 35,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-4-2018",
@@ -2499,7 +2705,9 @@
    "halaman": 13,
    "halaman_ocr": 0,
    "mutu": 0.999,
-   "n_segmen": 22
+   "n_segmen": 22,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-5-2018",
@@ -2525,7 +2733,9 @@
    "halaman": 9,
    "halaman_ocr": 0,
    "mutu": 0.998,
-   "n_segmen": 18
+   "n_segmen": 18,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-6-2018",
@@ -2551,7 +2761,9 @@
    "halaman": 51,
    "halaman_ocr": 22,
    "mutu": 0.981,
-   "n_segmen": 50
+   "n_segmen": 50,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-7-2018",
@@ -2577,7 +2789,9 @@
    "halaman": 11,
    "halaman_ocr": 0,
    "mutu": 0.997,
-   "n_segmen": 22
+   "n_segmen": 22,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perpres-17-2018",
@@ -2603,7 +2817,9 @@
    "halaman": 5,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 9
+   "n_segmen": 9,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-5-2017",
@@ -2629,7 +2845,9 @@
    "halaman": 11,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 19
+   "n_segmen": 19,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perban-6-2017",
@@ -2655,7 +2873,9 @@
    "halaman": 14,
    "halaman_ocr": 0,
    "mutu": 0.999,
-   "n_segmen": 20
+   "n_segmen": 20,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-1-2017",
@@ -2681,7 +2901,9 @@
    "halaman": 9,
    "halaman_ocr": 0,
    "mutu": 0.999,
-   "n_segmen": 18
+   "n_segmen": 18,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-2-2017",
@@ -2707,7 +2929,9 @@
    "halaman": 23,
    "halaman_ocr": 1,
    "mutu": 0.975,
-   "n_segmen": 32
+   "n_segmen": 32,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-3-2017",
@@ -2733,7 +2957,9 @@
    "halaman": 9,
    "halaman_ocr": 0,
    "mutu": 0.998,
-   "n_segmen": 15
+   "n_segmen": 15,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-4-2017",
@@ -2759,7 +2985,9 @@
    "halaman": 11,
    "halaman_ocr": 0,
    "mutu": 0.989,
-   "n_segmen": 19
+   "n_segmen": 19,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-1-2016",
@@ -2785,7 +3013,9 @@
    "halaman": 16,
    "halaman_ocr": 0,
    "mutu": 0.997,
-   "n_segmen": 28
+   "n_segmen": 28,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-2-2016",
@@ -2811,7 +3041,9 @@
    "halaman": 107,
    "halaman_ocr": 0,
    "mutu": 0.996,
-   "n_segmen": 125
+   "n_segmen": 125,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-3-2016",
@@ -2837,7 +3069,9 @@
    "halaman": 29,
    "halaman_ocr": 0,
    "mutu": 0.998,
-   "n_segmen": 35
+   "n_segmen": 35,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-4-2016",
@@ -2863,7 +3097,11 @@
    "halaman": 17,
    "halaman_ocr": 0,
    "mutu": 0.996,
-   "n_segmen": 35
+   "n_segmen": 35,
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-2-2025"
+   ]
   },
   {
    "id": "perka-5-2016",
@@ -2889,7 +3127,9 @@
    "halaman": 143,
    "halaman_ocr": 138,
    "mutu": 0.973,
-   "n_segmen": 124
+   "n_segmen": 124,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-1-2015",
@@ -2915,7 +3155,9 @@
    "halaman": 9,
    "halaman_ocr": 0,
    "mutu": 0.992,
-   "n_segmen": 12
+   "n_segmen": 12,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-2-2015",
@@ -2941,7 +3183,9 @@
    "halaman": 24,
    "halaman_ocr": 19,
    "mutu": 0.987,
-   "n_segmen": 44
+   "n_segmen": 44,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-3-2015",
@@ -2967,7 +3211,9 @@
    "halaman": 13,
    "halaman_ocr": 0,
    "mutu": 0.999,
-   "n_segmen": 27
+   "n_segmen": 27,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-4-2015",
@@ -2993,7 +3239,9 @@
    "halaman": 12,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 24
+   "n_segmen": 24,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-5-2015",
@@ -3019,7 +3267,9 @@
    "halaman": 16,
    "halaman_ocr": 0,
    "mutu": 0.976,
-   "n_segmen": 18
+   "n_segmen": 18,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-6-2015",
@@ -3045,7 +3295,9 @@
    "halaman": 16,
    "halaman_ocr": 0,
    "mutu": 0.976,
-   "n_segmen": 31
+   "n_segmen": 31,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-7-2015",
@@ -3071,7 +3323,11 @@
    "halaman": 38,
    "halaman_ocr": 22,
    "mutu": 0.976,
-   "n_segmen": 36
+   "n_segmen": 36,
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-3-2025"
+   ]
   },
   {
    "id": "perka-1-2014",
@@ -3097,7 +3353,9 @@
    "halaman": 3,
    "halaman_ocr": 0,
    "mutu": 0.998,
-   "n_segmen": 8
+   "n_segmen": 8,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-10-2014",
@@ -3123,7 +3381,9 @@
    "halaman": 53,
    "halaman_ocr": 13,
    "mutu": 0.978,
-   "n_segmen": 66
+   "n_segmen": 66,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-11-2014",
@@ -3149,7 +3409,9 @@
    "halaman": 17,
    "halaman_ocr": 17,
    "mutu": 0.977,
-   "n_segmen": 52
+   "n_segmen": 52,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-12-2014",
@@ -3175,7 +3437,9 @@
    "halaman": 10,
    "halaman_ocr": 0,
    "mutu": 0.994,
-   "n_segmen": 33
+   "n_segmen": 33,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-13-2014",
@@ -3201,7 +3465,9 @@
    "halaman": 15,
    "halaman_ocr": 0,
    "mutu": 0.997,
-   "n_segmen": 35
+   "n_segmen": 35,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-14-2014",
@@ -3227,7 +3493,9 @@
    "halaman": 9,
    "halaman_ocr": 0,
    "mutu": 0.993,
-   "n_segmen": 27
+   "n_segmen": 27,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-15-2014",
@@ -3253,7 +3521,9 @@
    "halaman": 35,
    "halaman_ocr": 0,
    "mutu": 0.983,
-   "n_segmen": 39
+   "n_segmen": 39,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-16-2014",
@@ -3279,7 +3549,9 @@
    "halaman": 68,
    "halaman_ocr": 5,
    "mutu": 0.99,
-   "n_segmen": 71
+   "n_segmen": 71,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-17-2014",
@@ -3305,7 +3577,9 @@
    "halaman": 14,
    "halaman_ocr": 3,
    "mutu": 1.0,
-   "n_segmen": 28
+   "n_segmen": 28,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-18-2014",
@@ -3331,7 +3605,9 @@
    "halaman": 11,
    "halaman_ocr": 0,
    "mutu": 0.995,
-   "n_segmen": 28
+   "n_segmen": 28,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-2-2014",
@@ -3357,7 +3633,9 @@
    "halaman": 3,
    "halaman_ocr": 0,
    "mutu": 0.997,
-   "n_segmen": 9
+   "n_segmen": 9,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-20-2014",
@@ -3383,7 +3661,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-21-2014",
@@ -3409,7 +3689,9 @@
    "halaman": 4,
    "halaman_ocr": 0,
    "mutu": 0.992,
-   "n_segmen": 12
+   "n_segmen": 12,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-22-2014",
@@ -3435,7 +3717,9 @@
    "halaman": 9,
    "halaman_ocr": 6,
    "mutu": 0.993,
-   "n_segmen": 17
+   "n_segmen": 17,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-23-2014",
@@ -3461,7 +3745,9 @@
    "halaman": 9,
    "halaman_ocr": 0,
    "mutu": 0.992,
-   "n_segmen": 23
+   "n_segmen": 23,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-24-2014",
@@ -3487,7 +3773,9 @@
    "halaman": 13,
    "halaman_ocr": 2,
    "mutu": 0.992,
-   "n_segmen": 36
+   "n_segmen": 36,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-25-2014",
@@ -3513,7 +3801,9 @@
    "halaman": 13,
    "halaman_ocr": 0,
    "mutu": 0.995,
-   "n_segmen": 20
+   "n_segmen": 20,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-26-2014",
@@ -3539,7 +3829,9 @@
    "halaman": 11,
    "halaman_ocr": 0,
    "mutu": 0.994,
-   "n_segmen": 18
+   "n_segmen": 18,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-3-2014",
@@ -3565,7 +3857,9 @@
    "halaman": 30,
    "halaman_ocr": 0,
    "mutu": 0.991,
-   "n_segmen": 36
+   "n_segmen": 36,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-4-2014",
@@ -3591,7 +3885,9 @@
    "halaman": 123,
    "halaman_ocr": 36,
    "mutu": 0.968,
-   "n_segmen": 162
+   "n_segmen": 162,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-5-2014",
@@ -3617,7 +3913,9 @@
    "halaman": 5,
    "halaman_ocr": 0,
    "mutu": 0.995,
-   "n_segmen": 10
+   "n_segmen": 10,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-6-2014",
@@ -3643,7 +3941,9 @@
    "halaman": 8,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 24
+   "n_segmen": 24,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-7-2014",
@@ -3669,7 +3969,9 @@
    "halaman": 8,
    "halaman_ocr": 0,
    "mutu": 0.981,
-   "n_segmen": 14
+   "n_segmen": 14,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-8-2014",
@@ -3695,7 +3997,11 @@
    "halaman": 3,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 9
+   "n_segmen": 9,
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-10-2025"
+   ]
   },
   {
    "id": "perka-9-2014",
@@ -3721,7 +4027,9 @@
    "halaman": 9,
    "halaman_ocr": 0,
    "mutu": 0.996,
-   "n_segmen": 20
+   "n_segmen": 20,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-1-2013",
@@ -3747,7 +4055,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-10-2013",
@@ -3773,7 +4083,9 @@
    "halaman": 7,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 8
+   "n_segmen": 8,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-2-2013",
@@ -3799,7 +4111,9 @@
    "halaman": 3,
    "halaman_ocr": 0,
    "mutu": 0.998,
-   "n_segmen": 10
+   "n_segmen": 10,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-3-2013",
@@ -3825,7 +4139,9 @@
    "halaman": 4,
    "halaman_ocr": 0,
    "mutu": 0.998,
-   "n_segmen": 9
+   "n_segmen": 9,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-4-2013",
@@ -3851,7 +4167,9 @@
    "halaman": 4,
    "halaman_ocr": 0,
    "mutu": 0.996,
-   "n_segmen": 9
+   "n_segmen": 9,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-6-2013",
@@ -3877,7 +4195,9 @@
    "halaman": 3,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 9
+   "n_segmen": 9,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-7-2013",
@@ -3903,7 +4223,9 @@
    "halaman": 116,
    "halaman_ocr": 110,
    "mutu": 0.811,
-   "n_segmen": 128
+   "n_segmen": 128,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-8-2013",
@@ -3929,7 +4251,9 @@
    "halaman": 3,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 9
+   "n_segmen": 9,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-9-2013",
@@ -3955,7 +4279,9 @@
    "halaman": 3,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 9
+   "n_segmen": 9,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-1-2012",
@@ -3981,7 +4307,11 @@
    "halaman": 31,
    "halaman_ocr": 19,
    "mutu": 0.985,
-   "n_segmen": 48
+   "n_segmen": 48,
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-7-2025"
+   ]
   },
   {
    "id": "perka-10-2012",
@@ -4007,7 +4337,9 @@
    "halaman": 32,
    "halaman_ocr": 0,
    "mutu": 0.997,
-   "n_segmen": 35
+   "n_segmen": 35,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-14-2012",
@@ -4033,7 +4365,9 @@
    "halaman": 3,
    "halaman_ocr": 0,
    "mutu": 0.998,
-   "n_segmen": 8
+   "n_segmen": 8,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-15-2012",
@@ -4059,7 +4393,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-16-2012",
@@ -4085,7 +4421,9 @@
    "halaman": 3,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 9
+   "n_segmen": 9,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-2-2012",
@@ -4111,7 +4449,9 @@
    "halaman": 3,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 9
+   "n_segmen": 9,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-3-2012",
@@ -4137,7 +4477,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-4-2012",
@@ -4163,7 +4505,9 @@
    "halaman": 85,
    "halaman_ocr": 29,
    "mutu": 0.971,
-   "n_segmen": 93
+   "n_segmen": 93,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-5-2012",
@@ -4189,7 +4533,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-6-2012",
@@ -4215,7 +4561,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-7-2012",
@@ -4241,7 +4589,9 @@
    "halaman": 18,
    "halaman_ocr": 0,
    "mutu": 0.992,
-   "n_segmen": 26
+   "n_segmen": 26,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-8-2012",
@@ -4267,7 +4617,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-9-2012",
@@ -4293,7 +4645,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-1-2011",
@@ -4319,7 +4673,9 @@
    "halaman": 3,
    "halaman_ocr": 0,
    "mutu": 0.984,
-   "n_segmen": 4
+   "n_segmen": 4,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-10-2011",
@@ -4345,7 +4701,9 @@
    "halaman": 21,
    "halaman_ocr": 5,
    "mutu": 0.982,
-   "n_segmen": 22
+   "n_segmen": 22,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-11-2011",
@@ -4371,7 +4729,9 @@
    "halaman": 24,
    "halaman_ocr": 2,
    "mutu": 0.987,
-   "n_segmen": 22
+   "n_segmen": 22,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-14-2011",
@@ -4397,7 +4757,9 @@
    "halaman": 140,
    "halaman_ocr": 0,
    "mutu": 0.996,
-   "n_segmen": 253
+   "n_segmen": 253,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-15-2011",
@@ -4423,7 +4785,9 @@
    "halaman": 141,
    "halaman_ocr": 4,
    "mutu": 0.989,
-   "n_segmen": 152
+   "n_segmen": 152,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-16-2011",
@@ -4449,7 +4813,9 @@
    "halaman": 3,
    "halaman_ocr": 0,
    "mutu": 0.995,
-   "n_segmen": 8
+   "n_segmen": 8,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-17-2011",
@@ -4475,7 +4841,9 @@
    "halaman": 46,
    "halaman_ocr": 0,
    "mutu": 0.994,
-   "n_segmen": 45
+   "n_segmen": 45,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-18-2011",
@@ -4501,7 +4869,9 @@
    "halaman": 5,
    "halaman_ocr": 0,
    "mutu": 0.994,
-   "n_segmen": 11
+   "n_segmen": 11,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-19-2011",
@@ -4527,7 +4897,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-2-2011",
@@ -4553,7 +4925,9 @@
    "halaman": 3,
    "halaman_ocr": 0,
    "mutu": 0.993,
-   "n_segmen": 4
+   "n_segmen": 4,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-20-2011",
@@ -4579,7 +4953,9 @@
    "halaman": 49,
    "halaman_ocr": 2,
    "mutu": 0.998,
-   "n_segmen": 53
+   "n_segmen": 53,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-21-2011",
@@ -4605,7 +4981,9 @@
    "halaman": 62,
    "halaman_ocr": 2,
    "mutu": 0.997,
-   "n_segmen": 59
+   "n_segmen": 59,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-3-2011",
@@ -4631,7 +5009,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-5-2011",
@@ -4657,7 +5037,9 @@
    "halaman": 4,
    "halaman_ocr": 0,
    "mutu": 0.968,
-   "n_segmen": 8
+   "n_segmen": 8,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-6-2011",
@@ -4683,7 +5065,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-7-2011",
@@ -4709,7 +5093,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-8-2011",
@@ -4735,7 +5121,9 @@
    "halaman": 39,
    "halaman_ocr": 0,
    "mutu": 0.99,
-   "n_segmen": 40
+   "n_segmen": 40,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-9-2011",
@@ -4761,7 +5149,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-10-2010",
@@ -4787,7 +5177,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-11-2010",
@@ -4813,7 +5205,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-12-2010",
@@ -4839,7 +5233,9 @@
    "halaman": 20,
    "halaman_ocr": 0,
    "mutu": 0.995,
-   "n_segmen": 25
+   "n_segmen": 25,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-13-2010",
@@ -4865,7 +5261,9 @@
    "halaman": 27,
    "halaman_ocr": 0,
    "mutu": 0.991,
-   "n_segmen": 24
+   "n_segmen": 24,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-14-2010",
@@ -4891,7 +5289,9 @@
    "halaman": 99,
    "halaman_ocr": 0,
    "mutu": 1.0,
-   "n_segmen": 95
+   "n_segmen": 95,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-15-2010",
@@ -4917,7 +5317,9 @@
    "halaman": 33,
    "halaman_ocr": 0,
    "mutu": 0.994,
-   "n_segmen": 36
+   "n_segmen": 36,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-16-2010",
@@ -4943,7 +5345,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-17-2010",
@@ -4969,7 +5373,11 @@
    "halaman": 16,
    "halaman_ocr": 0,
    "mutu": 0.992,
-   "n_segmen": 19
+   "n_segmen": 19,
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-5-2017"
+   ]
   },
   {
    "id": "perka-18-2010",
@@ -4995,7 +5403,9 @@
    "halaman": 16,
    "halaman_ocr": 0,
    "mutu": 0.97,
-   "n_segmen": 17
+   "n_segmen": 17,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-19-2010",
@@ -5021,7 +5431,9 @@
    "halaman": 13,
    "halaman_ocr": 0,
    "mutu": 0.998,
-   "n_segmen": 19
+   "n_segmen": 19,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-20-2010",
@@ -5047,7 +5459,9 @@
    "halaman": 21,
    "halaman_ocr": 17,
    "mutu": 0.942,
-   "n_segmen": 23
+   "n_segmen": 23,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-21-2010",
@@ -5073,7 +5487,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-22-2010",
@@ -5099,7 +5515,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-23-2010",
@@ -5125,7 +5543,9 @@
    "halaman": 9,
    "halaman_ocr": 0,
    "mutu": 0.952,
-   "n_segmen": 15
+   "n_segmen": 15,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-24-2010",
@@ -5151,7 +5571,9 @@
    "halaman": 52,
    "halaman_ocr": 0,
    "mutu": 0.997,
-   "n_segmen": 47
+   "n_segmen": 47,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-26-2010",
@@ -5177,7 +5599,9 @@
    "halaman": 6,
    "halaman_ocr": 0,
    "mutu": 0.997,
-   "n_segmen": 11
+   "n_segmen": 11,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-4-2010",
@@ -5203,7 +5627,9 @@
    "halaman": 30,
    "halaman_ocr": 0,
    "mutu": 0.926,
-   "n_segmen": 32
+   "n_segmen": 32,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-6-2010",
@@ -5229,7 +5655,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-7-2010",
@@ -5255,7 +5683,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-8-2010",
@@ -5281,7 +5711,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-9-2010",
@@ -5307,7 +5739,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-1-2009",
@@ -5333,7 +5767,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-10-2009",
@@ -5359,7 +5795,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-11-2009",
@@ -5385,7 +5823,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-12-2009",
@@ -5411,7 +5851,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-14-2009",
@@ -5437,7 +5879,9 @@
    "halaman": 8,
    "halaman_ocr": 0,
    "mutu": 0.989,
-   "n_segmen": 26
+   "n_segmen": 26,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-15-2009",
@@ -5463,7 +5907,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-16-2009",
@@ -5489,7 +5935,9 @@
    "halaman": 26,
    "halaman_ocr": 0,
    "mutu": 0.992,
-   "n_segmen": 38
+   "n_segmen": 38,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-17-2009",
@@ -5515,7 +5963,9 @@
    "halaman": 55,
    "halaman_ocr": 0,
    "mutu": 0.993,
-   "n_segmen": 47
+   "n_segmen": 47,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-18-2009",
@@ -5541,7 +5991,9 @@
    "halaman": 15,
    "halaman_ocr": 0,
    "mutu": 0.993,
-   "n_segmen": 21
+   "n_segmen": 21,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-2-2009",
@@ -5567,7 +6019,9 @@
    "halaman": 10,
    "halaman_ocr": 0,
    "mutu": 0.993,
-   "n_segmen": 15
+   "n_segmen": 15,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-4-2009",
@@ -5593,7 +6047,9 @@
    "halaman": 17,
    "halaman_ocr": 0,
    "mutu": 0.996,
-   "n_segmen": 22
+   "n_segmen": 22,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-5-2009",
@@ -5619,7 +6075,9 @@
    "halaman": 23,
    "halaman_ocr": 14,
    "mutu": 0.996,
-   "n_segmen": 19
+   "n_segmen": 19,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-6-2009",
@@ -5645,7 +6103,9 @@
    "halaman": 39,
    "halaman_ocr": 16,
    "mutu": 0.939,
-   "n_segmen": 39
+   "n_segmen": 39,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-7-2009",
@@ -5671,7 +6131,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-8-2009",
@@ -5697,7 +6159,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-1-2008",
@@ -5723,7 +6187,9 @@
    "halaman": 60,
    "halaman_ocr": 0,
    "mutu": 0.998,
-   "n_segmen": 311
+   "n_segmen": 311,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-10-2008",
@@ -5749,7 +6215,9 @@
    "halaman": 34,
    "halaman_ocr": 0,
    "mutu": 0.996,
-   "n_segmen": 35
+   "n_segmen": 35,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-11-2008",
@@ -5775,7 +6243,9 @@
    "halaman": 67,
    "halaman_ocr": 0,
    "mutu": 0.99,
-   "n_segmen": 88
+   "n_segmen": 88,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-12-2008",
@@ -5801,7 +6271,9 @@
    "halaman": 21,
    "halaman_ocr": 0,
    "mutu": 0.995,
-   "n_segmen": 25
+   "n_segmen": 25,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-13-2008",
@@ -5827,7 +6299,9 @@
    "halaman": 26,
    "halaman_ocr": 0,
    "mutu": 0.995,
-   "n_segmen": 29
+   "n_segmen": 29,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-2-2008",
@@ -5853,7 +6327,9 @@
    "halaman": 7,
    "halaman_ocr": 7,
    "mutu": 0.981,
-   "n_segmen": 14
+   "n_segmen": 14,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-3-2008",
@@ -5879,7 +6355,9 @@
    "halaman": 19,
    "halaman_ocr": 18,
    "mutu": 0.991,
-   "n_segmen": 27
+   "n_segmen": 27,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-4-2008",
@@ -5905,7 +6383,11 @@
    "halaman": 33,
    "halaman_ocr": 0,
    "mutu": 0.986,
-   "n_segmen": 58
+   "n_segmen": 58,
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-3-2026"
+   ]
   },
   {
    "id": "perka-5-2008",
@@ -5931,7 +6413,9 @@
    "halaman": 0,
    "halaman_ocr": 0,
    "mutu": null,
-   "n_segmen": 1
+   "n_segmen": 1,
+   "status_teks": "TIDAK_BISA_DICEK",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-6-2008",
@@ -5957,7 +6441,9 @@
    "halaman": 32,
    "halaman_ocr": 0,
    "mutu": 0.994,
-   "n_segmen": 34
+   "n_segmen": 34,
+   "status_teks": "TIDAK BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-7-2008",
@@ -5983,7 +6469,9 @@
    "halaman": 32,
    "halaman_ocr": 0,
    "mutu": 0.99,
-   "n_segmen": 31
+   "n_segmen": 31,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-8-2008",
@@ -6009,7 +6497,9 @@
    "halaman": 20,
    "halaman_ocr": 0,
    "mutu": 0.996,
-   "n_segmen": 30
+   "n_segmen": 30,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   },
   {
    "id": "perka-9-2008",
@@ -6035,7 +6525,9 @@
    "halaman": 38,
    "halaman_ocr": 0,
    "mutu": 0.989,
-   "n_segmen": 44
+   "n_segmen": 44,
+   "status_teks": "BERLAKU",
+   "dicabut_oleh": []
   }
  ],
  "relasi": [
@@ -7063,41 +7555,6 @@
   },
   {
    "dari": "perban-1-2021",
-   "ke": "perka-21-2010",
-   "jenis": "merujuk",
-   "terdaftar": true,
-   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 21 Tahun 2010 tentang Jadwal Retensi Arsip Keuangan Badan Nasional Penanggulangan Bencana"
-  },
-  {
-   "dari": "perban-1-2021",
-   "ke": "perka-26-2010",
-   "jenis": "merujuk",
-   "terdaftar": true,
-   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 26 Tahun 2010 tentang Jadwal Retensi Arsip Kepegawaian Pegawai Negeri Sipil dan Pejabat Negara Badan Nasional Penanggulangan Bencana"
-  },
-  {
-   "dari": "perban-1-2021",
-   "ke": "perka-18-2011",
-   "jenis": "merujuk",
-   "terdaftar": true,
-   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 18 Tahun 2011 tentang Jadwal Retensi Arsip Fasilitatif Non Keuangan dan Non Kepegawaian Badan Nasional Penanggulangan Bencana"
-  },
-  {
-   "dari": "perban-1-2021",
-   "ke": "perka-1-2014",
-   "jenis": "merujuk",
-   "terdaftar": true,
-   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2014 tentang Petunjuk Pelaksanaan Klasifikasi Keamanan dan Akses Arsip Dinamis di Lingkungan Badan Nasional Penanggulangan Bencana"
-  },
-  {
-   "dari": "perban-1-2021",
-   "ke": "perka-5-2014",
-   "jenis": "merujuk",
-   "terdaftar": true,
-   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2014 tentang Jadwal Retensi Arsip Substantif Badan Nasional Penanggulangan Bencana"
-  },
-  {
-   "dari": "perban-1-2021",
    "ke": "perka-2-2015",
    "jenis": "mengganti",
    "terdaftar": true,
@@ -7144,6 +7601,41 @@
    "jenis": "mengingat",
    "terdaftar": true,
    "ke_judul": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 4 Tahun 2019 tentang Organisasi dan Tata Kerja Badan Nasional Penanggulangan Bencana"
+  },
+  {
+   "dari": "perban-1-2021",
+   "ke": "perka-21-2010",
+   "jenis": "mencabut",
+   "terdaftar": true,
+   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 21 Tahun 2010 tentang Jadwal Retensi Arsip Keuangan Badan Nasional Penanggulangan Bencana"
+  },
+  {
+   "dari": "perban-1-2021",
+   "ke": "perka-26-2010",
+   "jenis": "mencabut",
+   "terdaftar": true,
+   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 26 Tahun 2010 tentang Jadwal Retensi Arsip Kepegawaian Pegawai Negeri Sipil dan Pejabat Negara Badan Nasional Penanggulangan Bencana"
+  },
+  {
+   "dari": "perban-1-2021",
+   "ke": "perka-18-2011",
+   "jenis": "mencabut",
+   "terdaftar": true,
+   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 18 Tahun 2011 tentang Jadwal Retensi Arsip Fasilitatif Non Keuangan dan Non Kepegawaian Badan Nasional Penanggulangan Bencana"
+  },
+  {
+   "dari": "perban-1-2021",
+   "ke": "perka-1-2014",
+   "jenis": "mencabut",
+   "terdaftar": true,
+   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2014 tentang Petunjuk Pelaksanaan Klasifikasi Keamanan dan Akses Arsip Dinamis di Lingkungan Badan Nasional Penanggulangan Bencana"
+  },
+  {
+   "dari": "perban-1-2021",
+   "ke": "perka-5-2014",
+   "jenis": "mencabut",
+   "terdaftar": true,
+   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2014 tentang Jadwal Retensi Arsip Substantif Badan Nasional Penanggulangan Bencana"
   },
   {
    "dari": "perban-1-2021",
@@ -7267,7 +7759,7 @@
   {
    "dari": "perban-1-2023",
    "ke": "perka-8-2011",
-   "jenis": "merujuk",
+   "jenis": "mencabut",
    "terdaftar": true,
    "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 8 Tahun 2011 tentang Standarisasi Data Kebencanaan"
   },
@@ -8099,13 +8591,6 @@
   },
   {
    "dari": "perban-3-2020",
-   "ke": "perka-15-2009",
-   "jenis": "merujuk",
-   "terdaftar": true,
-   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 15 Tahun 2009 tentang Pedoman Kearsipan Dinamis di Lingkungan Badan Nasional Penanggulangan Bencana"
-  },
-  {
-   "dari": "perban-3-2020",
    "ke": "uu-24-2007",
    "jenis": "mengingat",
    "terdaftar": false,
@@ -8124,6 +8609,13 @@
    "jenis": "mengingat",
    "terdaftar": true,
    "ke_judul": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 4 Tahun 2019 tentang Organisasi dan Tata Kerja Badan Nasional Penanggulangan Bencana"
+  },
+  {
+   "dari": "perban-3-2020",
+   "ke": "perka-15-2009",
+   "jenis": "mencabut",
+   "terdaftar": true,
+   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 15 Tahun 2009 tentang Pedoman Kearsipan Dinamis di Lingkungan Badan Nasional Penanggulangan Bencana"
   },
   {
    "dari": "perban-3-2020",
@@ -8611,28 +9103,28 @@
   {
    "dari": "perban-4-2025",
    "ke": "perban-6-2021",
-   "jenis": "merujuk",
+   "jenis": "mencabut",
    "terdaftar": true,
    "ke_judul": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 6 Tahun 2021 tentang Petunjuk Teknis Jabatan Fungsional Analis Kebencanaan"
   },
   {
    "dari": "perban-4-2025",
    "ke": "perban-7-2021",
-   "jenis": "merujuk",
+   "jenis": "mencabut",
    "terdaftar": true,
    "ke_judul": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 7 Tahun 2021 tentang Petunjuk Teknis Jabatan Fungsional Penata Penanggulangan Bencana"
   },
   {
    "dari": "perban-4-2025",
    "ke": "perban-1-2022",
-   "jenis": "merujuk",
+   "jenis": "mencabut",
    "terdaftar": true,
    "ke_judul": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2022 tentang Pengangkatan dalam Jabatan Fungsional Analis Kebencanaan Melalui Penyesuaian/Inpassing"
   },
   {
    "dari": "perban-4-2025",
    "ke": "perban-2-2022",
-   "jenis": "merujuk",
+   "jenis": "mencabut",
    "terdaftar": true,
    "ke_judul": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 2 Tahun 2022 tentang Pengangkatan dalam Jabatan Fungsional Penata Penanggulangan Bencana Melalui Penyesuaian/Inpassing"
   },
@@ -9478,13 +9970,6 @@
   },
   {
    "dari": "perban-7-2020",
-   "ke": "perka-20-2010",
-   "jenis": "merujuk",
-   "terdaftar": true,
-   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 20 Tahun 2010 tentang Petunjuk Pelaksanaan Tata Naskah Dinas Elektronik Di Lingkungan Badan Nasional Penanggulangan Bencana"
-  },
-  {
-   "dari": "perban-7-2020",
    "ke": "perka-5-2016",
    "jenis": "mengganti",
    "terdaftar": true,
@@ -9510,6 +9995,13 @@
    "jenis": "mengingat",
    "terdaftar": true,
    "ke_judul": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 4 Tahun 2019 tentang Organisasi dan Tata Kerja Badan Nasional Penanggulangan Bencana"
+  },
+  {
+   "dari": "perban-7-2020",
+   "ke": "perka-20-2010",
+   "jenis": "mencabut",
+   "terdaftar": true,
+   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 20 Tahun 2010 tentang Petunjuk Pelaksanaan Tata Naskah Dinas Elektronik Di Lingkungan Badan Nasional Penanggulangan Bencana"
   },
   {
    "dari": "perban-7-2020",
@@ -9821,13 +10313,6 @@
   },
   {
    "dari": "perban-8-2022",
-   "ke": "perka-2-2009",
-   "jenis": "merujuk",
-   "terdaftar": true,
-   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 2 Tahun 2009 tentang Tata Kerja Unsur Pengarah Penanggulangan Bencana"
-  },
-  {
-   "dari": "perban-8-2022",
    "ke": "perka-22-2014",
    "jenis": "mengganti",
    "terdaftar": true,
@@ -9867,6 +10352,13 @@
    "jenis": "mengingat",
    "terdaftar": true,
    "ke_judul": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 8 Tahun 2020 tentang Perubahan atas Peraturan Badan Nasional Penanggulangan Bencana Nomor 4 Tahun 2019 tentang Organisasi dan Tata Kerja Badan Nasional Penanggulangan Bencana"
+  },
+  {
+   "dari": "perban-8-2022",
+   "ke": "perka-2-2009",
+   "jenis": "mencabut",
+   "terdaftar": true,
+   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 2 Tahun 2009 tentang Tata Kerja Unsur Pengarah Penanggulangan Bencana"
   },
   {
    "dari": "perban-8-2022",
@@ -14126,13 +14618,6 @@
   },
   {
    "dari": "perka-3-2016",
-   "ke": "perka-10-2008",
-   "jenis": "merujuk",
-   "terdaftar": true,
-   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 10 Tahun 2008 tentang Pedoman Komando Tanggap Darurat Bencana"
-  },
-  {
-   "dari": "perka-3-2016",
    "ke": "perka-14-2010",
    "jenis": "mengganti",
    "terdaftar": true,
@@ -14172,6 +14657,13 @@
    "jenis": "mengingat",
    "terdaftar": false,
    "ke_judul": "Peraturan Presiden Nomor 8 Tahun 2008 tentang Badan Nasional Penanggulangan Bencana"
+  },
+  {
+   "dari": "perka-3-2016",
+   "ke": "perka-10-2008",
+   "jenis": "mencabut",
+   "terdaftar": true,
+   "ke_judul": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 10 Tahun 2008 tentang Pedoman Komando Tanggap Darurat Bencana"
   },
   {
    "dari": "perka-3-2016",
@@ -21803,6 +22295,112 @@
    "dok": "perpres-17-2018",
    "label": "Pasal 1",
    "teks": "Risiko Bencana adalah potensi kerugian yang ditimbulkan akibat bencana pada suatu wilayah dan kurun waktu tertentu yang dapat merupakan kematian, luka, sakit, jiwa terancam, hilangnya rasa aman, mengungsi, kerusakan atau kehilangan harta, dan gangguan kegiatan masyarakat."
+  }
+ ],
+ "konflik": [
+  {
+   "dok": "perban-1-2022",
+   "status_jdih": "BERLAKU",
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-4-2025"
+   ]
+  },
+  {
+   "dok": "perban-2-2019",
+   "status_jdih": "BERLAKU",
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-3-2024"
+   ]
+  },
+  {
+   "dok": "perban-2-2022",
+   "status_jdih": "BERLAKU",
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-4-2025"
+   ]
+  },
+  {
+   "dok": "perban-4-2019",
+   "status_jdih": "BERLAKU",
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-6-2025"
+   ]
+  },
+  {
+   "dok": "perban-5-2020",
+   "status_jdih": "BERLAKU",
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-5-2025"
+   ]
+  },
+  {
+   "dok": "perban-6-2021",
+   "status_jdih": "BERLAKU",
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-4-2025"
+   ]
+  },
+  {
+   "dok": "perban-7-2021",
+   "status_jdih": "BERLAKU",
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-4-2025"
+   ]
+  },
+  {
+   "dok": "perka-1-2012",
+   "status_jdih": "BERLAKU",
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-7-2025"
+   ]
+  },
+  {
+   "dok": "perka-17-2010",
+   "status_jdih": "BERLAKU",
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-5-2017"
+   ]
+  },
+  {
+   "dok": "perka-4-2008",
+   "status_jdih": "BERLAKU",
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-3-2026"
+   ]
+  },
+  {
+   "dok": "perka-4-2016",
+   "status_jdih": "BERLAKU",
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-2-2025"
+   ]
+  },
+  {
+   "dok": "perka-7-2015",
+   "status_jdih": "BERLAKU",
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-3-2025"
+   ]
+  },
+  {
+   "dok": "perka-8-2014",
+   "status_jdih": "BERLAKU",
+   "status_teks": "DICABUT",
+   "dicabut_oleh": [
+    "perban-10-2025"
+   ]
   }
  ]
 }

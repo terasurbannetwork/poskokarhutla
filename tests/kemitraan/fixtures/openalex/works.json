@@ -1,0 +1,11 @@
+{"meta": {"count": 3}, "results": [
+ {"id": "https://openalex.org/W1", "title": "Early warning for river floods in Java", "display_name": "Early warning for river floods in Java",
+  "abstract_inverted_index": {"Flood": [0], "early": [1], "warning": [2], "system": [3], "for": [4], "river": [5], "basins": [6], "in": [7], "Java.": [8], "We": [9], "propose": [10], "a": [11], "threshold": [12], "method.": [13]},
+  "publication_year": 2022, "doi": "https://doi.org/10.1/aaa", "primary_location": {"source": {"display_name": "Jurnal Contoh"}}, "cited_by_count": 41,
+  "topics": [{"display_name": "Flood Risk"}, {"display_name": "Hydrology"}]},
+ {"id": "https://openalex.org/W2", "title": "Peat fire mitigation", "display_name": "Peat fire mitigation",
+  "abstract_inverted_index": {"Canal": [0], "blocking": [1], "reduces": [2], "peat": [3], "fire.": [4]},
+  "publication_year": 2019, "doi": null, "primary_location": {"source": null}, "cited_by_count": 7, "topics": []},
+ {"id": "https://openalex.org/W3", "title": "Tanpa abstrak", "display_name": "Tanpa abstrak", "abstract_inverted_index": null,
+  "publication_year": 2020, "doi": "https://doi.org/10.1/ccc", "primary_location": null, "cited_by_count": 0, "topics": [{"display_name": "Geology"}]}
+]}

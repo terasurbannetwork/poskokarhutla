@@ -106,6 +106,7 @@ ulang yang berubah.
 | Mesin repo          | `.github/workflows/**`, `package.json`, `scripts/agents/**`   | —                                                   | `mekanik-mesin` |
 | Gerbang             | `tests/agen/**`, `tests/beban/**`                             | `npm run uji:agen`                                  | `penulis-gerbang` |
 | Kemitraan kampus `/kemitraan` | `public/kemitraan*`, `public/kemitraan/**`, `public/data/kemitraan/**`, `scripts/kemitraan/**`, `tests/kemitraan/**` (layar+pipeline); `src/kemitraan*.js`, `migrations/0080-0084` (warga-api) | D1 `km_*`, R2 `kemitraan/`; `kemitraan.yml` harian, `kemitraan-pakar.yml` bulanan | `kampus` |
+| Ruang Unit `/bnpb/unit` | `public/bnpb/unit/**`, `scripts/bnpb/unit/**` (ruang-bnpb); `src/unit*.js`, migrasi Ruang Unit (warga-api) | R2 `unit/`, rute `/api/unit/*`; langkah di `data.yml` | `ruang-bnpb` |
 | Lapangan `/petugas` | `public/petugas/**`, `tests/lapangan/**`, `scripts/lapangan/**`, `data/kajian-bnpb/lapangan/**` (lapangan); `src/lapangan*.js`, `migrations/0095-0098` (warga-api) | D1 `orang`, `lp_*`, `wa_antre`; R2 `lapangan/` | `lapangan` |
 
 ### 2.1 SIPPA (pipa portabel karhutla dan banjir): baca dulu, baru bangun
@@ -155,6 +156,19 @@ panggilan relawan lewat bot WA, baca dokumen di `data/kajian-bnpb/lapangan/` den
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LP-*`), `GLOSARIUM.md`.
 
 Aturan berhentinya sama dengan §2.1. Vektor wajah tidak pernah keluar dari Worker.
+
+### 2.4 Ruang Unit BNPB (`/bnpb/unit`): baca dulu, baru bangun
+
+Sebelum menyentuh apa pun tentang sistem untuk kedeputian, direktorat, pusat, biro, dan inspektorat BNPB
+(Jam Aturan, status peraturan, neraca kebutuhan, skor prioritas daerah, rapor dari data, perbaikan ambang meja), baca dokumen di
+`data/kajian-bnpb/kedeputian/` dengan urutan otoritas ini:
+
+1. `KEPUTUSAN-AWAL.md` (dan `KEPUTUSAN-UNIT.md` bila sudah ada, yang menang): ID sistem, mesin bersama MB-1..MB-8, fase F0-F3, prinsip, pertanyaan pemilik U1-U12.
+2. `riset/1-6` dan `RISET.md`: tusi tiap unit dari Perban 6/2025 jo. 11/2025, sistem resmi yang sudah ada, bukti per usulan.
+3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`RU-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Data staf hanya di R2 `unit/` lewat rute staf, tidak di `public/data`.
 
 ## 3. Bentuk kerja
 

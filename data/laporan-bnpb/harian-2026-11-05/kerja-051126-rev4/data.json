@@ -1,0 +1,251 @@
+{
+ "hari": "2026-11-05",
+ "cutoff": "2026-11-05T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Kota Subulussalam",
+   "status": "selesai",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 2255.0
+   },
+   "teks": {
+    "dampak": "* Korban Jiwa ; ± 2.255  KK  terdampak (pendataan)",
+    "status_darurat": "-",
+    "kondisi": "Banjir sudah surut",
+    "pengungsi": "32 KK mengungsi (sudah kembali kerumah masing-masing)"
+   },
+   "tangani": false,
+   "perhatian": false
+  },
+  {
+   "jenis": "longsor",
+   "prov": "11",
+   "lokasi": "Gayo Lues",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Tanah Longsor",
+   "angka": {
+    "meninggal": 1.0
+   },
+   "teks": {
+    "dampak": "* Korban Jiwa ; 1 (satu) jiwa MD An. Angelina",
+    "status_darurat": "-",
+    "kondisi": "Jalan lintas Blangkejeren - Kutacane dan Blangkejeren - Blangpidie lumpuh total, tidak bisa dilalui kendaraan roda empat dan roda dua.",
+    "pengungsi": "nihil"
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Selatan",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 222.0
+   },
+   "teks": {
+    "dampak": "* Korban Jiwa ; ± 222 KK / 794 jiwa terdampak (pendataan)",
+    "status_darurat": "Tanggap Darurat TMT 30 Oktober s.d 12 November 2026",
+    "kondisi": "Air perlahan surut menjadi ± 10-35 cm. Di Gampong Cot Bayu air perlahan surut, rumah warga tergenang air ± 10 s/d 15 cm. Di Gampong Padang Harapan air perlahan surut, rumah warga tergenang air ± 25 s/d 35 cm",
+    "pengungsi": "56 KK / 196 Jiwa mengungsi (pendataan)"
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Pidie Jaya",
+   "status": "selesai",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 4795.0
+   },
+   "teks": {
+    "dampak": "* Korban Jiwa ; 4.795 Kk/15.903 Jiwa terdampak",
+    "status_darurat": "transisi darurat ke pemulihan TMT 5 Agustus s.d 31 Desember 2026",
+    "kondisi": "Air sudah mulai surut, genangan kecil dan lumpur masih ada, Infrastruktur rusak (Jalan, tanggul jebol di beberapa titik)",
+    "pengungsi": "4 KK di gampong Dayah Usen"
+   },
+   "tangani": false,
+   "perhatian": false
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "33",
+   "lokasi": "Klaten",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 5775.0,
+    "jiwa": 19588.0,
+    "tangki": 7.0,
+    "liter": 35000.0
+   },
+   "teks": {
+    "dampak": "* Korban Jiwa ; ± 5.775 KK / 19.588 Jiwa terdampak (pendataan)",
+    "status_darurat": "Siaga Darurat Provinsi TMT 1 Juni s.d 31 Desember 2026",
+    "kondisi": "BPBD Kab Klaten melaksanakan kegiatan pendistribusian air bersih sebanyak 7 tangki / 35.000 liter Penerima manfaat per-hari ini 537 KK / 1.314 jiwa",
+    "pengungsi": "nihil"
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "33",
+   "lokasi": "Pemalang",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 14847.0,
+    "liter": 5000.0
+   },
+   "teks": {
+    "dampak": "* Korban Jiwa ; ± 14.847 KK terdampak (pendataan)",
+    "status_darurat": "Siaga Darurat TMT 1 Juni 2026 s.d 30 November 2026",
+    "kondisi": "BPBD Kab. Pemalang melaksanakan ‎distribusi air bersih menggunakan mobil tangki dengan kapasitas 5.000 liter dan 4.000 liter. Total Distribusi sebanyak 53.000 liter dari (BPBD) dilakukan dengan cara pendistribusian langsung kepada penerima manfaat 949 KK",
+    "pengungsi": "nihil"
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "33",
+   "lokasi": "Temanggung",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 1759.0,
+    "jiwa": 6094.0,
+    "tangki": 6.0,
+    "liter": 35000.0
+   },
+   "teks": {
+    "dampak": "* Korban Jiwa ; ± 1.759 KK / 6.094 jiwa terdampak (pendataan)",
+    "status_darurat": "Siaga Darurat Provinsi TMT 1 Juni s.d 31 Desember 2026",
+    "kondisi": "Personel BPBD Kabupaten Temanggung melaksanakan droping air bersih sebanyak 6 Tangki/35.000 liter",
+    "pengungsi": "nihil"
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "33",
+   "lokasi": "Grobogan",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 3491.0,
+    "liter": 58000.0
+   },
+   "teks": {
+    "dampak": "* Korban Jiwa ; ± 3.491 KK terdampak (pendataan)",
+    "status_darurat": "Siaga Darurat Provinsi TMT 1 Juni s.d 31 Desember 2026",
+    "kondisi": "BPBD Kab. Grobogan dan CSR mendistribusikan air bersih sebanyak 58.000 Liter.",
+    "pengungsi": "nihil"
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "banjir",
+   "prov": "35",
+   "lokasi": "Lumajang",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Banjir dan Tanah Longsor",
+   "angka": {
+    "kk": 1417.0
+   },
+   "teks": {
+    "dampak": "* Korban Jiwa ; ± 1.417 KK terdampak (pendataan)",
+    "status_darurat": "Siaga Darurat TMT 2 November 2026 s.d 30 Januari 2027",
+    "kondisi": "Titik pengungsian tidak ada, korban mengungsi ke rumah sanak saudara. TRC BPBD Kabupaten Lumajang masih melakukan penanganan, pendataan, serta menyiapkan logistik darurat. Pembukaan akses jalan, pemantauan wilayah terisolasi, dan pendataan kebutuhan warga menjadi prioritas penanganan. Masyarakat diimbau tetap waspada, menghindari aliran sungai yang berpotensi dilalui banjir lahar, serta mengikuti arahan petugas dan informasi resmi dari instansi berwenang",
+    "pengungsi": "nihil"
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "73",
+   "lokasi": "Bone",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 1060.0,
+    "jiwa": 5083.0,
+    "liter": 57400.0
+   },
+   "teks": {
+    "dampak": "* Korban Jiwa ; ± 1.060 KK / 5.083 jiwa terdampak (pendataan)",
+    "status_darurat": "-",
+    "kondisi": "BPBD Kab. Bone menyalurkan air sebanyak : 57.400 liter",
+    "pengungsi": "nihil"
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "73",
+   "lokasi": "Takalar",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 56.0,
+    "liter": 10000.0
+   },
+   "teks": {
+    "dampak": "* Korban Jiwa ; ± 56 KK terdampak",
+    "status_darurat": "-",
+    "kondisi": "Volume air yang disalurkan 10.000 liter",
+    "pengungsi": "nihil"
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "gempabumi",
+   "prov": "53",
+   "lokasi": "",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Gempa Bumi",
+   "angka": {
+    "meninggal": 156.0,
+    "kk": 17707.0
+   },
+   "teks": {
+    "dampak": "* Korban Jiwa: 156 (seratus lima puluh enam) jiwa MD, Luka-luka: ± 1.620 jiwa (masih dalam pendataan),  ± 17.707 KK terdampak (masih dalam pendataan)",
+    "status_darurat": "Transisi Darurat ke Pemulihan TMT 27 September 2026 s.d 27 Desember 2026",
+    "kondisi": "Hasil sementara Progres Huntara per tanggal 4 November di 7 Kabupaten terdampak yang sudah terbangun 100% sebanyak 368 unit",
+    "pengungsi": "± 27.120 jiwa mengungsi"
+   },
+   "tangani": true,
+   "perhatian": false
+  }
+ ],
+ "prioritas_baru": [
+  "93",
+  "81",
+  "82"
+ ]
+}

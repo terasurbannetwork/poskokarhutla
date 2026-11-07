@@ -297,7 +297,7 @@ PIL_PEMILIK = {'BNPB': 6895948, 'TNI': 7659472, 'Kemenhut': 8322412, 'PT Sinarma
 
 def pemilik(s, jumlah):
     """Baris PEMILIK armada dari rekap WA (A. BERDASARKAN INSTANSI), urutan WA (pemilik 27 Okt 2026). Pil templat disalin beserta ikonnya;
-    Pemda = pil Kemenhut berikon ikon/pemda.png (rIdPemda, dipasang penanganan.py). Tanpa rekap: baris PEMILIK dibuang."""
+    Pemda = pil Kemenhut berikon ikon/pemda.png (rIdPemda, dipasang penanganan.py); swasta lain (PT LNG, 4 Nov) = pil PT Sinarmas. Tanpa rekap: baris PEMILIK dibuang."""
     Y, YI = 6108192, 6140196
     cari = lambda tag, x, y: re.search(rf'<p:{tag}>(?:(?!</p:{tag}>).)*?<a:off x="{x}" y="{y}"/>(?:(?!</p:{tag}>).)*?</p:{tag}>', s, re.S).group(0)
     pil = {n: [cari('sp', x, Y), cari('pic', x + 73152, YI), cari('sp', x + 164592, Y)] for n, x in PIL_PEMILIK.items()}
@@ -306,13 +306,16 @@ def pemilik(s, jumlah):
         return re.sub(r'<p:sp>(?:(?!</p:sp>).)*?<a:off x="\d+" y="(?:6108192|6044184)"/>(?:(?!</p:sp>).)*?</p:sp>', '', s, flags=re.S)
     nid = max(map(int, re.findall(r'<p:cNvPr id="(\d+)"', s)))
     x, tambah = 6895948, ''
+    # pil keenam (PT LNG, 4 Nov) melewati panel: bantalan tulisan dikecilkan hanya bila lebar bawaan tidak muat
+    lebar = lambda pad: x - 64008 + sum(pad + 50292 * len(f'{k}  {v}') + 182880 + 64008 for k, v in jumlah.items())
+    PAD = 114300 if lebar(114300) <= 11551920 else 45720
     for nama, n in jumlah.items():
-        if nama not in pil and nama != 'Pemda':
+        if nama not in pil and nama != 'Pemda' and not nama.startswith('PT '):
             raise SystemExit(f'pemilik armada "{nama}" belum punya pil/ikon di templat (penanganan/bnpb.py PIL_PEMILIK)')
-        bg, ik, tx = pil.get(nama) or [pil['Kemenhut'][0], re.sub(r'r:embed="[^"]+"', 'r:embed="rIdPemda"', pil['Kemenhut'][1]), pil['Kemenhut'][2]]
+        bg, ik, tx = pil.get(nama) or (nama.startswith('PT ') and pil['PT Sinarmas']) or [pil['Kemenhut'][0], re.sub(r'r:embed="[^"]+"', 'r:embed="rIdPemda"', pil['Kemenhut'][1]), pil['Kemenhut'][2]]
         isi = iter((f'{nama}  ', str(n)))
         tx = re.sub(r'<a:t>[^<]*</a:t>', lambda m: f'<a:t>{next(isi, "")}</a:t>', tx)
-        tw = 114300 + 50292 * len(f'{nama}  {n}'); bw = tw + 182880   # lebar pil templat: 'BNPB  40' 516636 / 699516
+        tw = PAD + 50292 * len(f'{nama}  {n}'); bw = tw + 182880   # lebar pil templat: 'BNPB  40' 516636 / 699516
         for b, bx, by, cx in ((bg, x, Y, bw), (ik, x + 73152, YI, None), (tx, x + 164592, Y, tw)):
             b = re.sub(r'<a:off x="\d+" y="\d+"/>(\s*)<a:ext cx="(\d+)"', lambda m: f'<a:off x="{bx}" y="{by}"/>{m.group(1)}<a:ext cx="{cx or m.group(2)}"', b, count=1)
             nid += 1; tambah += re.sub(r'<p:cNvPr id="\d+"', f'<p:cNvPr id="{nid}"', b, count=1)

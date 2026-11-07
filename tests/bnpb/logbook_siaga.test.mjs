@@ -95,7 +95,7 @@ else {
   const tanpaGulir = async l => { for (const [w, h] of [[1440, 900], [390, 844]]) { await tab.ukuran(w, h); const x = await tab.lebihLebar(); assert.ok(x.sw <= x.iw + 1, `${l} ${w}px gulir mendatar ${x.sw}>${x.iw}`); } await tab.ukuran(1440, 900); };
 
   test("logbook: tanpa sesi tampil kartu masuk", async () => {
-    S.masuk = false; await tab.buka(base + "/bnpb/logbook.html", {tunggu: ".bn-blok a[href='/admin/pantau']"});
+    S.masuk = false; await tab.buka(base + "/bnpb/logbook.html", {tunggu: ".bn-blok a[href^='/admin/masuk?ke=%2Fbnpb%2Flogbook']"});
     assert.match(await tab.teks(), /Masuk staf/); S.masuk = true;
   });
 

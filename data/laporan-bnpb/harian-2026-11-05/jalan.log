@@ -1,0 +1,59 @@
+﻿C:\Python314\python : ok C:\Users\USER\AppData\Local\Temp\lewat-deck-7k4npfc9\Laporan Kejadian Bencana Harian 
+051126.pptx  {"slide": 7, "huruf_terkecil_pt": 6.5, "warna": 34, "angka_diperiksa": 194}
+At line:1 char:78
++ ... ltan\bnpb"; C:\Python314\python data\laporan-bnpb\harian-2026-11-05\j ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (ok C:\Users\USE...iperiksa": 194}:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+mode simpanan
+pakai simpanan website D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-05\kerja-051126\web
+hari data website 2026-11-04
+website 2026-11-04 ditambahkan: Maluku
+website 2026-11-04 ditambahkan: Maluku Utara
+website 2026-11-04 Kalimantan Tengah Siaga 1641 ha 821 FS -> ditangani PERHATIAN
+website 2026-11-04 Papua Selatan Prioritas 929 ha 306 FS -> ditangani PERHATIAN
+website 2026-11-04 Kalimantan Timur Siaga 331 ha 170 FS -> ditangani PERHATIAN
+website 2026-11-04 Jambi Siaga 255 ha 108 FS -> ditangani PERHATIAN
+website 2026-11-04 Kalimantan Selatan Siaga 137 ha 64 FS -> ditangani PERHATIAN
+website 2026-11-04 Sumatera Selatan Siaga 79 ha 55 FS -> ditangani 
+website 2026-11-04 Riau Patroli 4 ha 1 FS -> ditangani 
+website 2026-11-04 Kalimantan Barat Patroli 0 ha 0 FS -> selesai 
+website 2026-11-04 Sulawesi Tengah Siaga 95 ha 68 FS -> ditangani 
+website 2026-11-04 Maluku Siaga 174 ha 50 FS -> ditangani PERHATIAN
+website 2026-11-04 Maluku Utara Siaga 50 ha 5 FS -> ditangani 
+ok D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-05\Laporan Kejadian Bencana Harian 051126.pptx | hari data 2026-11-05 | cutoff 2026-11-05T07:00+07:00 | kejadian 23 karhutla 11 ditangani 10 perlu perhatian 7 selesai 3 | Prioritas ditambah ['93', '81', '82']
+karhutla 62 (prov) berjalan DITANGANI PERHATIAN {'kum': 697830, 'sisa': 1641, 'hot': 821}
+karhutla 93 (prov) berjalan DITANGANI PERHATIAN {'kum': 306166, 'sisa': 929, 'hot': 306}
+karhutla 64 (prov) berjalan DITANGANI PERHATIAN {'kum': 130343, 'sisa': 331, 'hot': 170}
+karhutla 15 (prov) berjalan DITANGANI PERHATIAN {'kum': 36650, 'sisa': 255, 'hot': 108}
+karhutla 81 (prov) berjalan DITANGANI PERHATIAN {'kum': 76724, 'sisa': 174, 'hot': 50}
+karhutla 63 (prov) berjalan DITANGANI PERHATIAN {'kum': 106591, 'sisa': 137, 'hot': 64}
+karhutla 72 (prov) berjalan DITANGANI  {'kum': 48195, 'sisa': 95, 'hot': 68}
+karhutla 16 (prov) berjalan DITANGANI  {'kum': 214367, 'sisa': 79, 'hot': 55}
+karhutla 82 (prov) berjalan DITANGANI  {'kum': 40901, 'sisa': 50, 'hot': 5}
+karhutla 14 (prov) berjalan DITANGANI  {'kum': 26998, 'sisa': 4, 'hot': 1}
+karhutla 61 (prov) berjalan selesai  {'kum': 327030, 'sisa': 0, 'hot': 0}
+banjir 11 Kota Subulussalam selesai selesai  {}
+longsor 11 Gayo Lues berjalan DITANGANI  {}
+banjir 11 Aceh Selatan belum DITANGANI PERHATIAN {}
+banjir 11 Pidie Jaya selesai selesai  {}
+kekeringan 33 Klaten berjalan DITANGANI  {}
+kekeringan 33 Pemalang berjalan DITANGANI  {}
+kekeringan 33 Temanggung berjalan DITANGANI  {}
+kekeringan 33 Grobogan berjalan DITANGANI  {}
+banjir 35 Lumajang berjalan DITANGANI  {}
+kekeringan 73 Bone berjalan DITANGANI  {}
+kekeringan 73 Takalar berjalan DITANGANI  {}
+gempabumi 53 (prov) berjalan DITANGANI  {}
+mesin ok D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-05\Laporan Kejadian Bencana Harian 051126.pptx
+Traceback (most recent call last):
+  File "D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-05\jalan.py", line 207, in <module>
+    import pdf; print('pdf', pdf.ke_pdf(nama))   # 30 Okt: PDF langsung (soffice, atau PowerPoint di Windows)
+                             ~~~~~~~~~~^^^^^^
+  File "D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\generator\pdf.py", line 28, in ke_pdf
+    if os.path.exists(pdf): os.remove(pdf)   # PDF lama tidak boleh lolos sebagai hasil konversi gagal
+                            ~~~~~~~~~^^^^^
+PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 
+'D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\harian-2026-11-05\\Laporan Kejadian Bencana Harian 
+051126.pdf'

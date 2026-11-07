@@ -780,7 +780,41 @@ def _konteks(teks_, ms, k):
     return sebelum.lower(), sesudah.lower()
 
 
-SETARA = ("perban", "perka", "kepka", "se", "juklak", "juknis", "pedoman")
+RX_CABUT_BUKA = re.compile(r"pada saat\b[^:]{0,160}?\bmulai berlaku\s*:", re.I)
+RX_CABUT_TUTUP = re.compile(r"\bdicabut\b|\bdinyatakan tidak berlaku\b", re.I)
+
+
+def cabut_daftar(teks_, ms):
+    """Indeks sitasi di dalam daftar berbutir 'Pada saat ... mulai berlaku: a. X; b. Y; dicabut dan dinyatakan tidak berlaku.'
+    _konteks() memotong di ';' dan di sitasi tetangga, jadi butir daftar tidak pernah melihat kata penutupnya (Perban 4/2025 Pasal 60).
+    Butir yang memuat 'tetap berlaku' atau 'diubah' dikecualikan."""
+    b = RX_CABUT_BUKA.search(teks_)
+    t = b and RX_CABUT_TUTUP.search(teks_, b.end())
+    if not t:
+        return set()
+    out = set()
+    for k, m in enumerate(ms):
+        if not (b.end() <= m.start() < t.start()):
+            continue
+        akhir = teks_.find(";", m.end(), t.start())
+        butir = teks_[m.end():akhir if akhir >= 0 else t.start()].lower()
+        if not re.search(r"tetap berlaku|\bdiubah\b", butir):
+            out.add(k)
+    return out
+
+
+def konflik_status(dok, relasi):
+    """Dokumen yang JDIH tulis BERLAKU padahal dicabut atau diganti dokumen BERLAKU lain menurut teksnya.
+    Relasi 'mengubah' tidak dihitung: dokumen yang diubah tetap berlaku (riset/6 H1 aturan c)."""
+    ber = {d["id"] for d in dok if (d["status"] or "").upper() == "BERLAKU"}
+    oleh = {}
+    for r in relasi:
+        if r["jenis"] in ("mencabut", "mengganti") and r["dari"] in ber and r["ke"] in ber:
+            oleh.setdefault(r["ke"], set()).add(r["dari"])
+    return [{"dok": k, "status_jdih": "BERLAKU", "status_teks": "DICABUT", "dicabut_oleh": sorted(v)} for k, v in sorted(oleh.items())]
+
+
+SETARA = ("perban","perka", "kepka", "se", "juklak", "juknis", "pedoman")
 
 
 def jenis_relasi(seg_jenis, sebelum, sesudah, sah=True):
@@ -807,12 +841,21 @@ def relasi_dari(dok_id, segs, judul_dok):
     bahan = [("judul", judul_dok)] + [(s["jenis"], s["teks"]) for s in segs if s["jenis"] != "judul"]
     for sj, t in bahan:
         ms = list(RX_SITASI.finditer(t))
+        daftar = cabut_daftar(t, ms) if sj == "pasal" else set()
         for k, m in enumerate(ms):
             ke = kunci_sitasi(m)
             if ke == dok_id:
                 continue
             sebelum, sesudah = _konteks(t, ms, k)
-            j = jenis_relasi(sj, sebelum, sesudah, ke.split("-")[0] in SETARA or ke.split("-")[0] == dok_id.split("-")[0])
+            sah = ke.split("-")[0] in SETARA or ke.split("-")[0] == dok_id.split("-")[0]
+            j = jenis_relasi(sj, sebelum, sesudah, sah)
+            if k in daftar and sah and j == "merujuk":
+                j = "mencabut"
+            # 'Pasal 5 Peraturan X dicabut' mencabut SATU pasal X; 'X telah dicabut dengan Y' melaporkan keadaan, bukan tindakan dokumen ini
+            if j in ("mencabut", "mengganti") and k not in daftar and (
+                    re.search(r"\bpasal\s+\d+[a-z]?(?:\s+ayat\s+\(\d+\))?\s*(?:dari\s+)?$", sebelum)
+                    or re.search(r"\btelah\s+(?:dicabut|diganti|digantikan|dinyatakan tidak berlaku)\b", sebelum + " " + sesudah)):
+                j = "merujuk"
             nama = re.sub(r"\s+", " ", t[m.start():m.end()])
             tg = RX_TENTANG.match(t, m.end())
             if tg:
@@ -869,6 +912,16 @@ def periksa(dok, segmen, relasi=None):
         assert r["jenis"] in JENIS_REL and r["dari"] in ids
 
 
+def status_menurut_teks(status, punya_isi, dicabut):
+    """DICABUT bila teks lawan mencabutnya; TIDAK_BISA_DICEK bila dokumen tanpa isi (hanya segmen judul), supaya tidak
+    tampak BERLAKU padahal tak ada teks yang diperiksa; selainnya status JDIH."""
+    if dicabut:
+        return "DICABUT"
+    if not punya_isi:
+        return "TIDAK_BISA_DICEK"
+    return (status or "").upper() or None
+
+
 def bangun(baca=None):
     indeks = json.load(open(f"{MENTAH}/indeks.json"))
     dok, segmen, definisi, rel_mentah = [], [], [], []
@@ -890,7 +943,7 @@ def bangun(baca=None):
                     "tgl_tetap": tanggal(m.get("Tanggal Penetapan")), "tgl_undang": tanggal(m.get("Tanggal Pengundangan")),
                     "sumber": sumber_dok(m)[0], "resmi": sumber_dok(m)[1], "sumber_bn": None if m.get("Sumber") in (None, "", "-") else m["Sumber"], "url": m.get("url"), "pdf": sumber_dok(m)[2],  # JDIH -> BPK -> bnpb.go.id -> salinan lain: yang benar-benar dipakai
                     "halaman": len(t["halaman"]) if t else 0, "halaman_ocr": len(t["ocr"]) if t else 0, "mutu": t["mutu"] if t else None,
-                    "n_segmen": len(segs)})
+                    "n_segmen": len(segs), "punya_isi": any(x["jenis"] != "judul" for x in segs)})
         for k, s in enumerate(segs):
             s["urut"] = k
         segmen += segs
@@ -903,9 +956,14 @@ def bangun(baca=None):
         d = ada.get(ke)
         relasi.append({"dari": dari, "ke": ke, "jenis": j, "terdaftar": d is not None, "ke_judul": d["judul"] if d else nama})
     periksa(dok, segmen, relasi)
+    konflik = konflik_status(dok, relasi)
+    dicabut = {x["dok"]: x["dicabut_oleh"] for x in konflik}
+    for d in dok:
+        d["status_teks"] = status_menurut_teks(d["status"], d.pop("punya_isi"), d["id"] in dicabut)
+        d["dicabut_oleh"] = dicabut.get(d["id"], [])
     dok.sort(key=lambda d: (-(d["tahun"] or 0), d["id"]))
     return {"versi": 1, "dibangun": sekarang.strftime("%Y-%m-%dT%H:%M:%SZ"), "sumber": "jdih.bnpb.go.id",
-            "dok": dok, "relasi": relasi, "definisi": definisi}, segmen
+            "dok": dok, "relasi": relasi, "definisi": definisi, "konflik": konflik}, segmen
 
 
 def tulis_seed(kat, segmen, ms):
@@ -980,6 +1038,13 @@ Tabel satu."""
 
 
 def cek():
+    # RU-014: tanpa isi -> TIDAK_BISA_DICEK; ber-isi tak terpengaruh; dicabut menang
+    assert status_menurut_teks("BERLAKU", False, False) == "TIDAK_BISA_DICEK"
+    assert status_menurut_teks("TIDAK BERLAKU", False, False) == "TIDAK_BISA_DICEK"
+    assert status_menurut_teks("BERLAKU", True, False) == "BERLAKU"
+    assert status_menurut_teks("Berlaku", True, True) == "DICABUT"
+    _, sj = urai_dok("perban-9-2026", "Judul saja", [])
+    assert all(x["jenis"] == "judul" for x in sj), sj
     # kunci kanonik: enam bentuk sitasi
     for teks_, mau in [("Undang-Undang Nomor 24 Tahun 2007", "uu-24-2007"), ("Peraturan Pemerintah Nomor 21 Tahun 2008", "pp-21-2008"),
                        ("Peraturan Presiden Nomor 1 Tahun 2019", "perpres-1-2019"),
@@ -1011,6 +1076,39 @@ def cek():
     assert ("uu-24-2007", "mengingat") in rel and ("perka-5-2020", "mencabut") in rel and ("perpres-9-2021", "merujuk") in rel, rel
     jr = relasi_dari("perpres-46-2026", [], "Perubahan atas Peraturan Presiden Nomor 1 Tahun 2019 tentang BNPB")
     assert jr and jr[0][0][2] == "mengubah", jr
+    # F0-1 (RU-001): daftar berbutir pencabutan, fixture pendek (bukan teks asli)
+    PB = "Peraturan Badan Nasional Penanggulangan Bencana"
+    cabut = lambda jenis, t: {k[1] for k, _ in relasi_dari("perban-4-2025", [{"jenis": jenis, "teks": t}], "Judul uji") if k[2] == "mencabut"}
+    t60 = (f"Pada saat Peraturan Badan ini mulai berlaku: a. {PB} Nomor 6 Tahun 2021 tentang A; b. {PB} Nomor 7 Tahun 2021 tentang B; "
+           f"c. {PB} Nomor 1 Tahun 2022 tentang C; dan d. {PB} Nomor 2 Tahun 2022 tentang D; dicabut dan dinyatakan tidak berlaku.")
+    assert cabut("pasal", t60) == {"perban-6-2021", "perban-7-2021", "perban-1-2022", "perban-2-2022"}, cabut("pasal", t60)
+    # butir melewati 400 huruf: empat sitasi dengan judul panjang
+    panjang_ = t60.replace("tentang A", "tentang " + "Penyelenggaraan Penanggulangan Bencana " * 4)
+    assert len(panjang_) > 400 and cabut("pasal", panjang_) == cabut("pasal", t60), "daftar >400 huruf gagal"
+    t_tetap = (f"Pada saat Peraturan Badan ini mulai berlaku: a. {PB} Nomor 6 Tahun 2021 tentang A tetap berlaku; "
+               f"b. {PB} Nomor 7 Tahun 2021 tentang B; dicabut dan dinyatakan tidak berlaku.")
+    assert cabut("pasal", t_tetap) == {"perban-7-2021"}, cabut("pasal", t_tetap)
+    # Berita Negara di dalam butir bukan sitasi peraturan
+    t_bn = t60.replace("tentang A;", "tentang A (Berita Negara Republik Indonesia Tahun 2021 Nomor 1420);")
+    assert cabut("pasal", t_bn) == cabut("pasal", t60), cabut("pasal", t_bn)
+    # daftar hanya dibaca di Pasal; sitasi di Mengingat tetap mengingat
+    assert cabut("mengingat", t60) == set()
+    ming = relasi_dari("perban-4-2025", [{"jenis": "mengingat", "teks": f"1. Perubahan atas {PB} Nomor 9 Tahun 2020 tentang X;"}], "Judul uji")
+    assert [(k[1], k[2]) for k, _ in ming] == [("perban-9-2020", "mengingat")], ming
+    # pencabutan SATU pasal tidak mencabut dokumennya
+    assert cabut("pasal", f"Pasal 5 {PB} Nomor 9 Tahun 2020 dicabut.") == set()
+    # 'telah dicabut' di Menimbang menjelaskan keadaan dokumen ketiga, bukan tindakan dokumen ini
+    assert cabut("menimbang", f"bahwa {PB} Nomor 9 Tahun 2020 tentang X telah dicabut dengan {PB} Nomor 3 Tahun 2023 tentang Y;") == set()
+    kd = [{"id": i, "status": "BERLAKU"} for i in "abc"]
+    kr = [{"dari": "a", "ke": "b", "jenis": "mencabut"}, {"dari": "a", "ke": "c", "jenis": "mengubah"}]
+    assert [x["dok"] for x in konflik_status(kd, kr)] == ["b"], konflik_status(kd, kr)
+    assert konflik_status([{"id": "a", "status": "BERLAKU"}, {"id": "b", "status": "TIDAK BERLAKU"}], [{"dari": "a", "ke": "b", "jenis": "mencabut"}]) == []
+    # RU-001 mutasi: pengganti BERLAKU menandai sasaran BERLAKU; pencabut TIDAK BERLAKU tidak; daftar di Menimbang tidak mencabut
+    kb = [{"id": i, "status": "BERLAKU"} for i in "ab"]
+    assert [x["dok"] for x in konflik_status(kb, [{"dari": "a", "ke": "b", "jenis": "mengganti"}])] == ["b"], "mengganti tak jadi konflik"
+    kt = [{"id": "a", "status": "TIDAK BERLAKU"}, {"id": "b", "status": "BERLAKU"}]
+    assert konflik_status(kt, [{"dari": "a", "ke": "b", "jenis": "mencabut"}]) == [], "pencabut TIDAK BERLAKU dihitung"
+    assert cabut("menimbang", t60) == set(), "daftar di Menimbang mencabut"
     # tanpa Pasal: dipecah per judul bagian dan <= batas
     panjang = [("I. PENDAHULUAN", 1)] + [("kalimat uji nomor %d dengan isi yang cukup panjang untuk memenuhi baris." % i, 1) for i in range(120)]
     sj = segmen_judul("juklak-1-2026", panjang, "lain")

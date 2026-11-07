@@ -5,14 +5,14 @@
    Isian terakhir per jenis disimpan di R2 wa-form/<kunci>.json untuk tombol "Salin isian terakhir" (bukan sumber laporan).
    Semua rute: staf Pusdalops/Koordalops/Pimpinan (atau admin) PERTAMA, sebelum body/D1. */
 import {json, gagal, bacaBody} from "./worker.js";
-import {stafOK, stafNyata, dariStaf, wilayahStaf} from "./staf.js";
+import {modAtauStaf, stafNyata, dariStaf, wilayahStaf} from "./staf.js";
 import {laju} from "./bnpb.js";
 import {kenali, tanggalIsi} from "./wa_jenis.js";
 import {jenisDari, hariWib} from "./wa.js";
 import {susun, KUNCI} from "../public/bnpb/bahan_spek.js";
 
 const PERAN = ["pusdalops", "koordalops", "pimpinan"], MAKS_BODY = 65536, MAKS_TEKS = 65536, HARI = 864e5;   // MAKS_TEKS = CHECK teks wa_masuk (0076)
-const pintu = async (env, req) => { const o = await stafOK(env, req, PERAN); return o ? String(o).slice(0, 64) : null; };
+const pintu = async (env, req) => { const o = await modAtauStaf(env, req, PERAN); return o ? String(o).slice(0, 64) : null; };
 const DITOLAK = "hanya staf Pusdalops, Koordalops, atau Pimpinan";
 /* bahan laporan harian = produk NASIONAL yang dibaca bot laporan Kepala BNPB: staf berwilayah dan akun dummy tidak boleh menulisnya */
 const bolehTulis = (req, oleh) => !dariStaf(oleh) || (stafNyata(req) && !wilayahStaf(req).length);
@@ -24,7 +24,8 @@ async function kirim(env, req, kini) {
   const b = await bacaBody(req, MAKS_BODY); if (b.galat) return gagal(b.status || 400, b.galat);
   const kunci = b.o?.kunci, r = susun(kunci, b.o?.isi); if (r.galat) return gagal(400, r.galat);
   /* penjaga kontrak: teks susunan harus dikenali sebagai jenis yang sama dan bertanggal sama, kalau tidak bot tidak akan memilihnya */
-  if (kenali(r.teks, null) !== kunci || tanggalIsi(r.teks, kunci) !== r.tanggal) return gagal(400, "teks bebas memuat frasa judul laporan WA lain (mis. \"laporan karhutla\"); ubah kalimatnya");
+  /* "laporan karhutla" ditolak di mana pun walau kenali() kini hanya membaca judul (b8f58f18): pembaca lama (bot Mac mini sebelum diperbarui) masih mencocokkan frasa itu di tengah teks */
+  if (kenali(r.teks, null) !== kunci || tanggalIsi(r.teks, kunci) !== r.tanggal || /laporan karhutla/i.test(r.teks.replace(/[*_]/g, "").replace(/\s+/g, " "))) return gagal(400, "teks bebas memuat frasa judul laporan WA lain (mis. \"laporan karhutla\"); ubah kalimatnya");
   const hari = Date.parse(hariWib(kini)), t = Date.parse(r.tanggal);
   if (t < hari - 14 * HARI || t > hari + HARI) return gagal(400, "tanggal laporan harus dalam 14 hari terakhir sampai besok");
   if (r.teks.length > MAKS_TEKS) return gagal(400, `teks susunan melewati ${MAKS_TEKS} karakter; kurangi kejadian atau kalimat`);

@@ -1,0 +1,103 @@
+{
+  "kode": "UGM",
+  "nama": "Universitas Gadjah Mada",
+  "kota": "Yogyakarta",
+  "provinsi": "DI Yogyakarta",
+  "lon": 110.38,
+  "lat": -7.77,
+  "logo": "kampus/UGM/logo.png",
+  "foto_kampus": [
+    "kampus/UGM/kampus-1.jpg",
+    "kampus/UGM/kampus-2.jpg",
+    "kampus/UGM/kampus-3.jpg",
+    "kampus/UGM/kampus-4.jpg"
+  ],
+  "kredit_kampus": "Foto: Lusia Komala Widiastuti (Gedung Pusat dan Gerbang UGM), Risanprasetyo/Febri Ady Prasetyo (Grha Sabha Pramana), Rahmatdenas (Masjid Kampus), CC0, CC BY-SA 4.0, dan CC BY 4.0, Wikimedia Commons",
+  "foto_kampus_sumber": [
+    {
+      "berkas": "kampus-1.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Gedung_Pusat_(Rektorat)_UGM.jpg",
+      "pengunggah": "Lusia Komala Widiastuti",
+      "lisensi": "CC0",
+      "objek": "Gedung Pusat (Rektorat) UGM"
+    },
+    {
+      "berkas": "kampus-2.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Gerbang_UGM_-_Boulevard.jpg",
+      "pengunggah": "Lusia Komala Widiastuti",
+      "lisensi": "CC0",
+      "objek": "Gerbang UGM, Boulevard",
+      "catatan": "Asli 1440x1080, diperbesar ke 1920x1440"
+    },
+    {
+      "berkas": "kampus-3.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Gedung_Grha_Sabha_Pramana_(GSP).jpg",
+      "pengunggah": "Risanprasetyo/Febri Ady Prasetyo",
+      "lisensi": "CC BY-SA 4.0",
+      "objek": "Grha Sabha Pramana (GSP)"
+    },
+    {
+      "berkas": "kampus-4.jpg",
+      "url": "https://commons.wikimedia.org/wiki/File:Masjid_Kampus_Universitas_Gadjah_Mada_2026_oleh_Denas.jpg",
+      "pengunggah": "Rahmatdenas",
+      "lisensi": "CC BY 4.0",
+      "objek": "Masjid Kampus UGM (pandangan udara)"
+    }
+  ],
+  "pusat_studi": "PSBA UGM",
+  "pusat_studi_nama": "Pusat Studi Bencana UGM",
+  "riset": [
+    {
+      "judul": "GAMA-EWS, peringatan dini longsor",
+      "gambar": "kampus/UGM/riset-1.jpg",
+      "unit": "Fak. Teknik",
+      "bahaya": "Longsor",
+      "isi": "Ekstensometer dengan telemetri dan sirene yang dikembangkan sejak 2007. Alat di Banjarnegara memberi peringatan sekitar 4 jam sebelum longsor.",
+      "url": "https://ugm.ac.id/id/berita/8000-berkat-alat-pengintai-longsor-faisal-raih-dosen-berprestasi-nasional/"
+    },
+    {
+      "judul": "EWS gempa berbasis radon dan air tanah",
+      "gambar": "kampus/UGM/riset-2.jpg",
+      "unit": "Tek. Fisika",
+      "bahaya": "Gempa",
+      "isi": "Stasiun telemonitor mengukur gas radon dan muka air tanah, mengirim data ke server lewat IoT tiap 5 detik. Lima stasiun beroperasi di DIY; kemampuan prediksinya masih dikaji.",
+      "url": "https://ugm.ac.id/id/berita/20125-ugm-kembangkan-sistem-deteksi-gempa-bisa-prediksi-3-hari-sebelum-terjadi/"
+    },
+    {
+      "judul": "EWS banjir lahar di Kali Code",
+      "gambar": "kampus/UGM/riset-3.jpg",
+      "unit": "Fak. Teknik",
+      "bahaya": "Banjir lahar",
+      "isi": "Sensor muka air dan kamera pemotret sungai tiap 30 detik, bertenaga surya, mendeteksi banjir lahar dingin Merapi di Kali Code.",
+      "url": "https://pasca.ugm.ac.id/en/early-warning-system-ews-in-kali-code-with-advanced-instruments-and-utilizing-independent-energy-sources/"
+    },
+    {
+      "judul": "Pemantauan kubah Merapi dengan drone",
+      "gambar": "kampus/UGM/riset-4.jpg",
+      "unit": "UGM-LAPAN",
+      "bahaya": "Gunung api",
+      "isi": "Pesawat nirawak sepanjang sekitar 1,2 m dengan terbang otomatis memotret kubah Merapi pada 2012, gambar puncak pertama sejak erupsi besar 2010.",
+      "url": "https://ugm.ac.id/id/berita/4198-pesawat-nir-awak-pantau-aktivitas-puncak-merapi/"
+    }
+  ],
+  "sumber_riset": "Laman resmi UGM (ugm.ac.id, pasca.ugm.ac.id), 2012–2024; foto dok. UGM",
+  "kredit_foto_riset": "Foto: UGM",
+  "peluang": [
+    {
+      "ikon": "longsor",
+      "judul": "Pasang di desa rawan",
+      "isi": "GAMA-EWS dipasang di lokasi rawan longsor pilihan BPBD."
+    },
+    {
+      "ikon": "banjir",
+      "judul": "Sungai Merapi",
+      "isi": "Data muka air Kali Code masuk ke peringatan banjir lahar BPBD."
+    },
+    {
+      "ikon": "gunungapi",
+      "judul": "Pantau kubah",
+      "isi": "Drone UGM melengkapi pantauan kubah Merapi bagi tanggap darurat."
+    }
+  ],
+  "catatan": "1) riset-4.jpg aslinya 500x313 px (satu-satunya foto di artikel UGM 2012), diperbesar 2x sehingga agak lunak; cari foto pengganti bila perlu. 2) riset-1 dan riset-4 menampilkan seorang peneliti/orang di tepi bingkai; riset-3 adalah potongan poster kuliah lapangan Magister Manajemen Bencana (16 Mei 2024), ada orang di kiri; resolusi 900x820. 3) Sebagian foto UGM bersumber dari berita lama (2012, 2013, 2020); status operasional alat sekarang belum terverifikasi. 4) Jumlah pemasangan GAMA-EWS berbeda antarsumber (100+ unit di 12 provinsi per 2013; 32 provinsi per laman lain), maka tidak dicantumkan. 5) Klaim EWS gempa radon (prediksi 1 sampai 3 hari) belum diakui BMKG, jadi isi hanya menyebut cara kerja. 6) Unit pengembang EWS Kali Code belum jelas dari sumber (dijelaskan Prof. Faisal Fathani, FT UGM); mohon dicek. 7) Nama lengkap PSBA di laman resmi tertulis 'Pusat Studi Bencana UGM'; singkatan PSBA dipakai pada alamat psba.ugm.ac.id. 8) Logo diambil dari Commons (CC BY 4.0, brand.ugm.ac.id) berbentuk lambang plus tulisan, ditaruh di kanvas persegi transparan; bila ingin lambang saja, perlu dipotong. 9) Kredit foto riset 'Foto: UGM' belum memuat nama fotografer."
+}

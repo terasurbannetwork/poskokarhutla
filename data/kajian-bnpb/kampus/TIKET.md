@@ -57,26 +57,26 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 | KM-B03 | Masalah otomatis `masalah.py` | kampus | P | M | selesai |
 | KM-B04 | Ringkas + profil provinsi | kampus | P | S | selesai |
 | KM-B05 | Workflow `kemitraan.yml` | mekanik-mesin | I | S | belum |
-| KM-B06 | Tampilan Daerah + lembar profil | kampus | L | L | belum |
-| KM-B07 | Komponen peta SVG `.km-peta-wil` | kampus | L | M | belum |
-| KM-B08 | Buku profil daerah | kampus | L | L | belum |
-| KM-C01 | Bank templat pertanyaan | kampus | P | L | belum |
-| KM-C02 | Generator pertanyaan + halaman panduan | kampus | P + L | M | belum |
-| KM-C03 | Rute masalah, kunjungan, jawaban, koreksi | warga-api | W | L | belum |
+| KM-B06 | Tampilan Daerah + lembar profil | kampus | L | L | selesai |
+| KM-B07 | Komponen peta SVG `.km-peta-wil` | kampus | L | M | selesai |
+| KM-B08 | Buku profil daerah | kampus | L | L | selesai |
+| KM-C01 | Bank templat pertanyaan | kampus | P | L | selesai |
+| KM-C02 | Generator pertanyaan + halaman panduan | kampus | P + L | M | selesai |
+| KM-C03 | Rute masalah, kunjungan, jawaban, koreksi | warga-api | W | L | selesai |
 | KM-C04 | Tampilan Masalah | kampus | L | L | belum |
 | KM-C05 | Formulir pendataan luring (halaman saya BP) | kampus | L | M | belum |
-| KM-C06 | Korpus OpenAlex `korpus.py` | kampus | P | M | belum |
-| KM-C07 | Indeks BM25 + cocok pakar + solusi | kampus | P | L | belum |
+| KM-C06 | Korpus OpenAlex `korpus.py` | kampus | P | M | selesai |
+| KM-C07 | Indeks BM25 + cocok pakar + solusi | kampus | P | L | selesai |
 | KM-C08 | Pakar di worker + ekspor pipeline | warga-api | W | M | belum |
 | KM-C09 | Label relevansi 60 masalah [manusia] | – | P (manusia) | M | belum |
-| KM-C10 | Uji relevansi `uji_cocok.py` | kampus | P | S | belum |
+| KM-C10 | Uji relevansi `uji_cocok.py` | kampus | P | S | selesai |
 | KM-C11 | Kartu pakar + daftar pendek di masalah | kampus | L | M | belum |
 | KM-C12 | Workflow `kemitraan-pakar.yml` | mekanik-mesin | I | S | belum |
-| KM-D01 | Rute daftar, masuk, atur sandi, kode anggota | warga-api | W | L | belum |
+| KM-D01 | Rute daftar, masuk, atur sandi, kode anggota | warga-api | W | L | selesai |
 | KM-D02 | Halaman daftar + masuk | kampus | L | M | belum |
 | KM-D03 | Halaman saya (anggota) | kampus | L | M | belum |
 | KM-D04 | Tampilan Kampus + perjanjian | kampus | L | M | belum |
-| KM-D05 | Rute kampus, perjanjian, kode BPBD | warga-api | W | M | belum |
+| KM-D05 | Rute kampus, perjanjian, kode BPBD | warga-api | W | M | selesai |
 | KM-D06 | Skor keaktifan kampus | warga-api | W | S | belum |
 | KM-E01 | Rute donor + panggilan donor | warga-api | W | S | belum |
 | KM-E02 | Data donor awal (A2 paparan) | kampus | P | S | belum |

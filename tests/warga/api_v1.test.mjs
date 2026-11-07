@@ -82,6 +82,24 @@ uji("riwayat sel: publik, sel berisi dikembalikan, sel kosong data null, koordin
   assert.ok((await api("GET", "/api/v1")).j.endpoint.some(e => e.jalur === "/api/v1/riwayat" && e.kunci === false));
 });
 
+uji("firespot: publik, angka sama dengan arsip kluster_hari, saring prov, hari salah 400, hari tanpa arsip 404", async () => {
+  const hari = "2026-10-24", arsip = JSON.parse(readFileSync(path.join(AKAR, `public/data/kluster_hari/${hari}.json`), "utf8"));
+  const r = await api("GET", `/api/v1/firespot?hari=${hari}`); assert.equal(r.s, 200, r.t); assert.equal(r.h.get("access-control-allow-origin"), "*");
+  assert.equal(r.j.hari, hari); assert.equal(r.j.wilayah.length, Object.keys(arsip.w).length);
+  for (const b of r.j.wilayah) {
+    const v = arsip.w[[b.prov, b.kab, b.kec].filter(x => x !== null).join("|")];
+    assert.ok(v, `baris ${b.prov}|${b.kab}|${b.kec} tidak ada di arsip`);
+    assert.deepEqual([b.firespot, b.cluster_hari, b.cluster_aktif, b.cluster_firespot_aktif, b.level_maks], [v[4], v[3], v[0], v[1], v[2]]);
+  }
+  const prov = r.j.wilayah.find(b => b.kab === null).prov, sp = await api("GET", `/api/v1/firespot?hari=${hari}&prov=${prov}`);
+  assert.equal(sp.s, 200); assert.ok(sp.j.wilayah.length > 0 && sp.j.wilayah.every(b => b.prov === prov));
+  for (const q of ["hari=2026-02-30", "hari=24-10-2026", "hari=2026-10-24T00", "hari=../meta", "prov=1", "prov=14|x"]) {
+    const x = await api("GET", "/api/v1/firespot?" + q); assert.equal(x.s, 400, `${q} harus 400, dapat ${x.s}`); assert.equal(x.h.get("access-control-allow-origin"), "*");
+  }
+  assert.equal((await api("GET", "/api/v1/firespot?hari=2000-01-01")).s, 404);
+  assert.ok((await api("GET", "/api/v1")).j.endpoint.some(e => e.jalur === "/api/v1/firespot" && e.kunci === false));
+});
+
 uji("riwayat sel: laju per hash IP, panggilan ke-601 dalam sejam 429 dengan CORS; IP lain tidak ikut; IP mentah tidak disimpan", async () => {
   const alamat = "198.51.100.77", kunci = (await import("node:crypto")).createHash("sha256").update("garam-uji|" + alamat).digest("hex");
   await DB.batch(Array.from({length: 600}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'riwayat.ip', ?)").bind(kunci, Date.now())));

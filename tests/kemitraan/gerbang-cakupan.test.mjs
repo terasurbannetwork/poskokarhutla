@@ -20,8 +20,12 @@ export function namaEkspor(t) {
   for (const m of t.matchAll(/^export\s+(?:async\s+)?(?:function\*?|const|let|class)\s+([A-Za-z_$][\w$]*)/gm)) n.add(m[1]);
   for (const m of t.matchAll(/^export\s*\{([^}]*)\}/gm)) for (const x of m[1].split(",")) { const s = x.trim().split(/\s+as\s+/).pop(); if (s) n.add(s); }
   for (const m of t.matchAll(/\b(?:module\.)?exports\.([A-Za-z_$][\w$]*)\s*=/g)) n.add(m[1]);
-  for (const m of t.matchAll(/module\.exports\s*=\s*\{([^}]*)\}/g)) {
-    for (const x of m[1].split(",")) { const k = /^\s*([A-Za-z_$][\w$]*)/.exec(x); if (k) n.add(k[1]); }
+  const badan = (b) => { for (const x of b.split(",")) { const k = /^\s*([A-Za-z_$][\w$]*)/.exec(x); if (k) n.add(k[1]); } };
+  for (const m of t.matchAll(/module\.exports\s*=\s*\{([^}]*)\}/g)) badan(m[1]);
+  // module.exports = pub; -> kunci literal objek `const pub = { ... }` (literal tanpa kurung kurawal bersarang)
+  for (const m of t.matchAll(/module\.exports\s*=\s*([A-Za-z_$][\w$]*)\s*;?/g)) {
+    const d = new RegExp(`\\b(?:const|let|var)\\s+${m[1].replace(/\$/g, "\\$")}\\s*=\\s*\\{([^}]*)\\}`).exec(t);
+    if (d) badan(d[1]);
   }
   return [...n];
 }
@@ -97,6 +101,10 @@ test("cakupan KM: penemuan benar-benar menemukan konst, kode, dan konst.js (buka
 test("cakupan KM: penemu ekspor mengenali ES export, exports.X, dan module.exports = {..}", () => {
   assert.deepEqual(namaEkspor("export function a(){}\nexport const b = 1;\nexport { c, d as e };").sort(), ["a", "b", "c", "e"]);
   assert.deepEqual(namaEkspor("exports.x = 1; module.exports.y = 2;\nmodule.exports = { z, w: 1 };").sort(), ["w", "x", "y", "z"]);
+  // module.exports = <identifier>: tiap kunci literalnya satu ekspor, dan kunci baru yang tak terdaftar ikut terlihat
+  const pub = "const pub = { a, b: 1,\n  c };\nmodule.exports = pub;";
+  assert.deepEqual(namaEkspor(pub).sort(), ["a", "b", "c"]);
+  assert.deepEqual(namaEkspor(pub.replace("c }", "c, baru }")).sort(), ["a", "b", "baru", "c"]);
 });
 
 /* ---------- penolakan gerbang sendiri ---------- */

@@ -48,6 +48,9 @@ export async function buatDunia() {
   try { await (await mf.getWorker()).scheduled({cron: "* * * * *", scheduledTime: Date.UTC(d0.getUTCFullYear(), d0.getUTCMonth(), d0.getUTCDate(), 0, 5)}); } catch (e) { galatIsi.sitrep_arsip = "cron arsip: " + e.message; }
   const ds = await api("GET", "/api/sitrep/arsip/daftar", null, {});
   if (!ds.j?.tgl?.includes(tglArsip)) galatIsi.sitrep_arsip = `arsip ${tglArsip} tidak ada di R2 sesudah cron: ${ds.t.slice(0, 160)}`;
+  /* Pantau Dalops (src/dalops.js) membaca R2 dalops/<jenis>.json yang diunggah mesin Pusdalops, tanpa endpoint dummy: benihkan isi kosong yang sah */
+  const media = await mf.getR2Bucket("MEDIA"), hariIni = new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);
+  for (const j of ["banjir", "longsor", "karhutla"]) await media.put(`dalops/${j}.json`, JSON.stringify({hari: hariIni, kejadian: []}));
   /* cookie sesi admin = Super Admin (token rahasia-admin): format "exp.mod.hmac" milik src/statistik.js, ditandatangani SESI_KUNCI uji */
   const isi = `${Date.now() + 6 * 3600e3}.${sha256("rahasia-admin").slice(0, 12)}`, sesi = `${isi}.${createHmac("sha256", "kunci-sesi-uji").update(isi).digest("hex")}`;
   return {mf, base, sesi, tglArsip, DB, api, kode, galatIsi, tutup: () => mf.dispose()};

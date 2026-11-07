@@ -1100,7 +1100,7 @@ def cek_ekstensi():
     coba("E_hulu", lambda: sumber_tak_ada("E_hulu", "CHIRPS hulu (model_kab_hulu/chirps) belum ada") if not os.path.isdir(HU.CHIRPS_DIR) else None)
     coba("E_neraca", lambda: sumber_tak_ada("E_neraca", "deret_bulanan.json belum ada") if not os.path.exists(DERET_BULANAN) else None)
     coba("E_twsa", lambda: sumber_tak_ada("E_twsa", "grace.json belum ada") if not os.path.exists(GRACE) else None)
-    coba("E_swi", lambda: [jam_hujan(s) for s in [(-6.125, 106.625)]] and None)
+    coba("E_swi", lambda: [jam_hujan(s) for s in sorted(__import__("jam_era5").sel_hujan())[:1]] and None)   # sel uji = sel nyata grid jam_era5
     coba("E_cs", lambda: sumber_tak_ada("E_cs", "angin 10 m ERA5 (jam_era5 angin) belum ada") if not os.path.isdir(os.path.join(JAM_ERA5, "angin")) else None)
     coba("E_iklim", baca_iklim)
     return cek
@@ -1111,7 +1111,8 @@ def pemblokir():
     s = {}
     s[1] = ("manual-latih", "P_w/T_w dihitung `latih`/`baris` dari label v2 (berkas v2 diperlukan)") if not os.path.exists(V2.OUT_KAB) else ("siap", "label v2 ada; jalankan `baris`")
     titik = os.path.join(AKAR, "data/raw/banjir/model_kab_debit/titik.json")
-    s[2] = ("siap", "titik latih ada") if os.path.exists(titik) else ("BLOK", "model_kab_debit/titik.json tidak ada: `arsip_debit.py salin-titik` atau Q2 dihitung ulang di pusat sel")
+    q2m = os.path.join(AKAR, "data/raw/banjir/q2_pusat/manifest.json")   # A-11: titik latih = pusat sel q2_pusat
+    s[2] = ("siap", "titik latih ada") if os.path.exists(titik) else ("siap", "titik latih = pusat sel q2_pusat (A-11)") if os.path.exists(q2m) else ("BLOK","model_kab_debit/titik.json tidak ada: `arsip_debit.py salin-titik` atau Q2 dihitung ulang di pusat sel")
     cek = cek_ekstensi()
     s[3] = ("siap", "jam-an ERA5 tersedia") if cek["E_swi"] is None else ("BLOK", cek["E_swi"])
     s[5] = ("siap", "semua cache ada") if not any(cek[k] for k in ("E_kedap", "E_pasang")) else ("BLOK", "; ".join(str(cek[k]) for k in ("E_kedap", "E_pasang") if cek[k]))

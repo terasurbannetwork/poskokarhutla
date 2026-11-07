@@ -274,7 +274,7 @@
     });
   }
   function masuk(s) {
-    app.replaceChildren(h("div", {class: "bn-blok"}, h("h2", {teks: "Masuk staf"}), h("p", {class: "dk-p", teks: s === 403 ? "Akunmu belum berhak membuka dokumen Pusdalops. Hanya peran Pusdalops, Koordinator Pusdalops, dan Pimpinan." : "Dokumen Pusdalops hanya untuk staf. Masuk dulu."}), h("a", {class: "bn-tombol", href: "/admin/pantau", teks: "Masuk staf"})));
+    app.replaceChildren(h("div", {class: "bn-blok"}, h("h2", {teks: "Masuk staf"}), h("p", {class: "dk-p", teks: s === 403 ? "Akunmu belum berhak membuka dokumen Pusdalops. Hanya peran Pusdalops, Koordinator Pusdalops, dan Pimpinan." : "Dokumen Pusdalops hanya untuk staf. Masuk dulu."}), h("a", {class: "bn-tombol", href: "/admin/masuk?ke=" + encodeURIComponent(location.pathname + location.search), teks: "Masuk staf"})));
   }
   const sibuk = () => el.kertas.hasAttribute("aria-busy");
   function cetak() {

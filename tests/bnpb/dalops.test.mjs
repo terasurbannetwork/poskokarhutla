@@ -3,7 +3,9 @@
    Jalan: node --test tests/bnpb/dalops.test.mjs */
 import {test} from "node:test";
 import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
 import "../../public/bnpb/dalops_hitung.js";
+import "../../public/bnpb/dalops_karhutla.js";
 const H = globalThis.DalopsHitung, HARI = "2026-11-01";
 const K = (id, kab, mulai, terakhir, surut, x = {}) => ({id, prov: "Aceh", prov_kode: "11", kab: ["Kab. " + kab], kab_kode: ["11|" + kab], mulai, pertama: mulai, terakhir,
   kk: null, jiwa: null, mengungsi: null, rumah_terendam: null, tinggi_cm: null, surut, kondisi: "", ...x});
@@ -76,6 +78,58 @@ test("rincian kab: kecamatan digabung, desa dikelompokkan per kecamatan, histori
   assert.deepEqual(kel[0].kec, ["Trumon Tengah", "Trumon"]);
   assert.deepEqual(kel[0].riwayat.map(r => [r.tgl, r.kk, r.jiwa, r.tinggi_cm]), [["2026-10-29", 40, 132, [10, 60]], ["2026-11-01", 5, null, null]]);
   assert.deepEqual(H.perKec(kel[0]).map(k => [k.nama, k.desa.map(d => d.nama)]), [["Trumon Tengah", []], ["Trumon", ["Padang Harapan"]], [null, ["Lhok Raya"]]]);
+});
+
+test("laporan harian terbaru memperbarui Pantau Banjir: jalan.py memanggil dalops_banjir.py --unggah (pemilik 5 Nov 2026)", async () => {
+  const {readdirSync} = await import("node:fs");
+  const akar = new URL("../../data/laporan-bnpb/", import.meta.url);
+  // folder harian-YYYY-MM-DD dengan jalan.py, mulai 5 Nov 2026 (sebelumnya belum ada aturannya)
+  const hari = readdirSync(akar).filter(n => /^harian-\d{4}-\d{2}-\d{2}$/.test(n) && n >= "harian-2026-11-05").sort();
+  const terbaru = hari.reverse().find(n => { try { readFileSync(new URL(n + "/jalan.py", akar)); return true; } catch { return false; } });
+  assert.ok(terbaru, "tidak ada data/laporan-bnpb/harian-*/jalan.py sejak 5 Nov 2026");
+  assert.match(readFileSync(new URL(terbaru + "/jalan.py", akar), "utf8"), /dalops_banjir\.py['"],\s*['"]--unggah/,
+    `${terbaru}/jalan.py tidak memanggil scripts/data/dalops_banjir.py --unggah: kondisi banjir WA tidak sampai ke /bnpb/dalops`);
+});
+
+test("tab Karhutla: angka dari peta_karhutla_kab (luas/belum hari terakhir, tidak dijumlah antarhari), kabar BPBD terbaru per kab, perlu ditanya", () => {
+  const K = globalThis.DalopsKarhutla;
+  const hari = Array.from({length: 10}, (_, i) => `2026-10-${String(26 + i).padStart(2, "0")}`.replace("2026-10-32", "2026-11-01").replace("2026-10-33", "2026-11-02").replace("2026-10-34", "2026-11-03").replace("2026-10-35", "2026-11-04"));
+  const kab = {hari, kab: {
+    "62|Kapuas": {nama: "Kapuas", prov: "62", d: [[6, 900, 700], [7, 1200, 900], [8, 1400, 1000], [9, 1534, 1086]]},   // belum 4 hari berturut
+    "62|Seruyan": {nama: "Seruyan", prov: "62", d: [[8, 50, 20], [9, 30, 0]]},                                       // padam hari terakhir
+    "15|Lama": {nama: "Lama", prov: "15", d: [[1, 10, 5]]}}};                                                         // di luar 7 hari
+  const kabar = [{kab_kode: ["62|Kapuas"], terakhir: "2026-11-01", surut: false, kondisi: "a"}, {kab_kode: ["62|Kapuas"], terakhir: "2026-11-03", surut: false, kondisi: "b"}];
+  const {hari: h, baris} = K.rakit(kab, kabar);
+  assert.equal(h, "2026-11-04");
+  assert.deepEqual(baris.map(x => [x.nama, x.luas, x.belum, x.padam, x.lama, x.kabar?.kondisi ?? null]), [["Kapuas", 1534, 1086, false, 4, "b"], ["Seruyan", 30, 0, true, 0, null]]);
+  assert.equal(baris[0].harian.length, 7);
+  assert.deepEqual(K.perluDitanya(baris, h).map(x => [x.nama, x.umur]), [["Kapuas", 1]], "Kapuas berkabar 3 Nov, data 4 Nov: ditanya; Seruyan padam: tidak");
+});
+
+test("kata per jenis: teks WA dan daftar kurang longsor tanpa tinggi genangan; status.json kolom l untuk longsor", () => {
+  const x = {nama: "Kab. Gayo Lues", mulai: "2026-11-04", terakhir: "2026-11-04", kurang: [], mengungsi: 5};
+  const wa = H.pesanWA(x, H.KATA.longsor);
+  assert.match(wa, /mencatat longsor di Kab\. Gayo Lues/); assert.match(wa, /belum dilaporkan tertangani/); assert.doesNotMatch(wa, /surut|genangan|perahu/);
+  assert.match(H.pesanWA(x), /banjir .* belum dilaporkan surut/);
+  const kel = [{nama: "A", surut: false, terakhir: "2026-11-04", kk: 1, jiwa: 2, tinggi_cm: null}];
+  assert.deepEqual(H.perluDitanya(kel, "2026-11-04", H.KATA.longsor), []);
+  assert.deepEqual(H.perluDitanya(kel, "2026-11-04")[0].kurang, ["tinggi"]);
+  const sk = H.statusKab({kec: {"11|Gayo Lues|Blangkejeren": {b: [0, 0, 0, 0], l: [1, 2, 2, 0]}}}, "l");
+  assert.deepEqual(sk["11|Gayo Lues"].b, [1, 2, 2, 0]);
+});
+
+test("desa tanpa angka tidak bisa dibuka: adaAngka butuh KK, jiwa, atau tinggi air (pemilik 5 Nov 2026)", () => {
+  assert.equal(H.adaAngka({nama: "Napai", kk: null, jiwa: null, tinggi_cm: null}), false);
+  assert.equal(H.adaAngka({nama: "Napai"}), false);
+  assert.equal(H.adaAngka({kk: 30, jiwa: null, tinggi_cm: null}), true);
+  assert.equal(H.adaAngka({kk: null, jiwa: null, tinggi_cm: [10, 15]}), true);
+  // gerbang layar: baris desa dan histori kecamatan disaring adaAngka, kecamatan tanpa desa berangka tidak bisa diklik
+  const src = readFileSync(new URL("../../public/bnpb/dalops.js", import.meta.url), "utf8");
+  assert.match(src, /k\.desa\.filter\(H\.adaAngka\)/, "baris desa harus disaring H.adaAngka");
+  assert.match(src, /filter\(r => r && H\.adaAngka\(r\)\)/, "histori kecamatan harus disaring H.adaAngka");
+  // kartu Upaya penanganan paling bawah
+  const urut = src.slice(src.lastIndexOf("bagianWilayah(pekan, prov, hari"));   // panggilan di render(), bukan definisinya
+  assert.ok(urut.indexOf("bagianUpaya(") > urut.indexOf("Peringatan dini"), "bagianUpaya harus sesudah Peringatan dini");
 });
 
 test("tindakan: upaya, pihak, kebutuhan, kendala dari kejadian terbaru yang mengisinya; histori harian menggabungkan upaya per tanggal", () => {

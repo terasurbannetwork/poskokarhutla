@@ -1,0 +1,47 @@
+/* Kemitraan Kampus, buku profil daerah /kemitraan/buku (KM-B08, DS §5.10). Cetak A4; layar lebar 210mm di tengah. Hanya komponen .km-buku*, selebihnya dari kemitraan.css dan akademisi.css. */
+@page{size:A4;margin:18mm 16mm 20mm}
+.km-bukualat{position:fixed;right:16px;bottom:16px;z-index:5;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.ak.km-buku{max-width:210mm;margin:0 auto;padding:12mm 12mm 24mm;display:block;background:var(--card);font-family:Roboto,"Helvetica Neue",Arial,sans-serif}
+.km-buku > section{margin-bottom:28px}
+.km-buku h1{font-size:22px;line-height:1.25;margin:0 0 14px;padding-bottom:8px;border-bottom:2px solid var(--brand);color:var(--brand)}
+.km-buku p{text-align:justify;hyphens:auto;margin:0 0 8px}
+.km-buku .km-babisi{margin-top:0}
+.km-buku .ak-disi{padding:10px 12px 12px}
+.km-sampul{min-height:240mm;display:flex;flex-direction:column;gap:12px;justify-content:center}
+.km-sampul h1{font-size:34px;border:0;padding:0;margin:0}
+.km-sampul-kop{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.km-sampul .km-peta{max-width:140mm}
+.km-merek{font-size:11px;color:var(--ink2);margin-top:auto}
+.km-bk-angka{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:0 0 14px}
+.km-bk-angka > div{border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:3px;align-content:start;min-width:0}
+.km-bk-angka span{font-size:11.5px;color:var(--ink2)}
+.km-bk-angka b{font-size:20px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.km-bk-angka small{font-size:10.5px;color:var(--ink2)}
+.km-bk-daftar{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:6px}
+.km-bk-daftar li{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:6px}
+.km-bk-daftar small{color:var(--ink2)}
+.km-buku h2{font-size:15px;margin:14px 0 6px}
+footer.km-kaki{display:block;text-align:justify;padding:8px 0 0;margin:14px 0 0;font-size:11px;line-height:1.4;border-top:1px solid var(--line);color:var(--ink2)}
+.km-pakar{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:6px;break-inside:avoid}
+.km-pakar h3{margin:0;font-size:14px}
+.km-kutip{margin:0;padding:8px 12px;border-left:3px solid var(--accent);background:var(--surface);border-radius:var(--r-sm,6px);font-size:13px}
+.km-kutip small{display:block;color:var(--ink2);font-size:10.5px;margin-bottom:4px}
+.km-kutip cite{display:block;margin-top:4px;font-size:11.5px;color:var(--ink2);font-style:normal}
+.km-buku .km-tanya li{break-inside:avoid}
+.km-buku .km-tanya > li::after{content:"";display:block;height:20mm;margin-top:6px;border:1px dashed var(--line);border-radius:6px}
+.km-buku tr{break-inside:avoid}
+@media (max-width:700px){.ak.km-buku{padding:12px}.km-bk-angka{grid-template-columns:repeat(2,minmax(0,1fr))}.km-sampul{min-height:0}.km-sampul h1{font-size:26px}}
+@media print{
+  .km-buku .ak-tw{overflow:visible}
+  .km-bukualat,header.top{display:none}
+  html,body,.ak.km-buku{background:#fff}
+  .ak.km-buku{max-width:none;padding:0}
+  .km-buku > section.km-bukubab{break-before:page;margin:0}
+  .km-sampul{min-height:225mm;margin:0}
+  .km-buku h1,.km-buku h2,.km-buku h3,.km-buku h4,.km-buku summary,.km-buku figcaption,.km-buku .km-ket{break-after:avoid}
+  .km-buku h4 + ol,.km-buku h3 + .km-kv,.km-buku summary + .ak-disi > :first-child{break-before:avoid}
+  .km-buku section.ak-dbagian,.km-buku .ak-grafik,.km-buku .km-peta-wil{break-inside:avoid}
+  .km-buku .ak-dbagian{border-color:#bbb}
+  .km-buku .km-peta-wil{max-height:120mm}
+  .km-buku .km-tanya > li::after{height:16mm}
+}

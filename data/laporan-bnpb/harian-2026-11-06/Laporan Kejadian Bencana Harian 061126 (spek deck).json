@@ -1,0 +1,98 @@
+{
+ "format": "harian",
+ "pesan_kunci": "Laporan Kejadian Bencana Harian, 06-11-2026.",
+ "judul_dokumen": "Laporan Kejadian Bencana Harian",
+ "kajian": "rehab",
+ "tanggal": "2026-11-06",
+ "slide": [
+  {
+   "jenis": "sampul",
+   "layout": "putih",
+   "foto": [
+    "D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/generator/sampul/media/image1.png"
+   ],
+   "kredit": "Foto: DenY Krisbiyantoro, CC BY-SA 4.0, Wikimedia Commons",
+   "kota": "Jakarta",
+   "judul_sampul": "Laporan Kejadian Bencana Harian",
+   "subjudul": "Periode 5 Nov 2026, 07.00 sampai 6 Nov 2026, 07.00 WIB",
+   "penyaji": {
+    "nama": "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)",
+    "jabatan": "Kepala Badan Nasional Penanggulangan Bencana"
+   },
+   "tanpa_kepada": "pemilik 2 Nov 2026: pil Disampaikan kepada dihapus, laporan harian dipresentasikan Kepala BNPB sendiri"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\harian-2026-11-06\\Laporan Kejadian Bencana Harian 061126 (isi).pptx",
+   "halaman": 2,
+   "bagian": 1,
+   "sumber": "Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; GIS BNPB, 5 Nov 2026"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\harian-2026-11-06\\Laporan Kejadian Bencana Harian 061126 (isi).pptx",
+   "halaman": 3,
+   "bagian": 2,
+   "sumber": "Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; GIS BNPB, 5 Nov 2026"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\harian-2026-11-06\\Laporan Kejadian Bencana Harian 061126 (isi).pptx",
+   "halaman": 4,
+   "bagian": 3,
+   "sumber": "Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; GIS BNPB, 5 Nov 2026"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\harian-2026-11-06\\Laporan Kejadian Bencana Harian 061126 (isi).pptx",
+   "halaman": 5,
+   "bagian": 4,
+   "sumber": "PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB"
+  },
+  {
+   "jenis": "penutup",
+   "layout": "putih",
+   "foto": [
+    "D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/generator/sampul/media/image1.png"
+   ],
+   "kredit": "Foto: DenY Krisbiyantoro, CC BY-SA 4.0, Wikimedia Commons"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\harian-2026-11-06\\Laporan Kejadian Bencana Harian 061126 (isi).pptx",
+   "halaman": 7,
+   "sumber": "Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; GIS BNPB, 5 Nov 2026"
+  }
+ ],
+ "bagian": [
+  {
+   "judul": "Ringkasan Situasi",
+   "label": "Ringkasan",
+   "halaman_tetap": [
+    2
+   ]
+  },
+  {
+   "judul": "Kejadian Baru",
+   "label": "Kejadian baru",
+   "halaman_tetap": [
+    3
+   ]
+  },
+  {
+   "judul": "Pengkinian Kejadian Sebelumnya",
+   "label": "Pengkinian",
+   "halaman_tetap": [
+    4
+   ]
+  },
+  {
+   "judul": "Status Siaga Bencana",
+   "label": "Status siaga",
+   "halaman_tetap": [
+    5
+   ]
+  }
+ ],
+ "panel_sisi": "gelap"
+}

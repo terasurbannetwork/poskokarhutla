@@ -1,0 +1,2968 @@
+{
+ "spek": "spek",
+ "pesan_kunci": "Laporan Kejadian Bencana Harian, 06-11-2026.",
+ "slide": [
+  {
+   "nomor": 1,
+   "jenis": "sampul",
+   "asal": "spek#1",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    158.16,
+    410.0,
+    109.68,
+    3
+   ],
+   "peta": null,
+   "struktur": [
+    "Foto: DenY Krisbiyantoro, CC BY-SA 4.0, Wikimedia Commons",
+    "Periode 5 Nov 2026, 07.00 sampai 6 Nov 2026, 07.00 WIB",
+    "Dipresentasikan oleh",
+    "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)",
+    "Kepala Badan Nasional Penanggulangan Bencana",
+    "Jakarta, 6 November 2026",
+    "© 2026 Badan Nasional Penanggulangan Bencana",
+    "Ketangguhan Bangsa dalam Menghadapi Bencana"
+   ],
+   "warna": [
+    [
+     "00499D",
+     "aksen"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "7F93AA",
+     "garis"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "garis"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo",
+    "logo",
+    "logo"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": [
+    43.2,
+    279.84000000000003,
+    410.0,
+    19.5
+   ]
+  },
+  {
+   "nomor": 2,
+   "jenis": "impor",
+   "asal": "spek#2",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "2",
+    "Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; GIS BNPB, 5 Nov 2026",
+    "01  ",
+    "02  ",
+    "03  "
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "impor"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "impor"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "1B5A93",
+     "impor"
+    ],
+    [
+     "2E3440",
+     "impor"
+    ],
+    [
+     "2F86D1",
+     "impor"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "5B7A99",
+     "impor"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "8A6A2E",
+     "impor"
+    ],
+    [
+     "B08A3E",
+     "impor"
+    ],
+    [
+     "BFC5CC",
+     "impor"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "impor"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "impor"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "DCEBF8",
+     "impor"
+    ],
+    [
+     "E3EAF1",
+     "impor"
+    ],
+    [
+     "E6EAF0",
+     "impor"
+    ],
+    [
+     "F1F3F6",
+     "impor"
+    ],
+    [
+     "F3F5F8",
+     "impor"
+    ],
+    [
+     "F4C3A0",
+     "impor"
+    ],
+    [
+     "F4ECDC",
+     "impor"
+    ],
+    [
+     "F8DDE0",
+     "impor"
+    ],
+    [
+     "FBE7D6",
+     "impor"
+    ],
+    [
+     "FCF1F2",
+     "impor"
+    ],
+    [
+     "FDF4EC",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "peta",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 3,
+   "jenis": "impor",
+   "asal": "spek#3",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "3",
+    "Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; GIS BNPB, 5 Nov 2026",
+    "01  ",
+    "02  ",
+    "03  "
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "impor"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "impor"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "1B5A93",
+     "impor"
+    ],
+    [
+     "2E3440",
+     "impor"
+    ],
+    [
+     "2F86D1",
+     "impor"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "5B7A99",
+     "impor"
+    ],
+    [
+     "6B7280",
+     "impor"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "8A6A2E",
+     "impor"
+    ],
+    [
+     "A9B4C2",
+     "impor"
+    ],
+    [
+     "B08A3E",
+     "impor"
+    ],
+    [
+     "BFC5CC",
+     "impor"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "impor"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "impor"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "DCC79C",
+     "impor"
+    ],
+    [
+     "E3EAF1",
+     "impor"
+    ],
+    [
+     "E6EAF0",
+     "impor"
+    ],
+    [
+     "F1F3F6",
+     "impor"
+    ],
+    [
+     "F3F5F8",
+     "impor"
+    ],
+    [
+     "F4ECDC",
+     "impor"
+    ],
+    [
+     "FBE7D6",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 4,
+   "jenis": "impor",
+   "asal": "spek#4",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "4",
+    "PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+    "01  ",
+    "02  ",
+    "03  "
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "impor"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "impor"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "impor"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "5B7A99",
+     "impor"
+    ],
+    [
+     "6B7280",
+     "impor"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "8F3F07",
+     "impor"
+    ],
+    [
+     "B08A3E",
+     "impor"
+    ],
+    [
+     "BFC5CC",
+     "impor"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "impor"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "C9D1E3",
+     "impor"
+    ],
+    [
+     "D9600B",
+     "impor"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "DCE3EB",
+     "impor"
+    ],
+    [
+     "E3EAF1",
+     "impor"
+    ],
+    [
+     "E6EAF0",
+     "impor"
+    ],
+    [
+     "F3F5F8",
+     "impor"
+    ],
+    [
+     "F4C3A0",
+     "impor"
+    ],
+    [
+     "F4ECDC",
+     "impor"
+    ],
+    [
+     "F6B26B",
+     "impor"
+    ],
+    [
+     "F8DDE0",
+     "impor"
+    ],
+    [
+     "FBE7D6",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 5,
+   "jenis": "penutup",
+   "asal": "spek#5",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    168,
+    410.0,
+    64.32000000000001,
+    3
+   ],
+   "peta": null,
+   "struktur": [
+    "Foto: DenY Krisbiyantoro, CC BY-SA 4.0, Wikimedia Commons",
+    "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)",
+    "Kepala Badan Nasional Penanggulangan Bencana",
+    "117",
+    "Graha BNPB, Jl. Pramuka Kav. 38, Jakarta Timur 13120",
+    "021 2982 7793",
+    "persuratan@bnpb.go.id",
+    "www.bnpb.go.id",
+    "Satu Data Bencana",
+    "@BNPB_Indonesia",
+    "@infoBencanaBNPB",
+    "BNPB Indonesia",
+    "@bnpbindonesia",
+    "© 2026 Badan Nasional Penanggulangan Bencana",
+    "Ketangguhan Bangsa dalam Menghadapi Bencana"
+   ],
+   "warna": [
+    [
+     "00499D",
+     "aksen"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "7F93AA",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo",
+    "logo",
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 6,
+   "jenis": "impor",
+   "asal": "spek#6",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "6",
+    "Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; GIS BNPB, 5 Nov 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "impor"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "impor"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2F86D1",
+     "impor"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "impor"
+    ],
+    [
+     "BFC5CC",
+     "impor"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "impor"
+    ],
+    [
+     "E6EAF0",
+     "impor"
+    ],
+    [
+     "F1F3F6",
+     "impor"
+    ],
+    [
+     "F3F5F8",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "impor"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  }
+ ],
+ "angka": [
+  {
+   "kunci": "turunan:spek#1#kredit:foto0_0.png",
+   "tampil": "Foto: DenY Krisbiyantoro, CC BY-SA 4.0, Wikimedia Commons",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Wikimedia Commons, atribusi foto",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor0.8",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor0.10",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor0.21",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor1.0",
+   "tampil": "18",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor3.0",
+   "tampil": "15",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor5.0",
+   "tampil": "11",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor8.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor11.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor15.0",
+   "tampil": "26",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor17.0",
+   "tampil": "18",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor19.0",
+   "tampil": "11",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor21.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor23.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor25.0",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor27.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor30.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor33.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor36.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor39.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor42.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor44.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor46.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor48.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor50.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor52.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor54.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor56.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor58.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor59.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor62.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor72.0",
+   "tampil": "22",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor73.0",
+   "tampil": "78",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor74.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor75.4",
+   "tampil": "18",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor77.0",
+   "tampil": "14",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor78.4",
+   "tampil": "18",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor80.26",
+   "tampil": "14",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor84.2",
+   "tampil": "2.828",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor89.2",
+   "tampil": "1.881",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor94.2",
+   "tampil": "397",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor99.2",
+   "tampil": "132",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor104.2",
+   "tampil": "128",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor108.2",
+   "tampil": "97",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor112.2",
+   "tampil": "83",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor115.2",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor117.2",
+   "tampil": "90",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor120.2",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor120.16",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor121.0",
+   "tampil": "46.705",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor126.0",
+   "tampil": "81",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor129.0",
+   "tampil": "17.707",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor133.34",
+   "tampil": "2.828",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor133.52",
+   "tampil": "1.881",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor134.35",
+   "tampil": "78",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor134.54",
+   "tampil": "66",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor136.50",
+   "tampil": "2.5",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor136.54",
+   "tampil": "64,2",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor137.49",
+   "tampil": "2.5",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor137.53",
+   "tampil": "80,5",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor139.26",
+   "tampil": "167.000",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor139.47",
+   "tampil": "46.705",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor140.28",
+   "tampil": "19.836",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor141.2",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor142.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor1.0",
+   "tampil": "11",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor4.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor7.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor10.0",
+   "tampil": "11",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor13.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor13.6",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor15.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor17.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor20.0",
+   "tampil": "17",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor21.8",
+   "tampil": "294",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor22.2",
+   "tampil": "701.734",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor23.0",
+   "tampil": "1.033",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor24.2",
+   "tampil": "2.828",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor26.0",
+   "tampil": "28",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor27.8",
+   "tampil": "10",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor28.2",
+   "tampil": "311.030",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor29.0",
+   "tampil": "869",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor30.2",
+   "tampil": "1.881",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor32.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor33.8",
+   "tampil": "65",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor34.2",
+   "tampil": "131.100",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor35.0",
+   "tampil": "156",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor36.2",
+   "tampil": "397",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor38.0",
+   "tampil": "28",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor39.8",
+   "tampil": "10",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor40.2",
+   "tampil": "48.553",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor41.0",
+   "tampil": "63",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor42.2",
+   "tampil": "132",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor44.0",
+   "tampil": "15",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor45.8",
+   "tampil": "53",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor46.2",
+   "tampil": "106.936",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor47.0",
+   "tampil": "48",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor48.2",
+   "tampil": "128",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor50.0",
+   "tampil": "27",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor51.8",
+   "tampil": "72",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor52.2",
+   "tampil": "36.755",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor53.0",
+   "tampil": "42",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor54.2",
+   "tampil": "97",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor56.0",
+   "tampil": "30",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor57.8",
+   "tampil": "8",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor58.2",
+   "tampil": "77.004",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor59.0",
+   "tampil": "29",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor60.2",
+   "tampil": "83",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor62.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor63.8",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor64.2",
+   "tampil": "32.599",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor65.0",
+   "tampil": "68",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor66.2",
+   "tampil": "78",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor68.0",
+   "tampil": "8",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor69.8",
+   "tampil": "183",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor70.2",
+   "tampil": "214.465",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor71.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor72.2",
+   "tampil": "12",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor74.0",
+   "tampil": "21",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor75.8",
+   "tampil": "290",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor76.2",
+   "tampil": "27.000",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor78.0",
+   "tampil": "26",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor79.8",
+   "tampil": "134",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor80.2",
+   "tampil": "327.049",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor82.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor87.0",
+   "tampil": "46.705",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor89.0",
+   "tampil": "113.476",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor91.0",
+   "tampil": "167.000",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor93.0",
+   "tampil": "10",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor96.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor97.0",
+   "tampil": "12.022",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor99.0",
+   "tampil": "57.311",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor101.0",
+   "tampil": "56.000",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor103.0",
+   "tampil": "10",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor106.0",
+   "tampil": "29",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor107.0",
+   "tampil": "14.847",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor111.0",
+   "tampil": "71.000",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor114.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor115.0",
+   "tampil": "19.836",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor117.0",
+   "tampil": "56.165",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor119.0",
+   "tampil": "40.000",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor122.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor127.0",
+   "tampil": "15",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor128.14",
+   "tampil": "27",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor129.1",
+   "tampil": "17.707",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor130.0",
+   "tampil": "156",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor133.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor134.1",
+   "tampil": "4.969",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor135.14",
+   "tampil": "31",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor139.0",
+   "tampil": "28",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor141.1",
+   "tampil": "222",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor144.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor145.1",
+   "tampil": "81",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor150.2",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor151.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 5 Nov 2026 07.00 s.d. 6 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor1.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor3.2",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor3.14",
+   "tampil": "42",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor5.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor6.0",
+   "tampil": "0",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor9.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor12.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor15.0",
+   "tampil": "42",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor24.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor27.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor28.0",
+   "tampil": "10",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor29.0",
+   "tampil": "15",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor31.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor42.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor48.8",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor51.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor52.0",
+   "tampil": "10",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor53.0",
+   "tampil": "15",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor55.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor59.0",
+   "tampil": "7",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor72.8",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor75.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor76.0",
+   "tampil": "10",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor77.0",
+   "tampil": "15",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor79.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor83.0",
+   "tampil": "13",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor95.2",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#4#impor96.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#4",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari PVMBG Badan Geologi, 6 Nov 2026 06.00 WIB",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#kredit:foto4_0.png",
+   "tampil": "Foto: DenY Krisbiyantoro, CC BY-SA 4.0, Wikimedia Commons",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Wikimedia Commons, atribusi foto",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#kontak:call-center",
+   "tampil": "117",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Situs resmi BNPB, bnpb.go.id",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#5#kontak:telepon",
+   "tampil": "021 2982 7793",
+   "nilai": null,
+   "naskah": "spek#5",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Situs resmi BNPB, bnpb.go.id",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor1.33",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor2.18",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor2.20",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor2.31",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor3.0",
+   "tampil": "14",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor4.0",
+   "tampil": "7",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor5.0",
+   "tampil": "7",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor10.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor12.0",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor15.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor18.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor21.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor24.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor27.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor29.0",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor32.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor34.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor40.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor42.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor45.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor47.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor50.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor52.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor55.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor58.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor60.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor63.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor66.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor68.2",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#6#impor69.0",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#6",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 s.d. 6 Nov 2026; Pengolahan data sistem BNPB dari GIS BNPB, 5 Nov 2026",
+   "dari": []
+  }
+ ],
+ "catatan": [
+  [
+   "spek#1",
+   "judul_baris",
+   2
+  ],
+  [
+   "spek#2",
+   "impor_warna",
+   {
+    "2F6FB5": "2F86D1",
+    "0E7490": "1B5A93",
+    "E5E7EB": "E6EAF0",
+    "F1F2F4": "F1F3F6",
+    "D5EEF2": "DCEBF8",
+    "F2D3BA": "F4C3A0"
+   }
+  ],
+  [
+   "spek#3",
+   "impor_warna",
+   {
+    "9FB0C4": "A9B4C2",
+    "EEF0F3": "F1F3F6",
+    "E2D3B5": "DCC79C",
+    "2F6FB5": "2F86D1",
+    "0E7490": "1B5A93",
+    "F7F8FA": "F3F5F8"
+   }
+  ],
+  [
+   "spek#4",
+   "impor_warna",
+   {
+    "FBE7DC": "FBE7D6",
+    "9A3412": "8F3F07",
+    "F7F8FA": "F3F5F8",
+    "E1E5EA": "DCE3EB",
+    "C9D1DB": "C9D1E3",
+    "FBE0CC": "FBE7D6",
+    "F3C7CD": "F8DDE0",
+    "F6C9A7": "F4C3A0",
+    "F2A672": "F6B26B"
+   }
+  ],
+  [
+   "spek#6",
+   "impor_warna",
+   {
+    "2F6FB5": "2F86D1",
+    "EEF0F3": "F1F3F6"
+   }
+  ]
+ ],
+ "keputusan": [],
+ "peringatan": [],
+ "masukan": {
+  "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\logo-bersama\\kris.png": "d0c25d345951e4c4a3e4444be49d0a41bf58ce3ad1d2be1cc78608ad51ab0c25",
+  "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\data\\angka.json": "4163ae0df3859117ccbb3069ec7dd06ff438c3c04783910b2547526a84dd31b1",
+  "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\foto\\berakhlak-hd.png": "5c28e8ef6c0b71f02486173d71b3a052369c1e6658c2e40d7cee331b0d1f2eb9",
+  "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\logo\\sumber-bnpb.png": "40625fac249ac73b97d4b25bcd29b48961037a80bf49ae2a789877db29bacb64",
+  "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\tema.json": "e6594fae0cc2d74401922f76d2a2cb9e86f7203bc87a46248837217bc9c6c546",
+  "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262",
+  "foto0_0.png": "3c8688d68006235d198d9efb572787e5aee08d3ecece28af93e8978e9d4916c0",
+  "foto4_0.png": "3c8688d68006235d198d9efb572787e5aee08d3ecece28af93e8978e9d4916c0",
+  "isi.pptx": "bb29f08325c44dc8779c946b00c09c99535670143f719f67911a9beaec66b86c",
+  "spek.json": "be3dc392ee34828a17c02343b256dbba45bc5149a610c3f5a185fa3cd8a3e32f"
+ }
+}

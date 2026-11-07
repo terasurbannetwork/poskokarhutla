@@ -40,6 +40,9 @@
     return [...m.values(), ...(lain.desa.length ? [lain] : [])];
   }
 
+  /* desa atau hari histori yang punya minimal satu angka (KK, jiwa, tinggi air); tanpa angka = baris berisi "–" saja */
+  const adaAngka = d => d.kk != null || d.jiwa != null || !!d.tinggi_cm;
+
   function kelompok(kejadian, h) {
     const m = new Map();
     for (const k of [...kejadian].sort((a, b) => (a.terakhir > b.terakhir) - (a.terakhir < b.terakhir))) {
@@ -65,8 +68,13 @@
   const lama = (x, h) => selisih(x.surut ? x.terakhir : h, x.mulai || x.terakhir) + 1;
   const sepekan = (kel, h) => kel.filter(x => selisih(h, x.terakhir) <= SEPEKAN);
 
+  /* kata per jenis untuk teks WA dan daftar kurang (pemilik 5 Nov 2026: Pantau = Karhutla, Banjir, Longsor). 'surut' di data = selesai menurut jenisnya. */
+  const KATA = {
+    banjir: {kata: "banjir", selesai: "surut", tanya: "apakah banjir sudah surut", ukur: "tinggi genangan", tinggi: true, alat: "logistik, perahu, pompa, alat berat"},
+    longsor: {kata: "longsor", selesai: "tertangani", tanya: "apakah akses sudah bisa dilalui dan material sudah dibersihkan", ukur: "", tinggi: false, alat: "logistik, alat berat, tenda"}};
+
   /* belum surut yang kabarnya lebih dari sehari atau angkanya bolong. Urut kabar paling lama dulu. */
-  function perluDitanya(kel, h) {
+  function perluDitanya(kel, h, j = KATA.banjir) {
     const out = [];
     for (const x of kel) {
       if (x.surut) continue;
@@ -74,18 +82,18 @@
       if (umur >= 1) kurang.push("kabar");
       if (x.kk == null) kurang.push("kk");
       if (x.jiwa == null) kurang.push("jiwa");
-      if (x.tinggi_cm == null) kurang.push("tinggi");
+      if (j.tinggi && x.tinggi_cm == null) kurang.push("tinggi");
       if (kurang.length) out.push({...x, umur, kurang, senyap: umur > SEPEKAN});
     }
     return out.sort((a, b) => b.umur - a.umur || a.nama.localeCompare(b.nama));
   }
 
   /* status.json per kecamatan -> per kab: level harian = tertinggi di kecamatannya, h3 = tertinggi, h3d = hujan tiga hari per tanggal (tertinggi) */
-  function statusKab(st) {
+  function statusKab(st, f = "b") {   // f: "b" banjir, "l" longsor (status.json membawa keduanya); hasil tetap di x.b
     const out = {};
     for (const [k, v] of Object.entries(st?.kec || {})) {
       const [p, kab] = k.split("|"), kode = p + "|" + kab, x = out[kode] || (out[kode] = {kab_kode: kode, prov_kode: p, nama: kab, b: [], h3: null, h3d: []});
-      (v.b || []).forEach((l, i) => { if (l != null && !(x.b[i] >= l)) x.b[i] = l; });
+      (v[f] || []).forEach((l, i) => { if (l != null && !(x.b[i] >= l)) x.b[i] = l; });
       if (v.h3 != null && !(x.h3 >= v.h3)) x.h3 = v.h3;
       (v.h3d || []).forEach((m, i) => { if (m != null && !(x.h3d[i] >= m)) x.h3d[i] = m; });
     }
@@ -113,32 +121,33 @@
   const BLN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
   const tglPanjang = s => s ? `${+s.slice(8, 10)} ${BLN[+s.slice(5, 7) - 1]} ${s.slice(0, 4)}` : "–";
   const tglPendek = s => s ? `${+s.slice(8, 10)} ${BLN[+s.slice(5, 7) - 1].slice(0, 3)}` : "–";
-  const NAMA_KURANG = {kabar: "kondisi terkini dan apakah banjir sudah surut", kk: "jumlah KK terdampak", jiwa: "jumlah jiwa terdampak", tinggi: "tinggi genangan (cm)", upaya: "upaya penanganan yang sudah dilakukan"};
+  const NAMA_KURANG = j => ({kabar: "kondisi terkini dan " + j.tanya, kk: "jumlah KK terdampak", jiwa: "jumlah jiwa terdampak", tinggi: "tinggi genangan (cm)", upaya: "upaya penanganan yang sudah dilakukan"});
   /* pesan siap tempel ke grup WA BPBD: netral-formal, tanpa sapaan nama */
-  function pesanWA(x) {
-    const minta = [...new Set(["kabar", ...x.kurang])].map(k => NAMA_KURANG[k]);
+  function pesanWA(x, j = KATA.banjir) {
+    const minta = [...new Set(["kabar", ...x.kurang])].map(k => NAMA_KURANG(j)[k]);
     if (x.mengungsi == null) minta.push("jumlah warga mengungsi dan lokasi pengungsian");
-    return `Yth. rekan BPBD ${x.nama}. Pusdalops BNPB mencatat banjir di ${x.nama} sejak ${tglPanjang(x.mulai)}, kabar terakhir ${tglPanjang(x.terakhir)}, belum dilaporkan surut.\n` +
+    return `Yth. rekan BPBD ${x.nama}. Pusdalops BNPB mencatat ${j.kata} di ${x.nama} sejak ${tglPanjang(x.mulai)}, kabar terakhir ${tglPanjang(x.terakhir)}, belum dilaporkan ${j.selesai}.\n` +
       `Mohon pembaruan:\n${minta.map((m, i) => `${i + 1}. ${m[0].toUpperCase() + m.slice(1)}`).join("\n")}\n` +
-      `Bila ada kebutuhan mendesak (logistik, perahu, pompa, alat berat), mohon disampaikan sekalian. Terima kasih.`;
+      `Bila ada kebutuhan mendesak (${j.alat}), mohon disampaikan sekalian. Terima kasih.`;
   }
 
   /* pesan peringatan dini untuk kab berstatus Waspada ke atas: status dan hujan tiga hari per tanggal, minta siaga dan kabar bila banjir */
-  function pesanSiaga(x, hari) {
+  function pesanSiaga(x, hari, j = KATA.banjir) {
     const baris = hari.map((t, i) => `${i + 1}. ${tglPanjang(t)}: ${NAMA_LEVEL[x.b[i] ?? 0]}${x.h3d?.[i] != null ? `, hujan tiga hari ${Math.round(x.h3d[i])} mm` : ""}`);
-    return `Yth. rekan BPBD ${x.nama}. Pusdalops BNPB menyampaikan prakiraan status banjir ${x.nama}:\n${baris.join("\n")}\n` +
-      (x.sudah ? "Banjir sepekan ini sudah tercatat di logbook. Mohon kabar kondisi terkini dan apakah sudah surut.\n" : "") +
-      `Mohon kesiapsiagaan, dan bila terjadi banjir atau genangan mohon dikabarkan lokasi, jumlah KK dan jiwa terdampak, serta tinggi air. Terima kasih.`;
+    const K = j.kata[0].toUpperCase() + j.kata.slice(1);
+    return `Yth. rekan BPBD ${x.nama}. Pusdalops BNPB menyampaikan prakiraan status ${j.kata} ${x.nama}:\n${baris.join("\n")}\n` +
+      (x.sudah ? `${K} sepekan ini sudah tercatat di logbook. Mohon kabar kondisi terkini dan ${j.tanya}.\n` : "") +
+      `Mohon kesiapsiagaan, dan bila terjadi ${j.tinggi ? "banjir atau genangan" : j.kata} mohon dikabarkan lokasi, jumlah KK dan jiwa terdampak${j.tinggi ? ", serta tinggi air" : ", serta akses yang tertutup"}. Terima kasih.`;
   }
 
   /* pesan per provinsi ke Pusdalops BPBD provinsi: daftar kab/kota belum surut dengan kabar terakhirnya */
-  function pesanProv(prov, xs) {
+  function pesanProv(prov, xs, j = KATA.banjir) {
     const belum = xs.filter(x => !x.surut);
-    return `Yth. rekan Pusdalops BPBD Provinsi ${prov}. Pusdalops BNPB mencatat banjir belum dilaporkan surut di ${belum.length} kab/kota:\n` +
+    return `Yth. rekan Pusdalops BPBD Provinsi ${prov}. Pusdalops BNPB mencatat ${j.kata} belum dilaporkan ${j.selesai} di ${belum.length} kab/kota:\n` +
       belum.map((x, i) => `${i + 1}. ${x.nama}, sejak ${tglPanjang(x.mulai)}, kabar terakhir ${tglPanjang(x.terakhir)}`).join("\n") +
-      `\nMohon pembaruan kondisi terkini tiap kab/kota: apakah sudah surut, jumlah KK dan jiwa terdampak, warga mengungsi, tinggi genangan, serta desa/kelurahan terdampak. Terima kasih.`;
+      `\nMohon pembaruan kondisi terkini tiap kab/kota: ${j.tanya}, jumlah KK dan jiwa terdampak, warga mengungsi, ${j.tinggi ? "tinggi genangan, " : ""}serta desa/kelurahan terdampak. Terima kasih.`;
   }
 
-  const X = {SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perKec, gabungRiwayat, perluDitanya, statusKab, siaga, pesanWA, pesanSiaga, pesanProv, tglPanjang, tglPendek, namaKab};
+  const X = {KATA, SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perKec, adaAngka, gabungRiwayat, perluDitanya, statusKab, siaga, pesanWA, pesanSiaga, pesanProv, tglPanjang, tglPendek, namaKab};
   g.DalopsHitung = X;
 })(globalThis);

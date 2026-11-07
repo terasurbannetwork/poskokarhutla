@@ -17,13 +17,22 @@ export const JENIS_LAPORAN = [
   {kunci: "bpbd_kejadian", label: "Kejadian BPBD", wajib: false},
 ];
 
+/* Judul laporan Mensesneg berdiri di barisnya sendiri (boleh didahului "Yth. Bapak Mensesneg") dan diikuti isi. Frasa di tengah obrolan
+   ("jangan lupa laporan karhutla ya") atau pesan yang cuma berisi judul bukan laporannya (grup BNPB IT 25 Okt-2 Nov 2026).
+   Baris lain boleh sebelum (sapaan) atau sesudah (tanggal, isi) judul. */
+function judulMensesneg(teks) {
+  const baris = String(teks ?? "").toLowerCase().split("\n").map(l => l.replace(/[*_]/g, "").replace(/\s+/g, " ").trim()).filter(Boolean);
+  const i = baris.findIndex(l => l === "laporan karhutla" || l.startsWith("laporan penanganan karhutla di enam provinsi prioritas"));
+  return i >= 0 && i <= 2 && baris.length > 1;
+}
+
 export function kenali(teks, namaBerkas) {
   if (/Laporan Harian Dit\.? ?Koordalops/i.test(namaBerkas || "")) return "laphar_pdf";
   const t = String(teks ?? "").toLowerCase().replace(/[*_]/g, "").replace(/\s+/g, " ").trim();
   if (/^laporan harian dit\.? ?koordalops/.test(t)) return "laphar_pdf";
   const malam = () => /selamat malam|pukul 19\.00/.test(t);
   if (t.includes("laporan upaya pemadaman karhutla oleh satgas")) return "satgas";
-  if (t.includes("laporan karhutla") || t.includes("laporan penanganan karhutla di enam provinsi prioritas")) return "karhutla_mensesneg";
+  if (judulMensesneg(teks)) return "karhutla_mensesneg";
   const kepala = t.match(/hasil pemantauan dit\.? koordalops bnpb tanggal[^:]{0,120}/);
   if (kepala) {
     // ujung rentang = jam terakhir di KALIMAT KEPALA saja; badan teks bisa memuat "pukul 17.00" (bahan asli 25 Okt 2026)

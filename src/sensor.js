@@ -9,7 +9,7 @@
    Satu baris per (alat, tingkat, hari WIB). */
 import {json, gagal, bacaBytes, sha, acak, ipHash} from "./worker.js";
 import {laju} from "./bnpb.js";
-import {stafOK} from "./staf.js";
+import {modAtauStaf} from "./staf.js";
 import {wib} from "./posko.js";
 
 const PERAN = ["pusdalops", "koordalops", "pimpinan"], MAKS_BADAN = 1024, TUA_MAKS = 24 * 3600e3, KONTROL = /[\u0000-\u001f\u007f\u200b-\u200f\u202a-\u202e\ufeff]/g, SELISIH = 10 * 6e4, LAJU_ALAT = [[5 * 6e4, 30]], LAJU_IP = [[6e4, 300]], BASI = 3600e3, TINGKAT = ["waspada", "siaga", "awas"];
@@ -95,7 +95,7 @@ async function masukPengingat(env, a, jenis, keadaan, sumber, judul, rincian, ki
   } catch (e) { console.error("sensor pengingat", e?.message); }
 }
 async function status(env, req, kini) {
-  if (!await stafOK(env, req, PERAN)) return gagal(403, "hanya staf Pusdalops, Koordalops, atau Pimpinan");
+  if (!await modAtauStaf(env, req, PERAN)) return gagal(403, "hanya staf Pusdalops, Koordalops, atau Pimpinan");
   const rows = (await env.DB.prepare(`SELECT a.id, a.jenis, a.kab, a.desa, a.lat, a.lon, a.ambang, a.aktif, b.waktu, b.nilai, b.baterai, b.rssi FROM sensor_alat a
     LEFT JOIN sensor_baca b ON b.alat_id = a.id AND b.waktu = (SELECT max(waktu) FROM sensor_baca WHERE alat_id = a.id) ORDER BY a.id LIMIT 500`).all()).results;
   return json({alat: rows.map(r => {

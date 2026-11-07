@@ -1,9 +1,9 @@
 /* Logbook Pusdalops (kontrak L1: docs/superpowers/specs/2026-11-01-logbook-pusdalops-design.md; migrasi 0088; medan Juklak 7/2023 + KIB + SK status: migrasi 0094).
    Satu kejadian = banyak entri; angka dampak di entri = nilai TERKINI (entri lanjutan menimpa, tidak menjumlah; null = tidak dilaporkan).
-   Semua rute: stafOK(pusdalops|koordalops|pimpinan) PERTAMA, sebelum body/D1. Wilayah = kunci "prov|nama" (prov 2 angka), sama dengan public/data/logbook_riwayat.json.
+   Semua rute: modAtauStaf(pusdalops|koordalops|pimpinan) PERTAMA, sebelum body/D1. Wilayah = kunci "prov|nama" (prov 2 angka), sama dengan public/data/logbook_riwayat.json.
    Pengingat lanjutan (24/72 jam tanpa entri baru) dibuat src/pengingat.js lewat pendeteksi `logbookLanjutan` memakai logbook_kejadian.terakhir (indeks status, terakhir). */
 import {json, gagal, acak, bacaBody} from "./worker.js";
-import {stafOK, dalamWilayahStaf} from "./staf.js";
+import {modAtauStaf, dalamWilayahStaf} from "./staf.js";
 import {superOK} from "./posko.js";
 import {laju} from "./bnpb.js";
 import {PROV} from "./alun.js";
@@ -206,7 +206,7 @@ const kolEnt = () => (JK_ADA ? [...BASE_ENT, "j.kib_entri AS kib", ...JK.map(c =
 const luarWilayah = (req, provs) => provs.every(p => dalamWilayahStaf(req, [p])) && dalamWilayahStaf(req, provs) ? null : gagal(403, "provinsi di luar wilayah staf");
 const BATAS_TULIS = [[3600e3, 120]];   // tulis logbook per pelaku per jam
 const lajuTulis = (env, oleh, kini) => laju(env, "lb:" + oleh, "logbook_tulis", BATAS_TULIS, kini);
-const pintu = async (env, req) => { const oleh = await stafOK(env, req, PERAN); return oleh ? String(oleh).slice(0, 64) : null; };
+const pintu = async (env, req) => { const oleh = await modAtauStaf(env, req, PERAN); return oleh ? String(oleh).slice(0, 64) : null; };
 const baca = async req => { const b = await bacaBody(req, MAKS_BODY); return b.galat ? {r: gagal(b.status || 400, b.galat)} : {o: b.o}; };
 
 async function buat(env, req, kini) {
@@ -244,8 +244,8 @@ export async function buatKejadian(env, oleh, o, kini) {
   return json({kejadian: keluarKej(await env.DB.prepare(`SELECT ${kolKej()} FROM ${dariKej()} WHERE k.id = ?`).bind(id).first()), entri: keluarEntri(await env.DB.prepare(`SELECT ${kolEnt()} FROM ${dariEnt()} WHERE e.kejadian_id = ?`).bind(id).first()), ...!JK_ADA && adaIsiJk(o, p.e) ? {juklak: MENUNGGU} : {}}, 201);
 }
 async function lanjut(env, req, kini, id) {
-  await jkAda(env, kini);
   const oleh = await pintu(env, req); if (!oleh) return gagal(403, "hanya staf Pusdalops, Koordalops, atau Pimpinan");
+  await jkAda(env, kini);
   const b = await baca(req); if (b.r) return b.r;
   const k = await env.DB.prepare(JK_ADA ? "SELECT k.id, k.status, k.jenis, k.prov, k.kab, k.mulai, b.kib FROM logbook_kejadian k LEFT JOIN logbook_kib b ON b.kejadian_id = k.id WHERE k.id = ?" : "SELECT id, status, jenis, prov, kab FROM logbook_kejadian WHERE id = ?").bind(id).first();
   if (!k) return gagal(404, "kejadian tidak ada");
@@ -291,8 +291,8 @@ async function tutup(env, req, kini, id) {
 }
 /* kejadian buka di kab dalam 14 hari terakhir (mulai ATAU entri terakhir), lengkap dengan entri terkini untuk mengisi form lanjutan */
 async function buka(env, req, url, kini) {
-  await jkAda(env, kini);
   if (!await pintu(env, req)) return gagal(403, "hanya staf Pusdalops, Koordalops, atau Pimpinan");
+  await jkAda(env, kini);
   const q = url.searchParams.get("kab") ?? "", w = wilayah(q.includes("|") ? {kab: q} : {prov: url.searchParams.get("prov"), kab: q});
   if (!w) return gagal(400, 'kab wajib kunci wilayah "prov|nama" (atau kab + prov)');
   const kej = (await env.DB.prepare(`SELECT ${kolKej()} FROM ${dariKej()} WHERE k.prov = ? AND k.kab = ? AND k.status = 'buka' AND k.terakhir >= ? ORDER BY k.terakhir DESC LIMIT 50`).bind(w.prov, w.kab, kini - 14 * HARI).all()).results;

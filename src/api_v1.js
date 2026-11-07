@@ -82,6 +82,7 @@ const INDEKS = {
   endpoint: [
     ...Object.keys(DATA).map(n => ({jalur: `/api/v1/data/${n}`, kunci: false, cakupan: null})),
     {jalur: "/api/v1/riwayat", kunci: false, cakupan: null},
+    {jalur: "/api/v1/firespot", kunci: false, cakupan: null},
     ...Object.entries(BERKUNCI).map(([j, [c]]) => ({jalur: "/api/v1" + j, kunci: true, cakupan: c})),
   ],
 };
@@ -113,6 +114,29 @@ export async function riwayatSel(env, url, p) {
     ...(rec ? {} : {catatan: t ? "sel ini tidak punya riwayat titik VIIRS sejak 2012 (kurang dari 20 titik dalam sekitar 16 km): kebakaran di sini tidak biasa" : "ubin riwayat untuk lokasi ini belum tersedia"})}, 200, {"cache-control": "public, max-age=300, stale-while-revalidate=3600"});
 }
 
+/* Firespot per wilayah per hari WIB dari arsip public/data/kluster_hari/<hari>.json (scripts/data/harian.py arsip_kluster, disimpan 8 hari).
+   Kolom w[kunci] = ringkas_kluster: [aktif, firespot aktif, level maks, cluster bertitik hari itu, titik firespot hari itu, <24 jam, 24-72 jam].
+   hari opsional (default hari ini WIB, mundur ke kemarin bila arsip hari ini belum ada); prov opsional = kode 2 digit. Publik, sama dengan layar. */
+const RE_HARI = /^\d{4}-\d{2}-\d{2}$/, hariWib = ms => new Date(ms + 7 * JAM).toISOString().slice(0, 10);
+export async function firespot(env, url, kini) {
+  const p = url.searchParams, h = p.get("hari"), prov = p.get("prov");
+  const t = h !== null && RE_HARI.test(h) ? Date.parse(h + "T00:00:00Z") : NaN;   // 2026-02-30 jadi NaN atau bergeser bulan: ditolak
+  if (h !== null && (!Number.isFinite(t) || new Date(t).toISOString().slice(0, 10) !== h)) return gagal(400, "hari harus tanggal YYYY-MM-DD, mis. hari=2026-11-04");
+  if (prov !== null && !/^\d{2}$/.test(prov)) return gagal(400, "prov harus kode provinsi 2 digit, mis. prov=14");
+  let d = null;
+  for (const hari of h ? [h] : [hariWib(kini), hariWib(kini - 24 * JAM)]) {
+    const r = await aset(env, url, `/data/kluster_hari/${hari}.json`); if (!r) continue;
+    d = await r.json().catch(() => null); if (d) break;
+  }
+  if (!d?.w) return gagal(404, "arsip firespot hari itu tidak tersedia (disimpan 8 hari terakhir)");
+  const wilayah = Object.entries(d.w).filter(([k]) => prov === null || k.split("|")[0] === prov).map(([k, v]) => {
+    const [kode, kab = null, kec = null] = k.split("|");
+    return {prov: kode, kab, kec, firespot: v[4], cluster_hari: v[3], cluster_aktif: v[0], cluster_firespot_aktif: v[1], level_maks: v[2]};
+  });
+  return json({hari: d.hari, catatan: "firespot = titik panas (lokasi unik 375 m) yang disentuh cluster lolos uji firespot pada hari itu, dijumlah ke wilayah titiknya; kec null = baris kab, kab null = baris provinsi",
+    wilayah}, 200, {"cache-control": "public, max-age=300, stale-while-revalidate=3600"});
+}
+
 async function dalam(req, env, ctx, url) {
   const kini = Date.now(), sisa = url.pathname.replace(/\/+$/, "").slice("/api/v1".length);
   if (req.method !== "GET" && req.method !== "HEAD") return gagal(405, "hanya GET", {allow: "GET, HEAD, OPTIONS"});
@@ -122,6 +146,7 @@ async function dalam(req, env, ctx, url) {
     const g = await laju(env, await ipHash(env, req), "riwayat.ip", [[JAM, 600]], kini); if (g) return g;
     return riwayatSel(env, url, url.searchParams);
   }
+  if (sisa === "/firespot") return firespot(env, url, kini);
   if (sisa.startsWith("/data/")) return dataPublik(env, url, sisa.slice(6));
   const b = Object.hasOwn(BERKUNCI, sisa) ? BERKUNCI[sisa] : null;
   if (!b) return json({galat: "rute tidak ada", petunjuk: "daftar endpoint di /api/v1, dokumentasi di /api"}, 404);

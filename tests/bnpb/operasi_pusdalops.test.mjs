@@ -188,7 +188,7 @@ else {
   const pilihTab = async k => { await tab.klik(`[data-tab="${k}"]`); await tab.tungguFungsi(`document.querySelector('[data-tab="${k}"]').getAttribute('aria-selected') === 'true' && !document.querySelector('.op-isi').hasAttribute('aria-busy')`, 15000); };
 
   test("tanpa sesi tampil kartu masuk", async () => {
-    S.masuk = false; await tab.buka(base + "/bnpb/operasi.html", {tunggu: ".bn-blok a[href='/admin/pantau']"});
+    S.masuk = false; await tab.buka(base + "/bnpb/operasi.html", {tunggu: ".bn-blok a[href^='/admin/masuk?ke=%2Fbnpb%2Foperasi']"});
     assert.match(await tab.teks(), /Masuk staf/); S.masuk = true;
   });
 

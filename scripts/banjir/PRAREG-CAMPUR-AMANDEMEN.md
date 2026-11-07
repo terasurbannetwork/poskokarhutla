@@ -40,3 +40,11 @@ data sintetis. `PRAREG-CAMPUR.md` tidak disunting; berkas ini dikunci di `.sidik
   sel yang belum utuh di `latih.json`.
 - **A-12 (4 Nov 2026).** `E_kedap`: porsi kelas 50 (built-up) WorldCover v200 2021 per kab sampel dari fraksi blok 20x20 piksel (~220 m), rerata sel berpusat di dalam poligon
   `public/geo/kabupaten`; hash ubin dan metode di `kedap.json`, dikunci di `latih.json`/`.sidik`. Pendekatan blok 220 m menjadi toleransi batas kab.
+- **A-13 (4 Nov 2026; belum ada skor uji yang dilihat). Resep pembangunan label v2 di mesin ini.** Izin pemilik (3-4 Nov): unduh Groundsource parquet (Zenodo record 18647054, 667.122.400 B, CC BY 4.0) ke
+  `data/raw/banjir/label_kec/`, pyarrow hanya di venv `data/raw/banjir/.venv-label` (tidak masuk repo). `scripts/banjir/susun_label_v2.py` menjalankan `label_kec` -> `label_bersatu.susun` -> `label_bersatu_v2.susun`
+  tanpa menyunting skrip itu, dengan logbook CSV, DIBI dan berita DIPOTONG <= 2026-10-18 sebelum diproses. Sumber yang tidak ada di checkout dan diganti: arsip logbook harian `data/raw/logbook/arsip/*` (hari tercakup logbook
+  kosong, sehingga cakupan logbook pada v2 hanya dari CSV), PetaBencana (kosong), GFM nasional (CSV kosong; v2 tidak memakainya). Akibat: resep v2 identik dengan aturan tertulisnya, tetapi cakupan logbook/PB lebih sempit daripada
+  yang pernah dipakai KAB2; dampaknya pada negatif (`tidak_ada_laporan`) ditentukan hanya oleh poligon Groundsource >= 5 per kab-tahun dan DKI/PB (kosong). sha256 parquet, v2 dan P_w/T_w dikunci di `label_v2_manifest.json` dan `.sidik`.
+- **A-13 (tambahan, 4 Nov 2026).** Kunci R2 `internal/pusdalops-logbook/turunan/*` (ditulis `scripts/data/logbook_internal.py`) hanya memuat TURUNAN agregat (rapor_bpbd, rekomendasi, penanganan, serupa_NN), bukan arsip harian
+  `baris.jsonl`; `rapor_bpbd.json` diambil (read-only, `data/raw/logbook/turunan/`) dan terbukti agregat per kab/provinsi (tanpa tanggal per hari). Arsip harian TIDAK dapat dipulihkan dari R2, jadi A-13 tetap:
+  hari tercakup logbook pada v2 kosong. Informasi cakupan tahun dari `periode.dasar` (2014-2020, 2024, 2025; terpisah 2024-2026) dicatat sebagai petunjuk, tidak dipakai sebagai hari tercakup.

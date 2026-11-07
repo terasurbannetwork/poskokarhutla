@@ -12,10 +12,10 @@ Daftar pekerjaan yang masih terbuka. Coret atau hapus baris saat selesai. Bagian
 | A3 | Kalibrasi jendela belum padam 12-36 jam, padam 48 jam (gambut kandidat 72 jam) | Data lapangan cuma ~7 kejadian. Minta: laphar BNPB Agu-Okt mentah (koordinat, tgl mulai/padam), log 100-200 insiden Manggala Agni/Daops (>= 30 gambut), definisi "sisa belum padam" BPBD | laporan validasi-model 25 Okt |
 | A4 | Banding langsung dengan SIPANTAU Kemenhut per provinsi per hari | Menunggu balasan surat permohonan data GIS (23 Okt) | |
 | A5 | Faktor luas per jenis lahan atau pulau | Butuh luas resmi per provinsi per tahun; dNBR belum menunjukkan beda gambut/mineral | `public/data/ujiluas_kab.json` |
-| A6 | Cek layar setelah `data.yml` jalan: `hotspot.json`, `wilayah.json`, `laporan.json` baru memakai lokasi unik di CI | Cek KPI peta, tabel wilayah, overlay kab sama angkanya | |
+| A6 | ~~Cek layar setelah `data.yml`~~ SELESAI 5 Nov 2026: live `peta_karhutla.json` vs `hotspot.json` 3-4 Nov selisih 0,0-0,1%; keduanya lokasi unik | | |
 | A7 | Lokasi hanya-MODIS yang bersebelahan dengan sel VIIRS (4,7% lokasi 23 Okt) kemungkinan api yang sama dihitung dua kali | Perlu keputusan: gabung 3x3 untuk MODIS atau biarkan | validasi-model 25 Okt |
 | A8 | Selisih hot `hotspot.json` vs `peta_karhutla.json` +0,3-0,6% per hari | Dugaan NRT vs arsip SP dan jam tarik, belum dibuktikan | |
-| A9 | Komentar basi "setara SiPongi/BNPB" | `public/index.html` sekitar baris 1795 | |
+| A9 | ~~Komentar basi "setara SiPongi/BNPB"~~ SELESAI 5 Nov 2026 | | |
 
 ## A0. Batas wilayah BIG harus tally dengan Kemendagri (pemilik 31 Okt 2026)
 
@@ -25,7 +25,7 @@ di BIG, wilayahnya ikut distrik induk. Nasional: BIG 7.182 kecamatan, Kemendagri
 | # | Pekerjaan | Status / menunggu | Rujukan |
 |---|---|---|---|
 | A0.1 | Perbarui data batas BIG (`batas.py ambil`, `cocok`, `bangun`) ke edisi terbaru, lalu `batas.py selisih` | Terbuka. Gerbang `batas.py uji` (data.yml) menolak selisih baru atau yang membesar | `scripts/geo/batas.py`, `scripts/geo/selisih_kemendagri.json` |
-| A0.2 | Kab/kota bernilai BIG 0 (Mukomuko, Pangkep, Siau Tagulandang Biaro, Toli-Toli, Kota Tanjungbalai, Kota Padangsidimpuan, Kota Parepare): kemungkinan nama kunci beda, bukan poligon hilang | Terbuka: petakan nama | `public/data/kemitraan/kode.json` `kunci_nama` |
+| A0.2 | ~~Kab/kota bernilai BIG 0~~ SELESAI 5 Nov 2026: beda ejaan saja (Muko Muko, Toli Toli, Pare Pare, dll.), `hitung_selisih` kini lewat `norm()` + alias; utang turun 25 -> 18 kab/kota | | |
 | A0.3 | Distrik baru yang belum ada di BIG (mis. Tomor Birip, Sor Ep): bila BIG belum terbit, deck wajib mencatat jumlah Kemendagri dan kecamatan yang belum berbatas | Aturan deck | |
 
 ## B. Git dan kebersihan repo
@@ -73,3 +73,18 @@ bisnis karbon, catatan prospektif mingguan model risiko 7 hari.
 | C7 | Cuaca ekstrem | Tab registry, en.json, arsip nowcast per jam |
 | C8 | Kekeringan | Cache data.yml, tab simulasi di registry, i18n |
 | C9 | Kajian BNPB mitigasi dan GD pipa / SIPPA | Dikerjakan sesi lain |
+
+## E. Fitur pilihan pemilik 5 Nov 2026 (belum dibangun)
+
+Dasar: D1 produksi 5 Nov, hampir semua tabel isian manusia 0 baris (akun, meja, km_*, riset_*), pengunjung ~20 orang/hari, 0 dari mesin pencari. Fitur dipilih supaya orang bisa masuk dan data terisi tanpa form panjang.
+
+| No | Fitur | Bergantung pada | Pengerja |
+| -- | ----- | --------------- | -------- |
+| E1 | Satu akun lewat nomor WA + OTP; enam tabel akun lama (staf, pemirsa, instansi_akun, km_akun, pdt_akun, orang) dipetakan ke satu identitas + peran | gateway WA hidup | warga-api (+ guard-api, security-reviewer, migrasi-idempoten) |
+| E2 | Papan aktivasi 514 kab/kota: punya akun, terakhir aktif, tombol undangan WA dari tabel kontak | E1 | warga-api + layar-peta |
+| E3 | Isi awal km_kampus + pakar dari /direktori, /akademisi, kontak_pt (R2) | - | kampus |
+| E4 | Pelacak MoU/PKS di km_perjanjian: unggah PDF, tanggal berakhir, kewajiban, pengingat H-60 | E1 | kampus + warga-api |
+| E5 | Undang 5 pakar teratas lewat WA per masalah; nomor diisi kampus, pakar setuju dulu (PDP) | E1, E3 | kampus + wa-bot |
+| E6 | Laporan triwulan TA ke Ka BNPB (PPTX+PDF lewat ppt-konsultan): kunjungan, MoU, soal, skor, dana luar | E3, E4 | sesi induk |
+| E7 | Bahan kunjungan kerja satu klik: pilih kab, briefing 2 halaman (riwayat bencana, status hari ini, kapasitas BPBD, isu terbuka, kampus mitra) | E3 untuk kampus mitra | ruang-bnpb |
+| E8 | Cadangan air tanah GRACE-FO untuk kekeringan; resolusi asli ~300 km bulanan, telat 2-3 bulan: tampil per pulau/provinsi, bukan per kab | token Earthdata (habis ~11 Des) | gunungapi-kering |

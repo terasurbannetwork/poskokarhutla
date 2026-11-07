@@ -527,6 +527,7 @@ uji("status: sumber tahap uji (registry salinan dengan cuaca `uji`) basi/hilang 
   copyFileSync(path.join(AKAR, "public/pipa/pelihara.js"), path.join(tmp, "public/pipa/pelihara.js"));   // src/sippa.js mengimpor fungsi pemeliharaan murni langsung (SP-093)   // src/sippa.js mengimpor formulir.js langsung (ADR-03)
   copyFileSync(path.join(AKAR, "public/pipa/uji_pilot_spek.js"), path.join(tmp, "public/pipa/uji_pilot_spek.js"));   // src/uji_pilot.js mengimpor aturan isian langsung
   mkdirSync(path.join(tmp, "public/bnpb")); for (const f of ["pendataan_spek.js", "bahan_spek.js"]) copyFileSync(path.join(AKAR, "public/bnpb", f), path.join(tmp, "public/bnpb", f));   // src/pendataan.js mengimpor spek bersama langsung
+  mkdirSync(path.join(tmp, "public/inti")); for (const f of ["jam_aturan.js", "jam_aturan.json"]) copyFileSync(path.join(AKAR, "public/inti", f), path.join(tmp, "public/inti", f));   // src/meja_spek.js mengimpor Jam Aturan langsung (MB-2, RU-008)
   writeFileSync(path.join(tmp, "src/bencana.generated.js"), `export default ${JSON.stringify(B)};\n`);
   const mf2 = new Miniflare({...opsi(), scriptPath: path.join(tmp, "src/worker.js"), modulesRoot: tmp, d1Databases: {DB: "uji-registry"}});
   try {

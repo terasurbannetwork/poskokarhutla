@@ -37,7 +37,7 @@ PDF dibuat dengan LibreOffice headless (`soffice --headless --convert-to pdf`). 
 
 - Perpres 7/2026 benar mengubah Perpres 189/2024 (tercatat di peraturan.bpk.go.id; isi perubahan belum dibaca).
 - Tidak ada Perpres BNPB baru setelah Perpres 29/2021; status perubahan Perpres 78/2021 tentang BRIN.
-- Gelar Kepala BNPB "S.Sos., M.Si., M.Si. (Han)" sesuai SK.
+- Gelar Kepala BNPB "S.Sos., M.Si. (Han)" sesuai SK.
 - Batas jangka waktu NK menurut Peraturan BRIN 2/2022 jo. 4/2024 (draf memakai lima tahun).
 - Meterai untuk naskah antarinstansi pemerintah. Ketiga rujukan (UMY, Unpad, UGM) memakai meterai, tetapi semuanya naskah dengan perguruan tinggi.
 - Urutan pihak. BNPB ditulis sebagai PIHAK KESATU karena pengusul; dapat ditukar bila penandatanganan di kantor mitra (pola Unpad 2026).

@@ -31,6 +31,10 @@ uji("migrasi 0103 idempoten; seed 9 base dan 55 armada; CHECK dan UNIQUE menahan
   assert.equal(await n("op_armada", "peran = 'omc'"), 13); assert.equal(await n("op_armada", "bucket_liter = 4000"), 2);
   const pnk = await DB.prepare("SELECT * FROM op_base WHERE id = 'PNK'").first(); assert.deepEqual([pnk.icao, pnk.prov, pnk.vor_kode, pnk.lat], ["WIOO", "61", "PNK", -0.152258]);
   assert.equal((await DB.prepare("SELECT vor_kode FROM op_base WHERE id = 'KTG'").first()).vor_kode, null);
+  /* 0108: ICAO Jambi WIPA (lama) -> WIJJ; seed 0103 yang diulang tidak mengembalikannya, 0108 diulang tetap WIJJ */
+  for (const s of pecah(readFileSync(path.join(AKAR, "migrations/0108_icao_jambi.sql"), "utf8"))) await DB.prepare(s).run();
+  assert.equal((await DB.prepare("SELECT icao FROM op_base WHERE id = 'DJB'").first()).icao, "WIJJ", "base Jambi harus ber-ICAO WIJJ sesudah 0108");
+  assert.equal(await n("op_base", "icao = 'WIPA'"), 0, "tidak boleh ada base ber-ICAO WIPA");
   assert.equal(await n("op_armada", "base_id NOT IN (SELECT id FROM op_base)"), 0, "tiap armada menunjuk base yang ada");
   const arm = {registrasi: "PK-UJI", tipe: "X", peran: "wb", pemilik: "bnpb_sewa"};
   await sisip("op_armada", arm);

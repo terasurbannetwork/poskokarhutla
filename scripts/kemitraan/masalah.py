@@ -26,6 +26,8 @@ JUDUL = {"A5": "{B} berisiko tinggi, belum tercatat dokumen rencana", "A1": "Kej
          "A7": "Kelompok rentan banyak di wilayah {b}", "A3k": "Karhutla di lahan gambut, pembasahan belum efektif",
          "A3g": "Bangunan di zona {b} perlu dinilai ketahanannya"}
 VONIS_AWAL = "Vonis NASIONAL"
+LABEL_UJI = {"banjir_longsor": "banjir dan longsor", "karhutla_sebaran_sel": "sebaran karhutla per sel", "karhutla_sebaran_luas": "sebaran karhutla per luas",
+             "karhutla_jejak_api": "jejak api karhutla", "karhutla_peluang": "peluang karhutla"}  # kunci internal uji balik -> teks manusia
 RE_ANGKA = re.compile(r"\d")
 MASALAH_ARTI = ("komponen H F T D P K = persentil nasional 0-1 (peringkat terendah untuk nilai kembar, per komponen dan bahaya), K = 1 - tercatat/5 langsung; "
                 "bobot dan ambang = asumsi-kebijakan (konst.py), belum dikalibrasi; skor null bila < 4 komponen tersedia; masalah dibentuk hanya bila skor >= 0,40; "
@@ -86,6 +88,11 @@ def aturan_aspek(b, komp, skor, rpb=None, renkon=None, tren=None, gambut_pct=Non
 def judul(b, a):
     k = "A3k" if (a == "A3" and b == "karhutla") else "A3g" if a == "A3" else a
     return JUDUL[k].format(B=NAMA[b][0].upper() + NAMA[b][1:], b=NAMA[b])
+
+
+def lereng_teks(ls):
+    """Lereng Theil-Sen: 2 desimal; di bawah 0,01 ditulis 'di bawah 0,01' (bukan '0,000' yang berpura-pura teliti)."""
+    return "di bawah 0,01" if abs(ls) < 0.01 else idn(ls, 2)
 
 
 def idn(x, d=1):
@@ -179,7 +186,7 @@ def bukti_komp(p, b, mt, c):
     if c == "T" and mt["T"] is not None:
         kata, ls = mt["ket"]["T"]
         blk = p["karhutla"] if b == "karhutla" else p["kejadian"]
-        return [bk(f"Tren kejadian {nm} 2015-2025 (Theil-Sen): {kata}, lereng {idn(ls, 3)} per tahun", ls, blk)]
+        return [bk(f"Tren kejadian {nm} 2015-2025 (Theil-Sen): {kata}, lereng {lereng_teks(ls)} per tahun", ls, blk)]
     if c == "D" and "D" in mt["ket"]:
         d = mt["ket"]["D"]
         kj = p["kejadian"]
@@ -224,7 +231,7 @@ def vonis(p, b):
     u = md.get("uji") or {}
     if not all(u.get(s) == "gagal" for s in sub):
         return None
-    return bk(f"{VONIS_AWAL} uji balik model {NAMA[b]}: gagal ({', '.join(sub)}); bukan hasil uji per kabupaten", "gagal", md)
+    return bk(f"{VONIS_AWAL} uji balik model {NAMA[b]}: gagal ({', '.join(LABEL_UJI.get(x, x.replace('_', ' ')) for x in sub)}); bukan hasil uji per kabupaten", "gagal", md)
 
 
 # ---------------------------------------------------------------- nasional

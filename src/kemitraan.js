@@ -9,6 +9,8 @@ import {modOK, superOK} from "./posko.js";
 import {pemegangKode, CSP} from "./bnpb.js";
 import {stafSesi} from "./staf.js";
 import {lindungi} from "./relawan.js";
+import {ruteAkun, profilSaya} from "./kemitraan_akun.js";
+import {ruteMasalah} from "./kemitraan_masalah.js";
 
 const COOKIE = "sesi_kemitraan";
 const tokenKm = req => (req.headers.get("cookie") || "").match(new RegExp(`(?:^|;\\s*)${COOKIE}=([0-9a-f]{64})(?:;|$)`))?.[1] ?? null;
@@ -48,13 +50,16 @@ const cariKode = (env, kini) => async kodeSha => {
    hak ditegakkan API (hakKm). Tamu tetap 200 (layar masuk), bukan dialihkan ke /admin/masuk. */
 const CANGKANG = `<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Kemitraan Kampus</title></head>
 <body><main><h1>Kemitraan Kampus</h1><p>Masuk untuk melanjutkan.</p><p><a href="/admin/masuk?ke=%2Fkemitraan">Masuk staf BNPB</a> | <a href="/kemitraan/masuk">Masuk koordinator kampus</a></p></main></body></html>`;
-async function halaman(env, url, berkas) {
+async function halaman(env, url, berkas, turnstile = false) {
   const r = env.ASSETS ? await env.ASSETS.fetch(new Request(new URL(berkas, url))) : null;
-  if (r?.ok) return new Response(r.body, {headers: tajuk()});
+  const t = tajuk(turnstile && env.TURNSTILE_SITEKEY);
+  if (r?.ok) return new Response(r.body, {headers: t});
   r?.body?.cancel();
-  return new Response(CANGKANG, {headers: tajuk()});
+  return new Response(CANGKANG, {headers: t});
 }
-const tajuk = () => ({"content-type": "text/html; charset=utf-8", "cache-control": "private, no-store", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", "x-robots-tag": "noindex, nofollow", "content-security-policy": CSP});
+/* Turnstile (hanya /kemitraan/daftar, hanya bila TURNSTILE_SITEKEY diset): widget butuh skrip dan bingkai challenges.cloudflare.com; pola CSP_TS di src/bnpb.js */
+const CSP_TS = CSP.replace("script-src 'self'", "script-src 'self' https://challenges.cloudflare.com").replace("frame-ancestors", "frame-src https://challenges.cloudflare.com; frame-ancestors");
+const tajuk = ts => ({"content-type": "text/html; charset=utf-8", "cache-control": "private, no-store", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", "x-robots-tag": "noindex, nofollow", "content-security-policy": ts ? CSP_TS : CSP});
 
 /* Halaman yang hanya untuk sesi (staf/KK): tanpa hak yang sesuai, 303 ke layar masuk. Kode BP/AG/PL tidak bisa membuka halaman ini lewat navigasi (kode ada di fragmen #k=, dikirim
    skrip sebagai x-kode ke API), jadi hak BP di buku/panduan ditegakkan API-nya, bukan halamannya. */
@@ -66,7 +71,8 @@ async function halamanHak(env, req, url, kini, boleh, berkas) {
 /* ================================================================ API */
 async function saya(env, req, kini) {
   const h = await hakKm(env, req, kini);
-  return h.tolak ?? (h.peran ? json({jenis: h.peran}) : gagal(401, "belum masuk atau kode tidak diberikan"));
+  if (h.tolak) return h.tolak;
+  return h.peran ? json({jenis: h.peran, profil: await profilSaya(env, h)}) : gagal(401, "belum masuk atau kode tidak diberikan");
 }
 /* pemegang rute fitur yang belum dibangun: hak diperiksa dulu supaya tamu tidak bisa membedakan rute ada/tidak, lalu 501 */
 const belumAda = async (env, req, url, kini) => {
@@ -78,13 +84,15 @@ const belumAda = async (env, req, url, kini) => {
 export const RUTE_KEMITRAAN = lindungi({
   "GET /kemitraan": (env, req, url) => halaman(env, url, "/kemitraan.html"),
   "GET /kemitraan/masuk": (env, req, url) => halaman(env, url, "/kemitraan/masuk.html"),
-  "GET /kemitraan/daftar": (env, req, url) => halaman(env, url, "/kemitraan/daftar.html"),
+  "GET /kemitraan/daftar": (env, req, url) => halaman(env, url, "/kemitraan/daftar.html", true),
   "GET /kemitraan/saya": (env, req, url) => halaman(env, url, "/kemitraan/saya.html"),
   "GET /kemitraan/buku": (env, req, url, kini) => halamanHak(env, req, url, kini, ["SA", "ST", "PM", "KK"], "/kemitraan/buku.html"),
   "GET /kemitraan/panduan": (env, req, url, kini) => halamanHak(env, req, url, kini, ["SA", "ST"], "/kemitraan/panduan.html"),
   "GET /kemitraan/sertifikat/:id": (env, req, url) => halaman(env, url, "/kemitraan/sertifikat.html"),
   "GET /api/kemitraan/saya": (env, req, url, kini) => saya(env, req, kini),
-  /* penampung pola :kab4, :id, :aid; diganti pemilik sebenarnya oleh KM-C03 / KM-C08 */
+  ...ruteAkun(),   // daftar, masuk, atur sandi, kampus, anggota, perjanjian, kode BPBD (src/kemitraan_akun.js, KM-D01 dan KM-D05)
+  ...ruteMasalah(),   // masalah, kunjungan, jawaban, koreksi (src/kemitraan_masalah.js, KM-C03)
+  /* penampung pola :kab4, :id, :aid; diganti pemilik sebenarnya oleh KM-C08 */
   "GET /api/kemitraan/daerah/:kab4/pakar": belumAda,
   "POST /api/kemitraan/masalah/:id/pakar/:aid": belumAda,
 }, "fitur kemitraan kampus belum diaktifkan", "kemitraan: tabel km_* belum ada (migrasi 0080-0085 belum diterapkan)");

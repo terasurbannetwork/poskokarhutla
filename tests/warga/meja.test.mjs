@@ -8,6 +8,7 @@ import {MEJA, DAFTAR_MEJA, PASANGAN, BARANG, BENCANA, AMBANG, RAPOR, validasi, s
 import {gabungSkor, skorRespons, DIBI_KOLOM, DIBI_JENIS, selCsv} from "../../src/meja.js";
 import {siapkan, berantai, ADMIN, MOD2, GERBANG} from "./_bnpb.mjs";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
+import {nilai, tenggat} from "../../public/inti/jam_aturan.js";
 
 const uji = berantai(), JAM = 3600e3, HARI = 24 * JAM, MENIT = 60e3, wib = t => new Date(t + 7 * JAM).toISOString().slice(0, 10);
 const U = await siapkan("uji-meja"), {DB, api, adm} = U;
@@ -90,10 +91,14 @@ uji("validasi spek: kolom liar, tipe salah, di luar rentang, tautan, tipe ya, ta
   assert.equal((await baru(ADMIN, "kaji_cepat", "7", "Kab Val", kaji(), {desa: "Desa Val"})).s, 400, "prov 2 digit");
   assert.equal((await adm("POST", "/api/meja/catatan", {meja: "logistik", prov: "71", kab: "Kab Val", data: logis(), tambahan: 1})).s, 400, "kunci atas liar");
   assert.equal((await baru(ADMIN, "logistik", "71", "Kab Val", logis({barang: "emas"}))).s, 400);
-  assert.equal((await baru(ADMIN, "destana", "71", "Kab Val", {kelas: "madya", tahun_dibentuk: 2020, indikator: ["tim_siaga", "tim_siaga"]}, {desa: "Desa V", kec: "Kec V"})).s, 400, "multi duplikat");
+  assert.equal((await baru(ADMIN, "destana", "71", "Kab Val", {kelas: "madya", tahun_dibentuk: 2020, tgl_penilaian: "2026-13-45"}, {desa: "Desa V", kec: "Kec V"})).s, 400, "tanggal penilaian tidak sah");
+  assert.equal((await baru(ADMIN, "destana", "71", "Kab Val", {kelas: "madya", tahun_dibentuk: 2020, indikator: ["tim_siaga"]}, {desa: "Desa V", kec: "Kec V"})).s, 400, "kolom indikator karangan sudah dihapus (Perban 7/2025 Pasal 13: indikator = SNI)");
   assert.equal((await baru(ADMIN, "destana", "71", "Kab Val", {kelas: "madya", tahun_dibentuk: 2020}, {desa: "Desa V"})).s, 400, "kecamatan wajib");
   assert.equal((await baru(ADMIN, "dsp", "71", "Kab Val", dsp({nilai_diajukan: 1e14}))).s, 400);
   assert.equal((await baru(ADMIN, "renkon", "71", "Kab Val", {bencana: "banjir", judul: "R", tgl_sah: hari(10), berlaku_sampai: hari(20)})).s, 400, "berlaku_sampai sebelum tgl_sah");
+  assert.equal((await baru(ADMIN, "renkon", "71", "Kab Val", {bencana: "banjir", judul: "R", tgl_sah: "2026-01-10", berlaku_sampai: "2029-01-11"})).s, 400, "berlaku_sampai lebih dari tgl_sah + 3 tahun (Perban 2/2023 Pasal 21)");
+  assert.equal((await baru(ADMIN, "renkon", "71", "Kab Val", {bencana: "banjir", judul: "R", tgl_sah: "2026-01-10", berlaku_sampai: "2029-01-10"})).s, 201, "tepat 3 tahun sah");
+  assert.equal((await baru(ADMIN, "renkon", "71", "Kab Val", {bencana: "gempa", judul: "R tanpa sampai", tgl_sah: "2026-01-10"})).s, 201, "berlaku_sampai tidak lagi wajib");
   assert.equal((await api("POST", "/api/meja/catatan", "{bukan json", ADMIN)).s, 400);
   assert.equal((await api("POST", "/api/meja/catatan", "x".repeat(5000), ADMIN)).s, 413);
   /* fungsi murni: tipe ya, isian awal vs tahap */
@@ -102,7 +107,7 @@ uji("validasi spek: kolom liar, tipe salah, di luar rentang, tautan, tipe ya, ta
   try { assert.deepEqual(validasi("dsp", {setuju: true}, null), {data: {setuju: true}}); assert.ok(validasi("dsp", {setuju: "ya"}, null).galat); assert.ok(validasi("dsp", {}, null).galat); } finally { MEJA.dsp.kolom = ya; }
   assert.ok(validasi("logistik", {jumlah_kirim: 5, tgl_kirim: hari(0)}, "dikirim").data, "tahap dikirim menerima kolom tahapnya");
   assert.ok(validasi("logistik", {jumlah_kirim: 5, tgl_kirim: hari(0), barang: "beras"}, "dikirim").galat, "kolom awal ditolak di tahap");
-  assert.equal(await U.n("meja_catatan"), 2);
+  assert.equal(await U.n("meja_catatan"), 4, "2 lama + 2 renkon sah baru (tepat 3 tahun, tanpa berlaku_sampai)");
 });
 
 uji("status turunan renkon dan destana benar di tepi tanggal (fungsi murni)", async () => {
@@ -112,12 +117,21 @@ uji("status turunan renkon dan destana benar di tepi tanggal (fungsi murni)", as
   assert.equal(rk(plus(0), plus(-10)), "segera_habis", "hari ini masih berlaku (segera habis)");
   assert.equal(rk(plus(90), plus(-10)), "segera_habis", "tepat 90 hari = segera habis");
   assert.equal(rk(plus(91), plus(-10)), "berlaku", "91 hari = berlaku");
-  assert.equal(rk(plus(200), plus(-365)), "berlaku", "uji tepat 365 hari lalu masih sah");
-  assert.equal(rk(plus(200), plus(-366)), "belum_diuji", "uji 366 hari lalu");
-  assert.equal(rk(plus(200), null), "belum_diuji", "tanpa uji");
-  assert.equal(rk(plus(30), plus(-400)), "segera_habis", "kedaluwarsa > segera_habis > belum_diuji");
+  /* F0-2 (RU-008): hari ini 2026-10-19 di fungsi ini; reviu 6 bulan + berlaku 3 tahun dari Jam Aturan (Perban 2/2023 Pasal 21), bukan uji 365 hari */
+  const rv = (sah, sampai, reviu, uji) => statusEfektif("renkon", {data: {tgl_sah: sah, berlaku_sampai: sampai, ...(reviu ? {reviu_terakhir: reviu} : {}), ...(uji ? {uji_terakhir: uji} : {})}}, kini);
+  assert.equal(rv("2024-03-01", "2027-03-01", "2026-04-18"), "perlu_reviu", "reviu 6 bulan + 1 hari lalu");
+  assert.equal(rv("2024-03-01", "2027-03-01", "2026-04-19"), "berlaku", "reviu tepat 6 bulan lalu masih sah");
+  assert.equal(rv("2024-03-01", "2027-03-01", null, "2026-10-01"), "perlu_reviu", "catatan lama: uji_terakhir tidak dihitung, reviu dari tgl_sah, tanpa galat");
+  assert.equal(rv("2023-10-01", "2026-10-01", "2026-10-01"), "kedaluwarsa", "3 tahun lewat");
+  assert.equal(rv("2023-10-19", null, "2026-10-01"), "segera_habis", "tanpa berlaku_sampai: bawaan tgl_sah + 3 tahun (hari ini sisa 0)");
+  assert.equal(rv("2023-10-18", null, "2026-10-01"), "kedaluwarsa", "bawaan tgl_sah + 3 tahun sudah lewat");
+  assert.equal(rv(plus(-10), plus(200), plus(-10)), "berlaku");
+  assert.equal(rk(plus(30), plus(-400)), "segera_habis", "kedaluwarsa > segera_habis > perlu_reviu");
   assert.equal(rk(plus(-5), null), "kedaluwarsa");
   const ds = keg => statusEfektif("destana", {data: keg ? {kegiatan_terakhir: keg} : {}}, kini);
+  const nilaiDs = tgl => tandaBahaya("destana", {status: "tercatat", data: {kegiatan_terakhir: "2026-10-19", ...(tgl ? {tgl_penilaian: tgl} : {})}}, kini).includes("penilaian_kedaluwarsa");
+  assert.equal(nilaiDs(null), true, "tanpa tgl_penilaian"); assert.equal(nilaiDs("2023-10-01"), true, "penilaian lebih dari 3 tahun");
+  assert.equal(nilaiDs("2023-10-19"), false, "penilaian tepat 3 tahun lalu belum kedaluwarsa");
   assert.equal(ds("2025-10-19"), "aktif", "tepat 12 bulan lalu = aktif");
   assert.equal(ds("2025-10-18"), "pasif", "12 bulan + 1 hari = pasif");
   assert.equal(ds("2026-10-19"), "aktif"); assert.equal(ds(null), "pasif");
@@ -131,11 +145,25 @@ uji("status turunan renkon dan destana benar di tepi tanggal (fungsi murni)", as
   assert.deepEqual(tandaBahaya("logistik", rec("disetujui", kini - 99 * JAM, logis()), kini), []);
   assert.deepEqual(tandaBahaya("logistik", rec("diterima", kini, {jumlah_kirim: 5, jumlah_terima: 5}), kini), []);
   assert.deepEqual(tandaBahaya("logistik", rec("diterima", kini, {jumlah_kirim: 5, jumlah_terima: 4}), kini), ["selisih_terima"]);
-  assert.deepEqual(tandaBahaya("dsp", rec("cair", kini, {tgl_cair: plus(-30)}), kini), [], "30 hari belum bahaya");
-  assert.deepEqual(tandaBahaya("dsp", rec("cair", kini, {tgl_cair: plus(-31)}), kini), ["spj_terlambat"]);
-  assert.deepEqual(tandaBahaya("dsp", rec("spj", kini, {tgl_cair: plus(-99)}), kini), [], "sudah SPJ");
+  /* DSP (Perban 4/2020 Pasal 21): laporan perkembangan tiap tanggal 5 bulan berikutnya; SPJ 3 bulan sesudah status darurat berakhir. Hari ini 2026-10-19. */
+  const dp = (data, status = "cair") => tandaBahaya("dsp", rec(status, kini, data), kini);
+  assert.deepEqual(dp({tgl_cair: "2026-10-10"}), [], "cair Oktober: laporan jatuh tempo 5 November");
+  assert.deepEqual(dp({tgl_cair: "2026-09-10"}), ["laporan_terlambat"], "cair September: jatuh tempo 5 Oktober lewat");
+  assert.deepEqual(dp({tgl_cair: "2026-09-10", laporan_terakhir: "2026-10-12"}), [], "laporan Oktober sudah masuk, berikutnya 5 November");
+  assert.deepEqual(dp({tgl_cair: "2026-09-10", tgl_status_berakhir: "2026-06-19"}), ["laporan_terlambat", "spj_terlambat"], "dua tanda sekaligus");
+  assert.deepEqual(dp({tgl_cair: "2026-10-10", tgl_status_berakhir: "2026-07-18"}), ["spj_terlambat"], "status berakhir 3 bulan + 1 hari lalu");
+  assert.deepEqual(dp({tgl_cair: "2026-10-10", tgl_status_berakhir: "2026-07-19"}), [], "tepat 3 bulan belum terlambat");
+  assert.deepEqual(dp({tgl_cair: "2026-10-10"}).filter(x => x === "spj_terlambat"), [], "tanpa tgl_status_berakhir tidak ada tanda SPJ palsu");
+  assert.deepEqual(dp({tgl_cair: "2025-01-01", tgl_status_berakhir: "2025-02-01"}, "spj"), [], "sudah SPJ");
+  /* kaji cepat: laporan awal 1 x 24 jam (Juklak 3/2022 hal. 16); rec.dibuat proksi waktu tiba */
+  assert.deepEqual(tandaBahaya("kaji_cepat", rec("dilaporkan", kini - 25 * JAM), kini), ["belum_diverifikasi"], "25 jam");
+  assert.deepEqual(tandaBahaya("kaji_cepat", rec("dilaporkan", kini - 23 * JAM), kini), [], "23 jam");
   assert.deepEqual(tandaBahaya("kaji_cepat", rec("dilaporkan", kini - 73 * JAM), kini), ["belum_diverifikasi"]);
-  assert.equal(AMBANG.logistik_setuju_jam, 24);
+  /* AMBANG hanya cermin Jam Aturan; internal berlabel asumsi di teks tanda */
+  assert.equal(AMBANG.logistik_setuju_jam, 24); assert.equal(AMBANG.logistik_setuju_jam, nilai("logistik_setuju_jam"));
+  assert.equal(AMBANG.kaji_awal_jam, nilai("kaji_awal")); assert.equal(AMBANG.kaji_lanjutan_jam, 72);
+  for (const [m, t] of [["logistik", "belum_disetujui"], ["destana", "pasif"], ["rehab", "macet"]]) assert.match(MEJA[m].bahaya[t], /asumsi/, `tanda internal ${m}.${t} wajib berlabel asumsi`);
+  assert.equal(tenggat("renkon_berlaku", "2024-02-29").hasil, "2027-02-28");
 });
 
 uji("isolasi: petugas kab A tidak bisa membaca atau menulis kab B, dan hanya mejanya", async () => {
@@ -256,13 +284,13 @@ uji("alur status per meja: transisi liar ditolak, peran dijaga, isian per tahap,
   assert.equal((await api("POST", "/api/meja/catatan/" + l2.id, {aksi: "hapus"}, p.h)).s, 400);
   /* renkon dan destana: tidak ada transisi, isi boleh diperbarui kapan saja */
   const rk = (await baru(p.h, "renkon", undefined, undefined, {bencana: "banjir", judul: "Renkon Banjir", tgl_sah: hari(400), berlaku_sampai: wib(KINI + 400 * HARI), tautan: "https://contoh.id/r.pdf"})).j.catatan;
-  assert.equal(rk.status_efektif, "belum_diuji"); assert.deepEqual(rk.tanda, ["belum_diuji"]); assert.deepEqual(rk.aksi, []);
+  assert.equal(rk.status_efektif, "perlu_reviu"); assert.deepEqual(rk.tanda, ["perlu_reviu"]); assert.deepEqual(rk.aksi, []);
   assert.equal((await st(p.h, rk.id, {ke: "tercatat"})).s, 409);
-  const rk2 = await api("POST", "/api/meja/catatan/" + rk.id, {aksi: "ubah", data: {...rk.data, uji_terakhir: hari(10)}}, p.h);
+  const rk2 = await api("POST", "/api/meja/catatan/" + rk.id, {aksi: "ubah", data: {...rk.data, reviu_terakhir: hari(10)}}, p.h);
   assert.equal(rk2.j.catatan.status_efektif, "berlaku"); assert.deepEqual(rk2.j.catatan.tanda, []);
   assert.equal((await api("GET", "/api/meja/catatan?meja=renkon&status=berlaku", undefined, p.h)).j.catatan.length, 1);
   assert.equal((await api("GET", "/api/meja/catatan?meja=renkon&status=kedaluwarsa", undefined, p.h)).j.catatan.length, 0);
-  const ds = (await baru(p.h, "destana", undefined, undefined, {kelas: "madya", tahun_dibentuk: 2019, indikator: ["tim_siaga"], kegiatan_terakhir: hari(30)}, {desa: "Desa Tangguh", kec: "Kec Alur"})).j.catatan;
+  const ds = (await baru(p.h, "destana", undefined, undefined, {kelas: "madya", tahun_dibentuk: 2019, tgl_penilaian: hari(30), kegiatan_terakhir: hari(30)}, {desa: "Desa Tangguh", kec: "Kec Alur"})).j.catatan;
   assert.equal(ds.status_efektif, "aktif");
   assert.equal((await api("POST", "/api/meja/catatan/" + ds.id, {aksi: "ubah", data: {kelas: "utama", tahun_dibentuk: 2019, kegiatan_terakhir: hari(500)}}, p.h)).j.catatan.status_efektif, "pasif");
 });
@@ -410,7 +438,7 @@ const kajiSiap = async (h, kab, prov = "71") => {
 };
 
 uji("sempurna: enum spek rehab dan gudang sama dengan CHECK/trigger migrasi; tautan kaji_id, saldo stok, dan transaksi dijaga D1", async () => {
-  const sql = readFileSync(path.join(AKAR, "migrations/0026_meja.sql"), "utf8");
+  const sql = migrasi();   // semua migrasi (0026 + 0110 yang membangun ulang meja_catatan), bukan 0026 saja
   assert.deepEqual(DAFTAR_MEJA, ["kaji_cepat", "logistik", "dsp", "renkon", "destana", "rehab", "gudang"]);
   for (const m of ["rehab", "gudang"]) assert.ok(sql.includes(`'${m}'`));
   for (const s of MEJA.rehab.status) assert.ok(sql.includes(`'${s}'`), "status rehab di migrasi: " + s);
@@ -420,7 +448,8 @@ uji("sempurna: enum spek rehab dan gudang sama dengan CHECK/trigger migrasi; tau
   const coba = async (sqlText, ...a) => { try { await DB.prepare(sqlText).bind(...a).run(); return true; } catch (e) { return false; } };
   const kj = async (status = "masuk_jitupasna", kab = "Kab Tautan", meja = "kaji_cepat") => { const id = hex(); await DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, kec, desa, data, status, dibuat, diubah) VALUES (?, ?, '71', ?, NULL, 'Desa D', '{}', ?, 1, 1)").bind(id, meja, kab, status).run(); return id; };
   const rh = (id, kaji, kab = "Kab Tautan", dummy = 0) => coba("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah, kaji_id, dummy) VALUES (?, 'rehab', '71', ?, '{}', 'jitupasna', 1, 1, ?, ?)", id, kab, kaji, dummy);
-  assert.equal(await rh(hex(), null), false, "rehab tanpa kaji_id");
+  // F0-3 (migrasi 0110, KEPUTUSAN-AWAL §5.0, tiket RU-009): rehab tanpa kaji cepat induk kini DITERIMA (dulu ditolak). Tautan liar tetap ditolak di bawah.
+  assert.equal(await rh(hex(), null), true, "rehab tanpa kaji_id (F0-3)");
   assert.equal(await rh(hex(), hex()), false, "kaji_id liar");
   assert.equal(await rh(hex(), await kj("diverifikasi")), false, "kaji belum masuk_jitupasna");
   assert.equal(await rh(hex(), await kj("masuk_jitupasna", "Kab Lain")), false, "kaji kab lain");
@@ -455,7 +484,14 @@ uji("sempurna: alur rehab-rekon, peran petugas/admin, aturan lintas kolom, tauta
   const kj = await kajiSiap(p.h, "Kab Rehab"), kjLain = await kajiSiap(lain.h, "Kab Rehab Lain");
   const mk = (h, kaji_id, data = rehabIsi(), extra = {}) => api("POST", "/api/meja/catatan", {meja: "rehab", kaji_id, data, ...extra}, h);
   /* tautan liar */
-  assert.equal((await mk(p.h, undefined)).s, 400, "kaji_id wajib"); assert.equal((await mk(p.h, "bukan-hex")).s, 400); assert.equal((await mk(p.h, hex())).s, 400, "kaji tak ada");
+  /* F0-3 (RU-010, KEPUTUSAN-AWAL §5.0): kaji_id OPSIONAL; rehab tanpa induk diterima dengan kejadian_ref, kaji_id yang diisi tetap dijaga */
+  const bebas = await petugas("Kab Rehab Bebas", ["rehab"]), lain2 = await petugas("Kab Rehab Bebas B", ["rehab"]);   // kab terpisah supaya hitungan kab Rehab di bawah tak berubah
+  const tanpaInduk = await mk(bebas.h, undefined, rehabIsi({kejadian_ref: "SK-UJI-1"})); assert.equal(tanpaInduk.s, 201, tanpaInduk.t); assert.ok(!tanpaInduk.j.catatan.kaji_id, "tanpa induk");
+  assert.equal((await mk(bebas.h, undefined, rehabIsi({kejadian_ref: "SK-UJI-1"}))).s, 409, "kejadian_ref sama di kab sama");
+  assert.equal((await mk(lain2.h, undefined, rehabIsi({kejadian_ref: "SK-UJI-1"}))).s, 201, "kejadian_ref sama di kab lain boleh");
+  assert.equal((await mk(bebas.h, undefined)).s, 201, "tanpa kejadian_ref diterima (indeks unik hanya untuk yang berisi)");
+  assert.equal((await mk(bebas.h, undefined)).s, 201, "dua rehab tanpa induk dan tanpa kejadian_ref");
+  assert.equal((await mk(bebas.h, null)).s, 201, "kaji_id null sama dengan tanpa kaji_id"); assert.equal((await mk(p.h, "bukan-hex")).s, 400); assert.equal((await mk(p.h, hex())).s, 400, "kaji tak ada");
   const belum = (await baru(p.h, "kaji_cepat", undefined, undefined, kaji(), {desa: "Desa Belum"})).j.catatan.id; assert.equal((await mk(p.h, belum)).s, 400, "kaji belum masuk_jitupasna");
   assert.equal((await mk(p.h, kjLain)).s, 400, "kaji kab lain (pesan sama dengan tak ada)"); assert.equal((await mk(p.h, kj, rehabIsi(), {kaji_id: kjLain})).s, 400, "kaji_id ganda tidak dipakai");
   assert.equal((await api("POST", "/api/meja/catatan", {meja: "rehab", prov: "71", kab: "Kab Salah", kaji_id: kj, data: rehabIsi()}, ADMIN)).s, 400, "admin: kab berbeda dari kaji");

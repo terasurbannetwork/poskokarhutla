@@ -359,18 +359,24 @@ SELISIH = os.path.join(os.path.dirname(__file__), "selisih_kemendagri.json")
 def hitung_selisih():
     """{kunci "NN|Kab": [jumlah kecamatan BIG, jumlah kecamatan Kemendagri]} untuk kab/kota yang tidak sama. Kemendagri =
     kode kecamatan unik (NN.NN.NN) di public/geo/desa/<kode kab>.json; peta kode di public/data/kemitraan/kode.json."""
+    # Ejaan BIG vs Kemendagri beda (Muko Muko/Mukomuko, Padang Sidempuan/Padangsidimpuan): bandingkan lewat norm() + alias.
+    alias = {"kotapadangsidempuan": "kotapadangsidimpuan", "kepulauansiautagulandangbiaro": "kepsiautagulandangbiaro",
+             "pangkajenekepulauan": "pangkajenedankepulauan"}
     big = collections.Counter()
     for k in KODE:
         for f in json.load(open(os.path.join(GEO, "kecamatan", k + ".json")))["features"]:
-            big[f"{k}|{f['properties']['kab']}"] += 1
+            nm = norm(f["properties"]["kab"])
+            big[f"{k}|{alias.get(nm, nm)}"] += 1
     out = {}
     for v in json.load(open(os.path.join(AKAR, "public/data/kemitraan/kode.json"))).values():
         p = os.path.join(GEO, "desa", f"{v.get('kemendagri')}.json")
         if not v.get("kemendagri") or not os.path.exists(p):
             continue
         n = len({f["properties"]["kd"][:8] for f in json.load(open(p))["features"]})
-        if big.get(v["kunci_nama"], 0) != n:
-            out[v["kunci_nama"]] = [big.get(v["kunci_nama"], 0), n]
+        pr, nm = v["kunci_nama"].split("|", 1)
+        b = big.get(f"{pr}|{norm(nm)}", 0)
+        if b != n:
+            out[v["kunci_nama"]] = [b, n]
     return out
 
 
