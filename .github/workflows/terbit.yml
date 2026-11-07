@@ -34,6 +34,9 @@ jobs:
           cache: npm
       - name: Pasang dependensi uji
         run: npm ci
+      # gerbang-skill-surat menjalankan mesin surat BNPB (python-docx) sungguhan; runner tidak membawanya (7 Nov 2026)
+      - name: Pasang python-docx untuk uji mesin surat
+        run: python3 -m pip install --quiet python-docx==1.2.0
       # Batas waktu PER LANGKAH (4 Nov 2026): uji yang macet (Chrome yatim memegang pipa) dulu menghabiskan 25 menit job lalu
       # berakhir "cancelled", sehingga pemberitahuan failure() tidak menyala. Langkah yang lewat batasnya berstatus gagal.
       - name: Uji agen (gerbang)
