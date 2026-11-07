@@ -52,7 +52,7 @@ export async function lengkapi(env, kini) {
   const sejak = hariWib(kini - 3 * 864e5), Q = (sql, ...b) => env.DB.prepare(sql).bind(...b).all().then(r => r.results), st = [];
   const [foto, gerak] = await Promise.all([
     Q("SELECT id, registrasi, coalesce(jam_utc, diterima) jam, lat, lon FROM op_foto WHERE gerak_id IS NULL AND registrasi IS NOT NULL AND tanggal >= ?", sejak),
-    Q("SELECT id, tanggal, registrasi, jam_utc, lat, lon, lokasi FROM op_gerak WHERE jenis = 'berangkat' AND dummy = 0 AND jam_utc IS NOT NULL AND tanggal >= ? ORDER BY jam_utc LIMIT 1000", sejak)]);
+    Q("SELECT id, tanggal, registrasi, jam_utc, lat, lon, lokasi FROM op_gerak WHERE jenis = 'berangkat' AND dummy = 0 AND jam_utc IS NOT NULL AND (tanggal >= ?1 OR jam_utc >= ?2) ORDER BY jam_utc LIMIT 1000", sejak, kini - 3 * 864e5)]);   // jam_utc: pesan telat (isi bertanggal lama, aksi drop berjam terima) tetap dilengkapi
   const ambilKoordinat = (g, lat, lon, sumber) => {
     g.lat = lat; g.lon = lon;
     st.push(env.DB.prepare("UPDATE op_gerak SET lat = ?2, lon = ?3 WHERE id = ?1").bind(g.id, lat, lon),
@@ -66,7 +66,7 @@ export async function lengkapi(env, kini) {
   }
   const tanpa = gerak.filter(g => g.lat == null && g.lokasi);
   if (tanpa.length) {
-    const tem = await Q("SELECT tanggal, lat, lon, lokasi FROM op_temuan WHERE tanggal >= ? AND lokasi IS NOT NULL", sejak);
+    const tem = await Q("SELECT tanggal, lat, lon, lokasi FROM op_temuan WHERE tanggal >= ? AND lokasi IS NOT NULL", tanpa.reduce((m, g) => g.tanggal < m ? g.tanggal : m, sejak));
     for (const g of tanpa) { const k = segmen(g.lokasi), t = k.length >= 4 && tem.find(x => x.tanggal === g.tanggal && segmen(x.lokasi) === k); if (t) ambilKoordinat(g, t.lat, t.lon, "temuan"); }
   }
   if (st.length) await env.DB.batch(st);

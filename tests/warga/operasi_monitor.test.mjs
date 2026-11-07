@@ -132,7 +132,9 @@ uji("foto bertanda tangan stempel: koordinat aksi tanpa koordinat diisi dari ste
 });
 
 uji("gerbang: stempel hanya dari gateway berkunci; kunci salah ditolak dan tidak ada yang tersimpan", async () => {
-  const F = JSON.parse(readFileSync(path.join(AKAR, "tests/warga/fixtures/ocr_stempel_041126.json"), "utf8")).blok.find(b => b.id === 98).teks;
+  const w = new Date(Date.now() + 7 * 36e5 - 10 * 60e3), tgl = `${w.getUTCDate()} ${"Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ")[w.getUTCMonth()]} ${w.getUTCFullYear()} ${w.toISOString().slice(11, 19).replaceAll(":", ".")}`;
+  // stempel digeser ke 10 menit lalu (WIB): stempel > 3 hari dari waktu terima dibuang, dan gateway menolak waktu terima > 7 hari, jadi tanggal tetap 4 Nov membusuk
+  const F = JSON.parse(readFileSync(path.join(AKAR, "tests/warga/fixtures/ocr_stempel_041126.json"), "utf8")).blok.find(b => b.id === 98).teks.replace("4 Nov 2026 08.35.53", tgl);
   const kirimS = async (kunci, grup = G) => {
     const f = new FormData(); f.set("dari", "6289900001111"); f.set("grup", grup); f.set("stempel", F); f.set("waktu", String(Date.now())); f.set("berkas", new Blob([JPEG_SAH], {type: "image/jpeg"}), "x.jpg");
     const r = await I.mf.dispatchFetch("http://bnpb.lokal/api/wa/gateway", {method: "POST", headers: kunci ? {"x-wa-kunci": kunci} : {}, body: f}); return {s: r.status, j: await r.json()};
