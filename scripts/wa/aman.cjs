@@ -54,7 +54,17 @@ function buatTerlihat(berkas, cap = 5000) {
   }
 }
 
-// 'append' = susulan offline: hanya yang <= 24 jam (ts detik dari Baileys, bisa Long).
-const susulanBaru = (ts, now = Date.now()) => { const t = Number(ts?.toString?.() ?? ts) * 1000; return Number.isFinite(t) && t > 0 && now - t <= 86400e3 }
+// 'append' = susulan offline: hanya yang <= `hari` hari (bawaan 7; ts detik dari Baileys, bisa Long).
+const HARI_SUSULAN = 7
+const susulanBaru = (ts, now = Date.now(), hari = HARI_SUSULAN) => { const t = Number(ts?.toString?.() ?? ts) * 1000; return Number.isFinite(t) && t > 0 && now - t <= hari * 86400e3 }
 
-module.exports = { samaAman, idAman, idSah, jalurKeluaran, mimeBoleh, ukuranBerkas, buatTerlihat, susulanBaru }
+// Putusan satu pesan susulan/riwayat: { ok:true } atau { ok:false, alasan } supaya pembuangan selalu tercatat di log.
+// `diterima` = pengirim di WA_IZIN atau grup operasi; `terlihat` = id sudah pernah diteruskan.
+function putusanSusulan({ diterima, ts, terlihat, now = Date.now(), hari = HARI_SUSULAN }) {
+  if (!diterima) return { ok: false, alasan: 'bukan izin' }
+  if (!susulanBaru(ts, now, hari)) return { ok: false, alasan: `umur lebih dari ${hari} hari` }
+  if (terlihat) return { ok: false, alasan: 'sudah terlihat' }
+  return { ok: true }
+}
+
+module.exports = { samaAman, idAman, idSah, jalurKeluaran, mimeBoleh, ukuranBerkas, buatTerlihat, susulanBaru, putusanSusulan, HARI_SUSULAN }
