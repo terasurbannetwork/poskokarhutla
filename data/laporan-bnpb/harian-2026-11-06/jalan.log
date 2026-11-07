@@ -1,0 +1,75 @@
+Traceback (most recent call last):
+  File "D:\Project\Work\BNPB\poskokarhutla\scripts\data\dalops_banjir.py", line 623, in <module>
+    main()
+    ~~~~^^
+  File "D:\Project\Work\BNPB\poskokarhutla\scripts\data\dalops_banjir.py", line 466, in main
+    satu(o, LB, LP)
+    ~~~~^^^^^^^^^^^
+  File "D:\Project\Work\BNPB\poskokarhutla\scripts\data\dalops_banjir.py", line 472, in satu
+    return main_wa(o, LB)
+  File "D:\Project\Work\BNPB\poskokarhutla\scripts\data\dalops_banjir.py", line 436, in main_wa
+    r = subprocess.run(["npx", "--yes", "wrangler@4.42.0", "r2", "object", "get", kunci_r2(), "--remote", "--pipe"], cwd=AKAR, capture_output=True, text=True)
+  File "C:\Python314\Lib\subprocess.py", line 555, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\subprocess.py", line 1553, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                       ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+                             # no special security
+                             ^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+                             cwd,
+                             ^^^^
+                             startupinfo)
+                             ^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] The system cannot find the file specified
+ok C:\Users\USER\AppData\Local\Temp\lewat-deck-4kd7elkh\Laporan Kejadian Bencana Harian 061126.pptx  {"slide": 7, "huruf_terkecil_pt": 6.5, "warna": 33, "angka_diperiksa": 182}
+mode simpanan
+pakai simpanan website D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-06\kerja-061126\web
+hari data website 2026-11-05
+website 2026-11-05 ditambahkan: Kalimantan Selatan
+website 2026-11-05 ditambahkan: Sulawesi Tenggara
+website 2026-11-05 ditambahkan: Maluku
+ikut baris provinsi: Banggai Kepulauan -> Sulawesi Tengah
+website 2026-11-05 Kalimantan Tengah Siaga 2828 ha 1033 FS -> ditangani PERHATIAN
+website 2026-11-05 Kalimantan Timur Siaga 397 ha 156 FS -> ditangani PERHATIAN
+website 2026-11-05 Jambi Siaga 97 ha 42 FS -> ditangani 
+website 2026-11-05 Sumatera Selatan Patroli 12 ha 3 FS -> ditangani 
+website 2026-11-05 Riau Patroli 0 ha 0 FS -> selesai 
+website 2026-11-05 Kalimantan Barat Patroli 0 ha 0 FS -> selesai 
+website 2026-11-05 Sulawesi Tengah Siaga 132 ha 63 FS -> ditangani PERHATIAN
+website 2026-11-05 Papua Selatan Prioritas 1881 ha 869 FS -> ditangani PERHATIAN
+website 2026-11-05 Kalimantan Selatan Siaga 128 ha 48 FS -> ditangani PERHATIAN
+website 2026-11-05 Sulawesi Tenggara Siaga 78 ha 68 FS -> ditangani 
+website 2026-11-05 Maluku Siaga 83 ha 29 FS -> ditangani 
+ok D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-06\Laporan Kejadian Bencana Harian 061126.pptx | hari data 2026-11-06 | cutoff 2026-11-06T07:00+07:00 | kejadian 18 karhutla 11 ditangani 9 perlu perhatian 6 selesai 4 | Prioritas ditambah ['63', '74', '81']
+karhutla 62 (prov) berjalan DITANGANI PERHATIAN {'kum': 701734, 'sisa': 2828, 'hot': 1033}
+karhutla 93 (prov) berjalan DITANGANI PERHATIAN {'kum': 311030, 'sisa': 1881, 'hot': 869}
+karhutla 64 (prov) berjalan DITANGANI PERHATIAN {'kum': 131100, 'sisa': 397, 'hot': 156}
+karhutla 72 (prov) berjalan DITANGANI PERHATIAN {'kum': 48553, 'sisa': 132, 'hot': 63}
+karhutla 63 (prov) berjalan DITANGANI PERHATIAN {'kum': 106936, 'sisa': 128, 'hot': 48}
+karhutla 15 (prov) berjalan DITANGANI  {'kum': 36755, 'sisa': 97, 'hot': 42}
+karhutla 81 (prov) berjalan DITANGANI  {'kum': 77004, 'sisa': 83, 'hot': 29}
+karhutla 74 (prov) berjalan DITANGANI  {'kum': 32599, 'sisa': 78, 'hot': 68}
+karhutla 16 (prov) berjalan DITANGANI  {'kum': 214465, 'sisa': 12, 'hot': 3}
+karhutla 14 (prov) berjalan selesai  {'kum': 27000, 'sisa': 0, 'hot': 0}
+karhutla 61 (prov) berjalan selesai  {'kum': 327049, 'sisa': 0, 'hot': 0}
+banjir 11 Pidie Jaya selesai selesai  {}
+banjir 11 Aceh Selatan selesai selesai  {}
+kekeringan 33 Boyolali berjalan DITANGANI  {}
+kekeringan 33 Pemalang berjalan DITANGANI  {}
+angin 35 Kediri belum DITANGANI PERHATIAN {}
+kekeringan 35 Blitar berjalan DITANGANI  {}
+gempabumi 53 (prov) berjalan DITANGANI  {}
+mesin ok D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-06\Laporan Kejadian Bencana Harian 061126.pptx
+pdf D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-06\Laporan Kejadian Bencana Harian 061126.pdf

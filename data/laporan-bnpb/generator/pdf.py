@@ -26,7 +26,10 @@ def ke_pdf(pptx, outdir=None):
             if f.endswith('.ttf') and not os.path.exists(os.path.join(profil, 'user', 'fonts', f)):
                 shutil.copy(os.path.join(FONT, f), os.path.join(profil, 'user', 'fonts', f))
         if os.path.exists(pdf): os.remove(pdf)   # PDF lama tidak boleh lolos sebagai hasil konversi gagal
-        subprocess.run([so, f'-env:UserInstallation=file://{profil}', '--headless', '--convert-to', 'pdf', '--outdir', outdir, pptx],
+        # Wajib URI utuh (file:///C:/...). "file://C:\..." di Windows bikin soffice gagal bootstrap dan memunculkan
+        # dialog "bootstrap.ini is corrupt" yang menggantung konversi (5 Nov 2026).
+        from pathlib import Path
+        subprocess.run([so, f'-env:UserInstallation={Path(profil).as_uri()}', '--headless', '--convert-to', 'pdf', '--outdir', outdir, pptx],
                        check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=300)
     elif os.name == 'nt':
         # 32 = ppSaveAsPDF; WithWindow=0 supaya PowerPoint tidak muncul. Path lewat env, bukan disisipkan ke skrip.

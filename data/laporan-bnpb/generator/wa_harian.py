@@ -33,7 +33,7 @@ def status_dari(kondisi, prov_level):
     Urutan: kata 'masih/belum dapat/pendinginan' -> belum; ada sisa belum padam > 0 ha -> belum (kabupaten) atau berjalan (provinsi, sisa
     tersebar di banyak lokasi); 'berhasil dipadamkan/sudah padam/surut' -> selesai; selain itu berjalan."""
     k = kondisi.lower()
-    if re.search(r'masih dilakukan|masih pemadaman|belum dapat|pendinginan|muncul kembali|masih terlihat|masih terpantau|masih berlangsung|masih menggenang|belum surut|berangsur surut|perlahan surut|rumah warga tergenang', k):   # 4 Nov Aceh Selatan: "air perlahan surut ... rumah warga tergenang 10-60 cm"
+    if re.search(r'masih dilakukan|masih pemadaman|belum dapat|belum sepenuhnya|belum berhasil|pendinginan|muncul kembali|masih terlihat|masih terpantau|masih berlangsung|masih menggenang|belum surut|berangsur surut|perlahan surut|rumah warga tergenang', k):   # 4 Nov Aceh Selatan: "air perlahan surut ... rumah warga tergenang 10-60 cm"
         return 'belum'
     m = re.search(r'sisa[^,.]*?(?:padam\s*)?(?:luas\s*)?±?\s*(\d[\d.,]*)\s*ha', k)
     if m and angka(m.group(1).rstrip('.,')) > 0:
@@ -170,14 +170,16 @@ KOTA = {'ppangkalanbun': 'Pangkalan Bun', 'pangkalanbun': 'Pangkalan Bun', 'pang
 def bmkg(teks):
     t = teks.replace('\xa0', ' ')
     pm = []
-    for m in re.finditer(r'^[\s*\-]*([A-Za-z][A-Za-z0-9 .]*?)\s*:?\s*(\d+(?:[.,]\d+)?)\s*(?:µg/m³)?\s*\(([^)]+)\)', t, re.M):
-        nama = m.group(1).strip()
-        pm.append((KOTA.get(nama.lower(), nama.title()), float(m.group(2).replace(',', '.')), m.group(3).strip()))
+    # 6 Nov: WA BMKG tanpa kategori ("* KEMAYORAN 80.5") -> kategori dari ambang ISPU PM2.5 (cocok arsip: 55,3 Sedang, 96,6 Tidak sehat)
+    ispu = lambda v: 'Baik' if v <= 15.5 else 'Sedang' if v <= 55.4 else 'Tidak sehat' if v <= 150.4 else 'Sangat tidak sehat' if v <= 250.4 else 'Berbahaya'
+    for m in re.finditer(r'^[\s*\-]*([A-Za-z][A-Za-z0-9 .]*?)\s*:?\s*(\d+(?:[.,]\d+)?)\s*(?:µg/m³)?(?:\s*\(([^)]+)\)|[ \t]*$)', t, re.M):
+        nama, v = m.group(1).strip(), float(m.group(2).replace(',', '.'))
+        pm.append((KOTA.get(nama.lower(), nama.title()), v, (m.group(3) or ispu(v)).strip()))
     daftar = lambda pola: [re.sub(r'^dan\s+', '', p.strip()) for p in re.split(r',|\s+dan\s+', (re.search(pola, t, re.S) or [None, ''])[1]) if p.strip()]   # 3 Nov: "A dan B" = dua provinsi
     jam = re.search(r'Tertinggi pada hari (.+?WIB)', t)
     per = re.search(r'Periode\s+(.+?\d{4})', t)
     return {'jam': jam[1] if jam else '', 'pm': pm, 'periode': per[1] if per else '',
-            'hujan': daftar(r'intensitas sedang yang terjadi di (.+?)\.\s*(?:\n|$)'), 'angin': daftar(r'Angin Kencang\*?:\s*(.+?)\.\s*(?:\n|$)')}
+            'hujan': daftar(r'intensitas sedang yang terjadi di (.+?)\.\s*(?:\n|$)'), 'angin': [p for p in daftar(r'Angin Kencang\*?:\s*(.+?)\.\s*(?:\n|$)') if p.upper() not in ('NIL', 'NIHIL', '-')]}   # 6 Nov: "Angin Kencang: NIL."
 
 
 def uji():

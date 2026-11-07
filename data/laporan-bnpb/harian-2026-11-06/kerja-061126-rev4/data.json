@@ -1,0 +1,153 @@
+{
+ "hari": "2026-11-06",
+ "cutoff": "2026-11-06T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Pidie Jaya",
+   "status": "selesai",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 4969.0,
+    "transisi_sd": "2026-12-31"
+   },
+   "teks": {
+    "dampak": "± 4.969 KK / 16.774 Jiwa terdampak",
+    "status_darurat": "Transisi Darurat ke Pemulihan TMT 05/08/2026 s.d 31/12/2026",
+    "kondisi": "Air sudah mulai surut",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Selatan",
+   "status": "selesai",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 222.0
+   },
+   "teks": {
+    "dampak": "± 222 KK / 794 jiwa terdampak (pendataan)",
+    "status_darurat": "Tanggap Darurat TMT 30/08/2026 s.d 12/11/2026",
+    "kondisi": "Banjir surut total",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "33",
+   "lokasi": "Boyolali",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 12022.0,
+    "jiwa": 57311.0,
+    "tangki": 10.0,
+    "liter": 56000.0
+   },
+   "teks": {
+    "dampak": "± 12.022 KK / 57.311 jiwa terdampak (pendataan)",
+    "status_darurat": "Perpanjangan Siaga Darurat TMT 01/06/2026 s.d 31/12/2026",
+    "kondisi": "BPBD Kab. Boyolali telah mendistribusikan bantuan air bersih dengan volume sebanyak 10 tangki (56.000 liter)",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "33",
+   "lokasi": "Pemalang",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 14847.0,
+    "liter": 71000.0
+   },
+   "teks": {
+    "dampak": "± 14.847 KK  (pendataan)",
+    "status_darurat": "Perpanjangan Siaga Darurat TMT 01/06/2026 s.d 30/11/2026",
+    "kondisi": "Total Distribusi sebanyak 71.000 liter dari (BPBD) dan 12.000 dari (PDAM)",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "angin",
+   "prov": "35",
+   "lokasi": "Kediri",
+   "status": "belum",
+   "baru": true,
+   "label": "Angin Kencang",
+   "angka": {
+    "kk": 81.0
+   },
+   "teks": {
+    "dampak": "± 81 KK terdampak",
+    "status_darurat": "Siaga Darurat TMT 07/10/2026 s.d 01/12/2026",
+    "kondisi": "Masih dilakukan pembersihan material rumah rusak",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "35",
+   "lokasi": "Blitar",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 19836.0,
+    "jiwa": 56165.0,
+    "liter": 40000.0
+   },
+   "teks": {
+    "dampak": "± 19.836 KK / 56.165 jiwa terdampak",
+    "status_darurat": "Perpanjangan Siaga Darurat TMT 07/10/2026 s.d 01/12/2026",
+    "kondisi": "BPBD Kabupaten Blitar melaksanakan droping air bersih dengan total 40.000 liter dalam 8 ritase",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "gempabumi",
+   "prov": "53",
+   "lokasi": "",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Gempabumi",
+   "angka": {
+    "meninggal": 156.0,
+    "kk": 17707.0,
+    "transisi_sd": "2026-12-27"
+   },
+   "teks": {
+    "dampak": "156 jiwa MD, ± 1.620 jiwa (masih dalam pendataan), ± 17.707 KK terdampak (masih dalam pendataan)",
+    "status_darurat": "Transisi Darurat ke Pemulihan TMT 27/09/2026 s.d 27/12/2026",
+    "kondisi": "Hasil sementara Progres Huntara per tanggal 4 November di 7 Kabupaten terdampak yang sudah terbangun. Progres 100% sebanyak 368 unit",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false
+  }
+ ],
+ "prioritas_baru": [
+  "63",
+  "74",
+  "81"
+ ]
+}
