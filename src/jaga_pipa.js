@@ -5,7 +5,7 @@
    grup data yang antre/jalan, picu workflow_dispatch sekali. Paling banyak sekali per 3 jam (run terbaru apa pun < 3 jam = lewat).
    Butuh secret GITHUB_TOKEN (fine-grained, Actions: read and write, repo ini saja); tanpa token = lewat diam-diam. */
 const REPO = "terasurbannetwork/poskokarhutla", JAM = 3600e3, BASI = 4 * JAM, JEDA = 3 * JAM;
-export const PIPA = /workflows\/(titik|data|banjir|gempa|lintas|prediksi|statis|udara|titik_palsu)\.yml$/;   // grup concurrency `data`, sama dengan jaga.yml
+export const PIPA = /workflows\/(titik|data|banjir|gempa|lintas|prediksi|statis|titik_palsu|jarak_pandang|kemitraan)\.yml$/;   // grup concurrency `data` (dijaga tests/warga/jaga_titik.test.mjs)
 
 export async function jagaTitik(env, sekarang, ambil = fetch) {
   if (!env.GITHUB_TOKEN) return {lewat: "tanpa token"};
