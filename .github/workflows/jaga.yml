@@ -11,6 +11,12 @@ on:
 
 permissions:
   actions: write
+  contents: read
+
+# cron dan denyut Worker bisa berbarengan; satu per satu supaya tidak memicu dobel (di luar grup `data`, tidak mengisi slot antre pipeline)
+concurrency:
+  group: jaga
+  cancel-in-progress: false
 
 jobs:
   jaga:
@@ -22,6 +28,10 @@ jobs:
       URL_STATUS: ${{ vars.URL_STATUS || 'https://centurisk97.id/api/status' }}
       PIPA: titik|data|banjir|gempa|lintas|prediksi|statis|titik_palsu|jarak_pandang|kemitraan   # workflow ber-grup `data` selain terbit.yml; sama dengan terbit_antre.yml
     steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/terbit
+
       - name: Jalankan ulang jadwal yang terusir antrean (boleh gagal)
         continue-on-error: true
         run: |
@@ -35,8 +45,12 @@ jobs:
           for w in titik.yml data.yml banjir.yml gempa.yml udara.yml lintas.yml prediksi.yml; do
             [ "$(gh run list --workflow "$w" -L 1 --json conclusion --jq '.[0].conclusion')" = cancelled ] || continue
             [ -z "$(gh run list --workflow "$w" --json status --jq '.[] | select(.status != "completed") | .status')" ] || continue
-            gh workflow run "$w" && { echo "$w terusir antrean, dipicu ulang"; break; } || true
+            gh workflow run "$w" && { echo "$w terusir antrean, dipicu ulang"; echo "PIPA_SUDAH=1" >> "$GITHUB_ENV"; break; } || true
           done
+      # GitHub bisa membuang pemicu schedule seluruh repo (7-8 Nov 2026); run ini sendiri dipicu cron Worker tiap jam (src/jaga_jadwal.js).
+      - name: Picu jadwal yang terlewat (boleh gagal)
+        continue-on-error: true
+        run: node scripts/terbit/jaga_jadwal.mjs
       - name: Periksa /api/status, terbitkan ulang bila basi
         run: |
           for i in 1 2 3; do

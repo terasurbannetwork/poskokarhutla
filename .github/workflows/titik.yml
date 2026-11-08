@@ -16,6 +16,11 @@ on:
     - cron: "10 9 * * *"
     - cron: "55 22 * * *"
   workflow_dispatch:
+    inputs:
+      jaga:
+        description: "ya = pengganti jadwal yang terlewat (scripts/terbit/jaga_jadwal.mjs): langkah harian dan 6 jam ikut aturan jam seperti run terjadwal"
+        required: false
+        default: ""
 
 concurrency:
   group: data
@@ -227,7 +232,7 @@ jobs:
         # Putaran tambahan 55 22 (mulai ± 23.30 UTC, di jendela itu) disaring `if:` di atas supaya jejak tidak jalan dua kali sehari.
         run: |
           jam=$(date -u +%H)
-          if [ "${{ github.event_name }}" != "workflow_dispatch" ] && [ "$jam" -lt 21 ]; then echo "jejak dilewati (jam UTC $jam, harian 21-23)"; exit 0; fi
+          if { [ "${{ github.event_name }}" != "workflow_dispatch" ] || [ "${{ inputs.jaga }}" = "ya" ]; } && [ "$jam" -lt 21 ]; then echo "jejak dilewati (jam UTC $jam, harian 21-23)"; exit 0; fi
           python3 scripts/sebaran/jejak.py
 
       # run yang gagal sebelum langkah pulihkan (mis. FIRMS putus 20 Okt) dulu menyimpan salinan kosong dari git dan memutus rantai catatan
@@ -259,7 +264,7 @@ jobs:
           # cron 40 */3 telat 30-45 menit, jadi jam jatuh di 1,4,7,..; j%6 <= 2 menangkap satu dari tiap dua putaran (sekali per 6 jam).
           # Putaran tambahan (jam ± 9 dan ± 23 UTC) sudah disaring `if:` di atas; tanpa itu j=0 (cron 55 22 yang telat > 1 jam) lolos dua kali.
           j=$((10#$(date -u +%H)))
-          if [ $((j % 6)) -gt 2 ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then echo "jam $j UTC: bukan giliran 6 jam"; exit 0; fi
+          if [ $((j % 6)) -gt 2 ] && { [ "${{ github.event_name }}" != "workflow_dispatch" ] || [ "${{ inputs.jaga }}" = "ya" ]; }; then echo "jam $j UTC: bukan giliran 6 jam"; exit 0; fi
           python3 scripts/bnpb/risiko.py --cek && python3 scripts/bnpb/risiko.py
           python3 scripts/bnpb/prioritas.py --cek && python3 scripts/bnpb/prioritas.py
 

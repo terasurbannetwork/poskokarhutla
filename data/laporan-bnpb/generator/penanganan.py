@@ -103,7 +103,8 @@ def bangun(D, jam, bmkg, out, operasi=None, ha_utuh=False, belum_kini=False, lua
     import pdf; pdf.ke_pdf(os.path.join(kerja, nama))   # soffice, atau PowerPoint di Windows (30 Okt)
     os.makedirs(out, exist_ok=True)
     for f in (nama, nama[:-4] + 'pdf'):
-        shutil.copy(os.path.join(kerja, f), out)
+        try: shutil.copy(os.path.join(kerja, f), out)
+        except PermissionError: print('berkas terkunci di penampil, tidak ditimpa:', f)   # 6 dan 8 Nov: PDF terbuka membuat angka.json tidak tertulis
     nas = lambda m: round(sum(o[m][3] for o in prov.values()))
     print(f'ok {os.path.join(out, nama)} | {D} s.d. {jam} WIB: hot {nas("hot")} firespot {nas("fs")} luas {nas("luas")} '
           f'belum {nas("belum")} | 6 teratas {top6}')

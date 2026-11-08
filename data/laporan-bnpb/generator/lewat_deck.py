@@ -38,6 +38,8 @@ def bingkai(pptx, format, judul=None, subjudul=None, tanggal=None, sampul=True, 
         sys.exit(f'deck.py tidak ditemukan di {SKILL} (setel DECK_BNPB). Semua PPT wajib lewat deck.py (pemilik 31 Okt 2026).')
     pptx = os.path.abspath(pptx); keluar = os.path.abspath(keluar or pptx)
     isi = pptx[:-5] + ' (isi).pptx'
+    if format == 'penanganan':   # pemilik 8 Nov 2026: logo KRIS di tiap slide
+        import kris; kris.pasang_isi(pptx)
     shutil.copyfile(pptx, isi)
     tanggal = tanggal or dt.date.today()
     if format == 'penanganan':
@@ -77,8 +79,14 @@ def bingkai(pptx, format, judul=None, subjudul=None, tanggal=None, sampul=True, 
         os.makedirs(tmp, exist_ok=True); kerja = tempfile.mkdtemp(prefix='lewat-deck-', dir=tmp)
         isi_k = os.path.join(kerja, 'isi.pptx'); shutil.copyfile(isi, isi_k)
         spek_k = json.loads(json.dumps(spek))
+        lain = {}   # 5 Nov: impor dari pptx lain (lampiran kab/kota penanganan 051126) ikut disalin, bukan ditimpa jadi isi.pptx
         for n_, sl in enumerate(spek_k['slide']):
-            if sl.get('pptx'): sl['pptx'] = isi_k.replace(os.sep, '/')
+            if sl.get('pptx'):
+                if os.path.abspath(sl['pptx']) == os.path.abspath(isi): sl['pptx'] = isi_k.replace(os.sep, '/')
+                else:
+                    if sl['pptx'] not in lain:
+                        lain[sl['pptx']] = shutil.copyfile(sl['pptx'], os.path.join(kerja, f'impor{len(lain) + 1}.pptx'))
+                    sl['pptx'] = lain[sl['pptx']].replace(os.sep, '/')
             if sl.get('foto'):
                 sl['foto'] = [shutil.copyfile(f, os.path.join(kerja, f'foto{n_}_{i}{os.path.splitext(f)[1]}')).replace(os.sep, '/') for i, f in enumerate(sl['foto'])]
         sp_b = os.path.join(kerja, 'spek.json'); json.dump(spek_k, open(sp_b, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
@@ -95,6 +103,7 @@ def bingkai(pptx, format, judul=None, subjudul=None, tanggal=None, sampul=True, 
         sys.exit(f'deck.py gagal ({r.returncode}):\n{r.stderr[-3000:]}')
     if 'GAGAL' in r.stdout:
         print('PERINGATAN: gerbang QA deck.py GAGAL, baca laporan qa/ di folder keluaran sebelum menyerahkan', file=sys.stderr)
+    if format == 'penanganan': kris.cek_isi(keluar)
     return keluar
 
 

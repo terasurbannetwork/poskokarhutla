@@ -2036,3 +2036,60 @@
 {"t":"2026-11-07T13:04:41.502+07:00","sesi":"e103ba63","prompt":"berapa lama lagi? \n\nJika memang masih ada sisa lu teruskan aja terus","label":[],"berkas":[]}
 {"t":"2026-11-07T13:07:36.220+07:00","sesi":"e103ba63","prompt":"Oke cek riset data publik lagi semua yang bisa diambil. Coba rekomendasikan semua","label":[],"berkas":[]}
 {"t":"2026-11-07T13:11:20.422+07:00","sesi":"e77ea522","prompt":"udah semua ya?","label":[],"berkas":[]}
+{"t":"2026-11-07T08:38:04.981+07:00","sesi":"6657d1c1","prompt":"eh judulnya gauash ada rev4nya","label":[],"berkas":[]}
+{"t":"2026-11-07T08:43:22.822+07:00","sesi":"6657d1c1","prompt":"gunung bromo ga masuk?","label":[],"berkas":[]}
+{"t":"2026-11-07T08:55:16.440+07:00","sesi":"6657d1c1","prompt":"1. hari ini 23, kemarin 24 yang waspada, yang hilang apa?\n2. terus itu kamu dapet info gunung yg statusnya normal darimana","label":[],"berkas":[]}
+{"t":"2026-11-07T08:59:02.204+07:00","sesi":"6657d1c1","prompt":"ini komentar dari atasan saya","label":[],"berkas":[]}
+{"t":"2026-11-07T09:05:47.652+07:00","sesi":"6657d1c1","prompt":"gaada kata2 gunung bromonya, gimana ya baiknya\n\nitu orang sulit juga tau kalau hanya jatim probolinggo","label":[],"berkas":[]}
+{"t":"2026-11-07T09:06:47.963+07:00","sesi":"6657d1c1","prompt":"kata2nya: Erupsi Gn. Bromo","label":[],"berkas":[]}
+{"t":"2026-11-07T09:13:28.678+07:00","sesi":"6657d1c1","prompt":"Try again","label":[],"berkas":[]}
+{"t":"2026-11-07T09:22:56.887+07:00","sesi":"6657d1c1","prompt":"coba yg ntt gempa hapus, itu slide 1 tuh yg bener2 terkini dalam 24 jam aja","label":["gempa"],"berkas":[]}
+{"t":"2026-11-07T09:25:28.962+07:00","sesi":"6657d1c1","prompt":"lah slide 2 itu masih ttp slide yg gunung api haduhhh\n\nsaya itu perintahkan hanya untuk slide 1","label":["gunungapi-kering"],"berkas":[]}
+{"t":"2026-11-07T09:30:45.149+07:00","sesi":"6657d1c1","prompt":"yang banjir cek masih ada apa udah surut","label":["banjir"],"berkas":[]}
+{"t":"2026-11-07T10:17:52.238+07:00","sesi":"6657d1c1","prompt":"ya, pake label pill ya, termasuk yg kk dll nya","label":[],"berkas":[]}
+{"t":"2026-11-07T10:23:40.094+07:00","sesi":"6657d1c1","prompt":"radius 1 km dapet darimana?","label":[],"berkas":[]}
+{"t":"2026-11-08T07:56:12.981+07:00","sesi":"e71f10de","prompt":"@\"C:\\Users\\USER\\Desktop\\Laporan Harian Dit. Koordalops BNPB 07112026.docx.pdf\"\nbuat laporan kejadian bencana hari ini\n\n[tempelan 11315 karakter]\n\n[tempelan 5313 karakter]\n\n[tempelan 3108 karakter]","label":[],"berkas":[]}
+{"t":"2026-11-08T08:27:07.303+07:00","sesi":"e71f10de","prompt":"bromo masih erupsi ga","label":[],"berkas":[]}
+{"t":"2026-11-08T14:43:03.170+07:00","sesi":"1288615b","prompt":"tolong buat ini","label":[],"berkas":[]}
+{"t":"2026-11-08T14:56:10.179+07:00","sesi":"e71f10de","prompt":"ini yang belum dipush dan commit apa aja?","label":[],"berkas":[]}
+{"t":"2026-11-08T15:37:07.043+07:00","sesi":"1288615b","prompt":"jelaskan bagaimana kamu mendapat dan mengolah data/informasi pada masing2 slidenya","label":[],"berkas":[]}
+{"t":"2026-11-08T15:38:07.673+07:00","sesi":"9cd4954a","prompt":"Poles tampilannya","label":[],"berkas":[]}
+{"t":"2026-11-08T15:44:54.652+07:00","sesi":"9cd4954a","prompt":"pakai logo kris juga ya","label":[],"berkas":[]}
+{"t":"2026-11-08T15:56:04.757+07:00","sesi":"9cd4954a","prompt":"buat bencana lain dan status gunung coba pakai layout dan desain seperti laporan bencana harian yang dulu (sebelum hanya 2 slide)\n\nyang bencana lain pakai layout/desain seperti di slide pengkinian data, gunung api seperti di slide gunung api\n\nnah tinggal digabung","label":["gunungapi-kering"],"berkas":[]}
+{"t":"2026-11-08T16:15:03.396+07:00","sesi":"9cd4954a","prompt":"kekeringan masukin ke container bencana lainnya aja, gausah dipisah","label":["gunungapi-kering"],"berkas":[]}
+{"t":"2026-11-08T16:25:58.494+07:00","sesi":"9cd4954a","prompt":"ini layoutnya benerin","label":[],"berkas":[]}
+{"t":"2026-11-08T16:25:59.667+07:00","sesi":"9cd4954a","prompt":"terus yang longsor tambahin bar KK terdampak juga, kalau gaada datanya strip aja","label":["longsor"],"berkas":[]}
+{"t":"2026-11-08T16:27:47.830+07:00","sesi":"9cd4954a","prompt":"ini kalimat ga efektif dan nanggung\n\ncoba lebih xxx kab/kota menjadi daerah calon banjir pada xxxx\n\nterus itu xxx penduduk ... bikin jadi line baru aja, jgn nanggung gitu","label":["banjir"],"berkas":[]}
+{"t":"2026-11-08T16:27:49.209+07:00","sesi":"9cd4954a","prompt":"terus masing2 slide pastiin ada kata yang warna fontnya oren","label":[],"berkas":[]}
+{"t":"2026-11-08T16:48:35.897+07:00","sesi":"9cd4954a","prompt":"eh itu slide 4 bagian nama daerahnya gausah pake pill\n\npill itu khusus info\n\nuntuk tabelnya revert ke tampilan awal aja, lebih baik clean kayak awal drpd kyk gitu","label":[],"berkas":[]}
+{"t":"2026-11-08T16:54:49.936+07:00","sesi":"9cd4954a","prompt":"ini bisa dibikin jadi card kayak yg gunung api aja ga? jangan lupa iconnya","label":["gunungapi-kering"],"berkas":[]}
+{"t":"2026-11-08T16:55:24.381+07:00","sesi":"9cd4954a","prompt":"Sumber batas: Batas kab/kota BIG; WGS 84; ekuirektangular; Batas wilayah bukan rujukan resmi\n\nini hapus","label":[],"berkas":[]}
+{"t":"2026-11-08T16:55:24.789+07:00","sesi":"9cd4954a","prompt":"prakiraan model belum diuji balik\n\nkata2 ini hapus","label":[],"berkas":[]}
+{"t":"2026-11-08T17:01:30.884+07:00","sesi":"9cd4954a","prompt":"buat label daerah mending jadi pill putih dengan slight drop shadow\n\nterus di dalemnya ada nama daerah, statusnya, terus icon statusnya","label":[],"berkas":[]}
+{"t":"2026-11-08T17:01:59.071+07:00","sesi":"9cd4954a","prompt":"eh bebas deh warna  pillnya","label":[],"berkas":[]}
+{"t":"2026-11-08T17:02:01.157+07:00","sesi":"9cd4954a","prompt":"mau dibedain per kondisi status juga bisa","label":[],"berkas":[]}
+{"t":"2026-11-08T17:14:51.494+07:00","sesi":"9cd4954a","prompt":"dari perintah awal bang ghozi, coba kamu kritisi slide yang udah dibikin\n\napakah infonya membingungkan, kurang, atau gimana","label":[],"berkas":[]}
+{"t":"2026-11-08T17:28:10.444+07:00","sesi":"9cd4954a","prompt":"Kerjakan semua","label":[],"berkas":[]}
+{"t":"2026-11-08T17:53:35.301+07:00","sesi":"9cd4954a","prompt":"udah?","label":[],"berkas":[]}
+{"t":"2026-11-08T18:03:39.492+07:00","sesi":"49e546cc","prompt":"buat laporran penanganan karhutla hr ini\n\n[tempelan 21932 karakter]\n\n[tempelan 13086 karakter]\n\n[tempelan 569 karakter]","label":[],"berkas":[]}
+{"t":"2026-11-08T18:04:49.764+07:00","sesi":"9cd4954a","prompt":"btw ini apa iya hanya sumatera?","label":[],"berkas":[]}
+{"t":"2026-11-08T18:09:52.523+07:00","sesi":"9cd4954a","prompt":"sisipan gimana maksudnya?","label":[],"berkas":[]}
+{"t":"2026-11-08T18:10:19.337+07:00","sesi":"9cd4954a","prompt":"coba buat","label":[],"berkas":[]}
+{"t":"2026-11-08T18:11:42.350+07:00","sesi":"9cd4954a","prompt":"sama sekalian\n\n* bikin indikator slide di atas\n* bikin slide lampiran isinya semua list daerah yang punya status (gausah ditandain di indikator)","label":[],"berkas":[]}
+{"t":"2026-11-08T18:14:01.035+07:00","sesi":"49e546cc","prompt":"filenya mana?","label":[],"berkas":[]}
+{"t":"2026-11-08T18:15:48.779+07:00","sesi":"49e546cc","prompt":"<!-- reply 1 -->\n> Laporan penanganan karhutla 8 November udah jadi, 3 slide dengan cut-off 18.00 WIB. Satu angka masih tertinggal: firespot 8 Nov (587 titik) masih dari terbitan situs 13.56 WIB, datanya sampai 11.14 WIB, jadi lintasan siang belum masuk. Makanya ada yang kelihatan janggal, misalnya Sulawesi Selatan 151 hotspot tapi firespot cuma 1. Angka lain sudah sampai data FIRMS terakhir, yaitu 15.41 WIB.\n\ndaerah mana aja yang belum update sama lintasan siang dan mana yang sudah update?","label":["pipa-data"],"berkas":[]}
+{"t":"2026-11-08T18:22:42.092+07:00","sesi":"49e546cc","prompt":"itu tuh emg belum tersedia dari nasanya apa gimana dah, belum paham","label":[],"berkas":[]}
+{"t":"2026-11-08T18:24:17.308+07:00","sesi":"49e546cc","prompt":"Jalankan, bangun ulang","label":[],"berkas":[]}
+{"t":"2026-11-08T18:26:20.774+07:00","sesi":"3709a9d1","prompt":"penggugusan titik tuh maksudnya apa?","label":[],"berkas":[]}
+{"t":"2026-11-08T18:26:42.890+07:00","sesi":"49e546cc","prompt":"berapa lama prosesnya?","label":[],"berkas":[]}
+{"t":"2026-11-08T18:30:14.491+07:00","sesi":"49e546cc","prompt":"sekalian fix workflownya ya, hal ini yang sering menghambat, kalau kamu udah tau datanya ga tally, maka benerin, liat pemicunya apa, perbaiki, sehingga hasil akhirnya reliable\n\nini tuh untuk masyarakat loh, jangan sampai misinformasi","label":[],"berkas":[]}
+{"t":"2026-11-08T18:33:06.209+07:00","sesi":"9cd4954a","prompt":"poles lagi bagian lampiran, banyak banget itu prnya, mulai dari desain header tabel, divider 3 bagian dalam 1 slide, pil dan icon status, dll\n\nbenerin pokoknya","label":[],"berkas":[]}
+{"t":"2026-11-08T18:33:52.052+07:00","sesi":"9cd4954a","prompt":"bikin header tuh yang jelas, kalimatnya lengkap, jangan nanggung\n\njujur saya ga ngerti maksudnya","label":[],"berkas":[]}
+{"t":"2026-11-08T18:34:33.002+07:00","sesi":"9cd4954a","prompt":"kan slide 2 tuh tentang calon banjir ya, tapi saya bingung sama info yang ada di slidenya, saya ga dapet atau bingung dengan key information yg harus saya dapat","label":["banjir"],"berkas":[]}
+{"t":"2026-11-08T18:46:42.078+07:00","sesi":"9cd4954a","prompt":"tinggal slide 2 nih masih jelek\n\nayo kita brainstorming dulu","label":[],"berkas":[]}
+{"t":"2026-11-08T18:49:06.462+07:00","sesi":"9cd4954a","prompt":"buat yang terakhir, kamu bisa pastikan bahwa calon banjirnya hanya daerah2 yang disebutkan itu?","label":[],"berkas":[]}
+{"t":"2026-11-08T18:52:06.144+07:00","sesi":"9cd4954a","prompt":"Coba buat sebagai tabel dulu aja\n\nKolomnya mulai dari provinsi, kab/kota, kecamatan, penduduk, peluang, dst dst\n\ndiurutkan berdasarkan peluang terjadinya\n\nterus diksi calon banjir ganti -> daerah dengan probabilitas terjadinya banjir\n\nterus instead of ada section cara baca, mending jadi penjelasan darimana angka peluang itu didapat","label":["banjir"],"berkas":[]}
+{"t":"2026-11-08T18:53:00.987+07:00","sesi":"9cd4954a","prompt":"Slide 2 dibangun ulang dengan peta dan dua tingkat?\n\nini usulmu mending buat di slide baru sekalian, jadi kita punya alternatif, nanti tinggal dipilih","label":[],"berkas":[]}
+{"t":"2026-11-08T18:54:45.520+07:00","sesi":"49e546cc","prompt":"prioritaskan bikin decknya ya, perbaikan wo rkflow bisa seetelah itu","label":[],"berkas":[]}
+{"t":"2026-11-08T19:09:09.166+07:00","sesi":"49e546cc","prompt":"eh itu slidenya gaada logo kris, biasakan pakai logo kris","label":[],"berkas":[]}
+{"t":"2026-11-08T19:26:22.591+07:00","sesi":"49e546cc","prompt":"Commit the working tree changes with a sensible message.","label":[],"berkas":[]}

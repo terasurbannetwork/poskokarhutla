@@ -53,3 +53,19 @@ test("cron tambahan titik.yml disaring dari langkah jejak api dan prioritas 6 ja
     for (const c of tambahan) assert.ok(kondisi.includes(`github.event.schedule != '${c}'`), `${nama}: cron tambahan '${c}' belum disaring di if:`);
   }
 });
+
+test("jam pengganti (scripts/terbit/jaga_jadwal.mjs): PIPA sama dengan jaga.yml, tiap workflow dijaga bisa di-dispatch, dan worker memanggilnya", async () => {
+  const {PIPA, JADWAL} = await import("../../scripts/terbit/jaga_jadwal.mjs");
+  const m = tanpaKomentar(baca("jaga.yml")).match(/^\s*PIPA:\s*([\w|]+)/m);
+  assert.deepEqual([...PIPA].sort(), m[1].split("|").sort(), "PIPA scripts/terbit/jaga_jadwal.mjs harus sama dengan jaga.yml");
+  for (const j of JADWAL) {
+    const isi = tanpaKomentar(baca(j.wf));
+    assert.match(isi, /^\s*workflow_dispatch:/m, `${j.wf} harus bisa di-dispatch`);
+    for (const k of Object.keys(j.masukan || {})) assert.match(isi, new RegExp(`^[ ]+${k}:`, "m"), `${j.wf} harus mendeklarasikan input ${k}`);
+  }
+  assert.ok(JADWAL.some(j => j.wf === "titik.yml" && j.jendela?.length), "putaran cut-off titik.yml wajib dijaga");
+  assert.match(readFileSync("src/worker.js", "utf8"), /await denyutJaga\(env\)/, "cron Worker harus memicu jaga.yml");
+  assert.match(tanpaKomentar(baca("jaga.yml")), /node scripts\/terbit\/jaga_jadwal\.mjs/, "jaga.yml harus menjalankan pemeriksa jadwal");
+  assert.match(tanpaKomentar(baca("jaga.yml")), /actions\/checkout@/, "jaga.yml harus checkout: skrip pemeriksa ada di repo");
+  assert.equal((tanpaKomentar(baca("titik.yml")).match(/inputs\.jaga/g) || []).length, 2, "jaga=ya harus mengikuti aturan jam di langkah jejak api dan prioritas 6 jam");
+});

@@ -130,3 +130,51 @@ def pasang_logo(pptx, logo=LOGO, x=1737360, y=566928, tinggi=777240, posisi=0): 
         for n in ['[Content_Types].xml'] + [n for n in F if n != '[Content_Types].xml']: zo.writestr(n, F[n])
     os.replace(t, pptx)
     return pptx
+
+
+# ---- Logo KRIS di tiap slide deck Penanganan (pemilik 8 Nov 2026: "biasakan pakai logo kris"; deck ini tanpa sampul dan penutup, 3 Nov).
+X_BNPB, TENGAH_LOGO, T_KRIS, X_JUDUL, Y_JUDUL, SZ_JUDUL = 11295583, 585216, 320040, 548640, 274320, 2200   # EMU; logo BNPB hasil deck.py format penanganan
+
+
+def logo_resmi():
+    return os.path.join(os.environ.get('DECK_BNPB', os.path.expanduser('~/.claude/skills/ppt-konsultan/bnpb')), 'assets', 'logo-bersama', 'kris.png')
+
+
+def pasang_isi(pptx, logo=None):
+    """Logo KRIS resmi di kiri logo BNPB pada tiap slide isi, tinggi 0,35 inci sejajar tengah logo (sama dengan KRIS_ISI harian). Kotak judul berhenti
+    sebelum logo dan huruf judul disamakan supaya judul terpanjang tetap satu baris. Dipanggil lewat_deck.bingkai sebelum deck.py, jadi ikut gerbang QA."""
+    from PIL import Image
+    logo = logo or logo_resmi()
+    if not os.path.exists(logo): raise RuntimeError(f'logo KRIS tidak ditemukan: {logo}; setel DECK_BNPB')
+    w0, h0 = Image.open(logo).size; lebar = int(T_KRIS * w0 / h0); kx = X_BNPB - 137160 - lebar; ky = TENGAH_LOGO - T_KRIS // 2
+    z = zipfile.ZipFile(pptx); F = {n: z.read(n) for n in z.namelist()}; z.close()
+    F['ppt/media/kris-isi.png'] = open(logo, 'rb').read()
+    for sl in sorted(n for n in F if re.fullmatch(r'ppt/slides/slide\d+\.xml', n)):
+        x = F[sl].decode()
+        if 'name="KRIS isi"' in x: continue
+        pola = rf'<p:sp>(?:(?!</p:sp>).)*?<a:off x="{X_JUDUL}" y="{Y_JUDUL}"/>(?:(?!</p:sp>).)*?</p:sp>'
+        m = re.search(pola, x, re.S)
+        if not m: raise RuntimeError(f'kotak judul tidak ditemukan di {sl}: tata letak Penanganan berubah, sesuaikan kris.pasang_isi')
+        j = re.sub(r'(<a:off x="\d+" y="\d+"/>\s*<a:ext cx=")\d+', rf'\g<1>{kx - 91440 - X_JUDUL}', m[0], count=1)
+        x = x.replace(m[0], re.sub(r'sz="\d+"', f'sz="{SZ_JUDUL}"', j), 1)
+        pic = (f'<p:pic><p:nvPicPr><p:cNvPr id="9200" name="KRIS isi" descr="KRIS: Kolaborasi, Responsif, Integratif, Sinkronisasi"/><p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr>'
+               f'<p:blipFill><a:blip r:embed="rIdKrisIsi"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x="{kx}" y="{ky}"/><a:ext cx="{lebar}" cy="{T_KRIS}"/></a:xfrm>'
+               '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>')
+        F[sl] = x.replace('</p:spTree>', pic + '</p:spTree>', 1).encode()
+        rl = sl.replace('slides/', 'slides/_rels/') + '.rels'
+        F[rl] = F[rl].decode().replace('</Relationships>', '<Relationship Id="rIdKrisIsi" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/kris-isi.png"/></Relationships>').encode()
+    if b'Extension="png"' not in F['[Content_Types].xml']:
+        F['[Content_Types].xml'] = F['[Content_Types].xml'].replace(b'<Default ', b'<Default Extension="png" ContentType="image/png"/><Default ', 1)
+    _tulis(pptx, F)
+    return pptx
+
+
+def cek_isi(pptx):
+    """Gerbang hasil akhir: tiap slide wajib memuat gambar logo KRIS resmi (dikenali dari byte gambarnya; deck.py boleh mengganti nama bentuk dan berkas media)."""
+    z = zipfile.ZipFile(pptx); F = {n: z.read(n) for n in z.namelist()}; z.close()
+    resmi = open(logo_resmi(), 'rb').read(); kurang = []
+    for sl in sorted(n for n in F if re.fullmatch(r'ppt/slides/slide\d+\.xml', n)):
+        rel = F[sl.replace('slides/', 'slides/_rels/') + '.rels'].decode()
+        if not any(F.get('ppt/' + t.replace('../', '')) == resmi for t in re.findall(r'Target="(\.\./media/[^"]+)"', rel)): kurang.append(sl)
+    if kurang: raise RuntimeError(f'logo KRIS hilang di {kurang}')
+    return pptx

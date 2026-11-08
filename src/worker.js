@@ -4,6 +4,7 @@
    hanya lewat POST /:id/kontak yang dibatasi lajunya, dan dihapus cron setelah 72 jam. */
 import {jagaTitik} from "./jaga_pipa.js";
 import {himawariRespons} from "./himawari.js";
+import {denyutJaga} from "./jaga_jadwal.js";
 import {JENIS, BAHAYA} from "../public/informasi_jenis.js";
 import {perbaruiTitik, titikTerbaru, wilayah, cariWilayah, jedaSensor} from "./titik.js";
 import * as St from "./statistik.js";
@@ -929,6 +930,8 @@ const W = {
       if (m === 16 && w.getUTCHours() % 3 === 0) try { console.log("antrean", JSON.stringify(await buatAntrean(env, sekarang))); } catch (e) { console.error("antrean", e?.message); }
       /* tugas api instansi: tiap menit memeriksa `dibuat` tugas_kompleks.json (murah) dan membuat tugas sekali per versi baru; verifikasi padam tetap menit 18 jam kelipatan 3 */
       try { const h = await tugasBaruDariBerkas(env, sekarang); if (!h.lewat || h.padam) console.log("tugas api", JSON.stringify(h)); } catch (e) { console.error("tugas api", e?.message); }
+      /* jadwal GitHub dibuang sejak 7 Nov 2026: sekali per jam Worker memicu jaga.yml, yang memeriksa workflow terlewat (scripts/terbit/jaga_jadwal.mjs) */
+      if (m === 52) try { const h = await denyutJaga(env); if (h.galat) console.log("denyut jaga", JSON.stringify(h)); } catch (e) { console.error("denyut jaga", e?.message); }
       if (m >= 25 && w.getUTCHours() % 3 === 0) try { const r = await kirimPushDaerah(env, sekarang); if (r.akun) console.log("push daerah", JSON.stringify(r)); } catch (e) { console.error("push daerah", e?.message); }   // push 3 jam: menit 25 (sesudah tugas api menit 18), menit 26+ melanjutkan sisa akun
       if (w.getUTCHours() === 0 && (m === 5 || m === 35)) try { console.log("sitrep", JSON.stringify(await arsipkanSitrep(env, sekarang, m === 35))); } catch (e) { console.error("sitrep", e?.message); }   // arsip sitrep 07 WIB (menit 35 = ulang bila gagal)
       if (w.getUTCHours() === 0 && (m === 1 || m === 31)) try { console.log("laporan karhutla", JSON.stringify(await buatDrafLaporanKarhutla(env, sekarang))); } catch (e) { console.error("laporan karhutla", e?.message); }   // draf harian 07.01 WIB (menit 31 = ulang bila gagal; idempoten)
