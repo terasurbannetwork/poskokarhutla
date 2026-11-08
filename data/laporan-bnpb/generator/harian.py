@@ -29,7 +29,7 @@ AKRONIM = {'Kal. Barat': 'Kalbar', 'Kal. Tengah': 'Kalteng', 'Kal. Selatan': 'Ka
            'Sul. Selatan': 'Sulsel', 'Sul. Tenggara': 'Sultra', 'Sul. Barat': 'Sulbar', 'Papua Selatan': 'Papsel', 'Papua Barat': 'Pabar'}
 SINGKAT = {'Kep. Bangka Belitung': 'Kep. Babel', 'Nusa Tenggara Timur': 'NTT', 'Nusa Tenggara Barat': 'NTB', 'Papua Barat Daya': 'Papua Barat Daya',
            'Jawa Barat': 'Jabar', 'Jawa Tengah': 'Jateng', 'Jawa Timur': 'Jatim', 'DI Yogyakarta': 'DIY'}   # 27 Okt: lima provinsi Jawa berdesakan di peta
-JENIS_SINGKAT = {'gempabumi': 'gempa', 'karhutla': 'karhutla', 'banjir': 'banjir', 'angin': 'angin', 'cuaca': 'cuaca ekstrem', 'kekeringan': 'kekeringan', 'lainnya': 'kebakaran', 'longsor': 'longsor'}
+JENIS_SINGKAT = {'gempabumi': 'gempa', 'karhutla': 'karhutla', 'banjir': 'banjir', 'angin': 'angin', 'cuaca': 'cuaca ekstrem', 'kekeringan': 'kekeringan', 'lainnya': 'kebakaran', 'longsor': 'longsor', 'erupsi': 'erupsi'}
 angka_id = lambda t: float(t.replace('.', '').replace(',', '.'))
 PENDEK = lambda k: SINGKAT.get(NAMA[k]) or re.sub(r'^(Kalimantan|Sumatera|Sulawesi) ', lambda m: m.group(1)[:3] + '. ', NAMA[k])
 # kawasan yang dilaporkan BPBD tanpa nama kabupaten: kecamatan pembentuknya (sama dengan kotak kawasan paparan Jatim 231026)
@@ -39,7 +39,8 @@ KAWASAN = {'Gunung Argopuro': ['35|Probolinggo|Krucil', '35|Probolinggo|Tiris', 
            'Gunung Arjuno': ['35|Pasuruan|Prigen', '35|Pasuruan|Purwosari', '35|Malang|Singosari', '35|Malang|Lawang', '35|Malang|Karangploso',
                              '35|Kota Batu|Bumiaji', '35|Mojokerto|Gondang', '35|Mojokerto|Pacet', '35|Mojokerto|Trawas', '35|Mojokerto|Jatirejo']}
 JENIS_LAIN = {'gempabumi': ('Gempa bumi', 'gempa', SLATE, T_SLATE), 'lainnya': ('Kebakaran TPA', 'api', 'A23B2A', 'F5E1DD'), 'banjir': ('Banjir', 'banjir', '2F6FB5', 'DCE7F5'), 'angin': ('Angin kencang', 'angin', '0E7490', 'D5EEF2'),
-             'cuaca': ('Cuaca ekstrem', 'angin', '0E7490', 'D5EEF2'), 'longsor': ('Tanah longsor', 'longsor', '7A5230', 'EFE4D8')}   # 1 Nov: longsor Simalungun   # 30 Okt: "Bencana Alam Cuaca Ekstrem" (Jombang, Tapin)
+             'cuaca': ('Cuaca ekstrem', 'angin', '0E7490', 'D5EEF2'), 'longsor': ('Tanah longsor', 'longsor', '7A5230', 'EFE4D8'),
+             'erupsi': ('Erupsi', 'gunung', 'C8102E', 'F8DDE0')}   # 7 Nov atasan: erupsi Bromo 5 Nov 17.11 WIB masuk Informasi bencana slide 1   # 1 Nov: longsor Simalungun   # 30 Okt: "Bencana Alam Cuaca Ekstrem" (Jombang, Tapin)
 WEB = ('peta_karhutla.json', 'peta_karhutla_kab.json', 'peta_karhutla_wil.json', 'harian30.json', 'kluster_awal.json')
 
 
@@ -313,6 +314,8 @@ class Deck:
             for n in range(len(nama), 0, -1):
                 t = awal + ', '.join(nama[:n]) + (f' dan {len(nama) - n} lainnya' if n < len(nama) else '')
                 if len(t) <= batas: return t
+            pendek = [n.split(' ±')[0] for n in nama]   # 7 Nov: satu nama + angka + "dan N lainnya" tidak muat -> nama tanpa angka (angka ada di tabel), bukan elipsis (D-17)
+            if pendek != nama: return muat(awal, pendek, batas)
             return awal + nama[0][:max(batas - len(awal) - 1, 8)] + '…'
         # 4 Nov pemilik (atasan: "rasanya tiap hari infonya gitu2 aja"): isi dari perubahan sejak laporan kemarin bila arsip kemarin ada
         ub = s.tindak_ubah(muat)
@@ -426,22 +429,31 @@ class Deck:
             besar = max(s.KR, key=lambda x: x['angka'].get('kk', 0))
             b3.append(muat('•  Mempercepat pendataan dan distribusi: ', kosong, 59) if kosong else f"•  Memprioritaskan {besar['lokasi']}: ±{f0(besar['angka'].get('kk', 0))} KK terdampak")
             k3 = ('daun_p', 'Air bersih', b3)
-        elif br:
+        elif br and s.KH:   # 7 Nov: tanpa karhutla kolom pertama sudah Kejadian baru; kolom ketiga jangan dobel
             k3 = ('awas_p', 'Kejadian baru', [muat('•  Mengkaji cepat dampak: ', [f"{x['lokasi'] or PENDEK(x['prov'])} ±{f0(x['angka']['kk'])} KK" if x['angka'].get('kk') else (x['lokasi'] or PENDEK(x['prov'])) for x in br], 59),
                                               '•  Mendampingi BPBD: logistik dan pembersihan material'])
         else:
-            g = next((x for x in s.LN if x['tangani']), None)
+            kb_ = {(y['jenis'], y['prov'], y['lokasi']) for y in br}; g = next((x for x in s.LN if x['tangani'] and (x['jenis'], x['prov'], x['lokasi']) not in kb_), None) or next((x for x in s.LN if x['tangani']), None)   # 7 Nov: kejadian lama dulu, yang baru sudah di kolom pertama
             k3 = ('awas_p', 'Pemulihan', [f"•  {JENIS_LAIN[g['jenis']][0]} {NAMA[g['prov']]}: pendampingan berlanjut"] if g else ['•  Pemantauan kejadian lain berlanjut'])
+            if not s.KH and (not g or (g['jenis'], g['prov'], g['lokasi']) in kb_) and (s.w.get('siaga') or s.w.get('angin')):
+                # 8 Nov: tanpa kejadian lama, kolom ketiga bukan "Pemulihan" atas kejadian baru, tapi peringatan dini cuaca BMKG
+                pv = lambda d: [(lambda n: SINGKAT.get(n) or AKRONIM.get(re.sub(r'^(Kalimantan|Sumatera|Sulawesi) ', lambda m: m.group(1)[:3] + '. ', n), n))(n.replace('Sumatra', 'Sumatera')) for n in d]
+                k3 = ('awas_p', 'Peringatan dini BMKG', ([muat('•  Siaga hujan lebat: ', pv(s.w['siaga']), 59)] if s.w.get('siaga') else [])
+                                                      + ([muat('•  Angin kencang: ', pv(s.w['angin']), 59)] if s.w.get('angin') else []))
         if not s.KH:   # 6 Nov pemilik ("di slide itu gausah bahas karhutla lagi"): kolom pemadaman diganti kejadian baru / pendampingan
             if br:   # 6 Nov: kejadian baru yang sudah surut/selesai tidak "dikaji cepat", cukup dipantau pascabencana
                 lk = lambda x: x['lokasi'] or PENDEK(x['prov'])
                 isi_ = lambda x: f"{lk(x)} ±{f0(x['angka']['kk'])} KK" if x['angka'].get('kk') else f"{lk(x)} {f0(x['angka']['meninggal'])} MD" if x['angka'].get('meninggal') else lk(x)
+                er = [x for x in br if x['jenis'] == 'erupsi']; br = [x for x in br if x['jenis'] != 'erupsi']   # 7 Nov: erupsi punya kolom sendiri
                 bt, bs = [x for x in br if x['tangani']], [x for x in br if not x['tangani']]
                 b0 = ([muat('•  Mengkaji cepat dampak: ', [isi_(x) for x in bt], 59)] if bt else []) + ([muat('•  Memantau pascabencana: ', [lk(x) for x in bs], 59)] if bs else [])
                 k1 = ('awas_p', 'Kejadian baru', (b0 + ['•  Mendampingi BPBD: logistik dan pembukaan akses'])[:2])
             else:
                 lg = [x for x in s.LN if x['tangani']]
                 k1 = ('awas_p', 'Pendampingan', [muat('•  Mendampingi BPBD: ', [x['lokasi'] or PENDEK(x['prov']) for x in lg], 59)] if lg else ['•  Pemantauan kejadian lain berlanjut'])
+            if er:   # 7 Nov pemilik (Bromo): kolom ketiga = pemantauan gunung api yang erupsi, bukan pemulihan kejadian lama
+                k3 = ('awas_p', 'Gunung api', [muat('•  Memantau aktivitas: ', [JENIS_LAIN['erupsi'][0].replace('Erupsi ', '') if JENIS_LAIN['erupsi'][0] != 'Erupsi' else x['lokasi'] for x in er], 59),
+                                               '•  Menjaga radius aman dari kawah aktif'])
             return [k1, ('pendaki_p', 'Keselamatan warga', b2), k3]
         return [('heli_p', 'Pemadaman prioritas', b1), ('pendaki_p', 'Keselamatan warga', b2), k3]
 
@@ -481,6 +493,8 @@ class Deck:
         # 31 Okt pemilik: "kata '0 kekeringan' hapus aja" -> jenis berjumlah nol tidak disebut di judul
         def bagian(kr_tambah=''):
             bag = [b for b in ((len(s.KH), ' karhutla'), (len(s.KR), ' kekeringan' + kr_tambah), (len(s.LN), ' bencana lainnya')) if b[0]]
+            if getattr(s, 'V3', False) and not s.KH and not s.KR:   # 7 Nov: tanpa karhutla dan kekeringan, "terdiri atas 7 bencana lainnya" janggal -> pecah per jenis seperti kartu
+                bag = [(n, ' ' + (v[0][0].lower() + v[0][1:]).replace('Gn. ', 'Gn. ')) for j, v in JENIS_LAIN.items() for n in [sum(1 for x in s.LN if x['jenis'] == j)] if n]
             o = []
             for i, (n, lab) in enumerate(bag):
                 if i: o.append(P(', dan ' if i == len(bag) - 1 and len(bag) > 2 else ' dan ' if i == len(bag) - 1 else ', '))
@@ -557,17 +571,20 @@ class Deck:
         T = [('papan_n', T_NAVY, f0(s.wa['laporan']), 'laporan kejadian', NAVY), ('seru_n', T_NAVY, f0(s.N_TOT), 'kejadian menonjol', NAVY),
              ('api_o', T_ORG, f0(len(s.KH)), 'karhutla', ORG), ('daun_k', T_KER, f0(len(s.KR)), 'kekeringan', KER), ('awas_b', T_SLATE, f0(len(s.LN)), 'bencana lainnya', SLATE)]
         if V3:   # 6 Nov pemilik: "bencana lainnya pecah aja: hari ini kan ada gempa, banjir, dan angin", "iconnya juga sesuaikan"
-            IKK = {'gempa': 'gempa_slate', 'banjir': 'banjir_navy', 'angin': 'angin_slate', 'longsor': 'longsor_coklat', 'api': 'api_merah'}
-            T = [t for t in T[:4] if not (t[3] == 'karhutla' and not s.KH)] + [(IKK[v[1]], v[3], f0(n), v[0][0].lower() + v[0][1:], v[2]) for j, v in JENIS_LAIN.items() for n in [sum(1 for x in s.LN if x['jenis'] == j)] if n]
+            IKK = {'gempa': 'gempa_slate', 'banjir': 'banjir_navy', 'angin': 'angin_slate', 'longsor': 'longsor_coklat', 'api': 'api_merah', 'gunung': 'gunung_merah'}
+            T = [t for t in T[:4] if not (t[3] == 'karhutla' and not s.KH) and not (t[3] == 'kekeringan' and not s.KR)] + [(IKK[v[1]], v[3], f0(n), v[0][0].lower() + v[0][1:], v[2]) for j, v in JENIS_LAIN.items() for n in [sum(1 for x in s.LN if x['jenis'] == j)] if n]   # 7 Nov: kartu 0 kekeringan dibuang
         kw = ((11094415 - 2 * 109728) if V3 else 8359811) - (len(T) - 1) * 91440; kw //= len(T)
         for i, t in enumerate(T): o += s.kartu(658368 + i * (kw + 91440), 1591056, *t, w=kw)
         if not V3: o += s.kartu(9511955, 1591056, 'awas_merah', T_MERAH, f0(len(s.SER)), 'kejadian perlu perhatian', MERAH)
         MX, MY, MW, MH = 502920, 2331720, 7680960, 2880360
         MENURUN = V3 and getattr(s, 'MENURUN', False)
         PX = 6309360   # alternatif 3: panel Informasi bencana melebar ke kiri, peta mengecil (rasio tetap) dan rata tengah tegak
-        if MENURUN: MW_ = PX - 91440 - MX; MY += (MH - MW_ * MH // MW) // 2; MW, MH = MW_, MW_ * MH // MW
+        PIL_ = V3 and getattr(s, 'INFO_PIL', False)   # 7 Nov pemilik: kolom DAMPAK dan KONDISI berupa pil -> panel melebar ke kiri, peta mengecil
+        if PIL_: PX = 7040880
+        if MENURUN or PIL_: MW_ = PX - 91440 - MX; MY += (MH - MW_ * MH // MW) // 2; MW, MH = MW_, MW_ * MH // MW
         o += s.peta_blok(MX, MY, MW, MH, V3, (640080 if MENURUN else 1371600, 5184648))
         if MENURUN: return o + s.info_bencana_menurun(PX, 2331720, 11643055 - PX, 3017520) + s.strip_tindak()
+        if PIL_: return o + s.info_bencana(PX, 11643055 - PX) + s.strip_tindak()
         if V3: return o + s.info_bencana() + s.strip_tindak()
         # status penanganan: batang selesai | belum selesai, lalu daftar perlu perhatian (semua jenis)
         o += s.kotak(8503920, 2331720, 3139135, 3017520, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=3000) + s.tx(8668512, 2441448, 2864815, 182880, ['STATUS PENANGANAN'], sz=750, b=True, c=NAVY, spc=100)
@@ -641,17 +658,26 @@ class Deck:
                 o += s.au(XE, y, q, *pe, 720, c=tc, wn=500000, wu=300000) if pe else s.tx(10545775, y, 932688, q, [isi], sz=620, b=True, c=tc, al='ctr', an='ctr', wrap='none')
         return o + s.strip_tindak()
 
-    def info_bencana(s):
+    def info_bencana(s, X=8503920, W=3139135):
         """Versi 3 (6 Nov pemilik): panel kanan slide ringkasan = INFORMASI BENCANA, satu baris per kejadian menonjol: bencana, provinsi,
         kab/kota, dampak KK ("kalau gaada infonya strip aja"). Urut karhutla (sisa terbesar), kekeringan, lalu bencana lainnya; nama jenis
         hanya di baris pertama kelompoknya."""
-        X, Y, W, H = 8503920, 2331720, 3139135, 3017520
+        Y, H = 2331720, 3017520
+        PIL_ = getattr(s, 'INFO_PIL', False)
         o = s.kotak(X, Y, W, H, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=3000) + s.tx(X + 164592, Y + 109728, W - 329184, 182880, ['INFORMASI BENCANA'], sz=750, b=True, c=NAVY, spc=100)
         XL = X + 109728; WL = W - 219456
         # 6 Nov pemilik: kab/kota karhutla tingkat provinsi tidak di-strip -> kabupaten yang masih bersisa api di website (x['kab_api'], sisa
         # terbesar dulu, diisi jalan.py); dampak = KK, ditambah MD bila ada ("data pentingnya tampilkan", teks Menko PMK)
         CB, CP, CK = 800000, 500000, 900000
-        C = [('BENCANA', XL, CB, 'l'), ('PROVINSI', XL + CB, CP, 'l'), ('KAB/KOTA', XL + CB + CP, CK, 'l'), ('DAMPAK', XL + CB + CP + CK, WL - CB - CP - CK, 'r')]
+        # 7 Nov pemilik ("Erupsi Gn. Bromo" menimpa kolom provinsi): kolom BENCANA melebar sesuai nama terpanjang (diukur Roboto tebal 7 pt),
+        # diambil dari kolom PROVINSI (paling banyak 25.000 EMU, kepala PROVINSI tetap lega) lalu dari kolom DAMPAK
+        nm_ = [v[0] for j, v in JENIS_LAIN.items() if any(x['jenis'] == j for x in s.LN)] + (['Karhutla'] if s.KH else []) + (['Kekeringan'] if s.KR else [])
+        perlu = max([s.lebar_runs([(n, INK, True)], 700) for n in nm_] or [0]) + 91440 + 100584 + 54864
+        if perlu > CB: CP -= min(perlu - CB, 25000); CB = perlu
+        if PIL_: CK = 960000   # "Kab. Lampung Selatan" utuh
+        CD = 700000 if PIL_ else WL - CB - CP - CK   # 7 Nov: kolom DAMPAK (pil KK) lalu KONDISI (pil surut/ditangani) di kanan
+        C = [('BENCANA', XL, CB, 'l'), ('PROVINSI', XL + CB, CP, 'l'), ('KAB/KOTA', XL + CB + CP, CK, 'l'), ('DAMPAK', XL + CB + CP + CK, CD, 'l' if PIL_ else 'r')]
+        if PIL_: C.append(('KONDISI', XL + CB + CP + CK + CD, WL - CB - CP - CK - CD, 'l'))
         yk = Y + 365760
         o += s.kotak(XL, yk, WL, 182880, NAVY, 'roundRect', adj=12000)
         for t, x, w, al in C: o += s.tx(x + 54864, yk, w - 109728, 182880, [t], sz=620, b=True, c='FFFFFF', spc=40, al=al, an='ctr', wrap='none')
@@ -686,7 +712,18 @@ class Deck:
                   'Kepulauan Riau': 'Kepri', 'Kep. Riau': 'Kepri', 'DI Yogyakarta': 'DIY', 'DKI Jakarta': 'Jakarta'}.get(pv, pv)   # kolom provinsi sempit
             o += s.tx(XL + CB + 54864, y, CP - 54864, rp, [pv], sz=sz, c=INK, an='ctr', wrap='none')
             o += s.tx(XL + CB + CP + 54864, y, CK - 54864, rp, [lok(x)], sz=sz, c=TEKS, an='ctr', wrap='none')
-            o += s.tx(XL + CB + CP + CK, y, WL - CB - CP - CK - 54864, rp, [dm], sz=sz if len(dm) <= 11 else min(sz, 600), b=dm != '–', c=INK if dm != '–' else ABU, al='r', an='ctr', wrap='none')
+            if PIL_:   # 7 Nov pemilik ("pake label pill ya, termasuk yg kk dll nya")
+                hp = min(164592, rp - 27432); yp = y + (rp - hp) // 2; xd = XL + CB + CP + CK + 54864
+                for t_ in dm.split(', ') if dm != '–' else []:
+                    p_, w_ = s.pil(xd, yp, t_, T_NAVY, NAVY, 'orang_navy' if 'KK' in t_ else 'awas_navy', sz=620, h=hp); o += p_; xd += w_ + 36576
+                if dm == '–': o += s.tx(xd, y, 300000, rp, ['–'], sz=sz, c=ABU, an='ctr', wrap='none')
+                kd = x.get('kondisi_pil')
+                if kd:
+                    tint, warna, ik = {'selesai': (T_SLATE, SLATE, 'cek_slate'), 'surut': (T_ORG, ORG, 'banjir_oranye'), 'tangani': (T_NAVY, NAVY, 'orang_navy'),
+                                       'waspada': (T_KER, '8A6A2E', 'mata_kering')}[kd[1]]
+                    o += s.pil(XL + CB + CP + CK + CD + 54864, yp, kd[0], tint, warna, ik, sz=620, h=hp)[0]
+            else:
+                o += s.tx(XL + CB + CP + CK, y, WL - CB - CP - CK - 54864, rp, [dm], sz=sz if len(dm) <= 11 else min(sz, 600), b=dm != '–', c=INK if dm != '–' else ABU, al='r', an='ctr', wrap='none')
         return o
 
     # ---- 6 Nov (Bang Ghozi: "tulis aja kab kota ke bawah dicoba"; pemilik: "coba 2-2nya, kasih beberapa alternatif slide")
@@ -808,7 +845,7 @@ class Deck:
     # ---- 6 Nov sore (Bang Ghozi: "jangan +10", "gapapa kebawah juga tulisannya"; pemilik: "bener2 sesuain aja layoutnya, petanya bisa
     # diperkecil"): ringkasan dengan SEMUA kab/kota karhutla ditulis menurun di slide 1. Alternatif 4 dan 5.
     def kpi_daftar(s):
-        IKK = {'gempa': 'gempa_slate', 'banjir': 'banjir_navy', 'angin': 'angin_slate', 'longsor': 'longsor_coklat', 'api': 'api_merah'}
+        IKK = {'gempa': 'gempa_slate', 'banjir': 'banjir_navy', 'angin': 'angin_slate', 'longsor': 'longsor_coklat', 'api': 'api_merah', 'gunung': 'gunung_merah'}
         return ([('papan_n', T_NAVY, f0(s.wa['laporan']), 'laporan kejadian', NAVY), ('seru_n', T_NAVY, f0(s.N_TOT), 'kejadian menonjol', NAVY),
                  ('api_o', T_ORG, f0(len(s.KH)), 'karhutla', ORG), ('daun_k', T_KER, f0(len(s.KR)), 'kekeringan', KER)]
                 + [(IKK[v[1]], v[3], f0(n), v[0][0].lower() + v[0][1:], v[2]) for j, v in JENIS_LAIN.items() for n in [sum(1 for x in s.LN if x['jenis'] == j)] if n])
@@ -1053,7 +1090,7 @@ class Deck:
                 continue
             if yy: yy += 54864
             lain += f'@{yy}@' + s.kotak(XL, 0, XR - XL, 182880, 'F3F5F8', 'roundRect', adj=30000) + s.kotak(XL + 45720, 18288, 146304, 146304, warna, 'ellipse') + s.gambar(XL + 73152, 45720, 91440, 91440, f'{ikon}_putih')
-            p_, _ = s.pil(XL + 300000 + len(nama) * 64000, 27432, f'{len(xs)} kejadian', tint, warna, {'gempa': 'gempa_slate', 'api': 'api_merah', 'banjir': 'banjir_navy', 'angin': 'angin_slate', 'daun': 'daun_k', 'longsor': 'longsor_coklat'}[ikon], sz=580, h=128016)
+            p_, _ = s.pil(XL + 300000 + len(nama) * 64000, 27432, f'{len(xs)} kejadian', tint, warna, {'gempa': 'gempa_slate', 'api': 'api_merah', 'banjir': 'banjir_navy', 'angin': 'angin_slate', 'daun': 'daun_k', 'longsor': 'longsor_coklat', 'gunung': 'gunung_merah'}[ikon], sz=580, h=128016)
             lain += s.tx(XL + 237744, 0, 1600000, 182880, [nama], sz=820, b=True, an='ctr', wrap='none') + p_ + '@@'
             yy += 182880 + 18288; AI, AN = 237744, 237744 + 146304 + 64008
             for x in xs:

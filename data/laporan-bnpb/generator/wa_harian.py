@@ -45,7 +45,7 @@ def status_dari(kondisi, prov_level):
 
 def _jenis_lokasi(judul):
     j = judul.lower()
-    jenis = ('angin' if 'angin kencang' in j or 'puting beliung' in j else 'cuaca' if 'cuaca ekstrem' in j else 'lainnya' if 'tpa' in j else 'karhutla' if 'hutan dan lahan' in j or 'karhutla' in j else 'kekeringan' if 'kekeringan' in j
+    jenis = ('angin' if 'angin kencang' in j or 'puting beliung' in j else 'cuaca' if 'cuaca ekstrem' in j else 'lainnya' if 'tpa' in j else 'karhutla' if 'hutan dan lahan' in j or 'karhutla' in j or 'kebakaran lahan' in j or 'kebakaran hutan' in j else 'kekeringan' if 'kekeringan' in j
              else 'gempabumi' if 'gempa' in j else 'banjir' if 'banjir' in j else 'longsor' if 'longsor' in j or 'logsor' in j else 'lainnya')   # 3 Nov: salah ketik "Tanah Logsor"   # 1 Nov: tanah longsor Simalungun sempat jadi 'Kebakaran TPA'
     di = re.split(r'\s+di\s+', judul, maxsplit=1)[1] if ' di ' in judul else ''
     if not di: di = (lambda m: m.group(1) if m else '')(re.search(r'\b((?:Kab\.|Kabupaten|Kota)\s.*)', judul))   # 3 Nov: "Tanah Logsor Kab. Simalungun Prov. Sumatera Utara" tanpa "di"
@@ -179,7 +179,8 @@ def bmkg(teks):
     jam = re.search(r'Tertinggi pada hari (.+?WIB)', t)
     per = re.search(r'Periode\s+(.+?\d{4})', t)
     return {'jam': jam[1] if jam else '', 'pm': pm, 'periode': per[1] if per else '',
-            'hujan': daftar(r'intensitas sedang yang terjadi di (.+?)\.\s*(?:\n|$)'), 'angin': [p for p in daftar(r'Angin Kencang\*?:\s*(.+?)\.\s*(?:\n|$)') if p.upper() not in ('NIL', 'NIHIL', '-')]}   # 6 Nov: "Angin Kencang: NIL."
+            'hujan': daftar(r'intensitas sedang yang terjadi di (.+?)\.\s*(?:\n|$)'), 'angin': [p for p in daftar(r'Angin Kencang\*?:\s*(.+?)\.\s*(?:\n|$)') if p.upper() not in ('NIL', 'NIHIL', '-')],   # 6 Nov: "Angin Kencang: NIL."
+            'siaga': [p for p in daftar(r'Siaga \(hujan lebat[^)]*\)\*?:\s*(.+?)\.\s*(?:\n|$)') if p.upper() not in ('NIL', 'NIHIL', '-')]}   # 8 Nov: peringatan dini Siaga hujan lebat
 
 
 def uji():
