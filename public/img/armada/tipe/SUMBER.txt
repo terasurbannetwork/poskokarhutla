@@ -1,0 +1,16 @@
+berkas	lisensi	pembuat	sumber (Wikimedia Commons, diperkecil dan diubah ke WebP)
+c130.webp	Public domain	U.S. Air Force Photo by Tech Sgt. Erik Gudmundson; The original upload	https://commons.wikimedia.org/wiki/File:133rd_Airlift_Wing_C-130H_Hercules_over_Minnesota.jpg
+casa212.webp	Public domain	PH2 Bruce R. Trombecky.	https://commons.wikimedia.org/wiki/File:C-212_USAF.JPEG
+c208.webp	CC0	Wilfredor	https://commons.wikimedia.org/wiki/File:Cessna_208B_Grand_Caravan_EX_at_Santos_Dumont_Airport_05.jpg
+as332.webp	Public domain	Sgt. 1st Class Suzanne Ringle	https://commons.wikimedia.org/wiki/File:Kuwait_AS332,_Super_Puma,_helicopter.jpg
+as350.webp	CC BY 3.0	Marek Ślusarczyk (Tupungato) Photo portfolio	https://commons.wikimedia.org/wiki/File:053_Airbus_Helicopters_Eurocopter_AS350_B3_Ecureuil_-_Wucher_Helicopter,_Austria.jpg
+as355.webp	Public domain	Kristian Jones	https://commons.wikimedia.org/wiki/File:As355_811hs.JPG
+as365.webp	CC0	Amayagan	https://commons.wikimedia.org/wiki/File:FFPB-Aerospatiale_AS365N2_Dauphin_2-JA119F-Fukuoka_airport-20081212-154552.JPG
+bell206.webp	Public domain	Gab01	https://commons.wikimedia.org/wiki/File:Helit_Bell_206_B_%22JetRanger_III%22.JPG
+bell505.webp	CC BY-SA 4.0	Mpcaissy	https://commons.wikimedia.org/wiki/File:Bell_505_Jet_Ranger_X_(cropped).jpg
+ka32.webp	CC BY-SA 3.0	Pedro Aragão	https://commons.wikimedia.org/wiki/File:Kamov_Ka-32A-11BC,_Portugal_-_Fire_Brigade_JP6592043.jpg
+mi8.webp	Public domain	Staff Sgt. Todd Pouliot	https://commons.wikimedia.org/wiki/File:Afghan_Mi-17.jpg
+uh60.webp	Public domain	Master Sgt. David Loeffler	https://commons.wikimedia.org/wiki/File:UH-60_Black_Hawk_help_extinguish_wildfires_3191.jpg
+s61.webp	CC BY-SA 4.0	Acroterion	https://commons.wikimedia.org/wiki/File:Sikorsky_S-61_N906CH_FDK_MD1.jpg
+sa330.webp	Public domain	Wg5 Danny Trujillo	https://commons.wikimedia.org/wiki/File:West_German_Bundesgrenzschutz_SA_330_Puma_Helicopter.jpg
+cn295.webp	Public domain	TNI Angkatan Udara	https://commons.wikimedia.org/wiki/File:CN-295_TNI_Angkatan_Udara._Skadron_Udara_2.jpg

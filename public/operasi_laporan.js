@@ -197,7 +197,7 @@
     const ak = D.aksi30.filter(x => x.registrasi === a.registrasi).sort((x, y) => (y.jam_utc || 0) - (x.jam_utc || 0)), k = D.mon?.kpi?.armada?.[a.registrasi], kt = u.kontrak(a.registrasi), s = u.stAr(a.status);
     const jam = kt.reduce((t, x) => t + (x.jam_operasi_menit || 0), 0), hh = D.hitung(ak);
     const angka = (n, t) => `<div><b>${n}</b><span>${t}</span></div>`;
-    const isi = `<div class="ops-hist-atas">${u.FOTO.has(a.registrasi) ? `<img src="/img/armada/${esc(a.registrasi)}.webp" alt="${esc(a.registrasi)}" loading="lazy">` : ""}
+    const isi = `<div class="ops-hist-atas">${u.fotoAr(a) ? u.imgAr(a, "", a.registrasi) : ""}
         <div><p><b>${esc(/tidak diketahui/i.test(a.tipe || "") ? "Tipe belum tercatat" : a.tipe || "")}</b>, ${esc(PERAN[a.peran] || a.peran || "")}, base ${esc(namaBase(D, a.base_id))}</p>
         <p class="ops-red">${esc(a.operator || "Operator belum tercatat")}${a.bucket_liter ? `, bucket ${fmt(a.bucket_liter)} L` : ""}. Status ${esc(tglPendek(D.t))}: <span class="ops-st ${s[1]}">${s[0]}</span>${a.alasan ? ` ${esc(a.alasan)}` : ""}</p></div></div>
       <div class="ops-lap-angka ops-6">${[angka(nol(hh.sortie), "sortie 30 hari"), angka(nol(hh.wb), "aksi WB"), angka(u.persen(hh.persen), "padam ≥ 24 jam"),
@@ -350,6 +350,6 @@
     setTimeout(() => status(""), 3000);
   }
 
-  window.OperasiLaporan = {render, kelompokBase};
+  window.OperasiLaporan = {render, kelompokBase, kartuOperator};
   if (document.querySelector("#p-operasi.on")) render();
 })();

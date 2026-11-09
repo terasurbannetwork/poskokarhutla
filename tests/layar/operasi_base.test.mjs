@@ -1,7 +1,7 @@
 /* kelompokBase (public/operasi_laporan.js): armada dikelompokkan per base, urut nama, tanpa data base di akhir. Jalankan: node --test tests/layar/operasi_base.test.mjs */
 import assert from "node:assert/strict";
 import test from "node:test";
-import {readFileSync} from "node:fs";
+import {readFileSync, existsSync} from "node:fs";
 import vm from "node:vm";
 
 const win = {};
@@ -14,4 +14,32 @@ test("armada dikelompokkan per base, urut nama, tanpa base di akhir", () => {
   assert.deepEqual(g.map(x => x.nama), ["Banjarmasin", "Pekanbaru", "Base belum tercatat"]);
   assert.deepEqual(g[1].regs, ["RA-1", "RA-2"]);
   assert.deepEqual(g[2].regs, ["Q", "ZZ"]);
+});
+
+test("tabel operator: kolom base berjumlah armada dan Grand total di baris pertama", () => {
+  const win2 = {OpsUdara: {kontrak: () => [{jam_operasi_menit: 120}], persen: v => Math.round(v * 100) + "%"}};
+  vm.runInNewContext(readFileSync(new URL("../../public/operasi_laporan.js", import.meta.url), "utf8"), {window: win2, document: {querySelector: () => null}, localStorage: {}, fmt: v => String(v), esc: v => String(v)});
+  const html = win2.OperasiLaporan.kartuOperator({
+    peta: {base: [{id: "b1", nama: "Palembang / SMB II"}, {id: "b2", nama: "Pontianak"}], armada: [{registrasi: "A", operator: "PT X", base_id: "b1"}, {registrasi: "B", operator: "PT X", base_id: "b1"}, {registrasi: "C", operator: "PT Y", base_id: "b2"}, {registrasi: "D"}]},
+    mon: {kpi: {armada: {A: {hari_siap: 10, hari_terbang: 5, sortie: 3, aksi_wb: 2, padam: 1, dinilai: 2}, C: {hari_siap: 10, hari_terbang: 5, sortie: 1, aksi_wb: 2, padam: 1, dinilai: 2}}}}});
+  assert.match(html, /Base \(jumlah armada\)/);
+  assert.match(html, /Palembang \(2\)/);
+  assert.match(html, /Base belum tercatat \(1\)/);
+  const baris = html.split("<tr").slice(2).map(b => [...b.matchAll(/<td[^>]*>(.*?)<\/td>/g)].map(m => m[1].replace(/<[^>]+>/g, "")));
+  assert.equal(baris[0][0], "Grand total");
+  assert.deepEqual(baris[0].slice(1, 8), ["2 base", "4", "20", "10", "50%", "4", "4"]);
+});
+
+test("foto tipe: pemetaan tipe nyata ke berkas yang ada, foto asli menang, tipe asing tanpa foto", () => {
+  const sumber = readFileSync(new URL("../../public/operasi_peta.js", import.meta.url), "utf8");
+  const potong = sumber.slice(sumber.indexOf("const FOTO = new Set"), sumber.indexOf("const imgAr"));
+  const c = {encodeURIComponent}; vm.runInNewContext(potong + ";this.fotoAr = fotoAr;", c);
+  const tipe = t => c.fotoAr({registrasi: "X", tipe: t})?.src?.match(/tipe\/(\w+)\.webp/)?.[1];
+  for (const [t, f] of [["CASA NC-212", "casa212"], ["CN-295", "cn295"], ["Hercules C-130H", "c130"], ["Cessna Grand Caravan 208B", "c208"], ["C208B-EX", "c208"], ["BELL 206", "bell206"], ["Bell 505", "bell505"], ["MI-172", "mi8"], ["MI 8 AMT", "mi8"], ["Kamov KA-32", "ka32"], ["KAMOV KA32A0", "ka32"], ["Sikorsky UH-60L Black Hawk", "uh60"], ["Sikorsky S-61N", "s61"], ["NAS-332 Super Puma", "as332"], ["AS350B3e", "as350"], ["SA330J Puma", "sa330"]]) {
+    assert.equal(tipe(t), f, t);
+    assert.ok(existsSync(new URL(`../../public/img/armada/tipe/${f}.webp`, import.meta.url)), f);
+  }
+  assert.equal(c.fotoAr({registrasi: "PK-RTY", tipe: "AS 365 N2"}).src, "/img/armada/PK-RTY.webp");
+  assert.equal(c.fotoAr({registrasi: "X", tipe: "TRUSH S2R T34"}), null);
+  assert.ok(!/foto contoh/i.test(sumber));
 });

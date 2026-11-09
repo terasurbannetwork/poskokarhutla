@@ -20,6 +20,12 @@
   const hitungGuna = ar => ({wb: ar.filter(a => guna(a).wb).length, patroli: ar.filter(a => guna(a).patroli).length, omc: ar.filter(a => guna(a).omc).length});
   /* foto asli per registrasi (deck Rakor Kalteng/Kalsel 19 Okt 2026 + foto WA satgas, tanpa orang) */
   const FOTO = new Set(["HA-5234", "HA-5235", "N-814AR", "N261BE", "PK-DBM", "PK-FPU", "PK-RTQ", "PK-RTY", "PK-SNK", "PK-SNL", "RA-22747", "RA-22834", "RA-31021", "UR-CSM", "UR-CSN", "VH-HGM", "ZK-HKU"]);
+  /* registrasi tanpa foto asli: foto tipe dari Wikimedia Commons (public/img/armada/tipe/SUMBER.txt); kredit hanya untuk lisensi yang mewajibkan */
+  const FOTO_TIPE = [[/CN-?295/i, "cn295"], [/AS ?332|Super Puma|H-?225/i, "as332"], [/AS ?350/i, "as350"], [/AS ?355/i, "as355"], [/AS ?365/i, "as365"], [/SA ?330/i, "sa330"], [/Bell 20[67]/i, "bell206"], [/Bell 505/i, "bell505"],
+    [/208/, "c208"], [/Hercules|C-130/i, "c130"], [/CASA|NC-?212/i, "casa212"], [/KA-?32/i, "ka32"], [/\bMI[ -]?(8|17)/i, "mi8"], [/[UE]H-?60|Black ?Hawk/i, "uh60"], [/S-?61/i, "s61"]];
+  const KREDIT_TIPE = {as350: "Foto: Marek Ślusarczyk (Tupungato), CC BY 3.0", bell505: "Foto: Mpcaissy, CC BY-SA 4.0", ka32: "Foto: Pedro Aragão, CC BY-SA 3.0", s61: "Foto: Acroterion, CC BY-SA 4.0"};
+  const fotoAr = a => { if (FOTO.has(a.registrasi)) return {src: `/img/armada/${encodeURIComponent(a.registrasi)}.webp`}; const t = FOTO_TIPE.find(([re]) => re.test(a.tipe || ""))?.[1]; return t ? {src: `/img/armada/tipe/${t}.webp`, kredit: KREDIT_TIPE[t]} : null; };
+  const imgAr = (a, kelas, alt) => { const f = fotoAr(a); return `<img${kelas ? ` class="${kelas}"` : ""} src="${f.src}" alt="${esc(alt)}"${f.kredit ? ` title="${esc(f.kredit)}"` : ""} loading="lazy">`; };
   const STATUS_AR = {siap: ["Siap", "ops-s-siap"], operasi: ["Beroperasi", "ops-s-op"], siaga: ["Siaga", "ops-s-siaga"], tidak_siap: ["Tidak siap", "ops-s-tidak"]};
   const stAr = s => STATUS_AR[s] || ["Belum lapor", "ops-s-belum"];
   const HASIL = {padam: ["Padam", "l0"], masih_api: ["Masih ada api", "l3"], menunggu: ["Menunggu 24 jam", "l1"], tak_dinilai: ["Tak dinilai", "ops-abu"]};
@@ -120,7 +126,7 @@
     const urut = ar.slice().sort((x, y) => (FOTO.has(y.registrasi) ? 1 : 0) - (FOTO.has(x.registrasi) ? 1 : 0) || x.registrasi.localeCompare(y.registrasi));
     return `<div class="ops-hv"><div class="ops-hv-hd"><b>${esc(b.nama.split(" / ")[0])}</b><span>${esc(b.icao || b.id)}</span></div>
       <div class="ops-hv-g">${GUNA.map(([kk, s, t]) => `<div class="${g[kk] ? "" : "nol"}">${ikG(kk)}<b>${fmt(g[kk])}</b><span>${kk === "omc" ? "OMC" : t}</span></div>`).join("")}</div>
-      <ul>${urut.slice(0, 6).map(a => `<li>${FOTO.has(a.registrasi) ? `<img src="/img/armada/${esc(a.registrasi)}.webp" alt="" loading="lazy">` : `<span class="ops-hv-f">${ikG(guna(a).omc ? "omc" : guna(a).patroli && !guna(a).wb ? "patroli" : "wb")}</span>`}
+      <ul>${urut.slice(0, 6).map(a => `<li>${fotoAr(a) ? imgAr(a, "", "") : `<span class="ops-hv-f">${ikG(guna(a).omc ? "omc" : guna(a).patroli && !guna(a).wb ? "patroli" : "wb")}</span>`}
         <div><b>${esc(a.registrasi)}</b><span>${esc(/tidak diketahui/i.test(a.tipe || "") ? "tipe belum tercatat" : a.tipe || "")}</span></div><i class="${stAr(a.status)[1]}" title="${stAr(a.status)[0]}"></i></li>`).join("")}</ul>
       ${urut.length > 6 ? `<p class="ops-hv-lagi">dan ${fmt(urut.length - 6)} armada lain</p>` : ""}
       <div class="ops-hv-kaki"><span>${pilLayak(lay)}</span><span class="${p3 ? "merah" : ""}">${fmt(p3)} cluster prioritas ≤ ${fmt(Math.round(radiusBase(b)))} km</span>${k ? `<span>${fmt(k.aksi_wb)} aksi WB, padam ${persen(k.persen_padam)}</span>` : ""}</div>
@@ -149,7 +155,7 @@
     const g = hitungGuna(ar), dk = apiDekat(b).filter(k => k.level >= 2), lay = kelayakan(b), k = kpi("base", id), aksi = aksiBase(id).sort((x, y) => (y.jam_utc || 0) - (x.jam_utc || 0));
     const kartuAr = a => { const ka = kpi("armada", a.registrasi), kt = kontrak(a.registrasi), ktj = kt.find(x => x.berjalan) || kt[kt.length - 1], s = stAr(a.status);
       const jamTot = kt.reduce((t, x) => t + (x.jam_operasi_menit || 0), 0), sorTot = kt.reduce((t, x) => t + (x.sortie || 0), 0), wbTot = kt.reduce((t, x) => t + (x.wb_drop || 0), 0);
-      return `<article class="ops-ar">${FOTO.has(a.registrasi) ? `<img class="ops-ar-f" src="/img/armada/${esc(a.registrasi)}.webp" alt="${esc(a.registrasi)}" loading="lazy">` : `<div class="ops-ar-f ops-ar-sil">${ikG(guna(a).omc ? "omc" : guna(a).patroli && !guna(a).wb ? "patroli" : "wb")}</div>`}
+      return `<article class="ops-ar">${fotoAr(a) ? imgAr(a, "ops-ar-f", a.registrasi) : `<div class="ops-ar-f ops-ar-sil">${ikG(guna(a).omc ? "omc" : guna(a).patroli && !guna(a).wb ? "patroli" : "wb")}</div>`}
         <div class="ops-ar-isi"><div class="ops-ar-atas"><b>${esc(a.registrasi)}</b><span class="ops-st ${s[1]}">${s[0]}</span></div>
           <p>${esc(/tidak diketahui/i.test(a.tipe || "") ? "Tipe belum tercatat" : a.tipe)}, ${GUNA.filter(([kk]) => guna(a)[kk]).map(([kk, , t]) => t).join(" + ")}</p>
           <p class="ops-red">${esc(a.operator || "Operator belum tercatat")}${a.bucket_liter ? `, bucket ${fmt(a.bucket_liter)} L` : ""}</p>
@@ -245,7 +251,7 @@
     return true;
   })();
   /* helper bersama untuk layar laporan (public/operasi_laporan.js): satu sumber rumus kelayakan terbang, jangkauan base, status armada */
-  window.OpsUdara = {OP, muatSemua, armadaBase, hitungGuna, guna, kelayakan, pilLayak, radiusBase, apiDekat, kpi, kontrak, stAr, PROV_PDK, GUNA, HASIL, LV, FOTO, RADIUS_KM,
+  window.OpsUdara = {OP, muatSemua, armadaBase, hitungGuna, guna, kelayakan, pilLayak, radiusBase, apiDekat, kpi, kontrak, stAr, PROV_PDK, GUNA, HASIL, LV, FOTO, fotoAr, imgAr, RADIUS_KM,
     jamWIB, jamMenit, persen, durasi, gmaps, ikG};
   muatSemua();   // langsung cek hak supaya menu Operasi muncul tanpa menunggu peta
 
