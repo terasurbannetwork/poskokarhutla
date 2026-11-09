@@ -16,7 +16,7 @@ KOREKSI = {'Supit Urung': 'Supit Urang', 'Kota Parepare': 'Kota Pare Pare'}   # 
 
 def kode_prov(nama):
     n = re.sub(r'\s+', ' ', nama.replace('Prov.', '').strip()).lower()
-    n = {'kepulauan bangka belitung': 'kep. bangka belitung', 'bangka belitung': 'kep. bangka belitung', 'diy': 'di yogyakarta', 'daerah istimewa yogyakarta': 'di yogyakarta', 'd.i yogyakarta': 'di yogyakarta', 'd.i. yogyakarta': 'di yogyakarta', 'dki jakarta': 'dki jakarta'}.get(n, n)
+    n = {'kepulauan bangka belitung': 'kep. bangka belitung', 'bangka belitung': 'kep. bangka belitung', 'ntt': 'nusa tenggara timur', 'ntb': 'nusa tenggara barat', 'diy': 'di yogyakarta', 'daerah istimewa yogyakarta': 'di yogyakarta', 'd.i yogyakarta': 'di yogyakarta', 'd.i. yogyakarta': 'di yogyakarta', 'dki jakarta': 'dki jakarta'}.get(n, n)
     if n not in _PROV:
         raise ValueError(f'provinsi tidak dikenal: {nama!r}')
     return _PROV[n]
@@ -97,7 +97,7 @@ def _angka_kejadian(jenis, dampak, kondisi, status_darurat):
 
 def koordalops(teks, pagi=True):
     t = teks.replace('⁠', '').replace('\xa0', ' ')
-    m = re.search(r'tanggal\s+(\d\d)/(\d\d)/(\d{4})\s+pkl\s+(\d\d\.\d\d)\s*WIB\s+s\.d\.?\s+(\d\d)/(\d\d)/(\d{4})\s+pkl\s+(\d\d\.\d\d)', t)
+    m = re.search(r'tanggal\s+(\d\d)/(\d\d)/(\d{4})\s+(?:pkl|pukul)\s+(\d\d\.\d\d)\s*WIB\s+s\.d\.?\s+(\d\d)/(\d\d)/(\d{4})\s+(?:pkl|pukul)\s+(\d\d\.\d\d)', t)
     if not m:
         raise ValueError('kepala laporan Koordalops tidak ditemukan')
     mulai, sampai = f'{m[3]}-{m[2]}-{m[1]} {m[4]}', f'{m[7]}-{m[6]}-{m[5]} {m[8]}'

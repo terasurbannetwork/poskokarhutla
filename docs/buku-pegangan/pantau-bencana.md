@@ -4,8 +4,8 @@ Pemantauan bencana Indonesia: karhutla, banjir, dan enam bencana lain
 
 Semua selera, keputusan pemilik, gerbang, dan armada yang berlaku di situs Pantau Bencana (repo `poskokarhutla`), di satu tempat. Yang baru diputus masuk ke Riwayat, lalu ke bagian aturannya.
 
-Disegarkan 7 Nov 2026\
-commit bea309468
+Disegarkan 8 Nov 2026\
+commit e6f4143bd
 
 [Riwayat perubahan](#riwayat-perubahan) [Keputusan pemilik](#keputusan-pemilik) [Stack & peta repo](#stack--peta-repo) [Situs per alamat](#situs-per-alamat) [Halaman & rute](#halaman--rute) [Selera tampilan](#selera-tampilan) [Angka & copy](#angka--copy) [Selera presentasi (PPT)](#selera-presentasi-ppt) [Selera laporan (DOCX/PDF) dan visualisasi data](#selera-laporan-docx-pdf-dan-visualisasi-data) [Fitur yang disembunyikan](#fitur-yang-disembunyikan) [Model & data](#model--data) [Ruang Koordinasi BNPB](#ruang-koordinasi-bnpb) [Ruang Instansi](#ruang-instansi) [Gerbang penjaga](#gerbang-penjaga) [Insiden & pelajaran](#insiden--pelajaran) [Armada agent](#armada-agent) [Tugas pemilik](#tugas-pemilik) [Katalog modul dan design system](#katalog-modul-dan-design-system) [Rencana multi-bencana](#rencana-multi-bencana) [Cara halaman ini diperbarui](#cara-halaman-ini-diperbarui)
 
@@ -58,6 +58,11 @@ Terbaru di atas
 
 Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik saat menegur atau memutus.
 
+1. 8 Nov 2026
+   - **Jam pengganti jadwal GitHub** (`aabc7c8d`, `55284ffd`). GitHub membuang pemicu `schedule` di seluruh repo sejak 7 Nov: `jaga.yml` dari 24 run sehari tinggal 4 lalu 2, `titik.yml` dari 10 tinggal 5 lalu 2, sedangkan `workflow_dispatch` tetap jalan. Cron Worker kini memicu `jaga.yml` tiap jam pada menit 57 (`src/jaga_jadwal.js`), tidak berbarengan dengan `jagaTitik` menit 52. `scripts/terbit/jaga_jadwal.mjs` lalu memicu workflow yang terlewat: `titik`, `himawari`, `jarak_pandang`, `udara`, `data`, `banjir`, `gempa`, termasuk putaran cut-off laporan, paling banyak satu workflow grup `data` per putaran. Run pengganti membawa masukan `jaga=ya` supaya langkah harian dan 6 jam di `titik.yml` dan `data.yml` tetap ikut aturan jam run terjadwal.
+   - **Penjaga firespot basi di deck Penanganan** (`aabc7c8d`). Kejadian 8 Nov: olahan situs berhenti 11.14 WIB, FIRMS sudah sampai 15.41 WIB, Sulawesi Selatan 151 hotspot dengan 1 firespot. `data/laporan-bnpb/generator/segar_situs.py` memicu `titik.yml` bila lebih dari 5 persen titik hari laporan belum masuk situs, menunggu terbit, lalu mengulang `jalan.py`. Masih tertinggal sesudah diulang: deck tidak dibuat. `BOLEH_BASI=<alasan>` melewati penjaga dengan sadar dan tertulis di log.
+   - **Logo KRIS otomatis di tiap slide deck Penanganan**, dengan cek hasil akhir; `penanganan.py` tidak berhenti saat PDF terkunci di penampil (`aabc7c8d`).
+   - **Laporan harian 081126**: 2 slide tanpa karhutla, data 7 sampai 8 Nov. Kolom ketiga tindakan BNPB memakai peringatan dini BMKG bila tidak ada kejadian lama; `wa_harian` mengurai daftar Siaga hujan lebat (`095bc8b7`).
 1. 7 Nov 2026
    - **Cadangan pemicu `titik.yml` dari cron Worker** (`291f28b7`, `90631bb0`). GitHub tidak membuat run terjadwal 10.40 dan 13.40 WIB, sehingga firespot, cluster, dan harian30 tertinggal dari `/api/titik` (Papua Selatan 396 hotspot, firespot 0). `src/jaga_pipa.js` memicu `workflow_dispatch` dari cron menit 52 bila run sukses terakhir lebih dari 4 jam, run terbaru paling sedikit 3 jam, dan grup concurrency `data` tidak sedang antre atau jalan. Tanpa secret `GITHUB_TOKEN` di Worker, langkah ini lewat diam-diam. Daftar workflow grup `data` dijaga `tests/warga/jaga_titik.test.mjs`.
    - **Bot WA grup operasi** menyusulkan pesan 7 hari terakhir dan menarik riwayat per chat (`29b826cc`); `lengkapi()` ikut memproses pesan yang telat masuk (`d29b4247`).
@@ -464,7 +469,7 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
 | Worker | Cloudflare Worker `centurisk97` + D1 `poskowarga` + R2 (`src/**`, `migrations/**`): warga, foto, moderasi, `/api/titik` FIRMS, Himawari, nowcast, EWS email, PMTiles, Ruang Koordinasi, Ruang Instansi |
 | Jadwal worker | Satu cron `* * * * *` (batas 5 jadwal akun Free); tugas dipilih dari menit: FIRMS ke D1 menit 15 tiap 3 jam UTC, bersih-bersih menit 17, pemantauan MAGMA tiap 30 menit, arsip sitrep 07 WIB, pengingat 07.40 WIB |
 | Pipeline | Python 3.12 stdlib di GitHub Actions; JSON di-commit ke `public/data/` dan `public/<bencana>/data/` |
-| Workflow | `data.yml` harian, `titik.yml` 3 jam, `statis.yml`, `banjir.yml`, `gempa.yml`, `udara.yml` (OMC dirantai di sini), `himawari.yml`, `lintas.yml` (cuaca, gunung api, kekeringan, indeks risiko, kebutuhan musim), `bangunan.yml`, `jaga.yml`, `terbit.yml` (batas waktu 45 menit sejak 6 Nov); sejak 1 Nov juga `jarak_pandang.yml` (05.12 sampai 17.12 WIB), `nowcast-bandang.yml` (GSMaP tiap jam ke R2), `kemitraan.yml` harian, `kemitraan-pakar.yml` bulanan, dan workflow darurat laporan harian |
+| Workflow | `data.yml` harian, `titik.yml` 3 jam, `statis.yml`, `banjir.yml`, `gempa.yml`, `udara.yml` (OMC dirantai di sini), `himawari.yml`, `lintas.yml` (cuaca, gunung api, kekeringan, indeks risiko, kebutuhan musim), `bangunan.yml`, `jaga.yml` (sejak 8 Nov dipicu cron Worker tiap jam, sekaligus memicu workflow yang terlewat), `terbit.yml` (batas waktu 45 menit sejak 6 Nov); sejak 1 Nov juga `jarak_pandang.yml` (05.12 sampai 17.12 WIB), `nowcast-bandang.yml` (GSMaP tiap jam ke R2), `kemitraan.yml` harian, `kemitraan-pakar.yml` bulanan, dan workflow darurat laporan harian |
 | Terbit | Cloudflare static assets (`assets.directory ./public`); seluruh isi `public/` ikut terbit, jadi tidak ada kunci, berkas kerja, atau data pribadi di sana. `_headers` paling banyak 100 aturan (kini 65 sesudah pola pengecualian dipilih serakah tiap terbit, 26 Okt) |
 | D1 | Migrasi di repo sampai 0111 per 6 Nov (antara lain 0094 logbook Juklak, 0097 petugas, 0098 Pusdalops, 0102 dan 0104 peran Direktori saja, 0106 foto operasi, 0107 dan 0109 Asisten AI, 0110 meja rehab, 0111 indeks masalah Kemitraan). Sebelumnya: migrasi 0001 sampai 0069 (nomor 0051 tidak ada, 0062 ada dua berkas); produksi sudah sampai 0049 per 22 Okt dan tabel `uji_pilot_lapor` (0061) sudah ada di produksi 27 Okt; 0064 dan 0065 banjir menunggu pemilik. Migrasi yang sudah diterapkan tidak pernah disunting: uji lokal memakai versi repo dan tidak melihat bedanya |
 
@@ -1904,7 +1909,7 @@ Produksi sudah di migrasi 0049, tetapi per 22 Okt belum ada satu pun akun instan
 | `laporan-karhutla-deck`, `laporan-konpers`, `laporan-koordalops` | angka hanya dari snapshot atau isian, bagian kosong tidak dikarang, tanpa " · ", Matador terbaca | `npm run uji:agen` |
 | `siklus_insiden`, `presiden`, `sla_koreksi` | satu siklus insiden dari cron sampai SLA; panel presiden; uji cron di luar jendela push 3 jam | `npm run uji:warga` |
 | `peta-kab` | kartu peta kabupaten | `npm run uji:agen` |
-| `gerbang-jalur-mutlak`, `gerbang-antrean-data` | berkas terlacak tanpa jalur absolut mesin lokal (juga `jalur-mutlak.yml` di CI); `terbit.yml` tanpa pemicu push supaya `titik.yml` tidak terusir dari antrean | `npm run uji:agen` |
+| `gerbang-jalur-mutlak`, `gerbang-antrean-data` | berkas terlacak tanpa jalur absolut mesin lokal (juga `jalur-mutlak.yml` di CI); `terbit.yml` tanpa pemicu push supaya `titik.yml` tidak terusir dari antrean; sejak 8 Nov daftar `PIPA` di `jaga_jadwal.mjs` wajib sama dengan `jaga.yml`, dan keputusan picu atau tunggu diuji `tests/agen/jaga_jadwal.test.mjs` | `npm run uji:agen` |
 | `hotspot-mundur`, `waktu-kluster`, `drone-rute` | tabel Hotspot tidak menulis 0 saat FIRMS belum terbit; laci cluster tanpa tanggal tidak sah; rute drone menutup sel dan KMZ sah | `npm run uji:agen` |
 | `aktor-sawit`, `status-wilayah`, `konteks-jalan` | jendela sawit-saja kartu Perusahaan; status banjir wilayah di kotak cari; jalan dan sungai dari vektor basemap | `npm run uji:agen` |
 | `tests/warga/*` | route, skema D1, API, foto, OG, EWS, Ruang Koordinasi, Ruang Instansi di Miniflare sungguhan | `npm run uji:warga` |
@@ -1927,6 +1932,7 @@ Semuanya: `npm run uji`. Commit hanya bila tiap suite mencetak `fail 0`; grep pa
 
 | Tanggal | Insiden | Pelajaran |
 | --- | --- | --- |
+| 8 Nov | GitHub membuang pemicu `schedule` di seluruh repo, termasuk `jaga.yml`; deck Penanganan mengambil firespot situs yang tertinggal dari FIRMS (Sulawesi Selatan 151 hotspot, 1 firespot) | Cron Worker memicu `jaga.yml` tiap jam dan `jaga_jadwal.mjs` memicu workflow yang terlewat; `segar_situs.py` menahan deck bila data situs tertinggal |
 | 7 Nov | GitHub melewatkan dua run terjadwal `titik.yml`; `jaga.yml` hanya memicu ulang run yang dibatalkan, bukan run yang tidak pernah dibuat | Cron Worker jadi cadangan pemicu `titik.yml` (`src/jaga_pipa.js`) |
 | 6 Nov | Run `terbit.yml` terpotong tepat sesudah deploy karena batas waktu 25 menit | Batas waktu 45 menit |
 | 4 Nov | LLaVA membaca 0 dari 31 foto grup operasi dan mengarang koordinat | Stempel dari OCR Vision di gateway Mac mini; pengurai menolak koordinat ambigu |
@@ -1992,7 +1998,7 @@ Yang tidak bisa dikerjakan sesi agent:
 15. Putuskan apakah petugas instansi (bukan admin atau pemirsa) boleh membuka `/uji-lapangan`; Turnstile unggah foto dari form itu belum diuji.
 16. Turnstile `/pendataan` belum aktif di produksi.
 17. Branch yang tertinggal: sejak 2 Nov sesi agent boleh menyapu branch yang sudah masuk `main` lewat `scripts/agents/sapu-branch.sh`; branch yang belum di-merge tetap diputus pemilik.
-18. Pastikan secret Worker `GITHUB_TOKEN` (fine-grained, Actions read and write, repo ini saja) terpasang; tanpa itu cadangan pemicu `titik.yml` tidak jalan.
+18. Pastikan secret Worker `GITHUB_TOKEN` (fine-grained, Actions read and write, repo ini saja) terpasang; tanpa itu cadangan pemicu `titik.yml` dan denyut `jaga.yml` tidak jalan, padahal sejak 7 Nov jadwal GitHub dibuang.
 
 ## Katalog modul dan design system
 

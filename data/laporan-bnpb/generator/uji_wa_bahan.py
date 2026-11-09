@@ -19,4 +19,8 @@ op = wa_operasi.operasi(open(os.path.join(B, 'satgas_271026.txt'), encoding='utf
 assert op['personel'] and op['armada'], op
 k = wa_harian.koordalops(open(os.path.join(B, 'koordalops_261026_24.txt'), encoding='utf-8').read())
 assert len(k['kejadian']) == 17, len(k['kejadian'])
+# 9 Nov 2026: kepala laporan menulis "pukul", bukan "pkl"
+t = open(os.path.join(B, 'koordalops_261026_24.txt'), encoding='utf-8').read()
+assert 'pkl' in t and len(wa_harian.koordalops(t.replace('pkl', 'pukul', 1))['kejadian']) == 17
+assert wa_harian.kode_prov('Prov. NTT') == wa_harian.kode_prov('Nusa Tenggara Timur') and wa_harian.kode_prov('Prov. NTB') == wa_harian.kode_prov('Nusa Tenggara Barat')
 print('koordalops 17 kejadian, satgas ok')
