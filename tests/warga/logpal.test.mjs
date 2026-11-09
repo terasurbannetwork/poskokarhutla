@@ -274,7 +274,8 @@ uji("impor: skrip menulis SQL idempoten dari JSON gudang, memasangkan akun pempr
   const dir = path.join(AKAR, "public/data/logpal"), baca = f => uraiCsv(readFileSync(path.join(dir, f), "utf8"));
   const dokumen = [{berkas: "g1.json", d: {nama: "Gudang BPBD Kalimantan Tengah", pemilik: "BPBD", provinsi: "Kalimantan Tengah", kapasitas_ton: null, items: [
       {id: "b1", barang: "Perahu karet", kelompok: "Peralatan air", satuan: "unit", jumlah: 8, baik: 6, rusak: 2, kedaluwarsa: "", sumber_dana: "APBD", per: "Nov 2026", sumber: "Uji", catatan: "O'Brien \"kutip\"", prioritas: "", kategori: "Perahu", item_standar: "Perahu evakuasi", tahun: 2020, nilai: 9.5e7}]}},
-    {berkas: "g2.json", d: {nama: "Poslog Uji Impor", pemilik: "BNPB", provinsi: "Sumatera Utara", kapasitas_ton: 50, items: [{id: "b1", barang: "Selimut", kelompok: "Sandang", satuan: "lembar", jumlah: 100, baik: 100, rusak: 0, kedaluwarsa: "2027-01-31", prioritas: "1"}]}}];
+    {berkas: "g2.json", d: {nama: "Poslog Uji Impor", pemilik: "BNPB", provinsi: "Sumatera Utara", kapasitas_ton: 50, items: [{id: "b1", barang: "Selimut", kelompok: "Sandang", satuan: "lembar", jumlah: 100, baik: 100, rusak: 0, kedaluwarsa: "2027-01-31", prioritas: "1"}]}},
+    {berkas: "g3.json", d: {nama: "Gudang BPBD Kabupaten Kapuas Uji", pemilik: "BPBD", provinsi: "Kalimantan Tengah", kab: "KAPUAS", kapasitas_ton: null, items: []}}];
   const bangun = d => bangunSql({dokumen: d, provinsi: baca("provinsi.csv"), gudang: uraiCsv(GUDANG_FIX), kelompok: KELOMPOK, batas: TEKS_B, rumus, kini: Date.now()});
   const sql = bangun(dokumen), jalan = async () => { for (const st of pecah(sql)) await DB.prepare(st).run(); };
   await jalan(); await jalan();   // dua kali: INSERT OR IGNORE
@@ -282,6 +283,8 @@ uji("impor: skrip menulis SQL idempoten dari JSON gudang, memasangkan akun pempr
   const g = await DB.prepare("SELECT akun_id, prov, lon, lat FROM logpal_gudang WHERE kode = 'gudang-bpbd-kalimantan-tengah'").first();
   assert.deepEqual([g.akun_id, g.prov, g.lon, g.lat], [C.id, "62", 113.92, -2.21], "dipasangkan ke akun pemprov aktif provinsi itu; koordinat dari gudang.csv");
   assert.equal((await DB.prepare("SELECT akun_id FROM logpal_gudang WHERE kode = 'poslog-uji-impor'").first()).akun_id, null);
+  const gk = await DB.prepare("SELECT akun_id, kab FROM logpal_gudang WHERE kode = 'gudang-bpbd-kabupaten-kapuas-uji'").first();
+  assert.deepEqual([gk.akun_id, gk.kab], [A.id, "KAPUAS"], "gudang kab/kota dipasangkan ke akun pemkab wilayah itu, bukan pemprov");
   assert.match((await DB.prepare("SELECT catatan FROM logpal_barang WHERE barang = 'Perahu karet' AND catatan LIKE '%Brien%'").first()).catatan, /O'Brien "kutip"/, "kutip tidak merusak SQL");
   const di = (await GET(C)).j.gudang.find(x => x.nama === "Gudang BPBD Kalimantan Tengah"); assert.equal(di.boleh_tulis, true); assert.equal(di.items.length, 1);
   assert.equal((await POST(C, P + "ubah/" + di.items[0].id, {jumlah: 9})).s, 200, "akun pemprov kini mengelola gudang impor");

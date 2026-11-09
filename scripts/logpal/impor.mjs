@@ -3,9 +3,9 @@
    DATA GUDANG ASLI TIDAK BOLEH MASUK REPO (repo publik): skrip menolak folder masuk atau berkas keluaran di dalam repo.
    Pakai:  node scripts/logpal/impor.mjs <folder-seed> <keluaran.sql> [--kebutuhan kebutuhan.csv] [--statis <folder gudang.csv usulan.csv rute.csv wilayah.csv teks.json matriks.json kecamatan.csv terdampak.csv>]
    Lalu pemilik menjalankan sendiri:  npx wrangler d1 execute <DB> --remote --file <keluaran.sql>   (sesudah migrasi 0112 dan 0113)
-   Bentuk dokumen: {nama, pemilik: "BNPB"|"BPBD", provinsi, kapasitas_ton, items: [{id, barang, kategori, item_standar, prioritas, kelompok, satuan, jumlah, baik, rusak, kedaluwarsa, sumber_dana, per, sumber, catatan, ...kolom aset opsional}]}.
+   Bentuk dokumen: {nama, pemilik: "BNPB"|"BPBD", provinsi, kab (opsional, gudang kab/kota dipasangkan ke akun pemkab/pemkot), kapasitas_ton, items: [{id, barang, kategori, item_standar, prioritas, kelompok, satuan, jumlah, baik, rusak, kedaluwarsa, sumber_dana, per, sumber, catatan, ...kolom aset opsional}]}.
    Kode provinsi dari public/data/logpal/provinsi.csv (publik); koordinat gudang dari src/logpal_statis.js (bukan aset publik). id gudang dan barang deterministik (sha256 kode + id asal), jadi SQL aman dijalankan ulang:
-   INSERT OR IGNORE. Gudang BPBD dipasangkan ke akun pemprov aktif provinsinya; dijalankan ulang sesudah akun dibuat, pasangan yang masih kosong terisi. */
+   INSERT OR IGNORE. Gudang BPBD tanpa kab dipasangkan ke akun pemprov aktif provinsinya; dijalankan ulang sesudah akun dibuat, pasangan yang masih kosong terisi. */
 import {readFileSync, readdirSync, writeFileSync, realpathSync, existsSync} from "node:fs";
 import {createHash} from "node:crypto";
 import path from "node:path";
@@ -57,9 +57,10 @@ export function bangunSql({dokumen, provinsi, gudang, kebutuhan = [], kini = Dat
   for (const {berkas, d} of dokumen) {
     if (!d || typeof d.nama !== "string" || !["BNPB", "BPBD"].includes(d.pemilik) || !Array.isArray(d.items)) throw new Error(`${berkas}: bukan dokumen gudang (nama, pemilik BNPB/BPBD, items)`);
     const prov = kode.get(d.provinsi); if (!prov) throw new Error(`${berkas}: provinsi "${d.provinsi}" tidak ada di provinsi.csv`);
+    if (d.kab != null && (typeof d.kab !== "string" || d.kab.length < 2 || d.kab.length > 60)) throw new Error(`${berkas}: kab harus 2 sampai 60 karakter`);
     const kd = slug(d.nama); if (dipakai.has(kd)) throw new Error(`${berkas}: nama gudang "${d.nama}" kembar`); dipakai.add(kd);
     const gid = sha16("gudang:" + kd), t = titik.get(norm(d.nama));
-    sql.push(`INSERT OR IGNORE INTO logpal_gudang (id, kode, akun_id, nama, pemilik, prov, provinsi, kab, kapasitas_ton, lon, lat, dibuat, diubah, dummy) VALUES (${q(gid)}, ${q(kd)}, NULL, ${q(d.nama)}, ${q(d.pemilik)}, ${q(prov)}, ${q(d.provinsi)}, NULL, ${q(d.kapasitas_ton)}, ${q(t ? +t.lon : null)}, ${q(t ? +t.lat : null)}, ${kini}, ${kini}, 0);`);
+    sql.push(`INSERT OR IGNORE INTO logpal_gudang (id, kode, akun_id, nama, pemilik, prov, provinsi, kab, kapasitas_ton, lon, lat, dibuat, diubah, dummy) VALUES (${q(gid)}, ${q(kd)}, NULL, ${q(d.nama)}, ${q(d.pemilik)}, ${q(prov)}, ${q(d.provinsi)}, ${q(d.kab)}, ${q(d.kapasitas_ton)}, ${q(t ? +t.lon : null)}, ${q(t ? +t.lat : null)}, ${kini}, ${kini}, 0);`);
     const lihat = new Set();
     for (const x of d.items) {
       const a = `${berkas} item ${x.id}`;
@@ -82,7 +83,8 @@ export function bangunSql({dokumen, provinsi, gudang, kebutuhan = [], kini = Dat
       const nama = Object.keys(kol), isi = nama.map(k => typeof kol[k] === "number" || kol[k] === null ? q(kol[k]) : teks(kol[k]));
       sql.push(`INSERT OR IGNORE INTO logpal_barang (id, gudang_id, ${nama.join(", ")}, dibuat, diubah, dummy) VALUES (${q(sha16(kd + ":" + x.id))}, ${q(gid)}, ${isi.join(", ")}, ${kini}, ${kini}, 0);`);
     }
-    if (d.pemilik === "BPBD") sql.push(`UPDATE logpal_gudang SET akun_id = (SELECT a.id FROM instansi_akun a WHERE a.jenis = 'pemprov' AND a.status = 'aktif' AND a.dummy = 0 AND a.cakupan = '["${prov}"]' LIMIT 1) WHERE id = ${q(gid)} AND akun_id IS NULL;`);
+    const akun = d.kab ? `a.jenis IN ('pemkab', 'pemkot') AND a.tingkat = 'kab' AND a.prov = ${q(prov)} AND lower(a.kab) = lower(${q(d.kab)})` : `a.jenis = 'pemprov' AND a.cakupan = '["${prov}"]'`;
+    if (d.pemilik === "BPBD") sql.push(`UPDATE logpal_gudang SET akun_id = (SELECT a.id FROM instansi_akun a WHERE ${akun} AND a.status = 'aktif' AND a.dummy = 0 LIMIT 1) WHERE id = ${q(gid)} AND akun_id IS NULL;`);
   }
   for (const k of kebutuhan) {
     /* kolom ke-6 sampai ke-9 CSV sumber = stok gudang pembanding A, teksnya, stok pembanding B, teksnya (nama kolom sumber tidak dipakai) */
