@@ -16,6 +16,14 @@ test("armada dikelompokkan per base, urut nama, tanpa base di akhir", () => {
   assert.deepEqual(g[2].regs, ["Q", "ZZ"]);
 });
 
+test("foto dokumentasi per tanggal terbaru dulu, lalu per base, tanpa base di akhir", () => {
+  const base = [{id: "b2", nama: "Pekanbaru / Sultan Syarif"}, {id: "b1", nama: "Ketapang / Rahadi"}];
+  const g = JSON.parse(JSON.stringify(win.OperasiLaporan.kelompokFoto([{tanggal: "2026-11-08", base: "b1", url: "a"}, {tanggal: "2026-11-09", base: "x", url: "b"}, {tanggal: "2026-11-09", base: "b2", url: "c"}, {tanggal: "2026-11-09", base: "b1", url: "d"}, {tanggal: "2026-11-09", base: "b1", url: "e"}], base)));
+  assert.deepEqual(g.map(h => [h.tanggal, h.n]), [["2026-11-09", 4], ["2026-11-08", 1]]);
+  assert.deepEqual(g[0].base.map(b => [b.nama, b.foto.length]), [["Ketapang", 2], ["Pekanbaru", 1], ["Base belum tercatat", 1]]);
+  assert.deepEqual(g[0].base[0].foto.map(f => f.url), ["d", "e"]);
+});
+
 test("tabel operator: kolom base berjumlah armada dan Grand total di baris pertama", () => {
   const win2 = {OpsUdara: {kontrak: () => [{jam_operasi_menit: 120}], persen: v => Math.round(v * 100) + "%"}};
   vm.runInNewContext(readFileSync(new URL("../../public/operasi_laporan.js", import.meta.url), "utf8"), {window: win2, document: {querySelector: () => null}, localStorage: {}, fmt: v => String(v), esc: v => String(v)});

@@ -265,16 +265,23 @@
     return [...g.values()].map(x => ({...x, regs: x.regs.sort()})).sort((x, y) => (!x.id) - (!y.id) || x.nama.localeCompare(y.nama));
   }
 
+  /* foto dokumentasi per tanggal (terbaru dulu), di dalamnya per base (pemilik 9 Nov 2026); tanpa base = "Base belum tercatat" paling akhir */
+  function kelompokFoto(foto, base) {
+    const nama = id => ((base || []).find(b => b.id === id)?.nama || "").split(" / ")[0], T = new Map();
+    for (const f of foto) { if (!T.has(f.tanggal)) T.set(f.tanggal, new Map()); const B = T.get(f.tanggal), n = nama(f.base), k = n ? f.base : ""; if (!B.has(k)) B.set(k, {id: k, nama: n || "Base belum tercatat", foto: []}); B.get(k).foto.push(f); }
+    return [...T].sort(([a], [b]) => String(b).localeCompare(String(a))).map(([tanggal, B]) => { const base = [...B.values()].sort((x, y) => (!x.id) - (!y.id) || x.nama.localeCompare(y.nama)); return {tanggal, n: base.reduce((t, b) => t + b.foto.length, 0), base}; });
+  }
+
   /* fitur 15: galeri foto dokumentasi dari laporan WA satgas (30 hari) */
   function kartuGaleri(D) {
-    const u = U(), semua = D.aksi30.flatMap(a => (a.foto || []).map(f => ({...f, reg: a.registrasi, tanggal: a.tanggal, lokasi: a.lokasi, guna: a.guna, hasil: a.hasil}))).sort((x, y) => (y.jam_utc || 0) - (x.jam_utc || 0));
+    const u = U(), semua = D.aksi30.flatMap(a => (a.foto || []).map(f => ({...f, reg: a.registrasi, base: a.base_id || D.reg2base[a.registrasi], tanggal: a.tanggal, lokasi: a.lokasi, guna: a.guna, hasil: a.hasil}))).sort((x, y) => (y.jam_utc || 0) - (x.jam_utc || 0));
     const regs = [...new Set(semua.map(f => f.reg))].sort(), grup = kelompokBase(regs.map(r => ({registrasi: r, base_id: D.reg2base[r]})), D.peta.base);
     const ok = new Set([...regs, ...grup.map(g => "base:" + g.id)]), pilih = st.galeri && ok.has(st.galeri) ? st.galeri : "";
     const boleh = pilih.startsWith("base:") ? new Set(grup.find(g => "base:" + g.id === pilih).regs) : pilih ? new Set([pilih]) : null, foto = boleh ? semua.filter(f => boleh.has(f.reg)) : semua;
     const opsi = (v, t) => `<option value="${esc(v)}"${v === pilih ? " selected" : ""}>${esc(t)}</option>`;
     const saring = regs.length > 1 ? `<select data-galeri aria-label="Saring armada atau base"><option value="">Semua armada</option>${grup.map(g => `<optgroup label="${esc(g.nama)}">${g.regs.length > 1 ? opsi("base:" + g.id, "Semua armada di " + g.nama) : ""}${g.regs.map(r => opsi(r, r)).join("")}</optgroup>`).join("")}</select>` : "";
     return `<div id="opsGaleri">${bagian("Dokumentasi", semua.length ? `${hl(fmt(semua.length))} foto dokumentasi dari ${fmt(regs.length)} armada dalam 30 hari` : "Belum ada foto dokumentasi dalam 30 hari",
-      foto.length ? `<div class="ops-galeri">${foto.slice(0, 60).map(f => `<a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer"><img src="${esc(f.url)}" alt="Dokumentasi ${esc(f.reg)} ${esc(f.tanggal)}" loading="lazy"><span><b>${esc(f.reg)}</b> ${esc(tglPendek(f.tanggal))}, ${u.jamWIB(f.jam_utc)} WIB${f.lokasi ? `<br>${esc(f.lokasi)}` : ""}</span></a>`).join("")}</div>`
+      foto.length ? kelompokFoto(foto, D.peta.base).map((h, i) => `<details class="ops-gl-hari"${i ? "" : " open"}><summary>${esc(tglPendek(h.tanggal))}<small>${fmt(h.n)} foto, ${fmt(h.base.length)} base</small></summary>${h.base.map(b => `<h4 class="ops-gl-base">${esc(b.nama)}<small>${fmt(b.foto.length)} foto</small></h4><div class="ops-galeri">${b.foto.map(f => `<a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer"><img src="${esc(f.url)}" alt="Dokumentasi ${esc(f.reg)} ${esc(f.tanggal)}" loading="lazy"><span><b>${esc(f.reg)}</b> ${u.jamWIB(f.jam_utc)} WIB${f.lokasi ? `<br>${esc(f.lokasi)}` : ""}</span></a>`).join("")}</div>`).join("")}</details>`).join("")
         : `<p class="ops-kosong">Foto dari grup WA satgas udara muncul di sini begitu ditempel ke aksi armada.</p>`, saring)}</div>`;
   }
 
@@ -350,6 +357,6 @@
     setTimeout(() => status(""), 3000);
   }
 
-  window.OperasiLaporan = {render, kelompokBase, kartuOperator};
+  window.OperasiLaporan = {render, kelompokBase, kelompokFoto, kartuOperator};
   if (document.querySelector("#p-operasi.on")) render();
 })();
