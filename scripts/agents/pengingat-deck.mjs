@@ -9,7 +9,9 @@ export const PESAN = "PENGINGAT DECK BNPB (pemilik 3 dan 4 Nov 2026): semua slid
   "Skill deck-bnpb dan ppt-format-bnpb di repo ini PENSIUN (salinan mesin lama): jangan dipakai. Format baku: sampul dan penutup berlogo BNPB besar + KRIS + BerAKHLAK, sampul dengan " +
   "penyaji bernama lengkap (Kepala BNPB: Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)) dan kota-tanggal, " +
   "slide daftar-isi, pembatas-seksi per bagian + penanda bagian di pita atas, footer 'Badan Nasional Penanggulangan Bencana  |  Copyright 2026' " +
-  "+ nomor halaman, Roboto, grafik native, anti-AI. Dilarang membangun deck dari HTML/Chrome print-to-pdf. Kirim PPTX + PDF. " +
+  "+ nomor halaman, Roboto, grafik native, anti-AI. Logo KRIS wajib di TIAP slide, termasuk deck hasil sunting langsung. " +
+  "Baris Sumber hanya sumber dan tanggal, tanpa catatan seperti perkiraan atau belum dikonfirmasi; laporan Koordalops wajib sampai tanggal deck. " +
+  "Sebelum mengirim PPTX apa pun jalankan bnpb/scripts/aturan_slide.py <pptx> sampai lolos. Dilarang membangun deck dari HTML/Chrome print-to-pdf. Kirim PPTX + PDF. " +
   "Gerbang: tests/agen/gerbang-skill-deck.test.mjs.";
 
 if (import.meta.url === `file://${process.argv[1]}`) {

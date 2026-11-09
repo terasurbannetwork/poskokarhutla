@@ -38,6 +38,9 @@ test("pola menangkap permintaan slide pemilik, dan tidak menangkap prompt lain",
   assert.match(PESAN, /S\.Sos\., M\.Si\. \(Han\)/, "gelar Kepala BNPB: M.Si. sekali, yang ber-(Han) (pemilik 4 Nov 2026)");
   assert.doesNotMatch(PESAN, /M\.Si\., M\.Si\./);
   assert.match(PESAN, /KRIS/, "logo KRIS wajib di sampul dan penutup (pemilik 4 Nov 2026)");
+  assert.match(PESAN, /KRIS wajib di TIAP slide/, "logo KRIS di tiap slide, termasuk deck sunting langsung (pemilik 9 Nov 2026)");
+  assert.match(PESAN, /tanpa catatan/, "baris Sumber tanpa catatan keraguan (pemilik 9 Nov 2026)");
+  assert.match(PESAN, /aturan_slide\.py/, "deck apa pun wajib lolos pemeriksa keluaran (pemilik 9 Nov 2026)");
   assert.match(PESAN, /deck-bnpb dan ppt-format-bnpb .*PENSIUN/);
   assert.match(PESAN, /Dilarang membangun deck dari HTML/);
 });

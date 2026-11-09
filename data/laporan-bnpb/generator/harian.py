@@ -2061,7 +2061,7 @@ class Deck:
         W = 10454335
         o = ''
         if getattr(s, 'KRIS_ISI', False):
-            src = next((p for p in (os.path.join(os.environ.get('DECK_BNPB', os.path.expanduser('~/.claude/skills/ppt-konsultan/bnpb')), 'assets', 'logo-bersama', 'kris.png'),) if os.path.exists(p)), None)
+            src = next((p for p in (os.path.join(os.environ.get('DECK_BNPB', os.path.expanduser('~/.claude/skills/ppt-konsultan/bnpb')), 'assets', 'logo-bersama', 'kris-logo.png'),) if os.path.exists(p)), None)
             if not src: raise RuntimeError('logo KRIS (assets/logo-bersama/kris.png di skill ppt-konsultan) tidak ditemukan; setel DECK_BNPB')
             dst = os.path.join(s.ke, 'ik', 'kris.png')   # media wajib di folder kerja (nama bagian zip relatif s.ke; skill di drive lain)
             if not os.path.exists(dst): os.makedirs(os.path.dirname(dst), exist_ok=True); shutil.copyfile(src, dst)
