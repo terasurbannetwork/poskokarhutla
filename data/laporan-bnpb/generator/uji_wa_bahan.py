@@ -23,4 +23,7 @@ assert len(k['kejadian']) == 17, len(k['kejadian'])
 t = open(os.path.join(B, 'koordalops_261026_24.txt'), encoding='utf-8').read()
 assert 'pkl' in t and len(wa_harian.koordalops(t.replace('pkl', 'pukul', 1))['kejadian']) == 17
 assert wa_harian.kode_prov('Prov. NTT') == wa_harian.kode_prov('Nusa Tenggara Timur') and wa_harian.kode_prov('Prov. NTB') == wa_harian.kode_prov('Nusa Tenggara Barat')
+# 9 Nov 2026: "Angin Kencang: Papua Selatan" tanpa titik; bagian Imbauan sesudahnya tidak boleh ikut terbaca
+t = open(glob.glob(os.path.join(B, 'bmkg_*.txt'))[0], encoding='utf-8').read()
+assert wa_harian.bmkg(re.sub(r'Angin Kencang\*?:[^\n]*', 'Angin Kencang: Papua Selatan\n\nb. Imbauan:\n* Masyarakat', t, count=1))['angin'] == ['Papua Selatan']
 print('koordalops 17 kejadian, satgas ok')

@@ -179,8 +179,8 @@ def bmkg(teks):
     jam = re.search(r'Tertinggi pada hari (.+?WIB)', t)
     per = re.search(r'Periode\s+(.+?\d{4})', t)
     return {'jam': jam[1] if jam else '', 'pm': pm, 'periode': per[1] if per else '',
-            'hujan': daftar(r'intensitas sedang yang terjadi di (.+?)\.\s*(?:\n|$)'), 'angin': [p for p in daftar(r'Angin Kencang\*?:\s*(.+?)\.\s*(?:\n|$)') if p.upper() not in ('NIL', 'NIHIL', '-')],   # 6 Nov: "Angin Kencang: NIL."
-            'siaga': [p for p in daftar(r'Siaga \(hujan lebat[^)]*\)\*?:\s*(.+?)\.\s*(?:\n|$)') if p.upper() not in ('NIL', 'NIHIL', '-')]}   # 8 Nov: peringatan dini Siaga hujan lebat
+            'hujan': daftar(r'intensitas sedang yang terjadi di (.+?)\.\s*(?:\n|$)'), 'angin': [p for p in daftar(r'Angin Kencang\*?:[ \t]*([^\n]+?)\.?[ \t]*(?:\n|$)') if p.upper() not in ('NIL', 'NIHIL', '-')],   # 6 Nov: "Angin Kencang: NIL."
+            'siaga': [p for p in daftar(r'Siaga \(hujan lebat[^)]*\)\*?:[ \t]*([^\n]+?)\.?[ \t]*(?:\n|$)') if p.upper() not in ('NIL', 'NIHIL', '-')]}   # 8 Nov: peringatan dini Siaga hujan lebat
 
 
 def uji():
