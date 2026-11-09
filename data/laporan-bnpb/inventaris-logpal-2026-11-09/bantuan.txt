@@ -1,0 +1,165 @@
+# prov|unit|belum|2025|2026 alat|paket (selimut,matras,kasur,terpal,makanan,familykit)  S/B/K = paket baku
+Sulteng|Prov. Sulawesi Tengah|1|-|Rescue;TP;TK;LS|360,240,90,160,200,120
+Sulteng|Kab. Donggala|0|Rescue|TP;TK;LS|B
+Sulteng|Kab. Sigi|0|Rescue|TK|80,120,45,80,100,60
+Sulteng|Kab. Poso|0|Truk|Perahu|80,120,45,80,100,60
+Sulteng|Kab. Tolitoli|0|Pickup|TP;LS|B
+Sulteng|Kab. Banggai|0|-|Dapur;TK|B
+Sulteng|Kab. Banggai Kepulauan|1|-|Tangki|80,90,30,60,80,30
+Sulteng|Kab. Banggai Laut|0|-|Dapur|B
+Sulteng|Kab. Buol|0|-|-|40,30,5,10,20,15
+Sulteng|Kab. Morowali|1|-|Tangki|B
+Sulteng|Kab. Morowali Utara|1|-|Rescue|B
+Sulteng|Kab. Parigi Moutong|0|-|Tangki|80,90,30,60,80,30
+Sulteng|Kab. Tojo Una-Una|0|-|-|80,90,30,60,80,30
+Sulteng|Kota Palu|0|-|Dapur|80,120,45,80,100,60
+Banten|Kab. Lebak|0|Pickup|Perahu|K
+Banten|Kab. Pandeglang|0|Pickup|Perahu|K
+Banten|Kab. Serang|1|Pickup|Rescue|K
+Banten|Kab. Tangerang|1|-|Dapur|K
+Banten|Kota Cilegon|0|Rescue|TK|K
+Banten|Kota Serang|0|Pickup|Perahu;TK|K
+Banten|Kota Tangerang|1|-|Truk|K
+Banten|Kota Tangerang Selatan|0|Pickup|Trail|K
+Banten|Prov. Banten|1|Rescue|TP;LS;TK|240,240,60,110,140,75
+Jabar|Kab. Bandung|0|Pickup|-|S
+Jabar|Kab. Bandung Barat|0|Tangki|Trail|S
+Jabar|Kab. Bekasi|0|Pickup|Trail|S
+Jabar|Kab. Bogor|0|Rescue|Trail|S
+Jabar|Kab. Ciamis|0|Pickup|Trail|S
+Jabar|Kab. Cianjur|0|Pickup|Trail|S
+Jabar|Kab. Cirebon|0|-|Tangki|S
+Jabar|Kab. Garut|0|Pickup|TP;LS|S
+Jabar|Kab. Indramayu|0|Truk|Trail|S
+Jabar|Kab. Karawang|0|Truk|TP;LS|S
+Jabar|Kab. Kuningan|0|Tangki|-|S
+Jabar|Kab. Majalengka|0|Pickup|TP;TK;LS|S
+Jabar|Kab. Pangandaran|0|-|Dapur|S
+Jabar|Kab. Purwakarta|0|-|TP;LS|S
+Jabar|Kab. Subang|1|-|Dapur|S
+Jabar|Kab. Sukabumi|0|Rescue|Trail|B
+Jabar|Kab. Sumedang|0|-|Trail|S
+Jabar|Kab. Tasikmalaya|0|Pickup|Perahu|S
+Jabar|Kota Bandung|0|-|Trail|S
+Jabar|Kota Banjar|1|-|Truk|S
+Jabar|Kota Bekasi|0|Pickup|-|S
+Jabar|Kota Bogor|0|-|Rescue|S
+Jabar|Kota Cimahi|0|Truk|TK|S
+Jabar|Kota Cirebon|0|Pickup|Trail|S
+Jabar|Kota Sukabumi|0|-|Pickup|S
+Jabar|Kota Tasikmalaya|0|-|Pickup|S
+Jabar|Prov. Jawa Barat|0|Rescue|Trail;TP;LS|240,270,90,180,240,90
+Lampung|Prov. Lampung|0|Rescue|Perahu;TK;TP;LS|160,180,60,120,160,60
+Lampung|Kab. Pesawaran|0|Tangki|TP;LS|B
+Lampung|Kab. Pesisir Barat|0|Pickup|Perahu;TK|B
+Lampung|Kab. Lampung Tengah|0|Rescue|TP;LS|S
+Lampung|Kab. Lampung Utara|0|Rescue|TP;LS|S
+Lampung|Kab. Lampung Barat|0|Pickup|-|S
+Lampung|Kab. Tulang Bawang Barat|0|Pickup|Perahu;TK|S
+Lampung|Kab. Lampung Timur|0|-|Dapur|S
+Lampung|Kab. Mesuji|0|-|Tangki|S
+Lampung|Kab. Tulang Bawang|0|-|Pickup|S
+Lampung|Kab. Way Kanan|0|-|Truk|S
+Lampung|Kota Bandar Lampung|0|-|Pickup|S
+Lampung|Kota Metro|1|-|Tangki|S
+Lampung|Kab. Lampung Selatan|1|-|Tangki|B
+Lampung|Kab. Pringsewu|1|-|Tangki|S
+Lampung|Kab. Tanggamus|1|-|Dapur|S
+NTT|Prov. NTT|0|Pickup|TP;LS|240,240,90,160,200,120
+NTT|Kab. Nagekeo|0|Pickup|Perahu;TK|B
+NTT|Kab. Sikka|0|Pickup|Tangki|B
+NTT|Kab. Sumba Barat Daya|0|Pickup|TP;TK;LS|B
+NTT|Kab. Timor Tengah Utara|0|Pickup|Perahu|B
+NTT|Kab. Flores Timur|1|Truk|TP;LS|B
+NTT|Kota Kupang|0|Truk|TP;TK;LS|B
+NTT|Kab. Kupang|1|-|Truk|B
+NTT|Kab. Alor|0|-|Tangki|B
+NTT|Kab. Belu|1|-|Truk|B
+NTT|Kab. Ende|1|-|Rescue|B
+NTT|Kab. Lembata|0|-|Tangki;Perahu|B
+NTT|Kab. Malaka|1|-|Dapur|B
+NTT|Kab. Manggarai|1|-|Dapur|B
+NTT|Kab. Manggarai Barat|0|-|Truk|B
+NTT|Kab. Ngada|0|-|Pickup|B
+NTT|Kab. Rote Ndao|0|-|Truk;TK|B
+NTT|Kab. Sabu Raijua|0|-|Rescue|B
+NTT|Kab. Sumba Barat|1|-|Truk|B
+NTT|Kab. Sumba Tengah|1|-|Dapur|B
+NTT|Kab. Manggarai Timur|0|Pickup|TK|S
+NTT|Kab. Sumba Timur|0|-|Truk|S
+NTT|Kab. Timor Tengah Selatan|1|-|Truk|S
+Jateng|Kab. Banjarnegara|0|Pickup|TK|S
+Jateng|Kab. Banyumas|0|Truk|Perahu|S
+Jateng|Kab. Batang|0|-|Rescue|S
+Jateng|Kab. Blora|0|Tangki|Trail|S
+Jateng|Kab. Boyolali|0|Pickup|Trail|S
+Jateng|Kab. Brebes|0|Rescue|TP;LS|S
+Jateng|Kab. Cilacap|0|Pickup|Trail|S
+Jateng|Kab. Demak|0|-|Pickup;Perahu|S
+Jateng|Kab. Grobogan|0|Pickup|-|S
+Jateng|Kab. Jepara|0|Tangki|Truk|S
+Jateng|Kab. Karanganyar|0|-|Tangki|S
+Jateng|Kab. Kebumen|0|-|Rescue|S
+Jateng|Kab. Kendal|0|-|Dapur|S
+Jateng|Kab. Klaten|0|Tangki|Trail|S
+Jateng|Kab. Kudus|0|-|Truk|S
+Jateng|Kab. Magelang|0|-|Pickup|S
+Jateng|Kab. Pati|0|-|Rescue|S
+Jateng|Kab. Pekalongan|1|-|Tangki|S
+Jateng|Kab. Pemalang|0|-|Truk|S
+Jateng|Kab. Purbalingga|1|-|Rescue|S
+Jateng|Kab. Purworejo|1|-|Pickup|80,90,60,120,160,60
+Jateng|Kab. Rembang|0|Rescue|Trail|S
+Jateng|Kab. Semarang|0|Pickup|Perahu|S
+Jateng|Kab. Sragen|0|-|Tangki|S
+Jateng|Kab. Sukoharjo|0|Rescue|Trail|S
+Jateng|Kab. Tegal|0|-|Tangki|S
+Jateng|Kab. Temanggung|0|Truk|-|S
+Jateng|Kab. Wonogiri|0|Truk|-|S
+Jateng|Kab. Wonosobo|0|-|Tangki|S
+Jateng|Kota Magelang|0|-|Rescue|S
+Jateng|Kota Pekalongan|0|Pickup|-|S
+Jateng|Kota Salatiga|0|-|Dapur|S
+Jateng|Kota Semarang|1|-|Pickup|S
+Jateng|Kota Surakarta|0|Rescue|Perahu|S
+Jateng|Kota Tegal|0|-|Dapur|S
+Jateng|Prov. Jawa Tengah|0|Rescue|Perahu;TP;LS|160,180,60,120,160,60
+Jatim|Kab. Bangkalan|0|Pickup|Trail|S
+Jatim|Kab. Banyuwangi|0|-|Rescue|S
+Jatim|Kab. Blitar|0|Truk|-|S
+Jatim|Kab. Bojonegoro|0|-|Pickup|S
+Jatim|Kab. Bondowoso|0|Pickup|-|S
+Jatim|Kab. Gresik|1|Pickup|-|S
+Jatim|Kab. Jember|0|-|Trail|S
+Jatim|Kab. Jombang|1|-|Dapur|S
+Jatim|Kab. Kediri|0|-|Tangki|S
+Jatim|Kab. Lamongan|1|-|Tangki|S
+Jatim|Kab. Lumajang|0|Pickup|Perahu|S
+Jatim|Kab. Madiun|0|Pickup|Trail|S
+Jatim|Kab. Magetan|0|Truk|Trail|S
+Jatim|Kab. Malang|0|Pickup|-|S
+Jatim|Kab. Mojokerto|0|-|Tangki|S
+Jatim|Kab. Nganjuk|0|-|Rescue|S
+Jatim|Kab. Ngawi|1|-|Pickup|S
+Jatim|Kab. Pacitan|0|-|Pickup|S
+Jatim|Kab. Pamekasan|0|Pickup|Trail|S
+Jatim|Kab. Pasuruan|0|-|Pickup;Perahu|S
+Jatim|Kab. Ponorogo|0|Rescue|Rescue|S
+Jatim|Kab. Probolinggo|1|Rescue|Perahu|S
+Jatim|Kab. Sampang|0|Pickup|Trail|S
+Jatim|Kab. Sidoarjo|0|-|Rescue|S
+Jatim|Kab. Situbondo|0|-|Pickup;Perahu|S
+Jatim|Kab. Sumenep|1|-|Pickup|S
+Jatim|Kab. Trenggalek|0|-|Truk|S
+Jatim|Kab. Tuban|0|Rescue|Perahu|S
+Jatim|Kab. Tulungagung|0|-|Truk|S
+Jatim|Kota Batu|0|-|Pickup|S
+Jatim|Kota Blitar|0|Truk|Trail|S
+Jatim|Kota Kediri|0|-|Pickup|S
+Jatim|Kota Madiun|0|-|Dapur|S
+Jatim|Kota Malang|1|-|Truk|S
+Jatim|Kota Mojokerto|0|Truk|TK|S
+Jatim|Kota Pasuruan|0|-|Pickup|S
+Jatim|Kota Probolinggo|0|-|Dapur|S
+Jatim|Kota Surabaya|1|-|Rescue|S
+Jatim|Prov. Jawa Timur|0|Rescue|TP;LS|160,180,60,120,160,60
