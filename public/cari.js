@@ -191,7 +191,7 @@
       const KL = S.kluster.features.map(f => f.properties).filter(p => di(p.lon, p.lat)), kp = KL.length;
       const tl = `<span title="(Titik NOAA-20 × 4,22 ha + titik NOAA-21 × 4,36 ha) ÷ 2, per hari kalender WIB. Bukan angka regu darat">`;
       bd = lipat(`Di dalam batas, ${ren}`, tb2([[`Titik panas`, fmt(a.hot) + " titik"], [`${tl}Luas terbakar</span>`, fmt(a.luas) + " ha"],
-        [`<span title="Luas yang titiknya masih terdeteksi 12–36 jam sebelumnya">Belum padam</span>`, S.titikPenuh ? fmt(a.belum) + " ha" : "memuat…"], ["Cluster aktif (72 jam)", fmt(kp) + " cluster"]]))
+        [`<span title="Lokasi unik yang bertahan (terdeteksi 12–36 jam sebelumnya) atau baru di cluster firespot, dikali 2,25 ha">Belum padam</span>`, S.titikPenuh ? fmt(a.belum) + " ha" : "memuat…"], ["Cluster aktif (72 jam)", fmt(kp) + " cluster"]]))
         + (T.i.t === "desa" ? `<div id="ckBanjir"></div>` : "") + apiKawasan(KL, di)
         + (catatan && !KAW.has(T.i.t) ? `<p class="ck-n">${esc(catatan.split(". Batas")[0].replace("; ini bukan", "; bukan"))}.</p>` : ""); }
     else bd = `<p class="ck-n">Poligon konsesi tidak ditemukan di data.</p>`;

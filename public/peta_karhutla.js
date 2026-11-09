@@ -213,7 +213,7 @@ const kelasKab = (b, v) => b.filter(x => v > x).length;
 /* dua angka penting (4687 -> 4700, 397 -> 400, 83 tetap). TIDAK dipakai tampilan: pemilik (22 Okt 2026) memilih angka persis, sama dengan deck BNPB */
 const bulat2 = x => Number(Number(x).toPrecision(2));
 /* teks nilai satu kabupaten (tooltip, popup), angka persis seperti deck. Luas 0 = tak ada deteksi sama sekali; belum padam 0 = kabupaten itu bisa saja punya deteksi
-   (luas > 0) yang tak satu pun bertahan 12-36 jam, jadi "0 ha", BUKAN "Tanpa deteksi". fmt = pemformat angka layar */
+   (luas > 0) yang tak satu pun bertahan 12-36 jam dan tak di cluster firespot, jadi "0 ha", BUKAN "Tanpa deteksi". fmt = pemformat angka layar */
 const teksKab = (metrik, v, fmt) => v ? `${fmt(v)} ha` : metrik === "luas" ? "Tanpa deteksi" : "0 ha";
 /* baris legenda untuk petak transparan (nilai 0); maks = nilai terbesar periode itu (0 = tak ada kabupaten berwarna) */
 const kosongKab = (metrik, maks) => metrik === "belum" ? "Tidak ada yang belum padam" : maks ? "Tanpa deteksi" : "Tanpa deteksi pada periode ini";

@@ -346,14 +346,29 @@ async function dummyIsi(env, kini, oleh) {
     .forEach(([no, w, k, d, s, kq, kqt, sb, sbt, se, sts]) => st.push(env.DB.prepare("INSERT INTO logpal_kebutuhan (no, wilayah, kebutuhan, diajukan, satuan, stok_a, stok_a_teks, stok_b, stok_b_teks, setara, status_tetap, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)")
       .bind(900 + no, "Kalimantan Tengah", "[DUMMY] " + k, d, s, kq, kqt, sb, sbt, se, sts)));
   for (let i = 0; i < st.length; i += 50) await env.DB.batch(st.slice(i, i + 50));
-  return json({ok: true, gudang: 3, barang: bn.length + b2.length + b3.length, mutasi: 7, opname: 1, permintaan: 4, kebutuhan: 5}, 201);
+  /* bantuan: terpisah dari stok; dilewati bila migrasi 0115 belum jalan (jalur tulis lama jangan gagal karena tabel baru) */
+  const bt = [];
+  const bn1 = (prov, provinsi, tingkat, wilayah, tahun, barang, jumlah, satuan, belum, catatan = "") => bt.push(env.DB.prepare("INSERT OR IGNORE INTO logpal_bantuan (id, prov, provinsi, tingkat, wilayah, tahun, barang, jumlah, satuan, belum_usulkan, catatan, dibuat, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)")
+    .bind(acak(8), prov, provinsi, tingkat, wilayah, tahun, barang, jumlah, satuan, belum, catatan, kini));
+  const KN = [["Selimut", "lembar"], ["Matras", "lembar"], ["Kasur Lipat", "lembar"], ["Terpal", "lembar"], ["Makanan Siap Saji", "paket"], ["Family Kit", "paket"]];
+  [["[DUMMY] Provinsi Kalimantan Tengah", "prov", 0], ["[DUMMY] Kapuas", "kab", 0], ["[DUMMY] Kota Palangka Raya", "kab", 1], ["[DUMMY] Barito Utara", "kab", 0]].forEach(([w, tk, belum], i) => {
+    for (const th of [2025, 2026]) {
+      KN.forEach(([b, sat], j) => { if (!(i === 3 && th === 2025 && j > 1)) bn1("62", "Kalimantan Tengah", tk, w, th, b, (i + 1) * (j + 2) * 10 + (th - 2025) * 5, sat, belum); });
+      if (i % 2 === 0) bn1("62", "Kalimantan Tengah", tk, w, th, "Mobil Rescue", i + 1, "unit", belum);
+      if (i === 1) { bn1("62", "Kalimantan Tengah", tk, w, th, "Perahu dan Mesin", 2, "unit", belum); bn1("62", "Kalimantan Tengah", tk, w, th, "Tenda Pengungsi", 4, "set", belum); }
+    }
+  });
+  try { await env.DB.batch(bt); } catch (e) { if (!tanpaTabel(e)) throw e; }
+  return json({ok: true, bantuan: bt.length, gudang: 3, barang: bn.length + b2.length + b3.length, mutasi: 7, opname: 1, permintaan: 4, kebutuhan: 5}, 201);
 }
 async function dummyHapus(env) {
   const hit = async t => (await env.DB.prepare(`SELECT count(*) n FROM ${t} WHERE dummy = 1`).first()).n;
   const n = {gudang: await hit("logpal_gudang"), barang: await hit("logpal_barang"), mutasi: await hit("logpal_mutasi"), opname: await hit("logpal_opname"), permintaan: await hit("logpal_permintaan"), kebutuhan: await hit("logpal_kebutuhan")};
+  let bantuan = 0;
+  try { bantuan = await hit("logpal_bantuan"); await env.DB.prepare("DELETE FROM logpal_bantuan WHERE dummy = 1").run(); } catch (e) { if (!tanpaTabel(e)) throw e; }
   await env.DB.batch(["logpal_permintaan", "logpal_opname", "logpal_mutasi", "logpal_barang", "logpal_gudang", "logpal_kebutuhan"].map(t => env.DB.prepare(`DELETE FROM ${t} WHERE dummy = 1`))
     .concat(env.DB.prepare("DELETE FROM instansi_akun WHERE dummy = 1 AND username LIKE 'dummylogpal%' AND NOT EXISTS (SELECT 1 FROM tugas_isian i WHERE i.akun_id = instansi_akun.id)")));
-  return json({ok: true, ...n});
+  return json({ok: true, ...n, bantuan});
 }
 async function dummy(env, req, url, kini) {
   const mod = await superOK(env, req); if (!mod) return gagal(403, "dummy hanya untuk Super Admin (secret SUPER_ADMIN berisi awalan akun)");
@@ -361,6 +376,27 @@ async function dummy(env, req, url, kini) {
   if (b.o.aksi === "isi") return dummyIsi(env, kini, String(mod));
   if (b.o.aksi === "hapus") return dummyHapus(env);
   return gagal(400, "aksi harus isi/hapus");
+}
+
+/* ================================================================ bantuan peralatan dan logistik (tab Bantuan; BUKAN stok, status kirim belum diketahui: KEPUTUSAN-LOGPAL D11/Q9) */
+/* kunci pencocokan nama wilayah: huruf kecil, tanpa awalan "Kab."/"Kabupaten", "Kota " dipertahankan (jadi "Kupang" != "Kota Kupang") */
+export const kunciWilayah = v => String(v ?? "").normalize("NFC").trim().toLowerCase().replace(/\s+/g, " ").replace(/^(kab\.|kabupaten)\s+/, "");
+async function bantuan(env, req, url, kini) {
+  const ak = await aktor(env, req, kini); if (ak instanceof Response) return ak;
+  let hasil;
+  try {
+    const dum = ak.dummyOk ? "" : " AND dummy = 0", kol = "prov, provinsi, tingkat, wilayah, tahun, barang, jumlah, satuan, belum_usulkan, catatan";
+    if (ak.tipe === "staf") hasil = (await env.DB.prepare(`SELECT ${kol} FROM logpal_bantuan WHERE 1 = 1${dum} ORDER BY provinsi, wilayah, tahun, barang LIMIT 8000`).all()).results;
+    else if (ak.a.jenis === "pemprov") hasil = (await env.DB.prepare(`SELECT ${kol} FROM logpal_bantuan WHERE prov IN (SELECT value FROM json_each(?))${dum} ORDER BY provinsi, wilayah, tahun, barang LIMIT 8000`).bind(JSON.stringify(ak.cakupan)).all()).results;
+    else {   // pemkab/pemkot: hanya baris kab di provinsinya yang namanya sama persis (sesudah kunciWilayah); baris tingkat prov tidak tampil
+      const k = kunciWilayah(ak.a.kab);
+      hasil = k ? (await env.DB.prepare(`SELECT ${kol} FROM logpal_bantuan WHERE tingkat = 'kab' AND prov = ?${dum} ORDER BY wilayah, tahun, barang LIMIT 8000`).bind(String(ak.a.prov)).all()).results.filter(r => kunciWilayah(r.wilayah) === k) : [];
+    }
+  } catch (e) {
+    if (tanpaTabel(e)) return gagal(503, "tabel bantuan belum ada; jalankan migrasi 0115_logpal_bantuan");
+    throw e;
+  }
+  return json({kini, baris: hasil.map(r => ({...r, belum_usulkan: !!r.belum_usulkan}))}, 200, {"cache-control": "private, no-store"});
 }
 
 /* ================================================================ halaman dan data statis (wajib login, keputusan pemilik 9 Nov 2026) */
@@ -415,6 +451,7 @@ export const RUTE_LOGPAL = {
   ...Object.fromEntries(Object.entries({
   "GET /api/instansi/logpal/statis": statis,
   "GET /api/instansi/logpal/data": baca,
+  "GET /api/instansi/logpal/bantuan": bantuan,
   "POST /api/instansi/logpal/gudang": buatGudang,
   "POST /api/instansi/logpal/barang/:id": tambahBarang,
   "POST /api/instansi/logpal/ubah/:id": ubahBarang,

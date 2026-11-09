@@ -453,8 +453,8 @@ const G0=()=>G[aktif];
 $('b_kelompok').replaceChildren(...KEL.map(k=>new Option(k)));
 ['m_tanggal','o_tanggal','l_tgl'].forEach(i=>$(i).value=HARI());
 
-const MON=['stok','standar','kebutuhan','jaringan','kirim'];
-document.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{const h=b.dataset.h,mon=MON.includes(h);document.querySelectorAll('[data-h]').forEach(x=>x.setAttribute('aria-pressed',x===b));document.querySelectorAll('section[data-p]').forEach(s=>s.hidden=s.dataset.p!==h);document.querySelectorAll('[data-tab]').forEach(s=>s.hidden=s.dataset.tab!==h);$('mon').hidden=!mon;$('bilahG').hidden=mon;if(mon)nanti(dash._semua);if(h==='kirim')bukaKirim()});
+const MON=['stok','standar','kebutuhan','jaringan','kirim','bantuan'];
+document.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{const h=b.dataset.h,mon=MON.includes(h);document.querySelectorAll('[data-h]').forEach(x=>x.setAttribute('aria-pressed',x===b));document.querySelectorAll('section[data-p]').forEach(s=>s.hidden=s.dataset.p!==h);document.querySelectorAll('[data-tab]').forEach(s=>s.hidden=s.dataset.tab!==h);$('mon').hidden=!mon;$('bilahG').hidden=mon;if(mon)nanti(dash._semua);if(h==='kirim')bukaKirim();if(h==='bantuan')bukaBantuan()});
 $('pg').onchange=()=>{aktif=$('pg').value;gambar()};$('cari_barang').oninput=tunda(gambarStok);
 
 function kedaluwarsa(d){if(!d)return null;const h=Math.floor((new Date(d)-new Date(HARI()))/864e5);return h<0?'lewat':(h<=90?'dekat':null)}
@@ -693,6 +693,45 @@ function tabelTerdampak(baris){const L=idsK('semua').filter(i=>tampilK(K0.m.guda
       if(jw){$('kr_j').value=jw;jalankanK(c,jw,+$('kr_o').value||8,$('kr_l').value)}
       else{$('kr_m').className='msg o';$('kr_m').textContent=`Jumlah jiwa ${b.kab} belum ada di data terdampak. Isi jumlah pengungsi lalu tekan Hitung rencana.`;$('kr_j').focus()}};
     a.append(h);tr.append(td(b.kab),td(b.provinsi),td(b.status,'a'),td(tglK(b.tanggal),'a'),td(ter?String(ter.kec).replace(/;/g,', '):'–'),td(jw?N(jw):'–','a'),td(bt?bt.g.nama:'–'),td(bt?bt.t.moda:'–','a'),td(bt?jamT(bt.t.total):'–','a'),a);return tr}))}
+
+/* tab Bantuan: daftar bantuan peralatan dan logistik per BPBD per tahun. BUKAN stok; status kirim belum diketahui, jadi layar tidak menyebut terkirim atau diterima. Dimuat sekali saat tab pertama dibuka. */
+const BN={m:null,p:null};
+const BN_KOL=['Selimut','Matras','Kasur Lipat','Terpal','Makanan Siap Saji','Family Kit'];
+function bukaBantuan(){if(BN.m||BN.p)return;const m=$('bn_m');m.className='msg';m.textContent='Memuat bantuan.';
+  BN.p=api('bantuan').then(r=>{BN.p=null;
+    if(!r.ok){m.className='msg e';m.textContent=r.s===401||r.s===403?'Sesi berakhir atau akun tanpa hak. Masuk lagi.':r.s===503?'Data bantuan belum diaktifkan di server. Minta admin menjalankan migrasi 0115.':galat(r,'Data bantuan gagal dimuat. Buka tab ini lagi untuk mencoba ulang.');return}
+    BN.m=r.j.baris||[];m.textContent='';
+    const ps=[...new Map(BN.m.map(b=>[b.prov,b.provinsi]))].sort((a,b)=>a[1].localeCompare(b[1],'id'));
+    $('bn_prov').replaceChildren(new Option('Semua provinsi',''),...ps.map(([k,n])=>new Option(n,k)));
+    gambarBn()}).catch(()=>{BN.p=null;m.className='msg e';m.textContent='Data bantuan gagal dimuat. Buka tab ini lagi untuk mencoba ulang.'})}
+/*bantuan-murni*/
+/* baris API + saring -> per BPBD {wilayah, belum, angka{barang:jumlah}, lain{"barang|satuan":jumlah}}; "Semua tahun" menjumlah kedua tahun */
+function ringkasBn(baris,prov,tahun,belum){const per=new Map();
+  for(const b of baris){if(prov&&b.prov!==prov)continue;if(tahun&&String(b.tahun)!==tahun)continue;
+    const k=b.prov+'|'+b.wilayah;let x=per.get(k);if(!x)per.set(k,x={wilayah:b.wilayah,provinsi:b.provinsi,tingkat:b.tingkat,belum:false,angka:{},lain:{}});
+    if(b.belum_usulkan)x.belum=true;
+    if(BN_KOL.includes(b.barang))x.angka[b.barang]=(x.angka[b.barang]||0)+b.jumlah;
+    else{const q=b.barang+'|'+b.satuan;x.lain[q]=(x.lain[q]||0)+b.jumlah}}
+  let L=[...per.values()];if(belum)L=L.filter(x=>x.belum);
+  return L.sort((a,b)=>a.provinsi.localeCompare(b.provinsi,'id')||(a.tingkat===b.tingkat?0:a.tingkat==='prov'?-1:1)||a.wilayah.localeCompare(b.wilayah,'id'))}
+const teksLainBn=(lain)=>Object.entries(lain).map(([q,j])=>{const [b,s]=q.split('|');return b+' '+N(j)+(s?' '+s:'')}).join(', ');
+/*akhir-bantuan-murni*/
+function gambarBn(){if(!BN.m)return;const L=ringkasBn(BN.m,$('bn_prov').value,$('bn_tahun').value,$('bn_belum').checked),tb=$('bn_t');
+  ubin($('bn_u'),[['BPBD',N(L.length)],['Belum mengusulkan',N(L.filter(x=>x.belum).length)]]);
+  if(!L.length){const tr=document.createElement('tr'),x=td('Tidak ada BPBD untuk pilihan ini.','a');x.colSpan=9;tr.append(x);tb.replaceChildren(tr);return}
+  const jml=Object.fromEntries(BN_KOL.map(k=>[k,0]));
+  const baris=L.map(r=>{const tr=document.createElement('tr');BN_KOL.forEach(k=>{jml[k]+=r.angka[k]||0});
+    const st=document.createElement('span');st.className='km-pil';st.textContent=r.belum?'Belum mengusulkan':'Sudah mengusulkan';const c=td('','a');c.append(st);
+    tr.append(td(r.wilayah),c,td(teksLainBn(r.lain)||'–','t'),...BN_KOL.map(k=>td(r.angka[k]?N(r.angka[k]):'–','n')));return tr});
+  const tot=document.createElement('tr');tot.className='tot';tot.append(td('Total'),td(''),td(''),...BN_KOL.map(k=>td(N(jml[k]),'n')));
+  tb.replaceChildren(...baris,tot)}
+['bn_prov','bn_tahun','bn_belum'].forEach(i=>$(i).onchange=()=>nanti(gambarBn));
+
+/* 🧪 isi / 🧹 hapus data dummy (Super Admin; server menolak selain itu). Sesudahnya semua tab dimuat ulang, termasuk Bantuan. */
+$('dummy').onclick=(e)=>{const b=e.target.closest('[data-dummy]');if(!b)return;const aksi=b.dataset.dummy;if(aksi==='hapus'&&!confirm('Hapus SEMUA data dummy LogPal? Data asli tidak tersentuh.'))return;
+  const m=$('dummyMsg');m.textContent='Memproses.';nanti(async()=>{const r=await api('dummy',{aksi});
+    if(!r.ok){m.textContent=galat(r,'Gagal memproses data dummy.');return}
+    BN.m=null;await muat();if(!$('bn_t').closest('[data-tab]').hidden)bukaBantuan();m.textContent=aksi==='isi'?'Data dummy terisi.':'Data dummy terhapus.'})};
 
 
 muat();

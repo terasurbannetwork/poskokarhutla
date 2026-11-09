@@ -1108,6 +1108,7 @@
     "table op_gerak_hasil": "migrasi 0106 idempoten",
     "GET /api/instansi/logpal/data": "akses: akun tanpa hak ditolak",
     "GET /instansi/logpal": "halaman /instansi/logpal wajib login",
+    "GET /api/instansi/logpal/bantuan": "bantuan: akses per peran",
     "GET /api/instansi/logpal/statis": "halaman /instansi/logpal wajib login",
     "POST /api/instansi/logpal/gudang": "kepemilikan: BPBD A tidak bisa menulis gudang BPBD B",
     "POST /api/instansi/logpal/barang/:id": "kepemilikan: BPBD A tidak bisa menulis gudang BPBD B",
@@ -1127,6 +1128,7 @@
     "table logpal_tahap": "skema logpal: migrasi idempoten",
     "trigger logpal_permintaan_alur": "skema logpal: migrasi idempoten",
     "table logpal_statis": "impor: skrip menulis SQL idempoten",
+    "table logpal_bantuan": "bantuan: CHECK menolak jumlah 0",
     "table logpal_statis_potong": "statis besar: potongan berurutan dirakit",
     "table logpal_kebutuhan": "staf BNPB: mengelola gudang BNPB, pemilik dipaksa BNPB, kebutuhan hanya untuk staf"
   },

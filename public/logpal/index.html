@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="/inti/kepala.css">
 <link rel="stylesheet" href="/inti/tema.css">
 <link rel="stylesheet" href="/inti/gaya.css">
-<link rel="stylesheet" href="/logpal/logpal.css?v=1">
+<link rel="stylesheet" href="/logpal/logpal.css?v=2">
 <script src="/vendor/d3/d3.min.js?v=1"></script>
 <script src="/vendor/qrcode/qrcode.min.js?v=1"></script>
 </head>
@@ -30,7 +30,7 @@
   <header class="bar"><div><h1>Inventori LogPal</h1><p class="n" id="st" role="status">Menyambung ke data gudang.</p></div>
     <label id="bilahG" hidden style="min-width:min(100%,280px)">Gudang<select id="pg"></select></label></header>
   <div class="seg" role="group" aria-label="Halaman">
-    <button data-h="stok" aria-pressed="true">Stok</button><button data-h="standar" aria-pressed="false">Standar minimal</button><button data-h="kebutuhan" aria-pressed="false">Kebutuhan</button><button data-h="jaringan" aria-pressed="false">Jaringan logistik</button><button data-h="kirim" aria-pressed="false">Pengantaran</button><button data-h="permintaan" aria-pressed="false">Permintaan bantuan</button><button data-h="input" aria-pressed="false">Input stok</button><button data-h="mutasi" aria-pressed="false">Mutasi barang</button><button data-h="opname" aria-pressed="false">Stok opname</button><button data-h="laporan" aria-pressed="false">Pembuat laporan</button><button data-h="audit" aria-pressed="false">Kesiapan audit</button>
+    <button data-h="stok" aria-pressed="true">Stok</button><button data-h="standar" aria-pressed="false">Standar minimal</button><button data-h="kebutuhan" aria-pressed="false">Kebutuhan</button><button data-h="jaringan" aria-pressed="false">Jaringan logistik</button><button data-h="kirim" aria-pressed="false">Pengantaran</button><button data-h="bantuan" aria-pressed="false">Bantuan</button><button data-h="permintaan" aria-pressed="false">Permintaan bantuan</button><button data-h="input" aria-pressed="false">Input stok</button><button data-h="mutasi" aria-pressed="false">Mutasi barang</button><button data-h="opname" aria-pressed="false">Stok opname</button><button data-h="laporan" aria-pressed="false">Pembuat laporan</button><button data-h="audit" aria-pressed="false">Kesiapan audit</button>
   </div>
   <div id="mon"><div class="km">
   <header>
@@ -217,6 +217,21 @@
     </section>
   </div>
 
+  <div class="km-hal" data-tab="bantuan" hidden>
+    <section class="km-kartu" id="kartu-bantuan">
+      <h2>Bantuan peralatan dan logistik per BPBD</h2>
+      <p>Daftar bantuan per BPBD per tahun, terpisah dari data gudang. Belum diketahui apakah barangnya sudah sampai di daerah.</p>
+      <div class="km-kontrol">
+        <select id="bn_prov" aria-label="Provinsi"><option value="">Semua provinsi</option></select>
+        <select id="bn_tahun" aria-label="Tahun"><option value="">Semua tahun</option><option value="2025">2025</option><option value="2026">2026</option></select>
+        <label class="km-cek"><input type="checkbox" id="bn_belum">Belum mengusulkan</label>
+      </div>
+      <p class="msg" id="bn_m" role="status"></p>
+      <div class="km-ubin" id="bn_u"></div>
+      <div class="km-gulir"><table><thead><tr><th>Wilayah</th><th>Status usulan</th><th>Kendaraan dan peralatan</th><th>Selimut</th><th>Matras</th><th>Kasur Lipat</th><th>Terpal</th><th>Makanan Siap Saji</th><th>Family Kit</th></tr></thead><tbody id="bn_t"></tbody></table></div>
+    </section>
+  </div>
+
   <div class="km-hal" data-tab="kirim" hidden>
     <section class="km-kartu" id="kr_model">
       <h2>Model pengantaran logistik</h2>
@@ -367,6 +382,6 @@
 </div>
 <div id="dummy" class="dummy" hidden><button type="button" data-dummy="isi" title="Isi data dummy untuk halaman ini" aria-label="Isi data dummy">&#129514;</button><button type="button" data-dummy="hapus" title="Hapus semua data dummy" aria-label="Hapus data dummy">&#129529;</button><span id="dummyMsg" role="status"></span></div>
 <script type="module" src="/inti/kepala.js"></script>
-<script src="/logpal/logpal.js?v=1"></script>
+<script src="/logpal/logpal.js?v=2"></script>
 </body>
 </html>
