@@ -1,5 +1,5 @@
---- /Users/priyankaalfatehan28/.claude/skills/ppt-konsultan/bnpb/scripts/deck.py.bak-091126k	2026-11-09 14:00:49
-+++ /Users/priyankaalfatehan28/.claude/skills/ppt-konsultan/bnpb/scripts/deck.py	2026-11-09 14:00:49
+--- ~/.claude/skills/ppt-konsultan/bnpb/scripts/deck.py.bak-091126k	2026-11-09 14:00:49
++++ ~/.claude/skills/ppt-konsultan/bnpb/scripts/deck.py	2026-11-09 14:00:49
 @@ -1774,6 +1774,9 @@
          if cut and not self.data_harian():   # selera 5.09 dan pemilik 1 Nov 2026 ("Gausah ada cut off gini"): pil hanya di deck data harian
              cut = None
