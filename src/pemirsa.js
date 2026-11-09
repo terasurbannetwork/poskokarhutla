@@ -9,8 +9,8 @@ import {tx, superOK} from "./posko.js";
 import {sandiBaru} from "./staf.js";
 
 const HARI = 24 * 3600e3, SESI_UMUR = 30 * HARI, COOKIE = "sesi_pemirsa";
-/* daftar tetap: sama dengan trigger pemirsa_tab_sah (0036, dibuat ulang 0077, 0099, 0100) dan tab menu atas public/index.html (dijaga pemirsa.test.mjs) */
-export const TAB = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", dampak: "Dampak", sim: "Simulasi", monitor: "Monitor", foto: "Foto"};
+/* daftar tetap: sama dengan trigger pemirsa_tab_sah (0036, dibuat ulang 0077, 0099, 0100, 0116) dan tab menu atas public/index.html (dijaga pemirsa.test.mjs) */
+export const TAB = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", dampak: "Dampak", sim: "Simulasi", monitor: "Monitor", foto: "Foto", pusdalops: "Pusdalops"};
 const SESI = new WeakMap();   // permintaan -> baris pemirsa (gerbang dan layaniHTML membaca sekali)
 
 const tabelBelum = e => /no such table: pemirsa/i.test(String(e?.message || e));
@@ -31,15 +31,21 @@ export async function pemirsaSesi(env, req, kini = Date.now()) {
   SESI.set(req, p);
   return p;
 }
+/* Tab 'pusdalops' (9 Nov 2026) = MELIHAT semua menu Pusdalops (public/bnpb/menu_pusdalops.js), baca saja: halaman menu di bawah + "/?operasi" (peta utama, tab Operasi lapangan).
+   Bukan tab peta, jadi tujuan alihnya /bnpb/dalops. Halaman /admin/* menjaga dirinya sendiri (halamanAdmin/kerangka lewat stafSesi); API: pemirsaLihat di src/staf.js. */
+const HALAMAN_PUSDALOPS = /^\/(bnpb\/(dalops|logbook|bahan|saham|dokumen|operasi|siaga|perencanaan)|laporan-bnpb|daftar-kontak)\/?$/;
+const awalTab = t => t === "pusdalops" ? "/bnpb/dalops" : "/" + t;
 /* murni: halaman yang dibuka pemirsa -> null (boleh) atau alamat tab pertamanya. /kompleks bagian dari Insight; /sim/K0001 = tab sim.
    Banjir ikut tab yang sama (pemilik 28 Okt 2026): /banjir/ = peta, /banjir/<tab> = tab itu, selain itu ke /banjir/<tab pertama>. */
-export function arahPemirsa(p, pathname) {
+export function arahPemirsa(p, pathname, search = "") {
+  if (p.tab.includes("pusdalops") && (HALAMAN_PUSDALOPS.test(pathname) || pathname === "/" && /(^|[?&])operasi(=|&|$)/.test(search))) return null;
   const s = pathname.split("/"), banjir = s[1] === "banjir";
   const seg = (banjir ? s[2] || "peta" : s[1]) || "", tab = seg === "kompleks" ? "insight" : seg;
-  /* Monitor tidak punya tab di /banjir/: pemirsa ber-tab monitor melihat banjir lewat /monitor?bencana=banjir (migrasi 0077) */
-  const pb = banjir ? p.tab.find(x => x !== "monitor") : p.tab[0], ke = pb ? (banjir ? "/banjir/" : "/") + pb : "/monitor?bencana=banjir";
+  /* Monitor tidak punya tab di /banjir/: pemirsa ber-tab monitor melihat banjir lewat /monitor?bencana=banjir (migrasi 0077); tab pusdalops juga bukan tab banjir */
+  const pb = banjir ? p.tab.find(x => x !== "monitor" && x !== "pusdalops") : p.tab[0];
+  const ke = pb ? (banjir ? "/banjir/" + pb : awalTab(pb)) : p.tab.includes("monitor") ? "/monitor?bencana=banjir" : "/bnpb/dalops";
   if (banjir && tab === "monitor") return p.tab.includes("monitor") ? "/monitor?bencana=banjir" : ke;
-  return p.tab.includes(tab) ? null : ke;
+  return tab !== "pusdalops" && p.tab.includes(tab) ? null : ke;
 }
 
 /* dipanggil form /admin/masuk sesudah akun admin gagal: {token, tab} atau null. Batas laju: cekLaju per IP di form masuk. */
@@ -62,7 +68,7 @@ export async function hapusSesiPemirsa(env, req) {
 /* ================================================================ pengelolaan oleh Super Admin */
 const tolakSuper = () => gagal(403, "akun pemirsa hanya dikelola Super Admin");
 const slug = s => String(s).normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
-/* murni: larik tab dari isian -> larik atau null */
+/* murni: larik tab dari isian -> larik atau null. Paling banyak 7: sama dengan CHECK json_array_length tabel 0036 */
 export const cekTab = v => Array.isArray(v) && v.length >= 1 && v.length <= 7 && v.every(x => typeof x === "string" && Object.hasOwn(TAB, x)) && new Set(v).size === v.length ? v : null;
 /* murni: sandi awal pilihan Super Admin (opsional; kosong = acak). 8 sampai 64 karakter, tanpa spasi di ujung (form masuk tidak memangkas sandi). */
 export const cekSandiAwal = v => v == null || v === "" ? {v: undefined} : typeof v === "string" && v.length >= 8 && v.length <= 64 && v === v.trim() ? {v}

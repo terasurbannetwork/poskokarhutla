@@ -12,6 +12,7 @@ import {tx, modOK, superOK, RE_EMAIL} from "./posko.js";
 import {PROV, sandiAcak} from "./instansi.js";
 import {aksesStaf, halamanAkun} from "./admin_halaman.js";
 import {halamanAdmin} from "./statistik.js";
+import {pemirsaSesi} from "./pemirsa.js";   // siklus dengan pemirsa.js (sandiBaru): hanya fungsi dipakai saat dijalankan, bukan saat evaluasi modul
 import {Galat, pelakuSistem as SIS, pelakuAdmin as ADM, pelakuDiri, sesiDariToken, stafUntukMasuk, stafById, stafAdaNip, stafDaftar, hitungLaju, stmtLaju, stmtSesiBaru, stmtSesiBasi, stmtSesiLain, stmtSesiSemua,
   stmtSandi, stmtCabut, stmtPeran, stmtStafBaru, stmtJejak, tulisJejak, tulisSistem, hapusSesiToken, bersihkanSesi} from "./hak.js";
 
@@ -41,8 +42,32 @@ async function muatSesi(env, req, kini) {
 export const hanyaDirektori = peran => !!peran?.length && peran.every(p => p === "direktori");
 export async function stafSesi(env, req, kini = Date.now()) {
   const s = await stafSesiSemua(env, req, kini);
-  return s && !hanyaDirektori(s.peran) ? s : null;
+  return s ? hanyaDirektori(s.peran) ? null : s : pemirsaSintetis(env, req);
 }
+/* ================================================================ akun pemirsa bertab 'pusdalops' (9 Nov 2026): MELIHAT menu Pusdalops, baca saja
+   Daftar izin SATU konstanta, per rute (tanpa prefiks longgar). Lolos hanya bila metode GET/HEAD DAN path cocok DAN sesi pemirsa aktif memuat tab 'pusdalops'.
+   TIDAK PERNAH masuk: POST/PUT/DELETE, /dummy, /api/wa/masuk, /api/wa/berkas (bahan WA mentah), jejak Meja Pantau (nama pelaku), foto/jejak operasi, vektor wajah, secret, token, nomor HP. */
+export const IZIN_PEMIRSA_PUSDALOPS = [
+  /^\/admin\/(pantau|laporan-karhutla|omc)$/,   // halaman (kerangka tanpa data); datanya lewat rute di bawah
+  /^\/api\/dalops\/(banjir|longsor|karhutla|gempa|cuaca|kekeringan)$/,
+  /^\/api\/logbook\/(buka|hari|sk\/aktif)$/, /^\/api\/logbook\/turunan\/(rapor_bpbd|rekomendasi|penanganan|serupa_\d{2})$/, /^\/api\/logbook\/kejadian\/[0-9a-f]{16}\/sk$/,
+  /^\/api\/pusdalops\/(berantai|lapsus|medsos|medsos\/jeda|pemulihan|pemulihan\/ringkasan|rollcall|rollcall\/ringkasan)$/, /^\/api\/pusdalops\/(lapsus|pemulihan|rollcall)\/[0-9a-f]{16}$/,
+  /^\/api\/operasi\/(peta|monitor|nilai)$/,
+  /^\/api\/laporan-bnpb$/,
+  /^\/api\/saham\/(konsesi|cari|dividen)$/, /^\/api\/saham\/[A-Za-z0-9.-]{1,12}\/(info|transaksi|grafik)$/,
+  /^\/api\/pantau$/, /^\/api\/omc\/admin$/,
+  /^\/api\/laporan-karhutla\/(hari|format-khusus|kiriman|snapshot\/[0-9-]{10})$/,
+];
+export async function pemirsaLihat(env, req) {
+  if (req.method !== "GET" && req.method !== "HEAD") return null;
+  if (!IZIN_PEMIRSA_PUSDALOPS.some(re => re.test(new URL(req.url).pathname))) return null;
+  const p = await pemirsaSesi(env, req);
+  if (!p?.tab.includes("pusdalops")) return null;
+  SESI.set(req, {...p, id: "pemirsa:" + p.id, peran: ["operator_cc"], wilayah: [], dummy: 0});   // operator_cc = baca saja, butir keselamatan regu (TERTUTUP_OPERATOR, src/pantau.js) tersaring; nasional, bukan dummy: dalamWilayahStaf/stafNyata membacanya
+  return p;
+}
+/* sesi staf semu untuk gerbang yang membaca identitas lewat stafSesi (Meja Pantau, Laporan Karhutla, kerangka halaman admin): peran 'operator_cc' = baca saja di semua gerbang itu */
+const pemirsaSintetis = async (env, req) => { const p = await pemirsaLihat(env, req); return p && SESI.get(req); };
 /* sama dengan stafSesi tetapi termasuk staf berperan 'direktori' saja: dipakai stafPeran (yang memeriksa peran eksplisit) dan Direktori */
 export async function stafSesiSemua(env, req, kini = Date.now()) {
   if (!tokenDari(req)) return null;
@@ -62,7 +87,10 @@ export async function stafPeran(env, req, peran) {
   return s && peran.some(p => s.peran.includes(p)) ? "staf:" + s.id : null;
 }
 export async function stafOK(env, req, peran) { return (await adminOK(env, req)) || stafPeran(env, req, peran); }
-export async function modAtauStaf(env, req, peran) { return (await modOK(env, req)) || stafPeran(env, req, peran); }
+export async function modAtauStaf(env, req, peran) {
+  const p = (await modOK(env, req)) || await stafPeran(env, req, peran) || (peran.includes("pimpinan") && await pemirsaLihat(env, req));   // pemirsa = pimpinan baca saja: pemeriksaan peran tulis (mis. boleh_tulis OMC, ["tmc"]) tidak lolos
+  return p && typeof p === "object" ? "pemirsa:" + p.id : p;
+}
 /* aksi tulis lewat sesi staf berwilayah: provinsi sasaran harus di wilayahnya (admin dan staf nasional: selalu boleh) */
 export function dalamWilayahStaf(req, provs) {
   const s = SESI.get(req);

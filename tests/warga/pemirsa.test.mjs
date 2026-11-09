@@ -36,11 +36,11 @@ uji("pemirsa: migrasi 0036 idempoten dan trigger menolak tab asing atau berulang
   assert.equal(await n("pemirsa"), 0);
 });
 
-uji("pemirsa: daftar tab sama dengan trigger terakhir (0100) dan tab menu public/index.html", () => {
+uji("pemirsa: daftar tab sama dengan trigger terakhir (0116) dan tab menu public/index.html", () => {
   const diTrigger = TRIGGER_TAB.match(/NOT IN \(([^)]+)\)/)[1].split(",").map(x => x.trim().replace(/'/g, ""));
   assert.deepEqual(diTrigger, Object.keys(TAB));
   const idx = readFileSync(path.join(AKAR, "public/index.html"), "utf8"), tabs = idx.match(/const TABS = (\[.+\]);/)[1];
-  for (const k of Object.keys(TAB)) assert.ok(tabs.includes(`["${k}", "${TAB[k]}"]`), `tab ${k} ada di index.html dengan label ${TAB[k]}`);
+  for (const k of Object.keys(TAB).filter(k => k !== "pusdalops")) assert.ok(tabs.includes(`["${k}", "${TAB[k]}"]`), `tab ${k} ada di index.html dengan label ${TAB[k]}`);
   assert.ok(!("dinding" in TAB) && cekTab(["dinding"]) === null && cekTab(["peta", "dinding"]) === null, "tab dinding dibuang");
   assert.equal(arahPemirsa({tab: ["peta"]}, "/command-center/dinding"), "/peta", "bukan halaman khusus lagi: diperlakukan seperti halaman lain di luar tabnya");
   assert.equal(cekTab(["berita", "berita"]), null); assert.equal(cekTab([]), null); assert.deepEqual(cekTab(["foto"]), ["foto"]);

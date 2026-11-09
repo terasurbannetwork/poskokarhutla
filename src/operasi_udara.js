@@ -4,7 +4,7 @@
    Nama kru tidak disimpan. OP-2: catatOperasi() dipanggil gerbang WA (src/wa.js) sesudah wa_masuk tersimpan; pipeline renlap menyusul di OP-4. */
 import {json, gagal, bacaBody, sha, adminOK} from "./worker.js";
 import {tglSah, wib, superOK} from "./posko.js";
-import {stafPeran, stafNyata} from "./staf.js";
+import {stafPeran, stafNyata, pemirsaLihat} from "./staf.js";
 import {urai, tanggalOperasi} from "./operasi_wa.js";
 import {hitungNilai, menitRespons, median} from "./operasi_nilai.js";
 import {gunaAksi, lengkapi} from "./operasi_hasil.js";
@@ -18,7 +18,7 @@ const bungkus = fn => async (env, req, ...sisa) => {
 };
 
 async function peta(env, req, url, kini) {
-  if (!await adminOK(env, req, kini) && !await stafPeran(env, req, PERAN_BACA)) return gagal(403, "data operasi lapangan hanya untuk akun centurisk97, staf berperan, atau moderator");
+  if (!await adminOK(env, req, kini) && !await stafPeran(env, req, PERAN_BACA) && !await pemirsaLihat(env, req)) return gagal(403, "data operasi lapangan hanya untuk akun centurisk97, staf berperan, atau moderator");
   const t = url.searchParams.get("tanggal") ?? wib(kini);
   if (!tglSah(t)) return gagal(400, "tanggal harus YYYY-MM-DD yang sah");
   const dum = stafNyata(req) ? "AND dummy = 0" : "";
@@ -156,7 +156,7 @@ async function renlapMesin(env, req, url, kini) {
 
 /* GET /api/operasi/nilai: hak baca sama dengan peta (akun centurisk97, staf PERAN_BACA, moderator), staf nyata tanpa dummy. Satu kueri per tabel; rentang maks 31 hari (kuota baca D1 Free). */
 async function nilai(env, req, url) {
-  if (!await adminOK(env, req) && !await stafPeran(env, req, PERAN_BACA)) return gagal(403, "nilai operasi lapangan hanya untuk akun centurisk97, staf berperan, atau moderator");
+  if (!await adminOK(env, req) && !await stafPeran(env, req, PERAN_BACA) && !await pemirsaLihat(env, req)) return gagal(403, "nilai operasi lapangan hanya untuk akun centurisk97, staf berperan, atau moderator");
   const r = rentang(url, 31); if (r instanceof Response) return r;
   const dum = stafNyata(req), A = [r.dari, r.sampai];
   const Q = (sql, ...b) => env.DB.prepare(sql).bind(...b).all().then(x => x.results);
@@ -198,7 +198,7 @@ function hitungK({aks, status, tem, menitTerbang}) {
 /* GET /api/operasi/monitor?dari=&sampai= (default hari ini WIB, maks 31 hari). Hak baca = nilai/peta. Aksi = gerak berangkat (sortie atau laporan drop) bermisi wb/patroli/omc;
    hasil hanya dinilai untuk wb (padam/masih_api dari cron FIRMS, tanpa baris hasil: menunggu bila koordinat+jam ada), patroli dan omc = tak_dinilai. */
 async function monitor(env, req, url, kini) {
-  if (!await adminOK(env, req) && !await stafPeran(env, req, PERAN_BACA)) return gagal(403, "monitor operasi udara hanya untuk akun centurisk97, staf berperan, atau moderator");
+  if (!await adminOK(env, req) && !await stafPeran(env, req, PERAN_BACA) && !await pemirsaLihat(env, req)) return gagal(403, "monitor operasi udara hanya untuk akun centurisk97, staf berperan, atau moderator");
   const u = new URL(url); for (const k of ["dari", "sampai"]) if (!u.searchParams.has(k)) u.searchParams.set(k, wib(kini));
   const r = rentang(u, 31); if (r instanceof Response) return r;
   const nd = stafNyata(req) ? "AND g.dummy = 0" : "", A = [r.dari, r.sampai], Q = (sql, ...b) => env.DB.prepare(sql).bind(...b).all().then(x => x.results);
@@ -227,7 +227,7 @@ async function monitor(env, req, url, kini) {
 /* GET /api/operasi/jejak?tanggal= (bawaan hari ini WIB): jejak ADS-B per armada kita. adsb_posisi (0086) tak punya registrasi: dicocokkan lewat callsign
    (registrasi tanpa strip = flight). posisi_hari_ini = semua baris hari itu (bukti ADS-B hidup walau tak ada armada kita). Tabel belum ada = aktif:false. */
 async function jejak(env, req, url, kini) {
-  if (!await adminOK(env, req) && !await stafPeran(env, req, PERAN_BACA)) return gagal(403, "jejak ADS-B hanya untuk akun centurisk97, staf berperan, atau moderator");
+  if (!await adminOK(env, req) && !await stafPeran(env, req, PERAN_BACA) && !await pemirsaLihat(env, req)) return gagal(403, "jejak ADS-B hanya untuk akun centurisk97, staf berperan, atau moderator");
   const tanggal = url.searchParams.get("tanggal") ?? wib(kini);
   if (!tglSah(tanggal)) return gagal(400, "tanggal harus YYYY-MM-DD yang sah");
   const awal = Date.parse(tanggal + "T00:00:00Z") - 7 * 36e5, akhir = awal + HARI, nd = stafNyata(req) ? "AND a.dummy = 0" : "";
@@ -248,7 +248,7 @@ async function jejak(env, req, url, kini) {
 
 /* GET /api/operasi/foto/:id -> byte foto dari R2. Hak baca sama; privat (data operasional). */
 async function fotoBerkas(env, req, url, kini, ctx, id) {
-  if (!await adminOK(env, req) && !await stafPeran(env, req, PERAN_BACA)) return gagal(403, "foto operasi hanya untuk akun centurisk97, staf berperan, atau moderator");
+  if (!await adminOK(env, req) && !await stafPeran(env, req, PERAN_BACA) && !await pemirsaLihat(env, req)) return gagal(403, "foto operasi hanya untuk akun centurisk97, staf berperan, atau moderator");
   if (!env.MEDIA) return gagal(503, "penyimpanan belum aktif");
   const r = await env.DB.prepare("SELECT w.berkas, w.tipe FROM op_foto f JOIN wa_masuk w ON w.id = f.wa_id WHERE f.id = ?").bind(Number(id)).first();
   const o = r?.berkas && await env.MEDIA.get(r.berkas); if (!o) return gagal(404, "foto tidak ada");

@@ -762,7 +762,7 @@ async function layaniHTML(req, env, ctx, url) {
      pantau.terasurban.com tanpa atribut */
   const situsW = situsCenturisk(url.hostname);
   /* akun pemirsa: tab yang boleh dilihat ditulis di <html data-pemirsa-tab>, public/index.html menyembunyikan tab lain (admin tidak dibatasi) */
-  const pm = await pemirsaSesi(env, req), pmTab = pm && !await adminOK(env, req) ? pm.tab.join(",") : null;
+  const pm = await pemirsaSesi(env, req), pmTab = pm && !await adminOK(env, req) ? [...new Set(pm.tab.flatMap(t => t === "pusdalops" ? ["peta", "operasi"] : [t]))].join(",") : null;   // pusdalops = peta utama + tab Operasi lapangan (/?operasi); index.html tidak perlu tahu tab ini
   /* merek: semua berkas sudah bertulisan "Centurisk97" di sumbernya (pemilik, 26 Okt 2026), jadi tidak ada penulisan ulang merek per alamat */
   const keluaran = new HTMLRewriter().on("html", {element: el => {
     if (a) { el.setAttribute("data-pb-online", String(a.online)); el.setAttribute("data-pb-tampil", String(a.tampilan)); }
@@ -893,7 +893,7 @@ const W = {
     if (!ujiOK && hostTerkunci(url.hostname) && (req.method === "GET" || req.method === "HEAD") && halamanTerkunci(url) && !await adminOK(env, req)
       && !await stafPeran(env, req, /^\/direktori\/?$/.test(url.pathname) ? ["operator_cc", ...P_AKADEMISI] : MENU_PUSDALOPS.test(url.pathname) ? ["operator_cc", ...PERAN_DALOPS] : ["operator_cc"])) {   // operator command center (sesi staf) melihat semua halaman terkunci, GET/HEAD saja; staf berperan Direktori (P_AKADEMISI) membuka /direktori saja
       /* akun pemirsa (src/pemirsa.js): hanya tab miliknya; halaman lain dialihkan ke tab pertamanya */
-      const p = await pemirsaSesi(env, req), ke = p ? arahPemirsa(p, url.pathname) : "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search);
+      const p = await pemirsaSesi(env, req), ke = p ? arahPemirsa(p, url.pathname, url.search) : "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search);
       if (ke) return new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store"}});
     }
     const r = await rute(env, req, url, ctx); if (r) return r;
