@@ -118,6 +118,12 @@ masing-masing (urutan HOTSPOT, FIRESPOT, LUAS TERBAKAR, BELUM PADAM, sama dengan
   `tambah_peta.py`, `peta.mjs`, `bnpb.py` (pil, slide operasi), `ikon.mjs` (ikon Pemda; ikon FIRESPOT disalin dari deck 25 Okt), `cek6.py` (gerbang: tiap sel tabel harus cocok angka.json).
 - Provinsi 6 teratas tanpa baris di templat (selain 62,16,63,15,61,93,72,64) memakai `penanganan/logo/<kode>.png` bila ada, kalau tidak lambang layar `public/lambang/provinsi/<kode>.png` (semua 38 provinsi tersedia); baris disalin dari baris Kaltim.
 
+### Halaman perusahaan dan konsesi (hanya deck 081126)
+
+Halaman top 10 perusahaan, pemegang saham asing, dan lampiran 99 perusahaan dibuat khusus untuk deck 8 Nov 2026 (`../satelit-2026-11-08/perusahaan.py`). Pemilik 9 Nov: untuk
+tanggal lain seperti biasa. Saat menyalin `bingkai.py` 8 Nov ke hari baru, buang `import perusahaan`, bagian Perusahaan, dan halaman 4 ke atas di `susun`. Gerbang:
+`tests/agen/gerbang-perusahaan-sekali.test.mjs`.
+
 ### Lampiran kab/kota (opsional, tidak dipasang bawaan)
 
 Lampiran "Rincian Kabupaten/Kota Enam Provinsi" dibuat 5 Nov 2026 atas permintaan pemilik dan Bang Ghozi, karena angka per provinsi

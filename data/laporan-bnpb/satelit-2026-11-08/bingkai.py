@@ -9,7 +9,7 @@ import datetime as dt, os, re, shutil, sys, zipfile
 S = os.path.dirname(os.path.abspath(__file__)); G = os.path.normpath(os.path.join(S, '..', 'generator')); sys.path.insert(0, G); sys.path.insert(0, S)
 import lewat_deck, pdf
 T = dt.date(2026, 11, 8)
-nama = os.path.join(S, 'Laporan Penanganan Pengendalian Karhutla 081126 (rev3).pptx')   # firespot situs terbitan 18.26 WIB (data s.d. 15.41); rev2: logo KRIS tiap slide; rev3 (9 Nov): + 2 halaman perusahaan
+nama = os.path.join(S, 'Laporan Penanganan Pengendalian Karhutla 081126 (rev4).pptx')   # firespot situs terbitan 18.26 WIB (data s.d. 15.41); rev2: logo KRIS tiap slide; rev3 (9 Nov): + 2 halaman perusahaan; rev4: angka s.d. 9 Nov + lampiran 99 perusahaan
 gen = os.path.join(S, 'Laporan Penanganan Pengendalian Karhutla 081126 (generator).pptx')
 if not os.path.exists(gen):   # simpan hasil jalan.py sekali; bingkai ulang selalu dari berkas generator ini
     shutil.copyfile(nama, gen)
@@ -30,12 +30,12 @@ with zipfile.ZipFile(gen) as zi, zipfile.ZipFile(nama, 'w', zipfile.ZIP_DEFLATED
         zo.writestr(it, b)
 import perusahaan; perusahaan.tambah(nama)   # 9 Nov pemilik: kartu Perusahaan + Modal asing tab Insight jadi halaman 4 dan 5
 SG = 'GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 8 Nov 2026 18.00 WIB'
-SP = 'GIS BNPB, NASA FIRMS VIIRS 375 m, poligon konsesi GFW/Trase; data sistem 9 Nov 2026 07.20 WIB'
+SP = 'GIS BNPB, NASA FIRMS VIIRS 375 m, poligon konsesi GFW/Trase; 1 Jan s.d. 9 Nov 2026 07.20 WIB'
 lewat_deck.bingkai(nama, 'penanganan', 'Laporan Penanganan Pengendalian Karhutla', 'Cut-off data 8 Nov 2026, 18.00 WIB', T, pdf=False,
     tanpa_kepada='sama dengan laporan harian 2 Nov 2026 (pola tetap 3-5 Nov): laporan dipresentasikan Kepala BNPB sendiri',
     bagian=[{'judul': 'Situasi Hotspot dan Firespot', 'label': 'Situasi', 'halaman_tetap': [1, 2]},
             {'judul': 'Operasi Penanganan', 'label': 'Operasi', 'halaman_tetap': [3]},   # 6 Nov 18.4x: teks WA satgas + gelar pesawat ditempel pemilik
-            {'judul': 'Perusahaan Terindikasi', 'label': 'Perusahaan', 'halaman_tetap': [4, 5]}],
+            {'judul': 'Perusahaan Terindikasi', 'label': 'Perusahaan', 'halaman_tetap': list(range(4, 11))}],
     spek_tambah={'panel_sisi': 'gelap', 'skala_logo_bnpb': 1.0},   # pemilik 2 Nov 17.4x: "logo bnpb terlalu besar" (bawaan mesin 1,3x)
     susun=[   # pemilik 3 Nov: laporan karhutla tanpa sampul dan penutup (lewat_deck juga membuangnya untuk format penanganan)
            {'halaman': 1, 'bagian': 1, 'sumber': SG},
@@ -46,6 +46,7 @@ lewat_deck.bingkai(nama, 'penanganan', 'Laporan Penanganan Pengendalian Karhutla
            {'halaman': 3, 'bagian': 2, 'sumber': 'Laporan Upaya Pemadaman Satgas Karhutla, 8 Nov 2026 (kegiatan 7 Nov 2026)'},
            {'halaman': 4, 'bagian': 3, 'sumber': SP},
            {'halaman': 5, 'bagian': 3, 'sumber': SP},
+           *[{'halaman': n, 'bagian': 3, 'sumber': SP} for n in range(6, 11)],   # lampiran 99 perusahaan, 20 baris per halaman
            ])   # 6 Nov 19.xx pemilik: "lampirannya hapus aja"; cara membuatnya dicatat di generator/README.md (Lampiran kab/kota)
 
 print('mesin ok', nama)
