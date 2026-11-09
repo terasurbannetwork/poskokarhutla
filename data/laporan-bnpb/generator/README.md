@@ -99,7 +99,8 @@ hari laporan; kolom D-2, D-1, D dengan D = hari laporan, angka D sementara s.d. 
 kalimat Firespot dan "Angka D sementara" dibuang pemilik 27 Okt 2026); tabel punya **empat** kelompok berbintang, tiga hari
 masing-masing (urutan HOTSPOT, FIRESPOT, LUAS TERBAKAR, BELUM PADAM, sama dengan slide peta); halaman "Operasi Penanganan Karhutla"
 **dibuang** (sumbernya teks WA satgas, tidak ada untuk hari lampau), kecuali teks WA satgas hari itu diberikan lewat `--operasi wa.txt`
-(27 Okt 2026; contoh `../satelit-2026-10-27/wa-satgas.txt`).
+(27 Okt 2026; contoh `../satelit-2026-10-27/wa-satgas.txt`). Tanpa pil CUT OFF DATA sejak 9 Nov 2026: jam data cukup di kaki Sumber
+(`lewat_deck.buang_pil_cutoff`, gerbang `tests/agen/gerbang-penanganan-tanpa-pil.test.mjs`).
 
     cd data/laporan-bnpb/generator
     python3 penanganan.py --tanggal 2026-10-25                      # --jam 17:00 bawaan, --out ~/Downloads bawaan

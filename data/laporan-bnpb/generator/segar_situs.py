@@ -71,7 +71,7 @@ def _picu_dan_tunggu(lama):
     try: _gh('run', 'watch', str(rid), '--interval', '30', timeout=6000)   # bisa antre di grup data sampai sekitar 80 menit
     except subprocess.TimeoutExpired: sys.exit(f'titik.yml {rid} belum selesai sesudah 100 menit; deck tidak dibuat')
     for _ in range(40):   # terbit Cloudflare bisa beberapa menit sesudah run selesai
-        if _acuan_situs() > lama: return
+        if _acuan_situs() != lama: return   # acuan per sensor (dict): berubah = sudah terbit; cukup tidaknya dinilai jamin() saat jalan ulang
         time.sleep(30)
     sys.exit('titik.yml selesai tetapi situs belum memuat data baru; deck tidak dibuat')
 

@@ -137,7 +137,7 @@ X_BNPB, TENGAH_LOGO, T_KRIS, X_JUDUL, Y_JUDUL, SZ_JUDUL = 11295583, 585216, 3200
 
 
 def logo_resmi():
-    return os.path.join(os.environ.get('DECK_BNPB', os.path.expanduser('~/.claude/skills/ppt-konsultan/bnpb')), 'assets', 'logo-bersama', 'kris-logo.png')
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sampul', 'media', 'kris-logo.png')   # salinan repo, identik dengan assets/logo-bersama/kris.png di skill (di sana tidak ada kris-logo.png)
 
 
 def pasang_isi(pptx, logo=None):

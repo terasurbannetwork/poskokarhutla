@@ -28,6 +28,28 @@ def urutan_slide(pptx):
     return [(n, ''.join(re.findall(r'<a:t>([^<]*)</a:t>', z.read('ppt/' + rel[i]).decode()))) for n, i in enumerate(ids, 1)]
 
 
+def buang_pil_cutoff(pptx):
+    """Pemilik 9 Nov 2026: Laporan Penanganan tanpa pil CUT OFF DATA, jam data sudah ada di kaki Sumber. Pil = dua bentuk di posisi sama
+    (latar roundRect + teks), jadi semua bentuk sekoordinat dengan teks pil ikut dibuang. Templat generator tetap memuat pil karena ganti.py mengisinya."""
+    z = zipfile.ZipFile(pptx); isi = [(i, z.read(i.filename)) for i in z.infolist()]; z.close()
+    letak = lambda s: (lambda m: m[0] if m else None)(re.search(r'<a:off [^>]*/>\s*<a:ext [^>]*/>', s))
+    with zipfile.ZipFile(pptx, 'w', zipfile.ZIP_DEFLATED) as zo:
+        for i, b in isi:
+            if re.fullmatch(r'ppt/slides/slide\d+\.xml', i.filename):
+                bagian_xml = re.split(r'(<p:sp>.*?</p:sp>)', b.decode('utf-8'), flags=re.S)
+                pil = {letak(s) for s in bagian_xml if s.startswith('<p:sp>') and 'CUT OFF DATA' in s} - {None}
+                b = ''.join(s for s in bagian_xml if not (s.startswith('<p:sp>') and letak(s) in pil)).encode('utf-8')
+            zo.writestr(i, b)
+    return pptx
+
+
+def cek_tanpa_pil(pptx):
+    """Gerbang hasil akhir Laporan Penanganan: tidak ada pil CUT OFF DATA di slide mana pun."""
+    z = zipfile.ZipFile(pptx); ada = [n for n in z.namelist() if re.fullmatch(r'ppt/slides/slide\d+\.xml', n) and b'CUT OFF DATA' in z.read(n)]; z.close()
+    if ada: raise RuntimeError(f'pil CUT OFF DATA masih ada di {ada}')
+    return pptx
+
+
 def bingkai(pptx, format, judul=None, subjudul=None, tanggal=None, sampul=True, foto=FOTO, penyaji=KEPALA, kota='Jakarta',
             keluar=None, bagian=None, pdf=True, kepada=None, tanpa_kepada=None, susun=None, spek_tambah=None):
     """Bingkai ulang pptx generator lewat deck.py; mengembalikan path PPTX akhir (bawaan: menimpa nama asli).
@@ -40,6 +62,7 @@ def bingkai(pptx, format, judul=None, subjudul=None, tanggal=None, sampul=True, 
     isi = pptx[:-5] + ' (isi).pptx'
     if format == 'penanganan':   # pemilik 8 Nov 2026: logo KRIS di tiap slide
         import kris; kris.pasang_isi(pptx)
+        buang_pil_cutoff(pptx)
     shutil.copyfile(pptx, isi)
     tanggal = tanggal or dt.date.today()
     if format == 'penanganan':
@@ -103,7 +126,7 @@ def bingkai(pptx, format, judul=None, subjudul=None, tanggal=None, sampul=True, 
         sys.exit(f'deck.py gagal ({r.returncode}):\n{r.stderr[-3000:]}')
     if 'GAGAL' in r.stdout:
         print('PERINGATAN: gerbang QA deck.py GAGAL, baca laporan qa/ di folder keluaran sebelum menyerahkan', file=sys.stderr)
-    if format == 'penanganan': kris.cek_isi(keluar)
+    if format == 'penanganan': kris.cek_isi(keluar); cek_tanpa_pil(keluar)
     return keluar
 
 
