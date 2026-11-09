@@ -439,3 +439,16 @@
 .dl-ga-jdl{display:block;margin:0 0 6px;font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--ink3)}
 .dl-ga-tabel td:nth-child(3),.dl-ga-tabel th:nth-child(3){text-align:center}
 @media (max-width:800px){.dl-ga-kartu{grid-template-columns:1fr}.dl-ga-diagram{justify-self:center;width:200px}.dl-ga-ubin{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Mitigasi (tab Banjir): pita per kelompok, baris rapat; warna Awas/Siaga dari .dl-l3/.dl-l2 */
+.dl-mt th{text-align:center}
+.dl-mt td{padding:4px 12px;vertical-align:top}
+.dl-mt-pita td{font-weight:800;padding:5px 12px}
+.dl-mt-judul{display:inline-flex;align-items:center;gap:6px}.dl-mt-judul svg{width:15px;height:15px}
+.dl-mt-awas .dl-mt-pita td{background:color-mix(in srgb,var(--c1) 18%,var(--card));color:color-mix(in srgb,var(--c1) 80%,var(--ink))}
+.dl-mt-siaga .dl-mt-pita td{background:color-mix(in srgb,var(--c2) 20%,var(--card));color:color-mix(in srgb,var(--c2) 60%,var(--ink))}
+.dl-mt-terdampak .dl-mt-pita td{background:color-mix(in srgb,var(--c1) 8%,var(--card));color:color-mix(in srgb,var(--c1) 70%,var(--ink))}
+.dl-mt-pantau .dl-mt-pita td{background:color-mix(in srgb,var(--c5) 12%,var(--card));color:color-mix(in srgb,var(--c5) 70%,var(--ink))}
+.dl-mt-kab{white-space:nowrap}.dl-mt-kab .bn-label{margin-left:8px}
+.dl-mt-tg{white-space:nowrap;text-align:center;font-weight:700}
+.dl-mt-ln{min-width:320px}

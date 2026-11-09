@@ -151,6 +151,59 @@
       `\nMohon pembaruan kondisi terkini tiap kab/kota: ${j.tanya}, jumlah KK dan jiwa terdampak, warga mengungsi, ${j.tinggi ? "tinggi genangan, " : ""}serta desa/kelurahan terdampak. Terima kasih.`;
   }
 
-  const X = {KATA, SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perKec, adaAngka, gabungRiwayat, perluDitanya, statusKab, siaga, pesanWA, pesanSiaga, pesanProv, tglPanjang, tglPendek, namaKab};
+  /* Mitigasi (tab Banjir): usulan langkah per kab/kota dari data hidup. Satu kab satu kelompok, prioritas terdampak > awas > siaga > pantau.
+     Langkah hanya dari data yang ada: kebutuhan/kendala terlapor, posko lapangan (posko.json), kecamatan berstatus, kecamatan lereng (l >= 2). Tidak ada langkah karangan. */
+  const sebut = (xs, maks = 3) => xs.slice(0, maks).join(", ") + (xs.length > maks ? ` dan ${xs.length - maks} lainnya` : "");
+  const maksArr = a => Math.max(0, ...(a || []).map(l => l ?? 0));
+  function mitigasi(st, posko, pekan, hari) {
+    const kabSt = new Map();   // "11|Aceh Barat" -> [{nama, b, l}]
+    for (const [k, v] of Object.entries(st?.kec || {})) {
+      const [p, kb, kc] = k.split("|"), kode = p + "|" + kb;
+      (kabSt.get(kode) || kabSt.set(kode, []).get(kode)).push({nama: kc, b: v.b || [], l: v.l || []});
+    }
+    const tgl = i => i <= 0 || st.hari?.[i] < hari ? "Sekarang" : "Sebelum " + tglPendek(st.hari?.[i]);   // tanggal yang sudah lewat bukan tenggat
+    const pakai = new Set(), grup = [];
+    const buat = (kunci, judul, baris) => grup.push({kunci, judul, baris});
+    /* 1. terdampak belum surut */
+    const terdampak = [];
+    for (const x of pekan || []) {
+      if (x.surut || !x.kab_kode || pakai.has(x.kab_kode)) continue;
+      pakai.add(x.kab_kode);
+      const l = [];
+      if (x.kebutuhan?.length) l.push("Penuhi kebutuhan: " + x.kebutuhan.join(", "));
+      if (x.kendala?.length) l.push("Atasi kendala: " + x.kendala.join(", "));
+      if (x.terakhir && hari && x.terakhir < hari) l.push("Konfirmasi status surut ke BPBD, laporan terakhir " + tglPendek(x.terakhir));
+      if (x.kk == null && x.jiwa == null) l.push("Tuntaskan pendataan dampak");
+      terdampak.push({kab_kode: x.kab_kode, nama: x.nama, prov_kode: x.prov_kode, langkah: l.join("; ") || "Lanjutkan penanganan dan laporkan perkembangan", tenggat: "Sekarang", _n: (x.kec || []).length});
+    }
+    /* 2-3. awas lalu siaga; 4. pantau */
+    const per = {3: [], 2: []}, pantau = [];
+    const adaPekan = new Map((pekan || []).map(x => [x.kab_kode, x]));
+    for (const [kode, kecs] of kabSt) {
+      if (pakai.has(kode)) continue;
+      const lv = Math.max(...kecs.map(c => maksArr(c.b)));
+      const [p, nama] = kode.split("|");
+      if (lv >= 2) {
+        const idx = Math.min(...kecs.flatMap(c => c.b.map((v, i) => v >= lv ? i : 99)));
+        const tinggi = kecs.filter(c => maksArr(c.b) >= lv).map(c => c.nama).sort();
+        const ps = new Set((posko?.lapangan || []).filter(o => o.prov === p && o.kab === nama && (o.jenis === "permanen" || o.jenis === "siaga")).map(o => (o.kec || "").toLowerCase()));
+        const dgPosko = tinggi.filter(n => ps.has(n.toLowerCase())), evak = tinggi.filter(n => !ps.has(n.toLowerCase()));
+        const lereng = kecs.filter(c => maksArr(c.l) >= 2).map(c => c.nama).sort();
+        const l = [dgPosko.length && "Posko " + sebut(dgPosko), evak.length && "siapkan evakuasi " + sebut(evak), lereng.length && "pantau lereng " + sebut(lereng)].filter(Boolean);
+        l[0] = l[0][0].toUpperCase() + l[0].slice(1);
+        pakai.add(kode);
+        per[lv >= 3 ? 3 : 2].push({kab_kode: kode, nama, prov_kode: p, langkah: l.join("; "), tenggat: tgl(idx), _i: idx, _n: tinggi.length});
+      } else if (lv === 1 && adaPekan.get(kode)?.surut) {
+        const w = kecs.filter(c => maksArr(c.b) >= 1).map(c => c.nama).sort();
+        pantau.push({kab_kode: kode, nama, prov_kode: p, langkah: "Pantauan khusus: " + sebut(w, 4), tenggat: "", _n: w.length});
+      }
+    }
+    const urut = xs => xs.sort((a, b) => (a._i ?? 0) - (b._i ?? 0) || b._n - a._n || a.nama.localeCompare(b.nama)).map(({_i, _n, ...r}) => r);
+    buat("terdampak", "Terdampak belum surut", urut(terdampak)); buat("awas", "Awas", urut(per[3])); buat("siaga", "Siaga", urut(per[2])); buat("pantau", "Pantauan khusus", urut(pantau));
+    const g = grup.filter(x => x.baris.length), n = Object.fromEntries(grup.map(x => [x.kunci, x.baris.length]));
+    return {grup: g, n: {terdampak: n.terdampak, awas: n.awas, siaga: n.siaga, pantau: n.pantau, total: g.reduce((a, x) => a + x.baris.length, 0)}};
+  }
+
+  const X = {mitigasi, KATA, SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perKec, adaAngka, gabungRiwayat, perluDitanya, statusKab, siaga, pesanWA, pesanSiaga, pesanProv, tglPanjang, tglPendek, namaKab};
   g.DalopsHitung = X;
 })(globalThis);

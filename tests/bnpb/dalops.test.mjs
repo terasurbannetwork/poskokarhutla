@@ -207,3 +207,63 @@ test("dalops.js: delapan tab berurutan, gunung api dari JSON publik, jenis tanpa
   assert.match(src, /!adaPra \? null :/, "bagian Peringatan dini dilewati, bukan kotak kosong");
   assert.match(readFileSync(new URL("../../public/bnpb/dalops.html", import.meta.url), "utf8"), /dalops_gunungapi\.js\?v=\d+/);
 });
+
+/* ---------- Mitigasi (tab Banjir): H.mitigasi ---------- */
+const KEC = (b, l = [0, 0, 0, 0]) => ({b, l});
+const ST = {hari: ["2026-11-08", "2026-11-09", "2026-11-10", "2026-11-11"], kec: {
+  "11|Aceh Barat|A": KEC([0, 3, 3, 0]), "11|Aceh Barat|B": KEC([0, 3, 0, 0], [0, 2, 0, 0]), "11|Aceh Barat|C": KEC([0, 3, 0, 0]), "11|Aceh Barat|D": KEC([0, 3, 0, 0]), "11|Aceh Barat|E": KEC([0, 3, 0, 0]),
+  "11|Pidie|X": KEC([2, 0, 0, 0]), "11|Pidie|Y": KEC([0, 0, 2, 0]),
+  "11|Langkat|Z": KEC([0, 0, 0, 3]), "12|Deli|Q": KEC([1, 0, 0, 0]), "12|Toba|R": KEC([0, 1, 0, 0]), "12|Nias|S": KEC([0, 0, 3, 0])}};
+const PK = {lapangan: [{jenis: "permanen", prov: "11", kab: "Aceh Barat", kec: "A"}, {jenis: "siaga", prov: "11", kab: "Aceh Barat", kec: "b"}, {jenis: "waspada", prov: "11", kab: "Aceh Barat", kec: "C"}]};
+const P = (kode, x = {}) => ({kab_kode: kode, nama: kode.split("|")[1], prov_kode: kode.split("|")[0], surut: false, terakhir: "2026-11-09", kebutuhan: [], kendala: [], kk: 5, jiwa: 9, kec: [], ...x});
+const baris = (m, k) => m.grup.find(g => g.kunci === k)?.baris || [];
+
+test("mitigasi: satu kab satu kelompok, urutan prioritas, hitungan n", () => {
+  const m = H.mitigasi(ST, PK, [P("12|Nias"), P("12|Deli", {surut: true}), P("11|Pidie", {surut: true}), P("12|Toba", {surut: true})], "2026-11-09");
+  assert.deepEqual(m.grup.map(g => g.kunci), ["terdampak", "awas", "siaga", "pantau"]);
+  assert.deepEqual(baris(m, "terdampak").map(x => x.nama), ["Nias"], "Nias punya Awas tapi terdampak menang");
+  assert.deepEqual(baris(m, "awas").map(x => x.nama), ["Aceh Barat", "Langkat"]);
+  assert.deepEqual(baris(m, "siaga").map(x => x.nama), ["Pidie"], "surut tapi Siaga: bukan pantau");
+  assert.deepEqual(baris(m, "pantau").map(x => x.nama).sort(), ["Deli", "Toba"]);
+  assert.deepEqual(m.n, {terdampak: 1, awas: 2, siaga: 1, pantau: 2, total: 6});
+  const semua = m.grup.flatMap(g => g.baris.map(x => x.kab_kode)); assert.equal(new Set(semua).size, semua.length);
+});
+
+test("mitigasi: kecamatan posko tidak muncul lagi di evakuasi, batas 3 nama, lereng", () => {
+  const [ab] = baris(H.mitigasi(ST, PK, [], "2026-11-09"), "awas");
+  assert.equal(ab.langkah, "Posko A, B; siapkan evakuasi C, D, E; pantau lereng B", "posko jenis waspada tidak dihitung; posko cocok tanpa peduli huruf besar");
+  const st2 = {...ST, kec: {...ST.kec, "11|Aceh Barat|F": KEC([0, 3, 0, 0]), "11|Aceh Barat|G": KEC([0, 3, 0, 0])}};
+  assert.match(baris(H.mitigasi(st2, PK, [], "2026-11-09"), "awas")[0].langkah, /siapkan evakuasi C, D, E dan 2 lainnya/);
+});
+
+test("mitigasi: tenggat hari ke-0 Sekarang, berikutnya tanggal; urut tenggat dekat dulu; posko null tetap jalan", () => {
+  const m = H.mitigasi(ST, null, [], "2026-11-09"), a = baris(m, "awas");
+  assert.deepEqual(a.map(x => [x.nama, x.tenggat]), [["Aceh Barat", "Sebelum 9 Nov"], ["Nias", "Sebelum 10 Nov"], ["Langkat", "Sebelum 11 Nov"]]);
+  assert.equal(baris(m, "siaga")[0].tenggat, "Sekarang");
+  assert.match(a[0].langkah, /^Siapkan evakuasi A, B, C dan 2 lainnya; pantau lereng B$/, "tanpa posko: semua kecamatan tertinggi masuk evakuasi");
+});
+
+test("mitigasi: langkah terdampak dari data terlapor, tidak mengarang saat kosong", () => {
+  const m = H.mitigasi(ST, PK, [P("20|Satu", {kebutuhan: ["tenda", "air bersih"], kendala: ["jalan putus"], terakhir: "2026-11-07"}), P("20|Dua", {kk: null, jiwa: null}), P("20|Tiga")], "2026-11-09");
+  const t = Object.fromEntries(baris(m, "terdampak").map(x => [x.nama, x]));
+  assert.equal(t.Satu.langkah, "Penuhi kebutuhan: tenda, air bersih; Atasi kendala: jalan putus; Konfirmasi status surut ke BPBD, laporan terakhir 7 Nov");
+  assert.equal(t.Dua.langkah, "Tuntaskan pendataan dampak");
+  assert.equal(t.Tiga.langkah, "Lanjutkan penanganan dan laporkan perkembangan");
+  assert.ok(Object.values(t).every(x => x.tenggat === "Sekarang"));
+  assert.doesNotMatch(JSON.stringify(m), /tanggul|perahu|drainase/i);
+  assert.deepEqual(H.mitigasi(null, null, [], "2026-11-09").n.total, 0);
+});
+
+test("dalops.js: Mitigasi hanya di tab Banjir, sesudah Peringatan dini dan sebelum Upaya", () => {
+  const src = readFileSync(new URL("../../public/bnpb/dalops.js", import.meta.url), "utf8");
+  assert.match(src, /if \(!st \|\| J\.k !== "banjir"\) return null/);
+  assert.ok(src.indexOf("bagianMitigasi(st, posko, pekan, hari),\n      bagianUpaya") > src.indexOf('"Peringatan dini", `Prakiraan'));
+  assert.match(src, /"Usulan langkah"/);
+});
+
+test("mitigasi: status.json tertinggal dari hari data tidak memberi tenggat yang sudah lewat", () => {
+  const st = {hari: ["2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16"], kec: {"91|Sarmi|Bonggo": {b: [0, 0, 0, 3], l: [0, 0, 0, 0]}}};
+  const m = H.mitigasi(st, null, [], "2026-11-09");
+  assert.equal(m.grup[0].baris[0].tenggat, "Sekarang");
+  assert.equal(H.mitigasi(st, null, [], "2026-10-13").grup[0].baris[0].tenggat, "Sebelum 16 Okt");
+});

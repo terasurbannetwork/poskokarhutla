@@ -482,7 +482,26 @@
       .map(([l, t]) => h("div", {class: "dl-arti-l" + l}, status(l), h("span", {class: "bn-label", teks: t}))));
   }
 
-  function render(d, st, jenis = "banjir") {
+  /* ---------- mitigasi (hanya tab Banjir): usulan langkah per kab/kota dari status.json, posko.json, dan logbook; hitungan di H.mitigasi ---------- */
+  const PITA = {terdampak: ["banjir", "dl-mt-terdampak"], awas: ["peringatan", "dl-mt-awas"], siaga: ["peringatan", "dl-mt-siaga"], pantau: ["tunggu", "dl-mt-pantau"]};
+  function bagianMitigasi(st, posko, pekan, hari) {
+    if (!st || J.k !== "banjir") return null;
+    const m = H.mitigasi(st, posko, pekan, hari), n = m.n;
+    if (!n.total) return null;
+    const A = n.terdampak ? [hl(F(n.terdampak)), " terdampak ditangani sekarang"] : [];
+    const B = n.awas && n.siaga ? [hl(F(n.awas)), " Awas dan ", hl(F(n.siaga)), " Siaga disiapkan"] : n.awas || n.siaga ? [hl(F(n.awas || n.siaga)), n.awas ? " Awas disiapkan" : " Siaga disiapkan"] : [];
+    const judul = ["Mitigasi ", hl(`${F(n.total)} kab/kota`), ": ", ...A, ...A.length && B.length ? [", "] : [], ...B, ...!A.length && !B.length ? ["pantauan khusus"] : []];
+    const t = h("table", {class: "ad-tabel dl-tabel dl-mt"}, h("thead", null, h("tr", null, ["Kab/kota", "Tenggat", "Langkah BPBD bersama BNPB"].map(k => h("th", {scope: "col", teks: k})))));
+    for (const g of m.grup) {
+      const [ik, kls] = PITA[g.kunci];
+      t.append(h("tbody", {class: "dl-mt-grup " + kls}, h("tr", {class: "dl-mt-pita"}, h("td", {colspan: "3"}, h("span", {class: "dl-mt-judul"}, ikon(ik), `${g.judul}, ${F(g.baris.length)} kab/kota`))),
+        g.baris.map(x => h("tr", null, h("td", {class: "dl-mt-kab"}, h("b", {teks: x.nama}), h("span", {class: "bn-label", teks: namaProv(x.prov_kode)})),
+          h("td", {class: "dl-mt-tg", teks: x.tenggat || "–"}), h("td", {class: "dl-mt-ln", teks: x.langkah})))));
+    }
+    return bagian("mitigasi", "peringatan", "Usulan langkah", judul, h("div", {class: "ad-tabel-wadah dl-tabel-wadah"}, t));
+  }
+
+  function render(d, st, posko, jenis = "banjir") {
     J = JN[jenis];
     const hari = d.hari, kel = H.kelompok(d.kejadian, hari), pekan = H.sepekan(kel, hari), prov = H.perProv(pekan);
     const tanya = H.perluDitanya(kel, hari, H.KATA[J.k]);
@@ -497,6 +516,7 @@
       bagianTanya(tanya, sk, st, hari),
       !adaPra ? null : st ? bagian("prakiraan", "peringatan", "Peringatan dini", siagaJudul(H.siaga(sk, sudah, 2)), wadahPra, J.tinggi ? bagianArti() : null)
         : bagian("prakiraan", "peringatan", "Peringatan dini", `Prakiraan ${J.kata} belum termuat`, kosong("peringatan", "status.json gagal dimuat, coba muat ulang.")),
+      bagianMitigasi(st, posko, pekan, hari),
       bagianUpaya(pekan, hari)].filter(Boolean));   // upaya penanganan paling bawah (pemilik 5 Nov 2026)
     /* tombol Buka semua bagian prakiraan dipasang setelah tabelnya ada */
     const pra = panel[jenis].querySelector("section[id$='prakiraan']");
@@ -552,6 +572,7 @@
 
   const alat = () => ({bagian, hl, h, F, ikon, label, kosong, tdv, td, tbodyProv, tombolWA, tombolHistori, pasangUrut, pasangTip, namaProv, bukaSemua});
   let jawabAwal = null;   // jawaban /api/dalops/banjir dari pemeriksaan akses, dipakai sekali oleh panel Banjir
+  let poskoJson = null;   // /banjir/data/posko.json (publik) untuk langkah posko di Mitigasi; gagal = langkah posko dilewati
   let statusJson = null;  // /banjir/data/status.json membawa level banjir (b) dan longsor (l): diambil sekali untuk kedua tab
   async function muat(jenis) {
     const p = panel[jenis], tulis = teks => p.replaceChildren(h("div", {class: "bn-blok"}, h("p", {class: "lb-p", teks})));
@@ -568,7 +589,7 @@
     const d = await r.json();
     if (jenis === "karhutla") return window.DalopsKarhutla.render(p, d, alat());
     const st = JN[jenis].pra === false ? null : await (statusJson || (statusJson = fetch("/banjir/data/status.json").then(x => x.ok ? x.json() : null).catch(() => null)));
-    render(d, st, jenis);
+    render(d, st, jenis === "banjir" ? await (poskoJson || (poskoJson = fetch("/banjir/data/posko.json").then(x => x.ok ? x.json() : null).catch(() => null))) : null, jenis);
   }
 
   (async () => {
