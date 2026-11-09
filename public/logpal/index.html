@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#14284b">
+<title>Inventori LogPal | Centurisk97</title>
+<link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="/akademisi_tema.js"></script>
+<link rel="stylesheet" href="/inti/kepala.css">
+<link rel="stylesheet" href="/inti/tema.css">
+<link rel="stylesheet" href="/inti/gaya.css">
+<link rel="stylesheet" href="/logpal/logpal.css?v=1">
+<script src="/vendor/d3/d3.min.js?v=1"></script>
+<script src="/vendor/qrcode/qrcode.min.js?v=1"></script>
+</head>
+<body>
+<header class="top">
+  <div class="mark">
+    
+    <a class="logo" href="/" title="Centurisk97"><img src="/img/logo.svg?v=2" alt="Centurisk97" width="30" height="30"></a><details class="bencana" data-bencana="karhutla" data-tentang><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg><span class="sr">Pilih bencana: </span>Karhutla</summary><div class="menu"><a href="/"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg>Karhutla</a><hr class="lp-hr"><a href="/tentang"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Tentang kami</a></div></details>
+  </div>
+  <div class="stat"><button class="iconbtn" id="tema" aria-label="Ganti tema terang/gelap" title="Ganti tema"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button></div>
+</header>
+<div class="w" id="logpal">
+  <header class="bar"><div><h1>Inventori LogPal</h1><p class="n" id="st" role="status">Menyambung ke data gudang.</p></div>
+    <label id="bilahG" hidden style="min-width:min(100%,280px)">Gudang<select id="pg"></select></label></header>
+  <div class="seg" role="group" aria-label="Halaman">
+    <button data-h="stok" aria-pressed="true">Stok</button><button data-h="standar" aria-pressed="false">Standar minimal</button><button data-h="kebutuhan" aria-pressed="false">Kebutuhan</button><button data-h="jaringan" aria-pressed="false">Jaringan logistik</button><button data-h="permintaan" aria-pressed="false">Permintaan bantuan</button><button data-h="input" aria-pressed="false">Input stok</button><button data-h="mutasi" aria-pressed="false">Mutasi barang</button><button data-h="opname" aria-pressed="false">Stok opname</button><button data-h="laporan" aria-pressed="false">Pembuat laporan</button><button data-h="audit" aria-pressed="false">Kesiapan audit</button>
+  </div>
+  <div id="mon"><div class="km">
+  <header>
+    <p class="km-tesis" data-read lang="id">Angka baru masuk dari <b data-draw="r" data-u="provinsi_angka" data-source="rekap" data-field="nilai" data-where="ukuran=provinsi_angka">—</b> dari <b data-draw="r" data-u="provinsi_total" data-source="rekap" data-field="nilai" data-where="ukuran=provinsi_total">—</b> provinsi. <b data-draw="r" data-u="provinsi_kosong" data-source="rekap" data-field="nilai" data-where="ukuran=provinsi_kosong">—</b> provinsi belum ada datanya, jadi total di bawah belum bisa dibaca sebagai total nasional.</p>
+  </header>
+
+  <div class="km-hal" data-tab="stok">
+  <p class="km-sumber lp-kecil" data-draw="sumber" data-k="stok"></p>
+
+  <section class="km-ubin" id="ringkas" aria-label="Ringkasan">
+    <div class="km-u"><span>Gudang tercatat</span><b data-draw="r" data-u="gudang" data-source="rekap" data-field="nilai" data-where="ukuran=gudang">—</b><small><i data-draw="r" data-u="gudang_bpbd" data-source="rekap" data-field="nilai" data-where="ukuran=gudang_bpbd">—</i> BPBD, <i data-draw="r" data-u="gudang_bnpb" data-source="rekap" data-field="nilai" data-where="ukuran=gudang_bnpb">—</i> BNPB</small></div>
+    <div class="km-u"><span>Perahu</span><b data-draw="r" data-u="Perahu" data-source="rekap" data-field="nilai" data-where="ukuran=Perahu">—</b><small>unit siap pakai atau tercatat</small></div>
+    <div class="km-u"><span>Tenda</span><b data-draw="r" data-u="Tenda" data-source="rekap" data-field="nilai" data-where="ukuran=Tenda">—</b><small>unit siap pakai atau tercatat</small></div>
+    <div class="km-u"><span>Pompa</span><b data-draw="r" data-u="Pompa" data-source="rekap" data-field="nilai" data-where="ukuran=Pompa">—</b><small>unit siap pakai atau tercatat</small></div>
+    <div class="km-u"><span>Matras dan kasur</span><b data-draw="r" data-u="Matras dan kasur" data-source="rekap" data-field="nilai" data-where="ukuran=Matras%20dan%20kasur">—</b><small data-draw="sat" data-k="Matras dan kasur">lembar atau buah</small></div>
+    <div class="km-u"><span>Selimut</span><b data-draw="r" data-u="Selimut" data-source="rekap" data-field="nilai" data-where="ukuran=Selimut">—</b><small data-draw="sat" data-k="Selimut">lembar</small></div>
+  </section>
+
+  <div class="km-seg" role="group" aria-label="Pemilik gudang">
+    <button type="button" data-p="Semua" aria-pressed="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM13 13h8v8h-8z"/></svg>Semua gudang</button>
+    <button type="button" data-p="BPBD" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 21V9l8-5 8 5v12h-5v-6H9v6z"/></svg>Gudang BPBD</button>
+    <button type="button" data-p="BNPB" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.4 9.4-8 11-4.6-1.6-8-6-8-11V5z"/></svg>Gudang BNPB</button>
+  </div>
+
+  <section class="km-dua">
+    <div class="km-kartu km-peta-kotak" id="kartu-peta">
+      <div class="km-atas">
+        <h2>Sebaran <b data-draw="kat-teks">—</b> per provinsi</h2>
+        <div class="km-kontrol"><select id="pilih-kat" class="dash-select" data-draw="pilih-kat" data-source="inventori" aria-label="Kategori di peta"></select></div>
+      </div>
+      <p>Warna makin tua berarti makin banyak. Klik provinsi untuk menyaring tabel.</p>
+      <div class="km-peta" data-draw="peta" data-source="per_provinsi provinsi geo" data-fetchpriority="high">—</div>
+    </div>
+    <div class="km-kartu" id="kartu-peringkat">
+      <h2>Urutan provinsi</h2>
+      <p>Jumlah siap pakai atau tercatat pada kategori terpilih.</p>
+      <div class="km-rank" data-draw="urut" data-source="per_provinsi">—</div>
+    </div>
+  </section>
+
+  <section class="km-kartu" id="kartu-gudang">
+    <h2>Rekap per gudang</h2>
+    <p>Barang rusak tidak dihitung bila kondisinya dilaporkan.</p>
+    <div class="km-gulir">
+      <table data-source="matriks" data-row-key="kunci">
+        <thead><tr>
+          <th data-field="provinsi">Provinsi</th><th data-field="pemilik">Pemilik</th><th data-field="gudang">Gudang</th>
+          <th data-field="Alat berat">Alat berat</th><th data-field="Perahu">Perahu</th><th data-field="Genset">Genset</th><th data-field="Air bersih">Air bersih</th><th data-field="Pompa">Pompa</th><th data-field="Chainsaw">Chainsaw</th><th data-field="Geobag">Geobag</th><th data-field="Tenda">Tenda</th><th data-field="Velbed">Velbed</th><th data-field="Matras dan kasur">Matras, kasur</th><th data-field="Selimut">Selimut</th><th data-field="Terpal">Terpal</th><th data-field="Obat">Obat</th>
+        </tr></thead>
+        <tbody data-draw="matriks"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="km-kartu" id="kartu-barang">
+    <div class="km-atas">
+      <h2>Daftar barang, <b data-draw="jml-baris">—</b> baris</h2>
+      <div class="km-kontrol">
+        <select id="sar-kat" class="dash-select" data-draw="sar-kat" data-source="inventori" aria-label="Saring kelompok"></select>
+        <select id="sar-prov" class="dash-select" data-draw="sar-prov" data-source="provinsi" aria-label="Saring provinsi"></select>
+        <input id="cari" type="search" placeholder="Cari barang atau gudang" aria-label="Cari barang atau gudang">
+      </div>
+    </div>
+    <p>Klik judul kolom untuk mengurutkan.</p>
+    <div class="km-gulir">
+      <table id="tabel-barang" data-source="inventori" data-row-key="id">
+        <thead><tr>
+          <th data-field="provinsi"><button type="button" data-s="provinsi">Provinsi</button></th>
+          <th data-field="pemilik"><button type="button" data-s="pemilik">Pemilik</button></th>
+          <th data-field="gudang"><button type="button" data-s="gudang">Gudang</button></th>
+          <th data-field="barang"><button type="button" data-s="barang">Barang</button></th>
+          <th data-field="kelompok"><button type="button" data-s="kelompok">Kelompok</button></th>
+          <th data-field="kategori"><button type="button" data-s="kategori">Jenis</button></th>
+          <th data-field="prioritas">Prioritas</th>
+          <th data-field="jumlah"><button type="button" data-s="jumlah">Jumlah</button></th>
+          <th data-field="siap_hitung"><button type="button" data-s="siap_hitung">Siap pakai</button></th>
+          <th data-field="satuan">Satuan</th>
+          <th data-field="per">Per</th>
+          <th data-field="sumber">Sumber</th>
+          <th data-field="catatan">Catatan</th>
+        </tr></thead>
+        <tbody data-draw="barang"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="km-kartu" id="kartu-cakupan">
+    <h2>Cakupan laporan provinsi</h2>
+    <p>Provinsi di luar kelompok pertama perlu dimintai isian jumlah barang.</p>
+    <div class="km-cak">
+      <div><h3>Ada angka, <b data-draw="cak-n" data-s="Ada angka" data-source="cakupan" data-field="n" data-where="status=Ada%20angka">—</b></h3><div class="km-chip" data-draw="cak" data-s="Ada angka" data-source="provinsi"></div></div>
+      <div><h3>Melapor tanpa angka, <b data-draw="cak-n" data-s="Tanpa angka" data-source="cakupan" data-field="n" data-where="status=Tanpa%20angka">—</b></h3><div class="km-chip" data-draw="cak" data-s="Tanpa angka" data-source="provinsi"></div></div>
+      <div><h3>Tercatat belum melapor, <b data-draw="cak-n" data-s="Belum melapor" data-source="cakupan" data-field="n" data-where="status=Belum%20melapor">—</b></h3><div class="km-chip" data-draw="cak" data-s="Belum melapor" data-source="provinsi"></div></div>
+      <div><h3>Belum ada data, <b data-draw="cak-n" data-s="Belum ada data" data-source="cakupan" data-field="n" data-where="status=Belum%20ada%20data">—</b></h3><div class="km-chip" data-draw="cak" data-s="Belum ada data" data-source="provinsi"></div></div>
+    </div>
+  </section>
+
+  <details class="km-kartu" id="catatan">
+    <summary>Catatan data</summary>
+    <ul>
+      <li>Tanggal laporan tiap gudang berbeda, lihat kolom Per pada daftar barang.</li>
+      <li>Papua Selatan baru berisi data bantuan peralatan dan logistik tahun berjalan, bukan hitung sisa stok di gudang.</li>
+      <li>Sumatera Utara dihitung dari kolom kondisi baik. Barang yang kondisinya belum diisi tetap tampil di daftar, tetapi tidak masuk hitungan siap pakai.</li>
+    </ul>
+    <ul data-draw="catatan"></ul>
+  </details>
+  </div>
+
+  <div class="km-hal" data-tab="standar" hidden>
+    <section class="km-kartu">
+      <h2>Standar minimal dibandingkan stok</h2>
+      <p>Rumus dari draf Petunjuk Pelaksanaan Standar Minimal Kebutuhan 2024. Versi yang ditetapkan, Juklak BNPB 1/2024, teksnya belum didapat. Rata-rata pengungsi 2021 sampai 2025 dari DIBI. Service level resmi tiap daerah ditetapkan lewat SK, di sini bisa dicoba.</p>
+      <div class="km-seg km-sl" role="group" aria-label="Service level">
+        <button type="button" data-sl="0.1" aria-pressed="true">Service level 10%</button>
+        <button type="button" data-sl="0.2" aria-pressed="false">Service level 20%</button>
+        <button type="button" data-sl="0.3" aria-pressed="false">Service level 30%</button>
+      </div>
+    </section>
+    <section class="km-ubin">
+      <div class="km-u"><span>BNPB, item terpenuhi</span><b data-draw="sr" data-u="Nasional|Terpenuhi" data-source="standar_ringkas" data-field="nilai" data-where="kunci=Nasional|0.1|Terpenuhi">—</b><small>dari standar nasional</small></div>
+      <div class="km-u"><span>BNPB, item kurang</span><b data-draw="sr" data-u="Nasional|Kurang" data-source="standar_ringkas" data-field="nilai" data-where="kunci=Nasional|0.1|Kurang">—</b><small>stok ada, belum cukup</small></div>
+      <div class="km-u"><span>BNPB, belum tercatat</span><b data-draw="sr" data-u="Nasional|Belum tercatat" data-source="standar_ringkas" data-field="nilai" data-where="kunci=Nasional|0.1|Belum%20tercatat">—</b><small>stok belum ada di data</small></div>
+      <div class="km-u"><span>Pengungsi rata-rata per tahun</span><b data-draw="sj" data-source="wilayah_ringkas" data-field="nilai" data-where="ukuran=pengungsi">—</b><small>jiwa, DIBI</small></div>
+      <div class="km-u"><span>Kecamatan</span><b data-draw="sk" data-source="wilayah_ringkas" data-field="nilai" data-where="ukuran=kecamatan">—</b><small>dasar kendaraan dan alat</small></div>
+    </section>
+    <section class="km-kartu" id="std-nasional">
+      <div class="km-atas"><h2>Nasional, stok gudang BNPB yang tercatat</h2>
+      <div class="km-kontrol"><select id="std-bahaya" class="dash-select" aria-label="Jenis bencana untuk alat spesifik"><option>Banjir</option><option>Kebakaran hutan dan lahan</option><option>Kekeringan</option><option>Tanah longsor</option><option>Gempa bumi</option><option>Tsunami</option><option>Puting beliung</option><option>Erupsi gunung api</option><option>Pandemi</option></select></div></div>
+      <p>Pilihan jenis bencana mengganti daftar alat spesifik. Prioritas 1 didahulukan.</p>
+      <div class="km-gulir"><table data-source="standar" data-row-key="kunci"><thead><tr><th data-field="item">Item</th><th data-field="jenis">Jenis</th><th data-field="prioritas">Prioritas</th><th data-field="standar">Standar</th><th data-field="stok">Stok</th><th data-field="kurang">Kekurangan</th><th data-field="status">Status</th><th data-field="operator">Operator minimal</th></tr></thead><tbody data-draw="std-nas"></tbody></table></div>
+    </section>
+    <section class="km-kartu" id="std-provinsi">
+      <div class="km-atas"><h2>Provinsi, stok gudang BPBD yang tercatat</h2><div class="km-kontrol"><select id="std-prov" class="dash-select" data-draw="std-prov-pilih" data-source="provinsi" aria-label="Pilih provinsi"></select></div></div>
+      <p>Kolom asal bantuan mengikuti Perka 24/2014: provinsi terdekat yang berlebih, lalu BNPB. Stok kab/kota belum dilaporkan.</p>
+      <div class="km-gulir"><table data-source="standar" data-row-key="kunci"><thead><tr><th data-field="item">Item</th><th data-field="jenis">Jenis</th><th data-field="prioritas">Prioritas</th><th data-field="standar">Standar</th><th data-field="stok">Stok</th><th data-field="kurang">Kekurangan</th><th data-field="status">Status</th><th data-field="operator">Operator minimal</th><th data-field="saran">Asal bantuan terdekat</th></tr></thead><tbody data-draw="std-prv"></tbody></table></div>
+    </section>
+    <details class="km-kartu" id="perka18">
+      <summary>Pembanding Perka 18/2009, buffer stock provinsi</summary>
+      <p>Paket pangan 1% penduduk x 3 hari. Paket sandang dan logistik lain mengikuti pola tabel Perka, 0,1% penduduk per 4 jiwa. Paket kematian memakai tabel Perka, 10% paket sandang, walau teksnya menulis 1%. Penduduk 2026 dari WorldPop.</p>
+      <div class="km-gulir"><table data-source="perka18" data-row-key="kode"><thead><tr><th data-field="provinsi">Provinsi</th><th data-field="penduduk">Penduduk</th><th data-field="pangan">Paket pangan</th><th data-field="sandang">Paket sandang</th><th data-field="lain">Logistik lain</th><th data-field="kematian">Paket kematian</th><th data-field="stok_jenazah">Stok kantong jenazah</th></tr></thead><tbody data-draw="perka"></tbody></table></div>
+    </details>
+  </div>
+
+  <div class="km-hal" data-tab="kebutuhan" hidden>
+    <section class="km-kartu" id="kartu-kebutuhan">
+      <h2>Analisa kebutuhan wilayah terdampak banjir di Aceh dan Sumut</h2>
+      <p class="km-sumber lp-kecil" data-draw="sumber" data-k="kebutuhan"></p>
+      <p class="km-tesis2"><b data-draw="kb" data-u="lebih" data-source="kebutuhan_ringkas" data-field="nilai" data-where="ukuran=lebih">—</b> dari <b data-draw="kb" data-u="total" data-source="kebutuhan_ringkas" data-field="nilai" data-where="ukuran=total">—</b> jenis kebutuhan yang diajukan melebihi stok <span data-draw="teks" data-t="pembanding" data-d="gudang pembanding">gudang pembanding</span>, jadi perlu kiriman tambahan.</p>
+      <div class="km-gulir"><table data-source="kebutuhan_hitung" data-row-key="no"><thead><tr><th data-field="wilayah">Wilayah</th><th data-field="kebutuhan">Kebutuhan</th><th data-field="diajukan">Diajukan</th><th data-field="stok_a_teks" data-draw="teks" data-t="stok_a" data-d="Gudang pembanding 1">Gudang pembanding 1</th><th data-field="stok_b_teks" data-draw="teks" data-t="stok_b" data-d="Gudang pembanding 2">Gudang pembanding 2</th><th data-field="kurang">Kekurangan</th><th data-field="status">Status</th></tr></thead><tbody data-draw="kebutuhan"></tbody></table></div>
+    </section>
+  </div>
+
+  <div class="km-hal" data-tab="jaringan" hidden>
+    <section class="km-kartu">
+      <h2>Jangkauan gudang ke <b data-draw="n" data-n="kab">—</b> kab/kota</h2>
+      <p>Waktu tempuh perkiraan dari jarak garis lurus, untuk menyusun prioritas. Belum memakai jaringan jalan dan belum dikonfirmasi operator angkutan.</p>
+      <div class="km-seg km-jr" role="group" aria-label="Gudang yang dihitung" style="grid-template-columns:repeat(2,1fr)">
+        <button type="button" data-g="bnpb" aria-pressed="true">Hanya gudang BNPB</button>
+        <button type="button" data-g="semua" aria-pressed="false">BNPB dan BPBD tercatat</button>
+      </div>
+    </section>
+    <section class="km-ubin">
+      <div class="km-u"><span>Perkiraan sampai dalam 24 jam</span><b data-draw="jg" data-u="k24" data-source="jangkau" data-field="nilai" data-where="kunci=bnpb|k24">—</b><small>kab/kota</small></div>
+      <div class="km-u"><span>Perkiraan sampai dalam 72 jam</span><b data-draw="jg" data-u="k72" data-source="jangkau" data-field="nilai" data-where="kunci=bnpb|k72">—</b><small>kab/kota</small></div>
+      <div class="km-u"><span>Perkiraan lewat 72 jam</span><b data-draw="jg" data-u="lewat" data-source="jangkau" data-field="nilai" data-where="kunci=bnpb|lewat">—</b><small>kab/kota</small></div>
+      <div class="km-u"><span>Perkiraan rata-rata tertimbang pengungsi</span><b data-draw="jg" data-u="rata" data-source="jangkau" data-field="nilai" data-where="kunci=bnpb|rata">—</b><small>jam</small></div>
+    </section>
+    <section class="km-kartu" id="kartu-jaringan">
+      <h2>Peta jangkauan dan rute</h2>
+      <p>Titik kab/kota berwarna menurut waktu tempuh. Garis adalah rute penghantaran wilayah banjir saat ini.</p>
+      <div class="km-peta" data-draw="peta-jr" data-source="geo wilayah gudang rute">—</div>
+    </section>
+    <section class="km-dua">
+      <div class="km-kartu" id="kartu-usulan">
+        <h2>Titik gudang BNPB berikutnya yang paling menambah jangkauan</h2>
+        <p>Dipilih berurutan dari <b data-draw="n" data-n="prov">—</b> ibu kota provinsi, dengan bobot rata-rata pengungsi. Hanya menghitung gudang BNPB yang tercatat di sini.</p>
+        <div class="km-gulir"><table data-source="usulan" data-row-key="urutan"><thead><tr><th data-field="urutan">Urutan</th><th data-field="titik">Titik</th><th data-field="provinsi">Provinsi</th><th data-field="jam_rata">Perkiraan jam rata-rata</th><th data-field="kab_24">Kab/kota 24 jam</th><th data-field="kab_72">Kab/kota 72 jam</th></tr></thead><tbody data-draw="usulan"></tbody></table></div>
+      </div>
+      <div class="km-kartu" id="kartu-rute">
+        <h2>Rute penghantaran wilayah banjir</h2>
+        <p>Perkiraan dari jarak dan kecepatan rata-rata tiap moda.</p>
+        <div class="km-gulir"><table data-source="rute" data-row-key="kab"><thead><tr><th data-field="provinsi">Provinsi</th><th data-field="kab">Kab/kota</th><th data-field="asal">Asal gudang</th><th data-field="moda">Moda</th><th data-field="jam">Perkiraan jam</th><th data-field="turun_di">Turun di</th></tr></thead><tbody data-draw="rute"></tbody></table></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+</div>
+
+  <section data-p="input" hidden style="display:grid;gap:14px">
+    <div class="kr" id="ringkas_stok"><div class="u" id="u"></div></div>
+    <div class="kr"><h2 id="ft">Tambah barang</h2><p class="n">Logistik dicatat sebagai persediaan, peralatan sebagai aset. Kolomnya menyesuaikan kelompok yang dipilih.</p>
+      <form id="fb" class="f" autocomplete="off">
+        <label>Nama barang<input id="b_barang" required maxlength="120"></label>
+        <label>Kelompok<select id="b_kelompok"></select></label>
+        <label>Satuan<input id="b_satuan" maxlength="20"></label>
+        <label>Jumlah<input id="b_jumlah" type="number" min="0" step="1" required></label>
+        <label>Kondisi baik<input id="b_baik" type="number" min="0" step="1"></label>
+        <label data-m="L">Rusak<input id="b_rusak" type="number" min="0" step="1"></label>
+        <label data-m="A">Rusak ringan<input id="b_rr" type="number" min="0" step="1"></label>
+        <label data-m="A">Rusak berat<input id="b_rb" type="number" min="0" step="1"></label>
+        <label>Kode barang atau NUSP<input id="b_kode_barang" maxlength="40"></label>
+        <label data-m="A">NUP atau register<input id="b_nup" maxlength="30" placeholder="1 sampai 20"></label>
+        <label data-m="A">Merek dan tipe<input id="b_merek" maxlength="80"></label>
+        <label data-m="A">Nomor seri, rangka, mesin<input id="b_seri" maxlength="60"></label>
+        <label data-m="A">Tahun perolehan<input id="b_tahun" type="number" min="1970" max="2100" step="1"></label>
+        <label data-m="A">Cara perolehan<select id="b_cara"><option value="">Pilih</option><option>Pembelian</option><option>Hibah</option><option>Transfer masuk</option></select></label>
+        <label data-m="A">Nilai perolehan (Rp)<input id="b_nilai" type="number" min="0" step="1"></label>
+        <label data-m="A">Label<select id="b_label"><option value="">Pilih</option><option>Belum</option><option>Sementara</option><option>Permanen</option></select></label>
+        <label data-m="L">Kedaluwarsa<input id="b_kedaluwarsa" type="date"></label>
+        <label data-m="L">Nomor batch<input id="b_batch" maxlength="40"></label>
+        <label data-m="L">Harga satuan (Rp)<input id="b_harga" type="number" min="0" step="1"></label>
+        <label>Lokasi simpan<input id="b_lokasi" maxlength="80"></label>
+        <label>Dokumen sumber<input id="b_dokumen" maxlength="80" placeholder="BAST, kontrak, BPKB"></label>
+        <label>Sumber dana<select id="b_sumber_dana"><option value="">Pilih</option><option>APBN</option><option>APBD</option><option>Hibah</option><option>Sumber lain</option></select></label>
+        <label>Catatan<input id="b_catatan" maxlength="200"></label>
+        <div style="display:flex;gap:6px"><button class="p" type="submit">Simpan</button><button class="s" type="button" id="bb">Batal</button></div>
+      </form><p class="msg" id="mb"></p></div>
+    <div class="kr"><div class="bar"><h2>Daftar barang</h2><input id="cari_barang" type="search" placeholder="Cari barang" aria-label="Cari barang" style="max-width:260px"></div>
+      <div class="t"><table><thead><tr><th>Barang</th><th>Kelompok</th><th>Jumlah</th><th>Baik</th><th>Rusak</th><th>Satuan</th><th>Kedaluwarsa atau tahun</th><th>Sumber dana</th><th>Catatan</th><th></th></tr></thead><tbody id="tb"></tbody></table></div></div>
+    <div class="kr"><h2>Tambah gudang</h2><form id="fg" class="f" autocomplete="off">
+      <label>Nama gudang<input id="g_nama" required maxlength="100"></label><label>Provinsi<select id="g_provinsi" required></select></label><label>Kapasitas (ton)<input id="g_kap" type="number" min="0" step="0.1"></label><button class="p" type="submit">Tambah</button></form><p class="msg" id="mg"></p></div>
+  </section>
+
+  <section data-p="mutasi" hidden style="display:grid;gap:14px">
+    <div class="kr"><h2>Catat barang masuk, keluar, atau dihapus</h2><p class="n">Stok gudang langsung berubah setelah disimpan.</p>
+      <form id="fm" class="f" autocomplete="off">
+        <label>Jenis<select id="m_jenis"><option>Masuk</option><option>Keluar</option><option>Penghapusan</option></select></label>
+        <label>Tanggal<input id="m_tanggal" type="date" required></label>
+        <label>Barang<select id="m_barang" required></select></label>
+        <label>Jumlah<input id="m_jumlah" type="number" min="1" step="1" required></label>
+        <label>Asal atau tujuan<input id="m_lawan" maxlength="120"></label>
+        <label>Moda<select id="m_moda"><option value="">Pilih</option><option>Darat</option><option>Laut</option><option>Sungai</option><option>Danau</option><option>Udara</option></select></label>
+        <label>Nomor dokumen<input id="m_dok" maxlength="80" placeholder="Surat pengeluaran, surat jalan, BAST"></label>
+        <label>Nilai (Rp)<input id="m_nilai" type="number" min="0" step="1"></label>
+        <label>Penanggung jawab<input id="m_pj" maxlength="80"></label>
+        <button class="p" type="submit">Simpan</button>
+      </form><p class="msg" id="mm"></p></div>
+    <div class="kr"><h2>Riwayat mutasi gudang ini</h2><p class="n" id="mk">Isi Diterima saat barang sampai untuk mencocokkan manifest.</p>
+      <div class="t"><table><thead><tr><th>Tanggal</th><th>Jenis</th><th>Barang</th><th>Jumlah</th><th>Asal atau tujuan</th><th>Moda</th><th>Dokumen</th><th>Diterima</th><th>Selisih</th></tr></thead><tbody id="tm"></tbody></table></div></div>
+  </section>
+
+  <section data-p="opname" hidden style="display:grid;gap:14px">
+    <div class="kr"><h2>Stok opname</h2><p class="n">Isi hasil hitung fisik. Baris yang dikosongkan tidak ikut. Berita acara tersimpan di riwayat.</p>
+      <div class="f" style="margin-bottom:10px"><label>Tanggal<input id="o_tanggal" type="date"></label><label>Petugas pemeriksa<input id="o_petugas" maxlength="80"></label>
+      <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="o_apply" style="width:auto">Sesuaikan stok ke hasil hitung</label><button class="p" id="os">Simpan berita acara</button></div>
+      <p class="msg" id="mo"></p>
+      <div class="t"><table><thead><tr><th>Barang</th><th>Satuan</th><th>Tercatat</th><th>Hitung fisik</th><th>Selisih</th><th>Keterangan</th></tr></thead><tbody id="to"></tbody></table></div></div>
+    <div class="kr"><h2>Label QR barang</h2><p class="n">Tempel label di barang. Pindai dengan kamera HP, halaman stok opname terbuka di barang itu, lalu isi hitung fisik.</p><div style="display:flex;gap:6px"><button class="s" id="qrg" type="button">Buat label gudang ini</button><button class="s" id="qrd" type="button" hidden>Unduh label</button></div><div id="qrb" hidden style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px"></div></div>
+    <div class="kr"><h2>Riwayat stok opname</h2><div class="t"><table><thead><tr><th>Tanggal</th><th>Gudang</th><th>Petugas</th><th>Baris dihitung</th><th>Baris selisih</th><th>Stok disesuaikan</th></tr></thead><tbody id="thO"></tbody></table></div></div>
+  </section>
+
+  <section data-p="laporan" hidden style="display:grid;gap:14px">
+    <div class="kr"><h2>Pembuat laporan</h2><form id="fl" class="f">
+      <label>Jenis laporan<select id="l_jenis"><option>Laporan persediaan</option><option>Rekap mutasi dan distribusi</option><option>Laporan stok opname</option><option>Barang rusak dan kedaluwarsa</option><option>Evaluasi bantuan logistik</option><option>Daftar peralatan (DBKP atau KIBAR)</option><option>Daftar barang persediaan</option><option>Hasil inventarisasi fisik</option></select></label>
+      <label>Periode<select id="l_per"><option value="1">Harian</option><option value="31" selected>Bulanan</option><option value="92">Triwulan</option><option value="183">Semester</option><option value="366">Tahunan</option></select></label>
+      <label>Sampai tanggal<input id="l_tgl" type="date"></label>
+      <label>Cakupan<select id="l_g"></select></label>
+      <button class="p" type="submit">Buat laporan</button></form></div>
+    <div class="kr" id="hl" hidden><div class="bar"><div><h2 id="lj"></h2><p class="n" id="ls"></p></div><div style="display:flex;gap:6px"><button class="s" id="dc">Unduh CSV</button><button class="s" id="dh">Unduh HTML</button></div></div>
+      <div class="u" id="lu" style="margin-bottom:10px"></div><div class="t"><table><thead id="lh"></thead><tbody id="lb"></tbody></table></div><p class="msg" id="ml"></p></div>
+  </section>
+
+  <section data-p="permintaan" hidden style="display:grid;gap:14px">
+    <div class="kr"><h2>Permintaan bantuan logistik</h2><p class="n">Alur mengikuti Lampiran I dan II Perka 24/2014. Tanggap darurat wajib menyertakan penetapan status darurat.</p>
+      <form id="fp" class="f" autocomplete="off">
+        <label>Jenis permintaan<select id="p_jenis"><option>Tanggap darurat</option><option>Penguatan kesiapsiagaan</option></select></label>
+        <label>BPBD pemohon<input id="p_bpbd" required maxlength="100"></label>
+        <label>Provinsi<input id="p_prov" required maxlength="60"></label>
+        <label>Kab/kota<input id="p_kab" maxlength="60"></label>
+        <label>Status darurat<select id="p_status"><option value="">Pilih</option><option>Siaga darurat</option><option>Tanggap darurat</option><option>Transisi darurat ke pemulihan</option></select></label>
+        <label>Nomor penetapan status<input id="p_sk" maxlength="80"></label>
+        <label>Masyarakat terdampak (jiwa)<input id="p_jiwa" type="number" min="0" step="1"></label>
+        <label>Rekomendasi provinsi<select id="p_rek"><option value="">Pilih</option><option>Ada</option><option>Belum</option></select></label>
+        <label style="grid-column:1/-1">Ringkasan kaji cepat TRC<textarea id="p_trc" rows="2" maxlength="600"></textarea></label>
+      </form>
+      <div class="t" style="margin-top:10px"><table><thead><tr><th>Barang diminta</th><th>Jumlah</th><th>Satuan</th><th></th></tr></thead><tbody id="p_items"></tbody></table></div>
+      <div style="display:flex;gap:6px;margin-top:10px"><button class="s" id="p_add" type="button">Tambah barang</button><button class="p" id="p_kirim" type="button">Ajukan permintaan</button></div>
+      <p class="msg" id="mp"></p></div>
+    <div class="kr"><h2>Daftar permintaan</h2><p class="n" id="pn"></p>
+      <div class="t"><table><thead><tr><th>Tanggal</th><th>Pemohon</th><th>Provinsi</th><th>Jenis</th><th>Tahap</th><th></th></tr></thead><tbody id="tp"></tbody></table></div></div>
+    <div class="kr" id="pd" hidden><h2 id="pdj"></h2><p class="n" id="pds"></p>
+      <div class="t" style="margin-bottom:10px"><table><thead><tr><th>Barang</th><th>Diminta</th><th>Stok BNPB terkait</th></tr></thead><tbody id="pdi"></tbody></table></div>
+      <div class="t" style="margin-bottom:10px"><table><thead><tr><th>Tahap</th><th>Petugas</th><th>Waktu</th><th>Catatan</th></tr></thead><tbody id="pdh"></tbody></table></div>
+      <div id="pda" class="f"><label>Petugas<input id="pa_ptg" maxlength="80"></label><label>Catatan<input id="pa_cat" maxlength="200"></label><button class="p" id="pa_lanjut" type="button"></button><button class="s" id="pa_tolak" type="button">Tolak</button></div>
+      <p class="msg" id="mpa"></p></div>
+  </section>
+
+  <section data-p="audit" hidden style="display:grid;gap:14px">
+    <div class="kr"><h2>Kesiapan audit</h2><p class="n">Uji mengikuti hal yang lazim diperiksa BPK, BPKP, dan Inspektorat: PMK 181/2016, PMK 100/2025, Permendagri 47/2021, KMK 295/2019, dan temuan LHP LKPP 2022.</p>
+      <label style="max-width:320px">Cakupan<select id="au_g"></select></label>
+      <div class="u" id="au_u" style="margin-top:10px"></div></div>
+    <div class="kr"><h2>Uji auditor</h2><div class="t"><table><thead><tr><th>Uji</th><th>Lolos</th><th>Total</th><th>Status</th><th>Yang perlu dibereskan</th></tr></thead><tbody id="au_t"></tbody></table></div></div>
+    <div class="kr"><h2>Kelengkapan per gudang</h2><div class="t"><table><thead><tr><th>Provinsi</th><th>Gudang</th><th>Peralatan</th><th>Lengkap</th><th>Persediaan</th><th>Lengkap</th><th>Opname semester ini</th></tr></thead><tbody id="au_g2"></tbody></table></div></div>
+  </section>
+</div>
+<div id="dummy" class="dummy" hidden><button type="button" data-dummy="isi" title="Isi data dummy untuk halaman ini" aria-label="Isi data dummy">&#129514;</button><button type="button" data-dummy="hapus" title="Hapus semua data dummy" aria-label="Hapus data dummy">&#129529;</button><span id="dummyMsg" role="status"></span></div>
+<script type="module" src="/inti/kepala.js"></script>
+<script src="/logpal/logpal.js?v=1"></script>
+</body>
+</html>

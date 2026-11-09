@@ -1,0 +1,39 @@
+kode,provinsi,status,catatan,penduduk,ibu_kota,lon,lat
+11,Aceh,Ada angka,,5602631,Banda Aceh,95.32,5.55
+12,Sumatera Utara,Ada angka,,15719991,Medan,98.67,3.59
+13,Sumatera Barat,Ada angka,,5882205,Padang,100.36,-0.95
+14,Riau,Tanpa angka,"Peralatan ada, jenis disebut, logistik minim. Jumlah belum dilaporkan.",6782344,Pekanbaru,101.45,0.51
+15,Jambi,Belum ada data,,3762630,Jambi,103.61,-1.61
+16,Sumatera Selatan,Belum ada data,,8997440,Palembang,104.76,-2.98
+17,Bengkulu,Belum ada data,,2133717,Bengkulu,102.26,-3.8
+18,Lampung,Belum ada data,,9559544,Bandar Lampung,105.26,-5.43
+19,Kepulauan Bangka Belitung,Belum ada data,,1541617,Pangkalpinang,106.11,-2.13
+21,Kepulauan Riau,Ada angka,,2173180,Tanjungpinang,104.45,0.92
+31,DKI Jakarta,Belum ada data,,11147200,Jakarta,106.83,-6.18
+32,Jawa Barat,Belum ada data,,51002450,Bandung,107.61,-6.91
+33,Jawa Tengah,Ada angka,,38770526,Semarang,110.42,-6.99
+34,DI Yogyakarta,Ada angka,,3913753,Yogyakarta,110.37,-7.8
+35,Jawa Timur,Belum ada data,,43211767,Surabaya,112.74,-7.25
+36,Banten,Belum ada data,,12784923,Serang,106.15,-6.12
+51,Bali,Ada angka,,4591019,Denpasar,115.22,-8.65
+52,Nusa Tenggara Barat,Belum ada data,,5642061,Mataram,116.12,-8.58
+53,Nusa Tenggara Timur,Belum ada data,,5670394,Kupang,123.6,-10.17
+61,Kalimantan Barat,Belum ada data,,5750703,Pontianak,109.34,-0.03
+62,Kalimantan Tengah,Ada angka,,2823573,Palangka Raya,113.92,-2.21
+63,Kalimantan Selatan,Belum ada data,,4317654,Banjarbaru,114.83,-3.44
+64,Kalimantan Timur,Belum ada data,,3987512,Samarinda,117.15,-0.5
+65,Kalimantan Utara,Ada angka,,743519,Tanjung Selor,117.37,2.84
+71,Sulawesi Utara,Belum ada data,,2784192,Manado,124.84,1.49
+72,Sulawesi Tengah,Belum melapor,"Tercatat ""belum dilaporkan"" di Rekap PDW I.",3164781,Palu,119.87,-0.9
+73,Sulawesi Selatan,Belum ada data,,9621547,Makassar,119.43,-5.14
+74,Sulawesi Tenggara,Ada angka,,2786042,Kendari,122.51,-3.97
+75,Gorontalo,Belum ada data,,1233337,Gorontalo,123.06,0.54
+76,Sulawesi Barat,Belum ada data,,1510610,Mamuju,118.89,-2.67
+81,Maluku,Belum ada data,,1958501,Ambon,128.18,-3.7
+82,Maluku Utara,Ada angka,,1356755,Sofifi,127.57,0.74
+91,Papua,Ada angka,,1072358,Jayapura,140.71,-2.53
+92,Papua Barat,Belum ada data,,574213,Manokwari,134.06,-0.86
+94,Papua Tengah,Belum ada data,,1485046,Nabire,135.5,-3.37
+95,Papua Pegunungan,Belum ada data,,1446708,Wamena,138.95,-4.1
+93,Papua Selatan,Ada angka,"Baru data bantuan 2026. Jenis perahu, tenda, velbed, pompa disebut di Rekap PDW I tanpa jumlah.",619495,Merauke,140.4,-8.5
+96,Papua Barat Daya,Belum ada data,,548594,Sorong,131.26,-0.88
