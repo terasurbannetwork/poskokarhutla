@@ -389,9 +389,10 @@
 .dl-tindak .dl-chips{justify-content:flex-start}
 .dl-tindak .dl-tag{white-space:normal;text-align:left}
 /* pemilih jenis pantauan (gaya Operasi Udara | Operasi Darat, operasi_peta.css .ops-mode) dan tab Laporan (isi /pelaporan, pemilik 5 Nov 2026) */
-.dl-seg{display:inline-flex;gap:4px;padding:4px;margin:0 0 16px;background:var(--card);border:1px solid var(--line);border-radius:999px;box-shadow:var(--bayang);max-width:100%;overflow-x:auto}
-.dl-seg button{display:inline-flex;align-items:center;gap:8px;padding:9px 20px;border:0;border-radius:999px;background:none;font:inherit;font-size:14px;font-weight:700;color:var(--ink2);cursor:pointer;white-space:nowrap}
-.dl-seg button svg{width:18px;height:18px}
+/* delapan tab ujung ke ujung: kisi terbagi rata, membungkus di lebar sempit (tidak terpotong) */
+.dl-seg{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:4px;padding:4px;margin:0 0 16px;background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--bayang)}
+.dl-seg button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 12px;border:0;border-radius:999px;background:none;font:inherit;font-size:14px;font-weight:700;color:var(--ink2);cursor:pointer;white-space:nowrap}
+.dl-seg button svg{width:18px;height:18px;flex:none}
 .dl-seg button[aria-selected="true"]{background:var(--navy);color:#fff}
 .dl-seg button:focus-visible{outline:2px solid var(--c5);outline-offset:2px}
 .dl-wrap{--bad:var(--c1);--ok:var(--c4);--bg2:var(--soft);--brand2:var(--navy2);--shadow:var(--bayang)}   /* token yang dipakai arsip_laporan.css */
@@ -402,6 +403,39 @@
 .dl-lp-k b{font-family:var(--display);font-size:16px}
 .dl-lp-k span{color:var(--ink2);font-size:13.5px;line-height:1.5}
 .dl-lp-k small{color:var(--navy);font-weight:700;font-size:12.5px}
-@media (max-width:600px){.dl-seg button{padding:8px 14px;font-size:13px}}
+@media (max-width:600px){.dl-seg{grid-template-columns:repeat(2,1fr)}.dl-seg button{padding:8px 10px;font-size:13px}}
 /* tab Longsor: kolom Tinggi air (kolom ke-9 tabel wilayah; baris provinsi = 1 sel judul + 10 sel) tidak berlaku */
 .dl-tanpa-tinggi thead tr:first-child th:nth-child(7),.dl-tanpa-tinggi tbody td:nth-child(9),.dl-tanpa-tinggi tfoot td:nth-child(9){display:none}
+
+/* korban gempa dst: meninggal dan hilang merah tebal di bawah nama kab/kota */
+.dl-korban-baris{justify-content:flex-start;margin-top:4px}
+.dl-korban{font-weight:800;color:var(--c1)}
+/* tab Gunung Api: warna level sama dengan public/gunungapi/app.js (WARNA_LV); latar pil memakai warna itu, teks FG_LV */
+.dl-ga-l1{--w:#9aa4b2;--fg:#fff}.dl-ga-l2{--w:#e0b400;--fg:#3b2e00}.dl-ga-l3{--w:#e8743b;--fg:#fff}.dl-ga-l4{--w:#d64545;--fg:#fff}
+.dl-ga-ubin{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.dl-ga-ub{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"ik b" "ik t";column-gap:12px;align-items:center;padding:14px 16px;border-radius:12px;background:color-mix(in srgb,var(--w) 13%,var(--card));color:var(--ink)}
+.dl-ga-ub svg{grid-area:ik;width:30px;height:30px;color:var(--w)}
+.dl-ga-ub b{grid-area:b;font:800 28px/1.05 var(--display);font-variant-numeric:tabular-nums}
+.dl-ga-ub span{grid-area:t;font-size:13px;font-weight:600;color:var(--ink2)}
+.dl-ga-per{margin:12px 0 0}
+.dl-ga-pil{background:var(--w);color:var(--fg)}
+.dl-ga-kartu{display:grid;grid-template-columns:200px minmax(0,1fr) minmax(0,1.4fr);gap:24px;align-items:start}
+.dl-wrap .ex-std .dl-ga-svg{display:block;width:200px;max-width:100%;height:auto;color:var(--w);font-family:var(--display)}
+.dl-wrap .ex-std .dl-ga-svg text,.dl-wrap .ex-std .dl-ga-svg .puncak{stroke:none}
+.dl-ga-svg text{font-weight:600}
+.dl-ga-svg .cincin{fill:none;stroke:var(--line);stroke-width:1}
+.dl-ga-svg .tk{font-size:7px;fill:var(--ink3)}
+.dl-ga-svg .zona{fill:currentColor;fill-opacity:.16;stroke:currentColor;stroke-width:1.4}
+.dl-ga-svg .kipas{fill:currentColor;fill-opacity:.38;stroke:currentColor;stroke-width:1}
+.dl-ga-svg .puncak{fill:var(--ink)}
+.dl-ga-svg .utara{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.dl-ga-svg .tu{font-size:9px;font-weight:800;fill:var(--ink)}
+.dl-ga-tengah{display:grid;gap:8px;align-content:start}
+.dl-ga-tengah h4{margin:0;font:800 20px/1.15 var(--display);color:var(--ink)}
+.dl-ga-tengah p{margin:0;font-size:14px;color:var(--ink2)}
+.dl-ga-tengah p b{font:800 22px/1.1 var(--display);color:var(--ink);margin-right:4px}
+.dl-ga-tengah .dl-chips,.dl-ga-kanan .dl-chips{justify-content:flex-start}
+.dl-ga-kanan{display:grid;gap:14px;align-content:start}
+.dl-ga-jdl{display:block;margin:0 0 6px;font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--ink3)}
+.dl-ga-tabel td:nth-child(3),.dl-ga-tabel th:nth-child(3){text-align:center}
+@media (max-width:800px){.dl-ga-kartu{grid-template-columns:1fr}.dl-ga-diagram{justify-self:center;width:200px}.dl-ga-ubin{grid-template-columns:repeat(2,minmax(0,1fr))}}

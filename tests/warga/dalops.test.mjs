@@ -53,7 +53,20 @@ test("longsor dan karhutla (pemilik 5 Nov 2026): satu rute per jenis, kunci R2 t
   assert.deepEqual((await jenis("longsor")).j, ls);
   assert.equal((await jenis("karhutla")).status, 404);
   assert.equal((await mf.dispatchFetch("http://dalops.lokal/api/dalops/karhutla", {headers: LUAR})).status, 401, "verifikator tidak berhak");
-  assert.equal((await mf.dispatchFetch("http://dalops.lokal/api/dalops/gempa", {headers: STAF})).status, 404, "jenis lain tidak punya rute");
+  assert.equal((await mf.dispatchFetch("http://dalops.lokal/api/dalops/tsunami", {headers: STAF})).status, 404, "jenis lain tidak punya rute");
+});
+
+test("gempa, cuaca, kekeringan: tanpa sesi 401, staf mendapat isi R2-nya, belum diunggah 404", async () => {
+  for (const j of ["gempa", "cuaca", "kekeringan"]) {
+    const url = "http://dalops.lokal/api/dalops/" + j;
+    assert.equal((await mf.dispatchFetch(url)).status, 401, "tanpa sesi " + j);
+    assert.equal((await mf.dispatchFetch(url, {headers: LUAR})).status, 401, "verifikator tidak berhak " + j);
+    assert.equal((await mf.dispatchFetch(url, {headers: STAF})).status, 404, "belum diunggah " + j);
+    const isi = {v: 1, kejadian: [{id: "X-" + j}]};
+    await R2.put(`dalops/${j}.json`, JSON.stringify(isi));
+    const r = await mf.dispatchFetch(url, {headers: STAF});
+    assert.equal(r.status, 200); assert.deepEqual(await r.json(), isi);
+  }
 });
 
 test("RU-109: akun gerbang AKUN_SITUS* ditolak 401 tanpa badan data di ketiga jenis; staf sah dan moderator tetap 200", async () => {

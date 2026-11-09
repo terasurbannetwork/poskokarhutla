@@ -4,6 +4,10 @@ Masukan : data/raw/logbook/arsip/<tahun>/kejadian.jsonl (keluaran logbook_pusdal
 Keluaran: data/raw/dalops/banjir.json (ikut .gitignore). Dengan --unggah: R2 poskokarhutla-foto/dalops/banjir.json,
           disajikan src/dalops.js hanya untuk sesi staf Pusdalops/Koordalops/Pimpinan.
 
+Jenis keluaran: banjir, longsor, karhutla, gempa (logbook/WA 'gempabumi'), cuaca (cuaca + angin), kekeringan. Kolom 'surut' = selesai
+ditangani menurut jenisnya. Jenis gempa/cuaca/kekeringan menambah kolom md, hilang, status_darurat (null bila tak disebut); jendela
+'mulai' gempa dan kekeringan 120 hari (kejadian berbulan-bulan), jenis lain 30. Gempa tingkat provinsi: kab = "Prov. <nama>".
+
 Pilihan kejadian (jenis "banjir"; bandang tercatat di jenis ini, rob di gelombang_pasang tidak ikut):
   - mulai dalam 30 hari terakhir, DAN
   - kabar terakhir dalam 7 hari logbook terakhir (bahan "laporan sepekan") ATAU belum dilaporkan surut
@@ -26,10 +30,16 @@ import subprocess
 
 AKAR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 JENIS = "banjir"   # diganti --jenis: banjir, longsor, karhutla (pemilik 5 Nov 2026: Pantau = Karhutla, Banjir, Longsor)
-JENIS_BOLEH = ("banjir", "longsor", "karhutla")
+JENIS_BOLEH = ("banjir", "longsor", "karhutla", "gempa", "cuaca", "kekeringan")
+# nama keluaran -> jenis di logbook / WA (jenis keluaran 'gempa' membaca 'gempabumi'; angin = cuaca ekstrem)
+SUMBER = {"gempa": ("gempabumi",), "cuaca": ("cuaca", "angin")}
+BARU = ("gempa", "cuaca", "kekeringan")   # jenis tambahan: kolom md, hilang, status_darurat ikut terbit
+sumber = lambda: SUMBER.get(JENIS, (JENIS,))
 keluar = lambda: os.path.join(AKAR, f"data/raw/dalops/{JENIS}.json")
 kunci_r2 = lambda: f"poskokarhutla-foto/dalops/{JENIS}.json"
-SEPEKAN, BUKA_MAKS = 6, 30   # hari sebelum hari logbook terakhir
+SEPEKAN = 6   # hari sebelum hari logbook terakhir
+# jendela 'mulai' per jenis: gempa dan kekeringan berlangsung berbulan-bulan (Transisi s.d. 27 Des; kekeringan sejak 23 Sep)
+buka_maks = lambda: {"gempa": 120, "kekeringan": 120}.get(JENIS, 30)
 
 
 def _muat(nama, rel):
@@ -62,12 +72,23 @@ KARHUTLA_PADAM = re.compile(r"\b(sudah|telah|berhasil)\s+(di)?padam|\bapi\s+pada
 KARHUTLA_BELUM = re.compile(r"\bmasih\s+terbakar\s+[±]?\s*[1-9]|\bbelum\s+padam|\bmasih\s+(ada\s+)?(api|asap|titik)|\bpendinginan")
 
 
+# gempa dan cuaca ekstrem: selesai hanya bila penanganan dinyatakan selesai; "masih dalam penanganan/pendataan", huntara, pembersihan = belum
+TANGANI_SELESAI = re.compile(r"\bpenanganan\s+(?:telah\s+|sudah\s+)?(?:selesai|tuntas)|\b(?:sudah|telah)\s+(?:selesai|tuntas|tertangani|ditangani)\b|\bseluruh(?:nya)?\s+(?:sudah|telah)\s+(?:di)?(?:bersih|tangani)")
+TANGANI_BELUM = re.compile(r"\bbelum\s+(?:selesai|tertangani|sepenuhnya|diperbaiki)|\bmasih\s+(?:dalam\s+)?(?:penanganan|pendataan|proses|dilakukan|dilaksanakan|berlangsung)|\bdalam\s+(?:penanganan|proses|pendataan)|\bprogres|\bhuntara|\bpembersihan|\bpendataan|\bperlu\s+penanganan")
+# kekeringan: selesai hanya bila teks tegas hujan sudah turun / kondisi normal / status darurat berakhir; distribusi air bersih berjalan = belum
+KERING_SELESAI = re.compile(r"\b(?:sudah|telah)\s+(?:turun\s+)?hujan|\bhujan\s+(?:sudah|telah)\s+turun|\bkembali\s+normal|\b(?:sudah|telah)\s+normal|\bdarurat\s+(?:kekeringan\s+)?(?:sudah\s+|telah\s+)?(?:berakhir|dicabut)|\bstatus\s+(?:\w+\s+)?darurat\s+(?:kekeringan\s+)?(?:sudah\s+|telah\s+)?(?:berakhir|dicabut)")
+KERING_BELUM = re.compile(r"\bbelum\s+(?:turun\s+)?(?:hujan|normal|berakhir)|\bmasih\s+(?:terjadi|kering|kekeringan|kesulitan|membutuhkan|dilakukan|dilaksanakan|berlangsung)|\bdistribusi|\btidak\s+(?:ada\s+)?hujan|\bbelum\s+ada\s+hujan")
+POLA = {"longsor": (LONGSOR_SELESAI, LONGSOR_BELUM), "karhutla": (KARHUTLA_PADAM, KARHUTLA_BELUM), "gempa": (TANGANI_SELESAI, TANGANI_BELUM),
+        "cuaca": (TANGANI_SELESAI, TANGANI_BELUM), "kekeringan": (KERING_SELESAI, KERING_BELUM)}
+
+
 def selesai(teks):
-    """status kejadian per jenis, disimpan di kolom 'surut' supaya layar satu bentuk: banjir surut, longsor tertangani, karhutla padam."""
+    """status kejadian per jenis, disimpan di kolom 'surut' supaya layar satu bentuk: banjir surut, longsor tertangani, karhutla padam,
+    gempa/cuaca penanganan selesai, kekeringan berakhir. Ragu = belum."""
     if JENIS == "banjir":
         return surut(teks)
+    s, b = POLA[JENIS]
     t = (teks or "").lower()
-    s, b = (LONGSOR_SELESAI, LONGSOR_BELUM) if JENIS == "longsor" else (KARHUTLA_PADAM, KARHUTLA_BELUM)
     return not b.search(t) and bool(s.search(t))
 
 
@@ -294,17 +315,18 @@ def baris(k, kode_kab, bersih):
             "kk": angka(k.get("kk_terdampak"), k.get("kk")), "jiwa": angka(k.get("orang_terdampak"), k.get("jiwa")),
             "mengungsi": angka(k.get("orang_mengungsi"), k.get("mengungsi")), "kk_u": angka(k.get("kk_mengungsi")), "rumah_terendam": angka(k.get("rumah_terendam")),
             "n_kec": k.get("n_kec_total") or k.get("n_kec"), "n_desa": k.get("n_desa_total") or k.get("n_desa"),
-            "tinggi_cm": tinggi_cm(teks + " " + (k.get("dampak_teks_terakhir") or "")), "surut": selesai(teks), "kondisi": bersih_kondisi(teks)}
+            "tinggi_cm": tinggi_cm(teks + " " + (k.get("dampak_teks_terakhir") or "")), "surut": selesai(teks), "kondisi": bersih_kondisi(teks),
+            **({"md": angka(k.get("md")), "hilang": angka(k.get("hilang")), "status_darurat": k.get("status_darurat") or None} if JENIS in BARU else {})}
 
 
 def rakit(kejadian, hari, kode_kab, bersih=lambda t: t, laporan=None):
     """laporan: {id_kejadian: [baris logbook harian]} untuk riwayat, kecamatan, dan desa (opsional)."""
     laporan = laporan or {}
     awal_pekan = (dt.date.fromisoformat(hari) - dt.timedelta(days=SEPEKAN)).isoformat()
-    awal_buka = (dt.date.fromisoformat(hari) - dt.timedelta(days=BUKA_MAKS)).isoformat()
+    awal_buka = (dt.date.fromisoformat(hari) - dt.timedelta(days=buka_maks())).isoformat()
     out = []
     for k in kejadian:
-        if k.get("jenis") != JENIS or not k.get("kabkota") or not k.get("terakhir_dicatat") or k["terakhir_dicatat"] > hari:
+        if k.get("jenis") not in sumber() or not k.get("kabkota") or not k.get("terakhir_dicatat") or k["terakhir_dicatat"] > hari:
             continue
         b = baris(k, kode_kab, bersih)
         # mulai > 30 hari lalu dibuang: entri status tanggap/transisi panjang (mis. Solok sejak 21 Sep berisi catatan rapat) bukan genangan
@@ -343,6 +365,27 @@ def rakit(kejadian, hari, kode_kab, bersih=lambda t: t, laporan=None):
 # Pantau Banjir. Dipakai dua jalur: sesudah rakit logbook (main) dan langsung di atas berkas R2 (--wa, mesin tanpa arsip logbook).
 WA_GLOB = "data/laporan-bnpb/harian-*/kerja-*/data.json"
 RE_KK_JIWA = re.compile(r"(\d[\d.]*)\s*KK(?:\s*/\s*(\d[\d.]*)\s*jiwa)?", re.I)
+RE_MD = re.compile(r"(\d[\d.]*)\s*(?:\([^)]*\)\s*)?(?:jiwa|orang)?\s*(?:MD\b|meninggal)", re.I)
+RE_HILANG = re.compile(r"(\d[\d.]*)\s*(?:\([^)]*\)\s*)?(?:jiwa|orang)?\s*(?:hilang|dalam\s+pencarian)", re.I)
+try:
+    PROVINSI = _muat("wilayah", "scripts/data/wilayah.py").PROVINSI
+except Exception:   # wilayah.py hilang: nama provinsi jatuh ke kode
+    PROVINSI = {}
+
+
+def _korban(re_, kunci, angka_, dampak):
+    """meninggal/hilang: kolom angka WA bila ada, kalau tidak dibaca dari kalimat dampak; tak disebut = None (bukan 0)."""
+    v = angka_.get(kunci)
+    if isinstance(v, (int, float)) and v > 0:
+        return int(v)
+    m = re_.search(dampak or "")
+    return _bil(m.group(1)) if m else None
+
+
+def status_darurat(t):
+    """teks status darurat WA apa adanya; '-', '- Pendampingan BNPB: -' dan kosong = None."""
+    t = re.sub(r"\s+", " ", (t or "").strip())
+    return t if re.search(r"[A-Za-z]", t) and not t.startswith("-") else None
 
 
 def wa_entri(d, kode_kab):
@@ -351,9 +394,16 @@ def wa_entri(d, kode_kab):
     tgl = (dt.date.fromisoformat(d["hari"]) - dt.timedelta(days=1)).isoformat()
     out = []
     for k in d.get("kejadian", []):
-        if k.get("jenis") != JENIS or not k.get("lokasi"):
+        if k.get("jenis") not in sumber():
             continue
-        kode = (kode_kab({"kabkota": [k["lokasi"]], "prov_kode": [k["prov"]]}) or [""])[0]
+        if not k.get("lokasi"):   # kejadian tingkat provinsi (gempa NTT): satu baris per provinsi, kab = nama provinsi
+            if JENIS != "gempa" or not k.get("prov"):
+                continue
+            lok = "Prov. " + PROVINSI.get(k["prov"], k["prov"])
+            kode = f"{k['prov']}|(provinsi)"
+        else:
+            lok = k["lokasi"]
+            kode = (kode_kab({"kabkota": [lok], "prov_kode": [k["prov"]]}) or [""])[0]
         if not kode:
             continue
         t = k.get("teks") or {}
@@ -361,11 +411,13 @@ def wa_entri(d, kode_kab):
         pg = t.get("pengungsi") or ""
         pulang = bool(re.search(r"kembali|nihil", pg, re.I))
         ung = None if pulang else RE_KK_JIWA.search(pg)
-        nama = k["lokasi"] if re.match(r"(Kab\.|Kota)\s", k["lokasi"]) else "Kab. " + k["lokasi"]
+        nama = lok if re.match(r"(Kab\.|Kota|Prov\.)\s", lok) else "Kab. " + lok
         out.append({"tgl": tgl, "kab": nama, "kab_kode": kode, "prov_kode": k["prov"], "baru": bool(k.get("baru")), "pulang": pulang,
                     "kk": _bil(ter.group(1)) if ter else None, "jiwa": _bil(ter.group(2)) if ter and ter.group(2) else None,
                     "kk_u": _bil(ung.group(1)) if ung else None, "jiwa_u": _bil(ung.group(2)) if ung and ung.group(2) else None,
-                    "kondisi": (t.get("kondisi") or "").strip()})
+                    "kondisi": (t.get("kondisi") or "").strip(),
+                    "md": _korban(RE_MD, "meninggal", k.get("angka") or {}, t.get("dampak")), "hilang": _korban(RE_HILANG, "hilang", k.get("angka") or {}, t.get("dampak")),
+                    "status_darurat": status_darurat(t.get("status_darurat"))})
     return out
 
 
@@ -380,8 +432,9 @@ def perbarui_wa(rows, entri, nama_prov=lambda kode: kode):
         sudah = [r for r in calon if tgl in tgls(r) and r["id"].startswith("WA")]   # jalan ulang: baris WA yang sudah memuat tanggal ini
         # kejadian baru: hanya baris yang mulainya berselisih <= 3 hari (logbook bisa sudah mencatatnya); pengkinian: baris kab itu yang masih hidup
         dekat = [r for r in calon if r.get("mulai") and abs((hari - dt.date.fromisoformat(r["mulai"])).days) <= 3] if e["baru"] else calon
+        buka = e["baru"] or JENIS in ("gempa", "kekeringan")   # gempa/kekeringan berbulan-bulan: laporan pertama yang terbaca membuka barisnya
         r = sudah[0] if sudah else max(dekat, key=lambda r: (not r.get("surut"), r["terakhir"]), default=None)
-        if r is None and not e["baru"]:
+        if r is None and not buka:
             continue   # pengkinian kejadian lama di luar jendela layar (mis. status transisi Solok sejak Sep berisi rapat): tidak dibuka lagi
         if r is None:
             r = {"id": f"WA{tgl[2:4]}-{tgl[5:7]}{tgl[8:]}{i:02d}", "prov": nama_prov(e["prov_kode"]), "prov_kode": e["prov_kode"], "kab": [e["kab"]],
@@ -403,14 +456,37 @@ def perbarui_wa(rows, entri, nama_prov=lambda kode: kode):
             if e.get("pulang"):
                 r["kk_u"] = r["mengungsi"] = None
         r.setdefault("kk_u", None); r.setdefault("mengungsi", None); r.setdefault("kk", None); r.setdefault("jiwa", None)
+        if JENIS in BARU:   # angka kosong di WA tidak menghapus yang lama; status_darurat terbaru yang terisi menang
+            for f in ("md", "hilang", "status_darurat"):
+                r.setdefault(f, None)
+                if tgl >= r["terakhir"] and e.get(f) is not None:
+                    r[f] = e[f]
     return rows
+
+
+SENYAP_MAKS = {"gempa": 14, "cuaca": 14, "kekeringan": 30}   # jenis tambahan: tanpa kabar selama ini berarti tidak dipantau lagi; gempa kecil tanpa dampak tidak punya laporan "selesai"
+
+
+def lebur_provinsi(rows):
+    """baris WA tingkat provinsi dan baris logbook per kab untuk kejadian yang sama (angka md atau KK sama) jadi satu baris provinsi, supaya korban tidak terhitung dua kali."""
+    buang = set()
+    for p in [r for r in rows if r["kab_kode"][:1] and r["kab_kode"][0].endswith("|(provinsi)")]:
+        for q in rows:
+            sama = any(p.get(f) is not None and p.get(f) == q.get(f) for f in ("md", "kk"))
+            if q is not p and id(q) not in buang and q["prov_kode"] == p["prov_kode"] and sama:
+                p["mulai"] = min(x for x in (p["mulai"], q["mulai"]) if x)
+                p["riwayat"] = sorted(q.get("riwayat", []) + p.get("riwayat", []), key=lambda r: r.get("tgl") or "")
+                p["n_laporan"] = (p.get("n_laporan") or 0) + (q.get("n_laporan") or 0)
+                buang.add(id(q))
+    return [r for r in rows if id(r) not in buang]
 
 
 def saring(rows, hari):
     """jendela layar yang sama dengan rakit(): mulai <= 30 hari, dan berkabar sepekan terakhir atau belum surut."""
     awal_pekan = (dt.date.fromisoformat(hari) - dt.timedelta(days=SEPEKAN)).isoformat()
-    awal_buka = (dt.date.fromisoformat(hari) - dt.timedelta(days=BUKA_MAKS)).isoformat()
-    return sorted([b for b in rows if (b["mulai"] or "") >= awal_buka and b["terakhir"] <= hari and (b["terakhir"] >= awal_pekan or not b["surut"])],
+    awal_buka = (dt.date.fromisoformat(hari) - dt.timedelta(days=buka_maks())).isoformat()
+    awal_kabar = (dt.date.fromisoformat(hari) - dt.timedelta(days=SENYAP_MAKS.get(JENIS, buka_maks()))).isoformat()
+    return sorted([b for b in lebur_provinsi(rows) if (b["mulai"] or "") >= awal_buka and awal_kabar <= b["terakhir"] <= hari and (b["terakhir"] >= awal_pekan or not b["surut"])],
                   key=lambda b: (b["prov_kode"], b["terakhir"]))
 
 
@@ -440,8 +516,8 @@ def main_wa(o, LB):
         print(f"{kunci_r2()} belum ada di R2, mulai dari bahan WA saja")
         d = {"v": 1, "hari": (dt.date.today() - dt.timedelta(days=1)).isoformat(), "sumber": "WA Koordalops", "kejadian": []}
     rows, prov = d["kejadian"], {x["prov_kode"]: x["prov"] for x in d["kejadian"]}
-    entri = entri_wa_semua(LB.kode_kab, (dt.date.fromisoformat(d["hari"]) - dt.timedelta(days=BUKA_MAKS)).isoformat())
-    perbarui_wa(rows, entri, lambda k: prov.get(k, k))
+    entri = entri_wa_semua(LB.kode_kab, (dt.date.fromisoformat(d["hari"]) - dt.timedelta(days=buka_maks())).isoformat())
+    perbarui_wa(rows, entri, lambda k: prov.get(k) or PROVINSI.get(k, k))
     hari = max([d["hari"]] + [e["tgl"] for e in entri])
     rows = saring(rows, hari)
     kini = dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes")
@@ -476,7 +552,7 @@ def satu(o, LB, LP):
         if os.path.exists(f):
             for l in open(f, encoding="utf-8"):
                 r = json.loads(l)
-                if r.get("jenis") == JENIS and r.get("id_kejadian"):
+                if r.get("jenis") in sumber() and r.get("id_kejadian"):
                     laporan.setdefault(r["id_kejadian"], []).append(r)
 
     # laporan harian PDF Dit. Koordalops yang lebih baru dari logbook .docx: data/raw/dalops/laphar/*.pdf (ikut .gitignore)
@@ -489,7 +565,7 @@ def satu(o, LB, LP):
     # bahan WA laporan harian yang lebih baru dari logbook (data.json di git) menimpa kondisi kab yang sama
     entri = [e for e in entri_wa_semua(LB.kode_kab, hari) if not o.hari]
     prov = {x["prov_kode"]: x["prov"] for x in rows}
-    perbarui_wa(rows, entri, lambda k: prov.get(k, k))
+    perbarui_wa(rows, entri, lambda k: prov.get(k) or PROVINSI.get(k, k))
     hari = max([hari] + [e["tgl"] for e in entri])
     rows = saring(rows, hari)
     kini = dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes")
@@ -615,7 +691,44 @@ def uji():
     assert selesai("Api berhasil dipadamkan oleh tim gabungan")
     assert not selesai("berhasil dipadamkan ±11,3 ha dan sisa masih terbakar ±18,2 ha")   # Kalbar 3 Nov
     assert selesai("berhasil dipadamkan ± 1.5 ha dan sisa luas lahan masih terbakar 0 ha")
+    # jenis tambahan: gempa panjang tidak terbuang, kata selesai per jenis, WA angin -> cuaca
+    JENIS = "gempa"
+    assert buka_maks() == 120 and sumber() == ("gempabumi",)
+    G = lambda i, mulai, t: {"id_kejadian": i, "jenis": "gempabumi", "kabkota": ["Kab. Kupang"], "prov": ["NTT"], "prov_kode": ["53"], "tgl_kejadian": mulai,
+                             "pertama_dicatat": mulai, "terakhir_dicatat": t, "n_laporan": 1, "kondisi_terakhir": "Progres Huntara 100%", "md": 156, "status_darurat": "Transisi s.d. 27 Des"}
+    r = rakit([G("g1", "2026-08-15", "2026-11-05")], "2026-11-05", lambda k: ["53|Kupang"])   # mulai 82 hari lalu
+    assert [x["id"] for x in r] == ["g1"] and (r[0]["md"], r[0]["hilang"], r[0]["status_darurat"]) == (156, None, "Transisi s.d. 27 Des"), r
     JENIS = "banjir"
+    assert rakit([dict(K("z", "2026-11-05", "belum surut", "2026-08-15"), jenis="banjir")], "2026-11-05", kode) == []   # banjir tetap 30 hari
+    JENIS = "gempa"
+    B = lambda i, kab, mulai, t, md: {"id": i, "kab_kode": [kab], "prov_kode": "53", "mulai": mulai, "terakhir": t, "surut": False, "md": md, "kk": None, "riwayat": [], "n_laporan": 1}
+    r = saring([B("wa", "53|(provinsi)", "2026-11-03", "2026-11-05", 156), B("lb", "53|Sumba", "2026-08-15", "2026-10-30", 156), B("lama", "53|Alor", "2026-09-14", "2026-09-14", None)], "2026-11-05")
+    assert [(x["id"], x["mulai"], x["n_laporan"]) for x in r] == [("wa", "2026-08-15", 2)], r   # kejadian sama dilebur, gempa senyap 52 hari hilang
+    assert selesai("Penanganan telah selesai, seluruh pengungsi kembali") and not selesai("Hasil sementara Progres Huntara 100%")
+    assert not selesai("Masih dalam penanganan BPBD") and not selesai("")
+    JENIS = "cuaca"
+    assert selesai("Pohon tumbang sudah dibersihkan, penanganan sudah selesai") and not selesai("Penanganan dan pembersihan material masih dilakukan")
+    JENIS = "kekeringan"
+    assert buka_maks() == 120
+    assert selesai("Hujan sudah turun, kondisi kembali normal") and selesai("Status darurat kekeringan telah berakhir")
+    assert not selesai("Telah dilakukan distribusi bantuan air bersih sebanyak 2.684.100 liter") and not selesai("Belum turun hujan, kondisi sudah normal di sebagian")
+    assert not selesai("Sebagian warga masih kesulitan air")
+    # WA: gempa tingkat provinsi (lokasi kosong) dan angin -> cuaca, md/hilang/status_darurat terbawa
+    wk = {"hari": "2026-11-06", "kejadian": [
+        {"jenis": "gempabumi", "prov": "53", "lokasi": "", "angka": {"meninggal": 156.0}, "teks": {"dampak": "156 jiwa MD, 2 jiwa hilang, 17.707 KK terdampak", "status_darurat": "Transisi 27/09/2026 s.d 27/12/2026", "kondisi": "Progres Huntara"}},
+        {"jenis": "angin", "prov": "35", "lokasi": "Kediri", "baru": True, "angka": {}, "teks": {"dampak": "± 81 KK terdampak, 3 orang meninggal dunia", "status_darurat": "- Pendampingan BNPB: -", "kondisi": "Masih dilakukan pembersihan"}},
+        {"jenis": "banjir", "prov": "35", "lokasi": "Kediri", "teks": {}}]}
+    JENIS = "gempa"
+    wg = wa_entri(wk, kk)
+    assert [(e["kab"], e["kab_kode"], e["md"], e["hilang"], e["kk"], e["status_darurat"]) for e in wg] == [("Prov. Nusa Tenggara Timur", "53|(provinsi)", 156, 2, 17707, "Transisi 27/09/2026 s.d 27/12/2026")], wg
+    rg = perbarui_wa([], wg)   # tanpa baris dasar tetap terbuka (bukan 'baru', tapi gempa berbulan-bulan)
+    assert len(rg) == 1 and rg[0]["md"] == 156 and rg[0]["hilang"] == 2 and rg[0]["status_darurat"].startswith("Transisi") and not rg[0]["surut"], rg
+    JENIS = "cuaca"
+    wc = wa_entri(wk, kk)
+    assert [(e["kab"], e["md"], e["hilang"], e["status_darurat"]) for e in wc] == [("Kab. Kediri", 3, None, None)], wc
+    assert len(perbarui_wa([], wc)) == 1 and perbarui_wa([], [dict(wc[0], baru=False)]) == []   # cuaca lama tanpa baris tidak dibuka
+    JENIS = "banjir"
+    assert "md" not in perbarui_wa([], [dict(e, baru=True) for e in wa_entri(wk, kk)])[0]   # kolom tambahan tidak menyentuh bentuk banjir
     print("uji dalops_banjir: lulus")
 
 

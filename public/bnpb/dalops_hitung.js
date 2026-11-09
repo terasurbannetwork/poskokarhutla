@@ -49,10 +49,10 @@
       const kode = (k.kab_kode || [])[0] || "", kunci = (kode || "?" + namaKab("", k.kab)) + "|" + (k.surut ? 1 : 0) + "|" + (selisih(h, k.terakhir) > SEPEKAN ? "senyap" : "pekan");
       const x = m.get(kunci) || {kunci, kab_kode: kode, nama: namaKab(kode, k.kab), prov: k.prov, prov_kode: k.prov_kode, surut: k.surut, mulai: k.mulai, terakhir: k.terakhir,
         kk: null, jiwa: null, mengungsi: null, kk_u: null, rumah_terendam: null, tinggi_cm: null, kondisi: "", id: [], kec: [], desa: [], riwayat: [],
-        upaya: [], terlibat: [], kebutuhan: [], kendala: [], upaya_tgl: null};
+        upaya: [], terlibat: [], kebutuhan: [], kendala: [], upaya_tgl: null, md: null, hilang: null, status_darurat: null};
       if (k.mulai && k.mulai < x.mulai) x.mulai = k.mulai;
       if (k.terakhir > x.terakhir) x.terakhir = k.terakhir;
-      for (const f of ["kk", "jiwa", "mengungsi", "kk_u", "rumah_terendam", "tinggi_cm"]) if (k[f] != null) x[f] = k[f];
+      for (const f of ["kk", "jiwa", "mengungsi", "kk_u", "rumah_terendam", "tinggi_cm", "md", "hilang", "status_darurat"]) if (k[f] != null && k[f] !== "") x[f] = k[f];   // md, hilang, status_darurat: gempa dst, kosong bila tidak dilaporkan
       for (const c of k.kec || []) if (!x.kec.includes(c)) x.kec.push(c);
       for (const d of k.desa || []) { const ada = x.desa.find(y => y.nama.toLowerCase() === d.nama.toLowerCase()); if (ada) Object.assign(ada, Object.fromEntries(Object.entries(d).filter(([, v]) => v != null))); else x.desa.push({...d}); }
       x.riwayat = gabungRiwayat(x.riwayat, k.riwayat || []);
@@ -71,7 +71,10 @@
   /* kata per jenis untuk teks WA dan daftar kurang (pemilik 5 Nov 2026: Pantau = Karhutla, Banjir, Longsor). 'surut' di data = selesai menurut jenisnya. */
   const KATA = {
     banjir: {kata: "banjir", selesai: "surut", tanya: "apakah banjir sudah surut", ukur: "tinggi genangan", tinggi: true, alat: "logistik, perahu, pompa, alat berat"},
-    longsor: {kata: "longsor", selesai: "tertangani", tanya: "apakah akses sudah bisa dilalui dan material sudah dibersihkan", ukur: "", tinggi: false, alat: "logistik, alat berat, tenda"}};
+    longsor: {kata: "longsor", selesai: "tertangani", tanya: "apakah akses sudah bisa dilalui dan material sudah dibersihkan", ukur: "", tinggi: false, alat: "logistik, alat berat, tenda"},
+    gempa: {kata: "gempa bumi", selesai: "tertangani", tanya: "apakah penanganan dampak gempa sudah selesai (korban, kerusakan, pengungsi)", ukur: "", tinggi: false, alat: "logistik, tenda, alat berat, tenaga medis"},
+    cuaca: {kata: "cuaca ekstrem", selesai: "tertangani", tanya: "apakah dampak cuaca ekstrem sudah tertangani", ukur: "", tinggi: false, alat: "logistik, tenda, alat berat, terpal"},
+    kekeringan: {kata: "kekeringan", selesai: "berakhir", tanya: "apakah kekeringan sudah berakhir dan bagaimana pasokan air bersih", ukur: "", tinggi: false, alat: "air bersih, tangki air, pompa"}};
 
   /* belum surut yang kabarnya lebih dari sehari atau angkanya bolong. Urut kabar paling lama dulu. */
   function perluDitanya(kel, h, j = KATA.banjir) {

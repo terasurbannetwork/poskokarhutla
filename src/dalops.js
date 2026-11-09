@@ -1,4 +1,4 @@
-/* Pantau Dalops (/bnpb/dalops): layar staf Pusdalops/Koordalops untuk menindaklanjuti kab/kota terdampak karhutla, banjir, longsor.
+/* Pantau Dalops (/bnpb/dalops): layar staf Pusdalops/Koordalops untuk menindaklanjuti kab/kota terdampak karhutla, banjir, longsor, gempa, cuaca, kekeringan.
    Data kejadian dari logbook harian Pusdalops (isi internal, ada nama petugas) TIDAK boleh di public/ (repo publik):
    satu berkas JSON per jenis di R2 MEDIA kunci dalops/<jenis>.json, dibuat dan diunggah dari mesin pemilik lewat
    `python3 scripts/data/dalops_banjir.py --unggah`. Rute ini hanya meneruskan berkas itu setelah sesi staf lolos. */
@@ -7,7 +7,7 @@ import {modAtauStaf} from "./staf.js";   // RU-109: akun gerbang AKUN_SITUS* buk
 import {halamanBnpbPublik} from "./bnpb.js";
 
 export const PERAN_DALOPS = ["pusdalops", "koordalops", "pimpinan"];
-/* Pantau = Karhutla, Banjir, Longsor (pemilik 5 Nov 2026); satu rute per jenis, kunci R2 dalops/<jenis>.json */
+/* Pantau = Karhutla, Banjir, Longsor, Gempa, Cuaca, Kekeringan (pemilik 5 Nov 2026); satu rute per jenis, kunci R2 dalops/<jenis>.json */
 
 async function data(env, req, jenis) {
   if (!(await modAtauStaf(env, req, PERAN_DALOPS))) return gagal(401, "masuk sebagai staf Pusdalops, Koordalops, atau Pimpinan");
@@ -23,4 +23,7 @@ export const RUTE_DALOPS = {
   "GET /api/dalops/banjir": (env, req) => data(env, req, "banjir"),
   "GET /api/dalops/longsor": (env, req) => data(env, req, "longsor"),
   "GET /api/dalops/karhutla": (env, req) => data(env, req, "karhutla"),
+  "GET /api/dalops/gempa": (env, req) => data(env, req, "gempa"),
+  "GET /api/dalops/cuaca": (env, req) => data(env, req, "cuaca"),
+  "GET /api/dalops/kekeringan": (env, req) => data(env, req, "kekeringan"),
 };

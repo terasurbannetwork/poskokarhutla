@@ -6,6 +6,7 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import "../../public/bnpb/dalops_hitung.js";
 import "../../public/bnpb/dalops_karhutla.js";
+import "../../public/bnpb/dalops_gunungapi.js";
 const H = globalThis.DalopsHitung, HARI = "2026-11-01";
 const K = (id, kab, mulai, terakhir, surut, x = {}) => ({id, prov: "Aceh", prov_kode: "11", kab: ["Kab. " + kab], kab_kode: ["11|" + kab], mulai, pertama: mulai, terakhir,
   kk: null, jiwa: null, mengungsi: null, rumah_terendam: null, tinggi_cm: null, surut, kondisi: "", ...x});
@@ -139,4 +140,70 @@ test("tindakan: upaya, pihak, kebutuhan, kendala dari kejadian terbaru yang meng
   assert.deepEqual([kel[0].upaya, kel[0].terlibat, kel[0].upaya_tgl], [["Evakuasi"], ["TNI"], "2026-11-01"], "pihak kosong di kejadian terbaru tidak menghapus yang lama");
   assert.deepEqual(kel[0].riwayat.find(r => r.tgl === "2026-10-30").upaya, ["Asesmen", "Pendataan"]);
   assert.match(H.pesanWA({...kel[0], kurang: ["upaya"]}), /Upaya penanganan yang sudah dilakukan/);
+});
+
+// teks rekomendasi PVMBG 18-19 Okt 2026 (public/banjir/data/gunungapi_status.json), disalin supaya uji tidak ikut berubah bersama data
+const REKOM = {
+  merapi: "1. Potensi bahaya saat ini berupa guguran lava dan awanpanas pada sektor selatan-barat daya meliputi Sungai Boyong sejauh maksimal 5 km, Sungai Bedog, Krasak, Bebeng sejauh maksimal 7 km. Pada sektor tenggara meliputi Sungai Woro sejauh maksimal 3 km dan Sungai Gendol 5 km. Sedangkan lontaran material vulkanik bila terjadi letusan eksplosif dapat menjangkau radius 3 km dari puncak. 2. Data pemantauan menunjukkan suplai magma masih berlangsung 4. Masyarakat agar mewaspadai bahaya lahar dan awanpanas guguran [ APG] terutama saat terjadi hujan di seputar G. Merapi. 5. Masyarakat agar mengantisipasi gangguan akibat abu vulkanik dari erupsi Gunung Merapi.",
+  semeru: "1. Tidak melakukan aktivitas apapun di sektor tenggara di sepanjang Besuk Kobokan, sejauh 13 km dari puncak (pusat erupsi). Di luar jarak tersebut, masyarakat tidak melakukan aktivitas pada jarak 500 meter dari tepi sungai (sempadan sungai) di sepanjang Besuk Kobokan karena berpotensi terlanda perluasan awan panas dan aliran lahar hingga jarak 17 km dari puncak. 2. Tidak beraktivitas dalam radius 5 Km dari kawah/puncak Gunung Api Semeru karena rawan terhadap bahaya lontaran batu (pijar). 3. Mewaspadai potensi awan panas, guguran lava, dan lahar di sepanjang aliran sungai/lembah yang berhulu di puncak Gunung Api Semeru, terutama sepanjang Besuk Kobokan, Besuk Bang, Besuk Kembar, dan Besuk Sat serta potensi lahar pada sungai-sungai kecil.",
+  krakatau: "1. Masyarakat di sekitar Gunungapi Anak Krakatau dan pengunjung/wisatawan/pendaki tidak diperbolehkan memasuki dan melakukan kegiatan di dalam wilayah radius 5 km dari pusat erupsi Anak Krakatau. 2. Masyarakat di sekitar Gunungapi Anak Krakatau dan pengunjung/wisatawan tidak diperbolehkan memasuki dan melakukan kegiatan di dalam wilayah radius 1 km dari pulau baru di sektor barat laut dan tenggara Gunungapi Anak Krakatau. 3. Meningkatkan kewaspadaan terhadap ancaman bahaya lontaran batu pijar, hujan abu lebat, aliran lava, dan potensi erupsi sekunder yang ditimbulkan oleh kontak panas lava, baik dengan air laut maupun air hujan dalam radius 5 km dari pusat erupsi Anak Krakatau. 4. Masyarakat di wilayah pantai Provinsi Banten dan Lampung harap tenang."};
+
+test("tab Gunung Api: urai() Merapi = radius 3 km, sektor selatan-barat daya 7 km, ancaman dan sungai dari teks", () => {
+  const u = globalThis.DalopsGunungApi.urai(REKOM.merapi);
+  assert.equal(u.radius, 3); assert.deepEqual(u.sektor, {arah: "selatan-barat daya", km: 7});
+  assert.deepEqual(u.sudut, [202.5], "selatan-barat daya = di antara selatan (180) dan barat daya (225)");
+  for (const a of ["Awan panas", "Guguran lava", "Lontaran material", "Hujan abu", "Lahar"]) assert.ok(u.ancaman.includes(a), a);
+  assert.deepEqual(u.kawasan, ["Sektor selatan-barat daya dan tenggara", "Sungai Boyong, Bedog, Krasak, Bebeng, Woro, Gendol"]);
+});
+
+test("tab Gunung Api: urai() Semeru = radius 5 km, sektor tenggara 17 km (bukan 500 meter), Besuk dari teks", () => {
+  const u = globalThis.DalopsGunungApi.urai(REKOM.semeru);
+  assert.equal(u.radius, 5); assert.deepEqual(u.sektor, {arah: "tenggara", km: 17}); assert.deepEqual(u.sudut, [135]);
+  assert.deepEqual(u.ancaman, ["Awan panas", "Guguran lava", "Lontaran batu pijar", "Lahar"]);
+  assert.ok(u.kawasan.includes("Besuk Kobokan, Bang, Kembar, Sat"), u.kawasan.join(" | "));
+});
+
+test("tab Gunung Api: Anak Krakatau, 'radius 1 km dari pulau baru di sektor barat laut dan tenggara' bukan jarak sektor utama", () => {
+  const u = globalThis.DalopsGunungApi.urai(REKOM.krakatau);
+  assert.equal(u.radius, 5, "radius utama 5 km dari pusat erupsi, bukan 1 km pulau baru");
+  assert.equal(u.sektor, null); assert.deepEqual(u.sudut, []);
+  assert.deepEqual(u.ancaman, ["Aliran lava", "Lontaran batu pijar", "Hujan abu", "Erupsi sekunder"]);
+  assert.ok(u.kawasan.includes("1 km dari pulau baru (barat laut dan tenggara)"), u.kawasan.join(" | "));
+  assert.deepEqual(globalThis.DalopsGunungApi.sudut("barat laut dan tenggara"), [315, 135]);
+  assert.deepEqual(globalThis.DalopsGunungApi.urai(""), {radius: null, sektor: null, sudut: [], ancaman: [], kawasan: []}, "teks kosong aman");
+});
+
+test("tab Gunung Api: tanggal berlaku dari perubahan, kalau tidak tercatat 'Sebelum <awal riwayat>' (tidak dikarang)", () => {
+  const G = globalThis.DalopsGunungApi, d = {perubahan: [{nama: "Sinabung", dari: 3, ke: 2, tgl: "2026-10-19"}], riwayat: [{tgl: "2026-10-16"}, {tgl: "2026-10-19"}]};
+  assert.equal(G.labelBerlaku(G.tglBerlaku({nama: "Sinabung", level: 2}, d)), "Berlaku 19 Okt");
+  assert.equal(G.labelBerlaku(G.tglBerlaku({nama: "Merapi", level: 3}, d)), "Sebelum 16 Okt 2026");
+  assert.equal(G.labelBerlaku(G.tglBerlaku({nama: "Merapi", level: 3}, {})), "Tanggal berlaku belum diketahui");
+});
+
+test("kata per jenis baru: gempa, cuaca ekstrem, kekeringan; WA tanpa 'surut', tinggi air, atau perahu", () => {
+  const x = {nama: "Cianjur", mulai: "2026-11-04", terakhir: "2026-11-05", kurang: [], mengungsi: 5};
+  for (const [j, kata, selesai] of [["gempa", "gempa bumi", "tertangani"], ["cuaca", "cuaca ekstrem", "tertangani"], ["kekeringan", "kekeringan", "berakhir"]]) {
+    const wa = H.pesanWA(x, H.KATA[j]);
+    assert.match(wa, new RegExp(`mencatat ${kata} di Cianjur`)); assert.match(wa, new RegExp(`belum dilaporkan ${selesai}`));
+    assert.doesNotMatch(wa, /surut|genangan|perahu|Tinggi/);
+    assert.equal(H.KATA[j].tinggi, false);
+    assert.deepEqual(H.perluDitanya([{nama: "A", surut: false, terakhir: "2026-11-05", kk: 1, jiwa: 2, tinggi_cm: null}], "2026-11-05", H.KATA[j]), [], "tinggi air tidak ditanyakan");
+    assert.doesNotMatch(H.pesanProv("Jawa Barat", [{...x, surut: false}], H.KATA[j]), /genangan|surut/);
+  }
+});
+
+test("kolom korban gempa (md, hilang, status_darurat) ikut kelompok bila ada, null bila tidak", () => {
+  const kel = H.kelompok([K("a", "Cianjur", "2026-11-01", "2026-11-01", false, {md: 3, hilang: 2, status_darurat: "Tanggap darurat"}), K("b", "Garut", "2026-11-01", "2026-11-01", false)], HARI);
+  const c = kel.find(x => x.nama === "Cianjur"), g = kel.find(x => x.nama === "Garut");
+  assert.deepEqual([c.md, c.hilang, c.status_darurat], [3, 2, "Tanggap darurat"]); assert.deepEqual([g.md, g.hilang, g.status_darurat], [null, null, null]);
+});
+
+test("dalops.js: delapan tab berurutan, gunung api dari JSON publik, jenis tanpa prakiraan melewati status.json dan Peringatan dini", () => {
+  const src = readFileSync(new URL("../../public/bnpb/dalops.js", import.meta.url), "utf8");
+  const tab = src.match(/const TAB = \[([\s\S]*?)\];/)[1];
+  assert.deepEqual([...tab.matchAll(/\["(\w+)", "/g)].map(m => m[1]), ["karhutla", "banjir", "longsor", "gunungapi", "gempa", "cuaca", "kekeringan", "laporan"]);
+  assert.match(src, /fetch\("\/banjir\/data\/gunungapi_status\.json"\)/);
+  assert.match(src, /JN\[jenis\]\.pra === false \? null : await/, "status.json tidak dimuat untuk jenis tanpa prakiraan");
+  assert.match(src, /!adaPra \? null :/, "bagian Peringatan dini dilewati, bukan kotak kosong");
+  assert.match(readFileSync(new URL("../../public/bnpb/dalops.html", import.meta.url), "utf8"), /dalops_gunungapi\.js\?v=\d+/);
 });
