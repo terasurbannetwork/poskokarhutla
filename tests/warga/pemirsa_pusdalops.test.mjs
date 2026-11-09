@@ -112,13 +112,13 @@ uji("data-baca-saja: pemirsa pusdalops dapat di halaman menu, /admin/* dan /?ope
   assert.match((await html("/?operasi", P.cookie)).tag, /data-pemirsa-tab="peta,operasi"/);
   const adm = await situs("/bnpb/logbook", ADMIN); assert.equal(adm.status, 200); assert.doesNotMatch((await adm.text()).match(/<html[^>]*>/)[0], /data-baca-saja/, "admin tidak ditandai");
   const U2 = await buat("Pemirsa Peta", ["peta", "pusdalops"]); assert.match((await html("/?operasi", U2.cookie)).tag, /data-baca-saja/, "tab pusdalops di antara tab lain");
-  const tanpa = await buat("Pemirsa Peta Saja", ["peta", "berita"]); assert.doesNotMatch((await html("/", tanpa.cookie)).tag, /data-baca-saja/, "tanpa tab pusdalops");
+  const tanpa = await buat("Pemirsa Peta Saja", ["peta", "berita"]); assert.doesNotMatch((await html("/berita", tanpa.cookie)).tag, /data-baca-saja/, "tanpa tab pusdalops");
   assert.doesNotMatch((await html("/daftar-kontak")).tag, /data-baca-saja/, "tamu tanpa cookie");
 });
 
 uji("blok CSS html[data-baca-saja]: tiap kelas, id, atribut benar-benar ada di sumber layar (selektor basi = merah)", () => {
   const css = readFileSync("public/bnpb/menu_pusdalops.css", "utf8"), i = css.indexOf("html[data-baca-saja]"); assert.ok(i > 0);
-  const blok = css.slice(i).replace(/\/\*[\s\S]*?\*\//g, ""), sel = blok.split("{").filter((_, k) => k % 2 === 0).map(x => x.split("}").pop()).join(",");   // hanya bagian selektor
+  const blok = css.slice(i).replace(/\/\*[\s\S]*?\*\//g, ""), sel = blok.split("}").map(x => x.split("{")[0]).join(",");   // hanya bagian selektor
   const SUMBER = ["public/bnpb/logbook.js", "public/bnpb/operasi.js", "public/bnpb/operasi_g3.js", "public/laporan_bnpb.html", "public/laporan_bnpb.js"].map(f => readFileSync(f, "utf8")).join("\n");
   const kelas = new Set([...sel.matchAll(/[.#]([A-Za-z][\w-]*)/g)].map(m => m[1])), attr = new Set([...sel.matchAll(/\[(data-[\w-]+)/g)].map(m => m[1])); attr.delete("data-baca-saja");
   assert.ok(kelas.size >= 10 && attr.size >= 2, "selektor terbaca");

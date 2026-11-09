@@ -741,7 +741,7 @@ function catatHTML(env, req, jalur, ctx) {
 /* pemirsa bertab 'pusdalops' (baca saja): <html data-baca-saja>, public/bnpb/menu_pusdalops.css menyembunyikan kontrol tulis. Satu titik untuk jawaban rute() dan layaniHTML.
    Tanpa cookie pemirsa: tanpa query D1 (pemirsaSesi). Admin dan staf tidak ditandai. Hanya penyajian; gerbang akses dan API tetap yang menolak tulis. */
 async function bacaSaja(env, req, res) {
-  if (req.method !== "GET" || !/text\/html/.test(res.headers.get("content-type") || "")) return res;
+  const ct = res.headers.get("content-type"); if (req.method !== "GET" || res.status !== 200 || ct && !/text\/html/.test(ct)) return res;   // layaniHTML lokal (aset tanpa content-type) tetap lewat; pengubah HTML tak menyentuh badan non-HTML
   const pm = await pemirsaSesi(env, req);
   if (!pm?.tab.includes("pusdalops") || await adminOK(env, req) || await stafSesiSemua(env, req)) return res;
   const k = new HTMLRewriter().on("html", {element: el => el.setAttribute("data-baca-saja", "")}).transform(res);
