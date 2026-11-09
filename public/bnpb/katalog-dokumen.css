@@ -8,12 +8,12 @@
 /* filter: satu baris, kotak cari + tiga menu tarik-turun; filter aktif muncul sebagai chip hanya bila ada */
 .kd-saring{display:grid;grid-template-columns:minmax(0,1fr) repeat(2,minmax(150px,210px));gap:8px}
 @container (max-width:560px){.kd-saring{grid-template-columns:repeat(2,minmax(0,1fr))}.kd-saring .kd-cari{grid-column:1/-1}}
-/* kategori: label di kiri, kisi sama lebar. "Semua" dua sel + 10 kategori = 12 sel, jadi 6, 4, 3, atau 2 kolom selalu rata ujung ke ujung */
+/* kategori: label di kiri, kisi sama lebar. "Semua" + 11 kategori = 12 sel, jadi 6, 4, 3, atau 2 kolom selalu rata ujung ke ujung */
 .kd-grup{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;align-items:start}
 .kd-grup-label{padding-top:10px;color:var(--ink2);font-size:12px;font-weight:700}
 .kd-pilih{display:grid;gap:6px;grid-template-columns:repeat(2,minmax(0,1fr))}
 .kd-pilih button{display:flex;align-items:center;gap:6px;min-width:0;height:36px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink2);font:600 12.5px var(--font,inherit);cursor:pointer}
-.kd-pilih button:first-child{grid-column:span 2;justify-content:center}
+.kd-pilih button:first-child{justify-content:center}
 .kd-pilih button:hover{background:var(--surface)}
 .kd-pilih button:focus-visible{outline:2px solid var(--c5);outline-offset:1px}
 .kd-pilih button[aria-pressed="true"]{background:var(--navy,#0b2545);border-color:var(--navy,#0b2545);color:#fff}
@@ -79,6 +79,32 @@ svg.kd-ik{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;st
 .kd-kal-petunjuk{color:var(--ink2);font-size:12px}
 .kd-kal-hapus{padding:5px 12px;border:0;border-radius:999px;background:none;color:var(--c1);font:700 12px var(--font,inherit);cursor:pointer}
 .kd-kal-hapus:hover{background:color-mix(in srgb,var(--c1) 12%,transparent)}
+.kd-menu:disabled{opacity:.45;cursor:not-allowed}
+.kd-menu:disabled:hover{background:var(--card)}
+/* tampilan kalender: satu bulan, heatmap makin gelap makin banyak file. Warna tetap di kedua tema supaya artinya sama */
+.kd-hm{padding:14px 16px 16px;border-top:1px solid var(--line)}
+.kd-hm-kepala{display:flex;justify-content:center;margin-bottom:12px}
+.kd-hm-nav{display:flex;align-items:center;gap:6px}
+.kd-hm-nav b{min-width:150px;text-align:center;font:800 17px var(--display,inherit);color:var(--ink)}
+.kd-hm-nav .kd-ikon:disabled{opacity:.3;cursor:default;background:none}
+.kd-hm-skala{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:14px;color:var(--ink2);font-size:12px}
+.kd-hm-skala i{width:18px;height:12px;border-radius:3px}
+.kd-hm-kisi{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.kd-hm-hari{padding-bottom:2px;text-align:center;color:var(--ink2);font-size:12px;font-weight:700}
+.kd-hm-sel{display:flex;flex-direction:column;justify-content:space-between;height:88px;padding:9px 11px;border:0;border-radius:12px;background:var(--surface);color:var(--ink2);font:inherit;text-align:left;cursor:pointer;transition:transform .1s,box-shadow .1s}
+.kd-hm-tgl{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;opacity:.85}
+.kd-hm-n{display:flex;align-items:baseline;justify-content:flex-end;gap:4px}
+.kd-hm-n b{font:800 24px/1 var(--display,inherit);font-variant-numeric:tabular-nums}
+.kd-hm-n small{font-size:11px;font-weight:600;opacity:.85}
+.kd-hm-sel:disabled{cursor:default;background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
+.kd-hm-sel:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 4px 12px rgb(11 37 69 / .25)}
+.kd-hm-sel:focus-visible{outline:2px solid var(--c5);outline-offset:2px}
+.kd-hm-sel.pilih{outline:3px solid var(--c2);outline-offset:2px}
+[data-l="1"]{background:#d6e4f3}[data-l="2"]{background:#a3c3e6}[data-l="3"]{background:#5f94cc}[data-l="4"]{background:#2a66a8}[data-l="5"]{background:#0b3a73}
+.kd-hm-sel[data-l="1"],.kd-hm-sel[data-l="2"]{color:#0b2545}
+.kd-hm-sel[data-l="3"],.kd-hm-sel[data-l="4"],.kd-hm-sel[data-l="5"]{color:#fff}
+.kd-hm-sel[data-l="5"],.kd-hm-skala i[data-l="5"]{box-shadow:inset 0 0 0 1px rgb(120 150 190 / .45)}
+@media (max-width:640px){.kd-hm-sel{height:62px;padding:6px 7px;border-radius:9px}.kd-hm-n b{font-size:17px}.kd-hm-n small{display:none}.kd-hm-nav b{min-width:124px;font-size:15px}}
 .ex-tabel.kd-tabel{overflow:hidden}
 .kd-tabel table{width:100%;border-collapse:collapse;font-size:13.5px}
 .kd-tabel th{padding:10px 14px;background:#0b2545;color:#fff;font-weight:700;font-size:12.5px;text-align:center;white-space:nowrap}
@@ -89,7 +115,7 @@ svg.kd-ik{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;st
 .kd-dok-isi{min-width:0;flex:1}
 .kd-ikon-kat{--w:var(--ink3);flex:none;display:grid;place-items:center;width:24px;height:24px;color:color-mix(in srgb,var(--w) 82%,var(--ink))}
 .kd-ikon-kat svg{width:22px;height:22px}
-.kd-ikon-kat[data-k="harian"]{--w:var(--c1)}.kd-ikon-kat[data-k="satelit"]{--w:var(--c2)}.kd-ikon-kat[data-k="laporan"]{--w:var(--c8)}.kd-ikon-kat[data-k="kegiatan"]{--w:var(--c5)}.kd-ikon-kat[data-k="kajian"]{--w:var(--c6)}.kd-ikon-kat[data-k="rancangan"]{--w:var(--c3)}.kd-ikon-kat[data-k="riset"]{--w:var(--c4)}.kd-ikon-kat[data-k="sistem"]{--w:var(--c7)}.kd-ikon-kat[data-k="teknis"]{--w:var(--ink2)}.kd-ikon-kat[data-k="pdf"]{--w:var(--c1)}.kd-ikon-kat[data-k="pptx"]{--w:var(--c2)}.kd-ikon-kat[data-k="docx"]{--w:var(--c5)}.kd-ikon-kat[data-k="xlsx"]{--w:var(--c4)}.kd-ikon-kat[data-k="md"]{--w:var(--c7)}
+.kd-ikon-kat[data-k="harian"]{--w:var(--c1)}.kd-ikon-kat[data-k="satelit"]{--w:var(--c2)}.kd-ikon-kat[data-k="laporan"]{--w:var(--c8)}.kd-ikon-kat[data-k="kegiatan"]{--w:var(--c5)}.kd-ikon-kat[data-k="kajian"]{--w:var(--c6)}.kd-ikon-kat[data-k="rancangan"]{--w:var(--c3)}.kd-ikon-kat[data-k="riset"]{--w:var(--c4)}.kd-ikon-kat[data-k="sistem"]{--w:var(--c7)}.kd-ikon-kat[data-k="teknis"]{--w:var(--ink2)}.kd-ikon-kat[data-k="templat"]{--w:var(--c2)}.kd-ikon-kat[data-k="pdf"]{--w:var(--c1)}.kd-ikon-kat[data-k="pptx"]{--w:var(--c2)}.kd-ikon-kat[data-k="docx"]{--w:var(--c5)}.kd-ikon-kat[data-k="xlsx"]{--w:var(--c4)}.kd-ikon-kat[data-k="md"]{--w:var(--c7)}
 .kd-judul{font-weight:600;line-height:1.35;overflow-wrap:anywhere}
 .kd-folder{display:block;margin-top:2px;color:var(--ink2);font-size:11.5px;overflow-wrap:anywhere}
 .kd-rev{display:inline-block;margin-left:8px;padding:1px 8px;border-radius:999px;background:color-mix(in srgb,var(--c5) 16%,transparent);color:var(--c5);font-size:11px;font-weight:700;white-space:nowrap}
@@ -173,6 +199,7 @@ body.kd-ada-samping{padding-right:var(--kd-lebar)}
 .kd-md pre{margin:0 0 1em;padding:12px 14px;border-radius:10px;background:var(--surface);overflow-x:auto}
 .kd-md pre code{padding:0;background:none}
 .kd-md blockquote{margin:0 0 1em;padding:2px 14px;border-left:3px solid var(--c5);color:var(--ink2)}
+.kd-md-logo{display:block;height:38px;width:auto;margin-left:auto}
 .kd-md hr{border:0;border-top:1px solid var(--line);margin:1.4em 0}
 .kd-md-tabel{overflow-x:auto;margin:0 0 1em}
 .kd-md table{border-collapse:collapse;width:100%;font-size:13px}
