@@ -472,6 +472,7 @@ uji("halaman /instansi/logpal wajib login: anonim ditolak, BPBD aktif, staf berp
   const udara = await staf("Staf Udara Dua", ["udara"]); assert.equal((await api("GET", "/instansi/logpal", undefined, udara.h)).s, 403, "staf tanpa peran logistik");
   for (const [nama, h] of [["BPBD aktif", A.h], ["staf berperan", S.h], ["admin", ADMIN]]) {
     const x = await api("GET", "/instansi/logpal", undefined, h); assert.equal(x.s, 200, nama); assert.match(x.t, /Inventori LogPal/, nama);
+    const csp = x.h.get("content-security-policy") || ""; assert.match(csp, /script-src 'self'(;|$)/, nama + " CSP script-src ketat"); assert.doesNotMatch(csp.match(/script-src[^;]*/)?.[0] || "unsafe-inline", /unsafe-inline/, nama);
     assert.match(x.h.get("cache-control"), /no-store/); assert.match(x.h.get("vary") || "", /cookie/i);
     const st = await api("GET", "/api/instansi/logpal/statis?nama=rute", undefined, h); assert.equal(st.s, 200, nama); assert.match(st.t, /^provinsi,kab,asal/, nama);
     const tk = await api("GET", "/api/instansi/logpal/statis?nama=teks", undefined, h); assert.equal(tk.s, 200); assert.equal(tk.j.stok_a, "Gudang Uji A");

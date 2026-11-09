@@ -12,6 +12,7 @@ import {tx, num, modOK, superOK, wib, tglSah} from "./posko.js";
 import {laju} from "./bnpb.js";
 import {akunAktif, jsonAman, PROV} from "./instansi.js";
 import {modAtauStaf, stafNyata, stafSesi} from "./staf.js";
+import {CSP_LOGPAL} from "./admin_halaman.js";
 
 const JAM = 36e5, HARI = 24 * JAM, RE_ID = /^[0-9a-f]{16}$/, MAKS_BARANG_GUDANG = 3000, MAKS_GUDANG_AKUN = 50;
 /* daftar tetap: sama dengan CHECK di 0112 dan public/logpal/logpal.js (dijaga logpal.test.mjs) */
@@ -388,7 +389,7 @@ async function halaman(env, req, url, kini) {
   const ak = await aktor(env, req, kini);
   if (ak instanceof Response) return ak.status === 401 ? new Response(null, {status: 303, headers: {location: "/instansi", "cache-control": "no-store"}}) : ak;
   const r = await env.ASSETS.fetch(new Request(new URL("/logpal/index.html", url)));
-  return new Response(r.body, {status: r.status, headers: {"content-type": "text/html; charset=utf-8", "cache-control": "private, no-store", vary: "cookie", "x-robots-tag": "noindex, nofollow", "x-content-type-options": "nosniff"}});
+  return new Response(r.body, {status: r.status, headers: {"content-type": "text/html; charset=utf-8", "cache-control": "private, no-store", vary: "cookie", "x-robots-tag": "noindex, nofollow", "content-security-policy": CSP_LOGPAL, "x-content-type-options": "nosniff"}});
 }
 const NAMA_STATIS = ["gudang", "usulan", "rute", "jangkauan", "teks"];
 const NAMA_POTONG = ["matriks", "kecamatan", "terdampak"];   // besar: potongan berurutan di logpal_statis_potong (migrasi 0113), dibaca sekali saat tab Pengantaran dibuka
