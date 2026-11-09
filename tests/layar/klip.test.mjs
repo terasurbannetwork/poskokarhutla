@@ -1,8 +1,8 @@
 // Self-check klip Indonesia (public/inti/peta/nasa.js): titik dalam poligon, bungkus URL, ubin di luar kotak tanpa fetch.
-import test from "node:test"; import assert from "node:assert/strict"; import fs from "node:fs"; import vm from "node:vm";
+import test from "node:test"; import assert from "node:assert/strict"; import fs from "node:fs"; import vm from "node:vm"; import zlib from "node:zlib";
 const baca = p => fs.readFileSync(new URL("../../" + p, import.meta.url), "utf8");
 let fetchan = [], protokol = {};
-const win = {maplibregl: {version: "4.7.1", addProtocol: (n, f) => protokol[n] = f}, document: {getElementById: () => null}};
+const win = {maplibregl: {getVersion: () => "4.7.1", addProtocol: (n, f) => protokol[n] = f}, document: {getElementById: () => null}};
 win.window = win;
 const ctx = vm.createContext({window: win, maplibregl: win.maplibregl, atob, Uint8Array, Blob, Math, console, Path2D: class {}, OffscreenCanvas: class {},
   fetch: async u => { fetchan.push(u); return {json: async () => JSON.parse(baca("public/data/geo/batas_indonesia.json"))}; }});
@@ -22,4 +22,7 @@ test("ubin di luar kotak Indonesia: transparan, tanpa fetch ubin", async () => {
   fetchan = []; await N.batas();
   const r = await protokol.indo({url: "indo://5/10/10/https://contoh.org/a.png"}, {signal: {}});   // Eropa barat
   assert.ok(r.data.byteLength > 0 && !fetchan.some(u => u.includes("contoh.org")));
+  /* piksel IDAT harus benar-benar tembus: PNG lama berisi biru opak dan tampil sebagai kotak biru di laut */
+  const png = Buffer.from(r.data), i = png.indexOf("IDAT"), px = zlib.inflateSync(png.subarray(i + 4, i + 4 + png.readUInt32BE(i - 4)));
+  assert.equal(px[px.length - 1], 0, "alpha ubin kosong harus 0");
 });

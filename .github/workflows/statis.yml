@@ -36,6 +36,7 @@ jobs:
         run: |
           python3 scripts/scrape/fasilitas.py
           python3 scripts/scrape/kanal.py
+          python3 scripts/scrape/kanal_garis.py || echo "::warning::kanal_garis gagal, garis kanal tidak diperbarui"
           python3 scripts/scrape/akses.py graf
           python3 scripts/scrape/air_dem.py bangun
           python3 scripts/data/penduduk.py
@@ -77,6 +78,7 @@ jobs:
         run: |
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
+          [ ! -d public/data/kanal ] || git add public/data/kanal/
           git add public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson public/data/penduduk.json public/data/lahan/konsesi.geojson public/data/pabrik_sawit.json public/data/cari.json data/raw/konsesi/sanksi_karhutla.json
           git diff --cached --quiet && exit 0
           git commit -q -m "data: lapisan statis $(TZ=Asia/Jakarta date +%F)"

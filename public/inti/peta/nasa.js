@@ -22,7 +22,7 @@
      di kanvas lepas-layar, dan mengembalikan PNG. Ubin di luar kotak Indonesia = PNG transparan tanpa fetch. Hanya MapLibre >= 4 dan peladen ber-CORS;
      geoportal Kemenhut dilewati (datanya sudah Indonesia saja, CORS-nya hanya untuk satu origin). Galat apa pun = ubin asli (batas gagal) atau kosong (fetch gagal), tanpa log.
      ponytail: koordinat batas dihitung dalam piksel ubin tanpa pra-potong, di zoom tinggi simpul jauh bisa meleset ~1 px; tambah pra-potong bila terlihat. */
-  const PNG0 = Uint8Array.from(atob("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="), c => c.charCodeAt(0)).buffer;
+  const PNG0 = Uint8Array.from(atob("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="), c => c.charCodeAt(0)).buffer;
   let janjiBatas = null;
   const batas = () => janjiBatas ||= fetch("/data/geo/batas_indonesia.json").then(r => r.json()).then(j => j.cincin.map(v => { let x = v[0], y = v[1]; const p = [[x / j.skala, y / j.skala]];
     for (let i = 2; i < v.length; i += 2) { x += v[i]; y += v[i + 1]; p.push([x / j.skala, y / j.skala]); }
@@ -53,7 +53,7 @@
     } catch (e) { if (ac?.signal?.aborted) throw e; return {data: buf || PNG0}; }
   };
   let protokol = null;
-  const klip = tiles => { if (protokol == null) { try { protokol = +(window.maplibregl?.version || "0").split(".")[0] >= 4 && typeof OffscreenCanvas !== "undefined" && typeof Path2D !== "undefined"; if (protokol) maplibregl.addProtocol("indo", penanganIndo); } catch (e) { protokol = false; } }
+  const klip = tiles => { if (protokol == null) { try { protokol = +(window.maplibregl?.getVersion?.() || window.maplibregl?.version || "0").split(".")[0] >= 4 && typeof OffscreenCanvas !== "undefined" && typeof Path2D !== "undefined"; if (protokol) maplibregl.addProtocol("indo", penanganIndo); } catch (e) { protokol = false; } }
     return protokol ? tiles.map(t => /^https:/.test(t) && !/geoportal\.planologi/.test(t) ? `indo://{z}/{x}/{y}/${t}` : t) : tiles; };
   let janji = null;
   const muatTambahan = () => janji ||= fetch("/data/lapisan_tambahan.json").then(r => r.json()).then(j => { const hari = new Date().toISOString().slice(0, 10);
