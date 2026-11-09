@@ -5,7 +5,7 @@ const GIT = "\\bgit(?:\\s+-[cC]\\s+\\S+|\\s+--?[\\w-]+(?:=\\S+)?)*\\s+";
 const BOLEH_BRANCH = /^(-d|-D|--delete|-l|--list|--show-current|-a|--all|-r|--remotes|-v|-vv|--verbose|--merged|--no-merged|--contains|--no-contains|--format.*|--sort.*|--color.*|--no-color|--points-at|-u|--set-upstream-to.*|--unset-upstream)$/;
 
 // isi heredoc dan teks berkutip bukan perintah (pesan commit, pola grep)
-const bersih = cmd => cmd.replace(/<<-?\s*['"]?(\w+)['"]?[\s\S]*?\n\s*\1\b/g, " ").replace(/"(?:\\.|[^"\\])*"|'[^']*'/g, '""');
+const bersih = cmd => cmd.replace(/<<-?\s*['"]?(\w+)['"]?[\s\S]*?\n\s*\1\b/g, " ").replace(/"(?:\\.|[^"\\])*"|'[^']*'/g, '""').replace(/(?:\d|&)?>>?(?:&\d|\s*\S+)/g, " ");   // pengalihan keluaran (2>&1, >/dev/null) bukan nama branch
 
 function tolakPerintah(cmd) {
   for (const p of bersih(cmd).split(/&&|\|\||;|\||\n/)) {

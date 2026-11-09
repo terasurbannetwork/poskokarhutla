@@ -19,7 +19,7 @@ for (const c of ["git checkout -b coba", "git switch -c coba", "git switch --cre
   test(`ditolak: ${c}`, () => assert.equal(bash(c), 2));
 
 for (const c of ["git status", "git branch", "git branch -a", "git branch -d coba", "git branch -D coba", "git branch --list 'x*'", "git worktree list", "git worktree remove x", "git checkout main", "git checkout -- a.js", "git switch main",
-  "git push origin main", "git push", "git push origin 9f5f55288:main", "git push origin --delete coba", "git push origin :coba",
+  "git push origin main", "git push origin main 2>&1 | tail -6", "git branch 2>/dev/null", "git push origin main >/tmp/x 2>&1", "git push","git push origin 9f5f55288:main", "git push origin --delete coba", "git push origin :coba",
   `git commit -m "jangan git checkout -b dan git worktree add" -- a.js`, `grep -n "git branch coba" a.md`, "python3 - <<'E'\ngit branch coba\nE"])
   test(`boleh: ${c.split("\n")[0]}`, () => assert.equal(bash(c), 0));
 
