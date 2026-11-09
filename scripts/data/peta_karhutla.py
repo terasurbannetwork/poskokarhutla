@@ -85,7 +85,7 @@ F20, F21 = 4.12, 4.16
 # Luas per LOKASI UNIK untuk "belum" (keputusan pemilik 9 Nov 2026). SUMBER: data/laporan-bnpb/metode-2026-10-25/kalibrasi_lokasi.py -> kalibrasi_lokasi.json:
 # F_LOK = median 2024-2025 dari luas resmi BNPB / jumlah lokasi-hari setahun (sel 375 m yang terdeteksi NOAA-20 atau NOAA-21 n/h pada hari WIB itu, sekali per sel per hari,
 # di dalam batas wilayah, tanpa sel sumber panas tetap) = 2,254 (2024: 2,152; 2025: 2,356), dibulatkan 2 desimal. Bukan F20/2: luas lama dihitung per DETEKSI (sel yang dilihat
-# dua satelit terhitung dua kali), belum per LOKASI. Uji Jan-Jul 2026: 93.505 lokasi-hari x 2,254 = 210.762 ha vs SiPongi 202.011 ha (+4,3%).
+# dua satelit terhitung dua kali), belum per LOKASI. Uji Jan-Jul 2026 atas SELURUH lokasi-hari (bukan hanya yang belum padam): 93.505 x 2,25 = 210.386 ha vs SiPongi 202.011 ha (+4,1%); 2,25 belum pernah diuji khusus untuk himpunan belum padam.
 F_LOK = 2.25
 FAKTOR = {"N20": F20, "N21": F21, "lokasi": F_LOK}   # ha per titik / per lokasi unik; tersimpan di JSON terbit ("faktor") dan menjadi kunci baca_lama
 # PORSI HANYA untuk deteksi celah S-NPP (celah_hari, CELAH_NAS); TIDAK dipakai luas/belum/padam.
@@ -364,9 +364,9 @@ def lokasi_belum(h, det):
 
 def hitung(hd, d, kab=None, rinci=None):
     """hd {tanggal: hari_data} berisi d-2..d. -> {prov: [hot, luas, belum, padam]} (float, belum dibulatkan). Urutan operasi sama dengan hitung3.py.
-    luas = jumlah bobot() per satelit atas titik N20/N21 hari d; belum = F_LOK x lokasi unik (lokasi_belum: bertahan 12-36 jam, atau baru di cluster firespot "ya"); padam = bobot titik hari d-2 yang padam (bobot hari d-2).
+    luas = jumlah bobot() per satelit atas titik N20/N21 hari d; belum = F_LOK x lokasi unik, dibatasi min(belum, luas) per kabupaten (provinsi = jumlah kabupaten) (lokasi_belum: bertahan 12-36 jam, atau baru di cluster firespot "ya"); padam = bobot titik hari d-2 yang padam (bobot hari d-2).
     kab (dict kosong, opsional) diisi {(prov, kabupaten): [luas, belum]} (float): jumlah bobot titik kabupaten itu (provinsi = jumlah kabupatennya persis;
-    pembulatan terpisah, lihat periksa_kab). rinci (dict kosong, opsional) diisi {prov: [lokasi bertahan, lokasi baru-firespot]} (bilangan bulat; belum = (A + B) x F_LOK)."""
+    pembulatan terpisah, lihat periksa_kab). rinci (dict kosong, opsional) diisi {prov: [lokasi bertahan, lokasi baru-firespot]} (bilangan bulat, SEBELUM batas belum <= luas, jadi belum bisa < (A + B) x F_LOK)."""
     h0, h1, h2 = hd[d - 2 * HARI], hd[d - HARI], hd[d]
     det = defaultdict(list)
     for h in (h0, h1, h2):
@@ -379,21 +379,32 @@ def hitung(hd, d, kab=None, rinci=None):
     lok = defaultdict(list)
     for x in lokasi_belum(h2, det):
         lok[x[0]].append(x)
+    # BATAS belum <= luas (keputusan orkestrator 9 Nov 2026): luas dihitung per deteksi (2,06 ha), belum per lokasi (F_LOK 2,25 ha), jadi wilayah yang hampir semuanya
+    # bertahan bisa melewati luasnya. Dibatasi di tingkat kabupaten (min(belum, luas) per kabupaten); provinsi = jumlah kabupaten yang sudah dibatasi, supaya
+    # provinsi = jumlah kabupaten tetap persis dan belum <= luas berlaku di semua tingkat. Batas ini di hitungan, bukan di periksa().
+    kb = defaultdict(lambda: [0.0, 0.0])
+    namas = h2.get("kab") or [""] * len(h2["det"])
+    for (c, t, p), s, nama in zip(h2["det"], h2["sat"], namas):
+        if p:
+            kb[(p, nama)][0] += bw(w2, c, s)
+    for p, nama, _, _ in sum(lok.values(), []):
+        kb[(p, nama)][1] += F_LOK
+    for v in kb.values():
+        v[1] = min(v[1], v[0])
+    belum = defaultdict(float)
+    for (p, _), v in kb.items():
+        belum[p] += v[1]
     out = {}
     for k in PROVINSI:
         L, Lp = L_[k], Lp_[k]
         luas = _ha(L, w2)
         padam = _ha([x for x in Lp if not any(x[0] + o in sepi for o in NB)], w0)
-        out[k] = [h2["hot"].get(k, 0), luas, F_LOK * len(lok[k]), padam]
+        out[k] = [h2["hot"].get(k, 0), luas, belum[k], padam]
     if rinci is not None:
         for k in PROVINSI:
-            rinci[k] = [sum(1 for x in lok[k] if x[3] == "A"), sum(1 for x in lok[k] if x[3] == "B")]
+            rinci[k] = [sum(1 for x in lok[k] if x[3] == "A"), sum(1 for x in lok[k] if x[3] == "B")]   # lokasi sebelum batas
     if kab is not None:
-        for (c, t, p), s, nama in zip(h2["det"], h2["sat"], h2["kab"]):
-            if p:
-                kab.setdefault((p, nama), [0.0, 0.0])[0] += bw(w2, c, s)
-        for p, nama, _, _ in sum(lok.values(), []):
-            kab.setdefault((p, nama), [0.0, 0.0])[1] += F_LOK
+        kab.update({k: list(v) for k, v in kb.items()})
     return out
 
 
@@ -428,7 +439,7 @@ def hitung_wil(hd, d):
         for k in set(hot[tingkat]) | set(L_) | set(Lp_):
             L, Lp = L_.get(k, []), Lp_.get(k, [])
             luas = _ha(L, w2)
-            belum = F_LOK * lok[tingkat].get(k, 0)
+            belum = min(F_LOK * lok[tingkat].get(k, 0), luas)   # batas belum <= luas per wilayah (lihat hitung()); jumlah anak <= induk, sesuai periksa_wil
             padam = _ha([x for x in Lp if not any(x[0] + o in sepi for o in NB)], w0)
             out[k] = [hot[tingkat].get(k, 0), luas, belum, padam]
     return out
@@ -582,7 +593,8 @@ def metode():
                  "berapa pun lintasan dan satelitnya. Dihitung bila (A) bertahan: sel itu (sel 3x3, sampai 375 m dari titik) sudah terdeteksi 12–36 jam sebelumnya oleh salah satu satelit; atau (B) baru, "
                  "yaitu tidak bertahan tetapi berada di cluster firespot (aturan Kemenhut SIPANTAU: ada titik keyakinan tinggi, atau sedikitnya 4 piksel nominal, atau pola hari berturutan). "
                  "Lokasi yang hari itu tidak terdeteksi tidak dihitung. Faktor = luas resmi BNPB 2024–2025 dibagi jumlah lokasi-hari NOAA-20/21 setahun (median dua tahun), "
-                 "beda dari faktor luas karena luas menghitung per deteksi. Cadangan pada hari itu, bukan dijumlahkan antarhari.",
+                 "beda dari faktor luas karena luas menghitung per deteksi. Karena itu belum padam tiap kabupaten dan kecamatan dibatasi tidak melewati luasnya, dan angka provinsi adalah jumlah kabupatennya. "
+                 "Cadangan pada hari itu, bukan dijumlahkan antarhari.",
         "padam": "Luas dua hari sebelumnya (rumus yang sama) dari titik yang lokasinya tidak terdeteksi lagi sepanjang dua hari berikutnya (48 jam tanpa titik = padam).",
         "catatan": [
             "Perkiraan dari satelit, bukan luas resmi. Rentang galat 15–40% hanya berasal dari faktor dan sampling; faktor per titik tidak diuji per provinsi, "
@@ -1084,15 +1096,23 @@ def uji_sintetis():
     assert abs(r[2] - F_LOK) < 1e-9, r                                                                       # belum: c3 bertahan (dicek deteksi N21 hari d-1) = SATU lokasi x F_LOK; c4 baru tetapi bukan firespot "ya": tidak dihitung
     ri = {}
     hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2}, d, None, ri)
-    assert ri["62"] == [1, 0], ri["62"]                                                                      # rinci: 1 bertahan, 0 baru-firespot
+    assert ri["62"] == [1, 0], ri["62"]
+    # BATAS belum <= luas: wilayah yang seluruhnya bertahan tidak melewati luasnya (2 lokasi x 2,25 = 4,5 > luas 2 deteksi N20 x 2,06 = 4,12 -> 4,12); batas per kabupaten, provinsi = jumlahnya
+    hb = H({"62": 3}, [(c3, t0 + 600, "62"), (c3 + 7 * LEBAR, t0 + 600, "62"), (c4, t0 + 600, "62")], [0, 0, 0])
+    hb["kab"] = ["A", "A", "B"]
+    h1b = H({}, [(c3 - LEBAR, t0 - 1440 + 600, "62"), (c3 + 6 * LEBAR, t0 - 1440 + 600, "62")], [0, 0])   # kedua sel A bertahan (tetangga 22 jam sebelumnya)
+    kbb = {}
+    rb = hitung({d - 2 * HARI: h0, d - HARI: h1b, d: hb}, d, kbb)["62"]
+    assert abs(kbb[("62", "A")][0] - 2 * w20) < 1e-9 and abs(kbb[("62", "A")][1] - 2 * w20) < 1e-9, kbb   # 2 x 2,25 = 4,5 dibatasi ke luas A = 4,12
+    assert kbb[("62", "B")][1] == 0 and abs(rb[2] - 2 * w20) < 1e-9 and rb[2] <= rb[1] + 1e-9, (rb, kbb)                                                                      # rinci: 1 bertahan, 0 baru-firespot
     # (B) baru tetapi di cluster firespot "ya" terhitung; baru "mungkin" (tidak di ya) tidak; sel yang sama dua lintasan terhitung SEKALI (bertahan atau baru)
     h2y = H({"62": 7}, h2["det"], h2["sat"], ya=[c4])
-    assert abs(hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2y}, d)["62"][2] - 2 * F_LOK) < 1e-9, "c3 bertahan + c4 baru firespot ya = 2 lokasi"
+    assert abs(hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2y}, d)["62"][2] - min(2 * F_LOK, w20 + w21)) < 1e-9, "c3 bertahan + c4 baru firespot ya = 2 lokasi (dibatasi luas wilayah)"
     h2d = H({"62": 7}, h2["det"] + [(c3, t0 + 900, "62"), (c4, t0 + 900, "62")], h2["sat"] + [1, 0], ya=[c4])   # lintasan kedua pada sel yang sama (c3 dan c4) hari yang sama
-    assert abs(hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2d}, d)["62"][2] - 2 * F_LOK) < 1e-9, "dua lintasan pada satu sel = satu lokasi"
+    assert abs(hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2d}, d)["62"][2] - 2 * F_LOK) < 1e-9, "dua lintasan pada satu sel = satu lokasi (luas 4 deteksi, tidak kena batas)"
     assert abs(hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2d}, d)["62"][1] - (w20 + w21 + w21 + w20)) < 1e-9, "luas tetap per deteksi (tidak berubah)"
     h2l = H({"62": 7}, [(c3, t0 + 600, "62"), (c4, t0 + 600, "")], [0, 1], ya=[c4])                         # sel di laut/luar provinsi tak ditulis walau di cluster ya
-    assert abs(hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2l}, d)["62"][2] - F_LOK) < 1e-9
+    assert abs(hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2l}, d)["62"][2] - min(F_LOK, w20)) < 1e-9
     h2n = H({"62": 7}, [(c4, t0 + 600, "62")], [1], ya=[])                                                    # hari ini hanya sel baru "mungkin"
     assert hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2n}, d)["62"][2] == 0
     h2z = H({"62": 7}, [], [], ya=[c3])                                                                       # sel ya yang hari ini tak terdeteksi: tidak dihitung
@@ -1105,8 +1125,9 @@ def uji_sintetis():
     assert hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2}, d)["16"] == [0, 0, 0, 0], "provinsi tanpa titik"
     h2["kab"] = ["A", "B", ""]
     kb = {}
-    assert hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2}, d, kb)["62"] == r, "kab mengubah hitungan provinsi"
-    assert kb.keys() == {("62", "A"), ("62", "B")} and abs(kb[("62", "A")][0] - w20) < 1e-9 and abs(kb[("62", "A")][1] - F_LOK) < 1e-9 \
+    rk = hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2}, d, kb)["62"]
+    assert [rk[0], rk[1], rk[3]] == [r[0], r[1], r[3]] and abs(rk[2] - w20) < 1e-9, (rk, r)   # kab hanya mengubah belum: dibatasi per kabupaten (A: 2,25 -> luas 2,06)
+    assert kb.keys() == {("62", "A"), ("62", "B")} and abs(kb[("62", "A")][0] - w20) < 1e-9 and abs(kb[("62", "A")][1] - min(F_LOK, w20)) < 1e-9 \
         and abs(kb[("62", "B")][0] - w21) < 1e-9 and kb[("62", "B")][1] == 0, kb                           # A: c3 N20 bertahan (satu lokasi x F_LOK); B: c4 N21 baru bukan firespot ya: belum 0; titik laut tak dihitung
     # satelit anjlok PER PITA BUJUR (bd per pita 5 derajat): pita yang satu satelitnya 0 titik (dan yang lain >= CELAH_MIN) memakai satelit yang ada
     # saja, bobot penuh (F20 / F21, tanpa dibagi 2), satelit yang hilang dibobot 0; pita normal (termasuk rasio rendah tetapi bukan nol = tepi sapuan) tetap /2; pita lain tak terpengaruh. c3, c4 jatuh di pita "0".
@@ -1185,9 +1206,10 @@ def uji_sintetis():
     g1 = Hw({}, [(c3 + LEBAR + 1, t0 - 1440 + 600, kk[0], 1)])
     g0 = Hw({}, [(c1, t0 - 2880 + 600, kk[0], 0), (c2, t0 - 2880 + 600, kk[2], 1)])
     rw = hitung_wil({d - 2 * HARI: g0, d - HARI: g1, d: g2}, d)
-    assert set(rw) == {*kk, "62|A", "62|B"} and abs(rw["62|A|x"][1] - w20) < 1e-9 and abs(rw["62|A|x"][2] - F_LOK) < 1e-9 and rw["62|A|y"][2] == 0 and abs(rw["62|A|y"][1] - w21) < 1e-9, rw
-    for j in range(4):
+    assert set(rw) == {*kk, "62|A", "62|B"} and abs(rw["62|A|x"][1] - w20) < 1e-9 and abs(rw["62|A|x"][2] - min(F_LOK, w20)) < 1e-9 and rw["62|A|y"][2] == 0 and abs(rw["62|A|y"][1] - w21) < 1e-9, rw
+    for j in (0, 1, 3):
         assert abs(rw["62|A"][j] - rw["62|A|x"][j] - rw["62|A|y"][j]) < 1e-9 and abs(rw["62|A"][j] + rw["62|B"][j] - sum(rw[k][j] for k in kk)) < 1e-9, (j, rw)
+    assert rw["62|A|x"][2] + rw["62|A|y"][2] <= rw["62|A"][2] + 1e-9 and rw["62|A"][2] <= rw["62|A"][1], rw   # belum: batas per wilayah, jumlah kecamatan <= kabupaten
     assert rw["62|A"][0] == 3 and rw["62|B"][0] == 1 and abs(rw["62|A|x"][3] - w20) < 1e-9 and abs(rw["62|B|z"][3] - w21) < 1e-9, rw   # c1 (N20) dan c2 (N21) tak muncul lagi: keduanya padam, bobot satelit masing-masing
     iw = susun_wil(None, d, d, d + HARI, {d.isoformat(): rw, (d + HARI).isoformat(): {"62|A": [0, 0.4, 0, 0]}}, "x")
     assert iw["d"]["62|A"] == [0, 3, bul(w20 + w21), bul(F_LOK), bul(w20)] and iw["d"]["62|A|y"] == [0, 0, bul(w21), 0, 0] and iw["n"] == 2, iw["d"]   # hari 2 (semua membulat 0) tak tertulis
@@ -1345,8 +1367,23 @@ def uji_deck():
                 if len(k.split("|")) == tingkat + 1:
                     for j in range(4):
                         tot[k.split("|")[0]][j] += v[j]
+            for k, v in rp.items():   # belum dibatasi per wilayah: kabupaten = provinsi persis, jumlah kecamatan <= provinsi
+                assert all(abs(tot[k][j] - v[j]) < 1e-6 or (j == 2 and tingkat == 2 and tot[k][j] < v[j]) for j in range(4)), (d, tingkat, k, tot[k], v)
+    # batas belum aktif di atas (anak <= induk). Tanpa batas (F_LOK kecil) jumlah kecamatan harus PERSIS sama dengan provinsi, jadi kecamatan hilang atau salah hitung tetap tertangkap
+    f_asli = F_LOK
+    globals()["F_LOK"] = 1e-3
+    try:
+        for i in (18, 19, 20):
+            d = dt.date(2026, 10, i)
+            rw, rp = hitung_wil(hd, d), hitung(hd, d)
+            tot = defaultdict(float)
+            for k, v in rw.items():
+                if len(k.split("|")) == 3:
+                    tot[k.split("|")[0]] += v[2]
             for k, v in rp.items():
-                assert all(abs(tot[k][j] - v[j]) < 1e-6 for j in range(4)), (d, tingkat, k, tot[k], v)
+                assert abs(tot[k] - v[2]) < 1e-6, ("jumlah kecamatan tanpa batas", d, k, tot[k], v[2])
+    finally:
+        globals()["F_LOK"] = f_asli
     assert len(A["prov"]) == 38
     # hot: keputusan pemilik 25 Okt 2026 = LOKASI UNIK (titik_unik) 4 satelit, tanpa sel industri; keyakinan = titik_unik.KEYAKINAN_MIN (28 Okt 2026: semua), jadi BUKAN lagi angka deck (deck = titik mentah semua keyakinan).
     # Pembanding mandiri: hitung ulang dari baris fikstur (tanpa rekam/hari_data) lewat titik_unik.unik berurut waktu; hot harus sama persis, <= deteksi mentah yang lolos saringan sama,
