@@ -58,7 +58,7 @@ function dunia({ pesan = [], now = NOW, rekap, gagalGenerator } = {}) {
       exec.push(args)
       if (gagalGenerator) throw Object.assign(new Error('x'), { stderr: 'meledak' })
       const out = args[args.indexOf('--out') + 1], tgl = args[args.indexOf('--tanggal') + 1]
-      const lap = LAPORAN.find((l) => l.args(tgl, { rekap_koordalops_24: 'k', bmkg_pagi: 'b', satgas: 's' }, 'o')[0] === args[0])
+      const lap = LAPORAN.find((l) => l.args(tgl, { rekap_koordalops_24: 'k', bmkg_pagi: 'b', satgas: 's', pvmbg_pagi: 'g' }, 'o')[0] === args[0])
       for (const x of ['pdf', 'pptx']) fs.writeFileSync(path.join(out, `${lap.berkas(tgl)}.${x}`), 'x')
     },
     kirimFile: async () => { throw new Error('tidak boleh ke penerima') },
@@ -70,12 +70,12 @@ function dunia({ pesan = [], now = NOW, rekap, gagalGenerator } = {}) {
     balas: async (t) => { balasan.push(t) }, balasFile: async (p, n, c, m) => { berkas.push({ p, n, c, m }) } }
   return { ctx, balasan, berkas, exec, dasar, fetchUrl }
 }
-const LENGKAP = (tgl) => [P('1', 'rekap_koordalops_24', 0, tgl), P('2', 'bmkg_pagi', 0, tgl), P('3', 'satgas', 0, tgl)]
+const LENGKAP = (tgl) => [P('1', 'rekap_koordalops_24', 0, tgl), P('2', 'bmkg_pagi', 0, tgl), P('3', 'satgas', 0, tgl), P('5', 'pvmbg_pagi', 0, tgl)]
 
 test('buat hari lampau: abaikan cut-off, kirim PPTX dan PDF hanya ke peminta, state dan unggah tak disentuh', async () => {
   const d = dunia({ pesan: LENGKAP('2026-10-26'), now: wibKe(1) })
   await tangani(parse('buat harian 26 okt', d.ctx.now), d.ctx)
-  assert.equal(d.exec.length, 1); assert.equal(d.exec[0][0], 'harian.py')
+  assert.equal(d.exec.length, 1); assert.equal(d.exec[0][0], 'harian_ringkas.py')
   assert.deepEqual(d.berkas.map((b) => path.extname(b.n)).sort(), ['.pdf', '.pptx'])
   assert.ok(d.berkas.every((b) => b.c === 'Laporan Kejadian Bencana Harian 2026-10-26 (permintaan, belum dikirim ke penerima)'))
   assert.equal(fs.existsSync(path.join(d.dasar, 'state.json')), false)

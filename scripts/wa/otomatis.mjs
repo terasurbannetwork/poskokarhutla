@@ -27,9 +27,10 @@ const execP = promisify(execFile)
 
 // Aturan jam dari data/laporan-bnpb/generator/README.md: harian cut-off 12.00 WIB, penanganan 17.00 WIB.
 export const LAPORAN = [
-  { id: 'harian', judul: 'Laporan Kejadian Bencana Harian', butuh: ['rekap_koordalops_24', 'bmkg_pagi'], jam: 12,
+  { id: 'harian', judul: 'Laporan Kejadian Bencana Harian', butuh: ['rekap_koordalops_24', 'bmkg_pagi', 'pvmbg_pagi'], jam: 12,
     berkas: (d) => `Laporan Kejadian Bencana Harian ${ddmmyy(d)}`,
-    args: (d, f, out) => ['harian.py', '--tanggal', d, '--koordalops', f.rekap_koordalops_24, '--bmkg', f.bmkg_pagi, '--jam', '12:00', '--out', out] },
+    // format 2 slide tanpa karhutla, pemilik 6 Nov; harian.py tetap dipakai pembangun manual
+    args: (d, f, out) => ['harian_ringkas.py', '--tanggal', d, '--koordalops', f.rekap_koordalops_24, '--bmkg', f.bmkg_pagi, '--pvmbg', f.pvmbg_pagi, '--jam', '12:00', '--out', out] },
   { id: 'penanganan', judul: 'Laporan Penanganan Pengendalian Karhutla', butuh: ['bmkg_pagi', 'satgas'], opsional: true, jam: 17, // opsional: mode --cutoff membangun dari data sistem walau bahan WA belum ada (penanganan.py menerima --bmkg/--operasi opsional)
     berkas: (d) => `Laporan Penanganan Pengendalian Karhutla ${ddmmyy(d)}`,
     args: (d, f, out) => ['penanganan.py', '--tanggal', d, '--jam', '17:00', ...(f.bmkg_pagi ? ['--bmkg', f.bmkg_pagi] : []), ...(f.satgas ? ['--operasi', f.satgas] : []), '--out', out] },
@@ -199,6 +200,7 @@ export async function jalankan(opsi = {}) {
   const env = opsi.env || process.env
   const now = opsi.now || new Date()
   const kering = !!opsi.kering
+  if (kering) process.env.WA_KERING = '1' // generator tidak mengunggah ke luar saat uji tanpa kirim
   const dep = opsi.dep || depBawaan(env)
   const kenali = opsi.kenali || kenaliAsli
   const tanggalIsi = opsi.tanggalIsi || tanggalIsiAsli

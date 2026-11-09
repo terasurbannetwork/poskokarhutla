@@ -10,7 +10,7 @@ const kenali = (teks) => (teks.match(/^\[(\w+)\]/) || [])[1] || null // stub: "[
 const wibKe = (jam, tgl = '2026-10-29') => new Date(Date.parse(`${tgl}T00:00:00Z`) + (jam - 7) * 3600e3)
 const TGL = '2026-10-29'
 const P = (id, kunci, diterima, extra = '') => ({ id, diterima, teks: `[${kunci}] ${extra}`, nama_berkas: '' })
-const LENGKAP = [P('1', 'rekap_koordalops_24', 100, 'a'), P('2', 'bmkg_pagi', 101, 'b'), P('3', 'satgas', 102, 'c')]
+const LENGKAP = [P('1', 'rekap_koordalops_24', 100, 'a'), P('2', 'bmkg_pagi', 101, 'b'), P('3', 'satgas', 102, 'c'), P('5', 'pvmbg_pagi', 103, 'd')]
 
 function dunia(pesan, { gagalGenerator, gagalKirim, gagalUnggah } = {}) {
   const rumah = fs.mkdtempSync(path.join(os.tmpdir(), 'wa-uji-'))
@@ -21,7 +21,7 @@ function dunia(pesan, { gagalGenerator, gagalKirim, gagalUnggah } = {}) {
       kirim.exec.push(args); kirim.opsi = o; kirim.cmd = cmd
       if (gagalGenerator) throw Object.assign(new Error('x'), { stderr: 'baris1\nWA Koordalops s.d. bukan hari laporan' })
       const out = args[args.indexOf('--out') + 1]
-      const lap = LAPORAN.find((l) => l.args(TGL, { rekap_koordalops_24: 'k', bmkg_pagi: 'b', satgas: 's' }, 'o')[0] === args[0])
+      const lap = LAPORAN.find((l) => l.args(TGL, { rekap_koordalops_24: 'k', bmkg_pagi: 'b', satgas: 's', pvmbg_pagi: 'g' }, 'o')[0] === args[0])
       for (const x of ['pdf', 'pptx']) fs.writeFileSync(path.join(out, `${lap.berkas(TGL)}.${x}`), 'x')
     },
     unggah: async (a) => { kirim.urut.push('unggah'); if (kirim.gagalUnggah) throw new Error('HTTP 500'); kirim.unggah.push(a) },
@@ -40,7 +40,7 @@ test('pilihTerbaru: ambil pesan terbaru per jenis, jenis tak dikenal diabaikan',
 
 test('cekSiap: cut-off 12.00 harian dan 17.00 penanganan, dua jenis wajib ada', () => {
   const [h, p] = LAPORAN
-  const t = { rekap_koordalops_24: 1, bmkg_pagi: 1, satgas: 1 }
+  const t = { rekap_koordalops_24: 1, bmkg_pagi: 1, satgas: 1, pvmbg_pagi: 1 }
   assert.equal(cekSiap(h, t, wibKe(11.9), TGL).siap, false)
   assert.equal(cekSiap(h, t, wibKe(12), TGL).siap, true)
   assert.equal(cekSiap(p, t, wibKe(16.9), TGL).siap, false)
@@ -54,7 +54,7 @@ test('kirim sekali: dua laporan x dua berkas x dua penerima, caption tanpa titik
   await d.jalan()
   assert.equal(d.kirim.file.length, 8)
   assert.ok(d.kirim.file.every((f) => !f.c.includes('·') && !f.c.startsWith('Revisi')))
-  assert.deepEqual(d.kirim.exec.map((a) => a[0]), ['harian.py', 'penanganan.py'])
+  assert.deepEqual(d.kirim.exec.map((a) => a[0]), ['harian_ringkas.py', 'penanganan.py'])
   assert.ok(d.kirim.exec[0].includes('12:00') && d.kirim.exec[1].includes('--operasi'))
   await d.jalan()
   assert.equal(d.kirim.file.length, 8); assert.equal(d.kirim.exec.length, 2)
@@ -75,9 +75,9 @@ test('belum cut-off atau bahan kurang: tidak membangun apa pun', async () => {
   const d = dunia(LENGKAP)
   await d.jalan({ now: wibKe(11) })
   assert.equal(d.kirim.exec.length, 0)
-  const e = dunia(LENGKAP.slice(0, 2)) // satgas belum ada
+  const e = dunia(LENGKAP.filter((m) => !m.teks.includes('satgas'))) // satgas belum ada
   await e.jalan({ now: wibKe(20) })
-  assert.deepEqual(e.kirim.exec.map((a) => a[0]), ['harian.py'])
+  assert.deepEqual(e.kirim.exec.map((a) => a[0]), ['harian_ringkas.py'])
 })
 
 test('galat generator: hanya PEMILIK dikabari, satu kali, penerima nol', async () => {
