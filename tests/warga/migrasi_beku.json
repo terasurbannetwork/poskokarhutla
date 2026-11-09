@@ -112,5 +112,7 @@
   "0108_icao_jambi.sql": "f64de05852f1b7e6ce1f70f1649ab8576a2d3daf87480c6e541fe0e4d5fbd9c1",
   "0109_ai_pengetahuan.sql": "889840c422fefa9c21de891d313a34deb69456e289fe16f988d43f35dbe2fdde",
   "0110_meja_rehab_lepas.sql": "cbbf9ceaac8eb28c6b8128fdc9d5e9b012d37b510f15e9d2258b14b7036455df",
-  "0111_km_masalah_indeks.sql": "98f468de3fa3f95a4f30e99c3823dc403f14948d3ee7a3840d7f024bdc7a8cd2"
+  "0111_km_masalah_indeks.sql": "98f468de3fa3f95a4f30e99c3823dc403f14948d3ee7a3840d7f024bdc7a8cd2",
+  "0112_logpal.sql": "f391f70ba713b8d5ba96f85f4a1e32d6f635048f6f037e9e9e99724608abd84c",
+  "0113_logpal_potongan.sql": "9b18fbd55bca00015ae06f8876fb5d22c4f4994de953a5668e56ffbde89db1be"
 }

@@ -1,0 +1,118 @@
+{
+ "dibuat": "2026-11-09",
+ "hari": "2026-11-09",
+ "ambang": {
+  "belum_surut_hari": 14,
+  "sudah_surut_hari": 14
+ },
+ "baris": [
+  {
+   "kode": "11|Aceh Barat",
+   "prov_kode": "11",
+   "provinsi": "Aceh",
+   "kab": "Aceh Barat",
+   "status": "Sudah surut",
+   "tanggal": "2026-11-03",
+   "sumber": "Laporan harian Koordalops"
+  },
+  {
+   "kode": "11|Aceh Selatan",
+   "prov_kode": "11",
+   "provinsi": "Aceh",
+   "kab": "Aceh Selatan",
+   "status": "Sudah surut",
+   "tanggal": "2026-11-05",
+   "sumber": "Laporan harian Koordalops"
+  },
+  {
+   "kode": "11|Gayo Lues",
+   "prov_kode": "11",
+   "provinsi": "Aceh",
+   "kab": "Gayo Lues",
+   "status": "Sudah surut",
+   "tanggal": "2026-11-02",
+   "sumber": "Laporan harian Koordalops"
+  },
+  {
+   "kode": "11|Kota Subulussalam",
+   "prov_kode": "11",
+   "provinsi": "Aceh",
+   "kab": "Kota Subulussalam",
+   "status": "Sudah surut",
+   "tanggal": "2026-11-04",
+   "sumber": "Laporan harian Koordalops"
+  },
+  {
+   "kode": "11|Pidie Jaya",
+   "prov_kode": "11",
+   "provinsi": "Aceh",
+   "kab": "Pidie Jaya",
+   "status": "Belum surut",
+   "tanggal": "2026-11-05",
+   "sumber": "Laporan harian Koordalops"
+  },
+  {
+   "kode": "12|Deli Serdang",
+   "prov_kode": "12",
+   "provinsi": "Sumatera Utara",
+   "kab": "Deli Serdang",
+   "status": "Belum surut",
+   "tanggal": "2026-10-30",
+   "sumber": "Laporan harian Koordalops"
+  },
+  {
+   "kode": "12|Kota Binjai",
+   "prov_kode": "12",
+   "provinsi": "Sumatera Utara",
+   "kab": "Kota Binjai",
+   "status": "Sudah surut",
+   "tanggal": "2026-10-31",
+   "sumber": "Laporan harian Koordalops"
+  },
+  {
+   "kode": "12|Langkat",
+   "prov_kode": "12",
+   "provinsi": "Sumatera Utara",
+   "kab": "Langkat",
+   "status": "Belum surut",
+   "tanggal": "2026-10-31",
+   "sumber": "Laporan harian Koordalops"
+  },
+  {
+   "kode": "12|Mandailing Natal",
+   "prov_kode": "12",
+   "provinsi": "Sumatera Utara",
+   "kab": "Mandailing Natal",
+   "status": "Sudah surut",
+   "tanggal": "2026-11-02",
+   "sumber": "Laporan harian Koordalops"
+  },
+  {
+   "kode": "12|Serdang Bedagai",
+   "prov_kode": "12",
+   "provinsi": "Sumatera Utara",
+   "kab": "Serdang Bedagai",
+   "status": "Belum surut",
+   "tanggal": "2026-10-29",
+   "sumber": "Laporan harian Koordalops"
+  },
+  {
+   "kode": "13|Padang Pariaman",
+   "prov_kode": "13",
+   "provinsi": "Sumatera Barat",
+   "kab": "Padang Pariaman",
+   "status": "Sudah surut",
+   "tanggal": "2026-11-07",
+   "sumber": "Laporan harian Koordalops"
+  },
+  {
+   "kode": "35|Lumajang",
+   "prov_kode": "35",
+   "provinsi": "Jawa Timur",
+   "kab": "Lumajang",
+   "status": "Belum surut",
+   "tanggal": "2026-11-04",
+   "sumber": "Laporan harian Koordalops"
+  }
+ ]
+}

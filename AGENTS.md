@@ -108,6 +108,7 @@ ulang yang berubah.
 | Kemitraan kampus `/kemitraan` | `public/kemitraan*`, `public/kemitraan/**`, `public/data/kemitraan/**`, `scripts/kemitraan/**`, `tests/kemitraan/**` (layar+pipeline); `src/kemitraan*.js`, `migrations/0080-0084` (warga-api) | D1 `km_*`, R2 `kemitraan/`; `kemitraan.yml` harian, `kemitraan-pakar.yml` bulanan | `kampus` |
 | Ruang Unit `/bnpb/unit` | `public/bnpb/unit/**`, `scripts/bnpb/unit/**` (ruang-bnpb); `src/unit*.js`, migrasi Ruang Unit (warga-api) | R2 `unit/`, rute `/api/unit/*`; langkah di `data.yml` | `ruang-bnpb` |
 | Lapangan `/petugas` | `public/petugas/**`, `tests/lapangan/**`, `scripts/lapangan/**`, `data/kajian-bnpb/lapangan/**` (lapangan); `src/lapangan*.js`, `migrations/0095-0098` (warga-api) | D1 `orang`, `lp_*`, `wa_antre`; R2 `lapangan/` | `lapangan` |
+| Inventori LogPal `/logpal` | `public/logpal/**`, `public/data/logpal/**`, `scripts/logpal/**`, `data/kajian-bnpb/logpal/**`; `src/logpal.js`, `migrations/0112` (warga-api) | D1 `logpal_*`; rute `/api/instansi/logpal/*` | `warga-api` |
 
 ### 2.1 SIPPA (pipa portabel karhutla dan banjir): baca dulu, baru bangun
 
@@ -170,6 +171,18 @@ Sebelum menyentuh apa pun tentang sistem untuk kedeputian, direktorat, pusat, bi
 
 Aturan berhentinya sama dengan §2.1. Data staf hanya di R2 `unit/` lewat rute staf, tidak di `public/data`.
 
+### 2.5 Inventori LogPal (`/logpal`): baca dulu, baru bangun
+
+Sebelum menyentuh apa pun tentang stok gudang BNPB dan BPBD, mutasi, stok opname, permintaan bantuan logistik, atau impor data gudang, baca dokumen di
+`data/kajian-bnpb/logpal/` dengan urutan otoritas ini:
+
+1. `KEPUTUSAN-LOGPAL.md`: keputusan pemilik dan pertanyaan terbuka; menang atas semuanya. Jangan menjawab pertanyaan terbuka dengan karangan.
+2. `RISET.md` (+ `riset/R1-R3`): syarat audit BMN dan BMD, praktik dunia, sistem Indonesia.
+3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LG-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Data gudang asli tidak pernah masuk repo; `scripts/logpal/impor.mjs` menulis SQL ke luar repo.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
@@ -215,6 +228,12 @@ tua). Tanpa kaki keterangan/sumber (pemilik 4 Nov 2026: "hilangkan"); definisi k
 `title` kepala tabel. Tombol atau pemilih bagian di kanan judul. Jangan
 membuat kepala bagian sendiri (bilah gelap, `.head` + h2 lepas). Layar laporan baru masuk
 daftar `LAYAR` di gerbang `tests/agen/gerbang-kartu-std.test.mjs`.
+
+### 3.6 Folder revisi laporan harian (9 Nov 2026)
+
+Tiap keluaran Laporan Kejadian Bencana Harian dan Laporan Penanganan Pengendalian Karhutla masuk foldernya sendiri di folder hari:
+`Revisi 3/<nama deck>.pptx` dan `.pdf`, nama berkas tanpa `(rev3)`. Skrip harian menyerahkannya lewat `lewat_deck.serah_revisi`.
+Deck lain belum kena aturan ini. Gerbangnya `tests/agen/gerbang-folder-revisi.test.mjs`.
 
 ## 6. Review
 

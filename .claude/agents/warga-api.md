@@ -55,6 +55,10 @@ Berkas milikmu (glob paling spesifik menang):
 - `public/titik_live.js`
 - `public/statistik_publik.js`
 - `public/instansi*`
+- `public/logpal/**`
+- `public/data/logpal/**`
+- `scripts/logpal/**`
+- `data/kajian-bnpb/logpal/**`
 - `WARGA.md`
 - `.dev.vars.example`
 
@@ -68,6 +72,7 @@ Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 - Tiap perilaku di luar JS (skema D1, constraint, route) diuji lewat tests/warga/*.test.mjs yang menjalankan miniflare sungguhan (npm run uji:warga)
 - Route publik: validasi input, batas laju, tanpa membocorkan data pribadi pelapor
 - Kunci (FIRMS_MAP_KEY dll) lewat secret wrangler / .dev.vars, tidak pernah di berkas yang di-commit
+- Modul Inventori LogPal (/logpal): baca dulu data/kajian-bnpb/logpal/ urut otoritas AGENTS.md §2.5; data gudang asli tidak pernah masuk repo, pertanyaan terbuka di KEPUTUSAN-LOGPAL.md tidak dijawab dengan karangan
 
 ## Batas
 

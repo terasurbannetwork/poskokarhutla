@@ -39,15 +39,16 @@ export async function pemegangKode(env, req, modul, cari, kini = Date.now(), mak
 /* Halaman publik Ruang Koordinasi dari public/bnpb/<berkas>.html dengan CSP ketat (tanpa skrip/gaya inline). */
 export const CSP = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.openfreemap.org; connect-src 'self' https://*.openfreemap.org; worker-src blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
 /* turnstile: true = halaman berformulir publik; bila TURNSTILE_SITEKEY diset, CSP mengizinkan widget challenges.cloudflare.com (skrip + bingkai) */
+const CSP_PRATINJAU = CSP.replace("worker-src blob:", "worker-src 'self' blob:");   // worker PDF.js dari /vendor/pdfjs untuk pratinjau /bnpb/katalog-dokumen
 const CSP_TS = CSP.replace("script-src 'self'", "script-src 'self' https://challenges.cloudflare.com").replace("frame-ancestors", "frame-src https://challenges.cloudflare.com; frame-ancestors");
 /* citra: true = peta berlapis citra satelit Esri (pola peta utama); hanya halaman yang memerlukannya yang mendapat host ubin ini */
 const CSP_CITRA = CSP.replace("img-src 'self' data: blob: https://*.openfreemap.org", "img-src 'self' data: blob: https://*.openfreemap.org https://server.arcgisonline.com")
   .replace("connect-src 'self' https://*.openfreemap.org", "connect-src 'self' https://*.openfreemap.org https://server.arcgisonline.com");
-export async function halamanBnpbPublik(env, url, berkas, {pribadi = false, turnstile = false, bingkai = false, citra = false, gambar = ""} = {}) {
+export async function halamanBnpbPublik(env, url, berkas, {pribadi = false, turnstile = false, bingkai = false, citra = false, gambar = "", pratinjau = false} = {}) {
   const r = await env.ASSETS.fetch(new Request(new URL(`/bnpb/${berkas}.html`, url)));
   if (!r.ok) { r.body?.cancel(); return gagal(404, "halaman tidak ada"); }
   return new Response(r.body, {headers: {"content-type": "text/html; charset=utf-8", "cache-control": pribadi ? "no-store" : "public, max-age=300", "x-content-type-options": "nosniff",
-    "referrer-policy": pribadi ? "no-referrer" : "strict-origin-when-cross-origin", ...(pribadi ? {"x-robots-tag": "noindex, nofollow"} : {}), "content-security-policy": citra ? CSP_CITRA : turnstile && env.TURNSTILE_SITEKEY ? CSP_TS : bingkai ? CSP.replace("frame-ancestors 'none'", "frame-ancestors 'self'").replace("img-src 'self'", gambar ? `img-src 'self' ${gambar}` : "img-src 'self'") : CSP}});   // bingkai: boleh dibingkai situs sendiri (/admin/laporan); halaman lain tetap none
+    "referrer-policy": pribadi ? "no-referrer" : "strict-origin-when-cross-origin", ...(pribadi ? {"x-robots-tag": "noindex, nofollow"} : {}), "content-security-policy": pratinjau ? CSP_PRATINJAU : citra ? CSP_CITRA : turnstile && env.TURNSTILE_SITEKEY ? CSP_TS : bingkai ? CSP.replace("frame-ancestors 'none'", "frame-ancestors 'self'").replace("img-src 'self'", gambar ? `img-src 'self' ${gambar}` : "img-src 'self'") : CSP}});   // bingkai: boleh dibingkai situs sendiri (/admin/laporan); halaman lain tetap none
 }
 
 /* cron menit 17 */
@@ -60,6 +61,7 @@ export const RUTE_BNPB = {
   /* Operasi udara pindah ke peta utama (pemilik 3 Nov 2026): tab Operasi di "/" (public/operasi_peta.js); alamat lama dialihkan */
   "GET /bnpb/operasi-lapangan": () => new Response(null, {status: 302, headers: {location: "/operasi", "cache-control": "no-store"}}),   // layar staf: peta operasi udara harian (OP-3), data dari /api/operasi/peta
   "GET /bnpb/dokumen": (env, req, url) => halamanBnpbPublik(env, url, "dokumen", {pribadi: true}),   // layar staf: BAST, Laporan Menonjol, Shift, Rekap Mingguan dari logbook
+  "GET /bnpb/katalog-dokumen": (env, req, url) => halamanBnpbPublik(env, url, "katalog-dokumen", {pribadi: true, pratinjau: true}),   // katalog dokumen repo, terbuka tanpa login sementara, noindex; isi lewat /api/bnpb/katalog-dokumen
   "GET /bnpb/bahan": (env, req, url) => halamanBnpbPublik(env, url, "bahan", {pribadi: true}),   // layar staf: bahan laporan harian dari logbook, kirim ke WA (menu Pusdalops)
   "GET /bnpb/saham": (env, req, url) => halamanBnpbPublik(env, url, "saham", {pribadi: true, bingkai: true, gambar: "https://assets.stockbit.com"}),   // layar staf: data saham lewat proksi /api/saham/* (src/saham.js)
   "GET /bnpb/perencanaan": (env, req, url) => halamanBnpbPublik(env, url, "perencanaan", {pribadi: true}),   // layar staf: kab prioritas (beban laporan), kalender operasi, stok pra-musim

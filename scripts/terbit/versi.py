@@ -251,5 +251,20 @@ def uji():
     print("versi uji: lolos")
 
 
+def segarkan_katalog():
+    """Indeks halaman /bnpb/katalog-dokumen ikut segar di semua jalur terbit; gagal = terbit tetap jalan dengan indeks yang ter-commit."""
+    import subprocess
+    skrip = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "bnpb", "katalog_dokumen.py")
+    try:
+        subprocess.run([sys.executable, skrip], check=True, timeout=180)
+    except Exception as e:
+        print(f"::warning title=Katalog dokumen::indeks tidak diperbarui: {e}")
+
+
 if __name__ == "__main__":
-    uji() if sys.argv[1:] == ["uji"] else jalan(*sys.argv[1:])
+    if sys.argv[1:] == ["uji"]:
+        uji()
+    else:
+        jalan(*sys.argv[1:])
+        if not sys.argv[1:]:   # tanpa argumen = langkah terbit sungguhan; uji dengan akar sementara tidak menyentuh indeks
+            segarkan_katalog()

@@ -50,7 +50,7 @@ def _muat(nama, rel):
 
 
 # --------------------------------------------------------------- pembaca teks kondisi (murni, diuji --uji)
-SUDAH = re.compile(r"\b(sudah|telah|sdh|sudh)\s+(mulai\s+)?(surut|kering)|\bsurut\s+(total|seluruhnya|sepenuhnya)|\bkembali\s+normal|\bsudah\s+tidak\s+(ada\s+)?(tergenang|genangan)")
+SUDAH = re.compile(r"\b(sudah|telah|sdh|sudh)\s+(surut|kering)|\bsurut\s+(total|seluruhnya|sepenuhnya)|\bkembali\s+normal|\bsudah\s+tidak\s+(ada\s+)?(tergenang|genangan)")
 BELUM = re.compile(r"\bbelum\s+(sepenuhnya\s+)?surut|\bmasih\s+(ter)?genang|\bgenangan\b[^.]{0,40}\bmasih\s+ada|\bmasih\s+ada\s+genangan|\bmenggenangi|\bmasih\s+terendam|\bair\s+(kembali\s+)?naik|\bkenaikan")
 RE_TGL_AWAL = re.compile(r"^\s*(senin|selasa|rabu|kamis|jumat|jum'at|sabtu|minggu)?,?\s*\d{1,2}\s+\w+\s+\d{4}\s*", re.I)
 
@@ -686,6 +686,7 @@ def uji():
     perbarui_wa(r2, [dict(wa[0], kab_kode="11|Aceh Barat", tgl="2026-11-01", baru=True)])
     assert len(r2) == 1 and r2[0]["riwayat"][0]["tgl"] == "2026-11-01" and r2[0]["terakhir"] == "2026-11-02", r2
     assert not surut("Air sudah mulai surut, genangan kecil dan lumpur masih ada, Infrastruktur rusak")   # Pidie Jaya, WA 5 Nov
+    assert not surut("Air sudah mulai surut")   # Pidie Jaya, WA 6 Nov: tanpa kalimat sisa genangan tetap belum surut
     # selesai per jenis: longsor tertangani, karhutla padam (kalimat nyata WA Koordalops Nov 2026)
     global JENIS
     JENIS = "longsor"

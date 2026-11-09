@@ -47,6 +47,7 @@ import {RUTE_DRONE} from "./drone.js";
 import {RUTE_WA} from "./wa.js";
 import {RUTE_WA_FORM} from "./wa_form.js";
 import {RUTE_SAHAM} from "./saham.js";
+import {RUTE_KATALOG_DOKUMEN} from "./katalog_dokumen.js";
 import {alarmHimawari, bersihkanAlarm} from "./alarm_himawari.js";
 import {bersihkanKabar, ulangiKabar} from "./kabar.js";
 import {RUTE_UJI, jalankanUji} from "./uji_lapangan.js";
@@ -72,6 +73,7 @@ import {RUTE_AI} from "./ai.js";
 import {RUTE_PEMIRSA, bersihkanPemirsa, pemirsaSesi, arahPemirsa, hapusSesiPemirsa, cookiePemirsa} from "./pemirsa.js";
 import {RUTE_PANTAU, bersihkanPantau} from "./pantau.js";
 import {RUTE_INVENTARIS} from "./inventaris.js";
+import {RUTE_LOGPAL} from "./logpal.js";
 import {RUTE_KORBAN} from "./korban.js";
 import {RUTE_OMC} from "./omc.js";
 import {RUTE_OPERASI} from "./operasi_udara.js";
@@ -604,6 +606,7 @@ const RUTE = {
   ...RUTE_LABEL,   // label harian teranonim, Bearer PIPA_TOKEN (src/label.js)
   ...RUTE_PIPA,   // isian lapangan teranonim untuk pipeline, Bearer PIPA_TOKEN (src/pipa.js)
   ...RUTE_WA,   // kotak masuk WA laporan harian lewat gerbang Baileys, tanpa balasan (src/wa.js)
+  ...RUTE_KATALOG_DOKUMEN,   // indeks dokumen repo untuk /bnpb/katalog-dokumen, terbuka tanpa login sementara (src/katalog_dokumen.js)
   ...RUTE_SAHAM,   // proksi data saham untuk /bnpb/saham, staf saja, kunci Stellar hanya di Worker (src/saham.js)
   ...RUTE_WA_FORM,   // form Bahan Laporan Harian /bnpb/bahan: isian -> teks WA baku -> wa_masuk, staf saja (src/wa_form.js)
   ...RUTE_DRONE,   // atur drone ke gambut membara: halaman staf/instansi /admin/drone (src/drone.js, docs/bnpb/PANDUAN-DRONE-GAMBUT.md)
@@ -624,6 +627,7 @@ const RUTE = {
   ...RUTE_AKADEMISI,   // direktori pakar kebencanaan, hanya staf BNPB dan admin (src/akademisi.js, data di R2)
   ...RUTE_MONITOR,   // halaman staf /monitor: tanda baca peringatan, groundcheck, tindak lanjut (src/monitor.js)
   ...RUTE_PEMIRSA,   // akun pemirsa: hanya melihat tab tertentu situs Centurisk97 (src/pemirsa.js)
+  ...RUTE_LOGPAL,   // Inventori LogPal: gudang, mutasi, opname, permintaan bantuan BNPB/BPBD (src/logpal.js, migrasi 0112)
   ...RUTE_INVENTARIS,   // inventaris peralatan pemadam per pihak dan gudang (src/inventaris.js)
   ...RUTE_KORBAN,   // laporan korban jiwa: instansi dan Pusdalops melapor, verifikasi, butir Meja Pantau (src/korban.js)
   ...RUTE_OMC,   // catatan sortie OMC: staf TMC mengisi, GET /api/omc/sortie publik untuk pipeline (src/omc.js)
@@ -677,7 +681,7 @@ async function rute(env, req, url, ctx) {
    Syarat: wrangler.jsonc assets.html_handling = "none", supaya "/" dan "/banjir/" tidak dijawab aset otomatis.
    [pola jalur, berkas aset, kunci jalur untuk statistik (null = pakai jalur yang dinormalkan)] */
 const BNPB_BERSIH = {index: "/bnpb", relawan: "/relawan", "relawan-saya": "/relawan/saya", kampus: "/kampus", "alun-alun": "/alun-alun", riset: "/riset", mitra: "/riset/mitra",
-  meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan", kebakaran: "/risiko-kebakaran", hukum: "/bnpb/hukum", logbook: "/bnpb/logbook", bahan: "/bnpb/bahan", saham: "/bnpb/saham", dokumen: "/bnpb/dokumen", operasi: "/bnpb/operasi", operasi_lapangan: "/bnpb/operasi-lapangan", perencanaan: "/bnpb/perencanaan", dalops: "/bnpb/dalops", pendataan: "/pendataan", siaga: "/bnpb/siaga", kontak: "/daftar-kontak"};
+  meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan", kebakaran: "/risiko-kebakaran", hukum: "/bnpb/hukum", logbook: "/bnpb/logbook", bahan: "/bnpb/bahan", saham: "/bnpb/saham", dokumen: "/bnpb/dokumen", "katalog-dokumen": "/bnpb/katalog-dokumen", operasi: "/bnpb/operasi", operasi_lapangan: "/bnpb/operasi-lapangan", perencanaan: "/bnpb/perencanaan", dalops: "/bnpb/dalops", pendataan: "/pendataan", siaga: "/bnpb/siaga", kontak: "/daftar-kontak"};
 export const HOST_TERKUNCI = new Set(["centurisk97.id", "www.centurisk97.id"]);
 /* host yang halamannya di balik login: domain + alamat workers.dev PRODUKSI (dan pratinjau versinya "<hash>-centurisk97...").
    Uji Setneg 1 Nov 2026: /monitor, /direktori dll. terbuka tanpa login lewat workers.dev. Host *.workers.dev lain (uji lokal) tetap terbuka. */
@@ -717,6 +721,7 @@ export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk den
   ["/uji-pilot", "regu uji pilot SIPPA Kalteng membuka dossier dan melapor dengan tautan bertoken, tanpa akun (keputusan pemilik 26 Okt 2026, keputusan SIPPA 59); token dicek di tiap panggilan API, halaman tanpa token kosong"],
   ["/presiden", "panel publik agregat karhutla untuk dashboard presiden, tanpa data pribadi (keputusan pemilik 22 Okt 2026)"],
   ["/instansi", "pemda, polisi, dan TNI masuk dengan username dan sandi akun instansi sendiri, bukan sesi admin (keputusan pemilik 21 Okt 2026); sesi, status aktif, dan cakupan wilayah dicek di tiap panggilan API"],
+  ["/bnpb/katalog-dokumen", "katalog dokumen repo, dibuka tanpa login untuk sementara (permintaan pemilik 9 Nov 2026); hanya daftar judul dan tautan GitHub, repo-nya sendiri publik"],
   ["/pendataan", "pendataan Satu Data BNPB: staf direktorat membuat akun sendiri tanpa akun situs (keputusan pemilik 26 Okt 2026); akun baru menunggu persetujuan Super Admin, sesi dan status aktif dicek di tiap panggilan API"]]);
 function halamanTerkunci(url) {
   const jalur = url.pathname.replace(/\/+$/, "") || "/";
@@ -724,7 +729,8 @@ function halamanTerkunci(url) {
   if (PUBLIK_TANPA_SESI.has(jalur)) return false;
   if (url.pathname.startsWith("/f/") || HTML_RUTE.some(([re]) => re.test(url.pathname))) return true;
   const kunci = /\/[0-9a-f]{16}$/.test(jalur) ? jalur.slice(0, -16) + ":id" : jalur;
-  if (/^\/command-center(\/|$)/.test(jalur)) return false;   // meja menjaga dirinya sendiri (src/command_center.js): tamu 303 ke /admin/masuk?ke=
+  if (/^\/command-center(\/|$)/.test(jalur)) return false;
+  if (jalur === "/instansi/logpal" || jalur === "/logpal/index.html") return false;   // LogPal menjaga dirinya sendiri (src/logpal.js halaman): tanpa sesi sah 303 ke /instansi; BUKAN daftar putih (keputusan pemilik 9 Nov 2026: wajib login)   // meja menjaga dirinya sendiri (src/command_center.js): tamu 303 ke /admin/masuk?ke=
   return !!tabelRute()["GET " + kunci] && !/^\/(api|admin|ews|ubin|pipa)(\/|$)/.test(jalur);   // /pipa* menjaga dirinya sendiri (src/sippa.js, DESAIN-TEKNIS SIPPA §1.4): tamu 303 ke /admin/masuk?ke= (satu pintu)
 }
 function catatHTML(env, req, jalur, ctx) {
