@@ -107,6 +107,22 @@ def bingkai(pptx, format, judul=None, subjudul=None, tanggal=None, sampul=True, 
     return keluar
 
 
+def serah_revisi(pptx, pdf=None):
+    """Pemilik 9 Nov 2026 (laporan harian bencana dan penanganan karhutla): tiap keluaran punya folder sendiri, PPT dan PDF di dalamnya
+    bernama tanpa (revN). '<nama> (rev3).pptx' masuk 'Revisi 3/'; nama tanpa (revN) masuk folder bernomor berikutnya (mulai Revisi 1).
+    Berkas kerja (isi, spek, manifest) tetap di folder hari."""
+    m = re.fullmatch(r'(.*?)(?: \(rev(\d+)\))?\.pptx', os.path.basename(pptx))
+    akar = os.path.dirname(os.path.abspath(pptx))
+    n = m[2] or 1 + max([int(x[7:]) for x in os.listdir(akar) if re.fullmatch(r'Revisi \d+', x)] + [0])
+    ke = os.path.join(akar, f'Revisi {n}'); os.makedirs(ke, exist_ok=True)
+    os.replace(pptx, os.path.join(ke, m[1] + '.pptx'))
+    if pdf:
+        try: os.replace(pdf, os.path.join(ke, m[1] + '.pdf'))
+        except PermissionError:   # PDF lama di folder itu sedang dibuka pemilik
+            import time; os.replace(pdf, os.path.join(ke, m[1] + time.strftime(' %H%M') + '.pdf'))
+    return ke
+
+
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     ap.add_argument('pptx'); ap.add_argument('--format', required=True); ap.add_argument('--judul'); ap.add_argument('--subjudul')

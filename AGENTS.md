@@ -229,6 +229,12 @@ tua). Tanpa kaki keterangan/sumber (pemilik 4 Nov 2026: "hilangkan"); definisi k
 membuat kepala bagian sendiri (bilah gelap, `.head` + h2 lepas). Layar laporan baru masuk
 daftar `LAYAR` di gerbang `tests/agen/gerbang-kartu-std.test.mjs`.
 
+### 3.6 Folder revisi laporan harian (9 Nov 2026)
+
+Tiap keluaran Laporan Kejadian Bencana Harian dan Laporan Penanganan Pengendalian Karhutla masuk foldernya sendiri di folder hari:
+`Revisi 3/<nama deck>.pptx` dan `.pdf`, nama berkas tanpa `(rev3)`. Skrip harian menyerahkannya lewat `lewat_deck.serah_revisi`.
+Deck lain belum kena aturan ini. Gerbangnya `tests/agen/gerbang-folder-revisi.test.mjs`.
+
 ## 6. Review
 
 | Permukaan berubah                          | Pengulas                                  |

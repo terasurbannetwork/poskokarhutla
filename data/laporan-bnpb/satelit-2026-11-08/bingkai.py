@@ -1,0 +1,52 @@
+"""Bingkai Laporan Penanganan Pengendalian Karhutla 081126 lewat mesin ppt-konsultan (deck.py, format 'penanganan'), pola sama dengan
+laporan harian 021126 (pemilik 31 Okt: "kalo bentuknya dalam ppt semuanya harus pasti ke deck.py"; 2 Nov: "utamakan pembuatan slidenya
+pakai skill itu"). Isi tiga slide dari jalan.py (generator penanganan) + slide native Hasil Pemadaman Satgas (satgas.py), dibingkai:
+sampul + KRIS, penanda bagian, kaki Sumber, penutup.
+
+    PYTHONUTF8=1 DECK_BNPB=~/.claude/skills/ppt-konsultan/bnpb python bingkai.py   (sesudah jalan.py)
+"""
+import datetime as dt, os, re, shutil, sys, zipfile
+S = os.path.dirname(os.path.abspath(__file__)); G = os.path.normpath(os.path.join(S, '..', 'generator')); sys.path.insert(0, G); sys.path.insert(0, S)
+import lewat_deck, pdf
+T = dt.date(2026, 11, 8)
+nama = os.path.join(S, 'Laporan Penanganan Pengendalian Karhutla 081126 (rev3).pptx')   # firespot situs terbitan 18.26 WIB (data s.d. 15.41); rev2: logo KRIS tiap slide; rev3 (9 Nov): + 2 halaman perusahaan
+gen = os.path.join(S, 'Laporan Penanganan Pengendalian Karhutla 081126 (generator).pptx')
+if not os.path.exists(gen):   # simpan hasil jalan.py sekali; bingkai ulang selalu dari berkas generator ini
+    shutil.copyfile(nama, gen)
+# firespot generator C9503A tidak ada di palet tema; deck.py memetakannya ke oranye terdekat (= warna BELUM PADAM). Pakai merah tema
+# C8102E dan tint bahaya F8DDE0 supaya firespot tetap beda warna dari belum padam (pemeriksa bersih 2 Nov: oranye berarti empat hal).
+with zipfile.ZipFile(gen) as zi, zipfile.ZipFile(nama, 'w', zipfile.ZIP_DEFLATED) as zo:
+    for it in zi.infolist():
+        b = zi.read(it.filename)
+        if it.filename.endswith('.xml'): b = b.replace(b'C9503A', b'C8102E').replace(b'FFE3DC', b'F8DDE0')
+        if re.match(r'ppt/slides/slide\d+\.xml$', it.filename):
+            # pemilik 2 Nov: catatan kaki "*Data berdasarkan GIS ... (FIRMS: VIIRS dan MODIS)" dihapus ("kan udah ada di footer sumber"),
+            # beserta garis aksen biru di kirinya dan bintang rujukan di kepala kolom (HOTSPOT* -> HOTSPOT)
+            x = b.decode('utf-8')
+            x = ''.join('' if ('Data berdasarkan Geographic' in s or '<a:off x="548640" y="6199632"/><a:ext cx="45720" cy="219456"/>' in s) else s
+                        for s in re.split(r'(<p:sp>.*?</p:sp>)', x, flags=re.S))
+            x = re.sub(r'<a:t>(HOTSPOT|FIRESPOT|LUAS TERBAKAR|BELUM PADAM)\*</a:t>', r'<a:t>\1</a:t>', x)
+            b = x.encode('utf-8')
+        zo.writestr(it, b)
+import perusahaan; perusahaan.tambah(nama)   # 9 Nov pemilik: kartu Perusahaan + Modal asing tab Insight jadi halaman 4 dan 5
+SG = 'GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 8 Nov 2026 18.00 WIB'
+SP = 'GIS BNPB, NASA FIRMS VIIRS 375 m, poligon konsesi GFW/Trase; data sistem 9 Nov 2026 07.20 WIB'
+lewat_deck.bingkai(nama, 'penanganan', 'Laporan Penanganan Pengendalian Karhutla', 'Cut-off data 8 Nov 2026, 18.00 WIB', T, pdf=False,
+    tanpa_kepada='sama dengan laporan harian 2 Nov 2026 (pola tetap 3-5 Nov): laporan dipresentasikan Kepala BNPB sendiri',
+    bagian=[{'judul': 'Situasi Hotspot dan Firespot', 'label': 'Situasi', 'halaman_tetap': [1, 2]},
+            {'judul': 'Operasi Penanganan', 'label': 'Operasi', 'halaman_tetap': [3]},   # 6 Nov 18.4x: teks WA satgas + gelar pesawat ditempel pemilik
+            {'judul': 'Perusahaan Terindikasi', 'label': 'Perusahaan', 'halaman_tetap': [4, 5]}],
+    spek_tambah={'panel_sisi': 'gelap', 'skala_logo_bnpb': 1.0},   # pemilik 2 Nov 17.4x: "logo bnpb terlalu besar" (bawaan mesin 1,3x)
+    susun=[   # pemilik 3 Nov: laporan karhutla tanpa sampul dan penutup (lewat_deck juga membuangnya untuk format penanganan)
+           {'halaman': 1, 'bagian': 1, 'sumber': SG},
+           {'halaman': 2, 'bagian': 1, 'sumber': f'GIS BNPB, NASA FIRMS 8 Nov 18.00 WIB; PM2,5 CAMS 7 Nov; hujan model Open-Meteo, kelas BMKG'},   # pil tabel (pil_sendiri.py); klarifikasi hujan 2 Nov
+           # slide Hasil Pemadaman Satgas (satgas.slide) dihapus pemilik 2 Nov: "hapus slide 4"
+           # pemilik dan Bang Ghozi 5 Nov 18.21: angka per provinsi bisa menyesatkan, rincian kab/kota di lampiran (lampiran_hitung.py)
+           # 5 Nov pemilik: desain lampiran mirip lampiran harian (lampiran_slide.py, mesin harian.Deck); data lampiran-kab.json (lampiran_hitung.py)
+           {'halaman': 3, 'bagian': 2, 'sumber': 'Laporan Upaya Pemadaman Satgas Karhutla, 8 Nov 2026 (kegiatan 7 Nov 2026)'},
+           {'halaman': 4, 'bagian': 3, 'sumber': SP},
+           {'halaman': 5, 'bagian': 3, 'sumber': SP},
+           ])   # 6 Nov 19.xx pemilik: "lampirannya hapus aja"; cara membuatnya dicatat di generator/README.md (Lampiran kab/kota)
+
+print('mesin ok', nama)
+print('folder', lewat_deck.serah_revisi(nama, pdf.ke_pdf(nama)))   # pemilik 9 Nov: Revisi 3/<nama tanpa (rev3)>.pptx dan .pdf

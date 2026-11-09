@@ -12,6 +12,14 @@ gerbang QA deck.py. Format di `deck.py` (`FORMAT`): `harian`, `penanganan`, `dae
 - Mesin tanpa skill (Windows) berhenti dengan pesan jelas; jalankan langkah akhir di Mac yang punya skill.
 - Gerbang QA deck.py GAGAL = berkas tetap dibuat, proses berhenti; baca `qa/` sebelum menyerahkan.
 
+## Keluaran per folder revisi (pemilik 9 Nov 2026)
+
+Berlaku untuk Laporan Kejadian Bencana Harian dan Laporan Penanganan Pengendalian Karhutla. Tiap keluaran masuk foldernya sendiri:
+`Revisi 3/<nama deck>.pptx` dan `.pdf`, nama berkas tanpa `(rev3)`. Panggil `lewat_deck.serah_revisi(pptx, pdf)` di akhir skrip
+harian (`jalan_rev4.py`, `bingkai.py`); berkas kerja (isi, spek, manifest) tetap di folder hari. Nama tanpa `(revN)` otomatis masuk folder
+bernomor berikutnya, jadi saat menyalin skrip ke hari baru, buang `(revN)` dari namanya. Gerbang: `tests/agen/gerbang-folder-revisi.test.mjs`,
+memeriksa folder hari sejak 10 Nov 2026. Bot WA di Mac mini (`scripts/wa/otomatis.mjs`) memakai folder keluarannya sendiri dan tidak diubah.
+
 ## Bahan Pusdalops di layar (/laporan-bnpb)
 
 Sejak 25 Okt 2026 bahan harian Dit. Koordalops juga bisa dimasukkan lewat layar, tanpa menjalankan
@@ -109,6 +117,36 @@ masing-masing (urutan HOTSPOT, FIRESPOT, LUAS TERBAKAR, BELUM PADAM, sama dengan
 - Skrip deck di `penanganan/`: `kisi.py` (geometri kolom, dipakai bersama), `ganti.py` (tabel, baca param.json),
   `tambah_peta.py`, `peta.mjs`, `bnpb.py` (pil, slide operasi), `ikon.mjs` (ikon Pemda; ikon FIRESPOT disalin dari deck 25 Okt), `cek6.py` (gerbang: tiap sel tabel harus cocok angka.json).
 - Provinsi 6 teratas tanpa baris di templat (selain 62,16,63,15,61,93,72,64) memakai `penanganan/logo/<kode>.png` bila ada, kalau tidak lambang layar `public/lambang/provinsi/<kode>.png` (semua 38 provinsi tersedia); baris disalin dari baris Kaltim.
+
+### Lampiran kab/kota (opsional, tidak dipasang bawaan)
+
+Lampiran "Rincian Kabupaten/Kota Enam Provinsi" dibuat 5 Nov 2026 atas permintaan pemilik dan Bang Ghozi, karena angka per provinsi
+bisa menyesatkan. Pada 6 Nov pemilik minta lampiran itu dihapus dari deck ("lampirannya hapus aja"), jadi lampiran hanya dipasang bila
+diminta lagi. Skrip terakhirnya ada di `../satelit-2026-11-06/` (`lampiran_hitung.py`, `lampiran_slide.py`, `ikon-kepala/`). Untuk
+memakainya lagi, salin ketiganya ke folder hari laporan, ganti tanggal dan jam cut-off di kedua skrip, lalu jalankan berurutan:
+
+1. `jalan.py` hari itu. Skrip ini menyiapkan salinan `web/` dan deck generator.
+2. `PYTHONUTF8=1 DECK_BNPB=<skill>/bnpb C:/Python314/python lampiran_hitung.py` menulis `lampiran-kab.json` dan
+   `<skill>/bnpb/assets/proyek-bnpb/data/lap/penanganan-DDMMYY-kab.csv`. Isinya per kab/kota untuk enam provinsi tabel:
+   - hotspot dari `satelit.hitung` tingkat kab atas hotspot.json web;
+   - firespot dari `fs_ini` di kluster.json, dengan kunci `prov|kab|kec`;
+   - luas dan belum padam:
+     - versi "per sekarang" (`belum_kini` hari laporan sudah terbit): luas dari rumus `luas_sendiri` jalan.py dan belum padam dari
+       `satelit.hitung` tingkat kab;
+     - versi "hari utuh" (`belum_kini` belum terbit): sebaran dari `peta_karhutla_kab.json` hari D-1. Tiap baris `d` berbentuk
+       `[indeks hari, luas, belum]`.
+
+     Pada kedua versi, total provinsi di slide 2 dibagi ke kab/kota sesuai porsi itu, dengan pembulatan sisa terbesar. Assert
+     memastikan jumlah per provinsi sama persis dengan slide 2.
+3. `lampiran_slide.py` menggambar lampiran dengan mesin `harian.Deck`, memakai templat dan ikon dari folder kerja deck harian hari yang
+   sama (`../harian-YYYY-MM-DD/kerja-DDMMYY`; deck harian hari itu harus sudah dibangun). Hasilnya `lampiran-kab.pptx` dan
+   `lampiran-kab-halaman.json`. Gayanya: dua kolom per halaman, kepala kolom berupa kotak berwarna seperti slide 2 (hotspot navy,
+   firespot merah, luas abu-biru, belum padam oranye, masing-masing berikon), angka polos rata tengah, nilai 0 abu, baris induk provinsi
+   lalu anak kab/kota, dan kotak KETERANGAN di bawah.
+4. Di `bingkai.py`, tambahkan halaman impor ke `susun`:
+   `[{'jenis': 'impor', 'pptx': 'lampiran-kab.pptx', 'halaman': n, 'sumber': SG + '; luas dan belum padam per kab/kota dibagi dari
+   angka provinsi slide 2 sesuai sebaran titik'} for n in json.load(open('lampiran-kab-halaman.json'))]`.
+   Contohnya ada di `../satelit-2026-11-05/bingkai.py`.
 
 ## Penanganan banjir, longsor dan rob
 
