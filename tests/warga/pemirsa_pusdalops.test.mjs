@@ -1,6 +1,7 @@
 /* Akun pemirsa bertab 'pusdalops' (src/pemirsa.js, src/staf.js pemirsaLihat, migrations/0116_pemirsa_tab_pusdalops.sql): MELIHAT semua menu Pusdalops, baca saja.
    Worker utuh di workerd + D1 + R2 sungguhan (TEST.md: tanpa mock). Jalankan: node --test tests/warga/pemirsa_pusdalops.test.mjs */
 import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
 import {siapkan, berantai, ADMIN} from "./_bnpb.mjs";
 import "../../src/worker.js";
 import {TAB, arahPemirsa, cekTab} from "../../src/pemirsa.js";
@@ -102,4 +103,28 @@ uji("daftar izin: satu konstanta, GET saja, tanpa rute dummy/WA/prefiks longgar"
   const cocok = j => IZIN_PEMIRSA_PUSDALOPS.some(re => re.test(j));
   for (const j of ["/api/logbook/dummy", "/api/wa/masuk", "/api/wa/berkas", "/api/pantau/jejak", "/api/pantau/butir", "/api/operasi/dummy", "/api/dalops/banjir/x", "/api/akademisi/saya"]) assert.ok(!cocok(j), j);
   for (const j of ["/api/pantau", "/api/dalops/gempa", "/admin/omc", "/api/saham/BBCA/info"]) assert.ok(cocok(j), j);
+});
+
+const html = async (j, cookie) => { const r = await situs(j, cookie ? {cookie} : {}); assert.equal(r.status, 200, j); return {tag: (await r.text()).match(/<html[^>]*>/)[0], h: r.headers}; };
+uji("data-baca-saja: pemirsa pusdalops dapat di halaman menu, /admin/* dan /?operasi; admin dan pemirsa tanpa tab pusdalops tidak", async () => {
+  for (const j of [...MENU.filter(x => x !== "/daftar-kontak"), "/bnpb/dalops", "/admin/pantau", "/admin/laporan-karhutla", "/admin/omc", "/?operasi"]) {
+    const r = await html(j, P.cookie); assert.match(r.tag, /data-baca-saja/, j); assert.match(r.h.get("cache-control"), /no-store/, j); }
+  assert.match((await html("/?operasi", P.cookie)).tag, /data-pemirsa-tab="peta,operasi"/);
+  const adm = await situs("/bnpb/logbook", ADMIN); assert.equal(adm.status, 200); assert.doesNotMatch((await adm.text()).match(/<html[^>]*>/)[0], /data-baca-saja/, "admin tidak ditandai");
+  const U2 = await buat("Pemirsa Peta", ["peta", "pusdalops"]); assert.match((await html("/?operasi", U2.cookie)).tag, /data-baca-saja/, "tab pusdalops di antara tab lain");
+  const tanpa = await buat("Pemirsa Peta Saja", ["peta", "berita"]); assert.doesNotMatch((await html("/", tanpa.cookie)).tag, /data-baca-saja/, "tanpa tab pusdalops");
+  assert.doesNotMatch((await html("/daftar-kontak")).tag, /data-baca-saja/, "tamu tanpa cookie");
+});
+
+uji("blok CSS html[data-baca-saja]: tiap kelas, id, atribut benar-benar ada di sumber layar (selektor basi = merah)", () => {
+  const css = readFileSync("public/bnpb/menu_pusdalops.css", "utf8"), i = css.indexOf("html[data-baca-saja]"); assert.ok(i > 0);
+  const blok = css.slice(i).replace(/\/\*[\s\S]*?\*\//g, ""), sel = blok.split("{").filter((_, k) => k % 2 === 0).map(x => x.split("}").pop()).join(",");   // hanya bagian selektor
+  const SUMBER = ["public/bnpb/logbook.js", "public/bnpb/operasi.js", "public/bnpb/operasi_g3.js", "public/laporan_bnpb.html", "public/laporan_bnpb.js"].map(f => readFileSync(f, "utf8")).join("\n");
+  const kelas = new Set([...sel.matchAll(/[.#]([A-Za-z][\w-]*)/g)].map(m => m[1])), attr = new Set([...sel.matchAll(/\[(data-[\w-]+)/g)].map(m => m[1])); attr.delete("data-baca-saja");
+  assert.ok(kelas.size >= 10 && attr.size >= 2, "selektor terbaca");
+  for (const k of kelas) assert.ok(new RegExp(`(?<![\\w-])${k}(?![\\w-])`).test(SUMBER), "kelas/id tidak ada di sumber layar: " + k);
+  for (const a of attr) assert.ok(SUMBER.includes(a), "atribut tidak ada di sumber layar: " + a);
+  assert.ok(!/(^|[,}\s])(button|form|input|select|textarea)\s*[,{]/.test(sel), "tanpa selektor selimut");
+  for (const f of ["logbook", "operasi", "bahan", "dokumen", "perencanaan", "siaga", "dalops"]) assert.match(readFileSync(`public/bnpb/${f}.html`, "utf8"), /menu_pusdalops\.css/, f + " memuat stylesheet");
+  assert.match(readFileSync("public/laporan_bnpb.html", "utf8"), /menu_pusdalops\.css/); assert.match(readFileSync("src/admin_halaman.js", "utf8"), /menu_pusdalops\.css/);
 });

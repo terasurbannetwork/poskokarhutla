@@ -149,7 +149,7 @@
   function rincianLapsus(r, t) {
     const o = r.operasi, aktif = o.status === "aktif", nb = O.hitungBasi(r, t), provs = r.provinsi.map(p => p.prov), np = k => PROV[k] || k;
     teksWA = O.teksWa(r, t, t, namaJenis); kertasSiap = true;
-    const tutupTb = h("button", {type: "button", class: "bn-tombol sekunder"}, ikon("daftar"), "Kembali ke daftar"), statusTb = h("button", {type: "button", class: "bn-tombol sekunder"}, ikon(aktif ? "ok" : "tunggu"), aktif ? "Tandai selesai" : "Buka lagi");
+    const tutupTb = h("button", {type: "button", class: "bn-tombol sekunder"}, ikon("daftar"), "Kembali ke daftar"), statusTb = h("button", {type: "button", class: "bn-tombol sekunder op-tulis"}, ikon(aktif ? "ok" : "tunggu"), aktif ? "Tandai selesai" : "Buka lagi");
     tutupTb.addEventListener("click", () => { st.opId = null; kertasSiap = false; segarkan(); });
     statusTb.addEventListener("click", async () => { statusTb.disabled = true; const x = await api("POST", "/api/pusdalops/lapsus/status", {operasi_id: o.id, status: aktif ? "selesai" : "aktif"}); statusTb.disabled = false;
       if (x.ok) { st.info = aktif ? "Operasi ditandai selesai." : "Operasi dibuka lagi."; segarkan(); } else tampil(el.pesan, galatTeks(x), false); });

@@ -53,7 +53,7 @@ import {alarmHimawari, bersihkanAlarm} from "./alarm_himawari.js";
 import {bersihkanKabar, ulangiKabar} from "./kabar.js";
 import {RUTE_UJI, jalankanUji} from "./uji_lapangan.js";
 import {RUTE_UJI_BANJIR, bersihkanUjiBanjir} from "./uji_banjir.js";
-import {RUTE_STAF, bersihkanStaf, stafPeran} from "./staf.js";
+import {RUTE_STAF, bersihkanStaf, stafPeran, stafSesiSemua} from "./staf.js";
 import {RUTE_CC, bersihkanCc} from "./command_center.js";
 import {RUTE_AKADEMISI, P_AKADEMISI} from "./akademisi.js";
 import {RUTE_DALOPS, PERAN_DALOPS} from "./dalops.js";
@@ -738,6 +738,16 @@ function halamanTerkunci(url) {
 function catatHTML(env, req, jalur, ctx) {
   if (env.DB) ctx?.waitUntil?.(Pub.catatHit(env, req, jalur).catch(e => console.error("hit", e)));
 }
+/* pemirsa bertab 'pusdalops' (baca saja): <html data-baca-saja>, public/bnpb/menu_pusdalops.css menyembunyikan kontrol tulis. Satu titik untuk jawaban rute() dan layaniHTML.
+   Tanpa cookie pemirsa: tanpa query D1 (pemirsaSesi). Admin dan staf tidak ditandai. Hanya penyajian; gerbang akses dan API tetap yang menolak tulis. */
+async function bacaSaja(env, req, res) {
+  if (req.method !== "GET" || !/text\/html/.test(res.headers.get("content-type") || "")) return res;
+  const pm = await pemirsaSesi(env, req);
+  if (!pm?.tab.includes("pusdalops") || await adminOK(env, req) || await stafSesiSemua(env, req)) return res;
+  const k = new HTMLRewriter().on("html", {element: el => el.setAttribute("data-baca-saja", "")}).transform(res);
+  k.headers.set("cache-control", "private, no-store"); k.headers.append("vary", "cookie");
+  return k;
+}
 async function layaniHTML(req, env, ctx, url) {
   if (req.method !== "GET" && req.method !== "HEAD") return null;
   /* berkas statis layar petugas tidak membawa CSP/permissions-policy modul: arahkan ke alamat bersih */
@@ -896,9 +906,9 @@ const W = {
       const p = await pemirsaSesi(env, req), ke = p ? arahPemirsa(p, url.pathname, url.search) : "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search);
       if (ke) return new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store"}});
     }
-    const r = await rute(env, req, url, ctx); if (r) return r;
+    const r = await rute(env, req, url, ctx); if (r) return bacaSaja(env, req, r);
     const h = await layaniHTML(req, env, ctx, url);
-    if (h) return /^\/presiden\/?$/.test(url.pathname) ? bisaDiIframe(h) : h;
+    if (h) return /^\/presiden\/?$/.test(url.pathname) ? bisaDiIframe(h) : await bacaSaja(env, req, h);
     if (!url.pathname.startsWith("/api/warga")) { const a = await env.ASSETS.fetch(req); return a.status === 404 && mauHalaman(req, url) ? halamanGalat(env, req, url, 404) : a; }
     const kini = Date.now(), p = url.pathname.replace(/\/+$/, "").split("/").slice(3);   // ["", "api", "warga", ...]
     try {
