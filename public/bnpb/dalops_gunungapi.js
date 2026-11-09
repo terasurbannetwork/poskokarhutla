@@ -34,7 +34,7 @@
     for (const m of low.matchAll(/radius\s+(\d+(?:[.,]\d+)?)\s*km\s+dari\s+(?!pulau baru)/g)) radius = Math.max(radius ?? 0, km(m[1]));
     const sek = [];
     for (const m of low.matchAll(/sektor\s+([a-z][a-z\- ]*?)(?=\s+(?:meliputi|di|dari|gunung\w*|sejauh)\b|[.,])/g)) {
-      const sisa = low.slice(m.index + m[0].length), potong = sisa.search(/sektor|radius|\.\s+\d+\./), seg = potong < 0 ? sisa : sisa.slice(0, potong);
+      const sisa = low.slice(m.index + m[0].length), potong = sisa.search(/sektor|radius|di luar jarak|\.\s+\d+\./), seg = potong < 0 ? sisa : sisa.slice(0, potong);
       const jarak = [...seg.matchAll(/(\d+(?:[.,]\d+)?)\s*km\b/g)].map(x => km(x[1]));
       sek.push({arah: m[1].trim(), km: jarak.length ? Math.max(...jarak) : null});
     }

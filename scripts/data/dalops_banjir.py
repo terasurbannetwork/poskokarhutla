@@ -495,6 +495,12 @@ def entri_wa_semua(kode_kab, sesudah=""):
     out = []
     for f in sorted(glob.glob(os.path.join(AKAR, WA_GLOB))):
         out += [e for e in wa_entri(json.load(open(f, encoding="utf-8")), kode_kab) if e["tgl"] > sesudah]
+    if JENIS in SENYAP_MAKS:   # laporan yang data.json-nya tidak ikut git (mis. 8 Nov): urai teks WA Koordalops-nya langsung
+        WH = _muat("wa_harian", "data/laporan-bnpb/generator/wa_harian.py")
+        for f in sorted(glob.glob(os.path.join(AKAR, "data/laporan-bnpb/harian-*/wa-koordalops.txt"))):
+            if not glob.glob(os.path.join(os.path.dirname(f), "kerja-*/data.json")):
+                d = {"hari": os.path.basename(os.path.dirname(f))[7:], "kejadian": WH.koordalops(open(f, encoding="utf-8").read())["kejadian"]}
+                out += [e for e in wa_entri(d, kode_kab) if e["tgl"] > sesudah]
     return sorted(out, key=lambda e: e["tgl"])
 
 

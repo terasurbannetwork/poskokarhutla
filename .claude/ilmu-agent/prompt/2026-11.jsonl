@@ -2122,3 +2122,139 @@
 {"t":"2026-11-08T20:28:24.583+07:00","sesi":"49e546cc","prompt":"kirim ringkasan ke saya apa aja yang udah kamu sesuaikan untuk workflownya","label":[],"berkas":[]}
 {"t":"2026-11-08T20:28:34.266+07:00","sesi":"e71f10de","prompt":"Ya, commit 8 Nov","label":[],"berkas":[]}
 {"t":"2026-11-08T20:28:36.005+07:00","sesi":"e71f10de","prompt":"lgsg push","label":[],"berkas":[]}
+{"t":"2026-11-07T13:13:03.005+07:00","sesi":"e103ba63","prompt":"oke bro pelajarin semua best practice dari posko karhutla ini ya. Untuk keamanan dll. Lu masukin jadi rencana infrastruktur sistem. \n\nIni semua masih rencana ya. Masukin aja sempurnakan semua perencanaan dari segala aspek dulu","label":[],"berkas":[]}
+{"t":"2026-11-08T20:02:13.840+07:00","sesi":"7c1c2081","prompt":"Bro gw mau paparan ke presiden tolong buatkan 2 slide terkait metode prediksi kita untuk banjir. Dan bagaimana mekanismenya dan sekarang gimana. Dan perlu dilengkapi dengan data apa lagi pemantauannya","label":["banjir"],"berkas":[]}
+{"t":"2026-11-08T20:02:34.306+07:00","sesi":"7c1c2081","prompt":"Lu tambahin data\" yang penting juga. Intinya harus komprehensif","label":[],"berkas":[]}
+{"t":"2026-11-08T20:06:58.280+07:00","sesi":"7c1c2081","prompt":"11. Kepala BNPB\n12. Laporan langsung\n13. Dibaca sendiri\n14. Ga ada arahan\n15. Gausah ada\n16. Gausah\n17. Ya\n18. Ya\n19. Ya\n20. Ya\n21. Cut off gausah dulu\n22. Yes\n23. Banjir saja\n24. Tidak\n25. Diganti\n26. Tidak\n27. Tidak\n28. Tidak\n29. Gausah\n30. Yes bener","label":["banjir"],"berkas":[]}
+{"t":"2026-11-08T20:22:15.388+07:00","sesi":"7c1c2081","prompt":"Sistem melakukan prediksi banjir di xx kab kota (7.270 kecamatan) setiap hari untuk 4 hari ke Depan. Untuk 8 - xx November terdapat xx Kecamatan berstatus Awas dan 37 Siaga. \n\nKasih lagenda awas kalo berapa \n\nIni dibuat lagenda aja kai icon bagus\n\nYang cakupan harian hilankan.\n\n\nMekanisme prediksi ebutkan aja variabel yang dihitung apa aja kemudian digunakan dengan apa kemudian diolah dengan apa dan hasilnya apa. \n\nIni ya kasih lah curah hujannya berapa puncaknya di tanggal berapa.","label":["banjir"],"berkas":[]}
+{"t":"2026-11-08T20:27:24.595+07:00","sesi":"7c1c2081","prompt":"Gaussah dalam bentuk proses gini. Coba buatin sebagus mungkin. Keren pokoknya kasih icon","label":[],"berkas":[]}
+{"t":"2026-11-08T20:27:57.587+07:00","sesi":"7c1c2081","prompt":"Ini buat bagus. Kecil aja ya. Gausah ada jumlah berapa yang kena juga","label":[],"berkas":[]}
+{"t":"2026-11-08T20:29:32.329+07:00","sesi":"7c1c2081","prompt":"Oke slide kedua dihapus. Gw mau ini dimasukkan ke slide 1. Lu atur sedemikian rupa","label":[],"berkas":[]}
+{"t":"2026-11-08T20:30:31.909+07:00","sesi":"7c1c2081","prompt":"Agar ada provinsinya dulu ya. Baru di bawah kab/kotanya Provnya di Merge sampai kanan","label":[],"berkas":[]}
+{"t":"2026-11-08T20:32:07.026+07:00","sesi":"7c1c2081","prompt":"Ini coba lu jelasin maksudnya apa. Dalam kata\"","label":[],"berkas":[]}
+{"t":"2026-11-08T20:38:03.706+07:00","sesi":"7c1c2081","prompt":"Oke gini ya narasinya\n\n1. Model menggunakan prakiraan cuaca untuk menghitung curah hujan (kemarin, hari itu, besok) dan hujan terderas per jam untuk mendeteksi potensi banjir\n2. Model membuat 51 skenario untuk memprediski peluang yang menghasilkan berapa skenario yang menghasilkan banjir. Jika peluangnya sekitar 50% maka status Ssiaga\n3. Model juga menghitung debit dari 192 titik sungai dan membandingkan tren/histori banjir 2,5, 20 tahunan. dan kemudian data ini juga dicombine data sensor SIHKA di lapangan\n4. Model juga menghitung dari histori dan INARISK untuk menghitung wilayah dengan lebih tinggi. \n5. Semua bahan tadi diolah untuk bla bla bla\n6. Status untuk setiap wilayah untuk hari ini dan 3 hari setelahnya","label":["banjir"],"berkas":[]}
+{"t":"2026-11-08T20:42:31.000+07:00","sesi":"7c1c2081","prompt":"Di bold kata\" yang pentingnya ya. Yang pantauan SIHKA lapangan gausah dulu deh","label":[],"berkas":[]}
+{"t":"2026-11-08T20:43:23.068+07:00","sesi":"7c1c2081","prompt":"Ini ada yang bisa digabung ga? Ada label berarti Variabel 1 Variabel 2 Variabel 3 gitu baru masuk ke pengolahan baru hasil","label":[],"berkas":[]}
+{"t":"2026-11-08T20:44:12.162+07:00","sesi":"7c1c2081","prompt":"Terdapat 4 status pada sistem yaitu:\nCoba jelasin lengkap","label":[],"berkas":[]}
+{"t":"2026-11-08T20:44:42.819+07:00","sesi":"7c1c2081","prompt":"Jangan pakai orange deh. Coba buat bagus gimana","label":[],"berkas":[]}
+{"t":"2026-11-08T20:46:33.604+07:00","sesi":"7c1c2081","prompt":"Bro gini aja untuk Potensi Integrasi Pemantauan Real Time\n\n1. Data Bendungan \n2. Data pintu air \n3. Data CCTV dengan computer ision\n4. Google Flood Hub\n\n\nBuat aja icon ya Kecilin","label":[],"berkas":[]}
+{"t":"2026-11-08T20:47:05.502+07:00","sesi":"7c1c2081","prompt":"Variabelnya agar dibuat label aja di kanan atas.","label":[],"berkas":[]}
+{"t":"2026-11-08T20:47:49.681+07:00","sesi":"7c1c2081","prompt":"Itu ya dirapetin jangan ada line spacing lagi","label":[],"berkas":[]}
+{"t":"2026-11-08T20:48:23.662+07:00","sesi":"7c1c2081","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-08T20:49:06.237+07:00","sesi":"7c1c2081","prompt":"Ini Kecamatan yang Awas SSiaga dan Puncak berapa kan. Coba dibuat jelas ya","label":[],"berkas":[]}
+{"t":"2026-11-08T20:49:54.969+07:00","sesi":"7c1c2081","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-08T20:49:55.010+07:00","sesi":"7c1c2081","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-08T20:50:35.310+07:00","sesi":"7c1c2081","prompt":"Yang variabel 1 terlalu lebar kontainernya","label":[],"berkas":[]}
+{"t":"2026-11-08T20:50:56.083+07:00","sesi":"7c1c2081","prompt":"Gausah ada progress bar","label":[],"berkas":[]}
+{"t":"2026-11-08T20:50:56.128+07:00","sesi":"7c1c2081","prompt":"Angka mending dibuat label","label":[],"berkas":[]}
+{"t":"2026-11-08T20:51:24.014+07:00","sesi":"7c1c2081","prompt":"Kasih penjelasan. Oke jangan containernya pakai abu\" ya","label":[],"berkas":[]}
+{"t":"2026-11-08T20:52:08.762+07:00","sesi":"7c1c2081","prompt":"Ini yang potensi ini ada lagi ga yang dimasukin? Untuk pemantauan real time","label":[],"berkas":[]}
+{"t":"2026-11-08T20:52:29.922+07:00","sesi":"7c1c2081","prompt":"Kasih juga wali data setiap itu","label":[],"berkas":[]}
+{"t":"2026-11-08T20:52:48.155+07:00","sesi":"7c1c2081","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-08T20:54:39.686+07:00","sesi":"7c1c2081","prompt":"Jangan biru gini dong. Bahaya gitu. Pakai warna aja deh gausah pil","label":[],"berkas":[]}
+{"t":"2026-11-08T20:55:24.547+07:00","sesi":"7c1c2081","prompt":"1. Pos tinggi air SIHKA, wali data Kementerian PU. Ini paling penting, karena 490 posnya sudah terbaca dan tinggal diintegrasikan ke perhitungan status dan Sensor tinggi air di lokasi rawan, wali data BPBD. Kode alatnya sudah ada di repo, tetapi gw belum menemukan bukti alatnya terpasang.Sensor tinggi air di lokasi rawan, wali data BPBD. Kode alatnya sudah ada di repo, tetapi gw belum menemukan bukti alatnya terpasang.\n2. Radar cuaca dan pos hujan BMKG, wali data BMKG. Ini yang paling berguna untuk banjir bandang, karena hujan terbaca menit ke menit.","label":["banjir"],"berkas":[]}
+{"t":"2026-11-08T20:56:49.567+07:00","sesi":"7c1c2081","prompt":"GAUSAH ADA SETIAP HARINYA YA. NANTI TOLONG BUAT 9 - 12 NOVVEMBER","label":[],"berkas":[]}
+{"t":"2026-11-08T20:57:41.299+07:00","sesi":"7c1c2081","prompt":"ADA YANG BISA DIGABUNG GA?","label":[],"berkas":[]}
+{"t":"2026-11-08T20:58:09.476+07:00","sesi":"7c1c2081","prompt":"VMASIH BANYAK WHITE SPACE HURUFNYA GEDEIN","label":[],"berkas":[]}
+{"t":"2026-11-08T20:58:28.516+07:00","sesi":"7c1c2081","prompt":"GOOGLE FLOOD HUB HILANGKAN","label":[],"berkas":[]}
+{"t":"2026-11-08T21:00:35.495+07:00","sesi":"7c1c2081","prompt":"Kasih total","label":[],"berkas":[]}
+{"t":"2026-11-08T21:01:13.568+07:00","sesi":"7c1c2081","prompt":"Ini kenapa dempet. Terdapat 4 status tuh hilangkan","label":[],"berkas":[]}
+{"t":"2026-11-08T21:51:02.994+07:00","sesi":"7c1c2081","prompt":"Bro kok sebanyak ini ya yang data ambilnya padahal dari sini juga deh","label":[],"berkas":[]}
+{"t":"2026-11-08T21:52:29.372+07:00","sesi":"7c1c2081","prompt":"Tetap 10, masukkan Aceh Tenggara","label":[],"berkas":[]}
+{"t":"2026-11-08T21:54:54.095+07:00","sesi":"7c1c2081","prompt":"Sistem memprediski terdapata 3 kecamatan berstatu Awas dan xx Siaga untuk 4 hari ke depan (8 -11 November)","label":[],"berkas":[]}
+{"t":"2026-11-08T22:06:40.907+07:00","sesi":"9656715b","prompt":"@\"~/Downloads/Situasi Banjir dan Bencana Lain 081126 (final 19).pptx\" @\"~/Downloads/Situasi Banjir dan Bencana Lain 081126 (final 19).pdf\"\nGw mau benerin slide ini ya. Lu gerak dari sini ya. Peta ini agar diganti Dengan model gini tapi gausah ada yang awas siaga. Cuku belum surut dan sudah urut","label":["banjir"],"berkas":[]}
+{"t":"2026-11-08T22:07:28.353+07:00","sesi":"9656715b","prompt":"Jenis ppt gini untuk nama provinsi agar stylenya gini dan nama kab kota","label":[],"berkas":[]}
+{"t":"2026-11-08T22:08:17.366+07:00","sesi":"9656715b","prompt":"Hilangkan","label":[],"berkas":[]}
+{"t":"2026-11-08T22:08:17.421+07:00","sesi":"9656715b","prompt":"Ini yangkosong coba lu isi aja lah kira\" berapa KK nya. jangan kosong aja","label":[],"berkas":[]}
+{"t":"2026-11-08T22:08:43.913+07:00","sesi":"9656715b","prompt":"Agar ada sub total untuk Aceh dan sumut dan ada total di akhir","label":[],"berkas":[]}
+{"t":"2026-11-08T22:10:01.365+07:00","sesi":"9656715b","prompt":"Bro passtikan Kecamatan yang kena ya jangan semua kecamanata","label":[],"berkas":[]}
+{"t":"2026-11-08T22:10:01.553+07:00","sesi":"9656715b","prompt":"Periodenya diganti dong berarti ya","label":[],"berkas":[]}
+{"t":"2026-11-08T22:11:39.937+07:00","sesi":"9656715b","prompt":"Gausah ada lagi terdampak","label":[],"berkas":[]}
+{"t":"2026-11-08T22:11:40.056+07:00","sesi":"9656715b","prompt":"Hilangkan slide ini","label":[],"berkas":[]}
+{"t":"2026-11-08T22:16:05.460+07:00","sesi":"9656715b","prompt":"@\"~/Downloads/DATA PERALATAN BPBD PROVSU .xlsx\" @\"~/Downloads/STOK LOGPAL GUDANG BPBD SUMBAR BLN OKT 2026 (1).xlsx\"\nOke ini kan ada data untuk persediaan di Sumbar (Padang) dan SUmut (kualanamu)\n\nUntuk kebutuhan Sumut dan Aceh ini gw kirim juga\n\n[tempelan 514 karakter]\n\n[tempelan 1562 karakter]\n\nIni yang dimiliki BNPB Sumut di Kualanamu. Tolong dibuat narasinya \n\nSemua kebutuhan logistik dan peralatan untuk wilayah terdampak banjir di Aceh dan Sumatera Utara dan Sumatera Barat dapat dipenuhi oleh Posko BNPB di kualanamu. Untuk jaga\" bisa juga dari Sumbar. \n\nLu buat lah data pendukungnya ya. \n\nBaru ini slide yang untuk jalur\" ini agar dibagusin lagi","label":["banjir"],"berkas":[]}
+{"t":"2026-11-08T22:16:05.563+07:00","sesi":"9656715b","prompt":"Ini hilangkan","label":[],"berkas":[]}
+{"t":"2026-11-08T22:17:57.250+07:00","sesi":"9656715b","prompt":"Angkanya gausah ada lebih kurang ya langsung aja","label":[],"berkas":[]}
+{"t":"2026-11-08T22:18:49.107+07:00","sesi":"9656715b","prompt":"Di bawah Awas dan siaga biar white spacenya keiisi agar dikasih keterangan arti awas itu apa dan siaga itu apa\n\nIni","label":[],"berkas":[]}
+{"t":"2026-11-08T22:20:53.981+07:00","sesi":"9656715b","prompt":"berapa lama lagi ya?","label":[],"berkas":[]}
+{"t":"2026-11-08T22:21:01.162+07:00","sesi":"9656715b","prompt":"Lampiran nanti dulu deh yang utama dulu aja","label":[],"berkas":[]}
+{"t":"2026-11-08T22:22:49.480+07:00","sesi":"9656715b","prompt":"Ini gausah ada","label":[],"berkas":[]}
+{"t":"2026-11-08T22:24:47.353+07:00","sesi":"9656715b","prompt":"20 kab/kota di Aceh dan Sumut yang telah dan berpotensi banjir dapat dilayani dari zzz dengan waktu pengantaran bantuan paling lama 25 jam","label":["banjir"],"berkas":[]}
+{"t":"2026-11-08T22:25:32.743+07:00","sesi":"9656715b","prompt":"Lampiran hilangkan dulu bedakan","label":[],"berkas":[]}
+{"t":"2026-11-08T22:29:26.022+07:00","sesi":"9656715b","prompt":"@\"~/Downloads/Situasi Banjir dan Bencana Lain 081126.pdf\"\nTambnahkan slide ini ya. Di atas Video ya. Lu ambil dari sini","label":["banjir"],"berkas":[]}
+{"t":"2026-11-08T22:31:20.531+07:00","sesi":"9656715b","prompt":"Bagusin ya. Pastikan datanya tally ya dengan data sebelumnya","label":[],"berkas":[]}
+{"t":"2026-11-08T22:32:27.745+07:00","sesi":"9656715b","prompt":"@\"~/Downloads/WhatsApp Video 2026-11-08 at 22.30.30.mp4\"\nMasukkan ya videonya. Ke slide","label":["wa-bot"],"berkas":[]}
+{"t":"2026-11-08T22:35:29.902+07:00","sesi":"9656715b","prompt":"Bro ini bisa ga ya diplay di pdf?","label":[],"berkas":[]}
+{"t":"2026-11-08T22:45:18.585+07:00","sesi":"9656715b","prompt":"Oke cut off agar dibuat 22:45","label":[],"berkas":[]}
+{"t":"2026-11-08T23:00:11.952+07:00","sesi":"9656715b","prompt":"lu ada data ini ga?","label":[],"berkas":[]}
+{"t":"2026-11-08T23:02:24.871+07:00","sesi":"9656715b","prompt":"@\"~/Downloads/STOK LOGPAL GUDANG BPBD SUMBAR BLN OKT 2026 (1) (1).xlsx\" @\"~/Downloads/Rekap BANSOR_PDW_I.xlsx\" @\"~/Downloads/DATA PERALATAN BPBD PROVSU  (1).xlsx\" @\"~/Downloads/STOK LOGPAL GUDANG BPBD SUMBAR BLN OKT 2026 (1) (1).xlsx\"\n\n[tempelan 1562 karakter]\n\nIni lu cek. Jadi buatkan satu slide ya untuk kesiapan logistik. Buat dalam 1 slide aja","label":[],"berkas":[]}
+{"t":"2026-11-08T23:02:52.495+07:00","sesi":"9656715b","prompt":"Tambahkan di ppt sebelumnya","label":[],"berkas":[]}
+{"t":"2026-11-08T23:03:17.884+07:00","sesi":"9656715b","prompt":"@\"~/Downloads/STOK LOGPAL GUDANG BPBD SUMBAR BLN OKT 2026 (1) (2).xlsx\" @\"~/Downloads/DAFTAR PERALATAN PB BPBA.pdf\"\noke coba cek","label":[],"berkas":[]}
+{"t":"2026-11-08T23:05:36.689+07:00","sesi":"9656715b","prompt":"BPBA itu Aceh","label":[],"berkas":[]}
+{"t":"2026-11-08T23:06:34.107+07:00","sesi":"9656715b","prompt":"Oke ini hilangkan","label":[],"berkas":[]}
+{"t":"2026-11-08T23:08:23.197+07:00","sesi":"9656715b","prompt":"Ini jadi halaman 4","label":[],"berkas":[]}
+{"t":"2026-11-08T23:10:16.546+07:00","sesi":"9656715b","prompt":"Oke ini tetap benar ya. Karena kan yang dimiliki BNPB tuh Poslog Kualanamu dan UPT Padang","label":[],"berkas":[]}
+{"t":"2026-11-08T23:10:58.725+07:00","sesi":"9656715b","prompt":"Daftar Inentaris LogPal di Aceh, Sumut dan Sumbar","label":[],"berkas":[]}
+{"t":"2026-11-08T23:11:15.177+07:00","sesi":"9656715b","prompt":"Hilangkan ini","label":[],"berkas":[]}
+{"t":"2026-11-08T23:11:44.130+07:00","sesi":"9656715b","prompt":"Ini agar ada dibuat dua bagian ya BPBD dulu baru BNPB\n\nBNPB tuh Gudang UPT padang dan {pslog Kualanamu","label":[],"berkas":[]}
+{"t":"2026-11-08T23:12:14.022+07:00","sesi":"9656715b","prompt":"Hilangkan","label":[],"berkas":[]}
+{"t":"2026-11-08T23:12:14.180+07:00","sesi":"9656715b","prompt":"samakan semua termin ya cukup (Gudang BPBD)","label":[],"berkas":[]}
+{"t":"2026-11-08T23:12:46.038+07:00","sesi":"9656715b","prompt":"Ha adpa masukin aja.","label":[],"berkas":[]}
+{"t":"2026-11-08T23:12:46.149+07:00","sesi":"9656715b","prompt":"Obat dibuat satuan aja ya","label":[],"berkas":[]}
+{"t":"2026-11-08T23:13:05.983+07:00","sesi":"9656715b","prompt":"Kenapa BPBD ssumbar ga termasuk?","label":[],"berkas":[]}
+{"t":"2026-11-08T23:13:23.659+07:00","sesi":"9656715b","prompt":"KK Terdampak","label":[],"berkas":[]}
+{"t":"2026-11-08T23:14:01.852+07:00","sesi":"9656715b","prompt":"Hilangkan","label":[],"berkas":[]}
+{"t":"2026-11-08T23:15:21.833+07:00","sesi":"9656715b","prompt":"Ya, masukkan","label":[],"berkas":[]}
+{"t":"2026-11-08T23:15:53.380+07:00","sesi":"9656715b","prompt":"Analisa Kebutuhan wilayah terdampak banjir di Aceh dan Sumut","label":["banjir"],"berkas":[]}
+{"t":"2026-11-08T23:16:14.292+07:00","sesi":"9656715b","prompt":"Ini sebutin lah semuanya Kan ada ini semua","label":[],"berkas":[]}
+{"t":"2026-11-08T23:16:45.316+07:00","sesi":"9656715b","prompt":"Mitigasi","label":[],"berkas":[]}
+{"t":"2026-11-08T23:16:59.431+07:00","sesi":"9656715b","prompt":"Action Plan Terdekat","label":[],"berkas":[]}
+{"t":"2026-11-08T23:25:43.433+07:00","sesi":"9656715b","prompt":"@\"~/Downloads/Paparan Situasi Banjir 081126 (data 2206) (1).pptx\"\nOke ini ada yang slide tambahan ga? Terkait bencana lainnya dll. Pokoknya lu tambahin yang ga ada di lu","label":["banjir"],"berkas":[]}
+{"t":"2026-11-08T23:27:53.028+07:00","sesi":"9656715b","prompt":"Biarkan dulu","label":[],"berkas":[]}
+{"t":"2026-11-08T23:28:26.534+07:00","sesi":"9e1337f4","prompt":"[tempelan 6309 karakter]","label":[],"berkas":[]}
+{"t":"2026-11-08T23:31:05.759+07:00","sesi":"9e1337f4","prompt":"Ya, ukur ulang","label":[],"berkas":[]}
+{"t":"2026-11-08T23:36:10.675+07:00","sesi":"9656715b","prompt":"Buatkan narasi atau catatan untuk pembicara dalam bentuk word portrait. \n\nPenjelasan tiap slide","label":[],"berkas":[]}
+{"t":"2026-11-08T23:37:29.072+07:00","sesi":"9e1337f4","prompt":"Oke berapa lama?","label":[],"berkas":[]}
+{"t":"2026-11-08T23:38:03.947+07:00","sesi":"9e1337f4","prompt":"Jadi uji kecepatannya hasilnya 43 detik?","label":[],"berkas":[]}
+{"t":"2026-11-08T23:39:08.668+07:00","sesi":"9656715b","prompt":"@\"~/Downloads/Paparan Situasi Banjir 081126 v0.pdf\" @\"~/Downloads/Paparan Situasi Banjir 081126 v0.pptx\"\nYang ini aja 7 slide","label":["banjir"],"berkas":[]}
+{"t":"2026-11-08T23:39:56.374+07:00","sesi":"9656715b","prompt":"buat dalam pdf","label":[],"berkas":[]}
+{"t":"2026-11-08T23:44:15.195+07:00","sesi":"9656715b","prompt":"Ini Pidie Jaya di Aceh. Langkat, Deli Serdang dan Serdang Bedaga di SSumatera Utara.","label":[],"berkas":[]}
+{"t":"2026-11-08T23:54:48.356+07:00","sesi":"9656715b","prompt":"Hilangkan","label":[],"berkas":[]}
+{"t":"2026-11-08T23:55:36.686+07:00","sesi":"9656715b","prompt":"Mekanisme prediksi banjir. Atasnya juga agar diatur tetap sama dengan sistem kita. Template kita. Sesuaikan slide tambahan dengan punya kita","label":["banjir"],"berkas":[]}
+{"t":"2026-11-08T23:56:32.923+07:00","sesi":"9656715b","prompt":"Ini juga sesuaikan.\n\nHilangkan di luar karhutla","label":[],"berkas":[]}
+{"t":"2026-11-08T23:56:33.042+07:00","sesi":"9656715b","prompt":"Hilangkan karena sudah ada","label":[],"berkas":[]}
+{"t":"2026-11-08T23:57:01.382+07:00","sesi":"9656715b","prompt":"eh lanjut","label":[],"berkas":[]}
+{"t":"2026-11-08T23:58:07.705+07:00","sesi":"9656715b","prompt":"@\"~/Downloads/Situasi Banjir dan Bencana Lain 081126 (final 20).pdf\" @\"~/Downloads/Situasi Banjir dan Bencana Lain 081126 (final 20).pptx\"\nIni diganti sama daftar lampiran ini ya.","label":["banjir"],"berkas":[]}
+{"t":"2026-11-08T23:59:19.128+07:00","sesi":"9656715b","prompt":"Ya, samakan","label":[],"berkas":[]}
+{"t":"2026-11-08T23:59:26.422+07:00","sesi":"9e1337f4","prompt":"[tempelan 921 karakter]\n\nIninya ga ada ?","label":[],"berkas":[]}
+{"t":"2026-11-09T00:00:56.729+07:00","sesi":"9e1337f4","prompt":"Menurut lu kenapa Windows jauh lebih lama?","label":[],"berkas":[]}
+{"t":"2026-11-09T00:02:30.261+07:00","sesi":"9e1337f4","prompt":"Coba lu kasih semua spek dari Mac ini untuk dibandingkan dengan window. Apa yang membuat Mac lebih cepat.\n\nSama menurut lu normal ga untuk windowsnya segitu?","label":[],"berkas":[]}
+{"t":"2026-11-09T00:05:01.675+07:00","sesi":"9656715b","prompt":"Ini di download hapus semua yang berulang","label":[],"berkas":[]}
+{"t":"2026-11-09T00:06:19.779+07:00","sesi":"9e1337f4","prompt":"[tempelan 846 karakter]","label":[],"berkas":[]}
+{"t":"2026-11-09T00:08:01.022+07:00","sesi":"9e1337f4","prompt":"Berapa yang harus gw keluarkan biayanya?","label":[],"berkas":[]}
+{"t":"2026-11-09T07:49:05.359+07:00","sesi":"9af4b96e","prompt":"@\"~/Documents/GitHub/poskokarhutla/Paparan Karhutla Papua Selatan - Merauke - Jagebob-Tanah Miring 311026.pptx\"\nLu bisa baca file ini ga","label":[],"berkas":[]}
+{"t":"2026-11-09T07:52:06.140+07:00","sesi":"9af4b96e","prompt":"@\"~/Downloads/Pantauan Udara Merauke 011126.pptx\"\nBuat dalam 3 halaman. \nUpdate satu minggu terakhir progressnya untuk perusahaan\" gimana. Coba gabung sama  ini.\n\nAgar gunakan pakai data update terbaru.\n\nSebelum kerjain lu ada pertanyaan ga?","label":[],"berkas":[]}
+{"t":"2026-11-09T07:52:43.811+07:00","sesi":"9656715b","prompt":"Ya, sisakan final 43","label":[],"berkas":[]}
+{"t":"2026-11-09T07:53:35.396+07:00","sesi":"9656715b","prompt":"yang banjir waspada dihilangkan aja ya bang\n\nini di gedeinnotes nya\n\nsurut dan berpeluang di hapussurut dan berpeluang di hapus","label":["banjir"],"berkas":[]}
+{"t":"2026-11-09T07:59:21.332+07:00","sesi":"9af4b96e","prompt":"1. Informasi terbaru terkait kondisi konsesi di 2 perusahaan itu gimana\n2. Dibaca sendiri\n3. Hanya update kondisi saja\n4. Ya\n5. Tidak ada\n6. Senin 9 November jam 07.00\n7. Gausah ada tren 7 hari aja\n8. Ada yang umum Papua Selatan ada yang fokus wilayah di 2 perusahaan\n9. PT MSJ dan satu lagi apa ya yang ada di paparan yang pernah dibuat untuk renla? Medcopapua ya\n10. Ditulis\n11. Gausah ada ini. Objektif aja\n12. Gausah ada foto udara\n13. Ga ada\n14. Dibuang banjr\n15. Dibuang renlap\n16. Ga ada\n17. PDF dan pptx\n18. 5 menit lagi dipakai","label":[],"berkas":[]}
+{"t":"2026-11-09T07:59:36.816+07:00","sesi":"9af4b96e","prompt":"Tolong cepat ya.\n\nKenapa lama?","label":[],"berkas":[]}
+{"t":"2026-11-09T07:59:37.928+07:00","sesi":"9af4b96e","prompt":"Pakai data yang ada aja","label":[],"berkas":[]}
+{"t":"2026-11-09T08:00:23.170+07:00","sesi":"9af4b96e","prompt":"Eh di Papua Selatan ada berapa lahan konsesi?","label":[],"berkas":[]}
+{"t":"2026-11-09T08:00:27.219+07:00","sesi":"9af4b96e","prompt":"Yang terbakar","label":[],"berkas":[]}
+{"t":"2026-11-09T08:00:51.166+07:00","sesi":"9af4b96e","prompt":"jawab ini dulu","label":[],"berkas":[]}
+{"t":"2026-11-09T08:03:35.260+07:00","sesi":"9af4b96e","prompt":"Oke \n\n1. Update yang Papsel seminggu terakhir\n2. Update 2 perusahaan yang kemarin MSJ dan Medcopapua\n3. Update semua perusahaan yang ada kebakaran di konsesinya","label":[],"berkas":[]}
+{"t":"2026-11-09T08:09:40.418+07:00","sesi":"9af4b96e","prompt":"Ini yang papua yang pernah kita buat renlapnya kan ya?","label":[],"berkas":[]}
+{"t":"2026-11-09T08:11:24.867+07:00","sesi":"7c1c2081","prompt":"Buatkan halaman yang monitoring bencana gunung api bencana lain juga. Kemarin kan ada yang banjir ya ini yang bencana lain juga","label":["banjir","gunungapi-kering"],"berkas":[]}
+{"t":"2026-11-09T08:11:55.488+07:00","sesi":"7c1c2081","prompt":"Di satu halaman yang sama aja kali ya tapi ada bisa pilih bencana lainnya","label":[],"berkas":[]}
+{"t":"2026-11-09T08:12:36.583+07:00","sesi":"9656715b","prompt":"Lu ada data Log Pal kan ya? Tolong buatkan kaya monitoring inventori seluruh log pal baik di BPBD maupun di BNPB di seluruh Indonesia","label":[],"berkas":[]}
+{"t":"2026-11-09T08:15:26.239+07:00","sesi":"9656715b","prompt":"Ya, bangun dulu","label":[],"berkas":[]}
+{"t":"2026-11-09T08:15:55.155+07:00","sesi":"9656715b","prompt":"Bantuan Peralatan dan Logistik tahun 2026 utk Prov Papua Selatan :\n1. Peralatan (1 unit mobil Rescue)\n2. ⁠Logistik :\nSelimut 280 lembar\nMatras 300 lembar \nKasur Lipat 205\nTerpal 200 \nMakanan Siap Saji 260\nFamily Kit 120\n\nTambahin untuk Papua Selatan","label":[],"berkas":[]}
+{"t":"2026-11-09T08:23:37.284+07:00","sesi":"9656715b","prompt":"Ini dibuang","label":[],"berkas":[]}
+{"t":"2026-11-09T08:29:49.228+07:00","sesi":"9656715b","prompt":"Ya, 1.900","label":[],"berkas":[]}
+{"t":"2026-11-09T08:30:21.568+07:00","sesi":"9656715b","prompt":"@\"~/Downloads/[token].pdf\" @\"~/Downloads/Peraturan-Kepala-BNPB-No-24-Tahun-2014.pdf\" @\"~/Downloads/Pedoman-Manajemen-Logistik-dan-Peralatan-Penanggulangan-Bencana-Tagana-Dinas-Sosial-Kabupaten-Bantul.pdf\" @\"~/Downloads/BN+1090-2014.pdf\" @\"~/Downloads/[token].pdf\"\nCoba lu analisa dari semua dokumen ini. Apa yang bisa lu masukkan ke sistem","label":[],"berkas":["Downloads/Peraturan-Kepala-BNPB-No-24-Tahun-2014.pdf","Downloads/Pedoman-Manajemen-Logistik-dan-Peralatan-Penanggulangan-Bencana-Tagana-Dinas-Sosial-Kabupaten-Bantul.pdf"]}
+{"t":"2026-11-09T08:32:18.554+07:00","sesi":"9656715b","prompt":"@\"~/Downloads/ilide.[token] (1).pdf\"\nTambahan coba cek","label":[],"berkas":[]}
+{"t":"2026-11-09T08:32:18.613+07:00","sesi":"9656715b","prompt":"@\"~/Downloads/slidsahre-file.pptx\"\nTambahan. Cek juga ini","label":[],"berkas":["Downloads/slidsahre-file.pptx"]}
+{"t":"2026-11-09T08:34:42.838+07:00","sesi":"9656715b","prompt":"Ya, pasang","label":[],"berkas":[]}
+{"t":"2026-11-09T08:35:04.888+07:00","sesi":"9656715b","prompt":"Yang kaya gini juga boleh ya nanti ada kebutuhan dan analisanya gitu kurang atau gimana\n\nYang gini yang analisa jaringan logistik tolong dibuat juga bagusnya gimana","label":[],"berkas":[]}
+{"t":"2026-11-09T08:35:21.504+07:00","sesi":"7c1c2081","prompt":"Yang jenis gini di Pantau Banjir udah ada kan? sama mitigasi udah dibangun juga ga?","label":["banjir"],"berkas":[]}
+{"t":"2026-11-09T08:36:59.961+07:00","sesi":"9656715b","prompt":"Oke apa aja yang bisa dibuat? Form input? Form Stok opname? Pembuat laporan?","label":[],"berkas":[]}
+{"t":"2026-11-09T08:37:00.078+07:00","sesi":"9656715b","prompt":"[tempelan 1868 karakter]\n\nGas semua","label":[],"berkas":[]}

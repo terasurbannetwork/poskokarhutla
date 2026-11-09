@@ -156,9 +156,9 @@ test("tab Gunung Api: urai() Merapi = radius 3 km, sektor selatan-barat daya 7 k
   assert.deepEqual(u.kawasan, ["Sektor selatan-barat daya dan tenggara", "Sungai Boyong, Bedog, Krasak, Bebeng, Woro, Gendol"]);
 });
 
-test("tab Gunung Api: urai() Semeru = radius 5 km, sektor tenggara 17 km (bukan 500 meter), Besuk dari teks", () => {
+test("tab Gunung Api: urai() Semeru = radius 5 km, sektor tenggara 13 km (bukan 500 meter, bukan 17 km perluasan di luar zona), Besuk dari teks", () => {
   const u = globalThis.DalopsGunungApi.urai(REKOM.semeru);
-  assert.equal(u.radius, 5); assert.deepEqual(u.sektor, {arah: "tenggara", km: 17}); assert.deepEqual(u.sudut, [135]);
+  assert.equal(u.radius, 5); assert.deepEqual(u.sektor, {arah: "tenggara", km: 13}); assert.deepEqual(u.sudut, [135]);
   assert.deepEqual(u.ancaman, ["Awan panas", "Guguran lava", "Lontaran batu pijar", "Lahar"]);
   assert.ok(u.kawasan.includes("Besuk Kobokan, Bang, Kembar, Sat"), u.kawasan.join(" | "));
 });
@@ -182,7 +182,7 @@ test("tab Gunung Api: tanggal berlaku dari perubahan, kalau tidak tercatat 'Sebe
 
 test("kata per jenis baru: gempa, cuaca ekstrem, kekeringan; WA tanpa 'surut', tinggi air, atau perahu", () => {
   const x = {nama: "Cianjur", mulai: "2026-11-04", terakhir: "2026-11-05", kurang: [], mengungsi: 5};
-  for (const [j, kata, selesai] of [["gempa", "gempa bumi", "tertangani"], ["cuaca", "cuaca ekstrem", "tertangani"], ["kekeringan", "kekeringan", "berakhir"]]) {
+  for (const [j, kata, selesai] of [["gempa", "gempa bumi", "selesai"], ["cuaca", "cuaca ekstrem", "selesai"], ["kekeringan", "kekeringan", "berakhir"]]) {
     const wa = H.pesanWA(x, H.KATA[j]);
     assert.match(wa, new RegExp(`mencatat ${kata} di Cianjur`)); assert.match(wa, new RegExp(`belum dilaporkan ${selesai}`));
     assert.doesNotMatch(wa, /surut|genangan|perahu|Tinggi/);

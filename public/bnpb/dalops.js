@@ -22,6 +22,7 @@
     cuaca: {k: "cuaca", kata: "cuaca ekstrem", ik: "cuaca", ya: "Selesai", tidak: "Masih ditangani", ya_k: "selesai", tidak_k: "masih ditangani", tinggi: false, pra: false},
     kekeringan: {k: "kekeringan", kata: "kekeringan", ik: "kekeringan", ya: "Selesai", tidak: "Masih berlangsung", ya_k: "selesai", tidak_k: "masih berlangsung", tinggi: false, pra: false}};
   let J = JN.banjir;
+  const GEO = new Map();
   const surutLabel = s => s ? label(J.ya, "ok", "biru") : label(J.tidak, J.ik, "merah");
   const nadaUmur = u => u >= 7 ? "dl-u3" : u >= 3 ? "dl-u2" : "dl-u1";
   const tinggi = t => !t ? "–" : t[0] === t[1] ? F(t[0]) + " cm" : `${F(t[0])}–${F(t[1])} cm`;
@@ -35,9 +36,11 @@
     "aria-label": `Kirim ${apa} ${x.nama} lewat WhatsApp`, "data-tip": `<b>Kirim lewat WhatsApp</b><br>${apa}, pilih grup BPBD-nya`}, ikonWA());
   /* korban gempa dst (kolom md, hilang, status_darurat bila dilaporkan): merah menonjol, status darurat label kuning; aman bila kosong */
   const korbanChip = (teks, ik, nada) => { const e = label(teks, ik, nada); e.classList.add("dl-korban"); return e; };
+  const BULAN_DL = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+  const tglDarurat = s => String(s).replace(/(\d{1,2})\/(\d{1,2})\/(\d{4})/g, (_, d, m, y) => `${+d} ${BULAN_DL[m - 1]} ${y}`);   // teks WA 27/09/2026 -> 27 Sep 2026
   const chipKorban = x => (x.md > 0 || x.hilang > 0 || x.status_darurat) ? h("div", {class: "dl-chips dl-korban-baris"},
     x.md > 0 ? korbanChip(F(x.md) + " meninggal", "peringatan", "merah") : null, x.hilang > 0 ? korbanChip(F(x.hilang) + " hilang", "peringatan", "merah") : null,
-    x.status_darurat ? label(String(x.status_darurat), "peringatan", "kuning") : null) : null;
+    x.status_darurat ? label(tglDarurat(x.status_darurat), "peringatan", "kuning") : null) : null;
   const kab = (x, prov) => h("div", {class: "dl-kab"}, h("b", {teks: x.nama}), prov ? h("span", {class: "bn-label", teks: namaProv(x.prov_kode, x.prov)}) : null);
   const td = (isi, n) => h("td", {class: n ? "n" : null}, isi);
   const kosong = (ik, teks) => h("div", {class: "lb-kosong"}, ikon(ik), h("span", {teks}));
@@ -173,7 +176,7 @@
   async function gambarPeta(wadah, pekan, kontrol, sk = {}, hariSt = [], Jx = J) {
     const J = Jx;   // label jenis saat peta diminta, bukan tab yang sedang tampil sesudah fetch selesai
     if (!window.maplibregl) { wadah.replaceChildren(kosong("peringatan", "Peta gagal dimuat, coba muat ulang.")); return; }
-    const ambil = u => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
+    const ambil = u => { if (!GEO.has(u)) GEO.set(u, fetch(u).then(r => r.ok ? r.json() : null).catch(() => null)); return GEO.get(u); };   // batas wilayah dimuat sekali untuk semua tab berpeta
     const kodeProv = [...new Set(pekan.map(x => x.prov_kode))];
     const [daftarKantor, ...kabs] = await Promise.all([muatKantor(), ...kodeProv.map(p => ambil(`/geo/kabupaten/${p}.json`))]);
     /* satu kab bisa punya kejadian surut dan belum: belum menang */
@@ -329,7 +332,7 @@
 
   /* kab di peta banjir: /banjir/peta?wil=<kab_kode> langsung masuk kab itu */
   const tombolPetaBanjir = x => h("a", {class: "dl-ikon", href: "/banjir/peta?wil=" + encodeURIComponent(x.kab_kode), target: "_blank", rel: "noopener", "aria-label": "Buka " + x.nama + " di peta banjir", "data-tip": "<b>Peta banjir</b><br>status per kecamatan"}, ikon("banjir"));
-  const chipSurut = r => h("div", {class: "dl-chips"}, r.nBelum ? label(F(r.nBelum) + " belum", J.ik, "merah") : null, r.nKab - r.nBelum ? label(F(r.nKab - r.nBelum) + " sudah", "ok", "biru") : null);
+  const chipSurut = r => h("div", {class: "dl-chips"}, r.nBelum ? label(F(r.nBelum) + " " + (J.pra === false ? J.tidak_k : "belum"), J.ik, "merah") : null, r.nKab - r.nBelum ? label(F(r.nKab - r.nBelum) + " " + (J.pra === false ? J.ya_k : "sudah"), "ok", "biru") : null);
 
   function bagianWilayah(pekan, prov, hari, sk = {}, hariSt = []) {
     const tbodies = prov.map((r, i) => {
@@ -422,7 +425,7 @@
         h("td", {class: "dl-tindak"}, chipTindak(x.kendala, "peringatan", "merah")),
         tdv(x.upaya_tgl ? H.tglPendek(x.upaya_tgl) : "–", (x.upaya_tgl || "").replace(/-/g, "")),
         h("td", null, h("div", {class: "dl-aksi"}, tombolHistori(x)))))));
-    return bagian("upaya", "personel", "Upaya penanganan", [hl(`${F(belum.length)} kab/kota`), " masih ditangani, ", hl(`${F(lapor)} kab/kota`), " melaporkan upaya pada hari logbook terakhir"],
+    return bagian("upaya", "personel", "Upaya penanganan", [hl(`${F(belum.length)} kab/kota`), ` ${J.pra === false ? J.tidak_k : "masih ditangani"}, `, hl(`${F(lapor)} kab/kota`), " melaporkan upaya pada hari logbook terakhir"],
       tabelStd(["No", "Kab/kota", "Upaya terakhir", "Pihak terlibat", "Kebutuhan", "Kendala", "Laporan upaya", "Aksi"], ...tb));
   }
 

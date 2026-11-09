@@ -9,7 +9,7 @@
   const selisih = (a, b) => hari(a) - hari(b);   // a - b dalam hari
   const tutup = s => (s || "").replace(/^(Kab\.|Kabupaten)\s+/i, "");
   /* nama kab dari kunci "11|Aceh Barat" atau dari daftar nama logbook */
-  const namaKab = (kode, kab) => kode ? kode.split("|")[1] : tutup((kab || [])[0] || "");
+  const namaKab = (kode, kab) => kode && !kode.endsWith("|(provinsi)") ? kode.split("|")[1] : tutup((kab || [])[0] || "");   // gempa tingkat provinsi: pakai nama barisnya
 
   /* satu baris per kab/kota DAN status surut (sama dengan deck Situasi Banjir Sepekan): mulai paling awal, kabar paling akhir,
      angka dari kejadian terakhir yang mengisinya. Satu kab bisa muncul di dua kelompok (Langkat: satu kejadian surut, satu belum).
@@ -72,8 +72,8 @@
   const KATA = {
     banjir: {kata: "banjir", selesai: "surut", tanya: "apakah banjir sudah surut", ukur: "tinggi genangan", tinggi: true, alat: "logistik, perahu, pompa, alat berat"},
     longsor: {kata: "longsor", selesai: "tertangani", tanya: "apakah akses sudah bisa dilalui dan material sudah dibersihkan", ukur: "", tinggi: false, alat: "logistik, alat berat, tenda"},
-    gempa: {kata: "gempa bumi", selesai: "tertangani", tanya: "apakah penanganan dampak gempa sudah selesai (korban, kerusakan, pengungsi)", ukur: "", tinggi: false, alat: "logistik, tenda, alat berat, tenaga medis"},
-    cuaca: {kata: "cuaca ekstrem", selesai: "tertangani", tanya: "apakah dampak cuaca ekstrem sudah tertangani", ukur: "", tinggi: false, alat: "logistik, tenda, alat berat, terpal"},
+    gempa: {kata: "gempa bumi", selesai: "selesai", tanya: "apakah penanganan dampak gempa sudah selesai (korban, kerusakan, pengungsi)", ukur: "", tinggi: false, alat: "logistik, tenda, alat berat, tenaga medis"},
+    cuaca: {kata: "cuaca ekstrem", selesai: "selesai", tanya: "apakah dampak cuaca ekstrem sudah tertangani", ukur: "", tinggi: false, alat: "logistik, tenda, alat berat, terpal"},
     kekeringan: {kata: "kekeringan", selesai: "berakhir", tanya: "apakah kekeringan sudah berakhir dan bagaimana pasokan air bersih", ukur: "", tinggi: false, alat: "air bersih, tangki air, pompa"}};
 
   /* belum surut yang kabarnya lebih dari sehari atau angkanya bolong. Urut kabar paling lama dulu. */
