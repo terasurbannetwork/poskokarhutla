@@ -6,19 +6,20 @@
    (hanya saat pengguna menyalakan lapisan). Gerbang sebenarnya tetap 401 di Worker; pemeriksaan di sini supaya yang tak berhak tidak melihat tombolnya.
    Data GET /api/risiko7 (kontrak: docs/riset/RISIKO-MINGGUAN.md "Kontrak data"): sel 0,05 derajat [ix, iy, p_permil, peringkat_persen_dalam_provinsi].
    Status: 200 JSON; 401 sesi habis; 503 {status:"belum_ada"} sudah masuk tetapi belum ada ramalan terbit (catatan di kartu dan legenda); lainnya gagal dimuat.
-   Warna = PERINGKAT sel di dalam provinsinya (hanya itu yang tervalidasi), bukan peluang mutlak; p tampil di tooltip dan popup. Angka dari API dibaca apa adanya.
+   Warna = PELUANG ASLI sel (kelas mutlak tetap, sama antar provinsi dan minggu), bukan peringkat; peringkat provinsi hanya keterangan kecil di popup. Angka dari API dibaca apa adanya.
+   Kalibrasi: uji balik 2015-2025 kemiringan 0,93 (Jul-Nov), kantong peluang cocok dengan laju teramati; uji prospektif belum ada, jadi legenda menyebut "belum terbukti".
    Dimuat sesudah peta_kab.js, sebelum lapisan5.js (skrip klasik: peta, Peta, nanti, toast, namaProv, kartuTip, tampilTip, aksiLokasi, renderLegenda, gelap, $, esc terbaca dari skrip utama).
    Fungsi murni diuji sendiri: node public/risiko7.js */
 (() => {
   const ok = Number.isFinite, TGL = /^\d{4}-\d\d-\d\d$/;
   const ID = (x, d = 0) => Number(x).toLocaleString("id-ID", {minimumFractionDigits: d, maximumFractionDigits: d});
-  const TERATAS = 20;   /* aturan isi sel di kontrak: p >= 1 permil atau TERATAS% teratas provinsinya */
-  /* kelas menurut peringkat persen DI DALAM PROVINSI (1 = sel teratas provinsinya): batas atas, warna peta (rgba), warna penuh, nama */
-  const KELAS = [[1, "rgba(58,12,120,.94)", "#3a0c78", "1% teratas"], [5, "rgba(98,42,172,.82)", "#622aac", "1–5% teratas"], [10, "rgba(133,84,203,.68)", "#8554cb", "5–10% teratas"],
-    [TERATAS, "rgba(168,130,222,.52)", "#a882de", "10–20% teratas"], [100, "rgba(204,181,238,.38)", "#ccb5ee", "Di luar 20% teratas"]];
+  /* kelas PELUANG MUTLAK (permil): batas bawah, warna peta (rgba), warna penuh, nama. Di bawah 10 permil (1%) sel tanpa warna. Dipilih dari sebaran data 5 Nov 2026
+     (sel di berkas: 44% < 1%, 31% 1-5%, 10% 5-10%, 8% 10-20%, 5% 20-40%, 2% >= 40%), jadi kelas teratas jarang dan peta tidak pekat. */
+  const KELAS = [[10, "rgba(201,179,236,.40)", "#c9b3ec", "1–5%"], [50, "rgba(164,127,216,.52)", "#a47fd8", "5–10%"], [100, "rgba(138,92,200,.62)", "#8a5cc8", "10–20%"],
+    [200, "rgba(106,47,182,.74)", "#6a2fb6", "20–40%"], [400, "rgba(72,20,140,.86)", "#48148c", "40% atau lebih"]];
 
   /* ---------- fungsi murni ---------- */
-  const kelasDari = r => { const k = KELAS.findIndex(x => r <= x[0]); return k < 0 ? KELAS.length - 1 : k; };
+  const kelasDari = p => { let k = -1; KELAS.forEach((x, i) => { if (p >= x[0]) k = i; }); return k; };   /* -1 = di bawah ambang (< 1%): tanpa warna */
   const teksRank = r => `teratas ${ID(Math.max(1, Math.ceil(r)))}%`;   /* dibulatkan ke atas: tidak pernah melebihkan peringkat */
   const teksP = p => p < 1 ? "< 0,1%" : p < 100 ? `${ID(p / 10, 1)}%` : `${ID(Math.round(p / 10))}%`;
   const tg = (t, o) => new Date(t + "T12:00:00Z").toLocaleDateString("id-ID", {timeZone: "UTC", ...o});
@@ -57,7 +58,7 @@
   /* package.json bertipe module: `node public/risiko7.js` memuatnya sebagai ESM (tanpa module/require), jadi pemicunya nama berkas dan assert lewat getBuiltinModule */
   if (typeof process !== "undefined" && /risiko7\.js$/.test(process.argv?.[1] || "")) {
     const as = process.getBuiltinModule("node:assert/strict"), g = {x0: 94.5, y1: 6.5, sel: .05}, sah = {grid: g, sel: [], berlaku: ["2026-10-22", "2026-10-28"]};
-    [[0.4, 0], [1, 0], [1.01, 1], [5, 1], [10, 2], [20, 3], [20.5, 4], [100, 4]].forEach(([r, k]) => as.equal(kelasDari(r), k, "kelas peringkat " + r));
+    [[0, -1], [9.9, -1], [10, 0], [49.9, 0], [50, 1], [99.9, 1], [100, 2], [199.9, 2], [200, 3], [399.9, 3], [400, 4], [932, 4]].forEach(([p, k]) => as.equal(kelasDari(p), k, "kelas peluang " + p));
     as.equal(rentang("2026-10-22", "2026-10-28"), "22–28 Okt 2026"); as.equal(rentang("2026-10-29", "2026-11-04"), "29 Okt–4 Nov 2026"); as.equal(rentang("2026-12-30", "2027-01-05"), "30 Des 2026–5 Jan 2027");
     as.deepEqual([0.4, 1, 12, 99, 253].map(teksP), ["< 0,1%", "0,1%", "1,2%", "9,9%", "25%"]); as.deepEqual([0.3, 3.2, 20].map(teksRank), ["teratas 1%", "teratas 4%", "teratas 20%"]);
     as.equal(kalimatAndal({auc_dalam_prov_minggu: .847, pembanding_riwayat: .84, recall10: .414}), "Dalam uji balik atas data tahun-tahun lalu, urutan sel di dalam provinsi mencapai AUC 0,847 (riwayat api saja: 0,840), dan 41% sel yang berapi minggu berikutnya ada di 10% sel teratas tiap provinsi.");
@@ -95,7 +96,8 @@
       for (let j = a, e = Math.min(n, a + 6000); j < e; j++) {
         const r = d.sel[j];
         if (!(Array.isArray(r) && Number.isInteger(r[0]) && Number.isInteger(r[1]) && ok(r[2]) && ok(r[3]))) { rusak++; continue; }
-        fs.push({type: "Feature", geometry: {type: "Polygon", coordinates: cincin(g, r[0], r[1])}, properties: {c: kelasDari(r[3])}});   /* hanya kelas: p dan peringkat dicari dari idx */
+        const c = kelasDari(r[2]); if (c < 0) continue;   /* di bawah 1%: tanpa warna, tanpa sorot */
+        fs.push({type: "Feature", geometry: {type: "Polygon", coordinates: cincin(g, r[0], r[1])}, properties: {c}});   /* hanya kelas: p dan peringkat dicari dari idx */
         idx.set(r[1] * 65536 + r[0], r);
       }
       await jeda();   /* satu tugas pendek per 6.000 sel */
@@ -136,16 +138,16 @@
 
   /* ---------- tooltip dan popup ---------- */
   function isiTip(r) {
-    const w = KELAS[kelasDari(r[3])][2];
+    const w = KELAS[kelasDari(r[2])][2];
     return kartuTip({judul: "Peluang api 7 hari", sub: `<small class="tp-sub">Eksperimental</small>`,
-      stat: [["api", teksP(r[2]), "peluang berapi", w], ["puncak", teksRank(r[3]), "peringkat di provinsi", w]], kaki: `Berlaku ${K.rt}`});
+      stat: [["api", teksP(r[2]), "peluang berapi", w]], kaki: `Berlaku ${K.rt}, peringkat di provinsi ${teksRank(r[3])}`});
   }
   function isiPop(c) {
     const [ix, iy, p, rk] = c.r, g = K.d.grid, kb = (a, b) => `<div class="kb penuh"><span>${a}</span><b>${b}</b></div>`;
-    return `<div class="kartu"><div class="kp putih" style="--aksen:${KELAS[kelasDari(rk)][2]}"><div><small>Eksperimental</small><b>Peluang api 7 hari</b></div></div>
+    return `<div class="kartu"><div class="kp putih" style="--aksen:${KELAS[kelasDari(p)][2]}"><div><small>Eksperimental</small><b>Peluang api 7 hari</b></div></div>
       <div class="kg">${kb("Peluang berapi", teksP(p))}${kb("Peringkat di provinsi", teksRank(rk))}${kb("Berlaku", K.rt)}</div>
       ${typeof aksiLokasi === "function" ? aksiLokasi(g.y1 - (iy + .5) * g.sel, g.x0 + (ix + .5) * g.sel, "Sel peluang api 7 hari") : ""}
-      <div class="kk">Peluang satelit menangkap sedikitnya satu titik api di sel sekitar 5,5 km ini. Peringkat hanya dihitung di dalam provinsinya. ${teksLencana(K.d.keandalan?.prospektif?.lolos)}.</div></div>`;
+      <div class="kk">Peluang satelit menangkap sedikitnya satu titik api di sel sekitar 5,5 km ini. Peringkat hanya dihitung di dalam provinsinya dan tidak menentukan warna. ${teksLencana(K.d.keandalan?.prospektif?.lolos)}.</div></div>`;
   }
   /* didaftarkan ulang tiap pasang(): Peta.pasang() mendaftarkan ulang penangan hover wilayah di tiap style.load, dan yang terakhir menimpa kartunya (pola peta_kab.js) */
   function ikat() {
@@ -201,7 +203,7 @@
   /* ---------- legenda: kelas warna (ditempel di akhir legenda bawaan, pola peta_kab.js) ---------- */
   const kepalaLeg = `<div class="lbl">Peluang api 7 hari, eksperimental</div>`;
   const legenda = () => `<div class="lg-g">${kepalaLeg}<div class="leg">${KELAS.map(x => `<span><i class="sw" style="background:${x[1]}"></i>${x[3]}</span>`).join("")}`
-    + `<span class="r7-cat-leg">Berlaku ${K.rt}. Warna = peringkat sel di dalam provinsinya, bukan peluang mutlak. Sel tanpa warna: peluang di bawah 0,1% dan di luar ${TERATAS}% teratas.</span></div></div>`;
+    + `<span class="r7-cat-leg">Berlaku ${K.rt}. Warna = peluang sel berapi dalam 7 hari. Sel tanpa warna: peluang di bawah 1%. Cocok dengan kejadian lampau dalam uji balik, belum terbukti pada ramalan ke depan.</span></div></div>`;
   const legendaBelum = () => `<div class="lg-g">${kepalaLeg}<div class="leg"><span class="r7-cat-leg">Belum ada ramalan yang terbit.</span></div></div>`;
 
   /* ---------- kotak centang ---------- */

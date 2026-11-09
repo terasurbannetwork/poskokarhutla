@@ -2334,8 +2334,8 @@ const Lapis = {
   async pasang(k) {
     const bawahLabel = Peta.lapisAwal(), gaya = {
       /* lokasi langganan: lingkaran per jendela ~16 km yang terbakar >= 1/3 tahun; warna = bulan musim biasanya mulai (patroli sebulan sebelumnya), besar = tahun terbakar */
-      langganan: async () => { const d = this.cache.langganan ||= await muatJSON("data/riwayat_langganan.json");
-        peta.addSource("langganan", {type: "geojson", data: {type: "FeatureCollection", features: d.f.map(([x, y, a, n, b]) => ({type: "Feature", geometry: {type: "Point", coordinates: [x, y]}, properties: {a, n, b}}))}});
+      langganan: async () => { const d = this.cache.langganan ||= await muatJSON("data/riwayat_langganan.json"), B = await window.NASA?.batas().catch(() => null);   /* titik di luar batas Indonesia dibuang (inti/peta/nasa.js) */
+        peta.addSource("langganan", {type: "geojson", data: {type: "FeatureCollection", features: d.f.filter(([x, y]) => !B || NASA.dalam(B, x, y)).map(([x, y, a, n, b]) => ({type: "Feature", geometry: {type: "Point", coordinates: [x, y]}, properties: {a, n, b}}))}});
         peta.addLayer({id: "langganan", type: "circle", source: "langganan", paint: {"circle-color": ["step", ["get", "b"], "#8a94a6", 1, "#6e1a12", 6, "#b8402a", 7, "#e0663a", 8, "#f29b54", 9, "#f7c68a"],
           "circle-radius": ["interpolate", ["linear"], ["zoom"], 4, ["interpolate", ["linear"], ["get", "a"], 5, 1.6, 14, 4], 9, ["interpolate", ["linear"], ["get", "a"], 5, 6, 14, 13]],
           "circle-opacity": .75, "circle-stroke-color": "#fff", "circle-stroke-width": .6}}, "wil-line"); },
@@ -3069,7 +3069,7 @@ const UBIN = {titik: ["#2a1d17", "#ff8a3d", "titik"], kluster: ["#5a1d1a", "#e05
   kabluas: ["#3F5F80", "#7f9fc0", "lapisan"], langganan: ["#6e1a12", "#f29b54", "api"], kabbelum: ["#D9600B", "#f2a35e", "peringatan"], permukiman: ["#7a2b1d", "#e58a45", "gedung"]};   /* warna deck BNPB: luas = biru baja, belum padam = oranye */
 /* nama pendek untuk ubin (satu kategori sebaris); nama lengkap muncul di tooltip */
 const UBIN_PENDEK = {langganan: "Langganan api", aqi: "AQI", pm10: "PM10",udara: "Pangkalan udara", fwi: "FWI", pfvi: "Api gambut", metar: "METAR", kawasan: "Kawasan hutan", kwskemenhut: "Kawasan hutan", hutan: "Hutan", plkemenhut: "Tutupan lahan", konsesig: "Konsesi", konsesi: "Konsesi", hilang: "Hutan hilang",
-  kanal: "Kanal", jalan: "Jalan & sungai", daops: "Manggala Agni", foto: "Foto", kluster: "Cluster", wilayah: "Wilayah", gambut: "Gambut", khg: "KHG", pippib: "Moratorium", terbakar: "Areal terbakar", satelit: "Satelit", kabluas: "Luas terbakar", kabbelum: "Belum padam", permukiman: "Kebakaran permukiman"};
+  jalan: "Jalan, sungai & kanal", daops: "Manggala Agni", foto: "Foto", kluster: "Cluster", wilayah: "Wilayah", gambut: "Gambut", khg: "KHG", pippib: "Moratorium", terbakar: "Areal terbakar", satelit: "Satelit", kabluas: "Luas terbakar", kabbelum: "Belum padam", permukiman: "Kebakaran permukiman"};
 function ubinLapis() { const L = $("#lapis"); if (!L) return;
   L.querySelectorAll("details").forEach(d => { const ls = [...d.children].filter(x => x.tagName === "LABEL"); if (!ls.length) return;
     let gr = d.querySelector(":scope > .ub-gr"); if (!gr) { gr = document.createElement("div"); gr.className = "ub-gr"; d.append(gr); }

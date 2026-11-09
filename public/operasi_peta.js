@@ -79,8 +79,8 @@
   let pop = null;
   function fiturBase() { return {type: "FeatureCollection", features: (OP.data?.base || []).map(b => { const g = hitungGuna(armadaBase(b.id));
     return {type: "Feature", geometry: {type: "Point", coordinates: [b.lon, b.lat]}, properties: {id: b.id, lbl: `${b.icao || b.id}\n${["wb", "patroli", "omc"].filter(k => g[k]).map(k => `${{wb: "WB", patroli: "PTR", omc: "OMC"}[k]} ${g[k]}`).join("  ")}`}}; })}; }
-  const fiturTemuan = () => ({type: "FeatureCollection", features: (OP.data?.temuan || []).filter(t => t.lat != null).map(t => ({type: "Feature", geometry: {type: "Point", coordinates: [t.lon, t.lat]}, properties: {s: t.status, reg: t.registrasi, lok: t.lokasi || ""}}))});
-  const fiturAksi = () => ({type: "FeatureCollection", features: (OP.mon?.aksi || []).filter(x => x.lat != null).map(x => ({type: "Feature", geometry: {type: "Point", coordinates: [x.lon, x.lat]}, properties: {h: x.hasil, reg: x.registrasi, g: x.guna, lok: x.lokasi || "", jam: jamWIB(x.jam_utc)}}))});
+  const fiturTemuan = () => ({type: "FeatureCollection", features: (OP.cadT?.rows || OP.data?.temuan || []).filter(t => t.lat != null).map(t => ({type: "Feature", geometry: {type: "Point", coordinates: [t.lon, t.lat]}, properties: {s: t.status, reg: t.registrasi, lok: t.lokasi || ""}}))});
+  const fiturAksi = () => ({type: "FeatureCollection", features: (OP.cadA?.rows || OP.mon?.aksi || []).filter(x => x.lat != null).map(x => ({type: "Feature", geometry: {type: "Point", coordinates: [x.lon, x.lat]}, properties: {h: x.hasil, reg: x.registrasi, g: x.guna, lok: x.lokasi || "", jam: jamWIB(x.jam_utc)}}))});
   function pasang() {
     if (!OP.data || !peta || !peta.isStyleLoaded() || peta.getSource("ops-base")) return;
     const sumber = (id, data) => peta.addSource(id, {type: "geojson", data});
@@ -98,6 +98,19 @@
   const LAPIS_OPS = {opsbase: ["ops-base", "ops-base-lbl", "ops-base-ik"], opstemuan: ["ops-temuan"], opsaksi: ["ops-aksi"]};
   function terapkanLihat() { for (const [k, ids] of Object.entries(LAPIS_OPS)) { const on = $(`#lapis input[data-l="${k}"]`)?.checked !== false;
     for (const id of ids) if (peta.getLayer(id)) peta.setLayoutProperty(id, "visibility", on ? "visible" : "none"); } }
+  /* Temuan pilot dan aksi berasal dari laporan WA satgas: sering kosong untuk hari ini. Layar tidak mengarang; bila hari ini kosong, tampilkan hari terakhir yang ada datanya (maks 7 hari ke belakang) dan legenda menyebut tanggalnya. Sekali per sesi, hanya saat lapisannya dinyalakan (hemat kuota baca D1). */
+  const geser = (t, n) => new Date(Date.parse(t) - n * 864e5).toISOString().slice(0, 10);
+  const adaTitik = a => (a || []).some(x => x.lat != null);
+  async function cadang(k) {
+    if (!OP.data || (k !== "opstemuan" && k !== "opsaksi")) return;
+    const t = hariWIB();
+    if (k === "opstemuan" && OP.cadT === undefined && !adaTitik(OP.data.temuan)) { OP.cadT = null;
+      for (let i = 1; i <= 7 && !OP.cadT; i++) { const d = await ambil(`/api/operasi/peta?tanggal=${geser(t, i)}`), rows = (d?.temuan || []).filter(x => x.lat != null); if (rows.length) OP.cadT = {tgl: geser(t, i), rows}; } }
+    if (k === "opsaksi" && OP.cadA === undefined && !adaTitik(OP.mon?.aksi)) { OP.cadA = null;
+      const m = await ambil(`/api/operasi/monitor?dari=${geser(t, 7)}&sampai=${geser(t, 1)}`), a = (m?.aksi || []).filter(x => x.lat != null), tgl = a.map(x => x.tanggal).sort().pop();
+      if (tgl) OP.cadA = {tgl, rows: a.filter(x => x.tanggal === tgl)}; }
+    segarkanLapis(); document.querySelector("#legenda .ops-lg")?.remove(); renderLegenda();
+  }
   function segarkanLapis() { if (!peta?.getSource("ops-base")) return pasang();
     peta.getSource("ops-base").setData(fiturBase()); peta.getSource("ops-temuan").setData(fiturTemuan()); peta.getSource("ops-aksi").setData(fiturAksi()); }
 
@@ -183,14 +196,18 @@
     if (typeof UBIN_PENDEK === "object") Object.assign(UBIN_PENDEK, {opsbase: "Base & armada", opstemuan: "Temuan pilot", opsaksi: "Aksi & hasil"});
     const L = $("#lapis");
     if (L && !L.querySelector('[data-l="opsbase"]')) L.insertAdjacentHTML("beforeend", `<details open><summary>Operasi udara</summary><!-- grup paling bawah, bawaan tidak tercentang (pemilik 3 Nov 2026) -->
-      <label><input type="checkbox" data-l="opsbase"> Base dan armada (water bombing, patroli, OMC)</label>
+      <label><input type="checkbox" data-l="opsbase"> Base dan armada (pangkalan, METAR, water bombing, patroli, OMC)</label>
       <label><input type="checkbox" data-l="opstemuan"> Temuan pilot dari laporan WA satgas</label>
       <label><input type="checkbox" data-l="opsaksi"> Aksi armada dan hasilnya (padam 24 jam)</label></details>`);
+    /* METAR dan Pangkalan udara tidak punya tombol sendiri: ikut tombol Base & armada (pemilik, 9 Nov 2026). Input aslinya disembunyikan, bukan dihapus (Peta.pasang membacanya), dan disinkronkan lewat change. Tamu tanpa tombol ini tetap memakai keduanya. */
+    for (const k of ["udara", "metar"]) { const lb = L?.querySelector(`input[data-l="${k}"]`)?.closest("label"); if (lb) lb.style.display = "none"; }
     /* centang lapisan operasi ditangani di sini (fase tangkap), bukan oleh pemetaan Overlay peta utama */
     L?.addEventListener("change", e => { const k = e.target.closest("input")?.dataset.l; if (!LAPIS_OPS[k]) return; e.stopImmediatePropagation();
       /* lapisan operasi dinyalakan: Warna wilayah dimatikan supaya base terbaca (pemilik 3 Nov 2026) */
       const w = L.querySelector('input[data-l="wilayah"]'); if (e.target.checked && w?.checked) { w.checked = false; w.dispatchEvent(new Event("change", {bubbles: true})); }
-      nanti(() => { terapkanLihat(); renderLegenda(); }); }, true);
+      if (k === "opsbase") for (const m of ["udara", "metar"]) { const h = L.querySelector(`input[data-l="${m}"]`); if (h && h.checked !== e.target.checked) { h.checked = e.target.checked; h.dispatchEvent(new Event("change", {bubbles: true})); } }
+      nanti(() => { terapkanLihat(); renderLegenda(); });
+      if (e.target.checked) cadang(k); }, true);
     /* tab Operasi menyalakan lapisan Base & armada (pemilik 3 Nov 2026); centang lewat jalur change yang sama */
     pm?.addEventListener("click", e => { if (!e.target.closest('[data-m="ops"]')) return; const c = L?.querySelector('input[data-l="opsbase"]');
       if (c && !c.checked) { c.checked = true; c.dispatchEvent(new Event("change", {bubbles: true})); } });
@@ -203,14 +220,15 @@
     pasang(); pasangInteraksi(); legenda();
     if (new URLSearchParams(location.search).has("operasi")) pm?.querySelector('[data-m="ops"]')?.click();   // tautan lama /?operasi = panel Operasi di peta
   }
+  const catatKosong = (nama, cad, adaHariIni) => adaHariIni || cad === undefined ? "" : `<span class="ops-kosong">${cad ? `Belum ada ${nama} pada ${hariWIB()}, terakhir ${cad.tgl}` : `Belum ada ${nama} dalam 7 hari terakhir`}</span>`;
   function legenda() {
     const isi = $("#legenda .lg-isi"); if (!isi || !OP.data || isi.querySelector(".ops-lg")) return;
     const on = k => $(`#lapis input[data-l="${k}"]`)?.checked !== false;
     if (!on("opsbase") && !on("opstemuan") && !on("opsaksi")) return;
     isi.insertAdjacentHTML("afterbegin", `<div class="lg-g ops-lg"><div class="lbl">Operasi udara</div><div class="leg">
       ${on("opsbase") ? `<span><i class="sw dot" style="background:#0b2545;border:2px solid #fff;box-shadow:0 0 0 1px #0b2545"></i>Base (angka = WB, PTR, OMC)</span>` : ""}
-      ${on("opstemuan") ? `<span><b style="color:#c9503a">▲</b> Temuan api pilot <b style="color:#5a9e74;margin-left:6px">▲</b> Clear</span>` : ""}
-      ${on("opsaksi") ? `<span><i class="sw dot" style="background:#fff;border:3px solid #5a9e74"></i>Padam <i class="sw dot" style="background:#fff;border:3px solid #c9503a;margin-left:6px"></i>Masih api <i class="sw dot" style="background:#fff;border:3px solid #4f8fc4;margin-left:6px"></i>Menunggu</span>` : ""}</div></div>`);
+      ${on("opstemuan") ? `<span><b style="color:#c9503a">▲</b> Temuan api pilot <b style="color:#5a9e74;margin-left:6px">▲</b> Clear</span>${catatKosong("temuan", OP.cadT, adaTitik(OP.data.temuan))}` : ""}
+      ${on("opsaksi") ? `<span><i class="sw dot" style="background:#fff;border:3px solid #5a9e74"></i>Padam <i class="sw dot" style="background:#fff;border:3px solid #c9503a;margin-left:6px"></i>Masih api <i class="sw dot" style="background:#fff;border:3px solid #4f8fc4;margin-left:6px"></i>Menunggu</span>${catatKosong("aksi", OP.cadA, adaTitik(OP.mon?.aksi))}` : ""}</div></div>`);
   }
 
   /* ---------------- data hari ini, dipakai panel peta dan layar laporan /operasi (public/operasi_laporan.js) ---------------- */
