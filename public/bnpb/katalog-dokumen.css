@@ -79,6 +79,32 @@ svg.kd-ik{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;st
 .kd-kal-petunjuk{color:var(--ink2);font-size:12px}
 .kd-kal-hapus{padding:5px 12px;border:0;border-radius:999px;background:none;color:var(--c1);font:700 12px var(--font,inherit);cursor:pointer}
 .kd-kal-hapus:hover{background:color-mix(in srgb,var(--c1) 12%,transparent)}
+.kd-menu:disabled{opacity:.45;cursor:not-allowed}
+.kd-menu:disabled:hover{background:var(--card)}
+/* tampilan kalender: satu bulan, heatmap makin gelap makin banyak file. Warna tetap di kedua tema supaya artinya sama */
+.kd-hm{padding:14px 16px 16px;border-top:1px solid var(--line)}
+.kd-hm-kepala{display:flex;justify-content:center;margin-bottom:12px}
+.kd-hm-nav{display:flex;align-items:center;gap:6px}
+.kd-hm-nav b{min-width:150px;text-align:center;font:800 17px var(--display,inherit);color:var(--ink)}
+.kd-hm-nav .kd-ikon:disabled{opacity:.3;cursor:default;background:none}
+.kd-hm-skala{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:14px;color:var(--ink2);font-size:12px}
+.kd-hm-skala i{width:18px;height:12px;border-radius:3px}
+.kd-hm-kisi{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.kd-hm-hari{padding-bottom:2px;text-align:center;color:var(--ink2);font-size:12px;font-weight:700}
+.kd-hm-sel{display:flex;flex-direction:column;justify-content:space-between;height:88px;padding:9px 11px;border:0;border-radius:12px;background:var(--surface);color:var(--ink2);font:inherit;text-align:left;cursor:pointer;transition:transform .1s,box-shadow .1s}
+.kd-hm-tgl{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;opacity:.85}
+.kd-hm-n{display:flex;align-items:baseline;justify-content:flex-end;gap:4px}
+.kd-hm-n b{font:800 24px/1 var(--display,inherit);font-variant-numeric:tabular-nums}
+.kd-hm-n small{font-size:11px;font-weight:600;opacity:.85}
+.kd-hm-sel:disabled{cursor:default;background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
+.kd-hm-sel:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 4px 12px rgb(11 37 69 / .25)}
+.kd-hm-sel:focus-visible{outline:2px solid var(--c5);outline-offset:2px}
+.kd-hm-sel.pilih{outline:3px solid var(--c2);outline-offset:2px}
+[data-l="1"]{background:#d6e4f3}[data-l="2"]{background:#a3c3e6}[data-l="3"]{background:#5f94cc}[data-l="4"]{background:#2a66a8}[data-l="5"]{background:#0b3a73}
+.kd-hm-sel[data-l="1"],.kd-hm-sel[data-l="2"]{color:#0b2545}
+.kd-hm-sel[data-l="3"],.kd-hm-sel[data-l="4"],.kd-hm-sel[data-l="5"]{color:#fff}
+.kd-hm-sel[data-l="5"],.kd-hm-skala i[data-l="5"]{box-shadow:inset 0 0 0 1px rgb(120 150 190 / .45)}
+@media (max-width:640px){.kd-hm-sel{height:62px;padding:6px 7px;border-radius:9px}.kd-hm-n b{font-size:17px}.kd-hm-n small{display:none}.kd-hm-nav b{min-width:124px;font-size:15px}}
 .ex-tabel.kd-tabel{overflow:hidden}
 .kd-tabel table{width:100%;border-collapse:collapse;font-size:13.5px}
 .kd-tabel th{padding:10px 14px;background:#0b2545;color:#fff;font-weight:700;font-size:12.5px;text-align:center;white-space:nowrap}

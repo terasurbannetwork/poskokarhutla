@@ -18,6 +18,9 @@
     lain: "M6 12h.01M12 12h.01M18 12h.01",
     templat: "M4 4h16v5H4z|M4 13h7v7H4z|M15 13h5M15 17h5",
     folder: "M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
+    kalender: "M8 3v4M16 3v4M4 9h16|M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z|M8 13h2v2H8z|M14 13h2v2h-2z",
+    kiri: "M15 6l-6 6 6 6",
+    kanan: "M9 6l6 6-6 6",
     bawah: "M6 9l6 6 6-6",
     centang: "M5 12l5 5L20 7",
     pdf: "M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z|M14 3v4h4|M9 17v-4h1.500a1.200 1.200 0 0 1 0 2.400H9|M14 13v4",
@@ -41,7 +44,7 @@
   const app = document.getElementById("app");
   const simpan = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
   const baca = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
-  const S = {cari: "", kat: new Set(), fmt: new Set(), tgl: "", dari: "", sampai: "", n: PER_MUAT, tampil: baca("kd-tampil") === "kartu" ? "kartu" : "daftar"};
+  const S = {cari: "", kat: new Set(), fmt: new Set(), tgl: "", dari: "", sampai: "", n: PER_MUAT, hari: "", bulan: "", tampil: ["kartu", "kalender"].includes(baca("kd-tampil")) ? baca("kd-tampil") : "daftar"};
 
   const ikon = n => { const s = document.createElementNS(NS, "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true"); s.setAttribute("class", "kd-ik");
     for (const d of IKON[n].split("|")) { const p = document.createElementNS(NS, "path"); p.setAttribute("d", d); s.append(p); } return s; };
@@ -133,7 +136,7 @@
       return {...e, fmt: new Set(semua.map(b => b[0])), c: [e.j, e.d, nama[e.k], e.r, ...(e.v || []).map(v => v.l), ...semua.map(b => b[1])].join(" ").toLowerCase()}; });
     const hitung = {}; for (const e of dok) hitung[e.k] = (hitung[e.k] || 0) + 1;
     const buka = buatPanel();
-    const judul = h("h3"), badan = h("tbody"), grid = h("div", {class: "kd-grid"}), muat = h("button", {type: "button", class: "kd-muat", hidden: ""});
+    const judul = h("h3"), badan = h("tbody"), grid = h("div", {class: "kd-grid"}), kal = h("div", {class: "kd-hm"}), muat = h("button", {type: "button", class: "kd-muat", hidden: ""});
     let hasil = dok;
 
     const berkas = (b, jd) => h("div", {class: "kd-berkas"}, b.map(([x, p, u]) => {
@@ -150,16 +153,54 @@
 
     const kolom = [["Dokumen", "Judul dari isi Markdown atau nama berkas, dengan folder di repo"], ["Kategori", "Dikelompokkan menurut folder di repo"], ["Tanggal", "Tanggal pada nama berkas atau folder, kalau tidak ada tanggal perubahan terakhir di git"], ["Berkas", "Klik format untuk melihat isinya"]];
     const tabel = h("table", null, h("thead", null, h("tr", null, kolom.map(([t, ket]) => h("th", {scope: "col", title: ket, teks: t})))), badan);
-    const wadah = h("div", {class: "ex-tabel kd-tabel"}, tabel, grid, muat);
-    const tombolMuat = () => { const sisa = hasil.length - S.n; muat.hidden = sisa <= 0; muat.textContent = `Tampilkan ${angka(Math.min(sisa, PER_MUAT))} lagi, tersisa ${angka(Math.max(sisa, 0))}`; };
+    const wadah = h("div", {class: "ex-tabel kd-tabel"}, kal, tabel, grid, muat);
+    /* ---------- tampilan kalender: heatmap jumlah file per hari, makin gelap makin banyak. Klik tanggal = daftar dokumennya ---------- */
+    const adaDiHari = (e, t) => e.t === t || (e.v || []).some(v => v.t === t);
+    const daftarAktif = () => S.tampil === "kalender" ? (S.hari ? hasil.filter(e => adaDiHari(e, S.hari)) : []) : hasil;
+    const hitungHari = () => { const m = new Map();
+      for (const e of hasil) for (const x of [e, ...(e.v || [])]) if (x.t) { const n = x.b.filter(b => !S.fmt.size || S.fmt.has(b[0])).length; if (n) m.set(x.t, (m.get(x.t) || 0) + n); }
+      return m; };
+    const HARI = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"], isoHari = (y, m, d) => new Date(Date.UTC(y, m, d)).toISOString().slice(0, 10);
+    const tingkat = (n, maks) => !n ? 0 : Math.max(1, Math.min(5, Math.ceil(Math.sqrt(n / maks) * 5)));   // akar: hari sibuk tidak menumpuk di warna tergelap
+    const bulanKini = () => S.bulan || urutTanggal[urutTanggal.length - 1].slice(0, 7);
+    const namaBulanKd = k => new Date(k + "-15T12:00:00Z").toLocaleDateString("id-ID", {month: "long", year: "numeric", timeZone: "UTC"});
+    function gambarKalender(per) {
+      const kunci = bulanKini(), y = +kunci.slice(0, 4), m = +kunci.slice(5, 7) - 1, awal = urutTanggal[0].slice(0, 7), akhir = urutTanggal[urutTanggal.length - 1].slice(0, 7);
+      const maks = Math.max(0, ...[...per].filter(([t]) => t.startsWith(kunci)).map(x => x[1]));
+      const n = new Date(Date.UTC(y, m + 1, 0)).getUTCDate(), geser = (new Date(Date.UTC(y, m, 1)).getUTCDay() + 6) % 7, sel = [];
+      for (let i = 0; i < geser; i++) sel.push(h("span"));
+      for (let d = 1; d <= n; d++) {
+        const t = isoHari(y, m, d), j = per.get(t) || 0;
+        sel.push(h("button", {type: "button", class: "kd-hm-sel" + (t === S.hari ? " pilih" : ""), "data-t": t, "data-l": tingkat(j, maks), disabled: j ? null : "", title: j ? `${angka(j)} file, ${tanggal(t, "long")}` : tanggal(t, "long"), "aria-label": `${tanggal(t, "long")}, ${angka(j)} file`, "aria-pressed": String(t === S.hari)},
+          h("span", {class: "kd-hm-tgl", teks: d}), j ? h("span", {class: "kd-hm-n"}, h("b", {teks: angka(j)}), h("small", {teks: "file"})) : null));
+      }
+      const panah = (l, ik, teks, mati) => h("button", {type: "button", class: "kd-ikon", "data-geser": l, title: teks, "aria-label": teks, disabled: mati ? "" : null}, ikon(ik));
+      kal.replaceChildren(
+        h("header", {class: "kd-hm-kepala"},
+          h("div", {class: "kd-hm-nav"}, panah(-1, "kiri", "Bulan sebelumnya", kunci <= awal), h("b", {teks: namaBulanKd(kunci)}), panah(1, "kanan", "Bulan berikutnya", kunci >= akhir))),
+        h("div", {class: "kd-hm-kisi"}, HARI.map(x => h("span", {class: "kd-hm-hari", teks: x})), sel),
+        h("div", {class: "kd-hm-skala"}, "Sedikit", [1, 2, 3, 4, 5].map(l => h("i", {"data-l": l})), "Banyak"));
+    }
+    kal.addEventListener("click", ev => {
+      const p = ev.target.closest("button[data-geser]");
+      if (p) { const k = bulanKini(), d = new Date(Date.UTC(+k.slice(0, 4), +k.slice(5, 7) - 1 + Number(p.dataset.geser), 1)); S.bulan = d.toISOString().slice(0, 7); S.hari = ""; S.n = PER_MUAT; requestAnimationFrame(gambar); return; }
+      const b = ev.target.closest("button[data-t]"); if (!b) return; S.hari = S.hari === b.dataset.t ? "" : b.dataset.t; S.n = PER_MUAT; requestAnimationFrame(gambar);
+    });
+
+    const tombolMuat = () => { const sisa = daftarAktif().length - S.n; muat.hidden = sisa <= 0; muat.textContent = `Tampilkan ${angka(Math.min(sisa, PER_MUAT))} lagi, tersisa ${angka(Math.max(sisa, 0))}`; };
     const KOSONG = "Tidak ada dokumen yang cocok. Coba kata kunci atau saringan lain.";
     const gambar = () => {
-      judul.replaceChildren(...(hasil.length === dok.length ? [hl(angka(dok.length)), " dokumen tersimpan di repo, terbaru ", hl(tanggal(dok[0]?.t, "long"))]
+      const adaKal = S.tampil === "kalender", adaKartu = S.tampil === "kartu", daftar = daftarAktif(), tampak = daftar.slice(0, S.n);
+      if (adaKal) {
+        const per = hitungHari(), kunci = bulanKini(), isi = [...per].filter(([t]) => t.startsWith(kunci)), jumlah = isi.reduce((a, x) => a + x[1], 0), puncak = isi.sort((a, b) => b[1] - a[1])[0], nama = namaBulanKd(kunci);
+        judul.replaceChildren(...(S.hari ? [hl(angka(daftar.length)), " dokumen pada ", hl(tanggal(S.hari, "long"))]
+          : puncak ? [hl(angka(jumlah)), ` file di ${nama}, terbanyak `, hl(`${angka(puncak[1])} file`), " pada ", hl(tanggal(puncak[0], "long"))] : [`Tidak ada file yang cocok di ${nama}`]));
+        gambarKalender(per);
+      } else judul.replaceChildren(...(hasil.length === dok.length ? [hl(angka(dok.length)), " dokumen tersimpan di repo, terbaru ", hl(tanggal(dok[0]?.t, "long"))]
         : [hl(angka(hasil.length)), ` dari ${angka(dok.length)} dokumen cocok dengan saringan`]));
-      const adaKartu = S.tampil === "kartu", tampak = hasil.slice(0, S.n);
-      tabel.hidden = adaKartu; grid.hidden = !adaKartu;
-      if (adaKartu) { badan.replaceChildren(); grid.replaceChildren(...(hasil.length ? tampak.map(kartu) : [h("p", {class: "kd-kosong", teks: KOSONG})])); }
-      else { grid.replaceChildren(); badan.replaceChildren(...(hasil.length ? tampak.map(baris) : [h("tr", null, h("td", {class: "kd-kosong", colspan: "4", teks: KOSONG}))])); }
+      kal.hidden = !adaKal; tabel.hidden = adaKartu || (adaKal && !S.hari); grid.hidden = !adaKartu;
+      if (adaKartu) { badan.replaceChildren(); grid.replaceChildren(...(daftar.length ? tampak.map(kartu) : [h("p", {class: "kd-kosong", teks: KOSONG})])); }
+      else { grid.replaceChildren(); badan.replaceChildren(...(daftar.length ? tampak.map(baris) : adaKal ? [] : [h("tr", null, h("td", {class: "kd-kosong", colspan: "4", teks: KOSONG}))])); }
       tombolMuat();
     };
     const hariJakarta = (mundur = 0) => { const d = new Date(Date.now() - mundur * 864e5); return d.toLocaleDateString("sv-SE", {timeZone: "Asia/Jakarta"}); };
@@ -170,7 +211,7 @@
     };
     const dalamRentang = (e, a, z) => (!a && !z) || [e.t, ...(e.v || []).map(v => v.t)].some(t => t && (!a || t >= a) && (!z || t <= z));   // versi lama ikut dihitung: paparan tetap ketemu bila salah satu versinya di rentang
     const saring = () => {
-      const kata = S.cari.toLowerCase().split(/\s+/).filter(Boolean), [a, z] = rentang();
+      const kata = S.cari.toLowerCase().split(/\s+/).filter(Boolean), [a, z] = S.tampil === "kalender" ? ["", ""] : rentang();   // di kalender, tanggal dipilih dari kisinya
       hasil = dok.filter(e => (!S.kat.size || S.kat.has(e.k)) && (!S.fmt.size || [...S.fmt].some(x => e.fmt.has(x))) && dalamRentang(e, a, z) && kata.every(k => e.c.includes(k)));
       S.n = PER_MUAT; requestAnimationFrame(gambar);
     };
@@ -218,7 +259,9 @@
       for (const b of opsiKat.children) b.setAttribute("aria-pressed", String(b.dataset.v ? S.kat.has(b.dataset.v) : !S.kat.size));
       for (const b of opsiFmt.querySelectorAll("button[data-v]")) b.setAttribute("aria-pressed", String(S.fmt.has(b.dataset.v)));
       for (const b of opsiPreset.children) b.setAttribute("aria-pressed", String(S.tgl === b.dataset.v));
-      const namaF = [...S.fmt].map(f => NAMA_FORMAT[f]), tgl = teksTanggal();
+      const diKalender = S.tampil === "kalender", namaF = [...S.fmt].map(f => NAMA_FORMAT[f]), tgl = diKalender ? "" : teksTanggal();
+      if (diKalender && menuBuka === menuTgl) tutupMenu();
+      menuTgl.tombol.disabled = diKalender; menuTgl.tombol.title = diKalender ? "Tanggal dipilih langsung dari kalender" : "";
       ringkas(menuFmt, "Format", namaF); ringkas(menuTgl, "Tanggal", tgl ? [tgl] : []);
       const chip = (teks, buang) => { const b = h("button", {type: "button", class: "kd-chip", title: "Lepas filter " + teks, teks}, ikon("tutup")); b.addEventListener("click", () => { buang(); segarkanFilter(); saring(); }); return b; };
       const chips = [...[...S.fmt].map(f => chip(NAMA_FORMAT[f], () => S.fmt.delete(f))), ...(tgl ? [chip(tgl, hapusTanggal)] : [])];   // kategori tidak perlu chip: tombolnya sudah terlihat menyala
@@ -226,12 +269,12 @@
       terpilih.replaceChildren(...chips); terpilih.hidden = !chips.length;
     }
     segarkanFilter();
-    const pilihTampil = h("div", {class: "seg", role: "group", "aria-label": "Pilih tampilan"}, [["daftar", "Daftar"], ["kartu", "Kartu"]].map(([v, t]) => h("button", {type: "button", "data-v": v, "aria-pressed": String(S.tampil === v)}, ikon(v), t)));
-    pilihTampil.addEventListener("click", ev => { const b = ev.target.closest("button"); if (!b || b.dataset.v === S.tampil) return; S.tampil = b.dataset.v; simpan("kd-tampil", S.tampil); tandaiDeret(pilihTampil, b); requestAnimationFrame(gambar); });
+    const pilihTampil = h("div", {class: "seg", role: "group", "aria-label": "Pilih tampilan"}, [["daftar", "Daftar"], ["kartu", "Kartu"], ["kalender", "Kalender"]].map(([v, t]) => h("button", {type: "button", "data-v": v, "aria-pressed": String(S.tampil === v)}, ikon(v), t)));
+    pilihTampil.addEventListener("click", ev => { const b = ev.target.closest("button"); if (!b || b.dataset.v === S.tampil) return; S.tampil = b.dataset.v; S.hari = ""; simpan("kd-tampil", S.tampil); tandaiDeret(pilihTampil, b); segarkanFilter(); saring(); });
 
     const input = h("input", {type: "search", placeholder: "Cari judul, folder, atau nama berkas", "aria-label": "Cari dokumen", autocomplete: "off"});
     let tunda; input.addEventListener("input", () => { clearTimeout(tunda); tunda = setTimeout(() => { S.cari = input.value.trim(); saring(); }, 120); });
-    muat.addEventListener("click", () => { const dari = S.n; S.n += PER_MUAT; const tambah = hasil.slice(dari, S.n); if (S.tampil === "kartu") grid.append(...tambah.map(kartu)); else badan.append(...tambah.map(baris)); tombolMuat(); });   // ditambahkan, bukan digambar ulang: folder yang sedang terbuka tetap terbuka
+    muat.addEventListener("click", () => { const dari = S.n; S.n += PER_MUAT; const tambah = daftarAktif().slice(dari, S.n); if (S.tampil === "kartu") grid.append(...tambah.map(kartu)); else badan.append(...tambah.map(baris)); tombolMuat(); });   // ditambahkan, bukan digambar ulang: folder yang sedang terbuka tetap terbuka
 
     app.replaceChildren(h("section", {class: "ex ex-std"},
       h("header", {class: "ex-hd"}, h("span", {class: "ex-ey"}, ikon("kajian"), "Katalog dokumen"), h("div", {class: "ex-jd"}, judul, h("div", {class: "kd-kanan"}, pilihTampil, tombolTema()))),
