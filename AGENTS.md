@@ -191,22 +191,22 @@ Penulis kode bukan pengulasnya. Verifier = subagent baru tanpa riwayat
 pekerjanya, dan memeriksa sinyal nyata (self-check hijau, uji balik jalan,
 `npm run uji:warga` hijau), bukan klaim "sudah beres".
 
-### 3.3 Isolasi pekerja
+### 3.3 Hanya main (pemilik, 16 Okt sampai 9 Nov 2026)
+
+Pemilik tidak pernah mau ada branch atau worktree. Semua kerja langsung di `main`,
+tanpa pengecualian, termasuk agent. Hook `scripts/agents/tolak-branch.mjs` menolak
+`git checkout -b`, `git switch -c`, `git branch <nama>`, `git worktree add`, push ke
+selain `main`, `isolation: "worktree"`, dan `EnterWorktree`. Gerbangnya
+`tests/agen/gerbang-tanpa-branch.test.mjs`.
 
 Checkout utama sering dipegang beberapa sesi Claude sekaligus dan index git-nya
-dipakai bersama. Fan-out yang membaca aman di tree yang sama; fan-out yang
-menulis pakai `isolation: "worktree"`. Commit dengan path spesifik
-(`git commit -- <berkas>`), jangan `git add -A`.
+dipakai bersama. Fan-out yang membaca aman jalan bersamaan; agent penulis jalan satu
+per satu, atau bersamaan hanya bila berkasnya disebut di brief dan tidak beririsan.
+Commit dengan path spesifik (`git commit -- <berkas>`), jangan `git add -A`.
 
-Pemilik tidak mau branch menumpuk (2 Nov 2026). Branch dan worktree cuma
-tempat kerja sementara: begitu kerjanya selesai, merge ke `main` lalu hapus
-branch + worktree-nya di sesi yang sama. Jangan bikin branch "patok"
-(`panen/*`, `integrasi-*`) yang dibiarkan hidup. Sapuan aman (hanya branch yang
-sudah masuk `main`, worktree tanpa `--force`): `bash scripts/agents/sapu-branch.sh`.
-Sapuan itu jalan sendiri di hook `Stop` tiap giliran selesai (gerbang
-`tests/agen/gerbang-sapu-branch.test.mjs`). Worktree pengerja (`isolation: "worktree"`)
-yang masih terkunci dilepas dulu (`git worktree unlock`) begitu agentnya selesai, lalu
-cek `git branch` hanya menyisakan `main` sebelum lapor selesai (4 Nov 2026).
+Sisa branch yang sudah masuk `main` disapu hook `Stop` lewat
+`scripts/agents/sapu-branch.sh` (gerbang `tests/agen/gerbang-sapu-branch.test.mjs`).
+Branch lain yang ditemukan dilaporkan ke pemilik beserta perintah hapusnya.
 
 ### 3.4 Aturan pemilik masuk gerbang, bukan memory
 
