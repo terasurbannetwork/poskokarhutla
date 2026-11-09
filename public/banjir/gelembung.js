@@ -88,6 +88,7 @@
       for (const l of LAYER) peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", on ? "visible" : "none");
       /* titik pos sungai kecil disembunyikan selama gelembung berangka tampil (zoom nasional/kabupaten); muncul lagi saat zoom masuk */
       if (peta.getLayer("sungai")) peta.setLayerZoomRange("sungai", on && this.ada ? ZOOM.kabMaks : 0, 24);
+      if (typeof LapisTerdampak !== "undefined") { LapisTerdampak.muat(); LapisTerdampak.gambar(); }
       renderLegenda(); },
     muatPusat() { if (this.titikKab) return; muatJSON("data/pusat_kec.json").then(d => { this.kec = d; this.titikKab = pusatKab(d);  this.segarkan(); }).catch(() => {}); },
     async muatArsip() {

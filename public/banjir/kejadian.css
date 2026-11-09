@@ -33,3 +33,7 @@
 .wl-kg button[aria-pressed="true"]{background:var(--brand);color:#fff}:root[data-theme="dark"] .wl-kg button[aria-pressed="true"]{color:oklch(18% .035 256)}
 #rows.wl-redup{opacity:.5;transition:opacity .15s}
 .tr-naik{color:#c9503a;font-weight:800}.tr-turun{color:#2e8b57;font-weight:800}.tr-tetap{color:var(--ink2)}   /* kolom Tren tabel wilayah: naik = memburuk */
+/* kolom Terdampak tabel provinsi: header dan angka rata tengah (gerbang tabel-rata); pil status kab/kota dari laporan, bukan prakiraan */
+#rows .tb .n.tdm{text-align:center}
+.pill.td-b{background:#1d4e89;color:#fff}.pill.td-s{background:#23756f;color:#fff}.pill.td-t{background:#667085;color:#fff}
+.pill.td-b,.pill.td-s,.pill.td-t{text-transform:none;font-size:10.5px;padding:1px 6px}

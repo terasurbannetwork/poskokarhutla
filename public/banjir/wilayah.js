@@ -112,10 +112,18 @@
     kal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'};
   const svg = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[k]}</svg>`;
   const chip = (k, w, s, l, t) => `<span class="lg-c" style="--w:${w}" title="${t}">${svg(k)}<b>${s}</b>${l}</span>`;   // label pendek; arti lengkap di title
-  const G = "grid-template-columns:20px minmax(0,1.5fr) 64px 34px 42px 72px";
+  const G = "grid-template-columns:20px minmax(0,1.5fr) 64px 34px 42px 72px 64px";
   const akhir = () => W.pilih || W.file?.hari;
   const pilSt = s => s == null ? "–" : `<span class="pill l${s}">${s ? LEVEL[s] : "Aman"}</span>`;
   const n = v => v == null ? "–" : fmt(v);
+  /* kolom Terdampak: kab/kota yang sudah dilaporkan banjir (scripts/banjir/terdampak.py, lapis peta "Sudah banjir"), BUKAN prakiraan Siaga/Awas.
+     Provinsi = jumlah kab/kota Belum surut + Sudah surut; "–" = tidak ada laporan dalam ambang hari. Kab/kota = status laporannya. */
+  const TD = () => typeof LapisTerdampak !== "undefined" && LapisTerdampak.siap ? LapisTerdampak.baris : null;
+  let tdC = {};   /* indeks dihitung sekali per array baris, bukan per sel */
+  const tdI = b => tdC.b === b ? tdC : tdC = {b, p: TDm.perProvinsi(b), k: new Map(b.map(x => [x.kode, x]))};
+  const tdSel = (b, kunci, kab) => { const m = b && kab ? tdI(b).k.get(kunci) : null, v = b && !kab ? (tdI(b).p[kunci] || null) : null;
+    if (kab) return !b ? `<span class="n tdm" data-sort="-1">…</span>` : m ? `<span class="n tdm" data-sort="${m.status === TDm.BELUM ? 2 : m.status === TDm.SUDAH ? 1 : 0}" title="Keadaan ${TDm.tgl(m.tanggal)}"><span class="pill td-${m.status === TDm.BELUM ? "b" : m.status === TDm.SUDAH ? "s" : "t"}">${m.status === TDm.BELUM ? "Belum" : m.status === TDm.SUDAH ? "Sudah" : "Tak tahu"}</span></span>` : `<span class="n tdm" data-sort="-1">–</span>`;
+    return `<span class="n tdm" data-sort="${v ?? -1}">${b ? (v ? fmt(v) : "–") : "…"}</span>`; };
   const trSel = d => d == null ? `<span class="n" data-sort="-99">–</span>` : `<span class="n tr-${d > 0 ? "naik" : d < 0 ? "turun" : "tetap"}" data-sort="${d}">${d > 0 ? "▲" + fmt(d) : d < 0 ? "▼" + fmt(-d) : "0"}</span>`;
   /* tren membandingkan hari terakhir periode dengan TEPAT sehari sebelumnya; arsip kemarin tak ada = "–" (bukan diam-diam membandingkan dengan hari jauh) */
   function muatTren() {
@@ -174,14 +182,14 @@
       const p = (D.provinsi || []).find(x => x.kode === j[0] || x.nama === namaProv(j[0]));
       baris = p?.kab || []; kunciDari = r => String(r.kode).includes("|") ? r.kode : `${j[0]}|${r.nama}`;
     } else { baris = D.provinsi || []; kunciDari = r => r.kode; }
-    const urut = [...baris].sort(urutBaris), T = D.total || {};
-    const legenda = `<div class="lg-hs">${chip("kej", "#1d4e89", "WS", "Wilayah Siaga", "Wilayah Siaga (prakiraan model), jumlah gugus")}${chip("h3", "#4f8fc4", "H3", "Hujan 3 hari", "Hujan 3 hari terbesar, mm")}${chip("tr", "#c9503a", "TR", "Tren", `${j.length ? "Naik atau turun tingkat status" : "Bertambah atau berkurangnya kab/kota Siaga atau Awas"}, ${trJudul}`)}</div>`;
-    const kepala = `<div class="tb kepala" style="${G}" title="Sumber: BMKG (prakiraan dan peringatan), Open-Meteo (hujan), GloFAS (sungai), InaRISK (bahaya), WorldPop (penduduk)"><span></span><span>${j.length ? "Kabupaten / kota" : "Provinsi"}</span><span style="text-align:right">Status</span><span class="n" title="Wilayah Siaga (prakiraan), gugus">WS</span><span class="n" title="Hujan 3 hari, mm">H3 mm</span><span class="n" title="${j.length ? "Selisih tingkat status" : "Selisih kab/kota Siaga atau Awas"}, ${trJudul}">Tren</span></div>`;
-    const total = j.length ? "" : `<div class="tb tb-total" style="${G}"><span></span><span>Grand total</span><span></span><span class="n">${n(T.kejadian_aktif)}</span><span class="n">–</span>${trSel(TR?._total)}</div>`;
+    const urut = [...baris].sort(urutBaris), T = D.total || {}, TDb = TD();
+    const legenda = `<div class="lg-hs">${chip("kej", "#1d4e89", "WS", "Wilayah Siaga", "Wilayah Siaga (prakiraan model), jumlah gugus")}${chip("h3", "#4f8fc4", "H3", "Hujan 3 hari", "Hujan 3 hari terbesar, mm")}${chip("rob", "#23756f", "TD", "Terdampak", "Kab/kota yang sudah dilaporkan banjir (sudah terjadi, bukan prakiraan)")}${chip("tr", "#c9503a", "TR", "Tren", `${j.length ? "Naik atau turun tingkat status" : "Bertambah atau berkurangnya kab/kota Siaga atau Awas"}, ${trJudul}`)}</div>`;
+    const kepala = `<div class="tb kepala" style="${G}" title="Sumber: BMKG (prakiraan dan peringatan), Open-Meteo (hujan), GloFAS (sungai), InaRISK (bahaya), WorldPop (penduduk)"><span></span><span>${j.length ? "Kabupaten / kota" : "Provinsi"}</span><span style="text-align:center">Status</span><span class="n" title="Wilayah Siaga (prakiraan), gugus">WS</span><span class="n" title="Hujan 3 hari, mm">H3 mm</span><span class="n" title="${j.length ? "Selisih tingkat status" : "Selisih kab/kota Siaga atau Awas"}, ${trJudul}">Tren</span><span class="n tdm" title="${j.length ? "Status laporan banjir yang sudah terjadi: Belum surut atau Sudah surut" : "Jumlah kab/kota yang sudah dilaporkan banjir (Belum surut ditambah Sudah surut), dari Laporan harian Koordalops, bukan prakiraan"}. Hanya kejadian ${TDm.AMBANG} hari terakhir; – berarti tidak ada laporan${j.length ? `; Tak tahu berarti Belum surut tanpa kabar lebih dari ${TDm.AMBANG} hari` : ""}.">Terdampak</span></div>`;
+    const total = j.length ? "" : `<div class="tb tb-total" style="${G}"><span></span><span>Grand total</span><span></span><span class="n">${n(T.kejadian_aktif)}</span><span class="n">–</span>${trSel(TR?._total)}<span class="n tdm" data-sort="${TDb ? TDm.total(TDb) : -1}">${TDb ? fmt(TDm.total(TDb)) : "…"}</span></div>`;
     return kep + legenda + kepala + total + (urut.length ? urut.map((r, i) => `<button class="tb${(st(r.status) ?? 0) >= 2 ? " hl" + st(r.status) : ""}" style="${G}" role="listitem" data-k="${esc(kunciDari(r))}">
-      <span class="rk">${i + 1}</span><span style="font-weight:600">${esc(r.nama)}</span><span style="text-align:right" data-sort="${st(r.status) ?? -1}">${pilSt(st(r.status))}</span>
+      <span class="rk">${i + 1}</span><span style="font-weight:600">${esc(r.nama)}</span><span style="text-align:center" data-sort="${st(r.status) ?? -1}">${pilSt(st(r.status))}</span>
       <span class="n" data-sort="${r.kejadian_aktif ?? -1}">${n(r.kejadian_aktif)}</span>
-      <span class="n" data-sort="${r.hujan3_mm ?? -1}">${r.hujan3_mm == null ? "–" : fmt(Math.round(r.hujan3_mm))}</span>${trSel(TR?.[j.length ? kunciDari(r) : r.kode])}</button>`).join("") : `<div class="kosong">Tidak ada wilayah di tingkat ini.</div>`);
+      <span class="n" data-sort="${r.hujan3_mm ?? -1}">${r.hujan3_mm == null ? "–" : fmt(Math.round(r.hujan3_mm))}</span>${trSel(TR?.[j.length ? kunciDari(r) : r.kode])}${tdSel(TDb, j.length ? kunciDari(r) : r.kode, j.length)}</button>`).join("") : `<div class="kosong">Tidak ada wilayah di tingkat ini.</div>`);
   }
 
   /* klik kontrol: chrome (pil aktif, buka-tutup kalender) urgent di tempat; tabel berat digambar ulang sesudah satu frame lewat nanti() */
