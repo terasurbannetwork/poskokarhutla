@@ -6,7 +6,7 @@ Dua proses, tanpa LLM:
   melayani API lokal `127.0.0.1:PORT` (`/send`, `/send-file`) lewat limiter anti-blokir (`gateway/limiter.js`).
   Bahan yang belum tersimpan menunggu di `~/.wa-bot/outbox/` (dicoba ulang tiap 5 menit).
 - `otomatis.mjs`: baca bahan hari ini dari worker (`/api/wa/masuk`, token `WA_MESIN`), jalankan
-  `data/laporan-bnpb/generator/harian.py` dan `penanganan.py`, kirim PDF + PPTX ke `PENERIMA`.
+  `data/laporan-bnpb/generator/harian_ringkas.py` (2 slide, bahan Koordalops 24 jam + BMKG pagi + PVMBG pagi) dan `penanganan.py`, kirim PDF + PPTX ke `PENERIMA`.
   Dipicu gateway 2 menit sesudah bahan terakhir tersimpan, dan launchd tiap 10 menit sebagai cadangan (06.00 sampai 23.00 WIB).
 
 Aturan jam (README generator): Harian = rekap Koordalops 24 jam + BMKG pagi, sesudah 12.00 WIB. Penanganan = BMKG pagi + teks Satgas,
