@@ -322,6 +322,8 @@ jobs:
 
       # /api/status menjawab 503 bila sumber kunci basi (titik > 8 jam, banjir/berita > 30 jam): run jadi merah, tidak gagal diam.
       # Tanpa token Cloudflare (jalur commit) terbitnya lewat build lain, jadi dilewati.
+      # Himawari punya workflow sendiri dan jaga.yml tetap merah tiap jam bila ia basi. Kalau hanya itu yang basi, titik sudah terbit benar: peringatan, bukan
+      # merah (8-9 Nov 2026: 3 run merah berturut padahal titik segar, lalu pemicu pengganti tertahan aturan gagal tiga kali di jaga_jadwal.mjs).
       - name: Periksa kesegaran data yang tayang
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -334,5 +336,9 @@ jobs:
             [ "$kode" = 200 ] && exit 0
             sleep 30
           done
+          if [ "$kode" = 503 ] && python3 -c 'import json,sys; sys.exit(0 if json.load(open("status.json")).get("basi") == ["himawari"] else 1)'; then
+            echo "::warning title=Himawari basi::titik sudah terbit; himawari.yml dijaga jaga.yml"
+            exit 0
+          fi
           echo "::error title=Data basi::/api/status HTTP $kode $(cat status.json 2>/dev/null)"
           exit 1
