@@ -30,7 +30,7 @@
   <header class="bar"><div><h1>Inventori LogPal</h1><p class="n" id="st" role="status">Menyambung ke data gudang.</p></div>
     <label id="bilahG" hidden style="min-width:min(100%,280px)">Gudang<select id="pg"></select></label></header>
   <div class="seg" role="group" aria-label="Halaman">
-    <button data-h="stok" aria-pressed="true">Stok</button><button data-h="standar" aria-pressed="false">Standar minimal</button><button data-h="kebutuhan" aria-pressed="false">Kebutuhan</button><button data-h="jaringan" aria-pressed="false">Jaringan logistik</button><button data-h="permintaan" aria-pressed="false">Permintaan bantuan</button><button data-h="input" aria-pressed="false">Input stok</button><button data-h="mutasi" aria-pressed="false">Mutasi barang</button><button data-h="opname" aria-pressed="false">Stok opname</button><button data-h="laporan" aria-pressed="false">Pembuat laporan</button><button data-h="audit" aria-pressed="false">Kesiapan audit</button>
+    <button data-h="stok" aria-pressed="true">Stok</button><button data-h="standar" aria-pressed="false">Standar minimal</button><button data-h="kebutuhan" aria-pressed="false">Kebutuhan</button><button data-h="jaringan" aria-pressed="false">Jaringan logistik</button><button data-h="kirim" aria-pressed="false">Pengantaran</button><button data-h="permintaan" aria-pressed="false">Permintaan bantuan</button><button data-h="input" aria-pressed="false">Input stok</button><button data-h="mutasi" aria-pressed="false">Mutasi barang</button><button data-h="opname" aria-pressed="false">Stok opname</button><button data-h="laporan" aria-pressed="false">Pembuat laporan</button><button data-h="audit" aria-pressed="false">Kesiapan audit</button>
   </div>
   <div id="mon"><div class="km">
   <header>
@@ -186,7 +186,7 @@
   <div class="km-hal" data-tab="jaringan" hidden>
     <section class="km-kartu">
       <h2>Jangkauan gudang ke <b data-draw="n" data-n="kab">—</b> kab/kota</h2>
-      <p>Waktu tempuh perkiraan dari jarak garis lurus, untuk menyusun prioritas. Belum memakai jaringan jalan dan belum dikonfirmasi operator angkutan.</p>
+      <p>Waktu tempuh perkiraan dari rute darat, laut, dan udara, untuk menyusun prioritas. Belum dikonfirmasi operator angkutan.</p>
       <div class="km-seg km-jr" role="group" aria-label="Gudang yang dihitung" style="grid-template-columns:repeat(2,1fr)">
         <button type="button" data-g="bnpb" aria-pressed="true">Hanya gudang BNPB</button>
         <button type="button" data-g="semua" aria-pressed="false">BNPB dan BPBD tercatat</button>
@@ -211,9 +211,47 @@
       </div>
       <div class="km-kartu" id="kartu-rute">
         <h2>Rute penghantaran wilayah banjir</h2>
-        <p>Perkiraan dari jarak dan kecepatan rata-rata tiap moda.</p>
+        <p>Perkiraan waktu tempuh dari rute darat, laut, dan udara.</p>
         <div class="km-gulir"><table data-source="rute" data-row-key="kab"><thead><tr><th data-field="provinsi">Provinsi</th><th data-field="kab">Kab/kota</th><th data-field="asal">Asal gudang</th><th data-field="moda">Moda</th><th data-field="jam">Perkiraan jam</th><th data-field="turun_di">Turun di</th></tr></thead><tbody data-draw="rute"></tbody></table></div>
       </div>
+    </section>
+  </div>
+
+  <div class="km-hal" data-tab="kirim" hidden>
+    <section class="km-kartu" id="kr_model">
+      <h2>Model pengantaran logistik</h2>
+      <p>Jaringan bertingkat dari gudang ke pusat kab/kota lalu ke tiap kecamatan. Darat memakai rute jalan, laut jalur pelayaran, udara dari bandara terdekat. Kecepatan truk 35 km per jam, kapal 25 km per jam, pesawat 600 km per jam; antar terakhir ke kecamatan jauh dari jalan memakai 20 km per jam. Semua waktu adalah perkiraan dan belum dikonfirmasi operator angkutan. Stok dihitung dari gudang yang boleh dilihat akun ini, jadi rencana bisa kurang dari stok seluruh negeri.</p>
+      <p class="msg" id="kr_m" role="status"></p>
+      <div class="km-ubin" id="kr_u"></div>
+    </section>
+    <section class="km-kartu">
+      <h2>Kab/kota yang sudah banjir, titik permintaan</h2>
+      <p>Daftar dari data banjir terdampak yang masih berlaku (status lebih tua dari 14 hari tidak tampil). Kecamatan dan jumlah jiwa dari data terdampak staf; bila kosong, isi jumlah pengungsi sendiri di bawah.</p>
+      <div class="km-gulir"><table><thead><tr><th>Kab/kota</th><th>Provinsi</th><th>Status</th><th>Tanggal keadaan</th><th>Kecamatan</th><th>Jiwa</th><th>Gudang tercepat</th><th>Moda</th><th>Perkiraan tiba</th><th>Rencana</th></tr></thead><tbody id="kr_t"></tbody></table></div>
+    </section>
+    <section class="km-kartu">
+      <h2>Simulasi kejadian</h2>
+      <form id="kr_f" class="f" autocomplete="off">
+        <label>Provinsi<select id="kr_p"></select></label><label>Kab/kota<select id="kr_k"></select></label><label>Kecamatan<select id="kr_c"></select></label>
+        <label>Jumlah pengungsi (jiwa)<input id="kr_j" type="number" min="1" step="1" value="1000" required></label>
+        <label>Kapasitas truk (ton)<input id="kr_o" type="number" min="1" step="0.5" value="8"></label>
+        <label>Gudang<select id="kr_l"><option value="semua">BNPB dan BPBD tercatat</option><option value="bnpb">Hanya BNPB</option></select></label>
+        <button class="p" type="submit">Hitung rencana</button>
+      </form>
+    </section>
+    <section class="km-kartu" id="kr_h" hidden>
+      <h2 id="kr_h2"></h2>
+      <p id="kr_n"></p>
+      <div class="km-ubin" id="kr_u2" style="margin-bottom:10px"></div>
+      <div class="km-gulir" style="margin-bottom:12px"><table><thead><tr><th>Gudang</th><th>Moda</th><th>Muat dan bongkar</th><th>Angkut utama</th><th>Antar terakhir</th><th>Perkiraan tiba</th><th>Muatan</th><th>Truk</th></tr></thead><tbody id="kr_g"></tbody></table></div>
+      <div class="km-gulir" style="margin-bottom:12px"><table><thead><tr><th>Barang</th><th>Kebutuhan 3 hari</th><th>Terpenuhi</th><th>Kekurangan</th><th>Asal</th></tr></thead><tbody id="kr_b"></tbody></table></div>
+      <p id="kr_a"></p>
+    </section>
+    <section class="km-kartu">
+      <h2>Peta waktu tiba per kecamatan</h2>
+      <p>Warna menurut perkiraan waktu tiba dari gudang tercatat.</p>
+      <div style="position:relative"><canvas id="kr_cv" style="width:100%;display:block"></canvas></div>
+      <div class="km-leg" id="kr_lg"></div>
     </section>
   </div>
 </div>

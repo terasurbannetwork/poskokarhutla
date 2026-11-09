@@ -29,7 +29,7 @@ window.dash={
   data(id){if(ada(id)){const v=nilai(id);return {status:'ok',data:v,refreshing:false,meta:[]}}return {status:'loading',data:[],refreshing:false,meta:[]}},
   calc(id,o){C[id]=o},loader(){},onData(f){f()},setLink(){},refresh(){},params(){return {}},setParams(){},resetParams(){},colors:['#1f6fb0','#d9600b'],
   draw(n,f){if(f)reg[n]=f;else jalan(n)},
-  _semua:semua,_gudang(g){GD=g;turunan()},_kebutuhan(k){D.kebutuhan=k;Object.keys(memo).forEach(x=>delete memo[x]);semua()}
+  _csv:csv,_semua:semua,_gudang(g){GD=g;turunan()},_kebutuhan(k){D.kebutuhan=k;Object.keys(memo).forEach(x=>delete memo[x]);semua()}
 };
 Promise.all(Object.entries(DAF).map(async([id,u])=>{const r=await fetch(u,{credentials:'same-origin'});return [id,r.ok?await r.text():'']})).then(h=>{let J=null;h.forEach(([id,t])=>{
   if(id==='geo')D.geo=t?JSON.parse(t):{type:'FeatureCollection',features:[]};else if(id==='teks')D.teks=t?JSON.parse(t):{};else if(id==='jangkauan')J=t?csv(t):[];else if(id==='provinsi'){prov0=t?csv(t):[];D.provinsi=prov0}else D[id]=t?csv(t):[]});
@@ -453,8 +453,8 @@ const G0=()=>G[aktif];
 $('b_kelompok').replaceChildren(...KEL.map(k=>new Option(k)));
 ['m_tanggal','o_tanggal','l_tgl'].forEach(i=>$(i).value=HARI());
 
-const MON=['stok','standar','kebutuhan','jaringan'];
-document.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{const h=b.dataset.h,mon=MON.includes(h);document.querySelectorAll('[data-h]').forEach(x=>x.setAttribute('aria-pressed',x===b));document.querySelectorAll('[data-p]').forEach(s=>s.hidden=s.dataset.p!==h);document.querySelectorAll('[data-tab]').forEach(s=>s.hidden=s.dataset.tab!==h);$('mon').hidden=!mon;$('bilahG').hidden=mon;if(mon)nanti(dash._semua)});
+const MON=['stok','standar','kebutuhan','jaringan','kirim'];
+document.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{const h=b.dataset.h,mon=MON.includes(h);document.querySelectorAll('[data-h]').forEach(x=>x.setAttribute('aria-pressed',x===b));document.querySelectorAll('section[data-p]').forEach(s=>s.hidden=s.dataset.p!==h);document.querySelectorAll('[data-tab]').forEach(s=>s.hidden=s.dataset.tab!==h);$('mon').hidden=!mon;$('bilahG').hidden=mon;if(mon)nanti(dash._semua);if(h==='kirim')bukaKirim()});
 $('pg').onchange=()=>{aktif=$('pg').value;gambar()};$('cari_barang').oninput=tunda(gambarStok);
 
 function kedaluwarsa(d){if(!d)return null;const h=Math.floor((new Date(d)-new Date(HARI()))/864e5);return h<0?'lewat':(h<=90?'dekat':null)}
@@ -623,6 +623,77 @@ $('qrd').onclick=()=>{const g=G0();if(!g)return;const isi=[...$('qrb').children]
 function unduh2(n,d){simpan(n,d);pesan('mo','Label diunduh.',1)}
 function bukaHash(){const m=location.hash.match(/^#q-(.+)-([a-z0-9]+)$/);if(!m||!G[m[1]])return;aktif=m[1];$('pg').value=aktif;gambar();document.querySelector('[data-h="opname"]').click();const i=document.getElementById('of-'+m[2]);if(i){i.scrollIntoView({block:'center'});i.focus()}}
 addEventListener('hashchange',bukaHash);
+
+/* ================================================================ tab Pengantaran (rencana kirim per kecamatan)
+   Data besar (matriks waktu tempuh, kecamatan, terdampak staf) hanya dimuat sekali, saat tab pertama dibuka, dari /api/instansi/logpal/statis (sesi wajib).
+   Stok dari G: gudang yang dikembalikan /api/instansi/logpal/data untuk akun ini, jadi akun BPBD merencanakan dari gudang yang boleh dilihatnya saja. */
+const K0={m:null,kec:null,ter:null,ix:null,lebar:0,p:null};
+/*kirim-murni*/
+const ITEM_K=[['Paket makanan siap saji',j=>j*3,.5,'paket'],['Selimut',j=>j,1.5,'lembar'],['Matras dan kasur lipat',j=>j,3,'lembar'],['Paket perlengkapan keluarga',j=>Math.ceil(j/4),5,'paket'],['Terpal',j=>Math.ceil(j/4),5,'lembar'],['Tenda pengungsi',j=>Math.ceil(j/24),160,'unit'],['Velbed',j=>Math.ceil(j/24)*24,15,'unit'],['Genset',j=>Math.ceil(Math.ceil(j/24)/6),60,'unit'],['Light tower portable',j=>Math.ceil(Math.ceil(j/24)/6),150,'unit']];
+const BLN=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+const tglK=(t)=>{const [,m,d]=String(t).split('-').map(Number);return m&&d?d+' '+BLN[m-1]:'–'};
+const jamT=(j)=>j==null?'–':(j<48?Math.round(j)+' jam':Math.round(j/24*10)/10+' hari').replace('.',',');
+function utamaK(t){return t[0]!=null?[t[0],'Darat']:(t[1]!=null?[t[1],'Laut']:(t[2]!=null?[t[2],'Udara']:[null,'']))}
+function akhirK(c){return (+c.km_akhir||0)/(c.jauh==='1'?20:35)}
+function tibaK(gi,c){const [j,m]=utamaK(K0.m.jam[gi][c._i]);return j==null?null:{utama:j,moda:m,akhir:akhirK(c),total:j+3+akhirK(c)}}
+function idsK(l){return K0.m.gudang.map((g,i)=>[g,i]).filter(([g])=>g.status==='ada'&&(l==='semua'||g.pemilik==='BNPB')).map(([,i])=>i)}
+const gudangG=(g)=>Object.values(G).filter(x=>g.pemilik==='BNPB'?(x.pemilik==='BNPB'&&x.nama===g.nama):(x.pemilik==='BPBD'&&x.provinsi===g.provinsi));
+/* gudang matriks yang stoknya tampil untuk akun ini (ada di G dari /data); selain itu tidak dipakai di tabel tercepat dan peta */
+const tampilK=(g)=>gudangG(g).length>0;
+let stokG=null;const stokM=new Map();   // memo stok per gudang; G diganti objek baru tiap muat(), jadi memo dikosongkan saat G berubah
+function stokK(g){if(stokG!==G){stokM.clear();stokG=G}if(stokM.has(g))return stokM.get(g);const t={};gudangG(g).flatMap(x=>x.items||[]).forEach(x=>{const k=x.item_standar||klasifikasi(x.barang).item_standar;if(k)t[k]=(t[k]||0)+(+x.baik||0)});stokM.set(g,t);return t}
+function rencanaK(c,jiwa,cap,l){const R=idsK(l).map(i=>({g:K0.m.gudang[i],i,t:tibaK(i,c),s:stokK(K0.m.gudang[i]),m:{},ton:0})).filter(x=>x.t).sort((a,b)=>a.t.total-b.t.total);
+  const B=ITEM_K.map(([n,f,kg,sat])=>{let sisa=f(jiwa);const kb=sisa,asal=[];for(const r of R){if(sisa<=0)break;const a=Math.min(sisa,r.s[n]||0);if(a>0){r.m[n]=a;r.ton+=a*kg/1000;sisa-=a;asal.push(r.g.nama)}}return {n,kb,sat,pn:kb-sisa,kr:sisa,asal}});
+  const P=R.filter(r=>r.ton>0);P.forEach(r=>r.truk=Math.ceil(r.ton/cap));return {P,B}}
+const normK=(s)=>String(s).toLowerCase().replace(/[^a-z]/g,'');
+const kabDi=(kp,kab)=>K0.ix.get(kp+'|'+normK(kab))||[];   // indeks dibuat sekali di muatKirim
+function cariKec(kp,kab,nm){const a=kabDi(kp,kab);return a.find(c=>normK(c.kec)===normK(nm))||a[0]}
+/* status banjir terdampak yang masih berlaku: salinan TDm.tayang (public/banjir/terdampak.js), ambang 14 hari; Belum diketahui tidak dipakai */
+function tayangK(doc,h=new Date(Date.now()+7*36e5).toISOString().slice(0,10)){return (doc&&doc.baris||[]).flatMap(b=>{const u=Math.round((Date.parse(h)-Date.parse(b.tanggal))/864e5);if(!(u<=14))return [];return b.status==='Belum surut'||b.status==='Sudah surut'?[{...b,umur:u}]:[]})}
+/*akhir-kirim-murni*/
+function isiPilih(sel,arr,v){sel.replaceChildren(...arr.map(x=>new Option(x)));if(v!=null)sel.value=v}
+function isiKab(){const p=$('kr_p').value;isiPilih($('kr_k'),[...new Set(K0.kec.filter(c=>c.provinsi===p).map(c=>c.kab))].sort());isiKec()}
+function isiKec(){const k=$('kr_k').value,p=$('kr_p').value;isiPilih($('kr_c'),K0.kec.filter(c=>c.provinsi===p&&c.kab===k).map(c=>c.kec).sort())}
+function ubin(el,a){el.replaceChildren(...a.map(([x,y])=>{const d=document.createElement('div'),s=document.createElement('span'),n=document.createElement('b');d.className='km-u';s.textContent=x;n.textContent=y;d.append(s,n);return d}))}
+const kolK=(t)=>t.toFixed(1).replace('.',',');
+function hitungK(c,j,cap,l){const {P,B}=rencanaK(c,j,cap,l);$('kr_h').hidden=false;$('kr_h2').textContent=`Rencana kirim ke ${c.kec}, ${c.kab}`;
+  $('kr_n').textContent=`Untuk ${N(j)} jiwa selama 3 hari. Rasio dari Juklak Standar Minimal 2024, paket keluarga dan terpal dihitung per KK isi 4 jiwa. Berat barang perkiraan. Stok dihitung dari gudang yang boleh dilihat akun ini.`+(c.jauh==='1'?' Kecamatan ini jauh dari jalan, antar terakhir perlu moda lain.':'');
+  const tn=P.reduce((a,r)=>a+r.ton,0),tr=P.reduce((a,r)=>a+r.truk,0),kr=B.filter(b=>b.kr>0).length;
+  ubin($('kr_u2'),[['Tiba pertama',P.length?jamT(P[0].t.total):'–'],['Semua tiba',P.length?jamT(Math.max(...P.map(r=>r.t.total))):'–'],['Total muatan',kolK(tn)+' ton'],['Truk',N(tr)+' truk'],['Barang kurang',kr+' dari '+B.length+' barang']]);
+  $('kr_g').replaceChildren(...(P.length?P.map(r=>{const tr=document.createElement('tr');tr.append(td(r.g.nama),td(r.t.moda,'a'),td('perkiraan 3 jam','a'),td(jamT(r.t.utama),'a'),td(jamT(r.t.akhir),'a'),td(jamT(r.t.total),'a'),td(kolK(r.ton)+' ton','a'),td(N(r.truk),'a'));return tr}):[Object.assign(document.createElement('tr'),{innerHTML:'<td colspan="8">Tidak ada gudang yang terlihat akun ini dengan stok untuk barang di bawah.</td>'})]));
+  $('kr_b').replaceChildren(...B.map(b=>{const tr=document.createElement('tr');tr.append(td(b.n),td(N(b.kb)+' '+b.sat,'a'),td(N(b.pn)+' '+b.sat,'a'),td(b.kr?N(b.kr)+' '+b.sat:'–','a'),td(b.asal.join(', ')||'Stok belum tercatat'));return tr}));
+  const ib=K0.m.bandara[c._i],t=K0.m.tni[c._i],u=idsK(l).map(i=>K0.m.jam[i][c._i][2]).filter(v=>v!=null);
+  $('kr_a').textContent=(u.length?`Alternatif udara: sekitar ${jamT(Math.min(...u))} lewat ${ib[0]||'bandara terdekat'}${ib[1]&&ib[1]!=='Sipil'?' ('+ib[1]+'). Bandara ini melibatkan TNI, pemakaiannya perlu izin TNI AU':''}. `:'')+(t[0]?`Pangkalan TNI terdekat: ${t[0]}, ${N(t[1])} km dari pusat kab/kota. Pemakaian pangkalan TNI perlu izin TNI AU.`:'')}
+function petaK(){const cv=$('kr_cv'),geo=dash.data('geo').data;if(!geo.features)return;K0.lebar=cv.clientWidth;const w=cv.clientWidth||900,h=Math.round(w*.42),r=devicePixelRatio||1;cv.width=w*r;cv.height=h*r;cv.style.height=h+'px';const x=cv.getContext('2d');x.scale(r,r);const pr=d3.geoMercator().fitSize([w,h],geo),pa=d3.geoPath(pr,x);const cs=getComputedStyle(cv);x.fillStyle=cs.getPropertyValue('--km-kosong')||'#ddd';x.strokeStyle=cs.getPropertyValue('--bg')||'#fff';x.lineWidth=.5;geo.features.forEach(f=>{x.beginPath();pa(f);x.fill();x.stroke()});
+  const W_=c=>{const j=+c.jam_semua;return !c.jam_semua?'#888':j<=24?'#3b82c4':j<=72?'#e0a44a':'#c8102e'};K0.kec.forEach(c=>{const p=pr([+c.lon,+c.lat]);x.fillStyle=W_(c);x.fillRect(p[0]-.8,p[1]-.8,1.7,1.7)});
+  K0.m.gudang.filter(g=>g.status==='ada'&&tampilK(g)).forEach(g=>{const p=pr([g.lon,g.lat]);x.fillStyle=g.pemilik==='BNPB'?'#051c2c':'#fff';x.strokeStyle='#051c2c';x.fillRect(p[0]-3.5,p[1]-3.5,7,7);x.strokeRect(p[0]-3.5,p[1]-3.5,7,7)});
+  $('kr_lg').replaceChildren(...[['#3b82c4','Sampai 24 jam'],['#e0a44a','24 sampai 72 jam'],['#c8102e','Lewat 72 jam'],['#051c2c','Gudang BNPB']].map(([c,t])=>{const s=document.createElement('span'),i=document.createElement('i');i.style.background=c;s.append(i,t);return s}))}
+const jedaK=()=>new Promise(r=>nanti(r));
+const ambilK=async(n,wajib)=>{const r=await fetch(API+'statis?nama='+n,{credentials:'same-origin'});if(r.ok)return r.text();if(wajib)throw r.status;return ''};
+function bukaKirim(){if(K0.m){if($('kr_cv').clientWidth!==K0.lebar)nanti(petaK);return}K0.p||=muatKirim().catch(e=>{K0.p=null;$('kr_m').className='msg e';$('kr_m').textContent=e===404?'Data rute belum diimpor ke server. Minta admin menjalankan impor LogPal (matriks dan kecamatan).':e===401||e===403?'Sesi berakhir atau akun tanpa hak. Masuk lagi.':'Data rute gagal dimuat. Buka tab ini lagi untuk mencoba ulang.'})}
+async function muatKirim(){const m0=$('kr_m');m0.className='msg';m0.textContent='Memuat data rute.';await jedaK();
+  const [m,k,t,td0]=await Promise.all([ambilK('matriks',1),ambilK('kecamatan',1),ambilK('terdampak'),fetch('/banjir/data/terdampak.json').then(r=>r.ok?r.json():null).catch(()=>null)]);
+  await jedaK();const mm=JSON.parse(m),ix=new Map(mm.kab.map((x,i)=>[x,i]));
+  const kec=dash._csv(k).map(c=>({...c,_i:ix.get(c.kode_prov+'|'+c.kab)}));await jedaK();
+  const ix2=new Map();kec.forEach(c=>{const k=c.kode_prov+'|'+normK(c.kab);(ix2.get(k)||ix2.set(k,[]).get(k)).push(c)});K0.ix=ix2;K0.m=mm;K0.kec=kec;K0.ter=t?dash._csv(t):[];m0.textContent='';
+  isiPilih($('kr_p'),[...new Set(kec.map(c=>c.provinsi))].sort());$('kr_p').onchange=isiKab;$('kr_k').onchange=isiKec;isiKab();
+  const j=kec.map(c=>+c.jam_semua).filter(v=>v>0),jb=kec.map(c=>+c.jam_bnpb).filter(v=>v>0);ubin($('kr_u'),[['Kecamatan',N(kec.length)+' kecamatan'],['Tiba dalam 72 jam, semua gudang',N(j.filter(v=>v<=72).length)+' kecamatan'],['Tiba dalam 72 jam, BNPB saja',N(jb.filter(v=>v<=72).length)+' kecamatan'],['Jauh dari jalan',N(kec.filter(c=>c.jauh==='1').length)+' kecamatan']]);
+  tabelTerdampak(tayangK(td0));
+  $('kr_f').onsubmit=e=>{e.preventDefault();const c=K0.kec.find(x=>x.provinsi===$('kr_p').value&&x.kab===$('kr_k').value&&x.kec===$('kr_c').value);if(c)jalankanK(c,+$('kr_j').value,+$('kr_o').value||8,$('kr_l').value)};
+  addEventListener('resize',tunda(()=>{if($('kr_cv').offsetParent)petaK()},250));
+  nanti(petaK)}
+/* chrome urgent dulu (pesan), hitungan dan gulir sesudah paint */
+function jalankanK(c,j,cap,l){if(!(j>0)){$('kr_m').className='msg e';$('kr_m').textContent='Isi jumlah pengungsi lebih dari 0.';return}$('kr_m').className='msg';$('kr_m').textContent='Menghitung rencana.';nanti(()=>{hitungK(c,j,cap,l);$('kr_m').textContent='';$('kr_h').scrollIntoView({block:'start'})})}
+function tabelTerdampak(baris){const L=idsK('semua').filter(i=>tampilK(K0.m.gudang[i])),tb=$('kr_t');   // tercepat hanya dari gudang yang stoknya tampil untuk akun ini
+  if(!baris.length){const tr=document.createElement('tr'),x=td('Tidak ada kab/kota berstatus banjir yang masih berlaku (14 hari terakhir).');x.colSpan=10;tr.append(x);tb.replaceChildren(tr);return}
+  tb.replaceChildren(...baris.map(b=>{const ter=K0.ter.find(r=>r.kode_prov===b.prov_kode&&normK(r.kab)===normK(b.kab)),c=cariKec(b.prov_kode,b.kab,ter?String(ter.kec).split(';')[0]:''),jw=ter&&+ter.jiwa>0?+ter.jiwa:0,
+    bt=c&&L.map(i=>({g:K0.m.gudang[i],t:tibaK(i,c)})).filter(x=>x.t).sort((p,q)=>p.t.total-q.t.total)[0],tr=document.createElement('tr'),a=td('','a'),h=document.createElement('button');
+    h.className='s';h.type='button';h.textContent=jw?'Hitung':'Isi jiwa';h.disabled=!c;
+    h.onclick=()=>{$('kr_p').value=c.provinsi;isiKab();$('kr_k').value=c.kab;isiKec();$('kr_c').value=c.kec;
+      if(jw){$('kr_j').value=jw;jalankanK(c,jw,+$('kr_o').value||8,$('kr_l').value)}
+      else{$('kr_m').className='msg o';$('kr_m').textContent=`Jumlah jiwa ${b.kab} belum ada di data terdampak. Isi jumlah pengungsi lalu tekan Hitung rencana.`;$('kr_j').focus()}};
+    a.append(h);tr.append(td(b.kab),td(b.provinsi),td(b.status,'a'),td(tglK(b.tanggal),'a'),td(ter?String(ter.kec).replace(/;/g,', '):'–'),td(jw?N(jw):'–','a'),td(bt?bt.g.nama:'–'),td(bt?bt.t.moda:'–','a'),td(bt?jamT(bt.t.total):'–','a'),a);return tr}))}
+
 
 muat();
 

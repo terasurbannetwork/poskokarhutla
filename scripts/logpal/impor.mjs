@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /* Impor lokal Inventori LogPal: membaca folder JSON dokumen gudang (satu berkas per gudang) dan menulis SQL ke LUAR repo.
    DATA GUDANG ASLI TIDAK BOLEH MASUK REPO (repo publik): skrip menolak folder masuk atau berkas keluaran di dalam repo.
-   Pakai:  node scripts/logpal/impor.mjs <folder-seed> <keluaran.sql> [--kebutuhan kebutuhan.csv] [--statis <folder gudang.csv usulan.csv rute.csv wilayah.csv teks.json>]
-   Lalu pemilik menjalankan sendiri:  npx wrangler d1 execute <DB> --remote --file <keluaran.sql>   (sesudah migrasi 0112)
+   Pakai:  node scripts/logpal/impor.mjs <folder-seed> <keluaran.sql> [--kebutuhan kebutuhan.csv] [--statis <folder gudang.csv usulan.csv rute.csv wilayah.csv teks.json matriks.json kecamatan.csv terdampak.csv>]
+   Lalu pemilik menjalankan sendiri:  npx wrangler d1 execute <DB> --remote --file <keluaran.sql>   (sesudah migrasi 0112 dan 0113)
    Bentuk dokumen: {nama, pemilik: "BNPB"|"BPBD", provinsi, kapasitas_ton, items: [{id, barang, kategori, item_standar, prioritas, kelompok, satuan, jumlah, baik, rusak, kedaluwarsa, sumber_dana, per, sumber, catatan, ...kolom aset opsional}]}.
    Kode provinsi dari public/data/logpal/provinsi.csv (publik); koordinat gudang dari src/logpal_statis.js (bukan aset publik). id gudang dan barang deterministik (sha256 kode + id asal), jadi SQL aman dijalankan ulang:
    INSERT OR IGNORE. Gudang BPBD dipasangkan ke akun pemprov aktif provinsinya; dijalankan ulang sesudah akun dibuat, pasangan yang masih kosong terisi. */
@@ -18,6 +18,21 @@ const q = v => v == null || v === "" ? "NULL" : typeof v === "number" ? String(v
 /* seperti teks tetapi baris baru dipertahankan (isi CSV) */
 const teksBaris = v => "'" + String(v ?? "").replace(/\r/g, "").replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, " ").replace(/'/g, "''") + "'";
 const teks = v => "'" + String(v ?? "").replace(/[\u0000-\u001f\u007f]/g, " ").replace(/'/g, "''") + "'";
+
+export const BATAS_POTONG = 90000, MAKS_POTONGAN = 60;   // karakter isi dan byte pernyataan (setelah escape) per potongan; CHECK migrasi 0113 sama
+const NAMA_BIASA = ["gudang", "usulan", "rute", "jangkauan", "teks"], NAMA_POTONG = ["matriks", "kecamatan", "terdampak"];
+/* isi -> potongan berurutan; ukuran dihitung pada teks SQL (kutip ganda, UTF-8), tidak memotong pasangan surrogate */
+export function potongTeks(isi, maks = BATAS_POTONG) {
+  const hasil = [], bersih = String(isi).replace(/\r/g, "");
+  const ukur = t => Buffer.byteLength(teksBaris(t));
+  for (let i = 0; i < bersih.length;) {
+    let j = Math.min(i + maks, bersih.length);
+    for (let u; j - i > 1 && (u = ukur(bersih.slice(i, j))) > maks;) j -= Math.max(1, u - maks);   // kurangi tepat sebesar kelebihan byte (kutip pembungkus, escape)
+    if (j < bersih.length && /[\ud800-\udbff]/.test(bersih[j - 1])) j--;
+    hasil.push(bersih.slice(i, j)); i = j;
+  }
+  return hasil;
+}
 
 export function uraiCsv(t) {
   const R = []; let r = [], c = "", dq = false;
@@ -77,7 +92,13 @@ export function bangunSql({dokumen, provinsi, gudang, kebutuhan = [], kini = Dat
     sql.push(`INSERT OR IGNORE INTO logpal_kebutuhan (no, wilayah, kebutuhan, diajukan, satuan, stok_a, stok_a_teks, stok_b, stok_b_teks, setara, status_tetap, dummy) VALUES (${n}, ${teks(k.wilayah)}, ${teks(k.kebutuhan)}, ${dj}, ${teks(k.satuan)}, ${Math.max(0, Math.trunc(+k[ka] || 0))}, ${teks(k[kat])}, ${Math.max(0, Math.trunc(+k[kb] || 0))}, ${teks(k[kbt])}, ${k.setara === "0" ? 0 : 1}, ${teks(k.status_tetap)}, 0);`);
   }
   for (const [nama, isi] of Object.entries(statis)) {
-    if (!["gudang", "usulan", "rute", "jangkauan", "teks"].includes(nama) || typeof isi !== "string" || !isi.trim()) throw new Error(`statis ${nama}: nama tidak dikenal atau isi kosong`);
+    if (![...NAMA_BIASA, ...NAMA_POTONG].includes(nama) || typeof isi !== "string" || !isi.trim()) throw new Error(`statis ${nama}: nama tidak dikenal atau isi kosong`);
+    if (NAMA_POTONG.includes(nama) && potongTeks(isi).length > MAKS_POTONGAN) throw new Error(`statis ${nama}: ${potongTeks(isi).length} potongan melebihi ${MAKS_POTONGAN} (CHECK urut 0..59 di migrasi 0113)`);
+    if (NAMA_POTONG.includes(nama)) {   // besar: potongan <= 90 KB per pernyataan (batas D1 100 KB), potongan lama nama itu dihapus dulu; sesudah migrasi 0113
+      sql.push(`DELETE FROM logpal_statis_potong WHERE nama = ${q(nama)};`);
+      potongTeks(isi).forEach((p, i) => sql.push(`INSERT INTO logpal_statis_potong (nama, urut, isi, diubah) VALUES (${q(nama)}, ${i}, ${teksBaris(p)}, ${kini});`));
+      continue;
+    }
     sql.push(`INSERT OR REPLACE INTO logpal_statis (nama, isi, diubah) VALUES (${q(nama)}, ${teksBaris(isi)}, ${kini});`);
   }
   return sql.join("\n") + "\n";
@@ -94,6 +115,8 @@ export function susunStatis(dir) {
     hasil.jangkauan = kol.join(",") + "\n" + uraiCsv(w).map(r => kol.map(k => esc(r[k] ?? "")).join(",")).join("\n") + "\n";
   }
   const t = baca("teks.json"); if (t) { JSON.parse(t); hasil.teks = t; }
+  const m = baca("matriks.json"); if (m) { JSON.parse(m); hasil.matriks = m; }   // besar: jadi potongan di logpal_statis_potong
+  for (const n of ["kecamatan", "terdampak"]) { const c = baca(n + ".csv"); if (c) hasil[n] = c; }
   return hasil;
 }
 

@@ -372,13 +372,34 @@ async function halaman(env, req, url, kini) {
   return new Response(r.body, {status: r.status, headers: {"content-type": "text/html; charset=utf-8", "cache-control": "private, no-store", vary: "cookie", "x-robots-tag": "noindex, nofollow", "x-content-type-options": "nosniff"}});
 }
 const NAMA_STATIS = ["gudang", "usulan", "rute", "jangkauan", "teks"];
+const NAMA_POTONG = ["matriks", "kecamatan", "terdampak"];   // besar: potongan berurutan di logpal_statis_potong (migrasi 0113), dibaca sekali saat tab Pengantaran dibuka
+/* ponytail: memo per isolat, TTL 10 menit, hanya hasil sukses. Ceiling: impor ulang baru terlihat di isolat yang memegang memo paling lama 10 menit, dan tiap isolat menyimpan ~1,4 MB;
+   naik ke ETag/versi di tabel kecil bila impor sering atau memori isolat jadi masalah. */
+const MEMO_POTONG = new Map();
 async function statis(env, req, url, kini) {
   const ak = await aktor(env, req, kini); if (ak instanceof Response) return ak;
   const nama = url.searchParams.get("nama");
-  if (!NAMA_STATIS.includes(nama)) return gagal(400, `nama harus ${NAMA_STATIS.join("/")}`);
-  const r = await env.DB.prepare("SELECT isi FROM logpal_statis WHERE nama = ?").bind(nama).first();
-  if (!r) return gagal(404, "data statis belum diimpor (jalankan SQL keluaran scripts/logpal/impor.mjs)");
-  return new Response(r.isi, {headers: {"content-type": nama === "teks" ? "application/json; charset=utf-8" : "text/csv; charset=utf-8", "cache-control": "private, no-store", "x-content-type-options": "nosniff"}});
+  const potong = NAMA_POTONG.includes(nama);
+  if (!potong && !NAMA_STATIS.includes(nama)) return gagal(400, `nama harus ${[...NAMA_STATIS, ...NAMA_POTONG].join("/")}`);
+  let isi;
+  if (potong) {
+    const m = MEMO_POTONG.get(nama);   // sesudah aktor() sah, sebelum D1: tamu tak sah tidak pernah sampai sini
+    if (m && kini - m.t < 10 * 60e3) isi = m.isi;
+    else {
+      let results;
+      try { ({results} = await env.DB.prepare("SELECT urut, isi FROM logpal_statis_potong WHERE nama = ? ORDER BY urut").bind(nama).all()); }
+      catch (e) { return gagal(503, "tabel potongan data statis belum ada; jalankan migrasi LogPal 0112 dan 0113"); }
+      if (!results.length) return gagal(404, "data statis belum diimpor (jalankan SQL keluaran scripts/logpal/impor.mjs)");
+      if (results.some((r, i) => r.urut !== i)) return gagal(500, "potongan data statis tidak lengkap; impor ulang");
+      isi = results.map(r => r.isi).join("");
+      MEMO_POTONG.set(nama, {t: kini, isi});
+    }
+  } else {
+    const r = await env.DB.prepare("SELECT isi FROM logpal_statis WHERE nama = ?").bind(nama).first();
+    if (!r) return gagal(404, "data statis belum diimpor (jalankan SQL keluaran scripts/logpal/impor.mjs)");
+    isi = r.isi;
+  }
+  return new Response(isi, {headers: {"content-type": nama === "teks" || nama === "matriks" ? "application/json; charset=utf-8" : "text/csv; charset=utf-8", "cache-control": "private, no-store", "x-content-type-options": "nosniff"}});
 }
 /* JS dan CSS halaman: hanya sesi sah (pola halaman); tanpa sesi 401. Lewat Worker karena run_worker_first mencakup /logpal/* di wrangler.jsonc. */
 const asetSah = (env, req, url, kini) => aktor(env, req, kini).then(ak => ak instanceof Response ? ak

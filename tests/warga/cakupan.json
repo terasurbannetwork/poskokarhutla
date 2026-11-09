@@ -1124,6 +1124,7 @@
     "table logpal_tahap": "skema logpal: migrasi idempoten",
     "trigger logpal_permintaan_alur": "skema logpal: migrasi idempoten",
     "table logpal_statis": "impor: skrip menulis SQL idempoten",
+    "table logpal_statis_potong": "statis besar: potongan berurutan dirakit",
     "table logpal_kebutuhan": "staf BNPB: mengelola gudang BNPB, pemilik dipaksa BNPB, kebutuhan hanya untuk staf"
   },
   "dikecualikan": {

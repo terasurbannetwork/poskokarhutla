@@ -10,7 +10,7 @@ import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, MOD2, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus)
 import {FLOW, KELOMPOK, MUTASI, TEKS_B, rumus, cekBarang} from "../../src/logpal.js";
-import {bangunSql, uraiCsv, diLuarRepo, susunStatis} from "../../scripts/logpal/impor.mjs";
+import {bangunSql, uraiCsv, diLuarRepo, susunStatis, potongTeks, BATAS_POTONG} from "../../scripts/logpal/impor.mjs";
 import {tmpdir} from "node:os";
 
 const GUDANG_FIX = "gudang,pemilik,kode_prov,provinsi,lon,lat\nGudang BPBD Kalimantan Tengah,BPBD,62,Kalimantan Tengah,113.92,-2.21\n\"Gudang BPBD, Papua Selatan\",BPBD,96,Papua Selatan,140.4,-8.5\n";
@@ -409,4 +409,114 @@ uji("halaman /instansi/logpal wajib login: anonim ditolak, BPBD aktif, staf berp
   assert.ok(!readdirSync(path.join(AKAR, "src")).includes("logpal_statis.js"), "data statis tidak lagi dibundel di src");
   assert.match(js, /statis\?nama=gudang/); assert.ok(!/\/data\/logpal\/(gudang|usulan|rute)\.csv/.test(js), "klien memuat gudang, usulan, rute lewat API bersesi");
   assert.match(readFileSync(path.join(AKAR, "public/instansi.html"), "utf8"), /href="\/instansi\/logpal"/, "tertaut dari Ruang Instansi");
+});
+
+/* ================================================================ statis besar (migrasi 0113) dan tab Pengantaran */
+uji("statis besar: potongan berurutan dirakit, nama asing 400, tanpa sesi 401, belum diimpor 404", async () => {
+  const mig = readFileSync(path.join(AKAR, "migrations/0113_logpal_potongan.sql"), "utf8");
+  for (const s of pecah(mig)) await DB.prepare(s).run();   // diulang di atas migrasi yang sudah jalan: IF NOT EXISTS
+  const sy = "/api/instansi/logpal/statis?nama=";
+  for (const nm of ["matriks", "kecamatan", "terdampak"]) {
+    assert.equal((await api("GET", sy + nm, undefined, S.h)).s, 404, nm + " belum diimpor");
+    assert.equal((await api("GET", sy + nm)).s, 401, nm + " tanpa sesi");
+  }
+  assert.equal((await api("GET", sy + "lain", undefined, S.h)).s, 400);
+  /* isi >> 90 KB, ada kutip tunggal, kutip ganda, baris baru, dan karakter di luar BMP, supaya pemotongan diuji nyata */
+  const baris = Array.from({length: 9000}, (_, i) => `${i},O'Brien "kutip",Kab ${i} \u{1F30A} é,${(i * 7.31).toFixed(2)}`);
+  const kecamatan = "i,nama,kab,nilai\n" + baris.join("\n") + "\n";
+  const matriks = JSON.stringify({gudang: [{nama: "Gudang Uji", lon: 1, lat: 2}], jam: Array.from({length: 60}, (_, i) => Array.from({length: 150}, (_, k) => [i + k / 10, null, 5.5]))});
+  const terdampak = "kode_prov,provinsi,kab,kec,kk,jiwa,status,per\n62,Kalimantan Tengah,Kapuas,A;B,10,40,Belum surut,8 Nov 2026\n";
+  const potong = potongTeks(kecamatan); assert.ok(potong.length >= 4, "kecamatan butuh banyak potongan");
+  assert.equal(potong.join(""), kecamatan, "potongan bersambung kembali utuh");
+  const sql = bangunSql({dokumen: [], provinsi: [], gudang: [], kelompok: KELOMPOK, statis: {kecamatan, matriks, terdampak}});
+  const stmt = pecah(sql); assert.ok(stmt.length > 6);
+  for (const s of stmt) assert.ok(Buffer.byteLength(s) <= 100000, "pernyataan SQL melewati batas D1 100 KB: " + Buffer.byteLength(s));
+  for (const p of potongTeks(matriks)) assert.ok(p.length <= BATAS_POTONG);
+  const kecil = await n("logpal_statis"), jalan = async () => { for (const s of stmt) await DB.prepare(s).run(); };
+  await jalan(); await jalan();   // diulang: potongan lama dihapus dulu, tidak dobel
+  assert.equal(await n("logpal_statis_potong", "nama = 'kecamatan'"), potong.length);
+  assert.equal(await n("logpal_statis_potong", "length(isi) > 90000"), 0);
+  assert.equal(await n("logpal_statis"), kecil, "logpal_statis (nama kecil) tidak tersentuh oleh nama besar");
+  /* urutan rusak (potongan hilang) terdeteksi, bukan dirakit diam-diam; diuji SEBELUM ada hasil sukses karena hasil sukses dimemo 10 menit per isolat */
+  await DB.prepare("DELETE FROM logpal_statis_potong WHERE nama = 'kecamatan' AND urut = 1").run();
+  assert.equal((await api("GET", sy + "kecamatan", undefined, S.h)).s, 500, "potongan bolong");
+  await jalan();   // pulihkan
+  for (const [h, nama] of [[A.h, "BPBD aktif"], [S.h, "staf"], [ADMIN, "admin"]]) {
+    const k = await api("GET", sy + "kecamatan", undefined, h); assert.equal(k.s, 200, nama); assert.equal(k.t, kecamatan, nama + ": dirakit sama persis"); assert.match(k.h.get("content-type"), /text\/csv/); assert.match(k.h.get("cache-control"), /private, no-store/);
+    const m = await api("GET", sy + "matriks", undefined, h); assert.equal(m.s, 200); assert.match(m.h.get("content-type"), /json/); assert.equal(m.t, matriks); assert.equal(m.j.gudang[0].nama, "Gudang Uji");
+    assert.equal((await api("GET", sy + "terdampak", undefined, h)).t, terdampak);
+  }
+  /* sesudah sukses, jawaban datang dari memo: baris D1 yang hilang tidak terlihat sampai TTL habis (ponytail di src/logpal.js) */
+  await DB.prepare("DELETE FROM logpal_statis_potong WHERE nama = 'terdampak'").run();
+  assert.equal((await api("GET", sy + "terdampak", undefined, S.h)).t, terdampak, "memo melayani");
+  assert.equal((await api("GET", sy + "terdampak")).s, 401, "memo tidak melewati gerbang sesi");
+  /* CHECK: nama asing dan isi terlalu besar ditolak */
+  await assert.rejects(sisip("logpal_statis_potong", {nama: "gudang", urut: 0, isi: "x", diubah: 1}), /CHECK|constraint/i);
+  await assert.rejects(sisip("logpal_statis_potong", {nama: "matriks", urut: 70, isi: "x", diubah: 1}), /CHECK|constraint/i);
+  await assert.rejects(sisip("logpal_statis_potong", {nama: "matriks", urut: 5, isi: "x".repeat(90001), diubah: 1}), /CHECK|constraint/i);
+  await DB.prepare("DELETE FROM logpal_statis_potong").run();
+  /* terlalu banyak potongan ditolak saat membangun SQL, sebelum DELETE (CHECK urut 0..59) */
+  assert.throws(() => bangunSql({dokumen: [], provinsi: [], gudang: [], kelompok: KELOMPOK, statis: {kecamatan: "x".repeat(BATAS_POTONG * 61)}}), /melebihi 60/);
+  assert.doesNotThrow(() => bangunSql({dokumen: [], provinsi: [], gudang: [], kelompok: KELOMPOK, statis: {kecamatan: "x".repeat(BATAS_POTONG * 59)}}));
+});
+
+uji("impor statis besar: folder di dalam repo ditolak, folder luar menghasilkan potongan", async () => {
+  const { spawnSync } = await import("node:child_process");
+  const luar = mkdtempSync(path.join(tmpdir(), "lp-besar-")), seed = path.join(luar, "seed"), keluar = path.join(luar, "o.sql");
+  const jalankan = (...a) => spawnSync(process.execPath, [path.join(AKAR, "scripts/logpal/impor.mjs"), ...a], {encoding: "utf8"});
+  try {
+    const di = jalankan(path.join(AKAR, "public/data/logpal"), keluar); assert.equal(di.status, 3, "folder seed di dalam repo");
+    assert.match(di.stderr, /DITOLAK/);
+    assert.equal(jalankan(luar, path.join(AKAR, "o.sql")).status, 3, "keluaran di dalam repo");
+    assert.equal(jalankan(luar, keluar, "--statis", path.join(AKAR, "public/data/logpal")).status, 3, "folder statis di dalam repo");
+    writeFileSync(path.join(luar, "matriks.json"), JSON.stringify({gudang: [], x: "y".repeat(200000)}));
+    writeFileSync(path.join(luar, "kecamatan.csv"), "a,b\n1,2\n"); writeFileSync(path.join(luar, "terdampak.csv"), "kode_prov,kab\n62,Kapuas\n");
+    const { mkdirSync } = await import("node:fs"); mkdirSync(seed);
+    const ok = jalankan(seed, keluar, "--statis", luar); assert.equal(ok.status, 0, ok.stderr);
+    const sql = readFileSync(keluar, "utf8");
+    assert.match(sql, /DELETE FROM logpal_statis_potong WHERE nama = 'matriks'/); assert.ok((sql.match(/INSERT INTO logpal_statis_potong \(nama, urut/g) || []).length >= 5);
+    for (const s of pecah(sql)) assert.ok(Buffer.byteLength(s) <= 100000);
+    writeFileSync(path.join(luar, "matriks.json"), "bukan json");
+    assert.notEqual(jalankan(seed, keluar, "--statis", luar).status, 0, "matriks.json rusak ditolak");
+  } finally { rmSync(luar, {recursive: true, force: true}); }
+});
+
+uji("tab Pengantaran: rencana kirim murni (urutan tiba, stok terbatas, truk) dan klien memakai data bersesi", () => {
+  const html = readFileSync(path.join(AKAR, "public/logpal/index.html"), "utf8"), js = readFileSync(path.join(AKAR, "public/logpal/logpal.js"), "utf8"), css = readFileSync(path.join(AKAR, "public/logpal/logpal.css"), "utf8");
+  const blok = js.match(/\/\*kirim-murni\*\/([\s\S]*?)\/\*akhir-kirim-murni\*\//)[1];
+  const K0 = {m: {gudang: [{nama: "Jauh", pemilik: "BNPB", provinsi: "X", status: "ada"}, {nama: "Dekat", pemilik: "BNPB", provinsi: "X", status: "ada"}, {nama: "Tutup", pemilik: "BNPB", provinsi: "X", status: "tutup"}],
+      jam: [[[10, null, null]], [[2, null, 1]], [[1, null, null]]], bandara: [["Bandara", "Sipil"]], tni: [["Lanud", 50, ""]]},
+    kec: [{kode_prov: "62", kab: "Kapuas", kec: "Selat", km_akhir: "35", jauh: "0", _i: 0}, {kode_prov: "62", kab: "Kapuas", kec: "Basarang", km_akhir: "20", jauh: "1", _i: 0}]};
+  K0.ix = new Map([["62|kapuas", K0.kec]]);
+  const G = {a: {pemilik: "BNPB", nama: "Dekat", provinsi: "X", items: [{barang: "Selimut", item_standar: "Selimut", baik: 600}, {barang: "Selimut", item_standar: "Selimut", baik: 100}, {barang: "Tenda", item_standar: "Tenda pengungsi", baik: 4}]},
+    b: {pemilik: "BNPB", nama: "Jauh", provinsi: "X", items: [{barang: "Selimut", item_standar: "Selimut", baik: 5000}]}};
+  const f = new Function("K0", "G", "klasifikasi", blok + "; return {rencanaK, tibaK, idsK, jamT, cariKec, tayangK, normK, akhirK, tampilK, stokK, tglK};")(K0, G, () => ({item_standar: ""}));
+  assert.deepEqual(f.idsK("semua"), [0, 1], "gudang tutup tidak dihitung");
+  const t = f.tibaK(1, K0.kec[0]); assert.deepEqual([t.moda, t.utama, t.akhir, t.total], ["Darat", 2, 1, 6], "2 jam utama + 3 jam muat + 1 jam antar (35 km / 35)");
+  assert.equal(f.akhirK(K0.kec[1]), 1, "kecamatan jauh dari jalan: 20 km per jam");
+  const r = f.rencanaK(K0.kec[0], 1000, 8, "semua");
+  assert.deepEqual(r.P.map(x => x.g.nama), ["Dekat", "Jauh"], "gudang tercepat dulu, lalu yang berikutnya menutup kekurangan");
+  const sel = r.B.find(b => b.n === "Selimut"); assert.deepEqual([sel.kb, sel.pn, sel.kr, sel.asal.join()], [1000, 1000, 0, "Dekat,Jauh"]);
+  assert.deepEqual([r.P[0].m.Selimut, r.P[1].m.Selimut], [700, 300], "stok Dekat habis 700, sisanya dari Jauh");
+  const tenda = r.B.find(b => b.n === "Tenda pengungsi"); assert.deepEqual([tenda.kb, tenda.pn, tenda.kr], [42, 4, 38], "stok kurang: kekurangan dilaporkan");
+  assert.equal(r.P[0].truk, Math.ceil(r.P[0].ton / 8)); assert.equal(f.rencanaK(K0.kec[0], 1000, 8, "semua").B.find(b => b.n === "Genset").pn, 0, "stok tidak tercatat: terpenuhi 0");
+  assert.deepEqual([K0.m.gudang[0], K0.m.gudang[1], K0.m.gudang[2]].map(f.tampilK), [true, true, false], "gudang tanpa stok tampil di G (Tutup) tidak dianggap terlihat");
+  assert.equal(f.stokK(K0.m.gudang[1]), f.stokK(K0.m.gudang[1]), "stok dimemo per gudang"); assert.equal(f.stokK(K0.m.gudang[1]).Selimut, 700);
+  assert.equal(f.tglK("2026-11-08"), "8 Nov"); assert.equal(f.tglK(""), "–");
+  assert.equal(f.jamT(30), "30 jam"); assert.equal(f.jamT(72), "3 hari"); assert.equal(f.jamT(null), "–");
+  assert.equal(f.cariKec("62", "KAPUAS", "ba-sarang").kec, "Basarang", "padanan nama longgar"); assert.equal(f.cariKec("62", "Kapuas", "tidak ada").kec, "Selat", "tanpa padanan kecamatan: yang pertama"); assert.equal(f.cariKec("62", "Lain", "x"), undefined);
+  /* terdampak: ambang 14 hari seperti TDm.tayang */
+  const doc = {baris: [{kab: "A", status: "Belum surut", tanggal: "2026-11-05"}, {kab: "B", status: "Sudah surut", tanggal: "2026-10-20"}, {kab: "C", status: "Belum surut", tanggal: "2026-10-20"}, {kab: "D", status: "Belum diketahui", tanggal: "2026-11-08"}, {kab: "E", status: "Sudah surut", tanggal: "2026-11-09"}]};
+  assert.deepEqual(f.tayangK(doc, "2026-11-09").map(b => b.kab), ["A", "E"], "lebih tua dari 14 hari dan Belum diketahui tidak tampil");
+  /* kabel layar */
+  assert.match(html, /data-h="kirim"[^>]*>Pengantaran/); assert.match(html, /data-tab="kirim"/); assert.match(js, /const MON=\['stok','standar','kebutuhan','jaringan','kirim'\]/);
+  assert.match(js, /if\(h==='kirim'\)bukaKirim\(\)/); assert.match(js, /statis\?nama='\+n/); assert.match(js, /'matriks',1/); assert.match(js, /\/banjir\/data\/terdampak\.json/);
+  assert.ok(!/fetch\('data\//.test(js) && !/\/data\/logpal\/(matriks|kecamatan|terdampak)/.test(js), "data besar hanya lewat API bersesi");
+  assert.equal((js.match(/bukaKirim\(\)/g) || []).length, 2, "hanya definisi dan satu pemanggil (klik tab), tidak dimuat saat halaman dibuka");
+  assert.match(js, /perlu izin TNI AU/); assert.match(js, /jalankanK\(c,jw,/); assert.match(js, /Menghitung rencana\./); assert.match(js, /K0\.ix\.get\(/); assert.match(js, /clientWidth!==K0\.lebar/); assert.match(html, /perkiraan 3 jam|Perkiraan tiba/); assert.match(html, /gudang yang boleh dilihat akun ini/);
+  assert.ok(!/garis lurus|belum memakai jaringan jalan/i.test(html), "kalimat tab Jaringan tidak lagi menyebut garis lurus");
+  assert.match(html, /rute darat, laut, dan udara[^<]*belum dikonfirmasi operator angkutan/i);
+  const kirimHtml = html.slice(html.indexOf('data-tab="kirim"'), html.indexOf('data-p="input"')); assert.ok(kirimHtml.length > 1000 && !/·|Pantau Bencana|Bapak/.test(kirimHtml));
+  /* data besar tidak di repo */
+  for (const nm of ["matriks.json", "kecamatan.csv", "terdampak.csv"]) assert.equal(readdirSync(path.join(AKAR, "public/data/logpal")).includes(nm), false, nm + " bukan aset publik");
 });

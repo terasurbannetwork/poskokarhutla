@@ -9,6 +9,8 @@ Ambil satu tiket, kerjakan hanya cakupannya.
 | LG-03 | Skrip impor lokal | selesai |
 | LG-04 | Dummy dua ikon | selesai |
 | LG-05 | Perbaikan tinjauan: rumus CSV, kecepatan klik, angka jujur | selesai |
+| LG-12 | Tab Pengantaran di `/instansi/logpal`, migrasi 0113, impor potongan | selesai |
+| LG-13 | Pemilik menjalankan migrasi 0113 dan impor ulang dengan `--statis` berisi matriks.json, kecamatan.csv, terdampak.csv | menunggu pemilik |
 | LG-06 | Pemilik menjalankan migrasi 0112 dan impor data asli di produksi | menunggu pemilik |
 | LG-07 | Jawab pertanyaan terbuka Q1 sampai Q7 di KEPUTUSAN-LOGPAL | menunggu pemilik |
 | LG-08 | Peran staf logistik (bila Q2 menjawab perlu) | tergantung Q2 |
