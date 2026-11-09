@@ -202,6 +202,8 @@ def calon():
     """(path, blob) yang masuk katalog; salinan persis dibuang, yang di data/laporan-bnpb kalah dari salinan di tempat lain."""
     baris = [x.split("\t", 1) for x in git("ls-tree", "-r", "-z", "HEAD").decode("utf-8").split("\0") if x]
     semua = [(p, m.split()[2]) for m, p in baris if m.split()[1] == "blob" and masuk(p) and m.split()[2] != BLOB_KOSONG]
+    ada = {p for p, _ in semua}   # folder kegiatan yang pernah disalin ke laporan: salinan lama sering beda isi tipis, yang di kegiatan yang dipakai
+    semua = [(p, b) for p, b in semua if p.replace("data/laporan-bnpb/", "data/kegiatan-bnpb/", 1) == p or p.replace("data/laporan-bnpb/", "data/kegiatan-bnpb/", 1) not in ada]
     semua.sort(key=lambda x: (x[0].startswith("data/laporan-bnpb/"), len(x[0]), x[0]))
     lihat, hasil = set(), []
     for p, blob in semua:
