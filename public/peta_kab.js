@@ -6,9 +6,9 @@
 (() => {
   const R = window.PetaKarhutla; if (!R) return;
   const KUNCI = {kabluas: "luas", kabbelum: "belum"};
-  /* warna sasaran = deck BNPB: luas menuju biru baja, belum padam menuju oranye */
+  /* warna sasaran: keduanya oranye, biru baja lama nyaru di atas peta satelit (pemilik, 9 Nov 2026); satu overlay menyala sekali waktu, judul kartu yang membedakan */
   const INFO = {
-    luas: {warna: "#3F5F80", judul: "Luas terbakar", jumlah: "Jumlah luas harian", lbl: "Luas terbakar (ha)", tip: "luas terbakar", tipJml: "jumlah luas harian"},
+    luas: {warna: "#D9600B", judul: "Luas terbakar", jumlah: "Jumlah luas harian", lbl: "Luas terbakar (ha)", tip: "luas terbakar", tipJml: "jumlah luas harian"},
     belum: {warna: "#D9600B", judul: "Belum padam", lbl: "Belum padam (ha)", tip: "belum padam"}};
   let D = null, janji = null;           /* D = {P, KB, fc}: data siap pakai */
   let st = {metrik: null, mode: "hari", ref: "", a: "", b: ""}, hit = {}, kls = {b: [], w: []}, fokus = null, hov = null, pop = null, gen = 0;

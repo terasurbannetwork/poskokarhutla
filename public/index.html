@@ -2054,7 +2054,8 @@ const Peta = {
       "icon-size": ["interpolate", ["linear"], ["zoom"], 3, .8, 6, .9, 10, 1.1], "icon-offset": [16, -16], "icon-allow-overlap": true, "icon-ignore-placement": true}});
     peta.addLayer({id: "prio-lbl", type: "symbol", source: "prio", minzoom: 7, maxzoom: 10, filter: ["!", ["has", "point_count"]], layout: {visibility: visK, "text-field": ["get", "id"], "text-size": 10.5, "text-offset": [0, 1.4], "text-anchor": "top", "text-font": ["Noto Sans Bold"], "text-optional": true},
       paint: {"text-color": gelap() ? "#ffffff" : "#7a2b2b", "text-halo-color": gelap() ? "#0b1424" : "#ffffff", "text-halo-width": 1.6}});
-    peta.addSource("daops", {type: "geojson", data: {type: "FeatureCollection", features: S.daops.filter(d => S.daopsDipakai.has(d.kode)).map(d => ({type: "Feature", geometry: {type: "Point", coordinates: [d.lon, d.lat]}, properties: {nama: d.nama.replace("Daops ", ""), regu: d.regu}}))}});
+    peta.addSource("daops", {type: "geojson", data: {type: "FeatureCollection", features: S.daops.filter(d => S.daopsDipakai.has(d.kode)).map(d => ({type: "Feature", geometry: {type: "Point", coordinates: [d.lon, d.lat]}, properties: {nama: d.nama.replace("Daops ", ""), regu: d.regu, anggota: d.anggota, kab: d.kab, balai: d.balai}}))}});
+    peta.on("click", "daops", e => tipDaops(e.features[0].properties, e.originalEvent));   /* layar sentuh tidak punya hover */
     peta.addLayer({id: "daops", type: "circle", source: "daops", layout: {visibility: this.lihat("daops") ? "visible" : "none"},
       paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 3.5, 9, 7], "circle-color": "#4f8fc4", "circle-stroke-color": "#fff", "circle-stroke-width": 1.6}});
     peta.addLayer({id: "daops-lbl", type: "symbol", source: "daops", minzoom: 6, layout: {visibility: this.lihat("daops") ? "visible" : "none", "text-field": ["concat", "Daops ", ["get", "nama"]],
@@ -2241,7 +2242,7 @@ const Peta = {
         return new maplibregl.Popup({closeButton: false, maxWidth: "300px"}).setLngLat(e.lngLat).setHTML(`<div class="kartu"><div class="kp putih" style="--aksen:#c9503a"><div><small>${{N: "VIIRS S-NPP", N20: "VIIRS NOAA-20", N21: "VIIRS NOAA-21", M: "MODIS"}[p.s]}</small><b>Titik panas</b></div></div>
           <div class="kg">${kb("Umur deteksi", (p.u < 1 ? "< 1" : fmt(p.u)) + " jam")}${kb('<span title="tertinggi dalam sel 375 m">Keyakinan deteksi</span>', ["Rendah", "Sedang", "Tinggi"][p.c] ?? "–")}${kb("Daya api (FRP)", fmt(p.f) + " MW")}</div>
           ${aksiLokasi(t[0].geometry.coordinates[1], t[0].geometry.coordinates[0], "Titik panas " + ({N: "VIIRS S-NPP", N20: "VIIRS NOAA-20", N21: "VIIRS NOAA-21", M: "MODIS"}[p.s] || ""))}<div class="kk">Sumber: NASA FIRMS.</div></div>`).addTo(peta); }
-      const ud = ["udara", "udara-r", "metar"].filter(l => peta.getLayer(l)); if (ud.length && peta.queryRenderedFeatures([[e.point.x - 6, e.point.y - 6], [e.point.x + 6, e.point.y + 6]], {layers: ud}).length) return;
+      const ud = ["udara", "udara-r", "metar", "daops"].filter(l => peta.getLayer(l)); if (ud.length && peta.queryRenderedFeatures([[e.point.x - 6, e.point.y - 6], [e.point.x + 6, e.point.y + 6]], {layers: ud}).length) return;
       if (window.Risiko7?.klik(e)) return;   /* overlay eksperimental Peluang api 7 hari (hanya akun masuk): klik = popup sel, bukan turun ke wilayah */
       if (window.KebPermukiman?.klik(e)) return;
       if (window.RiwayatDaerah?.klik(e)) return;
@@ -2254,16 +2255,18 @@ const Peta = {
         if (!hf.length) { if (peta._tipHw) { peta._tipHw = 0; $("#tip").classList.remove("on"); peta.getCanvas().style.cursor = ""; } }
         else { const f0 = hf[0], p = f0.properties, bar = +p.baru === 1; peta._tipHw = 1; peta.getCanvas().style.cursor = "pointer";
           return tampilTip(kartuTip({judul: "Api baru", stat: [["api", fmt(Math.round(+p.f)) + " MW", "daya api", "#d946ef"], ["kal", hwLalu(+p.u) + " lalu", "terakhir terlihat"], ["titik", fmt(+p.px), "piksel"]]}), e.originalEvent); } }
-      const ls = ["udara", "metar"].filter(l => peta.getLayer(l) && peta.getLayoutProperty(l, "visibility") !== "none"); if (!ls.length) return;
+      const ls = ["udara", "metar", "daops"].filter(l => peta.getLayer(l) && peta.getLayoutProperty(l, "visibility") !== "none"); if (!ls.length) return;
       const f = peta.queryRenderedFeatures([[e.point.x - 5, e.point.y - 5], [e.point.x + 5, e.point.y + 5]], {layers: ls})[0];
       if (!f) { if (peta._tipUdara) { peta._tipUdara = 0; $("#tip").classList.remove("on"); peta.getCanvas().style.cursor = ""; } return; }
       const p = f.properties; peta._tipUdara = 1; peta.getCanvas().style.cursor = "pointer";
+      if (f.layer.id === "daops") return tipDaops(p, e.originalEvent);
       if (f.layer.id === "metar") { const v = p.v, w = v < 1000 ? "#c9503a" : v < 5000 ? "#e58a45" : v < 8000 ? "#e3b94e" : "#5a9e74";
         tampilTip(kartuTip({judul: esc(String(p.lbl).split(" ")[0]), sub: `<small class="tp-sub">Bandara · METAR</small>`, stat: [["fwi", v >= 9999 ? "≥ 10 km" : fmt(Math.round(v / 100) / 10) + " km", "jarak pandang", w, v < 1000]], kaki: /asap/.test(p.lbl) ? "Asap/kabut tercatat" : "Klik untuk rincian"}), e.originalEvent); }
       else { const jn = String(p.id).split(":")[0]; tampilTip(kartuTip({judul: esc(p.lbl), sub: `<small class="tp-sub">${jn === "h" ? "Pangkalan helikopter" : jn === "a" ? "Pangkalan heli aju" : "Pangkalan OMC"}</small>`, kaki: "Klik untuk rincian"}), e.originalEvent); } });
   },
 };
 /* lapisan tambahan: data dimuat saat pertama kali dinyalakan supaya halaman awal tetap ringan */
+const tipDaops = (p, ev) => tampilTip(kartuTip({judul: "Daops " + esc(p.nama), sub: `<small class="tp-sub">Markas Manggala Agni</small>`, daftar: [[fmt(+p.regu), "regu"], [p.anggota ? fmt(+p.anggota) : "-", "anggota"], [esc(p.kab || "-"), "kabupaten"], [esc(p.balai || "-"), "balai"]]}), ev);
 const hwLalu = u => u < 10 ? "< 10 menit" : u < 120 ? fmt(u) + " menit" : fmt(Math.round(u / 60)) + " jam";
 const Lapis = {
   cache: {},
@@ -2273,10 +2276,12 @@ const Lapis = {
   async kgSiap(n) { this._kgSig[n] = ""; peta.addSource(n, {type: "geojson", data: {type: "FeatureCollection", features: []}});
     if (!this._kgMove) this._kgMove = peta.on("moveend", () => ["pippib", "terbakar"].forEach(k => peta.getLayer(k) && nanti(() => this.kgIsi(k)))); },
   async kgIsi(n) {
-    if (!peta.getLayer(n) || peta.getLayoutProperty(n, "visibility") === "none" || peta.getZoom() < 5.5) return;
+    /* zoom jauh: PIPPIB memakai satu berkas ringkas nasional (scripts/geo/ringkas_pippib.py), areal terbakar tetap mulai zoom 5,5 */
+    const jauh = peta.getZoom() < 5.5;
+    if (!peta.getLayer(n) || peta.getLayoutProperty(n, "visibility") === "none" || (jauh && n !== "pippib")) return;
     const id = this._kgId[n] = (this._kgId[n] || 0) + 1, dir = this.kgDir(n);
     try { const ik = this.cache[dir] ||= await muatJSON(dir + "indeks.json"), b = peta.getBounds(), w = b.getWest(), e = b.getEast(), so = b.getSouth(), u = b.getNorth();
-      const ada = Object.entries(n === "pippib" ? ik.ubin : ik.prov).filter(([k, v]) => { const [a, c, d, f] = n === "pippib" ? (([x, y]) => [x - .5, y - .5, x + 5.5, y + 5.5])(k.split("_").map(Number)) : v.bb; return a < e && d > w && c < u && f > so; }).map(([k]) => k);
+      const ada = jauh ? ["nasional"] : Object.entries(n === "pippib" ? ik.ubin : ik.prov).filter(([k, v]) => { const [a, c, d, f] = n === "pippib" ? (([x, y]) => [x - .5, y - .5, x + 5.5, y + 5.5])(k.split("_").map(Number)) : v.bb; return a < e && d > w && c < u && f > so; }).map(([k]) => k);
       const fs = await Promise.all(ada.map(k => this.cache[dir + k] ||= muatJSON(dir + k + ".json").then(d => d.features, er => { delete this.cache[dir + k]; throw er; })));
       const sig = dir + ada.join(); if (id !== this._kgId[n] || sig === this._kgSig[n]) return;
       this._kgSig[n] = sig; peta.getSource(n)?.setData({type: "FeatureCollection", features: fs.flat()});
@@ -2347,7 +2352,7 @@ const Lapis = {
       /* PIPPIB 2026-I (Kepmenhut 2438/2026) dan areal terbakar Kemenhut: ubin/provinsi dimuat malas menurut tampilan peta (kgIsi), bukan satu berkas nasional */
       pippib: async () => { await this.kgSiap("pippib");
         const w = ["match", ["get", "k"], 1, "#2f7fa8", 2, "#2e9460", 3, "#8a5a2b", "#888"];
-        peta.addLayer({id: "pippib", type: "fill", source: "pippib", minzoom: 5.5, paint: {"fill-color": w, "fill-opacity": .3}}, "wil-line");
+        peta.addLayer({id: "pippib", type: "fill", source: "pippib", paint: {"fill-color": w, "fill-opacity": .3}}, "wil-line");
         peta.addLayer({id: "pippib-line", type: "line", source: "pippib", minzoom: 7, paint: {"line-color": w, "line-width": .7, "line-opacity": .7}}, "wil-line");
         this.kgKlik("pippib"); this.kgIsi("pippib"); },
       terbakar: async () => { await this.kgSiap("terbakar");
@@ -3168,7 +3173,7 @@ function renderLegenda() {
     `}
     ${Peta.lihat("gambut") ? `<div class="leg" style="margin-top:8px"><span><i class="sw" style="background:#6b4a2b;opacity:.6"></i>Lahan gambut (sumber: lihat Metode)</span></div>` : ""}
     ${Peta.lihat("khg") ? `<div class="leg" style="margin-top:8px"><span><i class="sw" style="background:none;border-top:2px dashed #e0a94a;height:0;margin-top:6px"></i>Batas KHG (BRGM PRIMS)</span></div>` : ""}
-    ${Peta.lihat("pippib") ? `<div class="lbl" style="margin-top:8px">Moratorium PIPPIB 2026-I</div><div class="leg" style="margin-top:4px">${[["#2f7fa8", "Kawasan"], ["#2e9460", "Primer"], ["#8a5a2b", "Gambut"]].map(([w, t]) => `<span><i class="sw" style="background:${w};opacity:.6"></i>${t}</span>`).join("")}<span>Sumber: Kemenhut (PIPPIB 2026-I), tampil mulai zoom 6</span></div>` : ""}
+    ${Peta.lihat("pippib") ? `<div class="lbl" style="margin-top:8px">Moratorium PIPPIB 2026-I</div><div class="leg" style="margin-top:4px">${[["#2f7fa8", "Kawasan"], ["#2e9460", "Primer"], ["#8a5a2b", "Gambut"]].map(([w, t]) => `<span><i class="sw" style="background:${w};opacity:.6"></i>${t}</span>`).join("")}<span>Sumber: Kemenhut (PIPPIB 2026-I), zoom jauh hanya area 500 ha ke atas</span></div>` : ""}
     ${Peta.lihat("terbakar") ? `<div class="lbl" style="margin-top:8px">Areal terbakar Kemenhut</div><div class="seg" id="tbThn" style="margin:4px auto 0;width:max-content">${[2025, 2026].map(y => `<button data-thn="${y}" aria-pressed="${Lapis.tahunTb === y}">${y}</button>`).join("")}</div><div class="leg" style="margin-top:4px"><span><i class="sw" style="background:#e0472b;opacity:.7"></i>Areal terbakar ${Lapis.tahunTb}</span><span>Sumber: Kemenhut (areal terbakar), tampil mulai zoom 6</span></div>` : ""}
     ${Peta.lihat("kawasan") ? `<div class="lbl" style="margin-top:8px">Kawasan hutan</div><div class="leg" style="margin-top:4px">${[["#1f7a3a", "Konservasi / Tahura (BKSDA, Taman Nasional)"], ["#5a9e74", "Hutan lindung (pemda)"], ["#9ccc65", "Hutan produksi (pemegang PBPH)"], ["#c5e1a5", "Produksi terbatas"], ["#e6ee9c", "Produksi dapat dikonversi"]].map(([c, n]) => `<span><i class="sw" style="background:${c}"></i>${n}</span>`).join("")}</div>` : ""}
     ${Peta.lihat("konsesi") ? `<div class="lbl" style="margin-top:8px">Konsesi (data sekitar 2014)</div><div class="leg" style="margin-top:4px"><span><i class="sw" style="background:#c98a3c"></i>Sawit (IUP/HGU)</span><span><i class="sw" style="background:#2f6f8f"></i>HPH (hutan alam)</span></div>` : ""}
