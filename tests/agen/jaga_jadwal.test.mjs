@@ -2,6 +2,7 @@
    Jalankan: node --test tests/agen/jaga_jadwal.test.mjs */
 import {test} from "node:test";
 import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
 import {JADWAL, jalankan, putuskan} from "../../scripts/terbit/jaga_jadwal.mjs";
 import {denyutJaga} from "../../src/jaga_jadwal.js";
 
@@ -55,6 +56,23 @@ test("sesudah gagal tiga kali dicoba lagi begitu 6 jam lewat", () => {
   const r = [run(J("03:00"), "failure"), run(J("02:00"), "failure"), run(J("01:00"), "failure")];
   assert.equal(putuskan(titik, r, J("08:59")).alasan, "gagal tiga kali berturut");
   assert.equal(putuskan(titik, r, J("09:01")).aksi, "picu");
+});
+
+test("insiden 9 Nov: tiga run merah tidak menahan putaran cut-off, di luar jendela tetap tertahan", () => {
+  const merah = [run(J("08:40"), "failure"), run(J("07:30"), "failure"), run(J("06:30"), "failure"), run(J("06:10"))];
+  const d = putuskan(titik, merah, J("09:52"));
+  assert.equal(d.aksi, "picu"); assert.match(d.alasan, /cut-off/);
+  assert.equal(putuskan(titik, merah, J("09:49")).alasan, "gagal tiga kali berturut");
+  assert.equal(putuskan(titik, merah, J("11:51")).alasan, "gagal tiga kali berturut");
+  const him = JADWAL.find(j => j.wf === "himawari.yml");
+  assert.equal(putuskan(him, merah, J("09:52")).alasan, "gagal tiga kali berturut");
+});
+
+test("titik.yml: hanya Himawari basi jadi peringatan, sumber lain tetap merah", () => {
+  const yml = readFileSync(new URL("../../.github/workflows/titik.yml", import.meta.url), "utf8");
+  const langkah = yml.slice(yml.indexOf("name: Periksa kesegaran data yang tayang"));
+  assert.match(langkah, /"\$kode" = 503 \] && python3 -c '[^']*\.get\("basi"\) == \["himawari"\]/);
+  assert.match(langkah, /::error title=Data basi::[^\n]*\n\s*exit 1/);
 });
 
 test("irama pengganti saat jadwal mati: pemeriksaan tiap 60 menit memberi selang yang dimaksud", () => {

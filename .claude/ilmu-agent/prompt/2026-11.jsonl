@@ -2542,3 +2542,22 @@
 {"t":"2026-11-09T17:29:25.183+07:00","sesi":"2030cb50","prompt":"26 GB: Documents/GitHub/poskokarhutla, salinan lama dari repo di Developer. Yang salinan platform METI juga tolong dihapus ya","label":[],"berkas":[]}
 {"t":"2026-11-09T17:33:07.284+07:00","sesi":"2030cb50","prompt":"Yang platformmeti di github soalnya udah ada di Developper","label":[],"berkas":[]}
 {"t":"2026-11-09T17:33:07.925+07:00","sesi":"2030cb50","prompt":"7,7 GB: hasil build .next di worth-it dan worktree-nya. Muncul lagi saat build berikutnya.\n4,9 GB: cache Chrome. Login tidak hilang, tapi tutup Chrome dulu.\n4,1 GB: sampah tmp_pack lama di .git repo Documents, sisa fetch yang gagal.\n1,7 GB: cache ~/.npm.\n\n* 1 GB: cache WhatsApp. Chat tidak hilang.\n* 1,2 GB: `Postman.app` dobel di Downloads, cache update Postman, dan installer `.dmg` di Downloads.\n\nHilangkan semuanya","label":["wa-bot"],"berkas":[]}
+{"t":"2026-11-09T16:21:17.603+07:00","sesi":"e66fb4b7","prompt":"[tempelan 566 karakter]\n\n[tempelan 13177 karakter]\n\n[tempelan 22280 karakter]","label":[],"berkas":[]}
+{"t":"2026-11-09T16:26:26.157+07:00","sesi":"a7252047","prompt":"ininya apa","label":[],"berkas":[]}
+{"t":"2026-11-09T16:28:17.733+07:00","sesi":"a7252047","prompt":"sudah selesai input token","label":[],"berkas":[]}
+{"t":"2026-11-09T16:56:44.720+07:00","sesi":"643914bf","prompt":"https://trello.com/invite/b/6ae1c9dd8a3d63c93daa53d5/[token]/tim-gonjang-ganjing\n\nkamu bisa lihat isi ini ga","label":[],"berkas":[]}
+{"t":"2026-11-09T16:57:48.374+07:00","sesi":"643914bf","prompt":"<!-- reply 1 -->\n> Chrome\n\nchrome?","label":[],"berkas":[]}
+{"t":"2026-11-09T16:58:22.429+07:00","sesi":"643914bf","prompt":"padahal saya ga buka chrome...","label":[],"berkas":[]}
+{"t":"2026-11-09T16:59:05.910+07:00","sesi":"643914bf","prompt":"di chrome apa di browser bawaan loi?","label":[],"berkas":[]}
+{"t":"2026-11-09T17:00:53.385+07:00","sesi":"643914bf","prompt":"chrome udah login, coba buka https://trello.com/b/EASES3lb/tim-gonjang-ganjing","label":[],"berkas":[]}
+{"t":"2026-11-09T17:21:01.595+07:00","sesi":"e66fb4b7","prompt":"Laporan Penanganan","label":[],"berkas":[]}
+{"t":"2026-11-09T17:21:13.620+07:00","sesi":"e66fb4b7","prompt":"coba cek ya apakah datanya sudah lengkap semua diambil","label":[],"berkas":[]}
+{"t":"2026-11-09T17:24:03.026+07:00","sesi":"e66fb4b7","prompt":"<!-- reply 1 -->\n> belum masuk situs\n\nemang cara masuknya gimana?\n\n\nkok lama ya? bisa dipercepat ga?","label":[],"berkas":[]}
+{"t":"2026-11-09T17:25:02.665+07:00","sesi":"a7252047","prompt":"terus gimana?","label":[],"berkas":[]}
+{"t":"2026-11-09T17:27:32.674+07:00","sesi":"a7252047","prompt":"Ya, benerin","label":[],"berkas":[]}
+{"t":"2026-11-09T17:29:10.498+07:00","sesi":"e66fb4b7","prompt":"<!-- reply 1 -->\n> Lintas bencana\n\ninintuh ngerjain apa?","label":[],"berkas":[]}
+{"t":"2026-11-09T17:29:20.188+07:00","sesi":"e66fb4b7","prompt":"antriannya apa aja?","label":[],"berkas":[]}
+{"t":"2026-11-09T17:33:41.218+07:00","sesi":"e66fb4b7","prompt":"kalau workflownya dituker gimana","label":[],"berkas":[]}
+{"t":"2026-11-09T17:34:37.730+07:00","sesi":"e66fb4b7","prompt":"oke, terus sekarang berapa lama lagi","label":[],"berkas":[]}
+{"t":"2026-11-09T17:34:57.239+07:00","sesi":"a7252047","prompt":"Commit the working tree changes with a sensible message.","label":[],"berkas":[]}
+{"t":"2026-11-09T17:35:00.015+07:00","sesi":"a7252047","prompt":"lgsg push\\","label":[],"berkas":[]}

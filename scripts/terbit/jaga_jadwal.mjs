@@ -35,17 +35,25 @@ export function putuskan(j, runs, kini) {
   if (!runs.length) return {aksi: "tunggu", alasan: "tanpa riwayat"};
   if (runs.some(r => r.status !== "completed")) return {aksi: "tunggu", alasan: "sedang jalan atau antre"};
   if (kini - ms(runs[0].created_at) < JEDA_MS) return {aksi: "tunggu", alasan: "run terakhir baru dibuat"};
-  // sumbernya yang rusak: memicu terus tidak menolong, dan run merah sudah memberi tahu pemilik. Sesudah 6 jam dicoba lagi: saat jadwal mati tidak ada yang membuat run baru.
-  if (runs.length >= 3 && runs.slice(0, 3).every(r => r.conclusion === "failure") && kini - ms(runs[0].created_at) < TAHAN_GAGAL_MS) return {aksi: "tunggu", alasan: "gagal tiga kali berturut"};
   const w = new Date(kini);
-  if (j.jam && !aktifJam(j.jam, w.getUTCHours())) return {aksi: "tunggu", alasan: "di luar jam aktif"};
   const sukses = runs.find(r => r.conclusion === "success"), tSukses = sukses ? ms(sukses.created_at) : 0;
+  const cutoff = cutoffTerlewat(j, w, tSukses);
+  // sumbernya yang rusak: memicu terus tidak menolong, dan run merah sudah memberi tahu pemilik. Sesudah 6 jam dicoba lagi: saat jadwal mati tidak ada yang membuat run baru.
+  // Putaran cut-off laporan tetap dicoba: jendelanya 2 jam dan JEDA_MS membatasinya paling banyak 3 kali, sedangkan tahanan 6 jam bisa menelan cut-off itu seluruhnya (9 Nov 2026).
+  if (!cutoff && runs.length >= 3 && runs.slice(0, 3).every(r => r.conclusion === "failure") && kini - ms(runs[0].created_at) < TAHAN_GAGAL_MS) return {aksi: "tunggu", alasan: "gagal tiga kali berturut"};
+  if (j.jam && !aktifJam(j.jam, w.getUTCHours())) return {aksi: "tunggu", alasan: "di luar jam aktif"};
+  if (cutoff) return {aksi: "picu", alasan: cutoff};
   if ((kini - tSukses) / 60000 > j.maks) return {aksi: "picu", alasan: `tanpa run sukses lebih dari ${j.maks} menit`};
+  return {aksi: "tunggu", alasan: "segar"};
+}
+
+function cutoffTerlewat(j, w, tSukses) {
+  const kini = w.getTime();
   for (const [h1, m1, h2, m2] of j.jendela || []) for (const hari of [0, -1]) {   // -1: jendela 22.55 masih berlaku sesudah 00.00 UTC
     const pada = (h, m) => Date.UTC(w.getUTCFullYear(), w.getUTCMonth(), w.getUTCDate() + hari, h, m);
-    if (kini >= pada(h2, m2) && kini < pada(h2, m2) + JENDELA_MS && tSukses < pada(h1, m1)) return {aksi: "picu", alasan: `putaran cut-off ${h1}.${m1} UTC terlewat`};
+    if (kini >= pada(h2, m2) && kini < pada(h2, m2) + JENDELA_MS && tSukses < pada(h1, m1)) return `putaran cut-off ${h1}.${m1} UTC terlewat`;
   }
-  return {aksi: "tunggu", alasan: "segar"};
+  return null;
 }
 
 async function slotTerisi(baca, api) {
