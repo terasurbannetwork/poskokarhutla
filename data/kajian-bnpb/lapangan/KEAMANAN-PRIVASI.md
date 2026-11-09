@@ -12,6 +12,7 @@ membahasnya.
 | Foto acuan depan | lihat | tidak | lihat saat meninjau | lihat, hapus | tidak |
 | Absen dan foto berstempel | lihat | lihat anggota | lihat, putus | semua | tidak |
 | Logbook | ubah sampai 23.59 | lihat anggota | lihat | semua | tidak |
+| Foto logbook di overlay Foto peta (9 Nov 2026) | lihat tanpa nama | lihat | lihat | lihat | tidak |
 | Label kondisi lapangan | | | | | agregat lokasi tanpa nama di `label.json` |
 | WA, email | lihat | tidak | lihat | ubah | tidak |
 | Kode/tautan pribadi | pemilik | tidak | tidak | lihat saat terbit (admin saja); staf pimpinan/koordalops hanya mengantrekan ke WA, tanpa melihat kode | tidak |
@@ -69,3 +70,7 @@ selisihnya, semuanya di server dan tidak dibuka ke klien (`KONST_PUBLIK` tidak m
 4. **Foto absen** selalu tersimpan untuk peninjau (tertutup R2, ketua regu boleh membuka foto anggotanya).
 5. Tahap lanjut (U2, aplikasi native) dapat memindahkan penilaian wajah ke sisi yang tidak dikendalikan penyerang;
    sampai itu ada, tinjauan manusia adalah penjaga terakhir.
+
+## Tambahan 9 Nov 2026: foto logbook dan uji pilot di overlay Foto (hanya staf login)
+
+Foto logbook (bukan foto absen) boleh dilihat staf yang login lewat overlay Foto di peta utama, bersama foto uji pilot. Tetap tidak publik: tamu dan akun gerbang situs (AKUN_SITUS*, pemirsa) ditolak 403; hanya `modOK` (ADMIN_TOKEN, sesi admin) atau sesi staf nyata yang lolos, tidak ada di `/api/foto`, tidak ada tautan bagikan atau OG. Daftar dan media memakai kunci R2 yang diambil dari baris D1 di server, respons `private, no-store`, tanpa nama, orang_id, regu, ip, kunci R2. Foto absen dan foto acuan wajah TIDAK berubah (aturan di atas tetap). Penghapusan data orang membuang baris logbook, sehingga fotonya otomatis hilang dari overlay. Keputusan: `KEPUTUSAN-LAPANGAN.md` bagian E; kode `src/foto_lapangan.js`; uji `tests/warga/foto_lapangan.test.mjs`.

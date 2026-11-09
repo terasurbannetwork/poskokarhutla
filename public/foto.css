@@ -399,3 +399,6 @@ form:not(.ada) .fl-lanjut{display:none}
   .fl-sheet [data-kirim-ok]{position:sticky;bottom:0;z-index:5;box-shadow:0 -14px 18px 4px var(--card)}
 }
 .fl-dummy{display:inline-flex;gap:8px;margin-left:auto}
+
+/* Laporan lapangan (staf login, public/foto.js RinciLap): lencana kecil di kartu peta */
+.fl-lapbadge{position:absolute;left:5px;top:5px;max-width:calc(100% - 10px);background:#1f3a5f;color:#fff;font:700 9px var(--font);padding:2px 5px;border-radius:5px;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

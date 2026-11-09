@@ -16,6 +16,7 @@ import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_POSKO, buatAntrean, bersihkanPosko} from "./posko.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
 import {RUTE_FOTO_LABEL} from "./foto_label.js";
+import {RUTE_FOTO_LAPANGAN} from "./foto_lapangan.js";
 import {bersihkanBnpb, RUTE_BNPB} from "./bnpb.js";
 import {RUTE_HUKUM} from "./hukum.js";
 import {RUTE_KONTAK} from "./kontak.js";
@@ -584,6 +585,7 @@ const RUTE = {
     return terapkanOg(env, url, await env.ASSETS.fetch(new Request(new URL("/index.html", url), req)), await ogFoto(env, url, id).catch(() => null)); },
   "GET /admin/sosmed": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanSosmed()),
   ...RUTE_FOTO,
+  ...RUTE_FOTO_LAPANGAN,   // foto logbook + uji pilot untuk staf login di overlay Foto (src/foto_lapangan.js)
   ...RUTE_FOTO_LABEL,   // label kerusakan foto oleh manusia, admin saja (src/foto_label.js)
   "GET /admin/labelfoto": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanLabelFoto()),
   ...RUTE_SOSMED,
