@@ -11,6 +11,7 @@
  "src/ews.js": 90,
  "src/foto.js": 151,
  "src/foto_label.js": 51,
+ "src/foto_lapangan.js": 9,
  "src/gempa.js": 71,
  "src/gunungapi.js": 35,
  "src/himawari.js": 2,
