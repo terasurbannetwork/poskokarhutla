@@ -16,6 +16,7 @@
     sistem: "M4 6h16M4 12h16M4 18h10",
     teknis: "M8 8l-4 4 4 4|M16 8l4 4-4 4|M13 6l-2 12",
     lain: "M6 12h.01M12 12h.01M18 12h.01",
+    templat: "M4 4h16v5H4z|M4 13h7v7H4z|M15 13h5M15 17h5",
     folder: "M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
     bawah: "M6 9l6 6 6-6",
     centang: "M5 12l5 5L20 7",

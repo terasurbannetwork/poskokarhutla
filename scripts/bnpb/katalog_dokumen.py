@@ -29,7 +29,7 @@ BLOB_KOSONG = "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
 KATEGORI = [
     ("harian", "Laphar Bencana"), ("satelit", "Laphar Karhutla"), ("laporan", "Laporan lain"), ("kegiatan", "Kegiatan dan paparan"),
     ("kajian", "Kajian Grand Design"), ("rancangan", "Rancangan sistem"), ("riset", "Riset dan pustaka"),
-    ("sistem", "Dokumentasi sistem"), ("teknis", "Catatan teknis"), ("lain", "Lain-lain"),
+    ("sistem", "Dokumentasi sistem"), ("teknis", "Catatan teknis"), ("templat", "Template"), ("lain", "Lain-lain"),
 ]
 PENANDA_VERSI = [
     re.compile(r"\s*\((rev\d+(?: alt\d+)?|terbaru|isi|generator|uji mesin|alternatif[^)]*)\)\s*$", re.I),
@@ -58,6 +58,7 @@ def masuk(p):
 
 
 def kategori(p):
+    if p.startswith("data/templat-dokumen/") or "/Templat " in p: return "templat"
     if p.startswith("data/laporan-bnpb/harian-"): return "harian"
     if p.startswith("data/laporan-bnpb/satelit-"): return "satelit"
     if p.startswith("data/laporan-bnpb/"): return "laporan"
@@ -233,6 +234,7 @@ def bangun():
         cadangan = judul_rapi(stem)
         if folder == "data/kajian-bnpb/keluaran" and "deck" not in stem and " " not in stem:   # air.pdf, neraca-air.docx: nama pendek tanpa konteks
             cadangan = "Naskah kajian " + cadangan.lower()
+        if p0.startswith("data/templat-dokumen/"): md = None   # judul Markdown template berisi placeholder; nama berkasnya yang terbaca
         dok.append({"j": judul_md(md, cadangan) if md else cadangan, "k": kategori(p0), "d": folder, "t": tgl, "b": berkas, "s": stem})
     dok = gabung_versi(dok)
     dok.sort(key=lambda e: (-int((e["t"] or "0").replace("-", "")), e["j"].lower()))
@@ -246,6 +248,7 @@ def periksa(d):
     assert not masuk("Paparan 2.pdf") and not masuk("AGENTS.md") and not masuk("public/data/a.md"), "cakupan nama"
     assert not masuk("data/kegiatan-bnpb/a/rapor-r1.md") and not masuk("data/laporan-bnpb/harian-2026-11-05/README.md") and not masuk("data/kajian-bnpb/keluaran/qa/a.md"), "catatan kerja"
     assert not masuk("data/laporan-bnpb/harian-2026-11-05/Laporan 051126.gagal.pptx"), "keluaran gagal"
+    assert kategori("data/templat-dokumen/Word/Template Surat.docx") == "templat" and kategori("data/kegiatan-bnpb/mou/Templat NK.docx") == "templat", "kategori template"
     assert masuk("data/kegiatan-bnpb/a/rapor.pdf") and masuk("data/kegiatan-bnpb/mou/PANDUAN-MOU-BNPB.md"), "catatan kerja, yang tetap masuk"
     assert masuk("public/panduan/sop.pdf") and masuk("docs/bnpb/A.md") and not masuk("docs/a.png"), "cakupan jenis"
     k = {a for a, _ in d["kategori"]}

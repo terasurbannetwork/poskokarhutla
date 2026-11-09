@@ -17,7 +17,7 @@ window.KatalogMd = (() => {
       if (m[1]) hasil.push(el("code", "", t.slice(1, -1)));
       else if (m[2]) hasil.push(el("strong", "", inline(t.slice(2, -2))));
       else if (m[3]) hasil.push(el("em", "", inline(t.slice(1, -1))));
-      else if (m[4]) { const [, teks, url] = t.match(/^!?\[([^\]]*)\]\(([^)\s]*)/); hasil.push(t[0] === "!" ? (teks || "gambar") : tautan(teks, url)); }
+      else if (m[4]) { const [, teks, url] = t.match(/^!?\[([^\]]*)\]\(([^)\s]*)/); if (t[0] === "!" && /logo-kris\.png$/.test(url)) { const g = el("img", "kd-md-logo"); g.src = "/img/logo-kris.png"; g.alt = teks; hasil.push(g); } else hasil.push(t[0] === "!" ? (teks || "gambar") : tautan(teks, url)); }
       else hasil.push(tautan(t, t));
       akhir = m.index + t.length;
     }
