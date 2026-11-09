@@ -1,3 +1,5 @@
+/* CSP tanpa inline: foto rusak di .ft dibuang lewat pendengar tangkap (error tidak menggelembung); dulunya onerror= di string */
+document.addEventListener("error", e => { if (e.target.tagName === "IMG" && e.target.closest(".ft")) e.target.remove(); }, true);
 /* /akademisi: direktori pakar kebencanaan, hanya staf BNPB dan admin. Data dari GET /api/akademisi (R2, bersesi; src/akademisi.js).
    Baris = [id, nama, kampus, [rumpun], h, karya, sitasi, orcid, [topik], foto, idSinta, prodi, subjek, status (s terdaftar SINTA,
    x tidak ada, "" belum dicek), logo kampus]. Semua teks dari luar di-escape. CSP: tanpa skrip inline (galat foto lewat listener capture). */
@@ -590,7 +592,7 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
     const rd = await ambilData("riset").catch(() => null); if (rd) indeksRiset(dlist(Array.isArray(rd) ? rd : rd?.riset));
     const kam = new Set(ors.map(o => o[2])), per = {}; ors.forEach(o => o[3].forEach(r => { per[r] = (per[r] || 0) + 1; }));
     const pilR = (r, n) => { const [l, d, w] = RUMPUN[r] || [r, "", "#6b7280"]; return `<span class="pil" style="--w:${w}">${d ? ikon(d, w) : ""}${esc(l)}${n != null ? ` <small>${angka(n)}</small>` : ""}</span>`; };
-    const fotoC = o => { const fo = o[9] || FOTO_PAKAR.get(o[0]); return `<span class="ft"><svg viewBox="0 0 24 24">${SIL}</svg>${fo ? `<img src="${esc(fo)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}</span>`; };
+    const fotoC = o => { const fo = o[9] || FOTO_PAKAR.get(o[0]); return `<span class="ft"><svg viewBox="0 0 24 24">${SIL}</svg>${fo ? `<img src="${esc(fo)}" alt="" referrerpolicy="no-referrer">` : ""}</span>`; };
     const kampusC = k => { const lg = urlOk(logoK[k]); return `<span class="k">${lg ? `<img src="${esc(lg)}" alt="" referrerpolicy="no-referrer">` : ""}<span>${esc(k)}</span></span>`; };
     const namaC = o => `<span class="nm">${esc(o[1])}</span>${o[13] === "s" ? '<span class="sinta">SINTA</span>' : ""}`;
     const kontakC = o => { const e = emailDari(o); return [e ? `${esc(e.list.join(", "))}${e.sumber === "Email kampus" ? " (kampus)" : ""}` : "", o[7] ? "ORCID " + esc(String(o[7]).replace(/^https?:\/\/orcid\.org\//, "")) : "", o[10] ? "SINTA " + esc(o[10]) : ""].filter(Boolean).join("<br>"); };

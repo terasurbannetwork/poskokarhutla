@@ -212,13 +212,17 @@
   /* fitur 10: utilisasi dan rapor operator (30 hari) */
   function kartuOperator(D) {
     const u = U(), kp = D.mon?.kpi?.armada || {}, grup = {};
-    for (const a of D.peta.armada || []) { const o = a.operator || "Operator belum tercatat", x = grup[o] ||= {n: 0, siap: 0, terbang: 0, sortie: 0, wb: 0, padam: 0, dinilai: 0, jam: 0};
-      const k = kp[a.registrasi]; x.n++; if (k) { x.siap += k.hari_siap || 0; x.terbang += k.hari_terbang || 0; x.sortie += k.sortie || 0; x.wb += k.aksi_wb || 0; x.padam += k.padam || 0; x.dinilai += k.dinilai || 0; }
+    for (const a of D.peta.armada || []) { const o = a.operator || "Operator belum tercatat", x = grup[o] ||= {n: 0, siap: 0, terbang: 0, sortie: 0, wb: 0, padam: 0, dinilai: 0, jam: 0, base: {}};
+      const k = kp[a.registrasi], nb = a.base_id ? namaBase(D, a.base_id) : "Base belum tercatat"; x.base[nb] = (x.base[nb] || 0) + 1; x.n++; if (k) { x.siap += k.hari_siap || 0; x.terbang += k.hari_terbang || 0; x.sortie += k.sortie || 0; x.wb += k.aksi_wb || 0; x.padam += k.padam || 0; x.dinilai += k.dinilai || 0; }
       x.jam += u.kontrak(a.registrasi).reduce((t, c) => t + (c.jam_operasi_menit || 0), 0); }
     const daf = Object.entries(grup).sort((a, b) => b[1].sortie - a[1].sortie || b[1].jam - a[1].jam || a[0].localeCompare(b[0]));
     const nganggur = daf.filter(([, x]) => x.siap && !x.terbang).length;
+    /* lokasi armada per operator, terbanyak dulu (pemilik 9 Nov 2026) */
+    const teksBase = b => Object.entries(b).sort((p, q) => q[1] - p[1] || p[0].localeCompare(q[0])).map(([n, j]) => `${esc(n)} (${fmt(j)})`).join(", ");
+    const jml = k => daf.reduce((t, [, x]) => t + x[k], 0), semuaBase = new Set(daf.flatMap(([, x]) => Object.keys(x.base).filter(n => n !== "Base belum tercatat")));
+    const total = `<tr class="ops-total">${kiri("<b>Grand total</b>")}${kiri(`${fmt(semuaBase.size)} base`)}${sel(fmt(jml("n")))}${sel(nol(jml("siap")))}${sel(nol(jml("terbang")))}${sel(jml("siap") ? u.persen(jml("terbang") / jml("siap")) : "–")}${sel(nol(jml("sortie")))}${sel(nol(jml("wb")))}${sel(jml("dinilai") ? u.persen(jml("padam") / jml("dinilai")) : "–")}${sel(jml("jam") ? fmt(Math.round(jml("jam") / 60)) : "–")}</tr>`;
     return bagian("Operator", daf.some(([, x]) => x.siap) ? `${hl(fmt(daf.length))} operator; ${nganggur ? `${hl(fmt(nganggur))} siap tapi belum terbang dalam 30 hari` : "semua yang siap sudah terbang"}` : `${hl(fmt(daf.length))} operator armada udara; status harian belum dilaporkan`,
-      tabelH(["Operator", "#Armada", "#Hari siap", "#Hari terbang", "#Utilisasi|Hari terbang dibagi hari siap", "#Sortie", "#Aksi WB", "#Padam", "#Jam 2026"], daf.map(([o, x]) => `<tr>${kiri(`<b>${esc(o)}</b>`)}${sel(fmt(x.n))}${sel(nol(x.siap))}${sel(nol(x.terbang))}${sel(x.siap ? u.persen(x.terbang / x.siap) : "–")}${sel(nol(x.sortie))}${sel(nol(x.wb))}${sel(x.dinilai ? u.persen(x.padam / x.dinilai) : "–")}${sel(x.jam ? fmt(Math.round(x.jam / 60)) : "–")}</tr>`), "Belum ada armada tercatat."));
+      tabelH(["Operator", "Base (jumlah armada)", "#Armada", "#Hari siap", "#Hari terbang", "#Utilisasi|Hari terbang dibagi hari siap", "#Sortie", "#Aksi WB", "#Padam", "#Jam 2026"], daf.length ? [total, ...daf.map(([o, x]) => `<tr>${kiri(`<b>${esc(o)}</b>`)}${kiri(teksBase(x.base))}${sel(fmt(x.n))}${sel(nol(x.siap))}${sel(nol(x.terbang))}${sel(x.siap ? u.persen(x.terbang / x.siap) : "–")}${sel(nol(x.sortie))}${sel(nol(x.wb))}${sel(x.dinilai ? u.persen(x.padam / x.dinilai) : "–")}${sel(x.jam ? fmt(Math.round(x.jam / 60)) : "–")}</tr>`)] : [], "Belum ada armada tercatat."));
   }
 
   /* fitur 6: jejak terbang ADS-B (adsb.fi, posisi tiap jam) */

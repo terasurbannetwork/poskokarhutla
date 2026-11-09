@@ -56,7 +56,9 @@ import csv, datetime as dt, gzip, io, json, math, os, statistics, sys, tarfile, 
 from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import aturan
 import firms
+import harian as HRN   # firespot() dan dbscan(): aturan Kemenhut + ST-DBSCAN dipakai ulang, bukan disalin
 import titik_palsu
 import titik_unik
 import firms_sumber as FS
@@ -76,7 +78,12 @@ NB = [i * LEBAR + j for i in (-1, 0, 1) for j in (-1, 0, 1)]
 # Luas per titik, kalibrasi langsung per satelit (keputusan pemilik 25 Okt 2026). SUMBER: data/laporan-bnpb/metode-2026-10-25/kalibrasi_noaa.py -> kalibrasi_noaa.json
 # (F20 = median 2019-2025 luas resmi BNPB / titik N20 n/h tanpa sel sumber panas tetap = 4,12; F21 = median 2024-2025 = 4,16; bulat 2 desimal). Uji: UJI_SIPONGI.
 F20, F21 = 4.12, 4.16
-FAKTOR = {"N20": F20, "N21": F21}          # ha per titik; tersimpan di JSON terbit ("faktor") dan menjadi kunci baca_lama
+# Luas per LOKASI UNIK untuk "belum" (keputusan pemilik 9 Nov 2026). SUMBER: data/laporan-bnpb/metode-2026-10-25/kalibrasi_lokasi.py -> kalibrasi_lokasi.json:
+# F_LOK = median 2024-2025 dari luas resmi BNPB / jumlah lokasi-hari setahun (sel 375 m yang terdeteksi NOAA-20 atau NOAA-21 n/h pada hari WIB itu, sekali per sel per hari,
+# di dalam batas wilayah, tanpa sel sumber panas tetap) = 2,254 (2024: 2,152; 2025: 2,356), dibulatkan 2 desimal. Bukan F20/2: luas lama dihitung per DETEKSI (sel yang dilihat
+# dua satelit terhitung dua kali), belum per LOKASI. Uji Jan-Jul 2026: 93.505 lokasi-hari x 2,254 = 210.762 ha vs SiPongi 202.011 ha (+4,3%).
+F_LOK = 2.25
+FAKTOR = {"N20": F20, "N21": F21, "lokasi": F_LOK}   # ha per titik / per lokasi unik; tersimpan di JSON terbit ("faktor") dan menjadi kunci baca_lama
 # PORSI HANYA untuk deteksi celah S-NPP (celah_hari, CELAH_NAS); TIDAK dipakai luas/belum/padam.
 PORSI = 0.5337924177818518                 # S-NPP : N20+N21 (n/h) = median 16-19 Okt 2026 (deck BNPB 21 Okt, angka_nasional.json); KONSTAN
 ACUAN = ("2026-10-16", "2026-10-17", "2026-10-18", "2026-10-19")   # hari S-NPP lengkap tempat PORSI diukur (hanya --uji yang memakainya)
@@ -92,12 +99,12 @@ UKUR = {"hari": 264, "porsi_median": 0.5, "porsi_agregat": 0.5085, "snpp_n21_har
 UJI_SIPONGI = {"sipongi": 202011, "kita": 219174, "selisih": "8,5", "lama": 20}   # kita = jumlah nasional luas 1 Jan-31 Jul 2026, bangun --penuh 25 Okt 2026 15.34 (+8,5%)
 STATIS = {"hari": "2026-10-20", "titik": 12516, "statis": 130, "bertahan": 6158, "bertahan_statis": 117}
 JENDELA = 4                               # hari terakhir yang dihitung ulang tiap jalan harian
-WARM = 2                                   # hari sebelum hari hitung yang dibutuhkan (belum 36 jam, padam d-2)
+WARM = HRN.JENDELA_HARI - 1                # hari UTC sebelum hari hitung yang dibutuhkan: jendela cluster firespot 7 hari (fs_hari, UTC d-7); belum 36 jam dan padam d-2 lebih pendek
 LATENSI = dt.timedelta(hours=4)            # NRT terlambat; hari WIB d dianggap lengkap bila sudah (now - 4 jam) > d
 TRUST = dt.timedelta(hours=12)             # rekaman cache sah bila ditarik >= 12 jam sesudah hari UTC-nya berakhir
 VERSI = 1
-VREK = 11                                   # 2: + tn (S-NPP semua keyakinan), h21t (N21 sesudah SNPP_AKHIR); 3: + kn/k (kabupaten tiap deteksi N20/N21 n/h);
-                                           # 4: + hk/h21k/h21tk (hot per kecamatan), kw/q (kecamatan tiap deteksi N20/N21 n/h); 5: + s (satelit tiap deteksi N20/N21 n/h: 0 = N20, 1 = N21); 6: deteksi di sel sumber panas tetap (titik_palsu) tidak masuk c/m/p/k/q/kw/s; 7: hot/hk/h21*/tn hanya keyakinan sedang/tinggi (VIIRS n/h, MODIS >= 30); 8: hot/hk/h21*/tn juga membuang sel sumber panas tetap; 9: (dibatalkan); 10: hot = lokasi unik titik_unik (z*), hk/h21k/h21t* dihapus; 11 (28 Okt 2026): z* ikut keyakinan rendah (titik_unik.KEYAKINAN_MIN = 0), tn/h21/luas tetap n/h; rekaman versi lain diunduh ulang
+VREK = 12                                   # 2: + tn (S-NPP semua keyakinan), h21t (N21 sesudah SNPP_AKHIR); 3: + kn/k (kabupaten tiap deteksi N20/N21 n/h);
+                                           # 4: + hk/h21k/h21tk (hot per kecamatan), kw/q (kecamatan tiap deteksi N20/N21 n/h); 5: + s (satelit tiap deteksi N20/N21 n/h: 0 = N20, 1 = N21); 6: deteksi di sel sumber panas tetap (titik_palsu) tidak masuk c/m/p/k/q/kw/s; 7: hot/hk/h21*/tn hanya keyakinan sedang/tinggi (VIIRS n/h, MODIS >= 30); 8: hot/hk/h21*/tn juga membuang sel sumber panas tetap; 9: (dibatalkan); 10: hot = lokasi unik titik_unik (z*), hk/h21k/h21t* dihapus; 11 (28 Okt 2026): z* ikut keyakinan rendah (titik_unik.KEYAKINAN_MIN = 0), tn/h21/luas tetap n/h; 12 (9 Nov 2026): + f* (titik cluster firespot: VIIRS S-NPP/N20/N21 n/h, tanpa sel industri dan gunung api, di provinsi: lintang, bujur, menit UTC, keyakinan 1/2, ukuran piksel, satelit 0/1/2, sel); rekaman versi lain diunduh ulang
 VERSI_WIL = 1                              # peta_karhutla_wil.json (kabupaten/kota + kecamatan, jarang)
 PITA = 5                                   # derajat bujur per pita deteksi celah
 # celah (dikalibrasi pada 293 hari 2026): rasio S-NPP : N20+N21 nasional per hari bergeser +-20% secara alami (p10 0,34, p90 0,61) dan per pita
@@ -124,7 +131,8 @@ def tgl(s):
 # ---------------------------------------------------------------- rekaman per hari UTC
 def baru_rekaman(tarik):
     return {"v": VREK, "tarik": tarik, "h21": {}, "tn": 0, "bd": {}, "c": [], "m": [], "p": [], "k": [], "kn": [], "kw": [], "q": [], "s": [],
-            "zla": [], "zlo": [], "zm": [], "zp": [], "zk": [], "zq": [], "zkn": [], "zkw": []}
+            "zla": [], "zlo": [], "zm": [], "zp": [], "zk": [], "zq": [], "zkn": [], "zkw": [],
+            "fa": [], "fo": [], "fm": [], "fk": [], "fx": [], "fs": [], "fc": []}
 
 
 def wajib(u, ket, acuan=None):
@@ -200,6 +208,10 @@ def rekam(baris, wil, tarik, industri=None):
                     rec["kw"].append(kk)
             if prov:
                 rec["bd"].setdefault(str(math.floor(lon / PITA) * PITA), [0] * 6)[VIIRS[s] * 2 + b] += 1
+                if not ind and not aturan.gunung_api(lat, lon):   # titik cluster firespot: harian.hotspot() + viirs (VIIRS n/h di Indonesia, tanpa gunung api)
+                    for kol, v in (("fa", round(lat, 4)), ("fo", round(lon, 4)), ("fm", m), ("fk", 2 if r["confidence"].lower() == "h" else 1),
+                                   ("fx", max(float(r.get("scan") or .4), float(r.get("track") or .4))), ("fs", VIIRS[s]), ("fc", sel(lon, lat))):
+                        rec[kol].append(v)
         if len(memo) > 200000:
             memo.clear()
     for tg, rec in out.items():
@@ -241,7 +253,50 @@ def hari_data(rek, d):
         if x["p"]:
             hot[x["p"]] += 1
             hotw[x["q"]] += 1
-    return {"hot": hot, "bd": bd, "det": det, "kab": kab, "sat": sat, "snpp": snpp, "hotw": hotw, "detw": detw}
+    return {"hot": hot, "bd": bd, "det": det, "kab": kab, "sat": sat, "snpp": snpp, "hotw": hotw, "detw": detw, "ya": None}
+
+
+def titik_fs(rek, d):
+    """Titik cluster firespot untuk jendela harian.JENDELA_HARI hari yang berakhir di akhir hari WIB d (jam 'sekarang' dibekukan di 00.00 WIB d+1 = 17.00 UTC hari UTC d, seperti
+    firespot_hari.py): bentuk sama dengan harian.hotspot() (lat, lon, t, c 1/2, px). Hari UTC yang tak ada di rek dilewati (jendela pendek; bangun() selalu memuat semuanya)."""
+    kini = d.toordinal() * 1440 + 1020
+    batas = kini - HRN.JENDELA_HARI * 1440
+    out = []
+    for n in range(HRN.JENDELA_HARI + 1):
+        u = d - n * HARI
+        r = rek.get(u.isoformat())
+        if not r:
+            continue
+        awal = dt.datetime.combine(u, dt.time(), UTC)
+        for la, lo, m, k, x, sa, c in zip(r["fa"], r["fo"], r["fm"], r["fk"], r["fx"], r["fs"], r["fc"]):
+            if batas <= u.toordinal() * 1440 + m < kini:
+                out.append({"lat": la, "lon": lo, "t": awal + dt.timedelta(minutes=m), "c": k, "px": x, "s": ("N", "N20", "N21")[sa], "fc": c})
+    out.sort(key=lambda p: p["t"])
+    return out
+
+
+def fs_hari(rek, d):
+    """Sel yang hari WIB d berada di cluster firespot "ya" -> (sel peta_karhutla.sel, sel titik_unik.sel). Pengelompokan = harian.dbscan (ST-DBSCAN yang sama dengan layar),
+    aturan = harian.firespot (Kemenhut SIPANTAU); tak ada aturan kedua di sini. Cluster dihitung atas VIIRS S-NPP/N20/N21 n/h jendela 7 hari, hanya titik hari d yang dikembalikan.
+    CATATAN: saringan "cluster kecil tak berbahaya" harian.main (< 3 titik, level 0 dari FWI) TIDAK dipakai: ia bergantung FWI harian yang tak tersimpan untuk hari lampau (lihat metode)."""
+    pts = titik_fs(rek, d)
+    label, _ = HRN.dbscan([{k: p[k] for k in ("lat", "lon", "t", "px")} for p in pts])
+    kl = defaultdict(list)
+    for p, l in zip(pts, label):
+        kl[l].append(p)
+    ya_pk, ya_tu = set(), set()
+    for ps in kl.values():
+        hari_ini = [p for p in ps if HRN.tgl(p["t"]) == d]
+        if hari_ini and HRN.firespot(ps)[1] == "ya":
+            ya_pk |= {p["fc"] for p in hari_ini}
+            ya_tu |= {HRN.pix(p) for p in hari_ini}
+    return ya_pk, ya_tu
+
+
+def pasang_ya(rek, h, d):
+    """Isi h["ya"] (sel peta_karhutla.sel di cluster firespot "ya" hari d) dan h["ya_tu"] (sel titik_unik.sel, untuk membandingkan dengan kolom FS arsip)."""
+    h["ya"], h["ya_tu"] = fs_hari(rek, d)
+    return h
 
 
 def bertahan(det, c, t):
@@ -287,11 +342,27 @@ def _ha(titik, w):
     return sum(bw(w, c, s) for c, _, s in titik)
 
 
-def hitung(hd, d, kab=None):
+def lokasi_belum(h, det):
+    """Belum padam hari h = LOKASI UNIK (keputusan pemilik 9 Nov 2026): sel hari itu (deteksi NOAA-20/21 n/h tersaring, sekali per sel walau beberapa lintasan atau dua satelit)
+    yang (A) bertahan (bertahan() atas SALAH SATU deteksinya) atau (B) baru tetapi berada di cluster firespot "ya" (h["ya"], fs_hari). Sel yang hari itu tak terdeteksi tidak dihitung.
+    Wilayah = deteksi paling awal sel itu. -> [(provinsi, kabupaten, kunci kecamatan, "A" | "B")] (provinsi "" = laut/luar tidak ditulis)."""
+    assert h["ya"] is not None, "h['ya'] belum diisi: pasang_ya(rek, h, d)"
+    awal, bt = {}, set()
+    for i in sorted(range(len(h["det"])), key=lambda i: h["det"][i][1]):
+        c, t, _ = h["det"][i]
+        awal.setdefault(c, i)
+        if bertahan(det, c, t):
+            bt.add(c)
+    kab, detw = h.get("kab"), h.get("detw")
+    return [(h["det"][i][2], kab[i] if kab else "", detw[i] if detw else "", "A" if c in bt else "B") for c, i in awal.items()
+            if h["det"][i][2] and (c in bt or c in h["ya"])]
+
+
+def hitung(hd, d, kab=None, rinci=None):
     """hd {tanggal: hari_data} berisi d-2..d. -> {prov: [hot, luas, belum, padam]} (float, belum dibulatkan). Urutan operasi sama dengan hitung3.py.
-    luas = jumlah bobot() per satelit atas titik N20/N21 hari d; belum = bobot titik yang bertahan 12-36 jam; padam = bobot titik hari d-2 yang padam (bobot hari d-2).
+    luas = jumlah bobot() per satelit atas titik N20/N21 hari d; belum = F_LOK x lokasi unik (lokasi_belum: bertahan 12-36 jam, atau baru di cluster firespot "ya"); padam = bobot titik hari d-2 yang padam (bobot hari d-2).
     kab (dict kosong, opsional) diisi {(prov, kabupaten): [luas, belum]} (float): jumlah bobot titik kabupaten itu (provinsi = jumlah kabupatennya persis;
-    pembulatan terpisah, lihat periksa_kab)."""
+    pembulatan terpisah, lihat periksa_kab). rinci (dict kosong, opsional) diisi {prov: [lokasi bertahan, lokasi baru-firespot]} (bilangan bulat; belum = (A + B) x F_LOK)."""
     h0, h1, h2 = hd[d - 2 * HARI], hd[d - HARI], hd[d]
     det = defaultdict(list)
     for h in (h0, h1, h2):
@@ -301,20 +372,24 @@ def hitung(hd, d, kab=None):
     per = lambda h: {k: [(c, t, s) for (c, t, p), s in zip(h["det"], h["sat"]) if p == k] for k in PROVINSI}
     L_, Lp_ = per(h2), per(h0)
     w2, w0 = bobot(h2), bobot(h0)
+    lok = defaultdict(list)
+    for x in lokasi_belum(h2, det):
+        lok[x[0]].append(x)
     out = {}
     for k in PROVINSI:
         L, Lp = L_[k], Lp_[k]
         luas = _ha(L, w2)
-        belum = _ha([x for x in L if bertahan(det, x[0], x[1])], w2)
         padam = _ha([x for x in Lp if not any(x[0] + o in sepi for o in NB)], w0)
-        out[k] = [h2["hot"].get(k, 0), luas, belum, padam]
+        out[k] = [h2["hot"].get(k, 0), luas, F_LOK * len(lok[k]), padam]
+    if rinci is not None:
+        for k in PROVINSI:
+            rinci[k] = [sum(1 for x in lok[k] if x[3] == "A"), sum(1 for x in lok[k] if x[3] == "B")]
     if kab is not None:
         for (c, t, p), s, nama in zip(h2["det"], h2["sat"], h2["kab"]):
             if p:
-                v = kab.setdefault((p, nama), [0.0, 0.0])
-                v[0] += bw(w2, c, s)
-                if bertahan(det, c, t):
-                    v[1] += bw(w2, c, s)
+                kab.setdefault((p, nama), [0.0, 0.0])[0] += bw(w2, c, s)
+        for p, nama, _, _ in sum(lok.values(), []):
+            kab.setdefault((p, nama), [0.0, 0.0])[1] += F_LOK
     return out
 
 
@@ -339,13 +414,17 @@ def hitung_wil(hd, d):
     for w, n in h2["hotw"].items():
         hot[0][w] += n; hot[1][kab(w)] += n
     w2, w0 = bobot(h2), bobot(h0)
+    lok = {0: defaultdict(int), 1: defaultdict(int)}
+    for _, _, w, _ in lokasi_belum(h2, det):
+        if w:
+            lok[0][w] += 1; lok[1][kab(w)] += 1
     out = {}
     for tingkat, f in ((0, lambda w: w), (1, kab)):
         L_, Lp_ = per(h2, f), per(h0, f)
         for k in set(hot[tingkat]) | set(L_) | set(Lp_):
             L, Lp = L_.get(k, []), Lp_.get(k, [])
             luas = _ha(L, w2)
-            belum = _ha([x for x in L if bertahan(det, x[0], x[1])], w2)
+            belum = F_LOK * lok[tingkat].get(k, 0)
             padam = _ha([x for x in Lp if not any(x[0] + o in sepi for o in NB)], w0)
             out[k] = [hot[tingkat].get(k, 0), luas, belum, padam]
     return out
@@ -761,7 +840,7 @@ def belum_kini(rek, hd, akhir, sekarang, kunci, ket, wil, log=print):
     rek = {**rek, d.isoformat(): rec}
     for x in (d - 2 * HARI, d - HARI):
         hd.setdefault(x, hari_data(rek, x))
-    hd = {**hd, d: hari_data(rek, d)}
+    hd = {**hd, d: pasang_ya(rek, hari_data(rek, d), d)}
     return {"hari": d.isoformat(), "dibuat": sekarang.astimezone(WIB).isoformat(timespec="minutes"),
             "prov": {k: bul(v[2]) for k, v in hitung(hd, d).items()}}
 
@@ -791,7 +870,7 @@ def bangun(argv, sekarang=None, log=print):
     kunci = firms.kunci()
     ket = muat_ketersediaan(kunci, ambil_pelan, famili=("VIIRS_NOAA20", "VIIRS_NOAA21", "MODIS"))   # S-NPP boleh hilang dari daftar sesudah berhenti
     wil = Wilayah()
-    perlu = [awal_hitung - (WARM + 1) * HARI + n * HARI for n in range((akhir - awal_hitung).days + WARM + 2)]   # UTC d-3 .. akhir
+    perlu = [awal_hitung - (WARM + 1) * HARI + n * HARI for n in range((akhir - awal_hitung).days + WARM + 2)]   # UTC d-7 .. akhir
     rek, kosong = {}, []
     for u in perlu:
         r = muat_rek(cache, u)
@@ -819,6 +898,7 @@ def bangun(argv, sekarang=None, log=print):
     while d <= akhir:
         for x in (d - 2 * HARI, d - HARI, d):
             ambil_hd(x)
+        pasang_ya(rek, hd[d], d)
         baru_kab[d.isoformat()] = {}
         baru[d.isoformat()] = hitung(hd, d, baru_kab[d.isoformat()])
         baru_w[d.isoformat()] = hitung_wil(hd, d)

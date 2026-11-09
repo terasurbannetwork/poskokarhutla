@@ -3,7 +3,7 @@ https://centurisk97.id/data/kluster_hari/YYYY-MM-DD.json; tanggal dan jam di bar
 Jalankan generator Penanganan 26 Okt tanpa tarik data baru: satelit dari cache (tarikan 14.15 WIB),
 firespot dari arsip cluster web (kluster_hari indeks 4)."""
 import datetime as dt, json, sys, os
-G = os.path.expanduser('~/Documents/GitHub/poskokarhutla/data/laporan-bnpb/generator')
+G = os.path.expanduser('~/Developer/poskokarhutla/data/laporan-bnpb/generator')
 sys.path.insert(0, G); sys.path.insert(0, os.path.join(G, 'penanganan')); os.chdir(G)
 import firespot_hari, penanganan
 W = os.environ.get('KLUSTER_DIR', os.path.dirname(os.path.abspath(__file__)))  # folder berisi k<DD>.json unduhan kluster_hari web

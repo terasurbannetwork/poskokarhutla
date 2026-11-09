@@ -113,6 +113,7 @@
 #opsLaporan .ex-ey{display:inline-flex;align-items:center;gap:6px}
 #opsLaporan .ex-ey svg{width:12px;height:12px;flex:none}
 #opsLaporan td.ops-kiri{text-align:left}
+#opsLaporan tr.ops-total td{background:color-mix(in srgb,#4f8fc4 18%,var(--card));font-weight:800}
 #opsLaporan .ex-jd select{height:34px;border:1px solid var(--line);border-radius:999px;padding:0 12px;background:var(--card);color:var(--ink);font:inherit;font-weight:600;flex:none}
 .ops-6{grid-template-columns:repeat(6,minmax(0,1fr))}
 .ops-hist-atas{display:flex;gap:14px;align-items:center}

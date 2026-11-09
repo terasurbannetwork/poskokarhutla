@@ -19,7 +19,8 @@
     "uji:layar": "node --test --test-concurrency=1 tests/bnpb/*.test.mjs",
     "bencana:js": "python3 scripts/umum/bencana.py js",
     "bencana:cek": "python3 scripts/umum/bencana.py cek",
-    "uji:sensor": "python3 -m unittest discover -s tests/sensor -p 'test_*.py'"
+    "uji:sensor": "python3 -m unittest discover -s tests/sensor -p 'test_*.py'",
+    "token:ukur": "node scripts/agents/token-ukur.mjs"
   },
   "devDependencies": {
     "miniflare": "3.20250718.3",
