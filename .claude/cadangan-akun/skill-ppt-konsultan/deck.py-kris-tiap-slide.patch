@@ -1,0 +1,67 @@
+--- /Users/priyankaalfatehan28/.claude/skills/ppt-konsultan/bnpb/scripts/deck.py.bak-091126k	2026-11-09 14:00:49
++++ /Users/priyankaalfatehan28/.claude/skills/ppt-konsultan/bnpb/scripts/deck.py	2026-11-09 14:00:49
+@@ -1774,6 +1774,9 @@
+         if cut and not self.data_harian():   # selera 5.09 dan pemilik 1 Nov 2026 ("Gausah ada cut off gini"): pil hanya di deck data harian
+             cut = None
+         w = jk['lebar_dengan_pil_pt'] if cut else jk['lebar_pt']
++        kris_ = self.ukur_kris_isi()   # logo KRIS di tiap slide (pemilik 6, 8, 9 Nov 2026): judul berhenti sebelum logo
++        if kris_:
++            w = min(w, kris_[0] - 7.2 - jk['x_pt'])
+         h = jk['tinggi_pt'][0] if sp.get('subjudul') else jk['tinggi_pt'][1]
+         judul, akhir = j.get('judul') or sp['judul'], j.get('judul_akhir', '')  # akhir dibangkitkan mesin ("(lanjutan 2/3)")
+         if akhir:
+@@ -1833,6 +1836,10 @@
+         # di bawah tab bagian (garis y 17), tidak menempel (pemilik 31 Okt); tidak turun bila ada pil CUT OFF di bawah logo
+         ly = lg['y_pt'] + (6 if j.get('bagian') and not self.hal.get('cut_off') else 0)
+         kv.gambar(self.logo, lg['x_pt'], ly, lg['lebar_pt'], lg['tinggi_pt'])
++        if kris_:
++            ky_ = 24 if cut and self.spek.get('pil_draf') else ly + lg['tinggi_pt'] / 2 - kris_[2] / 2   # pil draf menempati pusat logo
++            kv.gambar(self.logo_kris(), kris_[0], ky_, kris_[1], kris_[2], 'logo')
++            self.hal['kris'] = True
+         tl = self.hal.get('judul_tengah_logo') if self.hal is not None else None
+         if tl and abs(tl[0] - (ly + lg['tinggi_pt'] / 2)) > 0.5:  # gerbang: judul satu baris sejajar tengah logo (pemilik 2 Nov 2026)
+             raise DeckGalat(f'{asal}: judul satu baris tidak sejajar tengah logo BNPB (pusat judul {tl[0]:.1f} pt, pusat logo {ly + lg["tinggi_pt"] / 2:.1f} pt)')
+@@ -3313,12 +3320,23 @@
+             if p_.exists():
+                 return p_.resolve()
+         raise DeckGalat(f'{self.nama}: logo KRIS tidak ditemukan (assets/logo-bersama/kris-logo.png); wajib di sampul dan penutup (pemilik 4 Nov 2026)')
++
++    def ukur_kris_isi(self):
++        """(x, lebar, tinggi) logo KRIS di kiri logo BNPB slide isi, tinggi 0,35 inci seperti KRIS_ISI laporan harian; None bila tanpa_kris."""
++        src = self.logo_kris()
++        if not src:
++            return None
++        from PIL import Image
++        self.masukan.add(src)
++        lw_, lh_ = Image.open(src).size
++        return self.S['logo']['x_pt'] - 10.8 - 25.2 * lw_ / lh_, 25.2 * lw_ / lh_, 25.2
+ 
+     def pasang_kris(self, kv, kanan_x, y, tinggi_kotak, pad_x, pad_y, radius, bayang):
+         """Kotak putih KRIS setinggi kotak BerAKHLAK, berakhir 8 pt di kiri kanan_x."""
+         src = self.logo_kris()
+         if not src:
+             return
++        self.hal['kris'] = True
+         from PIL import Image
+         self.masukan.add(src)
+         lw_, lh_ = Image.open(src).size
+@@ -4795,6 +4813,8 @@
+                 self.T.update(asli)
+         else:
+             fn(kv, kj)
++        if kj['jenis'] != 'impor' and not self.hal.get('kris') and self.logo_kris():   # slide tanpa bingkai judul, dan sampul tanpa BerAKHLAK
++            self.pasang_kris(kv, self.S['lebar_pt'] - 43.2 + 8, 24, 33.0, 6.0, 4.0, 6, False)
+ 
+     def keluarga(self):
+         """Keluarga bencana yang tampil di halaman ini, dari peran warna kategori.<k> dan skala.<ramp> yang tercatat."""
+@@ -4870,6 +4890,10 @@
+         keluar.parent.mkdir(parents=True, exist_ok=True)
+         self.rapikan_templat()
+         self.prs.save(keluar)
++        import aturan_slide   # KRIS tiap slide, baris kaki tanpa catatan, tanggal sumber deck harian (pemilik 9 Nov 2026)
++        galat_ = aturan_slide.cek(keluar, self.tgl if self.data_harian() else None, self.spek.get('tanpa_kris'))
++        if galat_:
++            raise DeckGalat(f'{self.nama}: ' + '; '.join(galat_[:8]))
+         self.masukan |= {self.akar / 'data' / rel for rel in self.k._berkas}
+         (keluar.with_suffix('.manifest.json')).write_text(json.dumps(
+             {'spek': self.nama, 'pesan_kunci': self.spek.get('pesan_kunci'), 'slide': self.halaman, 'angka': self.k.manifest, 'catatan': self.catatan,
