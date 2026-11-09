@@ -15,6 +15,8 @@ import {modAtauStaf, stafNyata, stafSesi} from "./staf.js";
 
 const JAM = 36e5, HARI = 24 * JAM, RE_ID = /^[0-9a-f]{16}$/, MAKS_BARANG_GUDANG = 3000, MAKS_GUDANG_AKUN = 50;
 /* daftar tetap: sama dengan CHECK di 0112 dan public/logpal/logpal.js (dijaga logpal.test.mjs) */
+/* satu pintu pernyataan berparameter LogPal; pernyataan tanpa parameter tetap env.DB.prepare. */
+const dbq = (env, sql, ...nilai) => env.DB.prepare(sql).bind(...nilai);
 export const KELOMPOK = ["Pangan", "Sandang", "Papan", "Logistik lainnya", "Kendaraan bermotor", "Peralatan air", "Alat komunikasi", "Hunian dan penerangan", "Air dan sanitasi", "Peralatan khusus"];
 export const MUTASI = ["Masuk", "Keluar", "Penghapusan"];
 export const FLOW = {"Tanggap darurat": ["Rapat koordinasi lintas sektor", "Komandan tanggap darurat", "Kepala gudang", "Distribusi", "Pelaporan kepala gudang", "Selesai"],
@@ -60,7 +62,7 @@ const bolehTulis = (ak, g) => ak.tipe === "staf" ? g.pemilik === "BNPB" : g.akun
 /* gudang yang terbaca aktor, atau Response (404 di luar jangkauan, 403 terbaca tetapi bukan miliknya bila tulis) */
 async function gudangBisa(env, ak, id, tulis) {
   const j = jangkauan(ak);
-  const g = await env.DB.prepare(`SELECT g.* FROM logpal_gudang g WHERE g.id = ? AND ${j.sql}`).bind(id, ...j.ikat).first();
+  const g = await dbq(env, `SELECT g.* FROM logpal_gudang g WHERE g.id = ? AND ${j.sql}`, id, ...j.ikat).first();
   if (!g) return nTak();
   return tulis && !bolehTulis(ak, g) ? gagal(403, ak.tipe === "staf" ? "staf BNPB hanya mengubah gudang BNPB" : "gudang ini milik akun lain; hanya pemiliknya yang boleh mengubah") : g;
 }
@@ -93,7 +95,7 @@ const bentukBarang = r => ({id: r.id, ...Object.fromEntries([...KOL_B, "per", "s
 /* ================================================================ baca */
 async function baca(env, req, url, kini) {
   const ak = await aktor(env, req, kini); if (ak instanceof Response) return ak;
-  const j = jangkauan(ak), semua = async (sql, ...ikat) => (await env.DB.prepare(sql).bind(...ikat).all()).results;
+  const j = jangkauan(ak), semua = async (sql, ...ikat) => (await dbq(env, sql, ...ikat).all()).results;
   const G = await semua(`SELECT g.* FROM logpal_gudang g WHERE ${j.sql} ORDER BY g.provinsi, g.nama LIMIT 500`, ...j.ikat);
   const B = await semua(`SELECT b.* FROM logpal_barang b JOIN logpal_gudang g ON g.id = b.gudang_id WHERE ${j.sql} ORDER BY b.gudang_id, b.barang LIMIT 20000`, ...j.ikat);
   const M = await semua(`SELECT m.*, g.nama gnama, g.provinsi FROM logpal_mutasi m JOIN logpal_gudang g ON g.id = m.gudang_id WHERE ${j.sql} ORDER BY m.tanggal DESC, m.dibuat DESC LIMIT 2000`, ...j.ikat);
@@ -130,11 +132,10 @@ async function buatGudang(env, req, url, kini) {
   const kap = num(b.o.kapasitas_ton, 0, 1e6); if (Number.isNaN(kap)) return gagal(400, "kapasitas 0 sampai 1 juta ton");
   const kab = ak.tipe === "bpbd" && ak.a.tingkat === "kab" ? ak.a.kab : ts(b.o.kab, 60); if (kab === undefined || (kab && kab.length < 2)) return gagal(400, "kabupaten 2 sampai 60 karakter, tidak diawali = + - @");
   const pemilik = ak.tipe === "staf" ? "BNPB" : "BPBD";   // pemilik tidak diterima dari klien
-  if (ak.tipe === "bpbd" && (await env.DB.prepare("SELECT count(*) n FROM logpal_gudang WHERE akun_id = ?").bind(ak.id).first()).n >= MAKS_GUDANG_AKUN) return gagal(409, `maksimal ${MAKS_GUDANG_AKUN} gudang per akun`);
+  if (ak.tipe === "bpbd" && (await dbq(env, "SELECT count(*) n FROM logpal_gudang WHERE akun_id = ?", ak.id).first()).n >= MAKS_GUDANG_AKUN) return gagal(409, `maksimal ${MAKS_GUDANG_AKUN} gudang per akun`);
   const l = await batasi(env, ak, "logpal.tulis", 300, kini); if (l) return l;
   const id = acak(8);
-  await env.DB.prepare("INSERT INTO logpal_gudang (id, akun_id, nama, pemilik, prov, provinsi, kab, kapasitas_ton, dibuat, diubah, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-    .bind(id, ak.tipe === "bpbd" ? ak.id : null, nama, pemilik, prov, PROV[prov][1], kab || null, kap || null, kini, kini, ak.tipe === "bpbd" && ak.a.dummy ? 1 : 0).run();
+  await dbq(env, "INSERT INTO logpal_gudang (id, akun_id, nama, pemilik, prov, provinsi, kab, kapasitas_ton, dibuat, diubah, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", id, ak.tipe === "bpbd" ? ak.id : null, nama, pemilik, prov, PROV[prov][1], kab || null, kap || null, kini, kini, ak.tipe === "bpbd" && ak.a.dummy ? 1 : 0).run();
   return json({id}, 201);
 }
 
@@ -144,24 +145,23 @@ async function tambahBarang(env, req, url, kini, ctx, gid) {
   const g = await gudangBisa(env, ak, gid, true); if (g instanceof Response) return g;
   const b = await bacaBody(req, 4096); if (b.galat) return gagal(b.status || 400, b.galat);
   const c = cekBarang(b.o); if (c.g) return gagal(400, c.g);
-  if ((await env.DB.prepare("SELECT count(*) n FROM logpal_barang WHERE gudang_id = ?").bind(gid).first()).n >= MAKS_BARANG_GUDANG) return gagal(409, `maksimal ${MAKS_BARANG_GUDANG} jenis barang per gudang`);
+  if ((await dbq(env, "SELECT count(*) n FROM logpal_barang WHERE gudang_id = ?", gid).first()).n >= MAKS_BARANG_GUDANG) return gagal(409, `maksimal ${MAKS_BARANG_GUDANG} jenis barang per gudang`);
   const l = await batasi(env, ak, "logpal.tulis", 300, kini); if (l) return l;
   const id = acak(8), v = c.v, kol = [...KOL_B, "per", "dibuat", "diubah", "dummy"];
-  await env.DB.prepare(`INSERT INTO logpal_barang (id, gudang_id, ${kol.join(", ")}) VALUES (${["?", "?", ...kol.map(() => "?")].join(", ")})`)
-    .bind(id, gid, ...KOL_B.map(k => v[k]), wib(kini), kini, kini, g.dummy).run();
-  await env.DB.prepare("UPDATE logpal_gudang SET diubah = ? WHERE id = ?").bind(kini, gid).run();
+  await dbq(env, `INSERT INTO logpal_barang (id, gudang_id, ${kol.join(", ")}) VALUES (${["?", "?", ...kol.map(() => "?")].join(", ")})`, id, gid, ...KOL_B.map(k => v[k]), wib(kini), kini, kini, g.dummy).run();
+  await dbq(env, "UPDATE logpal_gudang SET diubah = ? WHERE id = ?", kini, gid).run();
   return json({id}, 201);
 }
 async function ubahBarang(env, req, url, kini, ctx, id) {
   const ak = await aktor(env, req, kini); if (ak instanceof Response) return ak;
-  const x = await env.DB.prepare("SELECT * FROM logpal_barang WHERE id = ?").bind(id).first(); if (!x) return nTak();
+  const x = await dbq(env, "SELECT * FROM logpal_barang WHERE id = ?", id).first(); if (!x) return nTak();
   const g = await gudangBisa(env, ak, x.gudang_id, true); if (g instanceof Response) return g;
   const b = await bacaBody(req, 4096); if (b.galat) return gagal(b.status || 400, b.galat);
   const c = cekBarang(b.o, x); if (c.g) return gagal(400, c.g);
   const l = await batasi(env, ak, "logpal.tulis", 300, kini); if (l) return l;
   const v = c.v;
-  await env.DB.batch([env.DB.prepare(`UPDATE logpal_barang SET ${KOL_B.map(k => k + " = ?").join(", ")}, per = ?, diubah = ? WHERE id = ? AND gudang_id = ?`).bind(...KOL_B.map(k => v[k]), wib(kini), kini, id, x.gudang_id),
-    env.DB.prepare("UPDATE logpal_gudang SET diubah = ? WHERE id = ?").bind(kini, x.gudang_id)]);
+  await env.DB.batch([dbq(env, `UPDATE logpal_barang SET ${KOL_B.map(k => k + " = ?").join(", ")}, per = ?, diubah = ? WHERE id = ? AND gudang_id = ?`, ...KOL_B.map(k => v[k]), wib(kini), kini, id, x.gudang_id),
+    dbq(env, "UPDATE logpal_gudang SET diubah = ? WHERE id = ?", kini, x.gudang_id)]);
   return json({ok: true});
 }
 
@@ -178,29 +178,28 @@ async function catatMutasi(env, req, url, kini, ctx, gid) {
   if (jumlah == null || Number.isNaN(jumlah)) return gagal(400, "jumlah harus bilangan bulat 1 sampai 100 juta");
   const lawan = ts(o.lawan, 120), moda = ts(o.moda, 30), dok = ts(o.dokumen, 100), pj = ts(o.pj, 80), nilai = num(o.nilai, 0, 1e13);
   if ([lawan, moda, dok, pj].includes(undefined) || Number.isNaN(nilai)) return gagal(400, "lawan 120, moda 30, dokumen 100, penanggung jawab 80 karakter dan tidak diawali = + - @; nilai 0 sampai 1e13");
-  const x = await env.DB.prepare("SELECT * FROM logpal_barang WHERE id = ? AND gudang_id = ?").bind(o.barang_id, gid).first(); if (!x) return gagal(404, "barang tidak ada di gudang ini");
+  const x = await dbq(env, "SELECT * FROM logpal_barang WHERE id = ? AND gudang_id = ?", o.barang_id, gid).first(); if (!x) return gagal(404, "barang tidak ada di gudang ini");
   const l = await batasi(env, ak, "logpal.tulis", 300, kini); if (l) return l;
   const id = acak(8);
   /* satu batch = satu transaksi: UPDATE bersyarat menjaga stok; baris mutasi hanya lahir bila UPDATE mengubah satu baris */
   const upd = jenis === "Masuk"
-    ? env.DB.prepare("UPDATE logpal_barang SET jumlah = jumlah + ?, baik = baik + ?, per = ?, diubah = ? WHERE id = ? AND gudang_id = ? AND jumlah + ? <= 100000000").bind(jumlah, jumlah, o.tanggal, kini, x.id, gid, jumlah)
-    : env.DB.prepare("UPDATE logpal_barang SET jumlah = jumlah - ?, baik = max(0, baik - ?), rusak = rusak - max(0, ? - baik), per = ?, diubah = ? WHERE id = ? AND gudang_id = ? AND jumlah >= ?").bind(jumlah, jumlah, jumlah, o.tanggal, kini, x.id, gid, jumlah);
-  const ins = env.DB.prepare("INSERT INTO logpal_mutasi (id, gudang_id, barang_id, tanggal, jenis, barang, kelompok, satuan, jumlah, lawan, moda, dokumen, nilai, pj, oleh, dibuat, dummy) SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? WHERE changes() > 0")
-    .bind(id, gid, x.id, o.tanggal, jenis, x.barang, x.kelompok, x.satuan, jumlah, lawan ?? "", moda ?? "", dok ?? "", nilai ?? 0, pj ?? "", ak.id, kini, g.dummy);
-  const r = await env.DB.batch([upd, ins, env.DB.prepare("UPDATE logpal_gudang SET diubah = ? WHERE id = ? AND changes() > 0").bind(kini, gid)]);
+    ? dbq(env, "UPDATE logpal_barang SET jumlah = jumlah + ?, baik = baik + ?, per = ?, diubah = ? WHERE id = ? AND gudang_id = ? AND jumlah + ? <= 100000000", jumlah, jumlah, o.tanggal, kini, x.id, gid, jumlah)
+    : dbq(env, "UPDATE logpal_barang SET jumlah = jumlah - ?, baik = max(0, baik - ?), rusak = rusak - max(0, ? - baik), per = ?, diubah = ? WHERE id = ? AND gudang_id = ? AND jumlah >= ?", jumlah, jumlah, jumlah, o.tanggal, kini, x.id, gid, jumlah);
+  const ins = dbq(env, "INSERT INTO logpal_mutasi (id, gudang_id, barang_id, tanggal, jenis, barang, kelompok, satuan, jumlah, lawan, moda, dokumen, nilai, pj, oleh, dibuat, dummy) SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? WHERE changes() > 0", id, gid, x.id, o.tanggal, jenis, x.barang, x.kelompok, x.satuan, jumlah, lawan ?? "", moda ?? "", dok ?? "", nilai ?? 0, pj ?? "", ak.id, kini, g.dummy);
+  const r = await env.DB.batch([upd, ins, dbq(env, "UPDATE logpal_gudang SET diubah = ? WHERE id = ? AND changes() > 0", kini, gid)]);
   if (!r[0].meta.changes) return gagal(409, jenis === "Masuk" ? "stok melebihi batas" : `jumlah melebihi stok (${x.jumlah}); muat ulang bila stok baru berubah`);
   return json({id}, 201);
 }
 async function catatDiterima(env, req, url, kini, ctx, id) {
   const ak = await aktor(env, req, kini); if (ak instanceof Response) return ak;
-  const m = await env.DB.prepare("SELECT gudang_id, jenis, jumlah FROM logpal_mutasi WHERE id = ?").bind(id).first(); if (!m) return nTak();
+  const m = await dbq(env, "SELECT gudang_id, jenis, jumlah FROM logpal_mutasi WHERE id = ?", id).first(); if (!m) return nTak();
   const g = await gudangBisa(env, ak, m.gudang_id, true); if (g instanceof Response) return g;
   const b = await bacaBody(req, 256); if (b.galat) return gagal(b.status || 400, b.galat);
   const n = num(b.o.diterima, 0, 1e8, true);
   if (m.jenis !== "Keluar") return gagal(400, "jumlah diterima hanya untuk mutasi Keluar");
   if (n == null || Number.isNaN(n) || n > m.jumlah) return gagal(400, `diterima bilangan bulat 0 sampai ${m.jumlah}`);
   const l = await batasi(env, ak, "logpal.tulis", 300, kini); if (l) return l;
-  await env.DB.prepare("UPDATE logpal_mutasi SET diterima = ? WHERE id = ? AND jenis = 'Keluar'").bind(n, id).run();
+  await dbq(env, "UPDATE logpal_mutasi SET diterima = ? WHERE id = ? AND jenis = 'Keluar'", n, id).run();
   return json({ok: true});
 }
 
@@ -219,19 +218,18 @@ async function catatOpname(env, req, url, kini, ctx, gid) {
     if (typeof r?.barang_id !== "string" || !RE_ID.test(r.barang_id) || f == null || Number.isNaN(f) || ket === undefined || lihat.has(r.barang_id)) return gagal(400, "tiap baris: barang_id sah tanpa ulang, fisik bilangan bulat >= 0, keterangan maks 120 karakter dan tidak diawali = + - @");
     lihat.add(r.barang_id); baris.push({b: r.barang_id, f, k: ket ?? ""});
   }
-  const sah = (await env.DB.prepare("SELECT count(*) n FROM logpal_barang WHERE gudang_id = ? AND id IN (SELECT value FROM json_each(?))").bind(gid, JSON.stringify(baris.map(x => x.b))).first()).n;
+  const sah = (await dbq(env, "SELECT count(*) n FROM logpal_barang WHERE gudang_id = ? AND id IN (SELECT value FROM json_each(?))", gid, JSON.stringify(baris.map(x => x.b))).first()).n;
   if (sah !== baris.length) return gagal(400, "ada barang yang bukan milik gudang ini");
   const l = await batasi(env, ak, "logpal.tulis", 300, kini); if (l) return l;
   const id = acak(8), sesuaikan = o.disesuaikan === true ? 1 : 0;
   /* satu batch: BA, barisnya (tercatat dibaca dari stok server SEKARANG), lalu penyesuaian stok dari baris yang baru lahir */
-  const st = [env.DB.prepare("INSERT INTO logpal_opname (id, gudang_id, tanggal, petugas, disesuaikan, oleh, dibuat, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").bind(id, gid, o.tanggal, petugas, sesuaikan, ak.id, kini, g.dummy),
-    env.DB.prepare("INSERT INTO logpal_opname_baris (opname_id, barang_id, barang, satuan, tercatat, fisik, selisih, ket) SELECT ?, b.id, b.barang, b.satuan, b.jumlah, json_extract(je.value, '$.f'), json_extract(je.value, '$.f') - b.jumlah, json_extract(je.value, '$.k') FROM json_each(?) je JOIN logpal_barang b ON b.id = json_extract(je.value, '$.b') AND b.gudang_id = ?")
-      .bind(id, JSON.stringify(baris), gid)];
+  const st = [dbq(env, "INSERT INTO logpal_opname (id, gudang_id, tanggal, petugas, disesuaikan, oleh, dibuat, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", id, gid, o.tanggal, petugas, sesuaikan, ak.id, kini, g.dummy),
+    dbq(env, "INSERT INTO logpal_opname_baris (opname_id, barang_id, barang, satuan, tercatat, fisik, selisih, ket) SELECT ?, b.id, b.barang, b.satuan, b.jumlah, json_extract(je.value, '$.f'), json_extract(je.value, '$.f') - b.jumlah, json_extract(je.value, '$.k') FROM json_each(?) je JOIN logpal_barang b ON b.id = json_extract(je.value, '$.b') AND b.gudang_id = ?", id, JSON.stringify(baris), gid)];
   if (sesuaikan) {
     const fisik = "(SELECT r.fisik FROM logpal_opname_baris r WHERE r.opname_id = ?1 AND r.barang_id = logpal_barang.id)";
-    st.push(env.DB.prepare(`UPDATE logpal_barang SET jumlah = ${fisik}, baik = min(baik, ${fisik}), rusak = min(rusak, ${fisik} - min(baik, ${fisik})), per = ?2, diubah = ?3 WHERE gudang_id = ?4 AND id IN (SELECT barang_id FROM logpal_opname_baris WHERE opname_id = ?1)`).bind(id, o.tanggal, kini, gid));
+    st.push(dbq(env, `UPDATE logpal_barang SET jumlah = ${fisik}, baik = min(baik, ${fisik}), rusak = min(rusak, ${fisik} - min(baik, ${fisik})), per = ?2, diubah = ?3 WHERE gudang_id = ?4 AND id IN (SELECT barang_id FROM logpal_opname_baris WHERE opname_id = ?1)`, id, o.tanggal, kini, gid));
   }
-  st.push(env.DB.prepare("UPDATE logpal_gudang SET diubah = ? WHERE id = ?").bind(kini, gid));
+  st.push(dbq(env, "UPDATE logpal_gudang SET diubah = ? WHERE id = ?", kini, gid));
   await env.DB.batch(st);
   return json({id, baris: baris.length}, 201);
 }
@@ -256,15 +254,14 @@ async function buatPermintaan(env, req, url, kini) {
   }
   const l = await batasi(env, ak, "logpal.minta", 20, kini); if (l) return l;
   const id = acak(8);
-  await env.DB.batch([env.DB.prepare("INSERT INTO logpal_permintaan (id, akun_id, jenis, bpbd, provinsi, kab, status_darurat, sk, jiwa, rekomendasi, trc, items, tahap, ditolak, dibuat, diubah, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?, ?, ?)")
-      .bind(id, ak.tipe === "bpbd" ? ak.id : null, jenis, bpbd, prov, kab ?? "", sd ?? "", sk ?? "", jiwa ?? 0, rek ?? "", trc ?? "", JSON.stringify(items), kini, kini, ak.tipe === "bpbd" && ak.a.dummy ? 1 : 0),
-    env.DB.prepare("INSERT INTO logpal_tahap (permintaan_id, tahap, petugas, catatan, waktu) VALUES (?, ?, ?, 'Diajukan', ?)").bind(id, FLOW[jenis][0], bpbd, kini)]);
+  await env.DB.batch([dbq(env, "INSERT INTO logpal_permintaan (id, akun_id, jenis, bpbd, provinsi, kab, status_darurat, sk, jiwa, rekomendasi, trc, items, tahap, ditolak, dibuat, diubah, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?, ?, ?)", id, ak.tipe === "bpbd" ? ak.id : null, jenis, bpbd, prov, kab ?? "", sd ?? "", sk ?? "", jiwa ?? 0, rek ?? "", trc ?? "", JSON.stringify(items), kini, kini, ak.tipe === "bpbd" && ak.a.dummy ? 1 : 0),
+    dbq(env, "INSERT INTO logpal_tahap (permintaan_id, tahap, petugas, catatan, waktu) VALUES (?, ?, ?, 'Diajukan', ?)", id, FLOW[jenis][0], bpbd, kini)]);
   return json({id}, 201);
 }
 async function prosesTahap(env, req, url, kini, ctx, id) {
   const ak = await aktor(env, req, kini); if (ak instanceof Response) return ak;
   if (ak.tipe !== "staf") return gagal(403, "tahap permintaan hanya diproses staf BNPB");
-  const p = await env.DB.prepare(`SELECT * FROM logpal_permintaan WHERE id = ? ${ak.dummyOk ? "" : "AND dummy = 0"}`).bind(id).first(); if (!p) return nTak();
+  const p = await dbq(env, `SELECT * FROM logpal_permintaan WHERE id = ? ${ak.dummyOk ? "" : "AND dummy = 0"}`, id).first(); if (!p) return nTak();
   const b = await bacaBody(req, 1024); if (b.galat) return gagal(b.status || 400, b.galat);
   const aksi = b.o.aksi, petugas = ts(b.o.petugas, 80), cat = ts(b.o.catatan, 300), dari = num(b.o.dari, 0, 10, true);
   if (aksi !== "lanjut" && aksi !== "tolak") return gagal(400, "aksi harus lanjut/tolak");
@@ -275,9 +272,9 @@ async function prosesTahap(env, req, url, kini, ctx, id) {
   if (p.ditolak || p.tahap >= alur.length - 1) return gagal(409, "permintaan sudah selesai atau ditolak");
   const l = await batasi(env, ak, "logpal.tulis", 300, kini); if (l) return l;
   const tolak = aksi === "tolak";
-  const r = await env.DB.batch([tolak ? env.DB.prepare("UPDATE logpal_permintaan SET ditolak = 1, diubah = ? WHERE id = ? AND tahap = ? AND ditolak = 0").bind(kini, id, p.tahap)
-      : env.DB.prepare("UPDATE logpal_permintaan SET tahap = tahap + 1, diubah = ? WHERE id = ? AND tahap = ? AND ditolak = 0").bind(kini, id, p.tahap),
-    env.DB.prepare("INSERT INTO logpal_tahap (permintaan_id, tahap, petugas, catatan, waktu) SELECT ?, ?, ?, ?, ? WHERE changes() > 0").bind(id, tolak ? "Ditolak" : alur[p.tahap + 1], petugas, cat ?? "", kini)]);
+  const r = await env.DB.batch([tolak ? dbq(env, "UPDATE logpal_permintaan SET ditolak = 1, diubah = ? WHERE id = ? AND tahap = ? AND ditolak = 0", kini, id, p.tahap)
+      : dbq(env, "UPDATE logpal_permintaan SET tahap = tahap + 1, diubah = ? WHERE id = ? AND tahap = ? AND ditolak = 0", kini, id, p.tahap),
+    dbq(env, "INSERT INTO logpal_tahap (permintaan_id, tahap, petugas, catatan, waktu) SELECT ?, ?, ?, ?, ? WHERE changes() > 0", id, tolak ? "Ditolak" : alur[p.tahap + 1], petugas, cat ?? "", kini)]);
   return r[0].meta.changes ? json({ok: true, tahap: tolak ? p.tahap : p.tahap + 1, ditolak: tolak}) : gagal(409, "tahap permintaan sudah berubah; muat ulang");
 }
 
@@ -285,20 +282,17 @@ async function prosesTahap(env, req, url, kini, ctx, id) {
 async function akunDummy(env, kini, oleh) {
   const ada = await env.DB.prepare("SELECT id FROM instansi_akun WHERE dummy = 1 AND status = 'aktif' AND jenis = 'pemprov' AND cakupan = '[\"62\"]' LIMIT 1").first(); if (ada) return ada.id;
   const id = acak(8), u = "dummylogpal62";
-  await env.DB.prepare(`INSERT INTO instansi_akun (id, username, jenis, tingkat, wilayah, kunci_wilayah, cakupan, prov, kab, garam, sandi_sha, status, nama, nip, pangkat, jabatan, unit, email, wa, telepon_kantor, surat, kartu, dikirim, diputus, oleh, wajib_ganti, dibuat, dummy)
-    VALUES (?, ?, 'pemprov', 'prov', '[DUMMY] BPBD Provinsi Kalimantan Tengah', ?, '["62"]', NULL, NULL, ?, ?, 'aktif', '[DUMMY] Petugas Logistik', '198001012005011001', 'Pembina IV/a', 'Kepala Pelaksana', '[DUMMY] BPBD Provinsi Kalimantan Tengah', ?, '628000000901', '0536 300000', 1, 1, ?, ?, ?, 0, ?, 1)`)
-    .bind(id, u, "dummy|" + u, acak(16), await sha(acak(16)), `${u}@contoh.invalid`, kini - 2 * HARI, kini - HARI, oleh, kini - 3 * HARI).run();
+  await dbq(env, `INSERT INTO instansi_akun (id, username, jenis, tingkat, wilayah, kunci_wilayah, cakupan, prov, kab, garam, sandi_sha, status, nama, nip, pangkat, jabatan, unit, email, wa, telepon_kantor, surat, kartu, dikirim, diputus, oleh, wajib_ganti, dibuat, dummy)
+    VALUES (?, ?, 'pemprov', 'prov', '[DUMMY] BPBD Provinsi Kalimantan Tengah', ?, '["62"]', NULL, NULL, ?, ?, 'aktif', '[DUMMY] Petugas Logistik', '198001012005011001', 'Pembina IV/a', 'Kepala Pelaksana', '[DUMMY] BPBD Provinsi Kalimantan Tengah', ?, '628000000901', '0536 300000', 1, 1, ?, ?, ?, 0, ?, 1)`, id, u, "dummy|" + u, acak(16), await sha(acak(16)), `${u}@contoh.invalid`, kini - 2 * HARI, kini - HARI, oleh, kini - 3 * HARI).run();
   return id;
 }
 async function dummyIsi(env, kini, oleh) {
   if ((await env.DB.prepare("SELECT count(*) n FROM logpal_gudang WHERE dummy = 1").first()).n) return gagal(409, "data dummy LogPal sudah ada; hapus dulu dengan 🧹");
   const akun = await akunDummy(env, kini, oleh), tgl = d => wib(kini + d * HARI), st = [];
-  const ib = (gid, barang, kelompok, satuan, jumlah, baik, rusak, x = {}) => { const id = acak(8); st.push(env.DB.prepare(`INSERT INTO logpal_barang (id, gudang_id, barang, kategori, item_standar, prioritas, kelompok, satuan, jumlah, baik, rusak, kedaluwarsa, sumber_dana, per, sumber, catatan,
-    kode_barang, nup, merek, seri, tahun, cara, nilai, rr, rb, label, batch, harga, lokasi, dokumen, dibuat, diubah, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Contoh', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`)
-    .bind(id, gid, "[DUMMY] " + barang, x.kategori ?? "Lainnya", x.item_standar ?? "", x.prioritas ?? "", kelompok, satuan, jumlah, baik, rusak, x.ked ?? "", x.dana ?? "APBD", tgl(-3), x.kode ?? "", x.nup ?? "", x.merek ?? "", x.seri ?? "", x.tahun ?? null,
+  const ib = (gid, barang, kelompok, satuan, jumlah, baik, rusak, x = {}) => { const id = acak(8); st.push(dbq(env, `INSERT INTO logpal_barang (id, gudang_id, barang, kategori, item_standar, prioritas, kelompok, satuan, jumlah, baik, rusak, kedaluwarsa, sumber_dana, per, sumber, catatan,
+    kode_barang, nup, merek, seri, tahun, cara, nilai, rr, rb, label, batch, harga, lokasi, dokumen, dibuat, diubah, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Contoh', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`, id, gid, "[DUMMY] " + barang, x.kategori ?? "Lainnya", x.item_standar ?? "", x.prioritas ?? "", kelompok, satuan, jumlah, baik, rusak, x.ked ?? "", x.dana ?? "APBD", tgl(-3), x.kode ?? "", x.nup ?? "", x.merek ?? "", x.seri ?? "", x.tahun ?? null,
       x.cara ?? "", x.nilai ?? null, x.rr ?? null, x.rb ?? null, x.label ?? "", x.batch ?? "", x.harga ?? null, x.lokasi ?? "", x.dok ?? "", kini - 30 * HARI, kini - 3 * HARI)); return id; };
-  const gudang = (akunId, nama, pemilik, kapasitas, lon, lat) => { const id = acak(8); st.push(env.DB.prepare("INSERT INTO logpal_gudang (id, akun_id, nama, pemilik, prov, provinsi, kab, kapasitas_ton, lon, lat, dibuat, diubah, dummy) VALUES (?, ?, ?, ?, '62', 'Kalimantan Tengah', NULL, ?, ?, ?, ?, ?, 1)")
-    .bind(id, akunId, "[DUMMY] " + nama, pemilik, kapasitas, lon, lat, kini - 40 * HARI, kini - 3 * HARI)); return id; };
+  const gudang = (akunId, nama, pemilik, kapasitas, lon, lat) => { const id = acak(8); st.push(dbq(env, "INSERT INTO logpal_gudang (id, akun_id, nama, pemilik, prov, provinsi, kab, kapasitas_ton, lon, lat, dibuat, diubah, dummy) VALUES (?, ?, ?, ?, '62', 'Kalimantan Tengah', NULL, ?, ?, ?, ?, ?, 1)", id, akunId, "[DUMMY] " + nama, pemilik, kapasitas, lon, lat, kini - 40 * HARI, kini - 3 * HARI)); return id; };
   const g1 = gudang(null, "Poslog BNPB Kalimantan Tengah", "BNPB", 400, 113.92, -2.21), g2 = gudang(akun, "Gudang BPBD Provinsi Kalimantan Tengah", "BPBD", 250, 113.9, -2.2), g3 = gudang(akun, "Gudang BPBD Kapuas", "BPBD", null, 114.39, -3.0);
   const bn = [ib(g1, "Selimut tebal standar BNPB", "Sandang", "lembar", 1200, 1200, 0, {kategori: "Selimut", item_standar: "Selimut", prioritas: "1", kode: "SB-001", harga: 85000, dok: "BAST-01", lokasi: "Rak A1", dana: "APBN"}),
     ib(g1, "Family kit", "Logistik lainnya", "paket", 300, 280, 20, {kategori: "Paket keluarga", item_standar: "Paket perlengkapan keluarga", prioritas: "1", kode: "FK-001", harga: 450000, dok: "BAST-02", lokasi: "Rak A2", dana: "APBN"}),
@@ -316,8 +310,7 @@ async function dummyIsi(env, kini, oleh) {
     ib(g2, "Susu balita", "Pangan", "kaleng", 90, 90, 0, {kategori: "Pangan", ked: tgl(-10), batch: "S-2025-09", kode: "PG-102", harga: 70000, dok: "BAST-18", lokasi: "Rak 1"})];
   const b3 = [ib(g3, "Beras 5 kg", "Pangan", "karung", 120, 120, 0, {kategori: "Pangan", ked: tgl(120), batch: "B-2026-03", kode: "PG-201", harga: 65000, dok: "BAST-21", lokasi: "Gudang A"}),
     ib(g3, "Terpal 4x6 m", "Papan", "lembar", 150, 150, 0, {kategori: "Terpal", item_standar: "Terpal", prioritas: "2"})];
-  const mut = (gid, bid, barang, kelompok, satuan, hari, jenis, jumlah, lawan, moda, dok, diterima, nilai) => st.push(env.DB.prepare("INSERT INTO logpal_mutasi (id, gudang_id, barang_id, tanggal, jenis, barang, kelompok, satuan, jumlah, lawan, moda, dokumen, nilai, pj, diterima, oleh, dibuat, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '[DUMMY] Rahmat', ?, ?, ?, 1)")
-    .bind(acak(8), gid, bid, tgl(hari), jenis, "[DUMMY] " + barang, kelompok, satuan, jumlah, lawan, moda, dok, nilai, diterima, oleh, kini + hari * HARI));
+  const mut = (gid, bid, barang, kelompok, satuan, hari, jenis, jumlah, lawan, moda, dok, diterima, nilai) => st.push(dbq(env, "INSERT INTO logpal_mutasi (id, gudang_id, barang_id, tanggal, jenis, barang, kelompok, satuan, jumlah, lawan, moda, dokumen, nilai, pj, diterima, oleh, dibuat, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '[DUMMY] Rahmat', ?, ?, ?, 1)", acak(8), gid, bid, tgl(hari), jenis, "[DUMMY] " + barang, kelompok, satuan, jumlah, lawan, moda, dok, nilai, diterima, oleh, kini + hari * HARI));
   mut(g2, b2[0], "Beras 5 kg", "Pangan", "karung", -20, "Masuk", 200, "Bulog Palangka Raya", "Darat", "SJ-0101", null, 13000000);
   mut(g2, b2[0], "Beras 5 kg", "Pangan", "karung", -9, "Keluar", 100, "Kabupaten Kapuas", "Darat", "BAST-K01", 100, 6500000);
   mut(g2, b2[2], "Matras lipat", "Sandang", "lembar", -7, "Keluar", 200, "Kabupaten Pulang Pisau", "Darat", "BAST-K02", 150, 30000000);
@@ -326,13 +319,12 @@ async function dummyIsi(env, kini, oleh) {
   mut(g1, bn[0], "Selimut tebal standar BNPB", "Sandang", "lembar", -12, "Keluar", 300, "BPBD Provinsi Kalimantan Tengah", "Udara", "BAST-K10", 300, 25500000);
   mut(g1, bn[1], "Family kit", "Logistik lainnya", "paket", -6, "Masuk", 100, "Pusat Logistik BNPB", "Darat", "SP-1001", null, 45000000);
   const op = acak(8);
-  st.push(env.DB.prepare("INSERT INTO logpal_opname (id, gudang_id, tanggal, petugas, disesuaikan, oleh, dibuat, dummy) VALUES (?, ?, ?, '[DUMMY] Siti', 0, ?, ?, 1)").bind(op, g2, tgl(-4), oleh, kini - 4 * HARI));
+  st.push(dbq(env, "INSERT INTO logpal_opname (id, gudang_id, tanggal, petugas, disesuaikan, oleh, dibuat, dummy) VALUES (?, ?, ?, '[DUMMY] Siti', 0, ?, ?, 1)", op, g2, tgl(-4), oleh, kini - 4 * HARI));
   [[b2[0], 380 + 0, 378, "Dua karung bocor"], [b2[1], 60, 60, ""], [b2[2], 500, 505, "Selisih dari penerimaan sebelumnya"], [b2[3], 8, 8, ""], [b2[5], 12, 11, "Satu unit di bengkel"]].forEach(([bid, tercatat, fisik, ket]) =>
-    st.push(env.DB.prepare("INSERT INTO logpal_opname_baris (opname_id, barang_id, barang, satuan, tercatat, fisik, selisih, ket) SELECT ?, id, barang, satuan, ?, ?, ? , ? FROM logpal_barang WHERE id = ?").bind(op, tercatat, fisik, fisik - tercatat, ket, bid)));
+    st.push(dbq(env, "INSERT INTO logpal_opname_baris (opname_id, barang_id, barang, satuan, tercatat, fisik, selisih, ket) SELECT ?, id, barang, satuan, ?, ?, ? , ? FROM logpal_barang WHERE id = ?", op, tercatat, fisik, fisik - tercatat, ket, bid)));
   const minta = (akunId, jenis, bpbd, kab, sd, sk, jiwa, items, tahap, ditolak, hari, riwayat) => { const id = acak(8);
-    st.push(env.DB.prepare("INSERT INTO logpal_permintaan (id, akun_id, jenis, bpbd, provinsi, kab, status_darurat, sk, jiwa, rekomendasi, trc, items, tahap, ditolak, dibuat, diubah, dummy) VALUES (?, ?, ?, ?, 'Kalimantan Tengah', ?, ?, ?, ?, 'Layak', '[DUMMY] TRC-01', ?, ?, ?, ?, ?, 1)")
-      .bind(id, akunId, jenis, bpbd, kab, sd, sk, jiwa, JSON.stringify(items), tahap, ditolak ? 1 : 0, kini + hari * HARI, kini + hari * HARI));
-    riwayat.forEach(([t, p, c], i) => st.push(env.DB.prepare("INSERT INTO logpal_tahap (permintaan_id, tahap, petugas, catatan, waktu) VALUES (?, ?, ?, ?, ?)").bind(id, t, p, c, kini + hari * HARI + i * 3 * JAM))); return id; };
+    st.push(dbq(env, "INSERT INTO logpal_permintaan (id, akun_id, jenis, bpbd, provinsi, kab, status_darurat, sk, jiwa, rekomendasi, trc, items, tahap, ditolak, dibuat, diubah, dummy) VALUES (?, ?, ?, ?, 'Kalimantan Tengah', ?, ?, ?, ?, 'Layak', '[DUMMY] TRC-01', ?, ?, ?, ?, ?, 1)", id, akunId, jenis, bpbd, kab, sd, sk, jiwa, JSON.stringify(items), tahap, ditolak ? 1 : 0, kini + hari * HARI, kini + hari * HARI));
+    riwayat.forEach(([t, p, c], i) => st.push(dbq(env, "INSERT INTO logpal_tahap (permintaan_id, tahap, petugas, catatan, waktu) VALUES (?, ?, ?, ?, ?)", id, t, p, c, kini + hari * HARI + i * 3 * JAM))); return id; };
   const TD = FLOW["Tanggap darurat"], PK = FLOW["Penguatan kesiapsiagaan"], bp = "[DUMMY] BPBD Provinsi Kalimantan Tengah";
   minta(akun, "Tanggap darurat", bp, "Kapuas", "Siaga darurat", "SK-DUMMY/2026/01", 4200, [{barang: "Selimut", jumlah: 1500, satuan: "lembar"}, {barang: "Family kit", jumlah: 400, satuan: "paket"}], 2, false, -3,
     [[TD[0], bp, "Diajukan"], [TD[1], "[DUMMY] Nur", "Disetujui komandan"], [TD[2], "[DUMMY] Budi", "Barang disiapkan"]]);
@@ -343,13 +335,10 @@ async function dummyIsi(env, kini, oleh) {
   minta(akun, "Penguatan kesiapsiagaan", bp, "", "", "", 0, [{barang: "Mi instan", jumlah: 800, satuan: "dus"}, {barang: "Matras", jumlah: 300, satuan: "lembar"}], 0, false, -1, [[PK[0], bp, "Diajukan"]]);
   [[1, "Kalimantan Tengah", "Selimut tebal standar BNPB", 5000, "lembar", 307, "307 lembar", 368, "368 lembar", 1, ""], [2, "Kalimantan Tengah", "Family kit", 2500, "boks", 0, "", 11, "11 paket", 1, ""], [3, "Kalimantan Tengah", "Minyak goreng pouch", 1500, "kg", 0, "", 3548, "3.548 liter", 0, "Terpenuhi"],
     [4, "Kalimantan Tengah", "Tenda peleton 6x8", 8, "unit", 8, "8 tenda pengungsi", 9, "9 tenda pengungsi", 0, "Pengganti"], [5, "Kalimantan Tengah", "Beras", 3000, "kg", 1000, "1.000 kg", 4000, "4.000 kg", 1, ""]]
-    .forEach(([no, w, k, d, s, kq, kqt, sb, sbt, se, sts]) => st.push(env.DB.prepare("INSERT INTO logpal_kebutuhan (no, wilayah, kebutuhan, diajukan, satuan, stok_a, stok_a_teks, stok_b, stok_b_teks, setara, status_tetap, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)")
-      .bind(900 + no, "Kalimantan Tengah", "[DUMMY] " + k, d, s, kq, kqt, sb, sbt, se, sts)));
-  for (let i = 0; i < st.length; i += 50) await env.DB.batch(st.slice(i, i + 50));
+    .forEach(([no, w, k, d, s, kq, kqt, sb, sbt, se, sts]) => st.push(dbq(env, "INSERT INTO logpal_kebutuhan (no, wilayah, kebutuhan, diajukan, satuan, stok_a, stok_a_teks, stok_b, stok_b_teks, setara, status_tetap, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)", 900 + no, "Kalimantan Tengah", "[DUMMY] " + k, d, s, kq, kqt, sb, sbt, se, sts)));
   /* bantuan: terpisah dari stok; dilewati bila migrasi 0115 belum jalan (jalur tulis lama jangan gagal karena tabel baru) */
   const bt = [];
-  const bn1 = (prov, provinsi, tingkat, wilayah, tahun, barang, jumlah, satuan, belum, catatan = "") => bt.push(env.DB.prepare("INSERT OR IGNORE INTO logpal_bantuan (id, prov, provinsi, tingkat, wilayah, tahun, barang, jumlah, satuan, belum_usulkan, catatan, dibuat, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)")
-    .bind(acak(8), prov, provinsi, tingkat, wilayah, tahun, barang, jumlah, satuan, belum, catatan, kini));
+  const bn1 = (prov, provinsi, tingkat, wilayah, tahun, barang, jumlah, satuan, belum, catatan = "") => bt.push(dbq(env, "INSERT OR IGNORE INTO logpal_bantuan (id, prov, provinsi, tingkat, wilayah, tahun, barang, jumlah, satuan, belum_usulkan, catatan, dibuat, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)", acak(8), prov, provinsi, tingkat, wilayah, tahun, barang, jumlah, satuan, belum, catatan, kini));
   const KN = [["Selimut", "lembar"], ["Matras", "lembar"], ["Kasur Lipat", "lembar"], ["Terpal", "lembar"], ["Makanan Siap Saji", "paket"], ["Family Kit", "paket"]];
   [["[DUMMY] Provinsi Kalimantan Tengah", "prov", 0], ["[DUMMY] Kapuas", "kab", 0], ["[DUMMY] Kota Palangka Raya", "kab", 1], ["[DUMMY] Barito Utara", "kab", 0]].forEach(([w, tk, belum], i) => {
     for (const th of [2025, 2026]) {
@@ -358,17 +347,17 @@ async function dummyIsi(env, kini, oleh) {
       if (i === 1) { bn1("62", "Kalimantan Tengah", tk, w, th, "Perahu dan Mesin", 2, "unit", belum); bn1("62", "Kalimantan Tengah", tk, w, th, "Tenda Pengungsi", 4, "set", belum); }
     }
   });
-  try { await env.DB.batch(bt); } catch (e) { if (!tanpaTabel(e)) throw e; }
+  /* tabel bantuan opsional: batch terpisah, dilewati bila migrasi 0115 belum jalan */
+  for (const [L, opsional] of [[st, false], [bt, true]]) for (let i = 0; i < L.length; i += 50) try { await env.DB.batch(L.slice(i, i + 50)); } catch (e) { if (!(opsional && tanpaTabel(e))) throw e; }
   return json({ok: true, bantuan: bt.length, gudang: 3, barang: bn.length + b2.length + b3.length, mutasi: 7, opname: 1, permintaan: 4, kebutuhan: 5}, 201);
 }
 async function dummyHapus(env) {
   const hit = async t => (await env.DB.prepare(`SELECT count(*) n FROM ${t} WHERE dummy = 1`).first()).n;
   const n = {gudang: await hit("logpal_gudang"), barang: await hit("logpal_barang"), mutasi: await hit("logpal_mutasi"), opname: await hit("logpal_opname"), permintaan: await hit("logpal_permintaan"), kebutuhan: await hit("logpal_kebutuhan")};
-  let bantuan = 0;
-  try { bantuan = await hit("logpal_bantuan"); await env.DB.prepare("DELETE FROM logpal_bantuan WHERE dummy = 1").run(); } catch (e) { if (!tanpaTabel(e)) throw e; }
-  await env.DB.batch(["logpal_permintaan", "logpal_opname", "logpal_mutasi", "logpal_barang", "logpal_gudang", "logpal_kebutuhan"].map(t => env.DB.prepare(`DELETE FROM ${t} WHERE dummy = 1`))
+  const bantuan = await hit("logpal_bantuan").catch(e => { if (!tanpaTabel(e)) throw e; return -1; });   // -1 = migrasi 0115 belum jalan
+  await env.DB.batch(["logpal_permintaan", "logpal_opname", "logpal_mutasi", "logpal_barang", "logpal_gudang", "logpal_kebutuhan", ...(bantuan < 0 ? [] : ["logpal_bantuan"])].map(t => env.DB.prepare(`DELETE FROM ${t} WHERE dummy = 1`))
     .concat(env.DB.prepare("DELETE FROM instansi_akun WHERE dummy = 1 AND username LIKE 'dummylogpal%' AND NOT EXISTS (SELECT 1 FROM tugas_isian i WHERE i.akun_id = instansi_akun.id)")));
-  return json({ok: true, ...n, bantuan});
+  return json({ok: true, ...n, bantuan: Math.max(0, bantuan)});
 }
 async function dummy(env, req, url, kini) {
   const mod = await superOK(env, req); if (!mod) return gagal(403, "dummy hanya untuk Super Admin (secret SUPER_ADMIN berisi awalan akun)");
@@ -383,19 +372,13 @@ async function dummy(env, req, url, kini) {
 export const kunciWilayah = v => String(v ?? "").normalize("NFC").trim().toLowerCase().replace(/\s+/g, " ").replace(/^(kab\.|kabupaten)\s+/, "");
 async function bantuan(env, req, url, kini) {
   const ak = await aktor(env, req, kini); if (ak instanceof Response) return ak;
+  const kab = ak.tipe === "bpbd" && ak.a.jenis !== "pemprov", k = kab ? kunciWilayah(ak.a.kab) : "";
+  /* satu pernyataan: staf semua; pemprov provinsi cakupannya; pemkab/pemkot hanya tingkat kab di provinsinya (nama disaring tepat di bawah, bukan LIKE) */
+  const [sql, ikat] = ak.tipe === "staf" ? ["1 = 1", []] : kab ? ["tingkat = 'kab' AND prov = ?", [String(ak.a.prov)]] : ["prov IN (SELECT value FROM json_each(?))", [JSON.stringify(ak.cakupan)]];
   let hasil;
-  try {
-    const dum = ak.dummyOk ? "" : " AND dummy = 0", kol = "prov, provinsi, tingkat, wilayah, tahun, barang, jumlah, satuan, belum_usulkan, catatan";
-    if (ak.tipe === "staf") hasil = (await env.DB.prepare(`SELECT ${kol} FROM logpal_bantuan WHERE 1 = 1${dum} ORDER BY provinsi, wilayah, tahun, barang LIMIT 8000`).all()).results;
-    else if (ak.a.jenis === "pemprov") hasil = (await env.DB.prepare(`SELECT ${kol} FROM logpal_bantuan WHERE prov IN (SELECT value FROM json_each(?))${dum} ORDER BY provinsi, wilayah, tahun, barang LIMIT 8000`).bind(JSON.stringify(ak.cakupan)).all()).results;
-    else {   // pemkab/pemkot: hanya baris kab di provinsinya yang namanya sama persis (sesudah kunciWilayah); baris tingkat prov tidak tampil
-      const k = kunciWilayah(ak.a.kab);
-      hasil = k ? (await env.DB.prepare(`SELECT ${kol} FROM logpal_bantuan WHERE tingkat = 'kab' AND prov = ?${dum} ORDER BY wilayah, tahun, barang LIMIT 8000`).bind(String(ak.a.prov)).all()).results.filter(r => kunciWilayah(r.wilayah) === k) : [];
-    }
-  } catch (e) {
-    if (tanpaTabel(e)) return gagal(503, "tabel bantuan belum ada; jalankan migrasi 0115_logpal_bantuan");
-    throw e;
-  }
+  try { hasil = (await dbq(env, `SELECT prov, provinsi, tingkat, wilayah, tahun, barang, jumlah, satuan, belum_usulkan, catatan FROM logpal_bantuan WHERE ${sql}${ak.dummyOk ? "" : " AND dummy = 0"} ORDER BY provinsi, wilayah, tahun, barang LIMIT 8000`, ...ikat).all()).results; }
+  catch (e) { if (tanpaTabel(e)) return gagal(503, "tabel bantuan belum ada; jalankan migrasi 0115_logpal_bantuan"); throw e; }
+  if (kab) hasil = k ? hasil.filter(r => kunciWilayah(r.wilayah) === k) : [];
   return json({kini, baris: hasil.map(r => ({...r, belum_usulkan: !!r.belum_usulkan}))}, 200, {"cache-control": "private, no-store"});
 }
 
@@ -423,7 +406,7 @@ async function statis(env, req, url, kini) {
     if (m && kini - m.t < 10 * 60e3) isi = m.isi;
     else {
       let results;
-      try { ({results} = await env.DB.prepare("SELECT urut, isi FROM logpal_statis_potong WHERE nama = ? ORDER BY urut").bind(nama).all()); }
+      try { ({results} = await dbq(env, "SELECT urut, isi FROM logpal_statis_potong WHERE nama = ? ORDER BY urut", nama).all()); }
       catch (e) { return gagal(503, "tabel potongan data statis belum ada; jalankan migrasi LogPal 0112 dan 0113"); }
       if (!results.length) return gagal(404, "data statis belum diimpor (jalankan SQL keluaran scripts/logpal/impor.mjs)");
       if (results.some((r, i) => r.urut !== i)) return gagal(500, "potongan data statis tidak lengkap; impor ulang");
@@ -431,7 +414,7 @@ async function statis(env, req, url, kini) {
       MEMO_POTONG.set(nama, {t: kini, isi});
     }
   } else {
-    const r = await env.DB.prepare("SELECT isi FROM logpal_statis WHERE nama = ?").bind(nama).first();
+    const r = await dbq(env, "SELECT isi FROM logpal_statis WHERE nama = ?", nama).first();
     if (!r) return gagal(404, "data statis belum diimpor (jalankan SQL keluaran scripts/logpal/impor.mjs)");
     isi = r.isi;
   }

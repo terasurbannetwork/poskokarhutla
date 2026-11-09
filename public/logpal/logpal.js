@@ -722,8 +722,8 @@ function gambarBn(){if(!BN.m)return;const L=ringkasBn(BN.m,$('bn_prov').value,$(
   const jml=Object.fromEntries(BN_KOL.map(k=>[k,0]));
   const baris=L.map(r=>{const tr=document.createElement('tr');BN_KOL.forEach(k=>{jml[k]+=r.angka[k]||0});
     const st=document.createElement('span');st.className='km-pil';st.textContent=r.belum?'Belum mengusulkan':'Sudah mengusulkan';const c=td('','a');c.append(st);
-    tr.append(td(r.wilayah),c,td(teksLainBn(r.lain)||'–','t'),...BN_KOL.map(k=>td(r.angka[k]?N(r.angka[k]):'–','n')));return tr});
-  const tot=document.createElement('tr');tot.className='tot';tot.append(td('Total'),td(''),td(''),...BN_KOL.map(k=>td(N(jml[k]),'n')));
+    tr.append(td(r.wilayah),c,td(teksLainBn(r.lain)||'–','t'),...BN_KOL.map(k=>td(r.angka[k]?N(r.angka[k]):'–','a')));return tr});
+  const tot=document.createElement('tr');tot.className='tot';tot.append(td('Total'),td(''),td(''),...BN_KOL.map(k=>td(N(jml[k]),'a')));
   tb.replaceChildren(...baris,tot)}
 ['bn_prov','bn_tahun','bn_belum'].forEach(i=>$(i).onchange=()=>nanti(gambarBn));
 
