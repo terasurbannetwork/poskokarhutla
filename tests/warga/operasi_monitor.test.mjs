@@ -147,14 +147,14 @@ uji("gerbang: stempel hanya dari gateway berkunci; kunci salah ditolak dan tidak
   // stempel digeser ke 10 menit lalu (WIB): stempel > 3 hari dari waktu terima dibuang, dan gateway menolak waktu terima > 7 hari, jadi tanggal tetap 4 Nov membusuk
   const F = JSON.parse(readFileSync(path.join(AKAR, "tests/warga/fixtures/ocr_stempel_041126.json"), "utf8")).blok.find(b => b.id === 98).teks.replace("4 Nov 2026 08.35.53", tgl);
   const kirimS = async (kunci, grup = G) => {
-    const f = new FormData(); f.set("dari", "6289900001111"); f.set("grup", grup); f.set("stempel", hariIni(F)); f.set("waktu", String(Date.now())); f.set("berkas", new Blob([JPEG_SAH], {type: "image/jpeg"}), "x.jpg");
+    const f = new FormData(); f.set("dari", "6289900001111"); f.set("grup", grup); f.set("stempel", F); f.set("waktu", String(Date.now())); f.set("berkas", new Blob([JPEG_SAH], {type: "image/jpeg"}), "x.jpg");
     const r = await I.mf.dispatchFetch("http://bnpb.lokal/api/wa/gateway", {method: "POST", headers: kunci ? {"x-wa-kunci": kunci} : {}, body: f}); return {s: r.status, j: await r.json()};
   };
   const sebelum = await I.n("op_foto");
   assert.equal((await kirimS(null)).s, 403); assert.equal((await kirimS("kunci-salah")).s, 403);
   assert.equal(await I.n("op_foto"), sebelum, "tanpa kunci gateway tak ada foto/stempel masuk");
   const ok = await kirimS("kunci-wa"); assert.equal(ok.s, 200); assert.deepEqual([ok.j.foto.lat, ok.j.foto.lon], [0.25944, 109.57139]);
-  const baris = (await Q("SELECT stempel, jam_utc FROM op_foto WHERE id = ?", ok.j.foto.id))[0]; assert.equal(baris.stempel, hariIni(F).slice(0, 1000)); assert.ok(baris.jam_utc);
+  const baris = (await Q("SELECT stempel, jam_utc FROM op_foto WHERE id = ?", ok.j.foto.id))[0]; assert.equal(baris.stempel, F.slice(0, 1000)); assert.ok(baris.jam_utc);
   const bukanGrup = await kirimS("kunci-wa", "") ; assert.equal(bukanGrup.s, 200); assert.equal(bukanGrup.j.foto, undefined, "stempel hanya untuk foto grup");
 });
 

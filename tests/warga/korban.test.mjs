@@ -243,8 +243,10 @@ uji("Meja Pantau: laporan belum terverifikasi = butir prioritas 0 di atas 'Seger
 });
 
 /* ================================================================ agregat harian */
+/* laporan > 60 hari ditolak Worker (JENDELA_LAPOR), jadi tanggal uji harus relatif; tanggal tetap 2026-09-10 membusuk 9 Nov 2026 */
+const TGL_UJI = d => new Date(Date.now() + 7 * 36e5 + d * 864e5).toISOString().slice(0, 10), HARI_UJI = TGL_UJI(-10), HARI_SEBELUM = TGL_UJI(-11), HARI_SESUDAH = TGL_UJI(-9);
 uji("korbanHari: angka per hari WIB kejadian (batas tengah malam WIB), per provinsi, belum diverifikasi dihitung, teks laporan dan 'N jiwa MD' tanpa nama, dummy tidak ikut, tanggal rusak = nol", async () => {
-  const hari = "2026-09-10", t = jam => Date.parse(`${hari}T${jam}+07:00`), tglSebelum = "2026-09-09", tglSesudah = "2026-09-11";
+  const hari = HARI_UJI, t = jam => Date.parse(`${hari}T${jam}+07:00`), tglSebelum = HARI_SEBELUM, tglSesudah = HARI_SESUDAH;
   const lap = (o, h = pus.hp) => lapor(h, BODI({waktu_kejadian: t("12:00:00"), kronologi: null, nama_korban: NAMA, ...o}));
   const a1 = await lap({prov: "62", meninggal: 2, luka_berat: 1}); await lap({prov: "62", meninggal: 1, luka_berat: 0, hilang: 2, waktu_kejadian: t("00:00:00")}); await lap({prov: "14", meninggal: 0, luka_berat: 0, hilang: 3, kab: "Pelalawan"});
   await lap({prov: "62", meninggal: 7, waktu_kejadian: t("23:59:59") + 1000}); await lap({prov: "62", meninggal: 5, waktu_kejadian: t("00:00:00") - 1000});
@@ -266,14 +268,14 @@ uji("korbanHari: angka per hari WIB kejadian (batas tengah malam WIB), per provi
 });
 
 uji("dampak di snapshot laporan karhutla: angka saja dari korbanHari ('terverifikasi N dari M'), muncul di kesimpulan dan teks WA, tanpa nama; tanpa laporan snapshot tidak berubah", async () => {
-  const kiriman = {}, dasar = {tanggal_laporan: "2026-09-11", prioritas: ["62"], kiriman, sebelumnya: [], ralat: 0}, tanpa = SP.agregasi(dasar);
+  const kiriman = {}, dasar = {tanggal_laporan: HARI_SESUDAH, prioritas: ["62"], kiriman, sebelumnya: [], ralat: 0}, tanpa = SP.agregasi(dasar);
   assert.ok(!("dampak" in tanpa) && !tanpa.kesimpulan.some(x => /Korban jiwa/.test(x)), "tanpa dampak: bentuk lama persis"); assert.ok(!laporanKarhutla(tanpa).includes("Korban jiwa"));
   assert.ok(!("dampak" in SP.agregasi({...dasar, dampak: {laporan: 0, terverifikasi: 0, provinsi: []}})), "nol laporan: tidak ada kunci dampak");
-  const k = await korbanHari({DB}, "2026-09-10"); assert.ok(k.laporan > 0); const snap = SP.agregasi({...dasar, dampak: k});
+  const k = await korbanHari({DB}, HARI_UJI); assert.ok(k.laporan > 0); const snap = SP.agregasi({...dasar, dampak: k});
   assert.deepEqual(Object.keys(snap.dampak).sort(), ["hilang", "laporan", "luka_berat", "meninggal", "meninggal_terverifikasi", "provinsi", "tanggal", "terverifikasi"]);
-  assert.equal(snap.dampak.tanggal, "2026-09-10"); assert.equal(snap.dampak.terverifikasi, 1); assert.equal(snap.dampak.laporan, 3);
-  assert.ok(snap.kesimpulan.includes("Korban jiwa 2026-09-10: 3 meninggal, 1 luka berat, 5 hilang (terverifikasi 1 dari 3 laporan)."), snap.kesimpulan.join(" | "));
-  const wa = laporanKarhutla(snap); assert.match(wa, /3\. Korban jiwa/); assert.ok(wa.includes("3 meninggal, 1 luka berat, 5 hilang pada 10 September 2026") && wa.includes("terverifikasi 1 dari 3 laporan"), wa.slice(wa.indexOf("Korban") - 50, wa.indexOf("Korban") + 200));
+  assert.equal(snap.dampak.tanggal, HARI_UJI); assert.equal(snap.dampak.terverifikasi, 1); assert.equal(snap.dampak.laporan, 3);
+  assert.ok(snap.kesimpulan.includes(`Korban jiwa ${HARI_UJI}: 3 meninggal, 1 luka berat, 5 hilang (terverifikasi 1 dari 3 laporan).`), snap.kesimpulan.join(" | "));
+  const wa = laporanKarhutla(snap); assert.match(wa, /3\. Korban jiwa/); assert.ok(wa.includes(`3 meninggal, 1 luka berat, 5 hilang pada ${+HARI_UJI.slice(8)} ${["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"][+HARI_UJI.slice(5, 7) - 1]} ${HARI_UJI.slice(0, 4)}`) && wa.includes("terverifikasi 1 dari 3 laporan"), wa.slice(wa.indexOf("Korban") - 50, wa.indexOf("Korban") + 200));
   for (const x of [NAMA, NAMA2, "Rahasia", "nama_korban"]) assert.ok(!wa.includes(x) && !JSON.stringify(snap).includes(x), "tanpa nama: " + x);
   const slide = teks("public/laporan_karhutla_slide.js"); assert.match(slide, /labelVerifikasi/); assert.match(slide, /s\.dampak/); assert.ok(!slide.includes("nama_korban"));
   assert.match(teks("src/laporan_karhutla.js"), /korbanHari\(env, S\.tanggalData\(tanggal\)/); assert.match(teks("src/laporan_karhutla.js"), /lama\?\.dampak \?\? null/, "ralat memakai dampak snapshot sebelumnya");
@@ -338,6 +340,6 @@ uji("503 sopan bila 0034 belum diterapkan: semua rute korban 503; kerangka halam
   }
   assert.equal((await V.api("GET", "/admin/korban", undefined, ADMIN)).s, 200, "kerangka halaman tidak butuh tabel");
   const pa = await V.api("GET", "/api/pantau", undefined, ADMIN); assert.equal(pa.s, 200); assert.ok("korban_baru" in pa.j.jenis && !pa.j.butir.some(b => b.jenis === "korban_baru"));
-  const k = await korbanHari({DB: V.DB}, "2026-09-10"); assert.deepEqual([k.laporan, k.meninggal, k.teks], [0, 0, null]); assert.deepEqual(await butirKorban({DB: V.DB}, Date.now(), true), []);
+  const k = await korbanHari({DB: V.DB}, HARI_UJI); assert.deepEqual([k.laporan, k.meninggal, k.teks], [0, 0, null]); assert.deepEqual(await butirKorban({DB: V.DB}, Date.now(), true), []);
   const rin = await GET(a, "/api/instansi/gudang", V); assert.equal(rin.s, 200, "inventaris biasa tidak terganggu");
 });
