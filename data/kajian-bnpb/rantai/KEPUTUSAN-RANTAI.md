@@ -18,6 +18,8 @@ Urutan otoritas: KEPUTUSAN-RANTAI > RISET > PRD > ALUR > ALGORITMA > DESIGN-SYST
 
 - Pemilik 10 Nov 2026, menjawab Q5 dan Q6: tanggal SPPH, PHD, akhir masa pelaksanaan hibah, serta tanggal penetapan Perkada RPBD, peninjauan, dan pemantauan-evaluasi diisi BPBD penerima, masing-masing untuk daerahnya sendiri.
 
+- Pemilik 10 Nov 2026, menjawab Q9: Rapor SPM menampilkan angka kepatuhan 25 menit per BPBD saja, tanpa ambang dan tanpa vonis lulus atau gagal.
+
 ## Keputusan teknis agent (boleh diubah pemilik)
 
 - T1. Tempat: `/bnpb/rantai` dan `/bnpb/kalender` di Ruang BNPB; blok SPM masuk Rapor Kinerja yang sudah tampil di `public/admin/pimpinan.js` lewat `GET /api/meja/rapor`.
