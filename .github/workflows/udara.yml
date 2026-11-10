@@ -47,6 +47,17 @@ jobs:
       - name: Data tidak lebih tua dari yang tayang
         run: python3 scripts/terbit/isi_data.py perlu
 
+      # tanpa ini deploy di bawah menerbitkan public/banjir/data versi git (insiden 9 Nov 2026: banjir, cuaca, gunung api, berita mundur ke Oktober)
+      - name: Pulihkan data banjir terakhir
+        uses: actions/cache/restore@v4
+        with:
+          # jalur HARUS sama persis dengan simpanan banjir.yml (versi cache dihitung dari daftar jalur); beda = cache tidak ditemukan
+          path: |
+            public/banjir/data
+            data/raw/banjir
+          key: banjir-${{ github.run_id }}
+          restore-keys: banjir-
+
       # berkas statis yang di-commit jangan digantikan versi cache (pola banjir.yml); pltu.json statis di public/udara/data
       - name: Pakai lapisan statis dari repo, bukan dari cache
         run: |
