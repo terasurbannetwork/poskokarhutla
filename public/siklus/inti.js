@@ -175,6 +175,8 @@ export function tanya({judul, teks, kolom = [], ya = "Simpan", bahaya = false}) 
 try { const t = localStorage.getItem("pb-tema"); if (t) document.documentElement.dataset.theme = t; } catch (e) { /* penyimpanan diblokir */ }
 const LAYAR = [
   [/^\/siklus\/paparan$/, () => import("./paparan.js"), "paparan"],
+  [/^\/siklus\/kaji(\/[0-9a-f]{16})?$/, () => import("./kaji.js"), "kaji"],
+  [/^\/siklus\/pulih(\/[0-9a-f]{16})?$/, () => import("./pulih.js"), "pulih"],
   [/^\/siklus(\/kejadian(\/.*)?)?$/, () => import("./kejadian.js"), "kejadian"],
 ];
 async function mulai() {

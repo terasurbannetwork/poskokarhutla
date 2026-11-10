@@ -71,3 +71,99 @@ export function faseSah(dari, ke) {
 
 /* k-anonim publik (KEAMANAN 2.6): angka korban atau terdampak di bawah 5 ditulis "di bawah 5"; null tetap null ("tidak ada") */
 export const angkaPublik = n => n == null ? null : n < 5 ? "di bawah 5" : n;
+
+/* ================================================================ F4 Jitupasna ke R3P (ALGORITMA F4.1 sampai F4.8). Fungsi murni; label harga selalu asumsi-kebijakan (U4, U8); kosong = "menunggu", bukan 0. */
+export const TINGKAT_F4 = ["hancur", "rb", "rs", "rr"];   // urut harga turun (monoton: h_hancur >= h_rb >= h_rs >= h_rr)
+export const TINGKAT_RUMAH = {berat: "rb", sedang: "rs", ringan: "rr"};   // rumah_rusak.tingkat ke F4 (tanpa tabel kedua)
+export const MENUNGGU = "menunggu";
+
+/* F4.1: p > 70 RB; 30 <= p <= 70 RS; p < 30 RR. Di luar 0..100 atau bukan angka = null. */
+export const klasifikasiTingkat = p => typeof p !== "number" || !Number.isFinite(p) || p < 0 || p > 100 ? null : p > 70 ? "rb" : p >= 30 ? "rs" : "rr";
+
+/* F4.2: h = h_ref x (IKK_k / IKK_ref) x (IHPB_t1 / IHPB_t0). Indeks tidak diberikan sama sekali = tanpa penyesuaian (faktor 1);
+   separuh pasangan, nol atau minus, atau melintasi patahan dasar IHPB = "menunggu". */
+export function hargaTerindeks({href, ikkK = null, ikkRef = null, ihpb1 = null, ihpb0 = null, patahan = false}) {
+  if (typeof href !== "number" || !(href > 0)) return {nilai: null, status: MENUNGGU, alasan: "harga dasar kosong"};
+  const pasang = (a, b, nama) => { if (a == null && b == null) return 1; if (!(a > 0) || !(b > 0)) throw new Error(nama); return a / b; };
+  if (patahan) return {nilai: null, status: MENUNGGU, alasan: "seri IHPB melintasi patahan dasar"};
+  try { const faktor = pasang(ikkK, ikkRef, "pasangan IKK tidak lengkap") * pasang(ihpb1, ihpb0, "pasangan IHPB tidak lengkap"); return {nilai: href * faktor, status: "asumsi-kebijakan", faktor}; }
+  catch (e) { return {nilai: null, status: MENUNGGU, alasan: e.message}; }
+}
+
+/* F4.3: V_s = jumlah_t (n x h). baris: [{sektor, tingkat, unit}]; harga(sektor, tingkat) -> angka|null. Sektor yang memakai tingkat tanpa harga = menunggu (bukan 0);
+   total null bila ada sektor menunggu. Monoton dilaporkan, tidak diperbaiki. */
+export function nilaiKerusakan(baris, harga) {
+  const per = {};
+  for (const b of baris) {
+    if (!b.unit && b.unit !== 0) continue;
+    const s = per[b.sektor] ??= {nilai: 0, menunggu: false, unit: {}};
+    s.unit[b.tingkat] = (s.unit[b.tingkat] ?? 0) + b.unit;
+    if (b.unit === 0) continue;
+    const h = harga(b.sektor, b.tingkat);
+    if (typeof h !== "number") s.menunggu = true; else s.nilai += b.unit * h;
+  }
+  for (const [sektor, s] of Object.entries(per)) {
+    const hs = TINGKAT_F4.map(t => [t, harga(sektor, t)]).filter(([, h]) => typeof h === "number"), langgar = [];
+    for (let i = 1; i < hs.length; i++) if (hs[i][1] > hs[i - 1][1]) langgar.push(`${hs[i][0]} > ${hs[i - 1][0]}`);
+    s.monoton = {ok: langgar.length === 0, langgar};
+    const hancur = harga(sektor, "hancur");   // kewajaran: V_s tidak melebihi semua unit dihargai hancur; tanpa harga hancur tidak dinilai
+    s.wajar = s.menunggu || typeof hancur !== "number" ? null : s.nilai <= Object.values(s.unit).reduce((a, n) => a + n, 0) * hancur;
+    if (s.menunggu) s.nilai = null;
+  }
+  const semua = Object.values(per);
+  return {per, total: semua.some(s => s.menunggu) ? null : semua.reduce((a, s) => a + s.nilai, 0), menunggu: semua.some(s => s.menunggu)};
+}
+
+/* F4.4: L_s = jumlah_c (arus x bulan); baris jenis rugi: [{sektor, komponen, arus_rp, bulan}] */
+export function nilaiKerugian(baris) {
+  const per = {};
+  for (const b of baris) { if (typeof b.arus_rp !== "number" || typeof b.bulan !== "number") continue; per[b.sektor] = (per[b.sektor] ?? 0) + b.arus_rp * b.bulan; }
+  return {per, total: Object.keys(per).length ? Object.values(per).reduce((a, n) => a + n, 0) : null};
+}
+
+/* F4.5: pemetaan subsektor Jitupasna ke lima sektor Perban 5/2017 Pasal 8 ayat (2); tafsir bawaan menurut nama subsektor R3 1.2, menunggu U10 */
+export const SEKTOR_R3P = ["permukiman", "infrastruktur", "ekonomi", "sosial", "lintas_sektor"];
+export const PETA_SEKTOR = {perumahan: "permukiman", jalan_jembatan: "infrastruktur", telekomunikasi: "infrastruktur", air_sanitasi: "infrastruktur",
+  pertanian: "ekonomi", perikanan: "ekonomi", ikm: "ekonomi", perdagangan: "ekonomi", pariwisata: "ekonomi", kesehatan: "sosial", pendidikan: "sosial", agama: "sosial", sosial_budaya: "sosial",
+  lingkungan: "lintas_sektor", sarana_pemerintahan: "lintas_sektor", keuangan_perbankan: "lintas_sektor", ketertiban_keamanan: "lintas_sektor"};
+/* nilai: {subsektor: angka|null}; invarian: lima sektor + belum_terpeta = total (angka yang ada) */
+export function petaLimaSektor(nilai) {
+  const r = Object.fromEntries([...SEKTOR_R3P, "belum_terpeta"].map(k => [k, 0]));
+  for (const [s, v] of Object.entries(nilai)) if (typeof v === "number") r[Object.hasOwn(PETA_SEKTOR, s) ? PETA_SEKTOR[s] : "belum_terpeta"] += v;
+  return {...r, total: Object.values(r).reduce((a, n) => a + n, 0)};
+}
+
+/* tiga penanda (Kotak 1 hal. 41): hitung ganda (komponen kerugian sama di dua sektor atau lebih), cakupan (sektor R3P tanpa isian), kewajaran (monoton atau V_s > semua unit hancur) */
+export function tigaPenanda({kerusakan, barisRugi, sektorTerisi}) {
+  const per = new Map(); for (const b of barisRugi) { const k = String(b.komponen); (per.get(k) ?? per.set(k, new Set()).get(k)).add(b.sektor); }
+  const ganda = [...per].filter(([, s]) => s.size > 1).map(([komponen, s]) => ({komponen, sektor: [...s].sort()}));
+  const terisi = new Set([...sektorTerisi].map(s => PETA_SEKTOR[s] ?? "belum_terpeta"));
+  const kosong = SEKTOR_R3P.filter(s => !terisi.has(s));
+  const wajar = Object.entries(kerusakan.per).filter(([, s]) => s.wajar === false || !s.monoton.ok).map(([sektor]) => sektor);
+  return {hitung_ganda: ganda, kosong, tidak_wajar: wajar};
+}
+
+/* F4.6: stimulan 60/30/15 juta (asumsi-kebijakan, U8: sumber sekunder; 50/25/10 dan 80 juta tidak dipakai); DTH Rp600.000 x 3 bulan per KK (Juklak DTH 1/2023) */
+export const TARIF_STIMULAN = {rb: 60e6, rs: 30e6, rr: 15e6}, DTH_RP = 600000, DTH_BULAN = 3;
+export const stimulan = ({rb, rs, rr}) => [rb, rs, rr].every(n => typeof n === "number") ? {nilai: rb * TARIF_STIMULAN.rb + rs * TARIF_STIMULAN.rs + rr * TARIF_STIMULAN.rr, yakin: "asumsi-kebijakan"} : {nilai: null, yakin: MENUNGGU};
+export const dth = kk => typeof kk === "number" ? {nilai: kk * DTH_RP * DTH_BULAN, yakin: "resmi"} : {nilai: null, yakin: MENUNGGU};
+
+/* F4.7: sisa_90 = 90 - hari berlalu sejak tanggap darurat dimulai (<= 0: lewat batas, bukan penolakan); PDNA BNPB = akhir darurat - 14 hari, BPBD = - 7 hari */
+export const sisa90 = (tanggapMulai, hariIni) => { if (!tanggapMulai) return {berlalu: null, sisa: null, lewat: null}; const berlalu = hariAntara(tanggapMulai, hariIni); return {berlalu, sisa: 90 - berlalu, lewat: 90 - berlalu <= 0}; };
+const geserTgl = (t, n) => new Date(Date.parse(t + "T00:00:00Z") + n * 864e5).toISOString().slice(0, 10);
+export const pdna = akhirDarurat => akhirDarurat ? {bnpb: geserTgl(akhirDarurat, -14), bpbd: geserTgl(akhirDarurat, -7)} : {bnpb: null, bpbd: null};
+
+/* F4.8: persen per kegiatan = realisasi / target x 100 (target kosong atau 0 = menunggu; realisasi > target anomali, tampil maks 100);
+   total tertimbang nilai hanya bila semua nilai terisi dan satuan sama; selain itu "menunggu". */
+export function persenRealisasi(kegiatan) {
+  const per = kegiatan.map(k => {
+    if (!(k.target > 0) || typeof k.realisasi !== "number") return {id: k.id, persen: null, status: MENUNGGU};
+    const mentah = k.realisasi / k.target * 100;
+    return {id: k.id, persen: Math.min(mentah, 100), anomali: mentah > 100, status: "terukur"};
+  });
+  const lengkap = kegiatan.length > 0 && kegiatan.every((k, i) => typeof k.nilai === "number" && per[i].persen != null);
+  const bobot = lengkap ? kegiatan.reduce((a, k) => a + k.nilai, 0) : 0;
+  return {per, total: lengkap && bobot > 0 ? kegiatan.reduce((a, k, i) => a + k.nilai * per[i].persen / 100, 0) / bobot * 100 : null, yakin: "asumsi-kebijakan"};
+}
+/* macet: tahap sama lebih dari batas hari (rehab_macet_hari = 60, jam_aturan.json, asumsi) sejak masuk tahap; dibaca saat halaman dibuka */
+export const macet = (masukTahap, hariIni, batas = 60) => !!masukTahap && hariAntara(masukTahap, hariIni) > batas;

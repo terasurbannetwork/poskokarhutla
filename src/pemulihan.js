@@ -1,6 +1,7 @@
 /* Tracker pemulihan pascabencana (W2, migrasi 0096): huntara, huntap, dana tunggu hunian, jembatan gantung, sumur bor per kab/desa, dengan riwayat progres.
    Semua rute /api/pusdalops/pemulihan*: staf (pusdalops|koordalops|pimpinan) PERTAMA. Id 16 hex di akhir jalur dibaca router worker.js; aksi pada id membawa id di body. */
 import {json, gagal, acak, NO_JSON, cek, tolak, teks, teksOpsi, tanggal, tglWIB, kabKunci, kodeProv, luarWilayah, koordinat, angka, pilih, idSah, persen, tabelBelum, bacaStaf, tulisStaf, dummyStaf, lajuTulis} from "./pusdalops_umum.js";
+import {skKemajuanPemulihan} from "./hak.js";
 
 export const JENIS_PEMULIHAN = ["huntara", "huntap", "dana_tunggu_hunian", "jembatan_gantung", "sumur_bor", "lainnya"];
 export const STATUS_PEMULIHAN = ["rencana", "berjalan", "selesai", "terhenti"];
@@ -114,3 +115,6 @@ export const RUTE_PEMULIHAN = {
   "GET /api/pusdalops/pemulihan/:id": T((env, req, url, kini, ctx, id) => rincian(env, req, id)),
   "POST /api/pusdalops/pemulihan/dummy": T((env, req, url, kini) => dummy(env, req, kini)),
 };
+
+/* Ekspor baca untuk Siklus F4 (SK-070): kemajuan (target, realisasi, status) per id pemulihan, tanpa koordinat, pelaksana, atau sumber dana. Tidak mengubah perilaku di atas. */
+export const kemajuanPemulihan = (env, ids) => skKemajuanPemulihan(env, ids);

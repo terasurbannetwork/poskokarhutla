@@ -84,5 +84,22 @@ test('layar paparan di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome t
         const p = s.catat.find((c) => c.jalur === '/api/siklus/dummy'); assert.equal(p.badan.halaman, 'paparan'); assert.equal(p.badan.kab4, '3301'); await T.tutup();
       } finally { await s.tutup(); }
     });
+    // SK-042 sapuan INP: tiap interaksi harus punya piksel berubah pada frame berikutnya (chrome urgent), bukan menunggu isi berat (INP.md)
+    const frame = (T, js) => T.eval(`(async () => { const t0 = performance.now(); ${js}; const c = document.querySelector('.seg.penuh button[aria-pressed=true]')?.textContent; await new Promise((r) => requestAnimationFrame(r)); return {ms: performance.now() - t0, c}; })()`);
+    for (const [w, h] of [[1440, 900], [390, 844]]) {
+      await t.test(`INP ${w}: segmen bahaya mengecat dalam satu frame, bahaya tanpa data menulis menunggu`, async () => {
+        const s = await sajikan(api('ko'));
+        try {
+          const T = await pb.tab(); await T.ukuran(w, h); await T.buka(`${s.url}/siklus/paparan?kab4=3301`, {tunggu: '#p-utama .sk-ber'});
+          for (const nama of ['Gempa', 'Banjir']) {
+            const r = await frame(T, `[...document.querySelectorAll('#p-utama .seg.penuh button')].find((x) => /${nama}/.test(x.textContent)).click()`);
+            assert.ok(r.ms < 200, `${nama}: ${Math.round(r.ms)} ms`); assert.match(r.c, new RegExp(nama));
+            await T.tungguFungsi(`document.querySelector('#p-utama h3').innerText.length > 0`);
+          }
+          const l = await T.lebihLebar(); assert.ok(l.sw <= l.iw + 1, `gulir mendatar di ${w}`);
+          assert.ok(!/\bnull\b/.test(await T.eval('document.body.innerText'))); assert.deepEqual(galatNyata(T), []); await T.tutup();
+        } finally { await s.tutup(); }
+      });
+    }
   } finally { await pb.tutup(); }
 });

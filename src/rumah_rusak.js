@@ -10,6 +10,7 @@ import {laju, lajuIP} from "./bnpb.js";
 import {wilayah, cariWilayah} from "./titik.js";
 import {jenisBerkas} from "./foto.js";
 import REGISTRY from "./bencana.generated.js";
+import {skRekapRumahRusak} from "./hak.js";
 
 const JAM = 3600e3, HARI = 24 * JAM, BBOX = {latMin: -11.5, latMaks: 6.5, lonMin: 94.5, lonMaks: 141.5};
 export const TINGKAT = ["berat", "sedang", "ringan"];
@@ -179,3 +180,6 @@ export const RUTE_RUMAH_RUSAK = {
   "POST /api/rumah-rusak/foto/:id": (env, req, url, kini, ctx, id) => fotoUnggah(env, req, id, kini),
   "GET /api/rumah-rusak/foto/:id": (env, req, url, kini, ctx, id) => fotoBaca(env, req, id, kini),
 };
+
+/* Ekspor baca untuk Siklus F4 (SK-070): hitungan per tingkat dan kecamatan untuk satu kabupaten, hanya laporan berstatus sah. TANPA koordinat, foto, catatan, atau pelapor (KEPUTUSAN-AWAL 12-13). Tidak mengubah perilaku di atas. */
+export const rekapTingkat = (env, {prov, kab, dari, sampai, bencana = null}) => skRekapRumahRusak(env, {prov, kab, dari, sampai, bencana});

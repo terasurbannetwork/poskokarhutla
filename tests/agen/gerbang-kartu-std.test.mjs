@@ -41,3 +41,14 @@ for (const l of LAYAR) {
     assert.match(baca(l.html), /\/inti\/kartu\.css/, `${l.html} harus memuat /inti/kartu.css`)
   })
 }
+
+// Layar yang membangun kartunya lewat kartu() dari inti.js (sudah di LAYAR): tak boleh membuat kepala bagian sendiri.
+for (const skrip of ['public/siklus/kaji.js']) {
+  test(`${skrip} memakai kartu() dari inti.js, tanpa kepala sendiri`, () => {
+    const js = baca(skrip)
+    assert.match(js, /import\s*\{[^}]*\bkartu\b[^}]*\}\s*from\s*"\.\/inti\.js"/, 'harus mengimpor kartu dari ./inti.js')
+    assert.match(js, /\bkartu\(/, 'bagian layar harus dibangun dengan kartu(')
+    assert.match(js, /\bhl\(/, 'judul kartu harus menyorot angka temuan dengan hl(')
+    assert.doesNotMatch(js, /Sumber: |class:\s*"ex-ft"|class:\s*"head"|"h2"/, 'tanpa kaki sumber dan tanpa kepala bagian sendiri')
+  })
+}

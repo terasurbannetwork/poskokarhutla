@@ -128,5 +128,36 @@ test('layar kejadian di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome 
         assert.deepEqual(galatNyata(T), []); await T.tutup();
       } finally { await sa.tutup(); }
     });
+    // SK-042 sapuan INP: tiap interaksi harus punya piksel berubah pada frame berikutnya (chrome urgent), bukan menunggu isi berat (INP.md)
+    const frame = (T, js) => T.eval(`(async () => { const t0 = performance.now(); ${js}; const c = document.querySelector('.seg.penuh button[aria-pressed=true]')?.textContent; await new Promise((r) => requestAnimationFrame(r)); return {ms: performance.now() - t0, c}; })()`);
+    for (const [w, h] of [[1440, 900], [390, 844]]) {
+      await t.test(`INP ${w}: klik segmen, rentang, cari, halaman mengecat dalam satu frame dan tanpa gulir mendatar`, async () => {
+        const s = await sajikan(buatApi('ko'));
+        try {
+          const T = await pb.tab(); await T.ukuran(w, h); await T.buka(`${s.url}/siklus/kejadian`, {tunggu: '#daftar table'});
+          const ukur = async (js) => { const r = await frame(T, js); assert.ok(r.ms < 200, `${js}: ${Math.round(r.ms)} ms sampai frame berikutnya`); return r; };
+          await ukur(`[...document.querySelectorAll('#daftar .seg.penuh button')].find((x) => /Banjir/.test(x.textContent)).click()`);
+          await T.tungguFungsi(`document.querySelectorAll('#daftar tbody tr').length === 1`);
+          await ukur(`[...document.querySelectorAll('#daftar .seg.penuh button')].find((x) => /Semua/i.test(x.textContent)).click()`);
+          await T.tungguFungsi(`document.querySelectorAll('#daftar tbody tr').length === 3`);
+          await ukur(`(() => { const i = document.querySelector('#daftar input[type=search]'); i.value = 'rote'; i.dispatchEvent(new Event('input', {bubbles: true})); })()`);
+          await T.tungguFungsi(`document.querySelectorAll('#daftar tbody tr').length === 1`);
+          await ukur(`document.querySelector('#daftar button[aria-label="Halaman berikutnya"]').click()`);
+          await ukur(`[...document.querySelectorAll('#daftar .seg.penuh button')].find((x) => /365|1 tahun/.test(x.textContent)).click()`);
+          const l = await T.lebihLebar(); assert.ok(l.sw <= l.iw + 1, `gulir mendatar di ${w}`);
+          assert.deepEqual(galatNyata(T), []); await T.tutup();
+        } finally { await s.tutup(); }
+      });
+    }
+    await t.test('dummy terisi di 390: muat ulang penuh, toast jumlah nyata, tanpa gulir mendatar', async () => {
+      const sa = await sajikan(buatApi('sa'));
+      try {
+        const T = await pb.tab(); await T.ukuran(390, 844); await T.buka(`${sa.url}/siklus/kejadian`, {tunggu: '.sk-dummy'});
+        await T.klik('.sk-dummy button[data-dummy=isi]');
+        await T.tungguFungsi(`document.getElementById('toast')?.textContent.includes('7 baris dummy dibuat')`, 10000);
+        await T.tunggu('#daftar table'); const l = await T.lebihLebar(); assert.ok(l.sw <= l.iw + 1);
+        assert.ok(!/\bnull\b/.test(await T.eval('document.body.innerText'))); await T.tutup();
+      } finally { await sa.tutup(); }
+    });
   } finally { await pb.tutup(); }
 });

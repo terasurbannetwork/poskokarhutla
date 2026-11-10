@@ -53,3 +53,17 @@ test('transisi fase sah, alias, dan basi sama di kedua sisi', async () => {
   assert.equal(B.basi('2026-11-01', '2026-11-05'), true); assert.equal(B.basi('2026-11-01', '2026-11-04'), false); assert.equal(B.hariAntara('2026-11-01', '2026-11-04'), 3);
   assert.equal(B.angkaPublik(4), 'di bawah 5'); assert.equal(B.angkaPublik(5), 5); assert.equal(B.angkaPublik(null), null);
 });
+
+test('F4: vektor acuan ALGORITMA sama di peramban dan Worker (klasifikasi, kerusakan, stimulan, DTH, sisa 90, PDNA)', () => {
+  const F = ACUAN.f4, JT = 1e6, H = {rb: 100 * JT, rs: 50 * JT, rr: 20 * JT};
+  for (const M of [B, W]) {
+    for (const [p, t] of F.klasifikasi) assert.equal(M.klasifikasiTingkat(p), t, `${p}`);
+    const baris = [{sektor: 'perumahan', tingkat: 'rb', unit: 10}, {sektor: 'perumahan', tingkat: 'rs', unit: 20}, {sektor: 'perumahan', tingkat: 'rr', unit: 30}];
+    assert.equal(M.nilaiKerusakan(baris, (s, t) => H[t] ?? null).total, F.kerusakan_rp);
+    assert.equal(M.stimulan({rb: 10, rs: 20, rr: 30}).nilai, F.stimulan_rp);
+    assert.equal(M.dth(F.dth_kk).nilai, F.dth_rp);
+    assert.deepEqual(M.sisa90(F.sisa90.tanggap, F.sisa90.hari_ini), {berlalu: F.sisa90.berlalu, sisa: F.sisa90.sisa, lewat: false});
+    assert.deepEqual(M.pdna(F.pdna.akhir), {bnpb: F.pdna.bnpb, bpbd: F.pdna.bpbd});
+    assert.equal(M.nilaiKerusakan([{sektor: 'pendidikan', tingkat: 'rb', unit: 2}], () => null).total, null, 'kosong menunggu, bukan 0');
+  }
+});

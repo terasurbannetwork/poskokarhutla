@@ -5,7 +5,7 @@ scripts/bnpb/terpapar.py (Dukcapil), bahaya_kelas.py. Tiga sumber jiwa berdampin
 (public/data/penduduk.json), Dukcapil per desa (titik pusat terdekat dalam kecamatan yang sama, U17: estimasi-model), GHSL (null "menunggu" bila belum ada).
 Keluaran siklus/saji/paparan/<prov>.json, kab/<kab4>.json, rinci/<kab4>.json (sel 110 m, tanpa koordinat bangunan tunggal); tidak pernah ke public/.
 Tanpa grid provinsi: terliput false, kab kosong (bukan 0). Zona tanpa geometri: tersedia false + alasan.
-Pakai: python3 -I scripts/siklus/paparan.py uji | kab PROV KAB4 KELUAR_DIR [--kelas]
+Pakai: python3 -I scripts/siklus/paparan.py uji | kab PROV KAB4 KELUAR_DIR [--kelas] | kejadian AKAR_SAJI [--kode B0007]
 """
 import importlib.util, json, math, os, sys
 
@@ -261,6 +261,90 @@ def jalankan_kab(prov, kab4, keluar, kelas=False):
     return h, masalah
 
 
+def paparan_kejadian(e, geoms, sel_fn, desa_fn, wp_semua):
+    """Paparan banjir SATU kejadian aktif (kode B00xx; poligon miliknya saja) untuk kaji_banjir: gabungan kabupaten dari e['kec'] ('prov|kab|kec').
+    kec dikunci 'prov|kab|kec' (sama dengan kec_siaga kaji_banjir dan penduduk.json). Grid halus kabupaten tidak ada / tak terliput / tanpa poligon =
+    zona banjir tersedia false + alasan (menunggu), bukan nol. Jiwa per sumber dijumlah antarkabupaten hanya bila semuanya ada, selain itu None.
+    sel_fn(prov, kab4) -> (sel, lat0, lon0, step, nama, w) | melempar OSError; desa_fn(prov, kab4, w) -> desa; wp_semua {'prov|kab|kec': jiwa}."""
+    Kn = _muat("sk_kunci", "scripts/siklus/kunci.py")
+    kabs = sorted({tuple(k.split("|")[:2]) for k in e.get("kec", []) if k.count("|") >= 2})
+    out = {"kode": e["kode"], "kab": [], "n": None, "kec": {}, "zona": {}}
+    tunggu = lambda alasan: out.update(zona={"banjir": {"tersedia": False, "alasan": alasan}}) or out
+    if not geoms:
+        return tunggu("tidak ada poligon untuk kejadian ini di kejadian_aktif_geo.json (menunggu)")
+    zonas, n, jiwa, per, galat = [zona_dari_bagian(geoms, "banjir", "poligon")], 0, [], {"n": 0, "luas_m2": 0, "kec": {}}, None
+    for prov, kab in kabs:
+        k4 = Kn.kab4(f"{prov}|{kab}")
+        if not k4:
+            return tunggu(f"kabupaten {prov}|{kab} tidak terpetakan ke kab4 (menunggu)")
+        try:
+            sel, _, _, _, nama, w = sel_fn(prov, k4)
+        except OSError:
+            return tunggu(f"grid halus provinsi {prov} tidak ada di data/terkunci/bangunan (menunggu)")
+        if not sel:
+            return tunggu(f"{k4}: tidak ada sel halus, kabupaten tidak terliput (menunggu)")
+        wp = {k.split("|", 2)[2]: v for k, v in wp_semua.items() if k.startswith(f"{prov}|{nama}|")}
+        h = hitung_kab(sel, zonas, desa_fn(prov, k4, w), wp)
+        z = h["zona"]["banjir"]["per_zona"]["poligon"]
+        out["kab"].append(k4)
+        galat = h["zona"]["banjir"]["galat_km"]
+        per["n"] += z["n"]
+        per["luas_m2"] += z["luas_m2"]
+        jiwa.append(z["jiwa"])
+        for kc, v in h["kec"].items():
+            out["kec"][f"{prov}|{nama}|{kc}"] = v
+    j = {s: (None if any(x[s] is None for x in jiwa) else sum(x[s] for x in jiwa)) for s in ("worldpop", "dukcapil", "ghsl")}
+    out["kab"].sort()
+    out["n"] = sum(v["n"] for v in out["kec"].values())
+    out["zona"] = {"banjir": {"tersedia": True, "galat_km": galat, "per_zona": {"poligon": {"n": per["n"], "luas_m2": per["luas_m2"], "jiwa": j, "jiwa_selisih": selisih(j)}}}}
+    return out
+
+
+def jalankan_kejadian(keluar, awal=None, geo=None, kode=None, sel_fn=None, desa_fn=None, wp_semua=None):
+    """Semua kejadian banjir aktif -> siklus/saji/paparan/<kode>.json di bawah `keluar`. -> (daftar (kode, status), masalah). Dry-run tidak ada: hanya menulis ke `keluar`."""
+    baca = lambda r: json.load(open(os.path.join(AKAR, r), encoding="utf-8"))
+    awal = awal or baca("public/banjir/data/kejadian_aktif_awal.json")
+    geo = geo or baca("public/banjir/data/kejadian_aktif_geo.json")
+    cache = os.path.join(AKAR, "data/raw/siklus")
+    sel_fn = sel_fn or sel_kab
+    desa_fn = desa_fn or (lambda prov, k4, w: desa_dukcapil(prov, k4, w, cache))
+    wp_semua = wp_semua if wp_semua is not None else baca("public/data/penduduk.json")["kec"]
+    hasil, masalah = [], []
+    for e in awal["kejadian"]:
+        if kode and e["kode"] != kode:
+            continue
+        g = [f["geometry"] for f in geo.get("features", []) if (f.get("properties") or {}).get("kode") == e["kode"]]
+        h = paparan_kejadian(e, g, sel_fn, desa_fn, wp_semua)
+        m = tulis_saji(keluar, f"paparan/{e['kode']}.json", h)
+        masalah += m
+        hasil.append((e["kode"], "ditolak" if m else "ok" if h["zona"]["banjir"]["tersedia"] else "menunggu: " + h["zona"]["banjir"]["alasan"]))
+    return hasil, masalah
+
+
+def semua_kab(akar=AKAR, prov=None):
+    """[(prov, kab4)] untuk provinsi yang punya halus_<prov>.json; provinsi tanpa berkas itu dilewati (bukan nol)."""
+    kk = _muat("sk_hvc", "scripts/bnpb/hvc_dasar.py").kab_kode()
+    ada = lambda p: os.path.exists(os.path.join(akar, "data/terkunci/bangunan", f"halus_{p}.json"))
+    return sorted((k.split("|", 1)[0], v) for k, v in kk.items() if (prov is None or k.split("|", 1)[0] == prov) and ada(k.split("|", 1)[0]))
+
+
+def jalankan_semua(fn, keluar, prov=None):
+    """Panggil fn(prov, kab4, keluar) per kabupaten; satu gagal tidak menghentikan yang lain. -> ringkasan; exit 1 bila ada gagal."""
+    daftar = semua_kab(prov=prov)
+    r = {"kab": len(daftar), "ok": [], "gagal": {}}
+    for p, k in daftar:
+        try:
+            m = fn(p, k, keluar)
+            (r["gagal"].__setitem__(k, str(m)[:200]) if m else r["ok"].append(k))
+        except (Exception, SystemExit) as e:
+            r["gagal"][k] = str(e)[:200]
+    r["ok"] = len(r["ok"])
+    if not daftar:
+        r["catatan"] = "tidak ada halus_<prov>.json di data/terkunci/bangunan: dilewati, bukan nol"
+    print(json.dumps(r, ensure_ascii=False))
+    return 1 if r["gagal"] else 0
+
+
 # ---------- uji ----------
 def _uji():
     # sel 110 m fiktif: 2 kecamatan, 2 desa Dukcapil di kecamatan A, 1 di B
@@ -310,6 +394,29 @@ def _uji():
     # zona dari berkas repo: tidak melempar, rob dan gempa tersedia false
     zz = zona_dari_berkas(tempfile.gettempdir() + "/_tak_ada_siklus")
     assert all(not x["tersedia"] for x in zz if x["bahaya"] in ("rob", "gempa", "karhutla"))
+    assert jalankan_semua(lambda *a: [], tempfile.gettempdir(), prov="zz") == 0 and semua_kab(prov="zz") == []
+    # paparan kejadian: dua kabupaten digabung, kec berkunci penuh; grid hilang = menunggu (bukan 0); tanpa poligon = menunggu
+    class _W:
+        pass
+    selK = {"3301": [(0, 0, 100, 5000, "A", 100.000, -1.0)], "3302": [(0, 1, 50, 2500, "B", 100.001, -1.0)]}
+    def sel_fn(prov, k4):
+        if prov == "99":
+            raise FileNotFoundError("halus_99.json")
+        return selK[k4], 0, 0, .001, {"3301": "Cilacap", "3302": "Banyumas"}[k4], _W()
+    ev = {"kode": "B0007", "kec": ["33|Cilacap|A", "33|Banyumas|B"]}
+    pk = paparan_kejadian(ev, [persegi], sel_fn, lambda *a: [], {"33|Cilacap|A": 1000, "33|Banyumas|B": 400})
+    zp = pk["zona"]["banjir"]["per_zona"]["poligon"]
+    assert pk["kab"] == ["3301", "3302"] and set(pk["kec"]) == {"33|Cilacap|A", "33|Banyumas|B"} and zp["n"] == 150 and zp["jiwa"]["dukcapil"] is None, pk
+    assert zp["jiwa"]["worldpop"] == round(1000 * 100 / 100) + round(400 * 50 / 50) == 1400 and zp["jiwa"]["ghsl"] is None
+    hl = paparan_kejadian({"kode": "B9", "kec": ["99|X|Y"]}, [persegi], sel_fn, lambda *a: [], {})
+    assert hl["zona"]["banjir"]["tersedia"] is False and "menunggu" in hl["zona"]["banjir"]["alasan"] and hl["n"] is None, "grid tidak ada = menunggu, bukan 0"
+    assert paparan_kejadian(ev, [], sel_fn, lambda *a: [], {})["zona"]["banjir"]["tersedia"] is False
+    with tempfile.TemporaryDirectory() as t:
+        aw = {"kejadian": [ev, {"kode": "B0008", "kec": ["99|X|Y"]}]}
+        ge = {"features": [{"properties": {"kode": "B0007"}, "geometry": persegi}, {"properties": {"kode": "B0008"}, "geometry": persegi}]}
+        hs, ms = jalankan_kejadian(t, aw, ge, None, sel_fn, lambda *a: [], {})
+        assert ms == [] and hs[0] == ("B0007", "ok") and hs[1][1].startswith("menunggu"), hs
+        assert json.load(open(os.path.join(t, "siklus/saji/paparan/B0007.json")))["zona"]["banjir"]["per_zona"]["poligon"]["n"] == 150
     print("paparan: uji hijau")
 
 
@@ -321,5 +428,10 @@ if __name__ == "__main__":
         h, m = jalankan_kab(a[1], a[2], a[3], "--kelas" in a)
         print(json.dumps({"n": h["n"], "luas_m2": h["luas_m2"], "kec": len(h["kec"]), "zona": {b: (e.get("per_zona") and {k: [v["n"], v["jiwa"]] for k, v in e["per_zona"].items()}) or e for b, e in h["zona"].items()}, "masalah": m}, ensure_ascii=False))
         sys.exit(1 if m else 0)
+    elif a[:1] == ["kejadian"] and len(a) >= 2:
+        hs, ms = jalankan_kejadian(a[1], kode=a[a.index("--kode") + 1] if "--kode" in a else None)
+        for k, st in hs:
+            print(k, st)
+        sys.exit(1 if ms else 0)
     else:
-        sys.exit("pakai: paparan.py uji | kab PROV KAB4 KELUAR_DIR [--kelas]")
+        sys.exit("pakai: paparan.py uji | kab PROV KAB4 KELUAR_DIR [--kelas] | kejadian AKAR_SAJI [--kode B0007]")

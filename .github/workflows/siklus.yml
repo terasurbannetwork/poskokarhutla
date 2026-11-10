@@ -2,24 +2,34 @@ name: Siklus Bencana (gudang R2)
 
 # Tidak commit, tidak terbit: keluaran hanya ke R2 (poskokarhutla-foto, siklus/{mentah,bersih,saji}/) lewat gudang.py,
 # yang hanya mengunggah berkas yang sidiknya berubah (manifest dibaca dari R2, diunggah paling akhir). DESAIN-TEKNIS 6.2/6.3.
-# Grup `siklus-batch` (harian, mingguan, bulanan, riwayat); grup `siklus-kaji` untuk job kaji (tiket kaji, belum ada skripnya).
+# Grup `siklus-batch` (harian, mingguan, bulanan, riwayat); grup `siklus-kaji` untuk job kaji (SK-058); lab dispatch (SK-103).
 # Satu run antre per grup: yang bentrok dengan job panjang bisa tertunda atau terlewat satu hari tanpa merusak data.
 # Cron (UTC) menghindari: 00:20 banjir, 01:10 gempa, 01:50 prediksi, 02:10 lintas, 02:30 kemitraan, 04:20 kaji, 06:40/18:40 udara,
 # 08:30 bangunan, 09:10 titik, 14:20 data. Rahasia: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, PIPA_TOKEN (semua sudah ada).
-# Belum ada skripnya, jadi tidak dipanggil: paparan kejadian aktif (paparan.py kab butuh daftar kabupaten + grid R2), kaji_*.py,
+# Belum dipanggil: paparan kab (butuh daftar kabupaten + grid R2),
 # adapter Overpass/Wikidata/Geofabrik (panen.py melewatinya dengan "dilewati" sampai adapter_g4.py ada).
 on:
   schedule:
     - cron: "50 3 * * *"
     - cron: "50 5 * * 0"
     - cron: "40 4 5 * *"
+    - cron: "20 1-22/3 * * *"
   workflow_dispatch:
     inputs:
       mode:
-        description: riwayat (bersih_dibi, bersih_logbook, arsip_kejadian; unggah berubah-saja)
+        description: riwayat (bersih_dibi, bersih_logbook, arsip_kejadian; unggah berubah-saja) atau lab (iklim_lab, ghsl_lab; agregat ke R2)
         type: choice
-        options: [riwayat]
+        options: [riwayat, lab]
         default: riwayat
+      prov:
+        description: "lab: kode provinsi 2 digit"
+        required: false
+      nc:
+        description: "lab: URL atau jalur NetCDF NEX-GDDP untuk iklim_lab (kosong = dilewati)"
+        required: false
+      ghsl:
+        description: "lab: argumen ghsl_lab, mis. 2015=a.tif,b.tif 2020=c.tif (kosong = dilewati)"
+        required: false
 
 env:
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -61,6 +71,44 @@ jobs:
         if: always()
         run: python3 -I scripts/siklus/gudang.py sinkron "$S" --wrangler "$W"
 
+  kaji:
+    if: github.event_name == 'schedule' && github.event.schedule == '20 1-22/3 * * *'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency: {group: siklus-kaji, cancel-in-progress: false}
+    env:
+      PIPA_TOKEN: ${{ secrets.PIPA_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Pasang wrangler sekali
+        run: |
+          npm i --prefix "$RUNNER_TEMP/w" wrangler@4.42.0
+          echo "W=$RUNNER_TEMP/w/node_modules/.bin/wrangler" >> "$GITHUB_ENV"
+          echo "S=$RUNNER_TEMP/s" >> "$GITHUB_ENV"
+      - name: Unduh grid halus bangunan dari R2
+        run: |
+          mkdir -p data/terkunci/bangunan; n=0
+          for p in 11 12 13 14 15 16 17 18 19 21 31 32 33 34 35 36 51 52 53 61 62 63 64 65 71 72 73 74 75 76 81 82 91 92 93 94 95 96; do
+            if "$W" r2 object get "poskokarhutla-foto/bangunan/halus_$p.json" --file "data/terkunci/bangunan/halus_$p.json" --remote >/dev/null 2>&1; then n=$((n+1)); else rm -f "data/terkunci/bangunan/halus_$p.json"; fi
+          done
+          echo "grid halus terunduh: $n/38"
+          [ "$n" -gt 0 ] || echo "::warning::tidak ada halus_<prov>.json di R2 bangunan/; paparan kejadian menunggu, bukan nol"
+      - name: Panen USGS ShakeMap
+        run: python3 -I scripts/siklus/panen.py usgs-shakemap --mentah "$S/siklus/mentah"
+      - name: Pasang kejadian hidup
+        run: python3 -I scripts/siklus/pasang.py masuk --hidup --basis "$BASIS" --mentah "$S/siklus/mentah" --kirim
+      - name: Paparan kejadian aktif
+        run: python3 -I scripts/siklus/paparan.py kejadian "$S"
+      - name: Kaji gempa
+        run: python3 -I scripts/siklus/kaji_gempa.py kirim --mentah "$S/siklus/mentah" --basis "$BASIS" --keluar "$S" --kirim
+      - name: Kaji banjir
+        run: python3 -I scripts/siklus/kaji_banjir.py kirim --paparan "$S/siklus/saji/paparan" --basis "$BASIS" --keluar "$S" --kirim
+      - name: Unggah ke R2 (hanya yang berubah)
+        if: always()
+        run: python3 -I scripts/siklus/gudang.py sinkron "$S" --wrangler "$W"
+
   mingguan:
     if: github.event_name == 'schedule' && github.event.schedule == '50 5 * * 0'
     runs-on: ubuntu-latest
@@ -79,12 +127,27 @@ jobs:
         run: |
           python3 -I scripts/siklus/adapter_g1.py uji
           python3 -I scripts/siklus/fasilitas.py uji
+      # halus_<prov>.json di-gitignore; diunggah job `gabung` bangunan.yml ke R2 bangunan/ (sudah, tanpa perubahan kontrak).
+      - name: Unduh grid halus bangunan dari R2
+        run: |
+          mkdir -p data/terkunci/bangunan; n=0
+          for p in 11 12 13 14 15 16 17 18 19 21 31 32 33 34 35 36 51 52 53 61 62 63 64 65 71 72 73 74 75 76 81 82 91 92 93 94 95 96; do
+            if "$W" r2 object get "poskokarhutla-foto/bangunan/halus_$p.json" --file "data/terkunci/bangunan/halus_$p.json" --remote >/dev/null 2>&1; then n=$((n+1)); else rm -f "data/terkunci/bangunan/halus_$p.json"; fi
+          done
+          echo "grid halus terunduh: $n/38"
+          [ "$n" -gt 0 ] || echo "::warning::tidak ada halus_<prov>.json di R2 bangunan/ (jalankan bangunan.yml mode bulanan); langkah fasilitas/kelas dilewati, bukan nol"
+
       - name: Panen G1 dan fasilitas (boleh gagal, sumber gagal = saji terakhir dipertahankan)
         continue-on-error: true
         run: |
           for s in gdacs glide usgs-fdsn osm-overpass wikidata; do
             python3 -I scripts/siklus/panen.py "$s" --mentah "$S/siklus/mentah" || echo "::warning::panen $s gagal"
           done
+      - name: Fasilitas semua kabupaten (boleh gagal)
+        continue-on-error: true
+        run: |
+          python3 -I scripts/siklus/fasilitas.py semua "$S"
+          # exit 1 bila ada kabupaten gagal; berkas yang sudah jadi tetap diunggah
       - name: Unggah ke R2 (hanya yang berubah)
         if: always()
         run: python3 -I scripts/siklus/gudang.py sinkron "$S" --wrangler "$W"
@@ -110,9 +173,37 @@ jobs:
         run: |
           python3 -I scripts/siklus/fasilitas.py uji
           python3 -I scripts/siklus/bahaya_kelas.py uji
+      # halus_<prov>.json di-gitignore; diunggah job `gabung` bangunan.yml ke R2 bangunan/ (sudah, tanpa perubahan kontrak).
+      - name: Unduh grid halus bangunan dari R2
+        run: |
+          mkdir -p data/terkunci/bangunan; n=0
+          for p in 11 12 13 14 15 16 17 18 19 21 31 32 33 34 35 36 51 52 53 61 62 63 64 65 71 72 73 74 75 76 81 82 91 92 93 94 95 96; do
+            if "$W" r2 object get "poskokarhutla-foto/bangunan/halus_$p.json" --file "data/terkunci/bangunan/halus_$p.json" --remote >/dev/null 2>&1; then n=$((n+1)); else rm -f "data/terkunci/bangunan/halus_$p.json"; fi
+          done
+          echo "grid halus terunduh: $n/38"
+          [ "$n" -gt 0 ] || echo "::warning::tidak ada halus_<prov>.json di R2 bangunan/ (jalankan bangunan.yml mode bulanan); langkah fasilitas/kelas dilewati, bukan nol"
       - name: Panen Geofabrik (boleh gagal; dilewati sampai adapter ada)
         continue-on-error: true
         run: python3 -I scripts/siklus/panen.py geofabrik-indonesia --mentah "$S/siklus/mentah"
+      - name: Fasilitas dan kelas bahaya semua kabupaten (boleh gagal)
+        continue-on-error: true
+        run: |
+          python3 -I scripts/siklus/fasilitas.py semua "$S" || echo "::warning::fasilitas semua exit non-nol"
+          python3 -I scripts/siklus/bahaya_kelas.py semua "$S"
+          # exit 1 bila ada kabupaten gagal; berkas yang sudah jadi tetap diunggah
+      - name: Panen CHIRPS dan PSMSL (boleh gagal, saji terakhir dipertahankan)
+        continue-on-error: true
+        run: |
+          for s in chirps-v3 psmsl; do
+            python3 -I scripts/siklus/panen.py "$s" --mentah "$S/siklus/mentah" || echo "::warning::panen $s gagal"
+          done
+      - name: BPS IKK dan IHPB (dilewati bila BPS_API_KEY kosong)
+        continue-on-error: true
+        env:
+          BPS_API_KEY: ${{ secrets.BPS_API_KEY }}
+        run: |
+          if [ -z "$BPS_API_KEY" ]; then echo "::warning::BPS_API_KEY kosong; langkah BPS dilewati"; exit 0; fi
+          python3 -I scripts/siklus/bps.py ambil --mentah "$S/siklus/mentah" --keluar "$S"
       - name: Unggah ke R2 (hanya yang berubah)
         if: always()
         run: python3 -I scripts/siklus/gudang.py sinkron "$S" --wrangler "$W"
@@ -140,4 +231,46 @@ jobs:
       - name: Lapis saji (manifest, laporan bersih, registri)
         run: python3 -I scripts/siklus/saji.py bangun "$S"
       - name: Unggah ke R2 (hanya yang berubah, 7.571+ berkas arsip, paralel 8)
+        run: python3 -I scripts/siklus/gudang.py sinkron "$S" --wrangler "$W"
+
+  lab:
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'lab'
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    concurrency: {group: siklus-batch, cancel-in-progress: false}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Pasang wrangler sekali
+        run: |
+          npm i --prefix "$RUNNER_TEMP/w" wrangler@4.42.0
+          echo "W=$RUNNER_TEMP/w/node_modules/.bin/wrangler" >> "$GITHUB_ENV"
+          echo "S=$RUNNER_TEMP/s" >> "$GITHUB_ENV"
+      # Satu-satunya tempat pip install pustaka lab; hanya agregat per kabupaten yang ke R2 (KA 29).
+      - name: Pasang pustaka lab
+        run: pip install duckdb xarray h5netcdf h5py fsspec aiohttp rasterio pyproj numpy
+      - name: Uji lab
+        run: |
+          python3 -I scripts/siklus/iklim_lab.py uji
+          python3 -I scripts/siklus/ghsl_lab.py uji
+      - name: iklim_lab (NEX-GDDP)
+        env:
+          PROV: ${{ inputs.prov }}
+          NC: ${{ inputs.nc }}
+        run: |
+          [ -n "$PROV" ] && [ -n "$NC" ] || { echo "::warning::prov/nc kosong; iklim_lab dilewati"; exit 0; }
+          python3 -I scripts/siklus/iklim_lab.py lab "$PROV" "$NC" "$RUNNER_TEMP/iklim.json"
+          python3 -I -c "import sys,json,importlib.util as u;s=u.spec_from_file_location('m','scripts/siklus/iklim_lab.py');m=u.module_from_spec(s);s.loader.exec_module(m);r=m.tulis(sys.argv[1],sys.argv[2],json.load(open(sys.argv[3])));print(r);sys.exit(1 if r else 0)" "$S" "$PROV" "$RUNNER_TEMP/iklim.json"
+      - name: ghsl_lab (GHSL BUILT-S)
+        env:
+          PROV: ${{ inputs.prov }}
+          GHSL: ${{ inputs.ghsl }}
+        run: |
+          [ -n "$PROV" ] && [ -n "$GHSL" ] || { echo "::warning::prov/ghsl kosong; ghsl_lab dilewati"; exit 0; }
+          # shellcheck disable=SC2086
+          python3 -I scripts/siklus/ghsl_lab.py lab "$PROV" $GHSL > "$RUNNER_TEMP/ghsl.json"
+          python3 -I -c "import sys,json,importlib.util as u;s=u.spec_from_file_location('m','scripts/siklus/ghsl_lab.py');m=u.module_from_spec(s);s.loader.exec_module(m);r=m.tulis(sys.argv[1],sys.argv[2],json.load(open(sys.argv[3])));print(r);sys.exit(1 if r else 0)" "$S" "$PROV" "$RUNNER_TEMP/ghsl.json"
+      - name: Unggah ke R2 (hanya yang berubah)
+        if: always()
         run: python3 -I scripts/siklus/gudang.py sinkron "$S" --wrangler "$W"

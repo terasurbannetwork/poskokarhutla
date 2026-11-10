@@ -32,121 +32,121 @@ Singkatan peran: WG tamu, BP akun instansi, PD pusdalops, KO koordalops, PM pimp
 | G3 | F4 Jitupasna ke R3P | SK-066 sampai SK-084 | 19 |
 | G4 | F5 Renkon dan Gladi, F6 Masa Depan, F7 Pintu | SK-085 sampai SK-111 | 27 |
 
-Semua status `belum`. Nomor disusun ulang karena belum ada tiket dikerjakan; tiket rahasia token lama dihapus (`PIPA_TOKEN` dipakai ulang).
+Status per tiket ada di kolom Status dan di baris `Status:` akhir tiap tiket (`selesai`, `tidak perlu`; tanpa baris = `belum`). Nomor disusun ulang pada Tinjauan 1; tiket rahasia token lama dihapus (`PIPA_TOKEN` dipakai ulang).
 
-| Kode | Judul |
-| --- | --- |
-| SK-001 | Skrip `uji:siklus` [induk] |
-| SK-002 | Registri sumber |
-| SK-003 | Konstanta Py dan JS |
-| SK-004 | `kunci.py` |
-| SK-005 | `panen.py` |
-| SK-006 | `gudang.py`, manifest, dan anggaran |
-| SK-007 | Ukur bucket R2 dan waktu unggah per objek [induk] |
-| SK-008 | `saji.py` |
-| SK-009 | `acuan.json` kasus G0 dan F1, gerbang publik |
-| SK-010 | `bersih_dibi.py` |
-| SK-011 | `bersih_logbook.py` |
-| SK-012 | Adapter panen G1: DIBI harian, GDACS, GLIDE, USGS |
-| SK-013 | `unggah_riwayat.py` dan `rollback.sql` |
-| SK-014 | Unggah riwayat dari mesin pemilik [pemilik] |
-| SK-015 | Migrasi G1 `sk_kejadian` |
-| SK-016 | `src/siklus_hitung.js` bagian F1 |
-| SK-017 | Cangkang `layaniSk`, cabang `worker.js`, dan bagian Siklus `src/hak.js` |
-| SK-018 | `lingkupKab4` untuk akun BPBD |
-| SK-019 | `run_worker_first`, aset berkunci, daftar putih |
-| SK-020 | Rute baca kejadian |
-| SK-021 | Rute tulis kejadian dan antrean |
-| SK-022 | Rute ingest |
-| SK-023 | `pasang.py` |
-| SK-024 | `arsip_kejadian.py` |
-| SK-025 | `siklus.yml` job harian, riwayat, mingguan |
-| SK-026 | Cangkang layar, `inti.js`, `kamus.json`, `hitung.js` |
-| SK-027 | Layar daftar kejadian |
-| SK-028 | Layar detail kejadian dan antrean |
-| SK-029 | Halaman publik kejadian dan `atribusi.json` |
-| SK-030 | Rute dummy dan isi G1 |
-| SK-031 | Tombol dummy dua ikon |
-| SK-032 | `bangunan.yml` 38 provinsi, pengukuran |
-| SK-033 | Bagi `bangunan.py` per pulau bila perlu |
-| SK-034 | Uji kontrak bangunan lama tidak berubah |
-| SK-035 | `bahaya_kelas.py` |
-| SK-036 | `paparan.py` |
-| SK-037 | `fasilitas.py` |
-| SK-038 | Rute paparan |
-| SK-039 | Layar paparan |
-| SK-040 | Berkas contoh dummy paparan di R2 |
-| SK-041 | Dummy layar paparan (mode contoh) |
-| SK-042 | Sapuan INP dan 1440/390 layar G1 |
-| SK-043 | Daftar layar G1 di gerbang kartu standar |
-| SK-044 | Uji peran, XSS, rencana kueri G1 |
-| SK-045 | `cakupan.json` G1 |
-| SK-046 | `tests/siklus/cakupan.json` dan peta data G1 |
-| SK-047 | Job mingguan dan bulanan: fasilitas dan kelas bahaya |
-| SK-048 | Peta data dan registri sumber |
-| SK-049 | Jawaban pertanyaan G1 [pemilik] |
-| SK-050 | Rilis G1 [induk] |
-| SK-051 | Migrasi G2 `sk_kaji` |
-| SK-052 | Adapter panen G2: USGS ShakeMap |
-| SK-053 | Rute kaji dan `ingest/kaji` |
-| SK-054 | `kaji_gempa.py` |
-| SK-055 | `kaji_banjir.py` |
-| SK-056 | `ujibalik.py` |
-| SK-057 | Layar kaji |
-| SK-058 | Job `kaji` di `siklus.yml` |
-| SK-059 | Dummy G2 |
-| SK-060 | Uji peran kaji |
-| SK-061 | Daftar layar kaji di gerbang kartu standar |
-| SK-062 | `cakupan.json` G2 |
-| SK-063 | `tests/siklus/cakupan.json` G2 |
-| SK-064 | Jawaban pertanyaan G2 [pemilik] |
-| SK-065 | Rilis G2 [induk] |
-| SK-066 | Jawaban pertanyaan G3 dan `BPS_API_KEY` [pemilik] |
-| SK-067 | Migrasi G3 |
-| SK-068 | `src/siklus_hitung.js` bagian F4 |
-| SK-069 | `hitung.js` F4 dan paritas |
-| SK-070 | Ekspor baca rumah rusak dan pemulihan |
-| SK-071 | Rute Jitupasna, baris, hitung, harga |
-| SK-072 | Rute R3P, tanda setuju, dan syarat fase |
-| SK-073 | `bps.py` IKK dan IHPB |
-| SK-074 | Job `bulanan` BPS di `siklus.yml` |
-| SK-075 | Layar pulih dan Jitupasna |
-| SK-076 | Layar R3P dan unduh draf |
-| SK-077 | Laporan Jitupasna lima bagian (PRD F4-08) |
-| SK-078 | `antre.js` formulir luring |
-| SK-079 | Dummy G3 |
-| SK-080 | Uji alur ujung ke ujung G3 |
-| SK-081 | Daftar layar pulih di gerbang kartu standar |
-| SK-082 | `cakupan.json` G3 |
-| SK-083 | `tests/siklus/cakupan.json` G3 |
-| SK-084 | Rilis G3 [induk] |
-| SK-085 | Migrasi G4 `sk_renkon`, `sk_gladi` |
-| SK-086 | `src/siklus_hitung.js` bagian F5 |
-| SK-087 | `hitung.js` F5 dan paritas |
-| SK-088 | Rute renkon dan ekspor stok |
-| SK-089 | Rute gladi dan pemutaran ulang |
-| SK-090 | Jenis pengingat renkon |
-| SK-091 | Layar renkon |
-| SK-092 | Layar gladi |
-| SK-093 | Adapter panen G4: CHIRPS, PSMSL, AR6 |
-| SK-094 | `iklim_lab.py` |
-| SK-095 | `ghsl_lab.py` dan saji masa depan |
-| SK-096 | Rute masa depan |
-| SK-097 | Layar masa depan dan `masa_depan_ringkas.json` |
-| SK-098 | Rute pintu dan registri |
-| SK-099 | Alat MCP ringkasan resmi |
-| SK-100 | Layar pintu `/siklus` dan registri |
-| SK-101 | Pembuka profil wilayah dari pintu (PRD F7-04) |
-| SK-102 | Kartu Siklus di pintu BNPB dan menu |
-| SK-103 | Job `bulanan` iklim dan `lab` |
-| SK-104 | Dummy G4 |
-| SK-105 | Uji peran lengkap |
-| SK-106 | Daftar layar G4 di gerbang kartu standar |
-| SK-107 | `cakupan.json` G4 |
-| SK-108 | `tests/siklus/cakupan.json` G4 |
-| SK-109 | Jawaban pertanyaan G4 [pemilik] |
-| SK-110 | Rilis G4 [induk] |
-| SK-111 | Penutupan program [induk] |
+| Kode | Judul | Status |
+| --- | --- | --- |
+| SK-001 | Skrip `uji:siklus` [induk] | belum |
+| SK-002 | Registri sumber | selesai |
+| SK-003 | Konstanta Py dan JS | selesai |
+| SK-004 | `kunci.py` | selesai |
+| SK-005 | `panen.py` | selesai |
+| SK-006 | `gudang.py`, manifest, dan anggaran | selesai |
+| SK-007 | Ukur bucket R2 dan waktu unggah per objek [induk] | selesai |
+| SK-008 | `saji.py` | selesai |
+| SK-009 | `acuan.json` kasus G0 dan F1, gerbang publik | selesai |
+| SK-010 | `bersih_dibi.py` | selesai |
+| SK-011 | `bersih_logbook.py` | selesai |
+| SK-012 | Adapter panen G1: DIBI harian, GDACS, GLIDE, USGS | selesai |
+| SK-013 | `unggah_riwayat.py` dan `rollback.sql` | selesai |
+| SK-014 | Unggah riwayat dari mesin pemilik [pemilik] | belum |
+| SK-015 | Migrasi G1 `sk_kejadian` | selesai |
+| SK-016 | `src/siklus_hitung.js` bagian F1 | selesai |
+| SK-017 | Cangkang `layaniSk`, cabang `worker.js`, dan bagian Siklus `src/hak.js` | selesai |
+| SK-018 | `lingkupKab4` untuk akun BPBD | selesai |
+| SK-019 | `run_worker_first`, aset berkunci, daftar putih | selesai |
+| SK-020 | Rute baca kejadian | selesai |
+| SK-021 | Rute tulis kejadian dan antrean | selesai |
+| SK-022 | Rute ingest | selesai |
+| SK-023 | `pasang.py` | selesai |
+| SK-024 | `arsip_kejadian.py` | selesai |
+| SK-025 | `siklus.yml` job harian, riwayat, mingguan | selesai |
+| SK-026 | Cangkang layar, `inti.js`, `kamus.json`, `hitung.js` | selesai |
+| SK-027 | Layar daftar kejadian | selesai |
+| SK-028 | Layar detail kejadian dan antrean | selesai |
+| SK-029 | Halaman publik kejadian dan `atribusi.json` | selesai |
+| SK-030 | Rute dummy dan isi G1 | selesai |
+| SK-031 | Tombol dummy dua ikon | selesai |
+| SK-032 | `bangunan.yml` 38 provinsi, pengukuran | selesai |
+| SK-033 | Bagi `bangunan.py` per pulau bila perlu | tidak perlu |
+| SK-034 | Uji kontrak bangunan lama tidak berubah | selesai |
+| SK-035 | `bahaya_kelas.py` | selesai |
+| SK-036 | `paparan.py` | selesai |
+| SK-037 | `fasilitas.py` | selesai |
+| SK-038 | Rute paparan | selesai |
+| SK-039 | Layar paparan | selesai |
+| SK-040 | Berkas contoh dummy paparan di R2 | selesai |
+| SK-041 | Dummy layar paparan (mode contoh) | selesai |
+| SK-042 | Sapuan INP dan 1440/390 layar G1 | belum |
+| SK-043 | Daftar layar G1 di gerbang kartu standar | selesai |
+| SK-044 | Uji peran, XSS, rencana kueri G1 | selesai |
+| SK-045 | `cakupan.json` G1 | selesai |
+| SK-046 | `tests/siklus/cakupan.json` dan peta data G1 | selesai |
+| SK-047 | Job mingguan dan bulanan: fasilitas dan kelas bahaya | selesai |
+| SK-048 | Peta data dan registri sumber | selesai |
+| SK-049 | Jawaban pertanyaan G1 [pemilik] | belum |
+| SK-050 | Rilis G1 [induk] | belum |
+| SK-051 | Migrasi G2 `sk_kaji` | belum |
+| SK-052 | Adapter panen G2: USGS ShakeMap | belum |
+| SK-053 | Rute kaji dan `ingest/kaji` | belum |
+| SK-054 | `kaji_gempa.py` | belum |
+| SK-055 | `kaji_banjir.py` | belum |
+| SK-056 | `ujibalik.py` | belum |
+| SK-057 | Layar kaji | belum |
+| SK-058 | Job `kaji` di `siklus.yml` | belum |
+| SK-059 | Dummy G2 | belum |
+| SK-060 | Uji peran kaji | belum |
+| SK-061 | Daftar layar kaji di gerbang kartu standar | belum |
+| SK-062 | `cakupan.json` G2 | belum |
+| SK-063 | `tests/siklus/cakupan.json` G2 | belum |
+| SK-064 | Jawaban pertanyaan G2 [pemilik] | belum |
+| SK-065 | Rilis G2 [induk] | belum |
+| SK-066 | Jawaban pertanyaan G3 dan `BPS_API_KEY` [pemilik] | belum |
+| SK-067 | Migrasi G3 | belum |
+| SK-068 | `src/siklus_hitung.js` bagian F4 | belum |
+| SK-069 | `hitung.js` F4 dan paritas | belum |
+| SK-070 | Ekspor baca rumah rusak dan pemulihan | belum |
+| SK-071 | Rute Jitupasna, baris, hitung, harga | belum |
+| SK-072 | Rute R3P, tanda setuju, dan syarat fase | belum |
+| SK-073 | `bps.py` IKK dan IHPB | belum |
+| SK-074 | Job `bulanan` BPS di `siklus.yml` | belum |
+| SK-075 | Layar pulih dan Jitupasna | belum |
+| SK-076 | Layar R3P dan unduh draf | belum |
+| SK-077 | Laporan Jitupasna lima bagian (PRD F4-08) | belum |
+| SK-078 | `antre.js` formulir luring | belum |
+| SK-079 | Dummy G3 | belum |
+| SK-080 | Uji alur ujung ke ujung G3 | belum |
+| SK-081 | Daftar layar pulih di gerbang kartu standar | belum |
+| SK-082 | `cakupan.json` G3 | belum |
+| SK-083 | `tests/siklus/cakupan.json` G3 | belum |
+| SK-084 | Rilis G3 [induk] | belum |
+| SK-085 | Migrasi G4 `sk_renkon`, `sk_gladi` | belum |
+| SK-086 | `src/siklus_hitung.js` bagian F5 | belum |
+| SK-087 | `hitung.js` F5 dan paritas | belum |
+| SK-088 | Rute renkon dan ekspor stok | belum |
+| SK-089 | Rute gladi dan pemutaran ulang | belum |
+| SK-090 | Jenis pengingat renkon | belum |
+| SK-091 | Layar renkon | belum |
+| SK-092 | Layar gladi | belum |
+| SK-093 | Adapter panen G4: CHIRPS, PSMSL, AR6 | belum |
+| SK-094 | `iklim_lab.py` | belum |
+| SK-095 | `ghsl_lab.py` dan saji masa depan | belum |
+| SK-096 | Rute masa depan | belum |
+| SK-097 | Layar masa depan dan `masa_depan_ringkas.json` | belum |
+| SK-098 | Rute pintu dan registri | belum |
+| SK-099 | Alat MCP ringkasan resmi | belum |
+| SK-100 | Layar pintu `/siklus` dan registri | belum |
+| SK-101 | Pembuka profil wilayah dari pintu (PRD F7-04) | belum |
+| SK-102 | Kartu Siklus di pintu BNPB dan menu | belum |
+| SK-103 | Job `bulanan` iklim dan `lab` | belum |
+| SK-104 | Dummy G4 | belum |
+| SK-105 | Uji peran lengkap | belum |
+| SK-106 | Daftar layar G4 di gerbang kartu standar | belum |
+| SK-107 | `cakupan.json` G4 | belum |
+| SK-108 | `tests/siklus/cakupan.json` G4 | belum |
+| SK-109 | Jawaban pertanyaan G4 [pemilik] | belum |
+| SK-110 | Rilis G4 [induk] | belum |
+| SK-111 | Penutupan program [induk] | belum |
 
 ## 3. Gelombang G1: lapis gudang data, Buku Besar, Peta Paparan
 
@@ -164,6 +164,7 @@ Berkas: `scripts/siklus/sumber.json`, `scripts/siklus/registri.py`, `tests/siklu
 Langkah: lengkapi 42 sumber yang sudah ada di `sumber.json` (jangan membuat daftar kedua) dengan `pemilik` (agent pengambil), `pemakai` (fitur, skrip, atau layar yang membaca), dan `jeda` (detik antarpermintaan, paling sedikit 2), di samping id, endpoint, lisensi dan atribusi (teks yang belum dibaca ditandai `menunggu`), jadwal, status uji (DT 6, KP 11, R2); anggaran per lapis dan fitur (tidak melampaui 4 GB, nilai `menunggu` bila tak diukur); sumber `gagal` tidak diambil; subperintah `uji` memeriksa pemilik, pemakai, jadwal (cermin `gerbang-peta-data`).
 Bukti: `python3 -I scripts/siklus/registri.py uji`; `node --test tests/siklus/gerbang_registri.test.mjs` (UJ-G0-01).
 Pemeriksa: higiene-repo.
+Status: selesai
 
 #### SK-003 Konstanta Py dan JS
 Pengerja: siklus. Bergantung: SK-001. Uji: dibuat `tests/siklus/paritas.test.mjs`, `tests/siklus/fixtures/acuan.json`.
@@ -171,66 +172,77 @@ Berkas: `scripts/siklus/konst.py`, `public/siklus/konst.js`, `tests/siklus/parit
 Langkah: konstanta bernama dari ALG: `JENDELA_JENIS` (semua 3), `BASI_HARI` 3, `PITA` 4, ambang bangunan 0,70, batas InaRISK 0,33 dan 0,66, `rehab_macet_hari` 60, `renkon_segera_hari` 90, tabel JRC, `TAG_OSM`; parameter tanpa nilai tertulis `null` dan "menunggu", tidak ditebak.
 Bukti: `node --test tests/siklus/paritas.test.mjs` (konst.py sama dengan konst.js).
 Pemeriksa: validasi-model.
+Status: selesai
 
 #### SK-004 `kunci.py`
 Pengerja: siklus. Bergantung: SK-001. Uji: `uji` di `kunci.py`.
 Berkas: `scripts/siklus/kunci.py`. Di luar: `scripts/bnpb/kunci_kejadian.py` (dibaca, tidak diubah), tabel kunci kedua.
 Langkah: bungkus `kab_kunci` dan `hvc_dasar.kab_kode`; tiga konvensi (`32|Bogor`, `3201`, `32.01`) menjadi BPS 4 digit; tak terpetakan dihitung `kab_tak_terpetakan`.
 Bukti: `python3 -I scripts/siklus/kunci.py uji` (UJ-G0-06). Pemeriksa: higiene-repo.
+Status: selesai
 
 #### SK-005 `panen.py`
 Pengerja: siklus. Bergantung: SK-002. Uji: `uji` di `panen.py`.
 Berkas: `scripts/siklus/panen.py`. Di luar: adapter sumber yang lisensinya `menunggu`.
 Langkah: satu klien jaringan: UA proyek, jeda minimal 2 detik antarpermintaan, 3 kali coba jeda 2 detik, hormati 429 `Retry-After`, tanpa CAPTCHA; gagal total mempertahankan `saji` terakhir dan memberi `menunggu`, tidak mengisi nol; hasil ke `mentah/<sumber>/<YYYY>/<tanggal>.<ext>`; adapter dimuat dari `scripts/siklus/adapter_g*.py` (tiket adapter).
 Bukti: `python3 -I scripts/siklus/panen.py uji` (server tiruan, UJ-G0-05). Pemeriksa: security-reviewer.
+Status: selesai
 
 #### SK-006 `gudang.py`, manifest, dan anggaran
 Pengerja: siklus. Bergantung: SK-002. Uji: `uji` di `gudang.py`.
 Berkas: `scripts/siklus/gudang.py`. Di luar: bucket `bangunan/` (tidak dipindah), `wrangler deploy`.
 Langkah: `put/get/hapus` lewat biner `wrangler@4.42.0` yang dipasang SEKALI per job (bukan `npx` per objek) atau folder `--lokal`; `ls` dibaca dari `manifest.json` (wrangler 4.42.0 tidak punya `r2 bulk` maupun daftar objek); sidik SHA-256 kanonik (ALG G0.2) dibandingkan dengan manifest, hanya berkas berubah diunggah (`xargs -P 8`, DT 6.2) dan manifest diunggah paling akhir; tulis `anggaran.json`; tolak unggah di atas anggaran dengan laporan `{lapis, berkas, u, t_L, a_L, kelebihan}`; `t_L` dari manifest, bukan pindai R2.
 Bukti: `python3 -I scripts/siklus/gudang.py uji` (UJ-G0-02, 03, 04, 14). Pemeriksa: higiene-repo.
+Status: selesai
 
 #### SK-007 Ukur bucket R2 dan waktu unggah per objek [induk]
 Pengerja: mekanik-mesin. Bergantung: SK-006. Uji: tidak ada.
 Berkas: tidak ada berkas kode; hasil dilaporkan dan angka anggaran `menunggu` di registri diisi tiket cakupan G1. Di luar: menulis ke bucket.
 Langkah: `wrangler r2 bucket info` untuk bucket foto; catat pemakaian awal dan sisa dari batas 10 GB; unggah 40 berkas kecil uji lewat `gudang.py` dan catat detik per objek (t di DT 6.2, asumsi 3 detik); laporkan ke sesi induk.
 Bukti: keluaran perintah dilampirkan di laporan. Pemeriksa: sesi induk.
+Status: selesai
 
 #### SK-008 `saji.py`
 Pengerja: siklus. Bergantung: SK-006. Uji: `uji` di `saji.py`.
 Berkas: `scripts/siklus/saji.py`. Di luar: berkas `public/` selain `--public` yang dijalankan manual.
 Langkah: bangun `manifest.json`, `laporan_bersih.json`, `registri.json`, `anggaran.json`; selubung bersama `{v, jenis, dibuat, sumber, yakin}`; tolak berkas lewat batas DT 5.2 dan kunci `total`, `jumlah_gabungan`, `rata`; opsi `--public` membangkitkan `atribusi.json` dan `masa_depan_ringkas.json`.
 Bukti: `python3 -I scripts/siklus/saji.py uji` (UJ-G0-10, UJ-UK-03). Pemeriksa: selera-angka.
+Status: selesai
 
 #### SK-009 `acuan.json` kasus G0 dan F1, gerbang publik
 Pengerja: siklus. Bergantung: SK-003, SK-008. Uji: dibuat `tests/siklus/gerbang_publik.test.mjs`; diperluas `fixtures/acuan.json`.
 Berkas: `tests/siklus/fixtures/acuan.json`, `tests/siklus/gerbang_publik.test.mjs`. Di luar: berkas `tests/agen/**`.
 Langkah: kasus acuan dari ALG yang dihitung ulang (vektor ID F1.2 `KJ-2026-9A2WGN3G`, `KJ-2026-8N57ZZ0Y`, `KJ-2026-MT5Z0ZVT`, `KJ-2026-K3JQG02Y`, sidik, anggaran, selisih); gerbang `siklus_publik`: berkas `public/siklus/**` paling banyak 40, tanpa surel, telepon, koordinat lebih dari 3 desimal, `innerHTML` berdata mentah, atribut `on*`, titik tengah, em dash, dan kata merek terlarang KA 23.
 Bukti: `node --test tests/siklus/paritas.test.mjs tests/siklus/gerbang_publik.test.mjs` (INV-6, INV-8, UJ-G0-11). Pemeriksa: higiene-repo.
+Status: selesai
 
 #### SK-010 `bersih_dibi.py`
 Pengerja: siklus. Bergantung: SK-004, SK-006. Uji: `uji` di `bersih_dibi.py`.
 Berkas: `scripts/siklus/bersih_dibi.py`. Di luar: `public/data/dibi_*`.
 Langkah: `mentah/dibi_harian/*` dan `dibi_kejadian.json` menjadi `bersih/dibi/<YYYY>.jsonl.gz` kunci kab4 Kemendagri (lewat nama + provinsi; `id_kab_bps` BPS tidak dipakai, tak cocok = `wilayah_belum_terpetakan`); aturan F1.6 nomor 1 sampai 3 dan 5; hitung per alasan; masuk = tersisa + dibuang.
 Bukti: `python3 -I scripts/siklus/bersih_dibi.py uji` (UJ-G0-07). Pemeriksa: validasi-model.
+Status: selesai
 
 #### SK-011 `bersih_logbook.py`
 Pengerja: siklus. Bergantung: SK-004, SK-006. Uji: `uji` di `bersih_logbook.py`.
 Berkas: `scripts/siklus/bersih_logbook.py`. Di luar: `data/pusdalops/logbook_kejadian.csv` (dibaca saja).
 Langkah: enam aturan ALG F1.6 berurutan; hanya kolom terstruktur, teks bebas (`kendala`, `kebutuhan`, narasi) dibuang; saring teks luar KP 6.1 (NFKC, buang bidi dan kontrol, buang `<` `>`, potong); laporan jumlah baris dibuang per alasan.
 Bukti: `python3 -I scripts/siklus/bersih_logbook.py uji` (UJ-G0-08, UJ-G0-09). Pemeriksa: security-reviewer.
+Status: selesai
 
 #### SK-012 Adapter panen G1: DIBI harian, GDACS, GLIDE, USGS
 Pengerja: siklus. Bergantung: SK-002, SK-005. Uji: `uji` di `adapter_g1.py`.
 Berkas: `scripts/siklus/adapter_g1.py`. Di luar: ReliefWeb (U6), PetaBencana tanpa lisensi, riwayat DIBI penuh (itu lewat `unggah_riwayat.py`).
 Langkah: adapter lewat `panen.py` (jeda 2 detik): DIBI harian yang ada di repo (`public/data/dibi_kejadian.json` dan sejenisnya) ke `mentah/dibi_harian/`; GDACS (GeoJSON, RSS), GLIDE, USGS FDSN dengan id disimpan sebagai pengenal luar, bukan angka (PRD F1-07); lisensi dan atribusi tiap sumber dari `sumber.json`; gagal = pertahankan `saji` terakhir dan `menunggu`. Adapter G2 (USGS ShakeMap) dan G4 (iklim) masuk di gelombangnya.
 Bukti: `python3 -I scripts/siklus/adapter_g1.py uji` (server tiruan, UJ-G0-05). Pemeriksa: security-reviewer.
+Status: selesai
 
 #### SK-013 `unggah_riwayat.py` dan `rollback.sql`
 Pengerja: siklus. Bergantung: SK-006, SK-010, SK-011. Uji: `uji` di `unggah_riwayat.py` (memeriksa daftar tabel `rollback.sql`).
 Berkas: `scripts/siklus/unggah_riwayat.py`, `scripts/siklus/rollback.sql`. Di luar: `migrations/`.
 Langkah: unggah DIBI harian penuh (57.161 baris) ke `mentah/dibi_harian/` dari mesin pemilik, cetak hash dan jumlah baris; `rollback.sql` `DROP TABLE IF EXISTS` untuk semua tabel `sk_*` DT 3 (keempat gelombang, urut terbalik) sekaligus, sehingga tiket migrasi tidak perlu menyunting berkas siklus; `uji` memeriksa tiap tabel DT 3 ada di berkas itu.
 Bukti: `python3 -I scripts/siklus/unggah_riwayat.py uji` (UJ-G0-13 bagian Py). Pemeriksa: migrasi-idempoten.
+Status: selesai
 
 #### SK-014 Unggah riwayat dari mesin pemilik [pemilik]
 Pengerja: pemilik. Bergantung: SK-013.
@@ -243,66 +255,77 @@ Pengerja: warga-api. Bergantung: SK-001, SK-013. Uji: dibuat `tests/warga/siklus
 Berkas: `migrations/<n>_sk_kejadian.sql` (n = nomor kosong berikutnya saat tiket), `tests/warga/migrasi_beku.json`, `tests/warga/siklus_skema.test.mjs`. Di luar: tabel `meja_*`, migrasi yang ada, `scripts/siklus/rollback.sql`.
 Langkah: `sk_kejadian` (fase termasuk `digabung`, kolom `ke`), `sk_kejadian_kab`, `sk_kejadian_alias`, `sk_kejadian_sumber` (`asal_id`, indeks `sk_ks_mulai`), `sk_jejak`, indeks parsial, trigger `sk_kejadian_fase` dan `sk_kejadian_publik` persis DT 3.1; uji tambahan: tiap tabel migrasi ada di `rollback.sql` dan skrip itu jalan di Miniflare mengosongkan skema.
 Bukti: `node --test tests/warga/siklus_skema.test.mjs` (UJ-F1-01, 02, 03, UJ-G0-13); `npm run uji:warga`. Pemeriksa: migrasi-idempoten.
+Status: selesai
 
 #### SK-016 `src/siklus_hitung.js` bagian F1
 Pengerja: warga-api. Bergantung: SK-009. Uji: dibuat `tests/warga/siklus_hitung.test.mjs`.
 Berkas: `src/siklus_hitung.js`, `tests/warga/siklus_hitung.test.mjs`. Di luar: bagian F4 dan F5; `tests/siklus/**` (tidak disunting; `acuan.json` dibaca).
 Langkah: fungsi murni `idKejadian(kunci, n)` (SHA-256, 40 bit, Crockford base32, ALG F1.2; hasil sama persis dengan vektor di `acuan.json`), selisih antarsumber (ALG F1.7), resolusi alias (pengaman 32 langkah), `basi`; tanpa dependensi D1.
 Bukti: `node --test tests/warga/siklus_hitung.test.mjs` (UJ-F1-04 bagian JS, UJ-F1-08 resolusi, UJ-F1-09). Pemeriksa: selera-angka.
+Status: selesai
 
 #### SK-017 Cangkang `layaniSk`, cabang `worker.js`, dan bagian Siklus `src/hak.js`
 Pengerja: warga-api. Bergantung: SK-015. Uji: dibuat `tests/warga/siklus_peran.test.mjs`.
 Berkas: `src/siklus.js`, `src/worker.js`, `src/hak.js`, `tests/warga/siklus_peran.test.mjs` (satu cabang sebelum gerbang host, pola `layaniKm`, cabang instansi lebih dulu dari pembungkus `/api/instansi`). Di luar: logika rute fitur. Sebelum menyunting `src/hak.js`: `git status --porcelain src/hak.js`, baca diff, tambah di akhir berkas.
 Langkah: bagian Siklus `src/hak.js` (DT 2.3: `MATRIKS` `sk_*` G1, `sedia`, `skBatch` yang menolak batch tanpa `sk_jejak`); `src/siklus*.js` tidak menyentuh `env.DB`. Pencocokan jalur, gerbang peran pertama, `tolakOrigin`, `x-pb`, `bacaBody`, laju, `sk_*` belum ada = 503, `env.SIKLUS_MATI === "1"` = 503, jawaban staf `private, no-store`, header halaman `halamanBnpbPublik({pribadi:true})`.
 Bukti: `node --test tests/warga/siklus_peran.test.mjs` bagian cangkang (UJ-KP-01, 04, 05, 10); `node --test tests/agen/gerbang-d1.test.mjs`. Pemeriksa: guard-api, security-reviewer.
+Status: selesai
 
 #### SK-018 `lingkupKab4` untuk akun BPBD
 Pengerja: warga-api. Bergantung: SK-017. Uji: dibuat `tests/warga/siklus_kab.test.mjs`.
 Berkas: `src/siklus_kab.js`, `tests/warga/siklus_kab.test.mjs`. Di luar: `src/instansi.js` (`dalamLingkup` tidak diubah).
 Langkah: DT 4.1: `lingkupKab4(akun, kab4)` (provinsi = 2 digit pertama; akun `kab` dibandingkan lewat nama); konstanta `NAMA_KAB4` dibangun sekali dari kolom `kode` dan `kab` `scripts/udara/kota.json`; uji membuktikan konstanta sama dengan `kota.json`.
 Bukti: `node --test tests/warga/siklus_kab.test.mjs` (akun `kab`: kabupaten sendiri lolos, tetangga dan provinsi lain ditolak; akun `prov`: provinsi sendiri lolos, provinsi lain ditolak; kab4 tak dikenal ditolak). Pemeriksa: guard-api.
+Status: selesai
 
 #### SK-019 `run_worker_first`, aset berkunci, daftar putih
 Pengerja: warga-api. Bergantung: SK-017. Uji: dibuat `tests/warga/siklus_aset.test.mjs`.
 Berkas: `wrangler.jsonc`, `src/siklus.js`, `tests/warga/siklus_aset.test.mjs`. Di luar: pola LogPal yang ada.
 Langkah: tambah `"/siklus/*"` ke `run_worker_first` (kini `["/*.html", "/logpal/*"]`) dan komentar alasannya; aset `private, max-age=600`; daftar putih tanpa sesi: cangkang publik, `publik.js` (mandiri), `publik.css`, `data/{atribusi,kamus,masa_depan_ringkas}.json`; `/siklus/kejadian/:id` tamu menerima `publik.html`, halaman lain tanpa sesi 303 `/admin/masuk?ke=`; catat jalur di `PUBLIK_TANPA_SESI` dengan alasan.
 Bukti: `node --test tests/warga/siklus_aset.test.mjs` (UJ-KP-10); `npm run uji:warga`. Pemeriksa: guard-api.
+Status: selesai
 
 #### SK-020 Rute baca kejadian
 Pengerja: warga-api. Bergantung: SK-016 sampai SK-018. Uji: dibuat `tests/warga/siklus_kejadian.test.mjs`.
 Berkas: `src/siklus_kejadian.js`, `src/hak.js` (fungsi `sk*` baca), `tests/warga/siklus_kejadian.test.mjs`. Di luar: rute tulis.
 Langkah: `GET kejadian`, `kejadian/arsip` (aliran R2), `kejadian/:id` (D1 dulu, lalu R2 bila `tahun` dan `kab4` ada; kab, sumber berdampingan, `selisih[]` dihitung server, alias `{alias_ke}`); daftar tanpa fase `digabung`; BP lewat `lingkupKab4`, `publik/kejadian/:id` (404 seragam, tembolok tepi), `jejak`; indeks terpakai, rentang lebih dari 366 hari 400.
 Bukti: `node --test tests/warga/siklus_kejadian.test.mjs` (UJ-F1-12 bagian baca, UJ-F1-14). Pemeriksa: guard-api.
+Status: selesai
 
 #### SK-021 Rute tulis kejadian dan antrean
 Pengerja: warga-api. Bergantung: SK-016, SK-020. Uji: dibuat `tests/warga/siklus_xss.test.mjs`; diperluas `siklus_kejadian.test.mjs`.
 Berkas: `src/siklus_kejadian.js`, `src/hak.js`, `tests/warga/siklus_kejadian.test.mjs`, `tests/warga/siklus_xss.test.mjs`. Di luar: ingest.
 Langkah: `POST kejadian` (id dari `idKejadian`, tabrakan hash ulang), `promosi` (body `{tahun,kab4}`; baris tanpa wilayah 400), `fase` (turun ke `terdeteksi`/`dibatalkan` menurunkan `publik` ke 0 dalam batch yang sama), `publik`, `gabung` (fase `digabung`, `ke`, `sk_kejadian_kab`), `koreksi` (pengganti pecah), `antrean`; satu batch dengan satu baris `sk_jejak`; laju per DT 4; ringkasan publik tanpa telepon atau surel (`teks()`).
 Bukti: `node --test tests/warga/siklus_kejadian.test.mjs tests/warga/siklus_xss.test.mjs` (UJ-F1-08, 12, 14, bagian rute UJ-F1-15; UJ-KP-07, 08, 11). Pemeriksa: security-reviewer, guard-api.
+Status: selesai
 
 #### SK-022 Rute ingest
 Pengerja: warga-api. Bergantung: SK-016, SK-017. Uji: dibuat `tests/warga/siklus_ingest.test.mjs`.
 Berkas: `src/siklus_kejadian.js`, `src/hak.js`, `tests/warga/siklus_ingest.test.mjs`. Di luar: `pasang.py`; rahasia baru (memakai `PIPA_TOKEN` yang ada).
 Langkah: `ingest/jendela` dan `ingest/sumber` (baca terindeks, kolom minimal, `lanjut` untuk halaman) dan `ingest/kejadian` Bearer `PIPA_TOKEN` waktu-tetap (pola `src/pipa.js`), batch paling banyak 200, id kejadian `baru` dari `idKejadian` dengan pemeriksaan tabrakan D1, `ON CONFLICT (sumber, kode, dummy) DO NOTHING`, dummy 400, cookie sesi 400, satu batch plus jejak `sistem:ingest`; `ingest/kaji` ditunda ke tiket rute kaji.
 Bukti: `node --test tests/warga/siklus_ingest.test.mjs` (UJ-F1-13, UJ-KP-06). Pemeriksa: security-reviewer.
+Status: selesai
 
 #### SK-023 `pasang.py`
 Pengerja: siklus. Bergantung: SK-003, SK-004, SK-009, SK-022. Uji: `uji` di `pasang.py`; diperluas `paritas.test.mjs`.
 Berkas: `scripts/siklus/pasang.py`. Di luar: `scripts/bnpb/kunci_kejadian.py`, `rekonsiliasi_dalops_dibi.py` (dipakai ulang).
 Langkah: urutan kanonik, ID `KJ-` ALG F1.2 (Crockford base32, tabrakan `kunci|n`), dua mode (kumpulan sejarah rakus; masuk bertahap hitung kandidat), multi-kabupaten, karhutla `sel:<i>:<j>`, penjaga kode dipakai ulang, fase otomatis hanya `terdeteksi` dan `siap_verifikasi`; GET `ingest/jendela` dan `ingest/sumber` (dipaginasi), hitung, POST ingest.
 Bukti: `python3 -I scripts/siklus/pasang.py uji`; `node --test tests/siklus/paritas.test.mjs` (UJ-F1-04 sampai 07, 10; INV-9). Pemeriksa: validasi-model.
+Status: selesai
 
 #### SK-024 `arsip_kejadian.py`
 Pengerja: siklus. Bergantung: SK-010, SK-011, SK-023. Uji: `uji` di `arsip_kejadian.py`.
 Berkas: `scripts/siklus/arsip_kejadian.py`. Di luar: D1.
 Langkah: `bersih/*` menjadi `kejadian/arsip/<YYYY>/<prov>.json` dan `k<kab4>.json` beku, id sama dengan hasil `pasang.py` (ALG F1.2, tabrakan hash `kunci|n`), baris tanpa wilayah di `tanpa_wilayah`, `selisih` hanya bila dua sumber melapor, `sha256_sumber`, tanpa kunci `total`.
 Bukti: `python3 -I scripts/siklus/arsip_kejadian.py uji` (UJ-F1-11). Pemeriksa: validasi-model.
+Status: selesai
 
 #### SK-025 `siklus.yml` job harian, riwayat, mingguan
 Pengerja: mekanik-mesin. Bergantung: SK-006, SK-008, SK-010 sampai SK-012, SK-023, SK-024. Uji: tidak ada.
 Berkas: `.github/workflows/siklus.yml`.
 Langkah: job `harian` (`50 3 * * *`, 60 menit) urutan DT 6.2; `riwayat` (dispatch `mode: riwayat`, 120 menit); `mingguan` (`50 5 * * 0`, 120 menit, tidak sama dengan menit dan jam `kaji`): panen adapter G1 (GDACS, GLIDE, USGS). Grup concurrency `siklus-batch` (grup `siklus-kaji` untuk job kaji dibuat tiket kaji); tidak commit, tidak terbit; wrangler dipasang sekali per job; secret `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `PIPA_TOKEN` (sudah ada); langkah sesudah `pasang` tetap jalan bila `pasang` gagal jaringan.
 Bukti: `npm run uji:agen`; `python3 scripts/agents/peta_data.py periksa`. Pemeriksa: higiene-repo.
+Status: selesai
 
 ### 3.3 Layar F1
 
@@ -311,36 +334,42 @@ Pengerja: siklus. Bergantung: SK-003, SK-016. Uji: dibuat `tests/siklus/hitung.t
 Berkas: `public/siklus/{index.html,siklus.css,inti.js,hitung.js}`, `public/siklus/data/kamus.json`. Di luar: kepala situs bersama, `public/inti/*`.
 Langkah: kepala situs navy bersama dan token `tema.css`; `inti.js` (`esc()`, fetch ber-`x-pb`, pil keyakinan enam nilai, `fmt` dari `/inti/format.js` lewat `inti.js` (tanpa formatter kedua)); `kamus.json` label, fase, jenis, singkatan; `hitung.js` cermin `siklus_hitung.js` (paritas dijaga uji); komponen `.sk-*` hanya daftar DS 2.8; empat keadaan layar.
 Bukti: `node --test tests/siklus/hitung.test.mjs tests/siklus/gerbang_publik.test.mjs`. Pemeriksa: selera-angka.
+Status: selesai
 
 #### SK-027 Layar daftar kejadian
 Pengerja: siklus. Bergantung: SK-020, SK-026. Uji: dibuat `tests/siklus/layar_kejadian.test.mjs`.
 Berkas: `public/siklus/kejadian.js`. Di luar: halaman detail.
 Langkah: daftar Buku Besar (DS 3.2), saring jenis, wilayah, fase, rentang; kartu `.ex.ex-std`; deretan pilihan penuh lebar berikon; arsip disaring di peramban per provinsi dan tahun; baris arsip tanpa wilayah tampil "wilayah belum terpetakan, belum bisa dipromosikan".
 Bukti: `node --test tests/siklus/layar_kejadian.test.mjs` (UJ-F1-16, 1440 dan 390). Pemeriksa: selera-angka, inp-reviewer.
+Status: selesai
 
 #### SK-028 Layar detail kejadian dan antrean
 Pengerja: siklus. Bergantung: SK-021, SK-027. Uji: diperluas `layar_kejadian.test.mjs`.
 Berkas: `public/siklus/kejadian.js`, `public/siklus/pintu.js` hanya bila perlu, `public/siklus/antre.js` TIDAK (milik tiket formulir luring G3). Di luar: halaman publik.
 Langkah: linimasa satu halaman DS 3.3: dampak per sumber berdampingan dengan selisih, tanpa kolom total; aksi fase, gabung, publikasi sesuai peran; antrean ambigu dan tanpa wilayah; tautan keluar dari templat host tetap; id alias mengarah ke penyintas; koreksi manual baris sumber (pengganti pecah); promosi arsip memakai `{tahun,kab4}`.
 Bukti: `node --test tests/siklus/layar_kejadian.test.mjs` (UJ-F1-15 bagian layar, 16). Pemeriksa: inp-reviewer, security-reviewer.
+Status: selesai
 
 #### SK-029 Halaman publik kejadian dan `atribusi.json`
 Pengerja: siklus. Bergantung: SK-009, SK-019, SK-020, SK-026. Uji: diperluas `gerbang_publik.test.mjs`.
 Berkas: `public/siklus/publik.html`, `publik.css`, `publik.js`, `public/siklus/data/atribusi.json`. Di luar: `inti.js` (publik.js mandiri).
 Langkah: cangkang publik ringkasan resmi saja (U3 bawaan); panel "Lisensi dan atribusi" dari `atribusi.json` (bukan kaki sumber kartu); tanpa nama korban dan rincian; angka di bawah 5 "di bawah 5".
 Bukti: `node --test tests/siklus/gerbang_publik.test.mjs tests/warga/siklus_aset.test.mjs` (UJ-F1-14, UJ-KP-12). Pemeriksa: security-reviewer, selera-angka.
+Status: selesai
 
 #### SK-030 Rute dummy dan isi G1
 Pengerja: warga-api. Bergantung: SK-021. Uji: dibuat `tests/warga/siklus_dummy.test.mjs`.
 Berkas: `src/siklus_dummy.js`, `src/hak.js`, `tests/warga/siklus_dummy.test.mjs`. Di luar: ember fitur lain.
 Langkah: `POST /api/siklus/dummy {aksi:isi|hapus,halaman,periode?,kab4?}` SA saja, isi ditentukan halaman: kejadian 7 fase, satu sumber `ambigu`, satu `tanpa_wilayah`, dua sumber dengan selisih; periode dari layar; "sudah ada N baris hidup" 409; `hapus` anak sebelum induk dalam satu batch; dummy tak masuk ingest, publik, R2.
 Bukti: `node --test tests/warga/siklus_dummy.test.mjs` (UJ-KP-13, INV-5). Pemeriksa: guard-api.
+Status: selesai
 
 #### SK-031 Tombol dummy dua ikon
 Pengerja: siklus. Bergantung: SK-026, SK-027, SK-030. Uji: diperluas `layar_kejadian.test.mjs`.
 Berkas: `public/siklus/dummy.js`.
 Langkah: dua ikon di tiap halaman Siklus, SA saja (isi dummy untuk halaman yang dibuka, hapus semua); `window.SK.periode` didaftarkan layar; muat ulang penuh sesudahnya; tanpa tombol bagi peran lain.
 Bukti: `node --test tests/siklus/layar_kejadian.test.mjs` (dummy terisi lalu terhapus). Pemeriksa: selera-angka.
+Status: selesai
 
 ### 3.4 F2: Peta Paparan per Bangunan
 
@@ -349,60 +378,70 @@ Pengerja: mekanik-mesin. Bergantung: SK-001. Uji: tidak ada.
 Berkas: `.github/workflows/bangunan.yml`. Di luar: `scripts/umum/bangunan.py` (milik pipa-umum).
 Langkah: dispatch `bulanan` sekali sebagai pengukuran (lama, ukuran cache, daftar `grid_*.json`); cache hanya `grid_*.json` dan `kec.json`; provinsi gagal tetap `terliput:false` dan harian tidak merah; laporkan bila lebih dari 330 menit atau disk 14 GB habis.
 Bukti: laporan satu jalan dispatch (UJ-F2-10); `npm run uji:agen`. Pemeriksa: higiene-repo.
+Status: selesai
 
 #### SK-033 Bagi `bangunan.py` per pulau bila perlu
 Pengerja: pipa-umum. Bergantung: SK-032. Uji: tidak ada (uji bawaan `bangunan.py`).
 Berkas: `scripts/umum/bangunan.py`. Di luar: kontrak `bangunan/*`, `terpapar.json`, rute `/api/bangunan/*`.
 Langkah: bendera `--prov` per kelompok pulau; keluaran identik per provinsi.
 Bukti: `python3 scripts/umum/bangunan.py uji` (atau subperintah uji yang ada); hash `grid_33.json` tidak berubah. Pemeriksa: validasi-model.
+Status: tidak perlu (sudah ditangani matriks)
 
 #### SK-034 Uji kontrak bangunan lama tidak berubah
 Pengerja: warga-api. Bergantung: SK-001. Uji: dibuat `tests/warga/siklus_kontrak_lama.test.mjs`.
 Berkas: `tests/warga/siklus_kontrak_lama.test.mjs`. Di luar: kode produksi `src/bangunan.js` (hanya dibaca).
 Langkah: uji hanya membaca: hash berkas kontrak lama yang ada di repo (`public/data/bnpb/terpapar.json` dan sejenisnya), tiga rute `/api/bangunan/*` lulus uji lamanya, `bangunan/*` tidak dipindah (PRD F2-07).
 Bukti: `node --test tests/warga/siklus_kontrak_lama.test.mjs` (UJ-F2-06); `npm run uji:warga`. Pemeriksa: guard-api.
+Status: selesai
 
 #### SK-035 `bahaya_kelas.py`
 Pengerja: siklus. Bergantung: SK-003, SK-006. Uji: `uji` di `bahaya_kelas.py`.
 Berkas: `scripts/siklus/bahaya_kelas.py`. Di luar: `scripts/bnpb/terpapar.py`.
 Langkah: sampling InaRISK ImageServer per sel halus 110 m; kelas rendah/sedang/tinggi dengan batas dari `konst`; nodata atau gagal = `null`; keluaran berlabel `estimasi-model` dengan `batas_versi` dan catatan bahwa sumber resmi batas tidak ditemukan; raster tidak disimpan.
 Bukti: `python3 -I scripts/siklus/bahaya_kelas.py uji` (UJ-F2-01). Pemeriksa: validasi-model.
+Status: selesai
 
 #### SK-036 `paparan.py`
 Pengerja: siklus. Bergantung: SK-004, SK-006, SK-035. Uji: `uji` di `paparan.py`.
 Berkas: `scripts/siklus/paparan.py`. Di luar: `scripts/umum/paparan_bangunan.py`, `public/data/bnpb/terpapar.json`.
 Langkah: `bangunan/grid_*`, `halus_*`, `kec.json`, zona bahaya (karhutla radius 1, 3, 5 km, banjir poligon, gempa pita MMI, gunung api KRB), tiga sumber jiwa (WorldPop dan Dukcapil dari berkas yang sudah ada di repo, GHSL) berdampingan; Open Buildings utama, agregat Overture ditunda (PRD F2-03), desa lewat titik pusat terdekat; keluaran `paparan/<prov>.json`, `paparan/kab/<kab4>.json`, `paparan/rinci/<kab4>.json` (sel 110 m); tanpa grid `terliput:false`.
 Bukti: `python3 -I scripts/siklus/paparan.py uji` (UJ-F2-02, 03, 04, 08). Pemeriksa: validasi-model.
+Status: selesai
 
 #### SK-037 `fasilitas.py`
 Pengerja: siklus. Bergantung: SK-004 sampai SK-006. Uji: `uji` di `fasilitas.py`.
 Berkas: `scripts/siklus/fasilitas.py`. Di luar: Sekolah Kita dan SIRS (tidak dipakai).
 Langkah: sekolah Dapodik (`public/data/sekolah.json`), Geofabrik OSM (`osmium`), Overpass, Overture places (lab), Wikidata (adapter lewat `panen.py`) menjadi `fasilitas/<kab4>.json`; kategori berkoordinat hanya sekolah, madrasah, kesehatan, ibadah, kantor pemerintah sipil; objek vital, bandara, pelabuhan, pembangkit, lapas, bendungan hanya hitungan; berkas gagal bila ada koordinat terlarang; tiap sumber berdampingan.
 Bukti: `python3 -I scripts/siklus/fasilitas.py uji` (UJ-F2-05, UJ-KP-09). Pemeriksa: security-reviewer.
+Status: selesai
 
 #### SK-038 Rute paparan
 Pengerja: warga-api. Bergantung: SK-017, SK-018, SK-036. Uji: diperluas `siklus_peran.test.mjs`.
 Berkas: `src/siklus_paparan.js` (atau bagian `src/siklus.js`), `src/hak.js` (jejak `baca_rinci`), `tests/warga/siklus_peran.test.mjs`. Di luar: `src/bangunan.js`.
 Langkah: `paparan/ringkas`, `paparan/kab`, `fasilitas`, `rinci` mengalirkan R2; `rinci` dibatasi PD, KO, SA, BP wilayahnya (`lingkupKab4`), parameter `contoh=1` hanya SA dari `_dummy/`, dicatat `baca_rinci`, 300 per jam; PM `fasilitas` baca saja; 403 sebelum R2.
 Bukti: `node --test tests/warga/siklus_peran.test.mjs` (UJ-F2-07, UJ-KP-02). Pemeriksa: guard-api, security-reviewer.
+Status: selesai
 
 #### SK-039 Layar paparan
 Pengerja: siklus. Bergantung: SK-026, SK-038. Uji: dibuat `tests/siklus/layar_paparan.test.mjs`.
 Berkas: `public/siklus/paparan.js`. Di luar: `public/data/terpapar.json`.
 Langkah: pilih wilayah, bahaya, kelas (DS 3.4); agregat per desa dan kecamatan; keterbatasan ditulis (ambang 0,70, +-0,8 km, kelas InaRISK tidak resmi); `terliput:false` tampil "tidak terliput"; tiga sumber jiwa berdampingan; panel peta bisa ditarik.
 Bukti: `node --test tests/siklus/layar_paparan.test.mjs` (UJ-F2-09). Pemeriksa: selera-angka, inp-reviewer.
+Status: selesai
 
 #### SK-040 Berkas contoh dummy paparan di R2
 Pengerja: siklus. Bergantung: SK-036. Uji: `uji` di `dummy_saji.py`.
 Berkas: `scripts/siklus/dummy_saji.py`. Di luar: berkas nyata `saji/`.
 Langkah: `siklus/saji/_dummy/paparan/*` memakai fungsi agregat yang sama dengan `paparan.py` pada fixture kecil, selubung `"dummy":true`, tanpa koordinat nyata, di luar `manifest` produksi (DT 9 butir 6); bagian masa depan ditambah tiket `ghsl`.
 Bukti: `python3 -I scripts/siklus/dummy_saji.py uji`. Pemeriksa: selera-angka.
+Status: selesai
 
 #### SK-041 Dummy layar paparan (mode contoh)
 Pengerja: warga-api. Bergantung: SK-030, SK-038, SK-040. Uji: diperluas `siklus_dummy.test.mjs`.
 Berkas: `src/siklus_dummy.js`, `src/siklus_paparan.js`, `tests/warga/siklus_dummy.test.mjs`.
 Langkah: halaman `paparan` tidak punya tabel D1: `POST dummy {aksi:isi,halaman:paparan}` memeriksa berkas `_dummy/` ada dan memberi `{dibuat:0,per_tabel:{},contoh:true}`; `GET paparan/*?contoh=1` hanya SA dan hanya dari `_dummy/`, tidak pernah dicampur data nyata; `hapus` mematikan mode.
 Bukti: `node --test tests/warga/siklus_dummy.test.mjs` (UJ-KP-13 untuk layar tanpa tabel). Pemeriksa: guard-api.
+Status: selesai
 
 #### SK-042 Sapuan INP dan 1440/390 layar G1
 Pengerja: siklus. Bergantung: SK-028, SK-031, SK-039. Uji: diperluas `layar_kejadian.test.mjs`, `layar_paparan.test.mjs`.
@@ -415,36 +454,42 @@ Pengerja: penulis-gerbang. Bergantung: SK-027, SK-028, SK-039. Uji: tidak ada (m
 Berkas: `tests/agen/gerbang-kartu-std.test.mjs` (tambah entri `LAYAR`). Di luar: melonggarkan pemeriksaan.
 Langkah: daftarkan `public/siklus/kejadian.js` dan `public/siklus/paparan.js` dengan `public/siklus/index.html`; entri tanpa pola `lama`.
 Bukti: `node --test tests/agen/gerbang-kartu-std.test.mjs`. Pemeriksa: selera-angka.
+Status: selesai
 
 #### SK-044 Uji peran, XSS, rencana kueri G1
 Pengerja: warga-api. Bergantung: SK-019, SK-021, SK-022, SK-038. Uji: dibuat `tests/warga/siklus_rencana_kueri.test.mjs`; diperluas `siklus_peran`, `siklus_xss`.
 Berkas: `tests/warga/siklus_peran.test.mjs`, `siklus_xss.test.mjs`, `siklus_rencana_kueri.test.mjs`. Di luar: kode produksi (temuan dilaporkan).
 Langkah: satu uji per baris matriks KP 1 untuk rute G1 di dua awalan; fixture XSS; `EXPLAIN QUERY PLAN` tiap kueri `sk_*` tanpa `SCAN` selain tabel kecil terdaftar; 413 dan 429.
 Bukti: `node --test tests/warga/siklus_peran.test.mjs tests/warga/siklus_xss.test.mjs tests/warga/siklus_rencana_kueri.test.mjs`. Pemeriksa: security-reviewer, guard-api.
+Status: selesai
 
 #### SK-045 `cakupan.json` G1
 Pengerja: warga-api. Bergantung: SK-034, SK-041, SK-044. Uji: tidak ada.
 Berkas: `tests/warga/cakupan.json`, `tests/warga/migrasi_beku.json`.
 Langkah: daftarkan semua tabel `sk_*`, trigger, dan rute G1 di `diuji` dengan potongan nama uji yang benar-benar ada, atau `dikecualikan` beralasan.
 Bukti: `npm run uji:warga` hijau (gerbang cakupan). Pemeriksa: penulis-gerbang.
+Status: selesai
 
 #### SK-046 `tests/siklus/cakupan.json` dan peta data G1
 Pengerja: siklus. Bergantung: SK-023, SK-024, SK-035 sampai SK-037. Uji: dibuat `tests/siklus/gerbang_cakupan.test.mjs`.
 Berkas: `tests/siklus/cakupan.json`, `tests/siklus/gerbang_cakupan.test.mjs`, `scripts/siklus/sumber.json`. 
 Langkah: daftarkan tiap rute `/api/siklus/*` ke uji yang memanggilnya dan tiap skrip pipeline ke `uji`-nya; sumber baru ber-pemakai dan ber-jadwal.
 Bukti: `npm run uji:siklus`; `python3 scripts/agents/peta_data.py periksa`. Pemeriksa: penulis-gerbang.
+Status: selesai
 
 #### SK-047 Job mingguan dan bulanan: fasilitas dan kelas bahaya
 Pengerja: mekanik-mesin. Bergantung: SK-025, SK-035, SK-037. Uji: tidak ada.
 Berkas: `.github/workflows/siklus.yml`.
 Langkah: `mingguan` tambah Overpass kesehatan dan Wikidata (`fasilitas.py`); `bulanan` (`40 4 5 * *`, 300 menit): Geofabrik PBF dengan `pip install osmium` (dicatat di workflow), `fasilitas.py`, `bahaya_kelas.py`, grup `siklus-batch`.
 Bukti: `npm run uji:agen`; `python3 scripts/agents/peta_data.py periksa`. Pemeriksa: higiene-repo.
+Status: selesai
 
 #### SK-048 Peta data dan registri sumber
 Pengerja: mekanik-mesin. Bergantung: SK-002, SK-025, SK-047. Uji: tidak ada.
 Berkas: `scripts/agents/peta_data.py` hanya bila perlu daftar baru; `docs/PETA-DATA.md` dan `docs/peta_data.json` lewat `bangun`. Di luar: menambah utang baru ke `tests/agen/fixtures/peta-data-utang.json`.
 Langkah: pastikan semua keluaran dan sumber Siklus terbaca penulisnya, pemakainya, dan jadwalnya; tanpa yatim dan tanpa tanpa-jadwal baru.
 Bukti: `python3 scripts/agents/peta_data.py bangun && python3 scripts/agents/peta_data.py periksa` (UJ-G0-12). Pemeriksa: penulis-gerbang.
+Status: selesai
 
 #### SK-049 Jawaban pertanyaan G1 [pemilik]
 Pengerja: pemilik. Bergantung: tidak ada (tidak memblokir).

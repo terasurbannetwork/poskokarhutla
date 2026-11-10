@@ -71,7 +71,7 @@ uji("UJ-F1-13: batch 201 ditolak 413; kosong, bukan larik, item liar, dummy, dan
   const mati = await kej(KO, {nama: "Akan dibatalkan", kab4: "3203", mulai: "2026-06-01"}); await DB.prepare("UPDATE sk_kejadian SET fase = 'dibatalkan' WHERE id = ?").bind(mati).run();
   assert.equal((await POST({keputusan: [item({aksi: "tambah", kejadian_id: mati, kode: "ke-mati"})]})).s, 400, "kejadian dibatalkan tidak menerima sumber baru");
 });
-uji("UJ-F1-13: ingest/jendela dan ingest/sumber dipaginasi lewat lanjut tanpa baris hilang atau ganda; hanya dummy = 0; jendela <= 120 hari; rute kaji belum ada", async () => {
+uji("UJ-F1-13: ingest/jendela dan ingest/sumber dipaginasi lewat lanjut tanpa baris hilang atau ganda; hanya dummy = 0; jendela <= 120 hari; ingest/kaji ada (SK-053)", async () => {
   await DB.prepare(`WITH RECURSIVE c(i) AS (SELECT 1 UNION ALL SELECT i + 1 FROM c WHERE i < 1003)
     INSERT INTO sk_kejadian_sumber (id, sumber, kode, status, jenis, mulai, diambil, dibuat, diubah, dummy) SELECT printf('%016x', i), 'uji_massal', 'k' || i, 'tanpa_wilayah', 'banjir', '2024-05-01', 1, 1, 1, 0 FROM c`).run();
   await DB.prepare(`WITH RECURSIVE c(i) AS (SELECT 1 UNION ALL SELECT i + 1 FROM c WHERE i < 1003)
@@ -85,7 +85,7 @@ uji("UJ-F1-13: ingest/jendela dan ingest/sumber dipaginasi lewat lanjut tanpa ba
   }
   for (const q of ["jendela", "jendela?dari=2024-05-01", "jendela?dari=2024-05-02&sampai=2024-05-01", "jendela?dari=2024-01-01&sampai=2024-05-02", "sumber?dari=x&sampai=y", "jendela?dari=2024-05-01&sampai=2024-05-01&lanjut=ngawur"]) assert.equal((await GET(q)).s, 400, q);
   assert.equal((await GET("jendela?dari=2024-01-01&sampai=2024-04-30")).s, 200, "tepat 120 hari sah"); assert.equal((await GET("jendela?dari=2024-01-01&sampai=2024-05-01")).s, 400, "121 hari");
-  assert.equal((await api("POST", ING + "kaji", {}, TOK)).s, 404, "ingest/kaji ditunda ke tiket rute kaji");
+  assert.equal((await api("POST", ING + "kaji", {}, TOK)).s, 400, "ingest/kaji ada sejak SK-053: badan kosong ditolak validasi");
 });
 
 uji("kab[]: ingest mengisi sk_kejadian_kab untuk semua kabupaten (baru dan tambah), kab4 tetap utama; >50, kode asing, bukan larik ditolak 400; tanpa duplikat", async () => {

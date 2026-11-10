@@ -486,6 +486,29 @@ def _opsi(a, nama, bawaan=None):
     return a[a.index(nama) + 1] if nama in a else bawaan
 
 
+def _masuk_hidup(a, cari=None):
+    """Sumber hidup (hidup.py) -> KJ-. DRY-RUN BAWAAN: tarikan GET jalan, POST ingest hanya dengan --kirim. Jendela tarikan = rentang tanggal rekaman."""
+    tk = os.environ.get("PIPA_TOKEN")
+    if not tk or not _opsi(a, "--basis"):
+        sys.exit("masuk --hidup butuh env PIPA_TOKEN dan --basis URL [--mentah DIR] [--dari D] [--kirim]")
+    H = _muat("hidup")
+    basis, http = _opsi(a, "--basis").rstrip("/"), _http(tk)
+    try:        # gagal-lunak: BMKG mati = USGS saja, tertulis, bukan nol
+        with urllib.request.urlopen(urllib.request.Request(basis + "/api/gempa/kejadian", headers={"User-Agent": "centurisk97-siklus"}), timeout=60) as r:
+            bmkg = json.loads(r.read().decode("utf-8")).get("kejadian") or []
+    except Exception as e:
+        bmkg = None
+        print("PERINGATAN: /api/gempa/kejadian gagal (%s); gempa BMKG dilewati" % str(e)[:80], file=sys.stderr)
+    dari = _opsi(a, "--dari", (dt.date.today() - dt.timedelta(days=30)).isoformat())
+    rek, n, lama = H.kumpulkan(_opsi(a, "--akar", AKAR), _opsi(a, "--mentah"), bmkg, cari, dari)
+    if not rek:
+        print(json.dumps({"hidup": n, "kedaluwarsa": lama, "catatan": "tidak ada rekaman hidup"}))
+        return
+    kirim = "--kirim" in a
+    h = masuk(http, basis, rek, min(r["tgl"] for r in rek), max(r["tgl"] for r in rek), kering=not kirim)
+    print(json.dumps({"hidup": n, "kedaluwarsa": lama, "keputusan": h, "mode": "kirim" if kirim else "dry-run (tambah --kirim untuk menulis)"}, indent=1))
+
+
 def _riwayat(akar):
     per, tak = {}, 0
     for s in ("dibi", "logbook"):
@@ -501,6 +524,8 @@ if __name__ == "__main__":
         _uji()
     elif a[:1] == ["riwayat"]:
         print(json.dumps(laporan(*_riwayat(_opsi(a, "--bersih", BERSIH_BAWAAN))), ensure_ascii=False, indent=1))
+    elif a[:2] == ["masuk", "--hidup"] or (a[:1] == ["masuk"] and "--hidup" in a):
+        _masuk_hidup(a)
     elif a[:1] == ["masuk"]:
         tk = os.environ.get("PIPA_TOKEN")
         if not tk or not all(_opsi(a, o) for o in ("--basis", "--dari", "--sampai")):
@@ -510,4 +535,4 @@ if __name__ == "__main__":
         rek = [r for s in ("dibi", "logbook") for r in satuan(baca_bersih(b, s, yr)[0]) if _opsi(a, "--dari") <= r["tgl"] <= _opsi(a, "--sampai")]
         print(json.dumps(masuk(_http(tk), _opsi(a, "--basis").rstrip("/"), rek, _opsi(a, "--dari"), _opsi(a, "--sampai"), "--kering" in a), indent=1))
     else:
-        sys.exit("pakai: pasang.py riwayat [--bersih DIR] | masuk --basis URL --dari D --sampai S [--kering] | uji")
+        sys.exit("pakai: pasang.py riwayat [--bersih DIR] | masuk --basis URL --dari D --sampai S [--kering] | masuk --hidup --basis URL [--mentah DIR] [--dari D] [--kirim] | uji")

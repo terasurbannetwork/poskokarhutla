@@ -13,16 +13,16 @@ import {FASE, RE_KJ, idKejadian, kunciPendiri, selisihDampak, resolusiAlias, fas
 
 const JAM = 36e5, HARI = 864e5, MAKS_ARSIP = 128 * 1024, MAKS_BATCH = 200;
 export const JENIS_SAH = ["banjir", "cuaca", "gelombang", "gempa", "gunungapi", "karhutla", "kebakaran_permukiman", "kekeringan", "longsor", "tsunami"];   // kunci JENIS scripts/bnpb/kunci_kejadian.py
-const FASE_SEMUA = [...FASE, "dibatalkan"], HIDUP = f => f !== "digabung" && f !== "dibatalkan";
-const NO = () => gagal(404, "tidak ada");   // satu bentuk untuk "tidak ada" dan "di luar lingkup" (byte demi byte sama)
+const FASE_SEMUA = [...FASE, "dibatalkan"]; export const HIDUP = f => f !== "digabung" && f !== "dibatalkan";
+export const NO = () => gagal(404, "tidak ada");   // satu bentuk untuk "tidak ada" dan "di luar lingkup" (byte demi byte sama)
 const tglWib = kini => new Date(kini + 7 * JAM).toISOString().slice(0, 10);
 const tglGeser = (t, n) => new Date(Date.parse(t + "T00:00:00Z") + n * HARI).toISOString().slice(0, 10);
 export const kab4Sah = (v, nama = "kab4") => { if (typeof v !== "string" || !Object.hasOwn(NAMA_KAB4, v)) tolak(`${nama} harus kode kabupaten 4 digit (Kemendagri, scripts/udara/kota.json) yang dikenal`); return v; };
-const parse = s => { try { return s == null ? null : JSON.parse(s); } catch (e) { return null; } };
+export const parse = s => { try { return s == null ? null : JSON.parse(s); } catch (e) { return null; } };
 const kursor = (s, nama = "sesudah") => { if (s == null || s === "") return null; const m = /^(\d{4}-\d\d-\d\d)\|([0-9A-Za-z-]{1,16})$/.exec(s); if (!m || !tglSah(m[1])) tolak(`${nama} bukan penanda halaman yang sah`); return {mulai: m[1], id: m[2]}; };
 const batasHal = (v, maks, awal) => { if (v == null || v === "") return awal; const n = Number(v); if (!Number.isInteger(n) || n < 1 || n > maks) tolak(`batas harus bilangan bulat 1-${maks}`); return n; };
 const halaman = (baris, batas, peta = x => x) => ({baris: baris.slice(0, batas).map(peta), berikut: baris.length > batas ? `${baris[batas - 1].mulai}|${baris[batas - 1].id}` : null});
-const bersihNama = (s, maks = 160) => String(s ?? "").normalize("NFKC").replace(/[\u0000-\u001f\u007f​-‏‪-‮﻿<>]/g, "").replace(/\s+/g, " ").trim().slice(0, maks);
+export const bersihNama = (s, maks = 160) => String(s ?? "").normalize("NFKC").replace(/[\u0000-\u001f\u007f​-‏‪-‮﻿<>]/g, "").replace(/\s+/g, " ").trim().slice(0, maks);
 /* teks() memeriksa; bersihNama membuang <, >, kontrol, dan lebar-nol dari yang DISIMPAN (item 3: tidak ada markup tersimpan) */
 const tb = (v, nama, maks, min = 0) => { const t = teks(v, nama, maks, min); if (t == null) return t; const b = bersihNama(t, maks); if (b.length < Math.max(min, 1)) tolak(`${nama} ${Math.max(min, 1)}-${maks} karakter setelah dibersihkan`); return b; };
 export const bodi = async (c, maks = 16384) => { const b = await bacaBody(c.req, maks); if (b.galat) throw new H.Galat(b.status || 400, b.galat); return b.o; };
@@ -36,9 +36,9 @@ const jenisSah = (v, nama = "jenis") => {
 const wilayahKab4 = kab4 => kab4 ? `${NAMA_KAB4[kab4]}, ${PROV[kab4.slice(0, 2)] ?? ""}`.replace(/, $/, "") : null;
 
 /* ================================================================ lingkup BP */
-const dalamBP = (c, kab4s) => c.h.tipe !== "bp" || (kab4s ?? []).some(k => lingkupKab4(c.h.akun, k));
-const lihat = (c, r) => !!r && (c.h.dummyOk || !r.dummy);   // staf nyata dan akun nyata tidak melihat dummy = 1
-const utkBP = (c, o) => { if (c.h.tipe !== "bp") return o; const {oleh, ...sisa} = o; return sisa; };
+export const dalamBP = (c, kab4s) => c.h.tipe !== "bp" || (kab4s ?? []).some(k => lingkupKab4(c.h.akun, k));
+export const lihat = (c, r) => !!r && (c.h.dummyOk || !r.dummy);   // staf nyata dan akun nyata tidak melihat dummy = 1
+export const utkBP = (c, o) => { if (c.h.tipe !== "bp") return o; const {oleh, ...sisa} = o; return sisa; };
 
 /* ID bebas: hash kunci (n = 1..5) sekali tanya; ID yang sudah dipakai D1 (termasuk dibatalkan/digabung) atau dalam batch yang sama dilewati */
 async function pilihId(c, p, kunci, dalamBatch = new Set()) {
@@ -129,7 +129,7 @@ async function detailKejadian(c) {
   const per = {};   // sumber berdampingan, tidak dijumlah; dua kode dari satu nama sumber dibedakan oleh kode
   for (const s of sumber) per[sumber.filter(x => x.sumber === s.sumber).length > 1 ? `${s.sumber}:${s.kode}` : s.sumber] = parse(s.dampak) ?? {};
   return json({kejadian: utkBP(c, r), wilayah: wilayahKab4(r.kab4), kab, sumber: sumber.map(({kandidat, ...s}) => ({...s, ...(c.h.tipe === "bp" ? {} : {kandidat: parse(kandidat)}), dampak: parse(s.dampak)})),
-    selisih: selisihDampak(per), kaji_ids: [], pulih_ids: [], jejak: c.h.tipe === "bp" ? jejak.map(({oleh, catatan, ...x}) => x) : jejak});
+    selisih: selisihDampak(per), kaji_ids: await H.skKajiIds(c.env, p, id, c.h.dummyOk), pulih_ids: await H.skJitupasnaIds(c.env, p, id, c.h.dummyOk), jejak: c.h.tipe === "bp" ? jejak.map(({oleh, catatan, ...x}) => x) : jejak});
 }
 
 /* publik: hanya publik = 1 dan dummy = 0; semua alasan tidak ada memberi jawaban yang sama; tembolok tepi 5 menit (KP 8) */
@@ -221,6 +221,7 @@ async function ubahFase(c) {
   if (v.ke === "tanggap" && !tm) return gagal(400, "tanggap_mulai wajib saat masuk fase tanggap");
   if (v.ke === "transisi" && !ta) return gagal(400, "tanggap_akhir wajib saat masuk fase transisi");
   if (tm && ta && ta < tm) return gagal(400, "tanggap_akhir tidak boleh sebelum tanggap_mulai");
+  if (r.fase === "transisi" && v.ke === "pemulihan" && (await H.skR3pDiusulkanAda(c.env, p, id)) === false) return gagal(409, "transisi ke pemulihan butuh R3P berstatus diusulkan atau lebih (ALUR 2.1)");   // null = sk_r3p belum ada: syarat belum berlaku
   const lj = await ujiLaju(c, "sk.fase", 120); if (lj) return lj;
   await H.skBatch(c.env, p, [H.skStmtFase(c.env, p, id, v.ke, c.kini, v.tm, v.ta), H.skStmtJejak(c.env, p, c.h.oleh, "kejadian", id, "fase", r.fase, v.ke, v.alasan, c.kini, r.dummy)]);
   return json({id, fase: v.ke});
@@ -316,7 +317,7 @@ async function antreanPutus(c) {
 
 /* ================================================================ ingest (pipeline, Bearer PIPA_TOKEN) */
 const COOKIE_SESI = /(?:^|;\s*)sesi_(?:staf|admin|instansi|kemitraan|pendataan)=/;
-async function gerbangIngest(c) {
+export async function gerbangIngest(c) {
   if (COOKIE_SESI.test(c.req.headers.get("cookie") || "")) return gagal(400, "ingest memakai Bearer PIPA_TOKEN, bukan cookie sesi");
   return periksaToken(c.env, c.req);
 }
@@ -343,7 +344,7 @@ async function ingestSumber(c) {
 }
 
 const LABEL = ["resmi", "terverifikasi", "estimasi-model", "asumsi-kebijakan", "hipotesis", "menunggu"];
-const polos = o => o !== null && typeof o === "object" && !Array.isArray(o);
+export const polos = o => o !== null && typeof o === "object" && !Array.isArray(o);
 function dampakSah(d) {
   if (d == null) return null;
   if (!polos(d) || Object.keys(d).length > 30) tolak("dampak harus objek {kolom: {n, y, t}} paling banyak 30 kolom");

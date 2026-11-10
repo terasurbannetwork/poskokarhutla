@@ -6,8 +6,10 @@ import {mulai, PB, ADMIN, kjAcak} from "./_siklus.mjs";
 import * as H from "../../src/hak.js";
 import {RUTE_SIKLUS as RK} from "../../src/siklus_kejadian.js";
 import {RUTE_SIKLUS_PAPARAN} from "../../src/siklus_paparan.js";
+import {RUTE_SIKLUS_KAJI} from "../../src/siklus_kaji.js";
+import {RUTE_SIKLUS_PULIH} from "../../src/siklus_pulih.js";
 import {RUTE_SIKLUS_DUMMY} from "../../src/siklus_dummy.js";
-const RUTE_SIKLUS = {...RK, ...RUTE_SIKLUS_PAPARAN, ...RUTE_SIKLUS_DUMMY};
+const RUTE_SIKLUS = {...RK, ...RUTE_SIKLUS_PAPARAN, ...RUTE_SIKLUS_KAJI, ...RUTE_SIKLUS_PULIH, ...RUTE_SIKLUS_DUMMY};
 
 const U = await mulai("uji-sk-peran");
 const {DB, api, GET, POST, n} = U;
@@ -34,6 +36,22 @@ const RUTE = [   // [kunci, jalur uji, aktor yang BOLEH]
   ["GET /api/siklus/paparan/kab", "/paparan/kab?kab4=3201", "PD KO PM SA MOD BP"],
   ["GET /api/siklus/fasilitas", "/fasilitas?kab4=3201", "PD KO PM SA BP"],
   ["GET /api/siklus/paparan/rinci", "/paparan/rinci?kab4=3201", "PD KO SA BP"],
+  ["GET /api/siklus/kaji", `/kaji?kejadian_id=${ID}`, "PD KO PM SA MOD BP"],
+  ["GET /api/siklus/kaji/:sid", `/kaji/${SID}`, "PD KO PM SA MOD BP"],
+  ["POST /api/siklus/kaji/:sid/status", `/kaji/${SID}/status`, "PD KO SA"],
+  ["GET /api/siklus/pulih", `/pulih?kejadian_id=${ID}`, "PD KO PM SA MOD BP"],
+  ["GET /api/siklus/pulih/:sid", `/pulih/${SID}`, "PD KO PM SA MOD BP"],
+  ["POST /api/siklus/pulih", "/pulih", "KO SA"],
+  ["POST /api/siklus/pulih/:sid/baris", `/pulih/${SID}/baris`, "PD KO SA BP"],
+  ["POST /api/siklus/pulih/:sid/hitung", `/pulih/${SID}/hitung`, "PD KO SA"],
+  ["POST /api/siklus/pulih/:sid/status", `/pulih/${SID}/status`, "KO SA"],
+  ["GET /api/siklus/harga", "/harga?sektor=perumahan", "PD KO PM SA MOD"],
+  ["POST /api/siklus/harga", "/harga", "PD KO SA"],
+  ["POST /api/siklus/r3p", "/r3p", "KO SA"],
+  ["POST /api/siklus/r3p/:sid/status", `/r3p/${SID}/status`, "KO SA"],
+  ["POST /api/siklus/r3p/:sid/kegiatan", `/r3p/${SID}/kegiatan`, "KO SA"],
+  ["GET /api/siklus/r3p/:sid", `/r3p/${SID}`, "PD KO PM SA MOD BP"],
+  ["POST /api/siklus/r3p/:sid/setuju", `/r3p/${SID}/setuju`, "PM"],
   ["GET /api/siklus/saya", "/saya", "PD KO PM SA MOD"],
   ["POST /api/siklus/dummy", "/dummy", "SA"],
 ];
@@ -101,15 +119,42 @@ uji("jawaban staf private, no-store; SIKLUS_MATI=1 memberi 503 untuk semua jalur
 const PELAKU = {sistem: H.pelakuSistem, sk_staf: H.pelakuSkStaf, sk_instansi: H.pelakuSkInstansi, admin: H.pelakuAdmin};
 const AKSI = ["baca", "tambah", "ubah", "hapus"];
 uji("MATRIKS sk_*: tiap sel (tabel x pelaku x aksi) sama dengan KEAMANAN; hapus hanya admin; instansi tidak menulis kejadian", () => {
-  assert.deepEqual(Object.keys(H.MATRIKS_SK).sort(), ["sk_jejak", "sk_kejadian", "sk_kejadian_alias", "sk_kejadian_kab", "sk_kejadian_sumber"]);
+  assert.deepEqual(Object.keys(H.MATRIKS_SK).sort(), ["sk_harga", "sk_jejak", "sk_jitupasna", "sk_jitupasna_baris", "sk_kaji", "sk_kejadian", "sk_kejadian_alias", "sk_kejadian_kab", "sk_kejadian_sumber", "sk_r3p", "sk_r3p_kegiatan"]);
   for (const t of Object.keys(H.MATRIKS_SK)) {
     assert.ok(H.MATRIKS[t], `${t} tidak masuk MATRIKS`);
     for (const [nama, p] of Object.entries(PELAKU)) for (const a of AKSI) assert.equal(H.boleh(p, t, a), !!H.MATRIKS_SK[t][nama]?.includes(a), `${t}.${a} oleh ${nama}`);
     for (const nama of ["sistem", "sk_staf", "sk_instansi"]) assert.equal(H.boleh(PELAKU[nama], t, "hapus"), false, `${t}.hapus oleh ${nama}`);
   }
-  for (const t of Object.keys(H.MATRIKS_SK).filter(t => t !== "sk_jejak")) for (const a of ["tambah", "ubah", "hapus"]) assert.equal(H.boleh(H.pelakuSkInstansi, t, a), false, `BP ${a} ${t}`);
+  for (const t of Object.keys(H.MATRIKS_SK).filter(t => t !== "sk_jejak" && t !== "sk_jitupasna_baris")) for (const a of ["tambah", "ubah", "hapus"]) assert.equal(H.boleh(H.pelakuSkInstansi, t, a), false, `BP ${a} ${t}`);
   assert.equal(H.boleh(H.pelakuSkInstansi, "sk_jejak", "tambah"), true, "BP boleh mencatat jejak (baca rinci, G3)");
+  assert.equal(H.boleh(H.pelakuSkInstansi, "sk_jitupasna_baris", "tambah"), true, "BP mengisi baris Jitupasna wilayahnya (G3)");
   assert.equal(H.boleh(H.pelakuSistem, "sk_kejadian", "ubah"), false, "ingest tidak mengubah kejadian");
+});
+uji("SK-060 UJ-KP-01: matriks sk_kaji: BP hanya baca; staf mengubah status tetapi tidak menambah; sistem menambah tetapi tidak mengubah; hanya admin menghapus", () => {
+  assert.deepEqual(H.MATRIKS_SK.sk_kaji, {sistem: ["baca", "tambah"], sk_staf: ["baca", "ubah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "ubah", "hapus"]});
+  for (const a of ["tambah", "ubah", "hapus"]) assert.equal(H.boleh(H.pelakuSkInstansi, "sk_kaji", a), false, `BP ${a} sk_kaji`);
+  assert.equal(H.boleh(H.pelakuSkStaf, "sk_kaji", "tambah"), false); assert.equal(H.boleh(H.pelakuSistem, "sk_kaji", "ubah"), false);
+});
+uji("SK-060 UJ-KP-03: kaji, PM baca saja (status 403) dan BP luar lingkup 404 di kedua awalan; WG 401", async () => {
+  const k = await U.kej(KO, {nama: "Gempa peran", jenis: "gempa"}), BP2 = await U.bp({kab: "Garut"});
+  const w = await api("POST", "/api/siklus/ingest/kaji", {kejadian_id: k, model: "gempa", masukan: {a: 1}, ringkas: {rentang: [1, 2]}}, {authorization: "Bearer token-pipa-uji"}); assert.equal(w.s, 201, w.t);
+  for (const a of [PD, KO, PM, SA, MOD, BP]) assert.equal((await GET(a, `/kaji/${w.j.id}`)).s, 200, a.via);
+  assert.equal((await POST(PM, `/kaji/${w.j.id}/status`, {ke: "diperiksa"})).s, 403);
+  assert.equal((await POST(BP, `/kaji/${w.j.id}/status`, {ke: "diperiksa"})).s, 403);
+  assert.equal((await POST(PD, `/kaji/${w.j.id}/status`, {ke: "diperiksa"})).s, 200);
+  const luar = await GET(BP2, `/kaji/${w.j.id}`), nol = await GET(BP2, "/kaji/0123456789abcdef"); assert.equal(luar.s, 404); assert.equal(luar.t, nol.t);
+  assert.equal((await GET(BP2, `/kaji?kejadian_id=${k}`)).s, 404);
+  assert.equal((await GET(TAMU, `/kaji/${w.j.id}`)).s, 401); assert.equal((await POST(TAMU, `/kaji/${w.j.id}/status`, {ke: "diperiksa"})).s, 401);
+  assert.equal((await api("GET", `/api/instansi/siklus/kaji/${w.j.id}`, undefined, BP.h)).s, 200, "awalan instansi"); assert.equal((await api("GET", `/api/siklus/kaji/${w.j.id}`, undefined, BP.h)).s, 401, "BP di awalan staf");
+});
+
+uji("SK-067 UJ-KP-01: matriks G3: BP hanya membaca Jitupasna, R3P, kegiatan dan menambah baris; harga tak terbuka bagi BP; staf tidak menghapus; hanya admin menghapus", () => {
+  for (const t of ["sk_jitupasna", "sk_r3p", "sk_r3p_kegiatan", "sk_harga", "sk_jitupasna_baris"]) { assert.equal(H.boleh(H.pelakuSkStaf, t, "hapus"), false, `staf hapus ${t}`); assert.equal(H.boleh(H.pelakuAdmin, t, "hapus"), true); assert.equal(H.boleh(H.pelakuSistem, t, "tambah"), false, `ingest tidak menulis ${t}`); }
+  for (const t of ["sk_jitupasna", "sk_r3p", "sk_r3p_kegiatan"]) for (const a of ["tambah", "ubah", "hapus"]) assert.equal(H.boleh(H.pelakuSkInstansi, t, a), false, `BP ${a} ${t}`);
+  assert.deepEqual(["baca", "tambah"].map(a => H.boleh(H.pelakuSkInstansi, "sk_jitupasna_baris", a)), [true, true]); assert.equal(H.boleh(H.pelakuSkInstansi, "sk_jitupasna_baris", "ubah"), false, "BP tidak membekukan nilai");
+  assert.equal(H.boleh(H.pelakuSkInstansi, "sk_harga", "baca"), false);
+  assert.throws(() => H.skStmtR3pSetuju({DB}, H.pelakuSkInstansi, "0123456789abcdef", "instansi:x", 1), e => e.status === 403, "BP tidak memberi tanda setuju");
+  assert.throws(() => H.skStmtHargaBaru({DB}, H.pelakuSistem, {id: "0123456789abcdef", kini: 1}), e => e.status === 403);
 });
 uji("pembangun pernyataan tulis menolak pelaku tanpa hak (403) sebelum menyentuh D1", () => {
   const env = {DB};
@@ -131,7 +176,7 @@ uji("UJ-KP-08: skBatch menolak batch tanpa baris sk_jejak (INV-4) dan tidak menu
 });
 uji("src/siklus*.js tidak menyentuh D1 (SQL sk_* hanya di hak.js)", async () => {
   const {readFileSync} = await import("node:fs"), {AKAR} = await import("./_bantu.mjs"), path = await import("node:path");
-  for (const f of ["siklus.js", "siklus_kejadian.js", "siklus_kab.js", "siklus_hitung.js"]) assert.doesNotMatch(readFileSync(path.join(AKAR, "src", f), "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, ""), /env\s*\.\s*DB|\.prepare\s*\(|\.batch\s*\(/, f);
+  for (const f of ["siklus.js", "siklus_kejadian.js", "siklus_kaji.js", "siklus_pulih.js", "siklus_kab.js", "siklus_hitung.js"]) assert.doesNotMatch(readFileSync(path.join(AKAR, "src", f), "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, ""), /env\s*\.\s*DB|\.prepare\s*\(|\.batch\s*\(/, f);
 });
 
 /* ---------- paparan (SK-038): UJ-F2-07, UJ-KP-02, UJ-KP-03 ---------- */

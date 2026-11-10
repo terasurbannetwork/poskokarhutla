@@ -1,7 +1,7 @@
 """Adapter panen G2 (SK-052): USGS ShakeMap lewat panen.py.
 
 Per gempa M5 ke atas 7 hari terakhir (katalog USGS FDSN, url dari sumber.json `usgs-fdsn`), ambil detail GeoJSON lalu produk
-`cont_mmi.json` (31 KB; bukan grid.xml 32,9 MB). Satu berkas mentah per hari: {"gempa":[{id,mag,waktu,status,cont_mmi}]}.
+`cont_mmi.json` (31 KB; bukan grid.xml 32,9 MB). Satu berkas mentah per hari: {"gempa":[{id,mag,waktu,lat,lon,dalam,status,cont_mmi}]}.
 status: `ok` | `tanpa_shakemap` (USGS belum menerbitkan) | `menunggu_data` (gagal ambil atau bentuk salah). cont_mmi `null`, bukan 0 (KA).
 Daftar gagal total = panen mengembalikan `menunggu` dan saji terakhir tetap. Lisensi dan atribusi dari sumber.json (id `usgs-shakemap`).
 Pakai: python3 -I scripts/siklus/adapter_g2.py uji
@@ -64,6 +64,11 @@ def _gempa(klien, f):
     r = {"id": str(f["id"]), "mag": (f.get("properties") or {}).get("mag"), "waktu": (f.get("properties") or {}).get("time"),
          "status": "menunggu_data", "cont_mmi": None}
     try:
+        lon, lat, dalam = (f.get("geometry") or {})["coordinates"][:3]
+        r.update({"lat": lat, "lon": lon, "dalam": dalam})   # untuk model guncangan sendiri bila ShakeMap belum terbit
+    except (KeyError, TypeError, ValueError):
+        pass
+    try:
         u = url_kontur(_json(klien.ambil((f.get("properties") or {})["detail"]), r["id"]))
         if u is None:
             r["status"] = "tanpa_shakemap"
@@ -104,7 +109,7 @@ def _uji():
         return {"properties": {"products": {"shakemap": [{"contents": {PRODUK: {"url": cb["u"] + "/k/" + ada}}}]}}} if ada else {"properties": {"products": {}}}
 
     def daftar():
-        return {"features": [{"id": i, "properties": {"mag": m, "time": 1, "detail": cb["u"] + "/d/" + i}} for i, m in
+        return {"features": [{"id": i, "properties": {"mag": m, "time": 1, "detail": cb["u"] + "/d/" + i}, "geometry": {"coordinates": [110.5, -7.5, 12]}} for i, m in
                              (("a", 7.1), ("b", 5.2), ("c", 5.5), ("d", 6.0), ("kecil", 4.2))]}
     jalur = {"/daftar": daftar, "/d/a": lambda: detail("a"), "/d/b": lambda: detail(None), "/d/c": lambda: detail("c"), "/d/d": lambda: detail("d"),
              "/k/a": lambda: kont, "/k/c": lambda: {"type": "FeatureCollection", "features": []}}
@@ -133,7 +138,7 @@ def _uji():
         assert r["status"] == "ok" and r["berkas"].endswith("usgs-shakemap/2026/2026-11-10.json"), r
         g = {x["id"]: x for x in json.load(open(r["berkas"]))["gempa"]}
         assert set(g) == {"a", "b", "c", "d"}, "M4,2 di bawah M5 tidak diambil"
-        assert g["a"]["status"] == "ok" and g["a"]["cont_mmi"] == kont
+        assert g["a"]["status"] == "ok" and g["a"]["cont_mmi"] == kont and (g["a"]["lat"], g["a"]["lon"], g["a"]["dalam"]) == (-7.5, 110.5, 12)
         assert g["b"]["status"] == "tanpa_shakemap" and g["c"]["status"] == "menunggu_data", "kontur kosong ditolak"
         assert g["d"]["status"] == "menunggu_data" and g["d"]["cont_mmi"] is None, "gagal ambil = menunggu_data, bukan 0"
         lama = {"n": 3}

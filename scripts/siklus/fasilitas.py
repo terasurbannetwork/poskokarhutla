@@ -199,5 +199,9 @@ if __name__ == "__main__":
         ring = {k: {"n": v["selisih_n"], "sumber": {s: x["n"] for s, x in v["sumber"].items()}, "selisih_zona": v["selisih_zona"]} for k, v in h["berkoordinat"].items()}
         print(json.dumps({"berkoordinat": ring, "hitungan": h["hanya_hitungan"], "masalah": m}, ensure_ascii=False))
         sys.exit(1 if m else 0)
+    elif a[:1] == ["semua"] and len(a) >= 2:
+        # mingguan/bulanan: fasilitas semua kabupaten ber-grid -> siklus/saji/fasilitas/<kab4>.json
+        P = _muat("sk_paparan", "scripts/siklus/paparan.py")
+        sys.exit(P.jalankan_semua(lambda p, k, o: jalankan_kab(p, k, o)[1], a[1], a[2] if len(a) > 2 else None))
     else:
-        sys.exit("pakai: fasilitas.py uji | kab PROV KAB4 KELUAR_DIR")
+        sys.exit("pakai: fasilitas.py uji | kab PROV KAB4 KELUAR_DIR | semua KELUAR_DIR [PROV]")

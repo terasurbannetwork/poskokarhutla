@@ -102,5 +102,9 @@ def _uji():
 if __name__ == "__main__":
     if sys.argv[1:] == ["uji"]:
         _uji()
+    elif sys.argv[1:2] == ["semua"] and len(sys.argv) >= 3:
+        # bulanan: kelas bahaya semua kabupaten ber-grid -> paparan/kab/<kab4>.json (kelas_h); Dukcapil+InaRISK, jeda 2 dtk
+        P = _muat("sk_paparan", os.path.join(AB, "paparan.py"))
+        sys.exit(P.jalankan_semua(lambda p, k, o: P.jalankan_kab(p, k, o, kelas=True)[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None))
     else:
-        sys.exit("pakai: bahaya_kelas.py uji")
+        sys.exit("pakai: bahaya_kelas.py uji | semua KELUAR_DIR [PROV]")

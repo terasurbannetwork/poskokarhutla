@@ -118,6 +118,12 @@ export const MATRIKS_SK = {
   sk_kejadian_kab:    {sistem: ["baca", "tambah"], sk_staf: ["baca", "tambah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "hapus"]},
   sk_kejadian_alias:  {sistem: ["baca"], sk_staf: ["baca", "tambah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "hapus"]},
   sk_kejadian_sumber: {sistem: ["baca", "tambah"], sk_staf: ["baca", "tambah", "ubah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "ubah", "hapus"]},
+  sk_kaji:            {sistem: ["baca", "tambah"], sk_staf: ["baca", "ubah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "ubah", "hapus"]},
+  sk_harga:           {sk_staf: ["baca", "tambah"], admin: ["baca", "tambah", "hapus"]},
+  sk_jitupasna:       {sk_staf: ["baca", "tambah", "ubah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "ubah", "hapus"]},
+  sk_jitupasna_baris: {sk_staf: ["baca", "tambah", "ubah"], sk_instansi: ["baca", "tambah"], admin: ["baca", "tambah", "ubah", "hapus"]},
+  sk_r3p:             {sk_staf: ["baca", "tambah", "ubah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "ubah", "hapus"]},
+  sk_r3p_kegiatan:    {sk_staf: ["baca", "tambah", "ubah"], sk_instansi: ["baca"], admin: ["baca", "tambah", "ubah", "hapus"]},
   sk_jejak:           {sistem: ["baca", "tambah"], sk_staf: ["baca", "tambah"], sk_instansi: ["baca", "tambah"], admin: ["baca", "tambah", "hapus"]},
 };
 Object.assign(MATRIKS, MATRIKS_SK);
@@ -206,14 +212,109 @@ export const skStmtAntrean = (env, p, sid, status, kejadianId, kab4, kini) => se
 export const skStmtSumberBaru = (env, p, s) => sedia(env, p, "sk_kejadian_sumber", "tambah", `INSERT INTO sk_kejadian_sumber (id, sumber, kode, kode_hari, pengenal_luar, kejadian_id, status, jenis, kab4, mulai, kandidat, dampak, diambil, dibuat, diubah, dummy)
   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (sumber, kode, dummy) DO NOTHING`).bind(s.id, s.sumber, s.kode, s.kode_hari ?? null, s.pengenal_luar ?? null, s.kejadian_id ?? null, s.status, s.jenis, s.kab4 ?? null, s.mulai,
     s.kandidat ?? null, s.dampak ?? null, s.diambil, s.kini, s.kini, s.dummy ? 1 : 0);
+/* ---------- Kaji Cepat Otomatis (G2, migrasi 0122_sk_kaji): baca ---------- */
+const KOL_KAJI = "id, kejadian_id, model, versi, status, masukan, ringkas, hasil_r2, galat_kalibrasi, yakin, alasan_tarik, dihitung, diubah, oleh, dummy";
+export const skKajiDaftar = async (env, p, kejadianId, dummyOk, batas = 50) => (await sedia(env, p, "sk_kaji", "baca", `SELECT ${KOL_KAJI} FROM sk_kaji WHERE kejadian_id = ?${dummyOk ? "" : " AND dummy = 0"} ORDER BY versi DESC, model LIMIT ?`).bind(kejadianId, batas).all()).results;
+export const skKajiById = (env, p, id) => sedia(env, p, "sk_kaji", "baca", `SELECT ${KOL_KAJI} FROM sk_kaji WHERE id = ?`).bind(id).first();
+export const skKajiIds = async (env, p, kejadianId, dummyOk) => (await sedia(env, p, "sk_kaji", "baca", `SELECT id FROM sk_kaji WHERE kejadian_id = ?${dummyOk ? "" : " AND dummy = 0"} ORDER BY versi DESC, model LIMIT 50`).bind(kejadianId).all()).results.map(r => r.id);
+/* isian petugas meja kaji_cepat untuk wilayah kejadian (indeks meja_catatan_wilayah: meja, prov, kab): HANYA kolom angka dan jenis, tanpa teks bebas, foto, atau petugas. Jendela waktu dibuat: [dari, sampai] ms. */
+export const skMejaKajiCepat = async (env, prov, kab, dari, sampai, dummy) => (await env.DB.prepare(`SELECT id, kec, desa, status, dibuat, json_extract(data, '$.kejadian') kejadian, json_extract(data, '$.tanggal') tanggal,
+  json_extract(data, '$.meninggal') meninggal, json_extract(data, '$.hilang') hilang, json_extract(data, '$.luka') luka, json_extract(data, '$.mengungsi') mengungsi,
+  json_extract(data, '$.rumah_rb') rumah_rb, json_extract(data, '$.rumah_rs') rumah_rs, json_extract(data, '$.rumah_rr') rumah_rr
+  FROM meja_catatan WHERE meja = 'kaji_cepat' AND prov = ? AND kab = ? AND dummy = ? AND dibuat >= ? AND dibuat <= ? ORDER BY dibuat DESC LIMIT 20`).bind(prov, kab, dummy ? 1 : 0, dari, sampai).all()).results;
+/* versi baru = max(versi)+1 untuk (kejadian, model, dummy), dihitung dalam pernyataan yang sama; dua penulis berbarengan: UNIQUE menolak yang kalah (409). Tidak pernah menimpa. */
+export const skStmtKajiBaru = (env, p, k) => sedia(env, p, "sk_kaji", "tambah", `INSERT INTO sk_kaji (id, kejadian_id, model, versi, status, masukan, ringkas, hasil_r2, galat_kalibrasi, alasan_tarik, dihitung, diubah, oleh, dummy)
+  SELECT ?, ?, ?, coalesce(max(versi), 0) + 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? FROM sk_kaji WHERE kejadian_id = ? AND model = ? AND dummy = ?`).bind(k.id, k.kejadian_id, k.model, k.status, k.masukan, k.ringkas, k.hasil_r2 ?? null, k.galat_kalibrasi ?? null, k.alasan_tarik ?? null, k.kini, k.kini, k.oleh, k.dummy ? 1 : 0, k.kejadian_id, k.model, k.dummy ? 1 : 0);
+/* ubah status hanya dari `dari` (pembanding atomik: kalah balapan = 0 baris berubah); jejak ikut hanya bila berubah */
+export const skStmtKajiStatus = (env, p, id, dari, ke, alasan, kini) => sedia(env, p, "sk_kaji", "ubah", "UPDATE sk_kaji SET status = ?, alasan_tarik = ?, diubah = ? WHERE id = ? AND status = ?").bind(ke, ke === "ditarik" ? alasan : null, kini, id, dari);
+export const skStmtJejakJikaBerubah = (env, p, oleh, obyek, obyekId, aksi, dari, ke, catatan, kini, dummy = 0) => {
+  const s = sedia(env, p, "sk_jejak", "tambah", "INSERT INTO sk_jejak (waktu, oleh, obyek, obyek_id, aksi, dari, ke, catatan, dummy) SELECT ?, ?, ?, ?, ?, ?, ?, ?, ? WHERE changes() > 0").bind(kini, oleh, obyek, obyekId, aksi, dari ?? null, ke ?? null, catatan ?? null, dummy ? 1 : 0);
+  JEJAK_SK.add(s);
+  return s;
+};
+/* ---------- Jitupasna ke R3P (G3, migrasi 0123_sk_pulih): baca ---------- */
+const KOL_JP = "id, kejadian_id, kaji_id, prov, kab4, status, tim_sk, versi, induk_id, tahun_harga, hitung, dibuat, diubah, oleh, dummy";
+/* harga dummy tidak pernah dipakai Jitupasna nyata (dan sebaliknya): saringan dummy = ? di skHargaCari */
+const KOL_R3P = "id, jitupasna_id, kejadian_id, status, versi, induk_id, tanggap_mulai, disetujui_oleh, disetujui_pada, no_keputusan, tgl_keputusan, penandatangan, total_rp, dibuat, diubah, oleh, dummy";
+const KOL_BARIS = "id, jitupasna_id, jenis, sektor, tingkat, unit, komponen, arus_rp, bulan, unit_asal, harga_id, nilai_rp, asumsi, klien_id, dibuat, oleh, dummy";
+export const skJitupasnaDaftar = async (env, p, kejadianId, dummyOk) => (await sedia(env, p, "sk_jitupasna", "baca", `SELECT ${KOL_JP} FROM sk_jitupasna WHERE kejadian_id = ?${dummyOk ? "" : " AND dummy = 0"} ORDER BY kab4, versi DESC LIMIT 100`).bind(kejadianId).all()).results;
+export const skJitupasnaIds = async (env, p, kejadianId, dummyOk) => (await sedia(env, p, "sk_jitupasna", "baca", `SELECT id FROM sk_jitupasna WHERE kejadian_id = ?${dummyOk ? "" : " AND dummy = 0"} ORDER BY kab4, versi DESC LIMIT 100`).bind(kejadianId).all()).results.map(r => r.id);
+export const skJitupasnaById = (env, p, id) => sedia(env, p, "sk_jitupasna", "baca", `SELECT ${KOL_JP} FROM sk_jitupasna WHERE id = ?`).bind(id).first();
+/* Jitupasna terbaru untuk (kejadian, kab4, dummy): dasar versi baru dan penolakan bila yang lama belum final */
+export const skJitupasnaTerbaru = (env, p, kejadianId, kab4, dummy) => sedia(env, p, "sk_jitupasna", "baca", "SELECT id, status, versi FROM sk_jitupasna WHERE kejadian_id = ? AND kab4 = ? AND dummy = ? ORDER BY versi DESC LIMIT 1").bind(kejadianId, kab4, dummy ? 1 : 0).first();
+export const skBarisDaftar = async (env, p, jpId) => (await sedia(env, p, "sk_jitupasna_baris", "baca", `SELECT ${KOL_BARIS} FROM sk_jitupasna_baris WHERE jitupasna_id = ? ORDER BY sektor, jenis, dibuat LIMIT 501`).bind(jpId).all()).results;
+export const skBarisHitung = async (env, p, jpId) => (await sedia(env, p, "sk_jitupasna_baris", "baca", "SELECT count(*) n FROM sk_jitupasna_baris WHERE jitupasna_id = ?").bind(jpId).first()).n;
+/* harga untuk tahun dan sektor tertentu: acuan kabupaten lebih dulu, lalu nasional (kab4 NULL); yang terbaru dulu */
+export const skHargaCari = async (env, p, sektor, tahun, kab4, dummy = 0) => (await sedia(env, p, "sk_harga", "baca", "SELECT id, sektor, tingkat, satuan, harga_rp, tahun, kab4, dokumen, yakin, dibuat FROM sk_harga WHERE sektor IN (SELECT value FROM json_each(?)) AND tahun = ? AND (kab4 IS NULL OR kab4 = ?) AND dummy = ? ORDER BY (kab4 IS NULL), dibuat DESC LIMIT 500").bind(JSON.stringify(sektor), tahun, kab4, dummy ? 1 : 0).all()).results;
+export const skHargaDaftar = async (env, p, sektor, tahun, dummyOk = false) => (await sedia(env, p, "sk_harga", "baca", `SELECT id, sektor, tingkat, satuan, harga_rp, tahun, kab4, dokumen, yakin, dibuat FROM sk_harga WHERE sektor = ?${tahun ? " AND tahun = ?" : ""}${dummyOk ? "" : " AND dummy = 0"} ORDER BY tingkat, tahun DESC, dibuat DESC LIMIT 200`).bind(...(tahun ? [sektor, tahun] : [sektor])).all()).results;
+export const skR3pById = (env, p, id) => sedia(env, p, "sk_r3p", "baca", `SELECT ${KOL_R3P} FROM sk_r3p WHERE id = ?`).bind(id).first();
+export const skR3pDariJitupasna = async (env, p, jpId) => (await sedia(env, p, "sk_r3p", "baca", `SELECT ${KOL_R3P} FROM sk_r3p WHERE jitupasna_id = ? ORDER BY versi DESC LIMIT 20`).bind(jpId).all()).results;
+export const skKegiatanDaftar = async (env, p, r3pId) => (await sedia(env, p, "sk_r3p_kegiatan", "baca", "SELECT id, r3p_id, sektor, nama, target, satuan, nilai_rp, tautan_jenis, tautan_id, status, dibuat, diubah, oleh, dummy FROM sk_r3p_kegiatan WHERE r3p_id = ? ORDER BY sektor, dibuat LIMIT 200").bind(r3pId).all()).results;
+/* syarat fase transisi -> pemulihan (ALUR 2.1): ada R3P diusulkan atau lebih untuk kejadian ini. Tabel belum ada (0123 belum diterapkan) = null: syarat belum berlaku. */
+export const skR3pDiusulkanAda = async (env, p, kejadianId) => {
+  try { return !!(await sedia(env, p, "sk_r3p", "baca", "SELECT 1 x FROM sk_r3p WHERE kejadian_id = ? AND status != 'draf' LIMIT 1").bind(kejadianId).first()); }
+  catch (e) { if (/no such table: sk_r3p/i.test(String(e?.message || e))) return null; throw e; }
+};
+/* baca dari modul lain, tanpa koordinat, foto, nama pelapor (KP 4, KA 12-13): hitungan per tingkat dari rumah_rusak yang sah; kemajuan dari pemulihan */
+export const skRekapRumahRusak = async (env, f) => (await env.DB.prepare(`SELECT kec, sum(tingkat = 'berat') berat, sum(tingkat = 'sedang') sedang, sum(tingkat = 'ringan') ringan, count(*) total
+  FROM rumah_rusak WHERE status = 'sah' AND prov = ? AND kab = ? AND tanggal BETWEEN ? AND ?${f.bencana ? " AND bencana = ?" : ""} GROUP BY kec ORDER BY kec LIMIT 300`).bind(f.prov, f.kab, f.dari, f.sampai, ...(f.bencana ? [f.bencana] : [])).all()).results;
+export const skKemajuanPemulihan = async (env, ids) => ids.length ? (await env.DB.prepare("SELECT id, jenis, satuan, target, realisasi, status, mulai, selesai, diubah FROM pemulihan WHERE id IN (SELECT value FROM json_each(?)) LIMIT 200").bind(JSON.stringify(ids)).all()).results : [];
+/* rujukan tautan kegiatan: pemulihan (id 16 heks) atau catatan meja rehab; tabel belum ada = tidak ada */
+export const skTautanAda = async (env, jenis, id) => {
+  try { return !!(await env.DB.prepare(jenis === "pemulihan" ? "SELECT 1 x FROM pemulihan WHERE id = ?" : "SELECT 1 x FROM meja_catatan WHERE id = ? AND meja = 'rehab'").bind(id).first()); }
+  catch (e) { if (/no such table/i.test(String(e?.message || e))) return false; throw e; }
+};
+
+/* ---------- Jitupasna ke R3P: pernyataan tulis ---------- */
+export const skStmtHargaBaru = (env, p, h) => sedia(env, p, "sk_harga", "tambah", "INSERT INTO sk_harga (id, sektor, tingkat, satuan, harga_rp, tahun, kab4, dokumen, yakin, dibuat, oleh, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'asumsi-kebijakan', ?, ?, ?)")
+  .bind(h.id, h.sektor, h.tingkat, h.satuan, h.harga_rp, h.tahun, h.kab4 ?? null, h.dokumen, h.kini, h.oleh, h.dummy ? 1 : 0);
+/* versi = max+1 untuk (kejadian, kab4, dummy), dihitung dalam pernyataan yang sama; UNIQUE menolak yang kalah balapan */
+export const skStmtJitupasnaBaru = (env, p, j) => sedia(env, p, "sk_jitupasna", "tambah", `INSERT INTO sk_jitupasna (id, kejadian_id, prov, kab4, tim_sk, versi, induk_id, dibuat, diubah, oleh, dummy)
+  SELECT ?, ?, ?, ?, ?, coalesce(max(versi), 0) + 1, (SELECT id FROM sk_jitupasna WHERE kejadian_id = ? AND kab4 = ? AND dummy = ? ORDER BY versi DESC LIMIT 1), ?, ?, ?, ? FROM sk_jitupasna WHERE kejadian_id = ? AND kab4 = ? AND dummy = ?`)
+  .bind(j.id, j.kejadian_id, j.prov, j.kab4, j.tim_sk ?? null, j.kejadian_id, j.kab4, j.dummy ? 1 : 0, j.kini, j.kini, j.oleh, j.dummy ? 1 : 0, j.kejadian_id, j.kab4, j.dummy ? 1 : 0);
+/* baris hanya masuk selama Jitupasna dibuka atau pengumpulan; klien_id kembar = DO NOTHING (changes 0 = duplikat) */
+export const skStmtBaris = (env, p, jpId, b, kini, oleh, dummy) => sedia(env, p, "sk_jitupasna_baris", "tambah", `INSERT INTO sk_jitupasna_baris (id, jitupasna_id, jenis, sektor, tingkat, unit, komponen, arus_rp, bulan, asumsi, klien_id, dibuat, oleh, dummy)
+  SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? WHERE (SELECT status FROM sk_jitupasna WHERE id = ?) IN ('dibuka', 'pengumpulan') ON CONFLICT (jitupasna_id, klien_id) DO NOTHING`)
+  .bind(b.id, jpId, b.jenis, b.sektor, b.tingkat ?? null, b.unit ?? null, b.komponen ?? null, b.arus_rp ?? null, b.bulan ?? null, b.asumsi ?? null, b.klien_id ?? null, kini, oleh, dummy ? 1 : 0, jpId);
+export const skStmtJitupasnaStatus = (env, p, id, dari, ke, kini) => sedia(env, p, "sk_jitupasna", "ubah", "UPDATE sk_jitupasna SET status = ?, diubah = ? WHERE id = ? AND status = ?").bind(ke, kini, id, dari);
+/* hitung: beku harga_id dan nilai_rp per baris (satu UPDATE ... FROM json_each), lalu status dihitung dan hasil JSON; dari pengumpulan atau dihitung saja */
+export const skStmtBarisNilai = (env, p, jpId, nilai) => sedia(env, p, "sk_jitupasna_baris", "ubah", `UPDATE sk_jitupasna_baris SET harga_id = json_extract(j.value, '$[1]'), nilai_rp = json_extract(j.value, '$[2]') FROM json_each(?) j
+  WHERE sk_jitupasna_baris.id = json_extract(j.value, '$[0]') AND sk_jitupasna_baris.jitupasna_id = ?`).bind(JSON.stringify(nilai), jpId);
+export const skStmtHitung = (env, p, id, tahun, hitung, kini) => sedia(env, p, "sk_jitupasna", "ubah", "UPDATE sk_jitupasna SET status = 'dihitung', tahun_harga = ?, hitung = ?, diubah = ? WHERE id = ? AND status IN ('pengumpulan', 'dihitung')").bind(tahun, hitung, kini, id);
+export const skStmtR3pBaru = (env, p, id, jpId, kini, oleh) => sedia(env, p, "sk_r3p", "tambah", `INSERT INTO sk_r3p (id, jitupasna_id, kejadian_id, versi, induk_id, tanggap_mulai, dibuat, diubah, oleh, dummy)
+  SELECT ?, j.id, j.kejadian_id, (SELECT coalesce(max(versi), 0) + 1 FROM sk_r3p WHERE jitupasna_id = j.id AND dummy = j.dummy), (SELECT id FROM sk_r3p WHERE jitupasna_id = j.id AND dummy = j.dummy ORDER BY versi DESC LIMIT 1),
+  (SELECT tanggap_mulai FROM sk_kejadian WHERE id = j.kejadian_id), ?, ?, ?, j.dummy FROM sk_jitupasna j WHERE j.id = ?`).bind(id, kini, kini, oleh, jpId);
+/* status maju satu langkah; menjadi diusulkan menghitung total_rp (hanya bila semua kegiatan bernilai); ditetapkan_resmi membawa nomor, tanggal, penandatangan sebagai teks */
+export const skStmtR3pStatus = (env, p, id, dari, ke, v, kini) => sedia(env, p, "sk_r3p", "ubah", `UPDATE sk_r3p SET status = ?, no_keputusan = coalesce(?, no_keputusan), tgl_keputusan = coalesce(?, tgl_keputusan), penandatangan = coalesce(?, penandatangan),
+  total_rp = CASE WHEN ? = 'diusulkan' THEN (SELECT CASE WHEN count(*) > 0 AND count(*) = count(nilai_rp) THEN sum(nilai_rp) END FROM sk_r3p_kegiatan WHERE r3p_id = ?) ELSE total_rp END, diubah = ? WHERE id = ? AND status = ?`)
+  .bind(ke, v?.no_keputusan ?? null, v?.tgl_keputusan ?? null, v?.penandatangan ?? null, ke, id, kini, id, dari);
+/* tanda setuju internal (U7): hanya dari diusulkan; trigger sk_r3p_setuju menolak pembuat draf dan pelaku bukan staf:<id> */
+export const skStmtR3pSetuju = (env, p, id, oleh, kini) => sedia(env, p, "sk_r3p", "ubah", "UPDATE sk_r3p SET status = 'disetujui_pm', disetujui_oleh = ?, disetujui_pada = ?, diubah = ? WHERE id = ? AND status = 'diusulkan'").bind(oleh, kini, kini, id);
+/* kegiatan baru hanya selagi R3P draf atau diusulkan */
+export const skStmtKegiatanBaru = (env, p, r3pId, k, kini, oleh, dummy) => sedia(env, p, "sk_r3p_kegiatan", "tambah", `INSERT INTO sk_r3p_kegiatan (id, r3p_id, sektor, nama, target, satuan, nilai_rp, tautan_jenis, tautan_id, status, dibuat, diubah, oleh, dummy)
+  SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? WHERE (SELECT status FROM sk_r3p WHERE id = ?) IN ('draf', 'diusulkan')`)
+  .bind(k.id, r3pId, k.sektor, k.nama, k.target ?? null, k.satuan ?? null, k.nilai_rp ?? null, k.tautan_jenis ?? null, k.tautan_id ?? null, k.status ?? "rencana", kini, kini, oleh, dummy ? 1 : 0, r3pId);
+
+/* dummy G3 (hanya admin): Jitupasna dengan status dan versi bebas (baris diisi sebelum status dinaikkan, nilai dibekukan, lalu status naik lewat skStmtJitupasnaStatus/skStmtHitung) */
+export const skStmtJitupasnaDummy = (env, p, j) => sedia(env, p, "sk_jitupasna", "tambah", "INSERT INTO sk_jitupasna (id, kejadian_id, kaji_id, prov, kab4, tim_sk, versi, induk_id, dibuat, diubah, oleh, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)")
+  .bind(j.id, j.kejadian_id, j.kaji_id ?? null, j.prov, j.kab4, j.tim_sk ?? null, j.versi, j.induk_id ?? null, j.kini, j.kini, j.oleh);
+/* tautan kegiatan dummy ke pemulihan dummy yang SUDAH ada (modul A tidak menulis dummy modul B); tabel belum ada = tidak ada */
+export const skPemulihanDummyId = async env => { try { return (await env.DB.prepare("SELECT id FROM pemulihan WHERE dummy = 1 ORDER BY id LIMIT 1").first())?.id ?? null; } catch (e) { if (/no such table/i.test(String(e?.message || e))) return null; throw e; } };
+
 /* ---------- dummy (DT 9): hanya admin (SA); hapus hanya baris dummy = 1, anak sebelum induk ---------- */
 /* kejadian dummy hidup dalam rentang mulai (lewat indeks parsial sk_kej_dummy) */
 export const skDummyKejadianAda = async (env, p, dari, sampai) => (await sedia(env, p, "sk_kejadian", "baca", "SELECT count(*) n FROM sk_kejadian WHERE dummy = 1 AND mulai >= ? AND mulai <= ?").bind(dari, sampai).first()).n;
 /* urutan wajib = SK_DUMMY_TABEL. ponytail: sumber dummy berstatus ditolak tanpa kejadian tidak terjangkau indeks (tidak ikut terhapus); tambah indeks parsial bila SA sering menolak sumber dummy */
-export const SK_DUMMY_TABEL = ["sk_kejadian_sumber", "sk_kejadian_alias", "sk_kejadian_kab", "sk_jejak", "sk_kejadian"];
+export const SK_DUMMY_TABEL = ["sk_r3p_kegiatan", "sk_r3p", "sk_jitupasna_baris", "sk_jitupasna", "sk_harga", "sk_kaji", "sk_kejadian_sumber", "sk_kejadian_alias", "sk_kejadian_kab", "sk_jejak", "sk_kejadian"];
 export const skStmtDummyHapus = (env, p) => {
   const dum = "SELECT id FROM sk_kejadian WHERE dummy = 1";
   return [
+    sedia(env, p, "sk_r3p_kegiatan", "hapus", "DELETE FROM sk_r3p_kegiatan WHERE dummy = 1"),
+    sedia(env, p, "sk_r3p", "hapus", "DELETE FROM sk_r3p WHERE dummy = 1"),
+    sedia(env, p, "sk_jitupasna_baris", "hapus", "DELETE FROM sk_jitupasna_baris WHERE dummy = 1"),
+    sedia(env, p, "sk_jitupasna", "hapus", "DELETE FROM sk_jitupasna WHERE dummy = 1"),
+    sedia(env, p, "sk_harga", "hapus", "DELETE FROM sk_harga WHERE dummy = 1"),
+    sedia(env, p, "sk_kaji", "hapus", "DELETE FROM sk_kaji WHERE dummy = 1"),
     sedia(env, p, "sk_kejadian_sumber", "hapus", `DELETE FROM sk_kejadian_sumber WHERE dummy = 1 AND (kejadian_id IN (${dum}) OR status IN ('ambigu', 'tanpa_wilayah'))`),
     sedia(env, p, "sk_kejadian_alias", "hapus", `DELETE FROM sk_kejadian_alias WHERE dummy = 1 AND (ke_id IN (${dum}) OR alias_id IN (${dum}))`),
     sedia(env, p, "sk_kejadian_kab", "hapus", `DELETE FROM sk_kejadian_kab WHERE dummy = 1 AND kejadian_id IN (${dum})`),

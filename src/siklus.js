@@ -11,8 +11,10 @@ import {CSP} from "./bnpb.js";
 import {Galat, pelakuAdmin, pelakuSkStaf, pelakuSkInstansi} from "./hak.js";
 import {RUTE_SIKLUS as RUTE_KEJADIAN} from "./siklus_kejadian.js";
 import {RUTE_SIKLUS_PAPARAN} from "./siklus_paparan.js";
+import {RUTE_SIKLUS_KAJI} from "./siklus_kaji.js";
+import {RUTE_SIKLUS_PULIH} from "./siklus_pulih.js";
 import {RUTE_SIKLUS_DUMMY} from "./siklus_dummy.js";
-const RUTE_SIKLUS = {...RUTE_KEJADIAN, ...RUTE_SIKLUS_PAPARAN, ...RUTE_SIKLUS_DUMMY};
+const RUTE_SIKLUS = {...RUTE_KEJADIAN, ...RUTE_SIKLUS_PAPARAN, ...RUTE_SIKLUS_KAJI, ...RUTE_SIKLUS_PULIH, ...RUTE_SIKLUS_DUMMY};
 
 const JENIS_BPBD = ["pemprov", "pemkab", "pemkot"], PERAN_STAF = ["pusdalops", "koordalops", "pimpinan"];
 const ID_KJ = "KJ-\\d{4}-[0-9A-HJKMNP-TV-Z]{8}", ID16 = "[0-9a-f]{16}", POLA = {id: ID_KJ, sid: ID16};
@@ -53,7 +55,7 @@ const galatKe = (e, url) => {
   if (e instanceof Galat) return gagal(e.status, e.message);
   const t = String(e?.message || e);
   if (/no such table: sk_/i.test(t)) return gagal(503, "Siklus Bencana belum diaktifkan");
-  if (/UNIQUE|constraint failed|sk_fase|sk_publik/i.test(t)) return gagal(409, "data berubah atau melanggar aturan; muat ulang lalu ulangi");
+  if (/UNIQUE|constraint failed|sk_fase|sk_publik|sk_r3p|sk_jitupasna_final/i.test(t)) return gagal(409, "data berubah atau melanggar aturan; muat ulang lalu ulangi");
   console.error("siklus", url.pathname, t);
   return gagal(500, "galat server");
 };

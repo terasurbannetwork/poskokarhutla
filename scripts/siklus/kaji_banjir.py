@@ -8,7 +8,7 @@ Tanpa kedalaman: "kedalaman belum tersedia", JRC tidak jalan. Kerusakan hanya hu
 Karhutla (radius km1/km3/km5 kumulatif, titik panas dan luas hanya dari sistem kita) dan gunung api (KRB I, II, III): hanya paparan. Jenis lain: belum ada perkiraan otomatis.
 Label selalu `estimasi-model`. Pakai: python3 -I scripts/siklus/kaji_banjir.py uji
 """
-import importlib.util, json, math, os, sys, tempfile
+import datetime as dt, importlib.util, json, math, os, sys, tempfile
 
 AB = os.path.dirname(os.path.abspath(__file__))
 YAKIN = "estimasi-model"
@@ -123,6 +123,70 @@ def tulis(root, kj, isi):
     return m
 
 
+def banjir_jam1(paparan, kec_siaga, waktu_data=None, kode=None):
+    """Ringkas banjir jam pertama untuk ingest/kaji: {"status","ringkas","masukan"}; None bila rentang tak ada (menunggu_data tidak dikirim)."""
+    b = banjir(paparan, kec_siaga=kec_siaga)
+    if b.get("status") != "ok" or b["rentang_jiwa"] is None:
+        return None
+    return {"status": "dihitung", "masukan": {"sumber": "kejadian_aktif", "kode": kode, "waktu_data": waktu_data},
+            "ringkas": {"rentang": b["rentang_jiwa"], "bangunan_terpapar": b["bangunan_terpapar"], "jiwa_terpapar": b["jiwa_terpapar"],
+                        "batas_atas_jam1": b["batas_atas_jam1"], "n_kec_siaga": len(kec_siaga), "kec_tak_dikenal": len(b["kec_tak_dikenal"])}}
+
+
+def muatan_banjir(kj, r):
+    return {"kejadian_id": kj, "model": "banjir_jam1", "status": r["status"], "yakin": YAKIN, "masukan": r["masukan"], "ringkas": r["ringkas"], "hasil_r2": None}
+
+
+def rencana(kejadian, baris, paparan_dir, keluar=None):
+    """kejadian = kejadian_aktif_awal.json['kejadian'] (kec = Siaga/Awas), paparan_dir/<kode>.json = keluaran paparan.hitung_kab. -> (muatan, lewati)."""
+    G = _muat("kaji_gempa")
+    muatan, lewati = [], []
+    for e in kejadian:
+        kode = e["kode"]
+        kj = G.peta_kj(baris, ("banjir",), kode)
+        f = os.path.join(paparan_dir or "", kode + ".json")
+        if not kj:
+            lewati.append((kode, "belum punya KJ- di sk_kejadian_sumber"))
+        elif not paparan_dir or not os.path.exists(f):
+            lewati.append((kode, "paparan kejadian belum dihitung (menunggu)"))
+        else:
+            r = banjir_jam1(json.load(open(f, encoding="utf-8")), e["kec"], e.get("sejak"), kode)
+            if r is None:
+                lewati.append((kode, "rentang tak ada (menunggu_data)"))
+            else:
+                m = muatan_banjir(kj, r)
+                if keluar:   # hasil_r2 terisi hanya bila berkasnya benar-benar ditulis (job mengunggahnya sesudah ingest)
+                    msl = tulis(keluar, kj, {"model": "banjir_jam1", "kode": kode, **banjir(json.load(open(f, encoding="utf-8")), kec_siaga=e["kec"])})
+                    if msl:
+                        lewati.append((kode, "saji kaji ditolak: " + "; ".join(msl)))
+                        continue
+                    m["hasil_r2"] = f"siklus/saji/kaji/{kj}.json"
+                muatan.append(m)
+    return muatan, lewati
+
+
+def _kirim_cli(a):
+    G = _muat("kaji_gempa")
+    akar = os.path.normpath(os.path.join(AB, "../.."))
+    o = lambda n, b=None: G._opsi(a, n, b)
+    awal = json.load(open(os.path.join(akar, "public/banjir/data/kejadian_aktif_awal.json"), encoding="utf-8"))
+    basis, sungguhan = o("--basis", "https://centurisk97.id").rstrip("/"), "--kirim" in a
+    http, baris = None, []
+    if sungguhan or "--basis" in a:
+        tk = os.environ.get("PIPA_TOKEN")
+        if not tk:
+            sys.exit("butuh env PIPA_TOKEN")
+        http = _muat("pasang")._http(tk)
+        h = dt.date.today()
+        baris = G.tarik_sumber(http, basis, (h - dt.timedelta(days=30)).isoformat(), h.isoformat())
+    muatan, lewati = rencana(awal["kejadian"], baris, o("--paparan"), o("--keluar"))
+    for i, why in lewati:
+        print("LEWATI", i, why)
+    for kj, hs in G.kirim(muatan, basis, http, sungguhan):
+        print("KIRIM" if sungguhan else "KERING", kj, hs)
+    print("| terkirim" if sungguhan else "| dry-run (tambah --kirim untuk mengirim)")
+
+
 def _uji():
     def salah(f, *a):
         try:
@@ -174,11 +238,36 @@ def _uji():
         assert d["yakin"] == YAKIN and d["jenis"] == "kaji" and d["bahaya"] == "banjir"
         assert tulis(t, "KJ-2026-XXXXXXXX", {"total": 1}) and not os.path.exists(os.path.join(t, "siklus/saji/kaji/KJ-2026-XXXXXXXX.json"))
     assert "total" not in json.dumps(b) and "rata" not in json.dumps(b)
+    # SK-056: banjir_jam1 dan rencana kirim
+    r = banjir_jam1(pap, ["A", "B"], "2026-10-18", "B0007")
+    assert r["ringkas"]["rentang"] == [600, 1400] and r["masukan"]["kode"] == "B0007" and r["status"] == "dihitung"
+    assert banjir_jam1(pap, ["A", "C"]) is None and banjir_jam1(pap, None if False else ["A"], None, "x") is not None, "rentang tak ada = None"
+    assert banjir_jam1({"zona": {"banjir": {"tersedia": False}}}, ["A"]) is None
+    G = _muat("kaji_gempa")
+    assert G.periksa(muatan_banjir("KJ-2026-9A2WGN3G", r)) == [] and G.periksa(muatan_banjir("KJ-2026-9A2WGN3G", {**r, "ringkas": {"rentang": None}}))
+    bar = [{"sumber": "banjir", "kode": "B0007", "status": "terpasang", "kejadian_id": "KJ-2026-9A2WGN3G"}, {"sumber": "banjir", "kode": "B0008", "status": "terpasang", "kejadian_id": "KJ-2026-9A2WGN3H"}]
+    kej = [{"kode": "B0007", "sejak": "2026-10-18", "kec": ["A", "B"]}, {"kode": "B0008", "kec": ["A", "C"]}, {"kode": "B0009", "kec": ["A"]}, {"kode": "B0010", "kec": ["A"]}]
+    with tempfile.TemporaryDirectory() as t:
+        for k in ("B0007", "B0008", "B0010"):
+            json.dump(pap, open(os.path.join(t, k + ".json"), "w"))
+        mu, lw = rencana(kej, bar, t)
+        assert [x["kejadian_id"] for x in mu] == ["KJ-2026-9A2WGN3G"] and [i for i, _ in lw] == ["B0008", "B0009", "B0010"], lw
+        assert rencana(kej, bar, None)[0] == [], "tanpa paparan tidak ada yang dikirim"
+        assert mu[0]["hasil_r2"] is None, "tanpa --keluar tidak ada berkas, hasil_r2 kosong"
+        with tempfile.TemporaryDirectory() as o:
+            m2, _ = rencana(kej, bar, t, o)
+            f = os.path.join(o, "siklus/saji/kaji/KJ-2026-9A2WGN3G.json")
+            d = json.load(open(f))
+            assert m2[0]["hasil_r2"] == "siklus/saji/kaji/KJ-2026-9A2WGN3G.json" and d["model"] == "banjir_jam1" and d["rentang_jiwa"] == [600, 1400] and G.periksa(m2[0]) == []
+    pernah = []
+    assert G.kirim(mu, "https://x", lambda *a: pernah.append(a))[0][1].startswith("dry-run") and not pernah
     print("kaji_banjir: uji hijau")
 
 
 if __name__ == "__main__":
     if sys.argv[1:] == ["uji"]:
         _uji()
+    elif sys.argv[1:2] == ["kirim"]:
+        _kirim_cli(sys.argv[2:])
     else:
-        sys.exit("pakai: kaji_banjir.py uji")
+        sys.exit("pakai: kaji_banjir.py uji | kirim [--paparan DIR] [--basis URL] [--keluar AKAR_SAJI] [--kirim]")

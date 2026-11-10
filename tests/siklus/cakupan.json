@@ -1,0 +1,167 @@
+{
+ "_catatan": "Rute /api/siklus/* -> uji server (tests/warga/siklus_*) dan layar (tests/siklus) yang memanggilnya; skrip pipeline -> subperintah uji (npm run uji:siklus menjalankannya). Rute baru wajib terdaftar di sini; kolom klien kosong = rute tanpa layar G1.",
+ "rute": {
+  "GET /api/siklus/publik/kejadian/:id": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": [
+    "tests/siklus/gerbang_publik.test.mjs"
+   ]
+  },
+  "GET /api/siklus/kejadian": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kejadian.test.mjs",
+    "tests/siklus/layar_kaji.test.mjs"
+   ]
+  },
+  "GET /api/siklus/kejadian/arsip": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": []
+  },
+  "GET /api/siklus/kejadian/:id": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kejadian.test.mjs"
+   ]
+  },
+  "POST /api/siklus/kejadian": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kejadian.test.mjs"
+   ]
+  },
+  "POST /api/siklus/kejadian/:id/promosi": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/kejadian/:id/fase": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kejadian.test.mjs"
+   ]
+  },
+  "POST /api/siklus/kejadian/:id/publik": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kejadian.test.mjs"
+   ]
+  },
+  "POST /api/siklus/kejadian/:id/gabung": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/kejadian/:id/koreksi": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": []
+  },
+  "GET /api/siklus/antrean": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kejadian.test.mjs"
+   ]
+  },
+  "POST /api/siklus/antrean/:sid": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kejadian.test.mjs"
+   ]
+  },
+  "GET /api/siklus/jejak": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": []
+  },
+  "GET /api/siklus/paparan/ringkas": {
+   "server": "tests/warga/siklus_peran.test.mjs",
+   "klien": [
+    "tests/siklus/layar_paparan.test.mjs"
+   ]
+  },
+  "GET /api/siklus/paparan/kab": {
+   "server": "tests/warga/siklus_peran.test.mjs",
+   "klien": [
+    "tests/siklus/layar_paparan.test.mjs"
+   ]
+  },
+  "GET /api/siklus/fasilitas": {
+   "server": "tests/warga/siklus_peran.test.mjs",
+   "klien": []
+  },
+  "GET /api/siklus/paparan/rinci": {
+   "server": "tests/warga/siklus_peran.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/dummy": {
+   "server": "tests/warga/siklus_dummy.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kejadian.test.mjs",
+    "tests/siklus/layar_paparan.test.mjs"
+   ]
+  },
+  "GET /api/siklus/saya": {
+   "server": "tests/warga/siklus_penguat.test.mjs",
+   "klien": []
+  },
+  "GET /api/siklus/ingest/jendela": {
+   "server": "tests/warga/siklus_ingest.test.mjs",
+   "klien": []
+  },
+  "GET /api/siklus/ingest/sumber": {
+   "server": "tests/warga/siklus_ingest.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/ingest/kejadian": {
+   "server": "tests/warga/siklus_ingest.test.mjs",
+   "klien": []
+  },
+  "GET /api/siklus/kaji": {
+   "server": "tests/warga/siklus_kaji.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kaji.test.mjs"
+   ]
+  },
+  "GET /api/siklus/kaji/:sid": {
+   "server": "tests/warga/siklus_kaji.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kaji.test.mjs"
+   ]
+  },
+  "POST /api/siklus/kaji/:sid/status": {
+   "server": "tests/warga/siklus_kaji.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kaji.test.mjs"
+   ]
+  },
+  "POST /api/siklus/ingest/kaji": {
+   "server": "tests/warga/siklus_kaji.test.mjs",
+   "klien": []
+  }
+ },
+ "skrip": {
+  "adapter_g1.py": "uji",
+  "adapter_g2.py": "uji",
+  "adapter_g4.py": "uji",
+  "alur.py": "uji",
+  "arsip_kejadian.py": "uji",
+  "bahaya_kelas.py": "uji",
+  "bersih_dibi.py": "uji",
+  "bersih_logbook.py": "uji",
+  "bps.py": "uji",
+  "dummy_saji.py": "uji",
+  "fasilitas.py": "uji",
+  "ghsl_lab.py": "uji",
+  "gudang.py": "uji",
+  "hidup.py": "uji",
+  "iklim_lab.py": "uji",
+  "kaji_banjir.py": "uji",
+  "kaji_gempa.py": "uji",
+  "konst.py": "uji",
+  "kunci.py": "uji",
+  "panen.py": "uji",
+  "paparan.py": "uji",
+  "pasang.py": "uji",
+  "registri.py": "uji",
+  "saji.py": "uji",
+  "ujibalik.py": "uji",
+  "unggah_riwayat.py": "uji"
+ }
+}
