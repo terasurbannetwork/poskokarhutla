@@ -1,7 +1,7 @@
 """Hoaks bencana: RSS TurnBackHoax.id (MAFINDO) disaring kata kunci bencana dan label [SALAH]/[HOAKS]/dst.
 -> public/data/hoaks_bencana.json   (judul, tautan, tanggal, kategori; BUKAN isi artikel). Berkas itu sendiri jadi arsip bergulir (maks 300 entri).
 Umpan hanya memuat 10 butir terbaru tanpa tanggal terbit: tanggal diambil dari datePublished halaman artikel (butir baru saja), cadangan = tanggal lihat.
-INDEKS jumlah klaim hoaks bencana per hari/jenis; pemakai: sinyal_sosial (pembanding lonjakan), bukan model.
+INDEKS jumlah klaim hoaks bencana per hari/jenis; calon pemakai: pembanding lonjakan sinyal sosial setelah arsip 60 hari, bukan model.
 Pakai: python3 scripts/umum/hoaks.py   |   python3 scripts/umum/hoaks.py uji
 """
 import datetime as dt, html, importlib.util, json, os, re, sys, xml.etree.ElementTree as ET
