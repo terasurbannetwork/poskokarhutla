@@ -16,6 +16,7 @@ import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_POSKO, buatAntrean, bersihkanPosko} from "./posko.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
 import {RUTE_FOTO_LABEL} from "./foto_label.js";
+import {RUTE_FOTO_LAPANGAN} from "./foto_lapangan.js";
 import {bersihkanBnpb, RUTE_BNPB} from "./bnpb.js";
 import {RUTE_HUKUM} from "./hukum.js";
 import {RUTE_KONTAK} from "./kontak.js";
@@ -52,7 +53,7 @@ import {alarmHimawari, bersihkanAlarm} from "./alarm_himawari.js";
 import {bersihkanKabar, ulangiKabar} from "./kabar.js";
 import {RUTE_UJI, jalankanUji} from "./uji_lapangan.js";
 import {RUTE_UJI_BANJIR, bersihkanUjiBanjir} from "./uji_banjir.js";
-import {RUTE_STAF, bersihkanStaf, stafPeran} from "./staf.js";
+import {RUTE_STAF, bersihkanStaf, stafPeran, stafSesiSemua} from "./staf.js";
 import {RUTE_CC, bersihkanCc} from "./command_center.js";
 import {RUTE_AKADEMISI, P_AKADEMISI} from "./akademisi.js";
 import {RUTE_DALOPS, PERAN_DALOPS} from "./dalops.js";
@@ -584,6 +585,7 @@ const RUTE = {
     return terapkanOg(env, url, await env.ASSETS.fetch(new Request(new URL("/index.html", url), req)), await ogFoto(env, url, id).catch(() => null)); },
   "GET /admin/sosmed": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanSosmed()),
   ...RUTE_FOTO,
+  ...RUTE_FOTO_LAPANGAN,   // foto logbook + uji pilot untuk staf login di overlay Foto (src/foto_lapangan.js)
   ...RUTE_FOTO_LABEL,   // label kerusakan foto oleh manusia, admin saja (src/foto_label.js)
   "GET /admin/labelfoto": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanLabelFoto()),
   ...RUTE_SOSMED,
@@ -736,6 +738,16 @@ function halamanTerkunci(url) {
 function catatHTML(env, req, jalur, ctx) {
   if (env.DB) ctx?.waitUntil?.(Pub.catatHit(env, req, jalur).catch(e => console.error("hit", e)));
 }
+/* pemirsa bertab 'pusdalops' (baca saja): <html data-baca-saja>, public/bnpb/menu_pusdalops.css menyembunyikan kontrol tulis. Satu titik untuk jawaban rute() dan layaniHTML.
+   Tanpa cookie pemirsa: tanpa query D1 (pemirsaSesi). Admin dan staf tidak ditandai. Hanya penyajian; gerbang akses dan API tetap yang menolak tulis. */
+async function bacaSaja(env, req, res) {
+  const ct = res.headers.get("content-type"); if (req.method !== "GET" || res.status !== 200 || ct && !/text\/html/.test(ct)) return res;   // layaniHTML lokal (aset tanpa content-type) tetap lewat; pengubah HTML tak menyentuh badan non-HTML
+  const pm = await pemirsaSesi(env, req);
+  if (!pm?.tab.includes("pusdalops") || await adminOK(env, req) || await stafSesiSemua(env, req)) return res;
+  const k = new HTMLRewriter().on("html", {element: el => el.setAttribute("data-baca-saja", "")}).transform(res);
+  k.headers.set("cache-control", "private, no-store"); k.headers.append("vary", "cookie");
+  return k;
+}
 async function layaniHTML(req, env, ctx, url) {
   if (req.method !== "GET" && req.method !== "HEAD") return null;
   /* berkas statis layar petugas tidak membawa CSP/permissions-policy modul: arahkan ke alamat bersih */
@@ -760,7 +772,7 @@ async function layaniHTML(req, env, ctx, url) {
      pantau.terasurban.com tanpa atribut */
   const situsW = situsCenturisk(url.hostname);
   /* akun pemirsa: tab yang boleh dilihat ditulis di <html data-pemirsa-tab>, public/index.html menyembunyikan tab lain (admin tidak dibatasi) */
-  const pm = await pemirsaSesi(env, req), pmTab = pm && !await adminOK(env, req) ? pm.tab.join(",") : null;
+  const pm = await pemirsaSesi(env, req), pmTab = pm && !await adminOK(env, req) ? [...new Set(pm.tab.flatMap(t => t === "pusdalops" ? ["peta", "operasi"] : [t]))].join(",") : null;   // pusdalops = peta utama + tab Operasi lapangan (/?operasi); index.html tidak perlu tahu tab ini
   /* merek: semua berkas sudah bertulisan "Centurisk97" di sumbernya (pemilik, 26 Okt 2026), jadi tidak ada penulisan ulang merek per alamat */
   const keluaran = new HTMLRewriter().on("html", {element: el => {
     if (a) { el.setAttribute("data-pb-online", String(a.online)); el.setAttribute("data-pb-tampil", String(a.tampilan)); }
@@ -891,12 +903,12 @@ const W = {
     if (!ujiOK && hostTerkunci(url.hostname) && (req.method === "GET" || req.method === "HEAD") && halamanTerkunci(url) && !await adminOK(env, req)
       && !await stafPeran(env, req, /^\/direktori\/?$/.test(url.pathname) ? ["operator_cc", ...P_AKADEMISI] : MENU_PUSDALOPS.test(url.pathname) ? ["operator_cc", ...PERAN_DALOPS] : ["operator_cc"])) {   // operator command center (sesi staf) melihat semua halaman terkunci, GET/HEAD saja; staf berperan Direktori (P_AKADEMISI) membuka /direktori saja
       /* akun pemirsa (src/pemirsa.js): hanya tab miliknya; halaman lain dialihkan ke tab pertamanya */
-      const p = await pemirsaSesi(env, req), ke = p ? arahPemirsa(p, url.pathname) : "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search);
+      const p = await pemirsaSesi(env, req), ke = p ? arahPemirsa(p, url.pathname, url.search) : "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search);
       if (ke) return new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store"}});
     }
-    const r = await rute(env, req, url, ctx); if (r) return r;
+    const r = await rute(env, req, url, ctx); if (r) return bacaSaja(env, req, r);
     const h = await layaniHTML(req, env, ctx, url);
-    if (h) return /^\/presiden\/?$/.test(url.pathname) ? bisaDiIframe(h) : h;
+    if (h) return /^\/presiden\/?$/.test(url.pathname) ? bisaDiIframe(h) : await bacaSaja(env, req, h);
     if (!url.pathname.startsWith("/api/warga")) { const a = await env.ASSETS.fetch(req); return a.status === 404 && mauHalaman(req, url) ? halamanGalat(env, req, url, 404) : a; }
     const kini = Date.now(), p = url.pathname.replace(/\/+$/, "").split("/").slice(3);   // ["", "api", "warga", ...]
     try {

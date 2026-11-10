@@ -12,3 +12,25 @@
   .ad-top .mp-menu{position:static;transform:none;max-width:none;flex:1;flex-wrap:wrap;justify-content:center;overflow:visible;margin:0 12px;row-gap:2px}
   .mp-menu a{padding:6px 10px;font-size:12.5px;gap:6px}
 }
+
+/* Akun pemirsa bertab 'pusdalops' = baca saja. Worker menulis <html data-baca-saja> (src/worker.js bacaSaja); satu blok ini menyembunyikan kontrol tulis
+   di semua halaman menu Pusdalops. Selektor harus kelas/id nyata di sumber layar (dijaga tests/warga/pemirsa_pusdalops.test.mjs). Filter, tab, tanggal, ekspor, Buka rincian tetap tampil.
+   Server tetap yang menolak tulis; ini hanya penyajian. Meja Pantau (saya.baca_saja) dan OMC (boleh_tulis) sudah menyembunyikan sendiri. */
+/* /bnpb/logbook: seluruh formulir entri (kejadian, dampak, SK, tutup kejadian) */
+html[data-baca-saja] .lb-kolom>.bn-form{display:none}
+html[data-baca-saja] .lb-kolom{grid-template-columns:minmax(0,1fr)}
+/* /bnpb/operasi: tiap formulir lipat (pemulihan, lapsus, roll call, SK, berantai, medsos) lengkap dengan judulnya, tombol Progres, Tolak/Tautkan/Buat, Tandai selesai */
+html[data-baca-saja] details.bn-blok:has(>.op-form),
+html[data-baca-saja] [data-progres],
+html[data-baca-saja] [data-butir],
+html[data-baca-saja] .op-tulis{display:none}
+/* /laporan-bnpb: isian, impor, simpan, geser hari, contoh dummy, buang draf. Ekspor JSON, Unduh, Tayang, Salin tetap */
+html[data-baca-saja] #lbForm,
+html[data-baca-saja] #lbSimpan,
+html[data-baca-saja] #lbGeser,
+html[data-baca-saja] #lbContoh,
+html[data-baca-saja] #lbBuang,
+html[data-baca-saja] .lb-isian .lb-imp,
+html[data-baca-saja] .lb-isian>.pp-cat{display:none}
+/* /bnpb/dalops tab Laporan Masuk: tombol WA minta pembaruan */
+html[data-baca-saja] .lm-tagih-aksi{display:none}

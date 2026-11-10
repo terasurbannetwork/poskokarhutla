@@ -14,7 +14,7 @@ let mf, DB;
 before(async () => {
   mf = new Miniflare({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
     compatibilityDate: "2024-09-23", d1Databases: {DB: "uji-gerbang-bukan-staf"}, r2Buckets: ["MEDIA"],
-    bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin", AKUN_SITUS_UJI: "gerbang@x:sandi"},
+    bindings: {IP_SALT: "garam-uji", SESI_KUNCI: "kunci-sesi-uji", ADMIN_TOKEN: "rahasia-admin", AKUN_SITUS_UJI: "gerbang@x:sandi"},
     serviceBindings: {ASSETS: () => new Response("tidak ada", {status: 404})}, cache: false});
   DB = await mf.getD1Database("DB"); await DB.batch(pecah(migrasi()).map(s => DB.prepare(s)));
   await DB.batch([DB.prepare(`INSERT INTO staf (id, username, nama, nip, unit, email, wa, peran, wilayah, garam, sandi_sha, wajib_ganti, dibuat, dibuat_oleh, dummy)
@@ -43,4 +43,19 @@ for (const [m, j] of RUTE) test(`gerbang ditolak, staf sah dan ADMIN_TOKEN diter
 test("staf berperan salah (udara) ditolak 403 di /api/sensor/status", async () => {
   const r = await kirim("GET", "/api/sensor/status", {cookie: "sesi_staf=" + TOK_UDARA});
   assert.equal(r.s, 403, `peran udara bukan pusdalops/koordalops/pimpinan: ${r.s} ${r.t.slice(0, 80)}`);
+});
+
+/* tombol "Masuk staf" di layar 403: akun gerbang dulu dialihkan balik ke ?ke= dan layar berputar tanpa bisa ganti akun (9 Nov 2026).
+   Tanpa ?ke= tetap 303: Admin.keMasuk (public/admin/bersama.js) memakai itu untuk membedakan "tak berhak" dari "belum masuk". */
+const masuk = (j, token) => mf.dispatchFetch("http://t.lokal" + j, {redirect: "manual", headers: {"x-admin-token": token}});
+test("GET /admin/masuk?ke=: akun gerbang dapat form, ADMIN_TOKEN dialihkan", async () => {
+  const g = await masuk("/admin/masuk?ke=%2Fbnpb%2Fbahan", "gerbang@x:sandi"), teks = await g.text();
+  assert.equal(g.status, 200, "akun gerbang harus melihat form masuk, bukan dipantulkan");
+  assert.match(teks, /action="\/admin\/masuk\?ke=%2Fbnpb%2Fbahan"/);
+  const a = await masuk("/admin/masuk?ke=%2Fbnpb%2Fbahan", "rahasia-admin"); await a.text();
+  assert.equal(a.status, 303); assert.equal(a.headers.get("location"), "/bnpb/bahan");
+});
+test("GET /admin/masuk tanpa ?ke=: akun gerbang tetap 303 (kontrak Admin.keMasuk)", async () => {
+  const g = await masuk("/admin/masuk", "gerbang@x:sandi"); await g.text();
+  assert.equal(g.status, 303);
 });

@@ -6,7 +6,7 @@ Dua proses, tanpa LLM:
   melayani API lokal `127.0.0.1:PORT` (`/send`, `/send-file`) lewat limiter anti-blokir (`gateway/limiter.js`).
   Bahan yang belum tersimpan menunggu di `~/.wa-bot/outbox/` (dicoba ulang tiap 5 menit).
 - `otomatis.mjs`: baca bahan hari ini dari worker (`/api/wa/masuk`, token `WA_MESIN`), jalankan
-  `data/laporan-bnpb/generator/harian.py` dan `penanganan.py`, kirim PDF + PPTX ke `PENERIMA`.
+  `data/laporan-bnpb/generator/harian_ringkas.py` (2 slide, bahan Koordalops 24 jam + BMKG pagi + PVMBG pagi) dan `penanganan.py`, kirim PDF + PPTX ke `PENERIMA`.
   Dipicu gateway 2 menit sesudah bahan terakhir tersimpan, dan launchd tiap 10 menit sebagai cadangan (06.00 sampai 23.00 WIB).
 
 Aturan jam (README generator): Harian = rekap Koordalops 24 jam + BMKG pagi, sesudah 12.00 WIB. Penanganan = BMKG pagi + teks Satgas,
@@ -87,7 +87,7 @@ Hanya dari nomor `PEMILIK` (boleh beberapa, dipisah koma). Pesan perintah (teks 
 `node scripts/wa/otomatis.mjs --cutoff [--kering] [--tanggal D]`: pada jam cut-off bangun dengan bahan yang ada. Penanganan (17.00) dibangun dari data sistem walau BMKG/satgas WA belum masuk (laporan balik memuat `bahanBelumMasuk`, slide tidak diberi catatan). Harian (12.00) wajib Koordalops + BMKG; bila belum ada, PEMILIK dikabari sekali. Bahan masuk kemudian = jalan biasa membangun ulang dan mengirim "Revisi: ". Plist templat `launchd/id.centurisk97.wa-cutoff.plist` (12.05 dan 17.05, sertakan `CHROMIUM_SHELL` karena Playwright headless shell tidak terpasang). Belum dimuat: setelah pemilik setuju,
 
 ```bash
-sed -e "s#__REPO__#$HOME/Documents/GitHub/poskokarhutla#" -e "s#__NODE__#$(which node)#" -e "s#__HOME__#$HOME#" scripts/wa/launchd/id.centurisk97.wa-cutoff.plist > ~/Library/LaunchAgents/id.centurisk97.wa-cutoff.plist
+sed -e "s#__REPO__#$HOME/Developer/poskokarhutla#" -e "s#__NODE__#$(which node)#" -e "s#__HOME__#$HOME#" scripts/wa/launchd/id.centurisk97.wa-cutoff.plist > ~/Library/LaunchAgents/id.centurisk97.wa-cutoff.plist
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/id.centurisk97.wa-cutoff.plist
 ```
 

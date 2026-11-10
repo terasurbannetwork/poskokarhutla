@@ -198,10 +198,10 @@ test("kolom korban gempa (md, hilang, status_darurat) ikut kelompok bila ada, nu
   assert.deepEqual([c.md, c.hilang, c.status_darurat], [3, 2, "Tanggap darurat"]); assert.deepEqual([g.md, g.hilang, g.status_darurat], [null, null, null]);
 });
 
-test("dalops.js: delapan tab berurutan, gunung api dari JSON publik, jenis tanpa prakiraan melewati status.json dan Peringatan dini", () => {
+test("dalops.js: sembilan tab berurutan (Laporan Masuk tepat sebelum Laporan), gunung api dari JSON publik, jenis tanpa prakiraan melewati status.json dan Peringatan dini", () => {
   const src = readFileSync(new URL("../../public/bnpb/dalops.js", import.meta.url), "utf8");
   const tab = src.match(/const TAB = \[([\s\S]*?)\];/)[1];
-  assert.deepEqual([...tab.matchAll(/\["(\w+)", "/g)].map(m => m[1]), ["karhutla", "banjir", "longsor", "gunungapi", "gempa", "cuaca", "kekeringan", "laporan"]);
+  assert.deepEqual([...tab.matchAll(/\["(\w+)", "/g)].map(m => m[1]), ["karhutla", "banjir", "longsor", "gunungapi", "gempa", "cuaca", "kekeringan", "laporan_masuk", "laporan"]);
   assert.match(src, /fetch\("\/banjir\/data\/gunungapi_status\.json"\)/);
   assert.match(src, /JN\[jenis\]\.pra === false \? null : await/, "status.json tidak dimuat untuk jenis tanpa prakiraan");
   assert.match(src, /!adaPra \? null :/, "bagian Peringatan dini dilewati, bukan kotak kosong");
@@ -266,4 +266,114 @@ test("mitigasi: status.json tertinggal dari hari data tidak memberi tenggat yang
   const m = H.mitigasi(st, null, [], "2026-11-09");
   assert.equal(m.grup[0].baris[0].tenggat, "Sekarang");
   assert.equal(H.mitigasi(st, null, [], "2026-10-13").grup[0].baris[0].tenggat, "Sebelum 16 Okt");
+});
+
+/* ---------- tab Laporan Masuk: rekap harian WA Koordalops (bentuk kontrak GET /api/dalops/laporan) ---------- */
+const LK = {
+  A: {jenis: "karhutla", prov: "14", lokasi: "", tempat: "Prov. Riau"}, B: {jenis: "banjir", prov: "13", lokasi: "Solok", tempat: "Kab. Solok"},
+  C: {jenis: "longsor", prov: "32", lokasi: "Cianjur", tempat: "Kab. Cianjur"}, D: {jenis: "cuaca", prov: "33", lokasi: "Cilacap", tempat: "Kab. Cilacap"},
+  E: {jenis: "gempabumi", prov: "75", lokasi: "Boalemo", tempat: "Kab. Boalemo"}, F: {jenis: "cuaca", prov: "35", lokasi: "Lamongan", tempat: "Kab. Lamongan"},
+  X: {jenis: "banjir", prov: "35", lokasi: "Gresik", tempat: "Kab. Gresik"}};
+const rek = (tanggal, ...isi) => ({tanggal, status: "ok", diterima: Date.parse(tanggal) + 42 * 6e4, jam: "07.42", laporan: isi.length + 5, menonjol: isi.length, lewat: 0, alasan: "",
+  kejadian: isi.map(([k, sifat, status]) => ({...LK[k], sifat, status}))});
+const ARSIP = [
+  rek("2026-11-01", ["A", "pengkinian", "berjalan"], ["B", "baru", "berjalan"], ["F", "pengkinian", "belum"]),
+  rek("2026-11-02", ["A", "pengkinian", "berjalan"], ["B", "pengkinian", "belum"], ["C", "baru", "belum"]),
+  {tanggal: "2026-11-03", status: "gagal", diterima: 1, jam: "07.50", laporan: null, menonjol: null, lewat: 0, kejadian: [], alasan: "rekap terpotong"},
+  rek("2026-11-05", ["A", "pengkinian", "berjalan"], ["B", "pengkinian", "selesai"]),
+  rek("2026-11-06", ["A", "pengkinian", "berjalan"], ["C", "pengkinian", "belum"], ["D", "baru", "berjalan"]),
+  rek("2026-11-07", ["A", "pengkinian", "berjalan"], ["B", "baru", "berjalan"], ["D", "baru", "berjalan"], ["E", "baru", "belum"]),
+  rek("2026-11-08", ["A", "pengkinian", "berjalan"], ["X", "pengkinian", "berjalan"]),
+  rek("2026-11-09", ["A", "pengkinian", "berjalan"])].reverse();   // terbaru dulu, seperti jawaban Worker
+const nama = r => r.map(x => x.k.lokasi || x.k.tempat);
+
+test("kunciKejadian: jenis, provinsi, lokasi tanpa awalan Kab./Kota/Prov. dan spasi rapat", () => {
+  assert.equal(H.kunciKejadian({jenis: "banjir", prov: "11", lokasi: "Kab.  Aceh   Barat"}), "banjir|11|aceh barat");
+  assert.equal(H.kunciKejadian({jenis: "banjir", prov: "11", lokasi: "Kota Banda Aceh"}), "banjir|11|banda aceh");
+  assert.equal(H.kunciKejadian({jenis: "karhutla", prov: "14", lokasi: ""}), "karhutla|14|");
+  assert.equal(H.kunciKejadian({jenis: "karhutla", prov: "14", lokasi: "Prov. Riau"}), "karhutla|14|riau");
+});
+
+test("tanggalPantau: tujuh tanggal WIB terbaru dulu, hari ini dilewati sebelum 07.00 WIB", () => {
+  const sebelum = H.tanggalPantau(Date.parse("2026-11-09T23:30:00Z")), sesudah = H.tanggalPantau(Date.parse("2026-11-10T00:00:00Z"));   // 06.30 dan 07.00 WIB 10 Nov
+  assert.deepEqual(sebelum, ["2026-11-09", "2026-11-08", "2026-11-07", "2026-11-06", "2026-11-05", "2026-11-04", "2026-11-03"]);
+  assert.equal(sesudah.length, 7); assert.equal(sesudah[0], "2026-11-10"); assert.equal(sesudah[6], "2026-11-04");
+  assert.equal(H.tanggalPantau(Date.parse("2026-12-01T10:00:00Z"))[6], "2026-11-25", "melewati pergantian bulan");
+});
+
+test("ringkasLaporan: hari tanpa rekap atau gagal tidak dihitung tagih; pesannya dari status", () => {
+  const gagal = H.ringkasLaporan(ARSIP, "2026-11-03"), belum = H.ringkasLaporan(ARSIP, "2026-11-04");
+  assert.deepEqual([gagal.ada, gagal.status, gagal.tagih.length, gagal.baru.length], [false, "gagal", 0, 0]);
+  assert.deepEqual([belum.ada, belum.status, belum.tagih.length], [false, "belum", 0]);
+});
+
+test("ringkasLaporan: baru dan pengkinian ikut sifat; kemunculan pertama pengkinian di tanggal arsip awal = Sebelum, hari ke kosong", () => {
+  const r = H.ringkasLaporan(ARSIP, "2026-11-01");
+  assert.deepEqual(nama(r.baru), ["Solok"]); assert.deepEqual(nama(r.pengkinian), ["Prov. Riau", "Lamongan"]);
+  const a = r.pengkinian[0]; assert.deepEqual([a.sebelum, a.hariKe, a.pertama], [true, null, "2026-11-01"]);
+  assert.equal(r.baru[0].sebelum, false); assert.equal(r.baru[0].hariKe, 1);
+  assert.equal(r.perluDicek.length, 0, "hari awal arsip tidak penuh tanda palsu");
+  const s = H.ringkasLaporan(ARSIP, "2026-11-05").pengkinian.find(x => x.k.lokasi === "Solok");
+  assert.deepEqual([s.sebelum, s.pertama, s.hariKe], [false, "2026-11-01", 5]);
+});
+
+test("ringkasLaporan: tagih = terbuka 14 hari sebelum T, bukan selesai, tidak ada di rekap T; tanpa kabar, nada, usul tutup, urut terlama", () => {
+  const r = H.ringkasLaporan(ARSIP, "2026-11-09");
+  assert.deepEqual(r.tagih.map(x => x.k.lokasi || x.k.tempat), ["Lamongan", "Cianjur", "Solok", "Cilacap", "Boalemo", "Gresik"]);
+  const por = Object.fromEntries(r.tagih.map(x => [x.k.lokasi, x]));
+  assert.deepEqual([por.Lamongan.tanpa, por.Lamongan.nada, por.Lamongan.usulTutup, por.Lamongan.sebelum], [8, "merah", true, true], "tanpa kabar > 7 hari: usul tutup");
+  assert.deepEqual([por.Cianjur.tanpa, por.Cianjur.nada, por.Cianjur.usulTutup, por.Cianjur.pertama], [3, "merah", false, "2026-11-02"]);
+  assert.deepEqual([por.Solok.tanpa, por.Solok.nada], [2, "kuning"], "Solok selesai 5 Nov lalu muncul berjalan 7 Nov: terbuka lagi");
+  assert.deepEqual([por.Gresik.tanpa, por.Gresik.nada], [1, "kuning"]);
+  assert.ok(!r.tagih.some(x => x.k.jenis === "karhutla"), "Riau ada di rekap hari itu");
+  const lima = H.ringkasLaporan(ARSIP, "2026-11-05");   // Solok selesai di rekap itu sendiri; Cianjur terakhir 2 Nov, rekap 3 Nov gagal tidak menolong
+  assert.deepEqual(lima.tagih.map(x => x.k.lokasi), ["Lamongan", "Cianjur"]);
+  assert.equal(lima.tagih[1].tanpa, 3);
+});
+
+test("ringkasLaporan: selesai pada kemunculan terakhir tidak ditagih; di luar 14 hari tidak ikut", () => {
+  const arsip = [rek("2026-11-20", ["A", "pengkinian", "berjalan"]), rek("2026-11-05", ["B", "baru", "selesai"], ["C", "baru", "belum"]), rek("2026-11-01", ["E", "baru", "belum"])];
+  const r = H.ringkasLaporan(arsip, "2026-11-20");
+  assert.deepEqual(r.tagih.map(x => x.k.lokasi), [], "C terakhir 5 Nov = 15 hari lalu, E lebih lama, B selesai");
+  assert.deepEqual(H.ringkasLaporan(arsip, "2026-11-19").tagih.length, 0, "rekap 19 Nov tidak ada");
+});
+
+test("perlu dicek: baru padahal sudah terbuka = Mungkin pengkinian; pengkinian tanpa kemunculan sebelumnya hanya bila T >= awal arsip + 7 hari", () => {
+  const baru = H.ringkasLaporan(ARSIP, "2026-11-07");
+  assert.deepEqual(baru.perluDicek.map(x => [x.k.lokasi, x.alasan]), [["Cilacap", "mungkin_pengkinian"]], "Solok selesai dulu, jadi baru yang sah");
+  const kini = H.ringkasLaporan(ARSIP, "2026-11-08");
+  assert.deepEqual(kini.perluDicek.map(x => [x.k.lokasi, x.alasan]), [["Gresik", "tanpa_pertama"]]);
+  const awal = [rek("2026-11-01", ["A", "pengkinian", "berjalan"]), rek("2026-11-06", ["A", "pengkinian", "berjalan"], ["X", "pengkinian", "berjalan"])];
+  assert.equal(H.ringkasLaporan(awal, "2026-11-06").perluDicek.length, 0, "6 hari sesudah arsip awal: belum ditandai");
+  assert.equal(H.ringkasLaporan([...awal, rek("2026-11-08", ["X", "pengkinian", "berjalan"])], "2026-11-08").perluDicek.length, 0, "X sudah pernah muncul");
+});
+
+test("cocokLogbook: jenis + provinsi + lokasi; provinsi (lokasi kosong) cukup jenis + provinsi; tgl logbook = T - 1", () => {
+  const entri = [{jenis: "banjir", prov: "13", kab: "Kab. Solok"}, {jenis: "karhutla", prov: "14", kab: "Pelalawan"}, {jenis: "cuaca", prov: "33", kab: "Cilacap"}];
+  assert.equal(H.cocokLogbook(LK.B, entri), true); assert.equal(H.cocokLogbook(LK.A, entri), true, "Riau tingkat provinsi");
+  assert.equal(H.cocokLogbook(LK.C, entri), false); assert.equal(H.cocokLogbook({...LK.B, lokasi: "Solok Selatan"}, entri), false);
+  assert.equal(H.cocokLogbook({...LK.D, jenis: "gelombang_pasang"}, entri), true, "gelombang pasang dicatat sebagai cuaca");
+  assert.equal(H.cocokLogbook(LK.B, []), false);
+  assert.equal(H.tglLogbook("2026-11-01"), "2026-10-31"); assert.equal(H.tglLogbook("2026-03-01"), "2026-02-28");
+});
+
+test("label kejadian dan pesan tagih: nama jenis + tempat, tanpa titik tengah dan sapaan nama", () => {
+  const pv = k => ({14: "Riau"})[k];
+  assert.equal(H.labelKejadian(LK.B, pv), "Banjir Kab. Solok"); assert.equal(H.labelKejadian({...LK.A, tempat: ""}, pv), "Karhutla Riau");
+  const x = H.ringkasLaporan(ARSIP, "2026-11-09").tagih.find(t => t.k.lokasi === "Cianjur"), t = H.pesanTagih(x, "Cianjur", H.kataJenis("longsor"));
+  assert.match(t, /BPBD Cianjur/); assert.match(t, /longsor di Cianjur sejak 2 November 2026, kabar terakhir 6 November 2026 \(3 hari tanpa pembaruan\)/);
+  assert.doesNotMatch(t, /Bapak|Pak |·/);
+  const sebelum = H.ringkasLaporan(ARSIP, "2026-11-09").tagih[0];
+  assert.match(H.pesanTagih(sebelum, "Lamongan", H.kataJenis("cuaca")), /sebelum 1 November 2026/);
+  assert.match(H.pesanTagih(x, "Riau", H.kataJenis("karhutla")), /api sudah padam/);
+});
+
+test("layar Laporan Masuk: kartu standar, tanpa teks dampak, tanpa titik tengah, kelas WA dijaga baca saja", () => {
+  const js = readFileSync("public/bnpb/dalops_laporan_masuk.js", "utf8"), css = readFileSync("public/bnpb/menu_pusdalops.css", "utf8");
+  assert.doesNotMatch(js.replace(/\/\*[\s\S]*?\*\//g, ""), /·|Pantau Bencana|hotspot|luas/i);
+  assert.match(js, /bagian\("lm-rekap"/); assert.match(js, /bagian\("lm-tagih"/); assert.match(js, /bagian\("lm-baru"/); assert.match(js, /bagian\("lm-kini"/);
+  assert.match(js, /lm-tagih-aksi/); assert.match(css, /html\[data-baca-saja\] \.lm-tagih-aksi\{display:none\}/);
+  assert.match(js, /DATA DUMMY/); assert.match(js, /\/api\/dalops\/laporan\/dummy/); assert.match(js, /requestAnimationFrame\(\(\) => requestAnimationFrame/);
+  assert.match(readFileSync("public/bnpb/dalops.js", "utf8"), /\["laporan_masuk", "Laporan Masuk", "daftar"\], \["laporan", "Laporan", "simpan"\]/);
+  assert.match(readFileSync("public/bnpb/dalops.html", "utf8"), /dalops_laporan_masuk\.js/);
 });

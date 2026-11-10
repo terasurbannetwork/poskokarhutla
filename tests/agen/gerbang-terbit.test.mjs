@@ -41,6 +41,23 @@ test("tiap deploy menulis daftar isi untuk cadangan, dan tiap workflow yang mene
   assert.deepEqual(kurang, [], kurang.join("; "));
 });
 
+test("tiap workflow yang menerbitkan memulihkan cache banjir sebelum deploy (insiden 9 Nov 2026)", () => {
+  const kurang = [];
+  for (const f of readdirSync(".github/workflows").filter(x => x.endsWith(".yml"))) {
+    const baris = readFileSync(`.github/workflows/${f}`, "utf8").split("\n");
+    const deploy = baris.findIndex(b => /wrangler@[\d.]+ deploy\b/.test(b) && !/^\s*#/.test(b));
+    if (deploy < 0) continue;
+    const pulih = baris.findIndex(b => /^\s+restore-keys: banjir-\s*$/.test(b));
+    const jalur = baris.slice(Math.max(0, pulih - 5), pulih).join("\n");
+    if (pulih < 0 || pulih > deploy || !/public\/banjir\/data\n\s+data\/raw\/banjir/.test(jalur)) kurang.push(f);
+  }
+  assert.deepEqual(kurang, [], `deploy tanpa pulihkan banjir-: ${kurang.join(", ")}`);
+});
+
+test("udara.yml tidak meng-commit jarak_pandang.json versi cache (insiden 10 Nov 2026: rebase bentrok, deploy batal)", () => {
+  assert.match(readFileSync(".github/workflows/udara.yml", "utf8"), /f=\$\(git ls-files [^)]*public\/udara\/data\/jarak_pandang\.json/);
+});
+
 test("cadangan live: isi rusak dan jalur '..' ditolak, cache yang lebih baru tidak ditimpa", () => {
   assert.match(execFileSync("python3", ["scripts/terbit/isi_data.py", "uji"], {encoding: "utf8"}), /ok/);
 });

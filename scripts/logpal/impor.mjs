@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /* Impor lokal Inventori LogPal: membaca folder JSON dokumen gudang (satu berkas per gudang) dan menulis SQL ke LUAR repo.
    DATA GUDANG ASLI TIDAK BOLEH MASUK REPO (repo publik): skrip menolak folder masuk atau berkas keluaran di dalam repo.
-   Pakai:  node scripts/logpal/impor.mjs <folder-seed> <keluaran.sql> [--kebutuhan kebutuhan.csv] [--statis <folder gudang.csv usulan.csv rute.csv wilayah.csv teks.json matriks.json kecamatan.csv terdampak.csv>]
+   Pakai:  node scripts/logpal/impor.mjs <folder-seed> <keluaran.sql> [--kebutuhan kebutuhan.csv] [--statis <folder gudang.csv usulan.csv rute.csv wilayah.csv teks.json matriks.json kecamatan.csv terdampak.csv>] [--bantuan bantuan.csv]
+   --bantuan: bantuan peralatan dan logistik per BPBD per tahun (kolom provinsi,wilayah,tingkat,tahun,barang,jumlah,satuan,belum_usulkan,catatan) -> logpal_bantuan (migrasi 0115). BUKAN stok gudang. Folder seed boleh kosong. INSERT OR REPLACE dengan id deterministik: aman diulang.
    Lalu pemilik menjalankan sendiri:  npx wrangler d1 execute <DB> --remote --file <keluaran.sql>   (sesudah migrasi 0112 dan 0113)
    Bentuk dokumen: {nama, pemilik: "BNPB"|"BPBD", provinsi, kab (opsional, gudang kab/kota dipasangkan ke akun pemkab/pemkot), kapasitas_ton, items: [{id, barang, kategori, item_standar, prioritas, kelompok, satuan, jumlah, baik, rusak, kedaluwarsa, sumber_dana, per, sumber, catatan, ...kolom aset opsional}]}.
    Kode provinsi dari public/data/logpal/provinsi.csv (publik); koordinat gudang dari src/logpal_statis.js (bukan aset publik). id gudang dan barang deterministik (sha256 kode + id asal), jadi SQL aman dijalankan ulang:
@@ -106,6 +107,31 @@ export function bangunSql({dokumen, provinsi, gudang, kebutuhan = [], kini = Dat
   return sql.join("\n") + "\n";
 }
 
+/* bantuan peralatan dan logistik (tab Bantuan): baris CSV -> SQL logpal_bantuan. Melempar galat jelas bila tidak sah; kunci (prov, wilayah, tahun, barang) kembar ditolak karena OR REPLACE diam-diam membuang salah satunya. */
+export const KOLOM_BANTUAN = ["provinsi", "wilayah", "tingkat", "tahun", "barang", "jumlah", "satuan", "belum_usulkan", "catatan"];
+export function bangunSqlBantuan({baris, provinsi, kini = Date.now(), rumus = () => false}) {
+  const kode = new Map(provinsi.map(p => [p.provinsi, p.kode])), lihat = new Set();
+  const sql = ["-- Impor bantuan peralatan dan logistik LogPal (dibangkitkan scripts/logpal/impor.mjs --bantuan). Jalankan sesudah migrasi 0115. INSERT OR REPLACE dengan id deterministik: aman diulang.", "-- BERKAS INI BERISI DATA ASLI: jangan commit, jangan taruh di repo."];
+  if (!baris.length) throw new Error("bantuan: CSV tanpa baris data");
+  for (const kk of KOLOM_BANTUAN) if (!(kk in baris[0])) throw new Error(`bantuan: kolom "${kk}" tidak ada di CSV`);
+  baris.forEach((r, i) => {
+    const a = `bantuan baris ${i + 2}`, tk = r.tingkat, th = Number(r.tahun), j = Number(r.jumlah), bu = r.belum_usulkan;
+    const prov = kode.get(r.provinsi); if (!prov) throw new Error(`${a}: provinsi "${r.provinsi}" tidak ada di provinsi.csv`);
+    if (!["prov", "kab"].includes(tk)) throw new Error(`${a}: tingkat harus prov atau kab`);
+    if (!Number.isInteger(th) || th < 2000 || th > 2100 || !/^\d{4}$/.test(r.tahun)) throw new Error(`${a}: tahun tidak sah`);
+    if (!/^\d+$/.test(r.jumlah) || !Number.isSafeInteger(j) || j < 1 || j > 1e8) throw new Error(`${a}: jumlah harus bilangan bulat positif`);
+    if (!["0", "1"].includes(bu)) throw new Error(`${a}: belum_usulkan harus 0 atau 1`);
+    for (const [k, min, maks] of [["wilayah", 2, 100], ["barang", 2, 100], ["satuan", 0, 30], ["catatan", 0, 300]]) {
+      const v = (r[k] ?? "").trim(); if (v.length < min || v.length > maks) throw new Error(`${a}: ${k} harus ${min} sampai ${maks} karakter`);
+      if (rumus(v)) throw new Error(`${a}: ${k} diawali = + - @`);
+    }
+    const w = r.wilayah.trim(), b = r.barang.trim(), kunci = [prov, w, th, b].join("|");
+    if (lihat.has(kunci)) throw new Error(`${a}: kunci (provinsi, wilayah, tahun, barang) kembar`); lihat.add(kunci);
+    sql.push(`INSERT OR REPLACE INTO logpal_bantuan (id, prov, provinsi, tingkat, wilayah, tahun, barang, jumlah, satuan, belum_usulkan, catatan, dibuat, dummy) VALUES (${q(sha16(kunci))}, ${q(prov)}, ${teks(r.provinsi)}, ${q(tk)}, ${teks(w)}, ${th}, ${teks(b)}, ${j}, ${teks((r.satuan ?? "").trim())}, ${bu}, ${teks((r.catatan ?? "").trim())}, ${kini}, 0);`);
+  });
+  return sql.join("\n") + "\n";
+}
+
 /* berkas statis dari folder di luar repo: gudang.csv, usulan.csv, rute.csv, wilayah.csv (jam dan nama gudang per kab/kota jadi `jangkauan`), teks.json (catatan dan label). Kode 93 dan 96 (Papua) dibetulkan. */
 export function susunStatis(dir) {
   const baca = f => existsSync(path.join(dir, f)) ? readFileSync(path.join(dir, f), "utf8").replace(/\r/g, "") : null, hasil = {};
@@ -131,9 +157,9 @@ export function diLuarRepo(jalur) {
 
 async function utama(argv) {
   const pos = [], opsi = {};
-  for (let i = 0; i < argv.length; i++) { if (argv[i] === "--kebutuhan" || argv[i] === "--statis") opsi[argv[i].slice(2)] = argv[++i]; else pos.push(argv[i]); }
+  for (let i = 0; i < argv.length; i++) { if (argv[i] === "--kebutuhan" || argv[i] === "--statis" || argv[i] === "--bantuan") opsi[argv[i].slice(2)] = argv[++i]; else pos.push(argv[i]); }
   const [folder, keluar] = pos;
-  if (!folder || !keluar) { console.error("pakai: node scripts/logpal/impor.mjs <folder-seed> <keluaran.sql> [--kebutuhan kebutuhan.csv] [--statis <folder csv>]"); return 2; }
+  if (!folder || !keluar) { console.error("pakai: node scripts/logpal/impor.mjs <folder-seed> <keluaran.sql> [--kebutuhan kebutuhan.csv] [--statis <folder csv>] [--bantuan bantuan.csv]"); return 2; }
   for (const j of [folder, keluar, ...Object.values(opsi)]) if (!j || !diLuarRepo(j)) { console.error(`DITOLAK: ${j} ada di dalam repo atau kosong; data gudang asli harus tetap di luar repo (repo publik).`); return 3; }
   await import("../../src/worker.js");   // worker dulu: modul saling impor (siklus)
   const {KELOMPOK, TEKS_B, rumus} = await import("../../src/logpal.js");
@@ -142,7 +168,13 @@ async function utama(argv) {
   const dir = path.join(AKAR, "public/data/logpal");
   const sql = bangunSql({dokumen, provinsi: uraiCsv(readFileSync(path.join(dir, "provinsi.csv"), "utf8")), gudang: statis.gudang ? uraiCsv(statis.gudang) : [],
     kebutuhan: opsi.kebutuhan ? uraiCsv(readFileSync(opsi.kebutuhan, "utf8")) : [], kelompok: KELOMPOK, batas: TEKS_B, rumus, statis});
-  writeFileSync(keluar, sql, {mode: 0o600});
+  let sqlAkhir = sql;
+  if (opsi.bantuan) {
+    const baris = uraiCsv(readFileSync(opsi.bantuan, "utf8"));
+    sqlAkhir += bangunSqlBantuan({baris, provinsi: uraiCsv(readFileSync(path.join(dir, "provinsi.csv"), "utf8")), rumus});
+    console.log(`${baris.length} baris bantuan`);
+  }
+  writeFileSync(keluar, sqlAkhir, {mode: 0o600});
   console.log(`${dokumen.length} gudang, ${dokumen.reduce((a, x) => a + x.d.items.length, 0)} barang, statis: ${Object.keys(statis).join(", ") || "tidak ada"} -> ${keluar}`);
   return 0;
 }

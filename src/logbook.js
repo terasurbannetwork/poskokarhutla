@@ -13,7 +13,7 @@ const PERAN = ["pusdalops", "koordalops", "pimpinan"], HARI = 864e5, MENIT = 6e4
 export const JENIS = ["banjir", "cuaca", "kebakaran_permukiman", "karhutla", "longsor", "gempabumi", "gunungapi", "kekeringan", "kecelakaan", "konflik_sosial", "lainnya", "gelombang_pasang", "tsunami", "wabah"];   // tiga terakhir: panduan resmi Pusdalops (DIBI 103, 108, 201), butuh migrasi 0091
 const JENIS_BARU = ["gelombang_pasang", "tsunami", "wabah"];
 export const KENDALA = ["akses", "logistik", "sinyal", "air", "personel", "alat_berat", "gambut", "cuaca", "data", "dana", "malam", "sosial", "listrik", "angin"];
-export const KEBUTUHAN = ["makanan", "tenda", "sandang", "air_bersih", "obat", "perahu", "material", "alat_berat", "pompa", "dana"];
+export const KEBUTUHAN = ["makanan", "tenda", "sandang", "air_bersih", "obat", "perahu", "material", "alat_berat", "pompa", "dana", "bantuan_nasional"];   // bantuan_nasional = permintaan Pemda untuk bantuan nasional, kriteria e ambang Juklak 7/2023
 /* batas wajar seperti BATAS_WAJAR di scripts/umum/laphar_arsip.py; di atasnya ditolak kecuali yakin:true. KERAS = batas mutlak, yakin pun tak menolong. */
 export const BATAS_WAJAR = {md: 5000, hilang: 5000, luka: 50000, mengungsi_jiwa: 2e6, mengungsi_kk: 1e6, rumah_rb: 5e5, rumah_rs: 5e5, rumah_rr: 5e5, rumah_terendam: 1e6, luas_ha: 3e6};
 const KERAS = 1e8, ANGKA = Object.keys(BATAS_WAJAR), RE_TGL = /^\d{4}-\d\d-\d\d$/, KONTROL = /[\u0000-\u001f\u007f​-‏‪-‮﻿]/;
@@ -65,14 +65,14 @@ export function periksaEntri(o, kini) {
 
 /* ---------------- Juklak BNPB 7/2023: medan baru, semua opsional (absen/null = tidak dilaporkan) ----------------
    Disimpan di logbook_entri_juklak (migrasi 0094) sebagai JSON tervalidasi; nilai TERKINI per entri seperti angka dampak. */
-export const UMUR = ["0-17", "18-59", "60+"], JK_KELAMIN = ["L", "P"], KORBAN_TERPILAH = {md: "md", luka: "luka", mengungsi: "mengungsi_jiwa"};   // kunci -> kolom total yang tidak boleh dilampaui jumlah terpilah
+export const UMUR = ["0-17", "18-59", "60+"], JK_KELAMIN = ["L", "P"], KORBAN_TERPILAH = {md: "md", hilang: "hilang", luka: "luka", mengungsi: "mengungsi_jiwa", terdampak: "terdampak_jiwa"};   // kunci -> kolom total yang tidak boleh dilampaui jumlah terpilah
 export const RENTAN = ["bayi", "balita", "ibu_hamil_menyusui", "lansia", "disabilitas"];
 export const TINGKAT_RUSAK = ["rb", "rs", "rr", "terendam"];
 /* kode prasarana/layanan dasar (Juklak 7/2023, Daftar Data): satuan TETAP per kode, bukan isian bebas (ha untuk lahan, km untuk jalan, unit selain itu) */
 export const PRASARANA = {sawah: "ha", lahan: "ha", kebun: "ha", hutan: "ha", kolam: "ha", kios_toko: "unit", pabrik: "unit", jaringan_air: "unit", jaringan_listrik: "unit", jaringan_telekomunikasi: "unit", irigasi: "unit",
   jalan: "km", jembatan: "unit", transportasi: "unit", spbu: "unit", rumah_ibadat: "unit", faskes: "unit", sekolah: "unit", kantor: "unit", pasar: "unit"};
 export const KELOMPOK_KEBUTUHAN = ["dana", "sdm", "sarpras", "logistik", "peralatan"];   // standar 5 kelompok: Dana, SDM, Sarana-prasarana, Logistik, Peralatan
-export const BATAS_JUKLAK = {kerugian_juta: 1e6, rentan: 2e6, prasarana_unit: 1e5, prasarana_ha: 3e6, prasarana_km: 1e5, kebutuhan_jumlah: 1e7};
+export const BATAS_JUKLAK = {kerugian_juta: 1e6, rentan: 2e6, prasarana_unit: 1e5, prasarana_ha: 3e6, prasarana_km: 1e5, kebutuhan_jumlah: 1e7, terdampak_jiwa: 1e7};
 const tglSah = v => typeof v === "string" && RE_TGL.test(v) && Number.isFinite(Date.parse(v + "T00:00:00Z")) && new Date(v + "T00:00:00Z").toISOString().slice(0, 10) === v;
 const tolak = (galat, wajar) => { throw {galat, wajar}; };
 const objek = (v, nama) => { if (!v || typeof v !== "object" || Array.isArray(v)) tolak(`${nama} harus objek`); return v; };
@@ -102,9 +102,9 @@ export function periksaJuklak(o) {
   const j = {kerugian_juta: null, korban: null, rentan: null, prasarana: null, kebutuhan_rinci: null, pemberi: null, dokumentasi: null, posko: null};
   try {
     if (o.kerugian_juta != null && o.kerugian_juta !== "") j.kerugian_juta = bil(o.kerugian_juta, "kerugian_juta", BATAS_JUKLAK.kerugian_juta, o, false);
-    if (o.korban != null) {   // {md|luka|mengungsi: {"0-17"|"18-59"|"60+": {L, P}}}
+    if (o.korban != null || (o.terdampak_jiwa != null && o.terdampak_jiwa !== "")) {   // {md|hilang|luka|mengungsi|terdampak: {"0-17"|"18-59"|"60+": {L, P}}}; total terdampak tidak punya kolom di logbook_entri, jadi ikut JSON ini sebagai korban.terdampak_jiwa
       const k = {};
-      for (const [g, per] of Object.entries(objek(o.korban, "korban"))) {
+      for (const [g, per] of Object.entries(objek(o.korban ?? {}, "korban"))) {
         if (!Object.hasOwn(KORBAN_TERPILAH, g)) tolak(`korban.${g} tidak dikenal; pilih: ${Object.keys(KORBAN_TERPILAH).join(", ")}`);
         let jumlah = 0; k[g] = {};
         for (const [u, lp] of Object.entries(objek(per, `korban.${g}`))) {
@@ -112,12 +112,13 @@ export function periksaJuklak(o) {
           k[g][u] = {};
           for (const [kel, v] of Object.entries(objek(lp, `korban.${g}.${u}`))) {
             if (!JK_KELAMIN.includes(kel)) tolak(`korban.${g}.${u}.${kel}: jenis kelamin harus L atau P`);
-            jumlah += k[g][u][kel] = bil(v, `korban.${g}.${u}.${kel}`, BATAS_WAJAR[KORBAN_TERPILAH[g]], o);
+            jumlah += k[g][u][kel] = bil(v, `korban.${g}.${u}.${kel}`, BATAS_WAJAR[KORBAN_TERPILAH[g]] ?? BATAS_JUKLAK[KORBAN_TERPILAH[g]], o);
           }
         }
         const total = o[KORBAN_TERPILAH[g]];   // jumlah terpilah tidak boleh melebihi total yang dilaporkan di entri yang sama
         if (typeof total === "number" && jumlah > total && o.yakin !== true) tolak(`jumlah korban.${g} terpilah (${jumlah}) lebih besar dari ${KORBAN_TERPILAH[g]} (${total}); periksa lagi atau kirim yakin: true`, `korban.${g}`);
       }
+      if (o.terdampak_jiwa != null && o.terdampak_jiwa !== "") k.terdampak_jiwa = bil(o.terdampak_jiwa, "terdampak_jiwa", BATAS_JUKLAK.terdampak_jiwa, o);
       j.korban = Object.keys(k).length ? k : null;
     }
     if (o.rentan != null) {
@@ -195,14 +196,28 @@ const stmtEntriJk = (env, kejadian, e, oleh, kini, eid = acak(8)) => !JK_ADA ? [
   env.DB.prepare("UPDATE logbook_kib SET urut = urut + 1 WHERE kejadian_id = ?").bind(kejadian), stmtEntri(env, kejadian, e, oleh, kini, eid),
   env.DB.prepare(`INSERT INTO logbook_entri_juklak (entri_id, kib_entri, ${JK}) VALUES (?, (SELECT kib || '-' || printf('%03d', urut) FROM logbook_kib WHERE kejadian_id = ?), ${JK.map(() => "?")})`)
     .bind(eid, kejadian, ...JK.map(k => e.jk?.[k] == null ? null : typeof e.jk[k] === "object" ? JSON.stringify(e.jk[k]) : e.jk[k]))];
+/* Ambang kejadian bencana, Juklak 7/2023 Bab II B.3: cukup satu dari enam kriteria. Nilai terkini per entri seperti angka dampak; ada_sk = kejadian punya SK status di logbook_sk.
+   Di bawah ambang TIDAK ditolak: laporan pertama sering belum punya angka, jadi hanya ditandai. "Rusak" tidak menghitung terendam, sama dengan masuk_laphar di scripts/wa/urai_laporan.py. */
+const FASILITAS_PUBLIK = ["rumah_ibadat", "faskes", "sekolah", "kantor", "pasar"];
+export function ambangKejadian(e) {
+  const n = v => Number(v) || 0, pras = Array.isArray(e.prasarana) ? e.prasarana : [], alasan = [];
+  if (n(e.md) >= 1) alasan.push("ada yang meninggal");
+  if (Math.max(n(e.korban?.terdampak_jiwa), n(e.luka), n(e.mengungsi_jiwa)) >= 50) alasan.push("50 orang atau lebih terdampak, luka, atau mengungsi");
+  if (n(e.rumah_rb) + n(e.rumah_rs) + n(e.rumah_rr) + pras.filter(x => FASILITAS_PUBLIK.includes(x.kode) && ["rb", "rs", "rr"].includes(x.tingkat)).reduce((a, x) => a + n(x.jumlah), 0) >= 5) alasan.push("5 unit atau lebih rumah atau fasilitas publik rusak");
+  if (n(e.luas_ha) + pras.filter(x => PRASARANA[x.kode] === "ha").reduce((a, x) => a + n(x.jumlah), 0) >= 1) alasan.push("1 hektare atau lebih lahan");
+  if (Array.isArray(e.kebutuhan) && e.kebutuhan.includes("bantuan_nasional")) alasan.push("Pemda meminta bantuan nasional");
+  if (e.ada_sk) alasan.push("ada penetapan status keadaan darurat");
+  return {ya: alasan.length > 0, alasan};
+}
 const keluarEntri = r => { const o = {...r, kendala: JSON.parse(r.kendala), kebutuhan: JSON.parse(r.kebutuhan), ...("dummy" in r ? {dummy: !!r.dummy} : {})};
   for (const k of JK.slice(1)) o[k] = typeof r[k] === "string" ? JSON.parse(r[k]) : null;
+  o.ambang = ambangKejadian(o); delete o.ada_sk;
   return o; };
 const keluarKej = k => ({...k, dummy: !!k.dummy});
 const BASE_KEJ = "k.id, k.jenis, k.prov, k.kab, k.kec, k.desa, k.lat, k.lon, k.mulai, k.status, k.terakhir, k.dibuat, k.diubah, k.dummy";
 const kolKej = () => JK_ADA ? BASE_KEJ + ", b.kib" : BASE_KEJ, dariKej = () => JK_ADA ? "logbook_kejadian k LEFT JOIN logbook_kib b ON b.kejadian_id = k.id" : "logbook_kejadian k";
 const BASE_ENT = [...["id", "kejadian_id", "waktu", ...ANGKA, "kendala", "kebutuhan", "catatan", "sumber_instansi", "dibuat"].map(c => "e." + c)];
-const kolEnt = () => (JK_ADA ? [...BASE_ENT, "j.kib_entri AS kib", ...JK.map(c => "j." + c)] : BASE_ENT).join(", "), dariEnt = () => JK_ADA ? "logbook_entri e LEFT JOIN logbook_entri_juklak j ON j.entri_id = e.id" : "logbook_entri e";
+const kolEnt = () => (JK_ADA ? [...BASE_ENT, "j.kib_entri AS kib", ...JK.map(c => "j." + c), "EXISTS (SELECT 1 FROM logbook_sk s WHERE s.kejadian_id = e.kejadian_id) AS ada_sk"] : BASE_ENT).join(", "), dariEnt = () => JK_ADA ? "logbook_entri e LEFT JOIN logbook_entri_juklak j ON j.entri_id = e.id" : "logbook_entri e";
 const luarWilayah = (req, provs) => provs.every(p => dalamWilayahStaf(req, [p])) && dalamWilayahStaf(req, provs) ? null : gagal(403, "provinsi di luar wilayah staf");
 const BATAS_TULIS = [[3600e3, 120]];   // tulis logbook per pelaku per jam
 const lajuTulis = (env, oleh, kini) => laju(env, "lb:" + oleh, "logbook_tulis", BATAS_TULIS, kini);

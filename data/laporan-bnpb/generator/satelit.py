@@ -1,6 +1,6 @@
 """Angka satelit karhutla untuk deck, dengan jam cut-off pada hari laporan (hari terakhir = angka sementara s.d. jam itu).
 
-Mesin hitungnya mesin website (scripts/data/peta_karhutla.py: rekam, hari_data, hitung, hitung_wil; luas per titik F20/F21 per satelit), jadi untuk hari yang sudah
+Mesin hitungnya mesin website (scripts/data/peta_karhutla.py: rekam, hari_data, pasang_ya, hitung, hitung_wil; luas per titik F20/F21 per satelit, belum padam = lokasi unik x F_LOK), jadi untuk hari yang sudah
 lengkap hasilnya sama dengan public/data/peta_karhutla*.json. Yang ditambah di sini hanya: tarikan FIRMS mentah per hari UTC (cache CSV),
 pemotongan di jam cut-off WIB. hot = LOKASI UNIK per hari WIB (titik_unik.py: M, N, N20, N21, sedang/tinggi, tanpa sel industri; keputusan pemilik 25 Okt 2026), jadi hot_bersih == hot
 (kunci dipertahankan untuk pembaca lama) dan 'hot_mandiri' = hitungan ulang terpisah dari baris mentah (pembanding uji).
@@ -67,7 +67,7 @@ def csv_hari(src, u, cutoff, kunci):
 def hitung(tanggal, jam='17:00', hari_n=4, kunci=None):
     cutoff = dt.datetime.combine(tanggal, dt.time.fromisoformat(jam), WIB)
     hari = [tanggal - (hari_n - 1 - i) * PK.HARI for i in range(hari_n)]
-    utc = [hari[0] - (3 - i) * PK.HARI for i in range((tanggal - hari[0]).days + 4)]   # hari_data(d) butuh UTC d-1, d; hitung(d) butuh d-2
+    utc = [hari[0] - (PK.WARM + 1 - i) * PK.HARI for i in range((tanggal - hari[0]).days + PK.WARM + 2)]   # hari_data(d) butuh UTC d-1, d; hitung(d) butuh d-2; cluster firespot (belum padam "baru") butuh UTC d-7
     kunci = kunci_firms(kunci)
     sel_ind, _ = TP.sel_industri()
     semua = []
@@ -82,7 +82,9 @@ def hitung(tanggal, jam='17:00', hari_n=4, kunci=None):
     rek = PK.rekam(semua, w, '', sel_ind)
     for u in utc:
         rek.setdefault(u.isoformat(), PK.baru_rekaman(''))
-    hd = {d: PK.hari_data(rek, d) for d in utc[1:]}
+    hd = {d: PK.hari_data(rek, d) for d in utc if d >= hari[0] - 2 * PK.HARI}
+    for d in hari:
+        PK.pasang_ya(rek, hd[d], d)   # belum padam = lokasi unik bertahan ATAU baru di cluster firespot "ya" (PK.fs_hari)
     # pembanding mandiri: titik_unik.unik langsung atas baris mentah (tanpa rekam/hari_data), berurut waktu, hari WIB
     pts = []
     for _, r in semua:

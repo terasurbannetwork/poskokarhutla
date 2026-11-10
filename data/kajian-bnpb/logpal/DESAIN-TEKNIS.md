@@ -7,6 +7,7 @@
 | `src/logpal.js` | validasi murni (`cekBarang`, `rumus`), rute `RUTE_LOGPAL`, dummy |
 | `src/worker.js` | impor dan spread `RUTE_LOGPAL`, pengecualian `halamanTerkunci` untuk `/instansi/logpal` (halaman menjaga dirinya, bukan daftar putih) |
 | `migrations/0113_logpal_potongan.sql` | `logpal_statis_potong` (nama matriks/kecamatan/terdampak, urut 0..59, isi maks 90000 karakter); idempoten |
+| `migrations/0115_logpal_bantuan.sql` | `logpal_bantuan` (prov, tingkat prov/kab, wilayah, tahun, barang, jumlah > 0, satuan, belum_usulkan 0/1, catatan, dummy), UNIQUE (prov, wilayah, tahun, barang), indeks (prov, tahun); idempoten |
 | `public/logpal/index.html`, `logpal.js`, `logpal.css` | layar |
 | `public/data/logpal/*` | data statis publik (wilayah tanpa kolom gudang dan jam, provinsi, peta provinsi) |
 | `public/vendor/d3/` | d3 7.8.5 |
@@ -15,6 +16,9 @@
 
 ## Tabel (0112)
 `logpal_gudang` (pemilik BNPB atau BPBD, `akun_id` boleh kosong), `logpal_barang` (semua kolom form, CHECK baik + rusak <= jumlah), `logpal_mutasi`, `logpal_opname`, `logpal_opname_baris`, `logpal_permintaan` (items JSON), `logpal_tahap` (riwayat), `logpal_kebutuhan` (kolom `stok_a`, `stok_b` = stok dua gudang pembanding), `logpal_statis` (nama + isi CSV atau JSON: gudang, usulan, rute, jangkauan, teks; diisi impor). Tabel `gudang` dan `alat` (0031) tidak disentuh.
+
+## Tab Bantuan (0115, D11)
+`logpal_bantuan` terpisah dari stok. `GET bantuan` hanya baca, `cache-control: private, no-store`, lewat `aktor()`: staf semua (tanpa dummy bila staf nyata); pemprov `prov` dalam cakupan; pemkab/pemkot hanya baris `tingkat = 'kab'` di provinsinya yang `kunciWilayah` namanya sama (huruf kecil, awalan "Kab."/"Kabupaten" dibuang, "Kota " dipertahankan, jadi "Kupang" tidak cocok dengan "Kota Kupang"; baris tingkat prov tidak tampil). Tabel belum ada: 503 berpesan jalankan migrasi 0115. Klien memuat sekali saat tab pertama dibuka; ringkasan per BPBD murni (`ringkasBn`, "Semua tahun" menjumlah dua tahun). Impor: `impor.mjs --bantuan` -> `INSERT OR REPLACE` id sha16(prov|wilayah|tahun|barang), kunci kembar dalam CSV ditolak. Dummy (`dummyIsi`/`dummyHapus`) ikut mengisi dan membersihkan, dilewati diam-diam bila 0115 belum jalan.
 
 ## Halaman
 `GET` dan `HEAD /instansi/logpal` serta `/logpal/index.html` menyajikan HTML hanya bila `aktor` sah; tanpa sesi 303 ke `/instansi`, sesi sah tanpa hak 403. `/logpal/logpal.js` dan `.css` lewat Worker (`run_worker_first` `/logpal/*` di `wrangler.jsonc`) dan 401 tanpa sesi.

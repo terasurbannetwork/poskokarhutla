@@ -291,15 +291,20 @@ export async function jalankan(opsi = {}) {
           state.laporan[kunci] = e; simpan()
         }
         const caption = (e.revisi ? 'Revisi: ' : '') + lap.judul + ' ' + tanggal + (e.linkDrive ? '\n' + e.linkDrive : '')
+        // 9 Nov: satu nomor kena batas harian limiter tidak boleh menahan penerima lain; yang gagal diulang jalan berikut.
+        const gagalKirim = []
         for (const t of penerima) {
           if (e.terkirim.includes(t)) continue
-          for (const b of berkas) {
-            if (kering) { log('[kering] akan kirim', path.basename(b.p), 'ke', t.replace(/\d(?=\d{4})/g, '*'), '|', caption); continue }
-            await dep.kirimFile(t, b.p, path.basename(b.p), caption, MIME[b.x])
-          }
-          e.terkirim.push(t)
-          state.laporan[kunci] = e; simpan()
+          try {
+            for (const b of berkas) {
+              if (kering) { log('[kering] akan kirim', path.basename(b.p), 'ke', t.replace(/\d(?=\d{4})/g, '*'), '|', caption); continue }
+              await dep.kirimFile(t, b.p, path.basename(b.p), caption, MIME[b.x])
+            }
+            e.terkirim.push(t)
+            state.laporan[kunci] = e; simpan()
+          } catch (x) { gagalKirim.push(`${t.replace(/\d(?=\d{4})/g, '*')}: ${x.message}`) }
         }
+        if (gagalKirim.length) throw new Error(`terkirim ${e.terkirim.length} dari ${penerima.length} penerima. ${gagalKirim.join('; ')}`)
         if (!kering) { e.selesai = true; state.laporan[kunci] = e; delete state.gagal[kunci]; simpan() }
         hasil.push({ id: lap.id, status: kering ? 'kering' : 'terkirim', revisi: e.revisi, ...(lap.butuh.some((k) => teks[k] == null) ? { bahanBelumMasuk: lap.butuh.filter((k) => teks[k] == null) } : {}) })
       } catch (x) {
