@@ -24,8 +24,9 @@ JEDA = 2.0
 BERKAS = os.path.join(KELUAR, "iklim_bmkg.json")
 ARSIP = os.path.join(KELUAR, "iklim_bmkg_arsip.json")
 UPT = os.path.join(KELUAR, "bmkg_upt.json")
-HUB_ARTIKEL = ["", "prediksi-musim", "analisis-hujan", "dinamika-atmosfer", "ketersediaan-air-tanaman", "indeks-presipitasi-terstandarisasi",
-               "anomali-suhu-udara", "buletin-iklim"]
+# beranda ("") paling akhir: artikel yang juga ada di hub tematik harus diurai dengan pengurai fakta hub itu
+HUB_ARTIKEL = ["prediksi-musim", "analisis-hujan", "dinamika-atmosfer", "ketersediaan-air-tanaman", "indeks-presipitasi-terstandarisasi",
+               "anomali-suhu-udara", "buletin-iklim", ""]
 HUB_GAMBAR = ["prediksi-ketersediaan-air-tanaman", "prediksi-indeks-presipitasi-terstandarisasi"]
 HALAMAN_TUNGGAL = ["el-nino-la-nina", "hari-tanpa-hujan"]
 HUB_GEMPA = ["ulasan-guncangan-tanah", "peta-isoseismal"]
@@ -95,7 +96,7 @@ def uniq(x):
 def gambar_pdf(h):
     h = h or ""
     g = uniq(re.findall(r'<img[^>]*?\ssrc="([^"?]+)', h))
-    p = uniq(u.replace("&#038;", "&").split("&")[0] for u in re.findall(r'(https?://[^"\s<]+?\.pdf)', h))
+    p = uniq(re.sub(r"^https://docs\.google\.com/viewer\?url=", "", u.replace("&#038;", "&").split("&")[0]) for u in re.findall(r'(https?://[^"\s<]+?\.pdf)', h))
     return g, p
 
 
@@ -260,10 +261,13 @@ def peta_kab(prov_nama, nama, W_):
     if not kp or kp not in kab:
         return kp, None
     n = _n(nama)
-    if n in kab[kp]:
-        return kp, kab[kp][n]
-    b = difflib.get_close_matches(n, kab[kp], 1, 0.9)
-    return kp, kab[kp][b[0]] if b else None
+    # Papua/Papua Barat lama sudah dimekarkan jadi 6 provinsi: cari di seluruh keluarga Papua (nama kab unik)
+    for k in (["91", "92", "93", "94", "95", "96"] if kp in ("91", "92") else [kp]):
+        if n in kab.get(k, {}):
+            return k, kab[k][n]
+    pool = {x: v for k in (["91", "92", "93", "94", "95", "96"] if kp in ("91", "92") else [kp]) for x, v in kab.get(k, {}).items()}
+    b = difflib.get_close_matches(n, pool, 1, 0.9)
+    return kp, pool[b[0]] if b else None
 
 
 def urai_narasi(t, wil=None):
@@ -440,8 +444,170 @@ def main():
                     "produk_gambar": gambar_hub, "narasi": narasi_snap, "gempa_hub": gempa, "siaran_pers": siaran, "n_artikel_arsip": len(ar_a), "n_narasi_arsip": len(ar_n),
                     "n_kab_terpetakan": sum(v["n_kab_terpetakan"] for v in narasi_snap.values()), "n_kab_total": sum(v["n_kab"] for v in narasi_snap.values()),
                     "tak_cocok": tak, "gagal": gagal,
+                    "pdf_lokal": {"spi": {k: {x: v[x] for x in ("update", "spi_bulan", "bulan_berkas", "per_tingkat", "n_baris", "n_terpetakan")} | {"n_tak_cocok": len(v["tak_cocok"])}
+                                          for k, v in arsip.get("spi_pdf", {}).items()},
+                                  "buletin": {k: {"bab": [b["kode"] for b in v["bab"]], "angka": v["angka"]} for k, v in arsip.get("buletin_pdf", {}).items()}},
                     "catatan": "hub hanya 12 artikel terbaru; arsip lama tidak dikejar. Gambar tidak diunduh, warna peta bukan angka."})
     print(f"iklim_bmkg: {ok} halaman ok dari {len(log)}, gagal {len(gagal)}, artikel arsip {len(ar_a)}, narasi {len(ar_n)}", file=sys.stderr)
+
+
+# ---------- PDF lokal (diunduh pemilik; BUKAN diunduh skrip, host content.bmkg.go.id di luar daftar; PDF tidak masuk repo) ----------
+TINGKAT_SPI = ("SANGAT KERING", "KERING", "AGAK KERING")
+NAMA_PROV = sorted(set(PROVINSI.values()) | {"Daerah Istimewa Yogyakarta", "Kepulauan Bangka Belitung", "Bangka Belitung"}, key=len, reverse=True)
+RX_PROV = re.compile(r"(?:(?<=\s)|^)(" + "|".join(re.escape(n) for n in NAMA_PROV) + r")\s?:\s*")  # PDF kadang menulis 'Barat : Bima'
+BUANG = {"@infoBMKG", "(021)196", "www.bmkg.go.id"}
+
+
+def _pdftotext(*arg):
+    import subprocess
+    exe = "/opt/homebrew/bin/pdftotext" if os.path.exists("/opt/homebrew/bin/pdftotext") else "pdftotext"
+    return subprocess.run([exe, *arg], capture_output=True, text=True, check=True).stdout
+
+
+def kolom_spi(kata):
+    """kata = [(xmin, ymin, xmax, teks)] satu halaman -> 3 teks kolom (SANGAT KERING, KERING, AGAK KERING).
+    Batas kolom dari liang kosong/terdangkal pada histogram sumbu x (lebar kolom beda tiap halaman); label wilayah di kiri dibuang."""
+    kepala = [w[1] for w in kata if w[3] in ("TINGKAT", "KEKERINGAN", "DAERAH", "SANGAT", "AGAK", "KERING")]  # tinggi kepala beda tiap halaman (ada yang tanpa kepala)
+    y_min = (max(kepala) + 12) if kepala else 0
+    body = [w for w in kata if w[1] > y_min and w[3] not in BUANG]
+    cov = [0] * 1000
+    for x0, _, x1, _t in body:
+        for x in range(int(x0), min(int(x1) + 1, 999)):
+            cov[x] += 1
+    kosong = [x for x in range(88, 140) if cov[x] == 0]
+    b0 = (max(x for x in kosong) + 1) if kosong else 97
+    b1 = min(range(290, 400), key=lambda x: cov[x]) + 1
+    g = [x for x in range(540, 720) if cov[x] == 0]
+    b2 = (max(g) + 1) if g else None
+    if b2 is None:
+        raise ValueError("batas kolom 2/3 tak ditemukan")
+    kol = [[], [], []]
+    for x0, y0, _x1, t in body:
+        if x0 >= b0:
+            kol[0 if x0 < b1 else 1 if x0 < b2 else 2].append((y0, x0, t))
+    out = []
+    for k in kol:  # kelompokkan per baris (selisih y < 4 pt = satu baris), urut x di dalam baris
+        k.sort()
+        baris, y = [], None
+        for y0, x0, t in k:
+            if y is None or y0 - y > 4:
+                baris.append([])
+                y = y0
+            baris[-1].append((x0, t))
+        out.append(" ".join(t for b in baris for _, t in sorted(b)))
+    return out
+
+
+def urai_spi_teks(kolom_semua, wil):
+    """kolom_semua = 3 teks (sudah digabung lintas halaman) -> baris {tingkat, prov, nama, kode}."""
+    baris, tak = [], []
+    for ti, teks in zip(TINGKAT_SPI, kolom_semua):
+        ms = list(RX_PROV.finditer(teks))
+        for i, m in enumerate(ms):
+            isi = teks[m.end(): ms[i + 1].start() if i + 1 < len(ms) else None]
+            for k in [x.strip(" .") for x in isi.split(",")]:
+                if not k:
+                    continue
+                _, kode = peta_kab(m.group(1), k, wil)
+                baris.append({"tingkat": ti, "prov": m.group(1), "nama": k, "kode": kode})
+                if not kode:
+                    tak.append(f"{ti} {m.group(1)}: {k}")
+    return baris, tak
+
+
+def urai_spi_pdf(jalur, wil, url=None):
+    h1 = _pdftotext("-f", "1", "-l", "1", jalur, "-")
+    n = (re.search(r"SPI (\d+)", h1) or [0, None])[1]
+    upd = (re.search(r"Update (\d+ \w+ \d{4})", h1) or [0, None])[1]
+    halaman = int((re.search(r"Pages:\s+(\d+)", __import__("subprocess").run(["pdfinfo", jalur], capture_output=True, text=True).stdout) or [0, 0])[1])
+    kol = ["", "", ""]
+    n_hal = 0
+    for p in range(1, halaman + 1):
+        x = _pdftotext("-bbox", "-f", str(p), "-l", str(p), jalur, "-")
+        if "KEKERINGAN" not in x:
+            continue
+        kata = [(float(a), float(b), float(c), t) for a, b, c, t in re.findall(r'xMin="([\d.]+)" yMin="([\d.]+)" xMax="([\d.]+)" yMax="[\d.]+">([^<]*)', x)]
+        for i, t in enumerate(kolom_spi(kata)):
+            kol[i] += " " + _html.unescape(t)
+        n_hal += 1
+    baris, tak = urai_spi_teks(kol, wil)
+    ber = os.path.basename(jalur)
+    return {"berkas": ber, "url": url, "spi_bulan": int(n) if n else None, "update": upd, "bulan_berkas": (re.search(r"_(\d{6})", ber) or [0, None])[1], "n_halaman_tabel": n_hal,
+            "per_tingkat": {t: sum(1 for b in baris if b["tingkat"] == t) for t in TINGKAT_SPI}, "n_baris": len(baris), "n_terpetakan": sum(1 for b in baris if b["kode"]),
+            "tak_cocok": tak, "baris": baris, "diambil": sekarang()}
+
+
+RX_BAB = re.compile(r"^\s*(I{1,3}|IV)\.\s+(.+)$|^\s*([A-F])\.\s+(.+)$|^\s*(\d)\.\s+(.+)$")
+
+
+def urai_buletin_teks(t):
+    """Teks pdftotext -layout -> bab {kode, judul, paragraf}. Halaman TIM PENYUSUN, alamat redaksi, daftar isi, tanda tangan dan nama orang DIBUANG."""
+    t = t.split("PENGANTAR", 1)[-1] if "TIM PENYUSUN" in t.split("PENGANTAR", 1)[0] else t  # buang halaman penyusun
+    t = re.sub(r"Jakarta, \w+ \d{4}\s+Direktur.*?\n\s*i\s*\n", "\n", t, flags=re.S)  # tanda tangan
+    t = re.sub(r"DAFTAR ISI.*?\n\s*ii\s*\n", "\n", t, flags=re.S)
+    bab, kini = [], {"kode": "PENGANTAR", "judul": "Pengantar", "baris": []}
+    for l in t.split("\n"):
+        s = l.strip()
+        if not s or re.fullmatch(r"[ivx\d]+", s) or s.startswith("Sumber :") or s.startswith("PENGANTAR"):
+            continue
+        m = RX_BAB.match(l)
+        if m and not re.search(r"[.,;]$", s) and len(s) < 110 and (m.group(1) or m.group(3) or m.group(5)) and s[3:4] != "":
+            if kini["baris"] or kini["kode"] != "PENGANTAR":
+                bab.append(kini)
+            kini = {"kode": m.group(1) or m.group(3) or m.group(5), "judul": (m.group(2) or m.group(4) or m.group(6)).strip(), "baris": []}
+        else:
+            kini["baris"].append(s)
+    bab.append(kini)
+    out = []
+    for b in bab:
+        teks = " ".join(b.pop("baris"))
+        b["teks"] = re.sub(r"\s+", " ", teks).strip()
+        out.append(b)
+    return out
+
+
+def angka_buletin(bab):
+    t = " ".join(b["teks"] for b in bab)
+
+    def f(rx):
+        m = re.search(rx, t)
+        return m.groups() if m else None
+    hth = [{"kategori": k.strip(), "titik": int(n.replace(".", "")), "persen": num(p)} for n, p, k in re.findall(r"(\d[\d.]*) titik \(([\d.,]+)%\)(?: dari total [\d.]+ titik observasi)? (?:tercatat masih mengalami hujan|mengalami HTH kategori ([A-Za-z ]+?)(?:,| dan|\.))", t)]
+    ek = f(r"(\d+) titik observasi mencatat curah hujan ekstrem")
+    mx = f(r"sebesar (\d+) mm/hari tercatat di (.+?) pada (\d+ \w+ \d{4})")
+    pred = [{"bulan": m, "pct": num(p), "uraian": u.strip()} for m, p, u in re.findall(r"bulan (\w+ \d{4}), sejumlah ([\d.,]+)% wilayah(?: Indonesia)? (.{0,110}?)(?=, [\d.,]+% |, dan [\d.,]+% |\.\s|\sSedangkan|\sPada bulan|$)", t)]
+    return {"hujan_ekstrem_titik": int(ek[0]) if ek else None,
+            "hujan_ekstrem_maks": {"mm_hari": int(mx[0]), "lokasi": mx[1], "tanggal": mx[2]} if mx else None,
+            "hth_titik_total": num((f(r"dari total ([\d.]+) titik observasi") or [None])[0].replace(".", "")) if f(r"dari total ([\d.]+) titik observasi") else None,
+            "hth_terpanjang_hari": num((f(r"terpanjang terjadi selama (\d+) hari") or [None])[0]),
+            "suhu_maks_c": num((f(r"maksimum tertinggi sebesar ([\d.,]+)°C") or [None])[0]), "suhu_min_c": num((f(r"minimum terendah yaitu ([\d.,]+)°C") or [None])[0]),
+            "angin_maks_knot": num((f(r"tertinggi sebesar (\d+) Knot") or [None])[0]), "rh_min_pct": num((f(r"terendah sebesar (\d+)%") or [None])[0]),
+            "dipole_mode": num((f(r"Dipole Mode periode[^+-]*?([+-][\d,]+)") or [None])[0]), "nino34": num((f(r"Nino3\.4\) (?:periode [^+-]*)?menunjukkan nilai (?:sebesar )?([+-][\d.,]+)") or [None])[0]),
+            "prediksi_persen": pred or None, "hth_kategori": hth or None}
+
+
+def pdf_lokal(arg):
+    """`spi|buletin <pdf>...`: urai PDF yang sudah ada di disk (BUKAN dari repo) ke arsip, append-only per nama berkas."""
+    jenis, berkas = arg[0], arg[1:]
+    arsip = baca(ARSIP, {}) or {}
+    ar_a = arsip.get("artikel", {})
+    urls = {os.path.basename(u): u for a in ar_a.values() for u in a.get("pdf", [])}
+    wil = indeks_wilayah() if jenis == "spi" else None
+    for j in berkas:
+        k = os.path.basename(j)
+        sub = arsip.setdefault("spi_pdf" if jenis == "spi" else "buletin_pdf", {})
+        if k in sub:
+            print(f"{k}: sudah di arsip, dilewati", file=sys.stderr)
+            continue
+        if jenis == "spi":
+            sub[k] = urai_spi_pdf(j, wil, urls.get(k))
+            print(f"{k}: {sub[k]['n_baris']} baris {sub[k]['per_tingkat']}, terpetakan {sub[k]['n_terpetakan']}, tak cocok {len(sub[k]['tak_cocok'])}", file=sys.stderr)
+        else:
+            bab = urai_buletin_teks(_pdftotext("-layout", j, "-"))
+            sub[k] = {"berkas": k, "url": urls.get(k), "bab": bab, "angka": angka_buletin(bab), "diambil": sekarang()}
+            print(f"{k}: {len(bab)} bab {[b['kode'] for b in bab]}", file=sys.stderr)
+    simpan(ARSIP, arsip)
+
 
 
 def uji():
@@ -478,6 +644,12 @@ def uji():
     assert fakta_gempa([], "Lokasi 9.84 LS – 118.90 BT, M 6.1 Kedalaman 30 KM")[0]["lat"] == -9.84
     assert KATA_BENCANA.search("Siklon Tropis ARNAB") and not KATA_BENCANA.search("Rilis kinerja")
     assert len(produk_dari(fx["produk"])) >= 2 and ref_dari(fx["produk"])[0]["step"] == "step1"
+    b, tk = urai_spi_teks(["Aceh: Aceh Tamiang, Aceh Utara Sumatera Barat: Tanah Datar.", "Aceh: Aceh Singkil, Kab Fiktif Jambi: Kota Jambi", "DKI Jakarta: Kota Administrasi Jakarta Barat"], wil)
+    assert [(x["tingkat"], x["nama"]) for x in b][:3] == [("SANGAT KERING", "Aceh Tamiang"), ("SANGAT KERING", "Aceh Utara"), ("SANGAT KERING", "Tanah Datar")] and b[0]["kode"], b
+    assert tk == ["KERING Aceh: Kab Fiktif"] and b[-1]["tingkat"] == "AGAK KERING" and b[-1]["kode"], tk
+    bb = urai_buletin_teks("TIM PENYUSUN BULETIN\nPengarah : Nama Uji\n PENGANTAR\n Isi pengantar.\n  I.    RINGKASAN\n Teks satu.\n 1\nII. ANALISIS\nA. Sub satu\n Teks dua 18 titik observasi mencatat curah hujan ekstrem (>150 mm/hari).\n 2\n")
+    assert [x["kode"] for x in bb] == ["PENGANTAR", "I", "II", "A"] and "Nama Uji" not in json.dumps(bb), bb
+    assert angka_buletin(bb)["hujan_ekstrem_titik"] == 18
     print("uji iklim_bmkg ok")
 
 
@@ -487,4 +659,4 @@ def kab_tak_cocok_dicatat(wil):
 
 
 if __name__ == "__main__":
-    uji() if sys.argv[1:] == ["uji"] else main()
+    uji() if sys.argv[1:] == ["uji"] else pdf_lokal(sys.argv[1:]) if sys.argv[1:2] in (["spi"], ["buletin"]) else main()
