@@ -42,12 +42,10 @@
   "public/gempa/data/inatews_sensor.json",
   "public/gempa/data/prospektif_guncangan.json",
   "public/gempa/data/prospektif_susulan.json",
-  "public/prediksi/data/tangga.json",
   "public/udara/data/atribusi.json",
   "public/udara/data/geoscf.json",
   "public/udara/data/kualitas_bmkg.json",
-  "public/udara/data/lintasan.json",
-  "public/udara/data/omc_bmkg.json"
+  "public/udara/data/lintasan.json"
  ],
  "tanpa-jadwal": [
   "public/banjir/data/cuaca_risiko_bnpb.json",
