@@ -718,6 +718,7 @@ export const HTML_RUTE = [
    BUKAN /data/*.json, JS, CSS, atau gambar: itu tetap aset statis publik tanpa Worker. */
 export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk dengan KODE tanpa akun (keputusan pemilik 19 Okt 2026); kode dicek di tiap panggilan API"],
   ["/petugas", "pegawai dan relawan masuk dengan kode pribadi tanpa akun (KEPUTUSAN-LAPANGAN D5); kode dicek di tiap panggilan API"],
+  ["/meja", "petugas BPBD membuka Meja Kerja dengan kode per kabupaten tanpa akun situs (keputusan pemilik 10 Nov 2026); halaman tanpa kode tidak memuat data, kode dan wilayah dicek di tiap panggilan API"],
   ["/daftar-kontak", "registrasi kontak pemangku kepentingan (kepala daerah, BPBD, TNI, Polri) yang tidak punya akun situs (permintaan pemilik 23 Okt 2026); hanya menulis baris menunggu, tidak membaca apa pun"],
   ["/renlap", "halaman HP Renlap SIPPA dibuka regu lapangan dengan tautan bertoken di fragmen #t=, tanpa akun (keputusan SIPPA 61, SP-140); data.json hanya terkirim bila token cocok (/api/renlap/data), halaman tanpa token kosong"],
   ["/uji-pilot", "regu uji pilot SIPPA Kalteng membuka dossier dan melapor dengan tautan bertoken, tanpa akun (keputusan pemilik 26 Okt 2026, keputusan SIPPA 59); token dicek di tiap panggilan API, halaman tanpa token kosong"],

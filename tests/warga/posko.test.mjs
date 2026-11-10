@@ -642,11 +642,13 @@ uji("centurisk97.id: /lapangan terbuka tanpa sesi lewat daftar putih bernama; se
   /* /daftar-kontak: registrasi kontak pemangku kepentingan yang tak punya akun situs (permintaan pemilik 23 Okt 2026); hanya menulis baris menunggu */
   /* /pendataan: staf direktorat BNPB membuat akun pendataan sendiri (keputusan pemilik 26 Okt 2026); akun menunggu persetujuan Super Admin */
   /* /uji-pilot: regu uji pilot SIPPA membuka dossier dan melapor lewat tautan bertoken (keputusan SIPPA 59); token dicek di tiap API */
-  assert.deepEqual([...PUBLIK_TANPA_SESI.keys()], ["/lapangan", "/petugas", "/daftar-kontak", "/renlap", "/uji-pilot", "/presiden", "/instansi", "/bnpb/katalog-dokumen", "/pendataan"], "daftar putih persis sembilan halaman (petugas: modul Pegawai dan Relawan Lapangan, kode pribadi dicek di tiap API; renlap: keputusan SIPPA 61, SP-140), masing-masing bersama alasan");
+  /* /meja: petugas BPBD masuk dengan kode per kabupaten tanpa akun situs (keputusan pemilik 10 Nov 2026); kode dan wilayah dicek di tiap API */
+  assert.deepEqual([...PUBLIK_TANPA_SESI.keys()], ["/lapangan", "/petugas", "/meja", "/daftar-kontak", "/renlap", "/uji-pilot", "/presiden", "/instansi", "/bnpb/katalog-dokumen", "/pendataan"], "daftar putih persis sepuluh halaman (petugas: modul Pegawai dan Relawan Lapangan, kode pribadi dicek di tiap API; renlap: keputusan SIPPA 61, SP-140), masing-masing bersama alasan");
   assert.ok([...PUBLIK_TANPA_SESI.values()].every(a => a.length > 20));
   const buka = j => mf.dispatchFetch("https://centurisk97.id" + j, {redirect: "manual", headers: {"cf-connecting-ip": "198.51.100.9"}}).then(async r => { await r.text(); return r; });
   assert.equal((await buka("/lapangan")).status, 200);
   assert.equal((await buka("/pendataan")).status, 200);
+  assert.equal((await buka("/meja")).status, 200);
   const a = await buka("/admin/posko"); assert.equal(a.status, 303); assert.match(a.headers.get("location"), /\/admin\/masuk/);
   const halaman = new Set(["/", "/peringatan", "/privasi", "/laporan", "/f/0123456789abcdef"]);
   for (const f of ["worker.js", "foto.js", "sosmed.js", "posko.js", "ews.js", "gempa.js", "statistik.js"])
