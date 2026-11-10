@@ -66,7 +66,7 @@ const Dampak = (() => {
     const d = lalu && v(lalu) ? Math.round((v(akhir) / v(lalu) - 1) * 100) : null;
     const judul = `${Kartu.hl(fmt(v(akhir)) + " " + frasa)} sepanjang ${akhir}${d != null ? `, ${Kartu.hl((d >= 0 ? "naik " : "turun ") + fmt(Math.abs(d)) + "%")} dari ${lalu}` : ""}; tertinggi pada ${Kartu.hl(pk)} dengan ${fmt(v(pk))} ${sat}`;
     const ctl = `<div class="seg" role="group">${ada.map(x => `<button data-dks="k" data-v="${x}" aria-pressed="${st.k === x}">${KUNCI[x][0]}</button>`).join("")}</div>`;
-    return bag("hist", judul, `<svg class="dk-svg" viewBox="0 0 ${W2} ${B + 22}" role="img" aria-label="${nm} per tahun">${g}</svg>`, `Sumber: ${sumber.BNPB} dan ${sumber.dibi}, kejadian banjir 2010–${akhir}; hanya angka yang tercatat`, ctl); }
+    return bag("hist", judul, `<svg class="dk-svg" viewBox="0 0 ${W2} ${B + 22}" role="img" aria-label="${nm} per tahun">${g}</svg>`, `Sumber: seri nasional ${sumber.BNPB} (data.bnpb.go.id), kejadian banjir 2010–${akhir}, tanpa banjir rob; hanya angka yang tercatat. Rekap DIBI per kabupaten menghitung rob, jadi angkanya bisa berbeda`, ctl); }
   const blokDi = t => t === D.hari ? D.terpapar : D.prakiraan?.[t];
   const selisih = t => Math.round((Date.parse(t) - Date.parse(hariWIB())) / 864e5);
   const lblH = t => { const d = selisih(t); return d === 0 ? "Hari ini" : d > 0 ? "+" + d + " hari" : "Sudah lewat"; };

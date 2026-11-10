@@ -240,7 +240,7 @@ const ProfilWilayah = (() => {
       const thn = Object.keys(a.y).sort().map(y => `${y}: ${fmt(a.y[y])}`).join("<br>");
       return `<tr><td data-tip="${esc(`<b>${JD[j] || j}</b><br>Kejadian per tahun<br>${thn}`)}" tabindex="0">${esc(JD[j] || j)}</td>${a.v.map(v => `<td>${fmt(v)}</td>`).join("")}</tr>`;
     }).join("");
-    return k(`Riwayat kejadian DIBI ${y1}-${y2}`, "riwayat", kal, `<div class="pw-tbw"><table class="pw-tb">${th2}<tbody>${rows}</tbody></table></div><p class="pw-sub">Jumlah selama ${y2 - y1 + 1} tahun, per jenis. Tahun tanpa catatan tidak ditulis nol. Arahkan ke nama jenis untuk rincian per tahun.</p>`, "");
+    return k(`Riwayat kejadian DIBI ${y1}-${y2}`, "riwayat", kal, `<div class="pw-tbw"><table class="pw-tb">${th2}<tbody>${rows}</tbody></table></div><p class="pw-sub">Jumlah selama ${y2 - y1 + 1} tahun, per jenis. Tahun tanpa catatan tidak ditulis nol. Arahkan ke nama jenis untuk rincian per tahun. Sumber Superset DIBI: kelompok banjir mencakup rob, bandang, genangan, dan lahar, jadi bisa lebih besar dari seri nasional di layar Banjir.</p>`, "");
   }
   const OSMJ = [["rs", "Rumah sakit"], ["puskesmas", "Puskesmas"], ["klinik", "Klinik"], ["sekolah", "Sekolah"], ["polisi", "Polisi"], ["damkar", "Pemadam kebakaran"], ["titik_kumpul", "Titik kumpul"], ["pemerintahan", "Kantor pemerintahan"], ["jembatan", "Jembatan"], ["ibadah", "Tempat ibadah"]];
   function osmAwal(kode, prov) {
