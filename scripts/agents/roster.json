@@ -179,6 +179,7 @@
         "public/data/logpal/**",
         "scripts/logpal/**",
         "data/kajian-bnpb/logpal/**",
+        "data/kajian-bnpb/juklak/**",
         "WARGA.md",
         ".dev.vars.example"
       ]
@@ -619,6 +620,27 @@
         "scripts/longsor/**",
         "public/longsor/**",
         "tests/longsor/**"
+      ]
+    },
+    {
+      "nama": "siklus",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja program Siklus Bencana (/siklus): Buku Besar Kejadian, Peta Paparan per Bangunan, Kaji Cepat Otomatis, Jitupasna ke R3P, Renkon Hidup dan Gladi, Risiko Masa Depan, Pintu Tunggal, serta lapis gudang data R2 dan registri sumber.",
+      "kapan": "public/siklus/**, scripts/siklus/**, tests/siklus/**, atau dokumen data/kajian-bnpb/siklus disentuh atau rusak",
+      "fokus": [
+        "Baca dulu data/kajian-bnpb/siklus/ urut otoritas di AGENTS.md; ambil satu tiket SK-NNN, kerjakan hanya cakupannya",
+        "Pakai ulang kode yang disebut KEPUTUSAN-AWAL bagian E; tidak membuat tabel atau kunci wilayah kedua",
+        "Tiap angka berlabel keyakinan, bersumber, berwaktu; tidak ada data ditulis tidak ada, bukan nol; angka antarsumber tidak dijumlah"
+      ],
+      "larangan": "Jangan menyentuh src/** dan migrations/** (milik warga-api) atau .github/workflows (milik mekanik-mesin). Paparan rinci tidak ditulis ke public/. Tanpa registri pengungsi per orang, tanpa NIK. Titik panas dan luas karhutla hanya dari sistem kita.",
+      "bisa": "membangun pipeline scripts/siklus, layar /siklus, dan uji tanpa DB sesuai tiket SK-NNN",
+      "tidak": "worker, D1, migrasi, workflow; keputusan di KEPUTUSAN-AWAL.md",
+      "milik": [
+        "public/siklus/**",
+        "scripts/siklus/**",
+        "tests/siklus/**",
+        "data/kajian-bnpb/siklus/**"
       ]
     },
     {

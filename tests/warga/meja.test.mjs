@@ -1,12 +1,13 @@
 /* Meja Kerja (src/meja.js, src/meja_spek.js, migrations/0026_meja.sql): worker utuh di workerd (Miniflare) dengan D1 sungguhan, migrasi apa adanya.
    Jalankan: node --test tests/warga/meja.test.mjs */
 import assert from "node:assert/strict";
-import {readFileSync} from "node:fs";
+import {readFileSync, readdirSync} from "node:fs";
 import path from "node:path";
+import {Miniflare} from "miniflare";
 import "../../src/worker.js";   // worker.js dulu: posko.js dan worker.js saling impor
-import {MEJA, DAFTAR_MEJA, PASANGAN, BARANG, BENCANA, AMBANG, RAPOR, validasi, statusEfektif, tandaBahaya} from "../../src/meja_spek.js";
+import {MEJA, DAFTAR_MEJA, DAFTAR_PETUGAS, MEJA_RAPOR, EKSPOR_RISIKO, PASANGAN, BARANG, BENCANA, AMBANG, RAPOR, validasi, statusEfektif, tandaBahaya} from "../../src/meja_spek.js";
 import {gabungSkor, skorRespons, DIBI_KOLOM, DIBI_JENIS, selCsv} from "../../src/meja.js";
-import {siapkan, berantai, ADMIN, MOD2, GERBANG} from "./_bnpb.mjs";
+import {siapkan, berantai, ADMIN, MOD2, GERBANG, sha256} from "./_bnpb.mjs";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 import {nilai, tenggat} from "../../public/inti/jam_aturan.js";
 
@@ -100,7 +101,7 @@ uji("validasi spek: kolom liar, tipe salah, di luar rentang, tautan, tipe ya, ta
   assert.equal((await baru(ADMIN, "renkon", "71", "Kab Val", {bencana: "banjir", judul: "R", tgl_sah: "2026-01-10", berlaku_sampai: "2029-01-10"})).s, 201, "tepat 3 tahun sah");
   assert.equal((await baru(ADMIN, "renkon", "71", "Kab Val", {bencana: "gempa", judul: "R tanpa sampai", tgl_sah: "2026-01-10"})).s, 201, "berlaku_sampai tidak lagi wajib");
   assert.equal((await api("POST", "/api/meja/catatan", "{bukan json", ADMIN)).s, 400);
-  assert.equal((await api("POST", "/api/meja/catatan", "x".repeat(5000), ADMIN)).s, 413);
+  assert.equal((await api("POST", "/api/meja/catatan", "x".repeat(9001), ADMIN)).s, 413);   // batas MAKS_ISIAN 9000: isian pengungsi terpanjang (Juklak 9/2023) tidak muat di batas umum 4096
   /* fungsi murni: tipe ya, isian awal vs tahap */
   assert.equal(BARANG.length, 15); assert.ok(BENCANA.includes("karhutla"));
   const ya = MEJA.dsp.kolom; MEJA.dsp.kolom = [{nama: "setuju", label: "Setuju", tipe: "ya", wajib: true}];
@@ -208,7 +209,7 @@ uji("isolasi: petugas kab A tidak bisa membaca atau menulis kab B, dan hanya mej
 });
 
 uji("luring: klien_id ganda tidak membuat baris ganda (buat dan ubah status), waktu klien dipakai, serentak aman, petugas lain terpisah", async () => {
-  const p = await petugas("Kab Luring", DAFTAR_MEJA), q = await petugas("Kab Luring", DAFTAR_MEJA, "71", "Petugas Dua");
+  const p = await petugas("Kab Luring", DAFTAR_PETUGAS), q = await petugas("Kab Luring", DAFTAR_PETUGAS, "71", "Petugas Dua");
   const KL = "klien-luring-0001", n = () => DB.prepare("SELECT count(*) n FROM meja_catatan WHERE klien_id = ?").bind(KL).first().then(r => r.n);
   const waktu = Date.now() - 3 * JAM;
   const a = await baru(p.h, "kaji_cepat", undefined, undefined, kaji(), {desa: "Desa Luring", klien_id: KL, waktu_klien: waktu});
@@ -236,7 +237,7 @@ uji("luring: klien_id ganda tidak membuat baris ganda (buat dan ubah status), wa
 });
 
 uji("alur status per meja: transisi liar ditolak, peran dijaga, isian per tahap, jejak lengkap", async () => {
-  const p = await petugas("Kab Alur", DAFTAR_MEJA), gerbang = {...GERBANG};
+  const p = await petugas("Kab Alur", DAFTAR_PETUGAS), gerbang = {...GERBANG};
   /* kaji cepat: petugas verifikasi, hanya admin masukkan JITUPASNA */
   const k = (await baru(p.h, "kaji_cepat", undefined, undefined, kaji(), {desa: "Desa Alur"})).j.catatan, st = (h, id, b) => api("POST", "/api/meja/catatan/" + id, {aksi: "status", ...b}, h);
   assert.deepEqual(k.aksi, [{ke: "diverifikasi", peran: "petugas", boleh: true}]);
@@ -398,15 +399,17 @@ uji("dummy: hanya Super Admin; isi tiap meja dan tiap status, tanda bahaya terpi
   assert.equal(A.respons.median_menit, 30); assert.equal(B.respons.median_menit, 100); assert.ok(A.respons.skor > B.respons.skor);
   assert.equal(A.respons.dipanggil, 5); assert.equal(A.respons.direspons, 4);
   assert.deepEqual([A.regu.terdaftar, A.regu.aktif, A.regu.skor], [3, 2, 67]); assert.ok(A.regu.laporan_7h > 0); assert.ok(B.regu.laporan_7h > 0 && B.regu.aktif === 1);
-  for (const m of DAFTAR_MEJA) assert.ok(A.kelengkapan.meja[m]?.n > 0, `kelengkapan ${m}`);
+  for (const m of MEJA_RAPOR) assert.ok(A.kelengkapan.meja[m]?.n > 0, `kelengkapan ${m}`);
+  for (const m of DAFTAR_MEJA.filter(x => !MEJA_RAPOR.includes(x))) assert.ok(!(m in A.kelengkapan.meja), `meja juklak ${m} tidak mengubah skor rapor`);
   assert.ok(A.skor > 0 && A.kelengkapan.skor > 0 && A.komponen_ada === 3 && A.petugas.length === 1);
   assert.equal(C.respons.skor, null); assert.equal(C.regu.skor, null); assert.equal(C.komponen_ada, 1, "kab C hanya kelengkapan: sisanya belum ada data");
   /* hapus: bersih, data nyata utuh */
   const h = await adm("POST", "/api/meja/dummy", {aksi: "hapus"}); assert.equal(h.s, 200, h.t);
   assert.equal(h.j.catatan, i.j.catatan); assert.equal(h.j.regu, 5); assert.equal(h.j.panggilan, 9); assert.equal(h.j.lapangan, i.j.lapangan);
-  for (const t of ["meja_catatan", "meja_petugas", "meja_jejak", "panggilan", "regu", "lapangan"]) assert.equal(await U.n(t, "dummy = 1"), 0, t);
+  for (const t of ["meja_catatan", "meja_petugas", "meja_jejak", "meja_pelapor", "panggilan", "regu", "lapangan"]) assert.equal(await U.n(t, "dummy = 1"), 0, t);
   assert.deepEqual({catatan: await U.n("meja_catatan"), petugas: await U.n("meja_petugas"), panggilan: await U.n("panggilan"), regu: await U.n("regu"), lapangan: await U.n("lapangan")}, asli, "data nyata utuh");
   assert.equal((await adm("POST", "/api/meja/dummy", {aksi: "isi"})).s, 201, "bisa diisi lagi");
+  assert.ok(await U.n("meja_pelapor", "dummy = 1") > 0, "dummy mengisi identitas contoh");
   assert.equal((await adm("POST", "/api/meja/dummy", {aksi: "hapus"})).s, 200);
 });
 
@@ -439,7 +442,8 @@ const kajiSiap = async (h, kab, prov = "71") => {
 
 uji("sempurna: enum spek rehab dan gudang sama dengan CHECK/trigger migrasi; tautan kaji_id, saldo stok, dan transaksi dijaga D1", async () => {
   const sql = migrasi();   // semua migrasi (0026 + 0110 yang membangun ulang meja_catatan), bukan 0026 saja
-  assert.deepEqual(DAFTAR_MEJA, ["kaji_cepat", "logistik", "dsp", "renkon", "destana", "rehab", "gudang"]);
+  assert.deepEqual(DAFTAR_MEJA, ["kaji_cepat", "logistik", "dsp", "renkon", "destana", "rehab", "gudang", "pengungsi", "pengaduan", "klaster", "risiko"]);
+  assert.deepEqual(DAFTAR_PETUGAS, ["kaji_cepat", "logistik", "dsp", "renkon", "destana", "rehab", "gudang", "pengungsi", "klaster"], "pengaduan dan risiko hanya pusat");
   for (const m of ["rehab", "gudang"]) assert.ok(sql.includes(`'${m}'`));
   for (const s of MEJA.rehab.status) assert.ok(sql.includes(`'${s}'`), "status rehab di migrasi: " + s);
   assert.ok(PASANGAN.filter(x => x.startsWith("rehab:")).length === 6);
@@ -474,9 +478,9 @@ uji("sempurna: enum spek rehab dan gudang sama dengan CHECK/trigger migrasi; tau
   assert.equal(await coba("UPDATE meja_stok SET delta = 9 WHERE gudang_id = ?", g), false, "transaksi beku"); assert.equal(await coba("DELETE FROM meja_stok WHERE gudang_id = ?", g), false, "transaksi tak bisa dihapus");
   assert.equal(await coba("INSERT INTO meja_ringkas (meja, prov, kab, status, dummy, n, bahaya, jumlah, terbaru) VALUES ('rehab', '71', 'K', 'macet', 0, 1, 2, '{}', 1)"), false, "bahaya <= n");
   assert.equal(await coba("INSERT INTO meja_ringkas (meja, prov, kab, status, dummy, n, bahaya, jumlah, terbaru) VALUES ('liar', '71', 'K', 'macet', 0, 1, 0, '{}', 1)"), false);
-  /* petugas boleh memegang meja baru, larik tujuh meja */
+  /* petugas boleh memegang meja baru, larik sembilan meja; meja pusat ditolak */
   const pet = async meja => coba("INSERT INTO meja_petugas (id, nama, prov, kab, meja, kode_sha, dibuat) VALUES (?, 'Uji Cek', '71', 'Kab Cek', ?, ?, 1)", hex(), meja, hex() + hex() + hex() + hex());
-  assert.equal(await pet(JSON.stringify(DAFTAR_MEJA)), true); assert.equal(await pet('["rehab","gudang"]'), true); assert.equal(await pet(JSON.stringify([...DAFTAR_MEJA, "kaji_cepat"])), false);
+  assert.equal(await pet(JSON.stringify(DAFTAR_PETUGAS)), true); assert.equal(await pet('["rehab","gudang"]'), true); assert.equal(await pet(JSON.stringify([...DAFTAR_PETUGAS, "kaji_cepat"])), false); assert.equal(await pet('["pengaduan"]'), false); assert.equal(await pet('["risiko"]'), false);
 });
 
 uji("sempurna: alur rehab-rekon, peran petugas/admin, aturan lintas kolom, tautan kaji_id sah dan liar, tanda macet 60 hari", async () => {
@@ -721,8 +725,185 @@ uji("sempurna: dummy mengisi tiap status rehab (satu macet), gudang di bawah amb
   assert.equal((await adm("POST", "/api/meja/dummy", {aksi: "isi"})).s, 201, "bisa diisi lagi"); assert.equal((await adm("POST", "/api/meja/dummy", {aksi: "hapus"})).s, 200);
 });
 
+/* ============================================================ juklak: kaji cepat lengkap, pengungsi, pengaduan, klaster, risiko, migrasi 0118 */
+const pengungsi = (o = {}) => ({tgl_data: hari(1), nama_tempat: "Balai Uji", jenis_tempat: "terkonsentrasi", kejadian: "banjir", tgl_buka: hari(3), kk: 5, bayi_l: 1, bayi_p: 1, balita_l: 1, balita_p: 1, anak_l: 1, anak_p: 1, remaja_l: 1, remaja_p: 1, dewasa_l: 2, dewasa_p: 2, lansia_l: 1, lansia_p: 1,
+  keb_air: "ada", keb_pangan: "ada", keb_sandang: "ada", keb_kesehatan: "ada", keb_hunian: "ada", keb_pendidikan: "ada", ...o});
+const aduan = (o = {}) => ({nomor_register: "ULP/" + hex(), kanal: "telepon", tgl_terima: hari(2), perihal: "Hal uji", uraian: "Uraian aduan uji", ...o});
+const risikoUji = (o = {}) => ({unit_pemilik: "Biro Uji", tahun: 2026, jenis_konteks: "program", nama_konteks: "Program Uji", indikator: "Indikator Uji", kode: "UJI." + hex().slice(0, 6), pernyataan: "Pernyataan uji", kategori: "operasional", dampak: "Dampak uji", spip: "ketaatan",
+  skor_kemungkinan: 3, skor_dampak: 4, level: 12, pengendalian: "ada", memadai: "memadai", res_kemungkinan: 2, res_dampak: 2, res_level: 4, selera: 6, ...o});
+const buatStaf = async (kunci, peran) => {   // sesi staf sungguhan; peran ulp/irtama belum masuk trigger staf_larik_sah, trigger dilepas hanya di D1 uji sampai PERAN src/staf.js didaftarkan
+  await DB.prepare("DROP TRIGGER IF EXISTS staf_larik_sah").run();
+  const tok = kunci.repeat(64), id = (kunci + "4").repeat(8);
+  await DB.prepare(`INSERT INTO staf (id, username, nama, nip, unit, email, wa, peran, wilayah, garam, sandi_sha, wajib_ganti, dibuat, dibuat_oleh, dummy) VALUES (?, ?, ?, ?, 'Inspektorat', ?, ?, ?, '[]', ?, ?, 0, 1, 'tes', 0)`)
+    .bind(id, "juklak" + kunci, "Staf Juklak " + kunci, "9200" + kunci + "000", kunci + "@b.id", "628100000" + kunci.charCodeAt(0), JSON.stringify(peran), "a".repeat(32), "a".repeat(64)).run();
+  await DB.prepare("INSERT INTO staf_sesi (token_sha, staf_id, dibuat, kedaluwarsa) VALUES (?, ?, 1, ?)").bind(sha256(tok), id, Date.now() + 3600e3).run();
+  return {cookie: "sesi_staf=" + tok, "x-pb": "1"};
+};
+const st = (h, id, b) => api("POST", "/api/meja/catatan/" + id, {aksi: "status", ...b}, h);
+
+uji("juklak kaji cepat: kolom opsional baru tersimpan, rekomendasi Ya/Tidak dijaga, baris kaji cepat lama tetap terbaca dan bisa diubah", async () => {
+  const b = await adm("POST", "/api/meja/catatan", {meja: "kaji_cepat", prov: "71", kab: "Kab Kaji Lengkap", desa: "Desa K", data: kaji({terancam_jiwa: 900, terdampak_kk: 40, rentan_bayi: 3, kesehatan: "Pos kesehatan", air_sanitasi: "Tangki air", kebutuhan: "Tenda 10 unit", rek_status: "ya", rek_status_hari: 14, rek_alasan: "Masih hujan"})});
+  assert.equal(b.s, 201, b.t); assert.equal(b.j.catatan.data.rek_status_hari, 14);
+  for (const o of [{rek_status: "ya"}, {rek_status: "tidak", rek_status_hari: 5}, {rek_status: "mungkin"}]) assert.equal((await adm("POST", "/api/meja/catatan", {meja: "kaji_cepat", prov: "71", kab: "Kab Kaji Lengkap", desa: "Desa L", data: kaji(o)})).s, 400, JSON.stringify(o));
+  const id = hex(), lama = {kejadian: "gempa", tanggal: hari(4), rumah_rb: 1, rumah_rs: 1, rumah_rr: 1, sekolah: 0, faskes: 0, ibadah: 0, jalan_km: 0, jembatan: 0, meninggal: 0, hilang: 0, luka: 0, mengungsi: 2};
+  await DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, desa, data, status, dibuat, diubah) VALUES (?, 'kaji_cepat', '71', 'Kab Kaji Lama', 'Desa Lama', ?, 'dilaporkan', ?, ?)").bind(id, JSON.stringify(lama), KINI, KINI).run();
+  const r = (await adm("GET", "/api/meja/catatan?meja=kaji_cepat&prov=71&kab=" + encodeURIComponent("Kab Kaji Lama"))).j.catatan.find(x => x.id === id);
+  assert.ok(r, "baris lama terbaca"); assert.deepEqual(r.data, lama, "data lama tidak berubah saat dibaca");
+  const u = await adm("POST", "/api/meja/catatan/" + id, {aksi: "ubah", data: lama}); assert.equal(u.s, 200, u.t); assert.deepEqual(u.j.catatan.data, lama, "catatan lama tetap sah tanpa kolom baru");
+  assert.equal((await st(ADMIN, id, {ke: "diverifikasi"})).s, 200, "alur status tetap jalan");
+});
+
+uji("juklak pengungsi: agregat tanpa nama, turunan dihitung server, jumlah harian terbaru per tempat, satu per tempat per hari, batas 6000 huruf", async () => {
+  const p = await petugas("Kab Pengungsi", ["pengungsi", "klaster"]);
+  const w = {desa: "Desa U", kec: "Kec U"}, b1 = await baru(p.h, "pengungsi", undefined, undefined, pengungsi(), w); assert.equal(b1.s, 201, b1.t);
+  assert.equal(b1.j.catatan.data.jiwa_total, 14); assert.equal(b1.j.catatan.data.jiwa_l, 7); assert.equal(b1.j.catatan.data.umur_dewasa, 4); assert.equal(b1.j.catatan.status_efektif, "berjalan");
+  for (const [o, ket] of [[{jiwa_total: 999}, "kolom turunan dari klien"], [{nik: "3171"}, "tanpa NIK"], [{nama_pengungsi: "Budi"}, "tanpa nama"], [{kk: 15}, "KK melebihi jiwa"], [{keb_air: "mungkin"}, "sektor ada/tidak"], [{jenis_tempat: "lain"}, "jenis"], [{tgl_data: hari(5)}, "tanggal sebelum buka"]])
+    assert.equal((await baru(p.h, "pengungsi", undefined, undefined, pengungsi(o), w)).s, 400, ket);
+  assert.equal((await baru(p.h, "pengungsi", undefined, undefined, pengungsi(), {kec: "Kec U"})).s, 400, "desa wajib");
+  assert.equal((await baru(p.h, "pengungsi", undefined, undefined, pengungsi({nama_tempat: "balai uji"}), w)).s, 409, "satu per tempat per hari, huruf besar diabaikan");
+  const b2 = await baru(p.h, "pengungsi", undefined, undefined, pengungsi({tgl_data: hari(0), kk: 6, dewasa_l: 5}), w); assert.equal(b2.s, 201, b2.t);
+  assert.equal((await api("POST", "/api/meja/catatan/" + b1.j.catatan.id, {aksi: "ubah", data: pengungsi({tgl_data: hari(0)})}, p.h)).s, 409, "ubah ke tanggal yang sudah ada");
+  const b3 = await baru(p.h, "pengungsi", undefined, undefined, pengungsi({nama_tempat: "Balai Tutup", tgl_data: hari(2), tgl_tutup: hari(1)}), w); assert.equal(b3.s, 201, b3.t); assert.equal(b3.j.catatan.status_efektif, "ditutup");
+  const rk = (await adm("GET", "/api/meja/rekap")).j.per_kab.pengungsi["71|Kab Pengungsi"];
+  assert.equal(rk.n, 3); assert.equal(rk.status.berjalan, 2); assert.equal(rk.status.ditutup, 1);
+  assert.equal(rk.jumlah.kk, 6, "KK dari catatan terbaru, tanpa tempat tertutup dan tanpa hari lama"); assert.equal(rk.jumlah.jiwa_total, 17, "jiwa terbaru 17, bukan jumlah semua hari");
+  /* kolom terpanjang lewat rute: JSON tetap dalam CHECK 6000 huruf */
+  const penuh = {};
+  for (const c of MEJA.pengungsi.kolom.filter(c => (c.tahap ?? null) === null)) penuh[c.nama] = c.tipe === "angka" ? c.maks : c.tipe === "teks" ? '"'.repeat(c.maks) : c.tipe === "pilih" ? c.nilai.reduce((a, x) => x.length > a.length ? x : a, "") : hari(0);
+  penuh.tgl_tutup = hari(0); const v = validasi("pengungsi", penuh, null, KINI); assert.ok(!v.galat, v.galat); assert.ok(JSON.stringify(v.data).length <= 6000, "JSON terpanjang: " + JSON.stringify(v.data).length);
+  const bb = await adm("POST", "/api/meja/catatan", {meja: "pengungsi", prov: "71", kab: "Kab Batas", desa: "Desa B", kec: "Kec B", data: penuh}); assert.equal(bb.s, 201, bb.t);
+  assert.ok((await DB.prepare("SELECT length(data) n FROM meja_catatan WHERE id = ?").bind(bb.j.catatan.id).first()).n <= 6000);
+});
+
+uji("juklak pengaduan: alur register sampai selesai, tolak lompat tahap, tenggat 15/20 hari kerja, petugas tidak bisa memegang meja ini", async () => {
+  assert.equal((await adm("POST", "/api/meja/petugas", {nama: "X Y", prov: "71", kab: "Kab Z", meja: ["pengaduan"]})).s, 400, "pengaduan bukan meja petugas");
+  assert.ok(await DB.prepare("INSERT INTO meja_petugas (id, nama, prov, kab, meja, kode_sha, dibuat) VALUES (?, 'Coba', '71', 'Kab Z', ?, ?, 1)").bind(hex(), '["risiko"]', "e".repeat(64)).run().then(() => false, () => true), "trigger meja_petugas_sah menolak meja pusat");
+  const a = await adm("POST", "/api/meja/catatan", {meja: "pengaduan", data: aduan()}); assert.equal(a.s, 201, a.t); assert.equal(a.j.catatan.prov, "00"); assert.equal(a.j.catatan.kab, "BNPB Pusat"); assert.equal(a.j.catatan.status, "register");
+  const id = a.j.catatan.id;
+  for (const ke of ["tindak_lanjut", "selesai", "bogus"]) assert.equal((await st(ADMIN, id, {ke})).s, 409, "lompat tahap " + ke);
+  assert.equal((await st(ADMIN, id, {ke: "telaah", data: {kategori: "aneh"}})).s, 400, "kategori sah");
+  assert.equal((await st(ADMIN, id, {ke: "telaah", data: {kategori: "berkadar_pengawasan", wewenang: "bnpb", hasil_telaah: "Ada indikasi", tgl_telaah: hari(1)}})).s, 200);
+  assert.equal((await st(ADMIN, id, {ke: "diteruskan", data: {tujuan: "Inspektorat III", tgl_diteruskan: hari(1)}})).s, 200);
+  assert.equal((await st(ADMIN, id, {ke: "tindak_lanjut", data: {tindakan: "pemeriksaan_audit", tgl_tindak: hari(0)}})).s, 200);
+  const s = await st(ADMIN, id, {ke: "selesai", data: {simpulan: "Terbukti sebagian", tgl_selesai: hari(0)}}); assert.equal(s.s, 200, s.t); assert.equal(s.j.catatan.status, "selesai");
+  /* register ganda, tolak dari telaah, tenggat */
+  const nomor = "ULP/GANDA"; assert.equal((await adm("POST", "/api/meja/catatan", {meja: "pengaduan", data: aduan({nomor_register: nomor})})).s, 201);
+  assert.equal((await adm("POST", "/api/meja/catatan", {meja: "pengaduan", data: aduan({nomor_register: nomor})})).s, 409, "nomor register unik");
+  const t = (await adm("POST", "/api/meja/catatan", {meja: "pengaduan", data: aduan({tgl_terima: hari(45)})})).j.catatan; assert.ok(t.tanda.includes("lewat_tenggat"), "20 hari kerja terlewati");
+  assert.equal((await st(ADMIN, t.id, {ke: "telaah", data: {kategori: "tidak_berkadar_pengawasan", wewenang: "bnpb", hasil_telaah: "Telaah", tgl_telaah: hari(44)}})).s, 200);
+  assert.equal((await st(ADMIN, t.id, {ke: "ditolak", data: {alasan: "Tidak memenuhi 5W"}})).s, 200); assert.equal((await st(ADMIN, t.id, {ke: "selesai", data: {simpulan: "x", tgl_selesai: hari(0)}})).s, 409);
+  const lt = (await adm("POST", "/api/meja/catatan", {meja: "pengaduan", data: aduan({tgl_terima: hari(45)})})).j.catatan;
+  for (const [ke, data] of [["telaah", {kategori: "berkadar_pengawasan", wewenang: "bnpb", hasil_telaah: "T", tgl_telaah: hari(44)}], ["diteruskan", {tujuan: "Inspektorat III", tgl_diteruskan: hari(40)}], ["tindak_lanjut", {tindakan: "klarifikasi", tgl_tindak: hari(10)}]]) assert.equal((await st(ADMIN, lt.id, {ke, data})).s, 200, ke);
+  assert.equal((await st(ADMIN, lt.id, {ke: "selesai", data: {simpulan: "Terlambat", tgl_selesai: hari(0)}})).s, 400, "melewati tenggat wajib penjelasan");
+  assert.equal((await st(ADMIN, lt.id, {ke: "selesai", data: {simpulan: "Terlambat", tgl_selesai: hari(0), penjelasan_lambat: "Tim audit menunggu dokumen"}})).s, 200);
+});
+
+uji("juklak pengaduan: identitas pelapor terpisah, tidak bocor di daftar/rincian/rekap/ringkas/ekspor, dibuka hanya peran Irtama/ULP, tiap buka tercatat", async () => {
+  const ulp = await buatStaf("d", ["ulp"]), biasa = await buatStaf("e", ["pusdalops"]), RAHASIA = "Sri Rahasia Pelapor", kontak = "0811-9999-777";
+  const dt = aduan(); const a = await api("POST", "/api/meja/catatan", {meja: "pengaduan", data: dt, pelapor: {nama: RAHASIA, alamat: "Jalan Rahasia 7", kontak, pekerjaan: "Guru"}}, ulp); assert.equal(a.s, 201, a.t);
+  const id = a.j.catatan.id, anon = await api("POST", "/api/meja/catatan", {meja: "pengaduan", data: aduan()}, ulp); assert.equal(anon.s, 201, anon.t);
+  /* moderator mencatat tanpa identitas; identitas ditolak; pelapor pada meja lain ditolak; petugas ditolak */
+  assert.equal((await adm("POST", "/api/meja/catatan", {meja: "pengaduan", data: aduan(), pelapor: {nama: "Ini Ditolak"}})).s, 403, "moderator tidak menulis identitas");
+  assert.equal((await adm("POST", "/api/meja/catatan", {meja: "kaji_cepat", prov: "71", kab: "Kab Y", desa: "Desa Y", data: kaji(), pelapor: {nama: "X"}})).s, 400);
+  assert.equal((await api("POST", "/api/meja/catatan", {meja: "pengaduan", data: aduan(), pelapor: {nama: "x", nik: "1"}}, ulp)).s, 400, "kolom identitas dikunci");
+  assert.equal((await api("POST", "/api/meja/catatan", {meja: "pengaduan", data: aduan(), pelapor: "nama"}, ulp)).s, 400, "pelapor harus objek");
+  const baris = await DB.prepare("SELECT data FROM meja_catatan WHERE id = ?").bind(id).first(); assert.ok(!baris.data.includes(RAHASIA) && !baris.data.includes(kontak), "kolom data bersih");
+  assert.equal((await DB.prepare("SELECT nama FROM meja_pelapor WHERE catatan_id = ?").bind(id).first()).nama, RAHASIA);
+  /* tiap jalur baca, admin dan ULP: tidak memuat identitas */
+  await adm("POST", "/api/meja/dummy", {aksi: "isi"});
+  const jalur = [["GET", "/api/meja/catatan?meja=pengaduan", ADMIN], ["GET", "/api/meja/catatan?meja=pengaduan", ulp], ["GET", "/api/meja/catatan/" + id, ADMIN], ["GET", "/api/meja/catatan/" + id, ulp], ["GET", "/api/meja/rekap", ADMIN], ["GET", "/api/meja/rekap?dummy=1", ADMIN], ["GET", "/api/meja/rapor", ADMIN], ["GET", "/api/meja/ringkas", {}], ["GET", "/api/meja/ringkas?dummy=1", ADMIN], ["GET", "/api/meja/rapor/publik", {}], ["GET", "/api/meja/ekspor?meja=risiko", ADMIN], ["GET", "/api/meja/ekspor?meja=kaji_cepat", ADMIN]];
+  for (const [m, j, h] of jalur) { const r = await api(m, j, undefined, h); assert.equal(r.s, 200, `${j}: ${r.t.slice(0, 200)}`); for (const x of [RAHASIA, kontak, "Jalan Rahasia", "Pelapor 1"]) assert.ok(!r.t.includes(x), `${j} membocorkan ${x}`); }
+  assert.equal((await api("GET", "/api/meja/ekspor?meja=pengaduan", undefined, ADMIN)).s, 400, "pengaduan tidak punya jalur ekspor");
+  /* pengaduan, risiko, klaster tidak tampil di layar publik */
+  const ring = (await api("GET", "/api/meja/ringkas")).j.meja; for (const m of ["pengaduan", "risiko", "klaster"]) assert.ok(!(m in ring), m + " keluar dari ringkas publik");
+  assert.ok(!(await api("GET", "/api/meja/rekap", undefined, ADMIN)).j.tanpa_renkon?.banjir?.some(k => k.startsWith("00|")), "pusat bukan kabupaten tanpa renkon");
+  await adm("POST", "/api/meja/dummy", {aksi: "hapus"});
+  /* membuka identitas: hanya peran Irtama/ULP */
+  const J = "/api/meja/pelapor/" + id;
+  assert.equal((await api("GET", J)).s, 403); assert.equal((await api("GET", J, undefined, ADMIN)).s, 403, "moderator pun ditolak"); assert.equal((await api("GET", J, undefined, biasa)).s, 403, "staf peran lain ditolak");
+  const d = await api("GET", J, undefined, ulp); assert.equal(d.s, 200, d.t); assert.deepEqual(d.j, {anonim: false, pelapor: {nama: RAHASIA, alamat: "Jalan Rahasia 7", kontak, pekerjaan: "Guru"}});
+  const j = (await api("GET", "/api/meja/catatan/" + id, undefined, ADMIN)).j.jejak; assert.ok(j.some(x => x.catatan === "identitas pelapor dibuka" && x.oleh.startsWith("staf:")), "pembukaan tercatat"); assert.ok(!JSON.stringify(j).includes(RAHASIA), "jejak tanpa isi identitas");
+  assert.deepEqual((await api("GET", "/api/meja/pelapor/" + anon.j.catatan.id, undefined, ulp)).j, {anonim: true, pelapor: null});
+  assert.equal((await api("GET", "/api/meja/pelapor/" + hex(), undefined, ulp)).s, 404);
+  const kj = (await adm("POST", "/api/meja/catatan", {meja: "kaji_cepat", prov: "71", kab: "Kab X", desa: "Desa X", data: kaji()})).j.catatan.id; assert.equal((await api("GET", "/api/meja/pelapor/" + kj, undefined, ulp)).s, 404, "bukan catatan pengaduan");
+  /* peran ULP terkunci ke meja pengaduan */
+  assert.equal((await api("GET", "/api/meja/catatan?meja=dsp", undefined, ulp)).s, 403); assert.equal((await api("GET", "/api/meja/catatan/" + kj, undefined, ulp)).s, 404); assert.equal((await api("POST", "/api/meja/catatan", {meja: "dsp", prov: "71", kab: "Y", data: dsp()}, ulp)).s, 403); assert.equal((await api("GET", "/api/meja/rekap", undefined, ulp)).s, 403);
+  assert.deepEqual((await api("GET", "/api/meja/saya", undefined, ulp)).j, {peran: "ulp"});
+});
+
+uji("juklak klaster: dokumen per kabupaten lewat petugas, aturan triwulan, tidak memegang stok", async () => {
+  const p = await petugas("Kab Klaster", ["klaster"]), b = (o = {}) => ({tingkat: "kabupaten_kota", dokumen: "rencana_kerja", judul: "Rencana Kerja Uji", tahun: 2026, tgl_dokumen: hari(1), ...o});
+  const a = await baru(p.h, "klaster", undefined, undefined, b()); assert.equal(a.s, 201, a.t); assert.equal(a.j.catatan.status, "tercatat"); assert.deepEqual(a.j.catatan.tanda, ["tanpa_dokumen"]);
+  assert.equal((await baru(p.h, "klaster", undefined, undefined, b({dokumen: "laporan_triwulan"}))).s, 400, "triwulan wajib"); assert.equal((await baru(p.h, "klaster", undefined, undefined, b({triwulan: "2"}))).s, 400, "triwulan hanya laporan triwulan");
+  assert.equal((await baru(p.h, "klaster", undefined, undefined, b({stok: 5}))).s, 400, "tidak ada kolom stok"); assert.equal((await baru(p.h, "klaster", undefined, undefined, b({tautan: "javascript:alert(1)"}))).s, 400, "tautan http saja");
+  const c = await baru(p.h, "klaster", undefined, undefined, b({dokumen: "laporan_triwulan", triwulan: "3", tautan: "https://contoh.invalid/x"})); assert.equal(c.s, 201, c.t); assert.deepEqual(c.j.catatan.tanda, []);
+  assert.ok(!MEJA.klaster.kolom.some(k => /stok|gudang|barang/.test(k.nama)), "stok tetap di LogPal (KEPUTUSAN-LOGPAL)"); assert.deepEqual(MEJA.klaster.transisi, {}, "tanpa tahap persetujuan (Q2 LogPal belum dijawab pemilik)");
+  assert.equal((await adm("POST", "/api/meja/catatan", {meja: "klaster", prov: "00", kab: "Nasional", data: b({tingkat: "nasional", tautan: "https://contoh.invalid/n"})})).s, 201, "klaster nasional lewat admin");
+});
+
+uji("juklak risiko: register per unit, level residu dijaga, status turunan selera, ekspor CSV Lampiran I Format 2, 3, 4", async () => {
+  const p = await petugas("Kab Risiko", ["kaji_cepat"]); assert.equal((await baru(p.h, "risiko", undefined, undefined, risikoUji())).s, 403);
+  const a = await adm("POST", "/api/meja/catatan", {meja: "risiko", data: risikoUji({kode: "UJI.A1", res_level: 4, selera: 6})}); assert.equal(a.s, 201, a.t); assert.equal(a.j.catatan.prov, "00"); assert.equal(a.j.catatan.status_efektif, "dalam_selera"); assert.deepEqual(a.j.catatan.tanda, []);
+  assert.equal((await adm("POST", "/api/meja/catatan", {meja: "risiko", data: risikoUji({kode: "UJI.A1"})})).s, 409, "kode unik per unit dan tahun");
+  assert.equal((await adm("POST", "/api/meja/catatan", {meja: "risiko", data: risikoUji({kode: "UJI.A2", pengendalian: "belum_ada", memadai: undefined, res_level: 4})})).s, 400, "belum ada pengendalian: residu tidak turun");
+  assert.equal((await adm("POST", "/api/meja/catatan", {meja: "risiko", data: risikoUji({kode: "UJI.A2", memadai: "belum_memadai", res_level: 4})})).s, 400, "belum memadai: residu tidak turun");
+  assert.equal((await adm("POST", "/api/meja/catatan", {meja: "risiko", data: risikoUji({kode: "UJI.A2", kategori: "x"})})).s, 400); assert.equal((await adm("POST", "/api/meja/catatan", {meja: "risiko", data: risikoUji({kode: "UJI.A2", skor_kemungkinan: 6})})).s, 400);
+  const b = await adm("POST", "/api/meja/catatan", {meja: "risiko", data: risikoUji({kode: "UJI.B1", res_level: 12, memadai: "belum_memadai", selera: 6})}); assert.equal(b.s, 201, b.t); assert.equal(b.j.catatan.status_efektif, "di_atas_selera"); assert.deepEqual(b.j.catatan.tanda, ["di_atas_selera"]);
+  const c = await adm("POST", "/api/meja/catatan", {meja: "risiko", data: risikoUji({kode: "UJI.C1", res_level: 15, memadai: "belum_memadai", level: 15, selera: 6, pernyataan: "=SUM(1)"})}); assert.equal(c.s, 201, c.t);
+  for (const [n, kolom] of Object.entries(EKSPOR_RISIKO)) {
+    const r = await api("GET", `/api/meja/ekspor?meja=risiko&lampiran=${n}`, undefined, ADMIN); assert.equal(r.s, 200, r.t); assert.match(r.h.get("content-disposition"), new RegExp(`risiko-format${n}-`));
+    assert.equal(r.t.replace(/^﻿/, "").split("\r\n")[0], kolom.kolom.map(x => `"${x}"`).join(","), `kepala Format ${n}`);
+    assert.ok(r.t.includes("'=SUM(1)"), `Format ${n}: rumus dinetralkan`);
+  }
+  const f4 = (await api("GET", "/api/meja/ekspor?meja=risiko&lampiran=4", undefined, ADMIN)).t.replace(/^﻿/, "").split("\r\n").slice(1);
+  assert.equal(f4.length, 2, "Format 4 hanya di atas selera"); assert.ok(f4[0].includes("UJI.C1") && f4[1].includes("UJI.B1"), "urut dari level tertinggi");
+  assert.equal((await api("GET", "/api/meja/ekspor?meja=risiko&lampiran=9", undefined, ADMIN)).s, 400);
+  assert.equal((await api("GET", "/api/meja/ekspor?meja=risiko")).s, 403, "ekspor hanya admin");
+});
+
+uji("migrasi 0118 di atas data lama: semua baris lolos, FK utuh, trigger meja baru aktif, jalan dua kali tetap idempoten", async () => {
+  const mf = new Miniflare({modules: true, script: "export default {fetch: () => new Response('ok')}", compatibilityDate: "2024-09-23", d1Databases: {DB: "uji-meja-0118"}});
+  try {
+    const D = await mf.getD1Database("DB"), dir = path.join(AKAR, "migrations"), berkas = readdirSync(dir).filter(f => f.endsWith(".sql")).sort(), sql = f => pecah(readFileSync(path.join(dir, f), "utf8"));
+    const jalan = async f => D.batch(sql(f).map(s => D.prepare(s)));
+    for (const f of berkas.filter(f => f < "0118_")) await jalan(f);
+    const tujuh = ["kaji_cepat", "logistik", "dsp", "renkon", "destana", "rehab", "gudang"];
+    const pt = "11".repeat(8), gd = "22".repeat(8), kj = "33".repeat(8), lg = "44".repeat(8), rh = "55".repeat(8);
+    await D.batch([
+      D.prepare("INSERT INTO meja_petugas (id, nama, prov, kab, meja, kode_sha, dibuat) VALUES (?, 'Lama', '71', 'Kab Lama', ?, ?, 1)").bind(pt, JSON.stringify(tujuh), "a".repeat(64)),
+      D.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, desa, data, status, dibuat, diubah, petugas_id) VALUES (?, 'kaji_cepat', '71', 'Kab Lama', 'Desa L', '{\"kejadian\":\"banjir\"}', 'masuk_jitupasna', 1, 1, ?)").bind(kj, pt),
+      D.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah, stok) VALUES (?, 'gudang', '71', 'Kab Lama', '{\"gudang\":\"G1\",\"barang\":\"beras\"}', 'tercatat', 1, 1, 50)").bind(gd),
+      D.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah) VALUES (?, 'logistik', '71', 'Kab Lama', '{\"barang\":\"beras\"}', 'dikirim', 1, 1)").bind(lg),
+      D.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah, kaji_id) VALUES (?, 'rehab', '71', 'Kab Lama', '{}', 'jitupasna', 1, 1, ?)").bind(rh, kj),
+      D.prepare("INSERT INTO meja_jejak (catatan_id, dari, ke, waktu, oleh) VALUES (?, NULL, 'masuk_jitupasna', 1, 'x')").bind(kj),
+      D.prepare("INSERT INTO meja_stok (gudang_id, jenis, delta, saldo, logistik_id, waktu) VALUES (?, 'keluar', -5, 45, ?, 1)").bind(gd, lg),
+      D.prepare("INSERT INTO meja_ringkas (meja, prov, kab, status, dummy, n, bahaya, jumlah, terbaru) VALUES ('kaji_cepat', '71', 'Kab Lama', 'masuk_jitupasna', 0, 1, 0, '{}', 1)"),
+    ]);
+    const potret = async () => ({c: (await D.prepare("SELECT id, meja, prov, kab, desa, data, status, stok, kaji_id, petugas_id FROM meja_catatan ORDER BY id").all()).results, p: (await D.prepare("SELECT id, nama, meja FROM meja_petugas").all()).results, j: (await D.prepare("SELECT catatan_id, ke FROM meja_jejak").all()).results, s: (await D.prepare("SELECT gudang_id, delta FROM meja_stok").all()).results, r: (await D.prepare("SELECT meja, n FROM meja_ringkas").all()).results});
+    const sebelum = await potret();
+    await jalan("0118_meja_juklak.sql");
+    assert.deepEqual(await potret(), sebelum, "semua baris lolos utuh");
+    assert.equal((await D.prepare("PRAGMA foreign_key_check").all()).results.length, 0, "FK utuh");
+    /* skema baru hidup */
+    await D.prepare("INSERT INTO meja_petugas (id, nama, prov, kab, meja, kode_sha, dibuat) VALUES (?, 'Baru', '71', 'Kab Lama', ?, ?, 1)").bind("66".repeat(8), JSON.stringify([...tujuh, "pengungsi", "klaster"]), "b".repeat(64)).run();
+    for (const [v, ket] of [['["pengaduan"]', "pusat"], ['["risiko"]', "pusat"], ['["kaji_cepat","kaji_cepat"]', "ganda"]]) assert.ok(await D.prepare("INSERT INTO meja_petugas (id, nama, prov, kab, meja, kode_sha, dibuat) VALUES (?, 'X', '71', 'K', ?, ?, 1)").bind(hex(), v, sha256(v)).run().then(() => false, () => true), `trigger menolak ${ket}`);
+    const adu = "77".repeat(8);
+    await D.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah) VALUES (?, 'pengaduan', '00', 'BNPB Pusat', '{}', 'register', 1, 1)").bind(adu).run();
+    assert.ok(await D.prepare("UPDATE meja_catatan SET status = 'selesai' WHERE id = ?").bind(adu).run().then(() => false, () => true), "trigger transisi aktif sesudah bangun ulang");
+    assert.ok(await D.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah) VALUES (?, 'pengaduan', '00', 'BNPB Pusat', '{}', 'tercatat', 1, 1)").bind(hex()).run().then(() => false, () => true), "CHECK status pengaduan");
+    assert.ok(await D.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah) VALUES (?, 'bogus', '00', 'B', '{}', 'tercatat', 1, 1)").bind(hex()).run().then(() => false, () => true), "CHECK daftar meja");
+    await D.prepare("INSERT INTO meja_pelapor (catatan_id, nama, dibuat) VALUES (?, 'Nama Uji', 1)").bind(adu).run();
+    /* jalan kedua: idempoten, baris baru ikut selamat */
+    const kedua = await potret(); await jalan("0118_meja_juklak.sql");
+    assert.deepEqual(await potret(), kedua, "jalan kedua tidak mengubah baris"); assert.equal((await D.prepare("SELECT nama FROM meja_pelapor WHERE catatan_id = ?").bind(adu).first()).nama, "Nama Uji");
+    assert.equal((await D.prepare("SELECT count(*) n FROM sqlite_master WHERE name LIKE '%_cadang'").first()).n, 0, "tanpa sisa cadangan");
+    assert.equal((await D.prepare("PRAGMA foreign_key_check").all()).results.length, 0);
+    for (const nama of ["meja_catatan_ubah", "meja_rehab_tautan", "meja_petugas_sah", "meja_stok_sah", "meja_pengungsi_hari", "meja_pengaduan_register", "meja_risiko_kode", "meja_gudang_unik"]) assert.ok(await D.prepare("SELECT 1 x FROM sqlite_master WHERE name = ?").bind(nama).first(), nama + " ada");
+  } finally { await mf.dispose(); }
+});
+
 uji("tabel belum dimigrasi = 503 (bukan 500)", async () => {
-  await DB.batch(["meja_stok", "meja_ringkas", "meja_ringkas_bencana", "meja_ringkas_meta", "meja_jejak", "meja_catatan", "meja_petugas"].map(t => DB.prepare("DROP TABLE " + t)));
+  await DB.batch(["meja_pelapor", "meja_stok","meja_ringkas", "meja_ringkas_bencana", "meja_ringkas_meta", "meja_jejak", "meja_catatan", "meja_petugas"].map(t => DB.prepare("DROP TABLE " + t)));
   for (const [j, h] of [["/api/meja/petugas", ADMIN], ["/api/meja/catatan?meja=dsp", ADMIN], ["/api/meja/ringkas", {}], ["/api/meja/rapor/publik", {}], ["/api/meja/rekap", ADMIN]]) {
     const r = await api("GET", j, undefined, h); assert.equal(r.s, 503, `${j}: ${r.t}`); assert.match(r.j.galat, /belum diaktifkan/);
   }

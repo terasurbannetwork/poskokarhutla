@@ -457,6 +457,8 @@
     "table meja_ringkas": "sempurna: agregat meja_ringkas sama persis dengan hitung manual",
     "table meja_ringkas_bencana": "sempurna: agregat meja_ringkas sama persis dengan hitung manual",
     "table meja_ringkas_meta": "sempurna: agregat meja_ringkas sama persis dengan hitung manual",
+    "table meja_pelapor": "juklak pengaduan: identitas pelapor terpisah",
+    "GET /api/meja/pelapor/:id": "juklak pengaduan: identitas pelapor terpisah",
     "GET /api/relawan/kapasitas": "sempurna: GET /api/relawan/kapasitas agregat per kabupaten",
     "GET /api/relawan/admin/institusi": "sempurna: institusi punya beberapa perjanjian",
     "POST /api/relawan/admin/institusi": "POST /api/relawan/admin/institusi: validasi 400",
@@ -1143,7 +1145,9 @@
     "table logbook_entri_cad": "salinan sementara migrasi 0091, dibuang di akhir; hasilnya diuji logbook: tiga jenis panduan resmi",
     "table pengingat_cad": "salinan sementara migrasi 0088, dibuang di akhir; hasilnya diuji 'migrasi 0088: pengingat dibangun ulang'",
     "table meja_catatan_cadang": "tabel cadangan sementara di migrations/0110_meja_rehab_lepas.sql: dibuat dan dibuang di migrasi yang sama saat meja_catatan dibangun ulang (F0-3, RU-009); salin-pulih datanya diuji tests/warga/unit_skema.test.mjs R1-R10",
-    "table meja_jejak_cadang": "tabel cadangan sementara di migrations/0110_meja_rehab_lepas.sql: dibuat dan dibuang di migrasi yang sama saat meja_catatan dibangun ulang (F0-3, RU-009); salin-pulih datanya diuji tests/warga/unit_skema.test.mjs R1-R10"
+    "table meja_petugas_cadang": "tabel cadangan sementara di migrations/0118_meja_juklak.sql: dibuat dan dibuang di migrasi yang sama saat meja_petugas dibangun ulang",
+    "table meja_ringkas_cadang": "tabel cadangan sementara di migrations/0118_meja_juklak.sql: dibuat dan dibuang di migrasi yang sama saat meja_ringkas dibangun ulang",
+    "table meja_jejak_cadang":"tabel cadangan sementara di migrations/0110_meja_rehab_lepas.sql: dibuat dan dibuang di migrasi yang sama saat meja_catatan dibangun ulang (F0-3, RU-009); salin-pulih datanya diuji tests/warga/unit_skema.test.mjs R1-R10"
   },
   "antre": {
     "batas global 600 laporan/jam": "butuh 600 baris jejak; tambahkan uji yang menyemai jejak langsung"

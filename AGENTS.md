@@ -206,6 +206,13 @@ Sebelum menyentuh apa pun tentang tangga skala (musim, bulan, dasarian, 10 hari,
 
 Aturan berhentinya sama dengan §2.1. Tidak pernah menulis "aman"; BMKG dan prediksi kita terpisah; tanpa skor gabungan sebelum uji balik. Pengerja: `prediksi`.
 
+### 2.6 Formulir Juklak di Meja Kerja: baca dulu, baru bangun
+
+Sebelum menyentuh meja `pengungsi`, `pengaduan`, `klaster`, `risiko`, atau pelengkap `kaji_cepat`, baca dokumen di
+`data/kajian-bnpb/juklak/` dengan urutan otoritas ini: `KEPUTUSAN-JUKLAK.md` (menang atas semuanya), lalu PRD, ALUR, ALGORITMA, DESAIN-TEKNIS, KEAMANAN-PRIVASI, RENCANA-UJI, TIKET.
+
+Aturan berhentinya sama dengan §2.1. Identitas pelapor pengaduan tidak pernah masuk `data`, rekap, atau ekspor.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih

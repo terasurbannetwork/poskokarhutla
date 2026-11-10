@@ -11,9 +11,13 @@ import {halamanAdmin} from "./statistik.js";
 import {halamanBnpb} from "./admin_halaman.js";
 import {PROV} from "./alun.js";
 import {waktuTanggapApi} from "./sla.js";
-import {MEJA, DAFTAR_MEJA, BENCANA, RAPOR, spekPublik, validasi, statusEfektif, tandaBahaya} from "./meja_spek.js";
+import {stafPeran} from "./staf.js";
+import {stmtPelapor, stmtHapusPelaporDummy, pengaduanById, bacaPelapor, stmtJejakPelapor} from "./hak.js";
+import {MEJA, DAFTAR_MEJA, DAFTAR_PETUGAS, MEJA_RAPOR, PUSAT, EKSPOR_RISIKO, BENCANA, RAPOR, spekPublik, validasi, statusEfektif, tandaBahaya} from "./meja_spek.js";
 
-const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, LAJU_TULIS = [[JAM, 120]], TTL_RINGKAS = 2 * JAM, MAKS_EKSPOR = 20000, RE_ID = /^[0-9a-f]{16}$/;
+const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, LAJU_TULIS = [[JAM, 120]], LAJU_PELAPOR = [[JAM, 30]], TTL_RINGKAS = 2 * JAM, MAKS_EKSPOR = 20000, MAKS_ISIAN = 9000, RE_ID = /^[0-9a-f]{16}$/;
+/* Juklak 5/2025: identitas pelapor hanya untuk Inspektorat Utama dan Unit Layanan Pengaduan. Peran ini belum terdaftar di PERAN src/staf.js, jadi sampai didaftarkan pemegangnya nol dan identitas tertutup untuk siapa pun. */
+export const PERAN_ULP = ["irtama", "ulp"];
 
 /* migrasi 0026 (atau 0022 untuk laju) belum jalan di produksi = 503, bukan 500 */
 const aman = f => async (...a) => {
@@ -25,7 +29,11 @@ const tolak = () => gagal(403, "akses ditolak: butuh kode petugas atau token adm
 /* ---------------------------------------------------------------- pelaku */
 const adminSaja = async (env, req) => { const m = await modOK(env, req); return m ? {admin: true, oleh: "admin:" + m} : tolak(); };
 async function pelaku(env, req) {
-  if (!req.headers.get("x-kode")) return adminSaja(env, req);
+  if (!req.headers.get("x-kode")) {
+    const m = await modOK(env, req); if (m) return {admin: true, oleh: "admin:" + m};
+    const u = await stafPeran(env, req, PERAN_ULP);   // staf Irtama/ULP hanya untuk meja pengaduan (daftar, buat, muatBaris menjaga)
+    return u ? {admin: true, ulp: true, oleh: u} : tolak();
+  }
   const p = await pemegangKode(env, req, "meja", sha => env.DB.prepare("SELECT id, nama, prov, kab, meja FROM meja_petugas WHERE kode_sha = ? AND dicabut IS NULL").bind(sha).first());
   return p instanceof Response ? p : {petugas: {...p, meja: JSON.parse(p.meja)}, oleh: "petugas:" + p.id};
 }
@@ -57,6 +65,7 @@ const SELESAI_SEGARKAN = (env, meja, prov, kab, dummy, kini) => segarkanGrup(env
 async function daftar(env, req, url, kini) {
   const p = await pelaku(env, req); if (p instanceof Response) return p;
   const meja = url.searchParams.get("meja"); if (!Object.hasOwn(MEJA, meja || "")) return gagal(400, `meja harus salah satu dari ${DAFTAR_MEJA.join(", ")}`);
+  if (p.ulp && meja !== "pengaduan") return gagal(403, "peran ini hanya untuk meja Pengaduan masyarakat");
   const w = ["meja = ?"], a = [meja], status = url.searchParams.get("status");
   if (p.petugas) {
     /* pemilih kaji cepat untuk meja rehab: petugas rehab boleh membaca kaji cepat kabupatennya */
@@ -90,20 +99,36 @@ function luring(o, kini) {
   if (w != null && !Number.isFinite(w)) return {galat: "waktu_klien harus angka (ms)"};
   return {klien: o.klien_id ?? null, waktu: w != null && w <= kini + 5 * MENIT && w >= kini - 14 * HARI ? Math.round(w) : kini};
 }
-const UNIK = {rehab: "kaji cepat atau kejadian ini sudah punya catatan rehab-rekon", gudang: "gudang dan barang itu sudah tercatat di kabupaten ini"};
+const UNIK = {rehab: "kaji cepat atau kejadian ini sudah punya catatan rehab-rekon", gudang: "gudang dan barang itu sudah tercatat di kabupaten ini", pengungsi: "tempat pengungsian ini sudah dicatat pada tanggal itu", pengaduan: "nomor register sudah dipakai", risiko: "kode risiko itu sudah tercatat untuk unit dan tahun ini"};
+/* identitas pelapor: objek terpisah dari data. Tidak ada isian = anonim (Juklak 5/2025 BAB III huruf B angka 1). */
+function cekPelapor(o) {
+  if (o == null) return {v: null};
+  if (typeof o !== "object" || Array.isArray(o)) return {galat: "pelapor harus objek"};
+  const x = semuaKunci(o, ["nama", "alamat", "kontak", "pekerjaan"]); if (x) return {galat: `kolom pelapor "${x.slice(0, 40)}" tidak dikenal`};
+  const v = {nama: tx(o.nama, 80), alamat: tx(o.alamat, 200), kontak: tx(o.kontak, 40), pekerjaan: tx(o.pekerjaan, 60)};
+  if (Object.values(v).includes(undefined)) return {galat: "identitas pelapor: teks melebihi batas atau bukan teks"};
+  return {v: Object.values(v).some(Boolean) ? v : null};
+}
 async function buat(env, req, kini) {
   const p = await pelaku(env, req); if (p instanceof Response) return p;
-  const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
-  const x = semuaKunci(b.o, ["meja", "prov", "kab", "kec", "desa", "data", "kaji_id", "klien_id", "waktu_klien"]); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
+  const b = await bacaBody(req, MAKS_ISIAN); if (b.galat) return gagal(b.status || 400, b.galat);
+  const x = semuaKunci(b.o, ["meja", "prov", "kab", "kec", "desa", "data", "kaji_id", "klien_id", "waktu_klien", "pelapor"]); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
   const lr = luring(b.o, kini); if (lr.galat) return gagal(400, lr.galat);
   if (lr.klien) { const u = await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE oleh IS ? AND klien_id = ?`).bind(p.oleh, lr.klien).first(); if (u) return json({catatan: baris(u, kini, !p.petugas), ulang: true}); }
   if (!Object.hasOwn(MEJA, b.o.meja || "")) return gagal(400, `meja harus salah satu dari ${DAFTAR_MEJA.join(", ")}`);
   const M = MEJA[b.o.meja], kabB = b.o.kab == null ? null : tx(b.o.kab, 60);
+  if (p.ulp && M.id !== "pengaduan") return gagal(403, "peran ini hanya untuk meja Pengaduan masyarakat");
+  /* identitas hanya ditulis pemegang peran yang berhak membacanya; moderator mencatat pengaduan tanpa identitas */
+  const pl = cekPelapor(b.o.pelapor); if (pl.galat) return gagal(400, pl.galat);
+  if (b.o.pelapor != null && M.id !== "pengaduan") return gagal(400, "pelapor hanya untuk meja Pengaduan masyarakat");
+  if (pl.v && !p.ulp) return gagal(403, "identitas pelapor hanya boleh dicatat peran Irtama atau ULP");
   let prov, kab;
   if (p.petugas) {
     if (!p.petugas.meja.includes(M.id)) return gagal(403, "meja ini tidak diizinkan untuk kodemu");
     if ((b.o.prov != null && b.o.prov !== p.petugas.prov) || (kabB != null && kabB !== p.petugas.kab)) return gagal(403, "kamu hanya boleh mengisi untuk kabupatenmu sendiri");
     ({prov, kab} = p.petugas);
+  } else if (M.pusat) {
+    ({prov, kab} = PUSAT);
   } else {
     if (typeof b.o.prov !== "string" || !RE_PROV.test(b.o.prov)) return gagal(400, "prov harus kode 2 digit");
     if (!kabB || kabB.length < 2) return gagal(400, "kabupaten 2-60 huruf");
@@ -127,6 +152,7 @@ async function buat(env, req, kini) {
       env.DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, kec, desa, data, status, dibuat, diubah, oleh, petugas_id, kaji_id, stok, klien_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
         .bind(id, M.id, prov, kab, wl.kec, wl.desa, JSON.stringify(v.data), M.awal, lr.waktu, lr.waktu, p.oleh, p.petugas?.id ?? null, kajiId, M.id === "gudang" ? v.data.stok_awal : null, lr.klien),
       env.DB.prepare("INSERT INTO meja_jejak (catatan_id, dari, ke, waktu, oleh, diterima) VALUES (?, NULL, ?, ?, ?, ?)").bind(id, M.awal, lr.waktu, p.oleh, kini),
+      ...(pl.v ? [stmtPelapor(env, id, pl.v, kini)] : []),
     ]);
   } catch (e) {
     if (/UNIQUE/i.test(String(e?.message || e))) {   // dua kiriman serentak dengan klien_id sama: yang kedua mengembalikan baris yang sudah ada
@@ -151,7 +177,16 @@ export async function sisipLogistik(env, {prov, kab, data}, kini, oleh, dummy = 
 /* petugas hanya melihat baris kabupaten + mejanya; selain itu dijawab 404 (tidak membocorkan bahwa id-nya ada) */
 async function muatBaris(env, p, id) {
   const r = await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE id = ?`).bind(id).first();
-  return r && (!p.petugas || (r.prov === p.petugas.prov && r.kab === p.petugas.kab && p.petugas.meja.includes(r.meja) && !r.dummy)) ? r : null;
+  return r && (p.petugas ? (r.prov === p.petugas.prov && r.kab === p.petugas.kab && p.petugas.meja.includes(r.meja) && !r.dummy) : !p.ulp || r.meja === "pengaduan") ? r : null;
+}
+/* identitas pelapor: hanya peran Irtama/ULP (moderator pun ditolak), tiap pembukaan tercatat di jejak tanpa isi identitasnya. */
+async function bukaPelapor(env, req, id, kini) {
+  const oleh = await stafPeran(env, req, PERAN_ULP); if (!oleh) return gagal(403, "identitas pelapor hanya untuk peran Irtama atau ULP");
+  const l = await laju(env, oleh, "meja.pelapor", LAJU_PELAPOR, kini); if (l) return l;
+  const c = await pengaduanById(env, id); if (!c) return gagal(404, "catatan pengaduan tidak ada");
+  const v = await bacaPelapor(env, id);
+  await stmtJejakPelapor(env, id, c.status, kini, oleh).run();
+  return json({anonim: !v, pelapor: v ?? null});
 }
 async function rincian(env, req, id, kini) {
   const p = await pelaku(env, req); if (p instanceof Response) return p;
@@ -183,7 +218,7 @@ async function ubahStok(env, p, r, o, cat, kini) {
 }
 async function ubah(env, req, id, kini) {
   const p = await pelaku(env, req); if (p instanceof Response) return p;
-  const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
+  const b = await bacaBody(req, MAKS_ISIAN); if (b.galat) return gagal(b.status || 400, b.galat);
   const x = semuaKunci(b.o, ["aksi", "ke", "data", "kec", "desa", "catatan", "jenis", "jumlah", "klien_id", "waktu_klien"]); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
   const lr = luring(b.o, kini); if (lr.galat) return gagal(400, lr.galat);
   if (!["status", "ubah", "stok"].includes(b.o.aksi)) return gagal(400, "aksi harus status, ubah, atau stok");
@@ -240,7 +275,7 @@ async function ubah(env, req, id, kini) {
       .bind(-data.jumlah_kirim, id, kini, p.oleh, `dikirim untuk ${data.posko}`.slice(0, 200), gd.id));
   let u;
   try { [u] = await env.DB.batch(st); }
-  catch (e) { if (lr.klien && /UNIQUE/i.test(String(e?.message || e))) return ulang(); if (/CHECK/i.test(String(e?.message || e))) return gagal(409, gd ? "stok gudang tidak cukup (berubah bersamaan); muat ulang" : "stok akhir tidak boleh minus"); throw e; }
+  catch (e) { if (lr.klien && /UNIQUE/i.test(String(e?.message || e))) return ulang(); if (/UNIQUE/i.test(String(e?.message || e)) && UNIK[r.meja]) return gagal(409, UNIK[r.meja]); if (/CHECK/i.test(String(e?.message || e))) return gagal(409, gd ? "stok gudang tidak cukup (berubah bersamaan); muat ulang" : "stok akhir tidak boleh minus"); throw e; }
   if (!u.meta.changes) return gagal(409, "status berubah di waktu yang sama; muat ulang lalu coba lagi");
   await SELESAI_SEGARKAN(env, r.meja, r.prov, r.kab, r.dummy, kini);
   if (gd) await SELESAI_SEGARKAN(env, "gudang", gd.prov, gd.kab, gd.dummy, kini);
@@ -249,13 +284,20 @@ async function ubah(env, req, id, kini) {
 
 /* ---------------------------------------------------------------- agregat (tabel meja_ringkas; rekap admin, ringkas publik, rapor) */
 const KOL_R = "SELECT meja, prov, kab, status, data, dibuat, diubah, stok, dummy FROM meja_catatan";
-function kumpul(rows, kini, acc = {r: new Map(), b: new Map()}) {
+function kumpul(rows, kini, acc = {r: new Map(), b: new Map(), t: new Map()}) {
   for (const r of rows) {
     const rec = {...recOf(r)}, M = MEJA[r.meja], se = statusEfektif(r.meja, rec, kini), kunci = [r.meja, r.prov, r.kab, se, r.dummy].join("\t");
     let a = acc.r.get(kunci); if (!a) acc.r.set(kunci, a = {meja: r.meja, prov: r.prov, kab: r.kab, status: se, dummy: r.dummy, n: 0, bahaya: 0, jumlah: Object.fromEntries(M.rekap.map(c => [c, 0])), terbaru: 0});
     a.n++; if (tandaBahaya(r.meja, rec, kini).length) a.bahaya++; a.terbaru = Math.max(a.terbaru, r.diubah);
-    for (const c of M.rekap) a.jumlah[c] += rec.data[c] || 0;
-    const bc = r.meja === "renkon" ? rec.data.bencana : r.meja === "kaji_cepat" ? rec.data.kejadian : null;
+    /* rekapTerakhir (data harian): jumlah hanya dari catatan terbaru per tempat; tempat yang sudah tidak berjalan tidak dihitung */
+    const T = M.rekapTerakhir, kt = T && [r.meja, r.prov, r.kab, r.dummy, String(rec.data[T.kunci]).toLowerCase()].join("\t"), lalu = T && acc.t.get(kt);
+    if (!T || !lalu || lalu.tgl < rec.data[T.tanggal]) {
+      if (lalu) for (const c of M.rekap) lalu.a.jumlah[c] -= lalu.d[c] || 0;
+      const d = !T || T.status === se ? rec.data : {};
+      if (T) acc.t.set(kt, {tgl: rec.data[T.tanggal], a, d});
+      for (const c of M.rekap) a.jumlah[c] += d[c] || 0;
+    }
+    const bc =r.meja === "renkon" ? rec.data.bencana : r.meja === "kaji_cepat" ? rec.data.kejadian : null;
     if (bc) {
       const kb = [r.meja, bc, r.prov, r.kab, r.dummy].join("\t"); let x = acc.b.get(kb); if (!x) acc.b.set(kb, x = {meja: r.meja, bencana: bc, prov: r.prov, kab: r.kab, dummy: r.dummy, n: 0, berlaku: 0});
       x.n++; if (r.meja !== "renkon" || se !== "kedaluwarsa") x.berlaku++;
@@ -281,7 +323,7 @@ export async function segarkanGrup(env, meja, prov, kab, dummy, kini = Date.now(
 /* bangun ulang SEMUA, membaca catatan bertahap (kunci id, 1000 per halaman), tanpa batas baris. Dipanggil cron tiap jam dan saat tabel basi.
    ponytail: tulis yang masuk di tengah pemindaian bisa tertimpa sampai tulis/segarkan berikutnya; paling lama satu jam. */
 export async function segarkanRingkas(env, kini = Date.now()) {
-  const acc = {r: new Map(), b: new Map()}; let akhir = "";
+  const acc = {r: new Map(), b: new Map(), t: new Map()}; let akhir = "";
   for (;;) {
     const rows = (await env.DB.prepare(`SELECT id, meja, prov, kab, status, data, dibuat, diubah, stok, dummy FROM meja_catatan WHERE id > ? ORDER BY id LIMIT 1000`).bind(akhir).all()).results;
     kumpul(rows, kini, acc); if (rows.length < 1000) break; akhir = rows[rows.length - 1].id;
@@ -309,7 +351,7 @@ async function rekap(env, req, url, kini) {
   const p = await adminSaja(env, req); if (p instanceof Response) return p;
   const ikut = url.searchParams.get("dummy") === "1", {dihitung, rows} = await bacaRingkas(env, kini, ikut);
   const petugasKab = (await env.DB.prepare(`SELECT DISTINCT prov, kab FROM meja_petugas WHERE dicabut IS NULL ${ikut ? "" : "AND dummy = 0"}`).all()).results;
-  const kabAda = new Set([...rows.map(r => r.prov + "|" + r.kab), ...petugasKab.map(r => r.prov + "|" + r.kab)]);
+  const kabAda = new Set([...rows.filter(r => r.prov !== PUSAT.prov).map(r => r.prov + "|" + r.kab), ...petugasKab.map(r => r.prov + "|" + r.kab)]);
   /* kabupaten tanpa renkon berlaku (belum kedaluwarsa) per bencana; bencana yang dihitung = yang pernah muncul di renkon atau kaji cepat */
   const bc = (await env.DB.prepare(`SELECT meja, bencana, prov, kab, sum(n) n, sum(berlaku) berlaku FROM meja_ringkas_bencana${ikut ? "" : " WHERE dummy = 0"} GROUP BY meja, bencana, prov, kab`).all()).results;
   const punya = new Set(bc.filter(r => r.meja === "renkon" && r.berlaku > 0).map(r => `${r.bencana}|${r.prov}|${r.kab}`));
@@ -318,7 +360,7 @@ async function rekap(env, req, url, kini) {
 }
 /* publik: angka per provinsi. Dummy hanya untuk admin ?dummy=1 (tanpa cache). */
 async function ringkas(env, req, url, kini, ctx) {
-  const ambil = async ikut => { const {dihitung, rows} = await bacaRingkas(env, kini, ikut); return json({dibuat: kini, dihitung, meja: agregat(rows, "prov")}); };
+  const ambil = async ikut => { const {dihitung, rows} = await bacaRingkas(env, kini, ikut); return json({dibuat: kini, dihitung, meja: agregat(rows.filter(r => MEJA[r.meja].publik !== false), "prov")}); };
   if (url.searchParams.get("dummy") === "1" && await modOK(env, req)) return ambil(true);
   return cacheTepi(new Request(new URL("/api/meja/ringkas", url), {method: "GET"}), ctx, 120, () => ambil(false));
 }
@@ -355,11 +397,11 @@ async function hitungRapor(env, kini, ikut, admin) {
   for (const r of rg.results) kab(r.prov, r.kab).regu = r.n;
   for (const r of lp.results) { const k = kab(r.prov, r.kab); k.aktif = r.aktif; k.laporan = r.n; }
   for (const r of pt.results) kab(r.prov, r.kab).petugas.push(r.nama);
-  for (const r of rr.rows) { const m = (kab(r.prov, r.kab).meja[r.meja] ??= {n: 0, bahaya: 0}); m.n += r.n; m.bahaya += r.bahaya; }
+  for (const r of rr.rows) { if (!MEJA_RAPOR.includes(r.meja)) continue; const m = (kab(r.prov, r.kab).meja[r.meja] ??= {n: 0, bahaya: 0}); m.n += r.n; m.bahaya += r.bahaya; }
   const hasil = [...K.values()].map(k => {
     const med = k.medianMs.length ? k.medianMs.reduce((x, y) => x + y, 0) / k.medianMs.length / MENIT : null, respons = skorRespons(med, k.dipanggil, k.direspons);
     const keaktifan = k.regu ? bulat(100 * Math.min(k.aktif, k.regu) / k.regu) : null;
-    const mj = Object.fromEntries(DAFTAR_MEJA.filter(m => k.meja[m]).map(m => [m, {...k.meja[m], skor: bulat(100 * (k.meja[m].n - k.meja[m].bahaya) / k.meja[m].n)}]));
+    const mj = Object.fromEntries(MEJA_RAPOR.filter(m => k.meja[m]).map(m => [m, {...k.meja[m], skor: bulat(100 * (k.meja[m].n - k.meja[m].bahaya) / k.meja[m].n)}]));
     const skorMeja = Object.values(mj).map(m => m.skor), kelengkapan = skorMeja.length ? bulat(skorMeja.reduce((a, b) => a + b, 0) / skorMeja.length) : null;
     const g = gabungSkor({respons, keaktifan, kelengkapan});
     return {prov: k.prov, kab: k.kab, respons: {dipanggil: k.dipanggil, direspons: k.direspons, median_menit: med == null ? null : bulat(med, 1), skor: respons},
@@ -396,25 +438,34 @@ async function ekspor(env, req, url, kini) {
   const p = await adminSaja(env, req); if (p instanceof Response) return p;
   const q = url.searchParams, fmt = q.get("format") ?? "csv", meja = q.get("meja") ?? "kaji_cepat", dari = q.get("dari"), sampai = q.get("sampai");
   if (fmt !== "csv" && fmt !== "json") return gagal(400, "format harus csv atau json");
-  if (meja !== "kaji_cepat") return gagal(400, "ekspor DIBI baru tersedia untuk meja kaji_cepat");
+  if (meja !== "kaji_cepat" && meja !== "risiko") return gagal(400, "ekspor tersedia untuk meja kaji_cepat (DIBI) dan risiko (Lampiran I Juklak 17/2025)");
+  const lampiran = q.get("lampiran") ?? "2", F = Object.hasOwn(EKSPOR_RISIKO, lampiran) ? EKSPOR_RISIKO[lampiran] : null;
+  if (meja === "risiko" && !F) return gagal(400, "lampiran harus 2, 3, atau 4");
   for (const [n, v] of [["dari", dari], ["sampai", sampai]]) if (v != null && !tglSah(v)) return gagal(400, `${n} harus YYYY-MM-DD`);
   if (dari && sampai && dari > sampai) return gagal(400, "dari tidak boleh sesudah sampai");
-  const w = ["meja = 'kaji_cepat'"], a = [];
+  const w = ["meja = ?"], a = [meja], kaji = meja === "kaji_cepat";
   if (q.get("dummy") !== "1") w.push("dummy = 0");
-  if (dari) { w.push("json_extract(data, '$.tanggal') >= ?"); a.push(dari); }
-  if (sampai) { w.push("json_extract(data, '$.tanggal') <= ?"); a.push(sampai); }
-  const rows = (await env.DB.prepare(`SELECT id, prov, kab, kec, desa, data, status, oleh FROM meja_catatan WHERE ${w.join(" AND ")} ORDER BY json_extract(data, '$.tanggal'), id LIMIT ${MAKS_EKSPOR + 1}`).bind(...a).all()).results;
+  if (kaji && dari) { w.push("json_extract(data, '$.tanggal') >= ?"); a.push(dari); }
+  if (kaji && sampai) { w.push("json_extract(data, '$.tanggal') <= ?"); a.push(sampai); }
+  const urut = kaji ? "json_extract(data, '$.tanggal')" : "lower(json_extract(data, '$.unit_pemilik')), json_extract(data, '$.tahun'), json_extract(data, '$.kode')";
+  const rows = (await env.DB.prepare(`SELECT id, prov, kab, kec, desa, data, status, oleh FROM meja_catatan WHERE ${w.join(" AND ")} ORDER BY ${urut}, id LIMIT ${MAKS_EKSPOR + 1}`).bind(...a).all()).results;
   const dipotong = rows.length > MAKS_EKSPOR; if (dipotong) rows.pop();
-  const isi = rows.map(barisDibi), nama = `dibi-${meja}-${wib(kini)}`;
-  if (fmt === "json") return json({kolom: DIBI_KOLOM, baris: isi.map(r => Object.fromEntries(DIBI_KOLOM.map((k, i) => [k, r[i]]))), dibuat: kini, dipotong}, 200, {"content-disposition": `attachment; filename="${nama}.json"`});
-  return new Response("\ufeff" + [DIBI_KOLOM, ...isi].map(r => r.map(selCsv).join(",")).join("\r\n"), {headers: {"content-type": "text/csv; charset=utf-8", "content-disposition": `attachment; filename="${nama}.csv"`,
+  let isi, kolom = DIBI_KOLOM, nama = `dibi-${meja}-${wib(kini)}`;
+  if (kaji) isi = rows.map(barisDibi);
+  else {
+    const d = rows.map(r => JSON.parse(r.data)).filter(F.saring ?? (() => true));
+    if (F.urut) d.sort(F.urut);
+    isi = d.map(F.isi); kolom = F.kolom; nama = `risiko-format${lampiran}-${wib(kini)}`;
+  }
+  if (fmt === "json") return json({kolom, baris: isi.map(r => Object.fromEntries(kolom.map((k, i) => [k, r[i]]))), dibuat: kini, dipotong}, 200, {"content-disposition": `attachment; filename="${nama}.json"`});
+  return new Response("\ufeff" + [kolom, ...isi].map(r => r.map(selCsv).join(",")).join("\r\n"), {headers: {"content-type": "text/csv; charset=utf-8", "content-disposition": `attachment; filename="${nama}.csv"`,
     "cache-control": "no-store", "x-content-type-options": "nosniff", ...(dipotong ? {"x-ekspor-dipotong": "1"} : {})}});
 }
 
 /* ---------------------------------------------------------------- petugas berkode */
 async function daftarPetugas(env, req) {
   const p = await adminSaja(env, req); if (p instanceof Response) return p;
-  return json({meja: DAFTAR_MEJA, petugas: (await env.DB.prepare(`SELECT t.id, t.nama, t.prov, t.kab, t.meja, t.dibuat, t.dicabut, t.dummy, (SELECT count(*) FROM meja_catatan c WHERE c.petugas_id = t.id) catatan
+  return json({meja: DAFTAR_PETUGAS, petugas: (await env.DB.prepare(`SELECT t.id, t.nama, t.prov, t.kab, t.meja, t.dibuat, t.dicabut, t.dummy, (SELECT count(*) FROM meja_catatan c WHERE c.petugas_id = t.id) catatan
     FROM meja_petugas t ORDER BY t.dibuat DESC LIMIT 500`).all()).results.map(r => ({...r, meja: JSON.parse(r.meja)}))});
 }
 async function buatPetugas(env, req, url, kini) {
@@ -426,7 +477,7 @@ async function buatPetugas(env, req, url, kini) {
   if (typeof b.o.prov !== "string" || !RE_PROV.test(b.o.prov)) return gagal(400, "prov harus kode 2 digit");
   if (!kab || kab.length < 2) return gagal(400, "kabupaten 2-60 huruf");
   const mj = b.o.meja;
-  if (!Array.isArray(mj) || !mj.length || !mj.every(m => typeof m === "string" && DAFTAR_MEJA.includes(m)) || new Set(mj).size !== mj.length) return gagal(400, `meja: satu atau lebih dari ${DAFTAR_MEJA.join(", ")}, tanpa duplikat`);
+  if (!Array.isArray(mj) || !mj.length || !mj.every(m => typeof m === "string" && DAFTAR_PETUGAS.includes(m)) || new Set(mj).size !== mj.length) return gagal(400, `meja: satu atau lebih dari ${DAFTAR_PETUGAS.join(", ")}, tanpa duplikat`);
   const id = acak(8), {kode, kode_sha} = await kodeBaru();
   await env.DB.prepare("INSERT INTO meja_petugas (id, nama, prov, kab, meja, kode_sha, dibuat, oleh) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").bind(id, nama, b.o.prov, kab, JSON.stringify(mj), kode_sha, kini, p.oleh).run();
   /* kode tampil SEKALI, di fragmen (#k=) supaya tidak masuk log server */
@@ -498,6 +549,38 @@ function barisDummy(kini, id) {
   add("destana", B, "tercatat", 5000, dt("madya", 400), "Desa Tangguh Dua", "Kec. Contoh");   // pasif
   add("destana", C, "tercatat", 5000, dt("pratama", null), "Desa Tangguh Tiga", "Kec. Contoh");   // pasif
   /* transaksi stok di luar logistik: pasokan masuk dan koreksi hitung ulang (umur dalam jam) */
+  /* pengungsi: dua tempat di kab A (satu berjalan beberapa hari, satu sudah ditutup) dan satu di kab B; kolom turunan lewat rumus spek yang sama */
+  const urPeng = {bayi_l: 2, bayi_p: 3, balita_l: 4, balita_p: 5, anak_l: 8, anak_p: 9, remaja_l: 6, remaja_p: 6, dewasa_l: 30, dewasa_p: 32, lansia_l: 4, lansia_p: 5};
+  const pgs = (nama, h, jiwaTambah, o = {}) => { const d = {tgl_data: t(h), nama_tempat: nama, jenis_tempat: "terkonsentrasi", tipe_tempat: "fasilitas_umum", kejadian: "banjir", pendataan_ke: 12 - h, tgl_buka: t(14), kk: 40, ...urPeng, dewasa_l: urPeng.dewasa_l + jiwaTambah,
+    hamil_t1: 1, hamil_t2: 2, hamil_t3: 1, menyusui: 3, yatim_anak_l: 1, pisah_balita_p: 1, dis_kursi_roda: 1, dis_netra: 1, anak_kk: 0, perempuan_kk: 4, nikah_dini: 1, penyakit_bawaan: 2,
+    keb_air: "ada", keb_pangan: "ada", keb_sandang: "ada", keb_kesehatan: "ada", keb_hunian: "ada", keb_pendidikan: "tidak", saran: "Tambah layanan pendidikan darurat", ...o}; return {...d, ...MEJA.pengungsi.hitung(d)}; };
+  add("pengungsi", A, "tercatat", 58, pgs("Balai Contoh Satu", 2, 0), "Desa Contoh Satu", "Kec. Contoh");
+  add("pengungsi", A, "tercatat", 34, pgs("Balai Contoh Satu", 1, 5), "Desa Contoh Satu", "Kec. Contoh");
+  add("pengungsi", A, "tercatat", 10, pgs("Balai Contoh Satu", 0, 8, {keb_air: "tidak"}), "Desa Contoh Satu", "Kec. Contoh");
+  add("pengungsi", A, "tercatat", 120, pgs("GOR Contoh", 4, 0, {tgl_tutup: t(3), keb_pendidikan: "ada"}), "Desa Contoh Dua", "Kec. Contoh");
+  add("pengungsi", B, "tercatat", 20, pgs("Masjid Contoh", 1, 2, {jenis_tempat: "tidak_terkonsentrasi", tipe_tempat: "tempat_ibadah"}), "Desa Contoh Empat", "Kec. Contoh");
+  /* pengaduan: tiap status, satu lewat tenggat, satu anonim; identitas contoh ke tabel meja_pelapor */
+  const adu = (reg, h, o = {}) => ({nomor_register: "ULP/CONTOH/" + reg, kanal: "website", tgl_terima: t(h), perihal: "Pengaduan contoh " + reg, uraian: "Uraian contoh, bukan pengaduan sungguhan", unit_terlapor: "Unit Kerja Contoh", ...o});
+  const pusat = o => ({...o, prov: PUSAT.prov}), kontak = n => ({pelapor: {nama: "[DUMMY] Pelapor " + n, alamat: "Alamat contoh", kontak: "0800000000" + n, pekerjaan: "Karyawan"}});
+  const tl = {kategori: "tidak_berkadar_pengawasan", wewenang: "bnpb", hasil_telaah: "Telaah contoh", tgl_telaah: t(9)}, ter = {tujuan: "Inspektorat III", tgl_diteruskan: t(8)}, tin = {tindakan: "klarifikasi", tgl_tindak: t(5)};
+  add("pengaduan", PUSAT.kab, "register", 20, adu(1, 1), null, null, pusat(kontak(1)));
+  add("pengaduan", PUSAT.kab, "register", 1500, adu(2, 60), null, null, pusat({}));   // anonim, lewat tenggat
+  add("pengaduan", PUSAT.kab, "telaah", 200, adu(3, 10, tl), null, null, pusat(kontak(3)));
+  add("pengaduan", PUSAT.kab, "diteruskan", 240, adu(4, 10, {...tl, ...ter}), null, null, pusat(kontak(4)));
+  add("pengaduan", PUSAT.kab, "tindak_lanjut", 300, adu(5, 12, {...tl, ...ter, ...tin}), null, null, pusat(kontak(5)));
+  add("pengaduan", PUSAT.kab, "selesai", 400, adu(6, 12, {...tl, ...ter, ...tin, simpulan: "Selesai ditindaklanjuti", tgl_selesai: t(2)}), null, null, pusat(kontak(6)));
+  add("pengaduan", PUSAT.kab, "ditolak", 200, adu(7, 10, {...tl, alasan: "Materi tidak memenuhi 5W"}), null, null, pusat(kontak(7)));
+  /* klaster: tiap jenis dokumen; satu tanpa tautan untuk tanda bahaya */
+  const th = new Date(kini).getUTCFullYear(), kl = (dokumen, judul, h, o = {}) => ({tingkat: "kabupaten_kota", dokumen, judul: judul + " Contoh", tahun: th, tgl_dokumen: t(h), tautan: "https://contoh.invalid/klaster", ...o});
+  add("klaster", A, "tercatat", 3000, kl("sk_klaster", "SK Klaster Logistik", 120), null, null);
+  add("klaster", A, "tercatat", 2800, kl("rencana_kerja", "Rencana Kerja", 110));
+  add("klaster", A, "tercatat", 100, kl("laporan_triwulan", "Laporan Triwulan", 4, {triwulan: "3", ringkasan: "Laporan contoh triwulan tiga"}));
+  add("klaster", B, "tercatat", 900, {...kl("laporan_tahunan", "Laporan Tahunan", 30), tautan: undefined});   // tanpa tautan: tanda bahaya
+  /* risiko: satu di atas selera, satu dalam selera (selera 8) */
+  const rs = (kode, kategori, res, o = {}) => ({unit_pemilik: "Unit Kerja Contoh", tahun: th, jenis_konteks: "program", nama_konteks: "Program Contoh", indikator: "Indikator Contoh", kode, pernyataan: "Pernyataan risiko contoh " + kode, kategori, dampak: "Dampak contoh", spip: "ketaatan", skor_kemungkinan: 4, skor_dampak: 4, level: 16, pengendalian: "ada", uraian_pengendalian: "Pengendalian contoh", memadai: "memadai", res_kemungkinan: 2, res_dampak: 3, res_level: res, selera: 8, ...o});
+  add("risiko", PUSAT.kab, "tercatat", 800, rs("CTH.01", "kepatuhan", 6), null, null, pusat({}));
+  add("risiko", PUSAT.kab, "tercatat", 800, rs("CTH.02", "operasional", 12, {memadai: "belum_memadai", res_level: 16, res_kemungkinan: 4, res_dampak: 4}), null, null, pusat({}));
+  add("risiko", PUSAT.kab, "tercatat", 800, rs("CTH.03", "kecurangan", 16, {pengendalian: "belum_ada", uraian_pengendalian: undefined, memadai: undefined, res_kemungkinan: 4, res_dampak: 4}), null, null, pusat({}));
   const stokLain = [{gudang: "gdSelimut", jenis: "masuk", jumlah: 100, umurJam: 100, catatan: "Pasokan dari gudang provinsi"}, {gudang: "gdBeras", jenis: "masuk", jumlah: 500, umurJam: 120, catatan: "Pasokan dari gudang provinsi"},
     {gudang: "gdBeras", jenis: "koreksi", jumlah: -20, umurJam: 60, catatan: "Koreksi hitung ulang"}];
   return {R, stokLain};
@@ -505,7 +588,7 @@ function barisDummy(kini, id) {
 async function dummyIsi(env, kini, oleh) {
   if ((await env.DB.prepare("SELECT count(*) n FROM meja_catatan WHERE dummy = 1").first()).n) return gagal(409, "data dummy Meja Kerja sudah ada; hapus dulu dengan 🧹");
   const st = [], idPetugas = Array.from({length: 3}, () => acak(8)), ID = {}, id = n => (ID[n] ??= acak(8));
-  const PT = [[KAB_D[0], DAFTAR_MEJA, 0], [KAB_D[1], ["kaji_cepat", "logistik"], 0], [KAB_D[2], ["renkon"], 1]];
+  const PT = [[KAB_D[0], DAFTAR_PETUGAS, 0], [KAB_D[1], ["kaji_cepat", "logistik"], 0], [KAB_D[2], ["renkon"], 1]];
   PT.forEach(([kab, mj, cabut], i) => st.push(env.DB.prepare("INSERT INTO meja_petugas (id, nama, prov, kab, meja, kode_sha, dibuat, dicabut, oleh, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)")
     .bind(idPetugas[i], `[DUMMY] Petugas Contoh ${i + 1}`, PROV_D, kab, JSON.stringify(mj), "0".repeat(48) + acak(8), kini - 30 * HARI, cabut ? kini - HARI : null, oleh)));
   const {R: rows, stokLain} = barisDummy(kini, id); let nj = 0;
@@ -515,12 +598,13 @@ async function dummyIsi(env, kini, oleh) {
     const M = MEJA[r.meja], rid = r.kunci ? id(r.kunci) : acak(8), dibuat = kini - r.umurJam * JAM;
     /* jalur status sampai status sekarang (ditolak keluar dari jalurTolak); jejak tiap langkah 1 jam sesudah sebelumnya, tidak melewati kini */
     const jalur = M.turunan ? [M.awal] : r.status === "ditolak" ? [...M.jalurTolak, "ditolak"] : M.status.slice(0, M.status.indexOf(r.status) + 1);
-    const waktu = i => Math.min(kini, dibuat + i * JAM), pi = PT.findIndex(x => x[0] === r.kab);
+    const waktu = i => Math.min(kini, dibuat + i * JAM), pi = PT.findIndex(x => x[0] === r.kab), pid = pi < 0 ? null : idPetugas[pi];   // meja pusat: tanpa petugas
     if (r.meja === "rehab") r.desa = desaKaji[r.kaji];
     if (r.meja === "logistik" && r.data.gudang_asal) tx_.push({gudang: r.data.gudang_asal, jenis: "keluar", delta: -r.data.jumlah_kirim, waktu: waktu(jalur.indexOf("dikirim")), logistik: rid, catatan: `dikirim untuk ${r.data.posko}`});
     r.id = rid; r.stok = r.meja === "gudang" ? r.data.stok_awal : null;
     st.push(env.DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, kec, desa, data, status, dibuat, diubah, oleh, petugas_id, dummy, kaji_id, stok) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)")
-      .bind(rid, r.meja, PROV_D, r.kab, r.kec, r.desa, JSON.stringify(r.data), r.status, dibuat, waktu(jalur.length - 1), "petugas:" + idPetugas[pi], idPetugas[pi], r.kaji ? kunciId[r.kaji] : null, r.stok));
+      .bind(rid, r.meja, r.prov ?? PROV_D, r.kab, r.kec, r.desa, JSON.stringify(r.data), r.status, dibuat, waktu(jalur.length - 1), pid ? "petugas:" + pid : oleh, pid, r.kaji ? kunciId[r.kaji] : null, r.stok));
+    if (r.pelapor) st.push(stmtPelapor(env, rid, r.pelapor, dibuat, 1));
     jalur.forEach((s, i) => { nj++; st.push(env.DB.prepare("INSERT INTO meja_jejak (catatan_id, dari, ke, waktu, oleh, catatan, dummy) VALUES (?, ?, ?, ?, ?, ?, 1)").bind(rid, i ? jalur[i - 1] : null, s, waktu(i), oleh, "[Contoh]")); });
   }
   for (const s of stokLain) tx_.push({gudang: kunciId[s.gudang], jenis: s.jenis, delta: s.jenis === "keluar" ? -s.jumlah : s.jumlah, waktu: kini - s.umurJam * JAM, catatan: s.catatan});
@@ -558,10 +642,10 @@ async function dummyHapus(env) {
   /* tabel Posko: hanya baris dummy di kabupaten contoh Meja Kerja (dummy Ruang Posko punya jalur hapusnya sendiri) */
   const kab = KAB_D.map(() => "?").join(","), di = `dummy = 1 AND prov = '${PROV_D}' AND kab IN (${kab})`;
   const n = async (t, w = "dummy = 1", ...a) => (await env.DB.prepare(`SELECT count(*) n FROM ${t} WHERE ${w}`).bind(...a).first()).n;
-  const hasil = {petugas: await n("meja_petugas"), catatan: await n("meja_catatan"), jejak: await n("meja_jejak"), transaksi_stok: await n("meja_stok"),
+  const hasil = {pelapor: await n("meja_pelapor"), petugas: await n("meja_petugas"), catatan: await n("meja_catatan"), jejak: await n("meja_jejak"), transaksi_stok: await n("meja_stok"),
     panggilan: await n("panggilan", di, ...KAB_D), lapangan: await n("lapangan", di, ...KAB_D), regu: await n("regu", di, ...KAB_D)};
   await env.DB.batch([
-    env.DB.prepare("DELETE FROM meja_stok WHERE dummy = 1"), env.DB.prepare("DELETE FROM meja_ringkas WHERE dummy = 1"), env.DB.prepare("DELETE FROM meja_ringkas_bencana WHERE dummy = 1"),
+    stmtHapusPelaporDummy(env), env.DB.prepare("DELETE FROM meja_stok WHERE dummy = 1"), env.DB.prepare("DELETE FROM meja_ringkas WHERE dummy = 1"), env.DB.prepare("DELETE FROM meja_ringkas_bencana WHERE dummy = 1"),
     env.DB.prepare("DELETE FROM meja_jejak WHERE dummy = 1"), env.DB.prepare("DELETE FROM meja_catatan WHERE dummy = 1"), env.DB.prepare("DELETE FROM meja_petugas WHERE dummy = 1"),
     env.DB.prepare(`DELETE FROM lapangan WHERE ${di}`).bind(...KAB_D), env.DB.prepare(`DELETE FROM panggilan WHERE ${di}`).bind(...KAB_D), env.DB.prepare(`DELETE FROM regu WHERE ${di}`).bind(...KAB_D),
   ]);
@@ -580,7 +664,8 @@ const A = {
   "GET /meja": (env, req, url) => halamanBnpbPublik(env, url, "meja", {pribadi: true}),
   "GET /admin/meja": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("meja")),
   "GET /api/meja/spek": (env, req, url, kini, ctx) => cacheTepi(new Request(new URL("/api/meja/spek", url), {method: "GET"}), ctx, 300, async () => json(spekPublik())),
-  "GET /api/meja/saya": async (env, req) => { const p = await pelaku(env, req); return p instanceof Response ? p : json(p.petugas ? {peran: "petugas", petugas: {nama: p.petugas.nama, prov: p.petugas.prov, kab: p.petugas.kab, meja: p.petugas.meja}} : {peran: "admin"}); },
+  "GET /api/meja/saya": async (env, req) => { const p = await pelaku(env, req); return p instanceof Response ? p : json(p.petugas ? {peran: "petugas", petugas: {nama: p.petugas.nama, prov: p.petugas.prov, kab: p.petugas.kab, meja: p.petugas.meja}} : {peran: p.ulp ? "ulp" : "admin"}); },
+  "GET /api/meja/pelapor/:id": (env, req, url, kini, ctx, id) => bukaPelapor(env, req, id, kini),
   "GET /api/meja/catatan": daftar,
   "POST /api/meja/catatan": (env, req, url, kini) => buat(env, req, kini),
   "GET /api/meja/catatan/:id": (env, req, url, kini, ctx, id) => rincian(env, req, id, kini),

@@ -1,5 +1,6 @@
-/* Meja Kerja: spesifikasi tujuh meja (kolom, status, transisi, tanda bahaya) + validasi + status turunan. Semua meja lewat SATU mesin di src/meja.js.
-   Daftar meja, status per meja, dan transisi HARUS sama dengan CHECK/trigger migrations/0026_meja.sql (dijaga tests/warga/meja.test.mjs).
+/* Meja Kerja: spesifikasi sebelas meja (kolom, status, transisi, tanda bahaya) + validasi + status turunan. Semua meja lewat SATU mesin di src/meja.js.
+   Daftar meja, status per meja, dan transisi HARUS sama dengan CHECK/trigger migrations/0118_meja_juklak.sql (dijaga tests/warga/meja.test.mjs).
+   Sifat meja: pusat (milik BNPB pusat, wilayah tetap PUSAT, tanpa petugas berkode), adminIsi (admin bisa menambah dari /admin/meja), publik:false (keluar dari /api/meja/ringkas), rapor:false (tidak mengubah skor rapor BPBD).
    Impor lewat worker.js dulu bila dipakai sendirian (posko.js dan worker.js saling impor). */
 import {tx, num, tglSah, wib} from "./posko.js";
 import {nilai, tenggat} from "../public/inti/jam_aturan.js";   // MB-2: angka tenggat berpasal hanya hidup di sana
@@ -31,6 +32,13 @@ const k = (nama, label, tipe, o = {}) => ({nama, label, tipe, ...o});
 const angka = (nama, label, o = {}) => k(nama, label, "angka", {min: 0, maks: 1e6, wajib: true, ...o});
 const tgl = (nama, label, o = {}) => k(nama, label, "tanggal", o);
 const rupiah = (nama, label, o = {}) => angka(nama, label, {maks: 1e13, rupiah: true, ...o});
+/* Juklak 9/2023 Format 2: enam kelompok umur, jenis disabilitas, enam sektor kebutuhan */
+const UMUR = [["bayi", "Bayi 0-11 bulan"], ["balita", "Balita 12-59 bulan"], ["anak", "Anak 5-12 tahun"], ["remaja", "Remaja 13-17 tahun"], ["dewasa", "Dewasa 18-59 tahun"], ["lansia", "Lansia 60 tahun ke atas"]];
+const DISABILITAS = [["dis_kursi_roda", "perlu kursi roda"], ["dis_tongkat", "perlu tongkat siku"], ["dis_rungu", "tuna rungu"], ["dis_netra", "tuna netra"], ["dis_wicara", "tuna wicara"], ["dis_intelektual", "intelektual atau mental"], ["dis_ganda", "ganda"], ["dis_lain", "lainnya"]];
+const SEKTOR = [["keb_air", "Air bersih dan sanitasi"], ["keb_pangan", "Pangan"], ["keb_sandang", "Sandang dan nonpangan"], ["keb_kesehatan", "Kesehatan dan psikososial"], ["keb_hunian", "Penampungan dan hunian sementara"], ["keb_pendidikan", "Pendidikan darurat"]];
+const HITUNG_PENGUNGSI = [["jiwa_total", "Total jiwa"], ["jiwa_l", "Total laki-laki"], ["jiwa_p", "Total perempuan"], ...UMUR.map(([u, t]) => ["umur_" + u, t])];
+/* belum ditelaah: tenggat terpanjang, supaya tanda yang terbit tetap benar apa pun kategori hasil telaahnya */
+const kunciAduan = d => d.kategori === "tidak_berkadar_pengawasan" ? "pengaduan_tak_berkadar" : "pengaduan_berkadar";
 
 export const MEJA = {
   kaji_cepat: {
@@ -43,7 +51,15 @@ export const MEJA = {
       angka("jalan_km", "Jalan rusak (km)", {maks: 1e4, desimal: true}), angka("jembatan", "Jembatan rusak", {maks: 1e4}),
       angka("meninggal", "Meninggal (jiwa)"), angka("hilang", "Hilang (jiwa)"), angka("luka", "Luka (jiwa)"), angka("mengungsi", "Mengungsi (jiwa)"),
       k("foto", "Tautan foto (opsional)", "tautan"),
+      /* Juklak 3/2022 Format 1 dan 3/4; semua opsional supaya catatan lama tetap sah */
+      angka("terancam_jiwa", "Penduduk terancam (jiwa)", {wajib: false}), angka("terancam_kk", "Penduduk terancam (KK)", {wajib: false}),
+      angka("terdampak_jiwa", "Penduduk terdampak (jiwa)", {wajib: false}), angka("terdampak_kk", "Penduduk terdampak (KK)", {wajib: false}),
+      angka("rentan_bayi", "Rentan: bayi 0-11 bulan", {wajib: false}), angka("rentan_balita", "Rentan: balita 12-59 bulan", {wajib: false}), angka("rentan_anak", "Rentan: anak 5-17 tahun", {wajib: false}), angka("rentan_lansia", "Rentan: lansia 60 tahun ke atas", {wajib: false}),
+      angka("rentan_hamil", "Rentan: ibu hamil", {wajib: false}), angka("rentan_menyusui", "Rentan: ibu menyusui", {wajib: false}), angka("rentan_disabilitas", "Rentan: disabilitas", {wajib: false}), angka("rentan_sakit", "Rentan: orang sakit", {wajib: false}),
+      k("kesehatan", "Kebutuhan kesehatan", "teks", {maks: 300}), k("air_sanitasi", "Air bersih dan sanitasi", "teks", {maks: 300}), k("kebutuhan", "Kebutuhan tindakan dan sumber daya", "teks", {maks: 400}),
+      k("rek_status", "Rekomendasi status darurat", "pilih", {nilai: ["ya", "tidak"]}), angka("rek_status_hari", "Perkiraan lama status (hari)", {wajib: false, min: 1, maks: 365}), k("rek_alasan", "Alasan rekomendasi", "teks", {maks: 200}),
     ],
+    cek: d => d.rek_status === "ya" && !d.rek_status_hari ? "rekomendasi status Ya wajib menyebut perkiraan lama status" : d.rek_status === "tidak" && d.rek_status_hari ? "perkiraan lama status hanya diisi bila rekomendasi status Ya" : "",
     awal: "dilaporkan", status: ["dilaporkan", "diverifikasi", "masuk_jitupasna"],
     transisi: {dilaporkan: {diverifikasi: "petugas"}, diverifikasi: {masuk_jitupasna: "admin"}},
     rekap: ["rumah_rb", "rumah_rs", "rumah_rr", "meninggal", "hilang", "luka", "mengungsi"],
@@ -158,8 +174,109 @@ export const MEJA = {
     rekap: [],
     bahaya: {stok_rendah: "stok sama dengan atau di bawah ambang minimum"},
   },
+  /* Juklak 9/2023 Format 1, 2, 4. AGREGAT tanpa nama atau NIK: satu catatan per tempat pengungsian per hari; kolom rekap dijumlahkan hanya dari catatan terbaru per tempat yang masih berjalan. */
+  pengungsi: {
+    id: "pengungsi", nama: "Pengungsi terpilah", ikon: '<path d="M3 21 12 4l9 17z"/><path d="M12 13v8M8.5 21 12 13l3.5 8"/>',
+    wilayah: {kec: true, desa: true}, adminIsi: false, rapor: false,
+    kolom: [
+      tgl("tgl_data", "Tanggal data", {wajib: true, maks: "hariini"}), k("nama_tempat", "Nama tempat pengungsian", "teks", {wajib: true, maks: 120}), k("pos_lapangan", "Pos lapangan", "teks", {maks: 80}),
+      k("jenis_tempat", "Jenis tempat", "pilih", {nilai: ["terkonsentrasi", "tidak_terkonsentrasi"], wajib: true}), k("tipe_tempat", "Tipe tempat", "pilih", {nilai: ["fasilitas_umum", "tanah_lapang", "lahan_gedung_swasta", "tempat_ibadah", "rumah_perorangan"]}),
+      k("kejadian", "Bencana", "pilih", {nilai: BENCANA, wajib: true}), angka("pendataan_ke", "Pendataan ke", {min: 1, maks: 1000, wajib: false}), tgl("tgl_buka", "Tanggal buka", {wajib: true, maks: "hariini"}), tgl("tgl_tutup", "Tanggal tutup"),
+      angka("kk", "Kepala keluarga (KK)"),
+      ...UMUR.flatMap(([u, t]) => [angka(`${u}_l`, `${t} laki-laki`), angka(`${u}_p`, `${t} perempuan`)]),
+      ...["bayi", "balita", "anak"].flatMap(u => [angka(`yatim_${u}_l`, `Yatim piatu ${u} laki-laki`, {wajib: false}), angka(`yatim_${u}_p`, `Yatim piatu ${u} perempuan`, {wajib: false}), angka(`pisah_${u}_l`, `Terpisah wali ${u} laki-laki`, {wajib: false}), angka(`pisah_${u}_p`, `Terpisah wali ${u} perempuan`, {wajib: false})]),
+      angka("hamil_t1", "Ibu hamil trimester I", {wajib: false}), angka("hamil_t2", "Ibu hamil trimester II", {wajib: false}), angka("hamil_t3", "Ibu hamil trimester III", {wajib: false}), angka("menyusui", "Ibu menyusui", {wajib: false}),
+      ...DISABILITAS.map(([n, t]) => angka(n, `Disabilitas ${t}`, {wajib: false})),
+      angka("anak_kk", "Anak menjadi kepala keluarga", {wajib: false}), angka("perempuan_kk", "Perempuan menjadi kepala keluarga", {wajib: false}), angka("nikah_dini", "Perempuan menikah usia dini (di bawah 19 tahun)", {wajib: false}), angka("penyakit_bawaan", "Penyakit bawaan perlu penanganan khusus", {wajib: false}),
+      ...SEKTOR.map(([n, t]) => k(n, `${t}: tersedia`, "pilih", {nilai: ["ada", "tidak"], wajib: true})), k("saran", "Saran tindak lanjut", "teks", {maks: 400}),
+      /* dihitung server */
+      ...HITUNG_PENGUNGSI.map(([n, t]) => angka(n, t, {tahap: "_baca", wajib: false})),
+    ],
+    hitung: d => {
+      const jl = UMUR.reduce((s, [u]) => s + (d[u + "_l"] || 0), 0), jp = UMUR.reduce((s, [u]) => s + (d[u + "_p"] || 0), 0);
+      return {jiwa_l: jl, jiwa_p: jp, jiwa_total: jl + jp, ...Object.fromEntries(UMUR.map(([u]) => ["umur_" + u, (d[u + "_l"] || 0) + (d[u + "_p"] || 0)]))};
+    },
+    cek: d => {
+      const j = UMUR.reduce((s, [u]) => s + (d[u + "_l"] || 0) + (d[u + "_p"] || 0), 0);
+      return !j ? "jumlah jiwa harus lebih dari 0" : d.kk > j ? "KK tidak boleh melebihi jumlah jiwa" : d.tgl_data < d.tgl_buka ? "tanggal data tidak boleh sebelum tanggal buka" : d.tgl_tutup && d.tgl_tutup < d.tgl_buka ? "tanggal tutup tidak boleh sebelum tanggal buka" : "";
+    },
+    awal: "tercatat", status: ["tercatat"], transisi: {}, turunan: ["berjalan", "ditutup"],
+    rekap: ["kk", "jiwa_total", "jiwa_l", "jiwa_p", ...UMUR.map(([u]) => "umur_" + u)], rekapTerakhir: {kunci: "nama_tempat", tanggal: "tgl_data", status: "berjalan"},
+    bahaya: {kebutuhan_kurang: "ada sektor kebutuhan yang belum tersedia di tempat pengungsian"},
+  },
+  /* Juklak 5/2025. Identitas pelapor tidak di data: tabel meja_pelapor, dibaca hanya lewat GET /api/meja/pelapor/:id (peran Irtama/ULP). */
+  pengaduan: {
+    jalurTolak: ["register", "telaah"], id: "pengaduan", nama: "Pengaduan masyarakat", ikon: '<path d="M4 4h16v12H8l-4 4z"/><path d="M8 9h8M8 12h5"/>',
+    wilayah: {kec: false, desa: false}, pusat: true, adminIsi: true, publik: false, rapor: false,
+    kolom: [
+      k("nomor_register", "Nomor register", "teks", {wajib: true, maks: 40}), k("kanal", "Kanal pengaduan", "pilih", {nilai: ["langsung", "website", "telepon", "surel", "surat", "whatsapp"], wajib: true}),
+      tgl("tgl_terima", "Tanggal diterima", {wajib: true, maks: "hariini"}), k("nomor_surat", "Nomor surat pengaduan", "teks", {maks: 60}), tgl("tgl_surat", "Tanggal surat pengaduan", {maks: "hariini"}),
+      k("perihal", "Hal yang diadukan", "teks", {wajib: true, maks: 200}), k("uraian", "Uraian singkat aduan", "teks", {wajib: true, maks: 500}), k("lokasi_aduan", "Lokasi aduan", "teks", {maks: 120}), tgl("waktu_kejadian", "Waktu kejadian", {maks: "hariini"}),
+      k("unit_terlapor", "Unit kerja terlapor", "teks", {maks: 120}), k("lampiran", "Lampiran", "teks", {maks: 200}),
+      k("kategori", "Kategori hasil telaah", "pilih", {nilai: ["berkadar_pengawasan", "tidak_berkadar_pengawasan"], wajib: true, tahap: "telaah"}), k("wewenang", "Kewenangan", "pilih", {nilai: ["bnpb", "bukan_bnpb"], wajib: true, tahap: "telaah"}),
+      k("hasil_telaah", "Hasil telaah", "teks", {wajib: true, maks: 500, tahap: "telaah"}), tgl("tgl_telaah", "Tanggal telaah", {wajib: true, maks: "hariini", tahap: "telaah"}),
+      k("tujuan", "Diteruskan kepada", "teks", {wajib: true, maks: 120, tahap: "diteruskan"}), k("nomor_penerusan", "Nomor surat penerusan", "teks", {maks: 60, tahap: "diteruskan"}), tgl("tgl_diteruskan", "Tanggal diteruskan", {wajib: true, maks: "hariini", tahap: "diteruskan"}),
+      k("alasan", "Alasan ditolak", "teks", {wajib: true, maks: 200, tahap: "ditolak"}),
+      k("tindakan", "Jenis tindak lanjut", "pilih", {nilai: ["klarifikasi", "konfirmasi", "pemeriksaan_audit"], wajib: true, tahap: "tindak_lanjut"}), tgl("tgl_tindak", "Tanggal tindak lanjut", {wajib: true, maks: "hariini", tahap: "tindak_lanjut"}), k("catatan_tindak", "Catatan tindak lanjut", "teks", {maks: 300, tahap: "tindak_lanjut"}),
+      k("simpulan", "Simpulan", "teks", {wajib: true, maks: 500, tahap: "selesai"}), k("rekomendasi", "Rekomendasi", "teks", {maks: 500, tahap: "selesai"}), tgl("tgl_selesai", "Tanggal selesai", {wajib: true, maks: "hariini", tahap: "selesai"}), k("penjelasan_lambat", "Penjelasan melewati tenggat", "teks", {maks: 300, tahap: "selesai"}),
+    ],
+    awal: "register", status: ["register", "telaah", "diteruskan", "tindak_lanjut", "selesai", "ditolak"],
+    transisi: {register: {telaah: "admin"}, telaah: {diteruskan: "admin", ditolak: "admin"}, diteruskan: {tindak_lanjut: "admin"}, tindak_lanjut: {selesai: "admin"}},
+    rekap: [],
+    bahaya: {lewat_tenggat: "melewati tenggat penanganan Juklak 5/2025 (20 hari kerja berkadar, 15 hari kerja tidak berkadar)"},
+    cek: d => d.tgl_telaah && d.tgl_telaah < d.tgl_terima ? "tanggal telaah tidak boleh sebelum tanggal diterima"
+      : d.tgl_selesai && d.tgl_selesai > tenggat(kunciAduan(d), d.tgl_terima).hasil && !d.penjelasan_lambat ? "melewati tenggat: penjelasan tertulis wajib (Juklak 5/2025 BAB III)" : "",
+  },
+  /* Juklak 16/2025 Format 1, 2, 5, 6: dokumen klaster saja. Stok tetap di LogPal (KEPUTUSAN-LOGPAL D2-D4); tidak ada kolom stok atau persetujuan barang. */
+  klaster: {
+    id: "klaster", nama: "Klaster logistik", ikon: '<circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M12 7.5V12M12 12l-5.5 4M12 12l5.5 4"/>',
+    wilayah: {kec: false, desa: false}, adminIsi: true, publik: false, rapor: false,
+    kolom: [
+      k("tingkat", "Tingkat klaster", "pilih", {nilai: ["nasional", "provinsi", "kabupaten_kota"], wajib: true}), k("dokumen", "Jenis dokumen", "pilih", {nilai: ["sk_klaster", "rencana_kerja", "laporan_triwulan", "laporan_tahunan"], wajib: true}),
+      k("judul", "Judul dokumen", "teks", {wajib: true, maks: 150}), angka("tahun", "Tahun", {min: 2020, maks: 2100}), k("triwulan", "Triwulan", "pilih", {nilai: ["1", "2", "3", "4"]}),
+      k("nomor_dokumen", "Nomor dokumen", "teks", {maks: 60}), tgl("tgl_dokumen", "Tanggal dokumen", {wajib: true, maks: "hariini"}), k("ringkasan", "Ringkasan", "teks", {maks: 400}), k("tautan", "Tautan dokumen (http/https)", "tautan"),
+    ],
+    awal: "tercatat", status: ["tercatat"], transisi: {},
+    rekap: [],
+    bahaya: {tanpa_dokumen: "tautan dokumen belum diisi"},
+    cek: d => d.dokumen === "laporan_triwulan" && !d.triwulan ? "laporan triwulan wajib menyebut triwulan" : d.dokumen !== "laporan_triwulan" && d.triwulan ? "triwulan hanya untuk laporan triwulan" : "",
+  },
+  /* Juklak 17/2025 Lampiran I Format 2, 3, 4. Skala Tabel 3.2 dan matriks Tabel 3.4 tidak terbaca: level diisi manual, pertanyaan terbuka di data/kajian-bnpb/juklak/KEPUTUSAN-JUKLAK.md. */
+  risiko: {
+    id: "risiko", nama: "Register risiko", ikon: '<path d="M12 3 3 20h18z"/><path d="M12 9v5M12 17v.5"/>',
+    wilayah: {kec: false, desa: false}, pusat: true, adminIsi: true, publik: false, rapor: false,
+    kolom: [
+      k("unit_pemilik", "Unit pemilik risiko", "teks", {wajib: true, maks: 120}), angka("tahun", "Tahun", {min: 2020, maks: 2100}),
+      k("jenis_konteks", "Jenis konteks", "pilih", {nilai: ["sasaran_strategis", "program", "keberlangsungan", "proses_bisnis"], wajib: true}), k("nama_konteks", "Nama konteks", "teks", {wajib: true, maks: 200}), k("indikator", "Indikator", "teks", {wajib: true, maks: 200}),
+      k("kode", "Kode risiko", "teks", {wajib: true, maks: 30}), k("pernyataan", "Pernyataan risiko", "teks", {wajib: true, maks: 400}), k("kategori", "Kategori risiko", "pilih", {nilai: ["kebijakan", "bencana", "kecurangan", "kepatuhan", "operasional", "pemangku_kepentingan"], wajib: true}),
+      k("dampak", "Uraian dampak", "teks", {wajib: true, maks: 400}), k("spip", "Tujuan SPIP", "pilih", {nilai: ["efektif_efisien", "keandalan_pelaporan", "pengamanan_aset", "ketaatan"], wajib: true}),
+      angka("skor_kemungkinan", "Skor probabilitas", {min: 1, maks: 5}), angka("skor_dampak", "Skor dampak", {min: 1, maks: 5}), angka("level", "Level risiko", {min: 1, maks: 25}),
+      k("pengendalian", "Pengendalian yang ada", "pilih", {nilai: ["ada", "belum_ada"], wajib: true}), k("uraian_pengendalian", "Uraian pengendalian", "teks", {maks: 300}), k("memadai", "Kecukupan pengendalian", "pilih", {nilai: ["memadai", "belum_memadai"]}),
+      angka("res_kemungkinan", "Skor probabilitas residu", {min: 1, maks: 5}), angka("res_dampak", "Skor dampak residu", {min: 1, maks: 5}), angka("res_level", "Level risiko residu", {min: 1, maks: 25}),
+      angka("selera", "Selera risiko pemilik", {min: 1, maks: 25}),
+    ],
+    awal: "tercatat", status: ["tercatat"], transisi: {}, turunan: ["dalam_selera", "di_atas_selera"],
+    rekap: [],
+    bahaya: {di_atas_selera: "level risiko residu di atas selera risiko (Juklak 17/2025 Format 4)"},
+    cek: d => d.pengendalian === "belum_ada" && d.uraian_pengendalian ? "uraian pengendalian hanya bila pengendalian ada"
+      : (d.pengendalian === "belum_ada" || d.memadai !== "memadai") && d.res_level < d.level ? "pengendalian belum ada atau belum memadai: level residu tidak boleh turun (Juklak 17/2025 BAB III)" : "",
+  },
 };
 export const DAFTAR_MEJA = Object.keys(MEJA);
+export const DAFTAR_PETUGAS = DAFTAR_MEJA.filter(m => !MEJA[m].pusat);   // sama dengan trigger meja_petugas_sah
+export const MEJA_RAPOR = DAFTAR_MEJA.filter(m => MEJA[m].rapor !== false);
+export const PUSAT = {prov: "00", kab: "BNPB Pusat"};
+/* Juklak 17/2025 Lampiran I: kolom CSV sesuai Format 2, 3, 4 (Keterangan kolom di teks juklak), didahului butir (a) unit dan (b) tahun */
+const AWAL_RISIKO = ["Unit Pemilik Risiko", "Tahun"];
+export const EKSPOR_RISIKO = {
+  2: {kolom: [...AWAL_RISIKO, "No", "Jenis Konteks", "Nama Konteks", "Indikator", "Kode Risiko", "Pernyataan Risiko", "Kategori Risiko", "Dampak", "Metode Pencapaian Tujuan SPIP"],
+    isi: (d, i) => [d.unit_pemilik, d.tahun, i + 1, d.jenis_konteks, d.nama_konteks, d.indikator, d.kode, d.pernyataan, d.kategori, d.dampak, d.spip]},
+  3: {kolom: [...AWAL_RISIKO, "Kode Risiko", "Pernyataan Risiko", "Skor Probabilitas", "Skor Dampak", "Level Risiko", "Ada/Belum Ada", "Uraian Pengendalian", "Memadai/Belum Memadai", "Skor Probabilitas Residu", "Skor Dampak Residu", "Level Risiko Residu"],
+    isi: d => [d.unit_pemilik, d.tahun, d.kode, d.pernyataan, d.skor_kemungkinan, d.skor_dampak, d.level, d.pengendalian, d.uraian_pengendalian ?? "", d.memadai ?? "", d.res_kemungkinan, d.res_dampak, d.res_level]},
+  4: {kolom: [...AWAL_RISIKO, "Selera Risiko", "Kode Risiko", "Pernyataan Risiko", "Skor Probabilitas", "Skor Dampak", "Level Risiko"],
+    saring: d => d.res_level > d.selera, urut: (a, b) => b.res_level - a.res_level,
+    isi: d => [d.unit_pemilik, d.tahun, d.selera, d.kode, d.pernyataan, d.res_kemungkinan, d.res_dampak, d.res_level]},
+};
 /* pasangan 'meja:dari>ke' sah; sama dengan trigger meja_catatan_ubah */
 export const PASANGAN = DAFTAR_MEJA.flatMap(m => Object.entries(MEJA[m].transisi).flatMap(([d, o]) => Object.keys(o).map(ke => `${m}:${d}>${ke}`)));
 /* bentuk untuk klien: tanpa fungsi */
@@ -196,7 +313,7 @@ export function validasi(meja, masuk, tahap, kini = Date.now(), lama = {}) {
   const data = {};
   for (const c of boleh) { const r = satu(c, masuk[c.nama], kini); if (r.galat) return r; if (r.v !== undefined) data[c.nama] = r.v; }
   const gabung = {...lama, ...data}, g = M.cek?.(gabung);
-  return g ? {galat: g} : {data};
+  return g ? {galat: g} : {data: {...data, ...M.hitung?.(gabung)}};
 }
 
 /* ---------------------------------------------------------------- status turunan & tanda bahaya */
@@ -207,6 +324,8 @@ export function statusEfektif(meja, rec, kini = Date.now()) {
     const reviu = [d.tgl_sah, d.reviu_terakhir].filter(Boolean).sort().at(-1);   // catatan lama (uji_terakhir) dihitung dari tgl_sah
     return sisa < 0 ? "kedaluwarsa" : sisa <= AMBANG.renkon_segera_hari ? "segera_habis" : tenggat("renkon_reviu", reviu).hasil < h ? "perlu_reviu" : "berlaku";
   }
+  if (meja === "pengungsi") return d.tgl_tutup && d.tgl_tutup < h ? "ditutup" : "berjalan";
+  if (meja === "risiko") return d.res_level > d.selera ? "di_atas_selera" : "dalam_selera";
   if (meja === "gudang") return d.stok <= d.ambang_min ? "menipis" : "cukup";
   if (meja === "destana") return d.kegiatan_terakhir && d.kegiatan_terakhir >= mundurBulan(h, AMBANG.destana_pasif_bulan) ? "aktif" : "pasif";
   return rec.status;
@@ -232,6 +351,10 @@ export function tandaBahaya(meja, rec, kini = Date.now()) {
     if (!d.tgl_penilaian || tenggat("destana_penilaian", d.tgl_penilaian).hasil < h) out.push("penilaian_kedaluwarsa");
   }
   if (meja === "gudang" && statusEfektif(meja, rec, kini) === "menipis") out.push("stok_rendah");
+  if (meja === "pengungsi" && statusEfektif(meja, rec, kini) === "berjalan" && SEKTOR.some(([n]) => d[n] === "tidak")) out.push("kebutuhan_kurang");
+  if (meja === "pengaduan" && !["selesai", "ditolak"].includes(rec.status) && h > tenggat(kunciAduan(d), d.tgl_terima).hasil) out.push("lewat_tenggat");
+  if (meja === "klaster" && !d.tautan) out.push("tanpa_dokumen");
+  if (meja === "risiko" && statusEfektif(meja, rec, kini) === "di_atas_selera") out.push("di_atas_selera");
   const tg = meja === "rehab" && TGL_TAHAP[rec.status];
   if (tg && d[tg] && selisihHari(h, d[tg]) > AMBANG.rehab_macet_hari) out.push("macet");
   return out;

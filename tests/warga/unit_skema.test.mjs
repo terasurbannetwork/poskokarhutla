@@ -11,9 +11,9 @@ const DIR = path.join(AKAR, "migrations"), F0110 = "0110_meja_rehab_lepas.sql";
 const berkas = readdirSync(DIR).filter(f => f.endsWith(".sql")).sort();
 const jalankan = (db, f) => { for (const s of pecah(readFileSync(path.join(DIR, f), "utf8"))) db.exec(s); };
 const terap0110 = db => { db.exec("BEGIN"); try { jalankan(db, F0110); db.exec("COMMIT"); } catch (e) { db.exec("ROLLBACK"); throw e; } };   // seperti D1: satu transaksi per migrasi
-function basisLama() {   // semua migrasi KECUALI 0110
+function basisLama() {   // semua migrasi SEBELUM 0110 (migrasi sesudahnya, mis. 0118, membangun ulang tabel yang sama dan harus jalan sesudah 0110)
   const db = new DatabaseSync(":memory:"); db.exec("PRAGMA foreign_keys = ON;");
-  for (const f of berkas) if (f !== F0110) jalankan(db, f);
+  for (const f of berkas) if (f < F0110) jalankan(db, f);
   return db;
 }
 let n = 0; const hex = () => (++n).toString(16).padStart(16, "0");
