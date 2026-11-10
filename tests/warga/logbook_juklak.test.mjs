@@ -8,6 +8,7 @@ import {createHash} from "node:crypto";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 import "../../src/worker.js";
+import {ambangKejadian} from "../../src/logbook.js";
 
 const uji = test;
 const sha = s => createHash("sha256").update(s).digest("hex");
@@ -90,7 +91,7 @@ uji("juklak: entri lama tanpa medan baru tetap lolos (semua opsional) dan bentuk
 uji("juklak: batas wajar dan validasi menolak 400 tanpa menyimpan; yakin:true meloloskan batas wajar, bukan batas mutlak", async () => {
   const sebelum = await n("logbook_kejadian"), sebelumE = await n("logbook_entri_juklak");
   const salah = [{kerugian_juta: -1}, {kerugian_juta: "5"}, {kerugian_juta: 1e6 + 1}, {kerugian_juta: 2e8, yakin: true},
-    {korban: {md: {"0-17": {L: -1}}}}, {korban: {md: {"0-17": {L: 1.5}}}}, {korban: {md: {"5-9": {L: 1}}}}, {korban: {md: {"0-17": {X: 1}}}}, {korban: {hilang: {"0-17": {L: 1}}}}, {korban: [1]}, {korban: {md: {"0-17": {L: 6000}}}},
+    {korban: {md: {"0-17": {L: -1}}}}, {korban: {md: {"0-17": {L: 1.5}}}}, {korban: {md: {"5-9": {L: 1}}}}, {korban: {md: {"0-17": {X: 1}}}}, {korban: {pingsan: {"0-17": {L: 1}}}}, {hilang: 1, korban: {hilang: {"0-17": {L: 2}}}}, {terdampak_jiwa: 1, korban: {terdampak: {"0-17": {L: 2}}}}, {terdampak_jiwa: -1}, {terdampak_jiwa: 1.5}, {terdampak_jiwa: "50"}, {korban: [1]}, {korban: {md: {"0-17": {L: 6000}}}},
     {md: 2, korban: {md: {"18-59": {L: 2, P: 1}}}}, {luka: 1, korban: {luka: {"0-17": {L: 1}, "60+": {P: 1}}}},
     {rentan: {bayi: -1}}, {rentan: {kucing: 1}}, {rentan: {bayi: 3e6}},
     {prasarana: [{kode: "jalan", tingkat: "rb", jumlah: -1}]}, {prasarana: [{kode: "ufo", jumlah: 1}]}, {prasarana: [{kode: "pasar", tingkat: "hancur", jumlah: 1}]}, {prasarana: [{kode: "pasar", jumlah: 1.5}]}, {prasarana: [{kode: "pasar", jumlah: 1}, {kode: "pasar", jumlah: 2}]}, {prasarana: [{kode: "jalan", jumlah: 2e5}]}, {prasarana: Array(41).fill({kode: "pasar", tingkat: "rb", jumlah: 1})},
@@ -156,4 +157,30 @@ uji("juklak: dummy mengisi medan baru (KIB, korban terpilah, prasarana, SK) dan 
   assert.equal((await dum("hapus")).status, 200);
   assert.deepEqual([await n("logbook_kib"), await n("logbook_sk")], [sebelumKib, sebelumSk]);
   assert.equal(await n("logbook_entri_juklak WHERE entri_id NOT IN (SELECT id FROM logbook_entri)"), 0);
+});
+
+uji("juklak: enam kriteria ambang kejadian, batasnya tepat dan terendam tidak dihitung rusak", () => {
+  const ya = e => ambangKejadian(e).ya;
+  for (const e of [{md: 1}, {luka: 50}, {mengungsi_jiwa: 50}, {korban: {terdampak_jiwa: 50}}, {rumah_rb: 2, rumah_rs: 2, rumah_rr: 1}, {rumah_rb: 3, prasarana: [{kode: "sekolah", tingkat: "rr", jumlah: 2}]}, {luas_ha: 1}, {prasarana: [{kode: "sawah", jumlah: 1}]}, {kebutuhan: ["bantuan_nasional"]}, {ada_sk: 1}])
+    assert.equal(ya(e), true, JSON.stringify(e));
+  for (const e of [{}, {md: 0, hilang: 3}, {luka: 49}, {korban: {terdampak_jiwa: 49}}, {rumah_rb: 4}, {rumah_terendam: 500}, {prasarana: [{kode: "sekolah", tingkat: "terendam", jumlah: 9}]}, {prasarana: [{kode: "sekolah", jumlah: 9}]}, {prasarana: [{kode: "jalan", tingkat: "rb", jumlah: 9}]}, {luas_ha: 0.99}, {kebutuhan: ["tenda"]}, {ada_sk: 0}])
+    assert.equal(ya(e), false, JSON.stringify(e));
+  assert.deepEqual(ambangKejadian({}).alasan, []);
+});
+
+uji("juklak: hilang dan terdampak tersimpan, ambang ikut balasan dan berubah setelah SK terbit", async () => {
+  const dasar = {jenis: "banjir", kab: "33|Temanggung", mulai: hariIni(), kendala: [], kebutuhan: []};
+  const a = await call("POST", "/api/logbook/kejadian", STAF, {...dasar, hilang: 2, terdampak_jiwa: 40, korban: {hilang: {"18-59": {L: 1, P: 1}}, terdampak: {"0-17": {L: 20, P: 20}}}});
+  assert.equal(a.status, 201, JSON.stringify(a.j));
+  assert.deepEqual(a.j.entri.korban.hilang, {"18-59": {L: 1, P: 1}}); assert.equal(a.j.entri.korban.terdampak_jiwa, 40);
+  assert.deepEqual(a.j.entri.ambang, {ya: false, alasan: []}, "di bawah ambang tetap tercatat, hanya ditandai"); assert.equal("ada_sk" in a.j.entri, false);
+  const id = a.j.kejadian.id;
+  assert.equal((await call("POST", `/api/logbook/kejadian/${id}/sk`, STAF, {tingkat: "tanggap", wilayah: "kab", nomor: "360/900/2026", tmt_mulai: "2026-10-30"})).status, 201);
+  const h = (await call("GET", "/api/logbook/hari?tgl=" + hariIni(), STAF)).j;
+  const baris = (h.entri || h.daftar).find(x => x.kejadian_id === id);
+  assert.ok(baris.ambang.ya, "SK di logbook_sk memenuhi kriteria f"); assert.match(baris.ambang.alasan.join(), /status keadaan darurat/);
+  const b = await call("POST", "/api/logbook/kejadian", STAF, {...dasar, kab: "33|Kebumen", kebutuhan: ["bantuan_nasional"]});
+  assert.equal(b.status, 201, JSON.stringify(b.j)); assert.equal(b.j.entri.ambang.ya, true);
+  const t = await call("POST", "/api/logbook/kejadian", STAF, {...dasar, kab: "33|Cilacap", terdampak_jiwa: 75});
+  assert.equal(t.status, 201, JSON.stringify(t.j)); assert.equal(t.j.entri.ambang.ya, true); assert.equal(t.j.entri.korban.terdampak_jiwa, 75);
 });

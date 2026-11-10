@@ -9,7 +9,7 @@
   /* sama persis dengan JENIS di src/logbook.js (daftar putih worker, 14 nilai); urutan resmi dari Wilayah. Tiga jenis baru dijawab 503 sampai migrasi 0091. */
   const JENIS = ["banjir", "cuaca", "kebakaran_permukiman", "karhutla", "longsor", "gempabumi", "gunungapi", "kekeringan", "kecelakaan", "konflik_sosial", "lainnya", "gelombang_pasang", "tsunami", "wabah"].sort(urutJenis);
   const KENDALA = {akses: "Akses putus", logistik: "Logistik/BBM", sinyal: "Sinyal putus", air: "Sumber air", personel: "Personel kurang", alat_berat: "Alat berat", gambut: "Gambut", cuaca: "Cuaca", data: "Data belum ada", dana: "Dana", malam: "Malam hari", sosial: "Sosial", listrik: "Listrik padam", angin: "Angin kencang"};
-  const KEBUTUHAN = {makanan: "Makanan", tenda: "Tenda", sandang: "Sandang", air_bersih: "Air bersih", obat: "Obat", perahu: "Perahu", material: "Material", alat_berat: "Alat berat", pompa: "Pompa", dana: "Dana"};
+  const KEBUTUHAN = {makanan: "Makanan", tenda: "Tenda", sandang: "Sandang", air_bersih: "Air bersih", obat: "Obat", perahu: "Perahu", material: "Material", alat_berat: "Alat berat", pompa: "Pompa", dana: "Dana", bantuan_nasional: "Permintaan bantuan nasional"};
   /* urutan: [kunci, label, satuan]; batas wajar = BATAS_WAJAR di scripts/umum/laphar_arsip.py */
   const DAMPAK = [["md", "Meninggal", "jiwa", 5000], ["hilang", "Hilang", "jiwa", 5000], ["luka", "Luka", "jiwa", 50000], ["mengungsi_jiwa", "Mengungsi", "jiwa", 2e6], ["mengungsi_kk", "Mengungsi", "KK", 2e6],
     ["rumah_rb", "Rumah rusak berat", "unit", 5e5], ["rumah_rs", "Rumah rusak sedang", "unit", 5e5], ["rumah_rr", "Rumah rusak ringan", "unit", 5e5], ["rumah_terendam", "Rumah terendam", "unit", 1e6], ["luas_ha", "Luas terbakar", "ha", 3e6]];
@@ -40,7 +40,7 @@
 
 
   /* ---------- rincian juklak (opsional): Juklak BNPB 7/2023; daftar kode SAMA dengan src/logbook.js (UMUR, RENTAN, PRASARANA, TINGKAT_RUSAK, KELOMPOK_KEBUTUHAN) ---------- */
-  const UMUR = ["0-17", "18-59", "60+"], KORBAN = [["md", "Meninggal"], ["luka", "Luka"], ["mengungsi", "Mengungsi"]];
+  const UMUR = ["0-17", "18-59", "60+"], KORBAN = [["md", "Meninggal"], ["hilang", "Hilang"], ["luka", "Luka"], ["terdampak", "Terdampak"], ["mengungsi", "Mengungsi"]];
   const RENTAN = {bayi: "Bayi", balita: "Balita", ibu_hamil_menyusui: "Ibu hamil/menyusui", lansia: "Lansia", disabilitas: "Disabilitas"};
   const PRASARANA = {sawah: ["Sawah", "ha"], lahan: ["Lahan", "ha"], kebun: ["Kebun", "ha"], hutan: ["Hutan", "ha"], kolam: ["Kolam", "ha"], kios_toko: ["Kios/toko", "unit"], pabrik: ["Pabrik", "unit"], jaringan_air: ["Jaringan air", "unit"], jaringan_listrik: ["Jaringan listrik", "unit"],
     jaringan_telekomunikasi: ["Jaringan telekomunikasi", "unit"], irigasi: ["Irigasi", "unit"], jalan: ["Jalan", "km"], jembatan: ["Jembatan", "unit"], transportasi: ["Transportasi", "unit"], spbu: ["SPBU", "unit"], rumah_ibadat: ["Rumah ibadat", "unit"],
@@ -84,6 +84,7 @@
     return h("details", {class: "bn-blok lb-juklak"}, h("summary", {class: "lb-judul-blok"}, ikon("daftar"), "Rincian juklak (opsional)"),
       h("p", {class: "lb-p lb-kaki", teks: "Standar Juklak BNPB 7/2023. Semua boleh kosong. Seperti angka dampak, isian di sini menimpa entri sebelumnya, bukan menambah."}),
       bagian("Taksiran kerugian", kolomAngka("kerugian_juta", "Kerugian (juta rupiah)", {placeholder: "1.250,5"})),
+      bagian("Jumlah terdampak", kolomAngka("terdampak_jiwa", "Terdampak total (jiwa)", {inputmode: "numeric"})),
       bagian("Korban terpilah menurut umur dan jenis kelamin (jiwa, L/P)", korban, h("p", {class: "lb-p lb-kaki", teks: "Jumlah terpilah tidak boleh melebihi total pada Dampak terkini."})),
       bagian("Kelompok rentan (jiwa)", h("div", {class: "lb-angka"}, Object.entries(RENTAN).map(([k, t]) => kolomAngka("rentan_" + k, t, {inputmode: "numeric"})))),
       bagian("Kerusakan prasarana dan layanan dasar", el.prasWadah, tbPras), bagian("Kebutuhan berjumlah (Dana, SDM, Sarana-prasarana, Logistik, Peralatan)", el.kebWadah, tbKeb),
@@ -100,6 +101,7 @@
     const korban = {};
     for (const [g, t] of KORBAN) for (const u of UMUR) for (const kel of ["L", "P"]) { const v = n(`k_${g}_${u}_${kel}`, `${t} ${u} ${kel}`); if (v != null) ((korban[g] ||= {})[u] ||= {})[kel] = v; }
     if (Object.keys(korban).length) isi.korban = korban;
+    const td = n("terdampak_jiwa", "Terdampak"); if (td != null) isi.terdampak_jiwa = td;
     const rentan = {}; for (const k of Object.keys(RENTAN)) { const v = n("rentan_" + k, RENTAN[k]); if (v != null) rentan[k] = v; }
     if (Object.keys(rentan).length) isi.rentan = rentan;
     const pras = bacaBaris(el.prasWadah, ["kode", "tingkat", "jumlah"]).filter(r => r.kode || r.jumlah).map(r => { const v = angkaId(r.jumlah); if (!r.kode || v == null || Number.isNaN(v) || v < 0) salah ||= "Prasarana: pilih jenis dan isi jumlah angka"; return {kode: r.kode, tingkat: r.tingkat || null, jumlah: v}; });
@@ -115,7 +117,7 @@
   function isiJuklak(t) {
     const baru = !t, set = (nama, v) => { if (baru || !el[nama].value.trim()) el[nama].value = v == null ? "" : fIsi(v); };
     if (baru) { el.prasWadah.replaceChildren(); el.kebWadah.replaceChildren(); }
-    set("kerugian_juta", t?.kerugian_juta);
+    set("kerugian_juta", t?.kerugian_juta); set("terdampak_jiwa", t?.korban?.terdampak_jiwa);
     for (const [g] of KORBAN) for (const u of UMUR) for (const kel of ["L", "P"]) set(`k_${g}_${u}_${kel}`, t?.korban?.[g]?.[u]?.[kel]);
     for (const k of Object.keys(RENTAN)) set("rentan_" + k, t?.rentan?.[k]);
     if (baru || !el.prasWadah.children.length) for (const v of t?.prasarana || []) barisPras(el.prasWadah, v);
@@ -306,7 +308,7 @@
     const b = badan(), r = lanjutId ? await api("POST", `/api/logbook/kejadian/${encodeURIComponent(lanjutId)}/entri`, b) : await api("POST", "/api/logbook/kejadian", b);
     el.kirim.disabled = false;
     if (!r.ok) return pesan(r.j.galat || (r.s === 503 ? "Data belum tersedia. Hubungi admin." : `Gagal menyimpan (${r.s}). Isianmu masih ada.`), false);
-    pesan(lanjutId ? "Entri lanjutan tercatat." : "Kejadian tercatat.", true);
+    pesan((lanjutId ? "Entri lanjutan tercatat." : "Kejadian tercatat.") + (r.j.entri?.ambang?.ya === false ? " Belum memenuhi ambang kejadian Juklak 7/2023, lengkapi dampaknya begitu datanya ada." : ""), true);
     hapusLokal(DRAF); bersihkan(false); muatHari();
   }
   const pesan = (t, ok) => { el.pesan.textContent = t; el.pesan.className = "bn-pesan " + (ok ? "ok" : "galat"); };
@@ -336,6 +338,7 @@
   const ringkasDampak = e => {
     const o = [], a = (k, t) => { const v = Number(e[k]); if (v > 0) o.push(`${F(v)} ${t}`); };
     a("md", "meninggal"); a("hilang", "hilang"); a("luka", "luka"); a("mengungsi_jiwa", "jiwa mengungsi"); a("mengungsi_kk", "KK mengungsi"); a("rumah_rb", "rumah rusak berat"); a("rumah_rs", "rumah rusak sedang"); a("rumah_rr", "rumah rusak ringan"); a("rumah_terendam", "rumah terendam"); a("luas_ha", "ha terbakar");
+    if (Number(e.korban?.terdampak_jiwa) > 0) o.push(`${F(e.korban.terdampak_jiwa)} jiwa terdampak`);
     return o.join(", ") || "belum ada angka dampak";
   };
   const larik = v => { if (Array.isArray(v)) return v; try { const j = JSON.parse(v || "[]"); return Array.isArray(j) ? j : []; } catch (e) { return []; } };
@@ -352,7 +355,7 @@
       const wk = e.waktu ? new Date(e.waktu).toLocaleTimeString("id-ID", {timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit"}).replace(".", ":") : "";
       const kd = larik(e.kendala);
       tb.append(h("tr", null, h("td", {teks: wk}), h("td", null, pil(namaJenis(e.jenis || "lainnya"), "info", e.jenis || "lainnya")), h("td", null, e.status === "tutup" ? pil("Ditutup", "ok", "ok") : pil("Buka", "tunggu", "tunggu")), h("td", {teks: wil}),
-        h("td", {teks: ringkasDampak(e)}), h("td", null, h("div", {class: "lb-ikonbaris"}, kd.map(k => h("span", {title: KENDALA[k] || k}, ikon(k)))))));
+        h("td", null, ringkasDampak(e), e.ambang && !e.ambang.ya ? h("div", null, pil("Di bawah ambang Juklak 7/2023", "tunggu", "tunggu")) : null), h("td", null, h("div", {class: "lb-ikonbaris"}, kd.map(k => h("span", {title: KENDALA[k] || k}, ikon(k)))))));
     }
     boxHari.replaceChildren(h("div", {class: "lb-tabel-bungkus"}, h("table", {class: "lb-tabel"}, h("thead", null, h("tr", null, ["Jam", "Jenis", "Status", "Wilayah", "Dampak", "Kendala"].map(t => h("th", {teks: t})))), tb)),
       h("p", {class: "lb-draf", teks: `${F(rows.length)} entri`}));

@@ -36,7 +36,8 @@
     const dilapor = ["md", "hilang", "luka"].some(c => e[c] != null), p = [];
     for (const [c, t] of [["md", "meninggal"], ["hilang", "hilang"], ["luka", "luka"]]) if (ada(e[c])) p.push(`${fmt(e[c])} ${t}`);
     m.korban.push(p.length ? p.join(", ") : dilapor ? "nihil" : "belum dilaporkan");
-    for (const [c, t] of [["md", "Meninggal"], ["luka", "Luka"]]) if (e.korban && e.korban[c]) m.korban.push(`${t} menurut umur: ${terpilah(e.korban[c])}`);
+    if (e.korban && ada(e.korban.terdampak_jiwa)) m.korban.push(`Terdampak ${fmt(e.korban.terdampak_jiwa)} jiwa`);
+    for (const [c, t] of [["md", "Meninggal"], ["hilang", "Hilang"], ["luka", "Luka"], ["terdampak", "Terdampak"]]) if (e.korban && e.korban[c]) m.korban.push(`${t} menurut umur: ${terpilah(e.korban[c])}`);
     const jiwa = ada(e.mengungsi_jiwa), kk = ada(e.mengungsi_kk);
     m.pengungsi.push(jiwa || kk ? `${jiwa ? fmt(e.mengungsi_jiwa) + " jiwa" : ""}${kk ? (jiwa ? ` (${fmt(e.mengungsi_kk)} KK)` : fmt(e.mengungsi_kk) + " KK") : ""}` : e.mengungsi_jiwa != null || e.mengungsi_kk != null ? "nihil" : "belum dilaporkan");
     if (e.korban && e.korban.mengungsi) m.pengungsi.push(`Menurut umur: ${terpilah(e.korban.mengungsi)}`);
