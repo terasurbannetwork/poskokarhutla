@@ -1180,14 +1180,14 @@ uji("dampak data pribadi: HP/NIK dengan pemisah dan digit Unicode, frasa identit
 });
 
 uji("dampak batas impor 50 baris dan laju 5 per jam per pelaku (petugas dan admin); isian terlalu panjang jadi galat baris", async () => {
-  const p = await petugas("Pekalongan", ["dampak"], "33"), baris = n => Array.from({length: n}, (_, i) => ({data: {jenis: "banjir", nama_kejadian: `Laju ${hex()} ${i}`, tanggal: hari(4)}}));
+  const p = await petugas("Pekalongan", ["dampak"], "33"), baris = n => Array.from({length: n}, (_, i) => ({data: {jenis: "banjir", nama_kejadian: `Laju ${hex().replace(/\d/g, "x")} ke-${i}`, tanggal: hari(4)}}));   // tanpa angka acak: deret angka bisa mirip nomor HP dan ditolak saringan data pribadi
   assert.equal((await api("POST", "/api/meja/impor", {baris: baris(51)}, p.h)).s, 400, "51 baris ditolak");
   assert.equal((await api("POST", "/api/meja/impor", "x".repeat(256 * 1024 + 1), p.h)).s, 413, "badan 256 KB");
   assert.equal((await api("POST", "/api/meja/impor", {baris: baris(50)}, p.h)).j.ringkas.masuk, 50, "50 baris sah");
   for (let i = 0; i < 4; i++) assert.equal((await api("POST", "/api/meja/impor", {baris: baris(1)}, p.h)).s, 200);
   const enam = await api("POST", "/api/meja/impor", {baris: baris(1)}, p.h); assert.equal(enam.s, 429, enam.t); assert.equal(await U.n("meja_catatan", "kab = 'Pekalongan'"), 54, "yang ditolak laju tidak masuk");
   /* admin: laju per pelaku yang sama (5 per jam) */
-  const adminImp = () => api("POST", "/api/meja/impor", {baris: [{prov: "33", kab: "Kab Laju Admin", data: {jenis: "banjir", nama_kejadian: "L " + hex(), tanggal: hari(4)}}]}, ADMIN);
+  const adminImp = () => api("POST", "/api/meja/impor", {baris: [{prov: "33", kab: "Kab Laju Admin", data: {jenis: "banjir", nama_kejadian: "L " + hex().replace(/\d/g, "x"), tanggal: hari(4)}}]}, ADMIN);
   await DB.prepare("DELETE FROM laju_bnpb WHERE aksi = 'meja.impor' AND kunci LIKE 'admin:%'").run();
   for (let i = 0; i < 5; i++) assert.equal((await adminImp()).s, 200, "admin ke-" + (i + 1));
   const a6 = await adminImp(); assert.equal(a6.s, 429, a6.t);
