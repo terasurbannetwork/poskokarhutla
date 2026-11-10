@@ -10,15 +10,79 @@ const tanda = v => (v > 0 ? "+" : v < 0 ? "−" : "") + F2(Math.abs(v));
 
 const Insight = {
   st: {jiwa: "3"},
-  EX: ["kabupaten", "jiwa", "prakiraan", "peluang", "padi", "ujibalik", "gambut", "berulang", "enso", "tabel", "bayangan"],
-  LABEL: {kabupaten: "Kabupaten/kota", jiwa: "Jiwa", prakiraan: "Prakiraan", peluang: "Peluang kering", padi: "Padi", ujibalik: "Seberapa tepat", gambut: "Gambut", berulang: "Paling sering kering", enso: "El Niño", tabel: "Paling kering", bayangan: "Uji berdampingan"},
-  T: {tabel: {urut: "_", turun: true, hal: 0}, prakiraan: {urut: "nm", turun: false, hal: 0}, padi: {urut: "nm", turun: false, hal: 0}, gambut: {urut: "dc", turun: true, hal: 0}, berulang: {urut: "tahun", turun: true, hal: 0}, bayangan: {urut: "p", turun: true, hal: 0}},
+  EX: ["bmkg", "kabupaten", "jiwa", "prakiraan", "peluang", "padi", "ujibalik", "gambut", "berulang", "enso", "tabel", "bayangan"],
+  LABEL: {bmkg: "Peringatan resmi BMKG", kabupaten: "Kabupaten/kota", jiwa: "Jiwa", prakiraan: "Prakiraan", peluang: "Peluang kering", padi: "Padi", ujibalik: "Seberapa tepat", gambut: "Gambut", berulang: "Paling sering kering", enso: "El Niño", tabel: "Paling kering", bayangan: "Uji berdampingan"},
+  T: {bmkg: {urut: "lv", turun: true, hal: 0}, tabel: {urut: "_", turun: true, hal: 0}, prakiraan: {urut: "nm", turun: false, hal: 0}, padi: {urut: "nm", turun: false, hal: 0}, gambut: {urut: "dc", turun: true, hal: 0}, berulang: {urut: "tahun", turun: true, hal: 0}, bayangan: {urut: "p", turun: true, hal: 0}},
   ex: (...a) => Kartu.ex(...a), hl: Kartu.hl, pil: Kartu.pil,
   seg(key, opsi) { return Kartu.seg(key, opsi, this.st); },
   nm: k => `<span translate="no">${esc(namaProv(k))}</span>`,
   pendek: k => namaProv(k).replace("Kalimantan", "Kal.").replace("Sumatera", "Sum.").replace("Sulawesi", "Sul.").replace("Nusa Tenggara", "NT").replace("Papua", "Pap."),
   uk() { const M = innerWidth < 640; return M ? {M, W: 520, L: 120, rh: 30, fs: 14, nm: k => this.pendek(k)} : {M, W: 940, L: 190, rh: 30, fs: 13, nm: k => namaProv(k)}; },
   p(x, y, t, bg, fg = "#fff", fs = 12) { return Kartu.pil(x, y, t, bg, fg, fs); },
+
+  /* 0. Peringatan resmi BMKG: gambar apa adanya dari BMKG, TIDAK didigitasi jadi angka (keputusan pemilik 10 Nov 2026).
+     Terbaru = PDKM_latest.jpg (membawa judul, dasarian, logo, legenda sendiri). Arsip = WMS CEWS BMKG (cews.bmkg.go.id), dasarian
+     dibangkitkan dari jangkar III Oktober 2026 ke belakang 18 dasarian (daftar CEWS; April 2026 dasarian III memang tidak diterbitkan).
+     ponytail: daftar tidak maju sendiri; gambar yang gagal dimuat jatuh ke "terbaru" (lihat bmkgGagal). */
+  BMKG: {
+    pdkm: {n: "Peringatan", ju: "BMKG menerbitkan peta peringatan dini kekeringan meteorologis tiap dasarian", u: "https://dataweb.bmkg.go.id/iklim/peringatan-kekeringan-meteorologis/PDKM_latest.jpg", ket: "Peta peringatan dini kekeringan meteorologis terbaru dari BMKG", tt: "https://www.bmkg.go.id/peringatan-dini/kekeringan-meteorologis", ic: "M12 3l9 16H3zM12 10v4M12 17v.5"},
+    hth: {n: "Tanpa hujan", ju: "BMKG memantau hari tanpa hujan berturut-turut", u: "https://dataweb.bmkg.go.id/iklim/hari-tanpa-hujan.png", ket: "Peta hari tanpa hujan berturut-turut dari BMKG", tt: "https://www.bmkg.go.id/iklim/informasi-hujan/hari-tanpa-hujan", ic: "M7 18a4 4 0 010-8 5 5 0 019.6-1A4 4 0 0117 18zM9 21l1.5-2M14 21l1.5-2"},
+    spi1: {n: "SPI 1", ju: "BMKG memprakirakan indeks kekeringan SPI untuk 1 bulan ke depan", u: "https://dataweb.bmkg.go.id/iklim/prediksi-spi/prakspi1.png", ket: "Peta prediksi SPI 1 bulan dari BMKG", tt: "https://www.bmkg.go.id/iklim/", ic: "M4 20V9m5 11V4m5 16v-8m5 8V7"},
+    spi3: {n: "SPI 3", ju: "BMKG memprakirakan indeks kekeringan SPI untuk 3 bulan ke depan", u: "https://dataweb.bmkg.go.id/iklim/prediksi-spi/prakspi3.png", ket: "Peta prediksi SPI 3 bulan dari BMKG", tt: "https://www.bmkg.go.id/iklim/", ic: "M4 20V9m5 11V4m5 16v-8m5 8V7"},
+    spi6: {n: "SPI 6", ju: "BMKG memprakirakan indeks kekeringan SPI untuk 6 bulan ke depan", u: "https://dataweb.bmkg.go.id/iklim/prediksi-spi/prakspi6.png", ket: "Peta prediksi SPI 6 bulan dari BMKG", tt: "https://www.bmkg.go.id/iklim/", ic: "M4 20V9m5 11V4m5 16v-8m5 8V7"},
+  },
+  bmkgDasarian() {
+    const BL = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"], RM = ["", "I", "II", "III"], r = [];
+    for (let y = 2026, m = 9, d = 3; r.length < 18; d--) { if (d < 1) { d = 3; if (--m < 0) { m = 11; y--; } }
+      if (y === 2026 && m === 3 && d === 3) continue;
+      r.push({v: `${y}-${String(m + 1).padStart(2, "0")}-01|${d}`, n: `Dasarian ${RM[d]} ${BL[m]} ${y}`}); }
+    return r; },
+  /* teks resmi BMKG (scripts/kekeringan/peringatan_bmkg.py): data {PROV:{"1"|"2"|"3":{KAB:[KEC]}}}, 1 Waspada 2 Siaga 3 Awas; nama BMKG dipakai apa adanya (hanya huruf besar-kecil dirapikan) */
+  bmkgData() {
+    const B = this.bm; if (!B?.data) return null; const d = this.st.das;
+    if (!d) return B;
+    const [t, n] = d.split("|"), A = this.bmArsip?.[`${t.slice(0, 7)}-${n}`];
+    return A ? {...A, data: A.data} : null; },
+  bmkgBaris(B) { const r = [];
+    for (const [pv, per] of Object.entries(B.data)) for (const lv of ["3", "2", "1"]) for (const [kb, kc] of Object.entries(per[lv] || {})) r.push({pv, kb, lv: +lv, kc: [...kc].sort()});
+    return r; },
+  cap: x => String(x).toLowerCase().replace(/(^|[\s(\-/])(\p{L})/gu, (m, a, b) => a + b.toUpperCase()),
+  bmkgTanggal(t) { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(t || ""); return m ? `${+m[3]} ${["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"][+m[2] - 1]} ${m[1]}` : ""; },
+  bmkgTabel(B) {
+    const R = this.bmkgBaris(B), NM = ["", "Waspada", "Siaga", "Awas"], WR = ["", "#e0b400", "#e8862a", "#c9302c"], FG = ["", "#1b1b1b", "#fff", "#fff"];
+    const pl = lv => `<span class="pill" style="background:${WR[lv]};color:${FG[lv]}">${NM[lv]}</span>`;
+    const P = {}; for (const r of R) { const o = P[r.pv] ||= [0, 0, 0, 0]; o[r.lv] += r.kc.length; }
+    const ps = Object.entries(P).sort((a, b) => b[1][3] - a[1][3] || b[1][2] - a[1][2] || b[1][1] - a[1][1]);
+    const ring = `<div class="tw"><table class="kl-tb"><thead><tr><th>Provinsi (jumlah kecamatan)</th><th class="n">Awas</th><th class="n">Siaga</th><th class="n">Waspada</th></tr></thead><tbody>${ps.map(([pv, o]) => `<tr><td><b translate="no">${esc(this.cap(pv))}</b></td><td class="n num">${o[3] ? fmt(o[3]) : "–"}</td><td class="n num">${o[2] ? fmt(o[2]) : "–"}</td><td class="n num">${o[1] ? fmt(o[1]) : "–"}</td></tr>`).join("")}</tbody></table></div>`;
+    const kol = [{k: "_", h: "#", s: (r, i) => `<span class="rk">${i + 1}</span>`}, {k: "pv", h: "Provinsi", v: r => r.pv, s: r => `<span translate="no">${esc(this.cap(r.pv))}</span>`},
+      {k: "kb", h: "Kabupaten/kota", v: r => r.kb, s: r => `<b translate="no">${esc(this.cap(r.kb))}</b>`}, {k: "lv", h: "Status BMKG", v: r => r.lv * 1e6 + r.kc.length, s: r => pl(r.lv)},
+      {k: "kc", h: "Kecamatan", v: r => r.kc.length, s: r => `<span translate="no" style="display:block;min-width:200px;white-space:normal;line-height:1.45"><b>${fmt(r.kc.length)}</b>: ${esc(r.kc.map(x => this.cap(x)).join(", "))}</span>`}];
+    return ring + this.tabel("bmkg", kol, R, () => "", 10, "kabupaten/kota"); },
+  exBmkg() {
+    this.gagal ||= new Set(); const B = this.BMKG, ada = Object.keys(B).filter(k => !this.gagal.has(k));
+    if (!ada.includes("pdkm")) return "";
+    const k = ada.includes(this.st.bmkg) ? this.st.bmkg : "pdkm", P = B[k], das = k === "pdkm" ? this.bmkgDasarian() : [], d = das.find(x => x.v === this.st.das);
+    let u = P.u, ket = P.ket, tt = P.tt;
+    if (d) { const [t, n] = d.v.split("|"); u = `https://cews.bmkg.go.id/cgi-bin/mapserv?map=bmkg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&LAYERS=pdie,prov,kabkot&date=${t}&num=${n}&SRS=EPSG:4326&BBOX=94,-12,142,8&WIDTH=1600&HEIGHT=667&FORMAT=image/png&STYLES=`;
+      ket = `Peta peringatan dini kekeringan meteorologis BMKG, berlaku ${d.n}`; tt = "https://cews.bmkg.go.id/peringatankekeringan.php"; }
+    const ikon = p => `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:3px"><path d="${p}"/></svg>`;
+    const seg = `<div class="seg" role="group" style="display:flex;width:100%">${ada.map(a => `<button data-set="bmkg" data-v="${a}" aria-pressed="${a === k}" style="flex:1 1 0;padding-inline:3px;white-space:nowrap;font-size:12px">${ikon(B[a].ic)}${B[a].n}</button>`).join("")}</div>`;
+    const sel = k === "pdkm" ? `<select data-set="das" aria-label="Pilih dasarian"><option value=""${d ? "" : " selected"}>Terbaru</option>${das.map(x => `<option value="${x.v}"${d && d.v === x.v ? " selected" : ""}>${esc(x.n)}</option>`).join("")}</select>` : "";
+    const W = k === "pdkm" ? this.bmkgData() : null, N = W?.ringkas?.kecamatan_tingkat;
+    const info = W ? `<p style="margin:0 0 10px"><b>${esc(W.judul.replace(/^.*?(Dasarian)/, "$1"))}</b>, terbit ${esc(this.bmkgTanggal(W.tanggal))}</p>` : "";
+    const isi = info + `<p style="margin:0 0 10px"><span class="pill" style="background:#dbe7f7;color:#0b3a73">Status resmi BMKG</span> <a href="${tt}" target="_blank" rel="noopener noreferrer">${esc(ket)}, buka di situs BMKG</a></p>`
+      + `<img src="${esc(u)}" alt="${esc(ket)}" data-bmkg="${k}" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="display:block;max-width:100%;height:auto;margin:0 auto;background:#fff;border-radius:8px">`
+      + `<p style="margin:10px 0 0;font-size:12px;opacity:.8">Gambar ini milik BMKG dan tidak diolah. Angka berlabel Deteksi Centurisk97 di kartu lain dihitung sendiri dari data hujan dan tanah, jadi bisa berbeda dari peta ini.</p>`
+      + (W ? `<div style="margin-top:12px">${this.bmkgTabel(W)}</div>` : k === "pdkm" && this.st.das ? `<p style="margin:10px 0 0;font-size:12px;opacity:.8">Daftar wilayah dalam teks baru diarsipkan sejak 10 November 2026; untuk dasarian ini hanya peta BMKG yang tersedia.</p>` : "");
+    const judul = N ? `BMKG menetapkan ${this.hl(fmt(N[3]) + " kecamatan")} Awas, ${fmt(N[2])} Siaga, dan ${fmt(N[1])} Waspada kekeringan meteorologis di ${fmt(W.ringkas.provinsi)} provinsi` : esc(P.ju);
+    return this.ex(judul, "", "", isi, "Sumber: BMKG", sel + seg).replace('class="ex"', 'class="ex ex-std"'); },
+  /* gambar BMKG gagal dimuat: kartu dibuang, bukan kotak rusak. Arsip gagal -> kembali ke terbaru. */
+  bmkgGagal(img) {
+    const k = img.dataset.bmkg; this.gagal ||= new Set();
+    if (k === "pdkm" && this.st.das) { this.st.das = ""; return this.ulang(img.closest("[data-ex]")); }
+    this.gagal.add(k); this.st.bmkg = "pdkm"; const box = img.closest("[data-ex]");
+    if (this.gagal.has("pdkm")) { box.remove(); return; }
+    this.ulang(box); },
 
   /* 1. kabupaten/kota per tingkat, per provinsi */
   exKabupaten() {
@@ -200,14 +264,16 @@ const Insight = {
       `Sumber: Deteksi Centurisk97; SPI-3 NASA POWER; pola kejadian DIBI dan laporan 2008–2019`); },
   gambar(id) { const f = this["ex" + id[0].toUpperCase() + id.slice(1)]; Kartu._leg = null;
     try { const h = f.call(this).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${this.LABEL[id] || ""}</span>`); return ["kabupaten", "jiwa", "tabel"].includes(id) ? beriAmbang(h) : h; } catch (e) { console.error(e); return ""; } },
-  pasangUrut(box) { const th = box.querySelector("thead"), st = this.T[box.dataset.ex]; if (th && st) pengurutKepala(st, th, () => this.ulang(box)); },
+  pasangUrut(box) { const th = box.querySelector("thead:has(button[data-k])") || box.querySelector("thead"), st = this.T[box.dataset.ex]; if (th && st) pengurutKepala(st, th, () => this.ulang(box)); },
   ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); this.pasangUrut(box); }); },
   render() {
     const el = $("#insight");
     if (this.pel === undefined) { this.pel = null; if (typeof Peluang !== "undefined") Peluang.muat("../banjir/data/kering_peluang.json").then(d => { if (d) { this.pel = d; if (el.isConnected) this.render(); } }); }
+    if (this.bm === undefined) { this.bm = null; this.bmArsip = null; Promise.all([muatJSON("../banjir/data/peringatan_bmkg.json").catch(() => null), muatJSON("../banjir/data/peringatan_bmkg_arsip.json").catch(() => null)]).then(([b, a]) => { this.bm = b; this.bmArsip = a; if (el.isConnected && (b || a)) this.render(); }); }
     if (this.bay === undefined) { this.bay = null; Promise.all([muatJSON("data/peluang_bayangan.json"), muatJSON("data/peluang_bayangan_nilai.json").catch(() => null)]).then(([b, n]) => { this.bay = b; this.bayN = n; if (el.isConnected) this.render(); }).catch(() => {}); }
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).filter(h => h.includes("<article")).join("");
     el.querySelectorAll("[data-ex]").forEach(b => this.pasangUrut(b));
+    if (!el.dataset.bmkg) { el.dataset.bmkg = 1; el.addEventListener("error", e => { if (e.target.dataset?.bmkg) this.bmkgGagal(e.target); }, true); }
     Cerita.sisip(el, "kekeringan");
     if (!el.innerHTML) el.innerHTML = `<p class="kosong">Belum ada data kekeringan.</p>`;
     else el.insertAdjacentHTML("beforeend", `<div class="kl-tautan"><a href="/kekeringan/simulasi" data-tab="simulasi">Simulasi neraca air 180 hari</a><a href="laporan.html">Laporan harian</a></div>`);

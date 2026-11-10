@@ -35,3 +35,5 @@
 #modePeta.seg.penuh{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-radius:18px;overflow:visible}
 #modePeta button{padding:5px 3px;font-size:11.5px;min-width:0}
 #posko svg text{fill:currentColor}
+
+@media(max-width:640px){#insight button[data-set="bmkg"] svg{display:none}}

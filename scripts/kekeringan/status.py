@@ -213,7 +213,7 @@ def main():
 
 # Turunan kekeringan, urut ketergantungan (workflow tidak bisa disunting dari mesin agent, jadi dirantai di sini).
 # Tiap langkah proses terpisah dengan batas waktu; langkah yang bahannya gagal dilewati (bukan dijalankan di atas berkas lama).
-RANTAI = ("hth", "prakiraan", "padi", "ujibalik", "laporan", "neraca", "resmi", "bukti", "dampak", "posko", "riwayat")
+RANTAI = ("hth", "prakiraan", "padi", "ujibalik", "laporan", "neraca", "resmi", "peringatan_bmkg", "bukti", "dampak", "posko", "riwayat")
 BUTUH = {"padi": ("prakiraan",), "laporan": ("hth",), "neraca": ("hth",), "bukti": ("resmi",)}
 BATAS_DTK = 1800
 

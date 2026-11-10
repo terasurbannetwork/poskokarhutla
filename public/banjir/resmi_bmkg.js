@@ -39,8 +39,8 @@ if (typeof window !== "undefined" && typeof Insight !== "undefined") {
     const sel = `<select data-set="resmi" aria-label="Dasarian peringatan BMKG">${L.map(x => `<option value="${x.kode}"${x.kode === d.kode ? " selected" : ""}>${esc(x.nama)}</option>`).join("")}</select>`;
     const isi = `<figure class="rb-peta"><img src="${ResmiBMKG.gambar(d)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" width="1600" height="600" alt="Peta Peringatan Dini Curah Hujan Tinggi BMKG, berlaku ${nama}"></figure>
       <div class="rb-leg" aria-label="Legenda peringatan">${ResmiBMKG.LEGENDA.map((n, i) => `<span><img src="${ResmiBMKG.ikon(i)}" alt="" loading="lazy">${n}</span>`).join("")}</div>
-      <p class="rb-cat">Peringatan dini curah hujan tinggi berlaku ${nama}, ditulis BMKG. Ini status resmi BMKG, terpisah dari deteksi dan prakiraan kami; peta ditampilkan utuh dan tidak kami ubah menjadi angka.</p>
+      <p class="rb-cat">Peta peringatan dini curah hujan tinggi BMKG untuk ${nama} (label dasarian dihitung dari kalender, bukan dibaca dari BMKG). Ini status resmi BMKG, terpisah dari deteksi dan prakiraan kami; peta ditampilkan utuh dan tidak kami ubah menjadi angka.</p>
       <div class="rb-aksi"><a href="${ResmiBMKG.SUMBER}" target="_blank" rel="noopener">${IK}Peta interaktif dan arsip dasarian</a><a href="${ResmiBMKG.HALAMAN}" target="_blank" rel="noopener">${IK}Halaman peringatan BMKG</a></div>`;
-    return Kartu.ex(`Peringatan dini curah hujan tinggi BMKG berlaku ${this.hl(nama)}`, "", "", isi, "Sumber: BMKG", sel).replace('class="ex"', 'class="ex ex-std"');
+    return Kartu.ex(`Peringatan dini curah hujan tinggi BMKG, ${this.hl(nama)}`, "", "", isi, `Sumber: BMKG, diambil ${Dini.tglIndo(Dini.wib())}`, sel).replace('class="ex"', 'class="ex ex-std"');
   };
 }
