@@ -6,7 +6,7 @@ main.peta{overflow:hidden}
 .sk-wrap .ex-bd{min-width:0}
 .sk-wrap .tw{overflow:auto}
 .sk-wrap td,.sk-wrap th{white-space:normal}
-.sk-wrap td.num,.sk-wrap td.n{text-align:right;font-variant-numeric:tabular-nums}
+.sk-wrap td.num,.sk-wrap td.n{text-align:center;font-variant-numeric:tabular-nums}
 .sk-wrap td.t{text-align:center}
 .sk-wrap td .sk-pil{margin-left:4px}
 
