@@ -305,7 +305,7 @@ async function jalankanPerintah(P, cmd, dari) {
   const jid = dari + '@s.whatsapp.net' // selalu ke pengirim, tidak pernah ke PENERIMA
   const kirim = async (isi) => { const x = await sendPaced(jid, isi, false); if (!x.ok) log('[perintah] balasan ditahan', x.error) }
   await P.tangani(cmd, {
-    env: process.env, dep: (await import('../otomatis.mjs')).depBawaan(process.env), log,
+    env: process.env, dep: (await muatOtomatis()).depBawaan(process.env), log,
     balas: (teks) => kirim({ text: teks }),
     balasFile: async (p, nama, caption, mimetype) => {
       const aman = jalurKeluaran(p, KELUARAN)
@@ -395,12 +395,16 @@ function sapu() {
 }
 sapu(); setInterval(() => drive.sapu(), 6 * 3600e3); drive.sapu(); setInterval(sapu, 6 * 3600e3)
 
+// 10 Nov 2026: gateway hidup berhari-hari; import biasa membekukan otomatis.mjs versi saat start, sehingga tiap bahan baru membangun ulang laporan dengan format lama.
+// ponytail: hanya otomatis.mjs yang disegarkan; impor di dalamnya tetap versi saat pertama dimuat, ubah salah satunya = mulai ulang gateway.
+const muatOtomatis = () => import('../otomatis.mjs?m=' + fs.statSync(path.join(__dirname, '../otomatis.mjs')).mtimeMs)
+
 let timerOtomatis = null
 function picuOtomatis() {
   clearTimeout(timerOtomatis)
   timerOtomatis = setTimeout(async () => {
     try {
-      const { jalankan } = await import('../otomatis.mjs')
+      const { jalankan } = await muatOtomatis()
       await jalankan({})
     } catch (e) { log('[otomatis] galat', String((e && e.message) || e)) }
   }, DEBOUNCE_MS)
