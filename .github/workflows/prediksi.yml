@@ -62,6 +62,7 @@ jobs:
         env:
           JALAN_COBA: "2"
           JALAN_DETIK: "900"
+          LIVE: https://centurisk97.terasurbannetwork.workers.dev   # tangga.py menarik nowcast, petir, awan bila salinan git basi
         run: python3 scripts/prediksi/jalan.py giliran --maks 15
 
       - name: Commit data prediksi
