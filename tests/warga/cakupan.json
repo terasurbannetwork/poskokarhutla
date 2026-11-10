@@ -986,7 +986,7 @@
     "table logbook_kib": "juklak: KIB 16 digit terbentuk",
     "table logbook_entri_juklak": "juklak: medan baru tersimpan dan terbaca",
     "table logbook_sk": "juklak: SK status per kejadian",
-    "table logbook_narasi": "juklak: isian naratif, kejadian utama lintas wilayah",
+    "table logbook_narasi": "juklak: isian naratif tersimpan, entri lanjutan hanya menimpa yang dikirim, batas ditolak",
     "POST /api/logbook/kejadian/:id/sk": "juklak: SK status per kejadian",
     "GET /api/logbook/kejadian/:id/sk": "juklak: SK status per kejadian",
     "POST /api/pusdalops/pemulihan": "pemulihan: buat, progres, daftar, rincian, ringkasan per kab/jenis",
