@@ -21,7 +21,7 @@ const pilGel = i => `<span class="pl" style="--w:${GEL[i][3]}">${GEL[i][1]}</spa
 const Peta = {
   async init() {
     document.head.insertAdjacentHTML("beforeend", '<link rel="stylesheet" href="../inti/peta/lapis.css"><link rel="stylesheet" href="../inti/peta/legenda.css">');
-    Status.kontrol(); Rawan.kontrol(); Tambahan.kontrol();   /* overlay rawan longsor dan peringatan dini (rawan.js); mode dan overlay Status 72 jam, hanya bila datanya ada */
+    Status.kontrol(); Rawan.kontrol(); Tambahan.kontrol(); Awan.kontrol();   /* overlay rawan longsor dan peringatan dini (rawan.js); mode dan overlay Status 72 jam, hanya bila datanya ada */
     PI = await import("../inti/peta/lapis.js").catch(() => null);
     PI?.ubinLapis($("#lapis"), {katalog: UBIN, pendek: UBIN_PENDEK});
     LG = await import("../inti/peta/legenda.js").catch(() => null);
@@ -58,7 +58,7 @@ const Peta = {
       paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 4, 8, 14], "circle-color": ["interpolate", ["linear"], ["get", "p"], 0, "#bcd6f0", .25, "#6aa7e3", .5, "#7a4fc4", .8, "#c9503a"],
         "circle-stroke-color": "#fff", "circle-stroke-width": 1, "circle-opacity": .9}});
     if (S.kec && !this._pm) { this._pm = 1; panelMode = "st"; }   /* tabel bertingkat Status jadi tab awal bila datanya ada */
-    Status.pasang(); Rawan.pasang(); Tambahan.pasang(); Kejadian.pasangLapis(); this.sesuaikanMode(); this.interaksi(); renderLegenda(); renderCrumb(); renderPanel(); },
+    Status.pasang(); Rawan.pasang(); Tambahan.pasang(); Awan.pasang(); Kejadian.pasangLapis(); this.sesuaikanMode(); this.interaksi(); renderLegenda(); renderCrumb(); renderPanel(); },
   /* hujan atau embusan digambar 1 piksel per sel di kanvas yang sama; MapLibre menghaluskan antarsel. Sumber kanvas, bukan gambar berurl data:
      (url data: dilaporkan CSP connect-src di konsol). */
   gambarMedan() {
@@ -113,7 +113,7 @@ const Peta = {
     let rf = 0, ev = null;
     peta.on("mousemove", e => { if (!PI) return; ev = e; if (rf) return; rf = requestAnimationFrame(() => { rf = 0; geser(ev); }); });
     const geser = e => {
-      if (Status.hover(e) || Rawan.hover(e) || Tambahan.hover(e)) return;
+      if (Status.hover(e) || Rawan.hover(e) || Tambahan.hover(e) || Awan.hover(e)) return;
       const ada = id => peta.getLayer(id) && peta.queryRenderedFeatures(e.point, {layers: [id]})[0];
       const b = this.lihat("bmkg") && ada("bmkg-fill"), gl = !b && this.lihat("gelombang") && ada("gelombang");
       peta.getCanvas().style.cursor = b || gl ? "pointer" : "";
@@ -123,7 +123,7 @@ const Peta = {
       r ? PI.tampilTip(this.kartuSel(r), e.originalEvent) : tip(); };
     peta.getCanvas().addEventListener("mouseleave", () => { cancelAnimationFrame(rf); rf = 0; tip(); });
     peta.on("click", e => {
-      if (Status.klik(e) || Rawan.klik(e) || Tambahan.klik(e)) return;
+      if (Status.klik(e) || Rawan.klik(e) || Tambahan.klik(e) || Awan.klik(e)) return;
       const b = this.lihat("bmkg") && peta.queryRenderedFeatures(e.point, {layers: ["bmkg-fill"]})[0];
       if (b) return this.fokus("nc", b.properties.i);
       const gl = this.lihat("gelombang") && peta.queryRenderedFeatures(e.point, {layers: ["gelombang"]})[0];
@@ -183,7 +183,7 @@ function renderLegenda() {
     ${S.mode === "ens" ? `<div class="lbl">Peluang hujan ≥ 50 mm (ansambel)</div><div class="legscale">${["#bcd6f0", "#6aa7e3", "#7a4fc4", "#c9503a"].map(c => `<i style="background:${c}"></i>`).join("")}</div><div class="legnum"><span>10%</span><span>25%</span><span>50%</span><span>80%</span></div>` : ""}
     ${Status.legenda()}
     ${Rawan.legenda()}
-    ${Tambahan.legenda()}
+    ${Tambahan.legenda()}${Awan.legenda()}
     ${T("bmkg") && S.nc.length ? `<div class="lbl">Peringatan nowcast BMKG</div><div class="leg" style="margin:4px 0 8px">${Object.entries(WARNA_SEV).filter(([k]) => S.nc.some(a => a.severity === k)).map(([k, w]) => `<span><i class="sw" style="background:${w}"></i><span translate="no">${SEV_ID[k] || k}</span></span>`).join("")}</div>` : ""}
     ${T("gelombang") && S.gl.length ? `<div class="lbl">Gelombang BMKG Maritim</div><div class="leg" style="margin:4px 0 8px">${GEL.map((k, i) => S.gl.some(o => o.lv === i + 1) ? `<span><i class="sw" style="background:${k[3]}"></i>${k[1]} (${k[2]})</span>` : "").join("")}</div>` : ""}
     </div></details>`;

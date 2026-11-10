@@ -13,18 +13,19 @@ const IK = {nowcast: '<path d="M7 18a5 5 0 1 1 1.2-9.9A6 6 0 0 1 19.5 10 4 4 0 0
   hujan: '<path d="M7 14a4 4 0 0 1-.5-8A6 6 0 0 1 18 5a4 4 0 0 1-1 9"/><path d="M8 17v3M12 16v4M16 17v3"/>', angin: '<path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/>',
   ansambel: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', peluang: '<path d="M3 20h18M6 20v-6M11 20V8M16 20v-9"/><path d="M4 7l4-3 4 3 4-3 4 3"/>', siklon: '<path d="M12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M12 3a9 9 0 0 1 9 9M12 21a9 9 0 0 1-9-9M12 6a6 6 0 0 1 6 6M12 18a6 6 0 0 1-6-6"/>', bukti: '<path d="M5 12l4 4 10-10"/><circle cx="12" cy="12" r="9"/>', status: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', sarana: '<path d="M4 20V9l8-5 8 5v11H4Z"/><path d="M10 20v-6h4v6"/>', provinsi: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', kejadian: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>'};
 
+IK.awan = '<path d="M7 18a5 5 0 1 1 1.2-9.9A6 6 0 0 1 19.5 10 4 4 0 0 1 18 18z"/><path d="M9 21l1-2M13 21l1-2"/>';
 IK.buktiBmkg = IK.buktiKita = IK.bukti;
 IK.maritim = IK.gelombang;
 IK.resmi = IK.bukti;
 
 const Insight = {
   /* tabel provinsi: urut menurun menurut hujan, 10 baris per halaman */
-  T: {provinsi: {urut: "hujan", turun: true, hal: 0}, kejadian: {urut: "mulai", turun: true, hal: 0}},
-  EX: ["kejadian", "status", "siklon", "siklonBmkg", "sarana", "buktiBmkg", "buktiKita", "resmi", "nowcast", "gelombang", "maritim", "hujan", "angin", "ansambel", "peluang", "provinsi"],
+  T: {provinsi: {urut: "hujan", turun: true, hal: 0}, kejadian: {urut: "mulai", turun: true, hal: 0}, awan: {urut: "sd", turun: true, hal: 0}},
+  EX: ["kejadian", "status", "siklon", "siklonBmkg", "sarana", "buktiBmkg", "buktiKita", "resmi", "nowcast", "gelombang", "maritim", "hujan", "angin", "ansambel", "peluang", "awan", "provinsi"],
   st: {},   /* state kontrol kartu peluang (wilayah, ambang) */
   PL: null,
   ih: 0, lead: "1",   /* hari kartu Status: indeks di kontrak 72 jam */
-  LABEL: {kejadian: "Kejadian cuaca", peluang: "Peluang hujan ekstrem", status: "Wilayah Siaga/Awas 72 jam", siklon: "Siklon tropis", sarana: "Pelabuhan dan bandara terancam", buktiBmkg: "Ketepatan peringatan BMKG", buktiKita: "Ketepatan prakiraan Centurisk97", resmi: "Prakiraan resmi vs model", nowcast: "Nowcast BMKG", gelombang: "Gelombang", maritim: "Prakiraan maritim BMKG", hujan: "Hujan", angin: "Angin", ansambel: "Ansambel", provinsi: "Provinsi"},
+  LABEL: {awan: "Awan sangat dingin", kejadian: "Kejadian cuaca", peluang: "Peluang hujan ekstrem", status: "Wilayah Siaga/Awas 72 jam", siklon: "Siklon tropis", sarana: "Pelabuhan dan bandara terancam", buktiBmkg: "Ketepatan peringatan BMKG", buktiKita: "Ketepatan prakiraan Centurisk97", resmi: "Prakiraan resmi vs model", nowcast: "Nowcast BMKG", gelombang: "Gelombang", maritim: "Prakiraan maritim BMKG", hujan: "Hujan", angin: "Angin", ansambel: "Ansambel", provinsi: "Provinsi"},
   /* 10b. peluang hujan ekstrem per kab/provinsi (../banjir/data/cuaca_peluang.json, kontrak peluang/1; mesin public/inti/peluang.js). Tanpa berkas = dibuang. */
   exPeluang() { if (typeof Peluang === "undefined" || !this.PL) return ""; this.st.pelW ??= Object.entries(this.PL.wilayah).filter(([, w]) => w.tingkat === "provinsi").map(([k, w]) => [k, Math.max(0, ...w.hari.map(h => h.p?.[0] ?? 0))]).sort((a, b) => b[1] - a[1])[0]?.[0];
     return Peluang.kartu(this.PL, {ey: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK.peluang}</svg>${this.LABEL.peluang}`, st: this.st, kejadian: "hujan ekstrem", sumber: "ECMWF IFS 51 anggota via Open-Meteo, dibuat " + jamWIB(this.PL?.dibuat)}); },
@@ -199,6 +200,19 @@ const Insight = {
       ...(S.gl.length ? [{k: "gl", n: "Gelombang", v: r => r.gl, h: r => r.gl ? pilGel(r.gl - 1) : "–"}] : [])];
     return this.ex(`${this.hl(fmt(sinyal) + " provinsi")} punya hujan lebat, embusan kencang, atau peringatan BMKG dalam ${hari.length} hari`, "", "", this.tabel("provinsi", kol, R, 10, "provinsi", r => `data-prov="${esc(r.k)}"`),
       `Sumber: Open-Meteo, ECMWF, BMKG, dibuat ${jamWIB(S.meta.dibuat)}`); },
+  /* awan sangat dingin Himawari-9 per kabupaten (awan.js): pengamatan satelit berpil Hipotesis, bukan peringatan; data lebih tua 6 jam atau tanpa awan sangat dingin = kartu dibuang */
+  exAwan() { const A = Awan.D.r; if (!A?.sangat.length) return "";
+    const R = A.sangat, top = [...R].sort((a, b) => b.sd - a.sd), t = top[0], U = this.uk(), warna = v => v >= 40 ? "#7a4fc4" : "#a98bd6";
+    const kol = [{k: "kab", n: "Kabupaten/kota", v: r => r.nama, h: r => `<span translate="no">${esc(r.nama)}</span>, ${esc(namaProv(r.prov))}`},
+      {k: "sd", n: "Titik sangat dingin", num: 1, v: r => r.sd, h: r => `<span class="pl" style="--w:${warna(r.sd)}">${fmt(r.sd)}%</span>`},
+      {k: "tb", n: "Terdingin", num: 1, v: r => -r.tb, h: r => fmt(r.tb) + " °C"},
+      {k: "km", n: "Tinggi puncak", num: 1, v: r => r.km, h: r => "sekitar " + fmt(r.km) + " km"}];
+    Kartu.leg([["#7a4fc4", "40% titik atau lebih"], ["#a98bd6", "di bawah 40%"]]);
+    return this.ex(`${this.hl(fmt(R.length) + " kabupaten/kota")} punya awan sangat dingin pada citra Himawari-9 pukul <span title="${esc(Awan.KET)}">${Awan.tgl(A.t)}</span>, persentase tertinggi di ${this.nm2s(t.nama)}`, "", "",
+      `<p class="fnd">${Awan.pil} Pengamatan satelit Centurisk97, bukan peringatan dan bukan produk BMKG. Uji kelayakan baru memeriksa kalibrasi suhu, proyeksi, dan perkiraan tinggi puncak; belum ada uji bahwa awan ini berkaitan dengan hujan lebat atau kejadian.</p>`
+      + this.batangH(top.slice(0, 10).map(r => ({label: r.nama, nilai: r.sd, warna: warna(r.sd), teks: fmt(r.sd) + "%", tip: `<b>${esc(r.nama)}</b>, ${esc(namaProv(r.prov))}<br>${fmt(r.sd)}% titik sangat dingin, ${fmt(r.d)}% dingin<br>Terdingin ${fmt(r.tb)} °C`})), U)
+      + this.tabel("awan", kol, R, 10, "kabupaten/kota", r => `data-aw="${esc(r.kode)}"`), ""); },
+  nm2s: n => `<span translate="no">${esc(n)}</span>`,
   tabel(id, kol, baris, per, satuan, attr) {
     const st = this.T[id], s = st.turun ? -1 : 1, kk = kol.find(c => c.k === st.urut) || kol[1];
     const R = [...baris].sort((a, b) => { const x = kk.v(a), y = kk.v(b); return (typeof x === "string" ? x.localeCompare(y) : x - y) * s; });
@@ -217,7 +231,7 @@ const Insight = {
   async render() {
     const el = $("#insight");
     await Kejadian.muatAwal();
-    await Promise.all([Tambahan.muat("lg"), Tambahan.titikKab(), typeof Resmi !== "undefined" && Resmi.muat(), typeof Bmkg2 !== "undefined" && Bmkg2.muat()]);   /* kartu Langganan; hilang = dibuang */
+    await Promise.all([Tambahan.muat("lg"), Tambahan.titikKab(), Awan.muat(), typeof Resmi !== "undefined" && Resmi.muat(), typeof Bmkg2 !== "undefined" && Bmkg2.muat()]);   /* kartu Langganan; hilang = dibuang */
     if (typeof Peluang !== "undefined") this.PL = await Peluang.muat("../banjir/data/cuaca_peluang.json");
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");
     Cerita.sisip(el, "cuaca");
@@ -226,6 +240,7 @@ const Insight = {
       const ds = e.target.closest("button[data-set]"); if (ds) { this.st[ds.dataset.set] = ds.dataset.v; ds.parentElement.querySelectorAll("[data-set]").forEach(b => b.setAttribute("aria-pressed", b === ds)); this.ulang(ds.closest("[data-ex]")); return; }
       const pg = e.target.closest(".pgn-b[data-h]"); if (pg) { if (!pg.disabled) { const box = pg.closest("[data-ex]"); this.T[box.dataset.ex].hal = +pg.dataset.h; halUrgen(pg, box); this.ulang(box); } return; }
       const lg = e.target.closest("[data-lg]"); if (lg) { bukaTab("peta"); const i = document.querySelector('#lapis input[data-l="t-lg"]'); if (i) i.checked = true; return nanti(() => Tambahan.fokusKab(lg.dataset.lg)); }
+      const aw = e.target.closest("[data-aw]"); if (aw) { bukaTab("peta"); return nanti(() => Awan.fokus(aw.dataset.aw)); }
       const kj = e.target.closest("[data-kej]"); if (kj) return Kejadian.buka(kj.dataset.kej);
       const pv = e.target.closest("[data-prov]"); if (pv) { const p = pv.dataset.prov; bukaTab("peta");   /* ke peta: laci gelombang, laci Status, atau sekadar terbang ke provinsi */
         return nanti(() => { if (S.gl.some(o => o.prov === p)) Peta.fokus("gl", p); else if (S.kec?.prov[p]) Status.fokusProv(p);
