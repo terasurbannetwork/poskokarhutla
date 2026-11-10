@@ -130,3 +130,15 @@ test("format Indonesia dan nomor surat", () => {
   const b = D.bast([], "2026-10-27", 3);
   assert.match(D.teksBast(b, "102/PTEO/PO.02/BB/2026", false), /Nomor 102[\s\S]*27 Okt 2026: 0 kejadian \(0 baru, 0 pengkinian\), 0 menonjol[\s\S]*Jumlah: 0 kejadian[\s\S]*Sumber: logbook Pusdalops/);
 });
+
+test("Juklak 7/2023: lintas wilayah satu kejadian nasional, per provinsi dihitung per provinsi", () => {
+  const W = Date.parse("2026-10-30T02:00:00Z"), e = (id, kib, prov, x = {}) => ({kejadian_id: id, waktu: W, jenis: "banjir", prov, kab: "K" + id, status: "buka", dummy: false, kib: kib && kib + "-001", ...x});
+  const utama = "3310101202610301", sama = "3310101202610302";
+  const E = [e("a", utama, "33"), e("b", "3402101202610301", "34", {induk_kib: utama}), e("c", sama, "33"), e("d", null, "33"), e("f", null, "35")];
+  const h = globalThis.DokumenPusdalops.hariData(E, "2026-10-30");
+  assert.equal(h.total, 3, "a+b lintas wilayah dan c hari, kab, kode sama: satu; d dan f tanpa KIB berdiri sendiri");
+  assert.equal(h.semua.length, 5, "daftar rinci tetap per baris");
+  const m = globalThis.DokumenPusdalops.mingguan(E, globalThis.DokumenPusdalops.akhirDariTgl("2026-11-05"));
+  assert.equal(m.total, 3); assert.deepEqual(Object.fromEntries(m.perProv.map(o => [o.kunci, o.total])), {33: 2, 34: 1, 35: 1});
+});
+

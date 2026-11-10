@@ -54,7 +54,7 @@ uji("juklak: KIB 16 digit terbentuk dari kab_bps + kode DIBI + tanggal + indeks,
   const b = await call("POST", "/api/logbook/kejadian", STAF, badan()); assert.equal(b.j.kejadian.kib, kib("longsor", "102") + "2");
   const c = await call("POST", "/api/logbook/kejadian", STAF, badan({jenis: "banjir"})); assert.equal(c.j.kejadian.kib, kib("banjir", "101") + "1");
   /* tanpa kab_bps, kab_bps salah provinsi, atau jenis tanpa kode DIBI: KIB null, kejadian tetap tercatat */
-  for (const x of [{kab_bps: undefined}, {kab_bps: "3504"}, {kab_bps: "33"}, {jenis: "lainnya"}, {jenis: "kecelakaan"}]) { const r = await call("POST", "/api/logbook/kejadian", STAF, badan(x)); assert.equal(r.status, 201, JSON.stringify(x)); assert.equal(r.j.kejadian.kib, null, JSON.stringify(x)); assert.equal(r.j.entri.kib, null); }
+  for (const x of [{kab_bps: undefined}, {kab_bps: "3504"}, {kab_bps: "33"}, {jenis: "lainnya"}]) { const r = await call("POST", "/api/logbook/kejadian", STAF, badan(x)); assert.equal(r.status, 201, JSON.stringify(x)); assert.equal(r.j.kejadian.kib, null, JSON.stringify(x)); assert.equal(r.j.entri.kib, null); }
   /* kejadian lama (tanpa KIB) mendapat KIB pada entri berikutnya bila kab_bps dikirim; urut = jumlah entri */
   const lama = await call("POST", "/api/logbook/kejadian", STAF, badan({kab_bps: undefined, jenis: "karhutla", kab: "33|Cilacap"})); assert.equal(lama.j.kejadian.kib, null);
   const l2 = await call("POST", `/api/logbook/kejadian/${lama.j.kejadian.id}/entri`, STAF, {luas_ha: 5, kab_bps: "3301"}); assert.equal(l2.j.entri.kib, "3301106" + hariIni().replaceAll("-", "") + "1-002");
@@ -183,4 +183,57 @@ uji("juklak: hilang dan terdampak tersimpan, ambang ikut balasan dan berubah set
   assert.equal(b.status, 201, JSON.stringify(b.j)); assert.equal(b.j.entri.ambang.ya, true);
   const t = await call("POST", "/api/logbook/kejadian", STAF, {...dasar, kab: "33|Cilacap", terdampak_jiwa: 75});
   assert.equal(t.status, 201, JSON.stringify(t.j)); assert.equal(t.j.entri.ambang.ya, true); assert.equal(t.j.entri.korban.terdampak_jiwa, 75);
+});
+
+const dasarN = {jenis: "banjir", mulai: hariIni(), kendala: [], kebutuhan: []};
+const kejN = (kab, kab_bps, x = {}) => call("POST", "/api/logbook/kejadian", STAF, {...dasarN, kab, kab_bps, ...x});
+
+uji("juklak: gagal teknologi memakai kode 203", async () => {
+  const r = await kejN("33|Banjarnegara", "3304", {jenis: "kecelakaan"});
+  assert.equal(r.status, 201, JSON.stringify(r.j)); assert.equal(r.j.kejadian.kib.slice(4, 7), "203");
+});
+
+uji("juklak: isian naratif tersimpan, entri lanjutan hanya menimpa yang dikirim, batas ditolak", async () => {
+  const a = await kejN("33|Purworejo", undefined, {nama_kejadian: "Banjir bandang Bener", penyebab: "Hujan lebat", kronologis: "Pukul 03.00 air naik", deskripsi: "Sungai meluap", upaya: "Evakuasi warga"});
+  assert.equal(a.status, 201, JSON.stringify(a.j)); assert.equal(a.j.narasi, undefined);
+  assert.deepEqual([a.j.entri.nama_kejadian, a.j.entri.penyebab, a.j.entri.upaya], ["Banjir bandang Bener", "Hujan lebat", "Evakuasi warga"]);
+  const b = await call("POST", `/api/logbook/kejadian/${a.j.kejadian.id}/entri`, STAF, {md: 1, kronologis: "Pukul 05.00 air surut"});
+  assert.equal(b.status, 201, JSON.stringify(b.j)); assert.equal(b.j.entri.kronologis, "Pukul 05.00 air surut"); assert.equal(b.j.entri.penyebab, "Hujan lebat", "yang tidak dikirim tetap");
+  assert.equal((await kejN("33|Purworejo", undefined, {kronologis: "Tanggal 30/10/2026 03.00 WIB air naik"})).status, 201, "tanggal dan jam bukan nomor telepon");
+  for (const x of [{nama_kejadian: "x".repeat(121)}, {penyebab: "x".repeat(301)}, {kronologis: "a\nb"}, {deskripsi: 5}, {induk_kib: "12"}, {induk_kib: 3304101202611101}, {kronologis: "hubungi 0812 3456 7890"}, {upaya: "andi@bpbd.go.id"}]) assert.equal((await kejN("33|Purworejo", undefined, x)).status, 400, JSON.stringify(x).slice(0, 40));
+});
+
+uji("juklak: kerugian per butir tersimpan, jumlahnya tidak boleh melebihi total, kode rumah sah", async () => {
+  const p = [{kode: "rumah", tingkat: "rb", jumlah: 4, kerugian_juta: 400}, {kode: "sawah", jumlah: 2, kerugian_juta: 50.5}, {kode: "pasar", tingkat: "rr", jumlah: 1}];
+  const r = await kejN("33|Wonogiri", undefined, {kerugian_juta: 500, prasarana: p});
+  assert.equal(r.status, 201, JSON.stringify(r.j)); assert.equal(r.j.entri.prasarana[1].kerugian_juta, 50.5); assert.equal("kerugian_juta" in r.j.entri.prasarana[2], false);
+  assert.equal((await kejN("33|Wonogiri", undefined, {kerugian_juta: 100, prasarana: p})).status, 400, "butir melebihi total");
+  assert.equal((await kejN("33|Wonogiri", undefined, {kerugian_juta: 100, prasarana: p, yakin: true})).status, 201);
+  for (const k of [-1, "5", 1e6 + 1]) assert.equal((await kejN("33|Wonogiri", undefined, {prasarana: [{kode: "pasar", jumlah: 1, kerugian_juta: k}]})).status, 400, String(k));
+});
+
+uji("juklak: kejadian lintas wilayah menunjuk KIB kejadian utama, satu tingkat, jenis sama", async () => {
+  const u = await kejN("33|Klaten", "3310"), kib = u.j.kejadian.kib;
+  const a = await kejN("33|Boyolali", "3309", {induk_kib: kib}); assert.equal(a.status, 201, JSON.stringify(a.j)); assert.equal(a.j.entri.induk_kib, kib); assert.equal("induk_id" in a.j.entri, false);
+  assert.equal((await kejN("33|Sragen", "3314", {induk_kib: "9".repeat(16)})).status, 400, "KIB tidak ada");
+  assert.equal((await kejN("33|Sragen", "3314", {induk_kib: kib, jenis: "longsor"})).status, 400, "jenis beda");
+  assert.equal((await kejN("33|Sragen", "3314", {induk_kib: a.j.kejadian.kib})).status, 400, "anak tidak bisa jadi utama");
+  assert.equal((await call("POST", `/api/logbook/kejadian/${u.j.kejadian.id}/entri`, STAF, {md: 1, induk_kib: kib})).status, 400, "diri sendiri");
+  assert.equal((await call("POST", `/api/logbook/kejadian/${u.j.kejadian.id}/entri`, STAF, {md: 1, induk_kib: (await kejN("33|Sleman", undefined)).j.kejadian.kib ?? "1".repeat(16)})).status, 400);
+});
+
+uji("juklak: dummy mengisi logbook_narasi dan hapus bersih", async () => {
+  const dum = aksi => call("POST", "/api/logbook/dummy", ADMIN, {aksi}), awal = await n("logbook_narasi");
+  await dum("hapus"); const sisa = await n("logbook_narasi");
+  assert.equal((await dum("isi")).status, 201); assert.ok(await n("logbook_narasi") > sisa, "dummy mengisi tabel");
+  assert.equal((await dum("hapus")).status, 200); assert.equal(await n("logbook_narasi"), sisa); assert.ok(awal >= sisa);
+});
+
+uji("juklak: staf wilayah lain tidak bisa menautkan atau menebak KIB provinsi lain", async () => {
+  const tok = "e".repeat(64), id = "s3s3s3s3s3s3s3s3";
+  await DB.batch([DB.prepare(`INSERT INTO staf (id, username, nama, nip, unit, email, wa, peran, wilayah, garam, sandi_sha, wajib_ganti, dibuat, dibuat_oleh, dummy) VALUES (?, 'wilsatu', 'Nama wilsatu', '2000300030', 'Unit', 'w@x.id', '6281200000030', '["pusdalops"]', '["34"]', 'gggggggggggggggggggggggggggggggg', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 0, 1, 'tes', 0)`).bind(id),
+    DB.prepare("INSERT INTO staf_sesi (token_sha, staf_id, dibuat, kedaluwarsa) VALUES (?, ?, 1, ?)").bind(sha(tok), id, Date.now() + 3600e3)]);
+  const utama = (await kejN("33|Magelang", "3308")).j.kejadian.kib, W = {cookie: "sesi_staf=" + tok, "x-pb": "1", ...orig};
+  const a = await call("POST", "/api/logbook/kejadian", W, {...dasarN, kab: "34|Sleman", induk_kib: utama}), b = await call("POST", "/api/logbook/kejadian", W, {...dasarN, kab: "34|Sleman", induk_kib: "9".repeat(16)});
+  assert.equal(a.status, 400, JSON.stringify(a.j)); assert.deepEqual(a.j, b.j, "jawaban sama dengan KIB yang tidak ada");
 });

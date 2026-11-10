@@ -44,7 +44,8 @@
   const RENTAN = {bayi: "Bayi", balita: "Balita", ibu_hamil_menyusui: "Ibu hamil/menyusui", lansia: "Lansia", disabilitas: "Disabilitas"};
   const PRASARANA = {sawah: ["Sawah", "ha"], lahan: ["Lahan", "ha"], kebun: ["Kebun", "ha"], hutan: ["Hutan", "ha"], kolam: ["Kolam", "ha"], kios_toko: ["Kios/toko", "unit"], pabrik: ["Pabrik", "unit"], jaringan_air: ["Jaringan air", "unit"], jaringan_listrik: ["Jaringan listrik", "unit"],
     jaringan_telekomunikasi: ["Jaringan telekomunikasi", "unit"], irigasi: ["Irigasi", "unit"], jalan: ["Jalan", "km"], jembatan: ["Jembatan", "unit"], transportasi: ["Transportasi", "unit"], spbu: ["SPBU", "unit"], rumah_ibadat: ["Rumah ibadat", "unit"],
-    faskes: ["Fasilitas kesehatan", "unit"], sekolah: ["Sekolah", "unit"], kantor: ["Kantor", "unit"], pasar: ["Pasar", "unit"]};
+    faskes: ["Fasilitas kesehatan", "unit"], sekolah: ["Sekolah", "unit"], kantor: ["Kantor", "unit"], pasar: ["Pasar", "unit"], rumah: ["Rumah", "unit"]};
+  const NARASI = [["nama_kejadian", "Nama kejadian", 120], ["penyebab", "Penyebab", 300], ["kronologis", "Kronologis", 2000], ["deskripsi", "Deskripsi", 1000], ["upaya", "Upaya penanganan", 1000]];
   const TINGKAT = {rb: "Rusak berat", rs: "Rusak sedang", rr: "Rusak ringan", terendam: "Terendam"}, KELOMPOK = {dana: "Dana", sdm: "SDM", sarpras: "Sarana-prasarana", logistik: "Logistik", peralatan: "Peralatan"};
   const SK_TINGKAT = {siaga: "Siaga darurat", tanggap: "Tanggap darurat", transisi: "Transisi darurat ke pemulihan"};
   const tglId = t => { const m = /^(\d{4})-(\d\d)-(\d\d)/.exec(t || ""); return m ? `${Number(m[3])} ${window.Wilayah.BLN[Number(m[2]) - 1] || m[2]} ${m[1]}` : ""; };
@@ -58,10 +59,10 @@
     r.lastChild.addEventListener("click", () => r.remove()); wadah.append(r); return r;
   }
   const barisPras = (w, v = {}) => { const r = tambahBaris(w, [sel2(Object.fromEntries(Object.entries(PRASARANA).map(([k, [t, sat]]) => [k, `${t} (${sat})`])), "Pilih prasarana", {"data-k": "kode", "aria-label": "Prasarana"}),
-    sel2(TINGKAT, "Tanpa tingkat", {"data-k": "tingkat", "aria-label": "Tingkat kerusakan"}), h("input", {"data-k": "jumlah", inputmode: "decimal", autocomplete: "off", "aria-label": "Jumlah", placeholder: "Jumlah"})]);
+    sel2(TINGKAT, "Tanpa tingkat", {"data-k": "tingkat", "aria-label": "Tingkat kerusakan"}), h("input", {"data-k": "jumlah", inputmode: "decimal", autocomplete: "off", "aria-label": "Jumlah", placeholder: "Jumlah"}), h("input", {"data-k": "kerugian_juta", inputmode: "decimal", autocomplete: "off", "aria-label": "Taksiran kerugian (juta rupiah)", placeholder: "Kerugian (juta)"})]);
     const satuan = () => { const p = PRASARANA[r.querySelector('[data-k="kode"]').value]; r.querySelector('[data-k="jumlah"]').placeholder = p ? `Jumlah (${p[1]})` : "Jumlah"; };
     r.querySelector('[data-k="kode"]').addEventListener("change", satuan);
-    if (v.kode) { r.querySelector('[data-k="kode"]').value = v.kode; r.querySelector('[data-k="tingkat"]').value = v.tingkat || ""; r.querySelector('[data-k="jumlah"]').value = fIsi(v.jumlah); satuan(); } };
+    if (v.kode) { r.querySelector('[data-k="kode"]').value = v.kode; r.querySelector('[data-k="tingkat"]').value = v.tingkat || ""; r.querySelector('[data-k="jumlah"]').value = fIsi(v.jumlah); if (v.kerugian_juta != null) r.querySelector('[data-k="kerugian_juta"]').value = fIsi(v.kerugian_juta); satuan(); } };
   const barisKeb = (w, v = {}) => { const r = tambahBaris(w, [sel2(KELOMPOK, "Pilih kelompok", {"data-k": "kelompok", "aria-label": "Kelompok kebutuhan"}), h("input", {"data-k": "barang", maxlength: "60", autocomplete: "off", "aria-label": "Barang", placeholder: "Barang"}),
     h("input", {"data-k": "jumlah", inputmode: "decimal", autocomplete: "off", "aria-label": "Jumlah", placeholder: "Jumlah"}), h("input", {"data-k": "satuan", maxlength: "20", autocomplete: "off", "aria-label": "Satuan", placeholder: "Satuan"})]);
     if (v.kelompok) for (const k of ["kelompok", "barang", "satuan"]) r.querySelector(`[data-k="${k}"]`).value = v[k]; if (v.kelompok) r.querySelector('[data-k="jumlah"]').value = fIsi(v.jumlah); };
@@ -83,6 +84,8 @@
     f.addEventListener("reset", () => { juklakDari = null; el.prasWadah.replaceChildren(); el.kebWadah.replaceChildren(); });
     return h("details", {class: "bn-blok lb-juklak"}, h("summary", {class: "lb-judul-blok"}, ikon("daftar"), "Rincian juklak (opsional)"),
       h("p", {class: "lb-p lb-kaki", teks: "Standar Juklak BNPB 7/2023. Semua boleh kosong. Seperti angka dampak, isian di sini menimpa entri sebelumnya, bukan menambah."}),
+      bagian("Uraian kejadian", h("div", {class: "lb-angka"}, NARASI.map(([k, t, m]) => { el[k] = h("textarea", {name: k, maxlength: String(m), rows: m > 300 ? "3" : "1"}); return h("label", {class: "bn-isian"}, t, el[k]); })),
+        h("div", {class: "lb-angka"}, kolomTeks("induk_kib", "KIB kejadian utama, bila lintas wilayah", {maxlength: "16", inputmode: "numeric"}))),
       bagian("Taksiran kerugian", kolomAngka("kerugian_juta", "Kerugian (juta rupiah)", {placeholder: "1.250,5"})),
       bagian("Jumlah terdampak", kolomAngka("terdampak_jiwa", "Terdampak total (jiwa)", {inputmode: "numeric"})),
       bagian("Korban terpilah menurut umur dan jenis kelamin (jiwa, L/P)", korban, h("p", {class: "lb-p lb-kaki", teks: "Jumlah terpilah tidak boleh melebihi total pada Dampak terkini."})),
@@ -97,6 +100,8 @@
   function juklak() {
     const isi = {}; let salah = "";
     const n = (nama, judul) => { const v = angkaId(el[nama].value); if (v != null && (Number.isNaN(v) || v < 0)) salah ||= `${judul}: isi angka nol atau lebih`; return v; };
+    for (const [k] of NARASI) { const v = el[k].value.trim().replace(/\s*\n\s*/g, " "); if (v) isi[k] = v; }
+    const ik = el.induk_kib.value.trim(); if (ik) { if (!/^\d{16}$/.test(ik)) salah ||= "KIB kejadian utama harus 16 angka"; isi.induk_kib = ik; }
     const kj = n("kerugian_juta", "Kerugian"); if (kj != null) isi.kerugian_juta = kj;
     const korban = {};
     for (const [g, t] of KORBAN) for (const u of UMUR) for (const kel of ["L", "P"]) { const v = n(`k_${g}_${u}_${kel}`, `${t} ${u} ${kel}`); if (v != null) ((korban[g] ||= {})[u] ||= {})[kel] = v; }
@@ -104,7 +109,7 @@
     const td = n("terdampak_jiwa", "Terdampak"); if (td != null) isi.terdampak_jiwa = td;
     const rentan = {}; for (const k of Object.keys(RENTAN)) { const v = n("rentan_" + k, RENTAN[k]); if (v != null) rentan[k] = v; }
     if (Object.keys(rentan).length) isi.rentan = rentan;
-    const pras = bacaBaris(el.prasWadah, ["kode", "tingkat", "jumlah"]).filter(r => r.kode || r.jumlah).map(r => { const v = angkaId(r.jumlah); if (!r.kode || v == null || Number.isNaN(v) || v < 0) salah ||= "Prasarana: pilih jenis dan isi jumlah angka"; return {kode: r.kode, tingkat: r.tingkat || null, jumlah: v}; });
+    const pras = bacaBaris(el.prasWadah, ["kode", "tingkat", "jumlah", "kerugian_juta"]).filter(r => r.kode || r.jumlah).map(r => { const v = angkaId(r.jumlah), rugi = angkaId(r.kerugian_juta); if (!r.kode || v == null || Number.isNaN(v) || v < 0) salah ||= "Prasarana: pilih jenis dan isi jumlah angka"; if (rugi != null && (Number.isNaN(rugi) || rugi < 0)) salah ||= "Prasarana: taksiran kerugian harus angka nol atau lebih"; return {kode: r.kode, tingkat: r.tingkat || null, jumlah: v, ...rugi == null ? {} : {kerugian_juta: rugi}}; });
     if (pras.length) isi.prasarana = pras;
     const keb = bacaBaris(el.kebWadah, ["kelompok", "barang", "jumlah", "satuan"]).filter(r => r.kelompok || r.barang || r.jumlah).map(r => { const v = angkaId(r.jumlah); if (!r.kelompok || !r.barang || !r.satuan || !(v > 0)) salah ||= "Kebutuhan: isi kelompok, barang, jumlah lebih dari nol, dan satuan"; return {kelompok: r.kelompok, barang: r.barang, jumlah: v, satuan: r.satuan}; });
     if (keb.length) isi.kebutuhan_rinci = keb;
@@ -117,6 +122,8 @@
   function isiJuklak(t) {
     const baru = !t, set = (nama, v) => { if (baru || !el[nama].value.trim()) el[nama].value = v == null ? "" : fIsi(v); };
     if (baru) { el.prasWadah.replaceChildren(); el.kebWadah.replaceChildren(); }
+    for (const [k] of NARASI) if (baru || !el[k].value.trim()) el[k].value = t?.[k] || "";
+    if (baru || !el.induk_kib.value.trim()) el.induk_kib.value = t?.induk_kib || "";
     set("kerugian_juta", t?.kerugian_juta); set("terdampak_jiwa", t?.korban?.terdampak_jiwa);
     for (const [g] of KORBAN) for (const u of UMUR) for (const kel of ["L", "P"]) set(`k_${g}_${u}_${kel}`, t?.korban?.[g]?.[u]?.[kel]);
     for (const k of Object.keys(RENTAN)) set("rentan_" + k, t?.rentan?.[k]);

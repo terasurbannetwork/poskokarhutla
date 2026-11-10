@@ -45,7 +45,7 @@
     const rm = [["rumah_rb", "rusak berat"], ["rumah_rs", "rusak sedang"], ["rumah_rr", "rusak ringan"], ["rumah_terendam", "terendam"]].filter(([c]) => ada(e[c])).map(([c, t]) => `${fmt(e[c])} rumah ${t}`);
     if (ada(e.luas_ha)) rm.push(`${fmt0(e.luas_ha)} ha terbakar`);
     m.kerugian.push(rm.length ? rm.join(", ") : "belum dilaporkan");
-    if (Array.isArray(e.prasarana) && e.prasarana.length) m.kerugian.push("Prasarana: " + e.prasarana.map(x => `${kode(x.kode)}${x.tingkat ? " " + TINGKAT[x.tingkat] : ""} ${(satuanPras(x.kode) === "km" ? fmt : fmt0)(x.jumlah)} ${satuanPras(x.kode)}`).join(", "));
+    if (Array.isArray(e.prasarana) && e.prasarana.length) m.kerugian.push("Prasarana: " + e.prasarana.map(x => `${kode(x.kode)}${x.tingkat ? " " + TINGKAT[x.tingkat] : ""} ${(satuanPras(x.kode) === "km" ? fmt : fmt0)(x.jumlah)} ${satuanPras(x.kode)}${ada(x.kerugian_juta) ? ` (Rp${fmt(x.kerugian_juta)} juta)` : ""}`).join(", "));
     if (ada(e.kerugian_juta)) m.kerugian.push(`Nilai kerugian Rp${fmt(e.kerugian_juta)} juta`);
     m.kebutuhan.push((e.kebutuhan || []).length ? e.kebutuhan.map(kode).join(", ") : "belum dilaporkan");
     if (Array.isArray(e.kebutuhan_rinci)) {
@@ -53,6 +53,7 @@
       for (const [kel, l] of per) m.kebutuhan.push(`${kel[0].toUpperCase() + kel.slice(1)}: ${l.join(", ")}`);
     }
     m.kendala.push((e.kendala || []).length ? e.kendala.map(kode).join(", ") : "belum dilaporkan");
+    if (e.upaya) m.upaya.push(rapi(e.upaya));
     if (Array.isArray(e.pemberi) && e.pemberi.length) m.upaya.push("Penanganan oleh " + e.pemberi.join(", "));
     const ps = poskoTeks(e.posko); if (ps) m.upaya.push(ps);
     if (e.sumber_instansi) m.upaya.push("Sumber instansi: " + rapi(e.sumber_instansi));
@@ -81,10 +82,11 @@
       const k = grup.get(v.id), dalam = k.entri.filter(x => x.waktu >= dari && x.waktu < sampai), e = dalam.at(-1), m = medanDampak(e), daftarSk = sk[v.id] || [];
       const tutup = k.status === "tutup";
       const kondisi = [tutup ? "Kejadian telah ditutup di logbook, penanganan selesai." : "Kejadian masih dalam penanganan."]; if (e.catatan) kondisi.push(rapi(e.catatan));
-      return {no: i + 1, id: v.id, jenis: v.jenis, judul: judulKejadian(k), kib: v.kib || null, menonjol: v.menonjol, alasan: v.alasan, sk: daftarSk, medan: [
+      return {no: i + 1, id: v.id, jenis: v.jenis, judul: e.nama_kejadian ? rapi(e.nama_kejadian) : judulKejadian(k), kib: v.kib || null, menonjol: v.menonjol, alasan: v.alasan, sk: daftarSk, medan: [
         ["Update", [waktuWib(e.waktu)]],
-        ["Kronologis", ["", ...dalam.map(x => `${jamWib(x.waktu)} WIB: ${rapi(x.catatan) || D.dampakTeks(x) || "pembaruan data"}`)]],
+        ["Kronologis", ["", ...e.kronologis ? [rapi(e.kronologis)] : [], ...dalam.map(x => `${jamWib(x.waktu)} WIB: ${rapi(x.catatan) || D.dampakTeks(x) || "pembaruan data"}`)]],
         ["Lokasi", [[k.desa && `Desa ${k.desa}`, k.kec && `Kecamatan ${k.kec}`, k.kab, `Provinsi ${namaProv(k.prov)}`].filter(Boolean).join(", ") + (v.kib ? `. KIB ${v.kib}` : "")]],
+        ...e.penyebab ? [["Penyebab", [rapi(e.penyebab)]]] : [], ...e.deskripsi ? [["Deskripsi", [rapi(e.deskripsi)]]] : [],
         ["Korban Jiwa", m.korban], ["Pengungsi", m.pengungsi], ["Kerugian Materil", m.kerugian], ["Upaya", m.upaya], ["Kebutuhan", m.kebutuhan], ["Kendala", m.kendala],
         ["Status", statusBaris(daftarSk)], ["Kondisi Mutakhir", kondisi]]};
     });

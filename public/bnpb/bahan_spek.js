@@ -16,7 +16,7 @@ export const KUNCI = ["rekap_koordalops_24", "bmkg_pagi", "pvmbg_pagi", "satgas"
 export const PRIORITAS = ["61", "62", "63", "16", "14", "15"];   // urutan WA satgas: Kalbar, Kalteng, Kalsel, Sumsel, Riau, Jambi
 export const JENIS = {banjir: "Banjir", longsor: "Tanah Longsor", gelombang_pasang: "Gelombang Pasang dan Abrasi", cuaca: "Cuaca Ekstrem", kekeringan: "Kekeringan",
   karhutla: "Kebakaran Hutan dan Lahan", gempabumi: "Gempa Bumi", tsunami: "Tsunami", gunungapi: "Erupsi Gunung Api", wabah: "Epidemi dan Wabah Penyakit",
-  kebakaran_permukiman: "Kebakaran Permukiman", kecelakaan: "Kecelakaan", konflik_sosial: "Konflik Sosial", lainnya: "Kejadian Lainnya"};
+  kebakaran_permukiman: "Kebakaran Permukiman", kecelakaan: "Gagal teknologi", konflik_sosial: "Konflik Sosial", lainnya: "Kejadian Lainnya"};
 const NON_ALAM = new Set(["wabah", "kebakaran_permukiman", "kecelakaan", "konflik_sosial", "lainnya"]);
 export const PEMILIK = ["BNPB", "TNI", "Kemenhut", "Pemda", "PT Sinarmas"];
 export const INTENSITAS = ["ringan", "ringan hingga sedang", "sedang", "sedang hingga lebat", "lebat"];

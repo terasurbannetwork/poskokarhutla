@@ -9,7 +9,7 @@ import {laju} from "./bnpb.js";
 import {PROV} from "./alun.js";
 import {catatBerantai} from "./berantai.js";
 
-const PERAN = ["pusdalops", "koordalops", "pimpinan"], HARI = 864e5, MENIT = 6e4, MAKS_BODY = 8192, MAKS_HARI = 1000;
+const PERAN = ["pusdalops", "koordalops", "pimpinan"], HARI = 864e5, MENIT = 6e4, MAKS_BODY = 16384, MAKS_HARI = 1000;
 export const JENIS = ["banjir", "cuaca", "kebakaran_permukiman", "karhutla", "longsor", "gempabumi", "gunungapi", "kekeringan", "kecelakaan", "konflik_sosial", "lainnya", "gelombang_pasang", "tsunami", "wabah"];   // tiga terakhir: panduan resmi Pusdalops (DIBI 103, 108, 201), butuh migrasi 0091
 const JENIS_BARU = ["gelombang_pasang", "tsunami", "wabah"];
 export const KENDALA = ["akses", "logistik", "sinyal", "air", "personel", "alat_berat", "gambut", "cuaca", "data", "dana", "malam", "sosial", "listrik", "angin"];
@@ -60,6 +60,14 @@ export function periksaEntri(o, kini) {
   const w = waktuMs(o.waktu, kini); if (w === undefined) return {galat: "waktu harus epoch ms atau ISO, tidak lebih dari 5 menit ke depan dan 14 hari ke belakang"};
   e.waktu = w;
   const jk = periksaJuklak(o); if (jk.galat) return jk;
+  const nar = {};
+  for (const [k, m] of Object.entries(BATAS_NARASI)) {   // teks ini masuk Laphar dan WA: tanpa nomor telepon dan surel
+    const v = teks(o[k], m); if (v === undefined) return {galat: `${k} maksimal ${m} karakter tanpa karakter kontrol`}; if (!v) continue;
+    const t = v.normalize("NFKC"); if (RE_HP_NARASI.test(t) || t.includes("@")) return {galat: `${k} tidak boleh memuat nomor telepon atau surel`};
+    nar[k] = v;
+  }
+  e.narasi = Object.keys(nar).length ? nar : null;
+  if (o.induk_kib != null && o.induk_kib !== "") { if (typeof o.induk_kib !== "string" || !/^\d{16}$/.test(o.induk_kib)) return {galat: "induk_kib harus 16 angka"}; e.induk_kib = o.induk_kib; }
   e.jk = jk.j; return {e};
 }
 
@@ -70,9 +78,11 @@ export const RENTAN = ["bayi", "balita", "ibu_hamil_menyusui", "lansia", "disabi
 export const TINGKAT_RUSAK = ["rb", "rs", "rr", "terendam"];
 /* kode prasarana/layanan dasar (Juklak 7/2023, Daftar Data): satuan TETAP per kode, bukan isian bebas (ha untuk lahan, km untuk jalan, unit selain itu) */
 export const PRASARANA = {sawah: "ha", lahan: "ha", kebun: "ha", hutan: "ha", kolam: "ha", kios_toko: "unit", pabrik: "unit", jaringan_air: "unit", jaringan_listrik: "unit", jaringan_telekomunikasi: "unit", irigasi: "unit",
-  jalan: "km", jembatan: "unit", transportasi: "unit", spbu: "unit", rumah_ibadat: "unit", faskes: "unit", sekolah: "unit", kantor: "unit", pasar: "unit"};
+  jalan: "km", jembatan: "unit", transportasi: "unit", spbu: "unit", rumah_ibadat: "unit", faskes: "unit", sekolah: "unit", kantor: "unit", pasar: "unit", rumah: "unit"};
 export const KELOMPOK_KEBUTUHAN = ["dana", "sdm", "sarpras", "logistik", "peralatan"];   // standar 5 kelompok: Dana, SDM, Sarana-prasarana, Logistik, Peralatan
 export const BATAS_JUKLAK = {kerugian_juta: 1e6, rentan: 2e6, prasarana_unit: 1e5, prasarana_ha: 3e6, prasarana_km: 1e5, kebutuhan_jumlah: 1e7, terdampak_jiwa: 1e7};
+const RE_HP_NARASI = /(?:^|\D)(?:\+?62|0)[\s.\-]?8(?:[\s.\-]?\d){7,}/;   // pola RE_HP2 menolak "30/10/2026 03.00" yang wajar di kronologis; di sini hanya bentuk nomor HP Indonesia
+export const BATAS_NARASI = {nama_kejadian: 120, penyebab: 300, kronologis: 2000, deskripsi: 1000, upaya: 1000};   // panjang maksimal isian naratif (Juklak 7/2023, Daftar Data a), kolom logbook_narasi
 const tglSah = v => typeof v === "string" && RE_TGL.test(v) && Number.isFinite(Date.parse(v + "T00:00:00Z")) && new Date(v + "T00:00:00Z").toISOString().slice(0, 10) === v;
 const tolak = (galat, wajar) => { throw {galat, wajar}; };
 const objek = (v, nama) => { if (!v || typeof v !== "object" || Array.isArray(v)) tolak(`${nama} harus objek`); return v; };
@@ -134,8 +144,11 @@ export function periksaJuklak(o) {
         const tk = x.tingkat ?? null; if (tk !== null && !TINGKAT_RUSAK.includes(tk)) tolak(`prasarana.tingkat harus salah satu: ${TINGKAT_RUSAK.join(", ")}`);
         const kunci = x.kode + "/" + tk; if (pakai.has(kunci)) tolak(`prasarana ${x.kode} tingkat ${tk} dobel`); pakai.add(kunci);
         const sat = PRASARANA[x.kode];
-        p.push({kode: x.kode, tingkat: tk, jumlah: bil(x.jumlah, `prasarana.${x.kode}.jumlah`, BATAS_JUKLAK["prasarana_" + sat], o, sat === "unit"), satuan: sat});
+        const rugi = x.kerugian_juta == null || x.kerugian_juta === "" ? null : bil(x.kerugian_juta, `prasarana.${x.kode}.kerugian_juta`, BATAS_JUKLAK.kerugian_juta, o, false);   // taksiran per butir, Juklak 7/2023 Lampiran I
+        p.push({kode: x.kode, tingkat: tk, jumlah: bil(x.jumlah, `prasarana.${x.kode}.jumlah`, BATAS_JUKLAK["prasarana_" + sat], o, sat === "unit"), satuan: sat, ...rugi == null ? {} : {kerugian_juta: rugi}});
       }
+      const rugiButir = p.reduce((a, x) => a + (x.kerugian_juta || 0), 0);
+      if (j.kerugian_juta != null && rugiButir > j.kerugian_juta + 1e-6 && o.yakin !== true) tolak(`jumlah kerugian per butir (${rugiButir}) lebih besar dari kerugian_juta (${j.kerugian_juta}); periksa lagi atau kirim yakin: true`, "prasarana");
       j.prasarana = p.length ? p : null;
     }
     if (o.kebutuhan_rinci != null) {   // [{kelompok, barang, jumlah, satuan}]
@@ -169,8 +182,8 @@ export function periksaJuklak(o) {
 
 /* ---------------- KIB (Juklak 7/2023; panduan_resmi.json "kib"): PPKK KKK YYYYMMDD I, 16 digit ----------------
    PPKK = kode BPS 4 angka kab/kota (2 provinsi + 2 kab; dikirim klien sebagai kab_bps karena D1 hanya menyimpan nama kab), KKK = kode bencana DIBI (jenis -> kode di bawah, dari panduan_resmi.json "jenis"),
-   YYYYMMDD = tanggal mulai kejadian WIB, I = indeks 1-9 kejadian dengan 15 digit awal sama. Sufiks entri -001 (kejadian baru), -002, ... (pengkinian). Jenis tanpa kode DIBI pasti (kecelakaan, lainnya) tidak berKIB. */
-export const KODE_BENCANA = {banjir: "101", longsor: "102", gelombang_pasang: "103", cuaca: "104", kekeringan: "105", karhutla: "106", gempabumi: "107", tsunami: "108", gunungapi: "109", wabah: "201", kebakaran_permukiman: "202", konflik_sosial: "301"};
+   YYYYMMDD = tanggal mulai kejadian WIB, I = indeks 1-9 kejadian dengan 15 digit awal sama. Sufiks entri -001 (kejadian baru), -002, ... (pengkinian). Jenis tanpa kode DIBI pasti (lainnya) tidak berKIB. */
+export const KODE_BENCANA = {banjir: "101", longsor: "102", gelombang_pasang: "103", cuaca: "104", kekeringan: "105", karhutla: "106", gempabumi: "107", tsunami: "108", gunungapi: "109", wabah: "201", kebakaran_permukiman: "202", kecelakaan: "203", konflik_sosial: "301"};   // kecelakaan = gagal teknologi, Juklak 7/2023 tabel jenis ancaman
 const kibAwal = (prov, kabBps, jenis, mulaiMs) => typeof kabBps === "string" && /^\d{4}$/.test(kabBps) && kabBps.startsWith(prov) && KODE_BENCANA[jenis] && Number.isFinite(mulaiMs)
   ? kabBps + KODE_BENCANA[jenis] + new Date(mulaiMs + 7 * 36e5).toISOString().slice(0, 10).replaceAll("-", "") : null;
 async function kibBerikut(env, awal) {   // null bila indeks 1-9 habis
@@ -184,7 +197,26 @@ const JK = ["kerugian_juta", "korban", "rentan", "prasarana", "kebutuhan_rinci",
 /* Tabel samping migrasi 0094 mungkin belum ada di D1 (kode terdeploy lebih dulu dari migrasi): cek SEKALI per isolate (hanya `true` dicache selamanya; `false` dicek ulang paling cepat tiap 5 menit),
    tanpa baca D1 per permintaan. Tanpa 0094 semua rute lama jalan dengan kueri lama, medan juklak diabaikan, rute SK 503. */
 let JK_ADA = false, JK_CEK = 0;
+let NAR_ADA = false, NAR_CEK = 0;   // migrasi 0117; sebelum diterapkan isian naratif diabaikan dengan peringatan, rute lain tetap jalan
+async function narAda(env, kini) {
+  if (NAR_ADA || (NAR_CEK && kini - NAR_CEK < 3e5)) return;
+  NAR_CEK = kini; NAR_ADA = !!(await env.DB.prepare("SELECT 1 x FROM sqlite_master WHERE type = 'table' AND name = 'logbook_narasi'").first());
+}
+const NAR = Object.keys(BATAS_NARASI), NAR_TUNGGU = o => !NAR_ADA && (o.narasi || o.induk_kib) ? {narasi: "menunggu migrasi 0117"} : {};
+const stmtNarasi = (env, kejadian, e, kini) => !NAR_ADA || (!e.narasi && !e.induk_id) ? [] : [env.DB.prepare(`INSERT INTO logbook_narasi (kejadian_id, ${NAR}, induk_id, diubah) VALUES (?, ${NAR.map(() => "?")}, ?, ?)
+  ON CONFLICT (kejadian_id) DO UPDATE SET ${NAR.map(c => `${c} = COALESCE(excluded.${c}, ${c})`)}, induk_id = COALESCE(excluded.induk_id, induk_id), diubah = excluded.diubah`).bind(kejadian, ...NAR.map(c => e.narasi?.[c] ?? null), e.induk_id ?? null, kini)];
+/* KIB kejadian utama -> id. Satu tingkat saja: utama tidak boleh anak kejadian lain, dan kejadian yang sudah punya anak tidak bisa jadi anak */
+async function cariInduk(env, req, kib, jenis, diri) {
+  const x = await env.DB.prepare("SELECT b.kejadian_id id, k.jenis, k.prov, n.induk_id FROM logbook_kib b JOIN logbook_kejadian k ON k.id = b.kejadian_id LEFT JOIN logbook_narasi n ON n.kejadian_id = k.id WHERE b.kib = ?").bind(kib).first();
+  if (!x || !req || luarWilayah(req, [x.prov])) return {galat: "KIB kejadian utama tidak ditemukan"};   // di luar wilayah staf sama jawabannya dengan tidak ada, supaya KIB provinsi lain tidak bisa ditebak
+  if (x.id === diri) return {galat: "kejadian tidak bisa menjadi kejadian utama bagi dirinya sendiri"};
+  if (x.jenis !== jenis) return {galat: "kejadian utama harus berjenis sama"};
+  if (x.induk_id) return {galat: "KIB itu bagian dari kejadian lain; pakai KIB kejadian utamanya"};
+  if (diri && await env.DB.prepare("SELECT 1 x FROM logbook_narasi WHERE induk_id = ?").bind(diri).first()) return {galat: "kejadian ini sudah menjadi kejadian utama bagi kejadian lain"};
+  return {id: x.id};
+}
 async function jkAda(env, kini = Date.now()) {
+  await narAda(env, kini);
   if (JK_ADA || (JK_CEK && kini - JK_CEK < 3e5)) return JK_ADA;
   JK_CEK = kini;
   JK_ADA = (await env.DB.prepare("SELECT count(*) n FROM sqlite_master WHERE type = 'table' AND name IN ('logbook_kib', 'logbook_entri_juklak', 'logbook_sk')").first()).n === 3;
@@ -217,7 +249,7 @@ const keluarKej = k => ({...k, dummy: !!k.dummy});
 const BASE_KEJ = "k.id, k.jenis, k.prov, k.kab, k.kec, k.desa, k.lat, k.lon, k.mulai, k.status, k.terakhir, k.dibuat, k.diubah, k.dummy";
 const kolKej = () => JK_ADA ? BASE_KEJ + ", b.kib" : BASE_KEJ, dariKej = () => JK_ADA ? "logbook_kejadian k LEFT JOIN logbook_kib b ON b.kejadian_id = k.id" : "logbook_kejadian k";
 const BASE_ENT = [...["id", "kejadian_id", "waktu", ...ANGKA, "kendala", "kebutuhan", "catatan", "sumber_instansi", "dibuat"].map(c => "e." + c)];
-const kolEnt = () => (JK_ADA ? [...BASE_ENT, "j.kib_entri AS kib", ...JK.map(c => "j." + c), "EXISTS (SELECT 1 FROM logbook_sk s WHERE s.kejadian_id = e.kejadian_id) AS ada_sk"] : BASE_ENT).join(", "), dariEnt = () => JK_ADA ? "logbook_entri e LEFT JOIN logbook_entri_juklak j ON j.entri_id = e.id" : "logbook_entri e";
+const kolEnt = () => (JK_ADA ? [...BASE_ENT, "j.kib_entri AS kib", ...JK.map(c => "j." + c), "EXISTS (SELECT 1 FROM logbook_sk s WHERE s.kejadian_id = e.kejadian_id) AS ada_sk", ...NAR_ADA ? [...NAR.map(c => "nr." + c), "(SELECT kib FROM logbook_kib i WHERE i.kejadian_id = nr.induk_id) AS induk_kib"] : []] : BASE_ENT).join(", "), dariEnt = () => (JK_ADA ? "logbook_entri e LEFT JOIN logbook_entri_juklak j ON j.entri_id = e.id" : "logbook_entri e") + (JK_ADA && NAR_ADA ? " LEFT JOIN logbook_narasi nr ON nr.kejadian_id = e.kejadian_id" : "");
 const luarWilayah = (req, provs) => provs.every(p => dalamWilayahStaf(req, [p])) && dalamWilayahStaf(req, provs) ? null : gagal(403, "provinsi di luar wilayah staf");
 const BATAS_TULIS = [[3600e3, 120]];   // tulis logbook per pelaku per jam
 const lajuTulis = (env, oleh, kini) => laju(env, "lb:" + oleh, "logbook_tulis", BATAS_TULIS, kini);
@@ -228,10 +260,10 @@ async function buat(env, req, kini) {
   const oleh = await pintu(env, req); if (!oleh) return gagal(403, "hanya staf Pusdalops, Koordalops, atau Pimpinan");
   const b = await baca(req); if (b.r) return b.r;
   const w = wilayah(b.o); if (w) { const lw = luarWilayah(req, [w.prov]); if (lw) return lw; }
-  return buatKejadian(env, oleh, b.o, kini);
+  return buatKejadian(env, oleh, b.o, kini, req);
 }
 /* Dipakai juga src/medsos_antre.js (butir pantauan jadi kejadian): validasi dan tulis satu tempat. Pemanggil sudah lolos gerbang staf dan membaca body. */
-export async function buatKejadian(env, oleh, o, kini) {
+export async function buatKejadian(env, oleh, o, kini, req = null) {
   await jkAda(env, kini);
   const w = wilayah(o);
   if (!JENIS.includes(o.jenis)) return gagal(400, `jenis harus salah satu: ${JENIS.join(", ")}`);
@@ -243,20 +275,21 @@ export async function buatKejadian(env, oleh, o, kini) {
   const mt = typeof o.mulai === "string" && /^\d{4}-\d\d-\d\d/.test(o.mulai) ? Date.parse(o.mulai) : NaN;
   if (!Number.isFinite(mt) || mt > kini + HARI || mt < kini - 400 * HARI) return gagal(400, "mulai harus tanggal ISO (YYYY-MM-DD atau waktu lengkap), tidak lebih dari 1 hari ke depan dan 400 hari ke belakang");
   const p = periksaEntri(typeof o.entri === "object" && o.entri && !Array.isArray(o.entri) ? {yakin: o.yakin, ...o.entri} : o, kini); if (p.galat) return json({galat: p.galat, wajar: p.wajar}, 400);
+  if (NAR_ADA && p.e.induk_kib) { const c = await cariInduk(env, req, p.e.induk_kib, o.jenis, null); if (c.galat) return gagal(400, c.galat); p.e.induk_id = c.id; }
   const lj = await lajuTulis(env, oleh, kini); if (lj) return lj;
   const id = acak(8), awal = JK_ADA ? kibAwal(w.prov, o.kab_bps, o.jenis, mt) : null;
   for (let coba = 0; ; coba++) {   // dua kejadian serentak bisa berebut indeks KIB yang sama: UNIQUE menolak salah satu, hitung ulang
     const kib = awal ? await kibBerikut(env, awal) : null;
     try { await env.DB.batch([env.DB.prepare(`INSERT INTO logbook_kejadian (id, jenis, prov, kab, kec, desa, lat, lon, mulai, status, terakhir, dibuat, diubah, dibuat_oleh) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'buka', ?, ?, ?, ?)`)
       .bind(id, o.jenis, w.prov, w.kab, kec, desa, ada ? o.lat : null, ada ? o.lon : null, new Date(mt).toISOString(), kini, kini, kini, oleh),
-      ...kib ? [env.DB.prepare("INSERT INTO logbook_kib (kejadian_id, kib, urut) VALUES (?, ?, 0)").bind(id, kib)] : [], ...stmtEntriJk(env, id, p.e, oleh, kini)]); break; }
+      ...kib ? [env.DB.prepare("INSERT INTO logbook_kib (kejadian_id, kib, urut) VALUES (?, ?, 0)").bind(id, kib)] : [], ...stmtEntriJk(env, id, p.e, oleh, kini), ...stmtNarasi(env, id, p.e, kini)]); break; }
     catch (e) {
       if (kib && coba < 3 && /UNIQUE constraint failed/i.test(String(e?.message || e))) continue;
       if (JENIS_BARU.includes(o.jenis) && /CHECK constraint failed/i.test(String(e?.message || e))) return gagal(503, "jenis ini belum aktif (migrasi 0091_logbook_jenis belum diterapkan)"); throw e;
     }
   }
   await catatBerantai(env, {jenis: o.jenis, prov: w.prov, kab: w.kab, kejadian: id, kini});
-  return json({kejadian: keluarKej(await env.DB.prepare(`SELECT ${kolKej()} FROM ${dariKej()} WHERE k.id = ?`).bind(id).first()), entri: keluarEntri(await env.DB.prepare(`SELECT ${kolEnt()} FROM ${dariEnt()} WHERE e.kejadian_id = ?`).bind(id).first()), ...!JK_ADA && adaIsiJk(o, p.e) ? {juklak: MENUNGGU} : {}}, 201);
+  return json({kejadian: keluarKej(await env.DB.prepare(`SELECT ${kolKej()} FROM ${dariKej()} WHERE k.id = ?`).bind(id).first()), entri: keluarEntri(await env.DB.prepare(`SELECT ${kolEnt()} FROM ${dariEnt()} WHERE e.kejadian_id = ?`).bind(id).first()), ...!JK_ADA && adaIsiJk(o, p.e) ? {juklak: MENUNGGU} : {}, ...NAR_TUNGGU(p.e)}, 201);
 }
 async function lanjut(env, req, kini, id) {
   const oleh = await pintu(env, req); if (!oleh) return gagal(403, "hanya staf Pusdalops, Koordalops, atau Pimpinan");
@@ -267,18 +300,19 @@ async function lanjut(env, req, kini, id) {
   const lw = luarWilayah(req, [k.prov]); if (lw) return lw;
   if (k.status !== "buka") return gagal(409, "kejadian sudah ditutup");
   const p = periksaEntri(b.o, kini); if (p.galat) return json({galat: p.galat, wajar: p.wajar}, 400);
+  if (NAR_ADA && p.e.induk_kib) { const c = await cariInduk(env, req, p.e.induk_kib, k.jenis, id); if (c.galat) return gagal(400, c.galat); p.e.induk_id = c.id; }
   const lj = await lajuTulis(env, oleh, kini); if (lj) return lj;
   const eid = acak(8), awal = k.kib || !JK_ADA ? null : kibAwal(k.prov, b.o.kab_bps, k.jenis, Date.parse(k.mulai));
   /* kejadian lama tanpa KIB dapat KIB pada entri ini bila klien mengirim kab_bps; urut dimulai dari jumlah entri yang sudah ada */
   for (let coba = 0; ; coba++) {   // tabrakan UNIQUE (indeks KIB direbut kejadian lain, atau entri serentak sudah memberi KIB kejadian ini): hitung ulang, jangan ditelan diam-diam
     const sudah = awal && (await env.DB.prepare("SELECT 1 x FROM logbook_kib WHERE kejadian_id = ?").bind(id).first());
     const kib = awal && !sudah ? await kibBerikut(env, awal) : null, lama = kib ? (await env.DB.prepare("SELECT count(*) n FROM logbook_entri WHERE kejadian_id = ?").bind(id).first()).n : 0;
-    try { await env.DB.batch([...kib ? [env.DB.prepare("INSERT INTO logbook_kib (kejadian_id, kib, urut) VALUES (?, ?, ?)").bind(id, kib, lama)] : [], ...stmtEntriJk(env, id, p.e, oleh, kini, eid),
+    try { await env.DB.batch([...kib ? [env.DB.prepare("INSERT INTO logbook_kib (kejadian_id, kib, urut) VALUES (?, ?, ?)").bind(id, kib, lama)] : [], ...stmtEntriJk(env, id, p.e, oleh, kini, eid), ...stmtNarasi(env, id, p.e, kini),
       env.DB.prepare("UPDATE logbook_kejadian SET terakhir = ?, diubah = ? WHERE id = ?").bind(kini, kini, id)]); break; }
     catch (e) { if (awal && coba < 3 && /UNIQUE constraint failed/i.test(String(e?.message || e))) continue; throw e; }
   }
   await catatBerantai(env, {jenis: k.jenis, prov: k.prov, kab: k.kab, kejadian: id, kini});
-  return json({entri: keluarEntri(await env.DB.prepare(`SELECT ${kolEnt()} FROM ${dariEnt()} WHERE e.id = ?`).bind(eid).first()), ...!JK_ADA && adaIsiJk(b.o, p.e) ? {juklak: MENUNGGU} : {}}, 201);
+  return json({entri: keluarEntri(await env.DB.prepare(`SELECT ${kolEnt()} FROM ${dariEnt()} WHERE e.id = ?`).bind(eid).first()), ...!JK_ADA && adaIsiJk(b.o, p.e) ? {juklak: MENUNGGU} : {}, ...NAR_TUNGGU(p.e)}, 201);
 }
 /* G1: tutup WAJIB membawa tgl_tuntas dan kondisi_akhir. Detail disimpan di logbook_tutup (migrasi 0098); tanpa tabelnya kejadian tetap ditutup dan balasan memuat tutup_detail.
    Kejadian lama yang sudah tutup tanpa baris di logbook_tutup tetap sah. */
@@ -431,6 +465,7 @@ async function dummyRute(env, req, kini) {
     if (kib) st.push(env.DB.prepare("INSERT INTO logbook_kib (kejadian_id, kib, urut) VALUES (?, ?, 0)").bind(id, kib));
     for (const [menit, d] of entri) st.push(...stmtEntriJk(env, id, {...Object.fromEntries(ANGKA.map(k => [k, d[k] ?? null])), kendala: d.kendala, kebutuhan: d.kebutuhan, catatan: "Data dummy untuk menilai layar", sumber_instansi: "Dummy", waktu: waktuDummy(kini, menit),
       jk: {...(periksaJuklak({yakin: true, ...d.jk, md: d.md, luka: d.luka, mengungsi_jiwa: d.mengungsi_jiwa}).j ?? {})}}, "dummy", kini));
+    st.push(...stmtNarasi(env, id, {narasi: {nama_kejadian: `Contoh ${jenis} ${kab}`, penyebab: "Data dummy untuk menilai layar", kronologis: "Data dummy untuk menilai layar", deskripsi: "Data dummy untuk menilai layar", upaya: "Data dummy untuk menilai layar"}}, kini));
     if (JK_ADA && jenis === "longsor") for (const x of SK_CONTOH) st.push(env.DB.prepare("INSERT INTO logbook_sk (id, kejadian_id, tingkat, wilayah, nomor, tgl_sk, tmt_mulai, tmt_selesai, perpanjangan_ke, tautan, oleh, dibuat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'dummy', ?)")
       .bind(acak(8), id, x.tingkat, x.wilayah, x.nomor, x.tgl_sk, x.tmt_mulai, x.tmt_selesai, x.perpanjangan_ke, x.tautan, kini));
   }

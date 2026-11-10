@@ -9,7 +9,7 @@
   const JAM = 36e5, HARI = 864e5, WIB = 7 * JAM, LOOKBACK_HARI = 7;
   const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];   // singkatan, keputusan 2 Nov 2026 (semua tab)
   const NAMA = {banjir: "Banjir", longsor: "Tanah longsor", cuaca: "Cuaca ekstrem", karhutla: "Karhutla", kebakaran_permukiman: "Kebakaran permukiman", gempabumi: "Gempa bumi", gunungapi: "Gunung api",
-    kekeringan: "Kekeringan", kecelakaan: "Kecelakaan", konflik_sosial: "Konflik sosial", lainnya: "Lainnya", gelombang_pasang: "Gelombang pasang dan abrasi", tsunami: "Tsunami", wabah: "Epidemi dan wabah penyakit"};
+    kekeringan: "Kekeringan", kecelakaan: "Gagal teknologi", konflik_sosial: "Konflik sosial", lainnya: "Lainnya", gelombang_pasang: "Gelombang pasang dan abrasi", tsunami: "Tsunami", wabah: "Epidemi dan wabah penyakit"};
   /* 3 shift piket; katalog Drive (Laporan Shift 2026) menulis Shift 1 06.30-15.00 dan Shift 3 21.00-07.00, Shift 2 tidak tertulis. Di sini 07.00-15.00, 15.00-21.00, 21.00-07.00
      supaya tiap entri jatuh di tepat satu shift (06.30 itu jam hadir, bukan serah terima). */
   const SHIFT = [{no: 1, dari: 7, sampai: 15}, {no: 2, dari: 15, sampai: 21}, {no: 3, dari: 21, sampai: 31}];
@@ -85,8 +85,11 @@
   const lihat = (k, sampai, baru, manual) => {
     const e = terkini(k, sampai) || k.entri.at(-1), m = menonjol(k.jenis, e), paksa = !!(manual && manual.has(k.id));
     return {id: k.id, ref: String(k.id).slice(0, 6), jenis: k.jenis, prov: k.prov, kab: k.kab, kec: k.kec, desa: k.desa, status: k.status, dummy: k.dummy, e, baru, lokasi: lokasi(k), dampak: dampakTeks(e),
-      menonjol: m.ya || paksa, alasan: paksa && !m.ya ? ["dipilih manual"] : m.alasan, kib: e && (e.kib || null)};
+      menonjol: m.ya || paksa, alasan: paksa && !m.ya ? ["dipilih manual"] : m.alasan, kib: e && (e.kib || null), induk_kib: e && (e.induk_kib || null)};
   };
+  /* Juklak 7/2023 Bab II B.4: satu bencana lintas wilayah = satu kejadian nasional (induk_kib); hari sama, kab/kota dan kode bencana sama = satu kejadian (15 digit awal KIB). Tanpa KIB tiap baris berdiri sendiri. */
+  const akarKejadian = v => (v.induk_kib || v.kib || "").slice(0, 15) || v.id;
+  const unikKejadian = daftar => new Set(daftar.map(akarKejadian)).size;
   const urutProv = (a, b) => String(a.prov).localeCompare(String(b.prov)) || String(a.kab).localeCompare(String(b.kab)) || String(a.jenis).localeCompare(String(b.jenis));
   const perProv = daftar => { const m = new Map(); for (const v of [...daftar].sort(urutProv)) { if (!m.has(v.prov)) m.set(v.prov, []); m.get(v.prov).push(v); } return [...m]; };
   const bullet = v => `- ${NAMA[v.jenis] || v.jenis}, ${v.lokasi}${v.dampak ? ": " + v.dampak : ": dampak belum dilaporkan"}`;
@@ -100,7 +103,7 @@
   function hariData(entri, tgl, manual) {
     const dari = awalHari(tgl), sampai = dari + HARI, r = ringkas(entri, dari, sampai, hariLaporan).get(tgl) || {baru: [], pengkinian: []};
     const semua = [...r.baru.map(k => lihat(k, sampai, true, manual)), ...r.pengkinian.map(k => lihat(k, sampai, false, manual))];
-    return {tgl, baru: r.baru.length, pengkinian: r.pengkinian.length, total: semua.length, semua, daftar: semua.filter(v => v.menonjol).sort(urutProv)};
+    return {tgl, baru: unikKejadian(semua.filter(v => v.baru)), pengkinian: unikKejadian(semua.filter(v => !v.baru)), total: unikKejadian(semua), semua, daftar: semua.filter(v => v.menonjol).sort(urutProv)};
   }
   function teksMenonjol(h, dummy, diambil) {
     const l = [tanda(dummy) + "*LAPORAN MENONJOL*", "Yth. Bapak Kepala BNPB", `Pemantauan ${tglIndo(h.tgl)} pukul 07.00 WIB s.d. ${tglIndo(tambahHari(h.tgl, 1))} pukul 07.00 WIB`, `Laporan kejadian bencana sejumlah ${fmt(h.daftar.length)}`];
@@ -148,10 +151,10 @@
   function mingguan(entri, akhir) {
     const {dari, sampai} = periodeMinggu(akhir), r = ringkas(entri, dari, sampai, () => "minggu").get("minggu") || {baru: [], pengkinian: []};
     const semua = [...r.baru.map(k => lihat(k, sampai, true)), ...r.pengkinian.map(k => lihat(k, sampai, false))].sort(urutProv);
-    const hitung = kunci => { const m = new Map(); for (const v of semua) { const k = kunci(v); const o = m.get(k) || {kunci: k, total: 0, baru: 0, pengkinian: 0}; o.total++; o[v.baru ? "baru" : "pengkinian"]++; m.set(k, o); } return [...m.values()].sort((a, b) => b.total - a.total || String(a.kunci).localeCompare(String(b.kunci))); };
+    const hitung = kunci => { const m = new Map(), sudah = new Map(); for (const v of semua) { const k = kunci(v); const o = m.get(k) || {kunci: k, total: 0, baru: 0, pengkinian: 0}, a = akarKejadian(v); m.set(k, o); const t = sudah.get(k) || new Set(); sudah.set(k, t); if (t.has(a)) continue; t.add(a); o.total++; o[v.baru ? "baru" : "pengkinian"]++; } return [...m.values()].sort((a, b) => b.total - a.total || String(a.kunci).localeCompare(String(b.kunci))); };
     const luas = new Map();
     for (const v of semua) if (v.jenis === "karhutla") { const o = luas.get(v.prov) || {prov: v.prov, kejadian: 0, ha: 0, tanpaLuas: 0}; o.kejadian++; if (v.e && v.e.luas_ha != null) o.ha += v.e.luas_ha; else o.tanpaLuas++; luas.set(v.prov, o); }
-    return {dari, sampai, akhir, total: semua.length, baru: r.baru.length, pengkinian: r.pengkinian.length, semua, perJenis: hitung(v => v.jenis), perProv: hitung(v => v.prov),
+    return {dari, sampai, akhir, total: unikKejadian(semua), baru: unikKejadian(semua.filter(v => v.baru)), pengkinian: unikKejadian(semua.filter(v => !v.baru)), semua, perJenis: hitung(v => v.jenis), perProv: hitung(v => v.prov),
       luas: [...luas.values()].sort((a, b) => b.ha - a.ha), luasTotal: [...luas.values()].reduce((a, o) => a + o.ha, 0), adaKib: semua.some(v => v.kib)};
   }
   const jamTgl = ms => `${tglIndo(tglISO(ms + WIB))} pukul ${String(new Date(ms + WIB).getUTCHours()).padStart(2, "0")}.00 WIB`;

@@ -212,7 +212,7 @@
   const normLokasi = s => String(s || "").toLowerCase().replace(/^\s*(kabupaten|kab\.?|kota|provinsi|prov\.?)\s+/, "").replace(/\s+/g, " ").trim();
   const kunciKejadian = k => `${k.jenis}|${k.prov}|${normLokasi(k.lokasi)}`;
   const NAMA_JENIS = {banjir: "Banjir", longsor: "Tanah longsor", karhutla: "Karhutla", gempabumi: "Gempa bumi", gunungapi: "Gunung api", cuaca: "Cuaca ekstrem", kekeringan: "Kekeringan",
-    kebakaran_permukiman: "Kebakaran permukiman", kecelakaan: "Kecelakaan", konflik_sosial: "Konflik sosial", gelombang_pasang: "Gelombang pasang", tsunami: "Tsunami", wabah: "Wabah", lainnya: "Lainnya"};
+    kebakaran_permukiman: "Kebakaran permukiman", kecelakaan: "Gagal teknologi", konflik_sosial: "Konflik sosial", gelombang_pasang: "Gelombang pasang", tsunami: "Tsunami", wabah: "Wabah", lainnya: "Lainnya"};
   /* nilai jenis rekap (laporan_urai.js jenisDari) sudah memakai kode logbook (src/logbook.js JENIS); hanya dua yang digabung urai ke jenis lain */
   const JENIS_LOGBOOK = {tsunami: "gempabumi", gelombang_pasang: "cuaca"};
   const jenisLogbook = j => JENIS_LOGBOOK[j] || j;
