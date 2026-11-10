@@ -82,7 +82,7 @@ export const PRASARANA = {sawah: "ha", lahan: "ha", kebun: "ha", hutan: "ha", ko
   jalan: "km", jembatan: "unit", transportasi: "unit", spbu: "unit", rumah_ibadat: "unit", faskes: "unit", sekolah: "unit", kantor: "unit", pasar: "unit", rumah: "unit"};
 export const KELOMPOK_KEBUTUHAN = ["dana", "sdm", "sarpras", "logistik", "peralatan"];   // standar 5 kelompok: Dana, SDM, Sarana-prasarana, Logistik, Peralatan
 export const BATAS_JUKLAK = {kerugian_juta: 1e6, rentan: 2e6, prasarana_unit: 1e5, prasarana_ha: 3e6, prasarana_km: 1e5, kebutuhan_jumlah: 1e7, terdampak_jiwa: 1e7};
-const RE_HP_NARASI = /(?:^|\D)(?:\+?62|0)[\s.\-]?8(?:[\s.\-]?\d){7,}/;   // pola RE_HP2 menolak "30/10/2026 03.00" yang wajar di kronologis; di sini hanya bentuk nomor HP Indonesia
+const RE_HP_NARASI = /(?:^|\D)(?:\+?62|0)[\s.\-\/_()]*8(?:[\s.\-\/_()]*\d){7,}/;   // pola RE_HP2 menolak "30/10/2026 03.00" yang wajar di kronologis; di sini hanya bentuk nomor HP Indonesia
 export const BATAS_NARASI = {nama_kejadian: 120, penyebab: 300, kronologis: 2000, deskripsi: 1000, upaya: 1000};   // panjang maksimal isian naratif (Juklak 7/2023, Daftar Data a), kolom logbook_narasi
 const tglSah = v => typeof v === "string" && RE_TGL.test(v) && Number.isFinite(Date.parse(v + "T00:00:00Z")) && new Date(v + "T00:00:00Z").toISOString().slice(0, 10) === v;
 const tolak = (galat, wajar) => { throw {galat, wajar}; };
@@ -293,16 +293,21 @@ export async function buatKejadian(env, oleh, o, kini, req = null) {
 }
 async function lanjut(env, req, kini, id) {
   const oleh = await pintu(env, req); if (!oleh) return gagal(403, "hanya staf Pusdalops, Koordalops, atau Pimpinan");
-  await jkAda(env, kini);
   const b = await baca(req); if (b.r) return b.r;
+  return lanjutEntri(env, oleh, b.o, kini, id, req);
+}
+/* Pengkinian satu kejadian tanpa gerbang peran dan tanpa membaca body: pemanggil (rute lanjut, atau terima Data kejadian dan dampak di src/meja.js) sudah lolos gerbangnya.
+   Validasi dan tulis satu tempat, sama persis dengan rute POST /api/logbook/kejadian/:id/entri. req boleh null (tanpa pemeriksaan wilayah staf). */
+export async function lanjutEntri(env, oleh, o, kini, id, req = null) {
+  await jkAda(env, kini);
   const k = await env.DB.prepare(JK_ADA ? "SELECT k.id, k.status, k.jenis, k.prov, k.kab, k.mulai, b.kib FROM logbook_kejadian k LEFT JOIN logbook_kib b ON b.kejadian_id = k.id WHERE k.id = ?" : "SELECT id, status, jenis, prov, kab FROM logbook_kejadian WHERE id = ?").bind(id).first();
   if (!k) return gagal(404, "kejadian tidak ada");
   const lw = luarWilayah(req, [k.prov]); if (lw) return lw;
   if (k.status !== "buka") return gagal(409, "kejadian sudah ditutup");
-  const p = periksaEntri(b.o, kini); if (p.galat) return json({galat: p.galat, wajar: p.wajar}, 400);
+  const p = periksaEntri(o, kini); if (p.galat) return json({galat: p.galat, wajar: p.wajar}, 400);
   if (NAR_ADA && p.e.induk_kib) { const c = await cariInduk(env, req, p.e.induk_kib, k.jenis, id); if (c.galat) return gagal(400, c.galat); p.e.induk_id = c.id; }
   const lj = await lajuTulis(env, oleh, kini); if (lj) return lj;
-  const eid = acak(8), awal = k.kib || !JK_ADA ? null : kibAwal(k.prov, b.o.kab_bps, k.jenis, Date.parse(k.mulai));
+  const eid = acak(8), awal = k.kib || !JK_ADA ? null : kibAwal(k.prov, o.kab_bps, k.jenis, Date.parse(k.mulai));
   /* kejadian lama tanpa KIB dapat KIB pada entri ini bila klien mengirim kab_bps; urut dimulai dari jumlah entri yang sudah ada */
   for (let coba = 0; ; coba++) {   // tabrakan UNIQUE (indeks KIB direbut kejadian lain, atau entri serentak sudah memberi KIB kejadian ini): hitung ulang, jangan ditelan diam-diam
     const sudah = awal && (await env.DB.prepare("SELECT 1 x FROM logbook_kib WHERE kejadian_id = ?").bind(id).first());
@@ -312,7 +317,7 @@ async function lanjut(env, req, kini, id) {
     catch (e) { if (awal && coba < 3 && /UNIQUE constraint failed/i.test(String(e?.message || e))) continue; throw e; }
   }
   await catatBerantai(env, {jenis: k.jenis, prov: k.prov, kab: k.kab, kejadian: id, kini});
-  return json({entri: keluarEntri(await env.DB.prepare(`SELECT ${kolEnt()} FROM ${dariEnt()} WHERE e.id = ?`).bind(eid).first()), ...!JK_ADA && adaIsiJk(b.o, p.e) ? {juklak: MENUNGGU} : {}, ...NAR_TUNGGU(p.e)}, 201);
+  return json({entri: keluarEntri(await env.DB.prepare(`SELECT ${kolEnt()} FROM ${dariEnt()} WHERE e.id = ?`).bind(eid).first()), ...!JK_ADA && adaIsiJk(o, p.e) ? {juklak: MENUNGGU} : {}, ...NAR_TUNGGU(p.e)}, 201);
 }
 /* G1: tutup WAJIB membawa tgl_tuntas dan kondisi_akhir. Detail disimpan di logbook_tutup (migrasi 0098); tanpa tabelnya kejadian tetap ditutup dan balasan memuat tutup_detail.
    Kejadian lama yang sudah tutup tanpa baris di logbook_tutup tetap sah. */

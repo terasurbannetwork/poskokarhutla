@@ -3,3 +3,4 @@
 .antre-pita.galat { background: #fdecec; border-color: #e39a9a; color: #7a1d1d; }
 .antre-pita button { min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid currentColor; background: transparent; color: inherit; font: inherit; cursor: pointer; }
 .antre-pita button:disabled { opacity: .5; cursor: default; }
+.antre-pita[hidden] { display: none; }

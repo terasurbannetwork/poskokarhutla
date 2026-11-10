@@ -5,7 +5,9 @@ import {readFileSync, readdirSync} from "node:fs";
 import path from "node:path";
 import {Miniflare} from "miniflare";
 import "../../src/worker.js";   // worker.js dulu: posko.js dan worker.js saling impor
-import {MEJA, DAFTAR_MEJA, DAFTAR_PETUGAS, MEJA_RAPOR, EKSPOR_RISIKO, PASANGAN, BARANG, BENCANA, AMBANG, RAPOR, validasi, statusEfektif, tandaBahaya} from "../../src/meja_spek.js";
+import {MEJA, DAFTAR_MEJA, DAFTAR_PETUGAS, MEJA_RAPOR, EKSPOR_RISIKO, PASANGAN, BARANG, BENCANA, AMBANG, RAPOR, JENIS_DAMPAK, spekPublik, validasi, statusEfektif, tandaBahaya} from "../../src/meja_spek.js";
+import {kelengkapan} from "../../public/inti/kelengkapan.js";
+import {JENIS} from "../../src/logbook.js";
 import {gabungSkor, skorRespons, DIBI_KOLOM, DIBI_JENIS, selCsv} from "../../src/meja.js";
 import {siapkan, berantai, ADMIN, MOD2, GERBANG, sha256} from "./_bnpb.mjs";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
@@ -101,7 +103,7 @@ uji("validasi spek: kolom liar, tipe salah, di luar rentang, tautan, tipe ya, ta
   assert.equal((await baru(ADMIN, "renkon", "71", "Kab Val", {bencana: "banjir", judul: "R", tgl_sah: "2026-01-10", berlaku_sampai: "2029-01-10"})).s, 201, "tepat 3 tahun sah");
   assert.equal((await baru(ADMIN, "renkon", "71", "Kab Val", {bencana: "gempa", judul: "R tanpa sampai", tgl_sah: "2026-01-10"})).s, 201, "berlaku_sampai tidak lagi wajib");
   assert.equal((await api("POST", "/api/meja/catatan", "{bukan json", ADMIN)).s, 400);
-  assert.equal((await api("POST", "/api/meja/catatan", "x".repeat(9001), ADMIN)).s, 413);   // batas MAKS_ISIAN 9000: isian pengungsi terpanjang (Juklak 9/2023) tidak muat di batas umum 4096
+  assert.equal((await api("POST", "/api/meja/catatan", "x".repeat(16385), ADMIN)).s, 413);   // batas MAKS_ISIAN 16384 (naik dari 9000 untuk meja dampak, Juklak 7/2023: narasi 5400 huruf + 130 kolom); pengungsi (Juklak 9/2023) tidak muat di batas umum 4096
   /* fungsi murni: tipe ya, isian awal vs tahap */
   assert.equal(BARANG.length, 15); assert.ok(BENCANA.includes("karhutla"));
   const ya = MEJA.dsp.kolom; MEJA.dsp.kolom = [{nama: "setuju", label: "Setuju", tipe: "ya", wajib: true}];
@@ -253,7 +255,7 @@ uji("alur status per meja: transisi liar ditolak, peran dijaga, isian per tahap,
   assert.equal((await api("POST", "/api/meja/catatan/" + k.id, {aksi: "ubah", data: kaji()}, ADMIN)).s, 409, "isi terkunci setelah status awal");
   const jejak = (await adm("GET", "/api/meja/catatan/" + k.id)).j.jejak; assert.deepEqual(jejak.map(j => [j.dari, j.ke]), [[null, "dilaporkan"], ["dilaporkan", "diverifikasi"], ["diverifikasi", "masuk_jitupasna"]]);
   assert.ok(jejak[1].oleh.startsWith("petugas:") && jejak[2].oleh.startsWith("admin:"));
-  const lihatP = (await api("GET", "/api/meja/catatan/" + k.id, undefined, p.h)).j; assert.ok(lihatP.jejak.every(j => !("oleh" in j)), "petugas tidak melihat identitas pelaku");
+  const lihatP = (await api("GET", "/api/meja/catatan/" + k.id, undefined, p.h)).j; assert.deepEqual(lihatP.jejak.map(j => j.oleh), ["Petugas", "Petugas", "Admin"], "petugas hanya melihat label tetap, bukan identitas pelaku"); assert.equal(lihatP.catatan.oleh, "Petugas");
   /* logistik: setuju + kirim admin, terima petugas, tiap tahap memuat kolomnya */
   const l = (await baru(p.h, "logistik", undefined, undefined, logis())).j.catatan;
   assert.equal((await st(p.h, l.id, {ke: "disetujui"})).s, 403, "petugas tak boleh menyetujui permintaannya");
@@ -442,8 +444,8 @@ const kajiSiap = async (h, kab, prov = "71") => {
 
 uji("sempurna: enum spek rehab dan gudang sama dengan CHECK/trigger migrasi; tautan kaji_id, saldo stok, dan transaksi dijaga D1", async () => {
   const sql = migrasi();   // semua migrasi (0026 + 0110 yang membangun ulang meja_catatan), bukan 0026 saja
-  assert.deepEqual(DAFTAR_MEJA, ["kaji_cepat", "logistik", "dsp", "renkon", "destana", "rehab", "gudang", "pengungsi", "pengaduan", "klaster", "risiko"]);
-  assert.deepEqual(DAFTAR_PETUGAS, ["kaji_cepat", "logistik", "dsp", "renkon", "destana", "rehab", "gudang", "pengungsi", "klaster"], "pengaduan dan risiko hanya pusat");
+  assert.deepEqual(DAFTAR_MEJA, ["kaji_cepat", "logistik", "dsp", "renkon", "destana", "rehab", "gudang", "pengungsi", "pengaduan", "klaster", "risiko", "dampak"]);
+  assert.deepEqual(DAFTAR_PETUGAS, ["kaji_cepat", "logistik", "dsp", "renkon", "destana", "rehab", "gudang", "pengungsi", "klaster", "dampak"], "pengaduan dan risiko hanya pusat");
   for (const m of ["rehab", "gudang"]) assert.ok(sql.includes(`'${m}'`));
   for (const s of MEJA.rehab.status) assert.ok(sql.includes(`'${s}'`), "status rehab di migrasi: " + s);
   assert.ok(PASANGAN.filter(x => x.startsWith("rehab:")).length === 6);
@@ -478,7 +480,7 @@ uji("sempurna: enum spek rehab dan gudang sama dengan CHECK/trigger migrasi; tau
   assert.equal(await coba("UPDATE meja_stok SET delta = 9 WHERE gudang_id = ?", g), false, "transaksi beku"); assert.equal(await coba("DELETE FROM meja_stok WHERE gudang_id = ?", g), false, "transaksi tak bisa dihapus");
   assert.equal(await coba("INSERT INTO meja_ringkas (meja, prov, kab, status, dummy, n, bahaya, jumlah, terbaru) VALUES ('rehab', '71', 'K', 'macet', 0, 1, 2, '{}', 1)"), false, "bahaya <= n");
   assert.equal(await coba("INSERT INTO meja_ringkas (meja, prov, kab, status, dummy, n, bahaya, jumlah, terbaru) VALUES ('liar', '71', 'K', 'macet', 0, 1, 0, '{}', 1)"), false);
-  /* petugas boleh memegang meja baru, larik sembilan meja; meja pusat ditolak */
+  /* petugas boleh memegang meja baru, larik sepuluh meja; meja pusat ditolak */
   const pet = async meja => coba("INSERT INTO meja_petugas (id, nama, prov, kab, meja, kode_sha, dibuat) VALUES (?, 'Uji Cek', '71', 'Kab Cek', ?, ?, 1)", hex(), meja, hex() + hex() + hex() + hex());
   assert.equal(await pet(JSON.stringify(DAFTAR_PETUGAS)), true); assert.equal(await pet('["rehab","gudang"]'), true); assert.equal(await pet(JSON.stringify([...DAFTAR_PETUGAS, "kaji_cepat"])), false); assert.equal(await pet('["pengaduan"]'), false); assert.equal(await pet('["risiko"]'), false);
 });
@@ -569,7 +571,7 @@ uji("sempurna: stok gudang, transaksi, dikirim mengurangi stok atomik, 409 bila 
   /* saldo = stok awal + jumlah transaksi, dan tiap baris mencatat saldo sesudahnya */
   const tx = (await DB.prepare("SELECT jenis, delta, saldo FROM meja_stok WHERE gudang_id = ? ORDER BY id").bind(g.id).all()).results;
   assert.deepEqual(tx.map(t => [t.jenis, t.delta, t.saldo]), [["keluar", -30, 70], ["masuk", 5, 75], ["koreksi", -5, 70]]);
-  const rin = (await api("GET", "/api/meja/catatan/" + g.id, undefined, p.h)).j; assert.equal(rin.transaksi.length, 3); assert.ok(rin.transaksi.every(t => !("oleh" in t)), "petugas tak melihat pelaku");
+  const rin = (await api("GET", "/api/meja/catatan/" + g.id, undefined, p.h)).j; assert.equal(rin.transaksi.length, 3); assert.ok(rin.transaksi.every(t => ["Petugas", "Admin"].includes(t.oleh)), "petugas hanya melihat label tetap, bukan pelaku");
   assert.ok((await adm("GET", "/api/meja/catatan/" + g.id)).j.transaksi.every(t => t.oleh));
   /* logistik dikirim dari gudang */
   const minta = async (jml, barang = "beras") => { const l = (await baru(p.h, "logistik", undefined, undefined, logis({barang, jumlah_diminta: jml}))).j.catatan; assert.equal((await SAH(0, ADMIN, l.id, {ke: "disetujui"})).s, 200); return l.id; };
@@ -901,6 +903,383 @@ uji("migrasi 0118 di atas data lama: semua baris lolos, FK utuh, trigger meja ba
     for (const nama of ["meja_catatan_ubah", "meja_rehab_tautan", "meja_petugas_sah", "meja_stok_sah", "meja_pengungsi_hari", "meja_pengaduan_register", "meja_risiko_kode", "meja_gudang_unik"]) assert.ok(await D.prepare("SELECT 1 x FROM sqlite_master WHERE name = ?").bind(nama).first(), nama + " ada");
   } finally { await mf.dispose(); }
 });
+
+/* ============================================================ meja dampak: Data kejadian dan dampak (Juklak 7/2023 Lampiran I, migrasi 0119, DATA-DAMPAK.md) */
+const KD = MEJA.dampak.kolom;
+const INTI_D = (o = {}) => ({jenis: "banjir", nama_kejadian: "Banjir Uji " + hex().slice(0, 6), tanggal: hari(2), jam: "04:15", bujur: 109.689012, lintang: -7.397123, penyebab: "Hujan lebat di hulu", kronologis: "Sungai meluap dini hari dan menggenangi dua desa.", deskripsi: "Genangan 40 sampai 100 cm.",
+  sumber: "Laporan petugas BPBD", kondisi_mutakhir: "Genangan mulai surut", status_darurat: "belum_ditetapkan", upaya: "Evakuasi dan dapur umum", meninggal: 1, hilang: 0, luka: 3, mengungsi: 200, terdampak: 900,
+  rumah_rb: 2, rumah_rs: 3, rumah_rr: 10, rumah_terendam: 150, nihil_kebutuhan: true, nihil_sosek: true, nihil_prasarana: true, nihil_layanan: true, nihil_aset: true, ...o});
+const sebarD = (n, v) => Object.fromEntries(["anak", "dewasa", "lansia"].flatMap((u, i) => ["l", "p"].map((s, j) => [`${n}_${u}_${s}`, v[2 * i + j]])));
+const wilD = {kec: "Kec Uji", desa: "Desa Uji"};
+const bDampak = (h, kab, data, prov = "33", extra = wilD) => api("POST", "/api/meja/catatan", {meja: "dampak", prov, kab, data, ...extra}, h);
+const kelD = (data, w = wilD) => kelengkapan(KD, {...data, ...w});
+const logbookN = async (tabel, where = "1") => (await DB.prepare(`SELECT count(*) n FROM ${tabel} WHERE ${where}`).first()).n;
+
+uji("dampak kelengkapan: kosong beda dari nol, nihil menjawab bagian dan menolak isian, rincian tidak melebihi total", async () => {
+  assert.deepEqual(JENIS_DAMPAK, JENIS, "jenis meja dampak sama dengan jenis Logbook");
+  assert.equal(AMBANG.data_dinamis_hari, nilai("data_dinamis_darurat")); assert.equal(AMBANG.data_dinamis_hari, 1);
+  const kosong = kelengkapan(KD, {});
+  assert.equal(kosong.persen, 0); assert.equal(kosong.inti_lengkap, false); assert.ok(kosong.kurang_inti.some(x => x.nama === "rumah_rb"), "kosong = belum didata");
+  assert.ok(kosong.kurang_inti.some(x => x.nama === "bagian_sosek"), "bagian tanpa satu butir = kurang");
+  const nol = kelengkapan(KD, {rumah_rb: 0, meninggal: 0});
+  assert.ok(!nol.kurang_inti.some(x => x.nama === "rumah_rb" || x.nama === "meninggal"), "angka 0 terjawab"); assert.ok(nol.persen > 0);
+  const sedang = kelD(INTI_D());
+  assert.equal(sedang.inti_lengkap, true, JSON.stringify(sedang.kurang_inti)); assert.ok(sedang.persen > 40 && sedang.persen < 100, "rincian umur dan taksiran kosong menurunkan persen: " + sedang.persen);
+  assert.ok(sedang.kurang_rinci.some(x => x.nama === "luka_anak_l") && sedang.kurang_rinci.some(x => x.nama === "rugi_rumah"), "rincian umur dan taksiran tampil sebagai kekurangan");
+  assert.ok(!sedang.kurang_rinci.some(x => x.nama.startsWith("hilang_")), "hilang 0: rincian umurnya tidak berlaku");
+  assert.equal(kelD(INTI_D(), {kec: "K"}).inti_lengkap, false, "desa kosong = inti kurang");
+  const semuaButir = Object.fromEntries(KD.filter(c => ["kebutuhan", "sosek", "prasarana", "layanan", "aset"].includes(c.bagian) && !c.nihil && !c.bila).map(c => [c.nama, c.tipe === "teks" ? "isi uji" : 0]));
+  const penuh = kelD(INTI_D({...sebarD("meninggal", [0, 0, 1, 0, 0, 0]), ...sebarD("luka", [1, 0, 1, 1, 0, 0]), ...sebarD("mengungsi", [50, 50, 40, 40, 10, 10]), ...sebarD("terdampak", [100, 100, 300, 300, 50, 50]), rugi_rumah: 900,
+    nihil_sosek: false, nihil_prasarana: false, nihil_layanan: false, nihil_kebutuhan: false, nihil_aset: false, ...semuaButir}));
+  assert.equal(penuh.persen, 100, JSON.stringify([penuh.kurang_inti, penuh.kurang_rinci.slice(0, 5)]));
+  /* validasi: nihil menolak isian di bagiannya; rincian > total; nomor HP/NIK/surel; koordinat berpasangan */
+  const v = (d, galat) => { const r = validasi("dampak", d, null); if (galat) assert.match(r.galat ?? "", galat, JSON.stringify(d).slice(0, 80)); else assert.ok(r.data, r.galat); return r; };
+  v(INTI_D()); v(INTI_D({sawah_ha: 2}), /tidak ada.*Sawah|Sawah/);
+  v(INTI_D({nihil_sosek: false, sawah_ha: 2})); v(INTI_D({luka: 2, ...sebarD("luka", [1, 1, 1, 0, 0, 0])}), /rincian luka\/sakit \(3\) tidak boleh melebihi total 2/); v(INTI_D({hilang: undefined, ...sebarD("hilang", [1, 0, 0, 0, 0, 0])}), /rincian hilang/);
+  v(INTI_D({penyebab: "hubungi 0812-3456-7890"}), /data pribadi/); v(INTI_D({upaya: "kontak a@b.id"}), /data pribadi/); v(INTI_D({deskripsi: "NIK 3301010101010001"}), /data pribadi/); v(INTI_D({jam: "25:99"}), /jam:menit/);
+  v(INTI_D({bujur: undefined}), /berpasangan/); v(INTI_D({lintang: 12}), /Latitude/); v(INTI_D({tgl_tuntas: hari(5)}), /sebelum tanggal kejadian/); v(INTI_D({jenis: "ufo"}), /Jenis/);
+  assert.equal(validasi("dampak", INTI_D({bujur: 109.1234567891}), null).data.bujur, 109.123457, "koordinat disimpan 6 angka di belakang koma");
+  assert.ok(validasi("dampak", {...INTI_D(), kolom_liar: 1}, null).galat); assert.ok(validasi("dampak", {...INTI_D(), kec: "x"}, null).galat, "kec/desa bukan kolom data");
+  assert.ok(JSON.stringify(spekPublik().meja.find(m => m.id === "dampak").kolom.find(c => c.nama === "rumah_rb")).includes('"inti":true'), "spek membawa bagian dan inti");
+});
+
+uji("dampak alur: verifikasi ditolak bila inti belum lengkap (menyebut butir), lalu lolos; ubah sesudahnya kembali ke dilaporkan; petugas terkunci kabnya", async () => {
+  const p = await petugas("Banjarnegara", ["dampak"], "33"), lain = await petugas("Cilacap", ["dampak"], "33"), tanpa = await petugas("Purwokerto", ["kaji_cepat"], "33");
+  const mk = await baru(p.h, "dampak", "33", "Banjarnegara", {jenis: "banjir", nama_kejadian: "Banjir Awal", tanggal: hari(2), rumah_rb: 2}); assert.equal(mk.s, 201, mk.t);
+  const id = mk.j.catatan.id; assert.equal(mk.j.catatan.status, "dilaporkan"); assert.equal(mk.j.catatan.kelengkapan.inti_lengkap, false); assert.ok(mk.j.catatan.kelengkapan.persen > 0);
+  const tolak = await st(p.h, id, {ke: "diverifikasi"}); assert.equal(tolak.s, 400); assert.match(tolak.j.galat, /verifikasi ditolak: \d+ butir inti/); assert.match(tolak.j.galat, /Kecamatan/); assert.match(tolak.j.galat, /Meninggal \(jiwa total\)/); assert.match(tolak.j.galat, /Kerusakan sosial ekonomi/);
+  assert.equal((await DB.prepare("SELECT status FROM meja_catatan WHERE id = ?").bind(id).first()).status, "dilaporkan");
+  assert.equal((await st(p.h, id, {ke: "masuk_logbook"})).s, 409, "tidak melompat");
+  /* melengkapi lewat ubah (kosong tetap kosong, 0 tersimpan) */
+  const ub = await api("POST", "/api/meja/catatan/" + id, {aksi: "ubah", data: INTI_D({nama_kejadian: "Banjir Awal", meninggal: 0}), ...wilD}, p.h); assert.equal(ub.s, 200, ub.t);
+  assert.equal(ub.j.catatan.data.meninggal, 0); assert.equal(ub.j.catatan.kelengkapan.inti_lengkap, true);
+  const ok = await st(p.h, id, {ke: "diverifikasi"}); assert.equal(ok.s, 200, ok.t); assert.equal(ok.j.catatan.status, "diverifikasi");
+  /* isi diubah sesudah diverifikasi: kembali ke dilaporkan (verifikasi ulang) di catatan yang sama */
+  const u2 = await api("POST", "/api/meja/catatan/" + id, {aksi: "ubah", data: INTI_D({nama_kejadian: "Banjir Awal", meninggal: 2}), ...wilD}, p.h); assert.equal(u2.s, 200, u2.t); assert.equal(u2.j.catatan.status, "dilaporkan"); assert.equal(u2.j.catatan.data.meninggal, 2);
+  const jj = (await api("GET", "/api/meja/catatan/" + id, undefined, ADMIN)).j.jejak.map(x => `${x.dari}>${x.ke}`); assert.deepEqual(jj, ["null>dilaporkan", "dilaporkan>dilaporkan", "dilaporkan>diverifikasi", "diverifikasi>dilaporkan"], "jejak: isi diubah, verifikasi, ubah kembali");
+  /* satu kejadian per kabupaten: jenis + tanggal + nama (huruf kecil) yang sama ditolak 409 */
+  assert.equal((await bDampak(p.h, "Banjarnegara", {jenis: "banjir", nama_kejadian: "BANJIR AWAL", tanggal: hari(3)}, "33", {})).s, 201, "tanggal beda = kejadian lain");
+  const dobel = await bDampak(p.h, "Banjarnegara", {jenis: "banjir", nama_kejadian: "banjir awal", tanggal: hari(3)}, "33", {}); assert.equal(dobel.s, 409, dobel.t);
+  /* petugas kab lain atau tanpa meja dampak */
+  assert.equal((await api("GET", "/api/meja/catatan/" + id, undefined, lain.h)).s, 404); assert.equal((await st(lain.h, id, {ke: "diverifikasi"})).s, 404);
+  assert.equal((await api("GET", "/api/meja/catatan?meja=dampak", undefined, lain.h)).j.catatan.length, 0);
+  assert.equal((await bDampak(lain.h, "Banjarnegara", {jenis: "banjir", nama_kejadian: "Curang", tanggal: hari(1)}, "33", {})).s, 403, "hanya kabupatennya");
+  assert.equal((await bDampak(tanpa.h, "Purwokerto", {jenis: "banjir", nama_kejadian: "Curang", tanggal: hari(1)}, "33", {})).s, 403, "meja tidak diizinkan");
+  assert.equal((await bDampak(p.h, "Banjarnegara", {jenis: "banjir", nama_kejadian: "Telepon 081234567890", tanggal: hari(1)}, "33", {})).s, 400, "data pribadi di teks bebas");
+});
+
+uji("dampak terima ke Logbook: petugas ditolak; moderator membuat kejadian, memasangkan, 409 bila ganda, pengkinian tidak ganda; di luar jendela catatan tetap", async () => {
+  const p = await petugas("Kebumen", ["dampak"], "33");
+  const siap = async (kab, data, wil = wilD, h = p.h) => {   // catatan terverifikasi
+    const a = await bDampak(h, kab, data, "33", wil); assert.equal(a.s, 201, a.t); const v = await st(h, a.j.catatan.id, {ke: "diverifikasi"}); assert.equal(v.s, 200, v.t); return a.j.catatan.id;
+  };
+  const kaya = {...sebarD("luka", [1, 0, 1, 1, 0, 0]), rugi_rumah: 900, sawah_ha: 2.5, rugi_sawah: 25, nihil_sosek: false, kios_rb: 0, kios_rs: 1, kios_rr: 0, kios_terendam: 3, rugi_kios: 60, dokumentasi: "https://contoh.id/foto-banjir", keb_logistik: "Beras 1 ton", nihil_kebutuhan: false,
+    nihil_prasarana: false, jalan_km: 2, rugi_jalan: 100, sebaran: "https://contoh.id/peta"};
+  const id = await siap("Kebumen", INTI_D({nama_kejadian: "Banjir Kebumen", ...kaya}));
+  /* petugas tidak bisa menerima; dummy tidak pernah masuk Logbook */
+  assert.equal((await st(p.h, id, {ke: "masuk_logbook"})).s, 403, "petugas tidak menerima ke Logbook");
+  assert.equal(await logbookN("logbook_kejadian"), 0);
+  const t1 = await st(ADMIN, id, {ke: "masuk_logbook"}); assert.equal(t1.s, 200, t1.t);
+  assert.equal(t1.j.logbook.tindakan, "buat"); assert.match(t1.j.logbook.kib, /^3305101\d{8}1$/, "KIB: kode BPS Kebumen 3305 dari data wilayah, tanpa diketik petugas"); assert.equal(t1.j.logbook.kib.slice(7, 15), hari(2).replaceAll("-", ""));
+  assert.equal(t1.j.catatan.status, "masuk_logbook"); assert.equal(t1.j.catatan.data.logbook_id, t1.j.logbook.kejadian_id); assert.equal(t1.j.catatan.data.logbook_kib, t1.j.logbook.kib);
+  const kej = await DB.prepare("SELECT * FROM logbook_kejadian WHERE id = ?").bind(t1.j.logbook.kejadian_id).first();
+  assert.equal(kej.jenis, "banjir"); assert.equal(kej.prov, "33"); assert.equal(kej.kab, "Kebumen"); assert.equal(kej.kec, "Kec Uji"); assert.equal(kej.lat, -7.397123); assert.equal(kej.lon, 109.689012)
+  const e1 = await DB.prepare("SELECT e.*, j.korban, j.prasarana, j.kerugian_juta, j.dokumentasi FROM logbook_entri e JOIN logbook_entri_juklak j ON j.entri_id = e.id WHERE e.kejadian_id = ?").bind(kej.id).first();
+  assert.equal(e1.md, 1); assert.equal(e1.luka, 3); assert.equal(e1.mengungsi_jiwa, 200); assert.equal(e1.rumah_rb, 2); assert.equal(e1.rumah_terendam, 150); assert.equal(e1.sumber_instansi, "BPBD Kebumen");
+  assert.equal(JSON.parse(e1.korban).luka["0-17"].L, 1); assert.equal(JSON.parse(e1.korban).terdampak_jiwa, 900); assert.equal(e1.kerugian_juta, 1085, "total taksiran = rumah 900 + sawah 25 + kios 60 + jalan 100");
+  const pras = JSON.parse(e1.prasarana); assert.ok(pras.some(x => x.kode === "sawah" && x.jumlah === 2.5 && x.kerugian_juta === 25) && pras.some(x => x.kode === "kios_toko" && x.tingkat === "rs" && x.kerugian_juta === 60) && pras.some(x => x.kode === "kios_toko" && x.tingkat === "terendam" && x.jumlah === 3) && pras.some(x => x.kode === "jalan" && x.jumlah === 2));
+  assert.deepEqual(JSON.parse(e1.dokumentasi), ["https://contoh.id/foto-banjir"]); assert.match(e1.catatan, /Kebutuhan Logistik: Beras 1 ton/);
+  assert.equal((await DB.prepare("SELECT penyebab, upaya FROM logbook_narasi WHERE kejadian_id = ?").bind(kej.id).first()).penyebab, "Hujan lebat di hulu");
+  /* pengkinian: isi diubah, verifikasi ulang, terima lagi = entri baru di kejadian yang sama */
+  const u = await api("POST", "/api/meja/catatan/" + id, {aksi: "ubah", data: INTI_D({nama_kejadian: "Banjir Kebumen", meninggal: 4, luka: 3, ...kaya}), ...wilD}, p.h); assert.equal(u.s, 200, u.t); assert.equal(u.j.catatan.status, "dilaporkan"); assert.equal(u.j.catatan.data.logbook_id, kej.id, "tautan Logbook bertahan saat diubah");
+  assert.equal((await st(p.h, id, {ke: "diverifikasi"})).s, 200);
+  const t2 = await st(ADMIN, id, {ke: "masuk_logbook"}); assert.equal(t2.s, 200, t2.t); assert.equal(t2.j.logbook.tindakan, "tambah"); assert.equal(t2.j.logbook.kejadian_id, kej.id); assert.equal(t2.j.logbook.kib, t1.j.logbook.kib); assert.equal(t2.j.logbook.kib_entri, t1.j.logbook.kib + "-002");
+  assert.equal(await logbookN("logbook_kejadian"), 1, "tidak menggandakan kejadian"); assert.equal(await logbookN("logbook_entri", `kejadian_id = '${kej.id}'`), 2);
+  assert.equal((await DB.prepare("SELECT md FROM logbook_entri WHERE kejadian_id = ? ORDER BY waktu DESC, rowid DESC LIMIT 1").bind(kej.id).first()).md, 4, "angka terbaru menimpa");
+  /* memasangkan dengan kejadian Logbook yang sudah dibuat staf: jenis, prov, kab, tanggal mulai sama */
+  const lb = (kab, mulai, jenis = "banjir") => api("POST", "/api/logbook/kejadian", {jenis, kab_kode: "33|" + kab, mulai, md: 0}, ADMIN);
+  const l1 = await lb("Cilacap", hari(2) + "T01:00:00+07:00"); assert.equal(l1.s, 201, l1.t);
+  const cil = await siap("Cilacap", INTI_D({nama_kejadian: "Banjir Cilacap"}), wilD, ADMIN);
+  const t3 = await st(ADMIN, cil, {ke: "masuk_logbook"}); assert.equal(t3.s, 200, t3.t); assert.equal(t3.j.logbook.tindakan, "tambah"); assert.equal(t3.j.logbook.kejadian_id, l1.j.kejadian.id, "satu cocok: tambah entri");
+  /* lebih dari satu cocok: 409 dengan kandidat; kirim logbook_id memilih; id kejadian lain jenis ditolak */
+  const l2 = await lb("Wonosobo", hari(2) + "T02:00:00+07:00"), l3 = await lb("Wonosobo", hari(2) + "T15:00:00+07:00"); assert.equal(l2.s, 201); assert.equal(l3.s, 201);
+  const won = await siap("Wonosobo", INTI_D({nama_kejadian: "Banjir Wonosobo"}), wilD, ADMIN);
+  const t4 = await st(ADMIN, won, {ke: "masuk_logbook"}); assert.equal(t4.s, 409, t4.t); assert.equal(t4.j.kandidat.length, 2); assert.match(t4.j.galat, /logbook_id/);
+  assert.equal((await DB.prepare("SELECT status FROM meja_catatan WHERE id = ?").bind(won).first()).status, "diverifikasi", "409: catatan tetap diverifikasi");
+  const salahJenis = await lb("Wonosobo", hari(2) + "T03:00:00+07:00", "longsor");
+  assert.equal((await st(ADMIN, won, {ke: "masuk_logbook", logbook_id: salahJenis.j.kejadian.id})).s, 400, "jenis beda ditolak");
+  assert.equal((await st(ADMIN, won, {ke: "masuk_logbook", logbook_id: "zz"})).s, 400);
+  const t5 = await st(ADMIN, won, {ke: "masuk_logbook", logbook_id: l3.j.kejadian.id}); assert.equal(t5.s, 200, t5.t); assert.equal(t5.j.logbook.kejadian_id, l3.j.kejadian.id);
+  /* kejadian tujuan sudah ditutup: 409 jelas, catatan tetap */
+  const l4 = await lb("Magelang", hari(2) + "T01:00:00+07:00"); assert.equal(l4.s, 201);
+  assert.equal((await api("POST", `/api/logbook/kejadian/${l4.j.kejadian.id}/tutup`, {tgl_tuntas: hari(1), kondisi_akhir: "Selesai ditangani"}, ADMIN)).s, 200);
+  const mag = await siap("Magelang", INTI_D({nama_kejadian: "Banjir Magelang"}), wilD, ADMIN);
+  const t6 = await st(ADMIN, mag, {ke: "masuk_logbook"}); assert.equal(t6.s, 409, t6.t); assert.match(t6.j.galat, /sudah ditutup/);
+  /* di luar jendela Logbook (mulai > 400 hari): pesan jelas, catatan tetap diverifikasi */
+  const tua = await siap("Temanggung", INTI_D({nama_kejadian: "Banjir Lama", tanggal: hari(500)}), wilD, ADMIN);
+  const t7 = await st(ADMIN, tua, {ke: "masuk_logbook"}); assert.equal(t7.s, 422, t7.t); assert.match(t7.j.galat, /di luar jendela Logbook/);
+  assert.equal((await DB.prepare("SELECT status FROM meja_catatan WHERE id = ?").bind(tua).first()).status, "diverifikasi"); assert.equal(await logbookN("logbook_kejadian", "kab = 'Temanggung'"), 0);
+  /* validasi Logbook yang sama: melewati batas wajar ditolak dan klaim dibatalkan; yakin: true meneruskan */
+  const besar = await siap("Sleman", INTI_D({nama_kejadian: "Banjir Besar", rumah_rb: 600000}), wilD, ADMIN);
+  const t8 = await st(ADMIN, besar, {ke: "masuk_logbook"}); assert.equal(t8.s, 400, t8.t); assert.equal(t8.j.wajar, "rumah_rb"); assert.equal((await DB.prepare("SELECT status FROM meja_catatan WHERE id = ?").bind(besar).first()).status, "diverifikasi");
+  assert.equal((await st(ADMIN, besar, {ke: "masuk_logbook", yakin: true})).s, 200);
+  /* batal terima: Logbook gagal sesudah klaim (laju tulis Logbook habis) mengembalikan ke diverifikasi dengan jejak */
+  const lbm = await siap("Klaten", INTI_D({nama_kejadian: "Banjir Klaten"}), wilD, ADMIN);
+  const kunciLaju = (await DB.prepare("SELECT kunci FROM laju_bnpb WHERE aksi = 'logbook_tulis' LIMIT 1").first()).kunci;
+  await DB.batch(Array.from({length: 120}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'logbook_tulis', ?)").bind(kunciLaju, Date.now())));
+  const t9 = await st(ADMIN, lbm, {ke: "masuk_logbook"}); assert.equal(t9.s, 429, t9.t);
+  assert.equal((await DB.prepare("SELECT status FROM meja_catatan WHERE id = ?").bind(lbm).first()).status, "diverifikasi", "klaim dibatalkan");
+  const jb = (await api("GET", "/api/meja/catatan/" + lbm, undefined, ADMIN)).j.jejak.map(x => `${x.dari}>${x.ke}`); assert.deepEqual(jb.slice(-2), ["diverifikasi>masuk_logbook", "masuk_logbook>diverifikasi"]);
+  assert.equal(await logbookN("logbook_kejadian", "kab = 'Klaten'"), 0);
+  await DB.prepare("DELETE FROM laju_bnpb WHERE aksi = 'logbook_tulis'").run();
+  /* catatan contoh (dummy) tidak pernah masuk Logbook */
+  await adm("POST", "/api/meja/dummy", {aksi: "isi"});
+  const dm = (await api("GET", "/api/meja/catatan?meja=dampak&status=diverifikasi&prov=62", undefined, ADMIN)).j.catatan.find(x => x.dummy);
+  assert.ok(dm, "dummy dampak diverifikasi ada"); const td = await st(ADMIN, dm.id, {ke: "masuk_logbook"}); assert.equal(td.s, 409, td.t); assert.match(td.j.galat, /dummy/);
+  await adm("POST", "/api/meja/dummy", {aksi: "hapus"});
+});
+
+uji("dampak staf Pusdalops/Koordalops: hanya meja dampak dan hanya terima ke Logbook, tidak mengisi atau mengubah isi", async () => {
+  const pd = await buatStaf("a", ["pusdalops"]), ko = await buatStaf("b", ["koordalops"]), luar = await buatStaf("c", ["udara"]), p = await petugas("Boyolali", ["dampak", "kaji_cepat"], "33");
+  const a = await bDampak(p.h, "Boyolali", INTI_D({nama_kejadian: "Banjir Boyolali"})); assert.equal(a.s, 201, a.t); const id = a.j.catatan.id;
+  assert.equal((await st(p.h, id, {ke: "diverifikasi"})).s, 200);
+  { const sy = await api("GET", "/api/meja/saya", undefined, pd); assert.equal(sy.j?.peran, "pusdalops", sy.t); }
+  const dft = await api("GET", "/api/meja/catatan?meja=dampak&status=diverifikasi", undefined, pd); assert.equal(dft.s, 200, dft.t); assert.ok(dft.j.catatan.some(x => x.id === id));
+  assert.ok(dft.j.catatan.find(x => x.id === id).aksi.some(x => x.ke === "masuk_logbook" && x.boleh), "tombol Terima ke Logbook tersedia");
+  for (const m of ["kaji_cepat", "pengaduan", "dsp"]) assert.equal((await api("GET", "/api/meja/catatan?meja=" + m, undefined, pd)).s, 403, m);
+  assert.equal((await api("GET", "/api/meja/catatan?meja=dampak", undefined, luar)).s, 403, "peran lain tidak masuk");
+  assert.equal((await bDampak(pd, "Boyolali", INTI_D())).s, 403, "tidak mengisi");
+  assert.equal((await api("POST", "/api/meja/catatan/" + id, {aksi: "ubah", data: INTI_D(), ...wilD}, pd)).s, 403, "tidak mengubah isi");
+  assert.equal((await st(pd, id, {ke: "dilaporkan"})).s, 403, "tidak menarik kembali");
+  assert.equal((await api("POST", "/api/meja/impor", {baris: [{prov: "33", kab: "Boyolali", data: INTI_D()}]}, pd)).s, 403, "tidak mengimpor");
+  const t = await st(ko, id, {ke: "masuk_logbook"}); assert.equal(t.s, 200, t.t); assert.equal(t.j.logbook.tindakan, "buat"); assert.match(t.j.logbook.kib, /^3309101/);
+  assert.match((await DB.prepare("SELECT dibuat_oleh FROM logbook_kejadian WHERE id = ?").bind(t.j.logbook.kejadian_id).first()).dibuat_oleh, /^staf:/, "tercatat atas nama staf");
+  /* staf berwilayah provinsi lain tidak bisa */
+  await DB.prepare("UPDATE staf SET wilayah = '[\"11\"]' WHERE username = 'juklaka'").run();
+  const b = await bDampak(p.h, "Boyolali", INTI_D({nama_kejadian: "Banjir Boyolali Dua"})); assert.equal(b.s, 201); assert.equal((await st(p.h, b.j.catatan.id, {ke: "diverifikasi"})).s, 200);
+  assert.equal((await st(pd, b.j.catatan.id, {ke: "masuk_logbook"})).s, 404, "di luar wilayah staf: 404, tidak membocorkan id");
+  assert.equal((await api("GET", "/api/meja/catatan/" + b.j.catatan.id, undefined, pd)).s, 404, "GET rincian lintas wilayah 404");
+  assert.equal((await api("GET", "/api/meja/catatan/" + b.j.catatan.id, undefined, ADMIN)).s, 200);
+  assert.equal((await api("GET", "/api/meja/catatan?meja=dampak", undefined, pd)).j.catatan.length, 0, "daftar disaring ke wilayah staf");
+  /* oleh dan jejak mentah hanya admin penuh; petugas dan staf melihat label tetap */
+  const mentah = (await api("GET", "/api/meja/catatan/" + id, undefined, ADMIN)).j; assert.ok(mentah.catatan.oleh.startsWith("petugas:") && mentah.jejak.every(j => /^(petugas|admin|staf):/.test(j.oleh)), "admin penuh melihat pelaku asli");
+  await DB.prepare("UPDATE staf SET wilayah = '[]' WHERE username = 'juklaka'").run();
+  for (const h of [pd, ko, p.h]) { const r = (await api("GET", "/api/meja/catatan/" + id, undefined, h)).j; assert.equal(r.catatan.oleh, "Petugas"); assert.ok(r.jejak.every(j => ["Petugas", "Admin"].includes(j.oleh)), JSON.stringify(r.jejak)); assert.ok(!JSON.stringify(r).match(/(petugas|admin|staf):[0-9a-f]/), "tanpa pelaku mentah"); }
+  assert.ok((await api("GET", "/api/meja/catatan?meja=dampak", undefined, pd)).j.catatan.every(x => ["Petugas", "Admin"].includes(x.oleh)), "daftar juga berlabel");
+});
+
+uji("dampak impor: 50 baris, tanpa ganda, baris rusak dilaporkan per baris, petugas hanya kabnya, batas jumlah", async () => {
+  const p = await petugas("Purbalingga", ["dampak"], "33"), tanpa = await petugas("Banyumas", ["kaji_cepat"], "33");
+  const baris = Array.from({length: 50}, (_, i) => ({data: {jenis: "banjir", nama_kejadian: "Banjir Impor " + i, tanggal: hari(3 + (i % 40)), meninggal: i % 3, rumah_rb: i % 7}, kec: "Kec Impor", desa: "Desa " + (i % 9)}));
+  const r1 = await api("POST", "/api/meja/impor", {baris}, p.h); assert.equal(r1.s, 200, r1.t.slice(0, 300));
+  assert.deepEqual(r1.j.ringkas, {baris: 50, masuk: 50, ganda: 0, galat: 0}); assert.equal(await U.n("meja_catatan", "meja = 'dampak' AND kab = 'Purbalingga'"), 50); assert.equal(await U.n("meja_jejak", "catatan IS 'impor'"), 50);
+  const r2 = await api("POST", "/api/meja/impor", {baris}, p.h); assert.equal(r2.s, 200); assert.deepEqual(r2.j.ringkas, {baris: 50, masuk: 0, ganda: 50, galat: 0}, "impor ulang tidak menggandakan"); assert.equal(await U.n("meja_catatan", "meja = 'dampak' AND kab = 'Purbalingga'"), 50);
+  assert.equal(r2.j.hasil[0].status, "ganda"); assert.equal(r2.j.hasil[0].baris, 1);
+  /* campuran: baru, ganda, rusak (jenis liar, kolom liar, kab lain, nihil bentrok, rincian lebih dari total) */
+  const camp = [{data: {jenis: "longsor", nama_kejadian: "Baru Impor", tanggal: hari(5)}}, baris[0], {data: {jenis: "ufo", nama_kejadian: "X", tanggal: hari(5)}}, {data: {jenis: "banjir", nama_kejadian: "Y", tanggal: hari(5), admin: 1}},
+    {kab: "Banyumas", data: {jenis: "banjir", nama_kejadian: "Kab lain", tanggal: hari(5)}}, {data: {jenis: "banjir", nama_kejadian: "Bentrok", tanggal: hari(5), nihil_sosek: true, sawah_ha: 1}}, {data: {jenis: "banjir", nama_kejadian: "Rincian", tanggal: hari(5), luka: 1, luka_anak_l: 2}}, "bukan objek"];
+  const r3 = await api("POST", "/api/meja/impor", {baris: camp}, p.h); assert.equal(r3.s, 200, r3.t); assert.deepEqual(r3.j.ringkas, {baris: 8, masuk: 1, ganda: 1, galat: 6});
+  assert.deepEqual(r3.j.hasil.map(h => h.status), ["masuk", "ganda", "galat", "galat", "galat", "galat", "galat", "galat"]); assert.match(r3.j.hasil[4].galat, /kabupatenmu/); assert.match(r3.j.hasil[2].galat, /Jenis/);
+  /* batas: 201 baris, kosong, kolom liar, meja tidak diizinkan, kabupaten terlalu banyak untuk admin */
+  assert.equal((await api("POST", "/api/meja/impor", {baris: [...baris, baris[0]]}, p.h)).s, 400); assert.equal((await api("POST", "/api/meja/impor", {baris: []}, p.h)).s, 400); assert.equal((await api("POST", "/api/meja/impor", {baris, x: 1}, p.h)).s, 400);
+  assert.equal((await api("POST", "/api/meja/impor", {baris: [baris[0]]}, tanpa.h)).s, 403);
+  assert.equal((await api("POST", "/api/meja/impor", {baris: [baris[0]]})).s, 403, "tanpa kode atau token");
+  const banyakKab = Array.from({length: 9}, (_, i) => ({prov: "33", kab: "Kab Impor " + i, data: {jenis: "banjir", nama_kejadian: "Satu", tanggal: hari(4)}}));
+  assert.equal((await api("POST", "/api/meja/impor", {baris: banyakKab}, ADMIN)).s, 400, "maks 8 kabupaten per impor");
+  const adminOk = await api("POST", "/api/meja/impor", {baris: banyakKab.slice(0, 3)}, ADMIN); assert.equal(adminOk.s, 200); assert.equal(adminOk.j.ringkas.masuk, 3);
+  const noWil = await api("POST", "/api/meja/impor", {baris: [{data: {jenis: "banjir", nama_kejadian: "Tanpa wilayah", tanggal: hari(4)}}]}, ADMIN); assert.equal(noWil.j.ringkas.galat, 1, "admin wajib menyebut prov dan kab per baris");
+  /* ringkasan meja ikut terbaru tanpa menunggu cron */
+  const ring = (await api("GET", "/api/meja/rekap", undefined, ADMIN)).j.per_kab.dampak["33|Purbalingga"]; assert.equal(ring.n, 51);
+});
+
+uji("dampak kelengkapan per kabupaten: rata-rata dari baris nyata, butir paling sering kosong, belum_dimutakhirkan; hanya admin dan staf Pusdalops", async () => {
+  const p = await petugas("Kendal", ["dampak"], "33");
+  const mk = async (nama, o = {}, umurHari = 0) => { const a = await bDampak(p.h, "Kendal", INTI_D({nama_kejadian: nama, ...o})); assert.equal(a.s, 201, a.t); if (umurHari) await DB.prepare("UPDATE meja_catatan SET dibuat = ?, diubah = ? WHERE id = ?").bind(KINI - umurHari * HARI, KINI - umurHari * HARI, a.j.catatan.id).run(); return a.j.catatan.id; };
+  const a = await mk("Darurat Basi", {status_darurat: "tanggap", tanggal: hari(4)}, 3), b = await mk("Darurat Segar", {status_darurat: "siaga", tanggal: hari(5)}), c = await mk("Darurat Ditutup", {status_darurat: "tanggap", tgl_tuntas: hari(1), tanggal: hari(6)}, 3), d = await mk("Tanpa Darurat", {tanggal: hari(7)}, 3);
+  const daftar = (await api("GET", "/api/meja/catatan?meja=dampak&kab=Kendal", undefined, ADMIN)).j.catatan, tanda = n => daftar.find(x => x.data.nama_kejadian === n).tanda;
+  assert.deepEqual(tanda("Darurat Basi"), ["belum_dimutakhirkan"], "darurat, belum ditutup, lebih dari sehari tanpa pembaruan"); assert.deepEqual(tanda("Darurat Segar"), []); assert.deepEqual(tanda("Darurat Ditutup"), []); assert.deepEqual(tanda("Tanpa Darurat"), []);
+  await DB.prepare("UPDATE meja_ringkas_meta SET nilai = 1").run();   // paksa bangun ulang penuh sekali (jalur cron)
+  const adm1 = await api("GET", "/api/meja/kelengkapan", undefined, ADMIN); assert.equal(adm1.s, 200, adm1.t);
+  const kend = adm1.j.kab.find(x => x.kab === "Kendal"); assert.equal(kend.kejadian, 4); assert.equal(kend.inti_lengkap, 4); assert.equal(kend.belum_dimutakhirkan, 1);
+  const manual = daftar.map(x => x.kelengkapan.persen), rata = Math.round(manual.reduce((s, v) => s + v, 0) / manual.length); assert.equal(kend.persen, rata, "persen rata-rata sama dengan hitung manual dari baris");
+  assert.ok(kend.kosong.length > 0 && kend.kosong[0].jumlah === 4 && kend.kosong[0].label, "butir paling sering kosong berlabel"); assert.ok(kend.kosong.some(x => x.nama === "luka_anak_l"));
+  assert.ok(adm1.j.kab.findIndex(x => x.kab === "Kendal") >= 0 && adm1.j.ringkas.kejadian >= 4);
+  /* sama persis dengan hitung dari seluruh tabel dampak per kabupaten (invarian, bukan potret) */
+  const semua = (await DB.prepare("SELECT prov, kab, kec, desa, data FROM meja_catatan WHERE meja = 'dampak' AND dummy = 0").all()).results, per = new Map();
+  for (const r of semua) { const k = r.prov + "|" + r.kab, h = kelengkapan(KD, {...JSON.parse(r.data), kec: r.kec, desa: r.desa}), z = per.get(k) ?? {n: 0, persen: 0}; z.n++; z.persen += h.persen; per.set(k, z); }
+  for (const x of adm1.j.kab) { const z = per.get(x.prov + "|" + x.kab); assert.equal(x.kejadian, z.n, x.kab); assert.equal(x.persen, Math.round(z.persen / z.n), x.kab); }
+  assert.equal(adm1.j.kab.length, per.size);
+  /* pembaruan satu catatan memperbarui agregat kabupatennya saja (tanpa menunggu cron) */
+  const ub = await api("POST", "/api/meja/catatan/" + d, {aksi: "ubah", data: INTI_D({nama_kejadian: "Tanpa Darurat", tanggal: hari(7), nihil_sosek: false, sawah_ha: 1}), ...wilD}, p.h); assert.equal(ub.s, 200, ub.t);
+  const adm2 = (await api("GET", "/api/meja/kelengkapan", undefined, ADMIN)).j.kab.find(x => x.kab === "Kendal"); assert.equal(adm2.kejadian, 4);
+  /* akses */
+  const pd = await buatStaf("1", ["pusdalops"]); assert.equal((await api("GET", "/api/meja/kelengkapan", undefined, pd)).s, 200, "staf Pusdalops boleh membaca");
+  const ulp = await buatStaf("2", ["ulp"]); assert.equal((await api("GET", "/api/meja/kelengkapan", undefined, ulp)).s, 403); assert.equal((await api("GET", "/api/meja/kelengkapan", undefined, p.h)).s, 403, "petugas tidak"); assert.equal((await api("GET", "/api/meja/kelengkapan")).s, 403);
+  assert.ok(!JSON.stringify(adm1.j).includes("Hujan lebat"), "tanpa isi laporan, hanya angka dan nama butir");
+  const rapor = (await api("GET", "/api/meja/rapor", undefined, ADMIN)).j; assert.ok(!JSON.stringify(rapor.kab.map(k => Object.keys(k.kelengkapan.meja))).includes("dampak"), "rapor BPBD tidak berubah: dampak rapor:false");
+  assert.ok(!("dampak" in (await api("GET", "/api/meja/ringkas")).j.meja), "dampak tidak tampil di ringkas publik");
+});
+
+uji("migrasi 0119 di atas data lama: semua baris lolos, FK utuh, meja dampak dan trigger aktif, batas data per meja, jalan dua kali tetap idempoten", async () => {
+  const mf = new Miniflare({modules: true, script: "export default {fetch: () => new Response('ok')}", compatibilityDate: "2024-09-23", d1Databases: {DB: "uji-meja-0119"}});
+  try {
+    const D = await mf.getD1Database("DB"), dir = path.join(AKAR, "migrations"), berkas = readdirSync(dir).filter(f => f.endsWith(".sql")).sort(), sql = f => pecah(readFileSync(path.join(dir, f), "utf8"));
+    const jalan = async f => D.batch(sql(f).map(s => D.prepare(s)));
+    for (const f of berkas.filter(f => f < "0119_")) await jalan(f);
+    const pt = "11".repeat(8), gd = "22".repeat(8), kj = "33".repeat(8), lg = "44".repeat(8), adu = "55".repeat(8), pg = "66".repeat(8);
+    await D.batch([
+      D.prepare("INSERT INTO meja_petugas (id, nama, prov, kab, meja, kode_sha, dibuat) VALUES (?, 'Lama', '71', 'Kab Lama', ?, ?, 1)").bind(pt, JSON.stringify(["kaji_cepat", "logistik", "pengungsi", "klaster"]), "a".repeat(64)),
+      D.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, desa, data, status, dibuat, diubah, petugas_id) VALUES (?, 'kaji_cepat', '71', 'Kab Lama', 'Desa L', '{\"kejadian\":\"banjir\"}', 'masuk_jitupasna', 1, 1, ?)").bind(kj, pt),
+      D.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah, stok) VALUES (?, 'gudang', '71', 'Kab Lama', '{\"gudang\":\"G1\",\"barang\":\"beras\"}', 'tercatat', 1, 1, 50)").bind(gd),
+      D.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah) VALUES (?, 'logistik', '71', 'Kab Lama', '{\"barang\":\"beras\"}', 'dikirim', 1, 1)").bind(lg),
+      D.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah) VALUES (?, 'pengaduan', '00', 'BNPB Pusat', '{}', 'register', 1, 1)").bind(adu),
+      D.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah) VALUES (?, 'pengungsi', '71', 'Kab Lama', '{\"nama_tempat\":\"Balai\",\"tgl_data\":\"2026-11-01\"}', 'tercatat', 1, 1)").bind(pg),
+      D.prepare("INSERT INTO meja_pelapor (catatan_id, nama, dibuat) VALUES (?, 'Nama Uji', 1)").bind(adu),
+      D.prepare("INSERT INTO meja_jejak (catatan_id, dari, ke, waktu, oleh) VALUES (?, NULL, 'masuk_jitupasna', 1, 'x')").bind(kj),
+      D.prepare("INSERT INTO meja_stok (gudang_id, jenis, delta, saldo, logistik_id, waktu) VALUES (?, 'keluar', -5, 45, ?, 1)").bind(gd, lg),
+      D.prepare("INSERT INTO meja_ringkas (meja, prov, kab, status, dummy, n, bahaya, jumlah, terbaru) VALUES ('kaji_cepat', '71', 'Kab Lama', 'masuk_jitupasna', 0, 1, 0, '{}', 1)"),
+    ]);
+    const potret = async () => ({c: (await D.prepare("SELECT id, meja, prov, kab, desa, data, status, stok, kaji_id, petugas_id FROM meja_catatan ORDER BY id").all()).results, p: (await D.prepare("SELECT id, nama, meja FROM meja_petugas").all()).results, j: (await D.prepare("SELECT catatan_id, ke FROM meja_jejak").all()).results,
+      s: (await D.prepare("SELECT gudang_id, delta FROM meja_stok").all()).results, r: (await D.prepare("SELECT meja, n FROM meja_ringkas").all()).results, l: (await D.prepare("SELECT catatan_id, nama FROM meja_pelapor").all()).results});
+    const sebelum = await potret();
+    await jalan("0119_meja_dampak.sql");
+    assert.deepEqual(await potret(), sebelum, "semua baris lolos utuh"); assert.equal((await D.prepare("PRAGMA foreign_key_check").all()).results.length, 0, "FK utuh");
+    const coba = async (q, ...a) => D.prepare(q).bind(...a).run().then(() => true, () => false);
+    const dm = (id, status, data = "{}", meja = "dampak") => coba("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah) VALUES (?, ?, '33', 'Kab Baru', ?, ?, 1, 1)", id, meja, data, status);
+    const besar = JSON.stringify({x: "a".repeat(15000)});
+    const i1 = hex();
+    assert.equal(await dm(i1, "dilaporkan"), true); assert.equal(await dm(hex(), "tercatat"), false, "status dampak dijaga CHECK"); assert.equal(await dm(hex(), "dilaporkan", besar), true, "dampak boleh sampai 20000 huruf");
+    assert.equal(await dm(hex(), "dilaporkan", JSON.stringify({x: "a".repeat(20001)})), false); assert.equal(await dm(hex(), "dilaporkan", besar, "kaji_cepat"), false, "meja lain tetap 6000");
+    for (const [dari, ke, ok] of [["dilaporkan", "diverifikasi", true], ["diverifikasi", "masuk_logbook", true], ["masuk_logbook", "dilaporkan", true], ["dilaporkan", "diverifikasi", true], ["diverifikasi", "dilaporkan", true], ["dilaporkan", "masuk_logbook", false]]) {
+      const id = hex(); await dm(id, dari); assert.equal(await coba("UPDATE meja_catatan SET status = ? WHERE id = ?", ke, id), ok, `${dari}>${ke}`);
+    }
+    const idu = hex(); await D.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah) VALUES (?, 'dampak', '33', 'Kab Uniq', ?, 'dilaporkan', 1, 1)").bind(idu, JSON.stringify({jenis: "banjir", tanggal: "2026-11-01", nama_kejadian: "Satu"})).run();
+    assert.equal(await coba("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah) VALUES (?, 'dampak', '33', 'Kab Uniq', ?, 'dilaporkan', 1, 1)", hex(), JSON.stringify({jenis: "banjir", tanggal: "2026-11-01", nama_kejadian: "SATU"})), false, "indeks unik per kejadian");
+    assert.equal(await coba("INSERT INTO meja_petugas (id, nama, prov, kab, meja, kode_sha, dibuat) VALUES (?, 'Baru', '71', 'Kab Baru', ?, ?, 1)", hex(), JSON.stringify(DAFTAR_PETUGAS), "c".repeat(64)), true, "sepuluh meja sah");
+    assert.equal(await coba("INSERT INTO meja_petugas (id, nama, prov, kab, meja, kode_sha, dibuat) VALUES (?, 'Baru', '71', 'Kab Baru', ?, ?, 1)", hex(), '["pengaduan"]', "d".repeat(64)), false, "meja pusat tetap ditolak");
+    assert.equal(await coba("INSERT INTO meja_kelengkapan (prov, kab, dummy, n, persen_jumlah, inti_lengkap, belum, kosong, terbaru) VALUES ('33', 'Kab K', 0, 2, 150, 1, 0, '{}', 1)"), true); assert.equal(await coba("INSERT INTO meja_kelengkapan (prov, kab, dummy, n, persen_jumlah, inti_lengkap, belum, kosong, terbaru) VALUES ('33', 'Kab K2', 0, 2, 201, 1, 0, '{}', 1)"), false, "persen <= 100 per kejadian");
+    const kedua = await potret(); await jalan("0119_meja_dampak.sql");
+    assert.deepEqual(await potret(), kedua, "jalan kedua tidak mengubah baris"); assert.equal((await D.prepare("SELECT count(*) n FROM sqlite_master WHERE name LIKE '%_cadang'").first()).n, 0, "tanpa sisa cadangan"); assert.equal((await D.prepare("PRAGMA foreign_key_check").all()).results.length, 0);
+    for (const nama of ["meja_catatan_ubah", "meja_rehab_tautan", "meja_petugas_sah", "meja_stok_sah", "meja_pengungsi_hari", "meja_pengaduan_register", "meja_risiko_kode", "meja_gudang_unik", "meja_dampak_kejadian", "meja_kelengkapan"]) assert.ok(await D.prepare("SELECT 1 x FROM sqlite_master WHERE name = ?").bind(nama).first(), nama + " ada");
+  } finally { await mf.dispose(); }
+});
+
+uji("dampak data pribadi: HP/NIK dengan pemisah dan digit Unicode, frasa identitas, catatan transisi; koordinat, tanggal, dan frasa wajar lolos", async () => {
+  const kolom = ["penyebab", "kronologis", "deskripsi", "upaya", "kondisi_mutakhir", "sumber", "nama_kejadian", "aset_barang", "keb_dana"];
+  const tolak = ["hubungi 0812-3456-7890", "telp 0812 3456 7890", "wa +62 812 3456 7890", "(0812)3456_7890", "08.12/3456/7890", "+62-(812)-345-6789", "٠٨١٢٣٤٥٦٧٨٩٠", "０８１２３４５６７８９０", "0­812⁠3456͏7890",
+    "NIK 3301 0101 0101 0001", "NIK 3301/0101.0101-0001", "3301_0101_0101_0001", "3301010101010001", "NIK ٣٣٠١٠١٠١٠١٠١٠٠٠١", "kontak a@b.id", "atas nama Budi", "A.N. Budi Santoso", "a.n. Budi", "an. Sari", "alm. Joko", "almarhum Pak Joko", "Almarhumah Siti", "rumah RT 03 / RW 04", "RT.3 RW.4", "rt 3 - rw 4"];
+  const lolos = ["-6,597998; 106,797429", "-6.597998, 106.797429", "tanggal 2026-08-12 dan 12/08/2026", "Ibu Kota Nusantara", "ibu hamil 3 orang", "Bapak Bupati hadir", "Jl. Trans Sulawesi km 5", "plan. lanjutan", "korban an. kecil", "Desa RT dan RW setempat", "100 orang pada pukul 08.30", "Rp 200.000.000"];
+  for (const t of tolak) for (const k of ["penyebab", "upaya"]) { const r = validasi("dampak", INTI_D({[k]: t}), null); assert.match(r.galat ?? "", new RegExp("data pribadi"), `harus ditolak: ${t}`); assert.ok(r.galat.includes(KD.find(c => c.nama === k).label), "pesan menyebut kolomnya: " + r.galat); }
+  for (const t of lolos) for (const k of kolom) { const r = validasi("dampak", INTI_D({[k]: t.slice(0, KD.find(c => c.nama === k).maks), nihil_aset: false, nihil_kebutuhan: false}), null); assert.ok(r.data, `harus lolos di ${k}: ${t}: ${r.galat}`); }
+  /* sama dengan aturan narasi Logbook */
+  const lb = await api("POST", "/api/logbook/kejadian", {jenis: "banjir", kab_kode: "33|Cilacap", mulai: hari(1), penyebab: "telp 08.12/3456/7890"}, ADMIN); assert.equal(lb.s, 400, "Logbook menolak pemisah yang sama");
+  /* catatan transisi untuk dampak disaring; meja lain tidak berubah */
+  const p = await petugas("Rembang", ["dampak"], "33"), a = await bDampak(p.h, "Rembang", INTI_D({nama_kejadian: "Banjir Rembang"})); assert.equal(a.s, 201, a.t);
+  const bad = await api("POST", "/api/meja/catatan/" + a.j.catatan.id, {aksi: "status", ke: "diverifikasi", catatan: "hubungi 0812-3456-7890"}, p.h); assert.equal(bad.s, 400); assert.match(bad.j.galat, /catatan: .*data pribadi/);
+  const ok = await api("POST", "/api/meja/catatan/" + a.j.catatan.id, {aksi: "status", ke: "diverifikasi", catatan: "sudah dicek lapangan"}, p.h); assert.equal(ok.s, 200, ok.t);
+});
+
+uji("dampak batas impor 50 baris dan laju 5 per jam per pelaku (petugas dan admin); isian terlalu panjang jadi galat baris", async () => {
+  const p = await petugas("Pekalongan", ["dampak"], "33"), baris = n => Array.from({length: n}, (_, i) => ({data: {jenis: "banjir", nama_kejadian: `Laju ${hex()} ${i}`, tanggal: hari(4)}}));
+  assert.equal((await api("POST", "/api/meja/impor", {baris: baris(51)}, p.h)).s, 400, "51 baris ditolak");
+  assert.equal((await api("POST", "/api/meja/impor", "x".repeat(256 * 1024 + 1), p.h)).s, 413, "badan 256 KB");
+  assert.equal((await api("POST", "/api/meja/impor", {baris: baris(50)}, p.h)).j.ringkas.masuk, 50, "50 baris sah");
+  for (let i = 0; i < 4; i++) assert.equal((await api("POST", "/api/meja/impor", {baris: baris(1)}, p.h)).s, 200);
+  const enam = await api("POST", "/api/meja/impor", {baris: baris(1)}, p.h); assert.equal(enam.s, 429, enam.t); assert.equal(await U.n("meja_catatan", "kab = 'Pekalongan'"), 54, "yang ditolak laju tidak masuk");
+  /* admin: laju per pelaku yang sama (5 per jam) */
+  const adminImp = () => api("POST", "/api/meja/impor", {baris: [{prov: "33", kab: "Kab Laju Admin", data: {jenis: "banjir", nama_kejadian: "L " + hex(), tanggal: hari(4)}}]}, ADMIN);
+  await DB.prepare("DELETE FROM laju_bnpb WHERE aksi = 'meja.impor' AND kunci LIKE 'admin:%'").run();
+  for (let i = 0; i < 5; i++) assert.equal((await adminImp()).s, 200, "admin ke-" + (i + 1));
+  const a6 = await adminImp(); assert.equal(a6.s, 429, a6.t);
+  await DB.prepare("DELETE FROM laju_bnpb WHERE aksi = 'meja.impor'").run();
+  /* panjang JSON baris diperiksa sebelum batch: galat baris, bukan ganda (batas data dampak 20000 di D1 tidak terjangkau validasi kolom, jadi dijaga langsung di CHECK) */
+  const id = hex(); assert.equal(await DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah) VALUES (?, 'dampak', '33', 'Kab Panjang', ?, 'dilaporkan', 1, 1)").bind(id, JSON.stringify({x: "a".repeat(20001)})).run().then(() => true, () => false), false);
+});
+
+uji("dampak terima: laju 60 per jam, tautan tersimpan dicek ulang, gagal simpan tautan tetap sukses tanpa menggandakan", async () => {
+  const p = await petugas("Pati", ["dampak"], "33");
+  const siap = async (kab, data) => { const a = await bDampak(ADMIN, kab, data, "33", wilD); assert.equal(a.s, 201, a.t); assert.equal((await st(ADMIN, a.j.catatan.id, {ke: "diverifikasi"})).s, 200); return a.j.catatan.id; };
+  /* tautan tersimpan yang tidak cocok lagi (jenis berubah): dicari ulang, buat kejadian baru */
+  const nm = "Banjir Pati " + hex().slice(0, 4), id = await siap("Pati", INTI_D({nama_kejadian: nm}));
+  const t1 = await st(ADMIN, id, {ke: "masuk_logbook"}); assert.equal(t1.s, 200, t1.t); assert.equal(t1.j.logbook.tindakan, "buat");
+  const u = await api("POST", "/api/meja/catatan/" + id, {aksi: "ubah", data: INTI_D({nama_kejadian: nm, jenis: "longsor"}), ...wilD}, ADMIN); assert.equal(u.s, 200, u.t); assert.equal(u.j.catatan.data.logbook_id, t1.j.logbook.kejadian_id);
+  assert.equal((await st(ADMIN, id, {ke: "diverifikasi"})).s, 200);
+  const t2 = await st(ADMIN, id, {ke: "masuk_logbook"}); assert.equal(t2.s, 200, t2.t); assert.equal(t2.j.logbook.tindakan, "buat", "jenis beda: bukan pengkinian kejadian lama"); assert.notEqual(t2.j.logbook.kejadian_id, t1.j.logbook.kejadian_id); assert.match(t2.j.logbook.kib, /^3318102/);
+  assert.equal(t2.j.catatan.data.logbook_id, t2.j.logbook.kejadian_id, "tautan baru menggantikan");
+  /* gagal menyimpan tautan: sukses dengan peringatan; penerimaan berikutnya memasangkan lewat pencarian, kejadian tidak ganda */
+  const id2 = await siap("Pati", INTI_D({nama_kejadian: "Banjir Pati Dua " + hex().slice(0, 4), tanggal: hari(3)}));
+  await DB.prepare("CREATE TRIGGER tmp_gagal_taut BEFORE UPDATE ON meja_catatan WHEN OLD.status = 'masuk_logbook' AND json_extract(NEW.data, '$.logbook_id') IS NOT NULL AND OLD.id = '" + id2 + "' BEGIN SELECT RAISE(ABORT, 'uji'); END").run();
+  const n0 = await logbookN("logbook_kejadian", "kab = 'Pati' AND jenis = 'banjir'");
+  const t3 = await st(ADMIN, id2, {ke: "masuk_logbook"}); await DB.prepare("DROP TRIGGER tmp_gagal_taut").run();
+  assert.equal(t3.s, 200, t3.t); assert.match(t3.j.logbook.peringatan, /tautan/); assert.equal(t3.j.catatan.status, "masuk_logbook"); assert.equal(t3.j.catatan.data.logbook_id, undefined);
+  assert.equal(await logbookN("logbook_kejadian", "kab = 'Pati' AND jenis = 'banjir'"), n0 + 1);
+  const u3 = await api("POST", "/api/meja/catatan/" + id2, {aksi: "ubah", data: INTI_D({nama_kejadian: t3.j.catatan.data.nama_kejadian, tanggal: t3.j.catatan.data.tanggal, meninggal: 5}), ...wilD}, ADMIN); assert.equal(u3.s, 200, u3.t);
+  assert.equal((await st(ADMIN, id2, {ke: "diverifikasi"})).s, 200);
+  const t4 = await st(ADMIN, id2, {ke: "masuk_logbook"}); assert.equal(t4.s, 200, t4.t); assert.equal(t4.j.logbook.tindakan, "tambah"); assert.equal(t4.j.logbook.kejadian_id, t3.j.logbook.kejadian_id);
+  assert.equal(await logbookN("logbook_kejadian", "kab = 'Pati' AND jenis = 'banjir'"), n0 + 1, "tidak menggandakan kejadian");
+  /* laju 60 per jam per pelaku, sebelum klaim */
+  const kunci = (await DB.prepare("SELECT kunci FROM laju_bnpb WHERE aksi = 'meja.terima' LIMIT 1").first()).kunci;
+  const id3 = await siap("Pati", INTI_D({nama_kejadian: "Banjir Pati Tiga " + hex().slice(0, 4), tanggal: hari(4)}));
+  await DB.batch(Array.from({length: 60}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'meja.terima', ?)").bind(kunci, Date.now())));
+  const t5 = await st(ADMIN, id3, {ke: "masuk_logbook"}); assert.equal(t5.s, 429, t5.t); assert.equal((await DB.prepare("SELECT status FROM meja_catatan WHERE id = ?").bind(id3).first()).status, "diverifikasi", "ditolak laju sebelum klaim");
+  await DB.prepare("DELETE FROM laju_bnpb WHERE aksi = 'meja.terima'").run();
+  assert.equal((await st(ADMIN, id3, {ke: "masuk_logbook"})).s, 200);
+});
+
+uji("migrasi 0119 dengan baris km_aktivasi_meja dan km_magang_lamar yang menunjuk meja_petugas: baris selamat, FK ke meja_petugas utuh, dua kali jalan", async () => {
+  const mf = new Miniflare({modules: true, script: "export default {fetch: () => new Response('ok')}", compatibilityDate: "2024-09-23", d1Databases: {DB: "uji-meja-0119-km"}});
+  try {
+    const D = await mf.getD1Database("DB"), dir = path.join(AKAR, "migrations"), berkas = readdirSync(dir).filter(f => f.endsWith(".sql")).sort(), sql = f => pecah(readFileSync(path.join(dir, f), "utf8"));
+    const jalan = async f => D.batch(sql(f).map(s => D.prepare(s)));
+    for (const f of berkas.filter(f => f < "0119_")) await jalan(f);
+    const pt = "ab".repeat(8), pmt = "99".repeat(8), akt = "cd".repeat(8), mg = "ef".repeat(8), rl = "12".repeat(8), lamar = "34".repeat(8);
+    /* induk sungguhan (permintaan relawan, aktivasi, magang, relawan) supaya FK ke meja_petugas diuji dengan baris anak yang sah */
+    await D.batch([
+      D.prepare("INSERT INTO meja_petugas (id, nama, prov, kab, meja, kode_sha, dibuat) VALUES (?, 'KM', '71', 'Kab KM', ?, ?, 1)").bind(pt, JSON.stringify(["kaji_cepat"]), "e".repeat(64)),
+      D.prepare("INSERT INTO relawan_permintaan (id, judul, bencana, prov, kab, butuh, mulai, selesai, dibuat) VALUES (?, 'Permintaan KM', 'banjir', '71', 'Kab KM', '[\"p3k\"]', '2026-11-01', '2026-11-05', 1)").bind(pmt),
+      D.prepare("INSERT INTO km_aktivasi (id, judul, bahaya, kab4, prov, tanggal, radius_km, kebutuhan, sumber, dibuka, oleh, permintaan_id) VALUES (?, 'Aktivasi KM uji', 'banjir', '7101', '71', '2026-11-01', 100, '[]', 'manual', 1, 'uji', ?)").bind(akt, pmt),
+      D.prepare("INSERT INTO km_aktivasi_meja (aktivasi_id, meja_petugas_id) VALUES (?, ?)").bind(akt, pt),
+      D.prepare("INSERT INTO relawan (id, nama, prov, kab, jalur, hari_per_minggu, maks_hari, luar_provinsi, setuju_pdp, dibuat, diubah) VALUES (?, 'Relawan KM', '71', 'Kab KM', 'umum', 1, 7, 0, 1, 1, 1)").bind(rl),
+      D.prepare("INSERT INTO km_magang (id, penyelenggara, unit, kuota, mulai, selesai, dibuat, diubah) VALUES (?, 'bnpb', 'Unit uji', 1, '2026-11-01', '2026-12-01', 1, 1)").bind(mg),
+      D.prepare("INSERT INTO km_magang_lamar (id, magang_id, relawan_id, meja_petugas_id, dibuat, diubah) VALUES (?, ?, ?, ?, 1, 1)").bind(lamar, mg, rl, pt)]);
+    const anak = async () => ({a: (await D.prepare("SELECT aktivasi_id, meja_petugas_id FROM km_aktivasi_meja").all()).results, l: (await D.prepare("SELECT id, meja_petugas_id FROM km_magang_lamar").all()).results, p: (await D.prepare("SELECT id, nama FROM meja_petugas").all()).results});
+    const sebelum = await anak();
+    const fkPetugas = async () => (await D.prepare("PRAGMA foreign_key_check").all()).results;
+    assert.equal((await fkPetugas()).length, 0);
+    await jalan("0119_meja_dampak.sql");
+    assert.deepEqual(await anak(), sebelum, "baris anak dan petugas selamat"); assert.deepEqual(await fkPetugas(), [], "semua FK utuh (termasuk ke meja_petugas) sesudah bangun ulang");
+    await jalan("0119_meja_dampak.sql");
+    assert.deepEqual(await anak(), sebelum, "jalan kedua"); assert.deepEqual(await fkPetugas(), []);
+  } finally { await mf.dispose(); }
+});
+
+for (const [sampai, baruAda] of [["0118_", false], ["0119_", true]]) {
+  uji(`kode baru di D1 tanpa migrasi ${sampai.slice(0, 4)}${baruAda ? " (0118 ada, 0119 belum)" : " dan sesudahnya"}: meja lama tetap ditulis dan ringkas diperbarui, meja baru 503 bukan 500`, async () => {
+    const V = await siapkan("uji-meja-lama-" + sampai, {sampai});
+    assert.equal(await V.DB.prepare("SELECT 1 x FROM sqlite_master WHERE name = 'meja_kelengkapan'").first(), null, "tabel kelengkapan memang belum ada");
+    const a = await V.adm("POST", "/api/meja/catatan", {meja: "kaji_cepat", prov: "71", kab: "Kab Lama", desa: "Desa L", data: kaji()}); assert.equal(a.s, 201, a.t);
+    const b = await V.adm("POST", "/api/meja/catatan", {meja: "renkon", prov: "71", kab: "Kab Lama", data: {bencana: "banjir", judul: "R", tgl_sah: hari(10)}}); assert.equal(b.s, 201, b.t);
+    assert.equal(await V.n("meja_ringkas", "meja = 'kaji_cepat' AND kab = 'Kab Lama'"), 1, "ringkas diperbarui walau kelengkapan tak ada");
+    const st1 = await V.adm("POST", "/api/meja/catatan/" + a.j.catatan.id, {aksi: "status", ke: "diverifikasi"}); assert.equal(st1.s, 200, st1.t);
+    assert.equal((await V.DB.prepare("SELECT status FROM meja_ringkas WHERE meja = 'kaji_cepat'").first()).status, "diverifikasi");
+    /* penyegaran penuh (jalur cron): paksa basi lalu baca */
+    await V.DB.prepare("UPDATE meja_ringkas_meta SET nilai = 1").run(); await V.DB.prepare("DELETE FROM meja_ringkas").run();
+    const rk = await V.adm("GET", "/api/meja/rekap"); assert.equal(rk.s, 200, rk.t); assert.equal(rk.j.per_kab.kaji_cepat["71|Kab Lama"].n, 1); assert.equal(rk.j.per_kab.renkon["71|Kab Lama"].n, 1);
+    /* meja baru: 503 yang jelas */
+    const baru = [["dampak", INTI_D(), wilD]];
+    if (!baruAda) baru.push(["pengungsi", pengungsi(), wilD], ["klaster", {tingkat: "kabupaten_kota", dokumen: "sk_klaster", judul: "J", tahun: 2026, tgl_dokumen: hari(2)}, {}]);
+    for (const [meja, data, wil] of baru) { const r = await V.adm("POST", "/api/meja/catatan", {meja, prov: "33", kab: "Kab Lama", data, ...wil}); assert.equal(r.s, 503, `${meja}: ${r.t}`); assert.match(r.j.galat, /belum diaktifkan \(migrasi belum diterapkan\)/); }
+    const imp = await V.adm("POST", "/api/meja/impor", {baris: [{prov: "33", kab: "Kab Lama", data: {jenis: "banjir", nama_kejadian: "X", tanggal: hari(2)}}]}); assert.equal(imp.s, 503, imp.t); assert.match(imp.j.galat, /belum diaktifkan/);
+    const kl = await V.adm("GET", "/api/meja/kelengkapan"); assert.equal(kl.s, 503, kl.t); assert.match(kl.j.galat, /belum diaktifkan/);
+    const dm = await V.adm("POST", "/api/meja/dummy", {aksi: "isi"}); assert.equal(dm.s, 503, dm.t);
+    const pt = await V.adm("POST", "/api/meja/petugas", {nama: "Petugas Baru", prov: "33", kab: "Kab Lama", meja: ["kaji_cepat", "dampak"]}); assert.equal(pt.s, 503, pt.t);
+    assert.equal((await V.adm("POST", "/api/meja/petugas", {nama: "Petugas Lama", prov: "33", kab: "Kab Lama", meja: ["kaji_cepat"]})).s, 201, "petugas meja lama tetap bisa dibuat");
+    /* galat validasi biasa tetap 400, meja lama tetap utuh */
+    assert.equal((await V.adm("POST", "/api/meja/catatan", {meja: "kaji_cepat", prov: "71", kab: "Kab Lama", desa: "Desa L", data: kaji({rumah_rb: -1})})).s, 400);
+    assert.equal(await V.n("meja_catatan"), 2);
+    if (baruAda) { const p = await V.adm("POST", "/api/meja/catatan", {meja: "pengungsi", prov: "71", kab: "Kab Lama", ...wilD, data: pengungsi()}); assert.equal(p.s, 201, "meja 0118 jalan di D1 yang punya 0118: " + p.t); }
+  });
+}
 
 uji("tabel belum dimigrasi = 503 (bukan 500)", async () => {
   await DB.batch(["meja_pelapor", "meja_stok","meja_ringkas", "meja_ringkas_bencana", "meja_ringkas_meta", "meja_jejak", "meja_catatan", "meja_petugas"].map(t => DB.prepare("DROP TABLE " + t)));

@@ -10,12 +10,13 @@
     unduh: svg('<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>'), orang: svg('<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>'), rapor: svg('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'), tambah: svg('<path d="M12 5v14M5 12h14"/>')};
   const TON = {dilaporkan: "tunggu", diverifikasi: "info", masuk_jitupasna: "ok", diminta: "tunggu", disetujui: "info", dikirim: "info", diterima: "ok", diajukan: "tunggu", cair: "info", spj: "info", selesai: "ok", ditolak: "bahaya",
     tercatat: "info", berlaku: "ok", segera_habis: "tunggu", kedaluwarsa: "bahaya", perlu_reviu: "tunggu", penilaian_kedaluwarsa: "bahaya", aktif: "ok", pasif: "bahaya",
-    register: "tunggu", telaah: "info", diteruskan: "info", tindak_lanjut: "info", berjalan: "info", ditutup: "ok", dalam_selera: "ok", di_atas_selera: "bahaya"};
+    masuk_logbook: "ok", register: "tunggu", telaah: "info", diteruskan: "info", tindak_lanjut: "info", berjalan: "info", ditutup: "ok", dalam_selera: "ok", di_atas_selera: "bahaya"};
   const label = s => { const t = String(s).replace(/_/g, " "); return t[0].toUpperCase() + t.slice(1); };
   const pil = (s, teks, ton) => { const t = ton || TON[s] || "info"; return `<span class="mj-pil t-${t}">${IK[t] || ""}${esc(teks ?? label(s))}</span>`; };
   const tglF = t => t ? new Date(t + "T00:00:00Z").toLocaleDateString("id-ID", {timeZone: "UTC", day: "numeric", month: "short", year: "numeric"}) : "";
   const waktuF = t => t ? new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB" : "–";
-  const angkaF = (k, v) => k.rupiah ? "Rp" + ID.format(v) : ID.format(v);
+  const IDD = new Map(), idDesimal = n => IDD.get(n) ?? (IDD.set(n, new Intl.NumberFormat("id-ID", {maximumFractionDigits: n})), IDD.get(n));
+  const angkaF = (k, v) => k.rupiah ? "Rp" + ID.format(v) : typeof k.desimal === "number" ? idDesimal(k.desimal).format(v) : ID.format(v);   // bujur/lintang 6 desimal sesuai spek
   const umur = t => { const h = Math.floor((Date.now() - t) / 864e5); return h < 1 ? "hari ini" : `${ID.format(h)} hari lalu`; };
 
   let saya = null, S = null, tab = "kaji_cepat", F ={prov: "", kab: "", status: "", bahaya: false}, daftar = [], rekapD = null, urut = "diubah", arah = -1, hal = 0, form = null, buka = new Map(), kodeBaru = null, dummyIkut = false, gudangOps = [], E = {dari: "", sampai: ""};
@@ -57,11 +58,12 @@
     const stokAksi = (r.aksi_stok || []).filter(a => a.boleh).map(a => `<button class="mj-btn kecil" data-stok="${esc(a.jenis)}">${IK.tambah}${esc(label(a.jenis))}</button>`).join("");
     const rin = buka.get(r.id);
     return `<tr class="${r.tanda.length ? "mj-bahaya" : ""}" data-id="${esc(r.id)}"><td><b>${esc(r.kab)}</b> <span class="mj-redup">prov ${esc(r.prov)}</span>${r.desa || r.kec ? `<br><span class="mj-redup">${esc([r.desa, r.kec].filter(Boolean).join(", "))}</span>` : ""}</td>
-      <td>${ringkasIsi(r) || "–"}</td><td>${pil(r.status_efektif)}${r.status_efektif !== r.status ? " " + pil(r.status) : ""}${r.dummy ? " " + pil("dummy", "DUMMY", "dummy") : ""}${tanda ? `<div class="mj-tanda">${tanda}</div>` : ""}</td>
+      <td>${ringkasIsi(r) || "–"}</td><td>${pil(r.status_efektif)}${r.status_efektif !== r.status ? " " + pil(r.status) : ""}${r.kelengkapan ? " " + pil("k", `Lengkap ${ID.format(r.kelengkapan.persen)}%`, r.kelengkapan.inti_lengkap ? "ok" : "tunggu") : ""}${r.dummy ? " " + pil("dummy", "DUMMY", "dummy") : ""}${tanda ? `<div class="mj-tanda">${tanda}</div>` : ""}</td>
       <td>${esc(waktuF(r.diubah))}<br><span class="mj-redup">${esc(umur(r.diubah))}</span></td>
       <td><div class="mj-aksi">${aksi}${stokAksi}<button class="mj-btn kecil" data-rinci="1">${IK.riwayat}Riwayat</button>${saya?.peran === "ulp" && r.meja === "pengaduan" ? `<button class="mj-btn kecil" data-pelapor="1">${IK.orang}Identitas pelapor</button>` : ""}</div></td></tr>${rin ? rincian(r, rin) : ""}`;
   };
-  const rincian = (r, d) => `<tr class="mj-rincian"><td colspan="5">${M().kolom.filter(k => r.data[k.nama] != null && r.data[k.nama] !== "").map(k => `${esc(k.label)}: <b>${k.tipe === "gudang" ? esc(r.gudang_asal_nama || "gudang") : nilaiF(k, r.data[k.nama])}</b>`).join(", ")}${r.kaji_id ? `, Kaji cepat induk: <b>${esc(r.kaji_id)}</b>` : ""}
+  const kurangHtml = r => r.kelengkapan && (r.kelengkapan.kurang_inti.length || r.kelengkapan.kurang_rinci.length) ? `<p>${r.kelengkapan.kurang_inti.length ? `Butir inti belum terjawab (menahan verifikasi): <b>${esc(r.kelengkapan.kurang_inti.map(x => x.label).join("; "))}</b>. ` : ""}${r.kelengkapan.kurang_rinci.length ? `Butir rinci belum terjawab: ${ID.format(r.kelengkapan.kurang_rinci.length)}.` : ""}</p>` : "";
+  const rincian = (r, d) => `<tr class="mj-rincian"><td colspan="5">${kurangHtml(r)}${M().kolom.filter(k => r.data[k.nama] != null && r.data[k.nama] !== "").map(k => `${esc(k.label)}: <b>${k.tipe === "gudang" ? esc(r.gudang_asal_nama || "gudang") : nilaiF(k, r.data[k.nama])}</b>`).join(", ")}${r.kaji_id ? `, Kaji cepat induk: <b>${esc(r.kaji_id)}</b>` : ""}
     ${d.pelapor !== undefined ? `<p>${d.pelapor ? `Pelapor: <b>${esc(d.pelapor.nama || "")}</b>, ${esc(d.pelapor.alamat || "")}, ${esc(d.pelapor.kontak || "")}, ${esc(d.pelapor.pekerjaan || "")}` : "Pelapor anonim."}</p>` : ""}
     ${d.transaksi ? `<ol>${d.transaksi.map(t => `<li>${esc(label(t.jenis))} ${ID.format(t.delta)}, saldo ${ID.format(t.saldo)}, ${esc(waktuF(t.waktu))}, ${esc(t.oleh || "")}${t.catatan ? `, ${esc(t.catatan)}` : ""}</li>`).join("")}</ol>` : ""}
     <ol>${d.jejak.map(j => `<li>${esc(label(j.ke))}${j.dari ? ` (dari ${esc(label(j.dari))})` : ""}, ${esc(waktuF(j.waktu))}, ${esc(j.oleh || "")}${j.catatan ? `, ${esc(j.catatan)}` : ""}</li>`).join("")}</ol></td></tr>`;
@@ -127,7 +129,7 @@
   const gambarTabel = () => { document.getElementById("mjIsi").innerHTML = tabelMeja(); };
   /* CSV: tiap sel dikutip; awalan = + - @ diberi apostrof supaya tidak dijalankan sebagai rumus di lembar kerja */
   function csv() {
-    const m = M(), kolom = m.kolom, kepala = ["id", "prov", "kab", "kec", "desa", "status", "status_efektif", "tanda_bahaya", "dibuat", "diubah", ...kolom.map(k => k.nama)];
+    const m = M(), kolom = m.kolom.filter(k => k.tipe !== "wilayah"), kepala = ["id", "prov", "kab", "kec", "desa", "status", "status_efektif", "tanda_bahaya", "dibuat", "diubah", ...kolom.map(k => k.nama)];
     const sel = v => { let t = Array.isArray(v) ? v.join("|") : String(v ?? ""); if (/^[=+\-@\t\r]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; };
     const rows = daftar.filter(r => (!F.status || r.status_efektif === F.status || r.status === F.status) && (!F.bahaya || r.tanda.length));
     const isi = [kepala.map(sel).join(","), ...rows.map(r => [r.id, r.prov, r.kab, r.kec, r.desa, r.status, r.status_efektif, r.tanda.join("|"), new Date(r.dibuat).toISOString(), new Date(r.diubah).toISOString(), ...kolom.map(k => r.data[k.nama])].map(sel).join(","))].join("\r\n");
@@ -144,6 +146,25 @@
     const res = await fetch(`${API}/ekspor?${q}`); if (!res.ok) { const j = await res.json().catch(() => ({})); return catat(j.galat || `Gagal (${res.status})`, false); }
     const a = document.createElement("a"); a.href = URL.createObjectURL(await res.blob()); a.download = nama; document.body.append(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 4000); catat(res.headers.get("x-ekspor-dipotong") ? "Diunduh, tetapi dipotong di 20.000 baris: persempit rentang tanggal." : "Diunduh.", true);
+  }
+
+  /* ---------- kelengkapan Data kejadian dan dampak per kabupaten (Juklak 7/2023) ---------- */
+  let kelD = [], kelMaks = 100;
+  async function tampilKelengkapan() {
+    const d = await ambilJ(`${API}/kelengkapan${dummyIkut ? "?dummy=1" : ""}`); if (!d.ok) return `<p class="mj-kosong">${esc(d.j.galat || "Gagal memuat")}</p>`;
+    kelD = d.j.kab; const r = d.j.ringkas;
+    return `<div class="mj-bar"><span class="mj-redup">${ID.format(r.kabupaten)} kabupaten/kota, ${ID.format(r.kejadian)} kejadian${r.persen == null ? "" : `, kelengkapan rata-rata ${ID.format(r.persen)}%`}. Dihitung ${esc(waktuF(d.j.dihitung))}; paling tidak lengkap di atas.</span>
+      <label class="mj-cek mj-ruang"><input type="checkbox" id="kDummy" ${dummyIkut ? "checked" : ""}>Sertakan data dummy</label></div>
+      <div class="mj-wadah"><table class="mj-tabel"><thead><tr><th>Kabupaten</th><th>Kejadian</th><th>Kelengkapan rata-rata</th><th>Inti lengkap</th><th>Belum dimutakhirkan</th><th>Butir paling sering kosong</th><th>Aksi</th></tr></thead><tbody>${kelD.length ? kelD.slice(0, kelMaks).map((k, i) => `<tr>
+        <td><b>${esc(k.kab)}</b> <span class="mj-redup">prov ${esc(k.prov)}</span>${k.dummy ? " " + pil("dummy", "DUMMY", "dummy") : ""}</td><td class="mj-angka">${ID.format(k.kejadian)}</td>
+        <td><span class="mj-skor">${ID.format(k.persen)}%</span><meter class="mj-meter" min="0" max="100" value="${k.persen}"></meter></td><td class="mj-angka">${ID.format(k.inti_lengkap)} dari ${ID.format(k.kejadian)}</td><td class="mj-angka">${k.belum_dimutakhirkan ? pil("b", ID.format(k.belum_dimutakhirkan) + " kejadian", "bahaya") : "0 kejadian"}</td>
+        <td>${k.kosong.slice(0, 3).map(x => `${esc(x.label)} <span class="mj-redup">(${ID.format(x.jumlah)} kejadian)</span>`).join("; ") || "–"}</td>
+        <td><button class="mj-btn kecil" data-tagih="${i}">${IK.maju}Salin teks tagihan</button></td></tr>`).join("") : '<tr><td colspan="7" class="mj-kosong">Belum ada data kejadian dan dampak.</td></tr>'}</tbody></table></div>${kelD.length > kelMaks ? `<div class="mj-hal">Menampilkan ${ID.format(kelMaks)} dari ${ID.format(kelD.length)} kabupaten/kota<button class="mj-btn kecil" data-lagi="1">Tampilkan lagi</button></div>` : ""}`;
+  }
+  /* teks tagihan menyebut butir kosong; disusun fungsi bersama /inti/kelengkapan.js (tanpa titik tengah) */
+  async function salinTagihan(k) {
+    const {teksTagihan} = await import("/inti/kelengkapan.js"), t = teksTagihan({kab: k.kab, kejadian: k.kejadian, persen: k.persen, kosong: k.kosong, belum: k.belum_dimutakhirkan});
+    try { await navigator.clipboard.writeText(t); catat(`Teks tagihan ${k.kab} disalin.`, true); } catch (e) { prompt("Salin teks tagihan (Ctrl+C):", t); }
   }
 
   /* ---------- petugas ---------- */
@@ -181,14 +202,14 @@
   }
 
   /* ---------- kerangka ---------- */
-  const TABS = () => [...S.meja.map(m => [m.id, svg(m.ikon) + esc(m.nama)]), ["petugas", IK.orang + "Petugas"], ["rapor", IK.rapor + "Rapor BPBD"]];
+  const TABS = () => [...S.meja.map(m => [m.id, svg(m.ikon) + esc(m.nama)]), ["kelengkapan", IK.ok + "Kelengkapan dampak"], ["petugas", IK.orang + "Petugas"], ["rapor", IK.rapor + "Rapor BPBD"]];
   function kerangka() {
     app.innerHTML = `<nav class="ad-tabs" aria-label="Meja Kerja">${TABS().map(([k, l]) => `<button data-tab="${k}" aria-pressed="${k === tab}">${l}</button>`).join("")}</nav>
       <p id="mjPesan" class="mj-pesan" role="status"></p><div id="mjIsi" class="mj-isi"><p class="ad-redup">Memuat…</p></div>`;
   }
   async function muat() {
     const isi = document.getElementById("mjIsi");
-    try { isi.innerHTML = await (tab === "petugas" ? tampilPetugas : tab === "rapor" ? tampilRapor : tampilMeja)(); } catch (e) { if (e.message !== "perlu masuk") isi.innerHTML = `<p class="mj-kosong">Gagal memuat: ${esc(e.message)}</p>`; }
+    try { isi.innerHTML = await (tab === "petugas" ? tampilPetugas : tab === "rapor" ? tampilRapor : tab === "kelengkapan" ? tampilKelengkapan : tampilMeja)(); } catch (e) { if (e.message !== "perlu masuk") isi.innerHTML = `<p class="mj-kosong">Gagal memuat: ${esc(e.message)}</p>`; }
   }
 
   /* ---------- peristiwa ---------- */
@@ -204,10 +225,12 @@
   app.addEventListener("click", async e => {
     const t = e.target.closest("button"); if (!t) return;
     const tr = t.closest("tr"), r = tr && daftar.find(x => x.id === tr.dataset.id);
-    if (t.dataset.tab) { tab = t.dataset.tab; form = null; hal = 0; F.status = ""; kerangka(); return muat(); }
+    if (t.dataset.lagi) { kelMaks += 100; return muat(); }
+    if (t.dataset.tab) { kelMaks = 100; tab = t.dataset.tab; form = null; hal = 0; F.status = ""; kerangka(); return muat(); }
     if (t.dataset.urut) { arah = urut === t.dataset.urut ? -arah : 1; urut = t.dataset.urut; return gambarTabel(); }
     if (t.dataset.hal) { hal += +t.dataset.hal; return gambarTabel(); }
     if (t.dataset.csv) return csv();
+    if (t.dataset.tagih) return salinTagihan(kelD[+t.dataset.tagih]);
     if (t.dataset.dibi) return dibi(t.dataset.dibi);
     if (t.dataset.lampiran) return unduh(new URLSearchParams({meja: "risiko", lampiran: t.dataset.lampiran}), `risiko-format${t.dataset.lampiran}-${new Date().toISOString().slice(0, 10)}.csv`);
     if (t.dataset.baru) { form = {baru: true}; return gambarTabel(); }
@@ -220,7 +243,14 @@
         const g = await ambilJ(`${API}/catatan?meja=gudang&prov=${encodeURIComponent(r.prov)}&kab=${encodeURIComponent(r.kab)}`);
         gudangOps = (g.j.catatan || []).filter(x => x.data.barang === r.data.barang).map(x => ({id: x.id, ...x.data}));
       }
-      if (!M().kolom.some(k => k.tahap === form.ke)) { const x = await kirim(`${API}/catatan/${r.id}`, {aksi: "status", ke: form.ke}); form = null; catat(x.ok ? "Status diubah." : (x.j.galat || `Gagal (${x.s})`), x.ok); return muat(); }   // tahap tanpa isian: langsung
+      if (!M().kolom.some(k => k.tahap === form.ke)) {   // tahap tanpa isian: langsung
+        let x = await kirim(`${API}/catatan/${r.id}`, {aksi: "status", ke: form.ke});
+        if (x.s === 409 && x.j.kandidat?.length > 1) {   // lebih dari satu kejadian Logbook cocok: pilih satu
+          const pilih = prompt(`${x.j.galat}\n\n${x.j.kandidat.map(c => `${c.id}  KIB ${c.kib || "-"}  mulai ${c.mulai}  ${c.status}`).join("\n")}\n\nTempel id kejadian yang dimaksud:`);
+          if (pilih) x = await kirim(`${API}/catatan/${r.id}`, {aksi: "status", ke: form.ke, logbook_id: pilih.trim()});
+        } else if (x.s === 400 && x.j.wajar && confirm(`${x.j.galat}\n\nAngka sudah diperiksa dan benar?`)) x = await kirim(`${API}/catatan/${r.id}`, {aksi: "status", ke: form.ke, yakin: true});
+        form = null; catat(x.ok ? (x.j.logbook ? `Masuk Logbook (${x.j.logbook.tindakan === "buat" ? "kejadian baru" : "entri baru di kejadian yang ada"}${x.j.logbook.kib ? ", KIB " + x.j.logbook.kib : ""}).` : "Status diubah.") : (x.j.galat || `Gagal (${x.s})`), x.ok); return muat();
+      }
       return gambarTabel();
     }
     if (t.dataset.rinci && r) {
@@ -239,7 +269,7 @@
     if (i.id === "eDari" || i.id === "eSampai") { E[i.id === "eDari" ? "dari" : "sampai"] = i.value; return; }
     if (i.id === "fStatus") { F.status = i.value; hal = 0; return gambarTabel(); }
     if (i.id === "fBahaya") { F.bahaya = i.checked; hal = 0; return gambarTabel(); }
-    if (i.id === "rDummy") { dummyIkut = i.checked; return muat(); }
+    if (i.id === "rDummy" || i.id === "kDummy") { dummyIkut = i.checked; return muat(); }
   });
   app.addEventListener("submit", async e => {
     e.preventDefault(); const f = e.target, tombol = f.querySelector('button[type="submit"]'); tombol.disabled = true; let r;

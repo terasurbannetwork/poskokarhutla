@@ -6,9 +6,10 @@ import {existsSync, readFileSync} from "node:fs";
 import {AKAR, migrasi, pecah} from "../warga/_bantu.mjs";
 import {ADMIN, sha256} from "../warga/_bnpb.mjs";
 
+const TIPE = {".js": "text/javascript", ".mjs": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html; charset=utf-8", ".svg": "image/svg+xml", ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"};
 const aset = async req => {
   const p = decodeURIComponent(new URL(req.url).pathname), f = path.join(AKAR, "public", p);
-  return existsSync(f) && f.startsWith(path.join(AKAR, "public")) && !p.endsWith("/") ? new Response(readFileSync(f)) : new Response("tidak ada", {status: 404});
+  return existsSync(f) && f.startsWith(path.join(AKAR, "public")) && !p.endsWith("/") ? new Response(readFileSync(f), {headers: {"content-type": TIPE[path.extname(f)] || "application/octet-stream"}}) : new Response("tidak ada", {status: 404});   // tipe MIME seperti ASSETS asli (skrip modul menolak tipe kosong)
 };
 export async function buatDunia() {
   const mf = new Miniflare({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],

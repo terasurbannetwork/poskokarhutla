@@ -3,7 +3,7 @@
 import {test, after} from "node:test";
 import path from "node:path";
 import {createHash} from "node:crypto";
-import {existsSync, readFileSync} from "node:fs";
+import {existsSync, readFileSync, readdirSync} from "node:fs";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 
@@ -13,13 +13,13 @@ const aset = async req => {
   const p = decodeURIComponent(new URL(req.url).pathname), f = path.join(AKAR, "public", p);
   return existsSync(f) && f.startsWith(path.join(AKAR, "public")) && !p.endsWith("/") ? new Response(readFileSync(f)) : new Response("tidak ada", {status: 404});
 };
-export async function siapkan(nama, {r2 = false, ikat = {}, luar, skrip = "src/worker.js", asetKu} = {}) {
+export async function siapkan(nama, {r2 = false, ikat = {}, luar, skrip = "src/worker.js", asetKu, sampai} = {}) {   // sampai: "0118_" = hanya migrasi sebelum itu (kode tayang sebelum migrasi diterapkan)
   const mf = new Miniflare({modules: true, scriptPath: path.join(AKAR, skrip), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
     compatibilityDate: "2024-09-23", cf: {country: "ID", colo: "CGK"}, d1Databases: {DB: nama}, ...(r2 ? {r2Buckets: {MEDIA: nama}} : {}),
     bindings: {IP_SALT: "garam-uji", ALARM_CACHE_DETIK: "0", ADMIN_TOKEN: "rahasia-admin, moderator-dua", AKUN_SITUS: "gerbang@x:sandi", AKUN_SITUS_DUMMY: "dirga@x:sandi-dummy", SUPER_ADMIN: sha256("rahasia-admin").slice(0, 12), SESI_KUNCI: "kunci-sesi-uji", LAPORAN_MUNDUR_HARI: "3650", ...ikat},
     serviceBindings: {ASSETS: asetKu || aset}, outboundService: luar || (() => new Response("diblok di uji", {status: 599})), cache: false});
   const DB = await mf.getD1Database("DB");
-  await DB.batch(pecah(migrasi()).map(s => DB.prepare(s)));
+  await DB.batch(pecah(sampai ? readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && f < sampai).sort().map(f => readFileSync(path.join(AKAR, "migrations", f), "utf8")).join("\n") : migrasi()).map(s => DB.prepare(s)));
   after(() => mf.dispose());
   /* ip: header cf-connecting-ip supaya batas laju per IP bisa diuji */
   const api = async (metode, j, body, h = {}) => {

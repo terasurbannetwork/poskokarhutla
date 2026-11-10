@@ -4,6 +4,7 @@
    Impor lewat worker.js dulu bila dipakai sendirian (posko.js dan worker.js saling impor). */
 import {tx, num, tglSah, wib} from "./posko.js";
 import {nilai, tenggat} from "../public/inti/jam_aturan.js";   // MB-2: angka tenggat berpasal hanya hidup di sana
+import {kelengkapan, bentrokNihil, BAGIAN} from "../public/inti/kelengkapan.js";
 
 const HARI = 864e5, JAM = 36e5;
 export const BENCANA = ["banjir", "longsor", "karhutla", "gempa", "tsunami", "gunungapi", "kekeringan", "cuaca_ekstrem", "rob", "lainnya"];
@@ -21,6 +22,7 @@ export const AMBANG = {
   destana_nilai_tahun: nilai("destana_penilaian"),      // Perban 7/2025 Pasal 14 ayat (5)
   destana_pasif_bulan: nilai("destana_pasif_bulan"),    // internal
   rehab_macet_hari: nilai("rehab_macet_hari"),          // internal
+  data_dinamis_hari: nilai("data_dinamis_darurat"),     // Juklak 7/2023 BAB II huruf A (hal. 3)
 };
 export const AMBANG_INTERNAL = ["logistik_setuju_jam", "renkon_segera_hari", "destana_pasif_bulan", "rehab_macet_hari"];
 const ASUMSI = " (asumsi internal, bukan pasal)";
@@ -39,6 +41,74 @@ const SEKTOR = [["keb_air", "Air bersih dan sanitasi"], ["keb_pangan", "Pangan"]
 const HITUNG_PENGUNGSI = [["jiwa_total", "Total jiwa"], ["jiwa_l", "Total laki-laki"], ["jiwa_p", "Total perempuan"], ...UMUR.map(([u, t]) => ["umur_" + u, t])];
 /* belum ditelaah: tenggat terpanjang, supaya tanda yang terbit tetap benar apa pun kategori hasil telaahnya */
 const kunciAduan = d => d.kategori === "tidak_berkadar_pengawasan" ? "pengaduan_tak_berkadar" : "pengaduan_berkadar";
+
+/* ---------------------------------------------------------------- meja dampak (Juklak 7/2023 Lampiran I huruf A; DATA-DAMPAK.md) */
+/* jenis = kode jenis Logbook (src/logbook.js JENIS); sama persis dijaga tests/warga/meja.test.mjs */
+export const JENIS_DAMPAK = ["banjir", "cuaca", "kebakaran_permukiman", "karhutla", "longsor", "gempabumi", "gunungapi", "kekeringan", "kecelakaan", "konflik_sosial", "lainnya", "gelombang_pasang", "tsunami", "wabah"];
+export const STATUS_DARURAT = ["belum_ditetapkan", "siaga", "tanggap", "transisi"];
+const DARURAT_AKTIF = ["siaga", "tanggap", "transisi"];
+/* teks bebas: tanpa data pribadi. Dinormalkan dulu (NFKC, buang U+00AD/U+2060/U+034F dan karakter lebar-nol, digit Unicode jadi ASCII) supaya nomor tidak lolos lewat penyamaran.
+   HP: 08 atau +62 dengan pemisah spasi . - / _ ( ); NIK: 16 digit dengan pemisah yang sama; plus frasa penanda orang. Koordinat "-6,597998; 106,797429" dan tanggal tidak kena (koma/titik koma/titik dua bukan pemisah).
+   Pola HP sama dengan RE_HP_NARASI di src/logbook.js supaya terima ke Logbook tidak gagal. */
+const SEP = "[\\s.\\-/_()]*";
+const RE_HP_BEBAS = new RegExp(`(?:^|\\D)(?:\\+?62|0)${SEP}8(?:${SEP}\\d){7,}`), RE_NIK = new RegExp(`\\d(?:${SEP}\\d){15,}`);
+const RE_FRASA = [/(?<![\p{L}])atas\s+nama(?![\p{L}])/iu, /(?<![\p{L}])(?:[Aa]\.[Nn]|[Aa][Nn])\.\s*\p{Lu}/u, /(?<![\p{L}])(?:[Aa]lmarhum(?:ah)?|[Aa]lm)\.?\s+\p{Lu}/u, /(?<![\p{L}])RT\.?\s*\d+\s*[\/\-,]?\s*RW\.?\s*\d+/i];
+const nilaiDigit = c => { let n = 0, cp = c.codePointAt(0); while (n < 9 && /^\p{Nd}$/u.test(String.fromCodePoint(cp - n - 1))) n++; return String(n % 10); };   // digit Unicode: urutan dalam deretnya (selalu mulai dari nol)
+export const normalTeks = t => String(t).replace(/[\u00AD\u2060\u034F\u200B-\u200D\uFEFF]/g, "").normalize("NFKC").replace(/[\u00AD\u2060\u034F\u200B-\u200D\uFEFF]/g, "").replace(/\p{Nd}/gu, c => /[0-9]/.test(c) ? c : nilaiDigit(c));
+export const teksBersih = t => { const n = normalTeks(t); return RE_HP_BEBAS.test(n) || RE_NIK.test(n) || n.includes("@") || RE_FRASA.some(r => r.test(n)) ? "tidak boleh memuat data pribadi (nomor telepon, NIK, surel, atas nama, almarhum, RT/RW)" : ""; };
+const dk = (bagian, nama, label, tipe, o = {}) => k(nama, label, tipe, {bagian, ...o});
+const da = (bagian, nama, label, o = {}) => dk(bagian, nama, label, "angka", {min: 0, maks: 1e6, ...o});   // tidak wajib: kosong = belum didata, 0 = tidak ada
+const dt = (bagian, nama, label, maks, o = {}) => dk(bagian, nama, label, "teks", {maks, bersih: true, ...o});
+const TINGKAT = [["rb", "rusak berat"], ["rs", "rusak sedang"], ["rr", "rusak ringan"], ["terendam", "terendam"]];
+const nihil = (bagian, label) => dk(bagian, "nihil_" + bagian, label, "ya", {nihil: true});
+const rugi = (bagian, nama, label, bila) => da(bagian, nama, `Taksiran kerugian ${label} (juta rupiah)`, {maks: 1e6, desimal: true, bila});
+const per = (bagian, awalan, label, o = {}) => TINGKAT.map(([t, n]) => da(bagian, `${awalan}_${t}`, `${label}, ${n} (unit)`, o));
+const UMUR_DAMPAK = [["anak", "anak-anak 0-17 tahun"], ["dewasa", "dewasa 18-59 tahun"], ["lansia", "lansia 60 tahun ke atas"]], KORBAN = [["meninggal", "Meninggal"], ["hilang", "Hilang"], ["luka", "Luka/sakit"], ["mengungsi", "Mengungsi"], ["terdampak", "Terdampak"]];
+const HA = [["sawah", "Sawah"], ["lahan", "Lahan"], ["kebun", "Kebun"], ["hutan", "Hutan"], ["kolam", "Kolam"]];
+const UNIT_VITAL = [["air", "Jaringan air bersih/minum"], ["listrik", "Jaringan listrik dan lampu penerangan"], ["telekom", "Jaringan telekomunikasi"], ["irigasi", "Jaringan irigasi"], ["transportasi", "Jaringan transportasi (pelabuhan, bandara, terminal, stasiun)"], ["spbu", "Sarana pengisian bahan bakar umum"]];
+const LAYANAN = [["ibadah", "Rumah ibadat"], ["faskes", "Fasilitas pelayanan kesehatan"], ["sekolah", "Satuan pendidikan"], ["kantor", "Kantor"], ["pasar", "Pasar"]];
+const kolomDampak = () => [
+  dk("kejadian", "jenis", "Jenis bencana", "pilih", {nilai: JENIS_DAMPAK, wajib: true, inti: true}), dt("kejadian", "nama_kejadian", "Nama kejadian", 120, {wajib: true, inti: true}),
+  dk("kejadian", "tanggal", "Tarikh (tanggal kejadian)", "tanggal", {wajib: true, maks: "hariini", inti: true}), dt("kejadian", "jam", "Waktu kejadian (jam:menit WIB)", 5, {inti: true, bersih: false}),
+  dk("kejadian", "kec", "Kecamatan", "wilayah", {inti: true}), dk("kejadian", "desa", "Kelurahan/desa", "wilayah", {inti: true}),
+  dk("kejadian", "bujur", "Longitude (bujur, disarankan 6 angka di belakang koma)", "angka", {min: 94, maks: 142, desimal: 6, inti: true}),
+  dk("kejadian", "lintang", "Latitude (lintang, disarankan 6 angka di belakang koma)", "angka", {min: -11.5, maks: 6.5, desimal: 6, inti: true}),
+  dt("kejadian", "penyebab", "Penyebab bencana", 300, {inti: true}), dt("kejadian", "kronologis", "Kronologis bencana", 2000, {inti: true}), dt("kejadian", "deskripsi", "Deskripsi", 1000, {inti: true}),
+  dt("kejadian", "sumber", "Sumber informasi", 100, {inti: true}), dt("kejadian", "kondisi_mutakhir", "Kondisi mutakhir", 500, {inti: true}),
+  dk("kejadian", "status_darurat", "Status keadaan darurat bencana", "pilih", {nilai: STATUS_DARURAT, inti: true}), dt("kejadian", "upaya", "Upaya penanganan", 1000, {inti: true}),
+  dk("kejadian", "dokumentasi", "Dokumentasi (tautan)", "tautan", {opsional: true}), dk("kejadian", "sebaran", "Sebaran dampak (tautan peta)", "tautan", {opsional: true}),
+  dk("kejadian", "tgl_tuntas", "Tanggal kejadian ditutup (status darurat berakhir)", "tanggal", {maks: "hariini", opsional: true}),
+  ...[["dana", "Dana"], ["sdm", "Sumber daya manusia"], ["sarpras", "Sarana dan prasarana"], ["logistik", "Logistik"], ["peralatan", "Peralatan"]].map(([n, t]) => dt("kebutuhan", "keb_" + n, `Kebutuhan ${t}`, 300)),
+  nihil("kebutuhan", "Tidak ada kebutuhan yang diminta"),
+  ...KORBAN.map(([n, t]) => da("manusia", n, `${t} (jiwa total)`, {maks: 1e7, inti: true})),
+  ...KORBAN.flatMap(([n, t]) => UMUR_DAMPAK.flatMap(([u, ut]) => ["l", "p"].map(s => da("manusia", `${n}_${u}_${s}`, `${t}, ${ut}, ${s === "l" ? "laki-laki" : "perempuan"}`, {maks: 1e7, bila: [n]})))),
+  ...HA.map(([n, t]) => da("sosek", n + "_ha", `${t} (hektare)`, {maks: 3e6, desimal: true})),
+  ...per("sosek", "kios", "Kios/toko"), ...per("sosek", "pabrik", "Pabrik"),
+  ...HA.map(([n, t]) => rugi("sosek", "rugi_" + n, t.toLowerCase(), [n + "_ha"])), rugi("sosek", "rugi_kios", "kios/toko", TINGKAT.map(([t]) => "kios_" + t)), rugi("sosek", "rugi_pabrik", "pabrik", TINGKAT.map(([t]) => "pabrik_" + t)),
+  nihil("sosek", "Tidak ada kerusakan sosial ekonomi"),
+  ...UNIT_VITAL.map(([n, t]) => da("prasarana", n + "_unit", `${t} (unit rusak)`, {maks: 1e5})), da("prasarana", "jalan_km", "Jalan rusak (km)", {maks: 1e5, desimal: true}),
+  ...TINGKAT.slice(0, 3).map(([t, n]) => da("prasarana", "jembatan_" + t, `Jembatan, ${n} (unit)`, {maks: 1e5})),
+  ...UNIT_VITAL.map(([n, t]) => rugi("prasarana", "rugi_" + n, t.toLowerCase(), [n + "_unit"])), rugi("prasarana", "rugi_jalan", "jalan", ["jalan_km"]), rugi("prasarana", "rugi_jembatan", "jembatan", TINGKAT.slice(0, 3).map(([t]) => "jembatan_" + t)),
+  nihil("prasarana", "Tidak ada kerusakan prasarana dan sarana vital"),
+  ...per("rumah", "rumah", "Rumah/pemukiman", {inti: true, maks: 1e6}), rugi("rumah", "rugi_rumah", "rumah/pemukiman", TINGKAT.map(([t]) => "rumah_" + t)),
+  ...LAYANAN.flatMap(([n, t]) => per("layanan", n, t, {maks: 1e5})), ...LAYANAN.map(([n, t]) => rugi("layanan", "rugi_" + n, t.toLowerCase(), TINGKAT.map(([x]) => n + "_" + x))),
+  nihil("layanan", "Tidak ada kerusakan pelayanan dasar"),
+  dt("aset", "aset_barang", "Barang yang dipakai untuk penanganan darurat bencana", 400), nihil("aset", "Tidak ada aset atau layanan yang dipakai"),
+];
+const jam = /^([01]\d|2[0-3]):[0-5]\d$/;
+const cekDampak = (d, kolom) => {
+  if (d.jam && !jam.test(d.jam)) return "waktu kejadian harus jam:menit 24 jam, contoh 14:30";
+  if ((d.bujur == null) !== (d.lintang == null)) return "longitude dan latitude diisi berpasangan";
+  for (const [n, t] of KORBAN) { const j = UMUR_DAMPAK.reduce((s, [u]) => s + (d[`${n}_${u}_l`] || 0) + (d[`${n}_${u}_p`] || 0), 0); if (j > (d[n] || 0)) return `jumlah rincian ${t.toLowerCase()} (${j}) tidak boleh melebihi total ${d[n] ?? "kosong"}; isi total dulu atau kecilkan rincian`; }
+  if (d.tgl_tuntas && d.tgl_tuntas < d.tanggal) return "tanggal ditutup tidak boleh sebelum tanggal kejadian";
+  return bentrokNihil(kolom, d);
+};
+/* gerbang transisi: dilaporkan ke diverifikasi ditolak bila inti belum lengkap, pesan menyebut butirnya */
+const gerbangDampak = (kolom, ke, data, wilayah) => {
+  if (ke !== "diverifikasi") return "";
+  const h = kelengkapan(kolom, {...data, ...wilayah});
+  return h.inti_lengkap ? "" : `verifikasi ditolak: ${h.kurang_inti.length} butir inti belum terjawab: ${h.kurang_inti.map(x => x.label).join("; ")}. Angka 0 dihitung terjawab; bagian tanpa kerusakan dipilih "tidak ada".`;
+};
 
 export const MEJA = {
   kaji_cepat: {
@@ -261,6 +331,19 @@ export const MEJA = {
     cek: d => d.pengendalian === "belum_ada" && d.uraian_pengendalian ? "uraian pengendalian hanya bila pengendalian ada"
       : (d.pengendalian === "belum_ada" || d.memadai !== "memadai") && d.res_level < d.level ? "pengendalian belum ada atau belum memadai: level residu tidak boleh turun (Juklak 17/2025 BAB III)" : "",
   },
+  /* Juklak 7/2023 Lampiran I huruf A: satu catatan per kejadian per kabupaten/kota, diperbarui di catatan yang sama. Kosong beda dari nol; bagian tanpa kerusakan dipilih nihil. Rapor BPBD tidak berubah (rapor:false, T3). */
+  dampak: {
+    id: "dampak", nama: "Data kejadian dan dampak", ikon: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/><path d="m14 5 2 2 4-4"/>',
+    wilayah: {kec: false, desa: false}, adminIsi: false, publik: false, rapor: false, ubahBuka: true, sistem: ["logbook_id", "logbook_kib"],
+    bagian: BAGIAN, kolom: kolomDampak(),
+    awal: "dilaporkan", status: ["dilaporkan", "diverifikasi", "masuk_logbook"],
+    transisi: {dilaporkan: {diverifikasi: "petugas"}, diverifikasi: {masuk_logbook: "pusdalops", dilaporkan: "petugas"}, masuk_logbook: {dilaporkan: "petugas", diverifikasi: "sistem"}},
+    rekap: ["meninggal", "hilang", "luka", "mengungsi", "terdampak", "rumah_rb", "rumah_rs", "rumah_rr", "rumah_terendam"],
+    bahaya: {belum_dimutakhirkan: `keadaan darurat belum ditutup dan data belum diubah lebih dari ${AMBANG.data_dinamis_hari} hari (data dinamis minimal 1 hari sekali, Juklak 7/2023 BAB II)`},
+    cek(d) { return cekDampak(d, this.kolom); },
+    gerbang(ke, data, wilayah) { return gerbangDampak(this.kolom, ke, data, wilayah); },
+    kelengkapan(data, wilayah) { return kelengkapan(this.kolom, {...data, ...wilayah}); },
+  },
 };
 export const DAFTAR_MEJA = Object.keys(MEJA);
 export const DAFTAR_PETUGAS = DAFTAR_MEJA.filter(m => !MEJA[m].pusat);   // sama dengan trigger meja_petugas_sah
@@ -280,7 +363,7 @@ export const EKSPOR_RISIKO = {
 /* pasangan 'meja:dari>ke' sah; sama dengan trigger meja_catatan_ubah */
 export const PASANGAN = DAFTAR_MEJA.flatMap(m => Object.entries(MEJA[m].transisi).flatMap(([d, o]) => Object.keys(o).map(ke => `${m}:${d}>${ke}`)));
 /* bentuk untuk klien: tanpa fungsi */
-export const spekPublik = () => ({ambang: AMBANG, ambang_internal: AMBANG_INTERNAL, rapor: RAPOR, meja: Object.values(MEJA).map(({cek, ...m}) => m)});
+export const spekPublik = () => ({ambang: AMBANG, ambang_internal: AMBANG_INTERNAL, rapor: RAPOR, meja: Object.values(MEJA).map(m => Object.fromEntries(Object.entries(m).filter(([, v]) => typeof v !== "function")))});
 
 /* ---------------------------------------------------------------- tanggal */
 const selisihHari = (a, b) => Math.round((Date.parse(a + "T00:00:00Z") - Date.parse(b + "T00:00:00Z")) / HARI);
@@ -291,8 +374,11 @@ const URL_OK = s => { try { const u = new URL(s); return (u.protocol === "http:"
 function satu(c, v, kini) {
   const kosong = v == null || v === "";
   if (kosong) return c.wajib ? {galat: `${c.label} wajib diisi`} : {};
-  if (c.tipe === "teks") { const s = tx(v, c.maks ?? 120); return s ? {v: s} : {galat: `${c.label}: teks 1-${c.maks ?? 120} huruf`}; }
-  if (c.tipe === "angka") { const n = num(v, c.min ?? 0, c.maks ?? 1e9, !c.desimal); return Number.isNaN(n) ? {galat: `${c.label}: angka ${c.desimal ? "" : "bulat "}${c.min ?? 0} sampai ${c.maks ?? 1e9}`} : {v: c.desimal ? Math.round(n * 100) / 100 : n}; }
+  if (c.tipe === "teks") {
+    const s = tx(v, c.maks ?? 120); if (!s) return {galat: `${c.label}: teks 1-${c.maks ?? 120} huruf`};
+    const g = c.bersih ? teksBersih(s) : ""; return g ? {galat: `${c.label}: ${g}`} : {v: s};
+  }
+  if (c.tipe === "angka") { const n = num(v, c.min ?? 0, c.maks ?? 1e9, !c.desimal); const p = 10 ** (typeof c.desimal === "number" ? c.desimal : 2); return Number.isNaN(n) ? {galat: `${c.label}: angka ${c.desimal ? "" : "bulat "}${c.min ?? 0} sampai ${c.maks ?? 1e9}`} : {v: c.desimal ? Math.round(n * p) / p : n}; }
   if (c.tipe === "pilih") return typeof v === "string" && c.nilai.includes(v) ? {v} : {galat: `${c.label}: pilih salah satu dari ${c.nilai.join(", ")}`};
   if (c.tipe === "multi") return Array.isArray(v) && v.length <= c.nilai.length && v.every(x => typeof x === "string" && c.nilai.includes(x)) && new Set(v).size === v.length ? {v} : {galat: `${c.label}: pilihan tidak sah`};
   if (c.tipe === "gudang") return typeof v === "string" && /^[0-9a-f]{16}$/.test(v) ? {v} : {galat: `${c.label}: pilih gudang dari daftar`};
@@ -308,7 +394,7 @@ function satu(c, v, kini) {
 export function validasi(meja, masuk, tahap, kini = Date.now(), lama = {}) {
   const M = MEJA[meja]; if (!M) return {galat: "meja tidak dikenal"};
   if (!masuk || typeof masuk !== "object" || Array.isArray(masuk)) return {galat: "data harus objek"};
-  const boleh = M.kolom.filter(c => (c.tahap ?? null) === tahap), nama = new Set(boleh.map(c => c.nama));
+  const boleh = M.kolom.filter(c => (c.tahap ?? null) === tahap && c.tipe !== "wilayah"), nama = new Set(boleh.map(c => c.nama));
   for (const x of Object.keys(masuk)) if (!nama.has(x)) return {galat: `kolom "${x.slice(0, 40)}" tidak dikenal untuk ${tahap ? "tahap " + tahap : "isian awal"} di meja ${M.nama}`};
   const data = {};
   for (const c of boleh) { const r = satu(c, masuk[c.nama], kini); if (r.galat) return r; if (r.v !== undefined) data[c.nama] = r.v; }
@@ -354,6 +440,7 @@ export function tandaBahaya(meja, rec, kini = Date.now()) {
   if (meja === "pengungsi" && statusEfektif(meja, rec, kini) === "berjalan" && SEKTOR.some(([n]) => d[n] === "tidak")) out.push("kebutuhan_kurang");
   if (meja === "pengaduan" && !["selesai", "ditolak"].includes(rec.status) && h > tenggat(kunciAduan(d), d.tgl_terima).hasil) out.push("lewat_tenggat");
   if (meja === "klaster" && !d.tautan) out.push("tanpa_dokumen");
+  if (meja === "dampak" && DARURAT_AKTIF.includes(d.status_darurat) && !d.tgl_tuntas && kini - rec.diubah > AMBANG.data_dinamis_hari * HARI) out.push("belum_dimutakhirkan");
   if (meja === "risiko" && statusEfektif(meja, rec, kini) === "di_atas_selera") out.push("di_atas_selera");
   const tg = meja === "rehab" && TGL_TAHAP[rec.status];
   if (tg && d[tg] && selisihHari(h, d[tg]) > AMBANG.rehab_macet_hari) out.push("macet");

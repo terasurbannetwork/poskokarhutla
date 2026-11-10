@@ -11,19 +11,25 @@ import {halamanAdmin} from "./statistik.js";
 import {halamanBnpb} from "./admin_halaman.js";
 import {PROV} from "./alun.js";
 import {waktuTanggapApi} from "./sla.js";
-import {stafPeran} from "./staf.js";
-import {stmtPelapor, stmtHapusPelaporDummy, pengaduanById, bacaPelapor, stmtJejakPelapor} from "./hak.js";
-import {MEJA, DAFTAR_MEJA, DAFTAR_PETUGAS, MEJA_RAPOR, PUSAT, EKSPOR_RISIKO, BENCANA, RAPOR, spekPublik, validasi, statusEfektif, tandaBahaya} from "./meja_spek.js";
+import {stafPeran, dalamWilayahStaf, wilayahStaf} from "./staf.js";
+import {stmtPelapor, stmtHapusPelaporDummy, pengaduanById, bacaPelapor, stmtJejakPelapor, cariKejadianLogbook, kejadianLogbookById, kibLogbook, simpanTautanLogbook, batalTerima, stmtHapusKelengkapanGrup, stmtHapusKelengkapan, stmtSisipKelengkapan, bacaKelengkapan, stmtImporDampak, batchTulis, skemaMejaAda} from "./hak.js";
+import {buatKejadian, lanjutEntri, periksaEntri} from "./logbook.js";
+import {cariKab, bangunMuatan, luarJendela, tutupKab, tanggalWib} from "./meja_terima.js";
+import {BAGIAN} from "../public/inti/kelengkapan.js";
+import {MEJA, DAFTAR_MEJA, DAFTAR_PETUGAS, MEJA_RAPOR, PUSAT, EKSPOR_RISIKO, BENCANA, RAPOR, spekPublik, validasi, statusEfektif, tandaBahaya, teksBersih} from "./meja_spek.js";
 
-const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, LAJU_TULIS = [[JAM, 120]], LAJU_PELAPOR = [[JAM, 30]], TTL_RINGKAS = 2 * JAM, MAKS_EKSPOR = 20000, MAKS_ISIAN = 9000, RE_ID = /^[0-9a-f]{16}$/;
+const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, LAJU_TULIS = [[JAM, 120]], LAJU_PELAPOR = [[JAM, 30]], TTL_RINGKAS = 2 * JAM, MAKS_EKSPOR = 20000, MAKS_ISIAN = 16384, MAKS_IMPOR = 256 * 1024, MAKS_BARIS_IMPOR = 50, MAKS_KAB_IMPOR = 8, LAJU_IMPOR = [[JAM, 5]], LAJU_TERIMA = [[JAM, 60]],   /* impor: batas CPU 10 ms akun Free */ RE_ID = /^[0-9a-f]{16}$/;
 /* Juklak 5/2025: identitas pelapor hanya untuk Inspektorat Utama dan Unit Layanan Pengaduan. Peran ini belum terdaftar di PERAN src/staf.js, jadi sampai didaftarkan pemegangnya nol dan identitas tertutup untuk siapa pun. */
 export const PERAN_ULP = ["irtama", "ulp"];
+/* meja Data kejadian dan dampak: staf Pusdalops/Koordalops menerima catatan terverifikasi ke Logbook dan membaca kelengkapan. Hanya meja dampak, hanya aksi terima (tidak mengisi, tidak mengubah isi). */
+export const PERAN_PUSDALOPS = ["pusdalops", "koordalops"];
 
 /* migrasi 0026 (atau 0022 untuk laju) belum jalan di produksi = 503, bukan 500 */
 const aman = f => async (...a) => {
   try { return await f(...a); }
   catch (e) { if (/no such table/i.test(String(e?.message || e))) return gagal(503, "Meja Kerja belum diaktifkan (migrasi 0026 belum diterapkan)"); throw e; }
 };
+const MEJA_BELUM = () => gagal(503, "meja ini belum diaktifkan (migrasi belum diterapkan)");
 const tolak = () => gagal(403, "akses ditolak: butuh kode petugas atau token admin");
 
 /* ---------------------------------------------------------------- pelaku */
@@ -32,7 +38,9 @@ async function pelaku(env, req) {
   if (!req.headers.get("x-kode")) {
     const m = await modOK(env, req); if (m) return {admin: true, oleh: "admin:" + m};
     const u = await stafPeran(env, req, PERAN_ULP);   // staf Irtama/ULP hanya untuk meja pengaduan (daftar, buat, muatBaris menjaga)
-    return u ? {admin: true, ulp: true, oleh: u} : tolak();
+    if (u) return {admin: true, ulp: true, hanya: "pengaduan", oleh: u};
+    const d = await stafPeran(env, req, PERAN_PUSDALOPS);   // staf Pusdalops: hanya meja dampak
+    return d ? {admin: true, pusdalops: true, hanya: "dampak", oleh: d} : tolak();
   }
   const p = await pemegangKode(env, req, "meja", sha => env.DB.prepare("SELECT id, nama, prov, kab, meja FROM meja_petugas WHERE kode_sha = ? AND dicabut IS NULL").bind(sha).first());
   return p instanceof Response ? p : {petugas: {...p, meja: JSON.parse(p.meja)}, oleh: "petugas:" + p.id};
@@ -42,14 +50,18 @@ const semuaKunci = (o, boleh) => Object.keys(o).find(x => !boleh.includes(x));
 /* ---------------------------------------------------------------- baris untuk klien */
 /* gudang: saldo tinggal di kolom stok, digabung ke data supaya status efektif dan tanda memakai satu jalur */
 const recOf = r => ({meja: r.meja, status: r.status, data: r.stok == null ? JSON.parse(r.data) : {...JSON.parse(r.data), stok: r.stok}, dibuat: r.dibuat, diubah: r.diubah});
-function baris(r, kini, admin, nama = {}) {
-  const M = MEJA[r.meja], rec = recOf(r), data = rec.data;
+/* oleh dan jejak mentah hanya untuk admin penuh (moderator/token); peran lain (petugas, ULP, staf Pusdalops) melihat label tetap */
+const penuh = p => !!p.admin && !p.pusdalops && !p.ulp;
+const labelOleh = o => (String(o ?? "").startsWith("petugas:") ? "Petugas" : "Admin");
+function baris(r, kini, p, nama = {}) {
+  const admin = !p.petugas, M = MEJA[r.meja], rec = recOf(r), data = rec.data;
   return {id: r.id, meja: r.meja, prov: r.prov, kab: r.kab, kec: r.kec, desa: r.desa, status: r.status, status_efektif: statusEfektif(r.meja, rec, kini),
-    tanda: tandaBahaya(r.meja, rec, kini), data, dibuat: r.dibuat, diubah: r.diubah, dummy: r.dummy, ...(admin ? {oleh: r.oleh} : {}),
+    tanda: tandaBahaya(r.meja, rec, kini), data, dibuat: r.dibuat, diubah: r.diubah, dummy: r.dummy, oleh: penuh(p) ? r.oleh : labelOleh(r.oleh),
     ...(r.kaji_id ? {kaji_id: r.kaji_id} : {}), ...(data.gudang_asal && nama[data.gudang_asal] ? {gudang_asal_nama: nama[data.gudang_asal]} : {}),
-    aksi: Object.entries(M.transisi[r.status] || {}).map(([ke, peran]) => ({ke, peran, boleh: admin || peran === "petugas"})),
+    ...(M.kelengkapan ? {kelengkapan: M.kelengkapan(data, {kec: r.kec, desa: r.desa})} : {}),
+    aksi: Object.entries(M.transisi[r.status] || {}).filter(([, peran]) => peran !== "sistem").map(([ke, peran]) => ({ke, peran, boleh: admin || peran === "petugas"})),
     ...(M.stokPeran ? {aksi_stok: Object.entries(M.stokPeran).map(([jenis, peran]) => ({jenis, peran, boleh: admin || peran === "petugas"}))} : {}),
-    bisa_ubah: !!M.turunan || r.status === M.awal};
+    bisa_ubah: !!M.turunan || !!M.ubahBuka || r.status === M.awal};
 }
 const KOLOM = "id, meja, prov, kab, kec, desa, data, status, dibuat, diubah, oleh, dummy, kaji_id, stok";
 /* nama gudang untuk logistik yang memuat gudang_asal (satu kueri, id lewat json_each karena D1 membatasi 100 parameter) */
@@ -65,7 +77,7 @@ const SELESAI_SEGARKAN = (env, meja, prov, kab, dummy, kini) => segarkanGrup(env
 async function daftar(env, req, url, kini) {
   const p = await pelaku(env, req); if (p instanceof Response) return p;
   const meja = url.searchParams.get("meja"); if (!Object.hasOwn(MEJA, meja || "")) return gagal(400, `meja harus salah satu dari ${DAFTAR_MEJA.join(", ")}`);
-  if (p.ulp && meja !== "pengaduan") return gagal(403, "peran ini hanya untuk meja Pengaduan masyarakat");
+  if (p.hanya && p.hanya !== meja) return gagal(403, `peran ini hanya untuk meja ${MEJA[p.hanya].nama}`);
   const w = ["meja = ?"], a = [meja], status = url.searchParams.get("status");
   if (p.petugas) {
     /* pemilih kaji cepat untuk meja rehab: petugas rehab boleh membaca kaji cepat kabupatennya */
@@ -76,9 +88,10 @@ async function daftar(env, req, url, kini) {
     const prov = url.searchParams.get("prov"), kab = tx(url.searchParams.get("kab"), 60);
     if (prov) { if (!RE_PROV.test(prov)) return gagal(400, "prov harus 2 digit"); w.push("prov = ?"); a.push(prov); }
     if (kab) { w.push("kab = ?"); a.push(kab); }
+    const ws = p.pusdalops ? wilayahStaf(req) : []; if (ws.length) { w.push(`prov IN (${ws.map(() => "?").join(",")})`); a.push(...ws); }   // staf berwilayah hanya melihat provinsinya
   }
   const mentah = (await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE ${w.join(" AND ")} ORDER BY diubah DESC LIMIT 2000`).bind(...a).all()).results, nama = await namaGudang(env, mentah);
-  const semua = mentah.map(r => baris(r, kini, !p.petugas, nama));
+  const semua = mentah.map(r => baris(r, kini, p, nama));
   const rows = status ? semua.filter(r => r.status_efektif === status || r.status === status) : semua;
   return json({meja, catatan: rows, status: MEJA[meja].turunan || MEJA[meja].status, dipotong: mentah.length >= 2000});
 }
@@ -99,7 +112,7 @@ function luring(o, kini) {
   if (w != null && !Number.isFinite(w)) return {galat: "waktu_klien harus angka (ms)"};
   return {klien: o.klien_id ?? null, waktu: w != null && w <= kini + 5 * MENIT && w >= kini - 14 * HARI ? Math.round(w) : kini};
 }
-const UNIK = {rehab: "kaji cepat atau kejadian ini sudah punya catatan rehab-rekon", gudang: "gudang dan barang itu sudah tercatat di kabupaten ini", pengungsi: "tempat pengungsian ini sudah dicatat pada tanggal itu", pengaduan: "nomor register sudah dipakai", risiko: "kode risiko itu sudah tercatat untuk unit dan tahun ini"};
+const UNIK = {rehab: "kaji cepat atau kejadian ini sudah punya catatan rehab-rekon", gudang: "gudang dan barang itu sudah tercatat di kabupaten ini", pengungsi: "tempat pengungsian ini sudah dicatat pada tanggal itu", pengaduan: "nomor register sudah dipakai", risiko: "kode risiko itu sudah tercatat untuk unit dan tahun ini", dampak: "kejadian itu (jenis, tanggal, dan nama yang sama) sudah tercatat di kabupaten ini; ubah catatan yang ada, jangan buat baru"};
 /* identitas pelapor: objek terpisah dari data. Tidak ada isian = anonim (Juklak 5/2025 BAB III huruf B angka 1). */
 function cekPelapor(o) {
   if (o == null) return {v: null};
@@ -114,10 +127,10 @@ async function buat(env, req, kini) {
   const b = await bacaBody(req, MAKS_ISIAN); if (b.galat) return gagal(b.status || 400, b.galat);
   const x = semuaKunci(b.o, ["meja", "prov", "kab", "kec", "desa", "data", "kaji_id", "klien_id", "waktu_klien", "pelapor"]); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
   const lr = luring(b.o, kini); if (lr.galat) return gagal(400, lr.galat);
-  if (lr.klien) { const u = await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE oleh IS ? AND klien_id = ?`).bind(p.oleh, lr.klien).first(); if (u) return json({catatan: baris(u, kini, !p.petugas), ulang: true}); }
+  if (lr.klien) { const u = await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE oleh IS ? AND klien_id = ?`).bind(p.oleh, lr.klien).first(); if (u) return json({catatan: baris(u, kini, p), ulang: true}); }
   if (!Object.hasOwn(MEJA, b.o.meja || "")) return gagal(400, `meja harus salah satu dari ${DAFTAR_MEJA.join(", ")}`);
   const M = MEJA[b.o.meja], kabB = b.o.kab == null ? null : tx(b.o.kab, 60);
-  if (p.ulp && M.id !== "pengaduan") return gagal(403, "peran ini hanya untuk meja Pengaduan masyarakat");
+  if (p.hanya && (p.pusdalops || p.hanya !== M.id)) return gagal(403, p.pusdalops ? "staf Pusdalops tidak mengisi Data kejadian dan dampak; ia hanya menerima catatan terverifikasi" : `peran ini hanya untuk meja ${MEJA[p.hanya].nama}`);
   /* identitas hanya ditulis pemegang peran yang berhak membacanya; moderator mencatat pengaduan tanpa identitas */
   const pl = cekPelapor(b.o.pelapor); if (pl.galat) return gagal(400, pl.galat);
   if (b.o.pelapor != null && M.id !== "pengaduan") return gagal(400, "pelapor hanya untuk meja Pengaduan masyarakat");
@@ -156,13 +169,14 @@ async function buat(env, req, kini) {
     ]);
   } catch (e) {
     if (/UNIQUE/i.test(String(e?.message || e))) {   // dua kiriman serentak dengan klien_id sama: yang kedua mengembalikan baris yang sudah ada
-      if (lr.klien) { const u = await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE oleh IS ? AND klien_id = ?`).bind(p.oleh, lr.klien).first(); if (u) return json({catatan: baris(u, kini, !p.petugas), ulang: true}); }
+      if (lr.klien) { const u = await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE oleh IS ? AND klien_id = ?`).bind(p.oleh, lr.klien).first(); if (u) return json({catatan: baris(u, kini, p), ulang: true}); }
       if (UNIK[M.id]) return gagal(409, UNIK[M.id]);
     }
+    if (/CHECK constraint failed/i.test(String(e?.message || e)) && !await skemaMejaAda(env, M.id)) return MEJA_BELUM();   // CHECK daftar meja di D1 belum memuat meja ini; CHECK validasi lain tetap galat
     throw e;
   }
   await SELESAI_SEGARKAN(env, M.id, prov, kab, 0, kini);
-  return json({catatan: baris(await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE id = ?`).bind(id).first(), kini, !p.petugas)}, 201);
+  return json({catatan: baris(await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE id = ?`).bind(id).first(), kini, p)}, 201);
 }
 /* permintaan logistik dari data terstruktur (Teruskan ke logistik di Alun-alun): validasi yang sama dengan rute buat (validasi + kolom meja Logistik). Mengembalikan {id} atau {galat}. */
 export async function sisipLogistik(env, {prov, kab, data}, kini, oleh, dummy = 0) {
@@ -175,9 +189,9 @@ export async function sisipLogistik(env, {prov, kab, data}, kini, oleh, dummy = 
   return {id};
 }
 /* petugas hanya melihat baris kabupaten + mejanya; selain itu dijawab 404 (tidak membocorkan bahwa id-nya ada) */
-async function muatBaris(env, p, id) {
+async function muatBaris(env, p, id, req) {
   const r = await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE id = ?`).bind(id).first();
-  return r && (p.petugas ? (r.prov === p.petugas.prov && r.kab === p.petugas.kab && p.petugas.meja.includes(r.meja) && !r.dummy) : !p.ulp || r.meja === "pengaduan") ? r : null;
+  return r && (p.petugas ? (r.prov === p.petugas.prov && r.kab === p.petugas.kab && p.petugas.meja.includes(r.meja) && !r.dummy) : (!p.hanya || r.meja === p.hanya) && (!p.pusdalops || dalamWilayahStaf(req, [r.prov]))) ? r : null;   // staf berwilayah: di luar provinsinya = 404
 }
 /* identitas pelapor: hanya peran Irtama/ULP (moderator pun ditolak), tiap pembukaan tercatat di jejak tanpa isi identitasnya. */
 async function bukaPelapor(env, req, id, kini) {
@@ -190,11 +204,11 @@ async function bukaPelapor(env, req, id, kini) {
 }
 async function rincian(env, req, id, kini) {
   const p = await pelaku(env, req); if (p instanceof Response) return p;
-  const r = await muatBaris(env, p, id); if (!r) return gagal(404, "catatan tidak ada");
+  const r = await muatBaris(env, p, id, req); if (!r) return gagal(404, "catatan tidak ada");
   const jejak = (await env.DB.prepare("SELECT dari, ke, waktu, oleh, catatan FROM meja_jejak WHERE catatan_id = ? ORDER BY id").bind(id).all()).results;
   const transaksi = r.meja === "gudang" ? (await env.DB.prepare("SELECT jenis, delta, saldo, logistik_id, waktu, oleh, catatan FROM meja_stok WHERE gudang_id = ? ORDER BY id DESC LIMIT 100").bind(id).all()).results : undefined;
-  return json({catatan: baris(r, kini, !p.petugas, await namaGudang(env, [r])), jejak: p.petugas ? jejak.map(({oleh, ...j}) => j) : jejak,
-    ...(transaksi ? {transaksi: p.petugas ? transaksi.map(({oleh, ...t}) => t) : transaksi} : {})});
+  return json({catatan: baris(r, kini, p, await namaGudang(env, [r])), jejak: penuh(p) ? jejak : jejak.map(j => ({...j, oleh: labelOleh(j.oleh)})),
+    ...(transaksi ? {transaksi: penuh(p) ? transaksi : transaksi.map(t => ({...t, oleh: labelOleh(t.oleh)}))} : {})});
 }
 /* transaksi stok manual: masuk, keluar, koreksi. UPDATE stok = stok + delta dijaga CHECK stok >= 0 di D1 (jaring kedua di bawah cek 409 ini). */
 async function ubahStok(env, p, r, o, cat, kini) {
@@ -214,28 +228,35 @@ async function ubahStok(env, p, r, o, cat, kini) {
     ]);
   } catch (e) { if (/CHECK/i.test(String(e?.message || e))) return gagal(409, "stok tidak cukup (berubah bersamaan); muat ulang"); throw e; }
   await SELESAI_SEGARKAN(env, r.meja, r.prov, r.kab, r.dummy, kini);
-  return json({catatan: baris(await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE id = ?`).bind(r.id).first(), kini, !p.petugas)});
+  return json({catatan: baris(await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE id = ?`).bind(r.id).first(), kini, p)});
 }
 async function ubah(env, req, id, kini) {
   const p = await pelaku(env, req); if (p instanceof Response) return p;
   const b = await bacaBody(req, MAKS_ISIAN); if (b.galat) return gagal(b.status || 400, b.galat);
-  const x = semuaKunci(b.o, ["aksi", "ke", "data", "kec", "desa", "catatan", "jenis", "jumlah", "klien_id", "waktu_klien"]); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
+  const x = semuaKunci(b.o, ["aksi", "ke", "data", "kec", "desa", "catatan", "jenis", "jumlah", "klien_id", "waktu_klien", "yakin", "logbook_id"]); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
   const lr = luring(b.o, kini); if (lr.galat) return gagal(400, lr.galat);
   if (!["status", "ubah", "stok"].includes(b.o.aksi)) return gagal(400, "aksi harus status, ubah, atau stok");
-  const r = await muatBaris(env, p, id); if (!r) return gagal(404, "catatan tidak ada");
-  const ulang = async () => json({catatan: baris(await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE id = ?`).bind(id).first(), kini, !p.petugas, await namaGudang(env, [r])), ulang: true});
+  const r = await muatBaris(env, p, id, req); if (!r) return gagal(404, "catatan tidak ada");
+  if (p.pusdalops) {   // staf Pusdalops hanya menerima ke Logbook, di provinsi wilayahnya
+    if (b.o.aksi !== "status" || MEJA[r.meja].transisi[r.status]?.[b.o.ke] !== "pusdalops") return gagal(403, "staf Pusdalops hanya boleh menerima catatan terverifikasi ke Logbook");
+  }
+  const ulang = async () => json({catatan: baris(await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE id = ?`).bind(id).first(), kini, p, await namaGudang(env, [r])), ulang: true});
   if (lr.klien && await env.DB.prepare("SELECT 1 FROM meja_jejak WHERE catatan_id = ? AND klien_id = ?").bind(id, lr.klien).first()) return ulang();   // kiriman ulang antrean luring: sudah tercatat
   const M = MEJA[r.meja], lama = JSON.parse(r.data), cat = b.o.catatan == null ? null : tx(b.o.catatan, 200);
   if (cat === undefined) return gagal(400, "catatan maksimal 200 huruf");
+  if (cat && r.meja === "dampak") { const g = teksBersih(cat); if (g) return gagal(400, `catatan: ${g}`); }
   if (b.o.aksi === "stok") return ubahStok(env, p, r, b.o, cat, kini);
   let ke = r.status, data, kec = r.kec, desa = r.desa, gd = null, dAwal = 0, ubahAngka = "";
   if (b.o.aksi === "status") {
     ke = b.o.ke;
     const peran = typeof ke === "string" && Object.hasOwn(M.transisi[r.status] || {}, ke) ? M.transisi[r.status][ke] : null;
     if (!peran) return gagal(409, `transisi ${r.status} ke ${String(ke).slice(0, 30)} tidak sah untuk meja ${M.nama}`);
+    if (peran === "sistem") return gagal(409, `transisi ${r.status} ke ${ke} hanya dilakukan sistem`);
     if (peran === "admin" && p.petugas) return gagal(403, `perpindahan ke ${ke} hanya boleh oleh admin`);
+    if (peran === "pusdalops" && (p.petugas || p.ulp)) return gagal(403, `perpindahan ke ${ke} hanya boleh oleh moderator atau staf Pusdalops/Koordalops`);
     const v = validasi(M.id, b.o.data ?? {}, ke, kini, lama); if (v.galat) return gagal(400, v.galat);
     data = {...lama, ...v.data};
+    const gg = M.gerbang?.(ke, data, {kec: r.kec, desa: r.desa}); if (gg) return gagal(400, gg);   // dampak: inti lengkap sebelum diverifikasi
     /* logistik dikirim dari gudang: stok gudang berkurang jumlah_kirim dalam batch yang sama */
     if (r.meja === "logistik" && ke === "dikirim" && data.gudang_asal) {
       gd = await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE id = ?`).bind(data.gudang_asal).first();
@@ -246,11 +267,13 @@ async function ubah(env, req, id, kini) {
       if (gd.stok < data.jumlah_kirim) return gagal(409, `stok gudang tidak cukup: tersisa ${gd.stok} ${g.satuan}, dikirim ${data.jumlah_kirim}`);
     }
   } else {
-    if (!M.turunan && r.status !== M.awal) return gagal(409, `isi hanya bisa diubah selama status ${M.awal}; pakai perpindahan status`);
+    if (!M.turunan && !M.ubahBuka && r.status !== M.awal) return gagal(409, `isi hanya bisa diubah selama status ${M.awal}; pakai perpindahan status`);
     const v = validasi(M.id, b.o.data ?? {}, null, kini); if (v.galat) return gagal(400, v.galat);
     if (r.meja === "gudang" && ["gudang", "barang", "satuan"].some(k => v.data[k] !== lama[k])) return gagal(409, "nama gudang, barang, dan satuan tidak bisa diubah; buat catatan baru");
     const wl = wilayahTeks({kec: b.o.kec ?? r.kec, desa: b.o.desa ?? r.desa}, M); if (wl.galat) return gagal(400, wl.galat);
     data = v.data; ({kec, desa} = wl);
+    for (const sk of M.sistem ?? []) if (lama[sk] != null) data[sk] = lama[sk];   // tautan Logbook tidak hilang saat isi diperbarui
+    if (M.ubahBuka && r.status !== M.awal) ke = M.awal;   // isi berubah sesudah diverifikasi/diterima: verifikasi ulang, penerimaan berikutnya jadi pengkinian
     /* gudang: stok_awal menggerakkan saldo, jadi petugas tidak boleh; admin boleh dan selisih terhadap stok_awal lama menggeser saldo dan dicatat sebagai baris meja_stok koreksi (saldo bergeser relatif, bukan dihitung ulang) */
     if (r.meja === "gudang") {
       dAwal = data.stok_awal - lama.stok_awal;
@@ -259,6 +282,9 @@ async function ubah(env, req, id, kini) {
     }
   }
   if (p.petugas) { const l = await laju(env, p.petugas.id, "meja.tulis", LAJU_TULIS, kini); if (l) return l; }
+  const terima = r.meja === "dampak" && ke === "masuk_logbook" && b.o.aksi === "status";
+  if (terima) { const l = await laju(env, p.oleh, "meja.terima", LAJU_TERIMA, kini); if (l) return l; }
+  let rencana; if (terima) { rencana = await siapkanTerima(env, req, r, data, b.o, kini); if (rencana instanceof Response) return rencana; }
   /* UPDATE bersyarat status lama (dua penulis serentak: yang kedua 409); jejak hanya masuk bila UPDATE mengubah baris; langkah gudang mengikuti rantai changes() */
   const gudangIsi = r.meja === "gudang" && b.o.aksi === "ubah";
   const st = [
@@ -277,18 +303,74 @@ async function ubah(env, req, id, kini) {
   try { [u] = await env.DB.batch(st); }
   catch (e) { if (lr.klien && /UNIQUE/i.test(String(e?.message || e))) return ulang(); if (/UNIQUE/i.test(String(e?.message || e)) && UNIK[r.meja]) return gagal(409, UNIK[r.meja]); if (/CHECK/i.test(String(e?.message || e))) return gagal(409, gd ? "stok gudang tidak cukup (berubah bersamaan); muat ulang" : "stok akhir tidak boleh minus"); throw e; }
   if (!u.meta.changes) return gagal(409, "status berubah di waktu yang sama; muat ulang lalu coba lagi");
+  let logbook; if (terima) { logbook = await terimaKeLogbook(env, req, p, r, rencana, kini); if (logbook instanceof Response) { await SELESAI_SEGARKAN(env, r.meja, r.prov, r.kab, r.dummy, kini); return logbook; } }
   await SELESAI_SEGARKAN(env, r.meja, r.prov, r.kab, r.dummy, kini);
   if (gd) await SELESAI_SEGARKAN(env, "gudang", gd.prov, gd.kab, gd.dummy, kini);
-  return json({catatan: baris(await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE id = ?`).bind(id).first(), kini, !p.petugas, await namaGudang(env, [{meja: r.meja, data: JSON.stringify(data)}]))});
+  return json({catatan: baris(await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE id = ?`).bind(id).first(), kini, p, await namaGudang(env, [{meja: r.meja, data: JSON.stringify(data)}])), ...(logbook ? {logbook} : {})});
+}
+
+/* ---------------------------------------------------------------- terima ke Logbook (meja dampak; Juklak 7/2023, DATA-DAMPAK.md "Alur dan status") */
+let WILAYAH = null;
+async function daftarKab(env, req) {
+  if (WILAYAH) return WILAYAH;
+  const r = env.ASSETS ? await env.ASSETS.fetch(new Request(new URL("/data/bnpb/wilayah.json", req.url))) : null;
+  return r?.ok ? (WILAYAH = (await r.json()).kab || []) : [];   // tanpa data wilayah: kejadian tetap diterima, tanpa KIB
+}
+const ringkasKandidat = k => ({id: k.id, kib: k.kib ?? null, mulai: k.mulai, status: k.status});
+/* sebelum klaim: pasangkan kejadian Logbook dan uji muatan dengan validasi Logbook yang sama. Mengembalikan Response (tolak, catatan tetap diverifikasi) atau rencana. */
+async function siapkanTerima(env, req, r, data, o, kini) {
+  if (r.dummy) return gagal(409, "catatan contoh (dummy) tidak diterima ke Logbook; Logbook hanya memuat data nyata");
+  const kab = cariKab(await daftarKab(env, req), r.prov, r.kab), nama = kab?.nama ?? tutupKab(r.kab);
+  const m = bangunMuatan(data, {prov: r.prov, kab: nama, kec: r.kec, desa: r.desa, kini, yakin: o.yakin === true});
+  const periksa = periksaEntri({...m.entri, kab_bps: kab?.kode}, kini); if (periksa.galat) return json({galat: `Logbook menolak isian: ${periksa.galat}`, wajar: periksa.wajar}, 400);
+  let id = null, k = null;
+  if (o.logbook_id == null && data.logbook_id) {   // tautan tersimpan dipakai hanya bila jenis, kabupaten, dan tanggal mulai masih cocok; kalau tidak, cari ulang seperti biasa
+    const t = await kejadianLogbookById(env, data.logbook_id);
+    if (t && t.jenis === data.jenis && t.prov === r.prov && t.kab === nama && tanggalWib(Date.parse(t.mulai)) === data.tanggal) { id = t.id; k = t; }
+  }
+  if (id) { /* tautan tersimpan sah */ }
+  else if (o.logbook_id != null) {
+    if (typeof o.logbook_id !== "string" || !RE_ID.test(o.logbook_id)) return gagal(400, "logbook_id: id kejadian Logbook (16 hex)");
+    k = await kejadianLogbookById(env, o.logbook_id);
+    if (!k || k.jenis !== data.jenis || k.prov !== r.prov || k.kab !== nama) return gagal(400, "logbook_id harus kejadian Logbook berjenis sama di kabupaten ini"); id = k.id;
+  } else {
+    const cocok = await cariKejadianLogbook(env, data.jenis, r.prov, nama, data.tanggal);
+    if (cocok.length > 1) return json({galat: `ada ${cocok.length} kejadian Logbook dengan jenis, kabupaten, dan tanggal mulai yang sama; kirim logbook_id kejadian yang dimaksud`, kandidat: cocok.map(ringkasKandidat)}, 409);
+    if (cocok.length) { k = cocok[0]; id = k.id; }
+  }
+  if (k && k.status !== "buka") return json({galat: "kejadian Logbook tujuan sudah ditutup; catatan tetap diverifikasi. Pilih kejadian lain (logbook_id) atau minta Pusdalops membuat kejadian baru", kandidat: [ringkasKandidat(k)]}, 409);
+  if (!k) { const lj = luarJendela(data, kini); if (lj) return gagal(422, lj); }
+  return {id, ...m, kab_bps: kab?.kode};
+}
+/* sesudah klaim: tulis ke Logbook lewat jalur yang sama dengan rute Logbook. Gagal = klaim dibatalkan (kembali diverifikasi) dan galatnya diteruskan apa adanya. */
+async function terimaKeLogbook(env, req, p, r, rencana, kini) {
+  let res;
+  try { res = rencana.id ? await lanjutEntri(env, p.oleh, {...rencana.entri, kab_bps: rencana.kab_bps}, kini, rencana.id, p.pusdalops ? req : null)
+    : await buatKejadian(env, p.oleh, {...rencana.kejadian, kab_bps: rencana.kab_bps, entri: rencana.entri}, kini, null); }
+  catch (e) { await batalTerima(env, r.id, kini, p.oleh, "galat basis data Logbook"); throw e; }
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok) { await batalTerima(env, r.id, kini, p.oleh, String(j.galat || res.status)); return json({galat: `Logbook menolak: ${j.galat || res.status}; catatan kembali berstatus diverifikasi`, wajar: j.wajar}, res.status); }
+  const logbookId = rencana.id ?? j.kejadian.id, kib = rencana.id ? await kibLogbook(env, logbookId) : j.kejadian.kib ?? null;
+  let gagalTaut = false;
+  try { await simpanTautanLogbook(env, r.id, logbookId, kib); } catch (e) { gagalTaut = true; }   // Logbook sudah tertulis: balas sukses; penerimaan berikutnya memasangkan lewat pencarian, tanpa menggandakan
+  const peringatan = [kib ? "" : "KIB tidak dibuat: kode BPS kabupaten tidak ditemukan di data wilayah", gagalTaut ? "tautan ke Logbook belum tersimpan di catatan; penerimaan berikutnya akan memasangkan ulang lewat pencarian" : ""].filter(Boolean).join("; ");
+  return {kejadian_id: logbookId, kib, kib_entri: j.entri?.kib ?? null, tindakan: rencana.id ? "tambah" : "buat", ...(peringatan ? {peringatan} : {})};
 }
 
 /* ---------------------------------------------------------------- agregat (tabel meja_ringkas; rekap admin, ringkas publik, rapor) */
-const KOL_R = "SELECT meja, prov, kab, status, data, dibuat, diubah, stok, dummy FROM meja_catatan";
-function kumpul(rows, kini, acc = {r: new Map(), b: new Map(), t: new Map()}) {
+const KOL_R = "SELECT meja, prov, kab, kec, desa, status, data, dibuat, diubah, stok, dummy FROM meja_catatan";
+function kumpul(rows, kini, acc = {r: new Map(), b: new Map(), t: new Map(), k: new Map()}) {
   for (const r of rows) {
     const rec = {...recOf(r)}, M = MEJA[r.meja], se = statusEfektif(r.meja, rec, kini), kunci = [r.meja, r.prov, r.kab, se, r.dummy].join("\t");
     let a = acc.r.get(kunci); if (!a) acc.r.set(kunci, a = {meja: r.meja, prov: r.prov, kab: r.kab, status: se, dummy: r.dummy, n: 0, bahaya: 0, jumlah: Object.fromEntries(M.rekap.map(c => [c, 0])), terbaru: 0});
-    a.n++; if (tandaBahaya(r.meja, rec, kini).length) a.bahaya++; a.terbaru = Math.max(a.terbaru, r.diubah);
+    const tanda = tandaBahaya(r.meja, rec, kini);
+    a.n++; if (tanda.length) a.bahaya++; a.terbaru = Math.max(a.terbaru, r.diubah);
+    if (M.kelengkapan) {   // agregat kelengkapan per kabupaten dari baris yang SUDAH dibaca (tanpa pemindaian tambahan)
+      const h = M.kelengkapan(rec.data, {kec: r.kec, desa: r.desa}), kz = [r.prov, r.kab, r.dummy].join("\t");
+      const z = acc.k.get(kz) ?? (acc.k.set(kz, {prov: r.prov, kab: r.kab, dummy: r.dummy, n: 0, persen: 0, inti: 0, belum: 0, kosong: {}, terbaru: 0}), acc.k.get(kz));
+      z.n++; z.persen += h.persen; if (h.inti_lengkap) z.inti++; if (tanda.includes("belum_dimutakhirkan")) z.belum++; z.terbaru = Math.max(z.terbaru, r.diubah);
+      for (const x of [...h.kurang_inti, ...h.kurang_rinci]) z.kosong[x.nama] = (z.kosong[x.nama] || 0) + 1;
+    }
     /* rekapTerakhir (data harian): jumlah hanya dari catatan terbaru per tempat; tempat yang sudah tidak berjalan tidak dihitung */
     const T = M.rekapTerakhir, kt = T && [r.meja, r.prov, r.kab, r.dummy, String(rec.data[T.kunci]).toLowerCase()].join("\t"), lalu = T && acc.t.get(kt);
     if (!T || !lalu || lalu.tgl < rec.data[T.tanggal]) {
@@ -314,26 +396,38 @@ function sisip(acc, env) {
     out.push(env.DB.prepare("INSERT INTO meja_ringkas_bencana (meja, bencana, prov, kab, dummy, n, berlaku) SELECT json_extract(value, '$[0]'), json_extract(value, '$[1]'), json_extract(value, '$[2]'), json_extract(value, '$[3]'), json_extract(value, '$[4]'), json_extract(value, '$[5]'), json_extract(value, '$[6]') FROM json_each(?)").bind(JSON.stringify(c)));
   return out;
 }
+/* kelengkapan = langkah TERPISAH dari meja_ringkas: tabel meja_kelengkapan (0119) bisa belum ada di produksi; hanya galat itu yang ditelan, meja lama tetap diperbarui */
+const sisipKl = (acc, env) => {
+  const kl = [...acc.k.values()].map(z => [z.prov, z.kab, z.dummy, z.n, z.persen, z.inti, z.belum, JSON.stringify(Object.fromEntries(Object.entries(z.kosong).sort((x, y) => y[1] - x[1]).slice(0, 25))), z.terbaru]), out = [];
+  for (let i = 0; i < kl.length; i += 100) out.push(stmtSisipKelengkapan(env, kl.slice(i, i + 100)));
+  return out;
+};
+const tulisKl = async (env, stmts) => { try { await batchTulis(env, stmts); } catch (e) { if (!/no such table: meja_kelengkapan/i.test(String(e?.message || e))) throw e; } };
 /* bangun ulang SATU kelompok (meja, prov, kab, dummy) dari catatan yang sudah tersimpan */
 export async function segarkanGrup(env, meja, prov, kab, dummy, kini = Date.now()) {
   const rows = (await env.DB.prepare(`${KOL_R} WHERE meja = ? AND prov = ? AND kab = ? AND dummy = ?`).bind(meja, prov, kab, dummy).all()).results.map(r => ({...r, dummy}));
+  const acc = kumpul(rows, kini);
   await env.DB.batch([env.DB.prepare("DELETE FROM meja_ringkas WHERE meja = ? AND prov = ? AND kab = ? AND dummy = ?").bind(meja, prov, kab, dummy),
-    env.DB.prepare("DELETE FROM meja_ringkas_bencana WHERE meja = ? AND prov = ? AND kab = ? AND dummy = ?").bind(meja, prov, kab, dummy), ...sisip(kumpul(rows, kini), env)]);
+    env.DB.prepare("DELETE FROM meja_ringkas_bencana WHERE meja = ? AND prov = ? AND kab = ? AND dummy = ?").bind(meja, prov, kab, dummy),
+    ...sisip(acc, env)]);
+  if (MEJA[meja].kelengkapan) await tulisKl(env, [stmtHapusKelengkapanGrup(env, prov, kab, dummy), ...sisipKl(acc, env)]);
 }
 /* bangun ulang SEMUA, membaca catatan bertahap (kunci id, 1000 per halaman), tanpa batas baris. Dipanggil cron tiap jam dan saat tabel basi.
    ponytail: tulis yang masuk di tengah pemindaian bisa tertimpa sampai tulis/segarkan berikutnya; paling lama satu jam. */
 export async function segarkanRingkas(env, kini = Date.now()) {
-  const acc = {r: new Map(), b: new Map(), t: new Map()}; let akhir = "";
+  const acc = {r: new Map(), b: new Map(), t: new Map(), k: new Map()}; let akhir = "";
   for (;;) {
-    const rows = (await env.DB.prepare(`SELECT id, meja, prov, kab, status, data, dibuat, diubah, stok, dummy FROM meja_catatan WHERE id > ? ORDER BY id LIMIT 1000`).bind(akhir).all()).results;
+    const rows = (await env.DB.prepare(`SELECT id, meja, prov, kab, kec, desa, status, data, dibuat, diubah, stok, dummy FROM meja_catatan WHERE id > ? ORDER BY id LIMIT 1000`).bind(akhir).all()).results;
     kumpul(rows, kini, acc); if (rows.length < 1000) break; akhir = rows[rows.length - 1].id;
   }
   await env.DB.batch([env.DB.prepare("DELETE FROM meja_ringkas"), env.DB.prepare("DELETE FROM meja_ringkas_bencana"), ...sisip(acc, env),
     env.DB.prepare("INSERT INTO meja_ringkas_meta (kunci, nilai) VALUES ('dihitung', ?) ON CONFLICT (kunci) DO UPDATE SET nilai = excluded.nilai").bind(kini)]);
+  await tulisKl(env, [stmtHapusKelengkapan(env), ...sisipKl(acc, env)]);
 }
-async function bacaRingkas(env, kini, ikut) {
+async function bacaRingkas(env, kini, ikut, tanpaBaris = false) {
   let m = await env.DB.prepare("SELECT nilai FROM meja_ringkas_meta WHERE kunci = 'dihitung'").first();
   if (!m || kini - m.nilai > TTL_RINGKAS) { await segarkanRingkas(env, kini); m = {nilai: kini}; }
+  if (tanpaBaris) return {dihitung: m.nilai, rows: []};
   const dm = ikut ? "" : " WHERE dummy = 0";
   return {dihitung: m.nilai, rows: (await env.DB.prepare(`SELECT meja, prov, kab, status, dummy, n, bahaya, jumlah, terbaru FROM meja_ringkas${dm}`).all()).results};
 }
@@ -363,6 +457,63 @@ async function ringkas(env, req, url, kini, ctx) {
   const ambil = async ikut => { const {dihitung, rows} = await bacaRingkas(env, kini, ikut); return json({dibuat: kini, dihitung, meja: agregat(rows.filter(r => MEJA[r.meja].publik !== false), "prov")}); };
   if (url.searchParams.get("dummy") === "1" && await modOK(env, req)) return ambil(true);
   return cacheTepi(new Request(new URL("/api/meja/ringkas", url), {method: "GET"}), ctx, 120, () => ambil(false));
+}
+
+/* ---------------------------------------------------------------- kelengkapan Data kejadian dan dampak per kabupaten/kota (admin dan staf Pusdalops) */
+const LABEL_BUTIR = Object.fromEntries(MEJA.dampak.kolom.map(c => [c.nama, c.label]));
+const labelButir = n => LABEL_BUTIR[n] ?? (n.startsWith("bagian_") ? `${BAGIAN[n.slice(7)]}: belum ada butir terisi` : n);
+async function kelengkapanKab(env, req, url, kini) {
+  const p = await pelaku(env, req); if (p instanceof Response) return p;
+  if (p.petugas || p.ulp) return gagal(403, "kelengkapan per kabupaten hanya untuk admin dan staf Pusdalops");
+  const ikut = url.searchParams.get("dummy") === "1" && !p.pusdalops, ws = p.pusdalops ? wilayahStaf(req) : [];
+  const {dihitung} = await bacaRingkas(env, kini, ikut, true);   // memastikan agregat tidak lebih tua dari 2 jam
+  let baca; try { baca = await bacaKelengkapan(env, ikut); } catch (e) { if (/no such table: meja_kelengkapan/i.test(String(e?.message || e))) return gagal(503, "Kelengkapan belum diaktifkan (migrasi 0119 belum diterapkan)"); throw e; }
+  const kab = baca.filter(z => !ws.length || ws.includes(z.prov)).map(z => ({prov: z.prov, kab: z.kab, dummy: !!z.dummy, kejadian: z.n, persen: Math.round(z.persen_jumlah / z.n), inti_lengkap: z.inti_lengkap,
+    belum_dimutakhirkan: z.belum, terbaru: z.terbaru, kosong: Object.entries(JSON.parse(z.kosong)).slice(0, 10).map(([nama, jumlah]) => ({nama, label: labelButir(nama), jumlah}))}))
+    .sort((a, b) => a.persen - b.persen || a.prov.localeCompare(b.prov) || a.kab.localeCompare(b.kab));   // paling tidak lengkap dulu
+  const n = kab.reduce((a, z) => a + z.kejadian, 0);
+  return json({kini, dihitung, ringkas: {kabupaten: kab.length, kejadian: n, persen: n ? Math.round(kab.reduce((a, z) => a + z.persen * z.kejadian, 0) / n) : null}, kab});
+}
+
+/* ---------------------------------------------------------------- impor Data kejadian dan dampak (templat satu baris per kejadian; berkas dibaca di peramban) */
+async function impor(env, req, kini) {
+  const p = await pelaku(env, req); if (p instanceof Response) return p;
+  if (p.hanya) return gagal(403, "peran ini tidak boleh mengimpor");
+  if (p.petugas && !p.petugas.meja.includes("dampak")) return gagal(403, "meja ini tidak diizinkan untuk kodemu");
+  const M = MEJA.dampak, b = await bacaBody(req, MAKS_IMPOR); if (b.galat) return gagal(b.status || 400, b.galat);
+  const x = semuaKunci(b.o, ["baris"]); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
+  if (!Array.isArray(b.o.baris) || !b.o.baris.length || b.o.baris.length > MAKS_BARIS_IMPOR) return gagal(400, `baris harus larik 1 sampai ${MAKS_BARIS_IMPOR} isi`);
+  const hasil = [], masuk = [], kabAda = new Map();
+  b.o.baris.forEach((o, i) => {
+    const salah = galat => hasil.push({baris: i + 1, status: "galat", galat});
+    if (!o || typeof o !== "object" || Array.isArray(o)) return salah("baris harus objek");
+    const k = semuaKunci(o, ["prov", "kab", "kec", "desa", "data"]); if (k) return salah(`kolom "${k.slice(0, 40)}" tidak dikenal`);
+    const kabB = o.kab == null ? null : tx(o.kab, 60); let prov, kab;
+    if (p.petugas) {
+      if ((o.prov != null && o.prov !== p.petugas.prov) || (kabB != null && kabB !== p.petugas.kab)) return salah("kamu hanya boleh mengisi untuk kabupatenmu sendiri");
+      ({prov, kab} = p.petugas);
+    } else {
+      if (typeof o.prov !== "string" || !RE_PROV.test(o.prov)) return salah("prov harus kode 2 digit");
+      if (!kabB || kabB.length < 2) return salah("kabupaten 2-60 huruf");
+      prov = o.prov; kab = kabB;
+    }
+    const wl = wilayahTeks(o, M); if (wl.galat) return salah(wl.galat);
+    const v = validasi(M.id, o.data, null, kini); if (v.galat) return salah(v.galat);
+    const json_ = JSON.stringify(v.data); if (json_.length > 20000) return salah("isian melebihi 20000 huruf (batas basis data)");   // galat per baris, bukan "ganda"
+    kabAda.set(prov + "|" + kab, [prov, kab]);
+    masuk.push({i, id: acak(8), prov, kab, kec: wl.kec, desa: wl.desa, data: json_, kini, oleh: p.oleh, petugas: p.petugas?.id ?? null});
+  });
+  if (kabAda.size > MAKS_KAB_IMPOR) return gagal(400, `satu impor paling banyak ${MAKS_KAB_IMPOR} kabupaten/kota (batas permintaan ke basis data); pecah berkasnya`);
+  if (masuk.length) {
+    if (!await skemaMejaAda(env, M.id)) return MEJA_BELUM();   // INSERT OR IGNORE akan menelan CHECK daftar meja sebagai "ganda": periksa skema dulu
+    const l = await laju(env, p.oleh, "meja.impor", LAJU_IMPOR, kini); if (l) return l;   // petugas dan admin, per pelaku
+    const res = await batchTulis(env, masuk.flatMap(m => stmtImporDampak(env, m)));
+    masuk.forEach((m, j) => hasil.push(res[2 * j].meta.changes ? {baris: m.i + 1, status: "masuk", id: m.id} : {baris: m.i + 1, status: "ganda", galat: UNIK.dampak}));   // OR IGNORE: tabrakan indeks unik = ganda
+    for (const [pv, kb] of kabAda.values()) await SELESAI_SEGARKAN(env, M.id, pv, kb, 0, kini);
+  }
+  hasil.sort((a, c) => a.baris - c.baris);
+  const n = st => hasil.filter(h => h.status === st).length;
+  return json({ringkas: {baris: hasil.length, masuk: n("masuk"), ganda: n("ganda"), galat: n("galat")}, hasil});
 }
 
 /* ---------------------------------------------------------------- rapor kinerja BPBD (indeks komposit, bobot sementara: RAPOR di meja_spek.js) */
@@ -479,7 +630,8 @@ async function buatPetugas(env, req, url, kini) {
   const mj = b.o.meja;
   if (!Array.isArray(mj) || !mj.length || !mj.every(m => typeof m === "string" && DAFTAR_PETUGAS.includes(m)) || new Set(mj).size !== mj.length) return gagal(400, `meja: satu atau lebih dari ${DAFTAR_PETUGAS.join(", ")}, tanpa duplikat`);
   const id = acak(8), {kode, kode_sha} = await kodeBaru();
-  await env.DB.prepare("INSERT INTO meja_petugas (id, nama, prov, kab, meja, kode_sha, dibuat, oleh) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").bind(id, nama, b.o.prov, kab, JSON.stringify(mj), kode_sha, kini, p.oleh).run();
+  try { await env.DB.prepare("INSERT INTO meja_petugas (id, nama, prov, kab, meja, kode_sha, dibuat, oleh) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").bind(id, nama, b.o.prov, kab, JSON.stringify(mj), kode_sha, kini, p.oleh).run(); }
+  catch (e) { if (/CHECK constraint failed|meja petugas tidak sah/i.test(String(e?.message || e)) && mj.includes("dampak") && !await skemaMejaAda(env, "dampak")) return MEJA_BELUM(); throw e; }   // kode tayang sebelum migrasi
   /* kode tampil SEKALI, di fragmen (#k=) supaya tidak masuk log server */
   return json({petugas: {id, nama, prov: b.o.prov, kab, meja: mj, dibuat: kini, dicabut: null}, kode, tautan: `${url.origin}/meja#k=${kode}`}, 201);
 }
@@ -581,6 +733,30 @@ function barisDummy(kini, id) {
   add("risiko", PUSAT.kab, "tercatat", 800, rs("CTH.01", "kepatuhan", 6), null, null, pusat({}));
   add("risiko", PUSAT.kab, "tercatat", 800, rs("CTH.02", "operasional", 12, {memadai: "belum_memadai", res_level: 16, res_kemungkinan: 4, res_dampak: 4}), null, null, pusat({}));
   add("risiko", PUSAT.kab, "tercatat", 800, rs("CTH.03", "kecurangan", 16, {pengendalian: "belum_ada", uraian_pengendalian: undefined, memadai: undefined, res_kemungkinan: 4, res_dampak: 4}), null, null, pusat({}));
+  /* dampak: tiap status dan tingkat kelengkapan. kurang = baru jenis dan nama; inti = inti lengkap (bagian lain "tidak ada"), rincian umur kosong; penuh = 100%. Angka masuk akal, rincian umur tidak melebihi total. */
+  const sebar = (n, v) => Object.fromEntries(["anak", "dewasa", "lansia"].flatMap((u, i) => ["l", "p"].map((s, j) => [`${n}_${u}_${s}`, v[2 * i + j]])));
+  const penuh = (o = {}) => ({jenis: "banjir", nama_kejadian: "Banjir Sungai Contoh", tanggal: t(2), jam: "03:30", bujur: 113.912345, lintang: -2.212345, penyebab: "Hujan lebat di hulu sungai selama dua hari",
+    kronologis: "Air sungai meluap pukul 03.30 WIB dan menggenangi tiga desa. Warga mengungsi ke balai desa.", deskripsi: "Banjir luapan sungai dengan tinggi genangan 50 sampai 120 cm.", sumber: "Laporan BPBD kabupaten",
+    kondisi_mutakhir: "Genangan surut di dua desa, satu desa masih tergenang", status_darurat: "tanggap", upaya: "Evakuasi warga, dapur umum, dan penyedotan air dengan pompa", dokumentasi: "https://contoh.invalid/dokumentasi", sebaran: "https://contoh.invalid/sebaran",
+    keb_dana: "Dana siap pakai 200 juta rupiah", keb_sdm: "40 personel relawan", keb_sarpras: "Dua perahu karet", keb_logistik: "Beras 2 ton dan selimut 300 lembar", keb_peralatan: "Dua pompa air",
+    meninggal: 1, hilang: 0, luka: 6, mengungsi: 420, terdampak: 1800, ...sebar("meninggal", [0, 0, 1, 0, 0, 0]), ...sebar("luka", [1, 1, 2, 1, 0, 1]), ...sebar("mengungsi", [60, 55, 120, 130, 25, 30]), ...sebar("terdampak", [250, 240, 520, 540, 120, 130]),
+    sawah_ha: 12.5, lahan_ha: 3, kebun_ha: 4.25, hutan_ha: 0, kolam_ha: 1.2, kios_rb: 0, kios_rs: 2, kios_rr: 5, kios_terendam: 14, pabrik_rb: 0, pabrik_rs: 0, pabrik_rr: 0, pabrik_terendam: 1,
+    rugi_sawah: 125, rugi_lahan: 20, rugi_kebun: 30, rugi_kolam: 12, rugi_kios: 340, rugi_pabrik: 150,
+    air_unit: 2, listrik_unit: 1, telekom_unit: 0, irigasi_unit: 3, transportasi_unit: 0, spbu_unit: 0, jalan_km: 4.5, jembatan_rb: 0, jembatan_rs: 1, jembatan_rr: 2, rugi_air: 40, rugi_listrik: 60, rugi_irigasi: 180, rugi_jalan: 900, rugi_jembatan: 450,
+    rumah_rb: 5, rumah_rs: 12, rumah_rr: 38, rumah_terendam: 640, rugi_rumah: 4200,
+    ibadah_rb: 0, ibadah_rs: 1, ibadah_rr: 2, ibadah_terendam: 3, faskes_rb: 0, faskes_rs: 0, faskes_rr: 1, faskes_terendam: 1, sekolah_rb: 0, sekolah_rs: 1, sekolah_rr: 2, sekolah_terendam: 4, kantor_rb: 0, kantor_rs: 0, kantor_rr: 0, kantor_terendam: 1, pasar_rb: 0, pasar_rs: 0, pasar_rr: 0, pasar_terendam: 0,
+    rugi_ibadah: 300, rugi_faskes: 150, rugi_sekolah: 700, rugi_kantor: 90, aset_barang: "Dua perahu karet dan satu pompa air milik BPBD", ...o});
+  const inti = (o = {}) => ({jenis: "longsor", nama_kejadian: "Longsor Lereng Contoh", tanggal: t(1), jam: "21:10", bujur: 114.101234, lintang: -2.301234, penyebab: "Hujan deras pada lereng tanpa penahan", kronologis: "Tebing longsor malam hari menimpa dua rumah.", deskripsi: "Longsor lereng setinggi 8 meter menutup jalan desa.",
+    sumber: "Kepala desa dan relawan", kondisi_mutakhir: "Jalan desa belum bisa dilalui", status_darurat: "belum_ditetapkan", upaya: "Pencarian korban dan pembersihan material", meninggal: 0, hilang: 0, luka: 2, mengungsi: 150, terdampak: 600,
+    rumah_rb: 2, rumah_rs: 0, rumah_rr: 3, rumah_terendam: 0, nihil_kebutuhan: true, nihil_sosek: true, nihil_prasarana: true, nihil_layanan: true, nihil_aset: true, ...o});
+  const kurang = (jenis, nama, o = {}) => ({jenis, nama_kejadian: nama, tanggal: t(1), penyebab: "Belum diketahui", meninggal: 0, rumah_rb: 2, ...o});
+  add("dampak", A, "dilaporkan", 5, kurang("banjir", "Banjir Kampung Contoh"), "Desa Contoh Satu", "Kec. Contoh");
+  add("dampak", A, "dilaporkan", 30, inti(), "Desa Contoh Dua", "Kec. Contoh");
+  add("dampak", A, "diverifikasi", 50, inti({nama_kejadian: "Longsor Dusun Contoh", status_darurat: "tanggap"}), "Desa Contoh Tiga", "Kec. Contoh");   // darurat tanpa pembaruan lebih dari sehari: belum_dimutakhirkan
+  add("dampak", A, "diverifikasi", 20, inti({nama_kejadian: "Banjir Bandang Contoh", jenis: "banjir"}), "Desa Contoh Empat", "Kec. Contoh");
+  add("dampak", A, "masuk_logbook", 100, penuh({tgl_tuntas: t(1)}), "Desa Contoh Satu", "Kec. Contoh");
+  add("dampak", B, "dilaporkan", 8, kurang("kekeringan", "Kekeringan Desa Contoh"), "Desa Contoh Lima", "Kec. Contoh");
+  add("dampak", B, "masuk_logbook", 90, penuh({jenis: "cuaca", nama_kejadian: "Angin Kencang Contoh", tgl_tuntas: t(1)}), "Desa Contoh Empat", "Kec. Contoh");
   const stokLain = [{gudang: "gdSelimut", jenis: "masuk", jumlah: 100, umurJam: 100, catatan: "Pasokan dari gudang provinsi"}, {gudang: "gdBeras", jenis: "masuk", jumlah: 500, umurJam: 120, catatan: "Pasokan dari gudang provinsi"},
     {gudang: "gdBeras", jenis: "koreksi", jumlah: -20, umurJam: 60, catatan: "Koreksi hitung ulang"}];
   return {R, stokLain};
@@ -588,7 +764,7 @@ function barisDummy(kini, id) {
 async function dummyIsi(env, kini, oleh) {
   if ((await env.DB.prepare("SELECT count(*) n FROM meja_catatan WHERE dummy = 1").first()).n) return gagal(409, "data dummy Meja Kerja sudah ada; hapus dulu dengan 🧹");
   const st = [], idPetugas = Array.from({length: 3}, () => acak(8)), ID = {}, id = n => (ID[n] ??= acak(8));
-  const PT = [[KAB_D[0], DAFTAR_PETUGAS, 0], [KAB_D[1], ["kaji_cepat", "logistik"], 0], [KAB_D[2], ["renkon"], 1]];
+  const PT = [[KAB_D[0], DAFTAR_PETUGAS, 0], [KAB_D[1], ["kaji_cepat", "logistik", "dampak"], 0], [KAB_D[2], ["renkon"], 1]];
   PT.forEach(([kab, mj, cabut], i) => st.push(env.DB.prepare("INSERT INTO meja_petugas (id, nama, prov, kab, meja, kode_sha, dibuat, dicabut, oleh, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)")
     .bind(idPetugas[i], `[DUMMY] Petugas Contoh ${i + 1}`, PROV_D, kab, JSON.stringify(mj), "0".repeat(48) + acak(8), kini - 30 * HARI, cabut ? kini - HARI : null, oleh)));
   const {R: rows, stokLain} = barisDummy(kini, id); let nj = 0;
@@ -645,16 +821,20 @@ async function dummyHapus(env) {
   const hasil = {pelapor: await n("meja_pelapor"), petugas: await n("meja_petugas"), catatan: await n("meja_catatan"), jejak: await n("meja_jejak"), transaksi_stok: await n("meja_stok"),
     panggilan: await n("panggilan", di, ...KAB_D), lapangan: await n("lapangan", di, ...KAB_D), regu: await n("regu", di, ...KAB_D)};
   await env.DB.batch([
-    stmtHapusPelaporDummy(env), env.DB.prepare("DELETE FROM meja_stok WHERE dummy = 1"), env.DB.prepare("DELETE FROM meja_ringkas WHERE dummy = 1"), env.DB.prepare("DELETE FROM meja_ringkas_bencana WHERE dummy = 1"),
+    stmtHapusPelaporDummy(env), env.DB.prepare("DELETE FROM meja_stok WHERE dummy = 1"), env.DB.prepare("DELETE FROM meja_ringkas WHERE dummy = 1"), env.DB.prepare("DELETE FROM meja_ringkas_bencana WHERE dummy = 1"), 
     env.DB.prepare("DELETE FROM meja_jejak WHERE dummy = 1"), env.DB.prepare("DELETE FROM meja_catatan WHERE dummy = 1"), env.DB.prepare("DELETE FROM meja_petugas WHERE dummy = 1"),
     env.DB.prepare(`DELETE FROM lapangan WHERE ${di}`).bind(...KAB_D), env.DB.prepare(`DELETE FROM panggilan WHERE ${di}`).bind(...KAB_D), env.DB.prepare(`DELETE FROM regu WHERE ${di}`).bind(...KAB_D),
   ]);
+  await tulisKl(env, [stmtHapusKelengkapan(env, false)]);
   return json({ok: true, ...hasil});
 }
 async function dummy(env, req, kini) {
   const oleh = await superOK(env, req); if (!oleh) return gagal(403, "dummy hanya untuk Super Admin (secret SUPER_ADMIN berisi awalan akun)");
   const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
-  if (b.o.aksi === "isi") return dummyIsi(env, kini, "admin:" + oleh);
+  if (b.o.aksi === "isi") {
+    try { return await dummyIsi(env, kini, "admin:" + oleh); }
+    catch (e) { if (/CHECK constraint failed|meja petugas tidak sah/i.test(String(e?.message || e)) && !await skemaMejaAda(env, "dampak")) return MEJA_BELUM(); throw e; }   // dummy meja baru sebelum migrasi
+  }
   if (b.o.aksi === "hapus") return dummyHapus(env);
   return gagal(400, "aksi harus isi/hapus");
 }
@@ -664,7 +844,7 @@ const A = {
   "GET /meja": (env, req, url) => halamanBnpbPublik(env, url, "meja", {pribadi: true}),
   "GET /admin/meja": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("meja")),
   "GET /api/meja/spek": (env, req, url, kini, ctx) => cacheTepi(new Request(new URL("/api/meja/spek", url), {method: "GET"}), ctx, 300, async () => json(spekPublik())),
-  "GET /api/meja/saya": async (env, req) => { const p = await pelaku(env, req); return p instanceof Response ? p : json(p.petugas ? {peran: "petugas", petugas: {nama: p.petugas.nama, prov: p.petugas.prov, kab: p.petugas.kab, meja: p.petugas.meja}} : {peran: p.ulp ? "ulp" : "admin"}); },
+  "GET /api/meja/saya": async (env, req) => { const p = await pelaku(env, req); return p instanceof Response ? p : json(p.petugas ? {peran: "petugas", petugas: {nama: p.petugas.nama, prov: p.petugas.prov, kab: p.petugas.kab, meja: p.petugas.meja}} : {peran: p.ulp ? "ulp" : p.pusdalops ? "pusdalops" : "admin"}); },
   "GET /api/meja/pelapor/:id": (env, req, url, kini, ctx, id) => bukaPelapor(env, req, id, kini),
   "GET /api/meja/catatan": daftar,
   "POST /api/meja/catatan": (env, req, url, kini) => buat(env, req, kini),
@@ -673,6 +853,8 @@ const A = {
   "GET /api/meja/rekap": rekap,
   "GET /api/meja/ringkas": ringkas,
   "GET /api/meja/ekspor": ekspor,
+  "GET /api/meja/kelengkapan": kelengkapanKab,
+  "POST /api/meja/impor": (env, req, url, kini) => impor(env, req, kini),
   "GET /api/meja/rapor": raporAdmin,
   "GET /api/meja/rapor/publik": raporPublik,
   "GET /api/meja/petugas": (env, req) => daftarPetugas(env, req),

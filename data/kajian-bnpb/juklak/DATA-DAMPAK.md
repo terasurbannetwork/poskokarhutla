@@ -54,7 +54,7 @@ Tanda bahaya `belum_dimutakhirkan`: status darurat Siaga atau Tanggap Darurat at
 
 ## Impor data lama
 
-Templat `public/bnpb/templat/data-dampak.xlsx` satu baris per kejadian. Berkas dibaca di peramban tanpa pustaka baru. `POST /api/meja/impor` paling banyak 200 baris, tiap baris melewati `validasi` yang sama, jawabannya per baris. Baris yang sama tidak masuk dua kali.
+Templat `public/bnpb/templat/data-dampak.xlsx` satu baris per kejadian. Berkas dibaca di peramban tanpa pustaka baru. `POST /api/meja/impor` paling banyak 50 baris per kirim (badan 256 KB, batas CPU 10 ms akun Free) dan 8 kabupaten/kota; 5 kirim per jam per pelaku (petugas maupun admin). Berkas lebih besar dipecah di peramban. Tiap baris melewati `validasi` yang sama, jawabannya per baris (`masuk`, `ganda`, `galat`); isian yang melebihi 20000 huruf jadi galat baris, bukan ganda. Baris yang sama tidak masuk dua kali.
 
 ## Larangan
 

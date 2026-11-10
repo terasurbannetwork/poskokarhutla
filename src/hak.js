@@ -71,3 +71,39 @@ export const stmtNarasiLogbook = (env, kolom, kejadian, narasi, indukId, kini) =
   ON CONFLICT (kejadian_id) DO UPDATE SET ${kolom.map(c => `${c} = COALESCE(excluded.${c}, ${c})`)}, induk_id = COALESCE(excluded.induk_id, induk_id), diubah = excluded.diubah`).bind(kejadian, ...kolom.map(c => narasi?.[c] ?? null), indukId ?? null, kini);
 export const indukLogbook = (env, kib) => env.DB.prepare("SELECT b.kejadian_id id, k.jenis, k.prov, n.induk_id FROM logbook_kib b JOIN logbook_kejadian k ON k.id = b.kejadian_id LEFT JOIN logbook_narasi n ON n.kejadian_id = k.id WHERE b.kib = ?").bind(kib).first();
 export const punyaAnakLogbook = (env, id) => env.DB.prepare("SELECT 1 x FROM logbook_narasi WHERE induk_id = ?").bind(id).first();
+
+/* ---- meja Data kejadian dan dampak (migrasi 0119): pasangkan ke Logbook, simpan tautan, kelengkapan per kabupaten, impor ---- */
+/* kejadian Logbook dengan jenis, prov, kab, dan tanggal mulai (WIB) sama; mulai dibatasi dua hari di sekitar tanggal dulu supaya date() tidak memindai semuanya. Tanpa logbook_kib (0094 belum jalan): tanpa kolom kib. */
+export async function cariKejadianLogbook(env, jenis, prov, kab, tgl) {
+  const hari = n => new Date(Date.parse(tgl + "T00:00:00Z") + n * 864e5).toISOString().slice(0, 10);
+  const sql = kib => `SELECT k.id, ${kib ? "b.kib" : "NULL AS kib"}, k.mulai, k.status FROM logbook_kejadian k ${kib ? "LEFT JOIN logbook_kib b ON b.kejadian_id = k.id" : ""}
+    WHERE k.jenis = ? AND k.prov = ? AND k.kab = ? AND k.mulai >= ? AND k.mulai < ? AND date(k.mulai, '+7 hours') = ? ORDER BY k.mulai LIMIT 6`;
+  const a = [jenis, prov, kab, hari(-1), hari(2), tgl];
+  try { return (await env.DB.prepare(sql(true)).bind(...a).all()).results; }
+  catch (e) { if (!/no such table: logbook_kib/i.test(String(e?.message || e))) throw e; return (await env.DB.prepare(sql(false)).bind(...a).all()).results; }
+}
+export const kejadianLogbookById = (env, id) => env.DB.prepare("SELECT id, jenis, prov, kab, mulai, status FROM logbook_kejadian WHERE id = ?").bind(id).first();
+export const kibLogbook = async (env, id) => { try { return (await env.DB.prepare("SELECT kib FROM logbook_kib WHERE kejadian_id = ?").bind(id).first())?.kib ?? null; } catch (e) { return null; } };
+/* tautan ke Logbook disimpan di catatan (kunci sistem logbook_id/logbook_kib di kolom data), penerimaan berikutnya jadi pengkinian */
+export const simpanTautanLogbook = (env, id, logbookId, kib) => env.DB.prepare("UPDATE meja_catatan SET data = json_set(data, '$.logbook_id', ?, '$.logbook_kib', ?) WHERE id = ? AND meja = 'dampak'").bind(logbookId, kib, id).run();
+/* batal terima: Logbook gagal ditulis sesudah catatan diklaim; kembali ke diverifikasi (pasangan sistem di trigger meja_catatan_ubah) dan jejaknya tercatat */
+export const batalTerima = (env, id, kini, oleh, alasan) => env.DB.batch([
+  env.DB.prepare("UPDATE meja_catatan SET status = 'diverifikasi', diubah = max(diubah, ?) WHERE id = ? AND status = 'masuk_logbook' AND meja = 'dampak'").bind(kini, id),
+  env.DB.prepare("INSERT INTO meja_jejak (catatan_id, dari, ke, waktu, oleh, catatan, diterima) SELECT ?, 'masuk_logbook', 'diverifikasi', ?, ?, ?, ? WHERE changes() > 0").bind(id, kini, oleh, ("terima ke Logbook dibatalkan: " + alasan).slice(0, 200), kini)]);
+/* kelengkapan per kabupaten (agregat; dibangun ulang bersama meja_ringkas dari baris yang sudah dibaca, tanpa pemindaian tambahan) */
+export const stmtHapusKelengkapanGrup = (env, prov, kab, dummy) => env.DB.prepare("DELETE FROM meja_kelengkapan WHERE prov = ? AND kab = ? AND dummy = ?").bind(prov, kab, dummy);
+export const stmtHapusKelengkapan = (env, dummyJuga = true) => env.DB.prepare(dummyJuga ? "DELETE FROM meja_kelengkapan" : "DELETE FROM meja_kelengkapan WHERE dummy = 1");
+export const stmtSisipKelengkapan = (env, baris) => env.DB.prepare("INSERT INTO meja_kelengkapan (prov, kab, dummy, n, persen_jumlah, inti_lengkap, belum, kosong, terbaru) SELECT json_extract(value, '$[0]'), json_extract(value, '$[1]'), json_extract(value, '$[2]'), json_extract(value, '$[3]'), json_extract(value, '$[4]'), json_extract(value, '$[5]'), json_extract(value, '$[6]'), json_extract(value, '$[7]'), json_extract(value, '$[8]') FROM json_each(?)").bind(JSON.stringify(baris));
+export const bacaKelengkapan = async (env, dummyJuga) => (await env.DB.prepare(`SELECT prov, kab, dummy, n, persen_jumlah, inti_lengkap, belum, kosong, terbaru FROM meja_kelengkapan${dummyJuga ? "" : " WHERE dummy = 0"} ORDER BY prov, kab`).all()).results;
+/* satu catatan impor = dua pernyataan; INSERT OR IGNORE + jejak bersyarat changes() supaya baris ganda (balapan) tidak menggagalkan batch dan tidak menulis jejak palsu */
+export const stmtImporDampak = (env, b) => [
+  env.DB.prepare("INSERT OR IGNORE INTO meja_catatan (id, meja, prov, kab, kec, desa, data, status, dibuat, diubah, oleh, petugas_id) VALUES (?, 'dampak', ?, ?, ?, ?, ?, 'dilaporkan', ?, ?, ?, ?)").bind(b.id, b.prov, b.kab, b.kec, b.desa, b.data, b.kini, b.kini, b.oleh, b.petugas),
+  env.DB.prepare("INSERT INTO meja_jejak (catatan_id, dari, ke, waktu, oleh, catatan, diterima) SELECT ?, NULL, 'dilaporkan', ?, ?, 'impor', ? WHERE changes() > 0").bind(b.id, b.kini, b.oleh, b.kini)];
+export const batchTulis = (env, stmts) => env.DB.batch(stmts);
+
+/* skema meja_catatan di D1 sudah memuat meja ini? (migrasi 0118/0119 belum tentu sudah diterapkan di produksi); sqlite_master berisi teks CHECK-nya */
+let SKEMA_MEJA = "";
+export const skemaMejaAda = async (env, meja) => {
+  if (!SKEMA_MEJA.includes(`'${meja}'`)) SKEMA_MEJA = (await env.DB.prepare("SELECT sql FROM sqlite_master WHERE name = 'meja_catatan'").first())?.sql ?? "";   // hanya yang sudah ada yang dicache; yang belum dicek ulang
+  return SKEMA_MEJA.includes(`'${meja}'`);
+};

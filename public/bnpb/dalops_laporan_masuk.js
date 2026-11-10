@@ -2,6 +2,8 @@
    terbuka yang belum dikinikan. Data: GET /api/dalops/laporan (src/dalops_laporan.js; ?dummy=1 Super Admin) + GET /api/logbook/hari?tgl=T-1 untuk
    mencocokkan kejadian baru ke logbook. Tidak ada teks dampak dan tidak ada luas/hotspot di tab ini.
    Hitungan murni di dalops_hitung.js (DalopsHitung.ringkasLaporan dst, diuji tests/bnpb/dalops.test.mjs). Helper layar disuntik dari dalops.js.
+   Bagian "Data BPBD" (JK-19): catatan meja Data kejadian dan dampak berstatus diverifikasi (GET /api/meja/catatan?meja=dampak&status=diverifikasi), persen kelengkapan,
+   tombol Terima ke Logbook (409 kandidat kejadian -> dialog pilih; 400 wajar -> konfirmasi yakin). Tombol tulis hanya untuk akun yang boleh (GET /api/meja/saya berhasil).
    Klik baris rekap: tanda terpilih urgent, tiga kartu lain dirender sesudah satu frame tercat (INP). */
 (g => {
   "use strict";
@@ -121,12 +123,75 @@
       if (sel.length) isiLogbook(t, sel, g0);
     };
 
+    /* ---------- kartu Data BPBD: catatan terverifikasi dari petugas BPBD, diterima ke Logbook oleh staf Pusdalops ---------- */
+    const kartuBpbd = () => {
+      let sayaCache = null;
+      const kartu = bagian("lm-bpbd", "daftar", "Data BPBD", "Memuat data kejadian dan dampak dari BPBD", kosong("tunggu", "Memuat…"));
+      const isi = kartu.querySelector(".ex-bd"), judul = kartu.querySelector("h3");
+      const pakai = (tj, ...k) => { judul.replaceChildren(...[].concat(tj)); isi.replaceChildren(...k.filter(Boolean)); pasangTip(); };
+      const pesanB = h("p", {class: "lm-pesan lm-pesan-b", role: "status"});
+      let tampil = 50, data = [], boleh = false;   // 50 baris dulu, "Tampilkan lagi" menambah 50
+      const kirim = (id, badan) => fetch("/api/meja/catatan/" + id, {method: "POST", credentials: "same-origin", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify({aksi: "status", ke: "masuk_logbook", ...badan})})
+        .then(async x => ({s: x.status, j: await x.json().catch(() => ({}))})).catch(() => ({s: 0, j: {galat: "Tidak ada sinyal."}}));
+      const dialog = (judulD, badan, tombol) => new Promise(selesai => {
+        const d = h("dialog", {class: "dl-dialog lm-dialog"}, h("div", {class: "dl-dialog-kepala"}, h("h2", null, judulD)), h("div", {class: "lm-dialog-isi"}, ...badan),
+          h("div", {class: "lm-dialog-aksi"}, ...tombol.map(([teks, nilai, utama]) => { const b = h("button", {type: "button", class: "lm-btn" + (utama ? " utama" : ""), teks}); b.addEventListener("click", () => { d.close(); selesai(nilai); }); return b; })));
+        d.addEventListener("cancel", () => selesai(null)); document.body.append(d); d.addEventListener("close", () => d.remove()); d.showModal();
+      });
+      const terima = async (r, tombol) => {
+        tombol.disabled = true; tombol.setAttribute("aria-busy", "true"); pesanB.textContent = "";
+        const siap = () => { tombol.disabled = false; tombol.removeAttribute("aria-busy"); };
+        let x = await kirim(r.id, {});
+        if (x.s === 409 && x.j.kandidat?.length) {
+          const pil = await dialog("Pilih kejadian Logbook", [h("p", {teks: x.j.galat || "Lebih dari satu kejadian Logbook cocok."})], [...x.j.kandidat.map(k => [`${k.kib ? "KIB " + k.kib : "Kejadian"}, mulai ${tgl(String(k.mulai).slice(0, 10))}`, k.id, true]), ["Batal", null]]);
+          if (!pil) { siap(); return; }
+          x = await kirim(r.id, {logbook_id: pil});
+        }
+        if (x.s === 400 && x.j.wajar) {
+          const ya = await dialog("Angka di atas batas wajar", [h("p", {teks: x.j.galat || "Ada angka di atas batas wajar."}), h("p", {teks: "Terima hanya bila angkanya sudah dicek ke BPBD."})], [["Angka benar, terima", true, true], ["Batal", false]]);
+          if (!ya) { siap(); return; }
+          x = await kirim(r.id, {yakin: true, ...(x.j.logbook_id ? {logbook_id: x.j.logbook_id} : {})});
+        }
+        if (x.s >= 300 || x.s === 0) { siap(); pesanB.textContent = x.j.galat || `Gagal menerima (${x.s}).`; return; }
+        return muatBpbd(`Diterima ke Logbook${x.j.logbook?.kib ? ", KIB " + x.j.logbook.kib : ""}.`);
+      };
+      const sayaP = () => sayaCache ||= fetch("/api/meja/saya", {credentials: "same-origin"}).then(x => x.ok ? x.json() : null).catch(() => null);   // satu kali per tampilan, bukan tiap muat ulang
+      const gambarBpbd = info => {
+        if (info) pesanB.textContent = info;
+        if (!data.length) return pakai("Belum ada data BPBD yang menunggu diterima", kosong("ok", "Catatan yang sudah diverifikasi petugas BPBD muncul di sini."), pesanB);
+        const baris = data.slice(0, tampil).map((r, i) => {
+          const k = r.kelengkapan, nada = !k ? "abu" : k.persen >= 100 ? "hijau" : k.persen >= 50 ? "kuning" : "merah", b = h("td", {class: "n"});
+          if (boleh && !r.dummy) { const t = h("button", {type: "button", class: "lm-btn utama", teks: "Terima ke Logbook"}); t.addEventListener("click", () => terima(r, t)); b.append(t); }
+          else b.append(r.dummy ? label("Contoh", "senyap", "abu") : "–");
+          return h("tr", null, nomor(i), h("td", {class: "lm-kej"}, h("b", {teks: r.data.nama_kejadian || "Tanpa nama"}), h("div", {class: "bn-label", teks: String(r.data.jenis || "").replace(/_/g, " ")})),
+            td(namaProv(r.prov) + ", " + r.kab), td(r.data.tanggal ? tgl(r.data.tanggal) : "–", true),
+            h("td", {class: "n"}, k ? h("div", {class: "dl-chips"}, label(`${F(k.persen)}%`, k.persen >= 100 ? "ok" : "tunggu", nada), k.inti_lengkap ? null : label(`Inti kurang ${F(k.kurang_inti.length)}`, "peringatan", "merah")) : "–"), b);
+        });
+        let lagi = null;
+        if (data.length > tampil) { lagi = h("button", {type: "button", class: "lm-btn", teks: `Tampilkan 50 lagi (${F(data.length - tampil)} tersisa)`}); lagi.addEventListener("click", () => { tampil += 50; gambarBpbd(); }); }
+        pakai([hl(`${F(data.length)} catatan`), " dari BPBD sudah diverifikasi dan menunggu diterima ke Logbook"], tabel(["No", "Kejadian", "Kabupaten/kota", "Tanggal", "Kelengkapan", "Aksi"], baris), lagi, pesanB);
+      };
+      const muatBpbd = async info => {
+        let rs;
+        try { rs = await fetch("/api/meja/catatan?meja=dampak&status=diverifikasi", {credentials: "same-origin"}); }
+        catch (e) { return pakai("Data BPBD tidak terbaca", kosong("sinyal", "Tidak ada sinyal. Muat ulang halaman ini.")); }
+        if (!rs.ok) return pakai("Data BPBD belum bisa dibuka", kosong("peringatan", rs.status === 401 || rs.status === 403 ? "Akunmu belum berhak membaca data BPBD." : `Data BPBD gagal dimuat (${rs.status}).`));
+        data = ((await rs.json()).catatan || []).filter(r => r.status === "diverifikasi");
+        const sy = await sayaP(); boleh = !!sy && ["admin", "pusdalops"].includes(sy.peran);
+        gambarBpbd(info);
+      };
+      muatBpbd();
+      return kartu;
+    };
+
     /* ---------- dummy (Super Admin saja): dua ikon polos, isi/hapus lalu muat ulang penuh ---------- */
     const dummy = async (aksi, wadah) => {
       if (aksi === "hapus" && !confirm("Hapus semua data dummy Laporan Masuk? Data asli tidak tersentuh.")) return;
       const tb = [...wadah.querySelectorAll("button")]; tb.forEach(b => { b.disabled = true; b.setAttribute("aria-busy", "true"); });
       let x; try { x = await fetch("/api/dalops/laporan/dummy", {method: "POST", credentials: "same-origin", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify({aksi})}); } catch (e) { x = null; }
-      if (x && (x.ok || (aksi === "isi" && x.status === 409))) { simpan(KUNCI_DUMMY, aksi === "isi" ? "1" : null); return location.reload(); }
+      if (x && (x.ok || (aksi === "isi" && x.status === 409))) {
+        await fetch("/api/meja/dummy", {method: "POST", credentials: "same-origin", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify({aksi})}).catch(() => {});
+       simpan(KUNCI_DUMMY, aksi === "isi" ? "1" : null); return location.reload(); }
       tb.forEach(b => { b.disabled = false; b.removeAttribute("aria-busy"); });
       wadah.querySelector(".lm-pesan").textContent = !x ? "Tidak ada sinyal." : x.status === 404 ? "Rute dummy Laporan Masuk belum ada di server." : `Dummy gagal (${x.status}).`;
     };
@@ -143,7 +208,7 @@
       sesudahFrame(() => { if (g0 === gen) pasangKartu(g0, false); });
     });
 
-    p.replaceChildren(...[alat, kartuRekap].filter(Boolean));
+    p.replaceChildren(...[alat, kartuRekap, kartuBpbd()].filter(Boolean));
     pasangTip();
     await new Promise(ok => sesudahFrame(ok));   // kartu rekap tercat dulu, tiga kartu lain menyusul
     pasangKartu(gen, true);
