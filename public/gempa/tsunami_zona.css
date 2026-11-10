@@ -1,0 +1,7 @@
+/* Tsunami per zona (tsunami_zona.js): pemutar buletin di dalam kartu */
+.tz-lb{margin:0 0 .5rem}
+.tz-pm{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-top:.25rem}
+.tz-pm input[type=range]{flex:1 1 12rem;min-width:8rem}
+.tz-pm #tzLabel{font-size:.8125rem;flex:1 1 100%}
+.tz-b{background:transparent;border:0;box-shadow:none}
+#tsunamiZona .ina-tb tr.on td{background:var(--hi,rgba(11,37,69,.06))}

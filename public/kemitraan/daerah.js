@@ -208,6 +208,31 @@
       return bag(`${n("P1")} masalah P1, ${n("P2")} P2, ${n("P3")} P3`, '<p><em class="ak-pl">Otomatis, belum divalidasi</em> Prioritas dihitung otomatis dari data dan menunggu pengesahan BPBD.</p>')
         + ms.map((m, i) => `<details class="ak-dbagian km-masalah"${i === 0 ? " open" : ""}><summary><em class="km-kelas km-w-${esc(String(m.kelas || "p3").toLowerCase())}">${esc(m.kelas || "–")}</em><h3>${esc(m.judul)}</h3><small>${esc(bl(m.B))}, skor ${sk(m.skor)} dari 1</small>${ujiPil(uji, m.B)}</summary><div class="ak-disi"><ul class="km-bukti">${(m.bukti || []).map(x => `<li title="${esc(tip(x))}">${esc(x.teks)}${buktiNilai(x)}${pilY(x)}</li>`).join("")}</ul></div></details>`).join("");
     },
+    /* SS-51 kalender ancaman 12 bulan: dua kolom terpisah (laju kejadian, prakiraan BMKG), tanpa skor gabungan. kal = kalender_ancaman.json utuh (dimuat malas) */
+    10(d, r, kal) {
+      if (!kal) return kosongHtml("Data kalender ancaman belum tersedia", "Data kalender ancaman belum tersedia untuk kab/kota ini. Muat ulang halaman atau coba lagi nanti.");
+      const k = kal.data; if (!k) return tanpa("kalender ancaman");
+      const dt = v => (/(\d{4}-\d{2}-\d{2})/.exec(String(v ?? "")) || [])[1] || null;   // tanggal di dalam teks sumber
+      const tLaju = dt(kal.sumber?.laju), tBmkg = dt(kal.sumber?.bmkg) || dt(bm0(k)), N_LAJU = "laju kejadian dari kalender risiko Pusdalops", N_BMKG = "BMKG, prakiraan iklim arsip";
+      const sb = (sumber, tanggal) => ({sumber, tanggal: String(tanggal || "").slice(0, 10) || null, yakin: null});
+      const n12 = v => v ? v : [], bm0 = k => (k.bmkg || []).find(x => x)?.diambil;
+      const bm = n12(k.bmkg), ada = bm.filter(x => x).length;
+      const bmIsi = bm.length ? tabelHtml([["Bulan"], ["Prakiraan BMKG"], ["Dasarian"]], BLN.map((b, i) => { const x = bm[i];
+        return x ? [esc(b), esc(`${x.lembaga || "BMKG"}, ${x.periode || ""}: ${x.label || ""}`), x.dasarian?.length ? x.dasarian.map(q => esc(`${q.periode}: ${q.label}`)).join("<br>") : "–"] : [esc(b), "Tidak disebut", "–"]; }))
+        + '<p class="km-ket">Label resmi BMKG apa adanya, bukan prediksi Centurisk97. Bulan yang tidak ada di narasi BMKG tertulis tidak disebut.</p>' : '<p class="km-kosong">Tidak ada data prakiraan BMKG untuk kab/kota ini</p>';
+      const lj = (b, kunci) => { const bul = k[kunci]?.bulan; if (!bul) return "";
+        const tp = (v, t) => v == null ? "di luar rentang" : nf(v, 0);
+        let mx = -1, mi = -1; bul.forEach((x, i) => { if (x.p != null && x.p > mx) { mx = x.p; mi = i; } });
+        const judul = kunci === "kekeringan" ? `${b}: hanya hitungan kejadian terkini` : mi >= 0 ? `${b}: paling sering ${BLN[mi]}, ${bul[mi].ada} dari ${bul[mi].dari} tahun` : `${b}: kejadian terlalu sedikit untuk dibandingkan antar bulan`;
+        const kol = kunci === "kekeringan" ? [["Bulan"], ["Kejadian terkini DIBI"], ["Kejadian terkini logbook"]] : [["Bulan"], ["Laju kejadian"], ["Jumlah kejadian"], ["Terkini DIBI"], ["Terkini logbook"]];
+        return bag(judul, tabelHtml(kol, bul.map((x, i) => kunci === "kekeringan" ? [esc(BLN[i]), esc(tp(x.terkini?.dibi)), esc(tp(x.terkini?.logbook))]
+          : [esc(BLN[i]), esc(`${x.ada} dari ${x.dari} tahun${x.kecil ? ", data kecil" : ""}`), esc(nf(x.n, 0)), esc(tp(x.terkini?.dibi)), esc(tp(x.terkini?.logbook))])), sb(N_LAJU, tLaju)); };
+      return bag(`Prakiraan BMKG menyebut ${ada} dari 12 bulan`, bmIsi, sb(N_BMKG, tBmkg))
+        + lj("Banjir", "banjir") + lj("Tanah longsor", "longsor") + lj("Karhutla", "karhutla") + lj("Kekeringan", "kekeringan")
+        + (kal.catatan?.length ? `<details class="ak-dbagian"><summary><h3>Catatan sumber dan tahun yang dipakai</h3></summary><div class="ak-disi"><ul class="km-bukti">${kal.catatan.map(c => `<li>${esc(c)}</li>`).join("")}</ul></div></details>` : "")
+        + `<p class="km-ket">Sumber: ${esc(N_LAJU)}${tLaju ? ", per " + esc(tgl(tLaju)) : ""}; ${esc(N_BMKG)}${tBmkg ? ", diambil " + esc(tgl(tBmkg)) : ""}.</p>`
+        + '<p class="km-ket">Terkini adalah hitungan kejadian mentah, DIBI dan logbook tidak dijumlah. Laju kejadian dan prakiraan BMKG dua kolom terpisah, tidak digabung jadi skor.</p>';
+    },
     9(d, r, bank) {
       if (!bank || !KM.hitung) return kosongHtml("Panduan pendataan belum tersedia", "Daftar pertanyaan belum bisa dimuat. Muat ulang halaman atau coba lagi nanti.");
       let h; try { h = KM.hitung.panduan(bank, d, null, null, {prov_nama: PROV[d.prov] ?? null}); } catch (e) { console.warn("kemitraan panduan", e); return kosongHtml("Panduan gagal disusun", "Data profil daerah ini tidak bisa diolah menjadi pertanyaan."); }
@@ -218,7 +243,7 @@
       return bag(`${th(n)} pertanyaan untuk ${th(Object.keys(h.narasumber).length)} narasumber`, isi) + KM.hitung.panduanHtml(h, esc);
     },
   };
-  const TAB = [["1", "Wilayah", '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/>'], ["2", "Risiko", IK.dasbor], ["3", "Bahaya", IK.masalah], ["4", "Riwayat", IK.waktu], ["5", "Paparan", IK.kampus], ["6", "Kapasitas", IK.satgas], ["7", "Masalah", IK.riset], ["9", "Panduan", IK.tanya]];
+  const TAB = [["1", "Wilayah", '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/>'], ["2", "Risiko", IK.dasbor], ["3", "Bahaya", IK.masalah], ["4", "Riwayat", IK.waktu], ["5", "Paparan", IK.kampus], ["6", "Kapasitas", IK.satgas], ["7", "Masalah", IK.riset], ["9", "Panduan", IK.tanya], ["10", "Kalender", IK.waktu]];
 
   /* ---------- peta letak kab dalam provinsinya (KM.peta, lazy: hanya saat bab Wilayah dibuka) ---------- */
   const memoJson = new Map();
@@ -257,6 +282,11 @@
     const gambar = () => {
       const s = $("kmBabIsi"); if (kini !== mine || tk !== mine.tk || !s) return;
       const pasang = html => { s.innerHTML = html; mine.tampil = b; s.querySelectorAll("i[data-w]").forEach(i => i.style.setProperty("width", i.dataset.w + "%")); if (b === "1") petaKab(mine, tk); };   // CSSOM, bukan atribut gaya (CSP)
+      if (b === "10" && !mine.cache[b]) {   // kalender 2,7 MB: dimuat malas sekali (memo ambilJson) saat bab dibuka
+        s.innerHTML = '<div class="ak-hantu"></div>';
+        ambilJson(`/data/kalender_ancaman/${mine.kab}.json`).then(kal => { if (kini !== mine || tk !== mine.tk) return; const h = BAB[10]({...mine.d, kab: mine.kab}, baris(mine.kab), kal); if (kal) mine.cache[b] = h; pasang(h); });
+        return;
+      }
       if (b === "9" && !mine.cache[b]) {   // panduan butuh pertanyaan.json: kerangka dulu; gagal muat = tidak di-cache, buka berikutnya mencoba lagi
         s.innerHTML = '<div class="ak-hantu"></div>';
         muatBank().then(bank => { if (kini !== mine || tk !== mine.tk) return; const h = BAB[9](mine.d, baris(mine.kab), bank); if (bank) mine.cache[b] = h; pasang(h); });

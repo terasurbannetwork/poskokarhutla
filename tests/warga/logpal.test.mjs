@@ -621,3 +621,28 @@ uji("tab Pengantaran: rencana kirim murni (urutan tiba, stok terbatas, truk) dan
   /* data besar tidak di repo */
   for (const nm of ["matriks.json", "kecamatan.csv", "terdampak.csv"]) assert.equal(readdirSync(path.join(AKAR, "public/data/logpal")).includes(nm), false, nm + " bukan aset publik");
 });
+
+uji("tab Pengantaran: cuaca jalur bantuan murni dari data BMKG lokal (bandara, maritim, gelombang, siklon), tanpa vonis", () => {
+  const js = readFileSync(path.join(AKAR, "public/logpal/logpal.js"), "utf8"), html = readFileSync(path.join(AKAR, "public/logpal/index.html"), "utf8");
+  const blok = js.match(/\/\*cuaca-murni\*\/([\s\S]*?)\/\*akhir-cuaca-murni\*\//)[1];
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+  const f = new Function("esc", blok + "; return {cuacaTitik, cuacaHtml, gelombangAktif, siklonAktif, jarakKm};")(esc);
+  const baca = n => JSON.parse(readFileSync(path.join(AKAR, "public/banjir/data", n + ".json"), "utf8"));
+  const D = {bandara: baca("cuaca_bandara_bmkg"), maritim: baca("cuaca_maritim"), peringatan: baca("peringatan"), siklon: baca("cuaca_siklon"), siklonB: baca("cuaca_siklon_bmkg")};
+  const now = Date.parse("2026-11-10T12:00:00+07:00"), nowGel = Date.parse("2026-10-14T12:00:00+07:00");
+  /* contoh nyata: tujuan di Pandeglang, Banten (peringatan gelombang tinggi 13-16 Okt di data lokal) */
+  const pd = f.cuacaTitik(D, {nama: "Tujuan: Labuan, Pandeglang", lat: -6.37, lon: 105.82, prov: "36"}, nowGel);
+  assert.ok(pd.bandara && pd.bandara.km < 250, "bandara terdekat ada"); assert.ok(pd.pelabuhan && pd.perairan);
+  assert.equal(pd.gelombang.length, 1); assert.deepEqual(pd.gelombang[0].tinggi.slice(0, 2), ["Perairan Selatan Pandeglang", "Perairan Selatan Lebak"]);
+  assert.equal(f.cuacaTitik(D, {nama: "x", lat: -6.37, lon: 105.82, prov: "36"}, Date.parse("2026-10-20T00:00:00+07:00")).gelombang.length, 0, "peringatan kedaluwarsa tidak aktif");
+  const sk = f.cuacaTitik(D, {nama: "x", lat: -6.37, lon: 105.82, prov: "36"}, Date.parse("2026-11-10T18:00:00+07:00")).siklon;
+  assert.deepEqual(sk.map(x => x.nama), ["CEMPAKA"], "JTWC 1 Nov basi (>48 jam) dibuang, tersisa BMKG");
+  const h = f.cuacaHtml([pd, f.cuacaTitik(D, {nama: "y", lat: -6.37, lon: 105.82, prov: "36"}, now)], D, now);
+  assert.match(h, /Bandara W\w{3}/); assert.match(h, /Pelabuhan /); assert.match(h, /Perairan /); assert.match(h, /Peringatan gelombang Banten/); assert.match(h, /tanpa penilaian layak atau tidak/);
+  assert.ok(!/<script|onerror/i.test(h) && !/·/.test(h) && !/\b(layak berangkat|aman|berbahaya)\b/i.test(h.replace("tanpa penilaian layak atau tidak", "")), "tanpa vonis");
+  /* tanpa data = tertulis tidak ada data; teks luar di-escape */
+  const kosong = f.cuacaHtml([f.cuacaTitik({}, {nama: "<img src=x onerror=1>", lat: 0, lon: 100, prov: "13"}, now)], {}, now);
+  assert.match(kosong, /Tidak ada data bandara/); assert.match(kosong, /Tidak ada data pelabuhan/); assert.match(kosong, /Tidak ada data peringatan gelombang/); assert.match(kosong, /Tidak ada data siklon/); assert.ok(!kosong.includes("<img"));
+  /* kabel layar: dimuat malas sesudah paint, data publik, tanpa rute D1 baru */
+  assert.match(js, /nanti\(\(\)=>tampilCuaca\(c,P\)\)/); assert.match(js, /'\/banjir\/data\/'\+n\+'\.json'/); assert.match(html, /id="kr_cu"/);
+});

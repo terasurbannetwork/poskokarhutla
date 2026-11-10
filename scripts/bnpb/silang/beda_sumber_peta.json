@@ -1,0 +1,94 @@
+{
+ "versi": 1,
+ "status": "usulan agent, belum ditinjau pemilik (ALGORITMA bagian 3). Peringkat hanya untuk membandingkan dua sumber; label resmi tetap tampil apa adanya.",
+ "ambang": {
+  "peringkat": 2,
+  "rasio": 2,
+  "lantai_m": 0.1,
+  "status": "hipotesis awal (KEPUTUSAN Q3), diatur ulang setelah arsip cukup"
+ },
+ "peringkat": [
+  {
+   "bahaya": "hujan",
+   "sumber": "BMKG prakiraan adm4; Centurisk97 prospektif",
+   "satuan": "mm/hari",
+   "dari": 0,
+   "peringkat": 0,
+   "alasan": "di bawah kelas hujan lebat BMKG",
+   "label": "hipotesis"
+  },
+  {
+   "bahaya": "hujan",
+   "sumber": "BMKG prakiraan adm4; Centurisk97 prospektif",
+   "satuan": "mm/hari",
+   "dari": 50,
+   "peringkat": 1,
+   "alasan": "hujan lebat (kelas BMKG, 50 mm per hari)",
+   "label": "hipotesis"
+  },
+  {
+   "bahaya": "hujan",
+   "sumber": "BMKG prakiraan adm4; Centurisk97 prospektif",
+   "satuan": "mm/hari",
+   "dari": 100,
+   "peringkat": 2,
+   "alasan": "hujan sangat lebat (100 mm per hari)",
+   "label": "hipotesis"
+  },
+  {
+   "bahaya": "hujan",
+   "sumber": "BMKG prakiraan adm4; Centurisk97 prospektif",
+   "satuan": "mm/hari",
+   "dari": 150,
+   "peringkat": 3,
+   "alasan": "hujan ekstrem (150 mm per hari)",
+   "label": "hipotesis"
+  },
+  {
+   "bahaya": "gelombang",
+   "sumber": "BMKG maritim; model Open-Meteo Marine",
+   "satuan": "m",
+   "dari": 0,
+   "peringkat": 0,
+   "alasan": "di bawah 2,5 m",
+   "label": "hipotesis"
+  },
+  {
+   "bahaya": "gelombang",
+   "sumber": "BMKG maritim; model Open-Meteo Marine",
+   "satuan": "m",
+   "dari": 2.5,
+   "peringkat": 1,
+   "alasan": "gelombang tinggi (2,5 m)",
+   "label": "hipotesis"
+  },
+  {
+   "bahaya": "gelombang",
+   "sumber": "BMKG maritim; model Open-Meteo Marine",
+   "satuan": "m",
+   "dari": 4,
+   "peringkat": 2,
+   "alasan": "gelombang sangat tinggi (4 m)",
+   "label": "hipotesis"
+  },
+  {
+   "bahaya": "gelombang",
+   "sumber": "BMKG maritim; model Open-Meteo Marine",
+   "satuan": "m",
+   "dari": 6,
+   "peringkat": 3,
+   "alasan": "gelombang ekstrem (6 m)",
+   "label": "hipotesis"
+  }
+ ],
+ "tidak_dibandingkan": [
+  {
+   "bahaya": "angin",
+   "alasan": "BMKG prakiraan adm4 memuat angin rata-rata, model memuat embusan: dua besaran berbeda"
+  },
+  {
+   "bahaya": "titik_panas",
+   "alasan": "hanya satu sumber"
+  }
+ ]
+}

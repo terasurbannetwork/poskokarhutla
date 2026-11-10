@@ -316,6 +316,41 @@ jobs:
         timeout-minutes: 5
         run: python3 scripts/bnpb/kebutuhan.py --cek && python3 scripts/bnpb/kebutuhan.py
 
+      # Silang sumber (tiket SS-07): rapor sumber (F1), beda sumber (F3), kalender ancaman (F6). SESUDAH cuaca (arsip prospektif/BMKG/sepekan di banjir-)
+      # dan DIBI (dibi_kejadian.json dari isi_data.py, dibi_kab_tahun.json dari repo). Keluaran public/data/bnpb/*.json dan kalender_ancaman.json
+      # ikut cache data- (dibaca terbit.yml). Arsip bulanan append-only TIDAK boleh hilang (data tak bisa dinilai tanpanya): digabung dari git
+      # (baris yang belum ada ditambah, yang sudah ada tidak ditimpa) sebelum jalan, lalu di-commit ke main di langkah berikutnya.
+      # beruntun.py (F5) belum dirantai: belum selesai.
+      - name: Silang sumber (rapor, beda, kalender ancaman) (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 10
+        run: |
+          for f in $(git ls-files 'public/data/bnpb/rapor_sumber_arsip/*.jsonl' 'public/data/bnpb/beda_sumber_arsip/*.jsonl'); do
+            git show "HEAD:$f" > /tmp/git_arsip.jsonl || { echo "::warning::arsip $f tidak terbaca dari git"; continue; }
+            if [ -e "$f" ]; then cat /tmp/git_arsip.jsonl "$f" | awk '!s[$0]++' > /tmp/gabung.jsonl && cp /tmp/gabung.jsonl "$f"
+            else mkdir -p "$(dirname "$f")" && cp /tmp/git_arsip.jsonl "$f"; fi
+          done
+          python3 scripts/bnpb/silang/rapor_sumber.py uji && { python3 scripts/bnpb/silang/rapor_sumber.py || echo "::warning title=rapor_sumber::gagal; berkas lamanya dibiarkan"; } || echo "::warning title=rapor_sumber::uji gagal"
+          python3 scripts/bnpb/silang/beda_sumber.py uji && { python3 scripts/bnpb/silang/beda_sumber.py || echo "::warning title=beda_sumber::gagal; berkas lamanya dibiarkan"; } || echo "::warning title=beda_sumber::uji gagal"
+          python3 scripts/umum/kalender_ancaman.py uji && { python3 scripts/umum/kalender_ancaman.py || echo "::warning title=kalender_ancaman::gagal; berkas lamanya dibiarkan"; } || echo "::warning title=kalender_ancaman::uji gagal"
+
+      - name: Commit arsip silang sumber ke main (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: |
+          B=$(ls -d public/data/bnpb/rapor_sumber_arsip public/data/bnpb/beda_sumber_arsip 2>/dev/null || true)
+          [ -n "$B" ] || { echo "belum ada arsip silang sumber"; exit 0; }
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f $B
+          git diff --cached --quiet -- $B && { echo "arsip silang sumber tidak berubah"; exit 0; }
+          git commit -q -m "data: arsip silang sumber $(TZ=Asia/Jakarta date +%F)" -- $B
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::warning title=Push arsip silang sumber gagal::git push ke main gagal 3x"
+
       # Video YouTube per bencana non-karhutla (API resmi, <= 600 unit kuota per bencana; karhutla 3.600 di data.yml; total < 10.000/hari).
       # Keluaran public/banjir/data/video_<id>.json (ber-cache); berkas < 20 jam dilewati. Tanpa secret YOUTUBE_API_KEY dilewati diam-diam.
       - name: Video YouTube lintas bencana (boleh gagal)

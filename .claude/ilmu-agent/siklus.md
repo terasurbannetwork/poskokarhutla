@@ -1,0 +1,46 @@
+# Ilmu siklus
+
+> Kelas: pengerja, Model: sonnet, Definisi: `.claude/agents/siklus.md`
+> Dibaca SEBELUM kerja (`node scripts/agents/ilmu.mjs baca siklus`). Kasus baru
+> ditambah SESUDAH kerja lewat `node scripts/agents/ilmu.mjs kasus siklus "..."`.
+
+## Peta berkas & tabel
+
+Program Siklus Bencana lahir 10 Nov 2026. Dokumen rancangan urut otoritas ada di
+`data/kajian-bnpb/siklus/`, dimulai `KEPUTUSAN-AWAL.md`. Kode tiket `SK-NNN`.
+
+| Berkas | Isi |
+| --- | --- |
+| `scripts/siklus/sumber.json` | registri sumber data publik: lisensi, jadwal, fitur, status uji |
+| `scripts/siklus/**` | pipeline Python 3.12 stdlib, self-check `uji` |
+| `public/siklus/**` | layar vanilla JS tanpa build step |
+| `tests/siklus/**` | uji `npm run uji:siklus` |
+
+Bukan milikku: `src/siklus*.js`, migrasi `sk_*` (warga-api); `.github/workflows/siklus.yml` (mekanik-mesin).
+
+## Aturan & invarian
+
+- Pakai ulang `scripts/bnpb/kunci_kejadian.py` (kunci jenis, kabupaten, tanggal), `scripts/umum/kejadian.py`, `scripts/bnpb/rekonsiliasi_dalops_dibi.py`, `scripts/umum/bangunan.py`, `scripts/umum/paparan_bangunan.py`, `src/bangunan.js`, `src/rumah_rusak.js`, `src/pemulihan.js`, `src/meja.js`. Tidak membuat tabel rumah rusak kedua, kunci wilayah kedua, atau pipeline bangunan kedua.
+- Paparan bangunan rinci hanya di R2 awalan `bangunan/` atau `siklus/`, dibaca setelah sesi; tidak pernah di `public/`.
+- Angka antarsumber (DIBI, Logbook Pusdalops, sistem kita) tampil berdampingan dengan selisih tertulis. Tidak dijumlah atau dirata-rata.
+- Tiap angka punya label keyakinan: resmi, terverifikasi, estimasi-model, asumsi-kebijakan, hipotesis, menunggu. Tidak ada data ditulis tidak ada, bukan nol.
+- Titik panas, firespot, luas, belum padam, dan terdampak karhutla hanya dari sistem kita, tidak dari Koordalops walau ditempel pemilik.
+- Tanpa registri pengungsi per orang (dicoret pemilik 19 Okt) dan tanpa NIK.
+- Merek Centurisk97; BNPB dan BPBD ditulis sebagai kita. Tanpa titik tengah dan em dash di teks tampil.
+
+## Ranjau yang pernah meledak
+
+- 28 Okt: kueri pindai D1 di cron menghabiskan kuota baca 5 juta per hari dan menjatuhkan situs. Program ini tidak menambah kueri pindai di cron; agregat dibaca dari R2.
+- Batas 20.000 berkas aset per versi Worker di paket Free, sekarang sekitar 12.100. Program ini paling banyak menambah 200 berkas di `public/`.
+- Berkas turunan besar yang di-commit membuat `.git` 5,7 GB. Keluaran besar ke R2.
+- Berkas `* 2.*` salinan nyasar sinkronisasi; jangan dipakai.
+- Checkout dipakai banyak sesi; commit dengan path spesifik.
+
+## Gerbang yang menghakimi
+
+- `tests/agen/gerbang-paket-modul.test.mjs`: paket dokumen lengkap.
+- `tests/agen/gerbang-peta-data.test.mjs`: data baru wajib punya pemakai dan jadwal.
+- `tests/agen/gerbang-kartu-std.test.mjs`: kartu laporan standar.
+- `npm run uji:siklus`: pipeline dan layar; `npm run uji:warga`: rute dan migrasi.
+
+## Kasus

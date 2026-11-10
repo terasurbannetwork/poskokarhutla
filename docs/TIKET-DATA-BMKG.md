@@ -14,7 +14,7 @@ hasil turunan lolos uji balik sebelum tampil sebagai peringatan, data Dalops tid
 | DB-06 | Peta asap dari Himawari, label analisis Centurisk97, terpisah dari poligon BMKG | cuaca-udara | setelah DB-05 |
 | DB-07 | Abu vulkanik dari Himawari, pelengkap VAAC | gunungapi-kering | setelah DB-05 |
 | DB-08 | Pusat karhutla: FWI H+7, factsheet, asap, hotspot, PM2,5, petir | layar-peta | setelah DB-01 tayang |
-| DB-09 | Rapor prakiraan: BMKG sepekan dan 10 hari, prediksi kita, lawan kejadian nyata | prediksi | butuh arsip minimal 30 hari |
+| DB-09 | Rapor prakiraan: BMKG sepekan dan 10 hari, prediksi kita, lawan kejadian nyata | ruang-bnpb | dirujuk ke SS-02 sampai SS-05 di `data/kajian-bnpb/silang-sumber/TIKET.md` (layar `/bnpb/rapor-sumber`); angka tampil butuh arsip minimal 30 hari |
 | DB-10 | Evaluasi OMC: operasi resmi lawan hujan, hotspot, PM2,5 | model-sebaran, validasi-model | setelah DB-02, ikuti pra-registrasi OMC |
 | DB-11 | Uji ambang kekeringan lawan peringatan resmi per kecamatan | gunungapi-kering, validasi-model | butuh arsip beberapa dasarian |
 | DB-12 | Riwayat gempa dan tsunami masuk kajian daerah, stasiun guncangan untuk pembanding model | gempa, validasi-model | setelah DB-01 tayang |

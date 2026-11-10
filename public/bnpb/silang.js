@@ -1,7 +1,7 @@
 "use strict";
 /* Kajian silang sumber (/bnpb/silang). Data statis: /data/bnpb/rekonsiliasi_dalops_dibi.json (scripts/bnpb/rekonsiliasi_dalops_dibi.py) dan
    /data/bnpb/inarisk_vs_kejadian.json (scripts/bnpb/inarisk_vs_kejadian.py). Layar hanya menampilkan angka pipeline; tidak menghitung ulang.
-   Butuh /inti/format.js (esc, $) dan /inti/tip.js (pasangTip, #tip). Tiga kartu .ex-std; grafik SVG dengan tooltip [data-tip].
+   Butuh /inti/format.js (esc, $) dan /inti/tip.js (pasangTip, #tip). Empat kartu .ex-std (beda sumber hari ini di atas); grafik SVG dengan tooltip [data-tip].
    Tanpa gaya/skrip inline (CSP): semua teks data lewat esc(). INP: pilihan jenis dan normalisasi hanya mengganti satu isi kartu. */
 (() => {
   const IKON = {data: "M4 6h16M4 12h16M4 18h10", beda: "M7 4v16M17 4v16M4 8l3-3 3 3M14 16l3 3 3-3", bahaya: "M12 3l9 16H3z|M12 10v4|M12 17v.5", info: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z|M12 8v.5|M12 11v5"};
@@ -158,14 +158,44 @@
       `<ul class="sg-daftar">${I.hipotesis.map(h => `<li>${esc(h)}</li>`).join("")}</ul>`);
   }
 
+  /* ---------- kartu 0: beda sumber hari ini (scripts/bnpb/silang/beda_sumber.py; ALGORITMA bagian 3) ---------- */
+  const BH = {hujan: "Hujan", gelombang: "Gelombang laut"};
+  const NB_MAKS = 200;
+  const nilaiB = x => `${x.nilai_teks ? x.nilai_teks + " " + x.satuan + " (tidak tertulis)" : Number(x.nilai).toLocaleString("id-ID", {maximumFractionDigits: 1}) + " " + x.satuan}, peringkat ${n(x.peringkat)}`;
+  function tabelBeda(B, bahaya) {
+    const r = B.baris.filter(x => bahaya === "semua" || x.bahaya === bahaya);
+    if (!r.length) return `<p class="sg-kosong">Tidak ada perbandingan yang perlu dicek pada pilihan ini.</p>`;
+    const t = tabel(["Bahaya", "Tempat", "Hari", ["Sumber resmi", "Nilai dan peringkat 0 sampai 3 dari lembaga resmi"], ["Sumber model", "Nilai dan peringkat 0 sampai 3 dari model; yang tidak tertulis berarti di bawah ambang catatnya"], "Alasan tanda"],
+      r.slice(0, NB_MAKS).map(x => [BH[x.bahaya] || x.bahaya, x.tempat.nama, tglPendek(x.hari), `${x.a.lembaga}: ${nilaiB(x.a)}`, `${x.b.lembaga}: ${nilaiB(x.b)}`, x.alasan]));
+    return t + (r.length > NB_MAKS ? `<p class="sg-p">Menampilkan ${n(NB_MAKS)} dari ${n(r.length)} perbandingan, urut dari selisih peringkat terbesar.</p>` : "");
+  }
+  function kartuBeda(B) {
+    if (!B) return kartu("k-beda", "beda", "Beda sumber hari ini", "Data beda sumber hari ini belum tersedia", `<p class="sg-kosong">Berkas beda_sumber.json belum bisa dibaca.</p>`);
+    const r = B.ringkas, pb = r.per_bahaya, tdk = Object.values(pb).reduce((a, h) => a + h.tidak_dibandingkan, 0);
+    const judul = `${hl(n(r.n_perlu_dicek))} dari ${hl(n(r.n_dibandingkan))} perbandingan sumber resmi lawan model perlu dicek, dan ${hl(n(tdk))} lokasi-hari tidak bisa dibandingkan karena salah satu sumber tidak ada`;
+    const ring = Object.keys(pb).map(k => `${BH[k] || k}: ${n(pb[k].perlu_dicek)} perlu dicek, ${n(pb[k].selaras)} selaras, ${n(pb[k].tidak_dibandingkan)} tidak dibandingkan`).join("; ");
+    return kartu("k-beda", "beda", "Beda sumber hari ini", judul,
+      `<div class="sg-pilpil">${pil("Deteksi Centurisk97, belum teruji balik", "bahaya", "sg-pil-hip")}${pil("Perbandingan dua sumber, bukan vonis", "info", "sg-pil-info")}${pil(`Ambang awal: ${n(B.ambang.peringkat)} peringkat atau ${n(B.ambang.rasio)} kali`, "bahaya", "sg-pil-hip")}</div>`,
+      asal("Data: prakiraan BMKG dan model Open-Meteo yang diarsipkan sebelum hari targetnya.", B.dibuat),
+      `<p class="sg-p">${esc(ring)}. Tanda perlu dicek berarti kedua nilai berbeda lewat ambang awal; layar tidak menyatakan sumber mana yang benar. Tanda dihitung ulang tiap hari.</p>`,
+      segmen("bahaya-beda", [["semua", "Semua"], ...Object.keys(pb).map(k => [k, BH[k] || k])], "semua"), `<div id="tabel-beda">${tabelBeda(B, "semua")}</div>`,
+      `<ul class="sg-daftar">${B.catatan.map(c => `<li>${esc(c)}</li>`).join("")}</ul>`);
+  }
+
   /* ---------- pasang ---------- */
   async function mulai() {
     const isi = $("#isi"), pesan = $("#pesan");
     try {
-      const [R, I] = await Promise.all(["rekonsiliasi_dalops_dibi", "inarisk_vs_kejadian"].map(f => fetch(`/data/bnpb/${f}.json`).then(r => { if (!r.ok) throw new Error(f + " " + r.status); return r.json(); })));
+      const [R, I, B] = await Promise.all([...["rekonsiliasi_dalops_dibi", "inarisk_vs_kejadian"].map(f => fetch(`/data/bnpb/${f}.json`).then(r => { if (!r.ok) throw new Error(f + " " + r.status); return r.json(); })),
+        fetch("/data/bnpb/beda_sumber.json").then(r => r.ok ? r.json() : null).catch(() => null)]);   // beda sumber gagal = kartunya saja yang kosong
       SEBAGIAN = R.cakupan.tahun_sebagian; AKHIR = R.cakupan.tanggal_akhir;
-      isi.innerHTML = kartu1(R) + kartu2(R) + kartu3(I);
+      isi.innerHTML = kartuBeda(B) + kartu1(R) + kartu2(R) + kartu3(I);
       isi.hidden = false; pesan.hidden = true; pasangTip();
+      if (B) isi.querySelector('[data-aksi="bahaya-beda"]').addEventListener("click", e => {
+        const b = e.target.closest("button[data-k]"); if (!b || b.getAttribute("aria-pressed") === "true") return;
+        e.currentTarget.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+        $("#tabel-beda").innerHTML = tabelBeda(B, b.dataset.k);
+      });
       let norma = "per_penduduk";
       $("#pilih-jenis").addEventListener("change", e => { $("#tabel-prov").innerHTML = tabelProv(R, e.target.value); });
       $("#pilih-ina").addEventListener("change", e => { $("#contoh-ina").innerHTML = contoh(I, norma, e.target.value); });

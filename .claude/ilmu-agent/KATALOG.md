@@ -1,7 +1,7 @@
 # Katalog armada agent — pengetahuan orkestrator
 
 > DI-GENERATE dari `scripts/agents/roster.json` (`npm run agents:build`). Jangan disunting tangan.
-> Armada: **31 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
+> Armada: **32 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
 
 Cara memakai katalog ini:
 
@@ -13,7 +13,7 @@ Cara memakai katalog ini:
    muncul, panggil `general-purpose` dengan prompt "Kamu adalah <nama>: baca `.claude/agents/<nama>.md`
    dan jalankan `node scripts/agents/ilmu.mjs baca <nama>` dulu".
 
-## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (22)
+## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (23)
 
 | Agent | Model | Bisa | Tidak bisa | Wilayah |
 | --- | --- | --- | --- | --- |
@@ -22,7 +22,7 @@ Cara memakai katalog ini:
 | `banjir` | sonnet | membangun & membetulkan pipeline dan layar banjir/rob | karhutla; worker warga | `scripts/banjir/**`, `public/banjir/**`, `tests/banjir/**` +1 |
 | `model-banjir` | sonnet | membangun & membetulkan model statistik banjir kab-hari, label, koreksi bias, uji balik, dan dokumen pra-registrasinya | pipeline operasional & layar banjir; workflow; worker; membuka uji yang belum boleh dibuka | `scripts/banjir/model_kab*`, `scripts/banjir/model_dampak*`, `scripts/banjir/model_bahaya.py` +19 |
 | `gempa` | sonnet | membangun & membetulkan pipeline, model guncangan/susulan, dan layar modul gempa & tsunami | worker dan D1 (warga-api); karhutla; banjir; menyunting .github/workflows | `scripts/gempa/**`, `public/gempa/**`, `tests/gempa/**` |
-| `warga-api` | sonnet | membangun & membetulkan worker, route API, skema D1, alur laporan warga dan admin | pipeline data; model; deploy | `src/**`, `migrations/**`, `wrangler*.jsonc` +15 |
+| `warga-api` | sonnet | membangun & membetulkan worker, route API, skema D1, alur laporan warga dan admin | pipeline data; model; deploy | `src/**`, `migrations/**`, `wrangler*.jsonc` +16 |
 | `layar-peta` | sonnet | membangun & membetulkan layar peta, kartu, pop-up, bagikan, i18n | pipeline data; model; worker & D1 | `public/*.html`, `public/*.js`, `tests/layar/**` +14 |
 | `inti-layar` | sonnet | membangun dan memecah modul inti layar, registry bencana, halaman bencana berkerangka | pipeline data; worker & D1; workflow | `public/inti/**`, `public/bencana.json`, `public/semua/**` |
 | `pipa-umum` | sonnet | membangun dan menguji pustaka pipeline bersama, subperintah bencana.py | layar; worker; workflow; logika domain satu bencana | `scripts/umum/**`, `scripts/berita/**`, `public/data/foto_dasar.json` +6 |
@@ -35,6 +35,7 @@ Cara memakai katalog ini:
 | `neraca-air` | sonnet | membangun & membetulkan pipeline neraca air Jawa dan paket datanya | layar web; pipeline karhutla/banjir/kekeringan; memvalidasi modelnya sendiri (itu validasi-model) | `scripts/air/neraca/**`, `public/data/neraca_air/**`, `data/kajian-bnpb/neraca-air/**` |
 | `wa-bot` | sonnet | membangun & membetulkan gateway Baileys, pengatur otomatis, plist launchd, dan uji tanpa jaringan untuknya | worker dan D1 (warga-api); isi generator laporan (pipa-data); layar publik | `scripts/wa/**`, `tests/wa/**` |
 | `longsor` | sonnet | membangun & membetulkan pipeline nowcast longsor, label kejadian, dan uji baliknya | worker dan D1; layar; modul banjir; menyunting .github/workflows | `scripts/longsor/**`, `public/longsor/**`, `tests/longsor/**` |
+| `siklus` | sonnet | membangun pipeline scripts/siklus, layar /siklus, dan uji tanpa DB sesuai tiket SK-NNN | worker, D1, migrasi, workflow; keputusan di KEPUTUSAN-AWAL.md | `public/siklus/**`, `scripts/siklus/**`, `tests/siklus/**` +1 |
 | `kampus` | sonnet | membangun pipeline profil daerah, masalah, korpus+indeks+cocok pakar, generator pertanyaan, dan layar /kemitraan beserta ujinya | worker, D1, migrasi, workflow; modul akademisi; keputusan di KEPUTUSAN-KAMPUS.md | `public/kemitraan.html`, `public/kemitraan.css`, `public/kemitraan/**` +5 |
 | `prediksi` | sonnet | membangun & membetulkan pembekuan prakiraan, penilaian, kalibrasi, aturan dampak, dan layar /prediksi | worker dan D1; modul udara/banjir; menyunting .github/workflows | `scripts/prediksi/**`, `public/prediksi/**`, `tests/prediksi/**` |
 | `sensor` | sonnet | menulis firmware, gateway, simulator, dan panduan pasang sensor lapangan | rute worker, migrasi D1, tampilan layar | `sensor/**`, `tests/sensor/**` |

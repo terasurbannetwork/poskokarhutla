@@ -54,6 +54,10 @@
       const awal = new Date(Date.parse(r.hari) - 6 * 864e5).toISOString().slice(0, 10); return [F(r.kejadian.filter(k => k.terakhir >= awal).length), "laporan banjir sepekan sampai logbook " + r.hari.split("-").reverse().join("/")]; }, "untuk staf Pusdalops", "Logbook harian Pusdalops BNPB, status banjir Centurisk97"],
     ["siaga", "Siaga pra-musim", "/bnpb/siaga", "siaga", async () => { const r = await ambil("/data/bnpb/siaga.json"); const n = Object.values(r?.kab || {}).filter(k => Object.keys(k.musim).length).length;
       return n ? [F(n), "kabupaten/kota punya musim bencana berulang"] : null; }, "untuk staf Pusdalops", "Logbook harian Pusdalops BNPB 2014–2020 dan 2024–2025"],
+    ["rapor-sumber", "Rapor sumber prakiraan", "/bnpb/rapor-sumber", "kinerja", async () => { const r = await ambil("/data/bnpb/rapor_sumber.json"); const s = (r?.sel || []).filter(x => x.daerah.tingkat === "nas"); if (!s.length) return null;
+      return [F(s.filter(x => x.status !== "belum_cukup").length), "dari " + F(s.length) + " penilaian sumber sudah punya data cukup", "perlu arsip 30 hari"]; }, "untuk staf Pusdalops", "BMKG, Centurisk97, DIBI BNPB, Logbook Pusdalops"],
+    ["silang", "Kajian silang sumber", "/bnpb/silang", "logbook", async () => { const r = await ambil("/data/bnpb/beda_sumber.json"); const k = r?.ringkas; if (!k) return null;
+      return [F(k.n_perlu_dicek), "dari " + F(k.n_dibandingkan) + " perbandingan resmi lawan model perlu dicek", "hipotesis"]; }, "untuk staf Pusdalops", "BMKG, Open-Meteo, DIBI BNPB, Logbook Pusdalops"],
     ["meja", "Meja kerja", "/meja", "meja", async () => { const r = await ambil("/api/meja/ringkas"); return r?.meja ? [F(jumlah(r.meja)), "catatan lapangan"] : null; }, "untuk petugas BPBD"],
   ];
 

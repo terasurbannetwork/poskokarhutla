@@ -651,6 +651,51 @@ function cariKec(kp,kab,nm){const a=kabDi(kp,kab);return a.find(c=>normK(c.kec)=
 /* status banjir terdampak yang masih berlaku: salinan TDm.tayang (public/banjir/terdampak.js), ambang 14 hari; Belum diketahui tidak dipakai */
 function tayangK(doc,h=new Date(Date.now()+7*36e5).toISOString().slice(0,10)){return (doc&&doc.baris||[]).flatMap(b=>{const u=Math.round((Date.parse(h)-Date.parse(b.tanggal))/864e5);if(!(u<=14))return [];return b.status==='Belum surut'||b.status==='Sudah surut'?[{...b,umur:u}]:[]})}
 /*akhir-kirim-murni*/
+/*cuaca-murni*/
+/* Cuaca jalur bantuan (LG-14): status resmi BMKG apa adanya, tanpa vonis layak atau tidak (KEPUTUSAN Q10 belum dijawab). Tanpa data tertulis = tidak ada data. D = {bandara, maritim, peringatan, siklon, siklonB} (JSON publik /banjir/data, null bila gagal dimuat). */
+const jarakKm=(a,b,c,d)=>{const r=Math.PI/180,dl=(c-a)*r,dg=(d-b)*r,h=Math.sin(dl/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin(dg/2)**2;return 12742*Math.asin(Math.sqrt(h))};
+function terdekat(arr,lat,lon,la,lo){let b=null;for(const x of arr||[]){const y=la(x),z=lo(x);if(typeof y!=='number'||typeof z!=='number')continue;const k=jarakKm(lat,lon,y,z);if(!b||k<b.km)b={x,km:k}}return b}
+const ZONA_JAM={WIB:7,WITA:8,WIT:9};
+const msZona=(s,z)=>Date.parse(String(s).slice(0,16)+':00Z')-(ZONA_JAM[z]||7)*36e5;
+function gelombangAktif(doc,prov,now){return ((doc&&doc.gelombang)||[]).filter(w=>w.prov===prov&&msZona(w.dari,w.zona)<=now&&now<msZona(w.sampai,w.zona))}
+const umurJam=(doc,now)=>doc&&doc.dibuat?(now-Date.parse(doc.dibuat))/36e5:null;
+const BASI_JAM=48;   // dokumen siklon lebih tua dari ini tidak dianggap daftar aktif
+function siklonAktif(D,lat,lon,now){const o=[];
+  const B=D.siklonB;if(B&&B.aktif&&umurJam(B,now)<=BASI_JAM)for(const s of B.aktif){const t=(s.titik||[]).filter(x=>!x.prakiraan).pop()||(s.titik||[])[0];if(t)o.push({sumber:'BMKG TCWC Jakarta',nama:s.nama,kategori:s.kategori,angin:t.angin_kt,waktu:t.waktu,km:jarakKm(lat,lon,t.lat,t.lon)})}
+  const J=D.siklon;if(J&&J.aktif&&umurJam(J,now)<=BASI_JAM)for(const s of J.aktif){const t=(s.lintasan||[]).filter(x=>x[4]==='amatan').pop();if(t)o.push({sumber:s.sumber||'JTWC',nama:s.nama,kategori:s.kategori,angin:s.angin_kt,waktu:t[0],km:jarakKm(lat,lon,t[1],t[2])})}
+  return o.sort((a,b)=>a.km-b.km)}
+/* satu titik rute {nama,lat,lon,prov?} -> bandara, pelabuhan, perairan terdekat, peringatan gelombang aktif di provinsinya, siklon aktif */
+function cuacaTitik(D,p,now){const B=D.bandara&&D.bandara.bandara?Object.values(D.bandara.bandara):null,M=D.maritim,
+    bd=B&&terdekat(B,p.lat,p.lon,x=>x.lat,x=>x.lon),pl=M&&terdekat(M.pelabuhan,p.lat,p.lon,x=>x[3],x=>x[4]),pr=M&&terdekat(M.perairan,p.lat,p.lon,x=>x[3],x=>x[4]),
+    prov=p.prov||(pl&&pl.x[2])||null;
+  return {nama:p.nama,bandara:bd,pelabuhan:pl,perairan:pr,prov,gelombang:D.peringatan&&prov?gelombangAktif(D.peringatan,prov,now):null,siklon:(D.siklon||D.siklonB)?siklonAktif(D,p.lat,p.lon,now):null}}
+const BLC=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'],ZN={'+07':'WIB','+08':'WITA','+09':'WIT'};
+/* '2026-11-10T17:20+07:00' / '2026-11-10T16:30:00' (zona z) / '2026-11-09T12:00:00Z' / '2026-11-10 00:00 UTC' / '2026-11-10' -> '10 Nov 2026, 17.20 WIB'; Z dan UTC digeser ke WIB */
+function waktuId(v,z){const m=String(v??'').match(/^(\d{4})-(\d\d)-(\d\d)(?:[T ](\d\d):(\d\d)(?::\d\d)?(?:\.\d+)?\s*(Z|UTC|[+-]\d\d(?::?\d\d)?)?)?$/);if(!m)return '–';let [,y,mo,d,h,mi,zz]=m;if(h==null)return `${+d} ${BLC[mo-1]} ${y}`;let lab=z||'WIB';if(zz==='Z'||zz==='UTC'){const t=new Date(Date.UTC(y,mo-1,d,h,mi)+7*36e5);y=t.getUTCFullYear();mo=t.getUTCMonth()+1;d=t.getUTCDate();h=String(t.getUTCHours()).padStart(2,'0');mi=String(t.getUTCMinutes()).padStart(2,'0');lab='WIB'}else if(zz)lab=ZN[zz.slice(0,3)]||zz;return `${+d} ${BLC[mo-1]} ${y}, ${h}.${mi} ${lab}`}
+const LEVEL_GEL=[['sedang','Sedang'],['tinggi','Tinggi'],['sangat_tinggi','Sangat tinggi'],['ekstrem','Ekstrem']];
+const tT=(v,s='')=>v==null?'–':(typeof v==='number'?v.toLocaleString('id-ID',{maximumFractionDigits:2}):String(v))+s;
+function tabelBandara(b,now){const x=b.x,pk=(x.prakiraan||[]).slice(0,12),pg=x.pengamatan,met=typeof x.metar==='string'?x.metar:'';
+  return `<p><b>Bandara ${esc(x.kode)} ${esc(x.nama)}</b>, ${tT(Math.round(b.km))} km dari titik ini. Data diambil ${esc(waktuId(x.diambil))}.</p>`
+   +(pg?`<p>Pengamatan terakhir ${esc(waktuId(pg.waktu,x.zona))}: ${esc(pg.cuaca)}, angin ${tT(pg.angin_kmj,' km/jam')} (${esc(pg.arah||'–')}), jarak pandang ${tT(pg.vis_km,' km')}.</p>`:'<p>Tidak ada data pengamatan bandara.</p>')
+   +(met?`<p>${esc(met)}</p>`:'')+(x.taf?`<p>${esc(x.taf)}</p>`:'')
+   +(pk.length?`<div class="km-gulir"><table><thead><tr><th>Jam (${esc(x.zona||'')})</th><th>Cuaca</th><th>Angin km/jam</th><th>Arah</th><th>Jarak pandang km</th></tr></thead><tbody>${pk.map(r=>`<tr><td>${esc(String(r.waktu).slice(11,16).replace(':','.'))}</td><td>${esc(r.cuaca)}</td><td class="a">${tT(r.angin_kmj)}</td><td>${esc(r.arah||'–')}</td><td class="a">${tT(r.vis_km)}</td></tr>`).join('')}</tbody></table></div>`:'<p>Tidak ada data prakiraan 12 jam untuk bandara ini.</p>')}
+function tabelMaritim(M,t,jenis,now){if(!t)return `<p>Tidak ada data ${jenis} terdekat.</p>`;const x=t.x,pel=jenis==='pelabuhan',h=M.hari||[],tgl=new Date(now+7*36e5).toISOString().slice(0,10),idx=h.map((d,i)=>i).filter(i=>h[i]>=tgl);
+  const kol=[['Gelombang m',i=>x[5][i]==null?null:x[5][i]/10],['Kelas',i=>x[6][i]],['Embusan knot',i=>x[7][i]==null?null:Math.round(x[7][i])],['Arus knot',i=>x[8][i]==null?null:x[8][i].toLocaleString('id-ID',{minimumFractionDigits:1,maximumFractionDigits:1})]].concat(pel?[['Pasang maks cm',i=>x[10][i]],['Pasang min cm',i=>x[11][i]],['Jarak pandang min km',i=>x[12][i]]]:[]);
+  if(!idx.length)return `<p>Tidak ada data ${jenis}: prakiraan BMKG yang tersimpan sudah lewat tanggalnya.</p>`;
+  return `<p><b>${pel?'Pelabuhan':'Perairan'} ${esc(x[1])}</b> (${esc(x[0])}), ${tT(Math.round(t.km))} km dari titik ini. Prakiraan BMKG terbit ${esc(waktuId(M.terbit))}.</p><div class="km-gulir"><table><thead><tr><th>Tanggal</th>${kol.map(k=>`<th>${esc(k[0])}</th>`).join('')}</tr></thead><tbody>${idx.map(i=>`<tr><td>${esc(waktuId(h[i]))}</td>${kol.map(k=>{const v=k[1](i);return `<td class="a">${v==null?'–':esc(typeof v==='number'?v.toLocaleString('id-ID',{maximumFractionDigits:2}):v)}</td>`}).join('')}</tr>`).join('')}</tbody></table></div>`}
+function htmlGelombang(g,prov){if(g==null)return '<p>Tidak ada data peringatan gelombang.</p>';if(!g.length)return `<p>Peringatan gelombang BMKG aktif untuk kode provinsi ${esc(prov)}: tidak ada pada data yang tersimpan.</p>`;
+  return g.map(w=>`<p><b>Peringatan gelombang ${esc(w.wilayah)}</b>, berlaku ${esc(waktuId(w.dari,w.zona))} sampai ${esc(waktuId(w.sampai,w.zona))}.</p><ul>${LEVEL_GEL.filter(([k])=>(w[k]||[]).length).map(([k,n])=>`<li>${n}: ${esc(w[k].join(', '))}</li>`).join('')}</ul>`).join('')}
+function htmlSiklon(s){if(s==null)return '<p>Tidak ada data siklon.</p>';if(!s.length)return '<p>Siklon aktif pada data BMKG dan JTWC yang tersimpan: tidak ada.</p>';
+  return `<ul>${s.map(x=>`<li>${esc(x.nama)} (${esc(x.sumber)}), kategori ${esc(x.kategori||'–')}, angin ${tT(x.angin,' knot')}, posisi terakhir ${esc(waktuId(x.waktu))}, ${tT(Math.round(x.km))} km dari titik ini.</li>`).join('')}</ul>`}
+function cuacaHtml(info,D,now){const ket=[['Bandara BMKG',D.bandara],['Maritim BMKG',D.maritim],['Peringatan gelombang BMKG',D.peringatan],['Siklon BMKG',D.siklonB],['Siklon JTWC',D.siklon]].map(([n,d])=>`${n}: ${d&&d.dibuat?'dibuat '+esc(waktuId(d.dibuat)):'tidak ada data'}`).join('; ');
+  return `<p>Status resmi BMKG apa adanya, tanpa penilaian layak atau tidak. ${ket}.</p>`+info.map(t=>`<h3>${esc(t.nama)}</h3>`+(t.bandara?tabelBandara(t.bandara,now):'<p>Tidak ada data bandara.</p>')+tabelMaritim(D.maritim||{},t.pelabuhan,'pelabuhan',now)+tabelMaritim(D.maritim||{},t.perairan,'perairan',now)+htmlGelombang(t.gelombang,t.prov)+htmlSiklon(t.siklon)).join('')}
+/*akhir-cuaca-murni*/
+const CU={p:null,tk:0};
+const jsonCu=(u)=>fetch(u).then(r=>r.ok?r.json():null).catch(()=>null);
+const muatCuaca=()=>CU.p||(CU.p=Promise.all(['cuaca_bandara_bmkg','cuaca_maritim','peringatan','cuaca_siklon','cuaca_siklon_bmkg'].map(n=>jsonCu('/banjir/data/'+n+'.json'))).then(([bandara,maritim,peringatan,siklon,siklonB])=>{const D={bandara,maritim,peringatan,siklon,siklonB};if(Object.values(D).every(v=>v==null))CU.p=null;return D}));
+/* dimuat malas sesudah rencana tampil; titik = tujuan dan sampai tiga gudang asal terdekat */
+function tampilCuaca(c,P){const tk=++CU.tk,el=$('kr_cu');el.textContent='Memuat cuaca jalur bantuan.';const T=[{nama:`Tujuan: ${c.kec}, ${c.kab}`,lat:+c.lat,lon:+c.lon,prov:c.kode_prov}].concat(P.slice(0,3).map(r=>({nama:'Gudang asal: '+r.g.nama,lat:r.g.lat,lon:r.g.lon})));
+  muatCuaca().then(D=>{if(tk!==CU.tk)return;const now=Date.now();el.innerHTML=cuacaHtml(T.map(t=>cuacaTitik(D,t,now)),D,now)}).catch(()=>{CU.p=null;if(tk===CU.tk)el.textContent='Tidak ada data cuaca: gagal dimuat.'})}
 function isiPilih(sel,arr,v){sel.replaceChildren(...arr.map(x=>new Option(x)));if(v!=null)sel.value=v}
 function isiKab(){const p=$('kr_p').value;isiPilih($('kr_k'),[...new Set(K0.kec.filter(c=>c.provinsi===p).map(c=>c.kab))].sort());isiKec()}
 function isiKec(){const k=$('kr_k').value,p=$('kr_p').value;isiPilih($('kr_c'),K0.kec.filter(c=>c.provinsi===p&&c.kab===k).map(c=>c.kec).sort())}
@@ -663,7 +708,7 @@ function hitungK(c,j,cap,l){const {P,B}=rencanaK(c,j,cap,l);$('kr_h').hidden=fal
   $('kr_g').replaceChildren(...(P.length?P.map(r=>{const tr=document.createElement('tr');tr.append(td(r.g.nama),td(r.t.moda,'a'),td('perkiraan 3 jam','a'),td(jamT(r.t.utama),'a'),td(jamT(r.t.akhir),'a'),td(jamT(r.t.total),'a'),td(kolK(r.ton)+' ton','a'),td(N(r.truk),'a'));return tr}):[Object.assign(document.createElement('tr'),{innerHTML:'<td colspan="8">Tidak ada gudang yang terlihat akun ini dengan stok untuk barang di bawah.</td>'})]));
   $('kr_b').replaceChildren(...B.map(b=>{const tr=document.createElement('tr');tr.append(td(b.n),td(N(b.kb)+' '+b.sat,'a'),td(N(b.pn)+' '+b.sat,'a'),td(b.kr?N(b.kr)+' '+b.sat:'–','a'),td(b.asal.join(', ')||'Stok belum tercatat'));return tr}));
   const ib=K0.m.bandara[c._i],t=K0.m.tni[c._i],u=idsK(l).map(i=>K0.m.jam[i][c._i][2]).filter(v=>v!=null);
-  $('kr_a').textContent=(u.length?`Alternatif udara: sekitar ${jamT(Math.min(...u))} lewat ${ib[0]||'bandara terdekat'}${ib[1]&&ib[1]!=='Sipil'?' ('+ib[1]+'). Bandara ini melibatkan TNI, pemakaiannya perlu izin TNI AU':''}. `:'')+(t[0]?`Pangkalan TNI terdekat: ${t[0]}, ${N(t[1])} km dari pusat kab/kota. Pemakaian pangkalan TNI perlu izin TNI AU.`:'')}
+  $('kr_a').textContent=(u.length?`Alternatif udara: sekitar ${jamT(Math.min(...u))} lewat ${ib[0]||'bandara terdekat'}${ib[1]&&ib[1]!=='Sipil'?' ('+ib[1]+'). Bandara ini melibatkan TNI, pemakaiannya perlu izin TNI AU':''}. `:'')+(t[0]?`Pangkalan TNI terdekat: ${t[0]}, ${N(t[1])} km dari pusat kab/kota. Pemakaian pangkalan TNI perlu izin TNI AU.`:'');nanti(()=>tampilCuaca(c,P))}
 function petaK(){const cv=$('kr_cv'),geo=dash.data('geo').data;if(!geo.features)return;K0.lebar=cv.clientWidth;const w=cv.clientWidth||900,h=Math.round(w*.42),r=devicePixelRatio||1;cv.width=w*r;cv.height=h*r;cv.style.height=h+'px';const x=cv.getContext('2d');x.scale(r,r);const pr=d3.geoMercator().fitSize([w,h],geo),pa=d3.geoPath(pr,x);const cs=getComputedStyle(cv);x.fillStyle=cs.getPropertyValue('--km-kosong')||'#ddd';x.strokeStyle=cs.getPropertyValue('--bg')||'#fff';x.lineWidth=.5;geo.features.forEach(f=>{x.beginPath();pa(f);x.fill();x.stroke()});
   const W_=c=>{const j=+c.jam_semua;return !c.jam_semua?'#888':j<=24?'#3b82c4':j<=72?'#e0a44a':'#c8102e'};K0.kec.forEach(c=>{const p=pr([+c.lon,+c.lat]);x.fillStyle=W_(c);x.fillRect(p[0]-.8,p[1]-.8,1.7,1.7)});
   K0.m.gudang.filter(g=>g.status==='ada'&&tampilK(g)).forEach(g=>{const p=pr([g.lon,g.lat]);x.fillStyle=g.pemilik==='BNPB'?'#051c2c':'#fff';x.strokeStyle='#051c2c';x.fillRect(p[0]-3.5,p[1]-3.5,7,7);x.strokeRect(p[0]-3.5,p[1]-3.5,7,7)});

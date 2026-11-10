@@ -1,0 +1,24 @@
+/* Rapor sumber prakiraan (/bnpb/rapor-sumber). Kartu .ex-std dari inti/kartu.css; token dari bnpb.css. Tanpa gaya inline (CSP). */
+.rs-kolom{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+.rs-kolom>*,.ex-bd>*{min-width:0}
+.rs-p{margin:0;text-align:justify;hyphens:auto;color:var(--ink2);font-size:0.844rem}
+.rs-pilpil{display:flex;gap:6px;flex-wrap:wrap}
+.rs-pil-hip{--pil:var(--c2)}.rs-pil-info{--pil:var(--c5)}
+.rs-seg{display:flex;gap:6px;width:100%}
+.rs-seg button{flex:1 1 0;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px;font-size:0.812rem;font-weight:700;cursor:pointer}
+.rs-seg button[aria-pressed="true"]{background:color-mix(in srgb,var(--c5) 16%,transparent);border-color:color-mix(in srgb,var(--c5) 55%,transparent)}
+.rs-seg svg{width:14px;height:14px}
+.rs-tabel{overflow-x:auto}
+.rs-tabel .ad-tabel td{white-space:nowrap}
+.rs-tabel .ad-tabel td.n{text-align:right;font-variant-numeric:tabular-nums}
+.rs-tabel .ad-tabel td:first-child{font-weight:700}
+.rs-tabel .ad-tabel th{text-align:center}
+.rs-daftar{margin:0;padding-left:18px;color:var(--ink2);font-size:0.812rem;display:grid;gap:4px}
+.rs-kosong{color:var(--ink2);font-weight:600;padding:8px 2px}
+@media (max-width:640px){
+  .rs-tabel.ad-tabel-wadah{background:var(--card);padding:0}
+  .rs-tabel .ad-tabel{display:table}.rs-tabel .ad-tabel thead{display:table-header-group}.rs-tabel .ad-tabel tbody{display:table-row-group}
+  .rs-tabel .ad-tabel tr{display:table-row;background:none;border-radius:0;padding:0;box-shadow:none}
+  .rs-tabel .ad-tabel td{display:table-cell;padding:9px 12px}.rs-tabel .ad-tabel td::before{content:none}
+  .rs-tabel .ad-tabel thead tr{background:var(--gradien)}
+}
