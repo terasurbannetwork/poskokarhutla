@@ -38,6 +38,11 @@ jobs:
           command -v pdftotext >/dev/null || sudo apt-get install -y -qq poppler-utils >/dev/null || true
           python3 scripts/cuaca/factsheet.py uji && { python3 scripts/cuaca/factsheet.py || echo "::warning title=factsheet::gagal; arsip lama dibiarkan"; }
 
+      - name: Factsheet karhutla (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python3 scripts/data/factsheet_karhutla.py uji && { python3 scripts/data/factsheet_karhutla.py || echo "::warning title=factsheet_karhutla::gagal; arsip lama dibiarkan"; }
+
       - name: Potensi hujan sepekan (boleh gagal)
         continue-on-error: true
         timeout-minutes: 5
@@ -47,7 +52,7 @@ jobs:
         run: |
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
-          B=$(ls public/gempa/data/inatews_*.json public/banjir/data/cuaca_factsheet.json public/banjir/data/cuaca_factsheet_arsip_*.json public/banjir/data/cuaca_sepekan.json public/banjir/data/cuaca_sepekan_arsip.json 2>/dev/null || true)
+          B=$(ls public/gempa/data/inatews_*.json public/banjir/data/cuaca_factsheet.json public/banjir/data/cuaca_factsheet_arsip_*.json public/banjir/data/cuaca_sepekan.json public/banjir/data/cuaca_sepekan_arsip.json public/banjir/data/karhutla_bmkg.json public/banjir/data/karhutla_bmkg_arsip_*.json 2>/dev/null || true)
           [ -n "$B" ] || { echo "belum ada arsip"; exit 0; }
           git add -f $B
           git diff --cached --quiet -- $B && { echo "arsip tidak berubah"; exit 0; }
