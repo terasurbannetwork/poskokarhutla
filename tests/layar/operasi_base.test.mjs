@@ -7,6 +7,13 @@ import vm from "node:vm";
 const win = {};
 vm.runInNewContext(readFileSync(new URL("../../public/operasi_laporan.js", import.meta.url), "utf8"), {window: win, document: {querySelector: () => null}, localStorage: {}});
 
+test("alasan renlap jadi label terbaca, medan mentah tidak tampil", () => {
+  const f = x => JSON.parse(JSON.stringify(win.OperasiLaporan.alasanRenlap(x)));
+  assert.deepEqual(f({teks: "tanpa titik baru; gambut; permukiman 0.9 km", titik_baru: 0, ffmc_basi: true}), ["Tanpa titik baru", "Gambut", "Permukiman 0,9 km"]);
+  assert.deepEqual(f({titik_baru: 0, ffmc_basi: true}), []);
+  assert.deepEqual(f(["a; b", {ket: "c"}]), ["A", "B", "C"]);
+});
+
 test("armada dikelompokkan per base, urut nama, tanpa base di akhir", () => {
   const base = [{id: "b2", nama: "Pekanbaru / Sultan Syarif"}, {id: "b1", nama: "Banjarmasin / Syamsudin"}];
   /* JSON round-trip: array dari vm beda realm, deepStrictEqual menolaknya */

@@ -141,6 +141,10 @@
     return bagian("Base", judul, tabelH(kepala.filter((_, i) => !lipat.has(i)), baris.map(x => `<tr>${x.sel.filter((_, i) => !lipat.has(i)).join("")}</tr>`), "Belum ada base tercatat."));
   }
 
+  /* alasan target jadi label: hanya teks siap baca dari mesin renlap, medan mentah (ffmc_basi, menahun_hari) tidak pernah tampil */
+  const alasanRenlap = a => (Array.isArray(a) ? a.map(x => typeof x === "string" ? x : x?.teks || x?.ket || "") : typeof a === "string" ? [a] : a?.teks ? [a.teks] : [])
+    .join(";").split(";").map(x => x.trim().replace(/(\d)\.(\d)/g, "$1,$2")).filter(Boolean).map(x => x[0].toUpperCase() + x.slice(1));
+
   /* fitur 4 + 5: renlap lawan realisasi, dengan alasan tiap target */
   function kartuRenlap(D) {
     const rl = D.peta.renlap || [], baris = [];
@@ -149,9 +153,10 @@
       total++;
       const kandidat = D.aksi.filter(a => a.lat != null && (a.base_id || D.reg2base[a.registrasi]) === r.base_id).map(a => ({...a, jarak: km(g.lat, g.lon, a.lat, a.lon)})).filter(a => a.jarak <= RENLAP_KM).sort((x, y) => x.jarak - y.jarak);
       const a = kandidat[0], h = a ? (U().HASIL[a.hasil] || U().HASIL.tak_dinilai) : null; if (a) datang++;
-      const alasan = Array.isArray(g.alasan) ? g.alasan.map(x => typeof x === "string" ? x : x?.teks || x?.ket || "").filter(Boolean).join("; ") : typeof g.alasan === "string" ? g.alasan : g.alasan ? Object.entries(g.alasan).map(([k, v]) => `${k} ${v}`).join(", ") : "";
-      baris.push(`<tr><td>${esc(namaBase(D, r.base_id))}<small>${esc(r.versi || "")}</small></td>${sel(fmt(g.urut ?? baris.length + 1))}
-        ${kiri(`${esc(g.lokasi || g.nama || g.jenis || "Target")} <a href="${U().gmaps(g.lat, g.lon)}" target="_blank" rel="noopener noreferrer">koordinat</a>${alasan ? `<small>${esc(alasan)}</small>` : ""}`)}
+      const alasan = alasanRenlap(g.alasan), nama = g.lokasi || g.nama || g.jenis || "Target";
+      /* satu sel base per renlap, bukan nama base diulang tiap baris */
+      baris.push(`<tr>${g === r.target[0] ? `<td class="ops-renlap-base" rowspan="${r.target.length}"><b>${esc(namaBase(D, r.base_id))}</b>${r.versi ? `<small>Renlap ${esc(r.versi)}</small>` : ""}</td>` : ""}${sel(fmt(g.urut ?? baris.length + 1))}
+        <td class="ops-kiri ops-renlap"><b>${esc(nama[0].toUpperCase() + nama.slice(1))}</b> <a href="${U().gmaps(g.lat, g.lon)}" target="_blank" rel="noopener noreferrer">koordinat</a>${alasan.length ? `<div class="ops-alasan">${alasan.map(x => `<span>${esc(x)}</span>`).join("")}</div>` : ""}</td>
         <td>${a ? `<span class="pill l0">Didatangi</span><small>${esc(a.registrasi)} ${U().jamWIB(a.jam_utc)} WIB, ${fmt(Math.round(a.jarak * 10) / 10)} km</small>` : `<span class="pill l3">Belum didatangi</span>`}</td>
         <td>${h ? `<span class="pill ${h[1]}">${h[0]}</span>` : "–"}</td></tr>`);
     }
@@ -361,6 +366,6 @@
     setTimeout(() => status(""), 3000);
   }
 
-  window.OperasiLaporan = {render, kelompokBase, kelompokFoto, kartuOperator};
+  window.OperasiLaporan = {render, kelompokBase, kelompokFoto, kartuOperator, alasanRenlap};
   if (document.querySelector("#p-operasi.on")) render();
 })();
