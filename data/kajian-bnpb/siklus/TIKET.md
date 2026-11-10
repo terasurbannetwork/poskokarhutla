@@ -804,3 +804,9 @@ Langkah: `ilmu.mjs kasus siklus` untuk pelajaran program; perbarui `.claude/ilmu
 2. F1: jalur data (bersih, adapter G1) lalu pasang lalu arsip; jalur Worker migrasi, cangkang, rute baca, rute tulis dan ingest; bertemu di pasang. F2 data tidak menunggu F1.
 3. G2 menunggu rilis G1; migrasi, hitung, ekspor G3 boleh jalan sejak G1 selesai; iklim lab paralel dengan G3.
 4. Penulis tidak menyunting berkas yang sama bersamaan (`src/siklus.js`, `src/siklus_dummy.js`, `src/siklus_hitung.js`, `src/hak.js`, `tests/warga/siklus_*.test.mjs`, `siklus.yml`, `public/siklus/pulih.js`): bergiliran menurut nomor, yang sudah berurutan topologis.
+
+#### SK-112 Tampilan tahap Rantai di halaman Buku Besar
+Pengerja: siklus (layar) dan warga-api (rute). Bergantung: SK-028, SK-020. Uji: diperluas `layar_kejadian.test.mjs`, `siklus_kejadian.test.mjs`.
+Berkas: `public/siklus/kejadian.js`, `src/siklus_kejadian.js`. Di luar: Kalender Kewajiban, Rapor SPM, Q1-Q14 Rantai.
+Langkah: tampilkan tahap per kejadian dari `data/kajian-bnpb/rantai/ALUR.md` di detail `/siklus/kejadian/:id`, KIB logbook sebagai kunci tautan ke `KJ-` lewat `sk_kejadian_sumber`. Tahap tanpa data tertulis tidak ada.
+Bukti: kedua uji hijau. Pemeriksa: selera-angka. Status: belum (menunggu konfirmasi U21).
