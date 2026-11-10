@@ -10,7 +10,7 @@
 .sg-seg button[aria-pressed="true"]{background:color-mix(in srgb,var(--c5) 16%,transparent);border-color:color-mix(in srgb,var(--c5) 55%,transparent)}
 .sg-seg svg{width:14px;height:14px}
 .sg-tabel{overflow-x:auto}
-.sg-tabel .ad-tabel td.n{text-align:right;font-variant-numeric:tabular-nums}
+.sg-tabel .ad-tabel td.n{text-align:center;font-variant-numeric:tabular-nums}
 .sg-tabel .ad-tabel td:first-child{font-weight:700}
 .sg-tabel .ad-tabel th{text-align:center}
 .sg-svg{width:100%;height:auto;display:block;overflow:visible}
