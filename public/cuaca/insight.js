@@ -202,13 +202,15 @@ const Insight = {
       `Sumber: Open-Meteo, ECMWF, BMKG, dibuat ${jamWIB(S.meta.dibuat)}`); },
   /* awan sangat dingin Himawari-9 per kabupaten (awan.js): pengamatan satelit berpil Hipotesis, bukan peringatan; data lebih tua 6 jam atau tanpa awan sangat dingin = kartu dibuang */
   exAwan() { const A = Awan.D.r; if (!A?.sangat.length) return "";
-    const R = A.sangat, top = [...R].sort((a, b) => b.sd - a.sd), t = top[0], U = this.uk(), warna = v => v >= 40 ? "#7a4fc4" : "#a98bd6";
+    /* peringkat persen hanya untuk kabupaten dengan 10 titik citra atau lebih: 100% dari satu titik tidak berarti */
+    const R = A.sangat, top = R.filter(r => r.n >= 10).sort((a, b) => b.sd - a.sd), t = top[0], U = this.uk(), warna = v => v >= 40 ? "#7a4fc4" : "#a98bd6";
     const kol = [{k: "kab", n: "Kabupaten/kota", v: r => r.nama, h: r => `<span translate="no">${esc(r.nama)}</span>, ${esc(namaProv(r.prov))}`},
-      {k: "sd", n: "Titik sangat dingin", num: 1, v: r => r.sd, h: r => `<span class="pl" style="--w:${warna(r.sd)}">${fmt(r.sd)}%</span>`},
-      {k: "tb", n: "Terdingin", num: 1, v: r => -r.tb, h: r => fmt(r.tb) + " °C"},
-      {k: "km", n: "Tinggi puncak", num: 1, v: r => r.km, h: r => "sekitar " + fmt(r.km) + " km"}];
+      {k: "sd", n: "Titik sangat dingin", t: "Persen titik citra di kabupaten dengan suhu kecerahan 10,4 mikron -65 °C atau lebih dingin", num: 1, v: r => r.sd, h: r => `<span class="pl" style="--w:${warna(r.sd)}">${fmt(r.sd)}%</span>`},
+      {k: "n", n: "Jumlah titik", t: "Jumlah titik citra Himawari-9 di kabupaten, dasar persentase", num: 1, v: r => r.n, h: r => fmt(r.n)},
+      {k: "tb", n: "Terdingin", t: "Suhu kecerahan terendah di kabupaten", num: 1, v: r => -r.tb, h: r => fmt(r.tb) + " °C"},
+      {k: "km", n: "Tinggi puncak", t: "Perkiraan kasar dari suhu, bukan pengukuran", num: 1, v: r => r.km, h: r => "sekitar " + fmt(Math.round(r.km)) + " km"}];
     Kartu.leg([["#7a4fc4", "40% titik atau lebih"], ["#a98bd6", "di bawah 40%"]]);
-    return this.ex(`${this.hl(fmt(R.length) + " kabupaten/kota")} punya awan sangat dingin pada citra Himawari-9 pukul <span title="${esc(Awan.KET)}">${Awan.tgl(A.t)}</span>, persentase tertinggi di ${this.nm2s(t.nama)}`, "", "",
+    return this.ex(`${this.hl(fmt(R.length) + " kabupaten/kota")} punya awan sangat dingin pada citra Himawari-9 pukul <span title="${esc(Awan.KET)}">${Awan.tgl(A.t)}</span>${t ? `, persentase tertinggi di ${this.nm2s(t.nama)} di antara wilayah dengan 10 titik citra atau lebih` : ""}`, "", "",
       `<p class="fnd">${Awan.pil} Pengamatan satelit Centurisk97, bukan peringatan dan bukan produk BMKG. Uji kelayakan baru memeriksa kalibrasi suhu, proyeksi, dan perkiraan tinggi puncak; belum ada uji bahwa awan ini berkaitan dengan hujan lebat atau kejadian.</p>`
       + this.batangH(top.slice(0, 10).map(r => ({label: r.nama, nilai: r.sd, warna: warna(r.sd), teks: fmt(r.sd) + "%", tip: `<b>${esc(r.nama)}</b>, ${esc(namaProv(r.prov))}<br>${fmt(r.sd)}% titik sangat dingin, ${fmt(r.d)}% dingin<br>Terdingin ${fmt(r.tb)} °C`})), U)
       + this.tabel("awan", kol, R, 10, "kabupaten/kota", r => `data-aw="${esc(r.kode)}"`), ""); },
@@ -218,7 +220,7 @@ const Insight = {
     const R = [...baris].sort((a, b) => { const x = kk.v(a), y = kk.v(b); return (typeof x === "string" ? x.localeCompare(y) : x - y) * s; });
     st.hal = Math.min(st.hal, Math.max(0, Math.ceil(R.length / per) - 1));
     const hal = R.slice(st.hal * per, (st.hal + 1) * per);
-    return `<div class="tw"><table><thead><tr>${kol.map(c => `<th class="${c.num ? "n" : ""}" aria-sort="${c === kk ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c.k}">${c.n}<i>${c === kk ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
+    return `<div class="tw"><table><thead><tr>${kol.map(c => `<th class="${c.num ? "n" : ""}"${c.t ? ` title="${esc(c.t)}"` : ""} aria-sort="${c === kk ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c.k}">${c.n}<i>${c === kk ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
       <tbody>${hal.map(r => `<tr class="klik"${attr ? " " + attr(r) : ""}>${kol.map(c => `<td${c.num ? ' class="n"' : ""}>${c.h(r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, per, satuan)}`; },
 
   /* satu kartu: label pil berikon di kepala; ikon bagikan dipasang mesin Bagikan (public/bagikan.js) */
