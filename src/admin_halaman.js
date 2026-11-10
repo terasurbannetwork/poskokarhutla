@@ -76,6 +76,7 @@ ${ekor}
 /* foto dan kreditnya sama dengan hero /tentang (public/img/kredit.json); public/img/masuk/*.webp = potongan melebar 1400x460 */
 const PITA_MASUK = [
   ["karhutla", "Karhutla", "Palangka Raya, Kalimantan Tengah", "Foto: ParadoxP P, CC BY 4.0", "File:Talawang_Monumen_Palangka_Raya_Haze.jpg", '<path d="M12 3s-6 6-6 11a6 6 0 0 0 12 0c0-5-6-11-6-11Z"/>'],
+  ["banjir-longsor", "Banjir dan longsor", "Agam, Sumatera Barat, 2025", "Foto: BNPB, Public domain", "File:Landslides_in_Agam_Regency,_West_Sumatra.jpg", '<path d="M3 20c2.5 0 2.5-2 4.5-2s2 2 4.5 2 2.5-2 4.5-2 2 2 4.5 2"/><path d="m4 15 6-9 4 5 2-2 4 6"/>'],
   ["rob", "Gelombang pasang dan abrasi", "Demak, Jawa Tengah", "Foto: Tim LindungiHutan, CC BY 4.0", "File:Rumah_Mak_Jah_di_Desa_Bedono_yang_Tenggelam_karena_abrasi.jpg", '<path d="M2 8c3 0 3 2 5 2s2-2 5-2 3 2 5 2 2-2 5-2M2 15c3 0 3 2 5 2s2-2 5-2 3 2 5 2 2-2 5-2"/>'],
   ["gempa", "Gempa dan tsunami", "Palu, Sulawesi Tengah, 2018", "Foto: Ungkeito, CC BY-SA 4.0", "File:Bencana_Tsunami_Palu.jpg", '<path d="M2 12h4l2-6 4 13 3-9 2 2h5"/>'],
   ["cuaca", "Cuaca ekstrem", "Nusa Tenggara Timur, 2021", "Foto: NASA, LANCE / MODIS on Aqua, Public domain", "File:Seroja_2021-04-05_0545Z.jpg", '<path d="M7 17a4 4 0 1 1 1-7.9A6 6 0 0 1 19.5 11 3.5 3.5 0 0 1 18 17Z"/><path d="m12 13-2 4h3l-1 4"/>'],
@@ -114,7 +115,7 @@ export const halamanMasuk = (galat, ke = "", merek = "Centurisk97") => `${kepala
 </main>
 </div>
 <aside class="ad-galeri" aria-label="Jenis bencana yang dipantau">
-${PITA_MASUK.map(([f, j, t, kr, src, ik]) => `  <figure class="ad-pita"><img src="/img/masuk/${f}.webp?v=1" alt="${j}, ${t}" decoding="async"><figcaption>${ikonMasuk(ik)}<b>${j}</b><span>${t}</span></figcaption><a class="ad-kredit" href="https://commons.wikimedia.org/wiki/${encodeURI(src)}" target="_blank" rel="noopener" title="${kr}" aria-label="${kr}">i</a></figure>`).join("\n")}
+${PITA_MASUK.map(([f, j, t, kr, src, ik]) => `  <figure class="ad-pita"><img src="/img/masuk/${f}.webp?v=1" alt="${j}, ${t}"><figcaption>${ikonMasuk(ik)}<b>${j}</b><span>${t}</span></figcaption><a class="ad-kredit" href="https://commons.wikimedia.org/wiki/${encodeURI(src)}" target="_blank" rel="noopener" title="${kr}" aria-label="${kr}">i</a></figure>`).join("\n")}
 </aside>
 <script src="/admin/masuk.js?v=2"></script>
 </body></html>`;
