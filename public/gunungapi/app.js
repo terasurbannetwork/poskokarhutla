@@ -31,6 +31,7 @@ const DATA = {};
 const sekali = (k, u) => DATA[k] ||= muatJSON(u).catch(() => { delete DATA[k]; return null; });
 const Data = {abu: () => sekali("abu", "../banjir/data/abu_gunungapi.json"), pap: () => sekali("pap", "data/paparan.json"), geo: () => sekali("geo", "data/paparan_geo.json"), bandara: () => sekali("bandara", "data/bandara.json"),
   fs: () => sekali("fs", "data/factsheet_gunungapi.json"), ped: () => sekali("ped", "data/pedoman_krb.json"), keg: () => sekali("keg", "data/kegempaan.json"),
+  rezim: () => sekali("rezim", "data/rezim_letusan.json"), pl: () => sekali("pl", "data/perubahan_level.json"), glosari: () => sekali("glosari", "data/glosari.json"),
   /* catatan harian terakhir satu gunung (baris terakhir data/catatan/<KODE>.jsonl, append-only); null bila berkas belum ada */
   harian: kode => !kode || !/^[A-Z]{2,4}$/.test(kode) ? null : DATA["cat" + kode] ||= fetch("data/catatan/" + kode + ".jsonl", {cache: "no-cache"}).then(r => r.ok ? r.text() : null).then(t => { const b = (t || "").trim().split("\n").pop(); return b ? JSON.parse(b) : null; }).catch(() => null), mirova: () => sekali("mirova", "data/mirova.json"), risiko: () => sekali("risiko", "data/risiko.json"), dampak: () => sekali("dampak", "../banjir/data/dampak_gunungapi.json"),
   /* paparan per id gunung */

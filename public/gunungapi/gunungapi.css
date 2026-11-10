@@ -39,3 +39,7 @@ details.lipat>.isi{padding:2px 14px 12px}
 #legenda .seg.penuh button{flex:1;text-align:center}
 
 #tren .klik{cursor:pointer}
+/* kartu standar: kepala tabel rata tengah */
+.ex-std .ex-tabel thead th{text-align:center}.ex-std .ex-tabel thead th button{justify-content:center;width:100%}
+#metode .gl-cari{width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;margin:10px 0}
+#metode .gl-has{display:grid;gap:8px;max-height:420px;overflow:auto}#metode .gl-has p{margin:0;font-size:13.5px;line-height:1.55;text-align:justify}

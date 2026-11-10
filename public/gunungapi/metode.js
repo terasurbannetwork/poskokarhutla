@@ -7,6 +7,18 @@ const Metode = {
     2: "Hasil pengamatan visual dan instrumental mulai memperlihatkan peningkatan aktivitas. Pada beberapa gunung api dapat terjadi erupsi",
     1: "Hasil pengamatan visual dan instrumental fluktuatif, tetapi tidak memperlihatkan peningkatan aktivitas yang signifikan"},
   daftar: (judul, baris, sumber, ey) => Kartu.ex(judul, "", "", `<ul class="mt">${baris.map(([a, b]) => `<li><b>${a}</b><span>${b}</span></li>`).join("")}</ul>`, sumber).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`),
+  /* cari istilah (glossary MAGMA, 438 istilah): berkasnya dimuat hanya saat bagian dibuka; ketik hanya menyaring dan menggambar 30 hasil */
+  glosari() {
+    return Kartu.ex("Cari istilah gunung api dari glossary MAGMA", "", "", `<details class="gl" data-gl><summary>Buka pencarian istilah</summary><input class="gl-cari" type="search" placeholder="Ketik istilah, mis. lahar" aria-label="Cari istilah" disabled><div class="gl-has" aria-live="polite"></div></details>`, "Sumber: MAGMA Indonesia, PVMBG (glossary)").replace('<span class="ex-ey"></span>', '<span class="ex-ey">Istilah</span>'); },
+  pasangGlosari(el) {
+    const d = el.querySelector("[data-gl]"); if (!d || d._siap) return; d._siap = 1;
+    const isi = d.querySelector(".gl-has"), q = d.querySelector(".gl-cari"); let L = null;
+    const gambar = () => { const k = q.value.trim().toLowerCase(), H = (k ? L.filter(x => x.i.toLowerCase().includes(k)) : L).slice(0, 30);
+      isi.innerHTML = H.map(x => `<p><b>${esc(x.i)}</b>. ${esc(x.d)}</p>`).join("") || `<p>Tidak ada istilah yang cocok.</p>`; };
+    d.addEventListener("toggle", async () => { if (!d.open || L) return; isi.textContent = "Memuat…";
+      const g = await Data.glosari(); if (!g?.istilah) { isi.textContent = "Glosari belum bisa dimuat."; return; }
+      L = g.istilah; q.disabled = false; q.focus(); gambar(); });
+    q.addEventListener("input", () => { if (L) nanti(gambar); }); },
   async render() {
     const a = await Data.abu(), P = a?.parameter || {}, UB = a?.uji_balik, UT = a?.uji_balik_tipis, amb = P.ambang || {}, kb = P.kelas_butir || [];
     const PL = typeof Peluang === "undefined" ? null : await Peluang.muat("../banjir/data/abu_peluang.json");
@@ -41,10 +53,18 @@ const Metode = {
         ["Izin tambang", "Wilayah Izin Usaha Pertambangan (WIUP) dari geoportal ESDM, hanya badan usaha. Zonanya yang tertinggi dari titik pusat dan simpul poligon."],
         ["Evakuasi", "Dijkstra berganda di jaringan jalan OSM (motorway sampai residential) dari titik aman: jalan tersier ke atas di luar KRB III dan II dan di luar radius rekomendasi ditambah 2 km. Kecepatan per kelas jalan: 50, 40, 35, 30, 25, 18, dan 15 km/jam. Hasilnya waktu tempuh arus bebas, tanpa antrean evakuasi massal, dan di tampilan hanya desa KRB III dan II yang dihitung. Titik kumpul bertanda OSM (assembly point atau shelter) diutamakan bila selisihnya tak lebih dari 10 menit. Bila tak ada desa KRB III atau II yang tersambung ke jalan, rute cadangan dihitung dari desa KRB I terdekat dan ditandai di peta."],
         ["Citra", "Sentinel-2 (Copernicus/ESA) bebas awan terbaik sebelum dan sesudah kejadian besar yang tercatat."]], "Sumber: ESDM, WorldPop, OpenStreetMap, Copernicus", "Paparan"),
+      this.daftar("Arsip MAGMA 2018 sampai 2026: apa yang dipakai dan apa yang tidak", [
+        ["Letusan", "Daftar informasi letusan MAGMA 2018 sampai 2026 (sekitar 21 ribu letusan), diringkas per gunung sejak 1 Jan 2024 di kartu Rezim letusan, Arah abu per musim, Cakupan VONA, dan Paparan lawan aktivitas. Berkasnya snapshot dari arsip lokal dan tidak ikut diperbarui otomatis; tanggal datanya tertulis di judul kartu."],
+        ["Tidak ada tren 2018 sampai 2023 lawan 2024", "Jumlah letusan melompat dari 457 pada 2023 ke 6.241 pada 2024: itu mengikuti perubahan cara mencatat, bukan alam, jadi deret tahunannya tidak digambar sebagai tren dan tidak dibandingkan."],
+        ["VONA", "Hanya waktu dan gunung dari tiap VONA yang dihitung untuk cakupan: letusan tercakup bila ada VONA gunung yang sama dalam 30 menit. Nama pembuat VONA tidak pernah dibaca atau ditampilkan. Selisih cakupan antar gunung bisa berarti satu VONA mewakili letusan menerus, bukan kelalaian."],
+        ["Daftar pantau kegempaan", "Hipotesis, bukan prediksi: gempa vulkanik 7 hari terakhir sedikitnya 10, sedikitnya 1,5 kali rata-rata sendiri, dan di atas persentil 90 riwayatnya. Hasil uji balik ditulis apa adanya di kartunya."]], "Sumber: MAGMA Indonesia, PVMBG", "Arsip"),
+      this.glosari(),
       this.daftar("Batas model dan yang sengaja tidak dilakukan", [
         ["Bukan prakiraan letusan", "Centurisk97 tidak meramal letusan dan tidak menentukan level sendiri. Untuk keputusan, ikuti rekomendasi PVMBG dan BPBD setempat; Level I Normal bukan jaminan tidak ada bahaya."],
+        ["Tidak ada peluang letusan 7 hari", "Kartu peluang letusan 7 hari sengaja tidak dibuat: pada uji balik arsip, model tidak mengalahkan persistensi (skill 0,059, interval 90% -0,014 sampai 0,13; untuk kolom 1.500 m ke atas -0,02), jadi tidak ada angka peluang yang bisa dipertanggungjawabkan."],
         ["Bukan informasi penerbangan", "Informasi abu vulkanik untuk penerbangan (VONA, VAAC) tetap bersumber dari PVMBG dan BMKG."],
         ["Angin dan jarak", "Angin dari prakiraan, bukan pengukuran; satu skenario kolom tetap selama pelepasan. Jarak jangkauan belum teruji."],
         ["Data tidak lengkap", "Tanpa data zona, desa, atau rute untuk suatu gunung, bagian itu dibuang, bukan ditulis kosong. Nol di OSM bukan bukti tidak ada."]], "Sumber: PVMBG, Badan Geologi", "Batas"),
-    ].join("") + (PL ? Peluang.batasan(PL, {judul: "Peluang abu di bandara dan kota"}).replace(/<b>0\. /, "<b>") : ""); },
+    ].join("") + (PL ? Peluang.batasan(PL, {judul: "Peluang abu di bandara dan kota"}).replace(/<b>0\. /, "<b>") : "");
+    this.pasangGlosari($("#metode")); },
 };
