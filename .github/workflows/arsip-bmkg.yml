@@ -1,0 +1,60 @@
+name: Arsip BMKG 3 jam
+
+# BMKG hanya menyimpan 30 buletin gempa/tsunami terakhir dan edisi terbaru ikhtisar cuaca harian.
+# Satu gempa besar bisa menghabiskan 30 buletin dalam hitungan jam, jadi arsip harian tidak cukup.
+# Keduanya append-only dan idempoten, gagal-lunak: sumber mati = arsip lama dibiarkan.
+# Keluaran di-commit ke main; TIDAK deploy, terbit.yml/titik.yml mengambilnya dari checkout.
+on:
+  schedule:
+    - cron: "25 */3 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  arsip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Arsip InaTEWS (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 15
+        run: python3 scripts/gempa/inatews.py uji && { python3 scripts/gempa/inatews.py || echo "::warning title=inatews::gagal; arsip lama dibiarkan"; }
+
+      - name: Ikhtisar cuaca harian (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: |
+          command -v pdftotext >/dev/null || sudo apt-get install -y -qq poppler-utils >/dev/null || true
+          python3 scripts/cuaca/factsheet.py uji && { python3 scripts/cuaca/factsheet.py || echo "::warning title=factsheet::gagal; arsip lama dibiarkan"; }
+
+      - name: Potensi hujan sepekan (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python3 scripts/cuaca/sepekan.py uji && { python3 scripts/cuaca/sepekan.py || echo "::warning title=sepekan::gagal; arsip lama dibiarkan"; }
+
+      - name: Commit arsip ke main
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          B=$(ls public/gempa/data/inatews_*.json public/banjir/data/cuaca_factsheet.json public/banjir/data/cuaca_factsheet_arsip_*.json public/banjir/data/cuaca_sepekan.json public/banjir/data/cuaca_sepekan_arsip.json 2>/dev/null || true)
+          [ -n "$B" ] || { echo "belum ada arsip"; exit 0; }
+          git add -f $B
+          git diff --cached --quiet -- $B && { echo "arsip tidak berubah"; exit 0; }
+          git commit -q -m "data: arsip BMKG $(TZ=Asia/Jakarta date '+%F %H:%M')" -- $B
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::error title=Push arsip BMKG gagal::git push ke main gagal 3x"
+          exit 1

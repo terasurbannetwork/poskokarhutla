@@ -123,6 +123,7 @@ jobs:
         run: |
           python3 scripts/cuaca/cuaca.py uji && python3 scripts/cuaca/cuaca.py || echo "::warning title=cuaca::cuaca.py gagal; berkas lamanya dibiarkan"
           python3 scripts/cuaca/peluang_cuaca.py uji && python3 scripts/cuaca/peluang_cuaca.py || echo "::warning title=peluang_cuaca::gagal; berkas lamanya dibiarkan"
+          python3 scripts/cuaca/bmkg_kab10.py uji && python3 scripts/cuaca/bmkg_kab10.py || echo "::warning title=bmkg_kab10::gagal; berkas lamanya dibiarkan"
 
       # Commit arsip prospektif cuaca (prospektif_cuaca.py dirantai cuaca.py). Hanya berkas bulanan; tidak ada perubahan = keluar bersih.
       - name: Commit arsip prospektif cuaca (boleh gagal)
@@ -131,7 +132,7 @@ jobs:
         run: |
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
-          B=$(ls public/banjir/data/cuaca_prospektif_*.json public/banjir/data/cuaca_bmkg_arsip_*.json public/banjir/data/cuaca_imerg_arsip_*.json 2>/dev/null || true)
+          B=$(ls public/banjir/data/cuaca_prospektif_*.json public/banjir/data/cuaca_bmkg_arsip_*.json public/banjir/data/cuaca_imerg_arsip_*.json public/banjir/data/cuaca_bmkg_kab10.json 2>/dev/null || true)
           [ -n "$B" ] || { echo "belum ada arsip prospektif cuaca"; exit 0; }
           git add -f $B
           git diff --cached --quiet -- $B && { echo "prospektif cuaca tidak berubah"; exit 0; }
@@ -206,8 +207,8 @@ jobs:
           python3 scripts/longsor/model.py diri && { python3 scripts/longsor/model.py harian || echo "::warning title=longsor::nowcast gagal; berkas lamanya dibiarkan"; }
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
-          B="public/gunungapi/data/mirova.json public/kekeringan/data/gdo.json public/longsor/data/nowcast.json"
-          git add $B
+          B="public/gunungapi/data/mirova.json public/kekeringan/data/gdo.json public/longsor/data/nowcast.json $(ls public/banjir/data/peringatan_bmkg.json public/banjir/data/peringatan_bmkg_arsip.json 2>/dev/null | tr '\n' ' ')"
+          git add -f $B
           git diff --cached --quiet -- $B && { echo "panen tidak berubah"; exit 0; }
           git commit -q -m "data: panen mirova, gdo, nowcast longsor $(TZ=Asia/Jakarta date +%F)" -- $B
           for i in 1 2 3; do
