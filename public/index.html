@@ -1889,12 +1889,12 @@ function sambungArsip() {
   const ke = k => { if (!idx.has(k)) { const p = k.split("|"); S.wilKunci.push([p[0], p[0] + "|" + p[1], k]); idx.set(k, S.wilKunci.length - 1); } return idx.get(k); };
   const tambah = [];
   for (const [t, a] of S.arsip) { if (a.tersambung === S.titik) continue; const d0 = Date.parse(t + "T00:00:00+07:00");
-    for (const b of a.baris) tambah.push([b[0], b[1], Math.round((d0 + b[2] * 36e5 - ac) / 36e4) / 10, b[3], b[4], b[5], ke(a.wilayah[b[6]]), t.slice(5), 1]); }   // berkas arsip tidak menulis tgl_wib dan hitung (titik_hari.py)
+    for (const b of a.baris) tambah.push([b[0], b[1], Math.round((d0 + b[2] * 36e5 - ac) / 36e4) / 10, a.sensor[b[3]], b[4], b[5], ke(a.wilayah[b[6]]), t.slice(5), 1]); }   // berkas arsip: sensor berupa indeks sensor_utama, tgl_wib dan hitung tidak ditulis (titik_hari.py)
   if (!tambah.length) return;
   S.titik = S.titik.concat(tambah); for (const a of S.arsip.values()) a.tersambung = S.titik;
 }
 async function muatArsip(t) {
-  if (!S.arsip.has(t)) { const j = await muatJSON(`data/titik_hari/${t}.json`); S.arsip.set(t, {baris: j.baris, wilayah: j.wilayah}); }
+  if (!S.arsip.has(t)) { const j = await muatJSON(`data/titik_hari/${t}.json`); S.arsip.set(t, {baris: j.baris, wilayah: j.wilayah, sensor: j.sensor_utama}); }
   sambungArsip();
 }
 const hariLama = v => v !== "hari" && v !== "kemarin";
