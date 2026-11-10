@@ -77,6 +77,22 @@ uji("pengirim tak terdaftar dan obrolan grup tidak mencapai kait", async () => {
   assert.equal(await berkas("dalops/laporan.json"), sebelum);
 });
 
+uji("rekap berkepala resmi dari anggota grup dan rekap bertanggal jauh ke depan tidak mengubah arsip", async () => {
+  const sebelum = await berkas("dalops/laporan.json");
+  assert.equal((await kirim(rekap("07"), "620000", {grup: "123-456@g.us"})).disimpan, true);   // tersimpan sebagai pesan, tapi tidak sampai ke kait
+  assert.equal(await berkas("dalops/laporan.json"), sebelum);
+  await kirim(rekap("07", "31/12/2098", "01/01/2099"));
+  assert.equal(await berkas("dalops/laporan.json"), sebelum);
+});
+
+uji("contoh rekap utuh repo sama dengan pengurai Python: 23 laporan, 17 menonjol, 3 baru; tempat dibatasi 80 huruf", () => {
+  const contoh = readFileSync(new URL("../../data/laporan-bnpb/generator/contoh/koordalops_241026.txt", import.meta.url), "utf8");
+  const h = hariDariRekap(contoh, {diterima: 1});
+  assert.deepEqual([h.laporan, h.menonjol, h.kejadian.length, h.kejadian.filter(k => k.sifat === "baru").length], [23, 17, 17, 3]);
+  const panjang = hariDariRekap(contoh.replace("di Prov. Riau *(Pengkinian Data)*", `di ${"Kab. Panjang".repeat(40)} *(Pengkinian Data)*`), {diterima: 1});
+  assert.ok(panjang.kejadian.every(k => k.tempat.length <= 80 && k.lokasi.length <= 80));
+});
+
 uji("staf (moderator) dan pemirsa pusdalops membaca; pemirsa ditolak di bahan WA dan tidak bisa POST dummy", async () => {
   assert.equal((await api("GET", "/api/dalops/laporan", undefined, MOD2)).s, 200);
   const b = await api("POST", "/api/pemirsa/admin/buat", {nama: "Dir Dalops", tab: ["pusdalops"]}, ADMIN); assert.equal(b.s, 201, b.t);

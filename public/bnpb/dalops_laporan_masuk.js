@@ -51,7 +51,7 @@
     const kartuRekap = bagian("lm-rekap", "kalender", "Rekap harian",
       jumlahOk === 7 ? [hl("7 dari 7 rekap"), " harian Koordalops masuk sepekan terakhir"]
         : [hl(`${F(jumlahOk)} dari 7 rekap`), " harian Koordalops masuk sepekan terakhir, ", hl(`${F(7 - jumlahOk)} belum masuk atau gagal dibaca`)],
-      tabel(["Tanggal", "Rekap masuk", "Laporan", "Menonjol", "Baru", "Pengkinian", "Tanpa pengkinian"], barisRekap, "lm-rekap-tabel"));
+      tabel(["Tanggal", "Rekap masuk (WIB)", "Laporan", "Menonjol", "Baru", "Pengkinian", "Tanpa pengkinian"], barisRekap, "lm-rekap-tabel"));
     const tbRekap = kartuRekap.querySelector("tbody");
 
     /* ---------- kartu 2-4, bergantung pada tanggal terpilih ---------- */

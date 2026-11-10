@@ -98,7 +98,7 @@ async function gerbang(env, req, kini) {
   /* rekap Koordalops 07.00 -> ringkasan terstruktur Laporan Masuk Dalops (R2 dalops/laporan.json); teks kosong + lampiran .txt dibaca dari isinya; rekap 19.00 diabaikan; galat tidak menggagalkan pesan */
   try {
     let t = teks; if (!t && isiBerkas && /^text\/plain/.test(tipe || "")) t = bersih(new TextDecoder().decode(isiBerkas), MAKS_TEKS);
-    if (t && kenali(t, null) === "rekap_koordalops_24") await catatRekap(env, {teks: t, tanggal, diterima});
+    if (t && !dariGrup && kenali(t, null) === "rekap_koordalops_24") await catatRekap(env, {teks: t, tanggal, diterima});   // anggota grup operasi tidak boleh menimpa rekap; rekap asli datang dari nomor WA_IZIN
   } catch (e) { console.error("dalops_laporan", String(e?.message || e).slice(0, 120)); }
   /* foto grup operasi -> indeks op_foto (stempel = teks OCR dari gateway, pemasangan ke aksi); galat/tabel 0106 belum ada tidak menggagalkan pesan */
   let foto = null; if (grup && gambar && b && isiBerkas && kunci) try { foto = await simpanFoto(env, {waId: r.meta.last_row_id, stempel, diterima, teks: caption}); } catch (e) { console.error("operasi_foto", String(e?.message || e).slice(0, 120)); }

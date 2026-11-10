@@ -8,6 +8,7 @@ import {superOK} from "./posko.js";
 import {PROV} from "./relawan.js";
 
 const KUNCI = "dalops/laporan.json", KUNCI_DUMMY = "dalops/laporan_dummy.json", MAKS_HARI = 30, WIB = 7 * 3600e3, SIFAT = {"kejadian baru": "baru", "pengkinian data": "pengkinian"};
+const MAKS_KEJADIAN = 200, MAKS_TEMPAT = 80;
 const kosong = () => ({versi: 1, diperbarui: null, hari: []});
 const jamWib = ms => new Date(ms + WIB).toISOString().slice(11, 16).replace(":", ".");
 
@@ -18,7 +19,7 @@ export function hariDariRekap(teks, {diterima, prov = PROV, tanggal = ""} = {}) 
   const alasan = h.menonjol == null ? "jumlah kejadian menonjol tidak terbaca" : !h.kejadian.length ? "tidak ada kejadian yang terurai" : "";
   if (alasan) return {...dasar, status: "gagal", laporan: null, menonjol: null, lewat: h.lewat.length, kejadian: [], alasan};
   return {...dasar, status: "ok", laporan: h.laporan_masuk, menonjol: h.menonjol, lewat: h.lewat.length,
-    kejadian: h.kejadian.map(k => ({jenis: k.jenis, prov: k.prov, lokasi: k.lokasi, tempat: k.tempat, sifat: SIFAT[String(k.sifat).toLowerCase()] ?? "",
+    kejadian: h.kejadian.slice(0, MAKS_KEJADIAN).map(k => ({jenis: k.jenis, prov: k.prov, lokasi: String(k.lokasi ?? "").slice(0, MAKS_TEMPAT), tempat: String(k.tempat ?? "").slice(0, MAKS_TEMPAT), sifat: SIFAT[String(k.sifat).toLowerCase()] ?? "",
       status: U.statusDari(k.kondisi, /^prov/i.test(k.tempat))}))};
 }
 
@@ -30,10 +31,15 @@ export function gabungHari(arsip, hari) {
   return semua.sort((a, b) => b.tanggal < a.tanggal ? -1 : b.tanggal > a.tanggal ? 1 : 0).slice(0, MAKS_HARI);
 }
 
+/* murni: tanggal kalender sah dan tidak lewat besok WIB; tanggal masa depan akan mendorong hari nyata keluar dari arsip 30 hari */
+export const tanggalWajar = (t, diterima) => /^\d{4}-\d{2}-\d{2}$/.test(t || "") && !Number.isNaN(Date.parse(t)) && new Date(t).toISOString().slice(0, 10) === t
+  && t <= new Date(diterima + WIB + 864e5).toISOString().slice(0, 10);
+
+/* ponytail: baca-ubah-tulis R2 tanpa kunci; rekap hanya dari nomor terdaftar, sekitar satu per hari. Pakai onlyIf etag bila pengirim bertambah. */
 export async function catatRekap(env, {teks, tanggal, diterima}) {
   if (!env.MEDIA) return null;
   const hari = hariDariRekap(teks, {diterima, tanggal});
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(hari.tanggal)) return null;
+  if (!tanggalWajar(hari.tanggal, diterima)) return null;
   const arsip = (await (await env.MEDIA.get(KUNCI))?.json().catch(() => null)) ?? kosong();
   const baru = {versi: 1, diperbarui: Date.now(), hari: gabungHari(Array.isArray(arsip.hari) ? arsip.hari : [], hari)};
   await env.MEDIA.put(KUNCI, JSON.stringify(baru), {httpMetadata: {contentType: "application/json"}});

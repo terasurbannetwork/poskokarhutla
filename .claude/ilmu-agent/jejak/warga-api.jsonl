@@ -985,3 +985,6 @@
 {"t":"2026-11-09T20:31:19.666+07:00","berkas":"tests/warga/pemirsa_pusdalops.test.mjs","blob":"5a83e352c52f992f97685afc3bc3c16086f607b4","aturan":"d2271d5c0b29","vonis":"dikerjakan","ringkas":"tab pemirsa pusdalops baca-saja","sha":"629bda206"}
 {"t":"2026-11-09T20:31:19.791+07:00","berkas":"tests/warga/pemirsa.test.mjs","blob":"beeabadf786204035df8f467f088ea4ae5f1fa4b","aturan":"d2271d5c0b29","vonis":"dikerjakan","ringkas":"tab pemirsa pusdalops baca-saja","sha":"629bda206"}
 {"t":"2026-11-09T20:31:19.904+07:00","berkas":"tests/warga/migrasi_beku.json","blob":"06320d2f682db44788dabfa2320aa69e417a363f","aturan":"d2271d5c0b29","vonis":"dikerjakan","ringkas":"tab pemirsa pusdalops baca-saja","sha":"629bda206"}
+{"t":"2026-11-10T10:54:49.095+07:00","berkas":"src/dalops_laporan.js","blob":"087e5a8606b443dc69ed11957ab54e99ae8f993d","aturan":"d2271d5c0b29","vonis":"dikerjakan","ringkas":"Laporan Masuk Dalops","sha":"f9869659b"}
+{"t":"2026-11-10T10:54:49.205+07:00","berkas":"src/wa.js","blob":"a77266dab780f49a271cbb8f56ce6e0353c04499","aturan":"d2271d5c0b29","vonis":"dikerjakan","ringkas":"Laporan Masuk Dalops","sha":"f9869659b"}
+{"t":"2026-11-10T10:54:49.312+07:00","berkas":"src/dalops.js","blob":"2c5f5c9994069a4ebd5a6fd19a904de7afc8225d","aturan":"d2271d5c0b29","vonis":"dikerjakan","ringkas":"Laporan Masuk Dalops","sha":"f9869659b"}
