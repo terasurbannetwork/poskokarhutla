@@ -218,7 +218,7 @@ Aturan berhentinya sama dengan §2.1. Identitas pelapor pengaduan tidak pernah m
 
 Sebelum menyentuh rantai per KIB, kalender tenggat per BPBD, atau rapor SPM, baca dokumen di `data/kajian-bnpb/rantai/` dengan urutan otoritas ini: `KEPUTUSAN-RANTAI.md` (menang atas semuanya), RISET, PRD, ALUR, ALGORITMA, DESIGN-SYSTEM, DESAIN-TEKNIS, KEAMANAN-PRIVASI, RENCANA-UJI, TIKET (`RT-*`), GLOSARIUM.
 
-Aturan berhentinya sama dengan §2.1. Pertanyaan terbuka di KEPUTUSAN tidak dijawab dengan karangan. Sebelum membangun Rantai, cocokkan dengan program Siklus Bencana (`data/kajian-bnpb/siklus/`, F1 Buku Besar Kejadian) supaya tidak ada dua buku kejadian.
+Aturan berhentinya sama dengan §2.1. Pertanyaan terbuka di KEPUTUSAN tidak dijawab dengan karangan. Rantai digabung ke F1 Buku Besar Kejadian program Siklus Bencana (`data/kajian-bnpb/siklus/`, keputusan pemilik 10 Nov 2026): tidak ada dua buku kejadian.
 
 ### 2.9 Siklus Bencana (`/siklus`): baca dulu, baru bangun
 

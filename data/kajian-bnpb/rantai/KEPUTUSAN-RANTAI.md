@@ -14,6 +14,8 @@ Urutan otoritas: KEPUTUSAN-RANTAI > RISET > PRD > ALUR > ALGORITMA > DESIGN-SYST
 - D6. Akses D1 baru hanya di `src/hak.js` (gerbang `tests/agen/gerbang-d1.test.mjs`). Meja Kerja, Logbook, dan LogPal dipakai ulang, tidak ditulis ulang.
 - D7. Satu pengerja lain sedang menambah meja `pengungsi`, `pengaduan`, `klaster`, `risiko`; paket ini menganggapnya sudah ada (11 meja). Rantai tidak menyentuh meja `pengaduan` (identitas pelapor).
 
+- Pemilik 10 Nov 2026: Rantai Satu Kejadian DIGABUNG ke F1 Buku Besar Kejadian program Siklus Bencana (`data/kajian-bnpb/siklus/`). Tidak ada dua buku kejadian. Rantai menjadi tampilan tahap di halaman Buku Besar; KIB logbook jadi kunci tautan ke ID `KJ-`. Tiket `RT-*` untuk tampilan rantai dikerjakan di sana. Kalender Kewajiban dan Rapor SPM tetap di paket ini.
+
 ## Keputusan teknis agent (boleh diubah pemilik)
 
 - T1. Tempat: `/bnpb/rantai` dan `/bnpb/kalender` di Ruang BNPB; blok SPM masuk Rapor Kinerja yang sudah tampil di `public/admin/pimpinan.js` lewat `GET /api/meja/rapor`.
