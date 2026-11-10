@@ -1,55 +1,55 @@
 /* Meja Kerja petugas (/meja). Layout dari bnpb.css; pil, tabel, tombol dasar dari /admin/meja.css (satu salinan); di sini hanya yang khas halaman petugas. */
 .mj-kop{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 14px}
-.mj-kop h1{font-size:20px;font-weight:800}.mj-kop .mj-ruang{margin-left:auto}
+.mj-kop h1{font-size:1.25rem;font-weight:800}.mj-kop .mj-ruang{margin-left:auto}
 .mj-meja{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(max-content,1fr);gap:4px;background:var(--card);border-radius:16px;padding:5px;box-shadow:var(--bayang);overflow-x:auto;scrollbar-width:none;margin-bottom:14px}
-.mj-meja button{height:42px;border:0;background:none;border-radius:12px;padding:0 14px;cursor:pointer;font-weight:700;font-size:13px;color:var(--ink2);display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}
+.mj-meja button{height:42px;border:0;background:none;border-radius:12px;padding:0 14px;cursor:pointer;font-weight:700;font-size:0.8125rem;color:var(--ink2);display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}
 .mj-meja button[aria-pressed="true"]{background:var(--gradien);color:#fff;box-shadow:0 0 0 1px color-mix(in srgb,var(--emas) 50%,transparent)}
 .mj-meja svg,.mj-pil svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .mj-pil svg{width:13px;height:13px}
 .mj-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
-.mj-tabel{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+.mj-tabel{width:100%;border-collapse:collapse;font-size:0.8125rem;min-width:560px}
 .mj-tabel td.mj-angka{text-align:center;font-variant-numeric:tabular-nums}
 .mj-tabel .mj-aksi{display:flex;gap:6px;flex-wrap:wrap}
 .mj-tabel .mj-tanda{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
-.mj-hal{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:10px;font-size:12.5px;color:var(--ink2)}
-.mj-btn{border:0;border-radius:10px;padding:8px 13px;font-weight:700;font-size:13px;cursor:pointer;background:var(--card);color:var(--ink);box-shadow:var(--ring);display:inline-flex;align-items:center;gap:6px;min-height:36px}
-.mj-btn.utama{background:var(--gradien);color:#fff;box-shadow:none}.mj-btn.kecil{padding:5px 10px;min-height:30px;font-size:12px}.mj-btn:disabled{opacity:.5;cursor:default}
+.mj-hal{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:10px;font-size:0.7812rem;color:var(--ink2)}
+.mj-btn{border:0;border-radius:10px;padding:8px 13px;font-weight:700;font-size:0.8125rem;cursor:pointer;background:var(--card);color:var(--ink);box-shadow:var(--ring);display:inline-flex;align-items:center;gap:6px;min-height:36px}
+.mj-btn.utama{background:var(--gradien);color:#fff;box-shadow:none}.mj-btn.kecil{padding:5px 10px;min-height:30px;font-size:0.75rem}.mj-btn:disabled{opacity:.5;cursor:default}
 .mj-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .mj-form{display:grid;gap:12px;margin-bottom:14px}
 .mj-form .bn-blok h2{display:flex;align-items:center;gap:8px}
 .mj-pesan{border-radius:12px;padding:10px 14px;font-weight:600;margin-bottom:12px}.mj-pesan:empty{display:none}
 .mj-pesan.ok{background:color-mix(in srgb,var(--c4) 14%,transparent);color:color-mix(in srgb,var(--c4) 75%,var(--ink))}
 .mj-pesan.galat{background:color-mix(in srgb,var(--c1) 12%,transparent);color:var(--c1)}
-.mj-rincian{font-size:12.5px;color:var(--ink2);margin:4px 0 0}
-.mj-jejak{margin:8px 0 0;padding-left:16px;font-size:12px;color:var(--ink2)}
-@media (max-width:640px){.mj-kop h1{font-size:18px}.mj-tabel{font-size:12.5px;min-width:0}.mj-tabel th:nth-child(4),.mj-tabel td:nth-child(4){display:none}}
+.mj-rincian{font-size:0.7812rem;color:var(--ink2);margin:4px 0 0}
+.mj-jejak{margin:8px 0 0;padding-left:16px;font-size:0.75rem;color:var(--ink2)}
+@media (max-width:640px){.mj-kop h1{font-size:1.125rem}.mj-tabel{font-size:0.7812rem;min-width:0}.mj-tabel th:nth-child(4),.mj-tabel td:nth-child(4){display:none}}
 .mj-form h2 svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 /* meja dampak: formulir per bagian, Nihil, meter, impor */
 .mj-dampak{gap:10px}
 .mj-meter{position:sticky;top:0;z-index:3;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:6px 14px;background:var(--card);border-radius:12px;padding:10px 12px;box-shadow:0 2px 10px rgb(11 37 69 / .12)}
-.mj-meter-a{display:grid;line-height:1.2}.mj-meter-a b{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}.mj-meter-a span{font-size:12px;color:var(--ink2)}
+.mj-meter-a{display:grid;line-height:1.2}.mj-meter-a b{font-size:1.375rem;font-weight:800;font-variant-numeric:tabular-nums}.mj-meter-a span{font-size:0.75rem;color:var(--ink2)}
 .mj-meter progress,.mj-impor progress{width:100%;height:10px;accent-color:var(--c4);border-radius:6px}
 .mj-meter[data-nada="bahaya"] progress{accent-color:var(--c1)}.mj-meter[data-nada="tunggu"] progress{accent-color:var(--c3)}
 .mj-kurang{display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:color-mix(in srgb,var(--c1) 7%,transparent);border-radius:12px;padding:10px 12px}.mj-kurang[hidden]{display:none}
-.mj-kurang b{flex:0 0 100%;font-size:13px}
-.mj-lompat{border:0;background:var(--card);box-shadow:var(--ring);border-radius:999px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);text-align:left}
-.mj-nol{margin:0;font-size:12.5px;text-align:justify}
+.mj-kurang b{flex:0 0 100%;font-size:0.8125rem}
+.mj-lompat{border:0;background:var(--card);box-shadow:var(--ring);border-radius:999px;padding:5px 11px;font-size:0.75rem;font-weight:600;cursor:pointer;color:var(--ink);text-align:left}
+.mj-nol{margin:0;font-size:0.7812rem;text-align:justify}
 .mj-bagian{border:1px solid var(--line);border-radius:14px;background:var(--card)}
 .mj-bagian>summary{list-style:none;display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;min-height:48px}.mj-bagian>summary::-webkit-details-marker{display:none}
-.mj-bt{font-weight:800;font-size:14px;flex:1}.mj-bc{font-size:12px;font-weight:700;color:var(--ink2);font-variant-numeric:tabular-nums}
+.mj-bt{font-weight:800;font-size:0.875rem;flex:1}.mj-bc{font-size:0.75rem;font-weight:700;color:var(--ink2);font-variant-numeric:tabular-nums}
 .mj-bagian>summary svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
 .mj-bagian[open]>summary svg{transform:rotate(180deg)}
 .mj-bi{display:grid;gap:12px;padding:0 14px 14px}
 .mj-fs{border:0;margin:0;padding:0;min-width:0}.mj-fs:disabled{opacity:.45}
-.mj-form .mj-nihil{display:flex;flex-direction:row;font-size:13.5px;align-items:center;justify-content:center;gap:8px;width:100%;border:1px dashed var(--line);border-radius:12px;padding:11px 14px;font-weight:700;font-size:13.5px;cursor:pointer;text-align:center}
+.mj-form .mj-nihil{display:flex;flex-direction:row;font-size:0.8438rem;align-items:center;justify-content:center;gap:8px;width:100%;border:1px dashed var(--line);border-radius:12px;padding:11px 14px;font-weight:700;font-size:0.8438rem;cursor:pointer;text-align:center}
 .mj-nihil input{accent-color:var(--navy2);width:18px;height:18px}.mj-nihil svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .mj-nihil:has(input:checked){background:color-mix(in srgb,var(--c4) 14%,transparent);border-style:solid}
 .mj-bila[hidden]{display:none}
-.mj-bantu{font-size:11.5px;font-weight:500;color:var(--ink3)}
-.mj-galat{font-size:12px;font-weight:700;color:var(--c1)}
+.mj-bantu{font-size:0.7188rem;font-weight:500;color:var(--ink3)}
+.mj-galat{font-size:0.75rem;font-weight:700;color:var(--c1)}
 .mj-impor{margin-bottom:14px}.mj-impor p{text-align:justify}
-.mj-kurang-baris{font-size:12.5px;margin:4px 0 8px}.mj-kurang-baris ul{margin:4px 0 6px;padding-left:18px;columns:2}
+.mj-kurang-baris{font-size:0.7812rem;margin:4px 0 8px}.mj-kurang-baris ul{margin:4px 0 6px;padding-left:18px;columns:2}
 .mj-tabel th{text-align:center}
 @media (max-width:640px){.mj-meter{grid-template-columns:auto 1fr}.mj-meter .mj-btn{grid-column:1/-1;justify-content:center}.mj-bar .mj-btn{flex:1 1 100%;justify-content:center}.mj-kurang-baris ul{columns:1}}
 .mj-impor .mj-tabel th:nth-child(4),.mj-impor .mj-tabel td:nth-child(4){display:table-cell}
