@@ -6,7 +6,10 @@ Jejak yang tampil di layar harus diberi label "skenario", bukan "awan abu saat i
 advisory VAAC Darwin (BoM) / VONA PVMBG; hanya untuk gambaran arah dan jangkauan kasar.
 
 Tinggi kolom (m di atas puncak):
-  1. letusan MAGMA terbaru gunung itu yang menuliskan tinggi kolom abu, bila terjadi <= 48 jam lalu;
+  1. tinggi kolom abu teramati di atas puncak yang TERBARU antara (a) letusan MAGMA gunung itu dan (b) VONA gunung itu (g["vona"].tinggi_m,
+     ditulis magma.py), bila terbit 0 sampai 48 jam SEBELUM awal skenario (jam bulat sekarang). Yang terbit sesudah awal skenario tidak dipakai:
+     itu masuk jendela penilaian prospektif (prospektif.py) dan akan menjadi masukan sekaligus targetnya. Uji balik (uji_abu.py) memakai tinggi VONA
+     dari kejadian itu sendiri, jadi tidak setara dengan skenario produksi ini;
   2. selain itu asumsi per level: II = 1000, III = 2000, IV = 5000. Alasan: kolom teramati harian pada status
      Waspada/Siaga umumnya 300-1500 m (Semeru, Ibu, Lewotobi, Ili Lewotolok), erupsi besar level Awas
      (Sinabung 2018, Merapi 2010) 5-10 km; nilai ini perkiraan kasar, dicatat di `kolom_sumber`.
@@ -413,14 +416,23 @@ def id_gunung(nama):
     return "-".join("".join(ch for ch in nama.lower() if ch.isalnum() or ch in " -").split())
 
 
-def kolom_untuk(g, letusan, sekarang):
-    """(kolom_m, kolom_sumber): letusan MAGMA <= 48 jam yang menulis tinggi kolom, selain itu asumsi per level."""
+def kolom_untuk(g, letusan, sekarang, mulai=None):
+    """(kolom_m, kolom_sumber): tinggi kolom abu teramati di atas puncak, dari yang TERBARU antara letusan MAGMA dan VONA gunung itu,
+    hanya yang terbit 0 sampai 48 jam sebelum `mulai` (awal skenario, jam bulat sekarang; bawaan = sekarang). Yang terbit sesudah mulai
+    ditolak: itu jendela penilaian prospektif, tak boleh jadi masukan sekaligus target. Selain itu asumsi per level."""
+    mulai = mulai or sekarang
+    cand = []
     for e in letusan:  # terbaru dulu
         if e.get("gunung", "").lower() == g["nama"].lower() and e.get("tinggi_m"):
-            w = dt.datetime.fromisoformat(e["waktu"])
-            if sekarang - w <= dt.timedelta(hours=48):
-                return int(e["tinggi_m"]), f"letusan MAGMA {w.astimezone(WIB).strftime('%d-%m-%Y %H.%M')} WIB"
+            cand.append((dt.datetime.fromisoformat(e["waktu"]), int(e["tinggi_m"]), "letusan MAGMA"))
             break
+    v = g.get("vona") or {}
+    if v.get("tinggi_m") and v.get("terbit"):
+        cand.append((dt.datetime.fromisoformat(v["terbit"]), int(v["tinggi_m"]), "VONA"))
+    cand = [c for c in cand if dt.timedelta(0) <= mulai - c[0] <= dt.timedelta(hours=48)]
+    if cand:
+        w, h, sb = max(cand, key=lambda c: c[0])
+        return h, f"{sb} {w.astimezone(WIB).strftime('%d-%m-%Y %H.%M')} WIB"
     return KOLOM_LEVEL.get(g["level"], 1000), f"asumsi level {g['level']}"
 
 
@@ -490,7 +502,7 @@ def jalan(n=N_PRODUKSI):
     rek = []
     for g in daftar:
         if g["nama"] in angin:
-            kol, kol_s = kolom_untuk(g, status.get("letusan", []), sekarang)
+            kol, kol_s = kolom_untuk(g, status.get("letusan", []), sekarang, sekarang.replace(minute=0, second=0, microsecond=0))
             rek.append(({"nama": g["nama"], "level": g["level"], "lat": g["lat"], "lon": g["lon"], "puncak_m": g.get("tinggi") or 0}, angin[g["nama"]], kol, kol_s))
     tulis(rek, bandara, n, tren_dari(status))
 
@@ -719,6 +731,14 @@ def uji():
     g = {"nama": "Ibu", "level": 2}
     assert kolom_untuk(g, [{"gunung": "Ibu", "waktu": "2026-10-18T10:00+07:00", "tinggi_m": 700}], sk)[0] == 700
     assert kolom_untuk(g, [{"gunung": "Ibu", "waktu": "2026-10-10T10:00+07:00", "tinggi_m": 700}], sk) == (1000, "asumsi level 2")
+    gv = {**g, "vona": {"tinggi_m": 1500, "terbit": "2026-10-18T11:00+07:00"}}   # VONA lebih baru dari letusan: dipakai; lebih lama: letusan menang; kedaluwarsa: asumsi level
+    assert kolom_untuk(gv, [{"gunung": "Ibu", "waktu": "2026-10-18T10:00+07:00", "tinggi_m": 700}], sk)[0] == 1500
+    assert kolom_untuk(gv, [{"gunung": "Ibu", "waktu": "2026-10-18T12:00+07:00", "tinggi_m": 700}], sk)[0] == 700
+    assert kolom_untuk({**g, "vona": {"tinggi_m": 1500, "terbit": "2026-10-10T11:00+07:00"}}, [], sk)[1] == "asumsi level 2"
+    mu = dt.datetime(2026, 10, 18, 12, 0, tzinfo=WIB)   # awal skenario: VONA/letusan yang terbit SESUDAH mulai tidak dipakai (target penilaian prospektif)
+    assert kolom_untuk({**g, "vona": {"tinggi_m": 1500, "terbit": "2026-10-18T12:30+07:00"}}, [], sk, mu) == (1000, "asumsi level 2")
+    assert kolom_untuk(g, [{"gunung": "Ibu", "waktu": "2026-10-18T12:30+07:00", "tinggi_m": 700}], sk, mu)[1] == "asumsi level 2"
+    assert kolom_untuk({**g, "vona": {"tinggi_m": 1500, "terbit": "2026-10-18T11:30+07:00"}}, [], sk, mu)[0] == 1500
     assert id_gunung("Lewotobi Laki-laki") == "lewotobi-laki-laki" and id_gunung("Anak Krakatau") == "anak-krakatau"
     # skema + ukuran: satu gunung sintetis penuh; peringatan bila berkas nyata ada
     hh = jalankan(-8.108, 112.92, 3676, 2000, angin_geser(), jam=72, n=200)

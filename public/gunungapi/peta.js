@@ -219,6 +219,7 @@ const Detail = {
     $("#dlg").innerHTML = `<div class="dh"><div><h3 id="dlgJudul">${esc(g.nama)}</h3><p>${esc(g.prov)}</p><div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">${pilLv(g.level)}<span id="dlgKode"></span></div></div><button type="button" aria-label="Tutup" data-tutup>×</button></div>
       <div class="db">${kot ? `<div class="kv gn-kv">${kot}</div>` : ""}
       ${g.rekomendasi ? `<details class="lipat" open><summary>Rekomendasi PVMBG</summary><div class="isi"><p class="rek-teks" translate="no" lang="id">${esc(g.rekomendasi)}</p><p class="rek-sumber">${g.periode ? `<span translate="no" lang="id">${esc(g.periode)}</span>, ` : ""}MAGMA Indonesia</p></div></details>` : ""}
+      ${this.sVona(g)}
       ${this.sKontak(g.kontak)}
       ${ev.length ? `<details class="lipat" open><summary>Erupsi terbaru</summary><div class="isi"><ul class="ev">${ev.map(x => `<li><b>${tglJam(x.waktu)}</b>${x.tinggi_m ? ` <span class="pl" style="--w:#b5523b">kolom abu ${fmt(x.tinggi_m)} m</span>` : ""}<br><span translate="no" lang="id">${esc(x.ket)}</span></li>`).join("")}</ul></div></details>` : ""}
       <div id="dlgLanjut"></div>
@@ -247,8 +248,34 @@ const Detail = {
     return li.length ? lipat("Kontak resmi", `<ul class="ev">${li.join("")}</ul><p class="rek-sumber">Sumber: teks rekomendasi PVMBG di MAGMA Indonesia</p>`) : ""; },
   /* bagian yang bergantung pada berkas turunan diisi sesudah dialog tampil (klik tidak menunggu jaringan); bagian tanpa data dibuang */
   async lanjut(g) {
-    const id = idGn(g.nama), [abu, pg, mv] = await Promise.all([Data.abu(), Data.pg(id), Data.mirova()]), d = $("#dlg"), el = d.querySelector("#dlgLanjut"); if (!el || d._g !== g) return;
-    nanti(() => { if (d._g === g) el.innerHTML = [this.sAbu(abu?.gunung?.find(x => x.id === id)), this.sTermal(mv, g.nama), this.sPaparan(pg), this.sEvak(pg), this.sCitra(pg)].join(""); }); },
+    const id = idGn(g.nama), [abu, pg, mv, ped, har] = await Promise.all([Data.abu(), Data.pg(id), Data.mirova(), Data.ped(), Data.harian(g.kode)]), d = $("#dlg"), el = d.querySelector("#dlgLanjut"); if (!el || d._g !== g) return;
+    nanti(() => { if (d._g !== g) return;
+      el.innerHTML = [this.sPantau(g, har), this.sArahan(g, pg, ped), this.sAbu(abu?.gunung?.find(x => x.id === id)), this.sTermal(mv, g.nama), this.sPaparan(pg), this.sEvak(pg), this.sCitra(pg)].join("");
+      el.querySelectorAll("img[data-foto]").forEach(i => { const hapus = () => i.closest(".cit")?.remove(); i.addEventListener("error", hapus); if (i.complete && !i.naturalWidth) hapus(); }); }); },
+  /* VONA terbaru gunung (MAGMA /v1/json/var): kode warna penerbangan, waktu terbit, tinggi kolom abu, arah bila ditulis. Gunung tanpa VONA dibuang. */
+  sVona(g) {
+    const v = g.vona; if (!v?.kode) return "";
+    const tinggi = v.tinggi_m ? `kolom abu ${Kartu.hl(fmt(v.tinggi_m) + " m")} di atas puncak${v.tinggi_dpl_m ? ` (${fmt(v.tinggi_dpl_m)} m di atas permukaan laut)` : ""}` : "tinggi kolom abu tidak dilaporkan";
+    return lipat("VONA untuk penerbangan", `<p>${pilVona(v)}</p><p class="dl-kal">Terbit ${tglJam(v.terbit)}, ${tinggi}${v.arah ? `, bergerak ke arah ${esc(v.arah)}` : ""}.</p>
+      <p class="rek-sumber">Kode warna penerbangan terpisah dari Level I sampai IV. <a href="https://magma.esdm.go.id/vona?code=${encodeURIComponent(g.kode || "")}" target="_blank" rel="noopener noreferrer">VONA ${esc(g.nama)} di MAGMA</a></p>`); },
+  /* laporan 24 jam terakhir dari catatan harian: foto visual (tetap di host PVMBG, tidak disalin), visual, klimatologi, jumlah gempa. Hilang bila catatan belum ada. */
+  sPantau(g, h) {
+    if (!h) return "";
+    const tg = new Date(h.tgl + "T12:00:00+07:00").toLocaleDateString("id-ID", {...WIB, day: "numeric", month: "long", year: "numeric"});
+    const foto = typeof h.foto === "string" && /^https:\/\/[a-z0-9.-]+\.esdm\.go\.id\//.test(h.foto) ? `<div class="cit sat"><figure><img data-foto src="${esc(h.foto)}" alt="Foto visual ${esc(g.nama)} laporan ${esc(tg)}" loading="lazy" decoding="async" referrerpolicy="no-referrer"><figcaption>Foto visual laporan ${esc(tg)}, sumber PVMBG (MAGMA Indonesia)</figcaption></figure></div>` : "";
+    const ada = x => x && !/^nihil\.?$/i.test(x.trim());
+    const baris = [h.visual && ["Visual", h.visual], ada(h.lainnya) && ["Keterangan lain", h.lainnya], h.klimatologi && ["Cuaca", h.klimatologi]].filter(Boolean);
+    const gempa = (h.gempa || []).length ? `<ul class="ev">${h.gempa.map(x => `<li><span translate="no" lang="id">${esc(x)}</span></li>`).join("")}</ul>` : "";
+    if (!foto && !baris.length && !gempa) return "";
+    const L = "https://magma.esdm.go.id/v1/gunung-api/";
+    return lipat("Laporan pengamatan terbaru", `${foto}${baris.map(([k, v]) => `<p class="dl-kal"><b>${k}:</b> <span translate="no" lang="id">${esc(v)}</span></p>`).join("")}${gempa ? `<p class="dl-kal"><b>Kegempaan 24 jam:</b></p>${gempa}` : ""}
+      <p class="rek-sumber">${esc(h.laporan || "Laporan " + tg)}. <a href="${L}gallery" target="_blank" rel="noopener noreferrer">Gallery foto</a>, <a href="${L}live-seismogram" target="_blank" rel="noopener noreferrer">Live seismogram</a> (MAGMA Indonesia)</p>`); },
+  /* arahan Permen ESDM 15/2011 per KRB untuk level gunung ini, kalimat apa adanya dari data/pedoman_krb.json. Hanya zona KRB PVMBG; zona proksi tidak disebut KRB. Sistem tidak memerintah. */
+  sArahan(g, pg, ped) {
+    if (!ped || !pg || pg.zona_sumber !== "KRB PVMBG") return "";
+    const Z = ["III", "II", "I"].filter(z => ped.krb?.[z]?.[g.level] && pg.zona?.[z]); if (!Z.length) return "";
+    return lipat("Arahan per KRB", `<div class="tw"><table><thead><tr><th style="text-align:center">KRB</th><th style="text-align:center">Arahan untuk Level ${LEVEL[g.level][0]} ${LEVEL[g.level][1]}</th><th class="n" style="text-align:center">Jiwa</th></tr></thead><tbody>${Z.map(z => `<tr><td>${pilZona(z)}</td><td>${esc(ped.krb[z][g.level])}</td><td class="n">${jiwaTxt(pg.zona[z].penduduk)}</td></tr>`).join("")}</tbody></table></div>
+      <p class="rek-sumber">Permen ESDM No. 15 Tahun 2011, level per ${tglJam(S.st.dibuat)}. Perintah mengungsi datang dari pemerintah daerah. Jarak larangan mengikuti rekomendasi terbaru gunung ini. Jiwa: perkiraan WorldPop 1 km</p>`); },
   /* anomali termal satelit MIROVA (VRP, MW): pengamatan panas permukaan, BUKAN prakiraan letusan. Tanda "naik" hanya bila berkas menyatakan riwayat >= 14 hari (di_atas_latar bukan null). Gunung tanpa data dibuang (A18). */
   sTermal(mv, nama) {
     const m = mv && Object.values(mv.gunung || {}).find(x => x.gunung === nama); if (!m) return "";

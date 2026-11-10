@@ -8,7 +8,7 @@ const py = (...a) => execFileSync("python3", a, { encoding: "utf8", stdio: ["ign
 const D = "public/longsor/data/";
 const baca = (n) => JSON.parse(readFileSync(D + n, "utf8"));
 
-for (const [berkas, arg] of [["dasar.py"], ["rumus.py"], ["model.py", "diri"], ["kejadian.py", "uji"], ["hujan_riwayat.py", "uji"], ["pvmbg.py", "uji"]]) {
+for (const [berkas, arg] of [["dasar.py"], ["rumus.py"], ["model.py", "diri"], ["kejadian.py", "uji"], ["hujan_riwayat.py", "uji"], ["pvmbg.py", "uji"], ["tanggapan_pvmbg.py", "uji"]]) {
   test(`self-check ${berkas}`, () => {
     assert.ok(py(`scripts/longsor/${berkas}`, ...(arg ? [arg] : [])).includes("uji lolos"));
   });
@@ -59,4 +59,14 @@ from dasar import daftar_kec
 print(json.dumps(sorted({f"{k['prov']}|{k['kab']}" for k in daftar_kec()})))`)));
   const asing = j.kab.filter((n) => !poli.has(n));
   assert.deepEqual(asing, [], `${asing.length} nama kab DIBI tak ada di poligon: ${asing.slice(0, 5)}`);
+});
+
+test("kejadian.json pvmbg: baris sah, tanggal kejadian, koordinat di daratan, tidak dijumlahkan dengan dibi", () => {
+  const j = baca("kejadian.json");
+  assert.ok(j.pvmbg.length > 1000, "pvmbg kosong/terlalu sedikit");
+  for (const [tgl, lon, lat, mati, rumah, , , kab, kec] of j.pvmbg) {
+    assert.match(tgl, /^\d{4}-\d\d-\d\d$/);
+    assert.ok(lat >= -11.5 && lat <= 6.5 && lon >= 94.5 && lon <= 141.5, `koordinat ${lat},${lon}`);
+    assert.ok(mati >= 0 && rumah >= 0 && kab >= 0 && kab < j.kab.length && typeof kec === "string");
+  }
 });

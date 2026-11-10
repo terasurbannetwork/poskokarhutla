@@ -3,16 +3,17 @@
 /* Kartu Insight gempa: rupa dan anatomi sama dengan karhutla dan banjir (pil kategori, judul satu kalimat berangka merah, grafik berangka, kaki legenda + "Sumber:",
    ikon bagikan). Mesin dari public/inti (Kartu.ex lewat KG.kartu). Data hidup: /api/gempa/terbaru?jam=720 (hanya baca, D1 milik warga-api); riwayat: data/riwayat_*.json.
    Tanpa data hidup, kartu yang menyatakan "tidak ada gempa" DIBUANG (A18): tabel kosong bukan bukti tak ada gempa. Arsip D1 mulai 16 Okt 2026: jendela 7/30 hari ditulis "sejak <tanggal>" (lihat jendela()).
-   Model guncangan (guncangan.js) belum dipakai di layar: koefisiennya belum diverifikasi. */
+   Model guncangan (guncangan.js) dipakai di laci dan tab Kejadian; di Insight ia tampil sebagai pembanding terhadap laporan MMI Kajian MAGMA (kartu kajian). */
 Tip.polaSatu = /^([\d.,]+(?:\s?(?:rb|jt))?\s+(?:gempa|berita|jiwa|kecamatan))$/;
+const MIN_KAJIAN_MAGMA = 30;
 const MMI_WARNA = ["", "#d8d2b8", "#d8d2b8", "#e3c77a", "#e0a64f", "#d4802f", "#c9503a", "#a83a2a", "#8f2a1e", "#8f2a1e", "#6e1d14", "#6e1d14", "#6e1d14"];
 const WARNA_M_STACK = ["#d9a441", "#d4702a", "#a8321f"];
 const NAMA_M_STACK = ["M 5,0 sampai 5,9", "M 6,0 sampai 6,9", "M 7 atau lebih"];
 
 const Insight = {
-  st: {terkini: "7", dirasakan: "7", prov: "2000", riwayat: "dasawarsa"},
-  EX: ["terkini", "dirasakan", "susulan", "peluang", "provinsi", "riwayat", "tsunami", "bsesar", "bmmi", "bpesisir", "bevakuasi", "bbnpb", "btabel", "cerita"],
-  LABEL: {terkini: "Gempa terkini", dirasakan: "Dirasakan", provinsi: "Paling sering diguncang", riwayat: "Riwayat sejak 1900", tsunami: "Status tsunami BMKG", susulan: "Susulan", peluang: "Peluang", cerita: "Cerita"},
+  st: {kajian: "semua", terkini: "7", dirasakan: "7", prov: "2000", riwayat: "dasawarsa"},
+  EX: ["terkini", "dirasakan", "susulan", "peluang", "provinsi", "riwayat", "tsunami", "bsesar", "bmmi", "bpesisir", "bevakuasi", "bbnpb", "btabel", "cerita", "kajian"],
+  LABEL: {terkini: "Gempa terkini", dirasakan: "Dirasakan", provinsi: "Paling sering diguncang", riwayat: "Riwayat sejak 1900", tsunami: "Status tsunami BMKG", susulan: "Susulan", peluang: "Peluang", cerita: "Cerita", kajian: "Kajian MAGMA"},
   d: undefined, dMuat: 0, R: undefined, P: undefined,
   /* data hidup 30 hari, disegarkan paling cepat tiap 5 menit */
   async muatHidup() {
@@ -123,6 +124,23 @@ const Insight = {
     const gr = KG.kolom({cat, seri: [["Susulan", KG.TANAH]], nilai, aria: "Susulan per hari sejak gempa utama",
       tip: i => `<b>${i ? `Hari ke-${i}` : "Hari gempa utama"}</b><br>Susulan: ${fmt(nilai[i][0])}`});
     return {judul, grafik: gr, sumber: "BMKG, USGS", leg: [[KG.TANAH, "susulan per hari sejak gempa utama"]]}; },
+
+  /* 9. pembanding MMI laporan Kajian MAGMA (PVMBG) lawan model guncangan (scripts/gempa/kajian_magma.py). Pembanding, bukan kalibrasi; hanya tempat yang merasakan gempa tercatat.
+     Bias berbalik arah menurut jarak, jadi tiap baris menunjukkan bias sendiri dan tidak ada satu bias yang disebut ciri model. Baris dengan kajian < MIN_KAJIAN_MAGMA: hanya jumlah kajian + "sampel kecil". */
+  async exKajian() {
+    const K = await (this.K ??= muatJSON("data/kajian_magma.json").catch(() => null)); const B0 = K?.ringkas?.banding_mmi; if (!B0?.semua?.n) return "";
+    const B = this.st.kajian === "semua" ? B0 : B0.per_pencocokan[this.st.kajian], b = B.semua; if (!b?.n) return "";
+    const d1 = v => v.toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1}), cap = n => n[0].toUpperCase() + n.slice(1), bln = t => new Date(t).toLocaleDateString("id-ID", {month: "short", year: "numeric", timeZone: "UTC"}), kecil = o => o.kajian < MIN_KAJIAN_MAGMA;
+    const tip = (n, o) => kecil(o) ? `<b>${n}</b><br>Tempat dibandingkan: ${fmt(o.n)} dari ${fmt(o.kajian)} kajian<br>Sampel kecil (kurang dari ${MIN_KAJIAN_MAGMA} kajian), selisih tidak ditampilkan`
+      : `<b>${n}</b><br>Tempat dibandingkan: ${fmt(o.n)} (${fmt(o.kajian)} kajian)<br>Selisih rata-rata: ${d1(o.mae)} kelas MMI<br>Bias (model dikurangi laporan): ${(o.bias > 0 ? "+" : "") + d1(o.bias).replace("-", "−")} kelas<br>Selisih satu kelas atau kurang: ${fmt(Math.round(o.benar_1 * 100))}%`;
+    const pend = n => n.split(" (")[0].replace("kurang dari 25 km", "0-25 km").replace(/(\d+) sampai (\d+) km/, "$1-$2 km").replace("lebih dari 200 km", "200+ km").replace(/ km$/, "");   // label sumbu pendek (layar 390); tooltip memuat nama utuh
+    const baris = (awal, g) => Object.entries(g).map(([n, o]) => [awal + n, o, awal + pend(n)]);
+    const rows = [["Semua tempat", b, "Semua tempat"], ...baris("Gempa ", B.per_kelas_dalam), ...baris("Jarak ", B.per_jarak)].map(([n, o, ns]) => ({nama: cap(ns), v: kecil(o) ? 0 : o.mae, warna: n === "Semua tempat" ? KG.NAVY : KG.TANAH,
+      teks: kecil(o) ? fmt(o.kajian) + " kajian" : d1(o.mae) + " kelas", pil: [kecil(o) ? ["sampel kecil", "#9aa4b2"] : ["bias " + (o.bias > 0 ? "+" : "") + d1(o.bias).replace("-", "−"), KG.BIRU]], tip: tip(cap(n), o)}));
+    const R = K.ringkas, judul = `Di ${Kartu.hl(fmt(b.n) + " laporan tempat")} (${fmt(b.kajian)} dari ${fmt(R.cakupan.kajian)} kajian MAGMA, ${bln(R.rentang[0])} sampai ${bln(R.rentang[1])}, hanya tempat yang merasakan), MMI model berselisih rata-rata ${Kartu.hl(d1(b.mae) + " kelas")} dari laporan`;
+    const ctl = this.seg("kajian", [["semua", "Semua"], ["kecamatan", "Kecamatan"], ["kabupaten", "Pusat kabupaten"]]);
+    const info = esc("Sumber: Kajian gempa bumi MAGMA Indonesia (PVMBG), masukan BMKG. Pembanding, bukan kalibrasi: model tidak disetel dari data ini. " + B0.catatan);
+    return Kartu.ex(judul, "", "", KG.mendatar(rows, {akhir: 190}), "", ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${this.LABEL.kajian}</span>`).replace('<header class="ex-hd">', `<header class="ex-hd" title="${info}">`); },
 
   /* sinkron atau janji (kartu yang butuh data tambahan) */
   gambar(id) { Kartu._leg = null;

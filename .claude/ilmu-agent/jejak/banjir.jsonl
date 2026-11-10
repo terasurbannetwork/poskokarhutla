@@ -402,3 +402,4 @@
 {"t":"2026-11-09T12:28:39.496+07:00","berkas":"public/banjir/peta.js","blob":"f5c0e0db9dab20e9d8d241c85370027dc9ccf42b","aturan":"a791b496cc90","vonis":"dikerjakan","ringkas":"lapis terdampak terdaftar","sha":"689387550"}
 {"t":"2026-11-09T12:28:39.605+07:00","berkas":"public/banjir/gelembung.js","blob":"774f2e2242eb239399597b433a5d8f3258e96be0","aturan":"a791b496cc90","vonis":"dikerjakan","ringkas":"panggil LapisTerdampak","sha":"689387550"}
 {"t":"2026-11-09T12:28:39.715+07:00","berkas":"tests/banjir/terdampak.test.mjs","blob":"7068f30101694ee701684891c1844c6857cf889e","aturan":"a791b496cc90","vonis":"dikerjakan","ringkas":"uji","sha":"689387550"}
+{"t":"2026-11-10T16:31:09.142+07:00","berkas":"public/banjir/resmi_bmkg.js","blob":"31ac4cf8591430853ad3b08440645d74839b0707","aturan":"a791b496cc90","vonis":"dikerjakan","ringkas":"kartu Peringatan resmi BMKG","sha":"cdb469193"}

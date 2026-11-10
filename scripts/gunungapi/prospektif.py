@@ -92,10 +92,21 @@ def nilai(e, vona, mencapai, kini):
     return {"pada": pada, "n_vona": len(di), "vona_waktu": v["waktu"], "arah_vona": v["arah"], "arah_vona_deg": MATA[v["arah"]], "selisih_deg": sel, "cocok": sel <= TIPS}
 
 
-def ringkas(entri):
-    s = [x["dinilai"] for x in entri if x["dinilai"] and x["dinilai"].get("n_vona") and not x.get("terlambat")]
+def _ringkas_satu(s):
     k = sum(1 for d in s if d["cocok"])
     return {"n": len(s), "cocok": k, "persen": round(100 * k / len(s)) if s else None, "acak_persen": 25, "p_binomial": float(f"{p_binomial(k, len(s)):.3g}") if s else None}
+
+
+def ringkas(entri):
+    """Ringkasan DIPECAH menurut asal tinggi kolom skenario (kolom_sumber.split()[0] huruf kecil: asumsi, letusan, vona): kolom dari VONA yang
+    dinilai terhadap VONA lain tidak boleh bercampur dengan asumsi level. Entri lama (append-only) tetap, hanya cara menghitung ringkasan yang berubah."""
+    grup = {}
+    for x in entri:
+        d = x["dinilai"]
+        if d and d.get("n_vona") and not x.get("terlambat"):
+            ks = ((x.get("skenario") or {}).get("kolom_sumber") or "").split()
+            grup.setdefault(ks[0].lower() if ks else "tak_diketahui", []).append(d)
+    return {"per_sumber": {k: _ringkas_satu(v) for k, v in sorted(grup.items())}}
 
 
 def gabung(lama, baru):
@@ -149,7 +160,7 @@ def uji():
     kini = dt.datetime(2026, 10, 18, 20, 0, tzinfo=dt.timezone.utc)
     e = entri_baru(g, ao, kini)
     assert entri_baru(g, ao, dt.datetime(2026, 10, 19, 13, 54, tzinfo=dt.timezone.utc)) is None   # dicatat 19 jam sesudah awal: ditolak
-    assert ringkas([{"dinilai": {"n_vona": 1, "cocok": True}, "terlambat": True}])["n"] == 0
+    assert ringkas([{"dinilai": {"n_vona": 1, "cocok": True}, "terlambat": True}]) == {"per_sumber": {}}
     assert e["id"] == "semeru|2026-10-18" and e["jendela"] == ["2026-10-18T19:00:00Z", "2026-10-19T07:00:00Z"] and e["dinilai"] is None and e["skenario"]["arah_deg"] == 260, e
     assert entri_baru({**g, "jejak_tipis": [{"jam": 12, "arah_deg": 1}]}, ao, kini) is None
     kemudian = dt.datetime(2026, 10, 19, 12, 0, tzinfo=dt.timezone.utc)
@@ -166,7 +177,10 @@ def uji():
             gabung(lama, rusak); raise SystemExit("append-only dilanggar tanpa galat")
         except ValueError:
             pass
-    assert ringkas([{"dinilai": r}, {"dinilai": {"n_vona": 0}}, {"dinilai": None}]) == {"n": 1, "cocok": 1, "persen": 100, "acak_persen": 25, "p_binomial": 0.25}
+    sk = lambda t: {"kolom_sumber": t}
+    assert ringkas([{"dinilai": r, "skenario": sk("asumsi level 2")}, {"dinilai": {"n_vona": 0}}, {"dinilai": None}]) == {"per_sumber": {"asumsi": {"n": 1, "cocok": 1, "persen": 100, "acak_persen": 25, "p_binomial": 0.25}}}
+    pr = ringkas([{"dinilai": r, "skenario": sk("VONA 10-11-2026 15.03 WIB")}, {"dinilai": {**r, "cocok": False}, "skenario": sk("letusan MAGMA 10-11-2026")}, {"dinilai": r, "skenario": sk("asumsi level 3")}])["per_sumber"]
+    assert sorted(pr) == ["asumsi", "letusan", "vona"] and pr["vona"]["cocok"] == 1 and pr["letusan"]["cocok"] == 0   # tiap sumber dihitung sendiri
     # baca_vona: daftar yang tak mencapai awal jendela dilaporkan, tidak diam-diam dianggap lengkap
     hal = lambda p: h
     ev2, ok = baca_vona(dt.datetime(2026, 10, 19, 7, 0, tzinfo=dt.timezone.utc), hal)

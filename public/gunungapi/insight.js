@@ -8,11 +8,11 @@ const SUMBER = "Sumber: MAGMA Indonesia, PVMBG (Badan Geologi, KESDM)";
 const NAVY = "oklch(25.5% .075 256)", BATA = "#b5523b";
 
 const Insight = {
-  EX: ["status", "cerita", "letusan", "perubahan", "bandara", "peluang", "krb", "tambang", "kinerja", "daftar"],
-  LABEL: {status: "Status", cerita: "Cerita", letusan: "Erupsi", perubahan: "Perubahan level", bandara: "Bandara di jalur abu", peluang: "Peluang abu", krb: "Paparan KRB III", tambang: "Izin tambang", kinerja: "Uji", daftar: "Daftar gunung"},
+  EX: ["status", "cerita", "letusan", "perubahan", "bandara", "peluang", "krb", "arahan", "tambang", "kinerja", "daftar"],
+  LABEL: {status: "Status", cerita: "Cerita", letusan: "Erupsi", perubahan: "Perubahan level", bandara: "Bandara di jalur abu", peluang: "Peluang abu", krb: "Paparan KRB III", arahan: "Arahan per KRB", tambang: "Izin tambang", kinerja: "Uji", daftar: "Daftar gunung"},
   /* kartu yang bergantung pada berkas turunan (abu, paparan): digambar sesudah berkasnya tiba, dibuang bila datanya tak ada (A18) */
-  LAMBAT: ["cerita", "bandara", "peluang", "krb", "tambang", "kinerja"],
-  T: {daftar: {urut: "_", turun: true, hal: 0}, bandara: {urut: "jam", turun: false, hal: 0}, tambang: {urut: "zona", turun: true, hal: 0}},
+  LAMBAT: ["cerita", "bandara", "peluang", "krb", "arahan", "tambang", "kinerja"],
+  T: {daftar: {urut: "_", turun: true, hal: 0}, arahan: {urut: "_", turun: true, hal: 0}, bandara: {urut: "jam", turun: false, hal: 0}, tambang: {urut: "zona", turun: true, hal: 0}},
   st: {},
   ex: (...a) => Kartu.ex(...a),
   hl: Kartu.hl,
@@ -88,7 +88,7 @@ const Insight = {
     const B = (this.abu?.bandara_terdampak || []).filter(b => b.jam_tiba != null); if (!B.length) return "";
     const nmG = id => S.st.gunung.find(g => idGn(g.nama) === id), pilih = this.T.bandara;
     const kol = [{k: "nm", n: "Bandara", v: r => r.nama, h: r => `<b translate="no">${esc(r.nama)}</b>`}, {k: "kd", n: "Kode", v: r => r.iata || r.icao, h: r => `<span translate="no">${esc(r.iata || r.icao)}</span>`},
-      {k: "gn", n: "Gunung", v: r => nmG(r.gunung)?.nama || r.gunung, h: r => { const g = nmG(r.gunung); return g ? `<span translate="no">${esc(g.nama)}</span> ${pilLv(g.level, true)}` : esc(r.gunung); }},
+      {k: "gn", n: "Gunung", v: r => nmG(r.gunung)?.nama || r.gunung, h: r => { const g = nmG(r.gunung); return g ? `<span translate="no">${esc(g.nama)}</span> ${pilLv(g.level, true)}${g.vona ? " " + pilVona(g.vona) : ""}` : esc(r.gunung); }},
       {k: "jam", n: "Abu tiba", num: 1, v: r => r.jam_tiba ?? 99, h: r => r.jam_tiba != null ? `jam ke-${fmt(r.jam_tiba)}` : "–"}];
     const cepat = [...B].sort((a, b) => a.jam_tiba - b.jam_tiba)[0], gn = new Set(B.map(b => b.gunung)).size;
     return this.ex(`${this.hl(fmt(B.length) + " bandara")} berada di jalur abu skenario 72 jam dari ${fmt(gn)} gunung; tercepat ${this.nm(cepat.iata || cepat.icao)} dalam ${this.hl(fmt(cepat.jam_tiba) + " jam")}`, "", "",
@@ -106,6 +106,19 @@ const Insight = {
     Kartu.leg([[WARNA_LV[4], "Awas"], [WARNA_LV[3], "Siaga"], [WARNA_LV[2], "Waspada"], [WARNA_LV[1], "Normal"]]);
     return this.ex(`Sekitar ${this.hl(jiwaAngka(tot) + " jiwa")} tinggal di KRB III ${fmt(P.length)} gunung api; terbanyak di ${this.nm(P[0].nama)} (${jiwaTxt(P[0].jiwa)} jiwa)`, "", "",
       `<svg viewBox="0 0 ${U.W} ${T.length * U.rh + 4}" role="img" aria-label="Penduduk di KRB III per gunung">${g}</svg>`, "Sumber: KRB PVMBG 2018 (ESDM), perkiraan WorldPop 2026 1 km, OpenStreetMap"); },
+
+  /* 5b. arahan Permen ESDM 15/2011 per KRB untuk level gunung saat ini (data/pedoman_krb.json); hanya gunung Waspada ke atas dengan zona KRB PVMBG (zona proksi tidak disebut KRB). Sistem tidak memerintah. */
+  exArahan() {
+    const ped = this.ped; if (!ped?.krb) return "";
+    const R = [], G = S.st.gunung.filter(g => g.level >= 2).map(g => ({g, pg: (this.pap?.gunung || []).find(x => x.id === idGn(g.nama))})).filter(x => x.pg?.zona_sumber === "KRB PVMBG");
+    G.forEach(({g, pg}, gi) => { const tot = ["I", "II", "III"].reduce((a, z) => a + (pg.zona?.[z]?.penduduk || 0), 0);
+      ["III", "II", "I"].forEach((z, zi) => { if (ped.krb[z]?.[g.level] && pg.zona?.[z]) R.push({g, z, jiwa: pg.zona[z].penduduk || 0, tk: ped.krb[z][g.level], key: g.level * 1e12 + tot * 1e3 + (99 - gi) * 10 + (3 - zi)}); }); });
+    if (!R.length) return "";
+    const ng = G.filter(x => R.some(r => r.g === x.g)).length, tot = R.reduce((a, r) => a + r.jiwa, 0);
+    const kol = [{k: "gn", n: "Gunung", v: r => r.g.nama, h: r => `<span translate="no">${esc(r.g.nama)}</span> ${pilLv(r.g.level, true)}`}, {k: "zn", n: "KRB", v: r => r.z.length, h: r => pilZona(r.z)},
+      {k: "tk", n: "Arahan", t: "Permen ESDM No. 15 Tahun 2011, sebagaimana ditayangkan MAGMA Indonesia", v: r => r.tk, h: r => esc(r.tk)}, {k: "jw", n: "Jiwa", t: "Perkiraan penduduk WorldPop 1 km, bukan sensus", num: 1, v: r => r.jiwa, h: r => r.jiwa > 0 ? jiwaTxt(r.jiwa) : "0"}];
+    return this.ex(`${this.hl(fmt(ng) + " gunung")} berstatus Waspada ke atas punya arahan resmi per KRB; sekitar ${this.hl(jiwaAngka(tot) + " jiwa")} tinggal di KRB gunung-gunung itu, dan perintah mengungsi datang dari pemerintah daerah`, "", "",
+      this.tabel("arahan", kol, R, r => `data-gn="${esc(r.g.nama)}"`, 9, "arahan", r => r.key), ""); },
 
   /* 6. izin tambang di zona KRB */
   exTambang() {
@@ -135,7 +148,7 @@ const Insight = {
     const H = R.length * rowH + 4, xa = L + X(acak(a));
     const garis = `<line x1="${xa}" x2="${xa}" y1="0" y2="${H - 4}" stroke="currentColor" stroke-dasharray="4 3" opacity=".55"/><text x="${xa}" y="${H + 10}" text-anchor="middle" font-size="11" opacity=".7">acak ${fmt(acak(a))}%</text>`;
     return this.ex(`Arah awan abu skenario cocok dalam 45° dengan laporan PVMBG pada ${this.hl(fmt(cocok(a)) + " dari " + fmt(a.n) + " kejadian")} berambang, ${ket(a)}${b?.n ? `; ${this.hl(fmt(cocok(b)) + " dari " + fmt(b.n))} kejadian tanpa ambang cocok, ${ket(b)}${b.klimatologi_persen != null ? ", tetapi belum terbukti lebih baik dari arah angin musiman" : ""}` : ""}`, "", "",
-      `<svg viewBox="0 0 ${U.W} ${H + 16}" role="img" aria-label="Uji balik arah abu">${g}${garis}</svg>`, `Arah angin musiman = tebakan memakai arah angin rata-rata bulan itu. Hanya arah yang bisa diuji (laporan PVMBG 8 mata angin, tanpa jarak); sampel kecil. Sumber: VONA PVMBG vs angin ECMWF IFS, ${esc(a.periode || "")}`); },
+      `<svg viewBox="0 0 ${U.W} ${H + 16}" role="img" aria-label="Uji balik arah abu">${g}${garis}</svg>`, `Arah angin musiman = tebakan memakai arah angin rata-rata bulan itu. Hanya arah yang bisa diuji (laporan PVMBG 8 mata angin, tanpa jarak); sampel kecil. Uji balik memakai tinggi kolom dari VONA kejadian itu sendiri, bukan tinggi yang tersedia sebelum kejadian. Sumber: VONA PVMBG vs angin ECMWF IFS, ${esc(a.periode || "")}`); },
 
   /* 8. tabel standar. Penduduk dalam radius pindah ke tab Dampak (Insight karhutla tidak memuatnya) */
   /* peluang abu di bandara/kota (../banjir/data/abu_peluang.json, kontrak peluang/1; mesin public/inti/peluang.js). Wilayah awal = pasangan gunung-titik
@@ -160,7 +173,7 @@ const Insight = {
     const R = [...baris].sort((a, b) => { const x = f(a), y = f(b); return (typeof x === "string" ? x.localeCompare(y) : x - y) * s; });
     st.hal = Math.min(st.hal, Math.max(0, Math.ceil(R.length / per) - 1));
     const hal = R.slice(st.hal * per, (st.hal + 1) * per);
-    return `<div class="tw"><table><thead><tr>${kol.map(c => `<th class="${c.num ? "n" : ""}" aria-sort="${c === kk ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c.k}">${c.n}<i>${c === kk ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
+    return `<div class="tw"><table><thead><tr>${kol.map(c => `<th${c.t ? ` title="${esc(c.t)}"` : ""} class="${c.num ? "n" : ""}" aria-sort="${c === kk ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c.k}">${c.n}<i>${c === kk ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
       <tbody>${hal.map(r => `<tr class="klik" ${atribut(r)}>${kol.map(c => `<td${c.num ? ' class="n"' : ""}>${c.h(r)}</td>`).join("")}</tr>`).join("") || `<tr><td colspan="${kol.length}" class="kosong">Tidak ada data.</td></tr>`}</tbody></table></div>${paginasi(st.hal, R.length, per, satuan)}`; },
 
   gambar(id) { const f = this["ex" + id[0].toUpperCase() + id.slice(1)]; Kartu._leg = null;
@@ -171,7 +184,7 @@ const Insight = {
     const el = $("#insight"); if (el._siap) return; el._siap = 1;
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.LAMBAT.includes(id) ? "" : this.gambar(id)}</div>`).join("");
     /* berkas turunan: digambar sesudah tiba; kartu tanpa data dibuang */
-    Promise.all([Data.abu(), Data.pap(), typeof Peluang === "undefined" ? null : Peluang.muat("../banjir/data/abu_peluang.json"), Data.fs(), Data.risiko(), Data.dampak()]).then(([a, p, pl, fs, rk, dm]) => { this.abu = a; this.pap = p; this.pel = pl; this.cr = {fs, rk, dm};
+    Promise.all([Data.abu(), Data.pap(), typeof Peluang === "undefined" ? null : Peluang.muat("../banjir/data/abu_peluang.json"), Data.fs(), Data.risiko(), Data.dampak(), Data.ped()]).then(([a, p, pl, fs, rk, dm, ped]) => { this.abu = a; this.pap = p; this.ped = ped; this.pel = pl; this.cr = {fs, rk, dm};
       this.LAMBAT.forEach(id => { const box = el.querySelector(`[data-ex="${id}"]`); if (!box) return; const h = this.gambar(id); if (h) { box.innerHTML = h; this.pasangUrut(box); } else box.remove(); }); });
     el.querySelectorAll("[data-ex]").forEach(b => this.pasangUrut(b));
     el.onchange = e => { const s = e.target.closest("select[data-set]"); if (s) { this.st[s.dataset.set] = s.value; this.ulang(s.closest("[data-ex]")); } };

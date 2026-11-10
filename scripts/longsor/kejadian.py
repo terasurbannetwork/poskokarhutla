@@ -9,8 +9,12 @@ Dua sumber, TIDAK dijumlahkan (beda tingkat dan beda liputan):
   dibi  DIBI BNPB per kabupaten per hari (Superset publik, pola dari scripts/banjir/kejadian.py: superset(), Pencocok).
         Jenis: "Tanah Longsor", "Gerakan Tanah" (gab=0) dan "Banjir dan Tanah Longsor" (gab=1, ikut banjir juga).
 
-Keluaran: {"dibuat","atribusi","kab":["pp|nama kab"],"dibi":[[tgl,kab_idx,n,gab]],"glc":[[tgl,lon,lat,mati,akurasi,pemicu,kab_idx,kec_id|null]]}
-Pakai:  python3 scripts/longsor/kejadian.py   |   python3 scripts/longsor/kejadian.py uji
+  pvmbg Tanggapan Gerakan Tanah MAGMA/PVMBG (panen sekali, scripts/longsor/tanggapan_pvmbg.py -> tanggapan_pvmbg.json),
+        titik berkoordinat ~2020-Mei 2023, tanggal KEJADIAN. Sumber ketiga, TIDAK dijumlahkan dengan glc/dibi (tumpang tindih).
+
+Keluaran: {"dibuat","atribusi","kab":["pp|nama kab"],"dibi":[[tgl,kab_idx,n,gab]],"glc":[[tgl,lon,lat,mati,akurasi,pemicu,kab_idx,kec_id|null]],
+           "pvmbg":[[tgl,lon,lat,mati,rumah,tipe,zona,kab_idx,kec_id|null]]}
+Pakai:  python3 scripts/longsor/kejadian.py   |   ... pvmbg (tambah/segarkan pvmbg di kejadian.json yang ada, tanpa jaringan)   |   ... uji
 """
 import datetime as dt, importlib.util, json, os, sys, urllib.parse
 
@@ -23,7 +27,10 @@ SUMBER_GLC = [
     "https://services9.arcgis.com/RrvMEynxDB8hycVO/arcgis/rest/services/nasa_global_landslide_catalog_point/FeatureServer/0",
 ]
 JENIS_LONGSOR = {"Tanah Longsor": 0, "Gerakan Tanah": 0, "Banjir dan Tanah Longsor": 1}
-ATRIBUSI = ("NASA Global Landslide Catalog / COOLR (Kirschbaum dkk. 2015, 2010), domain publik NASA; DIBI BNPB (dibi.bnpb.go.id), "
+KOLOM_PVMBG = ["tanggal", "lon", "lat", "mati", "rumah", "tipe", "zona", "kab", "kec"]
+CATATAN_PVMBG = ("pvmbg: Tanggapan Gerakan Tanah MAGMA/PVMBG, tanggal kejadian, bukan tanggal laporan; ~2020 s.d. Mei 2023; rumah = rusak/hancur/roboh/terendam "
+                 "bila angka tertulis; TIDAK dijumlahkan dengan glc/dibi.")
+ATRIBUSI = ("MAGMA Indonesia PVMBG (Tanggapan Gerakan Tanah); NASA Global Landslide Catalog / COOLR (Kirschbaum dkk. 2015, 2010), domain publik NASA; DIBI BNPB (dibi.bnpb.go.id), "
             "dasbor publik, tidak resmi lewat API.")
 
 
@@ -89,7 +96,7 @@ def dibi_longsor(K, dari=2015):
     return sorted((t, kab, n, g) for (t, kab, g), n in hasil.items())
 
 
-def susun(dibi, glc, cari, kecs):
+def susun(dibi, glc, cari, kecs, pvmbg=()):
     kab, idx = [], {}
     def ik(nama):
         if nama not in idx:
@@ -102,7 +109,44 @@ def susun(dibi, glc, cari, kecs):
         n = cari.cari(lon, lat)
         k = kecs[n] if n is not None else None
         g.append([t, lon, lat, mati, akur, pem, ik(f"{k['prov']}|{k['kab']}") if k else None, k["id"] if k else None])
-    return {"kab": kab, "dibi": d, "glc": g}
+    return {"kab": kab, "dibi": d, "glc": g, "pvmbg": pvmbg_susun(pvmbg, cari, kecs, ik)}
+
+
+def pvmbg_susun(baris, cari, kecs, ik):
+    """Baris tanggapan_pvmbg.json -> [tgl,lon,lat,mati,rumah,tipe,zona,kab_idx,kec_id]; hanya titik yang jatuh di poligon kecamatan (daratan Indonesia)."""
+    out = []
+    for b in sorted(baris, key=lambda b: (b["tgl"], b["id"])):
+        n = cari.cari(b["lon"], b["lat"])
+        if n is None:
+            continue
+        k, dp = kecs[n], b.get("dampak") or {}
+        out.append([b["tgl"], round(b["lon"], 4), round(b["lat"], 4), dp.get("meninggal", 0), dp.get("rumah", 0),
+                    b.get("tipe"), b.get("zona"), ik(f"{k['prov']}|{k['kab']}"), k["id"]])
+    return out
+
+
+def baca_pvmbg():
+    p = os.path.join(KELUAR, "tanggapan_pvmbg.json")
+    return json.load(open(p))["kejadian"] if os.path.exists(p) else []
+
+
+def tambah_pvmbg():
+    """Segarkan hanya kunci pvmbg di kejadian.json yang ada (dibi/glc tidak disentuh, tanpa jaringan)."""
+    p = os.path.join(KELUAR, "kejadian.json")
+    j = json.load(open(p))
+    kecs = daftar_kec()
+    idx = {n: i for i, n in enumerate(j["kab"])}
+    def ik(n):
+        if n not in idx:
+            idx[n] = len(j["kab"])
+            j["kab"].append(n)
+        return idx[n]
+    j["pvmbg"] = pvmbg_susun(baca_pvmbg(), Cari(kecs), kecs, ik)
+    j["kolom_pvmbg"] = KOLOM_PVMBG
+    j["atribusi"] = ATRIBUSI
+    j["catatan_pvmbg"] = CATATAN_PVMBG
+    simpan(p, j)
+    print(f"kejadian: pvmbg {len(j['pvmbg'])} titik di daratan", file=sys.stderr)
 
 
 def jalan():
@@ -112,11 +156,11 @@ def jalan():
     dibi = dibi_longsor(K)
     assert dibi, "DIBI longsor kosong"
     kecs = daftar_kec()
-    isi = susun(dibi, glc, Cari(kecs), kecs)
+    isi = susun(dibi, glc, Cari(kecs), kecs, baca_pvmbg())
     th = lambda xs: sorted({x[0][:4] for x in xs})
     simpan(os.path.join(KELUAR, "kejadian.json"), {
         "dibuat": dt.datetime.now(WIB).strftime("%Y-%m-%dT%H:%M+07:00"), "atribusi": ATRIBUSI, "sumber_glc": sumber,
-        "kolom_dibi": ["tanggal", "kab", "n", "gab"], "kolom_glc": ["tanggal", "lon", "lat", "mati", "akurasi", "pemicu", "kab", "kec"],
+        "kolom_dibi": ["tanggal", "kab", "n", "gab"], "kolom_glc": ["tanggal", "lon", "lat", "mati", "akurasi", "pemicu", "kab", "kec"], "kolom_pvmbg": KOLOM_PVMBG, "catatan_pvmbg": CATATAN_PVMBG,
         "catatan": "gab=1: 'Banjir dan Tanah Longsor' (ikut terhitung di banjir). kab = indeks ke daftar 'kab' ('kodeprov|nama di peta'). "
                    "GLC berhenti diperbarui sehingga tahun terakhirnya lebih awal dari DIBI.",
         "tahun_dibi": [th(dibi)[0], th(dibi)[-1]], "tahun_glc": [th(glc)[0], th(glc)[-1]] if glc else None, **isi})
@@ -131,8 +175,12 @@ def uji():
     kecs = [{"id": "x|A|B", "prov": "x", "kab": "A", "kec": "B", "cincin": [[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]]}]
     r = susun([("2024-01-01", "x|A", 2, 0)], [("2020-01-01", .5, .5, 0, "", ""), ("2020-01-02", 5, 5, 0, "", "")], Cari(kecs), kecs)
     assert r["dibi"] == [["2024-01-01", 0, 2, 0]] and r["glc"][0][6] == 0 and r["glc"][0][7] == "x|A|B" and r["glc"][1][6] is None
+    pv = {"id": "CRS1", "tgl": "2021-01-02", "lon": .5, "lat": .5, "tipe": "Longsoran", "zona": "Menengah", "dampak": {"meninggal": 2, "rumah": 3}}
+    r = susun([], [], Cari(kecs), kecs, [pv, {**pv, "id": "CRS2", "lon": 9, "lat": 9}])  # titik kedua di luar daratan -> dibuang
+    assert r["pvmbg"] == [["2021-01-02", .5, .5, 2, 3, "Longsoran", "Menengah", 0, "x|A|B"]], r["pvmbg"]
     print("kejadian: uji lolos")
 
 
 if __name__ == "__main__":
-    uji() if sys.argv[1:] == ["uji"] else jalan()
+    a = sys.argv[1:]
+    uji() if a == ["uji"] else tambah_pvmbg() if a == ["pvmbg"] else jalan()

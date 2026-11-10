@@ -12,6 +12,9 @@ const FG_LV = {1: "#fff", 2: "#3b2e00", 3: "#fff", 4: "#fff"};
 const IK_GN = '<path d="M3 20 9 9h6l6 11z"/><path d="M12 9V6M9.5 5l-1-2M14.5 5l1-2"/>';
 /* label pil berwarna + ikon gunung (A3) */
 const pilLv = (l, pendek = false) => `<span class="pl lvp" style="--w:${WARNA_LV[l]}"><svg viewBox="0 0 24 24" aria-hidden="true">${IK_GN}</svg>${pendek ? LEVEL[l][1] : `Level ${LEVEL[l][0]} ${LEVEL[l][1]}`}</span>`;
+/* kode warna penerbangan VONA (terpisah dari Level I sampai IV; arti kode di data/pedoman_krb.json) */
+const WARNA_VONA = {green: "#2e9e5b", yellow: "#e0b400", orange: "#e8743b", red: "#d64545"}, NAMA_VONA = {green: "Hijau", yellow: "Kuning", orange: "Oranye", red: "Merah"};
+const pilVona = v => v?.kode && WARNA_VONA[v.kode] ? `<span class="pl" style="--w:${WARNA_VONA[v.kode]}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 16l20-6-8 12-2-6z"/></svg>VONA ${NAMA_VONA[v.kode]}</span>` : "";
 const tglJam = t => new Date(t).toLocaleString("id-ID", {...WIB, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB";
 
 const S = {st: null, level: 0, q: "", urut: {k: "lv", d: -1}, geo: {prov: null}};   /* level 0 = semua */
@@ -27,7 +30,9 @@ const idGn = nama => String(nama).toLowerCase().replace(/[^\p{L}\p{N} -]/gu, "")
 const DATA = {};
 const sekali = (k, u) => DATA[k] ||= muatJSON(u).catch(() => { delete DATA[k]; return null; });
 const Data = {abu: () => sekali("abu", "../banjir/data/abu_gunungapi.json"), pap: () => sekali("pap", "data/paparan.json"), geo: () => sekali("geo", "data/paparan_geo.json"), bandara: () => sekali("bandara", "data/bandara.json"),
-  fs: () => sekali("fs", "data/factsheet_gunungapi.json"), mirova: () => sekali("mirova", "data/mirova.json"), risiko: () => sekali("risiko", "data/risiko.json"), dampak: () => sekali("dampak", "../banjir/data/dampak_gunungapi.json"),
+  fs: () => sekali("fs", "data/factsheet_gunungapi.json"), ped: () => sekali("ped", "data/pedoman_krb.json"), keg: () => sekali("keg", "data/kegempaan.json"),
+  /* catatan harian terakhir satu gunung (baris terakhir data/catatan/<KODE>.jsonl, append-only); null bila berkas belum ada */
+  harian: kode => !kode || !/^[A-Z]{2,4}$/.test(kode) ? null : DATA["cat" + kode] ||= fetch("data/catatan/" + kode + ".jsonl", {cache: "no-cache"}).then(r => r.ok ? r.text() : null).then(t => { const b = (t || "").trim().split("\n").pop(); return b ? JSON.parse(b) : null; }).catch(() => null), mirova: () => sekali("mirova", "data/mirova.json"), risiko: () => sekali("risiko", "data/risiko.json"), dampak: () => sekali("dampak", "../banjir/data/dampak_gunungapi.json"),
   /* paparan per id gunung */
   async pg(id) { const p = await this.pap(); return p?.gunung?.find(x => x.id === id) || null; }};
 /* dibagikan ke sim.js (tab Simulasi memakai status dan loader yang sama, tanpa unduh ulang) */
