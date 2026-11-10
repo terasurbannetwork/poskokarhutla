@@ -233,7 +233,7 @@ const Insight = {
   async render() {
     const el = $("#insight");
     await Kejadian.muatAwal();
-    await Promise.all([Tambahan.muat("lg"), Tambahan.titikKab(), Awan.muat(), typeof Resmi !== "undefined" && Resmi.muat(), typeof Bmkg2 !== "undefined" && Bmkg2.muat()]);   /* kartu Langganan; hilang = dibuang */
+    await Promise.all([typeof Iklim !== "undefined" && Iklim.muat(), Tambahan.muat("lg"), Tambahan.titikKab(), Awan.muat(), typeof Resmi !== "undefined" && Resmi.muat(), typeof Bmkg2 !== "undefined" && Bmkg2.muat()]);   /* kartu Langganan; hilang = dibuang */
     if (typeof Peluang !== "undefined") this.PL = await Peluang.muat("../banjir/data/cuaca_peluang.json");
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");
     Cerita.sisip(el, "cuaca");

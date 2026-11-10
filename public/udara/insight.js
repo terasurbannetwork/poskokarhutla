@@ -10,7 +10,7 @@ const tglIns = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", 
 
 const Insight = {
   st: {hari: 0, kabHari: 0, asalK: ""},
-  EX: ["jiwa", "kab", "pel", "asal", "jarak", "bmkg", "tropo", "rapor"],
+  EX: ["jiwa", "kab", "pel", "asal", "jarak", "bmkg", "kualitas", "tropo", "rapor"],
   PL: null, AS: null,   /* peluang.json dan asal.json, dimuat sekali di render() */
   T: {kab: {urut: "_", turun: true, hal: 0}},
   hl: Kartu.hl,
@@ -93,14 +93,14 @@ const Insight = {
     const hal = R.slice(st.hal * per, (st.hal + 1) * per);
     return `<div class="tw"><table><thead><tr>${kol.map(c => `<th class="${c.num ? "n" : ""}" aria-sort="${c === kk ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c.k}">${c.n}<i>${c === kk ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
       <tbody>${hal.map(r => `<tr class="klik" ${atribut(r)}>${kol.map(c => `<td${c.num ? ' class="n"' : ""}>${c.h(r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, per, satuan)}`; },
-  gambar(id) { return ({jiwa: () => this.exJiwa(), kab: () => this.exKab(), pel: () => this.exPel(), asal: () => this.exAsal(), jarak: () => this.exJarak(), bmkg: () => Stasiun.ex(), tropo: () => Satelit.exTropo(), rapor: () => Satelit.exRapor()})[id](); },
+  gambar(id) { return ({jiwa: () => this.exJiwa(), kab: () => this.exKab(), pel: () => this.exPel(), asal: () => this.exAsal(), jarak: () => this.exJarak(), bmkg: () => Stasiun.ex(), kualitas: () => Kualitas.ex(), tropo: () => Satelit.exTropo(), rapor: () => Satelit.exRapor()})[id](); },
   pasang(box) {
     const th = box.querySelector("thead"), st = this.T[box.dataset.ex]; if (th && st) pengurutKepala(st, th, () => this.ulang(box)); },
   ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); this.pasang(box); }); },
   async render() {
     const el = $("#insight");
     if (typeof Peluang !== "undefined") [this.PL, this.AS] = await Promise.all([Peluang.muat("data/peluang.json"), fetch("data/asal.json").then(r => r.ok ? r.json() : null).catch(() => null)]); if (this.st.hari < S.h0) this.st.hari = this.st.kabHari = S.h0;
-    await Satelit.muatKartu();   /* TROPOMI dan rapor model: dimuat malas saat Insight dibuka; berkas hilang = kartu dibuang */
+    await Promise.all([Satelit.muatKartu(), Kualitas.muat()]);   /* TROPOMI dan rapor model: dimuat malas saat Insight dibuka; berkas hilang = kartu dibuang */
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");
     Cerita.sisip(el, "udara");
     el.querySelectorAll("[data-ex]").forEach(b => this.pasang(b));
