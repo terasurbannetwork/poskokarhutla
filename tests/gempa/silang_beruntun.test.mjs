@@ -6,7 +6,7 @@ import vm from "node:vm";
 const c = {console, Math, JSON, Date, esc: x => String(x ?? ""), fmt: n => (n == null ? "-" : String(n).replace(".", ","))};
 vm.createContext(c);
 vm.runInContext(fs.readFileSync("public/gempa/beruntun.js", "utf8") + "\nthis.B = Beruntun;", c);
-const B = c.B, D = JSON.parse(fs.readFileSync("public/gempa/data/beruntun.json", "utf8")), BL = JSON.parse(fs.readFileSync("public/gempa/data/beruntun_baseline.json", "utf8"));
+const B = c.B, D = JSON.parse(fs.readFileSync("public/gempa/data/beruntun.json", "utf8")), BL = JSON.parse(fs.readFileSync("scripts/gempa/beruntun_baseline.json", "utf8"));
 
 test("label Deteksi Centurisk97, bukan prediksi, hipotesis belum teruji, hanya M 4,5+", () => {
   assert.equal(D.label, "Deteksi Centurisk97"); assert.equal(D.bukan_prediksi, true); assert.equal(D.teruji, false);

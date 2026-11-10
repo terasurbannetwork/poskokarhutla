@@ -8,7 +8,7 @@ TERPISAH (SS-44), tidak dilebur menjadi angka.
 
 Masukan:
   baseline (subperintah `baseline`): data/raw/gempa/susulan_katalog.json (katalog USGS M >= 4,5 sejak 2000, tak dilacak git; dibuat susulan.py/riwayat.py).
-    Hasilnya DIKOMIT di public/gempa/data/beruntun_baseline.json supaya `jalan` dan CI tidak butuh katalog mentah.
+    Hasilnya DIKOMIT di scripts/gempa/beruntun_baseline.json supaya `jalan` dan CI tidak butuh katalog mentah.
   7 hari terakhir: USGS FDSN query 7 hari M >= 4,5 (diambil sekali, disimpan di data/raw/gempa/beruntun_usgs.json). N dihitung dari USGS SAJA, seskala dengan
     baseline (pilihan pemilik USGS M 4,5+; magnitudo BMKG dan USGS beda, jadi BMKG tidak ikut ambang). Cacah BMKG M >= 4,5 (`n_bmkg`) hanya info terpisah.
     USGS 7 hari tak terambil dan simpanan tak menutup jendela -> semua sasaran "tidak_dinilai" dengan alasan.
@@ -356,7 +356,7 @@ def rakit(events, sasaran, baseline_doc, ref, dibuat, kegempaan=None, status=Non
 
 
 def jalan():
-    bl = baca("public/gempa/data/beruntun_baseline.json")
+    bl = baca("scripts/gempa/beruntun_baseline.json")
     sas = baca("scripts/gempa/beruntun_sasaran.json")["sasaran"]
     dibuat = baca("public/gempa/data/inatews_katalog.json")["dibuat"]
     ref = epoch(dibuat)
@@ -453,7 +453,7 @@ def uji():
     finally:
         DATA = lama
     # data nyata
-    bl = baca("public/gempa/data/beruntun_baseline.json")
+    bl = baca("scripts/gempa/beruntun_baseline.json")
     sas = baca("scripts/gempa/beruntun_sasaran.json")["sasaran"]
     assert set(bl["sasaran"]) == {x["id"] for x in sas} and bl["m_min"] == 4.5 and bl["overdispersi"]["alpha"] > 0 and bl["diunduh"]
     assert all("n_menyala" in v for v in bl["sasaran"].values())
@@ -470,7 +470,7 @@ if __name__ == "__main__":
                          "sasaran": [{"id": "gn:" + n, "nama": n, "jenis": "gunung_api", "pusat": [v["lat"], v["lon"]], "R_km": R_KM} for n, v in sorted(g.items())]})
     elif a == "baseline":
         d = bangun_baseline()
-        simpan(os.path.join(DATA, "beruntun_baseline.json"), d)
+        simpan(os.path.join(os.path.dirname(os.path.abspath(__file__)), "beruntun_baseline.json"), d)
         ov = d["overdispersi"]
         nol = [k for k, v in d["sasaran"].items() if v["n"] == 0]
         print("baseline:", d["n_katalog"], "gempa", d["mulai"], "sampai", d["akhir"], "diunduh", d["diunduh"], "| laju nol:", len(nol), "| b", d["kelengkapan"]["b_aki_semua"])
