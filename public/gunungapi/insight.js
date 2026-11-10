@@ -69,8 +69,8 @@ const Insight = {
         <g class="gf">${this.p(U.L + Math.max(3, X(x.n)) + 8, y + 7, fmt(x.n) + " erupsi", WARNA_LV[x.lv], FG_LV[x.lv])[0]}${x.tinggi ? this.p(U.L + Math.max(3, X(x.n)) + 8 + (fmt(x.n) + " erupsi").length * 7.2 + 22, y + 7, "abu " + fmt(x.tinggi) + " m", BATA)[0] : ""}</g></g>`; }).join("");
     const terakhir = E[0];
     Kartu.leg([[WARNA_LV[4], "Awas"], [WARNA_LV[3], "Siaga"], [WARNA_LV[2], "Waspada"], [WARNA_LV[1], "Normal"]]);
-    return this.ex(dlm.length ? `${this.hl(fmt(dlm.length) + " erupsi")} tercatat dalam ${jam} jam terakhir di ${fmt(T.length)} gunung; ${this.nm(T[0].nm)} terbanyak` : `Erupsi terakhir tercatat pada ${tglJam(terakhir.waktu)} di ${this.nm(terakhir.gunung)}`, "", "",
-      T.length ? `<svg viewBox="0 0 ${U.W} ${T.length * U.rh + 4}" role="img" aria-label="Erupsi per gunung">${g}</svg>` : `<p class="kosong">${esc(terakhir.ket)}</p>`, SUMBER + " (informasi letusan)"); },
+    return this.ex(dlm.length ? `${this.hl(fmt(dlm.length) + " erupsi")} tercatat dalam ${jam} jam terakhir di ${fmt(Object.keys(per).length)} gunung; ${this.nm(T[0].nm)} terbanyak` : `Erupsi terakhir tercatat pada ${tglJam(terakhir.waktu)} di ${this.nm(terakhir.gunung)}`, "", "",
+      T.length ? `<svg viewBox="0 0 ${U.W} ${T.length * U.rh + 4}" role="img" aria-label="Erupsi per gunung">${g}</svg>` : `<p class="kosong">${esc(terakhir.ket)}</p>`, "Sumber: MAGMA Indonesia, PVMBG (Badan Geologi, KESDM), informasi letusan"); },
 
   /* 3. perubahan level yang dicatat Centurisk97 tiap kali data diperbarui */
   exPerubahan() {
@@ -163,77 +163,90 @@ const Insight = {
   tglArsip(d) { return this.tgl(d + "T12:00:00+07:00"); },
   /* batang mendatar ber-tooltip: rows [{nm, v, w, pil: [[teks, latar, huruf]], tip}] */
   batang(rows, aria) {
-    const U = this.uk(), M = U.W < 600, kanan = M ? 150 : 330, mx = Math.max(...rows.map(r => r.v), 1e-9), X = v => v / mx * (U.W - U.L - kanan);
+    const U = this.uk(), M = U.W < 600, kanan = M ? Math.max(150, ...rows.map(r => r.pil[0][0].length * 7.2 + 30)) : 330, mx = Math.max(...rows.map(r => r.v), 1e-9), X = v => v / mx * (U.W - U.L - kanan);
     const g = rows.map((r, i) => { const y = i * U.rh, w = Math.max(3, X(r.v)); let px = U.L + w + 8;
       const ps = r.pil.slice(0, M ? 1 : 9).map(([t, bg, fg]) => { const o = this.p(px, y + 7, t, bg, fg || "#fff")[0]; px += t.length * 7.2 + 22; return o; }).join("");
       return `<g><text x="${U.L - 10}" y="${y + 21}" text-anchor="end" font-size="${U.fs}" font-weight="600">${esc(M && r.nm.length > 15 ? r.nm.slice(0, 14) + "…" : r.nm)}</text>
         <rect class="gx" x="${U.L}" y="${y + 6}" width="${w}" height="${U.rh - 12}" rx="5" fill="${r.w}" data-tip="${r.tip}"/><g class="gf">${ps}</g></g>`; }).join("");
     return `<svg viewBox="0 0 ${U.W} ${rows.length * U.rh + 4}" role="img" aria-label="${aria}">${g}</svg>`; },
 
-  /* 9. rezim letusan per gunung sejak 1 Jan 2024. Sebelum 2024 tidak dibandingkan: lompat 457 ke 6.241 letusan per tahun mengikuti cara mencatat, bukan alam. */
+  /* 9. rezim letusan per gunung sejak 1 Jan 2024. Sebelum 2024 tidak dibandingkan: lompat 457 ke 6.241 letusan per tahun terutama mengikuti cara mencatat, sebagian aktivitas nyata. */
   exRezim() {
     const R = this.rz?.rezim; if (!R?.length) return "";
     const tot = R.reduce((a, r) => a + r.n, 0), dua = Math.round(100 * (R[0].n + (R[1]?.n || 0)) / tot);
     const rows = R.slice(0, 10).map(r => { const lv = this.lvG(r.gunung);
       return {nm: r.gunung, v: r.n, w: WARNA_LV[lv], pil: [[fmt(r.n) + " letusan", WARNA_LV[lv], FG_LV[lv]], ...(r.kolom_median ? [["kolom median " + fmt(r.kolom_median) + " m", BATA]] : [])],
         tip: `<b>${esc(r.gunung)}</b><br>Letusan sejak 1 Jan 2024: ${fmt(r.n)}<br>Hari aktif: ${this.d(r.hari_aktif_pct)}%${r.kolom_median ? `<br>Kolom abu: median ${fmt(r.kolom_median)} m, p90 ${fmt(r.kolom_p90)} m, maks ${fmt(r.kolom_maks)} m (dari ${fmt(r.kolom_n)} letusan yang menyebut tinggi)` : ""}<br>Laju: ${this.d(r.per_hari_90, 2)} per hari (90 hari terakhir) lawan ${this.d(r.per_hari_365_sebelumnya, 2)} (365 hari sebelumnya)`}; });
-    const n2 = v => v == null ? "–" : this.d(v, 2), m = v => v ? fmt(v) : "–";
+    const tk = Math.round(100 * (1 - R.reduce((a, r) => a + r.kolom_n, 0) / tot)), n2 = v => v == null ? "–" : this.d(v, 2), m = v => v ? fmt(v) : "–";
     const kol = [{k: "nm", n: "Gunung", v: r => r.gunung, h: r => `<b translate="no">${esc(r.gunung)}</b> ${pilLv(this.lvG(r.gunung), true)}`},
       {k: "n", n: "Letusan", t: "Jumlah letusan di daftar informasi letusan MAGMA sejak 1 Jan 2024", num: 1, v: r => r.n, h: r => fmt(r.n)},
       {k: "ha", n: "Hari aktif", t: "Persen hari sejak 1 Jan 2024 yang punya sedikitnya satu letusan", num: 1, v: r => r.hari_aktif_pct, h: r => this.d(r.hari_aktif_pct) + "%"},
-      {k: "km", n: "Kolom median", t: "Tinggi kolom abu di atas puncak (m), median dari letusan yang menyebut tinggi. Sekitar 63% letusan tidak menyebut tinggi (malam atau berawan), jadi angkanya condong ke letusan yang terlihat", num: 1, v: r => r.kolom_median ?? -1, h: r => m(r.kolom_median)},
-      {k: "k9", n: "Kolom p90", t: "Persentil 90 tinggi kolom abu (m): 9 dari 10 letusan yang menyebut tinggi tidak lebih tinggi dari ini", num: 1, v: r => r.kolom_p90 ?? -1, h: r => m(r.kolom_p90)},
-      {k: "kx", n: "Kolom maks", t: "Tinggi kolom abu tertinggi di atas puncak (m) sejak 1 Jan 2024", num: 1, v: r => r.kolom_maks ?? -1, h: r => m(r.kolom_maks)},
+      {k: "km", n: "Kolom median (m)", t: `Tinggi kolom abu di atas puncak (m), median dari letusan yang menyebut tinggi. Sekitar ${tk}% letusan sejak 2024 tidak menyebut tinggi, jadi angkanya hanya dari letusan yang menyebutnya`, num: 1, v: r => r.kolom_median ?? -1, h: r => m(r.kolom_median)},
+      {k: "k9", n: "Kolom p90 (m)", t: "Persentil 90 tinggi kolom abu (m): 9 dari 10 letusan yang menyebut tinggi tidak lebih tinggi dari ini", num: 1, v: r => r.kolom_p90 ?? -1, h: r => m(r.kolom_p90)},
+      {k: "kx", n: "Kolom maks (m)", t: "Tinggi kolom abu tertinggi di atas puncak (m) sejak 1 Jan 2024", num: 1, v: r => r.kolom_maks ?? -1, h: r => m(r.kolom_maks)},
       {k: "l9", n: "Per hari, 90 hari", t: "Rata-rata letusan per hari dalam 90 hari terakhir arsip", num: 1, v: r => r.per_hari_90, h: r => n2(r.per_hari_90)},
       {k: "l3", n: "Per hari, 365 hari sebelumnya", t: "Rata-rata letusan per hari dalam 365 hari sebelum 90 hari terakhir", num: 1, v: r => r.per_hari_365_sebelumnya, h: r => n2(r.per_hari_365_sebelumnya)}];
     return this.std(this.LABEL.rezim, `Arsip MAGMA per ${this.tglArsip(this.rz.akhir)}: ${this.hl(fmt(tot) + " letusan")} di ${fmt(R.length)} gunung sejak 1 Jan 2024, ${this.hl(dua + "%")} dari ${this.nm(R[0].gunung)} dan ${this.nm(R[1].gunung)}`,
       this.batang(rows, "Letusan per gunung") + this.tabelStd("rezim", kol, R, r => `data-gn="${esc(r.gunung)}"`, 10, "gunung", r => -r.n)
-      + this.ket("Snapshot arsip, tidak diperbarui otomatis. Jumlah letusan sebelum 2024 tidak dibandingkan: pencatatan berubah dari sekitar 450 menjadi lebih dari 6.000 letusan per tahun, jadi lompat itu bukan tren alam.")); },
+      + this.ket("Snapshot arsip, tidak diperbarui otomatis. Jumlah letusan sebelum 2024 tidak dibandingkan: pencatatan berubah dari sekitar 450 menjadi lebih dari 6.000 letusan per tahun, jadi lompat itu terutama mengikuti perubahan cara mencatat, sebagian aktivitas nyata.")); },
 
-  /* 10. arah abu per musim (kebiasaan dari laporan erupsi, bukan prakiraan angin); musim dengan n < 50 ditandai, tidak disimpulkan */
+  /* 10. arah abu per musim (kebiasaan dari laporan erupsi, bukan prakiraan angin). "Jelas" hanya bila n >= 50, selisih dua arah teratas >= 10 poin persen, dan >= 3 musim-tahun ikut. */
   SM: {DJF: "Desember sampai Februari", MAM: "Maret sampai Mei", JJA: "Juni sampai Agustus", SON: "September sampai November"},
   exArahabu() {
     const A = this.rz?.arah_musim; if (!A || !Object.keys(A).length) return "";
-    const m = [, "DJF", "DJF", "MAM", "MAM", "MAM", "JJA", "JJA", "JJA", "SON", "SON", "SON", "DJF"][+hariWIB(Date.now()).slice(5, 7)], pc = (n, t) => Math.round(100 * n / t);
-    const ada = Object.entries(A).filter(([, s]) => s[m]).map(([g, s]) => ({g, s, a: s[m], tot: s[m].at(-1)})).sort((x, y) => y.tot - x.tot); if (!ada.length) return "";
-    const rows = ada.map(({g, s, a, tot}) => { const kecil = tot < 50, [a1, a2] = a, tipM = Object.keys(this.SM).filter(k => s[k]).map(k => { const t = s[k].at(-1); return `<br>${k}${k === m ? " (musim ini)" : ""}: ${s[k].slice(0, 2).filter(Array.isArray).map(([ar, n]) => `${ar} ${pc(n, t)}%`).join(", ")} dari ${fmt(t)} penyebutan${t < 50 ? ", n kecil, jangan disimpulkan" : ""}`; }).join("");
-      return {nm: g, v: a1[1] / tot, w: kecil ? "#b8c0cc" : "#4f8fc0",
-        pil: [...(kecil ? [["n kecil (" + fmt(tot) + "), jangan disimpulkan", "#8a6d1f"]] : []), [a1[0] + " " + pc(a1[1], tot) + "%", "#4f8fc0"], ...(Array.isArray(a2) ? [[a2[0] + " " + pc(a2[1], tot) + "%", "#6b7a90"]] : []), ...(kecil ? [] : [["n = " + fmt(tot), "#9aa4b2"]])],
-        tip: `<b>${esc(g)}</b>, arah abu per musim${tipM}`}; });
-    const sah = ada.filter(x => x.tot >= 50).slice(0, 3);
-    const judul = sah.length ? `Musim ${this.SM[m].toLowerCase()}: abu ${this.gabung(sah.map(x => `${this.hl(this.nm(x.g))} paling sering ke ${x.a[0][0]}`))}` : `Musim ${this.SM[m].toLowerCase()} belum punya gunung dengan arah abu yang cukup untuk disimpulkan (kurang dari 50 penyebutan)`;
-    return this.std(this.LABEL.arahabu, judul, this.batang(rows, "Arah abu musim ini") + this.ket("Arah dari laporan erupsi MAGMA (8 mata angin) sejak 1 Jan 2024, gunung dengan sedikitnya 200 penyebutan arah. Persen = bagian dari penyebutan arah pada musim itu; arahkan kursor ke batang untuk keempat musim. Ini kebiasaan, bukan prakiraan angin hari ini.")); },
+    const m = [, "DJF", "DJF", "MAM", "MAM", "MAM", "JJA", "JJA", "JJA", "SON", "SON", "SON", "DJF"][+hariWIB(Date.now()).slice(5, 7)], pc = (n, t) => Math.round(100 * n / t), tg = this.tglArsip(this.rz.akhir);
+    const cek = s => { const [a1, a2] = s.arah, sel = a2 ? pc(a1[1] - a2[1], s.n) : 100; return s.n < 50 ? "kecil" : sel < 10 ? "seri" : s.musim < 3 ? "singkat" : "jelas"; };
+    const ada = Object.entries(A).filter(([, s]) => s[m]).map(([g, s]) => ({g, s, a: s[m], st: cek(s[m])})).sort((x, y) => y.a.n - x.a.n); if (!ada.length) return "";
+    const KET = {kecil: "n kecil, jangan disimpulkan", seri: "belum jelas, dua arah hampir sama", singkat: "baru beberapa musim, belum jelas"};
+    const rows = ada.map(({g, s, a, st}) => { const [a1, a2] = a.arah, tipM = Object.keys(this.SM).filter(k => s[k]).map(k => `<br>${k}${k === m ? " (musim ini)" : ""}: ${s[k].arah.map(([ar, n]) => `${ar} ${pc(n, s[k].n)}%`).join(", ")}; n = ${fmt(s[k].n)} penyebutan, ${fmt(s[k].musim)} musim${cek(s[k]) !== "jelas" ? ", " + KET[cek(s[k])] : ""}`).join("");
+      return {nm: g, v: a1[1] / a.n, w: st === "jelas" ? "#4f8fc0" : "#b8c0cc",
+        pil: [...(st === "jelas" ? [] : [[KET[st], "#8a6d1f"]]), [a1[0] + " " + pc(a1[1], a.n) + "%", "#4f8fc0"], ...(a2 ? [[a2[0] + " " + pc(a2[1], a.n) + "%", "#6b7a90"]] : []), ["n = " + fmt(a.n) + ", " + fmt(a.musim) + " musim", "#9aa4b2"]],
+        tip: `<b>${esc(g)}</b>, arah abu per musim (arsip ${tg})${tipM}`}; });
+    const sah = ada.filter(x => x.st === "jelas").slice(0, 3);
+    const judul = sah.length ? `Musim ${this.SM[m]}: abu ${this.gabung(sah.map(x => `${this.hl(this.nm(x.g))} paling sering ke ${x.a.arah[0][0]}`))}${ada.length > sah.length ? `; ${fmt(ada.length - sah.length)} gunung lain belum jelas` : ""}` : `Musim ${this.SM[m]} belum punya gunung dengan arah abu yang jelas: datanya sedikit atau dua arah teratas hampir sama`;
+    return this.std(this.LABEL.arahabu, judul, this.batang(rows, "Arah abu musim ini") + this.ket(`Arah dari laporan erupsi MAGMA (8 mata angin) sejak 1 Jan 2024 sampai ${tg}, gunung dengan sedikitnya 200 penyebutan arah. Persen = bagian dari penyebutan arah pada musim itu; arahkan kursor ke batang untuk keempat musim. Arah dianggap jelas bila selisih dua arah teratas sedikitnya 10 poin persen dan sedikitnya 3 musim ikut. Ini kebiasaan, bukan prakiraan angin hari ini.`)); },
 
-  /* 11. cakupan VONA: letusan dengan VONA gunung yang sama dalam 30 menit. Selisih antar gunung belum tentu kelalaian (satu VONA bisa mewakili letusan menerus). */
+  /* 11. cakupan VONA: VONA gunung yang sama 0 sampai +30 menit sesudah letusan, dibanding kontrol (waktu letusan digeser -37 jam). Yang dibaca selisihnya. Selisih antar gunung bukan bukti kelalaian. */
   exCakupan() {
-    const C = Object.entries(this.rz?.cakupan_vona || {}).filter(([, c]) => c[1] >= 50).map(([g, [a, n]]) => ({g, a, n, p: 100 * a / n})).sort((x, y) => y.p - x.p); if (C.length < 2) return "";
-    const rows = C.map(x => ({nm: x.g, v: x.p, w: "#4f8fc0", pil: [[fmt(Math.round(x.p)) + "%", "#4f8fc0"], [fmt(x.a) + " dari " + fmt(x.n) + " letusan", "#6b7a90"]],
-      tip: `<b>${esc(x.g)}</b><br>${fmt(x.a)} dari ${fmt(x.n)} letusan sejak 1 Jan 2024 punya VONA gunung yang sama dalam 30 menit (${this.d(x.p)}%)`})), [a, z] = [C[0], C.at(-1)], all = this.rz.cakupan_vona_semua;
-    return this.std(this.LABEL.cakupan, `VONA terbit dalam 30 menit dari ${this.hl(fmt(Math.round(a.p)) + "%")} letusan ${this.nm(a.g)} dan ${this.hl(fmt(Math.round(z.p)) + "%")} letusan ${this.nm(z.g)}; selisih bisa berarti satu VONA mewakili letusan yang berlangsung menerus, bukan kelalaian`,
-      this.batang(rows, "Cakupan VONA per gunung") + this.ket(`Letusan dihitung tercakup bila ada VONA gunung yang sama dalam 30 menit sebelum atau sesudahnya. Gunung dengan sedikitnya 50 letusan sejak 1 Jan 2024; seluruh gunung ${fmt(Math.round(100 * all[0] / all[1]))}% (${fmt(all[0])} dari ${fmt(all[1])}). Arsip VONA ${this.tglArsip(this.rz.vona_rentang[0])} sampai ${this.tglArsip(this.rz.vona_rentang[1])}.`)); },
+    const R = this.rz, K = R?.cakupan_kontrol; if (!K) return "";
+    const pk = c => 100 * c[0] / c[1], X = Object.entries(R.cakupan_vona).filter(([, c]) => c[1] >= 50).map(([g, [a, n]]) => ({g, a, n, p: 100 * a / n, k: pk(K[g]), th: R.cakupan_tahun?.[g] || {}})).map(x => ({...x, sel: x.p - x.k})).sort((x, y) => y.sel - x.sel); if (X.length < 2) return "";
+    const B = X.filter(x => x.n >= 200), [a, z] = [B[0] || X[0], B.at(-1) || X.at(-1)], poin = v => fmt(Math.round(v)) + " poin", yrs = [...new Set(X.flatMap(x => Object.keys(x.th)))].sort(), semeru = R.rezim.find(r => r.gunung === "Semeru"), tot = R.rezim.reduce((s, r) => s + r.n, 0);
+    const rows = X.map(x => ({nm: x.g, v: Math.max(x.sel, 0), w: "#4f8fc0", pil: [["+" + poin(x.sel), "#4f8fc0"], [fmt(Math.round(x.p)) + "% asli, " + fmt(Math.round(x.k)) + "% kontrol", "#6b7a90"]],
+      tip: `<b>${esc(x.g)}</b><br>${fmt(x.a)} dari ${fmt(x.n)} letusan punya VONA gunung yang sama 0 sampai 30 menit sesudahnya (${this.d(x.p)}%)<br>Kontrol (waktu geser -37 jam): ${this.d(x.k)}%<br>Selisih di atas kontrol: ${this.d(x.sel)} poin${yrs.map(y => x.th[y] ? `<br>${y}: ${this.d(100 * x.th[y][0] / x.th[y][1])}% dari ${fmt(x.th[y][1])} letusan` : "").join("")}`}));
+    const kol = [{k: "nm", n: "Gunung", v: r => r.g, h: r => `<b translate="no">${esc(r.g)}</b>`}, {k: "n", n: "Letusan", t: "Letusan sejak 1 Jan 2024", num: 1, v: r => r.n, h: r => fmt(r.n)},
+      {k: "p", n: "Asli (%)", t: "Persen letusan dengan VONA gunung yang sama 0 sampai 30 menit sesudahnya", num: 1, v: r => r.p, h: r => this.d(r.p)}, {k: "k", n: "Kontrol (%)", t: "Pencocokan yang sama dengan waktu letusan digeser -37 jam: ukuran kebetulan karena VONA sering terbit", num: 1, v: r => r.k, h: r => this.d(r.k)},
+      {k: "s", n: "Selisih (poin)", t: "Asli dikurangi kontrol", num: 1, v: r => r.sel, h: r => this.d(r.sel)},
+      ...yrs.map(y => ({k: "y" + y, n: y + " (%)", t: `Persen letusan ${y} dengan VONA 0 sampai 30 menit sesudahnya; tanda "–" bila kurang dari 20 letusan`, num: 1, v: r => r.th[y] && r.th[y][1] >= 20 ? r.th[y][0] / r.th[y][1] : -1, h: r => r.th[y] && r.th[y][1] >= 20 ? this.d(100 * r.th[y][0] / r.th[y][1], 0) : "–"}))];
+    const beda = X.map(x => { const e = Object.entries(x.th).filter(([, v]) => v[1] >= 20).map(([y, v]) => [100 * v[0] / v[1], y]); return e.length > 1 ? {g: x.g, lo: e.reduce((m, v) => v[0] < m[0] ? v : m), hi: e.reduce((m, v) => v[0] > m[0] ? v : m)} : null; }).filter(Boolean).sort((p, q) => (q.hi[0] - q.lo[0]) - (p.hi[0] - p.lo[0]))[0];
+    this.T.cakupan ||= {urut: "s", turun: true, hal: 0};
+    return this.std(this.LABEL.cakupan, `VONA terbit 0 sampai 30 menit sesudah letusan ${this.hl(poin(a.sel))} lebih sering daripada kebetulan untuk ${this.nm(a.g)}, tetapi hanya ${this.hl(poin(z.sel))} untuk ${this.nm(z.g)}; selisih itu bisa berarti satu VONA mewakili letusan yang berlangsung menerus, bukan kelalaian`,
+      this.batang(rows, "Cakupan VONA di atas kontrol") + this.tabelStd("cakupan", kol, X, r => `data-gn="${esc(r.g)}"`, 10, "gunung", r => -r.sel)
+      + this.ket(`Letusan tercakup bila ada VONA gunung yang sama 0 sampai 30 menit sesudahnya. Kontrol: pencocokan yang sama dengan waktu letusan digeser -37 jam, jadi selisihnya yang dibaca, bukan angka mentah. Gunung dengan sedikitnya 50 letusan sejak 1 Jan 2024. ${beda ? `Cakupan berbeda antartahun (${this.nm(beda.g)}: ${this.d(beda.lo[0], 0)}% pada ${beda.lo[1]}, ${this.d(beda.hi[0], 0)}% pada ${beda.hi[1]}), jadi satu angka tidak mewakili seluruh masa.` : ""} ${fmt(R.vona_unik_terpakai)} dari ${fmt(R.vona_unik)} VONA unik terpakai (arsip ${this.tglArsip(R.vona_rentang[0])} sampai ${this.tglArsip(R.vona_rentang[1])}). Tidak ada angka gabungan seluruh gunung: ${this.nm("Semeru")} saja ${fmt(Math.round(100 * semeru.n / tot))}% dari letusan dan mendominasinya.`)); },
 
   /* 12. daftar pantau kegempaan: Hipotesis, bukan prediksi. Hitungan dari data/kegempaan.json yang bertambah tiap pembaruan; hasil uji dari arsip. */
   anomali() {
     const kg = this.kg; if (!kg?.gunung) return null;
-    const VT = ["harmonik", "tremor_non_harmonik", "low_frequency", "hybrid", "vulkanik_dangkal", "vulkanik_dalam"], idx = kg.jenis.map((j, i) => VT.includes(j.k) ? i : -1).filter(i => i >= 0), out = [];
+    const VT = ["harmonik", "tremor_non_harmonik", "low_frequency", "hybrid", "vulkanik_dangkal", "vulkanik_dalam"], idx = kg.jenis.map((j, i) => VT.includes(j.k) ? i : -1).filter(i => i >= 0), out = []; let akhir = "";
     for (const [nm, o] of Object.entries(kg.gunung)) {
       const hs = Object.keys(o.hari).sort().slice(0, -1); if (hs.length < 60) continue;   /* hari terakhir belum penuh */
       const v = hs.map(h => idx.reduce((a, i) => a + (o.hari[h][i] || 0), 0)), w = []; for (let i = 6; i < v.length; i++) { let s = 0; for (let j = i - 6; j <= i; j++) s += v[j]; w.push(s); }
       const now = w.at(-1), dulu = w.slice(0, -7); if (!dulu.length) continue;
       const mean = dulu.reduce((a, b) => a + b, 0) / dulu.length, rs = (now + 1) / (mean + 1), pct = dulu.filter(a => a < now).length / dulu.length;
+      akhir = hs.at(-1) > akhir ? hs.at(-1) : akhir;
       if (now >= 10 && rs >= 1.5 && pct >= .9) out.push({nm, now, mean, rs, pct: Math.round(pct * 100)});
     }
-    return out.sort((a, b) => b.rs - a.rs); },
+    out.akhir = akhir; return out.sort((a, b) => b.rs - a.rs); },
   exPantau() {
     const A = this.anomali(), U = this.rz?.uji_kegempaan; if (!A || !U) return "";
     const [a, na] = U.alarm, [t, nt] = U.tenang, pa = this.d(100 * a / na), pt = this.d(100 * t / nt);
-    const uji = `Hasil uji balik pada gunung yang sedang tidak meletus: ${fmt(a)} dari ${fmt(na)} hari alarm diikuti letusan dalam 7 hari (${pa}%) lawan ${fmt(t)} dari ${fmt(nt)} hari tenang (${pt}%). Selisihnya kecil dan jendela riwayat kegempaan baru 90 hari, jadi daftar ini bukan prediksi letusan.`;
+    const [ea, en] = U.episode, [ma, mn] = U.meletus.alarm, [mt, mm] = U.meletus.tenang, tgA = U.hari_akhir ? this.tglArsip(U.hari_akhir) : "";
+    const uji = `Hasil uji balik pada gunung yang sedang tidak meletus: ${fmt(a)} dari ${fmt(na)} hari alarm diikuti letusan dalam 7 hari (${pa}%) lawan ${fmt(t)} dari ${fmt(nt)} hari tenang (${pt}%); hari alarm itu hanya ${fmt(en)} episode, ${fmt(ea)} di antaranya diikuti letusan. Banyak alarm jatuh di gunung tanpa letusan di arsip; pada gunung yang pernah meletus sejak 2024 saja, ${fmt(ma)} dari ${fmt(mn)} hari alarm (${this.d(100 * ma / mn)}%) lawan ${fmt(mt)} dari ${fmt(mm)} hari tenang (${this.d(100 * mt / mm)}%). Episodenya terlalu sedikit dan jendela riwayat kegempaan baru 90 hari, jadi belum ada kesimpulan dan daftar ini bukan prediksi letusan.`;
     const kol = [{k: "nm", n: "Gunung", v: r => r.nm, h: r => `<b translate="no">${esc(r.nm)}</b>`}, {k: "lv", n: "Level", t: "Level resmi PVMBG saat ini", v: r => this.lvG(r.nm), h: r => pilLv(this.lvG(r.nm), true)},
       {k: "nw", n: "7 hari terakhir", t: "Jumlah gempa vulkanik (harmonik, tremor non-harmonik, low frequency, hybrid, vulkanik dangkal, vulkanik dalam) dalam 7 hari terakhir tanpa hari berjalan", num: 1, v: r => r.now, h: r => fmt(r.now)},
       {k: "mn", n: "Rata-rata 7 hari", t: "Rata-rata jumlah gempa vulkanik per jendela 7 hari pada riwayat gunung itu sendiri", num: 1, v: r => r.mean, h: r => this.d(r.mean)},
       {k: "rs", n: "Kelipatan", t: "7 hari terakhir dibagi rata-rata riwayatnya sendiri (masing-masing ditambah 1)", num: 1, v: r => r.rs, h: r => this.d(r.rs) + " kali"},
       {k: "pc", n: "Persentil", t: "Persen jendela 7 hari riwayatnya yang lebih rendah dari 7 hari terakhir", num: 1, v: r => r.pct, h: r => fmt(r.pct)}];
-    const judul = A.length ? `${this.hl(fmt(A.length) + " gunung")} punya gempa vulkanik 7 hari terakhir jauh di atas kebiasaannya sendiri; ${this.hl(this.nm(A[0].nm))} tertinggi, ${this.hl(this.d(A[0].rs) + " kali")} rata-ratanya` : `Tidak ada gunung yang gempa vulkaniknya 7 hari terakhir memenuhi ketiga syarat daftar pantau`;
+    const judul = A.length ? `${this.hl(fmt(A.length) + " gunung")} punya gempa vulkanik 7 hari terakhir${A.akhir ? " sampai " + this.tglArsip(A.akhir) : ""} di atas kebiasaannya sendiri (sedikitnya 1,5 kali); ${this.hl(this.nm(A[0].nm))} tertinggi, ${this.hl(this.d(A[0].rs) + " kali")} rata-ratanya` : `Tidak ada gunung yang gempa vulkaniknya 7 hari terakhir memenuhi ketiga syarat daftar pantau`;
     return this.std(this.LABEL.pantau, judul, `<div class="ex-pl">${this.pilHip(uji)}</div>` + (A.length ? this.tabelStd("pantau", kol, A, r => `data-gn="${esc(r.nm)}"`, 10, "gunung", r => -r.rs) : "")
       + this.ket("Syarat masuk daftar: gempa vulkanik 7 hari terakhir sedikitnya 10, sedikitnya 1,5 kali rata-rata 7 harinya sendiri, dan di atas persentil 90 riwayatnya. " + uji)); },
 
@@ -249,7 +262,7 @@ const Insight = {
       {k: "n", n: "Letusan sejak 2024", t: "Jumlah letusan di daftar informasi letusan MAGMA sejak 1 Jan 2024; guguran atau aktivitas tanpa letusan tidak terhitung", num: 1, v: r => r.n, h: r => fmt(r.n)},
       {k: "l9", n: "Per hari, 90 hari", t: "Rata-rata letusan per hari dalam 90 hari terakhir arsip", num: 1, v: r => r.l9, h: r => this.d(r.l9, 2)}];
     const judul = sepi.length >= 2 ? `${this.gabung(sepi.map(x => this.hl(this.nm(x.nm))))} berstatus Normal (Level I) dan nyaris tanpa letusan sejak 2024, padahal ${this.hl(jiwaTxt(sepi.reduce((a, x) => a + x.jw, 0)) + " jiwa")} tinggal di KRB III dan II-nya` : `${this.hl(this.nm(P[0].nm))} berpenduduk KRB III dan II terbesar (${this.hl(jiwaTxt(P[0].jw) + " jiwa")}), ${fmt(P[0].n)} letusan sejak 2024`;
-    return this.std(this.LABEL.paparan, judul, this.tabelStd("paparan", kol, P, r => `data-gn="${esc(r.nm)}"`, 10, "gunung", r => -r.jw) + this.ket("Level I Normal bukan jaminan tanpa bahaya; ikuti rekomendasi PVMBG dan BPBD. Penduduk perkiraan WorldPop 1 km. Letusan dari daftar informasi letusan MAGMA, snapshot arsip " + this.tglArsip(this.rz.akhir) + ".")); },
+    return this.std(this.LABEL.paparan, judul, this.tabelStd("paparan", kol, P, r => `data-gn="${esc(r.nm)}"`, 10, "gunung", r => -r.jw) + this.ket("KRB edisi 2018; radius bahaya terkini dari rekomendasi PVMBG bisa lebih luas daripada KRB itu (mis. Ibu dan Lewotobi Laki-laki). Level I Normal bukan jaminan tanpa bahaya; ikuti rekomendasi PVMBG dan BPBD. Penduduk perkiraan WorldPop 1 km. Letusan dari daftar informasi letusan MAGMA, snapshot arsip " + this.tglArsip(this.rz.akhir) + ".")); },
 
   /* 8. tabel standar. Penduduk dalam radius pindah ke tab Dampak (Insight karhutla tidak memuatnya) */
   /* peluang abu di bandara/kota (../banjir/data/abu_peluang.json, kontrak peluang/1; mesin public/inti/peluang.js). Wilayah awal = pasangan gunung-titik
