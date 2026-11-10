@@ -587,6 +587,7 @@ dialog.dlg{border-radius:18px;overflow:auto}
 .sg-ket > svg{width:16px!important;height:16px!important;min-width:16px;flex:none;color:var(--brand2)}
 .sg-ket > span{flex:1 1 auto}
 .sg-ket b{color:var(--ink)}
+.seg.tr-seg{margin:6px 0 8px;overflow:hidden}.seg.tr-seg button{flex:1 1 0;min-width:0;padding:5px 0;font-size:.68rem}.tr-pesan{margin:2px 0 0;font-size:.72rem;color:var(--ink2);text-align:center}.tr-pesan b{color:var(--ink)}
 .tm-leg{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 12px;font-size:10.5px;color:var(--ink2);margin:2px 0 4px}
 .tm-leg span{display:inline-flex;align-items:center;gap:5px}
 .tm-leg i{width:14px;border-top:2px dashed;height:0}
@@ -2751,7 +2752,7 @@ function renderDaftar() {
   const total = item.length ? `<div class="tb tb-total" style="${G}"><span></span><span>Grand total</span>${u === "kl"
       ? `<span class="n">${fmt(jm(i => i.v))}</span><span class="n">${jmN(i => i.kw[5])}</span><span class="n">${jmN(i => i.kw[6])}</span><span class="n">${item.some(i => i.kw[5] == null) ? "–" : fmt(jm(i => i.kw[0] - i.kw[5] - i.kw[6]))}</span>`
       : `<span class="n">${fmt(jm(i => i.v))}</span><span class="n">${jmN(i => i.kw[4])}</span><span class="n">${per ? "–" : jmN(i => i.kw[3])}</span>`}<span></span><span></span></div>` : "";
-  $("#rows").innerHTML = (j.length >= 1 ? trenMini(j[0]) + kartuAsap(j[j.length - 1]) + (window.SatelitLintas ? SatelitLintas.kartu() : "") : "") + sakelar + kepala + total + (item.length ? item.map((i, n) => {
+  $("#rows").innerHTML = (j.length >= 1 ? trenMini(j[0]) + trenWil(j[0]) + kartuAsap(j[j.length - 1]) + (window.SatelitLintas ? SatelitLintas.kartu() : "") : "") + sakelar + kepala + total + (item.length ? item.map((i, n) => {
     const [akt, , , nk, fs, j24, j72] = i.kw, lv = i.lv, f = v => v ? fmt(v) : "–";
     const t = j.length === 0 ? trenProv(i.kunci) : null;
     const judul = t ? `${t.th[t.th.length - 1]}: ${fmt(t.ini)} titik, ${(t.ini / t.rata).toFixed(1).replace(".", ",")}× rata-rata ${t.th[0]}–${t.th[t.th.length - 2]}` : "";
@@ -2887,6 +2888,54 @@ function trenMini(k) { const t = trenProv(k); if (!t) return "";
     <div class="tm-leg">${rEN != null ? `<span><i style="border-color:#a9402f"></i>rata-rata El Niño <b>${pendek(Math.round(rEN))}</b></span>` : ""}${rB != null ? `<span><i style="border-color:#d9692f"></i>rata-rata tahun biasa <b>${pendek(Math.round(rB))}</b></span>` : ""}</div>
     <div class="tm-ring" style="--w:${t.ini >= t.rata ? "#c9503a" : "#2b8c86"}"><div class="tm-ring-k"><span>${t.th[n - 1]}</span><b>${fmt(Math.round(t.ini / t.rata * 10) / 10)}× rata-rata</b></div>
       <div class="tm-ring-r"><span><b>${fmt(t.ini)}</b> titik, peringkat ${t.rank} dari ${n} tahun</span><span>Rata-rata ${t.th[0]}–${t.th[n - 2]}: <b>${fmt(Math.round(t.rata))}</b> titik</span></div></div></div>`; }
+/* tren titik panas per provinsi (pemilik, 10 Nov 2026): 1-3 minggu per hari, 1-6 bulan per minggu (4 minggu per bulan), 1 tahun per bulan.
+   Hari terakhir = kemarin (hari ini belum lengkap), kecuali batang bulan berjalan. harian30.json 100 hari; lebih lama dari itu harian_panjang.json, dimuat saat dibutuhkan */
+const TREN_WIL = [["7h", "1 mg", "1 minggu", 7, "h"], ["14h", "2 mg", "2 minggu", 14, "h"], ["21h", "3 mg", "3 minggu", 21, "h"], ["4m", "1 bln", "1 bulan", 4, "m"], ["8m", "2 bln", "2 bulan", 8, "m"],
+  ["12m", "3 bln", "3 bulan", 12, "m"], ["16m", "4 bln", "4 bulan", 16, "m"], ["20m", "5 bln", "5 bulan", 20, "m"], ["24m", "6 bln", "6 bulan", 24, "m"], ["12b", "1 thn", "1 tahun", 12, "b"]];
+S.trenWilV = "7h";
+const trenPanjang = v => { const r = TREN_WIL.find(x => x[0] === v); return r[4] === "b" || (r[4] === "m" && r[3] > 12); };
+const muatPanjang = () => S.hPanjangP ||= muatJSON("data/harian_panjang.json").then(j => { S.hPanjang = {i: new Map(j.hari.map((t, i) => [t, i])), prov: j.prov}; }).catch(() => { S.hPanjangP = null; throw 0; });
+/* nilai satu hari: harian30 menang (versi terbaru), selebihnya arsip panjang; null = hari itu tidak ada datanya */
+function nilaiHariProv(k, t) { const H = S.h30, i = H ? H.hari.indexOf(t) : -1; if (i >= 0) return H.prov[k]?.[i] || 0;
+  const P = S.hPanjang, j = P?.i.get(t); return j == null ? null : P.prov[k]?.[j] || 0; }
+const geserHari = (t, n) => new Date(Date.parse(t + "T12:00:00Z") + n * 864e5).toISOString().slice(0, 10);
+const jmlHari = (k, dari, n) => { let a = 0, ada = false; for (let i = 0; i < n; i++) { const v = nilaiHariProv(k, geserHari(dari, i)); if (v != null) { a += v; ada = true; } } return ada ? a : null; };
+const tglTren = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"});
+function batangTren(k, v) { const r = TREN_WIL.find(x => x[0] === v), N = r[3], hi = S.meta.hari_wib, akhir = geserHari(hi, -1), out = [];
+  if (r[4] === "b") { const y0 = +hi.slice(0, 4), m0 = +hi.slice(5, 7) - 1;
+    for (let i = N - 1; i >= 0; i--) { const d = new Date(Date.UTC(y0, m0 - i, 1)), dari = d.toISOString().slice(0, 10), bln = new Date(Date.UTC(y0, m0 - i + 1, 1)), hb = Math.min(Math.round((bln - d) / 864e5), Math.round((Date.parse(akhir + "T00:00:00Z") - d) / 864e5) + 1);
+      const nama = d.toLocaleDateString("id-ID", {month: "short", timeZone: "UTC"}), lengkap = d.toLocaleDateString("id-ID", {month: "long", year: "numeric", timeZone: "UTC"});
+      out.push({x: nama, tip: lengkap + (i ? "" : " (berjalan)"), n: hb > 0 ? jmlHari(k, dari, hb) : null}); }
+    return out; }
+  const lebar = r[4] === "h" ? 1 : 7;
+  for (let i = N - 1; i >= 0; i--) { const z = geserHari(akhir, -i * lebar), a = geserHari(z, 1 - lebar);
+    out.push({x: tglTren(lebar === 1 ? z : a), tip: lebar === 1 ? new Date(z + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long"}) : `${tglTren(a)} sampai ${tglTren(z)}`, n: jmlHari(k, a, lebar)}); }
+  return out; }
+function isiTrenWil(k) { const v = S.trenWilV, r = TREN_WIL.find(x => x[0] === v);
+  if (trenPanjang(v) && !S.hPanjang) return `<p class="tr-pesan">Memuat riwayat…</p>`;
+  const b = batangTren(k, v), n = b.length, nl = b.map(x => x.n || 0), tot = nl.reduce((a, c) => a + c, 0), m = Math.max(1, ...nl), W = 360, H = 96, B = 78, bw = W / n, iP = nl.indexOf(Math.max(...nl));
+  if (b.every(x => x.n == null)) return `<p class="tr-pesan">Data rentang ini belum tersedia.</p>`;
+  const tiapLabel = n <= 12 ? 1 : n <= 16 ? 2 : n <= 21 ? 3 : 4, satuan = r[4] === "h" ? "hari" : r[4] === "m" ? "minggu" : "bulan";
+  const g = b.map((x, i) => { const h = x.n ? Math.max(1.5, x.n / m * 60) : 0, puncak = i === iP && x.n > 0, ang = n <= 14 || puncak;
+    return `<g class="tm-b" data-tip="${esc(`<b>${x.tip}</b><br>${x.n == null ? "belum ada data" : fmt(x.n) + " titik panas"}`)}"><rect x="${i * bw}" y="0" width="${bw}" height="${H}" fill="transparent"/>
+      <rect x="${i * bw + Math.min(2, bw * .12)}" y="${B - h}" width="${bw - 2 * Math.min(2, bw * .12)}" height="${h}" rx="2" fill="${puncak ? "#c9503a" : "#e58a45"}"/>
+      ${ang && x.n ? `<text x="${Math.min(W - 12, Math.max(12, i * bw + bw / 2))}" y="${B - h - 3}" text-anchor="middle" font-size="8.5" font-weight="700" fill="currentColor">${fmt(x.n)}</text>` : ""}
+      ${(n - 1 - i) % tiapLabel === 0 ? `<text x="${Math.min(W - 14, Math.max(14, i * bw + bw / 2))}" y="${H - 6}" text-anchor="middle" font-size="8" fill="currentColor" opacity=".55">${x.x}</text>` : ""}</g>`; }).join("");
+  /* banding dengan rentang sepanjang ini tepat sebelumnya, sampai 2 bulan saja: lebih panjang dari itu membandingkan musim api dengan musim hujan */
+  let banding = "";
+  if (r[4] === "h" || (r[4] === "m" && r[3] <= 8)) { const lebar = r[4] === "h" ? 1 : 7, hari = r[3] * lebar, dari = geserHari(S.meta.hari_wib, -1 - 2 * hari + 1), lalu = jmlHari(k, dari, hari), lengkap = nilaiHariProv(k, dari) != null;
+    if (lalu && lengkap) { const d = Math.round((tot - lalu) / lalu * 100); banding = ` <span style="color:${d > 0 ? "#c9503a" : d < 0 ? "#2b8c86" : "inherit"}">${d > 0 ? "naik" : d < 0 ? "turun" : "sama dengan"} ${d ? fmt(Math.abs(d)) + "% dari" : ""} ${r[2]} sebelumnya</span>`; } }
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Tren titik panas ${r[2]} terakhir, per ${satuan}">${g}</svg>
+    <p class="tr-pesan"><b>${fmt(tot)}</b> titik panas, ${r[2]} terakhir per ${satuan}.${banding}</p>`; }
+function trenWil(k) { if (!S.h30?.prov?.[k] && !S.sejarah?.prov?.[k]) return "";
+  return `<div class="tm kotak-p" id="trenWil" data-prov="${esc(k)}"><div class="lbl">Tren titik panas</div>
+    <div class="seg penuh tr-seg" role="group" aria-label="Rentang tren">${TREN_WIL.map(([v, n, p]) => `<button type="button" data-tren="${v}" title="${p}" aria-label="${p}" aria-pressed="${S.trenWilV === v}">${n}</button>`).join("")}</div>
+    <div id="trenWilIsi">${isiTrenWil(k)}</div></div>`; }
+function segarTrenWil() { const w = $("#trenWil"); if (w) w.querySelector("#trenWilIsi").innerHTML = isiTrenWil(w.dataset.prov); }
+$("#rows").addEventListener("click", e => { const t = e.target.closest("[data-tren]"); if (!t) return; const v = t.dataset.tren;
+  if (S.trenWilV === v) return; S.trenWilV = v;
+  t.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === t));   /* tombol berganti dulu, grafik sesudah satu frame (INP) */
+  requestAnimationFrame(() => setTimeout(() => { segarTrenWil(); if (trenPanjang(v) && !S.hPanjang) muatPanjang().then(segarTrenWil, () => { const i = $("#trenWilIsi"); if (i) i.innerHTML = `<p class="tr-pesan">Riwayat gagal dimuat, coba lagi.</p>`; S.trenWilV === v && (S.hPanjangP = null); }); }, 0)); });
 /* daftar Riwayat: wilayah di tingkat ini diurutkan menurut skor risiko 2002-2026; klik = popup analisa */
 function renderDaftarRiw() {
   if (!S.riw) return;
