@@ -35,8 +35,8 @@ button{-webkit-tap-highlight-color:transparent}
 
 /* masuk */
 .ad-masuk{display:grid;grid-template-columns:minmax(0,44fr) minmax(0,56fr);height:100dvh;overflow:hidden;background:var(--paper)}
-.ad-sisi-masuk{position:relative;display:grid;place-items:center;padding:32px 24px;overflow:auto;background:linear-gradient(160deg,var(--soft),var(--paper) 55%,color-mix(in srgb,var(--c5) 14%,var(--paper)))}
-.ad-pola{position:absolute;inset:0;pointer-events:none;background:var(--c5);opacity:.3;-webkit-mask:url(/img/pola-kontur.svg?v=1) center/cover no-repeat;mask:url(/img/pola-kontur.svg?v=1) center/cover no-repeat}
+.ad-sisi-masuk{position:relative;display:grid;place-items:center;padding:32px 24px;overflow:auto;background:radial-gradient(90% 60% at 8% 0%,color-mix(in srgb,var(--c5) 30%,transparent),transparent 70%),radial-gradient(80% 55% at 100% 22%,color-mix(in srgb,var(--navy2) 16%,transparent),transparent 72%),radial-gradient(95% 60% at 88% 100%,color-mix(in srgb,var(--c5) 36%,transparent),transparent 70%),radial-gradient(70% 45% at 0% 92%,color-mix(in srgb,var(--c7) 14%,transparent),transparent 72%),var(--paper)}
+.ad-pola{position:absolute;inset:0;pointer-events:none;background:var(--navy2);opacity:.22;-webkit-mask:url(/img/pola-kontur.svg?v=1) center/cover no-repeat;mask:url(/img/pola-kontur.svg?v=1) center/cover no-repeat}
 .ad-kartu-masuk{position:relative;z-index:1;width:min(440px,100%);border-radius:24px;background:var(--card);box-shadow:0 0 0 1px color-mix(in srgb,var(--ink) 6%,transparent),0 24px 60px -24px rgba(11,37,69,.28)}
 .ad-galeri{display:flex;flex-direction:column;gap:2px;background:var(--navy);min-height:0}
 .ad-pita{position:relative;flex:1 1 0;margin:0;min-height:0;overflow:hidden;transition:flex-grow .5s cubic-bezier(.2,.7,.2,1)}
