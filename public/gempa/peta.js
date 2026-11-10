@@ -158,8 +158,8 @@ const Peta = {
       if (w?.length) turun(w[0].properties.kode); });
   },
 };
-function turun(k) { S.jalur = [k]; S.hal = 0; S.urut = {k: "t", turun: true}; Peta.terbang(k); renderCrumb(); renderDaftar(); }
-function naik(n) { S.jalur = S.jalur.slice(0, n); S.hal = 0; S.urut = {k: "n", turun: true}; if (!n) peta.fitBounds(BB_ID, {padding: kiriPad(), duration: 700}); renderCrumb(); renderDaftar(); }
+function turun(k) { S.jalur = [k]; S.hal = 0; S.urut = {k: "t", turun: true}; Peta.terbang(k); renderCrumb(); nanti(renderDaftar); }
+function naik(n) { S.jalur = S.jalur.slice(0, n); S.hal = 0; S.urut = {k: "n", turun: true}; if (!n) peta.fitBounds(BB_ID, {padding: kiriPad(), duration: 700}); renderCrumb(); nanti(renderDaftar); }
 
 /* ---------- panel ---------- */
 function renderCrumb() {
@@ -210,7 +210,7 @@ function renderPita() {
 const setLapis = (k, on) => { const i = document.querySelector(`#lapis input[data-l="${k}"]`); if (i && i.checked !== on) { i.checked = on; i.dispatchEvent(new Event("change", {bubbles: true})); } };
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return; const k = i.dataset.l; if (k?.startsWith("nasa_")) return;
   if (k === "evakuasi") return nanti(() => Evakuasi.nyala());
-  Promise.resolve(["lempeng", "sesar", "riwayat", "katalog", "kekerapan", "bahaya", "satelit"].includes(k) ? Peta.pasangLapis(k) : 0).then(() => { (LAPIS_PETA[k] || []).forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none")); renderLegenda(); }); });
+  Promise.resolve(["lempeng", "sesar", "riwayat", "katalog", "kekerapan", "bahaya", "satelit"].includes(k) ? new Promise(r => nanti(() => r(Peta.pasangLapis(k)))) : 0).then(() => { (LAPIS_PETA[k] || []).forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none")); renderLegenda(); }); });
 $("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");
 $("#lapisLipat").onclick = e => { const b = e.currentTarget, det = document.querySelectorAll("#lapis details"), tutup = [...det].some(d => d.open); det.forEach(d => d.open = !tutup); b.classList.toggle("tutup", tutup); };
 

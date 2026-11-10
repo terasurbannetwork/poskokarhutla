@@ -5,7 +5,7 @@ import vm from "node:vm";
 
 const FIX = "scripts/gempa/fixture_inatews/", fx = n => fs.readFileSync(FIX + n, "utf8");
 const kod = fs.readFileSync("public/gempa/inatews.js", "utf8");
-const c = {console, Math, JSON, Date}; vm.createContext(c); vm.runInContext(kod + "\nthis.Ina = Ina;", c);
+const c = {console, Math, JSON, Date, esc: x => String(x)}; vm.createContext(c); vm.runInContext(kod + "\nthis.Ina = Ina;", c);
 const I = c.Ina;
 
 test("waktu WIB dan UTC sama dengan inatews.py", () => {
@@ -78,4 +78,27 @@ test("arsip: katalog append-only terbentuk dan konsisten", { skip: !fs.existsSyn
   assert.ok(k.baris.length >= 100); assert.equal(new Set(k.baris.map(r => r[i.id])).size, k.baris.length, "id unik");
   assert.ok(k.baris.every(r => r[i.t] > 1.7e9 && r[i.t] < 2.5e9), "waktu epoch detik");
   assert.ok(k.baris.every((r, j) => j === 0 || r[i.t] <= k.baris[j - 1][i.t]), "urut terbaru dulu");
+});
+
+test("P.D. tsunami dibaca dari subject buletin, tanpa tafsir", () => {
+  for (const [s, p] of [["Warning Tsunami PD-4", "PD-4"], ["Warning Tsunami PD-3.4", "PD-3.4"], ["Warning Tsunami PD-1", "PD-1"], ["Gempa M>5", ""]]) assert.equal(I.pd(s), p);
+  assert.match(I.pilPD({subjek: "Warning Tsunami PD-4"}), /#5b6575/); assert.match(I.pilPD({subjek: "Warning Tsunami PD-3.2"}), /#d64545/);
+});
+
+test("skema katalog riwayat PDF dikenali tampilan (null = strip)", { skip: !fs.existsSync("public/gempa/data/katalog_merusak.json") }, () => {
+  const m = JSON.parse(fs.readFileSync("public/gempa/data/katalog_merusak.json", "utf8")), t = JSON.parse(fs.readFileSync("public/gempa/data/katalog_tsunami.json", "utf8"));
+  for (const [k, set, arr] of [["merusak", m, m.baris], ["tsunami", t, t.baris], ["wilayah", t, t.baris_wilayah]]) {
+    const kol = I.RW[k].kol.map(x => x[0]).filter(x => x !== "koor"), ada = new Set(arr.flatMap(r => Object.keys(r)));
+    assert.equal(kol.filter(x => !ada.has(x)).join(), "", `kolom ${k} tidak ada di berkas`); assert.ok(arr.length > 100 && set.judul);
+  }
+});
+
+test("id buletin tak sah dibuang, parse dipakai ulang, format angka riwayat", () => {
+  const x = fx("last30event.xml");
+  assert.equal(I.cap(x.replace("<eventid>20261110153700</eventid>", "<eventid>../x?y</eventid>")).length, 0);
+  assert.equal(I.live(fx("live30event.xml").replace("bmg2026wank", "a b;c")).length, 2);
+  assert.ok(I.cap(x) === I.cap(x), "teks sama = hasil sama, tanpa urai ulang");
+  assert.equal(I.tglID("2025-11-27"), "27 Nov 2025"); assert.equal(I.tglID(null), "–"); assert.equal(I.jamID("11:56:24"), "11.56");
+  assert.equal(I.koord(-2.6, 95.8), "2,60° LS, 95,80° BT"); assert.equal(I.koord(null, 1), "–");
+  assert.doesNotMatch(kod, /\baman\b/i, "kata aman tidak muncul di kode tampilan");
 });

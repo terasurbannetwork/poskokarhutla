@@ -83,6 +83,9 @@ def jarak_km(a, b, c, d):
     return 12742 * math.asin(math.sqrt(h))
 
 
+ID_OK = re.compile(r"^[\w.-]{1,40}$")
+
+
 def angka(s, d=None):
     m = re.search(r"-?\d+(?:\.\d+)?", str(s or ""))
     return float(m.group()) if m else d
@@ -94,6 +97,8 @@ def urai_live(teks):
     for g in ET.fromstring(teks).iter("gempa"):
         v = {c.tag: (c.text or "").strip() for c in g}
         try:
+            if not ID_OK.match(v["eventid"]):
+                continue
             out.append({"id": v["eventid"], "t": utc_epoch(v["waktu"]), "lat": float(v["lintang"]), "lon": float(v["bujur"]), "dalam": angka(v.get("dalam")),
                         "m": round(float(v["mag"]), 1), "tempat": v.get("area", ""), "status": v.get("status", ""), "fokal": v.get("fokal", "")})
         except (KeyError, ValueError):
@@ -106,6 +111,8 @@ def urai_3m(teks):
     for f in json.loads(teks).get("features", []):
         p, c = f.get("properties", {}), f.get("geometry", {}).get("coordinates", [])
         try:
+            if not ID_OK.match(str(p["id"])):
+                continue
             out.append({"id": p["id"], "t": utc_epoch(p["time"]), "lat": float(c[1]), "lon": float(c[0]), "dalam": round(float(p["depth"]), 1), "m": round(float(p["mag"]), 1),
                         "tempat": p.get("place", ""), "status": p.get("status", ""), "fase": p.get("fase", "")})
         except (KeyError, ValueError, IndexError):
@@ -125,21 +132,23 @@ def urai_cap(teks):
         def v(t):
             e = info.find(NS + t)
             return (e.text or "").strip() if e is not None and e.text else ""
-        try:
+        try:   # satu buletin rusak atau ber-id tak sah dibuang; sisanya lanjut
             lon, lat = (float(x) for x in info.find(NS + "point").find(NS + "coordinates").text.split(","))
             b = {"id": v("eventid"), "jenis": jenis_buletin(v("subject")), "subjek": v("subject"), "t": wib_epoch(v("date"), v("time")), "lat": lat, "lon": lon,
                  "m": round(float(v("magnitude")), 1), "dalam": angka(v("depth")), "area": v("area"), "potensi": v("potential"), "judul": v("headline"),
                  "deskripsi": v("description"), "instruksi": v("instruction"), "felt": v("felt"), "terkirim": v("timesent"),
                  "berakhir": "berakhir" in v("headline").lower(),
                  "peta": {k: v(k) for k in ("shakemap", "wzmap", "ttmap", "sshmap") if v(k)}}
-        except (AttributeError, ValueError, KeyError):
+            if not ID_OK.match(b["id"]):
+                continue
+            ts = re.match(r"(\d\d)/(\d\d)/(\d{4}) (\d\d:\d\d:\d\d)", b["terkirim"])
+            b["terbit"] = wib_epoch(f"{ts[1]}-{ts[2]}-{ts[3]}", ts[4]) if ts else b["t"]
+            b["zona"] = [[(z.findtext(NS + "province") or "").strip(), (z.findtext(NS + "district") or "").strip(), (z.findtext(NS + "level") or "").strip(),
+                          wib_epoch(z.findtext(NS + "date"), z.findtext(NS + "time"))] for z in info.findall(NS + "wzarea")]
+            b["pantau"] = [[(o.findtext(NS + "location") or "").strip(), float(o.findtext(NS + "loclatitude")), float(o.findtext(NS + "loclongitude")),
+                            float(o.findtext(NS + "height")), wib_epoch(o.findtext(NS + "date"), o.findtext(NS + "time"))] for o in info.findall(NS + "obsarea")]
+        except (AttributeError, ValueError, KeyError, TypeError, IndexError):
             continue
-        ts = re.match(r"(\d\d)/(\d\d)/(\d{4}) (\d\d:\d\d:\d\d)", b["terkirim"])
-        b["terbit"] = wib_epoch(f"{ts[1]}-{ts[2]}-{ts[3]}", ts[4]) if ts else b["t"]
-        b["zona"] = [[(z.findtext(NS + "province") or "").strip(), (z.findtext(NS + "district") or "").strip(), (z.findtext(NS + "level") or "").strip(),
-                      wib_epoch(z.findtext(NS + "date"), z.findtext(NS + "time"))] for z in info.findall(NS + "wzarea")]
-        b["pantau"] = [[(o.findtext(NS + "location") or "").strip(), float(o.findtext(NS + "loclatitude")), float(o.findtext(NS + "loclongitude")),
-                        float(o.findtext(NS + "height")), wib_epoch(o.findtext(NS + "date"), o.findtext(NS + "time"))] for o in info.findall(NS + "obsarea")]
         out.append(b)
     return out
 
@@ -155,7 +164,7 @@ class _Bersih(html.parser.HTMLParser):
             self.o.append("<%s>" % tag)
             self.buka += tag == "p"
         elif tag == "br":
-            self.o.append(" ")
+            self.o.append("<br>")
 
     def handle_endtag(self, tag):
         if tag in ("p", "strong", "em"):
@@ -170,6 +179,7 @@ def bersihkan_narasi(teks):
     p.feed(teks)
     s = re.sub(r"[ \t\r\n]+", " ", "".join(p.o))
     s = re.sub(r"<(strong|em)> *</\1>", "", s)
+    s = re.sub(r"(<br>\s*)+(</p>)", r"\2", s)
     s = re.sub(r"\s+([,.;:])", r"\1", s).replace("( ", "(").replace(" )", ")")   # 'M5,0</strong> pada' tetap, ' ,' -> ','
     return "".join(x.strip() + "" for x in re.findall(r"<p>.*?</p>", s) if re.sub(r"<[^>]+>", "", x).strip())
 
@@ -376,6 +386,16 @@ def jalan(anggaran=150, net=None, sekarang=None):
                 if perlu_cek(d, bid, sekarang, g["t"]):
                     if not periksa_produk(net, bid, "tsunami_penuh" if i == 0 or bid == ids[0] else "tsunami", d, g, sekarang):
                         break
+    for g in tsunami.values():   # siaran pers lengkap tiap buletin tsunami (tabel 30 buletin di layar), sekali per buletin
+        for b in reversed(g["buletin"]):
+            if "nc" in b or net.anggaran < 2:
+                continue
+            gl = net.galat
+            r = net.minta(f"{CDN}{b['id']}_narasi.txt")
+            if net.galat == gl:
+                b["nc"] = 1
+            if r and bersihkan_narasi(r.decode("utf-8", "replace")):
+                b["narasi"] = bersihkan_narasi(r.decode("utf-8", "replace"))
     per_bulan = {}
     for key, d in detail.items():
         d["diakses"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
@@ -415,6 +435,10 @@ def uji():
     assert fl[0]["felt"] == "II - III Manokwari" and m5[0]["potensi"] == "tidak berpotensi TSUNAMI" and not m5[0]["berakhir"]
     assert ts[0]["berakhir"] is True and ts[1]["berakhir"] is False and ts[0]["zona"] == [] and len(ts[1]["zona"]) == 2 and ts[1]["zona"][0][2] == "SIAGA" and ts[1]["pantau"][0][3] == 0.14, (ts[1]["zona"][:1], ts[1]["pantau"][:1])
     assert ts[1]["zona"][0][3] == wib_epoch("15-08-2026", "05:02:23 WIB") and ts[0]["terbit"] == wib_epoch("15-08-2026", "07:31:30 WIB")
+    jahat = _fix("last30event.xml").replace("<eventid>20261110153700</eventid>", "<eventid>../../x?y</eventid>")
+    assert urai_cap(jahat) == [] and urai_live(_fix("live30event.xml").replace("bmg2026wank", "a b;c"))[0]["id"] != "a b;c"
+    rusak = _fix("last30tsunamievent.xml").replace("<loclatitude>-8.26</loclatitude>", "<loclatitude>x</loclatitude>")
+    assert len(urai_cap(rusak)) == len(ts) - 1, "satu buletin rusak dibuang, sisanya tetap terurai"
     # dua id buletin untuk satu gempa -> satu kejadian katalog
     kat = gabung_katalog([], m3, live)
     detail, tsu = {}, {}
@@ -429,6 +453,7 @@ def uji():
     # produk
     n = bersihkan_narasi(_fix("narasi.txt"))
     assert n.startswith("<p><strong>GEMPABUMI TEKTONIK M5,3") and "<script" not in n and "style=" not in n and "&deg;" not in n and "0,32° LS" in n and "<p>" in n, n[:200]
+    assert bersihkan_narasi("<p>a<br>b<br></p>") == "<p>a<br>b</p>", bersihkan_narasi("<p>a<br>b<br></p>")
     assert bersihkan_narasi('<p onclick="x()">a<script>b</script><b>c</b></p>') == "<p>abc</p>" or "onclick" not in bersihkan_narasi('<p onclick="x()">a</p>')
     st = urai_stasiun(_fix("stationlist_MMI.txt"))
     assert len(st) == 3 and st[0][0] == "FKSPI" and st[0][5] == "IX" and st[2][5] == "I" and st[1][1] == "Anggi, Pegunungan Arfak", st

@@ -20,7 +20,6 @@ import re
 import subprocess
 import sys
 import tempfile
-import urllib.request
 from datetime import date, datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -227,8 +226,8 @@ def parse_kiri(kiri, kep, bawah=()):
         lat = -lat
     f["lat"], f["bujur"], f["kedalaman_km"] = lat, angka(sel["lon"]), angka(sel["dep"])
     f["mag"], f["mag_teks"] = angka(sel["mag"]), sel["mag"]
-    if sel["ot"] and re.fullmatch(r"\d{1,2}:\d\d(:\d\d)?", sel["ot"]):
-        f["jam"] = sel["ot"]
+    if sel["ot"] and re.fullmatch(r"\d{1,2}[:.]\d\d([:.]\d\d)?", sel["ot"]):
+        f["jam"] = sel["ot"].replace(".", ":")  # "21.43.24" ditulis dengan titik di sebagian baris
     return f
 
 
@@ -358,168 +357,202 @@ def urai_merusak(halaman):
 
 
 # ---------------------------------------------------------------- tsunami
+KOL_TS = ("no", "thn", "bln", "tgl", "pukul", "mag", "vt", "lok", "lat", "lon", "hm", "kor", "cat", "ref")
+
+
 def kepala_tsunami(gs):
-    """Posisi kolom dari kepala tabel halaman tsunami; None bila bukan halaman tabel."""
+    """Tepi kiri tiap kolom dari kepala tabel (posisi beda per halaman).
+    bentuk 'wilayah': Tanggal gabung; bentuk 'lampiran': Thn/Bln/Tgl terpisah. None bila bukan tabel."""
     kata = [w for _, l in gs for w in l]
-    if not any(w[4] == "KEJADIAN" for w in kata):
+    kej = [w for w in kata if w[4] == "KEJADIAN"]
+    if not kej:
         return None
-    def f(t, ke=None):
-        c = [w for w in kata if w[4] == t and w[1] < 160]
+    y0 = kej[0][1]
+    zona = [w for w in kata if y0 - 8 <= w[1] <= y0 + 48]
+
+    def f(*nama):
+        c = sorted(w for w in zona if w[4] in nama)
         return c[0] if c else None
-    need = {n: f(n) for n in ("Tanggal", "Pukul", "MAG.", "SUMBER", "Lintang", "Bujur", "Hmaks.", "KORBAN", "MENINGGAL", "REFERENSI")}
-    if not all(need.values()):
+    lamp = f("Thn") is not None
+    pukul, mag, lat, lon = f("Pukul"), f("MAG."), f("Lintang", "Lat"), f("Bujur", "Lon", "Long")
+    meng, ref = f("MENINGGAL"), f("REFERENSI")
+    kor, no = f("KORBAN"), f("No.", "No")
+    if not all((pukul, mag, lat, lon, meng, ref, kor)):
         return None
-    n = need
-    utc = f("(UTC)")
-    return {
-        "top": (utc[3] if utc else n["Tanggal"][3]) + 1,
-        "tgl": n["Tanggal"][0] - 8, "pukul": n["Pukul"][0] - 12, "mag": n["MAG."][0] - 12,
-        "vt": f("V")[0] - 12 if f("V") else n["MAG."][0] + 40,
-        "lok": n["SUMBER"][0] - 14, "lat": n["Lintang"][0] - 8, "lon": n["Bujur"][0] - 8,
-        "hm": n["Hmaks."][0] - 8, "kor": n["KORBAN"][0] - 8, "cat": n["MENINGGAL"][2] + 3,
-        "ref": n["REFERENSI"][0] - 14,
-    }
+    vt = sorted(w for w in zona if w[4] in ("V", "/", "T", "Vol/", "Tek") and mag[0] < w[0] < lat[0])
+    if not vt:
+        return None
+    hm = f("Hmaks.", "H")
+    dasar_kepala = {"(UTC)", "PENGAMATAN", "GEMPA", "Tanggal", "Tangal", "Lintang", "Bujur", "Lat", "Lon", "Long",
+                    "Tgl", "Bln", "Thn", "Tek", "Pukul", "MENINGGAL"}
+    k = {"top": max(w[3] for w in zona if w[4] in dasar_kepala) + 1, "lamp": lamp, "no": no[0] if no else 0}
+    if lamp:
+        k["thn"] = f("Thn")[0] - 14
+        k["bln"] = f("Thn")[2] + 8
+        k["tgl"] = f("Tgl")[0] - 12
+    else:
+        tg = f("Tanggal", "Tangal")
+        k["tgl"] = (tg[0] - 8) if tg else (no[0] + 30 if no else 110)
+    k.update({
+        "pukul": pukul[0] - 12, "mag": mag[0] - 12, "vt": vt[0][0] - 12, "lok": vt[-1][2] + 8,
+        "lat": lat[0] - 12, "lon": lon[0] - 12,
+        "hm": (hm[0] - 12) if hm else (lon[0] + kor[0]) / 2,
+        "kor": kor[0] - 10, "ref": ref[0] - 14,
+    })
+    k["cat"] = k["ref"] if lamp else meng[2] + 3
+    return k
 
 
 def kolom_ts(x, k):
-    for nm in ("ref", "cat", "kor", "hm", "lon", "lat", "lok", "vt", "mag", "pukul", "tgl"):
-        if x >= k[nm]:
+    for nm in reversed(KOL_TS):
+        if nm in k and x >= k[nm]:
             return nm
     return "no"
 
 
+def kelompokkan(gt, anc, top, dasar, carry):
+    """Bagi kata tabel (sel rata tengah vertikal) ke baris. Tepi bawah baris = 2*y_jangkar - tepi atas.
+    Mengembalikan (kata_lanjutan_baris_sebelumnya, [kata per baris], carry_baru)."""
+    ys = sorted({round(y, 1) for y, _ in gt})
+    tepi = [(a + b) / 2 for a, b in zip(ys, ys[1:])]
+
+    def snap(v, r=7):
+        c = [t for t in tepi if abs(t - v) <= r]
+        return min(c, key=lambda t: abs(t - v)) if c else v
+    lo = snap(top + carry) if carry > 0 else top
+    lanjut = [w for y, ws in gt for w in ws if (w[1] + w[3]) / 2 < lo] if carry > 0 else []
+    hasil, batas = [], []
+    for i, ya in enumerate(anc):
+        atas = [y for y in ys if lo < y <= ya + 2]
+        t = (min(atas) - 5) if atas else ya - 6
+        b = 2 * ya - t
+        berikut = anc[i + 1] if i + 1 < len(anc) else None
+        if berikut is not None:
+            b = snap(min(max(b, ya + 4), berikut - 4))
+        elif b > dasar + 10:
+            carry, b = b - dasar, 1e9
+        else:
+            carry, b = 0.0, 1e9
+        hasil.append([w for y, ws in gt for w in ws if lo < (w[1] + w[3]) / 2 <= b] if i else
+                     [w for y, ws in gt for w in ws if lo <= (w[1] + w[3]) / 2 <= b])
+        lo = b
+    return lanjut, hasil, carry
+
+
+def isi_tsunami(r, w, k):
+    kol = {}
+    for t in sorted(w, key=lambda t: (round((t[1] + t[3]) / 2 / 3), t[0])):
+        kol.setdefault(kolom_ts(t[0], k), []).append(t)
+    T = lambda nm: rapi(teks(kol.get(nm, [])))
+    if k["lamp"]:
+        thn, bln, tgl = T("thn"), T("bln"), T("tgl")
+        tahun = int(thn) if thn and re.fullmatch(r"\d{1,4}", thn) else None
+        bulan = BULAN.get((bln or "").lower().rstrip("."))
+        hari = int(tgl) if tgl and re.fullmatch(r"\d{1,2}", tgl) else None
+        r["tanggal_teks"] = " ".join(x for x in (tgl, bln, thn) if x) or None
+    else:
+        hari = bulan = tahun = None
+        for t in sorted(kol.get("tgl", []), key=lambda t: ((t[1] + t[3]) / 2, t[0])):
+            sv = t[4]
+            if re.fullmatch(r"\d{1,2}", sv) and hari is None and bulan is None:
+                hari = int(sv)
+            elif sv.lower().rstrip(".") in BULAN and bulan is None:
+                bulan = BULAN[sv.lower().rstrip(".")]
+            elif re.fullmatch(r"\d{3,4}", sv) and tahun is None:
+                tahun = int(sv)
+        r["tanggal_teks"] = T("tgl")
+    r["tanggal"] = tanggal_iso(hari, bulan, tahun)
+    r["pukul_utc"] = T("pukul")
+    mg = T("mag")
+    r["magnitudo_gempa"], r["magnitudo_gempa_teks"] = angka(mg), mg
+    r["jenis_sumber"] = T("vt")  # kepala PDF "V/T" (Vulkanik/Tektonik); "*" = tak diketahui
+    r["sumber_tsunami"] = T("lok")
+    r["lintang"], r["bujur"] = angka(T("lat")), angka(T("lon"))
+    hm = T("hm")
+    r["tinggi_maks_m"], r["tinggi_maks_teks"] = angka(hm), hm
+    kb = T("kor")
+    r["korban_meninggal_teks"] = kb
+    r["korban_meninggal"] = int(kb.replace(".", "")) if kb and re.fullmatch(r"\d{1,3}(\.\d{3})+|\d+", kb) else None
+    r["catatan"] = T("cat")
+    r["referensi"] = T("ref")
+    return r
+
+
 def urai_tsunami(halaman):
-    baris, gagal, wilayah, sisa_lewat = [], [], None, 0.0
-    cur_prev = None
+    baris, gagal, wilayah, carry, prev, prev_k = [], [], None, 0.0, None, None
+    lampiran = []
     for nh, kata in enumerate(halaman, 1):
         gs = garis(kata)
+        for y, ws in gs:  # judul bagian bisa di halaman terpisah dari tabelnya
+            tj = teks(ws)
+            if ws[0][0] < 100 and len(ws) < 6 and "...." not in tj and y < 300 and (
+                    ws[0][4] == "WILAYAH" or (y < 90 and tj.isupper() and "LAMPIRAN" not in tj and "DAFTAR" not in tj
+                                               and not any(w[4] in ("WAKTU", "KEJADIAN", "No.") for w in ws))):
+                wilayah = tj.replace("WILAYAH", "").strip().title()
         k = kepala_tsunami(gs)
         if k is None:
             continue
-        for y, ws in gs:
-            if ws[0][4] == "WILAYAH" and y < k["top"] and ws[0][0] < 100:
-                wilayah = teks(ws).replace("WILAYAH", "").strip().title()
-        tabel = [w for w in kata if w[1] >= k["top"] - 0.5 and w[4] != "" and w[1] < 545]
-        # buang kaki halaman
-        gt = garis(tabel)
-        gt = [(y, ws) for y, ws in gt if "Katalog" not in teks(ws) or "Tsunami" not in teks(ws)]
-        # Catatan Pengamatan (paragraf lebar di bawah baris) -> milik baris sebelumnya
-        notes, rows_ws, mode = [], [], False
+        dasar = max([w[3] for w in kata if w[4] == "Katalog"] or [560]) - 12
+        gt = [(y, ws) for y, ws in garis([w for w in kata if w[1] >= k["top"] - 0.5 and w[3] < dasar + 11])
+              if not any(w[4] == "Katalog" for w in ws)]
+        notes, isi, mode = [], [], False
         for y, ws in gt:
-            kiri = ws[0][0] < 93 and not re.fullmatch(r"\d+\.", ws[0][4])
+            kiri = ws[0][0] < k["no"] + 3 and not re.fullmatch(r"\d+\.?", ws[0][4])
             if (ws[0][4] == "Catatan" and len(ws) > 1 and ws[1][4].startswith("Pengamatan")) or (mode and kiri):
                 mode = True
                 notes.append((y, ws))
             else:
                 mode = False
-                rows_ws.append((y, ws))
-        anc = [(y, w) for y, ws in rows_ws for w in ws if w[0] < k["tgl"] and re.fullmatch(r"\d+\.", w[4])]
-        ys = sorted({round(y, 1) for y, _ in rows_ws})
-        # batas dasar halaman: kaki
-        dasar = max([w[3] for w in kata if "Katalog" in w[4]] or [560]) - 12
-        gap = lambda y1, y2: (y1 + y2) / 2
-        tepi = []  # titik-titik gap antar baris-teks
-        for a, b in zip(ys, ys[1:]):
-            tepi.append((a + b) / 2)
-
-        def snap(v):
-            c = [t for t in tepi if abs(t - v) <= 7]
-            return min(c, key=lambda t: abs(t - v)) if c else v
-
+                isi.append((y, ws))
+        if not k["lamp"]:  # kepala "REFERENSI" rata tengah: batas Catatan | Referensi = celah kosong terlebar
+            iv = sorted((w[0], w[2]) for _, ws in isi for w in ws if w[0] >= k["cat"] + 40)
+            akhir, lebar = k["cat"] + 40, 8.0
+            for a0, b0 in iv:
+                if a0 - akhir > lebar:
+                    k["ref"], lebar = (akhir + a0) / 2, a0 - akhir
+                akhir = max(akhir, b0)
+        anc = [(y, w) for y, ws in isi for w in ws if w[0] < (k["thn"] if k["lamp"] else k["tgl"]) - (0 if k["lamp"] else 0)
+               and re.fullmatch(r"\d+\.?" if not k["lamp"] else r"\d{1,3}", w[4]) and w[0] >= k["no"] - 12
+               and (k["lamp"] or w[4].endswith("."))]
         if not anc:
             continue
-        b_awal = k["top"] + max(0.0, sisa_lewat)
-        b_awal = snap(b_awal) if sisa_lewat > 0 else k["top"]
-        # lanjutan baris sebelumnya: kata di atas b_awal
-        batas = [b_awal]
-        for i, (ya, _) in enumerate(anc):
-            b = 2 * ya - batas[-1]
-            if i + 1 < len(anc):
-                if not (ya < b < anc[i + 1][0]):
-                    b = (ya + anc[i + 1][0]) / 2
-                else:
-                    b = snap(b)
-            else:
-                if b > dasar:
-                    sisa_lewat = b - dasar
-                    b = 1e9
-                else:
-                    sisa_lewat = 0.0
-                    b = snap(b)
-            batas.append(b)
-        # lanjutan di puncak halaman -> baris terakhir halaman sebelumnya
-        if cur_prev is not None and b_awal > k["top"]:
-            cur_prev["_w"].extend(w for y, ws in rows_ws for w in ws if y < b_awal)
-        elif cur_prev is not None:
-            pass
-        halaman_baris = []
-        for i, (ya, wa) in enumerate(anc):
-            lo, hi = batas[i], batas[i + 1]
-            wsr = [w for y, ws in rows_ws for w in ws if lo < (w[1] + w[3]) / 2 <= hi] if i else \
-                  [w for y, ws in rows_ws for w in ws if lo <= (w[1] + w[3]) / 2 <= hi]
-            r = {"no_tabel": int(wa[4][:-1]), "halaman": nh, "wilayah_katalog": wilayah, "_w": wsr, "_y": ya, "_catn": []}
-            baris.append(r)
-            halaman_baris.append(r)
-        for y, ws in notes:  # milik jangkar terdekat di atasnya
-            atas = [r for r in halaman_baris if r["_y"] <= y]
-            tgt = atas[-1] if atas else (cur_prev if cur_prev else None)
+        # catatan pengamatan menyela: pisahkan dari sel baris (milik baris di atasnya)
+        lanjut, kel, carry = kelompokkan(isi, [y for y, _ in anc], k["top"], dasar, carry)
+        if prev is not None and lanjut:
+            prev["_w"].extend(lanjut)
+        hal = []
+        for (ya, wa), wsr in zip(anc, kel):
+            r = {"no_tabel": int(wa[4].rstrip(".")), "halaman": nh, "_w": wsr, "_k": k, "_y": ya, "_catn": []}
+            if not k["lamp"]:
+                r["wilayah"] = wilayah
+            hal.append(r)
+        for y, ws in notes:
+            atas = [r for r in hal if r["_y"] <= y]
+            tgt = atas[-1] if atas else prev
             if tgt is not None:
                 tgt["_catn"].append(teks(ws))
-        cur_prev = halaman_baris[-1]
-    for r in baris:
-        w = r.pop("_w")
-        r.pop("_y")
-        kol = {}
-        for t in sorted(w, key=lambda t: ((t[1] + t[3]) / 2, t[0])):
-            pass
-        # kolom per halaman: ambil ulang kepala halaman baris ini
-        kh = kepala_tsunami(garis(halaman[r["halaman"] - 1]))
-        for t in sorted(w, key=lambda t: (round((t[1] + t[3]) / 2 / 3), t[0])):
-            kol.setdefault(kolom_ts(t[0], kh), []).append(t)
-        tg = teks(kol.get("tgl", []))
-        m = re.match(r"(\d{1,2})\s+([A-Za-z]+)\s+(\d{3,4})", tg) or re.match(r"()([A-Za-z]+)\s+(\d{3,4})", tg) or re.match(r"()()(\d{3,4})$", tg)
-        # tanggal tersusun bertingkat: hari / bulan / tahun (urut y)
-        hari, bulan, tahun = None, None, None
-        for t in sorted(kol.get("tgl", []), key=lambda t: ((t[1] + t[3]) / 2, t[0])):
-            s = t[4]
-            if re.fullmatch(r"\d{1,2}", s) and hari is None and bulan is None:
-                hari = int(s)
-            elif s.lower().rstrip(".") in BULAN and bulan is None:
-                bulan = BULAN[s.lower().rstrip(".")]
-            elif re.fullmatch(r"\d{3,4}", s) and tahun is None:
-                tahun = int(s)
-        del m
-        r["tanggal"] = tanggal_iso(hari, bulan, tahun)
-        r["tanggal_teks"] = rapi(tg)
-        r["pukul_utc"] = rapi(teks(kol.get("pukul", [])))
-        mg = rapi(teks(kol.get("mag", [])))
-        r["magnitudo_gempa"] = angka(mg)
-        r["magnitudo_gempa_teks"] = mg
-        r["jenis"] = rapi(teks(kol.get("vt", [])))  # V = vulkanik, T = tektonik, * = lain, sesuai kepala "V/T"
-        r["sumber_tsunami"] = rapi(teks(kol.get("lok", [])))
-        r["lintang"] = angka(teks(kol.get("lat", [])))
-        r["bujur"] = angka(teks(kol.get("lon", [])))
-        hm = rapi(teks(kol.get("hm", [])))
-        r["tinggi_maks_m"] = angka(hm)
-        r["tinggi_maks_teks"] = hm
-        kb = rapi(teks(kol.get("kor", [])))
-        r["korban_meninggal_teks"] = kb
-        r["korban_meninggal"] = int(kb.replace(".", "")) if kb and re.fullmatch(r"\d{1,3}(\.\d{3})*|\d+", kb) else None
-        r["catatan"] = rapi(teks(kol.get("cat", [])))
-        extra = rapi(" ".join(r.pop("_catn")))
-        r["catatan_pengamatan"] = extra
-        r["referensi"] = rapi(teks(kol.get("ref", [])))
-        if r["tanggal"] is None:
-            gagal.append({"halaman": r["halaman"], "no_tabel": r["no_tabel"], "alasan": "tanggal tak terbaca", "teks": tg})
-        r["tsunami"] = True
-    return baris, gagal
+        (lampiran if k["lamp"] else baris).extend(hal)
+        prev = hal[-1]
+    out = []
+    for lst in (baris, lampiran):
+        for r in lst:
+            w, k = r.pop("_w"), r.pop("_k")
+            r.pop("_y")
+            isi_tsunami(r, w, k)
+            extra = rapi(re.sub(r"Catatan Pengamatan\s*:\s*", "", " ".join(r.pop("_catn"))))
+            if extra:
+                r["catatan_pengamatan"] = extra
+            if r["tanggal"] is None:
+                gagal.append({"halaman": r["halaman"], "no_tabel": r["no_tabel"], "alasan": "tanggal tak terbaca",
+                              "teks": r["tanggal_teks"]})
+        out.append(lst)
+    return out[0], out[1], gagal
 
 
 # ---------------------------------------------------------------- jalankan
 def unduh(url, ke):
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=300) as r, open(ke, "wb") as f:
-        f.write(r.read())
+    # curl, bukan urllib: Python sistem lama (LibreSSL) ditolak TLS oleh cdn.bmkg.go.id
+    subprocess.run(["curl", "-sfL", "-A", UA, "-o", ke, url], check=True)
 
 
 def bbox(pdf, ke):
@@ -534,44 +567,58 @@ def kolom_kosong(baris, skip=()):
     return {k: round(100 * sum(1 for b in baris if b.get(k) in (None, "")) / len(baris), 1) for k in ks}
 
 
-def bungkus(jenis, baris, gagal, pdf_url):
+def bungkus(jenis, baris, gagal, **lain):
     for i, b in enumerate(baris, 1):
         b["id"] = ("KM" if jenis == "merusak" else "KT") + "%04d" % i
-    return {
+    d = {
         "judul": {"merusak": "Katalog Gempabumi Signifikan & Merusak Indonesia 1821-2025 (BMKG)",
-                  "tsunami": "Katalog Tsunami Indonesia per Wilayah 416-2025 (BMKG)"}[jenis],
-        "sumber": pdf_url,
+                  "tsunami": "Katalog Tsunami Indonesia 416-2025 (BMKG)"}[jenis],
+        "sumber": SUMBER[jenis],
         "diambil": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "jumlah_baris": len(baris),
         "gagal_urai": gagal,
-        "catatan": "Disalin apa adanya dari tabel PDF; nilai yang tak terbaca = null. Kolom *_teks menyimpan tulisan asli.",
-        "baris": baris,
+        "catatan": "Disalin apa adanya dari tabel PDF resmi BMKG; nilai yang tak terbaca = null. "
+                   "Kolom *_teks menyimpan tulisan asli; halaman = halaman PDF (1 = sampul).",
     }
+    d.update(lain)
+    d["baris"] = baris
+    return d
+
+
+def tulis(nama, d):
+    os.makedirs(DATA, exist_ok=True)
+    with open(os.path.join(DATA, nama), "w", encoding="utf8") as f:
+        json.dump(d, f, ensure_ascii=False, indent=1)
+        f.write("\n")
 
 
 def bangun(pdf_dir=None):
     tmp = pdf_dir or tempfile.mkdtemp(prefix="katalog_pdf_")
-    os.makedirs(DATA, exist_ok=True)
-    ringkas = {}
     for jenis in ("merusak", "tsunami"):
         pdf = os.path.join(tmp, jenis + ".pdf")
         if not os.path.exists(pdf):
             unduh(SUMBER[jenis], pdf)
-        h = bbox(pdf, os.path.join(tmp, jenis + ".bbox.html"))
-        baris, gagal = (urai_merusak if jenis == "merusak" else urai_tsunami)(h)
-        d = bungkus(jenis, baris, gagal, SUMBER[jenis])
-        with open(os.path.join(DATA, "katalog_%s.json" % jenis), "w", encoding="utf8") as f:
-            json.dump(d, f, ensure_ascii=False, indent=1)
-            f.write("\n")
-        ringkas[jenis] = (len(baris), len(gagal), kolom_kosong(baris, skip=("id",)))
-        print(jenis, "baris", len(baris), "gagal", len(gagal))
-        print("  kosong%:", ringkas[jenis][2])
-    return ringkas
+    h = bbox(os.path.join(tmp, "merusak.pdf"), os.path.join(tmp, "merusak.bbox.html"))
+    baris, gagal = urai_merusak(h)
+    tulis("katalog_merusak.json", bungkus("merusak", baris, gagal))
+    print("merusak baris", len(baris), "gagal", len(gagal), "\n  kosong%:", kolom_kosong(baris, skip=("id",)))
+    h = bbox(os.path.join(tmp, "tsunami.pdf"), os.path.join(tmp, "tsunami.bbox.html"))
+    wil, utama, gagal = urai_tsunami(h)
+    for i, b in enumerate(wil, 1):
+        b["id"] = "KW%04d" % i
+    tulis("katalog_tsunami.json", bungkus(
+        "tsunami", utama, gagal, jumlah_baris_wilayah=len(wil), baris_wilayah=wil,
+        catatan_jumlah="Dokumen menyatakan 181 kejadian (Pendahuluan) tetapi Tabel Lampiran memuat %d baris; "
+                       "baris_wilayah mengulang kejadian yang menyentuh beberapa wilayah, dengan Catatan Pengamatan." % len(utama)))
+    print("tsunami baris(lampiran)", len(utama), "wilayah", len(wil), "gagal", len(gagal))
+    print("  kosong% lampiran:", kolom_kosong(utama, skip=("id",)))
+    print("  kosong% wilayah:", kolom_kosong(wil, skip=("id",)))
 
 
 def banding():
-    with urllib.request.urlopen(urllib.request.Request(CDN, headers={"User-Agent": UA}), timeout=120) as r:
-        cdn = json.load(r)["features"]
+    f_cdn = os.path.join(tempfile.mkdtemp(prefix="katalog_cdn_"), "katalog_gempa.json")
+    unduh(CDN, f_cdn)
+    cdn = json.load(open(f_cdn, encoding="utf8"))["features"]
     ref = []
     for f in cdn:
         p = f["properties"]
@@ -581,34 +628,153 @@ def banding():
             continue
         ref.append((d, angka(p.get("mag"))))
     km = json.load(open(os.path.join(DATA, "katalog_merusak.json"), encoding="utf8"))["baris"]
-    kunci = {}
-    for b in km:
-        kunci.setdefault(b["tanggal"], []).append(b["magnitudo"])
-    ada_tgl = ada_mag = 0
+    pdf = [(date.fromisoformat(b["tanggal"]), b["magnitudo"]) for b in km if b["tanggal"] and len(b["tanggal"]) == 10]
+    n = len(ref)
+    hit_tgl = hit_tgl1 = hit_mag = hit_mag1 = 0
     tak = []
     for d, m in ref:
-        c = kunci.get(d)
-        if c:
-            ada_tgl += 1
-            if m is not None and any(x is not None and abs(x - m) <= 0.15 for x in c):
-                ada_mag += 1
-            else:
-                tak.append((d, m, c))
-    n = len(ref)
-    print("cdn merusak:", n, "| tanggal ada di katalog PDF: %d (%.1f%%) | tanggal+magnitudo cocok (+-0,15): %d (%.1f%%)" % (
-        ada_tgl, 100 * ada_tgl / n, ada_mag, 100 * ada_mag / n))
-    return n, ada_tgl, ada_mag, tak
+        d = date.fromisoformat(d)
+        c0 = [x for x in pdf if x[0] == d]
+        c1 = [x for x in pdf if abs((x[0] - d).days) <= 1]  # PDF dalam WIB, CDN dalam UTC
+        hit_tgl += bool(c0)
+        hit_tgl1 += bool(c1)
+        ok0 = m is not None and any(x[1] is not None and abs(x[1] - m) <= 0.15 for x in c0)
+        ok1 = m is not None and any(x[1] is not None and abs(x[1] - m) <= 0.15 for x in c1)
+        hit_mag += ok0
+        hit_mag1 += ok1
+        if not ok1:
+            tak.append((d.isoformat(), m, [(x[0].isoformat(), x[1]) for x in c1]))
+    pct = lambda v: "%d (%.1f%%)" % (v, 100 * v / n)
+    print("CDN merusak (%d baris) vs katalog PDF (%d baris bertanggal lengkap)" % (n, len(pdf)))
+    print("  tanggal sama persis      :", pct(hit_tgl))
+    print("  tanggal +-1 hari         :", pct(hit_tgl1))
+    print("  tanggal sama + mag +-0,15:", pct(hit_mag))
+    print("  tanggal +-1 + mag +-0,15 :", pct(hit_mag1))
+    print("  contoh tak cocok:", tak[:8])
+    return n, hit_tgl, hit_tgl1, hit_mag, hit_mag1, tak
 
 
 # ---------------------------------------------------------------- uji
+# Potongan halaman NYATA dari kedua PDF (kata per baris: "x0-x1:teks"), bukan tiruan.
+# Tiap baris: "y|x0-x1:teks ...". Dipotong di y tertentu supaya ringkas.
+_P_MERUSAK_A = """
+85.7|50-147:TAHUN 155-218:2025
+119.5|62-76:NO 94-138:TANGGAL 173-207:WAKTU 209-243:GEMPA 256-296:LINTANG 318-349:BUJUR 391-449:KEDALAMAN 467-488:MAG 503-557:DIRASAKAN 658-697:DAMPAK 700-757:KERUSAKAN
+142.4|66-72:1 100-113:08 117-156:Januari 185-232:00:52:23 258-282:8.21 285-300:LS 319-355:119.27 359-374:BT 416-429:11 471-488:4.9 503-531:Bima 534-545:IV 549-572:MMI 658-700:Korban 703-771:meninggal:-
+156.2|115-142:2025 197-220:WIB 413-431:Km 658-700:Korban 703-735:Luka: 738-742:-
+165.3|501-532:Pusat 535-572:gempa 575-613:berada 616-625:di
+170.0|658-723:Kerusakan:
+179.1|114-142:Bima 501-521:laut 524-537:64 541-557:km 560-587:timur 590-609:laut 613-637:Kota
+183.8|658-664:1 668-702:rumah 705-734:rusak 738-777:sedang 780-823:(dinding
+192.9|501-532:Bima, 535-563:NTB.
+197.6|658-692:roboh) 696-705:di 708-743:Dusun 746-774:Ringi 777-805:Desa
+203.1|114-142:Nusa
+211.4|658-695:Pandai 698-759:Kecamatan 762-797:Woha,
+218.0|102-154:Tenggara
+225.2|658-716:Kabupaten 719-750:Bima, 753-777:NTB
+232.9|114-143:Barat
+"""
+_P_MERUSAK_B = """
+84.1|261-303:Koordinat 306-309:( 309-312:0 312-315:)
+92.7|336-361:Depth
+99.0|61-73:No 95-166:Tanggal/Wilayah 189-215:Origin 218-239:Time 377-397:Mag 441-476:Wilayah 478-499:yang 502-549:merasakan 680-711:Korban 714-716:/ 719-765:Kerusakan 865-899:Sumber
+105.3|339-358:(km)
+119.3|258-272:Lat 295-317:Long
+133.2|410-439:(Pusat 441-472:gempa 474-505:berada 508-516:di 519-536:laut 538-549:90 552-566:km
+146.7|410-457:BaratDaya 459-475:kab 478-539:Pangandaran. 542-564:Jawa
+160.1|410-438:Barat)
+174.1|93-104:28 106-143:Oktober 146-168:2020 194-233:02:43:53 410-414:- 416-454:Mamuju 456-489:Tengah 492-510:IV-V 513-534:MMI
+187.4|63-74:10 94-132:Mamuju 134-167:Tengah 204-223:WIB 254-277:-2.24 291-321:119.22 343-354:10 380-394:5.4 410-414:- 416-437:Kota 439-477:Mamuju 479-500:III-IV 503-524:MMI 590-623:Korban 626-674:Meninggal 677-680:: 685-690:1 693-718:orang 723-763:(terjatuh 765-796:karena 798-826:panik) 869-897:BMKG
+200.8|590-623:Korban 626-668:luka-luka 670-673:: 678-684:1 686-712:orang 715-723:di 726-747:Desa 750-770:Kuo. 773-794:Desa 797-817:Polo 819-849:Lereng
+214.2|410-414:- 421-460:Mamasa 462-479:II-III 482-503:MMI 590-607:dan 610-632:Desa 634-683:Barakkang. 686-734:Kabupaten 737-775:Mamuju 777-810:Tengah
+"""
+_P_TSUNAMI_LAMP = """
+73.6|85-233:LAMPIRAN
+124.0|204-242:WAKTU 244-295:KEJADIAN 370-396:MAG. 419-437:Vol/ 590-627:LOKASI
+132.6|483-526:SUMBER 670-677:H 700-744:KORBAN
+138.3|118-134:No. 784-841:REFERENSI
+144.0|482-527:TSUNAMI 666-681:(m) 696-757:MENINGGAL
+147.8|155-174:Thn 210-227:Bln 263-278:Tgl 311-338:Pukul 364-401:GEMPA 419-436:Tek 576-591:Lat 622-640:Lon
+169.9|124-129:1 156-173:416 419-437:Vol. 479-501:Selat 503-531:Sunda 569-598:-6.102 613-649:105.423 672-675:- 725-729:- 799-826:NOAA
+182.1|455-507:Gamalama. 510-554:P.Makian.
+187.8|124-129:2 153-176:1608 211-226:Juli 268-273:1 323-326:- 381-384:- 425-431:T 574-593:0.80 616-646:127.33 671-676:0 725-729:- 798-827:NOAA
+193.6|487-522:Ternate
+206.6|124-129:3 153-176:1657 196-242:Desember 265-276:10 323-326:- 381-384:- 425-431:T 456-465:P. 468-499:Banda. 502-522:Laut 525-553:Banda 572-595:-3.00 616-646:128.00 724-730:0 772-797:Latief 799-808:et 810-821:al. 824-853:(2000)
+220.5|323-326:- 381-384:- 419-436:Vol. 456-465:P. 468-499:Banda. 502-522:Laut 525-553:Banda 572-595:-6.92 616-646:129.13 666-680:1.5 798-827:NOAA
+"""
+_P_TSUNAMI_WIL = """
+73.6|85-216:WILAYAH 223-303:ACEH
+116.0|125-162:WAKTU 165-216:KEJADIAN 240-266:MAG. 424-462:LOKASI 692-740:CATATAN
+122.0|338-381:SUMBER 499-535:Hmaks. 566-610:KORBAN
+127.7|92-108:No. 289-296:V 299-301:/ 304-310:T 815-872:REFERENSI
+131.4|189-216:Pukul 337-382:TSUNAMI 509-525:(m) 558-619:MENINGGAL
+137.2|125-163:Tanggal 235-271:GEMPA 402-438:Lintang 453-479:Bujur 680-752:PENGAMATAN
+142.8|189-216:(UTC)
+154.8|139-150:29
+166.4|96-104:1. 120-169:September 246-260:7,3 296-303:V 332-361:Banda 364-387:Aceh 413-427:5,5 461-472:96 515-519:- 586-589:- 636-657:Lihat 660-710:keterangan 713-721:di 723-753:bawah 830-858:NOAA
+177.9|133-155:1837
+197.1|91-126:Catatan 128-188:Pengamatan:
+215.8|91-114:Pada 117-138:akhir 141-190:September 193-218:1837, 220-275:serangkaian 278-316:bencana 319-341:alam 343-378:dahsyat 381-419:melanda 422-448:Pulau 451-485:Penang 488-504:dan 507-534:pantai 537-560:barat 563-579:laut 582-622:Sumatra. 625-658:Gempa 661-682:bumi 685-705:kuat 707-729:yang 732-795:mengguncang 798-832:Penang 835-881:dilaporkan
+228.2|91-109:juga 112-156:dirasakan 158-197:serentak 199-207:di 210-233:Aceh 235-252:dan 255-301:sepanjang 304-333:pesisir 336-360:Pidie. 363-404:Informasi 407-428:lebih 431-455:lanjut 458-493:diterima 496-519:pada 521-527:4 530-565:Oktober 568-590:1837 593-610:dari 612-649:seorang 651-690:nakhoda 693-714:yang 717-737:baru 740-759:tiba. 761-770:Ia 773-825:melaporkan 827-860:adanya
+240.7|91-133:beberapa 136-168:letusan 170-206:Gunung 209-257:Peuetsagu 259-282:serta 284-315:gempa 318-339:bumi 342-350:di 353-417:Lhokseumawe 420-437:dan 439-473:wilayah 475-494:lain. 497-533:Menurut 536-581:kesaksian 583-622:tersebut, 625-660:dampak 663-701:terparah 704-731:terjadi 734-742:di 745-773:Banda 776-802:Aceh, 804-812:di 815-840:mana 843-873:gempa
+253.0|91-137:dilaporkan 139-194:berlangsung 197-229:selama 232-254:tujuh 257-273:hari 276-293:dan 296-358:menyebabkan 361-407:kerusakan 410-432:yang 434-461:cukup 464-492:besar. 494-542:Rangkaian 545-583:bencana 586-596:ini 599-618:juga 620-654:tercatat 657-691:memicu 694-744:gelombang 747-780:pasang 783-804:yang 807-826:kuat 829-859:hingga
+265.5|91-134:mencapai 137-185:Singapura.
+286.4|139-150:14
+298.7|96-104:2. 121-167:Desember 201-204:- 251-255:* 298-301:- 332-361:Banda 364-387:Aceh 413-427:5,5 461-472:96 514-520:0 586-589:- 636-660:Tidak 663-679:ada 682-732:keterangan 830-858:NOAA
+311.2|133-155:1885
+"""
+
+
 def _halaman(spec):
-    """spec: list (x0, y, teks) -> halaman kata dengan lebar kata dari panjang teks."""
-    return [(x, y - 4, x + 5 * len(t), y + 4, t) for x, y, t in spec]
+    out = []
+    for ln in spec.strip().splitlines():
+        y, isi = ln.split("|", 1)
+        y = float(y)
+        for tok in isi.split(" "):
+            if re.match(r"^\d+-\d+:", tok):
+                xs, t = tok.split(":", 1)
+                x0, x1 = xs.split("-")
+                out.append((float(x0), y - 4, float(x1), y + 4, t))
+            elif out:  # kata berspasi "Tanggal/Wilayah" tak ada; sambungan token tanpa posisi
+                out[-1] = out[-1][:4] + (out[-1][4] + " " + tok,)
+    return out
 
 
 def uji():
-    from katalog_pdf_uji import SNIP_MERUSAK_A, SNIP_MERUSAK_B, SNIP_TSUNAMI  # noqa
-    raise SystemExit("tak dipakai")
+    assert angka("7,3") == 7.3 and angka("-5.0") == -5.0 and angka("-") is None and angka("*") is None
+    assert tanggal_iso(29, 9, 1837) == "1837-09-29" and tanggal_iso(None, 5, 1920) == "1920-05"
+    assert tanggal_iso(None, None, 416) == "0416" and tanggal_iso(1, 1, None) is None
+    # merusak, bentuk A (2025): lintang bertanda lewat LS, caption foto bukan bagian baris
+    b, g = urai_merusak([_halaman(_P_MERUSAK_A)])
+    assert len(b) == 1 and not g, (b, g)
+    r = b[0]
+    assert (r["tanggal"], r["jam"], r["lintang"], r["bujur"], r["kedalaman_km"], r["magnitudo"]) == \
+        ("2025-01-08", "00:52:23", -8.21, 119.27, 11.0, 4.9), r
+    assert r["lokasi"] == "Bima Nusa Tenggara Barat", r["lokasi"]
+    assert r["dirasakan"].startswith("Bima IV MMI Pusat gempa berada di laut 64 km"), r["dirasakan"]
+    assert r["korban_kerusakan"].startswith("Korban meninggal:- Korban Luka: - Kerusakan: 1 rumah rusak sedang"), r
+    assert "Pusat" not in r["korban_kerusakan"] and r["tsunami"] is None
+    # merusak, bentuk B: tanggal di baris ATAS nomor (sel rata tengah) + tahun 2020
+    b, g = urai_merusak([_halaman(_P_MERUSAK_B)])
+    assert len(b) == 1 and b[0]["no_tabel"] == 10, b
+    r = b[0]
+    assert (r["tanggal"], r["jam"], r["lintang"], r["bujur"], r["kedalaman_km"], r["magnitudo"]) == \
+        ("2020-10-28", "02:43:53", -2.24, 119.22, 10.0, 5.4), r
+    assert r["dirasakan"].startswith("- Mamuju Tengah IV-V MMI - Kota Mamuju III-IV MMI"), r["dirasakan"]
+    # tsunami, tabel lampiran (satu baris per kejadian)
+    _, utama, g = urai_tsunami([_halaman(_P_TSUNAMI_LAMP)])
+    assert [x["no_tabel"] for x in utama[:3]] == [1, 2, 3] and not g, (utama, g)
+    assert utama[0]["tanggal"] == "0416" and utama[0]["lintang"] == -6.102 and utama[0]["jenis_sumber"] == "Vol."
+    assert utama[1]["tanggal"] == "1608-07-01" and utama[1]["sumber_tsunami"] == "Gamalama. P.Makian. Ternate"
+    assert utama[2]["tanggal"] == "1657-12-10" and utama[2]["korban_meninggal"] == 0 and utama[2]["referensi"].startswith("Latief")
+    # tsunami, tabel per wilayah: sel rata tengah + Catatan Pengamatan di bawah baris
+    wil, _, g = urai_tsunami([_halaman(_P_TSUNAMI_WIL)])
+    assert [x["no_tabel"] for x in wil] == [1, 2] and wil[0]["wilayah"] == "Aceh", wil
+    assert wil[0]["tanggal"] == "1837-09-29" and wil[0]["magnitudo_gempa"] == 7.3 and wil[0]["bujur"] == 96.0
+    assert wil[0]["sumber_tsunami"] == "Banda Aceh" and wil[0]["referensi"] == "NOAA"
+    assert wil[0]["catatan_pengamatan"].startswith("Pada akhir September 1837"), wil[0]
+    assert wil[1]["tanggal"] == "1885-12-14" and wil[1]["magnitudo_gempa"] is None and wil[1]["magnitudo_gempa_teks"] == "*"
+    print("uji katalog_pdf: OK")
 
 
 if __name__ == "__main__":
@@ -618,5 +784,7 @@ if __name__ == "__main__":
         bangun(d)
     elif perintah == "banding":
         banding()
+    elif perintah == "uji":
+        uji()
     else:
         sys.exit("pakai: uji | bangun [--pdf-dir D] | banding")

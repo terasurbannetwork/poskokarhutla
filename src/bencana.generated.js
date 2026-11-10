@@ -652,6 +652,7 @@ export default {
       "tab": [
         "peta",
         "insight",
+        "katalog",
         "berita",
         "tren",
         "kejadian",
