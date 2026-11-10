@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: data
+  group: arsip-bmkg
   cancel-in-progress: false
 
 permissions:
