@@ -1,0 +1,168 @@
+{
+  "konstanta": {
+    "JENDELA_JENIS": {
+      "bawaan": 3,
+      "kekeringan": null,
+      "karhutla": null,
+      "gunungapi": null
+    },
+    "BASI_HARI": 3,
+    "PITA": 4,
+    "AMBANG_BANGUNAN": 0.7,
+    "BATAS_INARISK": [
+      0.33,
+      0.66
+    ],
+    "REHAB_MACET_HARI": 60,
+    "RENKON_SEGERA_HARI": 90,
+    "JRC_HUNIAN": [
+      [
+        0,
+        0
+      ],
+      [
+        0.5,
+        0.33
+      ],
+      [
+        1,
+        0.49
+      ],
+      [
+        1.5,
+        0.62
+      ],
+      [
+        2,
+        0.72
+      ],
+      [
+        3,
+        0.87
+      ],
+      [
+        4,
+        0.93
+      ],
+      [
+        5,
+        0.98
+      ],
+      [
+        6,
+        1
+      ]
+    ],
+    "JRC_D_MAKS": {
+      "hunian": 111,
+      "niaga": 138,
+      "industri": 114
+    },
+    "KURS": null,
+    "FAKTOR_HARGA": null,
+    "TAG_OSM": null
+  },
+  "id_kejadian": [
+    {
+      "masukan": "banjir|3201|2026-03-02",
+      "tahun": 2026,
+      "id": "KJ-2026-9A2WGN3G"
+    },
+    {
+      "masukan": "banjir|3201|2026-03-02|2",
+      "tahun": 2026,
+      "id": "KJ-2026-8N57ZZ0Y"
+    },
+    {
+      "masukan": "banjir+longsor|3201|2026-03-02",
+      "tahun": 2026,
+      "id": "KJ-2026-MT5Z0ZVT"
+    },
+    {
+      "masukan": "banjir+longsor|3201|2026-03-02|2",
+      "tahun": 2026,
+      "id": "KJ-2026-K3JQG02Y"
+    }
+  ],
+  "sidik": [
+    {
+      "jenis": "bytes",
+      "masukan": "abc",
+      "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+    },
+    {
+      "jenis": "json",
+      "masukan": "{\"b\":1,\"a\":2}",
+      "kanonik": "{\"a\":2,\"b\":1}"
+    },
+    {
+      "jenis": "json",
+      "masukan": "{\"a\":2,\"b\":1}",
+      "kanonik": "{\"a\":2,\"b\":1}"
+    }
+  ],
+  "anggaran": {
+    "a_L": 100,
+    "t_L": 90,
+    "satuan": "MB",
+    "kasus": [
+      {
+        "u": 15,
+        "u_lama": 0,
+        "terima": false,
+        "kelebihan": 5
+      },
+      {
+        "u": 10,
+        "u_lama": 0,
+        "terima": true
+      },
+      {
+        "u": 12,
+        "u_lama": 8,
+        "terima": true,
+        "terpakai_sesudah": 94
+      }
+    ]
+  },
+  "selisih": [
+    {
+      "nilai": {
+        "dibi": 12,
+        "logbook": 15,
+        "sistem": null
+      },
+      "n": 2,
+      "selisih": 3,
+      "arah": {
+        "maks": "logbook",
+        "min": "dibi"
+      },
+      "persen": 20
+    },
+    {
+      "nilai": {
+        "dibi": 12,
+        "logbook": 15,
+        "ketiga": 9
+      },
+      "n": 3,
+      "selisih": 6,
+      "arah": {
+        "maks": "logbook",
+        "min": "ketiga"
+      },
+      "persen": 40
+    },
+    {
+      "nilai": {
+        "dibi": 0,
+        "logbook": null
+      },
+      "n": 1,
+      "selisih": null,
+      "arah": null,
+      "persen": null
+    }
+  ]
+}

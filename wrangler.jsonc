@@ -5,11 +5,12 @@
   "name": "centurisk97",
   "main": "src/worker.js",
   "compatibility_date": "2026-10-01",
-  "assets": { "directory": "./public", "binding": "ASSETS", "html_handling": "none", "run_worker_first": ["/*.html", "/logpal/*"] },
+  "assets": { "directory": "./public", "binding": "ASSETS", "html_handling": "none", "run_worker_first": ["/*.html", "/logpal/*", "/siklus/*"] },
   // run_worker_first larik (wrangler >= 4; wrangler@3 menolaknya, jadi SEMUA workflow deploy memakai wrangler@4.42.0): "*" mencocokkan
   // dalam sampai subfolder, jadi hanya berkas .html yang lewat Worker (gerbang centurisk97.id, halamanTerkunci di src/worker.js);
   // JS/CSS/JSON/gambar tetap dilayani aset tanpa memanggil Worker.
   // Pengecualian: /logpal/* (JS, CSS, HTML modul LogPal) lewat Worker supaya hanya sesi sah yang menerimanya (src/logpal.js asetSah; keputusan pemilik 9 Nov 2026).
+  // /siklus/* (JS, CSS, JSON staf Siklus Bencana) pola yang sama: tanpa sesi tidak terbuka; daftar putih publik (publik.js, publik.css, data/{atribusi,kamus,masa_depan_ringkas}.json) dilayani src/siklus.js (DESAIN-TEKNIS siklus 7.1).
   "d1_databases": [
     { "binding": "DB", "database_name": "poskowarga", "database_id": "2357f51f-540c-482c-8bf1-3130ddb7f196", "migrations_dir": "migrations" }
   ],

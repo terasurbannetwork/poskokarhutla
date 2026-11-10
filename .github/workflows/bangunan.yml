@@ -27,10 +27,29 @@ env:
   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
 jobs:
-  bulanan:
+  # Matriks per kelompok pulau: bangunan.py --prov hanya memuat ubin provinsi itu, dan grid/halus per provinsi
+  # identik dengan jalan --semua (ubin yang melintasi dua kelompok diunduh dua kali, hasilnya per provinsi tetap).
+  # Perkiraan (SK-032, dari ukuran 278 ubin 12,7 GB; laju terukur 20 Okt: ~140 dtk/GB = unduh 9 MB/s + urai 32 dtk/GB):
+  #   sumatera ~3,3 GB ~8 mnt; jawa-barat ~1,0; jawa-timur ~1,4; bali-nusra ~0,9; kalimantan ~2,4; sulawesi ~1,3; maluku-papua ~2,4.
+  #   Tembok waktu terburuk (unduh 20x lebih lambat, 0,5 MB/s): sumatera ~110 mnt, kalimantan/maluku-papua ~80 mnt: tetap < 330.
+  #   Satu job tunggal ~30 mnt (terbaik) sampai ~600 mnt (terburuk, melewati 360): inilah alasan matriks.
+  # Disk: --hapus-mentah menghapus CSV.gz tiap ubin; ubin terbesar 1,7 GB, jauh di bawah 14 GB.
+  # R2 awalan bangunan/ masuk anggaran KA 27 (perkiraan 150-300 MB): ukur dengan `wrangler r2 object list` sesudah dispatch pertama.
+  bangun:
     if: (github.event_name == 'schedule' && github.event.schedule == '30 20 3 * *') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'bulanan')
     runs-on: ubuntu-latest
-    timeout-minutes: 350
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {kelompok: sumatera, prov: "11,12,13,14,15,16,17,18,19,21"}
+          - {kelompok: jawa-barat, prov: "31,32,36"}
+          - {kelompok: jawa-timur, prov: "33,34,35"}
+          - {kelompok: bali-nusra, prov: "51,52,53"}
+          - {kelompok: kalimantan, prov: "61,62,63,64,65"}
+          - {kelompok: sulawesi, prov: "71,72,73,74,75,76"}
+          - {kelompok: maluku-papua, prov: "81,82,91,92,93,94,95,96"}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -38,20 +57,94 @@ jobs:
           python-version: "3.12"
 
       - name: Uji mandiri
-        run: |
-          set -e
-          python3 scripts/umum/bangunan.py --uji
-          python3 scripts/umum/paparan_bangunan.py --uji
+        run: python3 scripts/umum/bangunan.py --uji
 
       - name: Pulihkan hasil per ubin (lanjutkan unduhan)
         uses: actions/cache/restore@v4
         with:
           path: data/raw/bangunan/hasil
-          key: bangunan-hasil-${{ github.run_id }}
-          restore-keys: bangunan-hasil-
+          key: bangunan-hasil-${{ matrix.kelompok }}-${{ github.run_id }}
+          restore-keys: bangunan-hasil-${{ matrix.kelompok }}-
 
-      - name: Bangun grid semua provinsi
-        run: python3 scripts/umum/bangunan.py --semua --hapus-mentah
+      - name: Bangun grid kelompok
+        run: |
+          set -e
+          python3 scripts/umum/bangunan.py --prov "${{ matrix.prov }}" --hapus-mentah
+          # kec.json hanya memuat provinsi kelompok ini; digabung di job gabung
+          mv data/terkunci/bangunan/kec.json "data/terkunci/bangunan/kec_${{ matrix.kelompok }}.json"
+
+      - name: Simpan hasil per ubin
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw/bangunan/hasil
+          key: bangunan-hasil-${{ matrix.kelompok }}-${{ github.run_id }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bangunan-${{ matrix.kelompok }}
+          path: data/terkunci/bangunan/*.json
+          retention-days: 1
+
+  # Berjalan walau sebagian kelompok gagal: provinsi tanpa grid baru tetap memakai grid cache sebelumnya,
+  # atau terliput:false bila belum pernah ada (paparan_bangunan.py). Harian tidak merah.
+  gabung:
+    needs: bangun
+    if: ${{ !cancelled() && needs.bangun.result != 'skipped' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pulihkan grid bulan lalu (untuk kelompok yang gagal)
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            data/terkunci/bangunan/grid_*.json
+            data/terkunci/bangunan/kec.json
+          key: bangunan-grid-${{ github.run_id }}
+          restore-keys: bangunan-grid-
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: bangunan-*
+          path: data/terkunci/bangunan
+          merge-multiple: true
+
+      - name: Gabung kec.json
+        run: |
+          python3 - <<'PY'
+          import glob, json, os
+          d = "data/terkunci/bangunan"
+          baru = sorted(glob.glob(d + "/kec_*.json"))
+          if not baru:
+              raise SystemExit("::warning::tidak ada kelompok yang berhasil")
+          doc = json.load(open(d + "/kec.json")) if os.path.exists(d + "/kec.json") else None
+          for f in baru:
+              k = json.load(open(f))
+              if doc is None:
+                  doc = k
+                  continue
+              for bagian in ("prov", "kab", "kec"):
+                  doc[bagian].update(k[bagian])
+              for r in ("baris_dibaca", "dibuang_keyakinan_rendah", "di_luar_kecamatan"):
+                  doc["ringkasan"][r] = doc["ringkasan"].get(r, 0) + k["ringkasan"].get(r, 0)
+              doc["dibuat"] = max(doc["dibuat"], k["dibuat"])
+          for bagian in ("prov", "kab", "kec"):
+              doc[bagian] = dict(sorted(doc[bagian].items()))
+          r = doc["ringkasan"]
+          r["bangunan"] = sum(v[0] for v in doc["kec"].values())
+          r["luas_m2"] = sum(v[1] for v in doc["kec"].values())
+          r["provinsi"] = sorted(doc["prov"])
+          json.dump(doc, open(d + "/kec.json", "w"), separators=(",", ":"), ensure_ascii=False)
+          for f in baru:
+              os.remove(f)
+          print(len(r["provinsi"]), "provinsi,", r["bangunan"], "bangunan")
+          PY
+          ls -l data/terkunci/bangunan | head -100
 
       # simpan segera: bila langkah sesudahnya gagal, grid tidak hilang
       - name: Simpan grid untuk job harian
@@ -61,13 +154,6 @@ jobs:
             data/terkunci/bangunan/grid_*.json
             data/terkunci/bangunan/kec.json
           key: bangunan-grid-${{ github.run_id }}
-
-      - name: Simpan hasil per ubin
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: data/raw/bangunan/hasil
-          key: bangunan-hasil-${{ github.run_id }}
 
       - name: Pulihkan data karhutla terakhir
         uses: actions/cache/restore@v4
@@ -84,6 +170,9 @@ jobs:
             data/raw/banjir
           key: banjir-${{ github.run_id }}
           restore-keys: banjir-
+
+      - name: Uji mandiri paparan
+        run: python3 scripts/umum/paparan_bangunan.py --uji
 
       - name: Hitung paparan
         run: python3 scripts/umum/paparan_bangunan.py

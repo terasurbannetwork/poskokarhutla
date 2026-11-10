@@ -211,7 +211,7 @@ Bukti: `node --test tests/siklus/paritas.test.mjs tests/siklus/gerbang_publik.te
 #### SK-010 `bersih_dibi.py`
 Pengerja: siklus. Bergantung: SK-004, SK-006. Uji: `uji` di `bersih_dibi.py`.
 Berkas: `scripts/siklus/bersih_dibi.py`. Di luar: `public/data/dibi_*`.
-Langkah: `mentah/dibi_harian/*` dan `dibi_kejadian.json` menjadi `bersih/dibi/<YYYY>.jsonl.gz` kunci BPS 4; aturan F1.6 nomor 1 sampai 3 dan 5; hitung per alasan; masuk = tersisa + dibuang.
+Langkah: `mentah/dibi_harian/*` dan `dibi_kejadian.json` menjadi `bersih/dibi/<YYYY>.jsonl.gz` kunci kab4 Kemendagri (lewat nama + provinsi; `id_kab_bps` BPS tidak dipakai, tak cocok = `wilayah_belum_terpetakan`); aturan F1.6 nomor 1 sampai 3 dan 5; hitung per alasan; masuk = tersisa + dibuang.
 Bukti: `python3 -I scripts/siklus/bersih_dibi.py uji` (UJ-G0-07). Pemeriksa: validasi-model.
 
 #### SK-011 `bersih_logbook.py`

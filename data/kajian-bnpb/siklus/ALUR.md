@@ -102,13 +102,13 @@ Riwayat DIBI: [pemilik] mengunggah DIBI harian 2011-2026 dari mesinnya ke `siklu
 ### 3.2 F1: Buku Besar Kejadian
 
 **Pemasangan otomatis.**
-1. [SIS] sumber baru muncul -> `kunci_kejadian.pasangkan` mencari kejadian dengan jenis kanonik, kab BPS, dan tanggal mulai dalam jendela 3 hari.
+1. [SIS] sumber baru muncul -> `kunci_kejadian.pasangkan` mencari kejadian dengan jenis kanonik, kab4 Kemendagri, dan tanggal mulai dalam jendela 3 hari.
 2. Satu cocok -> tambah baris di `sk_kejadian_sumber`. Nol -> `sk_kejadian` baru (`KJ-` baru) dan fase `terdeteksi`. Lebih dari satu -> X "ambigu", masuk antrean PD, tidak ditebak.
 3. Karhutla: [SIS] sel atau kompleks sebagai kunci sumber; kode `K####` hanya disimpan sebagai pengenal hari itu, sehingga satu kompleks yang kodenya berganti tetap satu `KJ-`.
 
 **Antrean ambigu.** [PD] membuka antrean -> pilih kejadian yang benar atau "buat baru" -> * . X pilihan menggabungkan dua `KJ-` yang sudah punya fase berbeda -> ditolak dengan pesan baku; gabung manual oleh KO. Tidak ada pecah: [KO] membetulkan gabung yang salah dengan memindahkan satu baris sumber ke `KJ-` lain (koreksi manual, tercatat di jejak).
 
-**Arsip.** Kejadian lama di R2 tampil di daftar arsip. [PD/KO] mempromosikan satu baris ke D1 dengan `{tahun, kab4}` dari baris daftar itu; baris tanpa wilayah BPS tidak bisa dipromosikan dan layar menulis demikian ("wilayah belum terpetakan, belum bisa dipromosikan").
+**Arsip.** Kejadian lama di R2 tampil di daftar arsip. [PD/KO] mempromosikan satu baris ke D1 dengan `{tahun, kab4}` dari baris daftar itu; baris tanpa wilayah (kab4) tidak bisa dipromosikan dan layar menulis demikian ("wilayah belum terpetakan, belum bisa dipromosikan").
 
 **Verifikasi dan fase.** [PD] membuka `/siklus/kejadian/:id` -> memverifikasi (`terverifikasi`) -> [KO] mengubah fase menurut tabel 2.1. Tiap perubahan * .
 
@@ -190,7 +190,7 @@ Riwayat DIBI: [pemilik] mengunggah DIBI harian 2011-2026 dari mesinnya ke `siklu
 
 | Dari -> ke | Isi | Bentuk | Bila kosong |
 | --- | --- | --- | --- |
-| F1 -> F3 | `KJ-`, jenis, kab BPS, tanggal, pusat atau poligon | baris `sk_kejadian` + JSON saji | F3 tidak jalan; kejadian tanpa kab BPS ditandai |
+| F1 -> F3 | `KJ-`, jenis, kab4 Kemendagri, tanggal, pusat atau poligon | baris `sk_kejadian` + JSON saji | F3 tidak jalan; kejadian tanpa kab4 ditandai |
 | F1 -> F4 | `KJ-`, fase `tanggap`/`transisi`, dampak per sumber | kolom teks penaut (tanpa FK) | Jitupasna tidak dibuka |
 | F2 -> F3 | jiwa dan bangunan per sel dan desa, fasilitas vital | agregat R2 per provinsi | provinsi `terliput:false` -> F3 menulis "paparan tidak terliput" |
 | F2 -> F5 | paparan sebagai dasar asumsi dampak | agregat per kabupaten | asumsi dampak diisi manual, berlabel `menunggu` |

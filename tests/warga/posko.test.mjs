@@ -643,7 +643,7 @@ uji("centurisk97.id: /lapangan terbuka tanpa sesi lewat daftar putih bernama; se
   /* /pendataan: staf direktorat BNPB membuat akun pendataan sendiri (keputusan pemilik 26 Okt 2026); akun menunggu persetujuan Super Admin */
   /* /uji-pilot: regu uji pilot SIPPA membuka dossier dan melapor lewat tautan bertoken (keputusan SIPPA 59); token dicek di tiap API */
   /* /meja: petugas BPBD masuk dengan kode per kabupaten tanpa akun situs (keputusan pemilik 10 Nov 2026); kode dan wilayah dicek di tiap API */
-  assert.deepEqual([...PUBLIK_TANPA_SESI.keys()], ["/lapangan", "/petugas", "/meja", "/daftar-kontak", "/renlap", "/uji-pilot", "/presiden", "/instansi", "/bnpb/katalog-dokumen", "/pendataan"], "daftar putih persis sepuluh halaman (petugas: modul Pegawai dan Relawan Lapangan, kode pribadi dicek di tiap API; renlap: keputusan SIPPA 61, SP-140), masing-masing bersama alasan");
+  assert.deepEqual([...PUBLIK_TANPA_SESI.keys()], ["/lapangan", "/petugas", "/meja", "/daftar-kontak", "/renlap", "/uji-pilot", "/presiden", "/instansi", "/siklus/kejadian", "/bnpb/katalog-dokumen", "/pendataan"], "daftar putih persis sebelas halaman (siklus/kejadian: ringkasan publik KJ-..., keputusan awal U3 bawaan Siklus Bencana) (petugas: modul Pegawai dan Relawan Lapangan, kode pribadi dicek di tiap API; renlap: keputusan SIPPA 61, SP-140), masing-masing bersama alasan");
   assert.ok([...PUBLIK_TANPA_SESI.values()].every(a => a.length > 20));
   const buka = j => mf.dispatchFetch("https://centurisk97.id" + j, {redirect: "manual", headers: {"cf-connecting-ip": "198.51.100.9"}}).then(async r => { await r.text(); return r; });
   assert.equal((await buka("/lapangan")).status, 200);

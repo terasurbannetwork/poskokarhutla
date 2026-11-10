@@ -41,7 +41,6 @@
   "public/gempa/data/inatews_sensor.json",
   "public/gempa/data/prospektif_guncangan.json",
   "public/gempa/data/prospektif_susulan.json",
-  "public/udara/data/atribusi.json",
   "public/udara/data/geoscf.json",
   "public/udara/data/kualitas_bmkg.json",
   "public/udara/data/lintasan.json"

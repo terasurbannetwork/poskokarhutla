@@ -63,7 +63,7 @@ Urutan kanonik sebelum diproses: sumber menurut prioritas (DIBI, Logbook Pusdalo
 ```
 kunci_pendiri = jenis_utama + "|" + kab_utama + "|" + tgl_mulai_iso
 jenis_utama   = kunci jenis rekaman pendiri, diurut naik lalu digabung "+" (banjir+longsor)
-kab_utama     = kode BPS terkecil dari kab rekaman pendiri
+kab_utama     = kode Kemendagri (kab4) terkecil dari kab rekaman pendiri
 d(k)          = SHA-256(UTF-8 k)                      32 byte
 v(k)          = 5 byte pertama d(k), bilangan besar-ke-kecil (40 bit)
 kode(k)       = 8 simbol, simbol ke-i = ALFABET[(v >> (35 - 5 i)) & 31], i = 0..7
@@ -108,7 +108,7 @@ Tiap rekaman baru diproses berurutan:
 
 Jendela hari per jenis (konstanta `JENDELA_JENIS`): `pasangkan(..., jendela=3)` memakai 3 hari untuk semua jenis dan riset tidak punya nilai lain, jadi semua jenis 3 (`kunci_kejadian.py`); untuk kekeringan, karhutla, gunungapi (berdurasi panjang) nilai lain menunggu UA-1. `MASA` di `kejadian.py` (cuaca 1, udara 2, gunungapi 3, kekeringan 14) mengatur `aktif:false`, bukan jendela pemasangan.
 
-Dua mode: (a) **kumpulan sejarah** (DIBI lawan Logbook) memakai `pasangkan` rakus satu-satu urut selisih terkecil seperti `rekonsiliasi_dalops_dibi.py` (58,9 persen logbook terpasang ke DIBI, R3 bagian 4), seri diputus indeks urutan kanonik; (b) **masuk bertahap** ke `KJ-` yang ada memakai hitung kandidat di atas, karena ia keputusan identitas.
+Dua mode: (a) **kumpulan sejarah** (DIBI lawan Logbook) memakai `pasangkan` rakus satu-satu urut selisih terkecil seperti `rekonsiliasi_dalops_dibi.py` (R3 bagian 4 melaporkan 58,9 persen Logbook terpasang atas seluruh tahun; ukuran setara di sini adalah `persen_*_irisan`, pembilang dan penyebut dibatasi pada tahun 2013-2021 dan 2023-2026: DIBI 59,8 dan Logbook 60,4 pada data 10 Nov 2026, sedangkan atas seluruh tahun 57,1 dan 61,9; `kj_total_dengan_tanpa_wilayah` = KJ- berwilayah + rekaman tanpa wilayah), seri diputus indeks urutan kanonik; (b) **masuk bertahap** ke `KJ-` yang ada memakai hitung kandidat di atas, karena ia keputusan identitas.
 
 Kasus uji. `A` = banjir, 3201, mulai 2026-03-02 (DIBI).
 - Logbook banjir 3201, 2026-03-04: selisih 2 hari, satu kandidat (A): tambah.
@@ -583,3 +583,5 @@ Pertanyaan baru (belum di KA bagian H; tidak dijawab dengan karangan):
 | UA-5 | Pasal masa berlaku renkon? | `jam_aturan.json` | F5 |
 | UA-6 | Dasar iklim: model historical atau CHIRPS v3? | model historical | F6 |
 
+
+**ID stabil antar jalan `riwayat` (10 Nov 2026).** Sumber yang masuk belakangan dapat menggeser pendiri gugus (kunci ID memakai jenis, kab utama, tanggal mulai pendiri), jadi `susun(..., lama)` menerima pemetaan `(sumber, kode)` -> `KJ-` dari jalan sebelumnya (`data/raw/siklus/pemetaan/kj_pemetaan.json`, di luar `siklus/` sehingga tidak diunggah). ID lama dipertahankan; bila dua ID lama bergabung, yang leksikografis terkecil bertahan dan pasangan `lama -> baru` ditulis ke `pemetaan/alias.json`. ID lama yang gugusnya hilang dicadangkan, tidak dipakai ulang. `satuan` menggabung per (sumber, jenis, tanggal, kab utama) supaya tidak ada dua pendiri berkunci sama. `selisih` dampak tidak dihitung bila salah satu sisi multi-kabupaten. Tanggal Logbook: kosong atau selisih lebih dari 300 hari dari `pertama_dicatat` memakai `pertama_dicatat` (ditandai `tanggal_dari_catat`, aturan `rekonsiliasi_dalops_dibi.py`).

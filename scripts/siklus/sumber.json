@@ -1,5 +1,5 @@
 {
-  "versi": 1,
+  "versi": 2,
   "sumber": [
     {
       "id": "gdacs",
@@ -15,7 +15,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "200 JSON FeatureCollection. Indonesia sejak 2010: 57 peristiwa (76 KB); 2026: 5 peristiwa (6,7 KB). Properti: eventtype, eventid, episodeid, name, glide (mis. VO-2026-000171-IDN), alertlevel, alertscore, country, fromdate, todate, datemodified, iso3, polygonlabel, geometri titik dan bbox. Sudah dipakai repo (docs/peta_data.json). Dipakai sebagai kunci silang GLIDE."
+      "catatan": "200 JSON FeatureCollection. Indonesia sejak 2010: 57 peristiwa (76 KB); 2026: 5 peristiwa (6,7 KB). Properti: eventtype, eventid, episodeid, name, glide (mis. VO-2026-000171-IDN), alertlevel, alertscore, country, fromdate, todate, datemodified, iso3, polygonlabel, geometri titik dan bbox. Sudah dipakai repo (docs/peta_data.json). Dipakai sebagai kunci silang GLIDE.",
+      "pemilik": "siklus",
+      "pemakai": "Buku Besar Kejadian: scripts/siklus/adapter_g1.py, pasang.py, arsip_kejadian.py",
+      "job": "mingguan",
+      "jeda": 2
     },
     {
       "id": "petabencana",
@@ -31,7 +35,11 @@
       ],
       "status": "bersyarat",
       "uji": "2026-11-10",
-      "catatan": "200 GeoJSON. /reports?timeperiod=604800 (7 hari) 31 laporan, 25 KB. /reports/archive?start&end&geoformat=geojson: jendela paling lebar 18.748.800 dtk (217 hari), Jan 2025 230 laporan 151 KB; jendela lebih lebar ditolak 400. Properti: pkey, created_at, source, status, url, image_url, disaster_type (flood, wind, ...), report_data.impact, tags.city, tags.region_code (kode BPS kab), text. Teks bebas dan foto warga: ringkas saja, jangan tampil mentah. /floods menjawab 500 pada uji. Batas laju tidak dinyatakan."
+      "catatan": "200 GeoJSON. /reports?timeperiod=604800 (7 hari) 31 laporan, 25 KB. /reports/archive?start&end&geoformat=geojson: jendela paling lebar 18.748.800 dtk (217 hari), Jan 2025 230 laporan 151 KB; jendela lebih lebar ditolak 400. Properti: pkey, created_at, source, status, url, image_url, disaster_type (flood, wind, ...), report_data.impact, tags.city, tags.region_code (kode BPS kab), text. Teks bebas dan foto warga: ringkas saja, jangan tampil mentah. /floods menjawab 500 pada uji. Batas laju tidak dinyatakan.",
+      "pemilik": "siklus",
+      "pemakai": "Buku Besar Kejadian: scripts/siklus/adapter_g1.py, pasang.py, arsip_kejadian.py",
+      "job": "mingguan",
+      "jeda": 2
     },
     {
       "id": "hdx-hapi",
@@ -47,7 +55,11 @@
       ],
       "status": "bersyarat",
       "uji": "2026-11-10",
-      "catatan": "403 Invalid app identifier. Pengenal aplikasi adalah base64 dari nama-aplikasi:email; tidak dibuat pada uji ini karena butuh alamat email. Keputusan pemilik diperlukan (akun email proyek). Isi tidak teruji."
+      "catatan": "403 Invalid app identifier. Pengenal aplikasi adalah base64 dari nama-aplikasi:email; tidak dibuat pada uji ini karena butuh alamat email. Keputusan pemilik diperlukan (akun email proyek). Isi tidak teruji.",
+      "pemilik": "siklus",
+      "pemakai": "Buku Besar Kejadian: scripts/siklus/adapter_g1.py, pasang.py, arsip_kejadian.py",
+      "job": "mingguan",
+      "jeda": 2
     },
     {
       "id": "hdx-ckan",
@@ -64,7 +76,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "200 JSON. groups:idn berisi 348 paket. Tanpa kunci. Dipakai untuk menemukan produk UNOSAT (lihat unosat-hdx)."
+      "catatan": "200 JSON. groups:idn berisi 348 paket. Tanpa kunci. Dipakai untuk menemukan produk UNOSAT (lihat unosat-hdx).",
+      "pemilik": "siklus",
+      "pemakai": "Buku Besar Kejadian: scripts/siklus/adapter_g1.py, pasang.py, arsip_kejadian.py",
+      "job": "mingguan",
+      "jeda": 2
     },
     {
       "id": "desinventar",
@@ -80,7 +96,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "ZIP 23,97 MB (unduh penuh 40 dtk), isi DI_export_idn.xml 327 MB plus id0/id1/id2 shp dan dbf. 33.010 kartu kejadian (fichas), tahun 1815 sampai 2020. Kolom: serial, level0/level1 (kode BPS prov dan kab), name0/name1, evento, fechano/fechames/fechadia, muertos, heridos, desaparece, afectados, vivdest, vivafec, damnificados, evacuados, nhectareas, valorloc, latitude/longitude (banyak 0), glide, uu_id. Tumpang tindih dengan DIBI yang sudah dipakai: nilai tambah rendah, hanya untuk uji silang. Angka tidak dijumlah dengan DIBI (keputusan 7)."
+      "catatan": "ZIP 23,97 MB (unduh penuh 40 dtk), isi DI_export_idn.xml 327 MB plus id0/id1/id2 shp dan dbf. 33.010 kartu kejadian (fichas), tahun 1815 sampai 2020. Kolom: serial, level0/level1 (kode BPS prov dan kab), name0/name1, evento, fechano/fechames/fechadia, muertos, heridos, desaparece, afectados, vivdest, vivafec, damnificados, evacuados, nhectareas, valorloc, latitude/longitude (banyak 0), glide, uu_id. Tumpang tindih dengan DIBI yang sudah dipakai: nilai tambah rendah, hanya untuk uji silang. Angka tidak dijumlah dengan DIBI (keputusan 7).",
+      "pemilik": "siklus",
+      "pemakai": "Buku Besar Kejadian: scripts/siklus/adapter_g1.py, pasang.py, arsip_kejadian.py",
+      "job": "mingguan",
+      "jeda": 2
     },
     {
       "id": "usgs-fdsn",
@@ -97,7 +117,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "200 GeoJSON. Properti: mag, place, time, updated, felt, cdi, mmi, alert, tsunami, sig, net, code, ids, types, magType, title, detail. Filter producttype=shakemap berfungsi. Batas 20.000 hasil per kueri. Sudah dipakai di modul gempa."
+      "catatan": "200 GeoJSON. Properti: mag, place, time, updated, felt, cdi, mmi, alert, tsunami, sig, net, code, ids, types, magType, title, detail. Filter producttype=shakemap berfungsi. Batas 20.000 hasil per kueri. Sudah dipakai di modul gempa.",
+      "pemilik": "siklus",
+      "pemakai": "Buku Besar Kejadian: scripts/siklus/adapter_g1.py, pasang.py, arsip_kejadian.py",
+      "job": "kaji",
+      "jeda": 2
     },
     {
       "id": "copernicus-ems",
@@ -114,7 +138,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "200 JSON, 268 aktivasi (EMSR935 Spanyol Okt 2026 terbaru, terlama Mar 2023), 86 KB. Bidang: code, countries, eventTime, name, centroid, activationTime, category, lastUpdate, closed, gdacsId, n_aois, n_products. TIDAK ada satu pun aktivasi Indonesia pada daftar ini. Rincian produk lewat /public-activations/?code=EMSRxxx (wajib kode). Sudah dipakai repo; untuk Indonesia sinyal berguna hanya bila ada aktivasi baru."
+      "catatan": "200 JSON, 268 aktivasi (EMSR935 Spanyol Okt 2026 terbaru, terlama Mar 2023), 86 KB. Bidang: code, countries, eventTime, name, centroid, activationTime, category, lastUpdate, closed, gdacsId, n_aois, n_products. TIDAK ada satu pun aktivasi Indonesia pada daftar ini. Rincian produk lewat /public-activations/?code=EMSRxxx (wajib kode). Sudah dipakai repo; untuk Indonesia sinyal berguna hanya bila ada aktivasi baru.",
+      "pemilik": "siklus",
+      "pemakai": "Buku Besar Kejadian: scripts/siklus/adapter_g1.py, pasang.py, arsip_kejadian.py",
+      "job": "mingguan",
+      "jeda": 2
     },
     {
       "id": "intl-charter",
@@ -131,7 +159,11 @@
       ],
       "status": "bersyarat",
       "uji": "2026-11-10",
-      "catatan": "Halaman Next.js 698 KB, 45 sebutan Indonesia; /api/activations 404. Tidak ada JSON bersih yang ditemukan; sudah dipakai repo lewat penguraian halaman. Rapuh terhadap perubahan situs."
+      "catatan": "Halaman Next.js 698 KB, 45 sebutan Indonesia; /api/activations 404. Tidak ada JSON bersih yang ditemukan; sudah dipakai repo lewat penguraian halaman. Rapuh terhadap perubahan situs.",
+      "pemilik": "siklus",
+      "pemakai": "Buku Besar Kejadian: scripts/siklus/adapter_g1.py, pasang.py, arsip_kejadian.py",
+      "job": "mingguan",
+      "jeda": 2
     },
     {
       "id": "glide",
@@ -147,7 +179,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "200 JSON (di-parse dengan strict=False). 22 catatan untuk 2025 sampai 2026 (parameter maxhit tidak membatasi), 15,7 KB. Bidang: glidenumber (mis. DR-2026-000178-IDN), event, year, month, day, latitude, longitude, location, geocode, magnitude, killed, injured, homeless, affected, source, comments, status. Kunci silang ke GDACS (properti glide). Isi jarang, cocok sebagai kunci, bukan sebagai angka."
+      "catatan": "200 JSON (di-parse dengan strict=False). 22 catatan untuk 2025 sampai 2026 (parameter maxhit tidak membatasi), 15,7 KB. Bidang: glidenumber (mis. DR-2026-000178-IDN), event, year, month, day, latitude, longitude, location, geocode, magnitude, killed, injured, homeless, affected, source, comments, status. Kunci silang ke GDACS (properti glide). Isi jarang, cocok sebagai kunci, bukan sebagai angka.",
+      "pemilik": "siklus",
+      "pemakai": "Buku Besar Kejadian: scripts/siklus/adapter_g1.py, pasang.py, arsip_kejadian.py",
+      "job": "mingguan",
+      "jeda": 2
     },
     {
       "id": "reliefweb",
@@ -157,13 +193,17 @@
       "jenis": "api",
       "lisensi": "butuh appname yang disetujui",
       "atribusi": "Sumber: ReliefWeb",
-      "jadwal": "-",
+      "jadwal": "menunggu",
       "fitur": [
         "F1"
       ],
       "status": "gagal",
       "uji": "2026-11-10",
-      "catatan": "v1 mengembalikan 410 (dicabut). v2 mengembalikan 403 'not using an approved appname'. Sesuai U6 sumber ini tidak dipakai sampai pemilik mendaftarkan appname. Tidak ada percobaan memalsukan appname."
+      "catatan": "v1 mengembalikan 410 (dicabut). v2 mengembalikan 403 'not using an approved appname'. Sesuai U6 sumber ini tidak dipakai sampai pemilik mendaftarkan appname. Tidak ada percobaan memalsukan appname.",
+      "pemilik": "siklus",
+      "pemakai": "Buku Besar Kejadian: scripts/siklus/adapter_g1.py, pasang.py, arsip_kejadian.py",
+      "job": "mingguan",
+      "jeda": 2
     },
     {
       "id": "overture-buildings",
@@ -180,7 +220,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "HTTPS publik tanpa kunci (list S3 anonim 200). 512 berkas zstd.parquet total 276,9 GB. Dibaca di tempat dengan DuckDB 1.4.5 httpfs (pushdown bbox). Bangunan dalam bbox Indonesia (95 sampai 141,1 BT, -11,1 sampai 6,1 LU; termasuk sebagian wilayah negara tetangga): 115.179.810, hitung 711 dtk. Sampel Banda Aceh 0,1x0,1 derajat: 133.727 bangunan, 285 dtk (OSM 127.228, Microsoft 6.489, Google 10). Sampel Jakarta 0,2x0,2 derajat: 1.419.082 bangunan (OSM 80,5 persen, Microsoft 6,3, Google 13,3). Atribut jarang: height terisi 0,07 persen, num_floors 1,3, class 1,2, subtype 1,4 (Jakarta). Geometri WKB rata-rata sekitar 98 byte per bangunan (perkiraan sekitar 11 GB WKB mentah untuk seluruh Indonesia sebelum kompresi, belum diekstrak). Skema: id, names, sources[], level, height, num_floors, subtype, class, roof_*, facade_*, geometry (WKB), bbox{xmin,xmax,ymin,ymax}. Keputusan 29: baca di tempat, jangan salin utuh ke R2."
+      "catatan": "HTTPS publik tanpa kunci (list S3 anonim 200). 512 berkas zstd.parquet total 276,9 GB. Dibaca di tempat dengan DuckDB 1.4.5 httpfs (pushdown bbox). Bangunan dalam bbox Indonesia (95 sampai 141,1 BT, -11,1 sampai 6,1 LU; termasuk sebagian wilayah negara tetangga): 115.179.810, hitung 711 dtk. Sampel Banda Aceh 0,1x0,1 derajat: 133.727 bangunan, 285 dtk (OSM 127.228, Microsoft 6.489, Google 10). Sampel Jakarta 0,2x0,2 derajat: 1.419.082 bangunan (OSM 80,5 persen, Microsoft 6,3, Google 13,3). Atribut jarang: height terisi 0,07 persen, num_floors 1,3, class 1,2, subtype 1,4 (Jakarta). Geometri WKB rata-rata sekitar 98 byte per bangunan (perkiraan sekitar 11 GB WKB mentah untuk seluruh Indonesia sebelum kompresi, belum diekstrak). Skema: id, names, sources[], level, height, num_floors, subtype, class, roof_*, facade_*, geometry (WKB), bbox{xmin,xmax,ymin,ymax}. Keputusan 29: baca di tempat, jangan salin utuh ke R2.",
+      "pemilik": "siklus",
+      "pemakai": "Peta Paparan: scripts/siklus/paparan.py, fasilitas.py, bahaya_kelas.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "overture-places",
@@ -197,7 +241,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "16 berkas, 11,9 GB. Skema rilis 2026-10-21: id, geometry, confidence, names, addresses, phones, websites, socials, brand, operating_status, basic_category, taxonomy{primary,...}, sources, bbox (kolom lama categories sudah tidak ada). Sampel Banda Aceh 0,1x0,1 derajat: 6.400 tempat dari 4 dataset (Meta, dll). Kategori taxonomy.primary: government_office 256, hospital 95, school 88, elementary_school 75, high_school 52, preschool 38, middle_school 23, dental_clinic 18. Confidence per rekaman ada (contoh 0,58). Kualitas POI Indonesia perlu uji banding dengan OSM dan Kemendikdasmen; jangan dipakai sebagai satu-satunya sumber fasilitas vital."
+      "catatan": "16 berkas, 11,9 GB. Skema rilis 2026-10-21: id, geometry, confidence, names, addresses, phones, websites, socials, brand, operating_status, basic_category, taxonomy{primary,...}, sources, bbox (kolom lama categories sudah tidak ada). Sampel Banda Aceh 0,1x0,1 derajat: 6.400 tempat dari 4 dataset (Meta, dll). Kategori taxonomy.primary: government_office 256, hospital 95, school 88, elementary_school 75, high_school 52, preschool 38, middle_school 23, dental_clinic 18. Confidence per rekaman ada (contoh 0,58). Kualitas POI Indonesia perlu uji banding dengan OSM dan Kemendikdasmen; jangan dipakai sebagai satu-satunya sumber fasilitas vital.",
+      "pemilik": "siklus",
+      "pemakai": "Peta Paparan: scripts/siklus/paparan.py, fasilitas.py, bahaya_kelas.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "google-open-buildings",
@@ -213,7 +261,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "Daftar objek GCS publik 200. Berkas csv.gz per sel S2 level 4 (mis. 009_buildings.csv.gz 777 MB, 00b 1,17 GB, 00d 18 MB). Sudah dipakai repo (bangunan.yml, paparan_bangunan.py). Overture sudah memuat turunan Google (13 persen di sampel Jakarta); pakai berkas langsung hanya bila butuh kolom confidence dan area."
+      "catatan": "Daftar objek GCS publik 200. Berkas csv.gz per sel S2 level 4 (mis. 009_buildings.csv.gz 777 MB, 00b 1,17 GB, 00d 18 MB). Sudah dipakai repo (bangunan.yml, paparan_bangunan.py). Overture sudah memuat turunan Google (13 persen di sampel Jakarta); pakai berkas langsung hanya bila butuh kolom confidence dan area.",
+      "pemilik": "siklus",
+      "pemakai": "Peta Paparan: scripts/siklus/paparan.py, fasilitas.py, bahaya_kelas.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "ghsl-built-s",
@@ -230,7 +282,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "Apache index terbuka. Epoch E1975 sampai E2030 per 5 tahun; resolusi 3 detik busur (4326), 30 detik busur, 100 m dan 1000 m (Mollweide 54009). Zip global 3ss E2030 3,38 GB; ada subfolder tiles/ per ubin. Dipakai untuk deret waktu pertumbuhan terbangun (F6) dan pengisi paparan di luar bangunan Overture (F2)."
+      "catatan": "Apache index terbuka. Epoch E1975 sampai E2030 per 5 tahun; resolusi 3 detik busur (4326), 30 detik busur, 100 m dan 1000 m (Mollweide 54009). Zip global 3ss E2030 3,38 GB; ada subfolder tiles/ per ubin. Dipakai untuk deret waktu pertumbuhan terbangun (F6) dan pengisi paparan di luar bangunan Overture (F2).",
+      "pemilik": "siklus",
+      "pemakai": "Peta Paparan: scripts/siklus/paparan.py, fasilitas.py, bahaya_kelas.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "ghsl-pop",
@@ -247,7 +303,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "Epoch 1975 sampai 2030 per 5 tahun, resolusi 3ss/30ss/100 m/1000 m. Zip global 3ss E2030 13,2 GB; tiles/ tersedia. Angka proyeksi 2025 dan 2030 adalah model, label estimasi-model."
+      "catatan": "Epoch 1975 sampai 2030 per 5 tahun, resolusi 3ss/30ss/100 m/1000 m. Zip global 3ss E2030 13,2 GB; tiles/ tersedia. Angka proyeksi 2025 dan 2030 adalah model, label estimasi-model.",
+      "pemilik": "siklus",
+      "pemakai": "Peta Paparan: scripts/siklus/paparan.py, fasilitas.py, bahaya_kelas.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "sekolah-kemendikdasmen",
@@ -263,7 +323,11 @@
       ],
       "status": "bersyarat",
       "uji": "2026-11-10",
-      "catatan": "Ditemukan dari main-*.js SPA. POST JSON tanpa kunci. cari-sekolah {page,size,keyword,kabupaten_kota,bentuk_pendidikan,status_sekolah} mengembalikan total 560.629 satuan pendidikan tetapi TANPA koordinat. cari-sekolah-by-location {keyword,bentuk_pendidikan,status_sekolah,lintang,bujur,use_geo_kabupaten_kota} mengembalikan paling banyak 200 sekolah terdekat dengan lintang, bujur, distance_km (kueri Banda Aceh: total 430, kembali 200; 83 KB). referensi/wilayah {keyword} dan referensi/bentuk-pendidikan (GET) berfungsi. Kolom: npsn, nama, bentuk_pendidikan, status_sekolah, akreditasi, alamat, kecamatan, kabupaten, provinsi, lintang, bujur. Mengambil seluruh koordinat berarti ribuan panggilan grid; perlu izin tertulis atau berkas resmi dari Pusdatin sebelum crawl besar."
+      "catatan": "Ditemukan dari main-*.js SPA. POST JSON tanpa kunci. cari-sekolah {page,size,keyword,kabupaten_kota,bentuk_pendidikan,status_sekolah} mengembalikan total 560.629 satuan pendidikan tetapi TANPA koordinat. cari-sekolah-by-location {keyword,bentuk_pendidikan,status_sekolah,lintang,bujur,use_geo_kabupaten_kota} mengembalikan paling banyak 200 sekolah terdekat dengan lintang, bujur, distance_km (kueri Banda Aceh: total 430, kembali 200; 83 KB). referensi/wilayah {keyword} dan referensi/bentuk-pendidikan (GET) berfungsi. Kolom: npsn, nama, bentuk_pendidikan, status_sekolah, akreditasi, alamat, kecamatan, kabupaten, provinsi, lintang, bujur. Mengambil seluruh koordinat berarti ribuan panggilan grid; perlu izin tertulis atau berkas resmi dari Pusdatin sebelum crawl besar.",
+      "pemilik": "siklus",
+      "pemakai": "Peta Paparan: scripts/siklus/paparan.py, fasilitas.py, bahaya_kelas.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "referensi-kemendikdasmen",
@@ -279,7 +343,11 @@
       ],
       "status": "bersyarat",
       "uji": "2026-11-10",
-      "catatan": "HTML server-render 26 KB: rekap jumlah SD dan SMP per provinsi (mis. DKI Jakarta 2.715 SD, 1.354 SMP) dengan tautan turun per wilayah. Tidak ada koordinat, tidak ada JSON. Pakai hanya untuk uji silang jumlah terhadap Sekolah Kita. Halaman /pendidikan/npsn/ID menjawab 404 untuk ID uji."
+      "catatan": "HTML server-render 26 KB: rekap jumlah SD dan SMP per provinsi (mis. DKI Jakarta 2.715 SD, 1.354 SMP) dengan tautan turun per wilayah. Tidak ada koordinat, tidak ada JSON. Pakai hanya untuk uji silang jumlah terhadap Sekolah Kita. Halaman /pendidikan/npsn/ID menjawab 404 untuk ID uji.",
+      "pemilik": "siklus",
+      "pemakai": "Peta Paparan: scripts/siklus/paparan.py, fasilitas.py, bahaya_kelas.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "sirs-kemkes",
@@ -287,15 +355,19 @@
       "lembaga": "Kemenkes",
       "url": "https://sirs.kemkes.go.id/fo/home/",
       "jenis": "halaman",
-      "lisensi": "-",
-      "atribusi": "-",
-      "jadwal": "-",
+      "lisensi": "menunggu",
+      "atribusi": "menunggu",
+      "jadwal": "menunggu",
       "fitur": [
         "F2"
       ],
       "status": "gagal",
       "uji": "2026-11-10",
-      "catatan": "sirs.kemkes.go.id hanya halaman SPA Yankes Single Sign-On (1,8 KB) tanpa endpoint publik; /fo/api/rs 404. Host alternatif yankes.kemkes.go.id, rsonline.kemkes.go.id, data.kemkes.go.id, faskes.kemkes.go.id, fasyankes.kemkes.go.id, rscentre.kemkes.go.id tidak resolve dari mesin ini. Pengganti: OSM, Wikidata, Overture places."
+      "catatan": "sirs.kemkes.go.id hanya halaman SPA Yankes Single Sign-On (1,8 KB) tanpa endpoint publik; /fo/api/rs 404. Host alternatif yankes.kemkes.go.id, rsonline.kemkes.go.id, data.kemkes.go.id, faskes.kemkes.go.id, fasyankes.kemkes.go.id, rscentre.kemkes.go.id tidak resolve dari mesin ini. Pengganti: OSM, Wikidata, Overture places.",
+      "pemilik": "siklus",
+      "pemakai": "Peta Paparan: scripts/siklus/paparan.py, fasilitas.py, bahaya_kelas.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "osm-overpass",
@@ -312,7 +384,11 @@
       ],
       "status": "bersyarat",
       "uji": "2026-11-10",
-      "catatan": "overpass-api.de menjawab 200 hanya dengan User-Agent yang menyebut proyek (poskokarhutla/1.0); User-Agent generik 'Mozilla/5.0 (uji-ketersediaan-data)' ditolak 406. Kueri amenity hospital atau clinic bbox 0,1 derajat selesai 40 dtk (lambat). Cermin maps.mail.ru/osm/tools/overpass 504 dua kali, overpass.kumi.systems timeout 60 dtk, overpass.private.coffee 504. Untuk skala nasional pakai Geofabrik, bukan Overpass."
+      "catatan": "overpass-api.de menjawab 200 hanya dengan User-Agent yang menyebut proyek (poskokarhutla/1.0); User-Agent generik 'Mozilla/5.0 (uji-ketersediaan-data)' ditolak 406. Kueri amenity hospital atau clinic bbox 0,1 derajat selesai 40 dtk (lambat). Cermin maps.mail.ru/osm/tools/overpass 504 dua kali, overpass.kumi.systems timeout 60 dtk, overpass.private.coffee 504. Untuk skala nasional pakai Geofabrik, bukan Overpass.",
+      "pemilik": "siklus",
+      "pemakai": "Peta Paparan: scripts/siklus/paparan.py, fasilitas.py, bahaya_kelas.py",
+      "job": "bulanan",
+      "jeda": 10
     },
     {
       "id": "geofabrik-indonesia",
@@ -329,7 +405,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "HEAD 200 setelah redirect 307 ke indonesia-261109.osm.pbf, 1,74 GB. Jalan tetap, jembatan, sekolah, tempat ibadah, kantor pemerintah, tempat penampungan diambil dengan osmium atau DuckDB spatial. Unduhan satu kali per bulan sudah sopan. Belum diunduh pada uji."
+      "catatan": "HEAD 200 setelah redirect 307 ke indonesia-261109.osm.pbf, 1,74 GB. Jalan tetap, jembatan, sekolah, tempat ibadah, kantor pemerintah, tempat penampungan diambil dengan osmium atau DuckDB spatial. Unduhan satu kali per bulan sudah sopan. Belum diunduh pada uji.",
+      "pemilik": "siklus",
+      "pemakai": "Peta Paparan: scripts/siklus/paparan.py, fasilitas.py, bahaya_kelas.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "wikidata",
@@ -345,7 +425,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "Hitung rumah sakit (Q16917) di Indonesia (Q252) berkoordinat: 772. Kueri sekolah (Q3914) timeout 60 dtk. Cakupan jauh di bawah Dapodik dan OSM; pakai sebagai penyilang nama dan kode, bukan sumber utama."
+      "catatan": "Hitung rumah sakit (Q16917) di Indonesia (Q252) berkoordinat: 772. Kueri sekolah (Q3914) timeout 60 dtk. Cakupan jauh di bawah Dapodik dan OSM; pakai sebagai penyilang nama dan kode, bukan sumber utama.",
+      "pemilik": "siklus",
+      "pemakai": "Peta Paparan: scripts/siklus/paparan.py, fasilitas.py, bahaya_kelas.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "worldpop",
@@ -361,7 +445,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "Katalog JSON 21 rekaman (38 KB). Berkas contoh idn_ppp_2020_constrained.tif 103 MB (HEAD 200, Accept-Ranges). Sudah dipakai repo (penduduk.json). Tidak ada data setelah 2020."
+      "catatan": "Katalog JSON 21 rekaman (38 KB). Berkas contoh idn_ppp_2020_constrained.tif 103 MB (HEAD 200, Accept-Ranges). Sudah dipakai repo (penduduk.json). Tidak ada data setelah 2020.",
+      "pemilik": "siklus",
+      "pemakai": "Peta Paparan: scripts/siklus/paparan.py, fasilitas.py, bahaya_kelas.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "dukcapil-arcgis",
@@ -377,7 +465,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "Metadata layer 200 (27 KB), maxRecordCount 10000, kapabilitas Query. Kolom: no_prop, no_kab, no_kec, no_kel, kode_desa_spatial, jumlah_penduduk, jumlah_kk, kelompok umur u0..u75, agama, jenis kelamin, status kawin. Sudah dipakai repo. Hanya agregat desa, tidak ada NIK."
+      "catatan": "Metadata layer 200 (27 KB), maxRecordCount 10000, kapabilitas Query. Kolom: no_prop, no_kab, no_kec, no_kel, kode_desa_spatial, jumlah_penduduk, jumlah_kk, kelompok umur u0..u75, agama, jenis kelamin, status kawin. Sudah dipakai repo. Hanya agregat desa, tidak ada NIK.",
+      "pemilik": "siklus",
+      "pemakai": "Peta Paparan: scripts/siklus/paparan.py, fasilitas.py, bahaya_kelas.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "usgs-shakemap",
@@ -394,7 +486,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "Kejadian uji us6000tkt2 (M7,8 sekitar 64 km utara barat laut Ende, 14 Agt 2026), detail GeoJSON 67 KB. Produk shakemap v11: download/grid.xml 32,9 MB (grid 743x674, spasi 0,0155 derajat, kolom LON LAT MMI PGA PGV PSA03 PSA06 PSA10 PSA30 SVEL; dibaca 1,8 KB pertama untuk verifikasi), cont_mmi.json 31 KB, coverage_mmi_low_res.covjson 127 KB, shape.zip 11,6 MB, raster.zip 17,6 MB, uncertainty.xml 31,9 MB, shake_result.hdf 54 MB, stationlist.json 124 KB. Produk lain: losspager, ground-failure (likuefaksi dan longsor, GeoTIFF), dyfi (geojson 1 km dan 10 km). Cocok untuk F3 sebagai rentang MMI, dengan label estimasi-model."
+      "catatan": "Kejadian uji us6000tkt2 (M7,8 sekitar 64 km utara barat laut Ende, 14 Agt 2026), detail GeoJSON 67 KB. Produk shakemap v11: download/grid.xml 32,9 MB (grid 743x674, spasi 0,0155 derajat, kolom LON LAT MMI PGA PGV PSA03 PSA06 PSA10 PSA30 SVEL; dibaca 1,8 KB pertama untuk verifikasi), cont_mmi.json 31 KB, coverage_mmi_low_res.covjson 127 KB, shape.zip 11,6 MB, raster.zip 17,6 MB, uncertainty.xml 31,9 MB, shake_result.hdf 54 MB, stationlist.json 124 KB. Produk lain: losspager, ground-failure (likuefaksi dan longsor, GeoTIFF), dyfi (geojson 1 km dan 10 km). Cocok untuk F3 sebagai rentang MMI, dengan label estimasi-model.",
+      "pemilik": "siklus",
+      "pemakai": "Kaji Cepat: scripts/siklus/kaji_gempa.py, kaji_banjir.py",
+      "job": "kaji",
+      "jeda": 2
     },
     {
       "id": "earth-search",
@@ -410,7 +506,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "POST /search 200. Bbox 0,3 derajat Banda Aceh, 1 Okt sampai 9 Nov 2026: 45 item cocok (Sentinel-2 L2A dan Sentinel-1 GRD). Aset Sentinel-2 berupa COG di sentinel-cogs.s3.us-west-2.amazonaws.com (HTTPS anonim), sebagian aset s3:// lain. Aset Sentinel-1 GRD mengarah ke s3:// dan kemungkinan requester-pays (tidak diuji unduh). Untuk Sentinel-1 gunakan Planetary Computer RTC. Koleksi tersedia: sentinel-2-l2a, sentinel-2-l1c, sentinel-1-grd, landsat-c2-l2, cop-dem-glo-30 dan 90."
+      "catatan": "POST /search 200. Bbox 0,3 derajat Banda Aceh, 1 Okt sampai 9 Nov 2026: 45 item cocok (Sentinel-2 L2A dan Sentinel-1 GRD). Aset Sentinel-2 berupa COG di sentinel-cogs.s3.us-west-2.amazonaws.com (HTTPS anonim), sebagian aset s3:// lain. Aset Sentinel-1 GRD mengarah ke s3:// dan kemungkinan requester-pays (tidak diuji unduh). Untuk Sentinel-1 gunakan Planetary Computer RTC. Koleksi tersedia: sentinel-2-l2a, sentinel-2-l1c, sentinel-1-grd, landsat-c2-l2, cop-dem-glo-30 dan 90.",
+      "pemilik": "siklus",
+      "pemakai": "Kaji Cepat: scripts/siklus/kaji_gempa.py, kaji_banjir.py",
+      "job": "kaji",
+      "jeda": 2
     },
     {
       "id": "planetary-computer",
@@ -426,7 +526,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "POST /search sentinel-1-rtc 200 (13 KB, item S1D 5 Nov 2026 aset vv dan vh COG di blob Azure). Token SAS anonim tanpa akun: GET /api/sas/v1/token/sentinel1euwestrtc/sentinel1-grd-rtc 200, masa berlaku sekitar 1 jam. RTC sudah dikoreksi medan: cocok untuk deteksi genangan (pola genangan Sentinel-1 yang sudah ada di repo)."
+      "catatan": "POST /search sentinel-1-rtc 200 (13 KB, item S1D 5 Nov 2026 aset vv dan vh COG di blob Azure). Token SAS anonim tanpa akun: GET /api/sas/v1/token/sentinel1euwestrtc/sentinel1-grd-rtc 200, masa berlaku sekitar 1 jam. RTC sudah dikoreksi medan: cocok untuk deteksi genangan (pola genangan Sentinel-1 yang sudah ada di repo).",
+      "pemilik": "siklus",
+      "pemakai": "Kaji Cepat: scripts/siklus/kaji_gempa.py, kaji_banjir.py",
+      "job": "kaji",
+      "jeda": 2
     },
     {
       "id": "unosat-hdx",
@@ -442,7 +546,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "39 paket UNOSAT Indonesia; terbaru: longsor Jawa Tengah (24 Mei 2026), erupsi Lewotobi (17 Feb 2026), longsor Indonesia (24 Nov 2025). Banyak berupa tautan peta web, bukan poligon yang bisa diunduh; periksa sumber daya per paket. CC BY-SA mewajibkan turunan berlisensi sama: catat pada keluaran."
+      "catatan": "39 paket UNOSAT Indonesia; terbaru: longsor Jawa Tengah (24 Mei 2026), erupsi Lewotobi (17 Feb 2026), longsor Indonesia (24 Nov 2025). Banyak berupa tautan peta web, bukan poligon yang bisa diunduh; periksa sumber daya per paket. CC BY-SA mewajibkan turunan berlisensi sama: catat pada keluaran.",
+      "pemilik": "siklus",
+      "pemakai": "Kaji Cepat: scripts/siklus/kaji_gempa.py, kaji_banjir.py",
+      "job": "kaji",
+      "jeda": 2
     },
     {
       "id": "nasa-gibs",
@@ -458,7 +566,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "GetCapabilities 200 (5,3 MB). Ubin VIIRS_Black_Marble/default/2016-01-01/500m/2/1/3.png 200 (55 KB). Lapisan harian malam ditebak VIIRS_NOAA21_DayNightBand_At_Sensor_Radiance menjawab 400 (nama lapisan atau matriks tidak cocok; tidak dilanjutkan). Pilih nama lapisan dari GetCapabilities sebelum dipakai. Sudah ada lampu_malam.py di repo."
+      "catatan": "GetCapabilities 200 (5,3 MB). Ubin VIIRS_Black_Marble/default/2016-01-01/500m/2/1/3.png 200 (55 KB). Lapisan harian malam ditebak VIIRS_NOAA21_DayNightBand_At_Sensor_Radiance menjawab 400 (nama lapisan atau matriks tidak cocok; tidak dilanjutkan). Pilih nama lapisan dari GetCapabilities sebelum dipakai. Sudah ada lampu_malam.py di repo.",
+      "pemilik": "siklus",
+      "pemakai": "Kaji Cepat: scripts/siklus/kaji_gempa.py, kaji_banjir.py",
+      "job": "kaji",
+      "jeda": 2
     },
     {
       "id": "bps-ikk",
@@ -474,7 +586,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "var 2515 'Indeks Kemahalan Konstruksi Kabupaten/Kota': th 124=2024, 125=2025; 1.028 sel (514 kab/kota x 2 tahun), 42 KB. Kota acuan berganti tiap periode (2025: Surabaya=100; 2024: Banjarmasin=100), jadi tahun berbeda TIDAK sebanding. var 128 versi lama. Parameter wajib th, key. Kunci hanya dipakai di proses; tidak ditulis ke berkas. Batas laju tidak dinyatakan."
+      "catatan": "var 2515 'Indeks Kemahalan Konstruksi Kabupaten/Kota': th 124=2024, 125=2025; 1.028 sel (514 kab/kota x 2 tahun), 42 KB. Kota acuan berganti tiap periode (2025: Surabaya=100; 2024: Banjarmasin=100), jadi tahun berbeda TIDAK sebanding. var 128 versi lama. Parameter wajib th, key. Kunci hanya dipakai di proses; tidak ditulis ke berkas. Batas laju tidak dinyatakan.",
+      "pemilik": "siklus",
+      "pemakai": "Jitupasna ke R3P: scripts/siklus/bps.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "bps-ihpb",
@@ -490,7 +606,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "var 1018 'IHPB Bahan Bangunan/Konstruksi Indonesia' menurut kelompok komoditas, bulanan, 156 sel untuk 2024 sampai 2025, 5 KB; tahun dasar berganti (2018=100, sejak Jan 2025 2023=100). Juga var 885 (menurut jenis bahan), 24, 1721 (IHPB umum 2018=100). Dipakai sebagai pengindeks harga satuan ke waktu kejadian, bukan sebagai harga satuan."
+      "catatan": "var 1018 'IHPB Bahan Bangunan/Konstruksi Indonesia' menurut kelompok komoditas, bulanan, 156 sel untuk 2024 sampai 2025, 5 KB; tahun dasar berganti (2018=100, sejak Jan 2025 2023=100). Juga var 885 (menurut jenis bahan), 24, 1721 (IHPB umum 2018=100). Dipakai sebagai pengindeks harga satuan ke waktu kejadian, bukan sebagai harga satuan.",
+      "pemilik": "siklus",
+      "pemakai": "Jitupasna ke R3P: scripts/siklus/bps.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "pupr-harga",
@@ -498,15 +618,19 @@
       "lembaga": "Kementerian PU",
       "url": "https://data.pu.go.id/",
       "jenis": "halaman",
-      "lisensi": "-",
-      "atribusi": "-",
-      "jadwal": "-",
+      "lisensi": "menunggu",
+      "atribusi": "menunggu",
+      "jadwal": "menunggu",
       "fitur": [
         "F4"
       ],
       "status": "gagal",
       "uji": "2026-11-10",
-      "catatan": "data.pu.go.id adalah SPA 'Portal Data PU' (/api/ hanya menjawab versi), tidak ditemukan dataset harga satuan; jdih.pu.go.id SPA; binakonstruksi.pu.go.id Drupal 328 KB (halaman); sisdm.pu.go.id dan ekatalog.pu.go.id tidak resolve. Tidak ada berkas atau API harga satuan yang bisa diambil mesin. Jawaban untuk U4: tetap asumsi-kebijakan, harga satuan dimasukkan manual dari dokumen HSBGN/Perka di pustaka."
+      "catatan": "data.pu.go.id adalah SPA 'Portal Data PU' (/api/ hanya menjawab versi), tidak ditemukan dataset harga satuan; jdih.pu.go.id SPA; binakonstruksi.pu.go.id Drupal 328 KB (halaman); sisdm.pu.go.id dan ekatalog.pu.go.id tidak resolve. Tidak ada berkas atau API harga satuan yang bisa diambil mesin. Jawaban untuk U4: tetap asumsi-kebijakan, harga satuan dimasukkan manual dari dokumen HSBGN/Perka di pustaka.",
+      "pemilik": "siklus",
+      "pemakai": "Jitupasna ke R3P: scripts/siklus/bps.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "inaproc",
@@ -522,7 +646,11 @@
       ],
       "status": "bersyarat",
       "uji": "2026-11-10",
-      "catatan": "data.inaproc.id dashboard Next.js 84 KB (Profil Pengadaan, RUP, Realisasi) tanpa endpoint JSON yang terlihat di HTML. spse.inaproc.id/nasional/lelang HTML 26 KB. sirup.inaproc.id HTML 31 KB (host baru; sirup.lkpp.go.id lama tidak resolve). api.lkpp.go.id tidak resolve. Tidak ada data harga kontrak yang bisa diambil bersih; nilai paket pengadaan rehab-rekon hanya bisa dipantau manual. Tidak dipakai di MVP F4."
+      "catatan": "data.inaproc.id dashboard Next.js 84 KB (Profil Pengadaan, RUP, Realisasi) tanpa endpoint JSON yang terlihat di HTML. spse.inaproc.id/nasional/lelang HTML 26 KB. sirup.inaproc.id HTML 31 KB (host baru; sirup.lkpp.go.id lama tidak resolve). api.lkpp.go.id tidak resolve. Tidak ada data harga kontrak yang bisa diambil bersih; nilai paket pengadaan rehab-rekon hanya bisa dipantau manual. Tidak dipakai di MVP F4.",
+      "pemilik": "siklus",
+      "pemakai": "Jitupasna ke R3P: scripts/siklus/bps.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "data-bnpb-ckan",
@@ -539,7 +667,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "200 JSON, 527 nama paket (29 KB), tanpa kunci. Isi antara lain aki_*, ancaman-bencana-* per kabupaten. Sudah dipakai repo. Banyak paket lama (2017); kebaruan rendah."
+      "catatan": "200 JSON, 527 nama paket (29 KB), tanpa kunci. Isi antara lain aki_*, ancaman-bencana-* per kabupaten. Sudah dipakai repo. Banyak paket lama (2017); kebaruan rendah.",
+      "pemilik": "siklus",
+      "pemakai": "Renkon dan Gladi: layar /siklus/renkon dan fasilitas.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "gis-bnpb-inarisk",
@@ -557,7 +689,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "ArcGIS 11.4 tanpa kunci. Akar: 44 folder (inarisk, Destana, Bencana_Harian, Bencana_Mingguan, 2026_gempabumi_ntt, 2026_karhutla, bansor_sumatera_2025, citra_senyar, POI, ...). inarisk: 160 layanan: INDEKS_BAHAYA_*, INDEKS_KERENTANAN_*, INDEKS_RISIKO_*, layer_risiko_*, INARISKPOP_2020, Jalur_evakuasi, Arah_jalur_evakuasi, RENEVAK_tsunami, Peta_Rencana_Evakuasi_Cilacap1, proyeksi banjir dan longsor JBTBPJ. Folder POI dan Destana tidak memuat layanan yang terdaftar. Sudah dipakai repo (terpapar.py)."
+      "catatan": "ArcGIS 11.4 tanpa kunci. Akar: 44 folder (inarisk, Destana, Bencana_Harian, Bencana_Mingguan, 2026_gempabumi_ntt, 2026_karhutla, bansor_sumatera_2025, citra_senyar, POI, ...). inarisk: 160 layanan: INDEKS_BAHAYA_*, INDEKS_KERENTANAN_*, INDEKS_RISIKO_*, layer_risiko_*, INARISKPOP_2020, Jalur_evakuasi, Arah_jalur_evakuasi, RENEVAK_tsunami, Peta_Rencana_Evakuasi_Cilacap1, proyeksi banjir dan longsor JBTBPJ. Folder POI dan Destana tidak memuat layanan yang terdaftar. Sudah dipakai repo (terpapar.py).",
+      "pemilik": "siklus",
+      "pemakai": "Peta Paparan: scripts/siklus/paparan.py, fasilitas.py, bahaya_kelas.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "big-geoservices",
@@ -575,7 +711,11 @@
       ],
       "status": "bersyarat",
       "uji": "2026-11-10",
-      "catatan": "ArcGIS 10.81, 25 folder (BANGUNANDANFASUM, TRANSPORTASI, HIDROGRAFI, GARISPANTAI, BATASWILAYAH, TOPONIMI, PENUTUPLAHAN, ...). BANGUNANDANFASUM berisi lembar RBI 2014 sampai 2016 skala 1:25.000 untuk wilayah terbatas (Aceh, Lampung, Babel, Sulawesi Tenggara, Kalimantan, Papua); TRANSPORTASI hanya Bandung dan sebagian Papua dan Aceh. Cakupan tidak nasional dan data lama. tanahair.indonesia.go.id mengalihkan ke /portal-web/ (unduh perlu akun, tidak diuji)."
+      "catatan": "ArcGIS 10.81, 25 folder (BANGUNANDANFASUM, TRANSPORTASI, HIDROGRAFI, GARISPANTAI, BATASWILAYAH, TOPONIMI, PENUTUPLAHAN, ...). BANGUNANDANFASUM berisi lembar RBI 2014 sampai 2016 skala 1:25.000 untuk wilayah terbatas (Aceh, Lampung, Babel, Sulawesi Tenggara, Kalimantan, Papua); TRANSPORTASI hanya Bandung dan sebagian Papua dan Aceh. Cakupan tidak nasional dan data lama. tanahair.indonesia.go.id mengalihkan ke /portal-web/ (unduh perlu akun, tidak diuji).",
+      "pemilik": "siklus",
+      "pemakai": "Peta Paparan: scripts/siklus/paparan.py, fasilitas.py, bahaya_kelas.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "nex-gddp-cmip6",
@@ -591,7 +731,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "List S3 anonim 200. 35 model (ACCESS-CM2, ACCESS-ESM1-5, BCC-CSM2-MR, CESM2, CMCC-ESM2, CNRM-CM6-1, CanESM5, EC-Earth3, GFDL-ESM4, IPSL-CM6A-LR, MIROC6, MPI-ESM1-2-HR, MRI-ESM2-0, NorESM2-MM, UKESM1-0-LL, ...). Skenario: historical, ssp126, ssp245, ssp370, ssp585 (tidak semua model punya semua). Variabel: pr, tas, tasmax, tasmin, hurs, huss, rlds, rsds, sfcWind. Satu berkas NetCDF = satu variabel satu tahun global: pr 2015 181,6 MB, tas 2015 244,6 MB; ada berkas ganda _v1.1 dan _v2.0 per tahun. Range request menjawab 206. Perkiraan (hitungan): pr satu model satu skenario 2015 sampai 2100 sekitar 15,6 GB global. Pemotongan bbox Indonesia belum diuji (tergantung chunking NetCDF4); jalankan di lab, simpan hanya agregat per kabupaten ke R2 (keputusan 29)."
+      "catatan": "List S3 anonim 200. 35 model (ACCESS-CM2, ACCESS-ESM1-5, BCC-CSM2-MR, CESM2, CMCC-ESM2, CNRM-CM6-1, CanESM5, EC-Earth3, GFDL-ESM4, IPSL-CM6A-LR, MIROC6, MPI-ESM1-2-HR, MRI-ESM2-0, NorESM2-MM, UKESM1-0-LL, ...). Skenario: historical, ssp126, ssp245, ssp370, ssp585 (tidak semua model punya semua). Variabel: pr, tas, tasmax, tasmin, hurs, huss, rlds, rsds, sfcWind. Satu berkas NetCDF = satu variabel satu tahun global: pr 2015 181,6 MB, tas 2015 244,6 MB; ada berkas ganda _v1.1 dan _v2.0 per tahun. Range request menjawab 206. Perkiraan (hitungan): pr satu model satu skenario 2015 sampai 2100 sekitar 15,6 GB global. Pemotongan bbox Indonesia belum diuji (tergantung chunking NetCDF4); jalankan di lab, simpan hanya agregat per kabupaten ke R2 (keputusan 29).",
+      "pemilik": "siklus",
+      "pemakai": "Risiko Masa Depan: scripts/siklus/iklim_lab.py, ghsl_lab.py",
+      "job": "lab",
+      "jeda": 2
     },
     {
       "id": "chirps-v3",
@@ -607,7 +751,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "Direktori nginx terbuka: daily, monthly, pentads, dekads, annual, 2-monthly s.d. 6-monthly, prelim. monthly/global/tifs/chirps-v3.0.2026.09.tif 23,9 MB; daily/final/sat/2025/chirps-v3.0.sat.2025.01.01.tif 12,2 MB. Sempat HTTP 429 pada HEAD kedua yang terlalu cepat; sukses setelah jeda. Pakai jeda minimal 2 dtk dan satu koneksi."
+      "catatan": "Direktori nginx terbuka: daily, monthly, pentads, dekads, annual, 2-monthly s.d. 6-monthly, prelim. monthly/global/tifs/chirps-v3.0.2026.09.tif 23,9 MB; daily/final/sat/2025/chirps-v3.0.sat.2025.01.01.tif 12,2 MB. Sempat HTTP 429 pada HEAD kedua yang terlalu cepat; sukses setelah jeda. Pakai jeda minimal 2 dtk dan satu koneksi.",
+      "pemilik": "siklus",
+      "pemakai": "Risiko Masa Depan: scripts/siklus/iklim_lab.py, ghsl_lab.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "psmsl",
@@ -623,7 +771,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "HEAD 200, 18,97 MB, Accept-Ranges. Stasiun Indonesia belum dihitung pada uji (perlu filter kode negara 'IDN' dan jumlah stasiun). Dipakai untuk kecepatan kenaikan muka laut lokal sebagai pembanding proyeksi."
+      "catatan": "HEAD 200, 18,97 MB, Accept-Ranges. Stasiun Indonesia belum dihitung pada uji (perlu filter kode negara 'IDN' dan jumlah stasiun). Dipakai untuk kecepatan kenaikan muka laut lokal sebagai pembanding proyeksi.",
+      "pemilik": "siklus",
+      "pemakai": "Risiko Masa Depan: scripts/siklus/iklim_lab.py, ghsl_lab.py",
+      "job": "bulanan",
+      "jeda": 2
     },
     {
       "id": "cmems",
@@ -639,7 +791,11 @@
       ],
       "status": "bersyarat",
       "uji": "2026-11-10",
-      "catatan": "Portal 200 (halaman). Unduh data lewat toolbox dan butuh login; tidak dibuat pada uji. Perlu keputusan pemilik membuat akun. Tidak dipakai sampai ada akun. Pengganti: AR6 proyeksi muka laut (Zenodo) dan PSMSL."
+      "catatan": "Portal 200 (halaman). Unduh data lewat toolbox dan butuh login; tidak dibuat pada uji. Perlu keputusan pemilik membuat akun. Tidak dipakai sampai ada akun. Pengganti: AR6 proyeksi muka laut (Zenodo) dan PSMSL.",
+      "pemilik": "siklus",
+      "pemakai": "Risiko Masa Depan: scripts/siklus/iklim_lab.py, ghsl_lab.py",
+      "job": "lab",
+      "jeda": 2
     },
     {
       "id": "ar6-slr-zenodo",
@@ -655,7 +811,11 @@
       ],
       "status": "hidup",
       "uji": "2026-11-10",
-      "catatan": "API Zenodo 200. Berkas: ar6.zip 890 MB, ar6-regional-confidence.zip 9,24 GB, ar6-regional_novlm-confidence.zip 8,75 GB, location_list.lst 2,66 MB (daftar lokasi tide gauge). Rekaman kedua 15335127 'near-term' (AR6_regional.zip 390 MB, CC BY 4.0). Halaman alat sealevel.nasa.gov (pencarian dataset) 404 pada URL uji; gunakan Zenodo. Label keluaran hipotesis (keputusan 10)."
+      "catatan": "API Zenodo 200. Berkas: ar6.zip 890 MB, ar6-regional-confidence.zip 9,24 GB, ar6-regional_novlm-confidence.zip 8,75 GB, location_list.lst 2,66 MB (daftar lokasi tide gauge). Rekaman kedua 15335127 'near-term' (AR6_regional.zip 390 MB, CC BY 4.0). Halaman alat sealevel.nasa.gov (pencarian dataset) 404 pada URL uji; gunakan Zenodo. Label keluaran hipotesis (keputusan 10).",
+      "pemilik": "siklus",
+      "pemakai": "Risiko Masa Depan: scripts/siklus/iklim_lab.py, ghsl_lab.py",
+      "job": "lab",
+      "jeda": 2
     },
     {
       "id": "bpn-tata-ruang",
@@ -663,15 +823,19 @@
       "lembaga": "Kementerian ATR/BPN",
       "url": "https://gistaru.atrbpn.go.id/arcgis/rest/services",
       "jenis": "arcgis",
-      "lisensi": "-",
-      "atribusi": "-",
-      "jadwal": "-",
+      "lisensi": "menunggu",
+      "atribusi": "menunggu",
+      "jadwal": "menunggu",
       "fitur": [
         "F6"
       ],
       "status": "gagal",
       "uji": "2026-11-10",
-      "catatan": "gistaru ArcGIS 10.91 menjawab 200 tetapi folders dan services kosong untuk anonim. bhumi.atrbpn.go.id SPA Next.js, /api/ 404, tanpa API terdokumentasi. gistaru.atrbpn.go.id/rtronline halaman viewer. Tidak ada unduhan RTRW yang bisa diambil mesin. RTRW untuk F6 diambil manual per daerah percontohan atau dari lampiran Perda."
+      "catatan": "gistaru ArcGIS 10.91 menjawab 200 tetapi folders dan services kosong untuk anonim. bhumi.atrbpn.go.id SPA Next.js, /api/ 404, tanpa API terdokumentasi. gistaru.atrbpn.go.id/rtronline halaman viewer. Tidak ada unduhan RTRW yang bisa diambil mesin. RTRW untuk F6 diambil manual per daerah percontohan atau dari lampiran Perda.",
+      "pemilik": "siklus",
+      "pemakai": "Risiko Masa Depan: scripts/siklus/iklim_lab.py, ghsl_lab.py",
+      "job": "lab",
+      "jeda": 2
     },
     {
       "id": "modi-esdm",
@@ -679,15 +843,58 @@
       "lembaga": "Kementerian ESDM",
       "url": "https://modi.esdm.go.id/",
       "jenis": "halaman",
-      "lisensi": "-",
-      "atribusi": "-",
-      "jadwal": "-",
+      "lisensi": "menunggu",
+      "atribusi": "menunggu",
+      "jadwal": "menunggu",
       "fitur": [
         "F6"
       ],
       "status": "gagal",
       "uji": "2026-11-10",
-      "catatan": "modi.esdm.go.id halaman 67 KB; modi.esdm.go.id/portal/dataPerusahaan mengalihkan 302 ke minerbaone.esdm.go.id/publik/badan-usaha/ (tanpa API). geoportal.esdm.go.id 503 (WFS GetCapabilities 503). Tidak ada data yang teruji. Tidak dipakai."
+      "catatan": "modi.esdm.go.id halaman 67 KB; modi.esdm.go.id/portal/dataPerusahaan mengalihkan 302 ke minerbaone.esdm.go.id/publik/badan-usaha/ (tanpa API). geoportal.esdm.go.id 503 (WFS GetCapabilities 503). Tidak ada data yang teruji. Tidak dipakai.",
+      "pemilik": "siklus",
+      "pemakai": "Risiko Masa Depan: scripts/siklus/iklim_lab.py, ghsl_lab.py",
+      "job": "lab",
+      "jeda": 2
+    },
+    {
+      "id": "dibi_harian",
+      "nama": "DIBI harian BNPB (riwayat penuh dan salinan publik repo)",
+      "lembaga": "BNPB",
+      "url": "https://dibi.bnpb.go.id/",
+      "jenis": "berkas lokal",
+      "lisensi": "data publik BNPB; syarat pakai belum dibaca baris per baris",
+      "atribusi": "Sumber: BNPB, DIBI",
+      "jadwal": "harian lewat salinan public/data/dibi_kejadian.json; riwayat penuh sekali dari mesin pemilik",
+      "fitur": [
+        "F1"
+      ],
+      "status": "hidup",
+      "uji": "2026-11-10",
+      "catatan": "Adapter lokal (adapter_g1.salin_dibi_harian), tidak lewat panen CLI. Riwayat penuh 57.161 baris 2011 sampai sekarang diunggah pemilik (unggah_riwayat.py).",
+      "pemilik": "siklus",
+      "pemakai": "Buku Besar Kejadian: scripts/siklus/bersih_dibi.py, pasang.py, arsip_kejadian.py",
+      "job": "harian",
+      "jeda": 2
     }
-  ]
+  ],
+  "anggaran": {
+    "plafon_byte": 4000000000,
+    "lapis": {
+      "mentah": 1500000000,
+      "bersih": 500000000,
+      "saji": 1500000000
+    },
+    "fitur": {
+      "F1": "menunggu",
+      "F2": "menunggu",
+      "F3": "menunggu",
+      "F4": "menunggu",
+      "F5": "menunggu",
+      "F6": "menunggu",
+      "F7": "menunggu"
+    },
+    "berkas_public_maks": 200,
+    "catatan": "angka per fitur menunggu pengukuran; jumlah lapis tidak melampaui plafon (sisa 0,5 GB cadangan)"
+  }
 }

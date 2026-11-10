@@ -20,6 +20,8 @@ const LAYAR = [
   {skrip: 'public/operasi_laporan.js', html: 'public/index.html', lama: []},
   {skrip: 'public/banjir/sungai_induk.js', html: 'public/banjir/index.html', lama: []},
   {skrip: 'public/prediksi/laporan_layar.js', html: 'public/prediksi/index.html', lama: []},
+  {skrip: 'public/siklus/inti.js', html: 'public/siklus/index.html', lama: []},
+  {skrip: 'public/siklus/publik.js', html: 'public/siklus/publik.html', lama: []},
 ]
 
 test('kartu.css memuat semua bagian kartu standar', () => {

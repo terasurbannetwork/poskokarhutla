@@ -7,6 +7,7 @@
     "uji:banjir": "node --test --test-concurrency=1 tests/banjir/*.test.mjs",
     "uji:prediksi": "node --test --test-concurrency=1 tests/prediksi/*.test.mjs",
     "uji:udara": "node --test --test-concurrency=1 tests/udara/*.test.mjs",
+    "uji:siklus": "for f in scripts/siklus/*.py; do python3 -I \"$f\" uji || exit 1; done; node --test --test-concurrency=1 tests/siklus/*.test.mjs tests/warga/siklus_*.test.mjs",
     "uji:sippa": "node --test --test-concurrency=1 tests/sippa/*.test.mjs",
     "uji:ai": "node --test tests/ai/*.test.mjs",
     "uji:wa": "python3 -I scripts/wa/uji_urai_laporan.py uji && node --test tests/wa/lapangan_tarik.test.mjs",

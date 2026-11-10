@@ -27,7 +27,7 @@ Istilah dan singkatan program. Kalah dari `KEPUTUSAN-AWAL.md` (KA). Versi 1.0, 1
 | Pendiri | rekaman pertama yang membentuk `KJ-` |
 | Penyintas | `KJ-` yang bertahan setelah gabung (tanggal mulai paling awal) |
 | `K####` | kode kluster karhutla yang diberi ulang tiap hari, bukan kunci |
-| Kunci wilayah | kode BPS 4 digit (kab4) tunggal; jembatan lewat `kab_kunci` dan `hvc_dasar.kab_kode` |
+| Kunci wilayah | kode Kemendagri 4 digit (kab4, sama dengan IRBI dan `scripts/udara/kota.json`; BUKAN BPS, yang berbeda di 164 kabupaten) tunggal; jembatan lewat nama dan provinsi: `kab_kunci` dan `hvc_dasar.kab_kode`; `id_kab_bps` DIBI tidak pernah dipakai sebagai kode |
 | Pemasangan | mencocokkan rekaman sumber ke `KJ-`: satu cocok menambah, nol membuat baru, lebih dari satu masuk antrean |
 | Ambigu | rekaman dengan lebih dari satu kandidat; tidak ditebak, diputus staf |
 | Jendela hari | selisih hari paling besar untuk pemasangan, 3 hari |

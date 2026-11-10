@@ -1,0 +1,143 @@
+name: Siklus Bencana (gudang R2)
+
+# Tidak commit, tidak terbit: keluaran hanya ke R2 (poskokarhutla-foto, siklus/{mentah,bersih,saji}/) lewat gudang.py,
+# yang hanya mengunggah berkas yang sidiknya berubah (manifest dibaca dari R2, diunggah paling akhir). DESAIN-TEKNIS 6.2/6.3.
+# Grup `siklus-batch` (harian, mingguan, bulanan, riwayat); grup `siklus-kaji` untuk job kaji (tiket kaji, belum ada skripnya).
+# Satu run antre per grup: yang bentrok dengan job panjang bisa tertunda atau terlewat satu hari tanpa merusak data.
+# Cron (UTC) menghindari: 00:20 banjir, 01:10 gempa, 01:50 prediksi, 02:10 lintas, 02:30 kemitraan, 04:20 kaji, 06:40/18:40 udara,
+# 08:30 bangunan, 09:10 titik, 14:20 data. Rahasia: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, PIPA_TOKEN (semua sudah ada).
+# Belum ada skripnya, jadi tidak dipanggil: paparan kejadian aktif (paparan.py kab butuh daftar kabupaten + grid R2), kaji_*.py,
+# adapter Overpass/Wikidata/Geofabrik (panen.py melewatinya dengan "dilewati" sampai adapter_g4.py ada).
+on:
+  schedule:
+    - cron: "50 3 * * *"
+    - cron: "50 5 * * 0"
+    - cron: "40 4 5 * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: riwayat (bersih_dibi, bersih_logbook, arsip_kejadian; unggah berubah-saja)
+        type: choice
+        options: [riwayat]
+        default: riwayat
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  BASIS: https://centurisk97.id
+
+jobs:
+  harian:
+    if: github.event_name == 'schedule' && github.event.schedule == '50 3 * * *'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    concurrency: {group: siklus-batch, cancel-in-progress: false}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Pasang wrangler sekali
+        run: |
+          npm i --prefix "$RUNNER_TEMP/w" wrangler@4.42.0
+          echo "W=$RUNNER_TEMP/w/node_modules/.bin/wrangler" >> "$GITHUB_ENV"
+          echo "S=$RUNNER_TEMP/s" >> "$GITHUB_ENV"
+          echo "B=$RUNNER_TEMP/b" >> "$GITHUB_ENV"
+      - name: Uji registri dan kunci
+        run: |
+          python3 -I scripts/siklus/registri.py periksa
+          python3 -I scripts/siklus/kunci.py uji
+      - name: Panen DIBI harian (salinan berkas repo, hanya tambah)
+        run: python3 -I -c "import sys;sys.path.insert(0,'scripts/siklus');import adapter_g1 as a;print(a.salin_dibi_harian('$S/siklus/mentah'))"
+      - name: "Bersihkan DIBI (lokal saja, tidak diunggah, hanya dari berkas publik)"
+        run: python3 -I scripts/siklus/bersih_dibi.py bersih --mentah "$S/siklus/mentah/dibi_harian" --keluar "$B"
+      - name: Pasang kejadian (POST ingest, jendela 3 hari)
+        continue-on-error: true
+        env:
+          PIPA_TOKEN: ${{ secrets.PIPA_TOKEN }}
+        run: |
+          python3 -I scripts/siklus/pasang.py masuk --bersih "$B/siklus/bersih" --basis "$BASIS" \
+            --dari "$(date -u -d '3 days ago' +%F)" --sampai "$(date -u +%F)"
+      - name: Unggah ke R2 (hanya yang berubah)
+        if: always()
+        run: python3 -I scripts/siklus/gudang.py sinkron "$S" --wrangler "$W"
+
+  mingguan:
+    if: github.event_name == 'schedule' && github.event.schedule == '50 5 * * 0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    concurrency: {group: siklus-batch, cancel-in-progress: false}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Pasang wrangler sekali
+        run: |
+          npm i --prefix "$RUNNER_TEMP/w" wrangler@4.42.0
+          echo "W=$RUNNER_TEMP/w/node_modules/.bin/wrangler" >> "$GITHUB_ENV"
+          echo "S=$RUNNER_TEMP/s" >> "$GITHUB_ENV"
+      - name: Uji adapter G1 dan fasilitas
+        run: |
+          python3 -I scripts/siklus/adapter_g1.py uji
+          python3 -I scripts/siklus/fasilitas.py uji
+      - name: Panen G1 dan fasilitas (boleh gagal, sumber gagal = saji terakhir dipertahankan)
+        continue-on-error: true
+        run: |
+          for s in gdacs glide usgs-fdsn osm-overpass wikidata; do
+            python3 -I scripts/siklus/panen.py "$s" --mentah "$S/siklus/mentah" || echo "::warning::panen $s gagal"
+          done
+      - name: Unggah ke R2 (hanya yang berubah)
+        if: always()
+        run: python3 -I scripts/siklus/gudang.py sinkron "$S" --wrangler "$W"
+
+  bulanan:
+    if: github.event_name == 'schedule' && github.event.schedule == '40 4 5 * *'
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    concurrency: {group: siklus-batch, cancel-in-progress: false}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Pasang wrangler sekali
+        run: |
+          npm i --prefix "$RUNNER_TEMP/w" wrangler@4.42.0
+          echo "W=$RUNNER_TEMP/w/node_modules/.bin/wrangler" >> "$GITHUB_ENV"
+          echo "S=$RUNNER_TEMP/s" >> "$GITHUB_ENV"
+      # Satu-satunya pip install di Siklus (pembaca PBF stdlib tidak ada); Geofabrik PBF 1,74 GB dibaca adapter fasilitas.
+      - name: Pasang osmium
+        run: pip install osmium
+      - name: Uji fasilitas dan kelas bahaya
+        run: |
+          python3 -I scripts/siklus/fasilitas.py uji
+          python3 -I scripts/siklus/bahaya_kelas.py uji
+      - name: Panen Geofabrik (boleh gagal; dilewati sampai adapter ada)
+        continue-on-error: true
+        run: python3 -I scripts/siklus/panen.py geofabrik-indonesia --mentah "$S/siklus/mentah"
+      - name: Unggah ke R2 (hanya yang berubah)
+        if: always()
+        run: python3 -I scripts/siklus/gudang.py sinkron "$S" --wrangler "$W"
+
+  riwayat:
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'riwayat'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    concurrency: {group: siklus-batch, cancel-in-progress: false}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Pasang wrangler sekali
+        run: |
+          npm i --prefix "$RUNNER_TEMP/w" wrangler@4.42.0
+          echo "W=$RUNNER_TEMP/w/node_modules/.bin/wrangler" >> "$GITHUB_ENV"
+          echo "S=$RUNNER_TEMP/s" >> "$GITHUB_ENV"
+      - name: Bersihkan DIBI dan logbook (jumlah dibuang dilaporkan)
+        run: |
+          python3 -I scripts/siklus/bersih_dibi.py bersih --mentah "$S/siklus/mentah/dibi_harian" --keluar "$S"
+          python3 -I scripts/siklus/bersih_logbook.py bersih --keluar "$S"
+      - name: Arsip kejadian beku
+        run: python3 -I scripts/siklus/arsip_kejadian.py bangun --bersih "$S/siklus/bersih" --keluar "$S"
+      - name: Lapis saji (manifest, laporan bersih, registri)
+        run: python3 -I scripts/siklus/saji.py bangun "$S"
+      - name: Unggah ke R2 (hanya yang berubah, 7.571+ berkas arsip, paralel 8)
+        run: python3 -I scripts/siklus/gudang.py sinkron "$S" --wrangler "$W"

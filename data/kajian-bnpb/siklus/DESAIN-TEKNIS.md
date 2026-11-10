@@ -9,7 +9,7 @@ Rujukan kode diperiksa pada main 10 Nov 2026 (`5e08fc443`) dan pohon kerja (`011
 ```
 L0 sumber publik   DIBI, Logbook, USGS, GDACS, GLIDE, Open Buildings, Overture, GHSL, WorldPop, Dukcapil, OSM, Wikidata, InaRISK, BPS, CHIRPS, NEX-GDDP, AR6/PSMSL
 L1 panen           scripts/siklus/panen.py: jeda 2 dtk, UA proyek, 3x coba, tanpa CAPTCHA   [Actions siklus.yml]
-L2 gudang R2       siklus/mentah/ (apa adanya, bertanggal) -> siklus/bersih/ (kunci BPS4, label) -> siklus/saji/ (agregat siap layar)
+L2 gudang R2       siklus/mentah/ (apa adanya, bertanggal) -> siklus/bersih/ (kunci kab4 Kemendagri, label) -> siklus/saji/ (agregat siap layar)
 L3 tulang punggung kunci wilayah BPS 4 digit; ID kejadian KJ-; registri sumber; 6 label keyakinan
 L4 mesin           pasang kejadian, silang paparan, kaji cepat = Python; hitung Jitupasna/R3P/renkon = JS murni di Worker
 L5 operasi         Worker src/siklus*.js + D1 sk_* (transaksi staf, jejak)
@@ -69,7 +69,7 @@ Agent: `siklus` = layar, pipeline, registri, uji. `warga-api` = `src/**`, `migra
 
 ## 3. Model data D1
 
-Gaya `0096`, `0119`, `km_*`: id TEXT 16 heks (`acak(8)`; kecuali `sk_kejadian.id` yang berformat `KJ-`, dari hash, ALG F1.2); waktu INTEGER ms UTC; tanggal `YYYY-MM-DD`; `prov` 2 digit; `kab4` BPS; teks ber-CHECK panjang; `dummy` di SEMUA tabel; hanya `CREATE ... IF NOT EXISTS` dan `ON CONFLICT ... DO NOTHING` (bukan `INSERT OR IGNORE`); tanpa `ALTER` yang butuh bangun ulang.
+Gaya `0096`, `0119`, `km_*`: id TEXT 16 heks (`acak(8)`; kecuali `sk_kejadian.id` yang berformat `KJ-`, dari hash, ALG F1.2); waktu INTEGER ms UTC; tanggal `YYYY-MM-DD`; `prov` 2 digit; `kab4` Kemendagri (bukan BPS; `id_kab_bps` DIBI dan data BPS dipetakan lewat nama + provinsi, adapter BPS F4 sama); teks ber-CHECK panjang; `dummy` di SEMUA tabel; hanya `CREATE ... IF NOT EXISTS` dan `ON CONFLICT ... DO NOTHING` (bukan `INSERT OR IGNORE`); tanpa `ALTER` yang butuh bangun ulang.
 
 **Aturan CHECK enum (pelajaran `meja_catatan`, 0110/0118/0119).** Enum tetap menurut peraturan (fase, status alur, tingkat, jenis gladi, label keyakinan) di-CHECK. Enum yang bisa tumbuh (jenis kejadian, nama sumber, sektor U10) hanya di-CHECK panjangnya; daftar sahnya dijaga Worker dan uji, supaya menambah nilai tidak menuntut bangun ulang tabel.
 
@@ -116,17 +116,18 @@ CREATE TABLE IF NOT EXISTS sk_kejadian (
   CHECK (publik = 0 OR (ringkasan_publik IS NOT NULL AND fase NOT IN ('terdeteksi','dibatalkan','digabung')))
 );
 CREATE INDEX IF NOT EXISTS sk_kej_kab ON sk_kejadian (kab4, mulai DESC);
-CREATE INDEX IF NOT EXISTS sk_kej_mulai ON sk_kejadian (mulai DESC, id);
+CREATE INDEX IF NOT EXISTS sk_kej_mulai ON sk_kejadian (mulai DESC, id DESC);
 CREATE INDEX IF NOT EXISTS sk_kej_fase ON sk_kejadian (fase, fase_diubah) WHERE fase NOT IN ('selesai','dibatalkan','digabung');
 CREATE INDEX IF NOT EXISTS sk_kej_dummy ON sk_kejadian (id) WHERE dummy = 1;
 
 CREATE TABLE IF NOT EXISTS sk_kejadian_kab (            -- kejadian multi-kabupaten (ALG F1.3); kab utama juga satu baris
   kejadian_id TEXT NOT NULL REFERENCES sk_kejadian(id) KJ(kejadian_id),
   kab4 TEXT NOT NULL KAB4-notnull(kab4),
+  mulai TEXT NOT NULL DATE(mulai),                      -- salinan sk_kejadian.mulai: daftar BP lewat indeks tanpa gabung ke tabel induk
   dibuat INTEGER NOT NULL, DUM,
   PRIMARY KEY (kejadian_id, kab4)
 );
-CREATE INDEX IF NOT EXISTS sk_kejkab_kab ON sk_kejadian_kab (kab4, kejadian_id);
+CREATE INDEX IF NOT EXISTS sk_kejkab_kab ON sk_kejadian_kab (kab4, mulai DESC, kejadian_id);
 
 CREATE TABLE IF NOT EXISTS sk_kejadian_alias (          -- hasil gabung; id lama tetap terbuka
   alias_id TEXT PRIMARY KEY KJ(alias_id),
@@ -154,7 +155,7 @@ CREATE TABLE IF NOT EXISTS sk_kejadian_sumber (         -- (sumber, kode) -> KJ-
 );
 CREATE INDEX IF NOT EXISTS sk_ks_kej ON sk_kejadian_sumber (kejadian_id);
 CREATE INDEX IF NOT EXISTS sk_ks_mulai ON sk_kejadian_sumber (mulai, id);          -- untuk ingest/sumber (pasang.py), dibaca per tanggal
-CREATE INDEX IF NOT EXISTS sk_ks_antre ON sk_kejadian_sumber (status, mulai) WHERE status IN ('ambigu','tanpa_wilayah');
+CREATE INDEX IF NOT EXISTS sk_ks_antre ON sk_kejadian_sumber (status, mulai, id) WHERE status IN ('ambigu','tanpa_wilayah');
 
 CREATE TABLE IF NOT EXISTS sk_jejak (                   -- satu jejak untuk SEMUA sk_*; satu batch dengan tiap tulis
   id INTEGER PRIMARY KEY, waktu INTEGER NOT NULL,
@@ -169,6 +170,8 @@ CREATE INDEX IF NOT EXISTS sk_jejak_dummy ON sk_jejak (id) WHERE dummy = 1;
 ```
 
 Trigger `sk_kejadian_fase` (pola `meja_catatan_ubah`) memeriksa pasangan sah ALUR 2.1 (maju atau mundur satu langkah, `dibatalkan` hanya dari `terdeteksi`, `digabung` dari fase hidup mana pun dan tidak pernah keluar lagi) dengan `RAISE(ABORT, 'sk_fase: ...')`; `sk_kejadian_publik` menolak `publik = 1` saat fase `dibatalkan` atau `digabung`. Rute fase menurunkan `publik` ke 0 dalam batch yang sama bila fase baru `terdeteksi`, `dibatalkan`, atau `digabung` (ALUR 2.1). Tidak ada operasi pecah (ALG F1.5): koreksi salah gabung memindahkan satu baris `sk_kejadian_sumber` (`asal_id` terisi) dan tercatat di `sk_jejak`.
+
+Trigger `sk_kejadian_publik` (BEFORE UPDATE OF publik, fase) dan `sk_kejadian_publik_baru` (BEFORE INSERT) menolak `publik = 1` untuk kejadian `dibatalkan` atau `digabung` dengan `RAISE(ABORT, 'sk_publik: ...')`; CHECK tabel sudah menolak `terdeteksi`, trigger memberi pesan yang jelas.
 
 ### 3.2 Gelombang G2: `sk_kaji`
 
@@ -369,7 +372,7 @@ Semua JSON `saji` berselubung `{"v":1,"jenis":"..","dibuat":"<ISO UTC>","sumber"
 
 ```
 siklus/mentah/<sumber>/<YYYY>/<YYYY-MM-DD>.<ext>   apa adanya; harian dipangkas 90 hari; riwayat dan sumber tunggal permanen
-siklus/bersih/<jenis>/<YYYY>.jsonl.gz               kunci BPS4; tanpa teks bebas
+siklus/bersih/<jenis>/<YYYY>.jsonl.gz               kunci kab4 Kemendagri; tanpa teks bebas
 siklus/saji/{manifest,laporan_bersih,registri,anggaran}.json
 siklus/saji/kejadian/arsip/<YYYY>/{<prov>,k<kab4>}.json
 siklus/saji/paparan/<prov>.json  paparan/kab/<kab4>.json  paparan/rinci/<kab4>.json  fasilitas/<kab4>.json

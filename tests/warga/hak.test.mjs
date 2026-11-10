@@ -43,7 +43,8 @@ const SEL = {
 };
 const AKSI = ["baca", "tambah", "ubah", "hapus"];
 
-for (const tabel of Object.keys(H.MATRIKS)) for (const [nama, p] of Object.entries(PELAKU)) for (const aksi of AKSI) {
+/* tabel sk_* punya pelaku sendiri (sk_staf, sk_instansi) dan diuji sel demi sel di siklus_peran.test.mjs */
+for (const tabel of Object.keys(H.MATRIKS).filter(t => !t.startsWith("sk_"))) for (const [nama, p] of Object.entries(PELAKU)) for (const aksi of AKSI) {
   const boleh = H.MATRIKS[tabel][nama]?.includes(aksi) ?? false;
   test(`${tabel}.${aksi} oleh ${nama}: ${boleh ? "boleh" : "ditolak 403"}`, async () => {
     assert.equal(H.boleh(p, tabel, aksi), boleh);

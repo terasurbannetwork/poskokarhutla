@@ -1,0 +1,401 @@
+{
+ "v": 1,
+ "sumber": [
+  {
+   "id": "gdacs",
+   "nama": "GDACS daftar peristiwa Indonesia (GeoJSON) dan RSS",
+   "lisensi": "bebas dipakai dengan atribusi GDACS; teks syarat belum dibaca baris per baris pada uji ini",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: GDACS (JRC dan UN OCHA)",
+   "dipakai_di": [
+    "F1"
+   ]
+  },
+  {
+   "id": "petabencana",
+   "nama": "PetaBencana.id laporan warga (data.petabencana.id)",
+   "lisensi": "tidak dinyatakan di API; kode repositori cognicity berlisensi GPL-3.0; lisensi data harus dikonfirmasi ke PetaBencana.id sebelum dipakai ulang",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: PetaBencana.id",
+   "dipakai_di": [
+    "F1"
+   ]
+  },
+  {
+   "id": "hdx-hapi",
+   "nama": "HDX HAPI (kebutuhan kemanusiaan, orang terdampak)",
+   "lisensi": "data per dataset sumber (umumnya CC BY IGO); butuh app_identifier",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: OCHA HDX HAPI",
+   "dipakai_di": [
+    "F1"
+   ]
+  },
+  {
+   "id": "hdx-ckan",
+   "nama": "HDX CKAN (katalog dataset kemanusiaan Indonesia)",
+   "lisensi": "per dataset (kolom license_id pada tiap paket)",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: HDX dan penyedia dataset",
+   "dipakai_di": [
+    "F1",
+    "F3"
+   ]
+  },
+  {
+   "id": "desinventar",
+   "nama": "DesInventar Indonesia (ekspor XML dan shapefile)",
+   "lisensi": "tidak dinyatakan dalam paket; data bersumber DIBI (fechapor=DIBI)",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: DesInventar (UNDRR), asal DIBI BNPB",
+   "dipakai_di": [
+    "F1"
+   ]
+  },
+  {
+   "id": "usgs-fdsn",
+   "nama": "USGS katalog gempa FDSN",
+   "lisensi": "domain publik USGS dengan kredit (kebijakan umum USGS, tidak dibuka ulang pada uji)",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: USGS",
+   "dipakai_di": [
+    "F1",
+    "F3"
+   ]
+  },
+  {
+   "id": "copernicus-ems",
+   "nama": "Copernicus EMS Rapid Mapping daftar aktivasi publik",
+   "lisensi": "terbuka penuh menurut kebijakan Copernicus (tidak dibuka ulang pada uji)",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: Copernicus EMS",
+   "dipakai_di": [
+    "F1",
+    "F3"
+   ]
+  },
+  {
+   "id": "intl-charter",
+   "nama": "International Charter Space and Major Disasters aktivasi",
+   "lisensi": "tidak dinyatakan pada uji",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: International Charter Space and Major Disasters",
+   "dipakai_di": [
+    "F1",
+    "F3"
+   ]
+  },
+  {
+   "id": "glide",
+   "nama": "GLIDE nomor bencana (glidenumber.net)",
+   "lisensi": "tidak dinyatakan",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: GLIDE (glidenumber.net)",
+   "dipakai_di": [
+    "F1"
+   ]
+  },
+  {
+   "id": "overture-buildings",
+   "nama": "Overture Maps bangunan (GeoParquet S3)",
+   "lisensi": "ODbL-1.0 untuk bangunan turunan OpenStreetMap dan Microsoft (kolom sources[].license pada sampel Banda Aceh); bangunan turunan Google bernilai null pada kolom itu, bacaan lisensi Google Open Buildings berlaku",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: Overture Maps Foundation, OpenStreetMap contributors, Microsoft ML Buildings, Google Open Buildings",
+   "dipakai_di": [
+    "F2",
+    "F4"
+   ]
+  },
+  {
+   "id": "overture-places",
+   "nama": "Overture Maps tempat (POI)",
+   "lisensi": "Apache-2.0 dan CDLA-Permissive-2.0 (kolom sources[].license pada sampel Banda Aceh)",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: Overture Maps Foundation",
+   "dipakai_di": [
+    "F2",
+    "F5"
+   ]
+  },
+  {
+   "id": "google-open-buildings",
+   "nama": "Google Open Buildings v3 (poligon per sel S2)",
+   "lisensi": "CC BY 4.0 dan ODbL 1.0 menurut dokumentasi proyek (tidak dibuka ulang)",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: Google Open Buildings",
+   "dipakai_di": [
+    "F2"
+   ]
+  },
+  {
+   "id": "ghsl-built-s",
+   "nama": "GHSL GHS-BUILT-S R2023A (luas terbangun, epoch 1975 sampai 2030)",
+   "lisensi": "CC BY 4.0 (copyright.txt dibaca pada uji)",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: Uni Eropa, GHSL (JRC), CC BY 4.0",
+   "dipakai_di": [
+    "F2",
+    "F6"
+   ]
+  },
+  {
+   "id": "ghsl-pop",
+   "nama": "GHSL GHS-POP R2023A (penduduk bergrid, epoch 1975 sampai 2030)",
+   "lisensi": "CC BY 4.0 (copyright.txt dibaca pada uji)",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: Uni Eropa, GHSL (JRC), CC BY 4.0",
+   "dipakai_di": [
+    "F2",
+    "F6"
+   ]
+  },
+  {
+   "id": "sekolah-kemendikdasmen",
+   "nama": "Sekolah Kita (API internal SPA Kemendikdasmen)",
+   "lisensi": "tidak dinyatakan; bukan API terdokumentasi resmi",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: Kemendikdasmen, Sekolah Kita",
+   "dipakai_di": [
+    "F2"
+   ]
+  },
+  {
+   "id": "referensi-kemendikdasmen",
+   "nama": "Data Referensi Pendidikan (rekap satuan pendidikan)",
+   "lisensi": "tidak dinyatakan",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: Kemendikdasmen, Data Referensi Pendidikan",
+   "dipakai_di": [
+    "F2"
+   ]
+  },
+  {
+   "id": "osm-overpass",
+   "nama": "OpenStreetMap lewat Overpass API",
+   "lisensi": "ODbL 1.0 (tertulis di respons: data under ODbL)",
+   "url_lisensi": "menunggu",
+   "atribusi": "Data (c) OpenStreetMap contributors, ODbL",
+   "dipakai_di": [
+    "F2",
+    "F5"
+   ]
+  },
+  {
+   "id": "geofabrik-indonesia",
+   "nama": "Geofabrik ekstrak OSM Indonesia (PBF harian)",
+   "lisensi": "ODbL 1.0",
+   "url_lisensi": "menunggu",
+   "atribusi": "Data (c) OpenStreetMap contributors, ODbL; ekstrak Geofabrik",
+   "dipakai_di": [
+    "F2",
+    "F5"
+   ]
+  },
+  {
+   "id": "wikidata",
+   "nama": "Wikidata SPARQL (rumah sakit dan fasilitas berkoordinat)",
+   "lisensi": "CC0 1.0",
+   "url_lisensi": "menunggu",
+   "atribusi": "Wikidata (CC0), atribusi dianjurkan",
+   "dipakai_di": [
+    "F2"
+   ]
+  },
+  {
+   "id": "worldpop",
+   "nama": "WorldPop penduduk bergrid Indonesia",
+   "lisensi": "CC BY 4.0 menurut metadata WorldPop (hub.worldpop.org/data/licence.txt; tidak dibuka ulang)",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: WorldPop, DOI 10.5258/SOTON/WP00645",
+   "dipakai_di": [
+    "F2"
+   ]
+  },
+  {
+   "id": "dukcapil-arcgis",
+   "nama": "Dukcapil GIS penduduk per desa (ArcGIS FeatureServer)",
+   "lisensi": "tidak dinyatakan; dipakai sebagai data publik dengan atribusi (pola scripts/bnpb/terpapar.py)",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: Ditjen Dukcapil Kemendagri",
+   "dipakai_di": [
+    "F2"
+   ]
+  },
+  {
+   "id": "usgs-shakemap",
+   "nama": "USGS ShakeMap, PAGER, ground-failure",
+   "lisensi": "domain publik USGS dengan kredit (kebijakan umum USGS, tidak dibuka ulang pada uji)",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: USGS ShakeMap",
+   "dipakai_di": [
+    "F3",
+    "F1"
+   ]
+  },
+  {
+   "id": "earth-search",
+   "nama": "Element 84 Earth Search STAC (Sentinel-2 L2A COG, Sentinel-1 GRD)",
+   "lisensi": "data Sentinel: terbuka penuh (syarat Copernicus Sentinel); metadata koleksi bertuliskan 'proprietary'",
+   "url_lisensi": "menunggu",
+   "atribusi": "Berisi data Copernicus Sentinel yang dimodifikasi, ESA",
+   "dipakai_di": [
+    "F3"
+   ]
+  },
+  {
+   "id": "planetary-computer",
+   "nama": "Microsoft Planetary Computer STAC (Sentinel-1 RTC, dll.)",
+   "lisensi": "per koleksi (Sentinel-1 RTC mengikuti syarat Copernicus; tidak dibuka ulang)",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: Microsoft Planetary Computer, data Copernicus Sentinel",
+   "dipakai_di": [
+    "F3"
+   ]
+  },
+  {
+   "id": "unosat-hdx",
+   "nama": "UNOSAT produk bencana Indonesia lewat HDX",
+   "lisensi": "umumnya CC BY-SA (cc-by-sa), sebagian hdx-other; baca license_id tiap paket",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: UNOSAT (UNITAR) lewat HDX",
+   "dipakai_di": [
+    "F3"
+   ]
+  },
+  {
+   "id": "nasa-gibs",
+   "nama": "NASA GIBS WMTS (VIIRS Black Marble dan lain-lain)",
+   "lisensi": "data NASA terbuka tanpa pembatasan, kredit NASA GIBS",
+   "url_lisensi": "menunggu",
+   "atribusi": "Citra: NASA GIBS/Worldview",
+   "dipakai_di": [
+    "F3"
+   ]
+  },
+  {
+   "id": "bps-ikk",
+   "nama": "BPS Indeks Kemahalan Konstruksi (IKK) kabupaten/kota",
+   "lisensi": "butuh kunci API BPS (Keychain bps-webapi); data BPS dengan atribusi",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: BPS, Indeks Kemahalan Konstruksi",
+   "dipakai_di": [
+    "F4"
+   ]
+  },
+  {
+   "id": "bps-ihpb",
+   "nama": "BPS IHPB bahan bangunan/konstruksi",
+   "lisensi": "butuh kunci API BPS (Keychain bps-webapi); data BPS dengan atribusi",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: BPS, IHPB",
+   "dipakai_di": [
+    "F4"
+   ]
+  },
+  {
+   "id": "inaproc",
+   "nama": "INAPROC Data, SPSE nasional, SiRUP",
+   "lisensi": "tidak dinyatakan",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: LKPP INAPROC",
+   "dipakai_di": [
+    "F4"
+   ]
+  },
+  {
+   "id": "data-bnpb-ckan",
+   "nama": "data.bnpb.go.id (CKAN)",
+   "lisensi": "per dataset (CKAN license_id)",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: BNPB, data.bnpb.go.id",
+   "dipakai_di": [
+    "F5",
+    "F1"
+   ]
+  },
+  {
+   "id": "gis-bnpb-inarisk",
+   "nama": "gis.bnpb.go.id ArcGIS Server (InaRISK dan lainnya)",
+   "lisensi": "tidak dinyatakan; dipakai sebagai data publik dengan atribusi BNPB",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: BNPB InaRISK",
+   "dipakai_di": [
+    "F2",
+    "F5",
+    "F6"
+   ]
+  },
+  {
+   "id": "big-geoservices",
+   "nama": "BIG geoservices RBI (ArcGIS Server)",
+   "lisensi": "tidak dinyatakan pada layanan",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: BIG, Rupabumi Indonesia",
+   "dipakai_di": [
+    "F2",
+    "F5",
+    "F6"
+   ]
+  },
+  {
+   "id": "nex-gddp-cmip6",
+   "nama": "NASA NEX-GDDP-CMIP6 (proyeksi iklim harian 0,25 derajat)",
+   "lisensi": "CC0 1.0 menurut ketentuan NASA (tidak dibuka ulang pada uji); sitasi dianjurkan",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: NASA NEX-GDDP-CMIP6 (Thrasher et al.)",
+   "dipakai_di": [
+    "F6"
+   ]
+  },
+  {
+   "id": "chirps-v3",
+   "nama": "CHIRPS v3.0 curah hujan (harian final, bulanan)",
+   "lisensi": "domain publik menurut CHC (tidak dibuka ulang; README.txt 404)",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: CHIRPS v3 (Climate Hazards Center, UCSB)",
+   "dipakai_di": [
+    "F6"
+   ]
+  },
+  {
+   "id": "psmsl",
+   "nama": "PSMSL RLR bulanan (pasut)",
+   "lisensi": "gratis dengan sitasi PSMSL (tidak dibuka ulang pada uji)",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: PSMSL (Holgate et al. 2013)",
+   "dipakai_di": [
+    "F6"
+   ]
+  },
+  {
+   "id": "cmems",
+   "nama": "Copernicus Marine (CMEMS)",
+   "lisensi": "terbuka tetapi butuh akun gratis",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: E.U. Copernicus Marine Service",
+   "dipakai_di": [
+    "F6"
+   ]
+  },
+  {
+   "id": "ar6-slr-zenodo",
+   "nama": "IPCC AR6 proyeksi muka laut regional (Garner dkk. di Zenodo)",
+   "lisensi": "CC BY 4.0 (kolom license Zenodo)",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: IPCC AR6 Sea Level Projections, Zenodo 10.5281/zenodo.6382554",
+   "dipakai_di": [
+    "F6"
+   ]
+  },
+  {
+   "id": "dibi_harian",
+   "nama": "DIBI harian BNPB (riwayat penuh dan salinan publik repo)",
+   "lisensi": "data publik BNPB; syarat pakai belum dibaca baris per baris",
+   "url_lisensi": "menunggu",
+   "atribusi": "Sumber: BNPB, DIBI",
+   "dipakai_di": [
+    "F1"
+   ]
+  }
+ ]
+}

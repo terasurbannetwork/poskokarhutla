@@ -18,7 +18,7 @@ TAG = re.compile(r'(<(?:script|link)\b[^>]*?\b(?:src|href)=")([^"#?:]+\.(?:js|cs
 LEWATI = {"data", "geo", "lambang", "img", "citra"}
 IMPOR = re.compile(r"""((?:\bfrom|\bimport)\s*\(?\s*["'])(\.{1,2}/[^"'?#]+\.js|/(?!/)[^"'?#]+\.js)(["'])""")
 IMPOR_V = re.compile(r"""((?:\bfrom|\bimport)\s*\(?\s*["'])(\.{1,2}/[^"'?#]+\.js|/(?!/)[^"'?#]+\.js)(?:\?v=[0-9a-f]{10})?(["'])""")
-LIPAT = ("/petugas/", "/pipa/")   # 2 Nov 2026: tanpa /pipa/ 81 aturan, dengan 64 (batas dini gerbang 80)
+LIPAT = ("/petugas/", "/pipa/", "/siklus/")   # /siklus/* juga run_worker_first: Worker menyusun ulang header, aturan ini hanya cermin statis   # 2 Nov 2026: tanpa /pipa/ 81 aturan, dengan 64 (batas dini gerbang 80)
 TANDA = "# --- dibuat scripts/terbit/versi.py saat terbit (jangan disunting; tidak di-commit) ---"
 
 

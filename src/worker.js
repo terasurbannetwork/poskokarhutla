@@ -89,6 +89,7 @@ import {periksaPeringatan, bersihkanPeringatan, layaniPeringatan} from "./pering
 import {layaniUbin} from "./ubin.js";
 import {panenAdsb, bersihkanAdsb} from "./adsb.js";
 import {jedaSatelit, bersihkanGranul, ringkasGranul} from "./satelit.js";
+import {layaniSk} from "./siklus.js";   // sesudah berantai.js dst.: siklus_kejadian.js mengimpor pusdalops_umum.js, yang harus dimuat dari berantai.js (siklus impor tabelBelum3)
 import * as Ews from "./ews.js";   // namespace, dibaca saat jalan: ews.js dan worker.js saling impor, jadi ews.js bisa diimpor sendirian
 
 const JAM = 3600e3, HARI = 24 * JAM, CRON_TITIK = "15 */3 * * *", CRON_GEMPA = "* * * * *";
@@ -724,6 +725,7 @@ export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk den
   ["/uji-pilot", "regu uji pilot SIPPA Kalteng membuka dossier dan melapor dengan tautan bertoken, tanpa akun (keputusan pemilik 26 Okt 2026, keputusan SIPPA 59); token dicek di tiap panggilan API, halaman tanpa token kosong"],
   ["/presiden", "panel publik agregat karhutla untuk dashboard presiden, tanpa data pribadi (keputusan pemilik 22 Okt 2026)"],
   ["/instansi", "pemda, polisi, dan TNI masuk dengan username dan sandi akun instansi sendiri, bukan sesi admin (keputusan pemilik 21 Okt 2026); sesi, status aktif, dan cakupan wilayah dicek di tiap panggilan API"],
+  ["/siklus/kejadian", "ringkasan publik satu kejadian (/siklus/kejadian/KJ-...) dibuka tamu tanpa akun (KEPUTUSAN-AWAL U3 bawaan, DESAIN-TEKNIS siklus 7.2): cangkang publik hanya memuat ringkasan yang sudah dipublikasikan KO; halaman dan API staf Siklus tetap wajib sesi (src/siklus.js)"],
   ["/bnpb/katalog-dokumen", "katalog dokumen repo, dibuka tanpa login untuk sementara (permintaan pemilik 9 Nov 2026); hanya daftar judul dan tautan GitHub, repo-nya sendiri publik"],
   ["/pendataan", "pendataan Satu Data BNPB: staf direktorat membuat akun sendiri tanpa akun situs (keputusan pemilik 26 Okt 2026); akun baru menunggu persetujuan Super Admin, sesi dan status aktif dicek di tiap panggilan API"]]);
 function halamanTerkunci(url) {
@@ -882,6 +884,8 @@ const W = {
     /* Kemitraan Kampus (ADR-07): /kemitraan*, /api/kemitraan/* diserahkan ke sub-router src/kemitraan.js SEBELUM gerbang centurisk97.id di bawah:
        modul menjaga dirinya lewat hakKm (staf, kampus, kode), jadi tamu tidak dialihkan ke /admin/masuk. Bukan rute modul, jatuh ke aset statis. */
     if (url.pathname === "/kemitraan" || url.pathname.startsWith("/kemitraan/") || url.pathname.startsWith("/api/kemitraan/")) { const k = await layaniKm(env, req, url, ctx); if (k) return k; }
+    /* Siklus Bencana (src/siklus.js, migrasi 0120): /siklus*, /api/siklus/*, /api/instansi/siklus/* juga SEBELUM gerbang host dan sebelum pembungkus /api/instansi; modul menjaga dirinya (hakSk), aset /siklus/* lewat run_worker_first. */
+    if (url.pathname === "/siklus" || url.pathname.startsWith("/siklus/") || url.pathname.startsWith("/api/siklus/") || url.pathname.startsWith("/api/instansi/siklus/")) { const k = await layaniSk(env, req, url, ctx); if (k) return k; }
     /* centurisk97.id: semua halaman HTML wajib masuk admin dulu (pemilik 19 Okt 2026). Aset statis (JS/JSON/gambar) tidak lewat Worker. */
     /* Ruang Koordinasi: berkas /bnpb/*.html hanya lewat jalur bersihnya (halamanBnpbPublik memberi CSP ketat, no-store untuk halaman berkode);
        dibuka langsung = 301 ke jalur bersih (fragmen #k= ikut dibawa peramban), berkas tak dikenal = 404 */
