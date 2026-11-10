@@ -144,7 +144,7 @@ test('prompt pemilik tercatat, disamarkan, berlabel, dan hook tak pernah menahan
   ]
   const prompt =
     `benerin src/worker.js dan banjir rob; baca /Users/${rahasia[8]}/Downloads/x.pdf; kunci ${rahasia[0]} ${rahasia[1]}, email ${rahasia[2]}, ` +
-    `WA ${rahasia[3]} / ${rahasia[4]}, NIK ${rahasia[5]}, sha ${rahasia[6]}, password: hunter22, usulan FIT ${rahasia[9]} ${rahasia[10]} ` +
+    `WA ${rahasia[3]} / ${rahasia[4]}, NIK ${rahasia[5]}, sha ${rahasia[6]}, password: hunter22, passwordnya contoh99!! dan kata sandi acak, usulan FIT ${rahasia[9]} ${rahasia[10]} ` +
     `<pasted_content id="x">${rahasia[7]}</pasted_content id="x">`
   assert.equal(kirim(JSON.stringify({ session_id: 'abcdef123456', prompt })).status, 0)
   assert.equal(kirim('bukan json').status, 0, 'stdin rusak membuat hook gagal: prompt pemilik bisa tertahan')
@@ -157,6 +157,8 @@ test('prompt pemilik tercatat, disamarkan, berlabel, dan hook tak pernah menahan
   const bocor = rahasia.filter((s) => r.stdout.includes(s))
   assert.deepEqual(bocor, [], `penyamaran bocor, ini akan terbit di repo publik: ${bocor.join(' | ')}`)
   assert.ok(!r.stdout.includes('hunter22'), 'password: <nilai> tidak disamarkan')
+  assert.ok(!r.stdout.includes('contoh99'), 'passwordnya <nilai> tanpa titik dua tidak disamarkan')
+  assert.match(r.stdout, /sandi acak/, 'kata biasa sesudah "sandi" ikut tersamar; konteks prompt hilang')
   assert.match(r.stdout, /\[banjir, warga-api\]/, `label agent salah:\n${r.stdout}`)
   assert.match(r.stdout, /src\/worker\.js/, 'jalur berkas ikut tersamar; agent kehilangan konteks')
 })

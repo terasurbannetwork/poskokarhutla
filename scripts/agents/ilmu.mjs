@@ -300,7 +300,9 @@ const SAMAR = [
   [/<pasted_content[^>]*>([\s\S]*?)<\/pasted_content[^>]*>/g, (_, isi) => `[tempelan ${isi.length} karakter]`],
   [/\b(?:sk-[\w-]{16,}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_\w{20,}|AKIA[0-9A-Z]{16}|xox[abpr]-[\w-]{10,}|AIza[\w-]{30,})/g, '[kunci]'],
   [/\b(Bearer\s+)[\w.~+/-]{16,}=*/gi, '$1[kunci]'],
-  [/\b((?:api[_-]?key|token|secret|password|passwd|pwd|sandi|kata sandi)\s*[:=]\s*)\S+/gi, '$1[rahasia]'],
+  [/\b((?:api[_-]?key|token|secret|password|passwd|pwd|sandi|kata sandi)(?:-?nya)?\s*[:=]\s*)\S+/gi, '$1[rahasia]'],
+  // Tanpa titik dua ("passwordnya abc123!!"): kata berikutnya disamarkan bila berangka/bersimbol, supaya "sandi acak" tetap terbaca.
+  [/\b((?:password|passwd|pwd|sandi)(?:-?nya)?(?:\s+(?:adalah|yaitu|is))?\s+)(?=\S*[\d!@#$%^&*])\S{4,}/gi, '$1[rahasia]'],
   [/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g, '[email]'],
   // Jalur rumah membocorkan nama akun mesin (gerbang jalur mutlak menolaknya di repo publik).
   [/\/(?:Users|home)\/[^/\s"']+/g, '~'],
