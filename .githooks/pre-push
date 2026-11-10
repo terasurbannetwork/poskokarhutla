@@ -7,6 +7,11 @@ PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 [ -n "$LEWATI_UJI" ] && exit 0
 
 nol=0000000000000000000000000000000000000000
+# Profil peramban tidak pernah boleh terbit (10 Nov 2026: commit "gas" menyapu undefined.prof/ berisi Cookies dan Login Data; repo ini publik).
+if git log origin/main..HEAD --name-only --format= 2>/dev/null | grep -qE '(^|/)[^/]*\.prof/'; then
+  echo "pre-push DITOLAK: ada profil peramban (*.prof/) di commit yang belum terbit. Buang dari riwayat dulu, jangan cuma git rm." >&2
+  exit 1
+fi
 pakai=
 sha_dorong=
 while read -r lref lsha rref rsha; do

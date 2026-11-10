@@ -104,3 +104,5 @@ node_modules*/
 
 # Renlap PDF penerbangan: folder kerja + cache ubin citra (renlap_pdf.py)
 scripts/operasi/kerja/
+# profil peramban uji
+*.prof/
