@@ -219,6 +219,42 @@ const ProfilWilayah = (() => {
     return bag.join("");
   }
 
+  /* 9. riwayat DIBI per jenis (data/bnpb/dibi_kab_tahun.json, dimuat sekali saat dialog tampil) dan 10. fasilitas OSM per provinsi (ringkas.json, dimuat saat tombol ditekan) */
+  const DIBI = new URL("../bnpb/dibi_kab_tahun.json", DATA).href, OSMR = new URL("../osm_nasional/ringkas.json", DATA).href;
+  const JD = {banjir: "Banjir", longsor: "Tanah longsor", kekeringan: "Kekeringan", abrasi: "Gelombang pasang dan abrasi", gempa: "Gempa bumi", karhutla: "Karhutla", cuaca: "Cuaca ekstrem"};
+  const KD = [["kejadian", "Kejadian", "Jumlah kejadian tercatat DIBI sepanjang 2015-2025"], ["meninggal_hilang", "Meninggal dan hilang", "Korban meninggal ditambah hilang, jiwa"], ["luka", "Luka", "Korban luka, jiwa"], ["terdampak", "Terdampak", "Jiwa terdampak"], ["mengungsi", "Mengungsi", "Jiwa mengungsi"], ["rumah_rusak_berat", "Rumah rusak berat", "Unit rumah rusak berat"]];
+  let dibi = null, osmr = null;
+  const muatDibi = () => dibi || (dibi = muat(DIBI).catch(() => { dibi = null; return null; }));
+  const muatOsm = () => osmr || (osmr = muat(OSMR).catch(() => { osmr = null; return null; }));
+  function dibiKartu(D, kode, nama) {
+    if (!D) return k("Riwayat kejadian DIBI", "riwayat", "Data riwayat DIBI belum dapat dimuat saat ini, jadi belum bisa dipastikan ada atau tidaknya.", "");
+    const th = D.tahun_data || "2015-2025", baris = D.baris.filter(r => r[0] === kode);
+    if (!baris.length) return k(`Riwayat kejadian DIBI ${th.replace("DIBI ", "")}`, "riwayat", `DIBI tidak memuat catatan kejadian untuk ${esc(nama)} pada ${esc(th.replace("DIBI ", ""))}. Ini bukan berarti tidak pernah ada bencana: wilayah ini tidak tercatat atau tercatat dengan jenis di luar tujuh kelompok.`, "");
+    const per = {}, tahun = new Set(); /* baris DIBI semua-nol dibuang dari tabel */
+    for (const r of baris) { const a = per[r[2]] ||= {y: {}, v: [0, 0, 0, 0, 0, 0]}; a.y[r[1]] = r[3]; tahun.add(r[1]); for (let i = 0; i < 6; i++) a.v[i] += r[3 + i] || 0; }
+    const urut = Object.entries(per).filter(x => x[1].v.some(Boolean)).sort((x, y) => y[1].v[0] - x[1].v[0]), tot = urut.reduce((n, x) => n + x[1].v[0], 0), mh = urut.reduce((n, x) => n + x[1].v[1], 0);
+    const [j0, a0] = urut[0], y1 = Math.min(...tahun), y2 = Math.max(...tahun);
+    const kal = `DIBI mencatat ${o(fmt(tot))} kejadian di ${esc(nama)} pada ${y1}-${y2}, terbanyak ${o(esc((JD[j0] || j0).toLowerCase()))} (${fmt(a0.v[0])} kejadian)${mh ? `, dengan ${o(fmt(mh))} korban meninggal dan hilang` : ""}.`;
+    const th2 = `<thead><tr><th>Jenis</th>${KD.map(c => `<th title="${esc(c[2])}">${c[1]}</th>`).join("")}</tr></thead>`;
+    const rows = urut.map(([j, a]) => {
+      const thn = Object.keys(a.y).sort().map(y => `${y}: ${fmt(a.y[y])}`).join("<br>");
+      return `<tr><td data-tip="${esc(`<b>${JD[j] || j}</b><br>Kejadian per tahun<br>${thn}`)}" tabindex="0">${esc(JD[j] || j)}</td>${a.v.map(v => `<td>${fmt(v)}</td>`).join("")}</tr>`;
+    }).join("");
+    return k(`Riwayat kejadian DIBI ${y1}-${y2}`, "riwayat", kal, `<div class="pw-tbw"><table class="pw-tb">${th2}<tbody>${rows}</tbody></table></div><p class="pw-sub">Jumlah selama ${y2 - y1 + 1} tahun, per jenis. Tahun tanpa catatan tidak ditulis nol. Arahkan ke nama jenis untuk rincian per tahun.</p>`, "");
+  }
+  const OSMJ = [["rs", "Rumah sakit"], ["puskesmas", "Puskesmas"], ["klinik", "Klinik"], ["sekolah", "Sekolah"], ["polisi", "Polisi"], ["damkar", "Pemadam kebakaran"], ["titik_kumpul", "Titik kumpul"], ["pemerintahan", "Kantor pemerintahan"], ["jembatan", "Jembatan"], ["ibadah", "Tempat ibadah"]];
+  function osmAwal(kode, prov) {
+    return k("Fasilitas OpenStreetMap", "bpbd", `Fasilitas umum di ${esc(prov || "provinsi ini")} menurut peta OpenStreetMap.`, `<button class="pw-lagi" data-osm="${esc(kode.slice(0, 2))}">Tampilkan jumlah fasilitas se-provinsi</button>`);
+  }
+  function osmIsi(R, pr, prov) {
+    const c = R && R.provinsi && R.provinsi[pr];
+    if (!c) return k("Fasilitas OpenStreetMap", "bpbd", `Data fasilitas OpenStreetMap untuk ${esc(prov || "provinsi ini")} belum dapat dimuat.`, `<button class="pw-lagi" data-osm="${esc(pr)}">Coba lagi</button>`);
+    const kes = (c.rs || 0) + (c.puskesmas || 0) + (c.klinik || 0);
+    const pils = OSMJ.filter(x => c[x[0]] != null).map(x => pil(`${x[1]} <b>${fmt(c[x[0]])}</b>`, "", `${x[1]}: ${fmt(c[x[0]])} titik di OpenStreetMap, seluruh provinsi`)).join("");
+    return k("Fasilitas OpenStreetMap", "bpbd", `OpenStreetMap mencatat ${o(fmt(kes))} fasilitas kesehatan di ${esc(prov || "provinsi ini")}. Hitungan seluruh provinsi, belum dipilah per kabupaten.`,
+      `<div class="pw-pils">${pils}${pil("data sukarela", "pw-info", "OpenStreetMap diisi sukarelawan: sebaran dan kelengkapan antarwilayah tidak merata, jangan dibaca sebagai jumlah resmi.")}</div>`);
+  }
+
   function pastiDlg() {
     if (dlg) return dlg;
     if (!document.querySelector('link[href*="profil_wilayah.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = new URL("profil_wilayah.css", SRC).href; document.head.appendChild(l); }
@@ -226,6 +262,8 @@ const ProfilWilayah = (() => {
     tip = document.createElement("div"); tip.className = "pw-tip"; dlg.appendChild(tip);
     dlg.addEventListener("click", e => {
       if (e.target === dlg || e.target.closest("[data-tutup]")) dlg.close();
+      const ob = e.target.closest("[data-osm]");
+      if (ob && dlg._d) { const pr = ob.dataset.osm, box = ob.closest(".pw-osm"); ob.disabled = true; ob.textContent = "Memuat..."; muatOsm().then(R => requestAnimationFrame(() => { if (box?.isConnected && box.dataset.pr === pr) box.innerHTML = osmIsi(R, pr, dlg._d.p); })); }
       const l = e.target.closest("[data-lagi]"); if (l && dlg._d) { const s = l.closest(".pw-k"); s.outerHTML = riwayat(dlg._d, true); }
     });
     const hide = () => tip.classList.remove("on");
@@ -251,9 +289,10 @@ const ProfilWilayah = (() => {
       D._d = d; D.querySelector(".pw-hd")?.remove(); D.querySelector(".pw-bd")?.remove();
       /* bagian berat dirakit sesudah dialog tampil: klik tetap ringan */
       requestAnimationFrame(() => setTimeout(() => {
-        const bagian = [`<div class="pw-hari" data-kode="${esc(kode)}">${k("Hari ini", "risiko", "Memuat status darurat, saran, peringatan, dan kapasitas...", "")}</div>`, risiko(d, d.n), regulasi(d), paparan(d, kode), sosek(d), rawan(d), medan(d), bpbd(d), riwayat(d)].filter(Boolean);
+        const bagian = [`<div class="pw-hari" data-kode="${esc(kode)}">${k("Hari ini", "risiko", "Memuat status darurat, saran, peringatan, dan kapasitas...", "")}</div>`, risiko(d, d.n), regulasi(d), paparan(d, kode), sosek(d), rawan(d), medan(d), bpbd(d), `<div class="pw-dibi" data-kode="${esc(kode)}">${k("Riwayat kejadian DIBI", "riwayat", "Memuat riwayat kejadian DIBI...", "")}</div>`, riwayat(d), `<div class="pw-osm" data-pr="${esc(String(kode).slice(0, 2))}">${osmAwal(String(kode), d.p)}</div>`].filter(Boolean);
         D.insertAdjacentHTML("beforeend", kepala(d.n, d.p) + `<div class="pw-bd">${bagian.join("") || `<p class="pw-kos">Belum ada data profil untuk wilayah ini.</p>`}</div>`);
         /* bagian Hari ini: isi menyusul begitu data datang, tanpa menahan dialog */
+        muatDibi().then(Dd => { const e = D.querySelector(".pw-dibi"); if (e && e.dataset.kode === String(kode)) e.innerHTML = dibiKartu(Dd, String(kode), d.n); });
         muatHariIni().then(H => { const e = D.querySelector(".pw-hari"); if (e && e.dataset.kode === String(kode)) e.innerHTML = hariIni(d, String(kode), H); })
           .catch(() => { hi = null; const e = D.querySelector(".pw-hari"); if (e) e.innerHTML = k("Hari ini", "risiko", "Status darurat, saran, dan peringatan belum dapat dimuat saat ini.", ""); });
       }, 0));
