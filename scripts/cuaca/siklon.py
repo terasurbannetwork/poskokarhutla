@@ -4,8 +4,8 @@ Sumber: peringatan resmi JTWC (RSS https://www.metoc.navy.mil/jtwc/rss/jtwc.rss,
 prakiraan 12-120 jam, angin maksimum 1 menit (knot). Hanya sistem yang salah satu titik lintasannya di kotak lat -25..20, lon 80..160.
 Sumber kedua GDACS (gdacs.org/gdacsapi, gabungan JTWC/NOAA): hanya menambah sistem yang tidak ada di JTWC (nama sama = JTWC menang) dan menjadi cadangan
 bila JTWC tak terjangkau. Lintasan GDACS berupa ruas garis + lingkaran per titik waktu; sudut angin per titik tidak diterbitkan, jadi angin_kt hanya
-terisi di posisi terakhir (dari severity GDACS, km/jam -> knot) dan kategori per titik ada di "kategori_titik". BMKG TCWC Jakarta: tak ada umpan data
-terbuka (halaman bmkg.go.id/cuaca/siklon-tropis berupa HTML tanpa format stabil), tidak dipakai.
+terisi di posisi terakhir (dari severity GDACS, km/jam -> knot) dan kategori per titik ada di "kategori_titik". BMKG TCWC Jakarta: sumber terpisah di siklon_bmkg.py (halaman publik bmkg.go.id/cuaca/siklon-tropis, data Nuxt) ->
+cuaca_siklon_bmkg.json; sengaja tidak dicampur ke berkas ini.
 Tidak ada siklon aktif = "aktif": [] (sah). Kerucut ketidakpastian tidak diterbitkan JTWC dalam teks: kerucut_km = null (bila diisi,
 satu radius km per titik lintasan, urutan sama). BoM tidak dipakai: teks peringatannya tak punya format stabil; JTWC mencakup belahan selatan.
 Pakai: python3 scripts/cuaca/siklon.py   |   python3 scripts/cuaca/siklon.py uji

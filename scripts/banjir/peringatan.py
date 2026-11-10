@@ -10,7 +10,8 @@
 
 nowcast[]: {id, event, severity, urgency, certainty, mulai, selesai, aktif, wilayah, headline, deskripsi, prov[],
             polygon: [[[lon, lat], ...], ...] atau null, web}
-gelombang[]: {wilayah, prov (kode atau null untuk 'Indonesia'), dari, sampai, zona, sedang[], tinggi[], sangat_tinggi[], ekstrem[]}
+gelombang[]: {wilayah, prov (kode atau null untuk 'Indonesia'), dari, sampai, zona, sinoptik (teks sinoptik BMKG, maks 600 huruf, null bila kosong),
+             sedang[], tinggi[], sangat_tinggi[], ekstrem[]}
 Bagian yang gagal diunduh memakai isi berkas sebelumnya dan dicatat di `gagal`. Tidak memakai kuota Open-Meteo.
 
 Pakai:  python3 scripts/banjir/peringatan.py      |  python3 scripts/banjir/peringatan.py uji
@@ -107,13 +108,18 @@ def nowcast(w):
     return out
 
 
+def sinoptik(d):
+    return (d.get("synoptic") or "").strip()[:600] or None
+
+
 def gelombang():
     out = []
     for nama, v in ambil(GELOMBANG, kepala={"User-Agent": UA}).items():
         d = v.get("data") or {}
         wr = d.get("warning") or {}
         out.append({"wilayah": nama, "prov": kode_prov(nama), "dari": d.get("valid_from"), "sampai": d.get("valid_until"),
-                    "zona": d.get("time_zone"), **{k: wr.get(k, []) for k in ("sedang", "tinggi", "sangat_tinggi", "ekstrem")}})
+                    "zona": d.get("time_zone"), "sinoptik": sinoptik(d),
+                    **{k: wr.get(k, []) for k in ("sedang", "tinggi", "sangat_tinggi", "ekstrem")}})
     return out
 
 
@@ -151,6 +157,8 @@ def uji():
     assert not baca_cap(xml, None, dt.datetime(2026, 10, 13, 4, tzinfo=WIB))["aktif"]
     assert kode_prov("NTB") == "52" and kode_prov("Jawa Tengah Bagian Timur") == "33" and kode_prov("Bangka Belitung") == "19"
     assert kode_prov("Kalimantan Tengah") == "62" and kode_prov("Indonesia") is None and kode_prov("Papua Barat Daya") == "96"
+    assert sinoptik({"synoptic": " Angin Tenggara.\n"}) == "Angin Tenggara." and len(sinoptik({"synoptic": "x" * 900})) == 600
+    assert sinoptik({}) is None and sinoptik({"synoptic": "  \n"}) is None and sinoptik({"synoptic": None}) is None
     print("ok peringatan")
 
 

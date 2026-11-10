@@ -11,6 +11,14 @@ const Metode = {
     const isi = this.tabel(["Yang dinilai", "Tepat", "Alarm palsu", "Meleset", "POD", "FAR", "CSI"], R)
       + `<ul class="mt"><li>Penilaian dicocokkan per provinsi dan tanggal. Prakiraan kita dihitung untuk 1, 2, dan 3 hari sebelumnya, dengan hujan sehari 50 mm atau lebih sebagai alarm. Kejadian pembanding hanya yang dilaporkan, jadi jumlah meleset cenderung terlalu kecil bila laporan telat, dan terlalu besar bila arsip peringatan baru dimulai.</li><li>Tepat = ada peringatan dan ada kejadian. Alarm palsu = ada peringatan, tak ada kejadian. Meleset = ada kejadian, tak ada peringatan.</li><li>POD = tepat / (tepat + meleset). FAR = alarm palsu / (tepat + alarm palsu). CSI = tepat / (tepat + alarm palsu + meleset).</li>${V.bmkg?.kejadian ? `<li>Kejadian pembanding: ${esc(V.bmkg.kejadian)}.</li>` : ""}${cat}</ul>`;
     return `<div data-ex="Verifikasi">${Kartu.ex("Verifikasi", "", "", isi, "Sumber: BMKG, DIBI BNPB, Open-Meteo, dibuat " + jamWIB(V.dibuat)).replace('<span class="ex-ey"></span>', "")}</div>`; },
+  /* daftar nama siklon TCWC Jakarta (data/nama_siklon_tcwc.json, statis); nama yang sedang dipakai ditandai dari S.sikB. Berkas hilang = kartu dibuang */
+  async namaSiklon() {
+    const N = await muatJSON("data/nama_siklon_tcwc.json").catch(() => null); if (!N?.daftar) return "";
+    const pakai = new Set((S.sikB?.aktif || []).map(c => String(c.nama || "").toUpperCase())), hapus = new Map((N.dihapus || []).map(x => [x.nama.toUpperCase(), x.tahun]));
+    const sel = n => pakai.has(n.toUpperCase()) ? `<b translate="no">${esc(n)}</b> (dipakai sekarang)` : hapus.has(n.toUpperCase()) ? `<s translate="no">${esc(n)}</s>` : `<span translate="no">${esc(n)}</span>`;
+    const isi = this.tabel(["Daftar", "Nama berurutan"], Object.entries(N.daftar).map(([k, L]) => [k, L.map(sel).join(", ")]))
+      + `<ul class="mt"><li>Dihapus dari daftar: ${(N.dihapus || []).map(x => `<span translate="no">${esc(x.nama)}</span> (${esc(x.tahun)})`).join(", ")}.</li></ul>`;
+    return `<div data-ex="Nama siklon">${Kartu.ex("Nama siklon TCWC Jakarta", "", "", isi, "Sumber: " + esc(N.sumber || "BMKG TCWC Jakarta")).replace('<span class="ex-ey"></span>', "")}</div>`; },
   async render() {
     const PL = typeof Peluang !== "undefined" ? await Peluang.muat("../banjir/data/cuaca_peluang.json") : null, A = S.meta.ambang, sumber = this.tabel(["Data", "Sumber", "Cara tampil"], [
       ["Peringatan nowcast", "BMKG (CAP)", "Apa adanya, berlabel BMKG dan jam terbit; hilang saat masa berlakunya lewat"],
@@ -25,9 +33,10 @@ const Metode = {
       ["Status kecamatan 72 jam: gelombang", "Open-Meteo Marine, ambang kelas BMKG Maritim (2,5; 4; 6 m)", "Tinggi gelombang tertinggi sehari di titik pesisir terdekat"],
       ["Status kecamatan 72 jam: embusan", "Open-Meteo, ambang hipotesis Centurisk97 (54, 72, 90 km/jam)", "Belum dikunci uji balik"],
       ["Peluang ansambel (hipotesis)", "ECMWF IFS ansambel via Open-Meteo", "Waspada bila peluang 50 mm atau lebih sebesar 40% atau lebih; Siaga bila peluang 100 mm atau lebih 40% atau lebih; Awas bila 70% atau lebih; hanya titik ansambel sejauh 80 km atau kurang dari kecamatan"],
-      ["Prakiraan maritim per perairan dan pelabuhan", "BMKG Maritim", "Apa adanya, berlabel BMKG dan jam terbit"],
+      ["Prakiraan maritim per perairan dan pelabuhan", "BMKG Maritim", "Apa adanya, berlabel BMKG dan jam terbit; embusan dikonversi dari knot (1 knot = 1,852 km/jam), arus tetap knot"],
       ["Titik gelombang", "Open-Meteo Marine", "Tinggi gelombang tertinggi sehari per titik pesisir; model, bukan peringatan BMKG Maritim"],
       ["Siklon tropis", "JTWC dan GDACS", "Posisi amatan dan prakiraan apa adanya; tanpa siklon aktif kartunya tidak ada"],
+      ["Siklon tropis resmi", "BMKG TCWC Jakarta (halaman siklon tropis)", "Posisi, tekanan, area tanggung jawab (AoR) dan dampak apa adanya dari BMKG, angin dalam knot dan km/jam (1 knot = 1,852 km/jam), berlabel jam analisis; kartu terpisah dari JTWC"],
       ["Pelabuhan dan bandara", "Data terbuka (OpenStreetMap), Open-Meteo", "Sarana yang berstatus Waspada atau lebih pada titiknya"],
       ["Berita", "Google News RSS", "Judul dan cuplikan; diperbarui tangan, jam panen tertulis di kartu"]]);
     const ambang = this.tabel(["Bahaya", "Tingkat 1", "Tingkat 2", "Tingkat 3"], [
@@ -43,7 +52,7 @@ const Metode = {
       <li>Gelombang di bawah siklon memakai Pierson dan Moskowitz (1964), Hs = 0,21 U kuadrat / g. Ini batas atas laut berkembang penuh, jadi perkiraan atas, bukan prakiraan.</li>
       <li>Pelabuhan: terganggu bila Hs 1,5 m atau lebih, atau angin 16 kt atau lebih; tutup bila Hs 2,5 m atau lebih, atau angin 21 kt atau lebih. Bandara: terganggu bila embusan 54 km/jam atau lebih, atau hujan 10 mm/jam atau lebih; tutup bila embusan 72 km/jam atau lebih. Semua ini hipotesis berdasar kriteria risiko BMKG, bukan keputusan syahbandar atau otoritas bandara.</li></ul>`;
     const pel = PL ? `<div data-ex="Peluang">${Kartu.ex("Peluang hujan ekstrem", "", "", Peluang.batasan(PL, {judul: "Peluang dan batasnya"}).replace("<b>0. ", "<b>"), "Sumber: ECMWF, Open-Meteo").replace('<span class="ex-ey"></span>', "")}</div>` : "";
-    $("#metode").innerHTML = lain + pel + `<div data-ex="Simulasi" id="simulasi">${Kartu.ex("Simulasi", "", "", sim, "Sumber: Holland (1980), Pierson dan Moskowitz (1964), BMKG, Centurisk97").replace('<span class="ex-ey"></span>', "")}</div>` + this.verifikasi();
+    $("#metode").innerHTML = lain + pel + await this.namaSiklon() + `<div data-ex="Simulasi" id="simulasi">${Kartu.ex("Simulasi", "", "", sim, "Sumber: Holland (1980), Pierson dan Moskowitz (1964), BMKG, Centurisk97").replace('<span class="ex-ey"></span>', "")}</div>` + this.verifikasi();
     (typeof Dampak !== "undefined" ? Dampak.dibuat() : Promise.resolve(null)).then(d => { const e = $("#mtRisiko"); if (d && e) e.textContent = "Data InaRISK dibuat " + tglPendek(d.slice(0, 10)); });
   },
 };

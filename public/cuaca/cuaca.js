@@ -34,7 +34,7 @@ const marBaris = j => { const m = S.mar, ambil = (L, jenis) => L.flatMap((r, n) 
 const GEL = [["tinggi", "Tinggi", "2,5 sampai 4 m", "#3f7fb8"], ["sangat_tinggi", "Sangat tinggi", "4 sampai 6 m", "#5b4fb0"], ["ekstrem", "Ekstrem", "di atas 6 m", "#2a1f6b"]];
 
 /* ================================================================ state */
-const S = {pr: null, meta: null, per: null, geo: null, hari: 0, h0: 0, mode: "hujan", nc: [], gl: [], kec: null, gel: null, sik: null, sar: null, ver: null, dmp: null, uji: null};
+const S = {pr: null, meta: null, per: null, geo: null, hari: 0, h0: 0, mode: "hujan", nc: [], gl: [], kec: null, gel: null, sik: null, sikB: null, sar: null, ver: null, dmp: null, uji: null};
 /* tingkat Centurisk97 (registry cuaca.tingkat); ganti dari /bencana.json bila terbaca */
 let TINGKAT = [["Normal", "#9aa4b2"], ["Waspada", "#e0b400"], ["Siaga", "#e8743b"], ["Awas", "#d64545"]];
 const warnaT = t => TINGKAT[t]?.[1] || TINGKAT[0][1], namaT = t => TINGKAT[t]?.[0] || "";
@@ -95,11 +95,12 @@ $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.docu
 /* berkas tambahan boleh hilang: kartu dan lapisan yang datanya tak ada dibuang (A18) */
 const opsi = u => muatJSON(u).catch(() => null);
 async function muatTambahan() {
-  const B = "../banjir/data/", kej = Kejadian.muatAwal(), [kec, gel, sik, sar, ver, dmp, uji, mar, reg] = await Promise.all(["kec", "gelombang", "siklon", "sarana", "verifikasi", "dampak", "uji_logbook", "maritim"].map(n => opsi(B + "cuaca_" + n + ".json")).concat(opsi("/bencana.json")));
+  const B = "../banjir/data/", kej = Kejadian.muatAwal(), [kec, gel, sik, sar, ver, dmp, uji, mar, sikB, reg] = await Promise.all(["kec", "gelombang", "siklon", "sarana", "verifikasi", "dampak", "uji_logbook", "maritim", "siklon_bmkg"].map(n => opsi(B + "cuaca_" + n + ".json")).concat(opsi("/bencana.json")));
   const tg = reg?.bencana?.find(b => b.id === "cuaca")?.tingkat; if (tg?.length === 4) TINGKAT = tg.map(x => [x.nama, x.warna]);
   if (kec?.kec?.length) { const pk = await opsi(B + "pusat_kec.json"); if (pk) Object.assign(S, {kec, kecKunci: Object.keys(pk), kecPusat: Object.values(pk)}); }
   if (gel?.titik?.length) S.gel = gel;
   if (sik?.aktif?.length) S.sik = sik;
+  if (sikB?.aktif?.length) S.sikB = sikB;   /* BMKG TCWC Jakarta: berkas terpisah dari JTWC; hilang/kosong = bagian dibuang */
   if (sar && dmp && (dmp.pelabuhan?.length || dmp.bandara?.length)) S.sar = sar;
   if (mar?.hari?.length && (mar.perairan?.length || mar.pelabuhan?.length)) S.mar = mar;   /* BMKG Maritim: berkas hilang = bagian dibuang */
   if (ver && (ver.bmkg || ver.kita)) S.ver = ver;
@@ -133,7 +134,8 @@ function olahPeringatan() {
   const per = {};
   for (const g of p.gelombang || []) { if (!g.prov || Date.parse(g.sampai + (OFS[g.zona] || "+07:00")) <= t) continue;
     const o = per[g.prov] ||= {prov: g.prov, nama: g.wilayah, kelas: [0, 0, 0], perairan: [[], [], []], dari: g.dari, sampai: g.sampai, zona: g.zona};
-    GEL.forEach((k, i) => { o.kelas[i] += g[k[0]].length; o.perairan[i].push(...g[k[0]]); }); if (g.sampai > o.sampai) o.sampai = g.sampai; }
+    GEL.forEach((k, i) => { o.kelas[i] += g[k[0]].length; o.perairan[i].push(...g[k[0]]); }); if (g.sampai > o.sampai) o.sampai = g.sampai;
+    if (typeof g.sinoptik === "string" && g.sinoptik.trim() && !(o.sinoptik ||= []).includes(g.sinoptik.trim())) o.sinoptik.push(g.sinoptik.trim()); }
   S.gl = Object.values(per).map(o => ({...o, lv: o.kelas.reduce((a, n, i) => n ? i + 1 : a, 0), total: o.kelas.reduce((a, b) => a + b, 0)})).filter(o => o.lv);
 }
 /* hari-hari yang ditampilkan: hari ini sampai 6 hari ke depan (yang tersedia) */

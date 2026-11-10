@@ -19,7 +19,7 @@ IK.maritim = IK.gelombang;
 const Insight = {
   /* tabel provinsi: urut menurun menurut hujan, 10 baris per halaman */
   T: {provinsi: {urut: "hujan", turun: true, hal: 0}, kejadian: {urut: "mulai", turun: true, hal: 0}},
-  EX: ["kejadian", "status", "siklon", "sarana", "buktiBmkg", "buktiKita", "nowcast", "gelombang", "maritim", "hujan", "angin", "ansambel", "peluang", "provinsi"],
+  EX: ["kejadian", "status", "siklon", "siklonBmkg", "sarana", "buktiBmkg", "buktiKita", "nowcast", "gelombang", "maritim", "hujan", "angin", "ansambel", "peluang", "provinsi"],
   st: {},   /* state kontrol kartu peluang (wilayah, ambang) */
   PL: null,
   ih: 0, lead: "1",   /* hari kartu Status: indeks di kontrak 72 jam */
@@ -83,6 +83,19 @@ const Insight = {
     const c = [...A].sort((a, b) => (b.angin_kt || 0) - (a.angin_kt || 0))[0]; Kartu.leg([["#7a1f2b", "Amatan"], ["#c9503a", "Prakiraan"]]);
     return this.ex(`${this.hl("Siklon tropis " + esc(c.nama))}${A.length > 1 ? " dan " + (A.length - 1) + " lainnya" : ""} berangin ${this.hl(fmt(kmj(c.angin_kt)) + " km/jam")}${c.kategori ? ", " + esc(String(c.kategori).toLowerCase()) : ""}`, "", "", R.length ? this.batangH(R, U) : "",
       `Sumber: ${[...new Set(A.map(x => esc(x.sumber)))].join(", ")}, dibuat ${jamWIB(S.sik.dibuat)}`); },
+  /* siklon resmi BMKG TCWC Jakarta (cuaca_siklon_bmkg.json), terpisah dari JTWC/GDACS; "aktif: []" = kartu dibuang */
+  exSiklonBmkg() {
+    const A = S.sikB?.aktif?.filter(c => c.titik?.length); if (!A?.length) return ""; const kmj = v => v == null ? null : Math.round(v * 1.852);
+    const amatan = x => [...x.titik].reverse().find(t => !t.prakiraan), c = [...A].sort((a, b) => (amatan(b)?.angin_kt || 0) - (amatan(a)?.angin_kt || 0))[0];
+    const p = [...c.titik].reverse().find(t => !t.prakiraan) || c.titik[0], ll = `${fmt(Math.abs(p.lat))} ${p.lat < 0 ? "LS" : "LU"}, ${fmt(Math.abs(p.lon))} BT`;
+    const kat = c.kategori == null ? "" : /^\d+$/.test(c.kategori) ? "kategori " + c.kategori : String(c.kategori).toLowerCase();
+    const b = (j, v) => v ? `<tr><td>${j}</td><td translate="no">${esc(v)}</td></tr>` : "";
+    const baris = [b("Posisi", ll), b("Tekanan", p.tekanan_hpa != null ? fmt(p.tekanan_hpa) + " hPa" : ""), b("Angin", p.angin_kt != null ? `${fmt(p.angin_kt)} knot, sekitar ${fmt(kmj(p.angin_kt))} km/jam${p.embusan_kt != null ? `; embusan ${fmt(p.embusan_kt)} knot, sekitar ${fmt(kmj(p.embusan_kt))} km/jam` : ""}` : ""), b("Kategori", kat),
+      b("Wilayah BMKG", c.is_aor == null ? "" : (c.is_aor ? "Dalam area tanggung jawab (AoR) TCWC Jakarta" : "Di luar area tanggung jawab (AoR) TCWC Jakarta") + (c.area ? ", " + ({bbu: "belahan bumi utara", bbs: "belahan bumi selatan"}[c.area] || "area " + c.area) : "")),
+      b("Cuaca ekstrem", c.cuaca_ekstrem), b("Gelombang tinggi", c.gelombang_tinggi), b("Angin kencang", c.angin_kencang)].join("");
+    return this.ex(`${this.hl("Siklon tropis " + esc(c.nama))}${A.length > 1 ? " dan " + (A.length - 1) + " lainnya" : ""} di ${ll}${p.angin_kt != null ? `, angin ${this.hl(fmt(kmj(p.angin_kt)) + " km/jam")}` : ""}${p.tekanan_hpa != null ? ", tekanan " + fmt(p.tekanan_hpa) + " hPa" : ""}`, "", "",
+      `<div class="tw ex-tabel"><table><thead><tr><th>${esc(c.nama)}</th><th>Menurut BMKG</th></tr></thead><tbody>${baris}</tbody></table></div>`,
+      `Sumber: ${esc(S.sikB.sumber || "BMKG TCWC Jakarta")}, analisis ${jamWIB(c.analisis || S.sikB.dibuat)}`); },
   /* ketepatan: a = tepat, b = alarm palsu, c = meleset. Singkatan dan rumus hanya di Metode. */
   tepat(R, U, kode) {
     return this.tumpukH(R.map(([k, o]) => ({label: k === "ID" ? "Nasional" : namaProv(k), warna: "#2b8c86", seg: [[o.a, "#2b8c86", "tepat"], [o.c, "#e58a45", "meleset"], [o.b, "#c9503a", "alarm palsu"]].map(([n, w, t]) => ({nilai: n, warna: w, tip: `<b>${k === "ID" ? "Nasional" : esc(namaProv(k))}</b><br>${fmt(n)} ${t}`}))})), U); },
@@ -140,10 +153,11 @@ const Insight = {
     const m = mIdx(); if (!S.mar || m < 0) return ""; const B = marBaris(m).sort((a, b) => b.hs - a.hs || b.k - a.k), j = Math.max(0, kIdx()); if (!B.length) return "";
     const T = B.filter(x => x.k >= 3), nP = T.filter(x => x.jenis === "Perairan").length, nL = T.length - nP, t = B[0];
     Kartu.leg(MAR_KELAS.filter((x, i) => B.some(b => b.k === i)).map(x => [x[1], x[0]]));
-    const baris = B.slice(0, 10).map(({r, jenis, hs, k}) => `<tr><td translate="no">${esc(r[1])}</td><td>${jenis}</td><td class="n">${fmt(hs / 10)} m</td><td><i class="sw" style="background:${MAR_KELAS[k]?.[1] || "#9aa4b2"}"></i> ${esc(r[6][m])}</td><td class="n">${r[9][m] != null ? fmt(r[9][m] / 10) + " m" : "–"}</td></tr>`).join("");
+    /* perairan lepas nyaris tanpa titik model, jadi teratas per jenis supaya pelabuhan (berpembanding) ikut tampil */
+    const baris = ["Perairan", "Pelabuhan"].flatMap(x => B.filter(b => b.jenis === x).slice(0, 5)).map(({r, jenis, hs, k}) => `<tr><td translate="no">${esc(r[1])}</td><td>${jenis}</td><td class="n">${fmt(hs / 10)} m</td><td><i class="sw" style="background:${MAR_KELAS[k]?.[1] || "#9aa4b2"}"></i> ${esc(r[6][m])}</td><td class="n">${r[9][m] != null ? fmt(r[9][m] / 10) + " m" : "–"}</td></tr>`).join("");
     return this.ex(T.length ? `${this.hl(fmt(nP) + " perairan")} dan ${this.hl(fmt(nL) + " pelabuhan")} berkelas gelombang Tinggi atau lebih ${kapan3(j)} menurut BMKG`
       : `Gelombang tertinggi BMKG ${this.hl(fmt(t.hs / 10) + " m")} di ${esc(t.r[1])} ${kapan3(j)}, belum ada yang berkelas Tinggi`, "", "",
-      `<div class="tw ex-tabel"><table><thead><tr><th>Perairan atau pelabuhan</th><th>Jenis</th><th class="n">BMKG</th><th>Kelas BMKG</th><th class="n">Model Open-Meteo</th></tr></thead><tbody>${baris}</tbody></table></div>`,
+      `<div class="tw ex-tabel"><table><thead><tr><th>Lima teratas per jenis</th><th>Jenis</th><th class="n">Gelombang BMKG</th><th>Kelas BMKG</th><th class="n">Model Open-Meteo</th></tr></thead><tbody>${baris}</tbody></table></div>`,
       `Sumber: BMKG Maritim, terbit ${jamWIB(S.mar.terbit)}`); },
   exHujan() {
     const D = hariTampil().map(i => { const m = this.maksHari(i, 3), h = S.meta.hitung[i]; return {i, nilai: m.v, r: m.r, label: labelHari(i), ini: i === S.h0, warna: warnaHujan(m.v),

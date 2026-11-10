@@ -8,6 +8,9 @@ const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHei
   return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.min(160, Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150))}; };
 const UBIN = {bmkg: ["#7a3b0b", "#f2b544", "peringatan"], gelombang: ["#16405c", "#4fa3c4", "ombak"], satelit: ["#13324d", "#4d8a5e", "satelit"]};
 const UBIN_PENDEK = {bmkg: "BMKG", gelombang: "Ombak", satelit: "Satelit"};
+/* infografis nowcast BMKG: gambar utuh hanya dari https://nowcasting.bmkg.go.id (host persis); selain itu tetap tautan */
+const gambarNcSah = u => { try { const x = new URL(u); return x.protocol === "https:" && x.hostname === "nowcasting.bmkg.go.id"; } catch { return false; } };
+const infografisNc = u => gambarNcSah(u) ? `<p class="fnd"><img src="${escUrl(u)}" alt="Infografis nowcast BMKG untuk peringatan ini" loading="lazy" style="max-width:100%;height:auto;display:block"></p><p class="fnd">Sumber: BMKG</p>` : "";
 const kotak = fitur => PI.kotak(fitur);   /* inti/peta/lapis.js */
 const MEDAN_KOR = [[94.5, 6.5], [141.5, 6.5], [141.5, -11.5], [94.5, -11.5]]; /* kotak gambar hujan: barat laut, timur laut, tenggara, barat daya */
 const sevWarna = s => WARNA_SEV[s] || SEV_ASAL;
@@ -89,11 +92,13 @@ const Peta = {
     Laci.buka("Nowcast BMKG", `<span translate="no">${esc(a.event)}</span>`, `${pilSev(a.severity)} BMKG`,
       `${kvs(kot("Kecamatan", fmt(a.n), "dalam peringatan"))}
       <p class="fnd" translate="no"><b>${esc(hurufJudul(a.wilayah))}</b></p><p class="fnd">${waktuBerlaku(a.mulai, a.selesai)}</p>${a.deskripsi ? `<p class="fnd" translate="no">${esc(hurufJudul(a.deskripsi))}</p>` : ""}
-      <p class="fnd">Sumber: BMKG, terbit ${jamWIB(S.ncDibuat ?? S.per.dibuat)}${a.web ? `. <a href="${escUrl(a.web)}" target="_blank" rel="noopener">Infografis</a>` : ""}</p>`); },
+      ${infografisNc(a.web)}
+      <p class="fnd">Sumber: BMKG, terbit ${jamWIB(S.ncDibuat ?? S.per.dibuat)}${a.web && !gambarNcSah(a.web) ? `. <a href="${escUrl(a.web)}" target="_blank" rel="noopener noreferrer">Infografis</a>` : ""}</p>`); },
   laciProv(o) { if (!o) return;
     Laci.buka("Gelombang tinggi", `<span translate="no">${esc(namaProv(o.prov))}</span>`, `${pilGel(o.lv - 1)} ${fmt(o.total)} perairan`,
       `${kvs(...GEL.map((k, i) => kot(k[1], fmt(o.kelas[i]), k[2])))}
       ${GEL.map((k, i) => o.kelas[i] ? `<p class="fnd">${pilGel(i)} <span translate="no">${esc(o.perairan[i].join(", "))}</span></p>` : "").join("")}
+      ${o.sinoptik?.length ? `<div class="lbl">Sinoptik BMKG</div>${o.sinoptik.map(t => `<p class="fnd" translate="no">${esc(t)}</p>`).join("")}` : ""}
       <p class="fnd">${waktuBerlaku(o.dari + (OFS[o.zona] || "+07:00"), o.sampai + (OFS[o.zona] || "+07:00"))}</p><p class="fnd">Sumber: BMKG Maritim, terbit ${jamWIB(S.per.dibuat)}</p>`); },
   /* terbang ke satu peringatan: nowcast ke kotaknya, gelombang ke provinsinya */
   fokus(jenis, k) {
