@@ -44,3 +44,5 @@ Bukan milikku: `src/siklus*.js`, migrasi `sk_*` (warga-api); `.github/workflows/
 - `npm run uji:siklus`: pipeline dan layar; `npm run uji:warga`: rute dan migrasi.
 
 ## Kasus
+- 2026-11-10 · Migrasi 0119 sudah dipakai meja_dampak (belum ter-commit): nomor sk_* diambil saat tiket, paling cepat 0120. Cookie akun instansi berpath /api/instansi, jadi BP lewat /api/instansi/siklus/* (pola LogPal). Enum yang bisa tumbuh jangan di-CHECK (pelajaran meja_catatan). Tulis D1 riwayat 57 ribu baris melampaui jatah tulis harian 100 ribu: arsip di R2, D1 hanya kejadian hidup.
+- 2026-11-10 · Tinjauan 1 diterapkan 10 Nov: ID KJ- = 8 Crockford base32 dari SHA-256 kunci pendiri (tabrakan: hash kunci|n), tanpa pecah, SQL sk_* wajib fungsi di src/hak.js (gerbang-d1), pipeline Bearer PIPA_TOKEN, grup siklus-kaji dan siklus-batch, tiket 111 berurut topologis; skrip cek ketergantungan ditulis sekali jalan di scratchpad

@@ -108,6 +108,7 @@ ulang yang berubah.
 | Kemitraan kampus `/kemitraan` | `public/kemitraan*`, `public/kemitraan/**`, `public/data/kemitraan/**`, `scripts/kemitraan/**`, `tests/kemitraan/**` (layar+pipeline); `src/kemitraan*.js`, `migrations/0080-0084` (warga-api) | D1 `km_*`, R2 `kemitraan/`; `kemitraan.yml` harian, `kemitraan-pakar.yml` bulanan | `kampus` |
 | Ruang Unit `/bnpb/unit` | `public/bnpb/unit/**`, `scripts/bnpb/unit/**` (ruang-bnpb); `src/unit*.js`, migrasi Ruang Unit (warga-api) | R2 `unit/`, rute `/api/unit/*`; langkah di `data.yml` | `ruang-bnpb` |
 | Lapangan `/petugas` | `public/petugas/**`, `tests/lapangan/**`, `scripts/lapangan/**`, `data/kajian-bnpb/lapangan/**` (lapangan); `src/lapangan*.js`, `migrations/0095-0098` (warga-api) | D1 `orang`, `lp_*`, `wa_antre`; R2 `lapangan/` | `lapangan` |
+| Siklus Bencana `/siklus` | `public/siklus/**`, `scripts/siklus/**`, `tests/siklus/**`, `data/kajian-bnpb/siklus/**`; `src/siklus*.js`, migrasi `sk_*` (warga-api) | D1 `sk_*`, R2 `siklus/`; `siklus.yml` | `siklus` |
 | Inventori LogPal `/logpal` | `public/logpal/**`, `public/data/logpal/**`, `scripts/logpal/**`, `data/kajian-bnpb/logpal/**`; `src/logpal.js`, `migrations/0112` (warga-api) | D1 `logpal_*`; rute `/api/instansi/logpal/*` | `warga-api` |
 
 ### 2.1 SIPPA (pipa portabel karhutla dan banjir): baca dulu, baru bangun
@@ -219,6 +220,18 @@ Sebelum menyentuh rantai per KIB, kalender tenggat per BPBD, atau rapor SPM, bac
 
 Aturan berhentinya sama dengan §2.1. Pertanyaan terbuka di KEPUTUSAN tidak dijawab dengan karangan. Sebelum membangun Rantai, cocokkan dengan program Siklus Bencana (`data/kajian-bnpb/siklus/`, F1 Buku Besar Kejadian) supaya tidak ada dua buku kejadian.
 
+### 2.9 Siklus Bencana (`/siklus`): baca dulu, baru bangun
+
+Sebelum menyentuh apa pun tentang Buku Besar Kejadian, Peta Paparan per Bangunan, Kaji Cepat Otomatis, Jitupasna dan R3P, Renkon Hidup dan Gladi, Risiko Masa Depan, atau Pintu Tunggal, baca dokumen di
+`data/kajian-bnpb/siklus/` dengan urutan otoritas ini (kode ada di `public/siklus/**`, `scripts/siklus/**`, `tests/siklus/**`, `src/siklus*.js`):
+
+1. `KEPUTUSAN-AWAL.md`: keputusan pemilik, bawaan awal, dan pertanyaan terbuka U1 dan seterusnya; menang atas semuanya. Jangan menjawab pertanyaan terbuka dengan karangan.
+2. `RISET.md` (+ `riset/R1-R3`): kode repo yang dipakai ulang, sumber data yang teruji, praktik dan peraturan.
+3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`SK-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Paparan rinci hanya di R2 di balik sesi; angka antarsumber tidak dijumlah.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
@@ -271,6 +284,10 @@ daftar `LAYAR` di gerbang `tests/agen/gerbang-kartu-std.test.mjs`.
 Tiap keluaran Laporan Kejadian Bencana Harian dan Laporan Penanganan Pengendalian Karhutla masuk foldernya sendiri di folder hari:
 `Revisi 3/<nama deck>.pptx` dan `.pdf`, nama berkas tanpa `(rev3)`. Skrip harian menyerahkannya lewat `lewat_deck.serah_revisi`.
 Deck lain belum kena aturan ini. Gerbangnya `tests/agen/gerbang-folder-revisi.test.mjs`.
+
+### 3.7 Fitur besar: paket dokumen dulu, baru kode (10 Nov 2026)
+
+Pemilik: "disiapkan semuanya dari hulu ke hilir baru dikerjakan kodingannya biar ga jelek". Fitur atau modul besar lahir berurutan: KEPUTUSAN, RISET, PRD, ALUR, ALGORITMA, DESIGN-SYSTEM, DESAIN-TEKNIS, KEAMANAN-PRIVASI, RENCANA-UJI, TIKET, GLOSARIUM di `data/kajian-bnpb/<modul>/`, diperiksa pemeriksa bersih, lalu bagian "baca dulu, baru bangun" di §2 dan agent pengerjanya, baru tiket pertama dikerjakan. Pertanyaan yang belum dijawab pemilik ditulis dengan bawaan sementara yang ditandai, tidak dikarang. Folder baru di `public/` atau `scripts/` tanpa paket ditolak. Gerbangnya `tests/agen/gerbang-paket-modul.test.mjs`, pengingatnya `scripts/agents/pengingat-paket.mjs`.
 
 ## 6. Review
 
