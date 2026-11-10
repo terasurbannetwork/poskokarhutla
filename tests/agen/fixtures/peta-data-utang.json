@@ -3,46 +3,29 @@
  "yatim": [
   "D1:alat_jejak",
   "D1:rumah_rusak_koreksi",
-  "public/banjir/data/bmkg_upt.json",
-  "public/banjir/data/charter.json",
   "public/banjir/data/cuaca_prospektif*.json",
   "public/banjir/data/cuaca_sarana.json",
-  "public/banjir/data/iklim_bmkg.json",
-  "public/banjir/data/kecamatan_genangan.json",
   "public/banjir/data/kejadian_aktif_nomor.json",
   "public/banjir/data/kejadian_gunungapi_geo.json",
   "public/banjir/data/kejadian_gunungapi_nomor.json",
-  "public/banjir/data/mcdwd_model.json",
   "public/banjir/data/model_bahaya.json",
   "public/banjir/data/paparan_kab.json",
   "public/banjir/data/siaga_persentil_log.json",
   "public/data/bahan_bakar.json",
   "public/data/bahan_bakar_uji.json",
   "public/data/foto_dasar.json",
-  "public/data/gdelt.json",
-  "public/data/hgu_api.json",
-  "public/data/iklim_stasiun.json",
   "public/data/kemenhut/terbakar_2026/*.json",
   "public/data/khg_hari.json",
   "public/data/logistik.json",
-  "public/data/ps.json",
   "public/data/reliefweb.json",
   "public/data/risiko_mingguan_uji.json",
-  "public/data/sinyal_sosial.json",
   "public/data/sk_drive.json",
-  "public/data/slstr_malam.json",
-  "public/data/tambang.json",
   "public/data/transisi_lahan.json",
-  "public/gempa/data/dart.json",
   "public/gempa/data/emsc_prospektif.json",
   "public/gempa/data/emsc_residu.json",
-  "public/gempa/data/gnss.json",
-  "public/gempa/data/inatews_sejarah.json",
-  "public/gempa/data/inatews_sensor.json",
   "public/gempa/data/prospektif_guncangan.json",
   "public/gempa/data/prospektif_susulan.json",
   "public/udara/data/geoscf.json",
-  "public/udara/data/kualitas_bmkg.json",
   "public/udara/data/lintasan.json"
  ],
  "tanpa-jadwal": [
@@ -61,6 +44,9 @@
   "public/udara/data/omc_hasil.json"
  ],
  "pengecualian": {
-    "public/data/opera_dist.json": { "alasan": "Jalan manual di lab.yml karena butuh numpy, rasterio, dan unduhan raster besar; bukan jadwal harian.", "tanggal": "2026-11-10" }
+  "public/data/opera_dist.json": {
+   "alasan": "Jalan manual di lab.yml karena butuh numpy, rasterio, dan unduhan raster besar; bukan jadwal harian.",
+   "tanggal": "2026-11-10"
   }
+ }
 }
