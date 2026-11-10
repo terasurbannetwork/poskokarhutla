@@ -78,7 +78,7 @@ jobs:
       # luas_resmi.json TIDAK di sini: data.yml menariknya harian dari SiPongi; versi repo akan menimpa bulan baru
       - name: Pakai lapisan statis dari repo, bukan dari cache
         run: |
-          f=$(git ls-files public/data/penduduk.json public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson \
+          f=$(git ls-files public/data/opera_dist.json public/data/penduduk.json public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson \
             public/data/lapisan_tambahan.json public/data/model_sebaran.json public/data/musim.json public/data/musim_awal.json \
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
             public/data/riwayat_grid.json public/data/riwayat_sel public/data/riwayat_desa public/data/riwayat_langganan.json public/data/riwayat_sel_uji.json public/data/riwayat_hierarki.json public/data/riwayat_wilayah public/data/kalibrasi_wilayah.json public/data/prioritas_uji.json public/data/luas_satelit.json public/data/udara.json \

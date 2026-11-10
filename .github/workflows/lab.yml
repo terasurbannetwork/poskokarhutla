@@ -2,6 +2,7 @@ name: Lab uji model karhutla (luring)
 
 # Uji LURING model/aturan karhutla terhadap acuan (Gaveau 2019, konfirmasi lapangan, luas terbakar). Bukan bagian produksi:
 # TANPA schedule (batas 5 jadwal cron akun), jalan saat skrip lab didorong ke cabang claude/** atau lewat dispatch.
+# Di main HANYA dispatch dengan tugas persis "opera": cuma langkah 6b yang jalan, hasilnya berkas OPERA dan log-nya.
 # numpy/rasterio/pyshp/fiona HANYA di job ini; pipeline produksi tetap Python stdlib.
 # Hasil di-commit ke cabang yang sama (hanya ujibanding_firespot.json dan public/data/lab/**). Push oleh GITHUB_TOKEN
 # TIDAK memicu workflow lagi, jadi tidak berulang; lagipula berkas hasil tidak ada di daftar paths pemicu.
@@ -48,8 +49,8 @@ env:
 
 jobs:
   lab:
-    # hanya cabang kerja claude/**: dispatch dari main tidak pernah mendorong hasil ke main
-    if: startsWith(github.ref, 'refs/heads/claude/')
+    # cabang kerja claude/**, atau dispatch dari main dengan tugas persis opera (tugas lain dari main tidak pernah mendorong hasil ke main)
+    if: startsWith(github.ref, 'refs/heads/claude/') || (github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.tugas == 'opera')
     runs-on: ubuntu-latest
     timeout-minutes: 210
     steps:
