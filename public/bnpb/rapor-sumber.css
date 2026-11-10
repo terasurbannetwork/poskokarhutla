@@ -10,7 +10,7 @@
 .rs-seg svg{width:14px;height:14px}
 .rs-tabel{overflow-x:auto}
 .rs-tabel .ad-tabel td{white-space:nowrap}
-.rs-tabel .ad-tabel td.n{text-align:right;font-variant-numeric:tabular-nums}
+.rs-tabel .ad-tabel td.n{text-align:center;font-variant-numeric:tabular-nums}
 .rs-tabel .ad-tabel td:first-child{font-weight:700}
 .rs-tabel .ad-tabel th{text-align:center}
 .rs-daftar{margin:0;padding-left:18px;color:var(--ink2);font-size:0.812rem;display:grid;gap:4px}
