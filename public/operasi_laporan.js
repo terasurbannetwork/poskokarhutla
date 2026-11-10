@@ -3,7 +3,7 @@
    Tiap bagian = kartu standar .ex-std tanpa kaki (AGENTS.md §3.5). Pemilih tanggal mengganti seluruh laporan.
    Data udara: /api/operasi/peta?tanggal, /api/operasi/monitor (30 hari s.d. tanggal), /api/operasi/nilai (7 hari), /api/operasi/jejak (ADS-B),
    /api/omc/sortie + /udara/data/omc_hasil.json, /data/harian30.json (titik panas), /data/operasi/rekap_udara.json.
-   Data darat: /api/laporan-karhutla/snapshot/:tanggal (laporan terkunci); belum dikunci = angka rekap BNPB terakhir (/data/bnpb.json, /data/operasi_resmi.json)
+   Data darat: /api/laporan-karhutla/snapshot/:tanggal (laporan terkunci); belum dikunci = angka rekap BNPB terakhir (/data/bnpb.json, /data/operasi_resmi.json); OMC resmi: /udara/data/omc_bmkg.json
    dengan tanggalnya; /api/ops/patroli (patroli regu).
    INP: ganti tab, tanggal, atau armada mengecat kontrolnya dulu; laporan berat dirender sesudah frame berikut. */
 (() => {
@@ -44,8 +44,8 @@
       ambil(`/api/operasi/jejak?tanggal=${t}`), ambil(`/api/omc/sortie?sejak=${dari}`), ambil(`/api/laporan-karhutla/snapshot/${t}`), ambil("/api/ops/patroli")]);
     return {t, dari, peta, mon, nilai, jejak, omc: (omc?.sortie || []).filter(x => (x.mulai || "").slice(0, 10) <= t || !x.mulai), snap, patroli: patroli?.patroli || null};
   })();
-  const muatStatis = () => st.statis ||= Promise.all([ambil("/data/harian30.json"), ambil("/udara/data/omc_hasil.json"), ambil("/data/bnpb.json"), ambil("/data/operasi_resmi.json")])
-    .then(([h30, omcHasil, bnpb, resmi]) => ({h30, omcHasil, bnpb, resmi}));
+  const muatStatis = () => st.statis ||= Promise.all([ambil("/data/harian30.json"), ambil("/udara/data/omc_hasil.json"), ambil("/data/bnpb.json"), ambil("/data/operasi_resmi.json"), ambil("/udara/data/omc_bmkg.json")])
+    .then(([h30, omcHasil, bnpb, resmi, omcBmkg]) => ({h30, omcHasil, bnpb, resmi, omcBmkg}));
 
   /* ---------------- kerangka: tab Udara/Darat, tanggal, salin teks ---------------- */
   function kerangka(box) {
@@ -118,7 +118,7 @@
     return [
       bagian(`${ik("udara")} Operasi udara`, lapor ? `${hl(`${fmt(siap)} dari ${fmt(ar.length)}`)} armada siap di ${fmt(base.length)} base, ${H.sortie ? `${hl(fmt(H.sortie))} sortie` : "belum ada sortie"} pada ${tgl}`
         : `${hl(fmt(ar.length))} armada di ${fmt(base.length)} base; status harian ${tgl} belum dilaporkan`, ringkas),
-      kartuBase(D), kartuRenlap(D), kartuAksi(D), kartuTren(D), kartuHistori(D), kartuOperator(D), kartuJejak(D), kartuTemuan(D), kartuOmc(D), kartuGaleri(D), kartuNilai(D), kartuKontrak(D)].join("");
+      kartuBase(D), kartuRenlap(D), kartuAksi(D), kartuTren(D), kartuHistori(D), kartuOperator(D), kartuJejak(D), kartuTemuan(D), kartuOmcResmi(D), kartuOmc(D), kartuGaleri(D), kartuNilai(D), kartuKontrak(D)].join("");
   }
 
   function kartuBase(D) {
@@ -256,6 +256,19 @@
       tabelH(["#Jam WIB", "Armada", "Status", "Lokasi", "#Luas"], baris, "Pilot patroli belum melaporkan temuan."));
   }
 
+  /* OMC resmi BMKG aktif hari ini per provinsi (omc_bmkg.json, 10 Nov 2026). Menggantikan omc_pesawat tangan di operasi_resmi.json;
+     jumlah pesawat OMC (tangan, 12 Okt) tidak ada di BMKG dan tetap dibaca operasi.js. Data tak terjangkau = kartu dibuang. */
+  function kartuOmcResmi(D) {
+    const o = D.omcBmkg; if (!o || !Array.isArray(o.baris)) return "";
+    const h = hariWIB(), aktif = o.baris.filter(x => x.periode_awal <= h && h <= x.periode_akhir)
+      .sort((a, b) => /karhutla/i.test(b.jenis_kegiatan) - /karhutla/i.test(a.jenis_kegiatan) || (a.provinsi || "").localeCompare(b.provinsi || ""));
+    const kar = aktif.filter(x => /karhutla/i.test(x.jenis_kegiatan)), prov = new Set(aktif.map(x => x.provinsi)).size;
+    const baris = aktif.map(x => `<tr>${kiri(`<b>${esc(x.provinsi)}</b>`)}${kiri(`${esc(x.jenis_kegiatan)}${/karhutla/i.test(x.jenis_kegiatan) ? ' <span class="pill l3">karhutla</span>' : ""}`)}${kiri(esc(x.user || "–"))}${kiri(esc(x.operator || "–"))}${kiri(esc(x.periode))}</tr>`);
+    const judul = aktif.length ? `${hl(fmt(aktif.length))} OMC resmi BMKG aktif di ${fmt(prov)} provinsi, ${kar.length ? `${hl(fmt(kar.length))} untuk karhutla di ${esc([...new Set(kar.map(x => x.provinsi))].join(", "))}` : "tidak ada untuk karhutla"}`
+      : "Tidak ada OMC resmi BMKG yang aktif hari ini";
+    return bagian("OMC resmi BMKG aktif", judul, tabelH(["Provinsi", "Kegiatan|Jenis kegiatan menurut publikasi BMKG", "Pengguna|Pemohon layanan OMC", "Operator", "Periode"], baris, "Tidak ada OMC resmi BMKG yang aktif hari ini."));
+  }
+
   /* fitur 13: modifikasi cuaca (sortie OMC + penilaian efek) */
   function kartuOmc(D) {
     const s = D.omc, kg = s.reduce((t, x) => t + (x.kg || 0), 0), hasil = D.omcHasil?.ringkas || {};
@@ -366,6 +379,6 @@
     setTimeout(() => status(""), 3000);
   }
 
-  window.OperasiLaporan = {render, kelompokBase, kelompokFoto, kartuOperator, alasanRenlap};
+  window.OperasiLaporan = {render, kelompokBase, kelompokFoto, kartuOperator, alasanRenlap, kartuOmcResmi};
   if (document.querySelector("#p-operasi.on")) render();
 })();

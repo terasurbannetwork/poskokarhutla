@@ -59,3 +59,13 @@ test("foto tipe: pemetaan tipe nyata ke berkas yang ada, foto asli menang, tipe 
   assert.equal(c.fotoAr({registrasi: "X", tipe: "TRUSH S2R T34"}), null);
   assert.ok(!/foto contoh/i.test(sumber));
 });
+
+test("kartu OMC resmi BMKG: hanya yang aktif hari ini, karhutla dulu; tanpa data = kosong", () => {
+  const w = {}, o = JSON.parse(readFileSync(new URL("../../public/udara/data/omc_bmkg.json", import.meta.url), "utf8"));
+  vm.runInNewContext(readFileSync(new URL("../../public/operasi_laporan.js", import.meta.url), "utf8"), {window: w, document: {querySelector: () => null}, localStorage: {}, fmt: v => String(v), esc: v => String(v), Date: class extends Date { constructor(...a) { a.length ? super(...a) : super("2026-11-10T05:00:00Z"); } static now() { return Date.parse("2026-11-10T05:00:00Z"); } }});
+  assert.equal(w.OperasiLaporan.kartuOmcResmi({}), "");
+  const h = w.OperasiLaporan.kartuOmcResmi({omcBmkg: o});
+  assert.match(h, /OMC resmi BMKG aktif/);
+  assert.match(h, /Kalimantan Tengah/);
+  assert.ok(h.indexOf("Kalimantan Tengah") < h.indexOf("DKI Jakarta"), "karhutla di atas");
+});
