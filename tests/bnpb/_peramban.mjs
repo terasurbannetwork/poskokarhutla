@@ -55,7 +55,9 @@ async function bukaTab(port) {
     const p = m.params;
     if (m.method === "Runtime.consoleAPICalled" && p.type === "error") galat.push("konsol: " + p.args.map(a => a.value ?? a.description ?? "").join(" ").slice(0, 300));
     if (m.method === "Runtime.exceptionThrown") galat.push("pengecualian: " + (p.exceptionDetails.exception?.description || p.exceptionDetails.text).slice(0, 300));
-    if (m.method === "Log.entryAdded" && p.entry.level === "error") galat.push(`log(${p.entry.source}): ${p.entry.text} ${p.entry.url || ""}`.slice(0, 300));
+    /* gagal memuat aset dari host luar (font Google, ubin peta) bukan bug halaman: mesin bisa sedang tanpa internet */
+    const luar = m.method === "Log.entryAdded" && p.entry.source === "network" && /^https?:\/\/(?!127\.0\.0\.1|localhost)/.test(p.entry.url || "");
+    if (m.method === "Log.entryAdded" && p.entry.level === "error" && !luar) galat.push(`log(${p.entry.source}): ${p.entry.text} ${p.entry.url || ""}`.slice(0, 300));
     if (m.method === "Audits.issueAdded" && p.issue.code === "ContentSecurityPolicyIssue") galat.push("CSP: " + (p.issue.details.contentSecurityPolicyIssueDetails?.violatedDirective || "?") + " " + (p.issue.details.contentSecurityPolicyIssueDetails?.blockedURL || ""));
   });
   for (const d of ["Runtime", "Log", "Page", "Network", "Audits"]) await kirim(d + ".enable");
