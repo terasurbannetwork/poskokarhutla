@@ -96,6 +96,32 @@ jobs:
           git commit -q -m "data: udara $(TZ=Asia/Jakarta date '+%F %H:%M') WIB" -- public/udara/data
           git pull -q --rebase --autostash && git push -q || { echo "::error title=Push data udara gagal::git push ke main gagal (bentrok atau token tanpa scope workflow/contents:write); data udara belum masuk main"; exit 1; }
 
+      # Deploy mengirim seluruh situs. Tanpa cache ini public/banjir/data terkirim dari git (Oktober) dan menimpa data tayang: banjir, rob, cuaca, gelombang,
+      # gunung api, berita mundur sampai deploy berikutnya (4, 7, 9 Nov 2026). Sesudah commit, supaya --autostash tidak bentrok dengan berkas banjir yang
+      # sering diperbarui bot. Jalur HARUS sama persis dengan simpanan banjir.yml. Tanpa cache sama sekali: gagal, lebih baik tidak terbit daripada data mundur.
+      - name: Pulihkan data banjir terakhir
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            public/banjir/data
+            data/raw/banjir
+          key: banjir-${{ github.run_id }}
+          restore-keys: banjir-
+          fail-on-cache-miss: true
+
+      - name: Salin peringatan BMKG terbaru
+        run: cp public/banjir/data/peringatan.json public/data/ 2>/dev/null || true
+
+      # citra satelit punya cache sendiri dan tidak ada di git: tanpa ini deploy mengirim situs tanpa citra. Jalur harus sama persis dengan simpanannya.
+      - name: Pulihkan citra satelit
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            public/data/citra
+            public/data/citra.json
+          key: citra-${{ github.run_id }}
+          restore-keys: citra-
+
       - name: Terbitkan ke Cloudflare
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
