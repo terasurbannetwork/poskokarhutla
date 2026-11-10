@@ -5,8 +5,8 @@
 let peta = null, PI = null, LG = null, legBuka = innerWidth > 900;
 const DASAR = () => gelap() ? "https://tiles.openfreemap.org/styles/dark" : "https://tiles.openfreemap.org/styles/positron";
 const BB_ID = [[94.8, -11.2], [141.2, 6.2]];
-const UBIN = {kota: ["#c9503a", "#f0a05f", "perisai"], lintasan: ["#e8743b", "#f5c28b", "angin"], pm25: ["#3b6e5a", "#e8743b", "angin"], metar: ["#1f5f8b", "#9fb3d1", "mata"], satelit: ["#13324d", "#4d8a5e", "satelit"], tropomi: ["#6a1b9a", "#f0a05f", "satelit"]};
-const UBIN_PENDEK = {kota: "Status kota", lintasan: "Lintasan asap", pm25: "PM2,5", metar: "Jarak pandang", satelit: "Satelit", tropomi: "CO satelit"};
+const UBIN = {kota: ["#c9503a", "#f0a05f", "perisai"], lintasan: ["#e8743b", "#f5c28b", "angin"], pm25: ["#3b6e5a", "#e8743b", "angin"], metar: ["#1f5f8b", "#9fb3d1", "mata"], bmkg: ["#0b2545", "#5a9e74", "debit"], satelit: ["#13324d", "#4d8a5e", "satelit"], tropomi: ["#6a1b9a", "#f0a05f", "satelit"]};
+const UBIN_PENDEK = {kota: "Status kota", lintasan: "Lintasan asap", pm25: "PM2,5", metar: "Jarak pandang", bmkg: "Stasiun BMKG", satelit: "Satelit", tropomi: "CO satelit"};
 const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHeight * .45, left: 16, right: 16};
   const r = s => document.querySelector(s)?.getBoundingClientRect(), pn = r(".panel"), tl = r(".tools"), lg = r("#dok"), pt = r("#p-peta");
   return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.min(160, Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150))}; };
@@ -49,6 +49,7 @@ const Peta = {
     peta.addSource("metar", {type: "geojson", data: m});
     peta.addLayer({id: "metar", type: "circle", source: "metar", layout: {...vis(this.lihat("metar")), "circle-sort-key": ["-", 0, ["get", "k"]]},
       paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 6, 9, 11], "circle-color": ["match", ["get", "k"], 3, JP[3].w, 2, JP[2].w, 1, JP[1].w, JP[0].w], "circle-stroke-color": "#fff", "circle-stroke-width": 2}});
+    Stasiun.pasangPeta();
     Prak.pasangPeta(); Kejadian.pasangLapis(); if (this.lihat("tropomi")) Satelit.pasangPeta();   /* TROPOMI dimuat malas: hanya bila lapisannya menyala */
     if (S.pilih) peta.setFeatureState({source: "prov", id: S.pilih}, {pilih: true});
     this.interaksi(); },
@@ -68,7 +69,7 @@ const Peta = {
     return {url: bs.toDataURL(), kor: [[x0, y1], [x1, y1], [x1, y0], [x0, y0]]}; },
   geoMetar() { return {type: "FeatureCollection", features: metarSegar().map((m, i) => ({type: "Feature", geometry: {type: "Point", coordinates: [m.lon, m.lat]}, properties: {i, k: kelasJP(m.vis_m)}}))}; },
   terlihat(k) { return this.lihat(k); },
-  segarkan() { if (!peta?.getSource("pm")) return; const g = this.gambarPM(); peta.getSource("pm").updateImage({url: g.url, coordinates: g.kor}); peta.getSource("metar")?.setData(this.geoMetar()); Prak.segarkan(); },
+  segarkan() { if (!peta?.getSource("pm")) return; const g = this.gambarPM(); peta.getSource("pm").updateImage({url: g.url, coordinates: g.kor}); peta.getSource("metar")?.setData(this.geoMetar()); peta.getSource("bmkg")?.setData(Stasiun.geo()); Prak.segarkan(); },
   kartuSel(la, lo) { const k = kotaTerdekat(la, lo); if (!k) return ""; const v = k.r24?.[S.hari], mk = S.mk[k.kode]?.[S.hari]; if (v == null) return "";
     const c = kat(v);
     return PI.kartuTip({judul: `${KAT[c].n}`, sub: `<small translate="no">${esc(k.nama)}</small>`, stat: [["perisai", KAT[c].n, "kategori", KAT[c].w, c >= 2], ["debit", fmt(Math.round(v)) + " µg/m³", "rata-rata 24 jam", KAT[c].w], ...(mk == null ? [] : [["peringatan", fmt(Math.round(mk)) + " µg/m³", "puncak per jam", "#7d8ca3"]])]}); },
@@ -95,11 +96,14 @@ const Peta = {
     if (this._ia) return; this._ia = true; let diTitik = false;
     peta.on("mousemove", "metar", e => { diTitik = true; peta.getCanvas().style.cursor = "pointer"; PI?.tampilTip(this.kartuMetar(e.features[0].properties.i), e.originalEvent); });
     peta.on("mouseleave", "metar", () => { diTitik = false; peta.getCanvas().style.cursor = ""; PI?.sembunyiTip(); });
+    peta.on("mousemove", "bmkg", e => { diTitik = true; peta.getCanvas().style.cursor = "pointer"; PI?.tampilTip(Stasiun.kartu(e.features[0].properties.i), e.originalEvent); });
+    peta.on("mouseleave", "bmkg", () => { diTitik = false; peta.getCanvas().style.cursor = ""; PI?.sembunyiTip(); });
     peta.on("mousemove", e => { if (diTitik || this._diKota || !PI || !this.lihat("pm25")) return;
       const ada = peta.queryRenderedFeatures(e.point, {layers: ["prov-fill"]}).length; peta.getCanvas().style.cursor = ada ? "pointer" : "";
       const h = ada ? this.kartuSel(e.lngLat.lat, e.lngLat.lng) : ""; h ? PI.tampilTip(h, e.originalEvent) : PI.sembunyiTip(); });
     peta.getCanvas().addEventListener("mouseleave", () => PI?.sembunyiTip());
-    peta.on("click", e => { if (peta.getLayer("kota")) { const kk = peta.queryRenderedFeatures(e.point, {layers: ["kota"]})[0]; if (kk) return Prak.laciKota(kk.properties.i); }
+    peta.on("click", e => { if (peta.getLayer("bmkg")) { const sb = peta.queryRenderedFeatures(e.point, {layers: ["bmkg"]})[0]; if (sb) return Stasiun.laci(sb.properties.i); }
+      if (peta.getLayer("kota")) { const kk = peta.queryRenderedFeatures(e.point, {layers: ["kota"]})[0]; if (kk) return Prak.laciKota(kk.properties.i); }
       const f = peta.queryRenderedFeatures(e.point, {layers: ["prov-fill"]})[0]; if (f) this.pilihProv(f.properties.kode); }); },
 };
 
@@ -154,7 +158,7 @@ $("#hariSeg").addEventListener("click", e => { const b = e.target.closest("butto
   $("#hariSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); Prak.st.jam = null; nanti(() => { Peta.segarkan(); nanti(() => { renderDaftar(); if (S.pilih) Peta.laciProv(S.pilih); }); }); });
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return; const k = i.dataset.l;
   if (k === "tropomi") return void Satelit.ganti(i.checked);
-  const id = {pm25: "pm", metar: "metar", satelit: "satelit", kota: "kota", lintasan: ["lin", "lin-k"]}[k]; [].concat(id).forEach(x => peta.getLayer(x) && peta.setLayoutProperty(x, "visibility", i.checked ? "visible" : "none"));
+  const id = {pm25: "pm", metar: "metar", bmkg: "bmkg", satelit: "satelit", kota: "kota", lintasan: ["lin", "lin-k"]}[k]; [].concat(id).forEach(x => peta.getLayer(x) && peta.setLayoutProperty(x, "visibility", i.checked ? "visible" : "none"));
   Prak.hiasKontrol(); renderLegenda(); });
 $("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");
 function renderLegenda() {
@@ -163,6 +167,7 @@ function renderLegenda() {
     ${Peta.terlihat("pm25") ? `<div class="lbl">PM2,5 rata-rata 24 jam <span style="text-transform:none">(µg/m³)</span></div><div class="leg" style="margin:4px 0 8px">${KAT.map(k => `<span><i class="sw" style="background:${k.w}"></i>${k.n}, ${k.r}</span>`).join("")}</div>` : ""}
     ${S.prak && Peta.terlihat("kota") ? `<div class="lbl">Status kota (rata-rata 24 jam)</div><div class="leg" style="margin:4px 0 8px">${Murni.ST.map(k => `<span><i class="sw dot" style="background:${Murni.ST_WARNA[k]}"></i>${Murni.ST_NAMA[k]}</span>`).join("")}</div>` : ""}
     ${adaMetar && Peta.terlihat("metar") ? `<div class="lbl">Jarak pandang bandara (METAR)</div><div class="leg" style="margin:4px 0 8px">${JP.map(j => `<span><i class="sw dot" style="background:${j.w}"></i>${j.n}</span>`).join("")}</div>` : ""}
+    ${Peta.terlihat("bmkg") ? Stasiun.legenda() : ""}
     ${Peta.terlihat("tropomi") ? Satelit.legenda() : ""}
   </div></details>`;
   LG?.susunLegenda($("#legenda"), {saatBuka: v => legBuka = v}); }

@@ -4,6 +4,8 @@ pasangTip();            /* tooltip [data-tip] bersama (inti/tip.js) */
 PilihCantik.pasang();   /* <select> jadi pil, seperti karhutla */
 (async () => {
   try { await muatData(); } catch (e) { $("#muat").innerHTML = `<div><b>Data belum tersedia.</b><br>${esc(e.message)}</div>`; return; }
+  await Stasiun.muat();
+  if (!Stasiun.segar().length) document.querySelector('#lapis [data-l="bmkg"]')?.closest("label").remove();   /* tanpa stasiun segar, ubinnya dibuang (A18) */
   if (!metarSegar().length) document.querySelector('#lapis [data-l="metar"]')?.closest("label").remove();   /* tanpa laporan segar, ubinnya dibuang (A18) */
   if (!S.prak) document.querySelector('#lapis [data-l="kota"]')?.closest("label").remove();   /* tanpa prakiraan 72 jam, lapisannya dibuang (A18) */
   if (!S.lin?.kompleks?.length) document.querySelector('#lapis [data-l="lintasan"]')?.closest("label").remove();

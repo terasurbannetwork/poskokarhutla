@@ -10,12 +10,12 @@ const tglIns = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", 
 
 const Insight = {
   st: {hari: 0, kabHari: 0, asalK: ""},
-  EX: ["jiwa", "kab", "pel", "asal", "jarak", "tropo", "rapor"],
+  EX: ["jiwa", "kab", "pel", "asal", "jarak", "bmkg", "tropo", "rapor"],
   PL: null, AS: null,   /* peluang.json dan asal.json, dimuat sekali di render() */
   T: {kab: {urut: "_", turun: true, hal: 0}},
   hl: Kartu.hl,
   /* pil kategori (ikon + nama) di samping pil "perkiraan model CAMS, belum dikoreksi": tiap kartu berangka jiwa/PM2,5 membawa label model */
-  IK: {pel: '<path d="M3 20h18M6 20v-6M11 20V8M16 20v-9"/>', asal: '<path d="M4 20c4 0 4-8 8-8s4-8 8-8"/><circle cx="4" cy="20" r="1.5"/><circle cx="20" cy="4" r="1.5"/>', jiwa: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>', kab: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', jarak: '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>'},
+  IK: {stasiun: '<path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/>', pel: '<path d="M3 20h18M6 20v-6M11 20V8M16 20v-9"/>', asal: '<path d="M4 20c4 0 4-8 8-8s4-8 8-8"/><circle cx="4" cy="20" r="1.5"/><circle cx="20" cy="4" r="1.5"/>', jiwa: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>', kab: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', jarak: '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>'},
   eyIk: (id, nama) => `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${Insight.IK[id]}</svg>${nama}`,
   exM: (id, nama, ...a) => Kartu.ex(...a).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${Insight.eyIk(id, nama)}</span>${PIL_MODEL}`),
   seg(key, opsi) { return Kartu.seg(key, opsi, this.st); },
@@ -93,7 +93,7 @@ const Insight = {
     const hal = R.slice(st.hal * per, (st.hal + 1) * per);
     return `<div class="tw"><table><thead><tr>${kol.map(c => `<th class="${c.num ? "n" : ""}" aria-sort="${c === kk ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c.k}">${c.n}<i>${c === kk ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
       <tbody>${hal.map(r => `<tr class="klik" ${atribut(r)}>${kol.map(c => `<td${c.num ? ' class="n"' : ""}>${c.h(r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, per, satuan)}`; },
-  gambar(id) { return ({jiwa: () => this.exJiwa(), kab: () => this.exKab(), pel: () => this.exPel(), asal: () => this.exAsal(), jarak: () => this.exJarak(), tropo: () => Satelit.exTropo(), rapor: () => Satelit.exRapor()})[id](); },
+  gambar(id) { return ({jiwa: () => this.exJiwa(), kab: () => this.exKab(), pel: () => this.exPel(), asal: () => this.exAsal(), jarak: () => this.exJarak(), bmkg: () => Stasiun.ex(), tropo: () => Satelit.exTropo(), rapor: () => Satelit.exRapor()})[id](); },
   pasang(box) {
     const th = box.querySelector("thead"), st = this.T[box.dataset.ex]; if (th && st) pengurutKepala(st, th, () => this.ulang(box)); },
   ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); this.pasang(box); }); },
