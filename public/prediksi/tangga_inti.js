@@ -29,12 +29,12 @@
   const cakupanTeks = c => CAKUPAN[c] ?? "";
 
   /* anak tangga tanpa pernyataan: sumber skala itu ada = "Tidak disebut", tidak ada = "Belum ada data". Tidak pernah "aman". */
-  const kosongTeks = sk => sk?.ok ? "Tidak disebut dalam pernyataan sumber" : "Belum ada data";
+  const kosongTeks = (sk, a) => sk?.ok?.[a] ? "Tidak disebut dalam pernyataan sumber" : "Belum ada data";
 
   /* baris tanggal sumber: "BMKG, terbit 2 Okt" atau "BMKG, diambil 10 Nov" */
   function jejak(t, e) {
     const s = (t.sumber || {})[e.s] || {};
-    const tgl = s.terbit ? `terbit ${tglS(s.terbit)}` : s.diambil ? `diambil ${tglS(s.diambil)}` : "tanggal tidak dicantumkan";
+    const tgl = s.terbit ? `terbit ${tglS(s.terbit)}` : s.update ? `update ${s.update}` : s.diambil ? `diambil ${tglS(s.diambil)}` : "tanggal tidak dicantumkan";
     return `${s.lembaga || "tanpa lembaga"}, ${tgl}`;
   }
 
@@ -66,7 +66,8 @@
   /* kalimat tooltip pil sinyal (tanpa HTML selain <br>, aman setelah esc oleh pemanggil) */
   function ketSinyal(t, sg) {
     const nama = i => t.skala[i]?.nama ?? "";
-    const baris = t.skala.map((s, i) => `${s.nama}: ${sg.r[i] == null ? "tanpa tingkat" : "peringkat " + sg.r[i]}`);
+    const C = {nas: "nasional", prov: "provinsi", kab: "kabupaten"};
+    const baris = t.skala.map((s, i) => `${s.nama}: ${sg.r[i] == null ? "tanpa tingkat" : `peringkat ${sg.r[i]}, tingkat ${C[sg.c?.[i]] || "tidak diketahui"}`}`);
     if (sg.par) baris.push(`Selisih dua peringkat atau lebih: ${nama(sg.par[0])} dan ${nama(sg.par[1])}`);
     return baris;
   }
@@ -74,7 +75,8 @@
   const ATURAN = [
     "Peringkat 0 sampai 3 dipetakan dari label resmi tiap sumber (ALGORITMA bagian 3); label resmi selalu tampil apa adanya.",
     "Menguat: dari musim ke jam, skala yang lebih dekat menyatakan peringkat sama atau lebih tinggi, dan paling sedikit dua skala berperingkat 1 atau lebih.",
-    "Belum selaras: dua skala berselisih peringkat dua atau lebih.",
+    "Belum selaras: dua skala bercakupan sama (sama-sama kabupaten, atau sama-sama provinsi) berselisih peringkat dua atau lebih. Skala bercakupan beda tidak dibandingkan.",
+    "Sifat hujan Normal, hujan sedang, kategori SPI, asap terpantau, FWI tertinggi per pulau, dan prakiraan kondisi harian 10 hari tidak diberi peringkat (tanpa tingkat) dan tidak ikut sinyal.",
     "Sinyal hanya dari pernyataan BMKG; prediksi Centurisk97 ditampilkan terpisah. Sinyal bukan probabilitas dan bukan kabar bahwa kejadian akan terjadi; ia hanya menyatakan pernyataan resmi searah atau bertentangan.",
   ];
 

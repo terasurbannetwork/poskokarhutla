@@ -3,7 +3,7 @@
    Dimuat sesudah prediksi.js (PR, ambil, esc, fmt dari sana) dan tangga_inti.js (Tangga). Data tangga.json dimuat sekali.
    Layar baca saja: tidak menulis tabel apa pun, jadi tanpa tombol data dummy (KEPUTUSAN-TANGGA D7).
    Kontrol (pilihan, segmen) berubah dulu di layar; isi digambar sesudah satu frame tercat lewat nanti() (INP.md). */
-const TG = {t: null, prov: "", kab: "", a: "semua", n: 60};
+const TG = {t: null, prov: "", kab: "", a: "semua", n: 60, antri: false, provOpsi: null, r: []};
 const kartuTg = (ey, judul, isi, kls = "") => `<article class="ex ex-std ${kls}"><header class="ex-hd"><span class="ex-ey">${ey}</span><div class="ex-jd"><h3>${judul}</h3></div></header><div class="ex-bd">${isi}</div></article>`;
 const hlTg = v => `<span class="hl">${fmt(v)}</span>`;
 const kelasTk = (e, a) => { const v = Tangga.tkItem(e, a); return v == null ? "abu" : "tk" + v; };
@@ -18,7 +18,9 @@ function pilSinyal(t, sg, a) {
   const p = [];
   if (sg.m) p.push(`<span class="pr-pil ok" data-tip="${tip}">menguat</span>`);
   if (sg.s) p.push(`<span class="pr-pil buruk" data-tip="${tip}">belum selaras</span>`);
-  return p.length ? p.join(" ") : `<span class="pr-pil abu" data-tip="${tip}">tanpa sinyal</span>`;
+  if (!p.length) p.push(`<span class="pr-pil abu" data-tip="${tip}">tanpa sinyal</span>`);
+  p.push('<span class="pr-pil abu" data-tip="Sinyal ini belum diuji balik terhadap kejadian (RENCANA-UJI); jangan dibaca sebagai ketepatan">belum teruji</span>');
+  return p.join(" ");
 }
 
 /* deret peringkat per skala: batang 0..3, tooltip per batang; tanpa tingkat = batang putus-putus */
@@ -42,7 +44,7 @@ function itemTg(t, e, sk, a) {
 function barisTg(t, k, sk) {
   const sel = a => {
     const ps = Tangga.pernyataan(t, k.id, k.prov, sk.id, a);
-    return `<div class="tg-sel" data-a="${a}">${ps.length ? ps.map(e => itemTg(t, e, sk, a)).join("") : `<p class="tg-kosong">${esc(Tangga.kosongTeks(sk))}</p>`}</div>`;
+    return `<div class="tg-sel" data-a="${a}">${ps.length ? ps.map(e => itemTg(t, e, sk, a)).join("") : `<p class="tg-kosong">${esc(Tangga.kosongTeks(sk, a))}</p>`}</div>`;
   };
   return `<div class="tg-baris"><div class="tg-skala"><b>${esc(sk.nama)}</b><small>${esc(Tangga.KETERANGAN[sk.id] || "")}</small></div>${TG.a !== "b" ? sel("k") : ""}${TG.a !== "k" ? sel("b") : ""}</div>`;
 }
@@ -68,16 +70,20 @@ function ringkasTg() {
     return kartuTg("Ringkasan", `${hlTg(tot("mk"))} kabupaten/kota menguat pada ancaman kering dan ${hlTg(tot("mb"))} pada ancaman basah`,
       `<div class="tw ex-tabel"><table><thead><tr><th>Provinsi</th><th>Kab/kota</th><th data-tip="Menguat, kering">Menguat kering</th><th data-tip="Menguat, basah">Menguat basah</th><th data-tip="Belum selaras, kering">Belum selaras kering</th><th data-tip="Belum selaras, basah">Belum selaras basah</th></tr></thead><tbody>${baris}</tbody></table></div>`);
   }
-  const r = Tangga.bersinyal(t, daftar, TG.prov, TG.a), nProv = daftar.filter(k => k.prov === TG.prov).length;
+  const r = TG.r = Tangga.bersinyal(t, daftar, TG.prov, TG.a), nProv = daftar.filter(k => k.prov === TG.prov).length;
   const pn = daftar.find(k => k.prov === TG.prov)?.pn || "";
   const mk = r.filter(x => x.m.k).length, mb = r.filter(x => x.m.b).length;
-  const baris = r.slice(0, TG.n).map(x => {
-    const c = a => [x.m[a] ? "menguat" : "", x.s[a] ? "belum selaras" : ""].filter(Boolean).join(", ") || "–";
+  const isi = r.length ? `<div class="tw ex-tabel"><table><thead><tr><th>Kab/kota</th><th>Kering</th><th>Basah</th></tr></thead><tbody>${barisKab(0, TG.n)}</tbody></table></div>${r.length > TG.n ? '<div class="pr-lagi"><button type="button" id="tgLagi">Tampilkan lagi</button></div>' : ""}`
+    : '<p class="kosong">Tidak ada kab/kota dengan sinyal pada pernyataan BMKG yang ada.</p>';
+  return kartuTg("Ringkasan", `${esc(pn)}: ${hlTg(mk)} dari ${fmt(nProv)} kab/kota menguat kering, ${hlTg(mb)} menguat basah`, isi + '<p class="pr-kecil"><span class="pr-pil abu" data-tip="Sinyal ini belum diuji balik terhadap kejadian">belum teruji</span> Sinyal hanya dari pernyataan BMKG; aturannya ada di tangga tiap kab/kota.</p>');
+}
+
+/* baris tabel ringkasan kab dari indeks a sampai b (dipakai juga oleh "Tampilkan lagi" tanpa menggambar ulang) */
+function barisKab(a, b) {
+  return TG.r.slice(a, b).map(x => {
+    const c = z => [x.m[z] ? "menguat" : "", x.s[z] ? "belum selaras" : ""].filter(Boolean).join(", ") || "tanpa sinyal";
     return `<tr class="tg-klik" data-kab="${esc(x.k.id)}" tabindex="0"><td>${esc(x.k.nama)}</td><td>${c("k")}</td><td>${c("b")}</td></tr>`;
   }).join("");
-  const isi = r.length ? `<div class="tw ex-tabel"><table><thead><tr><th>Kab/kota</th><th>Kering</th><th>Basah</th></tr></thead><tbody>${baris}</tbody></table></div>${r.length > TG.n ? '<div class="pr-lagi"><button type="button" id="tgLagi">Tampilkan lagi</button></div>' : ""}`
-    : '<p class="kosong">Tidak ada kab/kota dengan sinyal pada pernyataan BMKG yang ada.</p>';
-  return kartuTg("Ringkasan", `${esc(pn)}: ${hlTg(mk)} dari ${fmt(nProv)} kab/kota menguat kering, ${hlTg(mb)} menguat basah`, isi);
 }
 
 function gambarTg() {
@@ -89,15 +95,19 @@ function gambarTg() {
   return t;
 }
 
-/* chrome dulu (nilai terpilih, aria-pressed), isi satu frame kemudian */
+/* chrome dulu (nilai terpilih, aria-pressed), isi satu frame kemudian; permintaan beruntun digabung jadi satu gambar */
 function pasangTg() {
   $("#tgProv").value = TG.prov;
-  const kabP = PR.d.kab.filter(k => !TG.prov || k.prov === TG.prov);
-  $("#tgKab").innerHTML = '<option value="">Pilih kab/kota</option>' + kabP.map(k => `<option value="${esc(k.id)}">${esc(k.nama)}</option>`).join("");
+  if (TG.provOpsi !== TG.prov) {   // opsi kabupaten hanya dibangun bila provinsi berubah
+    TG.provOpsi = TG.prov;
+    $("#tgKab").innerHTML = '<option value="">Pilih kab/kota</option>' + PR.d.kab.filter(k => !TG.prov || k.prov === TG.prov).map(k => `<option value="${esc(k.id)}">${esc(k.nama)}</option>`).join("");
+  }
   $("#tgKab").value = TG.kab;
   document.querySelectorAll("#tgAncaman button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.a === TG.a)));
   $("#tgIsi").setAttribute("aria-busy", "true");
-  nanti(gambarTg);
+  if (TG.antri) return;
+  TG.antri = true;
+  nanti(() => { TG.antri = false; gambarTg(); });
 }
 
 async function muatTangga() {
@@ -120,11 +130,18 @@ $("#tgProv").addEventListener("change", () => { TG.prov = $("#tgProv").value; TG
 $("#tgKab").addEventListener("change", () => { TG.kab = $("#tgKab").value; const k = PR.d.kab.find(x => x.id === TG.kab); if (k) TG.prov = k.prov; pasangTg(); });
 $("#tgAncaman").addEventListener("click", e => { const b = e.target.closest("button[data-a]"); if (b) { TG.a = b.dataset.a; TG.n = 60; pasangTg(); } });
 const bukaTg = e => {
-  if (e.type === "keydown" && e.key !== "Enter") return;
+  if (e.type === "keydown" && e.key !== "Enter" && e.key !== " ") return;
   const r = e.target.closest("tr[data-prov], tr[data-kab]");
   if (!r) return;
+  if (e.type === "keydown") e.preventDefault();   // Spasi tidak menggulir halaman
   if (r.dataset.prov) { TG.prov = r.dataset.prov; TG.kab = ""; } else { TG.kab = r.dataset.kab; }
   TG.n = 60; pasangTg();
 };
-$("#tgIsi").addEventListener("click", e => { if (e.target.id === "tgLagi") { TG.n += 60; pasangTg(); } else bukaTg(e); });
+$("#tgIsi").addEventListener("click", e => {
+  if (e.target.id !== "tgLagi") return bukaTg(e);
+  const tb = $("#tgIsi tbody"), dari = TG.n;   // tambah baris saja, tanpa menggambar ulang
+  TG.n += 60;
+  tb.insertAdjacentHTML("beforeend", barisKab(dari, TG.n));
+  if (TG.n >= TG.r.length) e.target.parentNode.remove();
+});
 $("#tgIsi").addEventListener("keydown", bukaTg);

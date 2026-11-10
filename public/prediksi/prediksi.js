@@ -231,8 +231,9 @@ function pilihTab(t) {
   PR.tab = t;
   document.querySelectorAll("#tabs button").forEach(b => b.dataset.tab === t ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
   document.querySelectorAll("main .page").forEach(s => s.classList.toggle("on", s.id === "p-" + t));
-  if (t === "rapor" && !$("#rapor table, #rapor section")) gambarRapor();
-  if (t === "dampak") muatDampak();
+  const tunda2 = f => window.nanti ? window.nanti(f) : f();   // isi berat sesudah satu frame tercat (chrome tab sudah berganti)
+  if (t === "rapor" && !$("#rapor table, #rapor section")) tunda2(gambarRapor);
+  if (t === "dampak") tunda2(muatDampak);
   if (t === "laporan") muatLaporan();   // laporan_layar.js; hash #laporan/<prov> diatur di sana
   else if (t === "tangga") muatTangga();   // tangga.js; hash #tangga/<id kab> diatur di sana
   else history.replaceState(null, "", t === "besok" ? "./" : "#" + t);
@@ -278,7 +279,9 @@ mulai();
 
 document.addEventListener("change", e => {
   if (e.target.id !== "kalKab") return;
-  const s = document.createElement("div");
-  s.innerHTML = kalenderRapor();
-  $("#kalIsi").innerHTML = s.querySelector("#kalIsi").innerHTML;
+  (window.nanti || (f => f()))(() => {
+    const s = document.createElement("div");
+    s.innerHTML = kalenderRapor();
+    $("#kalIsi").innerHTML = s.querySelector("#kalIsi").innerHTML;
+  });
 });

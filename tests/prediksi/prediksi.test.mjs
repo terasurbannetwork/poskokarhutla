@@ -128,7 +128,7 @@ test('tab Dampak: dimuat malas, data lewat esc(), tanpa sisa interpolasi mentah 
   const js = readFileSync(join(ROOT, 'public/prediksi/prediksi.js'), 'utf8')
   const mulai = js.slice(js.indexOf('async function mulai()'), js.indexOf('let tunda'))
   assert.ok(!/dampak\.json|jalan\.json/.test(mulai), 'dampak.json/jalan.json tidak boleh ditarik saat halaman dibuka')
-  assert.match(js, /if \(t === "dampak"\) muatDampak\(\)/)
+  assert.match(js, /if \(t === "dampak"\) tunda2\(muatDampak\)/)   // lewat nanti: chrome tab dulu, isi sesudah satu frame
   assert.ok(!js.includes('${jam(mulai)}'), 'jam() tanpa esc')
   assert.ok(!js.includes('<td>${x.ambang}</td>') && !js.includes('+${x.tenggang}</td>'), 'ambang/tenggang tanpa esc')
   const g = js.slice(js.indexOf('function gambarDampak'), js.indexOf('async function muatDampak'))

@@ -24,7 +24,7 @@ Dokumen ini menang atas semua dokumen lain di folder ini. Keputusan pemilik dica
 | D3 | Berkas keluaran satu, `public/prediksi/data/tangga.json`, dibaca sekali oleh layar. Pernyataan nasional dan provinsi disimpan sekali, tidak disalin ke 514 kabupaten; layar yang menggabungkan. | Ukuran berkas dan kejujuran cakupan. |
 | D4 | Cocok nama kabupaten lewat `dasar.pencari`, bukan kode, untuk semua berkas BMKG iklim dan awan: kode di sana indeks internal, bukan Kepmendagri (contoh: "1101" = Aceh Barat Daya di berkas iklim, Aceh Selatan di Kepmendagri). Berkas prakiraan 10 hari memakai kode Kepmendagri bertitik ("11.01") dan dicocokkan lewat id dengan pemeriksaan nama. | Ranjau salah kab diam-diam (AGENTS.md, ilmu prediksi). |
 | D5 | Setiap hari satu baris ringkas tingkat per anak tangga ditambahkan ke `public/prediksi/data/tangga_arsip/YYYY-MM.jsonl`, append-only. | Syarat uji balik prospektif (K7). |
-| D6 | Pernyataan yang melewati batas basi (jam: 4 jam; harian: 48 jam; iklim: 14 hari) tidak ditampilkan; berkasnya dicatat di `gagal`. | Staf tidak boleh membaca peringatan usang sebagai aktual. |
+| D6 | Pernyataan yang melewati batas basi (jam: 4 jam; harian dan peringatan kekeringan: 48 jam; iklim dan SPI: 14 hari; musim: 240 hari) tidak ditampilkan; berkasnya dicatat di `gagal`. | Staf tidak boleh membaca peringatan usang sebagai aktual. |
 | D7 | Pengecualian tombol dummy: tab Tangga hanya membaca `tangga.json` statis dan tidak menulis ke tabel D1 mana pun, sehingga tidak ada tabel yang harus diisi dummy. Isian uji ada di fixture `tests/prediksi/tangga.test.mjs`. | DUMMY.md mewajibkan tombol bagi halaman yang menulis data. |
 
 ## Pertanyaan terbuka untuk pemilik (Q)
@@ -35,8 +35,10 @@ Dokumen ini menang atas semua dokumen lain di folder ini. Keputusan pemilik dica
 | Q2 | Setujukah pemetaan peringkat 0 sampai 3 di ALGORITMA bagian 3 untuk pernyataan yang bukan Waspada/Siaga/Awas (sifat hujan, ensemble, nowcast, perhatian khusus)? | Dipakai hanya untuk sinyal; label resmi selalu tampil apa adanya. |
 | Q3 | Setujukah anak tangga "sepekan" ditambahkan (D1)? | Ditambahkan. |
 | Q4 | Perlukah sinyal gabungan BMKG dan prediksi kita? | Tidak, sampai ada uji balik (K6, D2). |
-| Q5 | SPI per kabupaten: BMKG menerbitkannya sebagai gambar dan PDF (`catatan: isi hanya gambar`). Mau dibaca dari PDF (skrip milik cuaca-udara)? | Tidak dipakai; sifat hujan bulanan dan dasarian menggantikan sebagai ukuran kering/basah. |
+| Q5 | SPI per kabupaten ternyata ADA: `iklim_bmkg_arsip.json` kunci `spi_pdf` (SPI 1 dan 3 bulan; Sangat Kering, Kering, Agak Kering). Dipakai di skala bulan, kolom kering, cakupan kabupaten, tanggal update PDF apa adanya. Kategori SPI bukan peringatan: tanpa peringkat, tidak ikut sinyal. Pertanyaan: perlukah SPI diberi peringkat untuk sinyal (butuh keputusan pemilik), dan SPI berkas bulan berjalan baru muncul bila BMKG menerbitkannya. | Tampil tanpa peringkat. |
 | Q6 | Nowcast BMKG menyebut kecamatan; pemetaan kecamatan ke kabupaten tidak ada di berkas itu. Perlukah tabel kecamatan ke kabupaten (BIG)? | Tampil tingkat provinsi, nama kecamatan di teks. |
 | Q7 | Jadwal: `prediksi.yml` jalan sekali sehari 08.50 WIB, sedangkan nowcast dan petir berubah tiap 3 jam. Pasang langkah `tangga.py` tersendiri tiap 3 jam? | Tangga dirantai di `jalan.py giliran` (harian). Usulan workflow ada di laporan, tidak disentuh. |
 | Q8 | Anak tangga "jam" untuk ancaman kering (titik panas hari ini) dari sumber mana? | Kosong ("belum ada data"). |
+| Q10 | Prakiraan kondisi harian BMKG 10 hari memakai kosakata Berawan, Hujan Ringan, Hujan Sedang, Hujan Petir, Petir, dan seterusnya, tanpa kelas "Lebat". Mau dipetakan ke peringkat? | Tidak dipetakan: peringkat null, kondisi terberat tampil apa adanya. |
+| Q11 | Sumber jam (nowcast, petir, Himawari) memerlukan salinan segar dari situs live; workflow belum menariknya. Setujukah usulan di DESAIN-TEKNIS? | Gagal-lunak: basi = dilewati. |
 | Q9 | Cakupan kabupaten untuk peringatan kekeringan BMKG (per kecamatan) diringkas ke tingkat tertinggi per kabupaten, dengan jumlah kecamatan di teks. Cukup? | Dipakai. |

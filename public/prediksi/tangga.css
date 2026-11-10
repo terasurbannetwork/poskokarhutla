@@ -36,3 +36,6 @@
   .tg-sel[data-a="k"]::before{content:"Kering";display:block;font-size:0.687rem;font-weight:800;color:var(--ink2);text-transform:uppercase}
   .tg-sel[data-a="b"]::before{content:"Basah";display:block;font-size:0.687rem;font-weight:800;color:var(--ink2);text-transform:uppercase}
 }
+#tgIsi td.n{text-align:center}
+.tg-kepala{justify-items:start}
+.tg-kepala .tg-bars{justify-self:stretch;width:100%}
