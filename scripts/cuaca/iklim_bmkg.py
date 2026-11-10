@@ -15,7 +15,7 @@ Pakai: python3 scripts/cuaca/iklim_bmkg.py | ... upt | ... uji
 import difflib, html as _html, json, os, re, sys, time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from bmkg_kab10 import nuxt_semua, unduh
+from bmkg_kab10 import UA, nuxt_semua, unduh
 from dasar import KELUAR, PROVINSI, baca, sekarang, simpan
 
 W = "https://www.bmkg.go.id"
@@ -438,6 +438,8 @@ def main():
         ok += kunjung(f"{W}/profil/balai-upt", "direktori", fu)["status"] == "ok"
     if not ok:
         raise RuntimeError("tak satu halaman pun berhasil: berkas lama dibiarkan")
+    _w = []
+    pdf_baru(arsip, lambda: _w[0] if _w else (_w.append(indeks_wilayah()) or _w[0]), log, gagal)
     # append-only: arsip lama sudah dimuat dan hanya ditambah
     simpan(ARSIP, arsip)
     simpan(BERKAS, {"dibuat": sekarang(), "sumber": "BMKG iklim (www.bmkg.go.id, dataweb.bmkg.go.id); teks saja", "halaman": log, "hub_artikel": hub_out, "produk_hujan": produk,
@@ -474,13 +476,20 @@ def kolom_spi(kata):
     for x0, _, x1, _t in body:
         for x in range(int(x0), min(int(x1) + 1, 999)):
             cov[x] += 1
-    kosong = [x for x in range(88, 140) if cov[x] == 0]
-    b0 = (max(x for x in kosong) + 1) if kosong else 97
-    b1 = min(range(290, 400), key=lambda x: cov[x]) + 1
-    g = [x for x in range(540, 720) if cov[x] == 0]
-    b2 = (max(g) + 1) if g else None
-    if b2 is None:
-        raise ValueError("batas kolom 2/3 tak ditemukan")
+    b0 = next((x for x in range(85, 200) if cov[x] >= 5), 97) - 1  # label wilayah di kiri jarang (cov kecil); kolom 1 mulai saat padat
+    hs = sorted((w for w in kata if w[3] in ("SANGAT", "AGAK", "KERING") and w[1] < y_min), key=lambda w: w[0])
+    ker, sg, ag = [w for w in hs if w[3] == "KERING"], [w for w in hs if w[3] == "SANGAT"], [w for w in hs if w[3] == "AGAK"]
+    if len(ker) < 3 or not sg or not ag:
+        raise ValueError("kepala tabel SANGAT/KERING/AGAK tak lengkap")
+    c1, c2, c3 = (sg[0][0] + ker[0][2]) / 2, (ker[1][0] + ker[1][2]) / 2, (ag[0][0] + ker[2][2]) / 2  # tengah kepala = tengah kolom
+
+    awal = {}  # tepi kiri kolom = nilai xMin yang paling sering (tiap baris kolom bermula di tepi kiri)
+    for w in body:
+        awal[round(w[0])] = awal.get(round(w[0]), 0) + 1
+
+    def tepi(m):
+        return max(range(int(m) - 45, int(m) + 46), key=lambda x: (awal.get(x, 0) + awal.get(x - 1, 0) + awal.get(x + 1, 0), -abs(x - m))) - 2
+    b1, b2 = tepi((c1 + c2) / 2), tepi((c2 + c3) / 2)
     kol = [[], [], []]
     for x0, y0, _x1, t in body:
         if x0 >= b0:
@@ -537,33 +546,50 @@ def urai_spi_pdf(jalur, wil, url=None):
             "tak_cocok": tak, "baris": baris, "diambil": sekarang()}
 
 
-RX_BAB = re.compile(r"^\s*(I{1,3}|IV)\.\s+(.+)$|^\s*([A-F])\.\s+(.+)$|^\s*(\d)\.\s+(.+)$")
+RX_BAB = re.compile(r"^\s*(I{1,3}|IV|VI{0,3}|IX|X)\.\s+(.+)$|^\s*([A-F])\.\s+(.+)$|^\s*(\d)\.\s+(.+)$")
+
+
+GELAR = re.compile(r"\b(Dr\.|Prof\.|Ir\.|S\.\s?Si|M\.\s?Si|M\.\s?Sc|S\.\s?Kom|M\.\s?Kom|Ph\.?\s?D|S\.\s?T\b|M\.\s?T\b|S\.\s?Tr|M\.\s?Mat|M\.\s?AI|M\.\s?CCSP|Data\.?\s?Sci)")
 
 
 def urai_buletin_teks(t):
-    """Teks pdftotext -layout -> bab {kode, judul, paragraf}. Halaman TIM PENYUSUN, alamat redaksi, daftar isi, tanda tangan dan nama orang DIBUANG."""
-    t = t.split("PENGANTAR", 1)[-1] if "TIM PENYUSUN" in t.split("PENGANTAR", 1)[0] else t  # buang halaman penyusun
-    t = re.sub(r"Jakarta, \w+ \d{4}\s+Direktur.*?\n\s*i\s*\n", "\n", t, flags=re.S)  # tanda tangan
-    t = re.sub(r"DAFTAR ISI.*?\n\s*ii\s*\n", "\n", t, flags=re.S)
+    """Teks pdftotext -layout -> bab {kode, judul, teks}. DIBUANG: halaman TIM PENYUSUN, alamat redaksi, daftar isi, blok tanda tangan, dan setiap baris bergelar (nama orang)."""
+    t = t.replace("\u200b", "").replace("\ufffd", "-")
+    L = t.split("\n")
+    if any("TIM PENYUSUN" in x for x in L):  # buang dari awal sampai kata PENGANTAR pertama
+        i = next((k for k, x in enumerate(L) if x.strip() == "PENGANTAR"), None)
+        L = L[i:] if i is not None else []
+    out, k = [], 0
+    while k < len(L):
+        s = L[k].strip()
+        if re.match(r"Jakarta, \w+ \d{4}", s):  # blok tanda tangan: sampai baris bergelar (maks 5 baris)
+            j = next((j for j in range(k, min(k + 6, len(L))) if GELAR.search(L[j])), k)
+            k = j + 1
+            continue
+        if s.upper() == "DAFTAR ISI":  # sampai judul bab I tanpa nomor halaman
+            j = next((j for j in range(k + 1, len(L)) if re.fullmatch(r"I\.\s+RINGKASAN", L[j].strip())), None)
+            if j is not None:
+                k = j
+                continue
+        if not GELAR.search(s):
+            out.append(L[k])
+        k += 1
     bab, kini = [], {"kode": "PENGANTAR", "judul": "Pengantar", "baris": []}
-    for l in t.split("\n"):
+    for l in out:
         s = l.strip()
-        if not s or re.fullmatch(r"[ivx\d]+", s) or s.startswith("Sumber :") or s.startswith("PENGANTAR"):
+        if not s or re.fullmatch(r"[ivx\d]+", s) or s.startswith("Sumber :") or s == "PENGANTAR":
             continue
         m = RX_BAB.match(l)
-        if m and not re.search(r"[.,;]$", s) and len(s) < 110 and (m.group(1) or m.group(3) or m.group(5)) and s[3:4] != "":
+        if m and not re.search(r"[.,;]$", s) and len(s) < 110:
             if kini["baris"] or kini["kode"] != "PENGANTAR":
                 bab.append(kini)
             kini = {"kode": m.group(1) or m.group(3) or m.group(5), "judul": (m.group(2) or m.group(4) or m.group(6)).strip(), "baris": []}
         else:
             kini["baris"].append(s)
     bab.append(kini)
-    out = []
     for b in bab:
-        teks = " ".join(b.pop("baris"))
-        b["teks"] = re.sub(r"\s+", " ", teks).strip()
-        out.append(b)
-    return out
+        b["teks"] = re.sub(r"\s+", " ", " ".join(b.pop("baris"))).strip()
+    return bab
 
 
 def angka_buletin(bab):
@@ -586,28 +612,69 @@ def angka_buletin(bab):
             "prediksi_persen": pred or None, "hth_kategori": hth or None}
 
 
+def satu_pdf(jenis, j, arsip, wil=None, url=None):
+    """Urai satu PDF di disk ke arsip (append-only per nama berkas). -> ringkasan teks atau None bila sudah ada."""
+    k = os.path.basename(j)
+    sub = arsip.setdefault("spi_pdf" if jenis == "spi" else "buletin_pdf", {})
+    if k in sub:
+        return None
+    if jenis == "spi":
+        sub[k] = urai_spi_pdf(j, wil, url)
+        return f"{k}: {sub[k]['n_baris']} baris {sub[k]['per_tingkat']}, terpetakan {sub[k]['n_terpetakan']}, tak cocok {len(sub[k]['tak_cocok'])}"
+    bab = urai_buletin_teks(_pdftotext("-layout", j, "-"))
+    sub[k] = {"berkas": k, "url": url, "bab": bab, "angka": angka_buletin(bab), "diambil": sekarang()}
+    return f"{k}: {len(bab)} bab {[b['kode'] for b in bab]}"
+
+
+def unduh_pdf(url, tujuan):
+    """PDF dari content.bmkg.go.id (host diizinkan pemilik 10 Nov 2026 untuk pengambilan rutin) ke folder sementara; jeda 2 detik."""
+    import urllib.request
+    assert url.startswith("https://content.bmkg.go.id/"), f"host di luar izin: {url}"
+    t = _akhir[0] + JEDA - time.time()
+    if t > 0:
+        time.sleep(t)
+    try:
+        with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA}), timeout=90) as r:
+            d = r.read(40_000_000)
+    finally:
+        _akhir[0] = time.time()
+    assert d[:4] == b"%PDF", "bukan PDF"
+    open(tujuan, "wb").write(d)
+
+
+def pdf_baru(arsip, wil_fn, log, gagal, per_hub=2):
+    """PDF dua artikel terbaru hub SPI dan buletin yang belum diurai: unduh ke folder sementara, urai, hapus (tidak pernah masuk repo)."""
+    import tempfile, shutil
+    if not shutil.which("pdftotext") and not os.path.exists("/opt/homebrew/bin/pdftotext"):
+        gagal.append("pdftotext tidak ada: PDF SPI/buletin dilewati")
+        return
+    for hub, jenis, sub in (("indeks-presipitasi-terstandarisasi", "spi", "spi_pdf"), ("buletin-iklim", "buletin", "buletin_pdf")):
+        arts = sorted((a for a in arsip.get("artikel", {}).values() if a["hub"] == hub), key=lambda a: a.get("tanggal") or "", reverse=True)[:per_hub]
+        for a in arts:
+            for u in a.get("pdf", []):
+                k = os.path.basename(u)
+                if not u.startswith("https://content.bmkg.go.id/") or k in arsip.get(sub, {}):
+                    continue
+                with tempfile.TemporaryDirectory() as d:
+                    try:
+                        j = os.path.join(d, k)
+                        unduh_pdf(u, j)
+                        r = satu_pdf(jenis, j, arsip, wil_fn() if jenis == "spi" else None, u)
+                        log.append({"url": u, "jenis": f"pdf_{jenis}", "status": "ok", "ringkas": r})
+                    except Exception as x:
+                        log.append({"url": u, "jenis": f"pdf_{jenis}", "status": f"gagal: {type(x).__name__} {x}"})
+                        gagal.append(u)
+
+
 def pdf_lokal(arg):
-    """`spi|buletin <pdf>...`: urai PDF yang sudah ada di disk (BUKAN dari repo) ke arsip, append-only per nama berkas."""
+    """`spi|buletin <pdf>...`: urai PDF yang sudah ada di disk (BUKAN dari repo) ke arsip."""
     jenis, berkas = arg[0], arg[1:]
     arsip = baca(ARSIP, {}) or {}
-    ar_a = arsip.get("artikel", {})
-    urls = {os.path.basename(u): u for a in ar_a.values() for u in a.get("pdf", [])}
+    urls = {os.path.basename(u): u for a in arsip.get("artikel", {}).values() for u in a.get("pdf", [])}
     wil = indeks_wilayah() if jenis == "spi" else None
     for j in berkas:
-        k = os.path.basename(j)
-        sub = arsip.setdefault("spi_pdf" if jenis == "spi" else "buletin_pdf", {})
-        if k in sub:
-            print(f"{k}: sudah di arsip, dilewati", file=sys.stderr)
-            continue
-        if jenis == "spi":
-            sub[k] = urai_spi_pdf(j, wil, urls.get(k))
-            print(f"{k}: {sub[k]['n_baris']} baris {sub[k]['per_tingkat']}, terpetakan {sub[k]['n_terpetakan']}, tak cocok {len(sub[k]['tak_cocok'])}", file=sys.stderr)
-        else:
-            bab = urai_buletin_teks(_pdftotext("-layout", j, "-"))
-            sub[k] = {"berkas": k, "url": urls.get(k), "bab": bab, "angka": angka_buletin(bab), "diambil": sekarang()}
-            print(f"{k}: {len(bab)} bab {[b['kode'] for b in bab]}", file=sys.stderr)
+        print(satu_pdf(jenis, j, arsip, wil, urls.get(os.path.basename(j))) or f"{j}: sudah di arsip, dilewati", file=sys.stderr)
     simpan(ARSIP, arsip)
-
 
 
 def uji():
@@ -647,7 +714,7 @@ def uji():
     b, tk = urai_spi_teks(["Aceh: Aceh Tamiang, Aceh Utara Sumatera Barat: Tanah Datar.", "Aceh: Aceh Singkil, Kab Fiktif Jambi: Kota Jambi", "DKI Jakarta: Kota Administrasi Jakarta Barat"], wil)
     assert [(x["tingkat"], x["nama"]) for x in b][:3] == [("SANGAT KERING", "Aceh Tamiang"), ("SANGAT KERING", "Aceh Utara"), ("SANGAT KERING", "Tanah Datar")] and b[0]["kode"], b
     assert tk == ["KERING Aceh: Kab Fiktif"] and b[-1]["tingkat"] == "AGAK KERING" and b[-1]["kode"], tk
-    bb = urai_buletin_teks("TIM PENYUSUN BULETIN\nPengarah : Nama Uji\n PENGANTAR\n Isi pengantar.\n  I.    RINGKASAN\n Teks satu.\n 1\nII. ANALISIS\nA. Sub satu\n Teks dua 18 titik observasi mencatat curah hujan ekstrem (>150 mm/hari).\n 2\n")
+    bb = urai_buletin_teks("TIM PENYUSUN BULETIN\nPengarah : Dr. Nama Uji, S.Si\n PENGANTAR\n Isi pengantar.\n Jakarta, Oktober 2026\n Direktur\n Dr. Nama Uji, M.Si\n DAFTAR ISI\n I. RINGKASAN 1\n  I.    RINGKASAN\n Teks satu.\n 1\nII. ANALISIS\nA. Sub satu\n Teks dua 18 titik observasi mencatat curah hujan ekstrem (>150 mm/hari).\n 2\n")
     assert [x["kode"] for x in bb] == ["PENGANTAR", "I", "II", "A"] and "Nama Uji" not in json.dumps(bb), bb
     assert angka_buletin(bb)["hujan_ekstrem_titik"] == 18
     print("uji iklim_bmkg ok")
