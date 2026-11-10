@@ -26,11 +26,11 @@ sys.path.insert(0, os.path.dirname(__file__))
 from umum import KELUAR, MENTAH, WIB, baca, simpan
 
 URL = "https://disasterscharter.org/activations"
-UA = "poskobanjir/1.0 (Pantau Bencana; +https://centurisk97.id)"
+UA = "poskobanjir/1.0 (Centurisk97; +https://centurisk97.id)"
 BERKAS = os.path.join(KELUAR, "charter.json")
 MIN_LABEL = 30
 OBJ = re.compile(r'\{"activationId":"(\d+)".*?"disasterTypes":\[[^\]]*\]\}')
-ATRIBUSI = "International Charter Space and Major Disasters, daftar aktivasi publik (disasterscharter.org); ringkasan oleh Pantau Bencana"
+ATRIBUSI = "International Charter Space and Major Disasters, daftar aktivasi publik (disasterscharter.org); ringkasan oleh Centurisk97"
 JENIS_DIBI = {"Flood": {"banjir", "bandang", "rob"}, "Landslide": {"longsor"}, "Storm": {"cuaca", "gelombang"}}  # DIBI lokal tak memuat gempa/letusan
 
 

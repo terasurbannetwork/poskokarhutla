@@ -23,10 +23,10 @@ const IKON_GEMPA = {
 };
 const UBIN = {wilayah: ["#f4c48a", "#d4572f", "peta"], gempa: ["#7a3b0b", "#e8743b", "gempa"], riwayat: ["#4a3b6b", "#a58bd6", "jam"], katalog: ["#6b3b1b", "#e0a35a", "kisi"], kekerapan: ["#8a3b2b", "#f0b35a", "kisi"],
   bahaya: ["#0b2545", "#3b6fb0", "perisai"], lempeng: ["#5a4a3a", "#c9a26b", "lempeng"], sesar: ["#3b1f1f", "#d9534f", "lempeng"], satelit: ["#13324d", "#4d8a5e", "satelit"], evakuasi: ["#0b3d4d", "#2fb0c9", "ombak"]};
-const UBIN_PENDEK = {wilayah: "Wilayah", gempa: "Terkini", riwayat: "Sejak 1900", katalog: "BMKG semua M", kekerapan: "Kekerapan", bahaya: "InaRISK", lempeng: "Lempeng", sesar: "Sesar", satelit: "Satelit", evakuasi: "Evakuasi"};
+const UBIN_PENDEK = {wilayah: "Wilayah", gempa: "Terkini", riwayat: "Sejak 1900", katalog: "BMKG semua M", kekerapan: "Kekerapan", bahaya: "InaRISK", lempeng: "Lempeng", sesar: "Sesar", satelit: "Satelit", evakuasi: "Evakuasi", sensor: "Sensor BMKG", dart: "DART", gnss: "GNSS"};
 /* urutan tumpukan lapisan, bawah ke atas */
-const URUT = ["satelit", "kekerapan", "prov-fill", "prov-line", "bahaya", "lempeng", "sesar", "evak-area", "evak-rute", "evak", "iso", "iso-garis", "riwayat", "katalog", "susulan", "gempa", "pilih"];
-const LAPIS_PETA = {wilayah: ["prov-fill"], gempa: ["gempa"], riwayat: ["riwayat"], katalog: ["katalog"], kekerapan: ["kekerapan"], bahaya: ["bahaya"], lempeng: ["lempeng"], sesar: ["sesar"], satelit: ["satelit"], evakuasi: ["evak-area", "evak-rute", "evak"]};
+const URUT = ["satelit", "kekerapan", "prov-fill", "prov-line", "bahaya", "lempeng", "sesar", "gnss", "sensor", "evak-area", "evak-rute", "evak", "iso", "iso-garis", "riwayat", "katalog", "dart", "susulan", "gempa", "pilih"];
+const LAPIS_PETA = {wilayah: ["prov-fill"], gempa: ["gempa"], riwayat: ["riwayat"], katalog: ["katalog"], kekerapan: ["kekerapan"], bahaya: ["bahaya"], lempeng: ["lempeng"], sesar: ["sesar"], satelit: ["satelit"], sensor: ["sensor"], dart: ["dart"], gnss: ["gnss"], evakuasi: ["evak-area", "evak-rute", "evak"]};
 const WARNA_WIL = ["rgba(0,0,0,0)", "#fbe3c0", "#f4b97a", "#e6803f", "#c9503a"], BATAS_WIL = [1, 5, 20, 50];
 const RAMP_GRID = [[0.04, [253, 231, 160, 150]], [0.12, [248, 190, 95, 185]], [0.4, [238, 133, 58, 215]], [1, [212, 71, 47, 235]], [2.5, [143, 29, 43, 250]]];
 const RAMP_BAHAYA = [[0, "#ffe9a8"], [.25, "#f9c25b"], [.5, "#ee8a3a"], [.75, "#d4472f"], [1, "#8f1d2b"]];
@@ -83,7 +83,7 @@ const Peta = {
     this.taruh({id: "pilih", type: "circle", source: "pilih", paint: {"circle-radius": 24, "circle-color": "rgba(0,0,0,0)", "circle-stroke-color": gelap() ? "#fff" : "#0b2545", "circle-stroke-width": 3}});
     this.aturWilayah(); this.interaksi(); Evakuasi.interaksi();
     /* lapisan lain malas: dimuat saat dinyalakan, bukan saat buka halaman */
-    ["lempeng", "sesar", "riwayat", "katalog", "kekerapan", "bahaya", "satelit"].forEach(k => this.lihat(k) && nanti(() => this.pasangLapis(k)));
+    ["lempeng", "sesar", "riwayat", "katalog", "kekerapan", "bahaya", "satelit", "sensor", "dart", "gnss"].forEach(k => this.lihat(k) && nanti(() => this.pasangLapis(k)));
     Evakuasi.pasang(); Kejadian.pasangLapis(); renderLegenda(); },
   geoGempa() { const kini = Date.now(), t0 = kini - S.rentang * 36e5;
     return {type: "FeatureCollection", features: S.gempa.map((g, i) => g.t < t0 ? null : ({type: "Feature", geometry: {type: "Point", coordinates: [g.lon, g.lat]},
@@ -103,6 +103,9 @@ const Peta = {
       else if (k === "riwayat") { const d = S.riwayat ||= await muatJSON("data/riwayat_m5.json"); if (peta.getLayer(k)) return;
         peta.addSource("riwayat", {type: "geojson", data: {type: "FeatureCollection", features: d.baris.map((b, i) => ({type: "Feature", geometry: {type: "Point", coordinates: [b[2], b[1]]}, properties: {i, m: b[4], d: kelasDalam(b[3])}}))}});
         this.taruh({id: "riwayat", type: "circle", source: "riwayat", layout: {...vis, "circle-sort-key": ["-", 0, ["get", "m"]]}, paint: {"circle-radius": radius(.6), "circle-color": warnaDalam, "circle-opacity": .5}}); }
+      else if (["sensor", "dart", "gnss"].includes(k)) { const t = S.titikLain ||= {}; t[k] ||= await this.titikLain(k); if (peta.getLayer(k)) return;
+        peta.addSource(k, {type: "geojson", data: {type: "FeatureCollection", features: t[k].map((b, i) => ({type: "Feature", geometry: {type: "Point", coordinates: [b.lon, b.lat]}, properties: {i, w: b.w}}))}});
+        this.taruh({id: k, type: "circle", source: k, layout: vis, paint: {"circle-radius": k === "dart" ? 7 : 4, "circle-color": ["get", "w"], "circle-stroke-color": "#fff", "circle-stroke-width": 1.2, "circle-opacity": .95}}); }
       else if (k === "katalog") await Ina.lapisPeta();
       else if (k === "kekerapan") { const d = S.grid ||= await muatJSON("data/riwayat_grid.json"); if (peta.getLayer(k)) return;
         const cv = document.createElement("canvas"); cv.width = d.w; cv.height = d.h; const ctx = cv.getContext("2d"), img = ctx.createImageData(d.w, d.h);
@@ -134,12 +137,21 @@ const Peta = {
       ["jam", jamPendek(g.waktu), "WIB", "#3f7fb8"], ...(g.mmi_maks ? [["getar", ROMAWI[g.mmi_maks], "dirasakan", "#c9503a"]] : [])]}); },
   kartuRiwayat(b) { const kd = kelasDalam(b[3]); return PI.kartuTip({judul: "Gempa " + b[0].slice(0, 4), stat: [["gempa", mTulis(b[4]), "kekuatan", warnaM(b[4]), b[4] >= 7],
     ["dalam", b[3] ? fmt(b[3]) + " km" : "–", "kedalaman", kd < 0 ? WARNA_DALAM_NA : KELAS_DALAM[kd][1]]]}); },
+  /* titik tambahan dari arsip pipa (data/dart.json, gnss.json, inatews_sensor.json): {lat, lon, w warna, judul, sub} */
+  async titikLain(k) {
+    if (k === "sensor") return (await muatJSON("data/inatews_sensor.json")).baris.map(([kode, nama, bawil, lon, lat]) => ({lat, lon, w: "#0b6e99", judul: esc(kode), sub: esc(nama + ", " + bawil)}));
+    if (k === "gnss") return (await muatJSON("data/gnss.json")).stasiun.map(s => ({lat: s.lat, lon: s.lon, w: s.transien ? "#c9503a" : s.aktif ? "#2f7d4f" : "#8a94a3", judul: esc(s.id),
+      sub: s.ve_mm_th == null ? "Kecepatan tidak tersedia" : `Kecepatan timur ${fmt(s.ve_mm_th)} dan utara ${fmt(s.vn_mm_th)} mm per tahun, ${s.aktif ? "stasiun aktif" : "stasiun berhenti"}`}));
+    const d = await muatJSON("data/dart.json"), rt = d.realtime?.pelampung || {}, WARNA = {tenang: "#2f7d4f", melampaui_ambang: "#c9503a", basi: "#8a94a3", tanpa_data: "#8a94a3"};
+    return Object.entries(d.pelampung).map(([id, b]) => { const r = rt[id] || {}; return {lat: b.lat, lon: b.lon, w: WARNA[r.status] || "#8a94a3", judul: "DART " + esc(id),
+      sub: `${esc(b.nama)}, ${r.maks_8jam_m == null ? "tanpa data terbaru" : "maks. 8 jam " + (r.maks_8jam_m * 100).toFixed(1).replace(".", ",") + " cm, ambang " + (r.ambang_m * 100).toFixed(1).replace(".", ",") + " cm"}`}; }); },
   kartuProv(k) { const a = agregat(dalamRentang())[k]; return PI.kartuTip({judul: esc(namaProv(k)), stat: a ? [["gempa", a.n, "gempa", "#d4572f"], ["getar", mTulis(a.m), "terbesar", warnaM(a.m), a.m >= 6]] : [["gempa", 0, "gempa", "#9aa8b8"]]}); },
   interaksi() {
     if (this._ia) return; this._ia = true;
     let hov = null, diTitik = 0; const tip = () => PI?.sembunyiTip(), kursor = v => peta.getCanvas().style.cursor = v;
     const titik = (id, kartu) => { peta.on("mousemove", id, e => { diTitik = id; kursor("pointer"); PI?.tampilTip(kartu(e.features[0].properties.i), e.originalEvent); });
       peta.on("mouseleave", id, () => { diTitik = 0; kursor(""); tip(); }); };
+    for (const k of ["sensor", "dart", "gnss"]) titik(k, i => { const b = S.titikLain[k][i]; return PI.kartuTip({judul: b.judul, sub: `<small class="tp-sub">${b.sub}</small>`}); });
     titik("gempa", i => this.kartuGempa(S.gempa[i])); titik("riwayat", i => this.kartuRiwayat(S.riwayat.baris[i]));
     peta.on("mousemove", "prov-fill", e => { kursor("pointer"); const f = e.features[0];
       if (hov !== f.id) { if (hov !== null) peta.setFeatureState({source: "prov", id: hov}, {hover: false}); hov = f.id; peta.setFeatureState({source: "prov", id: hov}, {hover: true}); }
@@ -210,18 +222,19 @@ function renderPita() {
 const setLapis = (k, on) => { const i = document.querySelector(`#lapis input[data-l="${k}"]`); if (i && i.checked !== on) { i.checked = on; i.dispatchEvent(new Event("change", {bubbles: true})); } };
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return; const k = i.dataset.l; if (k?.startsWith("nasa_")) return;
   if (k === "evakuasi") return nanti(() => Evakuasi.nyala());
-  Promise.resolve(["lempeng", "sesar", "riwayat", "katalog", "kekerapan", "bahaya", "satelit"].includes(k) ? new Promise(r => nanti(() => r(Peta.pasangLapis(k)))) : 0).then(() => { (LAPIS_PETA[k] || []).forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none")); renderLegenda(); }); });
+  Promise.resolve(["lempeng", "sesar", "riwayat", "katalog", "kekerapan", "bahaya", "satelit", "sensor", "dart", "gnss"].includes(k) ? new Promise(r => nanti(() => r(Peta.pasangLapis(k)))) : 0).then(() => { (LAPIS_PETA[k] || []).forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none")); renderLegenda(); }); });
 $("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");
 $("#lapisLipat").onclick = e => { const b = e.currentTarget, det = document.querySelectorAll("#lapis details"), tutup = [...det].some(d => d.open); det.forEach(d => d.open = !tutup); b.classList.toggle("tutup", tutup); };
 
 /* ---------- legenda: hanya lapisan yang sedang terlihat ---------- */
 const SUMBER = {gempa: ["Gempa terkini", "BMKG, USGS", "Katalog gempa hidup: BMKG (data.bmkg.go.id) dan USGS (earthquake.usgs.gov), domain publik."], riwayat: ["Gempa sejak 1900", "USGS", () => S.atr.usgs], katalog: ["Katalog BMKG", "BMKG", "Katalog gempa semua magnitudo BMKG InaTEWS (cdn.bmkg.go.id): 3mgempaQL.json dan live30event.xml, digabung dengan arsip Centurisk97. Klik titik untuk detail."],
   kekerapan: ["Kekerapan", "USGS", () => S.atr.usgs], bahaya: ["Indeks bahaya", "InaRISK, BNPB", () => S.atr.bahaya], lempeng: ["Batas lempeng", "PB2002, Bird (2003), ODC-By", () => S.atr.lempeng],
-  sesar: ["Sesar aktif", "GEM, EOS, CC BY-SA", () => S.atr.sesar], evakuasi: ["Evakuasi tsunami", "BNPB", "Titik evakuasi, rambu, jalur, dan sirine tsunami dari gis.bnpb.go.id (layanan ArcGIS publik). Hanya wilayah rintisan."]};
+  sesar: ["Sesar aktif", "GEM, EOS, CC BY-SA", () => S.atr.sesar], sensor: ["Sensor seismik", "BMKG", "Jaringan sensor seismik InaTEWS (cdn.bmkg.go.id/sensor_seismic.json), diarsipkan oleh pipa Centurisk97."], dart: ["Pelampung DART", "NOAA NDBC", "Muka laut terukur pelampung DART. Warna menurut penanda statistik Centurisk97, bukan peringatan; status tsunami resmi hanya BMKG dan PTWC."],
+  gnss: ["Stasiun GNSS", "Nevada Geodetic Laboratory", "Kecepatan stasiun GNSS kerangka IGS20 (Blewitt dkk. 2018). Bahan regangan kerak kasar, bukan prakiraan gempa."], evakuasi: ["Evakuasi tsunami", "BNPB", "Titik evakuasi, rambu, jalur, dan sirine tsunami dari gis.bnpb.go.id (layanan ArcGIS publik). Hanya wilayah rintisan."]};
 function renderLegenda() {
   const T = k => Peta.lihat(k);
   const dia = {3: 8, 5: 14, 7: 26}, skala = (st, f) => `<div class="legscale">${st.map(v => `<i style="background:${f(v)}"></i>`).join("")}</div>`;
-  const sumber = ["gempa", "riwayat", "katalog", "kekerapan", "bahaya", "lempeng", "sesar", "evakuasi"].filter(T).map(k => { const [n, s, p] = SUMBER[k], tip = typeof p === "function" ? p() : p;
+  const sumber = ["gempa", "riwayat", "katalog", "kekerapan", "bahaya", "lempeng", "sesar", "sensor", "dart", "gnss", "evakuasi"].filter(T).map(k => { const [n, s, p] = SUMBER[k], tip = typeof p === "function" ? p() : p;
     return `<span${tip ? ` data-tip="${esc("<b>" + n + "</b><br>" + tip)}"` : ""}>${n}: ${esc(s)}</span>`; }).join("");
   $("#legenda").innerHTML = `<details ${legBuka ? "open" : ""} id="legDet"><summary class="lbl">Legenda <span>▾</span></summary><div class="lg-isi">
     ${T("gempa") || T("riwayat") || T("katalog") ? `<div class="lbl">Kekuatan</div><div class="leg" style="margin:4px 0 8px">${[3, 5, 7].map(m => `<span style="display:flex;align-items:center"><span class="bulat-slot"><i class="sw dot bulat" style="width:${dia[m]}px;height:${dia[m]}px;margin:0;background:#9aa8b8"></i></span>${mTulis(m)}</span>`).join("")}</div>
@@ -230,6 +243,9 @@ function renderLegenda() {
     ${T("kekerapan") ? `<div class="lbl">Kejadian per tahun</div>${skala(RAMP_GRID.map(r => r[0]), v => `rgb(${ramp(RAMP_GRID, v).slice(0, 3).join(",")})`)}<div class="legnum">${RAMP_GRID.map(r => `<span>${fmt(r[0])}</span>`).join("")}</div>` : ""}
     ${T("bahaya") ? `<div class="lbl">Indeks bahaya gempa</div>${skala(RAMP_BAHAYA.map(r => r[0]), v => RAMP_BAHAYA.find(r => r[0] === v)[1])}<div class="legnum">${RAMP_BAHAYA.map(r => `<span>${fmt(r[0])}</span>`).join("")}</div>` : ""}
     ${T("lempeng") ? `<div class="lbl">Batas lempeng</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="height:0;border-top:3px dashed #b5523b;border-radius:0;background:none;vertical-align:3px"></i>pertemuan lempeng</span></div>` : ""}
+    ${T("sensor") ? `<div class="lbl">Sensor seismik BMKG</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#0b6e99"></i>stasiun sensor</span></div>` : ""}
+    ${T("dart") ? `<div class="lbl">Pelampung DART</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#2f7d4f"></i>di bawah ambang statistik</span><span><i class="sw dot" style="background:#c9503a"></i>melampaui ambang</span><span><i class="sw dot" style="background:#8a94a3"></i>data basi atau kosong</span></div>` : ""}
+    ${T("gnss") ? `<div class="lbl">Stasiun GNSS</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#2f7d4f"></i>aktif</span><span><i class="sw dot" style="background:#8a94a3"></i>berhenti</span><span><i class="sw dot" style="background:#c9503a"></i>bendera transien</span></div>` : ""}
     ${Evakuasi.legenda()}
     ${T("sesar") ? `<div class="lbl">Sesar aktif</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="height:0;border-top:3px solid #8f1d2b;border-radius:0;background:none;vertical-align:3px"></i>sesar aktif</span></div>` : ""}
     ${Kejadian.aktif?.iso ? `<div class="lbl">Perkiraan guncangan (MMI) ${pilModel}</div><div class="leg" style="margin:4px 0 8px">${Kejadian.aktif.iso.slice().reverse().map(o => `<span><i class="sw" style="background:${MMI_WARNA[o.k]}"></i>${ROMAWI[o.k]}, sampai ${fmt(Math.round(o.r))} km</span>`).join("")}</div>` : ""}

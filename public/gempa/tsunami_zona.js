@@ -47,6 +47,14 @@ const TsunamiZona = {
     return Kartu.ex(judul, "", "", isi, "", ctl).replace('<article class="ex">', '<article class="ex ex-std">').replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`); },
   gbr: (url, alt) => `<figure class="ina-f"><a href="${esc(url)}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(url)}" alt="${esc(alt)}"></a><figcaption>${esc(alt)}</figcaption></figure>`,
 
+  /* muka laut terukur pelampung DART (data/dart.json, scripts/gempa/dart.py): keadaan terkini, bukan untuk kejadian arsip yang sedang diputar. Penanda statistik, bukan peringatan. */
+  async kartuDart() {
+    const D = await (this._dart ||= muatJSON("data/dart.json").catch(() => null)); const rt = D?.realtime?.pelampung; if (!rt) return "";
+    const cm = v => v == null ? "–" : (v * 100).toFixed(1).replace(".", ","), ST = {tenang: "di bawah ambang", melampaui_ambang: "melampaui ambang", basi: "data basi", tanpa_data: "tanpa data"};
+    const B = Object.entries(D.pelampung).map(([id, p]) => ({id, p, r: rt[id] || {status: "tanpa_data"}})), n = B.filter(x => x.r.status === "melampaui_ambang").length;
+    const tb = B.map(({id, p, r}) => `<tr><td translate="no">${esc(id)}</td><td>${esc(p.nama)}</td><td class="n">${cm(r.maks_8jam_m)}</td><td class="n">${cm(r.ambang_m)}</td><td class="n">${r.umur_jam == null ? "–" : fmt(r.umur_jam)}</td><td>${ST[r.status] || esc(r.status)}</td></tr>`).join("");
+    return this.kartu("Muka laut terkini", `<span class="hl">${fmt(B.length)}</span> pelampung DART NOAA, <span class="hl">${fmt(n)}</span> melampaui ambang statistik`,
+      `<div class="tw ex-tabel ina-tb"><table><thead><tr><th>Pelampung</th><th>Perairan</th><th class="n">Maks. 8 jam (cm)</th><th class="n">Ambang (cm)</th><th class="n">Umur data (jam)</th><th>Keadaan</th></tr></thead><tbody>${tb}</tbody></table></div><p class="fnd ina-atr">${esc(D.realtime.catatan)} Diperbarui ${esc(D.realtime.diperbarui)} UTC.</p>`); },
   async muat() { if (!this.d) this.d = await muatJSON("data/tsunami_zona.json"); return this.d; },
   async render() {
     const el = $("#tsunamiZona"); if (!el) return;
@@ -106,7 +114,7 @@ const TsunamiZona = {
       `<div class="tw ex-tabel ina-tb"><table><thead><tr><th class="n">Ke</th><th>Subjek</th><th class="n">Terbit</th><th class="n">M</th><th class="n">Zona</th><th>Perubahan</th></tr></thead><tbody>${gw}</tbody></table></div>`);
     const tt = this.produk(kej, this.st.k, "tt"), wz = this.produk(kej, this.st.k, "wz");
     const k4 = tt || wz ? this.kartu("Peta BMKG", `Peta waktu tiba dan zona peringatan resmi BMKG, <span class="hl">gambar utuh</span>`, `<div class="ina-fg">${tt ? this.gbr(tt, "Peta waktu tiba tsunami BMKG") : ""}${wz ? this.gbr(wz, "Peta zona peringatan BMKG") : ""}</div><p class="fnd ina-atr">Gambar milik BMKG, ditampilkan utuh tanpa diubah. Sumber: <a href="https://www.bmkg.go.id/gempabumi/berpotensi-tsunami" target="_blank" rel="noopener">BMKG</a> (InaTEWS).</p>`) : "";
-    const isi = el.querySelector("#tzIsi"); isi.innerHTML = k1 + k2 + k3 + k4;
+    const isi = el.querySelector("#tzIsi"); isi.innerHTML = k1 + k2 + '<div id="tzDart"></div>' + k3 + k4; this.kartuDart().then(h => { const e = isi.querySelector("#tzDart"); if (e) e.innerHTML = h; });
     isi.querySelectorAll("figure.ina-f img").forEach(i => i.addEventListener("error", () => i.closest("figure")?.remove(), {once: true}));
   },
 };

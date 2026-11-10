@@ -70,6 +70,9 @@
     if (!(r.negara || []).length && NEG_GRUP[r.grup]) r.negara = [NEG_GRUP[r.grup]]; r.unit = unitDari(r);
     r.bumn = bumnDari(r); if (r.bumn) { r.grup = "BUMN"; r.unit = r.bumn; r.negara = ["ID"]; }   /* grup ditulis BUMN, holding jadi unit usaha (pemilik, 18 Okt 2026) */
     return r; };
+  /* kartu Konsesi dan tata kawasan (perhutanan sosial + izin tambang, data 29 Okt 2026) dari karhutla_data.js, dimuat lewat tag skrip */
+  const janjiKD = new Promise(ok => { const t = document.createElement("script"); t.src = "/karhutla_data.js"; t.onload = () => ok(window.KarhutlaData); t.onerror = () => ok(null); document.head.append(t); });
+  const pasangTata = () => janjiKD.then(k => k?.konsesi()).then(h => { const el = $("#knTata"); if (el && h) el.innerHTML = h; }).catch(() => {});
   const API = '<svg class="kn-api" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z" fill="#f08a3c"/><path d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z" fill="#ffd36b"/></svg>';
   /* kunci warna SWIR (sama dengan citra.js) */
   const LEG_SWIR = `<div class="kn-leg kn-leg-sw">${[["#ff5a1f", "Api aktif / bara"], ["#5a3a24", "Bekas terbakar"], ["#3f9a3a", "Vegetasi hidup"], ["#e8b98a", "Tanah terbuka"], ["#b9d3e6", "Asap tebal"], ["#fff", "Awan"]]
@@ -463,6 +466,7 @@
         </section>`).join("")}
       </section>`; }).join("")}
       ${bagianGP()}${bagianRiwayat()}
+      <div id="knTata"></div>
       <section class="kn-kartu kn-metode">
         <h2>Sumber dan cara hitung</h2>
         <div class="tw"><table class="kn-tb"><thead><tr><th>Data</th><th>Instansi</th><th>Rincian</th></tr></thead><tbody>
@@ -483,6 +487,7 @@
           <li>Titik panas di dalam areal konsesi menunjukkan lokasi api, <b>bukan bukti siapa yang membakar</b>. Verifikasi lapangan tetap diperlukan.</li>
         </ul>
       </section>`;
+    pasangTata();
     petaUtama();
     pasangGambar();
     siapUrut();
