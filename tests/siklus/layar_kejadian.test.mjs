@@ -67,6 +67,7 @@ test('layar kejadian di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome 
       try {
         const T = await pb.tab(); await T.ukuran(1440, 900);
         await T.buka(`${s.url}/siklus/kejadian`, {tunggu: '#daftar table'});
+        assert.ok(!/\bnull\b/.test(await T.eval('document.body.innerText')), 'kata null bocor ke layar');
         const d = await T.eval(`(() => { const k = document.querySelector('#daftar'); return {ex: k.classList.contains('ex-std'), ey: !!k.querySelector('.ex-ey'), hl: !!k.querySelector('h3 .hl'), baris: k.querySelectorAll('tbody tr').length,
           kepala: [...k.querySelectorAll('thead th')].map(x => x.textContent), titles: [...k.querySelectorAll('thead th')].every(x => x.title), penuh: !!k.querySelector('.seg.penuh'), ft: !!k.querySelector('.ex-ft'), teks: k.innerText, seg: k.querySelector('.seg.penuh').getBoundingClientRect().width, kartu: k.getBoundingClientRect().width}; })()`);
         assert.ok(d.ex && d.ey && d.hl && !d.ft); assert.equal(d.baris, 3); assert.ok(d.titles, 'definisi kolom di title kepala');
@@ -121,7 +122,7 @@ test('layar kejadian di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome 
         const T = await pb.tab(); await T.ukuran(1440, 900); await T.buka(`${sa.url}/siklus/kejadian`, {tunggu: '.sk-dummy'});
         assert.equal(await T.eval(`document.querySelectorAll('.sk-dummy button').length`), 2);
         await T.klik('.sk-dummy button[data-dummy=isi]');
-        await T.tungguFungsi(`document.getElementById('toast').textContent.includes('7 baris dummy dibuat')`, 10000);
+        await T.tungguFungsi(`document.getElementById('toast')?.textContent.includes('7 baris dummy dibuat')`, 10000);
         const p = sa.catat.find((c) => c.jalur === '/api/siklus/dummy'); assert.ok(p, 'rute dummy dipanggil');
         assert.equal(p.xpb, '1'); assert.equal(p.badan.aksi, 'isi'); assert.equal(p.badan.halaman, 'kejadian'); assert.match(p.badan.periode.dari, /^\d{4}-\d\d-\d\d$/); assert.match(p.badan.periode.sampai, /^\d{4}-\d\d-\d\d$/);
         assert.deepEqual(galatNyata(T), []); await T.tutup();

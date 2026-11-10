@@ -28,6 +28,7 @@ main.peta{overflow:hidden}
 .sk-blok>h4{margin:0;font-size:.6875rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink2)}
 .sk-para{margin:0;text-align:justify;hyphens:auto;line-height:1.6;font-size:.875rem}
 .sk-wrap .seg.penuh button,.panel .seg.penuh button{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.panel .seg.penuh{flex-wrap:wrap;overflow:visible;border-radius:18px}.panel .seg.penuh button{flex:1 1 30%}
 .sk-ctl{display:grid;gap:10px}
 .sk-baris{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .sk-baris>.pc{flex:1 1 200px}

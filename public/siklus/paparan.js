@@ -102,7 +102,7 @@ export async function buka(isi, sk) {
     const ada = kelasDipilih(S.kelas).filter(k => bh?.kelas?.[k]);
     const leg = h("div", {class: "ex-leg"}, ada.map(k => { const i = h("i"); i.style.background = `var(--f${k === "rendah" ? 0 : k === "sedang" ? 1 : 3})`; return h("span", {}, i, K.kelas?.[k] ?? k); }));
     const rinci = P.pd ? tombol("Tampilkan sel 110 m di peta", "biasa", () => tampilRinci(), "peta", "Muat rincian per sel 110 m untuk kabupaten ini (dicatat)") : para("Rincian per sel hanya untuk Pusdalops, Koordalops, dan Super Admin.");
-    kosongkan(hasil).append(kartuBh, ada.length ? leg : null, jiwa, fasil, dTab, keterbatasan(), rinci);
+    kosongkan(hasil).append(kartuBh, ada.length ? leg : "", jiwa, fasil, dTab, keterbatasan(), rinci);
   }
   async function tampilRinci() {
     if (!S.kab4) return;

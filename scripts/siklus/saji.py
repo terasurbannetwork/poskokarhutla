@@ -48,7 +48,10 @@ def periksa_berkas(kunci, isi):
             break
     if kunci.endswith(".json"):
         try:
-            m += [f"{kunci}: kunci terlarang {j}" for j in kunci_terlarang(json.loads(isi))]
+            d = json.loads(isi)
+            m += [f"{kunci}: kunci terlarang {j}" for j in kunci_terlarang(d)]
+            if kunci.startswith("siklus/saji/masa_depan/") and (not isinstance(d, dict) or d.get("yakin") != "hipotesis"):
+                m.append(f"{kunci}: keluaran masa depan wajib yakin hipotesis (KA 10)")
         except ValueError:
             m.append(f"{kunci}: bukan JSON sah")
     return m
@@ -190,10 +193,13 @@ def _uji():
     salah("siklus/saji/x.json", {"rata": 5}, "kunci terlarang /rata")
     salah("siklus/saji/x.json", "{rusak", "bukan JSON sah")
     salah("siklus/saji/x.json", {}, "masuk bukan", bersih={"masuk": 10, "tersisa": 5, "dibuang_total": 3})
+    salah("siklus/saji/masa_depan/33.json", {"v": 1, "yakin": "estimasi-model", "kab": {}}, "wajib yakin hipotesis")
+    salah("siklus/saji/masa_depan/tumbuh_33.json", {"v": 1, "kab": {}}, "wajib yakin hipotesis")
+    assert not periksa_berkas("siklus/saji/masa_depan/33.json", b'{"yakin": "hipotesis", "kab": {}}')
     assert not list(kunci_terlarang({"dua_sumber": {"dibi": 1, "logbook": 2, "selisih": 1}}))
 
     with tempfile.TemporaryDirectory() as t:
-        tulis(t, "siklus/saji/masa_depan/33.json", {"v": 1, "prov": "33", "kab": {
+        tulis(t, "siklus/saji/masa_depan/33.json", {"v": 1, "prov": "33", "yakin": "hipotesis", "kab": {
             "3301": {"2050": {"ssp245": {"rx1day": {"selisih_dasar": 4.0}}}},
             "3302": {"2050": {"ssp245": {"rx1day": {"selisih_dasar": 10.0}}}},
             "3303": {"2050": {"ssp245": {"rx1day": {"selisih_dasar": None}}}}}})

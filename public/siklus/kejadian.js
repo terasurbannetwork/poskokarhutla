@@ -74,7 +74,7 @@ async function daftar(isi, sk) {
       h("div", {class: "sk-baris"},
         S.rentang === "arsip" ? [pilihan(optTahun, S.tahun, v => { S.tahun = v; muat(); }, "Tahun arsip"), pilihan([["", "Pilih provinsi"], ...optProv.slice(1)], S.prov, v => { S.prov = v; muat(); }, "Provinsi arsip")]
           : [pilihan(optFase, S.fase[0] ?? "", v => { S.fase = v ? [v] : []; S.hal = 0; muat(); }, "Fase"), pilihan(optProv, S.prov, v => { S.prov = v; muat(); }, "Wilayah"), cari]),
-      S.rentang === "arsip" ? h("div", {class: "sk-baris"}, cari) : null,
+      S.rentang === "arsip" ? h("div", {class: "sk-baris"}, cari) : "",
       seg([["7", "7 hari", "bolak"], ["30", "30 hari", "bolak"], ["365", "1 tahun", "bolak"], ["arsip", "Arsip", "bangunan"]], S.rentang, v => { S.rentang = v; S.hal = 0; S.baris = []; S.berikut = null; S.arsip = null; kontrol(); muat(); }, "Rentang waktu"));
   };
 

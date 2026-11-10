@@ -12,7 +12,7 @@
     "uji:ai": "node --test tests/ai/*.test.mjs",
     "uji:wa": "python3 -I scripts/wa/uji_urai_laporan.py uji && node --test tests/wa/lapangan_tarik.test.mjs",
     "uji:kemitraan": "python3 -I scripts/kemitraan/konst.py --cek && python3 -I scripts/kemitraan/kode.py --cek && python3 -I scripts/kemitraan/geo.py --cek && python3 -I scripts/kemitraan/masalah.py --cek && python3 -I scripts/kemitraan/pertanyaan.py --cek && python3 -I scripts/kemitraan/korpus.py --cek && python3 -I scripts/kemitraan/teks.py --cek && python3 -I scripts/kemitraan/indeks_bm25.py --cek && python3 -I scripts/kemitraan/cocok_pakar.py --cek && python3 -I scripts/kemitraan/uji_cocok.py --cek && python3 -I scripts/kemitraan/profil_daerah.py --cek && node --test --test-concurrency=1 tests/kemitraan/*.test.mjs tests/warga/kemitraan_*.test.mjs",
-    "uji": "npm run uji:agen; a=$?; npm run uji:warga; b=$?; npm run uji:sippa; e=$?; npm run uji:banjir; c=$?; npm run uji:udara; d=$?; npm run uji:prediksi; f=$?; npm run uji:wa; g=$?; [ $a$b$e$c$d$f$g = 0000000 ]",
+    "uji": "npm run uji:agen; a=$?; npm run uji:warga; b=$?; npm run uji:sippa; e=$?; npm run uji:banjir; c=$?; npm run uji:udara; d=$?; npm run uji:prediksi; f=$?; npm run uji:wa; g=$?; npm run uji:siklus; h=$?; [ $a$b$e$c$d$f$g$h = 00000000 ]",
     "dev:warga": "wrangler dev --local -c wrangler.warga.jsonc --port 8787",
     "agents:build": "node scripts/agents/build.mjs",
     "agents:check": "node scripts/agents/build.mjs --cek",
