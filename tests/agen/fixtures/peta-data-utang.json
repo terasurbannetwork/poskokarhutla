@@ -2,7 +2,6 @@
  "_catatan": "Utang ratchet peta data (10 Nov 2026): hanya boleh MENYUSUT. Berkas yang sudah tersambung wajib dihapus dari sini. Berkas baru yatim/tanpa-jadwal gagal kecuali masuk pengecualian {alasan >=15 huruf, tanggal}.",
  "yatim": [
   "D1:alat_jejak",
-  "D1:meja_jejak",
   "D1:rumah_rusak_koreksi",
   "public/banjir/data/bmkg_upt.json",
   "public/banjir/data/charter.json",
