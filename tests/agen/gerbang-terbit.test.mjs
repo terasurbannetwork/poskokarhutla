@@ -54,6 +54,10 @@ test("tiap workflow yang menerbitkan memulihkan cache banjir sebelum deploy (ins
   assert.deepEqual(kurang, [], `deploy tanpa pulihkan banjir-: ${kurang.join(", ")}`);
 });
 
+test("udara.yml tidak meng-commit jarak_pandang.json versi cache (insiden 10 Nov 2026: rebase bentrok, deploy batal)", () => {
+  assert.match(readFileSync(".github/workflows/udara.yml", "utf8"), /f=\$\(git ls-files [^)]*public\/udara\/data\/jarak_pandang\.json/);
+});
+
 test("cadangan live: isi rusak dan jalur '..' ditolak, cache yang lebih baru tidak ditimpa", () => {
   assert.match(execFileSync("python3", ["scripts/terbit/isi_data.py", "uji"], {encoding: "utf8"}), /ok/);
 });
