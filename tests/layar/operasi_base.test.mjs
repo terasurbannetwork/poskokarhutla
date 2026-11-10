@@ -29,13 +29,14 @@ test("tabel operator: kolom base berjumlah armada dan Grand total di baris perta
   vm.runInNewContext(readFileSync(new URL("../../public/operasi_laporan.js", import.meta.url), "utf8"), {window: win2, document: {querySelector: () => null}, localStorage: {}, fmt: v => String(v), esc: v => String(v)});
   const html = win2.OperasiLaporan.kartuOperator({
     peta: {base: [{id: "b1", nama: "Palembang / SMB II"}, {id: "b2", nama: "Pontianak"}], armada: [{registrasi: "A", operator: "PT X", base_id: "b1"}, {registrasi: "B", operator: "PT X", base_id: "b1"}, {registrasi: "C", operator: "PT Y", base_id: "b2"}, {registrasi: "D"}]},
-    mon: {kpi: {armada: {A: {hari_siap: 10, hari_terbang: 5, sortie: 3, aksi_wb: 2, padam: 1, dinilai: 2}, C: {hari_siap: 10, hari_terbang: 5, sortie: 1, aksi_wb: 2, padam: 1, dinilai: 2}}}}});
+    mon: {kpi: {armada: {A: {hari_siap: 4, hari_terbang: 6, utilisasi: 0.75, sortie: 3, aksi_wb: 2, padam: 1, dinilai: 2}, C: {hari_siap: 10, hari_terbang: 5, utilisasi: 0.5, sortie: 1, aksi_wb: 2, padam: 1, dinilai: 2}}}}});
   assert.match(html, /Base \(jumlah armada\)/);
   assert.match(html, /Palembang \(2\)/);
   assert.match(html, /Base belum tercatat \(1\)/);
   const baris = html.split("<tr").slice(2).map(b => [...b.matchAll(/<td[^>]*>(.*?)<\/td>/g)].map(m => m[1].replace(/<[^>]+>/g, "")));
   assert.equal(baris[0][0], "Grand total");
-  assert.deepEqual(baris[0].slice(1, 8), ["2 base", "4", "20", "10", "50%", "4", "4"]);
+  assert.deepEqual(baris[0].slice(1, 8), ["2 base", "4", "14", "11", "57%", "4", "4"]);
+  assert.equal(baris[1][5], "75%", "terbang 6 hari, siap 4 hari: 3 hari siap yang terbang, bukan 150%");
 });
 
 test("foto tipe: pemetaan tipe nyata ke berkas yang ada, foto asli menang, tipe asing tanpa foto", () => {
