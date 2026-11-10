@@ -48,11 +48,18 @@ jobs:
         timeout-minutes: 5
         run: python3 scripts/cuaca/sepekan.py uji && { python3 scripts/cuaca/sepekan.py || echo "::warning title=sepekan::gagal; arsip lama dibiarkan"; }
 
+      - name: OMC resmi dan petir (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: |
+          python3 scripts/omc/bmkg_omc.py uji && { python3 scripts/omc/bmkg_omc.py || echo "::warning title=bmkg_omc::gagal; berkas lama dibiarkan"; }
+          python3 scripts/cuaca/petir.py uji && { python3 scripts/cuaca/petir.py || echo "::warning title=petir::gagal; arsip lama dibiarkan"; }
+
       - name: Commit arsip ke main
         run: |
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
-          B=$(ls public/gempa/data/inatews_*.json public/banjir/data/cuaca_factsheet.json public/banjir/data/cuaca_factsheet_arsip_*.json public/banjir/data/cuaca_sepekan.json public/banjir/data/cuaca_sepekan_arsip.json public/banjir/data/karhutla_bmkg.json public/banjir/data/karhutla_bmkg_arsip_*.json 2>/dev/null || true)
+          B=$(ls public/gempa/data/inatews_*.json public/banjir/data/cuaca_factsheet.json public/banjir/data/cuaca_factsheet_arsip_*.json public/banjir/data/cuaca_sepekan.json public/banjir/data/cuaca_sepekan_arsip.json public/banjir/data/karhutla_bmkg.json public/banjir/data/karhutla_bmkg_arsip_*.json public/udara/data/omc_bmkg.json public/banjir/data/cuaca_petir.json public/banjir/data/cuaca_petir_arsip_*.json 2>/dev/null || true)
           [ -n "$B" ] || { echo "belum ada arsip"; exit 0; }
           git add -f $B
           git diff --cached --quiet -- $B && { echo "arsip tidak berubah"; exit 0; }
