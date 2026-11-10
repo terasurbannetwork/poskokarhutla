@@ -62,6 +62,8 @@ Berkas milikmu (glob paling spesifik menang):
 - `public/data/tambang.json`
 - `public/data/tmat.json`
 - `public/data/transisi_lahan.json`
+- `public/data/opera_dist.json`
+- `public/data/opera_dist_2023.json`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.

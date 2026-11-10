@@ -132,6 +132,15 @@ jobs:
           SUNGAI_B_TITIK: "6"
         run: python3 scripts/banjir/sungai.py
 
+      # Katalog OPERA DSWx (CMR terbuka, tanpa token; `proses` hanya di lab.yml). Keluaran public/banjir/data/opera_dswx.json (cache banjir-).
+      # GEOGloWS (ramalan debit per ruas, ±3 menit, bisa kena 429) ikut langkah ini; geoglows.json di public/banjir/data (cache banjir-), daftar ruas di-commit.
+      - name: Katalog OPERA DSWx 14 hari dan GEOGloWS (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 15
+        run: |
+          python3 scripts/banjir/opera_dswx.py uji && python3 scripts/banjir/opera_dswx.py katalog --hari 14 || echo "::warning title=opera_dswx::katalog gagal"
+          python3 scripts/banjir/geoglows.py uji && python3 scripts/banjir/geoglows.py
+
       # Panen 30 Okt 2026 (docs/panen/RENCANA-PANEN-DATA.md #12 #14 #15 #16): semua tanpa kunci, keluaran di public/banjir/data (cache banjir-).
       # Tiap skrip: uji dulu, lalu jalan; gagal satu tidak menahan yang lain, berkas lamanya dibiarkan. Berkas bergulir tetap, tanpa berkas harian baru.
       # EMS publik 0 aktivasi Indonesia dan Charter berlabel sedikit: keduanya ringan (1 permintaan) dan jujur menulis indeks.

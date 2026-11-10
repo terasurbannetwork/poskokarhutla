@@ -20,6 +20,19 @@ on:
         description: "Langkah yang dijalankan, dipisah koma: uji, citra, lapangan, ringkas, generik (atau 'semua')"
         required: false
         default: "semua"
+      opera_awal:
+        description: "Tugas 'opera': awal jendela DIST-ALERT (YYYY-MM-DD UTC); kosong = bawaan skrip (8 pekan terakhir)"
+        required: false
+        default: ""
+      opera_uji2023:
+        description: "Tugas 'opera': true = tambah tarikan uji 2023-07-31..2023-11-05 (--uji2023, tulis opera_dist_2023.json); bawaan false"
+        type: boolean
+        required: false
+        default: false
+      opera_akhir:
+        description: "Tugas 'opera': akhir jendela DIST-ALERT (YYYY-MM-DD UTC)"
+        required: false
+        default: ""
 
 concurrency:
   group: lab
@@ -198,6 +211,26 @@ jobs:
           done
           [ "$gagal" = 0 ] || exit 1
 
+      # OPERA (butuh numpy + rasterio dari 'Pustaka ilmiah' di atas): HANYA lewat input tugas eksplisit 'opera', tidak ikut 'semua'.
+      - name: 6b. OPERA DIST-ALERT dan DSWx (manual)
+        continue-on-error: true
+        env:
+          EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}
+          OPERA_AWAL: ${{ inputs.opera_awal }}
+          OPERA_AKHIR: ${{ inputs.opera_akhir }}
+          OPERA_UJI2023: ${{ inputs.opera_uji2023 }}
+        run: |
+          source "$RUNNER_TEMP/lab.sh"
+          [[ ",$TUGAS," == *",opera,"* ]] || { echo "dilewati (tugas=$TUGAS; 'opera' harus disebut eksplisit)"; exit 0; }
+          gagal=0
+          python3 scripts/data/panen/opera_dist.py uji || gagal=1
+          lab_jalan opera_dist python3 scripts/data/panen/opera_dist.py jalan $OPERA_AWAL $OPERA_AKHIR || gagal=1
+          if [ "$OPERA_UJI2023" = true ]; then
+            lab_jalan opera_dist_2023 python3 scripts/data/panen/opera_dist.py jalan 2023-07-31 2023-11-05 --uji2023 || gagal=1
+          fi
+          python3 scripts/banjir/opera_dswx.py uji || gagal=1
+          lab_jalan opera_dswx python3 scripts/banjir/opera_dswx.py proses || gagal=1
+          [ "$gagal" = 0 ] || exit 1
       - name: 7. Commit hasil ke cabang ini
         if: always()
         env:
@@ -211,17 +244,23 @@ jobs:
           simpan="$RUNNER_TEMP/hasil_lab"; rm -rf "$simpan"; mkdir -p "$simpan"
           [ -e public/data/ujibanding_firespot.json ] && cp public/data/ujibanding_firespot.json "$simpan/"
           [ -d public/data/lab ] && cp -r public/data/lab "$simpan/lab"
+          [ -e public/data/opera_dist.json ] && cp public/data/opera_dist.json "$simpan/"
+          [ -e public/data/opera_dist_2023.json ] && cp public/data/opera_dist_2023.json "$simpan/"
+          [ -e public/banjir/data/opera_dswx.json ] && cp public/banjir/data/opera_dswx.json "$simpan/"
           for i in 1 2 3; do
             git fetch -q origin "$CABANG" && git reset -q --hard "origin/$CABANG"
             lama=""; [ -f public/data/lab/jalan.jsonl ] && lama=$(cat public/data/lab/jalan.jsonl)
             [ -e "$simpan/ujibanding_firespot.json" ] && cp "$simpan/ujibanding_firespot.json" public/data/
+            [ -e "$simpan/opera_dist.json" ] && cp "$simpan/opera_dist.json" public/data/
+            [ -e "$simpan/opera_dist_2023.json" ] && cp "$simpan/opera_dist_2023.json" public/data/
+            [ -e "$simpan/opera_dswx.json" ] && cp "$simpan/opera_dswx.json" public/banjir/data/
             if [ -d "$simpan/lab" ]; then
               mkdir -p public/data/lab && cp -r "$simpan/lab/." public/data/lab/
               if [ -n "$lama" ] && [ -f "$simpan/lab/jalan.jsonl" ]; then
                 { printf '%s\n' "$lama"; cat "$simpan/lab/jalan.jsonl"; } | awk 'NF && !seen[$0]++' > public/data/lab/jalan.jsonl
               fi
             fi
-            for p in public/data/ujibanding_firespot.json public/data/lab; do [ -e "$p" ] && git add -- "$p"; done
+            for p in public/data/ujibanding_firespot.json public/data/lab public/data/opera_dist.json public/data/opera_dist_2023.json public/banjir/data/opera_dswx.json; do [ -e "$p" ] && git add -- "$p"; done
             git diff --cached --quiet && { echo "tidak ada perubahan hasil"; exit 0; }
             git commit -q -m "lab: hasil uji ${GITHUB_SHA::7}"
             git push -q origin "HEAD:refs/heads/$CABANG" && exit 0

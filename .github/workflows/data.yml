@@ -301,6 +301,16 @@ jobs:
             python3 $p $u && { python3 $p $a || echo "::warning title=panen $p::$p gagal; berkas lamanya dibiarkan"; } || echo "::warning title=panen $p::uji $p gagal"
           done
 
+      # Panen harian lanjutan: harga pangan, hoaks bencana, katalog NISAR (ASF kadang 502, ±5 menit). harga_pangan_arsip.json dan hoaks_bencana.json
+      # bergulir dan hanya bertahan antar run lewat cache data- (path public/data utuh, tidak masuk daftar git checkout HEAD di atas). Semua boleh gagal.
+      - name: Panen harga pangan, hoaks bencana, katalog NISAR, Inaportnet (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 15
+        run: |
+          for p in umum/harga_pangan umum/hoaks umum/nisar_katalog umum/inaportnet; do
+            python3 scripts/$p.py uji && { python3 scripts/$p.py || echo "::warning title=panen $p::$p gagal; berkas lamanya dibiarkan"; } || echo "::warning title=panen $p::uji $p gagal"
+          done
+
       - name: Pulihkan arsip berita
         uses: actions/cache/restore@v4
         with:

@@ -17,7 +17,7 @@ Cara memakai katalog ini:
 
 | Agent | Model | Bisa | Tidak bisa | Wilayah |
 | --- | --- | --- | --- | --- |
-| `pipa-data` | sonnet | membangun & membetulkan skrip pipeline data karhutla dan JSON keluarannya | model ML sebaran; tampilan layar; worker Cloudflare | `scripts/data/**`, `scripts/panen/**`, `scripts/scrape/**` +16 |
+| `pipa-data` | sonnet | membangun & membetulkan skrip pipeline data karhutla dan JSON keluarannya | model ML sebaran; tampilan layar; worker Cloudflare | `scripts/data/**`, `scripts/panen/**`, `scripts/scrape/**` +18 |
 | `model-sebaran` | sonnet | membangun, melatih ulang, dan menguji model sebaran/eskalasi serta evaluator JS-nya | pipeline data mentah; worker; memverifikasi kejujuran uji baliknya sendiri (itu validasi-model) | `scripts/sebaran/**`, `public/sebaran_model.js`, `public/insight_sebaran*.js` +4 |
 | `banjir` | sonnet | membangun & membetulkan pipeline dan layar banjir/rob | karhutla; worker warga | `scripts/banjir/**`, `public/banjir/**`, `tests/banjir/**` +1 |
 | `model-banjir` | sonnet | membangun & membetulkan model statistik banjir kab-hari, label, koreksi bias, uji balik, dan dokumen pra-registrasinya | pipeline operasional & layar banjir; workflow; worker; membuka uji yang belum boleh dibuka | `scripts/banjir/model_kab*`, `scripts/banjir/model_dampak*`, `scripts/banjir/model_bahaya.py` +19 |
@@ -25,7 +25,7 @@ Cara memakai katalog ini:
 | `warga-api` | sonnet | membangun & membetulkan worker, route API, skema D1, alur laporan warga dan admin | pipeline data; model; deploy | `src/**`, `migrations/**`, `wrangler*.jsonc` +17 |
 | `layar-peta` | sonnet | membangun & membetulkan layar peta, kartu, pop-up, bagikan, i18n | pipeline data; model; worker & D1 | `public/*.html`, `public/*.js`, `tests/layar/**` +14 |
 | `inti-layar` | sonnet | membangun dan memecah modul inti layar, registry bencana, halaman bencana berkerangka | pipeline data; worker & D1; workflow | `public/inti/**`, `public/bencana.json`, `public/semua/**` |
-| `pipa-umum` | sonnet | membangun dan menguji pustaka pipeline bersama, subperintah bencana.py | layar; worker; workflow; logika domain satu bencana | `scripts/umum/**`, `scripts/berita/**`, `public/data/foto_dasar.json` +6 |
+| `pipa-umum` | sonnet | membangun dan menguji pustaka pipeline bersama, subperintah bencana.py | layar; worker; workflow; logika domain satu bencana | `scripts/umum/**`, `scripts/berita/**`, `public/data/foto_dasar.json` +14 |
 | `sippa` | sonnet | membangun dan membetulkan layar /pipa, fungsi hitung murni JS, mesin Studio, adegan 3D, laporan PDF, dan uji tests/sippa | worker dan D1; pipeline Python; vendor pustaka (layar-peta); memeriksa kerjanya sendiri | `public/pipa/**`, `tests/sippa/**` |
 | `ai-internal` | sonnet | membangun dan membetulkan layar /ai, klien percakapan dan formulir agen, dokumen docs/ai-internal, dan uji tests/ai | worker dan D1 (warga-api); memeriksa kerjanya sendiri | `public/ai/**`, `tests/ai/**`, `docs/ai-internal/**` |
 | `cuaca-udara` | sonnet | membangun pipeline dan layar modul cuaca ekstrem dan udara | worker dan D1 (warga-api); karhutla; banjir; gempa; menyunting .github/workflows | `scripts/cuaca/**`, `scripts/udara/**`, `public/cuaca/**` +7 |

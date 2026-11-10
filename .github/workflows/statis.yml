@@ -159,12 +159,15 @@ jobs:
           jalan umum/menara.py uji
           jalan umum/foto_dasar.py uji
           jalan longsor/kejadian.py uji
+          jalan umum/citra_terbuka.py uji
+          jalan cuaca/ibtracs.py uji
+          jalan umum/sirup.py uji
 
       - name: Commit panen bulanan
         run: |
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
-          B="public/gempa/data/gnss.json public/data/iklim_stasiun.json public/data/harga_komoditas.json public/data/bnpb/kerentanan.json public/data/bnpb/ikd.json public/data/bnpb/terpapar.json public/data/bnpb/risiko_hvc.json public/data/bnpb/puso.json public/data/ps.json public/data/tambang.json public/data/hgu_api.json public/data/menara.json public/data/foto_dasar.json public/longsor/data/kejadian.json"
+          B="public/gempa/data/gnss.json public/data/iklim_stasiun.json public/data/harga_komoditas.json public/data/bnpb/kerentanan.json public/data/bnpb/ikd.json public/data/bnpb/terpapar.json public/data/bnpb/risiko_hvc.json public/data/bnpb/puso.json public/data/ps.json public/data/tambang.json public/data/hgu_api.json public/data/menara.json public/data/foto_dasar.json public/longsor/data/kejadian.json public/data/citra_terbuka.json public/cuaca/data/ibtracs.json public/data/sirup_bencana.json"
           for f in $B; do [ ! -e "$f" ] || git add "$f"; done
           git diff --cached --quiet && { echo "panen bulanan tidak berubah"; exit 0; }
           git commit -q -m "data: panen bulanan $(TZ=Asia/Jakarta date +%F)"

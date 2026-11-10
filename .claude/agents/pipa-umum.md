@@ -52,6 +52,14 @@ Berkas milikmu (glob paling spesifik menang):
 - `public/data/menara.json`
 - `public/data/reliefweb.json`
 - `public/data/sinyal_sosial.json`
+- `public/data/harga_pangan.json`
+- `public/data/harga_pangan_arsip.json`
+- `public/data/harga_pangan_wfp.json`
+- `public/data/hoaks_bencana.json`
+- `public/data/citra_terbuka.json`
+- `public/data/nisar_katalog.json`
+- `public/data/sirup_bencana.json`
+- `public/data/inaportnet.json`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.

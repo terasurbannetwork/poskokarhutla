@@ -36,7 +36,7 @@
         "public/data/slstr_malam.json",
         "public/data/tambang.json",
         "public/data/tmat.json",
-        "public/data/transisi_lahan.json"
+        "public/data/transisi_lahan.json", "public/data/opera_dist.json", "public/data/opera_dist_2023.json"
       ]
     },
     {
@@ -268,7 +268,7 @@
         "public/data/logistik.json",
         "public/data/menara.json",
         "public/data/reliefweb.json",
-        "public/data/sinyal_sosial.json"
+        "public/data/sinyal_sosial.json", "public/data/harga_pangan.json", "public/data/harga_pangan_arsip.json", "public/data/harga_pangan_wfp.json", "public/data/hoaks_bencana.json", "public/data/citra_terbuka.json", "public/data/nisar_katalog.json", "public/data/sirup_bencana.json", "public/data/inaportnet.json"
       ]
     },
     {

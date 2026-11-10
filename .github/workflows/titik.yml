@@ -95,6 +95,13 @@ jobs:
           python3 scripts/data/ringkasan.py
           python3 scripts/data/aktor_walhi.py  # terakhir: gagalnya tidak menahan turunan lain
 
+      # Panen #2 (docs/panen/RENCANA-PANEN-DATA.md): fraksi FRP malam per cluster dari proksi FIRMS (hotspot72/kluster/kluster_awal yang baru dibuat di atas);
+      # log_prospektif 45 hari menumpuk di berkasnya sendiri lewat cache data-. Tanpa CDSE_USER/CDSE_PASS: unduh SLSTR belum dipakai skripnya, hanya katalog terbuka.
+      - name: Panen SLSTR malam, proksi FIRMS (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python3 scripts/data/panen/slstr_malam.py uji && { python3 scripts/data/panen/slstr_malam.py || echo "::warning title=panen slstr_malam::gagal; berkas lamanya dibiarkan"; }
+
       # Luas terbakar / belum padam metode deck BNPB (indikator Real Time, overlay kabupaten, laporan, API v1). Hari WIB d lengkap
       # sesudah d+1 04.00, jadi putaran pagi menerbitkan kemarin. Harian hanya mengunduh hari baru + 4 hari terakhir (± 2 menit);
       # trio prov/kab/wil yang hilang atau tak selaras = bangun ulang penuh (± 35 menit), dicicil antarputaran lewat cache peta-utc-.

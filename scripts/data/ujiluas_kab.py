@@ -115,8 +115,30 @@ def med(v):
     return round(statistics.median(v), 2) if v else None
 
 
+def opera():
+    """Gangguan vegetasi NASA OPERA DIST-ALERT (panen/opera_dist.py --uji2023 -> public/data/opera_dist_2023.json), PEMBANDING bukan luas terbakar:
+    {(prov, kab): [ha_total, ha_konfirmasi]} atas pekan penuh di dalam TGL, atau None bila berkas belum 'ok' / periodenya tak mencakup TGL.
+    None = tak ada data; kabupaten yang tak muncul di dict tetapi dict ada berarti 0 gangguan teramati. Irisan hotspot sengaja tidak dibawa (bukan independen)."""
+    try:
+        j = json.load(open(os.path.join(AKAR, "public/data/opera_dist_2023.json")))
+    except Exception:
+        return None
+    if j.get("status") != "ok" or j["periode"][0] > TGL[0].isoformat() or j["periode"][1] < TGL[1].isoformat():
+        return None
+    K = {k: i for i, k in enumerate(j["kolom"])}
+    out = {}
+    for r in j["baris"]:
+        d = dt.date.fromisoformat(r[K["pekan"]])
+        if TGL[0] <= d and d + dt.timedelta(days=6) <= TGL[1]:
+            o = out.setdefault((r[K["prov"]], r[K["kab"]]), [0.0, 0.0])
+            o[0] += r[K["ha_total"]]
+            o[1] += r[K["ha_konfirmasi"]]
+    return out
+
+
 def ringkas():
     pil, _, _ = pilih()
+    op = opera()
     baris, kabs, dibuang = [], [], {}
     for k, ps in pil.items():
         ok = []
@@ -138,13 +160,15 @@ def ringkas():
             s = lambda f: sum(x[f] for x in ok)
             d, a, bp, c = s("dnbr_ha"), s("a_ha"), s("b_px"), s("c_ha")
             kabs.append({"kab": k[1], "prov": PROVINSI[k[0]], "n_cluster": len(ok), "n_dicoba": len(ps), "gambut_cl": sum(x["gambut"] for x in ok), "dnbr_ha": round(d), "a_ha": round(a), "b_px": bp,
-                         "b_ha_tersirat_per_px": round(d / bp, 2), "c_ha": round(c), "rasio_a": round(d / a, 2), "rasio_c": round(d / c, 2) if c else None, "rasio_a_per_c": round(a / c, 2) if c else None})
+                         "b_ha_tersirat_per_px": round(d / bp, 2), "c_ha": round(c), "rasio_a": round(d / a, 2), "rasio_c": round(d / c, 2) if c else None, "rasio_a_per_c": round(a / c, 2) if c else None,
+                         **({} if op is None else {"gangguan_veg_ha": round(op.get(k, (0, 0))[0]), "gangguan_veg_konfirmasi_ha": round(op.get(k, (0, 0))[1])})})
     def strata(f):
         v = [x for x in baris if f(x)]
         return {"n": len(v), "dnbr": round(sum(x["dnbr_ha"] for x in v)), "a": round(sum(x["a_ha"] for x in v)), "c": round(sum(x["c_ha"] for x in v)), "b_px": sum(x["b_px"] for x in v),
                 "med_dnbr/a": med([x["dnbr_ha"] / x["a_ha"] for x in v]), "med_dnbr/c": med([x["dnbr_ha"] / x["c_ha"] for x in v if x["c_ha"]]), "med_ha_per_px": med([x["dnbr_ha"] / x["b_px"] for x in v]),
                 "p10_p90_dnbr/a": [round(U.kuantil([x["dnbr_ha"] / x["a_ha"] for x in v], q), 2) for q in (.1, .9)] if v else None}
     out = {"dibuat": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "periode": [TGL[0].isoformat(), TGL[1].isoformat()],
+           "gangguan_veg_ket": "gangguan_veg_ha = gangguan vegetasi NASA OPERA DIST-ALERT-HLS (semua penyebab; pembanding, bukan luas terbakar); kolom ini ada hanya bila berkas opera_dist_2023.json status ok",
            "metode": "dNBR>0,27 & NBR pasca<0,2 (luas_citra.nilai); a=sum_hari(N20x4,12+N21x4,16)/2; b=piksel unik N20uN21; c=titik S-NPP x 4,3; semua n/h tanpa sel sumber panas tetap",
            "kabupaten": kabs, "dibuang": dibuang, "semua": strata(lambda x: True), "gambut": strata(lambda x: x["gambut"]), "mineral": strata(lambda x: not x["gambut"]), "cluster": baris}
     json.dump(out, open(KELUAR, "w"), ensure_ascii=False, separators=(",", ":"))

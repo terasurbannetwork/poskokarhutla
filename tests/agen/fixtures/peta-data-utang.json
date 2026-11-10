@@ -62,5 +62,7 @@
   "public/prediksi/data/jalan.json",
   "public/udara/data/omc_hasil.json"
  ],
- "pengecualian": {}
+ "pengecualian": {
+    "public/data/opera_dist.json": { "alasan": "Jalan manual di lab.yml karena butuh numpy, rasterio, dan unduhan raster besar; bukan jadwal harian.", "tanggal": "2026-11-10" }
+  }
 }
