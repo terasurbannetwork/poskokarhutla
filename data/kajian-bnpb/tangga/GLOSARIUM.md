@@ -11,7 +11,8 @@
 | Tingkat (`t`) | Label resmi persis seperti sumber (Waspada, Siaga, Awas, Atas Normal, dan seterusnya). |
 | Peringkat (`tk`) | Angka 0 sampai 3 hanya untuk sinyal; pemetaannya di ALGORITMA 3. |
 | Cakupan | nasional, provinsi, kabupaten, kecamatan: luas wilayah yang disebut sumber. |
-| Menguat | Skala yang lebih dekat menyatakan peringkat sama atau lebih tinggi, dan paling sedikit dua skala >= 1. |
+| Searah | Skala yang lebih dekat menyatakan peringkat sama atau lebih tinggi, paling sedikit dua skala >= 1. |
+| Menguat | Searah, naik tegas, dan semua skala bercakupan sama. |
 | Belum selaras | Dua skala berselisih dua peringkat atau lebih. |
 | ZOM | Zona Musim BMKG. |
 | Dasarian | Sepuluh harian kalender: I tanggal 1 sampai 10, II 11 sampai 20, III 21 sampai akhir bulan. |

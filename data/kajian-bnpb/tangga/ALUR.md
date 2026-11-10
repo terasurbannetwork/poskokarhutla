@@ -14,7 +14,7 @@
 1. Buka `/prediksi`, tab Tangga.
 2. Pilih provinsi, lalu kabupaten (bisa juga dari daftar "menguat" di atas).
 3. Baca tangga dari atas (musim) ke bawah (jam). Di tiap anak tangga: kolom Kering di kiri, kolom Basah di kanan.
-4. Baca pil sinyal di kepala kolom: "menguat" bila skala yang lebih dekat menyatakan tingkat lebih tinggi atau sama; "belum selaras" bila dua skala bertentangan dua tingkat atau lebih. Klik "Aturan" untuk membaca definisinya.
+4. Baca pil sinyal di kepala kolom: "menguat" bila skala yang lebih dekat menyatakan peringkat lebih tinggi dengan cakupan sama; "searah" bila sama atau lebih tinggi tetapi datar atau cakupan beda; "belum selaras" bila dua skala bercakupan sama berselisih dua peringkat atau lebih. Pil "sinyal belum diuji balik" selalu menyertai. Klik "Aturan" untuk membaca definisinya.
 5. Lembaga ditampilkan terpisah: BMKG dan Centurisk97 (prediksi kita) tidak pernah digabung.
 
 ## Keadaan

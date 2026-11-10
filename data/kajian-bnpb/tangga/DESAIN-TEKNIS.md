@@ -21,10 +21,10 @@ Tidak menyentuh worker, D1, migrasi, workflow.
   nasional: { <skala>: [item] },
   prov: { "<kode 2 digit>": { <skala>: [item] } },
   kab:  { "<id Kepmendagri>": { <skala>: [item], sg: {k: sinyal, b: sinyal}, kita: {k: tk|null, b: tk|null} } },
-  ringkas: { n_kab, cakupan: {<skala>: {kab, prov, nas, kosong}}, menguat: {k, b}, belum_selaras: {k, b}, tak_cocok: {<sumber>: n} },
+  ringkas: { n_kab, cakupan: {<skala>: {kab, prov, nas, kosong}}, menguat: {k, b}, searah: {k, b}, belum_selaras: {k, b}, tak_cocok: {<sumber>: n} },
   catatan: [str], gagal: [str] }
 item  = { a: "k"|"b"|"kb", j: jenis, tk: 0..3|null, t: label resmi, x: kalimat, s: sid, c: "nas"|"prov"|"kab"|"kec", p?: periode, u?: vonis rapor kita }
-sinyal = { m: bool, s: bool, r: [tk|null x 7 skala], c: ["nas"|"prov"|"kab"|null x 7], par?: [i, j] }
+sinyal = { m: bool (menguat), d: bool (searah), s: bool (belum selaras), r: [tk|null x 7 skala], c: ["nas"|"prov"|"kab"|null x 7], par?: [i, j] }
 ```
 
 Pernyataan nasional dan provinsi disimpan sekali; layar menggabungkan nasional + provinsi + kabupaten menurut kunci kabupaten (`prov` dari `prediksi.json`).

@@ -41,13 +41,14 @@
   /* kab milik provinsi p dengan sinyal; ancaman a = "k" | "b" | "semua". Urut: menguat dulu, lalu belum selaras, lalu nama. */
   function bersinyal(t, daftar, p, a) {
     const ada = e => a === "semua" ? ["k", "b"].some(x => e[x]) : e[a];
+    const tgs = e => e.m.k || e.m.b ? 0 : e.d.k || e.d.b ? 1 : 2;
     return daftar.filter(k => (!p || k.prov === p) && t.kab[k.id])
       .map(k => {
         const s = t.kab[k.id].sg;
-        return {k, m: {k: s.k.m, b: s.b.m}, s: {k: s.k.s, b: s.b.s}};
+        return {k, m: {k: s.k.m, b: s.b.m}, d: {k: s.k.d, b: s.b.d}, s: {k: s.k.s, b: s.b.s}};
       })
-      .filter(r => ada(r.m) || ada(r.s))
-      .sort((x, y) => (+ada(y.m)) - (+ada(x.m)) || x.k.nama.localeCompare(y.k.nama, "id"));
+      .filter(r => ada(r.m) || ada(r.d) || ada(r.s))
+      .sort((x, y) => (ada(y.m) - ada(x.m)) || (ada(y.d) - ada(x.d)) || x.k.nama.localeCompare(y.k.nama, "id"));
   }
 
   /* hitungan per provinsi: [{p, nama, n, mk, mb, sk, sb}] */
@@ -56,8 +57,8 @@
     for (const k of daftar) {
       const s = t.kab[k.id]?.sg;
       if (!s) continue;
-      const r = g.get(k.prov) || {p: k.prov, nama: k.pn, n: 0, mk: 0, mb: 0, sk: 0, sb: 0};
-      r.n++; r.mk += +s.k.m; r.mb += +s.b.m; r.sk += +s.k.s; r.sb += +s.b.s;
+      const r = g.get(k.prov) || {p: k.prov, nama: k.pn, n: 0, mk: 0, mb: 0, dk: 0, db: 0, sk: 0, sb: 0};
+      r.n++; r.mk += +s.k.m; r.mb += +s.b.m; r.dk += +s.k.d; r.db += +s.b.d; r.sk += +s.k.s; r.sb += +s.b.s;
       g.set(k.prov, r);
     }
     return [...g.values()].sort((a, b) => a.nama.localeCompare(b.nama, "id"));
@@ -74,9 +75,10 @@
 
   const ATURAN = [
     "Peringkat 0 sampai 3 dipetakan dari label resmi tiap sumber (ALGORITMA bagian 3); label resmi selalu tampil apa adanya.",
-    "Menguat: dari musim ke jam, skala yang lebih dekat menyatakan peringkat sama atau lebih tinggi, dan paling sedikit dua skala berperingkat 1 atau lebih.",
+    "Searah: dari musim ke jam, skala yang lebih dekat menyatakan peringkat sama atau lebih tinggi, dan paling sedikit dua skala berperingkat 1 atau lebih.",
+    "Menguat: searah, naik tegas (skala terdekat lebih tinggi dari yang terjauh), dan semua skala yang dihitung bercakupan sama. Searah dengan cakupan beda atau datar tidak disebut menguat.",
     "Belum selaras: dua skala bercakupan sama (sama-sama kabupaten, atau sama-sama provinsi) berselisih peringkat dua atau lebih. Skala bercakupan beda tidak dibandingkan.",
-    "Sifat hujan Normal, hujan sedang, kategori SPI, asap terpantau, FWI tertinggi per pulau, dan prakiraan kondisi harian 10 hari tidak diberi peringkat (tanpa tingkat) dan tidak ikut sinyal.",
+    "Sifat dan curah hujan (selisih dari normal), kategori SPI, hujan sedang, asap terpantau, FWI tertinggi per pulau, prakiraan kondisi harian 10 hari, dan peringatan yang berakhir hari ini tidak diberi peringkat dan tidak ikut sinyal; selisih dari normal tidak disejajarkan dengan Siaga atau Awas.",
     "Sinyal hanya dari pernyataan BMKG; prediksi Centurisk97 ditampilkan terpisah. Sinyal bukan probabilitas dan bukan kabar bahwa kejadian akan terjadi; ia hanya menyatakan pernyataan resmi searah atau bertentangan.",
   ];
 

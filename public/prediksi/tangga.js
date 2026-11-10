@@ -17,9 +17,10 @@ function pilSinyal(t, sg, a) {
   const tip = esc(`<b>Sinyal ${Tangga.ANCAMAN[a].toLowerCase()}</b><br>${esc(ket).replace(/&lt;br&gt;/g, "<br>")}`);
   const p = [];
   if (sg.m) p.push(`<span class="pr-pil ok" data-tip="${tip}">menguat</span>`);
+  if (sg.d) p.push(`<span class="pr-pil abu" data-tip="${tip}">searah</span>`);
   if (sg.s) p.push(`<span class="pr-pil buruk" data-tip="${tip}">belum selaras</span>`);
   if (!p.length) p.push(`<span class="pr-pil abu" data-tip="${tip}">tanpa sinyal</span>`);
-  p.push('<span class="pr-pil abu" data-tip="Sinyal ini belum diuji balik terhadap kejadian (RENCANA-UJI); jangan dibaca sebagai ketepatan">belum teruji</span>');
+  p.push('<span class="pr-pil abu" data-tip="Sinyal ini belum diuji balik terhadap kejadian (RENCANA-UJI); jangan dibaca sebagai ketepatan. Beda dari pil vonis rapor pada prediksi kita.">sinyal belum diuji balik</span>');
   return p.join(" ");
 }
 
@@ -66,22 +67,22 @@ function ringkasTg() {
   const t = TG.t, daftar = PR.d.kab;
   if (!TG.prov) {
     const r = Tangga.perProvinsi(t, daftar), tot = k => r.reduce((s, x) => s + x[k], 0);
-    const baris = r.map(x => `<tr class="tg-klik" data-prov="${esc(x.p)}" tabindex="0"><td>${esc(x.nama)}</td><td class="n">${fmt(x.n)}</td><td class="n">${fmt(x.mk)}</td><td class="n">${fmt(x.mb)}</td><td class="n">${fmt(x.sk)}</td><td class="n">${fmt(x.sb)}</td></tr>`).join("");
+    const baris = r.map(x => `<tr class="tg-klik" data-prov="${esc(x.p)}" tabindex="0"><td>${esc(x.nama)}</td><td class="n">${fmt(x.n)}</td><td class="n">${fmt(x.mk)}</td><td class="n">${fmt(x.mb)}</td><td class="n">${fmt(x.dk)}</td><td class="n">${fmt(x.db)}</td><td class="n">${fmt(x.sk)}</td><td class="n">${fmt(x.sb)}</td></tr>`).join("");
     return kartuTg("Ringkasan", `${hlTg(tot("mk"))} kabupaten/kota menguat pada ancaman kering dan ${hlTg(tot("mb"))} pada ancaman basah`,
-      `<div class="tw ex-tabel"><table><thead><tr><th>Provinsi</th><th>Kab/kota</th><th data-tip="Menguat, kering">Menguat kering</th><th data-tip="Menguat, basah">Menguat basah</th><th data-tip="Belum selaras, kering">Belum selaras kering</th><th data-tip="Belum selaras, basah">Belum selaras basah</th></tr></thead><tbody>${baris}</tbody></table></div>`);
+      `<div class="tw ex-tabel"><table><thead><tr><th>Provinsi</th><th>Kab/kota</th><th data-tip="Menguat, kering">Menguat kering</th><th data-tip="Menguat, basah">Menguat basah</th><th data-tip="Searah (cakupan beda atau datar), kering">Searah kering</th><th data-tip="Searah (cakupan beda atau datar), basah">Searah basah</th><th data-tip="Belum selaras, kering">Belum selaras kering</th><th data-tip="Belum selaras, basah">Belum selaras basah</th></tr></thead><tbody>${baris}</tbody></table></div>`);
   }
   const r = TG.r = Tangga.bersinyal(t, daftar, TG.prov, TG.a), nProv = daftar.filter(k => k.prov === TG.prov).length;
   const pn = daftar.find(k => k.prov === TG.prov)?.pn || "";
   const mk = r.filter(x => x.m.k).length, mb = r.filter(x => x.m.b).length;
   const isi = r.length ? `<div class="tw ex-tabel"><table><thead><tr><th>Kab/kota</th><th>Kering</th><th>Basah</th></tr></thead><tbody>${barisKab(0, TG.n)}</tbody></table></div>${r.length > TG.n ? '<div class="pr-lagi"><button type="button" id="tgLagi">Tampilkan lagi</button></div>' : ""}`
     : '<p class="kosong">Tidak ada kab/kota dengan sinyal pada pernyataan BMKG yang ada.</p>';
-  return kartuTg("Ringkasan", `${esc(pn)}: ${hlTg(mk)} dari ${fmt(nProv)} kab/kota menguat kering, ${hlTg(mb)} menguat basah`, isi + '<p class="pr-kecil"><span class="pr-pil abu" data-tip="Sinyal ini belum diuji balik terhadap kejadian">belum teruji</span> Sinyal hanya dari pernyataan BMKG; aturannya ada di tangga tiap kab/kota.</p>');
+  return kartuTg("Ringkasan", `${esc(pn)}: ${hlTg(mk)} dari ${fmt(nProv)} kab/kota menguat kering, ${hlTg(mb)} menguat basah`, isi + '<p class="pr-kecil"><span class="pr-pil abu" data-tip="Sinyal ini belum diuji balik terhadap kejadian">sinyal belum diuji balik</span> Sinyal hanya dari pernyataan BMKG; aturannya ada di tangga tiap kab/kota.</p>');
 }
 
 /* baris tabel ringkasan kab dari indeks a sampai b (dipakai juga oleh "Tampilkan lagi" tanpa menggambar ulang) */
 function barisKab(a, b) {
   return TG.r.slice(a, b).map(x => {
-    const c = z => [x.m[z] ? "menguat" : "", x.s[z] ? "belum selaras" : ""].filter(Boolean).join(", ") || "tanpa sinyal";
+    const c = z => [x.m[z] ? "menguat" : "", x.d[z] ? "searah" : "", x.s[z] ? "belum selaras" : ""].filter(Boolean).join(", ") || "tanpa sinyal";
     return `<tr class="tg-klik" data-kab="${esc(x.k.id)}" tabindex="0"><td>${esc(x.k.nama)}</td><td>${c("k")}</td><td>${c("b")}</td></tr>`;
   }).join("");
 }

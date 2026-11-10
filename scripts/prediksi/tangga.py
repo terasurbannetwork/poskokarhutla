@@ -19,14 +19,13 @@ ARSIP = os.path.join(D.DATA, "tangga_arsip")
 
 SKALA = [("musim", "Musim"), ("bulan", "Bulan"), ("dasarian", "Dasarian"), ("h10", "10 hari"), ("sepekan", "Sepekan"), ("h3", "3 hari"), ("jam", "Jam")]
 ORDE = [s for s, _ in SKALA]
+BASI_SPI_HARI = 45   # SPI terbit bulanan; dihitung dari tanggal update PDF
 BASI_JAM = {"jam": 4, "harian": 48, "iklim": 14 * 24, "musim": 240 * 24}
 BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
 BLN_PENUH = {n.lower(): i + 1 for i, n in enumerate(["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"])}
 LEVEL = ["Normal", "Waspada", "Siaga", "Awas"]
 ISPU = ["Baik/Sedang", "Tidak sehat", "Sangat tidak sehat", "Berbahaya"]
-SIFAT = {"b": {"Atas Normal": 1, "Jauh di Atas Normal": 2}, "k": {"Bawah Normal": 1}}
-RANK = {"Rendah": 0, "Menengah": 1, "Tinggi": 2, "Sangat Tinggi": 3, "Bawah Normal": 0, "Normal": 1, "Atas Normal": 2, "Jauh di Atas Normal": 3}
-EKSTREM = {"b": "Sangat Tinggi", "k": "Rendah"}
+GANDA = "entri ganda bertentangan"
 KEKERINGAN = {"1": (1, "Waspada"), "2": (2, "Siaga"), "3": (3, "Awas")}
 SEVERITY = {"Minor": 1, "Moderate": 2, "Severe": 3, "Extreme": 3}
 
@@ -150,8 +149,9 @@ def muat_iklim(H, m, cari, kini):
                     if i:
                         baru = (w.get("kategori"), w.get("rentang"))
                         if i in peta and peta[i][0] != baru[0]:
-                            H.tc("iklim_ganda")   # entri ganda BMKG bertentangan: simpan kategori tertinggi
-                        if i not in peta or RANK.get(baru[0], -1) > RANK.get(peta[i][0], -1):
+                            H.tc("iklim_ganda")   # entri ganda BMKG bertentangan: tanpa kategori dan tanpa peringkat, tercatat
+                            peta[i] = (GANDA, None)
+                        elif i not in peta:
                             peta[i] = baru
                     else:
                         H.tc("iklim")
@@ -168,19 +168,28 @@ def muat_iklim(H, m, cari, kini):
             g = grup[k]
             for i in set(g.get("pch", {})) | set(g.get("psh", {})):
                 cur, sif = g.get("pch", {}).get(i), g.get("psh", {}).get(i)
-                tks = []
-                for a in ("k", "b"):
-                    dev = SIFAT[a].get(sif[0]) if sif else None   # Normal atau arah berlawanan = tanpa peringkat (null), bukan 0
-                    tks.append(None if dev is None else min(3, dev + (1 if cur and cur[0] == EKSTREM[a] else 0)))
-                t = sif[0] if sif else "sifat hujan tidak disebut"
-                x = "; ".join(p for p in (f"Curah hujan {cur[0]} ({cur[1]})" if cur else "", f"sifat hujan {sif[0]} ({sif[1]})" if sif else "") if p) + "."
-                H.taruh("kab", i, skala, item("kb", "iklim", tks, t, x, sid, "kab", p=g["periode"]))
+                # sifat dan curah = selisih dari normal / kelas curah, BUKAN peringatan: tanpa peringkat, tidak ikut sinyal (ALGORITMA 3)
+                def kat(z, nama):
+                    return "" if not z else f"{nama}: {GANDA}" if z[0] == GANDA else f"{nama} {z[0]} ({z[1]})"
+                t = GANDA.capitalize() if sif and sif[0] == GANDA else sif[0] if sif else "sifat hujan tidak disebut"
+                x = "; ".join(p for p in (kat(cur, "Curah hujan"), kat(sif, "sifat hujan")) if p) + "."
+                H.taruh("kab", i, skala, item("kb", "iklim", None, t, x, sid, "kab", p=g["periode"]))
         H.tandai(skala, "kb")
     muat_spi(H, arsip, cari, kini)
 
 
+def tgl_id(t):
+    """'30 September 2026' -> date atau None."""
+    m = re.match(r"\s*(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})", str(t or ""))
+    try:
+        return dt.date(int(m.group(3)), BLN_PENUH[m.group(2).lower()], int(m.group(1))) if m else None
+    except (KeyError, ValueError):
+        return None
+
+
 def muat_spi(H, arsip, cari, kini):
-    """SPI 1 dan 3 bulan per kabupaten (PDF BMKG yang sudah diurai). Kategori SPI BUKAN peringatan: tk null, tidak ikut sinyal (ALGORITMA 3)."""
+    """SPI 1 dan 3 bulan per kabupaten (PDF BMKG yang sudah diurai). Kategori SPI BUKAN peringatan: tk null, tidak ikut sinyal (ALGORITMA 3).
+    Satu item per kabupaten per sumber; kesegaran = tanggal update PDF (batas BASI_SPI_HARI), bukan waktu tarik."""
     terbaru = {}
     for v in (arsip.get("spi_pdf") or {}).values():
         if isinstance(v, dict) and isinstance(v.get("baris"), list) and v.get("spi_bulan") in (1, 3):
@@ -190,18 +199,25 @@ def muat_spi(H, arsip, cari, kini):
         H.lewat("SPI (spi_pdf): tidak ada")
         return
     for n, v in sorted(terbaru.items()):
-        if not segar(v.get("diambil"), BASI_JAM["iklim"], kini):
-            H.lewat(f"SPI {n} bulan: diambil lebih dari 14 hari lalu")
+        up = tgl_id(v.get("update"))
+        if up is None or (kini.date() - up).days > BASI_SPI_HARI:
+            H.lewat(f"SPI {n} bulan: tanggal update PDF {v.get('update')!r} tidak terbaca atau lebih dari {BASI_SPI_HARI} hari")
             continue
         sid = f"spi{n}"
         H.src(sid, lembaga="BMKG", nama=f"Standardized Precipitation Index {n} bulan", terbit=None, update=v.get("update"), diambil=v.get("diambil"), cakupan="kabupaten", url=v.get("url"), jenis="resmi")
+        per = {}
         for b in v["baris"]:
             i = cari(b.get("prov"), b.get("nama"))
             if not i:
                 H.tc("spi")
                 continue
+            per.setdefault(i, [])
             tt = str(b.get("tingkat", "")).capitalize()
-            H.taruh("kab", i, "bulan", item("k", "spi", None, tt, f"SPI {n} bulan, berkas {v.get('bulan_berkas')}: {tt.lower()}. Kategori indeks, bukan peringatan.", sid, "kab", p=f"SPI {n} bulan"))
+            if tt not in per[i]:
+                per[i].append(tt)
+        for i, tl in per.items():
+            lab = tl[0] if len(tl) == 1 else "Terbagi: " + ", ".join(x.lower() if j else x for j, x in enumerate(tl))
+            H.taruh("kab", i, "bulan", item("k", "spi", None, lab, f"SPI {n} bulan, berkas {v.get('bulan_berkas')}: " + (tl[0].lower() if len(tl) == 1 else "terbagi " + ", ".join(x.lower() for x in tl) + " (proporsi tidak ada di PDF)") + ". Kategori indeks, bukan peringatan.", sid, "kab", p=f"SPI {n} bulan"))
         H.tandai("bulan", "k")
 
 
@@ -235,7 +251,8 @@ def muat_kekeringan(H, m, cari, kini):
         top = max(lv, key=int)
         tk, nama = KEKERINGAN[top]
         rinci = ", ".join(f"{len(lv[k])} kecamatan {KEKERINGAN[k][1]}" for k in sorted(lv, key=int, reverse=True))
-        H.taruh("kab", i, "dasarian", item("k", "kekeringan", tk, nama, f"Peringatan dini kekeringan meteorologis dasarian {d.get('rentang')}: {rinci}.", "kekeringan", "kec", p=d.get("rentang")))
+        usai = akhir == kini.date()   # berakhir hari ini: tampil, tetapi tidak ikut sinyal (bukan pernyataan untuk dasarian berikutnya)
+        H.taruh("kab", i, "dasarian", item("k", "kekeringan", None if usai else tk, nama, f"Peringatan dini kekeringan meteorologis dasarian {d.get('rentang')}: {rinci}." + (" Masa berlaku berakhir hari ini." if usai else ""), "kekeringan", "kec", p=d.get("rentang")))
     H.tandai("dasarian", "k")
 
 
@@ -351,17 +368,17 @@ def muat_h3_kita(H, m, kini):
             tk, n = max(lv)
             ps = r[n][1] if len(r[n]) > 1 else None
             ket = f"Prediksi model: {nama} level {LEVEL[tk]}" + (f" pada {tgl(hari[n])}" if n < len(hari) else "") + (f", peluang Siaga {D_persen(ps)}" if ps is not None else "") + "."
-            H.taruh("kab", i, "h3", item("b", nama, tk, LEVEL[tk] if tk else "Aturan belum terpenuhi", ket, "kita", "kab", u=vonis(kd, "ps", n)))
+            H.taruh("kab", i, "h3", item("b", nama, tk, LEVEL[tk] if tk else "Aturan belum terpenuhi", ket, "kita", "kab", u=vonis(kd, "ps", n) or "belum teruji"))
         api = [(x[0], n) for n, x in enumerate(k.get("API") or []) if x and x[0] is not None]
         if api:
             p, n = max(api)
             aturan = (i, "karhutla") in trig
-            H.taruh("kab", i, "h3", item("k", "karhutla", 1 if aturan else 0, "Waspada" if aturan else "Aturan belum terpenuhi", f"Prediksi model: peluang titik panas {D_persen(p)}" + (f" pada {tgl(hari[n])}" if n < len(hari) else "") + f"; aturan karhutla {'terpenuhi' if aturan else 'belum terpenuhi'}.", "kita", "kab", u=vonis("API", "p", n)))
+            H.taruh("kab", i, "h3", item("k", "karhutla", 1 if aturan else 0, "Waspada" if aturan else "Aturan belum terpenuhi", f"Prediksi model: peluang titik panas {D_persen(p)}" + (f" pada {tgl(hari[n])}" if n < len(hari) else "") + f"; aturan karhutla {'terpenuhi' if aturan else 'belum terpenuhi'}.", "kita", "kab", u=vonis("API", "p", n) or "belum teruji"))
         asp = [(x[1], n, x[0]) for n, x in enumerate(k.get("ASP") or []) if x and x[1] is not None]
         if asp:
             kat, n, pm = max(asp)
             kat = min(max(int(kat), 0), 3)
-            H.taruh("kab", i, "h3", item("k", "asap", kat, ISPU[kat], f"Prediksi model: PM2,5 sampai {idn(pm, 0) if pm is not None else '-'} ug/m3" + (f" pada {tgl(hari[n])}" if n < len(hari) else "") + ", kategori ISPU.", "kita", "kab", u=vonis("ASP", "pm", n)))
+            H.taruh("kab", i, "h3", item("k", "asap", kat, ISPU[kat], f"Prediksi model: PM2,5 sampai {idn(pm, 0) if pm is not None else '-'} ug/m3" + (f" pada {tgl(hari[n])}" if n < len(hari) else "") + ", kategori ISPU.", "kita", "kab", u=vonis("ASP", "pm", n) or "belum teruji"))
 
 
 def D_persen(p):
@@ -396,7 +413,6 @@ def muat_jam(H, m, cari, kini):
                 H.tc("petir")
             elif x.get("n"):
                 H.taruh("kab", i, "jam", item("b", "petir", None, "pengamatan", f"{x['n']} sambaran petir terekam dalam sekitar 30 menit terakhir.", "petir", "kab"))
-        H.tandai("jam", "b")
     else:
         H.lewat("cuaca_petir.json: tidak ada atau lebih dari 4 jam")
     aw = m.get("awan")
@@ -418,13 +434,15 @@ HALUS = {"nas": 0, "prov": 1, "kab": 2}
 
 
 def sinyal(r, c=None):
-    """r = peringkat tk per skala (urutan ORDE), None = tanpa tingkat; c = kelas cakupan pernyataan penentu tiap skala (nas/prov/kab).
-    menguat: ALGORITMA 4. belum selaras: selisih >= 2 HANYA antar skala bercakupan sama (provinsi tidak dibandingkan dengan kabupaten).
-    -> {m, s, r, c, par?}"""
+    """r = peringkat tk per skala (urutan ORDE; hanya peringatan resmi), None = tanpa tingkat; c = kelas cakupan penentu tiap skala (nas/prov/kab).
+    searah (d): tidak menurun, skala terdekat >= 1, paling sedikit dua skala >= 1.
+    menguat (m): searah DAN naik tegas (terdekat > terjauh) DAN semua skala bertingkat bercakupan sama; selain itu searah (cakupan beda atau datar).
+    belum selaras (s): selisih >= 2 HANYA antar skala bercakupan sama. -> {m, d, s, r, c, par?}"""
     c = list(c) if c else [None] * len(r)
     v = [(i, x) for i, x in enumerate(r) if x is not None]
     nilai = [x for _, x in v]
-    m = len(v) >= 2 and all(a <= b for a, b in zip(nilai, nilai[1:])) and nilai[-1] >= 1 and sum(1 for x in nilai if x >= 1) >= 2
+    naik = len(v) >= 2 and all(a <= b for a, b in zip(nilai, nilai[1:])) and nilai[-1] >= 1 and sum(1 for x in nilai if x >= 1) >= 2
+    m = naik and nilai[-1] > nilai[0] and len({c[i] for i, _ in v}) == 1
     par = None
     for a in range(len(v)):
         for b in range(a + 1, len(v)):
@@ -433,7 +451,7 @@ def sinyal(r, c=None):
             sel = abs(v[a][1] - v[b][1])
             if sel >= 2 and (par is None or sel > par[0]):
                 par = (sel, v[a][0], v[b][0])
-    out = {"m": bool(m), "s": par is not None, "r": list(r), "c": c}
+    out = {"m": bool(m), "d": bool(naik and not m), "s": par is not None, "r": list(r), "c": c}
     if par:
         out["par"] = [par[1], par[2]]
     return out
@@ -481,7 +499,7 @@ def susun(m, kini):
             H.lewat(f"{fn.__name__}: {type(e).__name__}: {e}")
     prov_kab = {k["id"]: k["prov"] for k in kab_daftar}
     kab_out, cak = {}, {s: {"kab": 0, "prov": 0, "nas": 0, "kosong": 0} for s in ORDE}
-    menguat, selaras = {"k": 0, "b": 0}, {"k": 0, "b": 0}
+    menguat, searah, selaras = {"k": 0, "b": 0}, {"k": 0, "b": 0}, {"k": 0, "b": 0}
     for k in kab_daftar:
         i, p = k["id"], k["prov"]
         e = {s: H.kab[i][s] for s in ORDE if i in H.kab and s in H.kab[i]}
@@ -489,6 +507,7 @@ def susun(m, kini):
         sg = {a: sinyal(res[a], cc[a]) for a in ("k", "b")}
         for a in ("k", "b"):
             menguat[a] += sg[a]["m"]
+            searah[a] += sg[a]["d"]
             selaras[a] += sg[a]["s"]
         e["sg"], e["kita"] = sg, kita
         for s in ORDE:
@@ -504,7 +523,7 @@ def susun(m, kini):
     skala = [{"id": s, "nama": n, "ok": {a: bool(H.ok.get((s, a))) for a in ("k", "b")}, "gagal": [g for g in H.gagal if g.lower().startswith(tuple(PREFIKS.get(s, ())))]} for s, n in SKALA]
     return {"versi": 1, "dibuat": kini.isoformat(timespec="seconds"), "hari": kini.date().isoformat(), "skala": skala, "sumber": H.sumber, "nasional": H.nas,
             "prov": H.prov, "kab": kab_out,
-            "ringkas": {"n_kab": len(kab_out), "cakupan": cak, "menguat": menguat, "belum_selaras": selaras, "tak_cocok": H.tak_cocok},
+            "ringkas": {"n_kab": len(kab_out), "cakupan": cak, "menguat": menguat, "searah": searah, "belum_selaras": selaras, "tak_cocok": H.tak_cocok},
             "catatan": ["Peringkat 0 sampai 3 hanya untuk sinyal; label resmi tidak diubah. Sinyal hanya dari BMKG; prediksi kita terpisah.",
                         "Pernyataan yang hanya sampai provinsi atau nasional ditandai cakupannya dan tidak diklaim sebagai kabupaten.",
                         "Anak tangga musim: pemetaan ZOM ke kabupaten belum ada, tampil tingkat nasional."],
@@ -594,7 +613,7 @@ def jalankan():
         if b:
             print("tangga: arsip " + ("ditambah" if tambah_arsip(b) else "hari ini sudah ada"))
     r = t["ringkas"]
-    print(f"tangga: {r['n_kab']} kab; menguat kering {r['menguat']['k']} basah {r['menguat']['b']}; belum selaras kering {r['belum_selaras']['k']} basah {r['belum_selaras']['b']}")
+    print(f"tangga: {r['n_kab']} kab; menguat kering {r['menguat']['k']} basah {r['menguat']['b']}; searah kering {r['searah']['k']} basah {r['searah']['b']}; belum selaras kering {r['belum_selaras']['k']} basah {r['belum_selaras']['b']}")
     for s in t["skala"]:
         c = r["cakupan"][s["id"]]
         print(f"  {s['id']:9} ok={s['ok']!s:5} kab {c['kab']} prov {c['prov']} nas {c['nas']} kosong {c['kosong']}")
@@ -610,16 +629,22 @@ def uji():
     assert rentang("bulan November 2026") == (dt.date(2026, 11, 1), dt.date(2026, 11, 30))
     assert rentang("Dasarian III Desember 2026") == (dt.date(2026, 12, 21), dt.date(2026, 12, 31))
     assert rentang("Dasarian II November 2026") == (dt.date(2026, 11, 11), dt.date(2026, 11, 20)) and rentang("xx") is None
-    # sinyal: aturan terbuka (ALGORITMA 4)
-    assert sinyal([None, 0, 1, None, 2, None, 2])["m"] is True, "tidak menurun, >=2 skala >=1"
-    assert sinyal([None, 1, None, None, None, None, 1])["m"] is True, "sama, dua skala"
-    assert sinyal([None, None, None, None, None, None, 2])["m"] is False, "satu skala saja bukan menguat"
-    assert sinyal([None, 2, None, None, None, None, 1])["m"] is False, "menurun mendekat"
-    assert sinyal([None, 0, 0, None, 0, None, 0])["m"] is False, "semua nol"
-    s = sinyal([None, 0, None, None, 2, None, None])
-    assert s["s"] is True and s["par"] == [1, 4] and s["m"] is False, s
-    assert sinyal([None, 1, None, None, 2, None, None])["s"] is False, "selisih 1 selaras"
-    assert sinyal([None] * 7) == {"m": False, "s": False, "r": [None] * 7, "c": [None] * 7}
+    # sinyal: aturan terbuka (ALGORITMA 4). menguat = naik tegas DAN cakupan sama; selain itu searah
+    K = ["kab"] * 7
+    g = sinyal([None, 0, 1, None, 2, None, 2], K)
+    assert g["m"] is True and g["d"] is False, g
+    g = sinyal([None, 1, None, None, None, None, 1], K)
+    assert g["m"] is False and g["d"] is True, "datar = searah, bukan menguat"
+    g = sinyal([None, 1, None, None, None, None, 2], [None, "prov", None, None, None, None, "kab"])
+    assert g["m"] is False and g["d"] is True, "cakupan beda = searah, bukan menguat"
+    assert sinyal([None, 1, None, None, None, None, 2], K)["m"] is True
+    assert sinyal([None, None, None, None, None, None, 2], K)["d"] is False and sinyal([None, None, None, None, None, None, 2], K)["m"] is False, "satu skala saja"
+    assert sinyal([None, 2, None, None, None, None, 1], K)["m"] is False and sinyal([None, 2, None, None, None, None, 1], K)["d"] is False, "menurun mendekat"
+    assert sinyal([None, 0, 0, None, 0, None, 0], K)["m"] is False, "semua nol"
+    s_ = sinyal([None, 0, None, None, 2, None, None], K)
+    assert s_["s"] is True and s_["par"] == [1, 4] and s_["m"] is False, s_
+    assert sinyal([None, 1, None, None, 2, None, None], K)["s"] is False, "selisih 1 selaras"
+    assert sinyal([None] * 7) == {"m": False, "d": False, "s": False, "r": [None] * 7, "c": [None] * 7}
     # belum selaras hanya antar skala bercakupan sama: provinsi (2) vs kabupaten (null) bukan pertentangan
     assert sinyal([None, 0, None, None, 2, None, None], [None, "kab", None, None, "prov", None, None])["s"] is False
     assert sinyal([None, 0, None, None, 2, None, None], [None, "prov", None, None, "prov", None, None])["s"] is True
@@ -640,7 +665,7 @@ def uji():
                         "c": narasi("psh_bln", "bulan Oktober 2026", wil("Bawah Normal", "x", ("Aceh", "Aceh Selatan"))),
                         "d": narasi("psh_das", "Dasarian II November 2026", wil("Bawah Normal", "x", ("Aceh", "Aceh Selatan"))),
                         "e": narasi("psh_bln", "bulan Desember 2026", wil("Normal", "85% hingga 115%", ("Aceh", "Aceh Tenggara"), ("Aceh", "Kab Fiktif")), wil("Bawah Normal", "x", ("Aceh", "Aceh Tenggara")), wil("Jauh di Atas Normal", "lebih dari 150%", ("Jawa Barat", "Bandung")))}}
-    iklim["spi_pdf"] = {"a": {"spi_bulan": 1, "bulan_berkas": "202610", "update": "30 September 2026", "url": "u", "diambil": "2026-11-10T10:00+07:00", "baris": [{"tingkat": "SANGAT KERING", "prov": "Aceh", "nama": "Aceh Selatan"}, {"tingkat": "KERING", "prov": "Aceh", "nama": "Kab Fiktif"}]},
+    iklim["spi_pdf"] = {"a": {"spi_bulan": 1, "bulan_berkas": "202610", "update": "30 September 2026", "url": "u", "diambil": "2026-11-10T10:00+07:00", "baris": [{"tingkat": "SANGAT KERING", "prov": "Aceh", "nama": "Aceh Selatan"}, {"tingkat": "KERING", "prov": "Aceh", "nama": "Aceh Selatan"}, {"tingkat": "KERING", "prov": "Aceh", "nama": "Kab Fiktif"}]},
                          "b": {"spi_bulan": 1, "bulan_berkas": "202609", "diambil": "2026-11-10T10:00+07:00", "baris": [{"tingkat": "KERING", "prov": "Aceh", "nama": "Aceh Tenggara"}]}}
     kek = {"tahun": 2026, "bulan": 11, "dasarian": 1, "tanggal": "2026-11-01", "rentang": "1-10 November 2026", "diambil": "2026-11-10T09:00+07:00", "judul": "x", "url": None,
            "data": {"ACEH": {"1": {"KABUPATEN ACEH SELATAN": ["A", "B"]}, "3": {"KABUPATEN ACEH SELATAN": ["C"]}}}}
@@ -662,25 +687,27 @@ def uji():
     k1, k2, k3 = t["kab"]["1101"], t["kab"]["1102"], t["kab"]["3204"]
     # musim: nasional saja
     assert t["nasional"]["musim"][0]["c"] == "nas" and t["nasional"]["musim"][0]["tk"] is None and "MUNDUR" in t["nasional"]["musim"][0]["x"] and "musim" not in k1
-    # bulan: periode Oktober sudah lewat dibuang; Aceh Selatan kering = Bawah Normal 1 + curah Rendah searah = 2; basah 0
+    # bulan: periode Oktober sudah lewat dibuang; sifat/curah tanpa peringkat (bukan peringatan)
     ik1 = [e for e in k1["bulan"] if e["j"] == "iklim"]
-    assert len(ik1) == 1 and ik1[0]["tk"] == [2, None] and ik1[0]["a"] == "kb" and ik1[0]["t"] == "Bawah Normal", ik1
+    assert len(ik1) == 1 and ik1[0]["tk"] is None and ik1[0]["a"] == "kb" and ik1[0]["t"] == "Bawah Normal", ik1
     # SPI: berkas terbaru per spi_bulan, kategori apa adanya, tanpa peringkat, tanggal update apa adanya; tak cocok dihitung
     spi = [e for e in k1["bulan"] if e["j"] == "spi"]
-    assert len(spi) == 1 and spi[0]["t"] == "Sangat kering" and spi[0]["tk"] is None and spi[0]["a"] == "k" and t["sumber"]["spi1"]["update"] == "30 September 2026" and t["sumber"]["spi1"]["terbit"] is None
+    assert len(spi) == 1 and spi[0]["t"] == "Terbagi: Sangat kering, kering" and "proporsi tidak ada" in spi[0]["x"] and spi[0]["tk"] is None and spi[0]["a"] == "k" and t["sumber"]["spi1"]["update"] == "30 September 2026" and t["sumber"]["spi1"]["terbit"] is None
     assert not [e for e in k2["bulan"] if e["j"] == "spi"], "berkas 202609 lebih lama dari 202610: tidak dipakai"
     assert t["ringkas"]["tak_cocok"]["spi"] == 1 and t["ringkas"]["tak_cocok"]["iklim_ganda"] == 1
-    assert [e["tk"] for e in k2["bulan"] if e["j"] == "iklim"] == [[None, None]], "entri ganda Normal dan Bawah Normal: simpan yang tertinggi (Normal), tanpa peringkat"
-    assert k1["sg"]["k"]["r"][ORDE.index("bulan")] == 2, "SPI tidak ikut peringkat"
+    g2 = [e for e in k2["bulan"] if e["j"] == "iklim"]
+    assert [e["tk"] for e in g2] == [None] and g2[0]["t"] == "Entri ganda bertentangan" and "bertentangan" in g2[0]["x"], "entri ganda bertentangan: tanpa kategori dan tanpa peringkat"
+    assert k1["sg"]["k"]["r"][ORDE.index("bulan")] is None and k1["sg"]["b"]["r"][ORDE.index("bulan")] is None, "iklim dan SPI tidak ikut peringkat"
     ok = {s["id"]: s["ok"] for s in t["skala"]}
     assert ok["sepekan"] == {"k": True, "b": True} and ok["h3"] == {"k": False, "b": True} and ok["jam"] == {"k": False, "b": True} and ok["musim"] == {"k": True, "b": True}
-    assert k3["bulan"][0]["tk"] == [None, 1], "Bandung Atas Normal tanpa curah ekstrem"
-    assert [e["tk"][1] for e in k3["bulan"]] == [1, 2] and k3["sg"]["b"]["r"][ORDE.index("bulan")] == 1, "skala bulan memakai periode terdekat, bukan maksimum semua periode"
+    assert [e["tk"] for e in k3["bulan"]] == [None, None] and [e["t"] for e in k3["bulan"]] == ["Atas Normal", "Jauh di Atas Normal"] and k3["sg"]["b"]["r"][ORDE.index("bulan")] is None, "Atas Normal tidak disejajarkan dengan peringatan resmi"
     # kab tanpa pernyataan bulan Nov tetap punya pernyataan Des
     assert {e["p"] for e in k2["bulan"]} == {"bulan Desember 2026"} and t["ringkas"]["tak_cocok"]["iklim"] == 1
-    # dasarian: iklim (tk 1 kering) + kekeringan (Awas = 3, 3 kecamatan, tingkat tertinggi)
+    # dasarian: kekeringan berakhir hari ini (10 Nov) tampil tetapi tanpa peringkat; sehari sebelumnya Awas = 3 (tingkat tertinggi)
     ds = [e for e in k1["dasarian"] if e["j"] == "kekeringan"]
-    assert ds and ds[0]["tk"] == 3 and ds[0]["t"] == "Awas" and ds[0]["c"] == "kec" and "2 kecamatan Waspada" in ds[0]["x"], k1["dasarian"]
+    assert ds and ds[0]["tk"] is None and ds[0]["t"] == "Awas" and ds[0]["c"] == "kec" and "2 kecamatan Waspada" in ds[0]["x"] and "berakhir hari ini" in ds[0]["x"], k1["dasarian"]
+    ds9 = [e for e in susun(m, kini - dt.timedelta(days=1))["kab"]["1101"]["dasarian"] if e["j"] == "kekeringan"]
+    assert ds9[0]["tk"] == 3 and "berakhir" not in ds9[0]["x"]
     # 10 hari: id Kepmendagri bertitik, entri gabungan dilewati dan dihitung
     h10 = {e["a"]: e for e in k1["h10"]}
     assert h10["b"]["tk"] is None and h10["b"]["t"] == "Hujan Petir" and h10["k"]["tk"] is None and t["ringkas"]["tak_cocok"]["kab10"] == 1
@@ -693,13 +720,21 @@ def uji():
     # prediksi kita: terpisah dari sinyal
     kt = {(e["j"]): e for e in k1["h3"]}
     assert kt["banjir"]["tk"] == 2 and kt["banjir"]["t"] == "Siaga" and kt["banjir"]["u"] == "mengalahkan baseline" and "12 Nov" in kt["banjir"]["x"], kt["banjir"]
+    assert kt["asap"]["u"] == "belum teruji" and kt["karhutla"]["u"] == "belum teruji"
     assert kt["karhutla"]["tk"] == 1 and kt["asap"]["tk"] == 2 and k1["kita"] == {"k": 2, "b": 2}
     sg = k1["sg"]["b"]["r"]
     assert sg[ORDE.index("h3")] == 2 and sg[ORDE.index("h10")] is None and sg[ORDE.index("sepekan")] == 2, "kita (h3) tidak ikut sinyal; h3 = ensemble BMKG provinsi"
     # menguat basah Aceh Selatan: bulan 0, h10 2, sepekan 2, h3 2, jam 2 -> tidak menurun, >=2 skala >=1
-    assert k1["sg"]["b"]["m"] is True and k1["sg"]["b"]["s"] is False, k1["sg"]["b"]
+    assert k1["sg"]["b"]["m"] is False and k1["sg"]["b"]["d"] is True and k1["sg"]["b"]["s"] is False, k1["sg"]["b"]   # 2,2,2 pada provinsi: searah, datar
     assert k1["sg"]["b"]["c"][ORDE.index("sepekan")] == "prov" and k1["sg"]["b"]["c"][ORDE.index("h10")] is None
     assert not any("aman" in json.dumps(v, ensure_ascii=False).lower().replace("kemarau", "") for v in (t["kab"], t["prov"], t["nasional"])), "tidak pernah menulis aman"
+    # SPI: kesegaran memakai tanggal update PDF, bukan waktu tarik
+    lama = dict(m, iklim_arsip=dict(iklim, spi_pdf={"a": dict(iklim["spi_pdf"]["a"], update="1 Agustus 2026")}))
+    tl = susun(lama, kini)
+    assert not [e for e in tl["kab"]["1101"]["bulan"] if e["j"] == "spi"] and any("SPI 1 bulan" in g for g in tl["gagal"])
+    # petir menyala tidak membuat ok jam menyala bila nowcast gagal
+    tp = susun(dict(m, peringatan=None, petir={"diambil": "2026-11-10T11:00+07:00", "kabupaten": [{"kode_prov": "11", "kab": "Aceh Selatan", "n": 5}]}), kini)
+    assert [s for s in tp["skala"] if s["id"] == "jam"][0]["ok"] == {"k": False, "b": False} and tp["kab"]["1101"]["jam"][0]["j"] == "petir"
     # sumber hilang: tidak menggagalkan, anak tangga ditandai
     m2 = dict(m, kab10=None, iklim_arsip=None, prediksi=None)
     t2 = susun(m2, kini)

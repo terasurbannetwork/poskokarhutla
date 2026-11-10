@@ -15,7 +15,7 @@ Staf pusdalops dan BPBD. Alat bantu staf, bukan peringatan publik.
 | F1 | `tangga.json` per kode kabupaten, ditulis `scripts/prediksi/tangga.py`, dibaca sekali oleh layar. | Memuat 514 kabupaten; skala musim, bulan, dasarian, 10 hari, sepekan, 3 hari, jam. |
 | F2 | Tab "Tangga" di `/prediksi`: pilih provinsi lalu kabupaten, tangga vertikal per skala, dua kolom ancaman (kering, basah). | Tiap anak tangga menampilkan pil tingkat, kalimat, lembaga, tanggal, cakupan. |
 | F3 | Anak tangga tanpa data tertulis "belum ada data"; anak tangga yang sumbernya ada tetapi tidak menyebut kabupaten/provinsi itu tertulis "tidak disebut". | Tidak ada kata "aman". |
-| F4 | Sinyal "menguat" dan "belum selaras" per ancaman, dengan aturan terbuka (tautan ke teks aturan di layar). | Aturan tampil di layar; tidak ada persen atau kata "peluang" untuk sinyal. |
+| F4 | Sinyal "menguat", "searah", dan "belum selaras" per ancaman, dengan aturan terbuka (tautan ke teks aturan di layar). | Aturan tampil di layar; tidak ada persen atau kata "peluang" untuk sinyal. |
 | F5 | Daftar kabupaten "menguat" per provinsi, dapat disaring per ancaman. | Daftar dan jumlah cocok dengan `tangga.json`. |
 | F6 | Arsip harian `tangga_arsip/YYYY-MM.jsonl`, append-only. | Jalan ulang hari yang sama tidak menimpa. |
 

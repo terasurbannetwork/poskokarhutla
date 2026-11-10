@@ -22,11 +22,13 @@ const T = win.Tangga
 // salinan terbuka aturan sinyal (ALGORITMA 4), ditulis ulang di sini supaya tangga.py tidak menilai dirinya sendiri
 function sinyalUlang(r, c) {
   const v = r.filter((x) => x !== null)
-  const menguat = v.length >= 2 && v.every((x, i) => i === 0 || v[i - 1] <= x) && v.at(-1) >= 1 && v.filter((x) => x >= 1).length >= 2
+  const ix0 = r.map((x, i) => [x, i]).filter(([x]) => x !== null)
+  const naik = v.length >= 2 && v.every((x, i) => i === 0 || v[i - 1] <= x) && v.at(-1) >= 1 && v.filter((x) => x >= 1).length >= 2
+  const menguat = naik && v.at(-1) > v[0] && new Set(ix0.map(([, i]) => c[i])).size === 1
   let selaras = false
   const ix = r.map((x, i) => [x, i]).filter(([x]) => x !== null)
   for (let i = 0; i < ix.length; i++) for (let j = i + 1; j < ix.length; j++) if (c[ix[i][1]] === c[ix[j][1]] && Math.abs(ix[i][0] - ix[j][0]) >= 2) selaras = true
-  return { m: menguat, s: selaras }
+  return { m: menguat, d: naik && !menguat, s: selaras }
 }
 
 test('tangga.json: 514+ kab, tiap pernyataan punya lembaga, cakupan, kalimat; sinyal cocok aturan terbuka', () => {
@@ -65,10 +67,12 @@ test('tangga.json: 514+ kab, tiap pernyataan punya lembaga, cakupan, kalimat; si
       const u = sinyalUlang(sg.r, sg.c)
       assert.equal(sg.m, u.m, `${id} ${a} menguat`)
       assert.equal(sg.s, u.s, `${id} ${a} belum selaras`)
+      assert.equal(sg.d, u.d, `${id} ${a} searah`)
       menguat += sg.m
     }
   }
   assert.equal(menguat, t.ringkas.menguat.k + t.ringkas.menguat.b)
+  assert.ok(t.ringkas.searah && Number.isInteger(t.ringkas.searah.k) && Number.isInteger(t.ringkas.searah.b))
   // tidak pernah "aman", tidak pernah "Pantau Bencana"
   const teks = JSON.stringify([t.kab, t.prov, t.nasional, t.catatan])
   assert.doesNotMatch(teks, /\baman\b/i)
@@ -96,7 +100,8 @@ test('cakupan: FWI, asap, SPI, sifat Normal, hujan sedang tanpa peringkat; predi
   for (const e of semua) {
     if (['fwi', 'spi'].includes(e.j) || (e.j === 'asap' && t.sumber[e.s].jenis === 'resmi') || e.t === 'Hujan sedang') assert.equal(e.tk, null, `${e.j} ${e.t}`)
     if (t.sumber[e.s].jenis === 'kita' && e.tk === 0) assert.equal(e.t, e.j === 'asap' ? 'Baik/Sedang' : 'Aturan belum terpenuhi')
-    if (e.j === 'iklim') assert.ok(!(e.t === 'Normal' && e.tk.some((x) => x !== null)), 'Normal tanpa peringkat')
+    if (e.j === 'iklim') assert.equal(e.tk, null, 'sifat/curah hujan tanpa peringkat')
+    if (t.sumber[e.s].jenis === 'kita') assert.ok(e.u, `prediksi kita ${e.j} tanpa pil vonis`)
   }
   // belum selaras hanya antar cakupan sama (hitungan ulang di atas) dan ok per ancaman
   for (const s of t.skala) assert.deepEqual(Object.keys(s.ok), ['k', 'b'])
@@ -140,7 +145,7 @@ test('tangga_inti: gabung nasional, provinsi, kab menurut ancaman; kosong tidak 
 })
 
 test('tangga_inti: daftar bersinyal dan hitungan provinsi', () => {
-  const sg = (km, ks, bm, bs) => ({ k: { m: km, s: ks, r: [] }, b: { m: bm, s: bs, r: [] } })
+  const sg = (km, ks, bm, bs) => ({ k: { m: km, d: false, s: ks, r: [] }, b: { m: bm, d: false, s: bs, r: [] } })
   const t = { kab: { a: { sg: sg(true, false, false, false) }, b: { sg: sg(false, true, false, false) }, c: { sg: sg(false, false, false, false) }, d: { sg: sg(true, false, true, true) } } }
   const daftar = [{ id: 'a', nama: 'Kab. A', prov: '11', pn: 'Aceh' }, { id: 'b', nama: 'Kab. B', prov: '11', pn: 'Aceh' }, { id: 'c', nama: 'Kab. C', prov: '11', pn: 'Aceh' }, { id: 'd', nama: 'Kab. D', prov: '12', pn: 'Sumut' }]
   assert.deepEqual(T.bersinyal(t, daftar, '11', 'semua').map((r) => r.k.id), ['a', 'b'], 'menguat dulu, c tanpa sinyal dibuang')
