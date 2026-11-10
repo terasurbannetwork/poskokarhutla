@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="../inti/tabel.css">
 <link rel="stylesheet" href="../inti/kartu.css">
 <link rel="stylesheet" href="prediksi.css">
+<link rel="stylesheet" href="tangga.css">
 </head>
 <body>
 <div id="tip" role="tooltip"></div>
@@ -31,6 +32,7 @@
   <nav class="tabs" id="tabs" aria-label="Menu prediksi">
     <button type="button" data-tab="besok" aria-current="page">Besok</button>
     <button type="button" data-tab="rapor">Rapor</button>
+    <button type="button" data-tab="tangga">Tangga</button>
     <button type="button" data-tab="dampak">Dampak</button>
     <button type="button" data-tab="laporan">Laporan provinsi</button>
     <button type="button" data-tab="konfirmasi">Konfirmasi</button>
@@ -61,6 +63,22 @@
 
   <section class="page scroll" id="p-rapor" aria-label="Rapor ketepatan">
     <div class="wrap pr-wrap" id="rapor"><p class="kosong">Memuat rapor…</p></div>
+  </section>
+
+  <section class="page scroll" id="p-tangga" aria-label="Tangga peringatan">
+    <div class="wrap pr-wrap">
+      <div class="tbar tg-kendali">
+        <select id="tgProv" aria-label="Provinsi"></select>
+        <select id="tgKab" aria-label="Kab/kota"></select>
+        <div class="seg penuh" id="tgAncaman" role="group" aria-label="Ancaman">
+          <button type="button" data-a="semua" aria-pressed="true">Kering dan basah</button>
+          <button type="button" data-a="k" aria-pressed="false">Kering</button>
+          <button type="button" data-a="b" aria-pressed="false">Basah</button>
+        </div>
+      </div>
+      <p class="pr-kecil" id="tgLabel"></p>
+      <div id="tgIsi"><p class="kosong">Memuat tangga…</p></div>
+    </div>
   </section>
 
   <section class="page scroll" id="p-dampak" aria-label="Paparan dampak">
@@ -120,5 +138,8 @@
 <script src="laporan_prov.js"></script>
 <script src="prediksi.js"></script>
 <script src="laporan_layar.js"></script>
+<script src="../inti/nanti.js"></script>
+<script src="tangga_inti.js"></script>
+<script src="tangga.js"></script>
 </body>
 </html>

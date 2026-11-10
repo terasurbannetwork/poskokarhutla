@@ -234,6 +234,7 @@ function pilihTab(t) {
   if (t === "rapor" && !$("#rapor table, #rapor section")) gambarRapor();
   if (t === "dampak") muatDampak();
   if (t === "laporan") muatLaporan();   // laporan_layar.js; hash #laporan/<prov> diatur di sana
+  else if (t === "tangga") muatTangga();   // tangga.js; hash #tangga/<id kab> diatur di sana
   else history.replaceState(null, "", t === "besok" ? "./" : "#" + t);
 }
 
@@ -254,7 +255,7 @@ async function mulai() {
   try { $("#kRegu").value = localStorage.getItem("prediksi.regu") || ""; } catch {}
   gambarBesok();
   const tab = location.hash.slice(1).split("/")[0];
-  if (["rapor", "dampak", "konfirmasi", "laporan"].includes(tab)) pilihTab(tab);
+  if (["rapor", "dampak", "konfirmasi", "laporan", "tangga"].includes(tab)) pilihTab(tab);
 }
 
 let tunda;

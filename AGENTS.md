@@ -183,6 +183,29 @@ Sebelum menyentuh apa pun tentang stok gudang BNPB dan BPBD, mutasi, stok opname
 
 Aturan berhentinya sama dengan §2.1. Data gudang asli tidak pernah masuk repo; `scripts/logpal/impor.mjs` menulis SQL ke luar repo.
 
+### 2.6 Silang Sumber (`/bnpb/rapor-sumber`, `/bnpb/silang`, tsunami per zona, gempa beruntun, kalender ancaman): baca dulu, baru bangun
+
+Sebelum menyentuh rapor sumber, beda sumber resmi lawan model, tsunami per zona, deteksi gempa beruntun, atau kalender ancaman daerah, baca dokumen di
+`data/kajian-bnpb/silang-sumber/` dengan urutan otoritas ini:
+
+1. `KEPUTUSAN-SILANG.md`: keputusan pemilik dan pertanyaan terbuka; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`SS-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Modul ini tidak menulis di `public/prediksi/**` atau `scripts/prediksi/**`.
+
+### 2.7 Tangga Peringatan (`/prediksi`, tab Tangga): baca dulu, baru bangun
+
+Sebelum menyentuh apa pun tentang tangga skala (musim, bulan, dasarian, 10 hari, sepekan, 3 hari, jam), pernyataan BMKG per kab/kota, atau sinyal "menguat" dan "belum selaras", baca dokumen di
+`data/kajian-bnpb/tangga/` dengan urutan otoritas ini:
+
+1. `KEPUTUSAN-TANGGA.md`: keputusan pemilik, menang atas semuanya; Q yang terbuka tidak dijawab dengan karangan.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md` (peringkat per sumber, sinyal, batas basi),
+6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md` (`scripts/prediksi/tangga.py` -> `public/prediksi/data/tangga.json`), 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`TG-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Tidak pernah menulis "aman"; BMKG dan prediksi kita terpisah; tanpa skor gabungan sebelum uji balik. Pengerja: `prediksi`.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih

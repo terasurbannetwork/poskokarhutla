@@ -9,7 +9,7 @@ berbeda dari "jembatan graf". Kotak persegi memotong jaringan di tepi, jadi ruas
 ke luar kotak (batas atas); jaringan jalan OSM tidak lengkap di daerah terpencil.
 Pakai: python3 scripts/prediksi/jalan.py <id kab> [<id kab> ...]   (id Kepmendagri 4 digit; hasil digabung ke jalan.json)
        python3 scripts/prediksi/jalan.py giliran [--maks N]   (N kab, bawaan 15, yang belum ada / `dihitung`-nya paling lama; gagal diulang
-         di giliran berikut; exit 1 hanya bila ada yang dicoba dan nol berhasil)
+         di giliran berikut; exit 1 hanya bila ada yang dicoba dan nol berhasil; giliran lebih dulu memanggil tangga.py (Tangga Peringatan, gagal-lunak))
        python3 scripts/prediksi/jalan.py uji     (tanpa jaringan)
 Lari penuh 514 kab = giliran berputar oleh workflow terjadwal, jeda 5 detik per kueri.
 """
@@ -244,6 +244,11 @@ if __name__ == "__main__":
     if a == ["uji"]:
         uji()
     elif a[:1] == ["giliran"]:
+        try:   # Tangga Peringatan dirantai di sini, lebih dulu: cepat, dan Overpass di bawah sering lambat; kegagalannya tidak menggagalkan jalan.py
+            import tangga
+            tangga.jalankan()
+        except Exception as e:  # noqa: BLE001
+            print(f"jalan: tangga dilewati ({type(e).__name__}: {e})", file=sys.stderr)
         sys.exit(giliran(int(a[a.index("--maks") + 1]) if "--maks" in a else 15))
     elif a:
         jalankan(a)

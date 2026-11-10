@@ -1,0 +1,38 @@
+/* Tab Tangga /prediksi: hanya yang tidak ada di public/inti (baris skala, sel ancaman, pil peringkat, deret batang). */
+.tg-kendali{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tg-kendali select{width:100%;min-width:0}
+.tg-kendali .seg{grid-column:1/-1}
+#tgIsi{display:grid;gap:14px}
+#tgIsi[aria-busy="true"]{opacity:.6}
+.tg-klik{cursor:pointer}
+.tg-klik:hover,.tg-klik:focus-visible{background:var(--surface);outline:none}
+.tg-kepala-baris,.tg-baris{display:grid;grid-template-columns:120px repeat(2,minmax(0,1fr));gap:12px}
+.tg-kepala-baris{align-items:end;padding-bottom:6px;border-bottom:2px solid var(--line)}
+.tg-kepala{display:grid;gap:6px;font-size:13px}
+.tg-baris{padding:10px 0;border-bottom:1px solid var(--line)}
+.tg-baris:last-of-type{border-bottom:0}
+.tg-skala{display:grid;align-content:start;gap:2px}
+.tg-skala small{color:var(--ink2);font-size:11.5px}
+.tg-sel{display:grid;gap:8px;align-content:start;min-width:0}
+.tg-it{display:grid;gap:3px;font-size:13px}
+.tg-it p{margin:0;text-align:justify}
+.tg-pil{display:flex;flex-wrap:wrap;gap:4px}
+.tg-kosong{margin:0;color:var(--ink2);font-size:12.5px}
+.pr-pil.tk1{background:color-mix(in oklch,var(--warn) 16%,var(--card));color:var(--ink)}
+.pr-pil.tk2{background:color-mix(in oklch,var(--warn) 36%,var(--card));color:var(--ink)}
+.pr-pil.tk3{background:color-mix(in oklch,var(--bad,#c9503a) 34%,var(--card));color:var(--ink)}
+.pr-pil{white-space:normal}
+.tg-bars{display:flex;align-items:flex-end;gap:3px;height:42px}
+.tg-bar{flex:1;background:var(--ink2);opacity:.6;border-radius:2px 2px 0 0}
+.tg-bar:hover{opacity:1}
+.tg-bar.tg-nol{background:none;border:1px dashed var(--ink2);opacity:.5}
+.tg-aturan ul{margin:6px 0 0;padding-left:18px;font-size:12.5px}
+@media (max-width:640px){
+  .tg-kendali{grid-template-columns:1fr}
+  .tg-kepala-baris{grid-template-columns:1fr 1fr}
+  .tg-kepala-baris>div:first-child{display:none}
+  .tg-baris{grid-template-columns:minmax(0,1fr);gap:6px}
+  .tg-baris .tg-sel::before{content:attr(data-a);display:none}
+  .tg-sel[data-a="k"]::before{content:"Kering";display:block;font-size:11px;font-weight:800;color:var(--ink2);text-transform:uppercase}
+  .tg-sel[data-a="b"]::before{content:"Basah";display:block;font-size:11px;font-weight:800;color:var(--ink2);text-transform:uppercase}
+}
