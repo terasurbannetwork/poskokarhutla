@@ -32,6 +32,8 @@ function browser() {
   for (const b of pf) for (const r of ['Google/Chrome/Application/chrome.exe', 'Microsoft/Edge/Application/msedge.exe']) {
     if (ada(path.join(b, r))) return path.join(b, r);
   }
+  const chromeMac = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';   // Mac mini bot WA: shell headless Playwright versi lain tidak terpasang
+  if (ada(chromeMac)) return chromeMac;
   return undefined;   // biar playwright memakai browser bawaannya
 }
 

@@ -12,6 +12,9 @@ import {tx, modOK, superOK, RE_EMAIL} from "./posko.js";
 import {PROV, sandiAcak} from "./instansi.js";
 import {aksesStaf, halamanAkun} from "./admin_halaman.js";
 import {halamanAdmin} from "./statistik.js";
+import {pemirsaSesi} from "./pemirsa.js";   // siklus dengan pemirsa.js (sandiBaru): hanya fungsi dipakai saat dijalankan, bukan saat evaluasi modul
+import {Galat, pelakuSistem as SIS, pelakuAdmin as ADM, pelakuDiri, sesiDariToken, stafUntukMasuk, stafById, stafAdaNip, stafDaftar, hitungLaju, stmtLaju, stmtSesiBaru, stmtSesiBasi, stmtSesiLain, stmtSesiSemua,
+  stmtSandi, stmtCabut, stmtPeran, stmtStafBaru, stmtJejak, tulisJejak, tulisSistem, hapusSesiToken, bersihkanSesi} from "./hak.js";
 
 const JAM = 3600e3, HARI = 24 * JAM, SESI_UMUR = 30 * HARI, COOKIE = "sesi_staf";
 /* daftar tetap: sama dengan trigger staf_larik_sah (0030, dibuat ulang 0085 dan 0099) dan public/admin/pantau.js (dijaga pantau.test.mjs).
@@ -25,15 +28,13 @@ const SESI = new WeakMap();   // permintaan -> baris staf yang lolos stafSesi (d
 const tabelBelum = e => /no such table: (staf|pantau_)/i.test(String(e?.message || e));
 const baca = s => { try { return JSON.parse(s); } catch (e) { return []; } };
 const bentuk = r => r && {...r, peran: baca(r.peran), wilayah: baca(r.wilayah)};
-const KOLOM = "id, username, nama, nip, unit, email, wa, peran, wilayah, wajib_ganti, status, dibuat, dibuat_oleh, diputus, dummy";
 const ringkas = s => ({id: s.id, username: s.username, nama: s.nama, nip: s.nip, unit: s.unit, email: s.email, wa: s.wa, peran: s.peran, wilayah: s.wilayah, wajib_ganti: !!s.wajib_ganti, status: s.status, dibuat: s.dibuat, dummy: s.dummy});
 
 /* ================================================================ sesi */
 const tokenDari = req => (req.headers.get("cookie") || "").match(new RegExp(`(?:^|;\\s*)${COOKIE}=([0-9a-f]{64})(?:;|$)`))?.[1] ?? null;
 async function muatSesi(env, req, kini) {
   const t = tokenDari(req); if (!t) return null;
-  return bentuk(await env.DB.prepare(`SELECT ${KOLOM.split(", ").map(k => "s." + k).join(", ")} FROM staf_sesi x JOIN staf s ON s.id = x.staf_id WHERE x.token_sha = ? AND x.kedaluwarsa > ? AND s.status = 'aktif'`)
-    .bind(await sha(t), kini).first());
+  return bentuk(await sesiDariToken(env, SIS, await sha(t), kini));
 }
 /* sesi staf yang boleh dipakai rute kerja: aktif, sandi awal sudah diganti, dan (untuk kiriman) header x-pb. Tanpa cookie: tanpa query. Tabel 0030 belum ada: null (rute lama tak terganggu). */
 /* Peran 'direktori' (2 Nov 2026, Ka Biro Hukum Organisasi dan Kelembagaan): HANYA membuka Direktori (src/akademisi.js). Staf yang perannya cuma ini
@@ -41,8 +42,32 @@ async function muatSesi(env, req, kini) {
 export const hanyaDirektori = peran => !!peran?.length && peran.every(p => p === "direktori");
 export async function stafSesi(env, req, kini = Date.now()) {
   const s = await stafSesiSemua(env, req, kini);
-  return s && !hanyaDirektori(s.peran) ? s : null;
+  return s ? hanyaDirektori(s.peran) ? null : s : pemirsaSintetis(env, req);
 }
+/* ================================================================ akun pemirsa bertab 'pusdalops' (9 Nov 2026): MELIHAT menu Pusdalops, baca saja
+   Daftar izin SATU konstanta, per rute (tanpa prefiks longgar). Lolos hanya bila metode GET/HEAD DAN path cocok DAN sesi pemirsa aktif memuat tab 'pusdalops'.
+   TIDAK PERNAH masuk: POST/PUT/DELETE, /dummy, /api/wa/masuk, /api/wa/berkas (bahan WA mentah), jejak Meja Pantau (nama pelaku), foto/jejak operasi, vektor wajah, secret, token, nomor HP. */
+export const IZIN_PEMIRSA_PUSDALOPS = [
+  /^\/admin\/(pantau|laporan-karhutla|omc)$/,   // halaman (kerangka tanpa data); datanya lewat rute di bawah
+  /^\/api\/dalops\/(banjir|longsor|karhutla|gempa|cuaca|kekeringan|laporan)$/,
+  /^\/api\/logbook\/(buka|hari|sk\/aktif)$/, /^\/api\/logbook\/turunan\/(rapor_bpbd|rekomendasi|penanganan|serupa_\d{2})$/, /^\/api\/logbook\/kejadian\/[0-9a-f]{16}\/sk$/,
+  /^\/api\/pusdalops\/(berantai|lapsus|medsos|medsos\/jeda|pemulihan|pemulihan\/ringkasan|rollcall|rollcall\/ringkasan)$/, /^\/api\/pusdalops\/(lapsus|pemulihan|rollcall)\/[0-9a-f]{16}$/,
+  /^\/api\/operasi\/(peta|monitor|nilai)$/,
+  /^\/api\/laporan-bnpb$/,
+  /^\/api\/saham\/(konsesi|cari|dividen)$/, /^\/api\/saham\/[A-Za-z0-9.-]{1,12}\/(info|transaksi|grafik)$/,
+  /^\/api\/pantau$/, /^\/api\/omc\/admin$/,
+  /^\/api\/laporan-karhutla\/(hari|format-khusus|kiriman|snapshot\/[0-9-]{10})$/,
+];
+export async function pemirsaLihat(env, req) {
+  if (req.method !== "GET" && req.method !== "HEAD") return null;
+  if (!IZIN_PEMIRSA_PUSDALOPS.some(re => re.test(new URL(req.url).pathname))) return null;
+  const p = await pemirsaSesi(env, req);
+  if (!p?.tab.includes("pusdalops")) return null;
+  SESI.set(req, {...p, id: "pemirsa:" + p.id, peran: ["operator_cc"], wilayah: [], dummy: 0});   // operator_cc = baca saja, butir keselamatan regu (TERTUTUP_OPERATOR, src/pantau.js) tersaring; nasional, bukan dummy: dalamWilayahStaf/stafNyata membacanya
+  return p;
+}
+/* sesi staf semu untuk gerbang yang membaca identitas lewat stafSesi (Meja Pantau, Laporan Karhutla, kerangka halaman admin): peran 'operator_cc' = baca saja di semua gerbang itu */
+const pemirsaSintetis = async (env, req) => { const p = await pemirsaLihat(env, req); return p && SESI.get(req); };
 /* sama dengan stafSesi tetapi termasuk staf berperan 'direktori' saja: dipakai stafPeran (yang memeriksa peran eksplisit) dan Direktori */
 export async function stafSesiSemua(env, req, kini = Date.now()) {
   if (!tokenDari(req)) return null;
@@ -62,7 +87,10 @@ export async function stafPeran(env, req, peran) {
   return s && peran.some(p => s.peran.includes(p)) ? "staf:" + s.id : null;
 }
 export async function stafOK(env, req, peran) { return (await adminOK(env, req)) || stafPeran(env, req, peran); }
-export async function modAtauStaf(env, req, peran) { return (await modOK(env, req)) || stafPeran(env, req, peran); }
+export async function modAtauStaf(env, req, peran) {
+  const p = (await modOK(env, req)) || await stafPeran(env, req, peran) || (peran.includes("pimpinan") && await pemirsaLihat(env, req));   // pemirsa = pimpinan baca saja: pemeriksaan peran tulis (mis. boleh_tulis OMC, ["tmc"]) tidak lolos
+  return p && typeof p === "object" ? "pemirsa:" + p.id : p;
+}
 /* aksi tulis lewat sesi staf berwilayah: provinsi sasaran harus di wilayahnya (admin dan staf nasional: selalu boleh) */
 export function dalamWilayahStaf(req, provs) {
   const s = SESI.get(req);
@@ -77,26 +105,25 @@ export const dariStaf = mod => typeof mod === "string" && mod.startsWith("staf:"
 const cookieSet = (nilai, umur) => `${COOKIE}=${nilai}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${umur}`;
 const hashSandi = (garam, sandi) => sha(garam + sandi);
 export async function sandiBaru(sandi = sandiAcak()) { const garam = acak(16); return {sandi, garam, sandi_sha: await hashSandi(garam, sandi)}; }
-const gagalBanyak = async (env, kunci, aksi, maks, kini) => (await env.DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE kunci = ? AND aksi = ? AND waktu > ?").bind(kunci, aksi, kini - JAM).first()).n >= maks;
-const catatLaju = (env, kunci, aksi, kini) => env.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, ?, ?)").bind(kunci, aksi, kini);
-export const jejakStmt = (env, oleh, obyek, aksi, ke, catatan, kini, dummy = 0) => env.DB.prepare("INSERT INTO pantau_jejak (waktu, oleh, obyek, aksi, ke, catatan, dummy) VALUES (?, ?, ?, ?, ?, ?, ?)").bind(kini, oleh, obyek, aksi, ke ?? null, catatan ?? null, dummy);
+const gagalBanyak = async (env, kunci, aksi, maks, kini) => await hitungLaju(env, SIS, kunci, aksi, kini - JAM) >= maks;
+const catatLaju = (env, kunci, aksi, kini) => stmtLaju(env, SIS, kunci, aksi, kini);
+export const jejakStmt = (env, oleh, obyek, aksi, ke, catatan, kini, dummy = 0) => stmtJejak(env, ADM, oleh, obyek, aksi, ke, catatan, kini, dummy);   // pemanggil luar (pantau, sippa, ai) menulis jejak atas nama pelaku mereka
 
 /* Sandi diverifikasi DULU (sandi benar selalu masuk, penyerang tidak bisa mengunci pemilik); 429 hanya di jalur salah. (username + IP) 8 per jam, per username 200, per IP 30. */
 /* inti masuk staf, dipakai POST /api/staf/masuk (JSON) dan /admin/masuk (form satu pintu): {hasil: "ok", cookie, staf} | {hasil: "salah"} | {hasil: "kunci"} */
 export async function cobaMasukStaf(env, req, user0, sandi0, kini) {
   const user = typeof user0 === "string" ? user0.trim().toLowerCase().slice(0, 60) : "", sandi = typeof sandi0 === "string" ? sandi0.slice(0, 100) : "";
   const ip = await ipHash(env, req), kUserIp = "si:" + (await sha(user + "|" + ip)).slice(0, 40), kUser = "su:" + (await sha(user)).slice(0, 40);
-  const a = /^[a-z0-9]{5,60}$/.test(user) ? await env.DB.prepare("SELECT id, garam, sandi_sha, status FROM staf WHERE username = ?").bind(user).first() : null;
+  const a = /^[a-z0-9]{5,60}$/.test(user) ? await stafUntukMasuk(env, SIS, user) : null;
   const cek = await hashSandi(a?.garam ?? "0".repeat(32), sandi);   // hash tetap dihitung untuk username tak dikenal
   if (!a || a.status !== "aktif" || cek !== a.sandi_sha) {
     const kunci = await gagalBanyak(env, kUserIp, "staf.gagal_ui", 8, kini) || await gagalBanyak(env, kUser, "staf.gagal_u", 200, kini) || await gagalBanyak(env, ip, "staf.gagal_ip", 30, kini);
-    if (!kunci) await env.DB.batch([catatLaju(env, kUserIp, "staf.gagal_ui", kini), catatLaju(env, kUser, "staf.gagal_u", kini), catatLaju(env, ip, "staf.gagal_ip", kini)]);   // sudah terkunci: tidak menulis baris lagi (tidak membanjiri D1)
+    if (!kunci) await tulisSistem(env, SIS, [catatLaju(env, kUserIp, "staf.gagal_ui", kini), catatLaju(env, kUser, "staf.gagal_u", kini), catatLaju(env, ip, "staf.gagal_ip", kini)]);   // sudah terkunci: tidak menulis baris lagi (tidak membanjiri D1)
     return {hasil: kunci ? "kunci" : "salah"};
   }
   const token = acak(32);
-  await env.DB.batch([env.DB.prepare("INSERT INTO staf_sesi (token_sha, staf_id, dibuat, kedaluwarsa) VALUES (?, ?, ?, ?)").bind(await sha(token), a.id, kini, kini + SESI_UMUR),
-    env.DB.prepare("DELETE FROM staf_sesi WHERE staf_id = ? AND kedaluwarsa <= ?").bind(a.id, kini)]);
-  const s = bentuk(await env.DB.prepare(`SELECT ${KOLOM} FROM staf WHERE id = ?`).bind(a.id).first());
+  await tulisSistem(env, SIS, [stmtSesiBaru(env, SIS, await sha(token), a.id, kini, kini + SESI_UMUR), stmtSesiBasi(env, SIS, a.id, kini)]);
+  const s = bentuk(await stafById(env, SIS, a.id));
   return {hasil: "ok", cookie: cookieSet(token, SESI_UMUR / 1000), staf: s};
 }
 async function masuk(env, req, kini) {
@@ -108,7 +135,7 @@ async function masuk(env, req, kini) {
 }
 async function keluar(env, req) {
   const t = tokenDari(req);
-  if (t) await env.DB.prepare("DELETE FROM staf_sesi WHERE token_sha = ?").bind(await sha(t)).run();
+  if (t) await hapusSesiToken(env, SIS, await sha(t));
   const r = json({ok: true}); r.headers.append("set-cookie", cookieSet("", 0)); return r;
 }
 async function saya(env, req, kini) {
@@ -121,8 +148,8 @@ async function gantiSandi(env, req, kini) {
   if (!s) return gagal(401, "belum masuk atau sesi berakhir; masuk lagi");
   if (req.headers.get("x-pb") !== "1") return gagal(403, "kiriman wajib membawa header x-pb: 1");
   const n = await sandiBaru();
-  await env.DB.batch([env.DB.prepare("UPDATE staf SET garam = ?, sandi_sha = ?, wajib_ganti = 0 WHERE id = ?").bind(n.garam, n.sandi_sha, s.id),
-    env.DB.prepare("DELETE FROM staf_sesi WHERE staf_id = ? AND token_sha != ?").bind(s.id, await sha(tokenDari(req))), jejakStmt(env, "staf:" + s.id, "staf:" + s.id, "ganti_sandi", null, null, kini, s.dummy)]);
+  const diri = pelakuDiri(s.id);
+  await tulisJejak(env, diri, [stmtSandi(env, diri, s.id, n.garam, n.sandi_sha, 0), stmtSesiLain(env, diri, s.id, await sha(tokenDari(req)))], stmtJejak(env, diri, "staf:" + s.id, "staf:" + s.id, "ganti_sandi", null, null, kini, s.dummy));
   return json({sandi: n.sandi});
 }
 
@@ -149,47 +176,46 @@ export function cekStaf(o) {
   const p = cekPeranWilayah(o); if (p.galat) return p;
   return {v: {...v, peran: p.peran, wilayah: p.wilayah}};
 }
-export const stmtStaf = (env, id, username, v, sandi, kini, oleh, dummy = 0) => env.DB.prepare(`INSERT INTO staf (id, username, nama, nip, unit, email, wa, peran, wilayah, garam, sandi_sha, wajib_ganti, dibuat, dibuat_oleh, dummy)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(id, username, v.nama, v.nip, v.unit, v.email, v.wa, JSON.stringify(v.peran), JSON.stringify(v.wilayah), sandi.garam, sandi.sandi_sha, dummy ? 0 : 1, kini, oleh, dummy);
+export const stmtStaf = (env, id, username, v, sandi, kini, oleh, dummy = 0) => stmtStafBaru(env, ADM, id, username, v, sandi, kini, oleh, dummy);
 async function buat(env, req, kini) {
   const mod = await superOK(env, req); if (!mod) return tolakSuper();
   const b = await bacaBody(req, 2048); if (b.galat) return gagal(b.status || 400, b.galat);
   const c = cekStaf(b.o); if (c.galat) return gagal(400, c.galat);
-  if (await env.DB.prepare("SELECT 1 FROM staf WHERE nip = ?").bind(c.v.nip).first()) return gagal(409, "NIP ini sudah punya akun staf; reset sandinya bila perlu");
+  if (await stafAdaNip(env, ADM, c.v.nip)) return gagal(409, "NIP ini sudah punya akun staf; reset sandinya bila perlu");
   const s = await sandiBaru(), id = acak(8), dasar = "bnpb" + (slug(c.v.nama.split(/\s+/)[0]) || "staf").slice(0, 16);
   for (let i = 0; i < 5; i++) {
     const username = dasar + String(Math.floor(Math.random() * 900) + 100);
     try {
-      await env.DB.batch([stmtStaf(env, id, username, c.v, s, kini, mod), jejakStmt(env, mod, "staf:" + id, "buat", null, c.v.peran.join(","), kini)]);
-      return json({staf: ringkas(bentuk(await env.DB.prepare(`SELECT ${KOLOM} FROM staf WHERE id = ?`).bind(id).first())), username, sandi: s.sandi}, 201);   // sandi tampil sekali
+      await tulisJejak(env, ADM, [stmtStaf(env, id, username, c.v, s, kini, mod)], jejakStmt(env, mod, "staf:" + id, "buat", null, c.v.peran.join(","), kini));
+      return json({staf: ringkas(bentuk(await stafById(env, ADM, id))), username, sandi: s.sandi}, 201);   // sandi tampil sekali
     } catch (e) { if (!/UNIQUE constraint failed: staf\.username/i.test(String(e?.message || e))) throw e; }
   }
   return gagal(409, "username bentrok berulang; coba lagi");
 }
 async function daftar(env, req) {
   if (!await superOK(env, req)) return tolakSuper();   // NIP, WA, email staf: Super Admin saja
-  return json({staf: (await env.DB.prepare(`SELECT ${KOLOM} FROM staf ORDER BY status, nama LIMIT 500`).all()).results.map(r => { const s = ringkas(bentuk(r)); return {...s, akses: aksesStaf(s.peran)}; }),
+  return json({staf: (await stafDaftar(env, ADM)).map(r => { const s = ringkas(bentuk(r)); return {...s, akses: aksesStaf(s.peran)}; }),
     peran: PERAN, akses: Object.fromEntries(Object.keys(PERAN).map(p => [p, aksesStaf([p])]))});
 }
 async function ubah(env, req, id, kini) {
   const mod = await superOK(env, req); if (!mod) return tolakSuper();
   const b = await bacaBody(req, 2048); if (b.galat) return gagal(b.status || 400, b.galat);
-  const s = await env.DB.prepare(`SELECT ${KOLOM} FROM staf WHERE id = ?`).bind(id).first(); if (!s) return gagal(404, "staf tidak ada");
-  const cabutSesi = env.DB.prepare("DELETE FROM staf_sesi WHERE staf_id = ?").bind(id), j = (aksi, c) => jejakStmt(env, mod, "staf:" + id, aksi, null, c, kini, s.dummy);
+  const s = await stafById(env, ADM, id); if (!s) return gagal(404, "staf tidak ada");
+  const cabutSesi = stmtSesiSemua(env, ADM, id), j = (aksi, c) => jejakStmt(env, mod, "staf:" + id, aksi, null, c, kini, s.dummy);
   if (b.o.aksi === "cabut") {
     if (s.status === "dicabut") return gagal(409, "staf sudah dicabut");
-    await env.DB.batch([env.DB.prepare("UPDATE staf SET status = 'dicabut', diputus = ? WHERE id = ?").bind(kini, id), cabutSesi, j("cabut", null)]);
+    await tulisJejak(env, ADM, [stmtCabut(env, ADM, id, kini), cabutSesi], j("cabut", null));
     return json({id, status: "dicabut"});
   }
   if (s.status === "dicabut") return gagal(409, "staf sudah dicabut; buat akun baru");
   if (b.o.aksi === "reset") {
     const n = await sandiBaru();
-    await env.DB.batch([env.DB.prepare("UPDATE staf SET garam = ?, sandi_sha = ?, wajib_ganti = 1 WHERE id = ?").bind(n.garam, n.sandi_sha, id), cabutSesi, j("reset", null)]);
+    await tulisJejak(env, ADM, [stmtSandi(env, ADM, id, n.garam, n.sandi_sha, 1), cabutSesi], j("reset", null));
     return json({id, sandi: n.sandi});   // tampil sekali; staf WAJIB membuat sandi baru saat masuk
   }
   if (b.o.aksi === "ubah") {
     const p = cekPeranWilayah(b.o); if (p.galat) return gagal(400, p.galat);
-    await env.DB.batch([env.DB.prepare("UPDATE staf SET peran = ?, wilayah = ? WHERE id = ?").bind(JSON.stringify(p.peran), JSON.stringify(p.wilayah), id), j("ubah", p.peran.join(","))]);
+    await tulisJejak(env, ADM, [stmtPeran(env, ADM, id, p.peran, p.wilayah)], j("ubah", p.peran.join(",")));
     return json({id, peran: p.peran, wilayah: p.wilayah});
   }
   return gagal(400, "aksi harus cabut/reset/ubah");
@@ -197,7 +223,7 @@ async function ubah(env, req, id, kini) {
 
 /* retensi (cron menit 17): sesi kedaluwarsa */
 export async function bersihkanStaf(env, kini = Date.now()) {
-  try { return {sesi: (await env.DB.prepare("DELETE FROM staf_sesi WHERE kedaluwarsa <= ?").bind(kini).run()).meta.changes}; }
+  try { return {sesi: await bersihkanSesi(env, SIS, kini)}; }
   catch (e) { if (tabelBelum(e)) return {lewat: "migrasi 0030 belum diterapkan"}; throw e; }
 }
 
@@ -205,7 +231,7 @@ export async function bersihkanStaf(env, kini = Date.now()) {
 export function bungkusStaf(f) {
   return async (...a) => {
     try { return await f(...a); }
-    catch (e) { if (tabelBelum(e)) return gagal(503, "akun staf belum diaktifkan (migrasi 0030_staf belum diterapkan)"); throw e; }
+    catch (e) { if (e instanceof Galat) return gagal(e.status, e.status === 403 ? "dilarang" : e.message); if (tabelBelum(e)) return gagal(503, "akun staf belum diaktifkan (migrasi 0030_staf belum diterapkan)"); throw e; }
   };
 }
 /* rute digabung ke RUTE di src/worker.js. Tanpa admin = sesi staf di tiap handler; superOK = Super Admin; modOK = moderator ke atas. */

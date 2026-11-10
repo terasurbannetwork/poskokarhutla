@@ -80,7 +80,7 @@
     "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/PL_AR_250K/MapServer/export?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&f=image&layers=show:0&layerDefs=%7B%220%22%3A%22PL2025_ID_50K%20IN%20(2001%2C2004%2C2005)%22%7D"
    ],
    "tileSize": 512,
-   "minzoom": 7,
+   "minzoom": 3,
    "maxzoom": 11,
    "opasitas": 0.85,
    "lambat": true,
@@ -165,7 +165,7 @@
     "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/PL_AR_250K/MapServer/export?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&f=image"
    ],
    "tileSize": 512,
-   "minzoom": 7,
+   "minzoom": 3,
    "maxzoom": 11,
    "opasitas": 0.7,
    "lambat": true,
@@ -226,7 +226,7 @@
     "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/KWSHUTAN_AR_250K/MapServer/export?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&f=image"
    ],
    "tileSize": 512,
-   "minzoom": 7,
+   "minzoom": 3,
    "maxzoom": 11,
    "opasitas": 0.6,
    "lambat": true,

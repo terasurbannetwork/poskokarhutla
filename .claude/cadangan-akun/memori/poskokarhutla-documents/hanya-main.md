@@ -19,3 +19,5 @@ Owner (16 Oct 2026, after seeing a linked worktree in GitHub Desktop): "Agar cuk
 27 Oct 2026: staging reappeared (another session pushed "Neraca air Jawa" to it); owner said again "gw ga mau ada branch" and deleted it locally and on origin. Never create or push to any branch other than main; if a session finds another branch, tell the owner and give the delete commands (auto-mode blocks branch deletion from Claude).
 
 Disk history (was memory disk-worktree): on 16 Oct 2026 about 40 worktree agent runs left the Mac 96% full (each worktree carries public/ about 130 MB plus node_modules). If a worktree ever appears, remove it with `git worktree remove -f -f` only after its completion notice arrived, and check `df -h /Users`.
+
+9 Nov 2026: owner saw kerja-foto and worktree-agent-* in GitHub Desktop and said again "Lu catet selalu ya. Gw ga pernah mau ada branch". Now enforced at creation by scripts/agents/tolak-branch.mjs; AGENTS.md §3.3 rewritten to main only. Never pass use_worktree: true when starting sessions from this repo.

@@ -12,6 +12,7 @@
    - CPU: tanpa hash kriptografi, tanpa urai JSON besar; penggabungan JSON dikerjakan SQLite di D1. */
 import {json, gagal, sha, hex, acak, cekLaju, ipHash, gagalSudahBanyak, catatGagal, turnstileOK, adminOK, bacaBody, bacaBytes} from "./worker.js";
 import {CSP_ADMIN} from "./admin_halaman.js";
+import {modOK} from "./posko.js";
 import {stafSesi, cobaMasukStaf, hanyaDirektori} from "./staf.js";
 import {masukPemirsa, arahPemirsa, cookiePemirsa} from "./pemirsa.js";
 import {halStatistik} from "./bencana.js";
@@ -251,7 +252,8 @@ const tujuan = req => { const k = new URL(req.url).searchParams.get("ke") || "";
 export async function masuk(env, req, kini, halamanMasuk) {
   const ke = tujuan(req), hal = g => halamanMasuk(g, ke);
   if (!env.SESI_KUNCI || !env.ADMIN_TOKEN) return htmlMasuk(hal("Server belum dikonfigurasi (SESI_KUNCI / ADMIN_TOKEN)."), 503);
-  if (req.method === "GET") return (await adminOK(env, req, kini)) ? alihkan(ke || "/admin/statistik") : htmlMasuk(hal(""));
+  /* ?ke= dari tombol "Masuk staf": akun gerbang (AKUN_SITUS) lolos adminOK tapi ditolak rute staf, jadi dialihkan balik = putar terus (9 Nov 2026). Dia harus bisa ganti akun: tampilkan form. */
+  if (req.method === "GET") return (ke ? await modOK(env, req) : await adminOK(env, req, kini)) ? alihkan(ke || "/admin/statistik") : htmlMasuk(hal(""));
   const laju = await cekLaju(env, await ipHash(env, req), "masuk", kini);
   if (laju) return htmlMasuk(hal("Terlalu banyak percobaan. Coba lagi nanti."), 429, {"retry-after": laju.headers.get("retry-after") || "900"});
   const u = await bacaBytes(req, 2048), t = u.b ? new TextDecoder().decode(u.b) : "";   // body dibaca per byte; lebih dari 2 KB = dianggap kosong (401)

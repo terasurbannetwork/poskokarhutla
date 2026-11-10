@@ -56,7 +56,7 @@
   };
 
   /* ------------------------------------------------------------ data */
-  const D = {foto: [], muat: null, konfig: null};
+  const D = {foto: [], lap: [], muat: null, konfig: null};
   async function muat(paksa) {
     if (D.muat && !paksa) return D.muat;
     return D.muat = fetch(`${API}?bencana=${BEN}` + (admin ? "&dummy=1" : ""), {credentials: "same-origin"}).then(r => r.ok ? r.json() : {foto: []}).then(j => {
@@ -64,10 +64,18 @@
       return D.foto;
     }).catch(() => (D.foto = []));
   }
+  /* Laporan lapangan (logbook /petugas + uji pilot): HANYA untuk staf login. Tamu dijawab 401/403 dan diam (tanpa pesan, tanpa kartu). Hanya di peta, bukan galeri; dimuat sekali saat overlay dinyalakan. */
+  const TAHAP = {tiba: "Tiba di lokasi", pompa: "Pompa", air_mengalir: "Air mengalir", petak_sebelum: "Petak sebelum injeksi", injeksi: "Injeksi", petak_sesudah: "Petak sesudah injeksi", petak_24j: "Petak 24 jam", bongkar: "Bongkar", kendala: "Kendala"};
+  const srcLap = f => `${API}/lapangan/media/${f.sumber}/${f.id}` + (f.sumber === "uji_pilot" ? "?t=1" : "");
+  const ketLap = f => f.sumber === "uji_pilot" ? (TAHAP[f.ket] || "Uji pilot") : (f.ket || "Logbook petugas");
+  let lapMuat = null;
+  const muatLap = () => lapMuat ||= BEN !== "karhutla" ? Promise.resolve() : fetch(API + "/lapangan", {credentials: "same-origin"}).then(r => r.ok ? r.json() : {foto: []}).then(j => { D.lap = (j.foto || []).map(f => ({...f, lap: true})); }).catch(() => {});
   const konfig = () => D.konfig ||= fetch(API + "/konfig").then(r => r.json()).catch(() => ({media: false}));
 
   /* ------------------------------------------------------------ kartu (gaya kartu koleksi: bingkai putih, latar pastel per kategori) */
-  const kartu = (f, kecil = false) => { const [k, w] = KAT[f.kategori] || KAT.lainnya;
+  const kartuLap = f => `<button type="button" class="fl-kartu kecil fl-lap" style="--k:#1f3a5f" data-lid="${f.id}" aria-label="${esc("Laporan lapangan: " + ketLap(f))}">
+      <span class="fl-gbr"><img loading="lazy" decoding="async" alt="" src="${srcLap(f)}"><span class="fl-lapbadge">Laporan lapangan</span><span class="fl-ovl">${lalu(f.waktu)}</span></span></button>`;
+  const kartu = (f, kecil = false) => { if (f.lap) return kartuLap(f); const [k, w] = KAT[f.kategori] || KAT.lainnya;
     return `<button type="button" class="fl-kartu${kecil ? " kecil" : ""}" style="--k:${w}" data-fid="${f.id}" aria-label="${esc(`${k} di ${f.kec}, ${f.kab}`)}">
       <span class="fl-gbr"><img loading="lazy" decoding="async" alt="" src="${API}/thumb/${f.id}">${f.contoh ? '<span class="fl-contoh">contoh</span>' : ""}
         <i class="fl-ik" title="${k}">${f.jenis === "video" ? IK.main : ikat(f.kategori)}</i><span class="fl-ovl">${lalu(f.diambil)}</span></span></button>`; };
@@ -148,20 +156,23 @@
   function gambarPeta() {
     if (typeof peta === "undefined" || !peta) return;
     P.penanda.forEach(m => m.remove()); P.penanda = [];
-    if (!P.nyala || !D.foto.length) return;
+    if (P.nyala) muatLap().then(() => { if (!P.lapGambar) { P.lapGambar = true; if (D.lap.length) gambarPeta(); } });
+    const semua = P.nyala ? D.foto.concat(D.lap) : D.foto;
+    if (!P.nyala || !semua.length) return;
     const t = tingkatZoom(peta.getZoom()), b = peta.getBounds().pad?.(.2) || peta.getBounds(), grup = new Map();
-    for (const f of D.foto) { if (!b.contains([f.lon, f.lat])) continue; const k = t ? kunciWil(f, t) : f.id; (grup.get(k) || grup.set(k, []).get(k)).push(f); }
+    for (const f of semua) { if (!b.contains([f.lon, f.lat])) continue; const k = t && f.prov ? kunciWil(f, t) : f.id; (grup.get(k) || grup.set(k, []).get(k)).push(f); }
     for (const g of [...grup.values()].slice(0, 160)) {
       const lat = g.reduce((s, f) => s + f.lat, 0) / g.length, lon = g.reduce((s, f) => s + f.lon, 0) / g.length, el = document.createElement("div");
       if (g.length === 1) { el.className = "fl-pn satu"; el.innerHTML = kartu(g[0], true); }
-      else { el.className = "fl-pn tumpuk"; el.innerHTML = `<span class="fl-kipas">${g.slice(0, 3).map((f, i) => `<img alt="" loading="lazy" src="${API}/thumb/${f.id}" style="--i:${i - Math.min(2, g.length - 1) / 2};--k:${KAT[f.kategori]?.[1]}">`).join("")}</span>
+      else { el.className = "fl-pn tumpuk"; el.innerHTML = `<span class="fl-kipas">${g.slice(0, 3).map((f, i) => `<img alt="" loading="lazy" src="${f.lap ? srcLap(f) : API + "/thumb/" + f.id}" style="--i:${i - Math.min(2, g.length - 1) / 2};--k:${KAT[f.kategori]?.[1]}">`).join("")}</span>
         <span class="fl-lbl"><b>${esc(namaWil(g[0], t))}</b><em>${g.length}</em></span>`;
         el.setAttribute("role", "button"); el.tabIndex = 0; el.setAttribute("aria-label", `${g.length} foto di ${namaWil(g[0], t)}`); }
       el.addEventListener("click", e => { e.stopPropagation();
-        if (g.length === 1) return Rinci.buka(g[0].id);
+        if (g.length === 1) return g[0].lap ? RinciLap.buka(g[0]) : Rinci.buka(g[0].id);
         const lo = g.map(f => f.lon), la = g.map(f => f.lat);
-        if (Math.max(...lo) - Math.min(...lo) < .002 && Math.max(...la) - Math.min(...la) < .002) { G.prov = [g[0].prov]; G.h = 0; return bukaTab("foto"); }
-        peta.fitBounds([[Math.min(...lo), Math.min(...la)], [Math.max(...lo), Math.max(...la)]], {padding: 80, maxZoom: 13}); });
+        const lap = g.some(f => f.lap);
+        if (!lap && Math.max(...lo) - Math.min(...lo) < .002 && Math.max(...la) - Math.min(...la) < .002) { G.prov = [g[0].prov]; G.h = 0; return bukaTab("foto"); }
+        peta.fitBounds([[Math.min(...lo), Math.min(...la)], [Math.max(...lo), Math.max(...la)]], {padding: 80, maxZoom: lap ? 18 : 13}); });
       el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); el.click(); } });
       P.penanda.push(new maplibregl.Marker({element: el, anchor: "bottom"}).setLngLat([lon, lat]).addTo(peta));
     }
@@ -246,6 +257,23 @@
       if (!r.ok) return toast(j.galat || "Komentar gagal dikirim");
       fm.teks.value = ""; const ul = d.querySelector(".fl-kom-daftar"); ul.querySelector(".fl-redup")?.remove(); ul.insertAdjacentHTML("afterbegin", this.komentar(j));
       const n = d.querySelector("[data-fokus-kom] span"); n.textContent = fmt(+n.textContent.replace(/\D/g, "") + 1);
+    },
+  };
+  /* rincian laporan lapangan: foto, waktu, wilayah, keterangan. Tanpa suka, komentar, bagikan, aduan; alamat /f/ tidak disentuh. */
+  const RinciLap = {
+    buka(f) {
+      let d = document.querySelector("#flRinciLap");
+      if (!d) { d = document.createElement("dialog"); d.id = "flRinciLap"; d.className = "dlg fl-dlg"; d.setAttribute("aria-label", "Rincian foto laporan lapangan"); document.body.appendChild(d);
+        d.addEventListener("click", e => { if (e.target === d || e.target.closest("[data-tutup]")) d.close(); }); }
+      const wil = f.kec ? `Kec. ${esc(f.kec)}, ${esc(f.kab)}, ${esc(namaProv(f.prov))}` : "Wilayah tidak diketahui";
+      d.innerHTML = `<div class="fl-r" style="--k:#1f3a5f"><div class="fl-r-media"><div class="fl-mw"><img alt="${esc(ketLap(f))}" src="${API}/lapangan/media/${f.sumber}/${f.id}">${cap(f.kec ? {kec: f.kec, kab: f.kab, prov: f.prov} : null, {lat: f.lat, lon: f.lon}, jamWIB(f.waktu))}</div>
+          <div class="fl-r-atas"><span class="fl-pil abu">Laporan lapangan</span></div></div>
+        <button class="fl-x" data-tutup aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        <div class="fl-r-isi"><dl class="fl-info"><div><dt>${IK.galeri}Sumber</dt><dd>${f.sumber === "uji_pilot" ? "Uji pilot lapangan" : "Logbook petugas"}</dd></div>
+          <div><dt>${IK.pin}Lokasi</dt><dd>${wil}</dd></div><div><dt>${IK.titik}Koordinat GPS</dt><dd class="fl-angka">${koord(f)}</dd></div>
+          <div><dt>${IK.jam}Diambil</dt><dd class="fl-nw">${jamWIB(f.waktu)} <small>(${lalu(f.waktu)})</small></dd></div>
+          <div><dt>${IK.orang}Keterangan</dt><dd>${esc(ketLap(f))}</dd></div></dl></div></div>`;
+      if (!d.open) d.showModal();
     },
   };
   function pilihAlasan() {

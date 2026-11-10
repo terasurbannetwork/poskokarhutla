@@ -119,6 +119,11 @@ jobs:
         continue-on-error: true
         run: python3 scripts/data/titik_hari.py dari-hotspot
 
+      # riwayat harian per provinsi sampai 400 hari untuk kartu tren panel peta (harian30.json hanya 100 hari)
+      - name: Riwayat harian panjang per provinsi
+        continue-on-error: true
+        run: python3 scripts/data/harian_panjang.py sambung
+
       # riwayat deteksi per satelit setahun untuk tab tersembunyi /satelit -> public/data/satelit/riwayat.json (scripts/data/satelit_riwayat.py).
       # KUMULATIF: ikut cache data- seperti khg_hari.json/musim_harian.json (+ salinan situs live lewat _isi.json bila cache hilang, dan `git add public/data` di jalur
       # tanpa token). Cache kecil sendiri di bawah menjamin kemajuan isi mundur selamat walau langkah keras sesudahnya (Uji aturan) gagal sebelum cache data- disimpan.

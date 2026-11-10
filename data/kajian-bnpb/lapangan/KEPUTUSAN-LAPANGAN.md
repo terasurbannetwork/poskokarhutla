@@ -65,3 +65,12 @@ Aturan K12: halaman lama dialihkan (301) HANYA bila fitur `/petugas` sudah setar
 | `/lapangan#k=<kode regu>` (regu Posko) | laporan regu bergeotag + foto, draf luring `klien_id`, tugas regu (`/api/lapangan/*`, `x-kode-regu`) | Tidak | `/petugas` menulis `lp_logbook`, bukan `posko_laporan`; laporan regu tidak tampil di Posko pusat; tautan regu lama dibagikan lewat WA | Dibiarkan; `/api/posko` tidak diubah |
 
 Hasil: tidak satu pun dialihkan, jadi `src/worker.js` tidak diubah untuk LP-048. Uji `tests/warga/lapangan_kondisi.test.mjs` ("halaman lama belum dialihkan") menjaga ini: bila seseorang menambah 301 sebelum tabel di atas berubah, uji gagal. Alihkan satu per satu setelah kolom "yang kurang" terpenuhi dan tabel ini diperbarui.
+
+## E. Foto logbook dan uji pilot di overlay Foto peta utama (9 Nov 2026, pemilik)
+
+Overlay Foto di peta utama memuat juga foto laporan lapangan dari dua sumber: foto logbook `/petugas` (`lp_logbook_foto` join `lp_logbook`) dan uji pilot SIPPA (`uji_pilot_lapor`, R2 `uji-pilot/<id>`). Syarat:
+
+1. Hanya staf yang login (`modOK`: ADMIN_TOKEN atau sesi admin, atau sesi staf nyata; tamu dan akun gerbang situs AKUN_SITUS* 403 tanpa isi). Tidak pernah publik, tidak masuk `/api/foto`, tidak punya halaman `/f/:id`, tidak punya OG, tanpa suka, komentar, bagikan.
+2. Hanya baris dummy = 0 yang punya koordinat, 90 hari terakhir, paling banyak 500 per sumber. Kolom keluar: id, sumber, lat, lon, waktu, prov, kab, kec, keterangan (kegiatan atau tahap). Tidak pernah nama, orang_id, regu, HP, email, ip, kunci R2, sha256, token.
+3. Foto absen (`lp_absen`) dan foto acuan wajah TIDAK ikut dan tidak berubah. Orang yang dianonimkan atau mencabut diri: barisnya hilang lewat cascade, jadi foto tidak tampil lagi di overlay.
+4. Rute: `GET /api/foto/lapangan` dan `GET /api/foto/lapangan/media/{logbook|uji_pilot}/:id` (`src/foto_lapangan.js`). Foto contoh/dummy sudah dicabut dari publik (`FOTO_DUMMY_PUBLIK` "0").

@@ -4,6 +4,7 @@
    public/laporan_bnpb.js; penggambaran slide memakai teks apa adanya (tidak pernah innerHTML), jadi teks mentah aman. */
 import {json, gagal, adminOK, bacaBody} from "./worker.js";
 import {laju} from "./bnpb.js";
+import {pemirsaLihat} from "./staf.js";
 import {MODEL_URAI, MAKS_URAI, HARI, BATAS_URAI_HARI, BATAS_BACA_HARI, SKEMA_URAI, SISTEM_URAI, ULANG_URAI, uraiJson, rapat, periksaSalinan} from "./laporan_bnpb_spek.js";
 export {MODEL_URAI, periksaSalinan};
 import {KONTROL, tglSah} from "./posko.js";
@@ -33,8 +34,9 @@ const jenisDari = u => { const j = u.searchParams.get("jenis"); return JENIS_LAP
 const tolak = () => gagal(403, "perlu masuk admin");
 
 async function baca(env, req, url) {
-  if (!await adminOK(env, req)) return tolak();
-  return bacaLaporan(env, url);
+  const admin = await adminOK(env, req);
+  if (!admin && !await pemirsaLihat(env, req)) return tolak();   // pemirsa bertab pusdalops: GET saja (daftar izin src/staf.js)
+  return bacaLaporan(env, url, !admin);   // kolom oleh = prefiks hash kredensial admin, tidak untuk pemirsa
 }
 /* tanpa pemeriksaan akses: dipanggil setelah adminOK di atas, atau setelah kunci API bercakupan laporan_bnpb (src/api_v1.js) */
 export async function bacaLaporan(env, url, tanpaOleh = false) {

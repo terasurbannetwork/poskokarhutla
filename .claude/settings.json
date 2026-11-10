@@ -45,6 +45,16 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "Bash|Agent|EnterWorktree",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/agents/tolak-branch.mjs\"",
+            "timeout": 5
+          }
+        ]
       }
     ]
   }

@@ -5,6 +5,7 @@
 import {gagal} from "./worker.js";
 import {modAtauStaf} from "./staf.js";   // RU-109: akun gerbang AKUN_SITUS* bukan staf, tidak lolos (stafOK memakai adminOK)
 import {halamanBnpbPublik} from "./bnpb.js";
+import {bacaLaporan, dummyLaporan} from "./dalops_laporan.js";
 
 export const PERAN_DALOPS = ["pusdalops", "koordalops", "pimpinan"];
 /* Pantau = Karhutla, Banjir, Longsor, Gempa, Cuaca, Kekeringan (pemilik 5 Nov 2026); satu rute per jenis, kunci R2 dalops/<jenis>.json */
@@ -13,6 +14,7 @@ async function data(env, req, jenis) {
   if (!(await modAtauStaf(env, req, PERAN_DALOPS))) return gagal(401, "masuk sebagai staf Pusdalops, Koordalops, atau Pimpinan");
   if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
   const o = await env.MEDIA.get(`dalops/${jenis}.json`);
+  if (!o && jenis === "laporan") return new Response(JSON.stringify({versi: 1, diperbarui: null, hari: []}), {headers: {"content-type": "application/json; charset=utf-8", "cache-control": "private, no-store", vary: "cookie", "x-content-type-options": "nosniff"}});   // belum ada rekap masuk: kosong, bukan 404
   if (!o) return gagal(404, `data ${jenis} belum diunggah, jalankan scripts/data/dalops_banjir.py --unggah`);
   return new Response(o.body, {headers: {"content-type": "application/json; charset=utf-8", "cache-control": "private, no-store", vary: "cookie",
     "x-content-type-options": "nosniff", "x-diperbarui": o.uploaded.toISOString()}});
@@ -26,4 +28,6 @@ export const RUTE_DALOPS = {
   "GET /api/dalops/gempa": (env, req) => data(env, req, "gempa"),
   "GET /api/dalops/cuaca": (env, req) => data(env, req, "cuaca"),
   "GET /api/dalops/kekeringan": (env, req) => data(env, req, "kekeringan"),
+  "GET /api/dalops/laporan": (env, req, url) => bacaLaporan(env, req, url, data),   // Laporan Masuk: ringkasan rekap WA 07.00 (src/dalops_laporan.js)
+  "POST /api/dalops/laporan/dummy": (env, req, url, kini) => dummyLaporan(env, req, kini),
 };

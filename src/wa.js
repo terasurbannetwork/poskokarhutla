@@ -12,6 +12,7 @@ import {balas as balasPanggilan} from "./lapangan_wa.js";
 import {catatOperasi} from "./operasi_udara.js";
 import {urai} from "./operasi_wa.js";
 import {simpanFoto} from "./operasi_hasil.js";
+import {catatRekap} from "./dalops_laporan.js";
 import {JENIS_LAPORAN, kenali, tanggalIsi, tanggalNamaBerkas} from "./wa_jenis.js";
 
 export const MAKS_BERKAS = 20 * 1024 * 1024;
@@ -94,6 +95,11 @@ async function gerbang(env, req, kini) {
     .bind(diterima, tanggal, jenis, dari, nama, teks, kunci, namaBerkas, tipe).run();
   /* OP-2: pesan satgas udara -> tabel operasi; galat apa pun (termasuk migrasi 0103 belum ada) tidak menggagalkan pesan yang sudah tersimpan */
   let operasi = null; if (teks) try { operasi = await catatOperasi(env, {id: r.meta.last_row_id, teks, tanggal, diterima}); } catch (e) { console.error("operasi_wa", String(e?.message || e)); }
+  /* rekap Koordalops 07.00 -> ringkasan terstruktur Laporan Masuk Dalops (R2 dalops/laporan.json); teks kosong + lampiran .txt dibaca dari isinya; rekap 19.00 diabaikan; galat tidak menggagalkan pesan */
+  try {
+    let t = teks; if (!t && isiBerkas && /^text\/plain/.test(tipe || "")) t = bersih(new TextDecoder().decode(isiBerkas), MAKS_TEKS);
+    if (t && !dariGrup && kenali(t, null) === "rekap_koordalops_24") await catatRekap(env, {teks: t, tanggal, diterima});   // anggota grup operasi tidak boleh menimpa rekap; rekap asli datang dari nomor WA_IZIN
+  } catch (e) { console.error("dalops_laporan", String(e?.message || e).slice(0, 120)); }
   /* foto grup operasi -> indeks op_foto (stempel = teks OCR dari gateway, pemasangan ke aksi); galat/tabel 0106 belum ada tidak menggagalkan pesan */
   let foto = null; if (grup && gambar && b && isiBerkas && kunci) try { foto = await simpanFoto(env, {waId: r.meta.last_row_id, stempel, diterima, teks: caption}); } catch (e) { console.error("operasi_foto", String(e?.message || e).slice(0, 120)); }
   return json({ok: true, disimpan: true, id: r.meta.last_row_id, tanggal, jenis, ...(operasi ? {operasi} : {}), ...(foto ? {foto} : {})});

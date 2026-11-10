@@ -99,6 +99,22 @@ test('gateway mati saat kirim: galat ke PEMILIK saja, belum ditandai terkirim, l
   assert.ok(Object.values(st.laporan).every((e) => !e.selesai))
 })
 
+test('satu penerima kena batas harian: penerima lain tetap dikirim, yang gagal diulang tanpa kirim dobel', async () => {
+  const d = dunia(LENGKAP)
+  const asli = d.dep.kirimFile
+  let tahan = true
+  d.dep.kirimFile = async (t, ...r) => { if (tahan && t === '6281') throw new Error('HTTP 429 batas per tujuan/hari'); return asli(t, ...r) }
+  await d.jalan()
+  assert.ok(d.kirim.file.length > 0 && d.kirim.file.every((f) => f.t === '120@g.us'))
+  const n = d.kirim.file.length
+  const st = JSON.parse(fs.readFileSync(path.join(d.rumah, 'state.json'), 'utf8'))
+  assert.ok(Object.values(st.laporan).every((e) => !e.selesai && e.terkirim.join() === '120@g.us'))
+  tahan = false
+  await d.jalan()
+  assert.equal(d.kirim.file.filter((f) => f.t === '120@g.us').length, n)
+  assert.equal(d.kirim.file.filter((f) => f.t === '6281').length, n)
+})
+
 test('keluaran hilang: dianggap galat, tidak ada kiriman', async () => {
   const d = dunia(LENGKAP)
   await d.jalan({ ada: () => false })

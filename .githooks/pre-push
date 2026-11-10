@@ -22,7 +22,7 @@ while read -r lref lsha rref rsha; do
   for f in $berkas; do
     case "$f" in
       public/data/*|public/banjir/data/*) ;;
-      public/*|src/*|wrangler.jsonc|migrations/*|tests/agen/*|tests/warga/*|tests/sippa/*|package.json|package-lock.json) pakai=1; sha_dorong=$lsha ;;
+      public/*|src/*|wrangler.jsonc|migrations/*|tests/agen/*|tests/warga/*|tests/sippa/*|package.json|package-lock.json) pakai=1; sha_dorong=$lsha; sha_github=$rsha; ref_github=$rref ;;
     esac
   done
 done
@@ -47,6 +47,15 @@ tmp=$(mktemp -d "${TMPDIR:-/tmp}/uji-push.XXXXXX") || exit 1
 rmdir "$tmp"
 bersih() { rm -rf "$tmp"; rm -f "$kunci/pid"; rmdir "$kunci" 2>/dev/null; }
 trap bersih EXIT INT TERM HUP
+# git membaca posisi GitHub sebelum hook ini jalan. Kalau main bergerak selama antre atau uji, push ini pasti ditolak ("cannot lock ref");
+# berhenti di sini dengan pesan yang bisa dibaca, dan jangan buang menit uji. npm run dorong menyusul lalu mengulang sendiri (10 Nov 2026).
+cek_github() {
+  kini=$(git ls-remote "${1:-origin}" "$ref_github" 2>/dev/null | cut -f1)
+  [ -z "$kini" ] || [ "$kini" = "$sha_github" ] && return 0
+  echo "pre-push DIHENTIKAN: main di GitHub sudah maju saat push ini menunggu. Tidak ada yang rusak. Tarik dulu lalu push lagi, atau npm run dorong." >&2
+  exit 1
+}
+cek_github "$1"
 # git mengisi GIT_DIR dkk. untuk hook; tanpa unset, checkout dan git di dalam uji menyasar repo utama
 unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_OBJECT_DIRECTORY GIT_ALTERNATE_OBJECT_DIRECTORIES GIT_PREFIX
 { git clone -q --shared --no-checkout "$utama" "$tmp" && git -C "$tmp" checkout -q --detach "$sha_dorong"; } >/dev/null 2>&1 || { echo "pre-push: gagal membuat salinan uji." >&2; exit 1; }
@@ -64,4 +73,5 @@ if [ -n "$gagal" ]; then
   echo "(Hanya pemilik manusia, darurat: LEWATI_UJI=1 git push, atau git push --no-verify.)" >&2
   exit 1
 fi
+cek_github "$1"
 exit 0

@@ -13,7 +13,7 @@ const kepala = judul => `<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="/admin/admin.css?v=9" rel="stylesheet">
+<link href="/admin/admin.css?v=13" rel="stylesheet">
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], labelfoto: ["🏷️", "Label kerusakan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
@@ -60,7 +60,7 @@ const atas = (aktif, ctx) => ctx ? `<header class="ad-top">
 /* halaman admin yang ada di menu Pusdalops: kepalanya memakai menu Pusdalops (public/bnpb/menu_pusdalops.js), tanpa sub-menu Ruang Koordinasi,
    supaya pindah dari Pantau Banjir ke sini tidak terasa pindah situs (pemilik 4 Nov 2026) */
 const MENU_PUSDALOPS = new Set(["pantau", "laporan-karhutla", "omc"]);
-const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=5" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=8"></script>';
+const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=7" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=8"></script>';
 /* Kerangka bersama: header, judul halaman (ikon + judul + slot aksi kanan #aksiJudul), lalu isi #app yang diisi skripnya. */
 const halaman = (k, memuat, ekor, ctx) => `${kepala(`${HAL[k][1]} · Centurisk97`)}
 <body${ctx ? ` data-staf="1" data-peran="${esc(ctx.peran.join(","))}"${ctx.nama ? ' data-masuk="1"' : ""}` : ""}>
@@ -73,24 +73,36 @@ ${atas(k, ctx)}${MENU_PUSDALOPS.has(k) ? menuPusdalops : ""}
 ${ekor}
 </body></html>`;
 
+/* foto dan kreditnya sama dengan hero /tentang (public/img/kredit.json); public/img/masuk/*.webp = potongan melebar 1400x460 */
+const PITA_MASUK = [
+  ["karhutla", "Karhutla", "Palangka Raya, Kalimantan Tengah", "Foto: ParadoxP P, CC BY 4.0", "File:Talawang_Monumen_Palangka_Raya_Haze.jpg", '<path d="M12 3s-6 6-6 11a6 6 0 0 0 12 0c0-5-6-11-6-11Z"/>'],
+  ["banjir-longsor", "Banjir dan longsor", "Agam, Sumatera Barat, 2025", "Foto: BNPB, Public domain", "File:Landslides_in_Agam_Regency,_West_Sumatra.jpg", '<path d="M3 20c2.5 0 2.5-2 4.5-2s2 2 4.5 2 2.5-2 4.5-2 2 2 4.5 2"/><path d="m4 15 6-9 4 5 2-2 4 6"/>'],
+  ["rob", "Gelombang pasang dan abrasi", "Demak, Jawa Tengah", "Foto: Tim LindungiHutan, CC BY 4.0", "File:Rumah_Mak_Jah_di_Desa_Bedono_yang_Tenggelam_karena_abrasi.jpg", '<path d="M2 8c3 0 3 2 5 2s2-2 5-2 3 2 5 2 2-2 5-2M2 15c3 0 3 2 5 2s2-2 5-2 3 2 5 2 2-2 5-2"/>'],
+  ["gempa", "Gempa dan tsunami", "Palu, Sulawesi Tengah, 2018", "Foto: Ungkeito, CC BY-SA 4.0", "File:Bencana_Tsunami_Palu.jpg", '<path d="M2 12h4l2-6 4 13 3-9 2 2h5"/>'],
+  ["cuaca", "Cuaca ekstrem", "Nusa Tenggara Timur, 2021", "Foto: NASA, LANCE / MODIS on Aqua, Public domain", "File:Seroja_2021-04-05_0545Z.jpg", '<path d="M7 17a4 4 0 1 1 1-7.9A6 6 0 0 1 19.5 11 3.5 3.5 0 0 1 18 17Z"/><path d="m12 13-2 4h3l-1 4"/>'],
+  ["gunungapi", "Letusan gunung api", "Banyuwangi, Jawa Timur, 2015", "Foto: consigliere ivan, CC BY 2.0", "File:Eruption_of_Raung_Volcano_(2015)_from_Bali_strait_at_dawn.jpg", '<path d="m2 21 7-12h6l7 12Z"/><path d="M12 9V3M9 5l3-2 3 2"/>'],
+];
+const ikonMasuk = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+
 export const halamanMasuk = (galat, ke = "", merek = "Centurisk97") => `${kepala("Masuk · " + merek)}
 <body class="ad-masuk">
-<div class="ad-cahaya" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="ad-sisi-masuk">
+<div class="ad-pola" aria-hidden="true"></div>
 <main class="ad-kartu-masuk">
   <div class="ad-kepala-masuk">
-    <img src="/img/logo.svg?v=2" alt="" width="64" height="64">
-    <h1>${esc(merek)}</h1>
+    <img src="/img/logo.svg?v=2" alt="${esc(merek)}" width="44" height="44">
+    <h1>Pemantauan kondisi bencana di Indonesia secara <em>real time</em></h1>
     <p>Masuk staf dan admin</p>
   </div>
-  <div class="ad-garis"></div>
   <div class="ad-isi-masuk">
-    <h2>Login</h2>
     <form method="post" action="/admin/masuk${ke ? "?ke=" + encodeURIComponent(ke) : ""}">
       <div class="ad-isian">
+        ${ikonMasuk('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>')}
         <input id="email" name="email" type="text" placeholder=" " autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus>
         <label for="email">Username atau email</label>
       </div>
       <div class="ad-isian">
+        ${ikonMasuk('<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>')}
         <input id="sandi" name="sandi" type="password" placeholder=" " autocomplete="current-password" required>
         <label for="sandi">Kata sandi</label>
         <button class="ad-mata" type="button" tabindex="-1" aria-label="Tampilkan sandi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-8 10-8 10 8 10 8-3 8-10 8-10-8-10-8Z"/><circle cx="12" cy="12" r="3"/><path class="coret" d="m2 2 20 20"/></svg></button>
@@ -98,9 +110,13 @@ export const halamanMasuk = (galat, ke = "", merek = "Centurisk97") => `${kepala
       ${galat ? `<p class="ad-galat" role="alert">${esc(galat)}</p>` : ""}
       <button class="ad-tombol-masuk" type="submit">Masuk</button>
     </form>
-    <p class="ad-catatan">Sesi berlaku 12 jam. Percobaan masuk dibatasi.</p>
+    <p class="ad-catatan">${ikonMasuk('<path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6Z"/>')}Sesi 12 jam, percobaan masuk dibatasi</p>
   </div>
 </main>
+</div>
+<aside class="ad-galeri" aria-label="Jenis bencana yang dipantau">
+${PITA_MASUK.map(([f, j, t, kr, src, ik]) => `  <figure class="ad-pita"><img src="/img/masuk/${f}.webp?v=1" alt="${j}, ${t}"><figcaption>${ikonMasuk(ik)}<b>${j}</b><span>${t}</span></figcaption><a class="ad-kredit" href="https://commons.wikimedia.org/wiki/${encodeURI(src)}" target="_blank" rel="noopener" title="${kr}" aria-label="${kr}">i</a></figure>`).join("\n")}
+</aside>
 <script src="/admin/masuk.js?v=2"></script>
 </body></html>`;
 
@@ -218,6 +234,8 @@ export const CSP_ADMIN = "default-src 'self'; script-src 'self'; style-src 'self
 
 /* SIPPA (/pipa): cangkang staf dibangkitkan worker dari string, bukan berkas .html di public/ (ADR-12): .html di public/ bisa dibuka langsung dan di host publik tanpa CSP halaman.
    Isi layar di public/pipa/*.js (kode dan teks, tanpa data). CSP_SIPPA = CSP_ADMIN dengan tiga penggantian: peta openfreemap, rute OSRM untuk /pipa/kunjungan (keputusan 64, izin pemilik 30 Okt 2026), dan worker blob (DESAIN-TEKNIS SIPPA §4.2). */
+/* CSP_LOGPAL = CSP_ADMIN; style inline boleh karena public/logpal/index.html memuat atribut style=, gambar blob untuk QR dan grafik. script-src tetap 'self'. */
+export const CSP_LOGPAL = CSP_ADMIN.replace("style-src 'self'", "style-src 'self' 'unsafe-inline'").replace("img-src 'self' data:", "img-src 'self' data: blob:");
 export const CSP_SIPPA = CSP_ADMIN.replace("img-src 'self' data:", "img-src 'self' data: blob: https://*.openfreemap.org").replace("connect-src 'self'", "connect-src 'self' https://*.openfreemap.org https://router.project-osrm.org") + "; worker-src 'self' blob:";
 export const halamanSippa = (layar, ctx) => `<!doctype html>
 <html lang="id">
