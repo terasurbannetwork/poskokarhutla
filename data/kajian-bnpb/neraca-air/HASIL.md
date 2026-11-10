@@ -178,6 +178,22 @@ DDL, metode gaya Permen LH 17/2009 (SA = limpasan lokal model tanpa aliran masuk
 - Model tidak punya air tanah multi-tahun, PDAM, atau transfer selain Tarum Barat; waduk disederhanakan.
 
 
+## Proyeksi iklim (konteks, BUKAN masukan neraca)
+
+### Proyeksi iklim 2041-2060 vs 1995-2014 (NASA NEX-GDDP-CMIP6, 5 model, 119 kab)
+
+| Skenario | Musim | Hujan, median kab dari median model (%) | p10 (median kab, %) | p90 (median kab, %) | Kab dengan p10<0<p90 | Suhu, median kab (derajat C) |
+| --- | --- | --- | --- | --- | --- | --- |
+| ssp245 | tahunan | -7,2 | -10,9 | 0,4 | 69/119 | 1,2 |
+| ssp245 | kemarau | -28,6 | -38,8 | 8,1 | 101/119 | 1,1 |
+| ssp585 | tahunan | -2,7 | -9,7 | 6,1 | 118/119 | 1,4 |
+| ssp585 | kemarau | -31,4 | -45,5 | 30,0 | 119/119 | 1,4 |
+
+Baca dengan hati-hati: angka hujan adalah median 5 model TANPA uji signifikansi. Arah turun, tetapi sebaran p10-p90 antar model melewati nol (model tak sepakat tanda) di kolom "Kab dengan p10<0<p90", sehingga besaran hujan tidak boleh dikutip sebagai angka tunggal. Selisih hujan antar skenario ada di dalam derau 5 model dan satu realisasi: jangan menyebut satu skenario lebih basah atau lebih kering dari yang lain. Suhu naik konsisten di semua model.
+
+Sumber, lisensi dan keterbatasan: `public/data/neraca_air/proyeksi_iklim.json` (`meta.catatan`). Estimasi-model berbias, bukan prakiraan; neraca di atas BELUM memakai skenario ini (butuh keputusan koreksi ET0).
+
+
 ## Klaim aman / perlu catatan (untuk penulis buku dan deck)
 
 **Aman dikutip (dengan label estimasi-model):**

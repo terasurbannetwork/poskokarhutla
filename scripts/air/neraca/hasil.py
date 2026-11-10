@@ -22,6 +22,34 @@ def jumlah(kab, sk, nama, bln=range(12)):
     return sum(sum(v["skenario"][sk][nama][m] for m in bln) for v in kab.values() if v["skenario"][sk][nama] is not None)
 
 
+def proyeksi(rk):
+    """Bagian proyeksi iklim NEX-GDDP (NA-29) bila proyeksi_iklim.json ada; kosong bila belum ditarik."""
+    j = os.path.join(SUMBER, "proyeksi_iklim.json")
+    if not os.path.exists(j):
+        return ""
+    d = json.load(open(j))
+    md = lambda x: sorted(x)[len(x) // 2] if len(x) % 2 else sum(sorted(x)[len(x) // 2 - 1:len(x) // 2 + 1]) / 2
+    baris = []
+    n = len(d["kab"])
+    for sk in d["meta"]["skenario"]:
+        for ms in ("tahunan", "kemarau"):
+            st = [v[sk]["pr_persen"][ms] for v in d["kab"].values()]
+            ts = [v[sk]["tas_c"][ms]["median"] for v in d["kab"].values()]
+            lewat = sum(1 for x in st if x["p10"] < 0 < x["p90"])
+            baris.append([sk, ms, f(md([x["median"] for x in st]), 1), f(md([x["p10"] for x in st]), 1), f(md([x["p90"] for x in st]), 1),
+                          f"{lewat}/{n}", f(md(ts), 1)])
+    s = tabel("Proyeksi iklim 2041-2060 vs 1995-2014 (NASA NEX-GDDP-CMIP6, 5 model, 119 kab)", baris,
+              ["Skenario", "Musim", "Hujan, median kab dari median model (%)", "p10 (median kab, %)", "p90 (median kab, %)",
+               "Kab dengan p10<0<p90", "Suhu, median kab (derajat C)"])
+    return ("\n## Proyeksi iklim (konteks, BUKAN masukan neraca)\n" + s +
+            "\nBaca dengan hati-hati: angka hujan adalah median 5 model TANPA uji signifikansi. Arah turun, tetapi sebaran p10-p90 antar model melewati nol "
+            "(model tak sepakat tanda) di kolom \"Kab dengan p10<0<p90\", sehingga besaran hujan tidak boleh dikutip sebagai angka tunggal. "
+            "Selisih hujan antar skenario ada di dalam derau 5 model dan satu realisasi: jangan menyebut satu skenario lebih basah atau lebih kering dari yang lain. "
+            "Suhu naik konsisten di semua model.\n"
+            "\nSumber, lisensi dan keterbatasan: `public/data/neraca_air/proyeksi_iklim.json` (`meta.catatan`). Estimasi-model berbias, bukan prakiraan; "
+            "neraca di atas BELUM memakai skenario ini (butuh keputusan koreksi ET0).\n")
+
+
 def bangun(kab, rk, keb, meta):
     pr = lambda k: {"31": "DKI", "32": "Jabar", "33": "Jateng", "34": "DIY", "35": "Jatim", "36": "Banten"}[rk[k]["prov"]]
     pend = lambda k: keb["kab"][k]["pend_2025"]
@@ -128,6 +156,7 @@ def bangun(kab, rk, keb, meta):
              "- Ternak: sapi, kerbau, kambing, domba, babi 2024 BPS/Kementan; unggas hanya ayam buras + itik (ayam ras tidak tersedia di tabel BPS kab), kuda tidak dihitung.\n"
              f"- Kab ditandai `hilir_waduk`: {sum(1 for k in rk if rk[k]['bendera']['hilir_waduk'])}; kota/kab kecil (‡, luas < rerata sub-DAS, air terutama kiriman hulu): {sum(1 for k in rk if rk[k]['bendera']['kota_kecil'])}.\n"
              "- Model tidak punya air tanah multi-tahun, PDAM, atau transfer selain Tarum Barat; waduk disederhanakan.\n")
+    L.append(proyeksi(rk))
     L.append("\n## Klaim aman / perlu catatan (untuk penulis buku dan deck)\n")
     L.append("**Aman dikutip (dengan label estimasi-model):**\n"
              f"- Limpasan total Jawa rerata sekitar {f(R / 1000, 0)} miliar m3/th, dekat dengan BPS 2020 (175,6 miliar; selisih {f(100 * (va['awal']['total']['R_rata'] / 175558 - 1), 1)}% setelah diskala ke luas BPS, dan untuk tahun 2020 saja {f(100 * (va['awal']['total']['R_2020'] / 175558 - 1), 1)}%); keduanya angka model, bukan pengukuran.\n"
