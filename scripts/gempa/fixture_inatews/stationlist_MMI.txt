@@ -1,0 +1,9 @@
+,
+                                                 Badan Meteorologi Klimatologi dan Geofisika                                                  
+                                             Laporan Kejadian Gempabumi Bidang Seismologi Teknik                                              
+                               ================================================================================                               
+Gempabumi 10 November 2026, jam  15:34:04 WIB, Mag:5.3, Lat:0.19°LS, Long:132.98°BT, Kedalaman:10 Km, 69 km BaratLaut KEBARMANOKWARI-PAPUABRT
+
+|  1|FKSPI |                              Fkour, Sorong Selatan |  -1.159 |  132.016 | 151.30 |  IX |    0.3940 |    0.0186 |    0.2244 |          |
+|  2|ANAPI |                            Anggi, Pegunungan Arfak |  -1.323 |  133.912 | 162.39 |  II |    0.8163 |    1.4239 |    0.4831 |          |
+|  3| RAPI |                                               RAPI |  -0.410 |  130.821 | 240.48 |  I  |    0.0588 |    0.0529 |    0.0353 |    C     |

@@ -25,6 +25,7 @@ const Metode = {
       ["Status kecamatan 72 jam: gelombang", "Open-Meteo Marine, ambang kelas BMKG Maritim (2,5; 4; 6 m)", "Tinggi gelombang tertinggi sehari di titik pesisir terdekat"],
       ["Status kecamatan 72 jam: embusan", "Open-Meteo, ambang hipotesis Centurisk97 (54, 72, 90 km/jam)", "Belum dikunci uji balik"],
       ["Peluang ansambel (hipotesis)", "ECMWF IFS ansambel via Open-Meteo", "Waspada bila peluang 50 mm atau lebih sebesar 40% atau lebih; Siaga bila peluang 100 mm atau lebih 40% atau lebih; Awas bila 70% atau lebih; hanya titik ansambel sejauh 80 km atau kurang dari kecamatan"],
+      ["Prakiraan maritim per perairan dan pelabuhan", "BMKG Maritim", "Apa adanya, berlabel BMKG dan jam terbit"],
       ["Titik gelombang", "Open-Meteo Marine", "Tinggi gelombang tertinggi sehari per titik pesisir; model, bukan peringatan BMKG Maritim"],
       ["Siklon tropis", "JTWC dan GDACS", "Posisi amatan dan prakiraan apa adanya; tanpa siklon aktif kartunya tidak ada"],
       ["Pelabuhan dan bandara", "Data terbuka (OpenStreetMap), Open-Meteo", "Sarana yang berstatus Waspada atau lebih pada titiknya"],

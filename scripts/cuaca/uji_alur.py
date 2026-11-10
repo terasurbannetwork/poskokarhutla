@@ -56,6 +56,23 @@ def ambil_palsu(hari_ini):
     return f
 
 
+def maritim_palsu(hari_ini):
+    """BMKG Maritim buatan: 1 perairan + 1 pelabuhan, 72 jam dari 00:00 WIB hari ini."""
+    t0 = dt.datetime.combine(hari_ini, dt.time(0), tzinfo=dt.timezone(dt.timedelta(hours=7))).astimezone(dt.timezone.utc)
+    jam = lambda i: {"time": (t0 + dt.timedelta(hours=i)).strftime("%Y-%m-%d %H:00 UTC"), "wave_cat": "Sedang", "wave_height": 1.5, "wind_gust": 12, "current_speed": .5, "tides": 0.2, "visibility": 10}
+    isi = {"issued": t0.strftime("%Y-%m-%d %H:00 UTC"), "valid_to": (t0 + dt.timedelta(hours=72)).strftime("%Y-%m-%d %H:00 UTC"), "forecast_day1": [jam(i) for i in range(24)], "forecast_day2-4": [jam(i) for i in range(24, 72)]}
+
+    def f(url, *a, **k):
+        if url.endswith("area_province.json"):
+            return {"data": [{"province": "Sumatra Barat", "areas": [{"id": "M.01", "name": "Perairan Uji"}]}]}
+        if url.endswith("pelabuhan.json") and "meta" in url:
+            return {"features": [{"properties": {"code": "XA1", "name": "Pelabuhan Uji", "province": "DK Jakarta"}, "geometry": {"type": "Point", "coordinates": [106.8, -6.1]}}]}
+        if url.endswith("wilmetos.min.geojson"):
+            return {"features": [{"properties": {"ID_MAR": "M.01"}, "geometry": {"type": "Polygon", "coordinates": [[[99, -1], [100, -1], [100, 0], [99, 0], [99, -1]]]}}]}
+        return isi
+    return f
+
+
 def unduh_siklon_palsu(url):
     if url.endswith("jtwc.rss"):
         return open(os.path.join(FIX, "jtwc.rss")).read()
@@ -78,14 +95,15 @@ def jalankan():
         def tanpa_jaringan(*a, **k):
             raise AssertionError("jaringan nyata dipanggil: " + str(a[0])[:100])
         urllib.request.urlopen = tanpa_jaringan
-        import cuaca, dasar, dampak_cuaca, gelombang, laporan_cuaca, medan, musim, prakiraan_kec, sarana, siklon, verifikasi
-        for m in (dasar, cuaca, dampak_cuaca, gelombang, laporan_cuaca, medan, musim, prakiraan_kec, sarana, siklon, verifikasi):
+        import cuaca, dasar, dampak_cuaca, gelombang, laporan_cuaca, maritim, medan, musim, prakiraan_kec, sarana, siklon, verifikasi
+        for m in (dasar, cuaca, dampak_cuaca, gelombang, laporan_cuaca, maritim, medan, musim, prakiraan_kec, sarana, siklon, verifikasi):
             for nama in ("KELUAR", "MASUKAN", "BANJIR"):
                 if hasattr(m, nama):
                     setattr(m, nama, tmp)
         fake = ambil_palsu(hari_ini)
         for m in (gelombang, medan, verifikasi):
             m.ambil = fake
+        maritim.ambil = maritim_palsu(hari_ini)
         siklon.unduh = unduh_siklon_palsu
         sarana.unduh = tanpa_jaringan
         peringatan = json.load(open(os.path.join(tmp, "peringatan.json")))
@@ -124,6 +142,8 @@ def periksa(tmp, hari_ini, laporan_cuaca):
     for r in g["titik"]:
         assert len(r) == 7 and len(r[4]) == 72 and r[6] == max(x for x in r[4] if x is not None), f"titik gelombang {r[:4]}"
     assert any(r[6] == 42 for r in g["titik"]), "Hs 4,2 m buatan tidak sampai ke keluaran"
+    mr = B("cuaca_maritim.json")
+    assert mr["n"]["perairan"] == 1 and mr["n"]["pelabuhan"] == 1 and mr["n"]["gagal"] == 0 and mr["hari"] == hari and mr["perairan"][0][5][0] == 15 and mr["perairan"][0][3] == -0.5, mr["n"]
     s = B("cuaca_siklon.json")
     assert isinstance(s["aktif"], list) and isinstance(s["gagal"], list) and s["gagal"] == [], s["gagal"]
     assert [x["nama"] for x in s["aktif"]] == ["Champi"], [x["nama"] for x in s["aktif"]]

@@ -1,0 +1,44 @@
+/* Kajian silang sumber (/bnpb/silang). Kartu .ex-std dari inti/kartu.css; token dari bnpb.css. Tanpa gaya inline (CSP). */
+.sg-kolom{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+.sg-kolom>*,.ex-bd>*{min-width:0}
+.sg-tabel .ad-tabel td{white-space:nowrap}
+.sg-p{margin:0;text-align:justify;hyphens:auto;color:var(--ink2);font-size:0.844rem}
+.sg-kontrol{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.sg-kontrol .bn-isian{min-width:200px}
+.sg-seg{display:flex;gap:6px;flex-wrap:wrap}
+.sg-seg button{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px;font-size:0.812rem;font-weight:700;cursor:pointer}
+.sg-seg button[aria-pressed="true"]{background:color-mix(in srgb,var(--c5) 16%,transparent);border-color:color-mix(in srgb,var(--c5) 55%,transparent)}
+.sg-seg svg{width:14px;height:14px}
+.sg-tabel{overflow-x:auto}
+.sg-tabel .ad-tabel td.n{text-align:right;font-variant-numeric:tabular-nums}
+.sg-tabel .ad-tabel td:first-child{font-weight:700}
+.sg-tabel .ad-tabel th{text-align:center}
+.sg-svg{width:100%;height:auto;display:block;overflow:visible}
+.sg-svg text{fill:var(--ink2);font-weight:600;font-size:.6875rem;font-family:var(--font,inherit)}
+.sg-svg .sg-grid{stroke:color-mix(in srgb,var(--ink) 8%,transparent);stroke-width:1}
+.sg-svg .sg-sumbu{stroke:var(--line);stroke-width:1}
+.sg-svg .sg-harap{stroke:var(--c1);stroke-width:1.5;stroke-dasharray:5 4}
+.sg-svg .sg-bt{cursor:pointer}.sg-svg .sg-bt:hover,.sg-svg .sg-bt:focus-visible{opacity:.8;outline:none}
+.sg-svg .sg-tebal{font-weight:800;fill:var(--ink)}
+.sg-a{fill:var(--c4)}.sg-b{fill:var(--c3)}.sg-c{fill:var(--c1)}.sg-d{fill:var(--c5)}.sg-e{fill:var(--c2)}
+.sg-leg{display:flex;gap:6px 16px;flex-wrap:wrap;font-size:0.719rem;font-weight:600;color:var(--ink2)}
+.sg-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.sg-leg .a{background:var(--c4)}.sg-leg .b{background:var(--c3)}.sg-leg .c{background:var(--c1)}.sg-leg .d{background:var(--c5)}.sg-leg .e{background:var(--c2)}
+.sg-pil-hip{--pil:var(--c2)}.sg-pil-info{--pil:var(--c5)}
+.sg-pilpil{display:flex;gap:6px;flex-wrap:wrap}
+.sg-daftar{margin:0;padding-left:18px;color:var(--ink2);font-size:0.812rem;display:grid;gap:4px}
+.sg-dua{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+.sg-dua h4{margin:0 0 6px;font-size:0.844rem;font-weight:800}
+.sg-kosong{color:var(--ink2);font-weight:600;padding:8px 2px}
+@media (max-width:640px){.sg-dua{grid-template-columns:1fr}.sg-kontrol .bn-isian{min-width:0;flex:1}}
+/* tabel lebar tetap tabel (gulir mendatar) di HP; aturan kartu-per-baris admin.css butuh data-label yang tidak dipakai di sini */
+@media (max-width:640px){
+  .sg-tabel.ad-tabel-wadah{background:var(--card);padding:0}
+  .sg-tabel .ad-tabel{display:table}.sg-tabel .ad-tabel thead{display:table-header-group}.sg-tabel .ad-tabel tbody{display:table-row-group}
+  .sg-tabel .ad-tabel tr{display:table-row;background:none;border-radius:0;padding:0;box-shadow:none}
+  .sg-tabel .ad-tabel tbody tr:nth-child(even){background:color-mix(in srgb,var(--ink) 2%,transparent);border-radius:0;padding:0;box-shadow:none}
+  .sg-tabel .ad-tabel td{display:table-cell;padding:9px 12px}.sg-tabel .ad-tabel td::before{content:none}
+}
+.sg-svg{max-width:820px;margin:0 auto}
+.sg-svg .sg-n{font-size:.5625rem;font-weight:600}
+@media (max-width:640px){.sg-tabel .ad-tabel thead tr{background:var(--gradien)}}

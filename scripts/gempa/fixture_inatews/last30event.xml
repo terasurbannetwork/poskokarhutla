@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>Indonesia-InaTEWS-history-20260917132341</identifier>
+  <sender>inatews@bmkg.go.id</sender>
+  <sent>2026-11-10T15:37:00WIB</sent>
+  <status>Actual</status>
+  <msgType>Update</msgType>
+  <scope>Public</scope>
+  <code>profile:BMKG-Versi:1</code>
+  <info>
+     <event>Gempabumi</event>
+     <date>10-11-26</date>
+     <time>15:34:04 WIB</time>
+     <point><coordinates>132.98,-0.19</coordinates></point>
+     <latitude>0.19 LS</latitude>
+     <longitude>132.98 BT</longitude>
+     <magnitude>5.3</magnitude>
+     <depth>10 Km</depth>
+     <area>69 km BaratLaut KEBARMANOKWARI-PAPUABRT</area>
+     <eventid>20261110153700</eventid>
+     <potential>tidak berpotensi TSUNAMI</potential>
+     <subject>Gempa M>5</subject>
+     <headline>Info Gempa Mag:5.3, 10-Nov-26 15:34:04 WIB, Lok:0.19 LS, 132.98 BT (69 km BaratLaut KEBARMANOKWARI-PAPUABRT), Kedlmn:10 Km ::BMKG</headline>
+     <description>Telah terjadi gempabumi dengan kekuatan:5.3, lokasi: 69 km BaratLaut KEBARMANOKWARI-PAPUABRT, waktu:10-Nov-26 15:34:04 WIB, Gempa ini tidak berpotensi TSUNAMI</description>
+     <instruction>Hati-hati terhadap gempabumi susulan yang mungkin terjadi</instruction>
+     <shakemap>20261110153700.mmi.jpg</shakemap>
+     <timesent>10/11/2026 15:37:00WIB</timesent>
+  </info>
+</alert>

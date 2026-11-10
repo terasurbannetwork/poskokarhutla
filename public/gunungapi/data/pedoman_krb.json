@@ -1,0 +1,53 @@
+{
+ "v": 1,
+ "sumber": "Permen ESDM No. 15 Tahun 2011, sebagaimana ditayangkan MAGMA Indonesia (PVMBG, Badan Geologi)",
+ "diperiksa": "2026-11-10",
+ "level": {
+  "1": {
+   "nama": "Normal",
+   "pengamatan": "Visual dan instrumental fluktuatif, tetapi tidak memperlihatkan peningkatan aktivitas yang signifikan.",
+   "bahaya": "Gas beracun di sekitar kawah, pada gunung api tertentu."
+  },
+  "2": {
+   "nama": "Waspada",
+   "pengamatan": "Visual dan instrumental mulai memperlihatkan peningkatan aktivitas. Pada beberapa gunung api dapat terjadi erupsi.",
+   "bahaya": "Berada di sekitar kawah."
+  },
+  "3": {
+   "nama": "Siaga",
+   "pengamatan": "Visual dan instrumental memperlihatkan peningkatan aktivitas yang semakin nyata atau gunung api mengalami erupsi.",
+   "bahaya": "Erupsi bisa meluas tetapi tidak mengancam permukiman penduduk."
+  },
+  "4": {
+   "nama": "Awas",
+   "pengamatan": "Visual dan instrumental teramati mengalami peningkatan aktivitas yang semakin nyata atau gunung api mengalami erupsi.",
+   "bahaya": "Erupsi bisa meluas dan mengancam permukiman penduduk."
+  }
+ },
+ "krb": {
+  "I": {
+   "1": "Masyarakat dapat melakukan kegiatan sehari-hari.",
+   "2": "Masyarakat masih dapat melakukan kegiatannya dengan meningkatkan kewaspadaan.",
+   "3": "Masyarakat meningkatkan kewaspadaan dengan tidak melakukan aktivitas di sekitar lembah sungai yang berhulu di daerah puncak.",
+   "4": "Masyarakat segera mengungsi berdasarkan perintah dari pemerintah daerah setempat sesuai rekomendasi teknis dari KESDM."
+  },
+  "II": {
+   "1": "Masyarakat dapat melakukan kegiatan sehari-hari.",
+   "2": "Masyarakat masih dapat melakukan kegiatannya dengan meningkatkan kewaspadaan terhadap ancaman bahaya.",
+   "3": "Masyarakat mulai menyiapkan diri untuk mengungsi sambil menunggu perintah dari pemerintah daerah sesuai rekomendasi teknis dari KESDM.",
+   "4": "Masyarakat segera mengungsi berdasarkan perintah dari pemerintah daerah setempat sesuai rekomendasi teknis dari KESDM."
+  },
+  "III": {
+   "1": "Masyarakat dapat melakukan kegiatan sehari-hari dengan tetap mematuhi ketentuan peraturan dari pemerintah daerah setempat sesuai rekomendasi teknis dari KESDM.",
+   "2": "Masyarakat direkomendasikan tidak melakukan aktivitas di sekitar kawah.",
+   "3": "Masyarakat di wilayah terancam tidak diperbolehkan melakukan aktivitas dan mulai menyiapkan diri untuk mengungsi.",
+   "4": "Masyarakat di wilayah terancam tidak diperbolehkan melakukan aktivitas dan segera mengungsi."
+  }
+ },
+ "vona": {
+  "green": "Gunung api normal dan tidak erupsi, atau aktivitas dianggap berhenti setelah turun dari kode lebih tinggi.",
+  "yellow": "Tanda kegiatan di atas latar normal, atau aktivitas sudah turun signifikan tetapi tetap dipantau ketat.",
+  "orange": "Kegiatan meningkat dengan kemungkinan erupsi lebih besar, kolom di bawah 6.000 m di atas permukaan laut.",
+  "red": "Erupsi diperkirakan segera terjadi dengan emisi abu signifikan, kolom di atas 6.000 m di atas permukaan laut."
+ }
+}

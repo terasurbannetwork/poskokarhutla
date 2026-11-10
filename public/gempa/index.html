@@ -49,6 +49,7 @@
 <link rel="stylesheet" href="../inti/peringatan-berita.css">
 <link rel="stylesheet" href="gempa.css">
 <link rel="stylesheet" href="sim.css">
+<link rel="stylesheet" href="katalog.css">
 <link rel="stylesheet" href="../inti/metode.css">
 <link rel="stylesheet" href="foto.css">
 </head>
@@ -76,6 +77,7 @@
     <div id="peta"></div>
     <div class="muat" id="muat"><div><div class="spin"></div>Memuat gempa seluruh Indonesia…</div></div>
     <div class="pita" id="pita" role="status" hidden></div>
+    <div class="pita pita-ina" id="inaPita" hidden></div>
     <div class="panel" id="panel">
       <nav class="crumb" id="crumb" aria-label="Tingkat wilayah"></nav>
       <div class="card list">
@@ -100,6 +102,7 @@
         <details open><summary>Gempa</summary>
           <label><input type="checkbox" data-l="wilayah" checked> Warna wilayah</label>
           <label><input type="checkbox" data-l="gempa" checked> Gempa terkini</label>
+          <label><input type="checkbox" data-l="katalog"> Katalog BMKG semua magnitudo (3 bulan)</label>
           <label><input type="checkbox" data-l="riwayat"> Gempa besar sejak 1900 (M 5+)</label>
         </details>
         <details open><summary>Bahaya</summary>
@@ -123,6 +126,7 @@
   </section>
 
   <section class="page scroll" id="p-kejadian" aria-label="Kejadian gempa" hidden><div class="wrap" id="kejadian"></div></section>
+  <section class="page scroll" id="p-katalog" aria-label="Katalog BMKG" hidden><div class="wrap"><div class="pita ina-tsu" id="inaTsu" hidden></div><div id="katalog"></div></div></section>
   <section class="page scroll" id="p-insight" aria-label="Insight gempa" hidden><div class="wrap"><div id="pbBerita" hidden></div></div><div class="wrap" id="insight"></div></section>
   <section class="page scroll" id="p-tren" aria-label="Tren gempa" hidden><div class="wrap" id="tren"></div></section>
   <section class="page scroll" id="p-berita" aria-label="Berita gempa" hidden><div class="wrap" id="berita"></div></section>
@@ -161,6 +165,7 @@
 <script src="susulan.js"></script>
 <script src="tsunami.js"></script>
 <script src="evakuasi.js"></script>
+<script src="inatews.js"></script>
 <script src="kerusakan.js"></script>
 <script src="sim.js"></script>
 <script src="bukti.js"></script>

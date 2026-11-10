@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<Infogempa>
+ <gempa>
+  <eventid>bmg2026wank</eventid>
+  <status>confirmed</status>
+  <waktu>2026/11/10  08:34:06.051</waktu>
+  <lintang>-0.32</lintang>
+  <bujur>132.95</bujur>
+  <dalam>11</dalam>
+  <mag>5.0</mag>
+  <fokal>mt_yes</fokal>
+  <area>West Papua Region, Indonesia</area>
+ </gempa>
+ <gempa>
+  <eventid>bmg2026wamc</eventid>
+  <status>confirmed</status>
+  <waktu>2026/11/10  07:53:51.218</waktu>
+  <lintang>0.89</lintang>
+  <bujur>126.46</bujur>
+  <dalam>23</dalam>
+  <mag>3.4</mag>
+  <fokal>undetermined</fokal>
+  <area>Northern Molucca Sea</area>
+ </gempa>
+ <gempa>
+  <eventid>bmg2026walz</eventid>
+  <status>confirmed</status>
+  <waktu>2026/11/10  07:50:17.574</waktu>
+  <lintang>-7.94</lintang>
+  <bujur>120.59</bujur>
+  <dalam>10</dalam>
+  <mag>3.5</mag>
+  <fokal>undetermined</fokal>
+  <area>Flores Sea</area>
+ </gempa>
+</Infogempa>

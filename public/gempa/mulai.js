@@ -30,7 +30,7 @@ PilihCantik.pasang();
 /* ================================================================ mulai */
 (async () => {
   try { await muatData(); } catch (e) { $("#muat").innerHTML = `<div><b>Data belum tersedia.</b><br>${esc(e.message)}</div>`; return; }
-  renderRentang(); await Peta.init(); renderCrumb(); renderDaftar(); renderPita(); renderLegenda();
+  renderRentang(); await Peta.init(); renderCrumb(); renderDaftar(); renderPita(); renderLegenda(); Ina.mulai();
   $("#muat").classList.add("hilang");
   /* /gempa/<tab> bersih; tab tanpa isi jatuh ke Peta */
   const j = location.pathname.replace(/^\/gempa\/?/, "").replace(/\/+$/, "").replace(/^index\.html$/, "");

@@ -3,10 +3,10 @@
    Data: ../banjir/data/cuaca_{kec,gelombang,siklon,sarana,dampak}.json lewat S.kec/gel/sik/sar/dmp (cuaca.js muatTambahan). Berkas yang tak ada = bagian dibuang, tanpa galat.
    Semua lapisan baru hidup di peta.js lewat Status.pasang() dan Status.segarkan(); kontrol tambahan hanya dibuat bila datanya ada. */
 const Status = (() => {
-  const ID = {kec: "st-kec", gel: "st-gel", sar: "st-sar", sikG: "st-sik-garis", sikK: "st-sik-kerucut", sikT: "st-sik-titik"};
+  const ID = {kec: "st-kec", gel: "st-gel", sar: "st-sar", mar: "st-mar", sikG: "st-sik-garis", sikK: "st-sik-kerucut", sikT: "st-sik-titik"};
   const HS = () => S.kec?.ambang?.hs_m || [2.5, 4, 6];
   const k = () => { const i = kIdx(); return i >= 0 ? i : 0; };
-  const ada = {kec: () => !!S.kec, gel: () => !!(S.gel && S.kec), sar: () => !!(S.sar && S.dmp), sik: () => !!S.sik};
+  const ada = {kec: () => !!S.kec, gel: () => !!(S.gel && S.kec), sar: () => !!(S.sar && S.dmp), mar: () => !!(S.mar && S.kec), sik: () => !!S.sik};
   const warnaExpr = key => ["match", ["get", key], 3, warnaT(3), 2, warnaT(2), 1, warnaT(1), "#9aa4b2"];
   const tHs = v => v == null ? 0 : v / 10 >= HS()[2] ? 3 : v / 10 >= HS()[1] ? 2 : v / 10 >= HS()[0] ? 1 : 0;
   const pt = (lon, lat, p) => ({type: "Feature", geometry: {type: "Point", coordinates: [lon, lat]}, properties: p});
@@ -26,6 +26,9 @@ const Status = (() => {
     for (const r of S.dmp.pelabuhan || []) { const s = S.sar.pelabuhan[r[0]]; if (s) f.push(pt(s[2], s[1], {j: "pelabuhan", n: r[0], t0: r[1][0] || 0, t1: r[1][1] || 0, t2: r[1][2] || 0, x: r[2], g: r[3]})); }
     for (const r of S.dmp.bandara || []) { const s = S.sar.bandara[r[0]]; if (s) f.push(pt(s[3], s[2], {j: "bandara", n: r[0], t0: r[1][0] || 0, t1: r[1][1] || 0, t2: r[1][2] || 0, x: r[2], g: r[3]})); }
     return fc(f); };
+  /* satu titik per pelabuhan dan perairan berkoordinat; kelas tiga hari dipanggang sekali (k0..k2, -1 = tanpa data) supaya ganti hari hanya mengubah filter dan warna */
+  const geoMar = () => fc(["perairan", "pelabuhan"].flatMap(jn => S.mar[jn].flatMap((r, n) => r[3] == null ? [] : [pt(r[4], r[3], {j: jn, n, k0: marK(r[6][0]), k1: marK(r[6][1]), k2: marK(r[6][2])})])));
+  const warnaMar = key => ["match", ["get", key], ...MAR_KELAS.flatMap((x, i) => [i, x[1]]), "#9aa4b2"];
   const geoSik = () => { const G = [], T = [], C = [];
     for (const s of S.sik.aktif) { const L = s.lintasan || [], ob = L.filter(x => x[4] === "amatan"), pr = L.filter(x => x[4] !== "amatan");
       const garis = (a, jenis) => a.length > 1 && G.push({type: "Feature", geometry: {type: "LineString", coordinates: a.map(x => [x[2], x[1]])}, properties: {id: s.id, jenis}});
@@ -46,6 +49,12 @@ const Status = (() => {
       peta.addSource("st-gel", {type: "geojson", data: geoGel(j)});
       peta.addLayer({id: ID.gel, type: "circle", source: "st-gel", layout: {visibility: "none"}, filter: [">=", ["get", "hs"], Math.round(HS()[0] * 5)],
         paint: {"circle-color": warnaExpr("t"), "circle-radius": ["interpolate", ["linear"], ["get", "hs"], 10, 3, 60, 9], "circle-opacity": .8, "circle-stroke-color": "#16405c", "circle-stroke-width": 1.2}});
+    }
+    if (ada.mar()) {
+      const m = Math.max(0, mIdx());
+      peta.addSource("st-mar", {type: "geojson", data: geoMar()});
+      peta.addLayer({id: ID.mar, type: "circle", source: "st-mar", layout: {visibility: "none"}, filter: [">=", ["get", "k" + m], 0],
+        paint: {"circle-color": warnaMar("k" + m), "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 2.5, 8, 6, 11, 9], "circle-opacity": .85, "circle-stroke-color": ["match", ["get", "j"], "pelabuhan", "#16405c", "#fff"], "circle-stroke-width": ["match", ["get", "j"], "pelabuhan", 1.6, .6]}});
     }
     if (ada.sar()) {
       peta.addSource("st-sar", {type: "geojson", data: geoSar()});
@@ -68,16 +77,17 @@ const Status = (() => {
     if (!peta?.getLayer) return; const j = k(), st = S.mode === "status", v = (id, on) => peta.getLayer(id) && peta.setLayoutProperty(id, "visibility", on ? "visible" : "none");
     if (peta.getLayer(ID.kec)) { peta.setFilter(ID.kec, [">=", ["get", "t" + j], 1]); peta.setPaintProperty(ID.kec, "circle-color", warnaExpr("t" + j)); v(ID.kec, st && lihat("s-kec")); }
     if (peta.getLayer(ID.gel)) { peta.getSource("st-gel").setData(geoGel(j)); v(ID.gel, st && lihat("s-gel")); }
+    if (peta.getLayer(ID.mar)) { const m = mIdx(); peta.setFilter(ID.mar, m < 0 ? ["==", 1, 0] : [">=", ["get", "k" + m], 0]); if (m >= 0) peta.setPaintProperty(ID.mar, "circle-color", warnaMar("k" + m)); v(ID.mar, st && lihat("s-mar")); }
     if (peta.getLayer(ID.sar)) { peta.setFilter(ID.sar, [">=", ["get", "t" + j], 1]); peta.setPaintProperty(ID.sar, "circle-color", warnaExpr("t" + j)); v(ID.sar, st && lihat("s-sar")); }
     if (peta.getLayer(ID.sikT)) [ID.sikK, ID.sikG, ID.sikG + "-p", ID.sikT].forEach(id => v(id, lihat("s-sik")));
   }
 
   /* ---------- kontrol ---------- */
-  const IKT = {"s-kec": ["Kecamatan 72 jam", "Kecamatan", "peringatan"], "s-gel": ["Titik gelombang", "Ombak", "ombak"], "s-sar": ["Pelabuhan dan bandara", "Sarana", "posko"], "s-sik": ["Siklon tropis", "Siklon", "angin"]};
+  const IKT = {"s-kec": ["Kecamatan 72 jam", "Kecamatan", "peringatan"], "s-gel": ["Titik gelombang", "Ombak", "ombak"], "s-sar": ["Pelabuhan dan bandara", "Sarana", "posko"], "s-mar": ["Prakiraan maritim BMKG", "Maritim", "ombak"], "s-sik": ["Siklon tropis", "Siklon", "angin"]};
   function kontrol() {
     if (ada.kec()) { $("#modePeta").insertAdjacentHTML("beforeend", '<button data-mp="status" aria-pressed="false">Status</button>'); }
     pilSiklon();
-    const L = [["s-kec", ada.kec(), true], ["s-gel", ada.gel(), true], ["s-sar", ada.sar(), true], ["s-sik", ada.sik(), true]].filter(x => x[1]); if (!L.length) return;
+    const L = [["s-kec", ada.kec(), true], ["s-gel", ada.gel(), true], ["s-sar", ada.sar(), true], ["s-mar", ada.mar(), true], ["s-sik", ada.sik(), true]].filter(x => x[1]); if (!L.length) return;
     L.forEach(([n]) => { UBIN[n] = ["#7a3b0b", "#e58a45", IKT[n][2]]; UBIN_PENDEK[n] = IKT[n][1]; });
     $("#lapis").insertAdjacentHTML("beforeend", `<details open><summary>Status 72 jam</summary>${L.map(([n]) => `<label><input type="checkbox" data-l="${n}" checked> ${IKT[n][0]}</label>`).join("")}</details>`);
     $("#lapis").addEventListener("change", e => { if (e.target.closest('input[data-l^="s-"]')) { segarkan(); renderLegenda(); } });
@@ -159,6 +169,17 @@ const Status = (() => {
     Laci.buka(p.j === "pelabuhan" ? "Pelabuhan" : "Bandara", `<span translate="no">${esc(s.nama)}</span>`, `${pilT(p["t" + k()])} <span translate="no">${esc(namaProv(s.prov))}</span>`,
       `${kvs(kot(s.lb === "hujan" ? "Hujan" : "Gelombang", s.v.split(" ")[0], s.v.split(" ")[1]), kot("Embusan", fmt(p.g), "km/jam"))}
       ${[0, 1, 2].map(d => `<p class="fnd">${pilT(p["t" + d])} <b>${lbl3(d)}</b></p>`).join("")}<p class="fnd">Angka tertinggi dalam 72 jam. Sumber: Deteksi Centurisk97 dari prakiraan model; sarana dari data terbuka. Bukan peringatan resmi.</p>`); }
+  /* BMKG Maritim: tip dan laci dari baris S.mar (tiga hari WIB); teks dari BMKG lewat esc */
+  const marSub = (r, jenis) => `${jenis}${r[2] ? ", " + esc(namaProv(r[2])) : ""}`;
+  function tipMar(p) { const r = S.mar[p.j][p.n], m = mIdx(), md = r[9][m], kl = r[6][m];
+    return PI.kartuTip({judul: `<span translate="no">${esc(r[1])}</span>`, sub: `<small>${marSub(r, p.j === "pelabuhan" ? "Pelabuhan" : "Perairan")}</small>`,
+      stat: [["ombak", fmt(r[5][m] / 10) + " m", `gelombang BMKG, ${esc(kl)}${md != null ? `, model Open-Meteo ${fmt(md / 10)} m` : ""}`, MAR_KELAS[marK(kl)]?.[1] || "#16405c", marK(kl) >= 3], ["angin", fmt(marKmj(r[7][m])) + " km/jam", "embusan", "#2b8c86", false]]}); }
+  function laciMar(p) { const r = S.mar[p.j][p.n], m = mIdx(), pel = p.j === "pelabuhan", md = r[9][m];
+    Laci.buka(pel ? "Pelabuhan" : "Perairan", `<span translate="no">${esc(r[1])}</span>`, marSub(r, pel ? "Pelabuhan" : "Perairan"),
+      `${kvs(kot("Gelombang BMKG", fmt(r[5][m] / 10), "m"), kot("Embusan", fmt(marKmj(r[7][m])), "km/jam"), kot("Arus", fmt(marKmj(r[8][m])), "km/jam"), md != null && kot("Model Open-Meteo", fmt(md / 10), "m"),
+        pel && r[10][m] != null && kot("Pasang", fmt(r[10][m]) + " sampai " + fmt(r[11][m]), "cm"), pel && r[12][m] != null && kot("Jarak pandang", fmt(r[12][m]), "km"))}
+      ${S.mar.hari.map((h, d) => r[5][d] == null ? "" : `<p class="fnd"><b>${tglSgk(h)}</b>: gelombang ${fmt(r[5][d] / 10)} m, ${esc(r[6][d])}, embusan ${fmt(marKmj(r[7][d]))} km/jam, arus ${fmt(marKmj(r[8][d]))} km/jam${r[9][d] != null ? `, model Open-Meteo ${fmt(r[9][d] / 10)} m` : ""}</p>`).join("")}
+      <p class="fnd">Sumber: BMKG Maritim, terbit ${jamWIB(S.mar.terbit)}</p>`); }
   function tipGel(p) { const r = S.gel.titik[p.n]; return PI.kartuTip({judul: `<span translate="no">${esc(r[3] || namaProv(r[2]))}</span>`, sub: `<small>${esc(namaT(p.t))}</small>`, stat: [["ombak", fmt(p.hs / 10) + " m", "gelombang tertinggi", "#16405c", p.t >= 2]]}); }
   function laciSik(id) { const s = S.sik.aktif.find(x => x.id === id); if (!s) return;
     Laci.buka("Siklon tropis", `<span translate="no">${esc(s.nama || s.id)}</span>`, `<span translate="no">${esc(s.kategori || "")}</span>`,
@@ -167,16 +188,16 @@ const Status = (() => {
       <p class="fnd">Sumber: <span translate="no">${esc(s.sumber || "")}</span>, dibuat ${jamWIB(S.sik.dibuat)}${s.tautan ? `. <a href="${escUrl(s.tautan)}" target="_blank" rel="noopener">Lihat sumber</a>` : ""}</p>`); }
 
   /* ---------- interaksi peta ---------- */
-  const lapisAktif = () => [ID.sikT, ID.sar, ID.gel, ID.kec].filter(id => peta.getLayer(id) && peta.getLayoutProperty(id, "visibility") === "visible");
+  const lapisAktif = () => [ID.sikT, ID.sar, ID.mar, ID.gel, ID.kec].filter(id => peta.getLayer(id) && peta.getLayoutProperty(id, "visibility") === "visible");
   function hover(e) { if (!PI) return false; const st = S.mode === "status", L = lapisAktif(); if (!L.length) return st;
     const f = peta.queryRenderedFeatures(e.point, {layers: L})[0]; peta.getCanvas().style.cursor = f ? "pointer" : "";
     if (!f) { if (st) PI.sembunyiTip(); return st; }
-    const p = f.properties, h = f.layer.id === ID.kec ? tipKec(p.i) : f.layer.id === ID.sar ? tipSar(p) : f.layer.id === ID.gel ? tipGel(p)
+    const p = f.properties, h = f.layer.id === ID.kec ? tipKec(p.i) : f.layer.id === ID.sar ? tipSar(p) : f.layer.id === ID.mar ? tipMar(p) : f.layer.id === ID.gel ? tipGel(p)
       : PI.kartuTip({judul: `<span translate="no">${esc(S.sik.aktif.find(x => x.id === p.id)?.nama || p.id)}</span>`, sub: `<small>${p.jenis === "amatan" ? "posisi amatan" : "prakiraan"}</small>`, stat: [["angin", fmt(kt(p.kt)) + " km/jam", "angin", "#7a1f2b", true], ...(S.sik.aktif.find(x => x.id === p.id)?.jma?.angin_kt != null && p.jenis === "amatan" ? [["angin", fmt(kt(S.sik.aktif.find(x => x.id === p.id).jma.angin_kt)) + " km/jam", "angin JMA, 10 menit", "#6b7280"]] : [])]});
     PI.tampilTip(h, e.originalEvent); return true; }
   function klik(e) { const L = lapisAktif(); if (!L.length) return false; const f = peta.queryRenderedFeatures(e.point, {layers: L})[0]; if (!f) return false;
     const p = f.properties; S.pilih = null; renderCrumb();
-    if (f.layer.id === ID.kec) laciKec(p.i); else if (f.layer.id === ID.sar) laciSar(p); else if (f.layer.id === ID.sikT) laciSik(p.id);
+    if (f.layer.id === ID.kec) laciKec(p.i); else if (f.layer.id === ID.sar) laciSar(p); else if (f.layer.id === ID.mar) laciMar(p); else if (f.layer.id === ID.sikT) laciSik(p.id);
     else { const r = S.gel.titik[p.n]; Laci.buka("Gelombang", `<span translate="no">${esc(r[3] || namaProv(r[2]))}</span>`, `${pilT(p.t)} <span translate="no">${esc(namaProv(r[2]))}</span>`,
       `${kvs(kot("Tertinggi", fmt(p.hs / 10), "m"))}<p class="fnd">Tertinggi dalam sehari. Sumber: Open-Meteo Marine (model), bukan peringatan BMKG Maritim.</p>`); }
     return true; }
@@ -184,6 +205,7 @@ const Status = (() => {
   /* ---------- legenda ---------- */
   function legenda() { let h = "";
     if (S.mode === "status" && ada.kec()) h += `<div class="lbl">Status 72 jam (deteksi Centurisk97, ${AMBANG_PIL().toLowerCase()})</div><div class="leg" style="margin:4px 0 8px">${[1, 2, 3].map(t => `<span><i class="sw" style="background:${warnaT(t)}"></i>${namaT(t)}</span>`).join("")}</div>`;
+    if (S.mode === "status" && lihat("s-mar") && ada.mar()) h += `<div class="lbl">Prakiraan maritim BMKG, kelas gelombang</div><div class="leg" style="margin:4px 0 8px">${MAR_KELAS.map(x => `<span><i class="sw" style="background:${x[1]}"></i>${x[0]}</span>`).join("")}</div>`;
     if (lihat("s-sik") && ada.sik()) h += `<div class="lbl">Siklon tropis</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="background:#7a1f2b"></i>Lintasan amatan</span><span><i class="sw" style="background:#fff;border:2px solid #7a1f2b"></i>Prakiraan</span></div>`;
     return h; }
 

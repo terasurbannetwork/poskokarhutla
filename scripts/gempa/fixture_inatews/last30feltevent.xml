@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>Indonesia-InaTEWS-felthistory-Eq-20261110153404</identifier>
+  <sender>inatews@bmkg.go.id</sender>
+  <sent>2026-11-10T15:34:04WIB</sent>
+  <status>Actual</status>
+  <msgType>Update</msgType>
+  <scope>Public</scope>
+  <code>profile:BMKG-Versi:1</code>
+  <info>
+     <event>Gempabumi</event>
+     <date>10-11-26</date>
+     <time>15:34:04 WIB</time>
+     <point><coordinates>132.98,-0.19</coordinates></point>
+     <latitude>0.19 LS</latitude>
+     <longitude>132.98 BT</longitude>
+     <magnitude>5.3</magnitude>
+     <depth>10 Km</depth>
+     <area>Pusat gempa berada di laut 69 km barat laut Kebar Manokwari</area>
+     <eventid>20261110153404</eventid>
+     <potential>Gempa ini dirasakan untuk diteruskan pada masyarakat</potential>
+     <subject>Warning Gempa dirasakan</subject>
+     <headline>Info Gempa dirasakan Mag:5.3, 10-Nov-26 15:34:04 WIB, Lok:0.19 LS, 132.98 BT (Pusat gempa berada di laut 69 km barat laut Kebar Manokwari), Kedlmn:10 Km ::BMKG</headline>
+     <description>Telah terjadi gempabumi mag:5.3, lokasi:Pusat gempa berada di laut 69 km barat laut Kebar Manokwari, waktu:10-Nov-26 15:34:04 WIB, kedlmn:10 Km, gempa ini dirasakan(MMI):II - III Manokwari</description>
+     <instruction>Hati-hati terhadap gempabumi susulan yang mungkin terjadi</instruction>
+     <shakemap>20261110153404.mmi.jpg</shakemap>
+     <felt>II - III Manokwari</felt>
+     <timesent>10/11/2026 15:39:04WIB</timesent>
+  </info>
+</alert>

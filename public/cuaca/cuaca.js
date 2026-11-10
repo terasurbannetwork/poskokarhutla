@@ -26,6 +26,11 @@ const tingkat = (v, a) => a.reduce((n, x) => n + ((v || 0) >= x ? 1 : 0), 0);
 const WARNA_SEV = {Minor: "#e3b94e", Moderate: "#e58a45", Severe: "#c9503a", Extreme: "#7a1f2b"}, SEV_ASAL = "#8a96a6";
 /* kelas gelombang BMKG Maritim yang jadi PERINGATAN: tinggi, sangat tinggi, ekstrem (tinggi dalam meter). Kelas "sedang" (1,25 sampai 2,5 m) ada di berkas BMKG tetapi bukan peringatan
    (sama dengan hitungan scripts/banjir/peringatan.py "kategori tinggi+"), jadi tidak dihitung: "21 provinsi dalam peringatan" dulu menghitung provinsi yang hanya bergelombang sedang. */
+/* kelas gelombang BMKG Maritim apa adanya (cuaca_maritim.json); baris: [kode, nama, prov, lat, lon, hs dm, kelas, embusan kt, arus kt, model dm] + pelabuhan [pasang maks cm, pasang min cm, jarak pandang min km] */
+const MAR_KELAS = [["Tenang", "#b5c3d1"], ["Rendah", "#6bb3a8"], ["Sedang", "#c99a1e"], ["Tinggi", "#3f7fb8"], ["Sangat Tinggi", "#5b4fb0"], ["Ekstrem", "#2a1f6b"]];
+const marK = t => { const s = String(t ?? "").toLowerCase(); return !s ? -1 : s.includes("ekstrem") ? 5 : s.includes("sangat") ? 4 : MAR_KELAS.findIndex(k => k[0].toLowerCase() === s); };
+const marKmj = kt => kt == null ? null : Math.round(kt * 1.852);   /* knot ke km/jam */
+const marBaris = j => { const m = S.mar, ambil = (L, jenis) => L.flatMap((r, n) => j >= 0 && r[5][j] != null ? [{r, n, jenis, hs: r[5][j], k: marK(r[6][j])}] : []); return [...ambil(m.perairan, "Perairan"), ...ambil(m.pelabuhan, "Pelabuhan")]; };
 const GEL = [["tinggi", "Tinggi", "2,5 sampai 4 m", "#3f7fb8"], ["sangat_tinggi", "Sangat tinggi", "4 sampai 6 m", "#5b4fb0"], ["ekstrem", "Ekstrem", "di atas 6 m", "#2a1f6b"]];
 
 /* ================================================================ state */
@@ -37,6 +42,7 @@ const pilT = t => `<span class="pl" style="--w:${warnaT(t)}">${namaT(t)}</span>`
 const lbl3 = j => { const h = S.kec?.hari?.[j] ?? S.pr.hari[S.h0 + j], n = Math.round((Date.parse(h + "T12:00:00+07:00") - Date.parse(tglWIB(SEKARANG()) + "T12:00:00+07:00")) / 864e5); if (basi()) return "prakiraan " + tglSgk(h); return n === 0 ? "Hari ini" : n === 1 ? "Besok" : n === 2 ? "Lusa" : tglPendek(h); };
 /* kata keterangan waktu dalam kalimat: hari ini, besok, lusa, atau "pada 13 Okt" */
 const kapan3 = j => { const h = S.kec?.hari?.[j] ?? S.pr.hari[S.h0 + j], n = Math.round((Date.parse(h + "T12:00:00+07:00") - Date.parse(tglWIB(SEKARANG()) + "T12:00:00+07:00")) / 864e5); return basi() || n < 0 || n > 2 ? "pada " + tglSgk(h) : ["hari ini", "besok", "lusa"][n]; };
+const mIdx = () => S.mar ? S.mar.hari.indexOf(S.kec ? S.kec.hari[Math.max(0, kIdx())] : S.pr.hari[S.hari]) : -1;   /* hari terpilih di larik 3 hari BMKG Maritim; -1 = tak tercakup */
 const kIdx = () => S.kec ? S.kec.hari.indexOf(S.pr.hari[S.hari]) : -1;   /* hari terpilih di kontrak 72 jam; -1 = di luar 3 hari */
 const tglSgk = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"});
 /* prakiraan dibuat bukan pada hari WIB ini: "Hari ini/Besok" diganti tanggal */
@@ -89,12 +95,13 @@ $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.docu
 /* berkas tambahan boleh hilang: kartu dan lapisan yang datanya tak ada dibuang (A18) */
 const opsi = u => muatJSON(u).catch(() => null);
 async function muatTambahan() {
-  const B = "../banjir/data/", kej = Kejadian.muatAwal(), [kec, gel, sik, sar, ver, dmp, uji, reg] = await Promise.all(["kec", "gelombang", "siklon", "sarana", "verifikasi", "dampak", "uji_logbook"].map(n => opsi(B + "cuaca_" + n + ".json")).concat(opsi("/bencana.json")));
+  const B = "../banjir/data/", kej = Kejadian.muatAwal(), [kec, gel, sik, sar, ver, dmp, uji, mar, reg] = await Promise.all(["kec", "gelombang", "siklon", "sarana", "verifikasi", "dampak", "uji_logbook", "maritim"].map(n => opsi(B + "cuaca_" + n + ".json")).concat(opsi("/bencana.json")));
   const tg = reg?.bencana?.find(b => b.id === "cuaca")?.tingkat; if (tg?.length === 4) TINGKAT = tg.map(x => [x.nama, x.warna]);
   if (kec?.kec?.length) { const pk = await opsi(B + "pusat_kec.json"); if (pk) Object.assign(S, {kec, kecKunci: Object.keys(pk), kecPusat: Object.values(pk)}); }
   if (gel?.titik?.length) S.gel = gel;
   if (sik?.aktif?.length) S.sik = sik;
   if (sar && dmp && (dmp.pelabuhan?.length || dmp.bandara?.length)) S.sar = sar;
+  if (mar?.hari?.length && (mar.perairan?.length || mar.pelabuhan?.length)) S.mar = mar;   /* BMKG Maritim: berkas hilang = bagian dibuang */
   if (ver && (ver.bmkg || ver.kita)) S.ver = ver;
   S.dmp = dmp; if (uji?.jenis?.cuaca?.auc) S.uji = uji;
   await kej; isiTab();

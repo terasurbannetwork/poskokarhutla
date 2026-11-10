@@ -67,6 +67,10 @@ const Laci = {
     if (g.prov) Risiko.prov(g.prov).then(r => { if (!r) return;
       tambah(4, `<h4 class="lc-h">Indeks risiko riwayat provinsi</h4><table class="tb2"><tbody>${baris(esc(namaProv(g.prov)), `<span class="lc-mmi" style="--w:${r.w};color:${r.skor < 30 ? "#3b3320" : "#fff"}">${r.kelas}</span> ${r.skor} dari 100`)}</tbody></table>
         <p class="fnd">Dari gempa M 5+ ${r.r.tahun[0]} sampai ${r.r.tahun[1]}. Sumber: USGS</p>`); }).catch(() => {});
+    /* 8. detail lengkap BMKG/InaTEWS (peta guncangan, siaran pers, mekanisme, stasiun, zona tsunami): dipasangkan lewat waktu dan jarak ke katalog BMKG */
+    if (typeof Ina !== "undefined") Ina.untukLaci(g).then(r => { if (!r || !sama()) return;
+      tambah(8, `<button type="button" class="btn sec" data-ina><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4zM4 10h16M10 4v16"/></svg>Detail lengkap BMKG (InaTEWS)</button>`);
+      const t = slot.querySelector("[data-ina]"); if (t) t.onclick = () => Ina.buka(r); }).catch(() => {});
     /* 5. kantor BPBD terdekat (bpbd.json BNPB). DISEMBUNYIKAN (A24) seperti "Respons terdekat" karhutla: gempa.css menyembunyikan [data-j="Kontak BPBD"]; data kantor lama (± 2016), nomor perlu dicek */
     Kontak.dekat(g.lat, g.lon).then(K => { if (!K.length) return;
       tambah(5, `<h4 class="lc-h" data-j="Kontak BPBD">Kontak BPBD terdekat</h4><table class="tb2" data-j="Kontak BPBD"><tbody>${K.map(b => baris(esc(b.nama), `${fmt(Math.round(b.km))} km${b.pusdalops ? ", " + esc(b.pusdalops) : ""}`)).join("")}</tbody></table>

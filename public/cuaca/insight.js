@@ -14,15 +14,16 @@ const IK = {nowcast: '<path d="M7 18a5 5 0 1 1 1.2-9.9A6 6 0 0 1 19.5 10 4 4 0 0
   ansambel: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', peluang: '<path d="M3 20h18M6 20v-6M11 20V8M16 20v-9"/><path d="M4 7l4-3 4 3 4-3 4 3"/>', siklon: '<path d="M12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M12 3a9 9 0 0 1 9 9M12 21a9 9 0 0 1-9-9M12 6a6 6 0 0 1 6 6M12 18a6 6 0 0 1-6-6"/>', bukti: '<path d="M5 12l4 4 10-10"/><circle cx="12" cy="12" r="9"/>', status: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', sarana: '<path d="M4 20V9l8-5 8 5v11H4Z"/><path d="M10 20v-6h4v6"/>', provinsi: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', kejadian: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>'};
 
 IK.buktiBmkg = IK.buktiKita = IK.bukti;
+IK.maritim = IK.gelombang;
 
 const Insight = {
   /* tabel provinsi: urut menurun menurut hujan, 10 baris per halaman */
   T: {provinsi: {urut: "hujan", turun: true, hal: 0}, kejadian: {urut: "mulai", turun: true, hal: 0}},
-  EX: ["kejadian", "status", "siklon", "sarana", "buktiBmkg", "buktiKita", "nowcast", "gelombang", "hujan", "angin", "ansambel", "peluang", "provinsi"],
+  EX: ["kejadian", "status", "siklon", "sarana", "buktiBmkg", "buktiKita", "nowcast", "gelombang", "maritim", "hujan", "angin", "ansambel", "peluang", "provinsi"],
   st: {},   /* state kontrol kartu peluang (wilayah, ambang) */
   PL: null,
   ih: 0, lead: "1",   /* hari kartu Status: indeks di kontrak 72 jam */
-  LABEL: {kejadian: "Kejadian cuaca", peluang: "Peluang hujan ekstrem", status: "Wilayah Siaga/Awas 72 jam", siklon: "Siklon tropis", sarana: "Pelabuhan dan bandara terancam", buktiBmkg: "Ketepatan peringatan BMKG", buktiKita: "Ketepatan prakiraan Centurisk97", nowcast: "Nowcast BMKG", gelombang: "Gelombang", hujan: "Hujan", angin: "Angin", ansambel: "Ansambel", provinsi: "Provinsi"},
+  LABEL: {kejadian: "Kejadian cuaca", peluang: "Peluang hujan ekstrem", status: "Wilayah Siaga/Awas 72 jam", siklon: "Siklon tropis", sarana: "Pelabuhan dan bandara terancam", buktiBmkg: "Ketepatan peringatan BMKG", buktiKita: "Ketepatan prakiraan Centurisk97", nowcast: "Nowcast BMKG", gelombang: "Gelombang", maritim: "Prakiraan maritim BMKG", hujan: "Hujan", angin: "Angin", ansambel: "Ansambel", provinsi: "Provinsi"},
   /* 10b. peluang hujan ekstrem per kab/provinsi (../banjir/data/cuaca_peluang.json, kontrak peluang/1; mesin public/inti/peluang.js). Tanpa berkas = dibuang. */
   exPeluang() { if (typeof Peluang === "undefined" || !this.PL) return ""; this.st.pelW ??= Object.entries(this.PL.wilayah).filter(([, w]) => w.tingkat === "provinsi").map(([k, w]) => [k, Math.max(0, ...w.hari.map(h => h.p?.[0] ?? 0))]).sort((a, b) => b[1] - a[1])[0]?.[0];
     return Peluang.kartu(this.PL, {ey: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK.peluang}</svg>${this.LABEL.peluang}`, st: this.st, kejadian: "hujan ekstrem", sumber: "ECMWF IFS 51 anggota via Open-Meteo, dibuat " + jamWIB(this.PL?.dibuat)}); },
@@ -134,6 +135,16 @@ const Insight = {
     return this.ex(A.length ? `${this.hl(fmt(S.gl.length) + " provinsi")} dalam peringatan gelombang tinggi BMKG, ${this.hl(fmt(nPer) + " perairan")}` : `Tidak ada peringatan gelombang BMKG yang berlaku`, "", "",
       A.length ? this.tumpukH(A.map(o => ({label: namaProv(o.prov), warna: GEL[o.lv - 1][3], seg: GEL.map((k, i) => ({nilai: o.kelas[i], warna: k[3], tip: `<b>${esc(namaProv(o.prov))}</b><br>${k[1]}: ${o.kelas[i]} perairan`})).reverse()})), this.uk()) : "",
       `Sumber: BMKG Maritim, terbit ${jamWIB(S.per.dibuat)}`); },
+  /* prakiraan maritim resmi BMKG per perairan dan pelabuhan (cuaca_maritim.json), hari terpilih; model Open-Meteo berdampingan bila ada. Hanya ditampilkan, tidak masuk status. */
+  exMaritim() {
+    const m = mIdx(); if (!S.mar || m < 0) return ""; const B = marBaris(m).sort((a, b) => b.hs - a.hs || b.k - a.k), j = Math.max(0, kIdx()); if (!B.length) return "";
+    const T = B.filter(x => x.k >= 3), nP = T.filter(x => x.jenis === "Perairan").length, nL = T.length - nP, t = B[0];
+    Kartu.leg(MAR_KELAS.filter((x, i) => B.some(b => b.k === i)).map(x => [x[1], x[0]]));
+    const baris = B.slice(0, 10).map(({r, jenis, hs, k}) => `<tr><td translate="no">${esc(r[1])}</td><td>${jenis}</td><td class="n">${fmt(hs / 10)} m</td><td><i class="sw" style="background:${MAR_KELAS[k]?.[1] || "#9aa4b2"}"></i> ${esc(r[6][m])}</td><td class="n">${r[9][m] != null ? fmt(r[9][m] / 10) + " m" : "–"}</td></tr>`).join("");
+    return this.ex(T.length ? `${this.hl(fmt(nP) + " perairan")} dan ${this.hl(fmt(nL) + " pelabuhan")} berkelas gelombang Tinggi atau lebih ${kapan3(j)} menurut BMKG`
+      : `Gelombang tertinggi BMKG ${this.hl(fmt(t.hs / 10) + " m")} di ${esc(t.r[1])} ${kapan3(j)}, belum ada yang berkelas Tinggi`, "", "",
+      `<div class="tw ex-tabel"><table><thead><tr><th>Perairan atau pelabuhan</th><th>Jenis</th><th class="n">BMKG</th><th>Kelas BMKG</th><th class="n">Model Open-Meteo</th></tr></thead><tbody>${baris}</tbody></table></div>`,
+      `Sumber: BMKG Maritim, terbit ${jamWIB(S.mar.terbit)}`); },
   exHujan() {
     const D = hariTampil().map(i => { const m = this.maksHari(i, 3), h = S.meta.hitung[i]; return {i, nilai: m.v, r: m.r, label: labelHari(i), ini: i === S.h0, warna: warnaHujan(m.v),
       tip: `<b>${labelHari(i)}</b><br>Terlebat: ${fmt(Math.round(m.v))} mm<br>Sel ≥ 50 mm: ${fmt(h.hujan.reduce((a, b) => a + b, 0))} sel`}; });
