@@ -57,7 +57,7 @@ dialog.pw::backdrop{background:oklch(20% .05 256 / .45)}
 .pw-hari{display:grid;gap:12px}
 .pw-hari{min-height:260px;align-content:start}
 .pw-tbw{overflow-x:auto;margin:0 -2px}
-.pw-tb{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+.pw-tb{width:100%;border-collapse:collapse;font-size:.75rem;font-variant-numeric:tabular-nums}
 .pw-tb th{background:var(--brand2);color:#fff;font-weight:700;text-align:center;padding:6px 8px;vertical-align:middle}
 .pw-tb td{padding:6px 8px;text-align:right;border-bottom:1px solid var(--line)}
 .pw-tb td:first-child{text-align:left;font-weight:700;white-space:nowrap}
