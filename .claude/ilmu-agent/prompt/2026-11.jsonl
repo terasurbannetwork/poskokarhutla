@@ -2694,3 +2694,6 @@
 {"t":"2026-11-10T10:58:43.409+07:00","sesi":"9656715b","prompt":"Ini kenapa nol semua ya?","label":[],"berkas":[]}
 {"t":"2026-11-10T11:01:05.407+07:00","sesi":"9656715b","prompt":"Ya, perbaiki","label":[],"berkas":[]}
 {"t":"2026-11-10T11:04:49.138+07:00","sesi":"9656715b","prompt":"mau tanya, API untuk firespot nya apakah sudah dibuat ya?","label":[],"berkas":[]}
+{"t":"2026-11-10T11:08:35.409+07:00","sesi":"9656715b","prompt":"Bro ini lu bisa kasih juga ga tren untuk bisa pilih 1 minggu terakhir 2minggu terakhir 3 minggu terakhir 1 bulan terakhir 2 bulan 3 bulan 4 bulan 6 bulan dan 1 tahun terakhir.","label":[],"berkas":[]}
+{"t":"2026-11-10T11:10:43.529+07:00","sesi":"9656715b","prompt":"ada tren gitu. \n\ntapi kalo tren 1 minggu berarti dia ada 7 hari\nKalo tren 2 minggu ada 14 hari\nTren 3 minggu ada 21 hari\nTren 1 bulan itu berarti dia tiap minggu aja. \nKalo tren 2 bulan berarti ada 8 minggu aja\nKalo tren 3 bulan berarti ada 12 minggu aja\nKalo tren 4 bulan ada 16 minggu \nTren 5 bulan 20 minggu\nTren 6 bulan 24 minggu\nTren 1 tahun pakai 12 bulan","label":[],"berkas":[]}
+{"t":"2026-11-10T11:14:18.070+07:00","sesi":"2067fad3","prompt":"Btw untuk yang bnpb/dalops itu agar bisa diakses juga dengan akun pusdatin yang passwordnya [sandi-disamarkan] ya","label":[],"berkas":[]}

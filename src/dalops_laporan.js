@@ -20,7 +20,8 @@ export function hariDariRekap(teks, {diterima, prov = PROV, tanggal = ""} = {}) 
   if (alasan) return {...dasar, status: "gagal", laporan: null, menonjol: null, lewat: h.lewat.length, kejadian: [], alasan};
   return {...dasar, status: "ok", laporan: h.laporan_masuk, menonjol: h.menonjol, lewat: h.lewat.length,
     kejadian: h.kejadian.slice(0, MAKS_KEJADIAN).map(k => ({jenis: k.jenis, prov: k.prov, lokasi: String(k.lokasi ?? "").slice(0, MAKS_TEMPAT), tempat: String(k.tempat ?? "").slice(0, MAKS_TEMPAT), sifat: SIFAT[String(k.sifat).toLowerCase()] ?? "",
-      status: U.statusDari(k.kondisi, /^prov/i.test(k.tempat))}))};
+      status: U.statusDari(k.kondisi, /^prov/i.test(k.tempat)),
+      ...(k.jenis === "lainnya" ? {label: String(k.judul ?? "").replace(/^Bencana\s+(Non\s+)?Alam\s*/i, "").split(/\s+di\s+/i)[0].trim().slice(0, MAKS_TEMPAT)} : {})}))};   // jenis di luar daftar: nama pendek dari judul (mis. Kebakaran TPA), bukan "Lainnya"
 }
 
 /* murni: satu entri per tanggal, terbaru dulu, paling banyak 30. Gagal tidak menimpa ok; selain itu diterima >= tersimpan menimpa. */

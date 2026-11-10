@@ -216,7 +216,7 @@
   /* nilai jenis rekap (laporan_urai.js jenisDari) sudah memakai kode logbook (src/logbook.js JENIS); hanya dua yang digabung urai ke jenis lain */
   const JENIS_LOGBOOK = {tsunami: "gempabumi", gelombang_pasang: "cuaca"};
   const jenisLogbook = j => JENIS_LOGBOOK[j] || j;
-  const labelKejadian = (k, namaProv) => `${NAMA_JENIS[k.jenis] || "Kejadian"} ${k.tempat || namaProv(k.prov)}`.trim();
+  const labelKejadian = (k, namaProv) => `${k.label || NAMA_JENIS[k.jenis] || "Kejadian"} ${k.tempat || namaProv(k.prov)}`.trim();
   const KATA_UMUM = {kata: "kejadian", selesai: "selesai", tanya: "apakah penanganan sudah selesai", tinggi: false, alat: "logistik, peralatan"};
   const kataJenis = j => ({gempabumi: KATA.gempa, karhutla: {kata: "karhutla", selesai: "padam", tanya: "apakah api sudah padam", tinggi: false, alat: "pompa, selang, logistik regu"}}[j]
     || KATA[j] || {...KATA_UMUM, kata: (NAMA_JENIS[j] || "kejadian").toLowerCase()});

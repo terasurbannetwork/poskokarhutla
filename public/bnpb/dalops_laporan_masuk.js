@@ -62,11 +62,11 @@
       if (!rk.tagih.length) return bagian("lm-tagih", "ok", "Perlu ditagih", `Semua kejadian terbuka sudah dikinikan pada rekap ${tglP(t)}`, kosong("ok", "Tidak ada kejadian terbuka yang luput dari rekap ini."));
       const baris = rk.tagih.map((x, i) => {
         const nama = x.k.lokasi || namaProv(x.k.prov), kt = kontak(daftarKantor, {nama, kab_kode: `${x.k.prov}|${x.k.lokasi || "(provinsi)"}`});
-        let aksi = "–";
-        if (kt) {
-          const a = tombolWA({nama: H.labelKejadian(x.k, namaProv)}, H.pesanTagih(x, nama, H.kataJenis(x.k.jenis)), "permintaan pembaruan");
-          a.setAttribute("href", `https://wa.me/${kt.no}?text=${encodeURIComponent(H.pesanTagih(x, nama, H.kataJenis(x.k.jenis)))}`);   // ke kontak kantornya, tombol hanya membuka wa.me
-          aksi = h("div", {class: "dl-aksi lm-tagih-aksi", title: kt.nama}, a);
+        let aksi;
+        {
+          const a = tombolWA({nama: H.labelKejadian(x.k, namaProv)}, H.pesanTagih(x, nama, H.kataJenis(x.k.jenis)), "permintaan pembaruan");   // tanpa nomor kantor (bpbd.json hampir kosong): petugas memilih kontak di WhatsApp
+          if (kt) a.setAttribute("href", `https://wa.me/${kt.no}?text=${encodeURIComponent(H.pesanTagih(x, nama, H.kataJenis(x.k.jenis)))}`);   // ke kontak kantornya, tombol hanya membuka wa.me
+          aksi = h("div", {class: "dl-aksi lm-tagih-aksi", title: kt ? kt.nama : "Pilih kontak di WhatsApp"}, a);
         }
         return h("tr", null, nomor(i), kej(x), td(namaProv(x.k.prov)), td(hariTgl(x), true), td(tgl(x.kabarTerakhir), true),
           h("td", {class: "n"}, h("div", {class: "dl-chips"}, label(`${F(x.tanpa)} hari`, "tunggu", x.nada), x.usulTutup ? label("Usul tutup", "senyap", "abu") : null)),
