@@ -32,3 +32,5 @@ html[data-baca-saja] #lbContoh,
 html[data-baca-saja] #lbBuang,
 html[data-baca-saja] .lb-isian .lb-imp,
 html[data-baca-saja] .lb-isian>.pp-cat{display:none}
+/* /bnpb/dalops tab Laporan Masuk: tombol WA minta pembaruan */
+html[data-baca-saja] .lm-tagih-aksi{display:none}

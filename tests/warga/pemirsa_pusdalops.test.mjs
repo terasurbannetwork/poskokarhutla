@@ -119,7 +119,7 @@ uji("data-baca-saja: pemirsa pusdalops dapat di halaman menu, /admin/* dan /?ope
 uji("blok CSS html[data-baca-saja]: tiap kelas, id, atribut benar-benar ada di sumber layar (selektor basi = merah)", () => {
   const css = readFileSync("public/bnpb/menu_pusdalops.css", "utf8"), i = css.indexOf("html[data-baca-saja]"); assert.ok(i > 0);
   const blok = css.slice(i).replace(/\/\*[\s\S]*?\*\//g, ""), sel = blok.split("}").map(x => x.split("{")[0]).join(",");   // hanya bagian selektor
-  const SUMBER = ["public/bnpb/logbook.js", "public/bnpb/operasi.js", "public/bnpb/operasi_g3.js", "public/laporan_bnpb.html", "public/laporan_bnpb.js"].map(f => readFileSync(f, "utf8")).join("\n");
+  const SUMBER = ["public/bnpb/logbook.js", "public/bnpb/operasi.js", "public/bnpb/operasi_g3.js", "public/laporan_bnpb.html", "public/laporan_bnpb.js", "public/bnpb/dalops_laporan_masuk.js"].map(f => readFileSync(f, "utf8")).join("\n");
   const kelas = new Set([...sel.matchAll(/[.#]([A-Za-z][\w-]*)/g)].map(m => m[1])), attr = new Set([...sel.matchAll(/\[(data-[\w-]+)/g)].map(m => m[1])); attr.delete("data-baca-saja");
   assert.ok(kelas.size >= 10 && attr.size >= 2, "selektor terbaca");
   for (const k of kelas) assert.ok(new RegExp(`(?<![\\w-])${k}(?![\\w-])`).test(SUMBER), "kelas/id tidak ada di sumber layar: " + k);

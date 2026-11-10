@@ -389,8 +389,8 @@
 .dl-tindak .dl-chips{justify-content:flex-start}
 .dl-tindak .dl-tag{white-space:normal;text-align:left}
 /* pemilih jenis pantauan (gaya Operasi Udara | Operasi Darat, operasi_peta.css .ops-mode) dan tab Laporan (isi /pelaporan, pemilik 5 Nov 2026) */
-/* delapan tab ujung ke ujung: kisi terbagi rata, membungkus di lebar sempit (tidak terpotong) */
-.dl-seg{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:4px;padding:4px;margin:0 0 16px;background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--bayang)}
+/* sembilan tab ujung ke ujung dan selalu rata: 9 kolom di layar lebar, 3 x 3 di tengah, 2 kolom di HP dengan tab ganjil terakhir selebar dua kolom (tidak ada baris pincang) */
+.dl-seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;margin:0 0 16px;background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--bayang)}
 .dl-seg button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 12px;border:0;border-radius:999px;background:none;font:inherit;font-size:14px;font-weight:700;color:var(--ink2);cursor:pointer;white-space:nowrap}
 .dl-seg button svg{width:18px;height:18px;flex:none}
 .dl-seg button[aria-selected="true"]{background:var(--navy);color:#fff}
@@ -403,7 +403,8 @@
 .dl-lp-k b{font-family:var(--display);font-size:16px}
 .dl-lp-k span{color:var(--ink2);font-size:13.5px;line-height:1.5}
 .dl-lp-k small{color:var(--navy);font-weight:700;font-size:12.5px}
-@media (max-width:600px){.dl-seg{grid-template-columns:repeat(2,1fr)}.dl-seg button{padding:8px 10px;font-size:13px}}
+@media (min-width:1280px){.dl-seg{grid-template-columns:repeat(9,minmax(0,1fr))}.dl-seg button{gap:6px;padding:9px 6px;font-size:13px}}
+@media (max-width:600px){.dl-seg{grid-template-columns:repeat(2,minmax(0,1fr))}.dl-seg button{padding:8px 10px;font-size:13px}.dl-seg button:last-child:nth-child(odd){grid-column:1/-1}}
 /* tab Longsor: kolom Tinggi air (kolom ke-9 tabel wilayah; baris provinsi = 1 sel judul + 10 sel) tidak berlaku */
 .dl-tanpa-tinggi thead tr:first-child th:nth-child(7),.dl-tanpa-tinggi tbody td:nth-child(9),.dl-tanpa-tinggi tfoot td:nth-child(9){display:none}
 
@@ -452,3 +453,22 @@
 .dl-mt-kab{white-space:nowrap}.dl-mt-kab .bn-label{margin-left:8px}
 .dl-mt-tg{white-space:nowrap;text-align:center;font-weight:700}
 .dl-mt-ln{min-width:320px}
+
+/* Laporan Masuk (dalops_laporan_masuk.js): baris rekap bisa dipilih, kolom teks rata kiri, angka rata tengah */
+.lm-tabel td.n{text-align:center;font-variant-numeric:tabular-nums}
+.lm-tabel .lm-kej{min-width:200px}
+.lm-tabel .lm-cek{justify-content:flex-start;margin-top:4px}
+.lm-baris{cursor:pointer}
+.lm-baris:hover td{background:color-mix(in srgb,var(--navy2) 6%,var(--card))}
+.lm-baris.lm-pilih td{background:color-mix(in srgb,var(--c5) 14%,var(--card))}
+.lm-baris.lm-pilih .lm-tg{box-shadow:inset 3px 0 0 var(--c5)}
+.lm-tgl{border:0;background:none;padding:0;font:inherit;font-weight:700;color:var(--ink);cursor:pointer;text-align:left}
+.lm-tgl:focus-visible{outline:2px solid var(--c5);outline-offset:2px;border-radius:4px}
+.lm-rekap-tabel td .dl-tag{margin-left:6px}
+.lm-rekap-tabel td:first-child~td:not(.n){text-align:center}
+.lm-alat{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin:0 0 12px}
+.lm-pesan{font-size:12.5px;color:var(--c1);margin-right:auto}
+.lm-dummy{border:0;background:none;padding:4px;color:var(--ink2);cursor:pointer;display:inline-flex}
+.lm-dummy svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.lm-dummy:hover,.lm-dummy:focus-visible{color:var(--c5)}
+.lm-dummy:disabled{opacity:.4;cursor:default}
