@@ -2874,13 +2874,14 @@ function trenMini(k) { const t = trenProv(k); if (!t) return "";
   /* dua garis: rata-rata tahun El Niño dan tahun biasa (tahun lengkap saja) */
   const EN = new Set(["2002", "2004", "2006", "2009", "2015", "2019", "2023"]), lalu = t.v.slice(0, -1).map((x, i) => [x, EN.has(String(t.th[i]))]);
   const rr = f => { const a = lalu.filter(([, e]) => e === f); return a.length ? a.reduce((s, [x]) => s + x, 0) / a.length : null; }, rEN = rr(true), rB = rr(false);
-  const n = t.v.length, W = 360, H = 92, B = 74, m = Math.max(...t.v, t.rata, rEN || 0), bw = W / n, Y = v => B - v / m * 58;
+  const n = t.v.length, W = 360, H = 102, B = 74, m = Math.max(...t.v, t.rata, rEN || 0), bw = W / n, Y = v => B - v / m * 58;
   const pendek = v => v >= 1e6 ? (v / 1e6).toFixed(1).replace(".", ",") + "jt" : v >= 1e3 ? Math.round(v / 1e3) + "rb" : String(v);
-  const g = t.v.map((x, i) => { const h = Math.max(1, x / m * 58), ini = i === n - 1, atas = x > t.rata;
-    const tip = `<b>${t.th[i]}</b>${ini ? " (berjalan)" : ""}<br>${fmt(x)} titik panas<br>${t.rata ? (x / t.rata).toFixed(1).replace(".", ",") + "× rata-rata" : ""}`;
+  const g = t.v.map((x, i) => { const h = Math.max(1, x / m * 58), ini = i === n - 1, atas = x > t.rata, d = i && !(ini && x < t.v[i - 1]) ? ubahPersen(x, t.v[i - 1]) : null; /* tahun berjalan belum penuh: persen hanya bila sudah melewati tahun lalu, angka yang tidak mungkin berbalik */
+    const tip = `<b>${t.th[i]}</b>${ini ? " (berjalan)" : ""}<br>${fmt(x)} titik panas<br>${t.rata ? (x / t.rata).toFixed(1).replace(".", ",") + "× rata-rata" : ""}${tipPersen(d, "tahun")}`;
     return `<g class="tm-b" data-tip="${esc(tip)}"><rect x="${i * bw}" y="0" width="${bw}" height="${H}" fill="transparent"/>
       <rect x="${i * bw + 2}" y="${B - h}" width="${bw - 4}" height="${h}" rx="2.5" fill="${ini ? "#c9503a" : atas ? "#e58a45" : "#f3c79a"}"/>
       ${ini || atas || EN.has(String(t.th[i])) ? `<text x="${i * bw + bw / 2}" y="${B - h - 3}" text-anchor="middle" font-size="8.5" font-weight="700" fill="currentColor">${pendek(x)}</text>` : ""}
+      ${teksPersen(d, i * bw + bw / 2, B + 10)}
       <text x="${i * bw + bw / 2}" y="${H - 6}" text-anchor="middle" font-size="8" fill="currentColor" opacity=".55">'${String(t.th[i]).slice(2)}</text></g>`; }).join("");
   return `<div class="tm kotak-p"><div class="lbl" style="display:flex;justify-content:space-between"><span>Titik panas per tahun ${t.th[0]}–${t.th[n - 1]}</span></div>
     <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Tren tahunan">${g}
@@ -2901,11 +2902,18 @@ function nilaiHariProv(k, t) { const H = S.h30, i = H ? H.hari.indexOf(t) : -1; 
 const geserHari = (t, n) => new Date(Date.parse(t + "T12:00:00Z") + n * 864e5).toISOString().slice(0, 10);
 const jmlHari = (k, dari, n) => { let a = 0, ada = false; for (let i = 0; i < n; i++) { const v = nilaiHariProv(k, geserHari(dari, i)); if (v != null) { a += v; ada = true; } } return ada ? a : null; };
 const tglTren = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"});
+/* naik turun tiap batang terhadap batang sebelumnya (pemilik, 10 Nov 2026); null = tidak bisa dihitung: batang pertama, tanpa data, atau pembandingnya nol */
+const ubahPersen = (kini, lalu) => kini == null || !lalu ? null : Math.round((kini - lalu) / lalu * 100);
+const labelPersen = d => `${d > 0 ? "+" : d < 0 ? "−" : ""}${Math.abs(d).toLocaleString("id-ID")}%`;
+const tipPersen = (d, satuan) => d == null ? "" : `<br>${d > 0 ? "naik" : d < 0 ? "turun" : "sama dengan"}${d ? " " + Math.abs(d).toLocaleString("id-ID") + "% dari" : ""} ${satuan} sebelumnya`;
+const teksPersen = (d, x, y) => d == null ? "" : `<text x="${x}" y="${y}" text-anchor="middle" font-size="7" font-weight="700" fill="${d > 0 ? "#c9503a" : d < 0 ? "#2b8c86" : "currentColor"}">${labelPersen(d)}</text>`;
 function batangTren(k, v) { const r = TREN_WIL.find(x => x[0] === v), N = r[3], hi = S.meta.hari_wib, akhir = geserHari(hi, -1), out = [];
   if (r[4] === "b") { const y0 = +hi.slice(0, 4), m0 = +hi.slice(5, 7) - 1;
     for (let i = N - 1; i >= 0; i--) { const d = new Date(Date.UTC(y0, m0 - i, 1)), dari = d.toISOString().slice(0, 10), bln = new Date(Date.UTC(y0, m0 - i + 1, 1)), hb = Math.min(Math.round((bln - d) / 864e5), Math.round((Date.parse(akhir + "T00:00:00Z") - d) / 864e5) + 1);
       const nama = d.toLocaleDateString("id-ID", {month: "short", timeZone: "UTC"}), lengkap = d.toLocaleDateString("id-ID", {month: "long", year: "numeric", timeZone: "UTC"});
-      out.push({x: nama, tip: lengkap + (i ? "" : " (berjalan)"), n: hb > 0 ? jmlHari(k, dari, hb) : null}); }
+      /* bulan berjalan dibanding hari yang sama banyaknya di bulan lalu, supaya bulan yang baru separuh tidak terbaca anjlok */
+      const dLalu = new Date(Date.UTC(y0, m0 - i - 1, 1)), lalu = !i && hb > 0 ? (hb <= Math.round((d - dLalu) / 864e5) ? jmlHari(k, dLalu.toISOString().slice(0, 10), hb) : null) : undefined;
+      out.push({x: nama, tip: lengkap + (i ? "" : " (berjalan)"), n: hb > 0 ? jmlHari(k, dari, hb) : null, ...lalu === undefined ? {} : {lalu}}); }
     return out; }
   const lebar = r[4] === "h" ? 1 : 7;
   for (let i = N - 1; i >= 0; i--) { const z = geserHari(akhir, -i * lebar), a = geserHari(z, 1 - lebar);
@@ -2913,13 +2921,14 @@ function batangTren(k, v) { const r = TREN_WIL.find(x => x[0] === v), N = r[3], 
   return out; }
 function isiTrenWil(k) { const v = S.trenWilV, r = TREN_WIL.find(x => x[0] === v);
   if (trenPanjang(v) && !S.hPanjang) return `<p class="tr-pesan">Memuat riwayat…</p>`;
-  const b = batangTren(k, v), n = b.length, nl = b.map(x => x.n || 0), tot = nl.reduce((a, c) => a + c, 0), m = Math.max(1, ...nl), W = 360, H = 96, B = 78, bw = W / n, iP = nl.indexOf(Math.max(...nl));
+  const b = batangTren(k, v), n = b.length, nl = b.map(x => x.n || 0), tot = nl.reduce((a, c) => a + c, 0), m = Math.max(1, ...nl), W = 360, H = n > 14 ? 116 : 106, B = 78, bw = W / n, iP = nl.indexOf(Math.max(...nl));
   if (b.every(x => x.n == null)) return `<p class="tr-pesan">Data rentang ini belum tersedia.</p>`;
   const tiapLabel = n <= 12 ? 1 : n <= 16 ? 2 : n <= 21 ? 3 : 4, satuan = r[4] === "h" ? "hari" : r[4] === "m" ? "minggu" : "bulan";
-  const g = b.map((x, i) => { const h = x.n ? Math.max(1.5, x.n / m * 60) : 0, puncak = i === iP && x.n > 0, ang = n <= 14 || puncak;
-    return `<g class="tm-b" data-tip="${esc(`<b>${x.tip}</b><br>${x.n == null ? "belum ada data" : fmt(x.n) + " titik panas"}`)}"><rect x="${i * bw}" y="0" width="${bw}" height="${H}" fill="transparent"/>
+  const g = b.map((x, i) => { const h = x.n ? Math.max(1.5, x.n / m * 60) : 0, puncak = i === iP && x.n > 0, ang = n <= 14 || puncak, d = ubahPersen(x.n, x.lalu !== undefined ? x.lalu : b[i - 1]?.n);
+    return `<g class="tm-b" data-tip="${esc(`<b>${x.tip}</b><br>${x.n == null ? "belum ada data" : fmt(x.n) + " titik panas"}${tipPersen(d, satuan)}`)}"><rect x="${i * bw}" y="0" width="${bw}" height="${H}" fill="transparent"/>
       <rect x="${i * bw + Math.min(2, bw * .12)}" y="${B - h}" width="${bw - 2 * Math.min(2, bw * .12)}" height="${h}" rx="2" fill="${puncak ? "#c9503a" : "#e58a45"}"/>
       ${ang && x.n ? `<text x="${Math.min(W - 12, Math.max(12, i * bw + bw / 2))}" y="${B - h - 3}" text-anchor="middle" font-size="8.5" font-weight="700" fill="currentColor">${fmt(x.n)}</text>` : ""}
+      ${teksPersen(d, Math.min(W - 12, Math.max(12, i * bw + bw / 2)), B + 10 + (n > 14 && (n - 1 - i) % 2 ? 9 : 0))}
       ${(n - 1 - i) % tiapLabel === 0 ? `<text x="${Math.min(W - 14, Math.max(14, i * bw + bw / 2))}" y="${H - 6}" text-anchor="middle" font-size="8" fill="currentColor" opacity=".55">${x.x}</text>` : ""}</g>`; }).join("");
   /* banding dengan rentang sepanjang ini tepat sebelumnya, sampai 2 bulan saja: lebih panjang dari itu membandingkan musim api dengan musim hujan */
   let banding = "";
