@@ -39,6 +39,18 @@ jobs:
           key: banjir-${{ github.run_id }}
           restore-keys: banjir-
 
+      # Status gunung api terkini (cache kecil, 2 berkas): titik.yml memperbaruinya tiap ~3 jam lewat `magma.py cepat`, lintas.yml harian. Tanpa ini deploy
+      # mana pun (push tampilan, udara, data) mengirim status harian dari cache banjir- dan status mundur sampai titik berikutnya. Wajib SESUDAH pemulihan banjir-.
+      - name: Pulihkan status gunung api terbaru (boleh gagal)
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            public/banjir/data/gunungapi_status.json
+            public/gunungapi/data/perubahan_level.json
+          key: gunungapi-status-${{ github.run_id }}
+          restore-keys: gunungapi-status-
+
       - name: Pulihkan data karhutla terakhir
         uses: actions/cache/restore@v4
         with:
@@ -148,6 +160,34 @@ jobs:
         continue-on-error: true
         timeout-minutes: 25
         run: python3 scripts/gunungapi/magma.py uji && python3 scripts/gunungapi/magma.py
+
+      # Berkas permanen append-only MAGMA (kegempaan, catatan harian per gunung, perubahan level) di luar cache: ditimpa checkout main saat terbit,
+      # jadi tanpa commit riwayatnya hilang. Pola sama dengan paparan di bawah.
+      - name: Commit riwayat MAGMA ke main (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: |
+          B="public/gunungapi/data/kegempaan.json public/gunungapi/data/catatan public/gunungapi/data/perubahan_level.json"
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add $B
+          git diff --cached --quiet -- $B && { echo "riwayat MAGMA tidak berubah"; exit 0; }
+          git commit -q -m "data: riwayat MAGMA $(TZ=Asia/Jakarta date +%F)" -- $B
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::warning title=Push riwayat MAGMA gagal::git push ke main gagal 3x"
+
+      - name: Simpan status gunung api terbaru
+        if: always()
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            public/banjir/data/gunungapi_status.json
+            public/gunungapi/data/perubahan_level.json
+          key: gunungapi-status-${{ github.run_id }}
 
       # Paparan semua gunung (paparan.json dipakai ulang apa adanya, hanya gunung baru yang dihitung: murah) tiap hari; citra Sentinel-2 tiap Minggu.
       # Keluaran di public/gunungapi/data (di luar cache, ditimpa checkout main saat terbit) jadi DI-COMMIT ke main di langkah berikutnya.

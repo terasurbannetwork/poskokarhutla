@@ -254,6 +254,36 @@ jobs:
           key: banjir-${{ github.run_id }}
           restore-keys: banjir-
 
+      # Status gunung api terkini (cache kecil, 2 berkas): titik.yml memperbaruinya tiap ~3 jam lewat `magma.py cepat`, lintas.yml harian. Tanpa ini deploy
+      # mana pun (push tampilan, udara, data) mengirim status harian dari cache banjir- dan status mundur sampai titik berikutnya. Wajib SESUDAH pemulihan banjir-.
+      - name: Pulihkan status gunung api terbaru (boleh gagal)
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            public/banjir/data/gunungapi_status.json
+            public/gunungapi/data/perubahan_level.json
+          key: gunungapi-status-${{ github.run_id }}
+          restore-keys: gunungapi-status-
+
+      # Status gunung api tiap ~3 jam (level, letusan, VONA; tanpa grafik dan rantai abu): menumpang run yang sudah ada dan sudah men-deploy, jadi tanpa
+      # commit, tanpa slot antre baru. Perubahan level ikut cache kecil gunungapi-status- dan di-commit lintas.yml harian. Bukan putaran tambahan cut-off.
+      - name: Status gunung api cepat (boleh gagal)
+        if: github.event.schedule != '10 9 * * *' && github.event.schedule != '55 22 * * *'
+        continue-on-error: true
+        timeout-minutes: 6
+        run: python3 scripts/gunungapi/magma.py uji && python3 scripts/gunungapi/magma.py cepat
+
+      - name: Simpan status gunung api terbaru
+        if: always() && hashFiles('public/banjir/data/gunungapi_status.json') != ''
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            public/banjir/data/gunungapi_status.json
+            public/gunungapi/data/perubahan_level.json
+          key: gunungapi-status-${{ github.run_id }}
+
       # Prioritas dampak tiap 6 jam (Ruang Koordinasi F2): jalan 00, 06, 12, 18 UTC menumpang titik panas segar dari langkah di atas; bahaya lain dari
       # cache banjir- yang dipulihkan. Uji balik prospektif tetap harian di lintas.yml. Worker membaca hasilnya menit 55 (src/pengingat.js).
       - name: Indeks risiko dan prioritas dampak tiap 6 jam (boleh gagal)
@@ -309,6 +339,13 @@ jobs:
 
       - name: Salin peringatan BMKG terbaru
         run: cp public/banjir/data/peringatan.json public/data/ 2>/dev/null || true
+
+      # Penjaga kesegaran (scripts/agents/kesegaran.py): stempel `dibuat` tiap modul vs batas umur dari jadwal workflow. Menulis public/data/kesegaran.json
+      # (ikut terbit) dan anotasi ::warning bila telat; tidak pernah menggagalkan terbit.
+      - name: Penjaga kesegaran data (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 2
+        run: python3 scripts/agents/kesegaran.py uji && python3 scripts/agents/kesegaran.py
 
       - name: Terbitkan ke Cloudflare
         env:

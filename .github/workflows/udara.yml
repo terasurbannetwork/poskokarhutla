@@ -110,6 +110,18 @@ jobs:
           restore-keys: banjir-
           fail-on-cache-miss: true
 
+      # Status gunung api terkini (cache kecil, 2 berkas): titik.yml memperbaruinya tiap ~3 jam lewat `magma.py cepat`, lintas.yml harian. Tanpa ini deploy
+      # mana pun (push tampilan, udara, data) mengirim status harian dari cache banjir- dan status mundur sampai titik berikutnya. Wajib SESUDAH pemulihan banjir-.
+      - name: Pulihkan status gunung api terbaru (boleh gagal)
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            public/banjir/data/gunungapi_status.json
+            public/gunungapi/data/perubahan_level.json
+          key: gunungapi-status-${{ github.run_id }}
+          restore-keys: gunungapi-status-
+
       - name: Salin peringatan BMKG terbaru
         run: cp public/banjir/data/peringatan.json public/data/ 2>/dev/null || true
 
