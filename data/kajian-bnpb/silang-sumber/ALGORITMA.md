@@ -69,7 +69,7 @@ Tanda dihitung ulang tiap hari; tidak ada tanda yang bertahan dari hari lain.
 
 **Laju.** r = jumlah gempa M >= Mc dalam jendela deteksi (awal 7 hari) dibagi lamanya dalam hari.
 
-**Baseline.** Tergantung Q1. Sebelum Q1 dijawab, hanya mode "sekitar lawan sekitar": laju sasaran dibandingkan median laju sasaran lain pada Mc yang sama. Mode ini diberi label "perbandingan relatif" dan tidak disebut baseline historis.
+**Baseline (Q1 terjawab 10 Nov 2026: USGS M >= 4,5).** Laju historis M >= 4,5 sejak 2000 di lingkaran sasaran; harapan = laju x lama jendela; sasaran dengan laju nol tidak dinilai. Teks lama di bawah (mode relatif) tidak lagi dipakai: Sebelum Q1 dijawab, hanya mode "sekitar lawan sekitar": laju sasaran dibandingkan median laju sasaran lain pada Mc yang sama. Mode ini diberi label "perbandingan relatif" dan tidak disebut baseline historis.
 
 **Kejutan.** P = peluang ekor Poisson dari N pengamatan (jumlah gempa di jendela deteksi) terhadap harapan = r_baseline x lama jendela. Dikoreksi untuk banyak sasaran: P_koreksi = min(1, P x jumlah sasaran). Tanda "perlu dicek" bila P_koreksi < 0,01 (awal). Keluaran memuat N, harapan, P_koreksi, Mc, R, jendela.
 
