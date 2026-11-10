@@ -3,7 +3,7 @@
 // pemberitahuan isu di terbit.yml, dan hook Claude yang menolak jalan pintas (--no-verify, LEWATI_UJI, pengubahan hooksPath).
 import {test} from "node:test";
 import assert from "node:assert/strict";
-import {readFileSync, statSync, mkdtempSync, writeFileSync} from "node:fs";
+import {readFileSync, statSync, mkdtempSync, writeFileSync, mkdirSync, existsSync} from "node:fs";
 import {spawnSync, execFileSync} from "node:child_process";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
@@ -80,6 +80,54 @@ test("pre-push: rentang yang hanya menyentuh dokumen keluar 0 tanpa menjalankan 
   const r = spawnSync(join(process.cwd(), ".githooks/pre-push"), [], {cwd: d, input: `refs/heads/main ${b} refs/heads/main ${a}\n`, encoding: "utf8", env: {...process.env, LEWATI_UJI: ""}});
   assert.equal(r.status, 0, r.stderr);
   assert.doesNotMatch(r.stderr, /uji di commit/);
+});
+
+// 10 Nov 2026: push yang menunggu antrean uji membawa posisi main basi lalu ditolak GitHub ("cannot lock ref").
+// Git sungguhan: remote bare, dua clone, dan uji palsu yang mendorong commit lawan di tengah push.
+function arenaPush(ujiAgen) {
+  const d = mkdtempSync(join(tmpdir(), "dorong-"));
+  const git = (cwd, ...a) => execFileSync("git", a, {cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"]}).trim();
+  const a = join(d, "a"), b = join(d, "b"), r = join(d, "r.git");
+  git(d, "init", "-q", "--bare", "-b", "main", r);
+  mkdirSync(join(a, "public"), {recursive: true});
+  git(a, "init", "-q", "-b", "main");
+  for (const k of ["user.email", "user.name"]) git(a, "config", k, "a@b.c");
+  git(a, "remote", "add", "origin", r);
+  writeFileSync(join(a, "package.json"), JSON.stringify({scripts: {"uji:agen": `sh ${d}/uji.sh`, "uji:warga": "true", "uji:sippa": "true"}}));
+  writeFileSync(join(d, "uji.sh"), ujiAgen(d));
+  git(a, "add", "package.json"); git(a, "commit", "-qm", "awal"); git(a, "push", "-q", "origin", "main");
+  git(d, "clone", "-q", r, b);
+  for (const k of ["user.email", "user.name"]) git(b, "config", k, "b@b.c");
+  mkdirSync(join(a, "node_modules"));
+  git(a, "config", HP, join(process.cwd(), ".githooks"));
+  writeFileSync(join(a, "public/x.js"), "1"); git(a, "add", "public/x.js"); git(a, "commit", "-qm", "kerjaan");
+  return {d, a, r, log: () => git(r, "log", "--format=%s", "main").split("\n")};
+}
+const lawanSekali = d => `[ -e ${d}/sudah ] && exit 0\ntouch ${d}/sudah\ngit -C ${d}/b commit -q --allow-empty -m lawan\ngit -C ${d}/b push -q origin main\n`;
+const envPush = {...process.env, LEWATI_UJI: ""};
+
+test("pre-push: main bergerak di tengah uji, push berhenti dengan pesan jelas dan commit lawan selamat", () => {
+  const {a, log} = arenaPush(lawanSekali);
+  const r = spawnSync("git", ["push", "origin", "main"], {cwd: a, encoding: "utf8", env: envPush});
+  assert.notEqual(r.status, 0);
+  assert.match(r.stderr, /sudah maju/, r.stderr);
+  assert.deepEqual(log(), ["lawan", "awal"]);
+});
+
+test("npm run dorong: kalah rebutan lalu menyusul dan masuk, dua commit utuh", () => {
+  const {a, log} = arenaPush(lawanSekali);
+  const r = spawnSync("sh", [join(process.cwd(), "scripts/agents/dorong.sh")], {cwd: a, encoding: "utf8", env: envPush});
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.deepEqual(log(), ["kerjaan", "lawan", "awal"]);
+  assert.ok(!existsSync(join(a, ".git/dorong.kunci")), "kunci harus dilepas");
+});
+
+test("npm run dorong: uji merah berhenti di percobaan pertama, tidak ada yang masuk", () => {
+  const {d, a, log} = arenaPush(d => `echo x >> ${d}/hitung\nexit 1\n`);
+  const r = spawnSync("sh", [join(process.cwd(), "scripts/agents/dorong.sh")], {cwd: a, encoding: "utf8", env: envPush});
+  assert.notEqual(r.status, 0);
+  assert.equal(readFileSync(join(d, "hitung"), "utf8"), "x\n");
+  assert.deepEqual(log(), ["awal"]);
 });
 
 test("hook Claude PreToolUse Bash terdaftar, menolak jalan pintas uji, meloloskan push biasa", () => {

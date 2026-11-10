@@ -203,6 +203,7 @@ Checkout utama sering dipegang beberapa sesi Claude sekaligus dan index git-nya
 dipakai bersama. Fan-out yang membaca aman jalan bersamaan; agent penulis jalan satu
 per satu, atau bersamaan hanya bila berkasnya disebut di brief dan tidak beririsan.
 Commit dengan path spesifik (`git commit -- <berkas>`), jangan `git add -A`.
+Push pakai `npm run dorong`: antre per repo, menyusul `main`, lalu push lewat uji pre-push.
 
 Sisa branch yang sudah masuk `main` disapu hook `Stop` lewat
 `scripts/agents/sapu-branch.sh` (gerbang `tests/agen/gerbang-sapu-branch.test.mjs`).
