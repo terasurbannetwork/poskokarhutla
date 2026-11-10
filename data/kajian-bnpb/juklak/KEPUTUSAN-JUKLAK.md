@@ -31,7 +31,7 @@ Dokumen ini menang atas dokumen lain di folder ini. Hanya pemilik yang boleh men
 
 ## Pertanyaan terbuka untuk pemilik
 
-- Q1. Peran `irtama` dan `ulp` belum ada di daftar peran staf. Sampai didaftarkan (`src/staf.js` PERAN, trigger `staf_larik_sah` dan `staf_larik_ubah`, `SEMUA_PERAN` di `src/admin_halaman.js`, `public/admin/pantau.js`, plus cara staf membuka `/admin/meja`), identitas pelapor tidak bisa dicatat atau dibuka siapa pun. Staf mana yang memegang peran ini?
+- Q1 (dijawab pemilik 10 Nov 2026: pemegang identitas pelapor adalah staf Inspektorat Utama, peran `irtama`, migrasi 0121). Pertanyaan asal: Peran `irtama` dan `ulp` belum ada di daftar peran staf. Sampai didaftarkan (`src/staf.js` PERAN, trigger `staf_larik_sah` dan `staf_larik_ubah`, `SEMUA_PERAN` di `src/admin_halaman.js`, `public/admin/pantau.js`, plus cara staf membuka `/admin/meja`), identitas pelapor tidak bisa dicatat atau dibuka siapa pun. Staf mana yang memegang peran ini?
 - Q2. Juklak 17/2025 Tabel 3.2 (kriteria kemungkinan) dan Tabel 3.4 (matriks analisis) berupa gambar, tidak terbaca. Skala probabilitas 1 sampai 5 adalah asumsi; level risiko diisi manual, tidak dihitung. Tabel mana yang resmi?
 - Q3. Juklak 17/2025 Format 1, 5, 7, 11, 12 dan Lampiran II (daftar kode risiko) tidak punya teks kolom yang terbaca. Kode risiko diisi manual; format lain belum dibangun. Siapa memasok berkas aslinya?
 - Q4. Juklak 9/2023 Format 2 merinci sekitar 40 butir kebutuhan per sektor. Meja ini menyimpan Ada/Tidak per enam sektor (sesuai tabel Format 1). Perlu butir rincinya?

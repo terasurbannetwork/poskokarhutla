@@ -19,7 +19,7 @@ import {BAGIAN} from "../public/inti/kelengkapan.js";
 import {MEJA, DAFTAR_MEJA, DAFTAR_PETUGAS, MEJA_RAPOR, PUSAT, EKSPOR_RISIKO, BENCANA, RAPOR, spekPublik, validasi, statusEfektif, tandaBahaya, teksBersih} from "./meja_spek.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, LAJU_TULIS = [[JAM, 120]], LAJU_PELAPOR = [[JAM, 30]], TTL_RINGKAS = 2 * JAM, MAKS_EKSPOR = 20000, MAKS_ISIAN = 16384, MAKS_IMPOR = 256 * 1024, MAKS_BARIS_IMPOR = 50, MAKS_KAB_IMPOR = 8, LAJU_IMPOR = [[JAM, 5]], LAJU_TERIMA = [[JAM, 60]],   /* impor: batas CPU 10 ms akun Free */ RE_ID = /^[0-9a-f]{16}$/;
-/* Juklak 5/2025: identitas pelapor hanya untuk Inspektorat Utama dan Unit Layanan Pengaduan. Peran ini belum terdaftar di PERAN src/staf.js, jadi sampai didaftarkan pemegangnya nol dan identitas tertutup untuk siapa pun. */
+/* Juklak 5/2025: identitas pelapor hanya untuk Inspektorat Utama dan Unit Layanan Pengaduan. Pemegangnya staf Inspektorat Utama (peran irtama, keputusan pemilik 10 Nov 2026, migrasi 0121); ulp disisakan bila kelak dipisah. */
 export const PERAN_ULP = ["irtama", "ulp"];
 /* meja Data kejadian dan dampak: staf Pusdalops/Koordalops menerima catatan terverifikasi ke Logbook dan membaca kelengkapan. Hanya meja dampak, hanya aksi terima (tidak mengisi, tidak mengubah isi). */
 export const PERAN_PUSDALOPS = ["pusdalops", "koordalops"];
