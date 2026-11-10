@@ -213,6 +213,12 @@ Sebelum menyentuh meja `pengungsi`, `pengaduan`, `klaster`, `risiko`, atau pelen
 
 Aturan berhentinya sama dengan §2.1. Identitas pelapor pengaduan tidak pernah masuk `data`, rekap, atau ekspor.
 
+### 2.7 Rantai Satu Kejadian, Kalender Kewajiban, Rapor SPM: baca dulu, baru bangun
+
+Sebelum menyentuh rantai per KIB, kalender tenggat per BPBD, atau rapor SPM, baca dokumen di `data/kajian-bnpb/rantai/` dengan urutan otoritas ini: `KEPUTUSAN-RANTAI.md` (menang atas semuanya), RISET, PRD, ALUR, ALGORITMA, DESIGN-SYSTEM, DESAIN-TEKNIS, KEAMANAN-PRIVASI, RENCANA-UJI, TIKET (`RT-*`), GLOSARIUM.
+
+Aturan berhentinya sama dengan §2.1. Pertanyaan terbuka di KEPUTUSAN tidak dijawab dengan karangan. Sebelum membangun Rantai, cocokkan dengan program Siklus Bencana (`data/kajian-bnpb/siklus/`, F1 Buku Besar Kejadian) supaya tidak ada dua buku kejadian.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih

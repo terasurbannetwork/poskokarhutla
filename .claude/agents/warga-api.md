@@ -60,6 +60,7 @@ Berkas milikmu (glob paling spesifik menang):
 - `scripts/logpal/**`
 - `data/kajian-bnpb/logpal/**`
 - `data/kajian-bnpb/juklak/**`
+- `data/kajian-bnpb/rantai/**`
 - `WARGA.md`
 - `.dev.vars.example`
 
