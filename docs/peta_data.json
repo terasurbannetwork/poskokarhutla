@@ -55,13 +55,11 @@
     "scripts/cuaca/laporan_cuaca.py",
     "scripts/cuaca/uji_alur.py",
     "scripts/cuaca/verifikasi.py",
-    "scripts/prediksi/tangga.py",
     "src/peringatan.js"
    ],
    "jadwal": [
     "banjir.yml cron 20 0 * * *",
-    "lintas.yml cron 10 2 * * *",
-    "prediksi.yml cron 50 1 * * *"
+    "lintas.yml cron 10 2 * * *"
    ],
    "pemakai": {
     "layar publik": [
@@ -77,6 +75,7 @@
     "model/turunan": [
      "scripts/cuaca/cuaca.py",
      "scripts/og/buat.py",
+     "scripts/prediksi/tangga.py",
      "scripts/umum/kejadian.py"
     ],
     "worker": [
@@ -328,6 +327,7 @@
     "https://www.bmkg.go.id/peringatan-dini/kekeringan-meteorologis"
    ],
    "penulis": [
+    "scripts/bnpb/silang/rapor_sumber.py",
     "scripts/kekeringan/peringatan_bmkg.py"
    ],
    "jadwal": [
@@ -387,6 +387,7 @@
     "https://previous-runs-api.open-meteo.com/v1/forecast?"
    ],
    "penulis": [
+    "scripts/bnpb/silang/rapor_sumber.py",
     "scripts/cuaca/peluang_cuaca.py",
     "scripts/cuaca/verifikasi.py"
    ],
@@ -689,9 +690,11 @@
    "jumlah": 1,
    "lembaga": [],
    "url": [],
-   "penulis": [],
+   "penulis": [
+    "scripts/bnpb/silang/rapor_sumber.py"
+   ],
    "jadwal": [
-    "TIDAK ADA"
+    "lintas.yml cron 10 2 * * *"
    ],
    "pemakai": {
     "model/turunan": [
@@ -699,8 +702,8 @@
     ]
    },
    "arsip": true,
-   "status": "arsip",
-   "catatan": "penulis tak ketemu (nama dirakit f-string atau ditulis di workflow)",
+   "status": "terpakai",
+   "catatan": "",
    "laporan_lokal": []
   },
   {
@@ -864,6 +867,9 @@
    "pemakai": {
     "layar publik": [
      "public/cuaca/bmkg2.js"
+    ],
+    "layar staf (nama tanpa .json)": [
+     "public/logpal/logpal.js"
     ]
    },
    "arsip": false,
@@ -942,6 +948,7 @@
     "https://maritim.bmkg.go.id/marine2026-data/"
    ],
    "penulis": [
+    "scripts/bnpb/silang/beda_sumber.py",
     "scripts/cuaca/maritim.py"
    ],
    "jadwal": [
@@ -951,6 +958,9 @@
     "layar publik": [
      "public/cuaca/cuaca.js",
      "public/cuaca/insight.js"
+    ],
+    "layar staf (nama tanpa .json)": [
+     "public/logpal/logpal.js"
     ],
     "model/turunan": [
      "scripts/cuaca/uji_alur.py"
@@ -1084,10 +1094,12 @@
     "https://www.bmkg.go.id/cuaca/potensi-hujan-sepekan"
    ],
    "penulis": [
+    "scripts/bnpb/silang/rapor_sumber.py",
     "scripts/cuaca/sepekan.py"
    ],
    "jadwal": [
-    "arsip-bmkg.yml cron 25 */3 * * *"
+    "arsip-bmkg.yml cron 25 */3 * * *",
+    "lintas.yml cron 10 2 * * *"
    ],
    "pemakai": {},
    "arsip": true,
@@ -1250,9 +1262,11 @@
    "jumlah": 1,
    "lembaga": [],
    "url": [],
-   "penulis": [],
+   "penulis": [
+    "scripts/bnpb/silang/rapor_sumber.py"
+   ],
    "jadwal": [
-    "TIDAK ADA"
+    "lintas.yml cron 10 2 * * *"
    ],
    "pemakai": {
     "layar publik": [
@@ -1263,8 +1277,8 @@
     ]
    },
    "arsip": false,
-   "status": "statis",
-   "catatan": "penulis tak ketemu (nama dirakit f-string atau ditulis di workflow)",
+   "status": "terpakai",
+   "catatan": "",
    "laporan_lokal": []
   },
   {
@@ -1550,6 +1564,8 @@
     "https://x.bmkg.go.id/a.png"
    ],
    "penulis": [
+    "scripts/bnpb/silang/beda_sumber.py",
+    "scripts/bnpb/silang/rapor_sumber.py",
     "scripts/cuaca/bmkg_prakiraan.py",
     "scripts/cuaca/maritim.py",
     "scripts/cuaca/siklon_bmkg.py"
@@ -1693,6 +1709,30 @@
    "laporan_lokal": []
   },
   {
+   "berkas": "public/banjir/data/opera_dswx.json",
+   "jenis": "berkas",
+   "jumlah": 1,
+   "lembaga": [
+    "NASA",
+    "centurisk97.id"
+   ],
+   "url": [
+    "https://centurisk97.id",
+    "https://cmr.earthdata.nasa.gov/search/granules.json"
+   ],
+   "penulis": [
+    "scripts/banjir/opera_dswx.py"
+   ],
+   "jadwal": [
+    "TIDAK ADA"
+   ],
+   "pemakai": {},
+   "arsip": false,
+   "status": "yatim",
+   "catatan": "",
+   "laporan_lokal": []
+  },
+  {
    "berkas": "public/banjir/data/bahaya.json",
    "jenis": "berkas",
    "jumlah": 1,
@@ -1819,10 +1859,12 @@
     "https://previous-runs-api.open-meteo.com/v1/forecast?"
    ],
    "penulis": [
+    "scripts/bnpb/silang/rapor_sumber.py",
     "scripts/cuaca/verifikasi.py"
    ],
    "jadwal": [
-    "banjir.yml cron 20 0 * * *"
+    "banjir.yml cron 20 0 * * *",
+    "lintas.yml cron 10 2 * * *"
    ],
    "pemakai": {
     "model/turunan": [
@@ -2040,6 +2082,9 @@
     "layar publik": [
      "public/cuaca/insight.js",
      "public/cuaca/status.js"
+    ],
+    "layar staf (nama tanpa .json)": [
+     "public/logpal/logpal.js"
     ]
    },
    "arsip": false,
@@ -2545,6 +2590,9 @@
     "lintas.yml cron 10 2 * * *"
    ],
    "pemakai": {
+    "layar staf (nama tanpa .json)": [
+     "public/logpal/logpal.js"
+    ],
     "model/turunan": [
      "scripts/cuaca/uji_alur.py"
     ]
@@ -3326,10 +3374,12 @@
     "https://docs"
    ],
    "penulis": [
-    "scripts/cuaca/iklim_bmkg.py"
+    "scripts/cuaca/iklim_bmkg.py",
+    "scripts/umum/kalender_ancaman.py"
    ],
    "jadwal": [
-    "arsip-bmkg.yml cron 25 */3 * * *"
+    "arsip-bmkg.yml cron 25 */3 * * *",
+    "lintas.yml cron 10 2 * * *"
    ],
    "pemakai": {
     "model/turunan": [
@@ -3532,6 +3582,8 @@
     "https://gpm1.gesdisc.eosdis.nasa.gov/data/GPM_L3/"
    ],
    "penulis": [
+    "scripts/bnpb/silang/beda_sumber.py",
+    "scripts/bnpb/silang/rapor_sumber.py",
     "scripts/cuaca/imerg.py",
     "scripts/cuaca/prospektif_cuaca.py"
    ],
@@ -3794,6 +3846,7 @@
      "scripts/gempa/kalibrasi_kerusakan.mjs",
      "scripts/gempa/laporan_gempa.py",
      "scripts/gempa/pager.py",
+     "scripts/gempa/tsunami_zona.py",
      "scripts/gempa/umum.py",
      "scripts/kekeringan/bukti.py",
      "scripts/kekeringan/gdo.py",
@@ -4084,6 +4137,7 @@
     "https://www.bmkg.go.id/cuaca/prakiraan-cuaca/{adm1"
    ],
    "penulis": [
+    "scripts/bnpb/silang/rapor_sumber.py",
     "scripts/cuaca/bmkg_kab10.py"
    ],
    "jadwal": [
@@ -4249,12 +4303,14 @@
    ],
    "url": [
     "https://centurisk97.id",
+    "https://cmr.earthdata.nasa.gov/search/granules.json",
     "https://flood-api.open-meteo.com/v1/flood",
     "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/%s/default/%s/250m/5/%d/%d.png"
    ],
    "penulis": [
     "scripts/banjir/mcdwd.py",
-    "scripts/banjir/mcdwd_model.py"
+    "scripts/banjir/mcdwd_model.py",
+    "scripts/banjir/opera_dswx.py"
    ],
    "jadwal": [
     "banjir.yml cron 20 0 * * *"
@@ -4349,6 +4405,7 @@
     "scripts/data/kendala.py",
     "scripts/data/lab_luas.py",
     "scripts/data/lab_padam.py",
+    "scripts/data/panen/opera_dist.py",
     "scripts/data/peta_karhutla.py",
     "scripts/data/saham_konsesi.py",
     "scripts/data/sawit_pantau.py",
@@ -4430,12 +4487,14 @@
      "public/cuaca/insight.js",
      "public/cuaca/tambahan.js",
      "public/fungsi_direktori.js",
+     "public/gempa/beruntun.js",
      "public/gempa/bukti.js",
      "public/gempa/guncangan.js",
      "public/gempa/index.html",
      "public/gempa/insight.js",
      "public/gempa/kata.js",
      "public/gempa/metode.js",
+     "public/gunungapi/insight.js",
      "public/gunungapi/metode.js",
      "public/index.html",
      "public/inti/peluang.js",
@@ -4565,6 +4624,7 @@
     "scripts/banjir/mcdwd_model.py",
     "scripts/banjir/nowcast_bandang.py",
     "scripts/banjir/nowcast_jkt.py",
+    "scripts/banjir/opera_dswx.py",
     "scripts/banjir/replay.mjs",
     "scripts/banjir/uji_inarisk.py",
     "scripts/banjir/uji_logbook.py",
@@ -4621,6 +4681,7 @@
      "public/instansi_uji.js",
      "public/instansi_uji_halaman.js",
      "public/inti/asisten.js",
+     "public/inti/profil_wilayah.js",
      "public/kekeringan/metode.js",
      "public/kekeringan/simulasi.js",
      "public/laporan_konpers.js",
@@ -4702,6 +4763,7 @@
     "BMKG",
     "BNPB",
     "Copernicus",
+    "ECMWF",
     "ESDM/PVMBG",
     "JMA/BMKG Himawari",
     "JTWC",
@@ -4717,6 +4779,7 @@
     "a",
     "akademisi.karya",
     "akademisi.riset",
+    "api.daac.asf.alaska.edu",
     "api.dpuprkotang.info",
     "api.gdeltproject.org",
     "api.ioda.inetintel.cc.gatech.edu",
@@ -4726,6 +4789,7 @@
     "api.resend.com",
     "api.waqi.info",
     "aset.lokal",
+    "asf.alaska.edu",
     "assets.stockbit.com",
     "beritajatim.com",
     "bing.com",
@@ -4739,6 +4803,7 @@
     "data-api.globalforestwatch.org",
     "data.chc.ucsb.edu",
     "data.eodc.eu",
+    "data.humdata.org",
     "data.petabencana.id",
     "dataweb",
     "detik.com",
@@ -4819,6 +4884,7 @@
     "tiles.openfreemap.org",
     "tohatsu.com",
     "trends.google.com",
+    "turnbackhoax.id",
     "wa.me",
     "walhi.or.id",
     "x",
@@ -4826,9 +4892,9 @@
    ],
    "url": [
     "http://a/1",
-    "http://aset.lokal",
-    "http://aset.lokal/",
-    "http://aset.lokal/data/laporan.json"
+    "http://a/2",
+    "http://a/3",
+    "http://a/4"
    ],
    "penulis": [
     "scripts/agents/token-ukur.mjs",
@@ -4871,6 +4937,7 @@
     "scripts/banjir/genangan/tangki.py",
     "scripts/banjir/genangan/vonis_j3.py",
     "scripts/banjir/genangan_nasional.py",
+    "scripts/banjir/geoglows.py",
     "scripts/banjir/gfm_label.py",
     "scripts/banjir/grrr.py",
     "scripts/banjir/hand_kab.py",
@@ -4899,6 +4966,7 @@
     "scripts/banjir/nilai_kab2_ops.py",
     "scripts/banjir/nowcast_bandang.py",
     "scripts/banjir/nowcast_jkt.py",
+    "scripts/banjir/opera_dswx.py",
     "scripts/banjir/panen_lab.py",
     "scripts/banjir/pasang_astro.py",
     "scripts/banjir/pasut.py",
@@ -4927,6 +4995,8 @@
     "scripts/bnpb/risiko.py",
     "scripts/bnpb/rs_kapasitas.py",
     "scripts/bnpb/siaga.py",
+    "scripts/bnpb/silang/beda_sumber.py",
+    "scripts/bnpb/silang/rapor_sumber.py",
     "scripts/bnpb/terpapar.py",
     "scripts/bnpb/ujibalik_risiko.py",
     "scripts/bnpb/unit/jalan.py",
@@ -4988,6 +5058,7 @@
     "scripts/data/luas_citra.py",
     "scripts/data/musim_harian.py",
     "scripts/data/operasi.py",
+    "scripts/data/panen/opera_dist.py",
     "scripts/data/panen/ps.py",
     "scripts/data/panen/slstr_malam.py",
     "scripts/data/panen/tambang.py",
@@ -5030,6 +5101,7 @@
     "scripts/data/ujiluas_kab.py",
     "scripts/data/video.py",
     "scripts/data/watak_kluster.py",
+    "scripts/gempa/beruntun.py",
     "scripts/gempa/emsc.py",
     "scripts/gempa/gnss.py",
     "scripts/gempa/laporan_gempa.py",
@@ -5102,7 +5174,10 @@
     "scripts/umum/berita.py",
     "scripts/umum/dibi_kejadian.py",
     "scripts/umum/foto_dasar.py",
+    "scripts/umum/harga_pangan.py",
+    "scripts/umum/hoaks.py",
     "scripts/umum/internet_padam.py",
+    "scripts/umum/kalender_ancaman.py",
     "scripts/umum/kejadian.py",
     "scripts/umum/lab_kerusakan.py",
     "scripts/umum/laphar_arsip.mjs",
@@ -5111,6 +5186,7 @@
     "scripts/umum/laporan_kejadian.py",
     "scripts/umum/logbook_bnpb.py",
     "scripts/umum/menara.py",
+    "scripts/umum/nisar_katalog.py",
     "scripts/umum/outlook12.py",
     "scripts/umum/peluang.py",
     "scripts/umum/peringatan_berita.py",
@@ -5301,6 +5377,7 @@
      "public/bnpb/operasi_pusdalops.js",
      "public/bnpb/perencanaan.js",
      "public/bnpb/pintu.js",
+     "public/bnpb/rapor-sumber.js",
      "public/bnpb/relawan-saya.js",
      "public/bnpb/relawan.html",
      "public/bnpb/ringkas_bencana.js",
@@ -5418,6 +5495,7 @@
      "public/foto.js",
      "public/gempa/bagikan.js",
      "public/gempa/berita.js",
+     "public/gempa/beruntun.js",
      "public/gempa/dampak.js",
      "public/gempa/inatews.js",
      "public/gempa/index.html",
@@ -5756,17 +5834,21 @@
     "a",
     "akademisi.karya",
     "akademisi.riset",
+    "api.daac.asf.alaska.edu",
     "api.gdeltproject.org",
     "api.ioda.inetintel.cc.gatech.edu",
+    "api.openaerialmap.org",
     "api.openalex.org",
     "api.opentopodata.org",
     "api.reliefweb.int",
     "aset.lokal",
+    "asf.alaska.edu",
     "cendana15.com",
     "centurisk97.id",
     "contoh.invalid",
     "data.chc.ucsb.edu",
     "data.eodc.eu",
+    "data.humdata.org",
     "davidmegginson.github.io",
     "disasterscharter.org",
     "doi.org",
@@ -5784,6 +5866,7 @@
     "nama-situs",
     "news.google.com",
     "ogimet.com",
+    "openaerialmap.org",
     "openalex.org",
     "opencellid.org",
     "ourairports.com",
@@ -5799,6 +5882,7 @@
     "tiktok.com",
     "tiles.openfreemap.org",
     "trends.google.com",
+    "turnbackhoax.id",
     "wa.me",
     "webservices.volcano.si.edu",
     "x",
@@ -5806,9 +5890,9 @@
    ],
    "url": [
     "http://a/1",
-    "http://aset.lokal",
-    "http://aset.lokal/",
-    "http://aset.lokal/data/laporan.json"
+    "http://a/2",
+    "http://a/3",
+    "http://a/4"
    ],
    "penulis": [
     "scripts/akademisi/sambung_panen.mjs",
@@ -5872,6 +5956,7 @@
     "scripts/bnpb/risiko.py",
     "scripts/bnpb/risiko_hvc.py",
     "scripts/bnpb/siaga.py",
+    "scripts/bnpb/silang/rapor_sumber.py",
     "scripts/bnpb/ujibalik_risiko.py",
     "scripts/cuaca/cuaca.py",
     "scripts/cuaca/langganan.py",
@@ -5909,6 +5994,7 @@
     "scripts/gempa/laporan_gempa.py",
     "scripts/gempa/peluang_gempa.py",
     "scripts/gempa/riwayat.py",
+    "scripts/gempa/tsunami_zona.py",
     "scripts/gunungapi/abu.py",
     "scripts/gunungapi/dampak.py",
     "scripts/gunungapi/magma.py",
@@ -5937,9 +6023,13 @@
     "scripts/prediksi/terbit.py",
     "scripts/sebaran/lolos.py",
     "scripts/udara/peluang_udara.py",
+    "scripts/umum/citra_terbuka.py",
     "scripts/umum/dibi_kejadian.py",
     "scripts/umum/foto_dasar.py",
+    "scripts/umum/harga_pangan.py",
+    "scripts/umum/hoaks.py",
     "scripts/umum/internet_padam.py",
+    "scripts/umum/kalender_ancaman.py",
     "scripts/umum/kejadian.py",
     "scripts/umum/lab_kerusakan.py",
     "scripts/umum/lampu_malam.py",
@@ -5950,6 +6040,7 @@
     "scripts/umum/logbook_bnpb.py",
     "scripts/umum/logistik.py",
     "scripts/umum/menara.py",
+    "scripts/umum/nisar_katalog.py",
     "scripts/umum/outlook12.py",
     "scripts/umum/peluang.py",
     "scripts/umum/peringatan_berita.py",
@@ -6069,6 +6160,7 @@
      "public/bnpb/perencanaan.js",
      "public/bnpb/perencanaan_pusdalops.js",
      "public/bnpb/pintu.js",
+     "public/bnpb/rapor-sumber.js",
      "public/bnpb/ringkas_bencana.js",
      "public/bnpb/siaga.js",
      "public/bnpb/silang.js",
@@ -6119,6 +6211,7 @@
      "public/banjir/wilayah.js",
      "public/cari.js",
      "public/cerita_karhutla.js",
+     "public/cuaca/awan.js",
      "public/cuaca/berita.js",
      "public/cuaca/cuaca.js",
      "public/cuaca/dampak.js",
@@ -6141,6 +6234,7 @@
      "public/foto.js",
      "public/fungsi_direktori.js",
      "public/gempa/berita.js",
+     "public/gempa/beruntun.js",
      "public/gempa/inatews.js",
      "public/gempa/index.html",
      "public/gempa/insight.js",
@@ -6152,6 +6246,7 @@
      "public/gempa/sapa.js",
      "public/gempa/sim.js",
      "public/gempa/tab.js",
+     "public/gempa/tsunami_zona.js",
      "public/gunungapi/app.js",
      "public/gunungapi/berita.js",
      "public/gunungapi/dampak.js",
@@ -6217,6 +6312,7 @@
      "public/prediksi/index.html",
      "public/prediksi/laporan_layar.js",
      "public/prediksi/prediksi.js",
+     "public/prediksi/tangga.js",
      "public/prediksi/tangga_inti.js",
      "public/presiden.js",
      "public/ringkasan.js",
@@ -6283,6 +6379,7 @@
      "scripts/data/ringkasan.py",
      "scripts/data/subjenis_cuaca.py",
      "scripts/gempa/berita.py",
+     "scripts/gempa/beruntun.py",
      "scripts/gempa/kajian_magma.py",
      "scripts/gempa/susulan.py",
      "scripts/gunungapi/berita.py",
@@ -6422,6 +6519,7 @@
     "scripts/banjir/model_kab2_ops.py",
     "scripts/banjir/nilai_kab2_ops.py",
     "scripts/banjir/nowcast_jkt.py",
+    "scripts/banjir/opera_dswx.py",
     "scripts/banjir/susun_label_v2.py",
     "scripts/banjir/uji_logbook.py",
     "scripts/banjir/uji_logbook_longsor.py",
@@ -6431,6 +6529,7 @@
     "scripts/data/lab_dnbr.py",
     "scripts/data/lab_luas.py",
     "scripts/data/lab_padam.py",
+    "scripts/data/panen/opera_dist.py",
     "scripts/data/panen/slstr_malam.py",
     "scripts/data/presiden.py",
     "scripts/data/pusdalops_xlsx.py",
@@ -6446,7 +6545,9 @@
     "scripts/prediksi/bayangan/ekspor/ekspor_krh.py",
     "scripts/prediksi/bayangan/model.py",
     "scripts/prediksi/nilai.py",
+    "scripts/prediksi/tangga.py",
     "scripts/terbit/bersih_cache.py",
+    "scripts/umum/kalender_ancaman.py",
     "scripts/umum/lab_kerusakan.py",
     "scripts/umum/logistik.py",
     "scripts/umum/sinyal_sosial.py",
@@ -6482,6 +6583,7 @@
      "public/bnpb/dokumen.js",
      "public/bnpb/dokumen_laphar.js",
      "public/bnpb/kinerja.js",
+     "public/logpal/logpal.js",
      "public/pipa/layar_aset.js",
      "public/pipa/pelihara.js"
     ],
@@ -6642,7 +6744,8 @@
      "public/gempa/evakuasi.js"
     ],
     "model/turunan": [
-     "scripts/bnpb/iku.py"
+     "scripts/bnpb/iku.py",
+     "scripts/gempa/tsunami_zona.py"
     ]
    },
    "arsip": false,
@@ -6719,6 +6822,26 @@
    "laporan_lokal": []
   },
   {
+   "berkas": "public/cuaca/data/ibtracs.json",
+   "jenis": "berkas",
+   "jumlah": 1,
+   "lembaga": [],
+   "url": [],
+   "penulis": [],
+   "jadwal": [
+    "TIDAK ADA"
+   ],
+   "pemakai": {
+    "model/turunan": [
+     "scripts/cuaca/ibtracs.py"
+    ]
+   },
+   "arsip": false,
+   "status": "statis",
+   "catatan": "penulis tak ketemu (nama dirakit f-string atau ditulis di workflow)",
+   "laporan_lokal": []
+  },
+  {
    "berkas": "public/data/udara.json",
    "jenis": "berkas",
    "jumlah": 1,
@@ -6768,12 +6891,15 @@
    ],
    "penulis": [
     "scripts/banjir/siaga_persentil.py",
+    "scripts/bnpb/silang/rapor_sumber.py",
     "scripts/data/uji_logbook_karhutla.py",
+    "scripts/umum/kalender_ancaman.py",
     "scripts/umum/logbook_bnpb.py"
    ],
    "jadwal": [
     "banjir.yml cron 20 0 * * *",
-    "data.yml cron 20 14 * * *"
+    "data.yml cron 20 14 * * *",
+    "lintas.yml cron 10 2 * * *"
    ],
    "pemakai": {
     "model/turunan (nama tanpa .json)": [
@@ -6806,6 +6932,32 @@
    },
    "arsip": false,
    "status": "terpakai",
+   "catatan": "",
+   "laporan_lokal": []
+  },
+  {
+   "berkas": "public/data/harga_pangan_wfp.json",
+   "jenis": "berkas",
+   "jumlah": 1,
+   "lembaga": [
+    "data.humdata.org",
+    "pemerintah ID"
+   ],
+   "url": [
+    "https://api-panelhargav2.badanpangan.go.id/api",
+    "https://api-panelhargav2.badanpangan.go.id/api/provinces",
+    "https://data.humdata.org/api/3/action/package_show?id=wfp-food-prices-for-indonesia",
+    "https://data.humdata.org/dataset/wfp-food-prices-for-indonesia"
+   ],
+   "penulis": [
+    "scripts/umum/harga_pangan.py"
+   ],
+   "jadwal": [
+    "TIDAK ADA"
+   ],
+   "pemakai": {},
+   "arsip": false,
+   "status": "yatim",
    "catatan": "",
    "laporan_lokal": []
   },
@@ -6868,13 +7020,11 @@
     "scripts/cuaca/laporan_cuaca.py",
     "scripts/cuaca/uji_alur.py",
     "scripts/cuaca/verifikasi.py",
-    "scripts/prediksi/tangga.py",
     "src/peringatan.js"
    ],
    "jadwal": [
     "banjir.yml cron 20 0 * * *",
-    "lintas.yml cron 10 2 * * *",
-    "prediksi.yml cron 50 1 * * *"
+    "lintas.yml cron 10 2 * * *"
    ],
    "pemakai": {
     "layar publik": [
@@ -6890,6 +7040,7 @@
     "model/turunan": [
      "scripts/cuaca/cuaca.py",
      "scripts/og/buat.py",
+     "scripts/prediksi/tangga.py",
      "scripts/umum/kejadian.py"
     ],
     "worker": [
@@ -7095,13 +7246,16 @@
     "https://graph.mapillary.com/images?"
    ],
    "penulis": [
+    "scripts/bnpb/silang/rapor_sumber.py",
     "scripts/prediksi/nilai.py",
     "scripts/umum/foto_dasar.py",
     "scripts/umum/internet_padam.py",
+    "scripts/umum/kalender_ancaman.py",
     "scripts/umum/saran_status.py"
    ],
    "jadwal": [
     "data.yml cron 20 14 * * *",
+    "lintas.yml cron 10 2 * * *",
     "prediksi.yml cron 50 1 * * *",
     "statis.yml cron 0 19 2 * *",
     "titik.yml cron 40 */3 * * * | 10 9 * * * | 55 22 * * *"
@@ -7758,6 +7912,7 @@
      "scripts/bnpb/risiko.py",
      "scripts/cuaca/dampak_cuaca.py",
      "scripts/data/dampak.py",
+     "scripts/gempa/tsunami_zona.py",
      "scripts/kemitraan/profil_daerah.py",
      "scripts/udara/dampak_udara.py"
     ]
@@ -7997,6 +8152,26 @@
    "laporan_lokal": [
     "data.js"
    ]
+  },
+  {
+   "berkas": "public/data/hoaks_bencana.json",
+   "jenis": "berkas",
+   "jumlah": 1,
+   "lembaga": [],
+   "url": [],
+   "penulis": [],
+   "jadwal": [
+    "TIDAK ADA"
+   ],
+   "pemakai": {
+    "model/turunan": [
+     "scripts/umum/hoaks.py"
+    ]
+   },
+   "arsip": false,
+   "status": "statis",
+   "catatan": "penulis tak ketemu (nama dirakit f-string atau ditulis di workflow)",
+   "laporan_lokal": []
   },
   {
    "berkas": "public/data/internet_padam.json",
@@ -8747,6 +8922,9 @@
     "TIDAK ADA"
    ],
    "pemakai": {
+    "model/turunan (nama tanpa .json)": [
+     "scripts/data/panen/opera_dist.py"
+    ],
     "model/turunan": [
      "scripts/data/ujiluas_kab.py"
     ]
@@ -8995,6 +9173,32 @@
    "laporan_lokal": []
   },
   {
+   "berkas": "public/data/harga_pangan_arsip.json",
+   "jenis": "berkas",
+   "jumlah": 1,
+   "lembaga": [
+    "data.humdata.org",
+    "pemerintah ID"
+   ],
+   "url": [
+    "https://api-panelhargav2.badanpangan.go.id/api",
+    "https://api-panelhargav2.badanpangan.go.id/api/provinces",
+    "https://data.humdata.org/api/3/action/package_show?id=wfp-food-prices-for-indonesia",
+    "https://data.humdata.org/dataset/wfp-food-prices-for-indonesia"
+   ],
+   "penulis": [
+    "scripts/umum/harga_pangan.py"
+   ],
+   "jadwal": [
+    "TIDAK ADA"
+   ],
+   "pemakai": {},
+   "arsip": true,
+   "status": "arsip",
+   "catatan": "",
+   "laporan_lokal": []
+  },
+  {
    "berkas": "public/data/kekeringan_riwayat.json",
    "jenis": "berkas",
    "jumlah": 1,
@@ -9182,6 +9386,32 @@
    "laporan_lokal": []
   },
   {
+   "berkas": "public/data/harga_pangan.json",
+   "jenis": "berkas",
+   "jumlah": 1,
+   "lembaga": [
+    "data.humdata.org",
+    "pemerintah ID"
+   ],
+   "url": [
+    "https://api-panelhargav2.badanpangan.go.id/api",
+    "https://api-panelhargav2.badanpangan.go.id/api/provinces",
+    "https://data.humdata.org/api/3/action/package_show?id=wfp-food-prices-for-indonesia",
+    "https://data.humdata.org/dataset/wfp-food-prices-for-indonesia"
+   ],
+   "penulis": [
+    "scripts/umum/harga_pangan.py"
+   ],
+   "jadwal": [
+    "TIDAK ADA"
+   ],
+   "pemakai": {},
+   "arsip": false,
+   "status": "yatim",
+   "catatan": "",
+   "laporan_lokal": []
+  },
+  {
    "berkas": "public/data/penerbangan.json",
    "jenis": "berkas",
    "jumlah": 1,
@@ -9252,6 +9482,33 @@
    },
    "arsip": false,
    "status": "terpakai",
+   "catatan": "",
+   "laporan_lokal": []
+  },
+  {
+   "berkas": "public/data/opera_dist.json",
+   "jenis": "berkas",
+   "jumlah": 1,
+   "lembaga": [
+    "NASA"
+   ],
+   "url": [
+    "https://cmr.earthdata.nasa.gov/search/granules.json",
+    "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/X/X"
+   ],
+   "penulis": [
+    "scripts/data/panen/opera_dist.py"
+   ],
+   "jadwal": [
+    "TIDAK ADA"
+   ],
+   "pemakai": {
+    "model/turunan": [
+     "scripts/data/ujiluas_kab.py"
+    ]
+   },
+   "arsip": false,
+   "status": "tanpa-jadwal",
    "catatan": "",
    "laporan_lokal": []
   },
@@ -9394,6 +9651,7 @@
    "lembaga": [
     "BNPB",
     "ESDM/PVMBG",
+    "NASA",
     "NASA FIRMS",
     "Open-Meteo",
     "aset.lokal",
@@ -9414,6 +9672,7 @@
     "scripts/data/khg_prioritas.py",
     "scripts/data/konsesi_kompleks.py",
     "scripts/data/laporan.py",
+    "scripts/data/panen/opera_dist.py",
     "scripts/data/panen/ps.py",
     "scripts/data/panen/tambang.py",
     "scripts/data/ringkasan.py",
@@ -9722,6 +9981,7 @@
     "scripts/sebaran/lolos.py"
    ],
    "jadwal": [
+    "lintas.yml cron 10 2 * * *",
     "titik.yml cron 40 */3 * * * | 10 9 * * * | 55 22 * * *"
    ],
    "pemakai": {
@@ -9885,10 +10145,12 @@
     "https://gis.bnpb.go.id/karhutla2026/karhutla-api.php?t={int(time.time("
    ],
    "penulis": [
+    "scripts/bnpb/silang/beda_sumber.py",
     "scripts/data/harian.py"
    ],
    "jadwal": [
     "data.yml cron 20 14 * * *",
+    "lintas.yml cron 10 2 * * *",
     "titik.yml cron 40 */3 * * * | 10 9 * * * | 55 22 * * *"
    ],
    "pemakai": {
@@ -10013,6 +10275,7 @@
     "scripts/sebaran/prospektif.py"
    ],
    "jadwal": [
+    "lintas.yml cron 10 2 * * *",
     "titik.yml cron 40 */3 * * * | 10 9 * * * | 55 22 * * *"
    ],
    "pemakai": {
@@ -10100,6 +10363,29 @@
    "laporan_lokal": []
   },
   {
+   "berkas": "public/data/citra_terbuka.json",
+   "jenis": "berkas",
+   "jumlah": 1,
+   "lembaga": [],
+   "url": [],
+   "penulis": [],
+   "jadwal": [
+    "TIDAK ADA"
+   ],
+   "pemakai": {
+    "model/turunan": [
+     "scripts/umum/citra_terbuka.py"
+    ],
+    "model/turunan (nama tanpa .json)": [
+     "scripts/umum/nisar_katalog.py"
+    ]
+   },
+   "arsip": false,
+   "status": "statis",
+   "catatan": "penulis tak ketemu (nama dirakit f-string atau ditulis di workflow)",
+   "laporan_lokal": []
+  },
+  {
    "berkas": "public/data/sk_drive.json",
    "jenis": "berkas",
    "jumlah": 1,
@@ -10159,7 +10445,7 @@
     "scripts/data/panen/slstr_malam.py"
    ],
    "jadwal": [
-    "TIDAK ADA"
+    "titik.yml cron 40 */3 * * * | 10 9 * * * | 55 22 * * *"
    ],
    "pemakai": {},
    "arsip": false,
@@ -10287,6 +10573,28 @@
    "arsip": false,
    "status": "yatim",
    "catatan": "penulis tak ketemu (nama dirakit f-string atau ditulis di workflow)",
+   "laporan_lokal": []
+  },
+  {
+   "berkas": "public/data/kalender_ancaman.json",
+   "jenis": "berkas",
+   "jumlah": 1,
+   "lembaga": [],
+   "url": [],
+   "penulis": [
+    "scripts/umum/kalender_ancaman.py"
+   ],
+   "jadwal": [
+    "lintas.yml cron 10 2 * * *"
+   ],
+   "pemakai": {
+    "layar staf": [
+     "public/kemitraan/daerah.js"
+    ]
+   },
+   "arsip": false,
+   "status": "terpakai",
+   "catatan": "",
    "laporan_lokal": []
   },
   {
@@ -10565,6 +10873,7 @@
     "scripts/sebaran/pendorong.py"
    ],
    "jadwal": [
+    "lintas.yml cron 10 2 * * *",
     "titik.yml cron 40 */3 * * * | 10 9 * * * | 55 22 * * *"
    ],
    "pemakai": {
@@ -11007,6 +11316,7 @@
      "scripts/data/preventif.py",
      "scripts/gempa/kalibrasi_kerusakan.mjs",
      "scripts/gempa/pager.py",
+     "scripts/gempa/tsunami_zona.py",
      "scripts/kekeringan/gdo.py",
      "scripts/kekeringan/label.py",
      "scripts/kekeringan/prakiraan.py",
@@ -11570,6 +11880,7 @@
      "scripts/bnpb/risiko.py",
      "scripts/cuaca/dampak_cuaca.py",
      "scripts/data/dampak.py",
+     "scripts/gempa/tsunami_zona.py",
      "scripts/kemitraan/profil_daerah.py",
      "scripts/udara/dampak_udara.py"
     ]
@@ -11964,6 +12275,7 @@
     "scripts/sebaran/galat.py"
    ],
    "jadwal": [
+    "lintas.yml cron 10 2 * * *",
     "titik.yml cron 40 */3 * * * | 10 9 * * * | 55 22 * * *"
    ],
    "pemakai": {
@@ -11995,9 +12307,13 @@
    "jadwal": [
     "data.yml cron 20 14 * * *"
    ],
-   "pemakai": {},
+   "pemakai": {
+    "model/turunan (nama tanpa .json)": [
+     "scripts/umum/hoaks.py"
+    ]
+   },
    "arsip": false,
-   "status": "yatim",
+   "status": "terpakai",
    "catatan": "",
    "laporan_lokal": []
   },
@@ -12317,7 +12633,8 @@
     "scripts/data/logbook_bersih.py",
     "scripts/data/logbook_turunan.py",
     "scripts/kekeringan/label.py",
-    "scripts/prediksi/kalender.py"
+    "scripts/prediksi/kalender.py",
+    "scripts/umum/kalender_ancaman.py"
    ],
    "jadwal": [
     "banjir.yml cron 20 0 * * *",
@@ -12358,7 +12675,7 @@
   {
    "berkas": "public/data/bnpb/*.json",
    "jenis": "keluarga",
-   "jumlah": 20,
+   "jumlah": 22,
    "lembaga": [
     "*.openfreemap.org",
     "BMKG",
@@ -12433,6 +12750,8 @@
     "scripts/bnpb/risiko_hvc.py",
     "scripts/bnpb/rs_kapasitas.py",
     "scripts/bnpb/siaga.py",
+    "scripts/bnpb/silang/beda_sumber.py",
+    "scripts/bnpb/silang/rapor_sumber.py",
     "scripts/bnpb/templat_dokumen.py",
     "scripts/bnpb/terpapar.py",
     "scripts/bnpb/vapid.mjs",
@@ -12576,6 +12895,8 @@
      "public/bnpb/perencanaan.js",
      "public/bnpb/perencanaan_pusdalops.js",
      "public/bnpb/pintu.js",
+     "public/bnpb/rapor-sumber.html",
+     "public/bnpb/rapor-sumber.js",
      "public/bnpb/relawan-saya.html",
      "public/bnpb/relawan-saya.js",
      "public/bnpb/relawan.html",
@@ -12687,6 +13008,7 @@
      "scripts/terbit/versi.py",
      "scripts/udara/berita.py",
      "scripts/umum/cadangan_beku.py",
+     "scripts/umum/hoaks.py",
      "scripts/umum/lab_kerusakan.py",
      "scripts/umum/peringatan_berita.py",
      "scripts/umum/profil_wilayah.py",
@@ -12782,6 +13104,7 @@
     "scripts/bnpb/kebakaran.py",
     "scripts/bnpb/kerentanan.py",
     "scripts/bnpb/siaga.py",
+    "scripts/bnpb/silang/beda_sumber.py",
     "scripts/bnpb/terpapar.py",
     "scripts/cuaca/bmkg_prakiraan.py",
     "scripts/data/berita.py",
@@ -13070,6 +13393,7 @@
      "scripts/data/harian.py",
      "scripts/data/presiden.py",
      "scripts/data/sawit_s2.py",
+     "scripts/gempa/beruntun.py",
      "scripts/udara/lintasan.py"
     ],
     "worker": [
@@ -13269,6 +13593,7 @@
      "public/banjir/sim.js",
      "public/banjir/sim_tampak.js",
      "public/cari.js",
+     "public/cuaca/awan.js",
      "public/cuaca/bagikan.js",
      "public/cuaca/berita.js",
      "public/cuaca/cuaca.js",
@@ -13336,6 +13661,7 @@
      "scripts/berita/karhutla.py",
      "scripts/berita/pesisir.py",
      "scripts/cuaca/berita.py",
+     "scripts/cuaca/ibtracs.py",
      "scripts/cuaca/laporan_cuaca.py",
      "scripts/data/logbook_bersih.py",
      "scripts/data/penduduk.py",
@@ -13447,6 +13773,7 @@
      "public/banjir/wilayah.js",
      "public/databaru.js",
      "public/ews_tindakan.js",
+     "public/gempa/beruntun.js",
      "public/instansi.js",
      "public/instansi_alat.js",
      "public/instansi_kebutuhan.js",
@@ -13484,11 +13811,34 @@
    "laporan_lokal": []
   },
   {
+   "berkas": "public/data/kalender_ancaman/*.json",
+   "jenis": "keluarga",
+   "jumlah": 514,
+   "lembaga": [],
+   "url": [],
+   "penulis": [
+    "scripts/umum/kalender_ancaman.py"
+   ],
+   "jadwal": [
+    "lintas.yml cron 10 2 * * *"
+   ],
+   "pemakai": {
+    "layar staf": [
+     "public/kemitraan/daerah.js"
+    ]
+   },
+   "arsip": false,
+   "status": "terpakai",
+   "catatan": "",
+   "laporan_lokal": []
+  },
+  {
    "berkas": "public/data/kanal/*.json",
    "jenis": "keluarga",
    "jumlah": 160,
    "lembaga": [
     "BMKG",
+    "ECMWF",
     "NASA",
     "OpenStreetMap",
     "api.opentopodata.org",
@@ -13524,6 +13874,7 @@
     "https://aset.lokal/data/tugas_kompleks.json"
    ],
    "penulis": [
+    "scripts/banjir/geoglows.py",
     "scripts/banjir/pos_sungai.py",
     "scripts/data/berita.py",
     "scripts/data/citra.py",
@@ -13684,17 +14035,21 @@
     "a",
     "akademisi.karya",
     "akademisi.riset",
+    "api.daac.asf.alaska.edu",
     "api.gdeltproject.org",
     "api.ioda.inetintel.cc.gatech.edu",
+    "api.openaerialmap.org",
     "api.openalex.org",
     "api.opentopodata.org",
     "api.reliefweb.int",
     "aset.lokal",
+    "asf.alaska.edu",
     "cendana15.com",
     "centurisk97.id",
     "contoh.invalid",
     "data.chc.ucsb.edu",
     "data.eodc.eu",
+    "data.humdata.org",
     "davidmegginson.github.io",
     "disasterscharter.org",
     "doi.org",
@@ -13712,6 +14067,7 @@
     "nama-situs",
     "news.google.com",
     "ogimet.com",
+    "openaerialmap.org",
     "openalex.org",
     "opencellid.org",
     "ourairports.com",
@@ -13727,6 +14083,7 @@
     "tiktok.com",
     "tiles.openfreemap.org",
     "trends.google.com",
+    "turnbackhoax.id",
     "wa.me",
     "webservices.volcano.si.edu",
     "x",
@@ -13734,9 +14091,9 @@
    ],
    "url": [
     "http://a/1",
-    "http://aset.lokal",
-    "http://aset.lokal/",
-    "http://aset.lokal/data/laporan.json"
+    "http://a/2",
+    "http://a/3",
+    "http://a/4"
    ],
    "penulis": [
     "scripts/akademisi/sambung_panen.mjs",
@@ -13800,6 +14157,7 @@
     "scripts/bnpb/risiko.py",
     "scripts/bnpb/risiko_hvc.py",
     "scripts/bnpb/siaga.py",
+    "scripts/bnpb/silang/rapor_sumber.py",
     "scripts/bnpb/ujibalik_risiko.py",
     "scripts/cuaca/cuaca.py",
     "scripts/cuaca/langganan.py",
@@ -13837,6 +14195,7 @@
     "scripts/gempa/laporan_gempa.py",
     "scripts/gempa/peluang_gempa.py",
     "scripts/gempa/riwayat.py",
+    "scripts/gempa/tsunami_zona.py",
     "scripts/gunungapi/abu.py",
     "scripts/gunungapi/dampak.py",
     "scripts/gunungapi/magma.py",
@@ -13865,9 +14224,13 @@
     "scripts/prediksi/terbit.py",
     "scripts/sebaran/lolos.py",
     "scripts/udara/peluang_udara.py",
+    "scripts/umum/citra_terbuka.py",
     "scripts/umum/dibi_kejadian.py",
     "scripts/umum/foto_dasar.py",
+    "scripts/umum/harga_pangan.py",
+    "scripts/umum/hoaks.py",
     "scripts/umum/internet_padam.py",
+    "scripts/umum/kalender_ancaman.py",
     "scripts/umum/kejadian.py",
     "scripts/umum/lab_kerusakan.py",
     "scripts/umum/lampu_malam.py",
@@ -13878,6 +14241,7 @@
     "scripts/umum/logbook_bnpb.py",
     "scripts/umum/logistik.py",
     "scripts/umum/menara.py",
+    "scripts/umum/nisar_katalog.py",
     "scripts/umum/outlook12.py",
     "scripts/umum/peluang.py",
     "scripts/umum/peringatan_berita.py",
@@ -13997,6 +14361,7 @@
      "public/bnpb/perencanaan.js",
      "public/bnpb/perencanaan_pusdalops.js",
      "public/bnpb/pintu.js",
+     "public/bnpb/rapor-sumber.js",
      "public/bnpb/ringkas_bencana.js",
      "public/bnpb/siaga.js",
      "public/bnpb/silang.js",
@@ -14047,6 +14412,7 @@
      "public/banjir/wilayah.js",
      "public/cari.js",
      "public/cerita_karhutla.js",
+     "public/cuaca/awan.js",
      "public/cuaca/berita.js",
      "public/cuaca/cuaca.js",
      "public/cuaca/dampak.js",
@@ -14069,6 +14435,7 @@
      "public/foto.js",
      "public/fungsi_direktori.js",
      "public/gempa/berita.js",
+     "public/gempa/beruntun.js",
      "public/gempa/inatews.js",
      "public/gempa/index.html",
      "public/gempa/insight.js",
@@ -14080,6 +14447,7 @@
      "public/gempa/sapa.js",
      "public/gempa/sim.js",
      "public/gempa/tab.js",
+     "public/gempa/tsunami_zona.js",
      "public/gunungapi/app.js",
      "public/gunungapi/berita.js",
      "public/gunungapi/dampak.js",
@@ -14145,6 +14513,7 @@
      "public/prediksi/index.html",
      "public/prediksi/laporan_layar.js",
      "public/prediksi/prediksi.js",
+     "public/prediksi/tangga.js",
      "public/prediksi/tangga_inti.js",
      "public/presiden.js",
      "public/ringkasan.js",
@@ -14211,6 +14580,7 @@
      "scripts/data/ringkasan.py",
      "scripts/data/subjenis_cuaca.py",
      "scripts/gempa/berita.py",
+     "scripts/gempa/beruntun.py",
      "scripts/gempa/kajian_magma.py",
      "scripts/gempa/susulan.py",
      "scripts/gunungapi/berita.py",
@@ -14352,6 +14722,7 @@
      "scripts/geo/batas.py",
      "scripts/kemitraan/cocok_pakar.py",
      "scripts/kemitraan/indeks_bm25.py",
+     "scripts/umum/kalender_ancaman.py",
      "scripts/umum/status_darurat.py"
     ]
    },
@@ -14577,6 +14948,7 @@
      "public/bnpb/kontak.html",
      "public/bnpb/pendataan_spek.js",
      "public/bnpb/pintu.js",
+     "public/bnpb/rapor-sumber.js",
      "public/bnpb/ringkas_bencana.js",
      "public/bnpb/siaga.js",
      "public/kemitraan.html",
@@ -14632,6 +15004,7 @@
      "scripts/akademisi/pemutakhiran/berita_rss.py",
      "scripts/akademisi/pemutakhiran/rayap.py",
      "scripts/bnpb/iku.py",
+     "scripts/bnpb/silang/rapor_sumber.py",
      "scripts/bnpb/unit/skor.py",
      "scripts/cuaca/factsheet.py",
      "scripts/data/dampak.py",
@@ -14646,7 +15019,9 @@
      "scripts/longsor/tanggapan_pvmbg.py",
      "scripts/og/buat.py",
      "scripts/prediksi/jalan.py",
-     "scripts/umum/laporan_kejadian.py"
+     "scripts/umum/kalender_ancaman.py",
+     "scripts/umum/laporan_kejadian.py",
+     "scripts/umum/nisar_katalog.py"
     ],
     "worker": [
      "src/admin_halaman.js",
@@ -14852,6 +15227,8 @@
     "scripts/bnpb/prioritas.py",
     "scripts/bnpb/puso.py",
     "scripts/bnpb/rekonsiliasi_dalops_dibi.py",
+    "scripts/bnpb/silang/beda_sumber.py",
+    "scripts/bnpb/silang/rapor_sumber.py",
     "scripts/bnpb/ujibalik_risiko.py",
     "scripts/cuaca/bandara_bmkg.py",
     "scripts/cuaca/bmkg_kab10.py",
@@ -14903,6 +15280,7 @@
     "scripts/data/musim_harian.py",
     "scripts/data/operasi.py",
     "scripts/data/panen/hgu_api.py",
+    "scripts/data/panen/opera_dist.py",
     "scripts/data/panen/ps.py",
     "scripts/data/panen/tambang.py",
     "scripts/data/peluang_karhutla.py",
@@ -14943,6 +15321,7 @@
     "scripts/data/udara_rekom.py",
     "scripts/data/ujibanding_firespot.py",
     "scripts/data/ujiluas_dnbr.py",
+    "scripts/data/ujiluas_kab.py",
     "scripts/data/watak_kluster.py",
     "scripts/gempa/bukti.py",
     "scripts/gempa/dampak.py",
@@ -15022,6 +15401,7 @@
     "scripts/umum/dibi_kejadian.py",
     "scripts/umum/foto_dasar.py",
     "scripts/umum/internet_padam.py",
+    "scripts/umum/kalender_ancaman.py",
     "scripts/umum/kejadian.py",
     "scripts/umum/label_lapangan.py",
     "scripts/umum/laphar_arsip.mjs",
@@ -15274,6 +15654,7 @@
      "public/cari.js",
      "public/cerita_karhutla.js",
      "public/citra.js",
+     "public/cuaca/awan.js",
      "public/cuaca/bagikan.js",
      "public/cuaca/berita.js",
      "public/cuaca/bmkg2.js",
@@ -15448,6 +15829,7 @@
      "scripts/cuaca/dampak_cuaca.py",
      "scripts/cuaca/factsheet.py",
      "scripts/cuaca/gerakan_tanah_pu.py",
+     "scripts/cuaca/ibtracs.py",
      "scripts/cuaca/petir.py",
      "scripts/cuaca/posko.py",
      "scripts/cuaca/uji_alur.py",
@@ -15464,11 +15846,11 @@
      "scripts/data/sippa/pilot/renlap.py",
      "scripts/data/titik_unik.py",
      "scripts/data/uji_logbook_karhutla.py",
-     "scripts/data/ujiluas_kab.py",
      "scripts/data/video.py",
      "scripts/gempa/berita.py",
      "scripts/gempa/citra.py",
      "scripts/gempa/guncangan.py",
+     "scripts/gempa/tsunami_zona.py",
      "scripts/kekeringan/ambang2.py",
      "scripts/kekeringan/berita.py",
      "scripts/kekeringan/embung.py",
@@ -15748,6 +16130,7 @@
     "scripts/banjir/model_kab2_ops.py",
     "scripts/banjir/nilai_kab2_ops.py",
     "scripts/banjir/nowcast_jkt.py",
+    "scripts/banjir/opera_dswx.py",
     "scripts/banjir/susun_label_v2.py",
     "scripts/banjir/uji_logbook.py",
     "scripts/banjir/uji_logbook_longsor.py",
@@ -15757,6 +16140,7 @@
     "scripts/data/lab_dnbr.py",
     "scripts/data/lab_luas.py",
     "scripts/data/lab_padam.py",
+    "scripts/data/panen/opera_dist.py",
     "scripts/data/panen/slstr_malam.py",
     "scripts/data/presiden.py",
     "scripts/data/pusdalops_xlsx.py",
@@ -15772,7 +16156,9 @@
     "scripts/prediksi/bayangan/ekspor/ekspor_krh.py",
     "scripts/prediksi/bayangan/model.py",
     "scripts/prediksi/nilai.py",
+    "scripts/prediksi/tangga.py",
     "scripts/terbit/bersih_cache.py",
+    "scripts/umum/kalender_ancaman.py",
     "scripts/umum/lab_kerusakan.py",
     "scripts/umum/logistik.py",
     "scripts/umum/sinyal_sosial.py",
@@ -15808,6 +16194,7 @@
      "public/bnpb/dokumen.js",
      "public/bnpb/dokumen_laphar.js",
      "public/bnpb/kinerja.js",
+     "public/logpal/logpal.js",
      "public/pipa/layar_aset.js",
      "public/pipa/pelihara.js"
     ],
@@ -16526,16 +16913,20 @@
     "WorldPop",
     "[^",
     "adsb.fi",
+    "api.daac.asf.alaska.edu",
     "api.ioda.inetintel.cc.gatech.edu",
+    "api.openaerialmap.org",
     "api.opentopodata.org",
     "api.resend.com",
     "aset.lokal",
+    "asf.alaska.edu",
     "centurisk97.id",
     "commons.wikimedia.org",
     "contoh.invalid",
     "cwfis.cfs.nrcan.gc.ca",
     "data.eodc.eu",
     "data.globalforestwatch.org",
+    "data.humdata.org",
     "dataweb",
     "davidmegginson.github.io",
     "detik.com",
@@ -16557,6 +16948,7 @@
     "nama-situs",
     "news.google.com",
     "nwcg.gov",
+    "openaerialmap.org",
     "opendata.adsb.fi",
     "opengis.net",
     "pemerintah ID",
@@ -16627,6 +17019,7 @@
     "scripts/bnpb/drone.py",
     "scripts/bnpb/hvc_dasar.py",
     "scripts/bnpb/risiko.py",
+    "scripts/bnpb/silang/beda_sumber.py",
     "scripts/cuaca/bangun_bnpb.py",
     "scripts/cuaca/dasar.py",
     "scripts/cuaca/iklim_bmkg.py",
@@ -16654,6 +17047,7 @@
     "scripts/data/luas_citra.py",
     "scripts/data/musim_harian.py",
     "scripts/data/operasi.py",
+    "scripts/data/panen/opera_dist.py",
     "scripts/data/peluang_karhutla.py",
     "scripts/data/penduduk.py",
     "scripts/data/peta_karhutla.py",
@@ -16679,6 +17073,7 @@
     "scripts/gempa/peluang_gempa.py",
     "scripts/gempa/riwayat.py",
     "scripts/gempa/susulan.py",
+    "scripts/gempa/tsunami_zona.py",
     "scripts/gempa/umum.py",
     "scripts/gempa/vs30.py",
     "scripts/gunungapi/peluang_abu.py",
@@ -16711,12 +17106,15 @@
     "scripts/udara/laporan_udara.py",
     "scripts/umum/bencana.py",
     "scripts/umum/berita.py",
+    "scripts/umum/citra_terbuka.py",
+    "scripts/umum/harga_pangan.py",
     "scripts/umum/internet_padam.py",
     "scripts/umum/kejadian.py",
     "scripts/umum/lab_kerusakan.py",
     "scripts/umum/lampu_malam.py",
     "scripts/umum/laphar_arsip.py",
     "scripts/umum/laporan.py",
+    "scripts/umum/nisar_katalog.py",
     "scripts/umum/peluang.py",
     "scripts/umum/sosmed.py",
     "scripts/umum/status_darurat.py",
@@ -16924,6 +17322,7 @@
      "public/gempa/peta.js",
      "public/gempa/sapa.js",
      "public/gempa/sim.js",
+     "public/gempa/tsunami_zona.js",
      "public/gunungapi/berita.js",
      "public/gunungapi/insight.js",
      "public/gunungapi/peta.js",
@@ -17006,6 +17405,7 @@
      "scripts/banjir/mcdwd.py",
      "scripts/banjir/mcdwd_model.py",
      "scripts/banjir/nowcast_jkt.py",
+     "scripts/banjir/opera_dswx.py",
      "scripts/banjir/panen_lab.py",
      "scripts/banjir/posko.py",
      "scripts/banjir/rob_presiden.py",
@@ -17102,6 +17502,7 @@
      "scripts/udara/tropomi.py",
      "scripts/umum/bangunan.py",
      "scripts/umum/iklim_outlook.py",
+     "scripts/umum/kalender_ancaman.py",
      "scripts/umum/laporan_kejadian.py",
      "scripts/umum/menara.py",
      "scripts/umum/outlook12.py",
@@ -17281,6 +17682,28 @@
    },
    "arsip": false,
    "status": "tanpa-jadwal",
+   "catatan": "",
+   "laporan_lokal": []
+  },
+  {
+   "berkas": "public/gempa/data/beruntun.json",
+   "jenis": "berkas",
+   "jumlah": 1,
+   "lembaga": [],
+   "url": [],
+   "penulis": [
+    "scripts/gempa/beruntun.py"
+   ],
+   "jadwal": [
+    "lintas.yml cron 10 2 * * *"
+   ],
+   "pemakai": {
+    "layar publik": [
+     "public/gempa/beruntun.js"
+    ]
+   },
+   "arsip": false,
+   "status": "terpakai",
    "catatan": "",
    "laporan_lokal": []
   },
@@ -17478,11 +17901,13 @@
     "https://cdn.bmkg.go.id/"
    ],
    "penulis": [
-    "scripts/gempa/inatews.py"
+    "scripts/gempa/inatews.py",
+    "scripts/gempa/tsunami_zona.py"
    ],
    "jadwal": [
     "arsip-bmkg.yml cron 25 */3 * * *",
-    "gempa.yml cron 10 1 * * *"
+    "gempa.yml cron 10 1 * * *",
+    "lintas.yml cron 10 2 * * *"
    ],
    "pemakai": {
     "layar publik": [
@@ -17738,6 +18163,9 @@
    "pemakai": {
     "layar publik": [
      "public/gempa/inatews.js"
+    ],
+    "model/turunan": [
+     "scripts/gempa/beruntun.py"
     ]
    },
    "arsip": false,
@@ -17764,6 +18192,31 @@
    },
    "arsip": false,
    "status": "statis",
+   "catatan": "",
+   "laporan_lokal": []
+  },
+  {
+   "berkas": "public/gempa/data/tsunami_zona.json",
+   "jenis": "berkas",
+   "jumlah": 1,
+   "lembaga": [],
+   "url": [],
+   "penulis": [
+    "scripts/gempa/tsunami_zona.py"
+   ],
+   "jadwal": [
+    "lintas.yml cron 10 2 * * *"
+   ],
+   "pemakai": {
+    "layar publik (nama tanpa .json)": [
+     "public/gempa/index.html"
+    ],
+    "layar publik": [
+     "public/gempa/tsunami_zona.js"
+    ]
+   },
+   "arsip": false,
+   "status": "terpakai",
    "catatan": "",
    "laporan_lokal": []
   },
@@ -18047,6 +18500,28 @@
     "model/turunan": [
      "scripts/data/presiden.py",
      "scripts/umum/peluang.py"
+    ]
+   },
+   "arsip": false,
+   "status": "terpakai",
+   "catatan": "",
+   "laporan_lokal": []
+  },
+  {
+   "berkas": "public/gempa/data/zona_tsunami_kamus.json",
+   "jenis": "berkas",
+   "jumlah": 1,
+   "lembaga": [],
+   "url": [],
+   "penulis": [
+    "scripts/gempa/tsunami_zona.py"
+   ],
+   "jadwal": [
+    "lintas.yml cron 10 2 * * *"
+   ],
+   "pemakai": {
+    "layar publik": [
+     "public/gempa/tsunami_zona.js"
     ]
    },
    "arsip": false,
@@ -18581,6 +19056,7 @@
     "https://cendana15.com/x.jpeg"
    ],
    "penulis": [
+    "scripts/gempa/beruntun.py",
     "scripts/gunungapi/berita.py",
     "scripts/gunungapi/magma.py",
     "scripts/gunungapi/risiko.py"
@@ -18861,6 +19337,7 @@
      "public/bnpb/sitrep.js",
      "public/kemitraan/buku.js",
      "public/kemitraan/inti.js",
+     "public/logpal/logpal.js",
      "public/pipa/kunjungan.js",
      "public/pipa/layar_peta.js"
     ],
@@ -18963,6 +19440,7 @@
      "scripts/pesisir/abrasi.py",
      "scripts/prediksi/jalan.py",
      "scripts/prediksi/kalibrasi.py",
+     "scripts/prediksi/tangga.py",
      "scripts/prediksi/terbit.py",
      "scripts/scrape/kanal_garis.py",
      "scripts/sebaran/gbdt_np.py",
@@ -19756,10 +20234,12 @@
    "url": [],
    "penulis": [
     "scripts/bnpb/siaga.py",
-    "scripts/prediksi/kalender.py"
+    "scripts/prediksi/kalender.py",
+    "scripts/umum/kalender_ancaman.py"
    ],
    "jadwal": [
-    "data.yml cron 20 14 * * *"
+    "data.yml cron 20 14 * * *",
+    "lintas.yml cron 10 2 * * *"
    ],
    "pemakai": {
     "layar publik": [
@@ -19948,6 +20428,9 @@
      "public/prediksi/laporan_layar.js",
      "public/prediksi/laporan_prov.js"
     ],
+    "layar staf": [
+     "public/logpal/logpal.js"
+    ],
     "model/turunan": [
      "scripts/cuaca/cuaca.py",
      "scripts/cuaca/siklon.py",
@@ -19983,10 +20466,11 @@
     "https://api.open-meteo.com/v1/forecast",
     "https://archive-api.open-meteo.com/v1/archive",
     "https://centurisk97.id",
-    "https://commons.wikimedia.org/wiki/File:00_Brandbek%C3%A4mpfung_mit_der_E-L%C3%B6schlanze_bei_einem_Fahrzeugbrand_03.jpg"
+    "https://cmr.earthdata.nasa.gov/search/granules.json"
    ],
    "penulis": [
     "scripts/banjir/mcdwd.py",
+    "scripts/banjir/opera_dswx.py",
     "scripts/banjir/siaga_persentil.py",
     "scripts/data/lab_dnbr.py",
     "scripts/gunungapi/citra.py",
@@ -20207,6 +20691,9 @@
     "TIDAK ADA"
    ],
    "pemakai": {
+    "layar publik": [
+     "public/cuaca/awan.js"
+    ],
     "model/turunan": [
      "scripts/prediksi/tangga.py",
      "scripts/udara/awan_himawari.py"
@@ -21083,17 +21570,21 @@
     "a",
     "akademisi.karya",
     "akademisi.riset",
+    "api.daac.asf.alaska.edu",
     "api.gdeltproject.org",
     "api.ioda.inetintel.cc.gatech.edu",
+    "api.openaerialmap.org",
     "api.openalex.org",
     "api.opentopodata.org",
     "api.reliefweb.int",
     "aset.lokal",
+    "asf.alaska.edu",
     "cendana15.com",
     "centurisk97.id",
     "contoh.invalid",
     "data.chc.ucsb.edu",
     "data.eodc.eu",
+    "data.humdata.org",
     "davidmegginson.github.io",
     "disasterscharter.org",
     "doi.org",
@@ -21111,6 +21602,7 @@
     "nama-situs",
     "news.google.com",
     "ogimet.com",
+    "openaerialmap.org",
     "openalex.org",
     "opencellid.org",
     "ourairports.com",
@@ -21126,6 +21618,7 @@
     "tiktok.com",
     "tiles.openfreemap.org",
     "trends.google.com",
+    "turnbackhoax.id",
     "wa.me",
     "webservices.volcano.si.edu",
     "x",
@@ -21133,9 +21626,9 @@
    ],
    "url": [
     "http://a/1",
-    "http://aset.lokal",
-    "http://aset.lokal/",
-    "http://aset.lokal/data/laporan.json"
+    "http://a/2",
+    "http://a/3",
+    "http://a/4"
    ],
    "penulis": [
     "scripts/akademisi/sambung_panen.mjs",
@@ -21199,6 +21692,7 @@
     "scripts/bnpb/risiko.py",
     "scripts/bnpb/risiko_hvc.py",
     "scripts/bnpb/siaga.py",
+    "scripts/bnpb/silang/rapor_sumber.py",
     "scripts/bnpb/ujibalik_risiko.py",
     "scripts/cuaca/cuaca.py",
     "scripts/cuaca/langganan.py",
@@ -21236,6 +21730,7 @@
     "scripts/gempa/laporan_gempa.py",
     "scripts/gempa/peluang_gempa.py",
     "scripts/gempa/riwayat.py",
+    "scripts/gempa/tsunami_zona.py",
     "scripts/gunungapi/abu.py",
     "scripts/gunungapi/dampak.py",
     "scripts/gunungapi/magma.py",
@@ -21264,9 +21759,13 @@
     "scripts/prediksi/terbit.py",
     "scripts/sebaran/lolos.py",
     "scripts/udara/peluang_udara.py",
+    "scripts/umum/citra_terbuka.py",
     "scripts/umum/dibi_kejadian.py",
     "scripts/umum/foto_dasar.py",
+    "scripts/umum/harga_pangan.py",
+    "scripts/umum/hoaks.py",
     "scripts/umum/internet_padam.py",
+    "scripts/umum/kalender_ancaman.py",
     "scripts/umum/kejadian.py",
     "scripts/umum/lab_kerusakan.py",
     "scripts/umum/lampu_malam.py",
@@ -21277,6 +21776,7 @@
     "scripts/umum/logbook_bnpb.py",
     "scripts/umum/logistik.py",
     "scripts/umum/menara.py",
+    "scripts/umum/nisar_katalog.py",
     "scripts/umum/outlook12.py",
     "scripts/umum/peluang.py",
     "scripts/umum/peringatan_berita.py",
@@ -21396,6 +21896,7 @@
      "public/bnpb/perencanaan.js",
      "public/bnpb/perencanaan_pusdalops.js",
      "public/bnpb/pintu.js",
+     "public/bnpb/rapor-sumber.js",
      "public/bnpb/ringkas_bencana.js",
      "public/bnpb/siaga.js",
      "public/bnpb/silang.js",
@@ -21446,6 +21947,7 @@
      "public/banjir/wilayah.js",
      "public/cari.js",
      "public/cerita_karhutla.js",
+     "public/cuaca/awan.js",
      "public/cuaca/berita.js",
      "public/cuaca/cuaca.js",
      "public/cuaca/dampak.js",
@@ -21468,6 +21970,7 @@
      "public/foto.js",
      "public/fungsi_direktori.js",
      "public/gempa/berita.js",
+     "public/gempa/beruntun.js",
      "public/gempa/inatews.js",
      "public/gempa/index.html",
      "public/gempa/insight.js",
@@ -21479,6 +21982,7 @@
      "public/gempa/sapa.js",
      "public/gempa/sim.js",
      "public/gempa/tab.js",
+     "public/gempa/tsunami_zona.js",
      "public/gunungapi/app.js",
      "public/gunungapi/berita.js",
      "public/gunungapi/dampak.js",
@@ -21544,6 +22048,7 @@
      "public/prediksi/index.html",
      "public/prediksi/laporan_layar.js",
      "public/prediksi/prediksi.js",
+     "public/prediksi/tangga.js",
      "public/prediksi/tangga_inti.js",
      "public/presiden.js",
      "public/ringkasan.js",
@@ -21610,6 +22115,7 @@
      "scripts/data/ringkasan.py",
      "scripts/data/subjenis_cuaca.py",
      "scripts/gempa/berita.py",
+     "scripts/gempa/beruntun.py",
      "scripts/gempa/kajian_magma.py",
      "scripts/gempa/susulan.py",
      "scripts/gunungapi/berita.py",
@@ -21966,14 +22472,14 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
+    "model/turunan": [
+     "scripts/udara/atribusi.py",
+     "scripts/udara/peluang_udara.py"
+    ],
     "worker": [
      "src/gunungapi.js",
      "src/nowcast.js",
      "src/worker.js"
-    ],
-    "model/turunan": [
-     "scripts/udara/atribusi.py",
-     "scripts/udara/peluang_udara.py"
     ]
    },
    "arsip": false,
@@ -22129,6 +22635,108 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
+    "model/turunan": [
+     "scripts/agents/ilmu.mjs",
+     "scripts/agents/kesegaran.py",
+     "scripts/akademisi/lembaga_gabung.mjs",
+     "scripts/akademisi/pemutakhiran/berita.py",
+     "scripts/akademisi/pemutakhiran/berita_rss.py",
+     "scripts/akademisi/pemutakhiran/panen_tesis.py",
+     "scripts/akademisi/sambung_panen.mjs",
+     "scripts/akademisi/uji_perbarui.py",
+     "scripts/banjir/arsip_debit.py",
+     "scripts/banjir/charter.py",
+     "scripts/banjir/kejadian.py",
+     "scripts/banjir/nilai_kab2_ops.py",
+     "scripts/berita/pesisir.py",
+     "scripts/bnpb/iku.py",
+     "scripts/bnpb/inarisk_vs_kejadian.py",
+     "scripts/bnpb/kunci_kejadian.py",
+     "scripts/bnpb/prioritas.py",
+     "scripts/bnpb/rekonsiliasi_dalops_dibi.py",
+     "scripts/bnpb/risiko.py",
+     "scripts/bnpb/risiko_hvc.py",
+     "scripts/bnpb/templat_dokumen.py",
+     "scripts/bnpb/terpapar.py",
+     "scripts/bnpb/ujibalik_risiko.py",
+     "scripts/cuaca/bangun_bnpb.py",
+     "scripts/cuaca/iklim_bmkg.py",
+     "scripts/data/dalops_banjir.py",
+     "scripts/data/logbook_internal.py",
+     "scripts/data/logbook_pusdalops.py",
+     "scripts/data/pusdalops_sk.py",
+     "scripts/data/silang_dibi_logbook.py",
+     "scripts/data/sippa/jembatan.py",
+     "scripts/gempa/bahaya.py",
+     "scripts/gempa/batimetri.py",
+     "scripts/gempa/berita.py",
+     "scripts/gempa/beruntun.py",
+     "scripts/gempa/bukti.py",
+     "scripts/gempa/citra.py",
+     "scripts/gempa/dampak.py",
+     "scripts/gempa/dart.py",
+     "scripts/gempa/emsc.py",
+     "scripts/gempa/gnss.py",
+     "scripts/gempa/guncangan.py",
+     "scripts/gempa/inatews.py",
+     "scripts/gempa/kajian_magma.py",
+     "scripts/gempa/kalibrasi_kerusakan.mjs",
+     "scripts/gempa/katalog_pdf.py",
+     "scripts/gempa/laporan_gempa.py",
+     "scripts/gempa/pager.py",
+     "scripts/gempa/peluang_gempa.py",
+     "scripts/gempa/riwayat.py",
+     "scripts/gempa/sesar.py",
+     "scripts/gempa/susulan.py",
+     "scripts/gempa/tsunami_zona.py",
+     "scripts/gempa/uji_js_guncangan.py",
+     "scripts/gempa/uji_js_pager.py",
+     "scripts/gempa/uji_js_susulan.py",
+     "scripts/gempa/uji_js_tsunami.py",
+     "scripts/gempa/umum.py",
+     "scripts/gempa/vs30.py",
+     "scripts/gunungapi/arsip_magma.py",
+     "scripts/gunungapi/magma.py",
+     "scripts/gunungapi/panen_laporan.py",
+     "scripts/gunungapi/prospektif.py",
+     "scripts/gunungapi/risiko.py",
+     "scripts/gunungapi/riwayat_level.py",
+     "scripts/i18n/kumpul.mjs",
+     "scripts/kemitraan/indeks_bm25.py",
+     "scripts/kemitraan/konst.py",
+     "scripts/kemitraan/masalah.py",
+     "scripts/kemitraan/pertanyaan.py",
+     "scripts/kemitraan/profil_daerah.py",
+     "scripts/kemitraan/uji_cocok.py",
+     "scripts/longsor/lab_lereng.py",
+     "scripts/og/buat.py",
+     "scripts/prediksi/dampak.py",
+     "scripts/terbit/jaga_jadwal.mjs",
+     "scripts/terbit/versi.py",
+     "scripts/umum/bangunan.py",
+     "scripts/umum/bencana.py",
+     "scripts/umum/foto_dasar.py",
+     "scripts/umum/hoaks.py",
+     "scripts/umum/kalender_ancaman.py",
+     "scripts/umum/lab_kerusakan.py",
+     "scripts/umum/lampu_malam.py",
+     "scripts/umum/laphar_arsip.py",
+     "scripts/umum/laporan.py",
+     "scripts/umum/laporan_kejadian.py",
+     "scripts/umum/logbook_bnpb.py",
+     "scripts/umum/menara.py",
+     "scripts/umum/outlook12.py",
+     "scripts/umum/paparan_bangunan.py",
+     "scripts/umum/peringatan_berita.py",
+     "scripts/umum/rapor_belajar.py",
+     "scripts/umum/reliefweb.py",
+     "scripts/umum/saran_status.py",
+     "scripts/umum/sinyal_sosial.py",
+     "scripts/umum/tugas.py",
+     "scripts/umum/video.py",
+     "scripts/wa/uji_urai_laporan.py",
+     "scripts/wa/urai_laporan.py"
+    ],
     "layar publik": [
      "public/banjir/lapis_ekstra.js",
      "public/cuaca/kejadian.js",
@@ -22138,6 +22746,7 @@
      "public/fungsi_direktori.js",
      "public/gempa/bagikan.js",
      "public/gempa/berita.js",
+     "public/gempa/beruntun.js",
      "public/gempa/bukti.js",
      "public/gempa/dampak.js",
      "public/gempa/foto.js",
@@ -22161,6 +22770,7 @@
      "public/gempa/tab.js",
      "public/gempa/tren.js",
      "public/gempa/tsunami.js",
+     "public/gempa/tsunami_zona.js",
      "public/gunungapi/insight.js",
      "public/gunungapi/metode.js",
      "public/gunungapi/peta.js",
@@ -22197,6 +22807,28 @@
      "public/tentang.html",
      "public/udara/kejadian.js"
     ],
+    "layar staf": [
+     "public/admin/korban.js",
+     "public/admin/relawan.js",
+     "public/akademisi.html",
+     "public/akademisi.js",
+     "public/bnpb/bahan.js",
+     "public/bnpb/bahan_contoh.js",
+     "public/bnpb/bahan_spek.js",
+     "public/bnpb/dalops.js",
+     "public/bnpb/dalops_hitung.js",
+     "public/bnpb/dokumen.js",
+     "public/bnpb/dokumen_laphar.js",
+     "public/bnpb/kinerja.js",
+     "public/bnpb/ringkas_bencana.js",
+     "public/bnpb/risiko.js",
+     "public/bnpb/silang.js",
+     "public/kemitraan/buku.js",
+     "public/kemitraan/daerah.js",
+     "public/kemitraan/hitung.js",
+     "public/kemitraan/inti.js",
+     "public/kemitraan/konst.js"
+    ],
     "worker": [
      "src/admin_halaman.js",
      "src/akademisi.js",
@@ -22221,130 +22853,10 @@
      "src/tugas_bencana.js",
      "src/worker.js"
     ],
-    "model/turunan": [
-     "scripts/agents/ilmu.mjs",
-     "scripts/agents/kesegaran.py",
-     "scripts/akademisi/lembaga_gabung.mjs",
-     "scripts/akademisi/pemutakhiran/berita.py",
-     "scripts/akademisi/pemutakhiran/berita_rss.py",
-     "scripts/akademisi/pemutakhiran/panen_tesis.py",
-     "scripts/akademisi/sambung_panen.mjs",
-     "scripts/akademisi/uji_perbarui.py",
-     "scripts/banjir/arsip_debit.py",
-     "scripts/banjir/charter.py",
-     "scripts/banjir/kejadian.py",
-     "scripts/banjir/nilai_kab2_ops.py",
-     "scripts/berita/pesisir.py",
-     "scripts/bnpb/iku.py",
-     "scripts/bnpb/inarisk_vs_kejadian.py",
-     "scripts/bnpb/kunci_kejadian.py",
-     "scripts/bnpb/prioritas.py",
-     "scripts/bnpb/rekonsiliasi_dalops_dibi.py",
-     "scripts/bnpb/risiko.py",
-     "scripts/bnpb/risiko_hvc.py",
-     "scripts/bnpb/templat_dokumen.py",
-     "scripts/bnpb/terpapar.py",
-     "scripts/bnpb/ujibalik_risiko.py",
-     "scripts/cuaca/bangun_bnpb.py",
-     "scripts/cuaca/iklim_bmkg.py",
-     "scripts/data/dalops_banjir.py",
-     "scripts/data/logbook_internal.py",
-     "scripts/data/logbook_pusdalops.py",
-     "scripts/data/pusdalops_sk.py",
-     "scripts/data/silang_dibi_logbook.py",
-     "scripts/data/sippa/jembatan.py",
-     "scripts/gempa/bahaya.py",
-     "scripts/gempa/batimetri.py",
-     "scripts/gempa/berita.py",
-     "scripts/gempa/bukti.py",
-     "scripts/gempa/citra.py",
-     "scripts/gempa/dampak.py",
-     "scripts/gempa/dart.py",
-     "scripts/gempa/emsc.py",
-     "scripts/gempa/gnss.py",
-     "scripts/gempa/guncangan.py",
-     "scripts/gempa/inatews.py",
-     "scripts/gempa/kajian_magma.py",
-     "scripts/gempa/kalibrasi_kerusakan.mjs",
-     "scripts/gempa/katalog_pdf.py",
-     "scripts/gempa/laporan_gempa.py",
-     "scripts/gempa/pager.py",
-     "scripts/gempa/peluang_gempa.py",
-     "scripts/gempa/riwayat.py",
-     "scripts/gempa/sesar.py",
-     "scripts/gempa/susulan.py",
-     "scripts/gempa/uji_js_guncangan.py",
-     "scripts/gempa/uji_js_pager.py",
-     "scripts/gempa/uji_js_susulan.py",
-     "scripts/gempa/uji_js_tsunami.py",
-     "scripts/gempa/umum.py",
-     "scripts/gempa/vs30.py",
-     "scripts/gunungapi/arsip_magma.py",
-     "scripts/gunungapi/magma.py",
-     "scripts/gunungapi/panen_laporan.py",
-     "scripts/gunungapi/prospektif.py",
-     "scripts/gunungapi/risiko.py",
-     "scripts/gunungapi/riwayat_level.py",
-     "scripts/i18n/kumpul.mjs",
-     "scripts/kemitraan/indeks_bm25.py",
-     "scripts/kemitraan/konst.py",
-     "scripts/kemitraan/masalah.py",
-     "scripts/kemitraan/pertanyaan.py",
-     "scripts/kemitraan/profil_daerah.py",
-     "scripts/kemitraan/uji_cocok.py",
-     "scripts/longsor/lab_lereng.py",
-     "scripts/og/buat.py",
-     "scripts/prediksi/dampak.py",
-     "scripts/terbit/jaga_jadwal.mjs",
-     "scripts/terbit/versi.py",
-     "scripts/umum/bangunan.py",
-     "scripts/umum/bencana.py",
-     "scripts/umum/foto_dasar.py",
-     "scripts/umum/lab_kerusakan.py",
-     "scripts/umum/lampu_malam.py",
-     "scripts/umum/laphar_arsip.py",
-     "scripts/umum/laporan.py",
-     "scripts/umum/laporan_kejadian.py",
-     "scripts/umum/logbook_bnpb.py",
-     "scripts/umum/menara.py",
-     "scripts/umum/outlook12.py",
-     "scripts/umum/paparan_bangunan.py",
-     "scripts/umum/peringatan_berita.py",
-     "scripts/umum/rapor_belajar.py",
-     "scripts/umum/reliefweb.py",
-     "scripts/umum/saran_status.py",
-     "scripts/umum/sinyal_sosial.py",
-     "scripts/umum/tugas.py",
-     "scripts/umum/video.py",
-     "scripts/wa/uji_urai_laporan.py",
-     "scripts/wa/urai_laporan.py"
-    ],
     "peringatan": [
      "src/ews.js",
      "src/ews_email.js",
      "src/peringatan.js"
-    ],
-    "layar staf": [
-     "public/admin/korban.js",
-     "public/admin/relawan.js",
-     "public/akademisi.html",
-     "public/akademisi.js",
-     "public/bnpb/bahan.js",
-     "public/bnpb/bahan_contoh.js",
-     "public/bnpb/bahan_spek.js",
-     "public/bnpb/dalops.js",
-     "public/bnpb/dalops_hitung.js",
-     "public/bnpb/dokumen.js",
-     "public/bnpb/dokumen_laphar.js",
-     "public/bnpb/kinerja.js",
-     "public/bnpb/ringkas_bencana.js",
-     "public/bnpb/risiko.js",
-     "public/bnpb/silang.js",
-     "public/kemitraan/buku.js",
-     "public/kemitraan/daerah.js",
-     "public/kemitraan/hitung.js",
-     "public/kemitraan/inti.js",
-     "public/kemitraan/konst.js"
     ]
    },
    "arsip": false,
@@ -22693,24 +23205,6 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
-    "worker": [
-     "src/admin_halaman.js",
-     "src/akademisi.js",
-     "src/alun.js",
-     "src/command_center.js",
-     "src/hak.js",
-     "src/instansi.js",
-     "src/kemitraan_akun.js",
-     "src/kemitraan_masalah.js",
-     "src/kontak.js",
-     "src/meja.js",
-     "src/pantau.js",
-     "src/posko.js",
-     "src/relawan.js",
-     "src/riset.js",
-     "src/staf.js",
-     "src/worker.js"
-    ],
     "layar publik": [
      "public/bagikan.js",
      "public/gempa/kata.js",
@@ -22757,8 +23251,27 @@
      "scripts/kemitraan/cocok_pakar.py",
      "scripts/kemitraan/pertanyaan.py",
      "scripts/kemitraan/profil_daerah.py",
+     "scripts/umum/citra_terbuka.py",
      "scripts/umum/profil_wilayah.py",
      "scripts/wa/logbook_wa.mjs"
+    ],
+    "worker": [
+     "src/admin_halaman.js",
+     "src/akademisi.js",
+     "src/alun.js",
+     "src/command_center.js",
+     "src/hak.js",
+     "src/instansi.js",
+     "src/kemitraan_akun.js",
+     "src/kemitraan_masalah.js",
+     "src/kontak.js",
+     "src/meja.js",
+     "src/pantau.js",
+     "src/posko.js",
+     "src/relawan.js",
+     "src/riset.js",
+     "src/staf.js",
+     "src/worker.js"
     ],
     "peringatan": [
      "src/push.js"
@@ -23107,11 +23620,6 @@
      "src/uji_pilot_data.js",
      "src/worker.js"
     ],
-    "peringatan": [
-     "src/alarm_himawari.js",
-     "src/peringatan.js",
-     "src/push.js"
-    ],
     "layar publik": [
      "public/aktor.js",
      "public/api.html",
@@ -23162,6 +23670,11 @@
      "public/sw-lapangan.js",
      "public/tentang.html",
      "public/udara/sim/tanggap.js"
+    ],
+    "peringatan": [
+     "src/alarm_himawari.js",
+     "src/peringatan.js",
+     "src/push.js"
     ]
    },
    "arsip": false,
@@ -23377,6 +23890,108 @@
      "scripts/wa/urai_laporan.py",
      "scripts/warga/titik24.py"
     ],
+    "layar staf": [
+     "public/admin/instansi.js",
+     "public/admin/korban.js",
+     "public/admin/laporan_karhutla.js",
+     "public/admin/meja.js",
+     "public/admin/pantau.js",
+     "public/admin/pimpinan.js",
+     "public/admin/posko.js",
+     "public/admin/riset.js",
+     "public/akademisi.js",
+     "public/bnpb/bahan.html",
+     "public/bnpb/bahan.js",
+     "public/bnpb/bahan_contoh.js",
+     "public/bnpb/bahan_spek.js",
+     "public/bnpb/dalops.js",
+     "public/bnpb/dalops_hitung.js",
+     "public/bnpb/dalops_laporan_masuk.js",
+     "public/bnpb/dokumen.js",
+     "public/bnpb/dokumen_laphar.js",
+     "public/bnpb/dokumen_pusdalops.js",
+     "public/bnpb/index.html",
+     "public/bnpb/katalog-dokumen.js",
+     "public/bnpb/kinerja.js",
+     "public/bnpb/logbook.js",
+     "public/bnpb/logbook_turunan.js",
+     "public/bnpb/menu_pusdalops.js",
+     "public/bnpb/mitra.js",
+     "public/bnpb/operasi.js",
+     "public/bnpb/operasi_lapangan.js",
+     "public/bnpb/operasi_lapangan_hitung.js",
+     "public/bnpb/pendataan_spek.js",
+     "public/bnpb/perencanaan.js",
+     "public/bnpb/perencanaan_pusdalops.js",
+     "public/bnpb/pintu.js",
+     "public/bnpb/ringkas_bencana.js",
+     "public/bnpb/saham.js",
+     "public/bnpb/siaga.js",
+     "public/bnpb/silang.js",
+     "public/bnpb/sitrep.html",
+     "public/bnpb/sitrep.js",
+     "public/kemitraan/panduan.js",
+     "public/logpal/index.html",
+     "public/logpal/logpal.js",
+     "public/pipa/app.js",
+     "public/pipa/bukti.js",
+     "public/pipa/lapangan.js",
+     "public/pipa/lapangan_staf.js",
+     "public/pipa/laporan_isi.js",
+     "public/pipa/laporan_pdf.js",
+     "public/pipa/laporan_templat.js",
+     "public/pipa/layar_data.js",
+     "public/pipa/layar_laporan.js",
+     "public/pipa/layar_log.js",
+     "public/pipa/layar_ringkas.js",
+     "public/pipa/layar_studio.js",
+     "public/pipa/uji_pilot.html",
+     "public/pipa/uji_pilot.js",
+     "public/pipa/uji_pilot_spek.js"
+    ],
+    "worker": [
+     "src/admin_halaman.js",
+     "src/api_v1.js",
+     "src/berantai.js",
+     "src/bnpb.js",
+     "src/dalops.js",
+     "src/dalops_laporan.js",
+     "src/foto_lapangan.js",
+     "src/gunungapi.js",
+     "src/instansi.js",
+     "src/inventaris.js",
+     "src/korban.js",
+     "src/label.js",
+     "src/laporan_bencana.js",
+     "src/laporan_bnpb.js",
+     "src/laporan_bnpb_spek.js",
+     "src/laporan_karhutla.js",
+     "src/lapsus.js",
+     "src/logbook.js",
+     "src/mcp.js",
+     "src/meja.js",
+     "src/meja_spek.js",
+     "src/omc.js",
+     "src/operasi_udara.js",
+     "src/operasi_wa.js",
+     "src/pantau.js",
+     "src/pengingat.js",
+     "src/penugasan.js",
+     "src/posko.js",
+     "src/prediksi.js",
+     "src/riset.js",
+     "src/rumah_rusak.js",
+     "src/sensor.js",
+     "src/sippa.js",
+     "src/sitrep.js",
+     "src/sla.js",
+     "src/staf.js",
+     "src/tugas_bencana.js",
+     "src/uji_lapangan.js",
+     "src/uji_pilot.js",
+     "src/wa.js",
+     "src/worker.js"
+    ],
     "layar publik": [
      "public/aktor.js",
      "public/api.html",
@@ -23494,108 +24109,6 @@
      "public/udara/mulai.js",
      "public/unduh_tabel.js",
      "public/warga/index.html"
-    ],
-    "worker": [
-     "src/admin_halaman.js",
-     "src/api_v1.js",
-     "src/berantai.js",
-     "src/bnpb.js",
-     "src/dalops.js",
-     "src/dalops_laporan.js",
-     "src/foto_lapangan.js",
-     "src/gunungapi.js",
-     "src/instansi.js",
-     "src/inventaris.js",
-     "src/korban.js",
-     "src/label.js",
-     "src/laporan_bencana.js",
-     "src/laporan_bnpb.js",
-     "src/laporan_bnpb_spek.js",
-     "src/laporan_karhutla.js",
-     "src/lapsus.js",
-     "src/logbook.js",
-     "src/mcp.js",
-     "src/meja.js",
-     "src/meja_spek.js",
-     "src/omc.js",
-     "src/operasi_udara.js",
-     "src/operasi_wa.js",
-     "src/pantau.js",
-     "src/pengingat.js",
-     "src/penugasan.js",
-     "src/posko.js",
-     "src/prediksi.js",
-     "src/riset.js",
-     "src/rumah_rusak.js",
-     "src/sensor.js",
-     "src/sippa.js",
-     "src/sitrep.js",
-     "src/sla.js",
-     "src/staf.js",
-     "src/tugas_bencana.js",
-     "src/uji_lapangan.js",
-     "src/uji_pilot.js",
-     "src/wa.js",
-     "src/worker.js"
-    ],
-    "layar staf": [
-     "public/admin/instansi.js",
-     "public/admin/korban.js",
-     "public/admin/laporan_karhutla.js",
-     "public/admin/meja.js",
-     "public/admin/pantau.js",
-     "public/admin/pimpinan.js",
-     "public/admin/posko.js",
-     "public/admin/riset.js",
-     "public/akademisi.js",
-     "public/bnpb/bahan.html",
-     "public/bnpb/bahan.js",
-     "public/bnpb/bahan_contoh.js",
-     "public/bnpb/bahan_spek.js",
-     "public/bnpb/dalops.js",
-     "public/bnpb/dalops_hitung.js",
-     "public/bnpb/dalops_laporan_masuk.js",
-     "public/bnpb/dokumen.js",
-     "public/bnpb/dokumen_laphar.js",
-     "public/bnpb/dokumen_pusdalops.js",
-     "public/bnpb/index.html",
-     "public/bnpb/katalog-dokumen.js",
-     "public/bnpb/kinerja.js",
-     "public/bnpb/logbook.js",
-     "public/bnpb/logbook_turunan.js",
-     "public/bnpb/menu_pusdalops.js",
-     "public/bnpb/mitra.js",
-     "public/bnpb/operasi.js",
-     "public/bnpb/operasi_lapangan.js",
-     "public/bnpb/operasi_lapangan_hitung.js",
-     "public/bnpb/pendataan_spek.js",
-     "public/bnpb/perencanaan.js",
-     "public/bnpb/perencanaan_pusdalops.js",
-     "public/bnpb/pintu.js",
-     "public/bnpb/ringkas_bencana.js",
-     "public/bnpb/saham.js",
-     "public/bnpb/siaga.js",
-     "public/bnpb/silang.js",
-     "public/bnpb/sitrep.html",
-     "public/bnpb/sitrep.js",
-     "public/kemitraan/panduan.js",
-     "public/logpal/index.html",
-     "public/logpal/logpal.js",
-     "public/pipa/app.js",
-     "public/pipa/bukti.js",
-     "public/pipa/lapangan.js",
-     "public/pipa/lapangan_staf.js",
-     "public/pipa/laporan_isi.js",
-     "public/pipa/laporan_pdf.js",
-     "public/pipa/laporan_templat.js",
-     "public/pipa/layar_data.js",
-     "public/pipa/layar_laporan.js",
-     "public/pipa/layar_log.js",
-     "public/pipa/layar_ringkas.js",
-     "public/pipa/layar_studio.js",
-     "public/pipa/uji_pilot.html",
-     "public/pipa/uji_pilot.js",
-     "public/pipa/uji_pilot_spek.js"
     ],
     "peringatan": [
      "src/wa_form.js",
@@ -24411,6 +24924,29 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
+    "worker": [
+     "src/ai.js",
+     "src/command_center.js",
+     "src/foto.js",
+     "src/kabar.js",
+     "src/label.js",
+     "src/lapangan.js",
+     "src/lapangan_konst.js",
+     "src/lapangan_panel.js",
+     "src/lapangan_wa.js",
+     "src/laporan_bnpb.js",
+     "src/logpal.js",
+     "src/operasi_lapangan.js",
+     "src/penugasan.js",
+     "src/pipa.js",
+     "src/posko.js",
+     "src/rumah_rusak.js",
+     "src/satelit.js",
+     "src/sihka.js",
+     "src/sitrep.js",
+     "src/staf.js",
+     "src/worker.js"
+    ],
     "model/turunan": [
      "scripts/air/neraca/iklim_global.py",
      "scripts/banjir/ansambel_hujan.py",
@@ -24420,6 +24956,7 @@
      "scripts/banjir/floodhub.py",
      "scripts/banjir/genangan/j4_operasi.py",
      "scripts/banjir/genangan_nasional.py",
+     "scripts/banjir/geoglows.py",
      "scripts/banjir/hujan.py",
      "scripts/banjir/jam_era5.py",
      "scripts/banjir/koreksi_bias.py",
@@ -24469,6 +25006,22 @@
      "scripts/umum/video.py",
      "scripts/wa/gateway/index.js"
     ],
+    "layar staf": [
+     "public/admin/command_center.js",
+     "public/admin/labelfoto.js",
+     "public/admin/meja.js",
+     "public/admin/pantau.js",
+     "public/admin/posko.js",
+     "public/kemitraan/inti.js",
+     "public/kemitraan/konst.js",
+     "public/petugas/app.js",
+     "public/petugas/panel_panggil.js",
+     "public/petugas/panggil_murni.js",
+     "public/petugas/umum.js",
+     "public/pipa/antre.js",
+     "public/pipa/lapangan.js",
+     "public/pipa/layar_aset.js"
+    ],
     "layar publik": [
      "public/banjir/hujan_kini.js",
      "public/banjir/kejadian.js",
@@ -24487,45 +25040,6 @@
      "public/risiko7.js",
      "public/rumah_rusak.js",
      "public/udara/kejadian.js"
-    ],
-    "layar staf": [
-     "public/admin/command_center.js",
-     "public/admin/labelfoto.js",
-     "public/admin/meja.js",
-     "public/admin/pantau.js",
-     "public/admin/posko.js",
-     "public/kemitraan/inti.js",
-     "public/kemitraan/konst.js",
-     "public/petugas/app.js",
-     "public/petugas/panel_panggil.js",
-     "public/petugas/panggil_murni.js",
-     "public/petugas/umum.js",
-     "public/pipa/antre.js",
-     "public/pipa/lapangan.js",
-     "public/pipa/layar_aset.js"
-    ],
-    "worker": [
-     "src/ai.js",
-     "src/command_center.js",
-     "src/foto.js",
-     "src/kabar.js",
-     "src/label.js",
-     "src/lapangan.js",
-     "src/lapangan_konst.js",
-     "src/lapangan_panel.js",
-     "src/lapangan_wa.js",
-     "src/laporan_bnpb.js",
-     "src/logpal.js",
-     "src/operasi_lapangan.js",
-     "src/penugasan.js",
-     "src/pipa.js",
-     "src/posko.js",
-     "src/rumah_rusak.js",
-     "src/satelit.js",
-     "src/sihka.js",
-     "src/sitrep.js",
-     "src/staf.js",
-     "src/worker.js"
     ]
    },
    "arsip": false,
@@ -24627,14 +25141,6 @@
     "TIDAK ADA"
    ],
    "pemakai": {
-    "layar publik": [
-     "public/instansi.js",
-     "public/instansi_ops.js",
-     "public/instansi_tugaskan.js",
-     "public/inti/jam_aturan.js",
-     "public/lacak.js",
-     "public/satelit_lintas.js"
-    ],
     "layar staf": [
      "public/admin/pantau.js",
      "public/admin/relawan.js",
@@ -24645,6 +25151,11 @@
      "public/pipa/laporan_templat.js",
      "public/pipa/layar_kit.js",
      "public/pipa/layar_pemicu.js"
+    ],
+    "model/turunan": [
+     "scripts/akademisi/sambung_panen.mjs",
+     "scripts/data/lab_luas.py",
+     "scripts/data/sippa/akses_sippa.py"
     ],
     "worker": [
      "src/akademisi.js",
@@ -24661,10 +25172,13 @@
      "src/sla.js",
      "src/worker.js"
     ],
-    "model/turunan": [
-     "scripts/akademisi/sambung_panen.mjs",
-     "scripts/data/lab_luas.py",
-     "scripts/data/sippa/akses_sippa.py"
+    "layar publik": [
+     "public/instansi.js",
+     "public/instansi_ops.js",
+     "public/instansi_tugaskan.js",
+     "public/inti/jam_aturan.js",
+     "public/lacak.js",
+     "public/satelit_lintas.js"
     ]
    },
    "arsip": false,
@@ -24758,123 +25272,6 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
-    "layar staf": [
-     "public/admin/alun.js",
-     "public/admin/drone.js",
-     "public/admin/drone_rute.js",
-     "public/admin/inventaris.js",
-     "public/admin/riset.js",
-     "public/akademisi.js",
-     "public/bnpb/bahan_spek.js",
-     "public/bnpb/dalops.js",
-     "public/bnpb/dalops_gunungapi.js",
-     "public/bnpb/dalops_hitung.js",
-     "public/bnpb/dalops_karhutla.js",
-     "public/bnpb/dalops_laporan_masuk.js",
-     "public/bnpb/dokumen.js",
-     "public/bnpb/hukum.js",
-     "public/bnpb/kinerja.html",
-     "public/bnpb/kinerja.js",
-     "public/bnpb/logbook.js",
-     "public/bnpb/logbook_turunan.js",
-     "public/bnpb/menu_pusdalops.js",
-     "public/bnpb/operasi.js",
-     "public/bnpb/operasi_g3.js",
-     "public/bnpb/operasi_lapangan_hitung.js",
-     "public/bnpb/operasi_pusdalops.js",
-     "public/bnpb/perencanaan.js",
-     "public/bnpb/saham.js",
-     "public/bnpb/siaga.js",
-     "public/bnpb/wilayah.js",
-     "public/petugas/layar_kamera.js",
-     "public/pipa/adegan.js",
-     "public/pipa/lapangan.js",
-     "public/pipa/layar_air.js",
-     "public/pipa/layar_kit.js",
-     "public/pipa/layar_pelihara.js",
-     "public/pipa/layar_peta.js",
-     "public/pipa/pelihara.js",
-     "public/pipa/renlap.js"
-    ],
-    "layar publik": [
-     "public/ai/ai.js",
-     "public/api.html",
-     "public/bagikan.js",
-     "public/banjir/gelembung.js",
-     "public/banjir/hujan_kini.js",
-     "public/banjir/index.html",
-     "public/banjir/insight.js",
-     "public/banjir/kejadian.js",
-     "public/banjir/keputusan.js",
-     "public/banjir/longsor.js",
-     "public/banjir/metode.js",
-     "public/banjir/peta.js",
-     "public/banjir/posko.js",
-     "public/banjir/resmi_bmkg.js",
-     "public/banjir/sapa_banjir.js",
-     "public/banjir/sim.js",
-     "public/banjir/sim_tampak.js",
-     "public/banjir/sim_tanggap.js",
-     "public/banjir/tren.js",
-     "public/banjir/wilayah.js",
-     "public/cuaca/bagikan.js",
-     "public/cuaca/berita.js",
-     "public/cuaca/cuaca.js",
-     "public/cuaca/index.html",
-     "public/cuaca/insight.js",
-     "public/cuaca/kejadian.js",
-     "public/cuaca/metode.js",
-     "public/cuaca/peta.js",
-     "public/cuaca/rawan.js",
-     "public/cuaca/sapa.js",
-     "public/cuaca/sim_dampak.js",
-     "public/cuaca/sim_layar.js",
-     "public/cuaca/status.js",
-     "public/cuaca/tambahan.js",
-     "public/databaru.js",
-     "public/ews_tindakan.js",
-     "public/fungsi_direktori.js",
-     "public/gempa/inatews.js",
-     "public/gempa/index.html",
-     "public/gempa/metode.js",
-     "public/gempa/peta.js",
-     "public/gempa/sim.js",
-     "public/gempa/tsunami.js",
-     "public/gunungapi/index.html",
-     "public/gunungapi/peta.js",
-     "public/gunungapi/tren.js",
-     "public/index.html",
-     "public/instansi_alat.js",
-     "public/instansi_kartu.js",
-     "public/instansi_kebutuhan.js",
-     "public/instansi_ops.js",
-     "public/inti/adapter.js",
-     "public/inti/alarm.js",
-     "public/inti/asisten.js",
-     "public/inti/peringatan-berita.js",
-     "public/inti/peta/lapis.js",
-     "public/inti/profil_wilayah.js",
-     "public/kekeringan/index.html",
-     "public/kekeringan/insight.js",
-     "public/lacak.html",
-     "public/lacak.js",
-     "public/lacak_lapor.js",
-     "public/lapisan5.js",
-     "public/peringatan.html",
-     "public/peringatan.js",
-     "public/pesisir/hitung.js",
-     "public/pesisir/insight.js",
-     "public/pesisir/pesisir.js",
-     "public/pesisir/peta.js",
-     "public/prediksi/index.html",
-     "public/prediksi/tangga.js",
-     "public/satelit_lintas.js",
-     "public/syarat.html",
-     "public/udara/index.html",
-     "public/udara/metode.js",
-     "public/udara/peta.js",
-     "public/udara/prakiraan.js"
-    ],
     "model/turunan": [
      "scripts/akademisi/pemutakhiran/berita.py",
      "scripts/akademisi/sambung_panen.mjs",
@@ -24895,6 +25292,7 @@
      "scripts/bnpb/iku.py",
      "scripts/bnpb/risiko.py",
      "scripts/bnpb/siaga.py",
+     "scripts/bnpb/silang/rapor_sumber.py",
      "scripts/bnpb/ujibalik_risiko.py",
      "scripts/cuaca/bangun_bnpb.py",
      "scripts/cuaca/berita.py",
@@ -24918,6 +25316,7 @@
      "scripts/data/tle.py",
      "scripts/data/ujibanding_firespot.py",
      "scripts/gempa/berita.py",
+     "scripts/gempa/beruntun.py",
      "scripts/gempa/dart.py",
      "scripts/gempa/gnss.py",
      "scripts/gunungapi/abu.py",
@@ -24953,6 +25352,128 @@
      "scripts/umum/tugas.py",
      "scripts/wa/logbook_wa.mjs",
      "scripts/wa/peringatan_banjir.mjs"
+    ],
+    "layar staf": [
+     "public/admin/alun.js",
+     "public/admin/drone.js",
+     "public/admin/drone_rute.js",
+     "public/admin/inventaris.js",
+     "public/admin/riset.js",
+     "public/akademisi.js",
+     "public/bnpb/bahan_spek.js",
+     "public/bnpb/dalops.js",
+     "public/bnpb/dalops_gunungapi.js",
+     "public/bnpb/dalops_hitung.js",
+     "public/bnpb/dalops_karhutla.js",
+     "public/bnpb/dalops_laporan_masuk.js",
+     "public/bnpb/dokumen.js",
+     "public/bnpb/hukum.js",
+     "public/bnpb/kinerja.html",
+     "public/bnpb/kinerja.js",
+     "public/bnpb/logbook.js",
+     "public/bnpb/logbook_turunan.js",
+     "public/bnpb/menu_pusdalops.js",
+     "public/bnpb/operasi.js",
+     "public/bnpb/operasi_g3.js",
+     "public/bnpb/operasi_lapangan_hitung.js",
+     "public/bnpb/operasi_pusdalops.js",
+     "public/bnpb/perencanaan.js",
+     "public/bnpb/saham.js",
+     "public/bnpb/siaga.js",
+     "public/bnpb/wilayah.js",
+     "public/logpal/logpal.js",
+     "public/petugas/layar_kamera.js",
+     "public/pipa/adegan.js",
+     "public/pipa/lapangan.js",
+     "public/pipa/layar_air.js",
+     "public/pipa/layar_kit.js",
+     "public/pipa/layar_pelihara.js",
+     "public/pipa/layar_peta.js",
+     "public/pipa/pelihara.js",
+     "public/pipa/renlap.js"
+    ],
+    "layar publik": [
+     "public/ai/ai.js",
+     "public/api.html",
+     "public/bagikan.js",
+     "public/banjir/gelembung.js",
+     "public/banjir/hujan_kini.js",
+     "public/banjir/index.html",
+     "public/banjir/insight.js",
+     "public/banjir/kejadian.js",
+     "public/banjir/keputusan.js",
+     "public/banjir/longsor.js",
+     "public/banjir/metode.js",
+     "public/banjir/peta.js",
+     "public/banjir/posko.js",
+     "public/banjir/resmi_bmkg.js",
+     "public/banjir/sapa_banjir.js",
+     "public/banjir/sim.js",
+     "public/banjir/sim_tampak.js",
+     "public/banjir/sim_tanggap.js",
+     "public/banjir/tren.js",
+     "public/banjir/wilayah.js",
+     "public/cuaca/awan.js",
+     "public/cuaca/bagikan.js",
+     "public/cuaca/berita.js",
+     "public/cuaca/cuaca.js",
+     "public/cuaca/index.html",
+     "public/cuaca/insight.js",
+     "public/cuaca/kejadian.js",
+     "public/cuaca/metode.js",
+     "public/cuaca/peta.js",
+     "public/cuaca/rawan.js",
+     "public/cuaca/sapa.js",
+     "public/cuaca/sim_dampak.js",
+     "public/cuaca/sim_layar.js",
+     "public/cuaca/status.js",
+     "public/cuaca/tambahan.js",
+     "public/databaru.js",
+     "public/ews_tindakan.js",
+     "public/fungsi_direktori.js",
+     "public/gempa/beruntun.js",
+     "public/gempa/inatews.js",
+     "public/gempa/index.html",
+     "public/gempa/metode.js",
+     "public/gempa/peta.js",
+     "public/gempa/sim.js",
+     "public/gempa/tsunami.js",
+     "public/gempa/tsunami_zona.js",
+     "public/gunungapi/index.html",
+     "public/gunungapi/peta.js",
+     "public/gunungapi/tren.js",
+     "public/index.html",
+     "public/instansi_alat.js",
+     "public/instansi_kartu.js",
+     "public/instansi_kebutuhan.js",
+     "public/instansi_ops.js",
+     "public/inti/adapter.js",
+     "public/inti/alarm.js",
+     "public/inti/asisten.js",
+     "public/inti/peringatan-berita.js",
+     "public/inti/peta/lapis.js",
+     "public/inti/profil_wilayah.js",
+     "public/kekeringan/index.html",
+     "public/kekeringan/insight.js",
+     "public/lacak.html",
+     "public/lacak.js",
+     "public/lacak_lapor.js",
+     "public/lapisan5.js",
+     "public/peringatan.html",
+     "public/peringatan.js",
+     "public/pesisir/hitung.js",
+     "public/pesisir/insight.js",
+     "public/pesisir/pesisir.js",
+     "public/pesisir/peta.js",
+     "public/prediksi/index.html",
+     "public/prediksi/tangga.js",
+     "public/prediksi/tangga_inti.js",
+     "public/satelit_lintas.js",
+     "public/syarat.html",
+     "public/udara/index.html",
+     "public/udara/metode.js",
+     "public/udara/peta.js",
+     "public/udara/prakiraan.js"
     ],
     "worker": [
      "src/api_v1.js",
@@ -25002,62 +25523,6 @@
     "TIDAK ADA"
    ],
    "pemakai": {
-    "model/turunan": [
-     "scripts/agents/ilmu.mjs",
-     "scripts/agents/token-ukur.mjs",
-     "scripts/agents/tolak-branch.mjs",
-     "scripts/air/neraca/neraca.py",
-     "scripts/air/neraca/topologi.py",
-     "scripts/banjir/genangan/gsmap.py",
-     "scripts/banjir/genangan/hujan_jam.py",
-     "scripts/banjir/genangan/kunci_j3.py",
-     "scripts/banjir/genangan/kunci_j4.py",
-     "scripts/banjir/genangan/pemicu.py",
-     "scripts/banjir/genangan/tangki.py",
-     "scripts/banjir/genangan/vonis_j3.py",
-     "scripts/banjir/model_kab_campur.py",
-     "scripts/banjir/nilai_kab2_ops.py",
-     "scripts/banjir/nowcast_jkt.py",
-     "scripts/banjir/siaga_persentil.py",
-     "scripts/bnpb/bps.py",
-     "scripts/bnpb/drone.py",
-     "scripts/bnpb/drone_termal.py",
-     "scripts/bnpb/templat_dokumen.py",
-     "scripts/data/firms_sumber.py",
-     "scripts/data/lab_luas.py",
-     "scripts/data/lab_padam.py",
-     "scripts/data/musim_harian.py",
-     "scripts/data/satelit_riwayat.py",
-     "scripts/data/sippa/cat.py",
-     "scripts/data/sippa/jembatan.py",
-     "scripts/data/sippa/osm_pbf.py",
-     "scripts/data/tle.py",
-     "scripts/data/ujibanding_firespot.py",
-     "scripts/gempa/citra.py",
-     "scripts/gempa/dart.py",
-     "scripts/gempa/pager.py",
-     "scripts/gunungapi/citra.py",
-     "scripts/gunungapi/uji_setara.mjs",
-     "scripts/i18n/kelas.mjs",
-     "scripts/kemitraan/masalah.py",
-     "scripts/kemitraan/uji_cocok.py",
-     "scripts/operasi/isi_ulang_wa.mjs",
-     "scripts/operasi/renlap_pdf.py",
-     "scripts/prediksi/dasar.py",
-     "scripts/sebaran/risiko_produksi.py",
-     "scripts/statistik/splice_jejak.py",
-     "scripts/udara/alat.py",
-     "scripts/udara/openaq_mos.py",
-     "scripts/wa/drive-masuk.mjs",
-     "scripts/wa/gateway/index.js",
-     "scripts/wa/gateway/limiter.js",
-     "scripts/wa/lapangan_tarik.mjs",
-     "scripts/wa/logbook_wa.mjs",
-     "scripts/wa/otomatis.mjs",
-     "scripts/wa/perintah.mjs",
-     "scripts/wa/renlap_jam.mjs",
-     "scripts/wa/uji_urai_laporan.py"
-    ],
     "layar staf": [
      "public/admin/akun.js",
      "public/admin/alun.js",
@@ -25104,6 +25569,8 @@
      "public/bnpb/operasi_lapangan_hitung.js",
      "public/bnpb/pendataan.js",
      "public/bnpb/perencanaan.js",
+     "public/bnpb/rapor-sumber.html",
+     "public/bnpb/rapor-sumber.js",
      "public/bnpb/relawan-saya.html",
      "public/bnpb/relawan-saya.js",
      "public/bnpb/relawan.html",
@@ -25210,11 +25677,6 @@
      "public/udara/sim/ensemble.worker.js",
      "public/udara/sim/sim.js"
     ],
-    "peringatan": [
-     "src/push.js",
-     "src/wa_form.js",
-     "src/wa_jenis.js"
-    ],
     "worker": [
      "src/admin_halaman.js",
      "src/ai.js",
@@ -25248,6 +25710,67 @@
      "src/uji_lapangan.js",
      "src/wa.js",
      "src/worker.js"
+    ],
+    "model/turunan": [
+     "scripts/agents/ilmu.mjs",
+     "scripts/agents/token-ukur.mjs",
+     "scripts/agents/tolak-branch.mjs",
+     "scripts/air/neraca/neraca.py",
+     "scripts/air/neraca/topologi.py",
+     "scripts/banjir/genangan/gsmap.py",
+     "scripts/banjir/genangan/hujan_jam.py",
+     "scripts/banjir/genangan/kunci_j3.py",
+     "scripts/banjir/genangan/kunci_j4.py",
+     "scripts/banjir/genangan/pemicu.py",
+     "scripts/banjir/genangan/tangki.py",
+     "scripts/banjir/genangan/vonis_j3.py",
+     "scripts/banjir/model_kab_campur.py",
+     "scripts/banjir/nilai_kab2_ops.py",
+     "scripts/banjir/nowcast_jkt.py",
+     "scripts/banjir/siaga_persentil.py",
+     "scripts/bnpb/bps.py",
+     "scripts/bnpb/drone.py",
+     "scripts/bnpb/drone_termal.py",
+     "scripts/bnpb/templat_dokumen.py",
+     "scripts/data/firms_sumber.py",
+     "scripts/data/lab_luas.py",
+     "scripts/data/lab_padam.py",
+     "scripts/data/musim_harian.py",
+     "scripts/data/satelit_riwayat.py",
+     "scripts/data/sippa/cat.py",
+     "scripts/data/sippa/jembatan.py",
+     "scripts/data/sippa/osm_pbf.py",
+     "scripts/data/tle.py",
+     "scripts/data/ujibanding_firespot.py",
+     "scripts/gempa/citra.py",
+     "scripts/gempa/dart.py",
+     "scripts/gempa/pager.py",
+     "scripts/gunungapi/citra.py",
+     "scripts/gunungapi/uji_setara.mjs",
+     "scripts/i18n/kelas.mjs",
+     "scripts/kemitraan/masalah.py",
+     "scripts/kemitraan/uji_cocok.py",
+     "scripts/operasi/isi_ulang_wa.mjs",
+     "scripts/operasi/renlap_pdf.py",
+     "scripts/prediksi/dasar.py",
+     "scripts/sebaran/risiko_produksi.py",
+     "scripts/statistik/splice_jejak.py",
+     "scripts/udara/alat.py",
+     "scripts/udara/openaq_mos.py",
+     "scripts/wa/drive-masuk.mjs",
+     "scripts/wa/gateway/index.js",
+     "scripts/wa/gateway/limiter.js",
+     "scripts/wa/lapangan_tarik.mjs",
+     "scripts/wa/logbook_wa.mjs",
+     "scripts/wa/otomatis.mjs",
+     "scripts/wa/perintah.mjs",
+     "scripts/wa/renlap_jam.mjs",
+     "scripts/wa/uji_urai_laporan.py"
+    ],
+    "peringatan": [
+     "src/push.js",
+     "src/wa_form.js",
+     "src/wa_jenis.js"
     ]
    },
    "arsip": false,
@@ -25278,6 +25801,44 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
+    "layar publik": [
+     "public/bagikan.js",
+     "public/banjir/metode.js",
+     "public/banjir/posko.js",
+     "public/banjir/tren.js",
+     "public/cari.js",
+     "public/cerita_karhutla.js",
+     "public/gempa/sim.js",
+     "public/index.html",
+     "public/informasi_jenis.js",
+     "public/instansi.js",
+     "public/instansi_kartu.js",
+     "public/instansi_kebutuhan.js",
+     "public/instansi_ops.js",
+     "public/instansi_tugaskan.js",
+     "public/instansi_uji.html",
+     "public/instansi_uji_halaman.js",
+     "public/kabar.html",
+     "public/lacak.js",
+     "public/lapangan.html",
+     "public/lapangan.js",
+     "public/lapangan_tugas.js",
+     "public/lapisan5.js",
+     "public/laporan.js",
+     "public/operasi.js",
+     "public/operasi_laporan.js",
+     "public/prediksi/index.html",
+     "public/prediksi/prediksi.js",
+     "public/ringkasan.js",
+     "public/riwayat_sel.js",
+     "public/rumah_rusak.js",
+     "public/sim_armada.js",
+     "public/sim_perlakuan.js",
+     "public/sw-lapangan.js",
+     "public/tentang.html",
+     "public/udara/sim/model.js",
+     "public/udara/sim/tanggap.js"
+    ],
     "layar staf": [
      "public/admin/instansi.js",
      "public/admin/kinerja.js",
@@ -25343,44 +25904,6 @@
      "src/uji_pilot_data.js",
      "src/worker.js"
     ],
-    "layar publik": [
-     "public/bagikan.js",
-     "public/banjir/metode.js",
-     "public/banjir/posko.js",
-     "public/banjir/tren.js",
-     "public/cari.js",
-     "public/cerita_karhutla.js",
-     "public/gempa/sim.js",
-     "public/index.html",
-     "public/informasi_jenis.js",
-     "public/instansi.js",
-     "public/instansi_kartu.js",
-     "public/instansi_kebutuhan.js",
-     "public/instansi_ops.js",
-     "public/instansi_tugaskan.js",
-     "public/instansi_uji.html",
-     "public/instansi_uji_halaman.js",
-     "public/kabar.html",
-     "public/lacak.js",
-     "public/lapangan.html",
-     "public/lapangan.js",
-     "public/lapangan_tugas.js",
-     "public/lapisan5.js",
-     "public/laporan.js",
-     "public/operasi.js",
-     "public/operasi_laporan.js",
-     "public/prediksi/index.html",
-     "public/prediksi/prediksi.js",
-     "public/ringkasan.js",
-     "public/riwayat_sel.js",
-     "public/rumah_rusak.js",
-     "public/sim_armada.js",
-     "public/sim_perlakuan.js",
-     "public/sw-lapangan.js",
-     "public/tentang.html",
-     "public/udara/sim/model.js",
-     "public/udara/sim/tanggap.js"
-    ],
     "model/turunan": [
      "scripts/bnpb/drone_termal.py",
      "scripts/bnpb/iku.py",
@@ -25434,6 +25957,10 @@
     "TIDAK ADA"
    ],
    "pemakai": {
+    "layar staf": [
+     "public/admin/kunci_api.js",
+     "public/bnpb/dokumen_pusdalops.js"
+    ],
     "layar publik": [
      "public/api.html",
      "public/banjir/dampak.js",
@@ -25448,12 +25975,6 @@
      "public/rumah_rusak.html",
      "public/sw-lapangan.js"
     ],
-    "worker": [
-     "src/api_v1.js",
-     "src/mcp.js",
-     "src/rumah_rusak.js",
-     "src/worker.js"
-    ],
     "model/turunan": [
      "scripts/banjir/dampak.py",
      "scripts/banjir/kejadian.py",
@@ -25462,9 +25983,11 @@
      "scripts/gunungapi/tren.py",
      "scripts/wa/urai_laporan.py"
     ],
-    "layar staf": [
-     "public/admin/kunci_api.js",
-     "public/bnpb/dokumen_pusdalops.js"
+    "worker": [
+     "src/api_v1.js",
+     "src/mcp.js",
+     "src/rumah_rusak.js",
+     "src/worker.js"
     ]
    },
    "arsip": false,
@@ -25578,6 +26101,12 @@
     "TIDAK ADA"
    ],
    "pemakai": {
+    "layar publik": [
+     "public/index.html"
+    ],
+    "layar staf": [
+     "public/admin/sosmed.js"
+    ],
     "model/turunan": [
      "scripts/umum/sosmed.py",
      "scripts/umum/tiktok.py"
@@ -25586,12 +26115,6 @@
      "src/admin_halaman.js",
      "src/sosmed.js",
      "src/worker.js"
-    ],
-    "layar publik": [
-     "public/index.html"
-    ],
-    "layar staf": [
-     "public/admin/sosmed.js"
     ]
    },
    "arsip": false,
@@ -25764,9 +26287,6 @@
      "public/monitor.js",
      "public/privasi.html"
     ],
-    "layar staf": [
-     "public/admin/alun.js"
-    ],
     "model/turunan": [
      "scripts/agents/ilmu.mjs",
      "scripts/berita/banjir.py",
@@ -25783,6 +26303,9 @@
      "src/alun.js",
      "src/command_center.js",
      "src/worker.js"
+    ],
+    "layar staf": [
+     "public/admin/alun.js"
     ]
    },
    "arsip": false,
@@ -25917,9 +26440,6 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
-    "layar staf": [
-     "public/admin/gakkum.js"
-    ],
     "worker": [
      "src/command_center.js",
      "src/instansi.js",
@@ -25937,11 +26457,6 @@
      "src/sla.js",
      "src/uji_lapangan.js"
     ],
-    "model/turunan": [
-     "scripts/data/insiden.py",
-     "scripts/data/kalibrasi.py",
-     "scripts/data/ujibanding_firespot.py"
-    ],
     "peringatan": [
      "src/alarm_himawari.js",
      "src/peringatan.js",
@@ -25949,6 +26464,14 @@
     ],
     "layar publik": [
      "public/instansi_akses.js"
+    ],
+    "model/turunan": [
+     "scripts/data/insiden.py",
+     "scripts/data/kalibrasi.py",
+     "scripts/data/ujibanding_firespot.py"
+    ],
+    "layar staf": [
+     "public/admin/gakkum.js"
     ]
    },
    "arsip": false,
@@ -26027,6 +26550,9 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
+    "model/turunan": [
+     "scripts/data/ujibanding_firespot.py"
+    ],
     "worker": [
      "src/command_center.js",
      "src/instansi.js",
@@ -26039,9 +26565,6 @@
      "src/prediksi.js",
      "src/sla.js",
      "src/uji_lapangan.js"
-    ],
-    "model/turunan": [
-     "scripts/data/ujibanding_firespot.py"
     ]
    },
    "arsip": false,
