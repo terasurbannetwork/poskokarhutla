@@ -8,6 +8,7 @@ import {superOK} from "./posko.js";
 import {laju} from "./bnpb.js";
 import {PROV} from "./alun.js";
 import {catatBerantai} from "./berantai.js";
+import {tabelNarasiAda, stmtNarasiLogbook, indukLogbook, punyaAnakLogbook} from "./hak.js";
 
 const PERAN = ["pusdalops", "koordalops", "pimpinan"], HARI = 864e5, MENIT = 6e4, MAKS_BODY = 16384, MAKS_HARI = 1000;
 export const JENIS = ["banjir", "cuaca", "kebakaran_permukiman", "karhutla", "longsor", "gempabumi", "gunungapi", "kekeringan", "kecelakaan", "konflik_sosial", "lainnya", "gelombang_pasang", "tsunami", "wabah"];   // tiga terakhir: panduan resmi Pusdalops (DIBI 103, 108, 201), butuh migrasi 0091
@@ -200,19 +201,18 @@ let JK_ADA = false, JK_CEK = 0;
 let NAR_ADA = false, NAR_CEK = 0;   // migrasi 0117; sebelum diterapkan isian naratif diabaikan dengan peringatan, rute lain tetap jalan
 async function narAda(env, kini) {
   if (NAR_ADA || (NAR_CEK && kini - NAR_CEK < 3e5)) return;
-  NAR_CEK = kini; NAR_ADA = !!(await env.DB.prepare("SELECT 1 x FROM sqlite_master WHERE type = 'table' AND name = 'logbook_narasi'").first());
+  NAR_CEK = kini; NAR_ADA = await tabelNarasiAda(env);
 }
 const NAR = Object.keys(BATAS_NARASI), NAR_TUNGGU = o => !NAR_ADA && (o.narasi || o.induk_kib) ? {narasi: "menunggu migrasi 0117"} : {};
-const stmtNarasi = (env, kejadian, e, kini) => !NAR_ADA || (!e.narasi && !e.induk_id) ? [] : [env.DB.prepare(`INSERT INTO logbook_narasi (kejadian_id, ${NAR}, induk_id, diubah) VALUES (?, ${NAR.map(() => "?")}, ?, ?)
-  ON CONFLICT (kejadian_id) DO UPDATE SET ${NAR.map(c => `${c} = COALESCE(excluded.${c}, ${c})`)}, induk_id = COALESCE(excluded.induk_id, induk_id), diubah = excluded.diubah`).bind(kejadian, ...NAR.map(c => e.narasi?.[c] ?? null), e.induk_id ?? null, kini)];
+const stmtNarasi = (env, kejadian, e, kini) => !NAR_ADA || (!e.narasi && !e.induk_id) ? [] : [stmtNarasiLogbook(env, NAR, kejadian, e.narasi, e.induk_id, kini)];
 /* KIB kejadian utama -> id. Satu tingkat saja: utama tidak boleh anak kejadian lain, dan kejadian yang sudah punya anak tidak bisa jadi anak */
 async function cariInduk(env, req, kib, jenis, diri) {
-  const x = await env.DB.prepare("SELECT b.kejadian_id id, k.jenis, k.prov, n.induk_id FROM logbook_kib b JOIN logbook_kejadian k ON k.id = b.kejadian_id LEFT JOIN logbook_narasi n ON n.kejadian_id = k.id WHERE b.kib = ?").bind(kib).first();
+  const x = await indukLogbook(env, kib);
   if (!x || !req || luarWilayah(req, [x.prov])) return {galat: "KIB kejadian utama tidak ditemukan"};   // di luar wilayah staf sama jawabannya dengan tidak ada, supaya KIB provinsi lain tidak bisa ditebak
   if (x.id === diri) return {galat: "kejadian tidak bisa menjadi kejadian utama bagi dirinya sendiri"};
   if (x.jenis !== jenis) return {galat: "kejadian utama harus berjenis sama"};
   if (x.induk_id) return {galat: "KIB itu bagian dari kejadian lain; pakai KIB kejadian utamanya"};
-  if (diri && await env.DB.prepare("SELECT 1 x FROM logbook_narasi WHERE induk_id = ?").bind(diri).first()) return {galat: "kejadian ini sudah menjadi kejadian utama bagi kejadian lain"};
+  if (diri && await punyaAnakLogbook(env, diri)) return {galat: "kejadian ini sudah menjadi kejadian utama bagi kejadian lain"};
   return {id: x.id};
 }
 async function jkAda(env, kini = Date.now()) {
