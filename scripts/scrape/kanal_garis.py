@@ -20,7 +20,7 @@ if os.environ.get("OSM_MENTAH"):
     tarik_osm.MENTAH = os.environ["OSM_MENTAH"]
 
 KELUAR = os.path.join(AKAR, "public/data/kanal")
-TOL, MIN_KM = 0.0003, 0.05  # 0,0003 derajat = ~33 m
+TOL, MIN_KM = 0.0005, 0.5  # 0,0005 derajat = ~55 m; ditch/drain < 500 m dibuang supaya total ubin di bawah 25 MB (canal selalu disimpan)
 TOL_NAS, MIN_NAS_KM, MAKS_NAS = 0.01, 1.5, 1_300_000
 JENIS = {"canal": 1, "ditch": 2, "drain": 3}
 
