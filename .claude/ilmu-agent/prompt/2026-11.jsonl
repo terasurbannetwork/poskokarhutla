@@ -2797,3 +2797,5 @@
 {"t":"2026-11-10T15:11:32.645+07:00","sesi":"b7148fb7","prompt":"[tempelan 3014 karakter]\n\nBro ini kan dari magma ESDM lu udah ambil ga ya datanya?","label":[],"berkas":[]}
 {"t":"2026-11-10T15:12:17.669+07:00","sesi":"b7148fb7","prompt":"https://magma.esdm.go.id/v1\n\nLu cek website ini","label":[],"berkas":[]}
 {"t":"2026-11-10T15:13:13.559+07:00","sesi":"b7148fb7","prompt":"Ini semua informasinya https://magma.esdm.go.id/v1","label":[],"berkas":[]}
+{"t":"2026-11-10T15:18:32.370+07:00","sesi":"b7148fb7","prompt":"https://magma.esdm.go.id/v1/gunung-api/gallery\nhttps://magma.esdm.go.id/v1/gunung-api/live-seismogram\nhttps://magma.esdm.go.id/v1/gunung-api/gallery\nhttps://magma.esdm.go.id/v1/gerakan-tanah/tanggapan?page=1\nhttps://magma.esdm.go.id/v1/gempa-bumi-dan-tsunami/kajian\n\nCoba lu analisa semua ya\n\nApa yang bisa lu ambil dan jadi penguat sistem kita","label":["gempa"],"berkas":[]}
+{"t":"2026-11-10T15:20:00.976+07:00","sesi":"b7148fb7","prompt":"Semua press release juga cek ada yang penting\" ga\nhttps://magma.esdm.go.id/press-releasehttps://magma.esdm.go.id/press-release","label":[],"berkas":[]}
