@@ -204,6 +204,81 @@
     return {grup: g, n: {terdampak: n.terdampak, awas: n.awas, siaga: n.siaga, pantau: n.pantau, total: g.reduce((a, x) => a + x.baris.length, 0)}};
   }
 
-  const X = {mitigasi, KATA, SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perKec, adaAngka, gabungRiwayat, perluDitanya, statusKab, siaga, pesanWA, pesanSiaga, pesanProv, tglPanjang, tglPendek, namaKab};
+  /* ---------- Laporan Masuk (tab pemantau rekap harian WA Koordalops; kontrak GET /api/dalops/laporan) ----------
+     hari = [{tanggal, status: "ok"|"gagal", kejadian: [{jenis, prov, lokasi, tempat, sifat: "baru"|"pengkinian"|"", status: "berjalan"|"belum"|"selesai"}]}] urut apa saja.
+     Semua tanggal YYYY-MM-DD (tanggal rekap WIB). Tanpa DOM, tanpa fetch. */
+  const JENDELA_TERBUKA = 14, USUL_TUTUP = 7, MULAI_CEK = 7;
+  const geser = (s, n) => new Date(Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10)) + n * 864e5).toISOString().slice(0, 10);
+  const normLokasi = s => String(s || "").toLowerCase().replace(/^\s*(kabupaten|kab\.?|kota|provinsi|prov\.?)\s+/, "").replace(/\s+/g, " ").trim();
+  const kunciKejadian = k => `${k.jenis}|${k.prov}|${normLokasi(k.lokasi)}`;
+  const NAMA_JENIS = {banjir: "Banjir", longsor: "Tanah longsor", karhutla: "Karhutla", gempabumi: "Gempa bumi", gunungapi: "Gunung api", cuaca: "Cuaca ekstrem", kekeringan: "Kekeringan",
+    kebakaran_permukiman: "Kebakaran permukiman", kecelakaan: "Kecelakaan", konflik_sosial: "Konflik sosial", gelombang_pasang: "Gelombang pasang", tsunami: "Tsunami", wabah: "Wabah", lainnya: "Lainnya"};
+  /* nilai jenis rekap (laporan_urai.js jenisDari) sudah memakai kode logbook (src/logbook.js JENIS); hanya dua yang digabung urai ke jenis lain */
+  const JENIS_LOGBOOK = {tsunami: "gempabumi", gelombang_pasang: "cuaca"};
+  const jenisLogbook = j => JENIS_LOGBOOK[j] || j;
+  const labelKejadian = (k, namaProv) => `${NAMA_JENIS[k.jenis] || "Kejadian"} ${k.tempat || namaProv(k.prov)}`.trim();
+  const KATA_UMUM = {kata: "kejadian", selesai: "selesai", tanya: "apakah penanganan sudah selesai", tinggi: false, alat: "logistik, peralatan"};
+  const kataJenis = j => ({gempabumi: KATA.gempa, karhutla: {kata: "karhutla", selesai: "padam", tanya: "apakah api sudah padam", tinggi: false, alat: "pompa, selang, logistik regu"}}[j]
+    || KATA[j] || {...KATA_UMUM, kata: (NAMA_JENIS[j] || "kejadian").toLowerCase()});
+
+  /* tujuh tanggal WIB terakhir, terbaru dulu; hari ini dilewati sebelum 07.00 WIB (rekap belum semestinya masuk) */
+  function tanggalPantau(kiniMs) {
+    const w = new Date(kiniMs + 7 * 36e5), hariIni = w.toISOString().slice(0, 10), awal = w.getUTCHours() < 7 ? geser(hariIni, -1) : hariIni;
+    return [...Array(7)].map((_, i) => geser(awal, -i));
+  }
+
+  /* arsip rekap yang terbaca (status ok), tanggal naik; kunci -> kemunculan [{tanggal, k}] naik */
+  function indeksArsip(hari) {
+    const ok = [...hari].filter(x => x.status === "ok").sort((a, b) => a.tanggal < b.tanggal ? -1 : 1), m = new Map();
+    for (const d of ok) {
+      const lihat = new Set();
+      for (const k of d.kejadian || []) { const c = kunciKejadian(k); if (lihat.has(c)) continue; lihat.add(c); (m.get(c) || m.set(c, []).get(c)).push({tanggal: d.tanggal, k}); }
+    }
+    return {ok, awal: ok[0]?.tanggal || null, m};
+  }
+
+  /* laporan pertama: tanggal terawal kunci itu; kemunculan pertama di tanggal arsip paling awal dan bersifat pengkinian = "Sebelum <awal>" (hari ke tak diketahui) */
+  function riwayatKunci(ar, kunci, T) {
+    const a = (ar.m.get(kunci) || []).filter(e => e.tanggal <= T);
+    if (!a.length) return null;
+    const p = a[0], sebelum = p.tanggal === ar.awal && p.k.sifat === "pengkinian";
+    return {pertama: p.tanggal, sebelum, hariKe: sebelum ? null : selisih(T, p.tanggal) + 1};
+  }
+
+  function ringkasLaporan(hari, T) {
+    const ar = indeksArsip(hari), rekap = hari.find(x => x.tanggal === T);
+    if (!rekap || rekap.status !== "ok") return {ada: false, status: rekap ? rekap.status : "belum", baru: [], pengkinian: [], tagih: [], perluDicek: []};
+    const tampil = new Set(), kini = [];
+    for (const k of rekap.kejadian || []) { const c = kunciKejadian(k); if (!tampil.has(c)) { tampil.add(c); kini.push({kunci: c, k}); } }
+    const dari = geser(T, -JENDELA_TERBUKA);
+    /* terbuka sebelum T: muncul dalam 14 hari sebelum T dan status kemunculan terakhir (sebelum T) bukan selesai */
+    const sebelumT = new Map();
+    for (const [c, es] of ar.m) { const w = es.filter(e => e.tanggal < T && e.tanggal >= dari); if (w.length && w[w.length - 1].k.status !== "selesai") sebelumT.set(c, w[w.length - 1]); }
+    const tagih = [...sebelumT].filter(([c]) => !tampil.has(c)).map(([c, e]) => {
+      const tanpa = selisih(T, e.tanggal), r = riwayatKunci(ar, c, T);
+      return {kunci: c, k: e.k, kabarTerakhir: e.tanggal, tanpa, nada: tanpa >= 3 ? "merah" : "kuning", usulTutup: tanpa > USUL_TUTUP, pertama: r.pertama, sebelum: r.sebelum};
+    }).sort((a, b) => b.tanpa - a.tanpa || (a.pertama < b.pertama ? -1 : a.pertama > b.pertama ? 1 : 0) || (a.kunci < b.kunci ? -1 : 1));
+    const bagian = sifat => kini.filter(e => e.k.sifat === sifat).map(e => ({...e, ...riwayatKunci(ar, e.kunci, T)}));
+    const baru = bagian("baru"), pengkinian = bagian("pengkinian"), perluDicek = [];
+    for (const e of baru) if (sebelumT.has(e.kunci)) perluDicek.push({kunci: e.kunci, k: e.k, alasan: "mungkin_pengkinian"});
+    const cukupLama = ar.awal != null && selisih(T, ar.awal) >= MULAI_CEK;
+    for (const e of pengkinian) if (cukupLama && !(ar.m.get(e.kunci) || []).some(x => x.tanggal < T)) perluDicek.push({kunci: e.kunci, k: e.k, alasan: "tanpa_pertama"});
+    return {ada: true, status: "ok", baru, pengkinian, tagih, perluDicek, awalArsip: ar.awal};
+  }
+
+  /* logbook periode 07.00-07.00 WIB: rekap bertanggal T memakai tgl = T - 1 (GET /api/logbook/hari) */
+  const tglLogbook = T => geser(T, -1);
+  /* kejadian rekap ada di entri logbook: jenis + provinsi, dan kab/kota bila rekap menyebut lokasinya */
+  const cocokLogbook = (k, entri) => (entri || []).some(e => jenisLogbook(e.jenis) === jenisLogbook(k.jenis) && String(e.prov) === String(k.prov) && (!normLokasi(k.lokasi) || normLokasi(e.kab) === normLokasi(k.lokasi)));
+
+  /* pesan siap kirim untuk kabar yang berhenti; pola sama dengan pesanWA */
+  function pesanTagih(x, nama, j = KATA_UMUM) {
+    const sejak = x.sebelum ? "sebelum " + tglPanjang(x.pertama) : "sejak " + tglPanjang(x.pertama);
+    return `Yth. rekan BPBD ${nama}. Pusdalops BNPB mencatat ${j.kata} di ${nama} ${sejak}, kabar terakhir ${tglPanjang(x.kabarTerakhir)} (${x.tanpa} hari tanpa pembaruan), belum dilaporkan ${j.selesai}.\n` +
+      `Mohon pembaruan:\n1. Kondisi terkini dan ${j.tanya}\n2. Jumlah warga terdampak dan mengungsi\n` +
+      `Bila ada kebutuhan mendesak (${j.alat}), mohon disampaikan sekalian. Terima kasih.`;
+  }
+
+  const X = {kunciKejadian, normLokasi, ringkasLaporan, tanggalPantau, tglLogbook, cocokLogbook, labelKejadian, kataJenis, pesanTagih, NAMA_JENIS, mitigasi, KATA, SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perKec, adaAngka, gabungRiwayat, perluDitanya, statusKab, siaga, pesanWA, pesanSiaga, pesanProv, tglPanjang, tglPendek, namaKab};
   g.DalopsHitung = X;
 })(globalThis);

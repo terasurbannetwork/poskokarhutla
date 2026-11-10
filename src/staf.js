@@ -49,7 +49,7 @@ export async function stafSesi(env, req, kini = Date.now()) {
    TIDAK PERNAH masuk: POST/PUT/DELETE, /dummy, /api/wa/masuk, /api/wa/berkas (bahan WA mentah), jejak Meja Pantau (nama pelaku), foto/jejak operasi, vektor wajah, secret, token, nomor HP. */
 export const IZIN_PEMIRSA_PUSDALOPS = [
   /^\/admin\/(pantau|laporan-karhutla|omc)$/,   // halaman (kerangka tanpa data); datanya lewat rute di bawah
-  /^\/api\/dalops\/(banjir|longsor|karhutla|gempa|cuaca|kekeringan)$/,
+  /^\/api\/dalops\/(banjir|longsor|karhutla|gempa|cuaca|kekeringan|laporan)$/,
   /^\/api\/logbook\/(buka|hari|sk\/aktif)$/, /^\/api\/logbook\/turunan\/(rapor_bpbd|rekomendasi|penanganan|serupa_\d{2})$/, /^\/api\/logbook\/kejadian\/[0-9a-f]{16}\/sk$/,
   /^\/api\/pusdalops\/(berantai|lapsus|medsos|medsos\/jeda|pemulihan|pemulihan\/ringkasan|rollcall|rollcall\/ringkasan)$/, /^\/api\/pusdalops\/(lapsus|pemulihan|rollcall)\/[0-9a-f]{16}$/,
   /^\/api\/operasi\/(peta|monitor|nilai)$/,

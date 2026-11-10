@@ -502,5 +502,6 @@ function tataLetak(items, {skala = 5.1, jeda = 1.35} = {}) {
 const API = {urai, uraiWa, uraiLaphar, uraiSkDarurat, gabungKejadian, gabungStatus, tataLetak,
   kodeProv, jenisDari, tempatDari, ringkasStatus, statusDari, isoBulan, tanpaPrefiks};
 if (typeof window !== "undefined") window.LaporanUrai = API;
+globalThis.LaporanUrai = API;   // import side-effect dari Worker dan node (package type:module: module.exports tidak berlaku)
 if (typeof module !== "undefined" && module.exports) module.exports = API;
 })();
