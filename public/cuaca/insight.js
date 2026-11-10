@@ -15,15 +15,16 @@ const IK = {nowcast: '<path d="M7 18a5 5 0 1 1 1.2-9.9A6 6 0 0 1 19.5 10 4 4 0 0
 
 IK.buktiBmkg = IK.buktiKita = IK.bukti;
 IK.maritim = IK.gelombang;
+IK.resmi = IK.bukti;
 
 const Insight = {
   /* tabel provinsi: urut menurun menurut hujan, 10 baris per halaman */
   T: {provinsi: {urut: "hujan", turun: true, hal: 0}, kejadian: {urut: "mulai", turun: true, hal: 0}},
-  EX: ["kejadian", "status", "siklon", "siklonBmkg", "sarana", "buktiBmkg", "buktiKita", "nowcast", "gelombang", "maritim", "hujan", "angin", "ansambel", "peluang", "provinsi"],
+  EX: ["kejadian", "status", "siklon", "siklonBmkg", "sarana", "buktiBmkg", "buktiKita", "resmi", "nowcast", "gelombang", "maritim", "hujan", "angin", "ansambel", "peluang", "provinsi"],
   st: {},   /* state kontrol kartu peluang (wilayah, ambang) */
   PL: null,
   ih: 0, lead: "1",   /* hari kartu Status: indeks di kontrak 72 jam */
-  LABEL: {kejadian: "Kejadian cuaca", peluang: "Peluang hujan ekstrem", status: "Wilayah Siaga/Awas 72 jam", siklon: "Siklon tropis", sarana: "Pelabuhan dan bandara terancam", buktiBmkg: "Ketepatan peringatan BMKG", buktiKita: "Ketepatan prakiraan Centurisk97", nowcast: "Nowcast BMKG", gelombang: "Gelombang", maritim: "Prakiraan maritim BMKG", hujan: "Hujan", angin: "Angin", ansambel: "Ansambel", provinsi: "Provinsi"},
+  LABEL: {kejadian: "Kejadian cuaca", peluang: "Peluang hujan ekstrem", status: "Wilayah Siaga/Awas 72 jam", siklon: "Siklon tropis", sarana: "Pelabuhan dan bandara terancam", buktiBmkg: "Ketepatan peringatan BMKG", buktiKita: "Ketepatan prakiraan Centurisk97", resmi: "Prakiraan resmi vs model", nowcast: "Nowcast BMKG", gelombang: "Gelombang", maritim: "Prakiraan maritim BMKG", hujan: "Hujan", angin: "Angin", ansambel: "Ansambel", provinsi: "Provinsi"},
   /* 10b. peluang hujan ekstrem per kab/provinsi (../banjir/data/cuaca_peluang.json, kontrak peluang/1; mesin public/inti/peluang.js). Tanpa berkas = dibuang. */
   exPeluang() { if (typeof Peluang === "undefined" || !this.PL) return ""; this.st.pelW ??= Object.entries(this.PL.wilayah).filter(([, w]) => w.tingkat === "provinsi").map(([k, w]) => [k, Math.max(0, ...w.hari.map(h => h.p?.[0] ?? 0))]).sort((a, b) => b[1] - a[1])[0]?.[0];
     return Peluang.kartu(this.PL, {ey: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK.peluang}</svg>${this.LABEL.peluang}`, st: this.st, kejadian: "hujan ekstrem", sumber: "ECMWF IFS 51 anggota via Open-Meteo, dibuat " + jamWIB(this.PL?.dibuat)}); },
@@ -93,7 +94,7 @@ const Insight = {
     const baris = [b("Posisi", ll), b("Tekanan", p.tekanan_hpa != null ? fmt(p.tekanan_hpa) + " hPa" : ""), b("Angin", p.angin_kt != null ? `${fmt(p.angin_kt)} knot, sekitar ${fmt(kmj(p.angin_kt))} km/jam${p.embusan_kt != null ? `; embusan ${fmt(p.embusan_kt)} knot, sekitar ${fmt(kmj(p.embusan_kt))} km/jam` : ""}` : ""), b("Kategori", kat),
       b("Wilayah BMKG", c.is_aor == null ? "" : (c.is_aor ? "Dalam area tanggung jawab (AoR) TCWC Jakarta" : "Di luar area tanggung jawab (AoR) TCWC Jakarta") + (c.area ? ", " + ({bbu: "belahan bumi utara", bbs: "belahan bumi selatan"}[c.area] || "area " + c.area) : "")),
       b("Cuaca ekstrem", c.cuaca_ekstrem), b("Gelombang tinggi", c.gelombang_tinggi), b("Angin kencang", c.angin_kencang)].join("");
-    return this.ex(`${this.hl("Siklon tropis " + esc(c.nama))}${A.length > 1 ? " dan " + (A.length - 1) + " lainnya" : ""} di ${ll}${p.angin_kt != null ? `, angin ${this.hl(fmt(kmj(p.angin_kt)) + " km/jam")}` : ""}${p.tekanan_hpa != null ? ", tekanan " + fmt(p.tekanan_hpa) + " hPa" : ""}`, "", "",
+    return this.ex(`${this.hl("Siklon tropis " + esc(c.nama))}${A.length > 1 ? " dan " + (A.length - 1) + " lainnya" : ""} di ${ll}${p.angin_kt != null ? `, angin sekitar ${this.hl(fmt(kmj(p.angin_kt)) + " km/jam")}` : ""}${p.tekanan_hpa != null ? ", tekanan " + fmt(p.tekanan_hpa) + " hPa" : ""}`, "", "",
       `<div class="tw ex-tabel"><table><thead><tr><th>${esc(c.nama)}</th><th>Menurut BMKG</th></tr></thead><tbody>${baris}</tbody></table></div>`,
       `Sumber: ${esc(S.sikB.sumber || "BMKG TCWC Jakarta")}, analisis ${jamWIB(c.analisis || S.sikB.dibuat)}`); },
   /* ketepatan: a = tepat, b = alarm palsu, c = meleset. Singkatan dan rumus hanya di Metode. */
@@ -118,6 +119,8 @@ const Insight = {
     const B = S.ver?.bmkg; if (!B?.nasional) return ""; const n = B.nasional, nmin = B.n_min ?? 30, acuan = B.kejadian ? esc(B.kejadian) : "DIBI BNPB";
     const R = [["ID", n], ...Object.entries(B.prov || {}).filter(([, o]) => o.a + o.b + o.c).sort((a, b) => (b[1].a + b[1].b + b[1].c) - (a[1].a + a[1].b + a[1].c)).slice(0, 12)];
     return this.kartuBukti(`Peringatan BMKG: ${this.buktiIsi(n, B.mulai, nmin, B.dinilai_sampai)}`, n, R, "", `arsip nowcast BMKG sejak ${this.tglLengkap(B.mulai)}, ${acuan}`); },
+  /* prakiraan resmi BMKG (factsheet, sepekan, kab 10 hari) berdampingan dengan model; mesin di resmi.js, bagian tanpa berkas dibuang */
+  exResmi() { return typeof Resmi === "undefined" ? "" : Resmi.kartu(); },
   exBuktiKita() {
     const K = S.ver?.kita; if (!K?.lead || !K.pembanding) return ""; const l = this.lead, n = K.lead[l], mulai = K.periode?.[0] || S.ver.bmkg?.mulai, nmin = K.n_min ?? 30; if (!n) return "";
     const ctl = `<div class="seg penuh" role="group">${["1", "2", "3"].filter(x => K.lead[x]).map(x => `<button data-sld="${x}" aria-pressed="${x === l}">${x} hari sebelumnya</button>`).join("")}</div>`;
@@ -214,7 +217,7 @@ const Insight = {
   async render() {
     const el = $("#insight");
     await Kejadian.muatAwal();
-    await Promise.all([Tambahan.muat("lg"), Tambahan.titikKab()]);   /* kartu Langganan; hilang = dibuang */
+    await Promise.all([Tambahan.muat("lg"), Tambahan.titikKab(), typeof Resmi !== "undefined" && Resmi.muat(), typeof Bmkg2 !== "undefined" && Bmkg2.muat()]);   /* kartu Langganan; hilang = dibuang */
     if (typeof Peluang !== "undefined") this.PL = await Peluang.muat("../banjir/data/cuaca_peluang.json");
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");
     Cerita.sisip(el, "cuaca");

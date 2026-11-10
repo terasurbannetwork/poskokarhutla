@@ -159,7 +159,7 @@ const Status = (() => {
   function laciKec(i) { const r = rowKec(i), n = nmKec(i); if (!r) return; const j = k();
     const hari = r[1].map((t, d) => `<p class="fnd">${pilT(t)} <b>${lbl3(d)}</b>: hujan ${fmt(r[4][d] ?? 0)} mm (peluang 50 mm atau lebih ${fmt(r[2][d] ?? 0)}%, 100 mm atau lebih ${fmt(r[3][d] ?? 0)}%), embusan ${fmt(r[5][d] ?? 0)} km/jam${r[6]?.[d] != null ? `, gelombang ${fmt(r[6][d] / 10)} m` : ""}</p>`).join("");
     Laci.buka("Status 72 jam", `<span translate="no">${esc(n.kec)}</span>`, `${pilT(r[1][j])} <span translate="no">${esc(n.kab)}, ${esc(namaProv(n.p))}</span>`,
-      `${kvs(kot("Hujan", fmt(r[4][j] ?? 0), "mm"), kot("Embusan", fmt(r[5][j] ?? 0), "km/jam"), kot("Peluang 50 mm", fmt(r[2][j] ?? 0) + "%", "atau lebih"), r[6]?.[j] != null ? kot("Gelombang", fmt(r[6][j] / 10), "m") : kot("Peluang 100 mm", fmt(r[3][j] ?? 0) + "%", "atau lebih"))}${pemicu(r, j).length ? `<p class="fnd">Pemicu ${kapan3(j)}: ${pemicu(r, j).join(", ")}</p>` : ""}${hari}
+      `${kvs(kot("Hujan", fmt(r[4][j] ?? 0), "mm"), kot("Embusan", fmt(r[5][j] ?? 0), "km/jam"), kot("Peluang 50 mm", fmt(r[2][j] ?? 0) + "%", "atau lebih"), r[6]?.[j] != null ? kot("Gelombang", fmt(r[6][j] / 10), "m") : kot("Peluang 100 mm", fmt(r[3][j] ?? 0) + "%", "atau lebih"))}${pemicu(r, j).length ? `<p class="fnd">Pemicu ${kapan3(j)}: ${pemicu(r, j).join(", ")}</p>` : ""}${hari}${typeof Resmi !== "undefined" ? Resmi.laci(n.p, n.kab) : ""}${typeof Bmkg2 !== "undefined" ? Bmkg2.laciPetir(n.p, n.kab) : ""}
       <p class="fnd">Sumber: Deteksi Centurisk97 dari prakiraan model (Open-Meteo), bukan peringatan resmi BMKG. ${AMBANG_PIL()}. Diperbarui ${jamWIB(S.kec.dibuat)}.</p>`); }
   function tipKec(i) { const r = rowKec(i), n = nmKec(i), j = k(); if (!r) return "";
     return PI.kartuTip({judul: `<span translate="no">${esc(n.kec)}</span>`, sub: `<small>${esc(namaT(r[1][j]))}</small>`, stat: [["hujan", fmt(r[4][j] ?? 0) + " mm", "hujan", "#3f7fb8", r[4][j] >= AMB().hujan[0]], ["angin", fmt(r[5][j] ?? 0) + " km/jam", "embusan", "#2b8c86", r[5][j] >= AMB().angin_kmj[0]], ...(r[6]?.[j] != null ? [["ombak", fmt(r[6][j] / 10) + " m", "gelombang", "#16405c", r[6][j] / 10 >= HS()[0]]] : [])]}); }
@@ -168,7 +168,7 @@ const Status = (() => {
   function laciSar(p) { const s = sarInfo(p);
     Laci.buka(p.j === "pelabuhan" ? "Pelabuhan" : "Bandara", `<span translate="no">${esc(s.nama)}</span>`, `${pilT(p["t" + k()])} <span translate="no">${esc(namaProv(s.prov))}</span>`,
       `${kvs(kot(s.lb === "hujan" ? "Hujan" : "Gelombang", s.v.split(" ")[0], s.v.split(" ")[1]), kot("Embusan", fmt(p.g), "km/jam"))}
-      ${[0, 1, 2].map(d => `<p class="fnd">${pilT(p["t" + d])} <b>${lbl3(d)}</b></p>`).join("")}<p class="fnd">Angka tertinggi dalam 72 jam. Sumber: Deteksi Centurisk97 dari prakiraan model; sarana dari data terbuka. Bukan peringatan resmi.</p>`); }
+      ${[0, 1, 2].map(d => `<p class="fnd">${pilT(p["t" + d])} <b>${lbl3(d)}</b></p>`).join("")}<p class="fnd">Angka tertinggi dalam 72 jam. Sumber: Deteksi Centurisk97 dari prakiraan model; sarana dari data terbuka. Bukan peringatan resmi.</p>${p.j === "bandara" && typeof Bmkg2 !== "undefined" ? Bmkg2.laciBandara(S.sar.bandara[p.n]) : ""}`); }
   /* BMKG Maritim: tip dan laci dari baris S.mar (tiga hari WIB); teks dari BMKG lewat esc */
   const marSub = (r, jenis) => `${jenis}${r[2] ? ", " + esc(namaProv(r[2])) : ""}`;
   function tipMar(p) { const r = S.mar[p.j][p.n], m = mIdx(), md = r[9][m], kl = r[6][m];

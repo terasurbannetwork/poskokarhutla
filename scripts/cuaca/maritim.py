@@ -8,6 +8,8 @@ Keluaran {dibuat, terbit, sumber, hari:[3 tanggal WIB], n:{perairan,pelabuhan,ga
   pelabuhan menambah  pasang_maks[3] (cm), pasang_min[3] (cm), jarak_pandang_min[3] (km).
 Tiap larik per tanggal WIB di `hari`; null = tanggal itu tak tercakup. mod = gelombang model tertinggi dari titik cuaca_gelombang.json terdekat (<= 30 km, tercakup >= 12 jam), null bila tak ada.
 Lokasi yang valid_to-nya lewat dibuang (n.basi). Kurang dari 80% lokasi berhasil = raise, berkas lama tetap.
+Arsip: public/banjir/data/cuaca_bmkg_arsip_maritim_<YYYY-MM>.json {"terbit": {<issued>: {"hari":[3], "perairan": {kode: [hs dm x3, embusan kt x3]}, "pelabuhan": {...}}}}; entri per issued, yang sudah ada tak pernah ditimpa
+(diawali cuaca_bmkg_arsip_ supaya ikut glob commit lintas.yml; prakiraan BMKG tak bisa diisi mundur). Perkiraan ukuran: ~1.030 lokasi x ~40 byte = sekitar 40 KB per issued, sekitar 1,2 MB per bulan bila BMKG terbit sekali sehari.
 Pakai: python3 scripts/cuaca/maritim.py   |   python3 scripts/cuaca/maritim.py uji
 """
 import concurrent.futures as cf, datetime as dt, os, sys, time
@@ -158,6 +160,18 @@ def _satu(ambil_satu, l):
         return None
 
 
+def arsipkan(P, L, hari, terbit, folder):
+    """Tambah entri `terbit` (ISO UTC) ke arsip bulannya bila belum ada; ringkas: hs (dm) dan embusan (knot) 3 hari per lokasi. -> True bila ditulis."""
+    jalur = os.path.join(folder, f"cuaca_bmkg_arsip_maritim_{terbit[:7]}.json")
+    arsip = baca(jalur, None) or {"terbit": {}}
+    if terbit in arsip.setdefault("terbit", {}):
+        return False
+    ringkas = lambda B: {b[0]: b[5] + b[7] for b in B}
+    arsip["terbit"][terbit] = {"hari": hari, "perairan": ringkas(P), "pelabuhan": ringkas(L)}
+    simpan(jalur, arsip)
+    return True
+
+
 def main():
     area, pel, wil = (ambil(B + "meta/" + f, coba=3, batas_waktu=60) for f in ("area_province.json", "pelabuhan.json", "wilmetos.min.geojson"))
     lokasi, asing = daftar(area, pel, wil)
@@ -171,7 +185,8 @@ def main():
         raise RuntimeError(f"maritim: hanya {len(P) + len(L)}/{len(lokasi)} lokasi berhasil (gagal {gagal}, basi {basi}); berkas lama dipertahankan")
     simpan(os.path.join(KELUAR, "cuaca_maritim.json"), {"dibuat": sekarang(), "terbit": waktu(t).isoformat().replace("+00:00", "Z"), "sumber": "BMKG Maritim (maritim.bmkg.go.id)", "hari": hari,
            "n": {"perairan": len(P), "pelabuhan": len(L), "gagal": gagal, "basi": basi, "prov_asing": sorted(asing)}, "perairan": P, "pelabuhan": L})
-    print(f"cuaca maritim: {len(P)} perairan, {len(L)} pelabuhan, gagal {gagal}, basi {basi}, {time.time() - mulai:.0f} dtk", file=sys.stderr)
+    baru = arsipkan(P, L, hari, waktu(t).isoformat().replace("+00:00", "Z"), KELUAR)
+    print(f"cuaca maritim: {len(P)} perairan, {len(L)} pelabuhan, gagal {gagal}, basi {basi}, arsip {'+1' if baru else 'sudah ada'}, {time.time() - mulai:.0f} dtk", file=sys.stderr)
 
 
 def jam(t0, n, tides=None, **k):
@@ -226,6 +241,15 @@ def uji():
     assert all("RAHASIA" not in str(b) for b in P) and len(L[0]) == 13 and len(P[0]) == 10
     # ambang 80%
     assert (len(P) + len(L)) >= MIN_BERHASIL * len(lok) and (len(P) + len(L)) < MIN_BERHASIL * 12
+    # arsip: entri pertama menang, issued baru ditambah, bulan beda = berkas beda
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        assert arsipkan(P, L, hari, "2026-11-10T06:00:00Z", tmp) and not arsipkan([["M.0", "x", None, 0, 0, [99, 1, 1], [], [1, 1, 1]]], L, hari, "2026-11-10T06:00:00Z", tmp)
+        assert arsipkan(P, L, hari, "2026-11-10T12:00:00Z", tmp) and arsipkan(P, L, hari, "2026-12-01T00:00:00Z", tmp)
+        a = baca(os.path.join(tmp, "cuaca_bmkg_arsip_maritim_2026-11.json"))
+        assert list(a["terbit"]) == ["2026-11-10T06:00:00Z", "2026-11-10T12:00:00Z"] and a["terbit"]["2026-11-10T06:00:00Z"]["perairan"]["M.1"] == P[0][5] + P[0][7] and len(a["terbit"]["2026-11-10T06:00:00Z"]["perairan"]["M.1"]) == 6
+        assert "M.0" not in a["terbit"]["2026-11-10T06:00:00Z"]["perairan"] or a["terbit"]["2026-11-10T06:00:00Z"]["perairan"]["M.0"][0] != 99
+        assert os.path.exists(os.path.join(tmp, "cuaca_bmkg_arsip_maritim_2026-12.json"))
     print("ok maritim")
 
 

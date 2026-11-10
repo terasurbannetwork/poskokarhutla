@@ -60,7 +60,8 @@
    ],
    "jadwal": [
     "banjir.yml cron 20 0 * * *",
-    "lintas.yml cron 10 2 * * *"
+    "lintas.yml cron 10 2 * * *",
+    "prediksi.yml cron 50 1 * * *"
    ],
    "pemakai": {
     "layar publik": [
@@ -860,9 +861,13 @@
    "jadwal": [
     "arsip-bmkg.yml cron 25 */3 * * *"
    ],
-   "pemakai": {},
+   "pemakai": {
+    "layar publik": [
+     "public/cuaca/bmkg2.js"
+    ]
+   },
    "arsip": false,
-   "status": "yatim",
+   "status": "terpakai",
    "catatan": "",
    "laporan_lokal": []
   },
@@ -1023,12 +1028,14 @@
    "jumlah": 1,
    "lembaga": [
     "BMKG",
-    "dataweb"
+    "dataweb",
+    "docs"
    ],
    "url": [
+    "https://content.bmkg.go.id/",
     "https://dataweb",
     "https://dataweb.bmkg.go.id/iklim",
-    "https://www.bmkg.go.id"
+    "https://docs"
    ],
    "penulis": [
     "scripts/cuaca/iklim_bmkg.py"
@@ -2496,6 +2503,9 @@
     "arsip-bmkg.yml cron 25 */3 * * *"
    ],
    "pemakai": {
+    "layar publik": [
+     "public/cuaca/bmkg2.js"
+    ],
     "model/turunan": [
      "scripts/prediksi/tangga.py"
     ]
@@ -2697,12 +2707,14 @@
    "jumlah": 1,
    "lembaga": [
     "BMKG",
-    "dataweb"
+    "dataweb",
+    "docs"
    ],
    "url": [
+    "https://content.bmkg.go.id/",
     "https://dataweb",
     "https://dataweb.bmkg.go.id/iklim",
-    "https://www.bmkg.go.id"
+    "https://docs"
    ],
    "penulis": [
     "scripts/cuaca/iklim_bmkg.py"
@@ -3304,12 +3316,14 @@
    "jumlah": 1,
    "lembaga": [
     "BMKG",
-    "dataweb"
+    "dataweb",
+    "docs"
    ],
    "url": [
+    "https://content.bmkg.go.id/",
     "https://dataweb",
     "https://dataweb.bmkg.go.id/iklim",
-    "https://www.bmkg.go.id"
+    "https://docs"
    ],
    "penulis": [
     "scripts/cuaca/iklim_bmkg.py"
@@ -3845,6 +3859,12 @@
     "arsip-bmkg.yml cron 25 */3 * * *"
    ],
    "pemakai": {
+    "layar publik (nama tanpa .json)": [
+     "public/index.html"
+    ],
+    "layar publik": [
+     "public/karhutla_bmkg.js"
+    ],
     "model/turunan": [
      "scripts/prediksi/tangga.py"
     ]
@@ -4726,6 +4746,7 @@
     "digilib.uin-suka.ac.id",
     "disasterscharter.org",
     "dji.com",
+    "docs",
     "doi.org",
     "drive",
     "drive.google.com",
@@ -5442,6 +5463,7 @@
      "public/inti/sapa.js",
      "public/inti/status_pedoman.js",
      "public/jejak.js",
+     "public/karhutla_bmkg.js",
      "public/kekeringan/app.js",
      "public/kekeringan/bagikan.js",
      "public/kekeringan/berita.js",
@@ -5497,6 +5519,8 @@
      "public/prediksi/laporan_layar.js",
      "public/prediksi/laporan_prov.js",
      "public/prediksi/prediksi.js",
+     "public/prediksi/tangga.js",
+     "public/prediksi/tangga_inti.js",
      "public/privasi.html",
      "public/ringkasan.js",
      "public/risiko7.js",
@@ -6193,6 +6217,7 @@
      "public/prediksi/index.html",
      "public/prediksi/laporan_layar.js",
      "public/prediksi/prediksi.js",
+     "public/prediksi/tangga_inti.js",
      "public/presiden.js",
      "public/ringkasan.js",
      "public/risiko7.js",
@@ -6848,7 +6873,8 @@
    ],
    "jadwal": [
     "banjir.yml cron 20 0 * * *",
-    "lintas.yml cron 10 2 * * *"
+    "lintas.yml cron 10 2 * * *",
+    "prediksi.yml cron 50 1 * * *"
    ],
    "pemakai": {
     "layar publik": [
@@ -9696,7 +9722,6 @@
     "scripts/sebaran/lolos.py"
    ],
    "jadwal": [
-    "lintas.yml cron 10 2 * * *",
     "titik.yml cron 40 */3 * * * | 10 9 * * * | 55 22 * * *"
    ],
    "pemakai": {
@@ -9988,7 +10013,6 @@
     "scripts/sebaran/prospektif.py"
    ],
    "jadwal": [
-    "lintas.yml cron 10 2 * * *",
     "titik.yml cron 40 */3 * * * | 10 9 * * * | 55 22 * * *"
    ],
    "pemakai": {
@@ -10541,7 +10565,6 @@
     "scripts/sebaran/pendorong.py"
    ],
    "jadwal": [
-    "lintas.yml cron 10 2 * * *",
     "titik.yml cron 40 */3 * * * | 10 9 * * * | 55 22 * * *"
    ],
    "pemakai": {
@@ -11941,7 +11964,6 @@
     "scripts/sebaran/galat.py"
    ],
    "jadwal": [
-    "lintas.yml cron 10 2 * * *",
     "titik.yml cron 40 */3 * * * | 10 9 * * * | 55 22 * * *"
    ],
    "pemakai": {
@@ -13103,6 +13125,7 @@
     "data.globalforestwatch.org",
     "data.humdata.org",
     "dataweb",
+    "docs",
     "doi.org",
     "earth-search.aws.element84.com",
     "esa-worldcover.s3.eu-central-1.amazonaws.com",
@@ -13434,7 +13457,8 @@
      "public/kabar.js",
      "public/lacak_lapor.js",
      "public/laporan_karhutla_slide.js",
-     "public/laporan_konpers.js"
+     "public/laporan_konpers.js",
+     "public/prediksi/tangga_inti.js"
     ],
     "model/turunan": [
      "scripts/banjir/terdampak.py",
@@ -14121,6 +14145,7 @@
      "public/prediksi/index.html",
      "public/prediksi/laporan_layar.js",
      "public/prediksi/prediksi.js",
+     "public/prediksi/tangga_inti.js",
      "public/presiden.js",
      "public/ringkasan.js",
      "public/risiko7.js",
@@ -14366,6 +14391,9 @@
     "titik.yml cron 40 */3 * * * | 10 9 * * * | 55 22 * * *"
    ],
    "pemakai": {
+    "layar publik": [
+     "public/inti/profil_wilayah.js"
+    ],
     "layar staf": [
      "public/kemitraan/buku.js",
      "public/kemitraan/daerah.js"
@@ -14703,6 +14731,7 @@
     "dataweb",
     "davidmegginson.github.io",
     "detik.com",
+    "docs",
     "doi.org",
     "download.geofabrik.de",
     "drive",
@@ -15247,6 +15276,7 @@
      "public/citra.js",
      "public/cuaca/bagikan.js",
      "public/cuaca/berita.js",
+     "public/cuaca/bmkg2.js",
      "public/cuaca/cuaca.js",
      "public/cuaca/dampak.js",
      "public/cuaca/insight.js",
@@ -15348,6 +15378,8 @@
      "public/prediksi/laporan_layar.js",
      "public/prediksi/laporan_prov.js",
      "public/prediksi/prediksi.js",
+     "public/prediksi/tangga.js",
+     "public/prediksi/tangga_inti.js",
      "public/preventif.js",
      "public/ringkasan.js",
      "public/risiko7.js",
@@ -16201,6 +16233,7 @@
     "layar publik": [
      "public/dampak.js",
      "public/index.html",
+     "public/inti/profil_wilayah.js",
      "public/laporan_konsesi.html",
      "public/laporan_konsesi.js",
      "public/sebaran_model.js",
@@ -16244,6 +16277,9 @@
     "statis.yml cron 0 19 2 * *"
    ],
    "pemakai": {
+    "layar publik": [
+     "public/inti/profil_wilayah.js"
+    ],
     "model/turunan": [
      "scripts/gempa/bukti.py",
      "scripts/scrape/tarik_osm.py"
@@ -16505,6 +16541,7 @@
     "detik.com",
     "disasterscharter.org",
     "dji.com",
+    "docs",
     "esa-worldcover.s3.eu-central-1.amazonaws.com",
     "evil.example",
     "finansial.bisnis.com",
@@ -19575,11 +19612,16 @@
     "scripts/prediksi/tangga.py"
    ],
    "jadwal": [
-    "TIDAK ADA"
+    "prediksi.yml cron 50 1 * * *"
    ],
-   "pemakai": {},
+   "pemakai": {
+    "layar publik": [
+     "public/prediksi/tangga.js",
+     "public/prediksi/tangga_inti.js"
+    ]
+   },
    "arsip": false,
-   "status": "yatim",
+   "status": "terpakai",
    "catatan": "",
    "laporan_lokal": []
   },
@@ -20407,9 +20449,13 @@
    "jadwal": [
     "arsip-bmkg.yml cron 25 */3 * * *"
    ],
-   "pemakai": {},
+   "pemakai": {
+    "layar publik": [
+     "public/operasi_laporan.js"
+    ]
+   },
    "arsip": false,
-   "status": "yatim",
+   "status": "terpakai",
    "catatan": "",
    "laporan_lokal": []
   },
@@ -21498,6 +21544,7 @@
      "public/prediksi/index.html",
      "public/prediksi/laporan_layar.js",
      "public/prediksi/prediksi.js",
+     "public/prediksi/tangga_inti.js",
      "public/presiden.js",
      "public/ringkasan.js",
      "public/risiko7.js",
@@ -22082,6 +22129,98 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
+    "layar publik": [
+     "public/banjir/lapis_ekstra.js",
+     "public/cuaca/kejadian.js",
+     "public/dokumen_katalog.js",
+     "public/ews_tindakan.js",
+     "public/foto.js",
+     "public/fungsi_direktori.js",
+     "public/gempa/bagikan.js",
+     "public/gempa/berita.js",
+     "public/gempa/bukti.js",
+     "public/gempa/dampak.js",
+     "public/gempa/foto.js",
+     "public/gempa/grafik.js",
+     "public/gempa/guncangan.js",
+     "public/gempa/inatews.js",
+     "public/gempa/index.html",
+     "public/gempa/insight.js",
+     "public/gempa/kata.js",
+     "public/gempa/kejadian.js",
+     "public/gempa/kerusakan.js",
+     "public/gempa/laci.js",
+     "public/gempa/laporan.html",
+     "public/gempa/metode.js",
+     "public/gempa/mulai.js",
+     "public/gempa/pager.js",
+     "public/gempa/peta.js",
+     "public/gempa/sapa.js",
+     "public/gempa/sim.js",
+     "public/gempa/susulan.js",
+     "public/gempa/tab.js",
+     "public/gempa/tren.js",
+     "public/gempa/tsunami.js",
+     "public/gunungapi/insight.js",
+     "public/gunungapi/metode.js",
+     "public/gunungapi/peta.js",
+     "public/gunungapi/tren.js",
+     "public/informasi_jenis.js",
+     "public/instansi.js",
+     "public/instansi_kartu.js",
+     "public/instansi_korban.js",
+     "public/inti/adapter.js",
+     "public/inti/alarm.js",
+     "public/inti/asisten.js",
+     "public/inti/cerita.js",
+     "public/inti/kepala.js",
+     "public/inti/peluang.js",
+     "public/inti/peringatan-berita.js",
+     "public/inti/profil_wilayah.js",
+     "public/inti/video.js",
+     "public/laporan_bahaya_slide.js",
+     "public/laporan_bencana_spek.js",
+     "public/laporan_bencana_wa.js",
+     "public/laporan_karhutla_spek.js",
+     "public/laporan_konpers.js",
+     "public/laporan_urai.js",
+     "public/monitor.js",
+     "public/og/template.html",
+     "public/peringatan.html",
+     "public/peringatan.js",
+     "public/prediksi/prediksi.js",
+     "public/semua/analisis.js",
+     "public/semua/dampak.js",
+     "public/semua/index.html",
+     "public/semua/kejadian.js",
+     "public/syarat.html",
+     "public/tentang.html",
+     "public/udara/kejadian.js"
+    ],
+    "worker": [
+     "src/admin_halaman.js",
+     "src/akademisi.js",
+     "src/alun.js",
+     "src/bencana.generated.js",
+     "src/dalops.js",
+     "src/foto.js",
+     "src/gempa.js",
+     "src/instansi.js",
+     "src/jaga_pipa.js",
+     "src/kemitraan_masalah.js",
+     "src/korban.js",
+     "src/laporan_bencana.js",
+     "src/laporan_bnpb.js",
+     "src/mcp.js",
+     "src/meja.js",
+     "src/meja_spek.js",
+     "src/penugasan.js",
+     "src/prediksi.js",
+     "src/sitrep.js",
+     "src/staf.js",
+     "src/tugas_bencana.js",
+     "src/worker.js"
+    ],
     "model/turunan": [
      "scripts/agents/ilmu.mjs",
      "scripts/agents/kesegaran.py",
@@ -22180,6 +22319,11 @@
      "scripts/wa/uji_urai_laporan.py",
      "scripts/wa/urai_laporan.py"
     ],
+    "peringatan": [
+     "src/ews.js",
+     "src/ews_email.js",
+     "src/peringatan.js"
+    ],
     "layar staf": [
      "public/admin/korban.js",
      "public/admin/relawan.js",
@@ -22201,103 +22345,6 @@
      "public/kemitraan/hitung.js",
      "public/kemitraan/inti.js",
      "public/kemitraan/konst.js"
-    ],
-    "layar publik": [
-     "public/banjir/lapis_ekstra.js",
-     "public/cuaca/kejadian.js",
-     "public/dokumen_katalog.js",
-     "public/ews_tindakan.js",
-     "public/foto.js",
-     "public/fungsi_direktori.js",
-     "public/gempa/bagikan.js",
-     "public/gempa/berita.js",
-     "public/gempa/bukti.js",
-     "public/gempa/dampak.js",
-     "public/gempa/foto.js",
-     "public/gempa/grafik.js",
-     "public/gempa/guncangan.js",
-     "public/gempa/inatews.js",
-     "public/gempa/index.html",
-     "public/gempa/insight.js",
-     "public/gempa/kata.js",
-     "public/gempa/kejadian.js",
-     "public/gempa/kerusakan.js",
-     "public/gempa/laci.js",
-     "public/gempa/laporan.html",
-     "public/gempa/metode.js",
-     "public/gempa/mulai.js",
-     "public/gempa/pager.js",
-     "public/gempa/peta.js",
-     "public/gempa/sapa.js",
-     "public/gempa/sim.js",
-     "public/gempa/susulan.js",
-     "public/gempa/tab.js",
-     "public/gempa/tren.js",
-     "public/gempa/tsunami.js",
-     "public/gunungapi/insight.js",
-     "public/gunungapi/metode.js",
-     "public/gunungapi/peta.js",
-     "public/gunungapi/tren.js",
-     "public/informasi_jenis.js",
-     "public/instansi.js",
-     "public/instansi_kartu.js",
-     "public/instansi_korban.js",
-     "public/inti/adapter.js",
-     "public/inti/alarm.js",
-     "public/inti/asisten.js",
-     "public/inti/cerita.js",
-     "public/inti/kepala.js",
-     "public/inti/peluang.js",
-     "public/inti/peringatan-berita.js",
-     "public/inti/profil_wilayah.js",
-     "public/inti/video.js",
-     "public/laporan_bahaya_slide.js",
-     "public/laporan_bencana_spek.js",
-     "public/laporan_bencana_wa.js",
-     "public/laporan_karhutla_spek.js",
-     "public/laporan_konpers.js",
-     "public/laporan_urai.js",
-     "public/monitor.js",
-     "public/og/template.html",
-     "public/peringatan.html",
-     "public/peringatan.js",
-     "public/prediksi/prediksi.js",
-     "public/semua/analisis.js",
-     "public/semua/dampak.js",
-     "public/semua/index.html",
-     "public/semua/kejadian.js",
-     "public/syarat.html",
-     "public/tentang.html",
-     "public/udara/kejadian.js"
-    ],
-    "worker": [
-     "src/admin_halaman.js",
-     "src/akademisi.js",
-     "src/alun.js",
-     "src/bencana.generated.js",
-     "src/dalops.js",
-     "src/foto.js",
-     "src/gempa.js",
-     "src/instansi.js",
-     "src/jaga_pipa.js",
-     "src/kemitraan_masalah.js",
-     "src/korban.js",
-     "src/laporan_bencana.js",
-     "src/laporan_bnpb.js",
-     "src/mcp.js",
-     "src/meja.js",
-     "src/meja_spek.js",
-     "src/penugasan.js",
-     "src/prediksi.js",
-     "src/sitrep.js",
-     "src/staf.js",
-     "src/tugas_bencana.js",
-     "src/worker.js"
-    ],
-    "peringatan": [
-     "src/ews.js",
-     "src/ews_email.js",
-     "src/peringatan.js"
     ]
    },
    "arsip": false,
@@ -22449,11 +22496,11 @@
      "src/prediksi.js",
      "src/sla.js"
     ],
-    "peringatan": [
-     "src/push.js"
-    ],
     "model/turunan": [
      "scripts/logpal/impor.mjs"
+    ],
+    "peringatan": [
+     "src/push.js"
     ]
    },
    "arsip": false,
@@ -22581,12 +22628,12 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
-    "model/turunan": [
-     "scripts/data/ujibanding_firespot.py"
-    ],
     "worker": [
      "src/instansi.js",
      "src/pipa.js"
+    ],
+    "model/turunan": [
+     "scripts/data/ujibanding_firespot.py"
     ]
    },
    "arsip": false,
@@ -22646,22 +22693,23 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
-    "model/turunan": [
-     "scripts/akademisi/lembaga_gabung.mjs",
-     "scripts/akademisi/pemutakhiran/inti.py",
-     "scripts/akademisi/pemutakhiran/mutakhir.py",
-     "scripts/akademisi/pemutakhiran/rayap.py",
-     "scripts/akademisi/pemutakhiran/uji_inti.py",
-     "scripts/akademisi/sambung_panen.mjs",
-     "scripts/bnpb/hvc_dasar.py",
-     "scripts/cuaca/iklim_bmkg.py",
-     "scripts/data/harian.py",
-     "scripts/gunungapi/magma.py",
-     "scripts/kemitraan/cocok_pakar.py",
-     "scripts/kemitraan/pertanyaan.py",
-     "scripts/kemitraan/profil_daerah.py",
-     "scripts/umum/profil_wilayah.py",
-     "scripts/wa/logbook_wa.mjs"
+    "worker": [
+     "src/admin_halaman.js",
+     "src/akademisi.js",
+     "src/alun.js",
+     "src/command_center.js",
+     "src/hak.js",
+     "src/instansi.js",
+     "src/kemitraan_akun.js",
+     "src/kemitraan_masalah.js",
+     "src/kontak.js",
+     "src/meja.js",
+     "src/pantau.js",
+     "src/posko.js",
+     "src/relawan.js",
+     "src/riset.js",
+     "src/staf.js",
+     "src/worker.js"
     ],
     "layar publik": [
      "public/bagikan.js",
@@ -22695,23 +22743,22 @@
      "public/bnpb/relawan-saya.js",
      "public/bnpb/riset.js"
     ],
-    "worker": [
-     "src/admin_halaman.js",
-     "src/akademisi.js",
-     "src/alun.js",
-     "src/command_center.js",
-     "src/hak.js",
-     "src/instansi.js",
-     "src/kemitraan_akun.js",
-     "src/kemitraan_masalah.js",
-     "src/kontak.js",
-     "src/meja.js",
-     "src/pantau.js",
-     "src/posko.js",
-     "src/relawan.js",
-     "src/riset.js",
-     "src/staf.js",
-     "src/worker.js"
+    "model/turunan": [
+     "scripts/akademisi/lembaga_gabung.mjs",
+     "scripts/akademisi/pemutakhiran/inti.py",
+     "scripts/akademisi/pemutakhiran/mutakhir.py",
+     "scripts/akademisi/pemutakhiran/rayap.py",
+     "scripts/akademisi/pemutakhiran/uji_inti.py",
+     "scripts/akademisi/sambung_panen.mjs",
+     "scripts/bnpb/hvc_dasar.py",
+     "scripts/cuaca/iklim_bmkg.py",
+     "scripts/data/harian.py",
+     "scripts/gunungapi/magma.py",
+     "scripts/kemitraan/cocok_pakar.py",
+     "scripts/kemitraan/pertanyaan.py",
+     "scripts/kemitraan/profil_daerah.py",
+     "scripts/umum/profil_wilayah.py",
+     "scripts/wa/logbook_wa.mjs"
     ],
     "peringatan": [
      "src/push.js"
@@ -23060,6 +23107,11 @@
      "src/uji_pilot_data.js",
      "src/worker.js"
     ],
+    "peringatan": [
+     "src/alarm_himawari.js",
+     "src/peringatan.js",
+     "src/push.js"
+    ],
     "layar publik": [
      "public/aktor.js",
      "public/api.html",
@@ -23110,11 +23162,6 @@
      "public/sw-lapangan.js",
      "public/tentang.html",
      "public/udara/sim/tanggap.js"
-    ],
-    "peringatan": [
-     "src/alarm_himawari.js",
-     "src/peringatan.js",
-     "src/push.js"
     ]
    },
    "arsip": false,
@@ -23177,226 +23224,6 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
-    "worker": [
-     "src/admin_halaman.js",
-     "src/api_v1.js",
-     "src/berantai.js",
-     "src/bnpb.js",
-     "src/dalops.js",
-     "src/dalops_laporan.js",
-     "src/foto_lapangan.js",
-     "src/gunungapi.js",
-     "src/instansi.js",
-     "src/inventaris.js",
-     "src/korban.js",
-     "src/label.js",
-     "src/laporan_bencana.js",
-     "src/laporan_bnpb.js",
-     "src/laporan_bnpb_spek.js",
-     "src/laporan_karhutla.js",
-     "src/lapsus.js",
-     "src/logbook.js",
-     "src/mcp.js",
-     "src/meja.js",
-     "src/meja_spek.js",
-     "src/omc.js",
-     "src/operasi_udara.js",
-     "src/operasi_wa.js",
-     "src/pantau.js",
-     "src/pengingat.js",
-     "src/penugasan.js",
-     "src/posko.js",
-     "src/prediksi.js",
-     "src/riset.js",
-     "src/rumah_rusak.js",
-     "src/sensor.js",
-     "src/sippa.js",
-     "src/sitrep.js",
-     "src/sla.js",
-     "src/staf.js",
-     "src/tugas_bencana.js",
-     "src/uji_lapangan.js",
-     "src/uji_pilot.js",
-     "src/wa.js",
-     "src/worker.js"
-    ],
-    "layar publik": [
-     "public/aktor.js",
-     "public/api.html",
-     "public/arsip_laporan.js",
-     "public/bagikan.js",
-     "public/banjir/dampak.js",
-     "public/banjir/index.html",
-     "public/banjir/keputusan.js",
-     "public/banjir/laporan.html",
-     "public/banjir/logbook_tren.js",
-     "public/banjir/metode.js",
-     "public/banjir/replay.html",
-     "public/banjir/replay.js",
-     "public/banjir/terdampak.js",
-     "public/banjir/wilayah.js",
-     "public/cuaca/index.html",
-     "public/cuaca/laporan.html",
-     "public/cuaca/metode.js",
-     "public/cuaca/posko.js",
-     "public/dampak.js",
-     "public/dokumen.html",
-     "public/dokumen.js",
-     "public/dokumen_katalog.js",
-     "public/foto.js",
-     "public/gempa/bagikan.js",
-     "public/gempa/inatews.js",
-     "public/gempa/index.html",
-     "public/gempa/insight.js",
-     "public/gempa/laci.js",
-     "public/gempa/laporan.html",
-     "public/gempa/metode.js",
-     "public/gunungapi/app.js",
-     "public/gunungapi/index.html",
-     "public/gunungapi/insight.js",
-     "public/gunungapi/laporan.html",
-     "public/gunungapi/metode.js",
-     "public/gunungapi/peta.js",
-     "public/gunungapi/sapa.js",
-     "public/gunungapi/tren.js",
-     "public/i18n.js",
-     "public/index.html",
-     "public/informasi.js",
-     "public/informasi_jenis.js",
-     "public/insight_sebaran.js",
-     "public/instansi.js",
-     "public/instansi_kartu.js",
-     "public/instansi_korban.js",
-     "public/instansi_laporan.js",
-     "public/instansi_tugaskan.js",
-     "public/instansi_uji.html",
-     "public/instansi_uji_halaman.js",
-     "public/inti/asisten.js",
-     "public/inti/jam_aturan.js",
-     "public/inti/laporan-contoh.html",
-     "public/inti/laporan.js",
-     "public/jejak.js",
-     "public/kejadian.html",
-     "public/kejadian.js",
-     "public/kekeringan/index.html",
-     "public/kekeringan/insight.js",
-     "public/kekeringan/laporan.html",
-     "public/kekeringan/metode.js",
-     "public/kekeringan/sapa.js",
-     "public/kekeringan/simulasi.js",
-     "public/lacak.html",
-     "public/lacak.js",
-     "public/lacak_lapor.js",
-     "public/lapangan.html",
-     "public/lapangan.js",
-     "public/lapangan_tugas.js",
-     "public/laporan.html",
-     "public/laporan.js",
-     "public/laporan_bahaya_slide.js",
-     "public/laporan_belum_lapor.js",
-     "public/laporan_bencana_spek.js",
-     "public/laporan_bencana_wa.js",
-     "public/laporan_bnpb.html",
-     "public/laporan_bnpb.js",
-     "public/laporan_bnpb_slide.js",
-     "public/laporan_contoh.js",
-     "public/laporan_karhutla_slide.js",
-     "public/laporan_karhutla_spek.js",
-     "public/laporan_karhutla_wa.js",
-     "public/laporan_konpers.js",
-     "public/laporan_konsesi.html",
-     "public/laporan_konsesi.js",
-     "public/laporan_koordalops.js",
-     "public/laporan_urai.js",
-     "public/operasi.js",
-     "public/operasi_laporan.js",
-     "public/operasi_peta.js",
-     "public/paparan.js",
-     "public/paparan_slide.js",
-     "public/persetujuan.js",
-     "public/pesisir/tren.js",
-     "public/peta_karhutla.js",
-     "public/prediksi/index.html",
-     "public/prediksi/laporan_layar.js",
-     "public/prediksi/laporan_prov.js",
-     "public/prediksi/prediksi.js",
-     "public/privasi.html",
-     "public/ringkasan.js",
-     "public/riwayat_nasional.js",
-     "public/rumah_rusak.js",
-     "public/satelit_data.js",
-     "public/semua/analisis.js",
-     "public/sim_data.js",
-     "public/syarat.html",
-     "public/tentang.html",
-     "public/udara/app.js",
-     "public/udara/index.html",
-     "public/udara/insight.js",
-     "public/udara/laporan.html",
-     "public/udara/metode.js",
-     "public/udara/mulai.js",
-     "public/unduh_tabel.js",
-     "public/warga/index.html"
-    ],
-    "layar staf": [
-     "public/admin/instansi.js",
-     "public/admin/korban.js",
-     "public/admin/laporan_karhutla.js",
-     "public/admin/meja.js",
-     "public/admin/pantau.js",
-     "public/admin/pimpinan.js",
-     "public/admin/posko.js",
-     "public/admin/riset.js",
-     "public/akademisi.js",
-     "public/bnpb/bahan.html",
-     "public/bnpb/bahan.js",
-     "public/bnpb/bahan_contoh.js",
-     "public/bnpb/bahan_spek.js",
-     "public/bnpb/dalops.js",
-     "public/bnpb/dalops_hitung.js",
-     "public/bnpb/dalops_laporan_masuk.js",
-     "public/bnpb/dokumen.js",
-     "public/bnpb/dokumen_laphar.js",
-     "public/bnpb/dokumen_pusdalops.js",
-     "public/bnpb/index.html",
-     "public/bnpb/katalog-dokumen.js",
-     "public/bnpb/kinerja.js",
-     "public/bnpb/logbook.js",
-     "public/bnpb/logbook_turunan.js",
-     "public/bnpb/menu_pusdalops.js",
-     "public/bnpb/mitra.js",
-     "public/bnpb/operasi.js",
-     "public/bnpb/operasi_lapangan.js",
-     "public/bnpb/operasi_lapangan_hitung.js",
-     "public/bnpb/pendataan_spek.js",
-     "public/bnpb/perencanaan.js",
-     "public/bnpb/perencanaan_pusdalops.js",
-     "public/bnpb/pintu.js",
-     "public/bnpb/ringkas_bencana.js",
-     "public/bnpb/saham.js",
-     "public/bnpb/siaga.js",
-     "public/bnpb/silang.js",
-     "public/bnpb/sitrep.html",
-     "public/bnpb/sitrep.js",
-     "public/kemitraan/panduan.js",
-     "public/logpal/index.html",
-     "public/logpal/logpal.js",
-     "public/pipa/app.js",
-     "public/pipa/bukti.js",
-     "public/pipa/lapangan.js",
-     "public/pipa/lapangan_staf.js",
-     "public/pipa/laporan_isi.js",
-     "public/pipa/laporan_pdf.js",
-     "public/pipa/laporan_templat.js",
-     "public/pipa/layar_data.js",
-     "public/pipa/layar_laporan.js",
-     "public/pipa/layar_log.js",
-     "public/pipa/layar_ringkas.js",
-     "public/pipa/layar_studio.js",
-     "public/pipa/uji_pilot.html",
-     "public/pipa/uji_pilot.js",
-     "public/pipa/uji_pilot_spek.js"
-    ],
     "model/turunan": [
      "scripts/agents/build.mjs",
      "scripts/agents/ilmu.mjs",
@@ -23549,6 +23376,226 @@
      "scripts/wa/uji_urai_laporan.py",
      "scripts/wa/urai_laporan.py",
      "scripts/warga/titik24.py"
+    ],
+    "layar publik": [
+     "public/aktor.js",
+     "public/api.html",
+     "public/arsip_laporan.js",
+     "public/bagikan.js",
+     "public/banjir/dampak.js",
+     "public/banjir/index.html",
+     "public/banjir/keputusan.js",
+     "public/banjir/laporan.html",
+     "public/banjir/logbook_tren.js",
+     "public/banjir/metode.js",
+     "public/banjir/replay.html",
+     "public/banjir/replay.js",
+     "public/banjir/terdampak.js",
+     "public/banjir/wilayah.js",
+     "public/cuaca/index.html",
+     "public/cuaca/laporan.html",
+     "public/cuaca/metode.js",
+     "public/cuaca/posko.js",
+     "public/dampak.js",
+     "public/dokumen.html",
+     "public/dokumen.js",
+     "public/dokumen_katalog.js",
+     "public/foto.js",
+     "public/gempa/bagikan.js",
+     "public/gempa/inatews.js",
+     "public/gempa/index.html",
+     "public/gempa/insight.js",
+     "public/gempa/laci.js",
+     "public/gempa/laporan.html",
+     "public/gempa/metode.js",
+     "public/gunungapi/app.js",
+     "public/gunungapi/index.html",
+     "public/gunungapi/insight.js",
+     "public/gunungapi/laporan.html",
+     "public/gunungapi/metode.js",
+     "public/gunungapi/peta.js",
+     "public/gunungapi/sapa.js",
+     "public/gunungapi/tren.js",
+     "public/i18n.js",
+     "public/index.html",
+     "public/informasi.js",
+     "public/informasi_jenis.js",
+     "public/insight_sebaran.js",
+     "public/instansi.js",
+     "public/instansi_kartu.js",
+     "public/instansi_korban.js",
+     "public/instansi_laporan.js",
+     "public/instansi_tugaskan.js",
+     "public/instansi_uji.html",
+     "public/instansi_uji_halaman.js",
+     "public/inti/asisten.js",
+     "public/inti/jam_aturan.js",
+     "public/inti/laporan-contoh.html",
+     "public/inti/laporan.js",
+     "public/jejak.js",
+     "public/kejadian.html",
+     "public/kejadian.js",
+     "public/kekeringan/index.html",
+     "public/kekeringan/insight.js",
+     "public/kekeringan/laporan.html",
+     "public/kekeringan/metode.js",
+     "public/kekeringan/sapa.js",
+     "public/kekeringan/simulasi.js",
+     "public/lacak.html",
+     "public/lacak.js",
+     "public/lacak_lapor.js",
+     "public/lapangan.html",
+     "public/lapangan.js",
+     "public/lapangan_tugas.js",
+     "public/laporan.html",
+     "public/laporan.js",
+     "public/laporan_bahaya_slide.js",
+     "public/laporan_belum_lapor.js",
+     "public/laporan_bencana_spek.js",
+     "public/laporan_bencana_wa.js",
+     "public/laporan_bnpb.html",
+     "public/laporan_bnpb.js",
+     "public/laporan_bnpb_slide.js",
+     "public/laporan_contoh.js",
+     "public/laporan_karhutla_slide.js",
+     "public/laporan_karhutla_spek.js",
+     "public/laporan_karhutla_wa.js",
+     "public/laporan_konpers.js",
+     "public/laporan_konsesi.html",
+     "public/laporan_konsesi.js",
+     "public/laporan_koordalops.js",
+     "public/laporan_urai.js",
+     "public/operasi.js",
+     "public/operasi_laporan.js",
+     "public/operasi_peta.js",
+     "public/paparan.js",
+     "public/paparan_slide.js",
+     "public/persetujuan.js",
+     "public/pesisir/tren.js",
+     "public/peta_karhutla.js",
+     "public/prediksi/index.html",
+     "public/prediksi/laporan_layar.js",
+     "public/prediksi/laporan_prov.js",
+     "public/prediksi/prediksi.js",
+     "public/privasi.html",
+     "public/ringkasan.js",
+     "public/riwayat_nasional.js",
+     "public/rumah_rusak.js",
+     "public/satelit_data.js",
+     "public/semua/analisis.js",
+     "public/sim_data.js",
+     "public/syarat.html",
+     "public/tentang.html",
+     "public/udara/app.js",
+     "public/udara/index.html",
+     "public/udara/insight.js",
+     "public/udara/laporan.html",
+     "public/udara/metode.js",
+     "public/udara/mulai.js",
+     "public/unduh_tabel.js",
+     "public/warga/index.html"
+    ],
+    "worker": [
+     "src/admin_halaman.js",
+     "src/api_v1.js",
+     "src/berantai.js",
+     "src/bnpb.js",
+     "src/dalops.js",
+     "src/dalops_laporan.js",
+     "src/foto_lapangan.js",
+     "src/gunungapi.js",
+     "src/instansi.js",
+     "src/inventaris.js",
+     "src/korban.js",
+     "src/label.js",
+     "src/laporan_bencana.js",
+     "src/laporan_bnpb.js",
+     "src/laporan_bnpb_spek.js",
+     "src/laporan_karhutla.js",
+     "src/lapsus.js",
+     "src/logbook.js",
+     "src/mcp.js",
+     "src/meja.js",
+     "src/meja_spek.js",
+     "src/omc.js",
+     "src/operasi_udara.js",
+     "src/operasi_wa.js",
+     "src/pantau.js",
+     "src/pengingat.js",
+     "src/penugasan.js",
+     "src/posko.js",
+     "src/prediksi.js",
+     "src/riset.js",
+     "src/rumah_rusak.js",
+     "src/sensor.js",
+     "src/sippa.js",
+     "src/sitrep.js",
+     "src/sla.js",
+     "src/staf.js",
+     "src/tugas_bencana.js",
+     "src/uji_lapangan.js",
+     "src/uji_pilot.js",
+     "src/wa.js",
+     "src/worker.js"
+    ],
+    "layar staf": [
+     "public/admin/instansi.js",
+     "public/admin/korban.js",
+     "public/admin/laporan_karhutla.js",
+     "public/admin/meja.js",
+     "public/admin/pantau.js",
+     "public/admin/pimpinan.js",
+     "public/admin/posko.js",
+     "public/admin/riset.js",
+     "public/akademisi.js",
+     "public/bnpb/bahan.html",
+     "public/bnpb/bahan.js",
+     "public/bnpb/bahan_contoh.js",
+     "public/bnpb/bahan_spek.js",
+     "public/bnpb/dalops.js",
+     "public/bnpb/dalops_hitung.js",
+     "public/bnpb/dalops_laporan_masuk.js",
+     "public/bnpb/dokumen.js",
+     "public/bnpb/dokumen_laphar.js",
+     "public/bnpb/dokumen_pusdalops.js",
+     "public/bnpb/index.html",
+     "public/bnpb/katalog-dokumen.js",
+     "public/bnpb/kinerja.js",
+     "public/bnpb/logbook.js",
+     "public/bnpb/logbook_turunan.js",
+     "public/bnpb/menu_pusdalops.js",
+     "public/bnpb/mitra.js",
+     "public/bnpb/operasi.js",
+     "public/bnpb/operasi_lapangan.js",
+     "public/bnpb/operasi_lapangan_hitung.js",
+     "public/bnpb/pendataan_spek.js",
+     "public/bnpb/perencanaan.js",
+     "public/bnpb/perencanaan_pusdalops.js",
+     "public/bnpb/pintu.js",
+     "public/bnpb/ringkas_bencana.js",
+     "public/bnpb/saham.js",
+     "public/bnpb/siaga.js",
+     "public/bnpb/silang.js",
+     "public/bnpb/sitrep.html",
+     "public/bnpb/sitrep.js",
+     "public/kemitraan/panduan.js",
+     "public/logpal/index.html",
+     "public/logpal/logpal.js",
+     "public/pipa/app.js",
+     "public/pipa/bukti.js",
+     "public/pipa/lapangan.js",
+     "public/pipa/lapangan_staf.js",
+     "public/pipa/laporan_isi.js",
+     "public/pipa/laporan_pdf.js",
+     "public/pipa/laporan_templat.js",
+     "public/pipa/layar_data.js",
+     "public/pipa/layar_laporan.js",
+     "public/pipa/layar_log.js",
+     "public/pipa/layar_ringkas.js",
+     "public/pipa/layar_studio.js",
+     "public/pipa/uji_pilot.html",
+     "public/pipa/uji_pilot.js",
+     "public/pipa/uji_pilot_spek.js"
     ],
     "peringatan": [
      "src/wa_form.js",
@@ -24422,6 +24469,25 @@
      "scripts/umum/video.py",
      "scripts/wa/gateway/index.js"
     ],
+    "layar publik": [
+     "public/banjir/hujan_kini.js",
+     "public/banjir/kejadian.js",
+     "public/banjir/metode.js",
+     "public/cuaca/kejadian.js",
+     "public/cuaca/metode.js",
+     "public/gempa/kejadian.js",
+     "public/gunungapi/kejadian.js",
+     "public/instansi.js",
+     "public/instansi_laporan.js",
+     "public/instansi_tugaskan.js",
+     "public/lacak.js",
+     "public/laporan_bnpb.js",
+     "public/persetujuan.js",
+     "public/peta_kab.js",
+     "public/risiko7.js",
+     "public/rumah_rusak.js",
+     "public/udara/kejadian.js"
+    ],
     "layar staf": [
      "public/admin/command_center.js",
      "public/admin/labelfoto.js",
@@ -24460,25 +24526,6 @@
      "src/sitrep.js",
      "src/staf.js",
      "src/worker.js"
-    ],
-    "layar publik": [
-     "public/banjir/hujan_kini.js",
-     "public/banjir/kejadian.js",
-     "public/banjir/metode.js",
-     "public/cuaca/kejadian.js",
-     "public/cuaca/metode.js",
-     "public/gempa/kejadian.js",
-     "public/gunungapi/kejadian.js",
-     "public/instansi.js",
-     "public/instansi_laporan.js",
-     "public/instansi_tugaskan.js",
-     "public/lacak.js",
-     "public/laporan_bnpb.js",
-     "public/persetujuan.js",
-     "public/peta_kab.js",
-     "public/risiko7.js",
-     "public/rumah_rusak.js",
-     "public/udara/kejadian.js"
     ]
    },
    "arsip": false,
@@ -24540,18 +24587,18 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
+    "layar staf": [
+     "public/admin/pengingat.js",
+     "public/admin/pimpinan.js",
+     "public/pipa/formulir.js",
+     "public/pipa/lapangan.js"
+    ],
     "worker": [
      "src/admin_halaman.js",
      "src/logbook.js",
      "src/pengingat.js",
      "src/posko.js",
      "src/worker.js"
-    ],
-    "layar staf": [
-     "public/admin/pengingat.js",
-     "public/admin/pimpinan.js",
-     "public/pipa/formulir.js",
-     "public/pipa/lapangan.js"
     ]
    },
    "arsip": false,
@@ -24580,6 +24627,25 @@
     "TIDAK ADA"
    ],
    "pemakai": {
+    "layar publik": [
+     "public/instansi.js",
+     "public/instansi_ops.js",
+     "public/instansi_tugaskan.js",
+     "public/inti/jam_aturan.js",
+     "public/lacak.js",
+     "public/satelit_lintas.js"
+    ],
+    "layar staf": [
+     "public/admin/pantau.js",
+     "public/admin/relawan.js",
+     "public/akademisi.js",
+     "public/bnpb/relawan-saya.js",
+     "public/pipa/antre.js",
+     "public/pipa/lapangan.js",
+     "public/pipa/laporan_templat.js",
+     "public/pipa/layar_kit.js",
+     "public/pipa/layar_pemicu.js"
+    ],
     "worker": [
      "src/akademisi.js",
      "src/instansi.js",
@@ -24594,25 +24660,6 @@
      "src/sippa.js",
      "src/sla.js",
      "src/worker.js"
-    ],
-    "layar staf": [
-     "public/admin/pantau.js",
-     "public/admin/relawan.js",
-     "public/akademisi.js",
-     "public/bnpb/relawan-saya.js",
-     "public/pipa/antre.js",
-     "public/pipa/lapangan.js",
-     "public/pipa/laporan_templat.js",
-     "public/pipa/layar_kit.js",
-     "public/pipa/layar_pemicu.js"
-    ],
-    "layar publik": [
-     "public/instansi.js",
-     "public/instansi_ops.js",
-     "public/instansi_tugaskan.js",
-     "public/inti/jam_aturan.js",
-     "public/lacak.js",
-     "public/satelit_lintas.js"
     ],
     "model/turunan": [
      "scripts/akademisi/sambung_panen.mjs",
@@ -24711,6 +24758,44 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
+    "layar staf": [
+     "public/admin/alun.js",
+     "public/admin/drone.js",
+     "public/admin/drone_rute.js",
+     "public/admin/inventaris.js",
+     "public/admin/riset.js",
+     "public/akademisi.js",
+     "public/bnpb/bahan_spek.js",
+     "public/bnpb/dalops.js",
+     "public/bnpb/dalops_gunungapi.js",
+     "public/bnpb/dalops_hitung.js",
+     "public/bnpb/dalops_karhutla.js",
+     "public/bnpb/dalops_laporan_masuk.js",
+     "public/bnpb/dokumen.js",
+     "public/bnpb/hukum.js",
+     "public/bnpb/kinerja.html",
+     "public/bnpb/kinerja.js",
+     "public/bnpb/logbook.js",
+     "public/bnpb/logbook_turunan.js",
+     "public/bnpb/menu_pusdalops.js",
+     "public/bnpb/operasi.js",
+     "public/bnpb/operasi_g3.js",
+     "public/bnpb/operasi_lapangan_hitung.js",
+     "public/bnpb/operasi_pusdalops.js",
+     "public/bnpb/perencanaan.js",
+     "public/bnpb/saham.js",
+     "public/bnpb/siaga.js",
+     "public/bnpb/wilayah.js",
+     "public/petugas/layar_kamera.js",
+     "public/pipa/adegan.js",
+     "public/pipa/lapangan.js",
+     "public/pipa/layar_air.js",
+     "public/pipa/layar_kit.js",
+     "public/pipa/layar_pelihara.js",
+     "public/pipa/layar_peta.js",
+     "public/pipa/pelihara.js",
+     "public/pipa/renlap.js"
+    ],
     "layar publik": [
      "public/ai/ai.js",
      "public/api.html",
@@ -24781,50 +24866,14 @@
      "public/pesisir/insight.js",
      "public/pesisir/pesisir.js",
      "public/pesisir/peta.js",
+     "public/prediksi/index.html",
+     "public/prediksi/tangga.js",
      "public/satelit_lintas.js",
      "public/syarat.html",
      "public/udara/index.html",
      "public/udara/metode.js",
      "public/udara/peta.js",
      "public/udara/prakiraan.js"
-    ],
-    "layar staf": [
-     "public/admin/alun.js",
-     "public/admin/drone.js",
-     "public/admin/drone_rute.js",
-     "public/admin/inventaris.js",
-     "public/admin/riset.js",
-     "public/akademisi.js",
-     "public/bnpb/bahan_spek.js",
-     "public/bnpb/dalops.js",
-     "public/bnpb/dalops_gunungapi.js",
-     "public/bnpb/dalops_hitung.js",
-     "public/bnpb/dalops_karhutla.js",
-     "public/bnpb/dalops_laporan_masuk.js",
-     "public/bnpb/dokumen.js",
-     "public/bnpb/hukum.js",
-     "public/bnpb/kinerja.html",
-     "public/bnpb/kinerja.js",
-     "public/bnpb/logbook.js",
-     "public/bnpb/logbook_turunan.js",
-     "public/bnpb/menu_pusdalops.js",
-     "public/bnpb/operasi.js",
-     "public/bnpb/operasi_g3.js",
-     "public/bnpb/operasi_lapangan_hitung.js",
-     "public/bnpb/operasi_pusdalops.js",
-     "public/bnpb/perencanaan.js",
-     "public/bnpb/saham.js",
-     "public/bnpb/siaga.js",
-     "public/bnpb/wilayah.js",
-     "public/petugas/layar_kamera.js",
-     "public/pipa/adegan.js",
-     "public/pipa/lapangan.js",
-     "public/pipa/layar_air.js",
-     "public/pipa/layar_kit.js",
-     "public/pipa/layar_pelihara.js",
-     "public/pipa/layar_peta.js",
-     "public/pipa/pelihara.js",
-     "public/pipa/renlap.js"
     ],
     "model/turunan": [
      "scripts/akademisi/pemutakhiran/berita.py",
@@ -25161,6 +25210,11 @@
      "public/udara/sim/ensemble.worker.js",
      "public/udara/sim/sim.js"
     ],
+    "peringatan": [
+     "src/push.js",
+     "src/wa_form.js",
+     "src/wa_jenis.js"
+    ],
     "worker": [
      "src/admin_halaman.js",
      "src/ai.js",
@@ -25194,11 +25248,6 @@
      "src/uji_lapangan.js",
      "src/wa.js",
      "src/worker.js"
-    ],
-    "peringatan": [
-     "src/push.js",
-     "src/wa_form.js",
-     "src/wa_jenis.js"
     ]
    },
    "arsip": false,
@@ -25229,32 +25278,41 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
-    "model/turunan": [
-     "scripts/bnpb/drone_termal.py",
-     "scripts/bnpb/iku.py",
-     "scripts/bnpb/kebakaran.py",
-     "scripts/bnpb/kebutuhan.py",
-     "scripts/bnpb/risiko.py",
-     "scripts/bnpb/siaga.py",
-     "scripts/data/aturan.py",
-     "scripts/data/kalibrasi.py",
-     "scripts/data/keputusan.py",
-     "scripts/data/logbook_internal.py",
-     "scripts/data/logbook_pusdalops.py",
-     "scripts/data/operasi.py",
-     "scripts/data/presiden.py",
-     "scripts/data/preventif.py",
-     "scripts/data/sippa/bersama.py",
-     "scripts/data/sippa/pilot/lampiran.py",
-     "scripts/data/sippa/pilot/teks.py",
-     "scripts/data/sippa/pilot/teks_renlap.py",
-     "scripts/data/sippa/respons.py",
-     "scripts/data/taktik.py",
-     "scripts/i18n/kelas.mjs",
-     "scripts/prediksi/konfirmasi.py",
-     "scripts/prediksi/nilai.py",
-     "scripts/scrape/akses.py",
-     "scripts/scrape/daops.py"
+    "layar staf": [
+     "public/admin/instansi.js",
+     "public/admin/kinerja.js",
+     "public/admin/meja.js",
+     "public/admin/pimpinan.js",
+     "public/admin/posko.js",
+     "public/bnpb/dalops_hitung.js",
+     "public/bnpb/dalops_karhutla.js",
+     "public/bnpb/kebutuhan.html",
+     "public/bnpb/kebutuhan.js",
+     "public/bnpb/sitrep.js",
+     "public/petugas/app.js",
+     "public/petugas/layar_logbook.js",
+     "public/petugas/layar_regu.js",
+     "public/petugas/tinjau_kartu.js",
+     "public/pipa/antre.js",
+     "public/pipa/batas.js",
+     "public/pipa/bukti.js",
+     "public/pipa/hitung.js",
+     "public/pipa/katalog_alat.js",
+     "public/pipa/keputusan.js",
+     "public/pipa/kesiapan.js",
+     "public/pipa/lapangan.js",
+     "public/pipa/lapangan_staf.js",
+     "public/pipa/laporan_isi.js",
+     "public/pipa/laporan_templat.js",
+     "public/pipa/layar_data.js",
+     "public/pipa/layar_kit.js",
+     "public/pipa/layar_log.js",
+     "public/pipa/layar_peta.js",
+     "public/pipa/layar_studio.js",
+     "public/pipa/studio_mesin.js",
+     "public/pipa/studio_skema.js",
+     "public/pipa/uji_pilot.js",
+     "public/pipa/uji_pilot_spek.js"
     ],
     "worker": [
      "src/bnpb.js",
@@ -25323,41 +25381,32 @@
      "public/udara/sim/model.js",
      "public/udara/sim/tanggap.js"
     ],
-    "layar staf": [
-     "public/admin/instansi.js",
-     "public/admin/kinerja.js",
-     "public/admin/meja.js",
-     "public/admin/pimpinan.js",
-     "public/admin/posko.js",
-     "public/bnpb/dalops_hitung.js",
-     "public/bnpb/dalops_karhutla.js",
-     "public/bnpb/kebutuhan.html",
-     "public/bnpb/kebutuhan.js",
-     "public/bnpb/sitrep.js",
-     "public/petugas/app.js",
-     "public/petugas/layar_logbook.js",
-     "public/petugas/layar_regu.js",
-     "public/petugas/tinjau_kartu.js",
-     "public/pipa/antre.js",
-     "public/pipa/batas.js",
-     "public/pipa/bukti.js",
-     "public/pipa/hitung.js",
-     "public/pipa/katalog_alat.js",
-     "public/pipa/keputusan.js",
-     "public/pipa/kesiapan.js",
-     "public/pipa/lapangan.js",
-     "public/pipa/lapangan_staf.js",
-     "public/pipa/laporan_isi.js",
-     "public/pipa/laporan_templat.js",
-     "public/pipa/layar_data.js",
-     "public/pipa/layar_kit.js",
-     "public/pipa/layar_log.js",
-     "public/pipa/layar_peta.js",
-     "public/pipa/layar_studio.js",
-     "public/pipa/studio_mesin.js",
-     "public/pipa/studio_skema.js",
-     "public/pipa/uji_pilot.js",
-     "public/pipa/uji_pilot_spek.js"
+    "model/turunan": [
+     "scripts/bnpb/drone_termal.py",
+     "scripts/bnpb/iku.py",
+     "scripts/bnpb/kebakaran.py",
+     "scripts/bnpb/kebutuhan.py",
+     "scripts/bnpb/risiko.py",
+     "scripts/bnpb/siaga.py",
+     "scripts/data/aturan.py",
+     "scripts/data/kalibrasi.py",
+     "scripts/data/keputusan.py",
+     "scripts/data/logbook_internal.py",
+     "scripts/data/logbook_pusdalops.py",
+     "scripts/data/operasi.py",
+     "scripts/data/presiden.py",
+     "scripts/data/preventif.py",
+     "scripts/data/sippa/bersama.py",
+     "scripts/data/sippa/pilot/lampiran.py",
+     "scripts/data/sippa/pilot/teks.py",
+     "scripts/data/sippa/pilot/teks_renlap.py",
+     "scripts/data/sippa/respons.py",
+     "scripts/data/taktik.py",
+     "scripts/i18n/kelas.mjs",
+     "scripts/prediksi/konfirmasi.py",
+     "scripts/prediksi/nilai.py",
+     "scripts/scrape/akses.py",
+     "scripts/scrape/daops.py"
     ],
     "peringatan": [
      "src/push.js"
@@ -25385,20 +25434,6 @@
     "TIDAK ADA"
    ],
    "pemakai": {
-    "model/turunan": [
-     "scripts/banjir/dampak.py",
-     "scripts/banjir/kejadian.py",
-     "scripts/banjir/rob.py",
-     "scripts/gunungapi/dampak.py",
-     "scripts/gunungapi/tren.py",
-     "scripts/wa/urai_laporan.py"
-    ],
-    "worker": [
-     "src/api_v1.js",
-     "src/mcp.js",
-     "src/rumah_rusak.js",
-     "src/worker.js"
-    ],
     "layar publik": [
      "public/api.html",
      "public/banjir/dampak.js",
@@ -25412,6 +25447,20 @@
      "public/lapangan.js",
      "public/rumah_rusak.html",
      "public/sw-lapangan.js"
+    ],
+    "worker": [
+     "src/api_v1.js",
+     "src/mcp.js",
+     "src/rumah_rusak.js",
+     "src/worker.js"
+    ],
+    "model/turunan": [
+     "scripts/banjir/dampak.py",
+     "scripts/banjir/kejadian.py",
+     "scripts/banjir/rob.py",
+     "scripts/gunungapi/dampak.py",
+     "scripts/gunungapi/tren.py",
+     "scripts/wa/urai_laporan.py"
     ],
     "layar staf": [
      "public/admin/kunci_api.js",
@@ -25529,14 +25578,14 @@
     "TIDAK ADA"
    ],
    "pemakai": {
+    "model/turunan": [
+     "scripts/umum/sosmed.py",
+     "scripts/umum/tiktok.py"
+    ],
     "worker": [
      "src/admin_halaman.js",
      "src/sosmed.js",
      "src/worker.js"
-    ],
-    "model/turunan": [
-     "scripts/umum/sosmed.py",
-     "scripts/umum/tiktok.py"
     ],
     "layar publik": [
      "public/index.html"
@@ -25708,6 +25757,16 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
+    "layar publik": [
+     "public/informasi.js",
+     "public/inti/alarm.js",
+     "public/monitor.html",
+     "public/monitor.js",
+     "public/privasi.html"
+    ],
+    "layar staf": [
+     "public/admin/alun.js"
+    ],
     "model/turunan": [
      "scripts/agents/ilmu.mjs",
      "scripts/berita/banjir.py",
@@ -25724,16 +25783,6 @@
      "src/alun.js",
      "src/command_center.js",
      "src/worker.js"
-    ],
-    "layar publik": [
-     "public/informasi.js",
-     "public/inti/alarm.js",
-     "public/monitor.html",
-     "public/monitor.js",
-     "public/privasi.html"
-    ],
-    "layar staf": [
-     "public/admin/alun.js"
     ]
    },
    "arsip": false,
@@ -25762,11 +25811,11 @@
     "TIDAK ADA"
    ],
    "pemakai": {
-    "worker": [
-     "src/sihka.js"
-    ],
     "model/turunan": [
      "scripts/banjir/arsip_pos.py"
+    ],
+    "worker": [
+     "src/sihka.js"
     ]
    },
    "arsip": false,
@@ -25868,6 +25917,9 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
+    "layar staf": [
+     "public/admin/gakkum.js"
+    ],
     "worker": [
      "src/command_center.js",
      "src/instansi.js",
@@ -25890,16 +25942,13 @@
      "scripts/data/kalibrasi.py",
      "scripts/data/ujibanding_firespot.py"
     ],
-    "layar publik": [
-     "public/instansi_akses.js"
-    ],
     "peringatan": [
      "src/alarm_himawari.js",
      "src/peringatan.js",
      "src/push.js"
     ],
-    "layar staf": [
-     "public/admin/gakkum.js"
+    "layar publik": [
+     "public/instansi_akses.js"
     ]
    },
    "arsip": false,
@@ -25929,11 +25978,6 @@
     "worker scheduled() cron"
    ],
    "pemakai": {
-    "layar publik": [
-     "public/instansi.js",
-     "public/instansi_kartu.js",
-     "public/instansi_tugaskan.js"
-    ],
     "worker": [
      "src/command_center.js",
      "src/instansi.js",
@@ -25946,6 +25990,11 @@
      "src/sla.js",
      "src/tugas_bencana.js",
      "src/uji_lapangan.js"
+    ],
+    "layar publik": [
+     "public/instansi.js",
+     "public/instansi_kartu.js",
+     "public/instansi_tugaskan.js"
     ],
     "peringatan": [
      "src/push.js"
