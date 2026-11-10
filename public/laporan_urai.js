@@ -108,7 +108,7 @@ function uraiWa(teks, prov) {
   const utuh = baris.join("\n");
   const p = utuh.match(RE_PERIODE);
   if (p) { hasil.mulai = isoDari(p[1]); hasil.sampai = isoDari(p[3]); hasil.jam = p[2].replace(":", "."); }
-  const lm = utuh.match(/Laporan kejadian bencana sejumlah\s*±?\s*([\d.]+)/i); if (lm) hasil.laporan_masuk = angkaId(lm[1]);
+  const lm = utuh.match(/Laporan kejadian bencana sejumlah\s*(?:kejadian\s+)?±?\s*([\d.]+)/i); if (lm) hasil.laporan_masuk = angkaId(lm[1]);
   const mn = utuh.match(/Kejadian menonjol[^\n]*?sejumlah\s*±?\s*([\d.]+)/i); if (mn) hasil.menonjol = angkaId(mn[1]);
   const kp = utuh.match(/^\s*\*?\s*Yth\.?\s*(.+?)\s*\*?\s*$/mi); if (kp) hasil.kepada = polos(kp[1]);
   const kd = utuh.match(/Koordinator pembuat laporan\s*:\s*(.+)/i); if (kd) hasil.koordinator = polos(kd[1]);

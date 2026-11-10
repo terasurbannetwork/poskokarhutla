@@ -90,6 +90,7 @@ uji("contoh rekap utuh repo sama dengan pengurai Python: 23 laporan, 17 menonjol
   const h = hariDariRekap(contoh, {diterima: 1});
   assert.deepEqual([h.laporan, h.menonjol, h.kejadian.length, h.kejadian.filter(k => k.sifat === "baru").length], [23, 17, 17, 3]);
   assert.equal(h.kejadian.find(k => k.tempat === "Kota Malang").label, "Kebakaran TPA Supit Urung");
+  assert.equal(hariDariRekap(contoh.replace("sejumlah 23 (dua puluh tiga)", "sejumlah kejadian 23"), {diterima: 1}).laporan, 23);   // ejaan rekap 4 Nov 2026
   const panjang = hariDariRekap(contoh.replace("di Prov. Riau *(Pengkinian Data)*", `di ${"Kab. Panjang".repeat(40)} *(Pengkinian Data)*`), {diterima: 1});
   assert.ok(panjang.kejadian.every(k => k.tempat.length <= 80 && k.lokasi.length <= 80));
 });
