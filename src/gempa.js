@@ -223,7 +223,7 @@ export async function perbaruiGempa(env, kini = Date.now()) {
       if (d != null && kini - d < 10 * 60e3) return {tetap: true, galat};
     }
     const r = await simpan(env, ok.flatMap(h => h.baris).sort((a, b) => (a.sumber === "bmkg" ? 0 : 1) - (b.sumber === "bmkg" ? 0 : 1)), kini);   // BMKG dulu, USGS menempel
-    const kej = await kelompokkan(env);
+    const kej = r.baru || r.ubah ? await kelompokkan(env) : 0;   // tanpa baris baru tak ada yang perlu dikelompokkan (pindai tiap putaran memakan kuota baca D1)
     await env.DB.batch(ok.map(h => env.DB.prepare("INSERT INTO gempa_sumber (kunci, etag, isi, dibuat) VALUES (?, ?, ?, ?) ON CONFLICT(kunci) DO UPDATE SET etag = coalesce(excluded.etag, etag), isi = excluded.isi, dibuat = excluded.dibuat")
       .bind(h.nama, h.etag ?? null, JSON.stringify({baris: h.baris.length, rusak: h.rusak, tetap: !!h.tetap}), kini)));
     return {...r, kejadian: kej, rusak: ok.reduce((a, h) => a + h.rusak, 0), galat};
