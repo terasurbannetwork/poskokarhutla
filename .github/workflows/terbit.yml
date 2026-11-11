@@ -22,7 +22,7 @@ jobs:
   terbit:
     runs-on: ubuntu-latest
     # 25 menit memotong run 42062436264 (5 Nov 2026) tepat sesudah wrangler deploy: uji node kini memakan sebagian besar job.
-    timeout-minutes: 45
+    timeout-minutes: 50   # langkah uji 8 + 26 + 5 = 39 menit, ditambah 10 menit sisa untuk deploy (gerbang-uji-sebelum-push)
     steps:
       - uses: actions/checkout@v4
 

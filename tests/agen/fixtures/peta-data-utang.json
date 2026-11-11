@@ -44,6 +44,14 @@
   "public/udara/data/omc_hasil.json"
  ],
  "pengecualian": {
+  "public/banjir/data/uji_aifs.json": {
+   "alasan": "Sakelar vonis uji balik AIFS yang dibaca ansambel_hujan.py (aifs_lolos, lewat path UJI_AIFS); bukan data tampil.",
+   "tanggal": "2026-11-11"
+  },
+  "public/banjir/data/label_bersatu_v3_ringkas.json": {
+   "alasan": "Ringkasan label_bersatu_v3; konsumen (model_kab2, model_kab_campur) baru pindah setelah DSWx punya data nyata dan diputuskan pemilik (PRAREG-LABEL-V3).",
+   "tanggal": "2026-11-11"
+  },
   "public/data/opera_dist.json": {
    "alasan": "Jalan manual di lab.yml karena butuh numpy, rasterio, dan unduhan raster besar; bukan jadwal harian.",
    "tanggal": "2026-11-10"
