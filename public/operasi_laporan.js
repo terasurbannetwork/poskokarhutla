@@ -363,14 +363,14 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
       : `<p class="ops-kosong">Belum ada kegiatan tercatat dalam 30 hari.</p>`;
     /* kontrak sebagai daftar baris (pemilik 11 Nov 2026: kartu kesempitan bila kontrak banyak, ada yang terpotong):
        nomor, periode + durasi + jam per sortie, bilah jam operasi relatif kontrak terpanjang, tiga angka berikon, status */
-    const kini = Date.parse(D.t), jamMaks = Math.max(1, ...kt.map(x => x.jam_operasi_menit || 0));
+    const kini = Date.parse(D.t);
     const barisKt = x => { const m = Date.parse(x.mulai), z = x.selesai ? Date.parse(x.selesai) : kini, hr = m ? Math.round((z - m) / 864e5) + 1 : null;
       const perSortie = x.sortie && x.jam_operasi_menit ? u.jamMenit(x.jam_operasi_menit / x.sortie) : null;
-      const ket = [hr && (x.berjalan ? `hari ke-${fmt(hr)}` : `${fmt(hr)} hari`), perSortie && `${perSortie} jam per sortie`].filter(Boolean).join(", ");
+      const ket = [hr && lbl("kalender", x.berjalan ? `hari ke-${fmt(hr)}` : `${fmt(hr)} hari`), perSortie && lbl("jam", `${perSortie} per sortie`)].filter(Boolean).map(x => `<small>${x}</small>`).join("");
       const nilai = (ik, t, n) => `<div><span>${lbl(ik, t)}</span><b>${n}</b></div>`;
       return `<li${x.berjalan ? ' class="jalan"' : ""}><span class="ops-ktl-no">${fmt(x.kontrak_ke)}</span>
-        <div class="ops-ktl-per"><b>${esc(kalimat(x.periode_teks) || "–")}</b>${ket ? `<small>${ket}</small>` : ""}<i style="--p:${Math.round((x.jam_operasi_menit || 0) / jamMaks * 100)}%"></i></div>
-        ${nilai("jam", "Jam operasi", x.jam_operasi_menit ? u.jamMenit(x.jam_operasi_menit) : "–")}${nilai("peran", "Sortie", fmt(x.sortie || 0))}${nilai("air", "Jatuhan WB", x.wb_drop ? fmt(x.wb_drop) : "–")}
+        <div class="ops-ktl-per"><b>${esc(kalimat(x.periode_teks) || "–")}</b>${ket ? `<span>${ket}</span>` : ""}</div>
+        ${nilai("jam", "Jam operasi", x.jam_operasi_menit ? u.jamMenit(x.jam_operasi_menit) : `<em>belum ada</em>`)}${nilai("peran", "Sortie", fmt(x.sortie || 0))}${nilai("air", "Jatuhan WB", x.wb_drop ? fmt(x.wb_drop) : `<em>tanpa WB</em>`)}
         ${x.berjalan ? `<span class="pill l0">Berjalan</span>` : `<span class="ops-pa-selesai">Selesai</span>`}</li>`; };
     const sek = (judul, sub, isi, ik = "jam") => `<details class="ops-pa-sek" open><summary><i>${lbl(ik, "")}</i><b>${judul}</b>${(sub || []).map(([k, t]) => `<small>${lbl(k, t)}</small>`).join("")}<svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div>${isi}</div></details>`;
     return `<article class="ex ex-std ops-pa"><button type="button" class="ops-dlg-x" data-tutup aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>

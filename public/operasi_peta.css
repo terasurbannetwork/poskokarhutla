@@ -393,21 +393,21 @@
 #opsLaporan tr.ops-nganggur td:first-child{box-shadow:inset 3px 0 0 #e08a3a}
 #opsLaporan tr.ops-total td{font-weight:800}
 /* kontrak sebagai daftar baris di pop-up armada */
-#opsLaporan .ops-ktl{list-style:none;margin:0;padding:0;display:grid}
-#opsLaporan .ops-ktl>li{display:grid;grid-template-columns:34px minmax(220px,1.6fr) repeat(3,minmax(92px,1fr)) 92px;align-items:center;gap:14px;padding:12px 4px 12px 12px}
-#opsLaporan .ops-ktl>li+li{border-top:1px solid var(--line)}
-#opsLaporan .ops-ktl>li.jalan{box-shadow:inset 3px 0 0 #2e8b57}
-#opsLaporan .ops-ktl-no{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:color-mix(in srgb,var(--brand2) 10%,transparent);color:var(--brand2);font-size:.8125rem;font-weight:800}
-#opsLaporan .ops-ktl>li.jalan .ops-ktl-no{background:#2e8b57;color:#fff}
-#opsLaporan .ops-ktl-per{display:flex;flex-direction:column;gap:3px;min-width:0}
-#opsLaporan .ops-ktl-per b{font-size:.875rem;font-weight:700;color:var(--ink)}
-#opsLaporan .ops-ktl-per small{font-size:.71875rem;color:var(--ink2)}
-#opsLaporan .ops-ktl-per i{position:relative;height:4px;margin-top:4px;border-radius:999px;background:color-mix(in srgb,var(--brand2) 10%,transparent);overflow:hidden}
-#opsLaporan .ops-ktl-per i::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--p);border-radius:inherit;background:var(--brand2)}
-#opsLaporan .ops-ktl>li.jalan .ops-ktl-per i::after{background:#2e8b57}
-#opsLaporan .ops-ktl>li>div:not(.ops-ktl-per){display:flex;flex-direction:column;gap:3px}
+#opsLaporan .ops-ktl{list-style:none;margin:0;padding:0;display:grid;gap:8px;position:relative}
+#opsLaporan .ops-ktl::before{content:"";position:absolute;left:27px;top:24px;bottom:24px;width:2px;background:color-mix(in srgb,var(--brand2) 14%,transparent)}
+#opsLaporan .ops-ktl>li{position:relative;display:grid;grid-template-columns:32px minmax(220px,1.7fr) repeat(3,minmax(90px,1fr)) 88px;align-items:center;gap:16px;padding:12px 14px 12px 12px;border-radius:14px;border:1px solid var(--line);background:var(--card)}
+#opsLaporan .ops-ktl>li.jalan{border-color:color-mix(in srgb,#2e8b57 35%,transparent);background:color-mix(in srgb,#2e8b57 5%,var(--card))}
+#opsLaporan .ops-ktl-no{position:relative;z-index:1;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--card);box-shadow:inset 0 0 0 2px var(--brand2);color:var(--brand2);font-size:.8125rem;font-weight:800}
+#opsLaporan .ops-ktl>li.jalan .ops-ktl-no{background:#2e8b57;box-shadow:none;color:#fff}
+#opsLaporan .ops-ktl-per{display:flex;flex-direction:column;gap:6px;min-width:0}
+#opsLaporan .ops-ktl-per b{font-size:.875rem;font-weight:800;color:var(--ink)}
+#opsLaporan .ops-ktl-per>span{display:flex;flex-wrap:wrap;gap:5px}
+#opsLaporan .ops-ktl-per small{padding:2px 8px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line)}
+#opsLaporan .ops-ktl-per small .ops-lbl{font-size:.6875rem;font-weight:600;color:var(--ink2)}
+#opsLaporan .ops-ktl>li>div:not(.ops-ktl-per){display:flex;flex-direction:column;gap:4px}
 #opsLaporan .ops-ktl>li>div:not(.ops-ktl-per) .ops-lbl{font-size:.6875rem;color:var(--ink2)}
 #opsLaporan .ops-ktl>li>div:not(.ops-ktl-per) .ops-lbl svg{color:var(--brand2)}
 #opsLaporan .ops-ktl>li>div:not(.ops-ktl-per) b{font-family:var(--display);font-size:1.125rem;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.1}
+#opsLaporan .ops-ktl>li>div:not(.ops-ktl-per) b em{font-family:inherit;font-style:normal;font-size:.75rem;font-weight:600;color:var(--ink2)}
 #opsLaporan .ops-ktl>li>.pill,#opsLaporan .ops-ktl>li>.ops-pa-selesai{justify-self:end}
 @media (max-width:760px){#opsLaporan .ops-ktl>li{grid-template-columns:30px 1fr auto;row-gap:10px}#opsLaporan .ops-ktl-per{grid-column:2/4}#opsLaporan .ops-ktl>li>div:not(.ops-ktl-per){grid-row:2}#opsLaporan .ops-ktl>li>div:nth-of-type(2){grid-column:1/2}}
