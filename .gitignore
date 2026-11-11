@@ -60,6 +60,8 @@ data/raw/sebaran/prospektif/*
 # salinan otomatis Finder/iCloud ("berkas 2.js"): jangan pernah ikut commit
 * 2
 * 2.*
+# folder keluaran laporan "Revisi 2" (aturan folder revisi 9 Nov 2026) bukan salinan nyasar
+!Revisi 2/
 .env*
 !.env.example
 
