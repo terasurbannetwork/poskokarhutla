@@ -15,7 +15,7 @@
 
 /* deretan sub-halaman grup (11 Nov 2026): di bawah kepala, rata ujung ke ujung, gaya pemilih tab .dl-seg */
 .mp-sub{display:grid;grid-auto-columns:minmax(0,1fr);grid-auto-flow:column;gap:4px;margin:16px auto 0;padding:4px;background:var(--card,#fff);border:1px solid var(--line,#e2e8f0);border-radius:22px;box-shadow:var(--bayang,0 1px 2px rgb(15 23 42 / .06));box-sizing:border-box;width:calc(100% - 32px)}
-.mp-sub a{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 12px;border-radius:999px;color:var(--ink2,#334155);text-decoration:none;font-size:14px;font-weight:700;white-space:nowrap}
+.mp-sub a{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 12px;border-radius:999px;color:var(--ink2,#334155);text-decoration:none;font-size:.875rem;font-weight:700;white-space:nowrap}
 .mp-sub a:hover{background:rgb(15 23 42 / .05)}
 .mp-sub a:focus-visible{outline:2px solid var(--c5,#2563eb);outline-offset:2px}
 .mp-sub a[aria-current="page"]{background:var(--navy,#0f2340);color:#fff}

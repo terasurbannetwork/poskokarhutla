@@ -9,7 +9,7 @@ const JENDELA_MS = 2 * 3600000, TAHAN_GAGAL_MS = 6 * 3600000;
 
 // Sama dengan PIPA di jaga.yml dan terbit_antre.yml (dijaga tests/agen/gerbang-antrean-data.test.mjs): grup concurrency `data` hanya punya
 // satu slot antre, jadi dispatch tidak boleh mengusir run yang sedang menunggu slot itu.
-export const PIPA = ["titik", "data", "banjir", "gempa", "lintas", "prediksi", "statis", "titik_palsu", "jarak_pandang", "kemitraan"];
+export const PIPA = ["titik", "data", "banjir", "gempa", "lintas", "prediksi", "statis", "titik_palsu", "kemitraan"];
 
 /* maks = menit sejak run sukses terakhir sebelum dianggap terlewat. Pemeriksaan tiap 60 menit, jadi run pengganti jatuh pada kelipatan 60 menit pertama di atas maks:
    titik tiap 3 jam, himawari tiap jam, jarak_pandang tiap 2 jam, udara 13 jam, harian 25 jam (dengan 24 jam run pengganti mendahului cron yang sedang telat).
