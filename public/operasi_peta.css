@@ -1643,3 +1643,21 @@
 #opsLaporan .pill.ops-pbv.netral{background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--ink2)}
 #opsLaporan .ops-cmp p.nol{padding:4px 10px;border-radius:999px;background:color-mix(in srgb,#e08a3a 12%,transparent)}
 #opsLaporan .ops-cmp p.nol .ops-lbl{font-size:.75rem;font-weight:700;color:#a35512;white-space:nowrap}
+/* baris menu tidak terlalu renggang: tumbuh maksimal 42px (pemilik 11 Nov 2026 "line spacing kegedean") */
+@media (min-width:901px){#opsLaporan .ops-nav-isi>button{max-height:42px}}
+/* status di sel Angka utama boleh turun baris, tidak kepotong */
+#opsLaporan .ops-cmp p.nol{max-width:100%}
+#opsLaporan .ops-cmp p.nol .ops-lbl{white-space:normal;text-align:center;line-height:1.25;font-size:.71875rem}
+/* kartu Angka utama berkepala (L4): pita biru muda di atas, isi di tengah (pemilik 11 Nov 2026) */
+#opsLaporan .ops-ringkas-slot .ops-rk>.ops-lap-angka>div{padding:0 0 12px;overflow:hidden;justify-content:flex-start;gap:12px}
+#opsLaporan .ops-ringkas-slot .ops-rk>.ops-lap-angka>div>header{width:100%;justify-content:center;margin:0;padding:9px 12px;background:color-mix(in srgb,var(--brand2) 7%,var(--card));border-bottom:1px solid var(--line)!important}
+#opsLaporan .ops-ringkas-slot .ops-rk>.ops-lap-angka>div>header>span{font-weight:800;color:#0b2545}
+#opsLaporan .ops-ringkas-slot .ops-rk>.ops-lap-angka>div>.ops-cmp{flex:1;align-items:center;padding:0 10px}
+#opsLaporan .ops-ringkas-slot .ops-rk>.ops-lap-angka>div>.ops-ub-kaki{padding:0 10px}
+/* kepala Angka utama dan Perlu tindakan sama tinggi dan senada (pemilik 11 Nov 2026) */
+#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary,#opsLaporan .ops-ringkas-slot .ops-tindak>header{box-sizing:border-box;height:52px;padding:0 16px!important;display:flex;align-items:center;gap:10px}
+#opsLaporan .ops-ringkas-slot .ops-tindak>header{background:color-mix(in srgb,#c9503a 6%,var(--card));border-bottom:1px solid color-mix(in srgb,#c9503a 20%,var(--line))}
+#opsLaporan .ops-ringkas-slot .ops-tindak>header>.ops-lbl:first-child svg,#opsLaporan .ops-ringkas-slot .ops-tindak>header>i .ops-lbl svg{width:28px;height:28px;padding:6px;border-radius:8px;background:#a63a26;color:#fff!important;box-sizing:border-box}
+#opsLaporan .ops-ringkas-slot .ops-tindak>header>b{font-size:1rem;font-weight:800;color:#7a1f12}
+#opsLaporan .ops-ringkas-slot .ops-tindak>header>small{padding:1px 9px;border-radius:999px;background:#a63a26;color:#fff;font-size:.71875rem;font-weight:800}
+#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary>b{font-size:1rem;font-weight:800}
