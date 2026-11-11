@@ -98,3 +98,22 @@ body .ad-tabel thead tr{background:var(--db-navy)}
 @media (prefers-reduced-motion:reduce){.db-catatan>summary::before{transition:none}}
 /* kepala tabel di layar dashboard tanpa huruf kapital (memori tanpa-kapital) */
 thead th{text-transform:none!important;letter-spacing:0!important}
+
+/* ---- admin model A (public/inti/dasbor_admin.js) ---- */
+.ad-wrap.db-a{max-width:none;padding:12px 16px}
+.db-nav-admin .db-nav-isi{gap:1px;overflow:auto}
+.db-nav-sub{margin:8px 0 2px;padding:0 8px;font-size:.6875rem;font-weight:800;color:var(--ink2)}
+.db-nav-sub:first-child{margin-top:0}
+.db-nav-admin .db-nav-b{flex:0 0 auto;min-height:34px;text-decoration:none}
+.db-emoji{font-style:normal;font-size:.875rem;line-height:1}
+.db-nav-b[aria-current="true"] .db-emoji{filter:none}
+.db-kanan>.ad-judul{margin:0;padding:10px 16px;border-radius:14px;background:var(--db-navy);justify-content:center}
+.db-kanan>.ad-judul h1{color:#fff;font-size:1.25rem}
+.db-kanan>.ad-judul .ad-ikon{background:rgb(255 255 255 / .14)}
+.db-kanan>.ad-judul .ad-judul-aksi:empty{display:none}
+.db-a>.ad-sub,.db-a>[hidden]{display:none!important}
+/* kartu admin generik (.kj-k kinerja dan sejenisnya): kepala pita terang, kotak dalam putih bergaris, bukan abu (D6, D8) */
+.db-kanan .kj-k{border:1px solid var(--db-h2-garis);overflow:hidden;padding:0 0 12px}
+.db-kanan .kj-k>h2:first-child{margin:0 0 2px;padding:10px 14px;background:var(--db-h2);box-shadow:inset 4px 0 0 var(--db-navy);border-bottom:1px solid var(--db-h2-garis);font-size:.9375rem;color:var(--db-navy)}
+.db-kanan .kj-k>:not(h2:first-child){margin-left:14px;margin-right:14px}
+.db-kanan .kj-s{background:#fff;border:1px solid var(--db-h2-garis)}

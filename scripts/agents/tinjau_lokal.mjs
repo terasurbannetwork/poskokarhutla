@@ -64,7 +64,7 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
       } else if (r.ok && jalur.startsWith("/admin") && (r.headers.get("content-type") || "").includes("text/html")) {
         /* halaman admin dirender Worker: sisipkan lapisan dashboard lokal supaya perubahan public/inti/dasbor.css terlihat sebelum deploy */
         const h = isi.toString("utf8");
-        if (!h.includes("/inti/dasbor.css")) { isi = Buffer.from(h.replace("</head>", '<link href="/inti/dasbor.css" rel="stylesheet">\n</head>')); keluar["cache-control"] = "no-store"; }
+        if (!h.includes("/inti/dasbor.css")) { isi = Buffer.from(h.replace("</head>", '<link href="/inti/dasbor.css" rel="stylesheet">\n<script src="/inti/dasbor_admin.js" defer></script>\n</head>')); keluar["cache-control"] = "no-store"; }
       }
       res.writeHead(r.status, keluar);
       res.end(req.method === "HEAD" ? undefined : isi);

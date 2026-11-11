@@ -18,6 +18,7 @@ const MODEL_A = {"public/bnpb/sitrep.html": ["sr-nav", "sr-a"], "public/operasi_
 test("tiap layar dashboard memuat dasbor.css", () => {
   for (const f of LAYAR) assert.match(baca(f), /\/inti\/dasbor\.css/, `${f}: lapisan dasbor.css tidak dimuat`);
   assert.match(baca("src/admin_halaman.js"), /\/inti\/dasbor\.css/, "kepala halaman admin tidak memuat dasbor.css");
+  assert.match(baca("src/admin_halaman.js"), /\/inti\/dasbor_admin\.js/, "kepala halaman admin tidak memuat panel kiri model A (dasbor_admin.js)");
   assert.match(baca("public/bnpb/menu_pusdalops.js"), /\/inti\/dasbor\.css/, "menu Pusdalops tidak menyisipkan dasbor.css");
 });
 
