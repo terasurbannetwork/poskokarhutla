@@ -996,13 +996,18 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
       "Armada tanpa transponder ADS-B (umumnya TNI AU dan pesawat OMC) tidak terlacak dari sini."));
   }
 
+  /* lokasi temuan dibersihkan dari sisa teks WA (jam ATA, Eng.Off, kode z/LT); yang tersisa nama tempat (pemilik 11 Nov 2026 "jelek banget") */
+  const lokasiBersih = t => { const xs = String(t || "").split(/\s*,\s*/).map(x => x.trim()).filter(x => x && !/[:]|\d{2}[.:]\d{2}|\bz\b|\bLT\b|eng\.?\s*off|^ata\b/i.test(x));
+    return xs.map(x => x.replace(/^(muba)$/i, "Musi Banyuasin")).join(", ") || "Lokasi belum tercatat"; };
   function kartuTemuan(D) {
-    const u = U(), NAMA = {fs: "FS berasap", berasap: "Berasap", berasap_tipis: "Berasap tipis", clear: "Clear"}, tm = D.peta.temuan || [], api = tm.filter(x => x.status !== "clear").length;
-    const baris = tm.slice().sort((x, y) => (x.status === "clear") - (y.status === "clear") || (x.registrasi || "").localeCompare(y.registrasi || "")).map(x => `<tr>${sel(u.jamWIB(x.jam_utc))}<td><b>${esc(x.registrasi)}</b></td>
-      <td><span class="pill ${{clear: "l0", berasap_tipis: "l2"}[x.status] || "l3"}">${esc(NAMA[x.status] || x.status)}</span></td>${kiri(`${esc(x.lokasi || "–")}${x.lat != null ? ` <a href="${u.gmaps(x.lat, x.lon)}" target="_blank" rel="noopener noreferrer">koordinat</a>` : ""}`)}${sel(x.luas_ha != null ? fmt(x.luas_ha) + " ha" : "–")}</tr>`);
-    return bagian("Temuan pilot", tm.length ? `${hl(fmt(api))} titik api dilaporkan pilot dari ${fmt(tm.length)} temuan` : `Belum ada temuan pilot pada ${esc(tglPanjang(D.t))}`,
-      tabelH(["#Jam WIB", "Armada", "Status", "Lokasi", "#Luas"], baris, "Pilot patroli belum melaporkan temuan."));
+    const u = U(), NAMA = {fs: "FS berasap", berasap: "Berasap", berasap_tipis: "Berasap tipis", clear: "Clear"}, tm = D.peta.temuan || [];
+    const adaLuas = tm.some(x => x.luas_ha != null);
+    const baris = tm.slice().sort((x, y) => (x.status === "clear") - (y.status === "clear") || (y.jam_utc || 0) - (x.jam_utc || 0)).map(x => `<tr>${sel(`<b>${u.jamWIB(x.jam_utc)}</b>`)}${sel(`<span class="ops-omc-reg">${lbl("peran", esc(x.registrasi || "–"))}</span>`)}
+      ${sel(`<span class="pill ${{clear: "l0", berasap_tipis: "l2"}[x.status] || "l3"}">${esc(NAMA[x.status] || x.status)}</span>`)}${kiri(`<span class="ops-tm-lok">${esc(lokasiBersih(x.lokasi))}</span>`)}
+      ${sel(x.lat != null ? `<a class="ops-tm-peta" href="${u.gmaps(x.lat, x.lon)}" target="_blank" rel="noopener noreferrer" title="${(+x.lat).toFixed(4)}, ${(+x.lon).toFixed(4)}">${lbl("base", "Peta")}</a>` : "–")}${adaLuas ? sel(x.luas_ha != null ? fmt(x.luas_ha) + " ha" : "–") : ""}</tr>`);
+    return bagian("Temuan pilot", "", tabelH(["#Jam WIB", "#Armada", "#Status", "Lokasi", "#Peta", ...(adaLuas ? ["#Luas"] : [])], baris, "Pilot patroli belum melaporkan temuan."));
   }
+
 
   /* OMC resmi BMKG aktif hari ini per provinsi (omc_bmkg.json, 10 Nov 2026). Menggantikan omc_pesawat tangan di operasi_resmi.json;
      jumlah pesawat OMC (tangan, 12 Okt) tidak ada di BMKG dan tetap dibaca operasi.js. Data tak terjangkau = kartu dibuang. */
