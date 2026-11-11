@@ -96,3 +96,5 @@ body .ad-tabel thead tr{background:var(--db-navy)}
 .db-catatan[open]>summary::before{transform:rotate(90deg)}
 .db-catatan>:not(summary){margin:0 12px 10px;font-size:.75rem;color:var(--ink2);text-align:justify}
 @media (prefers-reduced-motion:reduce){.db-catatan>summary::before{transition:none}}
+/* kepala tabel di layar dashboard tanpa huruf kapital (memori tanpa-kapital) */
+thead th{text-transform:none!important;letter-spacing:0!important}

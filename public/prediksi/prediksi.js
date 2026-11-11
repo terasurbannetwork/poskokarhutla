@@ -50,7 +50,7 @@ function barisKal(k, n) {
   const isi = ["banjir", "longsor", "karhutla"].filter(j => kk[j].ada[m] > 0).sort((a, b) => kk[b].ada[m] - kk[a].ada[m])
     .map(j => `${JENIS_KAL[j].toLowerCase()} di ${fmt(kk[j].ada[m])} dari ${fmt(PR.kalender.n_tahun)} tahun${kk[j].kecil ? " (sampel kecil)" : ""}`).join(", ");
   if (!isi) return "";
-  return `<div class="pr-b"><b>${BULAN_PENUH[m]} tercatat:</b> ${isi} <span class="pr-pil abu" title="${esc(PR.kalender.metode)}">kejadian tercatat, logbook Pusdalops</span></div>`;
+  return `<div class="pr-b"><span class="pr-lab" data-k="KAL" title="${esc(PR.kalender.metode)}">Riwayat ${esc(BULAN[m])}</span><span>${isi} <span class="pr-pil abu">logbook Pusdalops</span></span></div>`;
 }
 
 function kartu(k, n) {
@@ -60,21 +60,21 @@ function kartu(k, n) {
   if (h) {
     const [p1, p20, p50, tot, mulai, lama, , m] = ["p1", "p20", "p50", "tot", "mulai", "lama", "puncak", "m"].map(c => kol("HJN", h, c));
     const kapan = mulai == null ? "tidak ada jam hujan ≥0,5 mm" : `mulai ${esc(jam(mulai))} WIB, lama ±${fmt(lama)} jam, total ${mm(tot)}`;
-    baris.push(`<div class="pr-b"><b>Hujan</b> ${kapan}<br>peluang ≥1 mm ${persen(p1)}, ≥20 mm ${persen(p20)}, ≥50 mm ${persen(p50)}
-      ${m ? "" : '<span class="pr-pil abu" title="Tanpa ansambel: skor kasar dari jumlah hujan deterministik">skor kasar</span>'} ${pil(v("HJN", "p20"))}</div>`);
+    baris.push(`<div class="pr-b"><span class="pr-lab" data-k="HJN">Hujan</span><span>${kapan}<br>peluang ≥1 mm ${persen(p1)}, ≥20 mm ${persen(p20)}, ≥50 mm ${persen(p50)}
+      ${m ? "" : '<span class="pr-pil abu" title="Tanpa ansambel: skor kasar dari jumlah hujan deterministik">skor kasar</span>'} ${pil(v("HJN", "p20"))}</span></div>`);
   }
   const a = k.API?.[n - 1];
-  if (a) baris.push(`<div class="pr-b"><b>Titik panas</b> peluang ≥1 titik ${persen(kol("API", a, "p"))} (${fmt(kol("API", a, "d"))} dari 3 hari terakhir bertitik panas) ${pil(v("API", "p"))}</div>`);
+  if (a) baris.push(`<div class="pr-b"><span class="pr-lab" data-k="API">Titik panas</span><span>peluang ≥1 titik ${persen(kol("API", a, "p"))} (${fmt(kol("API", a, "d"))} dari 3 hari terakhir bertitik panas) ${pil(v("API", "p"))}</span></div>`);
   for (const kd of ["BNJ", "LSR"]) {
     const r = k[kd]?.[n - 1];
-    if (r) baris.push(`<div class="pr-b"><b>${KODE_NAMA[kd]}</b> ${LEVEL[kol(kd, r, "lv")]}${kol(kd, r, "ps") != null ? `, peluang Siaga ${persen(kol(kd, r, "ps"))}` : ""} ${pil(v(kd, "ps"))}</div>`);
+    if (r) baris.push(`<div class="pr-b"><span class="pr-lab" data-k="${kd}">${KODE_NAMA[kd]}</span><span>${LEVEL[kol(kd, r, "lv")]}${kol(kd, r, "ps") != null ? `, peluang Siaga ${persen(kol(kd, r, "ps"))}` : ""} ${pil(v(kd, "ps"))}</span></div>`);
   }
   const s = k.ASP?.[n - 1];
-  if (s) baris.push(`<div class="pr-b"><b>Asap</b> PM2,5 ±${fmt(kol("ASP", s, "pm"))} µg/m³, ${ISPU[kol("ASP", s, "kat")]} <span class="pr-pil abu">belum teruji</span></div>`);
+  if (s) baris.push(`<div class="pr-b"><span class="pr-lab" data-k="ASP">Asap</span><span>PM2,5 ±${fmt(kol("ASP", s, "pm"))} µg/m³, ${ISPU[kol("ASP", s, "kat")]} <span class="pr-pil abu">belum teruji</span></span></div>`);
   const r = k.ROB?.[n - 1];
-  if (r) baris.push(`<div class="pr-b"><b>Rob</b> ${kol("ROB", r, "lewat") ? "muka laut melewati p95" : "di bawah p95"} <span class="pr-pil abu">belum teruji</span></div>`);
+  if (r) baris.push(`<div class="pr-b"><span class="pr-lab" data-k="ROB">Rob</span><span>${kol("ROB", r, "lewat") ? "muka laut melewati p95" : "di bawah p95"} <span class="pr-pil abu">belum teruji</span></span></div>`);
   baris.push(barisKal(k, n));
-  return `<article class="card pr-k" role="listitem"><h3>${esc(k.nama)}</h3><p class="pr-kecil">${esc(k.pn)}, ${ribu(k.jiwa)} jiwa</p>${baris.join("") || '<p class="pr-kecil">Tidak ada prakiraan untuk hari ini.</p>'}</article>`;
+  return `<article class="card pr-k" role="listitem"><header class="pr-kh"><h3>${esc(k.nama)}</h3><span class="pr-kp"><small>${esc(k.pn)}</small><small>${ribu(k.jiwa)} jiwa</small></span></header>${baris.join("") || '<p class="pr-kecil">Tidak ada prakiraan untuk hari ini.</p>'}</article>`;
 }
 
 function saring() {
@@ -230,6 +230,8 @@ async function muatDampak() {
 function pilihTab(t) {
   PR.tab = t;
   document.querySelectorAll("#tabs button").forEach(b => b.dataset.tab === t ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
+  document.querySelectorAll(".db-nav-b[data-tab]").forEach(b => b.setAttribute("aria-current", String(b.dataset.tab === t)));
+  const j = $("#prJudul"); if (j) j.textContent = document.querySelector(`#tabs button[data-tab="${t}"]`)?.textContent || "Prediksi";
   document.querySelectorAll("main .page").forEach(s => s.classList.toggle("on", s.id === "p-" + t));
   const tunda2 = f => window.nanti ? window.nanti(f) : f();   // isi berat sesudah satu frame tercat (chrome tab sudah berganti)
   if (t === "rapor" && !$("#rapor table, #rapor section")) tunda2(gambarRapor);
@@ -237,6 +239,21 @@ function pilihTab(t) {
   if (t === "laporan") muatLaporan();   // laporan_layar.js; hash #laporan/<prov> diatur di sana
   else if (t === "tangga") muatTangga();   // tangga.js; hash #tangga/<id kab> diatur di sana
   else history.replaceState(null, "", t === "besok" ? "./" : "#" + t);
+}
+
+/* model A (data/kajian-bnpb/dashboard): panel seksi kiri dari tab, kepala halaman navy, kaki pembaruan data per sumber */
+const IK_TAB = {besok: "M8 2v4|M16 2v4|M3 10h18|M5 4h14v17H5z", rapor: "M9 11l3 3 8-8|M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9", tangga: "M4 20h4v-4h4v-4h4V8h4", dampak: "M12 3l9 16H3z|M12 10v4|M12 17v.5", laporan: "M6 3h9l4 4v14H6z|M9 12h6|M9 16h6", konfirmasi: "M20 6 9 17l-5-5"};
+const svgD = d => `<svg viewBox="0 0 24 24" aria-hidden="true">${d.split("|").map(x => `<path d="${x}"/>`).join("")}</svg>`;
+function panelKiri() {
+  if ($(".db-nav")) return;
+  const tabs = [...document.querySelectorAll("#tabs button[data-tab]")];
+  const kaki = Object.entries(PR.d.kode).map(([kd, k]) => `<div class="db-nav-pb"><i class="db-nav-dot"></i><span>${esc(KODE_NAMA[kd] || kd)}</span><b>${esc(tgl(k.terbit).replace(/^\w+, /, "").replace(/ (\w{3})\w*$/, " $1"))}</b></div>`).join("");
+  document.body.insertAdjacentHTML("beforeend", `<aside class="db-nav pr-nav" aria-label="Seksi prediksi"><div class="db-nav-id"><b>Prediksi</b><small>Prakiraan per kab/kota sampai 3 hari</small></div>
+    <p class="db-nav-g"><i>${svgD("M4 6h16|M4 12h16|M4 18h10")}</i><span>Isi halaman</span></p>
+    <nav class="db-nav-isi">${tabs.map(b => `<button type="button" class="db-nav-b" data-tab="${b.dataset.tab}" aria-current="${b.hasAttribute("aria-current")}"><i class="db-nav-ik">${svgD(IK_TAB[b.dataset.tab] || IK_TAB.besok)}</i><span class="db-nav-t">${esc(b.textContent.trim())}</span></button>`).join("")}</nav>
+    <div class="db-nav-kaki"><p class="db-nav-g"><i>${svgD("M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z|M12 7v5l3 2")}</i><span>Pembaruan data</span></p>${kaki}</div></aside>`);
+  $(".pr-nav").addEventListener("click", e => { const b = e.target.closest("button[data-tab]"); if (b) pilihTab(b.dataset.tab); });
+  document.querySelector("main").insertAdjacentHTML("afterbegin", `<h1 class="db-l1" id="prJudul">${esc(document.querySelector("#tabs button[aria-current]")?.textContent || "Besok")}</h1>`);
 }
 
 async function ambil(f) { try { const r = await fetch("data/" + f, {cache: "no-cache"}); return r.ok ? r.json() : null; } catch { return null; } }
@@ -250,7 +267,10 @@ async function mulai() {
   const prov = [...new Map(PR.d.kab.map(k => [k.prov, k.pn])).entries()].sort((a, b) => a[1].localeCompare(b[1], "id"));
   $("#prov").insertAdjacentHTML("beforeend", prov.map(([k, n]) => `<option value="${esc(k)}">${esc(n)}</option>`).join(""));
   $("#dKab").innerHTML = PR.d.kab.map(k => `<option value="${esc(k.nama)}">${esc(k.pn)}</option>`).join("");
-  $("#catatan").innerHTML = `<p class="pr-kecil">${Object.keys(PR.d.kode).map(sumber).join("<br>")}</p><details class="pr-kecil"><summary>Batasan</summary><ul>${PR.d.batasan.map(b => `<li>${esc(b)}</li>`).join("")}</ul></details>`;
+  /* sumber dan batasan dilipat di bawah kartu (sistem desain dashboard: teks metode tidak menutupi angka) */
+  $("#catatan").innerHTML = `<details class="db-catatan"><summary>Sumber dan batasan</summary><p class="pr-kecil">${Object.keys(PR.d.kode).map(sumber).join("<br>")}</p><ul class="pr-kecil">${PR.d.batasan.map(b => `<li>${esc(b)}</li>`).join("")}</ul></details>`;
+  $(".pr-lagi").after($("#catatan"));
+  panelKiri();
   const kini = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
   Object.assign($("#kTgl"), {max: kini, min: new Date(Date.now() + 7 * 36e5 - 7 * 864e5).toISOString().slice(0, 10), value: kini});
   try { $("#kRegu").value = localStorage.getItem("prediksi.regu") || ""; } catch {}

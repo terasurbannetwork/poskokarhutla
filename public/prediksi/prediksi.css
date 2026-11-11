@@ -56,3 +56,29 @@
   .lp-peta{max-height:62mm}
   body{background:#fff}
 }
+
+/* model A (sistem desain dashboard, pemilik 11 Nov 2026): panel seksi kiri menggantikan tab atas, kepala halaman navy, kartu berlabel lurus */
+.pr-nav{display:none}
+main>.db-l1{display:none}
+@media (min-width:901px){
+  #tabs{display:none!important}
+  main{left:272px;right:8px}
+  .pr-nav{display:flex;position:fixed;top:calc(var(--top) + 8px);left:8px;bottom:8px;width:256px;height:auto;z-index:3}
+  .pr-nav .db-nav-pb{--w:#2e8b57}
+  main>.db-l1{display:block;position:absolute;top:8px;left:0;right:0;margin:0;padding:12px 16px;border-radius:14px;background:var(--db-navy,#0b2545);color:#fff;text-align:center;font:800 1.25rem var(--display,inherit);z-index:2}
+  main>.page{top:64px}
+  main>.page.scroll{padding:0 0 60px}
+}
+/* kartu kab/kota: kepala nama + pil provinsi dan penduduk; label bahaya kolom tetap supaya lurus ke bawah */
+.pr-k{padding:0;overflow:hidden;border:1px solid var(--db-h2-garis,#dbe6f7)}
+.pr-kh{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:9px 12px;background:var(--db-h2,#f3f7fd);box-shadow:inset 4px 0 0 var(--db-navy,#0b2545);border-bottom:1px solid var(--db-h2-garis,#dbe6f7)}
+.pr-kh h3{flex:1 1 auto;font-size:.9375rem;color:var(--db-navy,#0b2545)}
+.pr-kp{display:inline-flex;gap:4px}
+.pr-kp small{padding:1px 8px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font-size:.6875rem;font-weight:700;color:var(--db-navy,#0b2545)}
+.pr-k>.pr-b{display:grid;grid-template-columns:88px minmax(0,1fr);align-items:start;gap:8px;margin:0 12px;padding:7px 0;font-size:.78125rem;line-height:1.4}
+.pr-k>.pr-b:first-of-type{border-top:0}
+.pr-lab{justify-self:start;padding:1px 8px;border-radius:999px;font-size:.6875rem;font-weight:800;white-space:nowrap;background:color-mix(in srgb,var(--c,#2f6fd6) 12%,#fff);color:color-mix(in srgb,var(--c,#2f6fd6) 80%,#000)}
+.pr-lab[data-k="HJN"]{--c:#2f6fd6}.pr-lab[data-k="API"]{--c:#c0392b}.pr-lab[data-k="BNJ"]{--c:#0f6fb0}.pr-lab[data-k="LSR"]{--c:#8a5a12}.pr-lab[data-k="ASP"]{--c:#6e5426}.pr-lab[data-k="ROB"]{--c:#0f9488}
+.pr-k>.pr-kal,.pr-k>p,.pr-k>div:not(.pr-b){margin-left:12px;margin-right:12px}
+#catatan{margin-top:14px}
+.pr-lab[data-k="KAL"]{--c:#5b35a8}
