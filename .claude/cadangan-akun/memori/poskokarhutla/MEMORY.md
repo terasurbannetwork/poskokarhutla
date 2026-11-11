@@ -1,2 +1,3 @@
 - [Sidebar bisa ditarik, gaya peta utama](sidebar-bisa-ditarik.md) — panel peta wajib bisa ditarik; overlay/legenda tiru index.html
 - [Ikon tanpa garis luar](ikon-tanpa-garis-luar.md) — tombol ikon polos, tanpa border/kotak/latar
+- [Tinjau lokal](tinjau-lokal.md) — owner reviews every UI change at http://localhost:8800 under ANY Claude account; always give the link (AGENTS.md 3.8)

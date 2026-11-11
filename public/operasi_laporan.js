@@ -69,22 +69,25 @@
       if (e.target.matches("[data-galeri]")) { st.galeri = e.target.value; return sesudahFrame(() => { const k = $("#opsGaleri"); if (k) k.outerHTML = kartuGaleri(st._d); }); }
     });
   }
-  /* Pemilih periode harian, tiru HariPeriodeBar pangantara (pemilik 11 Nov 2026): baris 1 Kemarin | Periode | Besok,
-     baris 2 strip Sen-Min minggu aktif dengan loncat minggu di kedua ujung. Tanggal sesudah hari ini dan sebelum 1 Jul 2026 mati. */
+  /* Pemilih periode harian (pemilik 11 Nov 2026, "bagusin, masih jelek"): SATU baris ringkas. Kiri: pil [‹ | kalender + tanggal | ›]
+     dan Hari ini; kanan: strip 7 hari yang memuat tanggal terpilih dan tidak pernah melewati hari ini (laporan operasi hanya
+     ke belakang, jadi tidak ada deretan hari depan yang mati). Panah strip menggeser 7 hari. Terpilih = warna tab aktif (--brand). */
   const HARI = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"], HARI_P = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
   const TGL_MIN = "2026-07-01", dow = t => new Date(Date.parse(t)).getUTCDay();
   const hariLabel = t => `${HARI[dow(t)]}, ${tglPendek(t)} ${t.slice(0, 4)}`;
-  const mingguLabel = t => { const s = geser(t, -((dow(t) + 6) % 7)); return `${tglPendek(s)} - ${tglPendek(geser(s, 6))}`; };
   const keluar = t => t > hariWIB() || t < TGL_MIN;
-  const tb = (t, kelas, isi, judul = "") => `<button type="button" class="${kelas}" data-tgl="${t}"${keluar(t) ? " disabled" : ""}${judul ? ` title="${judul}"` : ""}>${isi}</button>`;
+  const PANAH = {kiri: '<path d="m15 18-6-6 6-6"/>', kanan: '<path d="m9 18 6-6-6-6"/>', kal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'};
+  const ikP = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${PANAH[k]}</svg>`;
+  const tb = (t, kelas, isi, judul) => `<button type="button" class="${kelas}" data-tgl="${t}"${keluar(t) ? " disabled" : ""} title="${judul}" aria-label="${judul}">${isi}</button>`;
   function periode() {
-    const t = st.tanggal, kini = hariWIB(), senin = geser(t, -((dow(t) + 6) % 7)), kmr = geser(t, -1), bsk = geser(t, 1), mL = geser(t, -7), mD = geser(t, 7);
-    return `<div class="ops-p1">${tb(kmr, "ops-lgk", `<b>‹ Kemarin</b><span class="ops-lnc">${hariLabel(kmr)}</span>`)}
-      <div class="ops-ptg"><span>Periode</span><label class="ops-tgl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>${hariLabel(t)}</span><input type="date" value="${t}" max="${kini}" min="${TGL_MIN}" aria-label="Pilih tanggal"></label>${t === kini
-        ? `<em class="ops-kini">Hari ini</em>` : `<button type="button" class="ops-kembali" data-tgl="${kini}">↺ Hari ini</button>`}</div>
-      ${tb(bsk, "ops-lgk", `<span class="ops-lnc">${hariLabel(bsk)}</span><b>Besok ›</b>`)}</div>
-      <div class="ops-p2">${tb(mL, "ops-ujung", `‹ ${mingguLabel(mL)}`, mingguLabel(mL))}<div class="ops-strip">${Array.from({length: 7}, (_, i) => { const d = geser(senin, i);
-        return tb(d, `ops-hr${d === t ? " on" : ""}${d === kini ? " kini" : ""}`, `<b data-p="${HARI[dow(d)]}">${HARI_P[dow(d)]}</b><span>${tglPendek(d)}</span>`); }).join("")}</div>${tb(mD, "ops-ujung", `${mingguLabel(mD)} ›`, mingguLabel(mD))}</div>`;
+    const t = st.tanggal, kini = hariWIB(), akhir = [geser(t, 3), kini].sort()[0], awal = geser(akhir, -6);
+    const hari = Array.from({length: 7}, (_, i) => geser(awal, i));
+    return `<div class="ops-nav">${tb(geser(t, -1), "ops-ik", ikP("kiri"), "Hari sebelumnya")}
+      <label class="ops-tgl" title="Pilih tanggal">${ikP("kal")}<span>${hariLabel(t)}</span><input type="date" value="${t}" max="${kini}" min="${TGL_MIN}" aria-label="Pilih tanggal"></label>
+      ${tb(geser(t, 1), "ops-ik", ikP("kanan"), "Hari berikutnya")}</div>
+      ${t === kini ? `<span class="ops-kini">Hari ini</span>` : `<button type="button" class="ops-kembali" data-tgl="${kini}">Ke hari ini</button>`}
+      <div class="ops-strip">${tb(geser(t, -7), "ops-ik", ikP("kiri"), "Mundur 7 hari")}${hari.map(d => tb(d, `ops-hr${d === t ? " on" : ""}${d === kini ? " kini" : ""}`,
+        `<span>${HARI[dow(d)]}</span><b>${+d.slice(8)}</b>`, `${HARI_P[dow(d)]}, ${tglPendek(d)}`)).join("")}${tb([geser(t, 7), kini].sort()[0], "ops-ik", ikP("kanan"), "Maju 7 hari")}</div>`;
   }
   /* INP: bilah periode dicat ulang dulu (ringan), laporan berat menyusul sesudah frame berikut */
   const pilihTanggal = t => { if (!t || t === st.tanggal || keluar(t)) return; st.tanggal = t; const p = $("#opsLaporan .ops-periode"); if (p) p.innerHTML = periode(); sesudahFrame(isi); };
