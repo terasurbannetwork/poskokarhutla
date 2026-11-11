@@ -171,10 +171,10 @@
     box.innerHTML = `<div class="ops-a"><aside class="ops-nav" aria-label="Seksi operasi">
       <div class="seg ops-mode" role="group" aria-label="Bagian operasi">${[["udara", "Udara"], ["darat", "Darat"]].map(([k, t]) => `<button type="button" data-mode="${k}" aria-pressed="${st.mode === k}">${ik(k)}${t}</button>`).join("")}</div>
       <nav class="ops-nav-isi">${navSeksi(null)}</nav><span class="ops-nav-tarik" tabindex="0" role="separator" aria-orientation="vertical" aria-label="Tarik lebar panel"></span></aside>
-      <div class="ops-utama" role="region" aria-label="Isi seksi"><div class="ops-alat" role="toolbar" aria-label="Laporan operasi"><h2 id="opsJudul" class="ops-judul"></h2>
+      <div class="ops-kanan"><div class="ops-periode" role="group" aria-label="Periode laporan">${periode()}</div><div class="ops-utama" role="region" aria-label="Isi seksi"><div class="ops-alat" role="toolbar" aria-label="Laporan operasi"><h2 id="opsJudul" class="ops-judul"></h2>
 
       ${""/* tombol Salin teks WA (data-aksi="salin") dan Cetak / PDF (data-aksi="cetak") disembunyikan pemilik 11 Nov 2026; handler dan salin() tetap */}
-      <span class="ops-status" role="status"></span></div><div class="ops-periode" role="group" aria-label="Periode laporan">${periode()}</div><div id="opsRingkas" class="ops-ringkas-slot"></div><div id="opsIsi"></div></div></div>`;
+      <span class="ops-status" role="status"></span></div><div id="opsRingkas" class="ops-ringkas-slot"></div><div id="opsIsi"></div></div></div></div>`;
     pasangTarikNav(box);
     box.addEventListener("toggle", e => { const k = e.target.dataset?.kartu; if (!k) return; if (k === "peta-operasi" && e.target.open) requestAnimationFrame(pasangPeta); ingatKartu[k] = e.target.open; try { localStorage.setItem("ops_kartu2", JSON.stringify(ingatKartu)); } catch (x) {} }, true);
     { const tip = document.createElement("div"); tip.className = "ops-tip"; tip.hidden = true; box.append(tip);   // tooltip grafik di halaman (data-tip sudah di-escape saat dibuat)
