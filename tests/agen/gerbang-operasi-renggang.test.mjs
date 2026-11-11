@@ -9,7 +9,8 @@ import {readFileSync} from "node:fs";
 const CSS = readFileSync(new URL("../../public/operasi_peta.css", import.meta.url), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
 const MIN = 12;
 const WADAH = ["#opsLaporan .ops-ringkas-slot", "#opsLaporan .ops-wadah", "#opsLaporan .ops-pa-badan", "#opsLaporan .ops-rl-daftar", ".ops-dlg-isi",
-  "#opsLaporan .ops-pb-grid", "#opsLaporan .ops-tindak ul", "#opsIsi", "#opsLaporan"];
+  "#opsLaporan .ops-pb-grid", "#opsLaporan .ops-tindak ul", "#opsIsi", "#opsLaporan",
+  "#opsLaporan .ops-a", "#opsLaporan .ops-utama", "#opsLaporan .ops-pk-grid"];
 
 export function gapTerakhir(css, sel) {
   let hasil = null;
