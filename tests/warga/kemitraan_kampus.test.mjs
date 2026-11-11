@@ -60,7 +60,8 @@ uji("daftar kampus publik hanya yang aktif (nama, prov); tanpa kontak", async ()
   const k = await kampusAktif("simpul"); await daftarKampus("Universitas Masih Menunggu Raya");
   const r = await U.api("GET", "/api/kemitraan/publik/kampus", undefined, ip()); assert.equal(r.s, 200, r.t);
   assert.deepEqual(r.j.kampus.map(x => x.id), [k.id]); assert.deepEqual(Object.keys(r.j.kampus[0]).sort(), ["id", "nama", "prov", "singkatan"]);
-  assert.doesNotMatch(r.t, /@|0812|62812/, "tanpa kontak"); assert.match(r.h.get("cache-control"), /max-age=300/);
+  // id hex acak bisa memuat "0812": periksa kolom selain id
+  assert.doesNotMatch(JSON.stringify(r.j.kampus.map(({id, ...x}) => x)), /@|0812|62812/, "tanpa kontak"); assert.match(r.h.get("cache-control"), /max-age=300/);
 });
 uji("setujui/tolak: hanya staf, peran wajib sah, tolak wajib alasan, tidak dua kali; KK tak bisa menyetujui dirinya", async () => {
   const a = await daftarKampus("Universitas Antrean Pertama Raya"), b = await daftarKampus("Universitas Antrean Kedua Raya");
