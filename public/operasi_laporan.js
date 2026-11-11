@@ -37,8 +37,13 @@
   const BUKA_AWAL = new Set(["base"]), CHEV = '<svg class="ops-chev ops-kartu-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
   let ingatKartu = {}; try { ingatKartu = JSON.parse(localStorage.getItem("ops_kartu") || "{}") || {}; } catch (e) {}
   const idKartu = ey => String(ey).replace(/<[^>]+>/g, "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-  const bagian = (ey, judul, isi, kanan = "") => { const id = idKartu(ey), buka = id in ingatKartu ? ingatKartu[id] : BUKA_AWAL.has(id);
-    return `<details class="ex ex-std ops-kartu" data-kartu="${id}"${buka ? " open" : ""}><summary class="ex-hd">${eyebrow(ey)}<div class="ex-jd"><h3>${judul}</h3>${kanan}</div>${CHEV}</summary><div class="ex-bd">${isi}</div></details>`; };
+  /* kepala kartu = NAMA SEKSI, bukan kalimat kesimpulan (pemilik 11 Nov 2026 "ini semuanya bukan kesimpulan kesimpulan ya");
+     kalimat temuan (judul) pindah ke baris pertama isi supaya infonya tetap ada */
+  const NAMA_SEKSI = {base: "Base dan armada", renlap: "Renlap", "aksi-armada": "Aksi armada", "tren-30-hari": "Tren 30 hari", "histori-armada": "Histori armada", operator: "Operator",
+    "jejak-ads-b": "Jejak ADS-B", "temuan-pilot": "Temuan pilot", "omc-resmi-bmkg-aktif": "OMC resmi BMKG", "modifikasi-cuaca": "Modifikasi cuaca", dokumentasi: "Dokumentasi", efektivitas: "Efektivitas", "kontrak-2026": "Kontrak 2026"};
+  const bagian = (ey, judul, isi, kanan = "") => { const id = idKartu(ey), buka = id in ingatKartu ? ingatKartu[id] : BUKA_AWAL.has(id), nama = NAMA_SEKSI[id];
+    if (!nama) return `<article class="ex ex-std"><header class="ex-hd">${eyebrow(ey)}<div class="ex-jd"><h3>${judul}</h3>${kanan}</div></header><div class="ex-bd">${isi}</div></article>`;
+    return `<details class="ex ex-std ops-kartu" data-kartu="${id}"${buka ? " open" : ""}><summary class="ex-hd">${eyebrow(ey)}<div class="ex-jd"><h3>${nama}</h3>${kanan}</div>${CHEV}</summary><div class="ex-bd"><p class="ops-lead">${judul}</p>${isi}</div></details>`; };
   const tabelH = (kepala, baris, kosong) => baris.length ? `<div class="tw ops-tw ex-tabel"><table><thead><tr>${kepala.map(k => { const [t, tip] = k.split("|");
       return `<th${t.startsWith("#") ? ' class="n"' : ""}${tip ? ` title="${esc(tip)}"` : ""}>${t.replace(/^#/, "")}</th>`; }).join("")}</tr></thead><tbody>${baris.join("")}</tbody></table></div>`
     : `<p class="ops-kosong">${kosong}</p>`;

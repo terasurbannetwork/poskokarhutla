@@ -590,3 +590,10 @@
 #opsLaporan .ops-rp-tren span:hover i{filter:brightness(1.12)}
 #opsLaporan .ops-rp-tren span.kini{box-shadow:inset 0 -2px 0 #e08a3a}
 #opsLaporan .ops-rp-tren u{position:absolute;left:0;bottom:-17px;font-size:.625rem;text-decoration:none;color:var(--ink2);white-space:nowrap}
+/* kartu lipat dalam wadah putih (pemilik 11 Nov 2026 "harusnya ada background container belakangnya"): kepala navy di dalam wadah */
+#opsLaporan details.ops-kartu,#opsLaporan .ops-pa-sek.ops-rk{padding:6px;background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
+#opsLaporan details.ops-kartu>summary.ex-hd,#opsLaporan .ops-pa-sek.ops-rk>summary{border-radius:16px}
+#opsLaporan details.ops-kartu>.ex-bd{padding:14px 2px 4px}
+#opsLaporan details.ops-kartu>summary .ex-jd>h3,#opsLaporan details.ops-kartu:not([open])>summary .ex-jd>h3{font-size:1rem}
+#opsLaporan .ops-lead{margin:2px 4px 14px;font-size:.9375rem;font-weight:700;color:var(--ink)}
+#opsLaporan .ops-lead .hl{color:#c2410c}
