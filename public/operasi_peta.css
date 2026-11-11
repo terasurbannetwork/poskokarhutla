@@ -1593,3 +1593,10 @@
 #opsLaporan .ops-rlk-tg li{justify-items:start}
 #opsLaporan .ops-rlk-tg li>b{justify-self:stretch;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #opsLaporan .ops-utama>.ops-alat>.ops-judul{justify-content:center;text-align:center}
+/* panel seksi mengisi tinggi: baris menu membesar rata, tanpa ruang kosong di tengah (pemilik 11 Nov 2026) */
+@media (min-width:901px){
+  #opsLaporan .ops-nav-isi>button{flex:1 1 0;min-height:30px;max-height:56px}
+  #opsLaporan .ops-nav-isi>.ops-nav-g{flex:none}
+  #opsLaporan .ops-nav-kaki{margin-top:6px}
+}
+@media (min-width:901px){#opsLaporan .ops-nav-isi>button{max-height:none}}
