@@ -1,0 +1,60 @@
+320/18312 granul baru, 501213 sel-hari
+340/18312 granul baru, 581956 sel-hari
+360/18312 granul baru, 637400 sel-hari
+380/18312 granul baru, 674801 sel-hari
+400/18312 granul baru, 763214 sel-hari
+420/18312 granul baru, 767055 sel-hari
+440/18312 granul baru, 788611 sel-hari
+460/18312 granul baru, 791208 sel-hari
+480/18312 granul baru, 885823 sel-hari
+500/18312 granul baru, 919740 sel-hari
+520/18312 granul baru, 937998 sel-hari
+540/18312 granul baru, 962880 sel-hari
+560/18312 granul baru, 968852 sel-hari
+580/18312 granul baru, 978924 sel-hari
+600/18312 granul baru, 1002346 sel-hari
+620/18312 granul baru, 1062339 sel-hari
+640/18312 granul baru, 1230216 sel-hari
+660/18312 granul baru, 1389008 sel-hari
+680/18312 granul baru, 1421421 sel-hari
+700/18312 granul baru, 1448884 sel-hari
+720/18312 granul baru, 1473511 sel-hari
+740/18312 granul baru, 1478797 sel-hari
+760/18312 granul baru, 1492647 sel-hari
+780/18312 granul baru, 1498739 sel-hari
+800/18312 granul baru, 1508474 sel-hari
+820/18312 granul baru, 1515816 sel-hari
+840/18312 granul baru, 1533899 sel-hari
+860/18312 granul baru, 1647158 sel-hari
+880/18312 granul baru, 1672297 sel-hari
+900/18312 granul baru, 1689428 sel-hari
+920/18312 granul baru, 1764703 sel-hari
+940/18312 granul baru, 1802067 sel-hari
+960/18312 granul baru, 1814638 sel-hari
+980/18312 granul baru, 1860774 sel-hari
+1000/18312 granul baru, 1940276 sel-hari
+1020/18312 granul baru, 1979726 sel-hari
+1040/18312 granul baru, 2003274 sel-hari
+1060/18312 granul baru, 2027032 sel-hari
+1080/18312 granul baru, 2068204 sel-hari
+1100/18312 granul baru, 2117708 sel-hari
+1120/18312 granul baru, 2223062 sel-hari
+1140/18312 granul baru, 2248989 sel-hari
+1160/18312 granul baru, 2309850 sel-hari
+1180/18312 granul baru, 2334011 sel-hari
+1200/18312 granul baru, 2439331 sel-hari
+1220/18312 granul baru, 2444517 sel-hari
+1240/18312 granul baru, 2494110 sel-hari
+1260/18312 granul baru, 2536312 sel-hari
+1280/18312 granul baru, 2542525 sel-hari
+1300/18312 granul baru, 2674537 sel-hari
+1320/18312 granul baru, 2705335 sel-hari
+katalog: {'granul': 18312, 'diambil': 18312, 'ubin': 638, 'akuisisi_awal': '2026-09-07T01:13:15.249Z', 'akuisisi_akhir': '2026-11-01T04:08:03.014Z', 'latensi_median_hari': 2.3}
+cakupan: {'granul_terdaftar': 18312, 'granul_selesai': 1326, 'granul_gagal': 0, 'granul_sisa': 16986, 'lengkap': False, 'dari_cache': 0, 'diunduh_putaran_ini': 1326}
+Traceback (most recent call last):
+  File "/home/runner/work/poskokarhutla/poskokarhutla/scripts/data/panen/opera_dist.py", line 552, in <module>
+    jalan(d0, d1, KELUAR_2023 if "--uji2023" in a else KELUAR)
+  File "/home/runner/work/poskokarhutla/poskokarhutla/scripts/data/panen/opera_dist.py", line 441, in jalan
+    baris = [[k[0], k[1], k[2]] + [None if x is None else round(x, 1) for x in v] for k, v in sorted(ag.items())]
+                                                                                              ^^^^^^^^^^^^^^^^^^
+TypeError: '<' not supported between instances of 'NoneType' and 'str'

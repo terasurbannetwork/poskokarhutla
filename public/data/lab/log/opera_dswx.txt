@@ -1,0 +1,2 @@
++ timeout 3300 python3 scripts/banjir/opera_dswx.py proses
+{"status": "sebagian: 741/1426 granul, 4/10 hari lengkap (anggaran 45 menit habis; lanjut di jalan berikutnya)", "granul_ditemukan": 1426, "hari": 11, "ubin_unik": 717, "kab_hari": 325} 31 KB
