@@ -18,7 +18,7 @@ before(async () => {
   mf = new Miniflare({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}], compatibilityDate: "2024-09-23",
     d1Databases: {DB: "uji-tanpa-0066"}, bindings: {SIHKA_STATUS_JEDA_MENIT: "0", IP_SALT: "g", ADMIN_TOKEN: "r"}, serviceBindings: {ASSETS: async () => new Response("", {status: 404})}, outboundService: luar, cache: false});
   DB = await mf.getD1Database("DB");
-  for (const f of readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && !/^006[68]_/.test(f)).sort())
+  for (const f of readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && !/^(006[68]|0125)_/.test(f)).sort())
     await DB.batch(pecah(readFileSync(path.join(AKAR, "migrations", f), "utf8")).map(s => DB.prepare(s)));
 });
 after(() => mf?.dispose());
