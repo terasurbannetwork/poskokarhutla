@@ -597,3 +597,30 @@
 #opsLaporan details.ops-kartu>summary .ex-jd>h3,#opsLaporan details.ops-kartu:not([open])>summary .ex-jd>h3{font-size:1rem}
 #opsLaporan .ops-lead{margin:2px 4px 14px;font-size:.9375rem;font-weight:700;color:var(--ink)}
 #opsLaporan .ops-lead .hl{color:#c2410c}
+/* pil kategori informasi di bawah Ringkasan (terapKat) */
+#opsLaporan .ops-kat{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px;padding:5px;border-radius:999px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+#opsLaporan .ops-kat button{display:inline-flex;align-items:center;justify-content:center;padding:9px 12px;border-radius:999px;font-size:.8125rem;font-weight:700}
+#opsLaporan .ops-kat button .ops-lbl{font-size:inherit;font-weight:inherit;color:inherit;gap:7px}
+#opsLaporan .ops-kat button .ops-lbl svg{width:15px;height:15px}
+#opsLaporan .ops-kat button[aria-pressed="true"]{background:#0b2545;color:#fff}
+@media (max-width:640px){#opsLaporan .ops-kat{grid-auto-flow:row;grid-template-columns:repeat(3,1fr);border-radius:18px}}
+#opsIsi [hidden]{display:none!important}
+/* satu wadah besar berisi pil kategori + kartu lipat (pemilik 11 Nov 2026 "container gede, di dalamnya baru collapsible") */
+#opsLaporan .ops-wadah{display:grid;gap:20px;padding:16px;background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}
+#opsLaporan .ops-wadah>.ops-kat{box-shadow:none;background:var(--surface,#eef2f8);border:0}
+#opsLaporan .ops-wadah details.ops-kartu{margin:0;padding:0;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:none}
+#opsLaporan .ops-wadah details.ops-kartu>summary.ex-hd{border-radius:15px}
+#opsLaporan .ops-wadah details.ops-kartu[open]>summary.ex-hd{border-radius:15px 15px 0 0}
+#opsLaporan .ops-wadah details.ops-kartu>.ex-bd{padding:14px 14px 10px}
+#opsLaporan .ops-wadah>div[data-kat-bungkus]{display:grid}
+/* Ringkasan di dalam wadah toolbar */
+#opsLaporan .ops-ringkas-slot{flex:1 1 100%;min-width:0}
+#opsLaporan .ops-ringkas-slot:empty{display:none}
+#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk{padding:0;border:1px solid var(--line);box-shadow:none;border-radius:18px}
+#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary{border-radius:17px 17px 0 0}
+#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk:not([open])>summary{border-radius:17px}
+/* kelompok Patroli + WB (peran patroli_wb): satu warna sendiri supaya jumlah kelompok = jumlah armada */
+.ops-lap-angka em small.ganda,#opsLaporan .ops-rp-bisi em small.ganda{background:color-mix(in srgb,#b7791f 13%,transparent);color:#8a5a12}
+#opsLaporan .ops-rp-peran{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+#opsLaporan .ops-rp-peran .ganda{color:#b7791f}
+#opsLaporan .ops-rp-peran .ganda i{background:color-mix(in srgb,#b7791f 13%,transparent)}

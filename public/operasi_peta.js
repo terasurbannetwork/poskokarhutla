@@ -17,7 +17,9 @@
     omc: '<path d="M7 18h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 9.5 4.3 4.3 0 0 0 7 18zM9 21l1-2M13 21l1-2"/>'};
   const ikG = k => `<svg class="ops-ig ops-g-${k}" viewBox="0 0 24 24" aria-hidden="true">${IK_GUNA[k]}</svg>`;
   const guna = a => ({wb: a.peran === "wb" || a.peran === "patroli_wb", patroli: a.peran === "patroli" || a.peran === "patroli_wb", omc: a.peran === "omc"});
-  const hitungGuna = ar => ({wb: ar.filter(a => guna(a).wb).length, patroli: ar.filter(a => guna(a).patroli).length, omc: ar.filter(a => guna(a).omc).length});
+  /* wb/patroli = kemampuan (patroli_wb masuk dua-duanya); wbSaja/ptrSaja/ganda/omc = kelompok yang jumlahnya sama dengan jumlah armada */
+  const hitungGuna = ar => ({wb: ar.filter(a => guna(a).wb).length, patroli: ar.filter(a => guna(a).patroli).length, omc: ar.filter(a => guna(a).omc).length,
+    wbSaja: ar.filter(a => a.peran === "wb").length, ptrSaja: ar.filter(a => a.peran === "patroli").length, ganda: ar.filter(a => a.peran === "patroli_wb").length});
   /* foto asli per registrasi (deck Rakor Kalteng/Kalsel 19 Okt 2026 + foto WA satgas, tanpa orang) */
   const FOTO = new Set(["HA-5234", "HA-5235", "N-814AR", "N261BE", "PK-DBM", "PK-FPU", "PK-RTQ", "PK-RTY", "PK-SNK", "PK-SNL", "RA-22747", "RA-22834", "RA-31021", "UR-CSM", "UR-CSN", "VH-HGM", "ZK-HKU"]);
   /* registrasi tanpa foto asli: foto tipe dari Wikimedia Commons (public/img/armada/tipe/SUMBER.txt); kredit hanya untuk lisensi yang mewajibkan */
@@ -244,7 +246,7 @@
     OP.data = d;
     /* menu Operasi di navbar: tersembunyi untuk tamu, muncul begitu /api/operasi/peta boleh dibaca */
     const nav = $('#tabs [data-t="operasi"]'); if (nav) nav.hidden = false;
-    if (!document.querySelector('link[href^="/operasi_peta.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/operasi_peta.css?v=41"; document.head.append(l); }
+    if (!document.querySelector('link[href^="/operasi_peta.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/operasi_peta.css?v=45"; document.head.append(l); }
     const dari7 = new Date(Date.parse(t) - 6 * 864e5).toISOString().slice(0, 10);
     [OP.mon, OP.rekap, OP.vis, OP.metar, OP.nilai] = await Promise.all([ambil(`/api/operasi/monitor?dari=${t}&sampai=${t}`), ambil("/data/operasi/rekap_udara.json"), ambil("/api/jarak-pandang"), ambil("/data/metar.json"),
       ambil(`/api/operasi/nilai?dari=${dari7}&sampai=${t}`)]);
