@@ -230,11 +230,24 @@
 .ops-tren svg{width:100%;height:90px;display:block;color:var(--ink2)}
 .ops-tren span{font-size:11.5px;color:var(--ink2)}
 .ops-efek{margin:0;font-size:12.5px;line-height:1.45;color:var(--ink2)}
-.ops-gl-hari{border-top:1px solid var(--line);padding:2px 0}
+/* dokumentasi per hari: baris tanggal + strip foto mini selalu terlihat, klik membuka galeri penuh per base */
+.ops-gl-hari{border-top:1px solid var(--line)}
 .ops-gl-hari:first-child{border-top:0}
-.ops-gl-hari>summary{cursor:pointer;display:flex;align-items:baseline;gap:8px;padding:10px 2px;font-weight:700;font-size:14px;color:var(--ink)}
-.ops-gl-hari small,.ops-gl-base small{font-weight:500;font-size:12px;color:var(--ink2)}
-.ops-gl-base{display:flex;align-items:baseline;gap:8px;margin:6px 0 8px;font-size:13px;font-weight:700;color:var(--ink)}
+.ops-gl-hari>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:150px 1fr auto;align-items:center;gap:16px;padding:12px 4px}
+.ops-gl-hari>summary::-webkit-details-marker{display:none}
+.ops-gl-tgl{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ops-gl-tgl b{font-size:.9375rem;font-weight:800;color:var(--ink)}
+.ops-gl-tgl small{font-size:.75rem;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ops-gl-pra{display:flex;gap:6px;min-width:0;overflow:hidden}
+.ops-gl-pra img{width:72px;height:54px;flex:none;object-fit:cover;border-radius:8px;background:var(--line)}
+.ops-gl-pra i{flex:none;display:grid;place-items:center;width:54px;height:54px;border-radius:8px;border:1px dashed var(--line);font-style:normal;font-size:.75rem;font-weight:800;color:var(--brand2)}
+.ops-gl-hari .ops-chev{width:16px;height:16px;color:var(--ink2);transition:transform .2s}
+.ops-gl-hari[open] .ops-chev{transform:rotate(90deg);color:var(--brand2)}
+.ops-gl-hari[open] .ops-gl-pra{visibility:hidden}
+.ops-gl-isi{padding:0 4px 14px}
+.ops-gl-base small{font-weight:500;font-size:.75rem;color:var(--ink2)}
+.ops-gl-base{display:flex;align-items:baseline;gap:8px;margin:6px 0 8px;font-size:.8125rem;font-weight:700;color:var(--ink)}
+@media (max-width:760px){.ops-gl-hari>summary{grid-template-columns:1fr auto}.ops-gl-pra{grid-column:1/-1;grid-row:2}}
 .ops-galeri{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;padding-bottom:6px}
 .ops-galeri a{display:grid;gap:4px;text-decoration:none;color:var(--ink)}
 .ops-galeri img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;background:var(--surface)}
