@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Server tinjau lokal http://localhost:8800 (scripts/agents/tinjau_lokal.mjs), jalan terus di Mac pemilik.
+     Pasang (pemilik sendiri, sekali per mesin): npm run tinjau:pasang. REPO diganti jalur repo oleh perintah itu. -->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>id.centurisk97.tinjau-lokal</string>
+  <key>ProgramArguments</key><array><string>/opt/homebrew/bin/node</string><string>REPO/scripts/agents/tinjau_lokal.mjs</string><string>8800</string></array>
+  <key>WorkingDirectory</key><string>REPO</string>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardOutPath</key><string>/tmp/tinjau-lokal.log</string>
+  <key>StandardErrorPath</key><string>/tmp/tinjau-lokal.log</string>
+</dict>
+</plist>

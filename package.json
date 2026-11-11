@@ -22,7 +22,9 @@
     "bencana:cek": "python3 scripts/umum/bencana.py cek",
     "uji:sensor": "python3 -m unittest discover -s tests/sensor -p 'test_*.py'",
     "token:ukur": "node scripts/agents/token-ukur.mjs",
-    "dorong": "sh scripts/agents/dorong.sh"
+    "dorong": "sh scripts/agents/dorong.sh",
+    "tinjau": "node scripts/agents/tinjau_lokal.mjs 8800",
+    "tinjau:pasang": "sed \"s#REPO#$PWD#g\" scripts/agents/tinjau_lokal.plist > ~/Library/LaunchAgents/id.centurisk97.tinjau-lokal.plist && (launchctl bootout gui/$(id -u)/id.centurisk97.tinjau-lokal 2>/dev/null; launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/id.centurisk97.tinjau-lokal.plist) && echo http://localhost:8800"
   },
   "devDependencies": {
     "miniflare": "3.20250718.3",

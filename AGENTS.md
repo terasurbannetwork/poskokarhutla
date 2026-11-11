@@ -289,6 +289,15 @@ Deck lain belum kena aturan ini. Gerbangnya `tests/agen/gerbang-folder-revisi.te
 
 Pemilik: "disiapkan semuanya dari hulu ke hilir baru dikerjakan kodingannya biar ga jelek". Fitur atau modul besar lahir berurutan: KEPUTUSAN, RISET, PRD, ALUR, ALGORITMA, DESIGN-SYSTEM, DESAIN-TEKNIS, KEAMANAN-PRIVASI, RENCANA-UJI, TIKET, GLOSARIUM di `data/kajian-bnpb/<modul>/`, diperiksa pemeriksa bersih, lalu bagian "baca dulu, baru bangun" di §2 dan agent pengerjanya, baru tiket pertama dikerjakan. Pertanyaan yang belum dijawab pemilik ditulis dengan bawaan sementara yang ditandai, tidak dikarang. Folder baru di `public/` atau `scripts/` tanpa paket ditolak. Gerbangnya `tests/agen/gerbang-paket-modul.test.mjs`, pengingatnya `scripts/agents/pengingat-paket.mjs`.
 
+### 3.8 Tinjau di lokal dulu (11 Nov 2026)
+
+Pemilik meninjau tiap perubahan layar di lokal, tanpa menunggu push dan terbit GitHub. Server tinjau tetap ada di
+**http://localhost:8800**: kode (HTML, JS, CSS) dari folder kerja, data, API, dan login dari centurisk97.id
+(`scripts/agents/tinjau_lokal.mjs`, launchd `id.centurisk97.tinjau-lokal`, dipasang pemilik sekali lewat `npm run tinjau:pasang`).
+Tiap sesi yang mengubah layar menutup laporannya dengan tautan `http://localhost:8800/<jalur>` halaman itu; bila port 8800
+tidak menjawab, jalankan `npm run tinjau` di latar dan sebut itu. Pemilik masuk sendiri lewat `/admin/masuk` di localhost;
+tulisan lewat server ini mengenai PRODUKSI. Gerbangnya `tests/agen/gerbang-tinjau-lokal.test.mjs`.
+
 ## 6. Review
 
 | Permukaan berubah                          | Pengulas                                  |
