@@ -501,7 +501,27 @@ def entri_wa_semua(kode_kab, sesudah=""):
             if not glob.glob(os.path.join(os.path.dirname(f), "kerja-*/data.json")):
                 d = {"hari": os.path.basename(os.path.dirname(f))[7:], "kejadian": WH.koordalops(open(f, encoding="utf-8").read())["kejadian"]}
                 out += [e for e in wa_entri(d, kode_kab) if e["tgl"] > sesudah]
+    out += entri_wa_bot(kode_kab, sesudah)
     return sorted(out, key=lambda e: e["tgl"])
+
+
+def entri_wa_bot(kode_kab, sesudah="", dasar=None):
+    """Rekap WA Koordalops yang diterima bot (WA_BOT_DIR, bawaan ~/.wa-bot: kerja/<tanggal laporan>/harian/rekap_koordalops_24.txt),
+    untuk tanggal yang belum punya folder data/laporan-bnpb/harian-<tanggal> di repo. Tanpa ini Pantau Dalops berhenti di salinan repo terakhir."""
+    dasar = dasar or os.environ.get("WA_BOT_DIR") or os.path.expanduser("~/.wa-bot")
+    WH, out = None, []
+    for f in sorted(glob.glob(os.path.join(dasar, "kerja", "20??-??-??", "harian", "rekap_koordalops_24.txt"))):
+        hari = os.path.basename(os.path.dirname(os.path.dirname(f)))
+        if os.path.isdir(os.path.join(AKAR, f"data/laporan-bnpb/harian-{hari}")):
+            continue
+        WH = WH or _muat("wa_harian", "data/laporan-bnpb/generator/wa_harian.py")
+        try:
+            d = {"hari": hari, "kejadian": WH.koordalops(open(f, encoding="utf-8").read())["kejadian"]}
+        except Exception as x:   # satu rekap rusak tidak menghentikan pembaruan hari lain
+            print(f"rekap WA {hari} tidak terbaca: {x}")
+            continue
+        out += [e for e in wa_entri(d, kode_kab) if e["tgl"] > sesudah]
+    return out
 
 
 def tulis(isi, unggah):

@@ -118,6 +118,8 @@ export function depBawaan(env) {
     kirimFile: (target, p, filename, caption, mimetype) => pos('/send-file', { target, path: p, filename, caption, mimetype }),
     kirimTeks: (target, message) => pos('/send', { target, message }),
     unggahDrive: (a) => buatDrive({ env }).unggahLaporan(a), // null bila Drive belum dikonfigurasi
+    // Pantau Dalops: perbarui tabel kejadian per jenis di R2 dari rekap WA Koordalops di folder kerja bot (scripts/data/dalops_banjir.py --wa).
+    dalops: ({ dasar }) => execP('python3', [path.resolve(DI, '../data/dalops_banjir.py'), '--wa', '--unggah'], { cwd: path.resolve(DI, '../..'), timeout: 10 * 60e3, maxBuffer: 20e6, env: { ...process.env, WA_BOT_DIR: dasar } }),
     unggah: async ({ tanggal, laporan, revisi, pptx, pdf }) => {
       const f = new FormData()
       f.set('tanggal', tanggal); f.set('laporan', laporan); f.set('revisi', String(revisi))
@@ -310,6 +312,19 @@ export async function jalankan(opsi = {}) {
       } catch (x) {
         await galat(kunci, x.message)
         hasil.push({ id: lap.id, status: 'galat', alasan: x.message })
+      }
+    }
+    // Pantau Dalops ikut rekap WA Koordalops hari ini, walau deck harian gagal dibangun (pemilik 11 Nov 2026: "kenapa belum terupdate").
+    // Sekali per isi rekap; gagal = PEMILIK dikabari sekali lewat galat(), diulang jalan berikut.
+    if (dep.dalops && !kering) {
+      const rekap = path.join(dasar, 'kerja', tanggal, 'harian', 'rekap_koordalops_24.txt')
+      if (fs.existsSync(rekap)) {
+        const sidik = crypto.createHash('sha256').update(fs.readFileSync(rekap)).digest('hex').slice(0, 16), kunciD = 'dalops:' + tanggal
+        state.dalops ||= {}
+        if (state.dalops[tanggal] !== sidik) {
+          try { await dep.dalops({ dasar, tanggal }); state.dalops[tanggal] = sidik; delete state.gagal[kunciD]; simpan(); hasil.push({ id: 'dalops', status: 'diperbarui' }) }
+          catch (x) { await galat(kunciD, `Pantau Dalops gagal diperbarui dari rekap WA: ${String(x.stderr || x.message).slice(-200)}`); hasil.push({ id: 'dalops', status: 'galat' }) }
+        }
       }
     }
     const pb = await peringatanBanjir({ env, dep, tanggal, state, simpan, kering, log, galat, jamWib: opsi.tanggal && tanggal !== tanggalWib(now) ? 24 : jamWib(now) })

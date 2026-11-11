@@ -19,6 +19,8 @@ Kuota Open-Meteo: 1 variabel x 51 anggota / 10 = 5,1 per lokasi (10 hari < 14). 
 dihitung ulang 18 Okt 2026 untuk perluasan m2/m3: tidak berubah, 50 lokasi per panggilan x 7 panggilan).
 Nilai titik berlaku untuk kotaknya; status.py memakai titik terdekat (<= 1 derajat) untuk tiap kecamatan.
 Model cadangan: gfs025 (31 anggota, 3,1 per lokasi).
+AIFS (ecmwf_aifs025, 51 anggota): diambil tiap hari bersama IFS (+~1.780 kuota/hari) ke hujan_ansambel_aifs.json (bayangan). Masuk ansambel hanya bila
+uji_aifs.json["vonis"] == "LOLOS" (PRAREG-AIFS.md); lalu anggotanya ditambahkan ke daftar anggota IFS (gabung()), cara hitung lain tidak berubah.
 
 Pakai:  python3 scripts/banjir/ansambel_hujan.py      |  python3 scripts/banjir/ansambel_hujan.py uji
 Jalankan setelah hujan.py (kisi darat dibaca dari hujan.json).
@@ -30,8 +32,20 @@ from umum import KELUAR, WIB, KuotaHabis, ambil, baca, per_lokasi, simpan
 
 URL = "https://ensemble-api.open-meteo.com/v1/ensemble"
 MODEL = ["ecmwf_ifs025", "gfs025"]
+AIFS = "ecmwf_aifs025"   # ensemble-api Open-Meteo, 51 anggota (diperiksa 11 Nov 2026). Bayangan sampai uji_aifs.json bervonis LOLOS (PRAREG-AIFS.md)
+UJI_AIFS = os.path.join(KELUAR, "uji_aifs.json")
 HARI = 8          # hari ini .. +7; p3 hari terakhir butuh +9
 PER_PANGGIL = 25
+
+
+def aifs_lolos():
+    """True hanya bila uji_aifs.json bervonis LOLOS. Berkas hilang/rusak/vonis lain = bayangan."""
+    return (baca(UJI_AIFS, {}) or {}).get("vonis") == "LOLOS"
+
+
+def gabung(daily, aifs):
+    """Anggota AIFS ditambahkan ke daftar anggota IFS (kunci diberi akhiran _aifs); anggota IFS tidak diubah."""
+    return {**daily, **{k + "_aifs": v for k, v in aifs.items() if k.startswith("precipitation_sum")}}
 
 
 def peluang(anggota, ambang):
@@ -76,12 +90,28 @@ def main():
     print(f"{len(titik)} titik (1 per kotak 1 derajat)", file=sys.stderr)
     for m in MODEL:
         keluar, hari, total, n = [], None, 0.0, 0
+        bayang, pakai = [], m == MODEL[0] and aifs_lolos()
         try:
             for a in range(0, len(titik), PER_PANGGIL):
                 b = titik[a:a + PER_PANGGIL]
                 q = {"latitude": ",".join(str(g["lat"]) for g in b), "longitude": ",".join(str(g["lon"]) for g in b),
                      "models": m, "daily": "precipitation_sum", "forecast_days": HARI + 2, "timezone": "Asia/Jakarta"}
-                for g, d in zip(b, per_lokasi(ambil(URL + "?" + urllib.parse.urlencode(q), batas_waktu=240))):
+                ds = per_lokasi(ambil(URL + "?" + urllib.parse.urlencode(q), batas_waktu=240))
+                da = [None] * len(b)
+                if m == MODEL[0]:   # AIFS: gagal tidak boleh menjatuhkan IFS
+                    try:
+                        time.sleep(len(b) * 5.1 / 9)
+                        da = [x["daily"] for x in per_lokasi(ambil(URL + "?" + urllib.parse.urlencode({**q, "models": AIFS}), batas_waktu=240))]
+                    except KuotaHabis:
+                        raise
+                    except Exception as e:
+                        print(f"  aifs gagal: {e}", file=sys.stderr)
+                for g, d, a_ in zip(b, ds, da):
+                    if a_ is not None:
+                        r_ = olah(a_)
+                        bayang.append({"lat": g["lat"], "lon": g["lon"], "prov": g["prov"], "p50": r_[1], "p100": r_[2], "p3": r_[3], "n": r_[4]})
+                        if pakai:
+                            d = {"daily": gabung(d["daily"], a_)}
                     hari, p50, p100, p3, n, m2, m3, q, c7 = olah(d["daily"])
                     keluar.append({"lat": g["lat"], "lon": g["lon"], "prov": g["prov"], "p50": p50, "p100": p100, "p3": p3, "m2": m2, "m3": m3, "q": q, "h7": c7})
                 w = len(b) * max(1.0, n / 10)
@@ -96,6 +126,11 @@ def main():
         simpan(os.path.join(KELUAR, "hujan_ansambel.json"), {
             "dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "model": m, "anggota": n, "hari": hari,
             "sel": 1, "sampel": "sel darat 0,25 derajat terdekat ke pusat kotak 1 derajat", "grid": keluar})
+        if bayang:
+            simpan(os.path.join(KELUAR, "hujan_ansambel_aifs.json"), {
+                "dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "model": AIFS, "hari": hari, "status": "dipakai" if pakai else "bayangan",
+                "grid": bayang})
+        print(f"AIFS {'masuk ansambel' if pakai else 'bayangan'}: {len(bayang)} titik", file=sys.stderr)
         print(f"hujan_ansambel.json: {len(keluar)} titik; P(3 hari >= 100 mm) >= 0,5 hari ini: "
               f"{sum(1 for g in keluar if (g['p3'][0] or 0) >= .5)}, maks semua hari: "
               f"{sum(1 for g in keluar if max(x or 0 for x in g['p3']) >= .5)}; kuota ~{total:.0f}; "
@@ -125,6 +160,9 @@ def uji():
     assert r[1][1] == 0.33 and r[3][1] == 0.0, (r[1], r[3])  # besok P(>=50)=1/3; jumlah +1..+3: A 60, B 90, C 60 -> tak ada >= 100
     s7 = h7([[0, 60, 0, 0, 0, 0, 0, 0], [0, 10, 10, 10, 10, 10, 10, None], [0, 10, 10, 10, 10, 10, 10, 10], [0, 80, 80, 80, 0, 0, 0, 0]])
     assert s7 == [0.67, 0.33], s7  # anggota 2 kosong dibuang (belum terbukti); lewat: 60, 80/80/80 ; jumlah >= 150: hanya 240
+    g = gabung({"time": ["d0"], "precipitation_sum": [1]}, {"time": ["d0"], "precipitation_sum_member01": [2], "x": [3]})
+    assert g == {"time": ["d0"], "precipitation_sum": [1], "precipitation_sum_member01_aifs": [2]}, g
+    assert olah({"time": ["d0"] * 10, **{k: [60] * 10 for k in g if k.startswith("pre")}})[4] == 2   # anggota AIFS terhitung bila digabung
     print("ok ansambel_hujan")
 
 

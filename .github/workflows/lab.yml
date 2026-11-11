@@ -90,15 +90,17 @@ jobs:
       - name: Pustaka ilmiah (hanya job lab)
         run: pip install numpy rasterio pyshp fiona netCDF4  # netCDF4 hanya untuk GFED5 di lab_luas.py
 
-      - name: Cache unduhan lab
-        uses: actions/cache@v4
+      # restore/save terpisah, kunci per run: kemajuan OPERA (data/raw/lab/opera_*) tersimpan tiap putaran, juga bila job dibatalkan.
+      # actions/cache@v4 dengan kunci hash skrip hanya menyimpan saat kunci meleset, jadi kemajuan hilang (run 42867122438).
+      - name: Pulihkan unduhan lab
+        uses: actions/cache/restore@v4
         with:
           path: |
             data/raw/ujibanding
             data/raw/lab
             data/raw/firms
             !data/raw/ujibanding/lapangan
-          key: lab-v1-${{ hashFiles('scripts/lab/**', 'scripts/data/ujibanding_firespot.py', 'scripts/data/ujiluas_*.py', 'scripts/data/lab_*.py') }}
+          key: lab-v1-${{ github.run_id }}
           restore-keys: lab-v1-
 
       # Pembantu bersama: lab_jalan <nama> <perintah...> menjalankan, mencatat log (<= 200 KB, ekor) ke public/data/lab/log/<nama>.txt,
@@ -225,12 +227,13 @@ jobs:
           [[ ",$TUGAS," == *",opera,"* ]] || { echo "dilewati (tugas=$TUGAS; 'opera' harus disebut eksplisit)"; exit 0; }
           gagal=0
           python3 scripts/data/panen/opera_dist.py uji || gagal=1
-          lab_jalan opera_dist python3 scripts/data/panen/opera_dist.py jalan $OPERA_AWAL $OPERA_AKHIR || gagal=1
+          # skrip berhenti sendiri di LAB_MENIT (45) dan melanjutkan putaran berikutnya dari cache; timeout shell hanya jaring pengaman
+          lab_jalan opera_dist timeout 3300 python3 scripts/data/panen/opera_dist.py jalan $OPERA_AWAL $OPERA_AKHIR || gagal=1
           if [ "$OPERA_UJI2023" = true ]; then
-            lab_jalan opera_dist_2023 python3 scripts/data/panen/opera_dist.py jalan 2023-07-31 2023-11-05 --uji2023 || gagal=1
+            lab_jalan opera_dist_2023 timeout 3300 python3 scripts/data/panen/opera_dist.py jalan 2023-07-31 2023-11-05 --uji2023 || gagal=1
           fi
           python3 scripts/banjir/opera_dswx.py uji || gagal=1
-          lab_jalan opera_dswx python3 scripts/banjir/opera_dswx.py proses || gagal=1
+          lab_jalan opera_dswx timeout 3300 python3 scripts/banjir/opera_dswx.py proses || gagal=1
           [ "$gagal" = 0 ] || exit 1
       - name: 7. Commit hasil ke cabang ini
         if: always()
@@ -269,3 +272,14 @@ jobs:
           done
           echo "::error title=Lab::push hasil gagal setelah 3 percobaan"
           exit 1
+
+      - name: Simpan unduhan lab
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            data/raw/ujibanding
+            data/raw/lab
+            data/raw/firms
+            !data/raw/ujibanding/lapangan
+          key: lab-v1-${{ github.run_id }}

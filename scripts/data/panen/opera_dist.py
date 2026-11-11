@@ -9,6 +9,9 @@ Pakai:  python3 opera_dist.py katalog [dari sampai]    # CMR tanpa login: jumlah
         python3 opera_dist.py jalan [dari sampai] [--uji2023]  # --uji2023: tulis ke public/data/opera_dist_2023.json (dibaca ujiluas_kab.py), tidak menyentuh berkas bawaan; # unduh + olah + tulis public/data/opera_dist.json (EARTHDATA_TOKEN + numpy + rasterio)
         python3 opera_dist.py uji                       # self-check logika irisan, tanpa jaringan
         (dari/sampai = YYYY-MM-DD UTC; bawaan 8 pekan terakhir yang sudah terbit, pekan penuh Senin-Minggu)
+Anggaran waktu: env LAB_MENIT (menit, bawaan 45). Granul baru tidak dimulai mendekati batas; yang selesai disimpan per granul di
+  data/raw/lab/opera_dist/ (hasil sudah direduksi ke sel-hari, bukan raster; dipulihkan actions/cache lab.yml) dan putaran berikutnya melanjutkan.
+  Keluaran sebelum semua granul selesai berstatus "sebagian" (bukan "ok"), `cakupan.lengkap` false; ujiluas_kab.py hanya menerima status "ok".
 Kunci: EARTHDATA_TOKEN dari env (token Bearer akun Earthdata), TIDAK pernah ditulis ke berkas/log, dan tidak dikirim ke host lain saat redirect.
 Tanpa token: berkas keluaran berisi status "menunggu_kunci" + statistik katalog nyata; berkas berstatus "ok" tidak pernah ditimpa stub.
 
@@ -24,7 +27,7 @@ Metode (semua konstanta dinyatakan di keluaran):
 Keterbatasan: tanggal gangguan = deteksi pertama (bisa tertunda awan), sel 330 m kasar di tepi kabupaten, irisan hotspot bukan bukti api
   (tebang di dekat api ikut terhitung), piksel tertutup awan tidak teramati sehingga angka cenderung rendah, bukan batas atas.
 """
-import collections, datetime as dt, glob, json, math, os, sys, time, urllib.parse, urllib.request, urllib.error
+import collections, concurrent.futures, datetime as dt, glob, json, math, os, sys, time, urllib.parse, urllib.request, urllib.error
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
@@ -33,7 +36,10 @@ from panen_util import tulis, http_json, UA  # noqa: E402
 RAIZ = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 KELUAR = os.path.join(RAIZ, "public", "data", "opera_dist.json")
 KELUAR_2023 = os.path.join(RAIZ, "public", "data", "opera_dist_2023.json")
-CACHE = os.path.join(RAIZ, "data", "raw", "opera_dist")
+CACHE = os.path.join(RAIZ, "data", "raw", "lab", "opera_dist")   # di bawah data/raw/lab: dipulihkan actions/cache lab.yml
+MENIT_BAWAAN = 45
+SISA_DETIK = 480            # granul baru berhenti dimulai SISA_DETIK sebelum anggaran habis (sisa untuk granul berjalan + agregasi + tulis)
+PEKERJA = 4
 CMR = "https://cmr.earthdata.nasa.gov/search/granules.json"
 SHORT = "OPERA_L3_DIST-ALERT-HLS_V1"
 KOTAK = "95,-11,141,6"
@@ -197,12 +203,13 @@ def unduh(url, token):
     (bukan substring), tidak pernah ke S3/CloudFront. Jawaban HTML (halaman login) ditolak."""
     ok_host = {urllib.parse.urlparse(url).hostname, HOST_URS}
     op = urllib.request.build_opener(_TanpaRedirect)
-    for _ in range(5):
+    coba = 0
+    for _ in range(8):
         h = {"User-Agent": UA}
         if urllib.parse.urlparse(url).hostname in ok_host and urllib.parse.urlparse(url).scheme == "https":
             h["Authorization"] = "Bearer " + token
         try:
-            with op.open(urllib.request.Request(url, headers=h), timeout=300) as r:
+            with op.open(urllib.request.Request(url, headers=h), timeout=120) as r:
                 if "text/html" in r.headers.get("Content-Type", ""):
                     raise RuntimeError("HTTP 401 jawaban HTML (halaman login), token ditolak")
                 return r.read()
@@ -210,7 +217,13 @@ def unduh(url, token):
             if e.code in (301, 302, 303, 307, 308):
                 url = urllib.parse.urljoin(url, e.headers["Location"])
                 continue
+            if e.code >= 500 and coba < 2:
+                coba += 1; time.sleep(3 * coba); continue
             raise RuntimeError(f"HTTP {e.code} (token Earthdata ditolak/kedaluwarsa?)" if e.code in (401, 403) else f"HTTP {e.code}") from None
+        except (urllib.error.URLError, TimeoutError, ConnectionError):   # galat jaringan sesaat: ulang 2x lalu granul dilewati
+            if coba >= 2:
+                raise
+            coba += 1; time.sleep(3 * coba)
     raise RuntimeError("redirect berulang")
 
 
@@ -277,7 +290,7 @@ def muat_titik(a, b):
 
 
 # ---------------------------------------------------------------- jalan
-def tulis_keluaran(keluar, status, a, b, kat, ket, baris=None, titik_ket=None, ntitik=0, cov=None):
+def tulis_keluaran(keluar, status, a, b, kat, ket, baris=None, titik_ket=None, ntitik=0, cov=None, cakupan=None):
     out = {"status": status, "dibuat": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "label": LABEL,
            "sumber": SHORT, "atribusi": ATRIBUSI, "lisensi": LISENSI, "periode": [a.isoformat(), b.isoformat()], "katalog": kat,
            "metode": {"piksel_ha": HA_PIKSEL, "sel_derajat": SEL, "radius_sel": RADIUS_SEL, "radius_km_kira2": round(RADIUS_SEL * SEL * 111, 2),
@@ -288,6 +301,8 @@ def tulis_keluaran(keluar, status, a, b, kat, ket, baris=None, titik_ket=None, n
                       "irisan_null": "null = data titik panas tidak menutup jendela irisan untuk sebagian/seluruh gangguan baris itu; BUKAN nol"},
            "kolom": ["prov", "kab", "pekan", "ha_total", "ha_konfirmasi", "ha_irisan_hotspot", "ha_irisan_hotspot_konfirmasi", "ha_gambut_total", "ha_gambut_irisan_hotspot"],
            "baris": baris or [], "keterangan": ket}
+    if cakupan:
+        out["cakupan"] = cakupan
     if baris:
         def s(i):
             v = [r[i] for r in baris]
@@ -297,11 +312,63 @@ def tulis_keluaran(keluar, status, a, b, kat, ket, baris=None, titik_ket=None, n
     print(f"{keluar}: {n/1e3:.0f} KB, status {status}")
 
 
-def sudah_ok(keluar):
+def sudah_ok(keluar, periode=None):
+    """Berkas berstatus ok (dan, bila periode diberikan, untuk periode yang sama)."""
     try:
-        return json.load(open(keluar)).get("status") == "ok"
+        j = json.load(open(keluar))
+        return j.get("status") == "ok" and (periode is None or j.get("periode") == periode)
     except Exception:
         return False
+
+
+def anggaran_detik(env=None):
+    """LAB_MENIT -> batas mulai granul baru dalam detik sejak awal (anggaran dikurangi SISA_DETIK, minimal separuh anggaran)."""
+    try:
+        m = float((os.environ if env is None else env).get("LAB_MENIT", "") or MENIT_BAWAAN)
+    except ValueError:
+        m = MENIT_BAWAAN
+    return max(m * 30, m * 60 - SISA_DETIK)
+
+
+def kerjakan(tugas, fn, terima, batas, pekerja=PEKERJA, jam=time.monotonic):
+    """Jalankan fn(t) untuk tiap t di tugas dengan kolam utas; tugas yang belum DIMULAI saat jam() >= batas dilewati (sisa).
+    terima(t, hasil) dipanggil di utas pemanggil (aman untuk gabung ke struktur bersama). -> (selesai, gagal, sisa).
+    Lebih dari 20 galat 'ditolak' (token) menghentikan sisa tugas."""
+    selesai, gagal, sisa, ditolak = 0, 0, 0, [0]
+    def satu(t):
+        if jam() >= batas or ditolak[0] > 20:
+            return None
+        try:
+            return (fn(t),)
+        except Exception as ex:
+            if "ditolak" in str(ex):
+                ditolak[0] += 1
+            print("gagal", str(t)[-40:], str(ex)[:80], file=sys.stderr)
+            return ex
+    with concurrent.futures.ThreadPoolExecutor(max(1, pekerja)) as kolam:
+        for t, r in zip(tugas, kolam.map(satu, tugas)):
+            if r is None:
+                sisa += 1
+            elif isinstance(r, Exception):
+                gagal += 1
+            else:
+                terima(t, r[0]); selesai += 1
+    return selesai, gagal, sisa
+
+
+def baca_cache(cb):
+    try:
+        return {tuple(map(int, k.split(","))): tuple(v) for k, v in json.load(open(cb)).items()}
+    except Exception:
+        return None
+
+
+def simpan_cache(cb, sh):
+    """Atomik: tulis ke berkas sementara lalu ganti, supaya pembatalan job tak meninggalkan cache separuh."""
+    os.makedirs(os.path.dirname(cb), exist_ok=True)
+    tmp = cb + ".tmp"
+    json.dump({",".join(map(str, k)): v for k, v in sh.items()}, open(tmp, "w"))
+    os.replace(tmp, cb)
 
 
 def jalan(a, b, keluar=KELUAR):
@@ -321,36 +388,55 @@ def jalan(a, b, keluar=KELUAR):
     from wilayah import Wilayah, Poligon
     os.makedirs(CACHE, exist_ok=True)
     lo, hi = (a - EPOCH).days, (b - EPOCH).days
-    kumpul, gagal = {}, 0
-    for n, e in enumerate(ent):
+    mulai = time.monotonic()
+    batas = mulai + anggaran_detik()
+    kumpul, tanpa_url, baru = {}, 0, []
+    cache_ada = 0
+    for e in ent:
         u = entri_ke_url(e)
         if len(u) < 2:
-            gagal += 1
+            tanpa_url += 1
             continue
         cb = os.path.join(CACHE, e["title"] + ".json")
-        if os.path.exists(cb):
-            sh = {tuple(map(int, k.split(","))): tuple(v) for k, v in json.load(open(cb)).items()}
+        sh = baca_cache(cb) if os.path.exists(cb) else None
+        if sh is None:
+            baru.append((e["title"], u, cb))
         else:
-            try:
-                sh = olah_granul(unduh(u["VEG-DIST-STATUS"], token), unduh(u["VEG-DIST-DATE"], token))
-            except Exception as ex:
-                gagal += 1
-                print("gagal", e["title"][-40:], str(ex)[:80], file=sys.stderr)
-                if gagal > 20 and "ditolak" in str(ex):
-                    break
-                continue
-            json.dump({",".join(map(str, k)): v for k, v in sh.items()}, open(cb, "w"))
-        gabung_granul(kumpul, sh, lo, hi)
-        if n % 50 == 0:
-            print(f"{n}/{len(ent)} granul, {len(kumpul)} sel-hari", file=sys.stderr, flush=True)
-    if gagal > len(ent) // 4:
+            gabung_granul(kumpul, sh, lo, hi); cache_ada += 1
+    print(f"{cache_ada} granul dari cache, {len(baru)} perlu diunduh, {tanpa_url} tanpa url; anggaran mulai-granul {(batas - mulai) / 60:.0f} menit", file=sys.stderr, flush=True)
+
+    def kerja(t):
+        _, u, cb = t
+        sh = olah_granul(unduh(u["VEG-DIST-STATUS"], token), unduh(u["VEG-DIST-DATE"], token))
+        simpan_cache(cb, sh)
+        return sh
+    n = [0]
+    def terima(t, sh):
+        gabung_granul(kumpul, sh, lo, hi); n[0] += 1
+        if n[0] % 20 == 0:
+            print(f"{n[0]}/{len(baru)} granul baru, {len(kumpul)} sel-hari", file=sys.stderr, flush=True)
+    selesai, gagal, sisa = kerjakan(baru, kerja, terima, batas)
+    gagal += tanpa_url
+    cak = {"granul_terdaftar": len(ent), "granul_selesai": cache_ada + selesai, "granul_gagal": gagal, "granul_sisa": sisa,
+           "lengkap": cache_ada + selesai == len(ent), "dari_cache": cache_ada, "diunduh_putaran_ini": selesai}
+    print("cakupan:", cak)
+    if sisa == 0 and gagal > len(ent) // 4:
         print(f"GAGAL: {gagal}/{len(ent)} granul tak terolah; berkas tidak ditulis."); sys.exit(1)
+    if cak["granul_selesai"] == 0:
+        print("belum ada granul selesai; berkas tidak ditulis."); sys.exit(1)
+    if sisa and sudah_ok(keluar, [a.isoformat(), b.isoformat()]):
+        print("anggaran habis, tapi berkas ok untuk periode ini sudah ada; tidak diturunkan jadi sebagian."); return
     titik, tket, cov = muat_titik(a, b)
     ix = indeks_titik(titik)
     wil, gb = Wilayah(), Poligon(os.path.join(RAIZ, "public/data/lahan/gambut.geojson"))
     ag = agregat(kumpul, ix, wil.cari, gb.cari, cov)
     baris = [[k[0], k[1], k[2]] + [None if x is None else round(x, 1) for x in v] for k, v in sorted(ag.items())]
-    tulis_keluaran(keluar, "ok", a, b, kat, f"{gagal} granul tak terolah; angka rendah-bias karena awan.", baris, tket, len(titik), cov)
+    if sisa:
+        ket = (f"SEBAGIAN: {cak['granul_selesai']} dari {len(ent)} granul terolah ({sisa} menunggu putaran berikutnya karena anggaran waktu, {gagal} gagal); "
+               "angka LEBIH RENDAH dari sebenarnya dan tidak boleh dibaca sebagai total periode. Jalankan lagi untuk melanjutkan.")
+    else:
+        ket = f"{gagal} granul tak terolah; angka rendah-bias karena awan."
+    tulis_keluaran(keluar, "sebagian" if sisa else "ok", a, b, kat, ket, baris, tket, len(titik), cov, cak)
 
 
 # ---------------------------------------------------------------- uji
@@ -400,6 +486,45 @@ def uji():
     # ringkas katalog: latensi dari dua stempel di nama granul
     r = ringkas_katalog([{"title": "OPERA_L3_DIST-ALERT-HLS_T53MLV_20261101T011943Z_20261103T022729Z_L8_30_v1", "time_start": "2026-11-01T01:19:43Z"}], 1)
     assert r["ubin"] == 1 and r["latensi_median_hari"] == 2.0, r
+    # anggaran: LAB_MENIT bawaan 45 -> mulai-granul sampai 45*60-480; nilai kecil -> separuh anggaran; sampah -> bawaan
+    assert anggaran_detik({}) == 45 * 60 - SISA_DETIK and anggaran_detik({"LAB_MENIT": "110"}) == 110 * 60 - SISA_DETIK
+    assert anggaran_detik({"LAB_MENIT": "5"}) == 150 and anggaran_detik({"LAB_MENIT": "x"}) == 45 * 60 - SISA_DETIK
+    # kerjakan: jam palsu maju 10 per granul, batas 25 -> tepat 3 granul dimulai (jam 0,10,20), 7 sisa; tiap granul gagal dihitung, bukan sisa
+    t = [0]
+    jam = lambda: t[0]
+    def f(x):
+        t[0] += 10
+        if x == 1:
+            raise RuntimeError("HTTP 500")
+        return {(x, x, 1): (x + 1, 0)}
+    got = {}
+    r = kerjakan(list(range(10)), f, lambda x, h: got.update({x: h}), 25, pekerja=1, jam=jam)
+    assert r == (2, 1, 7) and sorted(got) == [0, 2], (r, got)
+    # tanpa batas efektif, semua selesai dengan banyak utas; gabung di utas pemanggil tidak kehilangan hasil
+    got = {}
+    r = kerjakan(list(range(50)), lambda x: x * 2, lambda x, h: got.update({x: h}), 1e18, pekerja=5)
+    assert r == (50, 0, 0) and got == {x: x * 2 for x in range(50)}, r
+    # token ditolak berulang -> sisa tugas dihentikan, bukan dihajar satu per satu
+    def tolak(x): raise RuntimeError("HTTP 401 ditolak")
+    s_, g_, ss = kerjakan(list(range(60)), tolak, lambda *a: None, 1e18, pekerja=1)
+    assert s_ == 0 and g_ == 21 and ss == 39, (s_, g_, ss)
+    # cache granul: tulis atomik, baca ulang sama persis (resume), berkas rusak -> None (diunduh ulang)
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        cb = os.path.join(d, "sub", "G.json")
+        simpan_cache(cb, {(1, -2, 7): (5, 3)})
+        assert baca_cache(cb) == {(1, -2, 7): (5, 3)} and not os.path.exists(cb + ".tmp")
+        open(cb, "w").write("{rusak")
+        assert baca_cache(cb) is None
+        # resume: granul yang sudah ada di cache tidak dikerjakan lagi dan gabungannya tetap max-per-sel-hari
+        simpan_cache(cb, {(1, 1, 5): (10, 0)})
+        k = gabung_granul({}, baca_cache(cb)); gabung_granul(k, {(1, 1, 5): (12, 5)})
+        assert k == {(1, 1, 5): (12, 5)}
+        # sudah_ok: sebagian bukan ok; ok hanya untuk periode yang sama
+        pk = os.path.join(d, "k.json")
+        for st, per, mau in [("ok", ["a", "b"], True), ("sebagian", ["a", "b"], False), ("ok", ["a", "c"], False)]:
+            json.dump({"status": st, "periode": per}, open(pk, "w"))
+            assert sudah_ok(pk, ["a", "b"]) is mau, (st, per)
     print("opera_dist OK")
 
 

@@ -191,7 +191,25 @@ DDL, metode gaya Permen LH 17/2009 (SA = limpasan lokal model tanpa aliran masuk
 
 Baca dengan hati-hati: angka hujan adalah median 5 model TANPA uji signifikansi. Arah turun, tetapi sebaran p10-p90 antar model melewati nol (model tak sepakat tanda) di kolom "Kab dengan p10<0<p90", sehingga besaran hujan tidak boleh dikutip sebagai angka tunggal. Selisih hujan antar skenario ada di dalam derau 5 model dan satu realisasi: jangan menyebut satu skenario lebih basah atau lebih kering dari yang lain. Suhu naik konsisten di semua model.
 
-Sumber, lisensi dan keterbatasan: `public/data/neraca_air/proyeksi_iklim.json` (`meta.catatan`). Estimasi-model berbias, bukan prakiraan; neraca di atas BELUM memakai skenario ini (butuh keputusan koreksi ET0).
+Sumber, lisensi dan keterbatasan: `public/data/neraca_air/proyeksi_iklim.json` (`meta.catatan`). Estimasi-model berbias, bukan prakiraan; neraca di bawah proyeksi ada di bagian berikutnya.
+
+
+## Neraca di bawah proyeksi iklim (estimasi-model, bukan prakiraan)
+
+### Perubahan neraca Jawa 2041-2060 (delta-change, 5 model dijalankan satu per satu; juta m3/th, jumlah 119 kab)
+
+| Skenario | Indikator | Baseline | Delta, median model | Delta, model terendah | Delta, model tertinggi | Kab: semua model turun / semua naik / tak sepakat (dari 119) |
+| --- | --- | --- | --- | --- | --- | --- |
+| ssp245 | N_kemarau | 69.800 | -23.918 | -35.555 | 20.062 | 1 / 0 / 118 |
+| ssp245 | N_tahunan | 542.973 | -89.963 | -119.264 | 11.218 | 33 / 0 / 86 |
+| ssp245 | R_tahunan | 185.590 | -25.524 | -34.356 | 1.449 | 31 / 0 / 88 |
+| ssp585 | N_kemarau | 69.800 | -17.600 | -40.849 | 64.209 | 0 / 0 / 119 |
+| ssp585 | N_tahunan | 542.973 | -39.521 | -119.770 | 82.005 | 1 / 0 / 118 |
+| ssp585 | R_tahunan | 185.590 | -15.187 | -30.997 | 21.442 | 1 / 0 / 118 |
+
+Tiap angka di atas WAJIB dibaca bersama rentang model terendah-tertinggi; median 5 model bukan nilai yang boleh dikutip sendirian. Jumlah N antar-kab menghitung aliran masuk (qin) lebih dari sekali (satu aliran = limpasan kab hulu dan masukan kab hilir), jadi baca N sebagai indikator relatif per kab; hanya R yang aditif. Kolom terakhir menghitung kab yang kelima modelnya sepakat tanda; sisanya tak sepakat. Per kab, median dan min-maks ada di `public/data/neraca_air/proyeksi_neraca.json`.
+
+Metode (keputusan pemilik 11 Nov 2026): ET0 baseline adalah FAO-56 Penman-Monteith dari NASA POWER, jadi ET0 proyeksi dihitung ulang dengan rumus yang sama dari masukan yang suhunya digeser (T, Tmax, Tmin + selisih tas model; radiasi, RH, angin tetap), lalu rasionya dikalikan ke ET0 baseline. Hujan: pengali bulanan per model. Kebutuhan 2025 tidak ditumbuhkan, waduk dan transfer sama; hanya iklim yang berubah. Rincian: RANCANGAN.md.
 
 
 ## Klaim aman / perlu catatan (untuk penulis buku dan deck)

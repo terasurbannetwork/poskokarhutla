@@ -21,10 +21,12 @@ opera_dswx.json["silang_mcdwd"] -> dibaca penilaian label (sambung ke label_bers
 Pakai:  python3 scripts/banjir/opera_dswx.py katalog [--hari 14]
         python3 scripts/banjir/opera_dswx.py proses [--hari 14]      EARTHDATA_TOKEN=... (lab)
         python3 scripts/banjir/opera_dswx.py uji
+Anggaran: LAB_MENIT (env, bawaan 45) membatasi `proses`; hasil per granul (kab + sel ~300 m terklaim, gzip) disimpan di data/raw/lab/opera_dswx/ sehingga
+jalan berikutnya melanjutkan. Hanya hari yang SEMUA granulnya selesai yang masuk kab_hari (hari parsial akan dibekukan terlalu rendah); `cakupan` + `status` menyebut sisa.
 Berkas: opera_dswx.json (bergulir 60 hari, < 2 MB); mentah sementara di data/raw/banjir/opera_dswx/ (git-ignore).
 Atribusi: NASA OPERA DSWx-S1 (JPL, PO.DAAC), data terbuka NASA Earthdata.
 """
-import datetime as dt, json, os, re, sys, time, urllib.error, urllib.parse, urllib.request
+import datetime as dt, gzip, json, os, re, sys, time, urllib.error, urllib.parse, urllib.request
 from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -35,6 +37,8 @@ KOTAK = "95,-11,141,6"
 PRODUK = "OPERA_L3_DSWX-S1_V1"
 UA = "poskobanjir/1.0 (+https://centurisk97.id)"
 BERKAS, DIR = os.path.join(KELUAR, "opera_dswx.json"), os.path.join(MENTAH, "opera_dswx")
+CACHE = os.path.join(os.path.dirname(MENTAH), "lab", "opera_dswx")   # data/raw/lab/opera_dswx: hasil per granul (kab + sel) agar proses bisa dilanjutkan
+LAB_MENIT = float(os.environ.get("LAB_MENIT", 45))                    # anggaran waktu proses; habis = berhenti rapi, lanjut di jalan berikutnya
 MCDWD = os.path.join(KELUAR, "mcdwd.json")
 GULIR, MIN_PENGAMATAN, AMBANG_HA, HA_PIKSEL_MCDWD = 60, 5, 100.0, 380.0   # piksel MCDWD GIBS L5 ~1,95 km x 1,95 km
 ATRIBUSI = "NASA OPERA DSWx-S1 V1 (JPL, PO.DAAC; Sentinel-1 ESA/Copernicus); diringkas per kabupaten oleh Centurisk97."
@@ -156,9 +160,9 @@ def hitung_blok(a, blok=10):
     return ((b == 0) | (b == 1) | (b == 3)).sum((1, 3)), (b == 1).sum((1, 3)), (b == 3).sum((1, 3))
 
 
-def hitung_granul(jalur, wil, terlihat, blok=10):
+def hitung_granul(jalur, wil, terlihat, blok=10, baru=None):
     """GeoTIFF WTR -> ({kab: [valid_ha, air_ha, veg_ha]}, tag). Blok 300 m dipetakan ke kabupaten lewat pusatnya. `terlihat` = set sel (~300 m) yang
-    sudah dihitung HARI itu oleh ubin lain. Blok dengan valid < 50% (tepi ubin/layover) dilewati dan TIDAK ditandai, jadi ubin tetangga yang
+    sudah dihitung HARI itu oleh ubin lain; `baru` (list, opsional) diisi sel yang diklaim granul ini. Blok dengan valid < 50% (tepi ubin/layover) dilewati dan TIDAK ditandai, jadi ubin tetangga yang
     mencakupnya penuh yang menghitungnya; blok >= 50% valid dihitung sekali (yang pertama menang). Batas: dua ubin yang masing-masing <50% di sel sama kehilangan sel itu."""
     import numpy as np, rasterio
     from rasterio.warp import transform
@@ -178,6 +182,8 @@ def hitung_granul(jalur, wil, terlihat, blok=10):
         k = wil.cari(lo, la)
         if k:
             terlihat.add(sel)
+            if baru is not None:
+                baru.append(sel)
             r = hasil[f"{k[0]}|{k[1]}"]
             r[0] += float(valid[y, x]) * ha
             r[1] += float(air[y, x]) * ha
@@ -185,33 +191,77 @@ def hitung_granul(jalur, wil, terlihat, blok=10):
     return {k: [round(x, 1) for x in v] for k, v in hasil.items()}, tag
 
 
-def proses(gr):
+def cache_baca(f):
+    with gzip.open(f, "rt") as g:
+        c = json.load(g)
+    return c["h"], {tuple(x) for x in c["sel"]}, c.get("tag")
+
+
+def cache_tulis(f, h, sel, tag):
+    os.makedirs(CACHE, exist_ok=True)
+    with gzip.open(f + ".tmp", "wt") as g:
+        json.dump({"h": h, "sel": sel, "tag": tag}, g)
+    os.replace(f + ".tmp", f)
+
+
+def proses(gr, menit=None, mulai=None):
+    """-> (status, agregat kab-hari HANYA hari yang seluruh granulnya selesai, tag, cakupan). Lewat anggaran `menit`: berhenti dan lanjut lain kali dari
+    cache per granul (CACHE). Hari parsial tidak dikeluarkan (akan dibekukan terlalu rendah), hanya disimpan di cache."""
     token = os.environ.get("EARTHDATA_TOKEN")
     try:
         import numpy, rasterio  # noqa
     except ImportError:
-        return "MENUNGGU KUNCI: numpy/rasterio tidak ada (jalur lab)", {}, None
+        return "MENUNGGU KUNCI: numpy/rasterio tidak ada (jalur lab)", {}, None, None
     if not token:
-        return "MENUNGGU KUNCI: EARTHDATA_TOKEN tidak ada di env", {}, None
+        return "MENUNGGU KUNCI: EARTHDATA_TOKEN tidak ada di env", {}, None, None
     from wilayah import Wilayah
     wil = Wilayah()
     os.makedirs(DIR, exist_ok=True)
-    agg, terlihat, tag0 = defaultdict(dict), defaultdict(set), None
-    for t, u, url in sorted(gr):
+
+    def hitung(t, url, ter, baru):
         f = os.path.join(DIR, os.path.basename(url))
         try:
             unduh(url, token, f)
-            h, tag = hitung_granul(f, wil, terlihat[t])
-            tag0 = tag0 or {k: str(v)[:200] for k, v in list(tag.items())[:20]}
-            for k, v in h.items():
-                r = agg[k].setdefault(t, [0.0, 0.0, 0.0])
-                for i in range(3):
-                    r[i] += v[i]
+            return hitung_granul(f, wil, ter, baru=baru)
         finally:
             if os.path.exists(f):
                 os.remove(f)
-        time.sleep(0.5)
-    return "ok", {k: {t: [round(x, 1) for x in v] for t, v in per.items()} for k, per in agg.items()}, tag0
+    return susun(gr, hitung, menit, mulai)
+
+
+def susun(gr, hitung, menit=None, mulai=None):
+    """Inti proses tanpa raster: `hitung(t, url, terlihat_hari, baru)` -> (h, tag) untuk granul yang belum ada di CACHE."""
+    menit = LAB_MENIT if menit is None else menit
+    mulai = time.time() if mulai is None else mulai
+    agg, terlihat, tag0, selesai, habis = defaultdict(dict), defaultdict(set), None, defaultdict(int), False
+    total = defaultdict(int)
+    for t, _, _ in gr:
+        total[t] += 1
+    for t, u, url in sorted(gr):
+        c = os.path.join(CACHE, os.path.basename(url) + ".json.gz")
+        if os.path.exists(c):
+            h, sel, tag = cache_baca(c)
+            terlihat[t] |= sel
+        elif habis or time.time() - mulai > menit * 60:
+            habis = True
+            continue
+        else:
+            baru = []
+            h, tag = hitung(t, url, terlihat[t], baru)
+            tag = {k: str(v)[:200] for k, v in list(tag.items())[:20]}
+            cache_tulis(c, h, [list(x) for x in baru], tag)
+            time.sleep(0.5)
+        tag0 = tag0 or tag
+        selesai[t] += 1
+        for k, v in h.items():
+            r = agg[k].setdefault(t, [0.0, 0.0, 0.0])
+            for i in range(3):
+                r[i] += v[i]
+    lengkap = {t for t in total if selesai[t] == total[t]}
+    cakupan = {"granul_total": len(gr), "granul_selesai": sum(selesai.values()), "hari_total": len(total), "hari_lengkap": len(lengkap), "anggaran_menit": menit}
+    keluar = {k: {t: [round(x, 1) for x in v] for t, v in per.items() if t in lengkap} for k, per in agg.items()}
+    status = "ok" if len(lengkap) == len(total) else f"sebagian: {cakupan['granul_selesai']}/{len(gr)} granul, {len(lengkap)}/{len(total)} hari lengkap (anggaran {menit:g} menit habis; lanjut di jalan berikutnya)"
+    return status, {k: p for k, p in keluar.items() if p}, tag0, cakupan
 
 
 def main(mode, hari):
@@ -219,21 +269,21 @@ def main(mode, hari):
     lama = baca(BERKAS, {})
     kat = {**lama.get("katalog", {}), **katalog_hari(gr)}
     kat = dict(sorted(kat.items())[-GULIR:])
-    status, baru, tag = ("katalog saja", {}, None) if mode == "katalog" else proses(gr)
+    status, baru, tag, cakupan = ("katalog saja", {}, None, None) if mode == "katalog" else proses(gr)
     kab = lama.get("kab_hari", {})
     for k, per in baru.items():
         kab.setdefault(k, {}).update(per)
     batas = sorted(kat)[0]
     kab = {k: {t: v for t, v in per.items() if t >= batas} for k, per in kab.items()}
     kab = {k: p for k, p in kab.items() if p}
-    if status != "ok" and lama.get("kab_hari"):
+    if (status == "katalog saja" or status.startswith("MENUNGGU")) and lama.get("kab_hari"):
         status = lama.get("status", status)      # katalog / MENUNGGU KUNCI tidak menimpa status proses yang sudah berisi
     beku = bekukan(kab, lama.get("di_atas_min_ha", {}))
     beku = {k: {t: v for t, v in p.items() if t >= batas} for k, p in beku.items()}
     isi = {"dibuat": dt.datetime.now(WIB).isoformat(timespec="seconds"), "sumber": f"{CMR}?short_name={PRODUK}", "atribusi": ATRIBUSI, "lisensi": LISENSI,
            "status": status, "satuan": "hektare per kabupaten-hari: [valid, air terbuka, vegetasi tergenang]; radar, tak terhalang awan",
            "keterangan": "INDEKS radar: air terbuka di atas minimum 60 hari sebelumnya per kabupaten, dibekukan saat hari ditulis; bukan luas genangan, bukan model prediksi",
-           "tag_geotiff": tag or lama.get("tag_geotiff"), "katalog": kat, "kab_hari": kab, "di_atas_min_ha": {k: p for k, p in beku.items() if p}}
+           "cakupan": cakupan or lama.get("cakupan"), "tag_geotiff": tag or lama.get("tag_geotiff"), "katalog": kat, "kab_hari": kab, "di_atas_min_ha": {k: p for k, p in beku.items() if p}}
     if beku and os.path.exists(MCDWD):
         isi["silang_mcdwd"] = bandingkan(beku, json.load(open(MCDWD)))
     simpan(BERKAS, isi)
@@ -272,6 +322,38 @@ def uji():
     r = bandingkan({"31|A": {"2026-11-09": 500.0, "2026-11-03": 0.0, "2026-11-06": 0.0, "2026-11-07": 900.0}}, mc)
     assert (r["n_kab_hari"], r["sama_positif"], r["sama_negatif"], r["hanya_dswx"], r["hanya_mcdwd"]) == (3, 1, 2, 0, 0), r
     assert bandingkan({"31|A": {"2026-11-09": 50.0}}, mc)["hanya_mcdwd"] == 1   # f=7 x 380 ha > ambang, DSWx 50 < ambang
+    # anggaran + lanjut: granul 1 diproses lalu anggaran habis (menit=0 setelah itu); jalan kedua memakai cache, tak memanggil hitung untuk granul 1
+    import tempfile as tf
+    global CACHE
+    asli, CACHE = CACHE, tf.mkdtemp()
+    try:
+        gr = [("2026-11-01", "T1", "http://x/a_B01_WTR.tif"), ("2026-11-01", "T2", "http://x/b_B01_WTR.tif"), ("2026-11-02", "T1", "http://x/c_B01_WTR.tif")]
+        pan = []
+        def fk(t, url, ter, baru):
+            pan.append(url)
+            ter.add((1, 1)); baru.append((1, 1))
+            return {"31|A": [10.0, 4.0, 0.0]}, {"k": "v"}
+        st, ag, _, cak = susun(gr, fk, menit=0, mulai=time.time() - 1)           # anggaran 0: tak ada yang diproses
+        assert pan == [] and cak["granul_selesai"] == 0 and st.startswith("sebagian") and ag == {}, (pan, cak, st)
+        orig = time.time
+        n = [0]
+        def fk1(t, url, ter, baru):                                              # granul pertama selesai, lalu waktu melompat melewati anggaran
+            pan.append(url); n[0] += 1
+            baru.append((1, 1)); ter.add((1, 1))
+            if n[0] == 1:
+                globals()["time"] = type("T", (), {"time": staticmethod(lambda: orig() + 9999), "sleep": staticmethod(lambda s: None)})
+            return {"31|A": [10.0, 4.0, 0.0]}, {}
+        st, ag, _, cak = susun(gr, fk1, menit=1)
+        globals()["time"] = sys.modules["time"]
+        assert pan == ["http://x/a_B01_WTR.tif"] and cak["granul_selesai"] == 1 and cak["hari_lengkap"] == 0 and ag == {}, (pan, cak)   # hari 1 parsial: TIDAK keluar
+        pan.clear()
+        st, ag, _, cak = susun(gr, fk, menit=60)                                   # lanjut: a dari cache, b dan c baru
+        assert pan == ["http://x/b_B01_WTR.tif", "http://x/c_B01_WTR.tif"] and st == "ok" and cak["hari_lengkap"] == 2, (pan, st, cak)
+        assert ag["31|A"]["2026-11-01"] == [20.0, 8.0, 0.0] and ag["31|A"]["2026-11-02"] == [10.0, 4.0, 0.0], ag
+        pan.clear()
+        assert susun(gr, fk, menit=0)[0] == "ok" and pan == []                      # semua dari cache: selesai walau anggaran 0
+    finally:
+        CACHE = asli
     ada = lambda u: "Authorization" in kepala(u, "T")
     assert ada("https://urs.earthdata.nasa.gov/oauth") and ada("https://archive.podaac.earthdata.nasa.gov/x.tif")
     assert not ada("http://archive.podaac.earthdata.nasa.gov/x.tif") and not ada("http://urs.earthdata.nasa.gov/x")

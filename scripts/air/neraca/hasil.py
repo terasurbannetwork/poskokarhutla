@@ -47,7 +47,35 @@ def proyeksi(rk):
             "Selisih hujan antar skenario ada di dalam derau 5 model dan satu realisasi: jangan menyebut satu skenario lebih basah atau lebih kering dari yang lain. "
             "Suhu naik konsisten di semua model.\n"
             "\nSumber, lisensi dan keterbatasan: `public/data/neraca_air/proyeksi_iklim.json` (`meta.catatan`). Estimasi-model berbias, bukan prakiraan; "
-            "neraca di atas BELUM memakai skenario ini (butuh keputusan koreksi ET0).\n")
+            "neraca di bawah proyeksi ada di bagian berikutnya.\n")
+
+
+def proyeksi_neraca():
+    """Bagian neraca di bawah proyeksi iklim (NA-30): tiap angka dengan sebaran 5 model; bila belum dihitung, kosong."""
+    j = os.path.join(SUMBER, "proyeksi_neraca.json")
+    if not os.path.exists(j):
+        return ""
+    d = json.load(open(j))
+    md = lambda x: sorted(x)[len(x) // 2] if len(x) % 2 else sum(sorted(x)[len(x) // 2 - 1:len(x) // 2 + 1]) / 2
+    n, baris = len(d["kab"]), []
+    for sk in d["meta"]["skenario"]:
+        for ind in ("N_kemarau", "N_tahunan", "R_tahunan"):
+            tot = {m: sum(v[sk][ind]["delta_model"][m] for v in d["kab"].values()) for m in d["meta"]["model"]}   # jumlah 119 kab per model
+            dasar = sum(v[sk][ind]["dasar"] for v in d["kab"].values())
+            t = d["meta"]["ringkas_tanda"][f"{sk}.{ind}"]
+            baris.append([sk, ind, f(dasar, 0), f(md(list(tot.values())), 0), f(min(tot.values()), 0), f(max(tot.values()), 0),
+                          f"{t['turun']} / {t['naik']} / {t['tak-sepakat']}"])
+    s = tabel("Perubahan neraca Jawa 2041-2060 (delta-change, 5 model dijalankan satu per satu; juta m3/th, jumlah 119 kab)", baris,
+              ["Skenario", "Indikator", "Baseline", "Delta, median model", "Delta, model terendah", "Delta, model tertinggi",
+               f"Kab: semua model turun / semua naik / tak sepakat (dari {n})"])
+    return ("\n## Neraca di bawah proyeksi iklim (estimasi-model, bukan prakiraan)\n" + s +
+            "\nTiap angka di atas WAJIB dibaca bersama rentang model terendah-tertinggi; median 5 model bukan nilai yang boleh dikutip sendirian. "
+            "Jumlah N antar-kab menghitung aliran masuk (qin) lebih dari sekali (satu aliran = limpasan kab hulu dan masukan kab hilir), jadi baca N sebagai indikator relatif per kab; hanya R yang aditif. "
+            "Kolom terakhir menghitung kab yang kelima modelnya sepakat tanda; sisanya tak sepakat. Per kab, median dan min-maks ada di "
+            "`public/data/neraca_air/proyeksi_neraca.json`.\n"
+            "\nMetode (keputusan pemilik 11 Nov 2026): ET0 baseline adalah FAO-56 Penman-Monteith dari NASA POWER, jadi ET0 proyeksi dihitung ulang dengan rumus yang sama "
+            "dari masukan yang suhunya digeser (T, Tmax, Tmin + selisih tas model; radiasi, RH, angin tetap), lalu rasionya dikalikan ke ET0 baseline. Hujan: "
+            "pengali bulanan per model. Kebutuhan 2025 tidak ditumbuhkan, waduk dan transfer sama; hanya iklim yang berubah. Rincian: RANCANGAN.md.\n")
 
 
 def bangun(kab, rk, keb, meta):
@@ -157,6 +185,7 @@ def bangun(kab, rk, keb, meta):
              f"- Kab ditandai `hilir_waduk`: {sum(1 for k in rk if rk[k]['bendera']['hilir_waduk'])}; kota/kab kecil (‡, luas < rerata sub-DAS, air terutama kiriman hulu): {sum(1 for k in rk if rk[k]['bendera']['kota_kecil'])}.\n"
              "- Model tidak punya air tanah multi-tahun, PDAM, atau transfer selain Tarum Barat; waduk disederhanakan.\n")
     L.append(proyeksi(rk))
+    L.append(proyeksi_neraca())
     L.append("\n## Klaim aman / perlu catatan (untuk penulis buku dan deck)\n")
     L.append("**Aman dikutip (dengan label estimasi-model):**\n"
              f"- Limpasan total Jawa rerata sekitar {f(R / 1000, 0)} miliar m3/th, dekat dengan BPS 2020 (175,6 miliar; selisih {f(100 * (va['awal']['total']['R_rata'] / 175558 - 1), 1)}% setelah diskala ke luas BPS, dan untuk tahun 2020 saja {f(100 * (va['awal']['total']['R_2020'] / 175558 - 1), 1)}%); keduanya angka model, bukan pengukuran.\n"

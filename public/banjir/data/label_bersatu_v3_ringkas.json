@@ -1,0 +1,55 @@
+{
+ "dibuat": "2026-11-11",
+ "prareg": "scripts/banjir/PRAREG-LABEL-V3.md",
+ "dasar": "label_bersatu_v2 + OPERA DSWx-S1",
+ "v3_sama_dengan_v2": true,
+ "status": "DSWx KOSONG: v3 == v2 baris demi baris (kolom dswx nol); konsumen tetap di v2",
+ "dswx_status_proses": "katalog saja",
+ "dswx_katalog_hari": 10,
+ "aturan": {
+  "min_ha": 100.0,
+  "min_valid_ha": 5000.0,
+  "min_fraksi": 0.02,
+  "kronis": ">= 50% dari >= 10 hari teramati"
+ },
+ "simpanan_beku": {
+  "kab": 0,
+  "kab_hari": 0,
+  "ditambah_run_ini": 0
+ },
+ "kab_hari_teramati": 0,
+ "kab_hari_positif": 0,
+ "kab_kronis_dibuang": [],
+ "hasil": {},
+ "baris": {
+  "v2": 79507,
+  "v3": 79507
+ },
+ "per_tahun_keyakinan_v3": {
+  "2023": {
+   "RENDAH": 5412,
+   "TINGGI": 1126,
+   "SEDANG": 191
+  },
+  "2024": {
+   "RENDAH": 8971,
+   "TINGGI": 1623,
+   "SEDANG": 196
+  },
+  "2025": {
+   "RENDAH": 10954,
+   "TINGGI": 2382,
+   "SEDANG": 468
+  },
+  "2026": {
+   "RENDAH": 1838,
+   "TINGGI": 650,
+   "SEDANG": 196
+  }
+ },
+ "silang_mcdwd": null,
+ "catatan": [
+  "DSWx = indeks radar air di atas minimum 60 hari, bukan luas banjir; DSWx saja = RENDAH dan dswx_saja = 1.",
+  "Hanya hari yang sudah diproses opera_dswx.py (sejak 27 Okt 2026) yang ada; tidak ada DSWx untuk 2016-2025."
+ ]
+}

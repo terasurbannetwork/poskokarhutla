@@ -278,3 +278,17 @@ test('--cutoff: penanganan dibangun tanpa bahan WA, harian menunggu dan PEMILIK 
   assert.equal(d.kirim.teks.filter((t) => t.t === '6299' && /harian|Harian/.test(t.m)).length, 1)
   assert.equal(cekSiap(LAPORAN[1], {}, wibKe(18), TGL).siap, false) // tanpa --cutoff tetap menunggu bahan
 })
+
+test('Pantau Dalops ikut rekap WA Koordalops: sekali per isi rekap, walau deck gagal; gagal = PEMILIK dikabari sekali', async () => {
+  const w = dunia(LENGKAP, { gagalGenerator: true }); const panggil = []
+  w.dep.dalops = async (a) => { panggil.push(a) }
+  await w.jalan(); await w.jalan()
+  assert.equal(panggil.length, 1, 'rekap sama tidak memicu ulang'); assert.equal(panggil[0].dasar, w.rumah)
+  const w2 = dunia([P('1', 'rekap_koordalops_24', 100, 'a2'), ...LENGKAP.slice(1)]); let n = 0
+  w2.dep.dalops = async () => { n++; throw Object.assign(new Error('wrangler'), { stderr: 'R2 401' }) }
+  await w2.jalan(); await w2.jalan()
+  assert.equal(n, 2, 'gagal diulang jalan berikut')
+  assert.equal(w2.kirim.teks.filter((x) => /Pantau Dalops/.test(x.m)).length, 1, 'PEMILIK dikabari sekali')
+  const w3 = dunia(LENGKAP); let n3 = 0; w3.dep.dalops = async () => { n3++ }
+  await w3.jalan({ kering: true }); assert.equal(n3, 0, 'mode kering tidak mengunggah')
+})
