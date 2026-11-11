@@ -59,7 +59,7 @@ print(json.dumps({'k': H.koordalops(t['rekap_koordalops_24']), 'bh': H.bmkg(t['b
   assert.deepEqual(kej["Aceh Selatan"].angka, {mengungsi: 1205, rumah: 373});   // KK pengungsi tidak boleh terbaca sebagai KK terdampak
   assert.equal(kej["Aceh Selatan"].status, "belum"); assert.equal(kej["Aceh Selatan"].baru, false); assert.equal(kej["Aceh Selatan"].prov, "11");
   assert.deepEqual(kej.Dairi.angka, {meninggal: 1, rumah: 1}); assert.equal(kej.Dairi.jenis, "cuaca"); assert.equal(kej.Dairi.baru, true);
-  assert.equal(kej["Kota Pangkal Pinang"].jenis, "lainnya"); assert.equal(kej["Kota Pangkal Pinang"].prov, "19");
+  assert.equal(kej["Kota Pangkal Pinang"].jenis, "kebakaran_permukiman"); assert.equal(kej["Kota Pangkal Pinang"].prov, "19");   // 11 Nov 2026: jenis sendiri, bukan lagi "lainnya" (= Kebakaran TPA di deck)
   assert.deepEqual(kej.Badung.angka, {hilang: 2}); assert.equal(kej.Badung.jenis, "longsor");
   assert.deepEqual(kej["Kota Kupang"].angka, {meninggal: 156, mengungsi: 27193, rumah: 52735, transisi_sd: "2026-12-27"});
   assert.deepEqual([kej["Parigi Moutong"].angka.ha, kej["Parigi Moutong"].status, kej["Kolaka Timur"].angka.ha, kej["Kolaka Timur"].status], [1110.25, "berjalan", 8.5, "selesai"]);
