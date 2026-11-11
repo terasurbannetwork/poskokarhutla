@@ -704,10 +704,17 @@
         menu.addEventListener("keydown", e => { if (!["ArrowDown", "ArrowUp"].includes(e.key)) return; e.preventDefault(); const bs = [...menu.querySelectorAll("button")], i = bs.indexOf(document.activeElement);
           bs[(i + (e.key === "ArrowDown" ? 1 : bs.length - 1)) % bs.length]?.focus(); });
         return w; };
+      /* seksi = halaman (pemilik 11 Nov 2026, pola /operasi): klik di panel kiri mengganti isi, satu seksi tampil sekali;
+         seksi yang dipilih diingat menurut namanya, jadi pindah jenis bencana tetap di seksi yang sama (mis. Kondisi terkini) */
+      let seksiNama = null;
       const seksiSlot = () => {
         const p = panel[aktif], sek = p ? [...p.querySelectorAll(":scope > section.ex-std, :scope > .ex-std")] : [];
-        const bs = sek.map((x, i) => { x.id ||= `dl-${aktif}-s${i}`; const j = x.querySelector(".ex-jd h3"), b = h("button", {type: "button", class: "db-nav-b"}, h("i", {class: "db-nav-ik"}, j?.querySelector("svg")?.cloneNode(true) || ikon("daftar")), h("span", {class: "db-nav-t", teks: j ? j.textContent.trim() : "Bagian"}));
-          b.addEventListener("click", () => x.scrollIntoView({behavior: "smooth", block: "start"})); return b; });
+        const nama = x => x.querySelector(".ex-jd h3")?.textContent.trim() || "Bagian";
+        const kini = sek.find(x => nama(x) === seksiNama) || sek[0];
+        sek.forEach(x => x.classList.toggle("dl-seksi-tutup", x !== kini));
+        const pk = kini?.querySelector(".maplibregl-map")?._peta; if (pk) requestAnimationFrame(() => pk.resize());
+        const bs = sek.map((x, i) => { x.id ||= `dl-${aktif}-s${i}`; const j = x.querySelector(".ex-jd h3"), b = h("button", {type: "button", class: "db-nav-b", "aria-current": String(x === kini)}, h("i", {class: "db-nav-ik"}, j?.querySelector("svg")?.cloneNode(true) || ikon("daftar")), h("span", {class: "db-nav-t", teks: nama(x)}));
+          b.addEventListener("click", () => { seksiNama = nama(x); seksiSlot(); document.querySelector(".db-kanan")?.scrollIntoView({block: "start"}); }); return b; });
         const lap = tombol.slice(-2).map(t => { if (!t.dataset.dlKlik) { t.dataset.dlKlik = 1; t.classList.add("db-nav-b"); t.addEventListener("click", () => pilihTab(t.dataset.tab, tombol)); } return t; });
         slot.replaceChildren(...(bs.length ? [grup("Isi halaman", "daftar"), ...bs] : []), grup("Laporan", "simpan"), ...lap);
       };

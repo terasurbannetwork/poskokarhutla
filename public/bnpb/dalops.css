@@ -603,3 +603,5 @@
 /* ikon besar di kepala kartu hover tanpa lambang (gunung api) */
 .dl-pop-ikbesar{display:grid;place-items:center;width:40px;height:40px;flex:none;border-radius:12px;background:#0b2545;color:#fff}
 .dl-pop .dl-pop-ikbesar svg{width:20px;height:20px;stroke:#fff}
+/* satu seksi tampil sekali, dipilih dari panel kiri (pola /operasi) */
+.dl-panel>.ex-std.dl-seksi-tutup{display:none!important}
