@@ -367,7 +367,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
         ${x.berjalan ? `<span class="pill l0">Berjalan</span>` : `<span class="ops-pa-selesai">Selesai</span>`}</header>
         <div class="ops-pa-kt-angka">${angka("jam", u.jamMenit(x.jam_operasi_menit), "Jam operasi")}${angka("peran", fmt(x.sortie || 0), "Sortie")}${angka("ember", x.wb_drop ? fmt(x.wb_drop) : `<em>tanpa WB</em>`, "Jatuhan WB")}</div>
         ${perSortie ? `<footer>Rata-rata ${perSortie} jam per sortie${x.berjalan && hr ? `, ${u.jamMenit(x.jam_operasi_menit / hr)} jam per hari` : ""}</footer>` : ""}</div>`; };
-    const sek = (judul, sub, isi) => `<details class="ops-pa-sek" open><summary><b>${judul}</b>${sub ? `<small>${sub}</small>` : ""}<svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div>${isi}</div></details>`;
+    const sek = (judul, sub, isi, ik = "jam") => `<details class="ops-pa-sek" open><summary><i>${lbl(ik, "")}</i><b>${judul}</b>${sub ? sub.split(", ").map(x => `<small>${x}</small>`).join("") : ""}<svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div>${isi}</div></details>`;
     return `<article class="ex ex-std ops-pa"><button type="button" class="ops-dlg-x" data-tutup aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
       <header class="ops-pa-hd"><figure>${f ? u.imgAr(a, "", `${a.registrasi} ${tipe}`) : `<span class="ops-ar-kosong">${lbl("peran", "")}</span>`}</figure>
         <div><div class="ops-pa-id"><h3>${esc(a.registrasi)}</h3><p>${esc(tipe)}</p><span class="ops-ar-st ${s[1]}"><i></i>${s[0]} ${esc(tglPendek(D.t))}</span></div>
@@ -376,8 +376,8 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
         <div class="ops-pa-angka">${[angka(nol(hh.sortie), "sortie 30 hari"), angka(nol(hh.wb), "water bombing"), angka(hh.dinilai ? u.persen(hh.persen) : "–", "padam ≥ 24 jam"),
           angka(k ? `${fmt(siapTerbang(k))}/${fmt(k.hari_siap)}` : "–", "hari siap terbang"), angka(k?.respons_median_menit != null ? `${fmt(Math.round(k.respons_median_menit))} mnt` : "–", "respons median"),
           angka(kt.length ? `${fmt(Math.round(jam / 60))} jam` : "–", "operasi 2026")].join("")}</div></div></header>
-      <div class="ops-pa-badan">${sek("Kegiatan 30 hari", `${fmt(ak.length)} sortie, ${fmt(hari.length)} hari terbang`, `${strip}<ol class="ops-lm">${linimasa}</ol>`)}
-      ${kt.length ? sek("Kontrak 2026", `${fmt(kt.length)} kontrak`, `<div class="ops-pa-kt">${kt.map(kartuKt).join("")}</div>`) : ""}</div>
+      <div class="ops-pa-badan">${sek("Kegiatan 30 hari", `${fmt(ak.length)} sortie, ${fmt(hari.length)} hari terbang`, `${strip}<ol class="ops-lm">${linimasa}</ol>`, "peran")}
+      ${kt.length ? sek("Kontrak 2026", `${fmt(kt.length)} kontrak`, `<div class="ops-pa-kt">${kt.map(kartuKt).join("")}</div>`, "op") : ""}</div>
     </article>`;
   }
 
