@@ -1928,3 +1928,32 @@
 #opsLaporan .ops-laci-grup{margin:10px 0 4px;padding:7px 10px;border-radius:10px;background:color-mix(in srgb,#2f6fd6 9%,#fff)}
 #opsLaporan .ops-laci-grup .ops-lbl{gap:8px;font-size:.75rem;font-weight:800;color:#0b2545}
 #opsLaporan .ops-laci-grup .ops-lbl svg{width:20px;height:20px;padding:4px;border-radius:6px;background:#0b2545;color:#fff;box-sizing:border-box}
+/* renlap: pil versi sebaris dengan KML dan GPX di kaki kartu (pemilik 11 Nov 2026) */
+#opsLaporan .ops-rlk>footer{align-items:center;flex-wrap:nowrap}
+#opsLaporan .ops-rlk>footer>.ops-rlk-ud{flex:1 1 auto}
+#opsLaporan .ops-rlk>footer>.ops-pb-prov{flex:none;white-space:nowrap}
+/* Perlu tindakan: blok angka tanpa latar warna, cukup garis pemisah (pemilik 11 Nov 2026) */
+@media (min-width:1180px){#opsLaporan .ops-ringkas-slot .ops-tk-blok{background:var(--card);border-right:1px solid var(--line)}}
+/* label base di peta: kartu putih, ikon berwarna tingkat siaga (pemilik 11 Nov 2026 "bagusin lagi") */
+.ops-peta-base{gap:7px;padding:4px 11px 4px 4px;background:#fff;color:#0b2545;box-shadow:0 1px 2px rgb(8 18 38 / .12),0 4px 12px rgb(8 18 38 / .18),inset 0 0 0 1px rgb(11 37 69 / .1)}
+.ops-peta-base i{width:24px;height:24px;background:#2e8b57}
+.ops-peta-base.lv1 i{background:#2f6fd6}.ops-peta-base.lv2 i{background:#d9a21b}.ops-peta-base.lv3 i{background:#c0392b}
+.ops-peta-base.lv3{background:#fff;box-shadow:0 1px 2px rgb(8 18 38 / .12),0 4px 12px rgb(8 18 38 / .18),inset 0 0 0 1.5px #c0392b}
+.ops-peta-base span{font-size:.71875rem;font-weight:800}
+.ops-peta-base small{color:#5a6b85;font-weight:600}
+.ops-peta-base:hover{box-shadow:0 2px 4px rgb(8 18 38 / .14),0 8px 18px rgb(8 18 38 / .22),inset 0 0 0 1px #2f6fd6}
+/* pop-up armada dua baris: identitas + pil sebaris, enam angka sebaris; foto kecil (pemilik 11 Nov 2026) */
+@media (min-width:901px){
+  #opsLaporan .ops-pa-hd{grid-template-columns:150px minmax(0,1fr);gap:16px;align-items:center}
+  #opsLaporan .ops-pa-hd figure{min-height:0;height:auto;aspect-ratio:4/3}
+  #opsLaporan .ops-pa-hd>div{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;min-width:0}
+  #opsLaporan .ops-pa-hd>div>ul{margin:0}
+  #opsLaporan .ops-pa-hd>div>.ops-pa-alasan,#opsLaporan .ops-pa-hd>div>.ops-pa-angka{flex:1 0 100%;margin-top:0}
+  #opsLaporan .ops-pa-angka{grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+}
+@media (min-width:901px){
+  #opsLaporan .ops-pa-angka>div{column-gap:8px;padding:8px 10px!important}
+  #opsLaporan .ops-pa-angka i{width:26px;height:26px}
+  #opsLaporan .ops-pa-angka span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+}
+@media (min-width:901px) and (max-width:1279px){#opsLaporan .ops-pa-angka i{display:none}#opsLaporan .ops-pa-angka>div{grid-template-columns:1fr}}
