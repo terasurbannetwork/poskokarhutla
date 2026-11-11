@@ -389,8 +389,15 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
   function bukaDialog(html) {
     let d = document.getElementById("opsDlgAr");
     if (!d) { d = document.createElement("dialog"); d.id = "opsDlgAr"; d.className = "ops-dlg"; ($("#opsLaporan") || document.body).append(d);   // di dalam #opsLaporan supaya gaya layar ikut
-      d.addEventListener("click", e => { if (e.target === d || e.target.closest("[data-tutup]")) d.close(); }); }
-    d.innerHTML = `<div class="ops-dlg-isi">${html}</div>`;
+      d.addEventListener("click", e => { if (e.target === d || e.target.closest("[data-tutup]")) return d.close();
+        const tg = e.target.closest(".ops-rp-tren [data-tgl]"); if (tg) { d.close(); pilihTanggal(tg.dataset.tgl); } });
+      /* tooltip grafik pop-up: isi dari data-tip (HTML yang sudah di-escape saat dibuat), mengikuti kursor */
+      const tip = document.createElement("div"); tip.className = "ops-tip"; tip.hidden = true; d.append(tip);
+      d.addEventListener("pointermove", e => { const el = e.target.closest?.("[data-tip]"); if (!el) { tip.hidden = true; return; }
+        if (tip.dataset.dari !== el.dataset.tip) { tip.innerHTML = el.dataset.tip; tip.dataset.dari = el.dataset.tip; }
+        tip.hidden = false; const w = tip.offsetWidth, h = tip.offsetHeight; tip.style.left = Math.min(innerWidth - w - 8, e.clientX + 14) + "px"; tip.style.top = Math.max(8, e.clientY - h - 12) + "px"; });
+      d.addEventListener("pointerleave", () => { tip.hidden = true; }); }
+    d.querySelector(".ops-dlg-isi")?.remove(); d.insertAdjacentHTML("afterbegin", `<div class="ops-dlg-isi">${html}</div>`);
     if (!d.open) d.showModal();
   }
   function bukaArmada(reg) {
@@ -404,7 +411,8 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
   function bukaRingkas(k) {
     const D = st._d; if (!D) return;
     const u = U(), P = D.peta, base = P.base || [], ar = P.armada || [], g = u.hitungGuna(ar), lapor = ar.filter(a => a.status).length, siap = ar.filter(a => SIAP.includes(a.status)).length, H = D.hari;
-    const kepala = (ik, judul, sub, angka) => `<header class="ops-rp-hd"><i>${lbl(ik, "")}</i><div><h3>${judul}</h3><p>${sub}</p></div><b>${angka}</b>
+    const SATUAN = {base: "base", peran: "armada", siap: "siap", sortie: "sortie", temuan: "titik api", padam: "padam"};
+    const kepala = (ik, judul, sub, angka) => `<header class="ops-rp-hd"><i>${lbl(ik, "")}</i><div><h3>${judul}</h3>${sub ? `<small>${lbl(/\d{4}|hari ini/.test(sub) ? "kalender" : "tren", sub)}</small>` : ""}</div><span class="ops-rp-angka"><b>${angka}</b><small>${SATUAN[ik] || ""}</small></span>
       <button type="button" class="ops-dlg-x" data-tutup aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header>`;
     const perBase = base.map(b => ({b, a: ar.filter(x => x.base_id === b.id)}));
     let isi = "";
@@ -433,7 +441,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     else if (k === "sortie") { const maks = Math.max(1, ...D.perHari.map(x => x.sortie)), atas = Math.max(2, Math.ceil(maks / 2) * 2), tot30 = D.perHari.reduce((t, x) => t + x.sortie, 0);
       const perB = perBase.map(({b}) => { const ak = D.aksi30.filter(a => (a.base_id || D.reg2base[a.registrasi]) === b.id); return {b, n: ak.length, hari: ak.filter(a => a.tanggal === D.t).length}; }).sort((x, y) => y.n - x.n), mB = Math.max(1, ...perB.map(x => x.n));
       const grafik = `<div class="ops-rp-graf"><div class="ops-rp-sumbu"><span>${fmt(atas)}</span><span>${fmt(atas / 2)}</span><span>0</span></div>
-        <div class="ops-rp-tren">${D.perHari.map((x, i) => `<span title="${esc(tglPendek(x.t))}: ${fmt(x.sortie)} sortie, ${fmt(x.wb)} water bombing"${x.t === D.t ? ' class="kini"' : ""}><i class="wb" style="height:${x.wb / atas * 100}%"></i><i style="height:${(x.sortie - x.wb) / atas * 100}%"></i>${i % 7 === 0 || i === 29 ? `<u>${esc(tglPendek(x.t))}</u>` : ""}</span>`).join("")}</div></div>
+        <div class="ops-rp-tren">${D.perHari.map((x, i) => `<span data-tgl="${x.t}" data-tip="${esc(`<b>${tglPanjang(x.t)}</b><span>${fmt(x.sortie)} sortie</span><span class="wb">WB ${fmt(x.wb)}</span><span class="ptr">Lainnya ${fmt(x.sortie - x.wb)}</span><em>Klik untuk melihat tanggal ini</em>`)}" tabindex="0"${x.t === D.t ? ' class="kini"' : ""}><i class="wb" style="height:${x.wb / atas * 100}%"></i><i style="height:${(x.sortie - x.wb) / atas * 100}%"></i>${(i % 7 === 0 && i < 26) || i === 29 ? `<u${i === 29 ? ' class="akhir"' : ""}>${esc(tglPendek(x.t))}</u>` : ""}</span>`).join("")}</div></div>
         <div class="ops-rp-tren-kaki"><span class="ops-rp-leg"><small class="wb">${lbl("air", "Water bombing")}</small><small>${lbl("vis", "Patroli dan lainnya")}</small></span><span>rata-rata ${fmt(Math.round(tot30 / 30 * 10) / 10)} sortie per hari</span></div>`;
       isi = kepala("sortie", "Sortie", `hari ini ${esc(tglPendek(D.t))}, ${fmt(tot30)} dalam 30 hari`, fmt(H.sortie)) + `<div class="ops-pa-badan">
         ${sek("Tren 30 hari", [["peran", `${fmt(tot30)} sortie`]], grafik, "sortie")}

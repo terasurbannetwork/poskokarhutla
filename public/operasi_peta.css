@@ -648,3 +648,33 @@
 #opsLaporan .ops-rp-siapb>span .ops-lbl{font-size:inherit;color:inherit}
 #opsLaporan .ops-rp-siapb>span b{color:var(--ink);font-variant-numeric:tabular-nums}
 #opsLaporan .ops-rp-bgrid:not(.kecil)>article>footer{margin:12px 14px 12px}
+/* kepala wadah lipat di pop-up = navy seperti kepala kartu (pemilik 11 Nov 2026 "headernya bagusin") */
+#opsLaporan .ops-pa-sek>summary{background:#0b2545;box-shadow:none;padding:13px 16px}
+#opsLaporan .ops-pa-sek>summary>i{background:rgb(255 255 255 / .14)}
+#opsLaporan .ops-pa-sek>summary>i .ops-lbl svg{color:#fff}
+#opsLaporan .ops-pa-sek>summary b{color:#fff}
+#opsLaporan .ops-pa-sek>summary small{background:rgb(255 255 255 / .14);box-shadow:none;color:#d6e4f5}
+#opsLaporan .ops-pa-sek>summary .ops-chev{color:#d6e4f5}
+#opsLaporan .ops-pa-sek{border-color:color-mix(in srgb,#0b2545 22%,var(--line))}
+#opsLaporan .ops-pa-sek[open]>summary{border-bottom:0}
+#opsLaporan .ops-pa-sek>summary:hover{background:#10305a}
+/* tooltip grafik pop-up + batang bisa diklik */
+.ops-tip{position:fixed;z-index:20;display:flex;flex-direction:column;gap:3px;padding:10px 12px;border-radius:12px;background:#0b2545;color:#fff;font-size:.75rem;box-shadow:0 10px 24px rgb(8 18 38 / .3);pointer-events:none;min-width:150px}
+.ops-tip b{font-size:.8125rem}
+.ops-tip span{display:flex;align-items:center;gap:6px;color:#d6e4f5}
+.ops-tip span.wb::before,.ops-tip span.ptr::before{content:"";width:8px;height:8px;border-radius:2px;background:#2f6fd6}
+.ops-tip span.ptr::before{background:#0f9488}
+.ops-tip em{margin-top:3px;font-style:normal;font-size:.6875rem;color:#9cb3d1}
+#opsLaporan .ops-rp-tren span{cursor:pointer;border-radius:4px 4px 0 0;transition:background .12s}
+#opsLaporan .ops-rp-tren span:hover,#opsLaporan .ops-rp-tren span:focus-visible{background:color-mix(in srgb,var(--brand2) 8%,transparent);outline:none}
+#opsLaporan .ops-rp-tren u.akhir{left:auto;right:0}
+/* keterangan kepala pop-up = pil di sebelah judul */
+#opsLaporan .ops-rp-hd>div{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+#opsLaporan .ops-rp-hd>div>small{padding:3px 10px;border-radius:999px;background:rgb(255 255 255 / .14)}
+#opsLaporan .ops-rp-hd>div>small .ops-lbl{font-size:.71875rem;font-weight:700;color:#d6e4f5}
+#opsLaporan .ops-rp-hd>div>small .ops-lbl svg{color:#d6e4f5}
+/* angka kepala pop-up = label berkotak dengan satuan */
+#opsLaporan .ops-rp-angka{display:inline-flex;align-items:baseline;gap:6px;padding:6px 14px;border-radius:12px;background:rgb(255 255 255 / .12);box-shadow:inset 0 0 0 1px rgb(255 255 255 / .18)}
+#opsLaporan .ops-rp-angka b{font-family:var(--display);font-size:1.5rem;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;line-height:1}
+#opsLaporan .ops-rp-angka small{font-size:.75rem;font-weight:700;color:#d6e4f5}
+#opsLaporan .ops-rp-angka b small{font-size:.875rem;color:#d6e4f5}
