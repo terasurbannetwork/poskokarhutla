@@ -448,3 +448,51 @@
 /* pil kategori kartu = ikon saja (eyebrow() di public/operasi_laporan.js) */
 #opsLaporan .ex-std .ex-ey.ops-ey-ik{display:inline-grid;place-items:center;width:30px;height:30px;padding:0;border-radius:9px}
 #opsLaporan .ex-std .ex-ey.ops-ey-ik svg{width:16px;height:16px}
+/* ringkasan bisa dilipat + sel bisa diklik (bukaRingkas) */
+#opsLaporan .ops-rk{margin:6px 0 4px}
+#opsLaporan .ops-pa-sek.ops-rk>.ops-lap-angka{margin:0;padding:0;border:0;border-radius:0}
+#opsLaporan .ops-lap-angka>[data-rk]{cursor:pointer;transition:background .15s}
+#opsLaporan .ops-lap-angka>[data-rk]:hover{background:color-mix(in srgb,var(--brand2) 4%,transparent)}
+#opsLaporan .ops-lap-angka>[data-rk]:focus-visible{outline:2px solid var(--brand2);outline-offset:-2px}
+#opsLaporan .ops-lap-angka>[data-rk] header::after{content:"›";margin-left:auto;font-size:1.125rem;line-height:1;color:var(--ink2)}
+/* pop-up rincian ringkasan */
+#opsLaporan .ops-rp-hd{position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:18px 64px 18px 20px;background:linear-gradient(135deg,#0b1730,#163056);color:#fff}
+#opsLaporan .ops-rp-hd>i{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:color-mix(in srgb,#fff 14%,transparent)}
+#opsLaporan .ops-rp-hd>i .ops-lbl svg{width:22px;height:22px;color:#fff}
+#opsLaporan .ops-rp-hd h3{margin:0;font-size:1.125rem;font-weight:800;color:#fff}
+#opsLaporan .ops-rp-hd p{margin:2px 0 0;font-size:.8125rem;color:color-mix(in srgb,#fff 72%,transparent)}
+#opsLaporan .ops-rp-hd>b{font-family:var(--display);font-size:1.75rem;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap}
+#opsLaporan .ops-rp-hd .ops-dlg-x{position:absolute;top:50%;right:16px;transform:translateY(-50%)}
+#opsLaporan .ops-rp-bilah{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+#opsLaporan .ops-rp-bilah li{display:grid;grid-template-columns:minmax(140px,220px) 1fr 52px;align-items:center;gap:12px;font-size:.8125rem}
+#opsLaporan .ops-rp-bilah li>span{color:var(--ink);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#opsLaporan .ops-rp-bilah li>span .ops-lbl{font-size:.8125rem;color:var(--ink)}
+#opsLaporan .ops-rp-bilah li>i{position:relative;height:10px;border-radius:999px;background:color-mix(in srgb,var(--brand2) 8%,transparent);overflow:hidden}
+#opsLaporan .ops-rp-bilah li>i::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--p);border-radius:inherit;background:var(--brand2)}
+#opsLaporan .ops-rp-bilah li.wb>i::after{background:#2f6fd6}
+#opsLaporan .ops-rp-bilah li.ptr>i::after{background:#0f9488}
+#opsLaporan .ops-rp-bilah li.omc>i::after{background:#7a4fd0}
+#opsLaporan .ops-rp-bilah li>b{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+#opsLaporan .ops-rp-base{list-style:none;margin:0;padding:0;display:grid}
+#opsLaporan .ops-rp-base li{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:10px 4px}
+#opsLaporan .ops-rp-base li+li{border-top:1px solid var(--line)}
+#opsLaporan .ops-rp-base li>div{flex:1;min-width:200px;display:flex;flex-direction:column;gap:2px}
+#opsLaporan .ops-rp-base li>div b{font-size:.875rem;color:var(--ink)}
+#opsLaporan .ops-rp-base li>div small{font-size:.75rem;color:var(--ink2)}
+#opsLaporan .ops-rp-base li>span .ops-lbl{font-size:.75rem;color:var(--ink)}
+#opsLaporan .ops-rp-base li>a{text-decoration:none}
+#opsLaporan .ops-rp-base li>a .ops-lbl{color:var(--brand2);font-weight:700}
+#opsLaporan .ops-rp-st{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+#opsLaporan .ops-rp-st li{display:grid;grid-template-columns:160px 1fr;align-items:center;gap:4px 14px}
+#opsLaporan .ops-rp-st li b{font-size:.8125rem;color:var(--ink)}
+#opsLaporan .ops-rp-tumpuk{display:flex;height:12px;border-radius:999px;overflow:hidden;gap:2px}
+#opsLaporan .ops-rp-tumpuk i{background:var(--w)}
+#opsLaporan .ops-rp-st li small{grid-column:2;font-size:.71875rem;color:var(--ink2)}
+#opsLaporan .ops-rp-tren{display:grid;grid-template-columns:repeat(30,minmax(0,1fr));align-items:end;gap:3px;height:150px;padding-top:8px;border-bottom:1px solid var(--line)}
+#opsLaporan .ops-rp-tren span{display:flex;flex-direction:column-reverse;height:100%}
+#opsLaporan .ops-rp-tren i{display:block;background:#0f9488;border-radius:3px 3px 0 0}
+#opsLaporan .ops-rp-tren i.wb{background:#2f6fd6;border-radius:0}
+#opsLaporan .ops-rp-tren-kaki{display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:.6875rem;color:var(--ink2)}
+#opsLaporan .ops-rp-leg{display:flex;gap:10px}
+#opsLaporan .ops-rp-leg small .ops-lbl{font-size:.6875rem;color:#0b6f66;font-weight:700}
+#opsLaporan .ops-rp-leg small.wb .ops-lbl{color:#1f56ad}

@@ -68,6 +68,7 @@
       const m = e.target.closest("[data-mode]");
       if (m) { st.mode = m.dataset.mode; try { localStorage.setItem("ops_mode", st.mode); } catch (x) {} box.querySelectorAll("[data-mode]").forEach(b => b.setAttribute("aria-pressed", String(b === m))); return sesudahFrame(isi); }
       const ka = e.target.closest(".ops-akt[data-reg]"); if (ka) return bukaArmada(ka.dataset.reg);
+      const rk = e.target.closest(".ops-lap-angka [data-rk]"); if (rk) return bukaRingkas(rk.dataset.rk);
       const ud = e.target.closest("[data-unduh]"); if (ud) { e.preventDefault(); return st._d && unduhRute(st._d, ud.dataset.base, ud.dataset.unduh); }   // tombol di dalam <summary>: jangan ikut melipat
       const fp = e.target.closest("[data-fpulau], [data-ftanda]"); if (fp) return saringBase(fp);
       const gr = e.target.closest("tr.ops-grup"); if (gr) return lipatGrup(gr);
@@ -78,7 +79,7 @@
       if (a.dataset.aksi === "cetak") return window.print();
       if (a.dataset.aksi === "salin") salin(a);
     });
-    box.addEventListener("keydown", e => { const k = (e.key === "Enter" || e.key === " ") && e.target.closest?.(".ops-akt[data-reg], tr.ops-bb, tr.ops-grup"); if (k) { e.preventDefault(); k.dataset.reg ? bukaArmada(k.dataset.reg) : k.classList.contains("ops-grup") ? lipatGrup(k) : bukaBase(k); } });
+    box.addEventListener("keydown", e => { const k = (e.key === "Enter" || e.key === " ") && e.target.closest?.("[data-rk], .ops-akt[data-reg], tr.ops-bb, tr.ops-grup"); if (k) { e.preventDefault(); k.dataset.rk ? bukaRingkas(k.dataset.rk) : k.dataset.reg ? bukaArmada(k.dataset.reg) : k.classList.contains("ops-grup") ? lipatGrup(k) : bukaBase(k); } });
     box.addEventListener("change", e => {
       if (e.target.matches(".ops-tgl input")) return pilihTanggal(e.target.value);
       if (e.target.matches("[data-reg]")) { st.reg = e.target.value; return sesudahFrame(() => { const k = $("#opsHistori"); if (k) k.outerHTML = kartuHistori(st._d); }); }
@@ -155,7 +156,7 @@
   }
   /* kolom Kelayakan terbang (pemilik 11 Nov 2026): tanpa kode ICAO, jarak pandang/angin/jam jadi label berikon; kalimat lengkap tetap di title pil */
   const IK_LBL = {vis: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>', angin: '<path d="M3 8h10a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7"/>',
-    jam: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', awan: '<path d="M7 18a4 4 0 0 1-.6-7.96A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/>', air: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>', padam: '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 2 1.5 3 3 3-1-3 0-6 0-8.5z"/><path d="M4 4l16 16"/>',
+    jam: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', tren: '<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/>', siap: '<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>', sortie: '<path d="M4 19c4-1 6-5 8-9s5-6 8-6"/><circle cx="4" cy="19" r="1.6"/>', temuan: '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 2 1.5 3 3 3-1-3 0-6 0-8.5z"/>', awan: '<path d="M7 18a4 4 0 0 1-.6-7.96A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/>', air: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>', padam: '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 2 1.5 3 3 3-1-3 0-6 0-8.5z"/><path d="M4 4l16 16"/>',
     kalender: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>', respons: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M10 2h4M12 2v3"/>', base: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>', api: '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 2 1.5 3 3 3-1-3 0-6 0-8.5z"/>', unduh: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>', peran: '<path d="M10 14 3 12l1-2 7 1 4-6h2l-2 7 5 1 1-2h2l-1 4 1 4h-2l-1-2-5 1 2 7h-2l-4-6-7 1-1-2z"/>',
     op: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>', milik: '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>', ember: '<path d="M5 7h14l-2 13H7zM5 7a7 3 0 0 1 14 0"/>', asap: '<path d="M4 15a4 4 0 0 1 4-4 5 5 0 0 1 9.6-1A3.5 3.5 0 0 1 18 17H7a3 3 0 0 1-3-2z"/>', ts: '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'};
   const lbl = (k, t) => `<span class="ops-lbl" data-k="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_LBL[k]}</svg>${t}</span>`;
@@ -215,14 +216,15 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
       temuan: '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 2 1.5 3 3 3-1-3 0-6 0-8.5z"/>'};
     /* sub: teks biasa, atau larik pil [kelas, teks]; ubin redup = data belum masuk, ditandai pil oranye bukan kalimat */
     const ubin = (k, n, t, sub, redup) => { const pil = sub ? `<em${Array.isArray(sub) && sub.length > 1 ? ' class="tegak"' : ""}>${Array.isArray(sub) ? sub.map(([c, x]) => `<small class="${c}">${lbl({wb: "air", ptr: "vis", omc: "awan", belum: "jam"}[c] || "jam", x)}</small>`).join("") : sub}</em>` : "";
-      return `<div class="${redup ? "redup" : ""}"><header><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKR[k]}</svg></i><span>${t}</span></header><div class="ops-ub-isi${pil.includes("tegak") ? " samping" : ""}"><b>${n}</b>${pil}</div></div>`; };
+      return `<div class="${redup ? "redup" : ""}" data-rk="${k}" tabindex="0" role="button" aria-label="Rincian ${esc(t)}"><header><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKR[k]}</svg></i><span>${t}</span></header><div class="ops-ub-isi${pil.includes("tegak") ? " samping" : ""}"><b>${n}</b>${pil}</div></div>`; };
     const tiles = [ubin("base", fmt(base.length), "Base operasi udara"),
       ubin("armada", fmt(ar.length), "Armada", [["wb", `WB ${fmt(g.wb)}`], ["ptr", `Patroli ${fmt(g.patroli)}`], ["omc", `OMC ${fmt(g.omc)}`]]),
       ubin("siap", `${lapor ? fmt(siap) : "–"}<small>/${fmt(ar.length)}</small>`, "Armada siap", lapor ? `${fmt(lapor)} armada melapor` : [["belum", "Gelar armada belum masuk"]], !lapor),
       ubin("sortie", H.sortie ? fmt(H.sortie) : "–", "Sortie hari ini", H.sortie ? (H.wb ? `${fmt(H.wb)} water bombing${H.drop ? `, ${fmt(H.drop)} jatuhan` : ""}` : "tanpa water bombing") : [["belum", "Belum ada sortie"]], !H.sortie),
       H.dinilai && ubin("padam", u.persen(H.persen), "Padam ≥ 24 jam", `${fmt(H.padam)} dari ${fmt(H.dinilai)} dinilai`),
       ubin("temuan", (P.temuan || []).length ? fmt(temApi) : "–", "Temuan api pilot", (P.temuan || []).length ? `${fmt(P.temuan.length)} temuan total` : [["belum", "Belum ada laporan pilot"]], !(P.temuan || []).length)].filter(Boolean);
-    const ringkas = `<div class="ops-lap-angka" style="--n:${tiles.length}">${tiles.join("")}</div>`;
+    const ringkas = `<details class="ops-pa-sek ops-rk" open><summary><i>${lbl("tren", "")}</i><b>Ringkasan</b><small>${lbl("jam", esc(tglPendek(D.t)))}</small><svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="ops-lap-angka" style="--n:${tiles.length}">${tiles.join("")}</div></details>`;
     return [
       bagian(`${ik("udara")} Operasi udara`, lapor ? `${hl(`${fmt(siap)} dari ${fmt(ar.length)}`)} armada siap di ${fmt(base.length)} base, ${H.sortie ? `${hl(fmt(H.sortie))} sortie` : "belum ada sortie"} pada ${tgl}`
         : `${hl(fmt(ar.length))} armada di ${fmt(base.length)} base; status harian ${tgl} belum dilaporkan`, ringkas),
@@ -345,13 +347,54 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     return {judul: `${hl(esc(a.registrasi))}: ${hh.sortie ? `${hl(fmt(hh.sortie))} sortie dalam 30 hari` : "belum ada sortie dalam 30 hari"}`, isi};
   }
   /* pop-up histori armada (pemilik 11 Nov 2026: klik kartu armada = histori semua kegiatannya). <dialog> bawaan: Esc dan klik latar menutup. */
-  function bukaArmada(reg) {
-    const D = st._d, a = (D?.peta.armada || []).find(x => x.registrasi === reg); if (!a) return;
+  /* wadah lipat bersama pop-up: kepala ikon + judul + pil berikon, isi bisa dilipat */
+  const sek = (judul, sub, isi, ik = "jam", buka = true) => `<details class="ops-pa-sek"${buka ? " open" : ""}><summary><i>${lbl(ik, "")}</i><b>${judul}</b>${(sub || []).map(([k, t]) => `<small>${lbl(k, t)}</small>`).join("")}<svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div>${isi}</div></details>`;
+  /* satu <dialog> untuk semua pop-up layar ini; Esc, tombol tutup, dan klik latar menutup */
+  function bukaDialog(html) {
     let d = document.getElementById("opsDlgAr");
     if (!d) { d = document.createElement("dialog"); d.id = "opsDlgAr"; d.className = "ops-dlg"; ($("#opsLaporan") || document.body).append(d);   // di dalam #opsLaporan supaya gaya layar ikut
       d.addEventListener("click", e => { if (e.target === d || e.target.closest("[data-tutup]")) d.close(); }); }
-    d.innerHTML = `<div class="ops-dlg-isi">${popupArmada(D, a)}</div>`;
+    d.innerHTML = `<div class="ops-dlg-isi">${html}</div>`;
     if (!d.open) d.showModal();
+  }
+  function bukaArmada(reg) {
+    const D = st._d, a = (D?.peta.armada || []).find(x => x.registrasi === reg); if (!a) return;
+    bukaDialog(popupArmada(D, a));
+  }
+
+  /* pop-up rincian ubin ringkasan (pemilik 11 Nov 2026: "bisa diklik gini, keluar pop up", tiru pangantara) */
+  const bilah = (t, n, maks, kelas = "") => `<li class="${kelas}"><span>${t}</span><i style="--p:${maks ? Math.round(n / maks * 100) : 0}%"></i><b>${fmt(n)}</b></li>`;
+  function bukaRingkas(k) {
+    const D = st._d; if (!D) return;
+    const u = U(), P = D.peta, base = P.base || [], ar = P.armada || [], g = u.hitungGuna(ar), lapor = ar.filter(a => a.status).length, siap = ar.filter(a => SIAP.includes(a.status)).length, H = D.hari;
+    const kepala = (ik, judul, sub, angka) => `<header class="ops-rp-hd"><i>${lbl(ik, "")}</i><div><h3>${judul}</h3><p>${sub}</p></div><b>${angka}</b>
+      <button type="button" class="ops-dlg-x" data-tutup aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header>`;
+    const perBase = base.map(b => ({b, a: ar.filter(x => x.base_id === b.id)}));
+    let isi = "";
+    if (k === "base") isi = kepala("base", "Base operasi udara", esc(tglPanjang(D.t)), fmt(base.length)) + `<div class="ops-pa-badan">${sek("Daftar base", [["peran", `${fmt(ar.length)} armada`]],
+      `<ul class="ops-rp-base">${perBase.map(({b, a}) => { const lay = u.kelayakan(b), sp = a.filter(x => SIAP.includes(x.status)).length;
+        return `<li><div><b>${esc(b.nama.split(" / ")[0])}</b><small>${esc(b.icao || b.id)}, ${esc(u.PROV_PDK[b.prov] || b.prov || "")}</small></div><span>${lbl("peran", `${fmt(a.length)} armada`)}</span><span>${lbl("siap", a.some(x => x.status) ? `${fmt(sp)} siap` : "belum lapor")}</span>${u.pilLayak(lay)}</li>`; }).join("")}</ul>`, "base")}</div>`;
+    else if (k === "armada") { const op = Object.entries(ar.reduce((m, a) => (m[a.operator || "Operator belum tercatat"] = (m[a.operator || "Operator belum tercatat"] || 0) + 1, m), {})).sort((x, y) => y[1] - x[1]);
+      const mOp = op[0]?.[1] || 1, mB = Math.max(1, ...perBase.map(x => x.a.length));
+      isi = kepala("peran", "Armada", "komposisi armada udara", fmt(ar.length)) + `<div class="ops-pa-badan">
+        ${sek("Per peran", [], `<ul class="ops-rp-bilah">${bilah(lbl("air", "Water bombing"), g.wb, ar.length, "wb")}${bilah(lbl("vis", "Patroli"), g.patroli, ar.length, "ptr")}${bilah(lbl("awan", "OMC"), g.omc, ar.length, "omc")}</ul>`, "peran")}
+        ${sek("Per base", [["base", `${fmt(base.length)} base`]], `<ul class="ops-rp-bilah">${perBase.sort((x, y) => y.a.length - x.a.length).map(x => bilah(esc(x.b.nama.split(" / ")[0]), x.a.length, mB)).join("")}</ul>`, "base")}
+        ${sek("Per operator", [["op", `${fmt(op.length)} operator`]], `<ul class="ops-rp-bilah">${op.map(([o, n]) => bilah(esc(o), n, mOp)).join("")}</ul>`, "op", false)}</div>`; }
+    else if (k === "siap") { const ST = [["siap", "Siap"], ["operasi", "Beroperasi"], ["siaga", "Siaga"], ["tidak_siap", "Tidak siap"], [null, "Belum lapor"]];
+      isi = kepala("siap", "Armada siap", lapor ? `${fmt(lapor)} dari ${fmt(ar.length)} armada melapor` : "gelar armada WA belum masuk", lapor ? `${fmt(siap)}/${fmt(ar.length)}` : `–/${fmt(ar.length)}`) + `<div class="ops-pa-badan">
+        ${sek("Status per base", [["jam", esc(tglPendek(D.t))]], `<ul class="ops-rp-st">${perBase.map(({b, a}) => `<li><b>${esc(b.nama.split(" / ")[0])}</b><span class="ops-rp-tumpuk">${ST.map(([v, t]) => { const n = a.filter(x => (x.status || null) === v).length;
+          return n ? `<i class="${u.stAr(v)[1]}" style="flex:${n}" title="${t}: ${fmt(n)}"></i>` : ""; }).join("")}</span><small>${ST.map(([v, t]) => { const n = a.filter(x => (x.status || null) === v).length; return n ? `${t} ${fmt(n)}` : ""; }).filter(Boolean).join(", ")}</small></li>`).join("")}</ul>`, "siap")}</div>`; }
+    else if (k === "sortie") { const maks = Math.max(1, ...D.perHari.map(x => x.sortie));
+      isi = kepala("sortie", "Sortie", `hari ini ${esc(tglPendek(D.t))}`, fmt(H.sortie)) + `<div class="ops-pa-badan">
+        ${sek("Tren 30 hari", [["peran", `${fmt(D.perHari.reduce((t, x) => t + x.sortie, 0))} sortie`]], `<div class="ops-rp-tren">${D.perHari.map(x => `<span title="${esc(tglPendek(x.t))}: ${fmt(x.sortie)} sortie, ${fmt(x.wb)} WB"><i class="wb" style="height:${x.wb / maks * 100}%"></i><i style="height:${(x.sortie - x.wb) / maks * 100}%"></i></span>`).join("")}</div>
+          <div class="ops-rp-tren-kaki"><span>${esc(tglPendek(D.dari))}</span><span class="ops-rp-leg"><small class="wb">${lbl("air", "Water bombing")}</small><small>${lbl("vis", "Lainnya")}</small></span><span>${esc(tglPendek(D.t))}</span></div>`, "sortie")}
+        ${sek("Per base hari ini", [], `<ul class="ops-rp-bilah">${perBase.map(({b}) => ({b, k: D.hitung(D.baseAksi(b.id))})).sort((x, y) => y.k.sortie - x.k.sortie).map(x => bilah(esc(x.b.nama.split(" / ")[0]), x.k.sortie, Math.max(1, H.sortie))).join("")}</ul>`, "base")}</div>`; }
+    else if (k === "temuan") { const tm = (P.temuan || []).slice().sort((x, y) => (y.jam_utc || 0) - (x.jam_utc || 0)), NT = {fs: ["Titik api", "l3"], berasap: ["Berasap", "l2"], berasap_tipis: ["Berasap tipis", "l1"], clear: ["Bersih", "l0"]};
+      isi = kepala("temuan", "Temuan api pilot", esc(tglPanjang(D.t)), fmt(tm.filter(x => x.status !== "clear").length)) + `<div class="ops-pa-badan">${sek("Daftar temuan", [["temuan", `${fmt(tm.length)} temuan`]],
+        tm.length ? `<ul class="ops-rp-base">${tm.map(t => `<li><div><b>${esc(t.lokasi || "Lokasi tidak tercatat")}</b><small>${esc(t.registrasi || "")}${t.jam_utc ? `, ${u.jamWIB(t.jam_utc)} WIB` : ""}</small></div><span class="pill ${(NT[t.status] || ["", "ops-abu"])[1]}">${(NT[t.status] || [t.status])[0]}</span>${t.lat != null ? `<a href="${u.gmaps(t.lat, t.lon)}" target="_blank" rel="noopener noreferrer">${lbl("base", "Peta")}</a>` : ""}</li>`).join("")}</ul>` : `<p class="ops-kosong">Belum ada laporan pilot pada tanggal ini.</p>`, "temuan")}</div>`; }
+    else if (k === "padam") isi = kepala("padam", "Padam ≥ 24 jam", `${fmt(H.padam)} dari ${fmt(H.dinilai)} aksi dinilai`, u.persen(H.persen)) + `<div class="ops-pa-badan">${sek("Aksi water bombing hari ini", [], `<ul class="ops-rp-base">${D.aksi.filter(a => a.guna === "wb").map(a => { const h = u.HASIL[a.hasil] || u.HASIL.tak_dinilai;
+      return `<li><div><b>${esc(a.lokasi || "Lokasi tidak tercatat")}</b><small>${esc(a.registrasi)}, ${u.jamWIB(a.jam_utc)} WIB</small></div><span class="pill ${h[1]}">${h[0]}</span></li>`; }).join("")}</ul>`, "air")}</div>`;
+    if (isi) bukaDialog(`<article class="ex ex-std ops-pa ops-rp">${isi}</article>`);
   }
 
   /* isi pop-up armada (pemilik 11 Nov 2026 "masih jelek"): kepala foto besar + identitas, deret angka tanpa kotak,
@@ -383,7 +426,6 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
         <div class="ops-ktl-per"><b>${esc(kalimat(x.periode_teks) || "–")}</b>${ket ? `<span>${ket}</span>` : ""}</div>
         ${nilai("jam", "Jam operasi", x.jam_operasi_menit ? u.jamMenit(x.jam_operasi_menit) : `<em>belum ada</em>`)}${nilai("peran", "Sortie", fmt(x.sortie || 0))}${nilai("air", "Jatuhan WB", x.wb_drop ? fmt(x.wb_drop) : `<em>tanpa WB</em>`)}
         ${x.berjalan ? `<span class="pill l0">Berjalan</span>` : `<span class="ops-pa-selesai">Selesai</span>`}</li>`; };
-    const sek = (judul, sub, isi, ik = "jam") => `<details class="ops-pa-sek" open><summary><i>${lbl(ik, "")}</i><b>${judul}</b>${(sub || []).map(([k, t]) => `<small>${lbl(k, t)}</small>`).join("")}<svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div>${isi}</div></details>`;
     return `<article class="ex ex-std ops-pa"><button type="button" class="ops-dlg-x" data-tutup aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
       <header class="ops-pa-hd"><figure>${f ? u.imgAr(a, "", `${a.registrasi} ${tipe}`) : `<span class="ops-ar-kosong">${lbl("peran", "")}</span>`}</figure>
         <div><div class="ops-pa-id"><h3>${esc(a.registrasi)}</h3><p>${esc(tipe)}</p><span class="ops-ar-st ${s[1]}"><i></i>${s[0]} ${esc(tglPendek(D.t))}</span></div>
