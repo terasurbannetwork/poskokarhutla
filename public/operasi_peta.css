@@ -1402,3 +1402,6 @@
 #opsLaporan .ops-ringkas-slot .ops-rk>.ops-lap-angka>div:hover{border-color:color-mix(in srgb,var(--brand2) 45%,var(--line))!important;box-shadow:0 6px 16px rgb(11 37 69 / .1)}
 #opsLaporan .ops-ringkas-slot .ops-rk>.ops-lap-angka>div>header{border-bottom:0;padding-bottom:0}
 @media (max-width:760px){#opsLaporan .ops-ringkas-slot .ops-rk>.ops-lap-angka{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* isi kanan dalam satu wadah putih besar, setara panel seksi kiri (pemilik 11 Nov 2026) */
+#opsLaporan .ops-utama{padding:20px;border:1px solid var(--line);border-radius:20px;background:var(--card);box-shadow:var(--shadow)}
+@media (max-width:640px){#opsLaporan .ops-utama{padding:12px;border-radius:16px}}
