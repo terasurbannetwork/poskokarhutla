@@ -184,12 +184,9 @@
     peta.on("mouseenter", "peringatan", e => { const p = e.features[0].properties; peta.getCanvas().style.cursor = "default";
       /* pemilik 11 Nov 2026 "bagusin": kepala biru muda (lambang, nama, provinsi), isi baris berlabel rata kolom */
       const lama = p.hari ? Math.max(1, Math.round((Date.now() - Date.parse(p.hari + "T00:00:00+07:00")) / 864e5) + 1) : 0;
-      const baris = (t, ...v) => h("div", {class: "dl-aw-baris"}, h("span", {teks: t}), h("div", null, ...v));
-      pop.setLngLat(e.features[0].geometry.coordinates).setDOMContent(h("div", {class: "dl-pop dl-pop-awas"},
-        h("div", {class: "dl-aw-kepala"}, lambangKab(p), h("div", null, h("b", {class: "dl-tip-nama", teks: p.nama}), h("small", {teks: namaProv(p.prov_kode)}))),
-        h("div", {class: "dl-aw-isi"}, baris("Prakiraan", status(p.lv)),
-          p.hari ? baris("Mulai", h("b", {teks: H.tglPendek(p.hari)})) : null,
-          lama ? baris("Lama", h("b", {teks: lama + " hari"})) : null))).addTo(peta); });
+      pop.setLngLat(e.features[0].geometry.coordinates).setDOMContent(kartuMini({lambang: lambangKab(p), nama: p.nama, wilayah: namaProv(p.prov_kode),
+        pil: [status(p.lv), p.hari ? label("Mulai " + H.tglPendek(p.hari), "kalender", "garis") : null].filter(Boolean),
+        angka: [[lama ? F(lama) : null, "hari berturut", "tunggu"], [H.NAMA_LEVEL[p.lv], "prakiraan tertinggi", "peringatan"]]})).addTo(peta); });
     peta.on("mouseleave", "peringatan", () => { pop.remove(); peta.getCanvas().style.cursor = ""; });
   }
   async function gambarPeta(wadah, pekan, kontrol, sk = {}, hariSt = [], Jx = J) {
@@ -299,6 +296,17 @@
     return img;
   };
 
+  /* kartu hover seragam dengan kartu klik kab/kota (pemilik 11 Nov 2026 "yang lain tolong kaya gitu"): lambang atau ikon, nama, pil wilayah,
+     pil status dan tanggal, kotak angka berikon */
+  function kartuMini({lambang = null, ik = null, nama, wilayah = null, pil = [], angka = []}) {
+    const kepalaIk = lambang || (ik ? h("span", {class: "dl-pop-ikbesar"}, ikon(ik)) : null);
+    const isi = angka.filter(([v]) => v != null && v !== "");
+    return h("div", {class: "dl-pop"},
+      h("div", {class: "dl-pop-kepala"}, kepalaIk,
+        h("div", null, h("div", {class: "dl-pop-judul"}, h("b", {class: "dl-tip-nama", teks: nama}), wilayah ? label(wilayah, "pin", "abu") : null),
+          pil.length ? h("div", {class: "dl-pop-label"}, ...pil) : null)),
+      isi.length ? h("div", {class: "dl-tip-angka"}, isi.slice(0, 3).map(([v, t, i]) => h("div", null, h("span", {class: "dl-tip-ik"}, ikon(i)), h("b", {teks: v}), h("span", {teks: t})))) : null);
+  }
   /* kartu klik di peta: kondisi, nama, angka yang dilaporkan, kontak BPBD dengan tombol WA dan telepon */
   function kartuKab(x, k) {
     const rincian = h("button", {type: "button", class: "dl-pop-rinci"}, ikon("kalender"), "Histori");
@@ -426,7 +434,7 @@
       gambarPeta(wadahPeta, pekan, semua, sk, hariSt, Jk).then(() => { if (ubin) { ubin.classList.add("dl-peta-ubin"); wadahPeta.append(ubin); } });   // ringkasan di dalam peta (pemilik 11 Nov 2026)
     });
     const nBelum = jml("nBelum"), nKab = jml("nKab"), mdTot = pekan.reduce((a, x) => a + (x.md || 0), 0);
-    return bagian("peta", J.ik, `Kondisi ${J.kata} terkini`,
+    return bagian("peta", J.ik, "Kondisi terkini",
       nBelum ? [hl(`${F(nBelum)} dari ${F(nKab)} kab/kota`), ` ${J.kata} sepekan ${J.tidak_k}`, ...jml("jiwa") ? [", ", hl(`${F(jml("jiwa"))} jiwa`), " terdampak"] : [], ...mdTot ? [", ", hl(`${F(mdTot)} meninggal`)] : []] : [hl(`${F(nKab)} kab/kota`), ` ${J.kata} sepekan, semuanya ${J.ya_k}`],
       wadahPeta,
       tabel);
@@ -732,7 +740,7 @@
     setTimeout(async () => { for (const [k] of TAB) { if (k.startsWith("laporan") || sudahBuka.has(k)) continue; sudahBuka.add(k); try { await muat(k); } catch (e) {} } }, 1500);
   }
 
-  const alat = () => ({bagian, hl, h, F, ikon, label, kosong, tdv, td, tbodyProv, tombolWA, tombolHistori, pasangUrut, pasangTip, namaProv, bukaSemua, kontak, muatKantor});
+  const alat = () => ({kartuMini, lambangKab, bagian, hl, h, F, ikon, label, kosong, tdv, td, tbodyProv, tombolWA, tombolHistori, pasangUrut, pasangTip, namaProv, bukaSemua, kontak, muatKantor});
   let jawabAwal = null;   // jawaban /api/dalops/banjir dari pemeriksaan akses, dipakai sekali oleh panel Banjir
   let poskoJson = null;   // /banjir/data/posko.json (publik) untuk langkah posko di Mitigasi; gagal = langkah posko dilewati
   let statusJson = null;  // /banjir/data/status.json membawa level banjir (b) dan longsor (l): diambil sekali untuk kedua tab

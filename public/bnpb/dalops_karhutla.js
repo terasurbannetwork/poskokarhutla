@@ -100,7 +100,7 @@
 
     /* tabel utama dan peta dulu; Kelengkapan data dan Upaya menyusul sesudah frame berikut supaya tab tidak beku di HP */
     p.replaceChildren(
-      bagian("karhutla-peta", "karhutla", "Kondisi karhutla terkini",
+      bagian("karhutla-peta", "karhutla", "Kondisi terkini",
         belum.length ? [hl(`${F(belum.length)} kab/kota`), " masih ada api belum padam, ", hl(`${F(totBelum)} ha`), ` belum padam per ${tgl(hari)}`]
           : [hl(`${F(baris.length)} kab/kota`), ` terbakar sepekan, semuanya padam per ${tgl(hari)}`],
         wadahPeta, h("div", {class: "ad-tabel-wadah dl-tabel-wadah"}, t)));
@@ -120,7 +120,7 @@
     const geo = await Promise.all(provs.map(p => ambil(`/geo/kabupaten/${p}.json`)));
     const fitur = [];
     geo.forEach((gj, i) => (gj?.features || []).forEach(f => { const x = per.get(provs[i] + "|" + f.properties.kab); if (x) fitur.push({type: "Feature", id: fitur.length, properties: {kode: x.kab_kode, belum: x.belum}, geometry: f.geometry}); }));
-    wadah.replaceChildren(); wadah.after(h("div", {class: "dl-legenda-peta"}, h("span", {class: "dl-leg dl-leg-belum", teks: "Belum padam"}), h("span", {class: "dl-leg dl-leg-surut", teks: "Padam"})));
+    wadah.replaceChildren(); wadah.append(h("div", {class: "dl-legenda-peta"}, h("span", {class: "dl-leg dl-leg-belum", teks: "Belum padam"}), h("span", {class: "dl-leg dl-leg-surut", teks: "Padam"})));
     /* trackResize mati: panel bisa hidden, ukur ulang saat tab tampil (tampil()). Komentar ini dulu menelan style: dan peta kosong. */
     const m = petaKini = new g.maplibregl.Map({container: wadah, trackResize: false, style: "https://tiles.openfreemap.org/styles/positron", bounds: [[94.8, -11.2], [141.2, 6.2]], fitBoundsOptions: {padding: 16},
       minZoom: 3, maxZoom: 13, dragRotate: false, pitchWithRotate: false, attributionControl: {compact: true}});
@@ -137,8 +137,9 @@
       m.on("mousemove", "kab-isi", e => { const kode = e.features[0].properties.kode, x = per.get(kode); m.getCanvas().style.cursor = "pointer";
         if (kode === kodeLama) return void pop.setLngLat(e.lngLat);
         kodeLama = kode;
-        pop.setLngLat(e.lngLat).setDOMContent(h("div", {class: "dl-pop"}, h("b", {teks: x.nama}), h("div", {teks: x.padam ? "Padam" : `Belum padam ${F(x.belum)} ha`}),
-          h("div", {class: "bn-label", teks: `Luas terbakar ${x.luas ? F(x.luas) + " ha" : "–"}`}))).addTo(m); });
+        pop.setLngLat(e.lngLat).setDOMContent(U.kartuMini({lambang: U.lambangKab(x), nama: x.nama, wilayah: U.namaProv(x.prov_kode),
+          pil: [U.label(x.padam ? "Padam" : "Belum padam", x.padam ? "ok" : "karhutla", x.padam ? "biru" : "merah")],
+          angka: [[x.padam ? null : F(x.belum), "ha belum padam", "karhutla"], [x.luas ? F(x.luas) : "–", "ha terbakar", "peringatan"]]})).addTo(m); });
       m.on("mouseleave", "kab-isi", () => { m.getCanvas().style.cursor = ""; pop.remove(); kodeLama = null; });
     });
   }

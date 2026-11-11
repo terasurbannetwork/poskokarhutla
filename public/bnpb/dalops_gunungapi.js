@@ -181,11 +181,9 @@
         "icon-size": ["interpolate", ["linear"], ["zoom"], 4, ["match", ["get", "lv"], 4, 1, 3, .95, 2, .78, .66], 9, ["match", ["get", "lv"], 4, 1.5, 3, 1.4, 2, 1.2, 1.05]]}});
       const pop = new ml.Popup({closeButton: false, closeOnClick: false, offset: 12, className: "dl-popup"});
       peta.on("mouseenter", "ga-titik", e => { peta.getCanvas().style.cursor = "pointer"; const x = titik[e.features[0].properties.i], r = urai(x.rekomendasi).radius ?? x.radius_km;
-        const baris = (t, v) => h("div", {class: "dl-aw-baris"}, h("span", {teks: t}), h("div", null, v));
-        pop.setOffset([0, -22]).setLngLat([x.lon, x.lat]).setDOMContent(h("div", {class: "dl-pop dl-pop-awas"},
-          h("div", {class: "dl-aw-kepala"}, h("div", null, h("b", {class: "dl-tip-nama", teks: namaGn(x.nama)}), h("small", {teks: x.prov || ""}))),
-          h("div", {class: "dl-aw-isi"}, baris("Status", h("span", {class: "dl-tag dl-ga-pil dl-ga-l" + x.level}, ikon("gunungapi"), `${NAMA[x.level]} (Level ${ROMAWI[x.level]})`)),
-            r ? baris("Radius", h("b", {teks: `${F(r)} km`})) : null, x.tinggi ? baris("Tinggi", h("b", {teks: `${F(x.tinggi)} m`})) : null))).addTo(peta); });
+        pop.setOffset([0, -22]).setLngLat([x.lon, x.lat]).setDOMContent(U.kartuMini({ik: "gunungapi", nama: namaGn(x.nama), wilayah: x.prov || null,
+          pil: [h("span", {class: "dl-tag dl-ga-pil dl-ga-l" + x.level}, ikon("gunungapi"), `${NAMA[x.level]} (Level ${ROMAWI[x.level]})`)],
+          angka: [[r ? F(r) : null, "km radius larangan", "pin"], [x.tinggi ? F(x.tinggi) : null, "m tinggi puncak", "gunungapi"]]})).addTo(peta); });
       peta.on("mouseleave", "ga-titik", () => { pop.remove(); peta.getCanvas().style.cursor = ""; });
       peta.on("click", "ga-titik", e => { const x = titik[e.features[0].properties.i]; if (x.laporan) g.open(x.laporan, "_blank", "noopener"); });
     });

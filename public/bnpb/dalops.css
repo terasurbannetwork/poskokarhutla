@@ -600,3 +600,6 @@
 .dl-peta .dl-peta-alat>.dl-saring>button,.dl-peta .dl-peta-alat>.dl-periode>button{height:auto;padding-top:0;padding-bottom:0}
 .dl-peta .dl-peta-alat>.dl-semua-peta{display:inline-flex;align-items:center;gap:6px;padding:0 12px}
 .dl-peta .dl-peta-alat .dl-jp-btn{padding-left:5px}
+/* ikon besar di kepala kartu hover tanpa lambang (gunung api) */
+.dl-pop-ikbesar{display:grid;place-items:center;width:40px;height:40px;flex:none;border-radius:12px;background:#0b2545;color:#fff}
+.dl-pop .dl-pop-ikbesar svg{width:20px;height:20px;stroke:#fff}
