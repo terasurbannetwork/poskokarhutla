@@ -34,3 +34,10 @@ b,strong,td,.pill{font-variant-numeric:tabular-nums}
 .lb-wrap .bn-blok>.lb-judul-blok input{box-shadow:inset 0 0 0 1px var(--db-h2-garis)}
 /* blok tidak menempel (memori kartu-tidak-menempel) */
 .bn-blok+.bn-blok,.bn-blok+details.bn-blok,details.bn-blok+.bn-blok{margin-top:16px}
+
+/* ---- kartu standar .ex-std (kartu.css) di layar dashboard ---- */
+.ex-std>.ex-hd{padding:10px 16px;background:var(--db-h2);box-shadow:inset 4px 0 0 var(--db-navy);border-bottom:1px solid var(--db-h2-garis)}
+.ex-std .ex-ey{text-transform:none;letter-spacing:0;font-size:.6875rem}
+.ex-std .ex-jd>h3{font-size:1rem;line-height:1.3;color:var(--db-navy)}
+.ex.ex-std{border-color:var(--db-h2-garis)}
+.ex-std>.ex-bd{padding:12px 16px}
