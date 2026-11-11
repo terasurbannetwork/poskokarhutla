@@ -1600,3 +1600,46 @@
   #opsLaporan .ops-nav-kaki{margin-top:6px}
 }
 @media (min-width:901px){#opsLaporan .ops-nav-isi>button{max-height:none}}
+/* ===== tingkat wadah (pemilik 11 Nov 2026, DESIGN-SYSTEM §8): gelap hanya di L1 ===== */
+/* L2 bagian: kartu putih, kepala terang (ikon kotak navy + judul navy), garis bawah tipis */
+#opsLaporan .ops-wadah details.ops-kartu:not(.ops-polos)>summary.ex-hd,
+#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary{background:var(--card)!important;color:var(--ink)!important;border-bottom:1px solid var(--line)!important;padding:12px 16px!important}
+#opsLaporan .ops-wadah details.ops-kartu:not(.ops-polos)>summary .ex-jd>h3,
+#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary>b{color:#0b2545!important;font-size:1rem}
+#opsLaporan .ops-wadah details.ops-kartu:not(.ops-polos)>summary .ex-ey.ops-ey-ik,
+#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary>i{background:#0b2545!important;color:#fff!important;width:28px;height:28px;border-radius:8px}
+#opsLaporan .ops-wadah details.ops-kartu:not(.ops-polos)>summary .ex-ey.ops-ey-ik svg,
+#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary>i .ops-lbl svg{color:#fff!important}
+#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary>small{background:color-mix(in srgb,var(--brand2) 9%,transparent)!important}
+#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary>small .ops-lbl,#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary>small .ops-lbl svg{color:#1f3f73!important}
+#opsLaporan .ops-wadah details.ops-kartu:not(.ops-polos)>summary .ex-jd .ops-lbl{color:var(--ink2)}
+/* L2 khusus: Perlu tindakan kepala merah muda, teks merah tua */
+#opsLaporan .ops-tindak>header{background:color-mix(in srgb,#c9503a 10%,var(--card));color:#7a1f12;border-bottom:1px solid color-mix(in srgb,#c9503a 25%,transparent)}
+#opsLaporan .ops-tindak>header .ops-lbl svg{color:#a63a26}
+#opsLaporan .ops-tindak>header>small{background:#a63a26;color:#fff}
+/* L4 item: kartu base dan renlap, kepala biru muda, label bergaris */
+#opsLaporan .ops-pb>header{background:color-mix(in srgb,var(--brand2) 7%,var(--card));color:var(--ink);border-bottom:1px solid var(--line)}
+#opsLaporan .ops-pb-nm>b{color:#0b2545}
+#opsLaporan .ops-pb-icao{background:#0b2545;color:#fff}
+#opsLaporan .ops-pb-prov,#opsLaporan .ops-rlk .ops-pb-prov.kini{background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+#opsLaporan .ops-pb-prov .ops-lbl,#opsLaporan .ops-rlk .ops-pb-prov.kini .ops-lbl{color:var(--ink)}
+#opsLaporan .ops-pb-prov .ops-lbl svg{color:var(--brand2)}
+#opsLaporan .ops-rlk .ops-pb-prov:not(.kini){opacity:.65}
+#opsLaporan .ops-pb-lv{background:color-mix(in srgb,var(--brand2) 10%,transparent)}
+#opsLaporan .ops-pb-lv .ops-lbl,#opsLaporan .ops-pb-lv .ops-lbl svg{color:#1f3f73}
+/* Angka utama berdampingan: periode ini | pembanding, garis tengah (pemilik 11 Nov 2026, rujukan gemah-ripah) */
+#opsLaporan .ops-cmp{display:grid;grid-template-columns:1fr 1fr;align-items:center;width:100%}
+#opsLaporan .ops-cmp.tunggal{grid-template-columns:1fr}
+#opsLaporan .ops-cmp>div{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;padding:0 8px}
+#opsLaporan .ops-cmp>div.lalu{border-left:1px solid var(--line)}
+#opsLaporan .ops-cmp .pl{padding:1px 10px;border-radius:999px;background:color-mix(in srgb,var(--ink) 6%,transparent);font-size:.6875rem;font-weight:700;color:var(--ink2);white-space:nowrap}
+#opsLaporan .ops-cmp p{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:6px;margin:0}
+#opsLaporan .ops-cmp p b{font-family:var(--display);font-size:1.625rem;font-weight:800;line-height:1.1;color:#0b2545;font-variant-numeric:tabular-nums}
+#opsLaporan .ops-cmp .lalu p b{font-size:1.375rem;color:color-mix(in srgb,var(--ink) 55%,transparent)}
+#opsLaporan .ops-cmp p b small{font-size:.8125rem;font-weight:700;color:var(--ink2)}
+#opsLaporan .ops-cmp p.kosong{padding:4px 10px;border-radius:999px;background:color-mix(in srgb,#e08a3a 12%,transparent)}
+#opsLaporan .ops-cmp p.kosong .ops-lbl{font-size:.75rem;font-weight:700;color:#a35512;white-space:nowrap}
+#opsLaporan .ops-ringkas-slot .ops-rk>.ops-lap-angka>div{gap:10px;padding:10px 12px}
+#opsLaporan .pill.ops-pbv.netral{background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--ink2)}
+#opsLaporan .ops-cmp p.nol{padding:4px 10px;border-radius:999px;background:color-mix(in srgb,#e08a3a 12%,transparent)}
+#opsLaporan .ops-cmp p.nol .ops-lbl{font-size:.75rem;font-weight:700;color:#a35512;white-space:nowrap}

@@ -94,3 +94,15 @@ token Centurisk97, kartu berkepala §3.5 tetap.
 
 Satu tampilan = satu hash (`#ringkasan`, `#base`, ...), jadi tombol kembali dan tautan bekerja. Pindah seksi hanya
 mengganti `hidden` pada grup kartu yang sudah dirender (INP).
+
+## 8. Tingkat wadah (pemilik 11 Nov 2026)
+
+Warna gelap hanya di L1. Tingkat di bawahnya makin ringan, supaya mata tahu urutan tanpa banyak bilah navy.
+
+| Tingkat | Contoh | Bentuk |
+| ------- | ------ | ------ |
+| L1 halaman | wadah isi kanan | putih, sudut 20px; kepala navy `#0b2545` berisi judul seksi rata tengah, teks putih |
+| L2 bagian | Angka utama, Renlap, Papan base, Rencana tindakan | kartu putih bergaris tipis; kepala terang: ikon di kotak navy 28px + judul navy 1rem, garis bawah tipis. Perlu tindakan: kepala merah muda, teks merah tua |
+| L3 grup | pulau (Sumatera, Kalimantan) | wadah biru sangat muda (`--brand2` 4%), pita label biru muda dengan ikon kotak navy |
+| L4 item | kartu base, kartu renlap, kartu Angka utama | kartu putih bergaris; kepala biru muda (`--brand2` 7%), nama navy, kode ICAO pil navy, label bergaris tipis |
+| Label nilai | Siap, Renlap, Sortie | pil `.pill` sama bentuk: hijau baik, oranye perlu perhatian, merah prioritas, abu netral kosong |

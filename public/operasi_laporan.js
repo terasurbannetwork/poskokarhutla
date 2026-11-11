@@ -405,8 +405,8 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
           <li><span>${lbl("siap", "Siap")}</span><b>${x.lapor ? pv(x.siap === x.a.length ? "ok" : "awas", `${fmt(x.siap)}/${fmt(x.a.length)} siap`) : pv("awas", "Belum lapor")}</b>${bar(x.lapor ? x.siap : 0, x.a.length, "ok")}</li>
           <li><span>${lbl("vis", "Cuaca terbang")}</span><b>${u.pilLayak(x.lay)}</b></li>
           <li><span>${lbl("api", "Api dalam jangkauan")}</span><b>${x.dk.length ? (x.p3 ? pv("bahaya", `${fmt(x.p3)} prioritas dari ${fmt(x.dk.length)}`) : pv("awas", `${fmt(x.dk.length)} cluster`)) : pv("ok", "Tidak ada")}</b></li>
-          <li><span>${lbl("sortie", "Renlap")}</span><b>${x.tg.length ? pv(x.datang === x.tg.length ? "ok" : "awas", `${fmt(x.datang)}/${fmt(x.tg.length)} didatangi`) : pv("kosong", "Belum ada")}</b>${x.tg.length ? bar(x.datang, x.tg.length, "renlap") : ""}</li>
-          <li><span>${lbl("air", D.pm === "hari" ? "Sortie hari ini" : "Sortie periode")}</span><b>${x.k.sortie ? pv("ok", `${fmt(x.k.sortie)} sortie${x.k.wb ? `, ${fmt(x.k.wb)} WB` : ""}`) : pv("kosong", "Belum ada")}</b></li>
+          <li><span>${lbl("sortie", "Renlap")}</span><b>${x.tg.length ? pv(x.datang === x.tg.length ? "ok" : "awas", `${fmt(x.datang)}/${fmt(x.tg.length)} didatangi`) : pv("netral", "Belum ada")}</b>${x.tg.length ? bar(x.datang, x.tg.length, "renlap") : ""}</li>
+          <li><span>${lbl("air", D.pm === "hari" ? "Sortie hari ini" : "Sortie periode")}</span><b>${x.k.sortie ? pv("ok", `${fmt(x.k.sortie)} sortie${x.k.wb ? `, ${fmt(x.k.wb)} WB` : ""}`) : pv("netral", "Belum ada")}</b></li>
         </ul></article>`; };   // tanpa kaki "Rincian ›": kartu sendiri bisa diklik (pemilik 11 Nov 2026)
     /* dikelompokkan per pulau (pemilik 11 Nov 2026), urutan dalam pulau tetap: api paling genting dulu */
     const grup = {}; for (const x of bs) (grup[PULAU[String(x.b.prov || "")[0]] || "Lainnya"] ||= []).push(x);
@@ -660,8 +660,8 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
        pembanding jadi pil kecil supaya tidak bersaing dengan angka hari ini */
     const ubin = m => { const st0 = m.redup && Array.isArray(m.sub) ? (m.sub.find(x => x[0] === "belum") || m.sub[0])?.[1] : null;
       return `<div class="${m.redup ? "redup" : ""}" data-rk="${m.k}" tabindex="0" role="button" aria-label="Rincian ${esc(m.t)}"><header><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKR[m.k]}</svg></i><span>${m.t}</span></header>
-      <div class="ops-vs3">${m.redup ? `<p class="ops-vs3-kosong">${lbl("jam", esc(st0 || "Belum ada data"))}</p>` : `<p class="ops-vs3-kini"><b>${m.tampil}</b>${D.vs ? deltaHtml(m) : ""}</p>`}
-      ${D.vs ? `<small class="ops-vs3-lalu">${lbl("kalender", esc(D.vs.label))}<b>${m.tampilLalu}</b></small>` : ""}</div>
+      <div class="ops-cmp${D.vs ? "" : " tunggal"}"><div><small class="pl">${esc(D.label || tglPendek(D.t))}</small>${m.redup ? `<p class="nol">${lbl("jam", esc(st0 || "Belum ada data"))}</p>` : `<p><b>${m.tampil}</b>${D.vs ? deltaHtml(m) : ""}</p>`}</div>
+      ${D.vs ? `<div class="lalu"><small class="pl">${esc(D.vs.label)}</small><p><b>${m.tampilLalu}</b></p></div>` : ""}</div>
       ${m.redup ? "" : `<div class="ops-ub-kaki">${pilHtml(m.sub)}</div>`}</div>`; };
     const tiles = metrikRingkas(D).map(ubin);
     /* kartu pertama = ringkasan itu sendiri; kepala kartu gelap dihapus (pemilik 11 Nov 2026 "Ringkasan 11 Nov itu yang jadi header") */
@@ -766,7 +766,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     return `<div class="ops-tren2" style="--w:${warna}"><header><i>${lbl(ik, "")}</i><b>${label}</b><span class="tot"><strong>${fmtV(tot)}</strong><small>30 hari</small></span></header>
       ${ada ? `<p class="ops-tren2-ket">${lbl("ts", `Puncak ${fmtV(m)} pada ${esc(tglPendek(ph[ip].t))}`)}</p>` : ""}
       ${ada ? `<div class="ops-tren2-plot"><div class="ops-tren2-y">${garis.map(g => `<span>${fmtV(g)}</span>`).join("")}</div>
-      <div class="ops-tren2-bar" role="img" aria-label="${esc(label)} 30 hari">${nilai.map((v, i) => `<span data-tgl="${ph[i].t}" class="${ph[i].t === st._d.t ? "on" : ""}${v == null ? " kosong" : ""}" style="--h:${v ? Math.max(3, Math.round(v / atas * 100)) : 0}%"
+      <div class="ops-tren2-bar" role="img" aria-label="${esc(label)} 30 hari">${nilai.map((v, i) => `<span data-tgl="${ph[i].t}" class="${ph[i].t === st._d.t ? "on" : ""}${v == null ? " nihil" : ""}" style="--h:${v ? Math.max(3, Math.round(v / atas * 100)) : 0}%"
         data-tip="${esc(`<b>${esc(tglPanjang(ph[i].t))}</b><span>${esc(label)}: ${v == null ? "belum ada data" : fmtV(v)}</span><em>Klik untuk melihat tanggal ini</em>`)}"></span>`).join("")}</div></div>
       <div class="ops-tren2-kaki"><span>${esc(tglPendek(ph[0].t))}</span><span>${esc(tglPendek(ph[n - 1].t))}</span></div>`
       : `<p class="ops-kosong">Belum ada data ${esc(label.toLowerCase())} dalam 30 hari terakhir.</p>`}</div>`;
