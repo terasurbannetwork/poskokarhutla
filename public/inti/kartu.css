@@ -85,6 +85,9 @@
           <div class="ex-bd">isi</div><footer class="ex-ft"><span>keterangan</span><em>Sumber: …</em></footer></section>
    Tabel langsung di dalam .ex-bd menempel penuh (tanpa bingkai ganda). Gerbang: tests/agen/gerbang-kartu-std.test.mjs. */
 .ex.ex-std{background:var(--card,#fff);border:1px solid var(--line,#e3e8f0);border-radius:18px;box-shadow:var(--shadow,var(--bayang,0 2px 14px rgb(11 37 69 / .08)));padding:0;margin:0;overflow:hidden;display:block}
+/* kartu tidak pernah menempel (pemilik 11 Nov 2026: "gw ga pernah suka yang nempel"). Wadah grid/flex yang sudah ber-gap tidak ikut: lihat aturan :has di bawah.
+   Gerbang: tests/agen/gerbang-kartu-renggang.test.mjs */
+.ex+.ex,.ex.ex-std+.ex{margin-top:20px}
 .ex-std>.ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface,#eef2f8),color-mix(in oklch,var(--surface,#eef2f8) 40%,var(--card,#fff)));border-bottom:1px solid var(--line,#e3e8f0)}
 .ex-std .ex-ey{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2,var(--navy2,#1d4e89));background:color-mix(in oklch,var(--brand2,var(--navy2,#1d4e89)) 12%,transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
 .ex-std .ex-ey:empty{display:none}
