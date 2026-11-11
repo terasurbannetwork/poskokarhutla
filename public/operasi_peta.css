@@ -251,17 +251,27 @@
 .ops-gl-pra{display:flex;gap:6px;min-width:0;overflow:hidden}
 .ops-gl-pra img{width:72px;height:54px;flex:none;object-fit:cover;border-radius:8px;background:var(--line)}
 .ops-gl-pra i{flex:none;display:grid;place-items:center;width:54px;height:54px;border-radius:8px;border:1px dashed var(--line);font-style:normal;font-size:.75rem;font-weight:800;color:var(--brand2)}
-.ops-gl-hari .ops-chev{width:16px;height:16px;color:var(--ink2);transition:transform .2s}
+.ops-gl-hari .ops-chev{grid-column:3;justify-self:end;width:16px;height:16px;color:var(--ink2);transition:transform .2s}
 .ops-gl-hari[open] .ops-chev{transform:rotate(90deg);color:var(--brand2)}
-.ops-gl-hari[open] .ops-gl-pra{visibility:hidden}
+.ops-gl-hari[open] .ops-gl-pra{display:none}
 .ops-gl-isi{padding:0 4px 14px}
 .ops-gl-base small{font-weight:500;font-size:.75rem;color:var(--ink2)}
-.ops-gl-base{display:flex;align-items:baseline;gap:8px;margin:6px 0 8px;font-size:.8125rem;font-weight:700;color:var(--ink)}
+.ops-gl-base{display:flex;align-items:center;gap:8px;margin:14px 0 10px;font-size:.8125rem;font-weight:700;color:var(--ink)}
+.ops-gl-isi>.ops-gl-base:first-child{margin-top:4px}
+#opsLaporan .ops-gl-base>.ops-lbl{font-size:.875rem;font-weight:800;color:var(--ink)}
+#opsLaporan .ops-gl-base>.ops-lbl svg{color:var(--brand2);width:14px;height:14px}
+#opsLaporan .ops-gl-base small{padding:2px 9px;border-radius:999px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--brand2) 22%,transparent)}
+#opsLaporan .ops-gl-base small .ops-lbl{color:var(--brand2);font-weight:700}
+/* galeri: keterangan di atas foto, tinggi ubin seragam */
+.ops-galeri{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;padding-bottom:6px}
+.ops-galeri a{position:relative;display:block;aspect-ratio:4/3;border-radius:12px;overflow:hidden;background:var(--line);text-decoration:none}
+.ops-galeri img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .25s}
+.ops-galeri a:hover img{transform:scale(1.04)}
+.ops-galeri a::after{content:"";position:absolute;inset:auto 0 0;height:58%;background:linear-gradient(to top,rgba(8,18,38,.85),transparent);pointer-events:none}
+.ops-galeri span{position:absolute;left:10px;right:10px;bottom:8px;z-index:1;font-size:.6875rem;line-height:1.3;color:color-mix(in srgb,#fff 85%,transparent);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ops-galeri span b{font-size:.75rem;color:#fff}
+@media (prefers-reduced-motion:reduce){.ops-galeri img{transition:none}.ops-galeri a:hover img{transform:none}}
 @media (max-width:760px){.ops-gl-hari>summary{grid-template-columns:1fr auto}.ops-gl-pra{grid-column:1/-1;grid-row:2}}
-.ops-galeri{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;padding-bottom:6px}
-.ops-galeri a{display:grid;gap:4px;text-decoration:none;color:var(--ink)}
-.ops-galeri img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;background:var(--surface)}
-.ops-galeri span{font-size:11.5px;line-height:1.35;color:var(--ink2)}
 @media (max-width:760px){.ops-tren-grid{grid-template-columns:1fr}.ops-6{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:14px}.ops-hist-atas img{width:96px;height:64px}}
 @media print{#tabs,header,.ops-alat,.fab,[class*="chat"]{display:none!important}.page.on{position:static!important;overflow:visible!important}#opsIsi{gap:12px}.ex-std{break-inside:avoid;box-shadow:none!important}}
 /* kartu armada bisa diklik -> pop-up histori armada (public/operasi_laporan.js bukaArmada) */
@@ -413,3 +423,22 @@
 #opsLaporan .ops-ktl>li>div:not(.ops-ktl-per) b em{font-family:inherit;font-style:normal;font-size:.75rem;font-weight:600;color:var(--ink2)}
 #opsLaporan .ops-ktl>li>.pill,#opsLaporan .ops-ktl>li>.ops-pa-selesai{justify-self:end}
 @media (max-width:760px){#opsLaporan .ops-ktl>li{grid-template-columns:30px 1fr auto;row-gap:10px}#opsLaporan .ops-ktl-per{grid-column:2/4}#opsLaporan .ops-ktl>li>div:not(.ops-ktl-per){grid-row:2}#opsLaporan .ops-ktl>li>div:nth-of-type(2){grid-column:1/2}}
+/* kontrak 2026 per provinsi (kartuKontrak) */
+#opsLaporan .ops-kp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:12px;padding:4px 0}
+#opsLaporan .ops-kp{display:flex;flex-direction:column;gap:12px;padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--card);text-align:left}
+#opsLaporan .ops-kp header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+#opsLaporan .ops-kp header>b{font-size:1rem;font-weight:800;color:var(--ink)}
+#opsLaporan .ops-kp header span{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+#opsLaporan .ops-kp header span b{font-family:var(--display);font-size:1.375rem;font-weight:800;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums}
+#opsLaporan .ops-kp header span small{font-size:.6875rem;color:var(--ink2)}
+#opsLaporan .ops-kp-bar{position:relative;height:5px;border-radius:999px;background:color-mix(in srgb,var(--brand2) 10%,transparent);overflow:hidden}
+#opsLaporan .ops-kp-bar::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--p);border-radius:inherit;background:var(--brand2)}
+#opsLaporan .ops-kp ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+#opsLaporan .ops-kp li{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:10px 12px;border-radius:12px;border:1px solid var(--line)}
+#opsLaporan .ops-kp li .ops-lbl{font-size:.75rem;font-weight:600;color:var(--ink)}
+#opsLaporan .ops-kp li .ops-lbl svg{color:var(--ink2)}
+#opsLaporan .ops-kp-jenis{flex-basis:100%}
+#opsLaporan .ops-kp-jenis .ops-lbl{padding:2px 9px;border-radius:999px;font-weight:700}
+#opsLaporan .ops-kp li[data-j="patroli"] .ops-kp-jenis .ops-lbl,#opsLaporan .ops-kp li[data-j="patroli"] .ops-kp-jenis .ops-lbl svg{background:color-mix(in srgb,#0f9488 12%,transparent);color:#0b6f66}
+#opsLaporan .ops-kp li[data-j="wb"] .ops-kp-jenis .ops-lbl,#opsLaporan .ops-kp li[data-j="wb"] .ops-kp-jenis .ops-lbl svg{background:color-mix(in srgb,#2f6fd6 11%,transparent);color:#1f56ad}
+#opsLaporan .ops-kp li[data-j] .ops-kp-jenis .ops-lbl svg{background:none}
