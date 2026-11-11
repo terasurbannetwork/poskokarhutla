@@ -394,3 +394,36 @@ test("menu Pusdalops: 6 grup di navbar, 13 halaman lama tetap terjangkau lewat d
     "/bnpb/operasi", "/?operasi", "/bnpb/perencanaan", "/bnpb/siaga", "/daftar-kontak"]) assert.ok(rute.includes(r), r + " hilang dari menu");
   assert.doesNotMatch(js, /<details|<select|dropdown/i, "tanpa daftar turun");
 });
+
+/* Cek Kabar Luar CK-05/06 (data/kajian-bnpb/cek-kabar/RENCANA-UJI L1-L6) */
+const LU = (label, senyap, bukti = []) => ({label, dasar: bukti.length ? "berita" : null, senyap, alam: null, bukti, catatan: null});
+test("cek kabar L1/L1b: label kelompok paling waspada, perluDitanya memuat kemungkinan selesai dan mengurutkan menurut label", () => {
+  const lengkap = {kk: 5, jiwa: 10};
+  const kel = H.kelompok([
+    K("a", "Aceh Besar", "2026-10-20", "2026-10-31", false, {...lengkap, luar: LU("mungkin_selesai", 1)}),
+    K("b", "Aceh Besar", "2026-10-20", "2026-10-30", false, {...lengkap, luar: LU("masih", 2, [{judul: "x", url: "https://a.id/1", tgl: "2026-10-31", arah: "masih"}])}),
+    K("c", "Pidie", "2026-10-20", "2026-10-25", false, {...lengkap, luar: LU("mungkin_selesai", 7)}),
+    K("d", "Bireuen", "2026-10-20", "2026-10-28", false, {luar: LU("belum_ada", 4)}),
+    K("e", "Simeulue", "2026-10-20", "2026-10-29", false, {luar: LU("masih", 3)})], HARI);
+  assert.equal(kel.find(x => x.nama.includes("Aceh Besar")).luar.label, "masih", "masih mengalahkan mungkin_selesai");
+  assert.equal(kel.find(x => x.nama.includes("Aceh Besar")).luar.bukti.length, 1);
+  const t = H.perluDitanya(kel, HARI, H.KATA.banjir);
+  assert.deepEqual(t.map(x => x.luar.label), ["mungkin_selesai", "belum_ada", "masih", "masih"]);
+  assert.ok(t[0].nama.includes("Pidie"), "kemungkinan selesai berangka lengkap ikut ditanya");
+  assert.deepEqual(H.ringkasLuar(kel), {masih: 2, mungkin_selesai: 1, belum_ada: 1}, "L3: jumlah tiga angka = kelompok belum selesai");
+});
+test("cek kabar L2: teks WA kemungkinan selesai meminta konfirmasi, tanpa isi berita", () => {
+  const x = {nama: "Kab. Pidie", mulai: "2026-10-20", terakhir: "2026-10-25", kurang: [], luar: LU("mungkin_selesai", 7, [{judul: "RAHASIA JUDUL", url: "https://a.id", tgl: "2026-10-30", arah: "pulih"}])};
+  const wa = H.pesanWA(x, H.KATA.banjir);
+  assert.match(wa, /Mohon konfirmasi apakah sudah selesai \(surut\)/); assert.doesNotMatch(wa, /RAHASIA|https/);
+  assert.doesNotMatch(H.pesanWA({...x, luar: LU("masih", 1)}, H.KATA.banjir), /konfirmasi apakah sudah selesai/);
+});
+test("cek kabar L4/L5/L6: tautan bukti hanya http(s), berkas tanpa 'luar' tetap jalan, WA tersembunyi untuk baca-saja, judul tanpa kata dobel", () => {
+  const js = readFileSync("public/bnpb/dalops.js", "utf8");
+  assert.match(js, /const amanUrl = u => \/\^https\?:\\\/\\\/\/i\.test/); assert.match(js, /amanUrl\(a\.url\) \? h\("a"/);
+  assert.match(js, /if \(!xs\.length\) return null;/, "berkas lama tanpa kolom luar: bagian tidak dirender");
+  assert.match(js, /kemungkinan sudah \$\{sel\}/, "judul memakai kata selesai per jenis, bukan 'sudah sudah surut'");
+  const kel = H.kelompok([K("a", "Pidie", "2026-10-20", "2026-10-25", false, {kk: 1, jiwa: 2})], HARI);
+  assert.equal(kel[0].luar, undefined); assert.deepEqual(H.ringkasLuar(kel), {masih: 0, mungkin_selesai: 0, belum_ada: 0});
+  assert.match(readFileSync("public/bnpb/menu_pusdalops.css", "utf8"), /html\[data-baca-saja\] \.dl-wa\{display:none\}/);
+});
