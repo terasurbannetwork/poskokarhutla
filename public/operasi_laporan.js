@@ -204,13 +204,14 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
       wb: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>', padam: '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 2 1.5 3 3 3-1-3 0-6 0-8.5z"/><path d="M4 4l16 16"/>',
       temuan: '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 2 1.5 3 3 3-1-3 0-6 0-8.5z"/>'};
     /* sub: teks biasa, atau larik pil [kelas, teks]; ubin redup = data belum masuk, ditandai pil oranye bukan kalimat */
-    const ubin = (k, n, t, sub, redup) => `<div class="${redup ? "redup" : ""}"><i>${`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKR[k]}</svg>`}</i><div><b>${n}</b><span>${t}</span></div>${sub ? `<em>${Array.isArray(sub) ? sub.map(([c, x]) => `<small class="${c}">${lbl({wb: "air", ptr: "vis", omc: "awan", belum: "jam"}[c] || "jam", x)}</small>`).join("") : sub}</em>` : ""}</div>`;
-    const tiles = [ubin("base", fmt(base.length), "base operasi udara"),
-      ubin("armada", fmt(ar.length), "armada", [["wb", `WB ${fmt(g.wb)}`], ["ptr", `Patroli ${fmt(g.patroli)}`], ["omc", `OMC ${fmt(g.omc)}`]]),
-      ubin("siap", `${lapor ? fmt(siap) : "–"}<small>/${fmt(ar.length)}</small>`, "armada siap", lapor ? `${fmt(lapor)} armada melapor` : [["belum", "Gelar armada belum masuk"]], !lapor),
-      ubin("sortie", H.sortie ? fmt(H.sortie) : "–", "sortie hari ini", H.sortie ? (H.wb ? `${fmt(H.wb)} water bombing${H.drop ? `, ${fmt(H.drop)} jatuhan` : ""}` : "tanpa water bombing") : [["belum", "Belum ada sortie"]], !H.sortie),
-      H.dinilai && ubin("padam", u.persen(H.persen), "padam ≥ 24 jam", `${fmt(H.padam)} dari ${fmt(H.dinilai)} dinilai`),
-      ubin("temuan", (P.temuan || []).length ? fmt(temApi) : "–", "temuan api pilot", (P.temuan || []).length ? `${fmt(P.temuan.length)} temuan total` : [["belum", "Belum ada laporan pilot"]], !(P.temuan || []).length)].filter(Boolean);
+    const ubin = (k, n, t, sub, redup) => { const pil = sub ? `<em${Array.isArray(sub) && sub.length > 1 ? ' class="tegak"' : ""}>${Array.isArray(sub) ? sub.map(([c, x]) => `<small class="${c}">${lbl({wb: "air", ptr: "vis", omc: "awan", belum: "jam"}[c] || "jam", x)}</small>`).join("") : sub}</em>` : "";
+      return `<div class="${redup ? "redup" : ""}"><header><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKR[k]}</svg></i><span>${t}</span></header><div class="ops-ub-isi${pil.includes("tegak") ? " samping" : ""}"><b>${n}</b>${pil}</div></div>`; };
+    const tiles = [ubin("base", fmt(base.length), "Base operasi udara"),
+      ubin("armada", fmt(ar.length), "Armada", [["wb", `WB ${fmt(g.wb)}`], ["ptr", `Patroli ${fmt(g.patroli)}`], ["omc", `OMC ${fmt(g.omc)}`]]),
+      ubin("siap", `${lapor ? fmt(siap) : "–"}<small>/${fmt(ar.length)}</small>`, "Armada siap", lapor ? `${fmt(lapor)} armada melapor` : [["belum", "Gelar armada belum masuk"]], !lapor),
+      ubin("sortie", H.sortie ? fmt(H.sortie) : "–", "Sortie hari ini", H.sortie ? (H.wb ? `${fmt(H.wb)} water bombing${H.drop ? `, ${fmt(H.drop)} jatuhan` : ""}` : "tanpa water bombing") : [["belum", "Belum ada sortie"]], !H.sortie),
+      H.dinilai && ubin("padam", u.persen(H.persen), "Padam ≥ 24 jam", `${fmt(H.padam)} dari ${fmt(H.dinilai)} dinilai`),
+      ubin("temuan", (P.temuan || []).length ? fmt(temApi) : "–", "Temuan api pilot", (P.temuan || []).length ? `${fmt(P.temuan.length)} temuan total` : [["belum", "Belum ada laporan pilot"]], !(P.temuan || []).length)].filter(Boolean);
     const ringkas = `<div class="ops-lap-angka" style="--n:${tiles.length}">${tiles.join("")}</div>`;
     return [
       bagian(`${ik("udara")} Operasi udara`, lapor ? `${hl(`${fmt(siap)} dari ${fmt(ar.length)}`)} armada siap di ${fmt(base.length)} base, ${H.sortie ? `${hl(fmt(H.sortie))} sortie` : "belum ada sortie"} pada ${tgl}`
