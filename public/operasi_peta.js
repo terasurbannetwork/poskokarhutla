@@ -54,12 +54,12 @@
     const s = st.filter(x => km(b.lat, b.lon, x.lat, x.lon) <= 60).sort((x, y) => (y.t || "").localeCompare(x.t || ""))[0];
     if (!s) return {kelas: "?", teks: "Tanpa METAR", ket: OP.vis?.cadangan ? "Feed BMKG terputus; cadangan NOAA tidak memuat bandara ini." : "Tidak ada stasiun METAR dalam 60 km dari base."};
     const umurJam = (Date.now() - Date.parse(s.t)) / 36e5;
-    if (!(umurJam <= METAR_BASI_JAM)) return {kelas: "?", teks: "METAR basi", ket: `${s.icao}: laporan terakhir ${jamWIB(Date.parse(s.t))} WIB, lebih dari ${METAR_BASI_JAM} jam lalu.`};
+    if (!(umurJam <= METAR_BASI_JAM)) return {kelas: "?", teks: "METAR basi", jam: jamWIB(Date.parse(s.t)), ket: `${s.icao}: laporan terakhir ${jamWIB(Date.parse(s.t))} WIB, lebih dari ${METAR_BASI_JAM} jam lalu.`};
     const raw = (OP.metar || []).find(m => m.icao === s.icao)?.raw || "", ang = /(\d{3}|VRB)(\d{2,3})(?:G(\d{2,3}))?KT/.exec(raw), kt = ang ? Math.max(+ang[2], +(ang[3] || 0)) : null;
     const ts = /TS/.test(s.wx), asap = /FU|HZ/.test(s.wx), v = s.vis;
     const kelas = v < 1500 || ts || (kt != null && kt > 30) ? "tidak" : v < 5000 || asap || (kt != null && kt > 20) ? "terbatas" : "layak";
     const teks = {layak: "Layak terbang", terbatas: "Terbatas", tidak: "Tidak layak"}[kelas];
-    return {kelas, teks, ket: `${s.icao}: jarak pandang ${(v / 1000).toLocaleString("id-ID", {maximumFractionDigits: 1})} km${kt != null ? `, angin ${kt} kt` : ""}${asap ? ", asap" : ""}${ts ? ", badai petir" : ""} (${jamWIB(Date.parse(s.t))} WIB)`};
+    return {kelas, teks, vis_km: v / 1000, kt, asap, ts, jam: jamWIB(Date.parse(s.t)), ket: `${s.icao}: jarak pandang ${(v / 1000).toLocaleString("id-ID", {maximumFractionDigits: 1})} km${kt != null ? `, angin ${kt} kt` : ""}${asap ? ", asap" : ""}${ts ? ", badai petir" : ""} (${jamWIB(Date.parse(s.t))} WIB)`};
   }
   const pilLayak = k => `<span class="pill ${{layak: "l0", terbatas: "l2", tidak: "l3", "?": "ops-abu"}[k.kelas]}" title="${esc(k.ket)}">${esc(k.teks)}</span>`;
 
@@ -244,7 +244,7 @@
     OP.data = d;
     /* menu Operasi di navbar: tersembunyi untuk tamu, muncul begitu /api/operasi/peta boleh dibaca */
     const nav = $('#tabs [data-t="operasi"]'); if (nav) nav.hidden = false;
-    if (!document.querySelector('link[href^="/operasi_peta.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/operasi_peta.css?v=9"; document.head.append(l); }
+    if (!document.querySelector('link[href^="/operasi_peta.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/operasi_peta.css?v=13"; document.head.append(l); }
     const dari7 = new Date(Date.parse(t) - 6 * 864e5).toISOString().slice(0, 10);
     [OP.mon, OP.rekap, OP.vis, OP.metar, OP.nilai] = await Promise.all([ambil(`/api/operasi/monitor?dari=${t}&sampai=${t}`), ambil("/data/operasi/rekap_udara.json"), ambil("/api/jarak-pandang"), ambil("/data/metar.json"),
       ambil(`/api/operasi/nilai?dari=${dari7}&sampai=${t}`)]);
