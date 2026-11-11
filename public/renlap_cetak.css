@@ -28,7 +28,7 @@ h1{font-size:17pt;margin:1mm 0 0;font-weight:800}
 .kartu{border:1px solid #d9e1ea;border-radius:2mm;overflow:hidden}
 .kartu h3{margin:0;font-size:8pt;padding:2.2mm 3mm;border-left:3px solid #e8590c;background:#f6f8fb}
 table{width:100%;border-collapse:collapse;font-size:7.6pt;font-variant-numeric:tabular-nums}
-th{font-size:6.6pt;color:#5b6b82;font-weight:600;text-align:left;padding:1.3mm 1.5mm;border-bottom:1px solid #0b2545}
+th{font-size:6.6pt;color:#5b6b82;font-weight:600;text-align:center;padding:1.3mm 1.5mm;border-bottom:1px solid #0b2545}
 td{padding:1.4mm 1.5mm;border-bottom:1px solid #e6ebf1;vertical-align:top}
 .n{text-align:right;white-space:nowrap}.nw{white-space:nowrap}.jingga{color:#e8590c;font-weight:700}
 .mono{font-family:"SF Mono",Menlo,monospace;font-size:6.8pt;white-space:nowrap}.mono.bebas{white-space:normal;max-width:42mm}
