@@ -164,7 +164,9 @@
 .ops-lap-angka b small{font-size:.875rem;color:var(--ink2);font-weight:700;margin-left:2px}
 .ops-lap-angka span{font-size:.78125rem;font-weight:700;color:var(--ink2)}
 .ops-lap-angka em{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:5px;font-style:normal;font-size:.71875rem;font-weight:500;color:var(--ink2)}
-.ops-lap-angka em small{padding:2px 8px;border-radius:999px;font-size:.6875rem;font-weight:700}
+.ops-lap-angka em small{padding:3px 9px;border-radius:999px;font-size:.6875rem;font-weight:700}
+#opsLaporan .ops-lap-angka em small .ops-lbl{color:inherit;font-size:inherit;font-weight:inherit;gap:4px}
+#opsLaporan .ops-lap-angka em small .ops-lbl svg{width:12px;height:12px}
 .ops-lap-angka em small.wb{background:color-mix(in srgb,#2f6fd6 11%,transparent);color:#1f56ad}
 .ops-lap-angka em small.ptr{background:color-mix(in srgb,#0f9488 12%,transparent);color:#0b6f66}
 .ops-lap-angka em small.omc{background:color-mix(in srgb,#7a4fd0 12%,transparent);color:#5b35a8}
