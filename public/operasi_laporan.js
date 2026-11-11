@@ -145,7 +145,8 @@
   }
   /* kolom Kelayakan terbang (pemilik 11 Nov 2026): tanpa kode ICAO, jarak pandang/angin/jam jadi label berikon; kalimat lengkap tetap di title pil */
   const IK_LBL = {vis: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>', angin: '<path d="M3 8h10a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7"/>',
-    jam: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', base: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>', api: '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 2 1.5 3 3 3-1-3 0-6 0-8.5z"/>', unduh: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>', peran: '<path d="M10 14 3 12l1-2 7 1 4-6h2l-2 7 5 1 1-2h2l-1 4 1 4h-2l-1-2-5 1 2 7h-2l-4-6-7 1-1-2z"/>',
+    jam: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', air: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>', padam: '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 2 1.5 3 3 3-1-3 0-6 0-8.5z"/><path d="M4 4l16 16"/>',
+    kalender: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>', respons: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M10 2h4M12 2v3"/>', base: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>', api: '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 2 1.5 3 3 3-1-3 0-6 0-8.5z"/>', unduh: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>', peran: '<path d="M10 14 3 12l1-2 7 1 4-6h2l-2 7 5 1 1-2h2l-1 4 1 4h-2l-1-2-5 1 2 7h-2l-4-6-7 1-1-2z"/>',
     op: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>', milik: '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>', ember: '<path d="M5 7h14l-2 13H7zM5 7a7 3 0 0 1 14 0"/>', asap: '<path d="M4 15a4 4 0 0 1 4-4 5 5 0 0 1 9.6-1A3.5 3.5 0 0 1 18 17H7a3 3 0 0 1-3-2z"/>', ts: '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'};
   const lbl = (k, t) => `<span class="ops-lbl" data-k="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_LBL[k]}</svg>${t}</span>`;
   /* slot tetap (pemilik 11 Nov 2026 "label lurus ke bawah"): jarak pandang | angin | jam | cuaca; slot kosong tetap ada supaya kolom sejajar */
@@ -348,7 +349,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     const u = U(), ak = D.aksi30.filter(x => x.registrasi === a.registrasi).sort((x, y) => (y.jam_utc || 0) - (x.jam_utc || 0)), hh = D.hitung(ak);
     const k = D.mon?.kpi?.armada?.[a.registrasi], kt = u.kontrak(a.registrasi), s = u.stAr(a.status), jam = kt.reduce((t, x) => t + (x.jam_operasi_menit || 0), 0);
     const tipe = /tidak diketahui/i.test(a.tipe || "") ? "Tipe belum tercatat" : a.tipe || "Tipe belum tercatat", f = u.fotoAr(a);
-    const angka = (n, t) => `<div${n === "–" ? ' class="redup"' : ""}><b>${n}</b><span>${t}</span></div>`;
+    const angka = (n, t, ik) => `<div${n === "–" ? ' class="redup"' : ""}><i>${lbl(ik, "")}</i><b>${n}</b><span>${t}</span></div>`;
     const hari = [...new Set(ak.map(x => x.tanggal))], NH = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
     /* strip 30 hari: satu kotak per hari, gelap = banyak sortie */
     const per = ak.reduce((m, x) => (m[x.tanggal] = (m[x.tanggal] || 0) + 1, m), {}), maks = Math.max(1, ...Object.values(per));
@@ -359,25 +360,28 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
         return `<li><span class="ops-lm-jam">${u.jamWIB(x.jam_utc)}</span><span class="ops-lm-misi" data-g="${esc(x.guna || "")}">${esc(MISI[x.guna] || x.jenis || "Misi")}</span>
           <span class="ops-lm-lok">${esc((x.lokasi || "Lokasi tidak tercatat").replace(/\(BMKG\/Sipongi\)/g, "").trim())}</span><span class="ops-lm-ujung">${x.drop ? lbl("ember", `${fmt(x.drop)} jatuhan`) : ""}${h ? `<span class="pill ${h[1]}">${h[0]}</span>` : ""}</span></li>`; }).join("")}</ol></li>`).join("")
       : `<p class="ops-kosong">Belum ada kegiatan tercatat dalam 30 hari.</p>`;
-    /* kartu kontrak: durasi hari, status pil, tiga angka berikon, rata-rata jam per sortie (pemilik 11 Nov 2026 "bagusin lagi") */
-    const kini = Date.parse(D.t), kartuKt = x => { const m = Date.parse(x.mulai), z = x.selesai ? Date.parse(x.selesai) : kini, hr = m ? Math.round((z - m) / 864e5) + 1 : null;
+    /* kontrak sebagai daftar baris (pemilik 11 Nov 2026: kartu kesempitan bila kontrak banyak, ada yang terpotong):
+       nomor, periode + durasi + jam per sortie, bilah jam operasi relatif kontrak terpanjang, tiga angka berikon, status */
+    const kini = Date.parse(D.t), jamMaks = Math.max(1, ...kt.map(x => x.jam_operasi_menit || 0));
+    const barisKt = x => { const m = Date.parse(x.mulai), z = x.selesai ? Date.parse(x.selesai) : kini, hr = m ? Math.round((z - m) / 864e5) + 1 : null;
       const perSortie = x.sortie && x.jam_operasi_menit ? u.jamMenit(x.jam_operasi_menit / x.sortie) : null;
-      const angka = (k, n, t) => `<div><span>${lbl(k, t)}</span><b>${n}</b></div>`;
-      return `<div${x.berjalan ? ' class="jalan"' : ""}><header><i>${lbl("op", "")}</i><div><b>Kontrak ${fmt(x.kontrak_ke)}</b><p>${esc(kalimat(x.periode_teks) || "–")}${hr ? ` <small>${x.berjalan ? `hari ke-${fmt(hr)}` : `${fmt(hr)} hari`}</small>` : ""}</p></div>
-        ${x.berjalan ? `<span class="pill l0">Berjalan</span>` : `<span class="ops-pa-selesai">Selesai</span>`}</header>
-        <div class="ops-pa-kt-angka">${angka("jam", u.jamMenit(x.jam_operasi_menit), "Jam operasi")}${angka("peran", fmt(x.sortie || 0), "Sortie")}${angka("ember", x.wb_drop ? fmt(x.wb_drop) : `<em>tanpa WB</em>`, "Jatuhan WB")}</div>
-        ${perSortie ? `<footer>Rata-rata ${perSortie} jam per sortie${x.berjalan && hr ? `, ${u.jamMenit(x.jam_operasi_menit / hr)} jam per hari` : ""}</footer>` : ""}</div>`; };
-    const sek = (judul, sub, isi, ik = "jam") => `<details class="ops-pa-sek" open><summary><i>${lbl(ik, "")}</i><b>${judul}</b>${sub ? sub.split(", ").map(x => `<small>${x}</small>`).join("") : ""}<svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div>${isi}</div></details>`;
+      const ket = [hr && (x.berjalan ? `hari ke-${fmt(hr)}` : `${fmt(hr)} hari`), perSortie && `${perSortie} jam per sortie`].filter(Boolean).join(", ");
+      const nilai = (ik, t, n) => `<div><span>${lbl(ik, t)}</span><b>${n}</b></div>`;
+      return `<li${x.berjalan ? ' class="jalan"' : ""}><span class="ops-ktl-no">${fmt(x.kontrak_ke)}</span>
+        <div class="ops-ktl-per"><b>${esc(kalimat(x.periode_teks) || "–")}</b>${ket ? `<small>${ket}</small>` : ""}<i style="--p:${Math.round((x.jam_operasi_menit || 0) / jamMaks * 100)}%"></i></div>
+        ${nilai("jam", "Jam operasi", x.jam_operasi_menit ? u.jamMenit(x.jam_operasi_menit) : "–")}${nilai("peran", "Sortie", fmt(x.sortie || 0))}${nilai("air", "Jatuhan WB", x.wb_drop ? fmt(x.wb_drop) : "–")}
+        ${x.berjalan ? `<span class="pill l0">Berjalan</span>` : `<span class="ops-pa-selesai">Selesai</span>`}</li>`; };
+    const sek = (judul, sub, isi, ik = "jam") => `<details class="ops-pa-sek" open><summary><i>${lbl(ik, "")}</i><b>${judul}</b>${(sub || []).map(([k, t]) => `<small>${lbl(k, t)}</small>`).join("")}<svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div>${isi}</div></details>`;
     return `<article class="ex ex-std ops-pa"><button type="button" class="ops-dlg-x" data-tutup aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
       <header class="ops-pa-hd"><figure>${f ? u.imgAr(a, "", `${a.registrasi} ${tipe}`) : `<span class="ops-ar-kosong">${lbl("peran", "")}</span>`}</figure>
         <div><div class="ops-pa-id"><h3>${esc(a.registrasi)}</h3><p>${esc(tipe)}</p><span class="ops-ar-st ${s[1]}"><i></i>${s[0]} ${esc(tglPendek(D.t))}</span></div>
         <ul>${[lbl("peran", esc(PERAN[a.peran] || a.peran || "")), lbl("base", `Base ${esc(namaBase(D, a.base_id))}`), a.operator && lbl("op", esc(a.operator)), a.pemilik && lbl("milik", PEMILIK[a.pemilik] || esc(a.pemilik)), a.bucket_liter && lbl("ember", `Bucket ${fmt(a.bucket_liter)} L`)].filter(Boolean).map(x => `<li>${x}</li>`).join("")}</ul>
         ${a.alasan ? `<p class="ops-pa-alasan">${esc(a.alasan)}</p>` : ""}
-        <div class="ops-pa-angka">${[angka(nol(hh.sortie), "sortie 30 hari"), angka(nol(hh.wb), "water bombing"), angka(hh.dinilai ? u.persen(hh.persen) : "–", "padam ≥ 24 jam"),
-          angka(k ? `${fmt(siapTerbang(k))}/${fmt(k.hari_siap)}` : "–", "hari siap terbang"), angka(k?.respons_median_menit != null ? `${fmt(Math.round(k.respons_median_menit))} mnt` : "–", "respons median"),
-          angka(kt.length ? `${fmt(Math.round(jam / 60))} jam` : "–", "operasi 2026")].join("")}</div></div></header>
-      <div class="ops-pa-badan">${sek("Kegiatan 30 hari", `${fmt(ak.length)} sortie, ${fmt(hari.length)} hari terbang`, `${strip}<ol class="ops-lm">${linimasa}</ol>`, "peran")}
-      ${kt.length ? sek("Kontrak 2026", `${fmt(kt.length)} kontrak`, `<div class="ops-pa-kt">${kt.map(kartuKt).join("")}</div>`, "op") : ""}</div>
+        <div class="ops-pa-angka">${[angka(nol(hh.sortie), "sortie 30 hari", "peran"), angka(nol(hh.wb), "water bombing", "air"), angka(hh.dinilai ? u.persen(hh.persen) : "–", "padam ≥ 24 jam", "padam"),
+          angka(k ? `${fmt(siapTerbang(k))}/${fmt(k.hari_siap)}` : "–", "hari siap terbang", "kalender"), angka(k?.respons_median_menit != null ? `${fmt(Math.round(k.respons_median_menit))} mnt` : "–", "respons median", "respons"),
+          angka(kt.length ? `${fmt(Math.round(jam / 60))} jam` : "–", "operasi 2026", "jam")].join("")}</div></div></header>
+      <div class="ops-pa-badan">${sek("Kegiatan 30 hari", [["peran", `${fmt(ak.length)} sortie`], ["kalender", `${fmt(hari.length)} hari terbang`]], `${strip}<ol class="ops-lm">${linimasa}</ol>`, "peran")}
+      ${kt.length ? sek("Kontrak 2026", [["op", `${fmt(kt.length)} kontrak`], ["jam", `${u.jamMenit(jam)} jam operasi`]], `<ol class="ops-ktl">${kt.map(barisKt).join("")}</ol>`, "op") : ""}</div>
     </article>`;
   }
 
