@@ -1416,3 +1416,12 @@
 #opsLaporan .ops-gl-pra img{width:100%;height:68px;border-radius:10px}
 #opsLaporan .ops-gl-hari>summary{grid-template-columns:170px minmax(0,1fr) auto;padding:12px 8px}
 #opsLaporan .ops-gl-hari>summary:hover{background:color-mix(in srgb,var(--brand2) 4%,transparent);border-radius:12px}
+/* revisi: hanya judul yang jadi kepala (garis tipis di bawah), periode di latar putih (pemilik 11 Nov 2026 "semuanya jadi header") */
+#opsLaporan .ops-utama>.ops-alat{margin:0;padding:0;border-bottom:0;border-radius:0;background:none}
+#opsLaporan .ops-utama>.ops-alat>.ops-judul{flex:1 1 100%;margin:-20px -20px 4px;padding:16px 24px 14px;border-bottom:1px solid var(--line)}
+@media (max-width:640px){#opsLaporan .ops-utama>.ops-alat>.ops-judul{margin:-12px -12px 4px;padding:12px 14px}}
+/* judul bagian tanpa bingkai = pita seperti label grup panel kiri (pemilik 11 Nov 2026) */
+#opsLaporan .ops-wadah details.ops-polos>summary.ex-hd{padding:10px 14px;border-radius:12px;background:color-mix(in srgb,var(--brand2) 8%,transparent)}
+#opsLaporan .ops-wadah details.ops-polos>summary .ex-jd::after{display:none}
+#opsLaporan .ops-wadah details.ops-polos>summary .ex-ey.ops-ey-ik{width:28px;height:28px;border-radius:8px}
+#opsLaporan .ops-wadah details.ops-polos>summary .ex-jd>h3{font-size:1rem}
