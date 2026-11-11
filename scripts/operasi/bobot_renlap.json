@@ -22,6 +22,7 @@
     "gabung_km": 3.0,
     "radius_permukiman_km": 2.0,
     "radius_desa_nama_km": 5.0,
+    "radius_pandang_km": 6.0,
     "jam_clear_jam": 48,
     "ffmc_basi_hari": 3,
     "pm_radius_km": 120,

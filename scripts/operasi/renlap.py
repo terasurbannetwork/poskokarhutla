@@ -332,7 +332,7 @@ def kandidat(titik, temuan, B, ffmc=None, gambut=None, desa=None):
             skor += bw["clear_dengan_titik_baru"]
             alasan["clear_lalu_titik_baru"] = True
         terakhir = max(ps, key=lambda p: p["t"])
-        out.append({"lat": round(lat, 5), "lon": round(lon, 5), "skor": round(skor, 2), "alasan": alasan,
+        out.append({"lat": round(lat, 5), "lon": round(lon, 5), "skor": round(skor, 2), "alasan": alasan, "n": len(ps),
                     "terakhir": {"t": terakhir["t"], "sat": SATELIT.get(terakhir["sat"], terakhir["sat"])},
                     "wil": Counter(p["wil"] for p in ps).most_common(1)[0][0]})
     return [c for c in out if c["skor"] >= am["skor_minimum"]]
@@ -347,6 +347,22 @@ def urut_tetangga(base, daftar):
         out.append(n)
         cur = (n["lat"], n["lon"])
     return out
+
+
+def pilih_cakupan(dalam, n_maks, r_km):
+    """Pemilik 11 Nov 2026 ("yang di luar ga kedapetan"): target patroli dipilih rakus menurut CAKUPAN, bukan skor tertinggi saja.
+    Tiap langkah memilih sel yang menambah skor terbesar dari sel yang BELUM terlihat dalam radius pandang r_km, lalu berhenti
+    di n_maks target atau saat tak ada sel tersisa. Mengembalikan (pilih, sisa) dengan sisa = sel di luar radius pandang semua target.
+    ponytail: rakus O(n_maks x n^2); cukup untuk ratusan sel per base, ganti indeks grid bila ribuan."""
+    tetangga = {id(c): [d for d in dalam if jarak_nm(c["lat"], c["lon"], d["lat"], d["lon"]) * NM_KM <= r_km] for c in dalam}
+    lihat, pilih = set(), []
+    while len(pilih) < n_maks:
+        terbaik = max(dalam, default=None, key=lambda c: (sum(d["skor"] for d in tetangga[id(c)] if id(d) not in lihat), c["skor"], -c["lat"], -c["lon"]))
+        if terbaik is None or all(id(d) in lihat for d in tetangga[id(terbaik)]):
+            break
+        pilih.append(terbaik)
+        lihat.update(id(d) for d in tetangga[id(terbaik)])
+    return pilih, [c for c in dalam if id(c) not in lihat]
 
 
 def pilih_wb(basis, temuan, kandi, radius, B):
@@ -435,16 +451,13 @@ def susun(tanggal, versi, kini, titik, temuan, base, B, ffmc, pm, gambut, desa_p
         km = B["ambang"]["radius_clear_km"]
         dalam = [c for c in kandi if jarak_nm(pos[0], pos[1], c["lat"], c["lon"]) <= radius
                  and not any(jarak_nm(c["lat"], c["lon"], w["lat"], w["lon"]) * NM_KM <= km for w in wb_out)]
-        dalam.sort(key=lambda c: (-c["skor"], c["lat"], c["lon"]))
-        pilih = []
-        for c in dalam:  # sel bertetangga (2,2 km) = satu target
-            if not any(jarak_nm(c["lat"], c["lon"], q["lat"], q["lon"]) * NM_KM <= B["ambang"]["gabung_km"] for q in pilih):
-                pilih.append(c)
-        patroli = urut_tetangga(pos, pilih[:B["batas"]["patroli_maks"]]) if (not reg or peran - {"wb"}) else []
+        pilih, sisa = pilih_cakupan(dalam, B["batas"]["patroli_maks"], B["ambang"]["radius_pandang_km"])
+        patroli = urut_tetangga(pos, pilih) if (not reg or peran - {"wb"}) else []
         out["base"].append({"id": b["id"], "nama": b["nama"], "icao": b.get("icao"), "prov": b["prov"], "lat": b["lat"], "lon": b["lon"],
                             "vor": b.get("vor_kode"), "deklinasi_timur": dk, "radius_nm": radius, "armada": reg or "belum diseed",
                             "patroli": [dict(fmt(c, "patroli"), urut=i + 1) for i, c in enumerate(patroli)],
-                            "wb": [dict(w, urut=i + 1) for i, w in enumerate(wb_out)], "kandidat_dalam_radius": len(dalam)})
+                            "wb": [dict(w, urut=i + 1) for i, w in enumerate(wb_out)], "kandidat_dalam_radius": len(dalam),
+                            "di_luar_rute": {"sel": len(sisa), "titik": sum(c["n"] for c in sisa)} if patroli else None})
     return out
 
 
@@ -492,6 +505,8 @@ def teks(r):
                 u = c["udara"]
                 L.append("   Udara pagi (06-10 WIB): " + ("PM2,5 prakiraan maks %s ug/m3 (%s); jarak pandang tidak tersedia" % (u["pm25_maks"], u["kab"])
                                                        if isinstance(u, dict) else "tidak tersedia"))
+            if kunci == "patroli" and b.get("di_luar_rute"):
+                L.append("  Titik panas di luar radius pandang semua target: %d titik di %d sel" % (b["di_luar_rute"]["titik"], b["di_luar_rute"]["sel"]))
             L.append("")
         L.append("Kaki: radial = baringan benar dikurangi deklinasi timur %s derajat (PERKIRAAN tetap, bukan WMM); jelajah %d Nm. Titik panas: %s. FFMC: %s. Skor hipotesis."
                  % (b["deklinasi_timur"], b["radius_nm"], r["sumber"]["titik_panas"], r["sumber"]["ffmc"]))
@@ -614,6 +629,15 @@ def uji():
     o2 = [(c["lat"], c["lon"]) for c in urut_tetangga((-0.1, 109.4), list(reversed(kand)))]
     assert o1 == o2 and o1[0] == (-0.2, 109.4) and o1[-1] == (-0.9, 109.4), o1
     print("4. urutan tetangga terdekat stabil terhadap urutan masukan:", o1)
+
+    # 4b. cakupan: kelompok padat skor sedang mengalahkan satu sel skor tinggi yang menyendiri; sel dalam 6 km tidak dipilih dua kali
+    padat = [{"lat": -1.0 + i * 0.01, "lon": 113.0, "skor": 2.0, "n": 3} for i in range(5)]   # 5 sel dalam ~4,4 km
+    sendiri = [{"lat": -2.0, "lon": 114.0, "skor": 6.0, "n": 1}, {"lat": -3.0, "lon": 115.0, "skor": 1.0, "n": 2}]
+    pc, sisa = pilih_cakupan(padat + sendiri, 2, 6.0)
+    assert pc[0] in padat and pc[1] is sendiri[0] and sisa == [sendiri[1]], (pc, sisa)
+    pc, sisa = pilih_cakupan(padat, 8, 6.0)
+    assert len(pc) == 1 and not sisa, pc
+    print("4b. cakupan: kelompok padat dulu, satu target menutup 5 sel, sisa di luar rute dihitung")
 
     for lat, lon in [(-0.101110, 109.592780), (-6.0, 99.5), (0.425589, 101.441), (-3.4368, 114.731), (1.5, 109.0)]:
         la, lo = dari_dms(dms(lat, lon))
