@@ -401,7 +401,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     const pv = (k, t) => `<span class="pill ops-pbv ${k}">${esc(t)}</span>`;
     const kartu = x => { const bar = (n, d, kelas = "") => `<i class="ops-pb-bar ${kelas}" style="--p:${d ? Math.round(n / d * 100) : 0}%"></i>`;
       return `<article class="ops-pb lv${x.lv}" data-pb="${esc(x.b.id)}" tabindex="0" role="button" aria-label="Rincian base ${esc(x.b.nama)}">
-        <header><div><p class="ops-pb-nm"><b>${esc(x.b.nama.split(" / ")[0])}</b><em class="ops-pb-icao">${esc(x.b.icao || x.b.id)}</em></p><span class="ops-pb-sub"><small class="ops-pb-prov ops-pb-lambang">${lambangProv(x.b.prov)}<span>${esc(u.PROV_PDK[x.b.prov] || x.b.prov || "")}</span></small><small class="ops-pb-prov">${lbl("peran", `${fmt(x.a.length)} armada`)}</small><span class="ops-pb-lv">${lbl("api", LVK[x.lv])}</span></span></div></header>
+        <header><div><p class="ops-pb-nm"><b>${esc(x.b.nama.split(" / ")[0])}</b><em class="ops-pb-icao">${esc(x.b.icao || x.b.id)}</em></p><span class="ops-pb-sub"><small class="ops-pb-prov">${lbl("base", esc(u.PROV_PDK[x.b.prov] || x.b.prov || ""))}</small><small class="ops-pb-prov">${lbl("peran", `${fmt(x.a.length)} armada`)}</small><span class="ops-pb-lv">${lbl("api", LVK[x.lv])}</span></span></div></header>
         <ul>
           <li><span>${lbl("siap", "Siap")}</span><b>${x.lapor ? pv(x.siap === x.a.length ? "ok" : "awas", `${fmt(x.siap)}/${fmt(x.a.length)} siap`) : pv("awas", "Belum lapor")}</b>${bar(x.lapor ? x.siap : 0, x.a.length, "ok")}</li>
           <li><span>${lbl("vis", "Cuaca terbang")}</span><b>${u.pilLayak(x.lay)}</b></li>
