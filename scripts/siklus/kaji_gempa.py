@@ -3,7 +3,7 @@
 Masukan: satu entri keluaran adapter_g2 (`id, mag, waktu, status, cont_mmi` + `lat, lon, dalam` bila ada), `pusat` {kunci_kec: [lat, lon]}, `pend` {kunci_kec: jiwa} (WorldPop).
 MMI per kecamatan: (a) kontur ShakeMap `cont_mmi.json` bila terbit, (b) `guncangan.mmi_kecamatan` bila belum (status `menunggu_data`, korban `null`, perkiraan hanya di `sementara`).
 Korban jiwa: PAGER (theta 13,248768, beta 0,150846; pita 4 dari scripts/gempa/pager.py) dan ITB (10^(0,62275231 k - 8,03314466), k >= 4, tanpa pita) BERDAMPINGAN (U13).
-Rentang = [min(K_P/4, K_I), maks(K_P x 4, K_I)], selalu estimasi-model. Kelas siaga dari K_P. Galat kalibrasi (3,0586; faktor_loo 5,341) ditulis, TIDAK melebarkan rentang. Rumah rusak: menunggu, bukan 0.
+Rentang = [min(K_P/4, K_I), maks(K_P x 4, K_I)], selalu estimasi-model. Kelas siaga dari K_P. Galat kalibrasi (3,0586; faktor_loo 5,341) adalah galat model kerapuhan sendiri terhadap 8 gempa (in-sample, pengamatan dari ingatan), BUKAN galat PAGER atau ITB; ditulis, TIDAK melebarkan rentang. Rumah rusak: menunggu, bukan 0.
 Tidak dihitung: tsunami dan likuefaksi. ponytail: titik pusat kecamatan di dalam cincin kontur TERTUTUP, MMI = nilai kontur tertinggi yang melingkupinya; kontur yang terpotong tepi grid diabaikan (naikkan ke interpolasi grid bila cakupan kurang).
 Pakai: python3 -I scripts/siklus/kaji_gempa.py uji
 """
@@ -43,8 +43,9 @@ def korban(per):
 
 def galat_kalibrasi(jalur=KAL):
     d = json.load(open(jalur, encoding="utf-8"))
-    return {"kalibrasi": d["kalib"], "faktor_loo": d["faktor_loo"], "n_gempa": d["n"], "pita": PG.PITA, "melebihi_pita": d["faktor_loo"] > PG.PITA,
-            "catatan": "model dapat meleset sampai %s kali; rentang tidak dilebarkan" % str(d["faktor_loo"]).replace(".", ",")}
+    c = _muat(os.path.join(AB, "ujibalik.py"), "sk_ujibalik").dari_kalibrasi(jalur)["cakupan"]
+    return {"kalibrasi": d["kalib"], "faktor_loo": d["faktor_loo"], "n_gempa": d["n"], "pita": PG.PITA, "melebihi_pita": d["faktor_loo"] > PG.PITA, "cakupan": c, "in_sample": True,
+            "catatan": "galat model kerapuhan sendiri, bukan PAGER atau ITB; PAGER dan ITB belum diuji balik; model dapat meleset sampai %s kali; rentang tidak dilebarkan" % str(d["faktor_loo"]).replace(".", ",")}
 
 
 def _dalam(titik, cincin):
@@ -96,8 +97,9 @@ def hitung(g, pusat, pend, kal=None):
         per = PG.per_mmi(mmi, pend)
         k = korban(per)
         ge6 = sum(pend.get(x) or 0 for x, v in mmi.items() if v >= 6)
-        hasil = {**dasar, "status": "dihitung", "korban": k, "jiwa_terpapar": {"mmi_ge_6": {"worldpop": ge6, "dukcapil": None, "ghsl": None}}}
-        ring = {"rentang": k["rentang"], "kelas": k["kelas"], "model": k["model"]}
+        tanpa = sum(1 for x in pusat if x not in mmi)
+        hasil = {**dasar, "status": "dihitung", "korban": k, "jumlah_kec_tanpa_mmi": tanpa, "jiwa_terpapar": {"mmi_ge_6": {"worldpop": ge6, "dukcapil": None, "ghsl": None}}}
+        ring = {"rentang": k["rentang"], "kelas": k["kelas"], "model": k["model"], "jumlah_kec_tanpa_mmi": tanpa}
         return {"status": "dihitung", "ringkas": ring, "masukan": masuk, "galat_kalibrasi": kal, "hasil": hasil}
     mmi = _mmi_sementara(g, pusat)
     sem = None
@@ -237,7 +239,7 @@ def _uji():
     assert "total" not in json.dumps(k) and "rata" not in json.dumps(k)
     # galat kalibrasi dibaca dari berkas, tertulis, tidak melebarkan rentang
     gk = galat_kalibrasi()
-    assert gk["kalibrasi"] == 3.0586 and gk["faktor_loo"] == 5.341 and gk["melebihi_pita"] is True and gk["pita"] == 4
+    assert gk["kalibrasi"] == 3.0586 and gk["faktor_loo"] == 5.341 and gk["melebihi_pita"] is True and gk["pita"] == 4 and gk["in_sample"] is True and gk["cakupan"] == [4, 8] and "belum diuji balik" in gk["catatan"]
     # kontur: dua cincin bersarang + satu garis terbuka (diabaikan); titik di luar tak punya nilai
     def cin(v, a, b):
         return {"properties": {"value": v}, "geometry": {"type": "LineString", "coordinates": [[a, a], [b, a], [b, b], [a, b], [a, a]]}}
@@ -251,6 +253,7 @@ def _uji():
     r = hitung(g, pusat, pend)
     assert r["status"] == "dihitung" and len(r["ringkas"]["rentang"]) == 2 and r["ringkas"]["rentang"][0] <= r["ringkas"]["rentang"][1]
     assert r["hasil"]["rumah_rusak"] == {"n": None, "status": "menunggu", "alasan": "kurva kerapuhan resmi tidak ditemukan"}, "rumah rusak menunggu, bukan 0"
+    assert r["hasil"]["jumlah_kec_tanpa_mmi"] == 1 == r["ringkas"]["jumlah_kec_tanpa_mmi"], "kecamatan luar kontur dihitung, bukan dibuang diam-diam"
     assert r["hasil"]["jiwa_terpapar"]["mmi_ge_6"] == {"worldpop": 1_000_000, "dukcapil": None, "ghsl": None}
     assert r["hasil"]["galat_kalibrasi"]["faktor_loo"] == 5.341 and r["masukan"]["waktu_data"] == "2025-11-10T00:00Z"
     b = muatan_ingest("KJ-2026-9A2WGN3G", r)

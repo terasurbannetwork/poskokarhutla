@@ -1,105 +1,33 @@
 {
  "_catatan": "Rute /api/siklus/* -> uji server (tests/warga/siklus_*) dan layar (tests/siklus) yang memanggilnya; skrip pipeline -> subperintah uji (npm run uji:siklus menjalankannya). Rute baru wajib terdaftar di sini; kolom klien kosong = rute tanpa layar G1.",
  "rute": {
-  "GET /api/siklus/publik/kejadian/:id": {
-   "server": "tests/warga/siklus_kejadian.test.mjs",
-   "klien": [
-    "tests/siklus/gerbang_publik.test.mjs"
-   ]
-  },
-  "GET /api/siklus/kejadian": {
-   "server": "tests/warga/siklus_kejadian.test.mjs",
-   "klien": [
-    "tests/siklus/layar_kejadian.test.mjs",
-    "tests/siklus/layar_kaji.test.mjs"
-   ]
-  },
-  "GET /api/siklus/kejadian/arsip": {
-   "server": "tests/warga/siklus_kejadian.test.mjs",
-   "klien": []
-  },
-  "GET /api/siklus/kejadian/:id": {
-   "server": "tests/warga/siklus_kejadian.test.mjs",
-   "klien": [
-    "tests/siklus/layar_kejadian.test.mjs"
-   ]
-  },
-  "POST /api/siklus/kejadian": {
-   "server": "tests/warga/siklus_kejadian.test.mjs",
-   "klien": [
-    "tests/siklus/layar_kejadian.test.mjs"
-   ]
-  },
-  "POST /api/siklus/kejadian/:id/promosi": {
-   "server": "tests/warga/siklus_kejadian.test.mjs",
-   "klien": []
-  },
-  "POST /api/siklus/kejadian/:id/fase": {
-   "server": "tests/warga/siklus_kejadian.test.mjs",
-   "klien": [
-    "tests/siklus/layar_kejadian.test.mjs"
-   ]
-  },
-  "POST /api/siklus/kejadian/:id/publik": {
-   "server": "tests/warga/siklus_kejadian.test.mjs",
-   "klien": [
-    "tests/siklus/layar_kejadian.test.mjs"
-   ]
-  },
-  "POST /api/siklus/kejadian/:id/gabung": {
-   "server": "tests/warga/siklus_kejadian.test.mjs",
-   "klien": []
-  },
-  "POST /api/siklus/kejadian/:id/koreksi": {
-   "server": "tests/warga/siklus_kejadian.test.mjs",
-   "klien": []
-  },
   "GET /api/siklus/antrean": {
    "server": "tests/warga/siklus_kejadian.test.mjs",
    "klien": [
     "tests/siklus/layar_kejadian.test.mjs"
    ]
   },
-  "POST /api/siklus/antrean/:sid": {
-   "server": "tests/warga/siklus_kejadian.test.mjs",
-   "klien": [
-    "tests/siklus/layar_kejadian.test.mjs"
-   ]
-  },
-  "GET /api/siklus/jejak": {
-   "server": "tests/warga/siklus_kejadian.test.mjs",
-   "klien": []
-  },
-  "GET /api/siklus/paparan/ringkas": {
-   "server": "tests/warga/siklus_peran.test.mjs",
-   "klien": [
-    "tests/siklus/layar_paparan.test.mjs"
-   ]
-  },
-  "GET /api/siklus/paparan/kab": {
-   "server": "tests/warga/siklus_peran.test.mjs",
-   "klien": [
-    "tests/siklus/layar_paparan.test.mjs"
-   ]
-  },
   "GET /api/siklus/fasilitas": {
    "server": "tests/warga/siklus_peran.test.mjs",
    "klien": []
   },
-  "GET /api/siklus/paparan/rinci": {
-   "server": "tests/warga/siklus_peran.test.mjs",
-   "klien": []
-  },
-  "POST /api/siklus/dummy": {
-   "server": "tests/warga/siklus_dummy.test.mjs",
+  "GET /api/siklus/gladi": {
+   "server": "tests/warga/siklus_renkon.test.mjs",
    "klien": [
-    "tests/siklus/layar_kejadian.test.mjs",
-    "tests/siklus/layar_paparan.test.mjs"
+    "tests/siklus/layar_renkon.test.mjs"
    ]
   },
-  "GET /api/siklus/saya": {
-   "server": "tests/warga/siklus_penguat.test.mjs",
-   "klien": []
+  "GET /api/siklus/gladi/:sid": {
+   "server": "tests/warga/siklus_renkon.test.mjs",
+   "klien": [
+    "tests/siklus/layar_renkon.test.mjs"
+   ]
+  },
+  "GET /api/siklus/harga": {
+   "server": "tests/warga/siklus_pulih.test.mjs",
+   "klien": [
+    "tests/siklus/layar_pulih.test.mjs"
+   ]
   },
   "GET /api/siklus/ingest/jendela": {
    "server": "tests/warga/siklus_ingest.test.mjs",
@@ -109,8 +37,8 @@
    "server": "tests/warga/siklus_ingest.test.mjs",
    "klien": []
   },
-  "POST /api/siklus/ingest/kejadian": {
-   "server": "tests/warga/siklus_ingest.test.mjs",
+  "GET /api/siklus/jejak": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
    "klien": []
   },
   "GET /api/siklus/kaji": {
@@ -125,14 +53,218 @@
     "tests/siklus/layar_kaji.test.mjs"
    ]
   },
+  "GET /api/siklus/kejadian": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kejadian.test.mjs",
+    "tests/siklus/layar_kaji.test.mjs"
+   ]
+  },
+  "GET /api/siklus/kejadian/:id": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kejadian.test.mjs"
+   ]
+  },
+  "GET /api/siklus/kejadian/arsip": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": []
+  },
+  "GET /api/siklus/masadepan": {
+   "server": "tests/warga/siklus_pintu.test.mjs",
+   "klien": [
+    "tests/siklus/layar_masadepan.test.mjs"
+   ]
+  },
+  "GET /api/siklus/paparan/kab": {
+   "server": "tests/warga/siklus_peran.test.mjs",
+   "klien": [
+    "tests/siklus/layar_paparan.test.mjs"
+   ]
+  },
+  "GET /api/siklus/paparan/rinci": {
+   "server": "tests/warga/siklus_peran.test.mjs",
+   "klien": []
+  },
+  "GET /api/siklus/paparan/ringkas": {
+   "server": "tests/warga/siklus_peran.test.mjs",
+   "klien": [
+    "tests/siklus/layar_paparan.test.mjs"
+   ]
+  },
+  "GET /api/siklus/pintu": {
+   "server": "tests/warga/siklus_pintu.test.mjs",
+   "klien": [
+    "tests/siklus/layar_pintu.test.mjs"
+   ]
+  },
+  "GET /api/siklus/publik/kejadian/:id": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": [
+    "tests/siklus/gerbang_publik.test.mjs"
+   ]
+  },
+  "GET /api/siklus/pulih": {
+   "server": "tests/warga/siklus_pulih.test.mjs",
+   "klien": [
+    "tests/siklus/layar_pulih.test.mjs"
+   ]
+  },
+  "GET /api/siklus/pulih/:sid": {
+   "server": "tests/warga/siklus_pulih.test.mjs",
+   "klien": [
+    "tests/siklus/layar_pulih.test.mjs"
+   ]
+  },
+  "GET /api/siklus/r3p/:sid": {
+   "server": "tests/warga/siklus_pulih.test.mjs",
+   "klien": [
+    "tests/siklus/layar_pulih.test.mjs"
+   ]
+  },
+  "GET /api/siklus/registri": {
+   "server": "tests/warga/siklus_pintu.test.mjs",
+   "klien": [
+    "tests/siklus/layar_pintu.test.mjs"
+   ]
+  },
+  "GET /api/siklus/renkon": {
+   "server": "tests/warga/siklus_renkon.test.mjs",
+   "klien": [
+    "tests/siklus/layar_renkon.test.mjs"
+   ]
+  },
+  "GET /api/siklus/renkon/:sid": {
+   "server": "tests/warga/siklus_renkon.test.mjs",
+   "klien": [
+    "tests/siklus/layar_renkon.test.mjs"
+   ]
+  },
+  "GET /api/siklus/saya": {
+   "server": "tests/warga/siklus_penguat.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/antrean/:sid": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kejadian.test.mjs"
+   ]
+  },
+  "POST /api/siklus/dummy": {
+   "server": "tests/warga/siklus_dummy.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kejadian.test.mjs",
+    "tests/siklus/layar_paparan.test.mjs"
+   ]
+  },
+  "POST /api/siklus/gladi": {
+   "server": "tests/warga/siklus_renkon.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/gladi/:sid/catatan": {
+   "server": "tests/warga/siklus_renkon.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/gladi/:sid/status": {
+   "server": "tests/warga/siklus_renkon.test.mjs",
+   "klien": [
+    "tests/siklus/layar_renkon.test.mjs"
+   ]
+  },
+  "POST /api/siklus/harga": {
+   "server": "tests/warga/siklus_pulih.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/ingest/kaji": {
+   "server": "tests/warga/siklus_kaji.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/ingest/kejadian": {
+   "server": "tests/warga/siklus_ingest.test.mjs",
+   "klien": []
+  },
   "POST /api/siklus/kaji/:sid/status": {
    "server": "tests/warga/siklus_kaji.test.mjs",
    "klien": [
     "tests/siklus/layar_kaji.test.mjs"
    ]
   },
-  "POST /api/siklus/ingest/kaji": {
-   "server": "tests/warga/siklus_kaji.test.mjs",
+  "POST /api/siklus/kejadian": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kejadian.test.mjs"
+   ]
+  },
+  "POST /api/siklus/kejadian/:id/fase": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kejadian.test.mjs"
+   ]
+  },
+  "POST /api/siklus/kejadian/:id/gabung": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/kejadian/:id/koreksi": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/kejadian/:id/promosi": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/kejadian/:id/publik": {
+   "server": "tests/warga/siklus_kejadian.test.mjs",
+   "klien": [
+    "tests/siklus/layar_kejadian.test.mjs"
+   ]
+  },
+  "POST /api/siklus/pulih": {
+   "server": "tests/warga/siklus_pulih.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/pulih/:sid/baris": {
+   "server": "tests/warga/siklus_pulih.test.mjs",
+   "klien": [
+    "tests/siklus/layar_pulih.test.mjs"
+   ]
+  },
+  "POST /api/siklus/pulih/:sid/hitung": {
+   "server": "tests/warga/siklus_pulih.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/pulih/:sid/status": {
+   "server": "tests/warga/siklus_pulih.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/r3p": {
+   "server": "tests/warga/siklus_pulih.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/r3p/:sid/kegiatan": {
+   "server": "tests/warga/siklus_pulih.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/r3p/:sid/setuju": {
+   "server": "tests/warga/siklus_pulih.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/r3p/:sid/status": {
+   "server": "tests/warga/siklus_pulih.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/renkon": {
+   "server": "tests/warga/siklus_renkon.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/renkon/:sid/asumsi": {
+   "server": "tests/warga/siklus_renkon.test.mjs",
+   "klien": [
+    "tests/siklus/layar_renkon.test.mjs"
+   ]
+  },
+  "POST /api/siklus/renkon/:sid/status": {
+   "server": "tests/warga/siklus_renkon.test.mjs",
    "klien": []
   }
  },

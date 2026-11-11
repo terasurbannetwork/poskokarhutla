@@ -13,9 +13,9 @@ runInThisContext(readFileSync(path.join(PUB, 'inti/format.js'), 'utf8') + ';glob
 
 const KJ = {g: 'KJ-2026-9A2WGN3G', b: 'KJ-2026-BANJIR01', w: 'KJ-2026-WAIT0001'}, SID = {g: 'a1b2c3d4e5f60718', b: 'b1b2c3d4e5f60718', w: 'c1b2c3d4e5f60718'};
 const NOW = Date.parse('2026-11-10T03:00:00Z');
-const GALAT = {kalibrasi: 3.0586, faktor_loo: 5.341, n_gempa: 8, pita: 4, melebihi_pita: true};
+const GALAT = {kalibrasi: 3.0586, faktor_loo: 5.341, n_gempa: 8, pita: 4, melebihi_pita: true, cakupan: [4, 8], in_sample: true};
 const BARIS = {
-  g: {id: SID.g, kejadian_id: KJ.g, model: 'gempa', versi: 2, status: 'dihitung', masukan: {sumber: 'usgs-shakemap', id: 'us6000tkt2', waktu_data: '2026-11-10T01:00Z'}, ringkas: {rentang: [22, 354], kelas: 'kuning', model: {pager: [22, 354], itb: [334, 334]}}, galat_kalibrasi: GALAT, yakin: 'estimasi-model', alasan_tarik: null, dihitung: NOW, diubah: NOW, hasil_r2: `siklus/saji/kaji/${KJ.g}.json`, dummy: 0},
+  g: {id: SID.g, kejadian_id: KJ.g, model: 'gempa', versi: 2, status: 'dihitung', masukan: {sumber: 'usgs-shakemap', id: 'us6000tkt2', waktu_data: '2026-11-10T01:00Z'}, ringkas: {rentang: [22, 354], kelas: 'kuning', model: {pager: [22, 354], itb: [334, 334]}, jumlah_kec_tanpa_mmi: 12}, galat_kalibrasi: GALAT, yakin: 'estimasi-model', alasan_tarik: null, dihitung: NOW, diubah: NOW, hasil_r2: `siklus/saji/kaji/${KJ.g}.json`, dummy: 0},
   b: {id: SID.b, kejadian_id: KJ.b, model: 'banjir_jam1', versi: 1, status: 'diperiksa', masukan: {sumber: 'poligon'}, ringkas: {rentang: [600, 1400]}, galat_kalibrasi: null, yakin: 'estimasi-model', alasan_tarik: null, dihitung: NOW, diubah: NOW, dummy: 0},
   w: {id: SID.w, kejadian_id: KJ.w, model: 'gempa', versi: 1, status: 'menunggu_data', masukan: {sumber: 'usgs-shakemap', id: 'us6000wait'}, ringkas: {rentang: null}, galat_kalibrasi: null, yakin: 'estimasi-model', alasan_tarik: null, dihitung: NOW, diubah: NOW, hasil_r2: `siklus/saji/kaji/${KJ.w}.json`, dummy: 0},
 };
@@ -71,7 +71,7 @@ test('layar kaji di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome tida
         assert.match(d.jd, /22 sampai 354/); assert.match(d.jd, /rumah rusak menunggu/); assert.ok(d.pil.includes('estimasi-model'), 'pil estimasi model di kepala');
         assert.match(d.rn, /22[\s\S]*354/); assert.match(d.rn, /menunggu/); assert.doesNotMatch(d.rn, /\b0 sampai 0\b/);
         assert.equal(d.bar, 2); assert.match(d.md, /PAGER/i); assert.match(d.md, /ITB/i); assert.match(d.md, /22 sampai 354/); assert.match(d.md, /334/);
-        assert.match(d.md, /3,0586/); assert.match(d.md, /5,341/); assert.match(d.md, /melebihi pita 4/i); assert.match(d.md, /meleset sampai 5 kali/); assert.match(d.md, /hipotesis/i); assert.doesNotMatch(d.md, /lolos/i);
+        assert.match(d.md, /3,0586/); assert.match(d.md, /5,341/); assert.match(d.md, /melebihi pita 4/i); assert.match(d.md, /meleset sampai 5 kali/); assert.match(d.md, /hipotesis/i); assert.match(d.md, /galat model kerapuhan sendiri, bukan PAGER atau ITB; PAGER dan ITB belum diuji balik/i); assert.match(d.md, /4 dari 8 gempa/); assert.match(d.md, /in-sample/); assert.match(d.md, /12 kecamatan tidak punya nilai MMI/); assert.doesNotMatch(d.md, /\bnull\b/); assert.doesNotMatch(d.md, /lolos/i);
         assert.match(d.mj, /Cilacap Selatan/); assert.match(d.mj, /40/); assert.match(d.mj, /di dalam rentang model/); assert.match(d.mj, /tidak dijumlah/); assert.match(d.mj, /tidak ada/, 'hilang kosong ditulis tidak ada, bukan 0');
         assert.ok(d.ex >= 4 && !d.ft && d.lebar.every((w) => /%$/.test(w))); assert.doesNotMatch(d.semua, SALAH);
         assert.ok(d.aksi.includes('Diperiksa') && d.aksi.includes('Tarik'), `aksi: ${d.aksi}`);

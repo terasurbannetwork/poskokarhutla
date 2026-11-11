@@ -1199,7 +1199,22 @@
     "trigger sk_r3pk_beku": "UJ-F4-01: sk_r3p_kegiatan",
     "trigger sk_kejadian_fase": "UJ-F1-02: trigger sk_kejadian_fase",
     "trigger sk_kejadian_publik": "UJ-F1-02: sk_kejadian_publik menolak",
-    "trigger sk_kejadian_publik_baru": "UJ-F1-02: sk_kejadian_publik menolak"
+    "trigger sk_kejadian_publik_baru": "UJ-F1-02: sk_kejadian_publik menolak",
+    "GET /api/siklus/renkon": "UJ-F5-07: baca renkon",
+    "GET /api/siklus/renkon/:sid": "UJ-F5-07: baca renkon",
+    "POST /api/siklus/renkon": "UJ-F5-07: renkon dibuat PD dan KO",
+    "POST /api/siklus/renkon/:sid/status": "UJ-F5-07: status renkon hanya KO",
+    "POST /api/siklus/renkon/:sid/asumsi": "UJ-F5-07: isian asumsi PD/KO",
+    "GET /api/siklus/gladi": "UJ-F5-07: baca gladi hanya staf",
+    "GET /api/siklus/gladi/:sid": "UJ-F5-07: baca gladi hanya staf",
+    "POST /api/siklus/gladi": "UJ-F5-06: gladi hanya KO",
+    "POST /api/siklus/gladi/:sid/status": "UJ-F5-07: status gladi hanya KO",
+    "POST /api/siklus/gladi/:sid/catatan": "UJ-F5-07: status gladi hanya KO",
+    "GET /api/siklus/masadepan": "UJ-F6-04: masa depan",
+    "GET /api/siklus/pintu": "UJ-F7-01: urutan prioritas",
+    "GET /api/siklus/registri": "UJ-F7-02: registri sumber",
+    "table sk_renkon": "UJ-F5-01: sk_renkon",
+    "table sk_gladi": "UJ-F5-01: sk_gladi"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

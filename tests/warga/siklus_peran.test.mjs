@@ -9,7 +9,9 @@ import {RUTE_SIKLUS_PAPARAN} from "../../src/siklus_paparan.js";
 import {RUTE_SIKLUS_KAJI} from "../../src/siklus_kaji.js";
 import {RUTE_SIKLUS_PULIH} from "../../src/siklus_pulih.js";
 import {RUTE_SIKLUS_DUMMY} from "../../src/siklus_dummy.js";
-const RUTE_SIKLUS = {...RK, ...RUTE_SIKLUS_PAPARAN, ...RUTE_SIKLUS_KAJI, ...RUTE_SIKLUS_PULIH, ...RUTE_SIKLUS_DUMMY};
+import {RUTE_SIKLUS_RENKON} from "../../src/siklus_renkon.js";
+import {RUTE_SIKLUS_PINTU} from "../../src/siklus_pintu.js";
+const RUTE_SIKLUS = {...RK, ...RUTE_SIKLUS_PAPARAN, ...RUTE_SIKLUS_KAJI, ...RUTE_SIKLUS_PULIH, ...RUTE_SIKLUS_RENKON, ...RUTE_SIKLUS_PINTU, ...RUTE_SIKLUS_DUMMY};
 
 const U = await mulai("uji-sk-peran");
 const {DB, api, GET, POST, n} = U;
@@ -52,11 +54,22 @@ const RUTE = [   // [kunci, jalur uji, aktor yang BOLEH]
   ["POST /api/siklus/r3p/:sid/kegiatan", `/r3p/${SID}/kegiatan`, "KO SA"],
   ["GET /api/siklus/r3p/:sid", `/r3p/${SID}`, "PD KO PM SA MOD BP"],
   ["POST /api/siklus/r3p/:sid/setuju", `/r3p/${SID}/setuju`, "PM"],
+  ["GET /api/siklus/renkon", "/renkon?prov=32", "PD KO PM SA MOD BP"],
+  ["GET /api/siklus/renkon/:sid", `/renkon/${SID}`, "PD KO PM SA MOD BP"],
+  ["POST /api/siklus/renkon", "/renkon", "PD KO SA"],
+  ["POST /api/siklus/renkon/:sid/status", `/renkon/${SID}/status`, "KO SA"],
+  ["POST /api/siklus/renkon/:sid/asumsi", `/renkon/${SID}/asumsi`, "PD KO SA"],
+  ["GET /api/siklus/gladi", `/gladi?renkon_id=${SID}`, "PD KO PM SA MOD"],
+  ["GET /api/siklus/gladi/:sid", `/gladi/${SID}`, "PD KO PM SA MOD"],
+  ["POST /api/siklus/gladi", "/gladi", "KO SA"],
+  ["POST /api/siklus/gladi/:sid/status", `/gladi/${SID}/status`, "KO SA"],
+  ["POST /api/siklus/gladi/:sid/catatan", `/gladi/${SID}/catatan`, "PD KO SA"],
+  ["GET /api/siklus/registri", "/registri", "PD KO PM SA"],
   ["GET /api/siklus/saya", "/saya", "PD KO PM SA MOD"],
   ["POST /api/siklus/dummy", "/dummy", "SA"],
 ];
 uji("matriks: semua rute berkunci peran ada di tabel, dan tabel tidak punya rute yang tak diuji", () => {
-  const dikenal = new Set(RUTE.map(r => r[0])), tabel = Object.entries(RUTE_SIKLUS).filter(([, d]) => !d.izin.includes("tamu") && !d.izin.includes("sistem")).map(([k]) => k);
+  const dikenal = new Set(RUTE.map(r => r[0])), tabel = Object.entries(RUTE_SIKLUS).filter(([, d]) => !d.izin.includes("tamu") && !d.izin.includes("sistem") && !d.izin.includes("opsional")).map(([k]) => k);
   assert.deepEqual([...dikenal].sort(), tabel.sort());
 });
 for (const [kunci, jalur, ok] of RUTE) uji(`UJ-KP-01: ${kunci}: peran salah ditolak, peran sah lolos gerbang`, async () => {
@@ -119,7 +132,7 @@ uji("jawaban staf private, no-store; SIKLUS_MATI=1 memberi 503 untuk semua jalur
 const PELAKU = {sistem: H.pelakuSistem, sk_staf: H.pelakuSkStaf, sk_instansi: H.pelakuSkInstansi, admin: H.pelakuAdmin};
 const AKSI = ["baca", "tambah", "ubah", "hapus"];
 uji("MATRIKS sk_*: tiap sel (tabel x pelaku x aksi) sama dengan KEAMANAN; hapus hanya admin; instansi tidak menulis kejadian", () => {
-  assert.deepEqual(Object.keys(H.MATRIKS_SK).sort(), ["sk_harga", "sk_jejak", "sk_jitupasna", "sk_jitupasna_baris", "sk_kaji", "sk_kejadian", "sk_kejadian_alias", "sk_kejadian_kab", "sk_kejadian_sumber", "sk_r3p", "sk_r3p_kegiatan"]);
+  assert.deepEqual(Object.keys(H.MATRIKS_SK).sort(), ["sk_gladi", "sk_harga", "sk_jejak", "sk_jitupasna", "sk_jitupasna_baris", "sk_kaji", "sk_kejadian", "sk_kejadian_alias", "sk_kejadian_kab", "sk_kejadian_sumber", "sk_r3p", "sk_r3p_kegiatan", "sk_renkon"]);
   for (const t of Object.keys(H.MATRIKS_SK)) {
     assert.ok(H.MATRIKS[t], `${t} tidak masuk MATRIKS`);
     for (const [nama, p] of Object.entries(PELAKU)) for (const a of AKSI) assert.equal(H.boleh(p, t, a), !!H.MATRIKS_SK[t][nama]?.includes(a), `${t}.${a} oleh ${nama}`);
@@ -176,7 +189,7 @@ uji("UJ-KP-08: skBatch menolak batch tanpa baris sk_jejak (INV-4) dan tidak menu
 });
 uji("src/siklus*.js tidak menyentuh D1 (SQL sk_* hanya di hak.js)", async () => {
   const {readFileSync} = await import("node:fs"), {AKAR} = await import("./_bantu.mjs"), path = await import("node:path");
-  for (const f of ["siklus.js", "siklus_kejadian.js", "siklus_kaji.js", "siklus_pulih.js", "siklus_kab.js", "siklus_hitung.js"]) assert.doesNotMatch(readFileSync(path.join(AKAR, "src", f), "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, ""), /env\s*\.\s*DB|\.prepare\s*\(|\.batch\s*\(/, f);
+  for (const f of ["siklus.js", "siklus_kejadian.js", "siklus_kaji.js", "siklus_pulih.js", "siklus_kab.js", "siklus_hitung.js", "siklus_renkon.js", "siklus_pintu.js", "siklus_dummy.js"]) assert.doesNotMatch(readFileSync(path.join(AKAR, "src", f), "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, ""), /env\s*\.\s*DB|\.prepare\s*\(|\.batch\s*\(/, f);
 });
 
 /* ---------- paparan (SK-038): UJ-F2-07, UJ-KP-02, UJ-KP-03 ---------- */
@@ -231,4 +244,40 @@ uji("arsip tanpa_wilayah=1: staf saja (BP 403), dialirkan dari <tahun>/tanpa_wil
   assert.equal((await GET(PD, "/kejadian/arsip?tahun=2022&tanpa_wilayah=1")).s, 404);
   assert.notEqual((await POST(KO, "/kejadian/KJ-2021-AAAAAAAA/promosi", {tahun: 2021, kab4: "3201"})).s, 201, "baris tanpa wilayah tidak terpromosi");
   assert.equal(await n("sk_kejadian", "id = 'KJ-2021-AAAAAAAA'"), 0);
+});
+
+/* ---------- G4 (SK-105): renkon, gladi, masa depan, pintu, registri, dummy di dua awalan; UJ-KP-01 sampai 14, UJ-F5-07 ---------- */
+uji("SK-105 UJ-KP-01: matriks G4: sk_renkon dan sk_gladi, BP hanya baca; staf menambah dan mengubah tetapi tidak menghapus; sistem tidak menyentuh; hanya admin menghapus", () => {
+  for (const t of ["sk_renkon", "sk_gladi"]) {
+    assert.deepEqual(["baca", "tambah", "ubah", "hapus"].map(a => H.boleh(H.pelakuSkStaf, t, a)), [true, true, true, false], `staf ${t}`);
+    assert.deepEqual(["baca", "tambah", "ubah", "hapus"].map(a => H.boleh(H.pelakuSkInstansi, t, a)), [true, false, false, false], `BP ${t}`);
+    assert.deepEqual(["baca", "tambah", "ubah", "hapus"].map(a => H.boleh(H.pelakuAdmin, t, a)), [true, true, true, true], `admin ${t}`);
+    for (const a of ["baca", "tambah", "ubah", "hapus"]) assert.equal(H.boleh(H.pelakuSistem, t, a), false, `ingest ${a} ${t}`);
+  }
+  assert.throws(() => H.skStmtRenkonBaru({DB}, H.pelakuSkInstansi, {id: "0123456789abcdef", kini: 1}), e => e.status === 403, "BP tidak membuat renkon");
+  assert.throws(() => H.skStmtGladiBaru({DB}, H.pelakuSistem, {id: "0123456789abcdef", kini: 1}), e => e.status === 403, "ingest tidak membuat gladi");
+});
+uji("SK-105 UJ-F5-07: renkon di dua awalan: BP baca wilayahnya (200), BP lewat awalan staf 401, tulis dan gladi tertutup bagi BP, BP luar wilayah 404 seragam", async () => {
+  const BP2 = await U.bp({kab: "Garut"}), r = await POST(KO, "/renkon", {judul: "Renkon peran uji", bencana: "banjir", prov: "32", kab4: "3201"}); assert.equal(r.s, 201, r.t);
+  assert.equal((await api("GET", `/api/instansi/siklus/renkon/${r.j.id}`, undefined, BP.h)).s, 200, "awalan instansi");
+  assert.equal((await api("GET", `/api/siklus/renkon/${r.j.id}`, undefined, BP.h)).s, 401, "BP di awalan staf");
+  assert.equal((await api("GET", "/api/instansi/siklus/renkon?prov=32", undefined, BP.h)).j.baris.length, 1);
+  for (const [m, j, b] of [["POST", "/api/instansi/siklus/renkon", {judul: "Renkon peran uji", bencana: "gempa", prov: "32"}], ["POST", `/api/instansi/siklus/renkon/${r.j.id}/asumsi`, {kerangka: {jiwa: 1}}], ["POST", `/api/instansi/siklus/renkon/${r.j.id}/status`, {ke: "pelaksanaan"}],
+    ["GET", `/api/instansi/siklus/gladi?renkon_id=${r.j.id}`], ["POST", "/api/instansi/siklus/gladi", {}], ["GET", "/api/instansi/siklus/registri"]])
+    assert.equal((await api(m, j, b, m === "POST" ? BP.hp : BP.h)).s, 403, `${m} ${j}`);
+  const luar = await api("GET", `/api/instansi/siklus/renkon/${r.j.id}`, undefined, BP2.h), nol = await api("GET", "/api/instansi/siklus/renkon/0123456789abcdef", undefined, BP2.h);
+  assert.equal(luar.s, 404); assert.equal(luar.t, nol.t, "luar wilayah = tidak ada, byte demi byte");
+});
+uji("SK-105 UJ-KP-02: pintu dan masa depan opsional di dua awalan: tamu dan sesi tanpa hak dilayani sebagai WG (200), tidak pernah 401; PM baca renkon tidak menulis", async () => {
+  for (const a of [TAMU, UDARA, {...TAMU, via: "/api/instansi/siklus"}]) { const x = await GET(a, "/pintu"); assert.equal(x.s, 200, a.via); assert.equal(x.j.peran, "WG"); assert.ok(x.j.kartu.every(k => k.publik || k.kode.endsWith("_publik") || k.kode === "masadepan_publik")); }
+  assert.equal((await GET(BP, "/pintu")).j.peran, "BP"); assert.equal((await GET(PM, "/pintu")).j.peran, "PM");
+  assert.equal((await GET(TAMU, "/masadepan")).s, 200, "ringkasan publik, bukan 401"); assert.deepEqual((await GET(UDARA, "/masadepan?prov=32")).j, {v: 1}, "sesi tanpa hak = WG: ringkasan saja, bukan berkas provinsi");
+  assert.equal((await POST(PM, "/renkon", {judul: "Renkon PM", bencana: "banjir", prov: "32"})).s, 403);
+  assert.equal((await POST(TAMU, "/pintu", {})).s, 405, "pintu hanya GET");
+});
+uji("SK-105 UJ-KP-13: dummy G4 halaman renkon, pintu, masadepan: hanya SA; PD KO PM MOD BP tamu ditolak", async () => {
+  for (const halaman of ["renkon", "pintu", "masadepan"]) for (const a of [PD, KO, PM, MOD, BP, TAMU]) {
+    const r = await POST(a, "/dummy", {aksi: "isi", halaman}); assert.equal(r.s, a === TAMU ? 401 : 403, `${halaman} ${a.via}`);
+  }
+  assert.equal(await n("sk_renkon", "dummy = 1"), 0, "yang ditolak tidak menulis");
 });

@@ -9,7 +9,7 @@ const uji = berantai();
 const U = await siapkan("uji-mcp", {r2: true});
 const {DB, api, n, mf} = U;
 const R2 = await mf.getR2Bucket("MEDIA");
-const PUBLIK = ["titik_api_terkini", "status_kabupaten", "laporan_harian", "kualitas_udara", "peringatan_aktif", "daftar_wilayah", "riwayat_lokasi", "cari_peraturan_bnpb", "baca_peraturan_bnpb", "relasi_peraturan_bnpb"];
+const PUBLIK = ["titik_api_terkini", "status_kabupaten", "laporan_harian", "kualitas_udara", "peringatan_aktif", "daftar_wilayah", "riwayat_lokasi", "cari_peraturan_bnpb", "baca_peraturan_bnpb", "relasi_peraturan_bnpb", "kejadian_resmi"];
 const KUNCI = ["rumah_rusak", "rumah_rusak_rekap", "bangunan_terpapar", "konsesi_perusahaan", "laporan_bnpb"];
 const BATAS_KB = 24000;
 let ipN = 0, id = 0;

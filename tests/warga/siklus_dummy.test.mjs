@@ -9,7 +9,7 @@ const {DB, api, GET, POST, n} = U;
 const [PD, KO] = [await U.staf("Pd Uji", ["pusdalops"]), await U.staf("Ko Uji", ["koordalops"])];
 const BP = await U.bp(), {SA, TAMU} = U;
 const R2 = await U.mf.getR2Bucket("MEDIA");
-const TABEL = ["sk_kejadian", "sk_kejadian_kab", "sk_kejadian_alias", "sk_kejadian_sumber", "sk_kaji", "sk_harga", "sk_jitupasna", "sk_jitupasna_baris", "sk_r3p", "sk_r3p_kegiatan", "sk_jejak"];
+const TABEL = ["sk_kejadian", "sk_kejadian_kab", "sk_kejadian_alias", "sk_kejadian_sumber", "sk_kaji", "sk_harga", "sk_jitupasna", "sk_jitupasna_baris", "sk_r3p", "sk_r3p_kegiatan", "sk_renkon", "sk_gladi", "sk_jejak"];
 const dummyN = async () => { let t = 0; for (const x of TABEL) t += await n(x, "dummy = 1"); return t; };
 const reset = () => DB.prepare("DELETE FROM laju_bnpb WHERE aksi = 'sk.dummy'").run();   // 6 per jam: tiap uji mulai dari nol
 const TOK = {authorization: "Bearer token-pipa-uji"};
@@ -94,7 +94,7 @@ uji("SK-079: isi G3: Jitupasna 5 status, R3P 6, kegiatan 4, harga dummy; hitung 
   const kaji = await DB.prepare("SELECT id, kejadian_id, status FROM sk_kaji WHERE dummy = 1 AND status = 'dipakai'").first(); assert.equal(kaji.kejadian_id, jp[0].kejadian_id, "Jitupasna pada kejadian yang sama dengan kaji"); assert.equal(jp[2].kaji_id, kaji.id, "kaji tertaut");
   assert.equal((await DB.prepare("SELECT fase FROM sk_kejadian WHERE id = ?").bind(jp[0].kejadian_id).first()).fase, "transisi");
   const h = JSON.parse(jp[4].hitung); assert.equal(h.yakin, "asumsi-kebijakan"); assert.equal(h.kerusakan.per.perumahan.nilai, 2600e6, "RB 10 x 100 jt + RS 20 x 50 jt + RR 30 x 20 jt"); assert.equal(h.kerusakan.per.pendidikan.nilai, 300e6); assert.equal(h.stimulan.nilai, 1650e6);
-  assert.equal(h.peta.permukiman + h.peta.sosial, h.total, "lima sektor menutup total"); assert.equal(h.peta.belum_terpeta, 0);
+  assert.equal(h.peta.permukiman + h.peta.sosial, h.peta.total, "lima sektor (V_s saja) menutup total peta"); assert.equal(h.peta.belum_terpeta, null, "tanpa angka = null"); assert.equal(h.ragu, false);
   const b = (await DB.prepare("SELECT harga_id, nilai_rp, jenis FROM sk_jitupasna_baris WHERE jitupasna_id = ? ORDER BY id").bind(jp[4].id).all()).results; assert.ok(b.every(x => x.nilai_rp != null)); assert.ok(b.filter(x => x.jenis === "rusak").every(x => x.harga_id));
   assert.equal(await n("sk_jitupasna_baris", `jitupasna_id = '${jp[0].id}'`), 0, "dibuka belum berbaris"); assert.equal(await n("sk_jitupasna_baris", `jitupasna_id = '${jp[1].id}' AND nilai_rp IS NOT NULL`), 0, "pengumpulan belum dihitung");
   const r3p = (await DB.prepare("SELECT id, jitupasna_id, kejadian_id, status, versi, disetujui_oleh, no_keputusan, total_rp FROM sk_r3p ORDER BY versi").all()).results;
@@ -125,4 +125,43 @@ uji("periode objek: {dari, sampai} menentukan rentang; {kab4, prov, bahaya} dite
   for (const periode of [{dari: "2026-09-12", sampai: "2026-09-10"}, {dari: "x"}, {kab4: "3201", prov: "abc"}]) assert.equal((await POST(SA, "/dummy", {aksi: "isi", halaman: "kejadian", periode})).s, 400, JSON.stringify(periode));
   await R2.put("siklus/saji/_dummy/paparan/3201.json", "{}");
   const p = await POST(SA, "/dummy", {aksi: "isi", halaman: "paparan", periode: {kab4: "3201", prov: "32", bahaya: "banjir"}}); assert.equal(p.s, 200, p.t); assert.equal(p.j.contoh, true); assert.deepEqual(p.j.per_tabel, {});
+});
+
+/* ---------- G4 (SK-104): renkon 6 status plus satu kedaluwarsa, gladi 5 status x 3 jenis, pintu mengisi semua, masadepan mode contoh ---------- */
+uji("SK-104 halaman renkon: butuh kejadian contoh yang sudah ada (409 tanpa itu); lalu 7 renkon (6 status plus satu kedaluwarsa) dan 15 gladi (5 status x 3 jenis), tertaut ke dummy; 409 bila sudah ada", async () => {
+  await reset(); await POST(SA, "/dummy", {aksi: "hapus"}); await reset();
+  const tanpa = await POST(SA, "/dummy", {aksi: "isi", halaman: "renkon"}); assert.equal(tanpa.s, 409); assert.match(tanpa.t, /kejadian contoh/); assert.equal(await n("sk_renkon"), 0);
+  assert.equal((await POST(SA, "/dummy", {aksi: "isi", halaman: "kejadian", periode: "2026-04", kab4: "3201"})).s, 200);
+  const r = await POST(SA, "/dummy", {aksi: "isi", halaman: "renkon"}); assert.equal(r.s, 200, r.t); assert.deepEqual([r.j.per_tabel.sk_renkon, r.j.per_tabel.sk_gladi], [7, 15]);
+  const st = (await DB.prepare("SELECT status, count(*) c FROM sk_renkon WHERE dummy = 1 GROUP BY status").all()).results; assert.deepEqual(Object.fromEntries(st.map(x => [x.status, x.c])), {persiapan: 1, pelaksanaan: 1, finalisasi: 1, ditetapkan: 1, berlaku: 2, dimutakhirkan: 1});
+  const kd = (await GET(SA, "/renkon?prov=32&kab4=3201")).j.baris; assert.equal(kd.length, 7); assert.equal(kd.filter(x => x.kedaluwarsa).length, 1, "satu renkon berstatus berlaku sudah kedaluwarsa (dihitung saat dibaca)");
+  assert.equal(kd.find(x => x.kedaluwarsa).status, "berlaku", "kedaluwarsa bukan status tersimpan");
+  const g = (await DB.prepare("SELECT jenis, status, count(*) c FROM sk_gladi WHERE dummy = 1 GROUP BY jenis, status").all()).results; assert.equal(g.length, 15); assert.ok(g.every(x => x.c === 1));
+  assert.equal(await n("sk_gladi", "dummy = 1 AND status = 'selesai' AND rekomendasi IS NOT NULL"), 3);
+  const sk = JSON.parse((await DB.prepare("SELECT skenario FROM sk_gladi WHERE dummy = 1 LIMIT 1").first()).skenario); assert.equal(sk.label, "Model sederhana, bukan prakiraan"); assert.equal(sk.langkah.length, 2);
+  for (const a of [PD, KO, BP]) { assert.equal((await GET(a, "/renkon?prov=32&kab4=3201")).j.baris.length, 0, "staf nyata dan BP tidak melihat renkon contoh"); }
+  const rid = kd[0].id; assert.equal((await GET(KO, `/renkon/${rid}`)).s, 404); assert.equal((await GET(SA, `/renkon/${rid}`)).s, 200);
+  const lagi = await POST(SA, "/dummy", {aksi: "isi", halaman: "renkon"}); assert.equal(lagi.s, 409); assert.match(lagi.t, /sudah ada 7/); assert.equal(await n("sk_renkon", "dummy = 1"), 7, "409 tidak menulis");
+  await reset(); const h = await POST(SA, "/dummy", {aksi: "hapus"}); assert.equal(h.s, 200); assert.deepEqual([h.j.per_tabel.sk_gladi, h.j.per_tabel.sk_renkon], [15, 7]);
+  assert.equal(await dummyN(), 0, "hapus mengosongkan semua tabel termasuk G4");
+});
+uji("SK-104 halaman pintu: kejadian, kaji, Jitupasna, R3P, renkon, gladi sekaligus dalam satu batch; hapus mengosongkan; sk_gladi tidak menggantung ke kejadian yang dihapus", async () => {
+  await reset(); await POST(SA, "/dummy", {aksi: "hapus"}); await reset();
+  const r = await POST(SA, "/dummy", {aksi: "isi", halaman: "pintu", periode: "2026-05", kab4: "3201"}); assert.equal(r.s, 200, r.t);
+  assert.deepEqual([r.j.per_tabel.sk_kejadian, r.j.per_tabel.sk_renkon, r.j.per_tabel.sk_gladi, r.j.per_tabel.sk_r3p], [7, 7, 15, 6]);
+  const jj = await DB.prepare("SELECT count(*) c FROM sk_gladi g JOIN sk_kejadian k ON k.id = g.kejadian_id AND k.dummy = 1 JOIN sk_renkon r ON r.id = g.renkon_id AND r.dummy = 1 WHERE g.dummy = 1").first(); assert.equal(jj.c, 15, "tertaut ke kejadian dan renkon contoh");
+  assert.equal((await POST(SA, "/dummy", {aksi: "isi", halaman: "pintu", periode: "2026-05", kab4: "3201"})).s, 409);
+  assert.equal(await n("sk_jejak", "aksi = 'isi_dummy' AND dummy = 0"), 0, "jejak isi ikut dummy");
+  await reset(); const h = await POST(SA, "/dummy", {aksi: "hapus"}); assert.equal(h.s, 200, h.t); assert.equal(await dummyN(), 0);
+});
+uji("SK-104 halaman masadepan: tanpa tabel; memeriksa berkas contoh di R2 (404 bila belum), tidak menulis D1; dummy tidak ikut angka publik (ringkasan, pintu tamu)", async () => {
+  await reset(); const m0 = await POST(SA, "/dummy", {aksi: "isi", halaman: "masadepan"}); assert.equal(m0.s, 404); assert.match(m0.t, /dummy_saji\.py/);
+  await R2.put("siklus/saji/_dummy/masadepan/99.json", JSON.stringify({dummy: true}));
+  const m = await POST(SA, "/dummy", {aksi: "isi", halaman: "masadepan"}); assert.equal(m.s, 200, m.t); assert.deepEqual([m.j.contoh, m.j.per_tabel], [true, {}]); assert.equal(await dummyN(), 0, "tidak menulis D1");
+  await reset(); assert.equal((await POST(SA, "/dummy", {aksi: "isi", halaman: "kejadian", periode: "2026-06", kab4: "3201"})).s, 200);
+  await DB.prepare("UPDATE sk_kejadian SET publik = 1, ringkasan_publik = 'Ringkasan contoh yang cukup panjang.' WHERE dummy = 1 AND fase = 'tanggap'").run();
+  const w = await GET(TAMU, "/pintu"); assert.equal(w.s, 200); assert.ok(!w.j.kartu.some(k => k.kode === "kejadian_publik"), "kejadian contoh tidak jadi kartu publik");
+  const mc = await api("POST", "/mcp", {jsonrpc: "2.0", id: 1, method: "tools/call", params: {name: "kejadian_resmi", arguments: {}}}, {"cf-connecting-ip": "198.51.100.7"});
+  assert.equal(JSON.parse(mc.j.result.content[0].text).jumlah, 0, "alat MCP tidak memuat dummy");
+  await reset(); await POST(SA, "/dummy", {aksi: "hapus"});
 });

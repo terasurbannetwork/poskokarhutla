@@ -5,9 +5,9 @@
 import {json, gagal, acak} from "./worker.js";
 import {tolak} from "./pusdalops_umum.js";
 import * as H from "./hak.js";
-import {NAMA_KAB4} from "./siklus_kab.js";
+import {NAMA_KAB4, lingkupKab4} from "./siklus_kab.js";
 import {RE_KJ} from "./siklus_hitung.js";
-import {bodi, masukan, ujiLaju, NO, parse, bersihNama, dalamBP, lihat, utkBP, gerbangIngest, polos, HIDUP} from "./siklus_kejadian.js";
+import {bodi, masukan, ujiLaju, NO, parse, bersihNama, dalamBP, lihat, lihatTulis, utkBP, gerbangIngest, polos, HIDUP} from "./siklus_kejadian.js";
 
 const HARI = 864e5, MAKS_R2 = 100 * 1024, MODEL = ["gempa", "banjir_jam1"];
 const RE_SID = /^[0-9a-f]{16}$/;
@@ -47,7 +47,10 @@ async function detailKaji(c) {
   if (!lihat(c, r)) return NO();
   const k = await kejadianBoleh(c, r.kejadian_id); if (!k) return NO();
   const mulaiMs = Date.parse(k.mulai + "T00:00:00Z");
-  const meja = k.kab4 && NAMA_KAB4[k.kab4] ? await H.skMejaKajiCepat(c.env, k.kab4.slice(0, 2), NAMA_KAB4[k.kab4], mulaiMs - HARI, mulaiMs + 45 * HARI, k.dummy) : [];
+  /* staf: kabupaten kejadian; BP: hanya kabupaten kejadian yang di lingkup akunnya (bukan k.kab4, yang bisa di luar lingkup pada kejadian multi-kabupaten) */
+  const kabs = c.h.tipe === "bp" ? [...new Set([...(await H.skKejadianKab(c.env, c.h.pelaku, k.id)), k.kab4])].filter(x => lingkupKab4(c.h.akun, x)).slice(0, 5) : [k.kab4];
+  const meja = [];
+  for (const kb of kabs) if (kb && NAMA_KAB4[kb]) meja.push(...await H.skMejaKajiCepat(c.env, kb.slice(0, 2), NAMA_KAB4[kb], mulaiMs - HARI, mulaiMs + 45 * HARI, k.dummy));
   return json({kaji: bentuk(c, r), kejadian: {id: k.id, jenis: k.jenis, mulai: k.mulai, kab4: k.kab4, fase: k.fase}, ...(await bacaHasil(c, r)),
     meja: {catatan: "isian petugas BPBD, bukan hasil model; angka berdampingan, tidak dijumlah", baris: meja}});
 }
@@ -59,7 +62,7 @@ async function ubahStatus(c) {
     if (b.ke === "ditarik") { const a = bersihNama(b.alasan, 300); if (typeof b.alasan !== "string" || a.length < 3) tolak("alasan wajib (3-300 karakter) untuk menarik kaji"); return {ke: b.ke, alasan: a}; }
     return {ke: b.ke, alasan: null};
   });
-  const r = await H.skKajiById(c.env, p, c.p.sid); if (!lihat(c, r)) return NO();
+  const r = await H.skKajiById(c.env, p, c.p.sid); if (!lihatTulis(c, r)) return NO();
   if (!TRANSISI[r.status].includes(v.ke)) return gagal(409, `status ${r.status} tidak bisa menjadi ${v.ke}`);
   const lj = await ujiLaju(c, "sk.kaji", 120); if (lj) return lj;
   const res = await H.skBatch(c.env, p, [H.skStmtKajiStatus(c.env, p, r.id, r.status, v.ke, v.alasan, c.kini), H.skStmtJejakJikaBerubah(c.env, p, c.h.oleh, "kaji", r.id, "status", r.status, v.ke, v.alasan, c.kini, r.dummy)]);

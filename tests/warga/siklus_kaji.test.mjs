@@ -57,10 +57,11 @@ uji("daftar dan detail: staf melihat versi terbaru dulu; detail memuat R2 (<100 
   assert.equal(l.j.baris[0].oleh, "sistem:ingest"); assert.ok(Array.isArray(l.j.baris[0].ringkas.rentang));
   await R2.put(`siklus/saji/kaji/${KID}.json`, JSON.stringify({v: 1, jenis: "kaji", versi: 1, korban: {rentang: [22.1, 353.8], y: "estimasi-model"}}));
   const mulaiMs = Date.parse("2026-03-02T00:00:00Z");
-  await DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, desa, data, status, dibuat, diubah, oleh) VALUES (?, 'kaji_cepat', '32', 'Bogor', 'Desa Uji', ?, 'dilaporkan', ?, ?, 'petugas:x')").bind(id16(), JSON.stringify({kejadian: "gempa", tanggal: "2026-03-02", meninggal: 2, rumah_rb: 7, foto: "https://rahasia.example/f.jpg", kebutuhan: "hubungi 0812 rahasia"}), mulaiMs + 3600e3, mulaiMs + 3600e3).run();
+  await DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, desa, data, status, dibuat, diubah, oleh) VALUES (?, 'kaji_cepat', '32', 'Bogor', 'Desa Uji', ?, 'diverifikasi', ?, ?, 'petugas:x')").bind(id16(), JSON.stringify({kejadian: "gempa", tanggal: "2026-03-02", meninggal: 2, rumah_rb: 7, foto: "https://rahasia.example/f.jpg", kebutuhan: "hubungi 0812 rahasia"}), mulaiMs + 3600e3, mulaiMs + 3600e3).run();
+  await DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, desa, data, status, dibuat, diubah, oleh) VALUES (?, 'kaji_cepat', '32', 'Bogor', 'Desa Uji', ?, 'dilaporkan', ?, ?, 'petugas:x')").bind(id16(), JSON.stringify({kejadian: "gempa", tanggal: "2026-03-02", meninggal: 99, rumah_rb: 7, foto: "https://rahasia.example/f.jpg", kebutuhan: "hubungi 0812 rahasia"}), mulaiMs + 3600e3, mulaiMs + 3600e3).run();
   const d = await GET(PD, `/kaji/${SID}`); assert.equal(d.s, 200, d.t);
   assert.equal(d.j.hasil_status, "ada"); assert.equal(d.j.hasil.korban.y, "estimasi-model"); assert.equal(d.j.hasil_selaras, true); assert.equal(d.j.kaji.yakin, "estimasi-model");
-  assert.equal(d.j.meja.baris.length, 1); assert.equal(d.j.meja.baris[0].meninggal, 2); assert.equal(d.j.meja.baris[0].rumah_rb, 7);
+  assert.equal(d.j.meja.baris.length, 1, "hanya isian diverifikasi atau masuk_jitupasna; yang baru dilaporkan tidak ikut"); assert.equal(d.j.meja.baris[0].meninggal, 2); assert.equal(d.j.meja.baris[0].rumah_rb, 7);
   assert.doesNotMatch(d.t, /rahasia|data"/, "teks bebas dan foto meja tidak ikut");
   assert.deepEqual(d.j.kaji.ringkas.rentang, [22.1, 353.8], "rentang hasil model terpisah dari angka meja");
   const lain = await GET(PD, `/kaji/${(await GET(PD, `/kaji?kejadian_id=${KID}`)).j.baris[0].id}`); assert.equal(lain.j.hasil_selaras, false, "R2 versi 1, baris versi lain");

@@ -37,7 +37,8 @@ const wilayahKab4 = kab4 => kab4 ? `${NAMA_KAB4[kab4]}, ${PROV[kab4.slice(0, 2)]
 
 /* ================================================================ lingkup BP */
 export const dalamBP = (c, kab4s) => c.h.tipe !== "bp" || (kab4s ?? []).some(k => lingkupKab4(c.h.akun, k));
-export const lihat = (c, r) => !!r && (c.h.dummyOk || !r.dummy);   // staf nyata dan akun nyata tidak melihat dummy = 1
+export const lihat = (c, r) => !!r && (c.h.dummyOk || !r.dummy);
+export const lihatTulis = (c, r) => lihat(c, r) && (!c.h.dummy || !!r.dummy);   // jalur tulis: akun dummy tidak boleh menyentuh baris nyata (404 seragam)   // staf nyata dan akun nyata tidak melihat dummy = 1
 export const utkBP = (c, o) => { if (c.h.tipe !== "bp") return o; const {oleh, ...sisa} = o; return sisa; };
 
 /* ID bebas: hash kunci (n = 1..5) sekali tanya; ID yang sudah dipakai D1 (termasuk dibatalkan/digabung) atau dalam batch yang sama dilewati */
@@ -92,14 +93,14 @@ async function arsipKejadian(c) {
   return new Response(o.body, {headers: {"content-type": "application/json; charset=utf-8", "x-content-type-options": "nosniff"}});
 }
 /* baca <= 128 KB dan urai; lebih besar tidak dibuka di Worker (CPU 10 ms). Mengembalikan objek, atau Response galat. */
-async function bacaArsipKecil(c, tahun, kab4) {
+export async function bacaArsipKecil(c, tahun, kab4) {
   if (!c.env.MEDIA) return gagal(503, "penyimpanan arsip belum terpasang");
   const o = await c.env.MEDIA.get(`siklus/saji/kejadian/arsip/${tahun}/k${kab4}.json`);
   if (!o) return gagal(404, "arsip belum dibangun");
   if (o.size > MAKS_ARSIP) { o.body?.cancel?.(); return gagal(413, "berkas arsip terlalu besar untuk dibuka di Worker; minta pengelola memecahnya"); }
   try { return JSON.parse(await o.text()); } catch (e) { return gagal(502, "berkas arsip rusak"); }
 }
-const barisArsip = (a, id) => {
+export const barisArsip = (a, id) => {
   const i = Array.isArray(a?.kolom) ? a.kolom.indexOf("id") : -1;
   const b = i >= 0 && Array.isArray(a.baris) ? a.baris.find(r => Array.isArray(r) && r[i] === id) : null;
   return b ? Object.fromEntries(a.kolom.map((k, j) => [k, b[j] ?? null])) : null;

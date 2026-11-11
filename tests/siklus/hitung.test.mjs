@@ -67,3 +67,20 @@ test('F4: vektor acuan ALGORITMA sama di peramban dan Worker (klasifikasi, kerus
     assert.equal(M.nilaiKerusakan([{sektor: 'pendidikan', tingkat: 'rb', unit: 2}], () => null).total, null, 'kosong menunggu, bukan 0');
   }
 });
+
+test('F5: vektor acuan ALGORITMA sama di peramban dan Worker (kebutuhan, kesegaran, skor, pemutaran ulang; tanpa data = menunggu)', () => {
+  const F = ACUAN.f5, T = Date.UTC(2026, 2, 1, 1, 0);
+  for (const M of [B, W]) {
+    const c = M.kebutuhanDasar({jiwa: 1000, hari: 5}).komponen;
+    for (const [n, v] of Object.entries(F.kebutuhan_1000_5)) assert.equal(c[n].nilai, v, n);
+    assert.equal(c.tempat_sampah.nilai, null, 'KK kosong menunggu, bukan 0');
+    const s = M.kesegaran({tgl_sah: F.kesegaran.tgl_sah, hariIni: F.kesegaran.hari_ini});
+    assert.deepEqual([s.berlaku_sampai, s.sisa, s.status], [F.kesegaran.berlaku_sampai, F.kesegaran.sisa, F.kesegaran.status]);
+    const barang = [M.kesenjanganItem('beras', {nilai: 2000, satuan: 'kg'}, {baik: 1200, satuan: 'kg'}), M.kesenjanganItem('air_minum', {nilai: 51000, satuan: 'liter'}, {baik: 60000, satuan: 'liter'})];
+    const k = M.skorGladi({kesegaran: 'berlaku', barang, personel: M.kesenjanganPersonel(50, 40)});
+    assert.deepEqual([k.skor, k.label], [F.skor.nilai, F.skor.label]);
+    assert.equal(M.skorGladi({kesegaran: 'berlaku'}).skor, null);
+    const e = [{waktu: T + 24 * 36e5, sumber: 'a', metrik: 'm', nilai: 5}, {waktu: T, sumber: 'a', metrik: 'm', nilai: 0}, {waktu: T + 3.5 * 36e5, sumber: 'a', metrik: 'm', nilai: 3}];
+    assert.deepEqual(M.putarUlang(e).langkah.map((x) => x.t_jam), F.putar_t_jam);
+  }
+});

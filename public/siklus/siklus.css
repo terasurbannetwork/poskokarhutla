@@ -113,3 +113,11 @@ main.peta .ex-leg{background:var(--card);border:1px solid var(--line);border-rad
 .dlg .fld input,.dlg .fld textarea,.dlg .fld select{width:100%;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:8px 10px;min-height:36px}
 .dlg .fld>span{font-size:.75rem;font-weight:700;color:var(--ink2)}
 .dlg .dh h3{font-size:1.125rem}
+
+/* pintu, renkon, gladi, masa depan (SK-091..101): kartu tujuan dua kolom, strip angka memakai .sk-ber */
+.sk-pintu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sk-pintu a{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:6px;background:var(--card);color:var(--ink);text-decoration:none;font-weight:600;font-size:.875rem;min-height:44px}
+.sk-pintu a:hover{border-color:var(--brand2)}
+.sk-pintu small{color:var(--ink2);font-weight:500;font-size:.75rem}
+.sk-sisa[data-s="kedaluwarsa"]{color:var(--bad);font-weight:800}.sk-sisa[data-s="segera_habis"]{color:var(--warn);font-weight:800}
+@media (max-width:640px){.sk-pintu{grid-template-columns:1fr}}

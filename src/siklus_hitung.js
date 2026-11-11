@@ -114,11 +114,12 @@ export function nilaiKerusakan(baris, harga) {
   return {per, total: semua.some(s => s.menunggu) ? null : semua.reduce((a, s) => a + s.nilai, 0), menunggu: semua.some(s => s.menunggu)};
 }
 
-/* F4.4: L_s = jumlah_c (arus x bulan); baris jenis rugi: [{sektor, komponen, arus_rp, bulan}] */
+/* F4.4: L_s = jumlah_c (arus x bulan); baris jenis rugi: [{sektor, komponen, arus_rp, bulan}]. Baris tanpa arus_rp atau bulan tidak dijumlah (bukan 0 diam-diam):
+   dihitung per sektor di `dibuang` dan menandai hasil `menunggu: true`. */
 export function nilaiKerugian(baris) {
-  const per = {};
-  for (const b of baris) { if (typeof b.arus_rp !== "number" || typeof b.bulan !== "number") continue; per[b.sektor] = (per[b.sektor] ?? 0) + b.arus_rp * b.bulan; }
-  return {per, total: Object.keys(per).length ? Object.values(per).reduce((a, n) => a + n, 0) : null};
+  const per = {}, dibuang = {};
+  for (const b of baris) { if (typeof b.arus_rp !== "number" || typeof b.bulan !== "number") { dibuang[b.sektor] = (dibuang[b.sektor] ?? 0) + 1; continue; } per[b.sektor] = (per[b.sektor] ?? 0) + b.arus_rp * b.bulan; }
+  return {per, total: Object.keys(per).length ? Object.values(per).reduce((a, n) => a + n, 0) : null, dibuang, menunggu: Object.keys(dibuang).length > 0};
 }
 
 /* F4.5: pemetaan subsektor Jitupasna ke lima sektor Perban 5/2017 Pasal 8 ayat (2); tafsir bawaan menurut nama subsektor R3 1.2, menunggu U10 */
@@ -126,11 +127,16 @@ export const SEKTOR_R3P = ["permukiman", "infrastruktur", "ekonomi", "sosial", "
 export const PETA_SEKTOR = {perumahan: "permukiman", jalan_jembatan: "infrastruktur", telekomunikasi: "infrastruktur", air_sanitasi: "infrastruktur",
   pertanian: "ekonomi", perikanan: "ekonomi", ikm: "ekonomi", perdagangan: "ekonomi", pariwisata: "ekonomi", kesehatan: "sosial", pendidikan: "sosial", agama: "sosial", sosial_budaya: "sosial",
   lingkungan: "lintas_sektor", sarana_pemerintahan: "lintas_sektor", keuangan_perbankan: "lintas_sektor", ketertiban_keamanan: "lintas_sektor"};
-/* nilai: {subsektor: angka|null}; invarian: lima sektor + belum_terpeta = total (angka yang ada) */
+/* nilai: {subsektor: V_s angka|null} (kerusakan saja, tanpa kerugian: ALG F4.5). Sektor tanpa satu pun angka = null (bukan 0); `menunggu` mendaftar sektor tanpa angka
+   dan sektor yang sebagian subsektornya null. Invarian: lima sektor + belum_terpeta (yang berangka) = total; total null bila tak satu pun berangka. */
 export function petaLimaSektor(nilai) {
-  const r = Object.fromEntries([...SEKTOR_R3P, "belum_terpeta"].map(k => [k, 0]));
-  for (const [s, v] of Object.entries(nilai)) if (typeof v === "number") r[Object.hasOwn(PETA_SEKTOR, s) ? PETA_SEKTOR[s] : "belum_terpeta"] += v;
-  return {...r, total: Object.values(r).reduce((a, n) => a + n, 0)};
+  const kunci = [...SEKTOR_R3P, "belum_terpeta"], r = Object.fromEntries(kunci.map(k => [k, null])), sebagian = new Set();
+  for (const [s, v] of Object.entries(nilai)) {
+    const k = Object.hasOwn(PETA_SEKTOR, s) ? PETA_SEKTOR[s] : "belum_terpeta";
+    if (typeof v === "number") r[k] = (r[k] ?? 0) + v; else sebagian.add(k);
+  }
+  const ada = kunci.filter(k => r[k] !== null), menunggu = SEKTOR_R3P.filter(k => r[k] === null || sebagian.has(k));
+  return {...r, total: ada.length ? ada.reduce((a, k) => a + r[k], 0) : null, menunggu};
 }
 
 /* tiga penanda (Kotak 1 hal. 41): hitung ganda (komponen kerugian sama di dua sektor atau lebih), cakupan (sektor R3P tanpa isian), kewajaran (monoton atau V_s > semua unit hancur) */
@@ -167,3 +173,66 @@ export function persenRealisasi(kegiatan) {
 }
 /* macet: tahap sama lebih dari batas hari (rehab_macet_hari = 60, jam_aturan.json, asumsi) sejak masuk tahap; dibaca saat halaman dibuka */
 export const macet = (masukTahap, hariIni, batas = 60) => !!masukTahap && hariAntara(masukTahap, hariIni) > batas;
+
+/* ================================================================ F5 Renkon Hidup dan Gladi (ALGORITMA F5.1 sampai F5.5). Fungsi murni; stok dan personel dibaca, tidak disalin. Tanpa data = "menunggu", bukan 0. */
+const bulanAkhir = (t, n) => {   // tambah n bulan, hari dipangkas ke akhir bulan (2024-02-29 + 36 bulan = 2027-02-28)
+  const [y, m, d] = t.split("-").map(Number), tot = y * 12 + (m - 1) + n, yy = Math.floor(tot / 12), mm = tot % 12;
+  const akhir = new Date(Date.UTC(yy, mm + 1, 0)).getUTCDate();
+  return `${String(yy).padStart(4, "0")}-${String(mm + 1).padStart(2, "0")}-${String(Math.min(d, akhir)).padStart(2, "0")}`;
+};
+export const tambahBulan = bulanAkhir;
+const bulat = (x, d = 2) => Math.round(x * 10 ** d) / 10 ** d;
+
+/* F5.1 kebutuhan dasar Perka 7/2008 dari J jiwa, h hari, KK keluarga (isian; tempat sampah menunggu bila kosong). Hanya USULAN asumsi, tidak menimpa isian staf. */
+export function kebutuhanDasar({jiwa, hari, kk = null}) {
+  const ok = Number.isInteger(jiwa) && jiwa >= 0 && Number.isInteger(hari) && hari >= 1;
+  if (!ok) return {status: MENUNGGU, alasan: "jiwa dan hari belum diisi", yakin: MENUNGGU};
+  const J = jiwa, h = hari, bln = Math.ceil(h / 30), p = (nilai, satuan) => ({nilai, satuan});
+  return {status: "usulan", yakin: "estimasi-model", jiwa: J, hari: h,
+    komponen: {penampungan: p(3 * J, "m2"), beras: p(bulat(0.4 * J * h), "kg"), makan: p(2 * J * h, "porsi"), energi: p(2100, "kkal per orang per hari"),
+      air_bersih: p(J * (7 * Math.min(h, 3) + 15 * Math.max(h - 3, 0)), "liter"), air_minum: p(bulat(2.5 * J * h), "liter"), jamban: p(Math.ceil(J / 20), "unit"),
+      tempat_sampah: Number.isInteger(kk) && kk >= 0 ? p(Math.ceil(kk / 10), "unit") : {nilai: null, satuan: "unit", status: MENUNGGU},
+      sabun_mandi: p(bulat(0.25 * J * bln), "kg"), sabun_cuci: p(bulat(0.2 * J * bln), "kg")},
+    sphere: {penampungan: p(bulat(3.5 * J), "m2"), air_bersih: p(15 * J * h, "liter"), yakin: "hipotesis", catatan: "pembanding Sphere 2018, tidak menggantikan Perka 7/2008"}};
+}
+
+/* F5.2 kesenjangan stok: hanya komponen yang berpadanan dengan barang LogPal (beras, air mineral). stok = {baik, rusak, belum, satuan} dari kondisi di gudang wilayah, atau null (tak tercatat). */
+export const PADANAN = {beras: {satuan: "kg", pola: /beras/i}, air_minum: {satuan: "liter", pola: /air\s*(mineral|minum)/i}};
+export function kesenjanganItem(nama, k, stok, padanan = Object.hasOwn(PADANAN, nama)) {
+  if (!padanan) return {nama, status: "tidak punya padanan", gap: null, surplus: null, yakin: "estimasi-model"};
+  if (!stok || !Number.isFinite(stok.baik)) return {nama, status: "stok belum tercatat", gap: null, surplus: null, yakin: "estimasi-model"};
+  if (stok.satuan !== k.satuan) return {nama, status: "satuan beda, menunggu", gap: null, surplus: null, satuan_stok: stok.satuan, yakin: "estimasi-model"};
+  const K = k.nilai, S = stok.baik;
+  return {nama, status: "dihitung", kebutuhan: K, stok_baik: S, gap: Math.max(0, K - S), surplus: Math.max(0, S - K), rusak: stok.rusak ?? 0, belum_dinilai: stok.belum ?? 0, satuan: k.satuan, yakin: "estimasi-model"};   // kebutuhan = rumus Perka 7/2008 atas asumsi jiwa dan hari: estimasi, bukan angka resmi
+}
+export const kesenjanganPersonel = (target, siap) => typeof target !== "number" || !(target > 0) ? {status: "target menunggu", target: null, siap: siap ?? null, gap: null, yakin: "asumsi-kebijakan"}
+  : typeof siap !== "number" ? {status: "personel belum tercatat", target, siap: null, gap: null, yakin: "asumsi-kebijakan"} : {status: "dihitung", target, siap, gap: Math.max(0, target - siap), yakin: "asumsi-kebijakan"};   // target isian staf: asumsi kebijakan
+
+/* F5.3 kesegaran: berlaku_sampai = tgl_sah + 36 bulan (Perban 2/2023 Pasal 21 ayat 1); reviu jatuh 6 bulan sesudah yang terbaru dari tgl_sah dan reviu_terakhir (ayat 2). */
+export function kesegaran({tgl_sah, reviu_terakhir = null, berlaku_sampai = null, hariIni, segeraHari = 90}) {
+  if (!tgl_sah) return {status: MENUNGGU, berlaku_sampai: null, sisa: null, reviu_jatuh: null};
+  const sampai = berlaku_sampai ?? tambahBulan(tgl_sah, 36), sisa = hariAntara(hariIni, sampai);
+  const acuan = reviu_terakhir && reviu_terakhir > tgl_sah ? reviu_terakhir : tgl_sah, jatuh = tambahBulan(acuan, 6);
+  const status = sisa < 0 ? "kedaluwarsa" : sisa <= segeraHari ? "segera_habis" : jatuh < hariIni ? "perlu_reviu" : "berlaku";
+  return {status, berlaku_sampai: sampai, sisa, reviu_jatuh: jatuh};
+}
+
+/* F5.4 skor kesiapan gladi: rerata komponen tersedia (0..1) x 100, "n dari 4 komponen"; kurang dari 2 komponen = menunggu. */
+export function skorGladi({kesegaran: seg = null, barang = [], personel = null, rekomendasi = null}) {
+  const k1 = seg == null || seg === MENUNGGU ? null : seg === "kedaluwarsa" ? 0 : 1;
+  const ada = barang.filter(b => b.status === "dihitung" && b.kebutuhan > 0), k2 = ada.length ? ada.reduce((a, b) => a + Math.min(1, b.stok_baik / b.kebutuhan), 0) / ada.length : null;
+  const k3 = personel && personel.status === "dihitung" ? Math.min(1, personel.siap / personel.target) : null;
+  const k4 = Array.isArray(rekomendasi) && rekomendasi.length ? rekomendasi.filter(r => r && r.tertaut).length / rekomendasi.length : null;
+  const komp = {k1, k2, k3, k4}, tersedia = Object.values(komp).filter(v => v != null);
+  if (tersedia.length < 2) return {skor: null, status: MENUNGGU, komponen: komp, tersedia: tersedia.length, label: `${tersedia.length} dari 4 komponen`, yakin: "asumsi-kebijakan"};
+  return {skor: bulat(tersedia.reduce((a, v) => a + v, 0) / tersedia.length * 100), status: "dihitung", komponen: komp, tersedia: tersedia.length, label: `${tersedia.length} dari 4 komponen`, yakin: "asumsi-kebijakan"};
+}
+
+/* F5.5 pemutaran ulang: entri [{waktu (ms), sumber, metrik, nilai}] urut waktu, lalu sumber, lalu metrik; T_i = (waktu_i - waktu_pertama) jam / c. Nilai diinjeksikan apa adanya. */
+export function putarUlang(entri, c = 1) {
+  if (typeof c !== "number" || !Number.isFinite(c) || c < 1) throw new Error("percepatan harus angka >= 1");
+  const e = entri.filter(x => Number.isFinite(x.waktu) && typeof x.nilai === "number").sort((a, b) => a.waktu - b.waktu || String(a.sumber).localeCompare(b.sumber) || String(a.metrik).localeCompare(b.metrik));
+  if (!e.length) return {langkah: [], percepatan: c, yakin: "terverifikasi", label: "Model sederhana, bukan prakiraan"};
+  const t0 = e[0].waktu;
+  return {langkah: e.map(x => ({t_jam: bulat((x.waktu - t0) / 36e5 / c, 4), sumber: x.sumber, metrik: x.metrik, nilai: x.nilai})), percepatan: c, yakin: "terverifikasi", label: "Model sederhana, bukan prakiraan"};
+}

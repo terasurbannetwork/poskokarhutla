@@ -14,6 +14,8 @@ import {bacaDaftar, bacaRekap, KOLOM_V1} from "./rumah_rusak.js";
 import {kirim} from "./bangunan.js";
 import {bacaLaporan} from "./laporan_bnpb.js";
 import {cariHukum, bacaDok, bacaRelasi} from "./hukum.js";
+import * as H from "./hak.js";
+import {NAMA_KAB4} from "./siklus_kab.js";
 
 const JAM = 3600e3, VERSI_SERVER = "1.0.0", PROTOKOL = ["2025-06-18", "2025-03-26", "2024-11-05"], MAKS_BODY = 65536, BATAS_TEKS = 24000, BATAS_IP = [[JAM, 600]];
 const CORS = {"access-control-allow-origin": "*", "access-control-allow-headers": "X-API-Key, Mcp-Session-Id, MCP-Protocol-Version, Content-Type, Accept", "access-control-allow-methods": "POST, OPTIONS", "access-control-max-age": "86400"};
@@ -183,6 +185,18 @@ async function bacaPeraturan(env, url, a) {
 }
 async function relasiPeraturan(env, url, a) { return hukumOk(await bacaRelasi(env, a.id)); }
 
+/* Siklus Bencana F7 (SK-099): ringkasan resmi kejadian dari Buku Besar, hanya yang ditandai publik oleh Koordalops (publik = 1, bukan dummy, bukan terdeteksi/dibatalkan/digabung).
+   Tidak membuka paparan, nama korban, atau rincian staf. Tiap hasil membawa label keyakinan; asisten wajib menyebutnya. */
+async function kejadianResmi(env, url, a) {
+  const bentuk = r => ({id: r.id, jenis: r.jenis, wilayah: NAMA_KAB4[r.kab4] ?? null, kab4: r.kab4 ?? null, mulai: r.mulai, fase: r.fase, ringkasan: r.ringkasan_publik, label_keyakinan: r.yakin, diperbarui: new Date(r.diubah).toISOString()});
+  const catatan = "Ringkasan resmi yang dipublikasikan Koordalops; bukan rincian dampak. Sebut label_keyakinan saat menjawab. Rincian dan nama korban hanya untuk staf.";
+  try {
+    if (a.id) { const r = await H.skKejadianPublik(env, H.pelakuSistem, a.id); if (!r) tolak("kejadian tidak ada atau belum dipublikasikan"); return {kejadian: [bentuk(r)], catatan}; }
+    const baris = await H.skKejadianPublikDaftar(env, H.pelakuSistem, a.limit);
+    return {jumlah: baris.length, urut: "mulai menurun", kejadian: baris.map(bentuk), catatan};
+  } catch (e) { if (/no such table: sk_/i.test(String(e?.message || e))) tolak("Siklus Bencana belum diaktifkan"); throw e; }
+}
+
 const TOOLS = [
   {nama: "titik_api_terkini", deskripsi: "Titik panas (hotspot) satelit di Indonesia dalam 24 atau 72 jam terakhir, terurut dari daya api (FRP, megawatt) terbesar. Bisa disaring per provinsi dan kabupaten/kota. Sumber NASA FIRMS (MODIS, VIIRS S-NPP, VIIRS NOAA-20), diperbarui tiap 3 jam. Titik panas adalah indikasi, belum tentu kebakaran.",
     skema: {properties: {prov: P_PROV, kab: {type: "string", maxLength: 80, description: "Nama kabupaten/kota persis (tak peka huruf besar), mis. Kapuas."}, jam: {type: "integer", enum: [24, 72], default: 24, description: "Rentang jam ke belakang dari waktu data terakhir: 24 atau 72."}, limit: P_LIMIT(200, 50)}}, jalan: titikApi},
@@ -202,6 +216,8 @@ const TOOLS = [
     skema: {required: ["id"], properties: {id: P_IDDOK, pasal: {type: "string", maxLength: 60, description: "Label segmen persis atau nomornya, mis. 'Pasal 5' atau '5'."}}}, jalan: bacaPeraturan},
   {nama: "relasi_peraturan_bnpb", deskripsi: "Relasi satu peraturan BNPB: dasar hukum (mengingat), yang dicabut/diganti/diubah, dan peraturan lain yang merujuknya (masuk). Berguna memeriksa apakah suatu peraturan masih berlaku. Sebut id dokumen saat mengutip.",
     skema: {required: ["id"], properties: {id: P_IDDOK}}, jalan: relasiPeraturan},
+  {nama: "kejadian_resmi", deskripsi: "Ringkasan resmi kejadian bencana dari Buku Besar Kejadian Siklus Bencana, hanya yang sudah dipublikasikan Koordalops: jenis, wilayah, tanggal mulai, fase, ringkasan, dan label keyakinan. Tanpa id: daftar terbaru. Tidak memuat paparan rinci atau nama korban. Sebut label_keyakinan saat menjawab.",
+    skema: {properties: {id: {type: "string", pattern: "^KJ-\\d{4}-[0-9A-HJKMNP-TV-Z]{8}$", maxLength: 16, description: "ID kejadian, mis. KJ-2026-9A2WGN3G."}, limit: P_LIMIT(20, 5)}}, jalan: kejadianResmi},
   {nama: "rumah_rusak", cakupan: "rumah_rusak", deskripsi: "Laporan rumah rusak per rumah (berat/sedang/ringan), hanya yang berstatus sah, terbaru dulu. Diinput tim lapangan; tanpa pelapor, foto, dan catatan bebas; koordinat dibulatkan 4 desimal (sekitar 11 m). Butuh kunci API bercakupan rumah_rusak.",
     skema: {properties: {bencana: {type: "string", pattern: "^[a-z0-9_]{2,30}$", description: "Id bencana, mis. banjir, karhutla."}, prov: P_PROV, kab: {type: "string", maxLength: 80, description: "Nama kabupaten/kota persis."}, dari: P_TGL("Tanggal kejadian awal YYYY-MM-DD."), sampai: P_TGL("Tanggal kejadian akhir YYYY-MM-DD."), limit: P_LIMIT(100, 50)}}, jalan: rumahRusak},
   {nama: "rumah_rusak_rekap", cakupan: "rumah_rusak", deskripsi: "Rekap jumlah rumah rusak berat/sedang/ringan per kabupaten/kota untuk rentang tanggal (bawaan hari ini WIB, maksimal 366 hari), hanya status sah. Butuh kunci API bercakupan rumah_rusak.",

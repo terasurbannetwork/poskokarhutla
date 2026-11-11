@@ -2,6 +2,8 @@
 
 Tiap kejadian arsip i: keluaran model m_i, pengamatan o_i. g_i = ln(m_i / o_i) hanya bila m_i > 0 dan o_i > 0; selain itu dicatat `tak_dihitung`.
 bias = rerata g_i; faktor = exp(akar(rerata g_i^2)); cakupan = jumlah i dengan bawah_i <= o_i <= atas_i, dibagi n (yang dihitung). bawah/atas bawaan m/PITA dan m x PITA.
+Cakupan memakai rentang gabungan PAGER dan ITB (bawah = terendah, atas = tertinggi keduanya) bila pasangan dari keduanya: kirim bawah/atas eksplisit; tanpa itu pita model tunggal.
+ASAL PENGAMATAN: dari_kalibrasi mengukur model kerapuhan sendiri (public/gempa/kerusakan.js) terhadap korban jiwa 8 gempa yang ditulis dari ingatan, belum dicocokkan ke halaman sumber, dan pengalinya disetel pada 8 gempa yang sama (IN-SAMPLE, bias hampir nol karena disetel). Ini BUKAN uji balik PAGER atau ITB; keduanya belum diuji balik.
 Tiap sumber pengamatan (DIBI meninggal, rumah_rusak, ...) diuji TERPISAH, tidak digabung. TIDAK ada ambang "lolos" (U18): angka tampil apa adanya, label tetap estimasi-model.
 Pakai: python3 -I scripts/siklus/ujibalik.py uji | kalibrasi
 """
@@ -48,8 +50,10 @@ def per_sumber(sumber):
 
 
 def dari_kalibrasi(jalur=KAL):
-    """8 gempa kerak di kalibrasi_kerusakan.json: model lawan korban jiwa pengamatan (sumber BNPB/USGS)."""
-    return uji_balik([{"id": k["id"], "m": k["model"], "o": k["jiwa"]} for k in json.load(open(jalur, encoding="utf-8"))["kejadian"]])
+    """8 gempa kerak di kalibrasi_kerusakan.json: model kerapuhan sendiri lawan korban jiwa (ditulis dari ingatan). in_sample True; bias tidak dikeluarkan (disetel nol pada data yang sama)."""
+    r = uji_balik([{"id": k["id"], "m": k["model"], "o": k["jiwa"]} for k in json.load(open(jalur, encoding="utf-8"))["kejadian"]])
+    r.pop("bias")
+    return {**r, "in_sample": True}
 
 
 def _uji():
@@ -73,6 +77,9 @@ def _uji():
     # data nyata: 8 gempa kalibrasi, tiga pertama memberi n yang sama dengan berkas
     k = dari_kalibrasi()
     assert k["n"] == 8 and k["faktor"] > 1 and k["cakupan"][1] == 8, k
+    assert k["in_sample"] is True and "bias" not in k, "in-sample berlabel, bias tidak keluar"
+    # rentang gabungan PAGER dan ITB: o di luar pita PAGER tapi di dalam gabungan dihitung dalam
+    assert uji_balik([{"m": 10, "o": 200, "bawah": 2.5, "atas": 300}])["cakupan"] == [1, 1] and uji_balik([{"m": 10, "o": 200}])["cakupan"] == [0, 1]
     print("ujibalik: uji hijau")
 
 

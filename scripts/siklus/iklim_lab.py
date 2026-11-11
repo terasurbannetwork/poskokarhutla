@@ -125,7 +125,9 @@ def ringkas(deltas, relatifs=()):
     if not deltas:
         return None
     r = [x for x in relatifs if x is not None]
-    return {"median": persentil(deltas, .5), "p17": persentil(deltas, .17), "p83": persentil(deltas, .83), "n_model": len(deltas),
+    n = len(deltas)
+    # ambang usulan (asumsi-kebijakan, belum disetujui pemilik): rentang p17-p83 baru tampil dari 5 model, dianggap andal dari 10
+    return {"median": persentil(deltas, .5), "p17": persentil(deltas, .17) if n >= 5 else None, "p83": persentil(deltas, .83) if n >= 5 else None, "rentang_andal": n >= 10, "n_model": n,
             "n_model_positif": sum(1 for d in deltas if d > 0), "relatif_median": persentil(r, .5) if r else None}
 
 
@@ -167,7 +169,7 @@ def muka_laut(horizon, skenario, psmsl=None):
     if v is None:
         return {"status": "menunggu", "median": None, "rentang": None, "satuan": "m", "alasan": "horizon tidak ada di tabel AR6; menunggu rekaman Zenodo dibaca",
                 "yakin": "hipotesis"}
-    return {"median": v[0], "rentang": [v[1], v[2]], "satuan": "m", "titik": "global" if psmsl is None else psmsl, "sumber": "ar6-slr-zenodo",
+    return {"median": v[0], "rentang": [v[1], v[2]], "satuan": "m", "titik": "global" if psmsl is None else psmsl, "sumber": "AR6 WG1 Bab 9 lewat tabel HKO (R3), nilai tahun 2050", "titik_waktu": "2050",
             "dasar": "1995-2014", "yakin": "hipotesis", "catatan": "keluaran meter, bukan area tergenang; penurunan muka tanah tidak dihitung"}
 
 
@@ -279,6 +281,10 @@ def _uji():
     # UJ-F6-04 label dan muka laut
     s = muka_laut("2050", "ssp245")
     assert s["median"] == .20 and s["rentang"] == [.17, .26] and s["yakin"] == "hipotesis" and "tidak dihitung" in s["catatan"]
+    assert s["sumber"] == "AR6 WG1 Bab 9 lewat tabel HKO (R3), nilai tahun 2050" and s["titik_waktu"] == "2050"
+    r4, r5, r10 = ringkas([1, 2, 3, 4]), ringkas([1, 2, 3, 4, 5]), ringkas(list(range(10)))
+    assert r4["p17"] is None and r4["p83"] is None and r4["median"] == 2.5 and not r4["rentang_andal"], "n < 5: rentang menunggu"
+    assert r5["p17"] is not None and not r5["rentang_andal"] and r10["rentang_andal"], "n >= 10 andal (ambang usulan)"
     assert muka_laut("2050", "ssp585")["rentang"] == [.20, .29]
     w = muka_laut("2030", "ssp245")
     assert w["status"] == "menunggu" and w["median"] is None and w["yakin"] == "hipotesis"

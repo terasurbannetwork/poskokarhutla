@@ -43,7 +43,7 @@ for (const l of LAYAR) {
 }
 
 // Layar yang membangun kartunya lewat kartu() dari inti.js (sudah di LAYAR): tak boleh membuat kepala bagian sendiri.
-for (const skrip of ['public/siklus/kaji.js']) {
+for (const skrip of ['public/siklus/kaji.js', 'public/siklus/pulih.js', 'public/siklus/renkon.js', 'public/siklus/gladi.js', 'public/siklus/masadepan.js', 'public/siklus/pintu.js', 'public/siklus/registri.js']) {
   test(`${skrip} memakai kartu() dari inti.js, tanpa kepala sendiri`, () => {
     const js = baca(skrip)
     assert.match(js, /import\s*\{[^}]*\bkartu\b[^}]*\}\s*from\s*"\.\/inti\.js"/, 'harus mengimpor kartu dari ./inti.js')

@@ -90,16 +90,18 @@ function blokModel(rk, ringkas) {
   const m = ringkas?.model ?? {}, pg = rentangSah(m.pager), itb = rentangSah(m.itb), maks = Math.max(...[rk, pg, itb].map(rentangSah).filter(Boolean).map(x => x[1]), 0);
   if (!pg && !itb) return null;
   const kelas = ringkas?.kelas ? ` Kelas siaga PAGER: ${ringkas.kelas}.` : "";
+  const tanpa = bilangan(ringkas?.jumlah_kec_tanpa_mmi) && ringkas.jumlah_kec_tanpa_mmi > 0 ? ` ${angka(ringkas.jumlah_kec_tanpa_mmi)} kecamatan tidak punya nilai MMI dari kontur (di luar cincin tertutup atau terpotong tepi grid) dan tidak ikut dihitung.` : "";
   return wadah("Dasar model, berdampingan", h("div", {class: "sk-ber"},
     h("div", {}, h("small", {}, "PAGER"), h("b", {}, rentangTeks(pg) ?? "menunggu"), bilah(pg, maks, "PAGER"), pil("estimasi-model", {}, "Koefisien Indonesia (fatality.xml v2.2), pita kali dan bagi 4 (asumsi kebijakan)")),
     h("div", {}, h("small", {}, "ITB"), h("b", {}, itb ? angka(itb[0]) : "menunggu"), bilah(itb, maks, "ITB"), pil("estimasi-model", {}, "Model ITB Indonesia, satu nilai tanpa pita"))),
-  para(`Dua model tidak digabung dan tidak dirata-rata. Rentang di atas memakai batas bawah terendah dan batas atas tertinggi keduanya.${kelas} Tidak dihitung: tsunami dan likuefaksi.`));
+  para(`Dua model tidak digabung dan tidak dirata-rata. Rentang di atas memakai batas bawah terendah dan batas atas tertinggi keduanya.${kelas} Tidak dihitung: tsunami dan likuefaksi.${tanpa}`));
 }
 
 function blokGalat(g) {
   if (!g || !bilangan(g.kalibrasi) || !bilangan(g.faktor_loo)) return wadah("Galat kalibrasi", para("Galat kalibrasi belum tertulis untuk kaji ini."), pil("menunggu", {ditunggu: "galat kalibrasi"}));
   const pita = bilangan(g.pita) ? g.pita : (typeof KONST !== "undefined" ? KONST.PITA : 4), lewat = g.faktor_loo > pita;
-  return wadah("Galat kalibrasi", para(`Kalibrasi ${kom(g.kalibrasi)}, faktor LOO ${kom(g.faktor_loo)}: model dapat meleset sampai ${angka(Math.round(g.faktor_loo))} kali (lebih besar atau lebih kecil dari pengamatan), diuji pada ${angka(g.n_gempa) ?? "beberapa"} gempa kerak.`),
+  const cak = Array.isArray(g.cakupan) && bilangan(g.cakupan[0]) && bilangan(g.cakupan[1]) ? ` Pengamatan jatuh di dalam pita model pada ${angka(g.cakupan[0])} dari ${angka(g.cakupan[1])} gempa, jadi cakupan rentang rendah.` : "";
+  return wadah("Galat kalibrasi", para(`Ini galat model kerapuhan sendiri, bukan PAGER atau ITB; PAGER dan ITB belum diuji balik. Kalibrasi ${kom(g.kalibrasi)}, faktor LOO ${kom(g.faktor_loo)}: model dapat meleset sampai ${angka(Math.round(g.faktor_loo))} kali (lebih besar atau lebih kecil dari pengamatan), diuji pada ${angka(g.n_gempa) ?? "beberapa"} gempa kerak, pengalinya disetel pada gempa yang sama (in-sample).${cak}`),
     lewat ? h("p", {class: "sk-para", role: "note"}, `Peringatan: faktor ${kom(g.faktor_loo)} melebihi pita ${kom(pita)} pada rentang, jadi rentang bisa terlalu sempit. Rentang tidak dilebarkan karena cara menerapkannya belum bersumber.`) : null,
     pil("hipotesis", {}, "Uji balik belum punya ambang lolos, jadi angka dibaca sebagai hipotesis kerja"));
 }

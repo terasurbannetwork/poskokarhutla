@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS sk_harga (
   oleh TEXT NOT NULL CHECK (length(oleh) BETWEEN 1 AND 64),
   dummy INTEGER NOT NULL DEFAULT 0 CHECK (dummy IN (0, 1))
 );
-CREATE INDEX IF NOT EXISTS sk_harga_cari ON sk_harga (sektor, tingkat, tahun DESC, kab4);
+CREATE INDEX IF NOT EXISTS sk_harga_cari ON sk_harga (sektor, tahun DESC, kab4);
 CREATE INDEX IF NOT EXISTS sk_harga_dummy ON sk_harga (id) WHERE dummy = 1;
 
 CREATE TABLE IF NOT EXISTS sk_jitupasna (

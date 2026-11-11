@@ -83,7 +83,8 @@ uji("UJ-F4-09: hitung memakai fungsi siklus_hitung: RB 10 x 100 jt + RS 20 x 50 
   assert.equal(dua.j.hitung.yakin, "asumsi-kebijakan"); assert.equal(dua.j.hitung.indeks, "menunggu");
   assert.equal(dua.j.hitung.stimulan.nilai, 1650 * J, "10 RB, 20 RS, 30 RR = Rp1.650 juta"); assert.equal(dua.j.hitung.stimulan.yakin, "asumsi-kebijakan");
   assert.deepEqual(dua.j.hitung.penanda.hitung_ganda, []); assert.ok(dua.j.hitung.penanda.kosong.includes("ekonomi"));
-  assert.equal(dua.j.hitung.peta.permukiman, 2600 * J + 6 * J, "kerugian air_minum 2 jt x 3 bulan ikut sektor perumahan"); assert.equal(dua.j.hitung.peta.belum_terpeta, 0);
+  assert.equal(dua.j.hitung.peta.permukiman, 2600 * J, "peta lima sektor memakai V_s saja: kerugian air_minum 6 jt TIDAK ikut (ALG F4.5)"); assert.equal(dua.j.hitung.peta.belum_terpeta, null, "tanpa angka = null, bukan 0");
+  assert.ok(dua.j.hitung.peta.menunggu.includes("ekonomi") && !dua.j.hitung.peta.menunggu.includes("permukiman")); assert.equal(dua.j.hitung.ragu, false);
   const rb = await DB.prepare("SELECT nilai_rp, harga_id FROM sk_jitupasna_baris WHERE klien_id = 'klien-aaaa01'").first(); assert.equal(rb.nilai_rp, 1000 * J); assert.ok(rb.harga_id, "harga dibekukan");
   assert.equal((await DB.prepare("SELECT kab4 FROM sk_harga WHERE id = ?").bind(rb.harga_id).first()).kab4, "3201");
   const rugi = await DB.prepare("SELECT nilai_rp, harga_id FROM sk_jitupasna_baris WHERE klien_id = 'klien-aaaa03'").first(); assert.equal(rugi.nilai_rp, 6 * J); assert.equal(rugi.harga_id, null);
@@ -104,6 +105,7 @@ uji("UJ-F4-09: status Jitupasna: dihitung ke ditinjau ke final; lompat 409; mund
   assert.equal((await POST(KO, `/pulih/${jp}/status`, {ke: "dibuka"})).s, 400);
   const ulang = await POST(PD, `/pulih/${jp}/hitung`, {tahun_harga: 2026}); assert.equal(ulang.s, 200, ulang.t);
   assert.equal((await POST(KO, `/pulih/${jp}/status`, {ke: "ditinjau"})).s, 200); assert.equal((await POST(KO, `/pulih/${jp}/status`, {ke: "final"})).s, 200);
+  assert.equal((await POST(KO, `/pulih/${jp}/status`, {ke: "ditinjau"})).s, 409, "dari final ke ditinjau ditolak");
   assert.equal((await POST(KO, `/pulih/${jp}/status`, {ke: "pengumpulan", alasan: "mau ubah"})).s, 409, "final tidak mundur");
   assert.equal((await POST(PD, `/pulih/${jp}/hitung`, {tahun_harga: 2026})).s, 409);
   assert.equal((await POST(PD, `/pulih/${jp}/baris`, {baris: [rusak("perumahan", "rr", 1)]})).s, 409);
@@ -127,7 +129,7 @@ uji("UJ-F4-09: R3P hanya dari Jitupasna final; KO membuat, versi baru tidak meni
   assert.equal(await n("sk_jejak", `obyek = 'r3p' AND obyek_id = '${r.j.id}' AND aksi = 'buat'`), 1);
 });
 
-uji("UJ-F4-09: kegiatan R3P: lima sektor, tautan pemulihan ada atau 404, tautan berpasangan, hanya saat draf atau diusulkan, hanya KO", async () => {
+uji("UJ-F4-09: kegiatan R3P: lima sektor, tautan pemulihan ada atau 404, tautan berpasangan, hanya saat draf, hanya KO", async () => {
   const r3p = (await DB.prepare("SELECT id FROM sk_r3p").first()).id;
   const pem = id16(); await DB.prepare("INSERT INTO pemulihan (id, jenis, prov, kab, target, realisasi, satuan, status, dibuat, diubah, lat, lon, pelaksana) VALUES (?, 'huntara', '32', 'Bogor', 100, 40, 'unit', 'berjalan', 1, ?, -6.5, 106.8, 'PT Rahasia')").bind(pem, Date.now()).run();
   const k = (o = {}) => POST(KO, `/r3p/${r3p}/kegiatan`, {sektor: "permukiman", nama: "Huntara Bogor", target: 100, satuan: "unit", nilai_rp: 800 * J, ...o});
@@ -150,7 +152,7 @@ uji("UJ-F4-09 dan UJ-KP-07: status R3P maju satu langkah; setuju hanya PM dan ha
   assert.equal((await st(KO, {ke: "disetujui_pm"})).s, 400, "disetujui_pm tidak lewat status"); assert.equal((await st(KO, {ke: "berjalan"})).s, 409); assert.equal((await st(KO, {ke: "x"})).s, 400);
   assert.equal((await st(KO, {ke: "diusulkan"})).s, 200);
   assert.equal((await DB.prepare("SELECT total_rp FROM sk_r3p WHERE id = ?").bind(r3p).first()).total_rp, 1000 * J, "total dari dua kegiatan bernilai (800 jt + 200 jt)");
-  assert.equal((await POST(KO, `/r3p/${r3p}/kegiatan`, {sektor: "sosial", nama: "Sekolah darurat"})).s, 201, "kegiatan masih boleh saat diusulkan");
+  assert.equal((await POST(KO, `/r3p/${r3p}/kegiatan`, {sektor: "sosial", nama: "Sekolah darurat"})).s, 409, "kegiatan hanya saat draf: sesudah diusulkan, total_rp sudah beku");
   assert.equal((await POST(KO, `/r3p/${r3p}/setuju`, {})).s, 403, "KO tak punya hak setuju");
   assert.equal((await POST(PD, `/r3p/${r3p}/setuju`, {})).s, 403); assert.equal((await POST(SA, `/r3p/${r3p}/setuju`, {})).s, 403, "Super Admin bukan pimpinan"); assert.equal((await POST(BP, `/r3p/${r3p}/setuju`, {})).s, 403); assert.equal((await POST(TAMU, `/r3p/${r3p}/setuju`, {})).s, 401);
   assert.equal((await DB.prepare("SELECT status, disetujui_oleh FROM sk_r3p WHERE id = ?").bind(r3p).first()).disetujui_oleh, null);

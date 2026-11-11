@@ -13,8 +13,10 @@ import {RUTE_SIKLUS as RUTE_KEJADIAN} from "./siklus_kejadian.js";
 import {RUTE_SIKLUS_PAPARAN} from "./siklus_paparan.js";
 import {RUTE_SIKLUS_KAJI} from "./siklus_kaji.js";
 import {RUTE_SIKLUS_PULIH} from "./siklus_pulih.js";
+import {RUTE_SIKLUS_RENKON} from "./siklus_renkon.js";
+import {RUTE_SIKLUS_PINTU} from "./siklus_pintu.js";
 import {RUTE_SIKLUS_DUMMY} from "./siklus_dummy.js";
-const RUTE_SIKLUS = {...RUTE_KEJADIAN, ...RUTE_SIKLUS_PAPARAN, ...RUTE_SIKLUS_KAJI, ...RUTE_SIKLUS_PULIH, ...RUTE_SIKLUS_DUMMY};
+const RUTE_SIKLUS = {...RUTE_KEJADIAN, ...RUTE_SIKLUS_PAPARAN, ...RUTE_SIKLUS_KAJI, ...RUTE_SIKLUS_PULIH, ...RUTE_SIKLUS_RENKON, ...RUTE_SIKLUS_PINTU, ...RUTE_SIKLUS_DUMMY};
 
 const JENIS_BPBD = ["pemprov", "pemkab", "pemkot"], PERAN_STAF = ["pusdalops", "koordalops", "pimpinan"];
 const ID_KJ = "KJ-\\d{4}-[0-9A-HJKMNP-TV-Z]{8}", ID16 = "[0-9a-f]{16}", POLA = {id: ID_KJ, sid: ID16};
@@ -75,8 +77,12 @@ async function layaniApi(env, req, url, ctx, jalur, viaInstansi) {
   }
   let h = null;
   if (!sistem && !tamu) {
-    h = await hakSk(env, req, kini, viaInstansi); if (h instanceof Response) return h;
-    if (!c.def.izin.some(t => LOLOS[t]?.(h))) return gagal(403, "peran tidak berhak atas rute ini");
+    h = await hakSk(env, req, kini, viaInstansi);
+    if (c.def.izin.includes("opsional")) { if (h instanceof Response) h = null; }   // pintu dan masa depan: tamu atau sesi tanpa hak = WG (kartu dan ringkasan publik)
+    else {
+      if (h instanceof Response) return h;
+      if (!c.def.izin.some(t => LOLOS[t]?.(h))) return gagal(403, "peran tidak berhak atas rute ini");
+    }
   }
   try {
     const r = await c.def.f({env, req, url, ctx, kini, h, p: c.p, bp: viaInstansi});

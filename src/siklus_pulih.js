@@ -7,7 +7,7 @@ import {tolak, teks, tglSah} from "./pusdalops_umum.js";
 import * as H from "./hak.js";
 import {NAMA_KAB4} from "./siklus_kab.js";
 import {RE_KJ, nilaiKerusakan, nilaiKerugian, petaLimaSektor, tigaPenanda, stimulan, sisa90, persenRealisasi, macet, SEKTOR_R3P, MENUNGGU} from "./siklus_hitung.js";
-import {bodi, masukan, ujiLaju, NO, parse, bersihNama, dalamBP, lihat, utkBP, kab4Sah, polos} from "./siklus_kejadian.js";
+import {bodi, masukan, ujiLaju, NO, parse, bersihNama, dalamBP, lihat, lihatTulis, utkBP, kab4Sah, polos} from "./siklus_kejadian.js";
 import {rekapTingkat} from "./rumah_rusak.js";
 import {kemajuanPemulihan} from "./pemulihan.js";
 
@@ -21,9 +21,9 @@ const bersih = (v, nama, maks, min = 1) => { if (v == null || v === "") return n
 const nilaiJp = r => ({...r, hitung: parse(r.hitung)});
 
 /* Jitupasna yang boleh dilihat pemanggil, atau null (404 seragam: tidak ada, dummy bagi akun nyata, di luar lingkup BP) */
-async function jpBoleh(c, id) {
+async function jpBoleh(c, id, tulis = false) {
   const r = await H.skJitupasnaById(c.env, c.h.pelaku, id);
-  return lihat(c, r) && dalamBP(c, [r.kab4]) ? r : null;
+  return (tulis ? lihatTulis : lihat)(c, r) && dalamBP(c, [r.kab4]) ? r : null;
 }
 
 /* ================================================================ baca */
@@ -33,7 +33,7 @@ async function daftarPulih(c) {
   const k = await H.skKejadianRingkas(c.env, c.h.pelaku, id);
   if (!lihat(c, k)) return NO();
   const baris = (await H.skJitupasnaDaftar(c.env, c.h.pelaku, id, c.h.dummyOk)).filter(r => dalamBP(c, [r.kab4]));
-  if (c.h.tipe === "bp" && !baris.length && !dalamBP(c, [k.kab4])) return NO();
+  if (c.h.tipe === "bp" && !baris.length) return NO();   // tidak ada Jitupasna di lingkup = sama dengan tidak ada
   return json({kejadian_id: id, baris: baris.map(r => utkBP(c, nilaiJp(r)))});
 }
 
@@ -79,7 +79,7 @@ async function pulihBaru(c) {
     if (typeof b.kejadian_id !== "string" || !RE_KJ.test(b.kejadian_id)) tolak("kejadian_id wajib ID kejadian KJ-...");
     return {kejadian_id: b.kejadian_id, kab4: kab4Sah(b.kab4), tim_sk: bersih(b.tim_sk, "tim_sk", 120, 1)};
   });
-  const k = await H.skKejadianRingkas(c.env, p, v.kejadian_id); if (!lihat(c, k)) return NO();
+  const k = await H.skKejadianRingkas(c.env, p, v.kejadian_id); if (!lihatTulis(c, k)) return NO();
   const kabs = await H.skKejadianKab(c.env, p, v.kejadian_id);
   if (!(kabs.length ? kabs : [k.kab4]).includes(v.kab4)) return gagal(400, "kab4 bukan kabupaten kejadian ini");
   if (k.fase !== "tanggap" && k.fase !== "transisi") return gagal(409, `Jitupasna dibuka saat kejadian tanggap atau transisi (sekarang ${k.fase})`);
@@ -112,7 +112,7 @@ function barisSah(o, i) {
 async function barisTulis(c) {
   const b = await bodi(c, 256 * 1024), p = c.h.pelaku;
   const v = masukan(() => { if (!Array.isArray(b.baris) || b.baris.length < 1 || b.baris.length > PER_KIRIM) tolak(`baris harus larik 1-${PER_KIRIM}`); return b.baris.map(barisSah); });
-  const jp = await jpBoleh(c, c.p.sid); if (!jp) return NO();
+  const jp = await jpBoleh(c, c.p.sid, true); if (!jp) return NO();
   if (jp.status !== "dibuka" && jp.status !== "pengumpulan") return gagal(409, `baris hanya diterima saat dibuka atau pengumpulan (sekarang ${jp.status})`);
   if ((await H.skBarisHitung(c.env, p, jp.id)) + v.length > MAKS_BARIS) return gagal(409, `satu Jitupasna paling banyak ${MAKS_BARIS} baris`);
   for (let i = 0; i < Math.ceil(v.length / 20); i++) { const lj = await ujiLaju(c, "sk.baris", 30); if (lj) return lj; }
@@ -130,13 +130,14 @@ export function hitungJitupasna(baris, hargaRows, tahun, kini) {
   const hf = (s, t) => harga.get(s + "|" + t)?.harga_rp ?? null;
   const rusak = baris.filter(r => r.jenis === "rusak"), rugi = baris.filter(r => r.jenis === "rugi");
   const ker = nilaiKerusakan(rusak, hf), kru = nilaiKerugian(rugi);
-  const perSektor = {}; for (const s of sektor) { const a = ker.per[s]; perSektor[s] = a?.menunggu ? null : (a?.nilai ?? 0) + (kru.per[s] ?? 0); }
+  const perSektor = {}; for (const s of sektor) perSektor[s] = ker.per[s]?.nilai ?? null;   // peta lima sektor = V_s saja, tanpa kerugian (ALG F4.5); tanpa angka = null (menunggu)
+  const penanda = tigaPenanda({kerusakan: ker, barisRugi: rugi, sektorTerisi: sektor});
   const unitPerumahan = t => rusak.filter(r => r.sektor === "perumahan" && r.tingkat === t).reduce((a, r) => a + r.unit, 0);
   const stim = rusak.some(r => r.sektor === "perumahan") ? stimulan({rb: unitPerumahan("rb"), rs: unitPerumahan("rs"), rr: unitPerumahan("rr")}) : stimulan({});
   const hasil = {tahun_harga: tahun, dihitung: kini, yakin: "asumsi-kebijakan", indeks: MENUNGGU,
     kerusakan: {total: ker.total, menunggu: ker.menunggu, per: Object.fromEntries(Object.entries(ker.per).map(([s, a]) => [s, {nilai: a.nilai, menunggu: a.menunggu, monoton: a.monoton.ok, wajar: a.wajar}]))},
-    kerugian: {total: kru.total, per: kru.per}, peta: petaLimaSektor(perSektor), penanda: tigaPenanda({kerusakan: ker, barisRugi: rugi, sektorTerisi: sektor}), stimulan: stim,
-    total: ker.total == null ? null : ker.total + (kru.total ?? 0)};
+    kerugian: {total: kru.total, per: kru.per, dibuang: kru.dibuang, menunggu: kru.menunggu}, peta: petaLimaSektor(perSektor), penanda, stimulan: stim,
+    total: ker.total == null || kru.menunggu ? null : ker.total + (kru.total ?? 0), ragu: penanda.hitung_ganda.length > 0};   // ragu: komponen kerugian yang sama di dua sektor atau lebih, total mungkin berlebih
   const nilai = baris.map(r => {
     const h = r.jenis === "rusak" ? harga.get(r.sektor + "|" + r.tingkat) : null;
     return [r.id, h?.id ?? null, r.jenis === "rugi" ? r.arus_rp * r.bulan : h ? Math.round(r.unit * h.harga_rp) : null];
@@ -147,7 +148,7 @@ export function hitungJitupasna(baris, hargaRows, tahun, kini) {
 async function hitungTulis(c) {
   const b = await bodi(c), p = c.h.pelaku;
   const tahun = masukan(() => int(b.tahun_harga, "tahun_harga", 2000, 2100));
-  const jp = await jpBoleh(c, c.p.sid); if (!jp) return NO();
+  const jp = await jpBoleh(c, c.p.sid, true); if (!jp) return NO();
   if (jp.status !== "pengumpulan" && jp.status !== "dihitung") return gagal(409, `hitung hanya dari pengumpulan atau dihitung (sekarang ${jp.status})`);
   const baris = await H.skBarisDaftar(c.env, p, jp.id);
   if (!baris.length) return gagal(409, "belum ada baris untuk dihitung");
@@ -165,7 +166,7 @@ const GESER_JP = {pengumpulan: ["dibuka", "dihitung", "ditinjau"], ditinjau: ["d
 async function statusJp(c) {
   const b = await bodi(c), p = c.h.pelaku;
   const v = masukan(() => { if (!Object.hasOwn(GESER_JP, b.ke)) tolak("ke harus pengumpulan, ditinjau, atau final (dihitung lewat rute hitung)"); return {ke: b.ke, alasan: b.alasan == null || b.alasan === "" ? null : bersih(b.alasan, "alasan", 200, 3)}; });
-  const jp = await jpBoleh(c, c.p.sid); if (!jp) return NO();
+  const jp = await jpBoleh(c, c.p.sid, true); if (!jp) return NO();
   if (!GESER_JP[v.ke].includes(jp.status)) return gagal(409, `status ${jp.status} tidak bisa menjadi ${v.ke}`);
   if (v.ke === "pengumpulan" && jp.status !== "dibuka" && !v.alasan) return gagal(400, "alasan wajib untuk mundur ke pengumpulan");
   const lj = await ujiLaju(c, "sk.pulihstatus", 60); if (lj) return lj;
@@ -190,8 +191,8 @@ async function hargaBaru(c) {
 }
 
 /* ================================================================ R3P */
-async function r3pBoleh(c, id) {
-  const r = await H.skR3pById(c.env, c.h.pelaku, id); if (!lihat(c, r)) return null;
+async function r3pBoleh(c, id, tulis = false) {
+  const r = await H.skR3pById(c.env, c.h.pelaku, id); if (!(tulis ? lihatTulis : lihat)(c, r)) return null;
   const jp = await H.skJitupasnaById(c.env, c.h.pelaku, r.jitupasna_id);
   return jp && dalamBP(c, [jp.kab4]) ? {r, jp} : null;
 }
@@ -199,7 +200,7 @@ async function r3pBoleh(c, id) {
 async function r3pBaru(c) {
   const b = await bodi(c), p = c.h.pelaku;
   const jpId = masukan(() => { if (typeof b.jitupasna_id !== "string" || !RE_ID16.test(b.jitupasna_id)) tolak("jitupasna_id wajib (16 heks)"); return b.jitupasna_id; });
-  const jp = await jpBoleh(c, jpId); if (!jp) return NO();
+  const jp = await jpBoleh(c, jpId, true); if (!jp) return NO();
   if (jp.status !== "final") return gagal(409, `R3P hanya dari Jitupasna final (sekarang ${jp.status})`);
   const lama = await H.skR3pDariJitupasna(c.env, p, jp.id);
   if (lama.length && lama[0].status === "draf") return gagal(409, "sudah ada draf R3P untuk Jitupasna ini");
@@ -219,7 +220,7 @@ async function statusR3p(c) {
     if (!tglSah(b.tgl_keputusan)) tolak("tgl_keputusan wajib YYYY-MM-DD");
     return {ke: b.ke, no_keputusan: bersih(b.no_keputusan, "no_keputusan", 120, 1) ?? tolak("no_keputusan wajib"), tgl_keputusan: b.tgl_keputusan, penandatangan: bersih(b.penandatangan, "penandatangan", 120, 2)};
   });
-  const rj = await r3pBoleh(c, c.p.sid); if (!rj) return NO();
+  const rj = await r3pBoleh(c, c.p.sid, true); if (!rj) return NO();
   const {r} = rj;
   if (r.status !== LANGKAH_R3P[v.ke]) return gagal(409, `status ${r.status} tidak bisa menjadi ${v.ke}`);
   const lj = await ujiLaju(c, "sk.r3pstatus", 120); if (lj) return lj;
@@ -229,7 +230,7 @@ async function statusR3p(c) {
 }
 
 async function setuju(c) {
-  const p = c.h.pelaku, rj = await r3pBoleh(c, c.p.sid); if (!rj) return NO();
+  const p = c.h.pelaku, rj = await r3pBoleh(c, c.p.sid, true); if (!rj) return NO();
   const {r} = rj;
   if (r.status !== "diusulkan") return gagal(409, `tanda setuju hanya dari diusulkan (sekarang ${r.status})`);
   if (r.oleh === c.h.oleh) return gagal(403, "pembuat draf tidak boleh memberi tanda setuju atas drafnya sendiri");
@@ -249,9 +250,9 @@ async function kegiatanBaru(c) {
     return {sektor: b.sektor, nama: bersih(b.nama, "nama", 200, 3) ?? tolak("nama wajib"), target: b.target == null ? null : num(b.target, "target", 0, 1e9), satuan: bersih(b.satuan, "satuan", 20, 1),
       nilai_rp: b.nilai_rp == null ? null : int(b.nilai_rp, "nilai_rp", 0, 1e14), tautan_jenis: tj, tautan_id: ti};
   });
-  const rj = await r3pBoleh(c, c.p.sid); if (!rj) return NO();
+  const rj = await r3pBoleh(c, c.p.sid, true); if (!rj) return NO();
   const {r} = rj;
-  if (r.status !== "draf" && r.status !== "diusulkan") return gagal(409, `kegiatan hanya ditambah saat draf atau diusulkan (sekarang ${r.status})`);
+  if (r.status !== "draf") return gagal(409, `kegiatan hanya ditambah saat draf (sekarang ${r.status})`);
   if (v.tautan_jenis && !(await H.skTautanAda(c.env, v.tautan_jenis, v.tautan_id))) return gagal(404, "tautan_id tidak ada");
   const lj = await ujiLaju(c, "sk.kegiatan", 120); if (lj) return lj;
   const id = acak(8);

@@ -117,6 +117,9 @@ uji("UJ-F4-03: h_RS 120 jt > h_RB 100 jt = bendera monoton (tidak diperbaiki); h
 uji("UJ-F4-04: kerugian arus x bulan; hitung ganda (air_minum di dua sektor), cakupan (ekonomi kosong), kewajaran (V_s melebihi semua unit hancur)", () => {
   const rugi = [{sektor: "perumahan", komponen: "air_minum", arus_rp: 2 * JT, bulan: 3}, {sektor: "air_sanitasi", komponen: "air_minum", arus_rp: 1 * JT, bulan: 6}, {sektor: "kesehatan", komponen: "obat", arus_rp: JT, bulan: 1}];
   const kru = nilaiKerugian(rugi); assert.deepEqual(kru.per, {perumahan: 6 * JT, air_sanitasi: 6 * JT, kesehatan: JT}); assert.equal(kru.total, 13 * JT); assert.equal(nilaiKerugian([]).total, null);
+  assert.deepEqual([kru.menunggu, kru.dibuang], [false, {}]);
+  const buang = nilaiKerugian([{sektor: "perumahan", arus_rp: 5, bulan: 2}, {sektor: "perumahan", bulan: 3}, {sektor: "kesehatan", arus_rp: 9}, {sektor: "kesehatan", arus_rp: 9, bulan: "3"}]);
+  assert.equal(buang.menunggu, true); assert.deepEqual(buang.dibuang, {perumahan: 1, kesehatan: 2}, "baris tanpa arus_rp atau bulan dihitung per sektor, tidak diam-diam 0"); assert.deepEqual(buang.per, {perumahan: 10});
   const ker = nilaiKerusakan(rumah(10, 20, 30), hRumah);
   const p = tigaPenanda({kerusakan: ker, barisRugi: rugi, sektorTerisi: ["perumahan", "air_sanitasi", "kesehatan"]});
   assert.deepEqual(p.hitung_ganda, [{komponen: "air_minum", sektor: ["air_sanitasi", "perumahan"]}]); assert.deepEqual(p.kosong, ["ekonomi", "lintas_sektor"]); assert.deepEqual(p.tidak_wajar, []);
@@ -129,6 +132,9 @@ uji("UJ-F4-05: peta ke lima sektor; subsektor di luar tabel masuk belum_terpeta;
   assert.deepEqual([r.permukiman, r.infrastruktur, r.ekonomi, r.sosial, r.lintas_sektor, r.belum_terpeta], [100, 75, 15, 7, 3, 11]);
   assert.equal(SEKTOR_R3P.reduce((a, k) => a + r[k], 0) + r.belum_terpeta, r.total); assert.equal(r.total, 211, "null tidak dihitung");
   assert.equal(PETA_SEKTOR.perumahan, "permukiman"); assert.equal(Object.hasOwn(PETA_SEKTOR, "__proto__"), false);
+  assert.deepEqual(r.menunggu, ["sosial"], "hanya sektor tanpa angka atau sebagian: sosial (pendidikan null)");
+  const kosong = petaLimaSektor({perumahan: 100, pertanian: null}); assert.deepEqual([kosong.infrastruktur, kosong.sosial, kosong.lintas_sektor, kosong.belum_terpeta], [null, null, null, null], "sektor tanpa angka = null, bukan 0");
+  assert.deepEqual(kosong.menunggu, ["infrastruktur", "ekonomi", "sosial", "lintas_sektor"]); assert.equal(kosong.total, 100); assert.equal(petaLimaSektor({}).total, null);
   assert.equal(petaLimaSektor({__proto__: null, toString: 5}).belum_terpeta, 5, "kunci mirip bawaan objek tidak lolos sebagai sektor");
 });
 uji("UJ-F4-06: stimulan 10 RB, 20 RS, 30 RR = Rp1.650 juta (asumsi-kebijakan); DTH 100 KK = Rp180 juta; kosong menunggu", () => {
@@ -150,4 +156,59 @@ uji("UJ-F4-08: A 800 jt target 100 realisasi 50, B 200 jt target 10 realisasi 10
   const a = persenRealisasi([{id: "a", nilai: JT, target: 10, realisasi: 15}]); assert.equal(a.per[0].persen, 100); assert.equal(a.per[0].anomali, true);
   assert.equal(persenRealisasi([{id: "a", nilai: null, target: 10, realisasi: 5}]).total, null, "satu nilai kosong: total menunggu");
   assert.equal(macet("2026-08-01", "2026-10-05"), true); assert.equal(macet("2026-08-01", "2026-09-30"), false); assert.equal(macet(null, "2026-10-05"), false);
+});
+
+/* ---------- F5 Renkon Hidup dan Gladi (SK-086): UJ-F5-02 sampai UJ-F5-06 (bagian JS) ---------- */
+import * as F5 from "../../src/siklus_hitung.js";
+uji("UJ-F5-02: kebutuhan dasar Perka 7/2008: J = 1.000, h = 5; Sphere berdampingan; KK kosong menunggu; masukan salah menunggu", () => {
+  const k = F5.kebutuhanDasar({jiwa: 1000, hari: 5}), c = k.komponen, nilai = Object.fromEntries(Object.entries(c).map(([n, x]) => [n, x.nilai]));
+  assert.deepEqual(nilai, {penampungan: 3000, beras: 2000, makan: 10000, energi: 2100, air_bersih: 51000, air_minum: 12500, jamban: 50, tempat_sampah: null, sabun_mandi: 250, sabun_cuci: 200});
+  assert.equal(c.tempat_sampah.status, "menunggu"); assert.equal(k.yakin, "estimasi-model");
+  assert.equal(k.sphere.penampungan.nilai, 3500); assert.equal(k.sphere.air_bersih.nilai, 75000); assert.equal(k.sphere.yakin, "hipotesis");
+  assert.equal(F5.kebutuhanDasar({jiwa: 1000, hari: 5, kk: 250}).komponen.tempat_sampah.nilai, 25);
+  assert.equal(F5.kebutuhanDasar({jiwa: 1000, hari: 2}).komponen.air_bersih.nilai, 14000, "h <= 3: 7 liter per orang per hari");
+  assert.equal(F5.kebutuhanDasar({jiwa: 1000, hari: 31}).komponen.sabun_mandi.nilai, 500, "ceil(31/30) = 2 bulan");
+  for (const o of [{}, {jiwa: -1, hari: 5}, {jiwa: 10, hari: 0}, {jiwa: 1.5, hari: 5}, {jiwa: "10", hari: 5}]) assert.equal(F5.kebutuhanDasar(o).status, "menunggu", JSON.stringify(o));
+});
+uji("UJ-F5-03: kesenjangan: rusak tidak dihitung; surplus; satuan beda; tidak punya padanan; stok belum tercatat bukan 0; target personel", () => {
+  const beras = F5.kesenjanganItem("beras", {nilai: 2000, satuan: "kg"}, {baik: 1200, rusak: 100, belum: 20, satuan: "kg"});
+  assert.deepEqual([beras.gap, beras.surplus, beras.rusak, beras.belum_dinilai], [800, 0, 100, 20]);
+  const air = F5.kesenjanganItem("air_minum", {nilai: 12500, satuan: "liter"}, {baik: 15000, rusak: 0, satuan: "liter"}); assert.deepEqual([air.gap, air.surplus], [0, 2500]);
+  assert.equal(F5.kesenjanganItem("tenda", {nilai: 10, satuan: "unit"}, null).status, "tidak punya padanan");
+  const terigu = F5.kesenjanganItem("terigu", {nilai: 10, satuan: "kg"}, null, true); assert.equal(terigu.status, "stok belum tercatat"); assert.equal(terigu.gap, null, "bukan 0");
+  assert.equal(F5.kesenjanganItem("beras", {nilai: 10, satuan: "kg"}, {baik: 5, satuan: "karung"}).status, "satuan beda, menunggu");
+  assert.deepEqual(F5.kesenjanganPersonel(50, 40), {status: "dihitung", target: 50, siap: 40, gap: 10, yakin: "asumsi-kebijakan"});
+  for (const x of [beras, air, terigu, F5.kesenjanganItem("tenda", {nilai: 1, satuan: "unit"}, null), F5.kesenjanganItem("beras", {nilai: 10, satuan: "kg"}, {baik: 5, satuan: "karung"})]) assert.equal(x.yakin, "estimasi-model", "angka kebutuhan per item = estimasi-model");
+  for (const baik of [undefined, null, "12", NaN]) { const x = F5.kesenjanganItem("beras", {nilai: 10, satuan: "kg"}, {baik, satuan: "kg"}); assert.equal(x.status, "stok belum tercatat", String(baik)); assert.equal(x.gap, null); }
+  assert.equal(F5.kesenjanganPersonel(null, 40).yakin, "asumsi-kebijakan");
+  assert.equal(F5.kesenjanganPersonel(null, 40).status, "target menunggu"); assert.equal(F5.kesenjanganPersonel(0, 40).status, "target menunggu"); assert.equal(F5.kesenjanganPersonel(30, 40).gap, 0);
+});
+uji("UJ-F5-04: kesegaran: pangkas akhir bulan, segera_habis, kedaluwarsa, perlu_reviu, menunggu", () => {
+  assert.equal(F5.tambahBulan("2024-02-29", 36), "2027-02-28"); assert.equal(F5.tambahBulan("2025-08-31", 6), "2026-02-28");
+  const a = F5.kesegaran({tgl_sah: "2024-02-29", hariIni: "2026-12-15"}); assert.deepEqual([a.status, a.berlaku_sampai, a.sisa], ["segera_habis", "2027-02-28", 75]);
+  const b = F5.kesegaran({tgl_sah: "2024-02-29", hariIni: "2027-03-01"}); assert.deepEqual([b.status, b.sisa], ["kedaluwarsa", -1]);
+  assert.equal(F5.kesegaran({tgl_sah: "2024-02-29", hariIni: "2027-02-28"}).status, "segera_habis", "sisa 0 belum kedaluwarsa");
+  const c = F5.kesegaran({tgl_sah: "2025-01-10", hariIni: "2025-07-11"}); assert.deepEqual([c.status, c.reviu_jatuh], ["perlu_reviu", "2025-07-10"]);
+  assert.equal(F5.kesegaran({tgl_sah: "2025-01-10", reviu_terakhir: "2025-06-01", hariIni: "2025-07-11"}).status, "berlaku", "reviu terakhir menggeser acuan");
+  assert.equal(F5.kesegaran({tgl_sah: "2025-01-10", hariIni: "2025-02-01"}).status, "berlaku");
+  const d = F5.kesegaran({tgl_sah: null, hariIni: "2025-02-01"}); assert.deepEqual([d.status, d.sisa], ["menunggu", null]);
+  assert.equal(F5.kesegaran({tgl_sah: "2025-01-10", hariIni: "2025-02-01", segeraHari: 2000}).status, "segera_habis", "ambang dari jam_aturan");
+});
+uji("UJ-F5-05: skor kesiapan: K1 = 1, K2 = 0,8, K3 = 0,8, K4 lewat: 86,67 dari 3 komponen; kurang dari 2 komponen menunggu", () => {
+  const barang = [F5.kesenjanganItem("beras", {nilai: 2000, satuan: "kg"}, {baik: 1200, satuan: "kg"}), F5.kesenjanganItem("air_minum", {nilai: 51000, satuan: "liter"}, {baik: 60000, satuan: "liter"})];
+  const s = F5.skorGladi({kesegaran: "berlaku", barang, personel: F5.kesenjanganPersonel(50, 40), rekomendasi: null});
+  assert.deepEqual([s.skor, s.label, s.status, s.komponen.k4], [86.67, "3 dari 4 komponen", "dihitung", null]);
+  assert.equal(F5.skorGladi({kesegaran: "kedaluwarsa", barang: [], personel: null}).skor, null, "satu komponen: menunggu");
+  assert.equal(F5.skorGladi({kesegaran: "kedaluwarsa", barang, personel: null}).komponen.k1, 0);
+  assert.equal(F5.skorGladi({kesegaran: "berlaku", rekomendasi: [{tertaut: true}, {tertaut: false}], barang: []}).komponen.k4, 0.5);
+  assert.equal(F5.skorGladi({kesegaran: "menunggu", barang: [{status: "stok belum tercatat"}]}).komponen.k1, null, "menunggu bukan komponen");
+});
+uji("UJ-F5-06: pemutaran ulang: 08:00, 11:30, esoknya 08:00 menjadi 0; 3,5; 24 jam, c = 2 menjadi 0; 1,75; 12; urutan stabil; tanpa interpolasi", () => {
+  const T = Date.UTC(2026, 2, 1, 1, 0), e = [{waktu: T + 24 * 36e5, sumber: "dibi", metrik: "meninggal", nilai: 5}, {waktu: T, sumber: "dibi", metrik: "meninggal", nilai: 0}, {waktu: T + 3.5 * 36e5, sumber: "dibi", metrik: "meninggal", nilai: 3}];
+  assert.deepEqual(F5.putarUlang(e).langkah.map(x => x.t_jam), [0, 3.5, 24]); assert.deepEqual(F5.putarUlang(e, 2).langkah.map(x => x.t_jam), [0, 1.75, 12]);
+  assert.deepEqual(F5.putarUlang(e).langkah.map(x => x.nilai), [0, 3, 5], "nilai apa adanya"); assert.equal(F5.putarUlang(e).label, "Model sederhana, bukan prakiraan");
+  const kembar = F5.putarUlang([{waktu: T, sumber: "logbook", metrik: "luka", nilai: 1}, {waktu: T, sumber: "dibi", metrik: "meninggal", nilai: 2}, {waktu: T, sumber: "dibi", metrik: "hilang", nilai: 3}]).langkah.map(x => x.sumber + ":" + x.metrik);
+  assert.deepEqual(kembar, ["dibi:hilang", "dibi:meninggal", "logbook:luka"], "waktu sama: sumber lalu metrik");
+  assert.deepEqual(F5.putarUlang([]).langkah, []); assert.equal(F5.putarUlang([{waktu: T, sumber: "x", metrik: "y", nilai: "bukan angka"}]).langkah.length, 0);
+  for (const c of [0, 0.5, -1, NaN, "2"]) assert.throws(() => F5.putarUlang(e, c), /percepatan/, String(c));
 });

@@ -11,7 +11,7 @@ import importlib.util, json, os, sys, tempfile
 AB = os.path.dirname(os.path.abspath(__file__))
 VAR = {"ikk": 2515, "ihpb": 1018}
 SUMBER = {"ikk": "bps-ikk", "ihpb": "bps-ihpb"}
-DASAR_IHPB = ((2025, 1), "2023"), ((0, 0), "2018")  # (mulai, dasar) dari yang terbaru
+DASAR_IHPB = ((2025, 1), "2023"), ((2018, 1), "2018")  # (mulai, dasar) dari yang terbaru; sebelum 2018-01 tidak ada dasar = menunggu
 
 
 _CACHE = {}
@@ -74,14 +74,14 @@ def bersih_ihpb(sel):
 
 
 def dasar_ihpb(tahun, bulan):
-    return next(d for m, d in DASAR_IHPB if (tahun, bulan) >= m)
+    return next((d for m, d in DASAR_IHPB if (tahun, bulan) >= m), None)
 
 
 def rasio_ihpb(kelompok, t0, t1):
     """IHPB_t1 / IHPB_t0 untuk (tahun, bulan); None (menunggu) bila beda dasar, sel kosong, atau tidak ada."""
     sr = kelompok["seri"]
     a, b = sr.get("%d-%02d" % t0), sr.get("%d-%02d" % t1)
-    if not a or not b or a["dasar"] != b["dasar"] or not a["nilai"] or b["nilai"] is None:
+    if not a or not b or a["dasar"] is None or a["dasar"] != b["dasar"] or not a["nilai"] or b["nilai"] is None:
         return None
     return b["nilai"] / a["nilai"]
 
@@ -146,13 +146,14 @@ def _uji():
         except ValueError:
             pass
     ikk = {"status": "OK", "data-availability": "available", "var": [{"val": 2515}], "turvar": [{"val": "0"}], "turtahun": [{"val": 0}],
-           "vervar": [{"val": 3301, "label": "Cilacap"}, {"val": 3302, "label": "Banyumas"}, {"val": 3999, "label": "Atlantis"}],
+           "vervar": [{"val": 3301, "label": "Cilacap"}, {"val": 3302, "label": "Banyumas"}, {"val": 3999, "label": "Atlantis"}, {"val": 9471, "label": "Kota Jayapura"}],
            "tahun": [{"val": 124, "label": "2024"}, {"val": 125, "label": "2025"}],
-           "datacontent": {"3301251501240": 99.5, "3301251501250": 101.2, "3302251501250": 98.0}}
+           "datacontent": {"3301251501240": 99.5, "3301251501250": 101.2, "3302251501250": 98.0, "9471251501250": 104.0}}
     sel, _ = urai(json.dumps(ikk).encode(), 2515)
     kab, h = bersih_ikk(sel)
     assert kab["3301"] == {"2024": 99.5, "2025": 101.2} and kab["3302"] == {"2024": None, "2025": 98.0}, kab
-    assert h["kab_tak_terpetakan"] == 1 and h["nilai_kosong"] == 1 and "3999" not in kab, h
+    assert h["kab_tak_terpetakan"] == 1 and h["nilai_kosong"] == 2 and "3999" not in kab, h
+    assert kab["9171"] == {"2024": None, "2025": 104.0} and "9471" not in kab, "kode BPS 9471 jadi Kemendagri 9171 lewat nama dan provinsi"
     assert all(len(k) == 4 for k in kab) and "3301" in kab and 3301 not in kab, "kab4 Kemendagri, bukan kode BPS mentah"
     ih = {"status": "OK", "data-availability": "available", "var": [{"val": 1018}], "turvar": [{"val": "0"}],
           "vervar": [{"val": 1, "label": "Bangunan"}], "tahun": [{"val": 124, "label": "2024"}, {"val": 125, "label": "2025"}],
@@ -163,6 +164,7 @@ def _uji():
     g = kel["1"]
     assert g["seri"]["2024-11"]["dasar"] == "2018" and g["seri"]["2025-01"]["dasar"] == "2023"
     assert rasio_ihpb(g, (2024, 11), (2024, 12)) == 1.1, "dasar sama"
+    assert dasar_ihpb(2017, 12) is None and dasar_ihpb(2018, 1) == "2018" and rasio_ihpb(g, (2017, 12), (2017, 11)) is None, "sebelum 2018 tanpa dasar = menunggu"
     assert rasio_ihpb(g, (2024, 12), (2025, 1)) is None, "melintasi patahan dasar = menunggu"
     assert rasio_ihpb(g, (2024, 11), (2024, 10)) is None, "sel tidak ada = menunggu, bukan 0"
     assert abs(harga_terindeks(100, 120, 100, 110, 100) - 132) < 1e-9
@@ -204,7 +206,7 @@ def _uji():
         b = json.load(open(os.path.join(o, "siklus/bersih/bps/ikk.json")))
         assert b["yakin"] == "resmi" and b["atribusi"].startswith("Sumber: BPS")
         l = json.load(open(os.path.join(o, "siklus/bersih/bps/laporan.json")))
-        assert l["masuk"] == l["tersisa"] + l["dibuang_total"] == 6
+        assert l["masuk"] == l["tersisa"] + l["dibuang_total"] == 8
     srv.shutdown()
     print("bps: uji hijau")
 

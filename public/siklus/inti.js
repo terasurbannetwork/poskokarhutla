@@ -177,7 +177,12 @@ const LAYAR = [
   [/^\/siklus\/paparan$/, () => import("./paparan.js"), "paparan"],
   [/^\/siklus\/kaji(\/[0-9a-f]{16})?$/, () => import("./kaji.js"), "kaji"],
   [/^\/siklus\/pulih(\/[0-9a-f]{16})?$/, () => import("./pulih.js"), "pulih"],
-  [/^\/siklus(\/kejadian(\/.*)?)?$/, () => import("./kejadian.js"), "kejadian"],
+  [/^\/siklus\/renkon(\/[0-9a-f]{16})?$/, () => import("./renkon.js"), "renkon"],
+  [/^\/siklus\/gladi(\/[0-9a-f]{16})?$/, () => import("./gladi.js"), "renkon"],   // halaman dummy renkon mengisi renkon dan gladi
+  [/^\/siklus\/masa-depan$/, () => import("./masadepan.js"), "masadepan"],
+  [/^\/siklus\/registri$/, () => import("./registri.js"), "pintu"],
+  [/^\/siklus$/, () => import("./pintu.js"), "pintu"],
+  [/^\/siklus\/kejadian(\/.*)?$/, () => import("./kejadian.js"), "kejadian"],
 ];
 async function mulai() {
   const isi = document.getElementById("sk"); if (!isi) return;

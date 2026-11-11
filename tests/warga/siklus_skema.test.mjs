@@ -299,3 +299,39 @@ uji("UJ-F4-10: tidak ada tabel rumah rusak kedua; kolom G3 tanpa nama, NIK, KK, 
   assert.doesNotMatch(sql.replace(/^--.*$/gm, ""), /INSERT OR IGNORE|ALTER TABLE|DROP |meja_\w+\s*\(/i, "migrasi hanya CREATE IF NOT EXISTS dan tidak menyentuh meja_*");
   assert.ok((sql.match(/CREATE (TABLE|INDEX|TRIGGER) /g) ?? []).length === (sql.match(/CREATE (TABLE|INDEX|TRIGGER) IF NOT EXISTS /g) ?? []).length, "semua CREATE idempoten");
 });
+
+/* ---------- G4 (migrations/0124_sk_renkon.sql): UJ-F5-01 (lapis database) ---------- */
+const renkon = (o = {}) => { const r = {id: ID16(), judul: "Renkon banjir contoh", bencana: "banjir", prov: "32", kab4: "3201", status: "persiapan", versi: 1, dibuat: T0, diubah: T0, oleh: "staf:ko", dummy: 0, ...o}; ins("sk_renkon", r); return r.id; };
+const SAH_RK = {tgl_sah: "2026-01-10", berlaku_sampai: "2029-01-10", no_penetapan: "SK/1/2026"};
+const gladi = (rk, o = {}) => { const r = {id: ID16(), jenis: "ruang", renkon_id: rk, kejadian_id: o.kejadian_id ?? kejadian({fase: "tanggap"}), status: "dirancang", dibuat: T0, diubah: T0, oleh: "staf:ko", dummy: 0, ...o}; ins("sk_gladi", r); return r.id; };
+
+uji("UJ-F5-01: sk_renkon: status enam nilai tanpa 'kedaluwarsa'; ditetapkan dan berlaku wajib tgl_sah, berlaku_sampai, no_penetapan; tanggal GLOB; UNIQUE (prov, kab4, bencana, versi, dummy)", () => {
+  for (const s of ["persiapan", "pelaksanaan", "finalisasi", "dimutakhirkan"]) assert.ok(renkon({status: s, bencana: "gempa", kab4: null, versi: ["persiapan", "pelaksanaan", "finalisasi", "dimutakhirkan"].indexOf(s) + 1}), s);
+  for (const s of ["ditetapkan", "berlaku"]) { renkon({status: s, ...SAH_RK, bencana: "cuaca", versi: s === "berlaku" ? 2 : 1}); }
+  ditolak(() => renkon({status: "kedaluwarsa", bencana: "longsor"}), "kedaluwarsa bukan nilai status (dihitung saat dibaca, ADR-09)");
+  for (const s of ["ditetapkan", "berlaku"]) for (const hapus of ["tgl_sah", "berlaku_sampai", "no_penetapan"]) ditolak(() => renkon({status: s, ...SAH_RK, [hapus]: null, bencana: "kekeringan", versi: 7}), `${s} tanpa ${hapus}`);
+  for (const o of [{judul: "abcd"}, {judul: "x".repeat(201)}, {bencana: "ab"}, {prov: "3"}, {prov: "AB"}, {kab4: "32"}, {kab4: "32AB"}, {tgl_sah: "2026-1-1"}, {reviu_terakhir: "kemarin"}, {versi: 0}, {versi: 100}, {skenario: "x".repeat(4001)},
+    {asumsi: "bukan json"}, {kerangka: "{"}, {kesenjangan: "x".repeat(6001)}, {no_penetapan: ""}, {meja_id: ""}, {oleh: ""}, {dummy: 2}, {id: "xyz"}, {induk_id: "pendek"}]) ditolak(() => renkon({bencana: "tsunami", versi: 9, ...o}), JSON.stringify(o).slice(0, 60));
+  renkon({bencana: "banjir", versi: 1}); ditolak(() => renkon({bencana: "banjir", versi: 1}), "UNIQUE (prov, kab4, bencana, versi, dummy)");
+  assert.ok(renkon({bencana: "banjir", versi: 1, dummy: 1}), "dummy terpisah");
+});
+uji("UJ-F5-01: sk_gladi: jenis tiga nilai, status lima nilai, selesai wajib rekomendasi, FK renkon dan kejadian (hanya yang sudah di D1), JSON sah", () => {
+  const rk = renkon();
+  for (const j of ["ruang", "posko", "lapang"]) assert.ok(gladi(rk, {jenis: j}), j);
+  for (const s of ["siap", "berjalan", "dievaluasi"]) assert.ok(gladi(rk, {status: s}), s);
+  assert.ok(gladi(rk, {status: "selesai", rekomendasi: '[{"bidang":"kebijakan","teks":"x"}]'}));
+  ditolak(() => gladi(rk, {status: "selesai"}), "selesai tanpa rekomendasi");
+  ditolak(() => gladi(rk, {status: "ditunda"}), "status di luar lima");
+  ditolak(() => gladi(rk, {jenis: "daring"}), "jenis di luar tiga");
+  ditolak(() => gladi("ffffffffffffffff"), "FK renkon");
+  ditolak(() => gladi(rk, {kejadian_id: "KJ-2026-ZZZZZZZZ"}), "FK kejadian: kejadian yang masih di arsip R2 tidak punya baris D1");
+  ditolak(() => gladi(rk, {kejadian_id: "KJ-2026-ILOU0000"}), "ID salah alfabet");
+  for (const o of [{skenario: "bukan json"}, {masalah: "x".repeat(6001)}, {rekomendasi: "{"}, {oleh: ""}, {dummy: 2}, {id: "xyz"}]) ditolak(() => gladi(rk, o), JSON.stringify(o).slice(0, 50));
+});
+uji("UJ-F5-01: migrasi G4 hanya CREATE IF NOT EXISTS, tidak menyentuh meja_* atau CHECK pengingat, tanpa kolom pribadi", () => {
+  const sql = readFileSync(path.join(AKAR, "migrations/0124_sk_renkon.sql"), "utf8");
+  assert.doesNotMatch(sql.replace(/^--.*$/gm, ""), /INSERT OR IGNORE|ALTER TABLE|DROP |meja_\w+\s*\(|pengingat/i, "tanpa ALTER/DROP, meja_*, pengingat");
+  assert.ok((sql.match(/CREATE (TABLE|INDEX|TRIGGER) /g) ?? []).length === (sql.match(/CREATE (TABLE|INDEX|TRIGGER) IF NOT EXISTS /g) ?? []).length, "semua CREATE idempoten");
+  for (const t of ["sk_renkon", "sk_gladi"]) for (const kol of db.prepare(`SELECT name FROM pragma_table_info('${t}')`).all().map(r => r.name)) assert.doesNotMatch(kol, /^nama|nik|^kk$|ktp|^lat$|^lon$|koordinat|foto|pelapor|alamat|telp|^wa$/i, `${t}.${kol}`);
+  db.exec(sql); db.exec(sql);   // dua kali jalan tidak gagal
+});

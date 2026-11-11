@@ -209,7 +209,7 @@ CREATE TABLE IF NOT EXISTS sk_harga (                   -- manual (U4); tidak ad
   dokumen TEXT NOT NULL T(dokumen,3,200),               -- HSBGN/Perka, WAJIB
   yakin TEXT NOT NULL DEFAULT 'asumsi-kebijakan' CHECK (yakin IN ('asumsi-kebijakan','resmi')),
   dibuat INTEGER NOT NULL, oleh TEXT NOT NULL T(oleh,1,64), DUM);
-CREATE INDEX IF NOT EXISTS sk_harga_cari ON sk_harga (sektor, tingkat, tahun DESC, kab4);
+CREATE INDEX IF NOT EXISTS sk_harga_cari ON sk_harga (sektor, tahun DESC, kab4);   -- skHargaCari: sektor IN, tahun =, kab4 NULL atau = (pemeriksaan keamanan 11 Nov)
 
 CREATE TABLE IF NOT EXISTS sk_jitupasna (
   id TEXT PRIMARY KEY ID16(id),
@@ -288,9 +288,10 @@ CREATE TABLE IF NOT EXISTS sk_renkon (
   reviu_terakhir TEXT TGL(reviu_terakhir),              -- isian staf; dasar reviu enam bulan (ALG F5.3)
   meja_id TEXT T-null(meja_id,1,40),                    -- meja_catatan.id metadata renkon, tanpa FK
   dibuat INTEGER NOT NULL, diubah INTEGER NOT NULL, oleh TEXT NOT NULL T(oleh,1,64), DUM,
-  UNIQUE (prov, kab4, bencana, versi, dummy),
   CHECK (status NOT IN ('ditetapkan','berlaku') OR (tgl_sah IS NOT NULL AND berlaku_sampai IS NOT NULL AND no_penetapan IS NOT NULL))
 );
+-- UNIQUE biasa tidak menangkap kab4 NULL (NULL tak sama dengan NULL): renkon provinsi dipaksa unik lewat coalesce.
+CREATE UNIQUE INDEX IF NOT EXISTS sk_rk_unik ON sk_renkon (prov, coalesce(kab4, ''), bencana, versi, dummy);
 CREATE INDEX IF NOT EXISTS sk_rk_wil ON sk_renkon (prov, kab4, bencana);
 CREATE INDEX IF NOT EXISTS sk_rk_batas ON sk_renkon (berlaku_sampai) WHERE status = 'berlaku';
 
@@ -306,6 +307,8 @@ CREATE TABLE IF NOT EXISTS sk_gladi (
   CHECK (status <> 'selesai' OR rekomendasi IS NOT NULL)
 );
 CREATE INDEX IF NOT EXISTS sk_gl_renkon ON sk_gladi (renkon_id, diubah DESC);
+-- pintu publik (skKejadianPublikDaftar): urut mulai terbaru tanpa pindai, hanya baris publik nyata; ditambahkan di 0124 pada sk_kejadian
+CREATE INDEX IF NOT EXISTS sk_kej_publik ON sk_kejadian (mulai DESC, id DESC) WHERE publik = 1 AND dummy = 0;
 ```
 
 `kedaluwarsa` dan hari tersisa dihitung saat dibaca (ADR-09). Pengingat memakai `src/pengingat.js` apa adanya; jenis baru butuh bangun ulang CHECK `pengingat`, ditunda ke tiket warga-api (PRD F5-06).
