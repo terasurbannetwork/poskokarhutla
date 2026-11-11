@@ -1584,3 +1584,12 @@
   .wrap#opsLaporan{padding:0}
   #opsLaporan .ops-a{height:calc(100vh - var(--top, 58px) - 16px);gap:12px}
 }
+/* tiap pulau dalam wadah sendiri (pemilik 11 Nov 2026) */
+#opsLaporan .ops-pb-pulau>section{padding:12px;border:1px solid var(--line);border-radius:18px;background:color-mix(in srgb,var(--brand2) 4%,var(--card))}
+#opsLaporan .ops-pb-pulau>section>h4{margin:0;padding:6px 10px;border-radius:10px;background:color-mix(in srgb,var(--brand2) 9%,transparent)}
+#opsLaporan .ops-pb-pulau>section>h4>.ops-lbl svg{width:20px;height:20px;padding:3px;border-radius:6px;background:#0b2545;color:#fff;box-sizing:border-box}
+#opsLaporan .ops-pb-pulau{gap:16px}
+/* target renlap: teks rata kiri, terpotong rapi */
+#opsLaporan .ops-rlk-tg li{justify-items:start}
+#opsLaporan .ops-rlk-tg li>b{justify-self:stretch;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#opsLaporan .ops-utama>.ops-alat>.ops-judul{justify-content:center;text-align:center}
