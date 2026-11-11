@@ -497,3 +497,14 @@
 #opsLaporan .ops-rp-leg{display:flex;gap:10px}
 #opsLaporan .ops-rp-leg small .ops-lbl{font-size:.6875rem;color:#0b6f66;font-weight:700}
 #opsLaporan .ops-rp-leg small.wb .ops-lbl{color:#1f56ad}
+/* kolom Kegiatan tabel base: sortie + ringkasan WB/padam */
+#opsLaporan .ops-keg{display:inline-flex;flex-direction:column;align-items:center;line-height:1.15}
+#opsLaporan .ops-keg b{font-size:.875rem}
+#opsLaporan .ops-keg small{display:block;font-size:.6875rem;color:var(--ink2);white-space:nowrap}
+/* kepala Ringkasan = kepala kartu navy (sama dengan .ex>.ex-hd di public/inti/kartu.css) */
+#opsLaporan .ops-pa-sek.ops-rk>summary{background:#0b2545;box-shadow:none;padding:16px 20px;border-bottom:0}
+#opsLaporan .ops-pa-sek.ops-rk>summary>i{background:rgb(255 255 255 / .14)}
+#opsLaporan .ops-pa-sek.ops-rk>summary b{color:#fff;font-size:1rem}
+#opsLaporan .ops-pa-sek.ops-rk>summary small{background:rgb(255 255 255 / .14);box-shadow:none;color:#d6e4f5}
+#opsLaporan .ops-pa-sek.ops-rk>summary .ops-chev{color:#d6e4f5}
+#opsLaporan .ops-pa-sek.ops-rk{border:0}
