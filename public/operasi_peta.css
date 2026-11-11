@@ -678,3 +678,14 @@
 #opsLaporan .ops-rp-angka b{font-family:var(--display);font-size:1.5rem;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;line-height:1}
 #opsLaporan .ops-rp-angka small{font-size:.75rem;font-weight:700;color:#d6e4f5}
 #opsLaporan .ops-rp-angka b small{font-size:.875rem;color:#d6e4f5}
+/* pemilih periode: deret mode + navigasi per mode */
+#opsLaporan .ops-pm{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px;padding:4px;border-radius:999px;background:var(--surface);margin-bottom:2px}
+#opsLaporan .ops-pm button{display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;border-radius:999px;font-size:.78125rem;font-weight:700}
+#opsLaporan .ops-pm button .ops-lbl{color:inherit;font-size:inherit;font-weight:inherit;gap:6px}
+#opsLaporan .ops-pm button[aria-pressed="true"]{background:#0b2545;color:#fff}
+#opsLaporan .ops-pl{display:inline-flex;align-items:center;gap:8px;font-size:.875rem;font-weight:800;color:var(--ink)}
+#opsLaporan .ops-pl>span{font-size:.75rem;font-weight:600;color:var(--ink2)}
+#opsLaporan .ops-p1.rg{grid-template-columns:1fr}
+#opsLaporan .ops-tgl.ops-rg{padding:4px 12px}
+#opsLaporan .ops-tgl.ops-rg .ops-lbl{margin-right:4px}
+#opsLaporan .ops-lgk:disabled{opacity:.45;cursor:default}

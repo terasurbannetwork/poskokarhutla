@@ -55,7 +55,7 @@
   /* hanya atribut hidden, tanpa render ulang (INP) */
   const terapKat = root => root?.querySelectorAll("details.ops-kartu[data-kat], [data-kat-bungkus]").forEach(el => { el.hidden = (el.dataset.kat || el.dataset.katBungkus) !== katPilih[st.mode]; });
   /* ringkasan lipat bersama Udara dan Darat: kepala navy + sel berheader */
-  const ringkasLipat = (D, sel) => `<details class="ops-pa-sek ops-rk" open><summary><i>${lbl("tren", "")}</i><b>Ringkasan</b><small>${lbl("jam", esc(tglPendek(D.t)))}</small><svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+  const ringkasLipat = (D, sel) => `<details class="ops-pa-sek ops-rk" open><summary><i>${lbl("tren", "")}</i><b>Ringkasan</b><small>${lbl("kalender", esc(D.label || tglPendek(D.t)))}</small><svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
       <div class="ops-lap-angka" style="--n:${sel.length}">${sel.join("")}</div></details>`;
   const selDarat = (ik, n, t, sub, redup) => `<div class="${redup ? "redup" : ""}"><header><i>${lbl(ik, "")}</i><span>${t}</span></header><div class="ops-ub-isi"><b>${n}</b>${sub ? `<em>${sub}</em>` : ""}</div></div>`;
   const bagian = (ey, judul, isi, kanan = "") => { const id = idKartu(ey), buka = id in ingatKartu ? ingatKartu[id] : BUKA_AWAL.has(id), nama = NAMA_SEKSI[id];
@@ -72,15 +72,31 @@
   const SIAP = ["siap", "operasi", "siaga"];
   const RENLAP_KM = 10;   // ponytail: target renlap dianggap didatangi bila ada aksi armada base itu <= 10 km; ganti ke jejak ADS-B bila posisi rapat tersedia
 
-  const st = {mode: "udara", tanggal: hariWIB(), reg: "", cache: {}, statis: null};
+  const st = {mode: "udara", pm: "hari", rDari: "", rSampai: "", tanggal: hariWIB(), reg: "", cache: {}, statis: null};
   try { const m = localStorage.getItem("ops_mode"); if (m === "darat" || m === "udara") st.mode = m; } catch (e) {}
 
   /* ---------------- data per tanggal ---------------- */
-  const muatTanggal = t => st.cache[t] ||= (async () => {
-    const dari = geser(t, -29), [peta, mon, nilai, jejak, omc, snap, patroli] = await Promise.all([
-      ambil(`/api/operasi/peta?tanggal=${t}`), ambil(`/api/operasi/monitor?dari=${dari}&sampai=${t}`), ambil(`/api/operasi/nilai?dari=${geser(t, -6)}&sampai=${t}`),
+  /* periode (pemilik 11 Nov 2026, K9/UD-18): hari, minggu, bulan, rentang, 12 bulan. Kartu keadaan memakai hari terakhir periode,
+     kartu kegiatan dijumlah sepanjang periode (Q13 bawaan). /api/operasi/monitor dibatasi 31 hari, jadi rentang panjang ditarik per
+     potongan 31 hari dari belakang; potongan pertama = 31 hari terakhir, KPI 30 hari diambil dari situ. */
+  const akhirBulan = t => { const [y, m] = t.split("-").map(Number); return new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10); };
+  const geserBulan = (t, n) => { const [y, m] = t.split("-").map(Number); return new Date(Date.UTC(y, m - 1 + n, 1)).toISOString().slice(0, 10); };
+  const BLN_P = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+  const rentang = () => { const t = st.tanggal, kini = hariWIB(), cap = x => x > kini ? kini : x;
+    if (st.pm === "minggu") { const a = geser(t, -((dow(t) + 6) % 7)); return [a, cap(geser(a, 6))]; }
+    if (st.pm === "bulan") return [t.slice(0, 8) + "01", cap(akhirBulan(t))];
+    if (st.pm === "12bulan") return [geserBulan(t.slice(0, 8) + "01", -11), cap(akhirBulan(t))];
+    if (st.pm === "rentang") { const a = st.rDari || geser(t, -6), b = st.rSampai || t; return a <= b ? [a, b] : [b, a]; }
+    return [t, t]; };
+  const labelPeriode = ([a, b]) => st.pm === "hari" ? tglPendek(b) : st.pm === "bulan" ? `${BLN_P[+a.slice(5, 7) - 1]} ${a.slice(0, 4)}` : a.slice(0, 4) !== b.slice(0, 4) ? `${tglPendek(a)} ${a.slice(0, 4)} – ${tglPendek(b)} ${b.slice(0, 4)}` : `${tglPendek(a)} – ${tglPendek(b)}`;
+  const muatPeriode = (dariP, t) => st.cache[dariP + "_" + t] ||= (async () => {
+    const dari = geser(t, -29), awal = dariP < dari ? dariP : dari, potongan = [];
+    for (let b = t; b >= awal; b = geser(b, -31)) { const a = geser(b, -30); potongan.push([a < awal ? awal : a, b]); }
+    const [peta, mons, nilai, jejak, omc, snap, patroli] = await Promise.all([
+      ambil(`/api/operasi/peta?tanggal=${t}`), Promise.all(potongan.map(([a, b]) => ambil(`/api/operasi/monitor?dari=${a}&sampai=${b}`))), ambil(`/api/operasi/nilai?dari=${geser(t, -6)}&sampai=${t}`),
       ambil(`/api/operasi/jejak?tanggal=${t}`), ambil(`/api/omc/sortie?sejak=${dari}`), ambil(`/api/laporan-karhutla/snapshot/${t}`), ambil("/api/ops/patroli")]);
-    return {t, dari, peta, mon, nilai, jejak, omc: (omc?.sortie || []).filter(x => (x.mulai || "").slice(0, 10) <= t || !x.mulai), snap, patroli: patroli?.patroli || null};
+    const mon = mons.some(Boolean) ? {...mons[0], aksi: mons.flatMap(m => m?.aksi || [])} : null;
+    return {t, dari, dariP, peta, mon, nilai, jejak, omc: (omc?.sortie || []).filter(x => (x.mulai || "").slice(0, 10) <= t || !x.mulai), snap, patroli: patroli?.patroli || null};
   })();
   const muatStatis = () => st.statis ||= Promise.all([ambil("/data/harian30.json"), ambil("/udara/data/omc_hasil.json"), ambil("/data/bnpb.json"), ambil("/data/operasi_resmi.json"), ambil("/udara/data/omc_bmkg.json")])
     .then(([h30, omcHasil, bnpb, resmi, omcBmkg]) => ({h30, omcHasil, bnpb, resmi, omcBmkg}));
@@ -106,6 +122,7 @@
       const fp = e.target.closest("[data-fpulau], [data-ftanda]"); if (fp) return saringBase(fp);
       const gr = e.target.closest("tr.ops-grup"); if (gr) return lipatGrup(gr);
       const bb = e.target.closest("tr.ops-bb"); if (bb) return bukaBase(bb);
+      const pm = e.target.closest("[data-pm]"); if (pm) { if (st.pm === pm.dataset.pm) return; st.pm = pm.dataset.pm; const p = $("#opsLaporan .ops-periode"); if (p) p.innerHTML = periode(); return sesudahFrame(isi); }
       const tg = e.target.closest("[data-tgl]"); if (tg) return pilihTanggal(tg.dataset.tgl);
       const lb = e.target.closest(".ops-tgl"); if (lb) { const i = lb.querySelector("input"); try { i.showPicker(); e.preventDefault(); } catch (x) {} return; }
       const a = e.target.closest("[data-aksi]"); if (!a) return;
@@ -114,6 +131,7 @@
     });
     box.addEventListener("keydown", e => { const k = (e.key === "Enter" || e.key === " ") && e.target.closest?.("[data-rk], .ops-akt[data-reg], tr.ops-bb, tr.ops-grup"); if (k) { e.preventDefault(); k.dataset.rk ? bukaRingkas(k.dataset.rk) : k.dataset.reg ? bukaArmada(k.dataset.reg) : k.classList.contains("ops-grup") ? lipatGrup(k) : bukaBase(k); } });
     box.addEventListener("change", e => {
+      if (e.target.matches("[data-rentang]")) { if (!e.target.value) return; st[e.target.dataset.rentang === "dari" ? "rDari" : "rSampai"] = e.target.value; st.tanggal = rentang()[1]; return sesudahFrame(isi); }
       if (e.target.matches(".ops-tgl input")) return pilihTanggal(e.target.value);
       if (e.target.matches("[data-reg]")) { st.reg = e.target.value; return sesudahFrame(() => { const k = $("#opsHistori"); if (k) k.outerHTML = kartuHistori(st._d); }); }
       if (e.target.matches("[data-galeri]")) { st.galeri = e.target.value; return sesudahFrame(() => { const k = $("#opsGaleri"); if (k) k.outerHTML = kartuGaleri(st._d); }); }
@@ -127,7 +145,30 @@
   const mingguLabel = t => { const s = geser(t, -((dow(t) + 6) % 7)); return `${tglPendek(s)} - ${tglPendek(geser(s, 6))}`; };
   const keluar = t => t > hariWIB() || t < TGL_MIN;
   const tb = (t, kelas, isi, judul = "") => `<button type="button" class="${kelas}" data-tgl="${t}"${keluar(t) ? " disabled" : ""}${judul ? ` title="${judul}"` : ""}>${isi}</button>`;
+  /* pemilih periode: deret mode di atas, lalu navigasi per mode (pola pangantara, K9) */
+  const MODE_P = [["hari", "Hari", "kalender"], ["minggu", "Minggu", "kalender"], ["bulan", "Bulan", "kalender"], ["rentang", "Rentang", "tren"], ["12bulan", "12 Bulan", "tren"]];
   function periode() {
+    const seg = `<div class="seg ops-pm" role="group" aria-label="Jenis periode">${MODE_P.map(([k, t, ik]) => `<button type="button" data-pm="${k}" aria-pressed="${st.pm === k}">${lbl(ik, t)}</button>`).join("")}</div>`;
+    return seg + (st.pm === "hari" ? periodeHari() : periodeLain());
+  }
+  function periodeLain() {
+    const t = st.tanggal, kini = hariWIB(), [a, b] = rentang(), mulaiLalu = x => x <= kini ? (x > kini ? kini : x) : null;
+    const nav = (arah, x, teks, lab) => { const sah = x && x <= kini && x >= TGL_MIN; return `<button type="button" class="ops-lgk" ${sah ? `data-tgl="${x}"` : "disabled"}>${arah < 0 ? `<b>‹ ${teks}</b><span class="ops-lnc">${lab}</span>` : `<span class="ops-lnc">${lab}</span><b>${teks} ›</b>`}</button>`; };
+    let kiri = "", kanan = "", strip = "", tengah = esc(labelPeriode([a, b]));
+    if (st.pm === "minggu") { const s0 = geser(a, -7), s1 = geser(a, 7);
+      kiri = nav(-1, s0, "Minggu lalu", `${tglPendek(s0)} – ${tglPendek(geser(s0, 6))}`); kanan = nav(1, mulaiLalu(s1), "Minggu depan", `${tglPendek(s1)} – ${tglPendek(geser(s1, 6))}`);
+      const awalB = t.slice(0, 8) + "01", senin1 = geser(awalB, -((dow(awalB) + 6) % 7)), mg = [];
+      for (let x = senin1; x <= akhirBulan(t); x = geser(x, 7)) mg.push(x);
+      strip = mg.map((x, i) => `<button type="button" class="ops-hr${x === a ? " on" : ""}" ${x <= kini ? `data-tgl="${x}"` : "disabled"}><b>Minggu ${i + 1}</b><span>${tglPendek(x)} – ${tglPendek(geser(x, 6))}</span></button>`).join(""); }
+    else if (st.pm === "bulan" || st.pm === "12bulan") { const b0 = geserBulan(a.slice(0, 8) + "01", st.pm === "bulan" ? -1 : 0), b1 = geserBulan(t.slice(0, 8) + "01", 1), bl = x => `${BLN[+x.slice(5, 7) - 1]} ${x.slice(0, 4)}`;
+      const lalu = st.pm === "bulan" ? b0 : geserBulan(t.slice(0, 8) + "01", -1);
+      kiri = nav(-1, lalu, "Bulan lalu", bl(lalu)); kanan = nav(1, b1, "Bulan depan", bl(b1));
+      const th = t.slice(0, 4); strip = Array.from({length: 12}, (_, i) => `${th}-${String(i + 1).padStart(2, "0")}-01`).map(x => `<button type="button" class="ops-hr${x.slice(0, 7) === t.slice(0, 7) ? " on" : ""}" ${x <= kini && x >= TGL_MIN.slice(0, 8) + "01" ? `data-tgl="${x}"` : "disabled"}><b>${BLN[+x.slice(5, 7) - 1]}</b><span>${th}</span></button>`).join(""); }
+    else if (st.pm === "rentang") tengah = `<label class="ops-tgl ops-rg">${lbl("kalender", "")}<input type="date" data-rentang="dari" value="${a}" max="${kini}" min="${TGL_MIN}" aria-label="Dari tanggal"></label><span>sampai</span><label class="ops-tgl ops-rg">${lbl("kalender", "")}<input type="date" data-rentang="sampai" value="${b}" max="${kini}" min="${TGL_MIN}" aria-label="Sampai tanggal"></label>`;
+    const hr = Math.round((Date.parse(b) - Date.parse(a)) / 864e5) + 1;
+    return `<div class="ops-p1${st.pm === "rentang" ? " rg" : ""}">${kiri}<div class="ops-ptg"><span>Periode</span><b class="ops-pl">${tengah}</b><em class="ops-kini">${fmt(hr)} hari</em></div>${kanan}</div>${strip ? `<div class="ops-p2"><div class="ops-strip" style="grid-template-columns:repeat(${st.pm === "minggu" ? 6 : 12},minmax(0,1fr))">${strip}</div></div>` : ""}`;
+  }
+  function periodeHari() {
     const t = st.tanggal, kini = hariWIB(), senin = geser(t, -((dow(t) + 6) % 7)), kmr = geser(t, -1), bsk = geser(t, 1), mL = geser(t, -7), mD = geser(t, 7);
     return `<div class="ops-p1">${tb(kmr, "ops-lgk", `<b>‹ Kemarin</b><span class="ops-lnc">${hariLabel(kmr)}</span>`)}
       <div class="ops-ptg"><span>Periode</span><label class="ops-tgl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>${hariLabel(t)}</span><input type="date" value="${t}" max="${kini}" min="${TGL_MIN}" aria-label="Pilih tanggal"></label>${t === kini
@@ -171,9 +212,9 @@
     el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat ${st.mode === "udara" ? "operasi udara" : "operasi darat"} ${esc(tglPanjang(st.tanggal))}…</div>`;
     if (typeof lengkapiKluster === "function") await lengkapiKluster().catch(() => {});
     if (!window.OperasiLapangan) await muatSkrip("/bnpb/operasi_lapangan_hitung.js");
-    const [d, s] = await Promise.all([muatTanggal(st.tanggal), muatStatis()]);
+    const rg = rentang(), [d, s] = await Promise.all([muatPeriode(rg[0], rg[1]), muatStatis()]);
     if (n !== nomor) return;
-    const D = st._d = {...siapkan(d), ...s};
+    const D = st._d = {...siapkan(d), ...s, pm: st.pm, label: labelPeriode(rg)};
     el.innerHTML = st.mode === "udara" ? udara(D) : darat(D);
     terapKat(el);
     /* Ringkasan tinggal di wadah yang sama dengan tab dan pemilih periode (pemilik 11 Nov 2026 "disatuin dalam satu container") */
@@ -183,7 +224,7 @@
   /* ---------------- turunan udara ---------------- */
   function siapkan(d) {
     const t = d.t, peta = d.peta || {base: [], armada: [], temuan: [], renlap: [], gerak: []}, aksi30 = d.mon?.aksi || [];
-    const aksi = aksi30.filter(a => a.tanggal === t).sort((x, y) => (y.jam_utc || 0) - (x.jam_utc || 0));
+    const aksi = aksi30.filter(a => a.tanggal >= (d.dariP || t) && a.tanggal <= t).sort((x, y) => (y.jam_utc || 0) - (x.jam_utc || 0));
     const reg2base = Object.fromEntries((peta.armada || []).map(a => [a.registrasi, a.base_id]));
     const hitung = xs => { const p = xs.filter(a => a.hasil === "padam").length, m = xs.filter(a => a.hasil === "masih_api").length;
       return {sortie: xs.length, wb: xs.filter(a => a.guna === "wb").length, drop: xs.reduce((s, a) => s + (a.drop || 0), 0), padam: p, dinilai: p + m, persen: p + m ? p / (p + m) : null, foto: xs.reduce((s, a) => s + (a.foto || []).length, 0)}; };
@@ -256,11 +297,11 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     const tiles = [ubin("base", fmt(base.length), "Base operasi udara", [["netral", `${fmt(new Set(base.map(b => b.prov)).size)} provinsi`]]),
       ubin("armada", fmt(ar.length), "Armada", [["wb", `WB ${fmt(g.wbSaja)}`], ["ptr", `Patroli ${fmt(g.ptrSaja)}`], ...(g.ganda ? [["ganda", `Patroli + WB ${fmt(g.ganda)}`]] : []), ["omc", `OMC ${fmt(g.omc)}`]]),
       ubin("siap", `${lapor ? fmt(siap) : "–"}<small>/${fmt(ar.length)}</small>`, "Armada siap", lapor ? [["ok", `Siap ${fmt(siap)}`], ...(lapor - siap ? [["tdk", `Tidak siap ${fmt(lapor - siap)}`]] : []), ...(ar.length - lapor ? [["belum", `Belum lapor ${fmt(ar.length - lapor)}`]] : [])] : [["belum", "Gelar armada belum masuk"]], !lapor),
-      ubin("sortie", H.sortie ? fmt(H.sortie) : "–", "Sortie hari ini", H.sortie ? [["wb", `WB ${fmt(H.wb)}`], ["ptr", `Lainnya ${fmt(H.sortie - H.wb)}`], ...(H.drop ? [["jatuh", `${fmt(H.drop)} jatuhan`]] : [])] : [["belum", "Belum ada sortie"]], !H.sortie),
+      ubin("sortie", H.sortie ? fmt(H.sortie) : "–", D.pm === "hari" ? "Sortie hari ini" : "Sortie periode ini", H.sortie ? [...(H.wb ? [["wb", `WB ${fmt(H.wb)}`]] : []), ...(H.sortie - H.wb ? [["ptr", `Lainnya ${fmt(H.sortie - H.wb)}`]] : []), ...(H.drop ? [["jatuh", `${fmt(H.drop)} jatuhan`]] : [])] : [["belum", "Belum ada sortie"]], !H.sortie),
       H.dinilai && ubin("padam", u.persen(H.persen), "Padam ≥ 24 jam", [["ok", `Padam ${fmt(H.padam)}`], ...(H.dinilai - H.padam ? [["api", `Masih api ${fmt(H.dinilai - H.padam)}`]] : []), ["netral", `${fmt(H.dinilai)} dinilai`]]),
       ubin("temuan", (P.temuan || []).length ? fmt(temApi) : "–", "Temuan api pilot", (P.temuan || []).length ? [["api", `Titik api ${fmt(temApi)}`], ["netral", `${fmt(P.temuan.length)} temuan`]] : [["belum", "Belum ada laporan pilot"]], !(P.temuan || []).length)].filter(Boolean);
     /* kartu pertama = ringkasan itu sendiri; kepala kartu gelap dihapus (pemilik 11 Nov 2026 "Ringkasan 11 Nov itu yang jadi header") */
-    const ringkas = `<details class="ops-pa-sek ops-rk" open><summary><i>${lbl("tren", "")}</i><b>Ringkasan</b><small>${lbl("jam", esc(tglPendek(D.t)))}</small><svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+    const ringkas = `<details class="ops-pa-sek ops-rk" open><summary><i>${lbl("tren", "")}</i><b>Ringkasan</b><small>${lbl("kalender", esc(D.label || tglPendek(D.t)))}</small><svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
       <div class="ops-lap-angka" style="--n:${tiles.length}">${tiles.join("")}</div></details>`;
     return [
       ringkas, `<section class="ops-wadah">${pilKategori("udara")}${[
