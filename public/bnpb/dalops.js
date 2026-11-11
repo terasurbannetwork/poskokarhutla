@@ -714,7 +714,7 @@
       /* jenis bencana = satu tombol pilih di pojok peta (pemilik 11 Nov 2026: deretan sembilan pil diganti pemilih turun):
          tombol menampilkan jenis aktif, menu kartu berikon; Esc atau klik di luar menutup */
       const segarBatang = () => document.querySelectorAll(".dl-jenis-peta").forEach(w => { const j = JP.find(x => x[0] === aktif) || JP[0];
-        w.querySelector(".dl-jp-btn > .dl-jp-ik")?.replaceChildren(ikon(j[2])); w.querySelectorAll(".dl-jp-teks > span").forEach(x => x.classList.toggle("on", x.dataset.k === j[0]));
+        w.dataset.aktif = j[0]; w.querySelector(".dl-jp-btn > .dl-jp-ik")?.replaceChildren(ikon(j[2])); w.querySelectorAll(".dl-jp-teks > span").forEach(x => x.classList.toggle("on", x.dataset.k === j[0]));
         w.querySelectorAll("[data-jenis]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.jenis === aktif))); });
       const tutupMenu = () => document.querySelectorAll(".dl-jenis-peta.buka").forEach(w => { w.classList.remove("buka"); w.querySelector(".dl-jp-btn").setAttribute("aria-expanded", "false"); });
       document.addEventListener("click", e => { if (!e.target.closest(".dl-jenis-peta")) tutupMenu(); });
@@ -726,7 +726,7 @@
         const menu = h("div", {class: "dl-jp-menu", role: "listbox", "aria-label": "Jenis bencana"}, ...JP.map(([k, t, ik]) => {
           const b = h("button", {type: "button", role: "option", "data-jenis": k, "aria-selected": String(k === aktif)}, h("i", null, ikon(ik)), h("span", {teks: t}));
           b.addEventListener("click", e => { e.stopPropagation(); tutupMenu(); if (k !== aktif) { pilihTab(k, tombol); segarBatang(); } }); return b; }));
-        const w = h("div", {class: "dl-jenis-peta"}, btn, menu);
+        const w = h("div", {class: "dl-jenis-peta", "data-aktif": j[0]}, btn, menu);
         btn.addEventListener("click", e => { e.stopPropagation(); const jadi = !w.classList.contains("buka"); tutupMenu(); w.classList.toggle("buka", jadi); btn.setAttribute("aria-expanded", String(jadi));
           if (jadi) menu.querySelector('[aria-selected="true"]')?.focus({preventScroll: true}); });
         menu.addEventListener("keydown", e => { if (!["ArrowDown", "ArrowUp"].includes(e.key)) return; e.preventDefault(); const bs = [...menu.querySelectorAll("button")], i = bs.indexOf(document.activeElement);

@@ -636,3 +636,16 @@ h1.dl-l1{margin:0;padding:12px 16px;border-radius:14px;background:#0b2545;color:
 .dl-pop-mini>.dl-pop-label{margin:0;padding:10px 14px 0;gap:6px}
 .dl-pop-mini>.dl-tip-angka{margin:10px 14px 12px;gap:8px}
 .dl-pop-mini>.dl-pop-label:last-child{padding-bottom:12px}
+/* warna per jenis bencana di pemilih (pemilik 11 Nov 2026 "iconnya agar ada warnanya") */
+.dl-jp-menu [data-jenis="karhutla"],.dl-jenis-peta[data-aktif="karhutla"]{--jw:#e8590c}
+.dl-jp-menu [data-jenis="banjir"],.dl-jenis-peta[data-aktif="banjir"]{--jw:#1f6fb2}
+.dl-jp-menu [data-jenis="longsor"],.dl-jenis-peta[data-aktif="longsor"]{--jw:#8b5e34}
+.dl-jp-menu [data-jenis="gunungapi"],.dl-jenis-peta[data-aktif="gunungapi"]{--jw:#c0392b}
+.dl-jp-menu [data-jenis="gempa"],.dl-jenis-peta[data-aktif="gempa"]{--jw:#7c3aed}
+.dl-jp-menu [data-jenis="cuaca"],.dl-jenis-peta[data-aktif="cuaca"]{--jw:#0891b2}
+.dl-jp-menu [data-jenis="kekeringan"],.dl-jenis-peta[data-aktif="kekeringan"]{--jw:#b7791f}
+.dl-jp-menu [data-jenis="gelombang"],.dl-jenis-peta[data-aktif="gelombang"]{--jw:#0e7490}
+.dl-jp-menu [data-jenis="permukiman"],.dl-jenis-peta[data-aktif="permukiman"]{--jw:#dc2626}
+.dl-jp-menu button>i{background:color-mix(in srgb,var(--jw,#0b2545) 12%,#fff);color:var(--jw,#0b2545)}
+.dl-jp-menu button[aria-selected="true"]>i{background:var(--jw,#0b2545);color:#fff}
+.dl-jenis-peta .dl-jp-ik{background:var(--jw,#0b2545)}
