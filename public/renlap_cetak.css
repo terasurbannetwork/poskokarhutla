@@ -3,12 +3,12 @@
 @page{size:A4 landscape;margin:0}
 *{box-sizing:border-box}
 body{margin:0;font-family:Inter,Roboto,"Helvetica Neue",Arial,sans-serif;color:#0b2545;background:#e9eef5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-.alat{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:14px;padding:10px 18px;background:#0b2545;color:#fff;font-size:14px}
+.alat{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:14px;padding:10px 18px;background:#0b2545;color:#fff;font-size:.875rem}
 .alat label{display:flex;align-items:center;gap:8px;font-weight:600}
-.alat select{height:34px;border:0;border-radius:8px;padding:0 10px;font:600 13px Inter,Arial;color:#0b2545}
-.alat .info{padding:2px 10px;border-radius:999px;background:rgb(255 255 255 / .14);font-size:12px;font-weight:700}
-.alat button{margin-left:auto;height:36px;padding:0 16px;border:0;border-radius:999px;background:#fff;color:#0b2545;font:800 13px Inter,Arial;cursor:pointer}
-.pesan{margin:24px auto;max-width:900px;font-size:14px;color:#3d4b60}
+.alat select{height:34px;border:0;border-radius:8px;padding:0 10px;font:600 .8125rem Inter,Arial;color:#0b2545}
+.alat .info{padding:2px 10px;border-radius:999px;background:rgb(255 255 255 / .14);font-size:.75rem;font-weight:700}
+.alat button{margin-left:auto;height:36px;padding:0 16px;border:0;border-radius:999px;background:#fff;color:#0b2545;font:800 .8125rem Inter,Arial;cursor:pointer}
+.pesan{margin:24px auto;max-width:900px;font-size:.875rem;color:#3d4b60}
 #isi{display:grid;justify-content:center;gap:16px;padding:16px 0 40px}
 .hal{width:297mm;height:210mm;padding:9mm 10mm 7mm;position:relative;overflow:hidden;background:#fff;box-shadow:0 6px 24px rgb(11 37 69 / .14)}
 .ey{font-size:7.5pt;font-weight:700;letter-spacing:.02em;color:#5b6b82}

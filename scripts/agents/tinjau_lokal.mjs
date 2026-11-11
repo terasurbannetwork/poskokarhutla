@@ -54,8 +54,12 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
       if (kuki.length) keluar["set-cookie"] = kuki;
       const loc = r.headers.get("location"); if (loc) keluar.location = loc.replace(H.origin, asal);
       let isi = Buffer.from(await r.arrayBuffer());
-      const htmlLokal = r.ok && (r.headers.get("content-type") || "").includes("text/html") &&
-        (ruteHtml ? await berkas(publik, ruteHtml[1]) : jalur.endsWith(".html") && await berkas(publik, jalur));
+      /* rute HTML baru yang belum terbit di produksi (hulu 404) tetap disajikan dari folder kerja */
+      const baru = r.status === 404 && ruteHtml && await berkas(publik, ruteHtml[1]);
+      const htmlLokal = baru || (r.ok && (r.headers.get("content-type") || "").includes("text/html") &&
+        (ruteHtml ? await berkas(publik, ruteHtml[1]) : jalur.endsWith(".html") && await berkas(publik, jalur)));
+      let status = r.status;
+      if (baru) { status = 200; keluar["content-type"] = "text/html; charset=utf-8"; }
       if (htmlLokal) {
         const tagHulu = /<html[^>]*>/i.exec(isi.toString("utf8"))?.[0];
         let h = await fs.readFile(htmlLokal, "utf8");
@@ -66,7 +70,7 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
         const h = isi.toString("utf8");
         if (!h.includes("/inti/dasbor.css")) { isi = Buffer.from(h.replace("</head>", '<link href="/inti/dasbor.css" rel="stylesheet">\n<script src="/inti/dasbor_admin.js" defer></script>\n</head>')); keluar["cache-control"] = "no-store"; }
       }
-      res.writeHead(r.status, keluar);
+      res.writeHead(status, keluar);
       res.end(req.method === "HEAD" ? undefined : isi);
     } catch (e) {
       res.writeHead(502, {"content-type": "text/plain; charset=utf-8"}); res.end("tinjau lokal: " + e.message);

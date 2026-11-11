@@ -41,3 +41,5 @@ di `http://localhost:8800/operasi`, baru tiket berikutnya. Tiket yang menunggu Q
 - Tabel operator muat tanpa geser dengan bilah utilisasi.
 - Feed METAR BMKG lewat bot Mac mini, antrean `jarak_pandang.yml` sendiri.
 - Kartu peta operasi udara (K8).
+
+| UD-25 | F-15 renlap siap cetak (pemilik 11 Nov 2026: "tiap hari ada icon renlap yang langsung dibuka ... sesuai bentuk ini" dengan contoh Renlap Merauke 30 Okt) | halaman `/renlap-cetak?base=&tgl=&versi=` (`public/renlap_cetak.*`) merender di peramban pola `scripts/operasi/renlap_pdf.py`: peta rute di citra Esri + urutan CP, tabel leg pilot, satu halaman per CP; cetak = simpan PDF. Tombol "Renlap" di kaki kartu Renlap tiap base. Tidak menggantikan UD-01 (PDF bot di R2) | selesai 11 Nov 2026 |
