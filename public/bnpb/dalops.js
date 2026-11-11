@@ -433,23 +433,68 @@
   }
 
   /* ---------- perlu ditanya ---------- */
+  /* ---------- Cek Kabar Luar (data/kajian-bnpb/cek-kabar/): label per kab/kota dari berita dan data alam; tidak pernah menutup kejadian ---------- */
+  const LUAR = {masih: ["Masih berlangsung", null, "merah"], mungkin_selesai: ["Kemungkinan selesai", "ok", "biru"], belum_ada: ["Belum ada kabar luar", "peringatan", "kuning"]};
+  const TIP_LUAR = {masih: "ada berita sesudah laporan resmi terakhir yang menyebut korban, pengungsi, atau penanganan",
+    mungkin_selesai: "ada berita yang tegas menyebut selesai, atau lama tanpa kabar dan kondisi alamnya normal", belum_ada: "tidak ada berita yang cocok atau sinyal alam belum cukup"};
+  const labelLuar = x => {
+    const [t, ik, nada] = LUAR[x.luar.label] || LUAR.belum_ada, e = label(t, ik || J.ik, nada);
+    e.setAttribute("data-tip", `<b>Deteksi Centurisk97, bukan laporan resmi</b><br>${TIP_LUAR[x.luar.label] || ""}`);
+    return e;
+  };
+  const amanUrl = u => /^https?:\/\//i.test(u || "") ? u : null;
+  function buktiLuar(x) {
+    const L = x.luar, b = L.bukti || [];
+    if (b.length) {
+      const li = a => h("li", null, amanUrl(a.url) ? h("a", {href: a.url, target: "_blank", rel: "noopener noreferrer", teks: a.judul}) : h("span", {teks: a.judul}),
+        h("span", {class: "dl-redup", teks: ` ${a.media || "media tidak tercatat"}, ${H.tglPendek(a.tgl)}`}), " ", label(a.arah === "pulih" ? "pulih" : "masih", a.arah === "pulih" ? "ok" : J.ik, a.arah === "pulih" ? "biru" : "merah"));
+      return h("details", {class: "dl-bukti"}, h("summary", {teks: `${F(b.length)} berita, terbaru ${H.tglPendek(b[0].tgl)}`}), h("ul", null, b.map(li)));
+    }
+    if (L.dasar === "alam") return h("span", {teks: `${F(L.senyap)} hari tanpa kabar, kondisi alam normal`});
+    return h("span", {class: "dl-redup", teks: L.catatan === "sumber tidak terjangkau" ? "Sumber berita tidak terjangkau saat dicek" : L.alam === "aktif" ? "Belum ada berita, kondisi alam masih aktif" : "Belum ada berita yang cocok"});
+  }
+  function bagianLuar(kel, hari) {
+    const xs = kel.filter(x => !x.surut && x.luar);
+    if (!xs.length) return null;   // berkas lama tanpa kolom 'luar'
+    const n = H.ringkasLuar(kel), rank = x => H.WASPADA_LUAR[x.luar.label] ?? 1;
+    xs.sort((a, b) => rank(a) - rank(b) || (b.luar.senyap ?? 0) - (a.luar.senyap ?? 0) || a.nama.localeCompare(b.nama));
+    let no = 0;
+    const tb = h("tbody", null, xs.map(x => h("tr", {"data-luar": x.luar.label}, td(F(++no), true), h("td", null, kab(x, true)), tdv(labelLuar(x), rank(x)), h("td", null, buktiLuar(x)),
+      tdv(F(x.luar.senyap ?? 0) + " hari", x.luar.senyap ?? 0), tdv(H.tglPendek(x.terakhir), x.terakhir.replace(/-/g, "")),
+      h("td", null, h("div", {class: "dl-aksi"}, tombolHistori(x), tombolWA(x, H.pesanWA({...x, kurang: []}, H.KATA[J.k]), x.luar.label === "mungkin_selesai" ? "permintaan konfirmasi selesai" : "permintaan pembaruan"))))));
+    /* saring: klik label = hanya label itu, klik lagi = semua. Hanya mengganti hidden (INP) */
+    const tombol = Object.entries(LUAR).map(([k, [t, ik, nada]]) => h("button", {type: "button", class: "dl-luar-pil dl-tag-" + nada, "data-luar": k, "aria-pressed": "false"}, ikon(ik || J.ik), `${F(n[k])} ${t.toLowerCase()}`));
+    const saring = h("div", {class: "dl-luar-saring", role: "group", "aria-label": "Saring menurut kabar luar"}, ...tombol);
+    saring.addEventListener("click", e => {
+      const b = e.target.closest("[data-luar]"); if (!b) return;
+      const pilih = b.getAttribute("aria-pressed") === "true" ? null : b.dataset.luar;
+      tombol.forEach(t => t.setAttribute("aria-pressed", String(t.dataset.luar === pilih)));
+      for (const tr of tb.rows) tr.hidden = !!pilih && tr.dataset.luar !== pilih;
+    });
+    const sel = H.KATA[J.k].selesai;   // surut, tertangani, padam, selesai, berakhir
+    const judul = n.mungkin_selesai ? ["Terdapat ", hl(`${F(n.mungkin_selesai)} kab/kota`), ` kemungkinan sudah ${sel} tapi belum dilaporkan`]
+      : ["Kabar luar untuk ", hl(`${F(xs.length)} kab/kota`), ` yang belum dilaporkan ${sel}`];
+    return bagian("luar", "daftar", "Kabar luar", judul, saring, tabelStd(["No", "Kab/kota", "Kabar luar", "Bukti", "Tanpa kabar", "Laporan resmi terakhir", "Aksi"], tb));
+  }
+
   function bagianTanya(daftar, sk, st, hari) {
     if (!daftar.length) return bagian("tanya", "ok", "Kelengkapan data", `Semua wilayah yang ${J.tidak_k} sudah berkabar lengkap`, kosong("ok", "Tidak ada yang perlu ditanya hari ini."));
     let n = 0;
     const pra = J.pra !== false;   // jenis tanpa prakiraan: kolom Prakiraan besok dibuang
+    const adaLuar = daftar.some(x => x.luar);   // berkas lama tanpa kolom 'luar': kolom Kabar luar dibuang
     const tb = kelompokProv(daftar, (a, b) => b[1][0].umur - a[1][0].umur || b[1].length - a[1].length).map(([p, xs]) =>
-      tbodyProv(namaProv(p, xs[0].prov), `${F(xs.length)} kab/kota`, null, pra ? 7 : 6, xs.map(x => {
+      tbodyProv(namaProv(p, xs[0].prov), `${F(xs.length)} kab/kota`, null, (pra ? 7 : 6) + (adaLuar ? 1 : 0), xs.map(x => {
         /* status.json hanya memuat kecamatan berlevel > 0 (scripts/banjir/status.py): kab tak tercantum = Aman */
         const b = st ? (sk[x.kab_kode]?.b?.[1] ?? 0) : null, kurang = [...x.kurang.filter(k => k !== "kabar"), ...["kk_u", "mengungsi"].filter(f => x[f] == null),
           ...(x.kec.length || x.desa.some(d => d.kec) ? [] : ["kec"]), ...(x.desa.length ? [] : ["desa"]), ...(upayaKini(x, hari) ? [] : ["upaya"])].sort((a, b) => URUT_KURANG.indexOf(a) - URUT_KURANG.indexOf(b));   // pengungsi, kecamatan, desa: tampil saja, bukan syarat ditanya
-        return h("tr", null, td(F(++n), true), h("td", null, kab(x)),
+        return h("tr", null, td(F(++n), true), h("td", null, kab(x)), adaLuar ? tdv(x.luar ? labelLuar(x) : "–", x.luar ? H.WASPADA_LUAR[x.luar.label] : 9) : null,
           tdv(h("b", {class: "dl-umur " + nadaUmur(x.umur), teks: x.umur < 1 ? "Hari ini" : F(x.umur) + " hari"}), x.umur), tdv(H.tglPendek(x.terakhir), x.terakhir.replace(/-/g, "")),
           tdv(kurang.length ? h("div", {class: "dl-chips"}, kurang.map(k => label(KURANG[k][0], KURANG[k][1], "kuning"))) : label("Angka lengkap", "ok", "hijau"), kurang.length),
           pra ? tdv(b == null ? "–" : status(b), b) : null,
-          h("td", null, h("div", {class: "dl-aksi"}, tombolHistori(x), tombolWA(x, H.pesanWA(upayaKini(x, hari) ? x : {...x, kurang: [...x.kurang, "upaya"]}, H.KATA[J.k]), "permintaan pembaruan"))));
+          h("td", null, h("div", {class: "dl-aksi"}, tombolHistori(x), tombolWA(x, H.pesanWA(upayaKini(x, hari) ? x : {...x, kurang: [...x.kurang, "upaya"]}, H.KATA[J.k]), x.luar?.label === "mungkin_selesai" ? "permintaan konfirmasi selesai" : "permintaan pembaruan"))));
       })));
     return bagian("tanya", "tunggu", "Kelengkapan data", ["Terdapat ", hl(`${F(daftar.length)} kab/kota`), " di ", hl(`${F(tb.length)} provinsi`), " yang perlu dilakukan konfirmasi data dan informasi"],
-      tabelStd(["No", "Kab/kota", "Tanpa kabar", "Kabar terakhir", "Data belum ada", ...pra ? ["Prakiraan besok"] : [], "Aksi"], ...tb));
+      tabelStd(["No", "Kab/kota", ...adaLuar ? ["Kabar luar"] : [], "Tanpa kabar", "Kabar terakhir", "Data belum ada", ...pra ? ["Prakiraan besok"] : [], "Aksi"], ...tb));
   }
 
   /* ---------- prakiraan banjir per hari + hujan tiga hari per tanggal ---------- */
@@ -516,6 +561,7 @@
 
     panel[jenis].replaceChildren(...[   // replaceChildren bawaan menulis 'null': saring dulu
       bagianWilayah(pekan, prov, hari, sk, hariSt),
+      bagianLuar(kel, hari),
       bagianTanya(tanya, sk, st, hari),
       !adaPra ? null : st ? bagian("prakiraan", "peringatan", "Peringatan dini", siagaJudul(H.siaga(sk, sudah, 2)), wadahPra, J.tinggi ? bagianArti() : null)
         : bagian("prakiraan", "peringatan", "Peringatan dini", `Prakiraan ${J.kata} belum termuat`, kosong("peringatan", "status.json gagal dimuat, coba muat ulang.")),

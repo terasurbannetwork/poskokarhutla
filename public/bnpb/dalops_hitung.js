@@ -60,10 +60,23 @@
       /* tindakan: dari kejadian terakhir yang mengisinya (urutan kabar naik, jadi yang terbaru menang) */
       for (const f of TINDAK) if (k[f]?.length) x[f] = k[f];
       if (k.upaya_tgl && (!x.upaya_tgl || k.upaya_tgl >= x.upaya_tgl)) x.upaya_tgl = k.upaya_tgl;
+      if (k.luar) x.luar = gabungLuar(x.luar, k.luar);   // Cek Kabar Luar: label paling waspada, bukti gabungan
       x.id.push(k.id); m.set(kunci, x);
     }
     return [...m.values()].sort((a, b) => a.prov_kode.localeCompare(b.prov_kode) || a.nama.localeCompare(b.nama));
   }
+  /* Cek Kabar Luar (data/kajian-bnpb/cek-kabar/ALGORITMA 5): label kelompok = yang paling waspada (masih > belum_ada > mungkin_selesai),
+     bukti gabungan maksimal 5 terbaru tanpa dobel tautan. Label tidak pernah menutup kejadian. */
+  const WASPADA_LUAR = {mungkin_selesai: 0, belum_ada: 1, masih: 2};
+  function gabungLuar(a, b) {
+    if (!a) return {...b, bukti: [...(b.bukti || [])]};
+    const menang = (WASPADA_LUAR[b.label] ?? 1) > (WASPADA_LUAR[a.label] ?? 1) ? b : a, lihat = new Set();
+    const bukti = [...(a.bukti || []), ...(b.bukti || [])].sort((x, y) => (y.tgl || "").localeCompare(x.tgl || "")).filter(x => !lihat.has(x.url) && lihat.add(x.url)).slice(0, 5);
+    return {...menang, senyap: Math.min(a.senyap ?? 999, b.senyap ?? 999), bukti};
+  }
+  /* ringkasan label per tab: dihitung dari kelompok belum selesai yang berlabel */
+  const ringkasLuar = kel => kel.filter(x => !x.surut && x.luar).reduce((n, x) => (n[x.luar.label] = (n[x.luar.label] || 0) + 1, n), {masih: 0, mungkin_selesai: 0, belum_ada: 0});
+
   /* lama banjir dalam hari, termasuk hari mulai: belum surut s.d. hari logbook, sudah surut s.d. kabar terakhir (sama dengan deck) */
   const lama = (x, h) => selisih(x.surut ? x.terakhir : h, x.mulai || x.terakhir) + 1;
   const sepekan = (kel, h) => kel.filter(x => selisih(h, x.terakhir) <= SEPEKAN);
@@ -89,9 +102,11 @@
       if (x.kk == null) kurang.push("kk");
       if (x.jiwa == null) kurang.push("jiwa");
       if (j.tinggi && x.tinggi_cm == null) kurang.push("tinggi");
-      if (kurang.length) out.push({...x, umur, kurang, senyap: umur > SEPEKAN});
+      if (kurang.length || x.luar?.label === "mungkin_selesai") out.push({...x, umur, kurang, senyap: umur > SEPEKAN});   // kemungkinan selesai ikut ditanya walau angkanya lengkap
     }
-    return out.sort((a, b) => b.umur - a.umur || a.nama.localeCompare(b.nama));
+    /* urutan: label kabar luar (kemungkinan selesai dulu, lalu belum ada kabar, lalu masih), lalu paling lama senyap; tanpa label = belum ada kabar */
+    const rank = x => WASPADA_LUAR[x.luar?.label ?? "belum_ada"];
+    return out.sort((a, b) => rank(a) - rank(b) || (b.luar?.senyap ?? b.umur) - (a.luar?.senyap ?? a.umur) || b.umur - a.umur || a.nama.localeCompare(b.nama));
   }
 
   /* status.json per kecamatan -> per kab: level harian = tertinggi di kecamatannya, h3 = tertinggi, h3d = hujan tiga hari per tanggal (tertinggi) */
@@ -130,6 +145,10 @@
   const NAMA_KURANG = j => ({kabar: "kondisi terkini dan " + j.tanya, kk: "jumlah KK terdampak", jiwa: "jumlah jiwa terdampak", tinggi: "tinggi genangan (cm)", upaya: "upaya penanganan yang sudah dilakukan"});
   /* pesan siap tempel ke grup WA BPBD: netral-formal, tanpa sapaan nama */
   function pesanWA(x, j = KATA.banjir) {
+    /* kemungkinan selesai menurut kabar luar: minta konfirmasi, tanpa meneruskan isi berita (KEAMANAN-PRIVASI cek-kabar) */
+    if (x.luar?.label === "mungkin_selesai")
+      return `Yth. rekan BPBD ${x.nama}. Pusdalops BNPB mencatat ${j.kata} di ${x.nama} sejak ${tglPanjang(x.mulai)}, kabar terakhir ${tglPanjang(x.terakhir)}, belum dilaporkan ${j.selesai}.\n` +
+        `Mohon konfirmasi apakah sudah selesai (${j.selesai}). Bila sudah, mohon tanggal ${j.selesai} dan angka akhir terdampak. Bila belum, mohon kondisi terkini. Terima kasih.`;
     const minta = [...new Set(["kabar", ...x.kurang])].map(k => NAMA_KURANG(j)[k]);
     if (x.mengungsi == null) minta.push("jumlah warga mengungsi dan lokasi pengungsian");
     return `Yth. rekan BPBD ${x.nama}. Pusdalops BNPB mencatat ${j.kata} di ${x.nama} sejak ${tglPanjang(x.mulai)}, kabar terakhir ${tglPanjang(x.terakhir)}, belum dilaporkan ${j.selesai}.\n` +
@@ -282,6 +301,6 @@
       `Bila ada kebutuhan mendesak (${j.alat}), mohon disampaikan sekalian. Terima kasih.`;
   }
 
-  const X = {kunciKejadian, normLokasi, ringkasLaporan, tanggalPantau, tglLogbook, cocokLogbook, labelKejadian, kataJenis, pesanTagih, NAMA_JENIS, mitigasi, KATA, SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perKec, adaAngka, gabungRiwayat, perluDitanya, statusKab, siaga, pesanWA, pesanSiaga, pesanProv, tglPanjang, tglPendek, namaKab};
+  const X = {gabungLuar, ringkasLuar, WASPADA_LUAR, kunciKejadian, normLokasi, ringkasLaporan, tanggalPantau, tglLogbook, cocokLogbook, labelKejadian, kataJenis, pesanTagih, NAMA_JENIS, mitigasi, KATA, SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perKec, adaAngka, gabungRiwayat, perluDitanya, statusKab, siaga, pesanWA, pesanSiaga, pesanProv, tglPanjang, tglPendek, namaKab};
   g.DalopsHitung = X;
 })(globalThis);

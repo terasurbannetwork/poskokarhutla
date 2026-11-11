@@ -44,3 +44,5 @@ html[data-baca-saja] .lb-isian .lb-imp,
 html[data-baca-saja] .lb-isian>.pp-cat{display:none}
 /* /bnpb/dalops tab Laporan Masuk: tombol WA minta pembaruan */
 html[data-baca-saja] .lm-tagih-aksi{display:none}
+/* /bnpb/dalops tab jenis: tombol WA minta pembaruan atau konfirmasi selesai (Cek Kabar Luar CK-06) */
+html[data-baca-saja] .dl-wa{display:none}
