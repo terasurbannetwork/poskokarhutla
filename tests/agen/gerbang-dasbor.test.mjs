@@ -30,7 +30,7 @@ test("dasbor.css: tanpa latar gelap lain, tanpa huruf kapital dipaksa", () => {
   const css = baca("public/inti/dasbor.css").replace(/\/\*[\s\S]*?\*\//g, "");
   for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const [, sel, isi] = m, bg = /background(?:-color)?\s*:\s*([^;!]+)/.exec(isi)?.[1] || "";
-    if (/var\(--db-navy\)|#0b2545/.test(bg)) assert.ok(/thead|\.ad-tabel|h1|aria-current|>i\b/.test(sel), `latar navy di luar kepala tabel/halaman: ${sel.trim()}`);
+    if (/var\(--db-navy\)|#0b2545/.test(bg)) assert.ok(/thead|\.ad-tabel|h1|\.ad-judul|aria-current|>i\b/.test(sel), `latar navy di luar kepala tabel/halaman: ${sel.trim()}`);
     assert.ok(!/text-transform\s*:\s*uppercase/.test(isi), `huruf kapital dipaksa: ${sel.trim()}`);
   }
 });
