@@ -1479,3 +1479,67 @@
 #opsLaporan .ops-kanan{display:grid;grid-template-rows:auto minmax(0,1fr);gap:16px;min-width:0;min-height:0}
 #opsLaporan .ops-kanan>.ops-periode{position:static;margin:0;padding:12px 14px;border:1px solid var(--line);border-radius:20px;background:var(--card);box-shadow:var(--shadow)}
 @media (max-width:900px){#opsLaporan .ops-kanan>.ops-periode{position:sticky;top:0;z-index:6}}
+/* panel kanan peta: rincian titik yang diklik; panel kiri tetap daftar base (pemilik 11 Nov 2026) */
+#opsLaporan .ops-laci-r{left:auto;right:12px;width:320px}
+#opsLaporan .ops-laci-r>.ops-laci-isi>header{display:flex;align-items:center;gap:10px;padding:12px 10px 12px 16px;background:#0b2545;color:#fff;border-bottom:0}
+#opsLaporan .ops-laci-r>.ops-laci-isi>header>i .ops-lbl svg{color:#9cc3ff}
+#opsLaporan .ops-laci-r>.ops-laci-isi>header h4{flex:0 1 auto;color:#fff;margin:0}
+#opsLaporan .ops-laci-r>.ops-laci-isi>header small{flex:1;min-width:0;padding:0;background:none;color:#b9c9e0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#opsLaporan .ops-laci-r .ops-laci-x{color:#fff}
+#opsLaporan .ops-laci-r .ops-laci-badan{border-top:0;padding:12px}
+@media (max-width:640px){#opsLaporan .ops-laci-r{left:8px;right:8px;width:auto}}
+/* label nilai kartu base: bentuk sama dengan pil kelayakan */
+#opsLaporan .pill.ops-pbv.ok{background:color-mix(in srgb,#2e8b57 14%,transparent);color:#1f6b42}
+#opsLaporan .pill.ops-pbv.awas{background:color-mix(in srgb,#e08a3a 16%,transparent);color:#a35512}
+#opsLaporan .pill.ops-pbv.bahaya{background:color-mix(in srgb,#c9503a 15%,transparent);color:#a63a26}
+#opsLaporan .pill.ops-pbv.kosong{background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--ink2)}
+#opsLaporan .ops-pb>ul>li>b{font-family:inherit}
+/* rencana tindakan: kolom pil lebih lebar, kolom kanan sejajar */
+#opsLaporan .ops-ap-daftar li,#opsLaporan .ops-ap-daftar li.gabung{grid-template-columns:40px minmax(0,1fr) 150px 170px 150px 14px}
+#opsLaporan .ops-ap-daftar .ops-ap-pil{margin-top:4px}
+#opsLaporan .ops-ap-pil button.telat{background:color-mix(in srgb,#a63a26 6%,var(--card))}
+#opsLaporan .ops-ap-pil button.telat>b{background:color-mix(in srgb,#a63a26 14%,transparent);color:#a63a26}
+@media (max-width:1300px){#opsLaporan .ops-ap-daftar li,#opsLaporan .ops-ap-daftar li.gabung{grid-template-columns:36px minmax(0,1fr) auto;row-gap:6px}#opsLaporan .ops-ap-untuk,#opsLaporan .ops-ap-tg{grid-column:2}#opsLaporan .ops-ap-daftar .ops-ap-st{grid-column:3;grid-row:1}#opsLaporan .ops-ap-daftar li>.ke{display:none}}
+/* Perlu tindakan kolom kanan: angka menempel di depan judul, nama di bawah sejajar awal isi (pemilik 11 Nov 2026 "bagusin") */
+@media (min-width:1180px){
+  #opsLaporan .ops-ringkas-slot .ops-tindak li button{grid-template-columns:36px minmax(0,1fr) auto;column-gap:12px;padding:12px 12px 12px 14px}
+  #opsLaporan .ops-ringkas-slot .ops-tindak li p{display:flex;align-items:baseline;gap:8px}
+  #opsLaporan .ops-ringkas-slot .ops-tindak li p b{flex:none;min-width:0;text-align:left;font-size:1.25rem}
+  #opsLaporan .ops-ringkas-slot .ops-tindak li p span{font-size:.84375rem;font-weight:700;line-height:1.3}
+  #opsLaporan .ops-ringkas-slot .ops-tindak-ring{margin-left:0}
+  #opsLaporan .ops-ringkas-slot .ops-tindak li i{width:36px;height:36px}
+}
+/* panel seksi kiri, rapi (pemilik 11 Nov 2026 "bagusin lagi") */
+#opsLaporan .ops-nav-g{margin:16px 0 6px;padding:0 6px;background:none}
+#opsLaporan .ops-nav-g .ops-lbl{font-size:.71875rem;font-weight:800;color:var(--ink2);letter-spacing:.01em}
+#opsLaporan .ops-nav-g .ops-lbl svg{width:18px;height:18px;padding:3px;border-radius:6px;background:color-mix(in srgb,var(--brand2) 14%,transparent);color:#1f3f73}
+#opsLaporan .ops-nav-g::after{display:block;content:"";flex:1;height:1px;background:var(--line)}
+#opsLaporan .ops-nav-isi button{gap:10px;padding:7px 8px;font-size:.84375rem}
+#opsLaporan .ops-nav-isi button>i{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:8px;background:color-mix(in srgb,var(--brand2) 9%,transparent)}
+#opsLaporan .ops-nav-isi button>i .ops-lbl svg{width:15px;height:15px}
+#opsLaporan .ops-nav-isi button[aria-current="page"]>i{background:rgb(255 255 255 / .14)}
+#opsLaporan .ops-nav-isi button>b.oranye{background:color-mix(in srgb,#e08a3a 18%,transparent);color:#a35512}
+#opsLaporan .ops-nav-isi button[aria-current="page"]>b.merah,#opsLaporan .ops-nav-isi button>b.merah{background:#c9503a;color:#fff}
+#opsLaporan .ops-nav-isi button[aria-current="page"]>b.oranye{background:#e08a3a;color:#fff}
+/* pil pembaruan data: latar putih bergaris, titik status, nilai berwarna */
+#opsLaporan .ops-segar,#opsLaporan .ops-segar.ok,#opsLaporan .ops-segar.tunggu,#opsLaporan .ops-segar.basi{--sc:var(--ink2);background:var(--card);box-shadow:inset 0 0 0 1px var(--line);padding:7px 10px}
+#opsLaporan .ops-segar.ok{--sc:#2e8b57}#opsLaporan .ops-segar.tunggu{--sc:#e08a3a}#opsLaporan .ops-segar.basi{--sc:#c9503a}
+#opsLaporan .ops-segar .ops-lbl{color:var(--ink)}
+#opsLaporan .ops-segar .ops-lbl svg{color:var(--sc)!important}
+#opsLaporan .ops-segar b{color:var(--sc)!important}
+#opsLaporan .ops-segar::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--sc);order:-1}
+#opsLaporan .ops-segar{gap:8px}
+#opsLaporan .ops-segar>.ops-lbl{flex:1}
+/* pemilih periode lebih rapat (pemilik 11 Nov 2026) */
+#opsLaporan .ops-kanan>.ops-periode{gap:6px;padding:8px 10px}
+#opsLaporan .ops-periode>.ops-pm{padding:3px;margin:0}
+#opsLaporan .ops-periode>.ops-pm button{padding-top:5px;padding-bottom:5px}
+#opsLaporan .ops-periode>.ops-p1{height:34px}
+#opsLaporan .ops-periode>.ops-p1 .ops-lgk,#opsLaporan .ops-periode>.ops-p1 .ops-ptg{padding-top:3px;padding-bottom:3px}
+#opsLaporan .ops-periode .ops-p2{height:44px}
+#opsLaporan .ops-periode .ops-hr{padding-top:3px;padding-bottom:3px;gap:0}
+/* periode tidak diam (pemilik 11 Nov 2026 "kenapa masih freeze"): wadah periode dan wadah isi bergulir bersama di kolom kanan */
+@media (min-width:901px){
+  #opsLaporan .ops-kanan{grid-template-rows:auto auto;align-content:start;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding-right:2px}
+  #opsLaporan .ops-utama{height:auto;overflow:visible}
+}
