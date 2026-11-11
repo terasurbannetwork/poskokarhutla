@@ -2080,6 +2080,48 @@
 #opsLaporan .ops-laci-aksi{padding:6px 10px;background:color-mix(in srgb,#2f6fd6 8%,#fff);box-shadow:inset 0 0 0 1px color-mix(in srgb,#2f6fd6 24%,#fff)}
 #opsLaporan .ops-laci-aksi .ops-lbl,#opsLaporan .ops-laci-aksi .ops-lbl svg{color:#0b2545}
 #opsLaporan .ops-laci-aksi:hover{background:color-mix(in srgb,#2f6fd6 14%,#fff)}
+/* tabel base: kolom kelayakan rapat (pemilik 11 Nov 2026 "bagusin") */
+#opsLaporan tr.ops-bb .ops-layak{grid-template-columns:6.5rem 4rem 3.5rem 5.25rem 1.5rem;gap:4px}
+#opsLaporan tr.ops-bb .ops-rl{display:inline-flex;align-items:center;gap:4px}
+#opsLaporan tr.ops-bb .ops-redup-t{display:inline-flex;padding:1px 9px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line);font-size:.6875rem;font-weight:600;color:var(--ink2)}
+/* histori: dua pemilih sebaris */
+#opsLaporan #opsHistori summary select+select{margin-left:6px}
+/* label base peta ringkas: angka armada di lingkaran, nama saja; mengurangi tumpang tindih */
+.ops-peta-base{padding:3px 10px 3px 3px;gap:6px}
+.ops-peta-base i{width:20px;height:20px;font-style:normal;font-size:.65625rem;font-weight:800;color:#fff}
+.ops-peta-base span{font-size:.6875rem}
+/* renlap kartu lebar: target dalam beberapa kolom supaya kartu tidak melar kosong */
+#opsLaporan .ops-rlk-tg{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));column-gap:16px}
+#opsLaporan .ops-rlk-tg li{border-bottom:0!important}
+/* tabel operator rapat (pemilik 11 Nov 2026 "bagusin"): utilisasi sebaris (angka + bilah), baris pendek, tanda nganggur titik oranye, bukan garis */
+#opsLaporan .ops-util{flex-direction:row;align-items:center;gap:8px;min-width:96px}
+#opsLaporan .ops-util b{min-width:3.2ch;text-align:right;font-variant-numeric:tabular-nums}
+#opsLaporan .ops-util i{flex:1;height:4px}
+#opsLaporan tr.ops-nganggur td:first-child{box-shadow:none}
+#opsLaporan tr.ops-nganggur td:first-child b::after{content:"siap, belum terbang";margin-left:8px;padding:1px 7px;border-radius:999px;background:color-mix(in srgb,#e08a3a 12%,#fff);color:#a35512;font-size:.625rem;font-weight:700;vertical-align:1px}
+#opsLaporan tr[data-op]>td{padding-top:6px!important;padding-bottom:6px!important}
+#opsLaporan tr.ops-total>td{background:color-mix(in srgb,#2f6fd6 3%,#fff)!important}
+/* tren 30 hari: batang lebih ramping dan muda, garis rata-rata tegas, grid putus-putus */
+#opsLaporan .ops-tren2-bar{gap:4px}
+#opsLaporan .ops-tren2-bar>span::after{background:color-mix(in srgb,var(--w) 45%,#fff);border-radius:3px 3px 0 0;left:12%;right:12%}
+#opsLaporan .ops-tren2-bar>span:hover::after,#opsLaporan .ops-tren2-bar>span.on::after{background:color-mix(in srgb,var(--w) 80%,#fff)}
+#opsLaporan .ops-tren2-ma{stroke-width:2.25!important}
+#opsLaporan .ops-tren2 svg line{stroke-dasharray:3 4}
+/* galeri: tempat foto yang belum termuat lebih muda */
+#opsLaporan .ops-gl-pra img,#opsLaporan .ops-galeri img{background:color-mix(in srgb,#2f6fd6 5%,#fff)}
+/* OMC rapi (pemilik 11 Nov 2026 "bagusin"): pil bahan muda bukan pekat, baris tabel rapat, ringkasan bahan sebaris dengan aksen warna */
+#opsLaporan .ops-omc-bahan{background:color-mix(in srgb,var(--bh,#475569) 12%,#fff);color:color-mix(in srgb,var(--bh,#475569) 85%,#000);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bh,#475569) 28%,#fff);padding:1px 9px}
+#opsLaporan .ops-omc-ringkas>div{padding:8px 12px;gap:10px;box-shadow:inset 3px 0 0 var(--bh,#7c3aed);border-color:color-mix(in srgb,#2f6fd6 14%,#fff)}
+#opsLaporan .ops-omc-ringkas>div>i{width:30px;height:30px;background:color-mix(in srgb,var(--bh,#7c3aed) 12%,#fff)}
+#opsLaporan .ops-omc-ringkas>div>i .ops-lbl svg{width:15px;height:15px;color:var(--bh,#7c3aed)}
+#opsLaporan .ops-omc-ringkas>div>span{flex-wrap:nowrap;gap:6px}
+#opsLaporan .ops-omc-ringkas>div>span>b{width:auto;margin-right:6px}
+#opsLaporan .ops-omc-ringkas small{background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+#opsLaporan .ops-omc-ringkas small .ops-lbl{color:#0b2545}
+#opsIsi [data-seksi="omc"] .ops-tw tbody td,#opsLaporan .ops-omc-sas{line-height:1.25}
+#opsLaporan .ops-tw tbody td:has(.ops-omc-bahan){padding-top:5px!important;padding-bottom:5px!important}
+#opsLaporan .ops-tw tbody tr:has(.ops-omc-bahan)>td{padding-top:5px!important;padding-bottom:5px!important}
+#opsLaporan .ops-utama{gap:14px}
 /* kaki kartu renlap tidak memotong pil di kartu sempit (pemilik 11 Nov 2026 "kepotong") */
 #opsLaporan .ops-rlk>footer{flex-wrap:wrap;gap:6px;padding:8px 10px 10px}
 #opsLaporan .ops-rlk>footer>.ops-rlk-ud{flex:1 1 0;min-width:0}
@@ -2157,3 +2199,36 @@
 #opsLaporan .ops-apr>.t b{font-size:.8125rem}
 #opsLaporan .ops-apm td:first-child,#opsLaporan .ops-apm th:first-child{width:34%}
 #opsLaporan .ops-apm td{padding-top:5px!important;padding-bottom:5px!important}
+/* legenda selalu di bawah grafik (pemilik 11 Nov 2026), dalam pil */
+#opsLaporan .ops-tren2-ket{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0;padding-top:8px;border-top:1px solid color-mix(in srgb,#2f6fd6 10%,#fff)}
+#opsLaporan .ops-tren2-ket>.ops-lbl,#opsLaporan .ops-tren2-ket>.ma{display:inline-flex;align-items:center;gap:5px;padding:1px 9px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font-size:.6875rem;font-weight:700;color:#0b2545}
+/* histori: dua pemilih berdekatan di kanan judul */
+#opsLaporan #opsHistori details.ops-kartu>summary{justify-content:flex-start}
+#opsLaporan #opsHistori summary .ops-kanan-k,#opsLaporan #opsHistori summary select{flex:none}
+#opsLaporan #opsHistori summary select[data-hbase]{margin-left:auto}
+#opsLaporan #opsHistori summary select+select{margin-left:6px!important}
+/* angka selalu tabular dan sejajar (riset dashboard 11 Nov 2026) */
+#opsLaporan b,#opsLaporan strong,#opsLaporan td,#opsLaporan .pill,#opsLaporan .ops-lbl{font-variant-numeric:tabular-nums}
+#opsLaporan .ops-pilih2{display:inline-flex;align-items:center;gap:6px;margin-left:auto}
+#opsLaporan .ops-pilih2 select{margin:0!important}
+/* kartu armada: status pindah ke badan sebaris dengan jenis pesawat, tidak bertabrakan dengan label peran di foto (pemilik 11 Nov 2026) */
+#opsLaporan .ops-akt .ops-ar-isi li.ops-ar-baris1{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+#opsLaporan .ops-akt .ops-ar-isi .ops-ar-baris1 .ops-ar-st{position:static;display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font-size:.71875rem;font-weight:700;color:var(--ink)}
+#opsLaporan .ops-akt .ops-ar-isi .ops-ar-tipe .ops-lbl{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:999px;background:color-mix(in srgb,#2f6fd6 8%,#fff);box-shadow:inset 0 0 0 1px color-mix(in srgb,#2f6fd6 20%,#fff);font-size:.71875rem;font-weight:800;color:#0b2545}
+#opsLaporan .ops-akt .ops-ar-isi .ops-ar-tipe .ops-lbl svg{width:12px;height:12px;color:#2f6fd6}
+#opsLaporan .ops-akt .ops-ar-isi .ops-ar-tipe.nihil .ops-lbl{background:#fff;color:var(--ink2);font-weight:600}
+/* tabel mini kontrak tidak meluber di kartu sempit */
+#opsLaporan .ops-kp-t thead .ops-lbl svg{display:none}
+#opsLaporan .ops-kp-t th:first-child{width:24%}
+#opsLaporan .ops-kp-t tbody td{font-size:.8125rem;padding-left:2px;padding-right:2px}
+/* ikon bahan semai di pil tabel OMC */
+#opsLaporan .ops-omc-bahan .ops-lbl{display:inline-flex;align-items:center;gap:4px;color:inherit;font-size:inherit;font-weight:inherit}
+#opsLaporan .ops-omc-bahan .ops-lbl svg{width:11px;height:11px;color:inherit}
+/* jam OMC lurus: mulai rata kanan, tanda pisah di tengah, selesai rata kiri (pemilik 11 Nov 2026) */
+#opsLaporan .ops-jamr{display:inline-grid;grid-template-columns:5ch 1.2ch 5ch;align-items:center;font-variant-numeric:tabular-nums}
+#opsLaporan .ops-jamr>b:first-child{text-align:right}
+#opsLaporan .ops-jamr>i{font-style:normal;text-align:center;color:var(--ink2)}
+#opsLaporan .ops-jamr>b:last-child{text-align:left}
+/* Google Maps sebaris dengan KML dan GPX di waypoint (pemilik 11 Nov 2026) */
+#opsLaporan .ops-laci .ops-laci-wp a.ops-kml{text-decoration:none}
+#opsLaporan .ops-laci .ops-laci-wp p{flex-wrap:wrap}
