@@ -48,21 +48,24 @@
   function kartuRingkas(R) {
     const sk = Object.entries(R.hari_arsip).map(([s, h]) => `${s} ${n(h)} hari target`).join(", "), tg = R.dinilai_sampai_per_kejadian || {};
     const judul = `Skor sumber baru tampil angka setelah ${hl(n(R.hari_min))} hari dinilai dan ${hl(n(R.n_min))} kejadian; sampai ${hl(tglIndo(R.dinilai_sampai))} baru ${hl(n(Math.max(0, ...R.sel.map(x => x.hari_dinilai))))} hari yang bisa dinilai`;
-    return kartu("k-ringkas", "data", "Cara membaca rapor", judul,
+    return kartu("k-ringkas", "data", "Ringkasan rapor", judul,
       `<div class="rs-pilpil">${pil("Dibuat " + tglIndo(R.dibuat), "info", "rs-pil-info")}${pil("Prakiraan beku sebelum hari target", "buku", "rs-pil-info")}</div>`,
       `<p class="rs-p">Arsip prakiraan yang dibaca: ${esc(sk)}. Kejadian DIBI dinilai sampai ${esc(tglIndo(tg.DIBI))} dan Logbook Pusdalops sampai ${esc(tglIndo(tg.Logbook))}, karena DIBI melapor telat dan hanya memuat yang dilaporkan: alarm palsu (b) tampak terlalu besar dan meleset (c) terlalu kecil. Prakiraan yang dibekukan pada hari target itu sendiri dibuang (${esc(n(R.dibuang))} baris).</p>`,
       `<ul class="rs-daftar">${R.catatan.map(c => `<li>${esc(c)}</li>`).join("")}</ul>`);
   }
   function kartuLewat(R) {
-    return kartu("k-lewat", "info", "Sumber yang tidak dinilai", `${hl(n(R.dilewati.length))} sumber belum dinilai, masing-masing dengan alasannya`,
+    return kartu("k-lewat", "info", "Sumber tak dinilai", `${hl(n(R.dilewati.length))} sumber belum dinilai, masing-masing dengan alasannya`,
       tabel(["Sumber", "Alasan"], R.dilewati.map(x => [x.sumber, x.alasan])));
   }
   async function mulai() {
-    const isi = $("#isi"), pesan = $("#pesan");
+    /* rapor digabung ke layar Silang sumber (sistem desain dashboard I3, pemilik 11 Nov 2026): /bnpb/rapor-sumber pindah ke /bnpb/silang */
+    if (!$("#isi-rapor")) { location.replace("/bnpb/silang#k-ringkas"); return; }
+    const isi = $("#isi-rapor"), pesan = $("#pesan-rapor");
     try {
       const R = await fetch("/data/bnpb/rapor_sumber.json").then(r => { if (!r.ok) throw new Error("rapor_sumber " + r.status); return r.json(); });
       isi.innerHTML = kartuRingkas(R) + Object.keys(BAHAYA).map(b => kartuBahaya(R, b)).join("") + kartuLewat(R);
       isi.hidden = false; pesan.hidden = true;
+      window.DasborA?.kaki([["#2e8b57", "Rapor dibuat", tglIndo(R.dibuat).replace(/ \d{4}$/, "")], ["#2f6fd6", "Dinilai sampai", tglIndo(R.dinilai_sampai).replace(/ \d{4}$/, "")]]);
       for (const b of Object.keys(BAHAYA)) isi.querySelector(`[data-aksi="kej-${b}"]`).addEventListener("click", e => {
         const t = e.target.closest("button[data-k]"); if (!t || t.getAttribute("aria-pressed") === "true") return;
         e.currentTarget.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === t)));

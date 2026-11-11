@@ -22,3 +22,8 @@
   .rs-tabel .ad-tabel td{display:table-cell;padding:9px 12px}.rs-tabel .ad-tabel td::before{content:none}
   .rs-tabel .ad-tabel thead tr{background:var(--gradien)}
 }
+/* tabel rapor muat tanpa geser di layar Silang sumber (panel kiri): sel rapat, kepala dua baris */
+.db-kanan .rs-tabel .ad-tabel{font-size:.75rem;min-width:0;width:100%}
+.db-kanan .rs-tabel .ad-tabel th,.db-kanan .rs-tabel .ad-tabel td{padding:6px 5px}
+.db-kanan .rs-tabel .ad-tabel th{white-space:normal;line-height:1.2}
+.db-kanan .rs-tabel .bn-pil{white-space:nowrap;font-size:.6875rem}

@@ -11,7 +11,8 @@ import {readFileSync} from "node:fs";
 const baca = p => readFileSync(new URL("../../" + p, import.meta.url), "utf8");
 const LAYAR = ["public/bnpb/kinerja.html", "public/bnpb/sitrep.html", "public/bnpb/rapor-sumber.html", "public/bnpb/silang.html",
   "public/logpal/index.html", "public/siklus/index.html", "public/petugas/panel.html", "public/kemitraan.html", "public/prediksi/index.html"];
-const MODEL_A = {"public/bnpb/sitrep.html": ["sr-nav", "sr-a"], "public/operasi_laporan.js": ["ops-nav", "ops-judul"]};
+const MODEL_A = {"public/bnpb/sitrep.html": ["sr-nav", "sr-a"], "public/operasi_laporan.js": ["ops-nav", "ops-judul"],
+  "public/bnpb/silang.html": ["/inti/dasbor.js", "isi-rapor"], "public/bnpb/silang.js": ["DasborA?.pasang"]};
 
 test("tiap layar dashboard memuat dasbor.css", () => {
   for (const f of LAYAR) assert.match(baca(f), /\/inti\/dasbor\.css/, `${f}: lapisan dasbor.css tidak dimuat`);

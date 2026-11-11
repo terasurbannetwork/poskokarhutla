@@ -86,7 +86,7 @@
     const b = k => { const d = R.nasional_jenis[k]; return [jn(k), n(d.pasangan), n(d.korban_banding), pn(d.korban_sama_persen, d.korban_banding), n(d.korban_dalops_lebih), n(d.korban_dibi_lebih), n(d.korban_selisih_median, 1),
       n(d.rumah_banding), pn(d.rumah_sama_persen, d.rumah_banding), n(d.rumah_dalops_lebih), n(d.rumah_dibi_lebih), n(d.rumah_selisih_median, 1), n(d.jeda_catat_median, 1), n(d.selisih_tgl_median, 1)]; };
     const th = Object.keys(R.nasional_tahun).sort().map(y => { const d = R.nasional_tahun[y]; return [thn(y), n(d.pasangan), pct(d.persen_dalops_ada_di_dibi), pct(d.persen_dibi_ada_di_dalops), pn(d.korban_sama_persen, d.korban_banding), pn(d.rumah_sama_persen, d.rumah_banding), n(d.jeda_catat_median, 1)]; });
-    return kartu("k-selisih", "beda", "Selisih pada pasangan yang cocok", judul,
+    return kartu("k-selisih", "beda", "Selisih pasangan", judul,
       `<div class="sg-pilpil">${pil("Perbandingan dua sumber, bukan penilaian", "info", "sg-pil-info")}${pil("Penyebab selisih masih hipotesis", "bahaya", "sg-pil-hip")}</div>`,
       asal("Data: logbook Pusdalops BNPB (Dalops) dan DIBI BNPB, pasangan dari kartu di atas.", R.dibuat),
       `<p class="sg-p">Hanya pasangan yang Dalops-nya menyebut angka yang dibandingkan; kejadian lintas kabupaten tidak, karena dampaknya tidak bisa dibagi. Korban adalah meninggal ditambah hilang, rumah adalah rusak berat, sedang, dan ringan. Dalops membaca angka dari teks laporan piket, DIBI memuat angka dari BPBD, jadi selisih tidak menunjukkan sumber mana yang benar. Median selisih dihitung hanya pada pasangan yang angkanya berbeda dan dikosongkan bila pasangan yang dibandingkan kurang dari 5. Persen dengan pembanding kurang dari 10 ditulis dengan tanda strip dan n. Angka judul tidak memuat tahun yang belum penuh.</p>`,
@@ -147,7 +147,7 @@
     return `<div class="sg-dua">${t("Bahaya rendah, sering kena", d.rendah_sering.contoh)}${t("Bahaya tinggi, jarang kena", d.tinggi_jarang.contoh, d.jarang_tak_bermakna)}</div>`;
   }
   function kartu3(I) {
-    return kartu("k-inarisk", "bahaya", "InaRISK lawan kejadian nyata", judulIna(I),
+    return kartu("k-inarisk", "bahaya", "InaRISK lawan kejadian", judulIna(I),
       `<div class="sg-pilpil">${pil("Hipotesis, belum diuji sebab", "bahaya", "sg-pil-hip")}${pil("Hanya DIBI yang dipakai di tingkat kabupaten", "info", "sg-pil-info")}</div>`,
       asal("Data: indeks bahaya InaRISK BNPB, kejadian DIBI BNPB, penduduk Dukcapil Kemendagri.", I.dibuat),
       `<p class="sg-p">Kelas bahaya InaRISK dibaca dari indeks bahaya rata-rata kecamatan di tiap kabupaten: di bawah 0,33 rendah, 0,67 ke atas tinggi. Satuan laju adalah kejadian DIBI per tahun, ${esc(String(I.tahun[0]))} sampai ${esc(String(I.tahun[1]))}, dibagi per 100 ribu penduduk atau per 1.000 km². Sering kena berarti laju di seperempat teratas seluruh kabupaten dan minimal 3 kejadian; jarang kena berarti di seperempat terbawah. Garis putus di tiap batang adalah dasar: persen seluruh kabupaten yang jatuh di ekor itu; bahaya yang tidak berhubungan dengan kejadian akan jatuh di dasar. Dua normalisasi ditampilkan berdampingan dan kesimpulan hanya dipegang bila keduanya sejalan. Bila banyak kabupaten tanpa kejadian (persentil 25 sama dengan 0 dan lebih dari separuh kabupaten), ekor jarang tidak bermakna. Persen dengan kelas kurang dari 10 kabupaten ditulis dengan tanda strip dan n.</p>`,
@@ -183,6 +183,7 @@
   }
 
   /* ---------- pasang ---------- */
+  window.DasborA?.pasang({nama: "Silang sumber", sub: "Rapor sumber, beda sumber, kajian kejadian"});   // model A (sistem desain dashboard)
   async function mulai() {
     const isi = $("#isi"), pesan = $("#pesan");
     try {
