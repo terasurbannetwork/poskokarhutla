@@ -1,0 +1,51 @@
+/* Renlap rute udara siap cetak (public/renlap_cetak.js): A4 lanskap, pola Renlap Merauke 30 Okt 2026 dan scripts/operasi/renlap_pdf.py.
+   Tanpa huruf kapital semua (selera pemilik). Di layar: halaman bertumpuk dengan bayangan; saat cetak: satu halaman A4 per bagian. */
+@page{size:A4 landscape;margin:0}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Roboto,"Helvetica Neue",Arial,sans-serif;color:#0b2545;background:#e9eef5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.alat{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:14px;padding:10px 18px;background:#0b2545;color:#fff;font-size:14px}
+.alat label{display:flex;align-items:center;gap:8px;font-weight:600}
+.alat select{height:34px;border:0;border-radius:8px;padding:0 10px;font:600 13px Inter,Arial;color:#0b2545}
+.alat .info{padding:2px 10px;border-radius:999px;background:rgb(255 255 255 / .14);font-size:12px;font-weight:700}
+.alat button{margin-left:auto;height:36px;padding:0 16px;border:0;border-radius:999px;background:#fff;color:#0b2545;font:800 13px Inter,Arial;cursor:pointer}
+.pesan{margin:24px auto;max-width:900px;font-size:14px;color:#3d4b60}
+#isi{display:grid;justify-content:center;gap:16px;padding:16px 0 40px}
+.hal{width:297mm;height:210mm;padding:9mm 10mm 7mm;position:relative;overflow:hidden;background:#fff;box-shadow:0 6px 24px rgb(11 37 69 / .14)}
+.ey{font-size:7.5pt;font-weight:700;letter-spacing:.02em;color:#5b6b82}
+h1{font-size:17pt;margin:1mm 0 0;font-weight:800}
+.kepala{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1.2px solid #0b2545;padding-bottom:2.5mm;margin-bottom:3.5mm}
+.per{font-size:7.5pt;color:#5b6b82;text-align:right}.per b{color:#1f6fb2;display:block}
+.kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm;margin-bottom:3.5mm}
+.kpi div{border-left:3px solid #0b2545;padding-left:3mm}.kpi div.o{border-color:#e8590c}
+.kpi b{font-size:16pt;display:block}.kpi .o b{color:#e8590c}.kpi span{font-size:7.5pt;color:#3d4b60}
+.dua{display:grid;grid-template-columns:118mm 1fr;gap:5mm;align-items:start}
+.dua.cp{grid-template-columns:150mm 1fr}
+.dua.lebar{grid-template-columns:190mm 1fr}
+.tumpuk{display:grid;gap:4mm;align-content:start}
+.peta{position:relative;border-radius:2mm;overflow:hidden;background:#20303f}
+.peta.tinggi{height:118mm}.peta.kotak{height:150mm;width:150mm}
+.peta svg{position:absolute;inset:0;width:100%;height:100%}
+.kartu{border:1px solid #d9e1ea;border-radius:2mm;overflow:hidden}
+.kartu h3{margin:0;font-size:8pt;padding:2.2mm 3mm;border-left:3px solid #e8590c;background:#f6f8fb}
+table{width:100%;border-collapse:collapse;font-size:7.6pt;font-variant-numeric:tabular-nums}
+th{font-size:6.6pt;color:#5b6b82;font-weight:600;text-align:left;padding:1.3mm 1.5mm;border-bottom:1px solid #0b2545}
+td{padding:1.4mm 1.5mm;border-bottom:1px solid #e6ebf1;vertical-align:top}
+.n{text-align:right;white-space:nowrap}.nw{white-space:nowrap}.jingga{color:#e8590c;font-weight:700}
+.mono{font-family:"SF Mono",Menlo,monospace;font-size:6.8pt;white-space:nowrap}.mono.bebas{white-space:normal;max-width:42mm}
+a{color:#1f6fb2;text-decoration:none}
+.bul{display:inline-flex;width:5.2mm;height:5.2mm;border-radius:50%;background:#e8590c;color:#fff;font-weight:800;font-size:7pt;align-items:center;justify-content:center}
+.bul.b{background:#0b2545}
+.leg{display:flex;gap:4mm;flex-wrap:wrap;font-size:7pt;color:#3d4b60;margin-top:1.5mm}
+.leg i{display:inline-block;width:2.6mm;height:2.6mm;border-radius:50%;margin-right:1mm;vertical-align:-.3mm}
+.leg i.m{background:#ef4444}.leg i.k{background:#facc15}.leg i.o{background:#e8590c}.leg i.n{background:#0b2545}.leg .biru{color:#0284c7}
+.fnd{font-size:7pt;color:#5b6b82;margin:2mm 3mm}
+.kaki{position:absolute;left:10mm;right:10mm;bottom:5mm;font-size:6pt;color:#7a879a;line-height:1.35}
+ul,ol{margin:2mm 3mm 2mm 7mm;padding:0;font-size:7.6pt;line-height:1.45}li{margin-bottom:1mm}
+.besar{font-size:15pt;font-weight:800;color:#1f6fb2;margin:2mm 3mm 0}.mono.b{font-size:9pt;margin:1mm 3mm 2mm;display:block}
+.tbl{display:inline-block;background:#1f6fb2;color:#fff;font-weight:700;font-size:7.5pt;padding:1.6mm 3mm;border-radius:1.2mm;margin:0 3mm 3mm}
+.pil{display:inline-block;font-size:7pt;font-weight:700;padding:1mm 2.6mm;border-radius:9mm;background:#fdebd3;color:#8a4a06;margin-left:1.5mm}
+.pil.abu{background:#eef1f5;color:#0b2545}.pil.biru{background:#dbeafe;color:#1e3a8a}
+.mini{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin:3mm 0}
+.mini div{background:#f6f8fb;border-radius:1.5mm;padding:2mm 3mm;font-size:7pt;color:#3d4b60}.mini b{font-size:11pt;color:#0b2545}
+.nocp{display:flex;gap:4mm;align-items:center}.nocp .bul{width:11mm;height:11mm;font-size:15pt}
+@media print{body{background:#fff}.alat,.pesan{display:none}#isi{display:block;padding:0}.hal{box-shadow:none;page-break-after:always}}
