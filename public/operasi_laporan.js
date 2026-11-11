@@ -93,7 +93,7 @@
     $("#opsLaporan .ops-nav-isi")?.querySelectorAll("[data-seksi]").forEach(b => b.setAttribute("aria-current", b.dataset.seksi === x[0] ? "page" : "false"));
     requestAnimationFrame(pasangPeta);
   }
-  const pindahSeksi = k => { seksiPilih[st.mode] = k; try { localStorage.setItem("ops_seksi_" + st.mode, k); } catch (e) {} terapSeksi(); $("#opsLaporan .ops-utama")?.scrollIntoView({block: "start"}); };
+  const pindahSeksi = k => { seksiPilih[st.mode] = k; try { localStorage.setItem("ops_seksi_" + st.mode, k); } catch (e) {} terapSeksi(); const u = $("#opsLaporan .ops-utama"); if (u) { u.scrollTop = 0; u.scrollIntoView({block: "nearest"}); } };
   const pilKategori = m => `<div class="seg ops-kat" role="group" aria-label="Kategori informasi">${KATEGORI_MODE[m].map(([k, t, ik]) => `<button type="button" data-kat="${k}" aria-pressed="${k === katPilih[m]}">${lbl(ik, t)}</button>`).join("")}</div>`;
   /* hanya atribut hidden, tanpa render ulang (INP) */
   const terapKat = root => root?.querySelectorAll("details.ops-kartu[data-kat], [data-kat-bungkus]").forEach(el => { el.hidden = (el.dataset.kat || el.dataset.katBungkus) !== katPilih[st.mode]; });

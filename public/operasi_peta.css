@@ -1425,3 +1425,9 @@
 #opsLaporan .ops-wadah details.ops-polos>summary .ex-jd::after{display:none}
 #opsLaporan .ops-wadah details.ops-polos>summary .ex-ey.ops-ey-ik{width:28px;height:28px;border-radius:8px}
 #opsLaporan .ops-wadah details.ops-polos>summary .ex-jd>h3{font-size:1rem}
+/* dua wadah rata atas dan sama tinggi: panel kiri diam, isi kanan bergulir di wadahnya sendiri (pemilik 11 Nov 2026) */
+@media (min-width:901px){
+  #opsLaporan .ops-a{height:calc(100vh - var(--top, 58px) - 44px);align-items:stretch}
+  #opsLaporan .ops-nav{position:relative;top:0;height:auto;max-height:none}
+  #opsLaporan .ops-utama{height:auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+}
