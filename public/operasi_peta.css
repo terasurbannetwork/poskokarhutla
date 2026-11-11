@@ -1913,3 +1913,8 @@
 #opsLaporan .ops-tm-peta{display:inline-flex;padding:2px 10px;border-radius:999px;background:color-mix(in srgb,#2f6fd6 8%,#fff);box-shadow:inset 0 0 0 1px color-mix(in srgb,#2f6fd6 20%,#fff);text-decoration:none}
 #opsLaporan .ops-tm-peta .ops-lbl{font-size:.71875rem;font-weight:700;color:#1f3f73}
 #opsLaporan .ops-tm-peta .ops-lbl svg{color:#2f6fd6}
+/* kepala tabel kembali navy tua, teks putih (pemilik 11 Nov 2026 "pakai format tabel biasa, warna tua tulisan putih") */
+#opsLaporan .ex-tabel thead th,#opsLaporan .ops-tw thead th{background:#0b2545!important;color:#fff!important;border-bottom:0!important;font-weight:700}
+#opsLaporan .ex-tabel thead th *,#opsLaporan .ops-tw thead th *{color:#fff!important}
+#opsLaporan .ops-tw thead th small{color:#b9c9e0!important}
+#opsLaporan .ops-tw thead th:hover{color:#9cc3ff!important}

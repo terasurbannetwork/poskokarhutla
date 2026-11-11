@@ -6,7 +6,8 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 
 const CSS = readFileSync(new URL("../../public/operasi_peta.css", import.meta.url), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
-const TERANG = ["#opsLaporan .ex-tabel thead th", "#opsLaporan .ops-wadah details.ops-kartu>summary.ex-hd", "#opsLaporan .ops-pb>header",
+/* kepala tabel dikecualikan: pemilik 11 Nov 2026 memilih kepala tabel navy tua bertulisan putih */
+const TERANG = ["#opsLaporan .ops-wadah details.ops-kartu>summary.ex-hd", "#opsLaporan .ops-pb>header",
   "#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary", "#opsLaporan .ops-ringkas-slot .ops-tindak>header",
   "#opsLaporan .ops-pa-sek>summary", "#opsLaporan .ops-omc-sas small.pv", "#opsLaporan .ops-pb-icao",
   "#opsLaporan .ops-wadah details.ops-kartu:not(.ops-polos)>summary.ex-hd"];
