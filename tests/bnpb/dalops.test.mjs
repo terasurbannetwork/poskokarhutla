@@ -384,3 +384,13 @@ test("layar Laporan Masuk: kartu standar, tanpa teks dampak, tanpa titik tengah,
   assert.match(readFileSync("public/bnpb/dalops.js", "utf8"), /\["laporan_masuk", "Laporan Masuk", "daftar"\], \["laporan", "Laporan", "simpan"\]/);
   assert.match(readFileSync("public/bnpb/dalops.html", "utf8"), /dalops_laporan_masuk\.js/);
 });
+
+test("menu Pusdalops: 6 grup di navbar, 13 halaman lama tetap terjangkau lewat deretan sub-halaman, tanpa daftar turun (pemilik 11 Nov 2026)", () => {
+  const js = readFileSync("public/bnpb/menu_pusdalops.js", "utf8");
+  const grup = js.match(/const GRUP = \[([\s\S]*?)\]\]\];/)[1];
+  assert.deepEqual([...grup.matchAll(/^\s*\["(\w+)", "\w+", \[/gm)].map(m => m[1]), ["Pantau", "Logbook", "Laporan", "Operasi", "Perencanaan", "Kontak"]);
+  const rute = [...grup.matchAll(/\["(\/[^"]*)", "/g)].map(m => m[1]);
+  for (const r of ["/bnpb/dalops", "/admin/pantau", "/bnpb/logbook", "/bnpb/bahan", "/admin/laporan-karhutla", "/admin/omc", "/laporan-bnpb", "/bnpb/dokumen",
+    "/bnpb/operasi", "/?operasi", "/bnpb/perencanaan", "/bnpb/siaga", "/daftar-kontak"]) assert.ok(rute.includes(r), r + " hilang dari menu");
+  assert.doesNotMatch(js, /<details|<select|dropdown/i, "tanpa daftar turun");
+});
