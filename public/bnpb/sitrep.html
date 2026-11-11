@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/bnpb/sitrep.css?v=3" rel="stylesheet">
+<link href="/bnpb/sitrep.css?v=5" rel="stylesheet">
 <link href="/inti/dasbor.css?v=1" rel="stylesheet">
 </head>
 <body>
@@ -17,7 +17,9 @@
   <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a>
   <span class="ad-sep">Sitrep</span>
 </header>
-<main class="bn-wrap">
+<main class="bn-wrap sr-a">
+  <aside class="sr-nav" id="srNav" aria-label="Seksi laporan"></aside>
+  <div class="sr-kanan">
   <div class="bn-judul">
     <h1>Laporan situasi</h1>
     <div class="bn-aksi sr-kontrol">
@@ -29,8 +31,9 @@
   </div>
   <p id="pesan" class="bn-pesan" role="status"></p>
   <article id="lap" class="sr-lap" aria-live="polite"><p class="bn-pesan" role="status">Memuat laporan.</p></article>
+  </div>
 </main>
 <script src="/bnpb/ringkas_bencana.js?v=1"></script>
-<script src="/bnpb/sitrep.js?v=5"></script>
+<script src="/bnpb/sitrep.js?v=6"></script>
 </body>
 </html>

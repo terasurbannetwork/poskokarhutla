@@ -210,7 +210,15 @@
       h("div", {class: "sr-pils"}, pil(namaWil(), "peta", "var(--navy2)"), ARSIP ? pil("Arsip " + tglPendek(ARSIP.tgl) + ", 07.00 WIB", "kotak", "var(--c2)") : pil(wib(model.kini, {day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false}).replace(".", ":") + " WIB", null, "var(--c7)"),
         dataTgl ? pil("Data terbaru " + jamWIB(dataTgl), null, "var(--c5)") : null));
     const grid = h("div", {class: "sr-grid"}, sNeraca(N), sWarga(model.warga), sRelawan(model.relawan), sMeja(model.meja), sAlun(model.alun), sLogbook(model.logbook));
-    lap.replaceChildren(kop, sKejadian(model.kej), sNaik(model.naik), grid);
+    lap.replaceChildren(sKejadian(model.kej), sNaik(model.naik), grid);
+    /* model A (sistem desain dashboard, pemilik 11 Nov 2026): panel kiri berisi identitas laporan, daftar seksi, dan kaki "Pembaruan data" */
+    const nav = $("srNav");
+    if (nav) {
+      const seksi = [...lap.querySelectorAll(".sr-kartu > h2")].map((j, i) => { const k = j.parentElement; k.id ||= "sr-s" + i; const b = h("button", {type: "button", class: "sr-nav-b"});
+        const ik = j.querySelector("svg"); if (ik) b.append(ik.cloneNode(true)); b.append(j.textContent.trim()); b.addEventListener("click", () => k.scrollIntoView({behavior: "smooth", block: "start"})); return b; });
+      const kaki = h("div", {class: "sr-nav-kaki"}, h("p", {class: "sr-nav-kk", teks: "Pembaruan data"}), ...[...kop.querySelectorAll(".bn-pil")].map(p => h("div", {class: "sr-nav-pb"}, p)));
+      nav.replaceChildren(h("div", {class: "sr-nav-id"}, ...kop.children[0] ? [kop.children[0], kop.children[1]] : []), h("nav", {class: "sr-nav-isi"}, h("p", {class: "sr-nav-kk", teks: "Seksi"}), ...seksi), kaki);
+    }
     document.title = `Laporan situasi ${namaWil()}, Centurisk97`;
   }
 
