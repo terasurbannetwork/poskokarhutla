@@ -1,0 +1,19 @@
+{
+ "public/admin/command_center.js": 1,
+ "public/admin/posko.js": 1,
+ "public/bagikan.js": 1,
+ "public/bnpb/antre.js": 1,
+ "public/gempa/inatews.js": 1,
+ "public/gempa/tsunami_zona.js": 1,
+ "public/index.html": 1,
+ "public/instansi.js": 1,
+ "public/jejak.js": 1,
+ "public/lacak.js": 1,
+ "public/lacak_lapor.js": 1,
+ "public/lapangan.js": 1,
+ "public/laporan.js": 1,
+ "public/pipa/lapangan.js": 1,
+ "public/pipa/layar_kit.js": 1,
+ "public/ringkasan.js": 2,
+ "public/titik_live.js": 1
+}

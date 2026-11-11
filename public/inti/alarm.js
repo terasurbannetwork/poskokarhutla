@@ -183,6 +183,6 @@ ${aksi.length ? `<div class="al-op-b">${aksi.map(k => `<button type="button" cla
   }
 
   setTimeout(jajak, 3000);
-  setInterval(jajak, JEDA);
+  setInterval(() => { if (!document.hidden) jajak(); }, JEDA);
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") jajak(); });
 })();
