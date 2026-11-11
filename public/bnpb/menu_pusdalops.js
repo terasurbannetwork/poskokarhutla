@@ -5,7 +5,7 @@
 (() => {
   "use strict";
   /* lapisan sistem desain dashboard (data/kajian-bnpb/dashboard/DESIGN-SYSTEM.md) untuk semua halaman Pusdalops */
-  if (!document.querySelector('link[href^="/inti/dasbor.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/inti/dasbor.css?v=15"; document.head.append(l); }
+  if (!document.querySelector('link[href^="/inti/dasbor.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/inti/dasbor.css?v=16"; document.head.append(l); }
   const IKON = {"banjir": "M3 17c2 0 2-2 4.5-2S10 17 12 17s2.5-2 4.5-2S19 17 21 17|M3 21c2 0 2-2 4.5-2S10 21 12 21s2.5-2 4.5-2S19 21 21 21|M12 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.500 2-5 5-9z", "daftar": "M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01", "simpan": "M5 3h11l3 3v15H5z|M8 3v6h7V3M8 21v-7h8v7", "personel": "M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z|M4 21a8 8 0 0 1 16 0", "pin": "M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z|M12 12a2.500 2.500 0 1 0 0-5 2.500 2.500 0 0 0 0 5z", "peringatan": "M12 3l9 16H3z|M12 10v4M12 17v.5", "kalender": "M4 6h16v15H4zM4 10h16M8 3v4M16 3v4", "sinyal": "M4 20l.01 0M8 16a5.500 5.500 0 0 1 8 0M5 12.500a10 10 0 0 1 14 0|M3 3l18 18", "meja": "M9 3h6v3H9z|M6 5h12v16H6z|M9 11h6M9 15h4", "grafik": "M3 3v18h18|M7 15l4-4 3 3 5-6", "awan": "M7 18a4 4 0 0 1 0-8 5 5 0 0 1 9.600-1.500A3.500 3.500 0 0 1 17 18z"};
   /* 6 grup di navbar (pemilik 11 Nov 2026: 13 butir dirampingkan); tetap tanpa daftar turun (pemilik 4 Nov 2026): grup berisi lebih dari
      satu halaman menampilkan deretan sub-halaman di bawah kepala. Rute lama tetap; tautan grup membuka halaman pertamanya. */
@@ -48,17 +48,19 @@
   const butir = (href, teks, ik, aktif) => { const a = el("a", "db-nav-b"); a.href = href; const i = el("i", "db-nav-ik"); i.append(ikon(ik)); a.append(i, el("span", "db-nav-t", teks)); if (aktif) a.setAttribute("aria-current", "true"); return a; };
   const kepalaGrup = (teks, ik) => { const g = el("p", "db-nav-g"), i = el("i"); i.append(ikon(ik)); g.append(i, el("span", null, teks)); return g; };
   /* segmen atas = halaman satu grup (mis. Pantau kejadian | Meja Pantau), setara Udara | Darat di /operasi */
-  if (grup && grup[2].length > 1) {
+  if (grup && grup[2].length === 2) {   // dua halaman: segmen seperti Udara | Darat; tiga atau lebih: daftar berlabel di bawah
     const mode = el("nav", "db-mode"); mode.setAttribute("aria-label", grup[0]);
     for (const [href, teks, ik] of grup[2]) { const a = el("a"); a.href = href; a.append(ikon(ik), el("span", null, teks.replace(/^Pantau kejadian$/, "Kejadian"))); if (href === kini) a.setAttribute("aria-current", "true"); mode.append(a); }
     samping.append(mode);
   }
   const isi = el("nav", "db-nav-isi mp-side-isi"), slot = el("div", "mp-slot");
+  if (grup && grup[2].length > 2) isi.append(kepalaGrup(grup[0], grup[1]), ...grup[2].map(([href, teks, ik]) => butir(href, teks, ik, href === kini)));
   isi.append(slot, kepalaGrup("Pusdalops", "daftar"), ...GRUP.map(g => butir(g[2][0][0], g[0], g[1], false)));
   const kaki = el("div", "db-nav-kaki");
   samping.append(isi, kaki);
   /* tanpa seksi dari halaman: butir grup aktif ditandai navy */
-  const tandai = () => { const kosong = !slot.childElementCount; isi.querySelectorAll(":scope > .db-nav-b").forEach((a, i) => a.setAttribute("aria-current", String(kosong && GRUP[i] === grup))); };
+  const utama = [...isi.querySelectorAll(":scope > .db-nav-b")].slice(-GRUP.length);
+  const tandai = () => { const kosong = !slot.childElementCount && !(grup && grup[2].length > 2); utama.forEach((a, i) => a.setAttribute("aria-current", String(kosong && GRUP[i] === grup))); };
   tandai(); new MutationObserver(tandai).observe(slot, {childList: true});
   /* seksi halaman otomatis: halaman yang tidak mengisi slot sendiri mendapat daftar seksi dari kepala bloknya (h2 pertama tiap .bn-blok / .ex-std),
      klik menggulir ke seksinya, seksi yang sedang dibaca ditandai navy (rujukan /operasi). Catatan kaki panjang dilipat. */
