@@ -1153,3 +1153,25 @@
   .wrap#opsLaporan{padding-left:4px;padding-right:4px}
   #opsLaporan .ops-nav{border-radius:18px;border-left:1px solid var(--line);margin-top:0;height:calc(100vh - 96px)}
 }
+/* model A: kepala kartu tidak melipat, chevron dihapus */
+#opsLaporan .ops-kartu-chev,#opsLaporan .ops-rk>summary .ops-chev{display:none}
+#opsLaporan details.ops-kartu>summary.ex-hd,#opsLaporan .ops-rk>summary{cursor:default}
+/* seksi tanpa bingkai: judul ringan di atas latar halaman, isi (kartu-kartu) langsung di bawahnya */
+#opsLaporan .ops-wadah details.ops-kartu.ops-polos{padding:0;background:none;border:0;border-radius:0;box-shadow:none;overflow:visible}
+#opsLaporan .ops-wadah details.ops-polos>summary.ex-hd{padding:0 4px;background:none;border-radius:0;box-shadow:none}
+#opsLaporan .ops-wadah details.ops-polos>summary .ex-jd>h3{color:var(--ink);font-size:1.125rem}
+#opsLaporan .ops-wadah details.ops-polos>.ex-bd{padding:14px 0 0}
+#opsLaporan .ops-wadah details.ops-polos>summary .ex-ey.ops-ey-ik{background:#0b2545;color:#fff}
+#opsLaporan .ops-wadah details.ops-polos>summary .ex-ey.ops-ey-ik svg{color:#fff}
+/* laci peta tidak boleh kepotong: isi mengikuti lebar laci, teks panjang turun baris (pemilik 11 Nov 2026 "kepotong") */
+#opsLaporan .ops-laci,#opsLaporan .ops-laci *{box-sizing:border-box}
+#opsLaporan .ops-laci-isi{overflow-x:hidden}
+#opsLaporan .ops-laci-badan{min-width:0}
+#opsLaporan .ops-laci dl>div{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:start}
+#opsLaporan .ops-laci dt{white-space:nowrap}
+#opsLaporan .ops-laci dd{min-width:0;overflow-wrap:anywhere;line-height:1.35}
+#opsLaporan .ops-laci-wp{flex-wrap:wrap}
+#opsLaporan .ops-laci-wp>span{flex:1 1 140px;min-width:0}
+#opsLaporan .ops-laci-b{min-width:0}
+#opsLaporan .ops-laci-rinci{min-width:0}
+#opsLaporan .ops-laci-pil{min-width:0}

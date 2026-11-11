@@ -100,9 +100,11 @@
   const ringkasLipat = (D, sel) => `<details class="ops-pa-sek ops-rk" open><summary><i>${lbl("tren", "")}</i><b>Ringkasan</b><small>${lbl("kalender", esc(D.label || tglPendek(D.t)))}</small>${D.vs ? `<small class="vs">${lbl("tren", `dibanding ${esc(D.vs.label)}`)}</small>` : ""}<svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
       <div class="ops-lap-angka" style="--n:${sel.length}">${sel.join("")}</div></details>`;
   const selDarat = (ik, n, t, sub, redup) => `<div class="${redup ? "redup" : ""}"><header><i>${lbl(ik, "")}</i><span>${t}</span></header><div class="ops-ub-isi"><b>${n}</b>${sub ? `<em>${sub}</em>` : ""}</div></div>`;
+  /* tanpa bingkai: seksi yang isinya sudah kartu (kartu di dalam kartu dihindari, pemilik 11 Nov 2026) */
+  const POLOS = new Set(["papan-base", "dokumentasi"]);
   const bagian = (ey, judul, isi, kanan = "") => { const id = idKartu(ey), buka = id in ingatKartu ? ingatKartu[id] : true, nama = NAMA_SEKSI[id];
     if (!nama) return `<article class="ex ex-std"><header class="ex-hd">${eyebrow(ey)}<div class="ex-jd"><h3>${judul}</h3>${kanan}</div></header><div class="ex-bd">${isi}</div></article>`;
-    return `<details class="ex ex-std ops-kartu" data-kartu="${id}" data-kat="${katKartu(id)}"${buka ? " open" : ""}><summary class="ex-hd">${eyebrow(ey)}<div class="ex-jd"><h3>${nama}</h3>${kanan}</div>${CHEV}</summary><div class="ex-bd">${isi}</div></details>`; };   // tanpa kalimat kesimpulan (pemilik 11 Nov 2026 "gausah ada kesimpulan ini")
+    return `<details class="ex ex-std ops-kartu${POLOS.has(id) ? " ops-polos" : ""}" data-kartu="${id}" data-kat="${katKartu(id)}" open><summary class="ex-hd">${eyebrow(ey)}<div class="ex-jd"><h3>${nama}</h3>${kanan}</div>${CHEV}</summary><div class="ex-bd">${isi}</div></details>`; };   // tanpa kalimat kesimpulan (pemilik 11 Nov 2026 "gausah ada kesimpulan ini")
   const tabelH = (kepala, baris, kosong) => baris.length ? `<div class="tw ops-tw ex-tabel"><table><thead><tr>${kepala.map(k => { const [t, tip] = k.split("|");
       return `<th${t.startsWith("#") ? ' class="n"' : ""}${tip ? ` title="${esc(tip)}"` : ""}>${t.replace(/^#/, "")}</th>`; }).join("")}</tr></thead><tbody>${baris.join("")}</tbody></table></div>`
     : `<p class="ops-kosong">${kosong}</p>`;
@@ -181,7 +183,8 @@
         tip.hidden = false; const w = tip.offsetWidth, h = tip.offsetHeight; tip.style.left = Math.min(innerWidth - w - 8, e.clientX + 14) + "px"; tip.style.top = Math.max(8, e.clientY - h - 12) + "px"; });
       box.addEventListener("pointerleave", () => { tip.hidden = true; }); }
     box.addEventListener("click", e => {
-      if (e.target.closest("summary.ex-hd") && e.target.closest("button, a, input, select, label")) e.preventDefault();   // kontrol di kepala kartu tidak ikut melipat
+      /* model A: kartu utama dan Ringkasan selalu terbuka, kepala tidak melipat (pemilik 11 Nov 2026); tautan tetap jalan */
+      if (e.target.closest("details.ops-kartu>summary, .ops-rk>summary") && !e.target.closest("a, input, select, label")) e.preventDefault();
       const m = e.target.closest("[data-mode]");
       if (m) { st.mode = m.dataset.mode; try { localStorage.setItem("ops_mode", st.mode); } catch (x) {} box.querySelectorAll("[data-mode]").forEach(b => b.setAttribute("aria-pressed", String(b === m))); const nv = $("#opsLaporan .ops-nav-isi"); if (nv) nv.innerHTML = navSeksi(null); return sesudahFrame(isi); }
       const sk = e.target.closest("[data-seksi]"); if (sk) return pindahSeksi(sk.dataset.seksi);
