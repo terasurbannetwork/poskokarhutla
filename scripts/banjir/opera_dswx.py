@@ -237,11 +237,16 @@ def susun(gr, hitung, menit=None, mulai=None):
     total = defaultdict(int)
     for t, _, _ in gr:
         total[t] += 1
-    for t, u, url in sorted(gr):
+    muat = {}
+    for t, u, url in sorted(gr):     # sel terklaim SEMUA granul yang sudah di cache dimuat dulu: granul baru yang urutannya lebih awal tak menghitung ulang sel itu
         c = os.path.join(CACHE, os.path.basename(url) + ".json.gz")
         if os.path.exists(c):
-            h, sel, tag = cache_baca(c)
-            terlihat[t] |= sel
+            muat[url] = cache_baca(c)
+            terlihat[t] |= muat[url][1]
+    for t, u, url in sorted(gr):
+        c = os.path.join(CACHE, os.path.basename(url) + ".json.gz")
+        if url in muat:
+            h, sel, tag = muat[url]
         elif habis or time.time() - mulai > menit * 60:
             habis = True
             continue
@@ -351,7 +356,17 @@ def uji():
         assert pan == ["http://x/b_B01_WTR.tif", "http://x/c_B01_WTR.tif"] and st == "ok" and cak["hari_lengkap"] == 2, (pan, st, cak)
         assert ag["31|A"]["2026-11-01"] == [20.0, 8.0, 0.0] and ag["31|A"]["2026-11-02"] == [10.0, 4.0, 0.0], ag
         pan.clear()
-        assert susun(gr, fk, menit=0)[0] == "ok" and pan == []                      # semua dari cache: selesai walau anggaran 0
+        assert susun(gr, fk, menit=0)[0] == "ok" and pan == []
+        # urutan: granul baru (sort lebih awal) terbit sesudah granul lain hari itu masuk cache -> sel terklaim cache sudah terlihat saat menghitungnya
+        for f_ in os.listdir(CACHE):
+            os.remove(os.path.join(CACHE, f_))
+        cache_tulis(os.path.join(CACHE, "z_B01_WTR.tif.json.gz"), {"31|A": [10.0, 4.0, 0.0]}, [[1, 1]], {})
+        lihat = []
+        def fl(t, url, ter, baru):
+            lihat.append((1, 1) in ter)
+            return {}, {}
+        susun([("2026-11-01", "T1", "http://x/a_B01_WTR.tif"), ("2026-11-01", "T2", "http://x/z_B01_WTR.tif")], fl, menit=60)
+        assert lihat == [True], lihat                      # semua dari cache: selesai walau anggaran 0
     finally:
         CACHE = asli
     ada = lambda u: "Authorization" in kepala(u, "T")

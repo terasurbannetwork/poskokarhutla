@@ -45,3 +45,17 @@ atas hari (blok 7 hari, 1.000 ulangan, benih 7), selisih ETS dihitung pada resam
 
 `ansambel_hujan.py` membaca `public/banjir/data/uji_aifs.json`. Hanya `vonis == "LOLOS"` yang memasukkan AIFS ke berkas yang dipakai status
 (bagaimana anggota digabung tidak diubah oleh dokumen ini; penggabungan dilakukan oleh pemilik modul status setelah vonis).
+
+## Amandemen 11 November 2026 (setelah vonis ERA5 keluar; kriteria sakelar baru ditetapkan SEBELUM ada skor independen)
+
+1. Arah bias di bagian Data salah. AIFS dilatih meniru ERA5, jadi kebenaran ERA5 MENGUNTUNGKAN AIFS, bukan IFS. Vonis ERA5 `LOLOS`
+   (`vonis`, `vonis_kunci`, dikunci, tidak diubah) hanya berlaku untuk prakiraan deterministik `ecmwf_aifs025_single`, dan TIDAK membenarkan
+   menggabung 51 anggota ansambel `ecmwf_aifs025` ke ansambel operasional.
+2. Sakelar di `ansambel_hujan.py` kini membaca kunci baru `vonis_independen` di `uji_aifs.json` (awalnya `null`), bukan `vonis`.
+   Selama bukan `"LOLOS"`, AIFS tetap bayangan (`hujan_ansambel_aifs.json`).
+3. `vonis_independen = LOLOS` hanya bila uji peluang ansambel terhadap hujan teramati independen (bukan ERA5) menunjukkan, untuk kejadian
+   >= 20 mm/hari pada waktu-tunda 1 sampai 3: Brier skor IFS+AIFS dan AIFS masing-masing tidak lebih buruk dari IFS saja (batas atas selang 95%
+   selisih Brier <= 0, bootstrap blok 7 hari) dan reliabilitas (kemiringan diagram reliabilitas) tidak memburuk. Kandidat kebenaran:
+   `data/banjir/genangan/gsmap_harian.json` (GSMaP gauge-adjusted, kotak Jakarta, tumpang tindih sekitar Mar-Des 2025) dan log bayangan
+   `hujan_ansambel_aifs.json` yang terkumpul dibandingkan hujan teramati. Jumlah hari minimum dan skrip ujinya ditetapkan di amandemen berikutnya sebelum dijalankan.
+4. Titik dengan anggota AIFS kurang dari 51 dibuang dari bayangan dan dari penggabungan.

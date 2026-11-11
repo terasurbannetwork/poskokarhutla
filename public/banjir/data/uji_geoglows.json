@@ -1,0 +1,550 @@
+{
+ "dibuat": "2026-11-11T10:05:21",
+ "prareg": "scripts/banjir/PRAREG-GEOGLOWS.md",
+ "PERINGATAN": "Deret RETROSPEKTIF (simulasi ERA5), BUKAN ramalan terarsip: menguji sinyal hidrologi, bukan keterampilan ramalan 15 hari. Tidak dipasang ke status.json.",
+ "periode": [
+  "2016-01-01",
+  "2025-12-31"
+ ],
+ "jendela_label_hari": 2,
+ "label": "label_bersatu_v2, keyakinan TINGGI atau SEDANG, bukan jendela J3",
+ "sha256": {
+  "label": "f8e573379b6280141d1716618780efcc05074108dbad826442b974d7567e71de",
+  "ruas": "2eb6b6033ecd72c51f79f132ad747b8c48c2a6fcbcbc4331833ea442ddc5a7ad"
+ },
+ "reach_dinilai": {
+  "530163298": {
+   "kab": "93|Mappi",
+   "nama": "sungai induk, luas DAS 29562 km2",
+   "induk": true,
+   "kecil": false,
+   "t2": 7286.2
+  },
+  "510117429": {
+   "kab": "14|Pelalawan",
+   "nama": "sungai induk, luas DAS 21841 km2",
+   "induk": true,
+   "kecil": false,
+   "t2": 3753.2
+  },
+  "510073270": {
+   "kab": "14|Rokan Hilir",
+   "nama": "sungai induk, luas DAS 18416 km2",
+   "induk": true,
+   "kecil": false,
+   "t2": 3032.2
+  },
+  "520264340": {
+   "kab": "62|Kotawaringin Timur",
+   "nama": "sungai induk, luas DAS 14925 km2",
+   "induk": true,
+   "kecil": false,
+   "t2": 2558.7
+  },
+  "510175797": {
+   "kab": "35|Gresik",
+   "nama": "sungai induk, luas DAS 14850 km2",
+   "induk": true,
+   "kecil": false,
+   "t2": 2461.8
+  },
+  "510099751": {
+   "kab": "16|Banyuasin",
+   "nama": "sungai induk, luas DAS 14427 km2",
+   "induk": true,
+   "kecil": false,
+   "t2": 2088.9
+  },
+  "510060830": {
+   "kab": "12|Labuhanbatu",
+   "nama": "sungai induk, luas DAS 12529 km2",
+   "induk": true,
+   "kecil": false,
+   "t2": 1967.7
+  },
+  "510013385": {
+   "kab": "36|Kota Tangerang",
+   "nama": "ANGKE - DUREN VILLA",
+   "induk": false,
+   "kecil": true,
+   "t2": 10.2
+  },
+  "510010623": {
+   "kab": "31|Kota Administrasi Jakarta Barat",
+   "nama": "ANGKE - JEMBATAN POLOR",
+   "induk": false,
+   "kecil": true,
+   "t2": 6.8
+  },
+  "510012006": {
+   "kab": "36|Kota Tangerang Selatan",
+   "nama": "ANGKE - MUTIARA SERPONG",
+   "induk": false,
+   "kecil": true,
+   "t2": 5.5
+  },
+  "510007861": {
+   "kab": "36|Kota Tangerang",
+   "nama": "BENDA",
+   "induk": false,
+   "kecil": true,
+   "t2": 3.2
+  },
+  "510007867": {
+   "kab": "36|Kota Tangerang",
+   "nama": "BULAKAN",
+   "induk": false,
+   "kecil": true,
+   "t2": 5.1
+  },
+  "510017534": {
+   "kab": "32|Bogor",
+   "nama": "Bendung. Cibalok - Gadog 1",
+   "induk": false,
+   "kecil": true,
+   "t2": 12.2
+  },
+  "510028544": {
+   "kab": "32|Kota Bogor",
+   "nama": "Bendung. Katulampa 2",
+   "induk": false,
+   "kecil": true,
+   "t2": 6.5
+  },
+  "510013384": {
+   "kab": "36|Kota Tangerang",
+   "nama": "CIPULIR-ESTATE",
+   "induk": false,
+   "kecil": true,
+   "t2": 9.6
+  },
+  "510006503": {
+   "kab": "36|Kota Tangerang",
+   "nama": "CIPUTAT - PINTU 3",
+   "induk": false,
+   "kecil": true,
+   "t2": 6.2
+  },
+  "510006491": {
+   "kab": "36|Tangerang",
+   "nama": "CIRARAB - SARAKAN",
+   "induk": false,
+   "kecil": true,
+   "t2": 8.8
+  },
+  "510010622": {
+   "kab": "36|Kota Tangerang",
+   "nama": "CIRARAB - TELESONIK",
+   "induk": false,
+   "kecil": true,
+   "t2": 1.6
+  },
+  "510078070": {
+   "kab": "32|Bogor",
+   "nama": "CISADANE - BATU BELAH",
+   "induk": false,
+   "kecil": false,
+   "t2": 205.5
+  },
+  "510036767": {
+   "kab": "36|Kota Tangerang",
+   "nama": "KALI WETAN - PURI KARTIKA",
+   "induk": false,
+   "kecil": true,
+   "t2": 14.4
+  },
+  "510010613": {
+   "kab": "31|Kota Administrasi Jakarta Utara",
+   "nama": "P.A. Ancol Flushing 1",
+   "induk": false,
+   "kecil": true,
+   "t2": 1.7
+  },
+  "510031258": {
+   "kab": "31|Kota Administrasi Jakarta Barat",
+   "nama": "P.A. Cengkareng Drain",
+   "induk": false,
+   "kecil": true,
+   "t2": 7.8
+  },
+  "510014771": {
+   "kab": "31|Kota Administrasi Jakarta Timur",
+   "nama": "P.A. Hek Kramat Jati 1",
+   "induk": false,
+   "kecil": true,
+   "t2": 3.7
+  },
+  "510010617": {
+   "kab": "31|Kota Administrasi Jakarta Pusat",
+   "nama": "P.A. Istiqlal 1",
+   "induk": false,
+   "kecil": true,
+   "t2": 3.0
+  },
+  "510027128": {
+   "kab": "31|Kota Administrasi Jakarta Barat",
+   "nama": "P.A. Kaliduri 1",
+   "induk": false,
+   "kecil": true,
+   "t2": 9.7
+  },
+  "510034011": {
+   "kab": "31|Kota Administrasi Jakarta Pusat",
+   "nama": "P.A. Karet 1",
+   "induk": false,
+   "kecil": false,
+   "t2": 19.9
+  },
+  "510014758": {
+   "kab": "31|Kota Administrasi Jakarta Pusat",
+   "nama": "P.A. Manggarai 2",
+   "induk": false,
+   "kecil": true,
+   "t2": 3.3
+  },
+  "510013371": {
+   "kab": "31|Kota Administrasi Jakarta Timur",
+   "nama": "P.A. Pulo Gadung 2",
+   "induk": false,
+   "kecil": true,
+   "t2": 2.7
+  }
+ },
+ "reach_keluar": [
+  [
+   "520327685",
+   "titik di luar poligon kabupaten"
+  ],
+  [
+   "530060936",
+   "titik di luar poligon kabupaten"
+  ],
+  [
+   "520369677",
+   "titik di luar poligon kabupaten"
+  ],
+  [
+   "520164806",
+   "titik di luar poligon kabupaten"
+  ],
+  [
+   "510088741",
+   "titik di luar poligon kabupaten"
+  ],
+  [
+   "510094143",
+   "titik di luar poligon kabupaten"
+  ],
+  [
+   "530245731",
+   "titik di luar poligon kabupaten"
+  ],
+  [
+   "520230955",
+   "titik di luar poligon kabupaten"
+  ],
+  [
+   "520256541",
+   "titik di luar poligon kabupaten"
+  ],
+  [
+   "510102332",
+   "titik di luar poligon kabupaten"
+  ],
+  [
+   "520143092",
+   "titik di luar poligon kabupaten"
+  ],
+  [
+   "520228241",
+   "titik di luar poligon kabupaten"
+  ],
+  [
+   "520237999",
+   "titik di luar poligon kabupaten"
+  ],
+  [
+   "530159142",
+   "titik di luar poligon kabupaten"
+  ],
+  [
+   "520239766",
+   "titik di luar poligon kabupaten"
+  ],
+  [
+   "510095338",
+   "titik di luar poligon kabupaten"
+  ],
+  [
+   "520321921",
+   "titik di luar poligon kabupaten"
+  ],
+  [
+   "520191155",
+   "titik di luar poligon kabupaten"
+  ]
+ ],
+ "vonis_utama": "TIDAK LULUS",
+ "hasil": {
+  "utama_ruas_besar_semua": {
+   "reach": 9,
+   "kab_hari_reach": 32715,
+   "y1": 2098,
+   "alarm_sinyal": 213,
+   "prevalensi_label": 0.0641,
+   "sinyal": {
+    "POD": 0.0219,
+    "FAR": 0.784,
+    "CSI": 0.0203,
+    "ETS": 0.0144,
+    "a": 46,
+    "b": 167,
+    "c": 2052,
+    "n": 32715
+   },
+   "klimatologi": {
+    "POD": 0.0329,
+    "FAR": 0.6761,
+    "CSI": 0.0308,
+    "ETS": 0.0248,
+    "a": 69,
+    "b": 144,
+    "c": 2029,
+    "n": 32715
+   },
+   "persistensi": {
+    "POD": 0.0434,
+    "FAR": 0.5728,
+    "CSI": 0.041,
+    "ETS": 0.0351,
+    "a": 91,
+    "b": 122,
+    "c": 2007,
+    "n": 32715
+   },
+   "dETS_lawan_klimatologi": {
+    "titik": -0.0105,
+    "ci95": [
+     -0.0235,
+     0.0042
+    ]
+   },
+   "dETS_lawan_persistensi": {
+    "titik": -0.0207,
+    "ci95": [
+     -0.0328,
+     -0.0072
+    ]
+   },
+   "vonis": "TIDAK LULUS"
+  },
+  "lapis_sungai_induk": {
+   "reach": 7,
+   "kab_hari_reach": 25445,
+   "y1": 1093,
+   "alarm_sinyal": 199,
+   "prevalensi_label": 0.043,
+   "sinyal": {
+    "POD": 0.0375,
+    "FAR": 0.794,
+    "CSI": 0.0328,
+    "ETS": 0.0261,
+    "a": 41,
+    "b": 158,
+    "c": 1052,
+    "n": 25445
+   },
+   "klimatologi": {
+    "POD": 0.0339,
+    "FAR": 0.8141,
+    "CSI": 0.0295,
+    "ETS": 0.0228,
+    "a": 37,
+    "b": 162,
+    "c": 1056,
+    "n": 25445
+   },
+   "persistensi": {
+    "POD": 0.0494,
+    "FAR": 0.7286,
+    "CSI": 0.0436,
+    "ETS": 0.037,
+    "a": 54,
+    "b": 145,
+    "c": 1039,
+    "n": 25445
+   },
+   "dETS_lawan_klimatologi": {
+    "titik": 0.0033,
+    "ci95": [
+     -0.0094,
+     0.0165
+    ]
+   },
+   "dETS_lawan_persistensi": {
+    "titik": -0.0108,
+    "ci95": [
+     -0.0239,
+     0.0016
+    ]
+   },
+   "vonis": "TIDAK LULUS"
+  },
+  "lapis_pos_sihka_besar": {
+   "reach": 2,
+   "kab_hari_reach": 7270,
+   "y1": 1005,
+   "alarm_sinyal": 14,
+   "prevalensi_label": 0.1382,
+   "sinyal": {
+    "POD": 0.005,
+    "FAR": 0.6429,
+    "CSI": 0.0049,
+    "ETS": 0.003,
+    "a": 5,
+    "b": 9,
+    "c": 1000,
+    "n": 7270
+   },
+   "klimatologi": {
+    "POD": 0.007,
+    "FAR": 0.5,
+    "CSI": 0.0069,
+    "ETS": 0.005,
+    "a": 7,
+    "b": 7,
+    "c": 998,
+    "n": 7270
+   },
+   "persistensi": {
+    "POD": 0.007,
+    "FAR": 0.5,
+    "CSI": 0.0069,
+    "ETS": 0.005,
+    "a": 7,
+    "b": 7,
+    "c": 998,
+    "n": 7270
+   },
+   "dETS_lawan_klimatologi": {
+    "titik": -0.002,
+    "ci95": [
+     -0.0051,
+     0.0025
+    ]
+   },
+   "dETS_lawan_persistensi": {
+    "titik": -0.002,
+    "ci95": [
+     -0.0051,
+     0.0025
+    ]
+   },
+   "vonis": "TIDAK LULUS"
+  },
+  "lapis_ruas_kecil_deskriptif": {
+   "reach": 19,
+   "kab_hari_reach": 69065,
+   "y1": 4866,
+   "alarm_sinyal": 141,
+   "prevalensi_label": 0.0705,
+   "sinyal": {
+    "POD": 0.0078,
+    "FAR": 0.7305,
+    "CSI": 0.0076,
+    "ETS": 0.0057,
+    "a": 38,
+    "b": 103,
+    "c": 4828,
+    "n": 69065
+   },
+   "klimatologi": {
+    "POD": 0.0084,
+    "FAR": 0.7092,
+    "CSI": 0.0083,
+    "ETS": 0.0063,
+    "a": 41,
+    "b": 100,
+    "c": 4825,
+    "n": 69065
+   },
+   "persistensi": {
+    "POD": 0.0105,
+    "FAR": 0.6383,
+    "CSI": 0.0103,
+    "ETS": 0.0083,
+    "a": 51,
+    "b": 90,
+    "c": 4815,
+    "n": 69065
+   },
+   "dETS_lawan_klimatologi": {
+    "titik": -0.0006,
+    "ci95": [
+     -0.0034,
+     0.0024
+    ]
+   },
+   "dETS_lawan_persistensi": {
+    "titik": -0.0026,
+    "ci95": [
+     -0.0049,
+     -0.0005
+    ]
+   },
+   "vonis": "TIDAK LULUS"
+  },
+  "lapis_T5_deskriptif": {
+   "reach": 9,
+   "kab_hari_reach": 32715,
+   "y1": 2098,
+   "alarm_sinyal": 45,
+   "prevalensi_label": 0.0641,
+   "sinyal": {
+    "POD": 0.0057,
+    "FAR": 0.7333,
+    "CSI": 0.0056,
+    "ETS": 0.0043,
+    "a": 12,
+    "b": 33,
+    "c": 2086,
+    "n": 32715
+   },
+   "klimatologi": {
+    "POD": 0.0067,
+    "FAR": 0.6889,
+    "CSI": 0.0066,
+    "ETS": 0.0052,
+    "a": 14,
+    "b": 31,
+    "c": 2084,
+    "n": 32715
+   },
+   "persistensi": {
+    "POD": 0.011,
+    "FAR": 0.4889,
+    "CSI": 0.0108,
+    "ETS": 0.0095,
+    "a": 23,
+    "b": 22,
+    "c": 2075,
+    "n": 32715
+   },
+   "dETS_lawan_klimatologi": {
+    "titik": -0.0009,
+    "ci95": [
+     -0.0068,
+     0.0057
+    ]
+   },
+   "dETS_lawan_persistensi": {
+    "titik": -0.0052,
+    "ci95": [
+     -0.0107,
+     0.0013
+    ]
+   },
+   "vonis": "TIDAK LULUS"
+  }
+ }
+}

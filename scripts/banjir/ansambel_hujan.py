@@ -20,7 +20,7 @@ dihitung ulang 18 Okt 2026 untuk perluasan m2/m3: tidak berubah, 50 lokasi per p
 Nilai titik berlaku untuk kotaknya; status.py memakai titik terdekat (<= 1 derajat) untuk tiap kecamatan.
 Model cadangan: gfs025 (31 anggota, 3,1 per lokasi).
 AIFS (ecmwf_aifs025, 51 anggota): diambil tiap hari bersama IFS (+~1.780 kuota/hari) ke hujan_ansambel_aifs.json (bayangan). Masuk ansambel hanya bila
-uji_aifs.json["vonis"] == "LOLOS" (PRAREG-AIFS.md); lalu anggotanya ditambahkan ke daftar anggota IFS (gabung()), cara hitung lain tidak berubah.
+uji_aifs.json["vonis_independen"] == "LOLOS" (amandemen PRAREG-AIFS.md; vonis ERA5 saja tidak cukup); lalu anggotanya ditambahkan ke daftar anggota IFS (gabung()), cara hitung lain tidak berubah.
 
 Pakai:  python3 scripts/banjir/ansambel_hujan.py      |  python3 scripts/banjir/ansambel_hujan.py uji
 Jalankan setelah hujan.py (kisi darat dibaca dari hujan.json).
@@ -33,14 +33,16 @@ from umum import KELUAR, WIB, KuotaHabis, ambil, baca, per_lokasi, simpan
 URL = "https://ensemble-api.open-meteo.com/v1/ensemble"
 MODEL = ["ecmwf_ifs025", "gfs025"]
 AIFS = "ecmwf_aifs025"   # ensemble-api Open-Meteo, 51 anggota (diperiksa 11 Nov 2026). Bayangan sampai uji_aifs.json bervonis LOLOS (PRAREG-AIFS.md)
+AIFS_N = 51   # anggota utuh; titik dengan anggota AIFS kurang dibuang dari bayangan dan dari penggabungan
 UJI_AIFS = os.path.join(KELUAR, "uji_aifs.json")
 HARI = 8          # hari ini .. +7; p3 hari terakhir butuh +9
 PER_PANGGIL = 25
 
 
 def aifs_lolos():
-    """True hanya bila uji_aifs.json bervonis LOLOS. Berkas hilang/rusak/vonis lain = bayangan."""
-    return (baca(UJI_AIFS, {}) or {}).get("vonis") == "LOLOS"
+    """True hanya bila uji_aifs.json punya vonis_independen == LOLOS (amandemen PRAREG-AIFS 11 Nov 2026). `vonis` (ERA5, deterministik) TIDAK cukup.
+    Berkas hilang/rusak/kunci lain = bayangan."""
+    return (baca(UJI_AIFS, {}) or {}).get("vonis_independen") == "LOLOS"
 
 
 def gabung(daily, aifs):
@@ -107,8 +109,8 @@ def main():
                     except Exception as e:
                         print(f"  aifs gagal: {e}", file=sys.stderr)
                 for g, d, a_ in zip(b, ds, da):
-                    if a_ is not None:
-                        r_ = olah(a_)
+                    r_ = olah(a_) if a_ is not None else None
+                    if r_ is not None and r_[4] == AIFS_N:
                         bayang.append({"lat": g["lat"], "lon": g["lon"], "prov": g["prov"], "p50": r_[1], "p100": r_[2], "p3": r_[3], "n": r_[4]})
                         if pakai:
                             d = {"daily": gabung(d["daily"], a_)}
@@ -163,6 +165,17 @@ def uji():
     g = gabung({"time": ["d0"], "precipitation_sum": [1]}, {"time": ["d0"], "precipitation_sum_member01": [2], "x": [3]})
     assert g == {"time": ["d0"], "precipitation_sum": [1], "precipitation_sum_member01_aifs": [2]}, g
     assert olah({"time": ["d0"] * 10, **{k: [60] * 10 for k in g if k.startswith("pre")}})[4] == 2   # anggota AIFS terhitung bila digabung
+    global UJI_AIFS
+    import tempfile, json as _j
+    asli, UJI_AIFS = UJI_AIFS, os.path.join(tempfile.mkdtemp(), "u.json")
+    try:
+        assert not aifs_lolos()                                           # berkas hilang
+        _j.dump({"vonis": "LOLOS", "vonis_kunci": "LOLOS"}, open(UJI_AIFS, "w"))
+        assert not aifs_lolos()                                           # vonis ERA5 LOLOS tanpa vonis_independen = tetap bayangan
+        _j.dump({"vonis": "LOLOS", "vonis_independen": "LOLOS"}, open(UJI_AIFS, "w"))
+        assert aifs_lolos()
+    finally:
+        UJI_AIFS = asli
     print("ok ansambel_hujan")
 
 

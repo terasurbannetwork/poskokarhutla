@@ -57,21 +57,25 @@ def proyeksi_neraca():
         return ""
     d = json.load(open(j))
     md = lambda x: sorted(x)[len(x) // 2] if len(x) % 2 else sum(sorted(x)[len(x) // 2 - 1:len(x) // 2 + 1]) / 2
-    n, baris = len(d["kab"]), []
+    n, baris, bn = len(d["kab"]), [], []
     for sk in d["meta"]["skenario"]:
-        for ind in ("N_kemarau", "N_tahunan", "R_tahunan"):
-            tot = {m: sum(v[sk][ind]["delta_model"][m] for v in d["kab"].values()) for m in d["meta"]["model"]}   # jumlah 119 kab per model
-            dasar = sum(v[sk][ind]["dasar"] for v in d["kab"].values())
+        tot = {m: sum(v[sk]["R_tahunan"]["delta_model"][m] for v in d["kab"].values()) for m in d["meta"]["model"]}   # jumlah 119 kab per model
+        lo, hi = min(tot.values()), max(tot.values())
+        baris.append([sk, f(sum(v[sk]["R_tahunan"]["dasar"] for v in d["kab"].values()), 0), f(md(list(tot.values())), 0), f(lo, 0), f(hi, 0),
+                      "model tidak sepakat arah" if lo < 0 < hi else ("semua turun" if hi < 0 else "semua naik")])
+        for ind, lab in (("N_kemarau", "N kemarau (Jun-Okt)"), ("N_tahunan", "N tahunan"), ("N80_kemarau", "N80 kemarau (Jun-Okt)")):
             t = d["meta"]["ringkas_tanda"][f"{sk}.{ind}"]
-            baris.append([sk, ind, f(dasar, 0), f(md(list(tot.values())), 0), f(min(tot.values()), 0), f(max(tot.values()), 0),
-                          f"{t['turun']} / {t['naik']} / {t['tak-sepakat']}"])
-    s = tabel("Perubahan neraca Jawa 2041-2060 (delta-change, 5 model dijalankan satu per satu; juta m3/th, jumlah 119 kab)", baris,
-              ["Skenario", "Indikator", "Baseline", "Delta, median model", "Delta, model terendah", "Delta, model tertinggi",
-               f"Kab: semua model turun / semua naik / tak sepakat (dari {n})"])
+            bn.append([sk, lab, t["turun"], t["naik"], t["tak-sepakat"]])
+    s = tabel("Perubahan limpasan R Jawa 2041-2060 (delta-change, 5 model dijalankan satu per satu; juta m3 per tahun, jumlah 119 kab)", baris,
+              ["Skenario", "Baseline R 1991-2025", "Delta, median model", "Delta, model terendah", "Delta, model tertinggi", "Arah antar model"])
+    s += tabel(f"Neraca N per kab: hitungan kab menurut kesepakatan tanda kelima model (dari {n} kab)", bn,
+               ["Skenario", "Indikator", "Semua model turun", "Semua model naik", "Tak sepakat"])
     return ("\n## Neraca di bawah proyeksi iklim (estimasi-model, bukan prakiraan)\n" + s +
             "\nTiap angka di atas WAJIB dibaca bersama rentang model terendah-tertinggi; median 5 model bukan nilai yang boleh dikutip sendirian. "
-            "Jumlah N antar-kab menghitung aliran masuk (qin) lebih dari sekali (satu aliran = limpasan kab hulu dan masukan kab hilir), jadi baca N sebagai indikator relatif per kab; hanya R yang aditif. "
-            "Kolom terakhir menghitung kab yang kelima modelnya sepakat tanda; sisanya tak sepakat. Per kab, median dan min-maks ada di "
+            "N tidak dijumlahkan se-Jawa karena menghitung aliran masuk (qin) lebih dari sekali (limpasan kab hulu = masukan kab hilir); hanya R yang aditif, N hanya dalam hitungan kab. "
+            "N kemarau = total Juni-Oktober, N tahunan = Januari-Desember, keduanya juta m3 per periode itu. "
+            "Baseline adalah SATU realisasi: iklim 1991-2025 (CHIRPS + NASA POWER); delta-nya diterapkan ke seluruh seri itu dari model periode 1995-2014 ke 2041-2060 (satu realisasi r1i1p1f1 per model, 5 model), sehingga variabilitas alami tahun-ke-tahun tidak ikut dalam sebaran. "
+            "Per kab, median dan min-maks ada di "
             "`public/data/neraca_air/proyeksi_neraca.json`.\n"
             "\nMetode (keputusan pemilik 11 Nov 2026): ET0 baseline adalah FAO-56 Penman-Monteith dari NASA POWER, jadi ET0 proyeksi dihitung ulang dengan rumus yang sama "
             "dari masukan yang suhunya digeser (T, Tmax, Tmin + selisih tas model; radiasi, RH, angin tetap), lalu rasionya dikalikan ke ET0 baseline. Hujan: "

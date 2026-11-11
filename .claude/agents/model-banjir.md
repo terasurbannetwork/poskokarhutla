@@ -55,6 +55,7 @@ Berkas milikmu (glob paling spesifik menang):
 - `scripts/banjir/susun_label_v2.py`
 - `scripts/banjir/gfm_label.py`
 - `scripts/banjir/koreksi_bias.py`
+- `scripts/banjir/uji_geoglows*`
 - `scripts/banjir/jam_era5.py`
 - `scripts/banjir/sm_era5.py`
 - `scripts/banjir/q2_pusat.py`

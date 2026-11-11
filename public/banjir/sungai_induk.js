@@ -46,7 +46,9 @@ const SungaiInduk = (() => {
       const top = Object.entries(baruIdx).sort((a, b) => b[1][1] - a[1][1]).slice(0, 10);
       isi += tabel(["Kabupaten", "Tanggal", "Air di atas minimum (ha)|Air terbuka dikurangi porsi air minimum 60 hari sebelumnya x area teramati; INDEKS, bukan luas genangan"],
         top.map(([k, [t, v]]) => `<tr>${td(`<span translate="no">${esc(k.split("|")[1] || k)}</span>`, false)}${td(tgl(t), false)}${td(q(v))}</tr>`));
-    } else if (tunggu) isi += `<p>Status: ${esc(d.status)}. Katalog granul terbuka, unduh data butuh token Earthdata.</p>`;
+    }
+    if (d.cakupan && d.cakupan.hari_lengkap < d.cakupan.hari_total) isi += `<p>Cakupan: ${fmt(d.cakupan.hari_lengkap)} dari ${fmt(d.cakupan.hari_total)} hari lengkap.</p>`;
+    if (!nIdx && tunggu) isi += `<p>Status: ${esc(d.status)}. Katalog granul terbuka, unduh data butuh token Earthdata.</p>`;
     return kartu("Indeks", judul, isi);
   }
   return {debit, dswx, r3, layak};

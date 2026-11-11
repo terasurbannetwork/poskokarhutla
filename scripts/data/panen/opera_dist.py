@@ -11,7 +11,7 @@ Pakai:  python3 opera_dist.py katalog [dari sampai]    # CMR tanpa login: jumlah
         (dari/sampai = YYYY-MM-DD UTC; bawaan 8 pekan terakhir yang sudah terbit, pekan penuh Senin-Minggu)
 Anggaran waktu: env LAB_MENIT (menit, bawaan 45). Granul baru tidak dimulai mendekati batas; yang selesai disimpan per granul di
   data/raw/lab/opera_dist/ (hasil sudah direduksi ke sel-hari, bukan raster; dipulihkan actions/cache lab.yml) dan putaran berikutnya melanjutkan.
-  Keluaran sebelum semua granul selesai berstatus "sebagian" (bukan "ok"), `cakupan.lengkap` false; ujiluas_kab.py hanya menerima status "ok".
+  Keluaran sebelum SEMUA granul terdaftar selesai (sisa anggaran ATAU ada yang gagal) berstatus "sebagian" (bukan "ok"), `cakupan.lengkap` false; ujiluas_kab.py hanya menerima status "ok".
 Kunci: EARTHDATA_TOKEN dari env (token Bearer akun Earthdata), TIDAK pernah ditulis ke berkas/log, dan tidak dikirim ke host lain saat redirect.
 Tanpa token: berkas keluaran berisi status "menunggu_kunci" + statistik katalog nyata; berkas berstatus "ok" tidak pernah ditimpa stub.
 
@@ -321,6 +321,14 @@ def sudah_ok(keluar, periode=None):
         return False
 
 
+def status_dan_ket(cak):
+    """"ok" HANYA bila semua granul terdaftar selesai (cak["lengkap"]); selain itu "sebagian" (ujiluas_kab menolaknya)."""
+    if cak["lengkap"]:
+        return "ok", "Semua granul terdaftar terolah; angka rendah-bias karena awan."
+    return "sebagian", (f"SEBAGIAN: {cak['granul_selesai']} dari {cak['granul_terdaftar']} granul terolah ({cak['granul_sisa']} menunggu putaran berikutnya karena anggaran waktu, "
+                        f"{cak['granul_gagal']} gagal/tanpa url, akan dicoba lagi); angka LEBIH RENDAH dari sebenarnya dan tidak boleh dibaca sebagai total periode.")
+
+
 def anggaran_detik(env=None):
     """LAB_MENIT -> batas mulai granul baru dalam detik sejak awal (anggaran dikurangi SISA_DETIK, minimal separuh anggaran)."""
     try:
@@ -424,19 +432,15 @@ def jalan(a, b, keluar=KELUAR):
         print(f"GAGAL: {gagal}/{len(ent)} granul tak terolah; berkas tidak ditulis."); sys.exit(1)
     if cak["granul_selesai"] == 0:
         print("belum ada granul selesai; berkas tidak ditulis."); sys.exit(1)
-    if sisa and sudah_ok(keluar, [a.isoformat(), b.isoformat()]):
-        print("anggaran habis, tapi berkas ok untuk periode ini sudah ada; tidak diturunkan jadi sebagian."); return
+    if not cak["lengkap"] and sudah_ok(keluar, [a.isoformat(), b.isoformat()]):
+        print("belum lengkap, tapi berkas ok untuk periode ini sudah ada; tidak diturunkan jadi sebagian."); return
     titik, tket, cov = muat_titik(a, b)
     ix = indeks_titik(titik)
     wil, gb = Wilayah(), Poligon(os.path.join(RAIZ, "public/data/lahan/gambut.geojson"))
     ag = agregat(kumpul, ix, wil.cari, gb.cari, cov)
     baris = [[k[0], k[1], k[2]] + [None if x is None else round(x, 1) for x in v] for k, v in sorted(ag.items())]
-    if sisa:
-        ket = (f"SEBAGIAN: {cak['granul_selesai']} dari {len(ent)} granul terolah ({sisa} menunggu putaran berikutnya karena anggaran waktu, {gagal} gagal); "
-               "angka LEBIH RENDAH dari sebenarnya dan tidak boleh dibaca sebagai total periode. Jalankan lagi untuk melanjutkan.")
-    else:
-        ket = f"{gagal} granul tak terolah; angka rendah-bias karena awan."
-    tulis_keluaran(keluar, "sebagian" if sisa else "ok", a, b, kat, ket, baris, tket, len(titik), cov, cak)
+    status, ket = status_dan_ket(cak)
+    tulis_keluaran(keluar, status, a, b, kat, ket, baris, tket, len(titik), cov, cak)
 
 
 # ---------------------------------------------------------------- uji
@@ -525,6 +529,11 @@ def uji():
         for st, per, mau in [("ok", ["a", "b"], True), ("sebagian", ["a", "b"], False), ("ok", ["a", "c"], False)]:
             json.dump({"status": st, "periode": per}, open(pk, "w"))
             assert sudah_ok(pk, ["a", "b"]) is mau, (st, per)
+    c = {"granul_terdaftar": 10, "granul_selesai": 10, "granul_gagal": 0, "granul_sisa": 0, "lengkap": True}
+    assert status_dan_ket(c)[0] == "ok"
+    for ubah in ({"granul_selesai": 9, "granul_gagal": 1}, {"granul_selesai": 9, "granul_sisa": 1}):   # gagal tanpa sisa tetap sebagian
+        d = dict(c, lengkap=False, **ubah); st, ket = status_dan_ket(d)
+        assert st == "sebagian" and "SEBAGIAN" in ket and "LEBIH RENDAH" in ket, (st, ket)
     print("opera_dist OK")
 
 

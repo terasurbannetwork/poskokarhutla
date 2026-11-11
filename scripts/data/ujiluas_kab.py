@@ -123,7 +123,7 @@ def opera():
         j = json.load(open(os.path.join(AKAR, "public/data/opera_dist_2023.json")))
     except Exception:
         return None
-    if j.get("status") != "ok" or j["periode"][0] > TGL[0].isoformat() or j["periode"][1] < TGL[1].isoformat():
+    if j.get("status") != "ok" or (j.get("cakupan") or {}).get("lengkap") is False or j["periode"][0] > TGL[0].isoformat() or j["periode"][1] < TGL[1].isoformat():
         return None
     K = {k: i for i, k in enumerate(j["kolom"])}
     out = {}
@@ -184,6 +184,16 @@ def uji():
          {"sat": "N20", "d": dt.date(2023, 9, 2), "lat": 0, "lon": 0}, {"sat": "N", "d": dt.date(2023, 9, 1), "lat": 0, "lon": 0}]
     m = metrik(c)
     assert m["a_ha"] == round((2 * 4.12 + 1 * 4.16) / 2 + 4.12 / 2, 1) and m["b_px"] == 2 and m["n_snpp"] == 1 and m["c_ha"] == 4.3, m
+    import tempfile
+    global AKAR
+    lama = AKAR
+    with tempfile.TemporaryDirectory() as d:
+        AKAR = d; os.makedirs(os.path.join(d, "public/data"))
+        base = {"status": "ok", "periode": [TGL[0].isoformat(), TGL[1].isoformat()], "kolom": ["prov", "kab", "pekan", "ha_total", "ha_konfirmasi"], "baris": []}
+        for ubah, mau_none in [({}, False), ({"cakupan": {"lengkap": True}}, False), ({"cakupan": {"lengkap": False}}, True), ({"status": "sebagian"}, True)]:
+            json.dump(dict(base, **ubah), open(os.path.join(d, "public/data/opera_dist_2023.json"), "w"))
+            assert (opera() is None) is mau_none, ubah
+    AKAR = lama
     print("ok")
 
 

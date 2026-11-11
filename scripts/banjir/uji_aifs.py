@@ -178,7 +178,7 @@ def main(mulai, n):
     kunci = lama.get("vonis_kunci") or (v if v in ("LOLOS", "TIDAK LOLOS") else None)
     awal = min((t for l in data["aifs"].values() for _, t in l), default=None)
     simpan(BERKAS, {"dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "prareg": "scripts/banjir/PRAREG-AIFS.md", "vonis_hitung": v,
-                    "vonis": kunci or v, "vonis_kunci": kunci, "periode": [awal, akhir], "titik": n, "ambang_mm": AMBANG,
+                    "vonis": kunci or v, "vonis_kunci": kunci, "vonis_independen": lama.get("vonis_independen"), "amandemen": lama.get("amandemen"), "periode": [awal, akhir], "titik": n, "ambang_mm": AMBANG,
                     "kebenaran": "ERA5 (reanalisis; berbagi fisika dengan IFS, mungkin menguntungkan IFS)",
                     "catatan": "prakiraan deterministik (previous-runs tidak menyimpan anggota ansambel)", "waktu_tunda": hasil})
     print(v, "kunci:", kunci, hasil["1"]["ets"], f"hari={hasil['1']['n_hari']} kejadian={hasil['1']['n_kejadian']}")
