@@ -1661,3 +1661,7 @@
 #opsLaporan .ops-ringkas-slot .ops-tindak>header>b{font-size:1rem;font-weight:800;color:#7a1f12}
 #opsLaporan .ops-ringkas-slot .ops-tindak>header>small{padding:1px 9px;border-radius:999px;background:#a63a26;color:#fff;font-size:.71875rem;font-weight:800}
 #opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary>b{font-size:1rem;font-weight:800}
+/* garis wadah pulau dan kartu item lebih tegas (pemilik 11 Nov 2026 "kenapa ga ada garis containernya") */
+#opsLaporan .ops-pb-pulau>section{border:1px solid color-mix(in srgb,var(--brand2) 28%,var(--line))}
+#opsLaporan .ops-pb{border:1px solid color-mix(in srgb,var(--brand2) 22%,var(--line));box-shadow:0 1px 3px rgb(11 37 69 / .08)}
+#opsLaporan .ops-pb>header{border-bottom:1px solid color-mix(in srgb,var(--brand2) 18%,var(--line))}
