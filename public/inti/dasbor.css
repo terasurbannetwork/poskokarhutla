@@ -136,6 +136,17 @@ thead th{text-transform:none!important;letter-spacing:0!important}
 .mp-slot .db-nav-b{min-height:32px;font-size:.8125rem}
 .mp-slot .db-nav-ik{width:22px;height:22px;border-radius:6px}
 .mp-slot .db-nav-sub{margin:6px 0 1px;padding:0 6px}
+.mp-slot>.db-nav-g:first-child{display:none}
+.mp-g>summary{list-style:none;cursor:pointer}.mp-g>summary::-webkit-details-marker{display:none}
+.mp-g-kepala .mp-panah{margin-left:auto;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+.mp-g[open]>.mp-g-kepala .mp-panah{transform:rotate(90deg)}
+.mp-anak{display:flex;flex-direction:column;gap:1px;margin:2px 0 6px 14px;padding-left:8px;border-left:2px solid var(--db-h2-garis)}
+.mp-anak .db-nav-b{min-height:32px;font-size:.8125rem;text-decoration:none}
+.mp-anak>.mp-slot{margin:0 0 4px 10px;padding-left:6px}
+/* label kelompok di dalam seksi halaman: teks kecil, bukan pita biru, supaya tidak terbaca sebagai menu kedua */
+aside.db-nav .mp-slot>.db-nav-g{margin:6px 0 1px;padding:0 6px;background:none;font-size:.6875rem;font-weight:700;color:var(--ink2)}
+aside.db-nav .mp-slot>.db-nav-g>i{display:none}
+aside.db-nav .db-nav-b.mp-induk{font-weight:800;color:var(--db-navy)}
 .mp-a>.mp-side{order:0}.mp-a>main{order:1}
 /* kepala halaman L1 di halaman Pusdalops berpanel kiri */
 @media (min-width:901px){
@@ -167,7 +178,7 @@ aside.db-nav .db-nav-b[aria-current="true"] .db-nav-ik svg,aside.db-nav .db-nav-
 aside.db-nav .db-nav-b>b{flex:none;margin-left:auto;padding:1px 8px;border-radius:999px;background:color-mix(in srgb,#2f6fd6 9%,#fff);color:#0b2545;font:800 .6875rem/1.5 var(--font,inherit)}
 aside.db-nav .db-nav-b>b.merah{background:#c9503a;color:#fff}
 aside.db-nav .db-nav-b>b.oranye{background:color-mix(in srgb,#e08a3a 18%,#fff);color:#a35512}
-aside.db-nav .mp-slot{display:contents}
+aside.db-nav .mp-slot{display:flex}aside.db-nav .mp-slot:empty{display:none}
 aside.db-nav .db-nav-kaki{flex:none;display:grid;gap:4px;margin-top:auto;padding-top:8px;border-top:1px solid var(--line)}
 aside.db-nav .db-nav-pb{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 8px;border:0;border-radius:10px;box-shadow:inset 0 0 0 1px var(--line);background:#fff;font-size:.75rem}
 /* ubin Angka utama bersama (rujukan /operasi .ops-lap-angka): kepala ikon navy + nama, angka besar, keterangan pil */

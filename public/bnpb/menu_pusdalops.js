@@ -47,22 +47,32 @@
   const samping = el("aside", "db-nav mp-side"); samping.setAttribute("aria-label", "Menu Pusdalops");
   const butir = (href, teks, ik, aktif) => { const a = el("a", "db-nav-b"); a.href = href; const i = el("i", "db-nav-ik"); i.append(ikon(ik)); a.append(i, el("span", "db-nav-t", teks)); if (aktif) a.setAttribute("aria-current", "true"); return a; };
   const kepalaGrup = (teks, ik) => { const g = el("p", "db-nav-g"), i = el("i"); i.append(ikon(ik)); g.append(i, el("span", null, teks)); return g; };
-  /* segmen atas = halaman satu grup (mis. Pantau kejadian | Meja Pantau), setara Udara | Darat di /operasi */
-  if (grup && grup[2].length === 2) {   // dua halaman: segmen seperti Udara | Darat; tiga atau lebih: daftar berlabel di bawah
-    const mode = el("nav", "db-mode"); mode.setAttribute("aria-label", grup[0]);
-    for (const [href, teks, ik] of grup[2]) { const a = el("a"); a.href = href; a.append(ikon(ik), el("span", null, teks.replace(/^Pantau kejadian$/, "Kejadian"))); if (href === kini) a.setAttribute("aria-current", "true"); mode.append(a); }
-    samping.append(mode);
-  }
+  /* satu pohon menu (pemilik 11 Nov 2026 "recategorize, pastikan ga berulang"): Pusdalops sekali di puncak, tiap grup jadi butir;
+     grup berisi lebih dari satu halaman terbuka-tutup di tempat (tanpa pindah halaman) dan menampilkan halamannya bersarang di bawahnya.
+     Seksi halaman yang sedang dibuka (tab Logbook, isi Laporan, jenis bencana Dalops) diisi ke slot yang bersarang di bawah butir halaman itu. */
   const isi = el("nav", "db-nav-isi mp-side-isi"), slot = el("div", "mp-slot");
-  if (grup && grup[2].length > 2) isi.append(kepalaGrup(grup[0], grup[1]), ...grup[2].map(([href, teks, ik]) => butir(href, teks, ik, href === kini)));
-  /* pemilik 11 Nov 2026 "bisa masuk ga menunya ke side bar kiri": menu Pusdalops di panel kiri, di bawah isi halaman; bilah atas hanya di layar sempit */
-  isi.append(slot, kepalaGrup("Pusdalops", "daftar"), ...GRUP.map(g => butir(g[2][0][0], g[0], g[1], false)));
+  const panah = () => { const s = ikon("daftar"); s.replaceChildren(); const p = document.createElementNS(NS, "path"); p.setAttribute("d", "M9 6l6 6-6 6"); s.append(p); s.classList.add("mp-panah"); return s; };
+  const daun = [];   // [elemen butir halaman, href]
+  isi.append(kepalaGrup("Pusdalops", "daftar"));
+  for (const g of GRUP) {
+    const aktifG = g === grup;
+    if (g[2].length === 1) {
+      const a = butir(g[2][0][0], g[0], g[1], false); daun.push([a, g[2][0][0]]); isi.append(a);
+      if (aktifG) isi.append(slot);
+      continue;
+    }
+    const d = el("details", "mp-g"); d.open = aktifG;
+    const ringkas = el("summary", "db-nav-b mp-g-kepala"), i = el("i", "db-nav-ik"); i.append(ikon(g[1]));
+    ringkas.append(i, el("span", "db-nav-t", g[0]), panah()); if (aktifG) ringkas.classList.add("mp-induk");
+    const anak = el("div", "mp-anak");
+    for (const [href, teks, ik] of g[2]) { const a = butir(href, teks, ik, false); daun.push([a, href]); anak.append(a); if (href === kini) anak.append(slot); }
+    d.append(ringkas, anak); isi.append(d);
+  }
   const kaki = el("div", "db-nav-kaki");
   samping.append(isi, kaki);
-  const utama = [...isi.querySelectorAll(":scope > .db-nav-b")].slice(-GRUP.length);
-  const tandai = () => { const kosong = !slot.childElementCount && !(grup && grup[2].length > 2); utama.forEach((a, i) => a.setAttribute("aria-current", String(kosong && GRUP[i] === grup))); };
+  /* halaman aktif navy selama seksinya kosong; bila seksi terisi, seksi yang navy dan halaman ditebalkan saja */
+  const tandai = () => { const kosong = !slot.childElementCount; for (const [a, href] of daun) { a.setAttribute("aria-current", String(kosong && href === kini)); a.classList.toggle("mp-induk", !kosong && href === kini); } };
   tandai(); new MutationObserver(tandai).observe(slot, {childList: true});
-  /* tanpa seksi dari halaman: butir grup aktif ditandai navy */
   /* seksi halaman otomatis: halaman yang tidak mengisi slot sendiri mendapat daftar seksi dari kepala bloknya (h2 pertama tiap .bn-blok / .ex-std),
      klik menggulir ke seksinya, seksi yang sedang dibaca ditandai navy (rujukan /operasi). Catatan kaki panjang dilipat. */
   let io = null;
@@ -74,7 +84,7 @@
     const cermin = asli.map(o => { const b = el("button", "db-nav-b"); b.type = "button"; const i = el("i", "db-nav-ik"), sv = o.querySelector("svg"); if (sv) i.append(sv.cloneNode(true));
       b.append(i, el("span", "db-nav-t", o.textContent.trim())); b.addEventListener("click", () => o.click()); return b; });
     const sinkron = () => cermin.forEach((b, i) => b.setAttribute("aria-current", String(aktif(asli[i]))));
-    slot.dataset.halaman = "1"; slot.replaceChildren(kepalaGrup("Bagian", "daftar"), ...cermin); sinkron();
+    slot.dataset.halaman = "1"; slot.replaceChildren(...cermin); sinkron();
     new MutationObserver(sinkron).observe(seg, {subtree: true, attributes: true, attributeFilter: ["aria-selected", "aria-pressed", "aria-current"]});
     seg.classList.add("mp-tersembunyi");
     const wadah = seg.closest(".bn-blok");
@@ -89,7 +99,7 @@
     const tanda = kartu.map(k => k.querySelector(":scope > h2, :scope > .ex-hd h3").textContent.trim()).join("|"); if (tanda === slot.dataset.tanda) return; slot.dataset.tanda = tanda;   // tanpa perubahan seksi: jangan gambar ulang (cegah putaran MutationObserver)
     io?.disconnect(); io = new IntersectionObserver(es => { for (const e of es) if (e.isIntersecting) slot.querySelectorAll(".db-nav-b").forEach(b => b.setAttribute("aria-current", String(b.dataset.ke === e.target.id))); }, {rootMargin: "-15% 0px -70% 0px"});
     const pilihan = [...document.querySelectorAll("body main select")].map(x => x.selectedOptions[0]?.textContent.trim());
-    slot.replaceChildren(kepalaGrup("Isi halaman", "daftar"), ...kartu.map((k, i) => { k.id ||= "mp-s" + i;
+    slot.replaceChildren(...kartu.map((k, i) => { k.id ||= "mp-s" + i;
       const j = k.querySelector(":scope > h2, :scope > .ex-hd h3"), b = el("button", "db-nav-b"); b.type = "button"; b.dataset.ke = k.id;
       const ik = el("i", "db-nav-ik"), sv = j.querySelector("svg"); if (sv) ik.append(sv.cloneNode(true));
       const c = j.cloneNode(true); c.querySelectorAll("button, select, input, a, .ops-lbl, small").forEach(x => x.remove());
