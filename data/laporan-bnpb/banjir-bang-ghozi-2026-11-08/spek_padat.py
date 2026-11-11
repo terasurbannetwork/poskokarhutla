@@ -1,6 +1,7 @@
+import os; HOME = os.path.expanduser('~').replace(chr(92), '/') + '/'   # folder rumah, bukan jalur mutlak satu mesin
 """Spek deck padat: 3 slide padat + lampiran, dari spek utama yang sudah dibangkitkan."""
 import json
-PJ = 'C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/proyek-banjir0811/'
+PJ = HOME + '.claude/skills/ppt-konsultan/bnpb/assets/proyek-banjir0811/'
 RP = 'D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/banjir-bang-ghozi-2026-11-08/'
 S = json.load(open(PJ + 'spek/banjir-081126.json', encoding='utf-8')); n = json.load(open(RP + 'lampiran-hal.json'))['n']
 isi = PJ + 'data/lap/slide3-isi.pptx'; dasar = 7 + n + 1

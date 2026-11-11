@@ -1,7 +1,8 @@
+import os; HOME = os.path.expanduser('~').replace(chr(92), '/') + '/'   # folder rumah, bukan jalur mutlak satu mesin
 """Peta slide 1: hanya empat kab/kota yang tercatat terdampak banjir; wilayah lain abu."""
 import json,hashlib,math,shutil,glob,os
 from PIL import Image,ImageDraw,ImageFont,ImageFilter
-SK='C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/'
+SK=HOME + '.claude/skills/ppt-konsultan/bnpb/assets/'
 PJ=SK+'proyek-banjir0811/'; G=SK+'proyek-bnpb/geo/kabupaten/'
 IK='D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/harian-2026-11-08/kerja-081126-rev4/ik/'
 LON0,LON1,LAT0,LAT1=94.2,116.0,-9.9,6.6

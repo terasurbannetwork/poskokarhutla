@@ -1,5 +1,6 @@
+import os; HOME = os.path.expanduser('~').replace(chr(92), '/') + '/'   # folder rumah, bukan jalur mutlak satu mesin
 import json,csv
-PJ='C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/proyek-banjir0811/'
+PJ=HOME + '.claude/skills/ppt-konsultan/bnpb/assets/proyek-banjir0811/'
 H=json.load(open('hasil.json',encoding='utf-8')); S1,S2=H['S1'],H['S2']
 SIS='GIS BNPB, 8 Nov 2026 22.06 WIB'; KO='Laporan Dit. Koordalops BNPB, 5 s.d. 7 Nov 2026'; BM='BMKG, 8 Nov 2026'; PV='PVMBG Badan Geologi, 8 Nov 2026 06.00 WIB'; SH='SIHKA Kementerian PU, 8 Nov 2026'
 ANG={}; NIL={}
@@ -256,8 +257,8 @@ _RP='D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/banjir-bang-ghozi-2026
 json.dump([_lamp(k,v) for k,v in _d],open(_RP+'lampiran.json','w',encoding='utf-8'),ensure_ascii=False)
 import os as _os
 _nh=json.load(open(_RP+'lampiran-hal.json'))['n'] if _os.path.exists(_RP+'lampiran-hal.json') else 0
-SPK['slide'].append({'jenis':'impor','pptx':'C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/proyek-banjir0811/data/lap/slide3-isi.pptx','halaman':7+_nh,'sumber':'GIS BNPB'})
-for _i in range(_nh): SPK['slide'].append({'jenis':'impor','pptx':'C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/proyek-banjir0811/data/lap/slide3-isi.pptx','halaman':7+_i,'sumber':SIS+'; '+KO1})
+SPK['slide'].append({'jenis':'impor','pptx':HOME + '.claude/skills/ppt-konsultan/bnpb/assets/proyek-banjir0811/data/lap/slide3-isi.pptx','halaman':7+_nh,'sumber':'GIS BNPB'})
+for _i in range(_nh): SPK['slide'].append({'jenis':'impor','pptx':HOME + '.claude/skills/ppt-konsultan/bnpb/assets/proyek-banjir0811/data/lap/slide3-isi.pptx','halaman':7+_i,'sumber':SIS+'; '+KO1})
 import copy as _cp
 _KL=json.load(open('kec4l.json',encoding='utf-8')); _rl=_KL['rows']; _urL=list(dict.fromkeys(r['prov'] for r in _rl)); _rlb=sorted(_rl,key=lambda r:_urL.index(r['prov']))
 wcsv('p4l.csv',['prov','kab','n','pop','mm','tgl','st'],[[r['prov'],r['kab'],r['n'],r['pop'] if r['ada'] else '',mmk(r['k']),f"{r['tgl']} Nov",LVN[_KL['lv'][r['k']]]] for r in _rlb])

@@ -1,3 +1,4 @@
+import os; HOME = os.path.expanduser('~').replace(chr(92), '/') + '/'   # folder rumah, bukan jalur mutlak satu mesin
 """Slide 3 deck Situasi Banjir 081126: bencana lain (gaya slide Pengkinian) + gunung api (gaya slide Status siaga), digabung satu halaman.
 Pemilik 8 Nov 2026: "yang bencana lain pakai layout/desain seperti di slide pengkinian data, gunung api seperti di slide gunung api, nah tinggal digabung".
 Memakai fungsi gambar generator harian dan bahan WA 8 Nov (Koordalops, BMKG, PVMBG). Karhutla dan banjir tidak ikut: banjir ada di slide 1, karhutla dilaporkan terpisah.
@@ -461,7 +462,7 @@ def _jl(i):
 dk.LAMP_TAMBAH = [(_jl(i), h, None) for i, h in enumerate(_hal)] + [([('Video sistem ', INK, True), ('pemantauan banjir', ORG, True)], (lambda: dk.kotak(548640, 1325880, 11094415, 5029200, 'E6EAF0', 'roundRect', adj=1500)), None)]
 dk.I['peta_padat1'] = dk.I['banjir_putih'].replace('banjir-putih.png', 'peta-padat1.png'); dk.I['peta_padat2'] = dk.I['banjir_putih'].replace('banjir-putih.png', 'peta-padat2.png')
 _pd = _j.load(open(os.path.join(S, 'padat.json'), encoding='utf-8')); dk.PD = _pd; dk.TG = '8-11 November'
-_sc = 'C:/Users/USER/AppData/Local/Temp/claude/8477dca2efc2d380/9cd4954a-580a-4bd2-9624-23cdb3eb53f5/scratchpad/'
+_sc = HOME + 'AppData/Local/Temp/claude/8477dca2efc2d380/9cd4954a-580a-4bd2-9624-23cdb3eb53f5/scratchpad/'
 dk.Q4 = _j.load(open(_sc + 'kec4s.json', encoding='utf-8'))['rows']; dk.BS = {r['prov'] + '|' + r['kab'] for r in _j.load(open(_sc + 'lap.json', encoding='utf-8')) if not r['surut']}
 _n5 = sum(1 for r in _pd['lp'] if r['st'] != 'Surut')
 _H, _P = (lambda t_: (t_, ORG, True)), (lambda t_: (t_, INK, True))

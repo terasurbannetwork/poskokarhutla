@@ -1,9 +1,10 @@
+import os; HOME = os.path.expanduser('~').replace(chr(92), '/') + '/'   # folder rumah, bukan jalur mutlak satu mesin
 """Perkiraan penghantaran logpal dari Gudang UPT Padang ke kab/kota terdampak (slide 1) dan berprobabilitas banjir (slide 2), plus peta alur.
 Asumsi: darat = jarak lurus per ruas x 1,35 / 35 km/jam, penyeberangan Bakauheni-Merak +4 jam; laut = 22 km/jam (12 knot) + 8 jam bongkar muat;
 udara = 350 km/jam + 3 jam muat; ujung jalur dari pelabuhan/bandara ke pusat kab/kota lewat darat. Koordinat simpul dibulatkan, bukan data resmi."""
 import json, math, glob, os, hashlib, shutil
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
-SK = 'C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/'; PJ = SK + 'proyek-banjir0811/'; G = SK + 'proyek-bnpb/geo/kabupaten/'
+SK = HOME + '.claude/skills/ppt-konsultan/bnpb/assets/'; PJ = SK + 'proyek-banjir0811/'; G = SK + 'proyek-bnpb/geo/kabupaten/'
 RP = 'D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/banjir-bang-ghozi-2026-11-08/'
 def km(a, b):
     la1, lo1, la2, lo2 = map(math.radians, (a[0], a[1], b[0], b[1])); h = math.sin((la2 - la1) / 2) ** 2 + math.cos(la1) * math.cos(la2) * math.sin((lo2 - lo1) / 2) ** 2

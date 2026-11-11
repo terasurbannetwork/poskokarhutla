@@ -1,7 +1,8 @@
+import os; HOME = os.path.expanduser('~').replace(chr(92), '/') + '/'   # folder rumah, bukan jalur mutlak satu mesin
 """Peta slide alternatif: 22 kab/kota bernomor sesuai tabel, warna menurut tanggal mulai; Dipantau abu."""
 import json,hashlib,math,shutil,os,glob
 from PIL import Image,ImageDraw,ImageFont,ImageFilter
-SK='C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/'
+SK=HOME + '.claude/skills/ppt-konsultan/bnpb/assets/'
 PJ=SK+'proyek-banjir0811/'; G=SK+'proyek-bnpb/geo/kabupaten/'
 ALT=json.load(open('alt.json',encoding='utf-8'))
 WARNA={'9 Nov':'#8F3F07','10 Nov':'#A07A32','11 Nov':'#E8894A','Dipantau':'#7F93AA'}

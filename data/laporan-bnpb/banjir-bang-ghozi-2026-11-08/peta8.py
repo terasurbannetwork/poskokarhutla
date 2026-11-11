@@ -1,7 +1,8 @@
+import os; HOME = os.path.expanduser('~').replace(chr(92), '/') + '/'   # folder rumah, bukan jalur mutlak satu mesin
 """Peta slide 2 gaya referensi pemilik: tiga status (Terdampak, Awas, Siaga) per kab/kota, pill berikon di dua sisi, sisipan se-Indonesia."""
 import json, glob, os, math, hashlib, shutil
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
-SK = 'C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/'; PJ = SK + 'proyek-banjir0811/'; G = SK + 'proyek-bnpb/geo/kabupaten/'
+SK = HOME + '.claude/skills/ppt-konsultan/bnpb/assets/'; PJ = SK + 'proyek-banjir0811/'; G = SK + 'proyek-bnpb/geo/kabupaten/'
 IK = 'D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/banjir-bang-ghozi-2026-11-08/kerja-slide3/ik/'
 S4 = json.load(open('kec4s.json', encoding='utf-8'))['rows']; LAP = json.load(open('lap.json', encoding='utf-8'))
 ST = {}

@@ -1,6 +1,7 @@
+import os; HOME = os.path.expanduser('~').replace(chr(92), '/') + '/'   # folder rumah, bukan jalur mutlak satu mesin
 """Data tiga slide padat: dibaca slide3.py lewat padat.json."""
 import json, csv
-PJ = 'C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/proyek-banjir0811/data/lap/'
+PJ = HOME + '.claude/skills/ppt-konsultan/bnpb/assets/proyek-banjir0811/data/lap/'
 RP = 'D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/banjir-bang-ghozi-2026-11-08/'
 c = lambda n: list(csv.DictReader(open(PJ + n, encoding='utf-8')))
 P = json.load(open('data/banjir_data_prakiraan72.json', encoding='utf-8')); W = json.load(open('data/banjir_data_wilayah_hari.json', encoding='utf-8'))

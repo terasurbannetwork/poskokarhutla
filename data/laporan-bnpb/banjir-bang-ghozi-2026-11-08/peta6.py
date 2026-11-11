@@ -1,9 +1,10 @@
+import os; HOME = os.path.expanduser('~').replace(chr(92), '/') + '/'   # folder rumah, bukan jalur mutlak satu mesin
 """Peta slide 2: kecamatan Awas dan Siaga 4 hari ke depan, Sumatera bagian utara, label kab/kota dengan garis penunjuk, sisipan se-Indonesia.
 Batas kecamatan tidak tersedia: tiap kab/kota dibagi per titik pusat kecamatan terdekat (Voronoi di dalam batas kab/kota BIG)."""
 import json, glob, os, math, hashlib, shutil
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
-SK = 'C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/'; PJ = SK + 'proyek-banjir0811/'; G = SK + 'proyek-bnpb/geo/kabupaten/'
+SK = HOME + '.claude/skills/ppt-konsultan/bnpb/assets/'; PJ = SK + 'proyek-banjir0811/'; G = SK + 'proyek-bnpb/geo/kabupaten/'
 R = 'D:/Project/Work/BNPB/poskokarhutla/'
 S4 = json.load(open('kec4s.json', encoding='utf-8')); P = json.load(open('data/banjir_data_prakiraan72.json', encoding='utf-8'))['kec']; PUS = json.load(open(R + 'public/banjir/data/pusat_kec.json', encoding='utf-8'))
 LON0, LON1, LAT0, LAT1 = 92.4, 104.0, -3.0, 6.4

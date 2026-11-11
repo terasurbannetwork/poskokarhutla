@@ -1,7 +1,8 @@
+import os; HOME = os.path.expanduser('~').replace(chr(92), '/') + '/'   # folder rumah, bukan jalur mutlak satu mesin
 """Peta slide 2: level banjir tertinggi tiap kab/kota dalam 4 hari ke depan, label provinsi yang masuk tabel."""
 import json,hashlib,glob,os,shutil,math
 from PIL import Image,ImageDraw,ImageFont,ImageFilter
-SK='C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/'
+SK=HOME + '.claude/skills/ppt-konsultan/bnpb/assets/'
 PJ=SK+'proyek-banjir0811/'; G=SK+'proyek-bnpb/geo/kabupaten/'
 D4=json.load(open('kec4l.json',encoding='utf-8')); LV=D4['lv']
 LON0,LON1,LAT0,LAT1=94.0,141.6,-11.3,7.0

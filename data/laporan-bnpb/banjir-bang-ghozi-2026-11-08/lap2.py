@@ -1,7 +1,8 @@
+import os; HOME = os.path.expanduser('~').replace(chr(92), '/') + '/'   # folder rumah, bukan jalur mutlak satu mesin
 import glob,json,importlib.util,subprocess,re,os
 R='D:/Project/Work/BNPB/poskokarhutla/'
 s=importlib.util.spec_from_file_location('dl',R+'scripts/data/dalops_banjir.py'); dl=importlib.util.module_from_spec(s); s.loader.exec_module(dl)
-F=glob.glob('C:/Users/USER/Desktop/Laporan Harian Dit. Koordalops BNPB *112026*.pdf')+glob.glob('C:/Users/USER/Desktop/01 Kerja BNPB/Laporan Harian Dit. Koordalops BNPB *112026*.pdf')+glob.glob('I:/Other computers/Mac Saya/Downloads/Laporan Harian Dit. Koordalops BNPB *102026*.pdf')+glob.glob('D:/Project/Work/BNPB/Pusat Pengendalian Operasi/LAPORAN HARIAN 2026/10 Oktober 2026/*.pdf')
+F=glob.glob(HOME + 'Desktop/Laporan Harian Dit. Koordalops BNPB *112026*.pdf')+glob.glob(HOME + 'Desktop/01 Kerja BNPB/Laporan Harian Dit. Koordalops BNPB *112026*.pdf')+glob.glob('I:/Other computers/Mac Saya/Downloads/Laporan Harian Dit. Koordalops BNPB *102026*.pdf')+glob.glob('D:/Project/Work/BNPB/Pusat Pengendalian Operasi/LAPORAN HARIAN 2026/10 Oktober 2026/*.pdf')
 T={}
 dl.baca_pdf=lambda f: subprocess.run(['pdftotext','-enc','UTF-8','-layout',f,'-'],capture_output=True).stdout.decode('utf-8','replace')
 for f in F:
