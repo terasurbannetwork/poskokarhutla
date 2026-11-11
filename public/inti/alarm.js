@@ -32,7 +32,7 @@
   const hariWib = ms => Math.floor((ms + 7 * 36e5) / 864e5), hariIni = ms => hariWib(ms) === hariWib(Date.now());
   const jamTgl = ms => !Number.isFinite(ms) ? "" : hariIni(ms) ? jamWib(ms) : `${fTglWib.format(ms)} ${jamWib(ms)}`;
   const bunyi = () => { try { new Audio(SUARA).play().catch(() => {}); } catch (e) {} };
-  let antre = [], tampil = false, sejak = Math.floor(Date.now() / 36e5) * 36e5 - 24 * 36e5,   // dibulatkan ke jam: semua tab berbagi kunci cache tepi (kuota baca D1) el = null;
+  let antre = [], tampil = false, sejak = Math.floor(Date.now() / 36e5) * 36e5 - 24 * 36e5, el = null;   // sejak dibulatkan ke jam: semua tab berbagi kunci cache tepi (kuota baca D1)
   /* per tampilan halaman: opr = null (belum tahu) | true (operator berhak tulis) | false (publik); lihat = kunci yang sudah ditampilkan/ditutup di halaman ini; usai = kunci yang diketahui final;
      dikenal = kunci yang sudah pernah ada di jajak mana pun; pertama = jajak pertama belum selesai (isinya tidak berbunyi) */
   let opr = null, pertama = true, sibuk = false;
