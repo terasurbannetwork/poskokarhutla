@@ -102,7 +102,7 @@
       <div class="ops-lap-angka" style="--n:${sel.length}">${sel.join("")}</div></section>`;
   const selDarat = (ik, n, t, sub, redup) => `<div class="${redup ? "redup" : ""}"><header><i>${lbl(ik, "")}</i><span>${t}</span></header><div class="ops-ub-isi"><b>${n}</b>${sub ? `<em>${sub}</em>` : ""}</div></div>`;
   /* tanpa bingkai: seksi yang isinya sudah kartu (kartu di dalam kartu dihindari, pemilik 11 Nov 2026) */
-  const POLOS = new Set(["papan-base", "dokumentasi"]);
+  const POLOS = new Set();   // pemilik 11 Nov 2026: Papan base dan Dokumentasi juga berbingkai L2
   const bagian = (ey, judul, isi, kanan = "") => { const id = idKartu(ey), buka = id in ingatKartu ? ingatKartu[id] : true, nama = NAMA_SEKSI[id];
     if (!nama) return `<article class="ex ex-std"><header class="ex-hd">${eyebrow(ey)}<div class="ex-jd"><h3>${judul}</h3>${kanan}</div></header><div class="ex-bd">${isi}</div></article>`;
     return `<details class="ex ex-std ops-kartu${POLOS.has(id) ? " ops-polos" : ""}" data-kartu="${id}" data-kat="${katKartu(id)}" open><summary class="ex-hd">${eyebrow(ey)}<div class="ex-jd"><h3>${nama}</h3>${kanan}</div>${CHEV}</summary><div class="ex-bd">${isi}</div></details>`; };   // tanpa kalimat kesimpulan (pemilik 11 Nov 2026 "gausah ada kesimpulan ini")
@@ -457,7 +457,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     if (!it.length) return "";
     const pil = xs => { const u0 = [...new Set(xs)]; return u0.slice(0, 2).map(x => `<small>${esc(x)}</small>`).join("") + (u0.length > 2 ? `<small class="lagi">+${fmt(u0.length - 2)}</small>` : ""); };
     return `<section class="ops-tindak" aria-label="Perlu tindakan"><header>${lbl("ts", "")}<b>Perlu tindakan</b><small>${fmt(it.length)}</small></header>
-      <ul>${it.map(([ik, c, n, t, nama, ket, aksi]) => `<li class="${c}"><button type="button" data-tindak="${esc(aksi)}" title="${esc([...new Set(nama)].join(", "))}"><i>${lbl(ik, "")}</i>
+      <ul>${it.map(([ik, c, n, t, nama, ket, aksi]) => `<li class="${c}"><button type="button" data-tindak="${esc(aksi)}" title="${esc([...new Set(nama)].join(", "))}"><span class="ops-tk-blok">${lbl(ik, "")}<b>${fmt(n)}</b></span><i>${lbl(ik, "")}</i>
         <div><p><b>${fmt(n)}</b><span>${t}</span></p>${ket ? `<em class="ket">${esc(ket)}</em>` : ""}<span class="ops-tindak-pil">${pil(nama)}</span>${(() => { const u0 = [...new Set(nama)]; return u0.length ? `<span class="ops-tindak-ring"><span>${esc(u0.slice(0, 2).join(", "))}</span>${u0.length > 2 ? `<b>+${fmt(u0.length - 2)}</b>` : ""}</span>` : ""; })()}</div><em class="ke">›</em></button></li>`).join("")}</ul></section>`;
   }
   /* ---------- pengkinian data dan action plan (pemilik 11 Nov 2026): dihitung dari data, tanpa simpanan baru.
