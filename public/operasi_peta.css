@@ -1710,3 +1710,47 @@
 #opsLaporan .ops-pb.lv2 .ops-pb-lv .ops-lbl,#opsLaporan .ops-pb.lv2 .ops-pb-lv .ops-lbl svg{color:#3d2c05}
 /* sel Angka utama tanpa data: kolom kiri lebih lebar supaya status muat sebaris */
 #opsLaporan .ops-lap-angka .redup .ops-cmp{grid-template-columns:1.6fr 1fr}
+/* tren: garis rata-rata 7 hari di atas batang; hari tanpa data = celah (riset dashboard 11 Nov 2026) */
+#opsLaporan .ops-tren2-bar{position:relative}
+#opsLaporan .ops-tren2-ma{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+#opsLaporan .ops-tren2-ma polyline{fill:none;stroke:color-mix(in srgb,var(--w) 70%,#000);stroke-width:2;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
+#opsLaporan .ops-tren2-ket{display:flex;align-items:center;gap:12px}
+#opsLaporan .ops-tren2-ket .ma{display:inline-flex;align-items:center;gap:6px;font-size:.71875rem;font-weight:600;color:var(--ink2)}
+#opsLaporan .ops-tren2-ket .ma::before{content:"";width:16px;height:2px;border-radius:2px;background:color-mix(in srgb,var(--w) 70%,#000)}
+#opsLaporan .ops-tren2-bar>span.nihil::after{display:none}
+/* kepala gelap di luar area gulir: penuh kiri-kanan, scrollbar hanya di isi (pemilik 11 Nov 2026) */
+@media (min-width:901px){
+  #opsLaporan .ops-kanan{display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--line);border-radius:20px;background:var(--card);box-shadow:var(--shadow)}
+  #opsLaporan .ops-utama{flex:1;min-height:0;height:auto;border:0;border-radius:0;box-shadow:none;scrollbar-gutter:auto}
+}
+#opsLaporan .ops-kanan>.ops-judul{flex:none;display:flex;align-items:center;justify-content:center;gap:10px;margin:0;padding:16px 24px;background:#0b2545;color:#fff;font-family:var(--display);font-size:1.5rem;font-weight:800}
+#opsLaporan .ops-kanan>.ops-judul .ops-lbl svg{width:22px;height:22px;color:#9cc3ff}
+#opsLaporan .ops-utama>.ops-alat:empty,#opsLaporan .ops-utama>.ops-alat:has(>.ops-status:only-child){display:none}
+@media (max-width:900px){#opsLaporan .ops-kanan>.ops-judul{border-radius:16px 16px 0 0}#opsLaporan .ops-kanan>.ops-utama{border-top-left-radius:0;border-top-right-radius:0}}
+@media (min-width:901px){#opsLaporan .ops-kanan{scrollbar-gutter:auto;padding:0}}
+/* ===== warna kepala per tingkat: satu keluarga navy, makin dalam makin terang (pemilik 11 Nov 2026) ===== */
+#opsLaporan{--h1:#0b2545;--h2:color-mix(in srgb,#0b2545 8%,#fff);--h2-garis:color-mix(in srgb,#0b2545 14%,#fff);--h4:#fff}
+/* L2 bagian */
+#opsLaporan .ops-wadah details.ops-kartu>summary.ex-hd,
+#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary{background:var(--h2)!important;border-bottom:1px solid var(--h2-garis)!important;padding:12px 16px!important;border-radius:0!important}
+#opsLaporan .ops-wadah details.ops-kartu{border:1px solid var(--h2-garis)}
+#opsLaporan .ops-wadah details.ops-kartu>summary .ex-jd>h3{color:var(--h1)!important}
+#opsLaporan .ops-wadah details.ops-kartu>summary .ex-ey.ops-ey-ik{background:var(--h1)!important;color:#fff!important}
+/* L2 khusus Perlu tindakan: tone merah yang setara */
+#opsLaporan .ops-ringkas-slot .ops-tindak>header{background:color-mix(in srgb,#a63a26 8%,#fff);border-bottom:1px solid color-mix(in srgb,#a63a26 16%,#fff)}
+/* L4 item: kepala putih, hanya garis pemisah */
+#opsLaporan .ops-pb>header,
+#opsLaporan .ops-ringkas-slot .ops-rk>.ops-lap-angka>div>header{background:var(--h4)!important;border-bottom:1px solid var(--line)!important}
+/* bilah x/n di Angka utama */
+#opsLaporan .ops-bullet{display:block;width:80%;height:6px;margin:0 auto;border-radius:999px;background:color-mix(in srgb,var(--ink) 8%,transparent);overflow:hidden}
+#opsLaporan .ops-bullet>i{display:block;height:100%;border-radius:999px;background:#2e8b57}
+/* efektivitas per tema */
+#opsLaporan .ops-nl2-tema{display:grid;gap:18px}
+#opsLaporan .ops-nl2-tema>section{display:grid;gap:10px}
+#opsLaporan .ops-nl2-tema h4{margin:0}
+#opsLaporan .ops-nl2-tema h4 .ops-lbl{font-size:.8125rem;font-weight:800;color:#0b2545}
+#opsLaporan .ops-nl2-tema h4 .ops-lbl svg{width:20px;height:20px;padding:3px;border-radius:6px;background:color-mix(in srgb,var(--brand2) 12%,transparent);color:#1f3f73}
+/* legenda peta = saklar lapisan */
+#opsLaporan .ops-peta-leg>button{border:0;background:none;padding:0;font:inherit;font-size:inherit;color:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+#opsLaporan .ops-peta-leg>button[aria-pressed="false"]{opacity:.4;text-decoration:line-through}
+#opsLaporan .ops-peta-leg button::before{content:"";width:10px;height:10px;border-radius:50%}
