@@ -102,3 +102,7 @@
 .lb-wrap .lb-tab label:has(input:checked){background:var(--navy);color:#fff;box-shadow:inset 0 -2px 0 var(--emas)}
 .lb-wrap .lb-seg:not(.lb-tab){grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
 .lb-wrap .lb-seg:not(.lb-tab) label{justify-content:flex-start;text-align:left;min-height:46px;padding:8px 12px}
+/* sistem desain dashboard: tab atas pindah ke panel kiri; kolom berdampingan sama tinggi, tanpa ruang kosong (memori tanpa-ruang-kosong) */
+.lb-tab[hidden]{display:none!important}
+.lb-kolom{align-items:stretch}
+.lb-kolom>.bn-blok{align-content:start}

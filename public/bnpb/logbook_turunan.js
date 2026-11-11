@@ -293,6 +293,14 @@
     if (typeof pasangTip === "function") pasangTip();   // tooltip grafik jam (/inti/tip.js)
     const seg = deretan("lbtab", "Bagian halaman", BAGIAN, "catat", pilih);
     seg.classList.add("lb-tab");
+    /* model A (sistem desain dashboard, rujukan /operasi): bagian halaman pindah ke panel kiri Pusdalops, deretan tab atas disembunyikan */
+    const slot = window.MenuPusdalops?.pakaiSlot?.();
+    if (slot) {
+      const tb = BAGIAN.map(([k, t, ik]) => { const b = h("button", {type: "button", class: "db-nav-b", "data-k": k, "aria-current": String(k === "catat")}, h("i", {class: "db-nav-ik"}, ikon(ik)), h("span", {class: "db-nav-t", teks: t}));
+        b.addEventListener("click", () => { tb.forEach(x => x.setAttribute("aria-current", String(x === b))); const j = document.querySelector("main .bn-judul h1"); if (j) j.textContent = k === "catat" ? "Logbook Pusdalops" : t; pilih(k); }); return b; });
+      slot.replaceChildren(window.MenuPusdalops.grup("Bagian", "daftar"), ...tb);
+      seg.hidden = true;
+    }
     return [seg, kotak];
   }
   window.LogbookTurunan = {pasang};
