@@ -243,6 +243,17 @@ Sebelum menyentuh pantauan operasi udara (laporan gelar armada, kelayakan terban
 
 Aturan berhentinya sama dengan §2.1. Nama kru tidak pernah disimpan; biaya kontrak tidak pernah masuk `public/`; tiap tiket layar ditinjau pemilik di `http://localhost:8800/operasi`.
 
+### 2.11 Cek Kabar Luar (`/bnpb/dalops`, kejadian belum dilaporkan selesai): baca dulu, baru bangun
+
+Sebelum menyentuh pemeriksaan kabar luar (berita, data alam) untuk kejadian Pantau Dalops yang belum dilaporkan selesai, baca dokumen di
+`data/kajian-bnpb/cek-kabar/` dengan urutan otoritas ini (kode di `scripts/data/dalops_kabar.py` dan `scripts/data/dalops_banjir.py` milik `pipa-data`; `public/bnpb/dalops*.js` milik `ruang-bnpb`):
+
+1. `KEPUTUSAN-CEK-KABAR.md`: keputusan pemilik, keputusan rancangan D1–D7, pertanyaan terbuka Q1–Q6 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`CK-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Label tidak pernah menutup kejadian; penutupan hanya dari laporan resmi. Tanpa rute Worker dan tabel D1 baru.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
