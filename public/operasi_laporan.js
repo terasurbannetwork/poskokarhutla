@@ -36,7 +36,7 @@
   /* semua kartu bisa dilipat (pemilik 11 Nov 2026 "semua agar dibuat collapsible", pola pangantara): <details> dengan kepala navy
      sebagai <summary>; bawaan terbuka hanya Base, pilihan buka/tutup diingat per peramban (kenyamanan, bukan data) */
   const BUKA_AWAL = new Set(["papan-base", "peta-operasi"]), CHEV = '<svg class="ops-chev ops-kartu-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
-  let ingatKartu = {}; try { ingatKartu = JSON.parse(localStorage.getItem("ops_kartu") || "{}") || {}; } catch (e) {}
+  let ingatKartu = {}; try { ingatKartu = JSON.parse(localStorage.getItem("ops_kartu2") || "{}") || {}; } catch (e) {}   // model A: kunci baru, kartu bawaan terbuka
   const idKartu = ey => String(ey).replace(/<[^>]+>/g, "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   /* kepala kartu = NAMA SEKSI, bukan kalimat kesimpulan (pemilik 11 Nov 2026 "ini semuanya bukan kesimpulan kesimpulan ya");
      kalimat temuan (judul) pindah ke baris pertama isi supaya infonya tetap ada */
@@ -53,6 +53,33 @@
   const katKartu = id => (KATEGORI_SEMUA.find(k => k[3].includes(id)) || [""])[0];
   const katPilih = {udara: "hariini", darat: "personel"};
   for (const m of Object.keys(katPilih)) try { const k = localStorage.getItem("ops_kat_" + m); if (KATEGORI_MODE[m].some(x => x[0] === k)) katPilih[m] = k; } catch (e) {}
+  /* model A (pemilik 11 Nov 2026, DESIGN-SYSTEM §7): panel seksi kiri; satu seksi = satu tampilan, kartu di dalamnya terbuka.
+     [kunci, nama, ikon, kartu-kartu]; seksi "ringkasan" = Perlu tindakan + Ringkasan + kartu yang disebut */
+  const SEKSI = {udara: [["Hari ini", [["ringkasan", "Ringkasan", "tren", ["papan-base"]], ["base", "Base dan armada", "base", ["base", "histori-armada"]], ["peta", "Peta operasi", "api", ["peta-operasi"]], ["renlap", "Renlap dan aksi", "sortie", ["renlap", "aksi-armada", "temuan-pilot"]]]],
+      ["Kinerja", [["tren", "Tren 30 hari", "tren", ["tren-30-hari"]], ["efektivitas", "Efektivitas", "padam", ["efektivitas"]], ["operator", "Operator", "op", ["operator"]], ["dok", "Dokumentasi dan jejak", "catat", ["dokumentasi", "jejak-ads-b"]]]],
+      ["Kontrak", [["kontrak", "Kontrak 2026", "jam", ["kontrak-2026"]], ["omc", "Modifikasi cuaca", "awan", ["omc-resmi-bmkg-aktif", "modifikasi-cuaca"]]]]],
+    darat: [["Hari ini", [["ringkasan", "Ringkasan", "tren", []], ["personel", "Personel", "peran", ["personel"]], ["lahan", "Penanganan lahan", "api", ["penanganan-lahan", "dipadamkan-2026"]], ["patroli", "Patroli regu", "vis", ["patroli-regu"]]]]]};
+  const seksiDaftar = m => SEKSI[m].flatMap(g => g[1]);
+  const seksiPilih = {udara: "ringkasan", darat: "ringkasan"};
+  for (const m of Object.keys(seksiPilih)) try { const k = localStorage.getItem("ops_seksi_" + m); if (seksiDaftar(m).some(x => x[0] === k)) seksiPilih[m] = k; } catch (e) {}
+  const seksiKartu = (m, id) => seksiDaftar(m).find(x => x[3].includes(id))?.[0];
+  function navSeksi(D) {
+    const m = st.mode, u = U(), hit = {};
+    if (D && m === "udara") { const ar = D.peta.armada || [], bs = (D.peta.base || []).map(b => infoBase(D, b)), tg = bs.reduce((t, x) => t + x.tg.length, 0);
+      hit.base = fmt(ar.length); if (tg) hit.renlap = `${fmt(bs.reduce((t, x) => t + x.datang, 0))}/${fmt(tg)}`; const p3 = (S.kluster?.features || []).filter(f => f.properties.level >= 3).length; if (p3) hit.peta = fmt(p3);
+      if (D.omc?.length) hit.omc = fmt(D.omc.length); const tk = $("#opsRingkas .ops-tindak li")?.parentElement?.children.length; if (tk) hit.ringkasan = fmt(tk); }
+    return SEKSI[m].map(([g, xs]) => `<p class="ops-nav-g">${g}</p>${xs.map(([k, t, ik]) => `<button type="button" data-seksi="${k}" aria-current="${k === seksiPilih[m] ? "page" : "false"}"><i>${lbl(ik, "")}</i><span>${t}</span>${hit[k] ? `<b${k === "ringkasan" ? ' class="merah"' : ""}>${hit[k]}</b>` : ""}</button>`).join("")}`).join("");
+  }
+  /* hanya atribut hidden (INP): kartu di luar seksi disembunyikan, ringkasan hanya di seksi Ringkasan */
+  function terapSeksi() {
+    const m = st.mode, k = seksiPilih[m], x = seksiDaftar(m).find(z => z[0] === k) || seksiDaftar(m)[0];
+    $("#opsIsi")?.querySelectorAll("details.ops-kartu[data-kartu]").forEach(el => { el.hidden = !x[3].includes(el.dataset.kartu); if (!el.hidden && !(el.dataset.kartu in ingatKartu)) el.open = true; });
+    const r = $("#opsRingkas"); if (r) r.hidden = x[0] !== "ringkasan";
+    const j = $("#opsJudul"); if (j) j.innerHTML = `${lbl(x[2], "")}${x[1]}`;
+    $("#opsLaporan .ops-nav-isi")?.querySelectorAll("[data-seksi]").forEach(b => b.setAttribute("aria-current", b.dataset.seksi === x[0] ? "page" : "false"));
+    requestAnimationFrame(pasangPeta);
+  }
+  const pindahSeksi = k => { seksiPilih[st.mode] = k; try { localStorage.setItem("ops_seksi_" + st.mode, k); } catch (e) {} terapSeksi(); $("#opsLaporan .ops-utama")?.scrollIntoView({block: "start"}); };
   const pilKategori = m => `<div class="seg ops-kat" role="group" aria-label="Kategori informasi">${KATEGORI_MODE[m].map(([k, t, ik]) => `<button type="button" data-kat="${k}" aria-pressed="${k === katPilih[m]}">${lbl(ik, t)}</button>`).join("")}</div>`;
   /* hanya atribut hidden, tanpa render ulang (INP) */
   const terapKat = root => root?.querySelectorAll("details.ops-kartu[data-kat], [data-kat-bungkus]").forEach(el => { el.hidden = (el.dataset.kat || el.dataset.katBungkus) !== katPilih[st.mode]; });
@@ -60,7 +87,7 @@
   const ringkasLipat = (D, sel) => `<details class="ops-pa-sek ops-rk" open><summary><i>${lbl("tren", "")}</i><b>Ringkasan</b><small>${lbl("kalender", esc(D.label || tglPendek(D.t)))}</small>${D.vs ? `<small class="vs">${lbl("tren", `dibanding ${esc(D.vs.label)}`)}</small>` : ""}<svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
       <div class="ops-lap-angka" style="--n:${sel.length}">${sel.join("")}</div></details>`;
   const selDarat = (ik, n, t, sub, redup) => `<div class="${redup ? "redup" : ""}"><header><i>${lbl(ik, "")}</i><span>${t}</span></header><div class="ops-ub-isi"><b>${n}</b>${sub ? `<em>${sub}</em>` : ""}</div></div>`;
-  const bagian = (ey, judul, isi, kanan = "") => { const id = idKartu(ey), buka = id in ingatKartu ? ingatKartu[id] : BUKA_AWAL.has(id), nama = NAMA_SEKSI[id];
+  const bagian = (ey, judul, isi, kanan = "") => { const id = idKartu(ey), buka = id in ingatKartu ? ingatKartu[id] : true, nama = NAMA_SEKSI[id];
     if (!nama) return `<article class="ex ex-std"><header class="ex-hd">${eyebrow(ey)}<div class="ex-jd"><h3>${judul}</h3>${kanan}</div></header><div class="ex-bd">${isi}</div></article>`;
     return `<details class="ex ex-std ops-kartu" data-kartu="${id}" data-kat="${katKartu(id)}"${buka ? " open" : ""}><summary class="ex-hd">${eyebrow(ey)}<div class="ex-jd"><h3>${nama}</h3>${kanan}</div>${CHEV}</summary><div class="ex-bd">${isi}</div></details>`; };   // tanpa kalimat kesimpulan (pemilik 11 Nov 2026 "gausah ada kesimpulan ini")
   const tabelH = (kepala, baris, kosong) => baris.length ? `<div class="tw ops-tw ex-tabel"><table><thead><tr>${kepala.map(k => { const [t, tip] = k.split("|");
@@ -114,14 +141,27 @@
     .then(([h30, omcHasil, bnpb, resmi, omcBmkg]) => ({h30, omcHasil, bnpb, resmi, omcBmkg}));
 
   /* ---------------- kerangka: tab Udara/Darat, tanggal, salin teks ---------------- */
+  /* panel seksi bisa ditarik lebarnya (aturan pemilik: semua panel samping bisa ditarik), lebar diingat */
+  function pasangTarikNav(box) {
+    const a = box.querySelector(".ops-a"), tk = box.querySelector(".ops-nav-tarik"); if (!a || !tk) return;
+    const set = w => { w = Math.max(184, Math.min(320, w)); a.style.setProperty("--nav-w", w + "px"); return w; };
+    try { const w = +localStorage.getItem("ops_nav_lebar"); if (w) set(w); } catch (e) {}
+    let x0 = 0, w0 = 0, w = 0; const nav = box.querySelector(".ops-nav");
+    const gerak = e => { w = set(w0 + e.clientX - x0); }, lepas = () => { tk.classList.remove("aktif"); removeEventListener("pointermove", gerak); removeEventListener("pointerup", lepas); try { localStorage.setItem("ops_nav_lebar", String(w)); } catch (e) {} petaOps?.resize(); };
+    tk.addEventListener("pointerdown", e => { e.preventDefault(); x0 = e.clientX; w0 = w = nav.offsetWidth; tk.classList.add("aktif"); addEventListener("pointermove", gerak); addEventListener("pointerup", lepas); });
+    tk.addEventListener("keydown", e => { if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return; e.preventDefault(); w = set(nav.offsetWidth + (e.key === "ArrowRight" ? 16 : -16)); try { localStorage.setItem("ops_nav_lebar", String(w)); } catch (x) {} });
+  }
   function kerangka(box) {
-    box.innerHTML = `<div class="ops-alat" role="toolbar" aria-label="Laporan operasi">
-      <div class="seg ops-mode" role="group" aria-label="Bagian operasi">${[["udara", "Operasi Udara"], ["darat", "Operasi Darat"]].map(([k, t]) => `<button type="button" data-mode="${k}" aria-pressed="${st.mode === k}">${ik(k)}${t}</button>`).join("")}</div>
+    box.innerHTML = `<div class="ops-a"><aside class="ops-nav" aria-label="Seksi operasi">
+      <div class="seg ops-mode" role="group" aria-label="Bagian operasi">${[["udara", "Udara"], ["darat", "Darat"]].map(([k, t]) => `<button type="button" data-mode="${k}" aria-pressed="${st.mode === k}">${ik(k)}${t}</button>`).join("")}</div>
+      <nav class="ops-nav-isi">${navSeksi(null)}</nav><span class="ops-nav-tarik" tabindex="0" role="separator" aria-orientation="vertical" aria-label="Tarik lebar panel"></span></aside>
+      <main class="ops-utama"><div class="ops-alat" role="toolbar" aria-label="Laporan operasi"><h2 id="opsJudul" class="ops-judul"></h2>
       <div class="ops-periode" role="group" aria-label="Periode laporan">${periode()}</div>
       <div id="opsRingkas" class="ops-ringkas-slot"></div>
       ${""/* tombol Salin teks WA (data-aksi="salin") dan Cetak / PDF (data-aksi="cetak") disembunyikan pemilik 11 Nov 2026; handler dan salin() tetap */}
-      <span class="ops-status" role="status"></span></div><div id="opsIsi"></div>`;
-    box.addEventListener("toggle", e => { const k = e.target.dataset?.kartu; if (!k) return; if (k === "peta-operasi" && e.target.open) requestAnimationFrame(pasangPeta); ingatKartu[k] = e.target.open; try { localStorage.setItem("ops_kartu", JSON.stringify(ingatKartu)); } catch (x) {} }, true);
+      <span class="ops-status" role="status"></span></div><div id="opsIsi"></div></main></div>`;
+    pasangTarikNav(box);
+    box.addEventListener("toggle", e => { const k = e.target.dataset?.kartu; if (!k) return; if (k === "peta-operasi" && e.target.open) requestAnimationFrame(pasangPeta); ingatKartu[k] = e.target.open; try { localStorage.setItem("ops_kartu2", JSON.stringify(ingatKartu)); } catch (x) {} }, true);
     { const tip = document.createElement("div"); tip.className = "ops-tip"; tip.hidden = true; box.append(tip);   // tooltip grafik di halaman (data-tip sudah di-escape saat dibuat)
       box.addEventListener("pointermove", e => { const el = e.target.closest?.("[data-tip]"); if (!el || el.closest("dialog")) { tip.hidden = true; return; }
         if (tip.dataset.dari !== el.dataset.tip) { tip.innerHTML = el.dataset.tip; tip.dataset.dari = el.dataset.tip; }
@@ -130,7 +170,8 @@
     box.addEventListener("click", e => {
       if (e.target.closest("summary.ex-hd") && e.target.closest("button, a, input, select, label")) e.preventDefault();   // kontrol di kepala kartu tidak ikut melipat
       const m = e.target.closest("[data-mode]");
-      if (m) { st.mode = m.dataset.mode; try { localStorage.setItem("ops_mode", st.mode); } catch (x) {} box.querySelectorAll("[data-mode]").forEach(b => b.setAttribute("aria-pressed", String(b === m))); return sesudahFrame(isi); }
+      if (m) { st.mode = m.dataset.mode; try { localStorage.setItem("ops_mode", st.mode); } catch (x) {} box.querySelectorAll("[data-mode]").forEach(b => b.setAttribute("aria-pressed", String(b === m))); const nv = $("#opsLaporan .ops-nav-isi"); if (nv) nv.innerHTML = navSeksi(null); return sesudahFrame(isi); }
+      const sk = e.target.closest("[data-seksi]"); if (sk) return pindahSeksi(sk.dataset.seksi);
       const th = e.target.closest(".ops-tw thead th"); if (th && !th.closest("table").querySelector("tr.ops-grup")) return urutTabel(th);
       const op = e.target.closest("tr[data-op]"); if (op) return bukaOperator(op.dataset.op);
       const ro = e.target.closest("tr[data-reg-omc]"); if (ro) return bukaArmada(ro.dataset.regOmc);
@@ -138,9 +179,8 @@
       const nl = e.target.closest("[data-nilai]"); if (nl) return bukaNilai(nl.dataset.nilai);
       const ti = e.target.closest("[data-tindak]"); if (ti) { const [j, v] = ti.dataset.tindak.split(":");
         if (j === "pb") return bukaBasePop(v); if (j === "rk") return bukaRingkas(v);
-        const kartu = j === "peta" ? $('details[data-kartu="peta-operasi"]') : $(`details[data-kartu="${v}"]`); if (!kartu) return;
-        const bt = $(`.ops-kat [data-kat="${kartu.dataset.kat}"]`); if (bt && bt.getAttribute("aria-pressed") !== "true") bt.click();
-        kartu.open = true; kartu.scrollIntoView({behavior: "smooth", block: "start"}); return setTimeout(pasangPeta, 50); }
+        const id = j === "peta" ? "peta-operasi" : v, sk2 = seksiKartu(st.mode, id); if (!sk2) return; pindahSeksi(sk2);
+        const kartu = $(`details[data-kartu="${id}"]`); if (kartu) kartu.open = true; return; }
       const ka = e.target.closest(".ops-akt[data-reg]"); if (ka) return bukaArmada(ka.dataset.reg);
       const rk = e.target.closest(".ops-lap-angka [data-rk]"); if (rk) return bukaRingkas(rk.dataset.rk);
       const kt = e.target.closest(".ops-kat [data-kat]"); if (kt) { katPilih[st.mode] = kt.dataset.kat; try { localStorage.setItem("ops_kat_" + st.mode, kt.dataset.kat); } catch (x) {}
@@ -244,10 +284,10 @@
     const D = st._d = {...siapkan(d), ...s, pm: st.pm, label: labelPeriode(rg)};
     D.vs = vs?.ada ? {...vs, label: labelPeriode(rb), hari: D.hitung(vs.aksi)} : null;
     el.innerHTML = st.mode === "udara" ? udara(D) : darat(D);
-    terapKat(el);
     /* Ringkasan tinggal di wadah yang sama dengan tab dan pemilih periode (pemilik 11 Nov 2026 "disatuin dalam satu container") */
     const rk = [...el.querySelectorAll(":scope > .ops-tindak, :scope > .ops-rk")], slot = $("#opsRingkas"); if (slot) slot.replaceChildren(...rk);
-    requestAnimationFrame(pasangPeta);
+    const nv = $("#opsLaporan .ops-nav-isi"); if (nv) nv.innerHTML = navSeksi(D);
+    terapSeksi();
   }
 
   /* ---------------- turunan udara ---------------- */
@@ -529,7 +569,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     const ringkas = pitaTindakan(D) + `<details class="ops-pa-sek ops-rk" open><summary><i>${lbl("tren", "")}</i><b>Ringkasan</b><small>${lbl("kalender", esc(D.label || tglPendek(D.t)))}</small>${D.vs ? `<small class="vs">${lbl("tren", `dibanding ${esc(D.vs.label)}`)}</small>` : ""}<svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
       <div class="ops-lap-angka" style="--n:${tiles.length}">${tiles.join("")}</div></details>`;
     return [
-      ringkas, `<section class="ops-wadah">${pilKategori("udara")}${[
+      ringkas, `<section class="ops-wadah">${[
       kartuPapan(D), kartuPeta(D), kartuBase(D), kartuRenlap(D), kartuAksi(D), kartuTemuan(D),
       kartuTren(D), kartuNilai(D), kartuHistori(D), kartuGaleri(D), kartuJejak(D),
       kartuOperator(D), kartuKontrak(D), kartuOmcResmi(D), kartuOmc(D)].join("")}</section>`].join("");
@@ -961,7 +1001,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     const barisLuas = prov.filter(p => p.ditangani != null || p.sisa != null).sort((a, b) => (b.ditangani || 0) - (a.ditangani || 0)).map(p => `<tr>${kiri(`<b>${esc(p.nama)}</b>`)}${sel(p.ditangani == null ? "–" : fmt(p.ditangani) + " ha")}${sel(p.sisa == null ? "–" : fmt(p.sisa) + " ha")}${kiri(esc(p.upaya || p.hambatan || "–"))}</tr>`);
     const dipadamkan = resmi ? Object.entries(resmi.dipadamkan_ha).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<tr>${kiri(`<b>${esc(k === "lainnya" ? "Lainnya" : (window.Wilayah?.PROV?.[k] || namaProvSah(k)))}</b>`)}${sel(fmt(v) + " ha")}${sel(fmt(Math.round(v / resmi.dipadamkan_total_ha * 1000) / 10) + "%")}</tr>`) : [];
     return [
-      ringkas, `<section class="ops-wadah">${pilKategori("darat")}${[
+      ringkas, `<section class="ops-wadah">${[
       bagian("Personel", snap ? `Kekuatan personel per unsur pada ${esc(tglPanjang(D.t))}` : `Kekuatan personel per unsur, ${hl(esc(sumber))}`, tabelH(kepalaUnsur, barisP, "Laporan provinsi belum dikunci untuk tanggal ini.")),
       bagian("Penanganan lahan", barisLuas.length ? `${hl(fmt(Math.round(barisLuas.length)))} provinsi melaporkan luas penanganan darat` : "Luas penanganan darat belum dilaporkan",
         tabelH(["Provinsi", "#Ditangani darat", "#Akan dipadamkan", "Upaya dan rekomendasi"], barisLuas, "Belum ada angka luas penanganan darat.")),

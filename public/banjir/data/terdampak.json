@@ -1,6 +1,6 @@
 {
- "dibuat": "2026-11-09",
- "hari": "2026-11-09",
+ "dibuat": "2026-11-11",
+ "hari": "2026-11-11",
  "ambang": {
   "belum_surut_hari": 14,
   "sudah_surut_hari": 14
@@ -21,8 +21,8 @@
    "provinsi": "Aceh",
    "kab": "Aceh Selatan",
    "status": "Sudah surut",
-   "tanggal": "2026-11-05",
-   "sumber": "Laporan harian Koordalops"
+   "tanggal": "2026-11-06",
+   "sumber": "Laporan Pusdalops"
   },
   {
    "kode": "11|Gayo Lues",
@@ -30,8 +30,8 @@
    "provinsi": "Aceh",
    "kab": "Gayo Lues",
    "status": "Sudah surut",
-   "tanggal": "2026-11-02",
-   "sumber": "Laporan harian Koordalops"
+   "tanggal": "2026-11-10",
+   "sumber": "Laporan Pusdalops"
   },
   {
    "kode": "11|Kota Subulussalam",
@@ -48,8 +48,8 @@
    "provinsi": "Aceh",
    "kab": "Pidie Jaya",
    "status": "Belum surut",
-   "tanggal": "2026-11-05",
-   "sumber": "Laporan harian Koordalops"
+   "tanggal": "2026-11-10",
+   "sumber": "Laporan Pusdalops"
   },
   {
    "kode": "12|Deli Serdang",
@@ -57,8 +57,8 @@
    "provinsi": "Sumatera Utara",
    "kab": "Deli Serdang",
    "status": "Belum surut",
-   "tanggal": "2026-10-30",
-   "sumber": "Laporan harian Koordalops"
+   "tanggal": "2026-11-06",
+   "sumber": "Laporan Pusdalops"
   },
   {
    "kode": "12|Kota Binjai",
@@ -93,8 +93,8 @@
    "provinsi": "Sumatera Utara",
    "kab": "Serdang Bedagai",
    "status": "Belum surut",
-   "tanggal": "2026-10-29",
-   "sumber": "Laporan harian Koordalops"
+   "tanggal": "2026-11-06",
+   "sumber": "Laporan Pusdalops"
   },
   {
    "kode": "13|Padang Pariaman",
@@ -102,8 +102,8 @@
    "provinsi": "Sumatera Barat",
    "kab": "Padang Pariaman",
    "status": "Sudah surut",
-   "tanggal": "2026-11-07",
-   "sumber": "Laporan harian Koordalops"
+   "tanggal": "2026-11-09",
+   "sumber": "Laporan Pusdalops"
   },
   {
    "kode": "35|Lumajang",

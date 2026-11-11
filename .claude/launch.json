@@ -244,6 +244,16 @@
       ],
       "port": 8815,
       "autoPort": false
+    },
+    {
+      "name": "lokal2",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "scripts/agents/dev_lokal.mjs",
+        "8792"
+      ],
+      "port": 8792,
+      "autoPort": false
     }
   ]
 }

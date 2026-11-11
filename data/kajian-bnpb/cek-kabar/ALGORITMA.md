@@ -17,27 +17,27 @@ Artikel `a` cocok bila semua benar:
 | banjir | `berita.json` | `banjir|genang|terendam|meluap|bandang` |
 | longsor | `berita.json` | `longsor|tanah bergerak|pergerakan tanah|tertimbun` |
 | gelombang | `berita_pesisir.json` | `rob|gelombang|abrasi|pasang` |
-| karhutla | `/data/berita.json` | `kebakaran hutan|kebakaran lahan|karhutla|lahan terbakar` |
-| permukiman | `/data/berita.json` | `kebakaran (rumah|permukiman|pemukiman|pasar|ruko|gedung)` (Q2) |
+| karhutla | `/data/berita.json` | `kebakaran hutan|kebakaran lahan|karhutla|lahan terbakar|hutan terbakar` |
+| permukiman | `/data/berita.json` | `kebakaran (rumah|permukiman|pemukiman|pasar|ruko|gedung|bangunan)` (Q2) |
 | cuaca, gempa, kekeringan | berkas sendiri | tanpa syarat tambahan |
 
 ## 2. Arah bukti satu artikel
 
 Teks = `judul + " " + ringkas`, huruf kecil.
 
-- **pulih** bila regex selesai jenis itu dari `dalops_banjir.py` cocok dan regex belumnya tidak cocok (dipakai ulang lewat `POLA` dan `surut()`, bukan disalin), ditambah pola umum `kembali normal|warga kembali ke rumah|status (tanggap )?darurat (dicabut|berakhir)`. Contoh: "air mulai surut" **tidak** pulih karena `SUDAH` banjir meminta "sudah/telah surut".
+- **pulih** bila regex selesai jenis itu dari `dalops_banjir.py` cocok dan regex belumnya tidak cocok (dipakai ulang lewat `POLA` dan `surut()`, bukan disalin), ditambah pola umum `kembali normal|warga kembali ke rumah|status (tanggap )?darurat (dicabut|berakhir)` selama teks tidak memuat `belum (sepenuhnya) kembali/normal/dicabut/berakhir/surut/padam`. Contoh: "air mulai surut" **tidak** pulih karena `SUDAH` banjir meminta "sudah/telah surut".
 - **masih** bila bukan pulih dan salah satu benar: topik memuat `korban` atau `penanganan`, atau teks cocok `AKTIF` = `masih|terendam|tergenang|mengungsi|pengungsi|evakuasi|terisolir|belum surut|belum padam|terbakar|dalam penanganan|tanggap darurat` **[BAWAAN SEMENTARA]**.
 - Selain itu: diabaikan. Topik `kejadian` saja tidak cukup, karena hampir semua artikel bertopik `kejadian` (1.500 dari 1.500 di `berita.json` banjir 11 Nov 2026); artikel pencegahan, kebijakan, atau infrastruktur saja juga diabaikan.
 
 ## 3. Sinyal alam per jenis
 
-Level di `status.json`: 0 normal, 1 waspada, 2 siaga, 3 awas. Per kab diambil level tertinggi semua kecamatannya untuk hari ini dan besok.
+Level di `status.json`: 0 normal, 1 waspada, 2 siaga, 3 awas. Per kab diambil level tertinggi semua kecamatannya untuk hari ini dan besok; bila `hari` berkas tidak memuat hari ini, tanpa sinyal.
 
 | Jenis | Alam normal bila | Alam aktif bila |
 | --- | --- | --- |
 | banjir | level `b` tertinggi <= 1 | level `b` tertinggi >= 2 |
 | longsor | level `l` tertinggi <= 1 | level `l` tertinggi >= 2 |
-| karhutla | titik panas kab 0 pada 2 hari terakhir `peta_karhutla_kab.json` | titik panas kab > 0 pada hari terakhir |
+| karhutla | titik panas semua kab kejadian (dijumlah) 0 pada hari terakhir berkas dan sehari sebelumnya | jumlah > 0 pada hari terakhir berkas; berkas yang hari terakhirnya lebih tua dari h-1 = tanpa sinyal |
 | kekeringan | kelas `gdo_spi3` dan `gdo_tanah` di `gdo.json` sama-sama 0 | salah satu >= 1 |
 | cuaca, gempa, gelombang, permukiman | tidak ada sinyal alam | |
 

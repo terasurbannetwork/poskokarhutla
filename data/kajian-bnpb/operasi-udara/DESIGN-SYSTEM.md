@@ -75,3 +75,22 @@ Status armada memakai titik warna `--w` dari `STATUS_AR` (`public/operasi_peta.j
 - Pop-up `<dialog>` bawaan: Esc, tombol ×, klik latar menutup; fokus kembali ke kartu asal.
 - Kartu dan baris yang bisa diklik punya `tabindex="0"` dan bisa dibuka dengan Enter.
 - `prefers-reduced-motion`: tanpa efek angkat kartu.
+
+## 7. Tata letak model A: panel seksi kiri (pemilik 11 Nov 2026)
+
+Riset (NN/g accordions dan vertical nav, Stephen Few, Esri ArcGIS Dashboards, Grafana kiosk) dan rujukan Oyenza:
+kartu yang semuanya terlipat menyembunyikan isi yang hampir selalu dibutuhkan; dashboard = yang terpenting dalam satu layar,
+pengecualian (Perlu tindakan) dulu, rincian sesudahnya. Pola Oyenza dipinjam, bukan ditiru mentah: kepala situs navy,
+token Centurisk97, kartu berkepala §3.5 tetap.
+
+| Bagian | Isi |
+| ------ | --- |
+| Panel kiri (sticky, 232 px, bisa ditarik 200 sampai 320 px, bisa diciutkan jadi ikon) | Udara/Darat, lalu grup seksi berikon dengan angka kecil di kanan; yang aktif berlatar navy lembut. Udara: **Hari ini** (Ringkasan, Base dan armada, Peta, Renlap dan aksi), **Kinerja** (Tren, Efektivitas, Operator dan histori), **Kontrak** (Kontrak 2026, Modifikasi cuaca). Kaki panel: pil kesegaran data per sumber |
+| Kepala isi (satu baris) | Judul seksi besar di kiri; di kanan pemilih periode satu baris: segmen Hari/Minggu/Bulan/Rentang/12 Bulan + ‹ tanggal › |
+| Tampilan Ringkasan | Kiri: Ringkasan 3x2 berpembanding, papan base. Kanan (kolom 360 px): Perlu tindakan sebagai daftar tegak. Tanpa klik |
+| Tampilan lain | Kartu seksi terbuka bawaan; lipatan hanya untuk rincian sekunder (foto, jejak ADS-B) |
+| HP (< 900 px) | Panel kiri jadi deret seksi yang bisa digeser di atas isi; kolom kanan turun ke bawah |
+| TV | `?tv=1` (UD-24) |
+
+Satu tampilan = satu hash (`#ringkasan`, `#base`, ...), jadi tombol kembali dan tautan bekerja. Pindah seksi hanya
+mengganti `hidden` pada grup kartu yang sudah dirender (INP).

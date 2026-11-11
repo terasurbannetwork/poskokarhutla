@@ -28,6 +28,7 @@ import json
 import os
 import re
 import subprocess
+import sys
 
 AKAR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 JENIS = "banjir"   # diganti --jenis (lihat JENIS_BOLEH)
@@ -52,7 +53,7 @@ def _muat(nama, rel):
 
 # --------------------------------------------------------------- pembaca teks kondisi (murni, diuji --uji)
 SUDAH = re.compile(r"\b(sudah|telah|sdh|sudh)\s+(surut|kering)|\bsurut\s+(total|seluruhnya|sepenuhnya)|\bkembali\s+normal|\bsudah\s+tidak\s+(ada\s+)?(tergenang|genangan)")
-BELUM = re.compile(r"\bbelum\s+(sepenuhnya\s+)?surut|\bmasih\s+(ter)?genang|\bgenangan\b[^.]{0,40}\bmasih\s+ada|\bmasih\s+ada\s+genangan|\bmenggenangi|\bmasih\s+terendam|\bair\s+(kembali\s+)?naik|\bkenaikan")
+BELUM = re.compile(r"\bbelum\s+(sepenuhnya\s+)?surut|\bmasih\s+(ter)?genang|\bgenangan\b[^.]{0,40}\bmasih\s+ada|\bmasih\s+ada\s+genangan|\bmenggenangi|\bmasih\s+terendam|\bair\s+(kembali\s+)?naik|\bkenaikan|\bbelum\s+(sepenuhnya\s+)?kembali\s+normal")   # 11 Nov: "belum sepenuhnya kembali normal" bukan surut
 RE_TGL_AWAL = re.compile(r"^\s*(senin|selasa|rabu|kamis|jumat|jum'at|sabtu|minggu)?,?\s*\d{1,2}\s+\w+\s+\d{4}\s*", re.I)
 
 
@@ -532,6 +533,30 @@ def entri_wa_bot(kode_kab, sesudah="", dasar=None):
     return out
 
 
+_KABAR = None
+
+
+def cek_kabar(rows, hari, kini, arsip=True):
+    """Cek Kabar Luar (data/kajian-bnpb/cek-kabar/): kolom 'luar' tiap baris belum selesai, hapus di baris selesai. Gagal = lewati, tidak menghentikan.
+    CEK_KABAR=0 mematikan (mesin tanpa jaringan). arsip=False untuk --hari lampau: label hari ini bukan label hari itu."""
+    if os.environ.get("CEK_KABAR") == "0":
+        return
+    try:
+        global _KABAR
+        K = _KABAR = _KABAR or _muat("dalops_kabar", "scripts/data/dalops_kabar.py")   # sekali per jalan: berkas bersama tidak diunduh ulang
+        K.periksa(rows, hari, JENIS, K.muat_bahan(JENIS, hari), sys.modules[__name__], kini)
+        n = K.arsipkan(rows, hari, JENIS) if arsip else 0
+        hit = {}
+        for x in rows:
+            if x.get("luar"):
+                hit[x["luar"]["label"]] = hit.get(x["luar"]["label"], 0) + 1
+        print(f"cek kabar {JENIS}: {hit or 'tidak ada baris belum selesai'} ({n} baris arsip baru)")
+    except Exception as x:   # cek kabar adalah tambahan; berkas Dalops tetap terbit tanpanya, tanpa label setengah jadi atau basi
+        for r in rows:
+            r.pop("luar", None)
+        print(f"cek kabar {JENIS} dilewati: {x}")
+
+
 def tulis(isi, unggah):
     os.makedirs(os.path.dirname(keluar()), exist_ok=True)
     with open(keluar(), "w", encoding="utf-8") as f:
@@ -555,6 +580,7 @@ def main_wa(o, LB):
     hari = max([d["hari"]] + [e["tgl"] for e in entri])
     rows = saring(rows, hari)
     kini = dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes")
+    cek_kabar(rows, hari, kini)
     tulis({**d, "dibuat": kini, "hari": hari, "sumber": "Logbook Pusdalops BNPB + WA Koordalops", "kejadian": rows}, o.unggah)
     print(f"{JENIS} WA: {len(entri)} entri, hari {hari}: {sum(not r['surut'] for r in rows)} belum surut dari {len(rows)} -> {os.path.relpath(keluar(), AKAR)}")
 
@@ -603,6 +629,7 @@ def satu(o, LB, LP):
     hari = max([hari] + [e["tgl"] for e in entri])
     rows = saring(rows, hari)
     kini = dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes")
+    cek_kabar(rows, hari, kini, arsip=not o.hari)
     tulis({"v": 1, "dibuat": kini, "hari": hari, "sumber": "Logbook Pusdalops BNPB" + (" + WA Koordalops" if entri else ""), "kejadian": rows}, o.unggah)
     awal = (dt.date.fromisoformat(hari) - dt.timedelta(days=SEPEKAN)).isoformat()
     pekan = [r for r in rows if r["terakhir"] >= awal]
@@ -714,7 +741,8 @@ def uji():
     perbarui_wa(r2, [dict(wa[0], kab_kode="11|Aceh Barat", tgl="2026-11-01", baru=True)])
     assert len(r2) == 1 and r2[0]["riwayat"][0]["tgl"] == "2026-11-01" and r2[0]["terakhir"] == "2026-11-02", r2
     assert not surut("Air sudah mulai surut, genangan kecil dan lumpur masih ada, Infrastruktur rusak")   # Pidie Jaya, WA 5 Nov
-    assert not surut("Air sudah mulai surut")   # Pidie Jaya, WA 6 Nov: tanpa kalimat sisa genangan tetap belum surut
+    assert not surut("Air sudah mulai surut")
+    assert not surut("Kondisi belum sepenuhnya kembali normal") and surut("Kondisi sudah kembali normal")   # Pidie Jaya, WA 6 Nov: tanpa kalimat sisa genangan tetap belum surut
     # selesai per jenis: longsor tertangani, karhutla padam (kalimat nyata WA Koordalops Nov 2026)
     global JENIS
     JENIS = "longsor"

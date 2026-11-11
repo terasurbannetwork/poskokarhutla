@@ -22,6 +22,10 @@ di `http://localhost:8800/operasi`, baru tiket berikutnya. Tiket yang menunggu Q
 | UD-18b | K9 12 Bulan | rute rekap bulanan `/api/operasi/bulanan` (12 baris per bulan, satu kueri teragregasi, hemat kuota D1) | `warga-api` → `guard-api` | – |
 | UD-19 | K10 cari dan ekspor | bilah cari (base, registrasi, operator, lokasi) menyaring baris tanpa render ulang; ekspor Excel (SheetJS sudah dipakai repo?) dan PDF cetak seksi tampil | `layar-peta` → `inp-reviewer`, `selera-angka` | Q15 (bawaan dipakai) |
 | UD-20 | K11 tata letak seksi | deret tab seksi, kartu periode (UD-18) dan bilah cari (UD-19) di bawah Ringkasan, isi per seksi | `layar-peta` → `inp-reviewer` | Q14 (bawaan dipakai) |
+| UD-21 | Model A kerangka | panel seksi kiri, kepala satu baris, tampilan Ringkasan dua kolom, hash per seksi (DESIGN-SYSTEM §7); menggantikan pil kategori UD-20 | `layar-peta` → `inp-reviewer`, `selera-angka` | – |
+| UD-22 | Model A seksi | tiap seksi terbuka bawaan; lipatan hanya foto dan ADS-B; Operasi Darat memakai kerangka yang sama | `layar-peta` → `inp-reviewer` | – |
+| UD-23 | Aksi dan temuan berdaftar | cari, saring base/misi/hasil, kelompok per hari, ekspor CSV (menutup sebagian UD-19) | `layar-peta` → `selera-angka` | – |
+| UD-24 | Mode TV | `?tv=1`: sembunyikan kontrol, huruf besar, segar sendiri 5 menit | `layar-peta` | – |
 | UD-12 | F-8 liter dan sumber air | liter perkiraan berlabel; sumber air terdekat | `warga-api` + `layar-peta` | Q8, Q9 |
 | UD-13 | F-11 luas sebelum dan sesudah | luas cluster atau dNBR | `model-sebaran` → `validasi-model` | Q11 |
 | UD-14 | F-6 NOTAM | sumber NOTAM per bandara base | – | Q6 |
