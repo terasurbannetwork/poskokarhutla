@@ -41,14 +41,17 @@ export const lihat = (c, r) => !!r && (c.h.dummyOk || !r.dummy);
 export const lihatTulis = (c, r) => lihat(c, r) && (!c.h.dummy || !!r.dummy);   // jalur tulis: akun dummy tidak boleh menyentuh baris nyata (404 seragam)   // staf nyata dan akun nyata tidak melihat dummy = 1
 export const utkBP = (c, o) => { if (c.h.tipe !== "bp") return o; const {oleh, ...sisa} = o; return sisa; };
 
-/* ID bebas: hash kunci (n = 1..5) sekali tanya; ID yang sudah dipakai D1 (termasuk dibatalkan/digabung) atau dalam batch yang sama dilewati */
+/* ID bebas: hash kunci per 5 calon (n = 1..50, batas sama dengan idBebas), satu tanya D1 per 5; ID yang sudah dipakai D1
+   (termasuk dibatalkan/digabung) atau dalam batch yang sama dilewati. Dulu hanya 5: DIBI sering mencatat >5 kejadian sejenis
+   di satu kab pada hari yang sama, ingest Siklus 11 Nov 2026 gagal 409 seluruh batch. */
 async function pilihId(c, p, kunci, dalamBatch = new Set()) {
-  const calon = []; for (let n = 1; n <= 5; n++) calon.push(await idKejadian(kunci, n));
-  const terpakai = new Set(await H.skIdTerpakai(c.env, p, calon));
-  const id = calon.find(x => !terpakai.has(x) && !dalamBatch.has(x));
-  if (!id) throw new H.Galat(409, "ID kejadian bentrok berulang; hubungi pengelola");
-  dalamBatch.add(id);
-  return id;
+  for (let a = 1; a <= 50; a += 5) {
+    const calon = []; for (let n = a; n < a + 5; n++) calon.push(await idKejadian(kunci, n));
+    const terpakai = new Set(await H.skIdTerpakai(c.env, p, calon));
+    const id = calon.find(x => !terpakai.has(x) && !dalamBatch.has(x));
+    if (id) { dalamBatch.add(id); return id; }
+  }
+  throw new H.Galat(409, "ID kejadian bentrok berulang; hubungi pengelola");
 }
 
 /* ================================================================ baca */

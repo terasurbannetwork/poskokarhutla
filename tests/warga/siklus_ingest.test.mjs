@@ -37,6 +37,14 @@ uji("UJ-F1-13: ingest/kejadian: baru membuat kejadian + kab + sumber + satu jeja
   assert.equal(await n("sk_kejadian_kab"), 2); const s = await satu("SELECT * FROM sk_kejadian_sumber WHERE kode = 'dibi|3201|2026-03-02'"); assert.equal(s.status, "terpasang"); assert.equal(s.kejadian_id, "KJ-2026-9A2WGN3G"); assert.equal(JSON.parse(s.dampak).meninggal.n, 12);
   assert.equal(await n("sk_jejak"), 1, "satu jejak per batch"); const j = await satu("SELECT * FROM sk_jejak"); assert.equal(j.oleh, "sistem:ingest"); assert.equal(j.obyek, "ingest"); assert.equal(j.dummy, 0);
 });
+uji("ingest: lebih dari 5 kejadian baru sejenis di kab dan hari yang sama tidak 409 (insiden 11 Nov 2026: batas 5 calon ID menggagalkan seluruh batch DIBI)", async () => {
+  const sebelum = await n("sk_kejadian");
+  const r = await POST({keputusan: Array.from({length: 7}, (_, i) => item({kode: `dibi|3273|2026-05-05|${i}`, kab4: "3273", mulai: "2026-05-05", nama: "Banjir Kota Bandung"}))});
+  assert.equal(r.s, 200, r.t); assert.deepEqual(r.j, {terpasang: 7, baru: 7, antre: 0, duplikat: 0});
+  const r2 = await POST({keputusan: [item({kode: "dibi|3273|2026-05-05|7", kab4: "3273", mulai: "2026-05-05", nama: "Banjir Kota Bandung"})]});
+  assert.equal(r2.s, 200, `batch berikutnya memakai calon ke-8 dari D1: ${r2.t}`);
+  assert.equal(await n("sk_kejadian"), sebelum + 8);
+});
 uji("UJ-F1-13: kiriman sama dua kali = duplikat, nol baris baru, dampak tidak ditimpa (ON CONFLICT DO NOTHING)", async () => {
   const sebelum = [await n("sk_kejadian"), await n("sk_kejadian_sumber"), await n("sk_kejadian_kab"), await n("sk_jejak")];
   const r = await POST({keputusan: [item({dampak: {meninggal: {n: 999, y: "resmi", t: "2026"}}})]}); assert.equal(r.s, 200); assert.deepEqual(r.j, {terpasang: 0, baru: 0, antre: 0, duplikat: 1});
