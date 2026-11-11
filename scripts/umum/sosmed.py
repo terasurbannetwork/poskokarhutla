@@ -31,7 +31,7 @@ from collections import Counter
 
 AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
 WIB = dt.timezone(dt.timedelta(hours=7))
-SITUS = "https://poskokarhutla.terasurbannetwork.workers.dev"
+SITUS = "https://centurisk97.id"  # worker lama poskokarhutla.*.workers.dev sudah 404 (11 Nov 2026)
 SUMBER = "Post publik kurasi admin (Instagram, X, Threads)"
 HARI = 30
 

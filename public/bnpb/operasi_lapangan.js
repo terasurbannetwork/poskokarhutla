@@ -133,7 +133,7 @@
     el.dasar = h("div", {class: "ol-kanan"}, el.lapisKartu);
     el.lapisKartu.addEventListener("change", e => { const k = e.target.dataset.lapis; if (!k) return; st.lapis[k] = e.target.checked;   // ubin dicat dulu, lapisan sesudah frame
       if (k === "citra") { st.dasar = e.target.checked ? "citra" : "peta"; return sesudahFrame(pasangCitra); } sesudahFrame(() => { terapkanLapis(k); renderLegenda(); }); });
-    document.getElementById("kepala").replaceChildren(h("div", {class: "ol-kendali"}, el.tgl, el.rentang, el.seg), el.dummy);   // satu baris di bar atas (pemilik 3 Nov 2026)
+    document.getElementById("kepala").replaceChildren(h("div", {class: "ol-kendali"}, el.tgl, el.rentang, el.seg));   // el.dummy (wadah tombol dummy) dilepas 11 Nov 2026; pulihkan: tambahkan ", el.dummy" sebagai argumen terakhir   // satu baris di bar atas (pemilik 3 Nov 2026)
     el.legenda = h("details", {class: "ol-legenda", ...(innerWidth >= 1300 ? {open: ""} : {})});   // layar sempit: terlipat bawaan
     /* pesan dan spanduk dummy melayang di atas peta: tinggi peta tepat satu layar, legenda dan overlay tidak terpotong */
     app.replaceChildren(el.kartu, el.tengah = h("div", {class: "ol-tengah"}, el.peta, el.dasar, el.panel, el.tarik, el.legenda, h("div", {class: "ol-atas-peta"}, el.pesan, el.bandera)), el.bawah, el.kaki);
@@ -397,6 +397,7 @@
     } finally { tb.forEach(x => { x.disabled = false; x.removeAttribute("aria-busy"); }); }
   }
   async function tombolDummy() {
+    return; // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: hapus baris return ini
     const r = await api("GET", "/api/akademisi/saya"); if (!r.ok || !r.j.super) return; st.super = true;
     el.dummy.append(h("button", {class: "ad-tombol ad-bulat", type: "button", "data-dummy": "isi", title: "Isi data dummy operasi lapangan", "aria-label": "Isi data dummy"}, "🧪"),
       h("button", {class: "ad-tombol ad-bulat", type: "button", "data-dummy": "hapus", title: "Hapus semua data dummy", "aria-label": "Hapus data dummy"}, "🧹"));

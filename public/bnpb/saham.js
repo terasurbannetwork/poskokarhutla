@@ -258,6 +258,7 @@ function kartuMasuk(s) {
 
 /* ---------- dummy (Super Admin saja): isi contoh lokal di layar, tidak memanggil API ---------- */
 async function tombolDummy(wadah) {
+  return; // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: hapus baris return ini
   const r = await api("saya", "/api/akademisi/saya");
   if (!r || r.s !== 200 || !r.j.super) return;
   wadah.append(h("button", {class: "sh-dummy", type: "button", "data-dummy": "isi", title: "Isi semua panel dengan data contoh (tanpa API)", "aria-label": "Isi data dummy"}, "🧪"),
@@ -282,7 +283,7 @@ function mulai() {
   el.kGrupKartu.jd.after(el.kGrupBuka);
   const kCari = kartu("cari", "Cari emiten", "daftar", "Cari emiten lain untuk melihat info, grafik, transaksi, dan dividen");
   kCari.badan.append(h("div", {class: "sh-cari"}, el.q), el.pesan, el.hasil);
-  app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Data Saham"}), aksi), el.kKartu.sek, el.kDetailKartu.sek, el.kGrupKartu.sek, kCari.sek, el.panel);
+  app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Data Saham"})), el.kKartu.sek, el.kDetailKartu.sek, el.kGrupKartu.sek, kCari.sek, el.panel);
   tombolDummy(aksi); muatKonsesi();
 }
 mulai();

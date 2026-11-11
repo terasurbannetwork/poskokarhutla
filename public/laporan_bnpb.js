@@ -629,7 +629,7 @@ function aturOut() {
   document.querySelectorAll("#lbOut button").forEach(x => x.setAttribute("aria-pressed", x.dataset.o === S.out ? "true" : "false"));
   $("#lbOut").hidden = !harian; $("#lbAspekW").hidden = o !== "matador"; $("#lbTayang").hidden = !(o === "konpers" || o === "matador");
   const kd = o === "koordalops"; $("#lbPptx").hidden = o === "naskah" || kd; $("#lbDocx").hidden = !kd; $("#lbNaskah").hidden = o !== "naskah"; $("#lbKoord").hidden = !kd;
-  $("#lbGrid").hidden = o === "naskah" || kd; $("#lbContoh").hidden = !harian;
+  $("#lbGrid").hidden = o === "naskah" || kd; $("#lbContoh").hidden = true;   // tombol "Isi contoh" (dummy) disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: `= !harian`
 }
 document.querySelectorAll("#lbOut button").forEach(b => b.onclick = () => { if (b.dataset.o === S.out) return; S.out = b.dataset.o; aturOut(); jadwalkan(); });
 $("#lbAspek").onchange = e => { S.aspek = e.target.value; jadwalkan(); };

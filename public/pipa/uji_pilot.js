@@ -64,7 +64,7 @@ async function mulai() {
     return kosong("Data belum bisa dimuat", navigator.onLine ? e.message : "Ponsel sedang tanpa sinyal. Coba lagi saat ada sinyal.", true);
   }
   if (!bacaHash().t) history.replaceState(null, "", "#" + new URLSearchParams({t: TOK}));
-  if (D.admin) { $("#dummy").hidden = false; pasangDummy(); }
+  /* tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: ganti `false && D.admin` jadi `D.admin` */ if (false && D.admin) { $("#dummy").hidden = false; pasangDummy(); }
   const r = bacaHash(); if (!r.l) tampil();   // lokasi: tunggu laporan dulu supaya bagian laporan tidak dibangun dua kali
   await muatLapor(); if (r.l) tampil();
 }

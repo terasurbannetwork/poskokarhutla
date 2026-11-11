@@ -376,6 +376,7 @@
     location.reload();
   }
   async function tombolDummy(wadah) {
+    return; // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: hapus baris return ini
     const r = await api("GET", "/api/akademisi/saya");
     if (!r.ok || !r.j.super) return;
     wadah.append(h("button", {class: "ad-tombol ad-bulat", type: "button", "data-dummy": "isi", title: "Isi data dummy logbook (kejadian dan entri hari ini)", "aria-label": "Isi data dummy"}, "🧪"),
@@ -391,7 +392,7 @@
     const tglIn = h("input", {type: "date", value: tgl, max: wibHari(), "aria-label": "Tanggal laporan"});
     tglIn.addEventListener("change", () => { if (tglIn.value) { tgl = tglIn.value; muatHari(); } });
     const kolom = h("div", {class: "lb-kolom"}, bentuk(), h("section", {class: "bn-blok"}, h("h2", {class: "lb-judul-blok"}, ikon("daftar"), "Entri periode laporan", h("span", {class: "lb-kanan"}, tglIn)), boxHari));
-    app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Logbook Pusdalops"}), aksi), ...window.LogbookTurunan.pasang(kolom), kolom);
+    app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Logbook Pusdalops"})), ...window.LogbookTurunan.pasang(kolom), kolom);
     isiProv(); opsi(el.kab, [], "Pilih kabupaten/kota"); opsi(el.kec, [], "Pilih kecamatan"); opsi(el.desa, [], "Pilih desa/kelurahan"); opsi(el.lanjut, [], "Kejadian baru (bukan lanjutan)");
     el.form.addEventListener("submit", kirim);
     el.form.addEventListener("input", () => { periksaLive(); simpanDraf(); });

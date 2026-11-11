@@ -260,6 +260,7 @@
   }
   /* Super Admin: 🧪 isi contoh desa terisolir dan daerah senyap bila datanya kosong, 🧹 hapus. Murni di peramban ini (tidak ada tabel yang ditulis), muat ulang penuh. */
   async function superDummy(aksi) {
+    return;   // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: hapus baris return ini
     const r = await fetch("/api/akademisi/saya").then(x => x.ok ? x.json() : null).catch(() => null);
     if (!r?.super) return;
     aksi.prepend(h("button", {class: "ad-tombol ad-bulat", type: "button", "data-d": "isi", title: "Isi contoh desa terisolir dan daerah senyap untuk kabupaten/kota ini", "aria-label": "Isi data dummy"}, "🧪"),

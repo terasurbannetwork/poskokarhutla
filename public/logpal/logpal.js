@@ -438,7 +438,8 @@ async function muat(){
   $('g_provinsi').replaceChildren(...(ME.provinsi||[]).map(p=>new Option(p.nama,p.kode)));
   $('p_bpbd').readOnly=$('p_prov').readOnly=ME.peran==='bpbd';
   if(ME.peran==='bpbd'){$('p_bpbd').value=ME.nama||'';$('p_prov').value=((ME.provinsi||[])[0]||{}).nama||'';if(ME.kab)$('p_kab').value=ME.kab}
-  bolehSetuju=!!ME.proses;$('dummy').hidden=!ME.super;
+  bolehSetuju=!!ME.proses;$('dummy').hidden=true;   // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: $('dummy').hidden=!ME.super
+
   dash._kebutuhan(ME.kebutuhan||[]);gambar();nanti(()=>dash._gudang(G));gambarP();
   if(location.hash.startsWith('#q-')&&!window.__h){window.__h=1;setTimeout(bukaHash,0)}
   return true}

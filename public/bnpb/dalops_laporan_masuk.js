@@ -195,7 +195,8 @@
       tb.forEach(b => { b.disabled = false; b.removeAttribute("aria-busy"); });
       wadah.querySelector(".lm-pesan").textContent = !x ? "Tidak ada sinyal." : x.status === 404 ? "Rute dummy Laporan Masuk belum ada di server." : `Dummy gagal (${x.status}).`;
     };
-    const alat = (saya?.super || d.dummy) ? h("div", {class: "lm-alat"}, d.dummy ? label("DATA DUMMY", "uji", "kuning") : null, h("span", {class: "lm-pesan", role: "status"}), ...(saya?.super ? [
+    /* tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: ganti `false && saya?.super` jadi `saya?.super` (dua tempat di baris ini) */
+    const alat = (false && saya?.super || d.dummy) ? h("div", {class: "lm-alat"}, d.dummy ? label("DATA DUMMY", "uji", "kuning") : null, h("span", {class: "lm-pesan", role: "status"}), ...(false && saya?.super ? [
       h("button", {type: "button", class: "lm-dummy", "data-dummy": "isi", title: "Isi data dummy Laporan Masuk", "aria-label": "Isi data dummy"}, ikon("uji")),
       h("button", {type: "button", class: "lm-dummy", "data-dummy": "hapus", title: "Hapus semua data dummy", "aria-label": "Hapus data dummy"}, ikon("sapu"))] : [])) : null;
     alat?.addEventListener("click", e => { const b = e.target.closest("[data-dummy]"); if (b && !b.disabled) dummy(b.dataset.dummy, alat); });

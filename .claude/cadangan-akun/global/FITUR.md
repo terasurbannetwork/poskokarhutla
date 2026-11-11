@@ -140,7 +140,7 @@ dilihat sekali lalu tidak dibuka lagi.
 | 6 | **Tabel utama** | sort dari header, kotak cari sendiri, bar ekspor, grup lipat kalau panjang, legenda di kaki kartu |
 | 7 | **Summary AI** | satu tujuan satu nama satu warna; tiap tabel temuan wajib punya ✓ dan ✕; aksi ✓ eksekusi langsung ke DB |
 | 8 | **ActivityLog** | siapa mengubah apa, kapan; selalu paling bawah |
-| 9 | **Tombol data dummy 🧪 / 🧹** | Super Admin saja; tanpa ini fitur yang baru jadi tidak bisa dinilai di layar kosong |
+| 9 | ~~Tombol data dummy 🧪 / 🧹~~ | PENSIUN 11 Nov 2026: pemilik tidak mau data dummy di proyek mana pun |
 
 Aturan tambahan yang berlaku di semua dashboard:
 
@@ -376,7 +376,7 @@ Kalau app memakai model, tujuh hal ini lahir bersamanya — bukan sesudahnya:
 
 ---
 
-## 12. Data dummy
+## 12. Data dummy (PENSIUN 11 Nov 2026, jangan dipasang)
 
 Rinciannya di `~/.claude/DUMMY.md`. Ringkas: dua ikon Super Admin (🧪 isi
 modul halaman yang sedang dibuka, 🧹 hapus seluruh data dummy), periodenya

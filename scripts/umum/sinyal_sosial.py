@@ -112,7 +112,10 @@ def gdelt(hari, bataswaktu=600):
                     {"query": f"{q} sourcecountry:indonesia", "mode": mode, "format": "json",
                      "startdatetime": f"{hari[0]:%Y%m%d}000000", "enddatetime": f"{hari[-1]:%Y%m%d}235959"}))
                 d = J.ambil(u, jeda_host=8, batas=90, coba=3)
-                rec[mode] = {x["date"][:8]: x["value"] for x in d["timeline"][0]["data"]}
+                tl = d.get("timeline") if isinstance(d, dict) else None
+                if not tl:  # GDELT membalas {} atau teks "Please limit requests" saat membatasi: berhenti, jangan habiskan waktu langkah
+                    raise J.Ditolak("api.gdeltproject.org: tanpa timeline (dibatasi)")
+                rec[mode] = {x["date"][:8]: x["value"] for x in tl[0]["data"]}
         except Exception as e:
             print(f"  gdelt {t}: {e}", file=sys.stderr)
             if isinstance(e, J.Ditolak):

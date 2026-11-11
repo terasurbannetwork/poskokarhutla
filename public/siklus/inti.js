@@ -195,6 +195,6 @@ async function mulai() {
   const sk = G.SK = {periode: () => null, halaman: cocok?.[2] ?? "kejadian"};
   if (!cocok) { isi.replaceChildren(kartu({ey: "Siklus", judul: ["Layar ini ", hl("belum dibuka")], isi: [kead("kosong", {teks: "Layar ini belum tersedia. Buka daftar kejadian.", aksi: {label: "Buka kejadian", fn: () => { location.href = "/siklus/kejadian"; }}})]})); }
   else { try { await (await cocok[1]()).buka(isi, sk); } catch (e) { console.error("siklus", e); isi.replaceChildren(kartu({ey: "Siklus", judul: ["Layar ", hl("belum bisa dimuat")], isi: [kead("galat", {ulang: () => location.reload()})]})); } }
-  peran().then(async p => { if (p.sa) (await import("./dummy.js")).pasangDummy(sk); });
+  peran().then(async p => { /* tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: ganti `false && p.sa` jadi `p.sa` */ if (false && p.sa) (await import("./dummy.js")).pasangDummy(sk); });
 }
 if (typeof document !== "undefined" && document.getElementById("sk")) mulai();

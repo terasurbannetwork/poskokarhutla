@@ -156,7 +156,8 @@
   });
 
   /* ---------- dummy (DUMMY.md): isi seluruh halaman, hapus semuanya ---------- */
-  aksiJudul.replaceChildren(h("button", {class: "ad-tombol ad-bulat", "data-dummy": "isi", title: "Isi data dummy untuk halaman ini", "aria-label": "Isi data dummy", teks: "🧪"}),
+  // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: hapus `if (false)` di baris berikut
+  if (false) aksiJudul.replaceChildren(h("button", {class: "ad-tombol ad-bulat", "data-dummy": "isi", title: "Isi data dummy untuk halaman ini", "aria-label": "Isi data dummy", teks: "🧪"}),
     h("button", {class: "ad-tombol ad-bulat", "data-dummy": "hapus", title: "Hapus semua data dummy", "aria-label": "Hapus data dummy", teks: "🧹"}));
   aksiJudul.addEventListener("click", async e => {
     const d = e.target.closest("[data-dummy]"); if (!d) return;

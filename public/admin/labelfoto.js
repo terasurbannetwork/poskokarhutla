@@ -113,7 +113,8 @@
 
   /* tombol dummy 🧪/🧹 (DUMMY.md): 🧪 memberi label contoh pada foto dummy yang sudah ada lalu masuk mode contoh; 🧹 menghapus label dummy dan keluar mode */
   const aksiJudul = document.getElementById("aksiJudul");
-  aksiJudul.innerHTML = '<button class="ad-tombol ad-bulat" data-dummy="isi" title="Isi label contoh pada foto dummy" aria-label="Isi data dummy">🧪</button><button class="ad-tombol ad-bulat" data-dummy="hapus" title="Hapus semua data dummy" aria-label="Hapus data dummy">🧹</button>';
+  // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: hapus `if (false)` di baris berikut
+  if (false) aksiJudul.innerHTML = '<button class="ad-tombol ad-bulat" data-dummy="isi" title="Isi label contoh pada foto dummy" aria-label="Isi data dummy">🧪</button><button class="ad-tombol ad-bulat" data-dummy="hapus" title="Hapus semua data dummy" aria-label="Hapus data dummy">🧹</button>';
   aksiJudul.addEventListener("click", async e => {
     const d = e.target.closest("[data-dummy]"); if (!d) return;
     if (d.dataset.dummy === "hapus" && !confirm("Hapus SEMUA label dummy? Label asli tidak tersentuh.")) return;

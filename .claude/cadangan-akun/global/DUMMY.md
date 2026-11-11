@@ -1,3 +1,12 @@
+# PENSIUN 11 Nov 2026: JANGAN DIPAKAI
+
+Pemilik (11 Nov 2026): "Hilangkan ya ga ada data dummy". Aturan wajib tombol
+🧪/🧹 dicabut di SEMUA proyek. Proyek baru tidak dipasangi tombol dummy, dan
+tombol yang sudah ada disembunyikan. Isi di bawah disimpan hanya sebagai
+riwayat; jangan dijadikan rujukan atau checklist.
+
+---
+
 # Standar data dummy — berlaku di SEMUA proyek
 
 Aturan pemilik, 29 Agustus 2026. Diperluas 30 Agustus 2026 sesudah sapuan

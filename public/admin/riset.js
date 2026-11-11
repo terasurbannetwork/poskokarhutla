@@ -179,7 +179,8 @@
   });
 
   /* ================= dummy (DUMMY.md): 🧪 isi seluruh rantai riset, 🧹 hapus semua dummy ================= */
-  aksiJudul.innerHTML = '<button class="ad-tombol ad-bulat" data-dummy="isi" title="Isi data dummy untuk halaman ini" aria-label="Isi data dummy">🧪</button><button class="ad-tombol ad-bulat" data-dummy="hapus" title="Hapus semua data dummy" aria-label="Hapus data dummy">🧹</button>';
+  // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: hapus `if (false)` di baris berikut
+  if (false) aksiJudul.innerHTML = '<button class="ad-tombol ad-bulat" data-dummy="isi" title="Isi data dummy untuk halaman ini" aria-label="Isi data dummy">🧪</button><button class="ad-tombol ad-bulat" data-dummy="hapus" title="Hapus semua data dummy" aria-label="Hapus data dummy">🧹</button>';
   aksiJudul.addEventListener("click", async e => {
     const b = e.target.closest("[data-dummy]"); if (!b) return;
     if (b.dataset.dummy === "hapus" && !confirm("Hapus SEMUA data dummy riset (agenda, mitra, usulan, permintaan, luaran, pemanfaatan)? Data asli tidak tersentuh.")) return;

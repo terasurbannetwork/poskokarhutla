@@ -144,9 +144,7 @@
   /* ---------- dummy (DUMMY.md): 🧪 isi semua modul berurutan, 🧹 hapus; lalu muat ulang penuh ---------- */
   /* meja sebelum alun: dummy alun-alun (rantai Teruskan) menulis catatan logistik dummy, dan dummy meja menolak (409) bila sudah ada catatan dummy */
   const MODUL = ["relawan", "meja", "alun", "riset"];
-  aksiJudul.innerHTML = `<button class="ad-tombol" data-cetak="1" title="Cetak satu halaman A4 lanskap" aria-label="Cetak">${IK.cetak}Cetak</button>
-    <button class="ad-tombol ad-bulat" data-dummy="isi" title="Isi data dummy semua modul (relawan, alun-alun, riset, meja)" aria-label="Isi data dummy">🧪</button>
-    <button class="ad-tombol ad-bulat" data-dummy="hapus" title="Hapus semua data dummy" aria-label="Hapus data dummy">🧹</button>`;
+  aksiJudul.innerHTML = `<button class="ad-tombol" data-cetak="1" title="Cetak satu halaman A4 lanskap" aria-label="Cetak">${IK.cetak}Cetak</button>`;   // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: tambahkan dua tombol data-dummy isi/hapus (🧪/🧹) setelah tombol Cetak
   aksiJudul.addEventListener("click", async e => {
     if (e.target.closest("[data-cetak]")) return window.print();
     const b = e.target.closest("[data-dummy]"); if (!b) return;

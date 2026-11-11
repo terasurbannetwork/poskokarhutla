@@ -243,6 +243,7 @@ async function kirim() {
 
 /* ---------- dummy (Super Admin saja): isi form tab yang dibuka dengan isian contoh / kosongkan. Tidak menulis D1. ---------- */
 async function tombolDummy(wadah) {
+  return; // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: hapus baris return ini
   const r = await api("GET", "/api/akademisi/saya");
   if (!r.ok || !r.j.super) return;
   wadah.append(h("button", {class: "ad-tombol ad-bulat", type: "button", "data-dummy": "isi", title: "Isi form tab ini dengan isian contoh (angka 3 Nov 2026)", "aria-label": "Isi data dummy"}, "🧪"),
@@ -265,7 +266,7 @@ async function mulai() {
   seg.addEventListener("change", e => { const t = TAB.find(x => x.kunci === e.target.value); if (t && t !== aktif) pasang(t); });
   const panel = h("aside", {class: "bh-panel"}, h("section", {class: "bn-blok"}, h("h2", {class: "bh-judul"}, ikon("simpan"), "Pratinjau teks WA"), el.galat, el.teks, el.tgl,
     h("div", {class: "bh-aksi"}, el.salin, el.kirim), el.pesan));
-  app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Bahan Laporan Harian"}), aksi),
+  app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Bahan Laporan Harian"})),
     h("p", {class: "bh-p", teks: "Isi lewat form, teks WA baku tersusun otomatis di kanan. Bot laporan membaca kiriman terbaru per jenis."}), seg, h("div", {class: "bh-kolom"}, el.form, panel));
   tombolDummy(aksi);
   pasang(koordalops);

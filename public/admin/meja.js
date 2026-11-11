@@ -213,7 +213,8 @@
   }
 
   /* ---------- peristiwa ---------- */
-  aksiJudul.innerHTML = '<button class="ad-tombol ad-bulat" data-dummy="isi" title="Isi data dummy untuk halaman ini" aria-label="Isi data dummy">🧪</button><button class="ad-tombol ad-bulat" data-dummy="hapus" title="Hapus semua data dummy Meja Kerja" aria-label="Hapus data dummy">🧹</button>';
+  // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: hapus `if (false)` di baris berikut
+  if (false) aksiJudul.innerHTML = '<button class="ad-tombol ad-bulat" data-dummy="isi" title="Isi data dummy untuk halaman ini" aria-label="Isi data dummy">🧪</button><button class="ad-tombol ad-bulat" data-dummy="hapus" title="Hapus semua data dummy Meja Kerja" aria-label="Hapus data dummy">🧹</button>';
   aksiJudul.addEventListener("click", async e => {
     const d = e.target.closest("[data-dummy]"); if (!d) return;
     if (d.dataset.dummy === "hapus" && !confirm("Hapus SEMUA data dummy Meja Kerja (catatan, petugas, dan bahan rapor contoh)? Data asli tidak tersentuh.")) return;

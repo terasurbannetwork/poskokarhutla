@@ -188,7 +188,8 @@
   const TAMPIL = {validasi: tampilValidasi, akun: tampilAkun, pantau: tampilPantau, kontak: tampilKontak};
 
   /* ---- dummy (DUMMY.md): 🧪 isi seluruh rantai halaman ini, 🧹 hapus semua dummy ---- */
-  if (!window.Admin.staf) aksiJudul.innerHTML = '<button class="ad-tombol ad-bulat" data-dummy="isi" title="Isi data dummy untuk halaman ini" aria-label="Isi data dummy">🧪</button><button class="ad-tombol ad-bulat" data-dummy="hapus" title="Hapus semua data dummy" aria-label="Hapus data dummy">🧹</button>';
+  // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: ganti `false && ` jadi kosong di baris berikut
+  if (false && !window.Admin.staf) aksiJudul.innerHTML = '<button class="ad-tombol ad-bulat" data-dummy="isi" title="Isi data dummy untuk halaman ini" aria-label="Isi data dummy">🧪</button><button class="ad-tombol ad-bulat" data-dummy="hapus" title="Hapus semua data dummy" aria-label="Hapus data dummy">🧹</button>';
   aksiJudul.addEventListener("click", async e => {
     const d = e.target.closest("[data-dummy]"); if (!d) return;
     if (d.dataset.dummy === "hapus" && !confirm("Hapus SEMUA data dummy instansi (akun, tugas, isian, usulan contoh)? Data asli tidak tersentuh.")) return;

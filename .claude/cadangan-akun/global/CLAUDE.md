@@ -13,7 +13,6 @@ begitu tugasnya menyentuh barisnya:
 
 | Baca ini | Saat tugasnya | Gerbang yang menahannya |
 | -------- | ------------- | ----------------------- |
-| `~/.claude/DUMMY.md` | bikin/benerin tombol isi data dummy, layar kosong padahal tombolnya melapor sukses, tabel baru yang dibaca layar bertombol dummy | `gerbang-dummy`, `gerbang-dummy-layar`, `tests/e2e/05-dummy-jejak.sql` |
 | `~/.claude/INP.md` | klik/tab/paginasi/sort yang membekukan layar, overlay INP muncul, kontrol berchrome baru | `gerbang-inp-transisi`, agent `inp-reviewer`, skill `inp-sweep` |
 | `~/.claude/TEST.md` | trigger/constraint/RLS/fungsi SQL/route handler/alur lintas-tabel baru, atau mau menulis unit test bermock sebagai bukti | `gerbang-test-integrasi`, registri `tests/e2e/cakupan.json` |
 | `~/.claude/FITUR.md` | proyek baru, modul besar, atau menilai "apa yang belum ada" | katalog fitur, bukan aturan |
@@ -23,8 +22,8 @@ begitu tugasnya menyentuh barisnya:
 **Empat kalimat yang tidak boleh hilang walau berkasnya tidak dibuka**, karena
 keempatnya menentukan apakah berkasnya perlu dibuka sama sekali:
 
-1. **Tiap website yang dibangun wajib punya tombol isi data dummy sejak awal**,
-   dua ikon, Super Admin saja, isinya ditentukan HALAMAN yang sedang dibuka.
+1. **Tidak ada data dummy dan tidak ada tombol 🧪/🧹** (pemilik 11 Nov 2026,
+   berlaku di semua proyek). `DUMMY.md` pensiun; tombol yang ada disembunyikan.
 2. **Klik tidak boleh membekukan layar**, dan membungkus SELURUH setState dalam
    transition BUKAN obatnya: chrome kontrolnya urgent, subtree beratnya deferred.
 3. **Tiap perilaku yang tinggal di luar TypeScript wajib punya uji integrasi
@@ -37,6 +36,12 @@ keempatnya menentukan apakah berkasnya perlu dibuka sama sekali:
 5. **Tiap website/app/landing yang dibangun mengikuti `WEBSITE.md`**: selera
    pemilik, checklist siap rilis, stack, modul, galeri. Hook
    `pengingat-website.mjs` mengingatkan saat prompt menyebutnya.
+
+6. **Fitur besar disiapkan penuh dari hulu ke hilir SEBELUM satu baris kode**
+   (pemilik 10 Nov 2026, "biar ga jelek"): KEPUTUSAN, RISET, PRD, ALUR,
+   ALGORITMA, DESIGN-SYSTEM, DESAIN-TEKNIS, KEAMANAN-PRIVASI, RENCANA-UJI,
+   TIKET, GLOSARIUM dalam satu folder modul, lalu tiket dikerjakan urut.
+   Pertanyaan yang belum dijawab pemilik ditulis, tidak dikarang.
 
 Ragu salah satu ketiganya kena? Buka berkasnya. Itu lebih murah daripada
 memuat tiga-tiganya tiap sesi seharian.

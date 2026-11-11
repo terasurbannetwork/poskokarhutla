@@ -289,17 +289,48 @@ jobs:
 
       # Panen harian #34 #35 #36 #37 #38 (30 Okt 2026, docs/panen/RENCANA-PANEN-DATA.md): keluaran berkas bergulir tetap di public/data (cache data-).
       # Tanpa kunci wajib: reliefweb jatuh ke RSS publik bila RELIEFWEB_APPNAME kosong; rs_kapasitas mencatat MENUNGGU AKSES. Semua boleh gagal.
-      - name: Panen sinyal sosial, GDELT, ReliefWeb, internet padam, kapasitas RS (boleh gagal)
+      # 11 Nov 2026: satu langkah 20 menit dulu habis oleh ulang 429 Google Trends, sehingga internet_padam dan rs_kapasitas
+      # terpotong. Sekarang satu langkah per sumber, cache mentah (seri IODA, GDELT, Trends) dipulihkan antar run, dan
+      # sinyal_sosial dibatasi --waktu 300 detik per sumber (sisanya lanjut di run berikutnya lewat cache).
+      - name: Pulihkan cache mentah sinyal dan IODA
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            data/raw/sinyal
+            data/raw/ioda
+          key: panen-sinyal-${{ github.run_id }}
+          restore-keys: panen-sinyal-
+
+      - name: Panen sinyal sosial, GDELT, Trends (boleh gagal)
         continue-on-error: true
-        timeout-minutes: 20
+        timeout-minutes: 15
+        run: python3 scripts/umum/sinyal_sosial.py uji && python3 scripts/umum/sinyal_sosial.py semua --waktu 300
+
+      - name: Panen ReliefWeb (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
         env:
           RELIEFWEB_APPNAME: ${{ secrets.RELIEFWEB_APPNAME }}
-        run: |
-          for s in "umum/sinyal_sosial semua" umum/reliefweb umum/internet_padam bnpb/rs_kapasitas; do
-            p=${s%% *}; a=${s#"$p"}; p=scripts/$p.py
-            case $p in *rs_kapasitas*) u=--cek;; *) u=uji;; esac
-            python3 $p $u && { python3 $p $a || echo "::warning title=panen $p::$p gagal; berkas lamanya dibiarkan"; } || echo "::warning title=panen $p::uji $p gagal"
-          done
+        run: python3 scripts/umum/reliefweb.py uji && python3 scripts/umum/reliefweb.py
+
+      - name: Panen internet padam IODA (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 25
+        run: python3 scripts/umum/internet_padam.py uji && python3 scripts/umum/internet_padam.py
+
+      - name: Simpan cache mentah sinyal dan IODA
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            data/raw/sinyal
+            data/raw/ioda
+          key: panen-sinyal-${{ github.run_id }}
+
+      - name: Panen kapasitas RS (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python3 scripts/bnpb/rs_kapasitas.py --cek && python3 scripts/bnpb/rs_kapasitas.py
 
       # Panen harian lanjutan: harga pangan, hoaks bencana, katalog NISAR (ASF kadang 502, ±5 menit). harga_pangan_arsip.json dan hoaks_bencana.json
       # bergulir dan hanya bertahan antar run lewat cache data- (path public/data utuh, tidak masuk daftar git checkout HEAD di atas). Semua boleh gagal.

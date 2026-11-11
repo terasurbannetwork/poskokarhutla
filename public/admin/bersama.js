@@ -47,6 +47,7 @@ window.Admin = {
   },
   /* dua ikon dummy (DUMMY.md) di slot #aksiJudul; hanya Super Admin yang melihatnya */
   pasangDummy(slot, boleh) {
+    return;   // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: hapus baris return ini
     const t = (aksi, judul, label, ikon) => { const b = document.createElement("button"); b.className = "ad-tombol ad-bulat"; b.dataset.dummy = aksi; b.title = judul; b.setAttribute("aria-label", label); b.textContent = ikon; return b; };
     slot.replaceChildren(...(boleh ? [t("isi", "Isi data dummy untuk halaman ini", "Isi data dummy", "🧪"), t("hapus", "Hapus semua data dummy", "Hapus data dummy", "🧹")] : []));
   },

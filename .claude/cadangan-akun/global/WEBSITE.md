@@ -9,7 +9,7 @@ Dibaca saat: membangun website/app baru, menambah landing, atau menilai "sudah s
 ## 0. Mulai dari starter kit, bukan dari nol
 
 Repo `~/Documents/GitHub/starter-kit` adalah implementasi standar ini yang sudah jalan (Next 16 +
-Supabase + shadcn, tema G1–G9, rumah tunggal, kit INP, RLS, dummy 🧪/🧹, gerbang, uji SQL, armada
+Supabase + shadcn, tema G1–G9, rumah tunggal, kit INP, RLS, gerbang, uji SQL, armada
 agent, landing/legal/blog/SEO, auth + shell app + admin, 11 modul plug). Proyek website/app baru:
 klon repo itu, ikuti README-nya (brand di `lib/merek.ts`, paket di `lib/paket.ts`, gaya lewat
 `NEXT_PUBLIC_GAYA`, modul lewat `NEXT_PUBLIC_MODUL_<ID>`), lalu bangun domainnya. Utang yang belum
@@ -30,7 +30,7 @@ diverifikasi tercatat di README starter kit; baca sebelum menjanjikan "siap rili
 - **Premium tapi tenang.** Suka galeri premium (bento grid, motion halus 60fps, footer/CTA/404 yang dirancang),
   tapi animasi melayani makna, bukan hiasan. Hormati reduced-motion.
 - **Jujur.** Klaim di landing tidak boleh lebih manis dari kebijakan privasi/kenyataan.
-- **Siap rilis = lengkap.** Bukan demo: legal, empty state, error, 404, SEO, PWA, dummy data, test.
+- **Siap rilis = lengkap.** Bukan demo: legal, empty state, error, 404, SEO, PWA, test. Tanpa data dummy (11 Nov 2026).
 
 ## 2. Checklist "siap rilis" (semua wajib sebelum bilang selesai)
 
@@ -39,7 +39,7 @@ diverifikasi tercatat di README starter kit; baca sebelum menjanjikan "siap rili
 - [ ] SATU formatter: uang (Rp format Indonesia di semua bahasa), angka ringkas (rb/jt), tanggal, jam (satu: 24 jam untuk ID).
 - [ ] SATU modul hitung untuk tiap pertanyaan bisnis (saldo, sisa, total) — semua layar memakainya.
 - [ ] Katalog error code → kalimat manusiawi; endpoint `/health` + feature flag.
-- [ ] Tombol isi data dummy (DUMMY.md); dummy konsisten lintas periode.
+- [ ] Tidak ada tombol atau data dummy di layar (pemilik 11 Nov 2026).
 
 **UI/UX**
 - [ ] Tiap layar punya: loading (skeleton), empty state dengan SATU aksi berukuran normal, error state, offline state.

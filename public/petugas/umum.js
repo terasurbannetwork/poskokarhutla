@@ -69,6 +69,7 @@ export const adalahSuper = () => _super ??= api("/api/staf/admin/daftar", {cooki
 
 /* tombol dummy dua ikon, Super Admin saja. Super Admin = probe daftar staf (hanya Super Admin yang boleh 200). */
 export async function pasangDummy(bukaKode = false) {
+  return;   // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: hapus baris return ini
   const kotak = $("lpDummy"); if (!kotak) return;
   const probe = await api("/api/staf/admin/daftar", {cookie: true});
   if (!probe.ok) return;

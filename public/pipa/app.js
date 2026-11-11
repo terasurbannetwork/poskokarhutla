@@ -115,7 +115,8 @@ function mulai(akar) {
   tema.addEventListener("click", () => { const t = document.documentElement.dataset.theme === "dark" ? "light" : "dark"; terapkanTema(t); simpan("sp-tema", t); });
   /* tombol dummy 🧪 🧹 (DS §3.19): Super Admin saja, di header kanan sebelum tema, sama di tiap layar */
   const kepala = document.querySelector(".ad-top") || bilah;
-  if (bolehDummy(document.body?.dataset)) pasangDummy(kepala, {layar: () => layarDummy(cocokkanJalur(location.pathname)?.layar), kirim: (u, b) => konteks.kirim(u, b), pesan: tulisInfo});
+  // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: ganti `if (false && ...)` jadi `if (...)`
+  if (false && bolehDummy(document.body?.dataset)) pasangDummy(kepala, {layar: () => layarDummy(cocokkanJalur(location.pathname)?.layar), kirim: (u, b) => konteks.kirim(u, b), pesan: tulisInfo});
   kepala.append(tema);
 
   /* luring */

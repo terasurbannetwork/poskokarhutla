@@ -16,6 +16,7 @@ import datetime as dt, email.utils, html, importlib.util, json, os, re, sys, xml
 AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
 DIR = os.path.dirname(os.path.abspath(__file__))
 ARSIP = os.path.join(AKAR, "data/raw/reliefweb/arsip.json")
+OUT = os.path.join(AKAR, "public/data/reliefweb.json")
 RSS = "https://reliefweb.int/updates/rss.xml?legacy-river=country%2Fidn"  # tujuan redirect dari /country/idn/rss.xml (301 tanpa isi untuk UA kita)
 LEKSIKON = {"hunian": r"shelter|housing|tents?|displaced|evacuat", "pangan": r"food|nutrition|hunger|rice", "air": r"water|wash|drinking",
             "sanitasi": r"sanitation|hygiene|latrine", "kesehatan": r"health|medical|hospital|disease|ispa|respiratory",
@@ -72,6 +73,8 @@ def jalan():
     J, simp = _mod("jaring"), _mod("kejadian").simpan
     app = os.environ.get("RELIEFWEB_APPNAME")
     arsip = json.load(open(ARSIP)) if os.path.exists(ARSIP) else {}
+    if not arsip and os.path.exists(OUT):  # data/raw tidak ikut cache di Actions: keluaran terbit sendiri jadi arsip bergulir
+        arsip = {r["tautan"]: r for r in json.load(open(OUT)).get("laporan", [])}
     status = "MENUNGGU KUNCI (RELIEFWEB_APPNAME); jalur cadangan RSS publik"
     try:
         baru = dari_api(app) if app else urai_rss(J.ambil(RSS, mentah=True, jeda_host=1))
@@ -79,12 +82,15 @@ def jalan():
             status = "API v2"
     except Exception as e:
         baru, status = [], f"gagal: {e}"
+    if not baru and not arsip:  # gagal dan tak ada riwayat: jangan timpa berkas lama dengan nol
+        print(f"reliefweb: 0 laporan, berkas lama dibiarkan; {status}")
+        return
     for r in baru:
         arsip[r["tautan"]] = r
     os.makedirs(os.path.dirname(ARSIP), exist_ok=True)
     json.dump(arsip, open(ARSIP, "w"), separators=(",", ":"))
     daftar = sorted(arsip.values(), key=lambda r: r["tanggal"], reverse=True)[:300]
-    simp(os.path.join(AKAR, "public/data/reliefweb.json"), {
+    simp(OUT, {
         "sumber": "ReliefWeb (OCHA) laporan Indonesia", "atribusi": "ReliefWeb, https://reliefweb.int; hak cipta tiap laporan pada sumber_laporan",
         "akses": status, "jenis_keluaran": "INDEKS (label durasi tanggap darurat tak tersedia; tidak ada model)",
         "catatan": "Kebutuhan = kata kunci Inggris di judul/deskripsi; frekuensi bukan ukuran kebutuhan riil. Riwayat tumbuh dari akumulasi RSS (~20 laporan/jalan) "
