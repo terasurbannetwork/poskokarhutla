@@ -232,6 +232,17 @@ Sebelum menyentuh apa pun tentang Buku Besar Kejadian, Peta Paparan per Bangunan
 
 Aturan berhentinya sama dengan §2.1. Paparan rinci hanya di R2 di balik sesi; angka antarsumber tidak dijumlah.
 
+### 2.10 Operasi Udara (`/operasi`, bagian Operasi Udara): baca dulu, baru bangun
+
+Sebelum menyentuh pantauan operasi udara (laporan gelar armada, kelayakan terbang, renlap dan PDF/KML/GPX-nya, respons, hasil padam dan api muncul lagi, kepatuhan, kontrak, perawatan), baca dokumen di
+`data/kajian-bnpb/operasi-udara/` dengan urutan otoritas ini (kode di `public/operasi_laporan.js`, `public/operasi_peta.*`, `src/operasi_udara.js`, `src/operasi_hasil.js`, `scripts/operasi/**`):
+
+1. `KEPUTUSAN-UDARA.md`: keputusan pemilik K1 dan seterusnya, pertanyaan terbuka Q1–Q12 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md` (F-1..F-21), 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md` (rute, migrasi 0125, R2 `operasi/renlap/`), 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`UD-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Nama kru tidak pernah disimpan; biaya kontrak tidak pernah masuk `public/`; tiap tiket layar ditinjau pemilik di `http://localhost:8800/operasi`.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
