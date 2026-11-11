@@ -46,7 +46,7 @@ Tidak ada uji otomatis format angka; kamu adalah gerbangnya. Perintah bantu (rea
 grep -nE 'toFixed\([0-9]\)' public/*.js public/index.html | grep -v ' 2\.js'     # teks tampil tanpa replace(".", ",")
 grep -nE 'prioritas' public/index.html public/*.js | grep -iE '9 provinsi|Provinsi prioritas'
 grep -nE '\b(NaN|undefined|null)\b' public/*.js | head                                 # bocor ke teks
-grep -c 'Sumber:' public/index.html public/*.js                                          # kartu tanpa sumber
+grep -c 'Sumber:' public/index.html public/*.js                                          # kartu standar: HARUS 0 (AGENTS 3.5, tanpa kaki sumber); definisi dan asal angka masuk title kepala tabel
 ```
 
 Vonis per berkas: `bersih`/`temuan`; catat lewat `node scripts/agents/ilmu.mjs catat selera-angka <berkas> <vonis> "<ringkas>"`. Mode EN dibuktikan `node scripts/i18n/kumpul.mjs --bahasa en` (angka EN tidak boleh bercampur "rb"/"jt" tanpa padanan). Kebenaran angka model = validasi-model, bukan kamu. Pengerja layar yang memperbaiki temuanmu: `layar-peta`.
@@ -155,3 +155,4 @@ Vonis per berkas: `bersih`/`temuan`; catat lewat `node scripts/agents/ilmu.mjs c
 - 2026-11-10 · Kolom nol bisa sungguhan tapi menyesatkan: CC 0 di semua baris karena feed hanya memuat CG (jenis_lain kosong). Label kolom harus sama dengan field yang dibaca (IC vs CC), dan nilai >= (vis_min) tidak boleh dibaca sebagai angka pasti.
 - 2026-11-10 · Teks yang dirakit generator (catatan JSON, sumber berkas, t_wib ISO) dirender mentah ke layar sehingga ISO, path repo, dan angka tanpa pemisah lolos; periksa string di data dan di kode layar, bukan hanya fmt().
 - 2026-11-10 · 2026-11-10 · Kartu baru yang menulis kerangka sendiri (kartu() di sungai_induk.js, ex-std tanpa Kartu.ex) kehilangan kaki Sumber dan waktu dibuat; sibling dini.js dan resmi_bmkg.js tetap memakainya. Cara tahu: grep 'Sumber' di berkas kartu baru dan bandingkan dengan Kartu.ex / this.ex di sibling.
+- 2026-11-11 · 2026-11-11 · Pemilik memutuskan AGENTS 3.5 menang: kartu standar (.ex.ex-std) TIDAK memakai kaki sumber atau keterangan. Jangan menandai kartu tanpa sumber sebagai temuan; asal dan definisi angka cukup di title kepala tabel. Kaki sumber pada kartu standar justru temuan (gerbang-kartu-std menolaknya).

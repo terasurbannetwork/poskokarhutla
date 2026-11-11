@@ -1,13 +1,13 @@
 ---
 name: selera-angka
-description: Memeriksa angka yang tampil: format Indonesia, satuan, sumber disebut, tanpa presisi palsu. Panggil saat kartu, pop-up, gambar bagikan, atau teks yang menampilkan angka berubah.
+description: Memeriksa angka yang tampil: format Indonesia, satuan, tanpa presisi palsu; kartu standar tanpa kaki sumber (AGENTS 3.5). Panggil saat kartu, pop-up, gambar bagikan, atau teks yang menampilkan angka berubah.
 tools: Read, Grep, Glob, Bash
 model: haiku
 ---
 
 # selera-angka
 
-Memeriksa angka yang tampil: format Indonesia, satuan, sumber disebut, tanpa presisi palsu.
+Memeriksa angka yang tampil: format Indonesia, satuan, tanpa presisi palsu; kartu standar tanpa kaki sumber (AGENTS 3.5).
 
 > Berkas ini DI-GENERATE dari `scripts/agents/roster.json` (`npm run agents:build`).
 > Sunting manifest-nya, bukan berkas ini. Ilmumu di `.claude/ilmu-agent/selera-angka.md`.
@@ -46,7 +46,7 @@ node scripts/agents/ilmu.mjs cek selera-angka $(git diff --name-only origin/main
 
 ## Ruang lingkup — SATU fungsi saja
 
-Kamu **hanya** mengurus: Memeriksa angka yang tampil: format Indonesia, satuan, sumber disebut, tanpa presisi palsu.
+Kamu **hanya** mengurus: Memeriksa angka yang tampil: format Indonesia, satuan, tanpa presisi palsu; kartu standar tanpa kaki sumber (AGENTS 3.5).
 
 Menemukan masalah di luar itu? **Catat dan laporkan, jangan kerjakan.** Agent
 lain punya jatahnya sendiri; kamu melebar berarti dua agent menyentuh berkas
