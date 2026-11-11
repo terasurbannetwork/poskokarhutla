@@ -85,7 +85,7 @@
         ? `<em class="ops-kini">Hari ini</em>` : `<button type="button" class="ops-kembali" data-tgl="${kini}">↺ Hari ini</button>`}</div>
       ${tb(bsk, "ops-lgk", `<span class="ops-lnc">${hariLabel(bsk)}</span><b>Besok ›</b>`)}</div>
       <div class="ops-p2">${tb(mL, "ops-ujung", `‹ ${mingguLabel(mL)}`, mingguLabel(mL))}<div class="ops-strip">${Array.from({length: 7}, (_, i) => { const d = geser(senin, i);
-        return tb(d, `ops-hr${d === t ? " on" : ""}${d === kini ? " kini" : ""}`, `<b>${HARI_P[dow(d)]}</b><span>${tglPendek(d)}</span>`); }).join("")}</div>${tb(mD, "ops-ujung", `${mingguLabel(mD)} ›`, mingguLabel(mD))}</div>`;
+        return tb(d, `ops-hr${d === t ? " on" : ""}${d === kini ? " kini" : ""}`, `<b data-p="${HARI[dow(d)]}">${HARI_P[dow(d)]}</b><span>${tglPendek(d)}</span>`); }).join("")}</div>${tb(mD, "ops-ujung", `${mingguLabel(mD)} ›`, mingguLabel(mD))}</div>`;
   }
   /* INP: bilah periode dicat ulang dulu (ringan), laporan berat menyusul sesudah frame berikut */
   const pilihTanggal = t => { if (!t || t === st.tanggal || keluar(t)) return; st.tanggal = t; const p = $("#opsLaporan .ops-periode"); if (p) p.innerHTML = periode(); sesudahFrame(isi); };
