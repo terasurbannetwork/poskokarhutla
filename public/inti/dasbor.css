@@ -195,3 +195,20 @@ aside.db-nav .mp-slot:not([data-halaman]) .db-nav-b[aria-current="true"] .db-nav
 aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true"])>.db-nav-b[aria-current="true"]{background:color-mix(in srgb,#2f6fd6 12%,#fff);color:#0b2545}
 aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true"])>.db-nav-b[aria-current="true"] .db-nav-ik{background:#fff}
 aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true"])>.db-nav-b[aria-current="true"] .db-nav-ik svg{color:#0b2545}
+
+/* ---- mode otomatis dasbor.js (data-oto): layar mana pun jadi model A ---- */
+.db-oto{padding:12px 16px;max-width:none}
+.db-oto>.db-kanan{order:2}.db-oto>aside.db-nav{order:1;position:sticky;top:70px;height:calc(100vh - 86px)}
+@media (min-width:901px){.db-oto .db-sembunyi{display:none!important}}
+@media (max-width:900px){.db-oto>aside.db-nav{display:none}}
+/* kepala halaman pola /akademisi (.ak-kepala) di mode otomatis: L1 navy ringkas; angka ringkas keluar jadi ubin terang */
+.db-oto .ak-kepala{margin:0;padding:12px 16px;border-radius:14px;background:var(--db-navy)!important;min-height:0}
+.db-oto .ak-kepala::before,.db-oto .ak-kepala::after{display:none}
+.db-oto .ak-kepala-isi{padding:0;max-width:none}
+.db-oto .ak-kepala h1{margin:0;font-size:1.25rem;text-align:center;color:#fff}
+.db-oto>.db-kanan>.ak-ringkas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0;padding:0;background:none}
+.db-oto>.db-kanan>.ak-ringkas>div{display:grid;grid-template-columns:30px 1fr;grid-template-rows:auto auto;align-items:center;column-gap:10px;padding:10px 14px;border:1px solid var(--db-h2-garis);border-radius:14px;background:#fff;box-shadow:inset 4px 0 0 var(--db-navy)}
+.db-oto>.db-kanan>.ak-ringkas>div>svg{grid-row:1/3;width:30px;height:30px;padding:6px;border-radius:8px;background:var(--db-navy);color:#fff;fill:none;stroke:currentColor;stroke-width:2;box-sizing:border-box}
+.db-oto>.db-kanan>.ak-ringkas>div>b{font:800 1.5rem/1.1 var(--display,inherit);color:var(--db-navy)}
+.db-oto>.db-kanan>.ak-ringkas>div>span{font-size:.71875rem;font-weight:600;color:var(--ink2)}
+.db-oto>.db-kanan>.ak{min-width:0;margin:0;max-width:none;padding:0}

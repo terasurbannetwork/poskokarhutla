@@ -51,5 +51,44 @@
     let t; new MutationObserver(() => { clearTimeout(t); t = setTimeout(seksi, 60); }).observe(kanan, {childList: true, subtree: true});
     seksi();
   }
-  window.DasborA = {pasang, kaki, seksi};
+  /* ---- mode otomatis untuk layar mana pun (pemilik 11 Nov 2026 "ubah semuanya"): <script src="/inti/dasbor.js" data-oto data-nama="..."
+     data-isi="selektor isi" data-tab="selektor deretan tab" data-kepala="selektor kepala halaman" data-ringkas="selektor angka ringkas">
+     Deretan tab dicerminkan ke panel kiri (2 tab = segmen, 3+ = daftar), kepala jadi L1 navy, angka ringkas jadi ubin di bawahnya. */
+  const sc = document.currentScript;
+  function otomatis(c) {
+    const isi = document.querySelector(c.isi); if (!isi || isi.closest(".db-oto")) return;
+    const kepala = c.kepala && document.querySelector(c.kepala), ringkas = c.ringkas && document.querySelector(c.ringkas);
+    const w = el("div", "db-a db-oto"), kanan = el("div", "db-kanan");
+    nav = el("aside", "db-nav"); nav.setAttribute("aria-label", "Bagian " + (c.nama || "halaman"));
+    daftar = el("nav", "db-nav-isi"); kakiEl = el("div", "db-nav-kaki");
+    (kepala || isi).before(w);
+    if (kepala) kanan.append(kepala); if (ringkas) kanan.append(ringkas); kanan.append(isi);
+    w.append(nav, kanan);
+    nav.append(daftar, kakiEl);
+    document.body.classList.add("db-oto-aktif");
+    const tab = c.tab && document.querySelector(c.tab);
+    if (tab) {   // tombol tab bisa dibuat skrip halaman sesudah data dimuat: tunggu sampai ada
+      const coba = () => { if (tab.querySelectorAll(":scope > button, :scope > a").length >= 2 && !nav.dataset.tab) { nav.dataset.tab = 1; cerminTab(c, tab); } };
+      coba(); if (!nav.dataset.tab) new MutationObserver(coba).observe(tab, {childList: true});
+      return;
+    }
+    let t; new MutationObserver(() => { clearTimeout(t); t = setTimeout(seksi, 80); }).observe(kanan, {childList: true, subtree: true}); seksi();
+  }
+  function cerminTab(c, tab) {
+    const asli = [...tab.querySelectorAll(":scope > button, :scope > a")];
+    {
+      const aktif = b => ["aria-selected", "aria-pressed", "aria-current"].some(a => ["true", "page"].includes(b.getAttribute(a)));
+      const dua = asli.length === 2, wadah = dua ? el("nav", "db-mode") : daftar;
+      const cermin = asli.map(o => { const b = el("button", dua ? "" : "db-nav-b"); b.type = "button"; const sv = o.querySelector("svg");
+        if (dua) { if (sv) b.append(sv.cloneNode(true)); b.append(el("span", null, o.textContent.trim())); }
+        else { const i = el("i", "db-nav-ik"); if (sv) i.append(sv.cloneNode(true)); b.append(i, el("span", "db-nav-t", o.textContent.trim())); }
+        b.addEventListener("click", () => o.click()); return b; });
+      const sinkron = () => cermin.forEach((b, i) => b.setAttribute("aria-current", String(aktif(asli[i]))));
+      if (dua) { wadah.append(...cermin); nav.prepend(wadah); } else daftar.append(grup(c.grup || "Tampilan", IK.isi), ...cermin);
+      sinkron(); new MutationObserver(sinkron).observe(tab, {subtree: true, attributes: true, attributeFilter: ["aria-selected", "aria-pressed", "aria-current", "class"]});
+      (tab.closest(c.tabWadah || "nav, div") || tab).classList.add("db-sembunyi"); tab.classList.add("db-sembunyi");
+    }
+  }
+  if (sc?.hasAttribute("data-oto")) { const c = {...sc.dataset}; if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => otomatis(c)); else otomatis(c); }
+  window.DasborA = {pasang, kaki, seksi, otomatis};
 })();
