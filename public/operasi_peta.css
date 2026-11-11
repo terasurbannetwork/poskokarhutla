@@ -1543,3 +1543,9 @@
   #opsLaporan .ops-kanan{grid-template-rows:auto auto;align-content:start;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding-right:2px}
   #opsLaporan .ops-utama{height:auto;overflow:visible}
 }
+/* satu wadah putih: judul, periode, isi bergulir bersama (pemilik 11 Nov 2026 "gausah ada pemisah containernya") */
+@media (min-width:901px){
+  #opsLaporan .ops-kanan{display:block;overflow:visible;padding:0;height:100%;min-height:0}
+  #opsLaporan .ops-utama{height:100%;overflow-y:auto}
+}
+#opsLaporan .ops-utama>.ops-periode{position:static;margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;display:grid;gap:6px}

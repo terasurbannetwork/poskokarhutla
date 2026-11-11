@@ -93,7 +93,7 @@
     $("#opsLaporan .ops-nav-isi")?.querySelectorAll("[data-seksi]").forEach(b => b.setAttribute("aria-current", b.dataset.seksi === x[0] ? "page" : "false"));
     requestAnimationFrame(pasangPeta);
   }
-  const pindahSeksi = k => { seksiPilih[st.mode] = k; try { localStorage.setItem("ops_seksi_" + st.mode, k); } catch (e) {} terapSeksi(); const u = $("#opsLaporan .ops-kanan"); if (u) { u.scrollTop = 0; u.scrollIntoView({block: "nearest"}); } };
+  const pindahSeksi = k => { seksiPilih[st.mode] = k; try { localStorage.setItem("ops_seksi_" + st.mode, k); } catch (e) {} terapSeksi(); const u = $("#opsLaporan .ops-utama"); if (u) { u.scrollTop = 0; u.scrollIntoView({block: "nearest"}); } };
   const pilKategori = m => `<div class="seg ops-kat" role="group" aria-label="Kategori informasi">${KATEGORI_MODE[m].map(([k, t, ik]) => `<button type="button" data-kat="${k}" aria-pressed="${k === katPilih[m]}">${lbl(ik, t)}</button>`).join("")}</div>`;
   /* hanya atribut hidden, tanpa render ulang (INP) */
   const terapKat = root => root?.querySelectorAll("details.ops-kartu[data-kat], [data-kat-bungkus]").forEach(el => { el.hidden = (el.dataset.kat || el.dataset.katBungkus) !== katPilih[st.mode]; });
@@ -171,10 +171,10 @@
     box.innerHTML = `<div class="ops-a"><aside class="ops-nav" aria-label="Seksi operasi">
       <div class="seg ops-mode" role="group" aria-label="Bagian operasi">${[["udara", "Udara"], ["darat", "Darat"]].map(([k, t]) => `<button type="button" data-mode="${k}" aria-pressed="${st.mode === k}">${ik(k)}${t}</button>`).join("")}</div>
       <nav class="ops-nav-isi">${navSeksi(null)}</nav><span class="ops-nav-tarik" tabindex="0" role="separator" aria-orientation="vertical" aria-label="Tarik lebar panel"></span></aside>
-      <div class="ops-kanan"><div class="ops-periode" role="group" aria-label="Periode laporan">${periode()}</div><div class="ops-utama" role="region" aria-label="Isi seksi"><div class="ops-alat" role="toolbar" aria-label="Laporan operasi"><h2 id="opsJudul" class="ops-judul"></h2>
+      <div class="ops-kanan"><div class="ops-utama" role="region" aria-label="Isi seksi"><div class="ops-alat" role="toolbar" aria-label="Laporan operasi"><h2 id="opsJudul" class="ops-judul"></h2>
 
       ${""/* tombol Salin teks WA (data-aksi="salin") dan Cetak / PDF (data-aksi="cetak") disembunyikan pemilik 11 Nov 2026; handler dan salin() tetap */}
-      <span class="ops-status" role="status"></span></div><div id="opsRingkas" class="ops-ringkas-slot"></div><div id="opsIsi"></div></div></div></div>`;
+      <span class="ops-status" role="status"></span></div><div class="ops-periode" role="group" aria-label="Periode laporan">${periode()}</div><div id="opsRingkas" class="ops-ringkas-slot"></div><div id="opsIsi"></div></div></div></div>`;
     pasangTarikNav(box);
     box.addEventListener("toggle", e => { const k = e.target.dataset?.kartu; if (!k) return; if (k === "peta-operasi" && e.target.open) requestAnimationFrame(pasangPeta); ingatKartu[k] = e.target.open; try { localStorage.setItem("ops_kartu2", JSON.stringify(ingatKartu)); } catch (x) {} }, true);
     { const tip = document.createElement("div"); tip.className = "ops-tip"; tip.hidden = true; box.append(tip);   // tooltip grafik di halaman (data-tip sudah di-escape saat dibuat)
