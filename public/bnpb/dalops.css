@@ -492,3 +492,11 @@
 .dl-bukti li a{color:var(--c5);font-weight:600}
 .dl-kab{display:grid;gap:2px;justify-items:start}   /* nama kab di atas label provinsinya */
 @media (max-width:600px){.dl-luar-saring{grid-template-columns:minmax(0,1fr)}}
+
+/* model A (sistem desain dashboard, pemilik 11 Nov 2026): panel jenis di kiri, kepala halaman navy di kanan */
+.dl-wrap.db-a{max-width:none}
+.dl-nav .db-nav-isi{gap:1px;overflow:auto}
+.dl-nav .db-nav-b{flex:0 0 auto;min-height:36px}
+.dl-nav .db-nav-ik svg{width:15px;height:15px}
+.dl-l1{margin:0;padding:12px 16px;border-radius:14px;background:#0b2545;color:#fff;text-align:center;font-size:1.25rem}
+.dl-wrap.db-a .db-kanan>.dl-panel{min-width:0}

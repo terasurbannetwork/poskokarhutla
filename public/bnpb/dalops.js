@@ -600,7 +600,8 @@
   const sudahBuka = new Set();
   let aktif = "banjir";   // tab yang tampil: J dikembalikan ke jenis ini sesudah tab lain selesai dimuat di latar
   function pilihTab(k, tombol) {
-    tombol.forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === k)));
+    tombol.forEach(b => { b.setAttribute("aria-selected", String(b.dataset.tab === k)); b.setAttribute("aria-current", String(b.dataset.tab === k)); });
+    const jd = document.getElementById("dlJudul"); if (jd) jd.textContent = TAB.find(x => x[0] === k)?.[1] || "Pantau Dalops";
     for (const [n, p] of Object.entries(panel)) p.hidden = n !== k;
     if (location.hash.slice(1) !== k) history.replaceState(null, "", "#" + k);
     aktif = k; if (JN[k]) J = JN[k];
@@ -610,10 +611,15 @@
     sudahBuka.add(k);
   }
   function kerangka() {
-    const tombol = TAB.map(([k, t, ik]) => h("button", {type: "button", role: "tab", "data-tab": k, "aria-selected": "false", "aria-controls": "tab-" + k}, ikon(ik), t));
-    const seg = h("div", {class: "dl-seg", role: "tablist", "aria-label": "Jenis pantauan"}, ...tombol);
+    /* model A (sistem desain dashboard, pemilik 11 Nov 2026): jenis pantauan jadi panel seksi kiri, nama jenis jadi kepala halaman navy */
+    const tombol = TAB.map(([k, t, ik]) => h("button", {type: "button", role: "tab", class: "db-nav-b", "data-tab": k, "aria-selected": "false", "aria-controls": "tab-" + k},
+      h("i", {class: "db-nav-ik"}, ikon(ik)), h("span", {class: "db-nav-t", teks: t})));
+    const grup = teks => h("p", {class: "db-nav-sub", teks});
+    const seg = h("nav", {class: "db-nav-isi dl-seg-a", role: "tablist", "aria-label": "Jenis pantauan"}, grup("Bencana"), ...tombol.slice(0, -2), grup("Laporan"), ...tombol.slice(-2));
     seg.addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b) pilihTab(b.dataset.tab, tombol); });
-    app.replaceChildren(seg, ...Object.values(panel));
+    const nav = h("aside", {class: "db-nav dl-nav"}, h("div", {class: "db-nav-id"}, h("b", {teks: "Pantau Dalops"}), h("small", {teks: "Kejadian aktif per jenis bencana"})), seg);
+    app.classList.add("db-a");
+    app.replaceChildren(nav, h("div", {class: "db-kanan"}, h("h1", {class: "dl-l1", id: "dlJudul", teks: "Pantau Dalops"}), ...Object.values(panel)));
     const dariHash = () => TAB.some(([k]) => k === location.hash.slice(1)) ? location.hash.slice(1) : null;
     addEventListener("hashchange", () => { const k = dariHash(); if (k) pilihTab(k, tombol); });   // tautan /bnpb/dalops#laporan dari halaman ini juga
     pilihTab(dariHash() || "banjir", tombol);
