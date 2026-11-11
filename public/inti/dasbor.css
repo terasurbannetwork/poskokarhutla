@@ -190,3 +190,8 @@ aside.db-nav .db-nav-kaki:empty{display:none}
 aside.db-nav .mp-slot:not([data-halaman]) .db-nav-b[aria-current="true"]{background:color-mix(in srgb,#2f6fd6 12%,#fff);color:#0b2545}
 aside.db-nav .mp-slot:not([data-halaman]) .db-nav-b[aria-current="true"] .db-nav-ik{background:#fff}
 aside.db-nav .mp-slot:not([data-halaman]) .db-nav-b[aria-current="true"] .db-nav-ik svg{color:#0b2545}
+@media (min-width:901px){.mp-model-a .mp-tersembunyi{display:none!important}}
+/* bagian halaman jadi pilihan utama (navy); butir halaman di grupnya cukup biru muda */
+aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true"])>.db-nav-b[aria-current="true"]{background:color-mix(in srgb,#2f6fd6 12%,#fff);color:#0b2545}
+aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true"])>.db-nav-b[aria-current="true"] .db-nav-ik{background:#fff}
+aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true"])>.db-nav-b[aria-current="true"] .db-nav-ik svg{color:#0b2545}
