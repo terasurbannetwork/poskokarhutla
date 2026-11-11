@@ -249,25 +249,28 @@ const alihkan = (ke, h = {}) => new Response(null, {status: 303, headers: {locat
 
 /* ?ke= tujuan sesudah masuk: hanya jalur di situs sendiri ("/..." tanpa "//" atau "/\\") */
 const tujuan = req => { const k = new URL(req.url).searchParams.get("ke") || ""; return /^\/(?![\/\\])[^\x00-\x20]*$/.test(k) ? k : ""; };   // tanpa karakter kontrol/spasi: "/<TAB>/evil.com" dibaca peramban sebagai //evil.com
+/* kuota baca D1 habis (Free 5 jt baris/hari, 11 Nov 2026): batas laju gagal-terbuka supaya akun secret (ADMIN_TOKEN/AKUN_SITUS, sesi HMAC tanpa D1) tetap bisa masuk; galat lain tetap dilempar */
+const d1Habis = e => /D1_ERROR|exceeded/i.test(String(e?.message || e));
+const lunak = (janji, cadangan) => janji.catch(e => { if (!d1Habis(e)) throw e; console.error("masuk tanpa D1", String(e?.message || e).slice(0, 120)); return cadangan; });
 export async function masuk(env, req, kini, halamanMasuk) {
   const ke = tujuan(req), hal = g => halamanMasuk(g, ke);
   if (!env.SESI_KUNCI || !env.ADMIN_TOKEN) return htmlMasuk(hal("Server belum dikonfigurasi (SESI_KUNCI / ADMIN_TOKEN)."), 503);
   /* ?ke= dari tombol "Masuk staf": akun gerbang (AKUN_SITUS) lolos adminOK tapi ditolak rute staf, jadi dialihkan balik = putar terus (9 Nov 2026). Dia harus bisa ganti akun: tampilkan form. */
   if (req.method === "GET") return (ke ? await modOK(env, req) : await adminOK(env, req, kini)) ? alihkan(ke || "/admin/statistik") : htmlMasuk(hal(""));
-  const laju = await cekLaju(env, await ipHash(env, req), "masuk", kini);
+  const laju = await lunak(cekLaju(env, await ipHash(env, req), "masuk", kini), null);
   if (laju) return htmlMasuk(hal("Terlalu banyak percobaan. Coba lagi nanti."), 429, {"retry-after": laju.headers.get("retry-after") || "900"});
   const u = await bacaBytes(req, 2048), t = u.b ? new TextDecoder().decode(u.b) : "";   // body dibaca per byte; lebih dari 2 KB = dianggap kosong (401)
   /* akun = entri "email:sandi" (atau "username:sandi") di ADMIN_TOKEN/AKUN_SITUS, huruf kecil; tetap lewat adminOK supaya sesi & pencabutan sama dengan token */
   const f = new URLSearchParams(t.length <= 2048 ? t : ""), email = (f.get("email") || "").trim().toLowerCase(), sandi = f.get("sandi") || "";
   const kunciEmail = email ? (await sha(env.IP_SALT + "|masuk|" + email)).slice(0, 32) : "";   // batas per akun: memutar IP tak menghindarinya
-  if (kunciEmail && await gagalSudahBanyak(env, kunciEmail, "admin_gagal", MAKS_GAGAL_EMAIL, kini)) return htmlMasuk(hal("Terlalu banyak percobaan untuk akun ini. Coba lagi nanti."), 429, {"retry-after": "3600"});
+  if (kunciEmail && await lunak(gagalSudahBanyak(env, kunciEmail, "admin_gagal", MAKS_GAGAL_EMAIL, kini), false)) return htmlMasuk(hal("Terlalu banyak percobaan untuk akun ini. Coba lagi nanti."), 429, {"retry-after": "3600"});
   const sah = email && sandi && await adminOK(env, new Request("http://x/", {headers: {"x-admin-token": `${email}:${sandi}`}}), kini);
   if (!sah) {
     /* akun pemirsa (src/pemirsa.js): hanya tab tertentu; sesi admin di peramban ini dihapus supaya batasnya benar-benar berlaku */
-    const p = email && sandi && await masukPemirsa(env, email, sandi, kini);
+    const p = email && sandi && await lunak(masukPemirsa(env, email, sandi, kini), null);
     if (!p) {
       /* akun staf (src/staf.js) lewat pintu yang sama: satu halaman masuk untuk admin, pemirsa, dan staf (perintah pemilik 3 Nov 2026). Penguncian staf ikut aturan staf. */
-      const m = email && sandi ? await cobaMasukStaf(env, req, email, sandi, kini).catch(e => (/no such table/i.test(String(e?.message || e)) ? {hasil: "salah"} : Promise.reject(e))) : {hasil: "salah"};
+      const m = email && sandi ? await cobaMasukStaf(env, req, email, sandi, kini).catch(e => (/no such table/i.test(String(e?.message || e)) || d1Habis(e) ? {hasil: "salah"} : Promise.reject(e))) : {hasil: "salah"};
       if (m.hasil === "ok") {
         /* operator_cc SAJA ke peta utama "/" (dulu di form Meja Pantau), Direktori saja ke /direktori; ?ke= yang sah menang */
         /* akun Direktori saja: ?ke= di luar /direktori diabaikan, kalau tidak "/" melempar balik ke /admin/masuk?ke=/ dan login berputar (3 Nov 2026) */
@@ -275,7 +278,7 @@ export async function masuk(env, req, kini, halamanMasuk) {
         const arah = m.staf.wajib_ganti ? "/admin/pantau" : keSah || (d ? "/direktori" : p.length === 1 && p[0] === "operator_cc" ? "/" : "/admin/pantau");
         const r = alihkan(arah, {"set-cookie": m.cookie}); r.headers.append("set-cookie", cookie("", 0)); r.headers.append("set-cookie", cookiePemirsa("", 0)); return r;
       }
-      if (kunciEmail) await catatGagal(env, kunciEmail, "admin_gagal", kini);
+      if (kunciEmail) await lunak(catatGagal(env, kunciEmail, "admin_gagal", kini), null);
       return m.hasil === "kunci" ? htmlMasuk(hal("Terlalu banyak percobaan untuk akun ini. Coba lagi nanti."), 429, {"retry-after": "3600"}) : htmlMasuk(hal("Username atau kata sandi salah."), 401);
     }
     const r = alihkan((ke && !arahPemirsa(p, ke.split("?")[0]) ? ke : arahPemirsa(p, "/") ?? "/"), {"set-cookie": cookiePemirsa(p.token, p.umur)});
