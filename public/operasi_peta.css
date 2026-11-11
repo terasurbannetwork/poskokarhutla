@@ -689,3 +689,6 @@
 #opsLaporan .ops-tgl.ops-rg{padding:4px 12px}
 #opsLaporan .ops-tgl.ops-rg .ops-lbl{margin-right:4px}
 #opsLaporan .ops-lgk:disabled{opacity:.45;cursor:default}
+/* pil ringkasan sebaris */
+#opsLaporan .ops-lap-angka em,#opsLaporan .ops-lap-angka em.tegak{flex-wrap:nowrap;gap:4px}
+#opsLaporan .ops-lap-angka em small{padding:3px 8px;white-space:nowrap;cursor:default}
