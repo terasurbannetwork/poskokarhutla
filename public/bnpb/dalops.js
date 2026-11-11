@@ -450,7 +450,7 @@
         h("span", {class: "dl-redup", teks: ` ${a.media || "media tidak tercatat"}, ${H.tglPendek(a.tgl)}`}), " ", label(a.arah === "pulih" ? "pulih" : "masih", a.arah === "pulih" ? "ok" : J.ik, a.arah === "pulih" ? "biru" : "merah"));
       return h("details", {class: "dl-bukti"}, h("summary", {teks: `${F(b.length)} berita, terbaru ${H.tglPendek(b[0].tgl)}`}), h("ul", null, b.map(li)));
     }
-    if (L.dasar === "alam") return h("span", {teks: `${F(L.senyap)} hari tanpa kabar, kondisi alam normal`});
+    if (L.dasar === "alam") return h("span", {teks: L.senyap == null ? "Kondisi alam normal" : `${F(L.senyap)} hari tanpa kabar, kondisi alam normal`});
     return h("span", {class: "dl-redup", teks: L.catatan === "sumber tidak terjangkau" ? "Sumber berita tidak terjangkau saat dicek" : L.alam === "aktif" ? "Belum ada berita, kondisi alam masih aktif" : "Belum ada berita yang cocok"});
   }
   function bagianLuar(kel, hari) {
@@ -460,7 +460,7 @@
     xs.sort((a, b) => rank(a) - rank(b) || (b.luar.senyap ?? 0) - (a.luar.senyap ?? 0) || a.nama.localeCompare(b.nama));
     let no = 0;
     const tb = h("tbody", null, xs.map(x => h("tr", {"data-luar": x.luar.label}, td(F(++no), true), h("td", null, kab(x, true)), tdv(labelLuar(x), rank(x)), h("td", null, buktiLuar(x)),
-      tdv(F(x.luar.senyap ?? 0) + " hari", x.luar.senyap ?? 0), tdv(H.tglPendek(x.terakhir), x.terakhir.replace(/-/g, "")),
+      tdv(x.luar.senyap == null ? "–" : F(x.luar.senyap) + " hari", x.luar.senyap),   // tak diketahui = –, bukan 0 tdv(H.tglPendek(x.terakhir), x.terakhir.replace(/-/g, "")),
       h("td", null, h("div", {class: "dl-aksi"}, tombolHistori(x), tombolWA(x, H.pesanWA({...x, kurang: []}, H.KATA[J.k]), x.luar.label === "mungkin_selesai" ? "permintaan konfirmasi selesai" : "permintaan pembaruan"))))));
     /* saring: klik label = hanya label itu, klik lagi = semua. Hanya mengganti hidden (INP) */
     const tombol = Object.entries(LUAR).map(([k, [t, ik, nada]]) => h("button", {type: "button", class: "dl-luar-pil dl-tag-" + nada, "data-luar": k, "aria-pressed": "false"}, ikon(ik || J.ik), `${F(n[k])} ${t.toLowerCase()}`));
