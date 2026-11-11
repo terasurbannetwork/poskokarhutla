@@ -123,8 +123,10 @@
   const hl = t => h("span", {class: "hl", teks: t});
   const bagian = (id, ik, ey, judul, ...isi) => {
     const s = h("section", {class: "ex ex-std", id: J.k === "banjir" || id.includes("-") ? id : J.k + "-" + id});   // id berawalan jenis (karhutla-*) dipakai apa adanya   // banjir tetap id lama (tautan #peta dsb.)
-    s.append(h("header", {class: "ex-hd"}, h("span", {class: "ex-ey"}, ikon(ik), ey),
-        h("div", {class: "ex-jd"}, h("h3", null, ...[].concat(judul)), isi.some(x => x?.querySelector?.(".dl-grup")) ? bukaSemua(s) : null)),
+    /* kepala kartu = nama seksi berikon; kalimat temuan pindah ke title dan ubin Angka utama (AGENTS 3.5 pembaruan 11 Nov 2026) */
+    const kal = h("span", null, ...[].concat(judul));
+    s.append(h("header", {class: "ex-hd"},
+        h("div", {class: "ex-jd"}, h("h3", {title: kal.textContent}, ikon(ik), ey), isi.some(x => x?.querySelector?.(".dl-grup")) ? bukaSemua(s) : null)),
       h("div", {class: "ex-bd"}, ...isi.filter(Boolean)));
     return s;
   };
@@ -213,7 +215,8 @@
       b.addEventListener("click", () => { saring.has(v) ? saring.delete(v) : saring.add(v); b.setAttribute("aria-pressed", String(saring.has(v))); terapSaring(); });
       return b;
     });
-    wadah.append(legenda, h("div", {class: "dl-peta-alat"}, h("div", {class: "dl-saring", role: "group", "aria-label": "Saring peta: status surut dan prakiraan"}, tSaring), ...(kontrol ? [kontrol] : [])));   // legenda tengah bawah; tombol Buka semua di samping +/−
+    legenda.querySelector("b")?.remove(); wadah.after(legenda);   // legenda di bawah peta, dalam pil (sistem desain dashboard D16)
+    wadah.append(h("div", {class: "dl-peta-alat"}, h("div", {class: "dl-saring", role: "group", "aria-label": "Saring peta: status surut dan prakiraan"}, tSaring), ...(kontrol ? [kontrol] : [])));   // legenda tengah bawah; tombol Buka semua di samping +/−
     peta.touchZoomRotate.disableRotation();
     const css = getComputedStyle(document.documentElement), warna = n => css.getPropertyValue(n).trim();
     peta.on("load", () => {
@@ -549,8 +552,22 @@
     return bagian("mitigasi", "peringatan", "Usulan langkah", judul, h("div", {class: "ad-tabel-wadah dl-tabel-wadah"}, t));
   }
 
+  /* ubin Angka utama (sistem desain dashboard, rujukan /operasi): angka kunci jenis ini di atas, tanpa kalimat */
+  function angkaUtama(pekan, prov, sk, sudah) {
+    const jml = f => pekan.some(x => x[f] != null) ? pekan.reduce((a, x) => a + (x[f] || 0), 0) : null, belum = pekan.filter(x => !x.surut).length;
+    const siaga = Object.entries(sk).filter(([k, x]) => !sudah.has(k) && Math.max(0, ...x.b.map(l => l ?? 0)) >= 2).length;
+    const ubin = (ik, nama, nilai, sub, kelas = "") => h("div", {class: "db-ubin " + kelas}, h("header", null, h("i", null, ikon(ik)), h("span", {teks: nama})), h("b", {teks: nilai}), sub ? h("small", {teks: sub}) : null);
+    return h("div", {class: "db-ubin-grid"},
+      ubin(J.ik || "banjir", "Kab/kota terdampak", F(pekan.length), "sepekan terakhir"),
+      ubin("peringatan", J.tidak || "Belum selesai", F(belum), pekan.length ? `dari ${F(pekan.length)} kab/kota` : "–", belum ? "merah" : ""),
+      ubin("personel", "Jiwa terdampak", jml("jiwa") == null ? "–" : F(jml("jiwa")), "laporan Pusdalops"),
+      ubin("personel", "Mengungsi", jml("mengungsi") == null ? "–" : F(jml("mengungsi")), "jiwa"),
+      ubin("pin", "Provinsi", F(prov.length), "dengan kejadian sepekan"),
+      ubin("peringatan", "Prakiraan Siaga/Awas", F(siaga), "kab/kota belum terdampak", siaga ? "oranye" : ""));
+  }
   function render(d, st, posko, jenis = "banjir") {
     J = JN[jenis];
+    window.MenuPusdalops?.kaki?.([["#2e8b57", "Logbook Pusdalops", H.tglPendek(d.hari)], ["#2f6fd6", "Dimuat", new Date().toLocaleTimeString("id-ID", {hour: "2-digit", minute: "2-digit"}).replace(".", ":") + " WIB"]]);
     const hari = d.hari, kel = H.kelompok(d.kejadian, hari), pekan = H.sepekan(kel, hari), prov = H.perProv(pekan);
     const tanya = H.perluDitanya(kel, hari, H.KATA[J.k]);
     const sk = st ? H.statusKab(st, J.lv) : {}, sudah = new Set(pekan.map(x => x.kab_kode)), hariSt = st?.hari || [];
@@ -560,6 +577,7 @@
     if (st && adaPra) bagianPrakiraan(sk, sudah, hariSt, wadahPra, 2, pekan);
 
     panel[jenis].replaceChildren(...[   // replaceChildren bawaan menulis 'null': saring dulu
+      angkaUtama(pekan, prov, sk, sudah),
       bagianWilayah(pekan, prov, hari, sk, hariSt),
       bagianLuar(kel, hari),
       bagianTanya(tanya, sk, st, hari),
@@ -614,8 +632,8 @@
     /* model A (sistem desain dashboard, pemilik 11 Nov 2026): jenis pantauan jadi panel seksi kiri, nama jenis jadi kepala halaman navy */
     const tombol = TAB.map(([k, t, ik]) => h("button", {type: "button", role: "tab", class: "db-nav-b", "data-tab": k, "aria-selected": "false", "aria-controls": "tab-" + k},
       h("i", {class: "db-nav-ik"}, ikon(ik)), h("span", {class: "db-nav-t", teks: t})));
-    const grup = teks => h("p", {class: "db-nav-sub", teks});
-    const seg = h("nav", {class: "db-nav-isi dl-seg-a", role: "tablist", "aria-label": "Jenis pantauan"}, grup("Bencana"), ...tombol.slice(0, -2), grup("Laporan"), ...tombol.slice(-2));
+    const grup = (teks, ik) => window.MenuPusdalops?.grup ? window.MenuPusdalops.grup(teks, ik) : h("p", {class: "db-nav-sub", teks});
+    const seg = h("nav", {class: "db-nav-isi dl-seg-a", role: "tablist", "aria-label": "Jenis pantauan"}, grup("Bencana", "banjir"), ...tombol.slice(0, -2), grup("Laporan", "simpan"), ...tombol.slice(-2));
     seg.addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b) pilihTab(b.dataset.tab, tombol); });
     const judul = h("h1", {class: "dl-l1", id: "dlJudul", teks: "Pantau Dalops"}), slot = window.MenuPusdalops?.slot();
     if (slot) {   // panel kiri Pusdalops ada: jenis pantauan masuk di bawah butir "Pantau kejadian"

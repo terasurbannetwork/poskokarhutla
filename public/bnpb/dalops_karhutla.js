@@ -120,7 +120,7 @@
     const geo = await Promise.all(provs.map(p => ambil(`/geo/kabupaten/${p}.json`)));
     const fitur = [];
     geo.forEach((gj, i) => (gj?.features || []).forEach(f => { const x = per.get(provs[i] + "|" + f.properties.kab); if (x) fitur.push({type: "Feature", id: fitur.length, properties: {kode: x.kab_kode, belum: x.belum}, geometry: f.geometry}); }));
-    wadah.replaceChildren(h("div", {class: "dl-legenda-peta"}, h("b", {teks: "Legenda"}), h("span", {class: "dl-leg dl-leg-belum", teks: "Belum padam"}), h("span", {class: "dl-leg dl-leg-surut", teks: "Padam"})));
+    wadah.replaceChildren(); wadah.after(h("div", {class: "dl-legenda-peta"}, h("span", {class: "dl-leg dl-leg-belum", teks: "Belum padam"}), h("span", {class: "dl-leg dl-leg-surut", teks: "Padam"})));
     const m = petaKini = new g.maplibregl.Map({container: wadah, trackResize: false,   // panel bisa hidden: ukur ulang saat tab tampil (tampil()) style: "https://tiles.openfreemap.org/styles/positron", bounds: [[94.8, -11.2], [141.2, 6.2]], fitBoundsOptions: {padding: 16},
       minZoom: 3, maxZoom: 13, dragRotate: false, pitchWithRotate: false, attributionControl: {compact: true}});
     m.addControl(new g.maplibregl.NavigationControl({showCompass: false}), "top-right");

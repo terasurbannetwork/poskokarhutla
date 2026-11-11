@@ -34,8 +34,9 @@
   const rute = (P, t, tebal = 4) => t.slice(1).map((c, i) => { const [x1, y1] = P(t[i].lat, t[i].lon), [x2, y2] = P(c.lat, c.lon);
     return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#38bdf8" stroke-width="${tebal}"/><line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${((x1 + x2) / 2).toFixed(1)}" y2="${((y1 + y2) / 2).toFixed(1)}" stroke="none" marker-end="url(#p)" stroke-width="${tebal}"/>`; }).join("");
   const titikSvg = (P, d, r) => d.slice().sort((a, b) => b.umur - a.umur).map(t => { const [x, y] = P(t.lat, t.lon);
-    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${t.umur <= 24 ? "#ef4444" : "#facc15"}" stroke="#fff" stroke-width="${(r / 5).toFixed(1)}"/>`; }).join("");
-  const penanda = (P, t, r, base, label) => { const [x, y] = P(t.lat, t.lon);
+    return `<a href="${gmaps(t.lat, t.lon)}" target="_blank"><title>Titik panas ${t.lat.toFixed(4)}, ${t.lon.toFixed(4)}: buka Google Maps</title><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r + 3}" fill="transparent"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${t.umur <= 24 ? "#ef4444" : "#facc15"}" stroke="#fff" stroke-width="${(r / 5).toFixed(1)}"/></a>`; }).join("");
+  const penanda = (P, t, r, base, label) => `<a href="${gmaps(t.lat, t.lon)}" target="_blank"><title>${esc(t.kode || "")} ${esc(t.tempat || "")}: buka Google Maps</title>${penanda0(P, t, r, base, label)}</a>`;
+  const penanda0 = (P, t, r, base, label) => { const [x, y] = P(t.lat, t.lon);
     if (t.air) return `<rect x="${(x - r).toFixed(1)}" y="${(y - r).toFixed(1)}" width="${2 * r}" height="${2 * r}" rx="${r * .35}" transform="rotate(45 ${x.toFixed(1)} ${y.toFixed(1)})" fill="#0284c7" stroke="#fff" stroke-width="${(r / 4).toFixed(1)}"/><text x="${x.toFixed(1)}" y="${(y + r * .38).toFixed(1)}" text-anchor="middle" font-size="${Math.round(r * 1.05)}" font-weight="800" fill="#fff" font-family="Inter,Arial">A</text>`;
     return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${base ? "#0b2545" : "#e8590c"}" stroke="#fff" stroke-width="${(r / 4).toFixed(1)}"/><text x="${x.toFixed(1)}" y="${(y + r * .38).toFixed(1)}" text-anchor="middle" font-size="${Math.round(r * 1.05)}" font-weight="800" fill="#fff" font-family="Inter,Arial">${base ? "B" : t.urut}</text>`
       + (label ? `<text x="${(x + r + 6).toFixed(1)}" y="${(y + 7).toFixed(1)}" font-size="22" font-weight="700" fill="#fff" stroke="#0b2545" stroke-width="5" paint-order="stroke" font-family="Inter,Arial">${esc(label)}</text>` : ""); };
@@ -128,7 +129,9 @@
     throw new Error("renlap 3 hari terakhir tidak ditemukan");
   }
   async function titik(kini) {
-    let d; try { d = await json("/api/titik"); } catch { d = await json("/data/hotspot72.json"); }
+    /* sama dengan renlap_pdf.muat_titik: hotspot72.json (72 jam) dulu; bila basi lebih dari 72 jam dari jam renlap, /api/titik (sekitar 20 jam) */
+    let d = null; try { d = await json("/data/hotspot72.json"); if (Math.abs(kini - new Date(d.acuan)) > 72 * 36e5) d = null; } catch {}
+    if (!d) d = await json("/api/titik");
     const ac = new Date(d.acuan), k = Object.fromEntries(d.kolom.map((n, i) => [n, i]));
     return d.baris.map(b => { const t = new Date(ac.getTime() + b[k.jam] * 36e5); return {lat: b[k.lat], lon: b[k.lon], t, umur: (kini - t) / 36e5, sat: SAT[b[k.sensor]] || b[k.sensor], frp: "frp" in k ? b[k.frp] : null, yk: b[k.keyakinan]}; })
       .filter(x => x.umur >= 0 && x.umur <= 48 && x.yk >= 1);

@@ -5,7 +5,7 @@
 (() => {
   "use strict";
   /* lapisan sistem desain dashboard (data/kajian-bnpb/dashboard/DESIGN-SYSTEM.md) untuk semua halaman Pusdalops */
-  if (!document.querySelector('link[href^="/inti/dasbor.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/inti/dasbor.css?v=9"; document.head.append(l); }
+  if (!document.querySelector('link[href^="/inti/dasbor.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/inti/dasbor.css?v=13"; document.head.append(l); }
   const IKON = {"banjir": "M3 17c2 0 2-2 4.5-2S10 17 12 17s2.5-2 4.5-2S19 17 21 17|M3 21c2 0 2-2 4.5-2S10 21 12 21s2.5-2 4.5-2S19 21 21 21|M12 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.500 2-5 5-9z", "daftar": "M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01", "simpan": "M5 3h11l3 3v15H5z|M8 3v6h7V3M8 21v-7h8v7", "personel": "M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z|M4 21a8 8 0 0 1 16 0", "pin": "M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z|M12 12a2.500 2.500 0 1 0 0-5 2.500 2.500 0 0 0 0 5z", "peringatan": "M12 3l9 16H3z|M12 10v4M12 17v.5", "kalender": "M4 6h16v15H4zM4 10h16M8 3v4M16 3v4", "sinyal": "M4 20l.01 0M8 16a5.500 5.500 0 0 1 8 0M5 12.500a10 10 0 0 1 14 0|M3 3l18 18", "meja": "M9 3h6v3H9z|M6 5h12v16H6z|M9 11h6M9 15h4", "grafik": "M3 3v18h18|M7 15l4-4 3 3 5-6", "awan": "M7 18a4 4 0 0 1 0-8 5 5 0 0 1 9.600-1.500A3.500 3.500 0 0 1 17 18z"};
   /* 6 grup di navbar (pemilik 11 Nov 2026: 13 butir dirampingkan); tetap tanpa daftar turun (pemilik 4 Nov 2026): grup berisi lebih dari
      satu halaman menampilkan deretan sub-halaman di bawah kepala. Rute lama tetap; tautan grup membuka halaman pertamanya. */
@@ -45,17 +45,22 @@
      Menu atas tetap ada untuk layar sempit; di layar lebar disembunyikan dasbor.css (.mp-model-a). main tidak diubah, hanya dibungkus. */
   const el = (tag, kelas, teks) => { const e = document.createElement(tag); if (kelas) e.className = kelas; if (teks != null) e.textContent = teks; return e; };
   const samping = el("aside", "db-nav mp-side"); samping.setAttribute("aria-label", "Menu Pusdalops");
-  const id = el("div", "db-nav-id"); id.append(el("b", null, "Pusdalops"), el("small", null, "Pusat pengendalian operasi"));
-  const isi = el("nav", "db-nav-isi mp-side-isi"), slot = el("div", "mp-slot");
-  for (const [nama, , hal] of GRUP) {
-    isi.append(el("p", "db-nav-sub", nama));
-    for (const [href, teks, ik] of hal) {
-      const a = el("a", "db-nav-b"); a.href = href; const i = el("i", "db-nav-ik"); i.append(ikon(ik)); a.append(i, el("span", "db-nav-t", teks));
-      if (href === kini) { a.setAttribute("aria-current", "true"); isi.append(a, slot); } else isi.append(a);
-    }
+  const butir = (href, teks, ik, aktif) => { const a = el("a", "db-nav-b"); a.href = href; const i = el("i", "db-nav-ik"); i.append(ikon(ik)); a.append(i, el("span", "db-nav-t", teks)); if (aktif) a.setAttribute("aria-current", "true"); return a; };
+  const kepalaGrup = (teks, ik) => { const g = el("p", "db-nav-g"), i = el("i"); i.append(ikon(ik)); g.append(i, el("span", null, teks)); return g; };
+  /* segmen atas = halaman satu grup (mis. Pantau kejadian | Meja Pantau), setara Udara | Darat di /operasi */
+  if (grup && grup[2].length > 1) {
+    const mode = el("nav", "db-mode"); mode.setAttribute("aria-label", grup[0]);
+    for (const [href, teks, ik] of grup[2]) { const a = el("a"); a.href = href; a.append(ikon(ik), el("span", null, teks.replace(/^Pantau kejadian$/, "Kejadian"))); if (href === kini) a.setAttribute("aria-current", "true"); mode.append(a); }
+    samping.append(mode);
   }
-  samping.append(id, isi);
-  window.MenuPusdalops = {slot: () => slot};
+  const isi = el("nav", "db-nav-isi mp-side-isi"), slot = el("div", "mp-slot");
+  isi.append(slot, kepalaGrup("Pusdalops", "daftar"), ...GRUP.map(g => butir(g[2][0][0], g[0], g[1], false)));
+  const kaki = el("div", "db-nav-kaki");
+  samping.append(isi, kaki);
+  /* tanpa seksi dari halaman: butir grup aktif ditandai navy */
+  const tandai = () => { const kosong = !slot.childElementCount; isi.querySelectorAll(":scope > .db-nav-b").forEach((a, i) => a.setAttribute("aria-current", String(kosong && GRUP[i] === grup))); };
+  tandai(); new MutationObserver(tandai).observe(slot, {childList: true});
+  window.MenuPusdalops = {slot: () => slot, grup: kepalaGrup, kaki: baris => { kaki.replaceChildren(kepalaGrup("Pembaruan data", "kalender"), ...baris.map(([w, label, nilai]) => { const r = el("div", "db-nav-pb"), d = el("i", "db-nav-dot"); d.style.setProperty("--w", w); r.append(d, el("span", null, label), el("b", null, nilai)); r.style.setProperty("--w", w); return r; })); }};
   const pasangSamping = () => { const main = document.querySelector("body > main"); if (!main || main.closest(".mp-a")) return;
     const w = el("div", "mp-a"); main.before(w); w.append(samping, main); document.body.classList.add("mp-model-a"); };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", pasangSamping); else pasangSamping();
