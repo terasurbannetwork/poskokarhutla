@@ -20,7 +20,10 @@
     /* pemilik 9 Nov 2026: bencana lain di halaman yang sama. Tanpa prakiraan di status.json (pra: false): bagian Peringatan dini dan kolom prakiraan dilewati. */
     gempa: {k: "gempa", kata: "gempa bumi", ik: "gempabumi", ya: "Selesai", tidak: "Masih ditangani", ya_k: "selesai", tidak_k: "masih ditangani", tinggi: false, pra: false},
     cuaca: {k: "cuaca", kata: "cuaca ekstrem", ik: "cuaca", ya: "Selesai", tidak: "Masih ditangani", ya_k: "selesai", tidak_k: "masih ditangani", tinggi: false, pra: false},
-    kekeringan: {k: "kekeringan", kata: "kekeringan", ik: "kekeringan", ya: "Selesai", tidak: "Masih berlangsung", ya_k: "selesai", tidak_k: "masih berlangsung", tinggi: false, pra: false}};
+    kekeringan: {k: "kekeringan", kata: "kekeringan", ik: "kekeringan", ya: "Selesai", tidak: "Masih berlangsung", ya_k: "selesai", tidak_k: "masih berlangsung", tinggi: false, pra: false},
+    /* pemilik 11 Nov 2026: tiap jenis tab sendiri */
+    gelombang: {k: "gelombang", kata: "gelombang pasang", ik: "gelombang_pasang", ya: "Sudah surut", tidak: "Belum surut", ya_k: "sudah surut", tidak_k: "belum surut", tinggi: false, pra: false},
+    permukiman: {k: "permukiman", kata: "kebakaran permukiman", ik: "kebakaran_permukiman", ya: "Padam", tidak: "Masih ditangani", ya_k: "sudah padam", tidak_k: "masih ditangani", tinggi: false, pra: false}};
   let J = JN.banjir;
   const GEO = new Map();
   const surutLabel = s => s ? label(J.ya, "ok", "biru") : label(J.tidak, J.ik, "merah");
@@ -545,8 +548,8 @@
   /* ---------- pemilih jenis (gaya Operasi Udara | Operasi Darat): Karhutla, Banjir, Longsor, Laporan (pemilik 5 Nov 2026).
      Satu panel per jenis, dirender sekali saat pertama dibuka; ganti tab hanya mengganti hidden. J (label per jenis) ikut tab yang tampil,
      supaya pop-up peta dan tombol WA di panel itu memakai kata jenisnya. ---------- */
-  const TAB = [["karhutla", "Karhutla", "karhutla"], ["banjir", "Banjir", "banjir"], ["longsor", "Longsor", "longsor"], ["gunungapi", "Gunung Api", "gunungapi"], ["gempa", "Gempa", "gempabumi"],
-    ["cuaca", "Cuaca Ekstrem", "cuaca"], ["kekeringan", "Kekeringan", "kekeringan"], ["laporan_masuk", "Laporan Masuk", "daftar"], ["laporan", "Laporan", "simpan"]];
+  const TAB = [["karhutla", "Karhutla", "karhutla"], ["banjir", "Banjir", "banjir"], ["longsor", "Longsor", "longsor"], ["gunungapi", "Gunung Api", "gunungapi"], ["gempa", "Gempa & Tsunami", "gempabumi"],
+    ["cuaca", "Cuaca Ekstrem", "cuaca"], ["kekeringan", "Kekeringan", "kekeringan"], ["gelombang", "Gelombang Pasang", "gelombang_pasang"], ["permukiman", "Kebakaran Permukiman", "kebakaran_permukiman"], ["laporan_masuk", "Laporan Masuk", "daftar"], ["laporan", "Laporan", "simpan"]];
   const panel = Object.fromEntries(TAB.map(([k]) => [k, h("div", {class: "dl-panel", id: "tab-" + k, role: "tabpanel", hidden: true})]));
   const sudahBuka = new Set();
   let aktif = "banjir";   // tab yang tampil: J dikembalikan ke jenis ini sesudah tab lain selesai dimuat di latar

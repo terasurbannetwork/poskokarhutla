@@ -4,7 +4,8 @@ Masukan : data/raw/logbook/arsip/<tahun>/kejadian.jsonl (keluaran logbook_pusdal
 Keluaran: data/raw/dalops/banjir.json (ikut .gitignore). Dengan --unggah: R2 poskokarhutla-foto/dalops/banjir.json,
           disajikan src/dalops.js hanya untuk sesi staf Pusdalops/Koordalops/Pimpinan.
 
-Jenis keluaran: banjir, longsor, karhutla, gempa (logbook/WA 'gempabumi'), cuaca (cuaca + angin), kekeringan. Kolom 'surut' = selesai
+Jenis keluaran: banjir, longsor, karhutla, gempa (logbook/WA 'gempabumi'), cuaca (cuaca + angin), kekeringan, gelombang
+(gelombang_pasang: gelombang pasang, abrasi, rob), permukiman (kebakaran_permukiman). Kolom 'surut' = selesai
 ditangani menurut jenisnya. Jenis gempa/cuaca/kekeringan menambah kolom md, hilang, status_darurat (null bila tak disebut); jendela
 'mulai' gempa dan kekeringan 120 hari (kejadian berbulan-bulan), jenis lain 30. Gempa tingkat provinsi: kab = "Prov. <nama>".
 
@@ -29,11 +30,11 @@ import re
 import subprocess
 
 AKAR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-JENIS = "banjir"   # diganti --jenis: banjir, longsor, karhutla (pemilik 5 Nov 2026: Pantau = Karhutla, Banjir, Longsor)
-JENIS_BOLEH = ("banjir", "longsor", "karhutla", "gempa", "cuaca", "kekeringan")
+JENIS = "banjir"   # diganti --jenis (lihat JENIS_BOLEH)
+JENIS_BOLEH = ("banjir", "longsor", "karhutla", "gempa", "cuaca", "kekeringan", "gelombang", "permukiman")   # 11 Nov: gelombang pasang/abrasi, kebakaran permukiman
 # nama keluaran -> jenis di logbook / WA (jenis keluaran 'gempa' membaca 'gempabumi'; angin = cuaca ekstrem)
-SUMBER = {"gempa": ("gempabumi",), "cuaca": ("cuaca", "angin")}
-BARU = ("gempa", "cuaca", "kekeringan")   # jenis tambahan: kolom md, hilang, status_darurat ikut terbit
+SUMBER = {"gempa": ("gempabumi",), "cuaca": ("cuaca", "angin"), "gelombang": ("gelombang_pasang",), "permukiman": ("kebakaran_permukiman",)}
+BARU = ("gempa", "cuaca", "kekeringan", "gelombang", "permukiman")   # jenis tambahan: kolom md, hilang, status_darurat ikut terbit
 sumber = lambda: SUMBER.get(JENIS, (JENIS,))
 keluar = lambda: os.path.join(AKAR, f"data/raw/dalops/{JENIS}.json")
 kunci_r2 = lambda: f"poskokarhutla-foto/dalops/{JENIS}.json"
@@ -78,8 +79,15 @@ TANGANI_BELUM = re.compile(r"\bbelum\s+(?:selesai|tertangani|sepenuhnya|diperbai
 # kekeringan: selesai hanya bila teks tegas hujan sudah turun / kondisi normal / status darurat berakhir; distribusi air bersih berjalan = belum
 KERING_SELESAI = re.compile(r"\b(?:sudah|telah)\s+(?:turun\s+)?hujan|\bhujan\s+(?:sudah|telah)\s+turun|\bkembali\s+normal|\b(?:sudah|telah)\s+normal|\bdarurat\s+(?:kekeringan\s+)?(?:sudah\s+|telah\s+)?(?:berakhir|dicabut)|\bstatus\s+(?:\w+\s+)?darurat\s+(?:kekeringan\s+)?(?:sudah\s+|telah\s+)?(?:berakhir|dicabut)")
 KERING_BELUM = re.compile(r"\bbelum\s+(?:turun\s+)?(?:hujan|normal|berakhir)|\bmasih\s+(?:terjadi|kering|kekeringan|kesulitan|membutuhkan|dilakukan|dilaksanakan|berlangsung)|\bdistribusi|\btidak\s+(?:ada\s+)?hujan|\bbelum\s+ada\s+hujan")
+# kebakaran permukiman: selesai bila api padam atau penanganan selesai ("Api sudah padam" logbook Okt 2026); pendinginan tidak menahan
+PERMUKIMAN_SELESAI = re.compile(KARHUTLA_PADAM.pattern + "|" + TANGANI_SELESAI.pattern)
+PERMUKIMAN_BELUM = re.compile(r"\bbelum\s+(?:padam|tertangani|selesai)|\bmasih\s+(?:ada\s+)?(?:api|terbakar)|\b(?:masih\s+)?dalam\s+penanganan")
+# gelombang pasang/abrasi: air laut surut seperti banjir, atau penanganan selesai; satu kecamatan yang belum surut = belum (Rembang Jun 2026)
+GELOMBANG_SELESAI = re.compile(SUDAH.pattern + "|" + TANGANI_SELESAI.pattern)
+GELOMBANG_BELUM = re.compile(BELUM.pattern + "|" + TANGANI_BELUM.pattern + r"|\bberangsur\s+surut|\bmulai\s+surut")
 POLA = {"longsor": (LONGSOR_SELESAI, LONGSOR_BELUM), "karhutla": (KARHUTLA_PADAM, KARHUTLA_BELUM), "gempa": (TANGANI_SELESAI, TANGANI_BELUM),
-        "cuaca": (TANGANI_SELESAI, TANGANI_BELUM), "kekeringan": (KERING_SELESAI, KERING_BELUM)}
+        "cuaca": (TANGANI_SELESAI, TANGANI_BELUM), "kekeringan": (KERING_SELESAI, KERING_BELUM),
+        "gelombang": (GELOMBANG_SELESAI, GELOMBANG_BELUM), "permukiman": (PERMUKIMAN_SELESAI, PERMUKIMAN_BELUM)}
 
 
 def selesai(teks):
@@ -464,7 +472,7 @@ def perbarui_wa(rows, entri, nama_prov=lambda kode: kode):
     return rows
 
 
-SENYAP_MAKS = {"gempa": 14, "cuaca": 14, "kekeringan": 30}   # jenis tambahan: tanpa kabar selama ini berarti tidak dipantau lagi; gempa kecil tanpa dampak tidak punya laporan "selesai"
+SENYAP_MAKS = {"gempa": 14, "cuaca": 14, "kekeringan": 30, "gelombang": 14, "permukiman": 14}   # jenis tambahan: tanpa kabar selama ini berarti tidak dipantau lagi; gempa kecil tanpa dampak tidak punya laporan "selesai"
 
 
 def lebur_provinsi(rows):
@@ -756,6 +764,16 @@ def uji():
     assert len(perbarui_wa([], wc)) == 1 and perbarui_wa([], [dict(wc[0], baru=False)]) == []   # cuaca lama tanpa baris tidak dibuka
     JENIS = "banjir"
     assert "md" not in perbarui_wa([], [dict(e, baru=True) for e in wa_entri(wk, kk)])[0]   # kolom tambahan tidak menyentuh bentuk banjir
+    # 11 Nov: kebakaran permukiman dan gelombang pasang (kalimat nyata logbook 2026)
+    JENIS = "permukiman"
+    assert sumber() == ("kebakaran_permukiman",) and buka_maks() == 30
+    assert selesai("Api sudah berhasil dipadamkan") and selesai("Api sudah padam") and selesai("Api sudah padam, dilakukan pendinginan")
+    assert not selesai("Dalam penanganan") and not selesai("Api belum padam") and not selesai("")
+    JENIS = "gelombang"
+    assert sumber() == ("gelombang_pasang",)
+    assert not selesai("Kec. Kaliori air belum surut karena kondisi laut masih tinggi Kec. Kragan air sudah surut")
+    assert not selesai("Air berangsur surut") and not selesai("Dalam penanganan BPBD") and selesai("Air laut sudah surut, kondisi kembali normal")
+    assert [e["kab"] for e in wa_entri({"hari": "2026-11-06", "kejadian": [{"jenis": "gelombang_pasang", "prov": "33", "lokasi": "Rembang", "teks": {}}]}, kk)] == ["Kab. Rembang"]
     print("uji dalops_banjir: lulus")
 
 

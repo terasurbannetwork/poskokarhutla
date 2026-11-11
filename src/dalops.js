@@ -8,7 +8,7 @@ import {halamanBnpbPublik} from "./bnpb.js";
 import {bacaLaporan, dummyLaporan} from "./dalops_laporan.js";
 
 export const PERAN_DALOPS = ["pusdalops", "koordalops", "pimpinan"];
-/* Pantau = Karhutla, Banjir, Longsor, Gempa, Cuaca, Kekeringan (pemilik 5 Nov 2026); satu rute per jenis, kunci R2 dalops/<jenis>.json */
+/* Pantau = Karhutla, Banjir, Longsor, Gempa, Cuaca, Kekeringan (pemilik 5 Nov 2026), Gelombang Pasang, Kebakaran Permukiman (11 Nov 2026); satu rute per jenis, kunci R2 dalops/<jenis>.json */
 
 async function data(env, req, jenis) {
   if (!(await modAtauStaf(env, req, PERAN_DALOPS))) return gagal(401, "masuk sebagai staf Pusdalops, Koordalops, atau Pimpinan");
@@ -28,6 +28,8 @@ export const RUTE_DALOPS = {
   "GET /api/dalops/gempa": (env, req) => data(env, req, "gempa"),
   "GET /api/dalops/cuaca": (env, req) => data(env, req, "cuaca"),
   "GET /api/dalops/kekeringan": (env, req) => data(env, req, "kekeringan"),
+  "GET /api/dalops/gelombang": (env, req) => data(env, req, "gelombang"),     // gelombang pasang, abrasi, rob (11 Nov 2026)
+  "GET /api/dalops/permukiman": (env, req) => data(env, req, "permukiman"),   // kebakaran permukiman (11 Nov 2026)
   "GET /api/dalops/laporan": (env, req, url) => bacaLaporan(env, req, url, data),   // Laporan Masuk: ringkasan rekap WA 07.00 (src/dalops_laporan.js)
   "POST /api/dalops/laporan/dummy": (env, req, url, kini) => dummyLaporan(env, req, kini),
 };

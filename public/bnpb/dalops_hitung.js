@@ -74,7 +74,10 @@
     longsor: {kata: "longsor", selesai: "tertangani", tanya: "apakah akses sudah bisa dilalui dan material sudah dibersihkan", ukur: "", tinggi: false, alat: "logistik, alat berat, tenda"},
     gempa: {kata: "gempa bumi", selesai: "selesai", tanya: "apakah penanganan dampak gempa sudah selesai (korban, kerusakan, pengungsi)", ukur: "", tinggi: false, alat: "logistik, tenda, alat berat, tenaga medis"},
     cuaca: {kata: "cuaca ekstrem", selesai: "selesai", tanya: "apakah dampak cuaca ekstrem sudah tertangani", ukur: "", tinggi: false, alat: "logistik, tenda, alat berat, terpal"},
-    kekeringan: {kata: "kekeringan", selesai: "berakhir", tanya: "apakah kekeringan sudah berakhir dan bagaimana pasokan air bersih", ukur: "", tinggi: false, alat: "air bersih, tangki air, pompa"}};
+    kekeringan: {kata: "kekeringan", selesai: "berakhir", tanya: "apakah kekeringan sudah berakhir dan bagaimana pasokan air bersih", ukur: "", tinggi: false, alat: "air bersih, tangki air, pompa"},
+    /* 11 Nov 2026: tab sendiri */
+    gelombang: {kata: "gelombang pasang", selesai: "surut", tanya: "apakah air laut sudah surut dan bagaimana kerusakan di pesisir", ukur: "", tinggi: false, alat: "logistik, tenda, karung pasir, alat berat"},
+    permukiman: {kata: "kebakaran permukiman", selesai: "padam", tanya: "apakah api sudah padam dan berapa rumah rusak serta warga mengungsi", ukur: "", tinggi: false, alat: "logistik, tenda, sandang, makanan siap saji"}};
 
   /* belum surut yang kabarnya lebih dari sehari atau angkanya bolong. Urut kabar paling lama dulu. */
   function perluDitanya(kel, h, j = KATA.banjir) {
@@ -218,7 +221,7 @@
   const jenisLogbook = j => JENIS_LOGBOOK[j] || j;
   const labelKejadian = (k, namaProv) => `${k.label || NAMA_JENIS[k.jenis] || "Kejadian"} ${k.tempat || namaProv(k.prov)}`.trim();
   const KATA_UMUM = {kata: "kejadian", selesai: "selesai", tanya: "apakah penanganan sudah selesai", tinggi: false, alat: "logistik, peralatan"};
-  const kataJenis = j => ({gempabumi: KATA.gempa, karhutla: {kata: "karhutla", selesai: "padam", tanya: "apakah api sudah padam", tinggi: false, alat: "pompa, selang, logistik regu"}}[j]
+  const kataJenis = j => ({gempabumi: KATA.gempa, gelombang_pasang: KATA.gelombang, kebakaran_permukiman: KATA.permukiman, karhutla: {kata: "karhutla", selesai: "padam", tanya: "apakah api sudah padam", tinggi: false, alat: "pompa, selang, logistik regu"}}[j]
     || KATA[j] || {...KATA_UMUM, kata: (NAMA_JENIS[j] || "kejadian").toLowerCase()});
 
   /* tujuh tanggal WIB terakhir, terbaru dulu; hari ini dilewati sebelum 07.00 WIB (rekap belum semestinya masuk) */

@@ -390,7 +390,7 @@
 .dl-tindak .dl-tag{white-space:normal;text-align:left}
 /* pemilih jenis pantauan (gaya Operasi Udara | Operasi Darat, operasi_peta.css .ops-mode) dan tab Laporan (isi /pelaporan, pemilik 5 Nov 2026) */
 /* sembilan tab ujung ke ujung dan selalu rata: 9 kolom di layar lebar, 3 x 3 di tengah, 2 kolom di HP dengan tab ganjil terakhir selebar dua kolom (tidak ada baris pincang) */
-.dl-seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;margin:0 0 16px;background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--bayang)}
+.dl-seg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:4px;margin:0 0 16px;background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--bayang)}
 .dl-seg button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 12px;border:0;border-radius:999px;background:none;font:inherit;font-size:14px;font-weight:700;color:var(--ink2);cursor:pointer;white-space:nowrap}
 .dl-seg button svg{width:18px;height:18px;flex:none}
 .dl-seg button[aria-selected="true"]{background:var(--navy);color:#fff}
@@ -403,8 +403,10 @@
 .dl-lp-k b{font-family:var(--display);font-size:16px}
 .dl-lp-k span{color:var(--ink2);font-size:13.5px;line-height:1.5}
 .dl-lp-k small{color:var(--navy);font-weight:700;font-size:12.5px}
-@media (min-width:1280px){.dl-seg{grid-template-columns:repeat(9,minmax(0,1fr))}.dl-seg button{gap:6px;padding:9px 6px;font-size:.8125rem}}
-@media (max-width:600px){.dl-seg{grid-template-columns:repeat(2,minmax(0,1fr))}.dl-seg button{padding:8px 10px;font-size:.8125rem}.dl-seg button:last-child:nth-child(odd){grid-column:1/-1}}
+/* 11 tab (11 Nov 2026): 4 kolom (4+4+3), 6 kolom di layar lebar (6+5); tab terakhir selebar dua sel supaya tiap baris penuh ujung ke ujung */
+.dl-seg button:last-child{grid-column:span 2}
+@media (min-width:1280px){.dl-seg{grid-template-columns:repeat(6,minmax(0,1fr))}.dl-seg button{gap:6px;padding:9px 10px;font-size:.8125rem}}
+@media (max-width:600px){.dl-seg{grid-template-columns:repeat(2,minmax(0,1fr))}.dl-seg button{padding:8px 10px;font-size:.8125rem;white-space:normal;text-align:center;line-height:1.2}.dl-seg button:last-child:nth-child(odd){grid-column:1/-1}}
 /* tab Longsor: kolom Tinggi air (kolom ke-9 tabel wilayah; baris provinsi = 1 sel judul + 10 sel) tidak berlaku */
 .dl-tanpa-tinggi thead tr:first-child th:nth-child(7),.dl-tanpa-tinggi tbody td:nth-child(9),.dl-tanpa-tinggi tfoot td:nth-child(9){display:none}
 

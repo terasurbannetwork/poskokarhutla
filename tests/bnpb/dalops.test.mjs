@@ -180,9 +180,9 @@ test("tab Gunung Api: tanggal berlaku dari perubahan, kalau tidak tercatat 'Sebe
   assert.equal(G.labelBerlaku(G.tglBerlaku({nama: "Merapi", level: 3}, {})), "Tanggal berlaku belum diketahui");
 });
 
-test("kata per jenis baru: gempa, cuaca ekstrem, kekeringan; WA tanpa 'surut', tinggi air, atau perahu", () => {
+test("kata per jenis baru: gempa, cuaca ekstrem, kekeringan, gelombang pasang, kebakaran permukiman; WA tanpa 'surut', tinggi air, atau perahu", () => {
   const x = {nama: "Cianjur", mulai: "2026-11-04", terakhir: "2026-11-05", kurang: [], mengungsi: 5};
-  for (const [j, kata, selesai] of [["gempa", "gempa bumi", "selesai"], ["cuaca", "cuaca ekstrem", "selesai"], ["kekeringan", "kekeringan", "berakhir"]]) {
+  for (const [j, kata, selesai] of [["gempa", "gempa bumi", "selesai"], ["cuaca", "cuaca ekstrem", "selesai"], ["kekeringan", "kekeringan", "berakhir"], ["permukiman", "kebakaran permukiman", "padam"]]) {
     const wa = H.pesanWA(x, H.KATA[j]);
     assert.match(wa, new RegExp(`mencatat ${kata} di Cianjur`)); assert.match(wa, new RegExp(`belum dilaporkan ${selesai}`));
     assert.doesNotMatch(wa, /surut|genangan|perahu|Tinggi/);
@@ -198,10 +198,17 @@ test("kolom korban gempa (md, hilang, status_darurat) ikut kelompok bila ada, nu
   assert.deepEqual([c.md, c.hilang, c.status_darurat], [3, 2, "Tanggap darurat"]); assert.deepEqual([g.md, g.hilang, g.status_darurat], [null, null, null]);
 });
 
-test("dalops.js: sembilan tab berurutan (Laporan Masuk tepat sebelum Laporan), gunung api dari JSON publik, jenis tanpa prakiraan melewati status.json dan Peringatan dini", () => {
+test("gelombang pasang: kata surut tanpa tinggi air, dan jenis logbook memakai kata tab-nya", () => {
+  const wa = H.pesanWA({nama: "Rembang", mulai: "2026-11-04", terakhir: "2026-11-05", kurang: []}, H.KATA.gelombang);
+  assert.match(wa, /mencatat gelombang pasang di Rembang/); assert.match(wa, /belum dilaporkan surut/); assert.doesNotMatch(wa, /perahu|Tinggi/);
+  assert.equal(H.kataJenis("gelombang_pasang"), H.KATA.gelombang); assert.equal(H.kataJenis("kebakaran_permukiman"), H.KATA.permukiman);
+});
+
+test("dalops.js: sebelas tab berurutan (Laporan Masuk tepat sebelum Laporan), gunung api dari JSON publik, jenis tanpa prakiraan melewati status.json dan Peringatan dini", () => {
   const src = readFileSync(new URL("../../public/bnpb/dalops.js", import.meta.url), "utf8");
   const tab = src.match(/const TAB = \[([\s\S]*?)\];/)[1];
-  assert.deepEqual([...tab.matchAll(/\["(\w+)", "/g)].map(m => m[1]), ["karhutla", "banjir", "longsor", "gunungapi", "gempa", "cuaca", "kekeringan", "laporan_masuk", "laporan"]);
+  assert.deepEqual([...tab.matchAll(/\["(\w+)", "/g)].map(m => m[1]), ["karhutla", "banjir", "longsor", "gunungapi", "gempa", "cuaca", "kekeringan", "gelombang", "permukiman", "laporan_masuk", "laporan"]);
+  assert.match(tab, /\["gempa", "Gempa & Tsunami"/, "label gempa memuat tsunami (pemilik 11 Nov 2026)");
   assert.match(src, /fetch\("\/banjir\/data\/gunungapi_status\.json"\)/);
   assert.match(src, /JN\[jenis\]\.pra === false \? null : await/, "status.json tidak dimuat untuk jenis tanpa prakiraan");
   assert.match(src, /!adaPra \? null :/, "bagian Peringatan dini dilewati, bukan kotak kosong");

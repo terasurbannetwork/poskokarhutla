@@ -2,7 +2,7 @@
 
 koordalops(teks) -> {'mulai': 'YYYY-MM-DD HH.MM', 'sampai': ..., 'laporan': int, 'menonjol': int, 'kejadian': [...]}
     kejadian: {'jenis', 'prov', 'lokasi', 'status', 'perhatian', 'angka': {...}, 'teks': {'dampak', 'status_darurat', 'kondisi'}}
-    jenis: karhutla | kekeringan | gempabumi | banjir | longsor | angin | cuaca (cuaca ekstrem) | lainnya (kebakaran TPA); status: belum | berjalan | selesai (aturan di status_dari()).
+    jenis: karhutla | kekeringan | gempabumi | banjir | longsor | angin | cuaca (cuaca ekstrem) | gelombang_pasang (gelombang pasang, abrasi, rob) | kebakaran_permukiman | lainnya (kebakaran TPA); status: belum | berjalan | selesai (aturan di status_dari()).
     Pakai laporan 07.00 s.d. 07.00 (bukan laporan 19.00 yang hanya setengah hari).
 bmkg(teks) -> {'jam': 'Sabtu, 24 Oktober 2026 pukul 06.00 WIB', 'pm': [(kota, nilai, kategori)], 'hujan': [prov], 'angin': [prov], 'periode': '23 – 25 Oktober 2026'}
 Uji: python3 wa_harian.py --uji  (teks 24 Okt di contoh/ harus sama dengan isian ../harian-2026-10-24.json)"""
@@ -45,7 +45,11 @@ def status_dari(kondisi, prov_level):
 
 def _jenis_lokasi(judul):
     j = judul.lower()
-    jenis = ('angin' if 'angin kencang' in j or 'puting beliung' in j else 'cuaca' if 'cuaca ekstrem' in j else 'lainnya' if 'tpa' in j else 'karhutla' if 'hutan dan lahan' in j or 'karhutla' in j or 'kebakaran lahan' in j or 'kebakaran hutan' in j else 'kekeringan' if 'kekeringan' in j
+    # 11 Nov: gelombang pasang/abrasi/rob dan kebakaran permukiman punya jenis sendiri (sama dengan arsip logbook); sebelumnya jatuh ke banjir/'lainnya' (= "Kebakaran TPA" di deck)
+    # angin/cuaca didahulukan: "Cuaca Ekstrem (Gelombang Tinggi)" tetap cuaca; "Banjir Rob" ke gelombang_pasang (sama dengan logbook)
+    jenis = ('angin' if 'angin kencang' in j or 'puting beliung' in j else 'cuaca' if 'cuaca ekstrem' in j
+             else 'gelombang_pasang' if re.search(r'gelombang\s+pasang|gelombang\s+tinggi|abrasi|\brob\b', j) else 'kebakaran_permukiman' if re.search(r'kebakaran\s+(?:pe?mukiman|permukiman|rumah|bangunan|gedung|pasar|ruko|kios)', j)
+             else 'lainnya' if 'tpa' in j else 'karhutla' if 'hutan dan lahan' in j or 'karhutla' in j or 'kebakaran lahan' in j or 'kebakaran hutan' in j else 'kekeringan' if 'kekeringan' in j
              else 'gempabumi' if 'gempa' in j else 'banjir' if 'banjir' in j else 'longsor' if 'longsor' in j or 'logsor' in j else 'lainnya')   # 3 Nov: salah ketik "Tanah Logsor"   # 1 Nov: tanah longsor Simalungun sempat jadi 'Kebakaran TPA'
     di = re.split(r'\s+di\s+', judul, maxsplit=1)[1] if ' di ' in judul else ''
     if not di: di = (lambda m: m.group(1) if m else '')(re.search(r'\b((?:Kab\.|Kabupaten|Kota)\s.*)', judul))   # 3 Nov: "Tanah Logsor Kab. Simalungun Prov. Sumatera Utara" tanpa "di"
@@ -205,6 +209,11 @@ def uji():
         assert k[('longsor', 'Simalungun')]['kk'] == 90 and k[('karhutla', 'Kolaka Timur')]['ha'] == 8.5, k
         assert k[('cuaca', 'Dairi')]['meninggal'] == 1 and k[('longsor', 'Badung')]['hilang'] == 2, k
         print('uji lolos: WA Koordalops 3 Nov, 18 kejadian')
+    J = lambda t: _jenis_lokasi(t)[0]
+    assert (J('Gelombang Pasang di Kab. Rembang'), J('Banjir Rob di Kota Semarang'), J('Abrasi di Kab. Indramayu')) == ('gelombang_pasang',) * 3
+    assert (J('Kebakaran Pemukiman di Kab. Deli Serdang'), J('Kebakaran Permukiman di Kota Bogor'), J('Kebakaran Rumah di Kab. Mappi')) == ('kebakaran_permukiman',) * 3
+    assert (J('Cuaca Ekstrem (Gelombang Tinggi) di Kab. Sikka'), J('Angin Kencang dan Gelombang Tinggi di Kab. Natuna')) == ('cuaca', 'angin')
+    assert (J('Kebakaran TPA Suwung di Kota Denpasar'), J('Kebakaran Hutan dan Lahan di Kab. Ketapang'), J('Banjir di Kab. Bekasi')) == ('lainnya', 'karhutla', 'banjir')
 
 
 if __name__ == '__main__':

@@ -29,7 +29,7 @@ AKRONIM = {'Kal. Barat': 'Kalbar', 'Kal. Tengah': 'Kalteng', 'Kal. Selatan': 'Ka
            'Sul. Selatan': 'Sulsel', 'Sul. Tenggara': 'Sultra', 'Sul. Barat': 'Sulbar', 'Papua Selatan': 'Papsel', 'Papua Barat': 'Pabar'}
 SINGKAT = {'Kep. Bangka Belitung': 'Kep. Babel', 'Nusa Tenggara Timur': 'NTT', 'Nusa Tenggara Barat': 'NTB', 'Papua Barat Daya': 'Papua Barat Daya',
            'Jawa Barat': 'Jabar', 'Jawa Tengah': 'Jateng', 'Jawa Timur': 'Jatim', 'DI Yogyakarta': 'DIY'}   # 27 Okt: lima provinsi Jawa berdesakan di peta
-JENIS_SINGKAT = {'gempabumi': 'gempa', 'karhutla': 'karhutla', 'banjir': 'banjir', 'angin': 'angin', 'cuaca': 'cuaca ekstrem', 'kekeringan': 'kekeringan', 'lainnya': 'kebakaran', 'longsor': 'longsor', 'erupsi': 'erupsi'}
+JENIS_SINGKAT = {'gempabumi': 'gempa', 'karhutla': 'karhutla', 'banjir': 'banjir', 'angin': 'angin', 'cuaca': 'cuaca ekstrem', 'kekeringan': 'kekeringan', 'lainnya': 'kebakaran', 'longsor': 'longsor', 'erupsi': 'erupsi', 'gelombang_pasang': 'gelombang pasang', 'kebakaran_permukiman': 'kebakaran permukiman'}
 angka_id = lambda t: float(t.replace('.', '').replace(',', '.'))
 PENDEK = lambda k: SINGKAT.get(NAMA[k]) or re.sub(r'^(Kalimantan|Sumatera|Sulawesi) ', lambda m: m.group(1)[:3] + '. ', NAMA[k])
 # kawasan yang dilaporkan BPBD tanpa nama kabupaten: kecamatan pembentuknya (sama dengan kotak kawasan paparan Jatim 231026)
@@ -40,7 +40,8 @@ KAWASAN = {'Gunung Argopuro': ['35|Probolinggo|Krucil', '35|Probolinggo|Tiris', 
                              '35|Kota Batu|Bumiaji', '35|Mojokerto|Gondang', '35|Mojokerto|Pacet', '35|Mojokerto|Trawas', '35|Mojokerto|Jatirejo']}
 JENIS_LAIN = {'gempabumi': ('Gempa bumi', 'gempa', SLATE, T_SLATE), 'lainnya': ('Kebakaran TPA', 'api', 'A23B2A', 'F5E1DD'), 'banjir': ('Banjir', 'banjir', '2F6FB5', 'DCE7F5'), 'angin': ('Angin kencang', 'angin', '0E7490', 'D5EEF2'),
              'cuaca': ('Cuaca ekstrem', 'angin', '0E7490', 'D5EEF2'), 'longsor': ('Tanah longsor', 'longsor', '7A5230', 'EFE4D8'),
-             'erupsi': ('Erupsi', 'gunung', 'C8102E', 'F8DDE0')}   # 7 Nov atasan: erupsi Bromo 5 Nov 17.11 WIB masuk Informasi bencana slide 1   # 1 Nov: longsor Simalungun   # 30 Okt: "Bencana Alam Cuaca Ekstrem" (Jombang, Tapin)
+             'erupsi': ('Erupsi', 'gunung', 'C8102E', 'F8DDE0'), 'gelombang_pasang': ('Gelombang pasang', 'banjir', '2F6FB5', 'DCE7F5'),
+             'kebakaran_permukiman': ('Kebakaran permukiman', 'api', 'A23B2A', 'F5E1DD')}   # 11 Nov: dua jenis baru dari wa_harian, tanpa entri ini deck KeyError   # 7 Nov atasan: erupsi Bromo 5 Nov 17.11 WIB masuk Informasi bencana slide 1   # 1 Nov: longsor Simalungun   # 30 Okt: "Bencana Alam Cuaca Ekstrem" (Jombang, Tapin)
 WEB = ('peta_karhutla.json', 'peta_karhutla_kab.json', 'peta_karhutla_wil.json', 'harian30.json', 'kluster_awal.json')
 
 
@@ -459,7 +460,7 @@ class Deck:
 
     def detail(s, x):
         a = x['angka']
-        if x['jenis'] in ('gempabumi', 'banjir', 'longsor'):
+        if x['jenis'] in ('gempabumi', 'banjir', 'longsor', 'gelombang_pasang'):   # 11 Nov: rob/abrasi = jalur banjir, bukan pil api
             pil = []
             if a.get('transisi_sd'):
                 d = dt.date.fromisoformat(a['transisi_sd']); pil.append((f'Transisi s.d. {d.day} {BULAN[d.month - 1][:3]}', T_ORG, ORG, 'kalender_oranye'))
