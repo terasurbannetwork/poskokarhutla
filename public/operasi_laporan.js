@@ -410,7 +410,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
         </ul></article>`; };   // tanpa kaki "Rincian ›": kartu sendiri bisa diklik (pemilik 11 Nov 2026)
     /* dikelompokkan per pulau (pemilik 11 Nov 2026), urutan dalam pulau tetap: api paling genting dulu */
     const grup = {}; for (const x of bs) (grup[PULAU[String(x.b.prov || "")[0]] || "Lainnya"] ||= []).push(x);
-    return bagian("Papan base", "", `<div class="ops-pb-pulau">${URUT_PULAU.filter(g => grup[g]).map(g => `<section><h4>${lbl("base", esc(g))}<small>${fmt(grup[g].length)} base, ${fmt(grup[g].reduce((t, x) => t + x.a.length, 0))} armada</small></h4>
+    return bagian("Papan base", "", `<div class="ops-pb-pulau">${URUT_PULAU.filter(g => grup[g]).map(g => `<section><h4>${lbl("base", esc(g))}<span class="kn"><small>${lbl("base", `${fmt(grup[g].length)} base`)}</small><small>${lbl("peran", `${fmt(grup[g].reduce((t, x) => t + x.a.length, 0))} armada`)}</small></span></h4>
       <div class="ops-pb-grid" style="--n:${Math.min(grup[g].length, 6)};--nb:${grup[g].length <= 3 ? grup[g].length : Math.ceil(grup[g].length / 2)}">${grup[g].map(kartu).join("")}</div></section>`).join("")}</div>`);
   }
   function bukaBasePop(id) {
@@ -744,7 +744,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
         <ol class="ops-rlk-tg">${tg.slice(0, 4).map((g, i) => `<li class="${dt(g) ? "datang" : ""}"><span>${fmt(g.urut ?? i + 1)}</span><b>${esc(alasanRenlap(g.alasan)[0] || g.lokasi || g.nama || "Target")}</b></li>`).join("")}${tg.length > 4 ? `<li class="lagi"><span>+${fmt(tg.length - 4)}</span><b>target lain di rincian base</b></li>` : ""}</ol>
         <footer>${["kml", "gpx"].map(f => `<button type="button" class="ops-kml" data-unduh="${f}" data-base="${esc(id)}" title="Unduh waypoint renlap (${f.toUpperCase()})">${lbl("unduh", f.toUpperCase())}</button>`).join("")}</footer></article>`; };
     const grup = {}; for (const e of perBase) { const b = (D.peta.base || []).find(x => x.id === e[0]); (grup[PULAU[String(b?.prov || "")[0]] || "Lainnya"] ||= []).push(e); }
-    return bagian("Renlap", "", total ? `<div class="ops-pb-pulau">${URUT_PULAU.filter(g => grup[g]).map(g => `<section><h4>${lbl("base", esc(g))}<small>${fmt(grup[g].length)} base</small></h4>
+    return bagian("Renlap", "", total ? `<div class="ops-pb-pulau">${URUT_PULAU.filter(g => grup[g]).map(g => `<section><h4>${lbl("base", esc(g))}<span class="kn"><small>${lbl("base", `${fmt(grup[g].length)} base`)}</small><small>${lbl("sortie", `${fmt(grup[g].reduce((t, e) => t + (e[1][e[1].length - 1].target || []).length, 0))} target`)}</small></span></h4>
       <div class="ops-pb-grid" style="--n:${Math.min(grup[g].length, 6)};--nb:${grup[g].length <= 3 ? grup[g].length : Math.ceil(grup[g].length / 2)}">${grup[g].map(kartuB).join("")}</div></section>`).join("")}</div>`
       : `<p class="ops-kosong">Renlap disusun otomatis pukul 20.00 dan 07.00 WIB oleh mesin Pusdalops, lalu muncul di sini.</p>`);
   }
