@@ -41,3 +41,12 @@ b,strong,td,.pill{font-variant-numeric:tabular-nums}
 .ex-std .ex-jd>h3{font-size:1rem;line-height:1.3;color:var(--db-navy)}
 .ex.ex-std{border-color:var(--db-h2-garis)}
 .ex-std>.ex-bd{padding:12px 16px}
+
+/* ---- kartu .bn-kartu (Sitrep, Ruang Koordinasi) ---- */
+.bn-kartu{border:1px solid var(--db-h2-garis);overflow:hidden}
+.bn-kartu>h2:first-child{margin:-16px -18px 12px;padding:10px 18px;background:var(--db-h2);box-shadow:inset 4px 0 0 var(--db-navy);border-bottom:1px solid var(--db-h2-garis);font-size:.9375rem;color:var(--db-navy)}
+.bn-kartu>h2:first-child svg{color:var(--db-navy)}
+/* kepala tabel tanpa kapital dan tanpa garis emas, di mana pun .ad-tabel dipakai */
+body .ad-tabel thead th{text-transform:none;letter-spacing:0;font-size:.75rem;border-bottom:0}
+body .ad-tabel thead tr{background:var(--db-navy)}
+@media print{.bn-kartu>h2:first-child{margin:0 0 8px;padding:6px 10px;border-radius:6px}}

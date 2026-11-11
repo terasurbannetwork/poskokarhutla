@@ -29,7 +29,9 @@ const jalurData = j => /(^|\/)data\//.test(j);
 
 export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, rute = null} = {}) {
   const publik = path.join(akar, "public");
-  if (!rute) { try { rute = (await import(pathToFileURL(path.join(akar, "src/worker.js")).href)).HTML_RUTE; } catch { rute = []; } }
+  if (!rute) { try { const w = await import(pathToFileURL(path.join(akar, "src/worker.js")).href);
+    /* halaman Ruang Koordinasi dilayani lewat jalur bersih BNPB_BERSIH (/sitrep, /bnpb/logbook, ...), bukan HTML_RUTE */
+    rute = [...w.HTML_RUTE, ...Object.entries(w.BNPB_BERSIH || {}).map(([k, j]) => [{test: p => p === j || p === j + "/"}, `/bnpb/${k}.html`])]; } catch { rute = []; } }
   const H = new URL(hulu);
   return http.createServer(async (req, res) => {
     try {
