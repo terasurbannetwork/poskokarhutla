@@ -1887,3 +1887,18 @@
 #opsLaporan .ops-nl2-tema{gap:14px}
 /* Papan base dan semua kartu L2: kepala biru muda (menang atas aturan :not(.ops-polos) lama) */
 #opsLaporan .ops-wadah details.ops-kartu:not(.ops-polos)>summary.ex-hd{background:color-mix(in srgb,#2f6fd6 10%,#fff)!important;border-bottom:1px solid color-mix(in srgb,#2f6fd6 24%,#fff)!important}
+/* angka kontrak per provinsi jadi pil label (pemilik 11 Nov 2026) */
+#opsLaporan .ops-kp li{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+#opsLaporan .ops-kp li>span:not(.ops-kp-jenis){display:inline-flex;padding:3px 10px;border-radius:999px;background:color-mix(in srgb,#2f6fd6 8%,#fff);box-shadow:inset 0 0 0 1px color-mix(in srgb,#2f6fd6 18%,#fff)}
+#opsLaporan .ops-kp li>span:not(.ops-kp-jenis) .ops-lbl{font-size:.75rem;font-weight:700;color:#1f3f73}
+#opsLaporan .ops-kp li>span:not(.ops-kp-jenis) .ops-lbl svg{color:#2f6fd6}
+/* lambang provinsi */
+#opsLaporan .ops-lambang{width:22px;height:22px;object-fit:contain;flex:none}
+#opsLaporan .ops-lambang[hidden]{display:none}
+#opsLaporan .ops-kp-prov{display:inline-flex;align-items:center;gap:8px}
+#opsLaporan .ops-kp-prov .ops-lambang{width:28px;height:28px}
+#opsLaporan .ops-pb-lambang{display:inline-flex;align-items:center;gap:4px}
+#opsLaporan .ops-pb-lambang .ops-lambang{width:14px;height:14px}
+#opsLaporan .ops-pb-lambang>span{font-size:.65625rem;font-weight:700;color:var(--ink)}
+#opsLaporan .ops-kp-grid{grid-template-columns:repeat(var(--k,3),minmax(0,1fr))}
+@media (max-width:1100px){#opsLaporan .ops-kp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

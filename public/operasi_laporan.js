@@ -401,7 +401,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     const pv = (k, t) => `<span class="pill ops-pbv ${k}">${esc(t)}</span>`;
     const kartu = x => { const bar = (n, d, kelas = "") => `<i class="ops-pb-bar ${kelas}" style="--p:${d ? Math.round(n / d * 100) : 0}%"></i>`;
       return `<article class="ops-pb lv${x.lv}" data-pb="${esc(x.b.id)}" tabindex="0" role="button" aria-label="Rincian base ${esc(x.b.nama)}">
-        <header><div><p class="ops-pb-nm"><b>${esc(x.b.nama.split(" / ")[0])}</b><em class="ops-pb-icao">${esc(x.b.icao || x.b.id)}</em></p><span class="ops-pb-sub"><small class="ops-pb-prov">${lbl("base", esc(u.PROV_PDK[x.b.prov] || x.b.prov || ""))}</small><small class="ops-pb-prov">${lbl("peran", `${fmt(x.a.length)} armada`)}</small><span class="ops-pb-lv">${lbl("api", LVK[x.lv])}</span></span></div></header>
+        <header><div><p class="ops-pb-nm"><b>${esc(x.b.nama.split(" / ")[0])}</b><em class="ops-pb-icao">${esc(x.b.icao || x.b.id)}</em></p><span class="ops-pb-sub"><small class="ops-pb-prov ops-pb-lambang">${lambangProv(x.b.prov)}<span>${esc(u.PROV_PDK[x.b.prov] || x.b.prov || "")}</span></small><small class="ops-pb-prov">${lbl("peran", `${fmt(x.a.length)} armada`)}</small><span class="ops-pb-lv">${lbl("api", LVK[x.lv])}</span></span></div></header>
         <ul>
           <li><span>${lbl("siap", "Siap")}</span><b>${x.lapor ? pv(x.siap === x.a.length ? "ok" : "awas", `${fmt(x.siap)}/${fmt(x.a.length)} siap`) : pv("awas", "Belum lapor")}</b>${bar(x.lapor ? x.siap : 0, x.a.length, "ok")}</li>
           <li><span>${lbl("vis", "Cuaca terbang")}</span><b>${u.pilLayak(x.lay)}</b></li>
@@ -488,6 +488,8 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     return it.sort((p, q) => q[5] - p[5]);
   }
   /* jumlah kolom simetris (pemilik 11 Nov 2026): <=5 sebaris, 6 = 3x2, 8 = 4x2, lainnya separuh */
+  /* lambang provinsi dari /lambang/provinsi/<kode BPS>.png (sama dengan /bnpb/dalops); gagal muat = disembunyikan */
+  const lambangProv = k => k ? `<img class="ops-lambang" src="/lambang/provinsi/${esc(String(k).slice(0, 2))}.png" alt="" loading="lazy" onerror="this.hidden=true">` : "";
   const kolomSim = n => n <= 5 ? Math.max(n, 1) : n % 3 === 0 ? 3 : n % 4 === 0 ? 4 : Math.min(4, Math.ceil(n / 2));
   function kartuRencana(D) {
     const it = rencanaAksi(D), GRUP = [["jam", "Laporan gelar armada"], ["silang", "Armada tidak siap"], ["api", "Api di luar jangkauan"], ["sortie", "Renlap"], ["catat", "Kelengkapan data"]];
@@ -1102,11 +1104,11 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
       .map(g => ({...g, jam: g.r.reduce((t, x) => t + (x.jam_operasi_menit || 0), 0)})).sort((x, y) => y.jam - x.jam);
     const baris = x => `<li data-j="${esc(x.jenis)}"><span class="ops-kp-jenis">${lbl(x.jenis === "wb" ? "air" : "vis", esc(PERAN[x.jenis] || x.jenis))}</span>
       <span>${lbl("op", `${fmt(x.kontrak)} kontrak`)}</span><span>${lbl("jam", jamB(x.jam_operasi_menit))}</span><span>${lbl("peran", `${fmt(x.sortie || 0)} sortie`)}</span>
-      ${x.jenis === "wb" ? `<span>${lbl("ember", x.wb_drop ? `${fmt(x.wb_drop)} jatuhan` : "jatuhan –")}</span><span>${lbl("air", x.liter ? `${(x.liter / 1e6).toLocaleString("id-ID", {maximumFractionDigits: 1})} jt liter` : "liter –")}</span>` : ""}</li>`;
-    const kartu = prov.map(g => `<article class="ops-kp"><header><b>${esc(u.PROV_PDK[g.p] || g.p)}</b><span><b>${jamB(g.jam)}</b><small>${u.persen(g.jam / tot.jam)} dari total</small></span></header>
+      ${x.jenis === "wb" ? `<span>${lbl("ember", x.wb_drop ? `${fmt(x.wb_drop)} jatuhan` : "jatuhan –")}</span>${x.liter ? `<span>${lbl("air", `${(x.liter / 1e6).toLocaleString("id-ID", {maximumFractionDigits: 1})} jt liter`)}</span>` : ""}` : ""}</li>`;
+    const kartu = prov.map(g => `<article class="ops-kp"><header><b class="ops-kp-prov">${lambangProv(g.p)}${esc(u.PROV_PDK[g.p] || g.p)}</b><span><b>${jamB(g.jam)}</b><small>${u.persen(g.jam / tot.jam)} dari total</small></span></header>
       <i class="ops-kp-bar" style="--p:${Math.round(g.jam / tot.jam * 100)}%"></i>
       <ul>${g.r.slice().sort((x, y) => (x.jenis === "wb") - (y.jenis === "wb")).map(baris).join("")}</ul></article>`).join("");
-    return bagian("Kontrak 2026", `${hl(jamB(tot.jam))} operasi udara dari ${fmt(tot.n)} kontrak 2026, ${hl(fmt(tot.sortie))} sortie`, `<div class="ops-kp-grid">${kartu}</div>`);
+    return bagian("Kontrak 2026", `${hl(jamB(tot.jam))} operasi udara dari ${fmt(tot.n)} kontrak 2026, ${hl(fmt(tot.sortie))} sortie`, `<div class="ops-kp-grid" style="--k:${kolomSim(prov.length)}">${kartu}</div>`);
   }
 
   /* ---------------- operasi darat ---------------- */
