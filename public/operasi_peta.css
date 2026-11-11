@@ -508,3 +508,15 @@
 #opsLaporan .ops-pa-sek.ops-rk>summary small{background:rgb(255 255 255 / .14);box-shadow:none;color:#d6e4f5}
 #opsLaporan .ops-pa-sek.ops-rk>summary .ops-chev{color:#d6e4f5}
 #opsLaporan .ops-pa-sek.ops-rk{border:0}
+/* kartu bisa dilipat (bagian() = <details>): kepala navy satu baris, ikon kiri, judul, kontrol, panah */
+#opsLaporan details.ops-kartu>summary.ex-hd{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;column-gap:14px}
+#opsLaporan details.ops-kartu>summary.ex-hd::-webkit-details-marker{display:none}
+#opsLaporan details.ops-kartu>summary .ex-ey{margin:0}
+#opsLaporan details.ops-kartu>summary .ex-jd{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;min-width:0}
+#opsLaporan details.ops-kartu>summary .ex-jd>h3{margin:0}
+#opsLaporan .ops-kartu-chev{width:20px;height:20px;color:#d6e4f5;transition:transform .2s}
+#opsLaporan details.ops-kartu[open]>summary .ops-kartu-chev{transform:rotate(180deg)}
+#opsLaporan details.ops-kartu:not([open])>summary.ex-hd{padding-top:14px;padding-bottom:14px}
+#opsLaporan details.ops-kartu:not([open])>summary .ex-jd>h3{font-size:1rem}
+#opsLaporan details.ops-kartu:not([open])>summary .ex-jd>:not(h3){display:none}
+@media (prefers-reduced-motion:reduce){#opsLaporan .ops-kartu-chev{transition:none}}

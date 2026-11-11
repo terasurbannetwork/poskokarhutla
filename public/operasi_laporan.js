@@ -32,7 +32,13 @@
     Efektivitas: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>', "Kontrak 2026": '<path d="M6 3h9l3 3v15H6z"/><path d="M9 11h6M9 15h6"/>'};
   const eyebrow = ey => { const t = String(ey).replace(/<[^>]+>/g, "").trim(), svg = IK_EY[t];
     return svg ? `<span class="ex-ey ops-ey-ik" title="${esc(t)}" aria-label="${esc(t)}" role="img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${svg}</svg></span>` : `<span class="ex-ey">${ey}</span>`; };
-  const bagian = (ey, judul, isi, kanan = "") => `<article class="ex ex-std"><header class="ex-hd">${eyebrow(ey)}<div class="ex-jd"><h3>${judul}</h3>${kanan}</div></header><div class="ex-bd">${isi}</div></article>`;
+  /* semua kartu bisa dilipat (pemilik 11 Nov 2026 "semua agar dibuat collapsible", pola pangantara): <details> dengan kepala navy
+     sebagai <summary>; bawaan terbuka hanya Base, pilihan buka/tutup diingat per peramban (kenyamanan, bukan data) */
+  const BUKA_AWAL = new Set(["base"]), CHEV = '<svg class="ops-chev ops-kartu-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+  let ingatKartu = {}; try { ingatKartu = JSON.parse(localStorage.getItem("ops_kartu") || "{}") || {}; } catch (e) {}
+  const idKartu = ey => String(ey).replace(/<[^>]+>/g, "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const bagian = (ey, judul, isi, kanan = "") => { const id = idKartu(ey), buka = id in ingatKartu ? ingatKartu[id] : BUKA_AWAL.has(id);
+    return `<details class="ex ex-std ops-kartu" data-kartu="${id}"${buka ? " open" : ""}><summary class="ex-hd">${eyebrow(ey)}<div class="ex-jd"><h3>${judul}</h3>${kanan}</div>${CHEV}</summary><div class="ex-bd">${isi}</div></details>`; };
   const tabelH = (kepala, baris, kosong) => baris.length ? `<div class="tw ops-tw ex-tabel"><table><thead><tr>${kepala.map(k => { const [t, tip] = k.split("|");
       return `<th${t.startsWith("#") ? ' class="n"' : ""}${tip ? ` title="${esc(tip)}"` : ""}>${t.replace(/^#/, "")}</th>`; }).join("")}</tr></thead><tbody>${baris.join("")}</tbody></table></div>`
     : `<p class="ops-kosong">${kosong}</p>`;
@@ -64,7 +70,9 @@
       <div class="ops-periode" role="group" aria-label="Periode laporan">${periode()}</div>
       ${""/* tombol Salin teks WA (data-aksi="salin") dan Cetak / PDF (data-aksi="cetak") disembunyikan pemilik 11 Nov 2026; handler dan salin() tetap */}
       <span class="ops-status" role="status"></span></div><div id="opsIsi"></div>`;
+    box.addEventListener("toggle", e => { const k = e.target.dataset?.kartu; if (!k) return; ingatKartu[k] = e.target.open; try { localStorage.setItem("ops_kartu", JSON.stringify(ingatKartu)); } catch (x) {} }, true);
     box.addEventListener("click", e => {
+      if (e.target.closest("summary.ex-hd") && e.target.closest("button, a, input, select, label")) e.preventDefault();   // kontrol di kepala kartu tidak ikut melipat
       const m = e.target.closest("[data-mode]");
       if (m) { st.mode = m.dataset.mode; try { localStorage.setItem("ops_mode", st.mode); } catch (x) {} box.querySelectorAll("[data-mode]").forEach(b => b.setAttribute("aria-pressed", String(b === m))); return sesudahFrame(isi); }
       const ka = e.target.closest(".ops-akt[data-reg]"); if (ka) return bukaArmada(ka.dataset.reg);
