@@ -449,7 +449,8 @@
 #opsLaporan .ex-std .ex-ey.ops-ey-ik{display:inline-grid;place-items:center;width:30px;height:30px;padding:0;border-radius:9px}
 #opsLaporan .ex-std .ex-ey.ops-ey-ik svg{width:16px;height:16px}
 /* ringkasan bisa dilipat + sel bisa diklik (bukaRingkas) */
-#opsLaporan .ops-rk{margin:6px 0 4px}
+#opsLaporan .ops-rk{margin:0;background:var(--card);border-radius:22px;box-shadow:var(--shadow)}
+#opsLaporan .ops-rk>summary{padding:16px 20px}
 #opsLaporan .ops-pa-sek.ops-rk>.ops-lap-angka{margin:0;padding:0;border:0;border-radius:0}
 #opsLaporan .ops-lap-angka>[data-rk]{cursor:pointer;transition:background .15s}
 #opsLaporan .ops-lap-angka>[data-rk]:hover{background:color-mix(in srgb,var(--brand2) 4%,transparent)}

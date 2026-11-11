@@ -223,11 +223,11 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
       ubin("sortie", H.sortie ? fmt(H.sortie) : "–", "Sortie hari ini", H.sortie ? (H.wb ? `${fmt(H.wb)} water bombing${H.drop ? `, ${fmt(H.drop)} jatuhan` : ""}` : "tanpa water bombing") : [["belum", "Belum ada sortie"]], !H.sortie),
       H.dinilai && ubin("padam", u.persen(H.persen), "Padam ≥ 24 jam", `${fmt(H.padam)} dari ${fmt(H.dinilai)} dinilai`),
       ubin("temuan", (P.temuan || []).length ? fmt(temApi) : "–", "Temuan api pilot", (P.temuan || []).length ? `${fmt(P.temuan.length)} temuan total` : [["belum", "Belum ada laporan pilot"]], !(P.temuan || []).length)].filter(Boolean);
+    /* kartu pertama = ringkasan itu sendiri; kepala kartu gelap dihapus (pemilik 11 Nov 2026 "Ringkasan 11 Nov itu yang jadi header") */
     const ringkas = `<details class="ops-pa-sek ops-rk" open><summary><i>${lbl("tren", "")}</i><b>Ringkasan</b><small>${lbl("jam", esc(tglPendek(D.t)))}</small><svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
       <div class="ops-lap-angka" style="--n:${tiles.length}">${tiles.join("")}</div></details>`;
     return [
-      bagian(`${ik("udara")} Operasi udara`, lapor ? `${hl(`${fmt(siap)} dari ${fmt(ar.length)}`)} armada siap di ${fmt(base.length)} base, ${H.sortie ? `${hl(fmt(H.sortie))} sortie` : "belum ada sortie"} pada ${tgl}`
-        : `${hl(fmt(ar.length))} armada di ${fmt(base.length)} base; status harian ${tgl} belum dilaporkan`, ringkas),
+      ringkas,
       kartuBase(D), kartuRenlap(D), kartuAksi(D), kartuTren(D), kartuHistori(D), kartuOperator(D), kartuJejak(D), kartuTemuan(D), kartuOmcResmi(D), kartuOmc(D), kartuGaleri(D), kartuNilai(D), kartuKontrak(D)].join("");
   }
 
