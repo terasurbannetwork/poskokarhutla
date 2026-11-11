@@ -135,12 +135,12 @@ def aktif(kluster, t, maks=MAKS_KOMPLEKS):
 
 
 def kotak(geom):
-    xs, ys = [], []
-    bagian = geom["coordinates"] if geom["type"] == "MultiPolygon" else [geom["coordinates"]]
-    for b in bagian:
-        for c in b[0]:
-            xs.append(c[0])
-            ys.append(c[1])
+    # kluster.json memuat Point (kompleks satu titik) di samping Polygon
+    c = geom["coordinates"]
+    t = geom["type"]
+    pts = [c] if t == "Point" else [p for b in (c if t == "MultiPolygon" else [c]) for p in b[0]]
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
     return min(xs) - .02, min(ys) - .02, max(xs) + .02, max(ys) + .02
 
 
@@ -209,6 +209,8 @@ def angin_uji(u, v, jam0="2026-10-18T03:00Z"):
 
 def uji():
     assert negara(103.85, 1.3) == "Singapura" and negara(101.7, 3.1) == "Malaysia" and negara(114.9, 4.9) == "Brunei"
+    assert kotak({"type": "Point", "coordinates": [101.0, 1.0]}) == (100.98, .98, 101.02, 1.02)
+    assert kotak({"type": "MultiPolygon", "coordinates": [[[[100, 0], [101, 1], [100, 1]]], [[[102, 2], [103, 3], [102, 3]]]]}) == (99.98, -.02, 103.02, 3.02)
     assert negara(113.0, 3.0) == "Malaysia" and negara(125.6, -8.6) == "Timor Leste"
     assert negara(104.75, -2.98) is None and negara(109.3, -0.03) is None and negara(116.9, -1.27) is None and negara(124.9, -9.1) is None  # Palembang, Pontianak, Balikpapan, Atambua
     A = angin_uji(100, 0)                                   # 10 m/s ke timur
