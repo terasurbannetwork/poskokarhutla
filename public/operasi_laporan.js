@@ -57,6 +57,7 @@
     box.addEventListener("click", e => {
       const m = e.target.closest("[data-mode]");
       if (m) { st.mode = m.dataset.mode; try { localStorage.setItem("ops_mode", st.mode); } catch (x) {} box.querySelectorAll("[data-mode]").forEach(b => b.setAttribute("aria-pressed", String(b === m))); return sesudahFrame(isi); }
+      const ka = e.target.closest(".ops-ar[data-reg]"); if (ka) return bukaArmada(ka.dataset.reg);
       const ud = e.target.closest("[data-unduh]"); if (ud) return st._d && unduhRute(st._d, ud.dataset.base, ud.dataset.unduh);
       const fp = e.target.closest("[data-fpulau], [data-ftanda]"); if (fp) return saringBase(fp);
       const gr = e.target.closest("tr.ops-grup"); if (gr) return lipatGrup(gr);
@@ -67,7 +68,7 @@
       if (a.dataset.aksi === "cetak") return window.print();
       if (a.dataset.aksi === "salin") salin(a);
     });
-    box.addEventListener("keydown", e => { const k = (e.key === "Enter" || e.key === " ") && e.target.closest?.("tr.ops-bb, tr.ops-grup"); if (k) { e.preventDefault(); k.classList.contains("ops-grup") ? lipatGrup(k) : bukaBase(k); } });
+    box.addEventListener("keydown", e => { const k = (e.key === "Enter" || e.key === " ") && e.target.closest?.(".ops-ar[data-reg], tr.ops-bb, tr.ops-grup"); if (k) { e.preventDefault(); k.dataset.reg ? bukaArmada(k.dataset.reg) : k.classList.contains("ops-grup") ? lipatGrup(k) : bukaBase(k); } });
     box.addEventListener("change", e => {
       if (e.target.matches(".ops-tgl input")) return pilihTanggal(e.target.value);
       if (e.target.matches("[data-reg]")) { st.reg = e.target.value; return sesudahFrame(() => { const k = $("#opsHistori"); if (k) k.outerHTML = kartuHistori(st._d); }); }
@@ -186,7 +187,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     return `<div class="ops-ar-grid">${ar.slice().sort((x, y) => x.registrasi.localeCompare(y.registrasi)).map(a => {
       const s = u.stAr(a.status), aksi = D.aksi.filter(x => x.registrasi === a.registrasi), wb = aksi.filter(x => x.guna === "wb").length;
       const tipe = /tidak diketahui/i.test(a.tipe || "") ? "Tipe belum tercatat" : a.tipe || "Tipe belum tercatat", f = u.fotoAr(a);
-      return `<article class="ops-ar"><figure>${f ? u.imgAr(a, "", `${a.registrasi} ${tipe}`) : `<span class="ops-ar-kosong">${lbl("peran", "")}</span>`}<span class="ops-ar-st ${s[1]}"><i></i>${s[0]}</span></figure>
+      return `<article class="ops-ar" data-reg="${esc(a.registrasi)}" tabindex="0" role="button" aria-label="Histori ${esc(a.registrasi)}"><figure>${f ? u.imgAr(a, "", `${a.registrasi} ${tipe}`) : `<span class="ops-ar-kosong">${lbl("peran", "")}</span>`}<span class="ops-ar-st ${s[1]}"><i></i>${s[0]}</span></figure>
         <div class="ops-ar-isi"><header><b>${esc(a.registrasi)}</b><small>${esc(tipe)}</small></header>
         <ul>${baris("peran", esc(PERAN[a.peran] || a.peran || ""))}${baris("op", a.operator ? esc(a.operator) : "")}${baris("milik", a.pemilik ? PEMILIK[a.pemilik] || esc(a.pemilik) : "")}${baris("ember", a.bucket_liter ? `Bucket ${fmt(a.bucket_liter)} L` : "")}</ul>
         <footer>${aksi.length ? `<b>${fmt(aksi.length)}</b> sortie${wb ? `, <b>${fmt(wb)}</b> water bombing` : ""}` : "Belum ada sortie hari ini"}${a.alasan ? `<span>${esc(a.alasan)}</span>` : ""}</footer></div></article>`; }).join("")}</div>`;
@@ -306,7 +307,12 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     const reg = st.reg && ar.some(a => a.registrasi === st.reg) ? st.reg : (ar.find(a => aktif.has(a.registrasi)) || ar[0])?.registrasi || "";
     const a = ar.find(x => x.registrasi === reg), pilih = `<select data-reg aria-label="Pilih armada">${kelompokBase(ar, D.peta.base).map(g => `<optgroup label="${esc(g.nama)}">${g.regs.map(r => `<option value="${esc(r)}"${r === reg ? " selected" : ""}>${esc(r)}${aktif.has(r) ? " ●" : ""}</option>`).join("")}</optgroup>`).join("")}</select>`;
     if (!a) return `<div id="opsHistori">${bagian("Histori armada", "Belum ada armada tercatat", "")}</div>`;
-    const ak = D.aksi30.filter(x => x.registrasi === a.registrasi).sort((x, y) => (y.jam_utc || 0) - (x.jam_utc || 0)), k = D.mon?.kpi?.armada?.[a.registrasi], kt = u.kontrak(a.registrasi), s = u.stAr(a.status);
+    const {judul, isi} = isiHistori(D, a, 15);
+    return `<div id="opsHistori">${bagian("Histori armada", judul, isi, pilih)}</div>`;
+  }
+  /* isi histori satu armada: dipakai kartu Histori (15 aksi terakhir) dan pop-up kartu armada (semua aksi 30 hari) */
+  function isiHistori(D, a, batas = Infinity) {
+    const u = U(), ak = D.aksi30.filter(x => x.registrasi === a.registrasi).sort((x, y) => (y.jam_utc || 0) - (x.jam_utc || 0)), k = D.mon?.kpi?.armada?.[a.registrasi], kt = u.kontrak(a.registrasi), s = u.stAr(a.status);
     const jam = kt.reduce((t, x) => t + (x.jam_operasi_menit || 0), 0), hh = D.hitung(ak);
     const angka = (n, t) => `<div><b>${n}</b><span>${t}</span></div>`;
     const isi = `<div class="ops-hist-atas">${u.fotoAr(a) ? u.imgAr(a, "", a.registrasi) : ""}
@@ -315,10 +321,22 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
       <div class="ops-lap-angka ops-6">${[angka(nol(hh.sortie), "sortie 30 hari"), angka(nol(hh.wb), "aksi WB"), angka(u.persen(hh.persen), "padam ≥ 24 jam"),
         angka(k ? `${fmt(siapTerbang(k))}/${fmt(k.hari_siap)}` : "–", "hari siap yang terbang / siap"), angka(k?.respons_median_menit != null ? fmt(Math.round(k.respons_median_menit)) + " mnt" : "–", "respons median"),
         angka(kt.length ? fmt(Math.round(jam / 60)) + " jam" : "–", `operasi 2026, ${fmt(kt.length)} kontrak`)].join("")}</div>
-      ${tabelH(["Tanggal", "#Jam WIB", "Misi", "Lokasi", "#Jatuhan", "Hasil"], ak.slice(0, 15).map(x => { const h = u.HASIL[x.hasil] || u.HASIL.tak_dinilai;
+      ${tabelH(["Tanggal", "#Jam WIB", "Misi", "Lokasi", "#Jatuhan", "Hasil"], ak.slice(0, batas).map(x => { const h = u.HASIL[x.hasil] || u.HASIL.tak_dinilai;
         return `<tr><td>${esc(tglPendek(x.tanggal))}</td>${sel(u.jamWIB(x.jam_utc))}<td>${esc(MISI[x.guna] || x.jenis)}</td>${kiri(esc(x.lokasi || "–"))}${sel(nol(x.drop))}<td><span class="pill ${h[1]}">${h[0]}</span></td></tr>`; }), "Belum ada aksi tercatat untuk armada ini dalam 30 hari.")}
       ${kt.length ? tabelH(["#Kontrak", "Periode", "Jenis", "#Jam operasi", "#Sortie", "#Jatuhan WB"], kt.map(x => `<tr>${sel(fmt(x.kontrak_ke))}<td>${esc(x.periode_teks || "–")}${x.berjalan ? ` <span class="pill l0">berjalan</span>` : ""}</td><td>${esc(PERAN[x.jenis] || x.jenis)}</td>${sel(u.jamMenit(x.jam_operasi_menit))}${sel(nol(x.sortie))}${sel(nol(x.wb_drop))}</tr>`), "") : ""}`;
-    return `<div id="opsHistori">${bagian("Histori armada", `${hl(esc(a.registrasi))}: ${hh.sortie ? `${hl(fmt(hh.sortie))} sortie dalam 30 hari` : "belum ada sortie dalam 30 hari"}`, isi, pilih)}</div>`;
+    return {judul: `${hl(esc(a.registrasi))}: ${hh.sortie ? `${hl(fmt(hh.sortie))} sortie dalam 30 hari` : "belum ada sortie dalam 30 hari"}`, isi};
+  }
+  /* pop-up histori armada (pemilik 11 Nov 2026: klik kartu armada = histori semua kegiatannya). <dialog> bawaan: Esc dan klik latar menutup. */
+  function bukaArmada(reg) {
+    const D = st._d, a = (D?.peta.armada || []).find(x => x.registrasi === reg); if (!a) return;
+    let d = document.getElementById("opsDlgAr");
+    if (!d) { d = document.createElement("dialog"); d.id = "opsDlgAr"; d.className = "ops-dlg"; ($("#opsLaporan") || document.body).append(d);   // di dalam #opsLaporan supaya gaya layar ikut
+      d.addEventListener("click", e => { if (e.target === d || e.target.closest("[data-tutup]")) d.close(); }); }
+    const {judul, isi} = isiHistori(D, a);
+    d.innerHTML = `<article class="ex ex-std"><header class="ex-hd"><span class="ex-ey">${ik("udara")} Histori armada</span><div class="ex-jd"><h3>${judul}</h3>
+      <button type="button" class="ops-dlg-x" data-tutup aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></header>
+      <div class="ex-bd">${isi}</div></article>`;
+    if (!d.open) d.showModal();
   }
 
   /* Hari terbang bisa jatuh di hari tanpa laporan status, jadi terbang/siap bisa di atas 100%. Pembilang utilisasi = hari siap yang juga terbang;

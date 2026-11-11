@@ -232,3 +232,15 @@
 .ops-galeri span{font-size:11.5px;line-height:1.35;color:var(--ink2)}
 @media (max-width:760px){.ops-tren-grid{grid-template-columns:1fr}.ops-6{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:14px}.ops-hist-atas img{width:96px;height:64px}}
 @media print{#tabs,header,.ops-alat,.fab,[class*="chat"]{display:none!important}.page.on{position:static!important;overflow:visible!important}#opsIsi{gap:12px}.ex-std{break-inside:avoid;box-shadow:none!important}}
+/* kartu armada bisa diklik -> pop-up histori armada (public/operasi_laporan.js bukaArmada) */
+#opsLaporan .ops-ar[data-reg]{cursor:pointer;transition:transform .15s,box-shadow .15s}
+#opsLaporan .ops-ar[data-reg]:hover{transform:translateY(-2px);box-shadow:0 8px 20px color-mix(in srgb,var(--ink) 12%,transparent)}
+#opsLaporan .ops-ar[data-reg]:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+.ops-dlg{width:min(1000px,94vw);max-height:90vh;padding:0;border:0;border-radius:20px;background:transparent;overflow:visible}
+.ops-dlg::backdrop{background:color-mix(in srgb,#0b1730 55%,transparent);backdrop-filter:blur(3px)}
+.ops-dlg>.ex{margin:0;max-height:90vh;overflow:auto}
+.ops-dlg .ex-jd{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.ops-dlg-x{flex:none;display:grid;place-items:center;width:34px;height:34px;border:0;border-radius:50%;background:color-mix(in srgb,#fff 14%,transparent);color:#fff;cursor:pointer}
+.ops-dlg-x:hover{background:color-mix(in srgb,#fff 26%,transparent)}
+.ops-dlg-x svg{width:18px;height:18px}
+@media (prefers-reduced-motion:reduce){#opsLaporan .ops-ar[data-reg]{transition:none}#opsLaporan .ops-ar[data-reg]:hover{transform:none}}
