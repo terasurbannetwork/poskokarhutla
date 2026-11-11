@@ -124,7 +124,7 @@
     /* trackResize mati: panel bisa hidden, ukur ulang saat tab tampil (tampil()). Komentar ini dulu menelan style: dan peta kosong. */
     const m = petaKini = new g.maplibregl.Map({container: wadah, trackResize: false, style: "https://tiles.openfreemap.org/styles/positron", bounds: [[94.8, -11.2], [141.2, 6.2]], fitBoundsOptions: {padding: 16},
       minZoom: 3, maxZoom: 13, dragRotate: false, pitchWithRotate: false, attributionControl: {compact: true}});
-    m.addControl(new g.maplibregl.NavigationControl({showCompass: false}), "top-right");
+    m.addControl(new g.maplibregl.NavigationControl({showCompass: false}), "top-right"); g.DalopsKamera?.ikat(m);
     m.touchZoomRotate.disableRotation();
     const css = getComputedStyle(document.documentElement), c1 = css.getPropertyValue("--c1").trim() || "#c9503a", c5 = css.getPropertyValue("--c5").trim() || "#4f8fc4";
     const pop = new g.maplibregl.Popup({closeButton: false, closeOnClick: false, offset: 10, className: "dl-popup"});

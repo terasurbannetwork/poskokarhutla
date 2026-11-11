@@ -24,7 +24,15 @@
     /* pemilik 11 Nov 2026: tiap jenis tab sendiri */
     gelombang: {k: "gelombang", kata: "gelombang pasang", ik: "gelombang_pasang", ya: "Sudah surut", tidak: "Belum surut", ya_k: "sudah surut", tidak_k: "belum surut", tinggi: false, pra: false},
     permukiman: {k: "permukiman", kata: "kebakaran permukiman", ik: "kebakaran_permukiman", ya: "Padam", tidak: "Masih ditangani", ya_k: "sudah padam", tidak_k: "masih ditangani", tinggi: false, pra: false}};
+  /* saring peta per jenis (pemilik 11 Nov 2026 "filternya diatur lagi"): status selalu ada; dampak yang relevan per jenis; prakiraan hanya jenis berprakiraan */
+  const SARING = {banjir: ["ungsi", "kabar"], longsor: ["korban", "kabar"], gempa: ["korban", "ungsi", "kabar"], cuaca: ["korban", "ungsi", "kabar"],
+    kekeringan: ["kabar"], gelombang: ["ungsi", "kabar"], permukiman: ["korban", "ungsi", "kabar"]};
+  const NAMA_SARING = {korban: ["Ada korban jiwa", "peringatan"], ungsi: ["Ada pengungsi", "personel"], kabar: ["Kabar > 3 hari", "tunggu"]};
   let J = JN.banjir;
+  /* kamera bersama semua peta jenis (pemilik 11 Nov 2026 "mapnya tetap aja, gausah ngulang"): peta yang tampil mencatat pusat dan zoom,
+     peta jenis lain melompat ke posisi itu saat lahir dan saat ditampilkan */
+  const KAM = window.DalopsKamera = {c: null, ikat(peta) { peta.getContainer()._peta = peta; if (KAM.c) peta.jumpTo(KAM.c);
+    peta.on("moveend", () => { if (peta.getContainer().offsetParent) KAM.c = {center: peta.getCenter(), zoom: peta.getZoom()}; }); }};
   const GEO = new Map();
   const surutLabel = s => s ? label(J.ya, "ok", "biru") : label(J.tidak, J.ik, "merah");
   const nadaUmur = u => u >= 7 ? "dl-u3" : u >= 3 ? "dl-u2" : "dl-u1";
@@ -193,11 +201,13 @@
     /* satu kab bisa punya kejadian surut dan belum: belum menang */
     const perKab = new Map();
     for (const x of pekan) if (x.kab_kode) { const a = perKab.get(x.kab_kode); perKab.set(x.kab_kode, !a || (a.surut && !x.surut) ? x : a); }
+    const acuan = pekan.reduce((m, x) => x.terakhir > m ? x.terakhir : m, "");
     const fitur = [];
     kabs.forEach((g, i) => (g?.features || []).forEach(f => {
       const kode = kodeProv[i] + "|" + f.properties.kab, x = perKab.get(kode);
       if (!x) return;
-      fitur.push({type: "Feature", id: fitur.length, properties: {kode, st: x.surut ? "surut" : "belum"}, geometry: f.geometry});
+      fitur.push({type: "Feature", id: fitur.length, properties: {kode, st: x.surut ? "surut" : "belum", korban: (x.md || 0) + (x.hilang || 0) > 0 ? 1 : 0, ungsi: x.mengungsi > 0 ? 1 : 0,
+        kabar: !x.surut && acuan && H.selisih(acuan, x.terakhir) >= 3 ? 1 : 0}, geometry: f.geometry});
     }));
     wadah.replaceChildren();
     const legenda = h("div", {class: "dl-legenda-peta"}, h("b", {teks: "Legenda"}), h("span", {class: "dl-leg dl-leg-belum", teks: J.tidak}), h("span", {class: "dl-leg dl-leg-surut", teks: J.ya}));
@@ -213,17 +223,22 @@
     const saring = new Set();
     const terapSaring = () => {
       const st = ["surut", "belum"].filter(v => saring.has(v)), lv = [["siaga", 2], ["awas", 3]].filter(([v]) => saring.has(v)).map(([, l]) => l);
-      for (const id of ["kab-isi", "kab-garis"]) if (peta.getLayer(id)) peta.setFilter(id, saring.size ? ["in", ["get", "st"], ["literal", st]] : null);
+      const flag = ["korban", "ungsi", "kabar"].filter(v => saring.has(v));
+      /* dalam satu kelompok = atau, antarkelompok = dan; hanya prakiraan yang dipilih = wilayah kejadian disembunyikan */
+      const syarat = [...(st.length ? [["in", ["get", "st"], ["literal", st]]] : []), ...flag.map(v => ["==", ["get", v], 1])];
+      const fKab = !saring.size ? null : syarat.length ? ["all", ...syarat] : ["==", ["get", "st"], "-"];
+      for (const id of ["kab-isi", "kab-garis"]) if (peta.getLayer(id)) peta.setFilter(id, fKab);
       if (peta.getLayer("peringatan")) peta.setFilter("peringatan", saring.size ? ["in", ["get", "lv"], ["literal", lv]] : null);
     };
-    const tSaring = [["surut", J.ya, "ok"], ["belum", J.tidak, J.ik], ...(J.pra === false ? [] : [["siaga", H.NAMA_LEVEL[2], "peringatan"], ["awas", H.NAMA_LEVEL[3], "peringatan"]])].map(([v, t, ik]) => {
+    const tSaring = [["surut", J.ya, "ok"], ["belum", J.tidak, J.ik], ...(SARING[J.k] || []).filter(v => fitur.some(f => f.properties[v])).map(v => [v, ...NAMA_SARING[v]]),
+      ...(J.pra === false ? [] : [["siaga", H.NAMA_LEVEL[2], "peringatan"], ["awas", H.NAMA_LEVEL[3], "peringatan"]])].map(([v, t, ik]) => {
       const b = h("button", {type: "button", class: "dl-saring-btn dl-saring-" + v, "aria-pressed": "false"}, ikon(ik), t);
       b.addEventListener("click", () => { saring.has(v) ? saring.delete(v) : saring.add(v); b.setAttribute("aria-pressed", String(saring.has(v))); terapSaring(); });
       return b;
     });
-    legenda.querySelector("b")?.remove(); wadah.after(legenda);   // legenda di bawah peta, dalam pil (sistem desain dashboard D16)
+    legenda.querySelector("b")?.remove(); wadah.append(legenda);   /* legenda di dalam peta, kiri bawah di atas bilah ringkasan (pemilik 11 Nov 2026) */    // legenda di bawah peta, dalam pil (sistem desain dashboard D16)
     wadah.append(h("div", {class: "dl-peta-alat"}, h("div", {class: "dl-saring", role: "group", "aria-label": "Saring peta: status surut dan prakiraan"}, tSaring), ...(kontrol ? [kontrol] : [])));   // legenda tengah bawah; tombol Buka semua di samping +/−
-    peta.touchZoomRotate.disableRotation();
+    peta.touchZoomRotate.disableRotation(); KAM.ikat(peta);
     const css = getComputedStyle(document.documentElement), warna = n => css.getPropertyValue(n).trim();
     peta.on("load", () => {
       peta.addSource("kab", {type: "geojson", data: {type: "FeatureCollection", features: fitur}});
@@ -636,12 +651,13 @@
        jadi halaman tidak melompat; masuknya memudar (dalops.css .dl-panel) */
     const lama = Object.values(panel).find(p => !p.hidden), tinggi = lama?.offsetHeight || 0;
     for (const [n, p] of Object.entries(panel)) p.hidden = n !== k;
-    if (tinggi && panel[k] && panel[k] !== lama) { const p = panel[k]; p.style.minHeight = tinggi + "px"; p.classList.remove("dl-masuk"); void p.offsetWidth; p.classList.add("dl-masuk");
+    if (tinggi && panel[k] && panel[k] !== lama) { const p = panel[k]; p.style.minHeight = tinggi + "px";
       const lepas = () => { p.style.minHeight = ""; }; const ob = new MutationObserver(() => { if (p.querySelector(".maplibregl-canvas, .ex-std")) { ob.disconnect(); setTimeout(lepas, 400); } });
       ob.observe(p, {childList: true, subtree: true}); setTimeout(() => { ob.disconnect(); lepas(); }, 2500); }
     if (location.hash.slice(1) !== k) history.replaceState(null, "", "#" + k);
     aktif = k; if (JN[k]) J = JN[k];
     if (k === "karhutla") window.DalopsKarhutla?.tampil();   // peta yang lahir di panel tersembunyi diukur ulang
+    const pk = panel[k]?.querySelector(".maplibregl-map")?._peta; if (pk) { pk.resize(); if (KAM.c) pk.jumpTo(KAM.c); }
     if (k === "laporan") { if (!sudahBuka.has(k)) panelLaporan(panel.laporan); bukaLaporan(); }
     else if (!sudahBuka.has(k)) muat(k);
     sudahBuka.add(k);
@@ -662,7 +678,7 @@
       /* jenis bencana = satu tombol pilih di pojok peta (pemilik 11 Nov 2026: deretan sembilan pil diganti pemilih turun):
          tombol menampilkan jenis aktif, menu kartu berikon; Esc atau klik di luar menutup */
       const segarBatang = () => document.querySelectorAll(".dl-jenis-peta").forEach(w => { const j = JP.find(x => x[0] === aktif) || JP[0];
-        w.querySelector(".dl-jp-btn > .dl-jp-ik")?.replaceChildren(ikon(j[2])); const t = w.querySelector(".dl-jp-btn > span"); if (t) t.textContent = j[1];
+        w.querySelector(".dl-jp-btn > .dl-jp-ik")?.replaceChildren(ikon(j[2])); w.querySelectorAll(".dl-jp-teks > span").forEach(x => x.classList.toggle("on", x.dataset.k === j[0]));
         w.querySelectorAll("[data-jenis]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.jenis === aktif))); });
       const tutupMenu = () => document.querySelectorAll(".dl-jenis-peta.buka").forEach(w => { w.classList.remove("buka"); w.querySelector(".dl-jp-btn").setAttribute("aria-expanded", "false"); });
       document.addEventListener("click", e => { if (!e.target.closest(".dl-jenis-peta")) tutupMenu(); });
@@ -670,7 +686,7 @@
       const batang = () => {
         const j = JP.find(x => x[0] === aktif) || JP[0];
         const btn = h("button", {type: "button", class: "dl-jp-btn", "aria-haspopup": "listbox", "aria-expanded": "false", "aria-label": "Jenis bencana"},
-          h("i", {class: "dl-jp-ik"}, ikon(j[2])), h("span", {teks: j[1]}), h("i", {class: "dl-jp-panah", "aria-hidden": "true"}));
+          h("i", {class: "dl-jp-ik"}, ikon(j[2])), h("span", {class: "dl-jp-teks"}, ...JP.map(([k, t]) => h("span", {"data-k": k, class: k === j[0] ? "on" : null, teks: t}))),   /* semua nama ditumpuk: lebar tombol = nama terpanjang, tidak bergeser */ h("i", {class: "dl-jp-panah", "aria-hidden": "true"}));
         const menu = h("div", {class: "dl-jp-menu", role: "listbox", "aria-label": "Jenis bencana"}, ...JP.map(([k, t, ik]) => {
           const b = h("button", {type: "button", role: "option", "data-jenis": k, "aria-selected": String(k === aktif)}, h("i", null, ikon(ik)), h("span", {teks: t}));
           b.addEventListener("click", e => { e.stopPropagation(); tutupMenu(); if (k !== aktif) { pilihTab(k, tombol); segarBatang(); } }); return b; }));
@@ -689,6 +705,7 @@
       };
       const pasangBatang = k => { const p = panel[k]; if (!p || k.startsWith("laporan")) return;
         const m = p.querySelector(".maplibregl-map"), ada = p.querySelector(".dl-jenis-peta");
+        if (m && k === aktif) { const al = m.querySelector(".dl-peta-alat"); if (al && !al.contains(pPer)) al.insertBefore(pPer, al.querySelector(".dl-semua-peta")); }   // periode masuk peta (pemilik 11 Nov 2026)
         if (m) { if (!m.contains(ada)) { ada?.closest(".dl-jenis-atas")?.remove(); const al = m.querySelector(".dl-peta-alat"); al ? al.prepend(batang()) : m.append(batang()); } return; }
         if (!ada && !p.querySelector(".dl-peta") && p.querySelector(".ex-std, .db-ubin-grid")) p.prepend(h("div", {class: "dl-jenis-atas"}, batang())); };   // .dl-peta tanpa kelas maplibre = peta belum jadi: tunggu
       for (const [k, pn] of Object.entries(panel)) { let t; new MutationObserver(() => { clearTimeout(t); t = setTimeout(() => { pasangBatang(k); if (k === aktif) seksiSlot(); }, 80); }).observe(pn, {childList: true, subtree: true}); }
@@ -701,7 +718,7 @@
           if (dataTerakhir[aktif]) render(...dataTerakhir[aktif], aktif); });
         return b; }));
       const segarPer = () => { pPer.hidden = ["karhutla", "gunungapi"].includes(aktif) || aktif.startsWith("laporan"); };
-      const lamaSegar = dlSegar; dlSegar = () => { lamaSegar(); segarPer(); }; segarPer();
+      const lamaSegar = dlSegar; dlSegar = () => { lamaSegar(); segarPer(); const al = panel[aktif]?.querySelector(".maplibregl-map .dl-peta-alat"); if (al && !al.contains(pPer)) al.insertBefore(pPer, al.querySelector(".dl-semua-peta")); }; segarPer();
       app.replaceChildren(h("div", {class: "db-kanan"}, judul, pPer, ...Object.values(panel)));
     } else {
       const nav = h("aside", {class: "db-nav dl-nav"}, h("div", {class: "db-nav-id"}, h("b", {teks: "Pantau Dalops"}), h("small", {teks: "Kejadian aktif per jenis bencana"})), seg);
@@ -711,6 +728,8 @@
     const dariHash = () => TAB.some(([k]) => k === location.hash.slice(1)) ? location.hash.slice(1) : null;
     addEventListener("hashchange", () => { const k = dariHash(); if (k) pilihTab(k, tombol); });   // tautan /bnpb/dalops#laporan dari halaman ini juga
     pilihTab(dariHash() || "banjir", tombol);
+    /* jenis lain dimuat di latar satu per satu (data R2 kecil), jadi pindah jenis tidak menunggu peta dibangun */
+    setTimeout(async () => { for (const [k] of TAB) { if (k.startsWith("laporan") || sudahBuka.has(k)) continue; sudahBuka.add(k); try { await muat(k); } catch (e) {} } }, 1500);
   }
 
   const alat = () => ({bagian, hl, h, F, ikon, label, kosong, tdv, td, tbodyProv, tombolWA, tombolHistori, pasangUrut, pasangTip, namaProv, bukaSemua, kontak, muatKantor});

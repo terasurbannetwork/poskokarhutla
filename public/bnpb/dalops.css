@@ -524,22 +524,25 @@
 .dl-jenis-atas{margin-bottom:12px}.dl-jenis-atas>.dl-jenis-peta{display:inline-block}
 /* peta lebih tinggi; ringkasan angka sebaris di dasar peta */
 .dl-dalam .dl-peta{height:620px}
-/* ringkasan di dasar peta = satu bilah putih bersekat (pemilik 11 Nov 2026 "bagusin maksimal"): kotak ikon biru muda, label kecil di atas,
-   angka besar, keterangan abu di samping angka; angka waspada merah/oranye dengan kotak ikon senada */
+/* ringkasan di dasar peta (pemilik 11 Nov 2026 "bagusin lagi"): tiap sel terpusat, kotak ikon, angka besar di atas label; sekat tipis */
 .dl-peta .dl-peta-ubin{position:absolute;left:12px;right:12px;bottom:12px;z-index:2;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;margin:0;
   border-radius:16px;background:#fff;box-shadow:0 10px 30px rgb(11 37 69 / .18),0 0 0 1px rgb(11 37 69 / .05);overflow:hidden}
 .dl-peta .dl-peta-ubin.k4{grid-template-columns:repeat(4,minmax(0,1fr))}
-.dl-peta .dl-peta-ubin .db-ubin{position:relative;display:grid;grid-template-columns:40px minmax(0,1fr);grid-template-areas:"ik nama" "ik angka";align-items:center;column-gap:12px;row-gap:1px;padding:12px 16px;border:0;border-radius:0;background:none;box-shadow:none;text-align:left}
-.dl-peta .dl-peta-ubin .db-ubin+.db-ubin::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:1px;background:var(--db-h2-garis,#dbe5f3)}
+.dl-peta .dl-peta-ubin .db-ubin{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr);grid-template-areas:"ik nama" "ik angka";justify-content:start;align-items:center;column-gap:10px;row-gap:1px;padding:8px 14px;border:0;border-radius:0;background:none;box-shadow:none;text-align:left}
+.dl-peta .dl-peta-ubin .db-ubin+.db-ubin::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:1px;background:var(--db-h2-garis,#dbe5f3)}
 .dl-peta .dl-peta-ubin .db-ubin>header{display:contents}
-.dl-peta .dl-peta-ubin .db-ubin>header>i{grid-area:ik;width:40px;height:40px;border-radius:12px;background:var(--db-h2,#eef4fc);box-shadow:inset 0 0 0 1px var(--db-h2-garis,#dbe5f3)}
-.dl-peta .dl-peta-ubin .db-ubin>header>i svg{width:18px;height:18px;color:#0b2545;stroke:#0b2545}
-.dl-peta .dl-peta-ubin .db-ubin>header>span{grid-area:nama;font-size:.71875rem;font-weight:600;line-height:1.2;color:var(--ink3,#5b6b82)}
-.dl-peta .dl-peta-ubin .db-ubin>b{grid-area:angka;font-size:1.5rem;font-weight:800;line-height:1.1;letter-spacing:-.01em}
+.dl-peta .dl-peta-ubin .db-ubin>header>i{grid-area:ik;width:34px;height:34px;border-radius:10px;background:var(--db-h2,#eef4fc);box-shadow:inset 0 0 0 1px var(--db-h2-garis,#dbe5f3)}
+.dl-peta .dl-peta-ubin .db-ubin>header>i svg{width:16px;height:16px;color:#0b2545;stroke:#0b2545}
+.dl-peta .dl-peta-ubin .db-ubin>b{grid-area:angka;align-self:start;font-size:1.25rem;font-weight:800;line-height:1;letter-spacing:-.01em}
+.dl-peta .dl-peta-ubin .db-ubin>header>span{grid-area:nama;align-self:end;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.75rem;font-weight:600;line-height:1.25;color:var(--ink3,#5b6b82)}
 .dl-peta .dl-peta-ubin .db-ubin>small{display:none}
 .dl-peta .dl-peta-ubin .db-ubin.merah>header>i{background:#fdecea;box-shadow:inset 0 0 0 1px #f6c9c3}.dl-peta .dl-peta-ubin .db-ubin.merah>header>i svg{color:#c0392b;stroke:#c0392b}
 .dl-peta .dl-peta-ubin .db-ubin.oranye>header>i{background:#fff1e6;box-shadow:inset 0 0 0 1px #fbd3b4}.dl-peta .dl-peta-ubin .db-ubin.oranye>header>i svg{color:#c2410c;stroke:#c2410c}
-.dl-peta:has(.dl-peta-ubin) .maplibregl-ctrl-bottom-left,.dl-peta:has(.dl-peta-ubin) .maplibregl-ctrl-bottom-right{bottom:84px}
+/* atribusi peta di belakang bilah ringkasan (pemilik 11 Nov 2026 "sembunyikan di belakang summary") */
+.dl-peta:has(.dl-peta-ubin) .maplibregl-ctrl-bottom-right,.dl-peta:has(.dl-peta-ubin) .maplibregl-ctrl-bottom-left{z-index:1}
+/* legenda di dalam peta, kiri bawah tepat di atas bilah ringkasan */
+.dl-peta>.dl-legenda-peta{position:absolute;left:12px;bottom:76px;right:auto;top:auto;transform:none;z-index:2;margin:0;width:auto;display:flex;flex-wrap:wrap;gap:6px 14px;padding:7px 12px;border:0;border-radius:10px;background:rgb(255 255 255 / .96);box-shadow:0 0 0 2px rgb(0 0 0 / .08);font-size:.75rem}
+.dl-peta:not(:has(.dl-peta-ubin))>.dl-legenda-peta{bottom:12px}
 /* pemilih periode di bawah kepala halaman (rujukan /operasi) */
 .dl-periode{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px;margin:0 0 14px;padding:4px;border:1px solid var(--db-h2-garis,#dbe5f3);border-radius:999px;background:var(--db-h2,#f3f7fd)}
 .dl-periode[hidden]{display:none}
@@ -564,3 +567,36 @@
 @keyframes dl-masuk{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .dl-jenis-peta button,.dl-periode button,.dl-saring-btn{transition:background-color .18s ease,color .18s ease}
 @media (prefers-reduced-motion:reduce){.dl-panel.dl-masuk{animation:none}.dl-jenis-peta button,.dl-periode button,.dl-saring-btn{transition:none}}
+/* lebar tombol jenis = nama terpanjang (pemilik 11 Nov 2026 "biar ga bergeser"), menu selebar tombol */
+.dl-jenis-peta{display:inline-block}
+.dl-jp-btn{width:100%;justify-content:flex-start}
+.dl-jp-teks{display:grid;flex:1;text-align:left}
+.dl-jp-teks>span{grid-area:1/1;visibility:hidden;white-space:nowrap}
+.dl-jp-teks>span.on{visibility:visible}
+.dl-jp-menu{right:0;min-width:0}
+.dl-saring-korban svg{color:var(--c1)}.dl-saring-ungsi svg{color:var(--c5)}.dl-saring-kabar svg{color:#8a5a12}
+/* hover segitiga peringatan dan titik gunung api: kartu mini (pemilik 11 Nov 2026 "bagusin"): kepala biru muda berlambang, baris berlabel rata kolom */
+.dl-popup:has(.dl-pop-awas) .maplibregl-popup-content{padding:0;overflow:hidden;min-width:240px;border-radius:14px}
+.dl-pop-awas{display:grid;gap:0}
+.dl-aw-kepala{display:flex;align-items:center;gap:10px;padding:10px 14px;background:color-mix(in srgb,#2f6fd6 5%,#fff);box-shadow:inset 4px 0 0 #0b2545;border-bottom:1px solid var(--line)}
+.dl-aw-kepala .dl-pop-lambang{width:34px;height:34px;flex:none}
+.dl-aw-kepala>div{display:grid;gap:2px;min-width:0}
+.dl-aw-kepala .dl-tip-nama{font-size:.9375rem}
+.dl-aw-kepala small{font-size:.75rem;color:var(--ink3)}
+.dl-aw-isi{display:grid;gap:7px;padding:10px 14px 12px}
+.dl-aw-baris{display:grid;grid-template-columns:72px 1fr;align-items:center;gap:8px;font-size:.8125rem}
+.dl-aw-baris>span{color:var(--ink3);font-weight:600}
+.dl-aw-baris b{font-variant-numeric:tabular-nums;color:var(--ink);font-weight:700}
+/* pemilih periode di dalam peta, sebaris dengan saring (pemilik 11 Nov 2026 "masukin juga ke dalam map") */
+.dl-peta .dl-peta-alat>.dl-periode{display:inline-grid;margin:0;padding:2px;gap:2px;border:0;border-radius:8px;background:#fff;box-shadow:0 0 0 2px rgb(0 0 0 / .1)}
+.dl-peta .dl-peta-alat>.dl-periode[hidden]{display:none}
+.dl-peta .dl-peta-alat>.dl-periode button{padding:5px 10px;border-radius:6px;font-size:.75rem;font-weight:600;gap:5px}
+.dl-peta .dl-peta-alat>.dl-periode button:hover{background:#eef1f6}
+.dl-peta .dl-peta-alat>.dl-periode button[aria-pressed="true"]{background:#0b2545;color:#fff}
+/* semua kendali di puncak peta setinggi sama, 34px (pemilik 11 Nov 2026 "tingginya sama biar bagus") */
+.dl-peta .dl-peta-alat{align-items:center}
+.dl-peta .dl-peta-alat .dl-jp-btn,.dl-peta .dl-peta-alat>.dl-saring,.dl-peta .dl-peta-alat>.dl-periode,.dl-peta .dl-peta-alat>.dl-semua-peta{box-sizing:border-box;height:34px}
+.dl-peta .dl-peta-alat>.dl-saring,.dl-peta .dl-peta-alat>.dl-periode{align-items:stretch}
+.dl-peta .dl-peta-alat>.dl-saring>button,.dl-peta .dl-peta-alat>.dl-periode>button{height:auto;padding-top:0;padding-bottom:0}
+.dl-peta .dl-peta-alat>.dl-semua-peta{display:inline-flex;align-items:center;gap:6px;padding:0 12px}
+.dl-peta .dl-peta-alat .dl-jp-btn{padding-left:5px}
