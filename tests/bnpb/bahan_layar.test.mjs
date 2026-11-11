@@ -32,22 +32,18 @@ test("layar /bnpb/bahan: empat tab, dummy, pratinjau, kirim, logbook, konsol ber
   const asal = `http://127.0.0.1:${srv.address().port}`, br = await bukaPeramban(), t = await br.tab();
   try {
     for (const [w, hh] of [[1440, 900], [390, 844]]) {
-      await t.ukuran(w, hh); await t.buka(asal + "/bnpb/bahan", {tunggu: '[data-dummy="isi"]'});
+      await t.ukuran(w, hh); await t.buka(asal + "/bnpb/bahan", {tunggu: ".bh-form"});
+      assert.equal(await t.eval("!!document.querySelector('[data-dummy]')"), false, `tombol dummy tidak dirender @${w} (pemilik 11 Nov 2026)`);
       assert.equal(await t.eval("document.querySelector('.bn-pesan.galat[role=alert]').hidden"), true, `galat merah di keadaan awal @${w}`);
       /* Logbook -> draf */
       await t.eval("[...document.querySelectorAll('.bn-tombol')].find(b => /Ambil dari Logbook/.test(b.textContent)).click()");
       await t.tungguFungsi("document.querySelectorAll('.bh-kartu').length === 1 && /Kejadian baru|Pengkinian/.test(document.body.innerText)");
+      /* tombol dummy dicabut (11 Nov 2026): tiap tab hanya diperiksa terbuka tanpa galat; isi-kirim lewat dummy tidak ada lagi */
       for (const k of ["rekap_koordalops_24", "bmkg_pagi", "pvmbg_pagi", "satgas"]) {
         await t.eval(`document.querySelector('input[name=tab][value=${k}]').click()`);
-        await t.eval("document.querySelector('[data-dummy=isi]').click()");
-        await t.tungguFungsi(`!document.querySelector('.bh-form[aria-busy]') && document.querySelector('.bh-wa').textContent.length > 200 && document.querySelector('input[name=tab][value=${k}]').checked`);
-        await t.tungguFungsi(`document.querySelector('.bh-wa').textContent.includes(${JSON.stringify({rekap_koordalops_24: "Koordalops", bmkg_pagi: "BMKG", pvmbg_pagi: "PVMBG", satgas: "SATGAS"}[k])})`);
+        await t.tungguFungsi(`document.querySelector('input[name=tab][value=${k}]').checked && !document.querySelector('.bh-form[aria-busy]')`);
         assert.equal(await t.eval("document.querySelector('.bn-pesan.galat[role=alert]').hidden"), true, `galat pratinjau ${k} @${w}`);
       }
-      assert.ok(await t.eval("/Satgas|SATGAS/.test(document.querySelector('.bh-wa').textContent)"), "teks satgas");
-      await t.eval("[...document.querySelectorAll('.bn-tombol')].find(b => /Kirim ke kotak masuk/.test(b.textContent)).click()");
-      await t.tungguFungsi("/Masuk sebagai bahan 3 November 2026/.test(document.body.innerText)");
-      assert.equal(kiriman.at(-1).kunci, "satgas"); assert.ok(kiriman.at(-1).isi.personel.length === 6);
       assert.equal(await t.eval("/\\b(NaN|undefined|null)\\b|\\[object/.test(document.body.innerText)"), false, `teks bocor @${w}`);
       const {sw, iw} = await t.lebihLebar(); assert.ok(sw <= iw, `gulir mendatar ${sw} > ${iw} @${w}`);
       assert.deepEqual(t.galat().filter(bukanSisi), [], `konsol @${w}`);

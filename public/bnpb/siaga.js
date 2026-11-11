@@ -238,7 +238,7 @@
   async function mulai() {
     [D, SEN, KB, SU] = await Promise.all([ambil("/data/bnpb/siaga.json"), ambil("/data/senyap.json"), ambil("/data/bnpb/logbook_kebutuhan.json"), ambil("/data/bnpb/logbook_susulan.json")]);
     if (!D) return app.replaceChildren(kosong("peringatan", "Data siaga belum terbit. Jalankan scripts/bnpb/siaga.py."));
-    sedangDummy = lokal(DUMMY) === 1;
+    sedangDummy = false;  // tanpa data dummy, pemilik 11 Nov 2026; dulu lokal(DUMMY) === 1
     const kini = wibKini(); bulan = kini.getUTCMonth() + 1; ref = new Date(Date.UTC(kini.getUTCFullYear(), kini.getUTCMonth(), kini.getUTCDate()));
     const urut = Object.entries(D.kab).map(([k, v]) => ({k, nama: v.nama, prov: k.slice(0, 2)})).sort((a, b) => a.nama.localeCompare(b.nama, "id"));
     kode = lokal(KUNCI); if (!D.kab[kode]) kode = (urut.find(x => x.k === "3304") || urut[0]).k;

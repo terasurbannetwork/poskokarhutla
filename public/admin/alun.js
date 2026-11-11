@@ -101,13 +101,13 @@
     if (tab === "utas" && buka) tampilRincian(buka);
   }
   async function muat() {
-    try { D = await ambil(`${API}/admin?dummy=1`); } catch (e) { if (e.message !== "perlu masuk") document.getElementById("axIsi").replaceChildren(h("p", {class: "ax-kosong", teks: e.message})); return; }
+    try { D = await ambil(`${API}/admin`)  /* tanpa data dummy, pemilik 11 Nov 2026 */; } catch (e) { if (e.message !== "perlu masuk") document.getElementById("axIsi").replaceChildren(h("p", {class: "ax-kosong", teks: e.message})); return; }
     gambar();
   }
   /* rincian utas (balasan, balas sebagai petugas, tandai terjawab) */
   async function tampilRincian(id) {
     const p = document.getElementById("axPanel"); if (!p) return;
-    const u = await ambil(`${API}/${id}?dummy=1`);
+    const u = await ambil(`${API}/${id}`);
     p.replaceChildren(h("div", {class: "ad-kartu ax-panel"}, h("h3", {teks: u.judul}), h("p", {class: "ax-meta"}, pilJenis(u.jenis), u.nama || "Warga", ` ${[u.kab, u.prov_nama].filter(Boolean).join(", ")}`), h("div", {teks: u.teks, class: "ax-cuplik"}),
       ...u.balasan_daftar.map(b => h("div", {class: "ax-balas", "data-id": b.id}, h("div", {class: "ax-meta"}, b.petugas ? pil("petugas", "Petugas") : h("b", {teks: b.nama || "Warga"}), pil(b.moderasi, MOD[b.moderasi]), b.id === u.terjawab_id ? pil("selesai", "Jawaban", "centang") : null, h("span", {teks: jam(b.dibuat)})),
         h("p", {teks: b.teks}), h("div", {class: "ax-aksi"}, u.jenis !== "pengumuman" ? tombol(b.id === u.terjawab_id ? "Cabut terjawab" : "Tandai terjawab", {"data-aksi": "terjawab", "data-bid": b.id === u.terjawab_id ? "" : b.id}) : null,

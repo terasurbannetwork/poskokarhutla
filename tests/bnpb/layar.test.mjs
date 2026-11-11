@@ -47,12 +47,13 @@ const HALAMAN = [
     nama: u, admin: true, berubah: true, url: d => u, isi: "document.querySelectorAll('table tr').length >= 2",
     aksi: async t => { await t.klikTeks("button", tab); await t.tungguFungsi("document.querySelectorAll('table tr, .ad-kosong, .ad-kartu').length >= 1 || document.body.innerText.length > 200"); },
     harus: "document.body.innerText.length > 200"})),
-  /* Layar Pimpinan: tiap kartu harus berangka (bukan "belum ada data") setelah dummy; localStorage pm_dummy=1 membuat kartu membaca ?dummy=1 */
-  {nama: "/admin/pimpinan", admin: true, modul: /./, url: d => "/admin/pimpinan", pra: async (t, d) => { await t.buka(d.base + "/admin/pimpinan"); await t.eval("localStorage.setItem('pm_dummy','1')"); },
-    isi: "document.querySelectorAll('.pm-k').length === 8 && [...document.querySelectorAll('.pm-k')].every(k => /\\d/.test(k.innerText) && !k.querySelector('.pm-kosong'))",
+  /* Layar Pimpinan: pemilik 11 Nov 2026 "ga ada data dummy": kartu tidak lagi membaca ?dummy=1 dan dunia uji tidak punya baris nyata,
+     jadi yang dibuktikan: 8 kartu tampil, tiap kartu berangka ATAU berkeadaan kosong yang rapi (.pm-kosong), plus galat/scroll/bocor di atas. */
+  {nama: "/admin/pimpinan", admin: true, modul: /./, url: d => "/admin/pimpinan",
+    isi: "document.querySelectorAll('.pm-k').length === 8 && [...document.querySelectorAll('.pm-k')].every(k => /\\d/.test(k.innerText) || k.querySelector('.pm-kosong'))",
     aksi: async t => { await t.eval("window.__cetak = 0; window.print = () => { window.__cetak++; }"); await t.klik("[data-cetak]"); }, harus: "window.__cetak === 1"},
-  {nama: "/admin/pengingat", admin: true, modul: /^(pengingat|alun|meja|relawan)/, url: d => "/admin/pengingat", isi: "document.querySelectorAll('tbody tr[data-id]').length >= 1",
-    aksi: async t => { await t.klikTeks("button", "^Periksa sekarang$"); await t.tungguFungsi("/Diperiksa:/.test(document.querySelector('#pgPesan').innerText)"); }, harus: "document.querySelector('#pgPesan').className.includes('ok') && document.querySelectorAll('tbody tr[data-id]').length >= 1"},
+  {nama: "/admin/pengingat", admin: true, modul: /^(pengingat|alun|meja|relawan)/, url: d => "/admin/pengingat", isi: "document.querySelectorAll('tbody tr[data-id]').length >= 1 || document.querySelector('.pg-kosong') !== null",  /* tanpa ?dummy=1 sejak 11 Nov 2026: dunia uji hanya punya baris dummy */
+    aksi: async t => { await t.klikTeks("button", "^Periksa sekarang$"); await t.tungguFungsi("/Diperiksa:/.test(document.querySelector('#pgPesan').innerText)"); }, harus: "document.querySelector('#pgPesan').className.includes('ok')"},
   {nama: "/riset/mitra (kode mitra)", url: d => "/riset/mitra#k=" + d.kode.mitra, isi: "document.querySelectorAll('.mt-blok').length >= 1 && document.querySelector('#app').innerText.length > 80",
     aksi: async t => { await t.eval("document.querySelector('.mt-blok').scrollIntoView()"); }, harus: "document.querySelectorAll('.mt-blok').length >= 1 && !/Kode tidak berlaku/.test(document.body.innerText)"},
   {nama: "/sitrep (arsip)", url: d => "/sitrep?tgl=" + d.tglArsip, isi: "document.querySelectorAll('#lap tr').length >= 3 && /Arsip/.test(document.querySelector('#lap').innerText) && /Logbook petugas lapangan/.test(document.querySelector('#lap').innerText)",
@@ -283,23 +284,15 @@ if (!CHROME) {
     assert.deepEqual([...new Set((await tab.eval("document.querySelector('.op-layar').innerText")).match(TERLARANG) || [])], []);
     assert.deepEqual(tab.galat().filter(bukanFavicon), [], "admin operasi lapangan memunculkan galat konsol");
   });
-  test("operasi lapangan: tombol dummy 🧪/🧹 di /admin/instansi ikut mengisi dan menghapus contoh operasi lapangan", async () => {
+  test("operasi lapangan: tombol dummy 🧪/🧹 TIDAK dirender di /admin/instansi (pemilik 11 Nov 2026)", async () => {
     await tab.ukuran(1440, 900); await tab.cookie(dunia.base, "sesi_admin", dunia.sesi);
-    await tab.buka(dunia.base + "/admin/instansi#pantau", {tunggu: "[data-dummy=hapus]"});
-    await tab.eval("window.confirm = () => true");
-    const hitung = async () => (await dunia.DB.prepare("SELECT (SELECT count(*) FROM ops_garis WHERE dummy = 1) g, (SELECT count(*) FROM ops_sumber_air WHERE dummy = 1) s").first());
-    assert.ok((await hitung()).g > 0, "prasyarat: contoh operasi sudah terisi");
-    await tab.klik("[data-dummy=hapus]");
-    await tab.tungguFungsi("/Operasi lapangan: contoh dihapus/.test(document.querySelector('#aiPesan')?.innerText || '')", 30000);
-    assert.deepEqual(await hitung(), {g: 0, s: 0}, "contoh operasi lapangan tidak terhapus oleh tombol 🧹");
-    await tab.klik("[data-dummy=isi]");
-    await tab.tungguFungsi("/Operasi lapangan: contoh terisi/.test(document.querySelector('#aiPesan')?.innerText || '')", 30000);
-    const sesudah = await hitung(); assert.ok(sesudah.g >= 3 && sesudah.s >= 3, "contoh operasi lapangan tidak terisi oleh tombol 🧪: " + JSON.stringify(sesudah));
+    await tab.buka(dunia.base + "/admin/instansi#pantau", {tunggu: "#aiIsi [data-rincian]"});
+    assert.equal(await tab.eval("document.querySelectorAll('[data-dummy]').length"), 0);
   });
   test("Kartu Api: fixture lengkap dan kosong di ponsel, tombol salin dan navigasi, tanpa galat atau scroll mendatar", async () => {
     const {TUGAS, KARTU} = await import("./kartu_fixture.mjs");
     await tab.ukuran(390, 844); await tab.cookie(dunia.base, "sesi_admin", dunia.sesi);
-    await tab.buka(dunia.base + "/admin/instansi#pantau", {tunggu: "[data-dummy=hapus]"}); tab.kosongkanGalat();
+    await tab.buka(dunia.base + "/admin/instansi#pantau", {tunggu: "#aiIsi [data-rincian]"}); tab.kosongkanGalat();
     await tab.eval(`(() => { window.__salin = null; Object.defineProperty(navigator, "clipboard", {value: {writeText: async t => { window.__salin = t; }}, configurable: true});
       const w = document.createElement("div"); w.id = "ujiKartu"; document.body.prepend(w); window.KartuApi.pasang(w, ${JSON.stringify(TUGAS)}, ${JSON.stringify(KARTU)}); })()`);
     const teks = await tab.eval("document.querySelector('#ujiKartu').innerText");

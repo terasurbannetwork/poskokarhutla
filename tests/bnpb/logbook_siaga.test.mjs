@@ -116,7 +116,7 @@ else {
     assert.equal(S.log.filter(x => x.p === "/api/logbook/hari").length, 1, "hari dimuat sekali");
     await isi("select[name=kec]", "Kroya"); assert.ok(await tab.eval("document.querySelector('select[name=desa]').options.length > 2"));
     assert.match(await tab.teks(), /Buka/);
-    assert.equal(await tab.eval("!!document.querySelector('[data-dummy=isi]')"), true);
+    assert.equal(await tab.eval("!!document.querySelector('[data-dummy=isi]')"), false, "tombol dummy tidak dirender (pemilik 11 Nov 2026)");
     await bersih("logbook"); await tanpaGulir("logbook");
   });
 
@@ -198,7 +198,7 @@ else {
       await tab.klik("#sgCsv"); await tab.tungguFungsi("window.__csv");
       const csv = await tab.eval("window.__csv.text()"); assert.match(csv, /kabupaten_kota,jenis,awal_musim,bulan_target,tugas/);
     }
-    await tab.klik("[data-d=isi]"); await tab.tungguFungsi("localStorage.getItem('siaga_dummy') === '1'");
+    assert.equal(await tab.eval("!!document.querySelector('[data-d=isi]')"), false, "tombol dummy tidak dirender (pemilik 11 Nov 2026)");
   });
 
   test("siaga: kebutuhan yang biasa diminta memakai data nyata, n tampil, hitungan kab tanpa persen palsu", async () => {

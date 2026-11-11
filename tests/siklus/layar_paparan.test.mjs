@@ -76,12 +76,12 @@ test('layar paparan di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome t
         const l = await T.lebihLebar(); assert.ok(l.sw <= l.iw + 1); await T.tutup();
       } finally { await s.tutup(); }
     });
-    await t.test('dummy paparan membawa kab4 yang sedang dibuka', async () => {
+    await t.test('Super Admin di paparan: tidak ada tombol dummy (pemilik 11 Nov 2026)', async () => {
       const s = await sajikan(api('sa'));
       try {
-        const T = await pb.tab(); await T.ukuran(1440, 900); await T.buka(`${s.url}/siklus/paparan?kab4=3301`, {tunggu: '.sk-dummy'});
-        await T.klik('.sk-dummy button[data-dummy=isi]'); await T.tungguFungsi(`document.getElementById('toast').textContent.includes('3 baris dummy dibuat')`, 10000);
-        const p = s.catat.find((c) => c.jalur === '/api/siklus/dummy'); assert.equal(p.badan.halaman, 'paparan'); assert.equal(p.badan.kab4, '3301'); await T.tutup();
+        const T = await pb.tab(); await T.ukuran(1440, 900); await T.buka(`${s.url}/siklus/paparan?kab4=3301`, {tunggu: '#p-utama .sk-ber'});
+        await new Promise((r) => setTimeout(r, 400));
+        assert.equal(await T.eval(`document.querySelectorAll('.sk-dummy').length`), 0); await T.tutup();
       } finally { await s.tutup(); }
     });
     // SK-042 sapuan INP: tiap interaksi harus punya piksel berubah pada frame berikutnya (chrome urgent), bukan menunggu isi berat (INP.md)

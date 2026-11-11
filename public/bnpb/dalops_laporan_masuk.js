@@ -15,7 +15,7 @@
   async function muat(p, U) {
     const {h, F, ikon, label, kosong, bagian, hl, td, tombolWA, namaProv, pasangTip, kontak, muatKantor} = U;
     const pesan = (ik, teks) => p.replaceChildren(h("div", {class: "bn-blok"}, kosong(ik, teks)));
-    const mauDummy = baca(KUNCI_DUMMY) === "1";
+    const mauDummy = false;  // tanpa data dummy, pemilik 11 Nov 2026; dulu baca(KUNCI_DUMMY) === "1"
     let r, saya;
     try { [r, saya] = await Promise.all([fetch("/api/dalops/laporan" + (mauDummy ? "?dummy=1" : ""), {credentials: "same-origin"}),
       fetch("/api/akademisi/saya", {credentials: "same-origin"}).then(x => x.ok ? x.json() : null).catch(() => null)]); }

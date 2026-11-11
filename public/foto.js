@@ -59,7 +59,7 @@
   const D = {foto: [], lap: [], muat: null, konfig: null};
   async function muat(paksa) {
     if (D.muat && !paksa) return D.muat;
-    return D.muat = fetch(`${API}?bencana=${BEN}` + (admin ? "&dummy=1" : ""), {credentials: "same-origin"}).then(r => r.ok ? r.json() : {foto: []}).then(j => {
+    return D.muat = fetch(`${API}?bencana=${BEN}`, {  /* tanpa data dummy, pemilik 11 Nov 2026; dulu admin menambah &dummy=1 */credentials: "same-origin"}).then(r => r.ok ? r.json() : {foto: []}).then(j => {
       D.foto = j.foto || [];
       return D.foto;
     }).catch(() => (D.foto = []));

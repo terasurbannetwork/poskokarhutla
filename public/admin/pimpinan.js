@@ -24,7 +24,7 @@
   const rp = n => n >= 1e12 ? "Rp" + ID.format(Math.round(n / 1e11) / 10) + " triliun" : n >= 1e9 ? "Rp" + (n >= 1e11 ? N0.format(Math.round(n / 1e9)) : ID.format(Math.round(n / 1e8) / 10)) + " miliar" : "Rp" + N0.format(Math.round(n / 1e6)) + " juta";
   const jam = ms => { const j = Math.floor(ms / 36e5); return j < 48 ? `${N0.format(j)} jam` : `${N0.format(Math.floor(j / 24))} hari`; };
   const wib = t => new Date(t).toLocaleTimeString("id-ID", {timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit", hour12: false}).replace(".", ":") + " WIB";
-  const dummy = () => localStorage.getItem("pm_dummy") === "1", dq = () => dummy() ? "?dummy=1" : "";
+  const dummy = () => false  /* tanpa data dummy, pemilik 11 Nov 2026; dulu localStorage pm_dummy */, dq = () => dummy() ? "?dummy=1" : "";
 
   /* ---------- pengambilan: kegagalan jadi {g}, tidak melempar ---------- */
   const api = async (u, nama) => { try { return {j: await Admin.ambil(u, nama)}; } catch (e) { return {g: e.message}; } };

@@ -47,7 +47,7 @@
         h("tbody", null, rows.length ? rows : h("tr", null, h("td", {colspan: "7", class: "pg-kosong", teks: "Tidak ada pengingat."})))))));
   }
   async function muat() {
-    try { D = await ambil(`${API}/admin?dummy=1`); } catch (e) { if (e.message !== "perlu masuk") app.replaceChildren(h("p", {class: "pg-kosong", teks: e.message})); return; }
+    try { D = await ambil(`${API}/admin`)  /* tanpa data dummy, pemilik 11 Nov 2026 */; } catch (e) { if (e.message !== "perlu masuk") app.replaceChildren(h("p", {class: "pg-kosong", teks: e.message})); return; }
     pilih = new Set([...pilih].filter(id => D.pengingat.some(r => r.id === id))); gambar();
   }
   app.addEventListener("change", e => { const c = e.target.closest("[data-pilih]"); if (!c) return; const id = c.closest("[data-id]").dataset.id; c.checked ? pilih.add(id) : pilih.delete(id); gambar(); });

@@ -55,7 +55,7 @@ test('sumber layar: tanpa innerHTML, tanpa on*, tanpa style inline, tanpa kaki s
 
 test('hanya peran Super Admin memasang dummy: jalur pemasangan memeriksa p.sa', () => {
   const inti = SKRIP.find(([n]) => n === 'inti.js')[1];
-  assert.match(inti, /if \(p\.sa\) \(await import\("\.\/dummy\.js"\)\)\.pasangDummy/);
+  assert.match(inti, /if \(false && p\.sa\) \(await import\("\.\/dummy\.js"\)\)\.pasangDummy/, 'dummy dimatikan pemilik 11 Nov 2026');
 });
 
 const chrome = cariChrome();
@@ -119,12 +119,10 @@ test('layar kejadian di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome 
       } finally { await ko.tutup(); }
       const sa = await sajikan(buatApi('sa'));
       try {
-        const T = await pb.tab(); await T.ukuran(1440, 900); await T.buka(`${sa.url}/siklus/kejadian`, {tunggu: '.sk-dummy'});
-        assert.equal(await T.eval(`document.querySelectorAll('.sk-dummy button').length`), 2);
-        await T.klik('.sk-dummy button[data-dummy=isi]');
-        await T.tungguFungsi(`document.getElementById('toast')?.textContent.includes('7 baris dummy dibuat')`, 10000);
-        const p = sa.catat.find((c) => c.jalur === '/api/siklus/dummy'); assert.ok(p, 'rute dummy dipanggil');
-        assert.equal(p.xpb, '1'); assert.equal(p.badan.aksi, 'isi'); assert.equal(p.badan.halaman, 'kejadian'); assert.match(p.badan.periode.dari, /^\d{4}-\d\d-\d\d$/); assert.match(p.badan.periode.sampai, /^\d{4}-\d\d-\d\d$/);
+        const T = await pb.tab(); await T.ukuran(1440, 900); await T.buka(`${sa.url}/siklus/kejadian`, {tunggu: '#daftar table'});
+        await new Promise((r) => setTimeout(r, 400));
+        assert.equal(await T.eval(`document.querySelectorAll('.sk-dummy').length`), 0, 'Super Admin pun tanpa tombol dummy (pemilik 11 Nov 2026)');
+        assert.equal(sa.catat.some((c) => c.jalur === '/api/siklus/dummy'), false);
         assert.deepEqual(galatNyata(T), []); await T.tutup();
       } finally { await sa.tutup(); }
     });
@@ -149,12 +147,10 @@ test('layar kejadian di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome 
         } finally { await s.tutup(); }
       });
     }
-    await t.test('dummy terisi di 390: muat ulang penuh, toast jumlah nyata, tanpa gulir mendatar', async () => {
+    await t.test('Super Admin di 390: tanpa tombol dummy, tanpa gulir mendatar', async () => {
       const sa = await sajikan(buatApi('sa'));
       try {
-        const T = await pb.tab(); await T.ukuran(390, 844); await T.buka(`${sa.url}/siklus/kejadian`, {tunggu: '.sk-dummy'});
-        await T.klik('.sk-dummy button[data-dummy=isi]');
-        await T.tungguFungsi(`document.getElementById('toast')?.textContent.includes('7 baris dummy dibuat')`, 10000);
+        const T = await pb.tab(); await T.ukuran(390, 844); await T.buka(`${sa.url}/siklus/kejadian`, {tunggu: '#daftar table'});
         await T.tunggu('#daftar table'); const l = await T.lebihLebar(); assert.ok(l.sw <= l.iw + 1);
         assert.ok(!/\bnull\b/.test(await T.eval('document.body.innerText'))); await T.tutup();
       } finally { await sa.tutup(); }

@@ -63,6 +63,7 @@ test("kalimat: angka lewat id-ID (titik ribuan), tanpa toFixed", () => {
 test("app.js memasang tombol dummy hanya lewat bolehDummy dan memuat ulang penuh sesudah isi dan hapus (DUMMY.md syarat 6)", () => {
   const app = sumber("app.js") + sumber("dummy.js");
   assert.match(sumber("app.js"), /from "\.\/dummy\.js"/); assert.match(sumber("app.js"), /bolehDummy\(/);
+  assert.match(sumber("app.js"), /if \(false && bolehDummy\(/, "tombol dummy tidak dipasang (pemilik 11 Nov 2026); pulihkan = hapus false &&");
   assert.match(app, /location\.reload\(\)/);
   assert.match(app, /Isi data dummy untuk layar ini/); assert.match(app, /Hapus seluruh data dummy SIPPA/);
 });

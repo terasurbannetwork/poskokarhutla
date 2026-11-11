@@ -276,17 +276,11 @@ else {
     await bersih("rollcall sesudah kirim");
   });
 
-  test("dummy: Super Admin melihat dua ikon; isi memakai rute tab yang terbuka, hapus memakai keenam rute", async () => {
+  test("dummy: tombol 🧪/🧹 TIDAK dirender walau Super Admin (pemilik 11 Nov 2026)", async () => {
     S.log.length = 0; tab.kosongkanGalat();
-    await tab.buka(base + "/bnpb/operasi.html", {tunggu: ".op-tabel"}); await tab.tunggu("[data-dummy=isi]");
-    assert.equal(await tab.eval("document.querySelectorAll('[data-dummy]').length"), 2);
-    await tab.klik("[data-dummy=isi]"); await new Promise(r => setTimeout(r, 500));
-    assert.ok(S.log.some(x => x.m === "POST" && x.p === "/api/pusdalops/pemulihan/dummy" && x.body.aksi === "isi"), "dummy pemulihan tidak dipanggil");
-    await pilihTab("rollcall"); S.log.length = 0; await tab.klik("[data-dummy=isi]"); await new Promise(r => setTimeout(r, 500));
-    assert.deepEqual(S.log.filter(x => x.m === "POST").map(x => x.p), ["/api/pusdalops/rollcall/dummy"]);
-    await tab.eval("window.confirm = () => true"); S.log.length = 0; await tab.klik("[data-dummy=hapus]"); await new Promise(r => setTimeout(r, 500));
-    assert.deepEqual(S.log.filter(x => x.m === "POST").map(x => x.p).sort(), ["/api/logbook/dummy", "/api/pusdalops/berantai/dummy", "/api/pusdalops/lapsus/dummy", "/api/pusdalops/medsos/dummy", "/api/pusdalops/pemulihan/dummy", "/api/pusdalops/rollcall/dummy"]);
-    assert.ok(S.log.filter(x => x.m === "POST").every(x => x.body.aksi === "hapus"));
+    await tab.buka(base + "/bnpb/operasi.html", {tunggu: ".op-tabel"});
+    assert.equal(await tab.eval("document.querySelectorAll('[data-dummy]').length"), 0);
+    assert.equal(await tab.eval("!!document.querySelector('.bn-aksi')"), false, "wadah kosong tombol dummy tidak tersisa");
     await bersih("dummy");
   });
 
@@ -310,7 +304,7 @@ else {
     assert.deepEqual(nomor, ["200/2026", "300/2026", "100/2026"], "perlu cek dulu, lalu sisa hari terkecil");
     assert.equal(await tab.eval("[...document.querySelectorAll('.op-tabel tr.op-basi-baris')].length"), 2);
     assert.equal(await tab.eval("[...document.querySelectorAll('.op-tabel th')].every(th => getComputedStyle(th).textAlign === 'center')"), true);
-    assert.equal(await tab.eval("!!document.querySelector('.op-tak-cetak [data-dummy=isi]') || !!document.querySelector('[data-dummy=isi]')"), true);
+    assert.equal(await tab.eval("!!document.querySelector('[data-dummy=isi]')"), false);
     await bersih("sk"); await tanpaGulir("sk");
   });
 
@@ -368,14 +362,6 @@ else {
   test("tab baru: tabel belum ada (503) memberi pesan umum, bukan layar kosong atau nomor migrasi", async () => {
     S.g3_503 = true; await tab.buka(base + "/bnpb/operasi.html", {tunggu: ".op-tabel"}); await pilihTab("berantai");
     assert.match(await tab.teks(), /Data belum tersedia\. Hubungi admin\./); assert.doesNotMatch(await tab.teks(), /migrasi|0098/i); S.g3_503 = false;
-  });
-
-  test("dummy: isi memakai rute sesuai tab SK, Berantai, Medsos", async () => {
-    await tab.buka(base + "/bnpb/operasi.html", {tunggu: ".op-tabel"}); await tab.tunggu("[data-dummy=isi]");
-    for (const [k, rute] of [["sk", "/api/logbook/dummy"], ["berantai", "/api/pusdalops/berantai/dummy"], ["medsos", "/api/pusdalops/medsos/dummy"]]) {
-      await pilihTab(k); S.log.length = 0; await tab.klik("[data-dummy=isi]"); await tab.tungguFungsi("!document.querySelector('.op-isi').hasAttribute('aria-busy')", 15000); await new Promise(r => setTimeout(r, 300));
-      assert.deepEqual(S.log.filter(x => x.m === "POST").map(x => x.p), [rute], k);
-    }
   });
 
   test("klik tab langsung mengecat chrome (INP): aria-selected berubah sebelum data datang", async () => {

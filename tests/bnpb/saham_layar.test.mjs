@@ -39,14 +39,9 @@ test("layar /bnpb/saham: konsesi tanpa harga, lalu dummy lengkap", {skip: CHROME
       await t.eval("document.querySelector('tr[data-kode=AAAA]').click()");
       await t.tungguFungsi("/Harga saham belum tersedia/.test(document.querySelector('.sh-detail').innerText) && document.querySelector('.sh-detail svg.sh-ganda')");
       assert.equal(await t.eval("/Keterkaitan, bukan sebab; titik panas di konsesi bukan bukti pelanggaran/.test(document.querySelector('.sh-detail').innerText)"), true);
-      /* dummy */
-      await t.eval("document.querySelector('[data-dummy=isi]').click()");
-      await t.tungguFungsi("[...document.querySelectorAll('[data-harga]')].some(x => /^Rp /.test(x.textContent))");
-      await t.eval("document.querySelector('tr[data-kode=AAAA]').click()");
-      await t.tungguFungsi("document.querySelector('.sh-detail .sh-hline') && /Korelasi Spearman antara titik minggu ini/.test(document.querySelector('.sh-detail').innerText)");
-      assert.equal(await t.eval("/Data contoh/.test(document.querySelector('[data-panel=konsesi]').innerText)"), true);
-      await t.eval("document.querySelector('tr[data-kode=EEEE]').click()");
-      await t.tungguFungsi("/sampel terlalu kecil untuk disimpulkan/.test(document.querySelector('.sh-detail').innerText)");
+      /* tombol dummy dicabut (pemilik 11 Nov 2026): tidak dirender, dan tidak ada data contoh yang tampil sendiri */
+      assert.equal(await t.eval("!!document.querySelector('[data-dummy]')"), false, `tombol dummy tidak dirender @${w}`);
+      assert.equal(await t.eval("/Data contoh/.test(document.querySelector('[data-panel=konsesi]').innerText)"), false);
       assert.equal(await t.eval("/\\b(NaN|undefined|null)\\b|\\[object/.test(document.querySelector('[data-panel=konsesi]').innerText)"), false, `teks bocor @${w}`);
       const {sw, iw} = await t.lebihLebar(); assert.ok(sw <= iw, `gulir mendatar ${sw} > ${iw} @${w}`);
       assert.deepEqual(t.galat().filter(bukanSisi), [], `konsol @${w}`);
