@@ -1554,3 +1554,33 @@
 #opsLaporan .ops-nav-g::after{display:none}
 #opsLaporan .ops-nav-g .ops-lbl{gap:8px;font-size:.75rem;font-weight:800;color:#0b2545}
 #opsLaporan .ops-nav-g .ops-lbl svg{width:20px;height:20px;padding:4px;border-radius:6px;background:#0b2545;color:#fff}
+/* judul seksi = kepala gelap di atas pemilih periode (pemilik 11 Nov 2026) */
+#opsLaporan .ops-utama>.ops-alat>.ops-judul{margin:-20px -20px 4px;padding:16px 24px;border-bottom:0;border-radius:19px 19px 0 0;background:#0b2545;color:#fff}
+#opsLaporan .ops-utama>.ops-alat>.ops-judul .ops-lbl svg{color:#9cc3ff}
+@media (max-width:640px){#opsLaporan .ops-utama>.ops-alat>.ops-judul{margin:-12px -12px 4px;padding:12px 14px;border-radius:15px 15px 0 0}}
+/* baris nama ringkas hanya di kolom kanan; di lebar sedang pakai pil (tanpa dobel); tanpa geser samping */
+#opsLaporan .ops-tindak li .ops-tindak-ring{display:none}
+@media (min-width:1180px){#opsLaporan .ops-ringkas-slot .ops-tindak li .ops-tindak-ring{display:flex}}
+#opsLaporan .ops-utama{overflow-x:hidden}
+/* halaman Operasi tidak ikut bergulir: padding bawah = atas, panel kiri dan isi pas setinggi layar */
+@media (min-width:901px){#p-operasi.scroll{padding-bottom:22px;overflow-y:hidden}}
+/* panel seksi muat tanpa scroll (pemilik 11 Nov 2026 "gausah ada scroll") */
+@media (min-width:901px){
+  #opsLaporan .ops-nav{padding:10px;gap:8px;overflow:hidden}
+  #opsLaporan .ops-nav-isi{overflow:hidden;gap:1px}
+  #opsLaporan .ops-nav .ops-mode button{padding-top:6px;padding-bottom:6px}
+  #opsLaporan .ops-nav-g{margin:8px 0 3px;padding:5px 8px}
+  #opsLaporan .ops-nav-g .ops-lbl svg{width:18px;height:18px;padding:3px}
+  #opsLaporan .ops-nav-isi button{padding:4px 6px;font-size:.8125rem}
+  #opsLaporan .ops-nav-isi button>i{width:24px;height:24px;border-radius:7px}
+  #opsLaporan .ops-nav-isi button>i .ops-lbl svg{width:14px;height:14px}
+  #opsLaporan .ops-nav-kaki{gap:4px;padding-top:8px}
+  #opsLaporan .ops-segar,#opsLaporan .ops-segar.ok,#opsLaporan .ops-segar.tunggu,#opsLaporan .ops-segar.basi{padding:4px 8px}
+}
+@media (min-width:901px) and (max-height:720px){#opsLaporan .ops-nav-kaki{display:none}}
+/* sisa ruang luar sangat kecil (pemilik 11 Nov 2026): 8px di keempat sisi, jarak antar-panel 12px */
+@media (min-width:901px){
+  #p-operasi.scroll{padding:8px}
+  .wrap#opsLaporan{padding:0}
+  #opsLaporan .ops-a{height:calc(100vh - var(--top, 58px) - 16px);gap:12px}
+}
