@@ -133,7 +133,7 @@ async function detailKejadian(c) {
   const per = {};   // sumber berdampingan, tidak dijumlah; dua kode dari satu nama sumber dibedakan oleh kode
   for (const s of sumber) per[sumber.filter(x => x.sumber === s.sumber).length > 1 ? `${s.sumber}:${s.kode}` : s.sumber] = parse(s.dampak) ?? {};
   return json({kejadian: utkBP(c, r), wilayah: wilayahKab4(r.kab4), kab, sumber: sumber.map(({kandidat, ...s}) => ({...s, ...(c.h.tipe === "bp" ? {} : {kandidat: parse(kandidat)}), dampak: parse(s.dampak)})),
-    selisih: selisihDampak(per), kaji_ids: await H.skKajiIds(c.env, p, id, c.h.dummyOk), pulih_ids: await H.skJitupasnaIds(c.env, p, id, c.h.dummyOk), jejak: c.h.tipe === "bp" ? jejak.map(({oleh, catatan, ...x}) => x) : jejak});
+    selisih: selisihDampak(per), kaji_ids: await H.skKajiIds(c.env, p, id, c.h.dummyOk), pulih_ids: await H.skJitupasnaIds(c.env, p, id, c.h.dummyOk), r3p: await H.skR3pDiusulkanAda(c.env, p, id), jejak: c.h.tipe === "bp" ? jejak.map(({oleh, catatan, ...x}) => x) : jejak});
 }
 
 /* publik: hanya publik = 1 dan dummy = 0; semua alasan tidak ada memberi jawaban yang sama; tembolok tepi 5 menit (KP 8) */
