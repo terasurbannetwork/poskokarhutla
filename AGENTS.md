@@ -301,6 +301,13 @@ tua). Tanpa kaki keterangan/sumber (pemilik 4 Nov 2026: "hilangkan"); definisi k
 membuat kepala bagian sendiri (bilah gelap, `.head` + h2 lepas). Layar laporan baru masuk
 daftar `LAYAR` di gerbang `tests/agen/gerbang-kartu-std.test.mjs`.
 
+**Pembaruan 11 Nov 2026 (pemilik: "gausah ada kesimpulan ini", "Catet ya gausah ada yang gini. Jelek banget"):**
+kepala kartu = NAMA SEKSI berikon (mis. "Base dan armada", "Renlap"), bukan kalimat temuan, dan isi kartu
+tidak memuat kalimat kesimpulan sama sekali. Angka temuan tampil di Ringkasan dan pop-up, bukan sebagai kalimat
+di kepala atau di baris pertama kartu. Berlaku untuk layar yang dibangun atau dirombak mulai tanggal ini; layar
+lama dirapikan saat disentuh. Kartu boleh dilipat (`<details>`) dan dikelompokkan dengan pil kategori.
+Gerbangnya `tests/agen/gerbang-tanpa-kesimpulan.test.mjs` (layar `/operasi` dulu; layar lain masuk daftarnya saat dirombak).
+
 ### 3.6 Folder revisi laporan harian (9 Nov 2026)
 
 Tiap keluaran Laporan Kejadian Bencana Harian dan Laporan Penanganan Pengendalian Karhutla masuk foldernya sendiri di folder hari:

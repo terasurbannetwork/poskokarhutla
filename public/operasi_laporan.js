@@ -23,7 +23,8 @@
     darat: '<circle cx="9" cy="7" r="3"/><path d="M3 21v-1a6 6 0 0 1 12 0v1"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 21v-.5a4.5 4.5 0 0 1 6.5-4"/>'};
   const ik = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[k]}</svg>`;
   /* pil kategori kartu = ikon saja (pemilik 11 Nov 2026 "label diganti jadi icon aja"); teks tetap di title dan aria-label */
-  const IK_EY = {"Operasi udara": IK.udara, "Operasi darat": IK.darat, Base: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+  const IK_EY = {"Papan base": '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+    "Peta operasi": '<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>', "Operasi udara": IK.udara, "Operasi darat": IK.darat, Base: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
     Renlap: '<path d="M4 19c4-1 6-5 8-9s5-6 8-6"/><circle cx="4" cy="19" r="1.6"/><circle cx="20" cy="4" r="1.6"/>', "Aksi armada": '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>',
     "Tren 30 hari": '<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/>', "Histori armada": '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
     Operator: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>', "Jejak ADS-B": '<circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4M7.8 16.2a6 6 0 0 1 0-8.4M19 5a10 10 0 0 1 0 14M5 19A10 10 0 0 1 5 5"/>',
@@ -34,22 +35,23 @@
     return svg ? `<span class="ex-ey ops-ey-ik" title="${esc(t)}" aria-label="${esc(t)}" role="img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${svg}</svg></span>` : `<span class="ex-ey">${ey}</span>`; };
   /* semua kartu bisa dilipat (pemilik 11 Nov 2026 "semua agar dibuat collapsible", pola pangantara): <details> dengan kepala navy
      sebagai <summary>; bawaan terbuka hanya Base, pilihan buka/tutup diingat per peramban (kenyamanan, bukan data) */
-  const BUKA_AWAL = new Set(["base"]), CHEV = '<svg class="ops-chev ops-kartu-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+  const BUKA_AWAL = new Set(["papan-base", "peta-operasi"]), CHEV = '<svg class="ops-chev ops-kartu-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
   let ingatKartu = {}; try { ingatKartu = JSON.parse(localStorage.getItem("ops_kartu") || "{}") || {}; } catch (e) {}
   const idKartu = ey => String(ey).replace(/<[^>]+>/g, "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   /* kepala kartu = NAMA SEKSI, bukan kalimat kesimpulan (pemilik 11 Nov 2026 "ini semuanya bukan kesimpulan kesimpulan ya");
      kalimat temuan (judul) pindah ke baris pertama isi supaya infonya tetap ada */
-  const NAMA_SEKSI = {base: "Base dan armada", renlap: "Renlap", "aksi-armada": "Aksi armada", "tren-30-hari": "Tren 30 hari", "histori-armada": "Histori armada", operator: "Operator",
+  const NAMA_SEKSI = {"papan-base": "Papan base", "peta-operasi": "Peta operasi", base: "Tabel base dan armada", renlap: "Renlap", "aksi-armada": "Aksi armada", "tren-30-hari": "Tren 30 hari", "histori-armada": "Histori armada", operator: "Operator",
     "jejak-ads-b": "Jejak ADS-B", "temuan-pilot": "Temuan pilot", "omc-resmi-bmkg-aktif": "OMC resmi BMKG", "modifikasi-cuaca": "Modifikasi cuaca", dokumentasi: "Dokumentasi", efektivitas: "Efektivitas", "kontrak-2026": "Kontrak 2026",
     personel: "Personel per unsur", "penanganan-lahan": "Penanganan lahan", "dipadamkan-2026": "Dipadamkan 2026", "patroli-regu": "Patroli regu"};
   /* kategori informasi (pemilik 11 Nov 2026: pil di bawah Ringkasan untuk memilih kategori, pola pangantara; KEPUTUSAN K11, Q14) */
-  const KATEGORI_MODE = {udara: [["kesiapan", "Kesiapan", "siap", ["base", "histori-armada", "operator"]], ["renlap", "Renlap", "sortie", ["renlap"]],
-    ["kegiatan", "Kegiatan", "air", ["aksi-armada", "tren-30-hari", "jejak-ads-b", "temuan-pilot", "dokumentasi"]], ["omc", "OMC", "awan", ["omc-resmi-bmkg-aktif", "modifikasi-cuaca"]],
-    ["kinerja", "Kinerja", "tren", ["efektivitas", "kontrak-2026"]]],
+  /* tiga kategori (pemilik 11 Nov 2026, usulan 4): Hari ini, Tren, Kontrak dan OMC */
+  const KATEGORI_MODE = {udara: [["hariini", "Hari ini", "kalender", ["papan-base", "peta-operasi", "base", "renlap", "aksi-armada", "temuan-pilot"]],
+    ["tren", "Tren", "tren", ["tren-30-hari", "efektivitas", "histori-armada", "dokumentasi", "jejak-ads-b"]],
+    ["kontrak", "Kontrak dan OMC", "op", ["operator", "kontrak-2026", "omc-resmi-bmkg-aktif", "modifikasi-cuaca"]]],
     darat: [["personel", "Personel", "peran", ["personel"]], ["lahan", "Lahan", "api", ["penanganan-lahan", "dipadamkan-2026"]], ["patroli", "Patroli", "vis", ["patroli-regu"]]]};
   const KATEGORI_SEMUA = Object.values(KATEGORI_MODE).flat();
   const katKartu = id => (KATEGORI_SEMUA.find(k => k[3].includes(id)) || [""])[0];
-  const katPilih = {udara: "kesiapan", darat: "personel"};
+  const katPilih = {udara: "hariini", darat: "personel"};
   for (const m of Object.keys(katPilih)) try { const k = localStorage.getItem("ops_kat_" + m); if (KATEGORI_MODE[m].some(x => x[0] === k)) katPilih[m] = k; } catch (e) {}
   const pilKategori = m => `<div class="seg ops-kat" role="group" aria-label="Kategori informasi">${KATEGORI_MODE[m].map(([k, t, ik]) => `<button type="button" data-kat="${k}" aria-pressed="${k === katPilih[m]}">${lbl(ik, t)}</button>`).join("")}</div>`;
   /* hanya atribut hidden, tanpa render ulang (INP) */
@@ -60,7 +62,7 @@
   const selDarat = (ik, n, t, sub, redup) => `<div class="${redup ? "redup" : ""}"><header><i>${lbl(ik, "")}</i><span>${t}</span></header><div class="ops-ub-isi"><b>${n}</b>${sub ? `<em>${sub}</em>` : ""}</div></div>`;
   const bagian = (ey, judul, isi, kanan = "") => { const id = idKartu(ey), buka = id in ingatKartu ? ingatKartu[id] : BUKA_AWAL.has(id), nama = NAMA_SEKSI[id];
     if (!nama) return `<article class="ex ex-std"><header class="ex-hd">${eyebrow(ey)}<div class="ex-jd"><h3>${judul}</h3>${kanan}</div></header><div class="ex-bd">${isi}</div></article>`;
-    return `<details class="ex ex-std ops-kartu" data-kartu="${id}" data-kat="${katKartu(id)}"${buka ? " open" : ""}><summary class="ex-hd">${eyebrow(ey)}<div class="ex-jd"><h3>${nama}</h3>${kanan}</div>${CHEV}</summary><div class="ex-bd"><p class="ops-lead">${judul}</p>${isi}</div></details>`; };
+    return `<details class="ex ex-std ops-kartu" data-kartu="${id}" data-kat="${katKartu(id)}"${buka ? " open" : ""}><summary class="ex-hd">${eyebrow(ey)}<div class="ex-jd"><h3>${nama}</h3>${kanan}</div>${CHEV}</summary><div class="ex-bd">${isi}</div></details>`; };   // tanpa kalimat kesimpulan (pemilik 11 Nov 2026 "gausah ada kesimpulan ini")
   const tabelH = (kepala, baris, kosong) => baris.length ? `<div class="tw ops-tw ex-tabel"><table><thead><tr>${kepala.map(k => { const [t, tip] = k.split("|");
       return `<th${t.startsWith("#") ? ' class="n"' : ""}${tip ? ` title="${esc(tip)}"` : ""}>${t.replace(/^#/, "")}</th>`; }).join("")}</tr></thead><tbody>${baris.join("")}</tbody></table></div>`
     : `<p class="ops-kosong">${kosong}</p>`;
@@ -89,6 +91,16 @@
     if (st.pm === "rentang") { const a = st.rDari || geser(t, -6), b = st.rSampai || t; return a <= b ? [a, b] : [b, a]; }
     return [t, t]; };
   const labelPeriode = ([a, b]) => st.pm === "hari" ? tglPendek(b) : st.pm === "bulan" ? `${BLN_P[+a.slice(5, 7) - 1]} ${a.slice(0, 4)}` : a.slice(0, 4) !== b.slice(0, 4) ? `${tglPendek(a)} ${a.slice(0, 4)} – ${tglPendek(b)} ${b.slice(0, 4)}` : `${tglPendek(a)} – ${tglPendek(b)}`;
+  /* periode pembanding (pemilik 11 Nov 2026 "perlu dibuat versus"): hari = kemarin, minggu/rentang = rentang sepanjang sebelumnya,
+     bulan = bulan lalu pada tanggal yang sama (1-11 Nov lawan 1-11 Okt); 12 bulan tanpa pembanding (datanya terlalu berat ditarik dua kali) */
+  const rentangBanding = ([a, b]) => { if (st.pm === "12bulan") return null;
+    if (st.pm === "bulan") { const a0 = geserBulan(a, -1), b0 = geser(a0, Math.round((Date.parse(b) - Date.parse(a)) / 864e5)), z = akhirBulan(a0); return [a0, b0 > z ? z : b0]; }
+    const n = Math.round((Date.parse(b) - Date.parse(a)) / 864e5) + 1; return [geser(a, -n), geser(b, -n)]; };
+  const muatBanding = ([a, b]) => st.cache["vs_" + a + "_" + b] ||= (async () => {
+    const potongan = []; for (let z = b; z >= a; z = geser(z, -31)) { const x = geser(z, -30); potongan.push([x < a ? a : x, z]); }
+    const [peta, mons] = await Promise.all([ambil(`/api/operasi/peta?tanggal=${b}`), Promise.all(potongan.map(([x, y]) => ambil(`/api/operasi/monitor?dari=${x}&sampai=${y}`)))]);
+    return {peta, aksi: mons.flatMap(m => m?.aksi || []).filter(x => x.tanggal >= a && x.tanggal <= b), ada: !!peta || mons.some(Boolean)};
+  })();
   const muatPeriode = (dariP, t) => st.cache[dariP + "_" + t] ||= (async () => {
     const dari = geser(t, -29), awal = dariP < dari ? dariP : dari, potongan = [];
     for (let b = t; b >= awal; b = geser(b, -31)) { const a = geser(b, -30); potongan.push([a < awal ? awal : a, b]); }
@@ -109,15 +121,21 @@
       <div id="opsRingkas" class="ops-ringkas-slot"></div>
       ${""/* tombol Salin teks WA (data-aksi="salin") dan Cetak / PDF (data-aksi="cetak") disembunyikan pemilik 11 Nov 2026; handler dan salin() tetap */}
       <span class="ops-status" role="status"></span></div><div id="opsIsi"></div>`;
-    box.addEventListener("toggle", e => { const k = e.target.dataset?.kartu; if (!k) return; ingatKartu[k] = e.target.open; try { localStorage.setItem("ops_kartu", JSON.stringify(ingatKartu)); } catch (x) {} }, true);
+    box.addEventListener("toggle", e => { const k = e.target.dataset?.kartu; if (!k) return; if (k === "peta-operasi" && e.target.open) requestAnimationFrame(pasangPeta); ingatKartu[k] = e.target.open; try { localStorage.setItem("ops_kartu", JSON.stringify(ingatKartu)); } catch (x) {} }, true);
     box.addEventListener("click", e => {
       if (e.target.closest("summary.ex-hd") && e.target.closest("button, a, input, select, label")) e.preventDefault();   // kontrol di kepala kartu tidak ikut melipat
       const m = e.target.closest("[data-mode]");
       if (m) { st.mode = m.dataset.mode; try { localStorage.setItem("ops_mode", st.mode); } catch (x) {} box.querySelectorAll("[data-mode]").forEach(b => b.setAttribute("aria-pressed", String(b === m))); return sesudahFrame(isi); }
+      const pb = e.target.closest("[data-pb]"); if (pb) return bukaBasePop(pb.dataset.pb);
+      const ti = e.target.closest("[data-tindak]"); if (ti) { const [j, v] = ti.dataset.tindak.split(":");
+        if (j === "pb") return bukaBasePop(v); if (j === "rk") return bukaRingkas(v);
+        const kartu = j === "peta" ? $('details[data-kartu="peta-operasi"]') : $(`details[data-kartu="${v}"]`); if (!kartu) return;
+        const bt = $(`.ops-kat [data-kat="${kartu.dataset.kat}"]`); if (bt && bt.getAttribute("aria-pressed") !== "true") bt.click();
+        kartu.open = true; kartu.scrollIntoView({behavior: "smooth", block: "start"}); return setTimeout(pasangPeta, 50); }
       const ka = e.target.closest(".ops-akt[data-reg]"); if (ka) return bukaArmada(ka.dataset.reg);
       const rk = e.target.closest(".ops-lap-angka [data-rk]"); if (rk) return bukaRingkas(rk.dataset.rk);
       const kt = e.target.closest(".ops-kat [data-kat]"); if (kt) { katPilih[st.mode] = kt.dataset.kat; try { localStorage.setItem("ops_kat_" + st.mode, kt.dataset.kat); } catch (x) {}
-        kt.parentElement.querySelectorAll("[data-kat]").forEach(b => b.setAttribute("aria-pressed", String(b === kt))); return terapKat($("#opsIsi")); }
+        kt.parentElement.querySelectorAll("[data-kat]").forEach(b => b.setAttribute("aria-pressed", String(b === kt))); terapKat($("#opsIsi")); return requestAnimationFrame(pasangPeta); }
       const ud = e.target.closest("[data-unduh]"); if (ud) { e.preventDefault(); return st._d && unduhRute(st._d, ud.dataset.base, ud.dataset.unduh); }   // tombol di dalam <summary>: jangan ikut melipat
       const fp = e.target.closest("[data-fpulau], [data-ftanda]"); if (fp) return saringBase(fp);
       const gr = e.target.closest("tr.ops-grup"); if (gr) return lipatGrup(gr);
@@ -129,7 +147,7 @@
       if (a.dataset.aksi === "cetak") return window.print();
       if (a.dataset.aksi === "salin") salin(a);
     });
-    box.addEventListener("keydown", e => { const k = (e.key === "Enter" || e.key === " ") && e.target.closest?.("[data-rk], .ops-akt[data-reg], tr.ops-bb, tr.ops-grup"); if (k) { e.preventDefault(); k.dataset.rk ? bukaRingkas(k.dataset.rk) : k.dataset.reg ? bukaArmada(k.dataset.reg) : k.classList.contains("ops-grup") ? lipatGrup(k) : bukaBase(k); } });
+    box.addEventListener("keydown", e => { const k = (e.key === "Enter" || e.key === " ") && e.target.closest?.("[data-rk], [data-pb], .ops-akt[data-reg], tr.ops-bb, tr.ops-grup"); if (k) { e.preventDefault(); k.dataset.pb ? bukaBasePop(k.dataset.pb) : k.dataset.rk ? bukaRingkas(k.dataset.rk) : k.dataset.reg ? bukaArmada(k.dataset.reg) : k.classList.contains("ops-grup") ? lipatGrup(k) : bukaBase(k); } });
     box.addEventListener("change", e => {
       if (e.target.matches("[data-rentang]")) { if (!e.target.value) return; st[e.target.dataset.rentang === "dari" ? "rDari" : "rSampai"] = e.target.value; st.tanggal = rentang()[1]; return sesudahFrame(isi); }
       if (e.target.matches(".ops-tgl input")) return pilihTanggal(e.target.value);
@@ -212,13 +230,15 @@
     el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat ${st.mode === "udara" ? "operasi udara" : "operasi darat"} ${esc(tglPanjang(st.tanggal))}…</div>`;
     if (typeof lengkapiKluster === "function") await lengkapiKluster().catch(() => {});
     if (!window.OperasiLapangan) await muatSkrip("/bnpb/operasi_lapangan_hitung.js");
-    const rg = rentang(), [d, s] = await Promise.all([muatPeriode(rg[0], rg[1]), muatStatis()]);
+    const rg = rentang(), rb = rentangBanding(rg), [d, s, vs] = await Promise.all([muatPeriode(rg[0], rg[1]), muatStatis(), rb ? muatBanding(rb) : null]);
     if (n !== nomor) return;
     const D = st._d = {...siapkan(d), ...s, pm: st.pm, label: labelPeriode(rg)};
+    D.vs = vs?.ada ? {...vs, label: labelPeriode(rb), hari: D.hitung(vs.aksi)} : null;
     el.innerHTML = st.mode === "udara" ? udara(D) : darat(D);
     terapKat(el);
     /* Ringkasan tinggal di wadah yang sama dengan tab dan pemilih periode (pemilik 11 Nov 2026 "disatuin dalam satu container") */
-    const rk = el.querySelector(":scope > .ops-rk"), slot = $("#opsRingkas"); if (slot) slot.replaceChildren(...(rk ? [rk] : []));
+    const rk = [...el.querySelectorAll(":scope > .ops-tindak, :scope > .ops-rk")], slot = $("#opsRingkas"); if (slot) slot.replaceChildren(...rk);
+    requestAnimationFrame(pasangPeta);
   }
 
   /* ---------------- turunan udara ---------------- */
@@ -282,6 +302,136 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
   }
   const namaBase = (D, id) => ((D.peta.base || []).find(b => b.id === id)?.nama || id || "–").split(" / ")[0];
 
+  /* ---------- papan base (usulan 1): satu kartu per base menjawab "base ini perlu apa" ---------- */
+  const ZONA_BASE = {BDJ: 1};   // ALGORITMA §1: selisih jam dari WIB; base lain WIB
+  const LVK = ["Aman", "Patroli", "Siaga", "Prioritas"];
+  function infoBase(D, b) {
+    const u = U(), a = (D.peta.armada || []).filter(x => x.base_id === b.id), lapor = a.some(x => x.status), siap = a.filter(x => SIAP.includes(x.status)).length;
+    const dk = S.kluster?.features?.length ? u.apiDekat(b) : [], p3 = dk.filter(c => c.level >= 3).length, lv = p3 ? 3 : dk.some(c => c.level === 2) ? 2 : dk.length ? 1 : 0;
+    const r = renlapBase(D, b.id), tg = r?.target || [], aksiB = D.aksi.filter(x => (x.base_id || D.reg2base[x.registrasi]) === b.id);
+    const datang = tg.filter(g => aksiB.some(x => x.lat != null && km(g.lat, g.lon, x.lat, x.lon) <= RENLAP_KM)).length;
+    return {b, a, lapor, siap, dk, p3, lv, r, tg, datang, aksi: aksiB, k: D.hitung(aksiB), lay: u.kelayakan(b)};
+  }
+  function kartuPapan(D) {
+    const u = U(), bs = (D.peta.base || []).map(b => infoBase(D, b)).sort((x, y) => y.lv - x.lv || y.p3 - x.p3 || y.a.length - x.a.length);
+    if (!bs.length) return bagian("Papan base", "", `<p class="ops-kosong">Belum ada base tercatat.</p>`);
+    const kartu = x => { const bar = (n, d, kelas = "") => `<i class="ops-pb-bar ${kelas}" style="--p:${d ? Math.round(n / d * 100) : 0}%"></i>`;
+      return `<article class="ops-pb lv${x.lv}" data-pb="${esc(x.b.id)}" tabindex="0" role="button" aria-label="Rincian base ${esc(x.b.nama)}">
+        <header><div><b>${esc(x.b.nama.split(" / ")[0])}</b><small>${esc(u.PROV_PDK[x.b.prov] || x.b.prov || "")}, ${esc(x.b.icao || x.b.id)}</small></div><span class="ops-pb-lv">${lbl("api", LVK[x.lv])}</span></header>
+        <ul>
+          <li><span>${lbl("siap", "Siap")}</span><b>${x.lapor ? `${fmt(x.siap)}<small>/${fmt(x.a.length)}</small>` : `<em class="belum">belum lapor</em>`}</b>${bar(x.lapor ? x.siap : 0, x.a.length, "ok")}</li>
+          <li><span>${lbl("vis", "Terbang")}</span><b>${u.pilLayak(x.lay)}</b></li>
+          <li><span>${lbl("api", "Api dalam jangkauan")}</span><b>${x.dk.length ? (x.p3 ? `<em class="api">${fmt(x.p3)} prioritas</em><small> dari ${fmt(x.dk.length)}</small>` : `${fmt(x.dk.length)} cluster`) : `<em class="sepi">tidak ada</em>`}</b></li>
+          <li><span>${lbl("sortie", "Renlap")}</span><b>${x.tg.length ? `${fmt(x.datang)}<small>/${fmt(x.tg.length)} didatangi</small>` : `<em class="sepi">belum ada</em>`}</b>${x.tg.length ? bar(x.datang, x.tg.length, "renlap") : ""}</li>
+          <li><span>${lbl("air", D.pm === "hari" ? "Sortie hari ini" : "Sortie periode")}</span><b>${x.k.sortie ? `${fmt(x.k.sortie)}${x.k.wb ? `<small>, ${fmt(x.k.wb)} WB</small>` : ""}` : `<em class="sepi">belum ada</em>`}</b></li>
+        </ul><footer>${lbl("peran", `${fmt(x.a.length)} armada`)}<span>Rincian ›</span></footer></article>`; };
+    return bagian("Papan base", "", `<div class="ops-pb-grid">${bs.map(kartu).join("")}</div>`);
+  }
+  function bukaBasePop(id) {
+    const D = st._d, b = (D?.peta.base || []).find(x => x.id === id); if (!b) return;
+    const u = U(), x = infoBase(D, b);
+    const api = x.dk.length ? `<ul class="ops-rp-base">${x.dk.slice(0, 30).map(c => `<li><div><b>${esc(c.kec || c.desa || c.kab || "Cluster")}</b><small>${fmt(Math.round(c.jarak))} km dari base${c.px24 != null ? `, ${fmt(c.px24)} titik 24 jam` : ""}</small></div><span class="pill l${c.level}">${LVK[c.level] || ""}</span><a href="${u.gmaps(c.lat, c.lon)}" target="_blank" rel="noopener noreferrer">${lbl("base", "Peta")}</a></li>`).join("")}</ul>`
+      : `<p class="ops-kosong">Tidak ada cluster titik panas aktif dalam jangkauan ${fmt(Math.round(u.radiusBase(b)))} km.</p>`;
+    const renlap = x.tg.length ? `<ol class="ops-rl-grid">${x.tg.map((g, i) => { const d = x.aksi.some(a => a.lat != null && km(g.lat, g.lon, a.lat, a.lon) <= RENLAP_KM);
+        return `<li class="${d ? "datang" : ""}"><span class="ops-rl-no">${fmt(g.urut ?? i + 1)}</span><div><p><b>${esc(g.lokasi || g.nama || "Target")}</b><a href="${u.gmaps(g.lat, g.lon)}" target="_blank" rel="noopener noreferrer">${lbl("base", "Peta")}</a></p><footer>${d ? `<span class="pill l0">Didatangi</span>` : `<span class="ops-rl-belum">Belum didatangi</span>`}</footer></div></li>`; }).join("")}</ol>
+        <p class="ops-rp-unduh">${["kml", "gpx"].map(f => `<button type="button" class="ops-kml" data-unduh="${f}" data-base="${esc(b.id)}">${lbl("unduh", f.toUpperCase())}</button>`).join("")}</p>` : `<p class="ops-kosong">Belum ada renlap untuk base ini.</p>`;
+    const aksi = x.aksi.length ? `<ul class="ops-rp-base">${x.aksi.map(a => { const h = a.guna === "wb" ? (u.HASIL[a.hasil] || u.HASIL.tak_dinilai) : null;
+        return `<li><div><b>${esc(a.lokasi || "Lokasi tidak tercatat")}</b><small>${esc(a.registrasi)}, ${esc(tglPendek(a.tanggal))} ${u.jamWIB(a.jam_utc)} WIB${a.drop ? `, ${fmt(a.drop)} jatuhan` : ""}</small></div><span class="ops-lm-misi" data-g="${esc(a.guna || "")}">${esc(MISI[a.guna] || a.jenis || "Misi")}</span>${h ? `<span class="pill ${h[1]}">${h[0]}</span>` : ""}</li>`; }).join("")}</ul>` : `<p class="ops-kosong">Belum ada sortie pada periode ini.</p>`;
+    bukaDialog(`<article class="ex ex-std ops-pa ops-rp"><header class="ops-rp-hd"><i>${lbl("base", "")}</i><div><h3>${esc(b.nama.split(" / ")[0])}</h3><small>${lbl("base", `${esc(u.PROV_PDK[b.prov] || b.prov || "")}, ${esc(b.icao || b.id)}`)}</small><small>${lbl("api", LVK[x.lv])}</small></div>
+      <span class="ops-rp-angka"><b>${fmt(x.a.length)}</b><small>armada</small></span><button type="button" class="ops-dlg-x" data-tutup aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header>
+      <div class="ops-pa-badan">
+        <div class="ops-rp-vs ops-bp-info"><div><small>Siap</small><b>${x.lapor ? `${fmt(x.siap)}<small>/${fmt(x.a.length)}</small>` : "–"}</b></div><div class="lalu"><small>Kelayakan terbang</small><b class="kecil">${u.pilLayak(x.lay)}</b></div><p><span class="ops-layak">${u.pilLayak(x.lay)}${labelLayak(x.lay)}</span></p></div>
+        ${sek("Armada", [["peran", `${fmt(x.a.length)} armada`]], rinciArmada(D, x.a), "peran")}
+        ${sek("Api dalam jangkauan", [["api", `${fmt(x.dk.length)} cluster`]], api, "api")}
+        ${sek("Renlap", [["sortie", `${fmt(x.datang)}/${fmt(x.tg.length)} didatangi`]], renlap, "sortie", !!x.tg.length)}
+        ${sek(D.pm === "hari" ? "Sortie hari ini" : "Sortie periode ini", [["air", `${fmt(x.k.sortie)} sortie`]], aksi, "air", !!x.aksi.length)}</div></article>`);
+  }
+  /* ---------- pita "Perlu tindakan" (usulan 2): hanya yang butuh keputusan; kosong = tidak tampil ---------- */
+  function pitaTindakan(D) {
+    if (D.pm !== "hari") return "";
+    const u = U(), kini = hariWIB() === D.t, jamWibNow = (Date.now() / 36e5 + 7) % 24, bs = (D.peta.base || []).map(b => infoBase(D, b)), it = [];
+    if (kini) { const telat = bs.filter(x => x.a.length && !x.lapor && jamWibNow + (ZONA_BASE[x.b.id] || 0) >= 7.5);
+      if (telat.length) it.push(["jam", "telat", `${fmt(telat.length)} base belum lapor gelar armada`, telat.map(x => x.b.nama.split(" / ")[0]).join(", "), `pb:${telat[0].b.id}`]); }
+    const prio = (S.kluster?.features || []).map(f => f.properties).filter(p => p.level >= 3 && p.lat != null);
+    const celah = prio.filter(c => !bs.some(x => (x.lapor ? x.siap : x.a.length) && km(x.b.lat, x.b.lon, c.lat, c.lon) <= u.radiusBase(x.b)));
+    if (celah.length) it.push(["api", "celah", `${fmt(celah.length)} cluster prioritas di luar jangkauan armada`, celah.slice(0, 4).map(c => c.kec || c.kab || "").filter(Boolean).join(", "), "peta"]);
+    const tdk = bs.filter(x => x.p3 && x.lay && x.lay.kelas !== "layak" && x.lay.kelas !== "?");
+    if (tdk.length) it.push(["ts", "cuaca", `${fmt(tdk.length)} base dengan api prioritas tapi cuaca belum layak terbang`, tdk.map(x => x.b.nama.split(" / ")[0]).join(", "), `pb:${tdk[0].b.id}`]);
+    const ts = (D.peta.armada || []).filter(a => a.status === "tidak_siap");
+    if (ts.length) it.push(["silang", "rusak", `${fmt(ts.length)} armada tidak siap`, ts.slice(0, 5).map(a => `${a.registrasi}${a.alasan ? ` (${a.alasan})` : ""}`).join(", "), "rk:siap"]);
+    const belumR = bs.reduce((t, x) => t + (x.tg.length - x.datang), 0), totR = bs.reduce((t, x) => t + x.tg.length, 0);
+    if (kini && totR && belumR && jamWibNow >= 12) it.push(["sortie", "renlap", `${fmt(belumR)} dari ${fmt(totR)} target renlap belum didatangi`, "lewat pukul 12.00 WIB", "kartu:renlap"]);
+    if (!it.length) return "";
+    return `<section class="ops-tindak" aria-label="Perlu tindakan"><header>${lbl("ts", "")}<b>Perlu tindakan</b><small>${fmt(it.length)}</small></header>
+      <ul>${it.map(([ik, c, t, ket, aksi]) => `<li class="${c}"><button type="button" data-tindak="${esc(aksi)}"><i>${lbl(ik, "")}</i><span><b>${t}</b>${ket ? `<small>${esc(ket)}</small>` : ""}</span><em>›</em></button></li>`).join("")}</ul></section>`;
+  }
+  /* ---------- peta operasi (usulan 3, K8): base + jangkauan, cluster api, target renlap, aksi; MapLibre seperti Pantau Dalops ---------- */
+  function kartuPeta(D) {
+    return bagian("Peta operasi", "", `<div class="ops-peta-wadah"><div id="opsPeta" class="ops-peta" role="region" aria-label="Peta operasi udara"></div>
+      <div class="ops-peta-leg"><span class="k-b">Base</span><span class="k-j">Jangkauan</span><span class="k-3">Cluster prioritas</span><span class="k-2">Siaga</span><span class="k-1">Patroli</span><span class="k-t">Target renlap</span><span class="k-a">Aksi armada</span></div></div>`);
+  }
+  let petaOps = null;
+  function pasangPeta() {
+    const el = $("#opsPeta"), D = st._d; if (!el || !D || !window.maplibregl || el.closest("[hidden]") || !el.closest("details")?.open) return;
+    if (petaOps && petaOps.getContainer() === el) { petaOps.resize(); return; }
+    petaOps?.remove(); const u = U(), bs = (D.peta.base || []).filter(b => b.lat != null);
+    const ling = (b, r) => { const pts = []; for (let i = 0; i <= 64; i++) { const a = i / 64 * 2 * Math.PI; pts.push([b.lon + r / (111.32 * Math.cos(b.lat * Math.PI / 180)) * Math.cos(a), b.lat + r / 110.57 * Math.sin(a)]); } return pts; };
+    const fc = f => ({type: "FeatureCollection", features: f});
+    const kl = (S.kluster?.features || []).map(f => f.properties).filter(p => p.lat != null && (p.px24 || 0) > 0);
+    const tgt = (D.peta.renlap || []).flatMap(r => (r.target || []).map(g => ({...g, base_id: r.base_id}))).filter(g => g.lat != null);
+    const peta = petaOps = new maplibregl.Map({container: el, style: "https://tiles.openfreemap.org/styles/positron", bounds: bs.length ? [[Math.min(...bs.map(b => b.lon)) - 2.5, Math.min(...bs.map(b => b.lat)) - 2], [Math.max(...bs.map(b => b.lon)) + 2.5, Math.max(...bs.map(b => b.lat)) + 2]] : [[94.8, -11.2], [141.2, 6.2]],
+      fitBoundsOptions: {padding: 20}, minZoom: 3, maxZoom: 13, dragRotate: false, pitchWithRotate: false, attributionControl: {compact: true}});
+    peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-right"); peta.touchZoomRotate.disableRotation();
+    const pop = new maplibregl.Popup({closeButton: false, closeOnClick: false, offset: 10, className: "ops-peta-pop"});
+    const hover = (id, isi) => { peta.on("mousemove", id, e => { peta.getCanvas().style.cursor = "pointer"; pop.setLngLat(e.lngLat).setHTML(isi(e.features[0].properties)).addTo(peta); }); peta.on("mouseleave", id, () => { peta.getCanvas().style.cursor = ""; pop.remove(); }); };
+    peta.on("load", () => {
+      peta.addSource("jangkau", {type: "geojson", data: fc(bs.map(b => ({type: "Feature", properties: {}, geometry: {type: "Polygon", coordinates: [ling(b, u.radiusBase(b))]}})))});
+      peta.addLayer({id: "jangkau", type: "fill", source: "jangkau", paint: {"fill-color": "#2f6fd6", "fill-opacity": .06}});
+      peta.addLayer({id: "jangkau-g", type: "line", source: "jangkau", paint: {"line-color": "#2f6fd6", "line-width": 1, "line-dasharray": [3, 2], "line-opacity": .5}});
+      peta.addSource("kl", {type: "geojson", data: fc(kl.map(c => ({type: "Feature", properties: {lv: c.level || 0, px: c.px24 || 0, nama: c.kec || c.kab || "Cluster"}, geometry: {type: "Point", coordinates: [c.lon, c.lat]}})))});
+      peta.addLayer({id: "kl", type: "circle", source: "kl", paint: {"circle-color": ["match", ["get", "lv"], 3, "#c9503a", 2, "#e3b94e", "#4f8fc4"], "circle-radius": ["interpolate", ["linear"], ["get", "px"], 1, 4, 20, 9, 60, 14], "circle-opacity": .85, "circle-stroke-color": "#fff", "circle-stroke-width": 1}});
+      peta.addSource("tg", {type: "geojson", data: fc(tgt.map(g => ({type: "Feature", properties: {n: g.urut ?? "", nama: g.lokasi || g.nama || "Target", base: namaBase(D, g.base_id)}, geometry: {type: "Point", coordinates: [g.lon, g.lat]}})))});
+      peta.addLayer({id: "tg", type: "circle", source: "tg", paint: {"circle-color": "#e08a3a", "circle-radius": 5, "circle-stroke-color": "#fff", "circle-stroke-width": 1.5}});
+      peta.addSource("ak", {type: "geojson", data: fc(D.aksi.filter(a => a.lat != null).map(a => ({type: "Feature", properties: {reg: a.registrasi, misi: MISI[a.guna] || a.jenis || "", jam: u.jamWIB(a.jam_utc), lok: a.lokasi || ""}, geometry: {type: "Point", coordinates: [a.lon, a.lat]}})))});
+      peta.addLayer({id: "ak", type: "circle", source: "ak", paint: {"circle-color": "#0f9488", "circle-radius": 4.5, "circle-stroke-color": "#fff", "circle-stroke-width": 1.5}});
+      hover("kl", p => `<b>${esc(p.nama)}</b><br>${LVK[p.lv] || ""}, ${fmt(p.px)} titik 24 jam`);
+      hover("tg", p => `<b>Target ${esc(String(p.n))}: ${esc(p.nama)}</b><br>Renlap ${esc(p.base)}`);
+      hover("ak", p => `<b>${esc(p.reg)}</b> ${esc(p.misi)}<br>${esc(p.jam)} WIB${p.lok ? `, ${esc(p.lok)}` : ""}`);
+      for (const b of bs) { const x = infoBase(D, b), e = document.createElement("button"); e.type = "button"; e.className = `ops-peta-base lv${x.lv}`; e.dataset.pb = b.id; e.title = `${b.nama}: ${x.a.length} armada`;
+        e.innerHTML = `<i>${lbl("peran", "")}</i><span>${esc(b.nama.split(" / ")[0])}<small>${fmt(x.a.length)} armada${x.lapor ? `, ${fmt(x.siap)} siap` : ""}</small></span>`;
+        new maplibregl.Marker({element: e, anchor: "left"}).setLngLat([b.lon, b.lat]).addTo(peta); }
+    });
+  }
+
+  /* metrik ringkasan: nilai periode ini dan pembanding. baik = +1 bila naik itu baik, -1 bila naik itu buruk, 0 netral */
+  function metrikRingkas(D) {
+    const u = U(), P = D.peta, base = P.base || [], ar = P.armada || [], g = u.hitungGuna(ar), lapor = ar.filter(a => a.status).length, siap = ar.filter(a => SIAP.includes(a.status)).length, H = D.hari;
+    const V = D.vs, VP = V?.peta || {}, varr = VP.armada || [], vlapor = varr.filter(a => a.status).length, vsiap = varr.filter(a => SIAP.includes(a.status)).length, HB = V?.hari;
+    const tm = P.temuan || [], temApi = tm.filter(x => x.status !== "clear").length, vtm = VP.temuan || [], vApi = vtm.filter(x => x.status !== "clear").length;
+    const m = (k, t, now, prev, tampil, tampilLalu, sub, redup, baik = 0, persen = false, spark = null) => ({k, t, now, prev: V ? prev : null, tampil, tampilLalu, sub, redup, baik, persen, spark});
+    const p7 = (D.perHari || []).slice(-7);
+    return [
+      m("base", "Base operasi udara", base.length, (VP.base || []).length, fmt(base.length), fmt((VP.base || []).length), [["netral", `${fmt(new Set(base.map(b => b.prov)).size)} provinsi`]], false, 0),
+      m("armada", "Armada", ar.length, varr.length, fmt(ar.length), fmt(varr.length), [["wb", `WB ${fmt(g.wbSaja)}`], ["ptr", `Patroli ${fmt(g.ptrSaja)}`], ...(g.ganda ? [["ganda", `Patroli + WB ${fmt(g.ganda)}`]] : []), ["omc", `OMC ${fmt(g.omc)}`]], false, 0),
+      m("siap", "Armada siap", lapor ? siap : null, vlapor ? vsiap : null, `${lapor ? fmt(siap) : "–"}<small>/${fmt(ar.length)}</small>`, `${vlapor ? fmt(vsiap) : "–"}<small>/${fmt(varr.length)}</small>`,
+        lapor ? [["ok", `Siap ${fmt(siap)}`], ...(lapor - siap ? [["tdk", `Tidak siap ${fmt(lapor - siap)}`]] : []), ...(ar.length - lapor ? [["belum", `Belum lapor ${fmt(ar.length - lapor)}`]] : [])] : [["belum", "Gelar armada belum masuk"]], !lapor, 1),
+      m("sortie", D.pm === "hari" ? "Sortie hari ini" : "Sortie periode ini", H.sortie, HB?.sortie ?? null, H.sortie ? fmt(H.sortie) : "–", HB?.sortie ? fmt(HB.sortie) : "–",
+        H.sortie ? [...(H.wb ? [["wb", `WB ${fmt(H.wb)}`]] : []), ...(H.sortie - H.wb ? [["ptr", `Lainnya ${fmt(H.sortie - H.wb)}`]] : []), ...(H.drop ? [["jatuh", `${fmt(H.drop)} jatuhan`]] : [])] : [["belum", "Belum ada sortie"]], !H.sortie, 1, false, p7.map(x => [x.t, x.sortie, `${fmt(x.sortie)} sortie`])),
+      m("padam", "Padam ≥ 24 jam", H.dinilai ? H.persen : null, HB?.dinilai ? HB.persen : null, H.dinilai ? u.persen(H.persen) : "–", HB?.dinilai ? u.persen(HB.persen) : "–",
+        H.dinilai ? [["ok", `Padam ${fmt(H.padam)}`], ...(H.dinilai - H.padam ? [["api", `Masih api ${fmt(H.dinilai - H.padam)}`]] : []), ["netral", `${fmt(H.dinilai)} dinilai`]] : [["belum", "Belum ada aksi dinilai"]], !H.dinilai, 1, true,
+        p7.map(x => [x.t, x.dinilai ? Math.round(x.persen * 100) : null, x.dinilai ? `padam ${u.persen(x.persen)}` : "belum dinilai"])),
+      m("temuan", "Temuan api pilot", tm.length ? temApi : null, vtm.length ? vApi : null, tm.length ? fmt(temApi) : "–", vtm.length ? fmt(vApi) : "–",
+        tm.length ? [["api", `Titik api ${fmt(temApi)}`], ["netral", `${fmt(tm.length)} temuan`]] : [["belum", "Belum ada laporan pilot"]], !tm.length, -1)];
+  }
+  /* grafik kecil 7 hari (usulan 5): batang mini, hari terakhir disorot, tooltip per hari */
+  const sparkHtml = sp => { if (!sp?.length || sp.every(x => !x[1])) return ""; const mx = Math.max(1, ...sp.map(x => x[1] || 0));
+    return `<span class="ops-spark" aria-label="7 hari terakhir">${sp.map(([t, v, ket], i) => `<i title="${esc(tglPendek(t))}: ${esc(ket)}" class="${i === sp.length - 1 ? "akhir" : ""}${v == null ? " kosong" : ""}" style="height:${v == null ? 8 : Math.max(8, Math.round(v / mx * 100))}%"></i>`).join("")}</span><small class="ops-spark-k">7 hari terakhir</small>`; };
+  /* perubahan: persen untuk jumlah, poin untuk persentase; warna menurut arah baik */
+  const deltaHtml = m => { if (m.now == null || m.prev == null) return "";
+    const d = m.persen ? (m.now - m.prev) * 100 : m.prev ? (m.now - m.prev) / m.prev * 100 : null; if (d == null) return "";
+    if (Math.abs(d) < 0.05) return `<em class="ops-vs-d sama">sama</em>`;
+    const naik = d > 0, kelas = !m.baik ? "netral" : (naik === (m.baik > 0)) ? "baik" : "buruk";
+    return `<em class="ops-vs-d ${kelas}">${naik ? "▲" : "▼"} ${Math.abs(d).toLocaleString("id-ID", {maximumFractionDigits: 1})}${m.persen ? " poin" : "%"}</em>`; };
   function udara(D) {
     const u = U(), P = D.peta, base = P.base || [], ar = P.armada || [], g = u.hitungGuna(ar), lapor = ar.filter(a => a.status).length, siap = ar.filter(a => SIAP.includes(a.status)).length;
     const H = D.hari, temApi = (P.temuan || []).filter(x => x.status !== "clear").length, tgl = esc(tglPanjang(D.t));
@@ -292,23 +442,22 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
       wb: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>', padam: '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 2 1.5 3 3 3-1-3 0-6 0-8.5z"/><path d="M4 4l16 16"/>',
       temuan: '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 2 1.5 3 3 3-1-3 0-6 0-8.5z"/>'};
     /* sub: teks biasa, atau larik pil [kelas, teks]; ubin redup = data belum masuk, ditandai pil oranye bukan kalimat */
-    const ubin = (k, n, t, sub, redup) => { const pil = sub ? `<em${Array.isArray(sub) && sub.length > 1 ? ' class="tegak"' : ""}>${Array.isArray(sub) ? sub.map(([c, x]) => { const ik = {wb: "air", ptr: "vis", ganda: "peran", omc: "awan", belum: "jam", ok: "siap", tdk: "silang", api: "api", jatuh: "ember", netral: "base"}[c] || "jam";
+    const pilHtml = sub => sub ? `<em${Array.isArray(sub) && sub.length > 1 ? ' class="tegak"' : ""}>${Array.isArray(sub) ? sub.map(([c, x]) => { const ik = {wb: "air", ptr: "vis", ganda: "peran", omc: "awan", belum: "jam", ok: "siap", tdk: "silang", api: "api", jatuh: "ember", netral: "base"}[c] || "jam";
         /* pil ringkas sebaris (pemilik 11 Nov 2026): ikon + angka, nama lengkap di tooltip; pil tanpa angka tampil utuh */
         const m = /^(.*\D)\s([\d.,%]+)$/.exec(x) || /^([\d.,%]+)\s(.+)$/.exec(x), n = m ? (/^[\d.,%]+$/.test(m[2]) ? m[2] : m[1]) : null;
         return n ? `<small class="${c}" title="${esc(x)}">${lbl(ik, n)}</small>` : `<small class="${c}">${lbl(ik, x)}</small>`; }).join("") : sub}</em>` : "";
-      return `<div class="${redup ? "redup" : ""}" data-rk="${k}" tabindex="0" role="button" aria-label="Rincian ${esc(t)}"><header><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKR[k]}</svg></i><span>${t}</span></header><div class="ops-ub-isi${pil.includes("tegak") ? " samping" : ""}"><b>${n}</b>${pil}</div></div>`; };
-    const tiles = [ubin("base", fmt(base.length), "Base operasi udara", [["netral", `${fmt(new Set(base.map(b => b.prov)).size)} provinsi`]]),
-      ubin("armada", fmt(ar.length), "Armada", [["wb", `WB ${fmt(g.wbSaja)}`], ["ptr", `Patroli ${fmt(g.ptrSaja)}`], ...(g.ganda ? [["ganda", `Patroli + WB ${fmt(g.ganda)}`]] : []), ["omc", `OMC ${fmt(g.omc)}`]]),
-      ubin("siap", `${lapor ? fmt(siap) : "–"}<small>/${fmt(ar.length)}</small>`, "Armada siap", lapor ? [["ok", `Siap ${fmt(siap)}`], ...(lapor - siap ? [["tdk", `Tidak siap ${fmt(lapor - siap)}`]] : []), ...(ar.length - lapor ? [["belum", `Belum lapor ${fmt(ar.length - lapor)}`]] : [])] : [["belum", "Gelar armada belum masuk"]], !lapor),
-      ubin("sortie", H.sortie ? fmt(H.sortie) : "–", D.pm === "hari" ? "Sortie hari ini" : "Sortie periode ini", H.sortie ? [...(H.wb ? [["wb", `WB ${fmt(H.wb)}`]] : []), ...(H.sortie - H.wb ? [["ptr", `Lainnya ${fmt(H.sortie - H.wb)}`]] : []), ...(H.drop ? [["jatuh", `${fmt(H.drop)} jatuhan`]] : [])] : [["belum", "Belum ada sortie"]], !H.sortie),
-      H.dinilai && ubin("padam", u.persen(H.persen), "Padam ≥ 24 jam", [["ok", `Padam ${fmt(H.padam)}`], ...(H.dinilai - H.padam ? [["api", `Masih api ${fmt(H.dinilai - H.padam)}`]] : []), ["netral", `${fmt(H.dinilai)} dinilai`]]),
-      ubin("temuan", (P.temuan || []).length ? fmt(temApi) : "–", "Temuan api pilot", (P.temuan || []).length ? [["api", `Titik api ${fmt(temApi)}`], ["netral", `${fmt(P.temuan.length)} temuan`]] : [["belum", "Belum ada laporan pilot"]], !(P.temuan || []).length)].filter(Boolean);
+    /* sel ringkasan dengan pembanding (pemilik 11 Nov 2026, pola pangantara): kiri periode ini + perubahan, kanan periode pembanding */
+    const ubin = m => `<div class="${m.redup ? "redup" : ""}" data-rk="${m.k}" tabindex="0" role="button" aria-label="Rincian ${esc(m.t)}"><header><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKR[m.k]}</svg></i><span>${m.t}</span></header>
+      <div class="ops-vs${D.vs ? "" : " tunggal"}"><div><small class="ops-vs-pl">${esc(D.label)}</small><b>${m.tampil}</b>${D.vs ? deltaHtml(m) : ""}</div>${D.vs ? `<div class="lalu"><small class="ops-vs-pl">${esc(D.vs.label)}</small><b>${m.tampilLalu}</b></div>` : ""}</div>${pilHtml(m.sub)}${sparkHtml(m.spark)}</div>`;
+    const tiles = metrikRingkas(D).map(ubin);
     /* kartu pertama = ringkasan itu sendiri; kepala kartu gelap dihapus (pemilik 11 Nov 2026 "Ringkasan 11 Nov itu yang jadi header") */
-    const ringkas = `<details class="ops-pa-sek ops-rk" open><summary><i>${lbl("tren", "")}</i><b>Ringkasan</b><small>${lbl("kalender", esc(D.label || tglPendek(D.t)))}</small><svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+    const ringkas = pitaTindakan(D) + `<details class="ops-pa-sek ops-rk" open><summary><i>${lbl("tren", "")}</i><b>Ringkasan</b><small>${lbl("kalender", esc(D.label || tglPendek(D.t)))}</small><svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
       <div class="ops-lap-angka" style="--n:${tiles.length}">${tiles.join("")}</div></details>`;
     return [
       ringkas, `<section class="ops-wadah">${pilKategori("udara")}${[
-      kartuBase(D), kartuRenlap(D), kartuAksi(D), kartuTren(D), kartuHistori(D), kartuOperator(D), kartuJejak(D), kartuTemuan(D), kartuOmcResmi(D), kartuOmc(D), kartuGaleri(D), kartuNilai(D), kartuKontrak(D)].join("")}</section>`].join("");
+      kartuPapan(D), kartuPeta(D), kartuBase(D), kartuRenlap(D), kartuAksi(D), kartuTemuan(D),
+      kartuTren(D), kartuNilai(D), kartuHistori(D), kartuGaleri(D), kartuJejak(D),
+      kartuOperator(D), kartuKontrak(D), kartuOmcResmi(D), kartuOmc(D)].join("")}</section>`].join("");
   }
 
   function kartuBase(D) {
@@ -406,9 +555,10 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     /* pilihan pengguna dipertahankan antar-tanggal; tanpa pilihan = armada pertama yang beraksi dalam 30 hari */
     const reg = st.reg && ar.some(a => a.registrasi === st.reg) ? st.reg : (ar.find(a => aktif.has(a.registrasi)) || ar[0])?.registrasi || "";
     const a = ar.find(x => x.registrasi === reg), pilih = `<select data-reg aria-label="Pilih armada">${kelompokBase(ar, D.peta.base).map(g => `<optgroup label="${esc(g.nama)}">${g.regs.map(r => `<option value="${esc(r)}"${r === reg ? " selected" : ""}>${esc(r)}${aktif.has(r) ? " ●" : ""}</option>`).join("")}</optgroup>`).join("")}</select>`;
-    if (!a) return `<div id="opsHistori" data-kat-bungkus="kesiapan">${bagian("Histori armada", "Belum ada armada tercatat", "")}</div>`;
-    const {judul, isi} = isiHistori(D, a, 15);
-    return `<div id="opsHistori" data-kat-bungkus="kesiapan">${bagian("Histori armada", judul, isi, pilih)}</div>`;
+    if (!a) return `<div id="opsHistori" data-kat-bungkus="tren">${bagian("Histori armada", "Belum ada armada tercatat", "")}</div>`;
+    /* isi kartu = tampilan pop-up armada (pemilik 11 Nov 2026: tabel dan kotak angka lama "jelek banget"), tanpa tombol tutup */
+    const isi = popupArmada(D, a).replace(/<button type="button" class="ops-dlg-x"[\s\S]*?<\/button>/, "");
+    return `<div id="opsHistori" data-kat-bungkus="tren">${bagian("Histori armada", "", isi, pilih)}</div>`;
   }
   /* isi histori satu armada: dipakai kartu Histori (15 aksi terakhir) dan pop-up kartu armada (semua aksi 30 hari) */
   function isiHistori(D, a, batas = Infinity) {
@@ -495,6 +645,9 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
         tm.length ? `<ul class="ops-rp-base">${tm.map(t => `<li><div><b>${esc(t.lokasi || "Lokasi tidak tercatat")}</b><small>${esc(t.registrasi || "")}${t.jam_utc ? `, ${u.jamWIB(t.jam_utc)} WIB` : ""}</small></div><span class="pill ${(NT[t.status] || ["", "ops-abu"])[1]}">${(NT[t.status] || [t.status])[0]}</span>${t.lat != null ? `<a href="${u.gmaps(t.lat, t.lon)}" target="_blank" rel="noopener noreferrer">${lbl("base", "Peta")}</a>` : ""}</li>`).join("")}</ul>` : `<div class="ops-rp-kosong">${lbl("temuan", "")}<div><b>Belum ada temuan pilot untuk ${esc(tglPanjang(D.t))}</b><p>Temuan masuk dari laporan WA satgas udara: titik api, berasap, berasap tipis, atau bersih, lengkap dengan koordinat. Begitu pilot melapor, daftarnya muncul di sini.</p></div></div>`, "temuan")}</div>`; }
     else if (k === "padam") isi = kepala("padam", "Padam ≥ 24 jam", `${fmt(H.padam)} dari ${fmt(H.dinilai)} aksi dinilai`, u.persen(H.persen)) + `<div class="ops-pa-badan">${sek("Aksi water bombing hari ini", [], `<ul class="ops-rp-base">${D.aksi.filter(a => a.guna === "wb").map(a => { const h = u.HASIL[a.hasil] || u.HASIL.tak_dinilai;
       return `<li><div><b>${esc(a.lokasi || "Lokasi tidak tercatat")}</b><small>${esc(a.registrasi)}, ${u.jamWIB(a.jam_utc)} WIB</small></div><span class="pill ${h[1]}">${h[0]}</span></li>`; }).join("")}</ul>`, "air")}</div>`;
+    /* pita pembanding di kepala pop-up (pola pangantara): periode ini lawan pembanding, perubahan di bawah */
+    const mt = metrikRingkas(D).find(x => x.k === ({armada: "armada", base: "base", siap: "siap", sortie: "sortie", temuan: "temuan", padam: "padam"})[k]);
+    if (isi && mt && D.vs) isi = isi.replace('<div class="ops-pa-badan">', `<div class="ops-pa-badan"><div class="ops-rp-vs"><div><small>${esc(D.label)}</small><b>${mt.tampil}</b></div><div class="lalu"><small>${esc(D.vs.label)}</small><b>${mt.tampilLalu}</b></div><p>${deltaHtml(mt) || `<em class="ops-vs-d sama">belum bisa dibandingkan</em>`}</p></div>`);
     if (isi) bukaDialog(`<article class="ex ex-std ops-pa ops-rp">${isi}</article>`);
   }
 
@@ -630,7 +783,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     const boleh = pilih.startsWith("base:") ? new Set(grup.find(g => "base:" + g.id === pilih).regs) : pilih ? new Set([pilih]) : null, foto = boleh ? semua.filter(f => boleh.has(f.reg)) : semua;
     const opsi = (v, t) => `<option value="${esc(v)}"${v === pilih ? " selected" : ""}>${esc(t)}</option>`;
     const saring = regs.length > 1 ? `<select data-galeri aria-label="Saring armada atau base"><option value="">Semua armada</option>${grup.map(g => `<optgroup label="${esc(g.nama)}">${g.regs.length > 1 ? opsi("base:" + g.id, "Semua armada di " + g.nama) : ""}${g.regs.map(r => opsi(r, r)).join("")}</optgroup>`).join("")}</select>` : "";
-    return `<div id="opsGaleri" data-kat-bungkus="kegiatan">${bagian("Dokumentasi", semua.length ? `${hl(fmt(semua.length))} foto dokumentasi dari ${fmt(regs.length)} armada dalam 30 hari` : "Belum ada foto dokumentasi dalam 30 hari",
+    return `<div id="opsGaleri" data-kat-bungkus="tren">${bagian("Dokumentasi", semua.length ? `${hl(fmt(semua.length))} foto dokumentasi dari ${fmt(regs.length)} armada dalam 30 hari` : "Belum ada foto dokumentasi dalam 30 hari",
       foto.length ? kelompokFoto(foto, D.peta.base).map(h => { const pra = h.base.flatMap(b => b.foto).slice(0, 8);
         return `<details class="ops-gl-hari"><summary><span class="ops-gl-tgl"><b>${esc(tglPendek(h.tanggal))}</b><small>${fmt(h.n)} foto</small><small>${h.base.map(b => esc(b.nama)).join(", ")}</small></span>
           <span class="ops-gl-pra">${pra.map(f => `<img src="${esc(f.url)}" alt="" loading="lazy">`).join("")}${h.n > pra.length ? `<i>+${fmt(h.n - pra.length)}</i>` : ""}</span><svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></summary><div class="ops-gl-isi">${h.base.map(b => `<h4 class="ops-gl-base">${lbl("base", esc(b.nama))}<small>${lbl("kalender", `${fmt(b.foto.length)} foto`)}</small></h4><div class="ops-galeri">${b.foto.map(f => `<a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer"${f.lokasi ? ` title="${esc(f.lokasi)}"` : ""}><img src="${esc(f.url)}" alt="Dokumentasi ${esc(f.reg)} ${esc(f.tanggal)}" loading="lazy"><span><b>${esc(f.reg)}</b> ${u.jamWIB(f.jam_utc)} WIB${f.lokasi ? `<br>${esc(f.lokasi)}` : ""}</span></a>`).join("")}</div>`).join("")}</div></details>`; }).join("")
