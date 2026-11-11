@@ -1973,3 +1973,8 @@
 #opsLaporan .ops-ringkas-slot .ops-tindak>header{background:color-mix(in srgb,#c0392b 10%,#fff)!important;border-bottom:1px solid color-mix(in srgb,#c0392b 22%,#fff)!important}
 #opsLaporan tr.ops-grup>td{background:color-mix(in srgb,#2f6fd6 11%,#fff)!important}
 #opsLaporan .ops-laci-grup{background:color-mix(in srgb,#2f6fd6 10%,#fff)}
+/* biru jauh lebih muda (pemilik 11 Nov 2026 "jauh lebih muda lagi") */
+#opsLaporan .ops-wadah details.ops-kartu>summary.ex-hd,#opsLaporan .ops-wadah details.ops-kartu:not(.ops-polos)>summary.ex-hd,#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary{background:color-mix(in srgb,#2f6fd6 5%,#fff)!important;border-bottom:1px solid color-mix(in srgb,#2f6fd6 16%,#fff)!important}
+#opsLaporan .ops-ringkas-slot .ops-tindak>header{background:color-mix(in srgb,#c0392b 5%,#fff)!important;border-bottom:1px solid color-mix(in srgb,#c0392b 16%,#fff)!important}
+#opsLaporan tr.ops-grup>td{background:color-mix(in srgb,#2f6fd6 5%,#fff)!important}
+#opsLaporan .ops-laci-grup{background:color-mix(in srgb,#2f6fd6 5%,#fff)}
