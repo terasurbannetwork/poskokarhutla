@@ -1754,3 +1754,14 @@
 #opsLaporan .ops-peta-leg>button{border:0;background:none;padding:0;font:inherit;font-size:inherit;color:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
 #opsLaporan .ops-peta-leg>button[aria-pressed="false"]{opacity:.4;text-decoration:line-through}
 #opsLaporan .ops-peta-leg button::before{content:"";width:10px;height:10px;border-radius:50%}
+/* ===== kepala terbaik (riset 11 Nov 2026: Palantir "shaded style sekali per halaman", Shopify "nesting = struktur, bukan hiasan", EUI/SAP Fiori anatomi kepala) =====
+   Hanya L1 berwarna. Semua kepala L2: putih, tinggi 52px, ikon kotak navy + judul tebal + pil keterangan, aksi di kanan, garis bawah. */
+#opsLaporan{--h2:#fff;--h2-garis:color-mix(in srgb,#0b2545 12%,#fff)}
+#opsLaporan .ops-wadah details.ops-kartu>summary.ex-hd,
+#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary,
+#opsLaporan .ops-ringkas-slot .ops-tindak>header{box-sizing:border-box;min-height:52px;padding:8px 16px!important;background:#fff!important;border-bottom:1px solid var(--h2-garis)!important;align-items:center}
+#opsLaporan .ops-wadah details.ops-kartu>summary .ex-jd>h3,#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary>b{font-size:1.0625rem!important;font-weight:800;letter-spacing:-.005em;color:#0b2545!important}
+#opsLaporan .ops-ringkas-slot .ops-tindak>header{background:#fff!important;border-bottom-color:color-mix(in srgb,#a63a26 18%,#fff)!important}
+#opsLaporan .ops-ringkas-slot .ops-tindak>header>b{font-size:1.0625rem;color:#a63a26}
+/* garis bawah kepala L2 sedikit lebih tegas daripada garis isi, tanpa latar */
+#opsLaporan .ops-wadah details.ops-kartu{border-color:var(--h2-garis)}

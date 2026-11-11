@@ -108,3 +108,5 @@ Warna gelap hanya di L1. Tingkat di bawahnya makin ringan, supaya mata tahu urut
 | Label nilai | Siap, Renlap, Sortie | pil `.pill` sama bentuk: hijau baik, oranye perlu perhatian, merah prioritas, abu netral kosong |
 
 Warna kepala per tingkat (11 Nov 2026): satu keluarga navy, makin dalam makin terang. L1 navy solid `#0b2545` teks putih; L2 navy 8% (`--h2`) dengan garis navy 14% dan judul navy; L3 pita putih beraksen biru kiri di atas wadah biru sangat muda; L4 kepala putih dengan garis pemisah saja. Perlu tindakan memakai tone merah yang setara L2. Tingkat dibedakan oleh tone, bukan warna-warni.
+
+Pembaruan kepala (riset 11 Nov 2026): Palantir Workshop menyarankan gaya berlatar hanya sekali per halaman; Shopify Polaris memperlakukan susunan bertingkat sebagai struktur, bukan kartu berlatar, maksimal 2-3 tingkat; EUI dan SAP Fiori membatasi kepala ke ikon, judul, keterangan, dan 2-3 aksi dalam satu baris. Maka: hanya L1 berlatar navy; semua kepala L2 putih, tinggi minimal 52px, ikon kotak navy, judul 1.0625rem tebal navy, pil keterangan, aksi di kanan, garis bawah navy 12%. Perlu tindakan: ikon dan judul merah, tanpa latar.
