@@ -260,7 +260,8 @@
 #opsLaporan .ops-akt[data-reg]:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
 .ops-dlg{width:min(1000px,94vw);max-height:90vh;padding:0;border:0;border-radius:20px;background:transparent;overflow:visible}
 .ops-dlg::backdrop{background:color-mix(in srgb,#0b1730 55%,transparent);backdrop-filter:blur(3px)}
-.ops-dlg>.ex{margin:0;max-height:90vh;overflow:auto}
+.ops-dlg-isi{display:grid;gap:20px}
+.ops-dlg-isi>.ex{margin:0;max-height:90vh;overflow:auto}
 .ops-dlg .ex-jd{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 .ops-dlg-x{flex:none;display:grid;place-items:center;width:34px;height:34px;border:0;border-radius:50%;background:color-mix(in srgb,#fff 14%,transparent);color:#fff;cursor:pointer}
 .ops-dlg-x:hover{background:color-mix(in srgb,#fff 26%,transparent)}

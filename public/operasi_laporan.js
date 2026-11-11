@@ -337,7 +337,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     let d = document.getElementById("opsDlgAr");
     if (!d) { d = document.createElement("dialog"); d.id = "opsDlgAr"; d.className = "ops-dlg"; ($("#opsLaporan") || document.body).append(d);   // di dalam #opsLaporan supaya gaya layar ikut
       d.addEventListener("click", e => { if (e.target === d || e.target.closest("[data-tutup]")) d.close(); }); }
-    d.innerHTML = popupArmada(D, a);
+    d.innerHTML = `<div class="ops-dlg-isi">${popupArmada(D, a)}</div>`;
     if (!d.open) d.showModal();
   }
 
