@@ -56,7 +56,7 @@
   /* model A (pemilik 11 Nov 2026, DESIGN-SYSTEM §7): panel seksi kiri; satu seksi = satu tampilan, kartu di dalamnya terbuka.
      [kunci, nama, ikon, kartu-kartu]; seksi "ringkasan" = Perlu tindakan + Ringkasan + kartu yang disebut */
   const SEKSI = {udara: [["Hari ini", [["ringkasan", "Ringkasan", "tren", ["papan-base"]], ["tindak", "Tindak lanjut", "catat", ["rencana-tindakan", "data-belum-lengkap"]], ["base", "Base dan armada", "base", ["base", "histori-armada"]], ["peta", "Peta operasi", "api", ["peta-operasi"]], ["renlap", "Renlap dan sortie", "sortie", ["renlap", "aksi-armada", "temuan-pilot"]]]],
-      ["Kinerja", [["tren", "Tren 30 hari", "tren", ["tren-30-hari"]], ["efektivitas", "Efektivitas", "padam", ["efektivitas"]], ["operator", "Operator", "op", ["operator"]], ["dok", "Foto dan jejak terbang", "catat", ["dokumentasi", "jejak-ads-b"]]]],
+      ["Kinerja", [["tren", "Tren 30 hari", "tren", ["tren-30-hari"]], ["efektivitas", "Efektivitas", "padam", ["efektivitas"]], ["operator", "Operator", "op", ["operator"]], ["dok", "Dokumentasi foto", "catat", ["dokumentasi", "jejak-ads-b"]]]],
       ["Kontrak", [["kontrak", "Kontrak 2026", "jam", ["kontrak-2026"]], ["omc", "Modifikasi cuaca", "awan", ["omc-resmi-bmkg-aktif", "modifikasi-cuaca"]]]]],
     darat: [["Hari ini", [["ringkasan", "Ringkasan", "tren", []], ["personel", "Personel", "peran", ["personel"]], ["lahan", "Penanganan lahan", "api", ["penanganan-lahan", "dipadamkan-2026"]], ["patroli", "Patroli regu", "vis", ["patroli-regu"]]]]]};
   const IK_GRUP = {"Hari ini": "kalender", Kinerja: "tren", Kontrak: "op"};
@@ -695,7 +695,8 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     return [
       ringkas, `<section class="ops-wadah">${[
       kartuRencana(D), kartuPengkinian(D), kartuPapan(D), kartuPeta(D), kartuBase(D), kartuRenlap(D), kartuAksi(D), kartuTemuan(D),
-      kartuTren(D), kartuNilai(D), kartuHistori(D), kartuGaleri(D), kartuJejak(D),
+      kartuTren(D), kartuNilai(D), kartuHistori(D), kartuGaleri(D),   // Jejak ADS-B disembunyikan (pemilik 11 Nov 2026 "hilangkan ini")
+     
       kartuOperator(D), kartuKontrak(D), kartuOmcResmi(D), kartuOmc(D)].join("")}</section>`].join("");
   }
 

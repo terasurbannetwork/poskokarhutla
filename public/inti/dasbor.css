@@ -1,0 +1,26 @@
+/* Sistem desain dashboard Centurisk97 (data/kajian-bnpb/dashboard/DESIGN-SYSTEM.md, keputusan pemilik 9-11 Nov 2026).
+   Lapisan bersama yang dimuat sesudah CSS layar: menyeragamkan kepala bagian terang beraksen navy, tanpa huruf kapital,
+   tanpa latar gelap selain kepala halaman dan kepala tabel, angka tabular, label pil. Rujukan hidup: /operasi. */
+:root{--db-navy:#0b2545;--db-biru:#2f6fd6;--db-h2:color-mix(in srgb,#2f6fd6 5%,#fff);--db-h2-garis:color-mix(in srgb,#2f6fd6 16%,#fff);
+  --db-isi:color-mix(in srgb,#2f6fd6 2%,#fff);--db-merah-h2:color-mix(in srgb,#c0392b 5%,#fff);--db-merah-isi:color-mix(in srgb,#c9503a 2%,#fff)}
+
+/* angka sejajar */
+b,strong,td,.pill{font-variant-numeric:tabular-nums}
+
+/* ---- admin (/admin/*) ---- */
+/* tanpa huruf kapital semua (D14, memori tanpa-kapital) */
+.ad-sep,.ad-kontrol label,.ad-kartu h3,.ad-ey,.ad-seksi,.ad-tabel th,.ad-tabel td::before,.pb-tag,.pb-kaki{text-transform:none!important;letter-spacing:0!important}
+.ad-ey,.ad-kontrol label,.ad-seksi{font-size:.75rem}
+/* kepala kartu = pita L2 terang beraksen navy (D6) */
+.ad-kartu{padding:14px 16px;border:1px solid var(--db-h2-garis)}
+.ad-kartu>h3:first-child{display:flex;align-items:center;gap:8px;margin:-14px -16px 12px;padding:10px 16px;border-radius:16px 16px 0 0;background:var(--db-h2);box-shadow:inset 4px 0 0 var(--db-navy);border-bottom:1px solid var(--db-h2-garis);font:800 .875rem var(--font);color:var(--db-navy)}
+/* kartu angka utama tidak gelap (D4): biru muda, teks navy */
+.ad-hero>.ad-kartu:first-child{background:var(--db-h2);color:var(--db-navy);box-shadow:inset 4px 0 0 var(--db-navy);border:1px solid var(--db-h2-garis)}
+.ad-hero>.ad-kartu:first-child::after{display:none}
+.ad-hero>.ad-kartu:first-child .ad-ey,.ad-hero>.ad-kartu:first-child .ad-catat{color:var(--ink2)}
+.ad-hero>.ad-kartu:first-child .ad-besar-l{color:var(--db-navy)}
+/* kepala tabel navy polos bertulisan putih (D5) */
+.ad-tabel thead tr{background:var(--db-navy)}
+.ad-tabel th{font-size:.75rem;border-bottom:0}
+/* isi rapat (D13) */
+.ad-tabel td{padding-top:7px;padding-bottom:7px}
