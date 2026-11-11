@@ -115,6 +115,7 @@
 .ops-ptg{display:flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;border-radius:12px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);padding:6px 12px;font-size:12px}
 .ops-ptg>span{font-size:11px;font-weight:800;color:var(--brand2)}
 .ops-tgl{position:relative;display:inline-flex;align-items:center;cursor:pointer;border:1px solid var(--line);border-radius:999px;padding:4px 12px;background:var(--card);color:var(--ink);font-weight:700}
+.ops-tgl svg{width:14px;height:14px;margin-right:6px;color:var(--brand2)}
 .ops-tgl input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;border:0;padding:0}
 .ops-kini,.ops-kembali{border:0;border-radius:999px;padding:2px 8px;font-size:10.5px;font-style:normal;font-weight:800}
 .ops-kini{background:color-mix(in oklch,var(--brand2) 12%,transparent);color:var(--brand2)}

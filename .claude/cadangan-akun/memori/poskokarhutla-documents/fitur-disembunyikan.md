@@ -127,3 +127,6 @@ Added 17 Oct 2026:
 Added 1 Nov 2026:
 - Tab Foto: "foto" added to TAB_SEMBUNYI (public/index.html) and karhutla tab_sembunyi (public/bencana.json); Foto link removed from static nav in public/monitor.html. /foto still opens directly. Restore: undo those three.
 - Header share button "Bagikan" (#bgBuka, all hazard pages via public/bagikan.js init): `b.style.display = "none"` line. Per-chart/per-card share buttons still shown. Restore: delete that line.
+
+Added 11 Nov 2026:
+- /operasi bilah alat: tombol "Salin teks WA" dan "Cetak / PDF" dicabut dari markup kerangka() di public/operasi_laporan.js (komentar di tempatnya). Handler data-aksi, fungsi salin(), dan CSS .ops-tbl tetap. Pulihkan = kembalikan dua <button class="ops-tbl" data-aksi="salin|cetak">.

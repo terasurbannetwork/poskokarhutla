@@ -52,8 +52,7 @@
     box.innerHTML = `<div class="ops-alat" role="toolbar" aria-label="Laporan operasi">
       <div class="seg ops-mode" role="group" aria-label="Bagian operasi">${[["udara", "Operasi Udara"], ["darat", "Operasi Darat"]].map(([k, t]) => `<button type="button" data-mode="${k}" aria-pressed="${st.mode === k}">${ik(k)}${t}</button>`).join("")}</div>
       <div class="ops-periode" role="group" aria-label="Periode laporan">${periode()}</div>
-      <button type="button" class="ops-tbl" data-aksi="salin" title="Salin ringkasan laporan hari ini untuk WhatsApp">Salin teks WA</button>
-      <button type="button" class="ops-tbl" data-aksi="cetak" title="Cetak atau simpan PDF">Cetak / PDF</button>
+      ${""/* tombol Salin teks WA (data-aksi="salin") dan Cetak / PDF (data-aksi="cetak") disembunyikan pemilik 11 Nov 2026; handler dan salin() tetap */}
       <span class="ops-status" role="status"></span></div><div id="opsIsi"></div>`;
     box.addEventListener("click", e => {
       const m = e.target.closest("[data-mode]");
@@ -81,7 +80,7 @@
   function periode() {
     const t = st.tanggal, kini = hariWIB(), senin = geser(t, -((dow(t) + 6) % 7)), kmr = geser(t, -1), bsk = geser(t, 1), mL = geser(t, -7), mD = geser(t, 7);
     return `<div class="ops-p1">${tb(kmr, "ops-lgk", `<b>‹ Kemarin</b><span class="ops-lnc">${hariLabel(kmr)}</span>`)}
-      <div class="ops-ptg"><span>Periode</span><label class="ops-tgl"><span>${hariLabel(t)}</span><input type="date" value="${t}" max="${kini}" min="${TGL_MIN}" aria-label="Pilih tanggal"></label>${t === kini
+      <div class="ops-ptg"><span>Periode</span><label class="ops-tgl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>${hariLabel(t)}</span><input type="date" value="${t}" max="${kini}" min="${TGL_MIN}" aria-label="Pilih tanggal"></label>${t === kini
         ? `<em class="ops-kini">Hari ini</em>` : `<button type="button" class="ops-kembali" data-tgl="${kini}">↺ Hari ini</button>`}</div>
       ${tb(bsk, "ops-lgk", `<span class="ops-lnc">${hariLabel(bsk)}</span><b>Besok ›</b>`)}</div>
       <div class="ops-p2">${tb(mL, "ops-ujung", `‹ ${mingguLabel(mL)}`, mingguLabel(mL))}<div class="ops-strip">${Array.from({length: 7}, (_, i) => { const d = geser(senin, i);

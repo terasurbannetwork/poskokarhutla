@@ -9,8 +9,10 @@ on:
     - cron: "12 22-23,0-10 * * *"
   workflow_dispatch:
 
+# Grup sendiri, bukan `data` (11 Nov 2026): GitHub hanya menyimpan satu run antre per grup, jadi run per jam ini terus diusir
+# saat data.yml/titik.yml jalan lama (10-11 Nov: 15 jam tanpa pembaruan). Tabrakan push ke main ditangani pull --rebase + coba ulang di bawah.
 concurrency:
-  group: data
+  group: jarak-pandang
   cancel-in-progress: false
 
 permissions:
