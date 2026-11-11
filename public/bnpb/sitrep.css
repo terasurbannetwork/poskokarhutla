@@ -104,3 +104,24 @@
 @media print{.sr-ubin-grid{grid-template-columns:repeat(3,1fr)}.sr-grid{display:block}.sr-grid>.sr-kartu+.sr-kartu{margin-top:8px}}
 /* panel kiri setinggi layar (tanpa ruang kosong di bawahnya), ubin terakhir mengisi sisa baris */
 @media (min-width:901px){.sr-nav{height:calc(100vh - 86px)}}
+/* panel kiri setara /operasi: grup berlabel ikon, baris berikon kotak + angka kanan membagi rata tinggi, kaki pembaruan data bertitik */
+.sr-nav{gap:8px;padding:10px;overflow:hidden}
+.sr-nav-g{display:flex;align-items:center;gap:8px;margin:0;padding:6px 8px;border-radius:10px;background:var(--db-h2,#f3f7fd);font-size:.8125rem;font-weight:800;color:var(--db-navy,#0b2545)}
+.sr-nav-g>i{display:grid;place-items:center;width:22px;height:22px;border-radius:6px;background:var(--db-navy,#0b2545)}
+.sr-nav-g svg{width:13px;height:13px;color:#fff;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sr-nav-isi{flex:1;display:flex;flex-direction:column;gap:2px;min-height:0}
+.sr-nav-b{flex:1 1 0;max-height:42px;min-height:34px;gap:10px;padding:4px 8px;font-size:.84375rem}
+.sr-nav-ik{display:grid;place-items:center;flex:none;width:26px;height:26px;border-radius:8px;background:color-mix(in srgb,#2f6fd6 9%,#fff)}
+.sr-nav-ik svg{width:14px;height:14px}
+.sr-nav-t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sr-nav-n{flex:none;padding:1px 8px;border-radius:999px;background:color-mix(in srgb,#2f6fd6 9%,#fff);font-size:.6875rem;font-weight:800;color:var(--db-navy,#0b2545)}
+.sr-nav-n.merah{background:#c0392b;color:#fff}
+.sr-nav-n.oranye{background:color-mix(in srgb,#e08a3a 18%,#fff);color:#a35512}
+.sr-nav-b[aria-current="true"] .sr-nav-ik{background:rgb(255 255 255 / .16)}
+.sr-nav-b[aria-current="true"] .sr-nav-n{background:rgb(255 255 255 / .2);color:#fff}
+.sr-nav-kaki{margin-top:0;padding-top:8px;gap:5px}
+.sr-nav-pb{display:flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid var(--line);border-radius:10px;font-size:.75rem}
+.sr-nav-pb .sr-nav-dot{width:7px;height:7px;border-radius:50%;background:var(--w);flex:none}
+.sr-nav-pb svg{width:12px;height:12px;color:var(--w);fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.sr-nav-pb span{flex:1;font-weight:700;color:var(--ink)}
+.sr-nav-pb b{font-weight:800;color:var(--w);white-space:nowrap}

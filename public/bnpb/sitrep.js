@@ -149,10 +149,10 @@
     return kartu("Neraca Posko " + tglPendek(N.tgl), "api", isi, "Posko karhutla, rakor dan regu lapangan");
   }
   function sWarga(W) {
-    if (!W) return kartu("Laporan warga 24 jam", "warga", belum("Laporan warga belum bisa dimuat."), "Lapor Warga");
+    if (!W) return kartu("Lapor warga", "warga", belum("Laporan warga belum bisa dimuat."), "Lapor Warga");
     const isi = h("div", {class: "sr-isi"}, h("div", {class: "sr-ukurbaris"}, ukuran("Laporan aktif 24 jam", F(W.total) + (W.terpotong ? "+" : "")), ukuran("Dibenarkan warga lain", F(W.per.reduce((a, x) => a + x.benar, 0)))),
       W.per.length ? tabel(["Jenis", "Laporan", "Dibenarkan warga"], W.per.map(x => [JENIS_WARGA(x.jenis), {t: F(x.n), n: 1}, {t: F(x.benar), n: 1}])) : null);
-    return kartu("Laporan warga 24 jam", "warga", isi, "Lapor Warga" + (prov ? ", seluruh Indonesia (laporan belum dipilah per provinsi)" : ""));
+    return kartu("Lapor warga", "warga", isi, "Lapor Warga" + (prov ? ", seluruh Indonesia (laporan belum dipilah per provinsi)" : ""));
   }
   function sRelawan(R) {
     if (!R) return kartu("Relawan", "warga", belum("Relawan belum aktif."), "Relawan Centurisk97");
@@ -220,12 +220,22 @@
     /* model A (sistem desain dashboard, pemilik 11 Nov 2026): panel kiri berisi identitas laporan, daftar seksi, dan kaki "Pembaruan data" */
     const nav = $("srNav");
     if (nav) {
+      /* angka kecil di kanan tiap seksi, urut sama dengan seksi di layar */
+      const nK = model.kej.filter(r => !r.belum).length, ANGKA = [nK || null, model.naik.length || null, null, model.warga?.total ?? null, model.relawan?.siap ?? null, null, model.alun?.terbuka ?? null, null];
+      const KELAS = [null, "merah", null, null, null, null, "oranye", null];
       const seksi = [...lap.querySelectorAll(".sr-kartu > h2")].map((j, i) => { const k = j.parentElement; k.id ||= "sr-s" + i; const b = h("button", {type: "button", class: "sr-nav-b"});
-        const ik = j.querySelector("svg"); if (ik) b.append(ik.cloneNode(true)); b.append(j.textContent.trim()); b.dataset.ke = k.id; b.addEventListener("click", () => k.scrollIntoView({behavior: "smooth", block: "start"})); return b; });
+        const ik = h("i", {class: "sr-nav-ik"}), sv = j.querySelector("svg"); if (sv) ik.append(sv.cloneNode(true));
+        b.append(ik, h("span", {class: "sr-nav-t", teks: j.textContent.trim()}));
+        if (ANGKA[i] != null) b.append(h("small", {class: "sr-nav-n" + (KELAS[i] ? " " + KELAS[i] : ""), teks: F(ANGKA[i])}));
+        b.dataset.ke = k.id; b.addEventListener("click", () => k.scrollIntoView({behavior: "smooth", block: "start"})); return b; });
       const io = new IntersectionObserver(es => { for (const e of es) if (e.isIntersecting) seksi.forEach(b => b.setAttribute("aria-current", String(b.dataset.ke === e.target.id))); }, {rootMargin: "-20% 0px -70% 0px"});
       lap.querySelectorAll(".sr-kartu").forEach(k => io.observe(k));
-      const kaki = h("div", {class: "sr-nav-kaki"}, h("p", {class: "sr-nav-kk", teks: "Pembaruan data"}), ...[...kop.querySelectorAll(".bn-pil")].map(p => h("div", {class: "sr-nav-pb"}, p)));
-      nav.replaceChildren(h("div", {class: "sr-nav-id"}, ...kop.children[0] ? [kop.children[0], kop.children[1]] : []), h("nav", {class: "sr-nav-isi"}, h("p", {class: "sr-nav-kk", teks: "Isi laporan"}), ...seksi), kaki);
+      const grup = (teks, ikon) => h("p", {class: "sr-nav-g"}, h("i", null, svg(ikon)), h("span", {teks}));
+      const baris = (warna, ikon, label, nilai) => { const r = h("div", {class: "sr-nav-pb"}, h("i", {class: "sr-nav-dot"}), svg(ikon), h("span", {teks: label}), h("b", {teks: nilai})); r.style.setProperty("--w", warna); return r; };
+      const jam = t => { const d = new Date(t); return isNaN(d) ? "–" : wib(d, {hour: "2-digit", minute: "2-digit", hour12: false}).replace(".", ":") + " WIB"; }, waktu = ARSIP ? tglPendek(ARSIP.tgl) : jam(model.kini);
+      const kaki = h("div", {class: "sr-nav-kaki"}, grup("Pembaruan data", "kotak"),
+        baris("#2f6fd6", "peta", "Cakupan", namaWil()), baris("#2e8b57", "kotak", "Laporan", waktu), baris(dataTgl ? "#2e8b57" : "#94a3b8", "naik", "Data", dataTgl ? jam(dataTgl) : "–"));
+      nav.replaceChildren(h("div", {class: "sr-nav-id"}, ...kop.children[0] ? [kop.children[0], kop.children[1]] : []), grup("Isi laporan", "kotak"), h("nav", {class: "sr-nav-isi"}, ...seksi), kaki);
     }
     document.title = `Laporan situasi ${namaWil()}, Centurisk97`;
   }
