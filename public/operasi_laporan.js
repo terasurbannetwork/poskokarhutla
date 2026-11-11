@@ -57,7 +57,7 @@
     box.addEventListener("click", e => {
       const m = e.target.closest("[data-mode]");
       if (m) { st.mode = m.dataset.mode; try { localStorage.setItem("ops_mode", st.mode); } catch (x) {} box.querySelectorAll("[data-mode]").forEach(b => b.setAttribute("aria-pressed", String(b === m))); return sesudahFrame(isi); }
-      const ka = e.target.closest(".ops-ar[data-reg]"); if (ka) return bukaArmada(ka.dataset.reg);
+      const ka = e.target.closest(".ops-akt[data-reg]"); if (ka) return bukaArmada(ka.dataset.reg);
       const ud = e.target.closest("[data-unduh]"); if (ud) return st._d && unduhRute(st._d, ud.dataset.base, ud.dataset.unduh);
       const fp = e.target.closest("[data-fpulau], [data-ftanda]"); if (fp) return saringBase(fp);
       const gr = e.target.closest("tr.ops-grup"); if (gr) return lipatGrup(gr);
@@ -68,7 +68,7 @@
       if (a.dataset.aksi === "cetak") return window.print();
       if (a.dataset.aksi === "salin") salin(a);
     });
-    box.addEventListener("keydown", e => { const k = (e.key === "Enter" || e.key === " ") && e.target.closest?.(".ops-ar[data-reg], tr.ops-bb, tr.ops-grup"); if (k) { e.preventDefault(); k.dataset.reg ? bukaArmada(k.dataset.reg) : k.classList.contains("ops-grup") ? lipatGrup(k) : bukaBase(k); } });
+    box.addEventListener("keydown", e => { const k = (e.key === "Enter" || e.key === " ") && e.target.closest?.(".ops-akt[data-reg], tr.ops-bb, tr.ops-grup"); if (k) { e.preventDefault(); k.dataset.reg ? bukaArmada(k.dataset.reg) : k.classList.contains("ops-grup") ? lipatGrup(k) : bukaBase(k); } });
     box.addEventListener("change", e => {
       if (e.target.matches(".ops-tgl input")) return pilihTanggal(e.target.value);
       if (e.target.matches("[data-reg]")) { st.reg = e.target.value; return sesudahFrame(() => { const k = $("#opsHistori"); if (k) k.outerHTML = kartuHistori(st._d); }); }
@@ -147,7 +147,7 @@
   const IK_LBL = {vis: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>', angin: '<path d="M3 8h10a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7"/>',
     jam: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', base: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>', api: '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 2 1.5 3 3 3-1-3 0-6 0-8.5z"/>', unduh: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>', peran: '<path d="M10 14 3 12l1-2 7 1 4-6h2l-2 7 5 1 1-2h2l-1 4 1 4h-2l-1-2-5 1 2 7h-2l-4-6-7 1-1-2z"/>',
     op: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>', milik: '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>', ember: '<path d="M5 7h14l-2 13H7zM5 7a7 3 0 0 1 14 0"/>', asap: '<path d="M4 15a4 4 0 0 1 4-4 5 5 0 0 1 9.6-1A3.5 3.5 0 0 1 18 17H7a3 3 0 0 1-3-2z"/>', ts: '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'};
-  const lbl = (k, t) => `<span class="ops-lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_LBL[k]}</svg>${t}</span>`;
+  const lbl = (k, t) => `<span class="ops-lbl" data-k="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_LBL[k]}</svg>${t}</span>`;
   /* slot tetap (pemilik 11 Nov 2026 "label lurus ke bawah"): jarak pandang | angin | jam | cuaca; slot kosong tetap ada supaya kolom sejajar */
   const labelLayak = k => [k.vis_km != null ? lbl("vis", `${k.vis_km.toLocaleString("id-ID", {maximumFractionDigits: 1})} km`) : "",
     k.kt != null ? lbl("angin", `${k.kt} kt`) : "", k.jam ? lbl("jam", `${k.jam} WIB`) : "",
@@ -187,10 +187,9 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     return `<div class="ops-ar-grid">${ar.slice().sort((x, y) => x.registrasi.localeCompare(y.registrasi)).map(a => {
       const s = u.stAr(a.status), aksi = D.aksi.filter(x => x.registrasi === a.registrasi), wb = aksi.filter(x => x.guna === "wb").length;
       const tipe = /tidak diketahui/i.test(a.tipe || "") ? "Tipe belum tercatat" : a.tipe || "Tipe belum tercatat", f = u.fotoAr(a);
-      return `<article class="ops-ar" data-reg="${esc(a.registrasi)}" tabindex="0" role="button" aria-label="Histori ${esc(a.registrasi)}"><figure>${f ? u.imgAr(a, "", `${a.registrasi} ${tipe}`) : `<span class="ops-ar-kosong">${lbl("peran", "")}</span>`}<span class="ops-ar-st ${s[1]}"><i></i>${s[0]}</span></figure>
-        <div class="ops-ar-isi"><header><b>${esc(a.registrasi)}</b><small>${esc(tipe)}</small></header>
-        <ul>${baris("peran", esc(PERAN[a.peran] || a.peran || ""))}${baris("op", a.operator ? esc(a.operator) : "")}${baris("milik", a.pemilik ? PEMILIK[a.pemilik] || esc(a.pemilik) : "")}${baris("ember", a.bucket_liter ? `Bucket ${fmt(a.bucket_liter)} L` : "")}</ul>
-        <footer>${aksi.length ? `<b>${fmt(aksi.length)}</b> sortie${wb ? `, <b>${fmt(wb)}</b> water bombing` : ""}` : "Belum ada sortie hari ini"}${a.alasan ? `<span>${esc(a.alasan)}</span>` : ""}</footer></div></article>`; }).join("")}</div>`;
+      return `<article class="ops-akt" data-reg="${esc(a.registrasi)}" tabindex="0" role="button" aria-label="Histori ${esc(a.registrasi)}"><figure>${f ? u.imgAr(a, "", `${a.registrasi} ${tipe}`) : `<span class="ops-ar-kosong">${lbl("peran", "")}</span>`}<span class="ops-ar-st ${s[1]}"><i></i>${s[0]}</span><figcaption><b>${esc(a.registrasi)}</b><small>${esc(tipe)}</small></figcaption></figure>
+        <div class="ops-ar-isi"><ul>${baris("peran", esc(PERAN[a.peran] || a.peran || ""))}${baris("op", a.operator ? esc(a.operator) : "")}${baris("milik", a.pemilik ? PEMILIK[a.pemilik] || esc(a.pemilik) : "")}${baris("ember", a.bucket_liter ? `Bucket ${fmt(a.bucket_liter)} L` : "")}</ul>
+        ${a.alasan ? `<p class="ops-pa-alasan">${esc(a.alasan)}</p>` : ""}<footer><span>${aksi.length ? `<b>${fmt(aksi.length)}</b> sortie hari ini${wb ? `, <b>${fmt(wb)}</b> WB` : ""}` : "Belum ada sortie hari ini"}</span><em>Histori ›</em></footer></div></article>`; }).join("")}</div>`;
   }
   const namaBase = (D, id) => ((D.peta.base || []).find(b => b.id === id)?.nama || id || "–").split(" / ")[0];
 
@@ -332,11 +331,35 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     let d = document.getElementById("opsDlgAr");
     if (!d) { d = document.createElement("dialog"); d.id = "opsDlgAr"; d.className = "ops-dlg"; ($("#opsLaporan") || document.body).append(d);   // di dalam #opsLaporan supaya gaya layar ikut
       d.addEventListener("click", e => { if (e.target === d || e.target.closest("[data-tutup]")) d.close(); }); }
-    const {judul, isi} = isiHistori(D, a);
-    d.innerHTML = `<article class="ex ex-std"><header class="ex-hd"><span class="ex-ey">${ik("udara")} Histori armada</span><div class="ex-jd"><h3>${judul}</h3>
-      <button type="button" class="ops-dlg-x" data-tutup aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></header>
-      <div class="ex-bd">${isi}</div></article>`;
+    d.innerHTML = popupArmada(D, a);
     if (!d.open) d.showModal();
+  }
+
+  /* isi pop-up armada (pemilik 11 Nov 2026 "masih jelek"): kepala foto besar + identitas, deret angka tanpa kotak,
+     linimasa kegiatan per tanggal (hasil hanya untuk water bombing), kontrak sebagai kartu kecil, teks tanpa kapital semua */
+  const kalimat = t => String(t || "").toLowerCase().replace(/(^|[\s-])([a-z])/g, (m, a, b) => a + b.toUpperCase()).replace(/ - /g, " – ");
+  function popupArmada(D, a) {
+    const u = U(), ak = D.aksi30.filter(x => x.registrasi === a.registrasi).sort((x, y) => (y.jam_utc || 0) - (x.jam_utc || 0)), hh = D.hitung(ak);
+    const k = D.mon?.kpi?.armada?.[a.registrasi], kt = u.kontrak(a.registrasi), s = u.stAr(a.status), jam = kt.reduce((t, x) => t + (x.jam_operasi_menit || 0), 0);
+    const tipe = /tidak diketahui/i.test(a.tipe || "") ? "Tipe belum tercatat" : a.tipe || "Tipe belum tercatat", f = u.fotoAr(a);
+    const angka = (n, t) => `<div${n === "–" ? ' class="redup"' : ""}><b>${n}</b><span>${t}</span></div>`;
+    const hari = [...new Set(ak.map(x => x.tanggal))];
+    const linimasa = hari.length ? hari.map(t => `<li><time>${esc(tglPendek(t))}</time><ol>${ak.filter(x => x.tanggal === t).map(x => { const h = x.guna === "wb" ? (u.HASIL[x.hasil] || u.HASIL.tak_dinilai) : null;
+        return `<li><span class="ops-lm-jam">${u.jamWIB(x.jam_utc)}</span><span class="ops-lm-misi" data-g="${esc(x.guna || "")}">${esc(MISI[x.guna] || x.jenis || "Misi")}</span>
+          <span class="ops-lm-lok">${esc((x.lokasi || "Lokasi tidak tercatat").replace(/\(BMKG\/Sipongi\)/g, "").trim())}</span>${x.drop ? `<span class="ops-lm-drop">${lbl("ember", `${fmt(x.drop)} jatuhan`)}</span>` : ""}${h ? `<span class="pill ${h[1]}">${h[0]}</span>` : ""}</li>`; }).join("")}</ol></li>`).join("")
+      : `<p class="ops-kosong">Belum ada kegiatan tercatat dalam 30 hari.</p>`;
+    return `<article class="ex ex-std ops-pa"><button type="button" class="ops-dlg-x" data-tutup aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      <header class="ops-pa-hd"><figure>${f ? u.imgAr(a, "", `${a.registrasi} ${tipe}`) : `<span class="ops-ar-kosong">${lbl("peran", "")}</span>`}</figure>
+        <div><span class="ops-ar-st ${s[1]}"><i></i>${s[0]} ${esc(tglPendek(D.t))}</span><h3>${esc(a.registrasi)}</h3><p>${esc(tipe)}</p>
+        <ul>${[lbl("peran", esc(PERAN[a.peran] || a.peran || "")), lbl("base", `Base ${esc(namaBase(D, a.base_id))}`), a.operator && lbl("op", esc(a.operator)), a.pemilik && lbl("milik", PEMILIK[a.pemilik] || esc(a.pemilik)), a.bucket_liter && lbl("ember", `Bucket ${fmt(a.bucket_liter)} L`)].filter(Boolean).map(x => `<li>${x}</li>`).join("")}</ul>
+        ${a.alasan ? `<p class="ops-pa-alasan">${esc(a.alasan)}</p>` : ""}</div></header>
+      <div class="ops-pa-angka">${[angka(nol(hh.sortie), "sortie 30 hari"), angka(nol(hh.wb), "water bombing"), angka(hh.dinilai ? u.persen(hh.persen) : "–", "padam ≥ 24 jam"),
+        angka(k ? `${fmt(siapTerbang(k))}/${fmt(k.hari_siap)}` : "–", "hari siap terbang"), angka(k?.respons_median_menit != null ? `${fmt(Math.round(k.respons_median_menit))} mnt` : "–", "respons median"),
+        angka(kt.length ? `${fmt(Math.round(jam / 60))} jam` : "–", "operasi 2026")].join("")}</div>
+      <section><h4>Kegiatan 30 hari</h4><ol class="ops-lm">${linimasa}</ol></section>
+      ${kt.length ? `<section><h4>Kontrak 2026</h4><div class="ops-pa-kt">${kt.map(x => `<div${x.berjalan ? ' class="jalan"' : ""}><b>Kontrak ${fmt(x.kontrak_ke)}</b>${x.berjalan ? `<span class="pill l0">Berjalan</span>` : ""}
+        <p>${esc(kalimat(x.periode_teks) || "–")}</p><ul><li>${lbl("jam", `${u.jamMenit(x.jam_operasi_menit)} jam`)}</li><li>${lbl("peran", `${fmt(x.sortie || 0)} sortie`)}</li>${x.wb_drop ? `<li>${lbl("ember", `${fmt(x.wb_drop)} jatuhan`)}</li>` : ""}</ul></div>`).join("")}</div></section>` : ""}
+    </article>`;
   }
 
   /* Hari terbang bisa jatuh di hari tanpa laporan status, jadi terbang/siap bisa di atas 100%. Pembilang utilisasi = hari siap yang juga terbang;
