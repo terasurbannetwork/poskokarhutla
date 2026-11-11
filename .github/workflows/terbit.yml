@@ -43,7 +43,7 @@ jobs:
         timeout-minutes: 8
         run: npm run uji:agen
       - name: Uji worker (D1, route, foto)
-        timeout-minutes: 18
+        timeout-minutes: 26   # 16 mnt 21 dtk pada 10 Nov; uji Siklus G2-G4 (11 Nov) melewati 18
         run: npm run uji:warga
       - name: Uji SIPPA (klien dan gerbang)
         timeout-minutes: 5
