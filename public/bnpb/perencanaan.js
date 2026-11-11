@@ -72,7 +72,7 @@
     const pilih = seg("", [["semua", `Semua jenis (${P.bulat(n)} kab)`, "daftar"], ["alam", `Khusus bencana alam (${P.bulat(na)} kab)`, "banjir"]], st.mode, {role: "group", label: "Daftar kab"});
     pilih.addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b || b.dataset.k === st.mode) return; st.mode = b.dataset.k; tandai(pilih, st.mode, "aria-pressed"); wadah.setAttribute("aria-busy", "true"); sesudahFrame(() => { isi(); wadah.removeAttribute("aria-busy"); }); });
     isi();
-    return h("div", {class: "bn-blok"}, h("h2", {teks: `${P.bulat(n)} kab menurut beban laporan`}), h("p", {class: "pr-wajib", teks: "Beban laporan, bukan peringkat risiko."}),
+    return h("div", {class: "bn-blok"}, h("h2", {title: `${P.bulat(n)} kab menurut beban laporan`}, ikon("pin"), "Beban laporan per kab/kota"), h("p", {class: "pr-wajib", teks: "Beban laporan, bukan peringkat risiko."}),
       h("p", {class: "pr-p", teks: `Kab diurut menurut jumlah laporan Pusdalops (semua jenis, tahun dasar ${tahunTxt(d)}) sampai kumulatif ${P.persen(d.parameter_beban * 100)} dari ${P.bulat(d.total_kejadian)} kejadian-kab; ${P.persen(d.parameter_beban * 100)} adalah parameter operasional, bukan hasil statistik. Kab yang jarang melapor tampak ringan. Kolom per 100 ribu penduduk dan per 100 km² hanya pembanding dan tidak mengganti urutan.`}),
       h("div", null, pil("Belum diuji balik", "bahaya", "uji")), pilih, wadah,
       h("p", {class: "pr-p", teks: `Bencana alam saja menyisihkan ${d.jenis_non_alam.map(j => namaJenis(j).toLowerCase()).join(", ")}. Klik nama kab untuk rincian.`}),
@@ -98,7 +98,7 @@
     pilih.addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b || b.dataset.k === st.jenisK) return; st.jenisK = b.dataset.k; tandai(pilih, st.jenisK, "aria-pressed"); wadah.setAttribute("aria-busy", "true"); sesudahFrame(() => { isi(); wadah.removeAttribute("aria-busy"); }); });
     isi();
     const lg = (k, t) => h("span", null, h("i", {class: "pr-s-" + k}), t);
-    return h("div", {class: "bn-blok"}, h("h2", {teks: "Kalender operasi provinsi menurut bulan"}), h("p", {class: "pr-wajib", teks: "Pola laporan, bukan musim fisik; belum diuji balik."}),
+    return h("div", {class: "bn-blok"}, h("h2", null, ikon("kalender"), "Kalender operasi per provinsi"), h("p", {class: "pr-wajib", teks: "Pola laporan, bukan musim fisik; belum diuji balik."}),
       h("div", null, pil("Belum diuji balik", "bahaya", "uji")),
       h("p", {class: "pr-p", teks: `Musim dibaca dari laporan Pusdalops tahun ${tahunTxt(d)}. Entri berkeyakinan rendah atau tidak musiman dipudarkan dan tidak diberi bulan persiapan. Provinsi dan jenis dengan kurang dari 30 kejadian tidak dimuat. Untuk karhutla, sumber persiapan dapat beralih ke titik panas bila puncak laporan menyimpang dari FIRMS.`}),
       pilih, h("div", {class: "pr-legenda"}, lg("puncak", "Puncak musim"), lg("musim", "Dalam musim"), lg("persiapan", "Bulan persiapan logistik"), lg("kosong", "Di luar musim")), wadah,
@@ -148,8 +148,14 @@
   }
   el.tab = seg("tab", TAB, st.tab, {role: "tablist", label: "Bagian perencanaan"});
   el.pesan = h("p", {class: "bn-pesan", role: "status"}); el.isi = h("div", {class: "pr-isi"});
-  app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Perencanaan Pusdalops"}), h("div", {class: "bn-aksi"})),
-    h("section", {class: "bn-blok"}, el.tab, el.pesan), el.isi);
-  el.tab.addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (b && b.dataset.k !== st.tab) { st.tab = b.dataset.k; tandai(el.tab, st.tab, "aria-selected"); segarkan(); } });
+  /* model A (sistem desain dashboard, rujukan /operasi): bagian halaman pindah ke panel kiri Pusdalops, nama bagian jadi kepala halaman navy */
+  const slot = window.MenuPusdalops?.pakaiSlot?.(), judul = h("h1", {teks: "Perencanaan Pusdalops"});
+  const segarSlot = () => { if (!slot) return; slot.querySelectorAll("[data-k]").forEach(b => b.setAttribute("aria-current", String(b.dataset.k === st.tab))); judul.textContent = TAB.find(t => t[0] === st.tab)?.[1] || "Perencanaan"; };
+  if (slot) slot.replaceChildren(window.MenuPusdalops.grup("Bagian", "kalender"), ...TAB.map(([k, t, ik]) => { const b = h("button", {type: "button", class: "db-nav-b", "data-k": k}, h("i", {class: "db-nav-ik"}, ikon(ik)), h("span", {class: "db-nav-t", teks: t}));
+    b.addEventListener("click", () => { if (k !== st.tab) { st.tab = k; tandai(el.tab, st.tab, "aria-selected"); segarSlot(); segarkan(); } }); return b; }));
+  app.replaceChildren(h("div", {class: "bn-judul"}, judul, h("div", {class: "bn-aksi"})),
+    slot ? el.pesan : h("section", {class: "bn-blok"}, el.tab, el.pesan), el.isi);
+  segarSlot();
+  el.tab.addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (b && b.dataset.k !== st.tab) { st.tab = b.dataset.k; tandai(el.tab, st.tab, "aria-selected"); segarSlot(); segarkan(); } });
   segarkan();
 })();

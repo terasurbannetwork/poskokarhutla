@@ -229,7 +229,19 @@
 
   /* ---------- susunan halaman ---------- */
   /* gambar ulang ditunda satu frame: kontrol pilihan (kab, bulan) bereaksi seketika, kartu menyusul; permintaan beruntun digabung */
-  const isiSemua = () => { const T = tugasKab(); boxIsi.replaceChildren(kalender(), sop(T), stok(T), kebutuhanBiasa(), perkiraanStok(), susulan(), terisolir(), senyap()); };
+  /* ubin Angka utama (sistem desain dashboard, rujukan /operasi) */
+  function angkaUtama(T) {
+    const v = D.kab[kode], musim = J4.filter(j => (v.p[j]?.[bulan - 1] ?? 0) >= D.ambang_musim), tg = T.flatMap(x => x.tugas);
+    const segera = tg.filter(t => t.status[0] === "segera").length, lewat = tg.filter(t => t.status[0] === "terlewat").length;
+    const sen = (SEN?.baris || []).filter(b => b.kab === `${kode.slice(0, 2)}|${v.nama}`).length;
+    const ubin = (ik, nama, nilai, sub, kelas = "") => h("div", {class: "db-ubin " + kelas}, h("header", null, h("i", null, ikon(ik)), h("span", {teks: nama})), h("b", {teks: nilai}), h("small", {teks: sub}));
+    return h("div", {class: "db-ubin-grid k4"},
+      ubin("kalender", `Masuk musim ${BLN[bulan - 1]}`, F(musim.length), musim.length ? musim.map(namaJenis).join(", ") : "tidak ada", musim.length ? "oranye" : ""),
+      ubin("peringatan", "Tugas SOP segera", F(segera), "30 hari ke depan", segera ? "oranye" : ""),
+      ubin("peringatan", "Tugas terlewat", F(lewat), "belum dikerjakan", lewat ? "merah" : ""),
+      ubin("senyap", "Daerah senyap", F(sen), "sinyal tanpa laporan", sen ? "oranye" : ""));
+  }
+  const isiSemua = () => { const T = tugasKab(); boxIsi.replaceChildren(angkaUtama(T), kalender(), sop(T), stok(T), kebutuhanBiasa(), perkiraanStok(), susulan(), terisolir(), senyap()); };
   let rafId = 0;
   const gambarIsi = () => { cancelAnimationFrame(rafId); rafId = requestAnimationFrame(() => { isiSemua(); }); };
   const gambarSekarang = () => { cancelAnimationFrame(rafId); isiSemua(); };

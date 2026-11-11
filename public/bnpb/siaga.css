@@ -47,3 +47,5 @@
 .sg-sorot{background:color-mix(in srgb,var(--c1) 10%,transparent)}
 .lb-tabel th.sg-sorot{background:var(--c1)}
 .lb-pudar{color:var(--ink3)}
+/* batang di luar musim biru muda, bukan abu (selera pemilik: tanpa abu) */
+.sg-svg .bat:not(.musim){fill:color-mix(in srgb,#2f6fd6 28%,#fff)}

@@ -183,3 +183,6 @@ aside.db-nav .db-nav-pb{display:flex;align-items:center;justify-content:space-be
 aside.db-nav .mp-slot>nav,aside.db-nav .mp-slot .dl-seg-a{display:contents}
 .db-mode>a span,.db-mode>button span{overflow:hidden;text-overflow:ellipsis}
 aside.db-nav .db-nav-isi{overflow-y:auto;scrollbar-width:none}aside.db-nav .db-nav-isi::-webkit-scrollbar{display:none}
+.db-ubin-grid.k4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:900px){.db-ubin-grid.k4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+aside.db-nav .db-nav-kaki:empty{display:none}

@@ -48,3 +48,6 @@ tr.pr-pudar td:first-child>span{opacity:.5}
 .pr-prov .pr-bungkus{padding:8px 12px 12px}
 .pr-daftar{display:grid;gap:8px}
 @media (max-width:640px){.pr-tabel{font-size:12.5px}}
+/* kolom nama kab/kota tidak patah; tombol rincian rapat (sistem desain dashboard) */
+.pr-tabel{font-size:.78125rem}.pr-tabel td:nth-child(2),.pr-tabel td:nth-child(3){white-space:nowrap}
+.pr-tabel td{padding:5px 8px}

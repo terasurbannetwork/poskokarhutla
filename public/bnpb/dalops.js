@@ -125,7 +125,7 @@
     const s = h("section", {class: "ex ex-std", id: J.k === "banjir" || id.includes("-") ? id : J.k + "-" + id});   // id berawalan jenis (karhutla-*) dipakai apa adanya   // banjir tetap id lama (tautan #peta dsb.)
     /* kepala kartu = nama seksi berikon; kalimat temuan pindah ke title dan ubin Angka utama (AGENTS 3.5 pembaruan 11 Nov 2026) */
     const kal = h("span", null, ...[].concat(judul));
-    s.append(h("header", {class: "ex-hd"},
+    s.append(h("header", {class: "ex-hd"}, h("span", {class: "ex-ey"}, ikon(J.ik || "banjir"), J.kata ? J.kata[0].toUpperCase() + J.kata.slice(1) : "Dalops"),
         h("div", {class: "ex-jd"}, h("h3", {title: kal.textContent}, ikon(ik), ey), isi.some(x => x?.querySelector?.(".dl-grup")) ? bukaSemua(s) : null)),
       h("div", {class: "ex-bd"}, ...isi.filter(Boolean)));
     return s;
@@ -635,7 +635,7 @@
     const grup = (teks, ik) => window.MenuPusdalops?.grup ? window.MenuPusdalops.grup(teks, ik) : h("p", {class: "db-nav-sub", teks});
     const seg = h("nav", {class: "db-nav-isi dl-seg-a", role: "tablist", "aria-label": "Jenis pantauan"}, grup("Bencana", "banjir"), ...tombol.slice(0, -2), grup("Laporan", "simpan"), ...tombol.slice(-2));
     seg.addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b) pilihTab(b.dataset.tab, tombol); });
-    const judul = h("h1", {class: "dl-l1", id: "dlJudul", teks: "Pantau Dalops"}), slot = window.MenuPusdalops?.slot();
+    const judul = h("h1", {class: "dl-l1", id: "dlJudul", teks: "Pantau Dalops"}), slot = window.MenuPusdalops?.pakaiSlot?.();
     if (slot) {   // panel kiri Pusdalops ada: jenis pantauan masuk di bawah butir "Pantau kejadian"
       slot.replaceChildren(seg); app.classList.add("dl-dalam");
       app.replaceChildren(h("div", {class: "db-kanan"}, judul, ...Object.values(panel)));

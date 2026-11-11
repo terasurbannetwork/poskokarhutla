@@ -5,7 +5,7 @@
 (() => {
   "use strict";
   /* lapisan sistem desain dashboard (data/kajian-bnpb/dashboard/DESIGN-SYSTEM.md) untuk semua halaman Pusdalops */
-  if (!document.querySelector('link[href^="/inti/dasbor.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/inti/dasbor.css?v=13"; document.head.append(l); }
+  if (!document.querySelector('link[href^="/inti/dasbor.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/inti/dasbor.css?v=15"; document.head.append(l); }
   const IKON = {"banjir": "M3 17c2 0 2-2 4.5-2S10 17 12 17s2.5-2 4.5-2S19 17 21 17|M3 21c2 0 2-2 4.5-2S10 21 12 21s2.5-2 4.5-2S19 21 21 21|M12 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.500 2-5 5-9z", "daftar": "M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01", "simpan": "M5 3h11l3 3v15H5z|M8 3v6h7V3M8 21v-7h8v7", "personel": "M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z|M4 21a8 8 0 0 1 16 0", "pin": "M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z|M12 12a2.500 2.500 0 1 0 0-5 2.500 2.500 0 0 0 0 5z", "peringatan": "M12 3l9 16H3z|M12 10v4M12 17v.5", "kalender": "M4 6h16v15H4zM4 10h16M8 3v4M16 3v4", "sinyal": "M4 20l.01 0M8 16a5.500 5.500 0 0 1 8 0M5 12.500a10 10 0 0 1 14 0|M3 3l18 18", "meja": "M9 3h6v3H9z|M6 5h12v16H6z|M9 11h6M9 15h4", "grafik": "M3 3v18h18|M7 15l4-4 3 3 5-6", "awan": "M7 18a4 4 0 0 1 0-8 5 5 0 0 1 9.600-1.500A3.500 3.500 0 0 1 17 18z"};
   /* 6 grup di navbar (pemilik 11 Nov 2026: 13 butir dirampingkan); tetap tanpa daftar turun (pemilik 4 Nov 2026): grup berisi lebih dari
      satu halaman menampilkan deretan sub-halaman di bawah kepala. Rute lama tetap; tautan grup membuka halaman pertamanya. */
@@ -60,7 +60,27 @@
   /* tanpa seksi dari halaman: butir grup aktif ditandai navy */
   const tandai = () => { const kosong = !slot.childElementCount; isi.querySelectorAll(":scope > .db-nav-b").forEach((a, i) => a.setAttribute("aria-current", String(kosong && GRUP[i] === grup))); };
   tandai(); new MutationObserver(tandai).observe(slot, {childList: true});
-  window.MenuPusdalops = {slot: () => slot, grup: kepalaGrup, kaki: baris => { kaki.replaceChildren(kepalaGrup("Pembaruan data", "kalender"), ...baris.map(([w, label, nilai]) => { const r = el("div", "db-nav-pb"), d = el("i", "db-nav-dot"); d.style.setProperty("--w", w); r.append(d, el("span", null, label), el("b", null, nilai)); r.style.setProperty("--w", w); return r; })); }};
+  /* seksi halaman otomatis: halaman yang tidak mengisi slot sendiri mendapat daftar seksi dari kepala bloknya (h2 pertama tiap .bn-blok / .ex-std),
+     klik menggulir ke seksinya, seksi yang sedang dibaca ditandai navy (rujukan /operasi). Catatan kaki panjang dilipat. */
+  let io = null;
+  const seksiOtomatis = () => {
+    if (slot.dataset.halaman) return;
+    const kartu = [...document.querySelectorAll("body main .bn-blok, body main .ex.ex-std")].filter(k => !k.closest(".bn-blok .bn-blok") && k.querySelector(":scope > h2, :scope > .ex-hd h3") && !k.classList.contains("sg-pilih"));
+    if (kartu.length < 2) return;
+    const tanda = kartu.map(k => k.querySelector(":scope > h2, :scope > .ex-hd h3").textContent.trim()).join("|"); if (tanda === slot.dataset.tanda) return; slot.dataset.tanda = tanda;   // tanpa perubahan seksi: jangan gambar ulang (cegah putaran MutationObserver)
+    io?.disconnect(); io = new IntersectionObserver(es => { for (const e of es) if (e.isIntersecting) slot.querySelectorAll(".db-nav-b").forEach(b => b.setAttribute("aria-current", String(b.dataset.ke === e.target.id))); }, {rootMargin: "-15% 0px -70% 0px"});
+    const pilihan = [...document.querySelectorAll("body main select")].map(x => x.selectedOptions[0]?.textContent.trim());
+    slot.replaceChildren(kepalaGrup("Isi halaman", "daftar"), ...kartu.map((k, i) => { k.id ||= "mp-s" + i;
+      const j = k.querySelector(":scope > h2, :scope > .ex-hd h3"), b = el("button", "db-nav-b"); b.type = "button"; b.dataset.ke = k.id;
+      const ik = el("i", "db-nav-ik"), sv = j.querySelector("svg"); if (sv) ik.append(sv.cloneNode(true));
+      const c = j.cloneNode(true); c.querySelectorAll("button, select, input, a, .ops-lbl, small").forEach(x => x.remove());
+      let nama = c.textContent.trim().replace(/\s+/g, " ").replace(/ per \d.*$/, "");
+      for (const t of pilihan) if (t && nama.endsWith(" " + t)) nama = nama.slice(0, -t.length - 1);   // buang nama daerah terpilih
+      b.append(ik, el("span", "db-nav-t", nama)); b.addEventListener("click", () => k.scrollIntoView({behavior: "smooth", block: "start"})); io.observe(k); return b; }));
+    for (const p of document.querySelectorAll("body main .lb-kaki, body main .pr-kaki")) if (!p.closest("details") && p.textContent.length > 120) { const d = el("details", "db-catatan"); d.append(el("summary", null, "Catatan"), p.cloneNode(true)); p.replaceWith(d); }
+  };
+  let tunda; new MutationObserver(() => { clearTimeout(tunda); tunda = setTimeout(seksiOtomatis, 120); }).observe(document.body, {childList: true, subtree: true});
+  window.MenuPusdalops = {pakaiSlot: () => { slot.dataset.halaman = "1"; return slot; }, slot: () => slot, grup: kepalaGrup, kaki: baris => { kaki.replaceChildren(kepalaGrup("Pembaruan data", "kalender"), ...baris.map(([w, label, nilai]) => { const r = el("div", "db-nav-pb"), d = el("i", "db-nav-dot"); d.style.setProperty("--w", w); r.append(d, el("span", null, label), el("b", null, nilai)); r.style.setProperty("--w", w); return r; })); }};
   const pasangSamping = () => { const main = document.querySelector("body > main"); if (!main || main.closest(".mp-a")) return;
     const w = el("div", "mp-a"); main.before(w); w.append(samping, main); document.body.classList.add("mp-model-a"); };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", pasangSamping); else pasangSamping();
