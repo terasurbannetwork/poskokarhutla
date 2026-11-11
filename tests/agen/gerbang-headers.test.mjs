@@ -24,6 +24,11 @@ const semua = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) =>
   e.isDirectory() ? semua(join(d, e.name)) : [join(d, e.name)])
 const web = (akar, p) => '/' + relative(akar, p).split(sep).join('/')
 
+// CI dan Mac memakai `python3`; Windows biasanya hanya punya `python` (12 Nov 2026)
+const PYTHON = ['python3', 'python'].find((p) => {
+  try { execFileSync(p, ['--version'], { stdio: 'pipe' }); return true } catch { return false }
+}) ?? 'python3'
+
 // salin public/ lalu terbitkan seperti CI; `ubah(akar)` menyuntik keadaan salah untuk bukti merah.
 // Salinan (~1,7 GB) dihapus bila langkah apa pun gagal: 29 Okt-11 Nov 2026 di Windows tanpa `python3`,
 // tiap uji melempar sebelum try/finally pemanggil dan meninggalkan 51 salinan (76 GB) di Temp.
@@ -32,7 +37,8 @@ function terbit(ubah) {
   try {
     cpSync(join(ROOT, 'public'), akar, { recursive: true })
     ubah?.(akar)
-    execFileSync('python3', [join(ROOT, 'scripts/terbit/versi.py'), akar], { stdio: 'pipe' })
+    execFileSync(PYTHON, [join(ROOT, 'scripts/terbit/versi.py'), akar],
+      { stdio: 'pipe', env: { ...process.env, PYTHONUTF8: '1' } })
     return akar
   } catch (e) {
     rmSync(akar, { recursive: true, force: true })
@@ -124,7 +130,8 @@ test('gerbang _headers bisa merah: aturan >80, baris panjang, no-cache hilang, C
     appendFileSync(hp, `\n/panjang\n  X-Uji: ${'a'.repeat(2100)}\n`)
     assert.ok(periksa(akar).some((s) => /karakter > 2000/.test(s)), 'baris >2000 harus terdeteksi')
 
-    writeFileSync(hp, asli.replace(/^\/\*\.html\n {2}Cache-Control: no-cache\n/m, ''))
+    // \r?: checkout Windows dengan core.autocrlf membuat _headers ber-CRLF
+    writeFileSync(hp, asli.replace(/^\/\*\.html\r?\n {2}Cache-Control: no-cache\r?\n/m, ''))
     assert.ok(periksa(akar).some((s) => /halaman \/index\.html tidak kena aturan no-cache/.test(s)), 'no-cache hilang harus terdeteksi')
 
     mkdirSync(join(akar, 'banjir/data'), { recursive: true })
