@@ -1765,3 +1765,5 @@
 #opsLaporan .ops-ringkas-slot .ops-tindak>header>b{font-size:1.0625rem;color:#a63a26}
 /* garis bawah kepala L2 sedikit lebih tegas daripada garis isi, tanpa latar */
 #opsLaporan .ops-wadah details.ops-kartu{border-color:var(--h2-garis)}
+#opsLaporan .ops-omc-dur{display:inline-flex;padding:2px 9px;border-radius:999px;background:color-mix(in srgb,var(--brand2) 8%,transparent)}
+#opsLaporan .ops-omc-dur .ops-lbl{font-size:.75rem;font-weight:700;color:#1f3f73;font-variant-numeric:tabular-nums}
