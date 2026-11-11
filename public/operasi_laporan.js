@@ -58,7 +58,7 @@
       const m = e.target.closest("[data-mode]");
       if (m) { st.mode = m.dataset.mode; try { localStorage.setItem("ops_mode", st.mode); } catch (x) {} box.querySelectorAll("[data-mode]").forEach(b => b.setAttribute("aria-pressed", String(b === m))); return sesudahFrame(isi); }
       const ka = e.target.closest(".ops-akt[data-reg]"); if (ka) return bukaArmada(ka.dataset.reg);
-      const ud = e.target.closest("[data-unduh]"); if (ud) return st._d && unduhRute(st._d, ud.dataset.base, ud.dataset.unduh);
+      const ud = e.target.closest("[data-unduh]"); if (ud) { e.preventDefault(); return st._d && unduhRute(st._d, ud.dataset.base, ud.dataset.unduh); }   // tombol di dalam <summary>: jangan ikut melipat
       const fp = e.target.closest("[data-fpulau], [data-ftanda]"); if (fp) return saringBase(fp);
       const gr = e.target.closest("tr.ops-grup"); if (gr) return lipatGrup(gr);
       const bb = e.target.closest("tr.ops-bb"); if (bb) return bukaBase(bb);
@@ -253,23 +253,29 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     .join(";").split(";").map(x => x.trim().replace(/(\d)\.(\d)/g, "$1,$2")).filter(Boolean).map(x => x[0].toUpperCase() + x.slice(1));
 
   /* fitur 4 + 5: renlap lawan realisasi, dengan alasan tiap target */
+  /* renlap per base (pemilik 11 Nov 2026 "jelek banget"): blok per base yang bisa dilipat, kepala = progres didatangi + unduhan,
+     isi = kartu target bernomor; target didatangi bila ada aksi armada base itu <= RENLAP_KM dari target pada hari yang sama */
   function kartuRenlap(D) {
-    const rl = D.peta.renlap || [], baris = [];
+    const u = U(), rl = (D.peta.renlap || []).filter(r => (r.target || []).length);
     let datang = 0, total = 0;
-    for (const r of rl) for (const g of r.target || []) {
-      total++;
-      const kandidat = D.aksi.filter(a => a.lat != null && (a.base_id || D.reg2base[a.registrasi]) === r.base_id).map(a => ({...a, jarak: km(g.lat, g.lon, a.lat, a.lon)})).filter(a => a.jarak <= RENLAP_KM).sort((x, y) => x.jarak - y.jarak);
-      const a = kandidat[0], h = a ? (U().HASIL[a.hasil] || U().HASIL.tak_dinilai) : null; if (a) datang++;
-      const alasan = alasanRenlap(g.alasan), nama = g.lokasi || g.nama || g.jenis || "Target";
-      /* satu sel base per renlap, bukan nama base diulang tiap baris */
-      baris.push(`<tr>${g === r.target[0] ? `<td class="ops-renlap-base" rowspan="${r.target.length}"><b>${esc(namaBase(D, r.base_id))}</b>${r.versi ? `<small>Renlap ${esc(r.versi)}</small>` : ""}</td>` : ""}${sel(fmt(g.urut ?? baris.length + 1))}
-        <td class="ops-kiri ops-renlap"><b>${esc(nama[0].toUpperCase() + nama.slice(1))}</b> <a href="${U().gmaps(g.lat, g.lon)}" target="_blank" rel="noopener noreferrer">koordinat</a>${alasan.length ? `<div class="ops-alasan">${alasan.map(x => `<span>${esc(x)}</span>`).join("")}</div>` : ""}</td>
-        <td>${a ? `<span class="pill l0">Didatangi</span><small>${esc(a.registrasi)} ${U().jamWIB(a.jam_utc)} WIB, ${fmt(Math.round(a.jarak * 10) / 10)} km</small>` : `<span class="pill l3">Belum didatangi</span>`}</td>
-        <td>${h ? `<span class="pill ${h[1]}">${h[0]}</span>` : "–"}</td></tr>`);
-    }
+    const blok = rl.map(r => {
+      const tg = r.target.slice().sort((x, y) => (x.urut ?? 0) - (y.urut ?? 0)).map((g, i) => {
+        const a = D.aksi.filter(x => x.lat != null && (x.base_id || D.reg2base[x.registrasi]) === r.base_id).map(x => ({...x, jarak: km(g.lat, g.lon, x.lat, x.lon)})).filter(x => x.jarak <= RENLAP_KM).sort((x, y) => x.jarak - y.jarak)[0];
+        return {g, i, a, h: a?.guna === "wb" ? (u.HASIL[a.hasil] || u.HASIL.tak_dinilai) : null}; });   // hasil padam hanya bermakna untuk water bombing
+      const n = tg.filter(x => x.a).length; datang += n; total += tg.length;
+      const kartu = tg.map(({g, i, a, h}) => { const nama = g.lokasi || g.nama || g.jenis || "Target", alasan = alasanRenlap(g.alasan);
+        return `<li class="${a ? "datang" : ""}"><span class="ops-rl-no">${fmt(g.urut ?? i + 1)}</span><div><p><b>${esc(nama[0].toUpperCase() + nama.slice(1))}</b>
+          <a href="${u.gmaps(g.lat, g.lon)}" target="_blank" rel="noopener noreferrer" title="Buka koordinat di Google Maps">${lbl("base", "Peta")}</a></p>
+          ${alasan.length ? `<ul>${alasan.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
+          <footer>${a ? `<span class="pill l0">Didatangi</span><small>${esc(a.registrasi)} ${u.jamWIB(a.jam_utc)} WIB, ${fmt(Math.round(a.jarak * 10) / 10)} km</small>${h ? `<span class="pill ${h[1]}">${h[0]}</span>` : ""}` : `<span class="ops-rl-belum">Belum didatangi</span>`}</footer></div></li>`; }).join("");
+      const pct = tg.length ? n / tg.length : 0;
+      return `<details class="ops-rl-blok"><summary><svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        <span class="ops-rl-nama"><b>${esc(namaBase(D, r.base_id))}</b><small>Renlap ${esc(r.versi || "")}</small></span>
+        <span class="ops-rl-prog"><span><b>${fmt(n)}</b> dari ${fmt(tg.length)} didatangi</span><i style="--p:${(pct * 100).toFixed(0)}%"></i></span>
+        <span class="ops-rl-ud">${["kml", "gpx"].map(f => `<button type="button" class="ops-kml" data-unduh="${f}" data-base="${esc(r.base_id)}" title="Unduh waypoint renlap (${f.toUpperCase()})">${lbl("unduh", f.toUpperCase())}</button>`).join("")}</span></summary>
+        <ol class="ops-rl-grid">${kartu}</ol></details>`; }).join("");
     const judul = total ? `${hl(`${fmt(datang)} dari ${fmt(total)}`)} target renlap didatangi armada` : `Belum ada renlap untuk ${esc(tglPanjang(D.t))}`;
-    return bagian("Renlap", judul, tabelH(["Base", "#Urut", "Target dan alasan", `Realisasi|Ada aksi armada base itu ≤ ${RENLAP_KM} km dari target pada hari yang sama`, "Hasil"], baris,
-      "Renlap disusun otomatis pukul 20.00 dan 07.00 WIB oleh mesin Pusdalops, lalu muncul di sini."));
+    return bagian("Renlap", judul, total ? `<div class="ops-rl">${blok}</div>` : `<p class="ops-kosong">Renlap disusun otomatis pukul 20.00 dan 07.00 WIB oleh mesin Pusdalops, lalu muncul di sini.</p>`);
   }
 
   function kartuAksi(D) {
@@ -377,9 +383,11 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     /* lokasi armada per operator, terbanyak dulu (pemilik 9 Nov 2026) */
     const teksBase = b => Object.entries(b).sort((p, q) => q[1] - p[1] || p[0].localeCompare(q[0])).map(([n, j]) => `${esc(n)} (${fmt(j)})`).join(", ");
     const jml = k => daf.reduce((t, [, x]) => t + x[k], 0), semuaBase = new Set(daf.flatMap(([, x]) => Object.keys(x.base).filter(n => n !== "Base belum tercatat")));
-    const total = `<tr class="ops-total">${kiri("<b>Grand total</b>")}${kiri(`${fmt(semuaBase.size)} base`)}${sel(fmt(jml("n")))}${sel(nol(jml("siap")))}${sel(nol(jml("terbang")))}${sel(jml("siap") ? u.persen(jml("siapTerbang") / jml("siap")) : "–")}${sel(nol(jml("sortie")))}${sel(nol(jml("wb")))}${sel(jml("dinilai") ? u.persen(jml("padam") / jml("dinilai")) : "–")}${sel(jml("jam") ? fmt(Math.round(jml("jam") / 60)) : "–")}</tr>`;
+    /* utilisasi dengan bilah kecil; base pindah ke bawah nama operator supaya tabel muat tanpa geser (pemilik 11 Nov 2026) */
+    const util = (n, d) => d ? `<span class="ops-util"><b>${u.persen(n / d)}</b><i style="--p:${Math.min(100, Math.round(n / d * 100))}%"></i></span>` : "–";
+    const total = `<tr class="ops-total">${kiri(`<b>Total</b><small>${fmt(semuaBase.size)} base</small>`)}${sel(fmt(jml("n")))}${sel(nol(jml("siap")))}${sel(nol(jml("terbang")))}${sel(util(jml("siapTerbang"), jml("siap")))}${sel(nol(jml("sortie")))}${sel(nol(jml("wb")))}${sel(jml("dinilai") ? u.persen(jml("padam") / jml("dinilai")) : "–")}${sel(jml("jam") ? fmt(Math.round(jml("jam") / 60)) : "–")}</tr>`;
     return bagian("Operator", daf.some(([, x]) => x.siap) ? `${hl(fmt(daf.length))} operator; ${nganggur ? `${hl(fmt(nganggur))} siap tapi belum terbang dalam 30 hari` : "semua yang siap sudah terbang"}` : `${hl(fmt(daf.length))} operator armada udara; status harian belum dilaporkan`,
-      tabelH(["Operator", "Base (jumlah armada)", "#Armada", "#Hari siap", "#Hari terbang", "#Utilisasi|Hari siap yang benar-benar terbang dibagi hari siap, maksimal 100%", "#Sortie", "#Aksi WB", "#Padam", "#Jam 2026"], daf.length ? [total, ...daf.map(([o, x]) => `<tr>${kiri(`<b>${esc(o)}</b>`)}${kiri(teksBase(x.base))}${sel(fmt(x.n))}${sel(nol(x.siap))}${sel(nol(x.terbang))}${sel(x.siap ? u.persen(x.siapTerbang / x.siap) : "–")}${sel(nol(x.sortie))}${sel(nol(x.wb))}${sel(x.dinilai ? u.persen(x.padam / x.dinilai) : "–")}${sel(x.jam ? fmt(Math.round(x.jam / 60)) : "–")}</tr>`)] : [], "Belum ada armada tercatat."));
+      tabelH(["Operator|Nama operator, di bawahnya base dan jumlah armadanya", "#Armada", "#Hari siap", "#Hari terbang", "#Utilisasi|Hari siap yang benar-benar terbang dibagi hari siap, maksimal 100%", "#Sortie", "#Aksi WB", "#Padam", "#Jam 2026"], daf.length ? [total, ...daf.map(([o, x]) => `<tr${x.siap && !x.terbang ? ' class="ops-nganggur"' : ""}>${kiri(`<b>${esc(o)}</b><small>${teksBase(x.base)}</small>`)}${sel(fmt(x.n))}${sel(nol(x.siap))}${sel(nol(x.terbang))}${sel(util(x.siapTerbang, x.siap))}${sel(nol(x.sortie))}${sel(nol(x.wb))}${sel(x.dinilai ? u.persen(x.padam / x.dinilai) : "–")}${sel(x.jam ? fmt(Math.round(x.jam / 60)) : "–")}</tr>`)] : [], "Belum ada armada tercatat."));
   }
 
   /* fitur 6: jejak terbang ADS-B (adsb.fi, posisi tiap jam) */
