@@ -359,20 +359,25 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
         return `<li><span class="ops-lm-jam">${u.jamWIB(x.jam_utc)}</span><span class="ops-lm-misi" data-g="${esc(x.guna || "")}">${esc(MISI[x.guna] || x.jenis || "Misi")}</span>
           <span class="ops-lm-lok">${esc((x.lokasi || "Lokasi tidak tercatat").replace(/\(BMKG\/Sipongi\)/g, "").trim())}</span><span class="ops-lm-ujung">${x.drop ? lbl("ember", `${fmt(x.drop)} jatuhan`) : ""}${h ? `<span class="pill ${h[1]}">${h[0]}</span>` : ""}</span></li>`; }).join("")}</ol></li>`).join("")
       : `<p class="ops-kosong">Belum ada kegiatan tercatat dalam 30 hari.</p>`;
-    const kini = Date.parse(D.t), kartuKt = x => { const m = Date.parse(x.mulai), z = Date.parse(x.selesai), p = m && z > m ? Math.min(1, Math.max(0, (kini - m) / (z - m))) : null;
-      return `<div${x.berjalan ? ' class="jalan"' : ""}><header><b>Kontrak ${fmt(x.kontrak_ke)}</b>${x.berjalan ? `<span class="pill l0">Berjalan</span>` : `<span class="ops-pa-selesai">Selesai</span>`}</header>
-        <p>${esc(kalimat(x.periode_teks) || "–")}</p>${p != null ? `<i class="ops-pa-per" style="--p:${Math.round(p * 100)}%"></i>` : ""}
-        <dl><div><dt>Jam operasi</dt><dd>${u.jamMenit(x.jam_operasi_menit)}</dd></div><div><dt>Sortie</dt><dd>${fmt(x.sortie || 0)}</dd></div><div><dt>Jatuhan WB</dt><dd>${x.wb_drop ? fmt(x.wb_drop) : "–"}</dd></div></dl></div>`; };
+    /* kartu kontrak: durasi hari, status pil, tiga angka berikon, rata-rata jam per sortie (pemilik 11 Nov 2026 "bagusin lagi") */
+    const kini = Date.parse(D.t), kartuKt = x => { const m = Date.parse(x.mulai), z = x.selesai ? Date.parse(x.selesai) : kini, hr = m ? Math.round((z - m) / 864e5) + 1 : null;
+      const perSortie = x.sortie && x.jam_operasi_menit ? u.jamMenit(x.jam_operasi_menit / x.sortie) : null;
+      const angka = (k, n, t) => `<div><span>${lbl(k, t)}</span><b>${n}</b></div>`;
+      return `<div${x.berjalan ? ' class="jalan"' : ""}><header><i>${lbl("op", "")}</i><div><b>Kontrak ${fmt(x.kontrak_ke)}</b><p>${esc(kalimat(x.periode_teks) || "–")}${hr ? ` <small>${x.berjalan ? `hari ke-${fmt(hr)}` : `${fmt(hr)} hari`}</small>` : ""}</p></div>
+        ${x.berjalan ? `<span class="pill l0">Berjalan</span>` : `<span class="ops-pa-selesai">Selesai</span>`}</header>
+        <div class="ops-pa-kt-angka">${angka("jam", u.jamMenit(x.jam_operasi_menit), "Jam operasi")}${angka("peran", fmt(x.sortie || 0), "Sortie")}${angka("ember", x.wb_drop ? fmt(x.wb_drop) : `<em>tanpa WB</em>`, "Jatuhan WB")}</div>
+        ${perSortie ? `<footer>Rata-rata ${perSortie} jam per sortie${x.berjalan && hr ? `, ${u.jamMenit(x.jam_operasi_menit / hr)} jam per hari` : ""}</footer>` : ""}</div>`; };
+    const sek = (judul, sub, isi) => `<details class="ops-pa-sek" open><summary><b>${judul}</b>${sub ? `<small>${sub}</small>` : ""}<svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div>${isi}</div></details>`;
     return `<article class="ex ex-std ops-pa"><button type="button" class="ops-dlg-x" data-tutup aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
       <header class="ops-pa-hd"><figure>${f ? u.imgAr(a, "", `${a.registrasi} ${tipe}`) : `<span class="ops-ar-kosong">${lbl("peran", "")}</span>`}</figure>
-        <div><span class="ops-ar-st ${s[1]}"><i></i>${s[0]} ${esc(tglPendek(D.t))}</span><h3>${esc(a.registrasi)}</h3><p>${esc(tipe)}</p>
+        <div><div class="ops-pa-id"><h3>${esc(a.registrasi)}</h3><p>${esc(tipe)}</p><span class="ops-ar-st ${s[1]}"><i></i>${s[0]} ${esc(tglPendek(D.t))}</span></div>
         <ul>${[lbl("peran", esc(PERAN[a.peran] || a.peran || "")), lbl("base", `Base ${esc(namaBase(D, a.base_id))}`), a.operator && lbl("op", esc(a.operator)), a.pemilik && lbl("milik", PEMILIK[a.pemilik] || esc(a.pemilik)), a.bucket_liter && lbl("ember", `Bucket ${fmt(a.bucket_liter)} L`)].filter(Boolean).map(x => `<li>${x}</li>`).join("")}</ul>
-        ${a.alasan ? `<p class="ops-pa-alasan">${esc(a.alasan)}</p>` : ""}</div></header>
-      <div class="ops-pa-angka">${[angka(nol(hh.sortie), "sortie 30 hari"), angka(nol(hh.wb), "water bombing"), angka(hh.dinilai ? u.persen(hh.persen) : "–", "padam ≥ 24 jam"),
-        angka(k ? `${fmt(siapTerbang(k))}/${fmt(k.hari_siap)}` : "–", "hari siap terbang"), angka(k?.respons_median_menit != null ? `${fmt(Math.round(k.respons_median_menit))} mnt` : "–", "respons median"),
-        angka(kt.length ? `${fmt(Math.round(jam / 60))} jam` : "–", "operasi 2026")].join("")}</div>
-      <section><h4>Kegiatan 30 hari</h4>${strip}<ol class="ops-lm">${linimasa}</ol></section>
-      ${kt.length ? `<section><h4>Kontrak 2026</h4><div class="ops-pa-kt">${kt.map(kartuKt).join("")}</div></section>` : ""}
+        ${a.alasan ? `<p class="ops-pa-alasan">${esc(a.alasan)}</p>` : ""}
+        <div class="ops-pa-angka">${[angka(nol(hh.sortie), "sortie 30 hari"), angka(nol(hh.wb), "water bombing"), angka(hh.dinilai ? u.persen(hh.persen) : "–", "padam ≥ 24 jam"),
+          angka(k ? `${fmt(siapTerbang(k))}/${fmt(k.hari_siap)}` : "–", "hari siap terbang"), angka(k?.respons_median_menit != null ? `${fmt(Math.round(k.respons_median_menit))} mnt` : "–", "respons median"),
+          angka(kt.length ? `${fmt(Math.round(jam / 60))} jam` : "–", "operasi 2026")].join("")}</div></div></header>
+      <div class="ops-pa-badan">${sek("Kegiatan 30 hari", `${fmt(ak.length)} sortie, ${fmt(hari.length)} hari terbang`, `${strip}<ol class="ops-lm">${linimasa}</ol>`)}
+      ${kt.length ? sek("Kontrak 2026", `${fmt(kt.length)} kontrak`, `<div class="ops-pa-kt">${kt.map(kartuKt).join("")}</div>`) : ""}</div>
     </article>`;
   }
 
