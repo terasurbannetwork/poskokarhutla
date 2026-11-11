@@ -1,0 +1,153 @@
+{
+ "hari": "2026-11-07",
+ "cutoff": "2026-11-07T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "banjir",
+   "prov": "12",
+   "lokasi": "Deli Serdang",
+   "status": "belum",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 1701.0
+   },
+   "teks": {
+    "dampak": "±1.701 KK / 6.771 jiwa terdampak",
+    "status_darurat": "Tanggap Darurat TMT 27/10/2026 s.d 09/11/2026",
+    "kondisi": "Banjir Berangsur Surut",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "12",
+   "lokasi": "Serdang Bedagai",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 160.0,
+    "transisi_sd": "2026-12-31"
+   },
+   "teks": {
+    "dampak": "± 160 KK terdampak",
+    "status_darurat": "Transisi Darurat TMT 01/10/2026 s.d 31/12/2026",
+    "kondisi": "Sedang dalam penanganan oleh BPBD Kab. Serdang Bedagai",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "kondisi_pil": [
+    "Ditangani BPBD",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "longsor",
+   "prov": "12",
+   "lokasi": "Simalungun",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Tanah Longsor",
+   "angka": {
+    "kk": 65.0,
+    "transisi_sd": "2026-12-31"
+   },
+   "teks": {
+    "dampak": "± 65 KK terdampak",
+    "status_darurat": "Transisi Darurat TMT 01/10/2026 s.d 31/12/2026",
+    "kondisi": "Masih dalam penanganan oleh pemerintah setempat untuk membersihkan material tanah longsor yang menutupi akses jalan di Dusun Batu Holing dan Urung Dolok",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "kondisi_pil": [
+    "Pembersihan material",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "13",
+   "lokasi": "Padang Pariaman",
+   "status": "selesai",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 81.0
+   },
+   "teks": {
+    "dampak": "± 81 KK terdampak",
+    "status_darurat": "-",
+    "kondisi": "Hujan telah reda dan banjir sudah surut.",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "kondisi_pil": [
+    "Sudah surut",
+    "selesai"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "18",
+   "lokasi": "Lampung Selatan",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Angin Kencang",
+   "angka": {
+    "kk": 30.0
+   },
+   "teks": {
+    "dampak": "± 30 KK terdampak",
+    "status_darurat": "-",
+    "kondisi": "Situasi di lokasi terpantau aman dan kondusif.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "kondisi_pil": [
+    "Aman, kondusif",
+    "selesai"
+   ]
+  },
+  {
+   "jenis": "erupsi",
+   "prov": "35",
+   "lokasi": "Probolinggo",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Erupsi Gunung Api",
+   "angka": {},
+   "teks": {
+    "dampak": "Kolom abu ± 500 m di atas puncak, radius 1 km dari kawah aktif ditutup",
+    "status_darurat": "-",
+    "kondisi": "Status Waspada (Level II); sejak 6 Nov dini hari asap dan abu baru tidak teramati",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "kondisi_pil": [
+    "Waspada, radius 1 km",
+    "waspada"
+   ]
+  }
+ ],
+ "prioritas_baru": [
+  "93",
+  "62",
+  "63",
+  "64",
+  "74",
+  "81",
+  "82"
+ ]
+}

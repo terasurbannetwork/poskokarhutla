@@ -1,0 +1,1910 @@
+{
+ "dibuat": "2026-11-04",
+ "catatan": "Rincian banjir per kab/kota untuk paparan 26 Okt-1 Nov 2026. Sumber: logbook Pusdalops terurai s.d. 29 Okt, Laphar Koordalops 30-31 Okt, WA Koordalops 31 Okt-2 Nov. Angka tak diketahui = null. Nama petugas tidak disalin. Info setelah 1 Nov (WA 3-4 Nov) hanya muncul di catatan. Laphar 1 Nov lengkap tidak tersedia, hanya ringkasan WA.",
+ "kejadian": [
+  {
+   "prov": "Aceh",
+   "kab": "Kota Subulussalam",
+   "status": "belum",
+   "n_kec": 2,
+   "n_desa": 22,
+   "kecamatan": [
+    {
+     "nama": "Sultan Daulat",
+     "desa": [
+      {
+       "nama": "Jabi-Jabi",
+       "kk": 292,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Sigrun",
+       "kk": 30,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Namobuaya",
+       "kk": 15,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Suka Maju",
+       "kk": 260,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Rundeng",
+     "desa": [
+      {
+       "nama": "Suak Jampak",
+       "kk": 102,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Sibungke",
+       "kk": 148,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Panglima Sahman",
+       "kk": 125,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Muara Batu-Batu",
+       "kk": 164,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Pasar Rundeng",
+       "kk": 77,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Binanga",
+       "kk": 105,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Oboh",
+       "kk": 115,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Siperkas",
+       "kk": 101,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Kuta Beringin",
+       "kk": 40,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Lae Mate",
+       "kk": 145,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Belukur Makmur",
+       "kk": 132,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Lae Pamualan",
+       "kk": 15,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Sibuasan",
+       "kk": 135,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Dah",
+       "kk": 94,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Mandilam",
+       "kk": 55,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Tualang",
+       "kk": 70,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Tanah Tumbuh",
+       "kk": 20,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Kuala Kepeng",
+       "kk": 5,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 2245,
+    "jiwa": null,
+    "tanggal": "2026-10-31"
+   },
+   "pengungsi": {
+    "kk": 32,
+    "jiwa": null,
+    "tanggal": "2026-10-31",
+    "lokasi": [
+     {
+      "lokasi": "(lokasi pengungsian tidak disebut)",
+      "desa_asal": "Suak Jampak",
+      "kecamatan": "Rundeng",
+      "kk": 26,
+      "jiwa": null,
+      "tanggal_kabar": "2026-10-31"
+     },
+     {
+      "lokasi": "(lokasi pengungsian tidak disebut)",
+      "desa_asal": "Sibuasan",
+      "kecamatan": "Rundeng",
+      "kk": 3,
+      "jiwa": null,
+      "tanggal_kabar": "2026-10-31"
+     },
+     {
+      "lokasi": "(lokasi pengungsian tidak disebut)",
+      "desa_asal": "Tualang",
+      "kecamatan": "Rundeng",
+      "kk": 3,
+      "jiwa": null,
+      "tanggal_kabar": "2026-10-31"
+     }
+    ]
+   },
+   "sumber": [
+    "Logbook 29 Okt",
+    "Laphar 31 Okt (entri 11)",
+    "WA Koordalops 1 Nov"
+   ],
+   "catatan": "Jiwa terdampak 'dalam pendataan' di semua gampong; hanya KK. Jumlah KK per gampong = 2.245, cocok dengan total laphar. Rumah terdampak 2.245. Kondisi 31 Okt: Sultan Daulat air naik kembali, Rundeng masih tergenang. Logbook 28 Okt mencatat 1.985 KK/20 gampong; laphar 30-31 Okt 22 gampong (tambah Suka Maju). Tinggi air tidak disebut. Info di luar periode (WA 3 Nov): Kec. Longkib juga tergenang."
+  },
+  {
+   "prov": "Aceh",
+   "kab": "Aceh Tenggara",
+   "status": "belum",
+   "n_kec": 6,
+   "n_desa": 16,
+   "kecamatan": [
+    {
+     "nama": "Bambel",
+     "desa": []
+    },
+    {
+     "nama": "Lawe Bulan",
+     "desa": []
+    },
+    {
+     "nama": "Deleng Pokhkison",
+     "desa": []
+    },
+    {
+     "nama": "Badar",
+     "desa": []
+    },
+    {
+     "nama": "Lawe Sumur",
+     "desa": []
+    },
+    {
+     "nama": "Lawe Sigala-gala",
+     "desa": []
+    },
+    {
+     "nama": "(kecamatan belum disebut)",
+     "desa": [
+      {
+       "nama": "Kuning I",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Pinding",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Pancar Iman",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Bambel Gabungan",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Terutung Seperai",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Likat",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Rikit",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Kuta Rutuh",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Lawe Sagu Hulu",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Kandang Mbelang Mandiri",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Bunga Melur",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Kumbang Jaya",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Terutung Megara Lawe Pasaran",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Mulia Damai",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Suka Damai",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Gelah Musara",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 532,
+    "jiwa": 1920,
+    "tanggal": "2026-10-29"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [
+    "Logbook 28-29 Okt",
+    "WA Koordalops 30 Okt (laphar 29 Okt entri 19)"
+   ],
+   "catatan": "Pemetaan desa ke kecamatan tidak ada di logbook 29 Okt (daftar datar), maka 16 desa ditaruh di bucket kecamatan belum disebut. Tinggi air perkiraan 0,5-1 m (28 Okt, tingkat kejadian); jalan nasional Desa Kuning dan rumah warga masih tergenang (29 Okt). 3 tanggul sungai jebol, Jembatan gantung Kumbang Jaya-Gulo amblas. Data pengungsi tidak ada. Tidak ada update setelah 30 Okt di sumber."
+  },
+  {
+   "prov": "Aceh",
+   "kab": "Aceh Selatan",
+   "status": "belum",
+   "n_kec": 2,
+   "n_desa": 3,
+   "kecamatan": [
+    {
+     "nama": "Trumon Tengah",
+     "desa": [
+      {
+       "nama": "Lhok Raya",
+       "kk": 30,
+       "jiwa": 112,
+       "tinggi_air": "10-15 cm di badan jalan (31 Okt)"
+      },
+      {
+       "nama": "Cot Bayu",
+       "kk": 30,
+       "jiwa": 120,
+       "tinggi_air": "10-20 cm di permukiman (31 Okt)"
+      }
+     ]
+    },
+    {
+     "nama": "Trumon",
+     "desa": [
+      {
+       "nama": "Padang Harapan",
+       "kk": 21,
+       "jiwa": 82,
+       "tinggi_air": "10-20 cm (31 Okt)"
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 218,
+    "jiwa": 756,
+    "tanggal": "2026-11-01"
+   },
+   "pengungsi": {
+    "kk": 43,
+    "jiwa": 161,
+    "tanggal": "2026-11-01",
+    "lokasi": [
+     {
+      "lokasi": "Kompi Brimob",
+      "desa_asal": "Lhok Raya",
+      "kecamatan": "Trumon Tengah",
+      "kk": 30,
+      "jiwa": 96,
+      "tanggal_kabar": "2026-10-31"
+     },
+     {
+      "lokasi": "TPA dan rumah kerabat",
+      "desa_asal": "Cot Bayu",
+      "kecamatan": "Trumon Tengah",
+      "kk": 17,
+      "jiwa": 77,
+      "tanggal_kabar": "2026-10-31"
+     }
+    ]
+   },
+   "sumber": [
+    "Logbook 28-29 Okt",
+    "Laphar 30 Okt (entri 18)",
+    "Laphar 31 Okt (entri 3)",
+    "WA Koordalops 1 Nov",
+    "WA Koordalops 2 Nov (laphar 1 Nov entri 7)"
+   ],
+   "catatan": "Angka terbaru 1 Nov: 218 KK/756 jiwa terdampak, 43 KK/161 jiwa mengungsi, 210 rumah, tanpa rincian per gampong. Rincian per gampong dan lokasi pengungsian dari 31 Okt (81 KK/314 jiwa; 47 KK/173 jiwa mengungsi), sehingga tidak berjumlah sama dengan total 1 Nov. Tinggi air 1 Nov tingkat kecamatan: Trumon Tengah 20-65 cm, Trumon sekitar 15 cm. Status Tanggap Darurat 30 Okt-12 Nov. Info di luar periode (WA 3-4 Nov): 222 KK/794 jiwa, mengungsi 56-58 KK."
+  },
+  {
+   "prov": "Aceh",
+   "kab": "Aceh Tengah",
+   "status": "belum",
+   "n_kec": 2,
+   "n_desa": 2,
+   "kecamatan": [
+    {
+     "nama": "Rusip Antara",
+     "desa": [
+      {
+       "nama": "Meurandeh Paya",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Bintang",
+     "desa": [
+      {
+       "nama": "Bamil Nosar",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": "2026-10-24"
+   },
+   "pengungsi": {
+    "kk": 8,
+    "jiwa": null,
+    "tanggal": "2026-10-24",
+    "lokasi": [
+     {
+      "lokasi": "Balai Desa",
+      "desa_asal": null,
+      "kecamatan": null,
+      "kk": 8,
+      "jiwa": null,
+      "tanggal_kabar": "2026-10-24"
+     }
+    ]
+   },
+   "sumber": [
+    "Logbook 24-26 Okt"
+   ],
+   "catatan": "Sumber hanya menyebut 8 KK mengungsi di Balai Desa (24 Okt); KK/jiwa terdampak tidak ada. Angka 8 KK di deck lama kemungkinan KK mengungsi, bukan terdampak. Lokasi: Kp. Meurandeh Paya (Rusip Antara) dan Kp. Bamil Nosar (Bintang); Balai Desa tidak disebut di desa mana. Banjir belum surut per 24 Okt, gorong-gorong jalan provinsi tersumbat kayu."
+  },
+  {
+   "prov": "Aceh",
+   "kab": "Aceh Barat",
+   "status": "belum",
+   "n_kec": 1,
+   "n_desa": 3,
+   "kecamatan": [
+    {
+     "nama": "Woyla Barat",
+     "desa": [
+      {
+       "nama": "Napai",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": "30-50 cm di jalan, 50 cm di sekolah/pekarangan (24 Okt)"
+      },
+      {
+       "nama": "Blang Cot Mameh",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": "2026-10-24"
+   },
+   "pengungsi": {
+    "kk": 35,
+    "jiwa": 105,
+    "tanggal": "2026-11-01",
+    "lokasi": [
+     {
+      "lokasi": "(lokasi pengungsian tidak disebut)",
+      "desa_asal": null,
+      "kecamatan": null,
+      "kk": 35,
+      "jiwa": 105,
+      "tanggal_kabar": "2026-11-01"
+     }
+    ]
+   },
+   "sumber": [
+    "Logbook 24-26 Okt",
+    "WA Koordalops 2 Nov (laphar 1 Nov entri 8)"
+   ],
+   "catatan": "Logbook menyebut 3 desa di Woyla Barat tetapi hanya 2 bernama (Napai, Blang Cot Mameh); n_desa pakai angka sumber. Laphar 1 Nov menandai Aceh Barat sebagai kejadian baru: 35 KK/105 jiwa mengungsi, 1 rumah, 1 jembatan RB, 2 akses jalan; banjir masih menggenangi. Belum pasti sama dengan kejadian 24 Okt. Info di luar periode (WA 3-4 Nov): kec. Pante Ceureumen dan Sungai Mas ikut tergenang, pengungsi 147 KK/645 jiwa lalu semua kembali."
+  },
+  {
+   "prov": "Aceh",
+   "kab": "Aceh Barat Daya",
+   "status": "belum",
+   "n_kec": null,
+   "n_desa": null,
+   "kecamatan": [],
+   "terdampak_sumber": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [],
+   "catatan": "Tidak ada data di sumber yang tersedia (logbook sampai 29 Okt, laphar 30-31 Okt, WA 31 Okt-2 Nov)."
+  },
+  {
+   "prov": "Aceh",
+   "kab": "Aceh Jaya",
+   "status": "belum",
+   "n_kec": null,
+   "n_desa": null,
+   "kecamatan": [],
+   "terdampak_sumber": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [],
+   "catatan": "Tidak ada data di sumber yang tersedia."
+  },
+  {
+   "prov": "Aceh",
+   "kab": "Aceh Utara",
+   "status": "belum",
+   "n_kec": null,
+   "n_desa": null,
+   "kecamatan": [],
+   "terdampak_sumber": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [],
+   "catatan": "Tidak ada data di sumber yang tersedia."
+  },
+  {
+   "prov": "Aceh",
+   "kab": "Nagan Raya",
+   "status": "belum",
+   "n_kec": 2,
+   "n_desa": 10,
+   "kecamatan": [
+    {
+     "nama": "Darul Makmur",
+     "desa": []
+    },
+    {
+     "nama": "Tripa Makmur",
+     "desa": []
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": "2026-10-26"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [
+    "Logbook 26 Okt"
+   ],
+   "catatan": "Hanya jumlah: 2 kecamatan/10 desa tanpa nama; korban dan kerugian 'dalam pendataan'. Krueng Lamie dan Krueng Tripa meluap 25 Okt, air masih menggenangi (26 Okt)."
+  },
+  {
+   "prov": "Aceh",
+   "kab": "Pidie Jaya",
+   "status": "belum",
+   "n_kec": 3,
+   "n_desa": 2,
+   "kecamatan": [
+    {
+     "nama": "Meureudu",
+     "desa": []
+    },
+    {
+     "nama": "Meurah Dua",
+     "desa": []
+    },
+    {
+     "nama": "Bandar Dua",
+     "desa": []
+    },
+    {
+     "nama": "(kecamatan belum disebut)",
+     "desa": [
+      {
+       "nama": "Alue Ketapang",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Babah Krueng",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": "2026-10-26"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [
+    "Logbook 25-26 Okt"
+   ],
+   "catatan": "Pemetaan 2 desa ke 3 kecamatan tidak ada di sumber. Korban dan kerugian 'dalam pendataan'; per 25 Okt hujan reda dan air sudah surut, tetapi deck lama menghitung belum surut. Info di luar periode (WA 4 Nov): 4.795 KK/15.903 jiwa terdampak."
+  },
+  {
+   "prov": "Sumatera Utara",
+   "kab": "Langkat",
+   "status": "belum",
+   "n_kec": 1,
+   "n_desa": 3,
+   "kecamatan": [
+    {
+     "nama": "Tanjung Pura",
+     "desa": [
+      {
+       "nama": "Dusun 10 Palu Gusta",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Dusun 6 Serba Guna",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Dusun 5 Alur Kapal",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 310,
+    "jiwa": null,
+    "tanggal": "2026-10-30"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [
+    "Laphar 30 Okt (entri 16)",
+    "WA Koordalops 31 Okt"
+   ],
+   "catatan": "Kecamatan Tanjung Pura, 3 dusun (nama dusun sesuai laphar). Hujan 29 Okt 21.30, tanggul jebol; 310 rumah terdampak. Tidak ada data pengungsi; kondisi 30 Okt cuaca mendung."
+  },
+  {
+   "prov": "Sumatera Utara",
+   "kab": "Mandailing Natal",
+   "status": "belum",
+   "n_kec": 4,
+   "n_desa": 15,
+   "kecamatan": [
+    {
+     "nama": "Huta Bargot",
+     "desa": [
+      {
+       "nama": "Binanga",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Panyabungan Utara",
+     "desa": [
+      {
+       "nama": "Rumbio",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Panyabungan Barat",
+     "desa": [
+      {
+       "nama": "Barbaran Jae",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Batang Gadis",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Sirambas",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Panyabungan",
+     "desa": [
+      {
+       "nama": "Sopo Batu",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Gunung Tua Julu",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Gunung Tua Tonga",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Gunung Tua Lumban Pasir",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Gunung Tua Jae",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Manyabar",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Manyabar Jae",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Gunung Manaon",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Pagaran Tonga",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Saba Jambu",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 287,
+    "jiwa": null,
+    "tanggal": "2026-10-31"
+   },
+   "pengungsi": {
+    "kk": 190,
+    "jiwa": null,
+    "tanggal": "2026-10-31",
+    "lokasi": [
+     {
+      "lokasi": "(lokasi pengungsian tidak disebut)",
+      "desa_asal": null,
+      "kecamatan": null,
+      "kk": 190,
+      "jiwa": null,
+      "tanggal_kabar": "2026-10-31"
+     }
+    ]
+   },
+   "sumber": [
+    "Logbook 28-29 Okt",
+    "Laphar 30 Okt (entri 6)",
+    "Laphar 31 Okt (entri 5)",
+    "WA Koordalops 1 Nov"
+   ],
+   "catatan": "Laphar 31 Okt menggabung dua genangan: Sungai Simalagi (Binanga, Rumbio; 28 Okt, 32 KK di logbook, tinggi 60 cm) dan Aek Kitang (10 desa Panyabungan; 29 Okt, tinggi 30 cm). Total 287 KK/287 rumah, 2 rumah RB, 190 KK mengungsi. Air berangsur surut 31 Okt, kendaraan sudah lewat."
+  },
+  {
+   "prov": "Sumatera Utara",
+   "kab": "Dairi",
+   "status": "belum",
+   "n_kec": 1,
+   "n_desa": 1,
+   "kecamatan": [
+    {
+     "nama": "Silima Pungga-Pungga",
+     "desa": [
+      {
+       "nama": "Lae Ambat",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": "2026-10-25"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [
+    "Logbook 25-26 Okt"
+   ],
+   "catatan": "Banjir dan longsor 23 Okt di Dusun 5 Sukumblin, Desa Lae Ambat. Korban 'dalam pendataan'; lahan pertanian +/-5 ha, 8 titik jalan, 1 jembatan terdampak. Tidak ada angka KK/jiwa."
+  },
+  {
+   "prov": "Jawa Barat",
+   "kab": "Kota Bandung",
+   "status": "belum",
+   "n_kec": 1,
+   "n_desa": 1,
+   "kecamatan": [
+    {
+     "nama": "Coblong",
+     "desa": [
+      {
+       "nama": "Cipaganti",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 34,
+    "jiwa": 112,
+    "tanggal": "2026-10-31"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": 10,
+    "tanggal": "2026-10-31",
+    "lokasi": [
+     {
+      "lokasi": "(lokasi pengungsian tidak disebut)",
+      "desa_asal": "Cipaganti",
+      "kecamatan": "Coblong",
+      "kk": null,
+      "jiwa": 10,
+      "tanggal_kabar": "2026-10-31"
+     }
+    ]
+   },
+   "sumber": [
+    "Laphar 30 Okt (entri 24)",
+    "Laphar 31 Okt (entri 8)",
+    "WA Koordalops 31 Okt"
+   ],
+   "catatan": "Tanggul/kirmir sungai jebol 30 Okt; 34 rumah (2 RB, 1 RR), +/-3 km2 lahan. Pembersihan lumpur berlangsung 31 Okt (laphar 30 Okt menyebut banjir surut)."
+  },
+  {
+   "prov": "Jawa Tengah",
+   "kab": "Cilacap",
+   "status": "belum",
+   "n_kec": null,
+   "n_desa": null,
+   "kecamatan": [],
+   "terdampak_sumber": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [],
+   "catatan": "Tidak ada data banjir di sumber yang tersedia (logbook Cilacap hanya kekeringan). Angka deck lama (44 KK/159 jiwa) tidak bisa diverifikasi."
+  },
+  {
+   "prov": "Jawa Tengah",
+   "kab": "Banyumas",
+   "status": "belum",
+   "n_kec": 2,
+   "n_desa": 2,
+   "kecamatan": [
+    {
+     "nama": "Wangon",
+     "desa": [
+      {
+       "nama": "Wangon",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Purwojati",
+     "desa": [
+      {
+       "nama": "Gerduren",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 9,
+    "jiwa": 32,
+    "tanggal": "2026-10-31"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [
+    "Laphar 31 Okt (entri 16)"
+   ],
+   "catatan": "Banjir 30 Okt karena drainase kecil; 9 rumah. Berangsur surut 31 Okt. Logbook Banyumas hanya kekeringan."
+  },
+  {
+   "prov": "Jawa Timur",
+   "kab": "Trenggalek",
+   "status": "belum",
+   "n_kec": 1,
+   "n_desa": 3,
+   "kecamatan": [
+    {
+     "nama": "Munjungan",
+     "desa": [
+      {
+       "nama": "Masaran",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Craken",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Munjungan",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 27,
+    "jiwa": null,
+    "tanggal": "2026-10-30"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [
+    "Laphar 30 Okt (entri 17)"
+   ],
+   "catatan": "Banjir luapan dan longsor 29-30 Okt; 27 rumah RR. Pemantauan ketinggian air berlanjut 30 Okt."
+  },
+  {
+   "prov": "Jawa Timur",
+   "kab": "Kota Batu",
+   "status": "belum",
+   "n_kec": 2,
+   "n_desa": 3,
+   "kecamatan": [
+    {
+     "nama": "Junrejo",
+     "desa": []
+    },
+    {
+     "nama": "Batu",
+     "desa": []
+    },
+    {
+     "nama": "(kecamatan belum disebut)",
+     "desa": [
+      {
+       "nama": "Mojorejo",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Junrejo",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Oro-Oro Ombo",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 2,
+    "jiwa": null,
+    "tanggal": "2026-10-29"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [
+    "Logbook 28-29 Okt"
+   ],
+   "catatan": "Pemetaan 3 desa ke 2 kecamatan tidak ada di sumber. Genangan di 4 titik jalan karena drainase tersumbat sampah, tinggi air +/-15 cm; 2 rumah. Belum surut per 28 Okt."
+  },
+  {
+   "prov": "Aceh",
+   "kab": "Gayo Lues",
+   "status": "sudah",
+   "n_kec": 2,
+   "n_desa": 4,
+   "kecamatan": [
+    {
+     "nama": "Dabun Gelang",
+     "desa": [
+      {
+       "nama": "Badak",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": "selutut orang dewasa (28 Okt)"
+      },
+      {
+       "nama": "Sangir",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Pangur",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Blangkejeren",
+     "desa": [
+      {
+       "nama": "Agusen",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 373,
+    "jiwa": 1261,
+    "tanggal": "2026-10-31"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": 175,
+    "tanggal": "2026-10-31",
+    "lokasi": [
+     {
+      "lokasi": "Masjid An-Nur Desa Badak",
+      "desa_asal": "Badak",
+      "kecamatan": "Dabun Gelang",
+      "kk": null,
+      "jiwa": 175,
+      "tanggal_kabar": "2026-10-31"
+     }
+    ]
+   },
+   "sumber": [
+    "Logbook 28-29 Okt",
+    "Laphar 30 Okt (entri 15)",
+    "Laphar 31 Okt (entri 17)",
+    "WA Koordalops 1 Nov"
+   ],
+   "catatan": "Angka terbaru 373 KK/1.261 jiwa (31 Okt); 30 Okt sempat 370 KK/1.051 jiwa dan logbook 29 Okt 400 KK/1.824 jiwa. 370 rumah (8 RB, 1 RR). Air surut, lumpur tersisa. Info di luar periode (WA 3 Nov): pengungsi tersisa 50 jiwa."
+  },
+  {
+   "prov": "Sumatera Utara",
+   "kab": "Deli Serdang",
+   "status": "sudah",
+   "n_kec": 8,
+   "n_desa": 16,
+   "kecamatan": [
+    {
+     "nama": "Tanjung Morawa",
+     "desa": [
+      {
+       "nama": "Punden Rejo",
+       "kk": 88,
+       "jiwa": 358,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Dalu X-A",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Dalu X-B",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Bandar Labuhan",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Hamparan Perak",
+     "desa": [
+      {
+       "nama": "Desa Lama",
+       "kk": 58,
+       "jiwa": 215,
+       "tinggi_air": "30 cm (30 Okt)"
+      },
+      {
+       "nama": "Klambir V Kampung",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Klumpang Kebun",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Klambir V Kebun",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Bangun Purba",
+     "desa": [
+      {
+       "nama": "Mabar",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Delitua",
+     "desa": [
+      {
+       "nama": "Delitua Barat",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Sunggal",
+     "desa": [
+      {
+       "nama": "Tanjung Gusta",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Paya Geli",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Lalang",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Batang Kuis",
+     "desa": [
+      {
+       "nama": "Tumpatan Nimbung",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Patumbak",
+     "desa": [
+      {
+       "nama": "Sigara-gara",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Galang",
+     "desa": [
+      {
+       "nama": "Titi Besi",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 7615,
+    "jiwa": 29730,
+    "tanggal": "2026-10-30"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": 596,
+    "tanggal": "2026-10-29",
+    "lokasi": [
+     {
+      "lokasi": "(lokasi pengungsian tidak disebut)",
+      "desa_asal": null,
+      "kecamatan": null,
+      "kk": null,
+      "jiwa": 596,
+      "tanggal_kabar": "2026-10-29"
+     }
+    ]
+   },
+   "sumber": [
+    "Logbook 27 Okt",
+    "Laphar 30 Okt (entri 8)",
+    "WA Koordalops 28, 30, 31 Okt"
+   ],
+   "catatan": "KK/jiwa per desa hanya untuk Punden Rejo dan Desa Lama (laporan awal 27 Okt, total 146 KK/573 jiwa); total akhir 7.615 KK/29.730 jiwa, 7.327 rumah. Tinggi air awal 40-50 cm (tanggul jebol Dusun II Punden Rejo, 27 Okt). 30 Okt: surut kecuali Hamparan Perak TMA +/-30 cm; pengungsi sudah kembali ke rumah."
+  },
+  {
+   "prov": "Sumatera Utara",
+   "kab": "Langkat",
+   "status": "sudah",
+   "n_kec": 3,
+   "n_desa": 9,
+   "kecamatan": [
+    {
+     "nama": "Wampu",
+     "desa": [
+      {
+       "nama": "Stungkit",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Sirapit",
+     "desa": [
+      {
+       "nama": "Tanjung Keriahan",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Suka Pulung",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Gunung Tinggi",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Besitang",
+     "desa": [
+      {
+       "nama": "Sekoci",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Bukit Mas",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Pekan Besitang",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Bukit Kubu",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Kampung Lama",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 3157,
+    "jiwa": 12431,
+    "tanggal": "2026-10-31"
+   },
+   "pengungsi": {
+    "kk": 155,
+    "jiwa": 694,
+    "tanggal": "2026-10-31",
+    "lokasi": [
+     {
+      "lokasi": "Posko pengungsian Desa Sekoci",
+      "desa_asal": "Sekoci",
+      "kecamatan": "Besitang",
+      "kk": 155,
+      "jiwa": 694,
+      "tanggal_kabar": "2026-10-29"
+     }
+    ]
+   },
+   "sumber": [
+    "Logbook 28-29 Okt",
+    "Laphar 31 Okt (entri 6)",
+    "WA Koordalops 30, 31 Okt, 1 Nov"
+   ],
+   "catatan": "9 lokasi = 6 desa + 3 kelurahan (Pekan Besitang, Bukit Kubu, Kampung Lama). 3.157 rumah, +/-193,4 ha lahan, 1.032 ekor ternak. Awal 28 Okt 691 KK 'berpotensi terdampak'. 155 KK/694 jiwa mengungsi (29 Okt); per 31 Okt seluruhnya sudah kembali ke rumah."
+  },
+  {
+   "prov": "Sumatera Utara",
+   "kab": "Kota Medan",
+   "status": "sudah",
+   "n_kec": null,
+   "n_desa": null,
+   "kecamatan": [],
+   "terdampak_sumber": {
+    "kk": 2405,
+    "jiwa": 7930,
+    "tanggal": "2026-10-29"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [
+    "WA Koordalops 30 Okt (laphar 29 Okt entri 22)"
+   ],
+   "catatan": "Hanya angka agregat: 2.405 KK/7.930 jiwa, +/-2.200 rumah; banjir surut total. Tidak ada nama kecamatan/kelurahan atau data pengungsi di sumber (Medan tidak ada di logbook)."
+  },
+  {
+   "prov": "Sumatera Utara",
+   "kab": "Kota Binjai",
+   "status": "sudah",
+   "n_kec": 3,
+   "n_desa": 6,
+   "kecamatan": [
+    {
+     "nama": "Binjai Selatan",
+     "desa": [
+      {
+       "nama": "Rambung Timur",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Rambung Dalam",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Tanah Seribu",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Binjai Kota",
+     "desa": [
+      {
+       "nama": "Setia",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Pekan Binjai",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Binjai Timur",
+     "desa": [
+      {
+       "nama": "Mencirim",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 1006,
+    "jiwa": 3212,
+    "tanggal": "2026-10-31"
+   },
+   "pengungsi": {
+    "kk": 4,
+    "jiwa": 16,
+    "tanggal": "2026-10-31",
+    "lokasi": [
+     {
+      "lokasi": "rumah kerabat",
+      "desa_asal": "(rumah rusak berat)",
+      "kecamatan": null,
+      "kk": 4,
+      "jiwa": 16,
+      "tanggal_kabar": "2026-10-31"
+     }
+    ]
+   },
+   "sumber": [
+    "Logbook 29 Okt",
+    "Laphar 31 Okt (entri 7)",
+    "WA Koordalops 30 Okt, 1 Nov"
+   ],
+   "catatan": "Semua lokasi kelurahan (6 kel/3 kec). Awal 29 Okt 1.014 KK/3.885 jiwa; laphar 31 Okt 1.006 KK/3.212 jiwa dan 1.014 rumah (4 RB, 2 RR). TMA Sungai Bingai 390 cm, Mencirim 420 cm. 4 KK/16 jiwa (rumah rusak berat) mengungsi di rumah kerabat."
+  },
+  {
+   "prov": "Sumatera Utara",
+   "kab": "Asahan",
+   "status": "sudah",
+   "n_kec": 1,
+   "n_desa": 2,
+   "kecamatan": [
+    {
+     "nama": "Setia Janji",
+     "desa": [
+      {
+       "nama": "Sei Silau Tua",
+       "kk": 582,
+       "jiwa": 2910,
+       "tinggi_air": "30-60 cm"
+      },
+      {
+       "nama": "Bangun Sari",
+       "kk": 175,
+       "jiwa": 700,
+       "tinggi_air": "40-80 cm"
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 757,
+    "jiwa": 3610,
+    "tanggal": "2026-10-29"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [
+    "Logbook 27-29 Okt",
+    "WA Koordalops 28, 29 Okt"
+   ],
+   "catatan": "405 rumah terdampak, 2 fasdik, 1 akses jalan desa terendam. Awal 27 Okt 405 KK; rinci 757 KK/3.610 jiwa. Banjir surut 28 Okt. Data pengungsi tidak ada."
+  },
+  {
+   "prov": "Sumatera Utara",
+   "kab": "Labuhanbatu",
+   "status": "sudah",
+   "n_kec": 1,
+   "n_desa": 2,
+   "kecamatan": [
+    {
+     "nama": "Rantau Utara",
+     "desa": [
+      {
+       "nama": "Sirandorung",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Padang Bulan",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 520,
+    "jiwa": null,
+    "tanggal": "2026-10-27"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [
+    "Logbook 27 Okt",
+    "WA Koordalops 28 Okt"
+   ],
+   "catatan": "Keduanya kelurahan. +/-520 rumah; tinggi air +/-1 m (24 Okt, tingkat kejadian) hingga lintas jalan. Surut per 27 Okt."
+  },
+  {
+   "prov": "Sumatera Utara",
+   "kab": "Tapanuli Tengah",
+   "status": "sudah",
+   "n_kec": 4,
+   "n_desa": 6,
+   "kecamatan": [
+    {
+     "nama": "Tukka",
+     "desa": [
+      {
+       "nama": "Bonalumban",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Tukka",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Badiri",
+     "desa": [
+      {
+       "nama": "Lopian",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Sarudik",
+     "desa": [
+      {
+       "nama": "Sibuluan Nalambok",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Pandan",
+     "desa": [
+      {
+       "nama": "Sibuluan Indah",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Sibuluan Raya",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 106,
+    "jiwa": 424,
+    "tanggal": "2026-10-26"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [
+    "Logbook 23-26 Okt",
+    "Laphar 25 Okt (arsip laphar harian)"
+   ],
+   "catatan": "Semua kelurahan (4 kec/6 kel). 106 rumah, 1 rumah hanyut. Tanggul sungai Tukka rusak 23 Okt; surut 25 Okt. Tidak ada rincian KK per kelurahan."
+  },
+  {
+   "prov": "Sumatera Utara",
+   "kab": "Serdang Bedagai",
+   "status": "sudah",
+   "n_kec": 4,
+   "n_desa": 6,
+   "kecamatan": [
+    {
+     "nama": "Kotarih",
+     "desa": [
+      {
+       "nama": "Kotarih Baru",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Kotarih",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Silinda",
+     "desa": [
+      {
+       "nama": "Tapak Meriah",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Kualasar",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      },
+      {
+       "nama": "Pamah",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    },
+    {
+     "nama": "Sipispis",
+     "desa": []
+    },
+    {
+     "nama": "Dolok Merawan",
+     "desa": [
+      {
+       "nama": "Korajim",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 31,
+    "jiwa": null,
+    "tanggal": "2026-10-31"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [
+    "Laphar 31 Okt (entri 4)",
+    "WA Koordalops 30 Okt"
+   ],
+   "catatan": "Banjir dan longsor 29 Okt; 31 rumah terdampak, 1 rumah rusak, jembatan akses hanyut sebagian. Kec. Sipispis tanpa nama desa. Surut per 31 Okt."
+  },
+  {
+   "prov": "Jawa Barat",
+   "kab": "Bandung Barat",
+   "status": "sudah",
+   "n_kec": 1,
+   "n_desa": 1,
+   "kecamatan": [
+    {
+     "nama": "Padalarang",
+     "desa": [
+      {
+       "nama": "Tagogapu",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 6,
+    "jiwa": null,
+    "tanggal": "2026-10-29"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [
+    "Logbook 28-29 Okt"
+   ],
+   "catatan": "Banjir 27 Okt dari ambruknya drainase KCIC di bawah jalan; 5-6 rumah. Surut per 28 Okt."
+  },
+  {
+   "prov": "Jawa Barat",
+   "kab": "Cianjur",
+   "status": "sudah",
+   "n_kec": null,
+   "n_desa": null,
+   "kecamatan": [],
+   "terdampak_sumber": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [],
+   "catatan": "Tidak ada data di sumber yang tersedia. Angka deck lama (1 KK/3 jiwa/5 mengungsi) tidak bisa diverifikasi."
+  },
+  {
+   "prov": "Jawa Tengah",
+   "kab": "Sragen",
+   "status": "sudah",
+   "n_kec": 1,
+   "n_desa": 1,
+   "kecamatan": [
+    {
+     "nama": "Karangmalang",
+     "desa": [
+      {
+       "nama": "Plumbungan",
+       "kk": null,
+       "jiwa": null,
+       "tinggi_air": null
+      }
+     ]
+    }
+   ],
+   "terdampak_sumber": {
+    "kk": 6,
+    "jiwa": 29,
+    "tanggal": "2026-10-30"
+   },
+   "pengungsi": {
+    "kk": null,
+    "jiwa": null,
+    "tanggal": null,
+    "lokasi": []
+   },
+   "sumber": [
+    "Laphar 30 Okt (entri 20)"
+   ],
+   "catatan": "Kelurahan Plumbungan; gorong-gorong tersumbat longsor, 6 rumah."
+  }
+ ]
+}

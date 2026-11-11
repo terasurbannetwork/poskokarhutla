@@ -26,8 +26,13 @@ for (const f of g.features) {
   d[f.properties.kode] = s;
 }
 const rows = Object.entries(A).map(([k, o]) => ({k, t: o.hot[I] || 0})).filter(r => r.t > 0).sort((a, b) => b.t - a.t);
-const mx = Math.max(1, rows[0]?.t || 0), rad = t => 5 + 33 * Math.sqrt(t / mx), ada = new Set(rows.map(r => r.k));
-let s = Object.entries(d).map(([k, p]) => `<path d="${p}" class="${ada.has(k) ? 'pp-on' : 'pp'}"/>`).join('');
+// PETA_CHOROPLETH=1 (pemilik 10 Nov 2026: "pakai chloropleth, jangan bubble, fontnya agak gedein"): provinsi diwarnai kelas jumlah hotspot, tanpa lingkaran.
+// Ambang tetap supaya warna antarhari sebanding; kelas dan warnanya sama dengan legenda di tambah_peta.py.
+const CHORO = process.env.PETA_CHOROPLETH === '1';
+const KELAS = [[250, '#7F2704'], [100, '#D9480F'], [50, '#F78C3C'], [25, '#FDBE85'], [0, '#FEE5CC']];
+const warnaKelas = t => KELAS.find(([b]) => t > b)[1], nilaiProv = Object.fromEntries(rows.map(r => [r.k, r.t]));
+const mx = Math.max(1, rows[0]?.t || 0), rad = t => CHORO ? 0 : 5 + 33 * Math.sqrt(t / mx), ada = new Set(rows.map(r => r.k));
+let s = Object.entries(d).map(([k, p]) => CHORO ? `<path d="${p}" class="pp"${ada.has(k) ? ` style="fill:${warnaKelas(nilaiProv[k])}"` : ''}/>` : `<path d="${p}" class="${ada.has(k) ? 'pp-on' : 'pp'}"/>`).join('');
 const bul = rows.filter(r => c[r.k]).map(r => ({...r, x: c[r.k][0], y: c[r.k][1], ax: c[r.k][0], ay: c[r.k][1], r: rad(r.t)}));
 // Lingkaran bertumpuk didorong saling menjauh (Sulsel tertimpa Sultra, angka Gorontalo tertutup Sulteng, 31 Okt 2026): yang kecil bergeser
 // lebih jauh, semuanya ditarik pelan ke titik tengah provinsinya; 80 putaran terakhir tanpa tarikan supaya pasti tidak bertumpuk.
@@ -43,17 +48,46 @@ for (let it = 0; it < 480; it++) {
   if (it < 400) for (const r of bul) { r.x += (r.ax - r.x) * .02; r.y += (r.ay - r.y) * .02; }
   else if (!tumpuk) break;
 }
-s += bul.slice().reverse().map(r => `<circle cx="${r.x.toFixed(1)}" cy="${r.y.toFixed(1)}" r="${r.r.toFixed(1)}" class="pc"/>`).join('');
+if (!CHORO) s += bul.slice().reverse().map(r => `<circle cx="${r.x.toFixed(1)}" cy="${r.y.toFixed(1)}" r="${r.r.toFixed(1)}" class="pc"/>`).join('');
 s += bul.filter(r => r.r >= 22).map(r => `<text x="${r.x.toFixed(1)}" y="${(r.y + 2).toFixed(1)}" class="pa">${fmt(r.t)}</text>`
   + `<text x="${r.x.toFixed(1)}" y="${(r.y + 14).toFixed(1)}" class="pn" style="font-size:${Math.min(9.5, (2 * r.r - 10) / (0.58 * (SINGKAT[r.k] || ' ').length)).toFixed(1)}px">${SINGKAT[r.k] || ''}</text>`).join('');   // nama panjang (Gorontalo) dikecilkan supaya muat di lingkaran
-const LH = 17, pil = [], kena = (x, y, w) => x < 2 || x + w > PW - 2 || y < 2 || y + LH > PH - 2
+const LH = CHORO ? 26 : 17, JAGA = CHORO ? 9 : 2, pil = [], kena = (x, y, w) => x < 2 || x + w > PW + (CHORO ? 28 : -2) || y < (CHORO ? -6 : 2) || y + LH > PH + (CHORO ? 6 : -2)
   || pil.some(q => x < q[0] + q[2] + 3 && x + w + 3 > q[0] && y < q[1] + LH + 3 && y + LH + 3 > q[1])
-  || bul.some(c => { const nx = Math.max(x, Math.min(c.x, x + w)), ny = Math.max(y, Math.min(c.y, y + LH)); return (nx - c.x) ** 2 + (ny - c.y) ** 2 < (c.r + 2) ** 2; });
+  || bul.some(c => { const nx = Math.max(x, Math.min(c.x, x + w)), ny = Math.max(y, Math.min(c.y, y + LH)); return (nx - c.x) ** 2 + (ny - c.y) ** 2 < (c.r + JAGA) ** 2; });
 let garis = '', label = '', tanpa = [];
-for (const r of bul.filter(r => r.r < 22)) {
-  const nm = SINGKAT[r.k] || '', n = fmt(r.t), w = nm.length * 5.9 + n.length * 6.6 + 18;
+if (CHORO) {   // pemilik 10 Nov 2026 ("masih jelek dan berantakan"): label hanya 10 besar sesuai tabel, nomor peringkat di dalam pil, posisi dipilih yang paling sedikit menutup daratan
+  const darat = Object.values(d).flatMap(p => p.split('Z').filter(Boolean).map(q => {
+    const pts = q.slice(1).split('L').map(t => t.split(' ').map(Number)), xs = pts.map(a => a[0]), ys = pts.map(a => a[1]);
+    return {pts, b: [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)]}; }));
+  const diDarat = (x, y) => darat.some(({pts, b}) => { if (x < b[0] || x > b[2] || y < b[1] || y > b[3]) return false; let isi = false;
+    for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) if ((pts[i][1] > y) !== (pts[j][1] > y) && x < (pts[j][0] - pts[i][0]) * (y - pts[i][1]) / (pts[j][1] - pts[i][1]) + pts[i][0]) isi = !isi;
+    return isi; });
+  const atas = bul.slice(0, 10);
+  const bentur = (x, y, w) => x < 2 || x + w > PW + 28 || y < -6 || y + LH > PH + 6
+    || pil.some(q => x < q[0] + q[2] + 5 && x + w + 5 > q[0] && y < q[1] + LH + 5 && y + LH + 5 > q[1])
+    || atas.some(c => c.x > x - 7 && c.x < x + w + 7 && c.y > y - 7 && c.y < y + LH + 7);
+  atas.forEach((r, n) => {
+    const nm = SINGKAT[r.k] || '', v = fmt(r.t), w = nm.length * 9.6 + v.length * 10.6 + 46;
+    let hasil = null;
+    for (const dd of [14, 24, 36, 50, 68, 90, 115, 145, 180]) for (let a = 0; a < 24; a++) {
+      const ang = a * Math.PI / 12, cx = r.x + Math.cos(ang) * (dd + w / 2), cy = r.y + Math.sin(ang) * (dd + LH / 2), x = cx - w / 2, y = cy - LH / 2;
+      if (bentur(x, y, w)) continue;
+      let kena = 0; for (let i = 0; i < 6; i++) for (let j = 0; j < 3; j++) if (diDarat(x + w * (i + .5) / 6, y + LH * (j + .5) / 3)) kena++;
+      const skor = kena * 16 + dd * .9;
+      if (!hasil || skor < hasil[0]) hasil = [skor, x, y];
+    }
+    if (!hasil) { tanpa.push(nm); return; }
+    const [, x, y] = hasil; pil.push([x, y, w]);
+    const tx = Math.max(x, Math.min(r.x, x + w)), ty = Math.max(y, Math.min(r.y, y + LH));
+    garis += `<line x1="${r.x.toFixed(1)}" y1="${r.y.toFixed(1)}" x2="${tx.toFixed(1)}" y2="${ty.toFixed(1)}" class="pl"/><circle cx="${r.x.toFixed(1)}" cy="${r.y.toFixed(1)}" r="3.6" class="pd"/>`;
+    label += `<g transform="translate(${x.toFixed(1)},${y.toFixed(1)})"><rect width="${w.toFixed(1)}" height="${LH}" rx="${LH / 2}" class="pk"/><circle cx="13" cy="13" r="10" class="rk2"/>`
+      + `<text x="13" y="17.6" class="rk2-t">${n + 1}</text><text x="29" y="19" class="pt-t"><tspan class="pt-n">${nm}</tspan> <tspan class="pt-v">${v}</tspan></text></g>`;
+  });
+}
+for (const r of CHORO ? [] : bul.filter(r => r.r < 22)) {
+  const nm = SINGKAT[r.k] || '', n = fmt(r.t), w = CHORO ? nm.length * 8.8 + n.length * 9.9 + 26 : nm.length * 5.9 + n.length * 6.6 + 18;
   let pos = null;
-  for (const dd of [8, 18, 30, 46, 64]) { for (let a = 0; a < 16 && !pos; a++) { const ang = -Math.PI / 4 - a * Math.PI / 8,
+  for (const dd of CHORO ? [10, 20, 32, 46, 64, 86, 110, 140, 175] : [8, 18, 30, 46, 64]) { for (let a = 0; a < 16 && !pos; a++) { const ang = -Math.PI / 4 - a * Math.PI / 8,
     cx = r.x + Math.cos(ang) * (r.r + dd + w / 2), cy = r.y + Math.sin(ang) * (r.r + dd + LH / 2), x = cx - w / 2, y = cy - LH / 2;
     if (!kena(x, y, w)) pos = [x, y, cx, cy]; } if (pos) break; }
   if (!pos) { tanpa.push(nm); continue; }
@@ -61,22 +95,22 @@ for (const r of bul.filter(r => r.r < 22)) {
   const dd = Math.hypot(cx - r.x, cy - r.y) || 1, ex = r.x + (cx - r.x) * r.r / dd, ey = r.y + (cy - r.y) * r.r / dd;
   const tx = Math.max(x, Math.min(r.x, x + w)), ty = Math.max(y, Math.min(r.y, y + LH));
   if (Math.hypot(tx - ex, ty - ey) > 3) garis += `<line x1="${ex.toFixed(1)}" y1="${ey.toFixed(1)}" x2="${tx.toFixed(1)}" y2="${ty.toFixed(1)}" class="pl"/>`;
-  label += `<g transform="translate(${x.toFixed(1)},${y.toFixed(1)})"><rect width="${w.toFixed(1)}" height="${LH}" rx="8.5" class="pk"/>`
-    + `<text x="8" y="12" class="pt-t"><tspan class="pt-n">${nm}</tspan> <tspan class="pt-v">${n}</tspan></text></g>`;
+  label += `<g transform="translate(${x.toFixed(1)},${y.toFixed(1)})"><rect width="${w.toFixed(1)}" height="${LH}" rx="${LH / 2}" class="pk"/>`
+    + `<text x="${CHORO ? 12 : 8}" y="${CHORO ? 17.5 : 12}" class="pt-t"><tspan class="pt-n">${nm}</tspan> <tspan class="pt-v">${n}</tspan></text></g>`;
 }
 s += garis + label;
 // nomor peringkat 1-7 (sama dengan tabel peringkat): lencana kecil di tepi lingkaran, di sisi yang tidak menabrak
 // lingkaran lain, pil label, atau lencana lain (dicoba 8 arah)
 const lencana = [];
-s += bul.slice(0, 7).map((r, n) => {
-  const R8 = 8.5, bebas = (x, y) => !bul.some(c => c !== r && Math.hypot(x - c.x, y - c.y) < c.r + R8)
+s += (CHORO ? [] : bul.slice(0, 7)).map((r, n) => {
+  const R8 = CHORO ? 11 : 8.5, bebas = (x, y) => !bul.some(c => c !== r && Math.hypot(x - c.x, y - c.y) < c.r + R8)
     && !pil.some(q => x + R8 > q[0] && x - R8 < q[0] + q[2] && y + R8 > q[1] && y - R8 < q[1] + LH)
     && !lencana.some(([a, b]) => Math.hypot(x - a, y - b) < 2 * R8) && x > R8 && x < PW - R8 && y > R8 && y < PH - R8;
   let pos = null;
   for (const d of [-135, -45, 135, 45, 180, 0, -90, 90]) { const a = d * Math.PI / 180, x = r.x + Math.cos(a) * r.r, y = r.y + Math.sin(a) * r.r; if (bebas(x, y)) { pos = [x, y]; break; } }
   if (!pos) pos = [r.x + Math.cos(-3 * Math.PI / 4) * r.r, r.y + Math.sin(-3 * Math.PI / 4) * r.r];
   lencana.push(pos);
-  return `<g transform="translate(${pos[0].toFixed(1)},${pos[1].toFixed(1)})"><circle r="7.5" class="rk"/><text y="3.4" class="rk-t">${n + 1}</text></g>`; }).join('');
+  return `<g transform="translate(${pos[0].toFixed(1)},${pos[1].toFixed(1)})"><circle r="${CHORO ? 10 : 7.5}" class="rk"/><text y="${CHORO ? 4.8 : 3.4}" class="rk-t">${n + 1}</text></g>`; }).join('');
 const OR = process.env.BENCANA === 'banjir' ? '#2F6FB5' : '#D9600B';   // lingkaran banjir biru (penanganan_banjir.py), karhutla oranye
 // Roboto disematkan sebagai data URL: headless shell tidak selalu melihat font sistem dan jatuh ke serif (pemilik 28 Okt: font wajib Roboto)
 // Mesin tanpa Roboto di ~/Library/Fonts memakai salinan repo public/vendor/roboto (Regular + Bold; tebal 600-900 jatuh ke Bold)
@@ -85,8 +119,8 @@ const FONT = ['Roboto[wdth,wght].ttf', 'Roboto-Regular.ttf'].map(n => os.homedir
 const VENDOR = fileURLToPath(new URL('../../../../public/vendor/roboto/', import.meta.url));   // pathname di Windows = /D:/..., salah (30 Okt)
 const css = `${FONT ? muka(FONT, '100 900') : muka(VENDOR + 'Roboto-Regular.ttf', '100 500') + muka(VENDOR + 'Roboto-Bold.ttf', '600 900')}.pp{fill:#DCE1E7;stroke:#fff;stroke-width:.6}.pp-on{fill:#051C2C;stroke:#fff;stroke-width:.8}
 .pc{fill:${OR};stroke:#fff;stroke-width:1.5;fill-opacity:.95}.pa{font:800 14px Roboto;fill:#fff;text-anchor:middle}
-.pn{font:700 9.5px Roboto;fill:#fff;text-anchor:middle;opacity:.95}.pl{stroke:${OR};stroke-width:1.2}
-.pk{fill:#fff;stroke:#A9B4C2;stroke-width:.8}.pt-t{font:10px Roboto}.pt-n{font-weight:600;fill:#6B7280}.pt-v{font-weight:800;fill:#1A1A1A}\n.rk{fill:#fff;stroke:${OR};stroke-width:1.8}.rk-t{font:800 9.5px Roboto;fill:#1A1A1A;text-anchor:middle}`;
+.pn{font:700 9.5px Roboto;fill:#fff;text-anchor:middle;opacity:.95}.pl{stroke:${CHORO ? '#051C2C' : OR};stroke-width:${CHORO ? 1 : 1.2}}
+.pk{fill:#fff;stroke:#A9B4C2;stroke-width:.8}.pd{fill:#051C2C;stroke:#fff;stroke-width:1.2}.rk2{fill:#051C2C}.rk2-t{font:800 13px Roboto;fill:#fff;text-anchor:middle}.pt-t{font:${CHORO ? 17 : 10}px Roboto}.pt-n{font-weight:600;fill:${CHORO ? '#374151' : '#6B7280'}}.pt-v{font-weight:800;fill:#1A1A1A}\n.rk{fill:#fff;stroke:${CHORO ? '#051C2C' : OR};stroke-width:1.8}.rk-t{font:800 ${CHORO ? 13.5 : 9.5}px Roboto;fill:#1A1A1A;text-anchor:middle}`;
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -8 ${PW + 36} ${PH + 16}" width="${PW + 36}" height="${PH + 16}"><style>${css}</style>${s}</svg>`;
 fs.writeFileSync('peta-20okt.svg', svg);
 const b = await luncur(); const pg = await b.newPage({viewport: {width: PW + 36, height: PH + 16}, deviceScaleFactor: 4});

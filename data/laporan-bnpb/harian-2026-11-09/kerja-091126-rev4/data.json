@@ -1,0 +1,80 @@
+{
+ "hari": "2026-11-09",
+ "cutoff": "2026-11-09T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Gayo Lues",
+   "status": "selesai",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {},
+   "teks": {
+    "dampak": "Pendataan",
+    "status_darurat": "Tanggap Darurat TMT 28/10/2026 s.d 10/11/2026",
+    "kondisi": "Air sudah surut, masih dalam proses pembersihan",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "kondisi_pil": [
+    "Surut, pembersihan",
+    "tangani"
+   ],
+   "dampak_pil": "±100 rumah RB"
+  },
+  {
+   "jenis": "banjir",
+   "prov": "12",
+   "lokasi": "Deli Serdang",
+   "status": "belum",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 546.0
+   },
+   "teks": {
+    "dampak": "± 546 KK/ 2.199 jiwa terdampak",
+    "status_darurat": "Tanggap Darurat TMT 27/10/2026 s.d 09/11/2026",
+    "kondisi": "Air berangsur surut, TMA 5 - 10 cm",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "cuaca",
+   "prov": "35",
+   "lokasi": "Jember",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem",
+   "angka": {
+    "kk": 184.0
+   },
+   "teks": {
+    "dampak": "± 184 KK terdampak, 5 jiwa luka",
+    "status_darurat": "Siaga Darurat Provinsi TMT 07/10/2026 s.d 01/12/2026",
+    "kondisi": "Sebagian warga melakukan perbaikan rumah secara mandiri",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "kondisi_pil": [
+    "Perbaikan rumah",
+    "tangani"
+   ]
+  }
+ ],
+ "prioritas_baru": [
+  "74",
+  "81",
+  "82",
+  "93"
+ ]
+}

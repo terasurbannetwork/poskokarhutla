@@ -1,0 +1,91 @@
+--- a/bnpb/scripts/deck.py
++++ b/bnpb/scripts/deck.py
+@@ -2413,7 +2413,7 @@
+             self.pita_arus(kv, [(585, -30), (520, 70), (575, 170), (505, 280), (560, 380), (490, 470), (520, 575)], n=3, lebar=8.0, celah=6.0, runcing=0.06)
+         x, w = self.X0, (410.0 if tumpuk else 470.0)
+         lg = self.K['penutup']['logo']
+-        self.logo_bulat(kv, dict(lg, y_pt=36), alas=False)   # bingkai konsultan: logo di kolom putih
++        self.logo_bulat(kv, dict(lg, y_pt=36, d_pt=lg['d_pt'] * self.skala_logo_bnpb()), alas=False)   # bingkai konsultan: logo di kolom putih; 1,3x (pemilik 2 Nov 2026)
+         lk = sp.get('logo_kanan', self.spek.get('logo_kanan', 'foto/berakhlak-hd.png' if (self.akar / 'foto/berakhlak-hd.png').exists() else 'foto/berakhlak.png'))   # BerAKHLAK #banggamelayanibangsa standar di sampul dan penutup (pemilik 31 Okt, pola deck Kalteng)
+         if lk and (self.akar / lk).exists():
+             from PIL import Image
+@@ -2425,6 +2425,7 @@
+             bx_ = W - 43.2 - bw_ - 2 * px_
+             kv.bentuk('bulat', bx_, 36, bw_ + 2 * px_, bh_ + 2 * py_, 'kertas', radius=6, bayang=True)
+             kv.gambar(src, bx_ + px_, 36 + py_, bw_, bh_, 'logo')
++            self.pasang_kris(kv, bx_, 36, bh_ + 2 * py_, px_, 6, True, j)   # KRIS di kiri BerAKHLAK (pemilik 2 Nov 2026)
+         if penutup:
+             baris = [sp.get('teks', self.ui['terima_kasih'])]
+             g = dict(self.T['terima_kasih'], warna='teks', ukuran_pt=54)
+@@ -2542,7 +2543,7 @@
+         gelap = self.gelap(j)
+         Wn = SM['gelap' if gelap else 'putih']
+         self.foto_bingkai(kv, sp, 'sampul', gelap)
+-        self.logo_bulat(kv, SM['logo'], alas=gelap)
++        self.logo_bulat(kv, dict(SM['logo'], d_pt=SM['logo']['d_pt'] * self.skala_logo_bnpb()), alas=gelap)
+         x, w = SM['teks_x_pt'], SM['teks_lebar_pt']
+         g = dict(self.T['judul_sampul'], warna=Wn['warna_judul'])
+         wj = max(w, SM['foto_x_pt'] - x - 24) if sp.get('foto') else w   # judul memakai ruang sampai tepi foto: tanpa ruang putih besar di kanan (pemilik 27 Okt)
+@@ -2606,6 +2607,7 @@
+             if not sp.get('logo_kanan_bulat'):   # logo bundar: tanpa kotak putih (pemilik 27 Okt)
+                 kv.bentuk('bulat', bx_, 40, bw_ + 2 * pad_, bh_ + 2 * pad_, 'kertas', radius=8)
+             kv.gambar(src, bx_ + pad_, 40 + pad_, bw_, bh_, 'logo')
++            self.pasang_kris(kv, bx_, 40, bh_ + 2 * pad_, pad_, 8, False, j)   # KRIS di kiri BerAKHLAK (pemilik 2 Nov 2026)
+         TG = SM['tanggal']
+         g = dict(self.T['tanggal_sampul'], warna=Wn['warna_tanggal_teks'])
+         ty = y + TG['ikut_penyaji_pt'] if sp.get('penyaji') and 'ikut_penyaji_pt' in TG else TG['y_pt']  # tanggal menempel blok penyaji, tanpa ruang kosong (pemilik 26 Okt)
+@@ -2624,7 +2626,7 @@
+             kv.gambar(p, 0, 0, self.S['lebar_pt'], self.S['tinggi_pt'], 'foto')
+             KR = self.K['sampul']['kredit']
+             kv.teks(KR['x_pt'], KR['y_pt'], KR['lebar_pt'], KR['tinggi_pt'], [self.R(self.st(self.kredit(sp['foto'], sp)), self.T['kredit_foto'])], rata='r', bungkus=False)
+-        self.logo_bulat(kv, PN['logo'])
++        self.logo_bulat(kv, dict(PN['logo'], d_pt=PN['logo']['d_pt'] * self.skala_logo_bnpb()))
+         x, w = self.X0, PN['teks_lebar_pt']
+         kv.teks(x, PN['judul_y_pt'], w, PN['judul_tinggi_pt'], [self.R(sp.get('teks', self.ui['terima_kasih']), self.T['terima_kasih'])], jangkar='b', bungkus=False)
+         G = PN['garis']
+@@ -2642,7 +2644,7 @@
+             return self.bingkai_konsultan(kv, j, penutup=True)
+         sp, PN, SM = j['spek'], self.K['penutup'], self.K['sampul']
+         self.foto_bingkai(kv, sp, 'penutup', False)
+-        self.logo_bulat(kv, PN['logo'], alas=False)
++        self.logo_bulat(kv, dict(PN['logo'], d_pt=PN['logo']['d_pt'] * self.skala_logo_bnpb()), alas=False)
+         x, w = self.X0, SM['teks_lebar_pt']
+         kv.teks(x, PN['judul_y_pt'], w, PN['judul_tinggi_pt'], [self.R(sp.get('teks', self.ui['terima_kasih']), dict(self.T['terima_kasih'], warna='teks'))], jangkar='b', bungkus=False)
+         G = PN['garis']
+@@ -3178,6 +3180,36 @@
+         """Deck data harian (laporan harian, Penanganan, atau spek bertanda data_harian): satu-satunya yang boleh memasang pil CUT OFF."""
+         return self.spek.get('format') in ('harian', 'penanganan') or bool(self.spek.get('data_harian'))
+ 
++    def skala_logo_bnpb(self):
++        """Logo BNPB di sampul dan penutup 1,3x ukuran tema (pemilik 2 Nov 2026: "logo bnpb-nya agak gedein", sampul dan penutup).
++        Spek deck boleh menulis "skala_logo_bnpb": <angka> (1 = ukuran tema)."""
++        return float(self.spek.get('skala_logo_bnpb', 1.3))
++
++    def logo_kris(self):
++        """Logo KRIS (Kolaborasi, Responsif, Integratif, Sinkronisasi): akar proyek foto/kris.png, atau aset bersama skill."""
++        for p_ in (self.akar / 'foto/kris.png', Path(__file__).resolve().parents[1] / 'assets/logo-bersama/kris.png'):
++            if p_.exists():
++                return p_.resolve()
++        return None
++
++    def pasang_kris(self, kv, bx_kanan, by, bh, pad, radius, bayang, j):
++        """Logo KRIS resmi dalam kotak putih bersudut membulat tepat di kiri kotak BerAKHLAK, tinggi dan gaya kotak sama, di sampul
++        dan penutup (pemilik 2 Nov 2026: "taruh di dalam rounded box dan di samping kiri gambar BerAkhlak", "cover penutup juga").
++        Pengecualian beralasan: spek deck atau slide "tanpa_kris": "<alasan dari pemilik>"."""
++        if j['spek'].get('tanpa_kris') or self.spek.get('tanpa_kris'):
++            return
++        src = self.logo_kris()
++        if not src:
++            return
++        from PIL import Image
++        self.masukan.add(src)
++        lw_, lh_ = Image.open(src).size
++        ih = bh - 2 * pad; iw = ih * lw_ / lh_
++        kw = iw + 2 * pad * 1.4
++        kx = bx_kanan - 6 - kw
++        kv.bentuk('bulat', kx, by, kw, bh, 'kertas', radius=radius, bayang=bayang)
++        kv.gambar(src, kx + (kw - iw) / 2, by + pad, iw, ih, 'logo')
++
+     def logo_berakhlak(self):
+         for n in ('foto/berakhlak-hd.png', 'foto/berakhlak.png'):
+             if (self.akar / n).exists():

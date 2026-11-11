@@ -326,19 +326,41 @@ def pemilik(s, jumlah):
 
 def tanpa_instansi(s):
     """Buang rincian personel per instansi (TNI, BPBD, ... M. Agni) dari panel PENANGANAN: WA satgas tidak memuatnya; angka templat 21 Okt
-    jumlahnya 65.529, bukan total personel WA (pemilik 27 Okt 2026). Tiga angka utama (personel, heli, pesawat) disebar rata selebar panel."""
-    X0, P0, KANAN = 1152144, 868680, 7665415 - 228600   # kiri angka pertama, jarak templat, tepi kanan isi panel (panel 548640 + 7116775)
-    P = (KANAN - X0 - 1005840) // 2                      # 1005840 = lebar label angka
+    jumlahnya 65.529, bukan total personel WA (pemilik 27 Okt 2026). Tiga angka utama (personel, heli, pesawat) disusun tiga kolom
+    sama lebar berpemisah garis tipis, angka 20 pt dan label 8 pt (pemilik 6 Nov 2026: "size and spacingnya kurang proporsional";
+    sebelumnya angka 14 pt dan label 6,5 pt disebar rata dengan celah lebar)."""
+    X0, KANAN = 1152144, 7665415 - 228600                # kiri kolom pertama, tepi kanan isi panel (panel 548640 + 7116775)
+    CW, PAD = (KANAN - X0) // 3, 137160                  # lebar kolom, jarak isi dari garis pemisah
+    XS = (1152144, 2020824, 2889504)                     # x ikon/label tiga angka di templat (angka = x + 182880)
+    YA, HA, YL, HL, IK = 1572768, 320040, 1892808, 137160, 228600   # angka, label, ikon (EMU)
     def ubah(m):
-        b = m.group(0); o = re.search(r'<a:off x="(\d+)" y="(\d+)"/>', b)
-        if not o: return b
-        x, y = map(int, o.groups())
+        b = m.group(0); o0 = re.search(r'<a:off x="(\d+)" y="(\d+)"/>', b)
+        if not o0: return b
+        x, y = map(int, o0.groups())
         if 3749040 <= x < 7600000 and 1390000 <= y <= 1900000: return ''   # instansi: garis pemisah, ikon, nama, angka
-        k = next((k for k, xs in ((1, (2020824, 2203704)), (2, (2889504, 3072384))) if x in xs and y in (1572768, 1655064, 1847088)), 0)
-        return b.replace(f'<a:off x="{x}" y="{y}"/>', f'<a:off x="{x + k * (P - P0)}" y="{y}"/>', 1) if k else b
+        o = re.search(r'<a:off x="(\d+)" y="(\d+)"/>(\s*)<a:ext cx="(\d+)" cy="(\d+)"/>', b)
+        if not o: return b
+        for k, xk in enumerate(XS):
+            xc = X0 + k * CW + (PAD if k else 0)
+            if x == xk + 182880 and y == YA:   # angka
+                box = (xc + IK + 73152, YA, CW - PAD - IK - 73152, HA)
+                b = re.sub(r'sz="1400"', 'sz="2000"', b)
+            elif x == xk and y == 1655064:     # ikon, tengah tegak sejajar angka
+                box = (xc, YA + (HA - IK) // 2, IK, IK)
+            elif x == xk and y == 1847088:     # label
+                box = (xc, YL, CW - PAD, HL)
+                b = re.sub(r'sz="650"', 'sz="800"', b)
+            else: continue
+            return b.replace(o.group(0), '<a:off x="%d" y="%d"/>%s<a:ext cx="%d" cy="%d"/>' % (box[0], box[1], o.group(3), box[2], box[3]), 1)
+        return b
     hasil = re.sub(r'<p:(sp|pic)>.*?</p:\1>', ubah, s, flags=re.S)
     assert 'M. Agni' not in hasil and '13.396' not in hasil, 'rincian instansi masih tersisa'
-    return hasil
+    nid = max(map(int, re.findall(r'<p:cNvPr id="(\d+)"', hasil)))
+    garis = ''.join(
+        f'<p:cxnSp><p:nvCxnSpPr><p:cNvPr id="{nid + i}" name="Pemisah penanganan {i}"/><p:cNvCxnSpPr/><p:nvPr/></p:nvCxnSpPr>'
+        f'<p:spPr><a:xfrm><a:off x="{X0 + i * CW}" y="{YA}"/><a:ext cx="0" cy="{YL + HL - YA}"/></a:xfrm><a:prstGeom prst="line"><a:avLst/></a:prstGeom>'
+        f'<a:ln w="9525"><a:solidFill><a:srgbClr val="D5D9DE"/></a:solidFill></a:ln></p:spPr></p:cxnSp>' for i in (1, 2))
+    return hasil.replace('</p:spTree>', garis + '</p:spTree>', 1)
 
 
 def armada(s, ARMADA, batas=6300000):

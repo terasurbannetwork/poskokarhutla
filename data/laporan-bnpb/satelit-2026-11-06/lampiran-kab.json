@@ -1,0 +1,701 @@
+{
+ "hari": "2026-11-06",
+ "prov": {
+  "64": [
+   {
+    "kab": "Kutai Timur",
+    "hot": 41,
+    "fs": 27,
+    "luas": 304,
+    "belum": 158,
+    "luas_sendiri": 304,
+    "belum_sendiri": 157
+   },
+   {
+    "kab": "Paser",
+    "hot": 31,
+    "fs": 27,
+    "luas": 114,
+    "belum": 54,
+    "luas_sendiri": 114,
+    "belum_sendiri": 54
+   },
+   {
+    "kab": "Kutai Kartanegara",
+    "hot": 27,
+    "fs": 16,
+    "luas": 124,
+    "belum": 43,
+    "luas_sendiri": 124,
+    "belum_sendiri": 43
+   },
+   {
+    "kab": "Kutai Barat",
+    "hot": 23,
+    "fs": 19,
+    "luas": 145,
+    "belum": 110,
+    "luas_sendiri": 145,
+    "belum_sendiri": 110
+   },
+   {
+    "kab": "Mahakam Ulu",
+    "hot": 5,
+    "fs": 5,
+    "luas": 6,
+    "belum": 4,
+    "luas_sendiri": 6,
+    "belum_sendiri": 4
+   },
+   {
+    "kab": "Berau",
+    "hot": 4,
+    "fs": 1,
+    "luas": 37,
+    "belum": 12,
+    "luas_sendiri": 37,
+    "belum_sendiri": 12
+   },
+   {
+    "kab": "Kota Balikpapan",
+    "hot": 2,
+    "fs": 0,
+    "luas": 6,
+    "belum": 6,
+    "luas_sendiri": 6,
+    "belum_sendiri": 6
+   },
+   {
+    "kab": "Kota Samarinda",
+    "hot": 0,
+    "fs": 0,
+    "luas": 21,
+    "belum": 10,
+    "luas_sendiri": 21,
+    "belum_sendiri": 10
+   }
+  ],
+  "74": [
+   {
+    "kab": "Konawe",
+    "hot": 33,
+    "fs": 9,
+    "luas": 133,
+    "belum": 39,
+    "luas_sendiri": 132,
+    "belum_sendiri": 39
+   },
+   {
+    "kab": "Konawe Utara",
+    "hot": 23,
+    "fs": 1,
+    "luas": 48,
+    "belum": 19,
+    "luas_sendiri": 48,
+    "belum_sendiri": 19
+   },
+   {
+    "kab": "Bombana",
+    "hot": 21,
+    "fs": 8,
+    "luas": 91,
+    "belum": 4,
+    "luas_sendiri": 91,
+    "belum_sendiri": 4
+   },
+   {
+    "kab": "Buton Utara",
+    "hot": 14,
+    "fs": 0,
+    "luas": 25,
+    "belum": 2,
+    "luas_sendiri": 25,
+    "belum_sendiri": 2
+   },
+   {
+    "kab": "Buton",
+    "hot": 9,
+    "fs": 0,
+    "luas": 35,
+    "belum": 0,
+    "luas_sendiri": 35,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Konawe Selatan",
+    "hot": 7,
+    "fs": 1,
+    "luas": 70,
+    "belum": 6,
+    "luas_sendiri": 70,
+    "belum_sendiri": 6
+   },
+   {
+    "kab": "Kolaka Timur",
+    "hot": 4,
+    "fs": 2,
+    "luas": 35,
+    "belum": 2,
+    "luas_sendiri": 35,
+    "belum_sendiri": 2
+   },
+   {
+    "kab": "Kota Kendari",
+    "hot": 4,
+    "fs": 0,
+    "luas": 8,
+    "belum": 0,
+    "luas_sendiri": 8,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Kolaka",
+    "hot": 3,
+    "fs": 2,
+    "luas": 35,
+    "belum": 2,
+    "luas_sendiri": 35,
+    "belum_sendiri": 2
+   },
+   {
+    "kab": "Muna Barat",
+    "hot": 2,
+    "fs": 0,
+    "luas": 10,
+    "belum": 0,
+    "luas_sendiri": 10,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Muna",
+    "hot": 2,
+    "fs": 0,
+    "luas": 4,
+    "belum": 0,
+    "luas_sendiri": 4,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Konawe Kepulauan",
+    "hot": 2,
+    "fs": 0,
+    "luas": 0,
+    "belum": 0,
+    "luas_sendiri": 0,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Kolaka Utara",
+    "hot": 1,
+    "fs": 0,
+    "luas": 16,
+    "belum": 4,
+    "luas_sendiri": 16,
+    "belum_sendiri": 4
+   },
+   {
+    "kab": "Buton Tengah",
+    "hot": 1,
+    "fs": 0,
+    "luas": 0,
+    "belum": 0,
+    "luas_sendiri": 0,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Buton Selatan",
+    "hot": 0,
+    "fs": 0,
+    "luas": 15,
+    "belum": 0,
+    "luas_sendiri": 15,
+    "belum_sendiri": 0
+   }
+  ],
+  "62": [
+   {
+    "kab": "Kapuas",
+    "hot": 53,
+    "fs": 35,
+    "luas": 2046,
+    "belum": 1667,
+    "luas_sendiri": 2047,
+    "belum_sendiri": 1667
+   },
+   {
+    "kab": "Barito Selatan",
+    "hot": 28,
+    "fs": 19,
+    "luas": 693,
+    "belum": 497,
+    "luas_sendiri": 693,
+    "belum_sendiri": 497
+   },
+   {
+    "kab": "Seruyan",
+    "hot": 24,
+    "fs": 21,
+    "luas": 141,
+    "belum": 87,
+    "luas_sendiri": 141,
+    "belum_sendiri": 87
+   },
+   {
+    "kab": "Barito Utara",
+    "hot": 10,
+    "fs": 6,
+    "luas": 78,
+    "belum": 17,
+    "luas_sendiri": 78,
+    "belum_sendiri": 17
+   },
+   {
+    "kab": "Barito Timur",
+    "hot": 4,
+    "fs": 4,
+    "luas": 60,
+    "belum": 14,
+    "luas_sendiri": 60,
+    "belum_sendiri": 14
+   },
+   {
+    "kab": "Kotawaringin Barat",
+    "hot": 2,
+    "fs": 2,
+    "luas": 62,
+    "belum": 27,
+    "luas_sendiri": 62,
+    "belum_sendiri": 27
+   },
+   {
+    "kab": "Murung Raya",
+    "hot": 1,
+    "fs": 0,
+    "luas": 25,
+    "belum": 0,
+    "luas_sendiri": 25,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Pulang Pisau",
+    "hot": 0,
+    "fs": 0,
+    "luas": 379,
+    "belum": 333,
+    "luas_sendiri": 379,
+    "belum_sendiri": 333
+   },
+   {
+    "kab": "Katingan",
+    "hot": 0,
+    "fs": 0,
+    "luas": 215,
+    "belum": 118,
+    "luas_sendiri": 215,
+    "belum_sendiri": 118
+   },
+   {
+    "kab": "Kotawaringin Timur",
+    "hot": 0,
+    "fs": 0,
+    "luas": 95,
+    "belum": 33,
+    "luas_sendiri": 95,
+    "belum_sendiri": 33
+   },
+   {
+    "kab": "Kota Palangkaraya",
+    "hot": 0,
+    "fs": 0,
+    "luas": 39,
+    "belum": 31,
+    "luas_sendiri": 39,
+    "belum_sendiri": 31
+   },
+   {
+    "kab": "Lamandau",
+    "hot": 0,
+    "fs": 0,
+    "luas": 19,
+    "belum": 4,
+    "luas_sendiri": 19,
+    "belum_sendiri": 4
+   },
+   {
+    "kab": "Sukamara",
+    "hot": 0,
+    "fs": 0,
+    "luas": 29,
+    "belum": 0,
+    "luas_sendiri": 29,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Gunung Mas",
+    "hot": 0,
+    "fs": 0,
+    "luas": 23,
+    "belum": 0,
+    "luas_sendiri": 23,
+    "belum_sendiri": 0
+   }
+  ],
+  "72": [
+   {
+    "kab": "Morowali Utara",
+    "hot": 32,
+    "fs": 14,
+    "luas": 92,
+    "belum": 48,
+    "luas_sendiri": 91,
+    "belum_sendiri": 48
+   },
+   {
+    "kab": "Banggai",
+    "hot": 23,
+    "fs": 11,
+    "luas": 62,
+    "belum": 6,
+    "luas_sendiri": 62,
+    "belum_sendiri": 6
+   },
+   {
+    "kab": "Poso",
+    "hot": 16,
+    "fs": 13,
+    "luas": 45,
+    "belum": 12,
+    "luas_sendiri": 45,
+    "belum_sendiri": 12
+   },
+   {
+    "kab": "Morowali",
+    "hot": 10,
+    "fs": 5,
+    "luas": 41,
+    "belum": 8,
+    "luas_sendiri": 41,
+    "belum_sendiri": 8
+   },
+   {
+    "kab": "Banggai Kepulauan",
+    "hot": 6,
+    "fs": 0,
+    "luas": 17,
+    "belum": 15,
+    "luas_sendiri": 17,
+    "belum_sendiri": 15
+   },
+   {
+    "kab": "Tojo Una Una",
+    "hot": 5,
+    "fs": 5,
+    "luas": 60,
+    "belum": 31,
+    "luas_sendiri": 60,
+    "belum_sendiri": 31
+   },
+   {
+    "kab": "Parigi Moutong",
+    "hot": 1,
+    "fs": 1,
+    "luas": 25,
+    "belum": 6,
+    "luas_sendiri": 25,
+    "belum_sendiri": 6
+   },
+   {
+    "kab": "Buol",
+    "hot": 0,
+    "fs": 0,
+    "luas": 14,
+    "belum": 6,
+    "luas_sendiri": 14,
+    "belum_sendiri": 6
+   },
+   {
+    "kab": "Sigi",
+    "hot": 0,
+    "fs": 0,
+    "luas": 2,
+    "belum": 0,
+    "luas_sendiri": 2,
+    "belum_sendiri": 0
+   }
+  ],
+  "16": [
+   {
+    "kab": "Ogan Komering Ilir",
+    "hot": 31,
+    "fs": 6,
+    "luas": 12,
+    "belum": 6,
+    "luas_sendiri": 12,
+    "belum_sendiri": 6
+   },
+   {
+    "kab": "Lahat",
+    "hot": 8,
+    "fs": 0,
+    "luas": 4,
+    "belum": 2,
+    "luas_sendiri": 4,
+    "belum_sendiri": 2
+   },
+   {
+    "kab": "Ogan Komering Ulu",
+    "hot": 7,
+    "fs": 0,
+    "luas": 26,
+    "belum": 4,
+    "luas_sendiri": 25,
+    "belum_sendiri": 4
+   },
+   {
+    "kab": "Muara Enim",
+    "hot": 6,
+    "fs": 0,
+    "luas": 6,
+    "belum": 0,
+    "luas_sendiri": 6,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Penukal Abab Lematang Ilir",
+    "hot": 4,
+    "fs": 0,
+    "luas": 0,
+    "belum": 0,
+    "luas_sendiri": 0,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Musi Rawas",
+    "hot": 3,
+    "fs": 0,
+    "luas": 2,
+    "belum": 0,
+    "luas_sendiri": 2,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Banyuasin",
+    "hot": 3,
+    "fs": 0,
+    "luas": 0,
+    "belum": 0,
+    "luas_sendiri": 0,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Ogan Komering Ulu Timur",
+    "hot": 3,
+    "fs": 0,
+    "luas": 4,
+    "belum": 0,
+    "luas_sendiri": 4,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Musi Banyuasin",
+    "hot": 2,
+    "fs": 0,
+    "luas": 22,
+    "belum": 0,
+    "luas_sendiri": 21,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Ogan Ilir",
+    "hot": 2,
+    "fs": 0,
+    "luas": 2,
+    "belum": 0,
+    "luas_sendiri": 2,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Ogan Komering Ulu Selatan",
+    "hot": 1,
+    "fs": 0,
+    "luas": 6,
+    "belum": 0,
+    "luas_sendiri": 6,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Empat Lawang",
+    "hot": 0,
+    "fs": 0,
+    "luas": 8,
+    "belum": 0,
+    "luas_sendiri": 8,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Musi Rawas Utara",
+    "hot": 0,
+    "fs": 0,
+    "luas": 6,
+    "belum": 0,
+    "luas_sendiri": 6,
+    "belum_sendiri": 0
+   }
+  ],
+  "73": [
+   {
+    "kab": "Luwu Timur",
+    "hot": 15,
+    "fs": 9,
+    "luas": 102,
+    "belum": 31,
+    "luas_sendiri": 101,
+    "belum_sendiri": 31
+   },
+   {
+    "kab": "Gowa",
+    "hot": 6,
+    "fs": 4,
+    "luas": 10,
+    "belum": 6,
+    "luas_sendiri": 10,
+    "belum_sendiri": 6
+   },
+   {
+    "kab": "Bone",
+    "hot": 5,
+    "fs": 0,
+    "luas": 50,
+    "belum": 2,
+    "luas_sendiri": 50,
+    "belum_sendiri": 2
+   },
+   {
+    "kab": "Soppeng",
+    "hot": 4,
+    "fs": 0,
+    "luas": 21,
+    "belum": 2,
+    "luas_sendiri": 21,
+    "belum_sendiri": 2
+   },
+   {
+    "kab": "Wajo",
+    "hot": 3,
+    "fs": 0,
+    "luas": 19,
+    "belum": 0,
+    "luas_sendiri": 19,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Maros",
+    "hot": 2,
+    "fs": 0,
+    "luas": 4,
+    "belum": 0,
+    "luas_sendiri": 4,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Toraja Utara",
+    "hot": 2,
+    "fs": 0,
+    "luas": 0,
+    "belum": 0,
+    "luas_sendiri": 0,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Tana Toraja",
+    "hot": 1,
+    "fs": 0,
+    "luas": 0,
+    "belum": 0,
+    "luas_sendiri": 0,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Sidenreng Rappang",
+    "hot": 0,
+    "fs": 0,
+    "luas": 10,
+    "belum": 0,
+    "luas_sendiri": 10,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Kepulauan Selayar",
+    "hot": 0,
+    "fs": 0,
+    "luas": 4,
+    "belum": 0,
+    "luas_sendiri": 4,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Jeneponto",
+    "hot": 0,
+    "fs": 0,
+    "luas": 4,
+    "belum": 0,
+    "luas_sendiri": 4,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Luwu",
+    "hot": 0,
+    "fs": 0,
+    "luas": 4,
+    "belum": 0,
+    "luas_sendiri": 4,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Pinrang",
+    "hot": 0,
+    "fs": 0,
+    "luas": 4,
+    "belum": 0,
+    "luas_sendiri": 4,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Kota Makassar",
+    "hot": 0,
+    "fs": 0,
+    "luas": 4,
+    "belum": 0,
+    "luas_sendiri": 4,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Luwu Utara",
+    "hot": 0,
+    "fs": 0,
+    "luas": 8,
+    "belum": 0,
+    "luas_sendiri": 8,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Barru",
+    "hot": 0,
+    "fs": 0,
+    "luas": 2,
+    "belum": 0,
+    "luas_sendiri": 2,
+    "belum_sendiri": 0
+   },
+   {
+    "kab": "Bantaeng",
+    "hot": 0,
+    "fs": 0,
+    "luas": 4,
+    "belum": 0,
+    "luas_sendiri": 4,
+    "belum_sendiri": 0
+   }
+  ]
+ }
+}

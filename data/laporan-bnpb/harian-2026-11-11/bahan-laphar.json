@@ -1,0 +1,20 @@
+{
+ "catatan": "Disalin dari Laporan Harian Dit. Koordalops BNPB 9 Nov 2026, entri 13 gempa bumi NTT. kab = nama, MD dampak langsung, MD dampak tidak langsung, pengungsi jiwa, kebutuhan R3P rupiah. Nilai Jitupasna dan R3P sementara dan masih fluktuatif.",
+ "gempa": {
+  "kekuatan": "7,7",
+  "tanggal": "15 Agu 2026",
+  "susulan": 24617,
+  "dirasakan": 229,
+  "kab": [
+   ["Manggarai", 23, 44, 8244, 5121568177264],
+   ["Manggarai Timur", 20, 33, 9543, 2200562952201],
+   ["Nagekeo", 0, 20, 4696, 594771286312],
+   ["Sikka", 4, 2, 3340, 1072643960053.5],
+   ["Ngada", 0, 6, 515, 662111519083],
+   ["Ende", 1, 2, 0, 917131003848],
+   ["Manggarai Barat", 0, 1, 478, 2191614138433]
+  ],
+  "kebutuhan": 12760551185195.5,
+  "huntara": {"selesai": 470, "lebih50": 854, "kurang50": 1571, "lahan": 198}
+ }
+}

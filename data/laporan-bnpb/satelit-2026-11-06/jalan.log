@@ -1,0 +1,22 @@
+website: harian30 2026-11-06T17:42+07:00 | peta_karhutla 2026-11-06T17:42+07:00 s.d. 2026-11-05 | hotspot.json titik terakhir 2026-11-06T09:04:00+00:00 | belum_kini 2026-11-05T23:45+07:00
+uji luas 2026-11-05: sendiri 12950 ha vs website 12817 ha; beda > 5 ha: {'93': (4965, 4864), '74': (541, 525), '72': (368, 358)}
+VERSI hari utuh (belum_kini 2026-11-06 belum terbit) | 2026-11-06 s.d. data terakhir: luas 1487 ha, padam 5187 ha 
+SEGAR 2026-11-06 s.d. 18:00 {'hot': 849, 'luas': 1484, 'belum': 725, 'padam': 5127}
+6 provinsi tabel (hotspot 2026-11-06 ): ['64', '74', '62', '72', '16', '73'] [132, 127, 122, 92, 70, 38]
+selisih hotspot sendiri vs website (hari, prov, sendiri, website): [('2026-11-03', '15', 219, 220), ('2026-11-03', '16', 298, 297), ('2026-11-03', '19', 147, 148), ('2026-11-03', '33', 22, 23), ('2026-11-03', '53', 265, 264), ('2026-11-03', '62', 669, 666), ('2026-11-03', '64', 223, 228), ('2026-11-03', '93', 524, 528), ('2026-11-04', '15', 118, 119), ('2026-11-04', '16', 124, 125), ('2026-11-04', '62', 1206, 1202), ('2026-11-04', '63', 169, 168), ('2026-11-04', '71', 47, 48), ('2026-11-04', '72', 301, 300), ('2026-11-04', '74', 331, 330), ('2026-11-04', '81', 277, 274), ('2026-11-04', '93', 911, 912), ('2026-11-05', '15', 44, 46), ('2026-11-05', '35', 62, 61), ('2026-11-05', '62', 1469, 1464)] (24 sel)
+firespot website 2026-11-06 nasional 370
+sel ok 72 beda 0 | jumlah cocok
+Traceback (most recent call last):
+  File "D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\satelit-2026-11-06\jalan.py", line 183, in <module>
+    penanganan.bangun(D, JAM, None, S, (os.path.join(S, 'wa-satgas.txt') if os.path.exists(os.path.join(S, 'wa-satgas.txt')) else None), ha_utuh=True, belum_kini=False, luas_00=True)   # label kolom = hari kalender (sama dengan 301026)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\generator\penanganan.py", line 106, in bangun
+    shutil.copy(os.path.join(kerja, f), out)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\shutil.py", line 489, in copy
+    copyfile(src, dst, follow_symlinks=follow_symlinks)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\shutil.py", line 315, in copyfile
+    with open(dst, 'wb') as fdst:
+         ~~~~^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: 'D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\satelit-2026-11-06\\Laporan Penanganan Pengendalian Karhutla 061126.pdf'

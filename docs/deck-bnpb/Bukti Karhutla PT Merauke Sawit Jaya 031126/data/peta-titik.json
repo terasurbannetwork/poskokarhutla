@@ -1,0 +1,16 @@
+{
+ "png": "peta-titik.png",
+ "batas": [
+  140.53807,
+  -7.97434,
+  140.79513,
+  -7.71796
+ ],
+ "unsur_peta": {
+  "sumber_batas": "Konsesi Kemenhut 2014 via GFW; Sentinel-2",
+  "sistem_referensi": "WGS84",
+  "proyeksi": "UTM 54S",
+  "catatan": "Bukan peta HGU resmi"
+ },
+ "masukan": {}
+}

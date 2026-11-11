@@ -140,6 +140,10 @@ def hitung_web(t, jam, n, kunci=None):
                 pass
             else:
                 for m in ('luas', 'belum', 'padam'): o[m][i] = pk[m][P['hari'].index(d)] or 0
+            # 9 Nov 18.3x pemilik: luas terbakar pakai hari utuh terakhir seperti tab Luas terbakar di layar. Padam ikut digeser karena kalimatnya
+            # dihitung dari luas yang sama; belum padam tetap hari kalender (penanganan.bangun belum_kini=True, luas_00=False: kolom luas 6-8 Nov).
+            j = P['hari'].index((dt.date.fromisoformat(d) - dt.timedelta(days=1)).isoformat())
+            for m in ('luas', 'padam'): o[m][i] = pk[m][j] or 0
     return a
 
 
@@ -181,5 +185,5 @@ penanganan.wa_operasi.operasi = lambda teks: (lambda op: {**op, 'tanggal_armada'
 satelit.hitung = hitung_web
 penanganan.satelit = satelit
 penanganan.firespot_hari.seri = firespot_web
-penanganan.bangun(D, JAM, None, S, (os.path.join(S, 'wa-satgas.txt') if os.path.exists(os.path.join(S, 'wa-satgas.txt')) else None), ha_utuh=True, belum_kini=False, luas_00=True)   # label kolom = hari kalender (sama dengan 301026)
+penanganan.bangun(D, JAM, None, S, (os.path.join(S, 'wa-satgas.txt') if os.path.exists(os.path.join(S, 'wa-satgas.txt')) else None), ha_utuh=True, belum_kini=True, luas_00=False)   # kolom luas = hari utuh 6-8 Nov, kolom belum padam = 7-9 Nov
 json.dump(json.load(open(os.path.join(G, 'cache', f'penanganan-{D:%d%m%y}', 'angka.json'))), open(os.path.join(S, 'angka.json'), 'w'))

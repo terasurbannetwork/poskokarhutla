@@ -101,7 +101,7 @@ def _angka_kejadian(jenis, dampak, kondisi, status_darurat):
 
 def koordalops(teks, pagi=True):
     t = teks.replace('⁠', '').replace('\xa0', ' ')
-    m = re.search(r'tanggal\s+(\d\d)/(\d\d)/(\d{4})\s+(?:pkl|pukul)\s+(\d\d\.\d\d)\s*WIB\s+s\.d\.?\s+(\d\d)/(\d\d)/(\d{4})\s+(?:pkl|pukul)\s+(\d\d\.\d\d)', t)
+    m = re.search(r'tanggal\s+(\d\d)/(\d\d)/(\d{4})\s+(?:pkl|pukul)\.?\s+(\d\d\.\d\d)\s*WIB\s+s\.d\.?\s+(\d\d)/(\d\d)/(\d{4})\s+(?:pkl|pukul)\.?\s+(\d\d\.\d\d)', t)   # WA 9 Nov: "pukul 07.00 WIB s.d ... pkl 07.00"
     if not m:
         raise ValueError('kepala laporan Koordalops tidak ditemukan')
     mulai, sampai = f'{m[3]}-{m[2]}-{m[1]} {m[4]}', f'{m[7]}-{m[6]}-{m[5]} {m[8]}'
@@ -184,7 +184,8 @@ def bmkg(teks):
     per = re.search(r'Periode\s+(.+?\d{4})', t)
     return {'jam': jam[1] if jam else '', 'pm': pm, 'periode': per[1] if per else '',
             'hujan': daftar(r'intensitas sedang yang terjadi di (.+?)\.\s*(?:\n|$)'), 'angin': [p for p in daftar(r'Angin Kencang\*?:[ \t]*([^\n]+?)\.?[ \t]*(?:\n|$)') if p.upper() not in ('NIL', 'NIHIL', '-')],   # 6 Nov: "Angin Kencang: NIL."
-            'siaga': [p for p in daftar(r'Siaga \(hujan lebat[^)]*\)\*?:[ \t]*([^\n]+?)\.?[ \t]*(?:\n|$)') if p.upper() not in ('NIL', 'NIHIL', '-')]}   # 8 Nov: peringatan dini Siaga hujan lebat
+            'siaga': [p for p in daftar(r'Siaga \(hujan lebat[^)]*\)\*?:[ \t]*([^\n]+?)\.?[ \t]*(?:\n|$)') if p.upper() not in ('NIL', 'NIHIL', '-')],   # 8 Nov: peringatan dini Siaga hujan lebat
+            'awas': [p for p in daftar(r'Awas \(hujan[^)]*\)\*?:[ \t]*([^\n]+?)\.?[ \t]*(?:\n|$)') if p.upper() not in ('NIL', 'NIHIL', '-')]}   # 9 Nov: tingkat Awas; baris tanpa titik tidak boleh menelan "b. Imbauan"
 
 
 def uji():
@@ -202,6 +203,8 @@ def uji():
     w = bmkg(open(os.path.join(DI, 'contoh', 'bmkg_241026.txt')).read())
     assert len(w['pm']) == 10 and w['pm'][0] == ('Pangkalan Bun', 603.0, 'Berbahaya'), w['pm'][:2]
     assert 'Kalimantan Tengah' in w['hujan'] and 'Lampung' in w['angin'], (w['hujan'], w['angin'])
+    w9 = bmkg('- Awas (hujan sangat lebat – ekstrim): Sumatera Utara.\n- Siaga (hujan lebat): Aceh dan Sumatera Barat.\n- Angin Kencang: Papua Selatan\n\nb. Imbauan:\n* Masyarakat diimbau.\n')
+    assert (w9['awas'], w9['siaga'], w9['angin']) == (['Sumatera Utara'], ['Aceh', 'Sumatera Barat'], ['Papua Selatan']), w9
     print('uji lolos: 23 laporan, 17 kejadian sama dengan isian 24 Okt; BMKG', len(w['pm']), 'stasiun')
     f3 = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'harian-2026-11-03', 'wa-koordalops.txt')
     if os.path.exists(f3):   # 3 Nov: salah ketik "Logsor", judul tanpa "di", "±8.5 ha", MD pada cuaca ekstrem, "org hilang"

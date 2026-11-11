@@ -1,0 +1,42 @@
+{
+ "luas": {
+  "msj_sebelum_20260605.png": {
+   "tgl": "2026-06-05",
+   "px_dalam": 120120,
+   "awan_px": 3425,
+   "buka_px": 28039,
+   "buka_ha": 9013,
+   "dalam_ha": 38612,
+   "buka_pct_sah": 24.0
+  },
+  "msj_sebelum_20260521.png": {
+   "tgl": "2026-05-21",
+   "px_dalam": 120120,
+   "awan_px": 8761,
+   "buka_px": 22781,
+   "buka_ha": 7323,
+   "dalam_ha": 38612,
+   "buka_pct_sah": 20.5
+  },
+  "msj_sesudah_20261028.png": {
+   "tgl": "2026-10-28",
+   "px_dalam": 120120,
+   "awan_px": 1502,
+   "buka_px": 53432,
+   "buka_ha": 17175,
+   "dalam_ha": 38612,
+   "buka_pct_sah": 45.0
+  },
+  "msj_sesudah_20261023.png": {
+   "tgl": "2026-10-23",
+   "px_dalam": 120120,
+   "awan_px": 3357,
+   "buka_px": 47270,
+   "buka_ha": 15195,
+   "dalam_ha": 38612,
+   "buka_pct_sah": 40.5
+  }
+ },
+ "n_lama": 3406,
+ "n_baru": 1287
+}

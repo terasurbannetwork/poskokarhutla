@@ -1,0 +1,499 @@
+{
+"cutoff": "22.06",
+"lp": [
+{
+"prov": "Aceh",
+"kab": "Pidie Jaya",
+"kec": "5",
+"mulai": "31 Okt",
+"selesai": "–",
+"kk": "4969",
+"ungsi": "",
+"st": "Belum surut"
+},
+{
+"prov": "Aceh",
+"kab": "Kota Subulussalam",
+"kec": "3",
+"mulai": "24 Okt",
+"selesai": "5 Nov",
+"kk": "2255",
+"ungsi": "",
+"st": "Surut"
+},
+{
+"prov": "Aceh",
+"kab": "Gayo Lues",
+"kec": "2",
+"mulai": "28 Okt",
+"selesai": "1 Nov",
+"kk": "373",
+"ungsi": "50",
+"st": "Surut"
+},
+{
+"prov": "Aceh",
+"kab": "Aceh Selatan",
+"kec": "2",
+"mulai": "28 Okt",
+"selesai": "6 Nov",
+"kk": "222",
+"ungsi": "196",
+"st": "Surut"
+},
+{
+"prov": "Aceh",
+"kab": "Aceh Barat",
+"kec": "10",
+"mulai": "31 Okt",
+"selesai": "4 Nov",
+"kk": "",
+"ungsi": "645",
+"st": "Surut"
+},
+{
+"prov": "Sumatera Utara",
+"kab": "Langkat",
+"kec": "4",
+"mulai": "28 Okt",
+"selesai": "–",
+"kk": "3157",
+"ungsi": "694",
+"st": "Belum surut"
+},
+{
+"prov": "Sumatera Utara",
+"kab": "Deli Serdang",
+"kec": "5",
+"mulai": "27 Okt",
+"selesai": "–",
+"kk": "1701",
+"ungsi": "",
+"st": "Belum surut"
+},
+{
+"prov": "Sumatera Utara",
+"kab": "Serdang Bedagai",
+"kec": "1",
+"mulai": "29 Okt",
+"selesai": "–",
+"kk": "160",
+"ungsi": "",
+"st": "Belum surut"
+},
+{
+"prov": "Sumatera Utara",
+"kab": "Kota Binjai",
+"kec": "3",
+"mulai": "29 Okt",
+"selesai": "1 Nov",
+"kk": "1006",
+"ungsi": "16",
+"st": "Surut"
+},
+{
+"prov": "Sumatera Utara",
+"kab": "Mandailing Natal",
+"kec": "4",
+"mulai": "28 Okt",
+"selesai": "3 Nov",
+"kk": "418",
+"ungsi": "",
+"st": "Surut"
+},
+{
+"prov": "Sumatera Barat",
+"kab": "Padang Pariaman",
+"kec": "",
+"mulai": "7 Nov",
+"selesai": "7 Nov",
+"kk": "133",
+"ungsi": "",
+"st": "Surut"
+},
+{
+"prov": "Jawa Timur",
+"kab": "Lumajang",
+"kec": "7",
+"mulai": "2 Nov",
+"selesai": "–",
+"kk": "1417",
+"ungsi": "",
+"st": "Belum surut"
+}
+],
+"prov": [
+{
+"prov": "Aceh",
+"n": "10",
+"a": "3",
+"s": "38",
+"mm": "190"
+},
+{
+"prov": "Sumatera Barat",
+"n": "8",
+"a": "",
+"s": "20",
+"mm": "111"
+},
+{
+"prov": "Sumatera Utara",
+"n": "10",
+"a": "",
+"s": "31",
+"mm": "117"
+},
+{
+"prov": "Riau",
+"n": "3",
+"a": "",
+"s": "5",
+"mm": "90"
+},
+{
+"prov": "Kalimantan Barat",
+"n": "1",
+"a": "",
+"s": "1",
+"mm": "93"
+},
+{
+"prov": "Sulawesi Tengah",
+"n": "1",
+"a": "",
+"s": "2",
+"mm": "95"
+}
+],
+"keb": [
+{
+"prov": "Aceh",
+"jenis": "Selimut Tebal Standar BNPB",
+"jml": "5.000 lembar",
+"stok2": "307 lembar",
+"kurang": "4.693 lembar"
+},
+{
+"prov": "Aceh",
+"jenis": "Family Kit (jika tersedia)",
+"jml": "2.500 boks",
+"stok2": "Tidak tercatat",
+"kurang": "2.500 boks"
+},
+{
+"prov": "Sumatera Utara",
+"jenis": "Tenda Peleton 6x8",
+"jml": "8 unit",
+"stok2": "Tidak tercatat",
+"kurang": "8 unit"
+},
+{
+"prov": "Sumatera Utara",
+"jenis": "Senter Tahan Air",
+"jml": "12 unit",
+"stok2": "Tidak tercatat",
+"kurang": "12 unit"
+},
+{
+"prov": "Sumatera Barat",
+"jenis": "Ditangani gudang logpal Sumbar",
+"jml": "–",
+"stok2": "–",
+"kurang": "–"
+}
+],
+"lg": [
+{
+"prov": "Sumatera Barat",
+"alat": "",
+"perahu": "26",
+"genset": "6",
+"air": "12",
+"pompa": "51",
+"chainsaw": "6",
+"geobag": "820",
+"tenda": "316",
+"velbed": "876",
+"matras": "13173",
+"selimut": "28",
+"terpal": "180",
+"obat": "800"
+},
+{
+"prov": "Jawa Tengah",
+"alat": "",
+"perahu": "9",
+"genset": "41",
+"air": "",
+"pompa": "48",
+"chainsaw": "10",
+"geobag": "600",
+"tenda": "239",
+"velbed": "210",
+"matras": "1150",
+"selimut": "10850",
+"terpal": "700",
+"obat": ""
+},
+{
+"prov": "DI Yogyakarta",
+"alat": "",
+"perahu": "5",
+"genset": "32",
+"air": "",
+"pompa": "5",
+"chainsaw": "10",
+"geobag": "100",
+"tenda": "184",
+"velbed": "180",
+"matras": "1900",
+"selimut": "1900",
+"terpal": "300",
+"obat": ""
+},
+{
+"prov": "Sumatera Utara (Poslog Kualanamu)",
+"alat": "",
+"perahu": "11",
+"genset": "5",
+"air": "",
+"pompa": "2",
+"chainsaw": "",
+"geobag": "1400",
+"tenda": "152",
+"velbed": "",
+"matras": "6537",
+"selimut": "307",
+"terpal": "",
+"obat": "93"
+},
+{
+"prov": "Kalimantan Tengah",
+"alat": "",
+"perahu": "3",
+"genset": "2",
+"air": "10",
+"pompa": "",
+"chainsaw": "",
+"geobag": "",
+"tenda": "31",
+"velbed": "70",
+"matras": "",
+"selimut": "",
+"terpal": "75",
+"obat": ""
+},
+{
+"prov": "Kalimantan Utara",
+"alat": "",
+"perahu": "3",
+"genset": "2",
+"air": "",
+"pompa": "5",
+"chainsaw": "",
+"geobag": "",
+"tenda": "2",
+"velbed": "",
+"matras": "500",
+"selimut": "500",
+"terpal": "",
+"obat": ""
+},
+{
+"prov": "Bali",
+"alat": "",
+"perahu": "2",
+"genset": "",
+"air": "",
+"pompa": "134",
+"chainsaw": "",
+"geobag": "",
+"tenda": "92",
+"velbed": "",
+"matras": "400",
+"selimut": "300",
+"terpal": "",
+"obat": ""
+},
+{
+"prov": "Sulawesi Tenggara",
+"alat": "",
+"perahu": "",
+"genset": "",
+"air": "",
+"pompa": "2",
+"chainsaw": "",
+"geobag": "",
+"tenda": "2",
+"velbed": "",
+"matras": "",
+"selimut": "",
+"terpal": "",
+"obat": ""
+},
+{
+"prov": "Maluku Utara",
+"alat": "",
+"perahu": "",
+"genset": "3",
+"air": "",
+"pompa": "19",
+"chainsaw": "6",
+"geobag": "",
+"tenda": "74",
+"velbed": "50",
+"matras": "1000",
+"selimut": "700",
+"terpal": "1000",
+"obat": ""
+},
+{
+"prov": "Papua",
+"alat": "",
+"perahu": "6",
+"genset": "4",
+"air": "",
+"pompa": "",
+"chainsaw": "",
+"geobag": "",
+"tenda": "8",
+"velbed": "",
+"matras": "800",
+"selimut": "400",
+"terpal": "",
+"obat": ""
+}
+],
+"jl": [
+{
+"prov": "Aceh",
+"asal": "Kualanamu",
+"n": "10",
+"darat": "9",
+"laut": "1",
+"jam": "5-30 jam"
+},
+{
+"prov": "Sumatera Utara",
+"asal": "Kualanamu",
+"n": "10",
+"darat": "8",
+"laut": "2",
+"jam": "3-24 jam"
+},
+{
+"prov": "Sumatera Barat",
+"asal": "UPT Padang",
+"n": "8",
+"darat": "7",
+"laut": "1",
+"jam": "2-18 jam"
+},
+{
+"prov": "Riau",
+"asal": "UPT Padang",
+"n": "3",
+"darat": "3",
+"laut": "0",
+"jam": "11-12 jam"
+}
+],
+"bl": [
+[
+"Aceh",
+3,
+38,
+4,
+55
+],
+[
+"Sumatera Utara",
+0,
+31,
+1,
+50
+],
+[
+"Sumatera Barat",
+0,
+20,
+5,
+23
+],
+[
+"Sulawesi Tengah",
+0,
+2,
+0,
+8
+],
+[
+"Riau",
+0,
+5,
+0,
+4
+],
+[
+"Kalimantan Barat",
+0,
+1,
+0,
+4
+],
+[
+"Jambi",
+0,
+0,
+0,
+2
+],
+[
+"Kalimantan Tengah",
+0,
+0,
+0,
+2
+],
+[
+"Papua Barat",
+0,
+0,
+0,
+2
+],
+[
+"Papua Tengah",
+0,
+0,
+0,
+1
+]
+],
+"puncak": [
+{
+"kab": "Aceh Barat Daya",
+"mm": 190,
+"tgl": "8 Nov"
+},
+{
+"kab": "Aceh Tenggara",
+"mm": 184,
+"tgl": "11 Nov"
+},
+{
+"kab": "Aceh Barat",
+"mm": 132,
+"tgl": "8 Nov"
+}
+],
+"n_kab": 33,
+"n_prov": 6,
+"a": 3,
+"s": 97,
+"la": 10,
+"ls": 151,
+"jam1": 30,
+"n_jl": 31
+}

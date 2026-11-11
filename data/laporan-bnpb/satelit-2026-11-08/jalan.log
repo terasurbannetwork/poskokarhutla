@@ -1,0 +1,11 @@
+website: harian30 2026-11-08T18:26+07:00 | peta_karhutla 2026-11-08T18:27+07:00 s.d. 2026-11-07 | hotspot.json titik terakhir 2026-11-08T08:41:00+00:00 | belum_kini 2026-11-08T18:27+07:00
+uji luas 2026-11-07: sendiri 6060 ha vs website 6022 ha; beda > 5 ha: {'18': (114, 108), '64': (582, 570), '52': (147, 137), '81': (624, 612)}
+VERSI per sekarang | 2026-11-08 s.d. data terakhir: luas 5370 ha, padam 2888 ha belum padam 1925 ha
+SEGAR 2026-11-08 s.d. 18:00 {'hot': 2529, 'luas': 5339, 'belum': 1925, 'padam': 2875}
+penjaga situs: data situs s.d. 08 Nov 15.41 WIB, 0 dari 3441 titik FIRMS belum masuk (0%)
+6 provinsi tabel (hotspot 2026-11-08 ): ['62', '93', '74', '64', '16', '73'] [443, 427, 279, 214, 154, 151]
+selisih hotspot sendiri vs website (hari, prov, sendiri, website): [('2026-11-05', '15', 44, 46), ('2026-11-05', '35', 62, 61), ('2026-11-05', '62', 1469, 1464), ('2026-11-05', '64', 305, 307), ('2026-11-05', '73', 138, 140), ('2026-11-05', '82', 52, 54), ('2026-11-05', '93', 2701, 2699), ('2026-11-06', '16', 166, 167), ('2026-11-06', '52', 53, 52), ('2026-11-06', '64', 137, 138), ('2026-11-06', '72', 170, 172), ('2026-11-06', '74', 221, 220), ('2026-11-06', '82', 90, 91), ('2026-11-06', '92', 7, 6), ('2026-11-06', '93', 637, 633), ('2026-11-07', '18', 52, 51), ('2026-11-07', '62', 369, 367), ('2026-11-07', '63', 85, 84), ('2026-11-07', '64', 311, 310), ('2026-11-07', '74', 352, 351)] (23 sel)
+firespot website 2026-11-08 nasional 976
+sel ok 72 beda 0 | jumlah cocok
+berkas terkunci di penampil, tidak ditimpa: Laporan Penanganan Pengendalian Karhutla 081126.pdf
+ok D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\satelit-2026-11-08\Laporan Penanganan Pengendalian Karhutla 081126.pptx | 2026-11-08 s.d. 18:00 WIB: hot 2529 firespot 976 luas 5339 belum 1925 | 6 teratas ['62', '93', '74', '64', '16', '73']

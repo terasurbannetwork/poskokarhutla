@@ -20,6 +20,7 @@ import wa_harian, banjir_data  # noqa: E402
 AKAR = wa_harian.AKAR
 BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
 HARI_ID = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']
+GEO_VUL = ('gempabumi', 'erupsi')   # 10 Nov pemilik: kelompok geologi dan vulkanologi; jenis lain hidrometeorologi, kecuali Kebakaran TPA ('lainnya')
 KEPALA_NAMA = 'Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)'
 NAVY, ORG, MERAH, KER, SLATE, INK, ABU, TEKS = '051C2C', 'D9600B', 'C8102E', 'B08A3E', '5B7A99', '1A1A1A', '6B7280', '2E3440'
 T_NAVY, T_ORG, T_MERAH, T_KER, T_SLATE = 'E6EAF0', 'FBE7D6', 'F8DDE0', 'F4ECDC', 'E3EAF1'
@@ -182,9 +183,12 @@ class Deck:
                'peta.png': os.path.join(ke, 'peta.png')}
         s.GA, s.LAMPIRAN, s.GABUNG = None, False, False
         s.SIAGA = False   # 2 Nov pemilik: gunung api pindah ke slide sendiri "Status siaga bencana" (bukan kejadian baru)   # GABUNG (31 Okt, alternatif): kejadian baru dan pengkinian satu slide   # 30 Okt: GA = wa_harian.pvmbg(...); LAMPIRAN = slide 3 kejadian baru + gunung api, sisanya lampiran
-        for n in ('gempa', 'api', 'banjir', 'tenda', 'rumah', 'orang', 'hati', 'kalender', 'sampah', 'awas', 'angin', 'truk', 'gunung', 'asap', 'suhu', 'tetes', 'mata', 'tekanan', 'hujan', 'telepon', 'cek', 'radius', 'arah', 'longsor'):
+        for n in ('gempa', 'api', 'banjir', 'tenda', 'rumah', 'orang', 'hati', 'kalender', 'sampah', 'awas', 'angin', 'truk', 'gunung', 'asap', 'suhu', 'tetes', 'mata', 'tekanan', 'hujan', 'telepon', 'cek', 'radius', 'arah', 'longsor', 'asapsolid', 'hujansolid', 'anginsolid', 'jam'):
             for c in ('putih', 'slate', 'merah', 'oranye', 'navy', 'kering', 'coklat'):
                 s.I[f'{n}_{c}'] = IK + f'{n}-{c}.png'
+        for i_ in range(16):   # 11 Nov: panah arah sektor gunung api
+            for c in ('kering', 'oranye', 'navy'): s.I[f'panah{i_}_{c}'] = IK + f'panah{i_}-{c}.png'
+            s.I[f'kompas{i_}_kering'] = IK + f'kompas{i_}-kering.png'
         s.I['awas_p2'], s.I['awas_b'] = IK + 'awas-putih.png', IK + 'awas-slate.png'
         s.I['daun_putih'] = s.I['daun_p']
         KJ = D['kejadian']
@@ -436,10 +440,12 @@ class Deck:
         else:
             kb_ = {(y['jenis'], y['prov'], y['lokasi']) for y in br}; g = next((x for x in s.LN if x['tangani'] and (x['jenis'], x['prov'], x['lokasi']) not in kb_), None) or next((x for x in s.LN if x['tangani']), None)   # 7 Nov: kejadian lama dulu, yang baru sudah di kolom pertama
             k3 = ('awas_p', 'Pemulihan', [f"•  {JENIS_LAIN[g['jenis']][0]} {NAMA[g['prov']]}: pendampingan berlanjut"] if g else ['•  Pemantauan kejadian lain berlanjut'])
-            if not s.KH and (not g or (g['jenis'], g['prov'], g['lokasi']) in kb_) and (s.w.get('siaga') or s.w.get('angin')):
+            if not s.KH and (not g or (g['jenis'], g['prov'], g['lokasi']) in kb_) and (s.w.get('awas') or s.w.get('siaga') or s.w.get('angin')):
                 # 8 Nov: tanpa kejadian lama, kolom ketiga bukan "Pemulihan" atas kejadian baru, tapi peringatan dini cuaca BMKG
                 pv = lambda d: [(lambda n: SINGKAT.get(n) or AKRONIM.get(re.sub(r'^(Kalimantan|Sumatera|Sulawesi) ', lambda m: m.group(1)[:3] + '. ', n), n))(n.replace('Sumatra', 'Sumatera')) for n in d]
-                k3 = ('awas_p', 'Peringatan dini BMKG', ([muat('•  Siaga hujan lebat: ', pv(s.w['siaga']), 59)] if s.w.get('siaga') else [])
+                k3 = ('awas_p', 'Peringatan dini BMKG', ([muat(f"•  Hujan: Awas {', '.join(pv(s.w['awas']))}; Siaga ", pv(s.w['siaga']), 59)] if s.w.get('awas') and s.w.get('siaga')   # 9 Nov: tingkat Awas BMKG; satu baris supaya panel tidak meluap
+                                                         else [muat('•  Awas hujan sangat lebat: ', pv(s.w['awas']), 59)] if s.w.get('awas')
+                                                         else [muat('•  Siaga hujan lebat: ', pv(s.w['siaga']), 59)] if s.w.get('siaga') else [])
                                                       + ([muat('•  Angin kencang: ', pv(s.w['angin']), 59)] if s.w.get('angin') else []))
         if not s.KH:   # 6 Nov pemilik ("di slide itu gausah bahas karhutla lagi"): kolom pemadaman diganti kejadian baru / pendampingan
             if br:   # 6 Nov: kejadian baru yang sudah surut/selesai tidak "dikaji cepat", cukup dipantau pascabencana
@@ -501,8 +507,8 @@ class Deck:
                 if i: o.append(P(', dan ' if i == len(bag) - 1 and len(bag) > 2 else ' dan ' if i == len(bag) - 1 else ', '))
                 o += [H(f0(n)), P(lab)]
             return o
-        J2 = [P(f'Laporan {rentang(mulai, sampai)}: '), H(f0(s.N_TOT)), P(' kejadian menonjol di '), H(f'{s.N_PROV} provinsi'), P(', terdiri atas ')] + bagian()   # pemilik 25 Okt: tanpa jumlah dalam penanganan di judul
-        J3 = [P('Rincian '), H(f0(s.N_TOT)), P(' kejadian menonjol: ')] + bagian(' di ' + ' dan '.join(pk) if 0 < len(pk) <= 2 else f' di {len(pk)} provinsi' if pk else '')
+        J2 = [P(f'Laporan {rentang(mulai, sampai)}: '), H(f0(s.N_TOT)), P(' kejadian di '), H(f'{s.N_PROV} provinsi'), P(', terdiri atas ')] + bagian()   # pemilik 25 Okt: tanpa jumlah dalam penanganan di judul
+        J3 = [P('Rincian '), H(f0(s.N_TOT)), P(' kejadian: ')] + bagian(' di ' + ' dan '.join(pk) if 0 < len(pk) <= 2 else f' di {len(pk)} provinsi' if pk else '')
         return J2, J3
 
     # ---------------------------------------------------------- slide 2: ringkasan
@@ -520,21 +526,46 @@ class Deck:
         for p in per:
             px, py = s.TT['pusat'][p]; dx, dy = GESER.get(p, (0, 0)); titik[p] = (MX + (px + dx) / s.TT['PW'] * MW, MY + (py + dy) / s.TT['PH'] * MH)
         besar = lambda xs: k * (lambda u: 219456 if u <= 1 else 265176 if u <= 3 else 310896)(sum(1 for x in xs if x['jenis'] == 'karhutla') or len(xs))
+        # 10 Nov pemilik ("di peta, tambahin titik gunung yang lagi siaga, terus kasih icon"): penanda berikon di koordinat gunung Level III/IV PVMBG;
+        # nama di bawahnya. Lingkaran provinsi yang menimpa penanda digeser ke utara, posisi gunung tidak pernah digeser
+        GA_T, dg = [], int(146304 * k)
+        if V3 and s.GA:
+            ab_ = json.load(open(os.path.join(AKAR, 'public', 'banjir', 'data', 'abu_gunungapi.json'), encoding='utf-8'))['gunung']
+            for g in s.GA['gunung']:
+                if g['level'] not in ('Awas', 'Siaga'): continue
+                nm_g = re.sub(r'^(Gn\.|Gunung)\s*', '', g['nama']); pk = next((a_ for a_ in ab_ if a_['nama'].lower() == nm_g.lower()), None)
+                if not pk: print('PERINGATAN gunung tanpa koordinat:', g['nama']); continue
+                GA_T.append((nm_g, MX + (pk['lon'] - 95.0) / 45.9 * MW, MY + (6.2 - pk['lat']) / 17.2 * MH, MERAH if g['level'] == 'Awas' else ORG))
+            for p, (cx, cy) in titik.items():
+                perlu = besar(per[p]) / 2 + dg / 2 + 18288
+                for _, gx, gy, _w in GA_T:
+                    if (cx - gx) ** 2 + (cy - gy) ** 2 < perlu ** 2: cy = gy - (perlu ** 2 - (cx - gx) ** 2) ** .5
+                titik[p] = (cx, cy)
         terisi = [(cx - besar(per[p]) / 2, cy - besar(per[p]) / 2, cx + besar(per[p]) / 2, cy + besar(per[p]) / 2) for p, (cx, cy) in titik.items()]
+        terisi += [(gx - dg / 2, gy - dg / 2, gx + dg / 2, gy + dg / 2 + 137160) for _, gx, gy, _w in GA_T]
+        # 10 Nov pemilik: peringatan dini masuk peta, lingkaran putih bertanda seru, garis dan tanda oranye atau merah; PERINGATAN_PETA = [(lon, lat, label, 'merah'|'oranye', sisi label)]
+        PD_T, dp = [], int(201168 * k)
+        for lon_, lat_, lab_, wr_, sisi_ in (getattr(s, 'PERINGATAN_PETA', None) or [] if V3 else []):
+            gx, gy = MX + (lon_ - 95.0) / 45.9 * MW, MY + (6.2 - lat_) / 17.2 * MH; lw_ = len(lab_.split('|')[0]) * 46000 * k   # label "Daerah|Bahaya": hanya nama daerah yang tampil (10 Nov pemilik: "tampilin daerahnya", nama bahaya "gausah ada di peta"); bahaya dipakai memilih ikon
+            PD_T.append((gx, gy, lab_, MERAH if wr_ == 'merah' else ORG, sisi_, lw_))
+            terisi += [(gx - dp / 2, gy - dp / 2, gx + dp / 2, gy + dp / 2), (gx - dp / 2 - 36576 - lw_, gy - 73152, gx - dp / 2, gy + 73152) if sisi_ == 'kiri' else (gx + dp / 2, gy - 73152, gx + dp / 2 + 36576 + lw_, gy + 73152)]
         tabrak = lambda r: r[0] < MX or r[2] > MX + MW or any(not (r[2] <= q[0] or q[2] <= r[0] or r[3] <= q[1] or q[3] <= r[1]) for q in terisi)
         for p, xs in per.items():
             cx, cy = titik[p]
             # 6 Nov pemilik (Aceh 3 banjir + 1 longsor tergambar "4" biru, padahal legenda membedakan warnanya): lingkaran utama = karhutla, atau
             # jenis terbanyak; tiap jenis lain jadi lencana kecil berwarna jenisnya di pojok bawah lalu atas (jumlah per warna = tabel)
             hit = Counter(x['jenis'] for x in xs)
+            # 10 Nov pemilik ("audiens juga bisa tahu kalo itu jenis bencana hidro atau geo/vul pada peta"): warna tetap per bencana; bentuk = kelompok,
+            # lingkaran hidrometeorologi, kotak geologi dan vulkanologi
+            bj = lambda j: 'roundRect' if V3 and j in GEO_VUL else 'ellipse'
             wj = lambda j: ORG if j == 'karhutla' else KER if j == 'kekeringan' else JENIS_LAIN[j][2]
             uj = sorted(hit, key=lambda j: (j != 'karhutla', -hit[j], j == 'kekeringan'))
             utama, warna = hit[uj[0]], wj(uj[0]); lain_j = uj[1:]
             d = besar(xs)
-            o += s.kotak(cx - d / 2, cy - d / 2, d, d, warna, 'ellipse', ln='FFFFFF', lw=19050) + s.tx(cx - d / 2, cy - d / 2, d, d, [str(utama)], sz=int(850 * k), b=True, c='FFFFFF', al='ctr', an='ctr')
+            o += s.kotak(cx - d / 2, cy - d / 2, d, d, warna, bj(uj[0]), ln='FFFFFF', lw=19050, adj=22000 if bj(uj[0]) == 'roundRect' else None) + s.tx(cx - d / 2, cy - d / 2, d, d, [str(utama)], sz=int(850 * k), b=True, c='FFFFFF', al='ctr', an='ctr')
             for (sdx, sdy), j in zip(((1, 1), (-1, 1), (-1, -1), (1, -1)), lain_j):   # kanan-atas terakhir: tempat tanda seru (bukan versi 3)
                 q = 155448 * k; bx, by = cx + sdx * d * .42 - q / 2, cy + sdy * d * .42 - q / 2
-                o += s.kotak(bx, by, q, q, wj(j), 'ellipse', ln='FFFFFF', lw=12700) + s.tx(bx, by, q, q, [str(hit[j])], sz=int(650 * k), b=True, c='FFFFFF', al='ctr', an='ctr')
+                o += s.kotak(bx, by, q, q, wj(j), bj(j), ln='FFFFFF', lw=12700, adj=22000 if bj(j) == 'roundRect' else None) + s.tx(bx, by, q, q, [str(hit[j])], sz=int(650 * k), b=True, c='FFFFFF', al='ctr', an='ctr')
             np_ = 0 if V3 else sum(1 for x in xs if x['perhatian'])
             if np_:   # 3 Nov atasan ("perlu perhatiannya 7, disini cuma 6 tanda seru"): satu tanda seru per kejadian, berjajar ke kanan
                 q = 137160; qw = q if np_ == 1 else int(q * 1.6)   # 3 Nov atasan: dua kejadian = satu badge "2!", bukan dua tanda seru
@@ -544,22 +575,47 @@ class Deck:
             nm = PENDEK(p); lw = k * (60000 + len(nm) * 52000)
             yb = max(d / 2 + 27432, d * .42 + 77724 + 18288 if lain_j else 0)
             calon = {'kanan': (cx + d / 2 + 54864, cy - 73152, cx + d / 2 + 54864 + lw, cy + 73152), 'kiri': (cx - d / 2 - 54864 - lw, cy - 73152, cx - d / 2 - 54864, cy + 73152),
-                     'bawah': (cx - lw / 2, cy + yb, cx + lw / 2, cy + yb + 146304)}
+                     'bawah': (cx - lw / 2, cy + yb, cx + lw / 2, cy + yb + 146304), 'atas': (cx - lw / 2, cy - d / 2 - 173736, cx + lw / 2, cy - d / 2 - 27432)}
             urut = ['kiri', 'bawah', 'kanan'] if p in KIRI else ['bawah', 'kanan', 'kiri'] if p in BAWAH else ['kanan', 'kiri', 'bawah']
-            sisi = next((u for u in urut if not tabrak(calon[u])), None if k < 1 else urut[0])
+            sisi = next((u for u in urut + (['atas'] if V3 else []) if not tabrak(calon[u])), None if k < 1 else urut[0])   # 10 Nov: penanda gunung menutup sisi lain, label naik ke atas lingkaran
             if sisi is None: continue   # 6 Nov: peta kecil alternatif 4/5, label yang menimpa label lain dilewati
             r = calon[sisi]; terisi.append(r)
             o += (s.tx(r[2] - 1463040, cy - 73152, 1463040, 146304, [nm], sz=int(750 * k), b=True, al='r', an='ctr') if sisi == 'kiri'
-                  else s.tx(cx - 731520, cy + yb, 1463040, 146304, [nm], sz=int(750 * k), b=True, al='ctr', an='ctr') if sisi == 'bawah'
+                  else s.tx(cx - 731520, r[1], 1463040, 146304, [nm], sz=int(750 * k), b=True, al='ctr', an='ctr') if sisi in ('bawah', 'atas')
                   else s.tx(r[0], cy - 73152, 1463040, 146304, [nm], sz=int(750 * k), b=True, an='ctr'))
+        for nm_g, gx, gy, w_g in GA_T:
+            o += s.kotak(gx - dg / 2, gy - dg / 2, dg, dg, w_g, 'triangle', ln='FFFFFF', lw=12700)   # 10 Nov pemilik: "cukup segitiga warna oren untuk siaga dan merah untuk awas"
+            o += s.tx(gx - 457200, gy + dg / 2, 914400, 137160, [nm_g], sz=int(700 * k), b=True, c=w_g, al='ctr', an='ctr', wrap='none')
+        for gx, gy, lab_, c_, sisi_, lw_ in PD_T:
+            ik_ = ('asapsolid' if 'PM2' in lab_ else 'anginsolid' if 'ngin' in lab_ else 'hujansolid') + ('_merah' if c_ == MERAH else '_oranye')   # 10 Nov pemilik: lingkaran besar berisi ikon bahaya, lencana kecil bertanda seru di kanan atas
+            lab_ = [(lab_.split('|')[0], INK, True)]
+            db = dp * .56; bx, by = gx + dp * .36 - db / 2, gy - dp * .36 - db / 2
+            o += s.kotak(gx - dp / 2, gy - dp / 2, dp, dp, 'FFFFFF', 'ellipse', ln=c_, lw=15875) + s.gambar(gx - dp * .3, gy - dp * .3, dp * .6, dp * .6, ik_)
+            o += s.kotak(bx, by, db, db, c_, 'ellipse', ln='FFFFFF', lw=9525) + s.tx(bx, by, db, db, ['!'], sz=int(700 * k), b=True, c='FFFFFF', al='ctr', an='ctr', wrap='none')   # 10 Nov pemilik: lencana solid
+            o += (s.tx(gx - dp / 2 - 36576 - 1463040, gy - 73152, 1463040, 146304, [lab_], sz=int(680 * k), al='r', an='ctr', wrap='none') if sisi_ == 'kiri'
+                  else s.tx(gx + dp / 2 + 36576, gy - 73152, 1463040, 146304, [lab_], sz=int(680 * k), an='ctr', wrap='none'))
         n_seru = sum(1 for x in KJ if x['perhatian'])
         if not V3 and n_seru != len(s.SER): raise AssertionError(f'peta {n_seru} tanda seru, kartu perlu perhatian {len(s.SER)} (atasan 3 Nov: harus sama)')
         if leg is None: return o
         lx, ly = leg
-        for bentuk, w, t, seru in ([('rect', ORG, 'karhutla', False)] if s.KH else []) + ([('ellipse', KER, 'kekeringan', False)] if s.KR else []) + [('ellipse', v[2], v[0][0].lower() + v[0][1:], False) for k, v in JENIS_LAIN.items() if any(x['jenis'] == k for x in s.LN)] + ([] if V3 else [('ellipse', MERAH, 'perlu perhatian', True)]):
-            q = 128016 if bentuk == 'rect' else 146304
-            o += s.kotak(lx, ly + 22860 + (146304 - q) / 2, q, q, w, bentuk) + (s.tx(lx, ly + 22860, q, q, ['!'], sz=750, b=True, c='FFFFFF', al='ctr', an='ctr') if seru else '')
-            o += s.tx(lx + q + 54864, ly, 1100000, 192024, [t], sz=int(750 * kl), an='ctr'); lx += q + 54864 + (len(t) * 52000 + 228600) * kl
+        lain_ent = [(k_, v) for k_, v in JENIS_LAIN.items() if any(x['jenis'] == k_ for x in s.LN)]
+        if V3:   # 10 Nov pemilik: legenda rata tengah, dan dikelompokkan hidrometeorologi | geologi dan vulkanologi
+            hid_ = ([('ellipse', ORG, 'karhutla', False)] if s.KH else []) + ([('ellipse', KER, 'kekeringan', False)] if s.KR else []) + [('ellipse', v[2], v[0][0].lower() + v[0][1:], False) for k_, v in lain_ent if k_ not in GEO_VUL and k_ != 'lainnya']
+            geo_ = [('roundRect', v[2], v[0][0].lower() + v[0][1:], False) for k_, v in lain_ent if k_ in GEO_VUL]
+            if GA_T: geo_ += [('triangle', MERAH if l_ == 'Awas' else ORG, f'gunung api {l_}', False) for l_ in ('Awas', 'Siaga') if any(g['level'] == l_ for g in s.GA['gunung'])]
+            pd_w = {c_ for *_x, c_, _s, _l in PD_T}
+            ent = hid_ + geo_ + ([('seru', ORG, 'peringatan dini', False)] if pd_w else [])   # 10 Nov atasan: label "Hidrometeorologi" di legenda "gausah ada. Ini istilah internal kita aja"
+        else:
+            ent = ([('rect', ORG, 'karhutla', False)] if s.KH else []) + ([('ellipse', KER, 'kekeringan', False)] if s.KR else []) + [('ellipse', v[2], v[0][0].lower() + v[0][1:], False) for k_, v in lain_ent] + [('ellipse', MERAH, 'perlu perhatian', True)]
+        qe = lambda b_: 128016 if b_ == 'rect' else 146304
+        JEDA = 118872 if V3 else 228600
+        lb = lambda t_: len(t_) * (46000 if V3 else 52000) * kl + JEDA * kl
+        if V3: lx = MX + (MW - (sum(qe(b_) + 54864 + lb(t_) for b_, _w, t_, _s in ent) - JEDA * kl)) / 2
+        for bentuk, w, t, seru in ent:
+            q = qe(bentuk)
+            if bentuk == 'seru': o += s.kotak(lx, ly + 22860, q, q, 'FFFFFF', 'ellipse', ln=w, lw=15875) + s.kotak(lx + q * .58, ly + 22860 - q * .12, q * .54, q * .54, w, 'ellipse', ln='FFFFFF', lw=6350) + s.tx(lx + q * .58, ly + 22860 - q * .12, q * .54, q * .54, ['!'], sz=600, b=True, c='FFFFFF', al='ctr', an='ctr', wrap='none')
+            else: o += s.kotak(lx, ly + 22860 + (146304 - q) / 2, q, q, w, bentuk, adj=22000 if bentuk == 'roundRect' else None) + (s.tx(lx, ly + 22860, q, q, ['!'], sz=750, b=True, c='FFFFFF', al='ctr', an='ctr') if seru else '')
+            o += s.tx(lx + q + 54864, ly, 1463040, 192024, [t], sz=int(750 * kl), an='ctr', wrap='none'); lx += q + 54864 + lb(t)
         return o
 
     def s2(s):
@@ -573,7 +629,10 @@ class Deck:
              ('api_o', T_ORG, f0(len(s.KH)), 'karhutla', ORG), ('daun_k', T_KER, f0(len(s.KR)), 'kekeringan', KER), ('awas_b', T_SLATE, f0(len(s.LN)), 'bencana lainnya', SLATE)]
         if V3:   # 6 Nov pemilik: "bencana lainnya pecah aja: hari ini kan ada gempa, banjir, dan angin", "iconnya juga sesuaikan"
             IKK = {'gempa': 'gempa_slate', 'banjir': 'banjir_navy', 'angin': 'angin_slate', 'longsor': 'longsor_coklat', 'api': 'api_merah', 'gunung': 'gunung_merah'}
-            T = [t for t in T[:4] if not (t[3] == 'karhutla' and not s.KH) and not (t[3] == 'kekeringan' and not s.KR)] + [(IKK[v[1]], v[3], f0(n), v[0][0].lower() + v[0][1:], v[2]) for j, v in JENIS_LAIN.items() for n in [sum(1 for x in s.LN if x['jenis'] == j)] if n]   # 7 Nov: kartu 0 kekeringan dibuang
+            # 10 Nov pemilik: kartu "laporan kejadian" (jumlah WA) dihapus, "kejadian menonjol" berganti nama "laporan kejadian"; "gausah pisahin per bencana, bikin 2 aja: hidrometeorologi,
+            # geologi dan vulkanologi", "iconnya juga sesuaikan". Geologi dan vulkanologi = gempa bumi dan erupsi; tanah longsor ikut hidrometeorologi; Kebakaran TPA bukan keduanya
+            n_geo = sum(1 for x in s.LN if x['jenis'] in GEO_VUL); n_hid = len(s.KH) + len(s.KR) + sum(1 for x in s.LN if x['jenis'] not in GEO_VUL and x['jenis'] != 'lainnya')
+            T = [('papan_n', T_NAVY, f0(s.N_TOT), 'laporan kejadian', NAVY), ('hujan_navy', 'DCE7F5', f0(n_hid), 'hidrometeorologi', '2F6FB5'), ('gunung_coklat', 'EFE4D8', f0(n_geo), 'geologi dan vulkanologi', '7A5230')]
         kw = ((11094415 - 2 * 109728) if V3 else 8359811) - (len(T) - 1) * 91440; kw //= len(T)
         for i, t in enumerate(T): o += s.kartu(658368 + i * (kw + 91440), 1591056, *t, w=kw)
         if not V3: o += s.kartu(9511955, 1591056, 'awas_merah', T_MERAH, f0(len(s.SER)), 'kejadian perlu perhatian', MERAH)
@@ -581,7 +640,7 @@ class Deck:
         MENURUN = V3 and getattr(s, 'MENURUN', False)
         PX = 6309360   # alternatif 3: panel Informasi bencana melebar ke kiri, peta mengecil (rasio tetap) dan rata tengah tegak
         PIL_ = V3 and getattr(s, 'INFO_PIL', False)   # 7 Nov pemilik: kolom DAMPAK dan KONDISI berupa pil -> panel melebar ke kiri, peta mengecil
-        if PIL_: PX = 7040880
+        if PIL_: PX = 7955280 if getattr(s, 'TANPA_KONDISI', False) else 6858000   # 10 Nov: tanpa KONDISI panel menyempit, peta melebar
         if MENURUN or PIL_: MW_ = PX - 91440 - MX; MY += (MH - MW_ * MH // MW) // 2; MW, MH = MW_, MW_ * MH // MW
         o += s.peta_blok(MX, MY, MW, MH, V3, (640080 if MENURUN else 1371600, 5184648))
         if MENURUN: return o + s.info_bencana_menurun(PX, 2331720, 11643055 - PX, 3017520) + s.strip_tindak()
@@ -663,7 +722,7 @@ class Deck:
         """Versi 3 (6 Nov pemilik): panel kanan slide ringkasan = INFORMASI BENCANA, satu baris per kejadian menonjol: bencana, provinsi,
         kab/kota, dampak KK ("kalau gaada infonya strip aja"). Urut karhutla (sisa terbesar), kekeringan, lalu bencana lainnya; nama jenis
         hanya di baris pertama kelompoknya."""
-        Y, H = 2331720, 3017520
+        Y, H = getattr(s, 'INFO_Y', None) or (2331720, 3017520)   # 10 Nov pemilik: panel bisa dinaikkan sejajar atas kartu
         PIL_ = getattr(s, 'INFO_PIL', False)
         o = s.kotak(X, Y, W, H, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=3000) + s.tx(X + 164592, Y + 109728, W - 329184, 182880, ['INFORMASI BENCANA'], sz=750, b=True, c=NAVY, spc=100)
         XL = X + 109728; WL = W - 219456
@@ -673,21 +732,48 @@ class Deck:
         # 7 Nov pemilik ("Erupsi Gn. Bromo" menimpa kolom provinsi): kolom BENCANA melebar sesuai nama terpanjang (diukur Roboto tebal 7 pt),
         # diambil dari kolom PROVINSI (paling banyak 25.000 EMU, kepala PROVINSI tetap lega) lalu dari kolom DAMPAK
         nm_ = [v[0] for j, v in JENIS_LAIN.items() if any(x['jenis'] == j for x in s.LN)] + (['Karhutla'] if s.KH else []) + (['Kekeringan'] if s.KR else [])
-        perlu = max([s.lebar_runs([(n, INK, True)], 700) for n in nm_] or [0]) + 91440 + 100584 + 54864
+        perlu = max([s.lebar_runs([(n, INK, True)], 700) for n in nm_] or [0]) + 182880 + 100584 + 54864   # 10 Nov: ikon bencana dalam bulatan warna legenda
         if perlu > CB: CP -= min(perlu - CB, 25000); CB = perlu
         if PIL_: CK = 960000   # "Kab. Lampung Selatan" utuh
-        CD = 700000 if PIL_ else WL - CB - CP - CK   # 7 Nov: kolom DAMPAK (pil KK) lalu KONDISI (pil surut/ditangani) di kanan
-        C = [('BENCANA', XL, CB, 'l'), ('PROVINSI', XL + CB, CP, 'l'), ('KAB/KOTA', XL + CB + CP, CK, 'l'), ('DAMPAK', XL + CB + CP + CK, CD, 'l' if PIL_ else 'r')]
-        if PIL_: C.append(('KONDISI', XL + CB + CP + CK + CD, WL - CB - CP - CK - CD, 'l'))
+        TK = getattr(s, 'TANPA_KONDISI', False)   # 10 Nov pemilik: "itu kondisi gausah dulu"
+        KM = getattr(s, 'KOLOM_MULAI', False) and PIL_ and TK   # 11 Nov pemilik: kejadian baru + masih berlangsung, kolom tanggal mulai di kanan
+        CM = 0
+        if KM: CP, CK, CM = 400000, 820000, 560000   # 11 Nov pemilik ("ini nempel"): kolom PROVINSI dan KAB/KOTA dirampingkan, pil diukur lebih pas
+        CD = getattr(s, 'CD_PIL', 700000) if PIL_ and not TK else WL - CB - CP - CK - CM   # 9 Nov: CD_PIL = kolom lebih lebar untuk pil dampak panjang; 7 Nov: kolom DAMPAK (pil KK) lalu KONDISI (pil surut/ditangani) di kanan
+        # 10 Nov pemilik ("ini grouping berdasarkan provinsi ya", "ini kasih icon bencananya"): kolom pertama PROVINSI, namanya sekali per kelompok; tiap baris bencana berikon
+        # 10 Nov pemilik ("tanpa menghilangkan klasifikasi per bencananya"): kolom KELOMPOK sesudah BENCANA berisi pil Hidro atau Geo/Vul; CB dilebarkan, kolom sesudahnya digeser
+        CG = 0; CB0 = CB   # 10 Nov atasan: "Kolom ini gausah ada" (KELOMPOK)
+        # 10 Nov pemilik ("ini multigrouping aja, sebisa mungkin jangan ada info yang multiple times ditulis, terutama jenis bencana sama kelompok bencana"):
+        # tingkat BENCANA > PROVINSI > KAB/KOTA; tiap nilai ditulis sekali, di tengah rentang barisnya
+        C = [('BENCANA', XL + CG, CB0, 'l'), ('PROVINSI', XL + CB, CP, 'l'), ('KAB/KOTA', XL + CB + CP, CK, 'l'), ('DAMPAK', XL + CB + CP + CK, CD, 'l' if PIL_ else 'r')]
+        if PIL_ and not TK: C.append(('KONDISI', XL + CB + CP + CK + CD, WL - CB - CP - CK - CD, 'l'))
+        if KM:
+            C.append(('MULAI', XL + CB + CP + CK + CD, CM, 'l'))
+            # keterangan warna pil MULAI di kanan judul panel: oranye = kejadian baru, navy = masih berlangsung
+            lx = X + W - 164592
+            for teks_, warna_, tint_ in (('masih berlangsung', NAVY, T_NAVY), ('kejadian baru', ORG, T_ORG)):
+                lw_ = s.lebar_runs([(teks_, TEKS, False)], 620); lx -= lw_
+                o += s.tx(lx, Y + 109728, lw_ + 9144, 182880, [teks_], sz=620, c=TEKS, an='ctr', wrap='none')
+                lx -= 128016; o += s.kotak(lx, Y + 109728 + 45720, 91440, 91440, tint_, 'roundRect', ln=warna_, lw=9525, adj=20000); lx -= 118872
         yk = Y + 365760
         o += s.kotak(XL, yk, WL, 182880, NAVY, 'roundRect', adj=12000)
-        for t, x, w, al in C: o += s.tx(x + 54864, yk, w - 109728, 182880, [t], sz=620, b=True, c='FFFFFF', spc=40, al=al, an='ctr', wrap='none')
-        kel = [('Karhutla', ORG, sorted(s.KH, key=lambda x: (not x['tangani'], -x['sat']['sisa'])))]
-        kel += [('Kekeringan', KER, s.KR)]
-        for j, v in JENIS_LAIN.items(): kel.append((v[0], v[2], [x for x in s.LN if x['jenis'] == j]))
-        baris = [(nama if i == 0 else '', w, x) for nama, w, xs in kel for i, x in enumerate(xs)]
+        for t, x, w, al in C: o += s.tx(x + 54864, yk, w - 109728, 182880, [t], sz=620, b=True, c='FFFFFF', spc=40, al='ctr', an='ctr', wrap='none')   # 10 Nov pemilik: "ini header tabel tuh centerin"
+        IK_J = {'gempa': 'gempa_slate', 'banjir': 'banjir_navy', 'angin': 'angin_slate', 'longsor': 'longsor_coklat', 'api': 'api_merah', 'gunung': 'gunung_merah'}
+        kel = [('Karhutla', 'api_oranye', sorted(s.KH, key=lambda x: (not x['tangani'], -x['sat']['sisa'])))]
+        kel += [('Kekeringan', 'daun_k', s.KR)]
+        for j, v in JENIS_LAIN.items(): kel.append((v[0], IK_J[v[1]], [x for x in s.LN if x['jenis'] == j]))
+        rank_ = lambda x: 1 if x['jenis'] in GEO_VUL else 2 if x['jenis'] == 'lainnya' else 0
+        urut_ = {nama: i for i, (nama, _, _) in enumerate(kel)}
+        baris = sorted(((nama, ik, x) for nama, ik, xs in kel for x in xs), key=lambda b: (rank_(b[2]), urut_[b[0]], int(b[2]['prov'])))   # kelompok, jenis, lalu kode provinsi barat ke timur
         y0, yb = yk + 182880 + 27432, Y + H - 73152
-        rp = min(201168, (yb - y0) // max(1, len(baris))); sz = 700 if rp >= 137160 else 620
+        SI_ = getattr(s, 'SIAGA_INFO', False) and s.GA   # 10 Nov pemilik: "di bawah informasi bencana, tambahin status siaga"
+        TI_ = getattr(s, 'TINDAK_INFO', False); RES_T = (getattr(s, 'RES_T', None) or 1143000) if TI_ else 0   # 10 Nov pemilik: Keselamatan warga dan Peringatan dini BMKG masuk panel, di bawah Status Siaga
+        if SI_: yb -= 1234440 + RES_T
+        rp = min(420624 if getattr(s, 'INFO_Y', None) else 256032 if TK else 201168, (yb - y0) // max(1, len(baris))); sz = 780 if rp >= 320040 else 700 if rp >= 137160 else 620
+        def rentang_(n, sama):
+            m = n + 1
+            while m < len(baris) and sama(baris[m]): m += 1
+            return m - n
         def lok(x):
             if x['lokasi']: return x['lokasi'] if x['lokasi'].startswith(('Kota ', 'TN ', 'Gunung ')) else f"Kab. {x['lokasi']}"
             ks = x.get('kab_api') or []
@@ -696,35 +782,127 @@ class Deck:
                 if len(t) <= 22 or m == 1: return t
             return '–'
         def dampak(x):
+            if x.get('dampak_pil'): return x['dampak_pil']   # 9 Nov: WA "Dampak: Pendataan" -> angka kerusakan laphar dipasang jalan.py
             a = x['angka'] if x['jenis'] != 'karhutla' else {}
             kk, md = a.get('kk'), a.get('meninggal')
             return ', '.join(([f'±{f0(kk)} KK'] if kk else []) + ([f'{f0(md)} MD'] if md else [])) or '–'
-        for n, (nama, w, x) in enumerate(baris):
+        for n, (nama, ik, x) in enumerate(baris):
             y = y0 + n * rp
-            if nama and n: o += s.garis(XL, y, WL, 'D1D5DB')
-            elif n: o += s.garis(XL + CB, y, WL - CB, 'F1F2F4')
-            if nama:
-                d = min(91440, rp // 2)
-                wn = CB - d - 100584; szn = sz if len(nama) * sz * 66 < wn else max(540, int(wn / len(nama) / 66))   # 6 Nov: "Tanah longsor" menimpa kolom provinsi
-                o += s.kotak(XL + 54864, y + (rp - d) // 2, d, d, w, 'ellipse') + s.tx(XL + 54864 + d + 45720, y, wn, rp, [nama], sz=szn, b=True, c=INK, an='ctr', wrap='none')
+            sbl = baris[n - 1] if n else None
+            kel_awal = n == 0 or rank_(sbl[2]) != rank_(x)
+            ben_awal = kel_awal or sbl[0] != nama
+            pro_awal = ben_awal or sbl[2]['prov'] != x['prov']
+            if n: o += s.garis(XL, y, WL, 'BFC5CC') if kel_awal else s.garis(XL + CG, y, WL - CG, 'D1D5DB') if ben_awal else s.garis(XL + CB, y, WL - CB, 'E5E7EB') if pro_awal else s.garis(XL + CB + CP, y, WL - CB - CP, 'F1F2F4')
+            if ben_awal:
+                t_b = rentang_(n, lambda b: rank_(b[2]) == rank_(x) and b[0] == nama) * rp
+                d = min(182880, rp - 18288)   # 10 Nov pemilik: "ini icon bencananya tambahin buletan dengan warna yang sesuai legenda"
+                wn = CB0 - d - 100584; szn = sz if len(nama) * sz * 66 < wn else max(540, int(wn / len(nama) / 66))   # 6 Nov: "Tanah longsor" menimpa kolom berikutnya
+                wj_ = ORG if nama == 'Karhutla' else KER if nama == 'Kekeringan' else next(v[2] for v in JENIS_LAIN.values() if v[0] == nama)
+                o += s.kotak(XL + CG + 54864, y + (t_b - d) // 2, d, d, wj_, 'ellipse') + s.gambar(XL + CG + 54864 + d * .18, y + (t_b - d) // 2 + d * .18, d * .64, d * .64, ik.split('_')[0] + '_putih') + s.tx(XL + CG + 54864 + d + 45720, y, wn, t_b, [nama], sz=szn, b=True, c=INK, an='ctr', wrap='none')
             dm = dampak(x)
             pv = AKRONIM.get(PENDEK(x['prov']), PENDEK(x['prov']))
             pv = {'Maluku Utara': 'Malut', 'Papua Barat Daya': 'PBD', 'Papua Pegunungan': 'Papeg', 'Papua Tengah': 'Papteng', 'Papua Barat': 'Pabar', 'Kep. Bangka Belitung': 'Babel',
                   'Kepulauan Riau': 'Kepri', 'Kep. Riau': 'Kepri', 'DI Yogyakarta': 'DIY', 'DKI Jakarta': 'Jakarta'}.get(pv, pv)   # kolom provinsi sempit
-            o += s.tx(XL + CB + 54864, y, CP - 54864, rp, [pv], sz=sz, c=INK, an='ctr', wrap='none')
+            if pro_awal:
+                t_p = rentang_(n, lambda b: rank_(b[2]) == rank_(x) and b[0] == nama and b[2]['prov'] == x['prov']) * rp
+                o += s.tx(XL + CB + 54864, y, CP - 54864, t_p, [pv], sz=sz, b=True, c=INK, an='ctr', wrap='none')
             o += s.tx(XL + CB + CP + 54864, y, CK - 54864, rp, [lok(x)], sz=sz, c=TEKS, an='ctr', wrap='none')
             if PIL_:   # 7 Nov pemilik ("pake label pill ya, termasuk yg kk dll nya")
                 hp = min(164592, rp - 27432); yp = y + (rp - hp) // 2; xd = XL + CB + CP + CK + 54864
+                if TK and dm != '–':   # 10 Nov pemilik: "ini bikin center di kolom"
+                    lp_ = [(100000 + len(t_) * 700 * 59 + hp * .9) if KM else (120000 + len(t_) * 700 * 62 + hp * .9) for t_ in dm.split(', ')]
+                    xd = XL + CB + CP + CK + (CD - sum(lp_) - 36576 * (len(lp_) - 1)) / 2
                 for t_ in dm.split(', ') if dm != '–' else []:
-                    p_, w_ = s.pil(xd, yp, t_, T_NAVY, NAVY, 'orang_navy' if 'KK' in t_ else 'awas_navy', sz=620, h=hp); o += p_; xd += w_ + 36576
+                    p_, w_ = s.pil(xd, yp, t_, T_NAVY, NAVY, 'orang_navy' if 'KK' in t_ else 'awas_navy', sz=620, h=hp, w=(100000 + len(t_) * 700 * 59 + hp * .9) if KM else None); o += p_; xd += w_ + 36576
                 if dm == '–': o += s.tx(xd, y, 300000, rp, ['–'], sz=sz, c=ABU, an='ctr', wrap='none')
-                kd = x.get('kondisi_pil')
+                if KM and x.get('mulai'):   # pil kalender di tengah kolom MULAI; oranye = kejadian baru
+                    dmu = dt.date.fromisoformat(x['mulai']); tmu = f"{dmu.day} {BULAN[dmu.month - 1][:3]}"
+                    tint_, warna_, ik_ = (T_ORG, ORG, 'kalender_oranye') if x.get('baru') else (T_NAVY, NAVY, 'kalender_navy')
+                    lp_ = 100000 + len(tmu) * 700 * 59 + hp * .9
+                    o += s.pil(XL + CB + CP + CK + CD + (CM - lp_) / 2, yp, tmu, tint_, warna_, ik_, sz=620, h=hp, w=lp_)[0]
+                kd = None if TK else x.get('kondisi_pil')
                 if kd:
                     tint, warna, ik = {'selesai': (T_SLATE, SLATE, 'cek_slate'), 'surut': (T_ORG, ORG, 'banjir_oranye'), 'tangani': (T_NAVY, NAVY, 'orang_navy'),
                                        'waspada': (T_KER, '8A6A2E', 'mata_kering')}[kd[1]]
                     o += s.pil(XL + CB + CP + CK + CD + 54864, yp, kd[0], tint, warna, ik, sz=620, h=hp)[0]
             else:
                 o += s.tx(XL + CB + CP + CK, y, WL - CB - CP - CK - 54864, rp, [dm], sz=sz if len(dm) <= 11 else min(sz, 600), b=dm != '–', c=INK if dm != '–' else ABU, al='r', an='ctr', wrap='none')
+        if SI_:
+            ys = y0 + len(baris) * rp + 54864
+            o += s.siaga_info(XL, ys, WL, Y + H - 54864 - RES_T - ys)
+            if TI_: o += s.tindak_info(XL, Y + H - 54864 - RES_T, WL, RES_T)
+        return o
+
+    def tindak_info(s, X, Y, W, H):
+        """Butir ke-2 dan seterusnya dari pita Yang akan dilakukan BNPB, ditumpuk di dalam panel Informasi Bencana."""
+        if getattr(s, 'PERINGATAN_BARIS', None):   # 10 Nov pemilik: "ini jelek bgt, desainnya ubah": kepala seperti Status Siaga, satu baris per peringatan
+            o = s.garis(X, Y, W, 'BFC5CC') + s.tx(X + 54864, Y + 45720, W - 109728, 164592, ['PERINGATAN DINI'], sz=750, b=True, c=NAVY, spc=100, wrap='none')
+            if getattr(s, 'PERINGATAN_PERIODE', None):   # 11 Nov pemilik ("terlalu padet ... daerah dan periodenya"): periode sekali di kepala panel, rata kanan, ikon kalender
+                tp_ = s.PERINGATAN_PERIODE; rw_ = int(s.lebar_runs([(tp_, ABU, False)], 600) * 1.15); di_ = 100584; Y_ = Y - 13716   # lebar_runs kurang ukur untuk teks abu 6 pt
+                o += s.gambar(X + W - 54864 - rw_ - di_ - 54864, Y_ + 45720 + (164592 - di_) // 2, di_, di_, 'kalender_navy') + s.tx(X + W - 54864 - rw_ - 9144, Y_ + 45720, rw_ + 18288, 164592, [tp_], sz=600, c=ABU, al='r', an='ctr', wrap='none')
+            if getattr(s, 'PERINGATAN_KET', False):   # 11 Nov pemilik: keterangan ikon di kanan kepala panel: kalender = periode berlaku, jam = waktu diukur
+                lx_ = X + W - 54864
+                for ik_k, tk_ in (('jam_navy', 'waktu diukur'), ('kalender_navy', 'periode berlaku')):
+                    lw_ = int(s.lebar_runs([(tk_, TEKS, False)], 620) * 1.15); lx_ -= lw_
+                    o += s.tx(lx_, Y + 45720, lw_ + 9144, 164592, [tk_], sz=620, c=TEKS, al='r', an='ctr', wrap='none')
+                    lx_ -= 100584 + 36576; o += s.gambar(lx_, Y + 45720 + (164592 - 100584) // 2, 100584, 100584, ik_k); lx_ -= 128016
+            bar = s.PERINGATAN_BARIS; y0 = Y + 237744; dua = any(len(b) > 5 and b[5] for b in bar)   # 11 Nov: baris dua tingkat (daerah + periode) lebih tinggi, pil lebih ramping
+            rp = min(301752 if dua else 228600, (Y + H - y0) // len(bar)); h_p = min(164592, rp - 27432); lb_p = 868680 if dua else 1051560
+            for n, (ik, bhy, lok, pil, wr, *per) in enumerate(bar):   # per = [periode berlaku] opsional (11 Nov pemilik: buletin BMKG 9-12 Nov masih berlaku, "tampilan periodenya bagusin")
+                y = y0 + n * rp; d = 173736; c, t = (MERAH, T_MERAH) if wr == 'merah' else (ORG, T_ORG); xm, ym = X + 27432, y + (rp - d) // 2; db = d * .56   # 10 Nov pemilik: "ini samain kayak di peta"
+                if n: o += s.garis(X, y, W, 'F1F2F4')
+                o += s.gambar(X + 54864, ym, d, d, ik)   # 10 Nov pemilik: ikon solid saja, tanpa lingkaran dan tanda seru
+                o += s.tx(X + 265176, y, 1005840, rp, [bhy], sz=720, b=True, an='ctr', wrap='none')
+                if per and per[0]:   # lokasi dua baris: nama lokasi, lalu periode kecil abu-abu dengan ikon kalender (panel terlalu sempit untuk kolom sendiri)
+                    # 11 Nov pemilik ("rapihin spacing/sizingnya"): blok dua tingkat di tengah baris, jarak antartingkat tetap, ikon sebesar tinggi huruf periode
+                    h1, h2, gap, di = 109728, 91440, 18288, 82296; yt = y + (rp - h1 - gap - h2) // 2; xl = X + 1271016
+                    o += s.tx(xl, yt, 1110000, h1, [lok], sz=700, c=TEKS, an='ctr', wrap='none')
+                    o += s.gambar(xl, yt + h1 + gap + (h2 - di) // 2, di, di, per[1] if len(per) > 1 else 'kalender_navy') + s.tx(xl + di + 36576, yt + h1 + gap, 1060000, h2, [per[0]], sz=600, c=ABU, an='ctr', wrap='none')
+                else:
+                    o += s.tx(X + 1271016, y, 1110000, rp, [lok], sz=700, c=TEKS, an='ctr', wrap='none')
+                o += s.pil(X + W - 27432 - lb_p, y + (rp - h_p) // 2, pil, t, c, 'awas_merah' if wr == 'merah' else 'awas_oranye', sz=640, h=h_p, w=lb_p)[0]
+            return o
+        o = s.garis(X, Y, W, 'BFC5CC'); butir = s.tindak()[1:]; rp = H // max(1, len(butir))
+        for n, (ik, jd, isi) in enumerate(butir):
+            y = Y + n * rp; d = 329184
+            o += s.kotak(X + 54864, y + (rp - d) // 2, d, d, ORG, 'ellipse') + s.gambar(X + 128016, y + (rp - d) // 2 + 73152, 182880, 182880, ik)
+            o += s.tx(X + 457200, y + 64008, W - 512064, 182880, [jd], sz=880, b=True, an='ctr', wrap='none') + s.tx(X + 457200, y + 246888, W - 512064, rp - 265176, isi, sz=720, c=TEKS, wrap='none')
+        return o
+
+    def siaga_info(s, X, Y, W, H):
+        """Ringkasan status gunung api PVMBG di bawah tabel Informasi Bencana: jumlah per level lalu satu baris per gunung Awas atau Siaga."""
+        o = s.garis(X, Y, W, 'BFC5CC') + s.tx(X + 54864, Y + 45720, W - 109728, 164592, ['STATUS SIAGA'], sz=750, b=True, c=NAVY, spc=100, wrap='none')
+        # 11 Nov pemilik ("jadinya pakai S-BD, TG dll"): arah sektor disingkat mata angin, artinya dijelaskan di kanan kepala panel
+        ket_ = []
+        for g_ in s.GA['gunung']:
+            if g_['level'] in ('Awas', 'Siaga') and (g_.get('sektor') or 0) > (g_.get('radius') or 0):
+                ar0 = s.arah_sektor(g_)
+                if ar0 and (s.singkat_mata_angin(ar0), ar0) not in ket_: ket_.append((s.singkat_mata_angin(ar0), ar0))
+        if ket_:
+            tk_ = ', '.join(f'{a_} = {b_}' for a_, b_ in ket_); lw_ = int(s.lebar_runs([(tk_, TEKS, False)], 620) * 1.15)
+            o += s.tx(X + W - 54864 - lw_, Y + 45720, lw_, 164592, [tk_], sz=620, c=TEKS, al='r', an='ctr', wrap='none')
+        lv = s.GA['level']; yk = Y + 237744; hk = 228600; lb = (W - 3 * 54864) // 4
+        for i, (k, c, t, ik) in enumerate((('Awas', MERAH, T_MERAH, 'awas_merah'), ('Siaga', ORG, T_ORG, 'gunung_oranye'), ('Waspada', KER, T_KER, 'mata_kering'), ('Normal', SLATE, T_SLATE, 'cek_slate'))):
+            x = X + i * (lb + 54864); runs = [(f0(lv.get(k, 0)) + '  ', c, True), (k, c, False)]; d = 137160   # 10 Nov pemilik: "kasih icon", ikon sama dengan slide Status Siaga
+            x0 = x + (lb - d - 45720 - s.lebar_runs(runs, 760)) / 2
+            o += s.kotak(x, yk, lb, hk, t, 'roundRect', adj=14000) + s.gambar(x0, yk + (hk - d) / 2, d, d, ik) + s.tx(x0 + d + 45720, yk, lb, hk, [runs], sz=760, an='ctr', wrap='none')
+        gs = [g for g in s.GA['gunung'] if g['level'] in ('Awas', 'Siaga')]; y0 = yk + hk + 36576; rp = min(347472 if getattr(s, 'INFO_Y', None) else 228600, (Y + H - y0) // max(1, len(gs)))
+        for n, g in enumerate(gs):
+            y = y0 + n * rp; d = 137160; c = MERAH if g['level'] == 'Awas' else ORG
+            if n: o += s.garis(X, y, W, 'F1F2F4')
+            rad, sek = g.get('radius') or 0, g.get('sektor') or 0
+            km = lambda v: f'{v:g}'.replace('.', ',')
+            # 11 Nov pemilik dan atasan ("panah gini bingung", "makin ga ngerti apa itu sbd, tg", "layout/desainnya juga benerin"): arah sektor ditulis
+            # lengkap di tingkat kedua di bawah nama gunung (ikon panah searah sektor + "Sektor ke selatan-barat daya"), seperti baris peringatan dini;
+            # pil kanan tetap Radius dan Sektor (jarak saja), kolom tetap supaya sejajar antarbaris
+            ar_ = next((m[1].strip() for m in re.finditer(r'sektor\s+([a-z][a-z\- ]*?)(?=\s+(?:meliputi|di|dari|gunung\w*|sejauh)\b|[.,])', ' '.join(g['rekom']).lower())), '') if sek > rad else ''
+            b_ = s.bearing(ar_) if ar_ else None; ik_s = f'panah{round(b_ / 22.5) % 16}_kering' if b_ is not None else 'arah_kering'
+            # 11 Nov: kolom kiri-rata (nama, Radius, Sektor) supaya sejajar antarbaris; pil Sektor menulis arah lengkap dengan ikon jarum kompas
+            o += s.kotak(X + 54864, y + (rp - d) // 2, d, d, c, 'triangle') + s.tx(X + 246888, y, 1005840, rp, [g['nama']], sz=720, b=True, an='ctr', wrap='none')
+            ik_k = f'kompas{round(b_ / 22.5) % 16}_kering' if b_ is not None else 'arah_kering'
+            lb_p, h_p = 777240, min(164592, rp - 27432); x1 = X + 1243584; x2 = x1 + lb_p + 45720; yp = y + (rp - h_p) // 2
+            if rad: o += s.pil(x1, yp, f'Radius {km(rad)} km', T_ORG, ORG, 'radius_oranye', sz=660, h=h_p, w=lb_p)[0]
+            if sek > rad: o += s.pil(x2, yp, f'Bahaya {km(sek)} km – {s.singkat_mata_angin(ar_)}' if ar_ else f'Sektor {km(sek)} km', T_KER, '8A6A2E', ik_k, sz=660, h=h_p)[0]
         return o
 
     # ---- 6 Nov (Bang Ghozi: "tulis aja kab kota ke bawah dicoba"; pemilik: "coba 2-2nya, kasih beberapa alternatif slide")
@@ -944,7 +1122,27 @@ class Deck:
         return o + s.tabel_lain(X3 + 91440, Ym + 420624, WL3 - 182880, YB - 64008, rmax=228600, sempit=True)
 
     def strip_tindak(s):
-        o = s.kotak(548640, 5468112, 11094415, 822960, 'FDF4EC', 'roundRect', adj=8889) + s.tx(694944, 5541264, 3657600, 182880, ['YANG AKAN DILAKUKAN BNPB'], sz=750, b=True, c=ORG, spc=100)
+        TI_ = getattr(s, 'TINDAK_INFO', False)   # 10 Nov pemilik: sisa butir pindah ke panel kanan, pita selebar peta
+        o = s.kotak(548640, 5468112, 7315200 if TI_ else 11094415, 822960, 'FDF4EC', 'roundRect', adj=8889) + s.tx(694944, 5541264, 3657600, 182880, [getattr(s, 'JUDUL_STRIP', 'YANG AKAN DILAKUKAN BNPB')], sz=750, b=True, c=ORG, spc=100)
+        if TI_ and getattr(s, 'STRIP_KARTU', None):   # 10 Nov pemilik: isi yang ada ditata supaya ruang kosong tidak banyak, dua kartu putih sebaris
+            kartu = s.STRIP_KARTU; gp = 91440; xk0 = 658368; lb = (7315200 - 2 * 109728 - (len(kartu) - 1) * gp) // len(kartu); yk, hk = 5751576, 475488
+            for i, (ik, jd, isi) in enumerate(kartu):
+                x = xk0 + i * (lb + gp); d = 310896
+                o += s.kotak(x, yk, lb, hk, 'FFFFFF', 'roundRect', ln='F2D3BA', adj=12000) + s.kotak(x + 91440, yk + (hk - d) // 2, d, d, ORG, 'ellipse') + s.gambar(x + 91440 + d * .2, yk + (hk - d) // 2 + d * .2, d * .6, d * .6, ik)
+                if len(isi) > 48:   # 11 Nov pemilik ("jangan pakai frasa nanggung"): isi kalimat utuh, boleh dua baris
+                    o += s.tx(x + 484632, yk + 36576, lb - 530352, 164592, [jd], sz=860, b=True, an='ctr', wrap='none') + s.tx(x + 484632, yk + 210312, lb - 548640, hk - 237744, [isi], sz=700, c=TEKS, an='t', wrap='square')
+                else:
+                    o += s.tx(x + 484632, yk + 54864, lb - 530352, 182880, [jd], sz=880, b=True, an='ctr', wrap='none') + s.tx(x + 484632, yk + 246888, lb - 530352, 173736, [isi], sz=780, c=TEKS, an='ctr', wrap='none')
+            return o
+        if TI_:   # 10 Nov pemilik: pita selebar peta berisi tiga blok
+            butir = s.tindak()[:1] + list(getattr(s, 'STRIP_TAMBAH', []))
+            lb = (7315200 - 292608) // len(butir)
+            for i, (ik, jd, isi) in enumerate(butir):
+                x = 694944 + i * lb
+                if i: o += s.garis(x - 64008, 5788152, 0, 'F2D3BA', h=429768)
+                o += s.kotak(x, 5806440, 301752, 301752, ORG, 'ellipse') + s.gambar(x + 68580, 5875020, 164592, 164592, ik)
+                o += s.tx(x + 365760, 5715000, lb - 438912, 182880, [jd], sz=900, b=True, wrap='none') + s.tx(x + 365760, 5907024, lb - 438912, 365760, isi, sz=720, c=TEKS, wrap='none')
+            return o
         for i, (ik, jd, isi) in enumerate(s.tindak()):
             x = 694944 + i * 3600602
             if i: o += s.garis(x - 73152, 5797296, 0, 'F2D3BA', h=457200)
@@ -1523,7 +1721,12 @@ class Deck:
         for c, lab in ((MERAH, 'ancaman'), (SLATE, 'kawasan dihindari'), (NAVY, 'imbauan')):
             o += s.kotak(lx, yk + 59436, 155448, 155448, c, 'ellipse') + s.tx(lx + 210312, yk, len(lab) * 50000, 274320, [lab], sz=750, an='ctr', wrap='none'); lx += 210312 + len(lab) * 50000 + 137160
         if any(s.awal_ga(g) for g in gs):   # 4 Nov pemilik: arti pil kalender di kartu gunung
-            o += s.gambar(lx, yk + 50292, 173736, 173736, 'kalender_navy') + s.tx(lx + 228600, yk, 1400000, 274320, ['laporan pertama'], sz=750, an='ctr', wrap='none')
+            o += s.gambar(lx, yk + 50292, 173736, 173736, 'kalender_navy') + s.tx(lx + 228600, yk, 1400000, 274320, ['laporan pertama'], sz=750, an='ctr', wrap='none'); lx += 228600 + 15 * 50000
+        if LING:   # 9 Nov pemilik ("definisi status: awas itu apa, siaga apa, dst", ditaruh di sisa baris Keterangan): rumusan ringkas Permen ESDM 15/2011, ikon sama dengan ubin level
+            dx = lx + 91440; o += s.kotak(dx, yk + 45720, 9144, 182880, 'D1D5DB'); dx += 100584; dw = (QX + QW - 54864 - dx) // 4
+            for i, (k, c, ik, arti) in enumerate((('Awas', MERAH, 'awas_merah', 'erupsi berpotensi mengancam permukiman'), ('Siaga', ORG, 'gunung_oranye', 'erupsi dapat mengancam sekitar pusat erupsi'),
+                                                  ('Waspada', KER, 'mata_kering', 'aktivitas mulai naik, bahaya sekitar kawah'), ('Normal', SLATE, 'cek_slate', 'fluktuasi, tanpa peningkatan signifikan'))):
+                o += s.gambar(dx + i * dw, yk + (274320 - 146304) // 2, 146304, 146304, ik) + s.tx(dx + i * dw + 182880, yk, dw - 228600, 274320, [[(f'{k}: ', c, True), (arti, TEKS, False)]], sz=620, an='ctr')
         if not gs:
             return o + s.tx(IX, QY + 1188720, IW, 274320, ['Tidak ada gunung api berstatus Siaga atau Awas.'], sz=850, c=TEKS, an='ctr')
         y0, yb, GAP = QY + (813816 if LING else 1188720), QY + QH - 91440, 73152
@@ -1811,6 +2014,18 @@ class Deck:
             p_, y = s.alir([(m_, T_NAVY, NAVY, 'cek_navy') for m_ in im], PX, y, PW, h=182880, sz=700); o += p_   # pil bertanda cek, ringkas
         return o
 
+    SINGKAT_ARAH = (('barat laut', 'BL'), ('barat daya', 'BD'), ('timur laut', 'TL'), ('tenggara', 'TG'), ('utara', 'U'), ('selatan', 'S'), ('barat', 'B'), ('timur', 'T'))
+    def singkat_mata_angin(s, arah):   # 11 Nov: hanya pil Bahaya slide ringkasan; slide 2 tetap singkat_arah (lengkap)
+        '''"selatan-barat daya" -> "S-BD", "tenggara" -> "TG", "barat laut dan tenggara" -> "BL dan TG" (11 Nov pemilik, pola mata angin 16 arah).'''
+        def satu(t):
+            o_ = []
+            for bag in t.split('-'):
+                bag = bag.strip(); k_ = next((v for k, v in s.SINGKAT_ARAH if bag == k), None)
+                o_.append(k_ or bag)
+            return '-'.join(o_)
+        return ' dan '.join(satu(p_) for p_ in arah.split(' dan '))
+    def arah_sektor(s, g):
+        return next((m[1].strip() for m in re.finditer(r'sektor\s+([a-z][a-z\- ]*?)(?=\s+(?:meliputi|di|dari|gunung\w*|sejauh)\b|[.,])', ' '.join(g['rekom']).lower())), '')
     MATA_ANGIN = (('barat laut', 315), ('barat daya', 225), ('timur laut', 45), ('tenggara', 135), ('utara', 0), ('timur', 90), ('selatan', 180), ('barat', 270))
     def bearing(s, arah):
         """Arah PVMBG ("selatan-barat daya", "tenggara") ke derajat kompas (0 = utara, searah jarum jam); gabungan = rata-rata sudut."""
@@ -2062,7 +2277,7 @@ class Deck:
         W = 10454335
         o = ''
         if getattr(s, 'KRIS_ISI', False):
-            src = next((p for p in (os.path.join(os.environ.get('DECK_BNPB', os.path.expanduser('~/.claude/skills/ppt-konsultan/bnpb')), 'assets', 'logo-bersama', 'kris-logo.png'),) if os.path.exists(p)), None)
+            src = next((p for p in (os.path.join(os.environ.get('DECK_BNPB', os.path.expanduser('~/.claude/skills/ppt-konsultan/bnpb')), 'assets', 'logo-bersama', 'kris-logo.png'), os.path.join(DI, 'sampul', 'media', 'kris-logo.png')) if os.path.exists(p)), None)   # 10 Nov: skill Windows hanya punya kris.png; salinan repo identik
             if not src: raise RuntimeError('logo KRIS (assets/logo-bersama/kris.png di skill ppt-konsultan) tidak ditemukan; setel DECK_BNPB')
             dst = os.path.join(s.ke, 'ik', 'kris.png')   # media wajib di folder kerja (nama bagian zip relatif s.ke; skill di drive lain)
             if not os.path.exists(dst): os.makedirs(os.path.dirname(dst), exist_ok=True); shutil.copyfile(src, dst)
@@ -2140,6 +2355,8 @@ class Deck:
             # 2 Nov pemilik: dua gaya zona bahaya untuk dibandingkan (mistar dan lingkaran); GA_GAYAS = gaya yang dibangun, berurutan
             for n_, gy_ in enumerate(getattr(s, 'GA_GAYAS', None) or ['lingkaran']):   # 2 Nov pemilik memilih desain lingkaran
                 klon(7 + n_, s.judul_siaga(), (lambda gy_=gy_: (setattr(s, 'GA_GAYA', gy_), s.s_siaga())[1]), hal, True, 262 + n_, catatan=s.catatan_ga()); hal += 1
+        for n_, (jd_, fn_) in enumerate(getattr(s, 'HAL_TAMBAH', None) or []):   # 10 Nov pemilik: slide Hidrometeorologi, Geologi dan Vulkanologi, Prediksi (harian_lanjut.py)
+            klon(40 + n_, jd_, fn_, hal, True, 340 + n_, szj=2000); hal += 1
         if getattr(s, 'ALT_RINCI', False):
             # 6 Nov pemilik ("coba 2-2nya, kasih beberapa alternatif slide"): halaman isi tambahan untuk dipilih pemanggil lewat susun:
             # rincian kab/kota menurun (sesudah ringkasan), versi lampirannya, dan ringkasan alternatif 3 (kab/kota menurun di slide 1)

@@ -1,0 +1,102 @@
+{
+ "hari": "2026-11-10",
+ "cutoff": "2026-11-10T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Pidie Jaya",
+   "status": "selesai",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {},
+   "teks": {
+    "dampak": "pendataan",
+    "status_darurat": "Tanggap Darurat TMT 04/11/2026 s.d 17/11/2026",
+    "kondisi": "Air perlahan mulai surut di beberapa titik",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ],
+   "dampak_pil": "10 KK mengungsi"
+  },
+  {
+   "jenis": "cuaca",
+   "prov": "33",
+   "lokasi": "Sukoharjo",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem",
+   "angka": {
+    "kk": 26.0
+   },
+   "teks": {
+    "dampak": "2 (dua) jiwa LB, ±26 KK terdampak",
+    "status_darurat": "-",
+    "kondisi": "Sudah kondusif",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "kondisi_pil": [
+    "Kondusif",
+    "selesai"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "33",
+   "lokasi": "Blora",
+   "status": "belum",
+   "baru": true,
+   "label": "Angin Kencang",
+   "angka": {
+    "kk": 16.0
+   },
+   "teks": {
+    "dampak": "5 (lima) jiwa luka, 16 KK terdampak",
+    "status_darurat": "-",
+    "kondisi": "Masih dilakukan pembersihan material rumah rusak",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "kondisi_pil": [
+    "Pembersihan material",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "cuaca",
+   "prov": "35",
+   "lokasi": "Malang",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem",
+   "angka": {
+    "kk": 12.0
+   },
+   "teks": {
+    "dampak": "±12 KK terdampak",
+    "status_darurat": "Siaga Darurat Provinsi TMT 07/10/2026 s.d 01/12/2026",
+    "kondisi": "Telah dilakukan assessment dan pembersihan material",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "kondisi_pil": [
+    "Pembersihan material",
+    "tangani"
+   ]
+  }
+ ],
+ "prioritas_baru": [
+  "93",
+  "53",
+  "72"
+ ]
+}

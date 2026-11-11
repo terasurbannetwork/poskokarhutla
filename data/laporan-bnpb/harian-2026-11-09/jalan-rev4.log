@@ -1,0 +1,66 @@
+Traceback (most recent call last):
+  File "D:\Project\Work\BNPB\poskokarhutla\scripts\data\dalops_banjir.py", line 742, in <module>
+    main()
+    ~~~~^^
+  File "D:\Project\Work\BNPB\poskokarhutla\scripts\data\dalops_banjir.py", line 548, in main
+    satu(o, LB, LP)
+    ~~~~^^^^^^^^^^^
+  File "D:\Project\Work\BNPB\poskokarhutla\scripts\data\dalops_banjir.py", line 554, in satu
+    return main_wa(o, LB)
+  File "D:\Project\Work\BNPB\poskokarhutla\scripts\data\dalops_banjir.py", line 518, in main_wa
+    r = subprocess.run(["npx", "--yes", "wrangler@4.42.0", "r2", "object", "get", kunci_r2(), "--remote", "--pipe"], cwd=AKAR, capture_output=True, text=True)
+  File "C:\Python314\Lib\subprocess.py", line 555, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\subprocess.py", line 1553, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                       ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+                             # no special security
+                             ^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+                             cwd,
+                             ^^^^
+                             startupinfo)
+                             ^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] The system cannot find the file specified
+ok C:\Users\USER\AppData\Local\Temp\lewat-deck-5g55tmbg\Laporan Kejadian Bencana Harian 091126.pptx  {"slide": 2, "huruf_terkecil_pt": 7.0, "warna": 27, "angka_diperiksa": 44}
+mode simpanan
+pakai simpanan website D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-09\kerja-091126-rev4\web
+hari data website 2026-11-08
+website 2026-11-08 ditambahkan: Sulawesi Tenggara
+website 2026-11-08 ditambahkan: Maluku
+website 2026-11-08 ditambahkan: Maluku Utara
+website 2026-11-08 ditambahkan: Papua Selatan
+website 2026-11-08 Kalimantan Tengah Siaga 755 ha 359 FS -> ditangani PERHATIAN
+website 2026-11-08 Kalimantan Timur Siaga 234 ha 93 FS -> ditangani PERHATIAN
+website 2026-11-08 Sumatera Selatan Siaga 101 ha 65 FS -> ditangani PERHATIAN
+website 2026-11-08 Kalimantan Selatan Siaga 93 ha 36 FS -> ditangani 
+website 2026-11-08 Jambi Patroli 10 ha 0 FS -> ditangani 
+website 2026-11-08 Riau Aman 0 ha 0 FS -> selesai 
+website 2026-11-08 Kalimantan Barat Aman 0 ha 0 FS -> selesai 
+website 2026-11-08 Sulawesi Tenggara Prioritas 201 ha 104 FS -> ditangani PERHATIAN
+website 2026-11-08 Maluku Siaga 186 ha 36 FS -> ditangani PERHATIAN
+website 2026-11-08 Maluku Utara Siaga 56 ha 13 FS -> ditangani 
+website 2026-11-08 Papua Selatan Prioritas 321 ha 142 FS -> ditangani PERHATIAN
+data kosong 2026-11-08 Jambi -> pakai 2026-11-07 1 FS 4 ha
+tanpa karhutla: laporan 11 menonjol 9
+bukan 24 jam terakhir, dibuang: ['banjir Serdang Bedagai', 'banjir Solok', 'cuaca Ciamis', 'kekeringan Kendal', 'kekeringan Pekalongan', 'gempabumi 53']
+lampiran: tidak ada data harian 2026-11-07
+lampiran: tidak ada data harian 2026-11-08
+ok D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-09\Laporan Kejadian Bencana Harian 091126.pptx | hari data 2026-11-09 | cutoff 2026-11-09T07:00+07:00 | kejadian 3 karhutla 0 ditangani 0 perlu perhatian 1 selesai 1 | Prioritas ditambah ['74', '81', '82', '93']
+banjir 11 Gayo Lues selesai selesai  {}
+banjir 12 Deli Serdang belum DITANGANI PERHATIAN {}
+cuaca 35 Jember berjalan DITANGANI  {}
+halaman generator: ringkasan 2 status siaga 4
+mesin ok D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-09\Laporan Kejadian Bencana Harian 091126.pptx
+pdf D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\harian-2026-11-09\Laporan Kejadian Bencana Harian 091126.pdf

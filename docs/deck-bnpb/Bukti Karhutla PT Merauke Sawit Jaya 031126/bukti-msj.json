@@ -1,0 +1,698 @@
+{
+  "_catatan": "Bukti kebakaran di konsesi PT Merauke Sawit Jaya untuk Kepala BNPB. Dibangun dari spek/bangun_spek_msj.py.",
+  "pesan_kunci": "Api Merauke 2026 terpusat di konsesi PT Merauke Sawit Jaya dan bergerak bersama pembukaan lahan; bukti satelit, citra, dan udara cukup untuk diserahkan ke penegak hukum.",
+  "judul_dokumen": "Bukti Kebakaran di Konsesi PT Merauke Sawit Jaya",
+  "subjek_dokumen": "Bukti karhutla konsesi, 3 November 2026",
+  "kajian": "bukti-msj",
+  "format": "kajian",
+  "tanggal": "2026-11-03",
+  "cut_off": "2 Nov 2026, 24.00 WIB",
+  "bagian": [
+    {
+      "judul": "Bukti Satelit dan Citra",
+      "label": "Bukti satelit"
+    },
+    {
+      "judul": "Bukti Udara dan Dasar Hukum",
+      "label": "Bukti udara dan hukum"
+    }
+  ],
+  "slide": [
+    {
+      "jenis": "sampul",
+      "layout": "putih",
+      "judul_penuh": true,
+      "skala_subjudul": 0.9,
+      "foto": "foto/udara-04.jpg",
+      "kota": "Jakarta",
+      "kredit": "Foto: pantauan udara tim BNPB, 31 Okt 2026",
+      "logo_kanan": "foto/berakhlak-hd.png",
+      "kepada": "Ditujukan khusus untuk Kepala BNPB",
+      "subjudul": "Kecamatan Jagebob dan Animha, Kabupaten Merauke, Papua Selatan",
+      "penyaji": {
+        "nama": "Tim Ahli dan Tim Sus IT BNPB",
+        "jabatan": "Badan Nasional Penanggulangan Bencana"
+      }
+    },
+    {
+      "jenis": "galeri",
+      "jenis_slide": "navigasi",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Ringkasan bukti",
+      "kredit": "Foto: pantauan udara tim BNPB, 31 Okt 2026",
+      "judul": "Bukti satelit, citra, dan pantauan udara menunjuk satu pola: lahan PT Merauke Sawit Jaya dibuka dengan api sepanjang 2026",
+      "cut_off": false,
+      "grup": [
+        {
+          "pil": "Di dalam batas konsesi, 2026",
+          "nada": "perhatian",
+          "ikon": "karhutla",
+          "kartu": [
+            {
+              "nilai": "{{angka:msj.titik}}",
+              "label": "hotspot, 14 Jun sampai 2 Nov",
+              "ikon": "karhutla",
+              "warna": "merah"
+            },
+            {
+              "nilai": "{{angka:msj.rasio|satuan}}",
+              "label": "lebih padat dari sekitarnya",
+              "ikon": "naik",
+              "warna": "merah"
+            }
+          ]
+        },
+        {
+          "pil": "Peringkat Papua Selatan",
+          "nada": "data",
+          "ikon": "wilayah",
+          "kartu": [
+            {
+              "nilai": "{{angka:msj.peringkat}}",
+              "label": "dari {{angka:msj.papsel|satuan}} berapi",
+              "ikon": "wilayah",
+              "warna": "navy"
+            }
+          ]
+        }
+      ],
+      "kolom_panel": 2,
+      "panel": [
+        {
+          "judul": "Tepi lahan PT Merauke Sawit Jaya, 31 Oktober",
+          "ikon": "karhutla",
+          "kolom_foto": 1,
+          "bobot": 1,
+          "foto": [
+            {
+              "berkas": "foto/udara-04.jpg",
+              "keterangan": "Batang pohon menghitam di tepi hutan, ekskavator menumbangkan pohon di lahan terbuka"
+            }
+          ]
+        },
+        {
+          "judul": "Empat lapis bukti",
+          "ikon": "ringkasan",
+          "bobot": 1,
+          "temuan": [
+            {
+              "kode": "Temuan A.1",
+              "keyakinan": "resmi",
+              "ikon": "karhutla",
+              "teks": "**Api berulang di dalam batas.** Hotspot terdeteksi pada {{angka:msj.hari|satuan}}; Oktober saja {{angka:msj.bln.okt|satuan}}."
+            },
+            {
+              "kode": "Temuan A.2",
+              "keyakinan": "estimasi-model",
+              "ikon": "luas",
+              "teks": "**Lahan terbuka bertambah.** Citra Sentinel-2: {{angka:msj.buka.jun|satuan}} pada 5 Jun menjadi {{angka:msj.buka.okt|satuan}} pada 28 Okt."
+            },
+            {
+              "kode": "Temuan A.3",
+              "keyakinan": "resmi",
+              "ikon": "naik",
+              "teks": "**Tidak pernah sebesar ini.** Titik 2026 sudah {{angka:msj.kali|satuan}} tahun El Nino 2015."
+            },
+            {
+              "kode": "Temuan A.4",
+              "keyakinan": "terverifikasi",
+              "ikon": "peringatan",
+              "teks": "**Dilihat langsung dari udara.** Semak dibakar sebelum pohon ditumbangkan; tidak tampak regu maupun sekat bakar."
+            }
+          ]
+        }
+      ],
+      "sumber": "NASA FIRMS dan Copernicus Sentinel-2, diolah BNPB; pantauan udara BNPB, 31 Okt 2026"
+    },
+    {
+      "jenis": "daftar-isi"
+    },
+    {
+      "jenis": "pembatas-seksi",
+      "bagian": 1
+    },
+    {
+      "jenis": "temuan-peta",
+      "jenis_slide": "peta",
+      "judul_bentuk": "temuan",
+      "rasio": 0.56,
+      "pesan": "Hotspot menumpuk di dalam batas konsesi",
+      "judul": "{{angka:msj.titik|satuan}} jatuh di dalam batas konsesi {{angka:msj.luas|satuan}}; titik terbaru menumpuk di tepi blok yang baru dibuka",
+      "cut_off": false,
+      "peta": {
+        "png": "data/msj/peta-titik.png",
+        "legenda": {
+          "judul": "Citra SWIR 28 Okt 2026",
+          "item": [
+            {
+              "warna": "biru",
+              "label": "Batas konsesi"
+            },
+            {
+              "warna": "navy",
+              "label": "Titik 14 Jun sampai 26 Okt"
+            },
+            {
+              "warna": "merah",
+              "label": "Titik 27 Okt sampai 2 Nov"
+            }
+          ]
+        },
+        "keyakinan": "resmi",
+        "sumber": "NASA FIRMS, diolah BNPB; Copernicus Sentinel-2; konsesi Kemenhut 2014 via GFW"
+      },
+      "panel": {
+        "judul": "Identitas lahan",
+        "ikon": "wilayah",
+        "skala_huruf": 1.25,
+        "daftar": [
+          "**PT Merauke Sawit Jaya**, konsesi kelapa sawit {{angka:msj.luas|satuan}} di Kecamatan Jagebob dan Animha, Kabupaten Merauke.",
+          "Batas dari peta konsesi sawit Kemenhut 2014 (via Global Forest Watch); bukan peta HGU ATR/BPN.",
+          "Blok kebun bergrid tampak jelas di citra dan berimpit dengan batas konsesi.",
+          "Titik merah 27 Okt sampai 2 Nov menumpuk di blok utara dan barat yang baru dibuka; di dalam batas tercatat {{angka:msj.u31|satuan}} pada 31 Okt, hari tim terbang.",
+          "Gambut di dalam batas: nol; api di tanah mineral menyebar cepat di permukaan."
+        ]
+      },
+      "sumber": "NASA FIRMS dan Sentinel-2 28 Okt 2026, diolah BNPB; konsesi Kemenhut 2014 via GFW"
+    },
+    {
+      "jenis": "galeri",
+      "jenis_slide": "panel",
+      "judul_bentuk": "temuan",
+      "pesan": "Lahan terbuka bertambah",
+      "kredit": "Citra: Copernicus Sentinel-2, diolah BNPB",
+      "judul": "Citra Sentinel-2: lahan terbuka di dalam batas naik dari {{angka:msj.buka.jun|satuan}} pada 5 Juni menjadi {{angka:msj.buka.okt|satuan}} pada 28 Oktober",
+      "cut_off": false,
+      "kolom_panel": 3,
+      "panel": [
+        {
+          "judul": "Sebelum api: 5 Juni 2026",
+          "ikon": "kalender",
+          "kolom_foto": 1,
+          "bobot": 1.15,
+          "foto": [
+            {
+              "berkas": "data/msj/citra-0605.png",
+              "utuh": true,
+              "keterangan": "Blok utara dan segitiga tengah masih hutan (hijau)"
+            }
+          ]
+        },
+        {
+          "judul": "Sesudah api: 28 Oktober 2026",
+          "ikon": "karhutla",
+          "kolom_foto": 1,
+          "bobot": 1.15,
+          "foto": [
+            {
+              "berkas": "data/msj/citra-1028.png",
+              "utuh": true,
+              "keterangan": "Blok baru terbuka; segitiga tengah gelap bekas bakar"
+            }
+          ]
+        },
+        {
+          "judul": "Cara membaca citra",
+          "ikon": "ringkasan",
+          "bobot": 0.9,
+          "skala_huruf": 1.2,
+          "daftar": [
+            "**Kanal SWIR** (inframerah gelombang pendek): vegetasi hijau, tanah terbuka jingga-merah muda, bekas bakar cokelat gelap, api aktif merah terang.",
+            "**Bertambah** {{angka:msj.buka.tambah|satuan}} lahan tanpa vegetasi, kini {{angka:msj.buka.persen|satuan}} dari luas konsesi.",
+            "**Sejalan dengan satelit api:** luas piksel ber-hotspot sampai 26 Okt {{angka:msj.bakar|satuan}}.",
+            "**Batas biru** = konsesi Kemenhut 2014; hampir seluruh blok kebun yang terbuka berada di dalam batas ini."
+          ]
+        }
+      ],
+      "sumber": "Copernicus Sentinel-2 L2A, 5 Jun dan 28 Okt 2026, luas di dalam batas konsesi, diolah BNPB"
+    },
+    {
+      "jenis": "temuan-grafik",
+      "jenis_slide": "grafik",
+      "judul_bentuk": "temuan",
+      "rasio": 0.6,
+      "pesan": "Api memuncak Oktober",
+      "judul": "Api di konsesi melonjak sejak September: Oktober mencatat {{angka:msj.bln.okt|satuan}}, {{angka:msj.okt.persen|satuan}} dari titik 2026",
+      "cut_off": false,
+      "grafik": {
+        "judul_panel": "Hotspot di dalam batas per bulan",
+        "ikon": "kalender",
+        "judul": "**Hotspot VIIRS S-NPP**, titik, Juni sampai 2 November 2026",
+        "keluarga": "api",
+        "ubah": false,
+        "persen_batang": false,
+        "data": {
+          "csv": "data/msj/bulan.csv",
+          "kolom": [
+            {
+              "nama": "bulan",
+              "kepala": "Bulan"
+            },
+            {
+              "nama": "titik",
+              "kepala": "Titik",
+              "fmt": "0"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB"
+        }
+      },
+      "panel": {
+        "judul": "Yang terbaca",
+        "ikon": "naik",
+        "skala_huruf": 1.3,
+        "daftar": [
+          "**Bukan api sesaat.** Api pertama 14 Jun; sejak 1 September hotspot muncul pada {{angka:msj.hari.sep|satuan}} dari {{angka:msj.hari.sep.n|satuan}}.",
+          "**September dan Oktober** menyumbang {{angka:msj.sep.okt|satuan}}, masa puncak pembukaan blok baru.",
+          "**Satu kompleks api** di Jagebob menyala {{angka:msj.kompleks.hari|satuan}} berturut-turut dengan {{angka:msj.kompleks.besar|satuan}}.",
+          "**Api belum padam:** titik masih tercatat tiap hari sampai 2 Nov."
+        ]
+      },
+      "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB, keyakinan nominal dan tinggi, hari WIB"
+    },
+    {
+      "jenis": "tabel-peringkat",
+      "jenis_slide": "tabel",
+      "judul_bentuk": "temuan",
+      "rasio": 0.5,
+      "pesan": "Api terpusat di dalam batas",
+      "judul": "Api tidak datang dari luar: titik di dalam batas {{angka:msj.rasio|satuan}} lebih padat dibanding cincin {{angka:msj.cincin|satuan}} di sekelilingnya",
+      "cut_off": false,
+      "grup": [
+        {
+          "pil": "24 Okt sampai 2 Nov",
+          "nada": "perhatian",
+          "ikon": "karhutla",
+          "kartu": [
+            {
+              "nilai": "{{angka:msj.pad.dalam}}",
+              "label": "titik per seribu ha di dalam",
+              "ikon": "karhutla",
+              "warna": "merah"
+            },
+            {
+              "nilai": "{{angka:msj.pad.luar}}",
+              "label": "titik per seribu ha di luar",
+              "ikon": "wilayah",
+              "warna": "navy"
+            }
+          ]
+        }
+      ],
+      "tabel": {
+        "judul_panel": "Lokasi titik unik per hari",
+        "ikon": "kalender",
+        "peringkat": false,
+        "data": {
+          "csv": "data/msj/dalamluar.csv",
+          "kolom": [
+            {
+              "nama": "hari",
+              "kepala": "Hari"
+            },
+            {
+              "nama": "dalam",
+              "kepala": "Di dalam batas",
+              "fmt": "0"
+            },
+            {
+              "nama": "luar",
+              "kepala": "Cincin luar batas",
+              "fmt": "0"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+        }
+      },
+      "panel": {
+        "judul": "Kenapa ini penting",
+        "ikon": "peringatan",
+        "skala_huruf": 1.25,
+        "daftar": [
+          "**Total sepuluh hari:** {{angka:msj.unik.dalam|satuan}} di dalam batas, {{angka:msj.unik.luar|satuan}} di cincin luar yang dua kali lebih luas.",
+          "**Api bermula di dalam,** bukan merambat dari kampung atau hutan sekitar.",
+          "**Lahan tetangga** PT Selaras Inti Semesta dan PT Medcopapua Alam Lestari hampir tanpa titik pada hari terbang."
+        ]
+      },
+      "sumber": "NASA FIRMS lokasi unik, diolah BNPB, 24 Okt sampai 2 Nov 2026; pantauan udara BNPB"
+    },
+    {
+      "jenis": "temuan-visual",
+      "jenis_slide": "panel",
+      "judul_bentuk": "temuan",
+      "rasio": 0.6,
+      "pesan": "Terbanyak di Papua Selatan",
+      "judul": "Di antara {{angka:msj.papsel|satuan}} berapi di Papua Selatan, PT Merauke Sawit Jaya mencatat titik terbanyak 2026",
+      "cut_off": false,
+      "utama": {
+        "judul": "Hotspot 2026 per konsesi s.d. 26 Okt, delapan teratas Papua Selatan",
+        "ikon": "wilayah",
+        "lollipop": {
+          "sorot": "PT Merauke Sawit Jaya (Sawit)",
+          "satuan": "Titik VIIRS S-NPP",
+          "skala_huruf": 1.2,
+          "data": {
+            "csv": "data/msj/peringkat.csv",
+            "kolom": [
+              {
+                "nama": "perusahaan"
+              },
+              {
+                "nama": "titik",
+                "kepala": "Titik",
+                "fmt": "0"
+              }
+            ],
+            "keyakinan": "resmi",
+            "sumber": "NASA FIRMS VIIRS S-NPP, konsesi Kemenhut/GFW dan Trase, diolah BNPB, 1 Jan sampai 26 Okt 2026"
+          }
+        }
+      },
+      "panel": {
+        "judul": "Beda dengan yang lain",
+        "ikon": "peringatan",
+        "skala_huruf": 1.3,
+        "daftar": [
+          "**Paling padat:** {{angka:msj.bakar|satuan}} piksel api, hampir separuh konsesi; HPH dan HTI lain yang lebih luas di bawah seperlima.",
+          "**Satu-satunya konsesi sawit** di jajaran atas; sisanya izin kayu (HPH, HTI).",
+          "**Kompleks aktif:** {{angka:msj.kompleks|satuan}} pada 20 Okt sampai 26 Okt, seluruhnya di Jagebob dan Animha."
+        ]
+      },
+      "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB, s.d. 26 Okt 2026; konsesi Kemenhut via GFW dan Trase"
+    },
+    {
+      "jenis": "temuan-grafik",
+      "jenis_slide": "grafik",
+      "judul_bentuk": "temuan",
+      "rasio": 0.64,
+      "pesan": "Rekor tertinggi sejak ada satelit",
+      "judul": "Titik 2026 di konsesi ini sudah {{angka:msj.kali|satuan}} tahun El Nino 2015, rekor sejak satelit VIIRS mulai mengamati",
+      "cut_off": false,
+      "grafik": {
+        "judul_panel": "Hotspot di dalam batas per tahun",
+        "ikon": "data",
+        "judul": "**Hotspot VIIRS S-NPP**, titik, 2012 sampai 12 Oktober 2026",
+        "keluarga": "api",
+        "sorot": "terbaru",
+        "ubah": false,
+        "persen_batang": false,
+        "data": {
+          "csv": "data/msj/tahun.csv",
+          "kolom": [
+            {
+              "nama": "tahun",
+              "kepala": "Tahun"
+            },
+            {
+              "nama": "titik",
+              "kepala": "Titik",
+              "fmt": "0"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+        }
+      },
+      "panel": {
+        "judul": "Pembanding",
+        "ikon": "kalender",
+        "skala_huruf": 1.3,
+        "daftar": [
+          "**Tahun terbanyak sebelumnya** 2015, tahun El Nino kuat dengan kemarau panjang; 2026 sudah jauh melampauinya sebelum musim api selesai.",
+          "**MODIS sejak 2003** memberi pola sama: {{angka:msj.modis2026|satuan}} pada 2026, {{angka:msj.modis2015|satuan}} pada 2015.",
+          "**Tahun normal** 2016 sampai 2025 hampir tanpa api di lahan ini.",
+          "**Artinya:** lonjakan 2026 bukan cuaca semata, tetapi bertepatan dengan pembukaan blok kebun baru."
+        ]
+      },
+      "sumber": "NASA FIRMS VIIRS S-NPP dan MODIS, diolah BNPB, s.d. 12 Okt 2026"
+    },
+    {
+      "jenis": "pembatas-seksi",
+      "bagian": 2
+    },
+    {
+      "jenis": "galeri",
+      "jenis_slide": "panel",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Modus pembukaan lahan",
+      "kredit": "Foto: pantauan udara tim BNPB, 31 Okt 2026",
+      "judul": "Dari udara: semak dibakar dulu di bawah pohon tegak, pohon ditumbangkan sesudahnya, tanpa regu dan sekat bakar",
+      "cut_off": false,
+      "kolom_panel": 4,
+      "panel": [
+        {
+          "judul": "1. Semak dibakar",
+          "ikon": "karhutla",
+          "kolom_foto": 1,
+          "foto": [
+            {
+              "berkas": "foto/udara-26.jpg",
+              "keterangan": "Asap di lantai hutan, pohon masih tegak"
+            }
+          ]
+        },
+        {
+          "judul": "2. Pohon ditumbang",
+          "ikon": "peringatan",
+          "kolom_foto": 1,
+          "foto": [
+            {
+              "berkas": "foto/udara-00.jpg",
+              "keterangan": "Ekskavator di lahan baru dibuka"
+            }
+          ]
+        },
+        {
+          "judul": "3. Kayu ditumpuk",
+          "ikon": "luas",
+          "kolom_foto": 1,
+          "foto": [
+            {
+              "berkas": "foto/udara-06.jpg",
+              "keterangan": "Kayu tumbang ditumpuk berbaris"
+            }
+          ]
+        },
+        {
+          "judul": "Klaim dan kenyataan",
+          "ikon": "ringkasan",
+          "skala_huruf": 1.3,
+          "daftar": [
+            "**Klaim perusahaan:** pohon ditebang dulu, kayu disusun, baru dibakar terkendali.",
+            "**Kenyataan:** batang pohon yang masih tegak menghitam setinggi semak; api lewat sebelum pohon ditebang.",
+            "**Api di samping alat berat** yang sedang bekerja, mengikuti batas lahan yang dibuka.",
+            "**Tidak dijaga:** tidak tampak regu atau sekat bakar; api menjalar ke hutan sekitar."
+          ]
+        }
+      ],
+      "sumber": "Pantauan udara tim BNPB, 31 Okt 2026"
+    },
+    {
+      "jenis": "temuan-visual",
+      "jenis_slide": "grafik",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Kewajiban hukum dan temuan",
+      "rasio": 0.64,
+      "judul": "Temuan berhadapan langsung dengan dua larangan dan satu kewajiban pelaku usaha perkebunan",
+      "cut_off": false,
+      "utama": {
+        "judul": "Aturan dan bukti",
+        "ikon": "regulasi",
+        "banding": {
+          "kiri": {
+            "judul": "Aturan"
+          },
+          "kanan": {
+            "judul": "Bukti yang ada"
+          },
+          "baris": [
+            {
+              "label": "Larangan membakar",
+              "kiri": "UU 39/2014 Pasal 56: pelaku usaha perkebunan dilarang membuka lahan dengan cara membakar.",
+              "kanan": "Foto udara: semak dibakar sebelum pohon ditumbang, api di samping ekskavator yang bekerja."
+            },
+            {
+              "label": "Wajib sarana pengendalian",
+              "kiri": "UU 39/2014 Pasal 56: wajib punya sistem, sarana, dan prasarana pengendalian kebakaran.",
+              "kanan": "Tidak tampak regu atau sekat bakar; api menyala {{angka:msj.hari|satuan}} dan menjalar ke hutan."
+            },
+            {
+              "label": "Larangan lingkungan",
+              "kiri": "UU 32/2009 Pasal 69: setiap orang dilarang membuka lahan dengan cara membakar.",
+              "kanan": "{{angka:msj.titik|satuan}} di dalam batas, {{angka:msj.rasio|satuan}} lebih padat dari sekitarnya."
+            },
+            {
+              "label": "Tata cara tanpa bakar",
+              "kiri": "Permentan 5/2018: pembukaan lahan perkebunan wajib tanpa membakar.",
+              "kanan": "Pola bakar lalu tebang bertentangan langsung dengan tata cara ini."
+            }
+          ]
+        }
+      },
+      "panel": {
+        "judul": "Yang masih perlu dipastikan",
+        "ikon": "peringatan",
+        "skala_huruf": 1.2,
+        "daftar": [
+          "**Status izin dan pemegang hak** sekarang (HGU, IUP-B) dari ATR/BPN dan Kementan; batas di deck ini peta 2014.",
+          "**Siapa yang membuka lahan:** Merauke juga lokasi PSN pangan dan energi; pastikan alat berat milik siapa.",
+          "**Foto udara asli bergeotag** dari tim; berkas di deck sudah tanpa koordinat.",
+          "**Cek lapangan** di kompleks aktif: bekas bakar, alat, dan saksi."
+        ]
+      },
+      "sumber": "UU 39/2014 Perkebunan; UU 32/2009 PPLH; Permentan 5/2018; data satelit dan pantauan udara BNPB"
+    },
+    {
+      "jenis": "rekomendasi",
+      "jenis_slide": "rekomendasi",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Rencana tindak lanjut",
+      "judul": "Enam langkah tindak lanjut: bukti diserahkan ke penegak hukum, api di konsesi dipadamkan, perusahaan dipanggil",
+      "cut_off": false,
+      "sumber": "Rangkuman bukti satelit, citra, dan pantauan udara",
+      "rekomendasi": [
+        {
+          "kode": "R-1",
+          "jenis": "regulasi",
+          "langkah": "Serahkan berkas bukti",
+          "waktu": "segera",
+          "rincian": "Deck ini, data titik, citra, foto, dan video udara diserahkan sebagai bahan penyelidikan dugaan pembakaran lahan.",
+          "lembaga": [
+            "Kementerian Lingkungan Hidup",
+            "Polri"
+          ]
+        },
+        {
+          "kode": "R-2",
+          "jenis": "regulasi",
+          "langkah": "Panggil PT Merauke Sawit Jaya",
+          "waktu": "segera",
+          "rincian": "Klarifikasi pembukaan lahan, minta hentikan pembakaran dan padamkan api di areal serta sekitarnya.",
+          "lembaga": [
+            "Pemkab Merauke",
+            "Kementerian Pertanian"
+          ]
+        },
+        {
+          "kode": "R-3",
+          "jenis": "data",
+          "langkah": "Pastikan izin dan pemegang hak",
+          "waktu": "sepekan",
+          "rincian": "Cocokkan batas 2014 dengan HGU dan IUP-B terbaru serta lokasi PSN Merauke.",
+          "lembaga": [
+            "ATR/BPN",
+            "Kementerian Pertanian"
+          ]
+        },
+        {
+          "kode": "R-4",
+          "jenis": "data",
+          "langkah": "Cek lapangan kompleks aktif",
+          "waktu": "sepekan",
+          "rincian": "Regu datang ke kompleks di lampiran dengan foto bergeotag, sampel bekas bakar, dan keterangan saksi.",
+          "lembaga": [
+            "Manggala Agni",
+            "BPBD Papua Selatan"
+          ]
+        },
+        {
+          "kode": "R-5",
+          "jenis": "kapasitas",
+          "langkah": "Padamkan cluster Jagebob",
+          "waktu": "segera",
+          "rincian": "Water bombing dan regu darat diarahkan ke blok utara dan barat konsesi yang masih menyala.",
+          "lembaga": [
+            "Deputi Penanganan Darurat",
+            "BPBD Papua Selatan"
+          ]
+        },
+        {
+          "kode": "R-6",
+          "jenis": "data",
+          "langkah": "Pantau harian sampai padam",
+          "waktu": "segera",
+          "rincian": "Titik di dalam batas dilaporkan tiap pagi; citra baru ditarik tiap ada lintasan cerah.",
+          "lembaga": [
+            "Pusdalops BNPB",
+            "Tim Ahli BNPB"
+          ]
+        }
+      ]
+    },
+    {
+      "jenis": "pembatas-lampiran",
+      "kelompok": {
+        "A": "Data cek lapangan"
+      }
+    },
+    {
+      "jenis": "lampiran-tabel",
+      "jenis_slide": "lampiran",
+      "judul_bentuk": "deskriptif",
+      "kode": "A1",
+      "pesan": "Koordinat kompleks api",
+      "judul": "Koordinat kompleks api di dalam batas konsesi untuk cek lapangan",
+      "judul_daftar": "Koordinat kompleks api untuk cek lapangan",
+      "cut_off": false,
+      "data": {
+        "csv": "data/msj/kompleks.csv",
+        "kolom": [
+          {
+            "nama": "status",
+            "kepala": "Status"
+          },
+          {
+            "nama": "kecamatan",
+            "kepala": "Kecamatan"
+          },
+          {
+            "nama": "lat",
+            "kepala": "Lintang",
+            "fmt": "4"
+          },
+          {
+            "nama": "lon",
+            "kepala": "Bujur",
+            "fmt": "4"
+          },
+          {
+            "nama": "titik",
+            "kepala": "Titik",
+            "fmt": "0"
+          },
+          {
+            "nama": "mulai",
+            "kepala": "Mulai"
+          },
+          {
+            "nama": "akhir",
+            "kepala": "Akhir"
+          },
+          {
+            "nama": "hari",
+            "kepala": "Hari",
+            "fmt": "0"
+          },
+          {
+            "nama": "frp",
+            "kepala": "FRP maks (MW)",
+            "fmt": "1"
+          }
+        ],
+        "keyakinan": "resmi",
+        "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+      },
+      "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, s.d. 26 Okt 2026"
+    },
+    {
+      "jenis": "penutup",
+      "foto": "foto/udara-23.jpg",
+      "logo_kanan": "foto/berakhlak-hd.png",
+      "kredit": "Foto: pantauan udara tim BNPB, 31 Okt 2026",
+      "teks": "Terima Kasih",
+      "laporan": "Bukti kebakaran di konsesi PT Merauke Sawit Jaya, 3 November 2026"
+    }
+  ]
+}

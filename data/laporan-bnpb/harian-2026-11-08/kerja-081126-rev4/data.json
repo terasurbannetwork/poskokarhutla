@@ -1,0 +1,102 @@
+{
+ "hari": "2026-11-08",
+ "cutoff": "2026-11-08T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "cuaca",
+   "prov": "12",
+   "lokasi": "Serdang Bedagai",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem",
+   "angka": {
+    "kk": 10.0
+   },
+   "teks": {
+    "dampak": "10 KK terdampak",
+    "status_darurat": "-",
+    "kondisi": "Sedang dalam penanganan oleh BPBD Kab. Serdang Bedagai",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "kondisi_pil": [
+    "Ditangani BPBD",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "cuaca",
+   "prov": "32",
+   "lokasi": "Ciamis",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem",
+   "angka": {
+    "kk": 61.0
+   },
+   "teks": {
+    "dampak": "61 KK / 204 jiwa terdampak",
+    "status_darurat": "-",
+    "kondisi": "Sedang dalam penanganan",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "kondisi_pil": [
+    "Dalam penanganan",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "cuaca",
+   "prov": "32",
+   "lokasi": "Bogor",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem",
+   "angka": {
+    "kk": 31.0
+   },
+   "teks": {
+    "dampak": "31 KK / 132 jiwa terdampak",
+    "status_darurat": "-",
+    "kondisi": "Pohon-pohon yang tumbang telah selesai dievakuasi, sementara kerusakan pada rumah sebagian telah diperbaiki secara mandiri oleh pemilik masing-masing",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "kondisi_pil": [
+    "Pohon tumbang dievakuasi",
+    "selesai"
+   ]
+  },
+  {
+   "jenis": "cuaca",
+   "prov": "33",
+   "lokasi": "Kendal",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem",
+   "angka": {
+    "meninggal": 1.0
+   },
+   "teks": {
+    "dampak": "1 (satu) jiwa MD, 3 jiwa luka-luka",
+    "status_darurat": "-",
+    "kondisi": "Kondisi sudah kondusif",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "kondisi_pil": [
+    "Sudah kondusif",
+    "selesai"
+   ]
+  }
+ ],
+ "prioritas_baru": [
+  "93",
+  "81"
+ ]
+}

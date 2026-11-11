@@ -1,0 +1,4270 @@
+{
+ "spek": "bukti-msj",
+ "pesan_kunci": "Api Merauke 2026 terpusat di konsesi PT Merauke Sawit Jaya dan bergerak bersama pembukaan lahan; bukti satelit, citra, dan udara cukup untuk diserahkan ke penegak hukum.",
+ "slide": [
+  {
+   "nomor": 1,
+   "jenis": "sampul",
+   "asal": "bukti-msj#1",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    133.85999999999999,
+    410.0,
+    158.28000000000003,
+    3
+   ],
+   "peta": null,
+   "struktur": [
+    "Foto: pantauan udara tim BNPB, 31 Okt 2026",
+    "Kecamatan Jagebob dan Animha, Kabupaten Merauke, Papua Selatan",
+    "Dipresentasikan oleh",
+    "Tim Ahli dan Tim Sus IT BNPB",
+    "Badan Nasional Penanggulangan Bencana",
+    "Jakarta, 3 November 2026",
+    "Ditujukan khusus untuk Kepala BNPB",
+    "© 2026 Badan Nasional Penanggulangan Bencana",
+    "Ketangguhan Bangsa dalam Menghadapi Bencana"
+   ],
+   "warna": [
+    [
+     "00499D",
+     "aksen"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "7F93AA",
+     "garis"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "garis"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo",
+    "logo",
+    "logo"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": [
+    43.2,
+    304.14,
+    410.0,
+    39.0
+   ]
+  },
+  {
+   "nomor": 2,
+   "jenis": "galeri",
+   "asal": "bukti-msj#2",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "2",
+    "NASA FIRMS dan Copernicus Sentinel-2, diolah BNPB; pantauan udara BNPB, 31 Okt 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "aksen"
+    ],
+    [
+     "C8102E",
+     "pil"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F8DDE0",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Bukti satelit, citra, dan pantauan udara menunjuk satu pola: lahan PT Merauke Sawit Jaya dibuka dengan api sepanjang 2026",
+   "pesan": "Ringkasan bukti",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [
+    "foto"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "foto",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     220.8,
+     431.4,
+     279.2,
+     "Tepi lahan PT Merauke Sawit Jaya, 31 Oktober"
+    ],
+    [
+     485.4,
+     220.8,
+     431.4,
+     279.2,
+     "Empat lapis bukti"
+    ]
+   ],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 3,
+   "jenis": "daftar-isi",
+   "asal": "bukti-msj#3",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "Bukti Kebakaran di Konsesi PT Merauke Sawit Jaya",
+    "01",
+    "4–10",
+    "02",
+    "11–14",
+    "3"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 4,
+   "jenis": "pembatas-seksi",
+   "asal": "bukti-msj#4",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "01",
+    "01",
+    "4–10",
+    "02",
+    "11–14",
+    "4"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FDF4EC",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 5,
+   "jenis": "temuan-peta",
+   "asal": "bukti-msj#5",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": {
+    "legenda": true,
+    "unsur_peta": {
+     "sumber_batas": "Konsesi Kemenhut 2014 via GFW; Sentinel-2",
+     "sistem_referensi": "WGS84",
+     "proyeksi": "UTM 54S",
+     "catatan": "Bukan peta HGU resmi"
+    },
+    "resmi": false,
+    "batas": [
+     98.40800000000003,
+     101.0,
+     466.408,
+     469.0
+    ],
+    "label": [],
+    "ukuran_label_pt": 9.2
+   },
+   "struktur": [
+    "5",
+    "01  ",
+    "02  ",
+    "Sumber batas: Konsesi Kemenhut 2014 via GFW; Sentinel-2; WGS84; UTM 54S; Bukan peta HGU resmi",
+    "NASA FIRMS dan Sentinel-2 28 Okt 2026, diolah BNPB; konsesi Kemenhut 2014 via GFW"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2F86D1",
+     "aksen"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "aksen"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "{{angka:msj.titik|satuan}} jatuh di dalam batas konsesi {{angka:msj.luas|satuan}}; titik terbaru menumpuk di tepi blok yang baru dibuka",
+   "pesan": "Hotspot menumpuk di dalam batas konsesi",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "peta",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "peta"
+   ],
+   "gambar": [
+    "logo",
+    "peta",
+    "ikon"
+   ],
+   "panel": [
+    [
+     532.4,
+     137,
+     384.4,
+     363,
+     "Identitas lahan"
+    ]
+   ],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 6,
+   "jenis": "galeri",
+   "asal": "bukti-msj#6",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "6",
+    "01  ",
+    "02  ",
+    "Copernicus Sentinel-2 L2A, 5 Jun dan 28 Okt 2026, luas di dalam batas konsesi, diolah BNPB"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Citra Sentinel-2: lahan terbuka di dalam batas naik dari {{angka:msj.buka.jun|satuan}} pada 5 Juni menjadi {{angka:msj.buka.okt|satuan}} pada 28 Oktober",
+   "pesan": "Lahan terbuka bertambah",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "foto"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "foto",
+    "ikon",
+    "foto",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     137.0,
+     306.2,
+     363.0,
+     "Sebelum api: 5 Juni 2026"
+    ],
+    [
+     360.2,
+     137.0,
+     306.2,
+     363.0,
+     "Sesudah api: 28 Oktober 2026"
+    ],
+    [
+     677.2,
+     137.0,
+     239.6,
+     363.0,
+     "Cara membaca citra"
+    ]
+   ],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 7,
+   "jenis": "temuan-grafik",
+   "asal": "bukti-msj#7",
+   "keluarga": [
+    "api"
+   ],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "7",
+    "01  ",
+    "02  ",
+    "NASA FIRMS VIIRS S-NPP, diolah BNPB, keyakinan nominal dan tinggi, hari WIB"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "angka-judul"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "kategori.api"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "DCE1E7",
+     "inti"
+    ],
+    [
+     "F4C3A0",
+     "skala.api"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Api di konsesi melonjak sejak September: Oktober mencatat {{angka:msj.bln.okt|satuan}}, {{angka:msj.okt.persen|satuan}} dari titik 2026",
+   "pesan": "Api memuncak Oktober",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "grafik"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     137,
+     524.2,
+     363,
+     "Hotspot di dalam batas per bulan",
+     "grafik"
+    ],
+    [
+     578.2,
+     137,
+     338.6,
+     363,
+     "Yang terbaca"
+    ]
+   ],
+   "terisi": [
+    [
+     53.2,
+     145.0,
+     504.2,
+     345.0
+    ]
+   ],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 8,
+   "jenis": "tabel-peringkat",
+   "asal": "bukti-msj#8",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "8",
+    "01  ",
+    "02  ",
+    "NASA FIRMS lokasi unik, diolah BNPB, 24 Okt sampai 2 Nov 2026; pantauan udara BNPB"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "aksen"
+    ],
+    [
+     "C8102E",
+     "pil"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "EEF5FC",
+     "permukaan"
+    ],
+    [
+     "F8DDE0",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Api tidak datang dari luar: titik di dalam batas {{angka:msj.rasio|satuan}} lebih padat dibanding cincin {{angka:msj.cincin|satuan}} di sekelilingnya",
+   "pesan": "Api terpusat di dalam batas",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     220.8,
+     436.8,
+     279.2,
+     "Lokasi titik unik per hari"
+    ],
+    [
+     490.8,
+     220.8,
+     426.0,
+     279.2,
+     "Kenapa ini penting"
+    ]
+   ],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 9,
+   "jenis": "temuan-visual",
+   "asal": "bukti-msj#9",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "9",
+    "01  ",
+    "02  ",
+    "NASA FIRMS VIIRS S-NPP, diolah BNPB, s.d. 26 Okt 2026; konsesi Kemenhut via GFW dan Trase"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "7F93AA",
+     "skala.netral"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Di antara {{angka:msj.papsel|satuan}} berapi di Papua Selatan, PT Merauke Sawit Jaya mencatat titik terbanyak 2026",
+   "pesan": "Terbanyak di Papua Selatan",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "grafik"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     137,
+     524.2,
+     363,
+     "Hotspot 2026 per konsesi s.d. 26 Okt, delapan teratas Papua ",
+     "grafik"
+    ],
+    [
+     578.2,
+     137,
+     338.6,
+     363,
+     "Beda dengan yang lain"
+    ]
+   ],
+   "terisi": [
+    [
+     53.2,
+     145.0,
+     504.2,
+     345.0
+    ]
+   ],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 10,
+   "jenis": "temuan-grafik",
+   "asal": "bukti-msj#10",
+   "keluarga": [
+    "api"
+   ],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "10",
+    "01  ",
+    "02  ",
+    "NASA FIRMS VIIRS S-NPP dan MODIS, diolah BNPB, s.d. 12 Okt 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "angka-judul"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "kategori.api"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "F4C3A0",
+     "skala.api"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Titik 2026 di konsesi ini sudah {{angka:msj.kali|satuan}} tahun El Nino 2015, rekor sejak satelit VIIRS mulai mengamati",
+   "pesan": "Rekor tertinggi sejak ada satelit",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "grafik"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     137,
+     559.1,
+     363,
+     "Hotspot di dalam batas per tahun",
+     "grafik"
+    ],
+    [
+     613.1,
+     137,
+     303.7,
+     363,
+     "Pembanding"
+    ]
+   ],
+   "terisi": [
+    [
+     53.2,
+     145.0,
+     539.1,
+     345.0
+    ]
+   ],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 11,
+   "jenis": "pembatas-seksi",
+   "asal": "bukti-msj#11",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "02",
+    "01",
+    "4–10",
+    "02",
+    "11–14",
+    "11"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FDF4EC",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 12,
+   "jenis": "galeri",
+   "asal": "bukti-msj#12",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "12",
+    "01  ",
+    "02  ",
+    "Pantauan udara tim BNPB, 31 Okt 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Dari udara: semak dibakar dulu di bawah pohon tegak, pohon ditumbangkan sesudahnya, tanpa regu dan sekat bakar",
+   "pesan": "Modus pembukaan lahan",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "panel",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [
+    "foto"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "foto",
+    "ikon",
+    "foto",
+    "ikon",
+    "foto",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     137.0,
+     210.3,
+     363.0,
+     "1. Semak dibakar"
+    ],
+    [
+     264.3,
+     137.0,
+     210.3,
+     363.0,
+     "2. Pohon ditumbang"
+    ],
+    [
+     485.4,
+     137.0,
+     210.3,
+     363.0,
+     "3. Kayu ditumpuk"
+    ],
+    [
+     706.5,
+     137.0,
+     210.3,
+     363.0,
+     "Klaim dan kenyataan"
+    ]
+   ],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 13,
+   "jenis": "temuan-visual",
+   "asal": "bukti-msj#13",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "13",
+    "01  ",
+    "02  ",
+    "UU 39/2014 Perkebunan; UU 32/2009 PPLH; Permentan 5/2018; data satelit dan pantauan udara BNPB"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "DCE1E7",
+     "inti"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Temuan berhadapan langsung dengan dua larangan dan satu kewajiban pelaku usaha perkebunan",
+   "pesan": "Kewajiban hukum dan temuan",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "grafik",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     137,
+     559.1,
+     363,
+     "Aturan dan bukti",
+     "grafik"
+    ],
+    [
+     613.1,
+     137,
+     303.7,
+     363,
+     "Yang masih perlu dipastikan"
+    ]
+   ],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 14,
+   "jenis": "rekomendasi",
+   "asal": "bukti-msj#14",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "14",
+    "01  ",
+    "02  ",
+    "Rangkuman bukti satelit, citra, dan pantauan udara"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "pil"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "E6EAF0",
+     "pil"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "Enam langkah tindak lanjut: bukti diserahkan ke penegak hukum, api di konsesi dipadamkan, perusahaan dipanggil",
+   "pesan": "Rencana tindak lanjut",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "rekomendasi",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 15,
+   "jenis": "pembatas-lampiran",
+   "asal": "bukti-msj#15",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "16–17",
+    "15"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "logo"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 16,
+   "jenis": "lampiran-tabel",
+   "asal": "bukti-msj#16.1",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "16",
+    "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, s.d. 26 Okt 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "A1. Koordinat kompleks api di dalam batas konsesi untuk cek lapangan",
+   "pesan": "Koordinat kompleks api",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "lampiran",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 17,
+   "jenis": "lampiran-tabel",
+   "asal": "bukti-msj#16.2",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    820.3,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    " (lanjutan 2/2)",
+    "17",
+    "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, s.d. 26 Okt 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "A1. Koordinat kompleks api di dalam batas konsesi untuk cek lapangan (lanjutan 2/2)",
+   "pesan": "Koordinat kompleks api",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "lampiran",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 18,
+   "jenis": "penutup",
+   "asal": "bukti-msj#17",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    168,
+    410.0,
+    64.32000000000001,
+    3
+   ],
+   "peta": null,
+   "struktur": [
+    "Foto: pantauan udara tim BNPB, 31 Okt 2026",
+    "Tim Ahli dan Tim Sus IT BNPB",
+    "Badan Nasional Penanggulangan Bencana",
+    "117",
+    "Graha BNPB, Jl. Pramuka Kav. 38, Jakarta Timur 13120",
+    "021 2982 7793",
+    "persuratan@bnpb.go.id",
+    "www.bnpb.go.id",
+    "Satu Data Bencana",
+    "@BNPB_Indonesia",
+    "@infoBencanaBNPB",
+    "BNPB Indonesia",
+    "@bnpbindonesia",
+    "© 2026 Badan Nasional Penanggulangan Bencana",
+    "Ketangguhan Bangsa dalam Menghadapi Bencana"
+   ],
+   "warna": [
+    [
+     "00499D",
+     "aksen"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "7F93AA",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo",
+    "logo",
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  }
+ ],
+ "angka": [
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,8399",
+   "nilai": -7.8399,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,6368",
+   "nilai": 140.6368,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "127",
+   "nilai": 127.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "20 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "26 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "7",
+   "nilai": 7.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "32,7",
+   "nilai": 32.7,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,8570",
+   "nilai": -7.857,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,5801",
+   "nilai": 140.5801,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "117",
+   "nilai": 117.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "20 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "26 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "7",
+   "nilai": 7.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "52,0",
+   "nilai": 52.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,8050",
+   "nilai": -7.805,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,6686",
+   "nilai": 140.6686,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "80",
+   "nilai": 80.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "20 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "26 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "7",
+   "nilai": 7.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "433,3",
+   "nilai": 433.3,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,9238",
+   "nilai": -7.9238,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,5729",
+   "nilai": 140.5729,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "76",
+   "nilai": 76.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "23 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "26 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "4",
+   "nilai": 4.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "71,0",
+   "nilai": 71.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,9053",
+   "nilai": -7.9053,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,5760",
+   "nilai": 140.576,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "61",
+   "nilai": 61.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "20 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "26 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "6",
+   "nilai": 6.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "130,0",
+   "nilai": 130.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,8322",
+   "nilai": -7.8322,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,5958",
+   "nilai": 140.5958,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "27",
+   "nilai": 27.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "20 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "26 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "7",
+   "nilai": 7.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "13,3",
+   "nilai": 13.3,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,8251",
+   "nilai": -7.8251,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,6970",
+   "nilai": 140.697,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "12",
+   "nilai": 12.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "25 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "25 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "1",
+   "nilai": 1.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "2,4",
+   "nilai": 2.4,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,8943",
+   "nilai": -7.8943,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,6117",
+   "nilai": 140.6117,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "8",
+   "nilai": 8.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "21 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "26 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "2",
+   "nilai": 2.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "57,5",
+   "nilai": 57.5,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,7924",
+   "nilai": -7.7924,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,6609",
+   "nilai": 140.6609,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "5",
+   "nilai": 5.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "22 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "26 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "3",
+   "nilai": 3.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "7,3",
+   "nilai": 7.3,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,9170",
+   "nilai": -7.917,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,7578",
+   "nilai": 140.7578,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "3",
+   "nilai": 3.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "20 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "21 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "2",
+   "nilai": 2.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "5,0",
+   "nilai": 5.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,9397",
+   "nilai": -7.9397,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,7530",
+   "nilai": 140.753,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "3",
+   "nilai": 3.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "22 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "26 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "3",
+   "nilai": 3.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "1,1",
+   "nilai": 1.1,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,8325",
+   "nilai": -7.8325,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,5862",
+   "nilai": 140.5862,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "2",
+   "nilai": 2.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "20 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "23 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "2",
+   "nilai": 2.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "8,6",
+   "nilai": 8.6,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,7991",
+   "nilai": -7.7991,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,6393",
+   "nilai": 140.6393,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "2",
+   "nilai": 2.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "24 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "24 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "1",
+   "nilai": 1.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "6,4",
+   "nilai": 6.4,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,8982",
+   "nilai": -7.8982,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,7410",
+   "nilai": 140.741,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "1",
+   "nilai": 1.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "24 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "24 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "1",
+   "nilai": 1.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "7,7",
+   "nilai": 7.7,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,8456",
+   "nilai": -7.8456,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,7448",
+   "nilai": 140.7448,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "1",
+   "nilai": 1.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "24 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "24 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "1",
+   "nilai": 1.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "3,8",
+   "nilai": 3.8,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,8624",
+   "nilai": -7.8624,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,6536",
+   "nilai": 140.6536,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "2.474",
+   "nilai": 2474.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "20 Agu",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "20 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "50",
+   "nilai": 50.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "405,5",
+   "nilai": 405.5,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,8961",
+   "nilai": -7.8961,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,6065",
+   "nilai": 140.6065,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "90",
+   "nilai": 90.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "5 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "19 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "12",
+   "nilai": 12.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "95,4",
+   "nilai": 95.4,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,8951",
+   "nilai": -7.8951,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,7376",
+   "nilai": 140.7376,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "66",
+   "nilai": 66.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "1 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "10 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "8",
+   "nilai": 8.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "42,2",
+   "nilai": 42.2,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,9335",
+   "nilai": -7.9335,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,6237",
+   "nilai": 140.6237,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "37",
+   "nilai": 37.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "5 Sep",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "29 Sep",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "14",
+   "nilai": 14.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "30,8",
+   "nilai": 30.8,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,9106",
+   "nilai": -7.9106,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,7552",
+   "nilai": 140.7552,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "36",
+   "nilai": 36.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "14 Agu",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "22 Agu",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "9",
+   "nilai": 9.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "63,9",
+   "nilai": 63.9,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,8212",
+   "nilai": -7.8212,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,7258",
+   "nilai": 140.7258,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "31",
+   "nilai": 31.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "6 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "12 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "5",
+   "nilai": 5.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "24,2",
+   "nilai": 24.2,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,9311",
+   "nilai": -7.9311,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,6219",
+   "nilai": 140.6219,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "30",
+   "nilai": 30.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "18 Agu",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "20 Agu",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "3",
+   "nilai": 3.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "77,1",
+   "nilai": 77.1,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,9125",
+   "nilai": -7.9125,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,5889",
+   "nilai": 140.5889,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "24",
+   "nilai": 24.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "3 Sep",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "11 Sep",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "5",
+   "nilai": 5.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "70,0",
+   "nilai": 70.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lat",
+   "tampil": "-7,8699",
+   "nilai": -7.8699,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#lon",
+   "tampil": "140,6266",
+   "nilai": 140.6266,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#titik",
+   "tampil": "22",
+   "nilai": 22.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#mulai",
+   "tampil": "16 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csvteks:data/msj/kompleks.csv#akhir",
+   "tampil": "19 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#hari",
+   "tampil": "4",
+   "nilai": 4.0,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/kompleks.csv#frp",
+   "tampil": "44,9",
+   "nilai": 44.9,
+   "naskah": "bukti-msj#16/data",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, kompleks api sistem BNPB, 20 Agu sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "turunan:bukti-msj#1#kredit:udara-04.jpg",
+   "tampil": "Foto: pantauan udara tim BNPB, 31 Okt 2026",
+   "nilai": null,
+   "naskah": "bukti-msj#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Wikimedia Commons, atribusi foto",
+   "dari": []
+  },
+  {
+   "kunci": "msj.titik",
+   "opsi": "|",
+   "tampil": "3.808",
+   "nilai": 3808,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB",
+   "naskah": "bukti-msj#2"
+  },
+  {
+   "kunci": "msj.rasio",
+   "opsi": "|satuan",
+   "tampil": "12 kali",
+   "nilai": 12,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "bukti-msj#2"
+  },
+  {
+   "kunci": "msj.peringkat",
+   "opsi": "|",
+   "tampil": "1",
+   "nilai": 1,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "sistem konsesi BNPB, Papua Selatan",
+   "naskah": "bukti-msj#2"
+  },
+  {
+   "kunci": "msj.papsel",
+   "opsi": "|satuan",
+   "tampil": "24 konsesi",
+   "nilai": 24,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "sistem konsesi BNPB, Papua Selatan",
+   "naskah": "bukti-msj#2"
+  },
+  {
+   "kunci": "msj.hari",
+   "opsi": "|satuan",
+   "tampil": "84 hari",
+   "nilai": 84,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB",
+   "naskah": "bukti-msj#2"
+  },
+  {
+   "kunci": "msj.bln.okt",
+   "opsi": "|satuan",
+   "tampil": "2.765 titik",
+   "nilai": 2765,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB",
+   "naskah": "bukti-msj#2"
+  },
+  {
+   "kunci": "msj.buka.jun",
+   "opsi": "|satuan",
+   "tampil": "sekitar 9.000 ha",
+   "nilai": 9013,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Copernicus Sentinel-2, diolah BNPB",
+   "naskah": "bukti-msj#2"
+  },
+  {
+   "kunci": "msj.buka.okt",
+   "opsi": "|satuan",
+   "tampil": "sekitar 17.000 ha",
+   "nilai": 17175,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Copernicus Sentinel-2, diolah BNPB",
+   "naskah": "bukti-msj#2"
+  },
+  {
+   "kunci": "msj.kali",
+   "opsi": "|satuan",
+   "tampil": "6,7 kali",
+   "nilai": 6.7,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB",
+   "naskah": "bukti-msj#2"
+  },
+  {
+   "kunci": "msj.titik",
+   "opsi": "|satuan",
+   "tampil": "3.808 titik",
+   "nilai": 3808,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB",
+   "naskah": "bukti-msj#5"
+  },
+  {
+   "kunci": "msj.luas",
+   "opsi": "|satuan",
+   "tampil": "38.788 ha",
+   "nilai": 38788,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kemenhut via GFW, konsesi sawit 2014",
+   "naskah": "bukti-msj#5"
+  },
+  {
+   "kunci": "msj.luas",
+   "opsi": "|satuan",
+   "tampil": "38.788 ha",
+   "nilai": 38788,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kemenhut via GFW, konsesi sawit 2014",
+   "naskah": "bukti-msj#5"
+  },
+  {
+   "kunci": "msj.u31",
+   "opsi": "|satuan",
+   "tampil": "153 titik",
+   "nilai": 153,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik, diolah BNPB",
+   "naskah": "bukti-msj#5"
+  },
+  {
+   "kunci": "msj.buka.jun",
+   "opsi": "|satuan",
+   "tampil": "sekitar 9.000 ha",
+   "nilai": 9013,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Copernicus Sentinel-2, diolah BNPB",
+   "naskah": "bukti-msj#6"
+  },
+  {
+   "kunci": "msj.buka.okt",
+   "opsi": "|satuan",
+   "tampil": "sekitar 17.000 ha",
+   "nilai": 17175,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Copernicus Sentinel-2, diolah BNPB",
+   "naskah": "bukti-msj#6"
+  },
+  {
+   "kunci": "msj.buka.tambah",
+   "opsi": "|satuan",
+   "tampil": "sekitar 8.200 ha",
+   "nilai": 8162,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Copernicus Sentinel-2, diolah BNPB",
+   "naskah": "bukti-msj#6"
+  },
+  {
+   "kunci": "msj.buka.persen",
+   "opsi": "|satuan",
+   "tampil": "sekitar 44%",
+   "nilai": 44,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Copernicus Sentinel-2, diolah BNPB",
+   "naskah": "bukti-msj#6"
+  },
+  {
+   "kunci": "msj.bakar",
+   "opsi": "|satuan",
+   "tampil": "sekitar 18.000 ha",
+   "nilai": 17916,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "NASA FIRMS VIIRS, piksel unik kali luas piksel, diolah BNPB",
+   "naskah": "bukti-msj#6"
+  },
+  {
+   "kunci": "msj.bln.okt",
+   "opsi": "|satuan",
+   "tampil": "2.765 titik",
+   "nilai": 2765,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB",
+   "naskah": "bukti-msj#7"
+  },
+  {
+   "kunci": "msj.okt.persen",
+   "opsi": "|satuan",
+   "tampil": "72,6%",
+   "nilai": 72.6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB",
+   "naskah": "bukti-msj#7"
+  },
+  {
+   "kunci": "csv:data/msj/bulan.csv#titik",
+   "tampil": "3",
+   "nilai": 3.0,
+   "naskah": "bukti-msj#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/bulan.csv#titik",
+   "tampil": "15",
+   "nilai": 15.0,
+   "naskah": "bukti-msj#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/bulan.csv#titik",
+   "tampil": "95",
+   "nilai": 95.0,
+   "naskah": "bukti-msj#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/bulan.csv#titik",
+   "tampil": "842",
+   "nilai": 842.0,
+   "naskah": "bukti-msj#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/bulan.csv#titik",
+   "tampil": "2.765",
+   "nilai": 2765.0,
+   "naskah": "bukti-msj#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/bulan.csv#bulan",
+   "tampil": "Nov (1-2)",
+   "nilai": null,
+   "naskah": "bukti-msj#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/bulan.csv#titik",
+   "tampil": "88",
+   "nilai": 88.0,
+   "naskah": "bukti-msj#7",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB"
+  },
+  {
+   "kunci": "msj.hari.sep",
+   "opsi": "|satuan",
+   "tampil": "59 hari",
+   "nilai": 59,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB",
+   "naskah": "bukti-msj#7"
+  },
+  {
+   "kunci": "msj.hari.sep.n",
+   "opsi": "|satuan",
+   "tampil": "63 hari",
+   "nilai": 63,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB",
+   "naskah": "bukti-msj#7"
+  },
+  {
+   "kunci": "msj.sep.okt",
+   "opsi": "|satuan",
+   "tampil": "3.607 titik",
+   "nilai": 3607,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB",
+   "naskah": "bukti-msj#7"
+  },
+  {
+   "kunci": "msj.kompleks.hari",
+   "opsi": "|satuan",
+   "tampil": "50 hari",
+   "nilai": 50,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB",
+   "naskah": "bukti-msj#7"
+  },
+  {
+   "kunci": "msj.kompleks.besar",
+   "opsi": "|satuan",
+   "tampil": "2.474 titik",
+   "nilai": 2474,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB",
+   "naskah": "bukti-msj#7"
+  },
+  {
+   "kunci": "msj.rasio",
+   "opsi": "|satuan",
+   "tampil": "12 kali",
+   "nilai": 12,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "bukti-msj#8"
+  },
+  {
+   "kunci": "msj.cincin",
+   "opsi": "|satuan",
+   "tampil": "sekitar 75.000 ha",
+   "nilai": 74600,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "bukti-msj#8"
+  },
+  {
+   "kunci": "msj.pad.dalam",
+   "opsi": "|",
+   "tampil": "34,4",
+   "nilai": 34.4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "bukti-msj#8"
+  },
+  {
+   "kunci": "msj.pad.luar",
+   "opsi": "|",
+   "tampil": "2,8",
+   "nilai": 2.8,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "bukti-msj#8"
+  },
+  {
+   "kunci": "csvteks:data/msj/dalamluar.csv#hari",
+   "tampil": "24 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#dalam",
+   "tampil": "127",
+   "nilai": 127.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#luar",
+   "tampil": "3",
+   "nilai": 3.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/dalamluar.csv#hari",
+   "tampil": "25 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#dalam",
+   "tampil": "238",
+   "nilai": 238.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#luar",
+   "tampil": "60",
+   "nilai": 60.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/dalamluar.csv#hari",
+   "tampil": "26 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#dalam",
+   "tampil": "160",
+   "nilai": 160.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#luar",
+   "tampil": "14",
+   "nilai": 14.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/dalamluar.csv#hari",
+   "tampil": "27 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#dalam",
+   "tampil": "99",
+   "nilai": 99.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#luar",
+   "tampil": "2",
+   "nilai": 2.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/dalamluar.csv#hari",
+   "tampil": "28 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#dalam",
+   "tampil": "106",
+   "nilai": 106.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#luar",
+   "tampil": "17",
+   "nilai": 17.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/dalamluar.csv#hari",
+   "tampil": "29 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#dalam",
+   "tampil": "141",
+   "nilai": 141.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#luar",
+   "tampil": "9",
+   "nilai": 9.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/dalamluar.csv#hari",
+   "tampil": "30 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#dalam",
+   "tampil": "120",
+   "nilai": 120.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#luar",
+   "tampil": "9",
+   "nilai": 9.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/dalamluar.csv#hari",
+   "tampil": "31 Okt",
+   "nilai": null,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#dalam",
+   "tampil": "153",
+   "nilai": 153.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#luar",
+   "tampil": "70",
+   "nilai": 70.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/dalamluar.csv#hari",
+   "tampil": "1 Nov",
+   "nilai": null,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#dalam",
+   "tampil": "95",
+   "nilai": 95.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#luar",
+   "tampil": "17",
+   "nilai": 17.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/dalamluar.csv#hari",
+   "tampil": "2 Nov",
+   "nilai": null,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#dalam",
+   "tampil": "88",
+   "nilai": 88.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/dalamluar.csv#luar",
+   "tampil": "8",
+   "nilai": 8.0,
+   "naskah": "bukti-msj#8",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik 375 m per hari WIB, diolah BNPB"
+  },
+  {
+   "kunci": "msj.unik.dalam",
+   "opsi": "|satuan",
+   "tampil": "1.327 titik",
+   "nilai": 1327,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik, diolah BNPB",
+   "naskah": "bukti-msj#8"
+  },
+  {
+   "kunci": "msj.unik.luar",
+   "opsi": "|satuan",
+   "tampil": "209 titik",
+   "nilai": 209,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS (MODIS, VIIRS), lokasi unik, diolah BNPB",
+   "naskah": "bukti-msj#8"
+  },
+  {
+   "kunci": "msj.papsel",
+   "opsi": "|satuan",
+   "tampil": "24 konsesi",
+   "nilai": 24,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "sistem konsesi BNPB, Papua Selatan",
+   "naskah": "bukti-msj#9"
+  },
+  {
+   "kunci": "csv:data/msj/peringkat.csv#titik",
+   "tampil": "3.406",
+   "nilai": 3406.0,
+   "naskah": "bukti-msj#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, konsesi Kemenhut/GFW dan Trase, diolah BNPB, 1 Jan sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/peringkat.csv#titik",
+   "tampil": "3.014",
+   "nilai": 3014.0,
+   "naskah": "bukti-msj#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, konsesi Kemenhut/GFW dan Trase, diolah BNPB, 1 Jan sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/peringkat.csv#titik",
+   "tampil": "2.559",
+   "nilai": 2559.0,
+   "naskah": "bukti-msj#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, konsesi Kemenhut/GFW dan Trase, diolah BNPB, 1 Jan sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/peringkat.csv#titik",
+   "tampil": "1.946",
+   "nilai": 1946.0,
+   "naskah": "bukti-msj#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, konsesi Kemenhut/GFW dan Trase, diolah BNPB, 1 Jan sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/peringkat.csv#titik",
+   "tampil": "1.267",
+   "nilai": 1267.0,
+   "naskah": "bukti-msj#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, konsesi Kemenhut/GFW dan Trase, diolah BNPB, 1 Jan sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/peringkat.csv#titik",
+   "tampil": "1.043",
+   "nilai": 1043.0,
+   "naskah": "bukti-msj#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, konsesi Kemenhut/GFW dan Trase, diolah BNPB, 1 Jan sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/peringkat.csv#titik",
+   "tampil": "784",
+   "nilai": 784.0,
+   "naskah": "bukti-msj#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, konsesi Kemenhut/GFW dan Trase, diolah BNPB, 1 Jan sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "csv:data/msj/peringkat.csv#titik",
+   "tampil": "391",
+   "nilai": 391.0,
+   "naskah": "bukti-msj#9",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, konsesi Kemenhut/GFW dan Trase, diolah BNPB, 1 Jan sampai 26 Okt 2026"
+  },
+  {
+   "kunci": "msj.bakar",
+   "opsi": "|satuan",
+   "tampil": "sekitar 18.000 ha",
+   "nilai": 17916,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "NASA FIRMS VIIRS, piksel unik kali luas piksel, diolah BNPB",
+   "naskah": "bukti-msj#9"
+  },
+  {
+   "kunci": "msj.kompleks",
+   "opsi": "|satuan",
+   "tampil": "15 kompleks",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB",
+   "naskah": "bukti-msj#9"
+  },
+  {
+   "kunci": "msj.kali",
+   "opsi": "|satuan",
+   "tampil": "6,7 kali",
+   "nilai": 6.7,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB",
+   "naskah": "bukti-msj#10"
+  },
+  {
+   "kunci": "csvteks:data/msj/tahun.csv#tahun",
+   "tampil": "2012",
+   "nilai": null,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/tahun.csv#titik",
+   "tampil": "1",
+   "nilai": 1.0,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/tahun.csv#tahun",
+   "tampil": "2013",
+   "nilai": null,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/tahun.csv#titik",
+   "tampil": "8",
+   "nilai": 8.0,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/tahun.csv#tahun",
+   "tampil": "2014",
+   "nilai": null,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/tahun.csv#titik",
+   "tampil": "30",
+   "nilai": 30.0,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/tahun.csv#tahun",
+   "tampil": "2015",
+   "nilai": null,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/tahun.csv#titik",
+   "tampil": "348",
+   "nilai": 348.0,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/tahun.csv#tahun",
+   "tampil": "2016",
+   "nilai": null,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/tahun.csv#titik",
+   "tampil": "2",
+   "nilai": 2.0,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/tahun.csv#tahun",
+   "tampil": "2017",
+   "nilai": null,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/tahun.csv#titik",
+   "tampil": "5",
+   "nilai": 5.0,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/tahun.csv#tahun",
+   "tampil": "2018",
+   "nilai": null,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/tahun.csv#titik",
+   "tampil": "26",
+   "nilai": 26.0,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/tahun.csv#tahun",
+   "tampil": "2019",
+   "nilai": null,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/tahun.csv#titik",
+   "tampil": "23",
+   "nilai": 23.0,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/tahun.csv#tahun",
+   "tampil": "2020",
+   "nilai": null,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/tahun.csv#titik",
+   "tampil": "5",
+   "nilai": 5.0,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/tahun.csv#tahun",
+   "tampil": "2021",
+   "nilai": null,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/tahun.csv#titik",
+   "tampil": "1",
+   "nilai": 1.0,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/tahun.csv#tahun",
+   "tampil": "2022",
+   "nilai": null,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/tahun.csv#titik",
+   "tampil": "7",
+   "nilai": 7.0,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/tahun.csv#tahun",
+   "tampil": "2023",
+   "nilai": null,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/tahun.csv#titik",
+   "tampil": "13",
+   "nilai": 13.0,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/tahun.csv#tahun",
+   "tampil": "2024",
+   "nilai": null,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/tahun.csv#titik",
+   "tampil": "2",
+   "nilai": 2.0,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/tahun.csv#tahun",
+   "tampil": "2025",
+   "nilai": null,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/tahun.csv#titik",
+   "tampil": "2",
+   "nilai": 2.0,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csvteks:data/msj/tahun.csv#tahun",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "csv:data/msj/tahun.csv#titik",
+   "tampil": "2.322",
+   "nilai": 2322.0,
+   "naskah": "bukti-msj#10",
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP 2012 sampai 2026, diolah BNPB"
+  },
+  {
+   "kunci": "msj.modis2026",
+   "opsi": "|satuan",
+   "tampil": "726 titik",
+   "nilai": 726,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS MODIS 2003 sampai 2026, diolah BNPB",
+   "naskah": "bukti-msj#10"
+  },
+  {
+   "kunci": "msj.modis2015",
+   "opsi": "|satuan",
+   "tampil": "106 titik",
+   "nilai": 106,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS MODIS 2003 sampai 2026, diolah BNPB",
+   "naskah": "bukti-msj#10"
+  },
+  {
+   "kunci": "msj.hari",
+   "opsi": "|satuan",
+   "tampil": "84 hari",
+   "nilai": 84,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB",
+   "naskah": "bukti-msj#13"
+  },
+  {
+   "kunci": "msj.titik",
+   "opsi": "|satuan",
+   "tampil": "3.808 titik",
+   "nilai": 3808,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS VIIRS S-NPP, diolah BNPB",
+   "naskah": "bukti-msj#13"
+  },
+  {
+   "kunci": "msj.rasio",
+   "opsi": "|satuan",
+   "tampil": "12 kali",
+   "nilai": 12,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "bukti-msj#13"
+  },
+  {
+   "kunci": "turunan:bukti-msj#17#kredit:udara-23.jpg",
+   "tampil": "Foto: pantauan udara tim BNPB, 31 Okt 2026",
+   "nilai": null,
+   "naskah": "bukti-msj#17",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Wikimedia Commons, atribusi foto",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:bukti-msj#17#kontak:call-center",
+   "tampil": "117",
+   "nilai": null,
+   "naskah": "bukti-msj#17",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Situs resmi BNPB, bnpb.go.id",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:bukti-msj#17#kontak:telepon",
+   "tampil": "021 2982 7793",
+   "nilai": null,
+   "naskah": "bukti-msj#17",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Situs resmi BNPB, bnpb.go.id",
+   "dari": []
+  }
+ ],
+ "catatan": [
+  [
+   "bukti-msj#1",
+   "judul_baris",
+   3
+  ],
+  [
+   "bukti-msj#2",
+   "judul_baris",
+   2
+  ],
+  [
+   "bukti-msj#5",
+   "judul_baris",
+   2
+  ],
+  [
+   "bukti-msj#6",
+   "judul_baris",
+   2
+  ],
+  [
+   "bukti-msj#7",
+   "judul_baris",
+   2
+  ],
+  [
+   "bukti-msj#8",
+   "judul_baris",
+   2
+  ],
+  [
+   "bukti-msj#9",
+   "judul_baris",
+   2
+  ],
+  [
+   "bukti-msj#10",
+   "judul_baris",
+   2
+  ],
+  [
+   "bukti-msj#12",
+   "judul_baris",
+   2
+  ],
+  [
+   "bukti-msj#13",
+   "judul_baris",
+   2
+  ],
+  [
+   "bukti-msj#14",
+   "judul_baris",
+   2
+  ],
+  [
+   "bukti-msj#16.1",
+   "judul_baris",
+   1
+  ],
+  [
+   "bukti-msj#16.2",
+   "judul_baris",
+   2
+  ]
+ ],
+ "keputusan": [
+  {
+   "slide": 14,
+   "kode": "R-1",
+   "dasar": null,
+   "lembaga": [
+    "Kementerian Lingkungan Hidup",
+    "Polri"
+   ],
+   "tenggat": "segera",
+   "risiko": null,
+   "biaya": null,
+   "ketat": false
+  },
+  {
+   "slide": 14,
+   "kode": "R-2",
+   "dasar": null,
+   "lembaga": [
+    "Pemkab Merauke",
+    "Kementerian Pertanian"
+   ],
+   "tenggat": "segera",
+   "risiko": null,
+   "biaya": null,
+   "ketat": false
+  },
+  {
+   "slide": 14,
+   "kode": "R-3",
+   "dasar": null,
+   "lembaga": [
+    "ATR/BPN",
+    "Kementerian Pertanian"
+   ],
+   "tenggat": "sepekan",
+   "risiko": null,
+   "biaya": null,
+   "ketat": false
+  },
+  {
+   "slide": 14,
+   "kode": "R-4",
+   "dasar": null,
+   "lembaga": [
+    "Manggala Agni",
+    "BPBD Papua Selatan"
+   ],
+   "tenggat": "sepekan",
+   "risiko": null,
+   "biaya": null,
+   "ketat": false
+  },
+  {
+   "slide": 14,
+   "kode": "R-5",
+   "dasar": null,
+   "lembaga": [
+    "Deputi Penanganan Darurat",
+    "BPBD Papua Selatan"
+   ],
+   "tenggat": "segera",
+   "risiko": null,
+   "biaya": null,
+   "ketat": false
+  },
+  {
+   "slide": 14,
+   "kode": "R-6",
+   "dasar": null,
+   "lembaga": [
+    "Pusdalops BNPB",
+    "Tim Ahli BNPB"
+   ],
+   "tenggat": "segera",
+   "risiko": null,
+   "biaya": null,
+   "ketat": false
+  }
+ ],
+ "peringatan": [
+  "D-46 bukti-msj#14 butir R-1: kurang dasar (token {{angka:...}} atau \"slide N\"); risiko atau biaya (kalimat paling sedikit tiga kata)",
+  "D-46 bukti-msj#14 butir R-2: kurang dasar (token {{angka:...}} atau \"slide N\"); risiko atau biaya (kalimat paling sedikit tiga kata)",
+  "D-46 bukti-msj#14 butir R-3: kurang dasar (token {{angka:...}} atau \"slide N\"); risiko atau biaya (kalimat paling sedikit tiga kata)",
+  "D-46 bukti-msj#14 butir R-4: kurang dasar (token {{angka:...}} atau \"slide N\"); risiko atau biaya (kalimat paling sedikit tiga kata)",
+  "D-46 bukti-msj#14 butir R-5: kurang dasar (token {{angka:...}} atau \"slide N\"); risiko atau biaya (kalimat paling sedikit tiga kata)",
+  "D-46 bukti-msj#14 butir R-6: kurang dasar (token {{angka:...}} atau \"slide N\"); risiko atau biaya (kalimat paling sedikit tiga kata)"
+ ],
+ "masukan": {
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\logo-bersama\\kris.png": "d0c25d345951e4c4a3e4444be49d0a41bf58ce3ad1d2be1cc78608ad51ab0c25",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\data\\angka.json": "111aa0b9502c3413810b617d3073d4b4112bbdcb2d0b7408dd223c686a4c0543",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\data\\msj\\bulan.csv": "4c4f9fd9f8304bd518c1817c704ea1f05d2df39abb1e3a036359568f773ad6dd",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\data\\msj\\citra-0605.png": "d9d7517918b8ffa502685036abedb9406433cca05bf0084559e8f50694658d6a",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\data\\msj\\citra-1028.png": "ca6d74dbbda0e583ac2c03f8bd15d663d87c9c95f3c6392ca816c39dc3b3be63",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\data\\msj\\dalamluar.csv": "b535bd74812c6f71e3cb676159c40ce8e304aaf840821399c210014f18a7283c",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\data\\msj\\kompleks.csv": "da78b4a9a19e9f0d0621c46ff75a2c47c2e7d2e832142f31e6a982eb2ad624e1",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\data\\msj\\peringkat.csv": "6eef7179f6eb1d64d441f7582eda035a99afe05651aa25e2797a62fb4f983035",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\data\\msj\\peta-titik.json": "27af5487479c478e02069534b252591e1aa187b7a592e551c06ae6749cfdcef7",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\data\\msj\\peta-titik.png": "c31289d3ff356fca55d3effeb1d08710b8b11ddd8d9836554861751cb044f383",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\data\\msj\\tahun.csv": "1da30c7a7ea1a496e2500868f761cb32ca26e790b3fd07e21efe31dd03ee06be",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\foto\\berakhlak-hd.png": "5c28e8ef6c0b71f02486173d71b3a052369c1e6658c2e40d7cee331b0d1f2eb9",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\foto\\udara-00.jpg": "c1194b8245f8e44f979df0799757c7f7cef198daafa7129cd26811b66312b522",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\foto\\udara-04.jpg": "99569c1a9325d65ad7580a004c9e846837eeb883bb10271f3f21f5a20e0b30b9",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\foto\\udara-06.jpg": "7eec2d83578e6d9623ad0fd8034ad7a3799a4927310ba06b79ca59093dd86d22",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\foto\\udara-23.jpg": "4a4edd853991975b45d8cee4cc2dc63dc5a34dd7a70c032fb6f766a627fe398b",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\foto\\udara-26.jpg": "e5e7155a81d0e952bd13b75745d679aa2e8625f837546d3870311e074ba7c0fe",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\logo\\sumber-bnpb.png": "40625fac249ac73b97d4b25bcd29b48961037a80bf49ae2a789877db29bacb64",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\spek\\bukti-msj.json": "a760495ffccebca6dc61d35dc2d54bfe58b8c8c00800f959545abf30699566ee",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-msj\\tema.json": "740a232e0c61db048210fd80232e4a1e3378a7fcae2710ce8988bc3bd58c9921",
+  "..\\..\\..\\..\\..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262"
+ }
+}

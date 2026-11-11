@@ -25,10 +25,10 @@ with zipfile.ZipFile(gen) as zi, zipfile.ZipFile(nama, 'w', zipfile.ZIP_DEFLATED
             x = re.sub(r'<a:t>(HOTSPOT|FIRESPOT|LUAS TERBAKAR|BELUM PADAM)\*</a:t>', r'<a:t>\1</a:t>', x)
             b = x.encode('utf-8')
         zo.writestr(it, b)
-SG = 'GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 9 Nov 2026 18.00 WIB'
+SG = 'GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 9 Nov 2026 18.00 WIB; luas terbakar hari utuh 8 Nov'
 bagian = [{'judul': 'Situasi Hotspot dan Firespot', 'label': 'Situasi', 'halaman_tetap': [1, 2]}]
 susun = [{'halaman': 1, 'bagian': 1, 'sumber': SG},
-         {'halaman': 2, 'bagian': 1, 'sumber': 'GIS BNPB, NASA FIRMS 9 Nov 18.00 WIB; PM2,5 CAMS 8 Nov; hujan model Open-Meteo, kelas BMKG'}]
+         {'halaman': 2, 'bagian': 1, 'sumber': 'GIS BNPB, NASA FIRMS 9 Nov 18.00 WIB; luas terbakar hari utuh 8 Nov; PM2,5 CAMS 8 Nov; hujan model Open-Meteo, kelas BMKG'}]
 if ADA_OPERASI:
     bagian.append({'judul': 'Operasi Penanganan', 'label': 'Operasi', 'halaman_tetap': [3]})
     susun.append({'halaman': 3, 'bagian': 2, 'sumber': 'Laporan Penanganan Karhutla Satgas, 9 Nov 2026 (kegiatan 8 Nov 2026)'})

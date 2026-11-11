@@ -32,6 +32,7 @@ const P = {
   tekanan: '<path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>',
   hujan: '<path d="M4 14.9A7 7 0 1 1 15.7 8h1.8a4.5 4.5 0 0 1 2.5 8.2"/><path d="M16 14v6M8 14v6M12 16v6"/>',
   telepon: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>',
+  jam: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',   // 11 Nov pemilik: waktu diukur (beda dari kalender = periode berlaku)
   sampah: '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
 };
 const W = {putih: '#FFFFFF', slate: '#5B7A99', merah: '#C8102E', oranye: '#D9600B', navy: '#051C2C', kering: '#8A6A2E', coklat: '#7A5230'};
@@ -40,5 +41,27 @@ const pg = await b.newPage({viewport: {width: 96, height: 96}});
 for (const [n, d] of Object.entries(P)) for (const [w, c] of Object.entries(W)) {
   await pg.setContent(`<html><body style="margin:0;background:transparent"><svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg></body></html>`);
   await (await pg.$('svg')).screenshot({path: `${KE}/ik/${n}-${w}.png`, omitBackground: true});
+}
+// 10 Nov pemilik: ikon solid untuk penanda peringatan dini di peta; WARNA diganti warna ikon
+const AWAN = 'M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z';
+const SOLID = {
+  asapsolid: `<path d="${AWAN}" fill="WARNA"/>`,
+  hujansolid: `<g transform="translate(0 -5)"><path d="${AWAN}" fill="WARNA"/></g><path d="M8 17.5v4.5M12 17.5v4.5M16 17.5v4.5" stroke-width="2.6"/>`,
+  anginsolid: `<g stroke-width="3.2">${P.angin}</g>`,
+};
+for (const [n, d] of Object.entries(SOLID)) for (const [w, c] of Object.entries(W)) {
+  await pg.setContent(`<html><body style="margin:0;background:transparent"><svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d.replaceAll('WARNA', c)}</svg></body></html>`);
+  await (await pg.$('svg')).screenshot({path: `${KE}/ik/${n}-${w}.png`, omitBackground: true});
+}
+// 11 Nov pemilik ("arah panahnya bisa disesuain sama arah sektornya"): panah 16 arah mata angin, panah<i> = i x 22,5 derajat dari utara searah jarum jam
+for (let i = 0; i < 16; i++) for (const w of ['kering', 'oranye', 'navy']) {
+  await pg.setContent(`<html><body style="margin:0;background:transparent"><svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="${W[w]}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(${i * 22.5} 12 12)"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></g></svg></body></html>`);
+  await (await pg.$('svg')).screenshot({path: `${KE}/ik/panah${i}-${w}.png`, omitBackground: true});
+}
+// 11 Nov pemilik (usul gambar mata angin): ikon jarum kompas, lingkaran + titik utara + jarum terisi menunjuk arah sektor
+for (let i = 0; i < 16; i++) {
+  const c = W.kering;
+  await pg.setContent(`<html><body style="margin:0;background:transparent"><svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10.2"/><circle cx="12" cy="1.8" r="1.3" fill="${c}" stroke="none"/><g transform="rotate(${i * 22.5} 12 12)"><path d="M12 3.6 15 12 12 10.6 9 12Z" fill="${c}"/><path d="M12 20.4 15 12 12 13.4 9 12Z" fill="#FFFFFF" stroke-width="1.2"/></g></svg></body></html>`);
+  await (await pg.$('svg')).screenshot({path: `${KE}/ik/kompas${i}-kering.png`, omitBackground: true});
 }
 await b.close(); console.log('ikon', Object.keys(P).length * Object.keys(W).length);
