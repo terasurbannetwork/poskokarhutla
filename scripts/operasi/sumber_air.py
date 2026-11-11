@@ -48,9 +48,10 @@ def tanya(lat, lon, r_m):
 def saring(el):
     out = []
     for e in el:
-        t, b, c = e.get("tags", {}), e.get("bounds"), e.get("center")
-        if not b or not c:
+        t, b = e.get("tags", {}), e.get("bounds")
+        if not b:
             continue
+        c = e.get("center") or {"lat": (b["minlat"] + b["maxlat"]) / 2, "lon": (b["minlon"] + b["maxlon"]) / 2}   # Overpass "out bb" tanpa center
         jenis = t.get("water", "river" if t.get("waterway") == "riverbank" else "-")
         if jenis not in JENIS_OK:
             continue

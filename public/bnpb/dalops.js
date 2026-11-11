@@ -617,9 +617,15 @@
     const grup = teks => h("p", {class: "db-nav-sub", teks});
     const seg = h("nav", {class: "db-nav-isi dl-seg-a", role: "tablist", "aria-label": "Jenis pantauan"}, grup("Bencana"), ...tombol.slice(0, -2), grup("Laporan"), ...tombol.slice(-2));
     seg.addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b) pilihTab(b.dataset.tab, tombol); });
-    const nav = h("aside", {class: "db-nav dl-nav"}, h("div", {class: "db-nav-id"}, h("b", {teks: "Pantau Dalops"}), h("small", {teks: "Kejadian aktif per jenis bencana"})), seg);
-    app.classList.add("db-a");
-    app.replaceChildren(nav, h("div", {class: "db-kanan"}, h("h1", {class: "dl-l1", id: "dlJudul", teks: "Pantau Dalops"}), ...Object.values(panel)));
+    const judul = h("h1", {class: "dl-l1", id: "dlJudul", teks: "Pantau Dalops"}), slot = window.MenuPusdalops?.slot();
+    if (slot) {   // panel kiri Pusdalops ada: jenis pantauan masuk di bawah butir "Pantau kejadian"
+      slot.replaceChildren(seg); app.classList.add("dl-dalam");
+      app.replaceChildren(h("div", {class: "db-kanan"}, judul, ...Object.values(panel)));
+    } else {
+      const nav = h("aside", {class: "db-nav dl-nav"}, h("div", {class: "db-nav-id"}, h("b", {teks: "Pantau Dalops"}), h("small", {teks: "Kejadian aktif per jenis bencana"})), seg);
+      app.classList.add("db-a");
+      app.replaceChildren(nav, h("div", {class: "db-kanan"}, judul, ...Object.values(panel)));
+    }
     const dariHash = () => TAB.some(([k]) => k === location.hash.slice(1)) ? location.hash.slice(1) : null;
     addEventListener("hashchange", () => { const k = dariHash(); if (k) pilihTab(k, tombol); });   // tautan /bnpb/dalops#laporan dari halaman ini juga
     pilihTab(dariHash() || "banjir", tombol);

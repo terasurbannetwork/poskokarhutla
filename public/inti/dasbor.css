@@ -117,3 +117,30 @@ thead th{text-transform:none!important;letter-spacing:0!important}
 .db-kanan .kj-k>h2:first-child{margin:0 0 2px;padding:10px 14px;background:var(--db-h2);box-shadow:inset 4px 0 0 var(--db-navy);border-bottom:1px solid var(--db-h2-garis);font-size:.9375rem;color:var(--db-navy)}
 .db-kanan .kj-k>:not(h2:first-child){margin-left:14px;margin-right:14px}
 .db-kanan .kj-s{background:#fff;border:1px solid var(--db-h2-garis)}
+/* menu atas rata kiri langsung sesudah logo, bukan di tengah (pemilik 11 Nov 2026 "harusnya di kiri") */
+@media (min-width:561px){.ad-top nav,.ad-top .mp-menu{position:static!important;left:auto!important;transform:none!important;max-width:none!important;margin:0 0 0 20px!important;flex:0 1 auto!important;justify-content:flex-start!important}}
+
+/* ---- menu Pusdalops di panel kiri (public/bnpb/menu_pusdalops.js) ---- */
+.mp-side{display:none}
+@media (min-width:901px){
+  body.mp-model-a .ad-top .mp-menu,body.mp-model-a .mp-sub{display:none!important}
+  .mp-a{display:grid;grid-template-columns:248px minmax(0,1fr);gap:16px;align-items:start;padding:12px 16px}
+  .mp-a>main{margin:0!important;max-width:none!important;min-width:0;padding:0!important}
+  .mp-side{display:flex}
+  .mp-side .db-nav-isi{gap:1px;overflow:auto}
+  .mp-side .db-nav-b{flex:0 0 auto;min-height:34px;text-decoration:none}
+  .mp-side .db-nav-ik svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+}
+.mp-slot{display:flex;flex-direction:column;gap:1px;margin:2px 0 6px 14px;padding-left:8px;border-left:2px solid var(--db-h2-garis)}
+.mp-slot:empty{display:none}
+.mp-slot .db-nav-b{min-height:32px;font-size:.8125rem}
+.mp-slot .db-nav-ik{width:22px;height:22px;border-radius:6px}
+.mp-slot .db-nav-sub{margin:6px 0 1px;padding:0 6px}
+.mp-a>.mp-side{order:0}.mp-a>main{order:1}
+/* kepala halaman L1 di halaman Pusdalops berpanel kiri */
+@media (min-width:901px){
+  .mp-a>main>.bn-judul{margin:0 0 14px}
+  .mp-a>main>.bn-judul>h1{flex:1;margin:0;padding:12px 16px;border-radius:14px;background:var(--db-navy);color:#fff;text-align:center;font-size:1.25rem}
+  .mp-a>main>.ad-judul{margin:0 0 14px;padding:10px 16px;border-radius:14px;background:var(--db-navy);justify-content:center}
+  .mp-a>main>.ad-judul h1{color:#fff;font-size:1.25rem}
+}
