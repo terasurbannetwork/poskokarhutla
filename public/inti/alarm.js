@@ -32,7 +32,7 @@
   const hariWib = ms => Math.floor((ms + 7 * 36e5) / 864e5), hariIni = ms => hariWib(ms) === hariWib(Date.now());
   const jamTgl = ms => !Number.isFinite(ms) ? "" : hariIni(ms) ? jamWib(ms) : `${fTglWib.format(ms)} ${jamWib(ms)}`;
   const bunyi = () => { try { new Audio(SUARA).play().catch(() => {}); } catch (e) {} };
-  let antre = [], tampil = false, sejak = Date.now() - 24 * 36e5, el = null;
+  let antre = [], tampil = false, sejak = Math.floor(Date.now() / 36e5) * 36e5 - 24 * 36e5,   // dibulatkan ke jam: semua tab berbagi kunci cache tepi (kuota baca D1) el = null;
   /* per tampilan halaman: opr = null (belum tahu) | true (operator berhak tulis) | false (publik); lihat = kunci yang sudah ditampilkan/ditutup di halaman ini; usai = kunci yang diketahui final;
      dikenal = kunci yang sudah pernah ada di jajak mana pun; pertama = jajak pertama belum selesai (isinya tidak berbunyi) */
   let opr = null, pertama = true, sibuk = false;
@@ -158,6 +158,7 @@ ${aksi.length ? `<div class="al-op-b">${aksi.map(k => `<button type="button" cla
       if (a?.jenis !== "karhutla" || !a.kunci || !sudah.has(a.kunci) || ada.has(a.kunci) || lihat.has(a.kunci) || usai.has(a.kunci)) continue;
       n++; const r = await cc(urlStatus(a.kunci));
       if (r.s === 401 || r.s === 403) { opr = false; break; }
+      if (r.s === 404) { usai.add(a.kunci); continue; }   // di luar wilayah/contoh: jangan ditanya ulang tiap menit
       if (r.s !== 200 || !penuh(r.j)) continue;
       opr = true;
       if (FINAL_CC.includes(r.j.status) || !r.j.aksi.length) usai.add(a.kunci); else { antre.push({...a, _s: r.j}); ada.add(a.kunci); }

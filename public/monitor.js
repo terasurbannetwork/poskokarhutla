@@ -484,5 +484,5 @@
   tombolSuara(); if (typeof PilihCantik !== "undefined") PilihCantik.pasang();
   aturSeg(); atas(); muatRingkas(); muatBj(); if (sel === "status") muatSt();
   muatSemua().then(muatTitik);   // tugas dulu supaya popup pertama sudah tahu tugas terdekat
-  setInterval(muatTitik, 5 * 6e4); setInterval(muatSemua, 2 * 6e4); setInterval(muatRingkas, 5 * 6e4); setInterval(muatBj, 30 * 6e4);
+  setInterval(muatTitik, 5 * 6e4); setInterval(() => { if (!document.hidden) muatSemua(); }, 2 * 6e4); setInterval(() => { if (!document.hidden) muatRingkas(); }, 5 * 6e4); setInterval(muatBj, 30 * 6e4);
 })();
