@@ -1918,3 +1918,13 @@
 #opsLaporan .ex-tabel thead th *,#opsLaporan .ops-tw thead th *{color:#fff!important}
 #opsLaporan .ops-tw thead th small{color:#b9c9e0!important}
 #opsLaporan .ops-tw thead th:hover{color:#9cc3ff!important}
+/* baris grup pulau di tabel base berlatar biru muda (pemilik 11 Nov 2026) */
+#opsLaporan tr.ops-grup>td{background:color-mix(in srgb,#2f6fd6 11%,#fff)!important;border-top:1px solid color-mix(in srgb,#2f6fd6 22%,#fff);border-bottom:1px solid color-mix(in srgb,#2f6fd6 22%,#fff)}
+#opsLaporan tr.ops-grup>td,#opsLaporan tr.ops-grup>td *{color:#0b2545}
+#opsLaporan tr.ops-grup>td b,#opsLaporan tr.ops-grup>td strong{font-weight:800}
+#opsLaporan tr.ops-grup:hover>td{background:color-mix(in srgb,#2f6fd6 16%,#fff)!important}
+#opsLaporan tr.ops-grup small,#opsLaporan tr.ops-grup .ops-lbl{background:#fff}
+/* label pulau di laci peta = pita seperti label grup panel kiri (pemilik 11 Nov 2026) */
+#opsLaporan .ops-laci-grup{margin:10px 0 4px;padding:7px 10px;border-radius:10px;background:color-mix(in srgb,#2f6fd6 9%,#fff)}
+#opsLaporan .ops-laci-grup .ops-lbl{gap:8px;font-size:.75rem;font-weight:800;color:#0b2545}
+#opsLaporan .ops-laci-grup .ops-lbl svg{width:20px;height:20px;padding:4px;border-radius:6px;background:#0b2545;color:#fff;box-sizing:border-box}
