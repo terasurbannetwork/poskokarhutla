@@ -8,6 +8,8 @@ const PilihCantik = {
     const w = document.createElement("div"); w.className = sel.multiple ? "pc pc-multi" : "pc"; sel.before(w); w.append(sel);
     w.insertAdjacentHTML("afterbegin", `<button type="button" class="pc-btn" aria-haspopup="listbox" aria-label="${esc(sel.getAttribute("aria-label") || "Pilih")}"><span></span><i></i></button>`);
     this.label(sel);
+    /* lebar tombol = lebar pilihan terpanjang, menu sama lebar dengan tombol (pemilik 11 Nov 2026 "lebar keduanya sesuai lebar pilihan") */
+    if (!sel.multiple) w.style.setProperty("--pc-w", Math.max(...[...sel.options].map(o => o.textContent.length), 4) + 5 + "ch");
     /* pemilih ganda yang digambar ulang oleh halaman setelah berubah: menu dibuka lagi di pemilih penggantinya */
     const r = this._ulang; if (r && sel.matches(r.k)) { this._ulang = null; this.bukaMenu(w); this.buka?.querySelector(`[data-i="${r.i}"]`)?.focus({preventScroll: true}); } },
   /* <select multiple> (pemilih provinsi, pemilik 18 Okt 2026): opsi bernilai "" / "semua" = semua; kosong berarti semua */
@@ -22,13 +24,13 @@ const PilihCantik = {
   bukaMenu(w) { this.tutup(); const sel = w.querySelector("select"), r = w.getBoundingClientRect(); w.classList.add("on");
     const m = document.createElement("div"); m.className = sel.multiple ? "pc-menu multi" : "pc-menu"; m.setAttribute("role", "listbox"); if (sel.multiple) m.setAttribute("aria-multiselectable", "true");
     m.innerHTML = [...sel.options].map((o, i) => `<button type="button" role="option" data-i="${i}" aria-selected="${o.selected}"${o.disabled ? " disabled" : ""}>${esc(o.textContent)}</button>`).join("");
-    /* banyak opsi (> 30): kolom cari di puncak menu */
-    if (!sel.multiple && sel.options.length > 30) { const q = document.createElement("input"); q.type = "search"; q.className = "pc-cari"; q.placeholder = "Cari"; q.setAttribute("aria-label", "Cari");
+    /* lebih dari 8 opsi: kolom cari di puncak menu (pemilik 11 Nov 2026 "di base agar ada fitur cari") */
+    if (!sel.multiple && sel.options.length > 8) { const q = document.createElement("input"); q.type = "search"; q.className = "pc-cari"; q.placeholder = "Cari"; q.setAttribute("aria-label", "Cari");
       q.addEventListener("input", () => { const t = q.value.trim().toLowerCase(); m.querySelectorAll("[data-i]").forEach(b => { b.style.display = b.textContent.toLowerCase().includes(t) ? "" : "none"; }); });
       m.prepend(q); }
     (document.querySelector("dialog[open]") || document.body).append(m);
     const bawah = innerHeight - r.bottom, tinggi = Math.min(320, m.scrollHeight);
-    Object.assign(m.style, {left: r.left + "px", minWidth: r.width + "px", top: (bawah < tinggi + 12 && r.top > bawah ? r.top - tinggi - 6 : r.bottom + 6) + "px"});
+    Object.assign(m.style, {left: r.left + "px", minWidth: r.width + "px", width: sel.multiple ? "" : r.width + "px", top: (bawah < tinggi + 12 && r.top > bawah ? r.top - tinggi - 6 : r.bottom + 6) + "px"});
     m.querySelector('[aria-selected="true"]')?.scrollIntoView({block: "nearest"}); (m.querySelector(".pc-cari") || m.querySelector('[aria-selected="true"], button'))?.focus({preventScroll: true});
     m.addEventListener("click", e => { const o = e.target.closest("[data-i]"); if (!o) return;
       if (sel.multiple) { const op = sel.options[+o.dataset.i], ops = [...sel.options];
