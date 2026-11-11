@@ -103,10 +103,12 @@ test("slot antre terisi run pipeline lain: tidak dispatch", async () => {
 });
 
 test("paling banyak satu workflow grup data per putaran, yang di luar grup tetap dipicu", async () => {
-  const c = [], h = await jalankan("t", J("10:00"), "a/b", tiruan(["titik.yml", "jarak_pandang.yml", "himawari.yml"], [], c));
-  assert.ok(h.find(x => x.wf === "titik.yml").dipicu); assert.ok(h.find(x => x.wf === "himawari.yml").dipicu);
-  assert.equal(h.find(x => x.wf === "jarak_pandang.yml").lewat, "slot antre terisi");
-  assert.equal(c.filter(x => x.m === "POST").length, 2);
+  // jarak_pandang.yml keluar dari grup data 11 Nov 2026 (antrean sendiri): ikut dipicu bersama himawari
+  const c = [], dasar = tiruan(["titik.yml", "jarak_pandang.yml", "himawari.yml"], [], c);
+  const h = await jalankan("t", J("10:00"), "a/b", (u, o) => u.includes("/workflows/data.yml/") && !o?.method ? (c.push({u, m: "GET"}), Response.json({workflow_runs: [run(Date.parse("2026-11-06T00:00:00Z"))]})) : dasar(u, o));
+  assert.ok(h.find(x => x.wf === "titik.yml").dipicu); assert.ok(h.find(x => x.wf === "himawari.yml").dipicu); assert.ok(h.find(x => x.wf === "jarak_pandang.yml").dipicu);
+  assert.equal(h.find(x => x.wf === "data.yml").lewat, "slot antre terisi");
+  assert.equal(c.filter(x => x.m === "POST").length, 3);
 });
 
 test("langkah jaga.yml sebelumnya sudah memicu pipeline: pemeriksa tidak memicu pipeline lagi", async () => {
