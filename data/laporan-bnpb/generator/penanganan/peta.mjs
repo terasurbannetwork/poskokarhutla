@@ -63,26 +63,28 @@ if (CHORO) {   // pemilik 10 Nov 2026 ("masih jelek dan berantakan"): label hany
   const diDarat = (x, y) => darat.some(({pts, b}) => { if (x < b[0] || x > b[2] || y < b[1] || y > b[3]) return false; let isi = false;
     for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) if ((pts[i][1] > y) !== (pts[j][1] > y) && x < (pts[j][0] - pts[i][0]) * (y - pts[i][1]) / (pts[j][1] - pts[i][1]) + pts[i][0]) isi = !isi;
     return isi; });
-  const atas = bul.slice(0, 10);
-  const bentur = (x, y, w) => x < 2 || x + w > PW + 28 || y < -6 || y + LH > PH + 6
-    || pil.some(q => x < q[0] + q[2] + 5 && x + w + 5 > q[0] && y < q[1] + LH + 5 && y + LH + 5 > q[1])
-    || atas.some(c => c.x > x - 7 && c.x < x + w + 7 && c.y > y - 7 && c.y < y + LH + 7);
+  // pemilik 11 Nov 2026: semua provinsi berhotspot berlabel; 10 besar (sesuai tabel) bernomor dan didahulukan, sisanya pil lebih kecil tanpa nomor
+  const atas = bul, KECIL = .78;
+  const bentur = (x, y, w, h) => x < 2 || x + w > PW + 28 || y < -6 || y + h > PH + 6
+    || pil.some(q => x < q[0] + q[2] + 4 && x + w + 4 > q[0] && y < q[1] + q[3] + 4 && y + h + 4 > q[1])
+    || atas.some(c => c.x > x - 6 && c.x < x + w + 6 && c.y > y - 6 && c.y < y + h + 6);
   atas.forEach((r, n) => {
-    const nm = SINGKAT[r.k] || '', v = fmt(r.t), w = nm.length * 9.6 + v.length * 10.6 + 46;
+    const no = n < 10, k = no ? 1 : KECIL, h = LH * k, nm = SINGKAT[r.k] || '', v = fmt(r.t), w = (nm.length * 9.6 + v.length * 10.6 + (no ? 46 : 24)) * k;
     let hasil = null;
     for (const dd of [14, 24, 36, 50, 68, 90, 115, 145, 180]) for (let a = 0; a < 24; a++) {
-      const ang = a * Math.PI / 12, cx = r.x + Math.cos(ang) * (dd + w / 2), cy = r.y + Math.sin(ang) * (dd + LH / 2), x = cx - w / 2, y = cy - LH / 2;
-      if (bentur(x, y, w)) continue;
-      let kena = 0; for (let i = 0; i < 6; i++) for (let j = 0; j < 3; j++) if (diDarat(x + w * (i + .5) / 6, y + LH * (j + .5) / 3)) kena++;
+      const ang = a * Math.PI / 12, cx = r.x + Math.cos(ang) * (dd + w / 2), cy = r.y + Math.sin(ang) * (dd + h / 2), x = cx - w / 2, y = cy - h / 2;
+      if (bentur(x, y, w, h)) continue;
+      let kena = 0; for (let i = 0; i < 6; i++) for (let j = 0; j < 3; j++) if (diDarat(x + w * (i + .5) / 6, y + h * (j + .5) / 3)) kena++;
       const skor = kena * 16 + dd * .9;
       if (!hasil || skor < hasil[0]) hasil = [skor, x, y];
     }
     if (!hasil) { tanpa.push(nm); return; }
-    const [, x, y] = hasil; pil.push([x, y, w]);
-    const tx = Math.max(x, Math.min(r.x, x + w)), ty = Math.max(y, Math.min(r.y, y + LH));
+    const [, x, y] = hasil; pil.push([x, y, w, h]);
+    const tx = Math.max(x, Math.min(r.x, x + w)), ty = Math.max(y, Math.min(r.y, y + h));
     garis += `<line x1="${r.x.toFixed(1)}" y1="${r.y.toFixed(1)}" x2="${tx.toFixed(1)}" y2="${ty.toFixed(1)}" class="pl"/><circle cx="${r.x.toFixed(1)}" cy="${r.y.toFixed(1)}" r="3.6" class="pd"/>`;
-    label += `<g transform="translate(${x.toFixed(1)},${y.toFixed(1)})"><rect width="${w.toFixed(1)}" height="${LH}" rx="${LH / 2}" class="pk"/><circle cx="13" cy="13" r="10" class="rk2"/>`
-      + `<text x="13" y="17.6" class="rk2-t">${n + 1}</text><text x="29" y="19" class="pt-t"><tspan class="pt-n">${nm}</tspan> <tspan class="pt-v">${v}</tspan></text></g>`;
+    label += `<g transform="translate(${x.toFixed(1)},${y.toFixed(1)}) scale(${k})"><rect width="${(w / k).toFixed(1)}" height="${LH}" rx="${LH / 2}" class="pk"/>`
+      + (no ? `<circle cx="13" cy="13" r="10" class="rk2"/><text x="13" y="17.6" class="rk2-t">${n + 1}</text>` : '')
+      + `<text x="${no ? 29 : 12}" y="19" class="pt-t"><tspan class="pt-n">${nm}</tspan> <tspan class="pt-v">${v}</tspan></text></g>`;
   });
 }
 for (const r of CHORO ? [] : bul.filter(r => r.r < 22)) {

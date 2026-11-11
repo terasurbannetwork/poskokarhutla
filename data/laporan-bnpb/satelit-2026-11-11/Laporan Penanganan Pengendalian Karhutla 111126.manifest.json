@@ -210,6 +210,10 @@
      "impor"
     ],
     [
+     "AEBBCB",
+     "impor"
+    ],
+    [
      "BFC5CC",
      "impor"
     ],
@@ -473,375 +477,6 @@
   },
   {
    "kunci": "turunan:spek#1#impor16.0",
-   "tampil": "1.916",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor19.0",
-   "tampil": "541",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor22.0",
-   "tampil": "4.315",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor25.0",
-   "tampil": "1.407",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor36.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor38.0",
-   "tampil": "544",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor39.0",
-   "tampil": "215",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor40.0",
-   "tampil": "1.373",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor41.0",
-   "tampil": "542",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor42.0",
-   "tampil": "2",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor44.0",
-   "tampil": "244",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor45.0",
-   "tampil": "91",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor46.0",
-   "tampil": "377",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor47.0",
-   "tampil": "236",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor48.0",
-   "tampil": "3",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor50.0",
-   "tampil": "210",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor51.0",
-   "tampil": "59",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor52.0",
-   "tampil": "391",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor53.0",
-   "tampil": "159",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor54.0",
-   "tampil": "4",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor56.0",
-   "tampil": "131",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor57.0",
-   "tampil": "29",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor58.0",
-   "tampil": "187",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor59.0",
-   "tampil": "74",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor60.0",
-   "tampil": "5",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor62.0",
-   "tampil": "128",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor63.0",
-   "tampil": "51",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor64.0",
-   "tampil": "340",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor65.0",
-   "tampil": "135",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor66.0",
-   "tampil": "6",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor68.0",
-   "tampil": "111",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor69.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor70.0",
-   "tampil": "226",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor71.0",
-   "tampil": "9",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor72.0",
-   "tampil": "7",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor74.0",
-   "tampil": "97",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor75.0",
-   "tampil": "54",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor76.0",
-   "tampil": "234",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor77.0",
-   "tampil": "116",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor78.0",
-   "tampil": "8",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor80.0",
-   "tampil": "95",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor81.0",
    "tampil": "11",
    "nilai": null,
    "naskah": "spek#1",
@@ -850,8 +485,8 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor82.0",
-   "tampil": "168",
+   "kunci": "turunan:spek#1#impor16.7",
+   "tampil": "2026,",
    "nilai": null,
    "naskah": "spek#1",
    "keyakinan": "resmi",
@@ -859,8 +494,8 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor83.0",
-   "tampil": "34",
+   "kunci": "turunan:spek#1#impor16.13",
+   "tampil": "18.00",
    "nilai": null,
    "naskah": "spek#1",
    "keyakinan": "resmi",
@@ -868,7 +503,304 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor84.0",
+   "kunci": "turunan:spek#1#impor18.0",
+   "tampil": "1.916",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor21.0",
+   "tampil": "541",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor24.0",
+   "tampil": "4.315",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor27.0",
+   "tampil": "1.407",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor38.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor40.0",
+   "tampil": "544",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor41.0",
+   "tampil": "215",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor42.0",
+   "tampil": "1.373",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor43.0",
+   "tampil": "542",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor44.0",
+   "tampil": "2",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor46.0",
+   "tampil": "244",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor47.0",
+   "tampil": "91",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor48.0",
+   "tampil": "377",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor49.0",
+   "tampil": "236",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor50.0",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor52.0",
+   "tampil": "210",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor53.0",
+   "tampil": "59",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor54.0",
+   "tampil": "391",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor55.0",
+   "tampil": "159",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor56.0",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor58.0",
+   "tampil": "131",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor59.0",
+   "tampil": "29",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor60.0",
+   "tampil": "187",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor61.0",
+   "tampil": "74",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor62.0",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor64.0",
+   "tampil": "128",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor65.0",
+   "tampil": "51",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor66.0",
+   "tampil": "340",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor67.0",
+   "tampil": "135",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor68.0",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor70.0",
+   "tampil": "111",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor71.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor72.0",
+   "tampil": "226",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor73.0",
    "tampil": "9",
    "nilai": null,
    "naskah": "spek#1",
@@ -877,8 +809,8 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor86.0",
-   "tampil": "61",
+   "kunci": "turunan:spek#1#impor74.0",
+   "tampil": "7",
    "nilai": null,
    "naskah": "spek#1",
    "keyakinan": "resmi",
@@ -886,8 +818,89 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor87.0",
-   "tampil": "10",
+   "kunci": "turunan:spek#1#impor76.0",
+   "tampil": "97",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor77.0",
+   "tampil": "54",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor78.0",
+   "tampil": "234",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor79.0",
+   "tampil": "116",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor80.0",
+   "tampil": "8",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor82.0",
+   "tampil": "95",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor83.0",
+   "tampil": "11",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor84.0",
+   "tampil": "168",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor85.0",
+   "tampil": "34",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor86.0",
+   "tampil": "9",
    "nilai": null,
    "naskah": "spek#1",
    "keyakinan": "resmi",
@@ -896,7 +909,7 @@
   },
   {
    "kunci": "turunan:spek#1#impor88.0",
-   "tampil": "48",
+   "tampil": "61",
    "nilai": null,
    "naskah": "spek#1",
    "keyakinan": "resmi",
@@ -905,15 +918,6 @@
   },
   {
    "kunci": "turunan:spek#1#impor89.0",
-   "tampil": "27",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor90.0",
    "tampil": "10",
    "nilai": null,
    "naskah": "spek#1",
@@ -922,8 +926,8 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor92.0",
-   "tampil": "50",
+   "kunci": "turunan:spek#1#impor90.0",
+   "tampil": "48",
    "nilai": null,
    "naskah": "spek#1",
    "keyakinan": "resmi",
@@ -931,8 +935,17 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor93.0",
-   "tampil": "0",
+   "kunci": "turunan:spek#1#impor91.0",
+   "tampil": "27",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor92.0",
+   "tampil": "10",
    "nilai": null,
    "naskah": "spek#1",
    "keyakinan": "resmi",
@@ -941,7 +954,7 @@
   },
   {
    "kunci": "turunan:spek#1#impor94.0",
-   "tampil": "72",
+   "tampil": "50",
    "nilai": null,
    "naskah": "spek#1",
    "keyakinan": "resmi",
@@ -958,35 +971,17 @@
    "dari": []
   },
   {
+   "kunci": "turunan:spek#1#impor96.0",
+   "tampil": "72",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
    "kunci": "turunan:spek#1#impor97.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor97.9",
-   "tampil": "100",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor98.0",
-   "tampil": "101",
-   "nilai": null,
-   "naskah": "spek#1",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#1#impor98.11",
-   "tampil": "250",
+   "tampil": "0",
    "nilai": null,
    "naskah": "spek#1",
    "keyakinan": "resmi",
@@ -995,7 +990,7 @@
   },
   {
    "kunci": "turunan:spek#1#impor99.0",
-   "tampil": "251",
+   "tampil": "1",
    "nilai": null,
    "naskah": "spek#1",
    "keyakinan": "resmi",
@@ -1003,8 +998,17 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor99.11",
-   "tampil": "500",
+   "kunci": "turunan:spek#1#impor99.9",
+   "tampil": "100",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor100.0",
+   "tampil": "101",
    "nilai": null,
    "naskah": "spek#1",
    "keyakinan": "resmi",
@@ -1013,6 +1017,24 @@
   },
   {
    "kunci": "turunan:spek#1#impor100.11",
+   "tampil": "250",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor101.0",
+   "tampil": "251",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor101.11",
    "tampil": "500",
    "nilai": null,
    "naskah": "spek#1",
@@ -1021,7 +1043,16 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor101.2",
+   "kunci": "turunan:spek#1#impor102.11",
+   "tampil": "500",
+   "nilai": null,
+   "naskah": "spek#1",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 11 Nov 2026 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#1#impor103.2",
    "tampil": "2026",
    "nilai": null,
    "naskah": "spek#1",
@@ -1030,7 +1061,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#1#impor102.0",
+   "kunci": "turunan:spek#1#impor104.0",
    "tampil": "1",
    "nilai": null,
    "naskah": "spek#1",
@@ -1129,7 +1160,34 @@
    "dari": []
   },
   {
+   "kunci": "turunan:spek#2#impor16.0",
+   "tampil": "11",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
    "kunci": "turunan:spek#2#impor16.7",
+   "tampil": "2026,",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor16.13",
+   "tampil": "18.00",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor18.7",
    "tampil": "6",
    "nilai": null,
    "naskah": "spek#2",
@@ -1138,7 +1196,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor20.2",
+   "kunci": "turunan:spek#2#impor22.2",
    "tampil": "2.5",
    "nilai": null,
    "naskah": "spek#2",
@@ -1147,7 +1205,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor21.2",
+   "kunci": "turunan:spek#2#impor23.2",
    "tampil": "2.5",
    "nilai": null,
    "naskah": "spek#2",
@@ -1156,7 +1214,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor22.6",
+   "kunci": "turunan:spek#2#impor24.6",
    "tampil": "24",
    "nilai": null,
    "naskah": "spek#2",
@@ -1165,7 +1223,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor22.18",
+   "kunci": "turunan:spek#2#impor24.18",
    "tampil": "11",
    "nilai": null,
    "naskah": "spek#2",
@@ -1174,7 +1232,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor22.25",
+   "kunci": "turunan:spek#2#impor24.25",
    "tampil": "12.00",
    "nilai": null,
    "naskah": "spek#2",
@@ -1183,7 +1241,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor24.0",
+   "kunci": "turunan:spek#2#impor26.0",
    "tampil": "28",
    "nilai": null,
    "naskah": "spek#2",
@@ -1192,7 +1250,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor25.7",
+   "kunci": "turunan:spek#2#impor27.7",
    "tampil": "4,4",
    "nilai": null,
    "naskah": "spek#2",
@@ -1201,7 +1259,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor27.0",
+   "kunci": "turunan:spek#2#impor29.0",
    "tampil": "17",
    "nilai": null,
    "naskah": "spek#2",
@@ -1210,7 +1268,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor28.7",
+   "kunci": "turunan:spek#2#impor30.7",
    "tampil": "2,7",
    "nilai": null,
    "naskah": "spek#2",
@@ -1219,7 +1277,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor30.0",
+   "kunci": "turunan:spek#2#impor32.0",
    "tampil": "12",
    "nilai": null,
    "naskah": "spek#2",
@@ -1228,7 +1286,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor31.7",
+   "kunci": "turunan:spek#2#impor33.7",
    "tampil": "9,4",
    "nilai": null,
    "naskah": "spek#2",
@@ -1237,7 +1295,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor33.0",
+   "kunci": "turunan:spek#2#impor35.0",
    "tampil": "8",
    "nilai": null,
    "naskah": "spek#2",
@@ -1246,7 +1304,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor34.7",
+   "kunci": "turunan:spek#2#impor36.7",
    "tampil": "7,6",
    "nilai": null,
    "naskah": "spek#2",
@@ -1255,7 +1313,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor36.0",
+   "kunci": "turunan:spek#2#impor38.0",
    "tampil": "14",
    "nilai": null,
    "naskah": "spek#2",
@@ -1264,7 +1322,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor37.7",
+   "kunci": "turunan:spek#2#impor39.7",
    "tampil": "6,3",
    "nilai": null,
    "naskah": "spek#2",
@@ -1273,7 +1331,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor39.0",
+   "kunci": "turunan:spek#2#impor41.0",
    "tampil": "28",
    "nilai": null,
    "naskah": "spek#2",
@@ -1282,7 +1340,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor40.7",
+   "kunci": "turunan:spek#2#impor42.7",
    "tampil": "3,8",
    "nilai": null,
    "naskah": "spek#2",
@@ -1291,34 +1349,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor43.0",
-   "tampil": "9",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor44.0",
-   "tampil": "10",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
    "kunci": "turunan:spek#2#impor45.0",
-   "tampil": "11",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor48.0",
    "tampil": "9",
    "nilai": null,
    "naskah": "spek#2",
@@ -1327,8 +1358,17 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor49.0",
+   "kunci": "turunan:spek#2#impor46.0",
    "tampil": "10",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor47.0",
+   "tampil": "11",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -1337,24 +1377,6 @@
   },
   {
    "kunci": "turunan:spek#2#impor50.0",
-   "tampil": "11",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor53.0",
-   "tampil": "8",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor54.0",
    "tampil": "9",
    "nilai": null,
    "naskah": "spek#2",
@@ -1363,7 +1385,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor55.0",
+   "kunci": "turunan:spek#2#impor51.0",
    "tampil": "10",
    "nilai": null,
    "naskah": "spek#2",
@@ -1372,7 +1394,25 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor58.0",
+   "kunci": "turunan:spek#2#impor52.0",
+   "tampil": "11",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor55.0",
+   "tampil": "8",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor56.0",
    "tampil": "9",
    "nilai": null,
    "naskah": "spek#2",
@@ -1381,7 +1421,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor59.0",
+   "kunci": "turunan:spek#2#impor57.0",
    "tampil": "10",
    "nilai": null,
    "naskah": "spek#2",
@@ -1391,564 +1431,6 @@
   },
   {
    "kunci": "turunan:spek#2#impor60.0",
-   "tampil": "11",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor61.0",
-   "tampil": "135",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor62.1",
-   "tampil": "72",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor63.0",
-   "tampil": "699",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor64.1",
-   "tampil": "418",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor65.0",
-   "tampil": "544",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor66.1",
-   "tampil": "22",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor67.0",
-   "tampil": "88",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor68.1",
-   "tampil": "48",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor69.0",
-   "tampil": "288",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor70.1",
-   "tampil": "227",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor71.0",
-   "tampil": "215",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor72.1",
-   "tampil": "25",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor73.0",
-   "tampil": "950",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor74.1",
-   "tampil": "26",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor75.0",
-   "tampil": "293",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor76.1",
-   "tampil": "69",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor77.0",
-   "tampil": "1.373",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor78.1",
-   "tampil": "369",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor79.0",
-   "tampil": "214",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor80.1",
-   "tampil": "54",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor81.0",
-   "tampil": "677",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor82.1",
-   "tampil": "216",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor83.0",
-   "tampil": "542",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor84.1",
-   "tampil": "20",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor85.0",
-   "tampil": "320",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor86.1",
-   "tampil": "3",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor87.0",
-   "tampil": "182",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor88.1",
-   "tampil": "43",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor89.0",
-   "tampil": "244",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor90.1",
-   "tampil": "34",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor91.0",
-   "tampil": "96",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor92.1",
-   "tampil": "19",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor93.0",
-   "tampil": "37",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor94.1",
-   "tampil": "61",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor95.0",
-   "tampil": "91",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor96.1",
-   "tampil": "146",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor97.0",
-   "tampil": "662",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor98.1",
-   "tampil": "6",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor99.0",
-   "tampil": "458",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor100.1",
-   "tampil": "31",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor101.0",
-   "tampil": "377",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor102.1",
-   "tampil": "18",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor103.0",
-   "tampil": "238",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor104.1",
-   "tampil": "24",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor105.0",
-   "tampil": "115",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor106.1",
-   "tampil": "52",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor107.0",
-   "tampil": "236",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor108.1",
-   "tampil": "105",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor109.0",
-   "tampil": "148",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor110.1",
-   "tampil": "33",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor111.0",
-   "tampil": "179",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor112.1",
-   "tampil": "21",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor113.0",
-   "tampil": "210",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor114.1",
-   "tampil": "17",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor115.0",
-   "tampil": "43",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor116.1",
-   "tampil": "54",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor117.0",
-   "tampil": "56",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor118.1",
-   "tampil": "30",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor119.0",
-   "tampil": "59",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor120.1",
-   "tampil": "5",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor121.0",
-   "tampil": "516",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor122.1",
    "tampil": "9",
    "nilai": null,
    "naskah": "spek#2",
@@ -1957,8 +1439,566 @@
    "dari": []
   },
   {
+   "kunci": "turunan:spek#2#impor61.0",
+   "tampil": "10",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor62.0",
+   "tampil": "11",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor63.0",
+   "tampil": "135",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor64.1",
+   "tampil": "72",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor65.0",
+   "tampil": "699",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor66.1",
+   "tampil": "418",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor67.0",
+   "tampil": "544",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor68.1",
+   "tampil": "22",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor69.0",
+   "tampil": "88",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor70.1",
+   "tampil": "48",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor71.0",
+   "tampil": "288",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor72.1",
+   "tampil": "227",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor73.0",
+   "tampil": "215",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor74.1",
+   "tampil": "25",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor75.0",
+   "tampil": "950",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor76.1",
+   "tampil": "26",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor77.0",
+   "tampil": "293",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor78.1",
+   "tampil": "69",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor79.0",
+   "tampil": "1.373",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor80.1",
+   "tampil": "369",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor81.0",
+   "tampil": "214",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor82.1",
+   "tampil": "54",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor83.0",
+   "tampil": "677",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor84.1",
+   "tampil": "216",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor85.0",
+   "tampil": "542",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor86.1",
+   "tampil": "20",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor87.0",
+   "tampil": "320",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor88.1",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor89.0",
+   "tampil": "182",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor90.1",
+   "tampil": "43",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor91.0",
+   "tampil": "244",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor92.1",
+   "tampil": "34",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor93.0",
+   "tampil": "96",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor94.1",
+   "tampil": "19",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor95.0",
+   "tampil": "37",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor96.1",
+   "tampil": "61",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor97.0",
+   "tampil": "91",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor98.1",
+   "tampil": "146",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor99.0",
+   "tampil": "662",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor100.1",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor101.0",
+   "tampil": "458",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor102.1",
+   "tampil": "31",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor103.0",
+   "tampil": "377",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor104.1",
+   "tampil": "18",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor105.0",
+   "tampil": "238",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor106.1",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor107.0",
+   "tampil": "115",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor108.1",
+   "tampil": "52",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor109.0",
+   "tampil": "236",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor110.1",
+   "tampil": "105",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor111.0",
+   "tampil": "148",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor112.1",
+   "tampil": "33",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor113.0",
+   "tampil": "179",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor114.1",
+   "tampil": "21",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor115.0",
+   "tampil": "210",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor116.1",
+   "tampil": "17",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor117.0",
+   "tampil": "43",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor118.1",
+   "tampil": "54",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor119.0",
+   "tampil": "56",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor120.1",
+   "tampil": "30",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor121.0",
+   "tampil": "59",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor122.1",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
    "kunci": "turunan:spek#2#impor123.0",
-   "tampil": "263",
+   "tampil": "516",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -1967,7 +2007,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor124.1",
-   "tampil": "49",
+   "tampil": "9",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -1976,7 +2016,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor125.0",
-   "tampil": "391",
+   "tampil": "263",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -1994,7 +2034,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor127.0",
-   "tampil": "101",
+   "tampil": "391",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2003,7 +2043,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor128.1",
-   "tampil": "63",
+   "tampil": "49",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2012,7 +2052,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor129.0",
-   "tampil": "158",
+   "tampil": "101",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2021,195 +2061,6 @@
   },
   {
    "kunci": "turunan:spek#2#impor130.1",
-   "tampil": "56",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor131.0",
-   "tampil": "159",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor132.1",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor133.0",
-   "tampil": "106",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor134.1",
-   "tampil": "19",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor135.0",
-   "tampil": "84",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor136.1",
-   "tampil": "21",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor137.0",
-   "tampil": "131",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor138.1",
-   "tampil": "56",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor139.0",
-   "tampil": "27",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor140.1",
-   "tampil": "4",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor141.0",
-   "tampil": "21",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor142.1",
-   "tampil": "22",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor143.0",
-   "tampil": "29",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor144.1",
-   "tampil": "38",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor145.0",
-   "tampil": "195",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor146.1",
-   "tampil": "49",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor147.0",
-   "tampil": "193",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor148.1",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor149.0",
-   "tampil": "187",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor150.1",
-   "tampil": "3",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor151.0",
    "tampil": "63",
    "nilai": null,
    "naskah": "spek#2",
@@ -2218,8 +2069,8 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor152.1",
-   "tampil": "24",
+   "kunci": "turunan:spek#2#impor131.0",
+   "tampil": "158",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2227,115 +2078,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor153.0",
-   "tampil": "54",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor154.1",
-   "tampil": "14",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor155.0",
-   "tampil": "74",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor156.1",
-   "tampil": "37",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor157.0",
-   "tampil": "154",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor158.1",
-   "tampil": "19",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor159.0",
-   "tampil": "150",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor160.1",
-   "tampil": "3",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor161.0",
-   "tampil": "128",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor162.1",
-   "tampil": "15",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor163.0",
-   "tampil": "59",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor164.1",
-   "tampil": "19",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor165.0",
+   "kunci": "turunan:spek#2#impor132.1",
    "tampil": "56",
    "nilai": null,
    "naskah": "spek#2",
@@ -2344,268 +2087,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor166.1",
-   "tampil": "5",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor167.0",
-   "tampil": "51",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor168.1",
-   "tampil": "9",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor169.0",
-   "tampil": "370",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor170.1",
-   "tampil": "40",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor171.0",
-   "tampil": "322",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor172.1",
-   "tampil": "13",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor173.0",
-   "tampil": "340",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor174.1",
-   "tampil": "6",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor175.0",
-   "tampil": "162",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor176.1",
-   "tampil": "21",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor177.0",
-   "tampil": "146",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor178.1",
-   "tampil": "10",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor179.0",
-   "tampil": "135",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor180.1",
-   "tampil": "8",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor181.0",
-   "tampil": "78",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor182.1",
-   "tampil": "49",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor183.0",
-   "tampil": "106",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor184.1",
-   "tampil": "36",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor185.0",
-   "tampil": "111",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor186.1",
-   "tampil": "5",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor187.0",
-   "tampil": "22",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor188.1",
-   "tampil": "66",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor189.0",
-   "tampil": "28",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor190.1",
-   "tampil": "27",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor191.0",
-   "tampil": "1",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor192.1",
-   "tampil": "96",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor193.0",
-   "tampil": "349",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor194.1",
-   "tampil": "29",
-   "nilai": null,
-   "naskah": "spek#2",
-   "keyakinan": "resmi",
-   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
-   "dari": []
-  },
-  {
-   "kunci": "turunan:spek#2#impor195.0",
+   "kunci": "turunan:spek#2#impor133.0",
    "tampil": "159",
    "nilai": null,
    "naskah": "spek#2",
@@ -2614,7 +2096,196 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor196.1",
+   "kunci": "turunan:spek#2#impor134.1",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor135.0",
+   "tampil": "106",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor136.1",
+   "tampil": "19",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor137.0",
+   "tampil": "84",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor138.1",
+   "tampil": "21",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor139.0",
+   "tampil": "131",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor140.1",
+   "tampil": "56",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor141.0",
+   "tampil": "27",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor142.1",
+   "tampil": "4",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor143.0",
+   "tampil": "21",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor144.1",
+   "tampil": "22",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor145.0",
+   "tampil": "29",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor146.1",
+   "tampil": "38",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor147.0",
+   "tampil": "195",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor148.1",
+   "tampil": "49",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor149.0",
+   "tampil": "193",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor150.1",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor151.0",
+   "tampil": "187",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor152.1",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor153.0",
+   "tampil": "63",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor154.1",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor155.0",
    "tampil": "54",
    "nilai": null,
    "naskah": "spek#2",
@@ -2623,8 +2294,8 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor197.0",
-   "tampil": "226",
+   "kunci": "turunan:spek#2#impor156.1",
+   "tampil": "14",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2632,8 +2303,8 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor198.1",
-   "tampil": "42",
+   "kunci": "turunan:spek#2#impor157.0",
+   "tampil": "74",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2641,8 +2312,8 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor199.0",
-   "tampil": "54",
+   "kunci": "turunan:spek#2#impor158.1",
+   "tampil": "37",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2650,8 +2321,8 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor200.1",
-   "tampil": "66",
+   "kunci": "turunan:spek#2#impor159.0",
+   "tampil": "154",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2659,7 +2330,52 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor201.0",
+   "kunci": "turunan:spek#2#impor160.1",
+   "tampil": "19",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor161.0",
+   "tampil": "150",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor162.1",
+   "tampil": "3",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor163.0",
+   "tampil": "128",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor164.1",
+   "tampil": "15",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor165.0",
    "tampil": "59",
    "nilai": null,
    "naskah": "spek#2",
@@ -2668,8 +2384,332 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor202.1",
+   "kunci": "turunan:spek#2#impor166.1",
+   "tampil": "19",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor167.0",
+   "tampil": "56",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor168.1",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor169.0",
+   "tampil": "51",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor170.1",
    "tampil": "9",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor171.0",
+   "tampil": "370",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor172.1",
+   "tampil": "40",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor173.0",
+   "tampil": "322",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor174.1",
+   "tampil": "13",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor175.0",
+   "tampil": "340",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor176.1",
+   "tampil": "6",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor177.0",
+   "tampil": "162",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor178.1",
+   "tampil": "21",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor179.0",
+   "tampil": "146",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor180.1",
+   "tampil": "10",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor181.0",
+   "tampil": "135",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor182.1",
+   "tampil": "8",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor183.0",
+   "tampil": "78",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor184.1",
+   "tampil": "49",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor185.0",
+   "tampil": "106",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor186.1",
+   "tampil": "36",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor187.0",
+   "tampil": "111",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor188.1",
+   "tampil": "5",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor189.0",
+   "tampil": "22",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor190.1",
+   "tampil": "66",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor191.0",
+   "tampil": "28",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor192.1",
+   "tampil": "27",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor193.0",
+   "tampil": "1",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor194.1",
+   "tampil": "96",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor195.0",
+   "tampil": "349",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor196.1",
+   "tampil": "29",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor197.0",
+   "tampil": "159",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor198.1",
+   "tampil": "54",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor199.0",
+   "tampil": "226",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor200.1",
+   "tampil": "42",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor201.0",
+   "tampil": "54",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor202.1",
+   "tampil": "66",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2678,7 +2718,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor203.0",
-   "tampil": "9",
+   "tampil": "59",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2687,7 +2727,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor204.1",
-   "tampil": "85",
+   "tampil": "9",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2696,7 +2736,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor205.0",
-   "tampil": "941",
+   "tampil": "9",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2704,8 +2744,8 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor206.0",
-   "tampil": "1.400",
+   "kunci": "turunan:spek#2#impor206.1",
+   "tampil": "85",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2714,7 +2754,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor207.0",
-   "tampil": "1.368",
+   "tampil": "941",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2723,7 +2763,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor208.0",
-   "tampil": "335",
+   "tampil": "1.400",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2732,7 +2772,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor209.0",
-   "tampil": "486",
+   "tampil": "1.368",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2741,7 +2781,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor210.0",
-   "tampil": "446",
+   "tampil": "335",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2750,7 +2790,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor211.0",
-   "tampil": "3.042",
+   "tampil": "486",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2759,7 +2799,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor212.0",
-   "tampil": "1.688",
+   "tampil": "446",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2768,7 +2808,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor213.0",
-   "tampil": "2.894",
+   "tampil": "3.042",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2777,7 +2817,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor214.0",
-   "tampil": "832",
+   "tampil": "1.688",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2786,7 +2826,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor215.0",
-   "tampil": "1.209",
+   "tampil": "2.894",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2795,7 +2835,7 @@
   },
   {
    "kunci": "turunan:spek#2#impor216.0",
-   "tampil": "1.155",
+   "tampil": "832",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2803,8 +2843,8 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor217.2",
-   "tampil": "2026",
+   "kunci": "turunan:spek#2#impor217.0",
+   "tampil": "1.209",
    "nilai": null,
    "naskah": "spek#2",
    "keyakinan": "resmi",
@@ -2813,6 +2853,24 @@
   },
   {
    "kunci": "turunan:spek#2#impor218.0",
+   "tampil": "1.155",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor219.2",
+   "tampil": "2026",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari GIS BNPB, NASA FIRMS 11 Nov 18.00 WIB; Pengolahan data sistem BNPB dari luas terbakar hari utuh 10 Nov; Pengolahan data sistem BNPB dari PM2,5 CAMS 10 Nov; Pengolahan data sistem BNPB dari hujan model Open-Meteo, kelas BMKG",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor220.0",
    "tampil": "2",
    "nilai": null,
    "naskah": "spek#2",
@@ -3210,6 +3268,7 @@
    "spek#2",
    "impor_warna",
    {
+    "AFC3DA": "AEBBCB",
     "F7F8FA": "F3F5F8",
     "7E1F1F": "8F3F07",
     "C7811B": "F28C28",
@@ -3226,7 +3285,7 @@
   "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\logo\\sumber-bnpb.png": "40625fac249ac73b97d4b25bcd29b48961037a80bf49ae2a789877db29bacb64",
   "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\tema.json": "e01beb88bdb9217a75fcde1568ad206fcd48c6e18589e5a06fa067b73e706255",
   "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262",
-  "isi.pptx": "663bee1f577410ca3e81d5e8dbcc8c1dd10a4790cee38e0390a9cdb1645dadae",
-  "spek.json": "1f3fa98a547e19356ea97c49b24cbdf91fe2c193e30fecb85e022c0edb2f4f80"
+  "isi.pptx": "cf2de7f02851f27cdbc41c1c784dfe6189672c977b98deb1bbf964aebfdd50ff",
+  "spek.json": "5f136b36ef0670dd22b9af2b5789d2dd272bd6c2b63fea35cb1d6cb8f1260dd7"
  }
 }
