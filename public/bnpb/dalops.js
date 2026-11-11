@@ -190,6 +190,32 @@
         angka: [[lama ? F(lama) : null, "hari berturut", "tunggu"], [H.NAMA_LEVEL[p.lv], "prakiraan tertinggi", "peringatan"]]})).addTo(peta); });
     peta.on("mouseleave", "peringatan", () => { pop.remove(); peta.getCanvas().style.cursor = ""; });
   }
+  /* gempa BMKG terkini di peta Gempa (pemilik 11 Nov 2026 "kan sering ada peringatan gempa"): katalog InaTEWS publik
+     /gempa/data/inatews_katalog.json (pipeline gempa), dalam jendela periode; bulatan sebesar magnitudo, warna kelas magnitudo; saring M >= 5 */
+  const KELAS_M = [[6, "#c0392b", "M 6 ke atas"], [5, "#e8743b", "M 5 sampai 5,9"], [4, "#e0b400", "M 4 sampai 4,9"], [0, "#7f8ea3", "di bawah M 4"]];
+  async function pasangGempaBmkg(peta, wadah, legenda) {
+    let d; try { d = await (await fetch("/gempa/data/inatews_katalog.json")).json(); } catch (e) { return; }
+    const kol = d.kolom, ix = n => kol.indexOf(n), batas = Date.now() / 1e3 - periode * 86400;
+    const gm = (d.baris || []).filter(r => r[ix("t")] >= batas).sort((a, b) => a[ix("m")] - b[ix("m")]);
+    if (!gm.length || peta.getSource("gempa-bmkg")) return;
+    peta.addSource("gempa-bmkg", {type: "geojson", data: {type: "FeatureCollection", features: gm.map((r, i) => ({type: "Feature", id: i, geometry: {type: "Point", coordinates: [r[ix("lon")], r[ix("lat")]]}, properties: {m: r[ix("m")], i}}))}});
+    peta.addLayer({id: "gempa-bmkg", type: "circle", source: "gempa-bmkg", paint: {
+      "circle-color": ["step", ["get", "m"], KELAS_M[3][1], 4, KELAS_M[2][1], 5, KELAS_M[1][1], 6, KELAS_M[0][1]],
+      "circle-radius": ["interpolate", ["linear"], ["get", "m"], 2, 3, 4, 5.5, 5, 8.5, 6, 12, 7, 17], "circle-opacity": .85, "circle-stroke-color": "#fff", "circle-stroke-width": 1.2}});
+    const wib = t => new Date((t + 7 * 3600) * 1e3).toISOString().replace("T", " ").slice(0, 16).replace(/^(\d+)-(\d+)-(\d+)/, (_, y, mo, dd) => `${+dd} ${H.tglPendek(`${y}-${mo}-${dd}`).split(" ")[1]}`) + " WIB";
+    const pop = new maplibregl.Popup({closeButton: false, closeOnClick: false, offset: 10, className: "dl-popup"});
+    peta.on("mouseenter", "gempa-bmkg", e => { peta.getCanvas().style.cursor = "default"; const r = gm[e.features[0].properties.i];
+      pop.setLngLat(e.features[0].geometry.coordinates).setDOMContent(kartuMini({ik: "gempabumi", nama: "Gempa M " + String(r[ix("m")]).replace(".", ","), wilayah: r[ix("tempat")],
+        pil: [label(wib(r[ix("t")]), "kalender", "garis")],
+        angka: [[String(r[ix("m")]).replace(".", ","), "magnitudo", "gempabumi"], [F(Math.round(r[ix("dalam")])), "km kedalaman", "pin"]]})).addTo(peta); });
+    peta.on("mouseleave", "gempa-bmkg", () => { pop.remove(); peta.getCanvas().style.cursor = ""; });
+    const saring = wadah.querySelector(".dl-saring");
+    if (saring) { const b = h("button", {type: "button", class: "dl-saring-btn dl-saring-m5", "aria-pressed": "false"}, ikon("gempabumi"), "M ≥ 5");
+      b.addEventListener("click", () => { const on = b.getAttribute("aria-pressed") !== "true"; b.setAttribute("aria-pressed", String(on)); peta.setFilter("gempa-bmkg", on ? [">=", ["get", "m"], 5] : null); });
+      saring.append(b); }
+    legenda.append(...KELAS_M.filter(([m], i) => gm.some(r => (i === 3 ? r[ix("m")] < 4 : r[ix("m")] >= m && (i === 0 || r[ix("m")] < KELAS_M[i - 1][0])))).map(([, w, t]) => {
+      const sp = h("span", {class: "dl-leg dl-leg-gm", teks: t}); sp.style.setProperty("--w", w); return sp; }));
+  }
   async function gambarPeta(wadah, pekan, kontrol, sk = {}, hariSt = [], Jx = J) {
     const J = Jx;   // label jenis saat peta diminta, bukan tab yang sedang tampil sesudah fetch selesai
     if (!window.maplibregl) { wadah.replaceChildren(kosong("peringatan", "Peta gagal dimuat, coba muat ulang.")); return; }
@@ -255,6 +281,7 @@
           peta.addLayer({id: "batas-prov", type: "line", source: "batas-prov", paint: {"line-color": "#0b2545", "line-width": ["interpolate", ["linear"], ["zoom"], 4, .9, 8, 2], "line-opacity": .75}});
         }
         pasangPeringatan(peta, waspada, semuaKab, SEMUA_PROV, hariSt, warna);
+        if (J.k === "gempa") pasangGempaBmkg(peta, wadah, legenda);
         terapSaring();   // penanda dipasang belakangan: saring yang sudah dipilih ikut berlaku
       });
       let sorot = null;
@@ -587,13 +614,13 @@
     const jml = f => pekan.some(x => x[f] != null) ? pekan.reduce((a, x) => a + (x[f] || 0), 0) : null, belum = pekan.filter(x => !x.surut).length;
     const siaga = Object.entries(sk).filter(([k, x]) => !sudah.has(k) && Math.max(0, ...x.b.map(l => l ?? 0)) >= 2).length;
     const ubin = (ik, nama, nilai, sub, kelas = "") => h("div", {class: "db-ubin " + kelas, title: sub ? `${nama}: ${nilai} ${sub}` : nama}, h("header", null, h("i", null, ikon(ik)), h("span", {teks: nama})), h("b", {teks: nilai}), sub ? h("small", {teks: sub}) : null);
-    return h("div", {class: "db-ubin-grid"},
+    return h("div", {class: "db-ubin-grid" + (J.pra === false ? " k5" : "")},
       ubin(J.ik || "banjir", "Kab/kota terdampak", F(pekan.length), kataPeriode()),
       ubin("peringatan", J.tidak || "Belum selesai", F(belum), pekan.length ? `dari ${F(pekan.length)} kab/kota` : "–", belum ? "merah" : ""),
       ubin("personel", "Jiwa terdampak", jml("jiwa") == null ? "–" : F(jml("jiwa")), "laporan Pusdalops"),
       ubin("personel", "Mengungsi", jml("mengungsi") == null ? "–" : F(jml("mengungsi")), "jiwa"),
       ubin("pin", "Provinsi", F(prov.length), "dengan kejadian"),
-      ubin("peringatan", "Prakiraan Siaga/Awas", F(siaga), "kab/kota belum terdampak", siaga ? "oranye" : ""));
+      J.pra === false ? null : ubin("peringatan", "Prakiraan Siaga/Awas", F(siaga), "kab/kota belum terdampak", siaga ? "oranye" : ""));   // jenis tanpa prakiraan: ubin ini dibuang
   }
   /* pemilih periode di atas (pemilik 11 Nov 2026, rujukan /operasi): jendela hari logbook untuk kejadian, ubin, peta, dan tabel */
   const PERIODE = [[1, "Hari ini", "kalender"], [3, "3 hari", "kalender"], [7, "Sepekan", "kalender"], [30, "30 hari", "kalender"]];
@@ -679,7 +706,7 @@
     const grup = (teks, ik) => window.MenuPusdalops?.grup ? window.MenuPusdalops.grup(teks, ik) : h("p", {class: "db-nav-sub", teks});
     const seg = h("nav", {class: "db-nav-isi dl-seg-a", role: "tablist", "aria-label": "Jenis pantauan"}, grup("Bencana", "banjir"), ...tombol.slice(0, -2), grup("Laporan", "simpan"), ...tombol.slice(-2));
     seg.addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b) pilihTab(b.dataset.tab, tombol); });
-    const judul = h("h1", {class: "dl-l1", id: "dlJudul", teks: "Pantau Dalops"}), slot = window.MenuPusdalops?.pakaiSlot?.();
+    const judul = h("h1", {class: "dl-l1", id: "dlJudul", teks: "Pantau Dalops", hidden: true}), slot = window.MenuPusdalops?.pakaiSlot?.();
     if (slot) {
       /* pemilik 11 Nov 2026: "pilihan bencananya ada di dalam maps": pil jenis bencana di pojok peta tiap panel (panel tanpa peta: di puncak panel);
          panel kiri berisi seksi panel yang tampil + grup Laporan */
