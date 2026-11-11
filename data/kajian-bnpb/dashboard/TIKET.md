@@ -30,6 +30,18 @@ Kerjakan urut. Tiap tiket layar: baca dokumen "baca dulu" modulnya (AGENTS §2),
 | DB-20 | `/prediksi` | baca `data/kajian-bnpb/tangga/` |
 | DB-21 | `/pipa` (SIPPA) | KEPUTUSAN-SIPPA menang; hanya token, kepala, pil, tabel (Q3) |
 
+## Antrean tambahan (pemilik 11 Nov 2026 "Masukkan antrean"), sesudah DB-21
+
+| Tiket | Layar | Catatan |
+| ----- | ----- | ------- |
+| DB-22 | `/admin/command-center` | paling dekat ke `/operasi` |
+| DB-23 | `/admin/pimpinan`, `/admin/kinerja` | calon integrasi I5 |
+| DB-24 | `/admin/posko`, `/admin/instansi`, `/admin/inventaris`, `/admin/korban` | tabel berkelompok, saringan, pil |
+| DB-25 | `/bnpb/kebutuhan`, `/bnpb/risiko`, `/risiko-kebakaran`, `/meja` | calon integrasi I6 |
+| DB-26 | `/bnpb/pendataan`, `/bnpb/relawan` | daftar dan rekap |
+
+Tidak ikut sistem ini: layar publik per bencana dan peta utama (gaya Insight, peta penuh), `/ai`, `/akademisi`, `/direktori`.
+
 ## Integrasi (D26), usulan menunggu persetujuan pemilik
 
 Usulan di bawah baru dari nama dan peran layar; isi tiap layar belum diperiksa. Diperiksa di tiket layarnya sebelum digabung.
@@ -40,3 +52,6 @@ Usulan di bawah baru dari nama dan peran layar; isi tiap layar belum diperiksa. 
 | I2 | `/bnpb/kinerja`, `/bnpb/sitrep`, `/bnpb/siaga`, `/bnpb/logbook` jadi satu layar Pusdalops berpanel seksi kiri (Siaga, Sitrep, Logbook, Kinerja) |
 | I3 | `/bnpb/rapor-sumber` dan `/bnpb/silang` jadi satu layar Sumber Data (seksi Rapor sumber, Beda sumber) |
 | I4 | `/bnpb/dalops` menampung I2 bila isinya beririsan (keputusan sesudah DB-10 dibaca) |
+| I5 | `/admin/pimpinan`, `/admin/kinerja`, `/bnpb/kinerja` jadi satu layar Kinerja |
+| I6 | `/bnpb/kebutuhan`, `/bnpb/risiko`, `/risiko-kebakaran`, `/bnpb/siaga` jadi satu layar Perencanaan berpanel seksi kiri |
+| I1 | sudah terjadi: `/bnpb/operasi-lapangan` dialihkan ke `/operasi` (mode Darat) |
