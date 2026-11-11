@@ -1138,3 +1138,18 @@
 /* lebar penuh kiri-kanan, tanpa margin kosong di layar lebar (pemilik 11 Nov 2026 "dibuat full aja kanan kiri") */
 .wrap#opsLaporan{max-width:none;padding-left:20px;padding-right:20px}
 @media (max-width:640px){.wrap#opsLaporan{padding-left:10px;padding-right:10px}}
+/* tanpa wadah di dalam wadah (pemilik 11 Nov 2026): kepala isi dan kartu langsung di atas latar halaman, pemisahnya jarak 20px dan bayang kartu */
+#opsLaporan .ops-utama>.ops-alat,#opsLaporan .ops-wadah{padding:0;background:none;border:0;border-radius:0;box-shadow:none}
+#opsLaporan .ops-utama>.ops-alat{gap:16px}
+#opsLaporan .ops-wadah>.ops-kartu{box-shadow:0 1px 2px rgb(11 37 69 / .06),0 6px 18px rgb(11 37 69 / .06)}
+#opsLaporan .ops-ringkas-slot{margin-top:0}
+/* maksimal: panel seksi menempel di tepi kiri setinggi layar, isi sampai tepi kanan (pemilik 11 Nov 2026 "full kan lagi") */
+@media (min-width:901px){
+  .wrap#opsLaporan{padding-left:0;padding-right:16px}
+  #opsLaporan .ops-a{gap:20px}
+  #opsLaporan .ops-nav{height:calc(100vh - 58px);border-radius:0 18px 18px 0;border-left:0;margin-top:-16px}
+}
+@media (min-width:901px){
+  .wrap#opsLaporan{padding-left:4px;padding-right:4px}
+  #opsLaporan .ops-nav{border-radius:18px;border-left:1px solid var(--line);margin-top:0;height:calc(100vh - 96px)}
+}
