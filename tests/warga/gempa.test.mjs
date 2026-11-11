@@ -190,11 +190,14 @@ uji("kejadian bergabung BMKG sesudah USGS: id utama ikut berpindah ke id BMKG", 
 });
 
 uji("GET /api/gempa/terbaru: bentuk JSON, tsunami.kode null vs 0, tanpa kolom internal", async () => {
+  // fixture bertanggal tetap (gempa tertua yang diperiksa: POHUWATO 2026-10-11T21:34:53Z); geser t per hari utuh supaya tetap di jendela 720 jam
+  const off = Math.max(0, Math.ceil((Date.now() - Date.parse("2026-10-11T21:34:53Z") - 700 * JAM) / HARI)) * HARI;
+  if (off) await DB.prepare("UPDATE gempa SET t = t + ?").bind(off).run();
   const r = await api("/api/gempa/terbaru?jam=720");
   assert.equal(r.status, 200); assert.ok(r.j.n > 10 && r.j.n === r.j.gempa.length); assert.equal(r.j.jam, 720); assert.ok(Date.parse(r.j.dibuat));
   const bogor = r.j.gempa.find(x => x.id.endsWith("|-6.69,106.63"));
   assert.deepEqual(Object.keys(bogor).sort(), ["dalam", "dirasakan", "id", "kab", "kej", "lat", "lon", "m", "mmi_maks", "mtipe", "pager", "prov", "shakemap", "sumber", "tsunami", "waktu", "wilayah"]);
-  assert.equal(bogor.tsunami.kode, null); assert.equal(bogor.shakemap, "https://cdn.bmkg.go.id/20261016102155.mmi.jpg"); assert.equal(bogor.waktu, "2026-10-16T03:21:55.000Z");
+  assert.equal(bogor.tsunami.kode, null); assert.equal(bogor.shakemap, "https://cdn.bmkg.go.id/20261016102155.mmi.jpg"); assert.equal(bogor.waktu, new Date(Date.parse("2026-10-16T03:21:55Z") + off).toISOString());
   assert.equal(r.j.gempa.find(x => x.wilayah.includes("POHUWATO")).tsunami.kode, 0);
   const urut = r.j.gempa.map(x => x.waktu); assert.deepEqual(urut, [...urut].sort().reverse());
   assert.ok(!r.teks.includes("diperbarui") && !r.teks.includes("potensi_teks"));
