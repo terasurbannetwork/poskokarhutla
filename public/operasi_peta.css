@@ -445,3 +445,6 @@
 #opsLaporan .ops-kp li[data-j="patroli"] .ops-kp-jenis .ops-lbl,#opsLaporan .ops-kp li[data-j="patroli"] .ops-kp-jenis .ops-lbl svg{background:color-mix(in srgb,#0f9488 12%,transparent);color:#0b6f66}
 #opsLaporan .ops-kp li[data-j="wb"] .ops-kp-jenis .ops-lbl,#opsLaporan .ops-kp li[data-j="wb"] .ops-kp-jenis .ops-lbl svg{background:color-mix(in srgb,#2f6fd6 11%,transparent);color:#1f56ad}
 #opsLaporan .ops-kp li[data-j] .ops-kp-jenis .ops-lbl svg{background:none}
+/* pil kategori kartu = ikon saja (eyebrow() di public/operasi_laporan.js) */
+#opsLaporan .ex-std .ex-ey.ops-ey-ik{display:inline-grid;place-items:center;width:30px;height:30px;padding:0;border-radius:9px}
+#opsLaporan .ex-std .ex-ey.ops-ey-ik svg{width:16px;height:16px}

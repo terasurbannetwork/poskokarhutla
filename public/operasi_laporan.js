@@ -22,7 +22,17 @@
   const IK = {udara: '<path d="M10 14 3 12l1-2 7 1 4-6h2l-2 7 5 1 1-2h2l-1 4 1 4h-2l-1-2-5 1 2 7h-2l-4-6-7 1-1-2z"/>',
     darat: '<circle cx="9" cy="7" r="3"/><path d="M3 21v-1a6 6 0 0 1 12 0v1"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 21v-.5a4.5 4.5 0 0 1 6.5-4"/>'};
   const ik = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[k]}</svg>`;
-  const bagian = (ey, judul, isi, kanan = "") => `<article class="ex ex-std"><header class="ex-hd"><span class="ex-ey">${ey}</span><div class="ex-jd"><h3>${judul}</h3>${kanan}</div></header><div class="ex-bd">${isi}</div></article>`;
+  /* pil kategori kartu = ikon saja (pemilik 11 Nov 2026 "label diganti jadi icon aja"); teks tetap di title dan aria-label */
+  const IK_EY = {"Operasi udara": IK.udara, "Operasi darat": IK.darat, Base: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+    Renlap: '<path d="M4 19c4-1 6-5 8-9s5-6 8-6"/><circle cx="4" cy="19" r="1.6"/><circle cx="20" cy="4" r="1.6"/>', "Aksi armada": '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>',
+    "Tren 30 hari": '<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/>', "Histori armada": '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    Operator: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>', "Jejak ADS-B": '<circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4M7.8 16.2a6 6 0 0 1 0-8.4M19 5a10 10 0 0 1 0 14M5 19A10 10 0 0 1 5 5"/>',
+    "Temuan pilot": '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 2 1.5 3 3 3-1-3 0-6 0-8.5z"/>', "OMC resmi BMKG aktif": '<path d="M7 18a4 4 0 0 1-.6-7.96A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/>',
+    "Modifikasi cuaca": '<path d="M7 16a4 4 0 0 1-.6-7.96A6 6 0 0 1 18 7a4.5 4.5 0 0 1-.5 9z"/><path d="M8 19v2M12 19v2M16 19v2"/>', Dokumentasi: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+    Efektivitas: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>', "Kontrak 2026": '<path d="M6 3h9l3 3v15H6z"/><path d="M9 11h6M9 15h6"/>'};
+  const eyebrow = ey => { const t = String(ey).replace(/<[^>]+>/g, "").trim(), svg = IK_EY[t];
+    return svg ? `<span class="ex-ey ops-ey-ik" title="${esc(t)}" aria-label="${esc(t)}" role="img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${svg}</svg></span>` : `<span class="ex-ey">${ey}</span>`; };
+  const bagian = (ey, judul, isi, kanan = "") => `<article class="ex ex-std"><header class="ex-hd">${eyebrow(ey)}<div class="ex-jd"><h3>${judul}</h3>${kanan}</div></header><div class="ex-bd">${isi}</div></article>`;
   const tabelH = (kepala, baris, kosong) => baris.length ? `<div class="tw ops-tw ex-tabel"><table><thead><tr>${kepala.map(k => { const [t, tip] = k.split("|");
       return `<th${t.startsWith("#") ? ' class="n"' : ""}${tip ? ` title="${esc(tip)}"` : ""}>${t.replace(/^#/, "")}</th>`; }).join("")}</tr></thead><tbody>${baris.join("")}</tbody></table></div>`
     : `<p class="ops-kosong">${kosong}</p>`;
