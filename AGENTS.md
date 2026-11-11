@@ -308,6 +308,10 @@ di kepala atau di baris pertama kartu. Berlaku untuk layar yang dibangun atau di
 lama dirapikan saat disentuh. Kartu boleh dilipat (`<details>`) dan dikelompokkan dengan pil kategori.
 Gerbangnya `tests/agen/gerbang-tanpa-kesimpulan.test.mjs` (layar `/operasi` dulu; layar lain masuk daftarnya saat dirombak).
 
+**Pembaruan 11 Nov 2026 malam (pemilik: "highlight belakang gelap cuma untuk yang atas"):** di layar yang memakai tingkat wadah
+(`/operasi`, `data/kajian-bnpb/operasi-udara/DESIGN-SYSTEM.md` §8), latar gelap hanya untuk kepala halaman (L1). Kepala bagian,
+kepala kartu, dan kepala tabel terang (navy 6%, teks navy). Aturan "kepala tabel biru tua" di atas berlaku untuk layar yang belum dirombak.
+
 ### 3.6 Folder revisi laporan harian (9 Nov 2026)
 
 Tiap keluaran Laporan Kejadian Bencana Harian dan Laporan Penanganan Pengendalian Karhutla masuk foldernya sendiri di folder hari:

@@ -1767,3 +1767,54 @@
 #opsLaporan .ops-wadah details.ops-kartu{border-color:var(--h2-garis)}
 #opsLaporan .ops-omc-dur{display:inline-flex;padding:2px 9px;border-radius:999px;background:color-mix(in srgb,var(--brand2) 8%,transparent)}
 #opsLaporan .ops-omc-dur .ops-lbl{font-size:.75rem;font-weight:700;color:#1f3f73;font-variant-numeric:tabular-nums}
+/* rencana tindakan = kartu tugas berkolom (pemilik 11 Nov 2026) */
+#opsLaporan .ops-apk-kolom{columns:340px;column-gap:14px}
+#opsLaporan .ops-apk{--ka:#1d6fd6;break-inside:avoid;display:grid;margin:0 0 14px;border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden;box-shadow:inset 0 3px 0 var(--ka)}
+#opsLaporan .ops-apk.k-jam{--ka:#e08a3a}#opsLaporan .ops-apk.k-silang{--ka:#c9503a}#opsLaporan .ops-apk.k-api{--ka:#a63a26}#opsLaporan .ops-apk.k-sortie{--ka:#0f9488}#opsLaporan .ops-apk.k-catat{--ka:#5b7bb4}
+#opsLaporan .ops-apk>header{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:10px;padding:14px 14px 8px}
+#opsLaporan .ops-apk>header>i{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:color-mix(in srgb,var(--ka) 14%,transparent)}
+#opsLaporan .ops-apk>header>i .ops-lbl svg{width:17px;height:17px;color:var(--ka)}
+#opsLaporan .ops-apk>header>div{display:grid;gap:2px;min-width:0}
+#opsLaporan .ops-apk>header small{font-size:.6875rem;font-weight:700;color:var(--ink2)}
+#opsLaporan .ops-apk>header b{font-size:.9375rem;font-weight:800;color:#0b2545;line-height:1.25}
+#opsLaporan .ops-apk-meta{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0 14px 10px 58px}
+#opsLaporan .ops-apk-meta>span{padding:2px 9px;border-radius:999px;background:color-mix(in srgb,var(--ink) 5%,transparent)}
+#opsLaporan .ops-apk-meta .ops-lbl{font-size:.71875rem;font-weight:600;color:var(--ink2)}
+#opsLaporan .ops-apk-meta .ops-lbl svg{color:var(--brand2)}
+#opsLaporan .ops-apk>ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+#opsLaporan .ops-apk>ul>li{display:grid;grid-template-columns:minmax(0,1fr) auto 12px;align-items:center;gap:10px;padding:8px 14px;border-top:1px solid color-mix(in srgb,var(--line) 60%,transparent);cursor:pointer}
+#opsLaporan .ops-apk>ul>li:first-child{border-top:0}
+#opsLaporan .ops-apk>ul>li:hover{background:color-mix(in srgb,var(--ka) 5%,transparent)}
+#opsLaporan .ops-apk>ul>li>span{font-size:.8125rem;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#opsLaporan .ops-apk>ul>li.telat>span::before{content:"";display:inline-block;width:7px;height:7px;margin-right:8px;border-radius:50%;background:#c9503a;vertical-align:middle}
+#opsLaporan .ops-apk>ul>li>b{padding:1px 8px;border-radius:999px;background:color-mix(in srgb,var(--ka) 12%,transparent);font-size:.71875rem;font-weight:800;color:color-mix(in srgb,var(--ka) 75%,#000);font-variant-numeric:tabular-nums}
+#opsLaporan .ops-apk>ul>li>em{font-style:normal;font-weight:800;color:var(--ink2)}
+/* kepala tabel terang: gelap hanya kepala halaman (pemilik 11 Nov 2026, AGENTS §3.5 pembaruan) */
+#opsLaporan .ex-tabel thead th,#opsLaporan .ops-tw thead th{background:color-mix(in srgb,#0b2545 6%,#fff)!important;color:#0b2545!important;border-bottom:2px solid color-mix(in srgb,#0b2545 16%,#fff)!important;font-weight:800}
+#opsLaporan .ex-tabel thead th *,#opsLaporan .ops-tw thead th *{color:inherit!important}
+/* sisa latar gelap disapu (pemilik 11 Nov 2026): seksi pop-up, pil provinsi sasaran OMC, pil ICAO jadi terang */
+#opsLaporan .ops-pa-sek>summary{background:color-mix(in srgb,#0b2545 6%,#fff)!important;border-bottom:1px solid color-mix(in srgb,#0b2545 14%,#fff)}
+#opsLaporan .ops-pa-sek>summary>b{color:#0b2545!important}
+#opsLaporan .ops-pa-sek>summary>i{background:#0b2545!important;border-radius:8px}
+#opsLaporan .ops-pa-sek>summary>i .ops-lbl svg{color:#fff!important}
+#opsLaporan .ops-pa-sek>summary>small{background:#fff!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,#0b2545 14%,#fff)}
+#opsLaporan .ops-pa-sek>summary>small .ops-lbl,#opsLaporan .ops-pa-sek>summary>small .ops-lbl svg{color:#1f3f73!important}
+#opsLaporan .ops-pa-sek>summary .ops-chev{color:#1f3f73!important}
+#opsLaporan .ops-omc-sas small.pv{background:color-mix(in srgb,#0b2545 9%,#fff)}
+#opsLaporan .ops-omc-sas small.pv .ops-lbl{color:#0b2545}
+#opsLaporan .ops-omc-sas small.pv .ops-lbl svg{color:var(--brand2)}
+#opsLaporan .ops-pb-icao{background:color-mix(in srgb,#0b2545 10%,#fff);color:#0b2545}
+/* tabel bersudut membulat (pemilik 11 Nov 2026) */
+#opsLaporan .ops-tw.ex-tabel,#opsLaporan .ops-tw{border:1px solid color-mix(in srgb,#0b2545 12%,#fff);border-radius:12px;overflow:auto;margin:0}
+#opsLaporan .ops-tw table{border-collapse:separate;border-spacing:0}
+#opsLaporan .ops-tw tbody tr:last-child>td{border-bottom:0}
+/* jam kelayakan lurus seragam: kolom ikon cuaca lebar tetap (pemilik 11 Nov 2026) */
+#opsLaporan .ops-layak{grid-template-columns:6.75rem 4.5rem 3.75rem 5.25rem 1.75rem}
+/* sudut tabel membulat menang atas kartu.css */
+#opsLaporan .ops-tw.ex-tabel,#opsLaporan .ex-std .ops-tw.ex-tabel{border:1px solid color-mix(in srgb,#0b2545 12%,#fff)!important;border-radius:12px!important;overflow:auto!important}
+/* saklar kondisi tabel base dalam satu wadah pil, sama dengan segmen pulau */
+#opsLaporan .ops-tanda{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+#opsLaporan .ops-tanda>button{border:0!important;border-radius:999px;padding:5px 12px;background:none}
+#opsLaporan .ops-tanda>button[aria-pressed="true"]{background:#0b2545}
+#opsLaporan .ops-tanda>button[aria-pressed="true"] .ops-lbl,#opsLaporan .ops-tanda>button[aria-pressed="true"] .ops-lbl *{color:#fff!important}
+#opsLaporan .ops-tanda>button:disabled{opacity:.45}
