@@ -225,7 +225,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
       return {p3: p3 || 0, lv, id: b.id, tanda, pulau: PULAU[String(b.prov || "")[0]] || "Lainnya", nAr: a.length, rinci: rinciArmada(D, a), sel: [kiri(`<span class="ops-bb-nama"><svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><b>${esc(b.nama.split(" / ")[0])}</b></span>`), `<td>${b.icao ? `<span class="ops-kode-l">${esc(b.icao)}</span>` : "–"}</td>`, `<td>${esc(u.PROV_PDK[b.prov] || b.prov || "–")}</td>`,
         sel(nol(gg.wb)), sel(nol(gg.patroli)), sel(nol(gg.omc)), sel(`${lapor ? fmt(a.filter(x => SIAP.includes(x.status)).length) : "–"}/${fmt(a.length)}`), sel(nol(k.sortie)), sel(nol(k.wb)), sel(u.persen(k.persen)),
         sel(p3 == null ? "–" : `<b>${nol(p3)}</b>`), `<td>${lv == null ? "–" : lv ? `<span class="pill l${lv}">${u.LV[lv]}</span>` : `<span class="pill l0">Aman</span>`}</td>`, `<td><span class="ops-layak">${u.pilLayak(lay)}${labelLayak(lay)}</span></td>`, (() => { const r = renlapBase(D, b.id), n = r?.target?.length || 0;
-          return `<td>${n ? `<span class="ops-rl"><b>${fmt(n)}</b> target${["kml", "gpx"].map(f => `<button type="button" class="ops-kml" data-unduh="${f}" data-base="${esc(b.id)}" title="Unduh waypoint renlap ${esc(r.versi || "")} (${f.toUpperCase()}) untuk GPS">${lbl("unduh", f.toUpperCase())}</button>`).join("")}</span>` : `<span class="ops-redup-t">Belum ada</span>`}</td>`; })()]}; }).sort((x, y) => y.p3 - x.p3);
+          return `<td>${n ? `<span class="ops-rl" title="${fmt(n)} target renlap"><b>${fmt(n)}</b>${["kml", "gpx"].map(f => `<button type="button" class="ops-kml" data-unduh="${f}" data-base="${esc(b.id)}" title="Unduh waypoint renlap ${esc(r.versi || "")} (${f.toUpperCase()}) untuk GPS">${lbl("unduh", f.toUpperCase())}</button>`).join("")}</span>` : `<span class="ops-redup-t">Belum ada</span>`}</td>`; })()]}; }).sort((x, y) => y.p3 - x.p3);
     const kepala = ["Base", "Kode|Kode ICAO bandara base", "Prov", "#WB", "#PTR", "#OMC", "#Siap|Armada siap dari laporan gelar armada WA; – = belum lapor", "#Sortie", "#Aksi WB", "#Padam|Tidak ada titik panas satelit dalam 1 km selama 24 jam sesudah water bombing",
       `#Cluster prioritas|Cluster prioritas aktif dalam jangkauan jelajah armada (bawaan ${fmt(u.RADIUS_KM)} km), kondisi kini`,
       `Status api|Level cluster tertinggi dalam jangkauan jelajah armada: ${u.LV.slice(1).join(", ")}; Aman = tidak ada cluster aktif`, "Kelayakan terbang|METAR terdekat ≤ 60 km, kondisi kini; basi bila lebih dari 3 jam", "Renlap|Rencana lapangan terbaru base ini; KML = waypoint target berurutan dari base, untuk GPS"];
@@ -275,7 +275,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
         <span class="ops-rl-ud">${["kml", "gpx"].map(f => `<button type="button" class="ops-kml" data-unduh="${f}" data-base="${esc(r.base_id)}" title="Unduh waypoint renlap (${f.toUpperCase()})">${lbl("unduh", f.toUpperCase())}</button>`).join("")}</span></summary>
         <ol class="ops-rl-grid">${kartu}</ol></details>`; }).join("");
     const judul = total ? `${hl(`${fmt(datang)} dari ${fmt(total)}`)} target renlap didatangi armada` : `Belum ada renlap untuk ${esc(tglPanjang(D.t))}`;
-    return bagian("Renlap", judul, total ? `<div class="ops-rl">${blok}</div>` : `<p class="ops-kosong">Renlap disusun otomatis pukul 20.00 dan 07.00 WIB oleh mesin Pusdalops, lalu muncul di sini.</p>`);
+    return bagian("Renlap", judul, total ? `<div class="ops-rl-daftar">${blok}</div>` : `<p class="ops-kosong">Renlap disusun otomatis pukul 20.00 dan 07.00 WIB oleh mesin Pusdalops, lalu muncul di sini.</p>`);
   }
 
   function kartuAksi(D) {
@@ -349,11 +349,20 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     const k = D.mon?.kpi?.armada?.[a.registrasi], kt = u.kontrak(a.registrasi), s = u.stAr(a.status), jam = kt.reduce((t, x) => t + (x.jam_operasi_menit || 0), 0);
     const tipe = /tidak diketahui/i.test(a.tipe || "") ? "Tipe belum tercatat" : a.tipe || "Tipe belum tercatat", f = u.fotoAr(a);
     const angka = (n, t) => `<div${n === "–" ? ' class="redup"' : ""}><b>${n}</b><span>${t}</span></div>`;
-    const hari = [...new Set(ak.map(x => x.tanggal))];
-    const linimasa = hari.length ? hari.map(t => `<li><time>${esc(tglPendek(t))}</time><ol>${ak.filter(x => x.tanggal === t).map(x => { const h = x.guna === "wb" ? (u.HASIL[x.hasil] || u.HASIL.tak_dinilai) : null;
+    const hari = [...new Set(ak.map(x => x.tanggal))], NH = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+    /* strip 30 hari: satu kotak per hari, gelap = banyak sortie */
+    const per = ak.reduce((m, x) => (m[x.tanggal] = (m[x.tanggal] || 0) + 1, m), {}), maks = Math.max(1, ...Object.values(per));
+    const strip = `<div class="ops-pa-strip" role="img" aria-label="Sortie per hari, 30 hari">${Array.from({length: 30}, (_, i) => { const t = geser(D.dari, i), n = per[t] || 0;
+      return `<i style="--a:${n ? (0.25 + 0.75 * n / maks).toFixed(2) : 0}" title="${esc(tglPendek(t))}: ${n ? `${fmt(n)} sortie` : "tanpa sortie"}"></i>`; }).join("")}</div>
+      <div class="ops-pa-strip-kaki"><span>${esc(tglPendek(D.dari))}</span><span>${fmt(hari.length)} hari terbang dari 30</span><span>${esc(tglPendek(D.t))}</span></div>`;
+    const linimasa = hari.length ? hari.map(t => `<li><time><b>${esc(tglPendek(t))}</b><small>${NH[new Date(Date.parse(t)).getUTCDay()]}</small></time><ol>${ak.filter(x => x.tanggal === t).map(x => { const h = x.guna === "wb" ? (u.HASIL[x.hasil] || u.HASIL.tak_dinilai) : null;
         return `<li><span class="ops-lm-jam">${u.jamWIB(x.jam_utc)}</span><span class="ops-lm-misi" data-g="${esc(x.guna || "")}">${esc(MISI[x.guna] || x.jenis || "Misi")}</span>
-          <span class="ops-lm-lok">${esc((x.lokasi || "Lokasi tidak tercatat").replace(/\(BMKG\/Sipongi\)/g, "").trim())}</span>${x.drop ? `<span class="ops-lm-drop">${lbl("ember", `${fmt(x.drop)} jatuhan`)}</span>` : ""}${h ? `<span class="pill ${h[1]}">${h[0]}</span>` : ""}</li>`; }).join("")}</ol></li>`).join("")
+          <span class="ops-lm-lok">${esc((x.lokasi || "Lokasi tidak tercatat").replace(/\(BMKG\/Sipongi\)/g, "").trim())}</span><span class="ops-lm-ujung">${x.drop ? lbl("ember", `${fmt(x.drop)} jatuhan`) : ""}${h ? `<span class="pill ${h[1]}">${h[0]}</span>` : ""}</span></li>`; }).join("")}</ol></li>`).join("")
       : `<p class="ops-kosong">Belum ada kegiatan tercatat dalam 30 hari.</p>`;
+    const kini = Date.parse(D.t), kartuKt = x => { const m = Date.parse(x.mulai), z = Date.parse(x.selesai), p = m && z > m ? Math.min(1, Math.max(0, (kini - m) / (z - m))) : null;
+      return `<div${x.berjalan ? ' class="jalan"' : ""}><header><b>Kontrak ${fmt(x.kontrak_ke)}</b>${x.berjalan ? `<span class="pill l0">Berjalan</span>` : `<span class="ops-pa-selesai">Selesai</span>`}</header>
+        <p>${esc(kalimat(x.periode_teks) || "–")}</p>${p != null ? `<i class="ops-pa-per" style="--p:${Math.round(p * 100)}%"></i>` : ""}
+        <dl><div><dt>Jam operasi</dt><dd>${u.jamMenit(x.jam_operasi_menit)}</dd></div><div><dt>Sortie</dt><dd>${fmt(x.sortie || 0)}</dd></div><div><dt>Jatuhan WB</dt><dd>${x.wb_drop ? fmt(x.wb_drop) : "–"}</dd></div></dl></div>`; };
     return `<article class="ex ex-std ops-pa"><button type="button" class="ops-dlg-x" data-tutup aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
       <header class="ops-pa-hd"><figure>${f ? u.imgAr(a, "", `${a.registrasi} ${tipe}`) : `<span class="ops-ar-kosong">${lbl("peran", "")}</span>`}</figure>
         <div><span class="ops-ar-st ${s[1]}"><i></i>${s[0]} ${esc(tglPendek(D.t))}</span><h3>${esc(a.registrasi)}</h3><p>${esc(tipe)}</p>
@@ -362,9 +371,8 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
       <div class="ops-pa-angka">${[angka(nol(hh.sortie), "sortie 30 hari"), angka(nol(hh.wb), "water bombing"), angka(hh.dinilai ? u.persen(hh.persen) : "–", "padam ≥ 24 jam"),
         angka(k ? `${fmt(siapTerbang(k))}/${fmt(k.hari_siap)}` : "–", "hari siap terbang"), angka(k?.respons_median_menit != null ? `${fmt(Math.round(k.respons_median_menit))} mnt` : "–", "respons median"),
         angka(kt.length ? `${fmt(Math.round(jam / 60))} jam` : "–", "operasi 2026")].join("")}</div>
-      <section><h4>Kegiatan 30 hari</h4><ol class="ops-lm">${linimasa}</ol></section>
-      ${kt.length ? `<section><h4>Kontrak 2026</h4><div class="ops-pa-kt">${kt.map(x => `<div${x.berjalan ? ' class="jalan"' : ""}><b>Kontrak ${fmt(x.kontrak_ke)}</b>${x.berjalan ? `<span class="pill l0">Berjalan</span>` : ""}
-        <p>${esc(kalimat(x.periode_teks) || "–")}</p><ul><li>${lbl("jam", `${u.jamMenit(x.jam_operasi_menit)} jam`)}</li><li>${lbl("peran", `${fmt(x.sortie || 0)} sortie`)}</li>${x.wb_drop ? `<li>${lbl("ember", `${fmt(x.wb_drop)} jatuhan`)}</li>` : ""}</ul></div>`).join("")}</div></section>` : ""}
+      <section><h4>Kegiatan 30 hari</h4>${strip}<ol class="ops-lm">${linimasa}</ol></section>
+      ${kt.length ? `<section><h4>Kontrak 2026</h4><div class="ops-pa-kt">${kt.map(kartuKt).join("")}</div></section>` : ""}
     </article>`;
   }
 
