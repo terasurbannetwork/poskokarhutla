@@ -74,7 +74,7 @@
 .ops-foto img{height:64px;border-radius:8px;display:block}
 @media (max-width:520px){.ops-ar{grid-template-columns:88px minmax(0,1fr)}.ops-ar-f{width:88px;height:60px}.ops-ringkas{grid-template-columns:repeat(2,1fr)}}
 /* menu Operasi = laporan tanpa peta (#p-operasi): kartu .ex gaya Insight/Tren/Dampak; gaya kartunya ikut selektor #opsLaporan di index.html */
-#opsLaporan{display:grid;gap:18px}
+#opsLaporan{display:grid;gap:16px}
 #opsLaporan .ex-bd:has(> .ops-tw:only-child){padding:0}
 #opsLaporan .ex-bd:not(:has(> .ops-tw:only-child)) > .ops-tw{border:1px solid var(--line)!important;border-radius:12px!important}
 #opsLaporan .ops-tw{border:0;border-radius:0;box-shadow:none}
@@ -187,7 +187,7 @@
 @media (max-width:1100px){.ops-lap-angka{grid-template-columns:repeat(3,minmax(0,1fr))}.ops-lap-angka>div{border-top:1px solid var(--line)}}
 @media (max-width:520px){.ops-lap-angka{grid-template-columns:repeat(2,minmax(0,1fr))}}
 /* laporan /operasi: bilah alat (tab Udara/Darat berikon, tanggal, salin, cetak) dan kartu fitur (public/operasi_laporan.js) */
-.ops-alat{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;margin:0 0 18px;padding:10px;background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}
+.ops-alat{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;margin:0;padding:10px;background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}
 .ops-mode{flex:1 1 100%;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);padding:4px;background:var(--surface);border-color:transparent;box-shadow:none}
 .ops-mode button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 18px;font-size:13.5px;font-weight:700;min-width:0}
 .ops-mode button svg{width:18px;height:18px}
