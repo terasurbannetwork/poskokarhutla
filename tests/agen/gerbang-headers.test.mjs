@@ -24,13 +24,20 @@ const semua = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) =>
   e.isDirectory() ? semua(join(d, e.name)) : [join(d, e.name)])
 const web = (akar, p) => '/' + relative(akar, p).split(sep).join('/')
 
-// salin public/ lalu terbitkan seperti CI; `ubah(akar)` menyuntik keadaan salah untuk bukti merah
+// salin public/ lalu terbitkan seperti CI; `ubah(akar)` menyuntik keadaan salah untuk bukti merah.
+// Salinan (~1,7 GB) dihapus bila langkah apa pun gagal: 29 Okt-11 Nov 2026 di Windows tanpa `python3`,
+// tiap uji melempar sebelum try/finally pemanggil dan meninggalkan 51 salinan (76 GB) di Temp.
 function terbit(ubah) {
   const akar = mkdtempSync(join(tmpdir(), 'headers-'))
-  cpSync(join(ROOT, 'public'), akar, { recursive: true })
-  ubah?.(akar)
-  execFileSync('python3', [join(ROOT, 'scripts/terbit/versi.py'), akar], { stdio: 'pipe' })
-  return akar
+  try {
+    cpSync(join(ROOT, 'public'), akar, { recursive: true })
+    ubah?.(akar)
+    execFileSync('python3', [join(ROOT, 'scripts/terbit/versi.py'), akar], { stdio: 'pipe' })
+    return akar
+  } catch (e) {
+    rmSync(akar, { recursive: true, force: true })
+    throw e
+  }
 }
 
 // _headers -> [{ pola, header, lepas, urut }]; aturan = baris yang diawali "/"; "! Nama" = lepas header (Cloudflare)
