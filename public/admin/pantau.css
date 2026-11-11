@@ -82,7 +82,7 @@
 .pt-siapa{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:.8125rem;font-weight:700;color:#0b2545}
 .pt-siapa small{padding:1px 8px;border-radius:999px;background:var(--db-h2,#eef4fc);font-size:.6875rem;font-weight:700;color:var(--ink2)}
 .pt-isi{gap:20px}
-.pt-kel.ex-std{margin:0}
+.pt-isi>.ex.ex-std{margin:0}
 .pt-kel .ex-jd{align-items:center}
 .pt-kel .ex-jd>h3 svg{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .pt-kel .pt-hitung{order:2;background:#fff;color:#0b2545;font-size:.75rem}

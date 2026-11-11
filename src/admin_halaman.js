@@ -226,7 +226,7 @@ export const halamanKontak = () => halaman("kontak", "Memuat buku kontak…", `<
 <script src="/admin/kontak.js?v=1"></script>`);
 
 /* Ruang Koordinasi BNPB: satu pola untuk keempat halaman (skrip + gaya di public/admin/<k>.js|css) */
-export const halamanBnpb = (k, ctx) => halaman(k, `Memuat ${HAL[k][1]}…`, `<link href="/admin/${k}.css?v=${k === "pantau" ? 2 : 1}" rel="stylesheet">
+export const halamanBnpb = (k, ctx) => halaman(k, `Memuat ${HAL[k][1]}…`, `<link href="/admin/${k}.css?v=${k === "pantau" ? 3 : 1}" rel="stylesheet">
 ${k === "pantau" ? `<script src="/inti/format.js"></script>\n<script src="/instansi_wilayah.js?v=1"></script>
 ` : k === "kinerja" ? `<script src="/inti/nanti.js"></script>
 ` : ""}<script src="/admin/bersama.js?v=4"></script>
