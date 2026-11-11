@@ -1978,3 +1978,86 @@
 #opsLaporan .ops-ringkas-slot .ops-tindak>header{background:color-mix(in srgb,#c0392b 5%,#fff)!important;border-bottom:1px solid color-mix(in srgb,#c0392b 16%,#fff)!important}
 #opsLaporan tr.ops-grup>td{background:color-mix(in srgb,#2f6fd6 5%,#fff)!important}
 #opsLaporan .ops-laci-grup{background:color-mix(in srgb,#2f6fd6 5%,#fff)}
+/* latar isi wadah dua kali lebih muda, hampir putih, tetap beda dari latar halaman (pemilik 11 Nov 2026) */
+#opsLaporan .ops-ringkas-slot .ops-rk,#opsLaporan .ops-pb-pulau>section{background:color-mix(in srgb,#2f6fd6 2%,#fff)!important}
+#opsLaporan .ops-ringkas-slot .ops-tindak,#opsLaporan .ops-ringkas-slot .ops-tindak ul{background:color-mix(in srgb,#c9503a 2%,#fff)!important}
+/* Kegiatan 30 hari, desain ulang (pemilik 11 Nov 2026 "sumpah jelek banget"): batang harian bertumpuk per misi + linimasa berkartu */
+#opsLaporan .ops-ks{display:grid;gap:10px;margin-bottom:16px;padding:12px 14px 10px;border:1px solid var(--line);border-radius:14px;background:#fff}
+#opsLaporan .ops-ks-bar{display:grid;grid-template-columns:repeat(30,minmax(0,1fr));gap:4px;height:112px;align-items:end}
+#opsLaporan .ops-ks-h{position:relative;display:grid;grid-template-rows:16px 1fr 16px;height:100%;align-items:end;justify-items:center;border-radius:6px}
+#opsLaporan .ops-ks-h.libur{background:color-mix(in srgb,#2f6fd6 4%,#fff)}
+#opsLaporan .ops-ks-h.kini{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,#0b2545 35%,#fff)}
+#opsLaporan .ops-ks-h>em{font-style:normal;font-size:.6875rem;font-weight:800;color:#0b2545;align-self:end}
+#opsLaporan .ops-ks-h>span{display:flex;flex-direction:column-reverse;width:70%;max-width:22px;height:var(--h);min-height:3px;border-radius:5px;overflow:hidden;background:color-mix(in srgb,#0b2545 8%,#fff)}
+#opsLaporan .ops-ks-h:not(.isi)>span{height:3px}
+#opsLaporan .ops-ks-h>span>i{display:block;min-height:4px}
+#opsLaporan .ops-ks [data-g="wb"] i,#opsLaporan .ops-ks-h>span>i[data-g="wb"]{background:#2f6fd6}
+#opsLaporan .ops-ks [data-g="patroli"] i,#opsLaporan .ops-ks-h>span>i[data-g="patroli"]{background:#0f9488}
+#opsLaporan .ops-ks [data-g="omc"] i,#opsLaporan .ops-ks-h>span>i[data-g="omc"]{background:#7a4fd0}
+#opsLaporan .ops-ks-h>small{font-size:.625rem;font-weight:600;color:var(--ink2);white-space:nowrap;align-self:center}
+#opsLaporan .ops-ks-h.isi>small,#opsLaporan .ops-ks-h.kini>small{color:#0b2545;font-weight:800}
+#opsLaporan .ops-ks-kaki{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding-top:8px;border-top:1px solid var(--line)}
+#opsLaporan .ops-ks-kaki>span{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line);font-size:.71875rem;font-weight:600;color:var(--ink)}
+#opsLaporan .ops-ks-kaki>span>i{width:9px;height:9px;border-radius:3px}
+#opsLaporan .ops-ks-kaki>span b{font-weight:800;color:#0b2545}
+#opsLaporan .ops-ks-kaki>span.hr{margin-left:auto;font-weight:700;color:#0b2545}
+#opsLaporan .ops-ks-kaki>span.hr .ops-lbl svg{width:12px;height:12px;color:#2f6fd6}
+#opsLaporan .ops-lm::before{display:none}
+#opsLaporan .ops-lm{display:grid;gap:8px}
+#opsLaporan .ops-lm>li{grid-template-columns:64px minmax(0,1fr);gap:0;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+#opsLaporan .ops-lm>li::before{display:none}
+#opsLaporan .ops-lm time{align-items:center;justify-content:center;padding:8px 0;background:color-mix(in srgb,#2f6fd6 5%,#fff);border-right:1px solid var(--line)}
+#opsLaporan .ops-lm time b{font-size:.8125rem;color:#0b2545}
+#opsLaporan .ops-lm ol li{grid-template-columns:auto auto minmax(0,1fr) auto;gap:10px;padding:9px 12px}
+#opsLaporan .ops-lm ol li+li{border-top:1px solid var(--line)}
+#opsLaporan .ops-lm-jam .ops-lbl{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line);font-size:.71875rem;font-weight:800;color:#0b2545;font-variant-numeric:tabular-nums}
+#opsLaporan .ops-lm-jam .ops-lbl svg,#opsLaporan .ops-lm-lok .ops-lbl svg{width:12px;height:12px;color:#2f6fd6}
+#opsLaporan .ops-lm-lok .ops-lbl{display:flex;align-items:center;gap:5px;min-width:0;font-size:.8125rem;color:var(--ink)}
+#opsLaporan .ops-lm-lok.nihil .ops-lbl{color:var(--ink2);font-style:italic}
+@media (max-width:760px){#opsLaporan .ops-ks-bar{gap:2px}#opsLaporan .ops-ks-h>small{font-size:.5rem}#opsLaporan .ops-lm ol li{grid-template-columns:auto auto;}}
+/* laci base di peta, rapi (pemilik 11 Nov 2026 "bagusin"): kepala pulau ringkas berangka, baris base padat, ikon berwarna tingkat siaga */
+#opsLaporan .ops-laci-badan{display:grid;gap:6px}
+#opsLaporan .ops-laci-grup{display:flex;align-items:center;gap:6px;margin:8px 0 0;padding:6px 8px;border-radius:10px;background:color-mix(in srgb,#2f6fd6 5%,#fff);box-shadow:inset 3px 0 0 #0b2545}
+#opsLaporan .ops-laci-grup:first-child{margin-top:0}
+#opsLaporan .ops-laci-grup>.ops-lbl{flex:1;min-width:0}
+#opsLaporan .ops-laci-grup>small{padding:1px 8px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font-size:.65625rem;font-weight:700;color:#0b2545;white-space:nowrap}
+#opsLaporan .ops-laci-b{gap:9px;padding:6px 10px 6px 6px;border-radius:10px;box-shadow:none}
+#opsLaporan .ops-laci-b>i{display:grid;place-items:center;flex:none;width:26px;height:26px;border-radius:8px;background:#2e8b57}
+#opsLaporan .ops-laci-b.lv1>i{background:#2f6fd6}#opsLaporan .ops-laci-b.lv2>i{background:#d9a21b}#opsLaporan .ops-laci-b.lv3>i{background:#c0392b}
+#opsLaporan .ops-laci-b>i .ops-lbl svg{width:14px;height:14px;color:#fff}
+#opsLaporan .ops-laci-b.lv2,#opsLaporan .ops-laci-b.lv3{box-shadow:none}
+#opsLaporan .ops-laci-b>span{flex-direction:column;align-items:flex-start;gap:0;line-height:1.2}
+#opsLaporan .ops-laci-b>span small{font-size:.65625rem}
+#opsLaporan .ops-laci-b>b .ops-lbl{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,#2f6fd6 7%,#fff);font-size:.71875rem;font-weight:800;color:#0b2545}
+#opsLaporan .ops-laci-b>b .ops-lbl svg{width:11px;height:11px;color:#2f6fd6}
+#opsLaporan .ops-laci-b.on>b .ops-lbl{background:rgb(255 255 255 / .14);color:#fff}
+#opsLaporan .ops-laci-b.on>b .ops-lbl svg{color:#b9c9e0}
+/* berat OMC: angka rata kanan dalam lebar tetap supaya "kg" lurus ke bawah (pemilik 11 Nov 2026) */
+#opsLaporan .ops-kg{display:inline-block;min-width:8ch;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+/* kontrak per jenis: pil jenis di atas, lima kolom angka tetap supaya Patroli dan Water bombing lurus; kartu provinsi sama tinggi */
+#opsLaporan .ops-kp{display:flex;flex-direction:column}
+#opsLaporan .ops-kp>ul{flex:1;display:grid;grid-auto-rows:1fr;gap:8px}
+#opsLaporan .ops-kp>ul>li{display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+#opsLaporan .ops-kp>ul>li>.ops-kp-jenis{align-self:flex-start}
+#opsLaporan .ops-kp-st{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+#opsLaporan .ops-kp-st>div{display:flex;flex-direction:column;gap:2px;padding:6px 8px;border-radius:8px;background:color-mix(in srgb,#2f6fd6 4%,#fff);min-width:0}
+#opsLaporan .ops-kp-st small .ops-lbl{display:inline-flex;align-items:center;gap:4px;font-size:.65625rem;font-weight:600;color:var(--ink2);white-space:nowrap}
+#opsLaporan .ops-kp-st small .ops-lbl svg{width:11px;height:11px;color:#2f6fd6}
+#opsLaporan .ops-kp-st b{font-family:var(--display);font-size:1rem;font-weight:800;color:#0b2545;font-variant-numeric:tabular-nums;line-height:1.1}
+/* tooltip grafik terang, bukan gelap (pemilik 11 Nov 2026 "ga pernah suka hover gelap") */
+.ops-tip{background:#fff;color:#0b2545;border:1px solid color-mix(in srgb,#2f6fd6 22%,#fff);box-shadow:0 10px 28px rgb(11 37 69 / .16);padding:0;gap:0;overflow:hidden;min-width:170px}
+.ops-tip b{display:block;padding:7px 12px;background:color-mix(in srgb,#2f6fd6 6%,#fff);border-bottom:1px solid color-mix(in srgb,#2f6fd6 16%,#fff);font-size:.78125rem;font-weight:800;color:#0b2545}
+.ops-tip span{padding:6px 12px 0;color:#334155;font-weight:600}
+.ops-tip span:last-of-type{padding-bottom:7px}
+.ops-tip em{margin:0;padding:6px 12px 8px;border-top:1px solid #e2e8f0;color:#2f6fd6;font-weight:700}
+/* kepala pop-up peta terang: biru muda, teks navy, ikon dalam kotak navy (pemilik 11 Nov 2026 "headernya jelek banget") */
+.ops-peta-pop .ops-ptip>header{padding:8px 12px;background:color-mix(in srgb,#2f6fd6 6%,#fff);border-bottom:1px solid color-mix(in srgb,#2f6fd6 16%,#fff)}
+.ops-peta-pop .ops-ptip>header .ops-lbl{display:flex;align-items:center;gap:8px;font-size:.84375rem;font-weight:800;color:#0b2545!important}
+.ops-peta-pop .ops-ptip>header .ops-lbl svg{box-sizing:border-box;width:22px;height:22px;padding:4px;border-radius:6px;background:#0b2545;color:#fff!important}
+/* kelayakan di tabel base: kolom tetap per kategori (status, jarak pandang, angin, jam, peringatan) supaya lurus ke bawah (pemilik 11 Nov 2026) */
+#opsLaporan tr.ops-bb .ops-layak{display:inline-grid;grid-template-columns:7.25rem 4.5rem 4rem 5.75rem 1.75rem;justify-content:start;justify-items:start;gap:6px}
+#opsLaporan tr.ops-bb .ops-layak>span:empty{display:block}
+/* jenis pesawat sebagai label di badan kartu, bukan teks samar di atas foto (pemilik 11 Nov 2026) */
+#opsLaporan .ops-akt .ops-ar-isi li.ops-ar-tipe .ops-lbl{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:999px;background:color-mix(in srgb,#2f6fd6 8%,#fff);box-shadow:inset 0 0 0 1px color-mix(in srgb,#2f6fd6 20%,#fff);font-size:.71875rem;font-weight:800;color:#0b2545}
+#opsLaporan .ops-akt .ops-ar-isi li.ops-ar-tipe .ops-lbl svg{width:12px;height:12px;color:#2f6fd6}
+#opsLaporan .ops-akt .ops-ar-isi li.ops-ar-tipe.nihil .ops-lbl{background:#fff;color:var(--ink2);font-weight:600}
