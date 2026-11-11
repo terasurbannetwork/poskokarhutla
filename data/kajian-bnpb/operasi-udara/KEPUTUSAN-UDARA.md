@@ -16,6 +16,7 @@ boleh dipakai untuk membangun, tetapi tidak boleh tampil di layar sebagai angka 
 | K6 | 11 Nov 2026 | Waypoint renlap tersedia dalam KML dan GPX. | "waypoint kml dan waypoint gpx" |
 | K7 | 4 Nov 2026 | Menu Operasi = laporan, dua bagian berikon: Operasi Udara, Operasi Darat. Bagian "tanpa peta" ditimpa K8. | (AGENTS, kepala `public/operasi_laporan.js`) |
 | K8 | 11 Nov 2026 | Operasi Udara punya kartu peta (pola peta Pantau Dalops): base dan jangkauan, cluster api, target renlap, aksi armada. | "Iniperlu ditambahin ga peta?", "petanyakaya gini. ataulu buat lebih bagus lagi" |
+| K9 | 11 Nov 2026 | Pemilih periode seperti pangantara: Hari, Minggu, Bulan, Rentang, 12 Bulan. | "Period picker nya gini. Bisa pilih minggu bulan rentang dan 12 bulan" |
 
 ## Prinsip yang mengikat semua tiket
 
@@ -40,4 +41,5 @@ boleh dipakai untuk membangun, tetapi tidak boleh tampil di layar sebagai angka 
 | Q9 | Sumber titik air (dip site): pakai titik sumber air SIPPA, peta badan air satelit, atau daftar dari Posko? | [SEMENTARA] badan air terdekat dari data yang sudah ada di repo (lihat RISET §3), berlabel perkiraan |
 | Q10 | Definisi waktu respons: dari titik panas pertama cluster terdeteksi satelit sampai aksi armada pertama ≤ 2 km dari cluster? | [SEMENTARA] ya, ≤ 2 km, hari yang sama atau sesudahnya, maksimal 72 jam |
 | Q11 | Luas terbakar sebelum dan sesudah: dari luas cluster titik panas sistem kita, atau citra Sentinel-2 (dNBR)? | [SEMENTARA] luas cluster sistem kita; Sentinel-2 jadi tiket lanjutan |
+| Q13 | Untuk periode lebih dari satu hari, kartu yang bersifat keadaan (status armada, kelayakan terbang, renlap) menampilkan hari terakhir periode atau rata-rata? | [SEMENTARA] hari terakhir periode, berlabel "per <tanggal>"; kartu kegiatan (sortie, aksi, padam, galeri, kepatuhan) dijumlah sepanjang periode |
 | Q12 | PDF renlap: boleh dibaca semua staf berperan yang bisa membuka `/operasi`, atau hanya Pusdalops dan pimpinan? Dan renlap JSON/TXT yang sekarang publik di `public/data/operasi/`: tetap publik atau dipindah ke balik sesi? | [SEMENTARA] PDF sama dengan hak baca `/api/operasi/peta`; JSON/TXT tetap seperti sekarang sampai dijawab |
