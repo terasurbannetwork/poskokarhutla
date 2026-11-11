@@ -1431,3 +1431,47 @@
   #opsLaporan .ops-nav{position:relative;top:0;height:auto;max-height:none}
   #opsLaporan .ops-utama{height:auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
 }
+/* ===== permintaan pemilik lewat sesi lain (11 Nov 2026) ===== */
+/* Angka utama: ikon seragam, nilai besar sendiri, status menggantikan strip, pembanding jadi pil kecil */
+#opsLaporan .ops-lap-angka .redup header i,#opsLaporan .ops-lap-angka header i{background:#0b2545;color:#fff;box-shadow:none}
+#opsLaporan .ops-vs3{display:flex;flex-direction:column;align-items:center;gap:8px}
+#opsLaporan .ops-vs3-kini{display:flex;align-items:baseline;gap:8px;margin:0}
+#opsLaporan .ops-vs3-kini b{font-family:var(--display);font-size:2rem;font-weight:800;line-height:1;color:#0b2545;font-variant-numeric:tabular-nums}
+#opsLaporan .ops-vs3-kini b small{font-size:.875rem;font-weight:700;color:var(--ink2)}
+#opsLaporan .ops-vs3-kosong{margin:0;padding:6px 12px;border-radius:999px;background:color-mix(in srgb,#e08a3a 12%,transparent)}
+#opsLaporan .ops-vs3-kosong .ops-lbl{font-size:.8125rem;font-weight:700;color:#a35512}
+#opsLaporan .ops-vs3-lalu{display:inline-flex;align-items:center;gap:6px;padding:2px 4px 2px 9px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line)}
+#opsLaporan .ops-vs3-lalu .ops-lbl{font-size:.6875rem;font-weight:600;color:var(--ink2)}
+#opsLaporan .ops-vs3-lalu>b{padding:0 7px;border-radius:999px;background:color-mix(in srgb,var(--ink) 6%,transparent);font-size:.6875rem;font-weight:800;color:var(--ink)}
+#opsLaporan .ops-vs3-lalu>b small{font-size:.625rem;font-weight:600}
+#opsLaporan .ops-ringkas-slot .ops-rk>.ops-lap-angka>div{justify-content:center;gap:14px}
+/* Perlu tindakan di kolom kanan: nama satu baris + "+N" selalu terlihat, garis kiri tipis, ikon netral */
+#opsLaporan .ops-tindak-ring{display:none}
+@media (min-width:1180px){
+  #opsLaporan .ops-ringkas-slot:has(.ops-tindak){grid-template-columns:minmax(0,1fr) 380px}
+  #opsLaporan .ops-ringkas-slot .ops-tindak li .ops-tindak-pil{display:none}
+  #opsLaporan .ops-ringkas-slot .ops-tindak-ring{display:flex;align-items:center;gap:6px;min-width:0;margin-left:calc(3ch + 8px)}
+  #opsLaporan .ops-ringkas-slot .ops-tindak-ring>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.75rem;color:var(--ink2)}
+  #opsLaporan .ops-ringkas-slot .ops-tindak-ring>b{flex:none;padding:0 7px;border-radius:999px;background:color-mix(in srgb,var(--ink) 7%,transparent);font-size:.6875rem;font-weight:800;color:var(--ink)}
+  #opsLaporan .ops-ringkas-slot .ops-tindak li button{box-shadow:inset 3px 0 0 var(--ka,#e08a3a)!important}
+  #opsLaporan .ops-ringkas-slot .ops-tindak li i{background:color-mix(in srgb,var(--ink) 5%,transparent)!important}
+}
+#opsLaporan .ops-tindak li.telat,#opsLaporan .ops-tindak li.renlap{--ka:#e08a3a}
+#opsLaporan .ops-tindak li.celah,#opsLaporan .ops-tindak li.rusak,#opsLaporan .ops-tindak li.cuaca{--ka:#c9503a}
+#opsLaporan .ops-tindak li.data{--ka:#5b7bb4}
+/* pemilih periode: selalu tampil, tinggi tetap di semua mode, menempel di atas saat isi digulir */
+#opsLaporan .ops-periode{position:sticky;top:-20px;z-index:6;margin:0 -20px;padding:12px 20px;background:var(--card);border-bottom:1px solid transparent}
+#opsLaporan .ops-periode>.ops-p1{height:44px}
+#opsLaporan .ops-periode>.ops-p1>*{height:100%}
+#opsLaporan .ops-periode .ops-p2{height:56px}
+#opsLaporan .ops-periode .ops-p2 .ops-strip{height:100%}
+#opsLaporan .ops-periode .ops-p2 .ops-strip>*{height:100%}
+@media (max-width:640px){#opsLaporan .ops-periode{top:-12px;margin:0 -12px;padding:10px 12px}}
+#opsLaporan .ops-ringkas-slot .ops-tindak li .ops-tindak-ring{flex-direction:row;flex-wrap:nowrap}#opsLaporan .ops-ringkas-slot .ops-tindak li .ops-tindak-ring>span{display:block}
+/* periode menempel: sticky di wadah kepala (anak langsung wadah gulir), offset dihitung JS */
+#opsLaporan .ops-periode{position:static}
+@media (min-width:901px){#opsLaporan .ops-utama>.ops-alat{position:sticky;z-index:6}}
+/* periode = anak langsung wadah gulir, menempel sendiri dengan latar putih */
+@media (min-width:901px){#opsLaporan .ops-utama>.ops-alat{position:static}}
+#opsLaporan .ops-utama>.ops-periode{position:sticky;top:-20px;z-index:6;margin:0 -20px;padding:12px 20px;background:var(--card);box-shadow:0 1px 0 var(--line)}
+@media (max-width:640px){#opsLaporan .ops-utama>.ops-periode{top:-12px;margin:0 -12px;padding:10px 12px}}

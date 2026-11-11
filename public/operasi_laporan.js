@@ -172,10 +172,9 @@
       <div class="seg ops-mode" role="group" aria-label="Bagian operasi">${[["udara", "Udara"], ["darat", "Darat"]].map(([k, t]) => `<button type="button" data-mode="${k}" aria-pressed="${st.mode === k}">${ik(k)}${t}</button>`).join("")}</div>
       <nav class="ops-nav-isi">${navSeksi(null)}</nav><span class="ops-nav-tarik" tabindex="0" role="separator" aria-orientation="vertical" aria-label="Tarik lebar panel"></span></aside>
       <div class="ops-utama" role="region" aria-label="Isi seksi"><div class="ops-alat" role="toolbar" aria-label="Laporan operasi"><h2 id="opsJudul" class="ops-judul"></h2>
-      <div class="ops-periode" role="group" aria-label="Periode laporan">${periode()}</div>
 
       ${""/* tombol Salin teks WA (data-aksi="salin") dan Cetak / PDF (data-aksi="cetak") disembunyikan pemilik 11 Nov 2026; handler dan salin() tetap */}
-      <span class="ops-status" role="status"></span></div><div id="opsRingkas" class="ops-ringkas-slot"></div><div id="opsIsi"></div></div></div>`;
+      <span class="ops-status" role="status"></span></div><div class="ops-periode" role="group" aria-label="Periode laporan">${periode()}</div><div id="opsRingkas" class="ops-ringkas-slot"></div><div id="opsIsi"></div></div></div>`;
     pasangTarikNav(box);
     box.addEventListener("toggle", e => { const k = e.target.dataset?.kartu; if (!k) return; if (k === "peta-operasi" && e.target.open) requestAnimationFrame(pasangPeta); ingatKartu[k] = e.target.open; try { localStorage.setItem("ops_kartu2", JSON.stringify(ingatKartu)); } catch (x) {} }, true);
     { const tip = document.createElement("div"); tip.className = "ops-tip"; tip.hidden = true; box.append(tip);   // tooltip grafik di halaman (data-tip sudah di-escape saat dibuat)
@@ -209,6 +208,7 @@
       const fp = e.target.closest("[data-fpulau], [data-ftanda]"); if (fp) return saringBase(fp);
       const gr = e.target.closest("tr.ops-grup"); if (gr) return lipatGrup(gr);
       const bb = e.target.closest("tr.ops-bb"); if (bb) return bukaBase(bb);
+      const rpe = e.target.closest("[data-rpre]"); if (rpe) { const [x, y] = rentangPreset(rpe.dataset.rpre); st.rDari = x; st.rSampai = y; st.tanggal = y; const p = $("#opsLaporan .ops-periode"); if (p) p.innerHTML = periode(); return sesudahFrame(isi); }
       const pm = e.target.closest("[data-pm]"); if (pm) { if (st.pm === pm.dataset.pm) return; st.pm = pm.dataset.pm; const p = $("#opsLaporan .ops-periode"); if (p) p.innerHTML = periode(); return sesudahFrame(isi); }
       const tg = e.target.closest("[data-tgl]"); if (tg) return pilihTanggal(tg.dataset.tgl);
       const lb = e.target.closest(".ops-tgl"); if (lb) { const i = lb.querySelector("input"); try { i.showPicker(); e.preventDefault(); } catch (x) {} return; }
@@ -251,9 +251,11 @@
       const lalu = st.pm === "bulan" ? b0 : geserBulan(t.slice(0, 8) + "01", -1);
       kiri = nav(-1, lalu, "Bulan lalu", bl(lalu)); kanan = nav(1, b1, "Bulan depan", bl(b1));
       const th = t.slice(0, 4); strip = Array.from({length: 12}, (_, i) => `${th}-${String(i + 1).padStart(2, "0")}-01`).map(x => `<button type="button" class="ops-hr${x.slice(0, 7) === t.slice(0, 7) ? " on" : ""}" ${x <= kini && x >= TGL_MIN.slice(0, 8) + "01" ? `data-tgl="${x}"` : "disabled"}><b>${BLN[+x.slice(5, 7) - 1]}</b><span>${th}</span></button>`).join(""); }
-    else if (st.pm === "rentang") tengah = `<label class="ops-tgl ops-rg">${lbl("kalender", "")}<input type="date" data-rentang="dari" value="${a}" max="${kini}" min="${TGL_MIN}" aria-label="Dari tanggal"></label><span>sampai</span><label class="ops-tgl ops-rg">${lbl("kalender", "")}<input type="date" data-rentang="sampai" value="${b}" max="${kini}" min="${TGL_MIN}" aria-label="Sampai tanggal"></label>`;
+    else if (st.pm === "rentang") { const pre = [["7", "7 hari terakhir"], ["14", "14 hari terakhir"], ["31", "31 hari terakhir"], ["bi", "Bulan ini"], ["bl", "Bulan lalu"]];
+      strip = pre.map(([k, t]) => { const [x, y] = rentangPreset(k); return `<button type="button" class="ops-hr${x === a && y === b ? " on" : ""}" data-rpre="${k}"><b>${t}</b><span>${tglPendek(x)} – ${tglPendek(y)}</span></button>`; }).join(""); }
+    if (st.pm === "rentang") tengah = `<label class="ops-tgl ops-rg">${lbl("kalender", "")}<input type="date" data-rentang="dari" value="${a}" max="${kini}" min="${TGL_MIN}" aria-label="Dari tanggal"></label><span>sampai</span><label class="ops-tgl ops-rg">${lbl("kalender", "")}<input type="date" data-rentang="sampai" value="${b}" max="${kini}" min="${TGL_MIN}" aria-label="Sampai tanggal"></label>`;
     const hr = Math.round((Date.parse(b) - Date.parse(a)) / 864e5) + 1;
-    return `<div class="ops-p1${st.pm === "rentang" ? " rg" : ""}">${kiri}<div class="ops-ptg"><span>Periode</span><b class="ops-pl">${tengah}</b><em class="ops-kini">${fmt(hr)} hari</em></div>${kanan}</div>${strip ? popStrip(st.pm === "minggu" ? "Pilih minggu" : "Pilih bulan", `<div class="ops-p2"><div class="ops-strip" style="grid-template-columns:repeat(${st.pm === "minggu" ? 6 : 12},minmax(0,1fr))">${strip}</div></div>`) : ""}`;
+    return `<div class="ops-p1${st.pm === "rentang" ? " rg" : ""}">${kiri}<div class="ops-ptg"><span>Periode</span><b class="ops-pl">${tengah}</b><em class="ops-kini">${fmt(hr)} hari</em></div>${kanan}</div>${strip ? popStrip(st.pm === "minggu" ? "Pilih minggu" : "Pilih bulan", `<div class="ops-p2"><div class="ops-strip" style="grid-template-columns:repeat(${st.pm === "minggu" ? 6 : st.pm === "rentang" ? 5 : 12},minmax(0,1fr))">${strip}</div></div>`) : ""}`;
   }
   function periodeHari() {
     const t = st.tanggal, kini = hariWIB(), senin = geser(t, -((dow(t) + 6) % 7)), kmr = geser(t, -1), bsk = geser(t, 1), mL = geser(t, -7), mD = geser(t, 7);
@@ -265,7 +267,10 @@
         return tb(d, `ops-hr${d === t ? " on" : ""}${d === kini ? " kini" : ""}`, `<b data-p="${HARI[dow(d)]}">${HARI_P[dow(d)]}</b><span>${tglPendek(d)}</span>`); }).join("")}</div>${tb(mD, "ops-ujung", `${mingguLabel(mD)} ›`, mingguLabel(mD))}</div>`)}`;
   }
   /* strip hari/minggu/bulan di popover kalender supaya pemilih periode satu baris (riset dashboard 11 Nov 2026) */
-  const popStrip = (t, isi) => isi;   // pemilik 11 Nov 2026: pakai pemilih periode yang lama (strip tetap tampil), popover dicabut
+  const popStrip = (t, isi) => isi;
+  /* rentang siap pakai: maks 31 hari (batas /api/operasi/monitor per panggilan dipecah per 31 hari) */
+  const rentangPreset = k => { const kini = hariWIB(); if (k === "bi") return [kini.slice(0, 8) + "01", kini];
+    if (k === "bl") { const a = geserBulan(kini.slice(0, 8) + "01", -1); return [a, akhirBulan(a)]; } return [geser(kini, -(+k - 1)), kini]; };   // pemilik 11 Nov 2026: pakai pemilih periode yang lama (strip tetap tampil), popover dicabut
   /* INP: bilah periode dicat ulang dulu (ringan), laporan berat menyusul sesudah frame berikut */
   const pilihTanggal = t => { if (!t || t === st.tanggal || keluar(t)) return; st.tanggal = t; const p = $("#opsLaporan .ops-periode"); if (p) p.innerHTML = periode(); sesudahFrame(isi); };
   /* buka/tutup rincian armada: hanya atribut hidden, tanpa render ulang (INP) */
@@ -451,7 +456,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     const pil = xs => { const u0 = [...new Set(xs)]; return u0.slice(0, 2).map(x => `<small>${esc(x)}</small>`).join("") + (u0.length > 2 ? `<small class="lagi">+${fmt(u0.length - 2)}</small>` : ""); };
     return `<section class="ops-tindak" aria-label="Perlu tindakan"><header>${lbl("ts", "")}<b>Perlu tindakan</b><small>${fmt(it.length)}</small></header>
       <ul>${it.map(([ik, c, n, t, nama, ket, aksi]) => `<li class="${c}"><button type="button" data-tindak="${esc(aksi)}" title="${esc([...new Set(nama)].join(", "))}"><i>${lbl(ik, "")}</i>
-        <div><p><b>${fmt(n)}</b><span>${t}</span></p>${ket ? `<em class="ket">${esc(ket)}</em>` : ""}<span class="ops-tindak-pil">${pil(nama)}</span></div><em class="ke">›</em></button></li>`).join("")}</ul></section>`;
+        <div><p><b>${fmt(n)}</b><span>${t}</span></p>${ket ? `<em class="ket">${esc(ket)}</em>` : ""}<span class="ops-tindak-pil">${pil(nama)}</span>${(() => { const u0 = [...new Set(nama)]; return u0.length ? `<span class="ops-tindak-ring"><span>${esc(u0.slice(0, 2).join(", "))}</span>${u0.length > 2 ? `<b>+${fmt(u0.length - 2)}</b>` : ""}</span>` : ""; })()}</div><em class="ke">›</em></button></li>`).join("")}</ul></section>`;
   }
   /* ---------- pengkinian data dan action plan (pemilik 11 Nov 2026): dihitung dari data, tanpa simpanan baru.
      Butir hilang sendiri begitu datanya masuk; status "telat" bila tenggatnya lewat. ---------- */
@@ -636,9 +641,13 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
         const m = /^(.*\D)\s([\d.,%]+)$/.exec(x) || /^([\d.,%]+)\s(.+)$/.exec(x), n = m ? (/^[\d.,%]+$/.test(m[2]) ? m[2] : m[1]) : null;
         return n ? `<small class="${c}" title="${esc(x)}">${lbl(ik, n)}</small>` : `<small class="${c}">${lbl(ik, x)}</small>`; }).join("") : sub}</em>` : "";
     /* sel ringkasan dengan pembanding (pemilik 11 Nov 2026, pola pangantara): kiri periode ini + perubahan, kanan periode pembanding */
-    const ubin = m => `<div class="${m.redup ? "redup" : ""}" data-rk="${m.k}" tabindex="0" role="button" aria-label="Rincian ${esc(m.t)}"><header><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKR[m.k]}</svg></i><span>${m.t}</span></header>
-      <div class="ops-vs2"><div class="kini"><b>${m.tampil}</b>${D.vs ? deltaHtml(m) : ""}</div>${D.vs ? `<div class="lalu" title="${esc(D.vs.label)}"><b>${m.tampilLalu}</b><small>${esc(D.vs.label)}</small></div>` : ""}</div>
-      <div class="ops-ub-kaki">${pilHtml(m.sub)}</div></div>`;
+    /* sel Angka utama (pemilik 11 Nov 2026 "bagusin"): nilai besar sendiri; bila belum ada data, teks status menggantikan strip "–";
+       pembanding jadi pil kecil supaya tidak bersaing dengan angka hari ini */
+    const ubin = m => { const st0 = m.redup && Array.isArray(m.sub) ? (m.sub.find(x => x[0] === "belum") || m.sub[0])?.[1] : null;
+      return `<div class="${m.redup ? "redup" : ""}" data-rk="${m.k}" tabindex="0" role="button" aria-label="Rincian ${esc(m.t)}"><header><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKR[m.k]}</svg></i><span>${m.t}</span></header>
+      <div class="ops-vs3">${m.redup ? `<p class="ops-vs3-kosong">${lbl("jam", esc(st0 || "Belum ada data"))}</p>` : `<p class="ops-vs3-kini"><b>${m.tampil}</b>${D.vs ? deltaHtml(m) : ""}</p>`}
+      ${D.vs ? `<small class="ops-vs3-lalu">${lbl("kalender", esc(D.vs.label))}<b>${m.tampilLalu}</b></small>` : ""}</div>
+      ${m.redup ? "" : `<div class="ops-ub-kaki">${pilHtml(m.sub)}</div>`}</div>`; };
     const tiles = metrikRingkas(D).map(ubin);
     /* kartu pertama = ringkasan itu sendiri; kepala kartu gelap dihapus (pemilik 11 Nov 2026 "Ringkasan 11 Nov itu yang jadi header") */
     const ringkas = pitaTindakan(D) + `<section class="ops-pa-sek ops-rk" open><summary><i>${lbl("tren", "")}</i><b>Angka utama</b><small>${lbl("kalender", esc(D.label || tglPendek(D.t)))}</small>${D.vs ? `<small class="vs">${lbl("tren", `dibanding ${esc(D.vs.label)}`)}</small>` : ""}<svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
