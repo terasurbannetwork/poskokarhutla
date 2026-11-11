@@ -143,6 +143,7 @@ jobs:
           [ -n "$CLOUDFLARE_API_TOKEN" ] || { echo "tanpa token Cloudflare: terbit lewat build lain"; exit 0; }
           git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data' ':!public/udara/data' ':!data/raw'
           python3 scripts/terbit/versi.py || { echo "::error title=Versi gagal::scripts/terbit/versi.py gagal"; exit 1; }
+          python3 scripts/terbit/isi_data.py perlu   # run ini panjang: titik.yml bisa terbit lebih baru di tengahnya (10 Nov 2026)
           python3 scripts/terbit/jaga_segar.py
           python3 scripts/terbit/isi_data.py buat
           npx --yes wrangler@4.42.0 deploy || { echo "::error title=Deploy gagal::wrangler deploy gagal"; exit 1; }

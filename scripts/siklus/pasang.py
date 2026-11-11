@@ -7,7 +7,7 @@ Karhutla: kode_sumber `sel:<i>:<j>` (sel 0,02 derajat), bukan `K####` yang diber
 Rekaman: {sumber, kode, jenis (tuple kunci), kab [kab4 Kemendagri terurut], tgl ISO, nilai {kolom: angka|None}, akhir}.
 Pakai: python3 -I scripts/siklus/pasang.py riwayat [--bersih DIR] | masuk --basis URL --dari D --sampai S [--kering] | uji
 """
-import collections, datetime as dt, functools, glob, gzip, hashlib, importlib.util, json, math, os, sys, urllib.parse, urllib.request
+import collections, datetime as dt, functools, glob, gzip, hashlib, importlib.util, json, math, os, sys, urllib.error, urllib.parse, urllib.request
 
 AB = os.path.dirname(os.path.abspath(__file__))
 AKAR = os.path.normpath(os.path.join(AB, "../.."))
@@ -314,8 +314,11 @@ def _http(token):
     def panggil(metode, url, isi=None):
         q = urllib.request.Request(url, method=metode, data=None if isi is None else json.dumps(isi).encode("utf-8"),
                                    headers={"Authorization": "Bearer " + token, "Content-Type": "application/json", "User-Agent": "centurisk97-siklus"})
-        with urllib.request.urlopen(q, timeout=60) as r:
-            return json.loads(r.read().decode("utf-8"))
+        try:
+            with urllib.request.urlopen(q, timeout=60) as r:
+                return json.loads(r.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:   # tanpa ini log CI cuma "409 Conflict" tanpa alasan dari Worker
+            raise SystemExit("%s %s -> HTTP %s: %s" % (metode, url.split("?")[0], e.code, e.read().decode("utf-8", "replace")[:500]))
     return panggil
 
 
