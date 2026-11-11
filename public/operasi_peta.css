@@ -2232,3 +2232,6 @@
 /* Google Maps sebaris dengan KML dan GPX di waypoint (pemilik 11 Nov 2026) */
 #opsLaporan .ops-laci .ops-laci-wp a.ops-kml{text-decoration:none}
 #opsLaporan .ops-laci .ops-laci-wp p{flex-wrap:wrap}
+/* pop-up lebih lebar (pemilik 11 Nov 2026 "lebarin lagi"); kartu armada 4 sebaris */
+.ops-dlg{width:min(1360px,96vw);max-height:92vh}
+@media (min-width:1300px){#opsLaporan .ops-dlg .ops-ar-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
