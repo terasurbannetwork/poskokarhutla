@@ -131,8 +131,9 @@ if BANJIR:
     LEG = [('ellipse', '2F6FB5', 'Ukuran lingkaran sebanding kecamatan Siaga atau Awas banjir'), ('rect', '051C2C', 'Provinsi dengan kecamatan Siaga atau Awas'),
            ('rect', 'DCE1E7', 'Tanpa kecamatan Siaga atau Awas')] + LEG[3:]
 elif os.environ.get('PETA_CHOROPLETH') == '1':   # pemilik 10 Nov 2026; kelas dan warna sama dengan KELAS di peta.mjs
-    LEG = [('rect', 'DCE1E7', 'Tanpa hotspot'), ('rect', 'FEE5CC', '1 sampai 25 titik'), ('rect', 'FDBE85', '26 sampai 50'), ('rect', 'F78C3C', '51 sampai 100'),
-           ('rect', 'D9480F', '101 sampai 250'), ('rect', '7F2704', 'Lebih dari 250')]
+    # rentang pemilik 11 Nov 2026
+    LEG = [('rect', 'DCE1E7', 'Tanpa hotspot'), ('rect', 'FDBE85', '1 sampai 100 titik'), ('rect', 'F78C3C', '101 sampai 250'),
+           ('rect', 'D9480F', '251 sampai 500'), ('rect', '7F2704', 'Lebih dari 500')]
 else:
     LEG = LEG[:3]   # tanpa persen, legenda naik/turun tak dipakai
 lw = [128016 + 91440 + round(len(t) * 750 / 100 * 0.5 * 12700) + 320040 for _, _, t in LEG]

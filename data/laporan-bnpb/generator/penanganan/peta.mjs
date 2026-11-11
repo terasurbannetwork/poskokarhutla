@@ -29,7 +29,8 @@ const rows = Object.entries(A).map(([k, o]) => ({k, t: o.hot[I] || 0})).filter(r
 // PETA_CHOROPLETH=1 (pemilik 10 Nov 2026: "pakai chloropleth, jangan bubble, fontnya agak gedein"): provinsi diwarnai kelas jumlah hotspot, tanpa lingkaran.
 // Ambang tetap supaya warna antarhari sebanding; kelas dan warnanya sama dengan legenda di tambah_peta.py.
 const CHORO = process.env.PETA_CHOROPLETH === '1';
-const KELAS = [[250, '#7F2704'], [100, '#D9480F'], [50, '#F78C3C'], [25, '#FDBE85'], [0, '#FEE5CC']];
+// pemilik 11 Nov 2026: rentang 1-100, 101-250, 251-500, >500
+const KELAS = [[500, '#7F2704'], [250, '#D9480F'], [100, '#F78C3C'], [0, '#FDBE85']];
 const warnaKelas = t => KELAS.find(([b]) => t > b)[1], nilaiProv = Object.fromEntries(rows.map(r => [r.k, r.t]));
 const mx = Math.max(1, rows[0]?.t || 0), rad = t => CHORO ? 0 : 5 + 33 * Math.sqrt(t / mx), ada = new Set(rows.map(r => r.k));
 let s = Object.entries(d).map(([k, p]) => CHORO ? `<path d="${p}" class="pp"${ada.has(k) ? ` style="fill:${warnaKelas(nilaiProv[k])}"` : ''}/>` : `<path d="${p}" class="${ada.has(k) ? 'pp-on' : 'pp'}"/>`).join('');

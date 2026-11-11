@@ -150,6 +150,26 @@ def singkat(t, n=46):
     return t if len(t) <= n else t[:t.rfind(',', 0, n - 5)] + ', dll.'
 
 
+def hasil_hujan(o, n=40):
+    """Keterangan pil hujan OMC (pemilik 11 Nov 2026): bila semua kab/kota sasaran ada di daftar hujan WA -> "Hujan di seluruh
+    kabupaten/kota sasaran"; sebagian -> berapa dari berapa sasaran; tanpa sasaran -> lokasi hujan seperti biasa. Dua nama pertama
+    daftar hujan bisa bukan sasaran (Sukamara, Lamandau 10 Nov) dan terbaca seolah hasil OMC."""
+    h = o.get('hujan')
+    if not h: return None
+    sas = [k for k in re.split(r',\s*', o.get('sasaran') or '') if k]
+    lok = h['lokasi'].lower()
+    kena = [k for k in sas if k.lower() in lok]
+    if sas and len(kena) == len(sas): return 'Hujan di seluruh kabupaten/kota sasaran'
+    if kena: return f'Hujan di {len(kena)} dari {len(sas)} kabupaten/kota sasaran'
+    return 'di ' + singkat(h['lokasi'], n)
+
+
+def daftar_sasaran(t):
+    """Sasaran OMC ditulis semua (pemilik 11 Nov 2026: "sebutin aja semua"), nama terakhir dengan "dan"."""
+    k = [x for x in re.split(r',\s*', t) if x]
+    return k[0] if len(k) == 1 else ', '.join(k[:-1]) + ' dan ' + k[-1]
+
+
 OMC_BARIS = [('Kalimantan Barat', 3108960, 3170682, 3294126), ('Kalimantan Tengah', 3552444, 3614166, 3737610),
              ('Sumatera Selatan', 3995928, 4057650, 4181094), ('Kalimantan Selatan', 4439412, 4501134, 4624578)]   # nama, y teks, y pil, y titik
 
@@ -201,11 +221,11 @@ def ganti_operasi(s, op):
     lama_has = ['13 kab/kota, termasuk 2 sasaran', 'di 4 kabupaten sasaran', 'Ogan Ilir dan Lahat', 'radar BMKG 24 jam']
     for (nama, yt, yp, yd), ls, lh in zip(OMC_BARIS, lama_sas, lama_has):
         o = op['omc'].get(nama) or {'sortie': 0, 'hujan': None, 'sasaran': ''}
-        s = teks(s, ls, singkat(o['sasaran']) if o['sasaran'] else 'tidak ada sortie')
+        s = teks(s, ls, daftar_sasaran(o['sasaran']) if o['sasaran'] else 'tidak ada sortie')
         h = o['hujan']
         label = label_hujan(h) if h else 'BELUM HUJAN'
         s = pasang_sp(s, 3561885, yp, pil['biru' if h else 'abu'], label)
-        s = teks(s, lh, ('di ' + singkat(h['lokasi'], 40)) if h else f'belum ada laporan hujan {bln(K)}')
+        s = teks(s, lh, hasil_hujan(o) if h else f'belum ada laporan hujan {bln(K)}')
         for e, f in sp_di(s, 676656, yd): s = s[:e] + re.sub(r'val="(4A9BE0|C4CAD3)"', f'val="{"4A9BE0" if h else "C4CAD3"}"', s[e:f]) + s[f:]
     s = rapat_omc(s, ada)
     # ---- semai: 2 provinsi berbahan terbanyak (baris templat Kalteng, Sumsel)
@@ -232,7 +252,7 @@ def ganti_operasi(s, op):
         h = o['hujan']
         kom = ', '.join(x for x in (f'NaCl {rb(o["nacl"])} kg' if o['nacl'] else '', f'dry ice {rb(o["dryice"])} kg' if o['dryice'] else '') if x)
         ganti = {ln: nama, lkg: f'{rb(o["nacl"] + o["dryice"])} kg', lso: f'{o["sortie"]} sortie',
-                 lh: ('di ' + singkat(h['lokasi'], 40)) if h else kom}
+                 lh: hasil_hujan(o) if h else kom}
         s = di_baris(s, yn, lambda b: re.sub(r'<a:t>([^<]*)</a:t>', lambda m: f'<a:t>{ganti.get(m.group(1), m.group(1))}</a:t>', b))
         label = label_hujan(h) if h else 'JARAK PANDANG NAIK' if o['jarak_pandang'] else 'BELUM HUJAN'
         s = pasang_sp(s, 3561885, yn + 61722, pil['abu' if label == 'BELUM HUJAN' else 'biru'], label)
