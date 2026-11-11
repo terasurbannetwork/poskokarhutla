@@ -1347,7 +1347,8 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
   }
 
   /* ---- profil lembaga (L41) ---- */
-  const isiNanti = (cek, id, html) => { const c = (n = 0) => { if (!cek()) return; const el = $(id); if (!el) { if (n < 20) nanti(() => c(n + 1)); return; } el.outerHTML = html; }; nanti(c); };
+  /* data bisa tiba SEBELUM panel tergambar (peramban sibuk): tunggu wadah dan cek bersama sampai ~10 dtk, bukan menyerah di cek pertama */
+  const isiNanti = (cek, id, html) => { const t0 = Date.now(), c = () => { const el = cek() && $(id); if (!el) { if (Date.now() - t0 < 10e3) nanti(c); return; } el.outerHTML = html; }; nanti(c); };
   const namaLb = x => [...new Set([x.nama, x.singkatan, ...strs(x.alias)].map(nrm).filter(s => s.length >= 3))];
   /* jurnal yang penerbitnya sama dengan nama/singkatan/alias lembaga: sama persis, atau salah satu nama (>= 4 huruf) muncul utuh sebagai kata di teks penerbit */
   function jurnalLembaga(d, x) {
