@@ -49,7 +49,7 @@ Status per tiket ada di kolom Status dan di baris `Status:` akhir tiap tiket (`s
 | SK-011 | `bersih_logbook.py` | selesai |
 | SK-012 | Adapter panen G1: DIBI harian, GDACS, GLIDE, USGS | selesai |
 | SK-013 | `unggah_riwayat.py` dan `rollback.sql` | selesai |
-| SK-014 | Unggah riwayat dari mesin pemilik [pemilik] | belum |
+| SK-014 | Unggah riwayat dari mesin pemilik [pemilik] | selesai |
 | SK-015 | Migrasi G1 `sk_kejadian` | selesai |
 | SK-016 | `src/siklus_hitung.js` bagian F1 | selesai |
 | SK-017 | Cangkang `layaniSk`, cabang `worker.js`, dan bagian Siklus `src/hak.js` | selesai |
@@ -146,7 +146,7 @@ Status per tiket ada di kolom Status dan di baris `Status:` akhir tiap tiket (`s
 | SK-108 | `tests/siklus/cakupan.json` G4 | selesai |
 | SK-109 | Jawaban pertanyaan G4 [pemilik] | selesai |
 | SK-110 | Rilis G4 [induk] | selesai |
-| SK-111 | Penutupan program [induk] | belum |
+| SK-111 | Penutupan program [induk] | selesai |
 | SK-112 | Tampilan tahap Rantai di halaman Buku Besar | selesai |
 
 ## 3. Gelombang G1: lapis gudang data, Buku Besar, Peta Paparan
@@ -248,7 +248,7 @@ Status: selesai
 
 #### SK-014 Unggah riwayat dari mesin pemilik [pemilik]
 Pengerja: pemilik. Bergantung: SK-013.
-Berkas: tidak ada. Langkah: pemilik menjalankan `unggah_riwayat.py` di mesin yang memegang riwayat DIBI penuh; melaporkan hash dan jumlah baris. TIDAK wajib untuk rilis G1: sebelum diunggah, sasaran yang butuh riwayat tampil `menunggu`. Bukti: keluaran skrip. Pemeriksa: sesi induk.
+Berkas: tidak ada. Langkah: pemilik menjalankan `unggah_riwayat.py` di mesin yang memegang riwayat DIBI penuh; melaporkan hash dan jumlah baris. TIDAK wajib untuk rilis G1: sebelum diunggah, sasaran yang butuh riwayat tampil `menunggu`. Bukti: keluaran skrip. Pemeriksa: sesi induk. Status: selesai (11 Nov 2026, pemilik menjalankan `--wrangler`: 16 berkas 2011-2026, 57.161 baris, ditolak 0; hash sama dengan uji kering).
 
 ### 3.2 F1: Buku Besar Kejadian
 
@@ -905,7 +905,7 @@ Status: selesai
 
 #### SK-111 Penutupan program [induk]
 Pengerja: induk. Bergantung: SK-110.
-Langkah: `ilmu.mjs kasus siklus` untuk pelajaran program; perbarui `.claude/ilmu-agent/siklus.md`; sapu status tiket; laporkan ke pemilik daftar U yang masih terbuka dan semua angka `asumsi-kebijakan` yang masih dipakai. Bukti: `npm run uji:agen`. Pemeriksa: higiene-repo.
+Langkah: `ilmu.mjs kasus siklus` untuk pelajaran program; perbarui `.claude/ilmu-agent/siklus.md`; sapu status tiket; laporkan ke pemilik daftar U yang masih terbuka dan semua angka `asumsi-kebijakan` yang masih dipakai. Bukti: `npm run uji:agen`. Pemeriksa: higiene-repo. Status: selesai (11 Nov 2026). U terbuka: tidak ada, semua dijawab di KEPUTUSAN-AWAL bagian I. Angka `asumsi-kebijakan` yang masih dipakai: stimulan rumah 60/30/15 juta (U8), DTH Rp600.000 x 3 bulan per KK, harga satuan kerusakan tanpa acuan resmi (U4), target personel kesenjangan renkon, skor kesiapan gladi, dan pemetaan tag OSM fasilitas.
 
 ## 7. Jalur kritis dan paralel
 
