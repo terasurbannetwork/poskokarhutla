@@ -632,7 +632,13 @@
   function pilihTab(k, tombol) {
     tombol.forEach(b => { b.setAttribute("aria-selected", String(b.dataset.tab === k)); b.setAttribute("aria-current", String(b.dataset.tab === k)); });
     const jd = document.getElementById("dlJudul"); if (jd) jd.textContent = TAB.find(x => x[0] === k)?.[1] || "Pantau Dalops";
+    /* pindah jenis mulus (pemilik 11 Nov 2026 "agar smooth transisinya"): panel baru menahan tinggi panel lama sampai isinya jadi,
+       jadi halaman tidak melompat; masuknya memudar (dalops.css .dl-panel) */
+    const lama = Object.values(panel).find(p => !p.hidden), tinggi = lama?.offsetHeight || 0;
     for (const [n, p] of Object.entries(panel)) p.hidden = n !== k;
+    if (tinggi && panel[k] && panel[k] !== lama) { const p = panel[k]; p.style.minHeight = tinggi + "px"; p.classList.remove("dl-masuk"); void p.offsetWidth; p.classList.add("dl-masuk");
+      const lepas = () => { p.style.minHeight = ""; }; const ob = new MutationObserver(() => { if (p.querySelector(".maplibregl-canvas, .ex-std")) { ob.disconnect(); setTimeout(lepas, 400); } });
+      ob.observe(p, {childList: true, subtree: true}); setTimeout(() => { ob.disconnect(); lepas(); }, 2500); }
     if (location.hash.slice(1) !== k) history.replaceState(null, "", "#" + k);
     aktif = k; if (JN[k]) J = JN[k];
     if (k === "karhutla") window.DalopsKarhutla?.tampil();   // peta yang lahir di panel tersembunyi diukur ulang
@@ -653,10 +659,27 @@
       /* pemilik 11 Nov 2026: "pilihan bencananya ada di dalam maps": pil jenis bencana di pojok peta tiap panel (panel tanpa peta: di puncak panel);
          panel kiri berisi seksi panel yang tampil + grup Laporan */
       const JP = TAB.filter(([k]) => !k.startsWith("laporan"));
-      const segarBatang = () => document.querySelectorAll(".dl-jenis-peta [data-jenis]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.jenis === aktif)));
-      const batang = () => h("div", {class: "dl-jenis-peta", role: "group", "aria-label": "Jenis bencana"}, ...JP.map(([k, t, ik]) => {
-        const b = h("button", {type: "button", "data-jenis": k, "aria-pressed": String(k === aktif)}, ikon(ik), h("span", {teks: t}));
-        b.addEventListener("click", e => { e.stopPropagation(); pilihTab(k, tombol); segarBatang(); }); return b; }));
+      /* jenis bencana = satu tombol pilih di pojok peta (pemilik 11 Nov 2026: deretan sembilan pil diganti pemilih turun):
+         tombol menampilkan jenis aktif, menu kartu berikon; Esc atau klik di luar menutup */
+      const segarBatang = () => document.querySelectorAll(".dl-jenis-peta").forEach(w => { const j = JP.find(x => x[0] === aktif) || JP[0];
+        w.querySelector(".dl-jp-btn > .dl-jp-ik")?.replaceChildren(ikon(j[2])); const t = w.querySelector(".dl-jp-btn > span"); if (t) t.textContent = j[1];
+        w.querySelectorAll("[data-jenis]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.jenis === aktif))); });
+      const tutupMenu = () => document.querySelectorAll(".dl-jenis-peta.buka").forEach(w => { w.classList.remove("buka"); w.querySelector(".dl-jp-btn").setAttribute("aria-expanded", "false"); });
+      document.addEventListener("click", e => { if (!e.target.closest(".dl-jenis-peta")) tutupMenu(); });
+      document.addEventListener("keydown", e => { if (e.key === "Escape") tutupMenu(); });
+      const batang = () => {
+        const j = JP.find(x => x[0] === aktif) || JP[0];
+        const btn = h("button", {type: "button", class: "dl-jp-btn", "aria-haspopup": "listbox", "aria-expanded": "false", "aria-label": "Jenis bencana"},
+          h("i", {class: "dl-jp-ik"}, ikon(j[2])), h("span", {teks: j[1]}), h("i", {class: "dl-jp-panah", "aria-hidden": "true"}));
+        const menu = h("div", {class: "dl-jp-menu", role: "listbox", "aria-label": "Jenis bencana"}, ...JP.map(([k, t, ik]) => {
+          const b = h("button", {type: "button", role: "option", "data-jenis": k, "aria-selected": String(k === aktif)}, h("i", null, ikon(ik)), h("span", {teks: t}));
+          b.addEventListener("click", e => { e.stopPropagation(); tutupMenu(); if (k !== aktif) { pilihTab(k, tombol); segarBatang(); } }); return b; }));
+        const w = h("div", {class: "dl-jenis-peta"}, btn, menu);
+        btn.addEventListener("click", e => { e.stopPropagation(); const jadi = !w.classList.contains("buka"); tutupMenu(); w.classList.toggle("buka", jadi); btn.setAttribute("aria-expanded", String(jadi));
+          if (jadi) menu.querySelector('[aria-selected="true"]')?.focus({preventScroll: true}); });
+        menu.addEventListener("keydown", e => { if (!["ArrowDown", "ArrowUp"].includes(e.key)) return; e.preventDefault(); const bs = [...menu.querySelectorAll("button")], i = bs.indexOf(document.activeElement);
+          bs[(i + (e.key === "ArrowDown" ? 1 : bs.length - 1)) % bs.length]?.focus(); });
+        return w; };
       const seksiSlot = () => {
         const p = panel[aktif], sek = p ? [...p.querySelectorAll(":scope > section.ex-std, :scope > .ex-std")] : [];
         const bs = sek.map((x, i) => { x.id ||= `dl-${aktif}-s${i}`; const j = x.querySelector(".ex-jd h3"), b = h("button", {type: "button", class: "db-nav-b"}, h("i", {class: "db-nav-ik"}, j?.querySelector("svg")?.cloneNode(true) || ikon("daftar")), h("span", {class: "db-nav-t", teks: j ? j.textContent.trim() : "Bagian"}));
