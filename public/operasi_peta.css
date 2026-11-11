@@ -1549,3 +1549,8 @@
   #opsLaporan .ops-utama{height:100%;overflow-y:auto}
 }
 #opsLaporan .ops-utama>.ops-periode{position:static;margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;display:grid;gap:6px}
+/* label grup panel kembali berpita (pemilik 11 Nov 2026 "bagusan sebelumnya ada containernya") */
+#opsLaporan .ops-nav-g{margin:14px 0 6px;padding:7px 10px;border-radius:10px;background:color-mix(in srgb,var(--brand2) 8%,transparent)}
+#opsLaporan .ops-nav-g::after{display:none}
+#opsLaporan .ops-nav-g .ops-lbl{gap:8px;font-size:.75rem;font-weight:800;color:#0b2545}
+#opsLaporan .ops-nav-g .ops-lbl svg{width:20px;height:20px;padding:4px;border-radius:6px;background:#0b2545;color:#fff}
