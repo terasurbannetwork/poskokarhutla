@@ -657,3 +657,11 @@ h1.dl-l1{margin:0;padding:12px 16px;border-radius:14px;background:#0b2545;color:
 .dl-peta .dl-peta-dasar>.dl-peta-ubin{position:static;flex:1;min-width:0;border-radius:0;box-shadow:none;background:none}
 .dl-peta-dasar .dl-peta-ubin .db-ubin{padding:8px 12px;column-gap:8px}
 .dl-peta-dasar .dl-peta-ubin .db-ubin>header>span{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.15;font-size:.6875rem}
+/* ringkasan di bilah dasar (pemilik 11 Nov 2026 "bagusin lagi", tambah KK/jiwa terdampak dan mengungsi): kolom sebanyak ubinnya, label kecil di atas angka */
+.dl-peta-dasar .dl-peta-ubin,.dl-peta-dasar .dl-peta-ubin.k5,.dl-peta-dasar .dl-peta-ubin.k4{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}
+.dl-peta-dasar .dl-peta-ubin .db-ubin{grid-template-columns:30px minmax(0,1fr);grid-template-areas:"ik nama" "ik angka";row-gap:1px;column-gap:9px;padding:9px 12px}
+.dl-peta-dasar .dl-peta-ubin .db-ubin>header>i{width:30px;height:30px}
+.dl-peta-dasar .dl-peta-ubin .db-ubin>header>span{align-self:end;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.6875rem;line-height:1.2}
+.dl-peta-dasar .dl-peta-ubin .db-ubin>b{align-self:start;font-size:1.125rem;line-height:1.15}
+/* seksi sekelompok tampil bertumpuk dengan jarak kartu */
+.dl-dalam .dl-panel:not([hidden]){display:flex;flex-direction:column;gap:20px}.dl-dalam .dl-panel>.ex-std{margin:0}

@@ -52,7 +52,7 @@ body .ad-tabel thead tr{background:var(--db-navy)}
 @media print{.bn-kartu>h2:first-child{margin:0 0 8px;padding:6px 10px;border-radius:6px}}
 
 /* ---- cangkang model A bersama (public/inti/dasbor.js): panel seksi kiri setara /operasi ---- */
-.db-a{display:grid;grid-template-columns:248px minmax(0,1fr);gap:16px;align-items:start;max-width:1560px}
+.db-a{display:grid;grid-template-columns:284px minmax(0,1fr);gap:16px;align-items:start;max-width:1560px}
 .db-kanan{display:grid;gap:14px;min-width:0;order:2}
 .db-nav{order:1;position:sticky;top:70px;display:flex;flex-direction:column;gap:8px;padding:10px;border:1px solid var(--db-h2-garis);border-radius:16px;background:var(--card,#fff);box-shadow:var(--bayang);height:calc(100vh - 86px);overflow:hidden}
 .db-nav-id{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:12px;background:var(--db-h2);box-shadow:inset 4px 0 0 var(--db-navy)}
@@ -124,7 +124,7 @@ thead th{text-transform:none!important;letter-spacing:0!important}
 .mp-side{display:none}
 @media (min-width:901px){
   body.mp-model-a .ad-top .mp-menu,body.mp-model-a .mp-sub{display:none!important}
-  .mp-a{display:grid;grid-template-columns:248px minmax(0,1fr);gap:16px;align-items:start;padding:12px 16px}
+  .mp-a{display:grid;grid-template-columns:284px minmax(0,1fr);gap:16px;align-items:start;padding:12px 16px}
   .mp-a>main{margin:0!important;max-width:none!important;min-width:0;padding:0!important}
   .mp-side{display:flex}
   .mp-side .db-nav-isi{gap:1px;overflow:auto}
@@ -240,3 +240,6 @@ aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true
   .mp-a>.mp-side>.db-nav-isi{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
   .mp-a>.mp-side>.db-nav-kaki{flex:none;margin-top:auto}
 }
+/* panel kiri Pusdalops lebih lebar (pemilik 11 Nov 2026 "harusnya bisa dilebarin"); butir halaman yang seksinya tampil disembunyikan */
+@media (min-width:901px){.mp-a>.mp-side{width:auto;max-width:none;min-width:0}}
+.mp-side .db-nav-b[hidden]{display:none!important}

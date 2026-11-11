@@ -12,7 +12,8 @@
   const put = (el, ...a) => el.replaceChildren(...a.flat().filter(x => x != null && x !== false));
   const kosong = (ik, teks) => h("div", {class: "lb-kosong"}, ikon(ik), h("span", {teks}));
   const pil = (teks, ton, ik) => h("span", {class: "bn-pil lb-t-" + ton}, ikon(ik), teks);
-  const kaki = t => h("p", {class: "lb-p lb-kaki", teks: t});
+  /* catatan metode panjang dilipat (pemilik 11 Nov 2026 "atur ulang semua"): tampil saat dibuka, tidak memenuhi layar */
+  const kaki = t => h("details", {class: "lb-catatan"}, h("summary", null, ikon("daftar"), "Catatan metode"), h("p", {class: "lb-p lb-kaki", teks: t}));
   const pct = (a, b) => b ? `${F(Math.round(1000 * a / b) / 10)}%` : "–";
   const esc = s => String(s).replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
   const tip = (judul, ...baris) => `<b>${esc(judul)}</b><br>${baris.map(esc).join("<br>")}`;
@@ -162,7 +163,7 @@
     const sU = pilihan("Urut menurut", [["n", "Urut: kejadian"], ["nama", "Urut: nama"], ...KOL.slice(1).map(([v, t]) => [v, `Urut: ${t}`])], urut, v => { urut = v; ulang(); });
     const sA = pilihan("Arah urut", [["turun", "Terbesar dulu"], ["naik", "Terkecil dulu"]], "turun", v => { naik = v === "naik"; ulang(); });
     const sP = pilihan("Provinsi", [["", "Semua provinsi"], ...Object.entries(PROV).map(([p, t]) => [p, t])], prov, v => { prov = v; ulang(); });
-    put(kotak, h("div", {class: "lb-peringatan"}, h("span", {teks: "Baca dengan hati-hati"}), h("ul", null, (D.catatan || []).map(c => h("li", {teks: c})))),
+    put(kotak, h("details", {class: "lb-catatan lb-hati"}, h("summary", null, ikon("peringatan"), "Baca dengan hati-hati"), h("ul", null, (D.catatan || []).map(c => h("li", {teks: c})))),
       sk, sPer, h("div", {class: "bn-baris"}, bungkus("Urut menurut", sU), bungkus("Arah", sA), bungkus("Provinsi", sP)),
       nas ? h("div", {class: "lb-ringkas"}, pil(`Nasional: ${F(nas.n)} kejadian, jeda median ${F(nas.jeda_hari?.median)} hari`, "info", "daftar"), pil(`${F(nas.sekali_pct)}% dilaporkan sekali saja`, "tunggu", "ok")) : null, isi,
       h("details", {class: "lb-p"}, h("summary", {teks: "Definisi kolom"}), h("ul", null, Object.entries(D.definisi || {}).map(([k, v]) => h("li", {teks: `${label(k)}: ${v}`})))));
@@ -191,7 +192,7 @@
     const ulang = () => lanjutNanti(gambar);
     const wl = await wilayah(v => { w = v; ulang(); });
     const mk = (nama, teks, ik, f) => { const i = h("input", {type: "checkbox", name: nama}); i.addEventListener("change", () => { f(i.checked); ulang(); }); return h("label", null, i, ikon(ik), teks); };
-    put(kotak, h("div", {class: "lb-peringatan"}, h("span", {teks: "Baca dengan hati-hati"}), h("ul", null, (D.catatan || []).map(c => h("li", {teks: c})))), wl.node,
+    put(kotak, h("details", {class: "lb-catatan lb-hati"}, h("summary", null, ikon("peringatan"), "Baca dengan hati-hati"), h("ul", null, (D.catatan || []).map(c => h("li", {teks: c})))), wl.node,
       h("div", {class: "lb-seg", role: "group", "aria-label": "Saring topik"}, mk("lbimb", "Tampilkan imbauan kewaspadaan", "peringatan", v => { imbauan = v; }), mk("lbber", "Hanya topik berulang", "kalender", v => { hanyaBerulang = v; })), isi);
     gambar();
   };

@@ -97,8 +97,7 @@
     const wadah = h("div", {class: "dl-peta"}, h("p", {class: "bn-pesan", teks: "Memuat peta…"}));
     const ringkas = bagian("gunungapi-ringkas", "gunungapi", "Peta gunung api",
       tinggi.length ? [hl(`${F(tinggi.length)} gunung api`), " berstatus Siaga atau Awas, ", hl(`${F(n(2))}`), " Waspada"] : ["Tidak ada gunung api berstatus Siaga atau Awas, ", hl(`${F(n(2))}`), " Waspada"],
-      wadah, h("div", {class: "dl-legenda-peta dl-ga-leg"}, ...[4, 3, 2, 1].map(l => h("span", {class: "dl-leg dl-ga-leg" + l, teks: NAMA[l]})),
-        d.dibuat ? label("Status PVMBG per " + tglPendek(d.dibuat.slice(0, 10), true), "kalender", "garis") : null));
+      wadah, h("div", {class: "dl-legenda-peta dl-ga-leg"}, ...[4, 3, 2, 1].map(l => h("span", {class: "dl-leg dl-ga-leg" + l, teks: NAMA[l]}))));   // pil "Status PVMBG per" dibuang (pemilik 11 Nov 2026 "gausah ada")
     requestAnimationFrame(() => petaGunung(wadah, gunung, WARNA, ubin, U));
     const kartu = tinggi.map(gn => {
       const u = urai(gn.rekomendasi), radius = u.radius ?? gn.radius_km ?? null;

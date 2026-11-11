@@ -213,7 +213,7 @@ else {
     await tab.klik(`.sg-bulan input[value="${bln}"]`);
     await tab.tungguFungsi("[...document.querySelectorAll('.bn-blok h2')].some(h => /^Kebutuhan yang biasa/.test(h.innerText.trim()))");
     const blok = "[...document.querySelectorAll('.bn-blok')].find(b => /^Kebutuhan yang biasa/.test(b.querySelector('h2')?.innerText.trim()))";
-    const t = await tab.eval(`${blok}.innerText`);
+    const t = await tab.eval(`${blok}.textContent`);   // catatan metode dilipat (details): baca isi DOM
     assert.match(t, /kejadian berisi di kab\/kota dari|Belum cukup data di kab ini/); assert.match(t, /Nasional, semua bulan|pola nasional/);
     assert.ok(await tab.eval(`${blok}.querySelectorAll('tbody tr').length >= 1 && ${blok}.querySelectorAll('meter').length >= 1`));
     assert.equal(await tab.eval(`[...${blok}.querySelectorAll('th')].every(th => getComputedStyle(th).textAlign === 'center')`), true, "header tabel rata tengah");
@@ -233,13 +233,13 @@ else {
     const buka = async (v, tunggu) => { await tab.klik(`input[name=lbtab][value=${v}]`); await tab.tungguFungsi(tunggu, 20000); };
     /* jam rawan */
     await buka("jam", "document.querySelectorAll('.lb-svg g[data-tip]').length === 24");
-    assert.equal(await tab.eval("document.querySelector('.lb-kolom').hidden"), true); assert.match(await tab.teks(), /Puncak jam/);
+    assert.equal(await tab.eval("document.querySelector('.lb-kolom').hidden"), true); assert.match(await tab.eval("document.body.textContent"), /Puncak jam/);
     await tab.klik("input[name=lbjenis][value=longsor]"); await tab.tungguFungsi("/Longsor/.test(document.querySelector('.lb-svg')?.getAttribute('aria-label') || '')");
     await bersih("jam"); await tanpaGulir("jam");
     /* pihak terlibat: BPBD tidak jadi baris */
     await buka("terlibat", "document.querySelectorAll('.lb-turunan tbody tr').length > 0");
     assert.equal(await tab.eval("[...document.querySelectorAll('.lb-turunan tbody td:first-child')].some(td => td.innerText.trim() === 'BPBD')"), false);
-    assert.match(await tab.teks(), /BPBD tidak ditampilkan sebagai temuan/);
+    assert.match(await tab.eval("document.body.textContent"), /BPBD tidak ditampilkan sebagai temuan/);   // catatan metode dilipat (details), teksnya tetap ada
     await isi(".lb-turunan select[aria-label=Provinsi]", "33"); await tab.tungguFungsi("document.querySelector('.lb-turunan select[aria-label=\"Kabupaten/kota\"]').options.length > 20");
     await bersih("terlibat");
     /* desa langganan: berkas per provinsi dimuat hanya saat dipilih, ambang bawaan 6 */
@@ -247,19 +247,19 @@ else {
     await buka("desa", "document.querySelectorAll('.lb-turunan tbody tr').length > 0");
     assert.equal(await tab.eval("document.querySelector('input[name=lbambang]:checked').value"), "6");
     assert.equal(await tab.eval("performance.getEntriesByType('resource').filter(e => /desa_langganan/.test(e.name)).length"), 1);
-    assert.match(await tab.teks(), /6 tahun atau lebih dari 9/);
+    assert.match(await tab.eval("document.body.textContent"), /6 tahun atau lebih dari 9/);
     await tab.klik("input[name=lbambang][value=\"9\"]"); await tab.tungguFungsi("/9 tahun atau lebih dari 9|Tidak ada desa/.test(document.body.innerText)");
     await bersih("desa"); await tanpaGulir("desa");
     /* rapor: sel n < 10 disembunyikan, catatan jeda, tanpa peringkat juara */
     await buka("rapor", "document.querySelectorAll('.lb-turunan tbody tr').length > 0");
-    let t = await tab.teks(); assert.match(t, /Cilacap, Jawa Tengah/); assert.doesNotMatch(t, /Kecil/); assert.match(t, /1 disembunyikan, kejadian kurang dari 10/); assert.match(t, /waktu MASUK ke Pusdalops/);
+    let t = await tab.eval("document.body.textContent"); assert.match(t, /Cilacap, Jawa Tengah/); assert.doesNotMatch(t, /Kecil/); assert.match(t, /1 disembunyikan, kejadian kurang dari 10/); assert.match(t, /waktu MASUK ke Pusdalops/);
     assert.doesNotMatch(t, /juara|terburuk|terbaik|peringkat/i);
     assert.equal(await tab.eval("[...document.querySelectorAll('.lb-turunan th')].every(th => getComputedStyle(th).textAlign === 'center')"), true);
     await tab.klik("input[name=lbskala][value=prov]"); await tab.tungguFungsi("/Jawa Tengah/.test(document.querySelector('.lb-turunan tbody')?.innerText || '')");
     await bersih("rapor"); await tanpaGulir("rapor");
     /* rekomendasi: imbauan tersembunyi bawaan, bisa dinyalakan */
     await buka("rekom", "!!document.querySelector('.lb-turunan select[aria-label=Provinsi]')");
-    assert.match(await tab.teks(), /Topik kata kunci kasar/);
+    assert.match(await tab.eval("document.body.textContent"), /Topik kata kunci kasar/);
     await isi(".lb-turunan select[aria-label=Provinsi]", "33"); await tab.tungguFungsi("document.querySelector('.lb-turunan select[aria-label=\"Kabupaten/kota\"]').options.length > 20");
     await isi(".lb-turunan select[aria-label=\"Kabupaten/kota\"]", "33|Cilacap"); await tab.tungguFungsi("/Tanggul dan penahan/.test(document.querySelector('.lb-turunan').innerText)");
     assert.doesNotMatch(await tab.eval("document.querySelector('.lb-turunan tbody').innerText"), /Imbauan kewaspadaan/);
@@ -287,7 +287,7 @@ else {
   test("logbook: lama penanganan, median hanya banjir yang layak, karhutla tanpa median", async () => {
     await tab.buka(base + "/bnpb/logbook.html", {tunggu: "select[name=prov]"});
     await tab.klik("input[name=lbtab][value=lama]"); await tab.tungguFungsi("/dilaporkan selesai/.test(document.querySelector('.lb-turunan')?.innerText || '')", 20000);
-    let t = await tab.eval("document.querySelector('.lb-turunan').innerText");
+    let t = await tab.eval("document.querySelector('.lb-turunan').textContent");   // catatan dilipat
     assert.match(t, /Median 1 hari/); assert.match(t, /median dari kejadian yang dilaporkan selesai/); assert.match(t, /batas bawah yang bias/);
     assert.match(t, /Cilacap/); assert.doesNotMatch(t, /Banyumas/, "kab tidak layak_median masuk peringkat");
     await tab.klik("input[name=lblama][value=karhutla]"); await tab.tungguFungsi("/Karhutla: hanya jumlah/.test(document.querySelector('.lb-turunan').innerText)");

@@ -620,9 +620,10 @@
     return h("div", {class: "db-ubin-grid" + (J.pra === false ? " k5" : "")},
       ubin(J.ik || "banjir", "Kab/kota terdampak", F(pekan.length), kataPeriode()),
       ubin("peringatan", J.tidak || "Belum selesai", F(belum), pekan.length ? `dari ${F(pekan.length)} kab/kota` : "–", belum ? "merah" : ""),
+      ubin("sosial", "KK terdampak", jml("kk") == null ? "–" : F(jml("kk")), "laporan Pusdalops"),
       ubin("personel", "Jiwa terdampak", jml("jiwa") == null ? "–" : F(jml("jiwa")), "laporan Pusdalops"),
-      ubin("personel", "Mengungsi", jml("mengungsi") == null ? "–" : F(jml("mengungsi")), "jiwa"),
-      ubin("pin", "Provinsi", F(prov.length), "dengan kejadian"),
+      ubin("tenda", "KK mengungsi", jml("kk_u") == null ? "–" : F(jml("kk_u")), "KK"),
+      ubin("tenda", "Jiwa mengungsi", jml("mengungsi") == null ? "–" : F(jml("mengungsi")), "jiwa"),
       J.pra === false ? null : ubin("peringatan", "Prakiraan Siaga/Awas", F(siaga), "kab/kota belum terdampak", siaga ? "oranye" : ""));   // jenis tanpa prakiraan: ubin ini dibuang
   }
   /* pemilih periode di atas (pemilik 11 Nov 2026, rujukan /operasi): jendela hari logbook untuk kejadian, ubin, peta, dan tabel */
@@ -737,15 +738,23 @@
         return w; };
       /* seksi = halaman (pemilik 11 Nov 2026, pola /operasi): klik di panel kiri mengganti isi, satu seksi tampil sekali;
          seksi yang dipilih diingat menurut namanya, jadi pindah jenis bencana tetap di seksi yang sama (mis. Kondisi terkini) */
+      /* seksi digabung per tujuan (pemilik 11 Nov 2026): kondisi sekarang + prakiraan, benar dan lengkapnya data, penanganan.
+         Satu butir panel kiri = satu kelompok; seksi yang tidak terdaftar berdiri sendiri. */
+      const KELOMPOK = {"Kondisi terkini": ["Kondisi dan prakiraan", "banjir"], "Peringatan dini": ["Kondisi dan prakiraan", "banjir"],
+        "Kabar luar": ["Kabar dan kelengkapan", "daftar"], "Kelengkapan data": ["Kabar dan kelengkapan", "daftar"],
+        "Usulan langkah": ["Penanganan", "personel"], "Upaya penanganan": ["Penanganan", "personel"]};
       let seksiNama = null;
       const seksiSlot = () => {
         const p = panel[aktif], sek = p ? [...p.querySelectorAll(":scope > section.ex-std, :scope > .ex-std")] : [];
         const nama = x => x.querySelector(".ex-jd h3")?.textContent.trim() || "Bagian";
-        const kini = sek.find(x => nama(x) === seksiNama) || sek[0];
-        sek.forEach(x => x.classList.toggle("dl-seksi-tutup", x !== kini));
-        const pk = kini?.querySelector(".maplibregl-map")?._peta; if (pk) requestAnimationFrame(() => pk.resize());
-        const bs = sek.map((x, i) => { x.id ||= `dl-${aktif}-s${i}`; const j = x.querySelector(".ex-jd h3"), b = h("button", {type: "button", class: "db-nav-b", "aria-current": String(x === kini)}, h("i", {class: "db-nav-ik"}, j?.querySelector("svg")?.cloneNode(true) || ikon("daftar")), h("span", {class: "db-nav-t", teks: nama(x)}));
-          b.addEventListener("click", () => { seksiNama = nama(x); seksiSlot(); document.querySelector(".db-kanan")?.scrollIntoView({block: "start"}); }); return b; });
+        const kel = x => KELOMPOK[nama(x)]?.[0] || nama(x);
+        const urut = [...new Set(sek.map(kel))];
+        const kini = urut.includes(seksiNama) ? seksiNama : urut[0];
+        sek.forEach(x => x.classList.toggle("dl-seksi-tutup", kel(x) !== kini));
+        for (const x of sek) { const pk = kel(x) === kini && x.querySelector(".maplibregl-map")?._peta; if (pk) requestAnimationFrame(() => pk.resize()); }
+        const bs = urut.map(k => { const x = sek.find(y => kel(y) === k), ikk = KELOMPOK[nama(x)]?.[1];
+          const b = h("button", {type: "button", class: "db-nav-b", "aria-current": String(k === kini)}, h("i", {class: "db-nav-ik"}, ikk && aktif !== "gunungapi" ? ikon(ikk === "banjir" ? (JN[aktif]?.ik || "banjir") : ikk) : x.querySelector(".ex-jd h3 svg")?.cloneNode(true) || ikon("daftar")), h("span", {class: "db-nav-t", teks: k}));
+          b.addEventListener("click", () => { seksiNama = k; seksiSlot(); document.querySelector(".db-kanan")?.scrollIntoView({block: "start"}); }); return b; });
         const lap = tombol.slice(-2).map(t => { if (!t.dataset.dlKlik) { t.dataset.dlKlik = 1; t.classList.add("db-nav-b"); t.addEventListener("click", () => pilihTab(t.dataset.tab, tombol)); } return t; });
         slot.replaceChildren(...(bs.length ? [grup("Isi halaman", "daftar"), ...bs] : []), grup("Laporan", "simpan"), ...lap);
       };

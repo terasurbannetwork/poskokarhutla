@@ -106,3 +106,37 @@
 .lb-tab[hidden]{display:none!important}
 .lb-kolom{align-items:stretch}
 .lb-kolom>.bn-blok{align-content:start}
+
+/* ===== rombak 11 Nov 2026 (pemilik "atur ulang semua, redesign relayout") =====
+   1. tab analisis tidak menampilkan form Catat di bawahnya (grid .lb-kolom menimpa [hidden]) */
+.lb-kolom[hidden],.lb-turunan[hidden]{display:none!important}
+/* 2. kepala halaman navy disembunyikan: bagian aktif terbaca di panel kiri dan kepala kartu */
+body.mp-model-a .lb-wrap>.bn-judul{display:none}
+/* 3. pilihan (jenis kejadian, tahun, saring) = pil ringkas sebaris yang membungkus, bukan kotak besar dua baris */
+.lb-wrap .lb-seg:not(.lb-tab){display:flex;flex-wrap:wrap;gap:6px}
+.lb-wrap .lb-seg:not(.lb-tab) label{min-height:34px;padding:0 12px;border-radius:999px;justify-content:center;white-space:nowrap;font-size:.8125rem;font-weight:600;color:#0b2545;background:#fff}
+.lb-wrap .lb-seg:not(.lb-tab) label:hover{border-color:#0b2545}
+.lb-wrap .lb-seg:not(.lb-tab) label:has(input:checked){background:#0b2545;border-color:#0b2545;color:#fff}
+.lb-wrap .lb-seg:not(.lb-tab) svg{width:14px;height:14px}
+/* 4. semua isian setinggi sama (40px), select berpanah sendiri supaya tidak gepeng di peramban mana pun */
+.lb-wrap .bn-isian{gap:4px;font-size:.75rem;font-weight:700;color:var(--ink2)}
+.lb-wrap .bn-isian input:not([type=radio]):not([type=checkbox]),.lb-wrap .bn-isian select{box-sizing:border-box;height:40px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background-color:#fff;font-size:.875rem;font-weight:500;color:var(--ink)}
+.lb-wrap .bn-isian select{appearance:none;-webkit-appearance:none;padding-right:34px;cursor:pointer;
+  background-image:linear-gradient(45deg,transparent 50%,#0b2545 50%),linear-gradient(135deg,#0b2545 50%,transparent 50%);background-position:calc(100% - 17px) 17px,calc(100% - 12px) 17px;background-size:5px 5px;background-repeat:no-repeat}
+.lb-wrap .bn-isian textarea{border-radius:10px}
+.lb-wrap .bn-baris{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));align-items:end}
+/* 5. catatan metode dan peringatan baca dilipat */
+.lb-catatan{border:1px solid var(--db-h2-garis,#dbe5f3);border-radius:12px;background:#fff}
+.lb-catatan>summary{display:flex;align-items:center;gap:8px;padding:9px 14px;cursor:pointer;list-style:none;font-size:.8125rem;font-weight:700;color:#0b2545}
+.lb-catatan>summary::-webkit-details-marker{display:none}
+.lb-catatan>summary::after{content:"";width:7px;height:7px;margin-left:auto;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .18s ease}
+.lb-catatan[open]>summary::after{transform:rotate(-135deg)}
+.lb-catatan>summary svg{width:15px;height:15px}
+.lb-catatan>.lb-kaki,.lb-catatan>ul{margin:0;padding:0 14px 12px 32px;border:0;font-size:.75rem;line-height:1.5;color:var(--ink2)}
+.lb-catatan>.lb-kaki{padding-left:14px}
+.lb-hati>summary{color:#8a5a12}.lb-hati{border-color:#f1dfb6;background:#fffaf0}
+/* isian angka: kotak sejajar meski labelnya dua baris */
+.lb-wrap .lb-angka{grid-template-columns:repeat(5,minmax(0,1fr));align-items:end;gap:12px}
+@media (max-width:1400px){.lb-wrap .lb-angka{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:700px){.lb-wrap .lb-angka{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.lb-wrap .bn-isian{align-content:end}

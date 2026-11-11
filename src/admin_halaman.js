@@ -14,7 +14,7 @@ const kepala = judul => `<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/admin/admin.css?v=13" rel="stylesheet">
-<link href="/inti/dasbor.css?v=21" rel="stylesheet">
+<link href="/inti/dasbor.css?v=23" rel="stylesheet">
 <script src="/inti/dasbor_admin.js?v=1" defer></script>
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
@@ -62,7 +62,7 @@ const atas = (aktif, ctx) => ctx ? `<header class="ad-top">
 /* halaman admin yang ada di menu Pusdalops: kepalanya memakai menu Pusdalops (public/bnpb/menu_pusdalops.js), tanpa sub-menu Ruang Koordinasi,
    supaya pindah dari Pantau Banjir ke sini tidak terasa pindah situs (pemilik 4 Nov 2026) */
 const MENU_PUSDALOPS = new Set(["pantau", "laporan-karhutla", "omc"]);
-const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=9" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=15"></script>';
+const menuPusdalops = '<link href="/bnpb/menu_pusdalops.css?v=9" rel="stylesheet"><script src="/bnpb/menu_pusdalops.js?v=16"></script>';
 /* Kerangka bersama: header, judul halaman (ikon + judul + slot aksi kanan #aksiJudul), lalu isi #app yang diisi skripnya. */
 const halaman = (k, memuat, ekor, ctx) => `${kepala(`${HAL[k][1]} · Centurisk97`)}
 <body${ctx ? ` data-staf="1" data-peran="${esc(ctx.peran.join(","))}"${ctx.nama ? ' data-masuk="1"' : ""}` : ""}>
