@@ -20,8 +20,8 @@ async function gambar(d) {
   const r = await fetch("/bencana.json");
   if (!r.ok) throw new Error(r.status);
   /* TAMPIL berisi id = hanya itu yang bisa dibuka dari menu, sisanya berlabel "Soon". Kosong = semua bencana berstatus aktif
-     terbuka, plus "Semua bencana". Pemilik menutup lagi bencana selain karhutla jadi "Soon" (21 Okt 2026), lalu membuka banjir (27 Okt 2026) dan gunung api (10 Nov 2026). */
-  const TAMPIL = new Set(["karhutla", "banjir", "pesisir", "cuaca", "gunungapi"]);
+     terbuka, plus "Semua bencana". Pemilik menutup lagi bencana selain karhutla jadi "Soon" (21 Okt 2026), lalu membuka banjir (27 Okt 2026), gunung api (10 Nov 2026), serta gempa dan kekeringan (11 Nov 2026: "semua coming soon dibuka aja"). */
+  const TAMPIL = new Set(["karhutla", "banjir", "pesisir", "cuaca", "gunungapi", "gempa", "kekeringan"]);
   const reg = (await r.json()).bencana;
   /* urutan menu (pemilik, 1 Nov 2026, dikonfirmasi ulang): Karhutla, Banjir, Cuaca Ekstrem tepat di bawah Banjir, lalu Pesisir,
      Gempa, Gunung api, Kekeringan; sisanya (udara) di belakang */
