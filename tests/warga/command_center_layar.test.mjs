@@ -170,7 +170,7 @@ else {
   });
 
   uji("cc layar Meja Pantau (Chrome): kartu api memakai komponen Meja Pantau yang ada; operator melihat status + tombol transisi dan tidak melihat 'Buka layar kerja'; koreksi wajib catatan; 409; riwayat memuat log cc; koordalops hanya melihat; pusdalops tetap punya tautan", async () => {
-    const lama = Date.now() - 8 * JAM, sebut = id => `li.pt-butir[data-id="api-konf:${id}"]`;
+    const lama = Date.now() - 8 * JAM, sebut = id => `tbody.pt-butir[data-id="api-konf:${id}"]`;
     const [PA, PB, PC, PD, PE] = [await tugas(0x3301, {kab: "Kab Pantau Satu", kec: "Kec Satu", dibuat: lama}), await tugas(0x3302, {kab: "Kab Pantau Dua", kec: "Kec Dua", dibuat: lama}),
       await tugas(0x3303, {kab: "Kab Pantau Tiga", kec: "Kec Tiga", dibuat: lama}), await tugas(0x3304, {kab: "Kab Pantau Empat", kec: "Kec Empat", dibuat: lama}),
       await tugas(0x3305, {kab: "Kab Pantau Lima", kec: "Kec Lima", dibuat: Date.now() - 8 * 24 * JAM})];   // PE: level 3 tetapi sudah 8 hari = bukan alert karena UMUR (bukan karena level)
@@ -182,15 +182,15 @@ else {
     const pusd = await staf("Pusdalops Pantau", ["pusdalops"]), css = readFileSync(path.join(AKAR, "public/admin/pantau.css"), "utf8");
     const kartu = (tab, id) => q(tab, `(() => { const k = q('${sebut(id)}'); if (!k) return null; const cc = k.querySelector('[data-cc]');
       return {cc: cc?.dataset.cc ?? null, pil: [...k.querySelectorAll('[data-cc] .pt-pil')].map(p => p.textContent), teks: k.innerText, tombol: [...k.querySelectorAll('button[data-cc-ke]')].map(b => b.dataset.ccKe + ':' + b.textContent),
-        kerja: [...k.querySelectorAll('a.pt-btn')].filter(a => /Buka layar kerja/.test(a.textContent)).map(a => a.getAttribute('href')),
+        kerja: [...k.querySelectorAll('a[aria-label="Buka layar kerja"]')].map(a => a.getAttribute('href')),
         kelas: [...new Set([...k.querySelectorAll('[data-cc], [data-cc] *, [data-cc-ke], .pt-aksi:has([data-cc-ke]), [data-koreksi-form], [data-koreksi-form] *')].flatMap(e => [...e.classList]))]}; })()`);
     const jejakN = id => DB.prepare("SELECT count(*) n FROM cc_jejak WHERE tugas_id = ?").bind(id).first().then(r => r.n);
     const pesanPantau = tab => q(tab, "q('#ptPesan').innerText");
 
     /* ---- operator_cc ---- */
     const tab = await tabBaru(1440, 900); await cookie(tab, "sesi_staf", op.tok);
-    await tab.buka(base + "/admin/pantau", {tunggu: sebut(PA)}); await tab.tungguFungsi(`document.querySelectorAll('li.pt-butir').length >= 5 && !document.querySelector('.pt-redup.pt-catatan + .pt-redup')`);
-    assert.equal(await q(tab, "qa('a.pt-btn').filter(a => /Buka layar kerja/.test(a.textContent)).length + qa('a[href*=\"/admin/instansi\"]').length"), 0, "operator tidak boleh membuka /admin/instansi: tidak ada tombol buntu");
+    await tab.buka(base + "/admin/pantau", {tunggu: sebut(PA)}); await tab.tungguFungsi(`document.querySelectorAll('tbody.pt-butir').length >= 5 && !document.querySelector('.pt-redup.pt-catatan + .pt-redup')`);
+    assert.equal(await q(tab, "qa('a[aria-label=\"Buka layar kerja\"]').length + qa('a[href*=\"/admin/instansi\"]').length"), 0, "operator tidak boleh membuka /admin/instansi: tidak ada tombol buntu");
     assert.equal(await q(tab, "qa('link[href*=\"command_\"], script[src*=\"command_\"]').length"), 0, "command_bersama/command_center tidak dimuat di Meja Pantau");
     let a = await kartu(tab, PA); assert.deepEqual([a.cc, a.pil, a.tombol], ["baru", ["Baru"], ["dalam_konfirmasi:Dalam konfirmasi"]]); assert.match(a.teks, /Tindak lanjut command center/); assert.match(a.teks, /Belum ada yang memegang/);
     const b = await kartu(tab, PB); assert.equal(b.cc, null); assert.deepEqual(b.tombol, []); assert.match(b.teks, /Bukan alert level 3: tidak ada tindak lanjut operator/);
@@ -242,7 +242,7 @@ else {
     assert.equal(await q(tab, "document.activeElement?.id"), "ptKoreksi", "dibuka lewat klik Koreksi: fokus ke input"); await ketik(PA, "Catatan sementara BPBD");
     const bertahan = async dari => { assert.equal(await nilai(PA), "Catatan sementara BPBD", "catatan utuh: " + dari); assert.notEqual(await q(tab, "document.activeElement?.id"), "ptKoreksi", "fokus tidak dicuri: " + dari); };
     await alihFokus(); await tandai(PA); await tab.klik(`${sebut(PA)} button[data-aksi="riwayat"]`); await baru(PA); await bertahan("Riwayat di kartu yang sama");
-    await alihFokus(); await tandai(PA); await tab.klik('button.pt-chip[data-jenis=""]'); await baru(PA); await bertahan("ganti penyaring");
+    await alihFokus(); await tandai(PA); await tab.klik('button[data-jenis=""]'); await baru(PA); await bertahan("ganti penyaring");
     await alihFokus(); await tandai(PA); await tab.klik(`${sebut(PF)} button[data-cc-ke="dalam_konfirmasi"]`);
     await tab.tungguFungsi(`document.querySelector('${sebut(PF)} [data-cc]')?.dataset.cc === 'dalam_konfirmasi'`); await baru(PA); await bertahan("muat ulang sesudah aksi di kartu lain");
     await q(tab, `q('${sebut(PA)} [data-koreksi-form]').requestSubmit()`);
@@ -261,15 +261,15 @@ else {
 
     /* ---- koordalops: status dan pemegang saja ---- */
     const tk = await tabBaru(1440, 900); await cookie(tk, "sesi_staf", koord.tok);
-    await tk.buka(base + "/admin/pantau", {tunggu: sebut(PA)}); await tk.tungguFungsi(`document.querySelectorAll('li.pt-butir').length >= 4`);
+    await tk.buka(base + "/admin/pantau", {tunggu: sebut(PA)}); await tk.tungguFungsi(`document.querySelectorAll('tbody.pt-butir').length >= 4`);
     for (const id of [PA, PC, PD]) { const x = await kartu(tk, id); assert.ok(x.cc && x.pil.length === 1, "pil status ada"); assert.deepEqual(x.tombol, [], "pembaca cc tanpa tombol"); }
     assert.match((await kartu(tk, PD)).teks, /Dipegang Budi Santoso sejak/); assert.doesNotMatch((await kartu(tk, PB)).teks, /Bukan alert level 3/, "keterangan itu hanya untuk operator_cc"); assert.doesNotMatch((await kartu(tk, PE)).teks, /Alert level 3 sudah lewat 7 hari|tidak ada tindak lanjut operator/, "keterangan umur juga hanya untuk operator_cc"); assert.equal((await kartu(tk, PB)).cc, null);
-    assert.equal(await q(tk, "qa('a.pt-btn').filter(a => /Buka layar kerja/.test(a.textContent)).length"), 0, "koordalops juga tidak boleh membuka /admin/instansi");
+    assert.equal(await q(tk, "qa('a[aria-label=\"Buka layar kerja\"]').length"), 0, "koordalops juga tidak boleh membuka /admin/instansi");
     assert.deepEqual(bersih(tk), []); await tk.tutup();
 
     /* ---- pusdalops: tautan tetap ada, tanpa blok cc ---- */
     const tp = await tabBaru(1440, 900); await cookie(tp, "sesi_staf", pusd.tok);
-    await tp.buka(base + "/admin/pantau", {tunggu: sebut(PA)}); await tp.tungguFungsi(`document.querySelectorAll('li.pt-butir').length >= 4`);
+    await tp.buka(base + "/admin/pantau", {tunggu: sebut(PA)}); await tp.tungguFungsi(`document.querySelectorAll('tbody.pt-butir').length >= 4`);
     const pa = await kartu(tp, PA); assert.deepEqual(pa.kerja, ["/admin/instansi#pantau/" + PA], "peran yang berhak: tautan tetap, deep link utuh"); assert.equal(pa.cc, null); assert.deepEqual(pa.tombol, []);
     assert.equal(await q(tp, "qa('[data-cc], [data-cc-ke]').length"), 0, "tanpa hak baca cc: tidak ada blok cc sama sekali"); assert.doesNotMatch(await tp.teks(), /Tindak lanjut command center|Bukan alert level 3|Alert level 3 sudah lewat 7 hari/);
     assert.deepEqual(bersih(tp), []); await tp.tutup();

@@ -230,7 +230,7 @@ export const halamanBnpb = (k, ctx) => halaman(k, `Memuat ${HAL[k][1]}…`, `<li
 ${k === "pantau" ? `<script src="/inti/format.js"></script>\n<script src="/instansi_wilayah.js?v=1"></script>
 ` : k === "kinerja" ? `<script src="/inti/nanti.js"></script>
 ` : ""}<script src="/admin/bersama.js?v=4"></script>
-<script src="/admin/${k}.js?v=${k === "pantau" ? 5 : 1}"></script>`, ctx);
+<script src="/admin/${k}.js?v=${k === "pantau" ? 6 : 1}"></script>`, ctx);
 
 export const CSP_ADMIN = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'none'; form-action 'self'";
 

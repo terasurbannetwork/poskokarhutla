@@ -103,7 +103,7 @@
       h("td", {class: "pt-prio"}, h("span", {class: "pt-pil p" + b.prioritas, teks: PRIO[b.prioritas]}), b.status !== "baru" ? h("span", {class: "pt-pil " + b.status, teks: STATUS[b.status]}) : null),
       h("td", {class: "pt-lok"}, h("b", {teks: lokasi}), b.kab && b.prov_nama ? h("small", {teks: b.prov_nama}) : null),
       h("td", {class: "pt-isi-sel"}, h("p", {class: "pt-judul", title: wil.teks(b.judul), teks: wil.teks(b.judul).replace(b.tenggat ? /,\s*lewat .*$/ : /$^/, "")})   /* tenggat sudah di kolom sendiri: ekor "lewat ... dari batas" dibuang */, b.rincian ? h("small", {class: "pt-rinci", teks: wil.teks(b.rincian)}) : null,
-        b.status === "abaikan" && b.alasan ? h("small", {class: "pt-rinci", teks: "Alasan diabaikan: " + b.alasan}) : (b.catatan ? h("small", {class: "pt-rinci", teks: "Catatan: " + b.catatan}) : null), ...(cc || [])),
+        b.status === "abaikan" && b.alasan ? h("small", {class: "pt-rinci", teks: "Alasan diabaikan: " + b.alasan}) : (b.catatan ? h("small", {class: "pt-rinci", teks: "Catatan: " + b.catatan}) : null), ...[].concat(cc || [])),
       h("td", {class: "pt-waktu"}, waktuSel, h("small", {teks: "umur " + lama(b.umur)})),
       h("td", {class: "pt-pegang"}, pegang),
       h("td", null, h("div", {class: "pt-aksi"}, aksi)));
