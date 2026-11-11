@@ -605,3 +605,8 @@
 .dl-pop .dl-pop-ikbesar svg{width:20px;height:20px;stroke:#fff}
 /* satu seksi tampil sekali, dipilih dari panel kiri (pola /operasi) */
 .dl-panel>.ex-std.dl-seksi-tutup{display:none!important}
+/* prakiraan Waspada di peta dan saring */
+.dl-leg-a1::before{width:13px;height:12px;border-radius:0;clip-path:polygon(50% 0,100% 100%,0 100%);background:var(--c3)}
+.dl-saring-waspada svg{color:color-mix(in srgb,var(--c3) 70%,#8a5a12)}
+/* menu jenis selebar tombolnya, bukan selebar baris kendali */
+.dl-dalam .dl-peta .dl-peta-alat>.dl-jenis-peta{position:relative}

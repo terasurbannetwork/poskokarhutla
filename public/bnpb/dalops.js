@@ -175,11 +175,12 @@
       g.beginPath(); g.moveTo(13, 2.5); g.lineTo(24, 22.5); g.lineTo(2, 22.5); g.closePath(); g.fillStyle = isi; g.strokeStyle = "#fff"; g.lineWidth = 2.2; g.fill(); g.stroke();
       g.fillStyle = "#fff"; g.fillRect(11.8, 9, 2.4, 7.5); g.beginPath(); g.arc(13, 19.2, 1.4, 0, 7); g.fill();
       return {width: n, height: n, data: g.getImageData(0, 0, n, n).data}; };
+    peta.addImage("awas-1", segitiga(warna("--c3") || "#e9d36b"), {pixelRatio: devicePixelRatio > 1 ? 2 : 1});   // Waspada (pemilik 11 Nov 2026)
     peta.addImage("awas-2", segitiga(warna("--c2") || "#e3b94e"), {pixelRatio: devicePixelRatio > 1 ? 2 : 1});
     peta.addImage("awas-3", segitiga(warna("--c1") || "#c9503a"), {pixelRatio: devicePixelRatio > 1 ? 2 : 1});
     peta.addSource("peringatan", {type: "geojson", data: {type: "FeatureCollection", features: fitur}});
     peta.addLayer({id: "peringatan", type: "symbol", source: "peringatan", layout: {"icon-image": ["concat", "awas-", ["to-string", ["get", "lv"]]],
-      "icon-size": ["interpolate", ["linear"], ["zoom"], 4, .75, 8, 1.1], "icon-allow-overlap": true, "symbol-sort-key": ["-", 0, ["get", "lv"]]}});
+      "icon-size": ["interpolate", ["linear"], ["zoom"], 4, ["case", ["==", ["get", "lv"], 1], .6, .75], 8, ["case", ["==", ["get", "lv"], 1], .9, 1.1]], "icon-allow-overlap": true, "symbol-sort-key": ["-", 0, ["get", "lv"]]}});
     const pop = new maplibregl.Popup({closeButton: false, closeOnClick: false, offset: 14, className: "dl-popup"});
     peta.on("mouseenter", "peringatan", e => { const p = e.features[0].properties; peta.getCanvas().style.cursor = "default";
       /* pemilik 11 Nov 2026 "bagusin": kepala biru muda (lambang, nama, provinsi), isi baris berlabel rata kolom */
@@ -209,8 +210,8 @@
     wadah.replaceChildren();
     const legenda = h("div", {class: "dl-legenda-peta"}, h("b", {teks: "Legenda"}), h("span", {class: "dl-leg dl-leg-belum", teks: J.tidak}), h("span", {class: "dl-leg dl-leg-surut", teks: J.ya}));
     /* prakiraan Siaga/Awas (status.json): simbol peringatan di titik tengah kab, legenda hanya bila ada */
-    const waspada = Object.values(sk).map(x => ({...x, maks: Math.max(0, ...x.b.map(l => l ?? 0))})).filter(x => x.maks >= 2);
-    for (const l of [3, 2]) if (waspada.some(x => x.maks === l)) legenda.append(h("span", {class: "dl-leg dl-leg-a" + l, teks: "Prakiraan " + H.NAMA_LEVEL[l]}));
+    const waspada = Object.values(sk).map(x => ({...x, maks: Math.max(0, ...x.b.map(l => l ?? 0))})).filter(x => x.maks >= 1);
+    for (const l of [3, 2, 1]) if (waspada.some(x => x.maks === l)) legenda.append(h("span", {class: "dl-leg dl-leg-a" + l, teks: "Prakiraan " + H.NAMA_LEVEL[l]}));
     /* bawaan: seluruh Indonesia (Aceh sampai Papua) di dasar terang, sesuai permintaan pemilik 3 Nov */
     const peta = new maplibregl.Map({container: wadah, style: "https://tiles.openfreemap.org/styles/positron", bounds: [[94.8, -11.2], [141.2, 6.2]],
       fitBoundsOptions: {padding: 16}, minZoom: 3, maxZoom: 13, dragRotate: false, pitchWithRotate: false, attributionControl: {compact: true}});
@@ -219,7 +220,7 @@
        ada yang dipilih = hanya itu. Surut/belum menyaring wilayah kab, Siaga/Awas menyaring penanda prakiraan (lv 2/3). */
     const saring = new Set();
     const terapSaring = () => {
-      const st = ["surut", "belum"].filter(v => saring.has(v)), lv = [["siaga", 2], ["awas", 3]].filter(([v]) => saring.has(v)).map(([, l]) => l);
+      const st = ["surut", "belum"].filter(v => saring.has(v)), lv = [["waspada", 1], ["siaga", 2], ["awas", 3]].filter(([v]) => saring.has(v)).map(([, l]) => l);
       const flag = ["korban", "ungsi", "kabar"].filter(v => saring.has(v));
       /* dalam satu kelompok = atau, antarkelompok = dan; hanya prakiraan yang dipilih = wilayah kejadian disembunyikan */
       const syarat = [...(st.length ? [["in", ["get", "st"], ["literal", st]]] : []), ...flag.map(v => ["==", ["get", v], 1])];
@@ -228,7 +229,7 @@
       if (peta.getLayer("peringatan")) peta.setFilter("peringatan", saring.size ? ["in", ["get", "lv"], ["literal", lv]] : null);
     };
     const tSaring = [["surut", J.ya, "ok"], ["belum", J.tidak, J.ik], ...(SARING[J.k] || []).filter(v => fitur.some(f => f.properties[v])).map(v => [v, ...NAMA_SARING[v]]),
-      ...(J.pra === false ? [] : [["siaga", H.NAMA_LEVEL[2], "peringatan"], ["awas", H.NAMA_LEVEL[3], "peringatan"]])].map(([v, t, ik]) => {
+      ...(J.pra === false ? [] : [["waspada", H.NAMA_LEVEL[1], "peringatan"], ["siaga", H.NAMA_LEVEL[2], "peringatan"], ["awas", H.NAMA_LEVEL[3], "peringatan"]])].map(([v, t, ik]) => {
       const b = h("button", {type: "button", class: "dl-saring-btn dl-saring-" + v, "aria-pressed": "false"}, ikon(ik), t);
       b.addEventListener("click", () => { saring.has(v) ? saring.delete(v) : saring.add(v); b.setAttribute("aria-pressed", String(saring.has(v))); terapSaring(); });
       return b;
