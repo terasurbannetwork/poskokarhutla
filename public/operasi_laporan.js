@@ -489,19 +489,20 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
   }
   function kartuRencana(D) {
     const it = rencanaAksi(D), GRUP = [["jam", "Laporan gelar armada"], ["silang", "Armada tidak siap"], ["api", "Api di luar jangkauan"], ["sortie", "Renlap"], ["catat", "Kelengkapan data"]];
-    /* kartu tugas (pemilik 11 Nov 2026 "menyamping ga jelas"): dibaca atas ke bawah; satu kartu = satu tindakan, pihak yang dituju jadi daftar tegak */
-    const satukan = xs => { const m = new Map(); for (const x of xs) { const k = x[1] + "|" + x[4]; (m.get(k) || m.set(k, []).get(k)).push(x); } return [...m.values()]; };
-    const kartuAp = (g, xs) => { const [ik, t, , , tenggat] = xs[0], telat = xs.filter(x => x[5]).length, sama = new Set(xs.map(x => x[2])).size === 1;
-      const untuk = sama ? xs[0][2] : `${fmt(xs.length)} ${xs.every(x => /^Base /.test(x[2])) ? "base" : "pihak"}`;
-      const baris = xs.map(x => { const nama = sama && xs.length > 1 ? x[3].split(",")[0] : sama ? x[3] : x[2].replace(/^Base /, ""), ang = !sama && /^\d/.test(x[3]) ? x[3].match(/^[\d.]+/)[0] : "";
-        return `<li data-ap="${esc(x[6])}" tabindex="0" role="button" title="${esc(x[3])}"${x[5] ? ' class="telat"' : ""}><span>${esc(nama)}</span>${ang ? `<b>${esc(ang)}</b>` : ""}<em>›</em></li>`; });
-      /* nama sama berulang (mis. cluster) digabung jadi satu baris dengan jumlah */
-      const gabung = sama && xs.length > 1 ? (() => { const m = new Map(); xs.forEach(x => { const k = x[3].split(",")[0]; if (!m.has(k)) m.set(k, {n: 0, x}); m.get(k).n++; }); return [...m.values()].map(v => `<li data-ap="${esc(v.x[6])}" tabindex="0" role="button" title="${esc(v.x[3])}"${v.x[5] ? ' class="telat"' : ""}><span>${esc(v.x[3].split(",")[0])}</span>${v.n > 1 ? `<b>${fmt(v.n)}×</b>` : ""}<em>›</em></li>`); })() : baris;
-      return `<article class="ops-apk k-${ik}${telat ? " telat" : ""}"><header><i>${lbl(ik, "")}</i><div><small>${esc(g)}</small><b>${esc(t)}</b></div>
-        <span class="ops-ap-st${telat ? " telat" : ""}">${lbl(telat ? "ts" : "jam", telat ? `${fmt(telat)} lewat tenggat` : "Belum")}</span></header>
-        <p class="ops-apk-meta"><span>${lbl(/^Base |base$/.test(untuk) ? "base" : /^Data|^Laporan/.test(untuk) ? "catat" : "op", esc(untuk))}</span><span>${lbl("jam", `Tenggat ${esc(tenggat)}`)}</span></p>
-        <ul>${gabung.join("")}</ul></article>`; };
-    const isi = it.length ? `<div class="ops-apk-kolom">${GRUP.filter(([k]) => it.some(x => x[0] === k)).flatMap(([k, g]) => satukan(it.filter(x => x[0] === k)).map(xs => kartuAp(g, xs))).join("")}</div>`
+    /* susunan rapi (pemilik 11 Nov 2026 "ga mau white space dan acak-acakan"): matriks base x tindakan, lalu kartu ringkas sama tinggi */
+    const KOL = [["jam", "Laporan gelar armada", "jam"], ["sortie", "Target renlap", "sortie"]];
+    const perBase = it.filter(x => /^Base /.test(x[2]) && KOL.some(k => k[0] === x[0])), lain = it.filter(x => !perBase.includes(x));
+    const namaB = [...new Set(perBase.map(x => x[2].replace(/^Base /, "")))];
+    const sel = (k, nb) => { const x = perBase.find(y => y[0] === k && y[2] === `Base ${nb}`); if (!x) return `<td class="n"><span class="pill ops-pbv ok">Beres</span></td>`;
+      const ang = (x[3].match(/^[\d.]+/) || [""])[0]; return `<td class="n"><button type="button" class="pill ops-pbv ${x[5] ? "bahaya" : "awas"}" data-ap="${esc(x[6])}" title="${esc(x[3])}">${esc(ang ? `${ang} ${k === "jam" ? "armada" : "target"}` : "Belum")}</button></td>`; };
+    const tenggatK = k => perBase.find(y => y[0] === k)?.[4] || "";
+    const matriks = namaB.length ? `<div class="ops-tw ex-tabel"><table class="ops-apm"><thead><tr><th>Base</th>${KOL.map(([k, t]) => `<th class="n">${t}${tenggatK(k) ? `<small>tenggat ${esc(tenggatK(k))}</small>` : ""}</th>`).join("")}</tr></thead>
+      <tbody>${namaB.map(nb => `<tr><td class="ops-kiri"><b>${esc(nb)}</b></td>${KOL.map(([k]) => sel(k, nb)).join("")}</tr>`).join("")}</tbody></table></div>` : "";
+    const IKG = {silang: "Armada tidak siap", api: "Api di luar jangkauan", catat: "Kelengkapan data", jam: "Laporan gelar armada", sortie: "Renlap"};
+    const kartuL = ([ik, t, untuk, rinci, tenggat, telat, buka]) => `<button type="button" class="ops-apr k-${ik}${telat ? " telat" : ""}" data-ap="${esc(buka)}">
+      <i>${lbl(ik, "")}</i><span class="t"><small>${esc(IKG[ik] || "")}</small><b>${esc(t)}</b><em>${esc(rinci)}</em></span>
+      <span class="m">${lbl(/^Data|^Laporan/.test(untuk) ? "catat" : /^Posko|^Base/.test(untuk) ? "base" : "op", esc(untuk))}<span class="ops-ap-st${telat ? " telat" : ""}">${lbl(telat ? "ts" : "jam", telat ? "Lewat tenggat" : esc(tenggat))}</span></span></button>`;
+    const isi = it.length ? `<div class="ops-apx">${matriks ? `<section><h4>${lbl("base", "Per base")}</h4>${matriks}</section>` : ""}${lain.length ? `<section><h4>${lbl("catat", "Tindakan lain")}</h4><div class="ops-apr-grid">${lain.map(kartuL).join("")}</div></section>` : ""}</div>`
       : `<p class="ops-kosong">${D.pm === "hari" ? "Tidak ada tindakan tertunda untuk tanggal ini." : "Rencana tindakan tersedia di mode Hari."}</p>`;
     return bagian("Rencana tindakan", "", isi);
   }

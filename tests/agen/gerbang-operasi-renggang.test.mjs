@@ -10,7 +10,7 @@ const CSS = readFileSync(new URL("../../public/operasi_peta.css", import.meta.ur
 const MIN = 12;
 const WADAH = ["#opsLaporan .ops-ringkas-slot", "#opsLaporan .ops-wadah", "#opsLaporan .ops-pa-badan", "#opsLaporan .ops-rl-daftar", ".ops-dlg-isi",
   "#opsLaporan .ops-pb-grid", "#opsLaporan .ops-tindak ul", "#opsIsi", "#opsLaporan",
-  "#opsLaporan .ops-a", "#opsLaporan .ops-utama", "#opsLaporan .ops-pk-grid", "#opsLaporan .ops-pb-pulau", "#opsLaporan .ops-pb-pulau>section", "#opsLaporan .ops-ap-daftar", "#opsLaporan .ops-kanan", "#opsLaporan .ops-nl2-tema"];
+  "#opsLaporan .ops-a", "#opsLaporan .ops-utama", "#opsLaporan .ops-pk-grid", "#opsLaporan .ops-pb-pulau", "#opsLaporan .ops-pb-pulau>section", "#opsLaporan .ops-ap-daftar", "#opsLaporan .ops-nl2-tema", "#opsLaporan .ops-apx", "#opsLaporan .ops-apr-grid"];   /* .ops-kanan: kepala + badan satu wadah, bukan penumpuk blok */
 
 export function gapTerakhir(css, sel) {
   let hasil = null;

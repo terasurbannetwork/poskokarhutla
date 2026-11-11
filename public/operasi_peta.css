@@ -1818,3 +1818,38 @@
 #opsLaporan .ops-tanda>button[aria-pressed="true"]{background:#0b2545}
 #opsLaporan .ops-tanda>button[aria-pressed="true"] .ops-lbl,#opsLaporan .ops-tanda>button[aria-pressed="true"] .ops-lbl *{color:#fff!important}
 #opsLaporan .ops-tanda>button:disabled{opacity:.45}
+#opsLaporan .ops-kanan>.ops-utama{padding-top:10px}   /* jarak kepala gelap ke pemilih periode lebih rapat (pemilik 11 Nov 2026) */
+#opsLaporan .ops-kanan{gap:0}
+/* rencana tindakan: matriks per base + kartu ringkas sama tinggi */
+#opsLaporan .ops-apx{display:grid;gap:18px}
+#opsLaporan .ops-apx>section{display:grid;gap:10px}
+#opsLaporan .ops-apx h4{margin:0}
+#opsLaporan .ops-apx h4 .ops-lbl{font-size:.8125rem;font-weight:800;color:#0b2545}
+#opsLaporan .ops-apx h4 .ops-lbl svg{width:20px;height:20px;padding:3px;border-radius:6px;background:color-mix(in srgb,var(--brand2) 12%,transparent);color:#1f3f73}
+#opsLaporan .ops-apm th small{display:block;font-size:.65625rem;font-weight:600;color:var(--ink2);margin-top:2px}
+#opsLaporan .ops-apm td{padding-top:7px;padding-bottom:7px}
+#opsLaporan .ops-apm button.pill{border:0;cursor:pointer;font:inherit;font-size:.71875rem;font-weight:700}
+#opsLaporan .ops-apr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+#opsLaporan .ops-apr{--ka:#1d6fd6;display:grid;grid-template-columns:36px minmax(0,1fr);grid-template-rows:auto auto;gap:8px 10px;align-content:start;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--card);font:inherit;text-align:left;cursor:pointer;box-shadow:inset 0 3px 0 var(--ka)}
+#opsLaporan .ops-apr:hover{border-color:color-mix(in srgb,var(--ka) 45%,var(--line))}
+#opsLaporan .ops-apr.k-silang{--ka:#c9503a}#opsLaporan .ops-apr.k-api{--ka:#a63a26}#opsLaporan .ops-apr.k-catat{--ka:#5b7bb4}#opsLaporan .ops-apr.k-jam{--ka:#e08a3a}#opsLaporan .ops-apr.k-sortie{--ka:#0f9488}
+#opsLaporan .ops-apr>i{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:color-mix(in srgb,var(--ka) 14%,transparent)}
+#opsLaporan .ops-apr>i .ops-lbl svg{width:17px;height:17px;color:var(--ka)}
+#opsLaporan .ops-apr>.t{display:grid;gap:2px;min-width:0}
+#opsLaporan .ops-apr>.t small{font-size:.6875rem;font-weight:700;color:var(--ink2)}
+#opsLaporan .ops-apr>.t b{font-size:.875rem;font-weight:800;color:#0b2545;line-height:1.25}
+#opsLaporan .ops-apr>.t em{font-style:normal;font-size:.75rem;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#opsLaporan .ops-apr>.m{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:8px;border-top:1px solid var(--line)}
+#opsLaporan .ops-apr>.m>.ops-lbl{font-size:.71875rem;font-weight:700;color:var(--ink)}
+#opsLaporan .ops-apr>.m>.ops-lbl svg{color:var(--brand2)}
+/* kepala tabel dan seksi pop-up biru muda, bukan abu (pemilik 11 Nov 2026 "jangan abu-abu") */
+#opsLaporan .ex-tabel thead th,#opsLaporan .ops-tw thead th{background:color-mix(in srgb,#2f6fd6 10%,#fff)!important;border-bottom:2px solid color-mix(in srgb,#2f6fd6 28%,#fff)!important;color:#0b2545!important}
+#opsLaporan .ops-pa-sek>summary{background:color-mix(in srgb,#2f6fd6 9%,#fff)!important;border-bottom-color:color-mix(in srgb,#2f6fd6 22%,#fff)!important}
+#opsLaporan .ops-tw.ex-tabel,#opsLaporan .ex-std .ops-tw.ex-tabel{border-color:color-mix(in srgb,#2f6fd6 20%,#fff)!important}
+/* kepala L2 biru muda supaya terbaca sebagai kepala (pemilik 11 Nov 2026 "putih polos ga keliatan header") */
+#opsLaporan .ops-wadah details.ops-kartu>summary.ex-hd,
+#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary{background:color-mix(in srgb,#2f6fd6 10%,#fff)!important;border-bottom:1px solid color-mix(in srgb,#2f6fd6 24%,#fff)!important}
+#opsLaporan .ops-wadah details.ops-kartu{border-color:color-mix(in srgb,#2f6fd6 22%,#fff)}
+#opsLaporan .ops-ringkas-slot .ops-tindak>header{background:color-mix(in srgb,#c9503a 10%,#fff)!important;border-bottom:1px solid color-mix(in srgb,#c9503a 24%,#fff)!important}
+#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary>small{background:#fff!important}
+#opsLaporan .ops-wadah details.ops-kartu>summary .ex-jd small,#opsLaporan .ops-wadah details.ops-kartu>summary .seg{background:#fff}
