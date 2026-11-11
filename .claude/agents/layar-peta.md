@@ -46,6 +46,7 @@ Berkas milikmu (glob paling spesifik menang):
 - `public/*.html`
 - `public/*.js`
 - `tests/layar/**`
+- `tests/prioritas.test.mjs`
 - `public/*.css`
 - `public/suara/**`
 - `public/_headers*`
