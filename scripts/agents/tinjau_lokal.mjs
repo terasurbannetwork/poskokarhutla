@@ -71,6 +71,6 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   const port = +(process.argv[2] || process.env.PORT || 8800);
   /* hanya loopback (IPv4 dan IPv6), tidak terbuka ke jaringan: server ini membawa cookie sesi produksi */
-  for (const h of ["127.0.0.1", "::1"]) (await buatServer()).listen(port, h).on("error", e => console.error(h, e.message));
+  for (const h of ["127.0.0.1", "::1"]) (await buatServer()).listen(port, h).on("error", e => { console.error(h, e.message); process.exit(1); });   // port bentrok: keluar, launchd KeepAlive mencoba ulang
   console.log(`tinjau lokal siap: http://localhost:${port} (kode dari ${AKAR}, data dari centurisk97.id)`);
 }
