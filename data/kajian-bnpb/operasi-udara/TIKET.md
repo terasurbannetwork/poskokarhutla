@@ -20,6 +20,8 @@ di `http://localhost:8800/operasi`, baru tiket berikutnya. Tiket yang menunggu Q
 | UD-11 | F-21 hari menganggur | dari kpi monitor; kolom di kartu Operator | `layar-peta` → `selera-angka` | biaya: Q7 |
 | UD-18 | K9 pemilih periode | mode Hari/Minggu/Bulan/Rentang (≤ 31 hari, `/api/operasi/monitor` dari..sampai sudah ada) di `public/operasi_laporan.js`; kartu kegiatan dijumlah sepanjang periode, kartu keadaan per hari terakhir (Q13) | `layar-peta` → `inp-reviewer`, `selera-angka` | Q13 (bawaan dipakai) |
 | UD-18b | K9 12 Bulan | rute rekap bulanan `/api/operasi/bulanan` (12 baris per bulan, satu kueri teragregasi, hemat kuota D1) | `warga-api` → `guard-api` | – |
+| UD-19 | K10 cari dan ekspor | bilah cari (base, registrasi, operator, lokasi) menyaring baris tanpa render ulang; ekspor Excel (SheetJS sudah dipakai repo?) dan PDF cetak seksi tampil | `layar-peta` → `inp-reviewer`, `selera-angka` | Q15 (bawaan dipakai) |
+| UD-20 | K11 tata letak seksi | deret tab seksi, kartu periode (UD-18) dan bilah cari (UD-19) di bawah Ringkasan, isi per seksi | `layar-peta` → `inp-reviewer` | Q14 (bawaan dipakai) |
 | UD-12 | F-8 liter dan sumber air | liter perkiraan berlabel; sumber air terdekat | `warga-api` + `layar-peta` | Q8, Q9 |
 | UD-13 | F-11 luas sebelum dan sesudah | luas cluster atau dNBR | `model-sebaran` → `validasi-model` | Q11 |
 | UD-14 | F-6 NOTAM | sumber NOTAM per bandara base | – | Q6 |
