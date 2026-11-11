@@ -137,7 +137,7 @@
     const tSaring = [["surut", "Padam", "ok"], ["belum", "Belum padam", "karhutla"]].map(([v, t, ik]) => { const b = h("button", {type: "button", class: "dl-saring-btn dl-saring-" + v, "aria-pressed": "false"}, ikon(ik), t);
       b.addEventListener("click", () => { saring.has(v) ? saring.delete(v) : saring.add(v); b.setAttribute("aria-pressed", String(saring.has(v))); terap(); }); return b; });
     wadah.append(h("div", {class: "dl-peta-alat"}, h("div", {class: "dl-saring", role: "group", "aria-label": "Saring status padam"}, tSaring)));
-    if (ubin) { ubin.classList.add("dl-peta-ubin"); wadah.append(ubin); }
+    if (ubin) { ubin.classList.add("dl-peta-ubin"); wadah.append(ubin); g.DalopsKamera?.dasar(wadah); }
     const css = getComputedStyle(document.documentElement), c1 = css.getPropertyValue("--c1").trim() || "#c9503a", c5 = css.getPropertyValue("--c5").trim() || "#4f8fc4";
     const pop = new g.maplibregl.Popup({closeButton: false, closeOnClick: false, offset: 10, className: "dl-popup"});
     m.on("load", () => {

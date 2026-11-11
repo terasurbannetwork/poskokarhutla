@@ -32,7 +32,10 @@
   /* kamera bersama semua peta jenis (pemilik 11 Nov 2026 "mapnya tetap aja, gausah ngulang"): peta yang tampil mencatat pusat dan zoom,
      peta jenis lain melompat ke posisi itu saat lahir dan saat ditampilkan */
   const KAM = window.DalopsKamera = {c: null, ikat(peta) { peta.getContainer()._peta = peta; if (KAM.c) peta.jumpTo(KAM.c);
-    peta.on("moveend", () => { if (peta.getContainer().offsetParent) KAM.c = {center: peta.getCenter(), zoom: peta.getZoom()}; }); }};
+    peta.on("moveend", () => { if (peta.getContainer().offsetParent) KAM.c = {center: peta.getCenter(), zoom: peta.getZoom()}; }); },
+    /* legenda dan ringkasan jadi satu bilah di dasar peta (pemilik 11 Nov 2026 "sebaris sama ini"): legenda di kiri, angka di kanan */
+    dasar(wadah) { const lg = wadah.querySelector(":scope > .dl-legenda-peta"), ub = wadah.querySelector(":scope > .dl-peta-ubin"); if (!ub || wadah.querySelector(".dl-peta-dasar")) return;
+      const d = document.createElement("div"); d.className = "dl-peta-dasar"; if (lg) d.append(lg); d.append(ub); wadah.append(d); }};
   const GEO = new Map();
   const surutLabel = s => s ? label(J.ya, "ok", "biru") : label(J.tidak, J.ik, "merah");
   const nadaUmur = u => u >= 7 ? "dl-u3" : u >= 3 ? "dl-u2" : "dl-u1";
@@ -459,7 +462,7 @@
     requestAnimationFrame(() => {   // MapLibre butuh wadah yang sudah terpasang dan berukuran
       const semua = wadahPeta.closest("section")?.querySelector(".ex-hd .dl-semua");
       semua?.remove(); semua?.classList.add("dl-semua-peta");
-      gambarPeta(wadahPeta, pekan, semua, sk, hariSt, Jk).then(() => { if (ubin) { ubin.classList.add("dl-peta-ubin"); wadahPeta.append(ubin); } });   // ringkasan di dalam peta (pemilik 11 Nov 2026)
+      gambarPeta(wadahPeta, pekan, semua, sk, hariSt, Jk).then(() => { if (ubin) { ubin.classList.add("dl-peta-ubin"); wadahPeta.append(ubin); KAM.dasar(wadahPeta); } });   // ringkasan di dalam peta (pemilik 11 Nov 2026)
     });
     const nBelum = jml("nBelum"), nKab = jml("nKab"), mdTot = pekan.reduce((a, x) => a + (x.md || 0), 0);
     return bagian("peta", J.ik, "Kondisi terkini",

@@ -156,7 +156,7 @@
       return b; });
     wadah.append(h("div", {class: "dl-peta-alat"}, h("div", {class: "dl-saring", role: "group", "aria-label": "Saring level gunung api"}, tombol)));
     ubin.classList.add("dl-peta-ubin"); wadah.append(ubin);
-    const leg = wadah.parentElement?.querySelector(":scope > .dl-ga-leg"); if (leg) wadah.append(leg);   // legenda masuk peta
+    const leg = wadah.parentElement?.querySelector(":scope > .dl-ga-leg"); if (leg) wadah.append(leg); g.DalopsKamera?.dasar(wadah);   // legenda masuk peta
     peta.on("load", () => {
       peta.addSource("ga", {type: "geojson", data: {type: "FeatureCollection", features: titik.map((x, i) => ({type: "Feature", id: i, geometry: {type: "Point", coordinates: [x.lon, x.lat]}, properties: {lv: x.level, i}}))}});
       peta.addSource("ga-r", {type: "geojson", data: {type: "FeatureCollection", features: titik.filter(x => x.level >= 3).map(x => {
