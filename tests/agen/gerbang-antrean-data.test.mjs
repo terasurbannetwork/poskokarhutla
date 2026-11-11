@@ -69,3 +69,12 @@ test("jam pengganti (scripts/terbit/jaga_jadwal.mjs): PIPA sama dengan jaga.yml,
   assert.match(tanpaKomentar(baca("jaga.yml")), /actions\/checkout@/, "jaga.yml harus checkout: skrip pemeriksa ada di repo");
   assert.equal((tanpaKomentar(baca("titik.yml")).match(/inputs\.jaga/g) || []).length, 2, "jaga=ya harus mengikuti aturan jam di langkah jejak api dan prioritas 6 jam");
 });
+
+test("terbit_antre.yml memantau run terbit dan memicu ulang bila cancelled sebelum mulai (11 Nov 2026)", () => {
+  const antre = tanpaKomentar(baca("terbit_antre.yml"));
+  assert.match(antre, /gh run list --workflow terbit\.yml --created/, "run terbit hasil dispatch harus dipantau");
+  assert.match(antre, /"cancelled"/, "status cancelled harus dikenali");
+  assert.match(antre, /picu ulang/, "cancelled harus berujung dispatch ulang");
+  assert.ok((antre.match(/tunggu_slot/g) || []).length >= 2, "dispatch ulang harus menunggu slot lagi");
+  assert.match(antre, /timeout-minutes:\s*170/);
+});

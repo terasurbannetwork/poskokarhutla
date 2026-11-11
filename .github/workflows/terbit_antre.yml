@@ -40,7 +40,7 @@ jobs:
       GH_REPO: ${{ github.repository }}
       PIPA: titik|data|banjir|gempa|lintas|prediksi|statis|titik_palsu|kemitraan
     steps:
-      - name: Redam, lalu tunggu slot antre grup data bebas dari pipeline
+      - name: Redam, tunggu slot, picu terbit.yml, ulangi bila run pending-nya dibatalkan
         shell: bash
         run: |
           sleep 60
@@ -51,23 +51,54 @@ jobs:
               gh api "repos/$GH_REPO/actions/runs?status=$s&per_page=100" --jq '.workflow_runs[] | "\(.path) \(.status) \(.id)"' || true
             done | grep -E "workflows/($PIPA)\.yml" || true
           }
+          tunggu_slot() {
+            while :; do
+              antre=$(menunggu)
+              if [ -z "$antre" ]; then echo "slot antre bebas; lanjut"; return; fi
+              if [ "$(date +%s)" -ge "$batas" ]; then
+                echo "::warning title=Antrean grup data tak kosong::150 menit menunggu habis; terbit.yml dipicu juga: $(echo "$antre" | tr '\n' ';')"
+                return
+              fi
+              echo "$(date -u +%H:%M:%S) menunggu: $(echo "$antre" | tr '\n' ';')"
+              sleep 60
+            done
+          }
+          # GitHub menyimpan SATU run pending per grup; pipeline yang masuk antre membuang run terbit pending itu (cancelled sebelum mulai,
+          # 11 Nov 2026: 8 dari 30 run). Maka setelah dispatch, run barunya dipantau; cancelled -> tunggu slot lagi dan picu ulang.
           while :; do
-            antre=$(menunggu)
-            if [ -z "$antre" ]; then echo "slot antre bebas; lanjut"; break; fi
-            if [ "$(date +%s)" -ge "$batas" ]; then
-              echo "::warning title=Antrean grup data tak kosong::150 menit menunggu habis; terbit.yml dipicu juga: $(echo "$antre" | tr '\n' ';')"
-              break
+            tunggu_slot
+            mulai=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+            ok=0
+            for i in 1 2 3; do
+              gh workflow run terbit.yml --ref "$GITHUB_REF_NAME" && { ok=1; break; }
+              sleep 20
+            done
+            if [ "$ok" != 1 ]; then
+              echo "::error title=terbit.yml tak terpicu::dispatch gagal 3 kali; picu manual atau tunggu jaga.yml"
+              exit 1
             fi
-            echo "$(date -u +%H:%M:%S) menunggu: $(echo "$antre" | tr '\n' ';')"
-            sleep 60
-          done
-
-      - name: Picu terbit.yml (masuk grup data satu kali)
-        shell: bash
-        run: |
-          for i in 1 2 3; do
-            gh workflow run terbit.yml --ref "$GITHUB_REF_NAME" && { echo "terbit.yml dipicu pada $GITHUB_REF_NAME (push $GITHUB_SHA)"; exit 0; }
+            echo "terbit.yml dipicu pada $GITHUB_REF_NAME (push $GITHUB_SHA); memantau run-nya"
             sleep 20
+            while :; do
+              # keadaan semua run terbit sejak dispatch: ANTRE (belum mulai), MULAI (jalan/selesai bukan cancelled), BATAL, atau KOSONG
+              hasil=$(gh run list --workflow terbit.yml --created ">=$mulai" -L 20 --json status,conclusion --jq '
+                if length == 0 then "KOSONG"
+                elif any(.[]; ((.status|IN("queued","pending","waiting","requested")) | not) and .conclusion != "cancelled") then "MULAI"
+                elif any(.[]; .status|IN("queued","pending","waiting","requested")) then "ANTRE"
+                else "BATAL" end' || echo ANTRE)
+              case "$hasil" in
+                MULAI) echo "run terbit sudah mulai/selesai; selesai"; exit 0 ;;
+                ANTRE) ;;
+                *) echo "run terbit $hasil (dibatalkan/tak muncul sebelum mulai); picu ulang"; break ;;
+              esac
+              if [ "$(date +%s)" -ge "$batas" ]; then
+                echo "::warning title=terbit.yml masih antre::batas 150 menit habis; run pending dibiarkan, jaga.yml menjaga sisanya"
+                exit 0
+              fi
+              sleep 30
+            done
+            if [ "$(date +%s)" -ge "$batas" ]; then
+              echo "::error title=terbit.yml dibatalkan terus::batas 150 menit habis tanpa run terbit yang mulai"
+              exit 1
+            fi
           done
-          echo "::error title=terbit.yml tak terpicu::dispatch gagal 3 kali; picu manual atau tunggu jaga.yml"
-          exit 1

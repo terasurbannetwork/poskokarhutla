@@ -9,7 +9,7 @@ Urutan job kaji (persis; semua dry-run kecuali --kirim; tidak ada unggah selain 
   gudang.py sinkron $S --wrangler $W
 Pakai: python3 -I scripts/siklus/alur.py uji
 """
-import datetime as dt, http.server, importlib.util, json, os, sys, tempfile, threading, urllib.error
+import datetime as dt, http.server, importlib.util, json, os, sys, tempfile, threading
 
 AB = os.path.dirname(os.path.abspath(__file__))
 TOKEN = "tok-uji"
@@ -119,8 +119,8 @@ def _uji():
         try:
             P._http("salah")("POST", basis + "/api/siklus/ingest/kaji", mg[0])
             raise AssertionError("token salah harus ditolak")
-        except urllib.error.HTTPError as e:
-            assert e.code == 401 and len(st["kaji"]) == 2
+        except SystemExit as e:   # pasang._http mengubah HTTPError jadi SystemExit beralasan (02f53b94a)
+            assert "HTTP 401" in str(e) and len(st["kaji"]) == 2
     srv.shutdown()
     print("alur: uji hijau")
 
