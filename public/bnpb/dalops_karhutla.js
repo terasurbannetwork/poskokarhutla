@@ -81,7 +81,12 @@
       th("Kabar BPBD", 5, "tanggal kabar terakhir BPBD di logbook atau WA Koordalops"), th("Aksi"))));
     t.append(...tbodies); pasangUrut(t);
     const wadahPeta = h("div", {class: "dl-peta"}, h("p", {class: "bn-pesan", teks: "Memuat peta…"}));
-    requestAnimationFrame(() => peta(wadahPeta, baris, U));
+    /* ringkasan di dalam peta, sama dengan jenis lain (pemilik 11 Nov 2026 "karhutla kok beda sendiri") */
+    const tanpaKabar = perluDitanya(baris, hari).length, nProv = new Set(baris.map(x => x.prov_kode)).size, luasTot = baris.reduce((s, x) => s + x.luas, 0);
+    const ub = (ik, nama, nilai, kelas = "") => h("div", {class: "db-ubin " + kelas}, h("header", null, h("i", null, ikon(ik)), h("span", {teks: nama})), h("b", {teks: nilai}));
+    const ubin = h("div", {class: "db-ubin-grid"}, ub("karhutla", "Kab/kota terbakar", F(baris.length)), ub("peringatan", "Belum padam", F(belum.length), belum.length ? "merah" : ""),
+      ub("karhutla", "Belum padam, ha", ha(totBelum), totBelum ? "merah" : ""), ub("kalender", "Luas terbakar, ha", ha(luasTot)), ub("pin", "Provinsi", F(nProv)), ub("tunggu", "Tanpa kabar BPBD", F(tanpaKabar), tanpaKabar ? "oranye" : ""));
+    requestAnimationFrame(() => peta(wadahPeta, baris, U, ubin));
 
     /* kelengkapan data: belum padam tanpa kabar BPBD sehari terakhir */
     const tanya = perluDitanya(baris, hari);
@@ -112,8 +117,8 @@
   }
 
   /* peta: kab terbakar sepekan, merah = belum padam (makin pekat makin luas), biru = sudah padam; arahkan kursor untuk angka */
-  async function peta(wadah, baris, U) {
-    const {h, F, kosong} = U;
+  async function peta(wadah, baris, U, ubin = null) {
+    const {h, F, kosong, ikon} = U;
     if (!g.maplibregl) return wadah.replaceChildren(kosong("peringatan", "Peta gagal dimuat, coba muat ulang."));
     const ambil = u => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
     const per = new Map(baris.map(x => [x.kab_kode, x])), provs = [...new Set(baris.map(x => x.prov_kode))];
@@ -121,11 +126,18 @@
     const fitur = [];
     geo.forEach((gj, i) => (gj?.features || []).forEach(f => { const x = per.get(provs[i] + "|" + f.properties.kab); if (x) fitur.push({type: "Feature", id: fitur.length, properties: {kode: x.kab_kode, belum: x.belum}, geometry: f.geometry}); }));
     wadah.replaceChildren(); wadah.append(h("div", {class: "dl-legenda-peta"}, h("span", {class: "dl-leg dl-leg-belum", teks: "Belum padam"}), h("span", {class: "dl-leg dl-leg-surut", teks: "Padam"})));
-    /* trackResize mati: panel bisa hidden, ukur ulang saat tab tampil (tampil()). Komentar ini dulu menelan style: dan peta kosong. */
-    const m = petaKini = new g.maplibregl.Map({container: wadah, trackResize: false, style: "https://tiles.openfreemap.org/styles/positron", bounds: [[94.8, -11.2], [141.2, 6.2]], fitBoundsOptions: {padding: 16},
+    /* trackResize hidup: peta ikut ukuran wadah saat panel tampil (dulu mati dan peta terpotong separuh). */
+    const m = petaKini = new g.maplibregl.Map({container: wadah, trackResize: true, style: "https://tiles.openfreemap.org/styles/positron", bounds: [[94.8, -11.2], [141.2, 6.2]], fitBoundsOptions: {padding: 16},
       minZoom: 3, maxZoom: 13, dragRotate: false, pitchWithRotate: false, attributionControl: {compact: true}});
     m.addControl(new g.maplibregl.NavigationControl({showCompass: false}), "top-right"); g.DalopsKamera?.ikat(m);
     m.touchZoomRotate.disableRotation();
+    /* saring status di puncak peta (bentuk sama dengan jenis lain): tak ada yang dipilih = semua */
+    const saring = new Set(), terap = () => { if (!m.getLayer("kab-isi")) return; const f = !saring.size || saring.size === 2 ? null : saring.has("belum") ? [">", ["get", "belum"], 0] : ["==", ["get", "belum"], 0];
+      for (const id of ["kab-isi", "kab-garis"]) m.setFilter(id, f); };
+    const tSaring = [["surut", "Padam", "ok"], ["belum", "Belum padam", "karhutla"]].map(([v, t, ik]) => { const b = h("button", {type: "button", class: "dl-saring-btn dl-saring-" + v, "aria-pressed": "false"}, ikon(ik), t);
+      b.addEventListener("click", () => { saring.has(v) ? saring.delete(v) : saring.add(v); b.setAttribute("aria-pressed", String(saring.has(v))); terap(); }); return b; });
+    wadah.append(h("div", {class: "dl-peta-alat"}, h("div", {class: "dl-saring", role: "group", "aria-label": "Saring status padam"}, tSaring)));
+    if (ubin) { ubin.classList.add("dl-peta-ubin"); wadah.append(ubin); }
     const css = getComputedStyle(document.documentElement), c1 = css.getPropertyValue("--c1").trim() || "#c9503a", c5 = css.getPropertyValue("--c5").trim() || "#4f8fc4";
     const pop = new g.maplibregl.Popup({closeButton: false, closeOnClick: false, offset: 10, className: "dl-popup"});
     m.on("load", () => {

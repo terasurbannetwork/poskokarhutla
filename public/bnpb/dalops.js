@@ -187,7 +187,7 @@
       const lama = p.hari ? Math.max(1, Math.round((Date.now() - Date.parse(p.hari + "T00:00:00+07:00")) / 864e5) + 1) : 0;
       pop.setLngLat(e.features[0].geometry.coordinates).setDOMContent(kartuMini({lambang: lambangKab(p), nama: p.nama, wilayah: namaProv(p.prov_kode),
         pil: [status(p.lv), p.hari ? label("Mulai " + H.tglPendek(p.hari), "kalender", "garis") : null].filter(Boolean),
-        angka: [[lama ? F(lama) : null, "hari berturut", "tunggu"], [H.NAMA_LEVEL[p.lv], "prakiraan tertinggi", "peringatan"]]})).addTo(peta); });
+        angka: [[lama ? F(lama) : null, "hari berturut-turut", "tunggu"]]})).addTo(peta); });
     peta.on("mouseleave", "peringatan", () => { pop.remove(); peta.getCanvas().style.cursor = ""; });
   }
   /* gempa BMKG terkini di peta Gempa (pemilik 11 Nov 2026 "kan sering ada peringatan gempa"): katalog InaTEWS publik
@@ -329,10 +329,10 @@
   function kartuMini({lambang = null, ik = null, nama, wilayah = null, pil = [], angka = []}) {
     const kepalaIk = lambang || (ik ? h("span", {class: "dl-pop-ikbesar"}, ikon(ik)) : null);
     const isi = angka.filter(([v]) => v != null && v !== "");
-    return h("div", {class: "dl-pop"},
+    return h("div", {class: "dl-pop dl-pop-mini"},
       h("div", {class: "dl-pop-kepala"}, kepalaIk,
-        h("div", null, h("div", {class: "dl-pop-judul"}, h("b", {class: "dl-tip-nama", teks: nama}), wilayah ? label(wilayah, "pin", "abu") : null),
-          pil.length ? h("div", {class: "dl-pop-label"}, ...pil) : null)),
+        h("div", null, h("b", {class: "dl-tip-nama", teks: nama}), wilayah ? h("small", {class: "dl-pop-wil"}, ikon("pin"), wilayah) : null)),
+      pil.length ? h("div", {class: "dl-pop-label"}, ...pil) : null,
       isi.length ? h("div", {class: "dl-tip-angka"}, isi.slice(0, 3).map(([v, t, i]) => h("div", null, h("span", {class: "dl-tip-ik"}, ikon(i)), h("b", {teks: v}), h("span", {teks: t})))) : null);
   }
   /* kartu klik di peta: kondisi, nama, angka yang dilaporkan, kontak BPBD dengan tombol WA dan telepon */

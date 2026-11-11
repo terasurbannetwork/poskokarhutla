@@ -66,28 +66,51 @@
   /* ---------- daftar butir ---------- */
   const lihat = () => D.butir.filter(b => (F.semua || b.status === "baru" || b.status === "dikerjakan") && (!F.jenis || b.jenis === F.jenis) && (!F.prov || b.provs.includes(F.prov))
     && (!F.punyaku || b.ditugaskan_ke?.id === D.saya.id) && (F.kartu !== "terlambat" || b.terlambat) && (F.kartu !== "belum" || !b.ditugaskan_ke));
+  /* ikon garis 24x24 (CSP: dibangun lewat createElementNS) */
+  const IKP = {ambil: "M12 5v14M5 12h14", abaikan: "M6 6l12 12M18 6L6 18", buka: "M3 12a9 9 0 1 0 3-6.7M3 4v5h5", layar: "M14 4h6v6M20 4l-9 9|M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5",
+    riwayat: "M12 7v5l3 2|M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.4 2.6L3 8M3 3v5h5", lepas: "M16 11a4 4 0 1 0-8 0M3 21a9 9 0 0 1 18 0|M17 3l4 4M21 3l-4 4", wa: "M4 20l1.3-3.9A8 8 0 1 1 8 19.4z",
+    api: "M12 3c3 4 5 6.5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.5 1.5 1.5 2 2 2 0-3 0-5 1-7.5z", akun: "M12 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4zM4 21a8 8 0 0 1 16 0", kontak: "M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2",
+    lapor: "M6 3h9l4 4v14H6z|M14 3v5h5M9 13h6M9 17h4", jam: "M12 7v5l3 2|M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z", orang: "M12 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4zM4 21a8 8 0 0 1 16 0", daftar: "M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01",
+    pin: "M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z|M12 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z", awas: "M12 3l9 16H3z|M12 10v4M12 17v.5"};
+  const NS = "http://www.w3.org/2000/svg";
+  const ik = n => { const v = document.createElementNS(NS, "svg"); v.setAttribute("viewBox", "0 0 24 24"); v.setAttribute("aria-hidden", "true");
+    for (const d of (IKP[n] || IKP.daftar).split("|")) { const q = document.createElementNS(NS, "path"); q.setAttribute("d", d); v.append(q); } return v; };
+  const ikJenis = j => j.startsWith("api_") ? "api" : j.startsWith("akun") ? "akun" : /kontak|panggil|perusahaan/.test(j) ? "kontak" : /lapor|korban/.test(j) ? "lapor" : "daftar";
+  const tIk = (n, label, data, kls = "") => h("button", {class: "pt-ik " + kls, type: "button", title: label, "aria-label": label, ...data}, ik(n));
+  /* satu butir = satu <tbody data-id>: baris utama + baris tambahan (alasan abaikan, koreksi cc, riwayat) melebar penuh di bawahnya.
+     Rombak 11 Nov 2026 (pemilik "terjelek sepanjang sejarah"): kartu tinggi empat kolom diganti tabel per jenis pola /operasi. */
+  const KOLOM = 6;
   function kartuButir(b) {
     const s = D.saya, milik = b.ditugaskan_ke?.id === s.id, tutup = b.status === "selesai" || b.status === "abaikan";
     const aksi = [];
     if (!s.baca_saja) {
       if (!tutup) {
-        if (s.id && !milik) aksi.push(tombol("Ambil", {"data-aksi": "ambil"}, "utama"));
-        aksi.push(tombol("Abaikan", {"data-aksi": "abaikan"}));
-        if (s.koordinator) aksi.push(h("select", {class: "pt-pilih", "data-tugaskan": "1", "aria-label": "Tugaskan ke"}, h("option", {value: "", teks: "Tugaskan ke…"}), ...D.staf.map(x => h("option", {value: x.id, teks: x.nama, selected: b.ditugaskan_ke?.id === x.id}))));
-        if (b.ditugaskan_ke && (milik || s.koordinator)) aksi.push(tombol("Lepas", {"data-aksi": "lepas"}));
-      } else aksi.push(tombol("Buka lagi", {"data-aksi": "buka"}));
+        if (s.id && !milik) aksi.push(tIk("ambil", "Ambil", {"data-aksi": "ambil"}, "utama"));
+        aksi.push(tIk("abaikan", "Abaikan dengan alasan", {"data-aksi": "abaikan"}));
+        if (b.ditugaskan_ke && (milik || s.koordinator)) aksi.push(tIk("lepas", "Lepas penugasan", {"data-aksi": "lepas"}));
+      } else aksi.push(tIk("buka", "Buka lagi", {"data-aksi": "buka"}));
     }
-    if (tautanKerja(b)) aksi.push(h("a", {class: "pt-btn", href: tautanKerja(b), teks: "Buka layar kerja"}));
-    for (const t of b.tagih || []) aksi.push(h("a", {class: "pt-btn wa", href: t.tautan, target: "_blank", rel: "noopener noreferrer", title: t.untuk}, h("b", {teks: t.jenis === "wakil" ? "Tagih wakil" : "Tagih PIC"}), h("small", {teks: t.nama ?? t.untuk})));
-    aksi.push(tombol("Riwayat", {"data-aksi": "riwayat"}));
-    return h("li", {class: "pt-butir p" + b.prioritas + (tutup ? " tutup" : ""), "data-id": b.id},
-      h("div", {class: "pt-baris"}, h("span", {class: "pt-pil p" + b.prioritas, teks: PRIO[b.prioritas]}), h("span", {class: "pt-pil " + b.status, teks: STATUS[b.status]}), b.dummy ? h("span", {class: "pt-pil dummy", teks: "DUMMY"}) : null,
-        b.ditugaskan_ke ? h("span", {class: "pt-pil orang", teks: milik ? "Punya saya" : b.ditugaskan_ke.nama}) : h("span", {class: "pt-pil kosong", teks: "Belum ditugaskan"})),
-      h("p", {class: "pt-judul", teks: wil.teks(b.judul)}),
-      h("p", {class: "pt-meta", teks: [b.kab ? `${wil.kab(b.kab)}, ${b.prov_nama}` : b.prov_nama, `umur ${lama(b.umur)}`, b.tenggat ? (b.terlambat ? `lewat tenggat ${lama(Date.now() - b.tenggat)}` : `tenggat ${waktu(b.tenggat)}`) : null].filter(Boolean).join(", ")}),
-      b.rincian ? h("p", {class: "pt-meta", teks: wil.teks(b.rincian)}) : null,
-      b.status === "abaikan" && b.alasan ? h("p", {class: "pt-meta", teks: "Alasan diabaikan: " + b.alasan}) : (b.catatan ? h("p", {class: "pt-meta", teks: "Catatan: " + b.catatan}) : null),
-      blokCc(b), h("div", {class: "pt-aksi"}, aksi), formAbaikan === b.id ? formAlasan(b) : null, formKoreksi === b.id && FINAL_CC.includes(b.cc?.status) ? formKoreksiCc(b) : null, buka.has(b.id) ? h("ol", {class: "pt-riwayat", "data-riwayat": "1"}, h("li", {teks: "Memuat riwayat…"})) : null);
+    if (tautanKerja(b)) aksi.push(h("a", {class: "pt-ik", href: tautanKerja(b), title: "Buka layar kerja", "aria-label": "Buka layar kerja"}, ik("layar")));
+    for (const t of b.tagih || []) aksi.push(h("a", {class: "pt-ik wa", href: t.tautan, target: "_blank", rel: "noopener noreferrer", title: `${t.jenis === "wakil" ? "Tagih wakil" : "Tagih PIC"}: ${t.nama ?? t.untuk}`, "aria-label": t.jenis === "wakil" ? "Tagih wakil" : "Tagih PIC"}, ik("wa")));
+    aksi.push(tIk("riwayat", "Riwayat", {"data-aksi": "riwayat", "aria-pressed": String(buka.has(b.id))}));
+    const pegang = s.koordinator && !s.baca_saja && !tutup
+      ? h("select", {class: "pt-pilih", "data-tugaskan": "1", "aria-label": "Tugaskan ke"}, h("option", {value: "", teks: b.ditugaskan_ke ? "Lepas…" : "Tugaskan…"}), ...D.staf.map(x => h("option", {value: x.id, teks: x.nama, selected: b.ditugaskan_ke?.id === x.id})))
+      : b.ditugaskan_ke ? h("span", {class: "pt-pil orang", teks: milik ? "Punya saya" : b.ditugaskan_ke.nama}) : h("span", {class: "pt-pil kosong", teks: "Belum ditugaskan"});
+    const lokasi = b.kab ? wil.kab(b.kab) : (b.prov_nama || "Nasional");
+    const waktuSel = b.tenggat ? (b.terlambat ? h("span", {class: "pt-pil p1", title: "tenggat " + waktu(b.tenggat), teks: "lewat " + lama(Date.now() - b.tenggat)}) : h("span", {class: "pt-pil dikerjakan", teks: waktu(b.tenggat)})) : h("span", {class: "pt-redup", teks: "–"});
+    const cc = blokCc(b);
+    const utama = h("tr", {class: "pt-tr p" + b.prioritas},
+      h("td", {class: "pt-prio"}, h("span", {class: "pt-pil p" + b.prioritas, teks: PRIO[b.prioritas]}), b.status !== "baru" ? h("span", {class: "pt-pil " + b.status, teks: STATUS[b.status]}) : null),
+      h("td", {class: "pt-lok"}, h("b", {teks: lokasi}), b.kab && b.prov_nama ? h("small", {teks: b.prov_nama}) : null),
+      h("td", {class: "pt-isi-sel"}, h("p", {class: "pt-judul", title: wil.teks(b.judul), teks: wil.teks(b.judul).replace(b.tenggat ? /,\s*lewat .*$/ : /$^/, "")})   /* tenggat sudah di kolom sendiri: ekor "lewat ... dari batas" dibuang */, b.rincian ? h("small", {class: "pt-rinci", teks: wil.teks(b.rincian)}) : null,
+        b.status === "abaikan" && b.alasan ? h("small", {class: "pt-rinci", teks: "Alasan diabaikan: " + b.alasan}) : (b.catatan ? h("small", {class: "pt-rinci", teks: "Catatan: " + b.catatan}) : null), ...(cc || [])),
+      h("td", {class: "pt-waktu"}, waktuSel, h("small", {teks: "umur " + lama(b.umur)})),
+      h("td", {class: "pt-pegang"}, pegang),
+      h("td", null, h("div", {class: "pt-aksi"}, aksi)));
+    const tambahan = [formAbaikan === b.id ? formAlasan(b) : null, formKoreksi === b.id && FINAL_CC.includes(b.cc?.status) ? formKoreksiCc(b) : null,
+      buka.has(b.id) ? h("ol", {class: "pt-riwayat", "data-riwayat": "1"}, h("li", {teks: "Memuat riwayat…"})) : null].filter(Boolean)
+      .map(x => h("tr", {class: "pt-tr-tambah"}, h("td", {colspan: String(KOLOM)}, x)));
+    return h("tbody", {class: "pt-butir" + (tutup ? " tutup" : ""), "data-id": b.id}, utama, ...tambahan);
   }
   /* tindak lanjut command center pada kartu api (butir.cc dari server): pil status + pemegang untuk semua pembaca cc, tombol transisi hanya bila server memberi aksi (penulis cc: operator_cc, moderator).
      Tugas yang BUKAN alert (bukan level 3 / lewat 7 hari / bukan karhutla): keterangan hanya untuk operator_cc, peran lain tidak berubah. */
@@ -117,11 +140,15 @@
     const isi = lihat(), kel = new Map(Object.keys(D.jenis).map(j => [j, []]));
     for (const b of isi) kel.get(b.jenis)?.push(b);
     const adaIsi = [...kel.values()].some(x => x.length);
-    const info = h("p", {class: "pt-redup pt-catatan", teks: "Butir dihitung dari keadaan sebenarnya dan hilang sendiri saat keadaannya selesai (akun divalidasi, laporan terkirim, dan seterusnya). Karena itu tidak ada tombol Selesai: ambil, tugaskan, atau abaikan dengan alasan."});
-    document.getElementById("ptDaftar")?.replaceChildren(info, ...(adaIsi ? [...kel].filter(([, x]) => x.length).map(([j, x]) => {
-      const semua = F["lebih_" + j], tampil = semua ? x : x.slice(0, POTONG);
-      return h("section", {class: "pt-kel", "aria-label": D.jenis[j]}, h("h3", null, D.jenis[j], h("span", {class: "pt-hitung", teks: angka(x.length)})),
-        h("ul", {class: "pt-daftar"}, tampil.map(kartuButir)), x.length > tampil.length ? tombol(`Lihat semua ${angka(x.length)}`, {"data-lebih": j}) : null);
+    const kepala = () => h("thead", null, h("tr", null, ...["Prioritas", "Lokasi", "Butir", "Tenggat", "Dipegang", "Aksi"].map(t => h("th", {scope: "col", teks: t}))));
+    document.getElementById("ptDaftar")?.replaceChildren(...(adaIsi ? [...kel].filter(([, x]) => x.length).map(([j, x]) => {
+      const semua = F["lebih_" + j], tampil = semua ? x : x.slice(0, POTONG), telat = x.filter(b => b.terlambat).length;
+      const t = h("table", {class: "ad-tabel pt-tabel2"}, kepala(), ...tampil.map(kartuButir));
+      return h("section", {class: "ex ex-std pt-kel", id: "pt-" + j, "aria-label": D.jenis[j]},
+        h("header", {class: "ex-hd"}, h("span", {class: "ex-ey", hidden: true, teks: "Meja Pantau"}),
+          h("div", {class: "ex-jd"}, h("h3", null, ik(ikJenis(j)), D.jenis[j]), h("span", {class: "pt-hitung", teks: angka(x.length)}), telat ? h("span", {class: "pt-pil p1", teks: `${angka(telat)} terlambat`}) : null)),
+        h("div", {class: "ex-bd"}, h("div", {class: "ad-tabel-wadah pt-wadah"}, t),
+          x.length > tampil.length ? h("div", {class: "pt-lebih"}, tombol(`Lihat semua ${angka(x.length)}`, {"data-lebih": j})) : null));
     }) : [h("p", {class: "pt-kosong", teks: D.butir.length ? "Tidak ada butir yang cocok dengan penyaring." : "Antrean kosong. Tidak ada pekerjaan yang menunggu untuk peran dan wilayah Anda."})]));
     for (const li of document.querySelectorAll("[data-riwayat]")) muatRiwayat(li);
   }
@@ -129,25 +156,33 @@
   function tunda() { cancelAnimationFrame(jadwal); jadwal = requestAnimationFrame(() => setTimeout(gambarDaftar, 0)); }
   function gambarKontrol() {
     const r = D.ringkas, s = D.saya, provs = [...new Map(D.butir.flatMap(b => b.provs.map(p => [p, wil.prov(p)]))).entries()].sort((a, b) => a[1].localeCompare(b[1]));
-    const kt = (k, l, n, kls = "") => h("button", {class: "pt-kartu " + kls, type: "button", "data-kartu": k, "aria-pressed": String(k === "punyaku" ? F.punyaku : F.kartu === k)}, h("b", {teks: angka(n)}), h("span", {teks: l}));
-    /* banner merah: laporan korban jiwa yang belum diverifikasi (butir prioritas 0, jenis korban_baru); hilang sendiri sesudah diverifikasi */
+    /* ubin ringkas = penyaring (rujukan /operasi): ikon navy, label, angka; ditekan = tepi navy */
+    const kt = (k, l, n, ikn, kls = "") => h("button", {class: "db-ubin pt-ubin " + kls, type: "button", "data-kartu": k, "aria-pressed": String(k === "punyaku" ? F.punyaku : F.kartu === k)},
+      h("header", null, h("i", null, ik(ikn)), h("span", {teks: l})), h("b", {teks: angka(n)}));
     const korban = D.butir.filter(b => b.jenis === "korban_baru" && (b.status === "baru" || b.status === "dikerjakan")).length;
     app.replaceChildren(korban ? h("div", {class: "pt-banner-korban", role: "alert"}, h("span", {teks: `${angka(korban)} laporan korban jiwa belum diverifikasi.`}), D.butir.some(b => b.jenis === "korban_baru" && b.tautan) ? h("a", {href: "/admin/korban", teks: "Buka laporan korban"}) : null) : null,
       h("p", {id: "ptPesan", class: "pt-pesan " + (pesanOk ? "ok" : "galat"), role: "status", teks: pesanTeks}),
-      h("div", {class: "pt-orang"}, h("span", {teks: `${s.nama}${s.admin ? " (admin)" : ""}, ${s.peran.map(p => PERAN[p] || p).join(", ")}`}), h("span", {class: "pt-redup", teks: s.wilayah.length ? `wilayah ${s.wilayah.length} provinsi` : "wilayah nasional"}),
-        s.baca_saja ? h("span", {class: "pt-pil abaikan", teks: "Baca saja"}) : null, s.id ? tombol("Keluar", {"data-aksi": "keluar"}) : null),
-      h("div", {class: "pt-ringkas"}, kt("", "Butir aktif", r.aktif), kt("terlambat", "Terlambat", r.terlambat, r.terlambat ? "merah" : ""), kt("belum", "Belum ditugaskan", r.belum_ditugaskan), s.id ? kt("punyaku", "Punya saya", r.punyaku) : null),
-      h("div", {class: "pt-saring"},
-        h("div", {class: "pt-chip-baris", role: "group", "aria-label": "Jenis"}, h("button", {class: "pt-chip", type: "button", "data-jenis": "", "aria-pressed": String(!F.jenis)}, "Semua jenis"),
-          ...Object.entries(D.jenis).map(([j, l]) => h("button", {class: "pt-chip", type: "button", "data-jenis": j, "aria-pressed": String(F.jenis === j)}, l, h("b", {teks: String(r.per_jenis[j] ?? 0)})))),
-        h("div", {class: "pt-baris"}, h("select", {id: "ptProv", "aria-label": "Wilayah"}, h("option", {value: "", teks: "Semua wilayah"}), ...provs.map(([k, n]) => h("option", {value: k, teks: n, selected: F.prov === k}))),
-          s.id ? h("label", {class: "pt-cek"}, h("input", {type: "checkbox", "data-punyaku": "1", checked: F.punyaku}), "Punya saya") : null,
-          h("label", {class: "pt-cek"}, h("input", {type: "checkbox", "data-semua": "1", checked: F.semua}), "Tampilkan selesai dan diabaikan"))),
+      h("div", {class: "db-ubin-grid pt-ringkas " + (s.id ? "k4" : "")}, kt("", "Butir aktif", r.aktif, "daftar"), kt("terlambat", "Terlambat", r.terlambat, "jam", r.terlambat ? "merah" : ""), kt("belum", "Belum ditugaskan", r.belum_ditugaskan, "orang", r.belum_ditugaskan ? "oranye" : ""), s.id ? kt("punyaku", "Punya saya", r.punyaku, "ambil") : null),
+      h("div", {class: "pt-alat"},
+        h("label", {class: "pt-wil"}, ik("pin"), h("select", {id: "ptProv", "aria-label": "Wilayah"}, h("option", {value: "", teks: "Semua wilayah"}), ...provs.map(([k, n]) => h("option", {value: k, teks: n, selected: F.prov === k})))),
+        s.id ? h("label", {class: "pt-cek"}, h("input", {type: "checkbox", "data-punyaku": "1", checked: F.punyaku}), "Punya saya") : null,
+        h("label", {class: "pt-cek"}, h("input", {type: "checkbox", "data-semua": "1", checked: F.semua}), "Tampilkan selesai dan diabaikan"),
+        h("span", {class: "pt-siapa", title: "Butir dihitung dari keadaan sebenarnya dan hilang sendiri saat keadaannya selesai; tidak ada tombol Selesai: ambil, tugaskan, atau abaikan dengan alasan."},
+          ik("orang"), `${s.nama}${s.admin ? " (admin)" : ""}`, h("small", {teks: s.wilayah.length ? `${s.wilayah.length} provinsi` : "nasional"}), s.baca_saja ? h("span", {class: "pt-pil abaikan", teks: "Baca saja"}) : null)),
       h("div", {id: "ptDaftar", class: "pt-isi"}, h("p", {class: "pt-redup", teks: "Menggambar daftar…"})),
       ...(s.super ? [panelStaf()] : []));
+    jenisKiri();
     tunda();
   }
-
+  /* jenis butir di panel kiri Pusdalops (slot halaman), berlencana jumlah; klik = saring jenis. Tanpa panel kiri (layar sempit): deretan pil lama. */
+  function jenisKiri() {
+    const M = window.MenuPusdalops, slot = M?.pakaiSlot?.(), r = D.ringkas;
+    const pil = (j, l, n) => { const b = h("button", {class: slot ? "db-nav-b" : "pt-chip", type: "button", "data-jenis": j, "aria-current": String(F.jenis === j), "aria-pressed": String(F.jenis === j)},
+      slot ? h("i", {class: "db-nav-ik"}, ik(j ? ikJenis(j) : "daftar")) : null, h("span", {class: slot ? "db-nav-t" : null, teks: l}), n != null ? h("b", {class: slot ? "db-nav-n" : null, teks: angka(n)}) : null); return b; };
+    const daftar = [pil("", "Semua jenis", r.aktif), ...Object.entries(D.jenis).filter(([j]) => (r.per_jenis[j] ?? 0) > 0 || F.jenis === j).map(([j, l]) => pil(j, l, r.per_jenis[j] ?? 0))];
+    if (slot) { slot.replaceChildren(M.grup("Jenis butir", "daftar"), ...daftar); return; }
+    app.querySelector(".pt-alat")?.before(h("div", {class: "pt-chip-baris", role: "group", "aria-label": "Jenis"}, ...daftar));
+  }
   /* ---------- Super Admin: akun staf dikelola di /admin/akun ---------- */
   const panelStaf = () => h("a", {class: "pt-btn", href: "/admin/akun", teks: "👥 Kelola akun staf dan aksesnya"});
 
@@ -173,7 +208,7 @@
       if (k === "punyaku") { F.punyaku = !F.punyaku; const c = app.querySelector("[data-punyaku]"); if (c) c.checked = F.punyaku; } else F.kartu = F.kartu === k ? "" : k;
       for (const x of app.querySelectorAll("[data-kartu]")) x.setAttribute("aria-pressed", String(x.dataset.kartu === "punyaku" ? F.punyaku : x.dataset.kartu === F.kartu));
       tunda(); return; }
-    const ch = t.closest("[data-jenis]"); if (ch) { F.jenis = ch.dataset.jenis; for (const c of app.querySelectorAll("[data-jenis]")) c.setAttribute("aria-pressed", String(c.dataset.jenis === F.jenis)); tunda(); return; }
+    const ch = t.closest("[data-jenis]"); if (ch) return pilihJenis(ch);
     const le = t.closest("[data-lebih]"); if (le) { F["lebih_" + le.dataset.lebih] = true; tunda(); return; }
     const cb = t.closest("[data-cc-batal]"); if (cb) { const id = cb.closest("[data-id]").dataset.id; tutupKoreksi(id); return gantiKartu(id); }
     const ck = t.closest("[data-cc-ke]"); if (ck) { if (!ck.disabled) klikCc(ck); return; }
@@ -184,6 +219,8 @@
     if (a === "abaikan" || a === "batal-abaikan") { formAbaikan = a === "abaikan" ? id : null; const tt = D.butir.find(x => x.id === id); if (tt) li.replaceWith(kartuButir(tt)); const ol = document.querySelector(`[data-id="${CSS.escape(id)}"] [data-riwayat]`); if (ol) muatRiwayat(ol); return; }
     await aksiButir(b, {id, aksi: a});
   });
+  function pilihJenis(ch) { F.jenis = ch.dataset.jenis; for (const c of document.querySelectorAll("[data-jenis]")) { c.setAttribute("aria-pressed", String(c.dataset.jenis === F.jenis)); c.setAttribute("aria-current", String(c.dataset.jenis === F.jenis)); } tunda(); }
+  document.addEventListener("click", e => { const ch = e.target.closest?.(".mp-slot [data-jenis]"); if (ch) pilihJenis(ch); });
   async function aksiButir(b, o) {
     b.disabled = true; const r = await kirim("/api/pantau/butir", o); b.disabled = false;
     if (!r.ok) { pesan(r.j.galat || `Gagal (${r.status})`, false); if (r.status === 404) muat(); return false; }
