@@ -49,3 +49,7 @@ ul,ol{margin:2mm 3mm 2mm 7mm;padding:0;font-size:7.6pt;line-height:1.45}li{margi
 .mini div{background:#f6f8fb;border-radius:1.5mm;padding:2mm 3mm;font-size:7pt;color:#3d4b60}.mini b{font-size:11pt;color:#0b2545}
 .nocp{display:flex;gap:4mm;align-items:center}.nocp .bul{width:11mm;height:11mm;font-size:15pt}
 @media print{body{background:#fff}.alat,.pesan{display:none}#isi{display:block;padding:0}.hal{box-shadow:none;page-break-after:always}}
+.bul.a{background:#0284c7}
+.leg i.a{background:#0284c7;border-radius:1px;transform:rotate(45deg)}
+.kartu.air{margin-bottom:3mm}.kartu.air h3{border-left-color:#0284c7}
+.per .mt{display:block;margin-top:1mm;padding:.6mm 2.4mm;border-radius:9mm;background:#fff3d6;color:#8a5a12;font-weight:700}

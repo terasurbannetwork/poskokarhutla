@@ -36,32 +36,49 @@
   const titikSvg = (P, d, r) => d.slice().sort((a, b) => b.umur - a.umur).map(t => { const [x, y] = P(t.lat, t.lon);
     return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${t.umur <= 24 ? "#ef4444" : "#facc15"}" stroke="#fff" stroke-width="${(r / 5).toFixed(1)}"/>`; }).join("");
   const penanda = (P, t, r, base, label) => { const [x, y] = P(t.lat, t.lon);
+    if (t.air) return `<rect x="${(x - r).toFixed(1)}" y="${(y - r).toFixed(1)}" width="${2 * r}" height="${2 * r}" rx="${r * .35}" transform="rotate(45 ${x.toFixed(1)} ${y.toFixed(1)})" fill="#0284c7" stroke="#fff" stroke-width="${(r / 4).toFixed(1)}"/><text x="${x.toFixed(1)}" y="${(y + r * .38).toFixed(1)}" text-anchor="middle" font-size="${Math.round(r * 1.05)}" font-weight="800" fill="#fff" font-family="Inter,Arial">A</text>`;
     return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${base ? "#0b2545" : "#e8590c"}" stroke="#fff" stroke-width="${(r / 4).toFixed(1)}"/><text x="${x.toFixed(1)}" y="${(y + r * .38).toFixed(1)}" text-anchor="middle" font-size="${Math.round(r * 1.05)}" font-weight="800" fill="#fff" font-family="Inter,Arial">${base ? "B" : t.urut}</text>`
       + (label ? `<text x="${(x + r + 6).toFixed(1)}" y="${(y + 7).toFixed(1)}" font-size="22" font-weight="700" fill="#fff" stroke="#0b2545" stroke-width="5" paint-order="stroke" font-family="Inter,Arial">${esc(label)}</text>` : ""); };
   const skala = (w, h, m, kmBar) => { const px = kmBar * 1000 / m, x = w - px - 40, y = h - 36;
     return `<rect x="${x - 14}" y="${y - 30}" width="${px + 28}" height="46" rx="6" fill="#fff" opacity=".9"/><line x1="${x}" y1="${y}" x2="${x + px}" y2="${y}" stroke="#0b2545" stroke-width="5"/><text x="${x}" y="${y - 9}" font-size="20" fill="#0b2545" font-family="Inter,Arial">0</text><text x="${x + px}" y="${y - 9}" font-size="20" text-anchor="end" fill="#0b2545" font-family="Inter,Arial">${ang(kmBar)} km</text>`; };
   const utara = w => `<circle cx="${w - 50}" cy="54" r="32" fill="#fff" opacity=".92"/><path d="M${w - 50},30 l14,36 -14,-9 -14,9z" fill="#0b2545"/><text x="${w - 50}" y="22" text-anchor="middle" font-size="20" font-weight="800" fill="#fff" stroke="#0b2545" stroke-width="4" paint-order="stroke">U</text>`;
   const sekitar = (panas, la, lo, r, jam) => panas.filter(t => t.umur <= jam).map(t => ({...t, d: km([la, lo], [t.lat, t.lon])})).filter(t => t.d <= r);
+  /* sumber air (scripts/operasi/sumber_air.py, OSM): kandidat ambil air helibucket terdekat dari target */
+  let AIR = [];
+  const JENIS_AIR = {lake: "danau", reservoir: "waduk", river: "sungai lebar", oxbow: "danau tapal kuda", lagoon: "laguna", "-": "badan air"};
+  const airDekat = (la, lo, n = 3, maks = 40) => AIR.map(a => ({lat: a[0], lon: a[1], jenis: a[2], nama: a[3], ha: a[4], d: km([la, lo], [a[0], a[1]])})).filter(a => a.d <= maks).sort((a, b) => a.d - b.d).slice(0, n);
+  const namaAir = a => `${a.nama || JENIS_AIR[a.jenis] || "badan air"}${a.nama ? ` (${JENIS_AIR[a.jenis] || "badan air"})` : ""}`;
   const kaki = m => `<div class="kaki">Sumber: titik panas NASA FIRMS (VIIRS S-NPP, NOAA-20, NOAA-21, MODIS) lewat sistem Centurisk97, kondisi per ${m.per} (deteksi satelit terakhir ${m.acuan}), keyakinan sedang dan tinggi. Target dari renlap usulan Centurisk97 versi ${esc(m.versi)} (skor hipotesis). Citra Esri World Imagery. Waktu tempuh = jarak garis lurus pada ${ang(V)} km/jam tanpa angin, ditambah orbit ${ORBIT} menit tiap CP. Haluan sejati (true), belum dikoreksi variasi magnet. Titik panas adalah deteksi satelit, bukan pengukuran api di lapangan. Usulan lokasi untuk dilihat, bukan perintah terbang: keputusan terbang pada PIC dan komando.</div>`;
   const kepala = (ey, judul, m, kanan) => `<div class="kepala"><div><div class="ey">${esc(ey)}</div><h1>${esc(judul)}</h1></div><div class="per">${kanan || `Kondisi per<b>${m.per}</b>`}</div></div>`;
 
+  /* terbit dan terbenam matahari (rumus NOAA ringkas, ketelitian sekitar 2 menit) untuk batas terbang siang */
+  function matahari(la, lo, tglIso) {
+    const d = new Date(tglIso + "T00:00:00Z"), n = Math.floor((d - Date.UTC(d.getUTCFullYear(), 0, 0)) / 864e5), g = 2 * Math.PI / 365 * (n - 1);
+    const eq = 229.18 * (0.000075 + 0.001868 * Math.cos(g) - 0.032077 * Math.sin(g) - 0.014615 * Math.cos(2 * g) - 0.040849 * Math.sin(2 * g));
+    const dek = 0.006918 - 0.399912 * Math.cos(g) + 0.070257 * Math.sin(g) - 0.006758 * Math.cos(2 * g) + 0.000907 * Math.sin(2 * g) - 0.002697 * Math.cos(3 * g) + 0.00148 * Math.sin(3 * g);
+    const ha = Math.acos(Math.cos(rad(90.833)) / (Math.cos(rad(la)) * Math.cos(dek)) - Math.tan(rad(la)) * Math.tan(dek)) * 180 / Math.PI;
+    const jam = m => { const w = ((m + 420) % 1440 + 1440) % 1440; return `${String(Math.floor(w / 60)).padStart(2, "0")}.${String(Math.round(w % 60) % 60).padStart(2, "0")}`; };
+    return {terbit: jam(720 - 4 * (lo + ha) - eq), terbenam: jam(720 - 4 * (lo - ha) - eq)};
+  }
   function susun(b, jenis) {
     const cp = (b[jenis] || []).map(c => ({...c, kode: `${jenis === "wb" ? "WB" : "CP"}${c.urut}`}));
     const base = {kode: b.id, lat: b.lat, lon: b.lon, tempat: `Base ${b.nama}`};
-    const t = [base, ...cp, {...base, tempat: `kembali ke Base ${b.nama}`}], leg = [];
+    /* water bombing: base -> ambil air (A) -> target -> ambil air -> target ... -> base (pemilik 11 Nov 2026: renlap memberi tahu ambil air di mana) */
+    const isi = jenis === "wb" ? cp.flatMap(c => { const a = airDekat(c.lat, c.lon, 1)[0]; return a ? [{kode: `A${c.urut}`, air: 1, urut: "A", lat: a.lat, lon: a.lon, tempat: `ambil air: ${namaAir(a)}`, ha: a.ha}, c] : [c]; }) : cp;
+    const t = [base, ...isi, {...base, tempat: `kembali ke Base ${b.nama}`}], leg = [];
     let kk = 0, km2 = 0; t[0] = {...t[0], kum_km: 0, kum_mnt: 0};
     for (let i = 1; i < t.length; i++) {
       const a = t[i - 1], c = t[i], j = km([a.lat, a.lon], [c.lat, c.lon]), mnt = j / V * 60;
-      kk += j; km2 += mnt + (i > 1 ? ORBIT : 0);
+      kk += j; km2 += mnt + (i > 1 && !a.air ? ORBIT : 0);
       leg.push({no: i, dari: a.kode, ke: c.kode, lat: c.lat, lon: c.lon, km: j, nm: j / NM_KM, mnt, haluan: baringan(a.lat, a.lon, c.lat, c.lon), rd: c.rd});
       t[i] = {...c, kum_km: kk, kum_mnt: km2};
     }
     return {t, leg};
   }
-  const LEG = (cp) => `<div class="leg"><span><i class="m"></i>Titik panas 24 jam</span><span><i class="k"></i>24–48 jam</span><span><i class="o"></i>${cp ? "Check point" : "Check point"}</span>${cp ? "" : '<span><i class="n"></i>Base</span>'}<span class="biru">— Rute dan arah terbang</span>${cp ? `<span>Kotak ${KOTAK} × ${KOTAK} km.</span>` : ""}</div>`;
+  const LEG = (cp) => `<div class="leg"><span><i class="m"></i>Titik panas 24 jam</span><span><i class="k"></i>24–48 jam</span><span><i class="o"></i>Check point</span>${AIR.length ? '<span><i class="a"></i>Ambil air (A)</span>' : ""}${cp ? "" : '<span><i class="n"></i>Base</span>'}<span class="biru">— Rute dan arah terbang</span>${cp ? `<span>Kotak ${KOTAK} × ${KOTAK} km.</span>` : ""}</div>`;
 
   function halBase(b, {t, leg}, panas, m, jenis) {
-    const misi = jenis === "wb" ? "water bombing" : "patroli", ey = `BNPB, rencana lapangan udara, base ${b.nama} (${b.id})`, cp = t.slice(1, -1);
+    const misi = jenis === "wb" ? "water bombing" : "patroli", ey = `BNPB, rencana lapangan udara, base ${b.nama} (${b.id})`, cp = t.slice(1, -1).filter(x => !x.air), nAir = t.filter(x => x.air).length;
     const la = t.map(x => x.lat), lo = t.map(x => x.lon), W = 1100, H = 1060;
     let z = 12; while (z > 4) { const [ax, ay] = gpx(Math.max(...la), Math.min(...lo), z), [bx, by] = gpx(Math.min(...la), Math.max(...lo), z); if ((bx - ax) * 1.25 <= W && (by - ay) * 1.25 <= H) break; z--; }
     const cla = (Math.min(...la) + Math.max(...la)) / 2, clo = (Math.min(...lo) + Math.max(...lo)) / 2, {P, img} = bingkai(cla, clo, z, W, H);
@@ -69,10 +86,10 @@
     const m1 = mpp(cla, z), bar = [5, 10, 20, 25, 50, 100].find(k => k * 1000 / m1 >= W * .12) || 100;
     const svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice">${PANAH}${img}${rute(P, t)}${titikSvg(P, dalam, 6)}${penanda(P, t[0], 15, true, `Base ${b.nama}`)}${cp.map(c => penanda(P, c, 13)).join("")}${skala(W, H, m1, bar)}${utara(W)}</svg>`;
     const n24 = cp.map(c => sekitar(panas, c.lat, c.lon, RADIUS, 24).length), tot = t[t.length - 1];
-    const baris = t.map(x => { const isb = x.kode === b.id, n = isb ? "–" : ang(sekitar(panas, x.lat, x.lon, RADIUS, 24).length);
-      return `<tr><td><span class="bul${isb ? " b" : ""}">${isb ? "B" : x.urut}</span></td><td><b>${esc(x.kode)}</b> ${esc(x.tempat || "")}</td><td class="n"><a href="${gmaps(x.lat, x.lon)}">${x.lat.toFixed(4)}, ${x.lon.toFixed(4)}</a></td><td class="n jingga">${n}</td><td class="n">${ang(x.kum_km)} km</td><td class="n">+${ang(x.kum_mnt)} mnt</td></tr>`; }).join("");
-    const kpi = `<div class="kpi"><div class="o"><b>${ang(n24.reduce((a, c) => a + c, 0))}</b><span>titik panas 24 jam dalam ${RADIUS} km dari check point</span></div><div><b>${ang(cp.length)} ${jenis === "wb" ? "target" : "check point"}</b><span>${jenis === "wb" ? "sortie water bombing ke temuan lapangan terkonfirmasi" : "sortie patroli, urut tetangga terdekat dari base"}</span></div><div><b>± ${ang(tot.kum_km)} km</b><span>loop base, semua CP, kembali ke base (${ang(tot.kum_km / NM_KM)} NM)</span></div><div class="o"><b>± ${ang(tot.kum_mnt)} menit</b><span>pada ${ang(V)} km/jam, termasuk orbit ${ORBIT} menit tiap CP</span></div></div>`;
-    const h1 = `<section class="hal">${kepala(ey, `Rencana rute udara ${misi} karhutla dari ${b.nama}`, m)}${kpi}<div class="dua"><div><div class="peta tinggi">${svg}</div>${LEG(false)}</div><div class="kartu"><h3>Urutan check point, klik koordinat untuk Google Maps</h3><table><thead><tr><th></th><th>Titik</th><th class="n">Koordinat</th><th class="n">Titik panas</th><th class="n">Jarak tempuh</th><th class="n">Waktu</th></tr></thead><tbody>${baris}</tbody></table><p class="fnd">Titik panas = deteksi 24 jam dalam radius ${RADIUS} km dari CP. Jarak dan waktu kumulatif sejak lepas landas.</p></div></div>${kaki(m)}</section>`;
+    const baris = t.map(x => { const isb = x.kode === b.id, n = isb || x.air ? "–" : ang(sekitar(panas, x.lat, x.lon, RADIUS, 24).length);
+      return `<tr><td><span class="bul${isb ? " b" : x.air ? " a" : ""}">${isb ? "B" : x.air ? "A" : x.urut}</span></td><td><b>${esc(x.kode)}</b> ${esc(x.tempat || "")}</td><td class="n"><a href="${gmaps(x.lat, x.lon)}">${x.lat.toFixed(4)}, ${x.lon.toFixed(4)}</a></td><td class="n jingga">${n}</td><td class="n">${ang(x.kum_km)} km</td><td class="n">+${ang(x.kum_mnt)} mnt</td></tr>`; }).join("");
+    const kpi = `<div class="kpi"><div class="o"><b>${ang(n24.reduce((a, c) => a + c, 0))}</b><span>titik panas 24 jam dalam ${RADIUS} km dari check point</span></div><div><b>${ang(cp.length)} ${jenis === "wb" ? "target" : "check point"}</b><span>${jenis === "wb" ? "sortie water bombing ke temuan lapangan terkonfirmasi" : "sortie patroli, urut tetangga terdekat dari base"}</span></div><div><b>± ${ang(tot.kum_km)} km</b><span>${nAir ? `base, ambil air, target, kembali ke base; ${ang(nAir)} titik ambil air` : "loop base, semua CP, kembali ke base"} (${ang(tot.kum_km / NM_KM)} NM)</span></div><div class="o"><b>± ${ang(tot.kum_mnt)} menit</b><span>pada ${ang(V)} km/jam, termasuk orbit ${ORBIT} menit tiap CP</span></div></div>`;
+    const mt = matahari(b.lat, b.lon, m.tgl), h1 = `<section class="hal">${kepala(ey, `Rencana rute udara ${misi} karhutla dari ${b.nama}`, m, `Kondisi per<b>${m.per}</b><span class="mt">Terbit ${mt.terbit}, terbenam ${mt.terbenam} WIB di ${esc(b.nama)}</span>`)}${kpi}<div class="dua"><div><div class="peta tinggi">${svg}</div>${LEG(false)}</div><div class="kartu"><h3>Urutan check point, klik koordinat untuk Google Maps</h3><table><thead><tr><th></th><th>Titik</th><th class="n">Koordinat</th><th class="n">Titik panas</th><th class="n">Jarak tempuh</th><th class="n">Waktu</th></tr></thead><tbody>${baris}</tbody></table><p class="fnd">Titik panas = deteksi 24 jam dalam radius ${RADIUS} km dari CP. Jarak dan waktu kumulatif sejak lepas landas.</p></div></div>${kaki(m)}</section>`;
     const lb = leg.map(x => `<tr><td>${x.no}</td><td class="nw"><b>${esc(x.dari)}</b> ke <b>${esc(x.ke)}</b></td><td class="mono">${dms(x.lat, x.lon)}</td><td class="mono bebas">${esc(x.rd || "–")}</td><td class="n"><a href="${gmaps(x.lat, x.lon)}">${x.lat.toFixed(4)}, ${x.lon.toFixed(4)}</a></td><td class="n"><b>${hal3(x.haluan)}</b></td><td class="n">${ang(x.km, 1)} km</td><td class="n">${ang(x.nm, 1)} NM</td><td class="n">${x.mnt < 1 ? "&lt; 1" : ang(x.mnt)} mnt</td></tr>`).join("")
       + `<tr><td></td><td><b>Total</b></td><td></td><td></td><td></td><td></td><td class="n"><b>${ang(leg.reduce((a, x) => a + x.km, 0))} km</b></td><td class="n"><b>${ang(leg.reduce((a, x) => a + x.nm, 0))} NM</b></td><td class="n"><b>${ang(leg.reduce((a, x) => a + x.mnt, 0))} mnt</b></td></tr>`;
     const alasan = cp.map(c => { const a = c.alasan || {}, bag = [];
@@ -98,6 +115,7 @@
     return `<section class="hal"><div class="kepala"><div class="nocp"><span class="bul">${c.urut}</span><div><div class="ey">${c.kode.startsWith("WB") ? "Target water bombing" : "Check point"} ${c.urut} dari ${t.length - 2}, rute udara base ${esc(b.nama)}</div><h1>${esc(c.tempat || c.kode)}</h1></div></div><div class="per">${kanan}</div></div>
       <div class="dua cp"><div><div class="peta kotak">${svg}</div>${LEG(true)}</div><div><div class="kartu"><h3>Koordinat check point, klik untuk Google Maps</h3><div class="besar"><a href="${gmaps(c.lat, c.lon)}">${c.lat.toFixed(4)}, ${c.lon.toFixed(4)}</a></div><span class="mono b">${dms(c.lat, c.lon)}</span>${c.rd ? `<span class="mono b">${esc(c.rd)}</span>` : ""}<a class="tbl" href="${gmaps(c.lat, c.lon)}">Buka di Google Maps</a></div>
       <div class="mini"><div>Masuk dari ${esc(seb.kode)}<br><b>${hal3(baringan(seb.lat, seb.lon, c.lat, c.lon))}</b>, ${ang(km([seb.lat, seb.lon], [c.lat, c.lon]), 1)} km</div><div>Lanjut ke ${esc(ses.kode)}<br><b>${hal3(baringan(c.lat, c.lon, ses.lat, ses.lon))}</b>, ${ang(km([c.lat, c.lon], [ses.lat, ses.lon]), 1)} km</div></div>
+      ${(() => { const ad = airDekat(c.lat, c.lon, 3); if (!AIR.length) return ""; return `<div class="kartu air"><h3>Sumber air terdekat untuk water bombing</h3>${ad.length ? `<table><thead><tr><th>Badan air</th><th class="n">Luas</th><th class="n">Jarak</th><th class="n">Haluan ke CP</th><th class="n">Koordinat</th></tr></thead><tbody>${ad.map(a => `<tr><td>${esc(namaAir(a))}</td><td class="n">± ${ang(a.ha)} ha</td><td class="n">${ang(a.d, 1)} km</td><td class="n"><b>${hal3(baringan(a.lat, a.lon, c.lat, c.lon))}</b></td><td class="n"><a href="${gmaps(a.lat, a.lon)}">${a.lat.toFixed(4)}, ${a.lon.toFixed(4)}</a></td></tr>`).join("")}</tbody></table><p class="fnd">Kandidat dari peta OpenStreetMap, belum dicek pilot: kedalaman, rintangan (kabel, pohon), dan izin pemilik lahan belum diketahui.</p>` : `<p class="fnd">Tidak ada badan air minimal 4 ha dalam 40 km di peta OpenStreetMap; ambil air di base atau sumber yang diketahui regu.</p>`}</div>`; })()}
       <div class="kartu"><h3>Titik panas di sekitar CP (${RADIUS} km), FRP terbesar dulu</h3><table><thead><tr><th class="n">Koordinat</th><th>WIB</th><th>Satelit</th><th class="n">FRP, MW</th><th class="n">Dari CP</th></tr></thead><tbody>${tb}</tbody></table><p class="fnd">${ang(malam)} dari ${ang(dekat.length)} titik terdeteksi malam hari. Titik panas 24–48 jam di sekitar CP: ${ang(d48)}. Titik panas terakhir di target: ${esc(c.terakhir?.jam_wib || "–")} WIB.</p></div></div></div>${kaki(m)}</section>`;
   }
 
@@ -120,9 +138,10 @@
     const q = new URLSearchParams(location.search), isi = $("#isi"), pesan = $("#pesan");
     try {
       const [d, tgl, versi] = await renlap(q.get("tgl"), q.get("versi"));
+      try { AIR = (await json("/data/operasi/sumber_air.json")).titik || []; } catch { AIR = []; }
       const kini = new Date(d.dibuat), panas = await titik(kini);
       const acuan = panas.length ? new Date(Math.max(...panas.map(x => x.t))) : kini;
-      const m = {per: tglPanjang(kini), acuan: tglPanjang(acuan), versi};
+      const m = {per: tglPanjang(kini), acuan: tglPanjang(acuan), versi, tgl};
       const bases = d.base.filter(b => (b.patroli || []).length || (b.wb || []).length);
       const pilih = q.get("base") && bases.some(b => b.id === q.get("base")) ? q.get("base") : bases[0]?.id;
       $("#base").innerHTML = bases.map(b => `<option value="${esc(b.id)}"${b.id === pilih ? " selected" : ""}>${esc(b.nama)} (${esc(b.icao || b.id)})</option>`).join("");
@@ -132,7 +151,7 @@
       document.title = `Renlap ${b.nama} ${tgl} ${versi}`;
       let h = "";
       for (const jenis of ["patroli", "wb"]) { if (!(b[jenis] || []).length) continue; const r = susun(b, jenis);
-        h += halBase(b, r, panas, m, jenis) + r.t.slice(1, -1).map((_, i) => halCp(b, r.t, i + 1, panas, m)).join(""); }
+        h += halBase(b, r, panas, m, jenis) + r.t.map((x, i) => i > 0 && i < r.t.length - 1 && !x.air ? halCp(b, r.t, i, panas, m) : "").join(""); }
       isi.innerHTML = h; pesan.hidden = true;
     } catch (e) { pesan.textContent = "Renlap belum bisa dimuat: " + e.message; }
   }
