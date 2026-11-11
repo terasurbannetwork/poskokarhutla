@@ -58,6 +58,7 @@
       return [F(s.filter(x => x.status !== "belum_cukup").length), "dari " + F(s.length) + " penilaian sumber sudah punya data cukup", "perlu arsip 30 hari"]; }, "untuk staf Pusdalops", "BMKG, Centurisk97, DIBI BNPB, Logbook Pusdalops"],
     ["silang", "Kajian silang sumber", "/bnpb/silang", "logbook", async () => { const r = await ambil("/data/bnpb/beda_sumber.json"); const k = r?.ringkas; if (!k) return null;
       return [F(k.n_perlu_dicek), "dari " + F(k.n_dibandingkan) + " perbandingan resmi lawan model perlu dicek", "hipotesis"]; }, "untuk staf Pusdalops", "BMKG, Open-Meteo, DIBI BNPB, Logbook Pusdalops"],
+    ["siklus", "Siklus Bencana", "/siklus/", "siaga", async () => ["5", "alat kerja: Buku Besar Kejadian, Kaji Cepat, Jitupasna ke R3P, Renkon dan Gladi, Risiko Masa Depan"], "untuk staf"],
     ["meja", "Meja kerja", "/meja", "meja", async () => { const r = await ambil("/api/meja/ringkas"); return r?.meja ? [F(jumlah(r.meja)), "catatan lapangan"] : null; }, "untuk petugas BPBD"],
   ];
 
