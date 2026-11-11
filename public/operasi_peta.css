@@ -624,3 +624,27 @@
 #opsLaporan .ops-rp-peran{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
 #opsLaporan .ops-rp-peran .ganda{color:#b7791f}
 #opsLaporan .ops-rp-peran .ganda i{background:color-mix(in srgb,#b7791f 13%,transparent)}
+/* pil status armada siap di ringkasan */
+.ops-lap-angka em small.ok{background:color-mix(in srgb,#2e8b57 13%,transparent);color:#1f6b41}
+.ops-lap-angka em small.tdk{background:color-mix(in srgb,#c9503a 13%,transparent);color:#a63a26}
+/* isi sel ringkasan rata tengah, pil sebaris di bawah angka (pemilik 11 Nov 2026) */
+#opsLaporan .ops-lap-angka header{justify-content:center}
+#opsLaporan .ops-lap-angka>[data-rk] header::after{margin-left:6px}
+#opsLaporan .ops-ub-isi,#opsLaporan .ops-ub-isi.samping{flex-direction:column;align-items:center;text-align:center;gap:10px}
+#opsLaporan .ops-lap-angka em,#opsLaporan .ops-lap-angka em.tegak{flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:center;gap:5px}
+.ops-lap-angka em small.jatuh{background:color-mix(in srgb,#2f6fd6 8%,transparent);color:#1f56ad;box-shadow:inset 0 0 0 1px color-mix(in srgb,#2f6fd6 22%,transparent)}
+.ops-lap-angka em small.netral{background:none;color:var(--ink2);box-shadow:inset 0 0 0 1px var(--line)}
+.ops-lap-angka em small.api{background:color-mix(in srgb,#c9503a 13%,transparent);color:#a63a26}
+/* kartu base di pop-up: header navy per kartu */
+#opsLaporan .ops-rp-bgrid:not(.kecil)>article{padding:0;gap:0;overflow:hidden}
+#opsLaporan .ops-rp-bgrid:not(.kecil)>article>header{padding:12px 14px;background:#0b2545;align-items:center}
+#opsLaporan .ops-rp-bgrid:not(.kecil)>article>header b{color:#fff}
+#opsLaporan .ops-rp-bgrid:not(.kecil)>article>header small{color:#b9c9e0}
+#opsLaporan .ops-rp-bgrid:not(.kecil)>article>header .ops-kode-l{border-color:rgb(255 255 255 / .3);color:#d6e4f5}
+#opsLaporan .ops-rp-bgrid:not(.kecil) .ops-rp-bisi{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:14px 14px 0}
+#opsLaporan .ops-rp-bgrid:not(.kecil) .ops-rp-bisi>em{flex-basis:100%;margin-top:6px}
+#opsLaporan .ops-rp-siapb{display:grid;gap:5px;padding:12px 14px 0}
+#opsLaporan .ops-rp-siapb>span{display:flex;justify-content:space-between;align-items:center;font-size:.71875rem;color:var(--ink2)}
+#opsLaporan .ops-rp-siapb>span .ops-lbl{font-size:inherit;color:inherit}
+#opsLaporan .ops-rp-siapb>span b{color:var(--ink);font-variant-numeric:tabular-nums}
+#opsLaporan .ops-rp-bgrid:not(.kecil)>article>footer{margin:12px 14px 12px}
