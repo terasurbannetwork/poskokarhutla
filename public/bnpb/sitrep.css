@@ -76,3 +76,31 @@
 .sr-kanan>.bn-judul>h1{margin:0;padding:12px 16px;border-radius:14px;background:var(--db-navy,#0b2545);color:#fff;text-align:center;font-size:1.25rem}
 .sr-kanan>.bn-judul>.bn-aksi{justify-content:flex-start}
 @media print{.sr-kanan>.bn-judul{display:none}}
+/* ubin kejadian per bencana */
+.sr-ubin-grid{display:grid;grid-template-columns:repeat(var(--k,3),minmax(0,1fr));gap:12px}
+.sr-ubin{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border:1px solid var(--db-h2-garis,#dbe6f7);border-radius:12px;background:#fff;box-shadow:inset 3px 0 0 var(--w)}
+.sr-ubin>header{display:flex;align-items:center;gap:8px;min-width:0}
+.sr-ubin>header>b{flex:1;min-width:0;font-size:.875rem;font-weight:800;color:var(--db-navy,#0b2545);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sr-ubin>header .bn-pil{flex:none}
+.sr-ubin-angka{display:flex;align-items:baseline;gap:6px;margin:0}
+.sr-ubin-angka b{font:800 1.75rem/1 var(--display);color:var(--db-navy,#0b2545);font-variant-numeric:tabular-nums}
+.sr-ubin-angka small{font-size:.75rem;font-weight:600;color:var(--ink2)}
+.sr-ubin .sr-pils{gap:4px}
+.sr-ubin-nol{margin:0;font-size:.75rem;color:var(--ink2)}
+.sr-ubin.redup{opacity:.75}
+@media (max-width:1100px){.sr-ubin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.sr-ubin-grid{grid-template-columns:1fr}}
+/* angka ringkas di tiap seksi jadi ubin bergaris */
+.sr-ukurbaris{grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.sr-ukur{padding:8px 10px;border:1px solid var(--db-h2-garis,#dbe6f7);border-radius:10px;background:var(--db-isi,#fbfcfe)}
+.sr-ukur .bn-angka{font-size:1.25rem;color:var(--db-navy,#0b2545)}
+/* seksi berdampingan sama tinggi, dua kolom simetris */
+.sr-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch}
+.sr-grid>.sr-kartu{min-width:0}
+@media (max-width:1100px){.sr-grid{grid-template-columns:1fr}}
+/* menu kiri: seksi yang sedang dibaca */
+.sr-nav-b[aria-current="true"]{background:var(--db-navy,#0b2545);color:#fff}
+.sr-nav-b[aria-current="true"] svg{color:#fff}
+@media print{.sr-ubin-grid{grid-template-columns:repeat(3,1fr)}.sr-grid{display:block}.sr-grid>.sr-kartu+.sr-kartu{margin-top:8px}}
+/* panel kiri setinggi layar (tanpa ruang kosong di bawahnya), ubin terakhir mengisi sisa baris */
+@media (min-width:901px){.sr-nav{height:calc(100vh - 86px)}}

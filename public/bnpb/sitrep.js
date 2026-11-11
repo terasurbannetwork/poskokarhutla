@@ -111,42 +111,48 @@
     t.append(h("tbody", null, ...baris.map(r => h("tr", null, ...r.map((c, i) => { const n = c instanceof Node; return h("td", {"data-label": kolom[i], class: !n && c && c.n ? "n" : null}, n ? c : String(c && c.t != null ? c.t : c)); })))));
     return h("div", {class: "ad-tabel-wadah"}, t);
   }
-  const kartu = (judul, ikon, isi, sumber) => h("section", {class: "bn-kartu sr-kartu"}, h("h2", null, svg(ikon), judul), isi, sumber ? h("p", {class: "bn-label sr-sumber", teks: "Sumber: " + sumber}) : null);
+  const kartu = (judul, ikon, isi, sumber) => h("section", {class: "bn-kartu sr-kartu"}, h("h2", sumber ? {title: "Sumber: " + sumber} : null, svg(ikon), judul), isi);   // tanpa kaki sumber (AGENTS 3.5); sumber di title kepala
   const belum = teks => h("p", {class: "sr-belum"}, svg("segitiga"), teks);
   const ukuran = (label, nilai, catatan) => h("div", {class: "sr-ukur"}, h("span", {class: "bn-angka", teks: nilai}), h("span", {class: "bn-label", teks: label + (catatan ? " (" + catatan + ")" : "")}));
   const namaWil = () => prov ? PROV[prov] : "Nasional";
 
+  /* kejadian aktif sebagai ubin per bencana (sistem desain dashboard 11 Nov 2026): nama + tingkat, angka utama besar, tren dan tanggal data sebagai pil */
   function sKejadian(rows) {
-    const baris = rows.map(r => {
-      const titik = h("span", {class: "sr-nama"}); const dot = h("i", {class: "sr-titik"}); dot.style.setProperty("--w", r.b.warna || "#4f8fc4"); titik.append(dot, r.b.nama);
-      if (r.belum) return [titik, h("span", {class: "bn-label", teks: r.belum}), "–", "–", "–"];
-      const tren = h("span", {class: "sr-tren " + (r.ubah.kelas || "")}); if (r.ubah.ikon) tren.append(svg(r.ubah.ikon)); tren.append(r.ubah.t);
-      const angka = h("span", {class: "sr-angka"}, h("b", {teks: F(r.angka, r.utama?.desimal | 0)}), h("small", {teks: ada(r.angka) ? " " + (r.satuan || "") : ""}));
-      return [titik, r.tingkat ? pil(r.tingkat.nama, "perisai", r.tingkat.warna) : h("span", {class: "bn-label", teks: "tanpa tingkat"}), angka, tren, tglPendek(r.tgl)];
+    const ubin = rows.map(r => {
+      const u = h("article", {class: "sr-ubin" + (r.belum ? " redup" : "")}); u.style.setProperty("--w", r.b.warna || "#4f8fc4");
+      const kepala = h("header", null, h("i", {class: "sr-titik"}), h("b", {teks: r.b.nama})), tk = r.tingkat ? pil(r.tingkat.nama, "perisai", r.tingkat.warna) : null;
+      if (r.belum) { u.append(kepala, h("p", {class: "sr-ubin-nol", teks: r.belum})); return u; }
+      const tren = h("span", {class: "bn-pil sr-tren " + (r.ubah.kelas || "")}); if (r.ubah.ikon) tren.append(svg(r.ubah.ikon)); tren.append(r.ubah.t);
+      u.append(kepala, h("p", {class: "sr-ubin-angka"}, h("b", {teks: F(r.angka, r.utama?.desimal | 0)}), h("small", {teks: ada(r.angka) ? r.satuan || "" : ""})),
+        h("div", {class: "sr-pils"}, tk, tren, pil(tglPendek(r.tgl), "kotak")));
+      return u;
     });
-    return kartu("Kejadian aktif dan tingkat respons", "api", tabel(["Bencana", "Tingkat respons", "Angka utama", "Tren 24 jam", "Data"], baris), "laporan harian tiap bencana (hari lengkap terakhir), registry tingkat Centurisk97");
+    const n = rows.length, k = n <= 5 ? n : n === 6 ? 3 : n <= 8 ? 4 : n === 9 ? 3 : 5, sisa = n % k;
+    if (sisa && ubin.length) ubin[ubin.length - 1].style.gridColumn = `span ${k - sisa + 1}`;   // baris terakhir penuh, tanpa lubang
+    const g = h("div", {class: "sr-ubin-grid"}, ...ubin); g.style.setProperty("--k", k);
+    return kartu("Kejadian aktif", "api", g, "laporan harian tiap bencana (hari lengkap terakhir), registry tingkat Centurisk97");
   }
   function sNaik(l) {
     const isi = l.length ? tabel(["Bencana", "Wilayah", "Provinsi", "Sebelumnya", "Terbaru", "Perubahan"], l.map(x => [x.b.nama, x.nama, x.prov, {t: x.dari, n: 1}, {t: x.ke, n: 1}, pil(x.naik, "naik", "var(--c1)")]))
       : h("p", {class: "sr-belum", teks: "Tidak ada wilayah yang naik dibanding hari sebelumnya."});
-    return kartu("Wilayah yang naik", "naik", isi, "laporan harian per kab/kota, status gunung api PVMBG");
+    return kartu("Wilayah memburuk", "naik", isi, "laporan harian per kab/kota, status gunung api PVMBG");
   }
   function sNeraca(N) {
-    if (!prov) return kartu("Neraca Posko karhutla", "api", belum("Pilih satu provinsi untuk melihat neraca Posko."), "Posko karhutla, rakor dan regu lapangan");
-    if (!N) return kartu("Neraca Posko karhutla", "api", belum(ARSIP ? "Provinsi ini tidak punya neraca di arsip hari itu." : "Neraca belum aktif atau belum bisa dimuat."), "Posko karhutla");
+    if (!prov) return kartu("Neraca Posko", "api", belum("Pilih satu provinsi untuk melihat neraca Posko."), "Posko karhutla, rakor dan regu lapangan");
+    if (!N) return kartu("Neraca Posko", "api", belum(ARSIP ? "Provinsi ini tidak punya neraca di arsip hari itu." : "Neraca belum aktif atau belum bisa dimuat."), "Posko karhutla");
     const t = N.total || {}, kab = N.kab || [];
-    if (!kab.length) return kartu("Neraca Posko karhutla", "api", h("p", {class: "sr-belum", teks: "Belum ada neraca masuk untuk " + tglPendek(N.tgl) + "."}), "Posko karhutla");
+    if (!kab.length) return kartu("Neraca Posko", "api", h("p", {class: "sr-belum", teks: "Belum ada neraca masuk untuk " + tglPendek(N.tgl) + "."}), "Posko karhutla");
     const kend = (t.kendala || []).map(k => pil(N.kendala_nama?.[k] || k, "segitiga", "var(--c2)"));
     const isi = h("div", {class: "sr-isi"}, h("div", {class: "sr-ukurbaris"}, ukuran("Titik api", F(t.fs)), ukuran("Luas (ha)", F(t.luas_ha, 1)), ukuran("Dipadamkan (ha)", F(t.padam_ha, 1)), ukuran("Sisa (ha)", F(t.sisa_ha, 1)), ukuran("Personel", F(t.personel))),
       kend.length ? h("div", {class: "sr-pils"}, ...kend) : null,
       tabel(["Kab/kota", "Titik api", "Luas (ha)", "Dipadamkan (ha)", "Sisa (ha)", "Personel"], kab.map(r => [r.kab, {t: F(r.fs), n: 1}, {t: F(r.luas_ha, 1), n: 1}, {t: F(r.padam_ha, 1), n: 1}, {t: F(r.sisa_ha, 1), n: 1}, {t: F(r.personel), n: 1}])));
-    return kartu("Neraca Posko karhutla " + tglPendek(N.tgl), "api", isi, "Posko karhutla, rakor dan regu lapangan");
+    return kartu("Neraca Posko " + tglPendek(N.tgl), "api", isi, "Posko karhutla, rakor dan regu lapangan");
   }
   function sWarga(W) {
-    if (!W) return kartu("Lapor Warga 24 jam", "warga", belum("Laporan warga belum bisa dimuat."), "Lapor Warga");
+    if (!W) return kartu("Laporan warga 24 jam", "warga", belum("Laporan warga belum bisa dimuat."), "Lapor Warga");
     const isi = h("div", {class: "sr-isi"}, h("div", {class: "sr-ukurbaris"}, ukuran("Laporan aktif 24 jam", F(W.total) + (W.terpotong ? "+" : "")), ukuran("Dibenarkan warga lain", F(W.per.reduce((a, x) => a + x.benar, 0)))),
       W.per.length ? tabel(["Jenis", "Laporan", "Dibenarkan warga"], W.per.map(x => [JENIS_WARGA(x.jenis), {t: F(x.n), n: 1}, {t: F(x.benar), n: 1}])) : null);
-    return kartu("Lapor Warga 24 jam", "warga", isi, "Lapor Warga" + (prov ? ", seluruh Indonesia (laporan belum dipilah per provinsi)" : ""));
+    return kartu("Laporan warga 24 jam", "warga", isi, "Lapor Warga" + (prov ? ", seluruh Indonesia (laporan belum dipilah per provinsi)" : ""));
   }
   function sRelawan(R) {
     if (!R) return kartu("Relawan", "warga", belum("Relawan belum aktif."), "Relawan Centurisk97");
@@ -164,23 +170,23 @@
     return kartu("Logistik dan kaji cepat", "kotak", tabel(["Meja", "Catatan", "Perlu perhatian", "Status"], baris), "Meja Kerja BPBD (angka per provinsi)");
   }
   function sAlun(A) {
-    if (!A) return kartu("Alun-alun: butuh bantuan", "pesan", belum("Alun-alun belum aktif."), "Alun-alun");
+    if (!A) return kartu("Permintaan bantuan", "pesan", belum("Alun-alun belum aktif."), "Alun-alun");
     const isi = h("div", {class: "sr-isi"}, h("div", {class: "sr-ukurbaris"}, ukuran("Terbuka", F(A.terbuka) + (A.lebih ? "+" : "")), ukuran("Ditangani", F(A.ditangani))),
       A.daftar.length ? tabel(["Permintaan", "Wilayah", "Sejak"], A.daftar.map(u => [u.judul, [u.kab, u.prov_nama].filter(Boolean).join(", "), wib(u.dibuat, {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false}).replace(".", ":")])) : h("p", {class: "sr-belum", teks: "Tidak ada permintaan bantuan terbuka."}));
-    return kartu("Alun-alun: butuh bantuan", "pesan", isi, "Alun-alun");
+    return kartu("Permintaan bantuan", "pesan", isi, "Alun-alun");
   }
 
   const hitungPil = (o, ikon, warna) => { const e = Object.entries(o || {}).sort((a, b) => b[1] - a[1]); return e.length ? h("span", {class: "sr-pils"}, ...e.map(([k, n]) => pil(`${String(k).replace(/_/g, " ")} ${F(n)}`, ikon, warna))) : "–"; };
   function sLogbook(L) {
     const SUMBER = "logbook petugas lapangan /petugas (agregat, tanpa nama)";
-    if (!L || !Array.isArray(L.tugas)) return kartu("Logbook petugas lapangan", "alat", belum(ARSIP ? "Arsip hari itu tidak memuat logbook petugas." : "Logbook petugas tampil pada arsip sitrep harian pukul 07.00 WIB."), SUMBER);
+    if (!L || !Array.isArray(L.tugas)) return kartu("Logbook petugas", "alat", belum(ARSIP ? "Arsip hari itu tidak memuat logbook petugas." : "Logbook petugas tampil pada arsip sitrep harian pukul 07.00 WIB."), SUMBER);
     const bagian = (tgl, nama) => {
       const t = L.tugas.filter(x => x.tanggal === tgl);
       return [h("p", {class: "bn-label", teks: nama + ", " + tglPendek(tgl)}),
         t.length ? tabel(["Tugas", "Terisi dari anggota", "Kegiatan", "Kendala"], t.map(x => [x.judul, {t: `${F(x.terisi)} dari ${F(x.anggota)}`, n: 1}, hitungPil(x.kegiatan, null, "var(--c5)"), hitungPil(x.kendala, "segitiga", "var(--c2)")]))
           : h("p", {class: "sr-belum", teks: "Belum ada logbook terisi."})];
     };
-    return kartu("Logbook petugas lapangan", "alat", h("div", {class: "sr-isi"}, ...bagian(L.hari, "Hari ini"), ...bagian(L.kemarin, "Kemarin")), SUMBER);
+    return kartu("Logbook petugas", "alat", h("div", {class: "sr-isi"}, ...bagian(L.hari, "Hari ini"), ...bagian(L.kemarin, "Kemarin")), SUMBER);
   }
 
   /* ---- teks WhatsApp dari model yang sama ---- */
@@ -215,9 +221,11 @@
     const nav = $("srNav");
     if (nav) {
       const seksi = [...lap.querySelectorAll(".sr-kartu > h2")].map((j, i) => { const k = j.parentElement; k.id ||= "sr-s" + i; const b = h("button", {type: "button", class: "sr-nav-b"});
-        const ik = j.querySelector("svg"); if (ik) b.append(ik.cloneNode(true)); b.append(j.textContent.trim()); b.addEventListener("click", () => k.scrollIntoView({behavior: "smooth", block: "start"})); return b; });
+        const ik = j.querySelector("svg"); if (ik) b.append(ik.cloneNode(true)); b.append(j.textContent.trim()); b.dataset.ke = k.id; b.addEventListener("click", () => k.scrollIntoView({behavior: "smooth", block: "start"})); return b; });
+      const io = new IntersectionObserver(es => { for (const e of es) if (e.isIntersecting) seksi.forEach(b => b.setAttribute("aria-current", String(b.dataset.ke === e.target.id))); }, {rootMargin: "-20% 0px -70% 0px"});
+      lap.querySelectorAll(".sr-kartu").forEach(k => io.observe(k));
       const kaki = h("div", {class: "sr-nav-kaki"}, h("p", {class: "sr-nav-kk", teks: "Pembaruan data"}), ...[...kop.querySelectorAll(".bn-pil")].map(p => h("div", {class: "sr-nav-pb"}, p)));
-      nav.replaceChildren(h("div", {class: "sr-nav-id"}, ...kop.children[0] ? [kop.children[0], kop.children[1]] : []), h("nav", {class: "sr-nav-isi"}, h("p", {class: "sr-nav-kk", teks: "Seksi"}), ...seksi), kaki);
+      nav.replaceChildren(h("div", {class: "sr-nav-id"}, ...kop.children[0] ? [kop.children[0], kop.children[1]] : []), h("nav", {class: "sr-nav-isi"}, h("p", {class: "sr-nav-kk", teks: "Isi laporan"}), ...seksi), kaki);
     }
     document.title = `Laporan situasi ${namaWil()}, Centurisk97`;
   }
