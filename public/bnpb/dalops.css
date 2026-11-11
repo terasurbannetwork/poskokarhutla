@@ -502,3 +502,47 @@
 .dl-wrap.db-a .db-kanan>.dl-panel{min-width:0}
 .mp-slot .dl-seg-a{display:flex;flex-direction:column;gap:1px}
 .dl-wrap.dl-dalam{max-width:none}
+
+/* pil jenis bencana di dalam peta (pemilik 11 Nov 2026 "pilihan bencananya ada di dalam maps"), bentuk sama dengan saring peta */
+.dl-jenis-peta{position:absolute;top:10px;left:10px;z-index:3;display:flex;flex-wrap:wrap;gap:2px;max-width:calc(100% - 520px);padding:2px;border-radius:8px;background:#fff;box-shadow:0 0 0 2px rgb(0 0 0 / .1)}
+.dl-jenis-peta button{display:inline-flex;align-items:center;gap:5px;padding:5px 10px 5px 8px;border:0;border-radius:6px;background:none;color:#0b2545;font:600 .75rem var(--font);cursor:pointer;white-space:nowrap}
+.dl-jenis-peta button:hover,.dl-jenis-peta button:focus-visible{background:#eef1f6}
+.dl-jenis-peta button[aria-pressed="true"]{background:#0b2545;color:#fff}
+.dl-jenis-peta svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dl-jenis-atas{margin-bottom:12px}.dl-jenis-atas>.dl-jenis-peta{position:static;max-width:none}
+/* peta lebih tinggi; ringkasan angka sebaris di dasar peta */
+.dl-dalam .dl-peta{height:620px}
+/* ringkasan di dasar peta = satu bilah putih bersekat (pemilik 11 Nov 2026 "dibagusin"), bukan enam kartu terpisah */
+.dl-peta .dl-peta-ubin{position:absolute;left:12px;right:12px;bottom:12px;z-index:2;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0;margin:0;
+  border-radius:14px;background:rgb(255 255 255 / .97);box-shadow:0 6px 22px rgb(11 37 69 / .18);overflow:hidden}
+.dl-peta .dl-peta-ubin.k4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.dl-peta .dl-peta-ubin .db-ubin{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"ik nama" "ik angka";align-items:center;column-gap:10px;row-gap:0;padding:10px 14px;border:0;border-radius:0;background:none;box-shadow:none;text-align:left}
+.dl-peta .dl-peta-ubin .db-ubin+.db-ubin{border-left:1px solid var(--db-h2-garis,#dbe5f3)}
+.dl-peta .dl-peta-ubin .db-ubin>header{display:contents}
+.dl-peta .dl-peta-ubin .db-ubin>header>i{grid-area:ik;width:34px;height:34px;border-radius:10px}
+.dl-peta .dl-peta-ubin .db-ubin>header>i svg{width:16px;height:16px}
+.dl-peta .dl-peta-ubin .db-ubin>header>span{grid-area:nama;font-size:.75rem;font-weight:700;line-height:1.2;color:var(--ink2)}
+.dl-peta .dl-peta-ubin .db-ubin>b{grid-area:angka;display:flex;align-items:baseline;gap:6px;font-size:1.375rem;line-height:1.15}
+.dl-peta .dl-peta-ubin .db-ubin>small{display:none}
+.dl-peta:has(.dl-peta-ubin) .maplibregl-ctrl-bottom-left,.dl-peta:has(.dl-peta-ubin) .maplibregl-ctrl-bottom-right{bottom:80px}
+/* pemilih periode di bawah kepala halaman (rujukan /operasi) */
+.dl-periode{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px;margin:0 0 14px;padding:4px;border:1px solid var(--db-h2-garis,#dbe5f3);border-radius:999px;background:var(--db-h2,#f3f7fd)}
+.dl-periode[hidden]{display:none}
+.dl-periode button{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:8px 12px;border:0;border-radius:999px;background:none;color:#0b2545;font:700 .8125rem var(--font);cursor:pointer}
+.dl-periode button:hover{background:#fff}
+.dl-periode button[aria-pressed="true"]{background:#0b2545;color:#fff}
+.dl-periode svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:900px){.dl-jenis-peta{position:static;max-width:none;margin-bottom:8px}.dl-peta .dl-peta-ubin{position:static;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:8px}.dl-dalam .dl-peta{height:auto;min-height:420px}}
+/* satu baris kendali di puncak peta: jenis bencana, saring status, buka semua (pemilik 11 Nov 2026) */
+.dl-dalam .dl-peta .dl-peta-alat{left:10px;right:50px;flex-wrap:wrap;justify-content:flex-start;align-items:flex-start;gap:6px}
+.dl-dalam .dl-peta .dl-peta-alat>.dl-jenis-peta{position:static;max-width:none}
+.dl-dalam .dl-peta .dl-peta-alat>.dl-semua-peta{margin-left:auto}
+/* legenda di bawah peta, tidak menimpa ubin */
+.dl-peta+.dl-legenda-peta{position:static;transform:none;margin:10px auto 0;width:max-content;box-shadow:none;border:1px solid var(--line)}
+.dl-dalam .dl-peta .dl-peta-alat>.dl-jenis-peta{flex-wrap:nowrap}
+.dl-dalam .dl-peta .dl-peta-alat>.dl-jenis-peta button{padding:5px 8px 5px 7px}
+/* peta gunung api: warna level pada saring dan legenda (sama dengan public/gunungapi/app.js WARNA_LV) */
+.dl-ga-s4 svg{color:#d64545}.dl-ga-s3 svg{color:#e8743b}.dl-ga-s2 svg{color:#c99a00}.dl-ga-s1 svg{color:#8a94a3}
+.dl-saring-btn.dl-ga-s4[aria-pressed="true"] svg,.dl-saring-btn.dl-ga-s3[aria-pressed="true"] svg,.dl-saring-btn.dl-ga-s2[aria-pressed="true"] svg,.dl-saring-btn.dl-ga-s1[aria-pressed="true"] svg{color:#fff}
+.dl-leg.dl-ga-leg4::before{background:#d64545;border-radius:50%}.dl-leg.dl-ga-leg3::before{background:#e8743b;border-radius:50%}
+.dl-leg.dl-ga-leg2::before{background:#e0b400;border-radius:50%}.dl-leg.dl-ga-leg1::before{background:#9aa4b2;border-radius:50%}

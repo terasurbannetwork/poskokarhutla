@@ -196,7 +196,7 @@
       const th = e.target.closest(".ops-tw thead th"); if (th && !th.closest("table").querySelector("tr.ops-grup")) return urutTabel(th);
       const op = e.target.closest("tr[data-op]"); if (op) return bukaOperator(op.dataset.op);
       const ro = e.target.closest("tr[data-reg-omc]"); if (ro) return bukaArmada(ro.dataset.regOmc);
-      const pb = e.target.closest("[data-pb]"); if (pb) return bukaBasePop(pb.dataset.pb);
+      const pb = e.target.closest("[data-pb]"); if (pb && !e.target.closest("[data-unduh], .ops-rlp")) return bukaBasePop(pb.dataset.pb);   // ikon unduh di kartu base tidak membuka pop-up
       const nl = e.target.closest("[data-nilai]"); if (nl) return bukaNilai(nl.dataset.nilai);
       const ti = e.target.closest("[data-tindak]"); if (ti) { const [j, v] = ti.dataset.tindak.split(":");
         if (j === "pb") return bukaBasePop(v); if (j === "rk") return bukaRingkas(v); if (j === "seksi") return pindahSeksi(v);
@@ -354,6 +354,11 @@
   /* renlap terbaru (versi terakhir) satu base, dan unduhan KML-nya: titik base, target bernomor sesuai urut, garis rute base -> target */
   const renlapBase = (D, id) => (D.peta.renlap || []).filter(r => r.base_id === id && (r.target || []).length).slice(-1)[0] || null;
   const xml = t => String(t ?? "").replace(/[<>&"']/g, c => ({"<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;"})[c]);
+  /* tombol Renlap siap cetak di samping KML/GPX di semua tempat unduh (pemilik 11 Nov 2026 "agar ada download renlap") */
+  const tombolRenlap = (id, r = {}) => `<a class="ops-kml ops-rlp" href="/renlap-cetak?base=${encodeURIComponent(id)}${r.tanggal ? `&tgl=${encodeURIComponent(r.tanggal)}` : ""}${r.versi ? `&versi=${encodeURIComponent(r.versi)}` : ""}" target="_blank" rel="noopener" title="Renlap rute udara siap cetak (PDF)">${lbl("catat", "Renlap")}</a>`;
+  /* versi ikon saja untuk baris Renlap kartu base (pemilik 11 Nov 2026 "icon download untuk waypoint dan renlap") */
+  const tombolIkonRenlap = (id, r = {}) => tombolRenlap(id, r).replace(/(<svg[^>]*>.*?<\/svg>)[^<]*<\/span>/, "$1</span>").replace('title="', 'aria-label="Renlap siap cetak" title="') +
+    ["kml", "gpx"].map(f => `<button type="button" class="ops-kml ops-ik" data-unduh="${f}" data-base="${esc(id)}" title="Unduh waypoint ${f.toUpperCase()}" aria-label="Unduh waypoint ${f.toUpperCase()}">${lbl("unduh", f.toUpperCase())}</button>`).join("");
   /* KML (Google Earth, Avenza) dan GPX (Garmin, aplikasi GPS penerbangan): titik base, target bernomor sesuai urut, rute base -> target */
   function unduhRute(D, id, f) {
     const b = (D.peta.base || []).find(x => x.id === id), r = renlapBase(D, id); if (!b || !r) return;
@@ -418,7 +423,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
           <li><span>${lbl("siap", "Siap")}</span><b>${x.lapor ? pv(x.siap === x.a.length ? "ok" : "awas", `${fmt(x.siap)}/${fmt(x.a.length)} siap`) : pv("awas", "Belum lapor")}</b>${x.lapor ? bar(x.siap, x.a.length, "ok") : ""}</li>
           <li><span>${lbl("vis", "Cuaca terbang")}</span><b>${u.pilLayak(x.lay)}</b></li>
           <li><span>${lbl("api", "Api terjangkau")}</span><b>${x.dk.length ? (x.p3 ? pv("bahaya", `${fmt(x.p3)} prioritas dari ${fmt(x.dk.length)}`) : pv("awas", `${fmt(x.dk.length)} cluster`)) : pv("ok", "Tidak ada")}</b></li>
-          <li><span>${lbl("sortie", "Renlap")}</span><b>${x.tg.length ? pv(x.datang === x.tg.length ? "ok" : "awas", `${fmt(x.datang)}/${fmt(x.tg.length)} didatangi`) : pv("netral", "Belum ada")}</b>${x.tg.length && x.datang ? bar(x.datang, x.tg.length, "renlap") : ""}</li>
+          <li><span>${lbl("sortie", "Renlap")}</span><b>${x.tg.length ? `<span class="ops-pb-ud">${tombolIkonRenlap(x.b.id, x.r)}</span>` : ""}${x.tg.length ? pv(x.datang === x.tg.length ? "ok" : "awas", `${fmt(x.datang)}/${fmt(x.tg.length)} didatangi`) : pv("netral", "Belum ada")}</b>${x.tg.length && x.datang ? bar(x.datang, x.tg.length, "renlap") : ""}</li>
           <li><span>${lbl("air", D.pm === "hari" ? "Sortie hari ini" : "Sortie periode")}</span><b>${x.k.sortie ? pv("ok", `${fmt(x.k.sortie)} sortie${x.k.wb ? `, ${fmt(x.k.wb)} WB` : ""}`) : pv("netral", "Belum ada")}</b></li>
         </ul></article>`; };   // tanpa kaki "Rincian ›": kartu sendiri bisa diklik (pemilik 11 Nov 2026)
     /* dikelompokkan per pulau (pemilik 11 Nov 2026), urutan dalam pulau tetap: api paling genting dulu */
@@ -433,7 +438,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
       : `<p class="ops-kosong">Tidak ada cluster titik panas aktif dalam jangkauan ${fmt(Math.round(u.radiusBase(b)))} km.</p>`;
     const renlap = x.tg.length ? `<ol class="ops-rl-grid">${x.tg.map((g, i) => { const d = x.aksi.some(a => a.lat != null && km(g.lat, g.lon, a.lat, a.lon) <= RENLAP_KM);
         return `<li class="${d ? "datang" : ""}"><span class="ops-rl-no">${fmt(g.urut ?? i + 1)}</span><div><p><b>${esc(g.lokasi || g.nama || "Target")}</b><a href="${u.gmaps(g.lat, g.lon)}" target="_blank" rel="noopener noreferrer">${lbl("base", "Peta")}</a></p><footer>${d ? `<span class="pill l0">Didatangi</span>` : `<span class="ops-rl-belum">Belum didatangi</span>`}</footer></div></li>`; }).join("")}</ol>
-        <p class="ops-rp-unduh">${["kml", "gpx"].map(f => `<button type="button" class="ops-kml" data-unduh="${f}" data-base="${esc(b.id)}">${lbl("unduh", f.toUpperCase())}</button>`).join("")}</p>` : `<p class="ops-kosong">Belum ada renlap untuk base ini.</p>`;
+        <p class="ops-rp-unduh">${tombolRenlap(b.id, renlapBase(D, b.id) || {})}${["kml", "gpx"].map(f => `<button type="button" class="ops-kml" data-unduh="${f}" data-base="${esc(b.id)}">${lbl("unduh", f.toUpperCase())}</button>`).join("")}</p>` : `<p class="ops-kosong">Belum ada renlap untuk base ini.</p>`;
     const aksi = x.aksi.length ? `<ul class="ops-rp-base">${x.aksi.map(a => { const h = a.guna === "wb" ? (u.HASIL[a.hasil] || u.HASIL.tak_dinilai) : null;
         return `<li><div><b>${esc(a.lokasi || "Lokasi tidak tercatat")}</b><small>${esc(a.registrasi)}, ${esc(tglPendek(a.tanggal))} ${u.jamWIB(a.jam_utc)} WIB${a.drop ? `, ${fmt(a.drop)} jatuhan` : ""}</small></div><span class="ops-lm-misi" data-g="${esc(a.guna || "")}">${esc(MISI[a.guna] || a.jenis || "Misi")}</span>${h ? `<span class="pill ${h[1]}">${h[0]}</span>` : ""}</li>`; }).join("")}</ul>` : `<p class="ops-kosong">Belum ada sortie pada periode ini.</p>`;
     bukaDialog(`<article class="ex ex-std ops-pa ops-rp"><header class="ops-rp-hd"><i>${lbl("base", "")}</i><div><h3>${esc(b.nama.split(" / ")[0])}</h3><small>${lbl("base", `${esc(u.PROV_PDK[b.prov] || b.prov || "")}, ${esc(b.icao || b.id)}`)}</small><small>${lbl("api", LVK[x.lv])}</small></div>
@@ -720,7 +725,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
       return {p3: p3 || 0, lv, id: b.id, tanda, pulau: PULAU[String(b.prov || "")[0]] || "Lainnya", nAr: a.length, rinci: rinciArmada(D, a), sel: [kiri(`<span class="ops-bb-nama"><svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><b>${esc(b.nama.split(" / ")[0])}</b></span>`), `<td>${b.icao ? `<span class="ops-kode-l">${esc(b.icao)}</span>` : "–"}</td>`, `<td>${esc(u.PROV_PDK[b.prov] || b.prov || "–")}</td>`,
         sel(nol(gg.wb)), sel(nol(gg.patroli)), sel(nol(gg.omc)), sel(`${lapor ? fmt(a.filter(x => SIAP.includes(x.status)).length) : "–"}/${fmt(a.length)}`), sel(k.sortie ? `<span class="ops-keg"><b>${fmt(k.sortie)}</b><small>${[k.wb && `${fmt(k.wb)} WB`, k.dinilai && `padam ${u.persen(k.persen)}`].filter(Boolean).join(", ") || "patroli"}</small></span>` : "–"),
         sel(p3 == null ? "–" : `<b>${nol(p3)}</b>`), `<td>${lv == null ? "–" : lv ? `<span class="pill l${lv}">${u.LV[lv]}</span>` : `<span class="pill l0">Aman</span>`}</td>`, `<td><span class="ops-layak">${u.pilLayak(lay)}${labelLayak(lay)}</span></td>`, (() => { const r = renlapBase(D, b.id), n = r?.target?.length || 0;
-          return `<td>${n ? `<span class="ops-rl" title="${fmt(n)} target renlap"><b>${fmt(n)}</b>${["kml", "gpx"].map(f => `<button type="button" class="ops-kml" data-unduh="${f}" data-base="${esc(b.id)}" title="Unduh waypoint renlap ${esc(r.versi || "")} (${f.toUpperCase()}) untuk GPS">${lbl("unduh", f.toUpperCase())}</button>`).join("")}</span>` : `<span class="ops-redup-t">Belum ada</span>`}</td>`; })()]}; }).sort((x, y) => y.p3 - x.p3);
+          return `<td>${n ? `<span class="ops-rl" title="${fmt(n)} target renlap"><b>${fmt(n)}</b>${tombolRenlap(b.id, r)}${["kml", "gpx"].map(f => `<button type="button" class="ops-kml" data-unduh="${f}" data-base="${esc(b.id)}" title="Unduh waypoint renlap ${esc(r.versi || "")} (${f.toUpperCase()}) untuk GPS">${lbl("unduh", f.toUpperCase())}</button>`).join("")}</span>` : `<span class="ops-redup-t">Belum ada</span>`}</td>`; })()]}; }).sort((x, y) => y.p3 - x.p3);
     const kepala = ["Base", "Kode|Kode ICAO bandara base", "Prov", "#WB|Armada berkemampuan water bombing (armada Patroli + WB ikut dihitung di sini dan di PTR)", "#PTR|Armada berkemampuan patroli (armada Patroli + WB ikut dihitung di sini dan di WB)", "#OMC", "#Siap|Armada siap dari laporan gelar armada WA; – = belum lapor", "#Kegiatan|Sortie hari itu; di bawahnya aksi water bombing dan persen padam (tidak ada titik panas satelit dalam 1 km selama 24 jam sesudah WB)",
       `#Cluster prioritas|Cluster prioritas aktif dalam jangkauan jelajah armada (bawaan ${fmt(u.RADIUS_KM)} km), kondisi kini`,
       `Status api|Level cluster tertinggi dalam jangkauan jelajah armada: ${u.LV.slice(1).join(", ")}; Aman = tidak ada cluster aktif`, "Kelayakan terbang|METAR terdekat ≤ 60 km, kondisi kini; basi bila lebih dari 3 jam", "Renlap|Rencana lapangan terbaru base ini; KML = waypoint target berurutan dari base, untuk GPS"];
@@ -767,7 +772,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
       return `<details class="ops-rl-blok"><summary><svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
         <span class="ops-rl-nama"><b>${esc(namaBase(D, r.base_id))}</b><small>Renlap ${esc(r.versi || "")}</small></span>
         <span class="ops-rl-prog"><span><b>${fmt(n)}</b> dari ${fmt(tg.length)} didatangi</span><i style="--p:${(pct * 100).toFixed(0)}%"></i></span>
-        <span class="ops-rl-ud">${["kml", "gpx"].map(f => `<button type="button" class="ops-kml" data-unduh="${f}" data-base="${esc(r.base_id)}" title="Unduh waypoint renlap (${f.toUpperCase()})">${lbl("unduh", f.toUpperCase())}</button>`).join("")}</span></summary>
+        <span class="ops-rl-ud">${tombolRenlap(r.base_id, r)}${["kml", "gpx"].map(f => `<button type="button" class="ops-kml" data-unduh="${f}" data-base="${esc(r.base_id)}" title="Unduh waypoint renlap (${f.toUpperCase()})">${lbl("unduh", f.toUpperCase())}</button>`).join("")}</span></summary>
         <ol class="ops-rl-grid">${kartu}</ol></details>`; }).join("");
     void blok;
     /* kartu per base, renlap terbaru saja, dikelompokkan per pulau seperti papan base (pemilik 11 Nov 2026 "jelek banget" untuk daftar baris) */

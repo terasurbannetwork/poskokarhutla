@@ -125,7 +125,7 @@
     const s = h("section", {class: "ex ex-std", id: J.k === "banjir" || id.includes("-") ? id : J.k + "-" + id});   // id berawalan jenis (karhutla-*) dipakai apa adanya   // banjir tetap id lama (tautan #peta dsb.)
     /* kepala kartu = nama seksi berikon; kalimat temuan pindah ke title dan ubin Angka utama (AGENTS 3.5 pembaruan 11 Nov 2026) */
     const kal = h("span", null, ...[].concat(judul));
-    s.append(h("header", {class: "ex-hd"}, h("span", {class: "ex-ey"}, ikon(J.ik || "banjir"), J.kata ? J.kata[0].toUpperCase() + J.kata.slice(1) : "Dalops"),
+    s.append(h("header", {class: "ex-hd"}, h("span", {class: "ex-ey", hidden: true}, ikon(J.ik || "banjir"), J.kata ? J.kata[0].toUpperCase() + J.kata.slice(1) : "Dalops"),
         h("div", {class: "ex-jd"}, h("h3", {title: kal.textContent}, ikon(ik), ey), isi.some(x => x?.querySelector?.(".dl-grup")) ? bukaSemua(s) : null)),
       h("div", {class: "ex-bd"}, ...isi.filter(Boolean)));
     return s;
@@ -174,8 +174,14 @@
       "icon-size": ["interpolate", ["linear"], ["zoom"], 4, .75, 8, 1.1], "icon-allow-overlap": true, "symbol-sort-key": ["-", 0, ["get", "lv"]]}});
     const pop = new maplibregl.Popup({closeButton: false, closeOnClick: false, offset: 14, className: "dl-popup"});
     peta.on("mouseenter", "peringatan", e => { const p = e.features[0].properties; peta.getCanvas().style.cursor = "default";
-      pop.setLngLat(e.features[0].geometry.coordinates).setDOMContent(h("div", {class: "dl-pop dl-pop-awas"}, h("div", {class: "dl-pop-kepala"}, lambangKab(p),
-        h("div", null, h("b", {class: "dl-tip-nama", teks: p.nama}), h("div", {class: "dl-pop-label"}, status(p.lv), p.hari ? label("Mulai " + H.tglPendek(p.hari), "kalender", "abu") : null))))).addTo(peta); });
+      /* pemilik 11 Nov 2026 "bagusin": kepala biru muda (lambang, nama, provinsi), isi baris berlabel rata kolom */
+      const lama = p.hari ? Math.max(1, Math.round((Date.now() - Date.parse(p.hari + "T00:00:00+07:00")) / 864e5) + 1) : 0;
+      const baris = (t, ...v) => h("div", {class: "dl-aw-baris"}, h("span", {teks: t}), h("div", null, ...v));
+      pop.setLngLat(e.features[0].geometry.coordinates).setDOMContent(h("div", {class: "dl-pop dl-pop-awas"},
+        h("div", {class: "dl-aw-kepala"}, lambangKab(p), h("div", null, h("b", {class: "dl-tip-nama", teks: p.nama}), h("small", {teks: namaProv(p.prov_kode)}))),
+        h("div", {class: "dl-aw-isi"}, baris("Prakiraan", status(p.lv)),
+          p.hari ? baris("Mulai", h("b", {teks: H.tglPendek(p.hari)})) : null,
+          lama ? baris("Lama", h("b", {teks: lama + " hari"})) : null))).addTo(peta); });
     peta.on("mouseleave", "peringatan", () => { pop.remove(); peta.getCanvas().style.cursor = ""; });
   }
   async function gambarPeta(wadah, pekan, kontrol, sk = {}, hariSt = [], Jx = J) {
@@ -340,7 +346,7 @@
   const tombolPetaBanjir = x => h("a", {class: "dl-ikon", href: "/banjir/peta?wil=" + encodeURIComponent(x.kab_kode), target: "_blank", rel: "noopener", "aria-label": "Buka " + x.nama + " di peta banjir", "data-tip": "<b>Peta banjir</b><br>status per kecamatan"}, ikon("banjir"));
   const chipSurut = r => h("div", {class: "dl-chips"}, r.nBelum ? label(F(r.nBelum) + " " + (J.pra === false ? J.tidak_k : "belum"), J.ik, "merah") : null, r.nKab - r.nBelum ? label(F(r.nKab - r.nBelum) + " " + (J.pra === false ? J.ya_k : "sudah"), "ok", "biru") : null);
 
-  function bagianWilayah(pekan, prov, hari, sk = {}, hariSt = []) {
+  function bagianWilayah(pekan, prov, hari, sk = {}, hariSt = [], ubin = null) {
     const tbodies = prov.map((r, i) => {
       const baris = [];
       for (const x of r.baris.slice().sort((a, b) => a.surut - b.surut || a.nama.localeCompare(b.nama))) {
@@ -402,7 +408,7 @@
     requestAnimationFrame(() => {   // MapLibre butuh wadah yang sudah terpasang dan berukuran
       const semua = wadahPeta.closest("section")?.querySelector(".ex-hd .dl-semua");
       semua?.remove(); semua?.classList.add("dl-semua-peta");
-      gambarPeta(wadahPeta, pekan, semua, sk, hariSt, Jk);
+      gambarPeta(wadahPeta, pekan, semua, sk, hariSt, Jk).then(() => { if (ubin) { ubin.classList.add("dl-peta-ubin"); wadahPeta.append(ubin); } });   // ringkasan di dalam peta (pemilik 11 Nov 2026)
     });
     const nBelum = jml("nBelum"), nKab = jml("nKab"), mdTot = pekan.reduce((a, x) => a + (x.md || 0), 0);
     return bagian("peta", J.ik, `Kondisi ${J.kata} terkini`,
@@ -556,19 +562,25 @@
   function angkaUtama(pekan, prov, sk, sudah) {
     const jml = f => pekan.some(x => x[f] != null) ? pekan.reduce((a, x) => a + (x[f] || 0), 0) : null, belum = pekan.filter(x => !x.surut).length;
     const siaga = Object.entries(sk).filter(([k, x]) => !sudah.has(k) && Math.max(0, ...x.b.map(l => l ?? 0)) >= 2).length;
-    const ubin = (ik, nama, nilai, sub, kelas = "") => h("div", {class: "db-ubin " + kelas}, h("header", null, h("i", null, ikon(ik)), h("span", {teks: nama})), h("b", {teks: nilai}), sub ? h("small", {teks: sub}) : null);
+    const ubin = (ik, nama, nilai, sub, kelas = "") => h("div", {class: "db-ubin " + kelas, title: sub ? `${nama}: ${nilai} ${sub}` : nama}, h("header", null, h("i", null, ikon(ik)), h("span", {teks: nama})), h("b", {teks: nilai}), sub ? h("small", {teks: sub}) : null);
     return h("div", {class: "db-ubin-grid"},
-      ubin(J.ik || "banjir", "Kab/kota terdampak", F(pekan.length), "sepekan terakhir"),
+      ubin(J.ik || "banjir", "Kab/kota terdampak", F(pekan.length), kataPeriode()),
       ubin("peringatan", J.tidak || "Belum selesai", F(belum), pekan.length ? `dari ${F(pekan.length)} kab/kota` : "–", belum ? "merah" : ""),
       ubin("personel", "Jiwa terdampak", jml("jiwa") == null ? "–" : F(jml("jiwa")), "laporan Pusdalops"),
       ubin("personel", "Mengungsi", jml("mengungsi") == null ? "–" : F(jml("mengungsi")), "jiwa"),
-      ubin("pin", "Provinsi", F(prov.length), "dengan kejadian sepekan"),
+      ubin("pin", "Provinsi", F(prov.length), "dengan kejadian"),
       ubin("peringatan", "Prakiraan Siaga/Awas", F(siaga), "kab/kota belum terdampak", siaga ? "oranye" : ""));
   }
+  /* pemilih periode di atas (pemilik 11 Nov 2026, rujukan /operasi): jendela hari logbook untuk kejadian, ubin, peta, dan tabel */
+  const PERIODE = [[1, "Hari ini", "kalender"], [3, "3 hari", "kalender"], [7, "Sepekan", "kalender"], [30, "30 hari", "kalender"]];
+  let periode = 7;
+  const kataPeriode = () => ({1: "hari ini", 3: "3 hari terakhir", 7: "sepekan terakhir", 30: "30 hari terakhir"})[periode];
+  const dataTerakhir = {};
   function render(d, st, posko, jenis = "banjir") {
+    dataTerakhir[jenis] = [d, st, posko];
     J = JN[jenis];
     window.MenuPusdalops?.kaki?.([["#2e8b57", "Logbook Pusdalops", H.tglPendek(d.hari)], ["#2f6fd6", "Dimuat", new Date().toLocaleTimeString("id-ID", {hour: "2-digit", minute: "2-digit"}).replace(".", ":") + " WIB"]]);
-    const hari = d.hari, kel = H.kelompok(d.kejadian, hari), pekan = H.sepekan(kel, hari), prov = H.perProv(pekan);
+    const hari = d.hari, kel = H.kelompok(d.kejadian, hari), pekan = kel.filter(x => H.selisih(hari, x.terakhir) < periode), prov = H.perProv(pekan);
     const tanya = H.perluDitanya(kel, hari, H.KATA[J.k]);
     const sk = st ? H.statusKab(st, J.lv) : {}, sudah = new Set(pekan.map(x => x.kab_kode)), hariSt = st?.hari || [];
 
@@ -577,8 +589,7 @@
     if (st && adaPra) bagianPrakiraan(sk, sudah, hariSt, wadahPra, 2, pekan);
 
     panel[jenis].replaceChildren(...[   // replaceChildren bawaan menulis 'null': saring dulu
-      angkaUtama(pekan, prov, sk, sudah),
-      bagianWilayah(pekan, prov, hari, sk, hariSt),
+      bagianWilayah(pekan, prov, hari, sk, hariSt, angkaUtama(pekan, prov, sk, sudah)),
       bagianLuar(kel, hari),
       bagianTanya(tanya, sk, st, hari),
       !adaPra ? null : st ? bagian("prakiraan", "peringatan", "Peringatan dini", siagaJudul(H.siaga(sk, sudah, 2)), wadahPra, J.tinggi ? bagianArti() : null)
@@ -617,6 +628,7 @@
   const panel = Object.fromEntries(TAB.map(([k]) => [k, h("div", {class: "dl-panel", id: "tab-" + k, role: "tabpanel", hidden: true})]));
   const sudahBuka = new Set();
   let aktif = "banjir";   // tab yang tampil: J dikembalikan ke jenis ini sesudah tab lain selesai dimuat di latar
+  let dlSegar = null;   // panel kiri dan pil jenis di peta ikut tab aktif
   function pilihTab(k, tombol) {
     tombol.forEach(b => { b.setAttribute("aria-selected", String(b.dataset.tab === k)); b.setAttribute("aria-current", String(b.dataset.tab === k)); });
     const jd = document.getElementById("dlJudul"); if (jd) jd.textContent = TAB.find(x => x[0] === k)?.[1] || "Pantau Dalops";
@@ -627,6 +639,7 @@
     if (k === "laporan") { if (!sudahBuka.has(k)) panelLaporan(panel.laporan); bukaLaporan(); }
     else if (!sudahBuka.has(k)) muat(k);
     sudahBuka.add(k);
+    dlSegar?.();
   }
   function kerangka() {
     /* model A (sistem desain dashboard, pemilik 11 Nov 2026): jenis pantauan jadi panel seksi kiri, nama jenis jadi kepala halaman navy */
@@ -636,9 +649,37 @@
     const seg = h("nav", {class: "db-nav-isi dl-seg-a", role: "tablist", "aria-label": "Jenis pantauan"}, grup("Bencana", "banjir"), ...tombol.slice(0, -2), grup("Laporan", "simpan"), ...tombol.slice(-2));
     seg.addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b) pilihTab(b.dataset.tab, tombol); });
     const judul = h("h1", {class: "dl-l1", id: "dlJudul", teks: "Pantau Dalops"}), slot = window.MenuPusdalops?.pakaiSlot?.();
-    if (slot) {   // panel kiri Pusdalops ada: jenis pantauan masuk di bawah butir "Pantau kejadian"
-      slot.replaceChildren(seg); app.classList.add("dl-dalam");
-      app.replaceChildren(h("div", {class: "db-kanan"}, judul, ...Object.values(panel)));
+    if (slot) {
+      /* pemilik 11 Nov 2026: "pilihan bencananya ada di dalam maps": pil jenis bencana di pojok peta tiap panel (panel tanpa peta: di puncak panel);
+         panel kiri berisi seksi panel yang tampil + grup Laporan */
+      const JP = TAB.filter(([k]) => !k.startsWith("laporan"));
+      const segarBatang = () => document.querySelectorAll(".dl-jenis-peta [data-jenis]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.jenis === aktif)));
+      const batang = () => h("div", {class: "dl-jenis-peta", role: "group", "aria-label": "Jenis bencana"}, ...JP.map(([k, t, ik]) => {
+        const b = h("button", {type: "button", "data-jenis": k, "aria-pressed": String(k === aktif)}, ikon(ik), h("span", {teks: t}));
+        b.addEventListener("click", e => { e.stopPropagation(); pilihTab(k, tombol); segarBatang(); }); return b; }));
+      const seksiSlot = () => {
+        const p = panel[aktif], sek = p ? [...p.querySelectorAll(":scope > section.ex-std, :scope > .ex-std")] : [];
+        const bs = sek.map((x, i) => { x.id ||= `dl-${aktif}-s${i}`; const j = x.querySelector(".ex-jd h3"), b = h("button", {type: "button", class: "db-nav-b"}, h("i", {class: "db-nav-ik"}, j?.querySelector("svg")?.cloneNode(true) || ikon("daftar")), h("span", {class: "db-nav-t", teks: j ? j.textContent.trim() : "Bagian"}));
+          b.addEventListener("click", () => x.scrollIntoView({behavior: "smooth", block: "start"})); return b; });
+        const lap = tombol.slice(-2).map(t => { if (!t.dataset.dlKlik) { t.dataset.dlKlik = 1; t.classList.add("db-nav-b"); t.addEventListener("click", () => pilihTab(t.dataset.tab, tombol)); } return t; });
+        slot.replaceChildren(...(bs.length ? [grup("Isi halaman", "daftar"), ...bs] : []), grup("Laporan", "simpan"), ...lap);
+      };
+      const pasangBatang = k => { const p = panel[k]; if (!p || k.startsWith("laporan")) return;
+        const m = p.querySelector(".maplibregl-map"), ada = p.querySelector(".dl-jenis-peta");
+        if (m) { if (!m.contains(ada)) { ada?.closest(".dl-jenis-atas")?.remove(); const al = m.querySelector(".dl-peta-alat"); al ? al.prepend(batang()) : m.append(batang()); } return; }
+        if (!ada && !p.querySelector(".dl-peta") && p.querySelector(".ex-std, .db-ubin-grid")) p.prepend(h("div", {class: "dl-jenis-atas"}, batang())); };   // .dl-peta tanpa kelas maplibre = peta belum jadi: tunggu
+      for (const [k, pn] of Object.entries(panel)) { let t; new MutationObserver(() => { clearTimeout(t); t = setTimeout(() => { pasangBatang(k); if (k === aktif) seksiSlot(); }, 80); }).observe(pn, {childList: true, subtree: true}); }
+      dlSegar = () => { segarBatang(); seksiSlot(); };
+      seksiSlot(); app.classList.add("dl-dalam");
+      const pPer = h("div", {class: "dl-periode", role: "group", "aria-label": "Periode"}, ...PERIODE.map(([n, t, ik]) => {
+        const b = h("button", {type: "button", "data-n": String(n), "aria-pressed": String(n === periode)}, ikon(ik), h("span", {teks: t}));
+        b.addEventListener("click", () => { if (n === periode) return; periode = n; pPer.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.n === periode)));
+          for (const k of Object.keys(dataTerakhir)) if (k !== aktif) delete dataTerakhir[k], sudahBuka.delete(k);   // tab lain dihitung ulang saat dibuka
+          if (dataTerakhir[aktif]) render(...dataTerakhir[aktif], aktif); });
+        return b; }));
+      const segarPer = () => { pPer.hidden = ["karhutla", "gunungapi"].includes(aktif) || aktif.startsWith("laporan"); };
+      const lamaSegar = dlSegar; dlSegar = () => { lamaSegar(); segarPer(); }; segarPer();
+      app.replaceChildren(h("div", {class: "db-kanan"}, judul, pPer, ...Object.values(panel)));
     } else {
       const nav = h("aside", {class: "db-nav dl-nav"}, h("div", {class: "db-nav-id"}, h("b", {teks: "Pantau Dalops"}), h("small", {teks: "Kejadian aktif per jenis bencana"})), seg);
       app.classList.add("db-a");

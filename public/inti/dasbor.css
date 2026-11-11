@@ -212,3 +212,20 @@ aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true
 .db-oto>.db-kanan>.ak-ringkas>div>b{font:800 1.5rem/1.1 var(--display,inherit);color:var(--db-navy)}
 .db-oto>.db-kanan>.ak-ringkas>div>span{font-size:.71875rem;font-weight:600;color:var(--ink2)}
 .db-oto>.db-kanan>.ak{min-width:0;margin:0;max-width:none;padding:0}
+
+/* kepala kartu seksi = pola /operasi (pemilik 11 Nov 2026 "samain ya bentuknya"): kotak ikon navy, nama seksi, pil kategori sebaris di kanannya,
+   tombol kartu di ujung kanan. Pil .ex-ey tetap ada (gerbang kartu-std), hanya pindah posisi dan bentuk. */
+:is(html,#_) .ex.ex-std>.ex-hd{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;padding:10px 16px}
+:is(html,#_) .ex.ex-std>.ex-hd>.ex-jd{display:contents}
+:is(html,#_) .ex.ex-std>.ex-hd .ex-jd>h3{order:1;display:flex;align-items:center;gap:10px;margin:0;font-size:1.0625rem;font-weight:800;line-height:1.25;color:var(--db-navy)}
+:is(html,#_) .ex.ex-std>.ex-hd .ex-jd>h3>svg:first-child{box-sizing:border-box;width:30px;height:30px;margin:0;padding:7px;border-radius:8px;background:var(--db-navy);color:#fff;stroke:#fff;fill:none;flex:none;vertical-align:middle}
+:is(html,#_) .ex.ex-std>.ex-hd>.ex-ey{order:2;display:inline-flex;align-items:center;gap:5px;margin:0;padding:3px 10px;border-radius:999px;background:#fff;color:var(--db-navy);font-size:.75rem;font-weight:700;opacity:1;border:0}
+:is(html,#_) .ex.ex-std>.ex-hd>.ex-ey svg{width:12px;height:12px;color:var(--db-navy);stroke:currentColor;fill:none}
+:is(html,#_) .ex.ex-std>.ex-hd .ex-jd>:not(h3){order:3;margin-left:auto}
+
+/* panel kiri Pusdalops menempel dan menggulir di dalam, kaki "Pembaruan data" tetap di dasar (pemilik 11 Nov 2026 "sama kaya operasi bisa digeser") */
+@media (min-width:901px){
+  .mp-a>.mp-side{position:sticky;top:12px;height:calc(100vh - 86px);flex-direction:column;overflow:hidden}
+  .mp-a>.mp-side>.db-nav-isi{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+  .mp-a>.mp-side>.db-nav-kaki{flex:none;margin-top:auto}
+}

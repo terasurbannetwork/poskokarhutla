@@ -89,13 +89,17 @@
     const tinggi = gunung.filter(x => x.level >= 3).sort((a, b) => b.level - a.level || a.nama.localeCompare(b.nama));
     const waspada = gunung.filter(x => x.level === 2);
 
-    /* empat ubin selebar penuh, terbagi rata */
-    const ubin = h("div", {class: "dl-ga-ubin"}, [4, 3, 2, 1].map(l => h("div", {class: "dl-ga-ub dl-ga-l" + l}, ikon(IK_LEVEL[l]),
-      h("b", {teks: F(n(l))}), h("span", {teks: `${NAMA[l]} (${ROMAWI[l]})`}))));
-    const ringkas = bagian("gunungapi-ringkas", "gunungapi", "Gunung api",
+    /* peta gunung api (pemilik 11 Nov 2026 "peta gunung apinya ya"): titik per gunung berwarna level, lingkar radius larangan Siaga/Awas,
+       saring level dan ubin jumlah per level di dalam peta, sama dengan peta Banjir */
+    const WARNA = {1: "#9aa4b2", 2: "#e0b400", 3: "#e8743b", 4: "#d64545"};
+    const ubin = h("div", {class: "db-ubin-grid k4"}, [4, 3, 2, 1].map(l => h("div", {class: "db-ubin" + (l >= 3 && n(l) ? (l === 4 ? " merah" : " oranye") : "")},
+      h("header", null, h("i", null, ikon(IK_LEVEL[l])), h("span", {teks: `${NAMA[l]} (${ROMAWI[l]})`})), h("b", {teks: F(n(l))}), h("small", {teks: "gunung api"}))));
+    const wadah = h("div", {class: "dl-peta"}, h("p", {class: "bn-pesan", teks: "Memuat peta…"}));
+    const ringkas = bagian("gunungapi-ringkas", "gunungapi", "Peta gunung api",
       tinggi.length ? [hl(`${F(tinggi.length)} gunung api`), " berstatus Siaga atau Awas, ", hl(`${F(n(2))}`), " Waspada"] : ["Tidak ada gunung api berstatus Siaga atau Awas, ", hl(`${F(n(2))}`), " Waspada"],
-      ubin, d.dibuat ? h("p", {class: "dl-ga-per"}, label("Status PVMBG per " + tglPendek(d.dibuat.slice(0, 10), true), "kalender", "garis")) : null);
-
+      wadah, h("div", {class: "dl-legenda-peta dl-ga-leg"}, ...[4, 3, 2, 1].map(l => h("span", {class: "dl-leg dl-ga-leg" + l, teks: NAMA[l]})),
+        d.dibuat ? label("Status PVMBG per " + tglPendek(d.dibuat.slice(0, 10), true), "kalender", "garis") : null));
+    requestAnimationFrame(() => petaGunung(wadah, gunung, WARNA, ubin, U));
     const kartu = tinggi.map(gn => {
       const u = urai(gn.rekomendasi), radius = u.radius ?? gn.radius_km ?? null;
       const baris = [];
@@ -106,7 +110,7 @@
       const tengah = h("div", {class: "dl-ga-tengah"}, h("h4", {teks: namaGn(gn.nama)}),
         h("div", {class: "dl-chips"}, label(labelBerlaku(tglBerlaku(gn, d)), "kalender", "garis"), h("span", {class: "dl-tag dl-ga-pil dl-ga-l" + gn.level}, ikon("gunungapi"), `${NAMA[gn.level]} (Level ${ROMAWI[gn.level]})`)),
         ...baris);
-      return bagian("gunungapi-" + gn.nama.toLowerCase().replace(/[^a-z0-9]+/g, "-"), "gunungapi", gn.level === 4 ? "Awas" : "Siaga",
+      return bagian("gunungapi-" + gn.nama.toLowerCase().replace(/[^a-z0-9]+/g, "-"), "gunungapi", namaGn(gn.nama),
         [hl(namaGn(gn.nama)), ` berstatus ${NAMA[gn.level]}`, ...radius ? [", dilarang beraktivitas dalam radius ", hl(`${F(radius)} km`)] : []],
         h("div", {class: "dl-ga-kartu"}, h("div", {class: "dl-ga-diagram"}, diagram(gn, {...u, radius})), tengah,
           h("div", {class: "dl-ga-kanan"}, grup("ANCAMAN", u.ancaman, t => IK_ANCAMAN[t] || "peringatan", "merah") || h("p", {class: "dl-redup", teks: "Ancaman tidak disebut dalam rekomendasi."}),
@@ -134,5 +138,44 @@
     pasangTip();
   }
 
+  /* lingkar radius (km) sebagai poligon 64 sisi */
+  const lingkar = (lon, lat, r) => [[...Array(65)].map((_, i) => { const a = i / 64 * 2 * Math.PI; return [lon + r / (111.32 * Math.cos(lat * Math.PI / 180)) * Math.sin(a), lat + r / 110.57 * Math.cos(a)]; })];
+  function petaGunung(wadah, gunung, WARNA, ubin, U) {
+    const {h, F, ikon} = U, ml = g.maplibregl;
+    if (!ml) return wadah.replaceChildren(U.kosong("peringatan", "Peta gagal dimuat, coba muat ulang."));
+    wadah.replaceChildren();
+    const titik = gunung.filter(x => x.lat != null && x.lon != null);
+    const peta = new ml.Map({container: wadah, style: "https://tiles.openfreemap.org/styles/positron", bounds: [[94.8, -11.2], [141.2, 6.2]],
+      fitBoundsOptions: {padding: 16}, minZoom: 3, maxZoom: 13, dragRotate: false, pitchWithRotate: false, attributionControl: {compact: true}});
+    peta.addControl(new ml.NavigationControl({showCompass: false}), "top-right");
+    peta.touchZoomRotate.disableRotation();
+    const saring = new Set();
+    const tombol = [4, 3, 2, 1].map(l => { const b = h("button", {type: "button", class: "dl-saring-btn dl-ga-s" + l, "aria-pressed": "false"}, ikon("gunungapi"), NAMA[l]);
+      b.addEventListener("click", () => { saring.has(l) ? saring.delete(l) : saring.add(l); b.setAttribute("aria-pressed", String(saring.has(l)));
+        const f = saring.size ? ["in", ["get", "lv"], ["literal", [...saring]]] : null; for (const id of ["ga-titik", "ga-radius", "ga-radius-garis"]) if (peta.getLayer(id)) peta.setFilter(id, f); });
+      return b; });
+    wadah.append(h("div", {class: "dl-peta-alat"}, h("div", {class: "dl-saring", role: "group", "aria-label": "Saring level gunung api"}, tombol)));
+    ubin.classList.add("dl-peta-ubin"); wadah.append(ubin);
+    peta.on("load", () => {
+      peta.addSource("ga", {type: "geojson", data: {type: "FeatureCollection", features: titik.map((x, i) => ({type: "Feature", id: i, geometry: {type: "Point", coordinates: [x.lon, x.lat]}, properties: {lv: x.level, i}}))}});
+      peta.addSource("ga-r", {type: "geojson", data: {type: "FeatureCollection", features: titik.filter(x => x.level >= 3).map(x => {
+        const r = urai(x.rekomendasi).radius ?? x.radius_km; return r ? {type: "Feature", geometry: {type: "Polygon", coordinates: lingkar(x.lon, x.lat, r)}, properties: {lv: x.level}} : null; }).filter(Boolean)}});
+      const warna = ["match", ["get", "lv"], 4, WARNA[4], 3, WARNA[3], 2, WARNA[2], WARNA[1]];
+      peta.addLayer({id: "ga-radius", type: "fill", source: "ga-r", paint: {"fill-color": warna, "fill-opacity": .18}});
+      peta.addLayer({id: "ga-radius-garis", type: "line", source: "ga-r", paint: {"line-color": warna, "line-width": 1.5}});
+      peta.addLayer({id: "ga-titik", type: "circle", source: "ga", layout: {"circle-sort-key": ["get", "lv"]},
+        paint: {"circle-color": warna, "circle-radius": ["interpolate", ["linear"], ["zoom"], 4, ["match", ["get", "lv"], 4, 8, 3, 7, 2, 5.5, 4.5], 9, ["match", ["get", "lv"], 4, 13, 3, 12, 2, 10, 8]],
+          "circle-stroke-color": "#fff", "circle-stroke-width": 1.6}});
+      const pop = new ml.Popup({closeButton: false, closeOnClick: false, offset: 12, className: "dl-popup"});
+      peta.on("mouseenter", "ga-titik", e => { peta.getCanvas().style.cursor = "pointer"; const x = titik[e.features[0].properties.i], r = urai(x.rekomendasi).radius ?? x.radius_km;
+        const baris = (t, v) => h("div", {class: "dl-aw-baris"}, h("span", {teks: t}), h("div", null, v));
+        pop.setLngLat([x.lon, x.lat]).setDOMContent(h("div", {class: "dl-pop dl-pop-awas"},
+          h("div", {class: "dl-aw-kepala"}, h("div", null, h("b", {class: "dl-tip-nama", teks: namaGn(x.nama)}), h("small", {teks: x.prov || ""}))),
+          h("div", {class: "dl-aw-isi"}, baris("Status", h("span", {class: "dl-tag dl-ga-pil dl-ga-l" + x.level}, ikon("gunungapi"), `${NAMA[x.level]} (Level ${ROMAWI[x.level]})`)),
+            r ? baris("Radius", h("b", {teks: `${F(r)} km`})) : null, x.tinggi ? baris("Tinggi", h("b", {teks: `${F(x.tinggi)} m`})) : null))).addTo(peta); });
+      peta.on("mouseleave", "ga-titik", () => { pop.remove(); peta.getCanvas().style.cursor = ""; });
+      peta.on("click", "ga-titik", e => { const x = titik[e.features[0].properties.i]; if (x.laporan) g.open(x.laporan, "_blank", "noopener"); });
+    });
+  }
   g.DalopsGunungApi = {urai, sudut, tglBerlaku, labelBerlaku, render};
 })(globalThis);
