@@ -2235,3 +2235,7 @@
 /* pop-up lebih lebar (pemilik 11 Nov 2026 "lebarin lagi"); kartu armada 4 sebaris */
 .ops-dlg{width:min(1360px,96vw);max-height:92vh}
 @media (min-width:1300px){#opsLaporan .ops-dlg .ops-ar-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+/* ubin Darat belum punya pembanding: tampilkan isinya (aturan lama menyembunyikan .ops-ub-isi untuk ubin Udara) */
+#opsLaporan .ops-lap-angka>div:not(:has(.ops-cmp))>.ops-ub-isi{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;flex:1;padding:12px 14px}
+#opsLaporan .ops-lap-angka>div:not(:has(.ops-cmp))>.ops-ub-isi>b{font-family:var(--display);font-size:1.75rem;font-weight:800;line-height:1;color:#0b2545;font-variant-numeric:tabular-nums}
+#opsLaporan .ops-lap-angka>div:not(:has(.ops-cmp))>.ops-ub-isi>em{font-style:normal;padding:1px 9px;border-radius:999px;background:color-mix(in srgb,#2f6fd6 7%,#fff);font-size:.6875rem;font-weight:700;color:var(--ink2)}
