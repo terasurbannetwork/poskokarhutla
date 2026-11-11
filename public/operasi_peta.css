@@ -2061,3 +2061,22 @@
 #opsLaporan .ops-akt .ops-ar-isi li.ops-ar-tipe .ops-lbl{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:999px;background:color-mix(in srgb,#2f6fd6 8%,#fff);box-shadow:inset 0 0 0 1px color-mix(in srgb,#2f6fd6 20%,#fff);font-size:.71875rem;font-weight:800;color:#0b2545}
 #opsLaporan .ops-akt .ops-ar-isi li.ops-ar-tipe .ops-lbl svg{width:12px;height:12px;color:#2f6fd6}
 #opsLaporan .ops-akt .ops-ar-isi li.ops-ar-tipe.nihil .ops-lbl{background:#fff;color:var(--ink2);font-weight:600}
+/* rincian base di laci peta (pemilik 11 Nov 2026 "bagusin, line spacing kurangin, jangan abu tua"): baris rapat, latar muda, tombol terang */
+#opsLaporan .ops-laci-rinci{gap:8px;padding:8px 10px;background:color-mix(in srgb,#2f6fd6 3%,#fff);border-color:color-mix(in srgb,#2f6fd6 14%,#fff)}
+#opsLaporan .ops-laci-rinci dl{gap:0}
+#opsLaporan .ops-laci-rinci dl>div{align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid color-mix(in srgb,#2f6fd6 10%,#fff)}
+#opsLaporan .ops-laci-rinci dl>div:last-child{border-bottom:0}
+#opsLaporan .ops-laci-rinci dt .ops-lbl{font-size:.71875rem;font-weight:600;color:var(--ink2)}
+#opsLaporan .ops-laci-rinci dt .ops-lbl svg{width:12px;height:12px;color:#2f6fd6}
+#opsLaporan .ops-laci-rinci dd{margin:0;text-align:right;font-size:.78125rem;font-weight:800;color:#0b2545}
+#opsLaporan .ops-laci-rinci .ops-laci-pil{gap:4px}
+#opsLaporan .ops-laci-rinci .ops-laci-pil button{padding:2px 9px;background:#fff;box-shadow:inset 0 0 0 1px color-mix(in srgb,#2f6fd6 22%,#fff);font-size:.71875rem;color:#0b2545}
+#opsLaporan .ops-laci-rinci .ops-laci-pil button:hover{background:color-mix(in srgb,#2f6fd6 8%,#fff)}
+#opsLaporan .ops-laci .ops-laci-wp{padding:6px 8px;gap:6px}
+#opsLaporan .ops-laci .ops-laci-wp>span .ops-lbl{font-size:.71875rem}
+#opsLaporan .ops-laci .ops-laci-wp .ops-kml{padding:0;border:0;background:none;cursor:pointer}
+#opsLaporan .ops-laci .ops-laci-wp .ops-kml .ops-lbl{padding:2px 9px;border-radius:999px;background:color-mix(in srgb,#2f6fd6 8%,#fff);box-shadow:inset 0 0 0 1px color-mix(in srgb,#2f6fd6 24%,#fff);color:#1f3f73;font-size:.6875rem;font-weight:800}
+#opsLaporan .ops-laci .ops-laci-wp .ops-kml .ops-lbl svg{color:#2f6fd6}
+#opsLaporan .ops-laci-aksi{padding:6px 10px;background:color-mix(in srgb,#2f6fd6 8%,#fff);box-shadow:inset 0 0 0 1px color-mix(in srgb,#2f6fd6 24%,#fff)}
+#opsLaporan .ops-laci-aksi .ops-lbl,#opsLaporan .ops-laci-aksi .ops-lbl svg{color:#0b2545}
+#opsLaporan .ops-laci-aksi:hover{background:color-mix(in srgb,#2f6fd6 14%,#fff)}
