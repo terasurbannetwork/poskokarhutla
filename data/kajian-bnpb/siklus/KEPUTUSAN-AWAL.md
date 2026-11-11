@@ -116,3 +116,32 @@ Tidak menghentikan G1. Bawaan sementara tertulis; hasil yang bergantung padanya 
 | U20 | Dasar iklim F6: delta terhadap historical model atau CHIRPS? (UA-6) | delta historical model, CHIRPS sebagai pembanding bias | F6 |
 | U21 | Hubungan dengan Rantai per KIB dan `meja_dampak`? | Disampaikan sesi lain 10 Nov 2026 sebagai jawaban pemilik "Ya, gabung": Rantai tahap per kejadian jadi tampilan tahap di halaman Buku Besar, KIB logbook kunci tautan ke `KJ-`, Kalender Kewajiban dan Rapor SPM tetap di paket Rantai; pertanyaan Q1-Q14 Rantai masih terbuka. Tunggu konfirmasi pemilik di sesi ini; tiket SK-112 | F1 |
 | U7 | Draf R3P perlu pengesahan siapa di sistem? | peran pimpinan sebagai tanda setuju, tidak menggantikan dokumen resmi | F4 |
+
+## I. Jawaban (11 November 2026)
+
+Pemilik, 11 Nov 2026: "Lu yang putuskan aja semuanya sendiri." Semua pertanyaan di bagian H diputuskan sesi induk atas mandat itu. Prinsipnya: bawaan yang murah, jujur, dan bisa dibalik dipertahankan; yang menyangkut uang, akun di luar, atau angka yang belum diuji tidak diambil. Pemilik bisa membalik butir mana pun; butir yang dibalik ditulis ulang di sini.
+
+| Kode | Keputusan | Alasan |
+| --- | --- | --- |
+| U1 | Tetap Free. | Rancangan sudah muat Free (butir 27); naik paket adalah belanja yang tidak diputuskan agen. |
+| U2 | Tidak masuk menu utama publik. Satu kartu Siklus di pintu `/bnpb` (SK-102); `public/inti/kepala.js` tidak diubah. | Layar staf di balik sesi; menu publik untuk halaman yang bisa dibuka warga. |
+| U3 | Bawaan dipakai: ringkasan resmi publik, rincian staf. | Sesuai butir privasi D dan pola `/bnpb`. |
+| U4 | Bawaan dipakai: HSBGN atau Perka bila ada di pustaka, selain itu `asumsi-kebijakan`. | Tanpa acuan resmi, label jujur lebih baik dari angka karangan. |
+| U5 | Percontohan F4 dan F5: Kabupaten Cianjur, kejadian gempa 21 November 2022 dari arsip, ditambah data dummy. | Kejadian besar dengan dokumen Jitupasna dan R3P publik untuk dibandingkan. |
+| U6 | ReliefWeb tidak dipakai. | Mendaftar `appname` berarti mendaftar di layanan luar; sumber resmi Indonesia sudah cukup untuk F1. |
+| U7 | Bawaan dipakai: peran pimpinan sebagai tanda setuju internal. | Sistem tidak menggantikan dokumen resmi. |
+| U8 | Bawaan dipakai: 60/30/15 juta berlabel `asumsi-kebijakan` sampai teks Juklak 5/2024 ditemukan. | Label membuat angka tidak dibaca sebagai tarif resmi. |
+| U9 | Perka 7/2008 (3 m2). | Acuan nasional; Sphere hanya pembanding bila ditampilkan. |
+| U10 | Bawaan dipakai: teks Perka 15/2011. | Batang tubuh mengikat, lampiran mengikuti. |
+| U11 | 0,70, tertulis di tiap keluaran. | Bawaan sudah tertulis dan teruji. |
+| U12 | Tinggi di atas 0,66, sedang 0,33 sampai 0,66. | Sama dengan `terpapar.py`, satu batas untuk seluruh repo. |
+| U13 | Keduanya tampil berdampingan sebagai rentang. | Tidak memilih model tanpa uji balik. |
+| U14 | Bawaan dipakai: ID `KJ-` internal, kolom nomor induk resmi kosong sampai ada. | Tidak mengarang format peraturan. |
+| U15 | 3 hari, karhutla sel 0,02 derajat. | Bawaan yang sudah teruji di G1 (31.452 pasangan). |
+| U16 | Tidak otomatis, butuh staf. | Status terverifikasi adalah klaim resmi. |
+| U17 | Bawaan dipakai: titik pusat desa Dukcapil, keterbatasan tertulis. | Belum ada poligon desa nasional terbuka yang teruji. |
+| U18 | Belum ada ambang; F3 tetap `estimasi-model`. Ambang hanya ditetapkan dari uji balik oleh `validasi-model`. | Ambang tanpa uji adalah angka karangan. |
+| U19 | Pasal 21 ayat (1), sesuai `jam_aturan.json`. | Batang tubuh mengikat. |
+| U20 | Delta terhadap historical model, CHIRPS sebagai pembanding bias. | Bawaan yang sudah dibangun di `iklim_lab.py`. |
+| U21 | "Ya, gabung" dikonfirmasi: tahap Rantai tampil di detail Buku Besar, KIB logbook menautkan ke `KJ-`; Kalender Kewajiban dan Rapor SPM tetap di paket Rantai. SK-112 dikerjakan. | Satu buku kejadian (AGENTS.md §2.7). |
+| SK-090 | Ditutup tanpa perubahan: tidak ada jenis pengingat `renkon_segera_habis`; kedaluwarsa renkon tampil di kartu pintu. | Bangun ulang CHECK tabel `pengingat` bersama di D1 produksi berisiko dan manfaatnya sudah tertutup kartu pintu. |
