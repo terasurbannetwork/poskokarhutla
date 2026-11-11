@@ -20,9 +20,9 @@ const DETAIL = {
   wilayah: 'Bogor, Jawa Barat', kab: ['3201'],
   sumber: [
     {id: SID, sumber: 'dibi', kode: 'D1', status: 'terpasang', jenis: 'banjir', kab4: '3201', mulai: '2026-11-05', dampak: DAMPAK(12, 'resmi'), pengenal_luar: null, dummy: 0},
-    {id: SID2, sumber: 'logbook', kode: 'L1', status: 'terpasang', jenis: 'banjir', kab4: '3201', mulai: '2026-11-05', dampak: DAMPAK(15, 'terverifikasi'), pengenal_luar: null, dummy: 0},
+    {id: SID2, sumber: 'logbook', kode: 'L1', status: 'terpasang', jenis: 'banjir', kab4: '3201', mulai: '2026-11-05', dampak: DAMPAK(15, 'terverifikasi'), pengenal_luar: '3201012611260001', dummy: 0},
   ],
-  selisih: [], kaji_ids: [], pulih_ids: [],
+  selisih: [], kaji_ids: [], pulih_ids: [], r3p: false,
   jejak: [{id: 2, waktu: Date.now() - 36e5, oleh: 'staf:1', obyek: 'kejadian', obyek_id: KJ, aksi: 'fase', dari: 'terverifikasi', ke: 'tanggap', catatan: null}, {id: 1, waktu: Date.now() - 72e5, oleh: 'sistem:ingest', obyek: 'kejadian', obyek_id: KJ, aksi: 'buat', dari: null, ke: 'terdeteksi', catatan: null}],
 };
 const PERAN = {ko: {saya: [200, {staf: {peran: ['koordalops']}}], akad: [401, {galat: 'x'}]}, sa: {saya: [401, {galat: 'x'}], akad: [200, {peran: ['admin'], super: true}]}};
@@ -102,6 +102,9 @@ test('layar kejadian di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome 
         assert.match(d.ber, /DIBI 12, Logbook Pusdalops 15, selisih 3/); assert.ok(d.kepala.includes('Selisih')); assert.ok(!d.kepala.some((x) => /total/i.test(x)));
         assert.match(d.judul, /12 jiwa menurut DIBI, 15 menurut Logbook, selisih 3/); assert.equal(d.garis, 2); assert.match(d.fase, /Tanggap/);
         assert.match(d.tid, /tidak ada/, 'terdampak tidak dilaporkan: ditulis tidak ada, bukan 0'); assert.ok(d.tombol.includes('Naikkan') && d.tombol.includes('Gabung'));
+        const tp = await T.eval(`[...document.querySelectorAll('#k-tahap .sk-garis li')].map(x => x.innerText)`);
+        assert.equal(tp.length, 3, 'hanya tahap berdata: fase, sumber, logbook; kaji, Jitupasna, R3P tanpa data tidak tampil');
+        assert.match(tp.join('|'), /Logbook Pusdalops[\s\S]*KIB 3201012611260001/); assert.ok(!/kaji|jitupasna|r3p/i.test(tp.join('|')) && !tp.some((x) => /\b0\b/.test(x)), 'tanpa angka 0 pengganti');
         assert.deepEqual(galatNyata(T), []);
         await T.buka(`${s.url}/siklus/kejadian/${KJ_ALIAS}`); await T.tungguFungsi(`location.pathname.endsWith('${KJ}')`, 8000);
         await T.ukuran(390, 844); await T.buka(`${s.url}/siklus/kejadian/${KJ}`, {tunggu: '#k-dampak .sk-ber'});

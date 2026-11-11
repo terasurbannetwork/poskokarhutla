@@ -138,7 +138,7 @@ uji("detail: kejadian + kab + sumber berdampingan + selisih dari server (tanpa t
   const m = r.j.selisih.find(x => x.metrik === "meninggal"); assert.equal(m.n, 2); assert.equal(m.selisih, 3); assert.deepEqual(m.arah, {maks: "logbook", min: "dibi"}); assert.equal(m.persen, 20);
   assert.equal(r.j.selisih.find(x => x.metrik === "luka").selisih, null);
   assert.ok(!/"total"|jumlah_gabungan/.test(r.t), "tanpa kolom total");
-  assert.ok(r.j.jejak.length >= 1); assert.deepEqual(r.j.kaji_ids, []); assert.equal((await GET(PD, `/kejadian/${kjAcak()}`)).s, 404);
+  assert.ok(r.j.jejak.length >= 1); assert.deepEqual(r.j.kaji_ids, []); assert.ok(r.j.r3p === false || r.j.r3p === null, "r3p: false/null bila belum ada R3P diusulkan (bukan 0)"); assert.equal((await GET(PD, `/kejadian/${kjAcak()}`)).s, 404);
   assert.equal((await GET(PD, `/kejadian/${id}?tahun=2019&kab4=3201`)).s, 200, "ada di D1: arsip diabaikan");
 });
 uji("UJ-KP-03: BP hanya kabupaten/provinsinya; di luar lingkup dan tidak ada memberi 404 yang sama byte demi byte (daftar, detail, arsip)", async () => {

@@ -274,6 +274,17 @@ function detailHidup(id, d, P, ulang) {
     return h("li", {"data-tip": tip(kal, ["Waktu", wib(j.waktu)], ["Pelaku", j.oleh], ["Catatan", j.catatan])}, h("time", {}, wib(j.waktu)), h("span", {}, kal), j.catatan ? h("small", {}, j.catatan) : null, h("small", {}, j.oleh));
   })) : kead("kosong", {teks: "Belum ada catatan perubahan"})]});
 
+  /* Tahap per kejadian (SK-112, U21): hanya tahap yang datanya ADA; tanpa data tidak ditampilkan, bukan angka 0 */
+  const kibLog = sumber.filter(x => x.sumber === "logbook" && /^\d{16}$/.test(x.pengenal_luar ?? "")).map(x => x.pengenal_luar), nLog = sumber.filter(x => x.sumber === "logbook").length;
+  const tahap = [["Fase kejadian", `${K.fase?.[r.fase]?.[0] ?? r.fase}${r.tanggap_mulai ? `, tanggap darurat sejak ${tgl(r.tanggap_mulai)}` : ""}${r.tanggap_akhir ? ` sampai ${tgl(r.tanggap_akhir)}` : ""}`],
+    ...(sumber.length ? [["Sumber terpasang", `${angka(sumber.length)} baris dari ${[...new Set(sumber.map(x => namaSumber(x.sumber)))].join(", ")}`]] : []),
+    ...(nLog ? [["Logbook Pusdalops", `${angka(nLog)} catatan terpasang${kibLog.length ? `, KIB ${[...new Set(kibLog)].join(", ")}` : ""}`]] : []),
+    ...(d.kaji_ids?.length ? [["Kaji cepat", `${angka(d.kaji_ids.length)} perkiraan otomatis (estimasi model)`]] : []),
+    ...(d.pulih_ids?.length ? [["Jitupasna", `${angka(d.pulih_ids.length)} dokumen kabupaten`]] : []),
+    ...(d.r3p === true ? [["R3P", "sudah diusulkan atau lebih"]] : [])];
+  const tahapKartu = kartu({ey: [ik("tautan", 12), "Tahap kejadian"], id: "k-tahap", judul: [hl(angka(tahap.length)), " tahap punya data, tahap tanpa data tidak ditampilkan"],
+    isi: [h("ol", {class: "sk-garis"}, tahap.map(([n, t]) => h("li", {"data-tip": tip(n, ["Isi", t])}, h("b", {}, n), h("span", {}, t))))]});
+
   const ada = Object.keys(per).length;
   const dampak = kartu({ey: [ik("jiwa", 12), "Dampak per sumber"], id: "k-dampak", judul: ada ? ["Dampak dilaporkan ", hl(angka(ada)), " sumber, berdampingan tanpa dijumlah"] : ["Dampak ", hl("belum ada laporan"), " dari sumber mana pun"],
     isi: ada ? [blokBerdampingan(per, "meninggal") ? wadah("Korban meninggal", blokBerdampingan(per, "meninggal")) : null, wadah("Semua jenis dampak", tabelDampak(per))] : [kead("kosong", {teks: "Belum ada laporan dampak. Angka muncul setelah sumber memasangkan laporannya ke kejadian ini."})]});
@@ -294,5 +305,5 @@ function detailHidup(id, d, P, ulang) {
       }, "bolak", "Pindahkan baris sumber ke kejadian lain") : null);
   })) : kead("kosong", {teks: "Belum ada sumber terpasang"})]});
 
-  return [kepala, h("div", {class: "sk-detail"}, h("div", {}, ringkasan, waktu, dampak, paparan, kaji, pulih), h("div", {}, terpasang))];
+  return [kepala, h("div", {class: "sk-detail"}, h("div", {}, ringkasan, tahapKartu, waktu, dampak, paparan, kaji, pulih), h("div", {}, terpasang))];
 }
