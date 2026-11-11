@@ -1906,3 +1906,5 @@
 @media (min-width:1180px){#opsLaporan .ops-ringkas-slot .ops-tindak ul{background:color-mix(in srgb,#c9503a 5%,#fff)!important}}
 #opsLaporan .ops-ringkas-slot .ops-tindak{background:color-mix(in srgb,#c9503a 5%,#fff)}
 #opsLaporan .ops-ringkas-slot .ops-tindak li button{background:#fff}
+/* kepala tabel: hover urut tanpa garis bawah (tidak terlihat seperti tautan), cukup warna biru */
+#opsLaporan .ops-tw thead th:hover{text-decoration:none;color:#2f6fd6!important}
