@@ -1957,3 +1957,8 @@
   #opsLaporan .ops-pa-angka span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 }
 @media (min-width:901px) and (max-width:1279px){#opsLaporan .ops-pa-angka i{display:none}#opsLaporan .ops-pa-angka>div{grid-template-columns:1fr}}
+/* kepala bagian L2 dan baris pulau: putih, aksen navy 4px di kiri, garis bawah tipis (pemilik 11 Nov 2026 memilih rekomendasi ini) */
+#opsLaporan .ops-wadah details.ops-kartu>summary.ex-hd,#opsLaporan .ops-wadah details.ops-kartu:not(.ops-polos)>summary.ex-hd,#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary{background:#fff!important;box-shadow:inset 4px 0 0 #0b2545!important;border-bottom:1px solid var(--line)!important}
+#opsLaporan .ops-ringkas-slot .ops-tindak>header{background:#fff!important;box-shadow:inset 4px 0 0 #c0392b!important;border-bottom:1px solid var(--line)!important}
+#opsLaporan tr.ops-grup>td{background:#fff!important;box-shadow:inset 4px 0 0 #0b2545!important;border-bottom:1px solid var(--line)!important}
+#opsLaporan .ops-laci-grup{background:#fff;box-shadow:inset 3px 0 0 #0b2545,inset 0 0 0 1px var(--line)}
