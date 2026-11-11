@@ -500,7 +500,9 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
   }
   /* jumlah kolom simetris (pemilik 11 Nov 2026): <=5 sebaris, 6 = 3x2, 8 = 4x2, lainnya separuh */
   /* lambang provinsi dari /lambang/provinsi/<kode BPS>.png (sama dengan /bnpb/dalops); gagal muat = disembunyikan */
-  const lambangProv = k => k ? `<img class="ops-lambang" src="/lambang/provinsi/${esc(String(k).slice(0, 2))}.png" alt="" loading="lazy" onerror="this.hidden=true">` : "";
+  /* lambang yang tidak ada disembunyikan lewat satu pendengar, bukan onerror sebaris (gerbang CSP) */
+  document.addEventListener?.("error", e => { if (e.target?.classList?.contains("ops-lambang")) e.target.hidden = true; }, true);
+  const lambangProv = k => k ? `<img class="ops-lambang" src="/lambang/provinsi/${esc(String(k).slice(0, 2))}.png" alt="" loading="lazy">` : "";
   const kolomSim = n => n <= 5 ? Math.max(n, 1) : n % 3 === 0 ? 3 : n % 4 === 0 ? 4 : Math.min(4, Math.ceil(n / 2));
   function kartuRencana(D) {
     const it = rencanaAksi(D), GRUP = [["jam", "Laporan gelar armada"], ["silang", "Armada tidak siap"], ["api", "Api di luar jangkauan"], ["sortie", "Renlap"], ["catat", "Kelengkapan data"]];

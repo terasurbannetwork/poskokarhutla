@@ -2131,7 +2131,7 @@
 #opsLaporan .ops-kp-t thead th{padding:6px 4px;background:color-mix(in srgb,#2f6fd6 5%,#fff);border-bottom:1px solid color-mix(in srgb,#2f6fd6 14%,#fff);text-align:center}
 #opsLaporan .ops-kp-t thead .ops-lbl{display:inline-flex;align-items:center;gap:3px;font-size:.625rem;font-weight:700;color:var(--ink2);white-space:nowrap}
 #opsLaporan .ops-kp-t thead .ops-lbl svg{width:10px;height:10px;color:#2f6fd6}
-#opsLaporan .ops-kp-t tbody th{padding:8px 6px 8px 8px;text-align:left}
+#opsLaporan .ops-kp-t tbody th{padding:8px 6px 8px 8px;text-align:center}
 #opsLaporan .ops-kp-t tbody td{padding:8px 4px;text-align:center;font-family:var(--display);font-size:.875rem;font-weight:800;color:#0b2545;white-space:nowrap}
 #opsLaporan .ops-kp-t tbody tr+tr>*{border-top:1px solid color-mix(in srgb,#2f6fd6 10%,#fff)}
 #opsLaporan .ops-kp-t .ops-kp-jenis .ops-lbl{white-space:nowrap}

@@ -14,7 +14,7 @@
   udara 20,50 ha), sisa 441,70 ha/77 FS.
 
 Bangun ulang: hapus `(generator).pptx`, lalu `PYTHONUTF8=1 C:/Python314/python jalan.py`, lalu
-`PYTHONUTF8=1 DECK_BNPB=C:/Users/USER/.claude/skills/ppt-konsultan/bnpb C:/Python314/python bingkai.py`. Gerbang deck.py lolos (310 angka).
+`PYTHONUTF8=1 DECK_BNPB=~/.claude/skills/ppt-konsultan/bnpb C:/Python314/python bingkai.py`. Gerbang deck.py lolos (310 angka).
 
 ## Lampiran kab/kota (ditambah 5 Nov 18.40)
 

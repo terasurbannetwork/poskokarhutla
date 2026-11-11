@@ -4,7 +4,7 @@
 - Sumber: WA Koordalops 9 Nov 07.00 s.d. 10 Nov 07.00 WIB (20 laporan, 15 menonjol), BMKG dan PVMBG 10 Nov 06.00 WIB, laphar PDF 9 Nov (`bahan-laphar.json`, gempa NTT).
 - Slide 1 tetap hanya kejadian baru tanpa karhutla (4 kejadian). Karhutla di slide 3 hanya data sistem.
 - `dalops_banjir.py --unggah` gagal di Windows (`npx` tidak ditemukan subprocess): Pantau Banjir belum terbarui dari laporan ini.
-- Jalankan: `PYTHONUTF8=1 DECK_BNPB="C:/Users/USER/.claude/skills/ppt-konsultan/bnpb" /c/Python314/python data/laporan-bnpb/harian-2026-11-10/jalan.py`
+- Jalankan: `PYTHONUTF8=1 DECK_BNPB="~/.claude/skills/ppt-konsultan/bnpb" /c/Python314/python data/laporan-bnpb/harian-2026-11-10/jalan.py`
 - Alt 2 (tanpa karhutla di semua slide, `Revisi 2`): jalankan perintah di atas dengan `ALT=2`. Panel karhutla slide 3 diganti infrastruktur terdampak (Kerugian Materiil laphar), panel FWI slide 5 diganti status 3 hari lokasi terdampak.
 - Alt 2 rev 2 (`Revisi 3`): `ALT=2 ALT_REV=2`, tabel slide 1 tanpa kolom Kondisi.
 - Alt 2 rev 3 (`Revisi 4`): `ALT=2 ALT_REV=3`, slide 1 tanpa "menonjol" dan tanpa kelompok, slide 5 banyak ancaman (`generator/harian_prediksi.py`).
