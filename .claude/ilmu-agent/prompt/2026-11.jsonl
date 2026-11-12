@@ -3689,3 +3689,12 @@
 {"t":"2026-11-12T13:37:10.968+07:00","sesi":"f86d07e7","prompt":"Coba tadi yang berhenti di tengah apa aja prosesnya?","label":[],"berkas":[]}
 {"t":"2026-11-12T13:43:49.647+07:00","sesi":"019ca9ba","prompt":"Kondisi dan Prakiraan \nKabar dan Kelengkapan","label":[],"berkas":[]}
 {"t":"2026-11-12T13:45:04.908+07:00","sesi":"019ca9ba","prompt":"Ini agar diganti jadi\n\n1. Peta Pantauan\n2. Kondisi terkini\n\n\nDipisah ya","label":[],"berkas":[]}
+{"t":"2026-11-12T13:46:11.544+07:00","sesi":"019ca9ba","prompt":"Ini agar ada filternya ya ini jadi bergantung mau pilih data yang ditampilkan yang mana","label":[],"berkas":[]}
+{"t":"2026-11-12T13:46:44.691+07:00","sesi":"019ca9ba","prompt":"Sama waspada dong","label":[],"berkas":[]}
+{"t":"2026-11-12T13:47:15.202+07:00","sesi":"019ca9ba","prompt":"Eh bagusin juga dong. Sama filter apa lagi ya. Kaya pilih pulau \nkemudian pilih provinsi\nPilkih yang sudah banjir atau masih normal","label":["banjir"],"berkas":[]}
+{"t":"2026-11-12T13:47:58.673+07:00","sesi":"019ca9ba","prompt":"Ini ga keliatan mana yang datanya belum lengkap. Apa pakai icon bulatan apa ya?","label":[],"berkas":[]}
+{"t":"2026-11-12T13:54:17.557+07:00","sesi":"f86d07e7","prompt":"Ya, rapikan","label":[],"berkas":[]}
+{"t":"2026-11-12T13:55:33.741+07:00","sesi":"019ca9ba","prompt":"Bro ini lu ada cron atau bot yang scraping harian datanya ga ya?","label":[],"berkas":[]}
+{"t":"2026-11-12T13:56:44.212+07:00","sesi":"f86d07e7","prompt":"Ini agar ada yang sifatnya semua bencana ada yang sifatnya bisa filter bencannanya apa","label":[],"berkas":[]}
+{"t":"2026-11-12T13:58:46.457+07:00","sesi":"f86d07e7","prompt":"Ini agar ada yang sifatnya semua bencana ada yang sifatnya bisa filter daerahnya apa. Misal filter provinsi dan filter kab kota.\n\nNah terus bisa expor baik dalam wa maupun dalam excel untuk kasih data info yang kurang itu apa aja. Atau perlu dalam lain? Dalam Word atau pdf kah? nah gw gatau\n\nKalo filter daerah munculnya adalah semua bencana di wilayah tersebut.","label":[],"berkas":[]}
+{"t":"2026-11-12T13:59:34.174+07:00","sesi":"019ca9ba","prompt":"Ya, jadwalkan","label":[],"berkas":[]}

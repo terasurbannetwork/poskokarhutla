@@ -101,8 +101,9 @@ export async function catatOperasi(env, {id, teks, tanggal, diterima}) {
     return st;
   };
   /* 0126 belum diterapkan di produksi: jalur lama tanpa penjagaan */
-  try { const st = bangun(true); if (st.length) await env.DB.batch(st); }
-  catch (e) { if (!/no such table: op_isian/i.test(String(e?.message || e))) throw e; const st = bangun(false); if (st.length) await env.DB.batch(st); }
+  const kirim = st => st.length ? env.DB.batch(st) : null;
+  try { await kirim(bangun(true)); }
+  catch (e) { if (!/no such table: op_isian/i.test(String(e?.message || e))) throw e; await kirim(bangun(false)); }
   try { await lengkapi(env, diterima); } catch (e) { if (!tanpaTabel(e)) throw e; }   // 0106 belum ada: pesan tetap tercatat tanpa pemasangan foto/koordinat
   return {tanggal: tgl, dikenali: h.dikenali, temuan: h.temuan.length, gerak: h.gerak.length, status: h.status.length, tertahan: h.tertahan.map(({alasan, lokasi}) => ({alasan, ...(lokasi ? {lokasi} : {})}))};
 }

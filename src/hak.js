@@ -396,3 +396,65 @@ export const skBatch = (env, p, stmts) => {
   if (!stmts.some(s => JEJAK_SK.has(s))) throw new Galat(500, "tulis sk_* tanpa baris sk_jejak ditolak");
   return env.DB.batch(stmts);
 };
+
+/* ======================================================================================================================================================
+   Operasi Udara isian manual (migrasi 0126_operasi_isian, 0127_op_isian_terhapus; src/operasi_isian.js, DESAIN-TEKNIS operasi-udara 7.3/7.4).
+   Hak tulis dicek di rute (stafPeran pusdalops atau modOK), di sini hanya SQL. Fungsi stmt* belum dijalankan: dirangkai ke batchTulis. */
+const opP = (env, sql, ...b) => env.DB.prepare(sql).bind(...b);
+const opJson = o => o == null ? null : JSON.stringify(o);
+const opTanpaIsian = e => /no such table: op_isian/i.test(String(e?.message || e));
+const OP_KOL_GERAK = "id, tanggal, registrasi, jenis, jam_utc, misi, lokasi, lat, lon";
+const OP_KOL_TEMUAN = "tanggal, jam_utc, registrasi, lat, lon, status, luas_klaim_ha, lokasi";
+const OP_KOL_HASIL = ["drops", "liter", "lapor"];
+
+/* "tabel|kunci" semua butir yang dihapus manual (indeks op_isian_terhapus). 0126 belum diterapkan: kosong. */
+export async function opDihapusManual(env) {
+  try { return new Set((await env.DB.prepare("SELECT tabel, kunci FROM op_isian WHERE terhapus = 1").all()).results.map(r => `${r.tabel}|${r.kunci}`)); }
+  catch (e) { if (opTanpaIsian(e)) return new Set(); throw e; }
+}
+export const opIsianTerhapus = async (env, tabel) => new Set((await opP(env, "SELECT kunci FROM op_isian WHERE tabel = ? AND terhapus = 1", tabel).all()).results.map(r => r.kunci));
+export const opLajuIsian = async (env, oleh, sejak) => (await opP(env, "SELECT count(*) n FROM op_isian_log WHERE oleh = ? AND waktu > ?", oleh, sejak).first())?.n ?? 0;
+export const opStmtIsian = (env, tabel, kunci, oleh, kini, terhapus = 0) => opP(env, "INSERT INTO op_isian (tabel, kunci, sumber, oleh, waktu, terhapus) VALUES (?1, ?2, 'manual', ?3, ?4, ?5) ON CONFLICT (tabel, kunci) DO UPDATE SET oleh = ?3, waktu = ?4, terhapus = ?5", tabel, kunci, oleh, kini, terhapus);
+export const opStmtLog = (env, oleh, kini, tabel, kunci, aksi, sebelum, sesudah, alasan = null) => opP(env, "INSERT INTO op_isian_log (waktu, oleh, tabel, kunci, aksi, sebelum, sesudah, alasan) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", kini, oleh, tabel, kunci, aksi, opJson(sebelum), opJson(sesudah), alasan);
+/* K15: koordinat baris manual dilengkapi cron, tercatat */
+export const opStmtLogLengkapi = (env, kini, kunci, sesudah) => opP(env, "INSERT INTO op_isian_log (waktu, oleh, tabel, kunci, aksi, sesudah) VALUES (?1, 'cron', 'op_gerak', ?2, 'lengkapi', ?3)", kini, kunci, opJson(sesudah));
+export const opStmtKejadian = (env, jenis, tanggal, registrasi, sub, id) => opP(env, "INSERT OR IGNORE INTO op_isian_kejadian (jenis, tanggal, registrasi, sub, id) VALUES (?, ?, ?, ?, ?)", jenis, tanggal, registrasi, sub, id);
+
+export const opArmada = (env, registrasi) => opP(env, "SELECT registrasi, base_id FROM op_armada WHERE registrasi = ?", registrasi).first();
+export const opBaseAda = (env, id) => opP(env, "SELECT id FROM op_base WHERE id = ?", id).first();
+export const opStatusTanggal = async (env, tanggal) => (await opP(env, "SELECT registrasi, status, alasan, sumber FROM op_armada_status WHERE tanggal = ?", tanggal).all()).results;
+export const opStmtStatusManual = (env, tanggal, registrasi, status, alasan, kini) => opP(env, "INSERT INTO op_armada_status (tanggal, registrasi, status, alasan, sumber, diubah) VALUES (?1, ?2, ?3, ?4, 'manual', ?5) ON CONFLICT (tanggal, registrasi) DO UPDATE SET status = ?3, alasan = ?4, sumber = 'manual', diubah = ?5", tanggal, registrasi, status, alasan, kini);
+/* baris bot jadi milik manual supaya pembaca menyembunyikannya; bot yang menulis lagi mengembalikan 'wa' */
+export const opStmtStatusJadiManual = (env, tanggal, registrasi) => opP(env, "UPDATE op_armada_status SET sumber = 'manual' WHERE tanggal = ? AND registrasi = ?", tanggal, registrasi);
+
+export const opGerakById = (env, id) => opP(env, `SELECT ${OP_KOL_GERAK} FROM op_gerak WHERE dummy = 0 AND id = ?`, id).first();
+/* sortie sama yang belum dihapus manual */
+export const opGerakKembar = (env, tanggal, registrasi, jenis, jam) => opP(env, `SELECT ${OP_KOL_GERAK} FROM op_gerak WHERE dummy = 0 AND tanggal = ?1 AND registrasi = ?2 AND jenis = ?3 AND jam_utc IS ?4 AND NOT EXISTS (SELECT 1 FROM op_isian WHERE tabel = 'op_gerak' AND kunci = CAST(op_gerak.id AS TEXT) AND terhapus = 1)`, tanggal, registrasi, jenis, jam).first();
+export const opSisipGerak = async (env, g) => (await opP(env, "INSERT INTO op_gerak (tanggal, registrasi, jenis, jam_utc, misi, lokasi, lat, lon, wa_id, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL, 0)", g.tanggal, g.registrasi, g.jenis, g.jam_utc, g.misi, g.lokasi, g.lat, g.lon).run()).meta.last_row_id;
+export const opStmtUbahGerak = (env, id, g) => opP(env, "UPDATE op_gerak SET tanggal = ?2, registrasi = ?3, jenis = ?4, jam_utc = ?5, misi = ?6, lokasi = ?7, lat = ?8, lon = ?9 WHERE id = ?1", id, g.tanggal, g.registrasi, g.jenis, g.jam_utc, g.misi, g.lokasi, g.lat, g.lon);
+export const opHasil = (env, gid) => opP(env, "SELECT drops, liter, lapor FROM op_gerak_hasil WHERE gerak_id = ?", gid).first();
+/* kol: bagian dari drops, liter, lapor (daftar putih); kolom satelit tidak disentuh */
+export const opStmtHasil = (env, gid, isi) => {
+  const kol = OP_KOL_HASIL.filter(k => isi[k] != null);
+  return opP(env, `INSERT INTO op_gerak_hasil (gerak_id, ${kol.join(", ")}) VALUES (?, ${kol.map(() => "?").join(", ")}) ON CONFLICT (gerak_id) DO UPDATE SET ${kol.map(k => `${k} = excluded.${k}`).join(", ")}`, gid, ...kol.map(k => isi[k]));
+};
+export const opTemuanById = (env, id) => opP(env, `SELECT ${OP_KOL_TEMUAN} FROM op_temuan WHERE id = ? AND dummy = 0`, id).first();
+export const opSisipTemuan = async (env, t) => (await opP(env, "INSERT INTO op_temuan (tanggal, jam_utc, registrasi, lat, lon, status, luas_klaim_ha, lokasi, wa_id, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL, 0)", t.tanggal, t.jam_utc, t.registrasi, t.lat, t.lon, t.status, t.luas_klaim_ha, t.lokasi).run()).meta.last_row_id;
+export const opStmtUbahTemuan = (env, id, t) => opP(env, "UPDATE op_temuan SET tanggal = ?2, jam_utc = ?3, registrasi = ?4, lat = ?5, lon = ?6, status = ?7, luas_klaim_ha = ?8, lokasi = ?9 WHERE id = ?1", id, t.tanggal, t.jam_utc, t.registrasi, t.lat, t.lon, t.status, t.luas_klaim_ha, t.lokasi);
+/* batalkan baris baru bila penanda isiannya gagal ditulis (tanpa penanda, bot bisa menggandakan) */
+export const opBatalSisip = (env, tabel, id) => opP(env, tabel === "op_temuan" ? "DELETE FROM op_temuan WHERE id = ?" : "DELETE FROM op_gerak WHERE id = ?", id).run();
+
+/* butir untuk hapus lunak: undefined = kunci tidak sesuai bentuk tabelnya, null = tidak ditemukan */
+export async function opButir(env, tabel, kunci) {
+  if (tabel === "op_armada_status") { const [t, r] = kunci.split("|"); return t && r ? opP(env, "SELECT tanggal, registrasi, status, alasan, sumber FROM op_armada_status WHERE tanggal = ? AND registrasi = ?", t, r).first() : undefined; }
+  if (!/^\d+$/.test(kunci)) return undefined;
+  const id = Number(kunci);
+  if (tabel === "op_gerak") { const g = await opGerakById(env, id); if (!g) return null; const {id: _, ...sisa} = g; return sisa; }
+  if (tabel === "op_gerak_hasil") return opHasil(env, id);
+  if (tabel === "op_temuan") return opTemuanById(env, id);
+  return undefined;
+}
+/* riwayat: per butir {tabel, kunci} atau per tanggal; maks 200, terbaru dulu */
+export const opRiwayat = async (env, {tabel, kunci, tanggal}) => (tabel != null
+  ? await opP(env, "SELECT waktu, oleh, tabel, kunci, aksi, sebelum, sesudah, alasan FROM op_isian_log WHERE tabel = ? AND kunci = ? ORDER BY id DESC LIMIT 200", tabel, kunci).all()
+  : await opP(env, "SELECT waktu, oleh, tabel, kunci, aksi, sebelum, sesudah, alasan FROM op_isian_log WHERE json_extract(coalesce(sesudah, sebelum), '$.tanggal') = ? ORDER BY id DESC LIMIT 200", tanggal).all()).results;

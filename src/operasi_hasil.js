@@ -4,6 +4,7 @@
    ponytail: tak menunggu keterlambatan NRT FIRMS (<= 3 jam) sebelum menyatakan padam; naikkan jendela ke 27 jam bila ada padam yang menyala lagi. */
 import {registrasi, uraiStempel} from "./operasi_wa.js";
 import {jarakKm} from "./operasi_nilai.js";
+import {opDihapusManual, opStmtLogLengkapi} from "./hak.js";
 
 const JAM = 36e5, KM_PADAM = 1, JENDELA_NILAI = 24 * JAM, MAKS_NILAI = 200;
 export const GUNA_PERAN = {wb: "wb", omc: "omc", patroli: "patroli", patroli_wb: "patroli"};
@@ -18,12 +19,8 @@ const tanpaTabel = e => /no such table: op_/i.test(String(e?.message || e));
 export const gerakHidup = a => `NOT EXISTS (SELECT 1 FROM op_isian WHERE tabel = 'op_gerak' AND kunci = CAST(${a}.id AS TEXT) AND terhapus = 1)`;
 /* ada isian manual aktif untuk sortie (tanggal, registrasi, jenis gerak) itu: bot tidak boleh menyisipkan kembaran */
 export const kejadianGerak = (t, r, j) => `EXISTS (SELECT 1 FROM op_isian_kejadian k JOIN op_isian i ON i.tabel = 'op_gerak' AND i.kunci = CAST(k.id AS TEXT) AND i.terhapus = 0 WHERE k.jenis = 'gerak' AND k.tanggal = ${t} AND k.registrasi = ${r} AND k.sub = ${j})`;
-/* "tabel|kunci" semua butir yang dihapus manual (dibaca SEKALI per permintaan, digabung di memori; tabel isian kecil, hanya baris terhapus=1). Tabel 0126 belum ada: kosong.
-   ponytail: tanpa indeks terhapus; pindai penuh op_isian per permintaan, tambah indeks sebagian bila baris isian sudah puluhan ribu. */
-export async function dihapusManual(env) {
-  try { return new Set((await env.DB.prepare("SELECT tabel, kunci FROM op_isian WHERE terhapus = 1").all()).results.map(r => `${r.tabel}|${r.kunci}`)); }
-  catch (e) { if (/no such table: op_isian/i.test(String(e?.message || e))) return new Set(); throw e; }
-}
+/* "tabel|kunci" semua butir yang dihapus manual (SQL di src/hak.js, indeks 0127); dibaca SEKALI per permintaan, digabung di memori */
+export const dihapusManual = opDihapusManual;
 
 /* putaran FIRMS (isi titik_terbaru) -> [{lat, lon, t}] */
 export const titikDariPutaran = isi => { const acuan = Date.parse(isi.acuan); return (isi.baris || []).map(b => ({lat: b[0], lon: b[1], t: acuan + b[2] * JAM})); };
@@ -71,7 +68,7 @@ export async function lengkapi(env, kini) {
     g.lat = lat; g.lon = lon;
     st.push(env.DB.prepare("UPDATE op_gerak SET lat = ?2, lon = ?3 WHERE id = ?1").bind(g.id, lat, lon),
       env.DB.prepare("INSERT INTO op_gerak_hasil (gerak_id, sumber_lokasi) VALUES (?1, ?2) ON CONFLICT (gerak_id) DO UPDATE SET sumber_lokasi = ?2").bind(g.id, sumber));
-    if (manual.has(String(g.id))) st.push(env.DB.prepare("INSERT INTO op_isian_log (waktu, oleh, tabel, kunci, aksi, sesudah) VALUES (?1, 'cron', 'op_gerak', ?2, 'lengkapi', ?3)").bind(kini, String(g.id), JSON.stringify({lat, lon, sumber})));   // K15: koordinat baris manual dilengkapi, tercatat
+    if (manual.has(String(g.id))) st.push(opStmtLogLengkapi(env, kini, String(g.id), {lat, lon, sumber}));   // K15: koordinat baris manual dilengkapi, tercatat
   };
   for (const f of foto) {
     let g = null; for (const c of gerak) if (c.registrasi === f.registrasi && Math.abs(c.jam_utc - f.jam) <= 3 * JAM && (!g || Math.abs(c.jam_utc - f.jam) < Math.abs(g.jam_utc - f.jam))) g = c;
