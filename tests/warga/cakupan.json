@@ -1214,7 +1214,16 @@
     "GET /api/siklus/pintu": "UJ-F7-01: urutan prioritas",
     "GET /api/siklus/registri": "UJ-F7-02: registri sumber",
     "table sk_renkon": "UJ-F5-01: sk_renkon",
-    "table sk_gladi": "UJ-F5-01: sk_gladi"
+    "table sk_gladi": "UJ-F5-01: sk_gladi",
+    "POST /api/operasi/isian/gelar": "gelar: status tersimpan sebagai manual",
+    "POST /api/operasi/isian/sortie": "sortie: isi, kembar 409, ubah",
+    "POST /api/operasi/isian/hasil": "sortie: isi, kembar 409, ubah; hasil drops/liter",
+    "POST /api/operasi/isian/temuan": "temuan: isi, kembar 409, ubah",
+    "POST /api/operasi/isian/hapus": "hapus lunak: alasan wajib",
+    "GET /api/operasi/isian/riwayat": "riwayat: hak baca, per butir dan per tanggal",
+    "table op_isian": "hapus lunak: alasan wajib",
+    "table op_isian_log": "riwayat: hak baca, per butir dan per tanggal",
+    "table op_isian_kejadian": "sortie: isi, kembar 409, ubah"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",
@@ -1227,7 +1236,10 @@
     "table meja_catatan_cadang": "tabel cadangan sementara di migrations/0110_meja_rehab_lepas.sql: dibuat dan dibuang di migrasi yang sama saat meja_catatan dibangun ulang (F0-3, RU-009); salin-pulih datanya diuji tests/warga/unit_skema.test.mjs R1-R10",
     "table meja_petugas_cadang": "tabel cadangan sementara di migrations/0118_meja_juklak.sql: dibuat dan dibuang di migrasi yang sama saat meja_petugas dibangun ulang",
     "table meja_ringkas_cadang": "tabel cadangan sementara di migrations/0118_meja_juklak.sql: dibuat dan dibuang di migrasi yang sama saat meja_ringkas dibangun ulang",
-    "table meja_jejak_cadang": "tabel cadangan sementara di migrations/0110_meja_rehab_lepas.sql: dibuat dan dibuang di migrasi yang sama saat meja_catatan dibangun ulang (F0-3, RU-009); salin-pulih datanya diuji tests/warga/unit_skema.test.mjs R1-R10"
+    "table meja_jejak_cadang": "tabel cadangan sementara di migrations/0110_meja_rehab_lepas.sql: dibuat dan dibuang di migrasi yang sama saat meja_catatan dibangun ulang (F0-3, RU-009); salin-pulih datanya diuji tests/warga/unit_skema.test.mjs R1-R10",
+    "table op_kontrak": "dibuat migrasi 0126 untuk tiket isian Operasi Udara berikutnya; belum ada kode di src/ yang membaca atau menulisnya, uji integrasi menyusul bersama rutenya",
+    "table op_personel": "dibuat migrasi 0126 untuk tiket isian Operasi Udara berikutnya; belum ada kode di src/ yang membaca atau menulisnya, uji integrasi menyusul bersama rutenya",
+    "table op_foto_unggah": "dibuat migrasi 0126 untuk tiket isian Operasi Udara berikutnya; belum ada kode di src/ yang membaca atau menulisnya, uji integrasi menyusul bersama rutenya"
   },
   "antre": {
     "batas global 600 laporan/jam": "butuh 600 baris jejak; tambahkan uji yang menyemai jejak langsung"
