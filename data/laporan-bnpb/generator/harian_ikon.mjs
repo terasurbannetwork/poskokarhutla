@@ -45,7 +45,9 @@ for (const [n, d] of Object.entries(P)) for (const [w, c] of Object.entries(W)) 
 // 10 Nov pemilik: ikon solid untuk penanda peringatan dini di peta; WARNA diganti warna ikon
 const AWAN = 'M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z';
 const SOLID = {
-  asapsolid: `<path d="${AWAN}" fill="WARNA"/>`,
+  // 12 Nov pemilik ("iconnya coba ganti, nyaru sama yg hujan"; partikel, masker, tengkorak ditolak; "berbau poison smoke"):
+  // kualitas udara = tiga kepulan asap tebal bergelombang naik dari sumbernya
+  asapsolid: `<g stroke-width="2.8"><path d="M6.5 19c-2-2.2 1.6-3.8 0-6.2s1.4-4 0-6.3"/><path d="M12 19c-2-2.4 1.8-4.2 0-6.8s1.6-4.4 0-7.2"/><path d="M17.5 19c-2-2.2 1.6-3.8 0-6.2s1.4-4 0-6.3"/></g><rect x="3" y="19.2" width="18" height="2.8" rx="1.4" fill="WARNA" stroke="none"/>`,
   hujansolid: `<g transform="translate(0 -5)"><path d="${AWAN}" fill="WARNA"/></g><path d="M8 17.5v4.5M12 17.5v4.5M16 17.5v4.5" stroke-width="2.6"/>`,
   anginsolid: `<g stroke-width="3.2">${P.angin}</g>`,
 };

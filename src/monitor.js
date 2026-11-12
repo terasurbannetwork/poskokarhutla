@@ -5,6 +5,7 @@ import {json, gagal, bacaBody, cacheTepi, normalWA} from "./worker.js";
 import {pemirsaSesi} from "./pemirsa.js";
 import {modOK} from "./posko.js";
 import {stafSesi} from "./staf.js";
+import {sqlDaftar, AGREGAT} from "./monitor_sql.js";
 import {akunAktif, lingkupSql, dalamLingkup, KECUALI_LAIN, tanpaBencana, tanpaTabel, kirimMedia, jsonAman, PROV} from "./instansi.js";
 import {laju} from "./bnpb.js";
 
@@ -47,8 +48,7 @@ async function daftar(env, req, url, kini) {
   const bencana = url.searchParams.get("bencana") ?? "karhutla";
   if (!Object.hasOwn(FILTER_BENCANA, bencana)) return gagal(400, "bencana harus karhutla atau banjir");
   const p = await pelaku(env, req, kini); if (p instanceof Response) return p;
-  const baca = bagian => env.DB.prepare(`SELECT t.id, t.prov, t.kab, t.kec, t.lat, t.lon, t.level, t.status, t.dibuat, t.terakhir_terdeteksi, t.padam_verif FROM tugas_api t
-    WHERE ${p.sql[0]} ${bagian} AND (t.status = 'buka' OR t.dibuat > ? OR t.padam_pada > ?) ORDER BY t.dibuat DESC LIMIT 300`).bind(...p.sql[1], kini - 72 * JAM, kini - 72 * JAM).all();
+  const baca = bagian => env.DB.prepare(sqlDaftar(p.sql[0], bagian)).bind(...p.sql[1], kini - 72 * JAM, kini - 72 * JAM).all();
   let T; try { T = (await baca(FILTER_BENCANA[bencana])).results; } catch (e) { if (!tanpaBencana(e)) throw e; T = bencana === "banjir" ? [] : (await baca("")).results; }   // 0047 belum ada = semua tugas karhutla, tak ada banjir
   const ids = JSON.stringify(T.map(t => t.id)), per = (m, t, f) => (m.get(t) || m.set(t, []).get(t)).push(f), B = new Map(), I = new Map(), M = new Map();
   if (T.length) {
@@ -97,10 +97,6 @@ async function berkas(env, req, id, kini, thumb) {
 }
 
 /* Ringkasan publik untuk popup "situasi hari ini": hitungan agregat per provinsi, tanpa data pribadi. Tanpa sesi. Cache tepi 300 dtk (D1 Free: pindai tugas_api mahal). Hanya data nyata (dummy = 0). */
-const ADA = (tbl, kond) => `EXISTS (SELECT 1 FROM ${tbl} x WHERE x.tugas_id = t.id AND ${kond})`;
-const AGREGAT = baca => `SELECT t.prov, count(*) kejadian, sum(${baca ? ADA("monitor_baca", "x.pihak = 'dalops' AND x.dummy = 0") : "0"}) dimonitor, sum(${baca ? ADA("monitor_baca", "x.pihak = 'bpbd' AND x.dummy = 0") : "0"}) diinfokan,
-  sum(${ADA("tugas_isian", "x.langkah = 'konfirmasi'")}) groundcheck, sum(${ADA("tugas_isian", "x.langkah = 'tindakan'")}) tindak, sum(t.status != 'buka') selesai
-  FROM tugas_api t WHERE t.dummy = 0 AND (t.status = 'buka' OR t.dibuat > ? OR t.padam_pada > ?) AND ?1 GROUP BY t.prov`;
 const NOL = {kejadian: 0, dimonitor: 0, diinfokan: 0, groundcheck: 0, tindak: 0, selesai: 0}, KUNCI = Object.keys(NOL);
 async function ringkas(env, req, ctx, url, kini) {
   const bencana = url.searchParams.get("bencana") ?? "karhutla";
