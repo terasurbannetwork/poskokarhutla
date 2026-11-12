@@ -144,9 +144,31 @@
   /* pilihan Pulau lalu Provinsi (daftar provinsi mengikuti pulau), dipakai bilah saring Kondisi terkini dan Peringatan dini (pemilik 12 Nov 2026) */
   const PULAU = {1: "Sumatera", 2: "Sumatera", 3: "Jawa", 5: "Bali dan Nusa Tenggara", 6: "Kalimantan", 7: "Sulawesi", 8: "Maluku", 9: "Papua"};
   const pulauDari = k => PULAU[String(k)[0]] || "Lainnya";
+  /* picker sendiri pengganti daftar bawaan peramban (pemilik 12 Nov 2026 "kenapa pickernya kaya gitu"): select asli tetap jadi sumber nilai dan event change,
+     tombol + daftar segaya menu jenis bencana; nilai yang diubah kode (select.value =, opsi diganti) ikut tampil */
+  const NILAI = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value");
+  function hiasPilih(sel) {
+    const t = h("span", {class: "dl-pp-t"}), b = h("button", {type: "button", class: "dl-pp-btn", "aria-haspopup": "listbox", "aria-expanded": "false", "aria-label": sel.getAttribute("aria-label")}, t, h("i", {class: "dl-pp-panah", "aria-hidden": "true"}));
+    const m = h("div", {class: "dl-pp-menu", role: "listbox", hidden: true}), w = h("div", {class: "dl-pp"}, sel, b, m);
+    sel.hidden = true; sel.tabIndex = -1;
+    const segar = () => { t.textContent = sel.selectedOptions[0]?.textContent || ""; };
+    Object.defineProperty(sel, "value", {get() { return NILAI.get.call(this); }, set(v) { NILAI.set.call(this, v); segar(); }});
+    new MutationObserver(segar).observe(sel, {childList: true});
+    const tutup = () => { if (m.hidden) return; m.hidden = true; b.setAttribute("aria-expanded", "false"); };
+    const buka = () => {
+      m.replaceChildren(...[...sel.options].map(o => { const x = h("button", {type: "button", role: "option", "aria-selected": String(o.selected), teks: o.textContent});
+        x.addEventListener("click", () => { sel.value = o.value; sel.dispatchEvent(new Event("change", {bubbles: true})); tutup(); b.focus(); }); return x; }));
+      m.hidden = false; b.setAttribute("aria-expanded", "true"); m.querySelector('[aria-selected="true"]')?.focus();
+    };
+    b.addEventListener("click", e => { e.stopPropagation(); m.hidden ? buka() : tutup(); });
+    m.addEventListener("keydown", e => { if (e.key === "Escape") { tutup(); b.focus(); return; } if (!["ArrowDown", "ArrowUp"].includes(e.key)) return; e.preventDefault();
+      const bs = [...m.children], i = bs.indexOf(document.activeElement); bs[(i + (e.key === "ArrowDown" ? 1 : bs.length - 1)) % bs.length]?.focus(); });
+    document.addEventListener("click", e => { if (!w.contains(e.target)) tutup(); });
+    segar(); return w;
+  }
   function pilihWilayah(kodes, berubah) {
     const sar = {pulau: "", prov: ""}, urutP = Object.values(PULAU);
-    const pilihan = (lbl, ik, isi) => h("label", {class: "dl-pilih"}, ikon(ik), h("span", {class: "dl-pilih-t", teks: lbl}), isi);
+    const pilihan = (lbl, ik, isi) => h("div", {class: "dl-pilih"}, ikon(ik), h("span", {class: "dl-pilih-t", teks: lbl}), hiasPilih(isi));
     const opsi = (semua, xs) => [h("option", {value: "", teks: semua}), ...xs.map(([v, t]) => h("option", {value: v, teks: t}))];
     const sProv = h("select", {"aria-label": "Provinsi"}), isiProv = () => {
       const xs = [...new Set(kodes.map(String))].filter(p => !sar.pulau || pulauDari(p) === sar.pulau).map(p => [p, namaProv(p)]).sort((a, b) => a[1].localeCompare(b[1]));
@@ -264,28 +286,31 @@
     const peta = new maplibregl.Map({container: wadah, style: "https://tiles.openfreemap.org/styles/positron", bounds: [[94.8, -11.2], [141.2, 6.2]],
       fitBoundsOptions: {padding: 16}, minZoom: 3, maxZoom: 13, dragRotate: false, pitchWithRotate: false, attributionControl: {compact: true}});
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-right");
-    /* saring di samping Tutup semua, boleh lebih dari satu (pemilik 5 Nov 2026): tak ada yang dipilih = semua tampil;
-       ada yang dipilih = hanya itu. Surut/belum menyaring wilayah kab, Siaga/Awas menyaring penanda prakiraan (lv 2/3). */
+    /* saring peta, boleh lebih dari satu (pemilik 5 Nov 2026): tak ada yang dipilih = semua tampil. Dua kelompok bersekat (pemilik 12 Nov 2026):
+       kejadian menyaring wilayah kab saja, prakiraan menyaring segitiga saja; memilih Siaga tidak lagi menyembunyikan wilayah kejadian. Tiap tombol berangka. */
     const saring = new Set();
     const terapSaring = () => {
       const st = ["surut", "belum"].filter(v => saring.has(v)), lv = [["waspada", 1], ["siaga", 2], ["awas", 3]].filter(([v]) => saring.has(v)).map(([, l]) => l);
       const flag = ["korban", "ungsi", "kabar", "kurang"].filter(v => saring.has(v));
-      /* dalam satu kelompok = atau, antarkelompok = dan; hanya prakiraan yang dipilih = wilayah kejadian disembunyikan */
+      /* dalam satu kelompok = atau, antarsaring kejadian = dan */
       const syarat = [...(st.length ? [["in", ["get", "st"], ["literal", st]]] : []), ...flag.map(v => ["==", ["get", v], 1])];
-      const fKab = !saring.size ? null : syarat.length ? ["all", ...syarat] : ["==", ["get", "st"], "-"];
+      const fKab = syarat.length ? ["all", ...syarat] : null;
       for (const id of ["kab-isi", "kab-garis"]) if (peta.getLayer(id)) peta.setFilter(id, fKab);
       if (peta.getLayer("kab-kurang")) peta.setFilter("kab-kurang", fKab ? ["all", fKab, ["==", ["get", "kurang"], 1]] : ["==", ["get", "kurang"], 1]);
       if (peta.getLayer("kab-kurang-titik")) peta.setFilter("kab-kurang-titik", fKab);
-      if (peta.getLayer("peringatan")) peta.setFilter("peringatan", saring.size ? ["in", ["get", "lv"], ["literal", lv]] : null);
+      if (peta.getLayer("peringatan")) peta.setFilter("peringatan", lv.length ? ["in", ["get", "lv"], ["literal", lv]] : null);
     };
-    const tSaring = [["surut", J.ya, "ok"], ["belum", J.tidak, J.ik], ...[...(SARING[J.k] || []), "kurang"].filter(v => fitur.some(f => f.properties[v])).map(v => [v, ...NAMA_SARING[v]]),   // pil Data belum lengkap (pemilik 12 Nov 2026)
-      ...(J.pra === false ? [] : [["waspada", H.NAMA_LEVEL[1], "peringatan"], ["siaga", H.NAMA_LEVEL[2], "peringatan"], ["awas", H.NAMA_LEVEL[3], "peringatan"]])].map(([v, t, ik]) => {
-      const b = h("button", {type: "button", class: "dl-saring-btn dl-saring-" + v, "aria-pressed": "false"}, ikon(ik), t);
+    const nKej = v => fitur.filter(f => v === "surut" || v === "belum" ? f.properties.st === v : f.properties[v]).length;
+    const tombolSar = ([v, t, ik, n]) => {
+      const b = h("button", {type: "button", class: "dl-saring-btn dl-saring-" + v, "aria-pressed": "false"}, ikon(ik), t, h("b", {class: "dl-saring-n", teks: F(n)}));
       b.addEventListener("click", () => { saring.has(v) ? saring.delete(v) : saring.add(v); b.setAttribute("aria-pressed", String(saring.has(v))); terapSaring(); });
       return b;
-    });
+    };
+    const tKej = [["surut", J.ya, "ok"], ["belum", J.tidak, J.ik], ...[...(SARING[J.k] || []), "kurang"].map(v => [v, ...NAMA_SARING[v]])]   // pil Data belum lengkap (pemilik 12 Nov 2026)
+      .map(x => [...x, nKej(x[0])]).filter(x => x[3]).map(tombolSar);
+    const tPra = J.pra === false ? [] : [[1, "waspada"], [2, "siaga"], [3, "awas"]].map(([l, v]) => [v, H.NAMA_LEVEL[l], "peringatan", waspada.filter(x => x.maks === l).length]).filter(x => x[3]).map(tombolSar);
     legenda.querySelector("b")?.remove(); wadah.append(legenda);   /* legenda di dalam peta, kiri bawah di atas bilah ringkasan (pemilik 11 Nov 2026) */    // legenda di bawah peta, dalam pil (sistem desain dashboard D16)
-    wadah.append(h("div", {class: "dl-peta-alat"}, h("div", {class: "dl-saring", role: "group", "aria-label": "Saring peta: status surut dan prakiraan"}, tSaring), ...(kontrol ? [kontrol] : [])));   // legenda tengah bawah; tombol Buka semua di samping +/−
+    wadah.append(h("div", {class: "dl-peta-alat"}, tKej.length ? h("div", {class: "dl-saring", role: "group", "aria-label": "Saring wilayah kejadian"}, tKej) : null, tPra.length ? h("div", {class: "dl-saring", role: "group", "aria-label": "Saring prakiraan"}, tPra) : null, ...(kontrol ? [kontrol] : [])));   // legenda tengah bawah; tombol Buka semua di samping +/−
     peta.touchZoomRotate.disableRotation(); KAM.ikat(peta);
     const css = getComputedStyle(document.documentElement), warna = n => css.getPropertyValue(n).trim();
     peta.on("load", () => {
@@ -382,14 +407,15 @@
   function kartuKab(x, k) {
     const rincian = h("button", {type: "button", class: "dl-pop-rinci"}, ikon("kalender"), "Histori");
     rincian.addEventListener("click", () => bukaHistori(x));
-    return h("div", {class: "dl-pop"},
+    /* pemilik 12 Nov 2026 "bagusin": gaya kartu mini (kepala biru muda: lambang, nama, provinsi), pil status dan tanggal sebaris, empat ubin angka seragam, tombol di kaki */
+    return h("div", {class: "dl-pop dl-pop-mini dl-pop-kab"},
       h("div", {class: "dl-pop-kepala"}, lambangKab(x),
-        h("div", null, h("div", {class: "dl-pop-judul"}, h("b", {class: "dl-tip-nama", teks: x.nama}), label(namaProv(x.prov_kode, x.prov), "pin", "abu")),
-          /* tanggal mulai dan selesai (pemilik 12 Nov 2026 "kapan tanggal mulai kapan tanggal selesainya"); selesai = kabar surut terakhir */
-          h("div", {class: "dl-pop-label"}, surutLabel(x.surut),
-            Object.assign(label("Mulai " + H.tglPendek(x.mulai || x.terakhir), "kalender", "garis"), {title: "Kejadian mulai " + H.tglPendek(x.mulai || x.terakhir)}),
-            x.surut ? Object.assign(label("Selesai " + H.tglPendek(x.terakhir), "kalender", "garis"), {title: "Dilaporkan selesai " + H.tglPendek(x.terakhir)})
-              : Object.assign(label("Kabar " + H.tglPendek(x.terakhir), "tunggu", "garis"), {title: "Kabar terakhir " + H.tglPendek(x.terakhir) + ", belum selesai"})))),
+        h("div", null, h("b", {class: "dl-tip-nama", teks: x.nama}), h("small", {class: "dl-pop-wil"}, ikon("pin"), namaProv(x.prov_kode, x.prov)))),
+      /* tanggal mulai dan selesai (pemilik 12 Nov 2026 "kapan tanggal mulai kapan tanggal selesainya"); selesai = kabar surut terakhir */
+      h("div", {class: "dl-pop-label"}, surutLabel(x.surut),
+        Object.assign(label("Mulai " + H.tglPendek(x.mulai || x.terakhir), "kalender", "garis"), {title: "Kejadian mulai " + H.tglPendek(x.mulai || x.terakhir)}),
+        x.surut ? Object.assign(label("Selesai " + H.tglPendek(x.terakhir), "kalender", "garis"), {title: "Dilaporkan selesai " + H.tglPendek(x.terakhir)})
+          : Object.assign(label("Kabar " + H.tglPendek(x.terakhir), "tunggu", "garis"), {title: "Kabar terakhir " + H.tglPendek(x.terakhir) + ", belum selesai"})),
       kotakAngka(x),
       h("div", {class: "dl-pop-kontak"},
         h("div", {class: "dl-pop-tombol"},
@@ -518,7 +544,7 @@
     };
     const wil = pilihWilayah(prov.map(r => r.prov_kode), () => saringTabel());   // pulau dan provinsi (pemilik 12 Nov 2026)
     const pilBar = h("div", {class: "dl-bilah-saring"}, ...wil.el, PIL.length > 1 ? h("div", {class: "dl-saring dl-saring-tabel", role: "group", "aria-label": "Saring tabel wilayah"}, PIL.map(([v, t2, ik]) => {
-      const n = kabRows.filter(k => k.c[v]).length, btn = h("button", {type: "button", class: "dl-saring-btn dl-saring-" + v, "aria-pressed": "false"}, ikon(ik), t2, h("b", {teks: F(n)}));
+      const n = kabRows.filter(k => k.c[v]).length, btn = h("button", {type: "button", class: "dl-saring-btn dl-saring-" + v, "aria-pressed": "false"}, ikon(ik), t2, h("b", {class: "dl-saring-n", teks: F(n)}));
       btn.addEventListener("click", () => { pilih.has(v) ? pilih.delete(v) : pilih.add(v); btn.setAttribute("aria-pressed", String(pilih.has(v))); saringTabel(); }); return btn; })) : null);
     const tabel = h("div", null, pilBar, h("div", {class: "ad-tabel-wadah dl-tabel-wadah"}, t));
     const wadahPeta = h("div", {class: "dl-peta"}, h("p", {class: "bn-pesan", teks: "Memuat peta…"})), Jk = J;
@@ -543,7 +569,7 @@
   const chipTindak = (xs, ik, nada) => xs?.length ? h("div", {class: "dl-chips"}, xs.map(t => label(t, ik, nada))) : h("span", {class: "dl-redup", teks: "–"});
   function bagianUpaya(pekan, hari) {
     const belum = pekan.filter(x => !x.surut), lapor = belum.filter(x => upayaKini(x, hari)).length;
-    if (!belum.length) return bagian("upaya", "personel", "Upaya penanganan", `Semua wilayah ${J.kata} sepekan ${J.ya_k}`, kosong("ok", "Tidak ada penanganan yang masih berjalan."));
+    if (!belum.length) return bagian("upaya", "personel", "Penanganan dan bantuan", `Semua wilayah ${J.kata} sepekan ${J.ya_k}`, kosong("ok", "Tidak ada penanganan yang masih berjalan."));
     let n = 0;
     const tb = kelompokProv(belum).map(([p, xs]) => tbodyProv(namaProv(p, xs[0].prov), `${F(xs.length)} kab/kota`, null, 8, xs.map(x =>
       h("tr", null, td(F(++n), true), h("td", null, kab(x)), h("td", {class: "dl-tindak"}, daftarUpaya(x.upaya)),
@@ -551,7 +577,7 @@
         h("td", {class: "dl-tindak"}, chipTindak(x.kendala, "peringatan", "merah")),
         tdv(x.upaya_tgl ? H.tglPendek(x.upaya_tgl) : "–", (x.upaya_tgl || "").replace(/-/g, "")),
         h("td", null, h("div", {class: "dl-aksi"}, tombolHistori(x), tombolWA(x, H.pesanWA({...x, kurang: x.kurang || []}, H.KATA[J.k]), "permintaan pembaruan upaya")))))));   // ikon WA seperti tabel Wilayah (pemilik 12 Nov 2026)
-    return bagian("upaya", "personel", "Upaya penanganan", [hl(`${F(belum.length)} kab/kota`), ` ${J.pra === false ? J.tidak_k : "masih ditangani"}, `, hl(`${F(lapor)} kab/kota`), " melaporkan upaya pada hari logbook terakhir"],
+    return bagian("upaya", "personel", "Penanganan dan bantuan", [hl(`${F(belum.length)} kab/kota`), ` ${J.pra === false ? J.tidak_k : "masih ditangani"}, `, hl(`${F(lapor)} kab/kota`), " melaporkan upaya pada hari logbook terakhir"],
       tabelStd(["No", "Kab/kota", "Upaya terakhir", "Pihak terlibat", "Kebutuhan", "Kendala", "Laporan upaya", "Aksi"], ...tb));
   }
 
@@ -608,15 +634,23 @@
     const rank = x => H.WASPADA_LUAR[x.luar.label] ?? 1;
     xs = xs.slice().sort((a, b) => rank(a) - rank(b) || (b.luar.senyap ?? 0) - (a.luar.senyap ?? 0) || a.nama.localeCompare(b.nama));
     let no = 0;
-    const tb = h("tbody", null, xs.map(x => pakaiJ(x.jn, () => tandai(h("tr", {"data-luar": x.luar.label}, td(F(++no), true), h("td", null, label(namaJenis(x.jn), JN[x.jn].ik)),
+    const baris = x => pakaiJ(x.jn, () => tandai(h("tr", {"data-luar": x.luar.label}, td(F(++no), true), h("td", null, label(namaJenis(x.jn), JN[x.jn].ik)),
       h("td", null, kab(x, true)), tdv(labelLuar(x), rank(x)), h("td", null, buktiLuar(x)),
       tdv(x.luar.senyap == null ? "–" : F(x.luar.senyap) + " hari", x.luar.senyap),   // tak diketahui = –, bukan 0
       tdv(H.tglPendek(x.terakhir), x.terakhir.replace(/-/g, "")),
-      h("td", null, h("div", {class: "dl-aksi"}, tombolHistori(x), tombolWA(x, H.pesanWA({...x, kurang: []}, H.KATA[J.k]), x.luar.label === "mungkin_selesai" ? "permintaan konfirmasi selesai" : "permintaan pembaruan")))), x))));
+      h("td", null, h("div", {class: "dl-aksi"}, tombolHistori(x), tombolWA(x, H.pesanWA({...x, kurang: []}, H.KATA[J.k]), x.luar.label === "mungkin_selesai" ? "permintaan konfirmasi selesai" : "permintaan pembaruan")))), x));
+    /* dikelompokkan per provinsi, bisa dilipat seperti tabel Kondisi terkini (pemilik 12 Nov 2026); provinsi yang paling banyak "masih" dan paling lama senyap di atas */
+    const SINGKAT = {masih: "masih", mungkin_selesai: "mungkin selesai", belum_ada: "belum ada"};
+    const tb = kelompokProv(xs, (a, b) => b[1].filter(x => x.luar.label === "masih").length - a[1].filter(x => x.luar.label === "masih").length || b[1].length - a[1].length).map(([p, ys]) => {
+      const n = k => ys.filter(x => x.luar.label === k).length, senyap = Math.max(...ys.map(x => x.luar.senyap ?? -1)), akhir = ys.reduce((m, x) => x.terakhir > m ? x.terakhir : m, "");
+      return tbodyProv(namaProv(p, ys[0].prov), `${F(new Set(ys.map(x => x.kab_kode)).size)} kab/kota`, [
+        h("td", null, h("div", {class: "dl-chips"}, Object.keys(LUAR).filter(n).map(k => label(`${F(n(k))} ${SINGKAT[k]}`, LUAR[k][1] || "banjir", LUAR[k][2])))), td("", true),
+        td(senyap < 0 ? "–" : F(senyap) + " hari", true), td(H.tglPendek(akhir), true), td("", true)], 3, ys.map(baris));
+    });
     /* pil label: klik = hanya label itu, klik lagi = semua; jumlahnya ikut saringan daerah dan bencana */
-    const tombol = Object.entries(LUAR).map(([k, [t, ik, nada]]) => h("button", {type: "button", class: "dl-luar-pil dl-tag-" + nada, "data-luar": k, "aria-pressed": "false"}, ikon(ik || "banjir"), h("span", {class: "dl-n"}), ` ${t.toLowerCase()}`));
+    const tombol = Object.entries(LUAR).map(([k, [t, ik, nada]]) => h("button", {type: "button", class: "dl-luar-pil dl-tag-" + nada, "data-luar": k, "aria-pressed": "false"}, ikon(ik || "banjir"), t, h("b", {class: "dl-n dl-saring-n"})));
     const saring = h("div", {class: "dl-luar-saring", role: "group", "aria-label": "Saring menurut kabar luar"}, ...tombol);
-    const tabel = tabelStd(["No", "Bencana", "Kab/kota", "Kabar luar", "Bukti", "Tanpa kabar", "Laporan resmi terakhir", "Aksi"], tb);
+    const tabel = tabelStd(["No", "Bencana", "Kab/kota", "Kabar luar", "Bukti", "Tanpa kabar", "Laporan resmi terakhir", "Aksi"], ...tb);
     saring.addEventListener("click", e => {
       const b = e.target.closest("[data-luar]"); if (!b) return;
       const t = tabel.querySelector("table"); t.dataset.pil = b.getAttribute("aria-pressed") === "true" ? "" : b.dataset.luar;
@@ -650,7 +684,8 @@
     const op = (v, t) => h("option", {value: v, teks: t});
     const jn = LINTAS.filter(j => semua.some(x => x.jn === j));
     const prov = [...new Set(semua.map(x => x.prov_kode))].map(k => [k, namaProv(k, semua.find(x => x.prov_kode === k)?.prov)]).sort((a, b) => a[1].localeCompare(b[1]));
-    const pilih = (kunci, aria, ...opsi) => h("label", {class: "dl-sl-p"}, h("span", {teks: aria}), h("select", {"data-sl": kunci, "aria-label": "Saring " + aria.toLowerCase()}, ...opsi));
+    const IK_SL = {jn: "peringatan", prov: "daftar", kab: "pin"};   // label di dalam kotak, berikon, sama dengan bilah saring tabel (pemilik 12 Nov 2026)
+    const pilih = (kunci, aria, ...opsi) => h("div", {class: "dl-pilih dl-sl-p"}, ikon(IK_SL[kunci]), h("span", {class: "dl-pilih-t", teks: aria}), hiasPilih(h("select", {"data-sl": kunci, "aria-label": "Saring " + aria.toLowerCase()}, ...opsi)));
     const w = h("div", {class: "dl-sl", role: "group", "aria-label": "Saring daerah dan bencana"},
       pilih("jn", "Bencana", op("", "Semua bencana"), ...jn.map(j => op(j, namaJenis(j)))),
       pilih("prov", "Provinsi", op("", "Semua provinsi"), ...prov.map(([k, t]) => op(k, t))),
@@ -736,10 +771,10 @@
       if (!d.tanya.length) sT.remove();   // tanpa kalimat kesimpulan (AGENTS 3.5): seksi kosong tidak dirender   // L5: berkas tanpa kolom 'luar' (atau semua sudah selesai): seksi Kabar luar tidak dirender
       if (d.luar.length) wL.replaceChildren(batangSaring(semua, false), ...isiLuar(d.luar));
       if (d.tanya.length) wT.replaceChildren(batangSaring(semua, true), ...isiTanya(d.tanya));
-      if (sT.querySelector(".dl-grup") && !sT.querySelector(".dl-semua")) sT.querySelector(".ex-jd").append(bukaSemua(sT));
+      for (const x of [sT, sL]) if (x.querySelector(".dl-grup") && !x.querySelector(".dl-semua")) x.querySelector(".ex-jd").append(bukaSemua(x));
       segarkan(); pasangTip();
     });
-    return [sL, sT];
+    return [sT, sL];   // Kelengkapan data di atas Kabar luar (pemilik 12 Nov 2026)
   }
 
   /* ---------- prakiraan banjir per hari + hujan tiga hari per tanggal ---------- */
@@ -965,7 +1000,7 @@
          Satu butir panel kiri = satu kelompok; seksi yang tidak terdaftar berdiri sendiri. */
       const KELOMPOK = {"Peta Pantauan": ["Kondisi dan Prakiraan", "banjir"], "Kondisi terkini": ["Kondisi dan Prakiraan", "banjir"], "Peringatan dini": ["Kondisi dan Prakiraan", "banjir"],
         "Kabar luar": ["Kabar dan Kelengkapan", "daftar"], "Kelengkapan data": ["Kabar dan Kelengkapan", "daftar"],
-        "Usulan langkah": ["Penanganan", "personel"], "Upaya penanganan": ["Penanganan", "personel"]};
+        "Usulan langkah": ["Penanganan dan Bantuan", "personel"], "Penanganan dan bantuan": ["Penanganan dan Bantuan", "personel"]};
       let seksiNama = null;
       const seksiSlot = () => {
         const p = panel[aktif], sek = p ? [...p.querySelectorAll(":scope > section.ex-std, :scope > .ex-std")] : [];
@@ -989,12 +1024,12 @@
       for (const [k, pn] of Object.entries(panel)) { let t; new MutationObserver(() => { clearTimeout(t); t = setTimeout(() => { pasangBatang(k); if (k === aktif) seksiSlot(); }, 80); }).observe(pn, {childList: true, subtree: true}); }
       dlSegar = () => { segarBatang(); seksiSlot(); };
       seksiSlot(); app.classList.add("dl-dalam");
-      const pPer = h("div", {class: "dl-periode", role: "group", "aria-label": "Periode"}, ...PERIODE.map(([n, t, ik]) => {
-        const b = h("button", {type: "button", "data-n": String(n), "aria-pressed": String(n === periode)}, ikon(ik), h("span", {teks: t}));
-        b.addEventListener("click", () => { if (n === periode) return; periode = n; pPer.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.n === periode)));
-          for (const k of Object.keys(dataTerakhir)) if (k !== aktif) delete dataTerakhir[k], sudahBuka.delete(k);   // tab lain dihitung ulang saat dibuka
-          if (dataTerakhir[aktif]) render(...dataTerakhir[aktif], aktif); });
-        return b; }));
+      /* periode jadi picker ringkas supaya bilah peta muat sebaris (pemilik 12 Nov 2026 "ini semua agar sebaris") */
+      const sPer = h("select", {"aria-label": "Periode"}, ...PERIODE.map(([n, t]) => h("option", {value: String(n), teks: t}))); sPer.value = String(periode);
+      sPer.addEventListener("change", () => { const n = +sPer.value; if (n === periode) return; periode = n;
+        for (const k of Object.keys(dataTerakhir)) if (k !== aktif) delete dataTerakhir[k], sudahBuka.delete(k);   // tab lain dihitung ulang saat dibuka
+        if (dataTerakhir[aktif]) render(...dataTerakhir[aktif], aktif); });
+      const pPer = h("div", {class: "dl-pilih dl-per-pilih", role: "group", "aria-label": "Periode"}, ikon("kalender"), hiasPilih(sPer));
       const segarPer = () => { pPer.hidden = ["karhutla", "gunungapi"].includes(aktif) || aktif.startsWith("laporan"); };
       const lamaSegar = dlSegar; dlSegar = () => { lamaSegar(); segarPer(); const al = panel[aktif]?.querySelector(".maplibregl-map .dl-peta-alat"); if (al && !al.contains(pPer)) al.insertBefore(pPer, al.querySelector(".dl-semua-peta")); }; segarPer();
       app.replaceChildren(h("div", {class: "db-kanan"}, judul, pPer, ...Object.values(panel)));

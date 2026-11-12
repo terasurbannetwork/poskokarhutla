@@ -141,7 +141,7 @@
     await new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
     p.append(
       bagian("karhutla-tanya", "tunggu", "Kelengkapan data", tanya.length ? [hl(`${F(tanya.length)} kab/kota`), ` belum padam tanpa kabar BPBD pada ${tgl(hari)}`] : `Semua kab/kota belum padam sudah berkabar pada ${tgl(hari)}`, tTanya),
-      bagian("karhutla-upaya", "personel", "Upaya penanganan", kabar.length ? [hl(`${F(kabar.length)} kab/kota`), " berkabar karhutla dari BPBD sepekan ini"] : "Belum ada kabar BPBD sepekan ini", tUpaya));
+      bagian("karhutla-upaya", "personel", "Penanganan dan bantuan", kabar.length ? [hl(`${F(kabar.length)} kab/kota`), " berkabar karhutla dari BPBD sepekan ini"] : "Belum ada kabar BPBD sepekan ini", tUpaya));
   }
 
   /* peta: kab terbakar sepekan, merah = belum padam (makin pekat makin luas), biru = sudah padam; arahkan kursor untuk angka */
