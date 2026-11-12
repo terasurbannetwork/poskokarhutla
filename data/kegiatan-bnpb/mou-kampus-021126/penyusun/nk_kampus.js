@@ -1,12 +1,13 @@
-// Templat Nota Kesepahaman BNPB dengan Perguruan Tinggi Koordinator (2 Nov 2026).
+// Templat Nota Kesepahaman BNPB dengan Perguruan Tinggi (2 Nov 2026, diselaraskan 12 Nov 2026).
 // Pola baku NK BNPB dengan UGM (2022), UMY (2024), Unpad (2026) ditambah empat pasal baru:
-// peran perguruan tinggi koordinator, data dan kerahasiaan, kekayaan intelektual dan publikasi, rujukan payung nasional.
-// Naskah dengan pihak nonpemerintah memakai logo BNPB (Perban BNPB 7/2020), bukan lambang negara.
+// peran para pihak, data dan kerahasiaan, kekayaan intelektual dan publikasi, rujukan payung nasional.
+// Ruang lingkup mengikuti empat pilar deck "Ajuan Program Kerja Sama BNPB dengan Perguruan Tinggi 301026 rev5".
+// Pemilik 12 Nov 2026: naskah perguruan tinggi tanpa kata "koordinator"; kop logo BNPB dan logo kampus.
 const path = require('path');
 const L = require('./nk_lib');
 const { A, H, par, pasal } = L;
 
-const isi = [...L.kepala('logo')];
+const isi = [...L.kepala('[[logo perguruan tinggi]]')];
 ['NOTA KESEPAHAMAN', 'ANTARA', 'BADAN NASIONAL PENANGGULANGAN BENCANA', 'DENGAN', '[[NAMA PERGURUAN TINGGI]]', 'TENTANG',
   'TRIDHARMA PERGURUAN TINGGI DALAM PENANGGULANGAN BENCANA'].forEach((t, i, a) => isi.push(L.tengah(t, i === a.length - 1 ? 200 : 60)));
 isi.push(L.nomor('NOMOR\t: [[...]]/KA BNPB/KS.01.01/[[bulan]]/[[tahun]]'));
@@ -31,24 +32,33 @@ pasal(isi, 1, 'MAKSUD DAN TUJUAN', [
 ]);
 pasal(isi, 2, 'RUANG LINGKUP', [
   par('Ruang lingkup Nota Kesepahaman ini meliputi:'),
-  A('a.', 'pendidikan, penelitian, dan pengabdian kepada masyarakat di bidang penanggulangan bencana;'),
-  A('b.', 'dukungan kegiatan penanggulangan bencana pada tahap prabencana, keadaan darurat bencana, dan pascabencana;'),
-  A('c.', 'peningkatan kapasitas sumber daya manusia; dan'),
-  A('d.', 'kegiatan lain yang disepakati **PARA PIHAK** sepanjang tidak bertentangan dengan ketentuan peraturan perundang-undangan.'),
+  A('a.', 'pendidikan kebencanaan, termasuk mata kuliah kebencanaan, kuliah umum Kepala Badan Nasional Penanggulangan Bencana, magang mahasiswa di lingkungan **PIHAK KESATU**, dan kuliah kerja nyata tematik kebencanaan;'),
+  A('b.', 'riset dan inovasi kebencanaan, termasuk riset yang menjawab daftar masalah kebencanaan, hibah riset bersama, riset bersama mitra luar negeri, uji lapangan, dan hilirisasi inovasi;'),
+  A('c.', 'pemanfaatan data dan informasi kebencanaan untuk pendidikan dan riset;'),
+  A('d.', 'pengabdian kepada masyarakat dan kerelawanan, termasuk relawan bencana kampus, satuan tugas bencana mahasiswa, alumni, dan perguruan tinggi, pendampingan badan penanggulangan bencana daerah, dan kampus aman bencana;'),
+  A('e.', 'forum ilmiah dan publikasi bersama;'),
+  A('f.', 'dukungan kegiatan penanggulangan bencana pada tahap prabencana, keadaan darurat bencana, dan pascabencana; dan'),
+  A('g.', 'kegiatan lain yang disepakati **PARA PIHAK** sepanjang tidak bertentangan dengan ketentuan peraturan perundang-undangan.'),
 ]);
 pasal(isi, 3, 'PELAKSANAAN', [
   A('(1)', 'Dalam melaksanakan Nota Kesepahaman ini, **PARA PIHAK** tunduk pada ketentuan peraturan perundang-undangan.'),
   A('(2)', 'Pelaksanaan Nota Kesepahaman ini dirumuskan secara rinci dalam Perjanjian Kerja Sama dan/atau dokumen lain yang disepakati antara unit kerja di lingkungan **PIHAK KESATU** dan unit kerja di lingkungan **PIHAK KEDUA**.'),
   A('(3)', 'Untuk menyusun Perjanjian Kerja Sama sebagaimana dimaksud pada ayat (2), **PARA PIHAK** menunjuk wakil sesuai dengan tugas dan fungsinya.'),
 ]);
-pasal(isi, 4, 'PERAN PERGURUAN TINGGI KOORDINATOR', [
-  A('(1)', '**PARA PIHAK** sepakat menunjuk **PIHAK KEDUA** sebagai perguruan tinggi koordinator untuk [[regional atau tematik, misalnya: Jawa Barat]].'),
-  A('(2)', 'Sebagai perguruan tinggi koordinator, **PIHAK KEDUA** berperan:'),
-  H('a.', 'memfasilitasi koordinasi dengan perguruan tinggi lain yang bersedia ikut serta dalam program kerja sama perguruan tinggi yang dikoordinasikan **PIHAK KESATU**, bersama lembaga layanan pendidikan tinggi setempat;'),
-  H('b.', 'menjadi simpul pelaksanaan kuliah kerja nyata tematik kebencanaan, magang, dan relawan kampus di [[wilayah atau bidang tematiknya]]; dan'),
-  H('c.', 'menyampaikan laporan kegiatan koordinasi kepada **PIHAK KESATU**.'),
-  A('(3)', 'Peran sebagaimana dimaksud pada ayat (2) tidak mengurangi hak perguruan tinggi lain untuk bekerja sama langsung dengan **PIHAK KESATU**.'),
-  A('(4)', 'Peran perguruan tinggi koordinator tidak menjadikan **PIHAK KEDUA** wakil perguruan tinggi lain dan tidak menimbulkan kewajiban pembiayaan.'),
+pasal(isi, 4, 'PERAN PARA PIHAK', [
+  A('(1)', 'Dalam pelaksanaan Nota Kesepahaman ini, **PIHAK KESATU** berperan:'),
+  H('a.', 'menyampaikan daftar masalah kebencanaan dari unit kerja **PIHAK KESATU** dan badan penanggulangan bencana daerah sebagai bahan riset;'),
+  H('b.', 'menyediakan akses data dan informasi kebencanaan sebagaimana dimaksud dalam Pasal 7;'),
+  H('c.', 'menyediakan tempat magang, narasumber kuliah umum, dan lokasi uji lapangan bersama pemerintah daerah dan badan penanggulangan bencana daerah; dan'),
+  H('d.', 'melatih dan mendaftarkan relawan bencana kampus.'),
+  A('(2)', 'Dalam pelaksanaan Nota Kesepahaman ini, **PIHAK KEDUA** berperan:'),
+  H('a.', 'menyelenggarakan mata kuliah kebencanaan dan mengakui magang serta kuliah kerja nyata tematik kebencanaan sebagai satuan kredit semester sesuai dengan kebijakan akademik **PIHAK KEDUA**;'),
+  H('b.', 'menugaskan pakar dan melaksanakan riset serta inovasi yang menjawab daftar masalah kebencanaan;'),
+  H('c.', 'membentuk relawan bencana kampus dan satuan tugas bencana yang melibatkan mahasiswa, alumni, dan sivitas akademika;'),
+  H('d.', 'mendampingi badan penanggulangan bencana daerah di [[wilayah]] dalam penyusunan kajian risiko bencana, rencana penanggulangan bencana, dan indeks ketahanan daerah; dan'),
+  H('e.', 'menerapkan kampus aman bencana, termasuk rencana kontinjensi dan simulasi evakuasi di lingkungan kampus.'),
+  A('(3)', '[[Bila disepakati:]] **PIHAK KEDUA** dapat memfasilitasi keikutsertaan perguruan tinggi lain di [[wilayah atau bidang tematik, misalnya: Jawa Barat]] dalam program kerja sama **PIHAK KESATU**, bersama lembaga layanan pendidikan tinggi setempat. [[Hapus ayat ini dan ayat (4) bila tidak dipakai.]]'),
+  A('(4)', 'Peran sebagaimana dimaksud pada ayat (3) tidak menjadikan **PIHAK KEDUA** wakil perguruan tinggi lain, tidak mengurangi hak perguruan tinggi lain untuk bekerja sama langsung dengan **PIHAK KESATU**, dan tidak menimbulkan kewajiban pembiayaan.'),
 ]);
 pasal(isi, 5, 'JANGKA WAKTU', [
   A('(1)', 'Nota Kesepahaman ini berlaku untuk jangka waktu 5 (lima) tahun terhitung sejak tanggal ditandatangani.'),
@@ -100,4 +110,4 @@ pasal(isi, 14, 'PENUTUP', [
 ]);
 isi.push(...L.ttd(L.BNPB_TTD, ['**PIHAK KEDUA**', '**REKTOR**', '**[[NAMA PERGURUAN TINGGI]],**', '**[[nama Rektor]]**', '[[gelar lengkap]]']));
 
-L.simpan(isi, path.join(__dirname, '..', 'Templat NK BNPB dan Perguruan Tinggi Koordinator 021126.docx'), 'Templat Nota Kesepahaman BNPB dan Perguruan Tinggi Koordinator');
+L.simpan(isi, path.join(__dirname, '..', 'Templat NK BNPB dan Perguruan Tinggi 021126.docx'), 'Templat Nota Kesepahaman BNPB dan Perguruan Tinggi');

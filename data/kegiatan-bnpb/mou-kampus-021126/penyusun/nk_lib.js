@@ -53,9 +53,9 @@ const nomor = (teks) => new Paragraph({
   tabStops: [{ type: TabStopType.LEFT, position: 2268 }], children: runs(teks, { bold: true }),
 });
 
-// kepala: lambang negara (antarlembaga pemerintah) atau logo BNPB kiri dan logo mitra kanan (mitra nonpemerintah)
-function kepala(jenis, logoMitra = '[[logo perguruan tinggi]]') {
-  if (jenis === 'lambang') return [tengah('[[Lambang Negara]]', 240, false)];
+// kop: logo BNPB di kiri dan logo mitra di kanan (pemilik 12 Nov 2026: semua naskah berkop logo BNPB).
+// Logo mitra berupa isian berstabilo sampai berkasnya tersedia.
+function kepala(logoMitra) {
   const logo = fs.readFileSync(path.join(__dirname, 'aset', 'logo-bnpb.png'));
   const sel = (anak, rata) => new TableCell({ width: { size: 4252, type: WidthType.DXA }, borders: TANPA, verticalAlign: VerticalAlign.CENTER,
     children: [new Paragraph({ alignment: rata, children: anak })] });
