@@ -56,6 +56,7 @@ uji("T6-T7: terkini dan riwayat membawa nama pengisi, riwayat terbaru dulu", asy
 uji("T8: staf berwilayah hanya provinsinya; nama staf tampil", async () => {
   const st = await bikin("Rina Pusdalops", ["pusdalops"], ["11"]);
   assert.equal((await pos({kunci: K2, status: "proses"}, st)).s, 403);
+  assert.equal((await pos({kunci: K, status: "selesai"}, {cookie: st.cookie, origin: st.origin})).s, 403, "sesi staf tanpa x-pb ditolak");
   assert.equal((await pos({kunci: K, status: "selesai"}, st)).s, 201);
   const g = await api("GET", "/api/dalops/tindak", undefined, st); assert.equal(g.j.boleh_tulis, true);
   assert.equal(g.j.butir.find(x => x.kunci === K).oleh_nama, "Rina Pusdalops");

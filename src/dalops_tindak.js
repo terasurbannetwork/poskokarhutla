@@ -41,6 +41,7 @@ async function riwayat(env, req, url) {
 async function simpan(env, req, url, kini) {
   const oleh = await penulis(env, req);
   if (!oleh) return gagal(403, "status langkah hanya bisa diubah staf Pusdalops, Koordalops, atau moderator");
+  if (oleh.startsWith("staf:") && req.headers.get("x-pb") !== "1") return gagal(403, "kiriman bersesi wajib membawa header x-pb: 1");   // lapis di atas tolakOrigin, sama dengan rute staf lain
   const b = await bacaBody(req, 4096); if (b.galat) return gagal(b.status || 400, b.galat);
   const o = b.o || {}, kunci = typeof o.kunci === "string" ? o.kunci : "";
   if (!RE_KUNCI.test(kunci)) return gagal(400, "kunci langkah tidak sah");
