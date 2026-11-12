@@ -14,6 +14,8 @@ Sekarang kejadian seperti itu hanya masuk daftar "Perlu ditanya", lalu hilang se
 | --- | --- |
 | K1 | Bangun satu bagian yang memeriksa, untuk tiap kejadian yang belum dilaporkan selesai, apakah ada kabar dari luar laporan BPBD (portal berita "atau yang lain"). Pemilik: "Gas, tulis paketnya" (11 Nov 2026). |
 | K2 | Paket dokumen lengkap dulu, baru kode (AGENTS.md 3.7). |
+| K3 | (12 Nov 2026) Seksi Kabar luar dan Kelengkapan data memuat **semua bencana** sekaligus, dengan saringan Bencana, Provinsi, dan Kab/kota. Saringan daerah menampilkan semua bencana di wilayah itu. Seksi lain (peta, kondisi, peringatan dini, penanganan) tetap per jenis. Pemilik: "ada yang sifatnya semua bencana ada yang sifatnya bisa filter ... filter provinsi dan filter kab kota"; pilihan cakupan "Kabar + Kelengkapan". Karhutla dan gunung api punya layar dan bentuk data sendiri, jadi belum ikut tabel gabungan. |
+| K4 | (12 Nov 2026) Data yang kurang bisa diekspor untuk saringan yang sedang aktif: **WA** (satu pesan per provinsi dan kab/kota) dan **Excel** (.xlsx, lembar Kelengkapan data dan Kabar luar). Pemilik menyerahkan format lain ("Word atau pdf kah? gw gatau"): Word/PDF tidak dibuat (lihat D8). |
 
 ## Keputusan rancangan (agent, bisa dibatalkan pemilik)
 
@@ -26,6 +28,7 @@ Sekarang kejadian seperti itu hanya masuk daftar "Perlu ditanya", lalu hilang se
 | D5 | Pengecek jalan di mesin yang sama dengan `dalops_banjir.py` (mesin pemilik dan bot WA) dan membaca berkas publik produksi (`/banjir/data/berita*.json`, `/banjir/data/status.json`, titik panas), bukan salinan di git. Pembaruan 12 Nov 2026 (pemilik "ya, jadwalkan"): selain ikut rekap WA, `dalops_banjir.py --kabar --unggah` jalan tiap hari di `banjir.yml` sesudah terbit, hanya menyegarkan kolom `luar` berkas R2; sumber gagal = berkas tayang dibiarkan. | Salinan di git basi: `public/banjir/data/berita.json` di `main` bertanggal 16 Okt 2026, yang tayang 10 Nov 2026. |
 | D6 | Label harian dibekukan append-only di `data/raw/dalops/cek_arsip.jsonl` (ikut .gitignore) supaya ketepatannya bisa dinilai prospektif lawan laporan selesai resmi yang datang kemudian. | Tanpa arsip beku, ketepatan tidak bisa diukur jujur. |
 | D7 | Pengerja: `pipa-data` untuk pengecek (`scripts/data/dalops_kabar.py`, dipanggil `dalops_banjir.py`); `ruang-bnpb` untuk layar (`public/bnpb/dalops*.js`). Tidak ada agent baru. | Pemilik berkas sudah ada (`ilmu.mjs pemilik`). |
+| D8 | Ekspor hanya WA dan Excel. WA untuk menagih BPBD, Excel untuk daftar kerja staf dan dilampirkan bila pesan WA terpotong (40 kejadian). Word/PDF tidak dibuat: data ini daftar kerja yang berubah tiap hari, bukan dokumen resmi bertanda tangan. Excel ditulis tanpa pustaka (`xlsx()` di `dalops_hitung.js`) karena CSP halaman staf hanya mengizinkan skrip dari situs sendiri. | Bisa ditambah bila pemilik butuh surat resmi. |
 
 ## Pertanyaan terbuka untuk pemilik (Q)
 
