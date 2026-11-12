@@ -1,0 +1,164 @@
+{
+ "hari": "2026-11-12",
+ "cutoff": "2026-11-12T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Pidie Jaya",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 8608.0
+   },
+   "teks": {
+    "dampak": "±8.608 KK / 32.272 Jiwa terdampak (masih dalam pendataan)",
+    "status_darurat": "Siaga Darurat TMT 4/11/2026 s.d 17/11/2026",
+    "kondisi": "Banjir masih menggenangi area permukiman di beberapa gampong, jebol tebing sungai darurat di Gp. Dayah Usen semakin luas.",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-01",
+   "kondisi_pil": [
+    "Masih tergenang",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "cuaca",
+   "prov": "32",
+   "lokasi": "Kota Sukabumi",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem",
+   "angka": {
+    "kk": 20.0
+   },
+   "teks": {
+    "dampak": "20 KK / 58 jiwa terdampak",
+    "status_darurat": "-",
+    "kondisi": "BPBD dan OPD terkait melakukan pembersihan material rumah rusak dan pohon tumbang",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-11",
+   "kondisi_pil": [
+    "Pembersihan",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "33",
+   "lokasi": "Boyolali",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 12022.0,
+    "jiwa": 57311.0,
+    "tangki": 16.0,
+    "liter": 82000.0
+   },
+   "teks": {
+    "dampak": "± 12.022 KK / 57.311 jiwa terdampak (pendataan)",
+    "status_darurat": "Siaga Darurat TMT 1/6/2026 s.d 31/12/2026",
+    "kondisi": "BPBD Kab. Boyolali telah mendistribusikan bantuan air bersih dengan volume sebanyak 16 tangki (82.000 liter) kepada warga",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-06-24",
+   "kondisi_pil": [
+    "Distribusi air",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "cuaca",
+   "prov": "35",
+   "lokasi": "Blitar",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem",
+   "angka": {
+    "kk": 14.0
+   },
+   "teks": {
+    "dampak": "1 jiwa luka ringan, ±14 KK terdampak",
+    "status_darurat": "Siaga Darurat TMT 07/10/ 2026 s.d 01/12/ 2026",
+    "kondisi": "Korban luka telah ditangani, BPBD dan OPD terkait melakukan pembersihan pohon tumbang di lokasi terdampak",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-11",
+   "kondisi_pil": [
+    "Pembersihan",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "35",
+   "lokasi": "Pasuruan",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 5269.0,
+    "liter": 75000.0
+   },
+   "teks": {
+    "dampak": "± 5.269 KK terdampak (pendataan)",
+    "status_darurat": "Siaga Darurat TMT 07/10/ 2026 s.d 01/12/ 2026",
+    "kondisi": "BPBD Kab. Pasuruan telah melakukan pendistribusian air bersih di Kecamatan Pasrepan, Lumbang, Kejayan, dan Purwodadi sebanyak 15 ritase (±75.000 liter) air",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-06-18",
+   "kondisi_pil": [
+    "Distribusi air",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "72",
+   "lokasi": "Banggai Kep.",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 1541.0,
+    "jiwa": 4412.0,
+    "liter": 687000.0
+   },
+   "teks": {
+    "dampak": "± 1.541 KK / 4.412 jiwa terdampak (pendataan)",
+    "status_darurat": "-",
+    "kondisi": "BPBD Kab. Banggai Kepulauan secara keseluruhan selama periode  27 Agustus 2026 - 11 November 2026, total telah melakukan dropping 687.000 liter untuk 29 Dusun dengan setiap Dusun/Desa diisi 2 bak penampungan kapasitas 5.000 liter",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-09-04",
+   "kondisi_pil": [
+    "Distribusi air",
+    "tangani"
+   ]
+  }
+ ],
+ "prioritas_baru": [
+  "93",
+  "64",
+  "72",
+  "74",
+  "81",
+  "82"
+ ]
+}

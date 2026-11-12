@@ -267,7 +267,7 @@ def _isi3(s, B):
     Hc = 137160 + 3 * 137160
     o += _tabel_hari(s, xi, y, WI, Hc, [([(s.pv(k), INK, True)], vs) for k, vs in Cu], B['cuaca_hari'], wn, sz=660); y += Hc + 54864
     o += s.garis(xi, y, WI, 'BFC5CC'); y += 64008
-    w = B['bmkg']; nm_ = lambda ks: ', '.join(H.NAMA[k] for k in ks)
+    w = B['bmkg']; nm_ = B.get('nm_bmkg') or (lambda ks: ', '.join(H.NAMA[k] for k in ks))   # 12 Nov: daftar provinsi panjang boleh diringkas dari skrip harian
     aw = [k for k, v in B['level'].items() if v == 'awas']; si = [k for k, v in B['level'].items() if v == 'siaga']
     pr_ = [r for r in (('hujansolid_merah', 'Hujan sangat lebat', nm_(aw), 'Awas', MERAH, T_MERAH), ('hujansolid_oranye', 'Hujan lebat', nm_(si), 'Siaga', ORG, T_ORG),
                        ('anginsolid_oranye', 'Angin kencang', nm_(B['angin']), 'Berpotensi', ORG, T_ORG)) if r[2]]
@@ -284,7 +284,8 @@ def _isi3(s, B):
     for r in B['rob']:
         if r['wilayah'] not in _rw or r['tanggal_selesai'] > _rw[r['wilayah']]['tanggal_selesai']: _rw[r['wilayah']] = r
     Rb = sorted(sorted(_rw.values(), key=lambda r: r['wilayah']), key=lambda r: r['tanggal_selesai'], reverse=True)[:4]
-    o += panel(s, X2, Yp, C2, Ha, B.get('laut_judul', 'LAUT')); xi = X2 + 128016; WI = C2 - 256032; y = Yp + 246888; rp = (Ha - 246888 - 45720 - 2 * 146304 - 45720) // max(1, len(Ge) + len(Rb))
+    Hl = HT if B.get('tanpa_fwi') else Ha   # 12 Nov pemilik ("karhutla/fwi di slide prediksi hapus dlu"): laut setinggi kolom tengah
+    o += panel(s, X2, Yp, C2, Hl, B.get('laut_judul', 'LAUT')); xi = X2 + 128016; WI = C2 - 256032; y = Yp + 246888; rp = (Ha - 246888 - 45720 - 2 * 146304 - 45720) // max(1, len(Ge) + len(Rb))
     def baris_(y, nm, sd, lab=None, c_=None, garis=True):
         o_ = s.garis(xi, y, WI, 'F1F2F4') if garis else ''
         o_ += s.tx(xi, y, WI - 1143000, rp, [nm], sz=660, c=INK, an='ctr', wrap='none')
@@ -298,9 +299,13 @@ def _isi3(s, B):
         for nm_, r_ in _rw.items(): per_.setdefault(r_['tanggal_selesai'], []).append(nm_.replace('Pesisir ', ''))
         kel_ = sorted(per_.items(), reverse=True)
         rp = (Ha - 246888 - 2 * 155448 - 64008 - 54864) // max(1, len(Gt) + 1 + len(kel_))
+        Gs = []
+        if B.get('tanpa_fwi'):   # panel penuh: perairan bergelombang sedang yang berlaku paling lama ikut dirinci sampai panel penuh
+            rp = 164592; muat = (Hl - 246888 - 2 * 155448 - 64008 - 54864) // rp - len(Gt) - len(kel_) - 1
+            Gs = sorted([g for g in B['gelombang'] if g[1] == 'Sedang'], key=lambda g: g[3], reverse=True)[:max(0, muat)]
         o += _sub(s, xi, y, WI, 'GELOMBANG', f"{len(B['gelombang'])} perairan"); y += 155448
-        for n, (nm, lab, c_, sd) in enumerate(Gt): o += baris_(y, nm.replace('Perairan ', ''), sd, lab, c_, n > 0); y += rp
-        o += s.garis(xi, y, WI, 'F1F2F4') + s.tx(xi, y, WI, rp, [f'{n_se} perairan lain bergelombang sedang'], sz=640, c=TEKS, an='ctr', wrap='none'); y += rp
+        for n, (nm, lab, c_, sd) in enumerate(Gt + Gs): o += baris_(y, nm.replace('Perairan ', ''), sd, lab, c_, n > 0); y += rp
+        o += s.garis(xi, y, WI, 'F1F2F4') + s.tx(xi, y, WI, rp, [f'{n_se - len(Gs)} perairan lain bergelombang sedang'], sz=640, c=TEKS, an='ctr', wrap='none'); y += rp
         y += 27432; o += s.garis(xi, y, WI, 'BFC5CC'); y += 36576
         o += _sub(s, xi, y, WI, 'BANJIR ROB', f"{len(_rw)} pesisir, menurut tanggal berakhir"); y += 155448
         for n, (tg, nms) in enumerate(kel_):
@@ -314,7 +319,7 @@ def _isi3(s, B):
         o += _sub(s, xi, y, WI, 'BANJIR ROB', f"{len(_rw)} pesisir, {len(Rb)} terlama"); y += 146304
         for n, r in enumerate(Rb): o += baris_(y, r['wilayah'].replace('Pesisir ', ''), dt.date.fromisoformat(r['tanggal_selesai']), garis=n > 0); y += rp
     # ---- KARHUTLA (tengah bawah)
-    o += _fwi(s, B, X2, Yb, C2, Hb)
+    if not B.get('tanpa_fwi'): o += _fwi(s, B, X2, Yb, C2, Hb)
     # ---- UDARA (kanan atas)
     xi = X3 + 128016; WI = C3 - 256032
     Hu = HT if B.get('tanpa_ga') else Ha   # 11 Nov pemilik: "gunung api gausah dimasukin lagi" -> udara setinggi kolom kanan
