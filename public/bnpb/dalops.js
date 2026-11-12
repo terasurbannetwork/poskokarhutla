@@ -841,13 +841,83 @@
 
   /* ---------- mitigasi (hanya tab Banjir): usulan langkah per kab/kota dari status.json, posko.json, dan logbook; hitungan di H.mitigasi ---------- */
   /* satu langkah: label jenis tindakan (ikon) + tempatnya; teks langkah dari H.mitigasi() tidak diubah */
-  const JENIS_LANGKAH = [[/^Posko /i, "Posko", "tenda"], [/^Siapkan evakuasi /i, "Evakuasi", "personel"], [/^Pantau lereng /i, "Pantau lereng", "longsor"],
-    [/^Penuhi kebutuhan: /i, "Kebutuhan", "logistik"], [/^Atasi kendala: /i, "Kendala", "peringatan"], [/^Konfirmasi status surut ke BPBD, /i, "Konfirmasi", "kalender"],
-    [/^Pantauan khusus: /i, "Pantau", "tunggu"]];
-  const butirLangkah = teks => {
-    const j = JENIS_LANGKAH.find(([re]) => re.test(teks)), isi = j ? teks.replace(j[0], "") : teks;
-    return h("div", {class: "dl-ln"}, h("span", {class: "dl-ln-j"}, ikon(j?.[2] || "lanjut"), j?.[1] || "Langkah"), h("span", {class: "dl-ln-t", teks: j ? isi[0].toUpperCase() + isi.slice(1) : isi}));
+  /* [awalan, label, ikon, jenis kunci log] (data/kajian-bnpb/tindak-langkah/ALGORITMA.md 1) */
+  const JENIS_LANGKAH = [[/^Posko /i, "Posko", "tenda", "posko"], [/^Siapkan evakuasi /i, "Evakuasi", "personel", "evakuasi"], [/^Pantau lereng /i, "Pantau lereng", "longsor", "lereng"],
+    [/^Penuhi kebutuhan: /i, "Kebutuhan", "logistik", "kebutuhan"], [/^Atasi kendala: /i, "Kendala", "peringatan", "kendala"], [/^Konfirmasi status surut ke BPBD, /i, "Konfirmasi", "kalender", "konfirmasi"],
+    [/^Tuntaskan pendataan dampak/i, "Pendataan", "daftar", "pendataan"], [/^Pantauan khusus: /i, "Pantau", "tunggu", "pantau"]];
+  const butirLangkah = (x, teks) => {
+    const j = JENIS_LANGKAH.find(([re]) => re.test(teks)), isi = (j ? teks.replace(j[0], "") : teks) || teks;
+    const kunci = `banjir|${x.kab_kode}|${j?.[3] || "lanjut"}`, tampil = isi[0].toUpperCase() + isi.slice(1);
+    return h("div", {class: "dl-ln", "data-kunci": kunci}, h("span", {class: "dl-ln-j"}, ikon(j?.[2] || "lanjut"), j?.[1] || "Langkah"), h("span", {class: "dl-ln-t", teks: tampil}),
+      h("button", {type: "button", class: "dl-st-tl", "data-st": "belum", hidden: true, "aria-label": `Status langkah ${j?.[1] || "lanjutan"} ${x.nama}`, "data-nama": x.nama, "data-jenis": j?.[1] || "Langkah", "data-langkah": teks}));
   };
+
+  /* ---------- log tindak lanjut Usulan langkah (data/kajian-bnpb/tindak-langkah/): status per langkah, catatan, riwayat; GET sekali, simpan per langkah ---------- */
+  const ST_TL = {belum: ["Belum", "tunggu"], proses: ["Dikerjakan", "lanjut"], selesai: ["Selesai", "ok"]};
+  let TL = null;   // janji {boleh_tulis, peta: Map kunci -> butir} atau null bila rute belum aktif
+  const muatTL = () => TL ||= fetch("/api/dalops/tindak", {credentials: "same-origin"}).then(r => r.ok ? r.json() : null).catch(() => null)
+    .then(d => { if (!d) { TL = null; return null; } return {boleh_tulis: !!d.boleh_tulis, peta: new Map(d.butir.map(b => [b.kunci, b]))}; });   // gagal: dicoba lagi saat render berikutnya
+  const jamWib = ms => { const d = new Date(ms + 7 * 36e5).toISOString(); return `${H.tglPendek(d.slice(0, 10))} ${d.slice(11, 16)} WIB`; };
+  function tandaTL(b, butir) {
+    const st = butir?.status || "belum", [t, ik] = ST_TL[st];
+    b.dataset.st = st; b.hidden = false;
+    b.replaceChildren(ikon(ik), h("span", {teks: st === "selesai" && butir ? `${t} ${H.tglPendek(new Date(butir.waktu + 7 * 36e5).toISOString().slice(0, 10))}` : t}));
+    b.title = butir ? `${t}, ${butir.oleh_nama}, ${jamWib(butir.waktu)}${butir.catatan ? ": " + butir.catatan : ""}` : "Belum ada tindak lanjut tercatat";
+  }
+  function hitungPita(tb) {
+    const bs = [...tb.querySelectorAll(".dl-st-tl")], n = bs.filter(b => b.dataset.st === "selesai").length, e = tb.querySelector(".dl-tl-n");
+    if (e) { e.hidden = !bs.length; e.textContent = `${F(n)} dari ${F(bs.length)} selesai`; }
+  }
+  function pasangTL(wadah) {
+    muatTL().then(d => {
+      if (!d) return;   // rute belum aktif (migrasi 0128) atau tanpa hak: tabel tetap tanpa status
+      wadah.querySelectorAll(".dl-st-tl").forEach(b => tandaTL(b, d.peta.get(b.closest("[data-kunci]").dataset.kunci)));
+      wadah.querySelectorAll("tbody.dl-mt-grup").forEach(hitungPita);
+      wadah.addEventListener("click", e => { const b = e.target.closest(".dl-st-tl"); if (b) { e.stopPropagation(); bukaTL(b, d); } });
+    });
+  }
+  function bukaTL(b, d) {
+    const kunci = b.closest("[data-kunci]").dataset.kunci, kini = d.peta.get(kunci);
+    if (!dialog) { dialog = h("dialog", {class: "dl-dialog", "aria-labelledby": "dl-dialog-judul"}); dialog.addEventListener("click", e => { if (e.target === dialog) dialog.close(); }); document.body.append(dialog); }
+    const tutup = h("button", {type: "button", class: "dl-ikon dl-tutup-dialog", "aria-label": "Tutup"}, ikon("tambah"));
+    tutup.addEventListener("click", () => dialog.close());
+    const rw = h("div", {class: "dl-tl-rw"}, h("p", {class: "dl-redup", teks: "Memuat riwayat…"}));
+    let form = null;
+    if (d.boleh_tulis) {
+      let pilih = kini?.status || "proses";
+      const opsi = Object.entries(ST_TL).map(([k, [t, ik]]) => h("button", {type: "button", "data-st": k, "aria-pressed": String(k === pilih)}, ikon(ik), h("span", {teks: t})));
+      const deret = h("div", {class: "dl-tl-pilih", role: "group", "aria-label": "Status langkah"}, ...opsi);
+      deret.addEventListener("click", e => { const o = e.target.closest("[data-st]"); if (!o) return; pilih = o.dataset.st; opsi.forEach(x => x.setAttribute("aria-pressed", String(x === o))); });
+      const cat = h("textarea", {class: "dl-tl-cat", maxlength: "300", rows: "3", placeholder: "Catatan tindak lanjut (tanpa nomor HP atau nama warga)", "aria-label": "Catatan"});
+      cat.value = kini?.catatan || "";
+      const pesan = h("p", {class: "dl-tl-pesan", role: "status"}), simpan = h("button", {type: "button", class: "dl-sl-b dl-tl-simpan"}, ikon("simpan"), h("span", {teks: "Simpan"}));
+      simpan.addEventListener("click", async () => {
+        simpan.setAttribute("aria-busy", "true"); simpan.disabled = true; pesan.textContent = "Menyimpan…";
+        let r; try { r = await fetch("/api/dalops/tindak", {method: "POST", credentials: "same-origin", headers: {"content-type": "application/json", "x-pb": "1"},
+          body: JSON.stringify({kunci, status: pilih, catatan: cat.value, langkah: b.dataset.langkah})}); } catch (e) { r = null; }
+        const j = r && await r.json().catch(() => null);
+        simpan.removeAttribute("aria-busy"); simpan.disabled = false;
+        if (!r?.ok) { pesan.textContent = j?.galat || j?.pesan || "Gagal menyimpan, coba lagi."; return; }
+        const butir = {kunci, status: pilih, catatan: cat.value.trim() || null, waktu: j.waktu, oleh_nama: "kamu"};
+        d.peta.set(kunci, butir);
+        document.querySelectorAll(`[data-kunci="${CSS.escape(kunci)}"] .dl-st-tl`).forEach(x => { tandaTL(x, butir); hitungPita(x.closest("tbody")); });
+        dialog.close();
+      });
+      form = h("div", {class: "dl-tl-form"}, deret, cat, h("div", {class: "dl-tl-aksi"}, pesan, simpan));
+    }
+    dialog.replaceChildren(h("div", {class: "dl-dialog-kepala"}, h("span", {class: "dl-hs-lencana"}, ikon("daftar")),
+        h("div", null, h("h2", {id: "dl-dialog-judul", teks: `${b.dataset.jenis} ${b.dataset.nama}`}), h("p", {class: "dl-sub", teks: b.dataset.langkah})), tutup),
+      h("div", {class: "dl-gulir"}, form, rw));
+    dialog.showModal();
+    fetch("/api/dalops/tindak/riwayat?kunci=" + encodeURIComponent(kunci), {credentials: "same-origin"}).then(r => r.ok ? r.json() : null).catch(() => null).then(xs => {
+      if (!xs) return rw.replaceChildren(h("p", {class: "dl-redup", teks: "Riwayat gagal dimuat."}));
+      if (!xs.length) return rw.replaceChildren(h("p", {class: "dl-redup", teks: "Belum ada tindak lanjut tercatat."}));
+      rw.replaceChildren(h("div", {class: "ad-tabel-wadah dl-tabel-wadah"}, h("table", {class: "ad-tabel dl-tabel"},
+        h("thead", null, h("tr", null, ["Waktu", "Pengisi", "Status", "Catatan"].map(k => h("th", {scope: "col", teks: k})))),
+        h("tbody", null, xs.map(x => h("tr", {title: x.langkah || ""}, h("td", {class: "dl-tgl", teks: jamWib(x.waktu)}), h("td", {teks: x.oleh_nama}),
+          h("td", null, label(ST_TL[x.status]?.[0] || x.status, ST_TL[x.status]?.[1] || "tunggu", x.status === "selesai" ? "hijau" : x.status === "proses" ? "kuning" : "")), h("td", {teks: x.catatan || "–"})))))));
+    });
+  }
   const PITA = {terdampak: ["banjir", "dl-mt-terdampak"], awas: ["peringatan", "dl-mt-awas"], siaga: ["peringatan", "dl-mt-siaga"], pantau: ["tunggu", "dl-mt-pantau"]};
   function bagianMitigasi(st, posko, pekan, hari) {
     if (!st || J.k !== "banjir") return null;
@@ -861,14 +931,15 @@
     for (const g of m.grup) {
       const [ik, kls] = PITA[g.kunci], buka = g.kunci === "terdampak" || g.kunci === "awas";
       const tombol = h("button", {type: "button", class: "dl-buka", "aria-expanded": String(buka)}, ikon("lanjut"), h("span", {class: "dl-mt-judul"}, ikon(ik), h("b", {teks: g.judul})),
-        h("span", {class: "dl-tag dl-tag-biru dl-jml", teks: `${F(g.baris.length)} kab/kota`}));
+        h("span", {class: "dl-tag dl-tag-hijau dl-tl-n", hidden: true}), h("span", {class: "dl-tag dl-tag-biru dl-jml", teks: `${F(g.baris.length)} kab/kota`}));
       const tb = h("tbody", {class: "dl-mt-grup dl-grup " + kls + (buka ? "" : " dl-tutup")}, h("tr", {class: "dl-mt-pita dl-prov"}, h("td", {colspan: "3"}, tombol)),
         g.baris.map(x => h("tr", null, h("td", {class: "dl-mt-kab"}, h("b", {teks: x.nama}), h("span", {class: "bn-label", teks: namaProv(x.prov_kode)})),
           h("td", {class: "dl-mt-tg"}, x.tenggat ? h("span", {class: "dl-tag " + (x.tenggat === "Sekarang" ? "dl-tag-merah" : "dl-tag-kuning"), teks: x.tenggat}) : "–"),
-          h("td", {class: "dl-mt-ln"}, ...String(x.langkah).split("; ").map(butirLangkah)))));
+          h("td", {class: "dl-mt-ln"}, ...String(x.langkah).split("; ").map(t => butirLangkah(x, t))))));
       tb.firstChild.addEventListener("click", () => { const jadi = tb.classList.toggle("dl-tutup") === false; tombol.setAttribute("aria-expanded", String(jadi)); });
       t.append(tb);
     }
+    pasangTL(t);
     return bagian("mitigasi", "peringatan", "Usulan langkah", judul, h("div", {class: "ad-tabel-wadah dl-tabel-wadah"}, t));
   }
 

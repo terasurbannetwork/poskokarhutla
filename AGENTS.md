@@ -265,6 +265,17 @@ Sebelum menyentuh laporan bencana berkala kepada Presiden (perakit angka per per
 
 Aturan berhentinya sama dengan §2.1. Angka dihitung mesin, kalimat kebijakan ditulis staf; versi beku tidak pernah ditimpa; tidak ada versi publik; tidak ada buku kejadian kedua.
 
+### 2.13 Log tindak lanjut Usulan langkah (`/bnpb/dalops`, menu Penanganan): baca dulu, baru bangun
+
+Sebelum menyentuh status, catatan, atau riwayat langkah di seksi Usulan langkah, baca dokumen di
+`data/kajian-bnpb/tindak-langkah/` dengan urutan otoritas ini (kode di `src/dalops_tindak.js`, bagian Dalops tindak lanjut `src/hak.js`, `migrations/0128_dl_tindak.sql`, `tests/warga/dalops_tindak.test.mjs` milik `warga-api`; layar di `public/bnpb/dalops.js` milik `ruang-bnpb`):
+
+1. `KEPUTUSAN-TINDAK.md`: keputusan pemilik K1–K3, rancangan D1–D6, pertanyaan terbuka Q1–Q6 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`TL-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Riwayat append-only; status tidak pernah mengubah daftar langkah; tidak ada data log di `public/`.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih

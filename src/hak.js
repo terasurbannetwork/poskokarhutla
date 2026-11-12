@@ -458,3 +458,14 @@ export async function opButir(env, tabel, kunci) {
 export const opRiwayat = async (env, {tabel, kunci, tanggal}) => (tabel != null
   ? await opP(env, "SELECT waktu, oleh, tabel, kunci, aksi, sebelum, sesudah, alasan FROM op_isian_log WHERE tabel = ? AND kunci = ? ORDER BY id DESC LIMIT 200", tabel, kunci).all()
   : await opP(env, "SELECT waktu, oleh, tabel, kunci, aksi, sebelum, sesudah, alasan FROM op_isian_log WHERE json_extract(coalesce(sesudah, sebelum), '$.tanggal') = ? ORDER BY id DESC LIMIT 200", tanggal).all()).results;
+
+/* ======================================================================================================================================================
+   Dalops tindak lanjut Usulan langkah (migrasi 0128_dl_tindak; src/dalops_tindak.js; data/kajian-bnpb/tindak-langkah/DESAIN-TEKNIS.md).
+   Hak dicek di rute (modAtauStaf untuk baca; modOK atau staf pusdalops/koordalops untuk tulis). dl_tindak_log append-only: tidak ada fungsi ubah/hapus. */
+export const dlTindakTerkini = async (env, sejak) => (await env.DB.prepare("SELECT kunci, status, catatan, oleh, waktu FROM dl_tindak WHERE waktu > ? ORDER BY waktu DESC LIMIT 2000").bind(sejak).all()).results;
+export const dlTindakRiwayat = async (env, kunci) => (await env.DB.prepare("SELECT waktu, status, catatan, langkah, oleh FROM dl_tindak_log WHERE kunci = ? ORDER BY id DESC LIMIT 100").bind(kunci).all()).results;
+export const dlTindakLaju = async (env, oleh, sejak) => (await env.DB.prepare("SELECT count(*) n FROM dl_tindak_log WHERE oleh = ? AND waktu > ?").bind(oleh, sejak).first())?.n ?? 0;
+export const dlStmtTindak = (env, kunci, status, catatan, oleh, kini) => env.DB.prepare("INSERT INTO dl_tindak (kunci, status, catatan, oleh, waktu) VALUES (?1, ?2, ?3, ?4, ?5) ON CONFLICT (kunci) DO UPDATE SET status = ?2, catatan = ?3, oleh = ?4, waktu = ?5").bind(kunci, status, catatan, oleh, kini);
+export const dlStmtTindakLog = (env, kunci, status, catatan, langkah, oleh, kini) => env.DB.prepare("INSERT INTO dl_tindak_log (kunci, status, catatan, langkah, oleh, waktu) VALUES (?, ?, ?, ?, ?, ?)").bind(kunci, status, catatan, langkah, oleh, kini);
+/* nama staf untuk kolom pengisi (Q3): hanya id yang diminta, lewat kunci utama */
+export const dlNamaStaf = async (env, ids) => ids.length ? new Map((await env.DB.prepare("SELECT id, nama FROM staf WHERE id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(ids)).all()).results.map(r => [r.id, r.nama])) : new Map();

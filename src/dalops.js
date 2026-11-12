@@ -6,6 +6,7 @@ import {gagal} from "./worker.js";
 import {modAtauStaf} from "./staf.js";   // RU-109: akun gerbang AKUN_SITUS* bukan staf, tidak lolos (stafOK memakai adminOK)
 import {halamanBnpbPublik} from "./bnpb.js";
 import {bacaLaporan, dummyLaporan} from "./dalops_laporan.js";
+import {RUTE_TINDAK} from "./dalops_tindak.js";
 
 export const PERAN_DALOPS = ["pusdalops", "koordalops", "pimpinan"];
 /* Pantau = Karhutla, Banjir, Longsor, Gempa, Cuaca, Kekeringan (pemilik 5 Nov 2026), Gelombang Pasang, Kebakaran Permukiman (11 Nov 2026); satu rute per jenis, kunci R2 dalops/<jenis>.json */
@@ -21,6 +22,7 @@ async function data(env, req, jenis) {
 }
 
 export const RUTE_DALOPS = {
+  ...RUTE_TINDAK,   // log tindak lanjut Usulan langkah (data/kajian-bnpb/tindak-langkah/)
   "GET /bnpb/dalops": (env, req, url) => halamanBnpbPublik(env, url, "dalops", {pribadi: true, bingkai: true}),   // layar staf; boleh dibingkai /admin/laporan
   "GET /api/dalops/banjir": (env, req) => data(env, req, "banjir"),
   "GET /api/dalops/longsor": (env, req) => data(env, req, "longsor"),

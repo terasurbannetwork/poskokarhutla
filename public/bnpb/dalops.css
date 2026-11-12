@@ -462,7 +462,26 @@
 .dl-ln+.dl-ln{border-top:1px dashed var(--line)}
 .dl-ln-j{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;font-weight:700;color:var(--ink2)}
 .dl-ln-j svg{width:14px;height:14px;flex:none}
-@media (max-width:600px){.dl-ln{grid-template-columns:minmax(0,1fr);gap:2px}}
+.dl-ln{grid-template-columns:128px minmax(0,1fr) auto}
+/* log tindak lanjut (data/kajian-bnpb/tindak-langkah/DESIGN-SYSTEM.md) */
+.dl-st-tl{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border:0;border-radius:999px;background:#eef2f7;color:var(--ink2);font:700 .75rem var(--font);cursor:pointer;white-space:nowrap;align-self:center}
+.dl-st-tl[hidden]{display:none}
+.dl-st-tl svg{width:13px;height:13px;flex:none}
+.dl-st-tl[data-st="proses"]{background:#fdf1d6;color:#8a5a00}
+.dl-st-tl[data-st="selesai"]{background:#dff3e6;color:#17663a}
+.dl-st-tl:hover{filter:brightness(.96)}
+.dl-st-tl:focus-visible,.dl-tl-pilih button:focus-visible,.dl-tl-cat:focus-visible{outline:2px solid var(--c5);outline-offset:2px}
+.dl-tl-n[hidden]{display:none}
+.dl-tl-form{display:grid;gap:10px;margin:0 0 14px}
+.dl-tl-pilih{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.dl-tl-pilih button{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;border:1px solid var(--line);border-radius:10px;background:var(--card);font:700 .8125rem var(--font);color:#0b2545;cursor:pointer}
+.dl-tl-pilih button svg{width:15px;height:15px}
+.dl-tl-pilih button[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.dl-tl-cat{width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--line);border-radius:10px;font:500 .875rem var(--font);resize:vertical}
+.dl-tl-aksi{display:flex;align-items:center;gap:10px;justify-content:flex-end}
+.dl-tl-pesan{margin:0;margin-right:auto;font-size:.8125rem;color:var(--ink2)}
+.dl-tl-simpan{min-width:120px}
+@media (max-width:600px){.dl-ln{grid-template-columns:minmax(0,1fr);gap:2px}.dl-st-tl{justify-self:start}.dl-tl-pilih{grid-template-columns:minmax(0,1fr)}}
 
 /* Laporan Masuk (dalops_laporan_masuk.js): baris rekap bisa dipilih, kolom teks rata kiri, angka rata tengah */
 .lm-tabel td.n{text-align:center;font-variant-numeric:tabular-nums}
