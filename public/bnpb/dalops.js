@@ -234,10 +234,11 @@
       const kode = kodeProv[i] + "|" + f.properties.kab, x = perKab.get(kode);
       if (!x) return;
       fitur.push({type: "Feature", id: fitur.length, properties: {kode, st: x.surut ? "surut" : "belum", korban: (x.md || 0) + (x.hilang || 0) > 0 ? 1 : 0, ungsi: x.mengungsi > 0 ? 1 : 0,
-        kabar: !x.surut && acuan && H.selisih(acuan, x.terakhir) >= 3 ? 1 : 0}, geometry: f.geometry});
+        kabar: !x.surut && acuan && H.selisih(acuan, x.terakhir) >= 3 ? 1 : 0, kurang: [x.kk, x.jiwa, x.kk_u, x.mengungsi].some(v => v == null) ? 1 : 0}, geometry: f.geometry});
     }));
     wadah.replaceChildren();
-    const legenda = h("div", {class: "dl-legenda-peta"}, h("b", {teks: "Legenda"}), h("span", {class: "dl-leg dl-leg-belum", teks: J.tidak}), h("span", {class: "dl-leg dl-leg-surut", teks: J.ya}));
+    const legenda = h("div", {class: "dl-legenda-peta"}, h("b", {teks: "Legenda"}), h("span", {class: "dl-leg dl-leg-belum", teks: J.tidak}), h("span", {class: "dl-leg dl-leg-surut", teks: J.ya}),
+      fitur.some(f => f.properties.kurang) ? h("span", {class: "dl-leg dl-leg-kurang", teks: "Data belum lengkap"}) : null);
     /* prakiraan Siaga/Awas (status.json): simbol peringatan di titik tengah kab, legenda hanya bila ada */
     const waspada = Object.values(sk).map(x => ({...x, maks: Math.max(0, ...x.b.map(l => l ?? 0))})).filter(x => x.maks >= 1);
     for (const l of [3, 2, 1]) if (waspada.some(x => x.maks === l)) legenda.append(h("span", {class: "dl-leg dl-leg-a" + l, teks: "Prakiraan " + H.NAMA_LEVEL[l]}));
@@ -255,6 +256,7 @@
       const syarat = [...(st.length ? [["in", ["get", "st"], ["literal", st]]] : []), ...flag.map(v => ["==", ["get", v], 1])];
       const fKab = !saring.size ? null : syarat.length ? ["all", ...syarat] : ["==", ["get", "st"], "-"];
       for (const id of ["kab-isi", "kab-garis"]) if (peta.getLayer(id)) peta.setFilter(id, fKab);
+      if (peta.getLayer("kab-kurang")) peta.setFilter("kab-kurang", fKab ? ["all", fKab, ["==", ["get", "kurang"], 1]] : ["==", ["get", "kurang"], 1]);
       if (peta.getLayer("peringatan")) peta.setFilter("peringatan", saring.size ? ["in", ["get", "lv"], ["literal", lv]] : null);
     };
     const tSaring = [["surut", J.ya, "ok"], ["belum", J.tidak, J.ik], ...(SARING[J.k] || []).filter(v => fitur.some(f => f.properties[v])).map(v => [v, ...NAMA_SARING[v]]),
@@ -273,6 +275,8 @@
         "fill-opacity": ["case", ["boolean", ["feature-state", "sorot"], false], .9, .7]}});
       peta.once("idle", terapSaring);
       peta.addLayer({id: "kab-garis", type: "line", source: "kab", paint: {"line-color": ["case", ["boolean", ["feature-state", "sorot"], false], "#0b2545", "#ffffff"], "line-width": ["case", ["boolean", ["feature-state", "sorot"], false], 2, .8]}});
+      /* data belum lengkap (KK/jiwa terdampak atau mengungsi belum dilaporkan): garis kuning putus-putus (pemilik 12 Nov 2026 "agar ada tandanya") */
+      peta.addLayer({id: "kab-kurang", type: "line", source: "kab", filter: ["==", ["get", "kurang"], 1], paint: {"line-color": "#f2c200", "line-width": 2, "line-dasharray": [2, 1.5]}});
       /* batas wilayah seluruh Indonesia: provinsi tebal gelap, kab/kota tipis abu; dimuat sesudah lapisan banjir supaya peta cepat tampil */
       const SEMUA_PROV = ["11","12","13","14","15","16","17","18","19","21","31","32","33","34","35","36","51","52","53","61","62","63","64","65","71","72","73","74","75","76","81","82","91","92","93","94","95","96"];
       Promise.all([ambil("/geo/provinsi.json"), ...SEMUA_PROV.map(p => kodeProv.includes(p) ? Promise.resolve(kabs[kodeProv.indexOf(p)]) : ambil(`/geo/kabupaten/${p}.json`))]).then(([prov, ...semuaKab]) => {
@@ -309,12 +313,13 @@
       peta.on("mouseleave", "kab-isi", tutup);
     });
   }
-  /* angka terdampak di kartu: hanya yang dilaporkan; kalau keduanya kosong, satu baris keterangan kecil (bukan "–" besar) */
+  /* angka terdampak di kartu (pemilik 12 Nov 2026 "agar ada KK mengungsi dan jiwa mengungsinya, kalau belum ada tulis NA terus kuningin"):
+     empat kotak tetap (KK dan jiwa terdampak, KK dan jiwa mengungsi), yang belum dilaporkan tertulis NA berlatar kuning; korban hanya bila ada */
   function kotakAngka(x) {
-    const isi = [[x.md, "meninggal", "peringatan"], [x.hilang, "hilang", "peringatan"], [x.kk, "KK terdampak", "sosial"], [x.jiwa, "jiwa terdampak", "personel"], [x.mengungsi, "jiwa mengungsi", "tenda"]]
-      .filter(([v], i) => v != null && (i > 1 || v > 0));   // korban hanya bila ada
-    return isi.length ? h("div", {class: "dl-tip-angka"}, isi.slice(0, x.md > 0 || x.hilang > 0 ? 3 : 2).map(([v, t, ik]) => h("div", null, h("span", {class: "dl-tip-ik"}, ikon(ik)), h("b", {teks: F(v)}), h("span", {teks: t}))))
-      : h("p", {class: "dl-tip-kosong"}, ikon("tunggu"), "Jumlah terdampak belum dilaporkan");
+    const korban = [[x.md, "meninggal", "peringatan"], [x.hilang, "hilang", "peringatan"]].filter(([v]) => v > 0);
+    const isi = [...korban, [x.kk, "KK terdampak", "sosial"], [x.jiwa, "jiwa terdampak", "personel"], [x.kk_u, "KK mengungsi", "tenda"], [x.mengungsi, "jiwa mengungsi", "tenda"]];
+    return h("div", {class: "dl-tip-angka"}, isi.map(([v, t, ik]) => h("div", v == null ? {class: "dl-na", title: t + " belum dilaporkan"} : null,
+      h("span", {class: "dl-tip-ik"}, ikon(ik)), h("b", {teks: v == null ? "NA" : F(v)}), h("span", {teks: t}))));
   }
 
   /* lambang kab/kota di kepala kartu (/lambang, sama dengan /bnpb/relawan); belum termuat atau tak ada: lambang provinsi, gagal: disembunyikan */
@@ -345,8 +350,11 @@
     return h("div", {class: "dl-pop"},
       h("div", {class: "dl-pop-kepala"}, lambangKab(x),
         h("div", null, h("div", {class: "dl-pop-judul"}, h("b", {class: "dl-tip-nama", teks: x.nama}), label(namaProv(x.prov_kode, x.prov), "pin", "abu")),
+          /* tanggal mulai dan selesai (pemilik 12 Nov 2026 "kapan tanggal mulai kapan tanggal selesainya"); selesai = kabar surut terakhir */
           h("div", {class: "dl-pop-label"}, surutLabel(x.surut),
-            Object.assign(label(H.tglPendek(x.terakhir), "kalender", "garis"), {title: "Kabar terakhir " + H.tglPendek(x.terakhir)})))),
+            Object.assign(label("Mulai " + H.tglPendek(x.mulai || x.terakhir), "kalender", "garis"), {title: "Kejadian mulai " + H.tglPendek(x.mulai || x.terakhir)}),
+            x.surut ? Object.assign(label("Selesai " + H.tglPendek(x.terakhir), "kalender", "garis"), {title: "Dilaporkan selesai " + H.tglPendek(x.terakhir)})
+              : Object.assign(label("Kabar " + H.tglPendek(x.terakhir), "tunggu", "garis"), {title: "Kabar terakhir " + H.tglPendek(x.terakhir) + ", belum selesai"})))),
       kotakAngka(x),
       h("div", {class: "dl-pop-kontak"},
         h("div", {class: "dl-pop-tombol"},

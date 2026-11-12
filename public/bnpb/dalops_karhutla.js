@@ -82,10 +82,28 @@
     t.append(...tbodies); pasangUrut(t);
     const wadahPeta = h("div", {class: "dl-peta"}, h("p", {class: "bn-pesan", teks: "Memuat peta…"}));
     /* ringkasan di dalam peta, sama dengan jenis lain (pemilik 11 Nov 2026 "karhutla kok beda sendiri") */
-    const tanpaKabar = perluDitanya(baris, hari).length, nProv = new Set(baris.map(x => x.prov_kode)).size, luasTot = baris.reduce((s, x) => s + x.luas, 0);
-    const ub = (ik, nama, nilai, kelas = "") => h("div", {class: "db-ubin " + kelas}, h("header", null, h("i", null, ikon(ik)), h("span", {teks: nama})), h("b", {teks: nilai}));
-    const ubin = h("div", {class: "db-ubin-grid"}, ub("karhutla", "Kab/kota terbakar", F(baris.length)), ub("peringatan", "Belum padam", F(belum.length), belum.length ? "merah" : ""),
-      ub("karhutla", "Belum padam, ha", ha(totBelum), totBelum ? "merah" : ""), ub("kalender", "Luas terbakar, ha", ha(luasTot)), ub("pin", "Provinsi", F(nProv)), ub("tunggu", "Tanpa kabar BPBD", F(tanpaKabar), tanpaKabar ? "oranye" : ""));
+    const tanpaKabar = perluDitanya(baris, hari).length, luasTot = baris.reduce((s, x) => s + x.luas, 0);
+    const ub = (ik, nama, nilai, kelas = "", tip = "") => h("div", {class: "db-ubin " + kelas, title: tip || null}, h("header", null, h("i", null, ikon(ik)), h("span", {teks: nama})), typeof nilai === "string" ? h("b", {teks: nilai}) : nilai);
+    /* angka deck Penanganan di peta (pemilik 12 Nov 2026): hotspot, firespot, luas terbakar, belum padam, tren 3 hari; semua dari sistem kita.
+       hotspot nasional = peta_karhutla.json (definisi deck), firespot = arsip kluster_hari (titik firespot hari itu, w[prov][4]) */
+    const hariKe = n => new Date(Date.parse(hari) - n * 864e5).toISOString().slice(0, 10), tiga = [2, 1, 0].map(hariKe);
+    const [nas, ...kl] = await Promise.all([fetch("/data/peta_karhutla.json").then(r => r.ok ? r.json() : null).catch(() => null),
+      ...tiga.map(t => fetch(`/data/kluster_hari/${t}.json`).then(r => r.ok ? r.json() : null).catch(() => null))]);
+    const hot = tiga.map(t => { const i = nas?.hari?.indexOf(t) ?? -1; return i < 0 ? null : nas.nasional.hot[i]; });
+    const fs = kl.map(k => k?.w ? Object.entries(k.w).filter(([kk]) => !kk.includes("|")).reduce((s, [, v]) => s + (v[4] || 0), 0) : null);
+    const tren = (() => { const ada = hot.filter(v => v != null), m = Math.max(1, ...ada);
+      const ubah = hot[0] && hot[2] != null ? Math.round((hot[2] - hot[0]) / hot[0] * 100) : null;
+      return h("b", {class: "dl-tren3"}, ...hot.map((v, i) => h("i", {style: `--t:${v == null ? 0 : Math.max(8, Math.round(v / m * 100))}%`, title: `${tgl(tiga[i])}: ${v == null ? "belum ada data" : F(v) + " hotspot"}`})),
+        ubah == null ? null : h("small", {class: ubah > 0 ? "naik" : "turun", teks: (ubah > 0 ? "▲ " : "▼ ") + F(Math.abs(ubah)) + "%"})); })();
+    const NA = v => v == null ? "NA" : F(v);
+    const ubin = h("div", {class: "db-ubin-grid"},
+      ub("karhutla", "Hotspot " + tgl(hari), NA(hot[2]), hot[2] == null ? "dl-na" : "", "Titik panas hari itu, semua satelit dan tingkat keyakinan (sistem Centurisk97)"),
+      ub("peringatan", "Firespot " + tgl(hari), NA(fs[2]), fs[2] == null ? "dl-na" : fs[2] ? "merah" : "", "Titik firespot hari itu dari cluster firespot (sistem Centurisk97)"),
+      ub("kalender", "Luas terbakar " + tgl(hari) + ", ha", ha(luasTot)),
+      ub("karhutla", "Belum padam, ha", ha(totBelum), totBelum ? "merah" : ""),
+      ub("data", "Tren hotspot 3 hari", tren, "", tiga.map((t, i) => `${tgl(t)}: ${hot[i] == null ? "NA" : F(hot[i])}`).join(", ")),
+      ub("pin", "Kab/kota belum padam", F(belum.length), belum.length ? "merah" : ""),
+      ub("tunggu", "Tanpa kabar BPBD", F(tanpaKabar), tanpaKabar ? "oranye" : ""));
     requestAnimationFrame(() => peta(wadahPeta, baris, U, ubin));
 
     /* kelengkapan data: belum padam tanpa kabar BPBD sehari terakhir */

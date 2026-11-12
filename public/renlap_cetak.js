@@ -122,7 +122,8 @@
 
   async function json(u) { const r = await fetch(u, {cache: "no-cache"}); if (!r.ok) throw new Error(u + " " + r.status); return r.json(); }
   async function renlap(tgl, versi) {
-    if (tgl && versi) return [await json(`/data/operasi/renlap_${tgl}_${versi}.json`), tgl, versi];
+    /* renlap yang diminta belum terbit di situs (pipeline menyusul): jatuh ke renlap terakhir yang ada, tanggal di kepala ikut berganti */
+    if (tgl && versi) { try { return [await json(`/data/operasi/renlap_${tgl}_${versi}.json`), tgl, versi]; } catch {} }
     const hari = Date.now() + 7 * 36e5;
     for (let i = 0; i < 3; i++) { const d = new Date(hari - i * 864e5).toISOString().slice(0, 10);
       for (const v of i ? ["malam", "pagi"] : ["pagi", "malam"]) { try { return [await json(`/data/operasi/renlap_${d}_${v}.json`), d, v]; } catch {} } }
