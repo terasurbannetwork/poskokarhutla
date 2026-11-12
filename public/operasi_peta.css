@@ -1723,8 +1723,8 @@
   #opsLaporan .ops-kanan{display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--line);border-radius:20px;background:var(--card);box-shadow:var(--shadow)}
   #opsLaporan .ops-utama{flex:1;min-height:0;height:auto;border:0;border-radius:0;box-shadow:none;scrollbar-gutter:auto}
 }
-#opsLaporan .ops-kanan>.ops-judul{flex:none;display:flex;align-items:center;justify-content:center;gap:10px;margin:0;padding:16px 24px;background:#0b2545;color:#fff;font-family:var(--display);font-size:1.5rem;font-weight:800}
-#opsLaporan .ops-kanan>.ops-judul .ops-lbl svg{width:22px;height:22px;color:#9cc3ff}
+#opsLaporan .ops-kanan>.ops-judul{flex:none;display:flex;align-items:center;justify-content:center;gap:8px;margin:0;padding:9px 16px;background:#0b2545;color:#fff;font-family:var(--display);font-size:1.0625rem;font-weight:800}
+#opsLaporan .ops-kanan>.ops-judul .ops-lbl svg{width:17px;height:17px;color:#9cc3ff}
 #opsLaporan .ops-utama>.ops-alat:empty,#opsLaporan .ops-utama>.ops-alat:has(>.ops-status:only-child){display:none}
 @media (max-width:900px){#opsLaporan .ops-kanan>.ops-judul{border-radius:16px 16px 0 0}#opsLaporan .ops-kanan>.ops-utama{border-top-left-radius:0;border-top-right-radius:0}}
 @media (min-width:901px){#opsLaporan .ops-kanan{scrollbar-gutter:auto;padding:0}}
@@ -2253,3 +2253,17 @@
 #opsLaporan .ops-rlp .ops-lbl:has(>svg:only-child){padding:2px 6px}
 #opsLaporan .ops-pb-ud{display:inline-flex;gap:3px;margin-right:6px;vertical-align:middle}
 #opsLaporan .ops-pb-ud .ops-kml .ops-lbl{padding:2px 7px;font-size:.6875rem;font-weight:700;background:var(--card);color:#1f3f73;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--brand2) 35%,transparent)}
+
+/* satu ikon unduh waypoint tanpa tulisan (pemilik 12 Nov 2026 "KML sama GPX jadi satu icon", "gausah ada kata") */
+#opsLaporan .ops-kml.ops-wp .ops-lbl{padding:3px 6px}
+#opsLaporan .ops-kml.ops-wp svg{margin:0}
+/* kartu base di pop-up Base (pemilik 12 Nov 2026 "bagusin"): baris Siap hanya bila sudah lapor, kaki status berlatar lembut, angka dan pil sebaris */
+#opsLaporan .ops-rp-bgrid>article{gap:10px;padding:0 0 12px;overflow:hidden}
+#opsLaporan .ops-rp-bgrid>article>header{padding:10px 14px;background:color-mix(in srgb,#0b2545 5%,var(--card));border-bottom:1px solid var(--line);box-shadow:inset 3px 0 0 #0b2545}
+#opsLaporan .ops-rp-bgrid>article>header div{flex-direction:row;align-items:center;flex-wrap:wrap;gap:8px}
+#opsLaporan .ops-rp-bgrid>article>:not(header){margin:0 14px}
+#opsLaporan .ops-rp-bisi{grid-template-columns:auto auto 1fr;grid-template-rows:auto;align-items:center;column-gap:8px}
+#opsLaporan .ops-rp-bisi>b{grid-row:auto;font-size:1.75rem;color:#0b2545}
+#opsLaporan .ops-rp-bisi>em{justify-content:flex-end}
+#opsLaporan .ops-rp-bgrid>article>footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding:7px 10px;border:0;border-radius:10px;background:color-mix(in srgb,#0b2545 4%,var(--card))}
+#opsLaporan .ops-rp-bgrid>article>footer>span.belum{padding:0}

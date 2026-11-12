@@ -79,7 +79,7 @@ body .ad-tabel thead tr{background:var(--db-navy)}
 .db-nav-pb b{font-weight:800;color:var(--w);white-space:nowrap}
 /* kepala halaman L1 di cangkang */
 .db-kanan>.bn-judul{margin:0}
-.db-kanan>.bn-judul>h1{margin:0;padding:12px 16px;border-radius:14px;background:var(--db-navy);color:#fff;text-align:center;font-size:1.25rem;flex:1}
+.db-kanan>.bn-judul>h1{margin:0;padding:9px 16px;border-radius:14px;background:var(--db-navy);color:#fff;text-align:center;font-size:1.0625rem;flex:1}
 .db-kanan>.bn-pesan[hidden],.db-kanan>.bn-pesan:empty{display:none}
 .db-kanan .ex-std .ex-jd>h3 svg{width:18px;height:18px;margin-right:8px;vertical-align:-3px;color:var(--db-navy);fill:none;stroke:currentColor;stroke-width:2}
 @media (max-width:900px){.db-a{grid-template-columns:1fr}.db-nav{position:static;height:auto}.db-nav-isi{flex-direction:row;flex-wrap:wrap}.db-nav-b{width:auto;flex:0 0 auto}}
@@ -151,9 +151,9 @@ aside.db-nav .db-nav-b.mp-induk{font-weight:800;color:var(--db-navy)}
 /* kepala halaman L1 di halaman Pusdalops berpanel kiri */
 @media (min-width:901px){
   .mp-a>main>.bn-judul{margin:0 0 14px}
-  .mp-a>main>.bn-judul>h1{flex:1;margin:0;padding:12px 16px;border-radius:14px;background:var(--db-navy);color:#fff;text-align:center;font-size:1.25rem}
-  .mp-a>main>.ad-judul{margin:0 0 14px;padding:10px 16px;border-radius:14px;background:var(--db-navy);justify-content:center}
-  .mp-a>main>.ad-judul h1{color:#fff;font-size:1.25rem}
+  .mp-a>main>.bn-judul>h1{flex:1;margin:0;padding:9px 16px;border-radius:14px;background:var(--db-navy);color:#fff;text-align:center;font-size:1.0625rem}
+  .mp-a>main>.ad-judul{margin:0 0 14px;padding:8px 16px;border-radius:14px;background:var(--db-navy);justify-content:center}
+  .mp-a>main>.ad-judul h1{color:#fff;font-size:1.0625rem}
 }
 
 /* ==== panel kiri IDENTIK /operasi (nilai terhitung dari .ops-nav, pemilik 11 Nov 2026 "sama persis modelnya") ==== */
