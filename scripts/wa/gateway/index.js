@@ -13,7 +13,7 @@ const { muatEnv, normalWa, daftar, rumah, RUMAH } = require('../umum.cjs')
 muatEnv()
 const {
   default: makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion,
-  downloadMediaMessage, normalizeMessageContent, proto,
+  downloadMediaMessage, normalizeMessageContent, proto, BufferJSON,
 } = require('@whiskeysockets/baileys')
 const limiter = require('./limiter')
 const drive = require('../drive.cjs').buat({ kabar: (t) => kabarPemilik(t) }) // Google Drive: mati sendiri bila belum dikonfigurasi
@@ -32,6 +32,8 @@ const GRUP_OPS = new Set(daftar(process.env.OPERASI_GRUP).filter((j) => /@g\.us$
 const PEMILIK = normalWa(daftar(process.env.PEMILIK)[0])
 const AUTH_DIR = rumah(process.env.WA_AUTH_DIR) || path.join(RUMAH, 'auth')
 const OUTBOX = path.join(RUMAH, 'outbox')
+const TERKIRIM = path.join(RUMAH, 'terkirim') // salinan pesan keluar untuk getMessage (kirim ulang bila penerima gagal dekripsi)
+const USIA_TERKIRIM = 7 * 86400e3
 const RUSAK = path.join(RUMAH, 'outbox-rusak')
 const KELUARAN = path.join(RUMAH, 'keluaran')
 const BATAS_OUTBOX = 500 * 1024 * 1024
@@ -68,7 +70,37 @@ async function sendPaced(jid, isi, isGroup) {
   if (!s.ok) return { ok: false, code: s.code, error: s.error }
   const sent = await sock.sendMessage(jid, isi)
   limiter.commit(jid)
+  simpanTerkirim(sent)
   return { ok: true, kind: isGroup ? 'group' : 'personal', id: (sent && sent.key && sent.key.id) || null }
+}
+
+// Tanpa getMessage, permintaan kirim ulang dari penerima yang gagal dekripsi tak terjawab dan pesan
+// macet sebagai "Menunggu pesan ini" (12 Nov 2026). Disimpan ke disk supaya tetap bisa dijawab sesudah restart.
+const idPesan = (id) => /^[A-Za-z0-9]{8,64}$/.test(String(id || '')) // id dari luar jadi nama berkas: tanpa / atau ..
+function simpanTerkirim(sent) {
+  const id = sent && sent.key && sent.key.id
+  if (!idPesan(id) || !sent.message) return
+  try {
+    fs.mkdirSync(TERKIRIM, { recursive: true })
+    fs.writeFileSync(path.join(TERKIRIM, id + '.json'), JSON.stringify(sent.message, BufferJSON.replacer))
+  } catch (e) { log('[terkirim] galat simpan', String((e && e.message) || e)) }
+}
+
+async function ambilTerkirim(key) {
+  const id = key && key.id
+  if (!idPesan(id)) return undefined
+  try { return proto.Message.fromObject(JSON.parse(fs.readFileSync(path.join(TERKIRIM, id + '.json'), 'utf8'), BufferJSON.reviver)) }
+  catch { return undefined }
+}
+
+function sapuTerkirim() {
+  let nama = []
+  try { nama = fs.readdirSync(TERKIRIM) } catch { return }
+  const batas = Date.now() - USIA_TERKIRIM
+  for (const n of nama) {
+    const f = path.join(TERKIRIM, n)
+    try { if (fs.statSync(f).mtimeMs < batas) fs.unlinkSync(f) } catch {}
+  }
 }
 
 async function jidDari(target) {
@@ -419,7 +451,8 @@ async function kabarPemilik(teks) {
 async function startSock() {
   const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR)
   const { version } = await fetchLatestBaileysVersion()
-  sock = makeWASocket({ version, auth: state, logger: pino({ level: 'silent' }), browser: ['Centurisk97 Bot', 'Chrome', '1.0.0'] })
+  sapuTerkirim()
+  sock = makeWASocket({ version, auth: state, logger: pino({ level: 'silent' }), browser: ['Centurisk97 Bot', 'Chrome', '1.0.0'], getMessage: ambilTerkirim })
   sock.ev.on('creds.update', saveCreds)
 
   sock.ev.on('messages.upsert', async (ev) => {
