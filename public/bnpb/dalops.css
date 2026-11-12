@@ -448,13 +448,21 @@
 .dl-mt td{padding:4px 12px;vertical-align:top}
 .dl-mt-pita td{font-weight:800;padding:5px 12px}
 .dl-mt-judul{display:inline-flex;align-items:center;gap:6px}.dl-mt-judul svg{width:15px;height:15px}
-.dl-mt-awas .dl-mt-pita td{background:color-mix(in srgb,var(--c1) 18%,var(--card));color:color-mix(in srgb,var(--c1) 80%,var(--ink))}
-.dl-mt-siaga .dl-mt-pita td{background:color-mix(in srgb,var(--c2) 20%,var(--card));color:color-mix(in srgb,var(--c2) 60%,var(--ink))}
-.dl-mt-terdampak .dl-mt-pita td{background:color-mix(in srgb,var(--c1) 8%,var(--card));color:color-mix(in srgb,var(--c1) 70%,var(--ink))}
-.dl-mt-pantau .dl-mt-pita td{background:color-mix(in srgb,var(--c5) 12%,var(--card));color:color-mix(in srgb,var(--c5) 70%,var(--ink))}
+.dl-mt-awas .dl-mt-pita td,.dl-wrap .dl-tabel .dl-mt-awas .dl-mt-pita td{background:color-mix(in srgb,var(--c1) 18%,var(--card));color:color-mix(in srgb,var(--c1) 80%,var(--ink))}
+.dl-mt-siaga .dl-mt-pita td,.dl-wrap .dl-tabel .dl-mt-siaga .dl-mt-pita td{background:color-mix(in srgb,var(--c2) 20%,var(--card));color:color-mix(in srgb,var(--c2) 60%,var(--ink))}
+.dl-mt-terdampak .dl-mt-pita td,.dl-wrap .dl-tabel .dl-mt-terdampak .dl-mt-pita td{background:color-mix(in srgb,var(--c1) 8%,var(--card));color:color-mix(in srgb,var(--c1) 70%,var(--ink))}
+.dl-mt-pantau .dl-mt-pita td,.dl-wrap .dl-tabel .dl-mt-pantau .dl-mt-pita td{background:color-mix(in srgb,var(--c5) 12%,var(--card));color:color-mix(in srgb,var(--c5) 70%,var(--ink))}
 .dl-mt-kab{white-space:nowrap}.dl-mt-kab .bn-label{margin-left:8px}
 .dl-mt-tg{white-space:nowrap;text-align:center;font-weight:700}
 .dl-mt-ln{min-width:320px}
+.dl-mt td.dl-mt-ln{padding-top:6px;padding-bottom:6px}
+.dl-mt-kab b{display:block}.dl-mt-kab .bn-label{margin-left:0}
+.dl-mt-pita .dl-buka{gap:8px;color:inherit}.dl-mt-pita .dl-buka>.dl-mt-judul{color:inherit}.dl-mt-pita .dl-jml{margin-left:auto}
+.dl-ln{display:grid;grid-template-columns:128px minmax(0,1fr);gap:10px;align-items:baseline;padding:2px 0}
+.dl-ln+.dl-ln{border-top:1px dashed var(--line)}
+.dl-ln-j{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;font-weight:700;color:var(--ink2)}
+.dl-ln-j svg{width:14px;height:14px;flex:none}
+@media (max-width:600px){.dl-ln{grid-template-columns:minmax(0,1fr);gap:2px}}
 
 /* Laporan Masuk (dalops_laporan_masuk.js): baris rekap bisa dipilih, kolom teks rata kiri, angka rata tengah */
 .lm-tabel td.n{text-align:center;font-variant-numeric:tabular-nums}
@@ -754,7 +762,9 @@ h1.dl-l1{margin:0;padding:12px 16px;border-radius:14px;background:#0b2545;color:
 /* kolom hujan di tabel peringatan dini: angka redup, rata kiri dekat pil statusnya */
 .dl-tabel-hari tbody td:nth-child(n+4):nth-child(odd){color:var(--ink2);font-weight:600}
 /* saring tabel wilayah: pil di atas tabel, jumlah kab/kota di tiap pil */
-.dl-saring-tabel{margin:0 0 10px;flex-wrap:wrap}
+.dl-saring-tabel{flex-wrap:wrap}
 .dl-saring-tabel .dl-saring-btn>b{margin-left:2px;font-size:.75rem;font-weight:800}
 /* legenda Data belum lengkap pakai ikon papan catatan, bukan kotak warna (pemilik 12 Nov 2026) */
-.dl-leg.dl-leg-kurang::before{display:inline-block;width:10px;height:10px;border-radius:50%;background:#f2c200;border:1.5px solid #0b2545;box-sizing:border-box}
+.dl-leg.dl-leg-kurang::before{display:none}
+.dl-leg-lencana{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:4px;background:#f2c200}
+.dl-wrap .dl-leg-lencana svg{width:12px;height:12px;color:#0b2545;stroke-width:2.4}
