@@ -3738,3 +3738,15 @@
 {"t":"2026-11-12T16:13:51.859+07:00","sesi":"25672fbe","prompt":"kenapa laptop saya lag banget ya","label":[],"berkas":[]}
 {"t":"2026-11-12T16:15:53.362+07:00","sesi":"25672fbe","prompt":"Ya, matikan","label":[],"berkas":[]}
 {"t":"2026-11-12T16:16:31.026+07:00","sesi":"b15eff73","prompt":"lgsg push","label":[],"berkas":[]}
+{"t":"2026-11-12T16:22:34.171+07:00","sesi":"20322e8f","prompt":"mana filenya","label":[],"berkas":[]}
+{"t":"2026-11-12T16:22:53.025+07:00","sesi":"b15eff73","prompt":"Sudah, lanjut push","label":[],"berkas":[]}
+{"t":"2026-11-12T16:23:33.832+07:00","sesi":"20322e8f","prompt":"ini kenapa gini ya","label":[],"berkas":[]}
+{"t":"2026-11-12T16:40:48.685+07:00","sesi":"b15eff73","prompt":"Sudah, coba lagi","label":[],"berkas":[]}
+{"t":"2026-11-12T16:41:23.801+07:00","sesi":"20322e8f","prompt":"benerin","label":[],"berkas":[]}
+{"t":"2026-11-12T16:43:46.067+07:00","sesi":"8c6f3bb7","prompt":"kalau laporan banjir yang terakhir kamu buat ada di repo?","label":["banjir"],"berkas":[]}
+{"t":"2026-11-12T16:44:53.921+07:00","sesi":"8c6f3bb7","prompt":"bukan kajian, tapi laporan ttg kejadian banjir yg bentuknya deck, ada map2nya di dalem","label":["banjir"],"berkas":[]}
+{"t":"2026-11-12T16:51:50.084+07:00","sesi":"8c6f3bb7","prompt":"@\"D:\\Project\\Work\\BNPB\\Print\\Paparan Situasi Banjir Sepekan 021126.pdf\" @\"D:\\Project\\Work\\BNPB\\Print\\Situasi Banjir dan Bencana Lain 091126 prakiraan 9 Nov.pdf\"\ncoba buat laporan banjir dan longsor per minggu\n\nformatnya gabungan dari 2 deck ini ya (khusus untuk file kedua yang saya kirim, cukup jadikan slide 1-5 sebagai referensi ya, sisanya gausah; itu juga termasuk buat acuan desain, karena file kedua adalah file terbaru dengan desain yang sudah oke)\n\nbuat untuk tanggal 2 sampai 8 november","label":["banjir","longsor"],"berkas":[]}
+{"t":"2026-11-12T17:00:28.784+07:00","sesi":"20322e8f","prompt":"Untuk kedua file tersebut, coba buat deck paparannya\n\nJangan gunakan frasa/klausa yang nanggung ya.","label":[],"berkas":[]}
+{"t":"2026-11-12T17:01:25.543+07:00","sesi":"b15eff73","prompt":"Coba buat decknya ya\n\njangan pakai frasa/klausa nanggung","label":[],"berkas":[]}
+{"t":"2026-11-12T17:01:48.487+07:00","sesi":"d4c9711c","prompt":"lanjutin dlu aja sampai fase terakhir","label":[],"berkas":[]}
+{"t":"2026-11-12T17:12:27.972+07:00","sesi":"68471f09","prompt":"Ya, commit","label":[],"berkas":[]}
