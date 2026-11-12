@@ -493,7 +493,7 @@
 .dl-kab{display:grid;gap:2px;justify-items:start}   /* nama kab di atas label provinsinya */
 @media (max-width:600px){.dl-luar-saring{grid-template-columns:minmax(0,1fr)}}
 /* saringan lintas bencana (pemilik 12 Nov 2026): Bencana, Provinsi, Kab/kota, ekspor; ujung ke ujung, sama lebar */
-.dl-sl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(0,1.3fr);gap:8px;align-items:end;margin:0 0 12px}
+.dl-sl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;align-items:end;margin:0 0 12px}
 .dl-sl:not(:has(.dl-sl-ek)){grid-template-columns:repeat(3,minmax(0,1fr))}
 .dl-sl-p{display:grid;gap:4px;font-size:.75rem;font-weight:700;color:var(--ink2)}
 .dl-sl-p select{width:100%;min-height:38px;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);font:600 .8125rem var(--font);color:#0b2545}
@@ -501,6 +501,7 @@
 .dl-sl-ek{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
 .dl-sl-b{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);font:700 .8125rem var(--font);color:#0b2545;cursor:pointer;white-space:nowrap}
 .dl-sl-b:hover{background:var(--db-h2,#f3f7fd)}
+.dl-sl-b[aria-busy="true"]{opacity:.6;cursor:progress}
 .dl-sl-b svg{width:16px;height:16px;flex:none}
 .dl-sl-b[data-ekspor="wa"] svg{fill:#25d366}
 .dl-sl-kosong{margin:0 0 10px}
@@ -740,13 +741,13 @@ h1.dl-l1{margin:0;padding:12px 16px;border-radius:14px;background:#0b2545;color:
 /* saring tingkat peringatan dini (pemilik 12 Nov 2026) */
 /* bilah saring peringatan dini: pulau, provinsi, kejadian, tingkat (pemilik 12 Nov 2026) */
 .dl-bilah-saring{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 12px;padding:8px;border-radius:10px;background:#f4f6fa}
-.dl-pilih{display:inline-flex;align-items:center;gap:6px;padding:2px 4px 2px 10px;border-radius:8px;background:#fff;box-shadow:0 0 0 2px rgb(0 0 0 / .1);color:#0b2545;font:600 12px var(--font)}
+.dl-pilih{display:inline-flex;align-items:center;gap:6px;padding:2px 4px 2px 10px;border-radius:8px;background:#fff;box-shadow:0 0 0 2px rgb(0 0 0 / .1);color:#0b2545;font:600 .75rem var(--font)}
 .dl-pilih>svg{width:14px;height:14px;color:#5b6b85;flex:none}
 .dl-pilih-t{color:#5b6b85;font-weight:600}
-.dl-pilih select{border:0;background:none;color:#0b2545;font:700 12px var(--font);padding:5px 4px;cursor:pointer;max-width:200px}
+.dl-pilih select{border:0;background:none;color:#0b2545;font:700 .75rem var(--font);padding:5px 4px;cursor:pointer;max-width:200px}
 .dl-pilih select:focus-visible{outline:2px solid #0b2545;outline-offset:1px;border-radius:5px}
 .dl-pilih:has(option:checked:not([value=""])){box-shadow:0 0 0 2px #0b2545}
-.dl-saring-n{font-size:11px;font-weight:800;padding:0 6px;border-radius:9px;background:#eef1f6;color:#0b2545}
+.dl-saring-n{font-size:.6875rem;font-weight:800;padding:0 6px;border-radius:9px;background:#eef1f6;color:#0b2545}
 .dl-saring-btn[aria-pressed="true"] .dl-saring-n{background:rgb(255 255 255 / .2);color:#fff}
 @media (max-width:640px){.dl-bilah-saring>*{flex:1 1 100%}.dl-bilah-saring .dl-saring{display:flex}.dl-bilah-saring .dl-saring-btn{flex:1;justify-content:center}.dl-pilih select{flex:1;max-width:none}}
 .dl-wrap .dl-tabel .dl-sar-x,.dl-wrap .dl-tabel tbody.dl-sar-x{display:none!important}

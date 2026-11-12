@@ -421,9 +421,38 @@ test("cek kabar L2: teks WA kemungkinan selesai meminta konfirmasi, tanpa isi be
 test("cek kabar L4/L5/L6: tautan bukti hanya http(s), berkas tanpa 'luar' tetap jalan, WA tersembunyi untuk baca-saja, judul tanpa kata dobel", () => {
   const js = readFileSync("public/bnpb/dalops.js", "utf8");
   assert.match(js, /const amanUrl = u => \/\^https\?:\\\/\\\/\/i\.test/); assert.match(js, /amanUrl\(a\.url\) \? h\("a"/);
-  assert.match(js, /if \(!xs\.length\) return null;/, "berkas lama tanpa kolom luar: bagian tidak dirender");
-  assert.match(js, /kemungkinan sudah \$\{sel\}/, "judul memakai kata selesai per jenis, bukan 'sudah sudah surut'");
+  assert.match(js, /if \(!d\.luar\.length\) sL\.remove\(\);/, "berkas lama tanpa kolom luar: bagian tidak dirender");
+  /* judul lintas bencana (12 Nov 2026) tidak memakai kata selesai per jenis lagi, jadi 'sudah sudah surut' tidak mungkin */
+  assert.match(js, /"Kabar luar semua bencana yang belum dilaporkan selesai"/);
   const kel = H.kelompok([K("a", "Pidie", "2026-10-20", "2026-10-25", false, {kk: 1, jiwa: 2})], HARI);
   assert.equal(kel[0].luar, undefined); assert.deepEqual(H.ringkasLuar(kel), {masih: 0, mungkin_selesai: 0, belum_ada: 0});
   assert.match(readFileSync("public/bnpb/menu_pusdalops.css", "utf8"), /html\[data-baca-saja\] \.dl-wa\{display:none\}/);
+});
+
+test("pesanKurang: dikelompokkan per provinsi, sapaan tujuan, dipotong di maks dengan sisa", () => {
+  const x = (nama, prov) => ({nama, prov, jenis: "banjir", mulai: "2026-11-01", terakhir: "2026-11-05", minta: ["kondisi terkini", "jiwa pengungsi"]});
+  const t = H.pesanKurang([x("Kab. Langkat", "Sumatera Utara"), x("Kab. Dairi", "Sumatera Utara"), x("Kab. Aceh Jaya", "Aceh")], "Provinsi Sumatera Utara dan kab/kota");
+  assert.match(t, /^Yth\. rekan BPBD Provinsi Sumatera Utara dan kab\/kota\./);
+  assert.match(t, /\*Sumatera Utara\*\n1\. Kab\. Langkat, banjir sejak 1 Nov \(kabar terakhir 5 Nov\): kondisi terkini, jiwa pengungsi\n2\. Kab\. Dairi/);
+  assert.match(t, /\*Aceh\*\n1\. Kab\. Aceh Jaya/);
+  assert.doesNotMatch(t, /kejadian lain/);
+  const p = H.pesanKurang(Array.from({length: 5}, (_, i) => x("Kab. " + i, "Aceh")), null, 2);
+  assert.match(p, /rekan BPBD provinsi dan kab\/kota/); assert.match(p, /Dan 3 kejadian lain/); assert.doesNotMatch(p, /Kab\. 2/);
+  assert.equal(H.pesanKurang([], null), "");
+});
+
+test("xlsx: zip sah (tanda tangan, CRC per berkas), lembar dan sel teks/angka, karakter XML diloloskan", () => {
+  assert.equal(H.crc32(new TextEncoder().encode("123456789")).toString(16), "cbf43926");
+  const b = H.xlsx([{nama: "Kelengkapan data", kepala: ["No", "Kab/kota"], baris: [[1, "Aceh <Utara> & co"], [2, null]]}, {nama: "Kabar/luar", kepala: ["A"], baris: []}]);
+  const v = new DataView(b.buffer), dec = new TextDecoder(), berkas = {};
+  assert.equal(v.getUint32(0, true), 0x04034b50);
+  for (let o = 0; v.getUint32(o, true) === 0x04034b50;) {
+    const crc = v.getUint32(o + 14, true), n = v.getUint32(o + 18, true), ln = v.getUint16(o + 26, true), nama = dec.decode(b.subarray(o + 30, o + 30 + ln)), isi = b.subarray(o + 30 + ln, o + 30 + ln + n);
+    assert.equal(H.crc32(isi), crc, nama); berkas[nama] = dec.decode(isi); o += 30 + ln + n;
+  }
+  assert.deepEqual(Object.keys(berkas).sort(), ["[Content_Types].xml", "_rels/.rels", "xl/_rels/workbook.xml.rels", "xl/styles.xml", "xl/workbook.xml", "xl/worksheets/sheet1.xml", "xl/worksheets/sheet2.xml"]);
+  assert.match(berkas["xl/workbook.xml"], /name="Kelengkapan data".*name="Kabar luar"/);
+  const s1 = berkas["xl/worksheets/sheet1.xml"];
+  assert.match(s1, /<c r="A1" t="inlineStr" s="1">/); assert.match(s1, /<c r="A2"><v>1<\/v><\/c>/); assert.match(s1, /Aceh &lt;Utara&gt; &amp; co/);
+  assert.doesNotMatch(s1, /r="B3"/, "sel kosong tidak ditulis");
 });

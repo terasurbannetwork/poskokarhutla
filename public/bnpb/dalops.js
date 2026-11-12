@@ -579,7 +579,6 @@
   }
 
   function isiLuar(xs) {
-    if (!xs.length) return [kosong("ok", "Belum ada kabar luar untuk kejadian yang belum selesai.")];
     const rank = x => H.WASPADA_LUAR[x.luar.label] ?? 1;
     xs = xs.slice().sort((a, b) => rank(a) - rank(b) || (b.luar.senyap ?? 0) - (a.luar.senyap ?? 0) || a.nama.localeCompare(b.nama));
     let no = 0;
@@ -596,14 +595,13 @@
       const b = e.target.closest("[data-luar]"); if (!b) return;
       const t = tabel.querySelector("table"); t.dataset.pil = b.getAttribute("aria-pressed") === "true" ? "" : b.dataset.luar;
       tombol.forEach(x => x.setAttribute("aria-pressed", String(x.dataset.luar === t.dataset.pil)));
-      terapkan();
+      segarkan();
     });
     tabel.querySelector("table").dataset.lintas = "luar";
     return [saring, tabel];
   }
 
   function isiTanya(daftar) {
-    if (!daftar.length) return [kosong("ok", "Semua kejadian yang belum selesai sudah berkabar lengkap.")];
     const pra = daftar.some(x => x.sk), adaLuar = daftar.some(x => x.luar), lebar = 7 + (pra ? 1 : 0) + (adaLuar ? 1 : 0);
     let n = 0;
     const tb = kelompokProv(daftar, (a, b) => Math.max(...b[1].map(x => x.umur)) - Math.max(...a[1].map(x => x.umur)) || b[1].length - a[1].length).map(([p, xs]) =>
@@ -634,38 +632,48 @@
       ekspor ? h("div", {class: "dl-sl-ek"},
         h("button", {type: "button", class: "dl-sl-b", "data-ekspor": "wa"}, ikonWA(), h("span", {teks: "Kirim WA"})),
         h("button", {type: "button", class: "dl-sl-b", "data-ekspor": "xlsx"}, ikon("unduh"), h("span", {teks: "Unduh Excel"}))) : null);
-    w.addEventListener("change", e => { const k = e.target.dataset?.sl; if (!k) return; SL[k] = e.target.value; if (k === "prov") SL.kab = ""; terapkan(); });
-    w.addEventListener("click", e => { const b = e.target.closest("[data-ekspor]"); if (b) b.dataset.ekspor === "wa" ? kirimWA() : unduhExcel(); });
-    w._semua = semua;
+    w.addEventListener("change", e => { const k = e.target.dataset?.sl; if (!k) return; SL[k] = e.target.value; if (k === "prov") SL.kab = ""; segarkan(); });
+    w.addEventListener("click", e => { const b = e.target.closest("[data-ekspor]"); if (b) { b.setAttribute("aria-busy", "true"); nanti(() => (b.dataset.ekspor === "wa" ? kirimWA() : unduhExcel()).finally(() => b.removeAttribute("aria-busy"))); } });
+    w._semua = semua; w._prov = null;   // null: opsi kab/kota diisi pada terapkan() pertama
     return w;
   }
 
-  /* terapkan saringan ke semua tabel lintas dan samakan semua batang saring */
+  /* terapkan saringan ke semua tabel lintas dan samakan semua batang saring. Dipanggil lewat segarkan(): kontrol tercat dulu (INP),
+     klik beruntun dan pemuatan banyak panel dilebur jadi satu kerja (token ver) */
+  let ver = 0;
+  const segarkan = () => { const v = ++ver; nanti(() => v === ver && terapkan()); };
   function terapkan() {
     for (const t of document.querySelectorAll("table[data-lintas]")) {
-      const pil = t.dataset.pil || "", hit = {};
+      const pil = t.dataset.pil || "", hit = {}, grup = new Map(); let tampil = 0;
       for (const tr of t.querySelectorAll("tr[data-jn]")) {
         const ok = (!SL.jn || tr.dataset.jn === SL.jn) && (!SL.prov || tr.dataset.prov === SL.prov) && (!SL.kab || tr.dataset.kab === SL.kab);
         if (ok && tr.dataset.luar) hit[tr.dataset.luar] = (hit[tr.dataset.luar] || 0) + 1;
-        tr.hidden = !ok || (!!pil && tr.dataset.luar !== pil);
+        const hid = !ok || (!!pil && tr.dataset.luar !== pil);
+        if (tr.hidden !== hid) tr.hidden = hid;
+        if (hid) continue;
+        tampil++;
+        const tb = tr.parentElement; (grup.get(tb) || grup.set(tb, new Set()).get(tb)).add(tr.dataset.kab);
       }
       for (const tb of t.tBodies) {
         if (!tb.classList.contains("dl-grup")) continue;
-        const ada = [...tb.rows].filter(r => r.dataset.jn && !r.hidden);
-        tb.hidden = !ada.length;
-        const j = tb.querySelector(".dl-jml"); if (j) j.textContent = `${F(new Set(ada.map(r => r.dataset.kab)).size)} kab/kota`;
-        if (SL.prov && ada.length) { tb.classList.remove("dl-tutup"); tb.querySelector(".dl-buka")?.setAttribute("aria-expanded", "true"); }   // satu provinsi dipilih: langsung terbuka
+        const kabs = grup.get(tb);
+        tb.hidden = !kabs;
+        const j = tb.querySelector(".dl-jml"); if (j && kabs) j.textContent = `${F(kabs.size)} kab/kota`;
+        if (SL.prov && kabs) { tb.classList.remove("dl-tutup"); tb.querySelector(".dl-buka")?.setAttribute("aria-expanded", "true"); }   // satu provinsi dipilih: langsung terbuka
       }
       const s = t.closest("section");
       s?.querySelectorAll(".dl-luar-pil").forEach(b => { b.querySelector(".dl-n").textContent = F(hit[b.dataset.luar] || 0); });
-      const kos = s?.querySelector(".dl-sl-kosong"), nihil = ![...t.querySelectorAll("tr[data-jn]")].some(r => !r.hidden);
-      if (nihil && !kos) t.closest(".dl-tabel-wadah").before(h("p", {class: "dl-redup dl-sl-kosong", teks: "Tidak ada kejadian yang cocok dengan saringan ini."}));
-      if (!nihil) kos?.remove();
+      const kos = s?.querySelector(".dl-sl-kosong");
+      if (!tampil && !kos) t.closest(".dl-tabel-wadah").before(h("p", {class: "dl-redup dl-sl-kosong", teks: "Tidak ada kejadian yang cocok dengan saringan ini."}));
+      if (tampil) kos?.remove();
     }
     for (const w of document.querySelectorAll(".dl-sl")) {
-      const k = w.querySelector('[data-sl="kab"]'), kabs = new Map(w._semua.filter(x => !SL.prov || x.prov_kode === SL.prov).map(x => [x.kab_kode, x.nama]));
-      k.replaceChildren(h("option", {value: "", teks: "Semua kab/kota"}), ...[...kabs].sort((a, b) => a[1].localeCompare(b[1])).map(([v, t]) => h("option", {value: v, teks: t})));
-      for (const s of w.querySelectorAll("[data-sl]")) s.value = SL[s.dataset.sl];
+      if (w._prov !== SL.prov) {   // daftar kab/kota hanya bergantung pada provinsi
+        w._prov = SL.prov;
+        const kabs = new Map(w._semua.filter(x => !SL.prov || x.prov_kode === SL.prov).map(x => [x.kab_kode, x.nama]));
+        w.querySelector('[data-sl="kab"]').replaceChildren(h("option", {value: "", teks: "Semua kab/kota"}), ...[...kabs].sort((a, b) => a[1].localeCompare(b[1])).map(([v, t]) => h("option", {value: v, teks: t})));
+      }
+      for (const s of w.querySelectorAll("[data-sl]")) if (s.value !== SL[s.dataset.sl]) s.value = SL[s.dataset.sl];
     }
   }
 
@@ -675,17 +683,17 @@
   async function kirimWA() {
     const d = await LD, xs = urutEkspor(d.tanya.filter(cocokSL));
     if (!xs.length) return alert("Tidak ada data yang kurang untuk saringan ini.");
-    const teks = H.pesanKurang(xs.map(x => ({nama: x.nama, prov: namaProv(x.prov_kode, x.prov), jenis: JN[x.jn].kata, mulai: x.mulai, terakhir: x.terakhir,
-      minta: ["kondisi terkini", ...kurangBaris(x).map(k => KURANG[k][0].toLowerCase())]})), tujuanSL(xs));
+    const teks = H.pesanKurang(xs.map(x => ({nama: x.nama, prov: namaProv(x.prov_kode, x.prov), jenis: JN[x.jn].kata, mulai: x.mulai || x.terakhir, terakhir: x.terakhir,
+      minta: ["kondisi terkini", ...kurangBaris(x).map(k => KURANG[k][0])]})), tujuanSL(xs));
     window.open("https://wa.me/?text=" + encodeURIComponent(teks), "_blank", "noopener");
   }
   async function unduhExcel() {
     const d = await LD, T = urutEkspor(d.tanya.filter(cocokSL)), L = urutEkspor(d.luar.filter(cocokSL));
     const lembar = [
       {nama: "Kelengkapan data", kepala: ["No", "Bencana", "Provinsi", "Kab/kota", "Sejak", "Kabar terakhir", "Tanpa kabar (hari)", "Kabar luar", "Data belum ada"],
-        baris: T.map((x, i) => [i + 1, namaJenis(x.jn), namaProv(x.prov_kode, x.prov), x.nama, x.mulai, x.terakhir, x.umur, x.luar ? LUAR[x.luar.label]?.[0] ?? "" : "", kurangBaris(x).map(k => KURANG[k][0]).join(", ")])},
+        baris: T.map((x, i) => [i + 1, namaJenis(x.jn), namaProv(x.prov_kode, x.prov), x.nama, H.tglPanjang(x.mulai || x.terakhir), H.tglPanjang(x.terakhir), x.umur, x.luar ? LUAR[x.luar.label]?.[0] ?? "" : "", kurangBaris(x).map(k => KURANG[k][0]).join(", ")])},
       {nama: "Kabar luar", kepala: ["No", "Bencana", "Provinsi", "Kab/kota", "Kabar luar", "Jumlah berita", "Berita terbaru", "Tautan", "Tanpa kabar (hari)", "Laporan resmi terakhir"],
-        baris: L.map((x, i) => { const b = x.luar.bukti?.[0]; return [i + 1, namaJenis(x.jn), namaProv(x.prov_kode, x.prov), x.nama, LUAR[x.luar.label]?.[0] ?? "", x.luar.bukti?.length || 0, b?.judul ?? "", amanUrl(b?.url) ?? "", x.luar.senyap, x.terakhir]; })}];
+        baris: L.map((x, i) => { const b = x.luar.bukti?.[0]; return [i + 1, namaJenis(x.jn), namaProv(x.prov_kode, x.prov), x.nama, LUAR[x.luar.label]?.[0] ?? "", x.luar.bukti?.length || 0, b?.judul ?? "", amanUrl(b?.url) ?? "", x.luar.senyap, H.tglPanjang(x.terakhir)]; })}];
     const nama = ["kelengkapan-dalops", d.tanya[0]?.hari || "", SL.jn, SL.kab ? T[0]?.nama : SL.prov ? namaProv(SL.prov) : ""].filter(Boolean).join("-").toLowerCase().replace(/[^a-z0-9-]+/g, "-");
     const a = h("a", {href: URL.createObjectURL(new Blob([H.xlsx(lembar)], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})), download: nama + ".xlsx"});
     document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
@@ -698,10 +706,12 @@
     const sT = bagian("tanya", "tunggu", "Kelengkapan data", "Kejadian semua bencana yang perlu dikonfirmasi data dan informasinya", wT);
     (LD ||= barisLintas()).then(d => {
       const semua = [...d.luar, ...d.tanya];
-      wL.replaceChildren(batangSaring(semua, false), ...isiLuar(d.luar));
-      wT.replaceChildren(batangSaring(semua, true), ...isiTanya(d.tanya));
+      if (!d.luar.length) sL.remove();
+      if (!d.tanya.length) sT.remove();   // tanpa kalimat kesimpulan (AGENTS 3.5): seksi kosong tidak dirender   // L5: berkas tanpa kolom 'luar' (atau semua sudah selesai): seksi Kabar luar tidak dirender
+      if (d.luar.length) wL.replaceChildren(batangSaring(semua, false), ...isiLuar(d.luar));
+      if (d.tanya.length) wT.replaceChildren(batangSaring(semua, true), ...isiTanya(d.tanya));
       if (sT.querySelector(".dl-grup") && !sT.querySelector(".dl-semua")) sT.querySelector(".ex-jd").append(bukaSemua(sT));
-      terapkan(); pasangTip();
+      segarkan(); pasangTip();
     });
     return [sL, sT];
   }

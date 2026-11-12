@@ -310,7 +310,7 @@
     const blok = [...m].map(([p, ys]) => `*${p}*\n` + ys.map((x, i) => `${i + 1}. ${x.nama}, ${x.jenis} sejak ${tglPendek(x.mulai)} (kabar terakhir ${tglPendek(x.terakhir)}): ${x.minta.join(", ")}`).join("\n"));
     const sisa = xs.length - Math.min(xs.length, maks);
     return `Yth. rekan BPBD ${sapa || "provinsi dan kab/kota"}. Pusdalops BNPB masih menunggu pembaruan data kejadian berikut:\n\n${blok.join("\n\n")}\n` +
-      (sisa ? `\nDan ${sisa} kejadian lain (daftar lengkap menyusul dalam berkas Excel).\n` : "") +
+      (sisa ? `\nDan ${sisa.toLocaleString("id-ID")} kejadian lain (daftar lengkap menyusul dalam berkas Excel).\n` : "") +
       `\nMohon kondisi terkini dan data yang belum ada di atas. Bila ada kebutuhan mendesak, mohon disampaikan sekalian. Terima kasih.`;
   }
 

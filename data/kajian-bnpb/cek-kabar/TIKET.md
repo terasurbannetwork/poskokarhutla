@@ -12,6 +12,7 @@ Kerjakan urut. Tiap tiket hanya cakupannya. Bukti siap = perintah di RENCANA-UJI
 | CK-06 | `dalops.js`: kartu ringkasan `.ex-std`, label per baris, pop-up bukti, saring; `.dl-wa` masuk blok baca-saja di `menu_pusdalops.css` | ruang-bnpb | L3, L4, L6; tangkapan layar desktop dan HP; pemeriksa `inp-reviewer` dan `selera-angka` | CK-05 |
 | CK-07 | `--rapor` ketepatan dari arsip beku | pipa-data | rapor tabel a/b/c/n | 60 hari arsip sesudah CK-04 tayang; Q6 |
 | CK-08 | Umpan berita kebakaran permukiman (gelombang pasang sudah punya `berita_pesisir.json`) | pipa-data | jenis itu punya artikel cocok | Q2 |
+| CK-09 | Lintas bencana (K3, K4, D8): `dalops.js` seksi Kabar luar dan Kelengkapan data menggabung semua jenis berformat logbook, kolom Bencana, saringan Bencana/Provinsi/Kab/kota bersama semua panel (hanya `hidden`), ekspor WA (`pesanKurang`) dan Excel (`xlsx`) | ruang-bnpb | `node --test tests/bnpb/dalops.test.mjs` (pesanKurang, xlsx), berkas .xlsx terbuka di LibreOffice; tinjau di `http://localhost:8800/bnpb/dalops`; pemeriksa `inp-reviewer` dan `selera-angka` | CK-06 |
 
 ## Catatan
 
