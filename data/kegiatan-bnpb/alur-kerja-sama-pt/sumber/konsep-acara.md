@@ -2,7 +2,7 @@ judul: Konsep Acara Studium Generale dan Penandatanganan Nota Kesepahaman BNPB d
 judul_pendek: Konsep Acara Studium Generale dan Penandatanganan Nota Kesepahaman
 subjudul: Rancangan topik, seremoni, tim, undangan, panitia, logistik, transportasi, anggaran, dan lini masa untuk satu kunjungan ke perguruan tinggi
 tanggal: 11 November 2026
-foto: C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/proyek-flagship/foto/kampus-ugm.jpg
+foto: ~/.claude/skills/ppt-konsultan/bnpb/assets/proyek-flagship/foto/kampus-ugm.jpg
 kredit: Foto sampul: Alharomain354, Wikimedia Commons, lisensi CC BY-SA 4.0.
 
 # Ringkasan Eksekutif
