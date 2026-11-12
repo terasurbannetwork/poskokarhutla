@@ -11,7 +11,7 @@ import json, os, re
 DI = os.path.dirname(os.path.abspath(__file__))
 AKAR = os.path.abspath(os.path.join(DI, '..', '..', '..'))
 _PROV = {v['nama'].lower(): k for k, v in json.load(open(os.path.join(AKAR, 'public', 'data', 'laporan.json')))['prov'].items()}
-KOREKSI = {'Supit Urung': 'Supit Urang', 'Kota Parepare': 'Kota Pare Pare'}   # salah ketik nama di WA yang berulang; 2 Nov: data website mengeja "Kota Pare Pare"
+KOREKSI = {'Kota. ': 'Kota ', 'Supit Urung': 'Supit Urang', 'Kota Parepare': 'Kota Pare Pare'}   # salah ketik nama di WA yang berulang; 2 Nov: data website mengeja "Kota Pare Pare"
 
 
 def kode_prov(nama):
@@ -79,7 +79,7 @@ def _angka_kejadian(jenis, dampak, kondisi, status_darurat):
         a.update(kk=cari(r'([\d.]+)\s*KK'), jiwa=cari(r'([\d.]+)\s*jiwa'), tangki=cari(r'(\d+)\s*Tangki'), liter=cari(r'([\d.]+)\s*Liter'))
     elif jenis in ('angin', 'cuaca'):
         # rumah rusak = RB + RS + RR (Jombang 30 Okt: "1 unit rumah RB"); "unit rumah terdampak" (Tapin) bukan rusak
-        rusak = [angka(m) for m in re.findall(r'(\d[\d.]*)\s*unit\s*rumah\s*R[BSR]\b', dampak)]
+        rusak = [angka(m) for m in re.findall(r'(\d[\d.]*)\s*unit\s*(?:rumah\s*)?R[BSR]\b', dampak)]   # 12 Nov Gayo Lues: "76 unit RS"
         a.update(meninggal=cari(r'(\d[\d.]*)\s*(?:\([^)]*\)\s*)?jiwa\s*MD'), kk=cari(r'([\d.]+)\s*KK'), kios=cari(r'(\d[\d.]*)\s*unit\s*kios'),
                  rumah=sum(rusak) if rusak else cari(r'(\d[\d.]*)\s*unit\s*rumah(?!\s*terdampak)'), rumah_dampak=cari(r'(\d[\d.]*)\s*unit\s*rumah\s*terdampak'))
     elif jenis in ('gempabumi', 'banjir', 'longsor'):
@@ -88,7 +88,7 @@ def _angka_kejadian(jenis, dampak, kondisi, status_darurat):
         a.update(meninggal=cari(r'(\d[\d.]*)\s*(?:\([^)]*\)\s*)?jiwa\s*MD'), kk=cari(r'([\d.]+)\s*KK(?!\s*berpotensi)'), potensi_kk=cari(r'([\d.]+)\s*KK\s*berpotensi'), mengungsi=cari(r'([\d.]+)\s*jiwa\s*mengungsi(?!\s*\(?sudah kembali)'),
                  huntara=cari(r'(\d[\d.]*)\s*unit\s*huntara'), hilang=cari(r'(\d[\d.]*)\s*(?:\([^)]*\)\s*)?(?:org|orang|jiwa)\s*hilang'))   # 3 Nov Badung: "2 org hilang"
         # rumah rusak = RB + RS + RR (Solok 26 Okt: 19 + 9 + 33); tanpa rincian kerusakan, angka "rumah terdampak" (Tapanuli Tengah) dipisah
-        rusak = [angka(m) for m in re.findall(r'(\d[\d.]*)\s*unit\s*rumah\s*R[BSR]\b', dampak)]
+        rusak = [angka(m) for m in re.findall(r'(\d[\d.]*)\s*unit\s*(?:rumah\s*)?R[BSR]\b', dampak)]   # 12 Nov Gayo Lues: "76 unit RS"
         if rusak: a['rumah'] = sum(rusak)
         else: a.update(rumah=cari(r'([\d.]+)\s*(?:unit\s*)?rumah\s*rusak'), rumah_dampak=cari(r'([\d.]+)\s*(?:unit\s*)?rumah\s*terdampak'))
         m = re.search(r'(Transisi[^T]*?)TMT.*?s\.d\.?\s*(\d\d)/(\d\d)/(\d{4})', status_darurat)
@@ -100,7 +100,7 @@ def _angka_kejadian(jenis, dampak, kondisi, status_darurat):
 
 
 def koordalops(teks, pagi=True):
-    t = teks.replace('⁠', '').replace('\xa0', ' ')
+    t = teks.replace('⁠', '').replace('\xa0', ' ').replace('unit tumah', 'unit rumah')   # 12 Nov NTT: "15.812 unit tumah RS"
     m = re.search(r'tanggal\s+(\d\d)/(\d\d)/(\d{4})\s+(?:pkl|pukul)\.?\s+(\d\d\.\d\d)\s*WIB\s+s\.d\.?\s+(\d\d)/(\d\d)/(\d{4})\s+(?:pkl|pukul)\.?\s+(\d\d\.\d\d)', t)   # WA 9 Nov: "pukul 07.00 WIB s.d ... pkl 07.00"
     if not m:
         raise ValueError('kepala laporan Koordalops tidak ditemukan')
@@ -117,12 +117,14 @@ def koordalops(teks, pagi=True):
             judul = re.sub(r'\*?\((?:Pengkinian Data|Kejadian Baru)\)\*?', '', kepala, flags=re.I).replace('Bencana Alam', '').replace('Bencana Non Alam', '').strip()
             if not judul:
                 continue
-            ambil = lambda kunci: (lambda m: m.group(1).strip() if m else '')(re.search(rf'-\s*{kunci}\s*:\s*(.*)', e, re.I))
+            ambil = lambda kunci: (lambda m: m.group(1).strip() if m else '')(re.search(rf'(?:^|[-*•])[ \t]*{kunci}\s*:\s*(.*)', e, re.I | re.M))   # 12 Nov: butir "* Dampak:", sebelumnya "- Dampak:"
             dampak, sd, kondisi = ambil('Dampak'), ambil('Penetapan status'), ambil('Kondisi mutakhir')
+            # 12 Nov: pengungsi dan kerusakan pindah ke butir sendiri; angka dihitung dari ketiganya
+            semua = ' '.join(x for x in (dampak, ambil('Pengungsi'), ambil('Kerusakan')) if x)
             jenis, lok = _jenis_lokasi(judul)
             out['kejadian'].append({'jenis': jenis, 'prov': prov, 'lokasi': lok, 'status': status_dari(kondisi, not lok), 'baru': baru,
                                     'label': re.split(r'\s+di\s+', judul, maxsplit=1)[0].strip(),
-                                    'angka': _angka_kejadian(jenis, dampak, kondisi, sd), 'teks': {'dampak': dampak, 'status_darurat': sd, 'kondisi': kondisi,
+                                    'angka': _angka_kejadian(jenis, semua, kondisi, sd), 'teks': {'dampak': dampak, 'status_darurat': sd, 'kondisi': kondisi,
                                     # 4 Nov: butir "* Pengungsi ; ..." di bawah Dampak (dampak hanya menangkap butir pertama, Korban Jiwa)
                                     'pengungsi': (lambda m: m.group(1).strip() if m else '')(re.search(r'\*\s*Pengungsi\s*[;:]\s*(.*)', e, re.I))}})
     if len(out['kejadian']) != out['menonjol']:
@@ -205,6 +207,14 @@ def uji():
     assert 'Kalimantan Tengah' in w['hujan'] and 'Lampung' in w['angin'], (w['hujan'], w['angin'])
     w9 = bmkg('- Awas (hujan sangat lebat – ekstrim): Sumatera Utara.\n- Siaga (hujan lebat): Aceh dan Sumatera Barat.\n- Angin Kencang: Papua Selatan\n\nb. Imbauan:\n* Masyarakat diimbau.\n')
     assert (w9['awas'], w9['siaga'], w9['angin']) == (['Sumatera Utara'], ['Aceh', 'Sumatera Barat'], ['Papua Selatan']), w9
+    b12 = koordalops('tanggal 11/11/2026 pkl 07.00 WIB s.d 12/11/2026 pkl 07.00 WIB\nLaporan kejadian bencana sejumlah 1 kejadian.\nberdampak signifikan sejumlah 1 kejadian.\n'
+                     '*A. Prov. Jawa Tengah*\n1. Bencana Alam Kekeringan di Kab. Boyolali Prov. Jawa Tengah *(Pengkinian Data)*\n* Dampak: 12.022 KK / 57.311 jiwa terdampak\n'
+                     '* Penetapan Status: Siaga Darurat\n* Kondisi Mutakhir: distribusi 16 tangki (82.000 liter)\n')['kejadian'][0]   # 12 Nov: butir bintang
+    assert b12['angka'] == {'kk': 12022, 'jiwa': 57311, 'tangki': 16, 'liter': 82000} and b12['teks']['status_darurat'] == 'Siaga Darurat', b12
+    g12 = koordalops('tanggal 11/11/2026 pkl 07.00 WIB s.d 12/11/2026 pkl 07.00 WIB\nLaporan kejadian bencana sejumlah 1 kejadian.\nberdampak signifikan sejumlah 1 kejadian.\n'
+                     '*A. Prov. Aceh*\n1. Bencana Alam Banjir di Kab. Gayo Lues, Prov. Aceh *(Pengkinian Data)*\n* Dampak: 118 KK / 376 jiwa terdampak\n'
+                     '* Pengungsi: 26 jiwa mengungsi ke rumah saudara\n* Kerusakan: 13 unit rumah RB, 76 unit RS, 15 unit tumah RR\n* Kondisi Mutakhir: surut\n')['kejadian'][0]   # 12 Nov: butir terpisah
+    assert (g12['angka']['mengungsi'], g12['angka']['rumah']) == (26, 104), g12['angka']
     print('uji lolos: 23 laporan, 17 kejadian sama dengan isian 24 Okt; BMKG', len(w['pm']), 'stasiun')
     f3 = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'harian-2026-11-03', 'wa-koordalops.txt')
     if os.path.exists(f3):   # 3 Nov: salah ketik "Logsor", judul tanpa "di", "±8.5 ha", MD pada cuaca ekstrem, "org hilang"

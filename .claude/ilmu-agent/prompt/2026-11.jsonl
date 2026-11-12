@@ -3641,3 +3641,14 @@
 {"t":"2026-11-12T12:32:00.824+07:00","sesi":"1c60d5f0","prompt":"Bagusin","label":[],"berkas":[]}
 {"t":"2026-11-12T12:33:01.483+07:00","sesi":"1c60d5f0","prompt":"harus huruf besar di awal kalimat dong\n\nBase belum melaporkan gelar armada\n\nCluster prioritas xxxx\n\nTarget relap yang belum \n\nData belum lengkap","label":[],"berkas":[]}
 {"t":"2026-11-12T12:33:35.423+07:00","sesi":"1c60d5f0","prompt":"Commit dan push","label":[],"berkas":[]}
+{"t":"2026-11-12T12:36:03.055+07:00","sesi":"9deefa9f","prompt":"Ya, kirim uji","label":[],"berkas":[]}
+{"t":"2026-11-12T12:36:50.875+07:00","sesi":"9deefa9f","prompt":"Terbaca","label":[],"berkas":[]}
+{"t":"2026-11-12T12:43:21.204+07:00","sesi":"1c60d5f0","prompt":"Nah gimana lah data\" ini bisa masuk di peta tadi itu menurut lu","label":[],"berkas":[]}
+{"t":"2026-11-12T12:43:23.113+07:00","sesi":"1c60d5f0","prompt":"Kaya gini","label":[],"berkas":[]}
+{"t":"2026-11-12T12:43:35.359+07:00","sesi":"1c60d5f0","prompt":"Nah ini semua kan udah ada yang bot ya yang masukin data secara langsung. Kalo misalnya dia bentuknya adalah inputan manual gitu bisa ga? DIbuat dimana ya bagusnya untuk inputan manual gitu untuk semua data? \n\nPastiin semua yang ada disini bisa ada masuk inputan","label":[],"berkas":[]}
+{"t":"2026-11-12T12:43:35.489+07:00","sesi":"1c60d5f0","prompt":"Kenapa ga bisa dibuat?","label":[],"berkas":[]}
+{"t":"2026-11-12T12:43:35.544+07:00","sesi":"1c60d5f0","prompt":"Ini kecilin lah","label":[],"berkas":[]}
+{"t":"2026-11-12T12:43:35.604+07:00","sesi":"1c60d5f0","prompt":"Oke agar ada KK mengungsi dan jiwa mengunsinya. Kalo belum ada ya tulis NA dulu terus kuningin","label":[],"berkas":[]}
+{"t":"2026-11-12T12:43:35.655+07:00","sesi":"1c60d5f0","prompt":"Ini juga jika ada datanya yang belum lengkpa agar ada tandanya gitu","label":[],"berkas":[]}
+{"t":"2026-11-12T12:43:35.711+07:00","sesi":"1c60d5f0","prompt":"ini kecilin aja biar muat banyak","label":[],"berkas":[]}
+{"t":"2026-11-12T12:43:35.763+07:00","sesi":"1c60d5f0","prompt":"Oke kalo karhutla itu\n\n1. Berapa firespot\n2. Berapa hotspot\n3. Luas terbakar hari sebelumnya\n4. Luas belum padam\n5. Tren 3 hari","label":["pipa-data"],"berkas":[]}
