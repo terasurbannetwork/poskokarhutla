@@ -254,12 +254,12 @@ Sebelum menyentuh pemeriksaan kabar luar (berita, data alam) untuk kejadian Pant
 
 Aturan berhentinya sama dengan §2.1. Label tidak pernah menutup kejadian; penutupan hanya dari laporan resmi. Tanpa rute Worker dan tabel D1 baru.
 
-### 2.12 Laporan Bulanan Kepala BNPB (`/laporan-bnpb`, jenis Laporan Bulanan): baca dulu, baru bangun
+### 2.12 Laporan Berkala Kepala BNPB (`/laporan-bnpb`, jenis Laporan Berkala: harian, mingguan, bulanan, tahunan): baca dulu, baru bangun
 
-Sebelum menyentuh laporan bencana bulanan kepada Presiden (perakit angka bulanan, versi beku, cetak A4), baca dokumen di
-`data/kajian-bnpb/laporan-bulanan/` dengan urutan otoritas ini (kode di `scripts/bulanan/**` milik `pipa-data`; `public/laporan_bulanan*`, `public/laporan_bnpb*`, `tests/bulanan/**` milik `layar-peta`; `src/laporan_bulanan.js` dan migrasinya milik `warga-api`):
+Sebelum menyentuh laporan bencana berkala kepada Presiden (perakit angka per periode, versi beku, cetak A4), baca dokumen di
+`data/kajian-bnpb/laporan-berkala/` dengan urutan otoritas ini (kode di `scripts/berkala/**` milik `pipa-data`; `public/laporan_berkala*`, `public/laporan_bnpb*`, `tests/berkala/**` milik `layar-peta`; `src/laporan_berkala.js` dan migrasinya milik `warga-api`):
 
-1. `KEPUTUSAN-BULANAN.md`: keputusan pemilik, keputusan rancangan D1–D10, pertanyaan terbuka Q1–Q21 dengan bawaan sementara; menang atas semuanya.
+1. `KEPUTUSAN-BERKALA.md`: keputusan pemilik, keputusan rancangan D1–D13, pertanyaan terbuka Q1–Q27 dengan bawaan sementara; menang atas semuanya.
 2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LB-*`), `GLOSARIUM.md`.
 
