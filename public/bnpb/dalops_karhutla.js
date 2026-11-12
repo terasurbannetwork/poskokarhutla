@@ -133,10 +133,10 @@
 
     /* tabel utama dan peta dulu; Kelengkapan data dan Upaya menyusul sesudah frame berikut supaya tab tidak beku di HP */
     p.replaceChildren(
-      bagian("karhutla-peta", "karhutla", "Kondisi terkini",
+      ...(kal => [bagian("karhutla-peta", "pin", "Peta Pantauan", kal, wadahPeta),   // peta dan tabel dua kartu (pemilik 12 Nov 2026)
+        bagian("karhutla-kondisi", "karhutla", "Kondisi terkini", kal, h("div", {class: "ad-tabel-wadah dl-tabel-wadah"}, t))])(
         belum.length ? [hl(`${F(belum.length)} kab/kota`), " masih ada api belum padam, ", hl(`${F(totBelum)} ha`), ` belum padam per ${tgl(hari)}`]
-          : [hl(`${F(baris.length)} kab/kota`), ` terbakar sepekan, semuanya padam per ${tgl(hari)}`],
-        wadahPeta, h("div", {class: "ad-tabel-wadah dl-tabel-wadah"}, t)));
+          : [hl(`${F(baris.length)} kab/kota`), ` terbakar sepekan, semuanya padam per ${tgl(hari)}`]));
     pasangTip();
     await new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
     p.append(

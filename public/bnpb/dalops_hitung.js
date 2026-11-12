@@ -301,6 +301,60 @@
       `Bila ada kebutuhan mendesak (${j.alat}), mohon disampaikan sekalian. Terima kasih.`;
   }
 
-  const X = {gabungLuar, ringkasLuar, WASPADA_LUAR, kunciKejadian, normLokasi, ringkasLaporan, tanggalPantau, tglLogbook, cocokLogbook, labelKejadian, kataJenis, pesanTagih, NAMA_JENIS, mitigasi, KATA, SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perKec, adaAngka, gabungRiwayat, perluDitanya, statusKab, siaga, pesanWA, pesanSiaga, pesanProv, tglPanjang, tglPendek, namaKab};
+  /* pesan WA gabungan untuk baris Kelengkapan data yang sedang tersaring (pemilik 12 Nov 2026: "expor ... dalam wa").
+     xs: [{nama, prov, jenis (kata), mulai, terakhir, minta: [teks]}]; sapa: nama BPBD tujuan atau null. Dipotong di `maks` baris supaya tautan wa.me tetap terbuka. */
+  function pesanKurang(xs, sapa, maks = 40) {
+    if (!xs.length) return "";
+    const m = new Map();
+    for (const x of xs.slice(0, maks)) (m.get(x.prov) || m.set(x.prov, []).get(x.prov)).push(x);
+    const blok = [...m].map(([p, ys]) => `*${p}*\n` + ys.map((x, i) => `${i + 1}. ${x.nama}, ${x.jenis} sejak ${tglPendek(x.mulai)} (kabar terakhir ${tglPendek(x.terakhir)}): ${x.minta.join(", ")}`).join("\n"));
+    const sisa = xs.length - Math.min(xs.length, maks);
+    return `Yth. rekan BPBD ${sapa || "provinsi dan kab/kota"}. Pusdalops BNPB masih menunggu pembaruan data kejadian berikut:\n\n${blok.join("\n\n")}\n` +
+      (sisa ? `\nDan ${sisa} kejadian lain (daftar lengkap menyusul dalam berkas Excel).\n` : "") +
+      `\nMohon kondisi terkini dan data yang belum ada di atas. Bila ada kebutuhan mendesak, mohon disampaikan sekalian. Terima kasih.`;
+  }
+
+  /* penulis .xlsx tanpa pustaka (CSP halaman staf: script-src 'self', SheetJS cdnjs diblok): zip tanpa kompresi + SpreadsheetML minimal.
+     lembar: [{nama, kepala: [teks], baris: [[teks|angka|null]]}]. Kepala tebal putih di atas navy, baris kepala dibekukan. Mengembalikan Uint8Array. */
+  const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+  const crc32 = b => { let c = 0xffffffff; for (const x of b) c = CRC[(c ^ x) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
+  const escXml = s => String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"})[c]).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "");
+  const kolom = i => { let s = ""; for (i++; i; i = Math.floor((i - 1) / 26)) s = String.fromCharCode(65 + (i - 1) % 26) + s; return s; };
+  function zip(berkas) {
+    const enc = new TextEncoder(), lokal = [], pusat = []; let off = 0;
+    const u16 = v => [v & 255, v >>> 8 & 255], u32 = v => [v & 255, v >>> 8 & 255, v >>> 16 & 255, v >>> 24 & 255];
+    for (const [nama, isi] of berkas) {
+      const n = enc.encode(nama), d = enc.encode(isi), c = crc32(d), umum = [...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(0x21), ...u32(c), ...u32(d.length), ...u32(d.length), ...u16(n.length), ...u16(0)];
+      const kepala = Uint8Array.from([...u32(0x04034b50), ...umum]);
+      lokal.push(kepala, n, d);
+      pusat.push(Uint8Array.from([...u32(0x02014b50), ...u16(20), ...umum, ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(off)]), n);
+      off += kepala.length + n.length + d.length;
+    }
+    const pj = pusat.reduce((s, x) => s + x.length, 0);
+    const akhir = Uint8Array.from([...u32(0x06054b50), 0, 0, 0, 0, ...u16(berkas.length), ...u16(berkas.length), ...u32(pj), ...u32(off), 0, 0]);
+    const semua = [...lokal, ...pusat, akhir], out = new Uint8Array(semua.reduce((s, x) => s + x.length, 0));
+    let i = 0; for (const x of semua) { out.set(x, i); i += x.length; }
+    return out;
+  }
+  function xlsx(lembar) {
+    const sel = (v, r, c, s) => v == null || v === "" ? "" : typeof v === "number" && Number.isFinite(v) ? `<c r="${kolom(c)}${r}"${s}><v>${v}</v></c>`
+      : `<c r="${kolom(c)}${r}" t="inlineStr"${s}><is><t xml:space="preserve">${escXml(v)}</t></is></c>`;
+    const sheet = L => {
+      const lebar = L.kepala.map((k, i) => Math.min(60, Math.max(8, String(k).length + 2, ...L.baris.map(b => String(b[i] ?? "").length + 2))));
+      const rows = [L.kepala, ...L.baris].map((b, r) => `<row r="${r + 1}">${b.map((v, c) => sel(v, r + 1, c, r ? "" : ' s="1"')).join("")}</row>`).join("");
+      return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>` +
+        `<cols>${lebar.map((w, i) => `<col min="${i + 1}" max="${i + 1}" width="${w}" customWidth="1"/>`).join("")}</cols><sheetData>${rows}</sheetData></worksheet>`;
+    };
+    const nama = lembar.map((L, i) => escXml(String(L.nama || "Lembar " + (i + 1)).replace(/[\\/?*[\]:]/g, " ").slice(0, 31)));
+    return zip([
+      ["[Content_Types].xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${lembar.map((_, i) => `<Override PartName="/xl/worksheets/sheet${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("")}</Types>`],
+      ["_rels/.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`],
+      ["xl/workbook.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${nama.map((n, i) => `<sheet name="${n}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join("")}</sheets></workbook>`],
+      ["xl/_rels/workbook.xml.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${lembar.map((_, i) => `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`).join("")}<Relationship Id="rId${lembar.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`],
+      ["xl/styles.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF051C2C"/></patternFill></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="2"><xf/><xf fontId="1" fillId="2" applyFont="1" applyFill="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf></cellXfs></styleSheet>`],
+      ...lembar.map((L, i) => [`xl/worksheets/sheet${i + 1}.xml`, sheet(L)])]);
+  }
+
+  const X = {pesanKurang, xlsx, crc32, gabungLuar, ringkasLuar, WASPADA_LUAR, kunciKejadian, normLokasi, ringkasLaporan, tanggalPantau, tglLogbook, cocokLogbook, labelKejadian, kataJenis, pesanTagih, NAMA_JENIS, mitigasi, KATA, SEPEKAN, NAMA_LEVEL, selisih, kelompok, lama, sepekan, perProv, perKec, adaAngka, gabungRiwayat, perluDitanya, statusKab, siaga, pesanWA, pesanSiaga, pesanProv, tglPanjang, tglPendek, namaKab};
   g.DalopsHitung = X;
 })(globalThis);

@@ -365,6 +365,18 @@ jobs:
           git commit -q -m "data: banjir harian $(TZ=Asia/Jakarta date +%F)"
           git pull -q --rebase && git push -q
 
+      # Cek kabar luar Dalops harian (pemilik 12 Nov 2026), lepas dari rekap WA: sesudah terbit supaya berita.json yang dibaca sudah yang hari ini.
+      # Hanya kolom 'luar' berkas R2 dalops/<jenis>.json yang disegarkan; sumber berita gagal = berkas tayang dibiarkan.
+      - name: Cek kabar luar Dalops (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 20
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          [ -n "$CLOUDFLARE_API_TOKEN" ] || { echo "::warning title=cek kabar::tanpa token Cloudflare, dilewati"; exit 0; }
+          python3 scripts/data/dalops_banjir.py --kabar --unggah
+
       # /api/status menjawab 503 bila sumber kunci basi (titik > 8 jam, banjir/berita > 30 jam): run jadi merah, tidak gagal diam.
       # Tanpa token Cloudflare (jalur commit) terbitnya lewat build lain, jadi dilewati.
       - name: Periksa kesegaran data yang tayang

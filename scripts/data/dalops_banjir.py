@@ -18,6 +18,7 @@ Surut dibaca dari teks kondisi terakhir (lihat `surut()`); "mulai/berangsur suru
 Angka tak diketahui = null, bukan 0.
 
 Pakai: python3 scripts/data/dalops_banjir.py [--hari YYYY-MM-DD] [--unggah]
+      python3 scripts/data/dalops_banjir.py --kabar --unggah   (cek kabar luar saja, dijadwalkan banjir.yml)
 Uji  : python3 scripts/data/dalops_banjir.py --uji
 """
 import argparse
@@ -585,6 +586,25 @@ def main_wa(o, LB):
     print(f"{JENIS} WA: {len(entri)} entri, hari {hari}: {sum(not r['surut'] for r in rows)} belum surut dari {len(rows)} -> {os.path.relpath(keluar(), AKAR)}")
 
 
+def main_kabar(o):
+    """Cek kabar luar saja, terjadwal (banjir.yml) supaya label tidak menunggu rekap WA berikutnya (pemilik 12 Nov 2026):
+    ambil berkas R2 yang tayang, segarkan kolom 'luar', unggah lagi. Kejadian dan angkanya tidak disentuh.
+    Sumber berita gagal = berkas tayang dibiarkan, label lama tidak ditimpa 'tidak terjangkau'."""
+    r = subprocess.run(["npx", "--yes", "wrangler@4.42.0", "r2", "object", "get", kunci_r2(), "--remote", "--pipe"], cwd=AKAR, capture_output=True, text=True)
+    try:
+        d = json.loads(r.stdout)
+    except ValueError:
+        return print(f"cek kabar {JENIS}: {kunci_r2()} tidak terbaca dari R2, dilewati")
+    rows = d["kejadian"]
+    ada_lama = any(x.get("luar") for x in rows)
+    kini = dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes")
+    cek_kabar(rows, d["hari"], kini, arsip=False)   # arsip label tinggal di mesin bot; runner tidak menyimpannya
+    if any((x.get("luar") or {}).get("catatan") for x in rows) or (ada_lama and not any(x.get("luar") for x in rows)):
+        return print(f"cek kabar {JENIS}: sumber gagal, berkas R2 dibiarkan")
+    # ponytail: tanpa kunci R2; bila bot WA mengunggah di sela get dan put (detik), kabar WA itu tertimpa sampai rekap berikutnya
+    tulis({**d, "kabar_dicek": kini, "kejadian": rows}, o.unggah)
+
+
 def main():
     global JENIS
     a = argparse.ArgumentParser()
@@ -592,10 +612,15 @@ def main():
     a.add_argument("--wa", action="store_true", help="tanpa arsip logbook: perbarui berkas R2 dengan bahan WA laporan harian di git")
     a.add_argument("--hari", help="hari logbook terakhir yang dipakai (bawaan: paling akhir di arsip)")
     a.add_argument("--unggah", action="store_true", help="unggah ke R2 (wrangler, --remote)")
+    a.add_argument("--kabar", action="store_true", help="cek kabar luar saja di atas berkas R2 yang tayang (terjadwal)")
     a.add_argument("--uji", action="store_true")
     o = a.parse_args()
     if o.uji:
         return uji()
+    if o.kabar:
+        for JENIS in (JENIS_BOLEH if o.jenis == "semua" else (o.jenis,)):
+            main_kabar(o)
+        return
     LB = _muat("logbook_bersih", "scripts/data/logbook_bersih.py")
     LP = _muat("logbook_pusdalops", "scripts/data/logbook_pusdalops.py")
     for JENIS in (JENIS_BOLEH if o.jenis == "semua" else (o.jenis,)):
