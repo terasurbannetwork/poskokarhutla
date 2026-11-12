@@ -2,7 +2,9 @@ judul: Konsep Acara Studium Generale dan Penandatanganan Nota Kesepahaman BNPB d
 judul_pendek: Konsep Acara Studium Generale dan Penandatanganan Nota Kesepahaman
 subjudul: Rancangan topik, seremoni, tim, undangan, panitia, logistik, transportasi, anggaran, dan lini masa untuk satu kunjungan ke perguruan tinggi
 tanggal: 11 November 2026
-foto: ~/.claude/skills/ppt-konsultan/bnpb/assets/proyek-flagship/foto/kampus-ugm.jpg
+foto: C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/proyek-kampus/foto/sampul-ugm.jpg
+foto_geser: 0.35
+label: Kerja Sama BNPB dan Perguruan Tinggi
 kredit: Foto sampul: Alharomain354, Wikimedia Commons, lisensi CC BY-SA 4.0.
 
 # Ringkasan Eksekutif
@@ -33,7 +35,7 @@ Naskah NK disiapkan dari templat yang sudah ada, yaitu Templat NK BNPB dan Pergu
 
 # 2. Rekomendasi Topik Studium Generale
 Tema payung yang disarankan untuk semua kampus adalah "Kampus Tangguh, Bangsa Tangguh: Peran Perguruan Tinggi dalam Penanggulangan Bencana". Subtopik dipilih dari daftar di bawah dan disesuaikan dengan ancaman bencana utama di wilayah kampus serta fakultas yang paling kuat di kampus itu.
-%% 5,17,21,32,25
+%% 5,16,23,33,23
 | No | Subtopik | Kampus yang cocok | Isi pokok paparan | PKS turunan yang ditawarkan |
 | --- | --- | --- | --- | --- |
 | 1 | Tridharma untuk ketangguhan bangsa | Semua kampus dengan peserta lintas fakultas | Paparan membahas peta risiko bencana Indonesia, kebijakan BNPB, serta peran pendidikan, riset, dan pengabdian. | Kerangka kerja sama lima tahun |

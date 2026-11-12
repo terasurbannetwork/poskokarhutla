@@ -2,8 +2,11 @@ judul: Alur Kerja Sama BNPB dan Perguruan Tinggi sampai Finalisasi Perjanjian Ke
 judul_pendek: Alur Kerja Sama BNPB dan Perguruan Tinggi sampai Finalisasi PKS
 subjudul: Delapan tahap dari pemetaan kampus sampai PKS bertanda tangan, beserta dokumen, syarat closing, pendanaan, dan bahan diskusi dengan Biro Hukum, Organisasi, dan Kerja Sama
 tanggal: 11 November 2026
-foto: ~/.claude/skills/ppt-konsultan/bnpb/assets/proyek-flagship/foto/kampus-itb.jpg
-kredit: Foto sampul: A2613, Wikimedia Commons, lisensi CC BY-SA 4.0.
+foto: C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/proyek-kampus/foto/kampus-itb-hd.jpg
+foto_geser: 0.42
+judul_ukuran: 23.5
+label: Kerja Sama BNPB dan Perguruan Tinggi
+kredit: Foto sampul: kampus ITB Ganesha, Bandung.
 
 # Ringkasan Eksekutif
 Titik *closing* kerja sama dengan perguruan tinggi adalah Perjanjian Kerja Sama (PKS) yang sudah ditandatangani. PKS itu memuat tiga hal, yaitu kegiatan dengan keluaran yang terukur, sumber dana yang sudah tercantum dalam anggaran masing-masing pihak, dan penanggung jawab dari kedua pihak. Nota Kesepahaman (NK) dan *studium generale* belum merupakan *closing*, karena NK tidak mengikat dan tidak memuat uang.
@@ -78,6 +81,7 @@ PKS dianggap final bila keenam syarat di bawah ini terpenuhi. Tanda tangan tanpa
 6. Jadwal kegiatan pertama sudah ditetapkan, paling lambat 60 hari sesudah PKS ditandatangani.
 ## Muatan minimum PKS
 Rujukan sementara untuk muatan PKS adalah muatan minimum PKS dalam Peraturan BRIN Nomor 2 Tahun 2022 juncto Nomor 4 Tahun 2024 dan PKS yang pernah dipakai BNPB. Templat resmi tetap mengikuti ketentuan Biro HOK.
+> Naskah rujukan memberi satu pelajaran penting: kewajiban membayar dan angka anggaran hanya ditulis di PKS, tidak di NK.
 %% 6,34,60
 | No | Pasal | Hal yang perlu diputuskan |
 | --- | --- | --- |
@@ -93,7 +97,6 @@ Rujukan sementara untuk muatan PKS adalah muatan minimum PKS dalam Peraturan BRI
 | 10 | Keadaan kahar | Pasal ini mengatur bencana besar yang menghentikan kegiatan, keadaan yang sangat mungkin terjadi bagi BNPB. |
 | 11 | Penyelesaian perselisihan | Pasal ini menetapkan musyawarah untuk mufakat sebagai cara penyelesaian. |
 | 12 | Perubahan dan penutup | Pasal ini mengatur adendum, jumlah rangkap, dan meterai. |
-> Naskah rujukan memberi satu pelajaran penting: kewajiban membayar dan angka anggaran hanya ditulis di PKS, tidak di NK.
 
 # 5. Pendanaan dan Siklus Anggaran
 Pendanaan menentukan kecepatan *closing*. PKS tanpa aliran dana dapat ditandatangani dalam hitungan minggu, sedangkan PKS yang memakai dana baru BNPB harus menunggu anggaran tersedia di Daftar Isian Pelaksanaan Anggaran (DIPA) unit teknis. Per November 2026, anggaran 2027 sudah berada pada tahap alokasi, sehingga dana baru untuk 2027 hanya dapat masuk melalui revisi anggaran.
