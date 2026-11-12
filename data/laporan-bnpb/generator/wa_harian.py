@@ -99,7 +99,7 @@ def _angka_kejadian(jenis, dampak, kondisi, status_darurat):
     return {k: v for k, v in a.items() if v is not None}
 
 
-def koordalops(teks, pagi=True):
+def koordalops(teks, pagi=True, terima_kurang=False):
     t = teks.replace('⁠', '').replace('\xa0', ' ').replace('unit tumah', 'unit rumah')   # 12 Nov NTT: "15.812 unit tumah RS"
     m = re.search(r'tanggal\s+(\d\d)/(\d\d)/(\d{4})\s+(?:pkl|pukul)\.?\s+(\d\d\.\d\d)\s*WIB\s+s\.d\.?\s+(\d\d)/(\d\d)/(\d{4})\s+(?:pkl|pukul)\.?\s+(\d\d\.\d\d)', t)   # WA 9 Nov: "pukul 07.00 WIB s.d ... pkl 07.00"
     if not m:
@@ -127,7 +127,8 @@ def koordalops(teks, pagi=True):
                                     'angka': _angka_kejadian(jenis, semua, kondisi, sd), 'teks': {'dampak': dampak, 'status_darurat': sd, 'kondisi': kondisi,
                                     # 4 Nov: butir "* Pengungsi ; ..." di bawah Dampak (dampak hanya menangkap butir pertama, Korban Jiwa)
                                     'pengungsi': (lambda m: m.group(1).strip() if m else '')(re.search(r'\*\s*Pengungsi\s*[;:]\s*(.*)', e, re.I))}})
-    if len(out['kejadian']) != out['menonjol']:
+    # terima_kurang: hanya atas perintah pemilik per laporan (12 Nov: WA Koordalops menyebut 20, merinci 15); lebih banyak dari kepala tetap ditolak
+    if len(out['kejadian']) != out['menonjol'] and not (terima_kurang and len(out['kejadian']) < out['menonjol']):
         raise ValueError(f"terurai {len(out['kejadian'])} kejadian, laporan menyebut {out['menonjol']} menonjol")
     return out
 

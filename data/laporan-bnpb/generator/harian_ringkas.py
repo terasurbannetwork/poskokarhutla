@@ -43,7 +43,8 @@ def uji():
 def utama():
     ap = argparse.ArgumentParser()
     ap.add_argument('--uji', action='store_true'); ap.add_argument('--tanggal'); ap.add_argument('--koordalops'); ap.add_argument('--bmkg'); ap.add_argument('--pvmbg')
-    ap.add_argument('--jam'); ap.add_argument('--out', default='.')   # --jam diterima supaya pemanggil sama dengan harian.py; cut-off format ini selalu 07.00
+    ap.add_argument('--jam'); ap.add_argument('--out', default='.')
+    ap.add_argument('--terima-kurang', action='store_true', help='WA Koordalops merinci lebih sedikit dari jumlah menonjol; hanya atas perintah pemilik')   # --jam diterima supaya pemanggil sama dengan harian.py; cut-off format ini selalu 07.00
     g = ap.parse_args()
     if g.uji:
         return uji()
@@ -54,7 +55,7 @@ def utama():
     if not os.path.exists(tpl):
         sys.exit(f'templat tidak ada: {tpl}')
     baca = lambda p: open(p, encoding='utf-8').read()
-    wa, w, ga = wa_harian.koordalops(baca(g.koordalops)), wa_harian.bmkg(baca(g.bmkg)), wa_harian.pvmbg(baca(g.pvmbg))
+    wa, w, ga = wa_harian.koordalops(baca(g.koordalops), terima_kurang=g.terima_kurang), wa_harian.bmkg(baca(g.bmkg)), wa_harian.pvmbg(baca(g.pvmbg))
     if wa['sampai'][:10] != g.tanggal:
         sys.exit(f"WA Koordalops s.d. {wa['sampai']} bukan hari laporan {g.tanggal}")
     # 6 Nov pemilik: slide tanpa karhutla; jumlah laporan dikurangi laporan karhutla. 7 Nov: hanya kejadian baru 24 jam, jumlah laporan WA tetap.
