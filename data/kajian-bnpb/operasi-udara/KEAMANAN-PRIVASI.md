@@ -38,3 +38,31 @@
 ## 4. Pengulas wajib
 
 Rute Worker baru dan unggahan: `guard-api` + `security-reviewer`. Migrasi D1 bila ada: `migrasi-idempoten`. Layar: `selera-angka` + `inp-reviewer`.
+
+## 5. Isian manual (K12)
+
+| Data | Kelas | Tempat | Siapa boleh tulis | Siapa boleh baca |
+| ---- | ----- | ------ | ----------------- | ---------------- |
+| Gelar armada, sortie, hasil, temuan, armada | operasional internal | D1 `op_*` | `pusdalops`, moderator (K14) | `PERAN_BACA` |
+| Kontrak tanpa harga | internal | D1 `op_kontrak` | `pusdalops`, moderator | `PERAN_BACA` |
+| Personel darat per provinsi | internal teragregasi, tanpa nama | D1 `op_personel` | `pusdalops`, moderator | `PERAN_BACA` |
+| Foto unggahan | operasional internal | R2 `operasi/foto/` + D1 `op_foto_unggah` | sama | `PERAN_BACA`, lewat rute baca berkas (pola `fotoBerkas`) |
+| Riwayat isian (siapa mengubah apa) | jejak audit | D1 `op_isian_log` | Worker saja | `PERAN_BACA` |
+
+Aturan tambahan:
+
+1. **Pengisi dicatat sebagai `staf:<id>` atau `admin:<hash12>`**, bukan nama atau nomor HP; akun gerbang `AKUN_SITUS*` (pembaca pimpinan) tidak pernah bisa menulis (`modOK`, bukan `adminOK`); nama staf diambil saat tampil dari tabel staf yang sudah ada.
+2. **Nama kru tetap haram**: formulir menampilkan peringatan "tanpa nama kru" di kolom bebas (`alasan`, `lokasi`, `ket`, `catatan`), dan kolom itu dibatasi panjangnya. Pengurai WA sekarang tidak punya pemeriksa pola nama otomatis yang bisa dipakai ulang; pemeriksa seperti itu belum dirancang dan tidak diklaim ada.
+3. **Validasi di Worker**, bukan di layar: tanggal sah dan tidak di depan, koordinat di BBOX Indonesia, `registrasi` dan `base_id` harus ada di `op_armada`/`op_base` (kecuali formulir armada yang membuat baru), angka dalam rentang skema, teks dipangkas dan dibatasi panjangnya.
+4. **Foto**: cek tanda tangan berkas (JPEG `FF D8`, PNG `89 50 4E 47`, WEBP `RIFF....WEBP`), SVG/GIF/HEIC ditolak, ≤ 8 MB dengan penjaga `Content-Length` sebelum `formData()`; koordinat dan jam WAJIB dari EXIF GPS (K18), foto tanpa GPS ditolak; EXIF menyimpan lokasi pemotret, jadi berkas hanya dibaca lewat rute berhak baca. Metadata lain BELUM dibuang (berkas disimpan apa adanya, sama dengan `src/foto.js`); kunci R2 disusun server; rute baca sendiri dengan `nosniff` dan `CSP sandbox` (DESAIN-TEKNIS §7.7).
+5. **CSRF**: sudah dijaga terpusat di `src/worker.js` (POST bercookie `sesi_staf`/`sesi_admin` wajib Origin sama-situs); rute baru tidak boleh dikecualikan dari pemeriksaan itu, dan rute tulis hanya menerima `application/json` atau `multipart/form-data`.
+6. **Tidak menulis ke `public/`**: isian manual tidak pernah memicu berkas statis; layar membaca lewat rute berhak baca.
+
+| Ancaman | Penangkal |
+| ------- | --------- |
+| Pimpinan atau akun baca mengubah data | hak tulis terpisah `PERAN_TULIS` + `modOK`; akun gerbang `AKUN_SITUS*` 403; uji 403 |
+| Bot menimpa koreksi staf | aturan §7.4 DESAIN-TEKNIS, uji pemutaran ulang |
+| Isian massal merusak data | batas laju per staf, riwayat sebelum-sesudah, hapus lunak |
+| Berkas berbahaya menyamar foto | cek tanda tangan, tipe dibatasi, `nosniff`, `attachment` tidak dipakai untuk pratinjau tetapi `content-type` dari tabel |
+
+Pengulas: `guard-api` + `security-reviewer` untuk `src/operasi_isian.js`; `migrasi-idempoten` untuk 0126.

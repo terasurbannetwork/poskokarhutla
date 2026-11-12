@@ -19,6 +19,14 @@ boleh dipakai untuk membangun, tetapi tidak boleh tampil di layar sebagai angka 
 | K9 | 11 Nov 2026 | Pemilih periode seperti pangantara: Hari, Minggu, Bulan, Rentang, 12 Bulan. | "Period picker nya gini. Bisa pilih minggu bulan rentang dan 12 bulan" |
 | K10 | 11 Nov 2026 | Bilah cari + ekspor Excel dan PDF seperti pangantara, di atas daftar. | "Ada fitur search dan exportnya gini" |
 | K11 | 11 Nov 2026 | Layar dibagi seksi seperti pangantara: deret tab seksi di atas, Ringkasan lipat, kartu periode, bilah cari dan ekspor, tab status, lalu isi seksi. | "Kira kira bentuknya section dan pembagiannya seperti ini" |
+| K12 | 12 Nov 2026 | Semua data operasi yang tampil di `/operasi` bisa juga diisi manual, di samping bot WA. Pengecualian tetap: angka satelit (hotspot, firespot, luas, belum padam), METAR, ADS-B, dan renlap mesin (PRD §6). | "Kalo misalnya dia bentuknya adalah inputan manual gitu bisa ga? ... Pastiin semua yang ada disini bisa ada masuk inputan" |
+| K13 | 12 Nov 2026 | Rancangan isian manual ditulis dulu di paket ini, baru kode (AGENTS §3.7). | "buat" |
+| K14 | 12 Nov 2026 | Q16: yang boleh mengisi data operasi manual hanya peran `pusdalops` (plus moderator ber-`ADMIN_TOKEN`); peran lain membaca saja. | "Bawaan: `pudalops`" |
+| K15 | 12 Nov 2026 | Q17: bila bot WA dan isian manual mengisi butir yang sama, isian manual menang. | "Bawaan: manual menang" |
+| K16 | 12 Nov 2026 | Q18: personel darat dicatat sebagai angka akumulasi per provinsi per unsur. | "Akumulasi" |
+| K17 | 12 Nov 2026 | Q19: isian salah dihapus lunak dengan alasan wajib. | "Bawaan: hapus lunak dengan alasan" |
+| K18 | 12 Nov 2026 | Q20: foto unggahan wajib berkoordinat, dan koordinat serta jamnya diambil dari data foto itu sendiri (EXIF), bukan diketik. | "Wajib. Nanti foto akan ambil datanya sendiri" |
+| K19 | 12 Nov 2026 | Q21: kontrak diisi tanpa harga dan tarif. | "Bawaan: tanpa harga" |
 
 ## Prinsip yang mengikat semua tiket
 
@@ -47,3 +55,5 @@ boleh dipakai untuk membangun, tetapi tidak boleh tampil di layar sebagai angka 
 | Q14 | Seksi apa saja di Operasi Udara, dan urutannya? | [SEMENTARA] Ringkasan, Base dan armada, Renlap, Aksi dan hasil, Operator dan kontrak, Dokumentasi; Operasi Darat tetap tab sendiri |
 | Q15 | Ekspor berisi apa: hanya seksi yang sedang tampil (sesuai saringan dan periode), atau seluruh laporan? | [SEMENTARA] seksi yang sedang tampil, sesuai saringan dan periode |
 | Q12 | PDF renlap: boleh dibaca semua staf berperan yang bisa membuka `/operasi`, atau hanya Pusdalops dan pimpinan? Dan renlap JSON/TXT yang sekarang publik di `public/data/operasi/`: tetap publik atau dipindah ke balik sesi? | [SEMENTARA] PDF sama dengan hak baca `/api/operasi/peta`; JSON/TXT tetap seperti sekarang sampai dijawab |
+
+Q16 sampai Q21 dijawab pemilik 12 Nov 2026, lihat K14 sampai K19.

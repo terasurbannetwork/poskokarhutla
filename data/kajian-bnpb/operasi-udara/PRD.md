@@ -61,3 +61,24 @@ Urutan pengerjaan ada di `TIKET.md`: yang datanya sudah ada dan tidak menunggu Q
 - Tidak menulis "aman terbang". Kelayakan terbang adalah penanda dari METAR dan prakiraan; keputusan terbang tetap milik pilot dan operator.
 - Tidak menjumlah angka antarsumber.
 - Tidak menambah kueri D1 terjadwal tanpa menghitung kuota baca (memori `d1-kuota-baca`).
+
+## 6. Isian manual (K12, 12 Nov 2026)
+
+Tujuan: data yang biasanya masuk lewat bot WA tetap bisa diisi staf langsung di `/operasi` bila bot terlambat, pesan WA tidak terbaca, atau sumbernya memang tidak lewat WA (kontrak, personel darat).
+
+| F | Data | Tempat simpan | Sekarang masuk lewat |
+| - | ---- | ------------- | -------------------- |
+| F-22 | Gelar armada harian per pesawat: status (siap, siaga, operasi, tidak siap) dan alasan | `op_armada_status` | bot WA |
+| F-23 | Sortie: berangkat, kembali, batal, misi, lokasi, koordinat | `op_gerak` | bot WA |
+| F-24 | Hasil water bombing: jatuhan, liter, laporan padam atau masih berasap | `op_gerak_hasil` (kolom `drops`, `liter`, `lapor`) | bot WA |
+| F-25 | Temuan api pilot: koordinat, status (fs, berasap, berasap tipis, clear), luas klaim, lokasi | `op_temuan` | bot WA |
+| F-26 | Data induk armada: tipe, peran, operator, pemilik, base, kapasitas bucket (menutup "armada tanpa tipe", "armada tanpa base") | `op_armada` | seed migrasi dan bot |
+| F-27 | Kontrak armada (K19) | tabel baru `op_kontrak` | berkas statis `public/data/operasi/rekap_udara.json` |
+| F-28 | Personel darat per provinsi, angka akumulasi (K16) | tabel baru `op_personel` | berkas statis `public/data/operasi_resmi.json` (per 12 Okt) |
+| F-29 | Foto dokumentasi | tabel baru `op_foto_unggah` + R2 `operasi/foto/` | bot WA (`op_foto`) |
+| F-30 | Modifikasi cuaca (OMC) | `omc_operasi`, sortie OMC | sudah ada formulir `/admin/omc` (`src/omc.js`); layar hanya menautkan, tidak membuat formulir kedua |
+| F-31 | Riwayat isian: siapa, kapan, sebelum dan sesudah, alasan | tabel baru `op_isian_log` | – |
+
+Tidak bisa diisi manual (larangan tetap): hotspot, firespot, luas terbakar, belum padam (hanya dari sistem kita), METAR (BMKG), posisi ADS-B, renlap dan targetnya (mesin `scripts/operasi/renlap.py`), status "didatangi" (dihitung dari aksi, F-23 yang mengubahnya).
+
+Ukuran berhasil: tiap butir di kotak "Pembaruan data" dan tiap angka di Ringkasan yang berasal dari laporan bisa diperbaiki staf dalam satu dialog tanpa membuka WA atau D1.

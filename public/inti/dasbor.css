@@ -23,7 +23,7 @@ b,strong,td,.pill{font-variant-numeric:tabular-nums}
 .ad-tabel thead tr{background:var(--db-navy)}
 .ad-tabel th{font-size:.75rem;border-bottom:0}
 /* isi rapat (D13) */
-.ad-tabel td{padding-top:7px;padding-bottom:7px}
+.ad-tabel td{padding-top:4px;padding-bottom:4px;line-height:1.3}
 
 /* ---- halaman Pusdalops (/bnpb/*) ---- */
 .bn-blok{border:1px solid var(--db-h2-garis);overflow:hidden}
@@ -236,7 +236,7 @@ aside.db-nav .db-nav-isi:has(.mp-slot[data-halaman] .db-nav-b[aria-current="true
 
 /* panel kiri Pusdalops menempel dan menggulir di dalam, kaki "Pembaruan data" tetap di dasar (pemilik 11 Nov 2026 "sama kaya operasi bisa digeser") */
 @media (min-width:901px){
-  .mp-a>.mp-side{position:sticky;top:12px;height:calc(100vh - 86px);flex-direction:column;overflow:hidden}
+  .mp-a>.mp-side{position:sticky;top:62px;height:calc(100dvh - 74px);flex-direction:column;overflow:hidden}
   .mp-a>.mp-side>.db-nav-isi{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
   .mp-a>.mp-side>.db-nav-kaki{flex:none;margin-top:auto}
 }

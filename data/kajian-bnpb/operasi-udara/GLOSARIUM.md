@@ -35,3 +35,6 @@
 | Kontrak | Sewa armada BNPB per periode dengan jam operasi tercatat (`rekap_udara`) |
 | Jam operasi | Jam terbang tercatat di kontrak, format jam:menit |
 | Tinjau lokal | Server `http://localhost:8800`: kode dari folder kerja, data dan login dari produksi (AGENTS §3.8) |
+| Isian manual | Data operasi yang diketik staf di `/operasi`, bukan diurai bot dari WA; bertanda pil "manual" |
+| Sumber butir | `wa` (bot) atau `manual`; disimpan di kolom `sumber` dan riwayat `op_isian_log` |
+| Hapus lunak | Baris ditandai terhapus dengan alasan; tetap ada di riwayat, tidak tampil di layar |

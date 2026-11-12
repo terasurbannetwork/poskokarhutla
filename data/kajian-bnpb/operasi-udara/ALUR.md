@@ -48,3 +48,17 @@ Alur ujung ke ujung per peran dan per siklus harian. Jam dalam waktu setempat ba
 | Aksi water bombing | menunggu 24 jam → padam / masih api → api muncul lagi | ALGORITMA §5 |
 | Cluster prioritas | terjangkau / celah → direspons | ALGORITMA §3 dan §4 |
 | PDF renlap | dibuat di Mac mini → diunggah → tersedia di layar | F-15; gagal unggah = kabar pemilik, layar tetap tanpa tombol |
+
+## 6. Alur isian manual (K12)
+
+1. Staf `pusdalops` (K14) membuka `/operasi`. Panel kiri punya grup **Isian**: Gelar armada, Sortie dan hasil, Temuan api pilot, Data armada, Kontrak, Personel darat, Foto, OMC (tautan ke `/admin/omc`).
+2. Jalan pintas: tiap baris kotak **Pembaruan data** (Gelar armada 0/55, Sortie terakhir) dan tiap butir **Perlu tindakan** yang soal data (base belum lapor, data belum lengkap) punya tombol **Isi** yang membuka dialog yang sama, sudah terisi tanggal dan base.
+3. Dialog gelar armada: daftar pesawat base itu, tiap baris satu deret pil status + kolom alasan (wajib untuk tidak siap). Simpan sekali untuk semua pesawat base.
+4. Simpan: Worker memeriksa hak, memvalidasi, menulis baris dengan `sumber = 'manual'` dan `oleh = staf:<id>`, lalu mencatat `op_isian_log` (sebelum, sesudah). Layar memuat ulang data seksi itu saja.
+5. Nilai dari isian manual bertanda pil kecil **manual** (tooltip: pengisi dan jam). Klik pil membuka riwayat butir itu.
+6. Bot WA datang sesudahnya untuk butir yang sama: tidak menimpa isian manual (K15); pesan WA tetap tercatat di `wa_masuk` dan riwayat menyebut "bot dilewati karena isian manual".
+7. Salah isi: tombol hapus di riwayat, alasan wajib (K17). Baris ditandai terhapus, layar kembali ke nilai sebelumnya (bot atau kosong).
+
+| Objek | Status | Peralihan |
+| ----- | ------ | --------- |
+| Butir data operasi | kosong → bot → manual → (manual diganti manual) → terhapus lunak | K15, K17 |

@@ -3658,3 +3658,25 @@
 {"t":"2026-11-12T12:48:34.469+07:00","sesi":"1c60d5f0","prompt":"Commit dan push","label":[],"berkas":[]}
 {"t":"2026-11-12T12:49:16.137+07:00","sesi":"1c60d5f0","prompt":"Di tiap provinsi juga ada hotspot firespot luas terbakar dan belum padam ya","label":["pipa-data"],"berkas":[]}
 {"t":"2026-11-12T12:49:54.225+07:00","sesi":"1c60d5f0","prompt":"Ini sumpah semuanya kenapa line spacingnya gede banget ya","label":[],"berkas":[]}
+{"t":"2026-11-12T12:50:19.101+07:00","sesi":"1c60d5f0","prompt":"Disini juga ada jumlah hotspot firespot dong","label":["pipa-data"],"berkas":[]}
+{"t":"2026-11-12T12:51:05.129+07:00","sesi":"1c60d5f0","prompt":"Kategorinya jangan gini dong kaya gini ya","label":[],"berkas":[]}
+{"t":"2026-11-12T12:51:44.193+07:00","sesi":"1c60d5f0","prompt":"Oke setiap bencana agar ada log hariannya gini ya","label":[],"berkas":[]}
+{"t":"2026-11-12T12:51:44.303+07:00","sesi":"1c60d5f0","prompt":"Ini bagusin ya","label":[],"berkas":[]}
+{"t":"2026-11-12T12:52:04.091+07:00","sesi":"1c60d5f0","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-12T12:52:08.651+07:00","sesi":"1c60d5f0","prompt":"Ini kenapa ga sampai bawah","label":[],"berkas":[]}
+{"t":"2026-11-12T12:52:51.673+07:00","sesi":"1c60d5f0","prompt":"Btw ini kenapa ketika scroll dia kaya kepotong gitu Kaya nya side bar yang operasi ga gitu deh","label":[],"berkas":[]}
+{"t":"2026-11-12T12:53:11.384+07:00","sesi":"1c60d5f0","prompt":"Iya ini agar ada tanggal mulai dan selesainya","label":[],"berkas":[]}
+{"t":"2026-11-12T12:53:33.498+07:00","sesi":"6aaf8982","prompt":"Ya, siapkan paket","label":[],"berkas":[]}
+{"t":"2026-11-12T12:56:03.317+07:00","sesi":"1c60d5f0","prompt":"Gw cek dulu","label":[],"berkas":[]}
+{"t":"2026-11-12T12:56:37.388+07:00","sesi":"1c60d5f0","prompt":"Agar ada juga icon WA nya ya","label":[],"berkas":[]}
+{"t":"2026-11-12T12:58:34.638+07:00","sesi":"1c60d5f0","prompt":"Bagusin","label":[],"berkas":[]}
+{"t":"2026-11-12T12:59:17.042+07:00","sesi":"1c60d5f0","prompt":"Agar ada pil data belum lengkap","label":[],"berkas":[]}
+{"t":"2026-11-12T12:59:55.667+07:00","sesi":"1c60d5f0","prompt":"Peringatan dini juga ada filter dong mana yang awas siaga dan waspada","label":[],"berkas":[]}
+{"t":"2026-11-12T13:00:21.802+07:00","sesi":"1c60d5f0","prompt":"Agar curahnya dipisahin di kolom yang berbeda dengan pil status","label":[],"berkas":[]}
+{"t":"2026-11-12T13:01:20.381+07:00","sesi":"1c60d5f0","prompt":"Ini juga bisa difilter dong","label":[],"berkas":[]}
+{"t":"2026-11-12T13:01:59.750+07:00","sesi":"1c60d5f0","prompt":"Pakai apa kek iconnya jangan chloropeth gitu","label":[],"berkas":[]}
+{"t":"2026-11-12T13:03:03.698+07:00","sesi":"1c60d5f0","prompt":"Tadi nih yang input manual tuh mana ya? ada lu baut?","label":[],"berkas":[]}
+{"t":"2026-11-12T13:03:12.162+07:00","sesi":"1c60d5f0","prompt":"buat","label":[],"berkas":[]}
+{"t":"2026-11-12T13:14:07.610+07:00","sesi":"1c60d5f0","prompt":"* Q16: siapa yang boleh mengisi. Bawaan: `pudalops`\n* Q17: kalau bot dan manual ngisi hal yang sama. Bawaan: manual menang.\n* Q18: personel darat dihitung harian atau akumulasi. Akumulasi\n* Q19: isian salah dihapus gimana. Bawaan: hapus lunak dengan alasan.\n* Q20: foto wajib berkoordinat atau nggak. Bawaan: Wajib. Nanti foto akan ambil datanya sendiri. \n* Q21: kolom kontrak apa saja. Bawaan: tanpa harga.","label":[],"berkas":[]}
+{"t":"2026-11-12T13:15:24.277+07:00","sesi":"6aaf8982","prompt":"* Q4, gelar Kepala BNPB: contoh Oktober menulis “S.Sos., M.Si. (Han)”, catatan lu 2 Nov menulis “S.Sos., M.Si., M.Si. (Han)”. Salah satunya pasti keliru.“S.Sos., M.Si. (Han)”,  ini yang bener\n* Q1, siapa yang boleh membuka laporan ini. SSemuanya \n* Q19, jenis yang tidak dihitung: Konflik Sosial, Gagal Teknologi, dan Epidemi ikut dikeluarkan atau tidak? “Banjir dan Tanah Longsor” dihitung banjir atau longsor? masukkan aja bagiannya lu pikirin apa yang perlu diisi\n* Q14, model hujan: contoh menyebut model CHIRPS/RONI/DMI per wilayah, tapi model itu tidak ada di repo. Lu coba cari dah\n* Q5 dan Q17, tampilan: huruf kapital di pil dan kepala tabel, dan pilihan ikut tampilan contoh Oktober atau tampilan ekspor PDF pangantara.","label":["banjir","longsor"],"berkas":[]}
+{"t":"2026-11-12T13:15:32.551+07:00","sesi":"1c60d5f0","prompt":"Commit lalu gas","label":[],"berkas":[]}

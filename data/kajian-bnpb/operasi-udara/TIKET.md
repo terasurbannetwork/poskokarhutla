@@ -43,3 +43,21 @@ di `http://localhost:8800/operasi`, baru tiket berikutnya. Tiket yang menunggu Q
 - Kartu peta operasi udara (K8).
 
 | UD-25 | F-15 renlap siap cetak (pemilik 11 Nov 2026: "tiap hari ada icon renlap yang langsung dibuka ... sesuai bentuk ini" dengan contoh Renlap Merauke 30 Okt) | halaman `/renlap-cetak?base=&tgl=&versi=` (`public/renlap_cetak.*`) merender di peramban pola `scripts/operasi/renlap_pdf.py`: peta rute di citra Esri + urutan CP, tabel leg pilot, satu halaman per CP; cetak = simpan PDF. Tombol "Renlap" di kaki kartu Renlap tiap base. Tidak menggantikan UD-01 (PDF bot di R2) | selesai 11 Nov 2026 |
+
+## Isian manual (K12, 12 Nov 2026)
+
+Urutan: UD-26 → UD-27 → UD-30 → UD-31 → sisanya. Rute dulu, layar sesudah rutenya hijau. Migrasi produksi diterapkan pemilik.
+
+| Tiket | Isi | Pengerja → pemeriksa | Menunggu |
+| ----- | --- | -------------------- | -------- |
+| UD-26 | Migrasi `0126_operasi_isian.sql` (DESAIN-TEKNIS §7.3), nomor diperiksa ulang | `warga-api` → `migrasi-idempoten` | – |
+| UD-27 | `src/operasi_isian.js` (`PERAN_TULIS = ["pusdalops"]`, K14): rute gelar, sortie, hasil, temuan, hapus, riwayat; penjagaan bot di dalam pernyataan tulis `catatOperasi` dan SQL `isi_ulang_wa.mjs` (DESAIN-TEKNIS §7.4); semua pembaca `op_*` melewati butir terhapus (§7.3); uji integrasi RENCANA-UJI §4 | `warga-api` → `guard-api`, `security-reviewer` | – (K14, K15, K17) |
+| UD-28 | Rute armada (data induk), kontrak, personel | `warga-api` → `guard-api` | – (K16, K19) |
+| UD-29 | Rute unggah foto + rute baca berkas; galeri Dokumentasi membaca `op_foto` dan `op_foto_unggah` | `warga-api` → `security-reviewer` | – (K18: koordinat dan jam dari EXIF, wajib) |
+| UD-30 | Layar: grup panel Isian, dialog bersama, tombol Isi di Pembaruan data dan Perlu tindakan | `layar-peta` → `inp-reviewer` | UD-27 |
+| UD-31 | Formulir gelar armada per base (pil status, alasan wajib untuk tidak siap) | `layar-peta` → `inp-reviewer`, `selera-angka` | UD-30 |
+| UD-32 | Formulir sortie, hasil water bombing, temuan api pilot (titik dari klik peta atau ketik koordinat) | `layar-peta` → `inp-reviewer` | UD-30 |
+| UD-33 | Formulir armada, kontrak, personel; layar Kontrak dan personel darat membaca rute, berkas statis dicabut | `layar-peta` → `selera-angka` | UD-28 |
+| UD-34 | Formulir unggah foto (seret dan lepas, beberapa berkas, pratinjau) | `layar-peta` → `inp-reviewer` | UD-29 |
+| UD-35 | Pil manual, riwayat per butir, hapus lunak dari layar | `layar-peta` → `selera-angka` | UD-27 |
+| UD-36 | OMC: tautan "Isi OMC" ke `/admin/omc` di grup Isian dan kartu Modifikasi cuaca, hanya untuk peran `tmc` (`src/omc.js` `PERAN_TULIS`) | `layar-peta` | – |

@@ -50,6 +50,16 @@
     const ha = v => v ? F(v) : "–";
     const status = x => x.padam ? label("Padam", "ok", "biru") : label("Belum padam", "karhutla", "merah");
     const belum = baris.filter(x => !x.padam), totBelum = belum.reduce((s, x) => s + x.belum, 0);
+    const hariKe = n => new Date(Date.parse(hari) - n * 864e5).toISOString().slice(0, 10), tiga = [2, 1, 0].map(hariKe);
+    const [nas, ...kl] = await Promise.all([fetch("/data/peta_karhutla.json").then(r => r.ok ? r.json() : null).catch(() => null),
+      ...tiga.map(t => fetch(`/data/kluster_hari/${t}.json`).then(r => r.ok ? r.json() : null).catch(() => null))]);
+    const hot = tiga.map(t => { const i = nas?.hari?.indexOf(t) ?? -1; return i < 0 ? null : nas.nasional.hot[i]; });
+    const fs = kl.map(k => k?.w ? Object.entries(k.w).filter(([kk]) => !kk.includes("|")).reduce((s, [, v]) => s + (v[4] || 0), 0) : null);
+    /* kolom hotspot dan firespot di tabel (pemilik 12 Nov 2026): provinsi = hotspot deck + firespot arsip; kab/kota = firespot saja (hotspot deck tidak dipecah per kab) */
+    const iH = nas?.hari?.indexOf(hari) ?? -1, kH = kl[2]?.w;
+    const hotProv = pk => iH < 0 || !nas?.prov?.[pk]?.hot ? null : nas.prov[pk].hot[iH];
+    const fsDi = kunci => kH ? kH[kunci]?.[4] ?? 0 : null;
+    const nOrNA = v => v == null ? "NA" : v ? F(v) : "–";
 
     /* tabel provinsi > kab/kota; baris kab membuka 7 hari terakhir */
     const prov = new Map();
@@ -60,25 +70,30 @@
         for (const x of xs) {
           const tombol = h("button", {type: "button", class: "dl-buka dl-buka-kab", "aria-expanded": "false"}, h("b", {teks: x.nama}));
           const tr = h("tr", {class: "dl-kab-baris"}, h("td", {class: "dl-wil"}, tombol), tdv(status(x), x.padam ? 0 : 1), tdv(x.lama ? F(x.lama) : "–", x.lama),
+            Object.assign(tdv("–", -1), {title: "Hotspot per kab/kota belum dihitung, lihat baris provinsi"}), tdv(nOrNA(fsDi(x.prov_kode + "|" + x.nama)), fsDi(x.prov_kode + "|" + x.nama) ?? -1),
             tdv(ha(x.luas), x.luas), tdv(ha(x.belum), x.belum), tdv(x.kabar ? tgl(x.kabar.terakhir) : "belum ada", x.kabar?.terakhir?.replace(/-/g, "") || "0"),
-            h("td", null, h("div", {class: "dl-aksi"}, x.padam ? null : tombolWA(x, pesanWA(x, hari, tgl), "permintaan pembaruan"))));
+            h("td", null, h("div", {class: "dl-aksi"},
+              /* log harian 7 hari, sama dengan jenis bencana lain (pemilik 12 Nov 2026): klik ikon membuka baris per hari */
+              h("button", {type: "button", class: "dl-ikon", title: "Log harian 7 hari", "aria-label": "Log harian 7 hari " + x.nama}, ikon("kalender")),
+              x.padam ? null : tombolWA(x, pesanWA(x, hari, tgl), "permintaan pembaruan"))));
           /* 7 hari terakhir dibangun saat pertama dibuka (ratusan kab x 7 baris = ribuan baris DOM bila dibangun di depan) */
           let anak = null;
           tr.addEventListener("click", e => { if (e.target.closest("a")) return; const buka = tombol.getAttribute("aria-expanded") !== "true";
             if (!anak) { anak = x.harian.slice().reverse().map(r => h("tr", {class: "dl-kec-baris", hidden: true}, h("td", {class: "dl-wil", teks: tgl(r.tgl)}),
-              td(r.belum ? label("Belum padam", "karhutla", "merah") : r.luas ? label("Padam", "ok", "biru") : "–"), td("", true), td(ha(r.luas), true), td(ha(r.belum), true), td("", true), td("", true))); tr.after(...anak); }
+              td(r.belum ? label("Belum padam", "karhutla", "merah") : r.luas ? label("Padam", "ok", "biru") : "–"), td("", true), td("", true), td("", true), td(ha(r.luas), true), td(ha(r.belum), true), td("", true), td("", true))); tr.after(...anak); }
             anak.forEach(a => a.hidden = !buka); tombol.setAttribute("aria-expanded", String(buka)); tr.classList.toggle("dl-aktif", buka); });
           rows.push(tr);
         }
         const nBelum = xs.filter(x => !x.padam).length;
         return tbodyProv(namaProv(pk), `${F(xs.length)} kab/kota`, [
           tdv(h("div", {class: "dl-chips"}, nBelum ? label(F(nBelum) + " belum", "karhutla", "merah") : null, xs.length - nBelum ? label(F(xs.length - nBelum) + " padam", "ok", "biru") : null), nBelum),
-          td("", true), tdv(ha(xs.reduce((s, x) => s + x.luas, 0)), 0), tdv(ha(nb), nb), td("", true), td("", true)], 1, rows);
+          td("", true), tdv(nOrNA(hotProv(pk)), hotProv(pk) ?? -1), tdv(nOrNA(fsDi(pk)), fsDi(pk) ?? -1), tdv(ha(xs.reduce((s, x) => s + x.luas, 0)), 0), tdv(ha(nb), nb), td("", true), td("", true)], 1, rows);
       });
     const th = (t, i, tip) => h("th", {scope: "col", teks: t, "data-i": i == null ? null : String(i), title: tip || null});
     const t = h("table", {class: "ad-tabel dl-tabel"}, h("thead", null, h("tr", null, th("Wilayah", 0), th("Status", 1), th("Lama, hari", 2, "hari berturut-turut sampai hari data terakhir dengan api belum padam"),
-      th("Luas terbakar, ha", 3, `luas terbakar hari ${tgl(hari)}, data satelit NOAA-20/21 (sistem Centurisk97)`), th("Belum padam, ha", 4, `sisa api belum padam hari ${tgl(hari)}, data satelit NOAA-20/21 (sistem Centurisk97)`),
-      th("Kabar BPBD", 5, "tanggal kabar terakhir BPBD di logbook atau WA Koordalops"), th("Aksi"))));
+      th("Hotspot", 3, `titik panas ${tgl(hari)} per provinsi, semua satelit dan tingkat keyakinan (sistem Centurisk97)`), th("Firespot", 4, `titik firespot ${tgl(hari)} dari cluster firespot (sistem Centurisk97)`),
+      th("Luas terbakar, ha", 5, `luas terbakar hari ${tgl(hari)}, data satelit NOAA-20/21 (sistem Centurisk97)`), th("Belum padam, ha", 6, `sisa api belum padam hari ${tgl(hari)}, data satelit NOAA-20/21 (sistem Centurisk97)`),
+      th("Kabar BPBD", 7, "tanggal kabar terakhir BPBD di logbook atau WA Koordalops"), th("Aksi"))));
     t.append(...tbodies); pasangUrut(t);
     const wadahPeta = h("div", {class: "dl-peta"}, h("p", {class: "bn-pesan", teks: "Memuat peta…"}));
     /* ringkasan di dalam peta, sama dengan jenis lain (pemilik 11 Nov 2026 "karhutla kok beda sendiri") */
@@ -86,11 +101,6 @@
     const ub = (ik, nama, nilai, kelas = "", tip = "") => h("div", {class: "db-ubin " + kelas, title: tip || null}, h("header", null, h("i", null, ikon(ik)), h("span", {teks: nama})), typeof nilai === "string" ? h("b", {teks: nilai}) : nilai);
     /* angka deck Penanganan di peta (pemilik 12 Nov 2026): hotspot, firespot, luas terbakar, belum padam, tren 3 hari; semua dari sistem kita.
        hotspot nasional = peta_karhutla.json (definisi deck), firespot = arsip kluster_hari (titik firespot hari itu, w[prov][4]) */
-    const hariKe = n => new Date(Date.parse(hari) - n * 864e5).toISOString().slice(0, 10), tiga = [2, 1, 0].map(hariKe);
-    const [nas, ...kl] = await Promise.all([fetch("/data/peta_karhutla.json").then(r => r.ok ? r.json() : null).catch(() => null),
-      ...tiga.map(t => fetch(`/data/kluster_hari/${t}.json`).then(r => r.ok ? r.json() : null).catch(() => null))]);
-    const hot = tiga.map(t => { const i = nas?.hari?.indexOf(t) ?? -1; return i < 0 ? null : nas.nasional.hot[i]; });
-    const fs = kl.map(k => k?.w ? Object.entries(k.w).filter(([kk]) => !kk.includes("|")).reduce((s, [, v]) => s + (v[4] || 0), 0) : null);
     const tren = (() => { const ada = hot.filter(v => v != null), m = Math.max(1, ...ada);
       const ubah = hot[0] && hot[2] != null ? Math.round((hot[2] - hot[0]) / hot[0] * 100) : null;
       return h("b", {class: "dl-tren3"}, ...hot.map((v, i) => h("i", {style: `--t:${v == null ? 0 : Math.max(8, Math.round(v / m * 100))}%`, title: `${tgl(tiga[i])}: ${v == null ? "belum ada data" : F(v) + " hotspot"}`})),
@@ -104,7 +114,7 @@
       ub("data", "Tren hotspot 3 hari", tren, "", tiga.map((t, i) => `${tgl(t)}: ${hot[i] == null ? "NA" : F(hot[i])}`).join(", ")),
       ub("pin", "Kab/kota belum padam", F(belum.length), belum.length ? "merah" : ""),
       ub("tunggu", "Tanpa kabar BPBD", F(tanpaKabar), tanpaKabar ? "oranye" : ""));
-    requestAnimationFrame(() => peta(wadahPeta, baris, U, ubin));
+    requestAnimationFrame(() => peta(wadahPeta, baris, U, ubin, {nas, kl: kl[2], hari, tgl}));
 
     /* kelengkapan data: belum padam tanpa kabar BPBD sehari terakhir */
     const tanya = perluDitanya(baris, hari);
@@ -135,7 +145,7 @@
   }
 
   /* peta: kab terbakar sepekan, merah = belum padam (makin pekat makin luas), biru = sudah padam; arahkan kursor untuk angka */
-  async function peta(wadah, baris, U, ubin = null) {
+  async function peta(wadah, baris, U, ubin = null, ex = {}) {
     const {h, F, kosong, ikon} = U;
     if (!g.maplibregl) return wadah.replaceChildren(kosong("peringatan", "Peta gagal dimuat, coba muat ulang."));
     const ambil = u => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
@@ -143,7 +153,14 @@
     const geo = await Promise.all(provs.map(p => ambil(`/geo/kabupaten/${p}.json`)));
     const fitur = [];
     geo.forEach((gj, i) => (gj?.features || []).forEach(f => { const x = per.get(provs[i] + "|" + f.properties.kab); if (x) fitur.push({type: "Feature", id: fitur.length, properties: {kode: x.kab_kode, belum: x.belum}, geometry: f.geometry}); }));
-    wadah.replaceChildren(); wadah.append(h("div", {class: "dl-legenda-peta"}, h("span", {class: "dl-leg dl-leg-belum", teks: "Belum padam"}), h("span", {class: "dl-leg dl-leg-surut", teks: "Padam"})));
+    /* kategori hotspot per provinsi seperti peta deck Penanganan (pemilik 12 Nov 2026 "kategorinya kaya gini"): tanpa hotspot, 1-100, 101-250, 251-500, > 500;
+       kab/kota belum padam bergaris merah di atasnya */
+    const KAT = [[0, "Tanpa hotspot", "#dfe3ea"], [1, "1 sampai 100 titik", "#f6c49e"], [101, "101 sampai 250", "#ef9150"], [251, "251 sampai 500", "#dd6421"], [501, "Lebih dari 500", "#8a2d0e"]];
+    const iHotHari = ex.nas?.hari?.indexOf(ex.hari) ?? -1;
+    const provGeo = await ambil("/geo/provinsi.json");
+    for (const f of provGeo?.features || []) f.properties.hot = iHotHari < 0 ? -1 : ex.nas.prov?.[f.properties.kode]?.hot?.[iHotHari] ?? 0;
+    wadah.replaceChildren(); wadah.append(h("div", {class: "dl-legenda-peta"}, ...KAT.map(([, t, w]) => h("span", {class: "dl-leg dl-leg-kat", style: `--w:${w}`, teks: t})),
+      h("span", {class: "dl-leg dl-leg-garis", teks: "Kab/kota belum padam"})));
     /* trackResize hidup: peta ikut ukuran wadah saat panel tampil (dulu mati dan peta terpotong separuh). */
     const m = petaKini = new g.maplibregl.Map({container: wadah, trackResize: true, style: "https://tiles.openfreemap.org/styles/positron", bounds: [[94.8, -11.2], [141.2, 6.2]], fitBoundsOptions: {padding: 16},
       minZoom: 3, maxZoom: 13, dragRotate: false, pitchWithRotate: false, attributionControl: {compact: true}});
@@ -158,18 +175,30 @@
     if (ubin) { ubin.classList.add("dl-peta-ubin"); wadah.append(ubin); g.DalopsKamera?.dasar(wadah); }
     const css = getComputedStyle(document.documentElement), c1 = css.getPropertyValue("--c1").trim() || "#c9503a", c5 = css.getPropertyValue("--c5").trim() || "#4f8fc4";
     const pop = new g.maplibregl.Popup({closeButton: false, closeOnClick: false, offset: 10, className: "dl-popup"});
+    /* angka provinsi di tiap pop-up (pemilik 12 Nov 2026 "di tiap provinsi juga ada hotspot firespot luas terbakar dan belum padam"):
+       hotspot, luas, belum padam = peta_karhutla.json (definisi deck); firespot = arsip kluster_hari w[prov][4]. Belum ada = NA kuning. */
+    const iHari = ex.nas?.hari?.indexOf(ex.hari) ?? -1, NA = v => v == null ? "NA" : F(v);
+    const fsKab = x => ex.kl?.w ? NA(ex.kl.w[x.prov_kode + "|" + x.nama]?.[4] ?? 0) : "NA";
+    const angkaProv = pk => { const P = ex.nas?.prov?.[pk], ambil = k => iHari < 0 || !P?.[k] ? null : P[k][iHari];
+      const isi = [["Hotspot", ambil("hot"), "titik"], ["Firespot", ex.kl?.w ? ex.kl.w[pk]?.[4] ?? 0 : null, "titik"], ["Luas terbakar", ambil("luas"), "ha"], ["Belum padam", ambil("belum"), "ha"]];
+      return h("div", {class: "dl-pop-prov"}, h("small", {teks: `Provinsi ${U.namaProv(pk)}, ${ex.tgl ? ex.tgl(ex.hari) : ""}`}),
+        h("div", null, ...isi.map(([t, v, sat]) => h("span", v == null ? {class: "dl-na"} : null, h("b", {teks: NA(v)}), h("em", {teks: `${t}, ${sat}`}))))); };
     m.on("load", () => {
+      if (provGeo) { m.addSource("prov", {type: "geojson", data: provGeo});
+        m.addLayer({id: "prov-isi", type: "fill", source: "prov", paint: {"fill-color": ["step", ["get", "hot"], KAT[0][2], 1, KAT[1][2], 101, KAT[2][2], 251, KAT[3][2], 501, KAT[4][2]], "fill-opacity": .9}});
+        m.addLayer({id: "prov-garis", type: "line", source: "prov", paint: {"line-color": "#ffffff", "line-width": 1}}); }
       m.addSource("kab", {type: "geojson", data: {type: "FeatureCollection", features: fitur}});
-      m.addLayer({id: "kab-isi", type: "fill", source: "kab", paint: {"fill-color": ["case", [">", ["get", "belum"], 0], c1, c5],
-        "fill-opacity": ["case", [">", ["get", "belum"], 0], ["interpolate", ["linear"], ["get", "belum"], 1, .45, 100, .7, 1000, .9], .55]}});
-      m.addLayer({id: "kab-garis", type: "line", source: "kab", paint: {"line-color": "#ffffff", "line-width": .8}});
+      /* isi kab hampir bening: tetap bisa disorot dan dibuka pop-up; warna kategori datang dari provinsi */
+      m.addLayer({id: "kab-isi", type: "fill", source: "kab", paint: {"fill-color": "#0b2545", "fill-opacity": .02}});
+      m.addLayer({id: "kab-garis", type: "line", source: "kab", paint: {"line-color": ["case", [">", ["get", "belum"], 0], "#b3261e", "rgba(255,255,255,.6)"], "line-width": ["case", [">", ["get", "belum"], 0], 1.8, .5]}});
       let kodeLama = null;   // isi pop-up dibangun hanya saat kab berganti; selain itu cukup geser posisinya
       m.on("mousemove", "kab-isi", e => { const kode = e.features[0].properties.kode, x = per.get(kode); m.getCanvas().style.cursor = "pointer";
         if (kode === kodeLama) return void pop.setLngLat(e.lngLat);
         kodeLama = kode;
         pop.setLngLat(e.lngLat).setDOMContent(U.kartuMini({lambang: U.lambangKab(x), nama: x.nama, wilayah: U.namaProv(x.prov_kode),
           pil: [U.label(x.padam ? "Padam" : "Belum padam", x.padam ? "ok" : "karhutla", x.padam ? "biru" : "merah")],
-          angka: [[x.padam ? null : F(x.belum), "ha belum padam", "karhutla"], [x.luas ? F(x.luas) : "–", "ha terbakar", "peringatan"]]})).addTo(m); });
+          angka: [[x.padam ? null : F(x.belum), "ha belum padam", "karhutla"], [x.luas ? F(x.luas) : "–", "ha terbakar", "peringatan"], [fsKab(x), "titik firespot", "peringatan"]],
+          bawah: angkaProv(x.prov_kode)})).addTo(m); });
       m.on("mouseleave", "kab-isi", () => { m.getCanvas().style.cursor = ""; pop.remove(); kodeLama = null; });
     });
   }

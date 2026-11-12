@@ -408,7 +408,7 @@
 @media (min-width:1280px){.dl-seg{grid-template-columns:repeat(6,minmax(0,1fr))}.dl-seg button{gap:6px;padding:9px 10px;font-size:.8125rem}}
 @media (max-width:600px){.dl-seg{grid-template-columns:repeat(2,minmax(0,1fr))}.dl-seg button{padding:8px 10px;font-size:.8125rem;white-space:normal;text-align:center;line-height:1.2}.dl-seg button:last-child:nth-child(odd){grid-column:1/-1}}
 /* tab Longsor: kolom Tinggi air (kolom ke-9 tabel wilayah; baris provinsi = 1 sel judul + 10 sel) tidak berlaku */
-.dl-tanpa-tinggi thead tr:first-child th:nth-child(7),.dl-tanpa-tinggi tbody td:nth-child(9),.dl-tanpa-tinggi tfoot td:nth-child(9){display:none}
+.dl-tanpa-tinggi thead tr:first-child th:nth-child(9),.dl-tanpa-tinggi tbody td:nth-child(11),.dl-tanpa-tinggi tfoot td:nth-child(11){display:none}
 
 /* korban gempa dst: meninggal dan hilang merah tebal di bawah nama kab/kota */
 .dl-korban-baris{justify-content:flex-start;margin-top:4px}
@@ -691,3 +691,51 @@ h1.dl-l1{margin:0;padding:12px 16px;border-radius:14px;background:#0b2545;color:
 /* angka belum ada: NA kuning */
 .dl-peta .dl-peta-ubin .db-ubin.dl-na>b{color:#8a6100}
 .dl-peta .dl-peta-ubin .db-ubin.dl-na>header>i{background:#fff4c2;box-shadow:inset 0 0 0 1px #f2d36b}
+/* baris tabel rapat (pemilik 12 Nov 2026 "kenapa line spacingnya gede banget"): sel 4px, label dan tombol ikon tidak menambah tinggi */
+:is(html,#_) .dl-wrap .dl-tabel tbody td{padding-top:3px;padding-bottom:3px;line-height:1.25}
+:is(html,#_) .dl-wrap .dl-tabel tbody .dl-tag{padding-top:0;padding-bottom:0;line-height:1.5}
+:is(html,#_) .dl-wrap .dl-tabel tbody .dl-ikon{width:24px;height:24px}
+.dl-pop-prov{margin:0 14px 12px;padding-top:8px;border-top:1px solid var(--line)}
+.dl-pop-prov>small{display:block;margin-bottom:6px;font-size:.6875rem;font-weight:700;color:var(--ink3)}
+.dl-pop-prov>div{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.dl-pop-prov span{display:grid;gap:1px;padding:4px 6px;border-radius:8px;background:color-mix(in srgb,#0b2545 4%,#fff)}
+.dl-pop-prov span.dl-na{background:#fff4c2}
+.dl-pop-prov b{font-size:.875rem;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.dl-pop-prov span.dl-na b{color:#8a6100}
+.dl-pop-prov em{font-style:normal;font-size:.625rem;line-height:1.2;color:var(--ink3)}
+.dl-pop-mini .dl-tip-angka>div.dl-na{background:#fff4c2}
+/* legenda kategori hotspot provinsi dan garis kab belum padam (peta Karhutla) */
+.dl-leg-kat::before{background:var(--w)}
+.dl-leg-garis::before{background:none;border:2px solid #b3261e;box-sizing:border-box}
+/* Arti prakiraan dirapikan (pemilik 12 Nov 2026 "bagusin"): judul tanpa kapital, tiap level satu baris berlatar lembut senada levelnya */
+.dl-arti-judul{text-transform:none;letter-spacing:0;font-size:.8125rem;color:#0b2545}
+.dl-wrap .dl-arti>div{grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:10px;padding:8px 12px;border:0;border-left:4px solid var(--pil);background:color-mix(in srgb,var(--pil) 8%,var(--card))}
+.dl-arti .bn-label{font-size:.75rem;line-height:1.35;color:var(--ink)}
+/* sel prakiraan sebaris: pil status lalu hujan mm di sampingnya, baris lebih pendek (pemilik 12 Nov 2026 "bagusin") */
+.dl-hari{display:inline-flex;align-items:center;gap:6px}
+.dl-hari>.dl-mm{min-width:44px;text-align:left;font-size:.6875rem;color:var(--ink3)}
+.dl-belum-selesai{font-size:.75rem;font-weight:700;color:#a35512}
+/* Arti prakiraan v2 (pemilik 12 Nov 2026 "bagusin"): kartu putih seragam, pil kiri atas, ambang mm besar, keterangan kecil; tanpa garis warna dan latar berwarna */
+.dl-arti-judul{display:flex;align-items:center;gap:6px;font-size:.8125rem;font-weight:800;color:#0b2545}
+.dl-wrap .dl-arti-judul svg{width:15px;height:15px}
+.dl-wrap .dl-arti>div{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"pil mm" "ket ket";align-items:center;column-gap:10px;row-gap:4px;padding:10px 14px;border:1px solid var(--line);border-left:1px solid var(--line);border-radius:12px;background:var(--card)}
+.dl-wrap .dl-arti>div>.dl-st{grid-area:pil;justify-self:start}
+.dl-arti-mm{grid-area:mm;justify-self:end;margin:0;font-size:.75rem;font-weight:700;color:var(--ink3)}
+.dl-arti-mm b{font:800 1.125rem/1 var(--display);color:#0b2545;font-variant-numeric:tabular-nums}
+.dl-wrap .dl-arti>div>.bn-label{grid-area:ket;font-size:.75rem;line-height:1.35;color:var(--ink2)}
+.dl-saring-kurang svg{color:#b08600}
+/* saring tingkat peringatan dini (pemilik 12 Nov 2026) */
+.dl-saring-tingkat{margin:0 0 10px}
+.dl-saring-tingkat .dl-saring-btn{gap:6px;padding:3px 10px 3px 4px}
+.dl-saring-tingkat .dl-saring-btn>b{font-size:.75rem;font-weight:800}
+.dl-saring-tingkat .dl-saring-btn[aria-pressed="true"]{background:color-mix(in srgb,#0b2545 10%,#fff);color:#0b2545;box-shadow:inset 0 0 0 2px #0b2545}
+.dl-saring-tingkat .dl-saring-btn[aria-pressed="true"] .dl-st svg{color:inherit}
+.dl-wrap .dl-tabel .dl-sar-x,.dl-wrap .dl-tabel tbody.dl-sar-x{display:none!important}
+/* kolom hujan di tabel peringatan dini: angka redup, rata kiri dekat pil statusnya */
+.dl-tabel-hari tbody td:nth-child(n+4):nth-child(odd){color:var(--ink2);font-weight:600}
+/* saring tabel wilayah: pil di atas tabel, jumlah kab/kota di tiap pil */
+.dl-saring-tabel{margin:0 0 10px;flex-wrap:wrap}
+.dl-saring-tabel .dl-saring-btn>b{margin-left:2px;font-size:.75rem;font-weight:800}
+/* legenda Data belum lengkap pakai ikon papan catatan, bukan kotak warna (pemilik 12 Nov 2026) */
+.dl-leg-kurang::before{display:none}
+.dl-wrap .dl-leg-kurang svg{width:13px;height:13px;color:#b08600}
