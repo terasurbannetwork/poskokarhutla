@@ -3,6 +3,7 @@
    jadi aturan tanggal, pengurai, dedupe, dan penilaian tidak diduplikasi di sini. Keluaran: berkas SQL idempoten untuk D1:
    - op_temuan INSERT OR IGNORE (UNIQUE registrasi+tanggal+lat+lon), op_armada_status ON CONFLICT DO NOTHING (laporan bot di D1 menang),
    - op_gerak hanya bila belum ada (kunci tanggal+registrasi+jenis+jam_utc, sama dengan catatOperasi), op_gerak_hasil dipasang ke gerak itu bila belum ada.
+   Isian manual menang (0126, K15): gerak tidak disisipkan bila ada penanda op_isian_kejadian aktif atau barisnya sudah dihapus manual; status dan hasil sudah DO NOTHING. SQL ini butuh migrasi 0126 di D1 tujuan.
    wa_id kosong (pesan tidak masuk wa_masuk; lampiran ekspor tidak diunggah). Nama kru dan nomor HP pengirim tidak dibaca.
 
    Pakai:  node scripts/operasi/isi_ulang_wa.mjs <keluar.sql> <ekspor1.txt> [ekspor2.txt ...]
@@ -16,6 +17,7 @@ import {fileURLToPath} from "node:url";
 const AKAR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 await import(path.join(AKAR, "src/worker.js"));   // worker dulu: modul saling impor
 const {catatOperasi} = await import(path.join(AKAR, "src/operasi_udara.js"));
+const {gerakHidup, kejadianGerak} = await import(path.join(AKAR, "src/operasi_hasil.js"));
 const {pecah, migrasi} = await import(path.join(AKAR, "tests/warga/_bantu.mjs"));
 
 /* D1 tipis di atas node:sqlite: prepare().bind().all/first/run, batch */
@@ -46,7 +48,7 @@ export function bacaEkspor(isi) {
 }
 
 const q = v => v == null ? "NULL" : typeof v === "number" ? String(v) : `'${String(v).replace(/'/g, "''")}'`;
-const kunciGerak = g => `tanggal = ${q(g.tanggal)} AND registrasi = ${q(g.registrasi)} AND jenis = ${q(g.jenis)} AND jam_utc IS ${q(g.jam_utc)}`;
+const kunciGerak = (g, a = "") => ["tanggal = " + q(g.tanggal), "registrasi = " + q(g.registrasi), "jenis = " + q(g.jenis), "jam_utc IS " + q(g.jam_utc)].map(x => a + x).join(" AND ");
 
 export async function isiUlang(pesan) {
   const db = new DatabaseSync(":memory:");
@@ -65,10 +67,10 @@ export async function isiUlang(pesan) {
   const hasil = new Map(baris("SELECT * FROM op_gerak_hasil").map(h => [h.gerak_id, h]));
   for (const g of baris("SELECT * FROM op_gerak WHERE dummy = 0 ORDER BY id")) {
     const kol = ["tanggal", "registrasi", "jenis", "jam_utc", "misi", "rute", "lokasi", "lat", "lon", "rujukan", "alasan"];
-    sql.push(`INSERT INTO op_gerak (${kol.join(", ")}) SELECT ${kol.map(k => q(g[k])).join(", ")} WHERE NOT EXISTS (SELECT 1 FROM op_gerak WHERE ${kunciGerak(g)});`);
+    sql.push(`INSERT INTO op_gerak (${kol.join(", ")}) SELECT ${kol.map(k => q(g[k])).join(", ")} WHERE NOT EXISTS (SELECT 1 FROM op_gerak x WHERE ${kunciGerak(g, "x.")} AND ${gerakHidup("x")}) AND NOT ${kejadianGerak(q(g.tanggal), q(g.registrasi), q(g.jenis))};`);   // penjagaan isian manual 0126 (DESAIN-TEKNIS 7.4)
     const h = hasil.get(g.id); if (!h) continue;
     const hk = Object.keys(h).filter(k => k !== "gerak_id" && h[k] != null);
-    if (hk.length) sql.push(`INSERT INTO op_gerak_hasil (gerak_id, ${hk.join(", ")}) SELECT id, ${hk.map(k => q(h[k])).join(", ")} FROM op_gerak WHERE ${kunciGerak(g)} ORDER BY id LIMIT 1 ON CONFLICT (gerak_id) DO NOTHING;`);
+    if (hk.length) sql.push(`INSERT INTO op_gerak_hasil (gerak_id, ${hk.join(", ")}) SELECT id, ${hk.map(k => q(h[k])).join(", ")} FROM op_gerak WHERE ${kunciGerak(g)} AND ${gerakHidup("op_gerak")} ORDER BY id LIMIT 1 ON CONFLICT (gerak_id) DO NOTHING;`);
   }
   for (const t of ["op_temuan", "op_armada_status", "op_gerak", "op_gerak_hasil"]) hitung[t] = db.prepare(`SELECT count(*) n FROM ${t}`).get().n;
   return {sql: sql.join("\n") + "\n", hitung, db};

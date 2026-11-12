@@ -16,7 +16,7 @@ A panel that is 13–15% empty still reads as "white space banyak banget" to the
 
 Slide titles fill the first line to the edge of the title box. Never balance the two lines, which leaves the right side empty ("kanan tuh kosong"). The second line must hold at least two words. The engine does this with seimbang_runs(penuh=True).
 
-A deck presented by an official names the presenter on the cover, as the daily report does: DISAMPAIKAN OLEH, then full name and degrees (Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si., M.Si. (Han)), then the title Kepala Badan Nasional Penanggulangan Bencana. Use spec field `penyaji`. Never write only "Disampaikan oleh Kepala BNPB".
+A deck presented by an official names the presenter on the cover, as the daily report does: DISAMPAIKAN OLEH, then full name and degrees (Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)), then the title Kepala Badan Nasional Penanggulangan Bencana. Use spec field `penyaji`. Never write only "Disampaikan oleh Kepala BNPB".
 
 Confidence pills (Resmi, Terverifikasi, Estimasi model) are no longer shown on slides, from 26 Oct 2026 onward ("Ga perlu ada ini ya Resmi dan Terverifikasi ke depan"). The engine default is `slide.pil_keyakinan: false`; labels stay in the spec and the manifest, and QA D-14 follows the switch.
 

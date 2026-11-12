@@ -65,7 +65,7 @@
 - [Jangan hapus LibreOffice](jangan-hapus-libreoffice.md) — LibreOffice.app + its profile never removable in disk cleanups; deck engine and .doc conversion need it
 
 - [Kunci BPS dan OpenAlex](kunci-bps.md) — BPS + OpenAlex API keys in macOS Keychain (bps-webapi, openalex-api), never in files; not GitHub secrets yet
-- [Gelar Kepala BNPB](kepala-bnpb-gelar.md) — write "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si., M.Si. (Han)", full title, never bare
+- [Gelar Kepala BNPB](kepala-bnpb-gelar.md) — write "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)", full title, never bare
 - [Sapaan pemilik](sapaan-pemilik.md) — never call owner "Bapak"/"Pak" in chat; casual gw/lu
 - [PPT putaran 5](ppt-putaran-5.md) — 1-3 Nov engine program done/remaining; templat s5-s6 + redo blocked on disk/iCloud; owner decisions pending
 - [Galeri templat BNPB](galeri-templat-bnpb.md) — 322 numbered T-sN-NN slide templates, gate decisions 2-3 Nov (15% layout, D-50/D-51), 5 decks (s1/s2) left failing on purpose

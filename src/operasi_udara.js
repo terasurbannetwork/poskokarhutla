@@ -7,12 +7,12 @@ import {tglSah, wib, superOK} from "./posko.js";
 import {stafPeran, stafNyata, pemirsaLihat} from "./staf.js";
 import {urai, tanggalOperasi} from "./operasi_wa.js";
 import {hitungNilai, menitRespons, median} from "./operasi_nilai.js";
-import {gunaAksi, lengkapi} from "./operasi_hasil.js";
+import {gunaAksi, lengkapi, gerakHidup, kejadianGerak, dihapusManual} from "./operasi_hasil.js";
 
 export const PERAN_BACA = ["udara", "pusdalops", "koordalops", "pimpinan", "tmc"];
-const tanpaTabel = e => /no such table: op_/i.test(String(e?.message || e));
+export const tanpaTabel = e => /no such table: op_/i.test(String(e?.message || e));
 const baca = s => { try { return JSON.parse(s); } catch (e) { return null; } };
-const bungkus = fn => async (env, req, ...sisa) => {
+export const bungkus = fn => async (env, req, ...sisa) => {
   try { return await fn(env, req, ...sisa); }
   catch (e) { if (tanpaTabel(e)) return gagal(503, "fitur Operasi Lapangan belum diaktifkan (migrasi 0103_operasi_lapangan belum diterapkan)"); throw e; }
 };
@@ -23,15 +23,19 @@ async function peta(env, req, url, kini) {
   if (!tglSah(t)) return gagal(400, "tanggal harus YYYY-MM-DD yang sah");
   const dum = stafNyata(req) ? "AND dummy = 0" : "";
   const Q = (sql, ...b) => env.DB.prepare(sql).bind(...b).all().then(r => r.results);
-  const [base, armada, gerak, temuan, renlap, target] = await Promise.all([
+  const [base, armada, gerak, temuan, renlap, target, hapus] = await Promise.all([
     Q("SELECT * FROM op_base ORDER BY id"),
     Q(`SELECT a.*, s.status, s.alasan, s.sumber FROM op_armada a LEFT JOIN op_armada_status s ON s.registrasi = a.registrasi AND s.tanggal = ? WHERE 1 = 1 ${dum.replace("dummy", "a.dummy")} ORDER BY a.base_id, a.registrasi`, t),
     Q(`SELECT * FROM op_gerak WHERE tanggal = ? ${dum} ORDER BY jam_utc, id LIMIT 500`, t),
     Q(`SELECT * FROM op_temuan WHERE tanggal = ? ${dum} ORDER BY registrasi, id LIMIT 500`, t),
     Q(`SELECT * FROM op_renlap WHERE tanggal = ? ${dum} ORDER BY versi, base_id LIMIT 100`, t),
     Q(`SELECT g.* FROM op_target g JOIN op_renlap r ON r.id = g.renlap_id WHERE r.tanggal = ? ${dum.replace("dummy", "r.dummy")} ORDER BY g.renlap_id, g.urut LIMIT 1000`, t),
+    dihapusManual(env),
   ]);
-  return json({tanggal: t, base, armada, gerak, temuan,
+  /* butir yang dihapus manual (0126) tidak tampil; status gelar baru disembunyikan bila masih berasal dari isian manual (bot yang menulis sesudah hapus mengembalikannya) */
+  const hilang = (tabel, id) => hapus.has(`${tabel}|${id}`);
+  armada.forEach(a => { if (a.sumber === "manual" && hilang("op_armada_status", `${t}|${a.registrasi}`)) { a.status = null; a.alasan = null; a.sumber = null; } });
+  return json({tanggal: t, base, armada, gerak: gerak.filter(g => !hilang("op_gerak", g.id)), temuan: temuan.filter(x => !hilang("op_temuan", x.id)),
     renlap: renlap.map(r => ({...r, isi: baca(r.isi_json), isi_json: undefined, target: target.filter(g => g.renlap_id === r.id).map(g => ({...g, alasan: baca(g.alasan_json), alasan_json: undefined}))}))});
 }
 
@@ -70,20 +74,35 @@ export async function catatOperasi(env, {id, teks, tanggal, diterima}) {
   if (!urai(teks, {tanggal}).dikenali) return null;
   const isi = tanggalOperasi(teks), batas = wib(diterima + 864e5), tgl = isi && isi <= batas ? isi : tanggal;
   let armada; try { armada = (await env.DB.prepare("SELECT registrasi FROM op_armada").all()).results.map(r => r.registrasi); } catch (e) { if (tanpaTabel(e)) return null; throw e; }
-  const h = urai(teks, {tanggal: tgl, armada}), P = (sql, ...b) => env.DB.prepare(sql).bind(...b), st = [];
-  /* jam temuan = jam pesan diterima bila tanggal operasi sama dengan hari terima (pesan patroli jarang menulis jam per titik); selain itu NULL. Bahan M7 waktu respons. */
-  const jamTemuan = tgl === wib(diterima) ? diterima : null;
-  for (const t of h.temuan) st.push(P("INSERT OR IGNORE INTO op_temuan (tanggal, jam_utc, registrasi, lat, lon, status, luas_klaim_ha, lokasi, wa_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-    tgl, jamTemuan, t.registrasi, t.lat, t.lon, t.status, t.luas_klaim_ha ?? null, t.lokasi ?? null, id));
-  for (const g of h.gerak) { const drop = g.tindakan === "drop", jam = g.jam_utc ? Date.parse(g.jam_utc) : drop ? diterima : null;   // aksi drop: jam = jam pesan diterima
-    st.push(P("INSERT INTO op_gerak (tanggal, registrasi, jenis, jam_utc, misi, lokasi, lat, lon, rujukan, alasan, wa_id, rute) SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12 WHERE NOT EXISTS (SELECT 1 FROM op_gerak WHERE tanggal = ?1 AND registrasi = ?2 AND jenis = ?3 AND jam_utc IS ?4)",
-      tgl, g.registrasi, g.jenis, jam, g.misi ?? null, g.target?.lokasi ?? null, g.target?.lat ?? null, g.target?.lon ?? null, g.rujukan ?? null, drop ? "water_drop" : g.alasan ?? null, id, g.rute ?? null));
-    if (["drops", "liter", "lapor", "luas_terbakar_ha", "luas_padam_ha", "menit_terbang"].some(k => g[k] != null))
-      st.push(P("INSERT INTO op_gerak_hasil (gerak_id, drops, liter, lapor, luas_terbakar_ha, luas_padam_ha, menit_terbang) SELECT id, ?5, ?6, ?7, ?8, ?9, ?10 FROM op_gerak WHERE tanggal = ?1 AND registrasi = ?2 AND jenis = ?3 AND jam_utc IS ?4 ORDER BY id LIMIT 1 ON CONFLICT (gerak_id) DO UPDATE SET drops = ?5, liter = ?6, lapor = ?7, luas_terbakar_ha = ?8, luas_padam_ha = ?9, menit_terbang = ?10",
-        tgl, g.registrasi, g.jenis, jam, g.drops ?? null, g.liter ?? null, g.lapor ?? null, g.luas_terbakar_ha ?? null, g.luas_padam_ha ?? null, g.menit_terbang ?? null)); }
-  for (const s of h.status) st.push(P("INSERT INTO op_armada_status (tanggal, registrasi, status, alasan, sumber, diubah) VALUES (?1, ?2, ?3, ?4, 'wa', ?5) ON CONFLICT (tanggal, registrasi) DO UPDATE SET status = ?3, alasan = ?4, sumber = 'wa', diubah = ?5",
-    tgl, s.registrasi, s.status, s.alasan ?? null, diterima));
-  if (st.length) await env.DB.batch(st);
+  const h = urai(teks, {tanggal: tgl, armada}), P = (sql, ...b) => env.DB.prepare(sql).bind(...b);
+  /* jaga = penjagaan isian manual 0126 (K15, DESAIN-TEKNIS 7.4) DI DALAM pernyataan tulis, bukan baca-lalu-tulis; bot tidak mencatat penanda untuk tulisannya sendiri. */
+  const bangun = jaga => {
+    const st = [], tolak = (tabel, kunci) => `EXISTS (SELECT 1 FROM op_isian WHERE tabel = '${tabel}' AND kunci = ${kunci} AND terhapus = 0)`;
+    /* jam temuan = jam pesan diterima bila tanggal operasi sama dengan hari terima (pesan patroli jarang menulis jam per titik); selain itu NULL. Bahan M7 waktu respons. */
+    const jamTemuan = tgl === wib(diterima) ? diterima : null;
+    for (const t of h.temuan) st.push(P("INSERT OR IGNORE INTO op_temuan (tanggal, jam_utc, registrasi, lat, lon, status, luas_klaim_ha, lokasi, wa_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      tgl, jamTemuan, t.registrasi, t.lat, t.lon, t.status, t.luas_klaim_ha ?? null, t.lokasi ?? null, id));
+    for (const g of h.gerak) { const drop = g.tindakan === "drop", jam = g.jam_utc ? Date.parse(g.jam_utc) : drop ? diterima : null;   // aksi drop: jam = jam pesan diterima
+      const kunciG = `?1 || '|' || ?2 || '|' || ?3`;
+      if (jaga) st.push(P(`INSERT INTO op_isian_log (waktu, oleh, tabel, kunci, aksi) SELECT ?4, 'bot', 'op_gerak', ${kunciG}, 'bot_dilewati' WHERE ${kejadianGerak("?1", "?2", "?3")}`, tgl, g.registrasi, g.jenis, diterima));
+      st.push(P(`INSERT INTO op_gerak (tanggal, registrasi, jenis, jam_utc, misi, lokasi, lat, lon, rujukan, alasan, wa_id, rute) SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12 WHERE NOT EXISTS (SELECT 1 FROM op_gerak x WHERE x.tanggal = ?1 AND x.registrasi = ?2 AND x.jenis = ?3 AND x.jam_utc IS ?4${jaga ? ` AND ${gerakHidup("x")}` : ""})${jaga ? ` AND NOT ${kejadianGerak("?1", "?2", "?3")}` : ""}`,
+        tgl, g.registrasi, g.jenis, jam, g.misi ?? null, g.target?.lokasi ?? null, g.target?.lat ?? null, g.target?.lon ?? null, g.rujukan ?? null, drop ? "water_drop" : g.alasan ?? null, id, g.rute ?? null));
+      if (["drops", "liter", "lapor", "luas_terbakar_ha", "luas_padam_ha", "menit_terbang"].some(k => g[k] != null)) {
+        const sel = `FROM op_gerak WHERE tanggal = ?1 AND registrasi = ?2 AND jenis = ?3 AND jam_utc IS ?4${jaga ? ` AND ${gerakHidup("op_gerak")}` : ""} ORDER BY id LIMIT 1`;
+        const args = [tgl, g.registrasi, g.jenis, jam, g.drops ?? null, g.liter ?? null, g.lapor ?? null, g.luas_terbakar_ha ?? null, g.luas_padam_ha ?? null, g.menit_terbang ?? null];
+        if (jaga) st.push(P(`INSERT INTO op_isian_log (waktu, oleh, tabel, kunci, aksi) SELECT ?5, 'bot', 'op_gerak_hasil', CAST(id AS TEXT), 'bot_dilewati' ${sel.replace(/ORDER BY id LIMIT 1$/, "")} AND ${tolak("op_gerak_hasil", "CAST(op_gerak.id AS TEXT)")} ORDER BY id LIMIT 1`, tgl, g.registrasi, g.jenis, jam, diterima));
+        st.push(P(`INSERT INTO op_gerak_hasil (gerak_id, drops, liter, lapor, luas_terbakar_ha, luas_padam_ha, menit_terbang) SELECT id, ?5, ?6, ?7, ?8, ?9, ?10 ${sel} ON CONFLICT (gerak_id) DO UPDATE SET drops = ?5, liter = ?6, lapor = ?7, luas_terbakar_ha = ?8, luas_padam_ha = ?9, menit_terbang = ?10${jaga ? ` WHERE NOT ${tolak("op_gerak_hasil", "CAST(op_gerak_hasil.gerak_id AS TEXT)")}` : ""}`, ...args));
+      } }
+    for (const s of h.status) {
+      if (jaga) st.push(P(`INSERT INTO op_isian_log (waktu, oleh, tabel, kunci, aksi) SELECT ?3, 'bot', 'op_armada_status', ?1 || '|' || ?2, 'bot_dilewati' WHERE ${tolak("op_armada_status", "?1 || '|' || ?2")}`, tgl, s.registrasi, diterima));
+      st.push(P(`INSERT INTO op_armada_status (tanggal, registrasi, status, alasan, sumber, diubah) VALUES (?1, ?2, ?3, ?4, 'wa', ?5) ON CONFLICT (tanggal, registrasi) DO UPDATE SET status = ?3, alasan = ?4, sumber = 'wa', diubah = ?5${jaga ? ` WHERE NOT ${tolak("op_armada_status", "excluded.tanggal || '|' || excluded.registrasi")}` : ""}`,
+        tgl, s.registrasi, s.status, s.alasan ?? null, diterima));
+    }
+    return st;
+  };
+  /* 0126 belum diterapkan di produksi: jalur lama tanpa penjagaan */
+  try { const st = bangun(true); if (st.length) await env.DB.batch(st); }
+  catch (e) { if (!/no such table: op_isian/i.test(String(e?.message || e))) throw e; const st = bangun(false); if (st.length) await env.DB.batch(st); }
   try { await lengkapi(env, diterima); } catch (e) { if (!tanpaTabel(e)) throw e; }   // 0106 belum ada: pesan tetap tercatat tanpa pemasangan foto/koordinat
   return {tanggal: tgl, dikenali: h.dikenali, temuan: h.temuan.length, gerak: h.gerak.length, status: h.status.length, tertahan: h.tertahan.map(({alasan, lokasi}) => ({alasan, ...(lokasi ? {lokasi} : {})}))};
 }
@@ -107,14 +126,14 @@ async function temuanMesin(env, req, url) {
   if (!await bacaMesin(env, req)) return gagal(403, "perlu kunci mesin");
   const r = rentang(url, 7); if (r instanceof Response) return r;
   const Q = (sql) => env.DB.prepare(sql).bind(r.dari, r.sampai).all().then(x => x.results);
-  const [temuan, gerak] = await Promise.all([
+  const [temuan, gerak, hapus] = await Promise.all([
     Q(`SELECT ${KOLOM_TEMUAN} FROM op_temuan WHERE dummy = 0 AND tanggal BETWEEN ? AND ? ORDER BY tanggal, id LIMIT 2000`),
-    Q(`SELECT ${KOLOM_GERAK} FROM op_gerak WHERE dummy = 0 AND tanggal BETWEEN ? AND ? ORDER BY tanggal, jam_utc, id LIMIT 2000`)]);
-  return json({...r, temuan, gerak});
+    Q(`SELECT ${KOLOM_GERAK} FROM op_gerak WHERE dummy = 0 AND tanggal BETWEEN ? AND ? ORDER BY tanggal, jam_utc, id LIMIT 2000`), dihapusManual(env)]);
+  return json({...r, temuan: temuan.filter(x => !hapus.has(`op_temuan|${x.id}`)), gerak: gerak.filter(x => !hapus.has(`op_gerak|${x.id}`))});
 }
 
 const MAKS_TARGET = 20, MAKS_RENLAP = 200000, MAKS_BASE = 20;
-const dalamBbox = (lat, lon) => Number.isFinite(lat) && Number.isFinite(lon) && lat >= -11.5 && lat <= 6.5 && lon >= 94.5 && lon <= 141.5;
+export const dalamBbox = (lat, lon) => Number.isFinite(lat) && Number.isFinite(lon) && lat >= -11.5 && lat <= 6.5 && lon >= 94.5 && lon <= 141.5;
 async function renlapMesin(env, req, url, kini) {
   if (!await bacaMesin(env, req)) return gagal(403, "perlu kunci mesin");
   const b = await bacaBody(req, MAKS_RENLAP); if (b.galat) return gagal(b.status || 400, b.galat);
@@ -161,14 +180,15 @@ async function nilai(env, req, url) {
   const dum = stafNyata(req), A = [r.dari, r.sampai];
   const Q = (sql, ...b) => env.DB.prepare(sql).bind(...b).all().then(x => x.results);
   const nd = dum ? "AND dummy = 0" : "";
-  const [base, armada, status, gerak, temuan, renlap, target] = await Promise.all([
+  const [base, armada, status0, gerak0, temuan0, renlap, target, hapus] = await Promise.all([
     Q("SELECT id, nama, prov, lat, lon FROM op_base ORDER BY id"),
     Q(`SELECT registrasi, tipe, peran, base_id FROM op_armada WHERE 1 = 1 ${nd}`),
-    Q("SELECT tanggal, registrasi, status FROM op_armada_status WHERE tanggal BETWEEN ? AND ?", ...A),
-    Q(`SELECT tanggal, registrasi, jenis, jam_utc, lat, lon, rujukan FROM op_gerak WHERE tanggal BETWEEN ? AND ? ${nd} LIMIT 5000`, ...A),
-    Q(`SELECT tanggal, jam_utc, registrasi, lat, lon, status FROM op_temuan WHERE tanggal BETWEEN ? AND ? ${nd} LIMIT 5000`, ...A),
+    Q("SELECT tanggal, registrasi, status, sumber FROM op_armada_status WHERE tanggal BETWEEN ? AND ?", ...A),
+    Q(`SELECT id, tanggal, registrasi, jenis, jam_utc, lat, lon, rujukan FROM op_gerak WHERE tanggal BETWEEN ? AND ? ${nd} LIMIT 5000`, ...A),
+    Q(`SELECT id, tanggal, jam_utc, registrasi, lat, lon, status FROM op_temuan WHERE tanggal BETWEEN ? AND ? ${nd} LIMIT 5000`, ...A),
     Q(`SELECT id, tanggal, versi, base_id FROM op_renlap WHERE tanggal BETWEEN ? AND ? ${nd}`, ...A),
-    Q(`SELECT g.renlap_id, g.lat, g.lon, g.jenis FROM op_target g JOIN op_renlap r ON r.id = g.renlap_id WHERE r.tanggal BETWEEN ? AND ? ${dum ? "AND r.dummy = 0" : ""}`, ...A)]);
+    Q(`SELECT g.renlap_id, g.lat, g.lon, g.jenis FROM op_target g JOIN op_renlap r ON r.id = g.renlap_id WHERE r.tanggal BETWEEN ? AND ? ${dum ? "AND r.dummy = 0" : ""}`, ...A), dihapusManual(env)]);
+  const status = status0.filter(x => !(x.sumber === "manual" && hapus.has(`op_armada_status|${x.tanggal}|${x.registrasi}`))), gerak = gerak0.filter(x => !hapus.has(`op_gerak|${x.id}`)), temuan = temuan0.filter(x => !hapus.has(`op_temuan|${x.id}`));
   let titik = null, alasanTitik = null;
   if (temuan.some(t => t.status === "clear")) {
     try {
@@ -202,13 +222,15 @@ async function monitor(env, req, url, kini) {
   const u = new URL(url); for (const k of ["dari", "sampai"]) if (!u.searchParams.has(k)) u.searchParams.set(k, wib(kini));
   const r = rentang(u, 31); if (r instanceof Response) return r;
   const nd = stafNyata(req) ? "AND g.dummy = 0" : "", A = [r.dari, r.sampai], Q = (sql, ...b) => env.DB.prepare(sql).bind(...b).all().then(x => x.results);
-  const [armada, gerak, foto, status, tem] = await Promise.all([
+  const [armada, gerak0, foto, status0, tem0, hapus] = await Promise.all([
     Q(`SELECT registrasi, base_id, peran FROM op_armada ${nd ? "WHERE dummy = 0" : ""}`),
     Q(`SELECT g.id, g.tanggal, g.registrasi, g.jenis, g.jam_utc, g.misi, g.lokasi, g.lat, g.lon, g.rujukan, g.alasan, h.sumber_lokasi, h.hasil, h.titik_dekat, h.drops, h.liter, h.lapor, h.luas_terbakar_ha, h.luas_padam_ha, h.menit_terbang
       FROM op_gerak g LEFT JOIN op_gerak_hasil h ON h.gerak_id = g.id WHERE g.tanggal BETWEEN ?1 AND ?2 ${nd} ORDER BY g.jam_utc, g.id LIMIT 3000`, ...A),
     Q("SELECT id, gerak_id, coalesce(jam_utc, diterima) jam_utc, lat, lon FROM op_foto WHERE gerak_id IN (SELECT id FROM op_gerak WHERE tanggal BETWEEN ?1 AND ?2) ORDER BY 3, id LIMIT 5000", ...A),
-    Q("SELECT tanggal, registrasi, status FROM op_armada_status WHERE tanggal BETWEEN ?1 AND ?2", ...A),
-    Q(`SELECT tanggal, jam_utc, registrasi, lat, lon, status FROM op_temuan g WHERE tanggal BETWEEN ?1 AND ?2 ${nd} LIMIT 5000`, ...A)]);
+    Q("SELECT tanggal, registrasi, status, sumber FROM op_armada_status WHERE tanggal BETWEEN ?1 AND ?2", ...A),
+    Q(`SELECT id, tanggal, jam_utc, registrasi, lat, lon, status FROM op_temuan g WHERE tanggal BETWEEN ?1 AND ?2 ${nd} LIMIT 5000`, ...A), dihapusManual(env)]);
+  const status = status0.filter(x => !(x.sumber === "manual" && hapus.has(`op_armada_status|${x.tanggal}|${x.registrasi}`))), tem = tem0.filter(x => !hapus.has(`op_temuan|${x.id}`));
+  const gerak = gerak0.filter(x => !hapus.has(`op_gerak|${x.id}`)).map(x => hapus.has(`op_gerak_hasil|${x.id}`) ? {...x, drops: null, liter: null, lapor: null, luas_terbakar_ha: null, luas_padam_ha: null, menit_terbang: null} : x);
   const am = new Map(armada.map(a => [a.registrasi, a]));
   const aksi = gerak.filter(g => g.jenis === "berangkat").flatMap(g => {
     const guna = gunaAksi(g.misi, am.get(g.registrasi)?.peran); if (!guna) return [];

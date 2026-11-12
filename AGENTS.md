@@ -254,6 +254,17 @@ Sebelum menyentuh pemeriksaan kabar luar (berita, data alam) untuk kejadian Pant
 
 Aturan berhentinya sama dengan §2.1. Label tidak pernah menutup kejadian; penutupan hanya dari laporan resmi. Tanpa rute Worker dan tabel D1 baru.
 
+### 2.12 Laporan Bulanan Kepala BNPB (`/laporan-bnpb`, jenis Laporan Bulanan): baca dulu, baru bangun
+
+Sebelum menyentuh laporan bencana bulanan kepada Presiden (perakit angka bulanan, versi beku, cetak A4), baca dokumen di
+`data/kajian-bnpb/laporan-bulanan/` dengan urutan otoritas ini (kode di `scripts/bulanan/**` milik `pipa-data`; `public/laporan_bulanan*`, `public/laporan_bnpb*`, `tests/bulanan/**` milik `layar-peta`; `src/laporan_bulanan.js` dan migrasinya milik `warga-api`):
+
+1. `KEPUTUSAN-BULANAN.md`: keputusan pemilik, keputusan rancangan D1–D10, pertanyaan terbuka Q1–Q21 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LB-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Angka dihitung mesin, kalimat kebijakan ditulis staf; versi beku tidak pernah ditimpa; tidak ada versi publik; tidak ada buku kejadian kedua.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih

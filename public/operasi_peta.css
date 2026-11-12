@@ -2267,3 +2267,19 @@
 #opsLaporan .ops-rp-bisi>em{justify-content:flex-end}
 #opsLaporan .ops-rp-bgrid>article>footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding:7px 10px;border:0;border-radius:10px;background:color-mix(in srgb,#0b2545 4%,var(--card))}
 #opsLaporan .ops-rp-bgrid>article>footer>span.belum{padding:0}
+/* saring misi + pemilih base (pemilik 12 Nov 2026): bilah saring boleh dua baris, rata kanan */
+#opsLaporan .ops-saring{flex-wrap:wrap;justify-content:flex-end;row-gap:6px}
+#opsLaporan .ops-akt[hidden]{display:none}
+#opsLaporan .ops-pilbase{border:0;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line);background:var(--card);padding:5px 12px;cursor:pointer;font:inherit}
+#opsLaporan .ops-pilbase .ops-lbl{font-size:.75rem;font-weight:700;color:#1f3f73}
+#opsLaporan .ops-pilbase[aria-expanded="true"]{background:#0f2236}
+#opsLaporan .ops-pilbase[aria-expanded="true"] .ops-lbl,#opsLaporan .ops-pilbase[aria-expanded="true"] .ops-lbl svg{color:#fff}
+#opsLaporan .ops-pilbase-isi{margin:0 0 12px;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--brand2) 5%,var(--card));box-shadow:inset 0 0 0 1px var(--line);display:flex;flex-wrap:wrap;gap:10px 22px}
+#opsLaporan .ops-pilbase-isi[hidden]{display:none}
+#opsLaporan .ops-pilbase-isi>p{flex-basis:100%;margin:0;display:flex;align-items:center;gap:8px;font-size:.8125rem}
+#opsLaporan .ops-pilbase-isi>p b{margin-right:auto;color:var(--ink)}
+#opsLaporan .ops-pilbase-isi>p button{border:0;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line);background:var(--card);padding:3px 10px;font:inherit;font-size:.71875rem;font-weight:700;color:#1f3f73;cursor:pointer}
+#opsLaporan .ops-pilbase-isi fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;min-width:180px}
+#opsLaporan .ops-pilbase-isi legend{padding:0 0 4px;font-size:.71875rem;font-weight:700;color:var(--ink2)}
+#opsLaporan .ops-pilbase-isi label{display:flex;align-items:center;gap:6px;font-size:.8125rem;color:var(--ink);cursor:pointer}
+#opsLaporan .ops-pilbase-isi input{accent-color:#0f2236;width:15px;height:15px}

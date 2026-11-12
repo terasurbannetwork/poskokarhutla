@@ -207,7 +207,9 @@
       const kt = e.target.closest(".ops-kat [data-kat]"); if (kt) { katPilih[st.mode] = kt.dataset.kat; try { localStorage.setItem("ops_kat_" + st.mode, kt.dataset.kat); } catch (x) {}
         kt.parentElement.querySelectorAll("[data-kat]").forEach(b => b.setAttribute("aria-pressed", String(b === kt))); terapKat($("#opsIsi")); return requestAnimationFrame(pasangPeta); }
       const ud = e.target.closest("[data-unduh]"); if (ud) { e.preventDefault(); if (st._d) for (const f of ud.dataset.unduh.split(",")) unduhRute(st._d, ud.dataset.base, f); return; }   // tombol di dalam <summary>: jangan ikut melipat
-      const fp = e.target.closest("[data-fpulau], [data-ftanda]"); if (fp) return saringBase(fp);
+      const fb = e.target.closest("[data-fbase-buka]"); if (fb) { const kartu = fb.closest(".ex"), pn = kartu?.querySelector(".ops-pilbase-isi"); if (!pn) return; const buka = pn.hidden;
+        pn.hidden = !buka; fb.setAttribute("aria-expanded", String(buka)); if (buka && kartu.tagName === "DETAILS") kartu.open = true; return; }
+      const fp = e.target.closest("[data-fpulau], [data-ftanda], [data-fmisi], [data-fbase-semua]"); if (fp) return saringBase(fp);
       const fo = e.target.closest("[data-fop]"); if (fo) return saringOp(fo);
       const gr = e.target.closest("tr.ops-grup"); if (gr) return lipatGrup(gr);
       const bb = e.target.closest("tr.ops-bb"); if (bb) return bukaBase(bb);
@@ -223,6 +225,7 @@
     box.addEventListener("change", e => {
       if (e.target.matches("[data-rentang]")) { if (!e.target.value) return; st[e.target.dataset.rentang === "dari" ? "rDari" : "rSampai"] = e.target.value; st.tanggal = rentang()[1]; return sesudahFrame(isi); }
       if (e.target.matches(".ops-tgl input")) return pilihTanggal(e.target.value);
+      if (e.target.matches("[data-fbase]")) return saringBase(e.target);
       if (e.target.matches("[data-hbase]")) { st.hbs = !!e.target.value; if (e.target.value) st.reg = e.target.value; return sesudahFrame(() => { const k = $("#opsHistori"); if (k) k.outerHTML = kartuHistori(st._d); }); }
       if (e.target.matches("[data-reg]")) { st.reg = e.target.value; return sesudahFrame(() => { const k = $("#opsHistori"); if (k) k.outerHTML = kartuHistori(st._d); }); }
       if (e.target.matches("[data-galeri]")) { st.galeri = e.target.value; return sesudahFrame(() => { const k = $("#opsGaleri"); if (k) k.outerHTML = kartuGaleri(st._d); }); }
@@ -281,13 +284,20 @@
   const bukaBase = tr => { const r = tr.nextElementSibling, buka = tr.getAttribute("aria-expanded") !== "true"; tr.setAttribute("aria-expanded", String(buka)); if (r?.classList.contains("ops-rinci")) r.hidden = !buka; };
   /* saring base (pulau + saklar kondisi, semua harus cocok): hanya atribut hidden, tanpa render ulang (INP).
      Grup tanpa baris lolos ikut disembunyikan; rincian armada tetap ikut status buka barisnya. */
+  /* misi (pemilik 12 Nov 2026 "filter Modifikasi cuaca, water bombing, patroli") juga menyembunyikan kartu armada lain di rincian;
+     pemilih base (pemilik 12 Nov 2026 "pilih base mana aja yang mau ditampilkan"): centang kosong semua = tidak ada base tampil */
   const saringBase = btn => { const kartu = btn.closest(".ex");
     if (btn.dataset.fpulau != null) kartu.querySelectorAll("[data-fpulau]").forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
-    else btn.setAttribute("aria-pressed", String(btn.getAttribute("aria-pressed") !== "true"));
+    else if (btn.dataset.fmisi != null) kartu.querySelectorAll("[data-fmisi]").forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
+    else if (btn.dataset.fbaseSemua != null) kartu.querySelectorAll("[data-fbase]").forEach(c => { c.checked = btn.dataset.fbaseSemua === "1"; });
+    else if (btn.dataset.fbase == null) btn.setAttribute("aria-pressed", String(btn.getAttribute("aria-pressed") !== "true"));
     const f = kartu.querySelector('[data-fpulau][aria-pressed="true"]')?.dataset.fpulau || "", t = [...kartu.querySelectorAll('[data-ftanda][aria-pressed="true"]')].map(b => b.dataset.ftanda);
+    const m = kartu.querySelector('[data-fmisi][aria-pressed="true"]')?.dataset.fmisi || "", cb = [...kartu.querySelectorAll("[data-fbase]")], pilih = new Set(cb.filter(c => c.checked).map(c => c.dataset.fbase));
+    const rk = kartu.querySelector("[data-fbase-ringkas]"); if (rk) rk.textContent = pilih.size === cb.length ? "Semua base" : `${fmt(pilih.size)} dari ${fmt(cb.length)} base`;
+    kartu.querySelectorAll(".ops-akt[data-misi]").forEach(a => { a.hidden = !!m && !a.dataset.misi.split(" ").includes(m); });
     kartu.querySelectorAll("tr.ops-grup").forEach(g => { const buka = g.getAttribute("aria-expanded") === "true"; let ada = false;
       for (let r = g.nextElementSibling; r && !r.classList.contains("ops-grup"); r = r.nextElementSibling) {
-        if (r.classList.contains("ops-bb")) { const ok = (!f || g.dataset.grup === f) && t.every(k => (r.dataset.tanda || "").split(" ").includes(k)); r.dataset.lolos = ok ? "1" : ""; ada ||= ok; r.hidden = !ok || !buka; }
+        if (r.classList.contains("ops-bb")) { const ok = (!f || g.dataset.grup === f) && t.every(k => (r.dataset.tanda || "").split(" ").includes(k)) && (!m || (r.dataset.misi || "").split(" ").includes(m)) && (!cb.length || pilih.has(r.dataset.base)); r.dataset.lolos = ok ? "1" : ""; ada ||= ok; r.hidden = !ok || !buka; }
         else r.hidden = !r.previousElementSibling.dataset.lolos || !buka || r.previousElementSibling.getAttribute("aria-expanded") !== "true"; }
       g.hidden = !ada; }); };
   const lipatGrup = tr => { const buka = tr.getAttribute("aria-expanded") !== "true"; tr.setAttribute("aria-expanded", String(buka));
@@ -396,11 +406,15 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
       const s = u.stAr(a.status), aksi = D.aksi.filter(x => x.registrasi === a.registrasi), wb = aksi.filter(x => x.guna === "wb").length;
       const tipe = /tidak diketahui/i.test(a.tipe || "") ? "Tipe belum tercatat" : a.tipe || "Tipe belum tercatat", f = u.fotoAr(a);
       const peran = PERAN[a.peran] || a.peran || "", milik = a.pemilik ? PEMILIK[a.pemilik] || a.pemilik : "", op = a.operator && a.operator !== milik ? a.operator : "";
-      const ul = `<li class="ops-ar-baris1"><span class="ops-ar-st ${s[1]}"><i></i>${s[0]}</span><span class="ops-ar-tipe${/belum tercatat/.test(tipe) ? " nihil" : ""}">${lbl("peran", esc(tipe))}</span></li>` + baris("op", esc(op)) + baris("ember", a.bucket_liter ? `Bucket ${fmt(a.bucket_liter)} L` : "") + (aksi.length ? baris("sortie", `${fmt(aksi.length)} sortie${wb ? `, ${fmt(wb)} WB` : ""}`) : "");
+      const ul = `<li class="ops-ar-baris1">${a.status ? `<span class="ops-ar-st ${s[1]}"><i></i>${s[0]}</span>` : ""}<span class="ops-ar-tipe${/belum tercatat/.test(tipe) ? " nihil" : ""}">${lbl("peran", esc(tipe))}</span></li>` + baris("op", esc(op)) + baris("ember", a.bucket_liter ? `Bucket ${fmt(a.bucket_liter)} L` : "") + (aksi.length ? baris("sortie", `${fmt(aksi.length)} sortie${wb ? `, ${fmt(wb)} WB` : ""}`) : "");
       const isi = (ul ? `<ul>${ul}</ul>` : "") + (a.alasan ? `<p class="ops-pa-alasan">${esc(a.alasan)}</p>` : "");
-      return `<article class="ops-akt" data-reg="${esc(a.registrasi)}" tabindex="0" role="button" aria-label="Histori ${esc(a.registrasi)}"><figure>${f ? u.imgAr(a, "", `${a.registrasi} ${tipe}`) : `<span class="ops-ar-kosong">${lbl("peran", "")}</span>`}${peran ? `<span class="ops-ar-tag atas" data-warna="${esc(a.peran)}">${lbl("peran", esc(peran))}</span>` : ""}${milik ? `<span class="ops-ar-tag bawah" data-warna="${esc(a.pemilik)}">${lbl("milik", esc(milik))}</span>` : ""}<figcaption><b>${esc(a.registrasi)}</b></figcaption></figure>
+      /* label lapor di kiri atas foto (pemilik 12 Nov 2026); status rinci (siap, tidak siap) tetap di badan kartu */
+      const lapor = `<span class="ops-ar-st ${a.status ? s[1] : "ops-s-belum"}"${a.status ? ` title="Status: ${esc(s[0])}"` : ""}><i></i>${a.status ? "Sudah lapor" : "Belum lapor"}</span>`;
+      return `<article class="ops-akt" data-reg="${esc(a.registrasi)}" data-misi="${misiAr(a)}" tabindex="0" role="button" aria-label="Histori ${esc(a.registrasi)}"><figure>${f ? u.imgAr(a, "", `${a.registrasi} ${tipe}`) : `<span class="ops-ar-kosong">${lbl("peran", "")}</span>`}${lapor}${peran ? `<span class="ops-ar-tag atas" data-warna="${esc(a.peran)}">${lbl("peran", esc(peran))}</span>` : ""}${milik ? `<span class="ops-ar-tag bawah" data-warna="${esc(a.pemilik)}">${lbl("milik", esc(milik))}</span>` : ""}<figcaption><b>${esc(a.registrasi)}</b></figcaption></figure>
         ${isi ? `<div class="ops-ar-isi">${isi}</div>` : ""}</article>`; }).join("")}</div>`;
   }
+  /* misi armada untuk saring: patroli + WB masuk keduanya (sama dengan hitungGuna) */
+  const misiAr = a => { const k = U().guna(a); return ["omc", "wb", "patroli"].filter(m => k[m]).join(" "); };
   const namaBase = (D, id) => ((D.peta.base || []).find(b => b.id === id)?.nama || id || "–").split(" / ")[0];
 
   /* ---------- papan base (usulan 1): satu kartu per base menjawab "base ini perlu apa" ---------- */
@@ -724,7 +738,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
       const dk = adaKl ? u.apiDekat(b) : null, p3 = dk ? dk.filter(c => c.level >= 3).length : null, lv = dk ? (p3 ? 3 : dk.some(c => c.level === 2) ? 2 : dk.length ? 1 : 0) : null;
       const lapor = a.some(x => x.status);
       const tanda = [p3 && "prioritas", lay.kelas !== "layak" && "layak", renlapBase(D, b.id) && "renlap", !lapor && a.length && "lapor"].filter(Boolean).join(" ");
-      return {p3: p3 || 0, lv, id: b.id, tanda, pulau: PULAU[String(b.prov || "")[0]] || "Lainnya", nAr: a.length, rinci: rinciArmada(D, a), sel: [kiri(`<span class="ops-bb-nama"><svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><b>${esc(b.nama.split(" / ")[0])}</b></span>`), `<td>${b.icao ? `<span class="ops-kode-l">${esc(b.icao)}</span>` : "–"}</td>`, `<td>${esc(u.PROV_PDK[b.prov] || b.prov || "–")}</td>`,
+      return {p3: p3 || 0, lv, id: b.id, tanda, misi: [...new Set(a.flatMap(x => misiAr(x).split(" ").filter(Boolean)))].join(" "), nama: b.nama.split(" / ")[0], pulau: PULAU[String(b.prov || "")[0]] || "Lainnya", nAr: a.length, rinci: rinciArmada(D, a), sel: [kiri(`<span class="ops-bb-nama"><svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><b>${esc(b.nama.split(" / ")[0])}</b></span>`), `<td>${b.icao ? `<span class="ops-kode-l">${esc(b.icao)}</span>` : "–"}</td>`, `<td>${esc(u.PROV_PDK[b.prov] || b.prov || "–")}</td>`,
         sel(nol(gg.wb)), sel(nol(gg.patroli)), sel(nol(gg.omc)), sel(`${lapor ? fmt(a.filter(x => SIAP.includes(x.status)).length) : "–"}/${fmt(a.length)}`), sel(k.sortie ? `<span class="ops-keg"><b>${fmt(k.sortie)}</b><small>${[k.wb && `${fmt(k.wb)} WB`, k.dinilai && `padam ${u.persen(k.persen)}`].filter(Boolean).join(", ") || "patroli"}</small></span>` : "–"),
         sel(p3 == null ? "–" : `<b>${nol(p3)}</b>`), `<td>${lv == null ? "–" : lv ? `<span class="pill l${lv}">${u.LV[lv]}</span>` : `<span class="pill l0">Aman</span>`}</td>`, `<td><span class="ops-layak">${u.pilLayak(lay)}${labelLayak(lay)}</span></td>`, (() => { const r = renlapBase(D, b.id), n = r?.target?.length || 0;
           return `<td>${n ? `<span class="ops-rl" title="${fmt(n)} target renlap"><b>${fmt(n)}</b>${ikonRenlap(b.id, r)}${tombolWp(b.id, r.versi ? ` renlap ${esc(r.versi)}` : " renlap")}</span>` : `<span class="ops-redup-t">Belum ada</span>`}</td>`; })()]}; }).sort((x, y) => y.p3 - x.p3);
@@ -742,12 +756,19 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
     const isi = grup.flatMap(gp => { const bs = baris.filter(x => x.pulau === gp), g = esc(gp);
       return [`<tr class="ops-grup" data-grup="${g}" tabindex="0" aria-expanded="true"><td colspan="${kol}"><span><svg class="ops-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><b>${g}</b><span class="ops-grup-chip">${bs.some(x => x.p3) ? `<em class="merah">${lbl("api", `${fmt(bs.filter(x => x.p3).length)} base dengan cluster prioritas`)}</em>` : ""}<em>${lbl("base", `${fmt(bs.length)} base`)}</em><em>${lbl("peran", `${fmt(bs.reduce((n, x) => n + x.nAr, 0))} armada`)}</em></span></span></td></tr>`,
         ...bs.flatMap(x => { const sel = x.sel.filter((_, i) => !lipat.has(i));
-          return [`<tr class="ops-bb" data-grup="${g}" data-tanda="${x.tanda}" tabindex="0" aria-expanded="false" title="Klik untuk rincian armada">${sel.join("")}</tr>`, `<tr class="ops-rinci" data-grup="${g}" hidden><td colspan="${sel.length}">${x.rinci}</td></tr>`]; })]; });
+          return [`<tr class="ops-bb" data-grup="${g}" data-tanda="${x.tanda}" data-misi="${x.misi}" data-base="${esc(x.id)}" tabindex="0" aria-expanded="false" title="Klik untuk rincian armada">${sel.join("")}</tr>`, `<tr class="ops-rinci" data-grup="${g}" hidden><td colspan="${sel.length}">${x.rinci}</td></tr>`]; })]; });
     const TANDA = [["prioritas", "api", "Ada api prioritas"], ["layak", "ts", "Belum layak terbang"], ["renlap", "unduh", "Ada renlap"], ["lapor", "jam", "Belum lapor"]];
     const saring = `<div class="ops-saring">${grup.length > 1 ? `<div class="seg" role="group" aria-label="Saring pulau">${["", ...grup].map(g => `<button type="button" data-fpulau="${esc(g)}" aria-pressed="${!g}">${g ? esc(g) : "Semua"}</button>`).join("")}</div>` : ""}
       <div class="ops-tanda" role="group" aria-label="Saring kondisi">${TANDA.map(([k, i, t]) => { const n = baris.filter(x => x.tanda.split(" ").includes(k)).length;
-        return `<button type="button" data-ftanda="${k}" aria-pressed="false"${n ? "" : " disabled"}>${lbl(i, `${t} <b>${fmt(n)}</b>`)}</button>`; }).join("")}</div></div>`;
-    return bagian("Base", judul, tabelH(kepala.filter((_, i) => !lipat.has(i)), isi, "Belum ada base tercatat."), saring);
+        return `<button type="button" data-ftanda="${k}" aria-pressed="false"${n ? "" : " disabled"}>${lbl(i, `${t} <b>${fmt(n)}</b>`)}</button>`; }).join("")}</div>
+      <div class="seg ops-fmisi" role="group" aria-label="Saring misi armada">${[["", "Semua misi"], ["omc", "Modifikasi cuaca"], ["wb", "Water bombing"], ["patroli", "Patroli"]].map(([k, t]) => { const n = k ? baris.filter(x => x.misi.split(" ").includes(k)).length : 0;
+        return `<button type="button" data-fmisi="${k}" aria-pressed="${!k}"${k && !n ? " disabled" : ""} title="${k ? `${fmt(n)} base punya armada ${t.toLowerCase()}` : "Semua misi"}">${esc(t)}</button>`; }).join("")}</div>
+      <button type="button" class="ops-pilbase" data-fbase-buka aria-expanded="false">${lbl("base", `<span data-fbase-ringkas>Semua base</span>`)}</button></div>`;
+    /* daftar centang di badan kartu, bukan di dalam <summary> (klik di summary dicegah supaya kartu tidak terlipat) */
+    const pilBase = `<div class="ops-pilbase-isi" role="group" aria-label="Pilih base yang ditampilkan" hidden>
+        <p><b>Base yang ditampilkan</b><button type="button" data-fbase-semua="1">Pilih semua</button><button type="button" data-fbase-semua="0">Kosongkan</button></p>
+        ${grup.map(gp => `<fieldset><legend>${esc(gp)}</legend>${baris.filter(x => x.pulau === gp).map(x => `<label><input type="checkbox" data-fbase="${esc(x.id)}" checked> ${esc(x.nama)}</label>`).join("")}</fieldset>`).join("")}</div>`;
+    return bagian("Base", judul, pilBase + tabelH(kepala.filter((_, i) => !lipat.has(i)), isi, "Belum ada base tercatat."), saring);
   }
 
   /* alasan target jadi label: hanya teks siap baca dari mesin renlap, medan mentah (ffmc_basi, menahun_hari) tidak pernah tampil */
