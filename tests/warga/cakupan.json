@@ -1223,7 +1223,12 @@
     "GET /api/operasi/isian/riwayat": "riwayat: hak baca, per butir dan per tanggal",
     "table op_isian": "hapus lunak: alasan wajib",
     "table op_isian_log": "riwayat: hak baca, per butir dan per tanggal",
-    "table op_isian_kejadian": "sortie: isi, kembar 409, ubah"
+    "table op_isian_kejadian": "sortie: isi, kembar 409, ubah",
+    "table dl_tindak": "T3-T4: simpan selesai lalu proses",
+    "table dl_tindak_log": "T6-T7: terkini dan riwayat membawa nama pengisi",
+    "GET /api/dalops/tindak": "T6-T7: terkini dan riwayat membawa nama pengisi",
+    "GET /api/dalops/tindak/riwayat": "T6-T7: terkini dan riwayat membawa nama pengisi",
+    "POST /api/dalops/tindak": "T3-T4: simpan selesai lalu proses"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",
