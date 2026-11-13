@@ -56,7 +56,7 @@
     "https://www.bmkg.go.id/iklim/peringatan-dini-kekeringan-meteorologis",
     "https://dibi.bnpb.go.id",
     "scripts/kekeringan/laporan.py",
-    "data/laporan-bnpb/harian-2026-10-19.json"
+    "data/laporan-bnpb/arsip/harian-2026-10-19.json"
    ]
   },
   {

@@ -1,0 +1,111 @@
+{
+ "format": "penanganan",
+ "pesan_kunci": "Laporan Penanganan Pengendalian Karhutla, 08-11-2026.",
+ "judul_dokumen": "Laporan Penanganan Pengendalian Karhutla",
+ "kajian": "rehab",
+ "tanggal": "2026-11-08",
+ "slide": [
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\penanganan-karhutla\\2026-11\\2026-11-08\\Laporan Penanganan Pengendalian Karhutla 081126 (rev4) (isi).pptx",
+   "halaman": 1,
+   "bagian": 1,
+   "sumber": "GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 8 Nov 2026 18.00 WIB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\penanganan-karhutla\\2026-11\\2026-11-08\\Laporan Penanganan Pengendalian Karhutla 081126 (rev4) (isi).pptx",
+   "halaman": 2,
+   "bagian": 1,
+   "sumber": "GIS BNPB, NASA FIRMS 8 Nov 18.00 WIB; PM2,5 CAMS 7 Nov; hujan model Open-Meteo, kelas BMKG"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\penanganan-karhutla\\2026-11\\2026-11-08\\Laporan Penanganan Pengendalian Karhutla 081126 (rev4) (isi).pptx",
+   "halaman": 3,
+   "bagian": 2,
+   "sumber": "Laporan Upaya Pemadaman Satgas Karhutla, 8 Nov 2026 (kegiatan 7 Nov 2026)"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\penanganan-karhutla\\2026-11\\2026-11-08\\Laporan Penanganan Pengendalian Karhutla 081126 (rev4) (isi).pptx",
+   "halaman": 4,
+   "bagian": 3,
+   "sumber": "GIS BNPB, NASA FIRMS VIIRS 375 m, poligon konsesi GFW/Trase; 1 Jan s.d. 9 Nov 2026 07.20 WIB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\penanganan-karhutla\\2026-11\\2026-11-08\\Laporan Penanganan Pengendalian Karhutla 081126 (rev4) (isi).pptx",
+   "halaman": 5,
+   "bagian": 3,
+   "sumber": "GIS BNPB, NASA FIRMS VIIRS 375 m, poligon konsesi GFW/Trase; 1 Jan s.d. 9 Nov 2026 07.20 WIB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\penanganan-karhutla\\2026-11\\2026-11-08\\Laporan Penanganan Pengendalian Karhutla 081126 (rev4) (isi).pptx",
+   "halaman": 6,
+   "bagian": 3,
+   "sumber": "GIS BNPB, NASA FIRMS VIIRS 375 m, poligon konsesi GFW/Trase; 1 Jan s.d. 9 Nov 2026 07.20 WIB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\penanganan-karhutla\\2026-11\\2026-11-08\\Laporan Penanganan Pengendalian Karhutla 081126 (rev4) (isi).pptx",
+   "halaman": 7,
+   "bagian": 3,
+   "sumber": "GIS BNPB, NASA FIRMS VIIRS 375 m, poligon konsesi GFW/Trase; 1 Jan s.d. 9 Nov 2026 07.20 WIB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\penanganan-karhutla\\2026-11\\2026-11-08\\Laporan Penanganan Pengendalian Karhutla 081126 (rev4) (isi).pptx",
+   "halaman": 8,
+   "bagian": 3,
+   "sumber": "GIS BNPB, NASA FIRMS VIIRS 375 m, poligon konsesi GFW/Trase; 1 Jan s.d. 9 Nov 2026 07.20 WIB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\penanganan-karhutla\\2026-11\\2026-11-08\\Laporan Penanganan Pengendalian Karhutla 081126 (rev4) (isi).pptx",
+   "halaman": 9,
+   "bagian": 3,
+   "sumber": "GIS BNPB, NASA FIRMS VIIRS 375 m, poligon konsesi GFW/Trase; 1 Jan s.d. 9 Nov 2026 07.20 WIB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\penanganan-karhutla\\2026-11\\2026-11-08\\Laporan Penanganan Pengendalian Karhutla 081126 (rev4) (isi).pptx",
+   "halaman": 10,
+   "bagian": 3,
+   "sumber": "GIS BNPB, NASA FIRMS VIIRS 375 m, poligon konsesi GFW/Trase; 1 Jan s.d. 9 Nov 2026 07.20 WIB"
+  }
+ ],
+ "bagian": [
+  {
+   "judul": "Situasi Hotspot dan Firespot",
+   "label": "Situasi",
+   "halaman_tetap": [
+    1,
+    2
+   ]
+  },
+  {
+   "judul": "Operasi Penanganan",
+   "label": "Operasi",
+   "halaman_tetap": [
+    3
+   ]
+  },
+  {
+   "judul": "Perusahaan Terindikasi",
+   "label": "Perusahaan",
+   "halaman_tetap": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ]
+  }
+ ],
+ "panel_sisi": "gelap",
+ "skala_logo_bnpb": 1.0
+}

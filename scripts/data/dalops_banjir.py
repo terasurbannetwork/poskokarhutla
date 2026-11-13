@@ -369,11 +369,11 @@ def rakit(kejadian, hari, kode_kab, bersih=lambda t: t, laporan=None):
     return sorted(out, key=lambda b: (b["prov_kode"], b["terakhir"]))
 
 
-# --------------------------------------------------------------- bahan WA laporan harian (data/laporan-bnpb/harian-*/kerja-*/data.json)
+# --------------------------------------------------------------- bahan WA laporan harian (data/laporan-bnpb/harian/<YYYY-MM>/<tanggal>/kerja-*/data.json; generator/jalur.py, 13 Nov)
 # Laporan Kejadian Bencana Harian dibuat dari WA Koordalops (cut-off 07.00 WIB hari H, isinya laphar hari H-1). wa_harian.py
 # sudah mengurainya ke data.json di git; pemilik 5 Nov 2026: tiap laporan harian dibuat, kondisi banjirnya ikut memperbarui
 # Pantau Banjir. Dipakai dua jalur: sesudah rakit logbook (main) dan langsung di atas berkas R2 (--wa, mesin tanpa arsip logbook).
-WA_GLOB = "data/laporan-bnpb/harian-*/kerja-*/data.json"
+WA_GLOB = "data/laporan-bnpb/harian/*/*/kerja-*/data.json"
 RE_KK_JIWA = re.compile(r"(\d[\d.]*)\s*KK(?:\s*/\s*(\d[\d.]*)\s*jiwa)?", re.I)
 RE_MD = re.compile(r"(\d[\d.]*)\s*(?:\([^)]*\)\s*)?(?:jiwa|orang)?\s*(?:MD\b|meninggal)", re.I)
 RE_HILANG = re.compile(r"(\d[\d.]*)\s*(?:\([^)]*\)\s*)?(?:jiwa|orang)?\s*(?:hilang|dalam\s+pencarian)", re.I)
@@ -507,9 +507,9 @@ def entri_wa_semua(kode_kab, sesudah=""):
         out += [e for e in wa_entri(json.load(open(f, encoding="utf-8")), kode_kab) if e["tgl"] > sesudah]
     if JENIS in SENYAP_MAKS:   # laporan yang data.json-nya tidak ikut git (mis. 8 Nov): urai teks WA Koordalops-nya langsung
         WH = _muat("wa_harian", "data/laporan-bnpb/generator/wa_harian.py")
-        for f in sorted(glob.glob(os.path.join(AKAR, "data/laporan-bnpb/harian-*/wa-koordalops.txt"))):
+        for f in sorted(glob.glob(os.path.join(AKAR, "data/laporan-bnpb/harian/*/*/wa-koordalops.txt"))):
             if not glob.glob(os.path.join(os.path.dirname(f), "kerja-*/data.json")):
-                d = {"hari": os.path.basename(os.path.dirname(f))[7:], "kejadian": WH.koordalops(open(f, encoding="utf-8").read())["kejadian"]}
+                d = {"hari": os.path.basename(os.path.dirname(f)), "kejadian": WH.koordalops(open(f, encoding="utf-8").read())["kejadian"]}   # 13 Nov: nama folder = tanggal
                 out += [e for e in wa_entri(d, kode_kab) if e["tgl"] > sesudah]
     out += entri_wa_bot(kode_kab, sesudah)
     return sorted(out, key=lambda e: e["tgl"])
@@ -517,12 +517,12 @@ def entri_wa_semua(kode_kab, sesudah=""):
 
 def entri_wa_bot(kode_kab, sesudah="", dasar=None):
     """Rekap WA Koordalops yang diterima bot (WA_BOT_DIR, bawaan ~/.wa-bot: kerja/<tanggal laporan>/harian/rekap_koordalops_24.txt),
-    untuk tanggal yang belum punya folder data/laporan-bnpb/harian-<tanggal> di repo. Tanpa ini Pantau Dalops berhenti di salinan repo terakhir."""
+    untuk tanggal yang belum punya folder data/laporan-bnpb/harian/<YYYY-MM>/<tanggal> di repo. Tanpa ini Pantau Dalops berhenti di salinan repo terakhir."""
     dasar = dasar or os.environ.get("WA_BOT_DIR") or os.path.expanduser("~/.wa-bot")
     WH, out = None, []
     for f in sorted(glob.glob(os.path.join(dasar, "kerja", "20??-??-??", "harian", "rekap_koordalops_24.txt"))):
         hari = os.path.basename(os.path.dirname(os.path.dirname(f)))
-        if os.path.isdir(os.path.join(AKAR, f"data/laporan-bnpb/harian-{hari}")):
+        if os.path.isdir(os.path.join(AKAR, f"data/laporan-bnpb/harian/{hari[:7]}/{hari}")):
             continue
         WH = WH or _muat("wa_harian", "data/laporan-bnpb/generator/wa_harian.py")
         try:

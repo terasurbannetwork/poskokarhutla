@@ -2,7 +2,7 @@
 
 Isi dari "Rancangan Workshop Region BNPB BPBD PTN 121126.docx" (draf 11 Nov) dan perbandingan skema dari
 "Analisis Skema Workshop Per Provinsi atau Region 121126.docx", disusun ulang ke format kajian Tinggi Banjir
-(data/laporan-bnpb/kajian-tinggi-banjir-2026-11): sampul, daftar isi, ringkasan eksekutif, bab bernomor, lampiran.
+(data/laporan-bnpb/kajian/tinggi-banjir-2026-11): sampul, daftar isi, ringkasan eksekutif, bab bernomor, lampiran.
 
 Urutan (dari folder ini):  py kajian.py -> node cetak.mjs -> py gabung.py  (ulang ketiganya sekali lagi supaya nomor
 halaman daftar isi terisi) -> node tangkap.mjs -> py word.py

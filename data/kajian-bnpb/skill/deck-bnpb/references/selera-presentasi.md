@@ -22,7 +22,7 @@ Nama berkas memakai pola `<Judul deck> DDMMYY`, dengan DDMMYY = tanggal paparan.
 ### Prinsip
 
 - **Hanya ada satu gaya rumah.** Kerangka BNPB berlaku untuk semua deck. Deck dari pihak lain dipakai sebagai sumber isi saja: *"Gayanya tetap pakai gini cuma yang Kalteng itu untuk referensi tambahan informasi"*.
-- **Deck lama yang ditunjuk pemilik yang disalin, bukan generator.** d4 dibuat dengan generator `/laporan-bnpb` (`public/laporan_bnpb_slide.js`, palet `C` di baris 9), sehingga hasilnya gaya d2. Selama generator itu belum disesuaikan, laporan harian dibangun mengikuti d3 dengan pembangun di `data/laporan-bnpb/harian-2026-10-23/` (langkahnya di README).
+- **Deck lama yang ditunjuk pemilik yang disalin, bukan generator.** d4 dibuat dengan generator `/laporan-bnpb` (`public/laporan_bnpb_slide.js`, palet `C` di baris 9), sehingga hasilnya gaya d2. Selama generator itu belum disesuaikan, laporan harian dibangun mengikuti d3 dengan pembangun di `data/laporan-bnpb/harian/2026-10/2026-10-23/` (langkahnya di README).
 - **Padat tapi tetap bernapas.** Satu slide berisi 3–4 blok (grup angka, 2–3 panel, pita bawah), 180–290 kata, dan mengisi y≈101–500. Tidak ada isi yang menempel ke tepi panel: *"Jangan ada yang nempel ke bawah gitu"*.
 - **Satu topik, satu kontainer**: *"JANGAN DIPISAHIN DONG CONTAINERNYA KAN SAMA"*. Panel gelap di samping tidak dipakai; isinya digabung ke panel putih.
 - **Pakai label, bukan kalimat.** Keterangan ditulis sebagai chip pendek (*"Ini keterangan dibuat label aja"*). Setiap panel punya kepala (*"Kasih header"*), setiap peringkat punya nomor, setiap penanda punya nama, setiap warna dan bulatan punya legenda.

@@ -1,12 +1,12 @@
 name: laporan-harian
-# Darurat (3 Nov 2026): bangun Laporan Kejadian Bencana Harian dari data/laporan-bnpb/harian-<tanggal>/jalan.py di runner,
+# Darurat (3 Nov 2026): bangun Laporan Kejadian Bencana Harian dari data/laporan-bnpb/harian/<YYYY-MM>/<tanggal>/jalan.py di runner,
 # saat laptop pemilik tidak bisa dipakai. Tanpa skill ppt-konsultan: bingkai deck.py dilewati (TANPA_DECK), format templat 221026.
-# PDF dan PPTX di-commit ke folder harian-<tanggal>.
+# PDF dan PPTX di-commit ke folder hari itu.
 on:
   workflow_dispatch:
     inputs:
       tanggal:
-        description: "Tanggal laporan YYYY-MM-DD (folder data/laporan-bnpb/harian-<tanggal> berisi jalan.py dan bahan WA)"
+        description: "Tanggal laporan YYYY-MM-DD (folder data/laporan-bnpb/harian/<YYYY-MM>/<tanggal> berisi jalan.py dan bahan WA)"
         required: true
 permissions:
   contents: write
@@ -28,18 +28,22 @@ jobs:
           pip install -q pillow
           npm i -q --prefix data/laporan-bnpb/generator/cache/node playwright-core@1.52.0
           mkdir -p data/laporan-bnpb/generator/cache/templat
-          cp data/laporan-bnpb/harian-2026-10-23/templat-221026.pptx data/laporan-bnpb/generator/cache/templat/harian-221026.pptx
+          cp data/laporan-bnpb/harian/2026-10/2026-10-23/templat-221026.pptx data/laporan-bnpb/generator/cache/templat/harian-221026.pptx
       - name: Bangun laporan
         env:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
           TANPA_DECK: "1"
           CHROMIUM_SHELL: /usr/bin/google-chrome
           PYTHONUTF8: "1"
-        run: python3 "data/laporan-bnpb/harian-${{ inputs.tanggal }}/jalan.py" 2>&1 | tee "data/laporan-bnpb/harian-${{ inputs.tanggal }}/jalan.log"; exit ${PIPESTATUS[0]}
+          TANGGAL: ${{ inputs.tanggal }}
+        # 13 Nov 2026: folder hari = data/laporan-bnpb/harian/<YYYY-MM>/<tanggal> (generator/jalur.py)
+        run: D="data/laporan-bnpb/harian/${TANGGAL:0:7}/${TANGGAL}"; python3 "$D/jalan.py" 2>&1 | tee "$D/jalan.log"; exit ${PIPESTATUS[0]}
       - name: Commit PDF dan PPTX
         if: always()
+        env:
+          TANGGAL: ${{ inputs.tanggal }}
         run: |
-          D="data/laporan-bnpb/harian-${{ inputs.tanggal }}"
+          D="data/laporan-bnpb/harian/${TANGGAL:0:7}/${TANGGAL}"
           git config user.name "github-actions[bot]"; git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
           for f in "$D"/*.pdf "$D"/*.pptx "$D"/jalan.log; do [ -e "$f" ] && git add "$f" || true; done
           git diff --cached --quiet && { echo "tidak ada keluaran"; exit 0; }

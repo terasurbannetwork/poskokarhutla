@@ -6,7 +6,7 @@ angka KK, jiwa, pengungsi. Pembacaan teks laporan hanya untuk menentukan status;
 Gerbang: `uji` gagal bila kunci lain muncul (BOLEH), dan tests/banjir/terdampak.test.mjs memeriksa berkas tayang.
 
 Sumber:
- 1. data/laporan-bnpb/harian-*/wa-koordalops.txt (terlacak git, jadi ada di CI), diurai pakai wa_harian.koordalops
+ 1. data/laporan-bnpb/harian/<YYYY-MM>/<tanggal>/wa-koordalops.txt (terlacak git, jadi ada di CI), diurai pakai wa_harian.koordalops
     dan surut() milik scripts/data/dalops_banjir.py (satu aturan baca "surut" untuk seluruh sistem).
  2. data/raw/dalops/banjir.json bila ada (logbook lokal, tidak di CI): hanya kab, tanggal terakhir, flag surut.
 Tanggal keadaan = hari laphar (H-1 dari tanggal laporan WA), sama dengan dalops_banjir.wa_entri.
@@ -68,8 +68,8 @@ def kamus_kab():
 def dari_wa(WH, DB, kamus):
     """{kode: (tanggal, surut, sumber)} keadaan terakhir tiap kab dari semua wa-koordalops.txt; kab tak dikenal dilaporkan ke stderr."""
     hasil, asing = {}, set()
-    for f in sorted(glob.glob(os.path.join(AKAR, "data/laporan-bnpb/harian-*/wa-koordalops.txt"))):
-        hari = os.path.basename(os.path.dirname(f))[7:]
+    for f in sorted(glob.glob(os.path.join(AKAR, "data/laporan-bnpb/harian/*/*/wa-koordalops.txt"))):   # 13 Nov: harian/<YYYY-MM>/<tanggal>
+        hari = os.path.basename(os.path.dirname(f))
         tgl = (dt.date.fromisoformat(hari) - dt.timedelta(days=1)).isoformat()
         for k in WH.koordalops(open(f, encoding="utf-8").read())["kejadian"]:
             if k.get("jenis") != "banjir" or not k.get("lokasi") or not k.get("prov"):

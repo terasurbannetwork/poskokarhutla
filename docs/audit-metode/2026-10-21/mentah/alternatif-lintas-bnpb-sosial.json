@@ -2,7 +2,7 @@
  "modul": "lintas-bnpb-sosial",
  "usulan": [
   {
-   "metode_lama": "Deck BNPB 21 Okt 2026 versi 'data satelit' (data/laporan-bnpb/satelit-2026-10-21: hitung3.py → angka.json → ganti.py). Luas terbakar harian dihitung dari titik NOAA-20/21 n/h × 0,534 × 4,3 ha. 'Belum padam' adalah porsi titik yang terdeteksi lagi dalam 12–36 jam. 'Telah padam' berarti 48 jam tanpa deteksi. Fire spot adalah kluster sel. Angka ini menggantikan angka lapangan BNPB di kolom resmi: untuk 8 provinsi pada 20 Okt tertulis 21.795 ha, sedangkan angka lapangan 1.083,92 ha.",
+   "metode_lama": "Deck BNPB 21 Okt 2026 versi 'data satelit' (data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21: hitung3.py → angka.json → ganti.py). Luas terbakar harian dihitung dari titik NOAA-20/21 n/h × 0,534 × 4,3 ha. 'Belum padam' adalah porsi titik yang terdeteksi lagi dalam 12–36 jam. 'Telah padam' berarti 48 jam tanpa deteksi. Fire spot adalah kluster sel. Angka ini menggantikan angka lapangan BNPB di kolom resmi: untuk 8 provinsi pada 20 Okt tertulis 21.795 ha, sedangkan angka lapangan 1.083,92 ha.",
    "vonis_akhir": "tidak_layak",
    "alternatif": "1) Sebelum paparan berikut: kolom LUAS TERBAKAR, BELUM PADAM, dan FIRE SPOT di slide 1–2 dikembalikan ke angka lapangan BNPB/Satgas. Sumber lain yang boleh adalah neraca Posko (/api/neraca), asalkan jumlah regu pelapor dicantumkan. Kata 'padam' hanya dipakai bila berasal dari laporan lapangan.\n2) Satelit dipindah ke satu slide terpisah berjudul 'Indikasi satelit (bukan angka lapangan)'. Isinya hanya besaran yang memang terukur satelit:\n- Titik panas VIIRS dengan satu definisi dan jendela 07.00–07.00 WIB yang sama dengan GIS BNPB, ditambah tanda kelengkapan lintasan.\n- Jumlah kompleks api dan FRP total per provinsi dari pengelompokan yang sudah ada di harian.py (gaya FEDS: DBSCAN ≤1,5 km, aktif ≤72 jam, ≤168 jam di gambut kering). Status kompleks ditulis 'terdeteksi 24 jam terakhir', 'tidak terdeteksi 24–72 jam', atau 'tidak terdeteksi >72 jam (>168 jam di gambut)', bukan 'belum padam' atau 'telah padam'.\n- Luas bekas bakar mingguan dari dNBR Sentinel-2 untuk provinsi prioritas. Pembacanya sudah ada: pembaca COG stdlib di scripts/data/citra.py, serta ambang dNBR >0,27 dan masker SCL di sawit_s2.py. Hasilnya dicek silang dengan burn scar bulanan Nusantara Atlas.\n3) Bila luas dari titik tetap diminta, tampilkan hanya total 7 hari per provinsi sebagai rentang (3,2–4,6 ha per titik) dengan label 'perkiraan kasar, tidak teruji per hari'.",
    "praktik_resmi_indonesia": "Angka situasi harian BNPB berasal dari laporan BPBD, Satgas, dan Manggala Agni yang dihimpun pos komando (SKPDB, Perka BNPB 3/2016). Permen LHK P.8/2018 mewajibkan titik panas dicek lapangan sebelum dinyatakan kebakaran. SiPongi menerbitkan 'indikasi luas' per bulan dari titik panas dan verifikasi, bukan per hari.",
@@ -35,7 +35,7 @@
    "rujukan": [
     "https://firms.modaps.eosdis.nasa.gov/alerts/",
     "https://doi.org/10.1016/j.rse.2013.12.008",
-    "repo: data/laporan-bnpb/satelit-2026-10-21/README.md; verifikasi/putaran-2.json; scripts/data/firms_sumber.py"
+    "repo: data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/README.md; verifikasi/putaran-2.json; scripts/data/firms_sumber.py"
    ]
   },
   {
@@ -289,7 +289,7 @@
    "rujukan": [
     "https://dibi.bnpb.go.id/",
     "https://peraturan.go.id/files/bn1777-2016.pdf",
-    "repo: public/laporan_bnpb_slide.js:43-45,199-245; data/laporan-bnpb/harian-2026-10-21.json"
+    "repo: public/laporan_bnpb_slide.js:43-45,199-245; data/laporan-bnpb/arsip/harian-2026-10-21.json"
    ]
   },
   {

@@ -1237,7 +1237,7 @@ atau daftar pertanyaan tanpa penanggung jawab tidak dipakai (ADB, Deloitte, MGI;
 
 Satu sumber: SVG garis gaya Lucide (stroke 2, viewBox 24, ujung bulat) di registri ikon
 `tema.json`, diwarnai ulang dari token saat render; PNG, gambar DOCX, dan HTML dibangkitkan
-dari registri itu. Path set deck (`data/laporan-bnpb/harian-2026-10-23/ikon.mjs`: gempa,
+dari registri itu. Path set deck (`data/laporan-bnpb/harian/2026-10/2026-10-23/ikon.mjs`: gempa,
 api, banjir, tenda, rumah, orang, hati, kalender, sampah) dipakai ulang sebagai sumber SVG.
 PNG `ik/*.png` deck tidak dipakai langsung: hanya lima warna (tanpa emas dan coklat) dan
 tanpa glif gunung api, tsunami, longsor, kekeringan, virus, pabrik, atau tetes.

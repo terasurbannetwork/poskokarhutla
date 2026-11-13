@@ -1,5 +1,5 @@
 """Estimasi INDEPENDEN luas terbakar tahunan Indonesia: sampling acak berlapis + penandaan citra (Olofsson dkk. 2014) -> data/riset/luas_resmi/
-(keputusan pemilik 25 Okt 2026; pembanding luas resmi BNPB/KLHK, data/laporan-bnpb/metode-2026-10-25/riwayat.json).
+(keputusan pemilik 25 Okt 2026; pembanding luas resmi BNPB/KLHK, data/laporan-bnpb/kajian/metode-2026-10-25/riwayat.json).
 
 Kerangka: daratan Indonesia pada kisi 0,003375 derajat (~375 m; kisi sel yang sama dengan peta_karhutla) dari poligon public/geo/kecamatan (bagian luar, seperti Wilayah).
   A = sel yang punya >= 1 deteksi VIIRS keyakinan n/h tahun Y (sensor per tahun: TAHUN), tanpa sel sumber panas tetap (titik_palsu.sel_industri) dan type FIRMS 0/kosong;

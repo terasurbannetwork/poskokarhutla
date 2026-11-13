@@ -80,7 +80,7 @@ Modul: karhutla-titik-luas-status dan lintas-bnpb-sosial; keduanya mencatatnya s
 - Hotspot 20 Okt diberi panah: Kalteng 2.363 ▼44%, Kalbar 211 ▼68%.
 - Semua itu berada di bawah "Badan Nasional Penanggulangan Bencana | Copyright 2026", dengan catatan kaki "*Data berdasarkan GIS".
 
-**Lokasi.** `data/laporan-bnpb/satelit-2026-10-21/` (alur `hitung3.py` → `angka.json` → `ganti.py`, lalu PPTX final). Folder ini belum di-commit (status git `??`).
+**Lokasi.** `data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/` (alur `hitung3.py` → `angka.json` → `ganti.py`, lalu PPTX final). Folder ini belum di-commit (status git `??`).
 
 **Mengapa salah.** Angka lapangan BNPB diganti angka platform tanpa kata "perkiraan":
 - luas = titik NOAA-20/21 n/h × 0,534 × 4,3 ha;
@@ -115,7 +115,7 @@ Selain itu, `ganti.py:100,105,107` mengganti judul kolom "LUAS TERBAKAR / TARGET
 Modul: lintas-bnpb-sosial dan karhutla-titik-luas-status.
 
 **Yang tampil**
-- Kesimpulan "Tren" di `data/laporan-bnpb/presiden-2026-10-20.json`, tanpa kata perkiraan dan tanpa rentang.
+- Kesimpulan "Tren" di `data/laporan-bnpb/arsip/presiden-2026-10-20.json`, tanpa kata perkiraan dan tanpa rentang.
 - Grafik Paparan menggambar 2015 = 3,49 juta ha (811.961 titik × 4,3), padahal angka resmi 2015 adalah 2,61 juta ha (`paparan_slide.js`, `riwayat_nasional.js`).
 
 **Mengapa salah**
@@ -1364,4 +1364,4 @@ Status 403 sering berarti situs memblokir bot, bukan tautan mati.
 4. *Rekap di HASIL.md.* `docs/audit-metode/2026-10-21/HASIL.md` menulis 17 layak, 147 layak dengan catatan, dan 165 tidak layak. Bedanya karena `susun.py` memakai vonis telaah bila nama metode berbeda antartahap. Ada 75 nama yang tidak cocok di 7 modul. Angka di ringkasan ini dihitung langsung dari vonis_akhir tantang ditambah metode_terlewat.
 5. *Penilaian ganda.* Beberapa metode dinilai di dua modul, misalnya deck BNPB 21 Okt, kejadian gunung api, dan outlook 12 bulan. Jadi 329 adalah jumlah entri penilaian, bukan jumlah metode unik.
 6. *P3 dan independensi.* Usulan P3 hampir tidak diverifikasi (1 dari 51). Semua penelaah dan pemeriksa adalah agen AI. "Terverifikasi" berarti dicek ulang ke berkas atau sumber oleh agen lain, bukan disahkan oleh lembaga.
-7. *Folder yang belum di-commit.* `data/laporan-bnpb/satelit-2026-10-21/` dan `docs/audit-metode/` belum masuk git.
+7. *Folder yang belum di-commit.* `data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/` dan `docs/audit-metode/` belum masuk git.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Bukti kebakaran di konsesi PT Merauke Sawit Jaya (sawit-gfw-1377), untuk Kepala BNPB, 3 Nov 2026.
 Bahan: repo poskokarhutla (public/data/konsesi2026/93.json, riwayat_konsesi.json), tembolok FIRMS generator laporan
-(24 Okt sampai 3 Nov), citra Sentinel-2 L2A (Element84) di data/laporan-bnpb/bukti-konsesi-msj-031126/, deck Pantauan Udara 011126.
+(24 Okt sampai 3 Nov), citra Sentinel-2 L2A (Element84) di data/laporan-bnpb/paparan/bukti-konsesi-msj-031126/, deck Pantauan Udara 011126.
 Jalankan: python spek/bangun_spek_msj.py <msj_titik.json>  lalu deck.py spek/bukti-msj.json --akar ."""
 import csv, hashlib, json, math, sys
 from collections import defaultdict
@@ -10,7 +10,7 @@ from PIL import Image, ImageDraw
 
 AKAR = Path(__file__).resolve().parents[1]
 REPO = Path('D:/Project/Work/BNPB/poskokarhutla')
-BUKTI = REPO / 'data/laporan-bnpb/bukti-konsesi-msj-031126'
+BUKTI = REPO / 'data/laporan-bnpb/paparan/bukti-konsesi-msj-031126'
 DM = AKAR / 'data/msj'
 DM.mkdir(parents=True, exist_ok=True)
 sys.path.insert(0, str(REPO / 'scripts/data'))

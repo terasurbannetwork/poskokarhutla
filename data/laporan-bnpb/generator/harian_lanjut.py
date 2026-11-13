@@ -58,8 +58,11 @@ def seri_gunung(folder_laporan, T):
     """{'Merapi': {'hari': [tanggal], 'tipe': {'guguran': [..]}, 'siaga': bool}} dari teks WA PVMBG 1 s.d. T bulan berjalan."""
     hasil = {}
     for n in range(1, T.day + 1):
-        d = T.replace(day=n); f = os.path.join(folder_laporan, f'harian-{d.isoformat()}', 'wa-pvmbg.txt')
-        if not os.path.exists(f): continue
+        d = T.replace(day=n)
+        import jalur   # 13 Nov: folder hari pindah ke harian/<YYYY-MM>/<tanggal>; susunan lama harian-<tanggal> tetap dibaca
+        f = next((p for p in (os.path.join(jalur.harian(d), 'wa-pvmbg.txt'), os.path.join(folder_laporan, f'harian-{d.isoformat()}', 'wa-pvmbg.txt'))
+                  if os.path.exists(p)), None)
+        if not f: continue
         for g in wa_harian.pvmbg(open(f, encoding='utf-8').read())['gunung']:
             nm = g['nama'].replace('Gn. ', ''); r = hasil.setdefault(nm, {'hari': [], 'isi': []})
             r['hari'].append(d); r['isi'].append({t.lower(): v for v, t in g.get('urai') or []})

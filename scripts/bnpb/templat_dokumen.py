@@ -52,13 +52,13 @@ RE_LABEL = re.compile(r"^(ringkasan|ringkasan eksekutif|executive summary|kejadi
 AMBANG_GAMBAR = {"Laporan Penanganan Pengendalian Karhutla": .001, "Brief Narasi Publik": .001}   # lambang provinsi kecil ikut ditutup
 
 PPT = [
-    ("Laporan Kejadian Bencana Harian", "data/laporan-bnpb/harian-2026-11-06/Laporan Kejadian Bencana Harian 061126 (rev4).pptx", None),
-    ("Laporan Penanganan Pengendalian Karhutla", "data/laporan-bnpb/satelit-2026-11-08/Revisi 4/Laporan Penanganan Pengendalian Karhutla 081126.pptx", [1, 2, 3]),   # slide perusahaan hanya untuk deck 081126
+    ("Laporan Kejadian Bencana Harian", "data/laporan-bnpb/harian/2026-11/2026-11-06/Laporan Kejadian Bencana Harian 061126 (rev4).pptx", None),
+    ("Laporan Penanganan Pengendalian Karhutla", "data/laporan-bnpb/penanganan-karhutla/2026-11/2026-11-08/Revisi 4/Laporan Penanganan Pengendalian Karhutla 081126.pptx", [1, 2, 3]),   # slide perusahaan hanya untuk deck 081126
     ("Paparan Kerja Sama dengan Perguruan Tinggi", "data/kegiatan-bnpb/kunjungan-kampus/UGM/Paparan Kerja Sama BNPB dengan UGM 061126 (rev3).pptx", list(range(1, 32))),
     ("Paparan Grand Design", "data/kajian-bnpb/keluaran/final/Grand Design Ketahanan Air Pulau Jawa 2026-2030.pptx", None),
     ("Ajuan Program Flagship", "data/kegiatan-bnpb/ajuan-program-kampus-021126/Ringkasan Ajuan Program Flagship Campus-first 031126.pptx", None),
     ("Paparan Karhutla per Wilayah", "Paparan Karhutla Papua Selatan - Merauke - Jagebob-Tanah Miring 311026.pptx", None),
-    ("Brief Narasi Publik", "data/laporan-bnpb/narasi-publik-karhutla-041126/Brief Narasi Publik Karhutla 041126.pptx", None),
+    ("Brief Narasi Publik", "data/laporan-bnpb/paparan/narasi-publik-karhutla-041126/Brief Narasi Publik Karhutla 041126.pptx", None),
     ("Laporan Kegiatan Operasi Modifikasi Cuaca", "data/laporan-bnpb/omc/OMC_Karhutla_16-27Okt2026.pptx", None),
     ("Paparan Pertemuan Bilateral", "docs/deck-bnpb/Pertemuan BNPB Malaysia 271026/Pertemuan BNPB Malaysia 271026.pptx", None),
 ]

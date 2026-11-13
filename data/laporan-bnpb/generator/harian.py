@@ -212,7 +212,10 @@ class Deck:
             s._riw = json.load(open(p, encoding='utf-8'))['episode'] if os.path.exists(p) else []
             s._wa_arsip = []
             import glob, wa_harian
-            for f in glob.glob(os.path.join(os.path.dirname(os.path.dirname(s.ke)), 'harian-*', 'wa-koordalops.txt')):
+            import jalur   # 13 Nov: keluaran di repo -> arsip harian/<YYYY-MM>/<tanggal>; keluaran bot di luar repo -> susunan lama
+            di_repo = os.path.abspath(s.ke).startswith(jalur.LAPORAN + os.sep)
+            for f in (jalur.berkas_hari('harian', 'wa-koordalops.txt') if di_repo else
+                      glob.glob(os.path.join(os.path.dirname(os.path.dirname(s.ke)), 'harian-*', 'wa-koordalops.txt'))):
                 try: w_ = wa_harian.koordalops(open(f, encoding='utf-8').read(), pagi=False)
                 except Exception: continue
                 s._wa_arsip += [(w_['mulai'][:10], k) for k in w_['kejadian']]
@@ -364,7 +367,10 @@ class Deck:
         """Arsip laporan hari sebelumnya (../harian-<D-1>/kerja-*/data.json dan wa-bmkg.txt); None bila tidak ada."""
         if hasattr(s, '_kmr'): return s._kmr
         import glob, wa_harian
-        d_ = os.path.join(os.path.dirname(os.path.dirname(s.ke)), f'harian-{(s.tanggal - dt.timedelta(days=1)).isoformat()}')
+        import jalur   # 13 Nov: keluaran di repo -> harian/<YYYY-MM>/<D-1>; keluaran bot di luar repo -> susunan lama
+        kmr = s.tanggal - dt.timedelta(days=1)
+        d_ = jalur.harian(kmr) if os.path.abspath(s.ke).startswith(jalur.LAPORAN + os.sep) else \
+            os.path.join(os.path.dirname(os.path.dirname(s.ke)), f'harian-{kmr.isoformat()}')
         dj = sorted(glob.glob(os.path.join(d_, 'kerja-*', 'data.json')))
         s._kmr = None
         if dj:

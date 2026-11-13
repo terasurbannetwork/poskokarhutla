@@ -282,7 +282,7 @@ jobs:
         run: python3 scripts/banjir/wilayah_hari.py
 
       # Kejadian banjir yang sudah terjadi, ringkas per kab/kota (publik, tanpa nama petugas/angka dampak). Sumber: wa-koordalops.txt yang
-      # terlacak di repo (data/laporan-bnpb/harian-*), jadi tersedia di CI tanpa rahasia; laporan baru masuk lewat commit berkas itu (manual).
+      # terlacak di repo (data/laporan-bnpb/harian/<YYYY-MM>/<tanggal>), jadi tersedia di CI tanpa rahasia; laporan baru masuk lewat commit berkas itu (manual).
       # Tanpa laporan baru, status lama menua sendiri (ambang 14 hari) dan jadi "Belum diketahui". Gagal: berkas lama bertahan.
       - name: Kejadian banjir terdampak per kab/kota (boleh gagal)
         continue-on-error: true

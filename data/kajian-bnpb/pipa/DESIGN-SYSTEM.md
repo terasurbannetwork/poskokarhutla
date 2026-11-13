@@ -508,7 +508,7 @@ objek.ikon_rasio_lingkaran`), sumber glif `tema.json glif`.
 | `segitiga-naik`, `segitiga-turun` | tema.json `khusus:` | arah |
 | `bendungan` | tema.json `khusus:bendungan` | sekat kanal |
 | `sumur` | tema.json `khusus:sumur` | sumur bor dangkal (zona C) |
-| ikon deck `api`, `kalender`, `orang` | `data/laporan-bnpb/harian-2026-10-23/ikon.mjs` | S |
+| ikon deck `api`, `kalender`, `orang` | `data/laporan-bnpb/harian/2026-10/2026-10-23/ikon.mjs` | S |
 
 **Ikon baru yang harus ditambahkan** ke `public/pipa/ikon.js` dan ke `tema.json ikon/glif`
 (sumber `lucide-react 1.54.0`, ISC, sama dengan glif tema yang ada, kecuali bertanda

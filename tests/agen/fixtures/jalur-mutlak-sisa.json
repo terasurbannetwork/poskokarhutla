@@ -84,193 +84,193 @@
   "data/kajian-bnpb/riset/D-inventaris-platform.md": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/harian-2026-10-23/data.py": {
+  "data/laporan-bnpb/harian/2026-10/2026-10-23/data.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/harian-2026-10-23/ikon.mjs": {
+  "data/laporan-bnpb/harian/2026-10/2026-10-23/ikon.mjs": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/harian-2026-10-23/peta.mjs": {
+  "data/laporan-bnpb/harian/2026-10/2026-10-23/peta.mjs": {
     "alfatehanseptianta": 3
   },
-  "data/laporan-bnpb/harian-2026-10-24/data.py": {
+  "data/laporan-bnpb/harian/2026-10/2026-10-24/data.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/harian-2026-10-24/ikon.mjs": {
+  "data/laporan-bnpb/harian/2026-10/2026-10-24/ikon.mjs": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/harian-2026-10-24/peta.mjs": {
+  "data/laporan-bnpb/harian/2026-10/2026-10-24/peta.mjs": {
     "alfatehanseptianta": 3
   },
-  "data/laporan-bnpb/metode-2026-10-25/buat.py": {
+  "data/laporan-bnpb/kajian/metode-2026-10-25/buat.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/metode-2026-10-25/kalibrasi_noaa.py": {
+  "data/laporan-bnpb/kajian/metode-2026-10-25/kalibrasi_noaa.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/metode-2026-10-25/kalibrasi_unik.py": {
+  "data/laporan-bnpb/kajian/metode-2026-10-25/kalibrasi_unik.py": {
     "alfatehanseptianta": 1
   },
   "data/laporan-bnpb/omc/OMC_Karhutla_16-27Okt2026.pptx": {
     "priyankaalfatehan28": 26
   },
-  "data/laporan-bnpb/paparan-jambi-2026-10-24/app.mjs": {
+  "data/laporan-bnpb/paparan/jambi-2026-10-24/app.mjs": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/paparan-jambi-2026-10-24/data.py": {
+  "data/laporan-bnpb/paparan/jambi-2026-10-24/data.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/paparan-jambi-2026-10-24/ikon.mjs": {
+  "data/laporan-bnpb/paparan/jambi-2026-10-24/ikon.mjs": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/paparan-jambi-2026-10-24/peta.py": {
+  "data/laporan-bnpb/paparan/jambi-2026-10-24/peta.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/paparan-jambi-2026-10-24/render.mjs": {
+  "data/laporan-bnpb/paparan/jambi-2026-10-24/render.mjs": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/paparan-jambi-2026-10-25/buat.py": {
+  "data/laporan-bnpb/paparan/jambi-2026-10-25/buat.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/paparan-jambi-2026-10-25/data.py": {
+  "data/laporan-bnpb/paparan/jambi-2026-10-25/data.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/paparan-jambi-2026-10-25/ikon.mjs": {
+  "data/laporan-bnpb/paparan/jambi-2026-10-25/ikon.mjs": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/paparan-jambi-2026-10-25/render.mjs": {
+  "data/laporan-bnpb/paparan/jambi-2026-10-25/render.mjs": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/paparan-lampung-2026-10-24/app.mjs": {
+  "data/laporan-bnpb/paparan/lampung-2026-10-24/app.mjs": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/paparan-lampung-2026-10-24/data.py": {
+  "data/laporan-bnpb/paparan/lampung-2026-10-24/data.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/paparan-lampung-2026-10-24/ikon.mjs": {
+  "data/laporan-bnpb/paparan/lampung-2026-10-24/ikon.mjs": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/paparan-lampung-2026-10-24/peta.py": {
+  "data/laporan-bnpb/paparan/lampung-2026-10-24/peta.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/paparan-lampung-2026-10-24/render.mjs": {
+  "data/laporan-bnpb/paparan/lampung-2026-10-24/render.mjs": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-21/cek_tampil.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/cek_tampil.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-21/hitung3.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/hitung3.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/satelit-2026-10-21/hitung_nasional.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/hitung_nasional.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-21/peta.mjs": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/peta.mjs": {
     "alfatehanseptianta": 3
   },
-  "data/laporan-bnpb/satelit-2026-10-21/tambah_peta.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/tambah_peta.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/putaran-1.json": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/putaran-1.json": {
     "alfatehanseptianta": 5
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/putaran-2.json": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/putaran-2.json": {
     "alfatehanseptianta": 3
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/audit/a1.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-1/audit/a1.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/audit/a3.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-1/audit/a3.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/audit/a5.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-1/audit/a5.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/audit/a6.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-1/audit/a6.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/audit/a7.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-1/audit/a7.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/audit/a8.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-1/audit/a8.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/cek.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-1/cek.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/deck.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-1/deck.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/extra.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-1/extra.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/mentah.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-1/mentah.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/verif.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-1/verif.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/verif_raw.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-1/verif_raw.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/banding.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-2/banding.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/celah.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-2/celah.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/celah2.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-2/celah2.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/celah3.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-2/celah3.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/celah4.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-2/celah4.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/celah5.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-2/celah5.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/dek.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-2/dek.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/dek2.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-2/dek2.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/s/cek.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-2/s/cek.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/s/lebar.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-2/s/lebar.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/survei.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-2/survei.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/ulang.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/verifikasi/skrip-putaran-2/ulang.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-22/hitung3.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-22/hitung3.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/satelit-2026-10-22/hitung_nasional.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-22/hitung_nasional.py": {
     "alfatehanseptianta": 2
   },
-  "data/laporan-bnpb/satelit-2026-10-22/peta.mjs": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-22/peta.mjs": {
     "alfatehanseptianta": 3
   },
-  "data/laporan-bnpb/satelit-2026-10-22/tambah_peta.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-22/tambah_peta.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/satelit-2026-10-23/peta.mjs": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-23/peta.mjs": {
     "alfatehanseptianta": 3
   },
-  "data/laporan-bnpb/satelit-2026-10-23/tambah_peta.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-23/tambah_peta.py": {
     "alfatehanseptianta": 1
   },
-  "data/laporan-bnpb/satelit-2026-10-24/peta.mjs": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-24/peta.mjs": {
     "alfatehanseptianta": 3
   },
-  "data/laporan-bnpb/satelit-2026-10-24/tambah_peta.py": {
+  "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-24/tambah_peta.py": {
     "alfatehanseptianta": 1
   },
   "docs/audit-metode/2026-10-21/HASIL.md": {

@@ -24,7 +24,7 @@ Sumber, catatan, dan keterangan gambar ditulis di luar gambar oleh pembangun DOC
 - Opsional `LUCIDE_DIR=/jalur/lucide-react/dist/esm/icons`: `uji.mjs` membandingkan glif `lucide:` di `tema.json` dengan paketnya.
 - Berkas lintas modul yang dibaca: `public/geo/provinsi.json`, `public/geo/kabupaten/{prov}.json` (batas, asal belum
   terdokumentasi), `scripts/udara/kota.json` (kode kab), `public/banjir/data/meta.json` (nama provinsi),
-  `data/laporan-bnpb/harian-2026-10-23/ikon.mjs` (glif deck), dan paket `data/kajian-bnpb/data/**`.
+  `data/laporan-bnpb/harian/2026-10/2026-10-23/ikon.mjs` (glif deck), dan paket `data/kajian-bnpb/data/**`.
 
 ## Cara membuat ulang dan memeriksa
 

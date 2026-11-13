@@ -399,7 +399,7 @@
   {
    "klaim": "Deck BNPB 21 Okt 'data satelit' mengganti angka lapangan BNPB di bawah kop BNPB: 8 provinsi 20 Okt luas 21.795 ha lawan 1.083,92 ha (20×), belum padam 11.680 lawan 554,76, FS 712 lawan 279; judul kolom dan catatan kaki diubah, catatan NA dihapus",
    "status": "benar",
-   "catatan": "Dicek langsung dari slide1/slide2.xml kedua PPTX dan ganti.py:100,105,107. Slide 1 subjudul '7.646 ha (33 persen) dari 23.382 ha api 18 Okt telah padam' memakai aturan 48 jam (hitung3.py). Folder data/laporan-bnpb/satelit-2026-10-21/ belum dilacak git (status '??')."
+   "catatan": "Dicek langsung dari slide1/slide2.xml kedua PPTX dan ganti.py:100,105,107. Slide 1 subjudul '7.646 ha (33 persen) dari 23.382 ha api 18 Okt telah padam' memakai aturan 48 jam (hitung3.py). Folder data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/ belum dilacak git (status '??')."
   },
   {
    "klaim": "'±2,2 juta ha terbakar 2026, tertinggi ke-2 sejak 2015' di Paparan Presiden adalah perkiraan titik S-NPP × 4,3 ha tanpa label/rentang, dan peringkatnya tidak kokoh",

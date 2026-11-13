@@ -196,7 +196,7 @@ Catatan pakai IRBI (RINGKASAN §3, A layak): skala 2025 tidak sebanding dengan 2
 - `public/semua/index.html`: halaman lintas bencana.
 
 **Render ke PNG untuk dokumen (pola yang sudah dipakai)**
-- `data/laporan-bnpb/harian-2026-10-23/peta.mjs` dan `data/laporan-bnpb/satelit-2026-10-2{1,2,3}/peta.mjs`: GeoJSON (`public/geo/provinsi.json`) diubah menjadi SVG ekuirektangular di node, lalu di-screenshot Playwright Chromium headless (`deviceScaleFactor` 1,5, `omitBackground`). Playwright diimpor dari path absolut `/Users/alfatehanseptianta/Developer/worth-it/node_modules/playwright` dengan `chrome-headless-shell` di cache ms-playwright, jadi **tidak ada di package.json repo ini**. Pola ini cukup disalin untuk peta per kab Jawa (`geo/kabupaten/3x.json`).
+- `data/laporan-bnpb/harian/2026-10/2026-10-23/peta.mjs` dan `data/laporan-bnpb/satelit-2026-10-2{1,2,3}/peta.mjs`: GeoJSON (`public/geo/provinsi.json`) diubah menjadi SVG ekuirektangular di node, lalu di-screenshot Playwright Chromium headless (`deviceScaleFactor` 1,5, `omitBackground`). Playwright diimpor dari path absolut `/Users/alfatehanseptianta/Developer/worth-it/node_modules/playwright` dengan `chrome-headless-shell` di cache ms-playwright, jadi **tidak ada di package.json repo ini**. Pola ini cukup disalin untuk peta per kab Jawa (`geo/kabupaten/3x.json`).
 - `tests/bnpb/_peramban.mjs`: Chrome headless lewat CDP tanpa dependensi. Bisa dipakai untuk memotret halaman simulasi yang sudah jalan (misalnya `risiko.html`) bila ingin persis seperti tampilan web.
 - `scripts/gunungapi/cek_merapi2010.mjs`: pola menjalankan mesin simulasi peramban di node (butuh `sharp` dan jaringan untuk ubin terrarium). Ini pola untuk menghasilkan angka skenario tanpa membuka layar.
 

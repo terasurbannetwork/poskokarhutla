@@ -23,7 +23,7 @@ JADI = {"pdf", "pptx", "docx", "xlsx"}
 KECUALI = re.compile(r"^(\.[^/]+/|node_modules/|tests/|graphify-out/|public/(?!panduan/)|docs/superpowers/|data/kajian-bnpb/(qa|naskah|skill)/)")
 KECUALI_NAMA = {"AGENTS.md", "CLAUDE.md", "SKILL.md", "_gabung.md"}
 # Markdown di folder laporan harian/satelit dan rapor/QA/README deck = catatan kerja pembuat deck, bukan dokumen rujukan
-CATATAN_KERJA = re.compile(r"^data/(laporan-bnpb/(harian|satelit)-|(laporan|kegiatan)-bnpb/(.*/)?(rapor|qa-|README))", re.I)
+CATATAN_KERJA = re.compile(r"^data/(laporan-bnpb/(harian|penanganan-karhutla)/|(laporan|kegiatan)-bnpb/(.*/)?(rapor|qa-|README))", re.I)
 SALINAN_NYASAR = re.compile(r" 2\.[^./]+$")   # berkas "* 2.*": salinan sinkronisasi, jangan dipakai (AGENTS.md §9)
 BLOB_KOSONG = "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
 KATEGORI = [
@@ -59,8 +59,8 @@ def masuk(p):
 
 def kategori(p):
     if p.startswith("data/templat-dokumen/") or "/Templat " in p: return "templat"
-    if p.startswith("data/laporan-bnpb/harian-"): return "harian"
-    if p.startswith("data/laporan-bnpb/satelit-"): return "satelit"
+    if p.startswith("data/laporan-bnpb/harian/"): return "harian"   # 13 Nov: harian/<YYYY-MM>/<tanggal>
+    if p.startswith("data/laporan-bnpb/penanganan-karhutla/"): return "satelit"   # dulu satelit-<tanggal>; label katalog tetap
     if p.startswith("data/laporan-bnpb/"): return "laporan"
     if p.startswith("data/kegiatan-bnpb/"): return "kegiatan"
     if p.startswith("data/kajian-bnpb/keluaran/"): return "kajian"
@@ -245,11 +245,11 @@ def bangun():
 
 def periksa(d):
     assert tgl_ddmmyy("Paparan UGM 061126") == "2026-11-06" and tgl_ddmmyy("kode 991326") is None, "tanggal ddmmyy"
-    assert tanggal_nama("data/laporan-bnpb/harian-2026-11-05/naskah.md") == "2026-11-05", "tanggal folder"
+    assert tanggal_nama("data/laporan-bnpb/harian/2026-11/2026-11-05/naskah.md") == "2026-11-05", "tanggal folder"
     assert not masuk(".claude/ilmu-agent/x.md") and not masuk("data/kajian-bnpb/qa/a.pdf") and not masuk("data/kajian-bnpb/naskah/air/b.md"), "cakupan"
     assert not masuk("Paparan 2.pdf") and not masuk("AGENTS.md") and not masuk("public/data/a.md"), "cakupan nama"
-    assert not masuk("data/kegiatan-bnpb/a/rapor-r1.md") and not masuk("data/laporan-bnpb/harian-2026-11-05/README.md") and not masuk("data/kajian-bnpb/keluaran/qa/a.md"), "catatan kerja"
-    assert not masuk("data/laporan-bnpb/harian-2026-11-05/Laporan 051126.gagal.pptx"), "keluaran gagal"
+    assert not masuk("data/kegiatan-bnpb/a/rapor-r1.md") and not masuk("data/laporan-bnpb/harian/2026-11/2026-11-05/README.md") and not masuk("data/kajian-bnpb/keluaran/qa/a.md"), "catatan kerja"
+    assert not masuk("data/laporan-bnpb/harian/2026-11/2026-11-05/Laporan 051126.gagal.pptx"), "keluaran gagal"
     assert kategori("data/templat-dokumen/Word/Template Surat.docx") == "templat" and kategori("data/kegiatan-bnpb/mou/Templat NK.docx") == "templat", "kategori template"
     assert masuk("data/kegiatan-bnpb/a/rapor.pdf") and masuk("data/kegiatan-bnpb/mou/PANDUAN-MOU-BNPB.md"), "catatan kerja, yang tetap masuk"
     assert masuk("public/panduan/sop.pdf") and masuk("docs/bnpb/A.md") and not masuk("docs/a.png"), "cakupan jenis"

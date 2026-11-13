@@ -8,8 +8,13 @@ import path from 'node:path'
 const AKAR = 'data/laporan-bnpb'
 
 test('halaman perusahaan hanya ada di deck penanganan 8 Nov 2026', () => {
-  const langgar = fs.readdirSync(AKAR)
-    .filter((d) => /^(satelit|harian)-\d{4}-\d{2}-\d{2}$/.test(d) && d !== 'satelit-2026-11-08')
+  // 13 Nov 2026: folder hari = <jenis>/<YYYY-MM>/<tanggal>; penanganan-karhutla dulu satelit-<tanggal>
+  const hari = ['penanganan-karhutla', 'harian'].flatMap((j) => fs.existsSync(path.join(AKAR, j))
+    ? fs.readdirSync(path.join(AKAR, j)).filter((b) => /^\d{4}-\d{2}$/.test(b))
+      .flatMap((b) => fs.readdirSync(path.join(AKAR, j, b)).filter((n) => /^\d{4}-\d{2}-\d{2}$/.test(n)).map((n) => path.join(j, b, n)))
+    : [])
+  const langgar = hari
+    .filter((d) => d !== path.join('penanganan-karhutla', '2026-11', '2026-11-08'))
     .flatMap((d) => fs.readdirSync(path.join(AKAR, d)).filter((f) => f.endsWith('.py')).map((f) => path.join(d, f)))
     .filter((f) => fs.readFileSync(path.join(AKAR, f), 'utf8').includes('perusahaan.tambah('))
   assert.deepEqual(langgar, [], 'buang import perusahaan dan halaman 4 ke atas di susun, bagian Perusahaan, dari salinan bingkai.py')

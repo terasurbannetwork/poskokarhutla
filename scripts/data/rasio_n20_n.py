@@ -12,11 +12,11 @@ Hari dibuang: jendelanya tidak seluruhnya ada di sumber (awal/akhir sumber), ata
 
 Sumber (tiga jenis, boleh dicampur; baris yang sama dari dua sumber dihitung sekali):
   --hotspot <hotspot.json>...   snapshot hotspot.json (git show <sha>:public/data/hotspot.json); cakupan = acuan - 7 hari + 6 jam .. acuan - 3 jam (lihat MARGIN_*)
-  --tar <firms-raw.tar.gz>      CSV FIRMS mentah per sensor per hari UTC (data/laporan-bnpb/satelit-*/firms-raw-*.tar.gz); hari UTC terakhir dianggap parsial
+  --tar <firms-raw.tar.gz>      CSV FIRMS mentah per sensor per hari UTC (data/laporan-bnpb/penanganan-karhutla/<YYYY-MM>/<tanggal>/firms-raw-*.tar.gz); hari UTC terakhir dianggap parsial
   --csv <berkas.csv>...         arsip FIRMS (firms.py; kolom satellite N/N20); cakupan = acq_date terkecil .. terbesar
-  --publik <J1_*.csv SUOMI_*.csv>  CSV 7 hari publik FIRMS (data/laporan-bnpb/satelit-2026-10-25/firms-7hari-publik-25okt-0721.tar.gz); hari pertama/terakhir parsial dibuang
+  --publik <J1_*.csv SUOMI_*.csv>  CSV 7 hari publik FIRMS (data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-25/firms-7hari-publik-25okt-0721.tar.gz); hari pertama/terakhir parsial dibuang
 PEMILIHAN KONSTANTA (pilih(), perintah `pilih`): `ukur` hanya memberi komponen Oktober (12 hari laporan, ~110 rb N). Jangka lebih panjang dari bulanan 2026 yang lengkap:
-Agu dan Sep (S-NPP: sejarah.json; N20: data/laporan-bnpb/metode-2026-10-25/kalibrasi_noaa.json bulan_2026_n20; satuan bulan WIB dan saringan sel industri/type sedikit beda, selisih
+Agu dan Sep (S-NPP: sejarah.json; N20: data/laporan-bnpb/kajian/metode-2026-10-25/kalibrasi_noaa.json bulan_2026_n20; satuan bulan WIB dan saringan sel industri/type sedikit beda, selisih
 <= 3% pada 130-200 rb titik per bulan). Jul tak dipakai (S-NPP nol 11-16 Jul), Mar-Jun tak dipakai (S-NPP diisi N20 x 0,978: melingkar), F20/4,3 tak dipakai (himpunan tahun
 beda). Agu memuat 3-4 Agu (S-NPP nol): N20 hari itu (perkiraan = N20 bulan x bagian lokasi unik 3-4 Agu di titik_hari/indeks.json) dibuang dari pembilang. Konstanta harian = rasio-dari-jumlah
 semua komponen; lokal = median jendela Oktober x (harian / rasio Oktober) (bentuk sebaran lokal diasumsikan sama, tingkatnya digeser ke jangka panjang). Masukan tercatat di
@@ -201,7 +201,7 @@ def bulanan(bulan, akar=None):
     sj = json.load(open(os.path.join(akar, "public/data/sejarah.json")))
     m = int(bulan[5:7])
     n = sum((v.get("2026") or [0] * 12)[m - 1] for v in sj["prov"].values())
-    n20 = json.load(open(os.path.join(akar, "data/laporan-bnpb/metode-2026-10-25/kalibrasi_noaa.json")))["bulan_2026_n20"][str(m)]
+    n20 = json.load(open(os.path.join(akar, "data/laporan-bnpb/kajian/metode-2026-10-25/kalibrasi_noaa.json")))["bulan_2026_n20"][str(m)]
     jml = json.load(open(os.path.join(akar, "public/data/titik_hari/indeks.json")))["jumlah"]
     total = sum(v for d, v in jml.items() if d.startswith(bulan))
     celah = round(n20 * sum(jml[d] for d in CELAH_SNPP_NOL.get(bulan, ())) / total)

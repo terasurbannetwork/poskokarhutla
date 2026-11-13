@@ -84,10 +84,11 @@ test("rincian kab: kecamatan digabung, desa dikelompokkan per kecamatan, histori
 test("laporan harian terbaru memperbarui Pantau Banjir: jalan.py memanggil dalops_banjir.py --unggah (pemilik 5 Nov 2026)", async () => {
   const {readdirSync} = await import("node:fs");
   const akar = new URL("../../data/laporan-bnpb/", import.meta.url);
-  // folder harian-YYYY-MM-DD dengan jalan.py, mulai 5 Nov 2026 (sebelumnya belum ada aturannya)
-  const hari = readdirSync(akar).filter(n => /^harian-\d{4}-\d{2}-\d{2}$/.test(n) && n >= "harian-2026-11-05").sort();
+  // folder harian/<YYYY-MM>/<tanggal> dengan jalan.py, mulai 5 Nov 2026 (sebelumnya belum ada aturannya; susunan folder 13 Nov 2026)
+  const hari = readdirSync(new URL("harian/", akar)).filter(b => /^\d{4}-\d{2}$/.test(b))
+    .flatMap(b => readdirSync(new URL(`harian/${b}/`, akar)).filter(n => /^\d{4}-\d{2}-\d{2}$/.test(n) && n >= "2026-11-05").map(n => `harian/${b}/${n}`)).sort();
   const terbaru = hari.reverse().find(n => { try { readFileSync(new URL(n + "/jalan.py", akar)); return true; } catch { return false; } });
-  assert.ok(terbaru, "tidak ada data/laporan-bnpb/harian-*/jalan.py sejak 5 Nov 2026");
+  assert.ok(terbaru, "tidak ada data/laporan-bnpb/harian/<YYYY-MM>/<tanggal>/jalan.py sejak 5 Nov 2026");
   assert.match(readFileSync(new URL(terbaru + "/jalan.py", akar), "utf8"), /dalops_banjir\.py['"],\s*['"]--unggah/,
     `${terbaru}/jalan.py tidak memanggil scripts/data/dalops_banjir.py --unggah: kondisi banjir WA tidak sampai ke /bnpb/dalops`);
 });

@@ -74,7 +74,7 @@ Input tidak memuat kode hex warna, nama font, atau ukuran huruf untuk deck. Yang
 - Kerjakan cepat dan ganti hanya bagian yang diminta. Contohnya, hanya slide data 1 dan 2.
 - Pastikan hasilnya benar, valid, dan lebih mendekati kebenaran.
 - Evaluasi juga metode hitung di website, bukan cuma deck, karena datanya diserahkan ke Presiden.
-- Simpan semua hasil di repo: deck, data mentah, skrip, verifikasi, dan evaluasi metode. Contohnya `data/laporan-bnpb/satelit-2026-10-21/`.
+- Simpan semua hasil di repo: deck, data mentah, skrip, verifikasi, dan evaluasi metode. Contohnya `data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/`.
 - Dahulukan PPT dari pekerjaan website, dan langsung kirim berkasnya.
 - Kalau pemilik bilang "Lu tentukan", putuskan sendiri dengan pegangan best practice.
 - Catat deck Penanganan di artifact sebagai deck utama dan pedoman ("kitab suci") yang terus diperbarui.

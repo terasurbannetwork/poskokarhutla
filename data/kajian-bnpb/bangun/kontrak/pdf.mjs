@@ -1,4 +1,4 @@
-// HTML lokal -> PDF A4 lewat Chromium headless (pola data/laporan-bnpb/harian-2026-10-23/peta.mjs).
+// HTML lokal -> PDF A4 lewat Chromium headless (pola data/laporan-bnpb/harian/2026-10/2026-10-23/peta.mjs).
 // Pakai: node pdf.mjs masuk.html [keluar.pdf]. Margin dari @page di HTML (tema.json).
 import path from 'node:path';
 import { chromium } from '/Users/alfatehanseptianta/Developer/worth-it/node_modules/playwright/index.mjs';

@@ -28,7 +28,7 @@ Catatan dari contoh yang menjadi pertanyaan pemilik (KEPUTUSAN):
 | Gempa per peristiwa (5.1) | `scripts/gempa/*` ke `public/gempa/data/*` | `gempa.yml` | Ada |
 | Status gunung api per tanggal (5.1) | `scripts/gunungapi/magma.py` ke `public/gunungapi/data/gunung.json`, `perubahan_level.json`, `riwayat_level.json` | `titik.yml`, `lintas.yml` | Ada; status "per 1 bulan berikutnya" ditangkap rakit tanggal 1 |
 | Kegiatan BNPB dan tautan (6, Lampiran) | belum ada panen siaran pers bnpb.go.id; `scripts/data/berita.py` hanya Google News karhutla | | Tidak ada (Q16) |
-| Kartu operasi: personel, armada, OMC, garam (2.4) | `omc_arsip.json`, `logbook_omc.json`, rekap manual `data/laporan-bnpb/omc-rekap/` | sebagian manual | Sebagian (Q15) |
+| Kartu operasi: personel, armada, OMC, garam (2.4) | `omc_arsip.json`, `logbook_omc.json`, rekap manual `data/laporan-bnpb/omc/rekap/` | sebagian manual | Sebagian (Q15) |
 | Peluang banjir dan longsor bulan depan per kab (7.1) | `public/data/logbook_riwayat.json` (kab x jenis x bulan per tahun, `tahun_penuh` 2014 sampai 2020, 2024, 2025, dibangun `scripts/data/logbook_bersih.py`); `outlook12.json`. Modul `/prediksi` tidak cocok: produknya +1 sampai +3 hari | diperbarui manual | Sebagian: data ada, hitungan peluang bulan depan per kab belum ada (Q12) |
 
 ## 3. Layar yang ada: `/laporan_bnpb`

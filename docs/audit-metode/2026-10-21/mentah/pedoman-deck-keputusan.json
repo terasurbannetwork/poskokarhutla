@@ -457,9 +457,9 @@
    "/Users/alfatehanseptianta/Downloads/Laporan Penanganan Pengendalian Karhutla 211026 v0.pptx (mtime 21 Okt 23:05; dipakai asisten sebagai deck acuan final)",
    "/Users/alfatehanseptianta/Downloads/Laporan Penanganan Pengendalian Karhutla 211026 v0.pdf (dicek dengan cmp: identik dengan salinan PDF final di repo)",
    "/Users/alfatehanseptianta/Downloads/Laporan Penanganan Pengendalian Karhutla 211026.pptx dan .pdf (mtime 21 Okt 22:00; tidak disebut di transkrip, kemungkinan cuplikan versi 4 slide, belum dipastikan)",
-   "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/satelit-2026-10-21/Laporan Penanganan Pengendalian Karhutla 211026 data satelit.pptx (final 3 slide, cut-off 22.33 WIB)",
-   "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/satelit-2026-10-21/Laporan Penanganan Pengendalian Karhutla 211026 data satelit.pdf",
-   "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/satelit-2026-10-21/ (README.md, ganti.py, tambah_peta.py, peta.mjs, hitung3.py, hitung_nasional.py, angka.json, angka_nasional.json, peta-20okt.png/svg, sumber-asli-BNPB-211026.pptx, firms-raw-15-21okt.tar.gz, verifikasi/)",
+   "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/Laporan Penanganan Pengendalian Karhutla 211026 data satelit.pptx (final 3 slide, cut-off 22.33 WIB)",
+   "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/Laporan Penanganan Pengendalian Karhutla 211026 data satelit.pdf",
+   "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/ (README.md, ganti.py, tambah_peta.py, peta.mjs, hitung3.py, hitung_nasional.py, angka.json, angka_nasional.json, peta-20okt.png/svg, sumber-asli-BNPB-211026.pptx, firms-raw-15-21okt.tar.gz, verifikasi/)",
    "/Users/alfatehanseptianta/Downloads/Laporan Penanganan  Pengendalian Karhutla 211026.pptx dan .pdf (sumber asli BNPB dari pemilik, masukan, bukan hasil)",
    "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/docs/audit-metode/2026-10-21/HASIL.md dan RINGKASAN-EKSEKUTIF.md (hasil evaluasi metode, bukan deck)"
   ]
@@ -720,8 +720,8 @@
    "API (dibuat sesi ini): /Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/src/laporan_bnpb.js",
    "MIGRASI D1 (dibuat sesi ini): /Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/migrations/0023_laporan_bnpb.sql",
    "UJI (dibuat sesi ini): /Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/tests/warga/laporan_bnpb.test.mjs",
-   "DATA CONTOH (dibuat sesi ini): /Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/harian-2026-10-19.json",
-   "DATA CONTOH (dibuat sesi ini): /Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/presiden-2026-10-20.json",
+   "DATA CONTOH (dibuat sesi ini): /Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/arsip/harian-2026-10-19.json",
+   "DATA CONTOH (dibuat sesi ini): /Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/arsip/presiden-2026-10-20.json",
    "CATATAN: ekspor uji pukul 14:00 WIB menghasilkan Laporan-Kejadian-Bencana-Harian-18-19-Okt-2026.pptx/.pdf (4 slide) dan Paparan-Kepala-BNPB-kepada-Presiden-Karhutla-20-Okt-2026.pptx/.pdf (7 slide) di peramban pratinjau. Keempatnya tidak tersimpan ke disk oleh sesi ini; Paparan-...-20-Okt-2026.pptx yang ada di Downloads bertanggal 20 Okt 11:18, sebelum sesi dimulai."
   ]
  },
@@ -756,7 +756,7 @@
   "berkas": [
    "/Users/alfatehanseptianta/Downloads/Laporan-Kejadian-Bencana-Harian-20-21-Okt-2026.pdf",
    "/Users/alfatehanseptianta/Downloads/Laporan-Kejadian-Bencana-Harian-20-21-Okt-2026.pptx",
-   "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/harian-2026-10-21.json"
+   "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/arsip/harian-2026-10-21.json"
   ]
  },
  {

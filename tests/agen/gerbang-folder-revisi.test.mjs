@@ -6,7 +6,14 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 const AKAR = 'data/laporan-bnpb'
-const hari = (awalan) => fs.readdirSync(AKAR).filter((d) => new RegExp(`^${awalan}-\\d{4}-\\d{2}-\\d{2}$`).test(d)).sort()
+// 13 Nov 2026: folder hari = <jenis>/<YYYY-MM>/<tanggal>; 'satelit' = penanganan-karhutla (nama lama dipertahankan di judul uji)
+const JENIS = { harian: 'harian', satelit: 'penanganan-karhutla' }
+const hari = (awalan) => {
+  const j = path.join(AKAR, JENIS[awalan])
+  if (!fs.existsSync(j)) return []
+  return fs.readdirSync(j).filter((b) => /^\d{4}-\d{2}$/.test(b))
+    .flatMap((b) => fs.readdirSync(path.join(j, b)).filter((n) => /^\d{4}-\d{2}-\d{2}$/.test(n)).map((n) => path.join(JENIS[awalan], b, n))).sort()
+}
 const LAPORAN = /^Laporan (Kejadian Bencana Harian|Penanganan Pengendalian Karhutla) \d{6}( \(rev\d+\)| \d{4})?\.(pptx|pdf)$/
 
 test('lewat_deck punya serah_revisi yang menulis ke folder Revisi N', () => {

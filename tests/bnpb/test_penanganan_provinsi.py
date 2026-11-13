@@ -4,7 +4,7 @@ import json, os, subprocess, sys, tempfile, unittest, zipfile
 
 AKAR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 GEN = os.path.join(AKAR, 'data', 'laporan-bnpb', 'generator')
-TEMPLAT = os.path.join(AKAR, 'data', 'laporan-bnpb', 'satelit-2026-10-21', 'sumber-asli-BNPB-211026.pptx')
+TEMPLAT = os.path.join(AKAR, 'data', 'laporan-bnpb', 'penanganan-karhutla', '2026-10', '2026-10-21', 'sumber-asli-BNPB-211026.pptx')
 KODE = sorted(json.load(open(os.path.join(AKAR, 'public/data/laporan.json')))['prov'])
 
 

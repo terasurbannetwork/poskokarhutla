@@ -2,13 +2,13 @@
 (+ luas dan belum per kabupaten -> public/data/peta_karhutla_kab.json, dan keempat metrik per kabupaten/kota + kecamatan -> peta_karhutla_wil.json,
 keduanya berdampingan dengan --keluar; ketiga berkas dibawa bersama, satu yang hilang/tak selaras = bangun ulang penuh)
 
-Metode "deck" (sama dengan deck BNPB 21 Okt 2026; rujukan data/laporan-bnpb/satelit-2026-10-21/hitung3.py, hitung_nasional.py, README.md):
+Metode "deck" (sama dengan deck BNPB 21 Okt 2026; rujukan data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21/hitung3.py, hitung_nasional.py, README.md):
 - provinsi = wilayah.Wilayah().cari(lon, lat)[0]; hari = hari kalender WIB (UTC+7) dari acq_date + acq_time.
 - hot   = LOKASI UNIK per hari WIB menurut scripts/data/titik_unik.py (keputusan pemilik 25 Okt 2026): M, S-NPP, NOAA-20, NOAA-21, semua keyakinan (titik_unik.KEYAKINAN_MIN, sejak 28 Okt 2026; dulu sedang/tinggi),
   tanpa sel industri; sel kisi titik_unik.sel dihitung sekali per hari, wilayah = deteksi paling awal. Aturannya DIIMPOR, bukan disalin. Sengaja tidak sama dengan SiPongi/GIS BNPB
   (titik mentah semua keyakinan; deck 21 Okt). Tidak ada seri "lokasi" lain: hot sendiri adalah lokasi unik. N21 selalu ikut, jadi pensiun S-NPP (SNPP_AKHIR) tidak mematahkan seri.
 - luas  = (n_N20 x F20 + n_N21 x F21) / 2, n_* = titik NOAA-20 / NOAA-21 berkeyakinan n/h; F20 = 4,12 ha, F21 = 4,16 ha per titik (kalibrasi langsung per satelit,
-  keputusan pemilik 25 Okt 2026; sumber angka: data/laporan-bnpb/metode-2026-10-25/kalibrasi_noaa.py + kalibrasi_noaa.json = luas resmi BNPB 2019-2025 dibagi
+  keputusan pemilik 25 Okt 2026; sumber angka: data/laporan-bnpb/kajian/metode-2026-10-25/kalibrasi_noaa.py + kalibrasi_noaa.json = luas resmi BNPB 2019-2025 dibagi
   titik N20 n/h per tahun, median 4,12; N21 2024-2025 median 4,16; uji Jan-Jul 2026 vs SiPongi 202.011 ha: lihat UJI_SIPONGI, cara lama (PORSI x 4,3) +20%).
   SARINGAN: titik di sel sumber panas tetap (titik_palsu.sel_industri(): smelter, tambang, kilang, pembangkit, lepas pantai; kawah tidak) dibuang dari hot
   DAN dari det (luas, belum, padam, dan pengecekan "bertahan"; keputusan pemilik 25 Okt 2026), SAMA dengan yang dipakai kalibrasi_noaa.py untuk faktor, karena faktor dibagi titik tersaring. Tanpa saringan
@@ -79,10 +79,10 @@ HOT = {"N", "N20", "Terra", "Aqua"}        # sensor hitungan utama (tanpa N21)
 G = 0.003375                               # sisi sel ~375 m
 LEBAR = 8192                               # kemasan sel: round(lon/G) * LEBAR + round(lat/G) + LEBAR/2 (lat/G ada di -3400..1930)
 NB = [i * LEBAR + j for i in (-1, 0, 1) for j in (-1, 0, 1)]
-# Luas per titik, kalibrasi langsung per satelit (keputusan pemilik 25 Okt 2026). SUMBER: data/laporan-bnpb/metode-2026-10-25/kalibrasi_noaa.py -> kalibrasi_noaa.json
+# Luas per titik, kalibrasi langsung per satelit (keputusan pemilik 25 Okt 2026). SUMBER: data/laporan-bnpb/kajian/metode-2026-10-25/kalibrasi_noaa.py -> kalibrasi_noaa.json
 # (F20 = median 2019-2025 luas resmi BNPB / titik N20 n/h tanpa sel sumber panas tetap = 4,12; F21 = median 2024-2025 = 4,16; bulat 2 desimal). Uji: UJI_SIPONGI.
 F20, F21 = 4.12, 4.16
-# Luas per LOKASI UNIK untuk "belum" (keputusan pemilik 9 Nov 2026). SUMBER: data/laporan-bnpb/metode-2026-10-25/kalibrasi_lokasi.py -> kalibrasi_lokasi.json:
+# Luas per LOKASI UNIK untuk "belum" (keputusan pemilik 9 Nov 2026). SUMBER: data/laporan-bnpb/kajian/metode-2026-10-25/kalibrasi_lokasi.py -> kalibrasi_lokasi.json:
 # F_LOK = median 2024-2025 dari luas resmi BNPB / jumlah lokasi-hari setahun (sel 375 m yang terdeteksi NOAA-20 atau NOAA-21 n/h pada hari WIB itu, sekali per sel per hari,
 # di dalam batas wilayah, tanpa sel sumber panas tetap) = 2,254 (2024: 2,152; 2025: 2,356), dibulatkan 2 desimal. Bukan F20/2: luas lama dihitung per DETEKSI (sel yang dilihat
 # dua satelit terhitung dua kali), belum per LOKASI. Uji Jan-Jul 2026 atas SELURUH lokasi-hari (bukan hanya yang belum padam): 93.505 x 2,25 = 210.386 ha vs SiPongi 202.011 ha (+4,1%); 2,25 belum pernah diuji khusus untuk himpunan belum padam.
@@ -1014,7 +1014,7 @@ def ukur_statis(baris, wil, hari):
 
 
 # ---------------------------------------------------------------- uji (tanpa jaringan)
-FIKSTUR = os.path.join(AKAR, "data/laporan-bnpb/satelit-2026-10-21")
+FIKSTUR = os.path.join(AKAR, "data/laporan-bnpb/penanganan-karhutla/2026-10/2026-10-21")
 
 
 def baris_deck(jalur_tar):

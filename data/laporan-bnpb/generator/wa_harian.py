@@ -194,7 +194,7 @@ def bmkg(teks):
 def uji():
     k = koordalops(open(os.path.join(DI, 'contoh', 'koordalops_241026.txt')).read())
     assert (k['laporan'], k['menonjol'], k['mulai'], k['sampai']) == (23, 17, '2026-10-23 07.00', '2026-10-24 07.00'), (k['laporan'], k['menonjol'])
-    isi = json.load(open(os.path.join(DI, '..', 'harian-2026-10-24.json')))['isi']['kejadian']
+    isi = json.load(open(os.path.join(DI, '..', 'arsip/harian-2026-10-24.json')))['isi']['kejadian']
     a = sorted((x['jenis'], x['prov'], x['lokasi'], x['status']) for x in k['kejadian'])
     b = sorted((x['jenis'], x['prov'], x['lokasi'], x['status']) for x in isi)
     assert a == b, f'beda dengan isian 24 Okt:\n  urai  {sorted(set(a) - set(b))}\n  isian {sorted(set(b) - set(a))}'
@@ -217,7 +217,7 @@ def uji():
                      '* Pengungsi: 26 jiwa mengungsi ke rumah saudara\n* Kerusakan: 13 unit rumah RB, 76 unit RS, 15 unit tumah RR\n* Kondisi Mutakhir: surut\n')['kejadian'][0]   # 12 Nov: butir terpisah
     assert (g12['angka']['mengungsi'], g12['angka']['rumah']) == (26, 104), g12['angka']
     print('uji lolos: 23 laporan, 17 kejadian sama dengan isian 24 Okt; BMKG', len(w['pm']), 'stasiun')
-    f3 = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'harian-2026-11-03', 'wa-koordalops.txt')
+    f3 = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'harian/2026-11/2026-11-03', 'wa-koordalops.txt')
     if os.path.exists(f3):   # 3 Nov: salah ketik "Logsor", judul tanpa "di", "±8.5 ha", MD pada cuaca ekstrem, "org hilang"
         k = {(x['jenis'], x['lokasi']): x['angka'] for x in koordalops(open(f3, encoding='utf-8').read())['kejadian']}
         assert k[('longsor', 'Simalungun')]['kk'] == 90 and k[('karhutla', 'Kolaka Timur')]['ha'] == 8.5, k

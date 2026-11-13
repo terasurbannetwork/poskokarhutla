@@ -1,0 +1,58 @@
+{
+ "format": "harian",
+ "pesan_kunci": "Laporan Kejadian Bencana Harian, 12-11-2026.",
+ "judul_dokumen": "Laporan Kejadian Bencana Harian",
+ "kajian": "rehab",
+ "tanggal": "2026-11-12",
+ "slide": [
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\harian\\2026-11\\2026-11-12\\Laporan Kejadian Bencana Harian 121126 Lampiran (isi).pptx",
+   "sumber": "GIS BNPB, prakiraan banjir dan longsor 11 Nov 2026 14.28 WIB",
+   "halaman": 7
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\harian\\2026-11\\2026-11-12\\Laporan Kejadian Bencana Harian 121126 Lampiran (isi).pptx",
+   "sumber": "GIS BNPB, prakiraan banjir dan longsor 11 Nov 2026 14.28 WIB",
+   "halaman": 8
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\harian\\2026-11\\2026-11-12\\Laporan Kejadian Bencana Harian 121126 Lampiran (isi).pptx",
+   "sumber": "GIS BNPB, prakiraan banjir dan longsor 11 Nov 2026 14.28 WIB",
+   "halaman": 9
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\harian\\2026-11\\2026-11-12\\Laporan Kejadian Bencana Harian 121126 Lampiran (isi).pptx",
+   "sumber": "GIS BNPB, prakiraan banjir dan longsor 11 Nov 2026 14.28 WIB",
+   "halaman": 10
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\harian\\2026-11\\2026-11-12\\Laporan Kejadian Bencana Harian 121126 Lampiran (isi).pptx",
+   "sumber": "GIS BNPB, prakiraan PM2,5 (CAMS) 12 sampai 14 Nov 2026; kategori ISPU PM2,5",
+   "halaman": 11
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\harian\\2026-11\\2026-11-12\\Laporan Kejadian Bencana Harian 121126 Lampiran (isi).pptx",
+   "sumber": "GIS BNPB, indeks cuaca kebakaran (FWI) dari data sistem",
+   "halaman": 12
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\harian\\2026-11\\2026-11-12\\Laporan Kejadian Bencana Harian 121126 Lampiran (isi).pptx",
+   "sumber": "BMKG, peringatan gelombang dan banjir rob berlaku 12 Nov 2026",
+   "halaman": 13
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\harian\\2026-11\\2026-11-12\\Laporan Kejadian Bencana Harian 121126 Lampiran (isi).pptx",
+   "sumber": "BMKG, peringatan gelombang dan banjir rob berlaku 12 Nov 2026",
+   "halaman": 14
+  }
+ ],
+ "panel_sisi": "gelap"
+}

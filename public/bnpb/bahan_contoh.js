@@ -1,5 +1,5 @@
 /* Isian contoh tombol dummy halaman /bnpb/bahan (Super Admin): angka nyata laporan 3 Nov 2026
-   (data/laporan-bnpb/harian-2026-11-03/wa-*.txt) dan satgas 2 Nov 2026 (satelit-2026-11-02/wa-satgas.txt). Tidak menulis D1. */
+   (data/laporan-bnpb/harian/2026-11/2026-11-03/wa-*.txt) dan satgas 2 Nov 2026 (satelit-2026-11-02/wa-satgas.txt). Tidak menulis D1. */
 const kej = (jenis, prov, kab, baru, o) => ({jenis, prov, kab, baru, status_darurat: "", pendampingan: "", detail: "Entri contoh (dummy)", ...o});
 export const CONTOH = {
   rekap_koordalops_24: {sampai: "2026-11-03", laporan: 26, kejadian: [

@@ -150,7 +150,7 @@
      "pengganti": "https://web-aviation.bmkg.go.id/"
     }
    ],
-   "koreksi": "Repo terkonfirmasi:\n- metar.py:3 mencatat WIJJ, WAGG, WIOK, dan lainnya tidak ada di feed.\n- Flag 'asap' menghitung FU dan HZ sama.\n- laporan_udara.py:143 mengambil 10 bandara pertama.\n- Tabel 'bandara' di laporan.json tidak memuat WIPP Palembang 1,6 km FU.\n- data/laporan-bnpb/presiden-2026-10-20.json baris 146 dan 556: Ketapang dan Singkawang tutup.\n\nNOTAM memang diterbitkan AirNav Indonesia (contoh NOTAM C1086/26 untuk WICC, 6 Sep 2026). Ditjen Hubud meminta operator menerbitkan NOTAM untuk kabut asap 13-17 Okt 2026. Endpoint NOTAM yang bisa dipanen mesin belum ditemukan."
+   "koreksi": "Repo terkonfirmasi:\n- metar.py:3 mencatat WIJJ, WAGG, WIOK, dan lainnya tidak ada di feed.\n- Flag 'asap' menghitung FU dan HZ sama.\n- laporan_udara.py:143 mengambil 10 bandara pertama.\n- Tabel 'bandara' di laporan.json tidak memuat WIPP Palembang 1,6 km FU.\n- data/laporan-bnpb/arsip/presiden-2026-10-20.json baris 146 dan 556: Ketapang dan Singkawang tutup.\n\nNOTAM memang diterbitkan AirNav Indonesia (contoh NOTAM C1086/26 untuk WICC, 6 Sep 2026). Ditjen Hubud meminta operator menerbitkan NOTAM untuk kabut asap 13-17 Okt 2026. Endpoint NOTAM yang bisa dipanen mesin belum ditemukan."
   },
   {
    "indeks": 11,

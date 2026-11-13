@@ -1,0 +1,137 @@
+{
+ "format": "kajian",
+ "pesan_kunci": "Laporan Situasi dan Kondisi Wilayah Terdampak Banjir, 02-11-2026.",
+ "judul_dokumen": "Laporan Situasi dan Kondisi Wilayah Terdampak Banjir",
+ "kajian": "rehab",
+ "tanggal": "2026-11-02",
+ "slide": [
+  {
+   "jenis": "sampul",
+   "layout": "putih",
+   "foto": [
+    "D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/mingguan/2026-11-02/banjir/bahan/sampul.jpg"
+   ],
+   "kredit": "Foto: Nasution007, CC BY-SA 4.0, Wikimedia Commons",
+   "kota": "Jakarta",
+   "judul_sampul": "Laporan Situasi dan Kondisi Wilayah Terdampak Banjir",
+   "subjudul": "Senin, 26 Oktober s.d. Minggu, 1 November 2026",
+   "penyaji": {
+    "nama": "Tim Ahli dan Tim Sus IT BNPB",
+    "jabatan": "Badan Nasional Penanggulangan Bencana"
+   },
+   "kepada": "Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana"
+  },
+  {
+   "jenis": "daftar-isi"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-02\\banjir\\Paparan Situasi Banjir Sepekan 021126 (isi).pptx",
+   "halaman": 1,
+   "bagian": 1,
+   "sumber": "Logbook Pusdalops BNPB, Laporan Harian Dit. Koordalops BNPB 26 Okt s.d. 2 Nov 2026, dan Simulasi Internal Banjir BNPB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-02\\banjir\\Paparan Situasi Banjir Sepekan 021126 (isi).pptx",
+   "halaman": 2,
+   "bagian": 1,
+   "sumber": "Logbook Pusdalops BNPB, Laporan Harian Dit. Koordalops BNPB 26 Okt s.d. 2 Nov 2026, dan Simulasi Internal Banjir BNPB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-02\\banjir\\Paparan Situasi Banjir Sepekan 021126 (isi).pptx",
+   "halaman": 3,
+   "bagian": 2,
+   "sumber": "Logbook Pusdalops BNPB, Laporan Harian Dit. Koordalops BNPB 26 Okt s.d. 2 Nov 2026, dan Simulasi Internal Banjir BNPB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-02\\banjir\\Paparan Situasi Banjir Sepekan 021126 (isi).pptx",
+   "halaman": 4,
+   "bagian": 3,
+   "sumber": "Logbook Pusdalops BNPB, Laporan Harian Dit. Koordalops BNPB 26 Okt s.d. 2 Nov 2026, dan Simulasi Internal Banjir BNPB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-02\\banjir\\Paparan Situasi Banjir Sepekan 021126 (isi).pptx",
+   "halaman": 5,
+   "bagian": 3,
+   "sumber": "Logbook Pusdalops BNPB, Laporan Harian Dit. Koordalops BNPB 26 Okt s.d. 2 Nov 2026, dan Simulasi Internal Banjir BNPB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-02\\banjir\\Paparan Situasi Banjir Sepekan 021126 (isi).pptx",
+   "halaman": 6,
+   "bagian": 3,
+   "sumber": "Logbook Pusdalops BNPB, Laporan Harian Dit. Koordalops BNPB 26 Okt s.d. 2 Nov 2026, dan Simulasi Internal Banjir BNPB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-02\\banjir\\Paparan Situasi Banjir Sepekan 021126 (isi).pptx",
+   "halaman": 7,
+   "sumber": "Logbook Pusdalops BNPB, Laporan Harian Dit. Koordalops BNPB 26 Okt s.d. 2 Nov 2026, dan Simulasi Internal Banjir BNPB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-02\\banjir\\Paparan Situasi Banjir Sepekan 021126 (isi).pptx",
+   "halaman": 8,
+   "sumber": "Logbook Pusdalops BNPB, Laporan Harian Dit. Koordalops BNPB 26 Okt s.d. 2 Nov 2026, dan Simulasi Internal Banjir BNPB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-02\\banjir\\Paparan Situasi Banjir Sepekan 021126 (isi).pptx",
+   "halaman": 9,
+   "sumber": "Logbook Pusdalops BNPB, Laporan Harian Dit. Koordalops BNPB 26 Okt s.d. 2 Nov 2026, dan Simulasi Internal Banjir BNPB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-02\\banjir\\Paparan Situasi Banjir Sepekan 021126 (isi).pptx",
+   "halaman": 10,
+   "sumber": "Logbook Pusdalops BNPB, Laporan Harian Dit. Koordalops BNPB 26 Okt s.d. 2 Nov 2026, dan Simulasi Internal Banjir BNPB"
+  },
+  {
+   "jenis": "impor",
+   "pptx": "D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\mingguan\\2026-11-02\\banjir\\Paparan Situasi Banjir Sepekan 021126 (isi).pptx",
+   "halaman": 11,
+   "sumber": "Logbook Pusdalops BNPB, Laporan Harian Dit. Koordalops BNPB 26 Okt s.d. 2 Nov 2026, dan Simulasi Internal Banjir BNPB"
+  },
+  {
+   "jenis": "penutup",
+   "layout": "putih",
+   "foto": [
+    "D:/Project/Work/BNPB/poskokarhutla/data/laporan-bnpb/mingguan/2026-11-02/banjir/bahan/sampul.jpg"
+   ],
+   "kredit": "Foto: Nasution007, CC BY-SA 4.0, Wikimedia Commons"
+  }
+ ],
+ "bagian": [
+  {
+   "judul": "Situasi banjir sepekan",
+   "label": "Situasi banjir sepekan",
+   "halaman_tetap": [
+    3,
+    4
+   ]
+  },
+  {
+   "judul": "Banjir yang sudah surut",
+   "label": "Banjir yang sudah surut",
+   "halaman_tetap": [
+    5
+   ]
+  },
+  {
+   "judul": "Prakiraan dan tindak lanjut",
+   "label": "Prakiraan dan tindak lanjut",
+   "halaman_tetap": [
+    6,
+    7,
+    8
+   ]
+  }
+ ],
+ "panel_sisi": "gelap",
+ "subjek_dokumen": "Paparan Situasi Banjir Mingguan",
+ "skala_logo_bnpb": 1.1
+}

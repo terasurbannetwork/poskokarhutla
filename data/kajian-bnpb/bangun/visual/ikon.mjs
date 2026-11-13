@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {REPO, T, V, Kanvas, ukuran, f2, lebar, tumpang} from './dasar.mjs';
 
-const DECK = 'data/laporan-bnpb/harian-2026-10-23/ikon.mjs';
+const DECK = 'data/laporan-bnpb/harian/2026-10/2026-10-23/ikon.mjs';
 const deck = Object.fromEntries([...fs.readFileSync(path.join(REPO, DECK), 'utf8').matchAll(/^\s+(\w+): '(<.+>)',$/gm)].map(m => [`deck:${m[1]}`, m[2]]));
 // path Lucide dan khusus dari registri tema.json glif (satu sumber untuk DOCX, deck, web; D-25); 'deck:' dari ikon.mjs deck harian
 export const GLIF = {...deck, ...Object.fromEntries(Object.entries(T.glif).filter(([k]) => !k.startsWith('_')))};

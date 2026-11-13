@@ -77,8 +77,8 @@ python3 harian.py --tanggal 2026-10-25 --koordalops wa_koordalops.txt --bmkg wa_
   dengan `FIRMS_MAP_KEY` dari `.env`.
 
 ```powershell
-$env:PYTHONUTF8=1; C:\Python314\python data\laporan-bnpb\harian-2026-10-29\jalan.py
-C:\Python314\python data\laporan-bnpb\generator\pdf.py "data\laporan-bnpb\harian-2026-10-29\Laporan Kejadian Bencana Harian 291026.pptx"
+$env:PYTHONUTF8=1; C:\Python314\python data\laporan-bnpb\harian\2026-10\2026-10-29\jalan.py
+C:\Python314\python data\laporan-bnpb\generator\pdf.py "data\laporan-bnpb\harian\2026-10\2026-10-29\Laporan Kejadian Bencana Harian 291026.pptx"
 ```
 
 Aturan pemilik yang dikunci di kode: status karhutla ikut sisa belum padam data kita; provinsi berstatus Prioritas di website wajib masuk;
@@ -99,7 +99,7 @@ hari laporan; kolom D-2, D-1, D dengan D = hari laporan, angka D sementara s.d. 
 kalimat Firespot dan "Angka D sementara" dibuang pemilik 27 Okt 2026); tabel punya **empat** kelompok berbintang, tiga hari
 masing-masing (urutan HOTSPOT, FIRESPOT, LUAS TERBAKAR, BELUM PADAM, sama dengan slide peta); halaman "Operasi Penanganan Karhutla"
 **dibuang** (sumbernya teks WA satgas, tidak ada untuk hari lampau), kecuali teks WA satgas hari itu diberikan lewat `--operasi wa.txt`
-(27 Okt 2026; contoh `../satelit-2026-10-27/wa-satgas.txt`). Tanpa pil CUT OFF DATA sejak 9 Nov 2026: jam data cukup di kaki Sumber
+(27 Okt 2026; contoh `../penanganan-karhutla/2026-10/2026-10-27/wa-satgas.txt`). Tanpa pil CUT OFF DATA sejak 9 Nov 2026: jam data cukup di kaki Sumber
 (`lewat_deck.buang_pil_cutoff`, gerbang `tests/agen/gerbang-penanganan-tanpa-pil.test.mjs`).
 
     cd data/laporan-bnpb/generator
@@ -121,7 +121,7 @@ masing-masing (urutan HOTSPOT, FIRESPOT, LUAS TERBAKAR, BELUM PADAM, sama dengan
 
 ### Halaman perusahaan dan konsesi (hanya deck 081126)
 
-Halaman top 10 perusahaan, pemegang saham asing, dan lampiran 99 perusahaan dibuat khusus untuk deck 8 Nov 2026 (`../satelit-2026-11-08/perusahaan.py`). Pemilik 9 Nov: untuk
+Halaman top 10 perusahaan, pemegang saham asing, dan lampiran 99 perusahaan dibuat khusus untuk deck 8 Nov 2026 (`../penanganan-karhutla/2026-11/2026-11-08/perusahaan.py`). Pemilik 9 Nov: untuk
 tanggal lain seperti biasa. Saat menyalin `bingkai.py` 8 Nov ke hari baru, buang `import perusahaan`, bagian Perusahaan, dan halaman 4 ke atas di `susun`. Gerbang:
 `tests/agen/gerbang-perusahaan-sekali.test.mjs`.
 
@@ -129,7 +129,7 @@ tanggal lain seperti biasa. Saat menyalin `bingkai.py` 8 Nov ke hari baru, buang
 
 Lampiran "Rincian Kabupaten/Kota Enam Provinsi" dibuat 5 Nov 2026 atas permintaan pemilik dan Bang Ghozi, karena angka per provinsi
 bisa menyesatkan. Pada 6 Nov pemilik minta lampiran itu dihapus dari deck ("lampirannya hapus aja"), jadi lampiran hanya dipasang bila
-diminta lagi. Skrip terakhirnya ada di `../satelit-2026-11-06/` (`lampiran_hitung.py`, `lampiran_slide.py`, `ikon-kepala/`). Untuk
+diminta lagi. Skrip terakhirnya ada di `../penanganan-karhutla/2026-11/2026-11-06/` (`lampiran_hitung.py`, `lampiran_slide.py`, `ikon-kepala/`). Untuk
 memakainya lagi, salin ketiganya ke folder hari laporan, ganti tanggal dan jam cut-off di kedua skrip, lalu jalankan berurutan:
 
 1. `jalan.py` hari itu. Skrip ini menyiapkan salinan `web/` dan deck generator.
@@ -146,14 +146,14 @@ memakainya lagi, salin ketiganya ke folder hari laporan, ganti tanggal dan jam c
      Pada kedua versi, total provinsi di slide 2 dibagi ke kab/kota sesuai porsi itu, dengan pembulatan sisa terbesar. Assert
      memastikan jumlah per provinsi sama persis dengan slide 2.
 3. `lampiran_slide.py` menggambar lampiran dengan mesin `harian.Deck`, memakai templat dan ikon dari folder kerja deck harian hari yang
-   sama (`../harian-YYYY-MM-DD/kerja-DDMMYY`; deck harian hari itu harus sudah dibangun). Hasilnya `lampiran-kab.pptx` dan
+   sama (`../harian/YYYY-MM/YYYY-MM-DD/kerja-DDMMYY`; deck harian hari itu harus sudah dibangun). Hasilnya `lampiran-kab.pptx` dan
    `lampiran-kab-halaman.json`. Gayanya: dua kolom per halaman, kepala kolom berupa kotak berwarna seperti slide 2 (hotspot navy,
    firespot merah, luas abu-biru, belum padam oranye, masing-masing berikon), angka polos rata tengah, nilai 0 abu, baris induk provinsi
    lalu anak kab/kota, dan kotak KETERANGAN di bawah.
 4. Di `bingkai.py`, tambahkan halaman impor ke `susun`:
    `[{'jenis': 'impor', 'pptx': 'lampiran-kab.pptx', 'halaman': n, 'sumber': SG + '; luas dan belum padam per kab/kota dibagi dari
    angka provinsi slide 2 sesuai sebaran titik'} for n in json.load(open('lampiran-kab-halaman.json'))]`.
-   Contohnya ada di `../satelit-2026-11-05/bingkai.py`.
+   Contohnya ada di `../penanganan-karhutla/2026-11/2026-11-05/bingkai.py`.
 
 ## Penanganan banjir, longsor dan rob
 
