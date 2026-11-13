@@ -5,6 +5,7 @@
 | NK payung BNPB dan Kemdiktisaintek | `Draf NK BNPB dan Kemdiktisaintek 021126.docx/.pdf` | 15 | 8 | Logo BNPB dan logo Kemdiktisaintek |
 | NK BNPB dan BRIN | `Draf NK BNPB dan BRIN 021126.docx/.pdf` | 15 | 7 | Logo BNPB dan logo BRIN |
 | Templat NK BNPB dan Perguruan Tinggi | `Templat NK BNPB dan Perguruan Tinggi 021126.docx/.pdf` | 14 | 7 | Logo BNPB dan logo kampus |
+| Templat Perjanjian Kerahasiaan (NDA) BNPB dan Perguruan Tinggi | `Templat Perjanjian Kerahasiaan BNPB dan Perguruan Tinggi 131126.docx/.pdf` | 17 | 7 | Logo BNPB dan logo kampus |
 
 Diselaraskan 12 Nov 2026 dengan deck baseline `data/kegiatan-bnpb/kajian-ajuan-program-pt/ajuan-program-kerja-sama-301026/` (rev5). Keputusan pemilik hari itu: semua naskah berkop logo BNPB (logo mitra diisi kemudian), dan naskah perguruan tinggi tanpa kata "koordinator".
 
@@ -15,6 +16,7 @@ cd penyusun
 NODE_PATH=~/laporan_bulanan/node_modules node nk_payung_kemdiktisaintek.js
 NODE_PATH=~/laporan_bulanan/node_modules node nk_brin.js
 NODE_PATH=~/laporan_bulanan/node_modules node nk_kampus.js
+NODE_PATH=~/laporan_bulanan/node_modules node nda_kampus.js
 ```
 
 `penyusun/package.json` menandai skrip sebagai CommonJS karena `package.json` repo bertipe module.
@@ -61,3 +63,9 @@ Kerangka di Lampiran A deck analisis memuat 14 pasal untuk payung dan 12 pasal u
 - Kop ketiga naskah: logo BNPB di kiri, logo mitra di kanan (sebelumnya payung dan BRIN berisian Lambang Negara). PANDUAN mencatat naskah antarlembaga pemerintah lazim berlambang negara; bila Biro HOK meminta itu, ganti kop payung dan BRIN.
 - Payung Kemdiktisaintek: konsiderans baru huruf e (kerja sama masih per kampus, belum satu kerangka nasional); tujuan huruf d (pengabdian dan kerelawanan); ruang lingkup memuat 15 program deck (modul baku MK, kuliah umum Kepala BNPB, KKN di desa rawan, Bank Masalah, hibah riset bersama, DIBI dan InaRISK, Korps Relawan terdaftar, satgas mahasiswa-alumni-PT, IKD, forum tahunan dan jurnal, riset dengan mitra luar negeri); pasal baru 4 Peran Para Pihak (peran Kemdiktisaintek dari halaman mitra deck: dorong MK kebencanaan, pengakuan SKS, skema pendanaan riset dan pengabdian, sebaran lewat LLDIKTI, ditulis tanpa nama program supaya tidak usang); pasal 6 Pelaksanaan Regional dan Tematik menggantikan pasal Perguruan Tinggi Koordinator; pasal Perubahan dilebur ke Lain-lain supaya tetap 15 pasal.
 - Templat kampus: nama berkas dan isi tanpa "koordinator"; ruang lingkup mengikuti empat pilar; pasal 4 Peran Para Pihak menggantikan Peran Perguruan Tinggi Koordinator.
+
+## Perjanjian Kerahasiaan per perguruan tinggi (13 Nov 2026)
+
+Pemilik: tiap perguruan tinggi tidak hanya MoU, tetapi juga perjanjian kerahasiaan (NDA). Templat `nda_kampus.js` timbal balik (BNPB membuka data kebencanaan dan data pribadi; kampus membuka data riset dan rancangan inovasi), mengikat, dan ditandatangani bersama NK pada hari yang sama. Berlaku sepanjang NK dan menaungi semua PKS turunannya; kerahasiaan bertahan 5 tahun setelah berakhir, data pribadi dan informasi yang dikecualikan tanpa batas waktu. Dasar: UU 14/2008, UU 27/2022, Peraturan BNPB 1/2023.
+
+Perlu diputus Biro HOK: kode nomor perjanjian BNPB, forum sengketa bila musyawarah gagal (draf: Pengadilan Negeri Jakarta Timur, berstabilo), pejabat penghubung kerahasiaan (draf: Kepala Pusdatinkom), dan apakah penanda tangannya Kepala BNPB dan Rektor atau cukup pejabat yang dilimpahi.
