@@ -343,5 +343,24 @@
    "95": "WIT",
    "96": "WIT"
   }
+ },
+ "rute": {
+  "_label": "ALGORITMA §7c, dasar H sampai BMKG memberi pola tabur baku",
+  "masuk_nm": {
+   "nilai": 10,
+   "dasar": "H"
+  },
+  "kaki_nm": {
+   "nilai": 10,
+   "dasar": "H"
+  },
+  "jarak_kaki_nm": {
+   "nilai": 3,
+   "dasar": "H"
+  },
+  "angin_tenang_ms": {
+   "nilai": 1.0,
+   "dasar": "H"
+  }
  }
 }

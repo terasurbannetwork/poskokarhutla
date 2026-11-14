@@ -27,6 +27,7 @@ terbaik seperti ini", "Coba buat tiket dan lain-lain design system dll. Seperti 
 | S8 | 14 Nov 2026 | Q13: base OMC di luar Sumatera dan Kalimantan menunggu daftar dari BMKG; sampai itu bawaan sementara Q13 berlaku. | "Nanti saja dari BMKG" |
 | S9 | 14 Nov 2026 | Pemilik menyerahkan keputusan: semua tiket dijalankan sampai selesai, dan pertanyaan terbuka yang tidak butuh data atau akun dari luar diputuskan penyusun dengan bawaan [SEMENTARA]-nya. Yang tetap menunggu pihak luar: daftar base BMKG (Q13), muatan armada (Q15), akun GSMaP/Earthdata, penerapan migrasi produksi. | "tolong lu yang putuskan ya jalankan semua" |
 | S10 | 14 Nov 2026 | OMC berangkat dari **bandara terdekat** (base `op_base` + 136 bandara BMKG di `scripts/cuaca/data/bandara.json`), **tanpa batas jelajah base**. Menggantikan bawaan Q2 dan Q13: tanda "di luar jelajah" dihapus; zona di Sulawesi sampai Papua bisa langsung jadi target renlap. | "kalo dari bandara terdekat? ... kalo OMC gausah ada batas jelajah base" |
+| S11 | 14 Nov 2026 | Renlap OMC **halaman tersendiri** per zona (`/renlap-omc?zona=…`, `public/renlap_omc.*`), terpisah dari renlap patroli dan water bombing per base: peta rute, sasaran, ketinggian, bahan, jumlah, tabel leg, KML, GPX. Tautannya di kartu Rekomendasi seksi Peluang semai. | "Renlapnya tersendiri ya" |
 
 ## Keputusan rancangan (dibuat penyusun paket dari riset, boleh dibatalkan pemilik)
 

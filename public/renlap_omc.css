@@ -1,0 +1,11 @@
+/* Renlap OMC per zona semai (public/renlap_omc.js), di atas renlap_cetak.css: hanya tambahan. */
+.alat .tombol{margin-left:auto;display:flex;gap:8px}
+.alat .tombol button{margin-left:0}
+.alat .tombol button:not(#cetak){background:rgb(255 255 255 / .14);color:#fff}
+.sasaran{display:grid;grid-template-columns:34mm 1fr;font-size:7.6pt}
+.sasaran dt{padding:1.6mm 3mm;color:#5b6b82;font-weight:600;border-bottom:1px solid #e6ebf1}
+.sasaran dd{margin:0;padding:1.6mm 3mm;border-bottom:1px solid #e6ebf1}
+tr.tabur td{background:#fff6ed}
+.bul.h{background:#0284c7;border-radius:1px;transform:rotate(45deg)}
+.bul.h>span{transform:rotate(-45deg)}
+.peta.sisip{height:52mm;border-radius:0}

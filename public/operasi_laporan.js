@@ -98,8 +98,8 @@
     requestAnimationFrame(pasangPeta);
   }
   let semaiMuat = null;   // modul seksi Peluang semai dimuat malas saat #semai pertama dibuka
-  const muatSemai = () => semaiMuat ||= (() => { if (!document.querySelector('link[href^="/operasi_semai.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/operasi_semai.css?v=2"; document.head.append(l); }
-    return muatSkrip("/operasi_semai_murni.js?v=2").then(() => muatSkrip("/operasi_semai.js?v=2")); })();
+  const muatSemai = () => semaiMuat ||= (() => { if (!document.querySelector('link[href^="/operasi_semai.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/operasi_semai.css?v=3"; document.head.append(l); }
+    return muatSkrip("/operasi_semai_murni.js?v=2").then(() => muatSkrip("/operasi_semai.js?v=3")); })();
   const pindahSeksi = k => { seksiPilih[st.mode] = k; try { if (k === "semai" || location.hash === "#semai") history.replaceState(null, "", k === "semai" ? "#semai" : location.pathname + location.search); } catch (e) {} try { localStorage.setItem("ops_seksi_" + st.mode, k); } catch (e) {} terapSeksi(); const u = $("#opsLaporan .ops-utama"); if (u) { u.scrollTop = 0; u.scrollIntoView({block: "nearest"}); } };
   const pilKategori = m => `<div class="seg ops-kat" role="group" aria-label="Kategori informasi">${KATEGORI_MODE[m].map(([k, t, ik]) => `<button type="button" data-kat="${k}" aria-pressed="${k === katPilih[m]}">${lbl(ik, t)}</button>`).join("")}</div>`;
   /* hanya atribut hidden, tanpa render ulang (INP) */

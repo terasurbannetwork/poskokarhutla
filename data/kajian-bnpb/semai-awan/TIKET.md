@@ -21,7 +21,7 @@ ditulis "berhenti".
 | ----- | --- | ------- | -------------------- | -------- |
 | SA-07 | Migrasi | `migrations/0129_semai_target.sql` (nomor diperiksa ulang) | `warga-api` → `migrasi-idempoten` | – |
 | SA-08 | Rute berkas dan target | `src/operasi_semai.js` (baca R2 berdaftar tetap, target), digabung `src/worker.js`; uji RENCANA-UJI §4 | `warga-api` → `guard-api`, `security-reviewer` | Q3 (bawaan) |
-| SA-09 | Target dan rute di renlap | blok Renlap Operasi Udara menampilkan target OMC dari zona; rute terbang OMC ALGORITMA §7c (CP base, titik masuk, pola tabur, kembali) di halaman cetak renlap (`public/renlap_cetak.*`), KML, GPX, dan pratinjau garis rute di peta seksi semai | `layar-peta` + `pipa-data` → `selera-angka` | SA-08 |
+| SA-09 | Target dan rute di renlap | rute terbang OMC ALGORITMA §7c (CP base, titik masuk, pola tabur, kembali) di halaman renlap OMC tersendiri `/renlap-omc` (`public/renlap_omc.*`, S11), KML, GPX, dan pratinjau garis rute di peta seksi semai | `layar-peta` + `pipa-data` → `selera-angka` | SA-08 |
 
 Migrasi produksi diterapkan pemilik.
 

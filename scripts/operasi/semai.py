@@ -156,6 +156,15 @@ def uji():
     K = lambda lcl, elev: M.ketinggian_kaki(lcl, elev, M.nilai(b, "ketinggian.lcl_min_m"), M.nilai(b, "ketinggian.lcl_maks_m"),
                                             M.nilai(b, "ketinggian.bulat_kaki"), M.nilai(b, "ketinggian.m_ke_kaki"))
     ok(K(1200, 50) == 4000 and K(250, 0) is None and K(3100, 0) is None, "ketinggian")
+    # rute OMC §7c: titik masuk 10 NM sebelum zona, kaki tabur 10 NM melintang angin, berjarak 3 NM, kembali ke base
+    import renlap
+    la, lo = M.titik_dari(0.0, 110.0, 90, 60)
+    ok(abs(la) < 1e-9 and abs(renlap.jarak_nm(0.0, 110.0, la, lo) - 60) < 0.01, "titik_dari")
+    rt = M.titik_rute_omc((0.0, 110.0), (0.0, 111.0), 0.0, 10, 10, 3, renlap.baringan)
+    ok(len(rt) == 7 and rt[0] == rt[6] and abs(renlap.jarak_nm(*rt[1], 0.0, 111.0) - 10) < 0.01, "rute: titik masuk 10 NM")
+    ok(abs(renlap.jarak_nm(*rt[2], *rt[3]) - 10) < 0.05 and abs(renlap.jarak_nm(*rt[3], *rt[4]) - 3) < 0.05, "rute: kaki 10 NM, jarak 3 NM")
+    ok(abs(renlap.baringan(*rt[2], *rt[3]) % 180 - 90) < 1, "rute: angin ke utara, kaki melintang timur-barat")
+    ok(renlap.jarak_nm(*rt[1], *rt[2]) < renlap.jarak_nm(*rt[1], *rt[3]), "rute: kaki pertama dari ujung terdekat titik masuk")
     ok(M.ada_inversi([300, 299, 301, 290]) and not M.ada_inversi([300, 298, 295]), "inversi")
     # dataran tinggi: 1000 hPa di bawah tanah (gh 100 < elev 600) dibuang; inversi semu di bawah tanah tak dihitung
     ok(M.ada_inversi([290, 295, 293, 290], [100, 800, 1500, 3000], 0) and not M.ada_inversi([290, 295, 293, 290], [100, 800, 1500, 3000], 600),
@@ -704,7 +713,41 @@ def rakit_zona(ctx, ev, k, s, huruf, skor_mat, mode, lengkap=True, hati_hati=Fal
     z["jumlah"] = {"muatan": "muatan armada belum diisi" if not b["muatan_kg"] else None, "armada_siap": None,
                    "armada_label": "armada siap belum diketahui, dihitung 1",
                    "sortie": M.jumlah_sortie(jmenit, menit, ms, 1), "sortie_tanpa_batas_armada": M.jumlah_sortie(jmenit, menit, ms, 10 ** 6)}
+    z["rute"] = rute_omc(ctx, bid, lat, lon, u, v, kaki)
     return z
+
+
+def rute_omc(ctx, bid, lat, lon, u, v, kaki):
+    """ALGORITMA §7c: rute satu sortie OMC base -> titik masuk -> dua kaki tabur melintang angin -> base, pakai renlap.py."""
+    import math
+    import renlap
+    b, bd = ctx.b, ctx.bandara[bid]
+    vor_b = ctx.base.get(bid) or {}
+    vor = (vor_b["vor_lat"], vor_b["vor_lon"]) if vor_b.get("vor_lat") is not None else None
+    dk = json.load(open(os.path.join(REPO, "scripts/operasi/bobot_renlap.json"), encoding="utf-8"))["deklinasi_timur_derajat"]["bawaan"]
+    angin_ke = math.degrees(math.atan2(u, v)) % 360 if (u * u + v * v) ** 0.5 >= n_(b, "rute.angin_tenang_ms") else None
+    pts = M.titik_rute_omc((bd["lat"], bd["lon"]), (lat, lon), angin_ke, n_(b, "rute.masuk_nm"), n_(b, "rute.kaki_nm"),
+                           n_(b, "rute.jarak_kaki_nm"), renlap.baringan)
+    nama = [f"Base {bd['nama']}", "Titik masuk", "Awal kaki tabur 1", "Akhir kaki tabur 1", "Awal kaki tabur 2", "Akhir kaki tabur 2",
+            f"Kembali ke base {bd['nama']}"]
+    cp = []
+    for i, (la, lo) in enumerate(pts):
+        c = {"kode": f"CP{i}", "nama": nama[i], "lat": round(la, 5), "lon": round(lo, 5), "dms": renlap.dms(la, lo)}
+        if vor:
+            r, j = renlap.radial_jarak(vor, la, lo, dk)
+            c.update({"radial": r, "jarak_vor_nm": round(j, 1), "vor": vor_b.get("vor_kode")})
+        cp.append(c)
+    kt = n_(b, "terbang.jelajah_kmj") / 1.852
+    leg = []
+    for i in range(len(pts) - 1):
+        nm = renlap.jarak_nm(*pts[i], *pts[i + 1])
+        hb = renlap.baringan(*pts[i], *pts[i + 1])
+        leg.append({"dari": f"CP{i}", "ke": f"CP{i + 1}", "nm": round(nm, 1), "haluan_benar": round(hb) % 360 or 360,
+                    "haluan_magnet": round((hb - dk) % 360) % 360 or 360, "menit": max(1, round(nm / kt * 60)),
+                    "tabur": i in (2, 4), "kaki": kaki if 1 <= i <= 4 else None})
+    return {"cp": cp, "leg": leg, "nm": round(sum(x["nm"] for x in leg), 1), "menit": sum(x["menit"] for x in leg),
+            "jelajah_kt": round(kt), "angin_ke": None if angin_ke is None else round(angin_ke), "deklinasi_timur": dk,
+            "perkiraan": True}
 
 
 def zona_dari(ctx, ev, skor_mat, mode, lengkap=True, hati_hati=False, huruf_awal=0, jauhi=()):

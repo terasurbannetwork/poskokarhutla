@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Renlap OMC, Centurisk97</title>
+<link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="/renlap_cetak.css?v=3" rel="stylesheet">
+<link href="/renlap_omc.css?v=1" rel="stylesheet">
+</head>
+<body>
+<header class="alat">
+  <b>Renlap OMC</b>
+  <label>Zona <select id="zona" aria-label="Pilih zona semai"></select></label>
+  <span id="info" class="info"></span>
+  <span class="tombol">
+    <button type="button" id="kml">Unduh KML</button>
+    <button type="button" id="gpx">Unduh GPX</button>
+    <button type="button" id="cetak">Cetak atau simpan PDF</button>
+  </span>
+</header>
+<p id="pesan" class="pesan" role="status">Memuat renlap OMC…</p>
+<main id="isi"></main>
+<script src="/renlap_omc.js?v=1"></script>
+</body>
+</html>

@@ -281,7 +281,7 @@ Aturan berhentinya sama dengan §2.1. Riwayat append-only; status tidak pernah m
 Sebelum menyentuh zona semai awan (OMC), awan layak semai, prakiraan asap 24 jam untuk seksi ini, tampilan Pos komando, Tinjau BMKG, Mitra, atau target renlap dari zona, baca dokumen di
 `data/kajian-bnpb/semai-awan/` dengan urutan otoritas ini (kode di `scripts/operasi/semai*` milik `pipa-data`; `scripts/udara/lintasan.py` milik `cuaca-udara`; `public/operasi_semai*` milik `layar-peta`; `src/operasi_semai.js` dan migrasi `op_semai_target` milik `warga-api`):
 
-1. `KEPUTUSAN-SEMAI.md`: keputusan pemilik S1–S9, rancangan D1–D10, pertanyaan terbuka Q1–Q17 dengan bawaan sementara; menang atas semuanya.
+1. `KEPUTUSAN-SEMAI.md`: keputusan pemilik S1–S11, rancangan D1–D10, pertanyaan terbuka Q1–Q17 dengan bawaan sementara; menang atas semuanya.
 2. `RISET.md` (+ `riset/R1-R3`: sains semai, data dan model, cerna Nimbus), 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md` (gerbang, Q D T, zona, asap, uji prospektif), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`SA-*`), `GLOSARIUM.md`.
 

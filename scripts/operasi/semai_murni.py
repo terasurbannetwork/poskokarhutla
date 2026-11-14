@@ -232,6 +232,32 @@ def arah_8(dari_lat, dari_lon, ke_lat, ke_lon):
     return "dari " + ARAH8[int(((b % 360) + 22.5) // 45) % 8]
 
 
+def titik_dari(lat, lon, baringan_derajat, nm):
+    """Titik tujuan dari (lat, lon) pada baringan benar dan jarak mil laut (bola, R 3440,065 NM)."""
+    d, t, p1, l1 = nm / 3440.065, math.radians(baringan_derajat), math.radians(lat), math.radians(lon)
+    p2 = math.asin(math.sin(p1) * math.cos(d) + math.cos(p1) * math.sin(d) * math.cos(t))
+    l2 = l1 + math.atan2(math.sin(t) * math.sin(d) * math.cos(p1), math.cos(d) - math.sin(p1) * math.sin(p2))
+    return math.degrees(p2), (math.degrees(l2) + 540) % 360 - 180
+
+
+def titik_rute_omc(base, zona, angin_ke, masuk_nm, kaki_nm, jarak_kaki_nm, baringan_fn):
+    """ALGORITMA §7c: CP0 base, CP1 titik masuk (masuk_nm sebelum zona di garis base-zona), CP2-CP5 dua kaki tabur melintang
+    angin pengarah (panjang kaki_nm, berjarak jarak_kaki_nm, berpusat di zona), CP6 base. angin_ke = arah angin bertiup (derajat)
+    atau None bila tenang; tanpa angin, kaki melintang garis base-zona. Kaki pertama mulai dari ujung yang lebih dekat CP1."""
+    b_bz = baringan_fn(base[0], base[1], zona[0], zona[1])
+    masuk = titik_dari(zona[0], zona[1], (b_bz + 180) % 360, masuk_nm)
+    sepanjang = angin_ke if angin_ke is not None else b_bz
+    lintang = (sepanjang + 90) % 360
+    def geser(al, li):
+        t = titik_dari(zona[0], zona[1], sepanjang if al >= 0 else (sepanjang + 180) % 360, abs(al))
+        return titik_dari(t[0], t[1], lintang if li >= 0 else (lintang + 180) % 360, abs(li))
+    h, k = jarak_kaki_nm / 2, kaki_nm / 2
+    a1, a2, b1, b2 = geser(-h, -k), geser(-h, k), geser(h, k), geser(h, -k)
+    d = lambda p: haversine(masuk[0], masuk[1], p[0], p[1])
+    kaki = [a1, a2, b1, b2] if d(a1) <= d(a2) else [a2, a1, b2, b1]
+    return [tuple(base), masuk, *kaki, tuple(base)]
+
+
 def menit_terbang(km, jelajah_kmj, bulat):
     return int(math.floor(km / jelajah_kmj * 60.0 / bulat + 0.5) * bulat)
 

@@ -68,7 +68,7 @@
       <button type="button" class="sm-koor" data-sm-salin="${esc(M.salinKoordinat(z.lat, z.lon))}" title="Klik untuk menyalin koordinat"><span>${esc(M.dms(z.lat, z.lon))}</span><span>${esc(M.desimal(z.lat, z.lon))}</span></button>
       ${alasan ? `<h5 class="sm-sub">Alasan</h5><ul class="sm-alasan">${alasan}</ul>` : ""}
       <h5 class="sm-sub">Untuk renlap</h5><div class="sm-renlap">${renlap}</div>
-      <button type="button" class="sm-tombol" data-sm-target ${sdh ? "disabled" : ""}>${sdh ? "Sudah jadi target renlap" : "Jadikan target renlap"}</button>`;
+      <div class="sm-aksi"><button type="button" class="sm-tombol" data-sm-target ${sdh ? "disabled" : ""}>${sdh ? "Sudah jadi target renlap" : "Jadikan target renlap"}</button>${z.rute ? `<a class="sm-tombol-garis" href="/renlap-omc?zona=${encodeURIComponent(z.id)}" target="_blank" rel="noopener" title="Renlap OMC zona ini: rute terbang, ketinggian, bahan, PDF, KML, GPX">${lb("unduh", "Renlap OMC")}</a>` : ""}</div>`;
   }
   const daftarZona = () => { const zs = st.data?.zona || [];
     return zs.length ? zs.map((z, i) => `<button type="button" class="sm-zr" data-sm-zona="${i}" aria-current="${i === st.zona}"><b class="sm-zl">${esc(z.huruf)}</b><span><strong>${esc(z.prov || "")}</strong><small>terbang ${esc(M.jendela(z).replace(/ (WIB|WITA|WIT)$/, ""))}${z.kota ? `, dekat ${esc(z.kota)}` : ""}</small>${z.base?.nama ? `<small>dari ${esc(z.base.nama)}${z.base.icao ? ` (${esc(z.base.icao)})` : ""}${z.base.menit != null ? `, sekitar ${M.fmt(z.base.menit)} menit` : ""}</small>` : ""}${z.ketinggian?.teks ? `<small>${esc(z.ketinggian.teks.replace(/ \(dasar awan perkiraan\)/, ""))}</small>` : ""}${pilTanda(z) ? `<span class="sm-tt">${pilTanda(z)}</span>` : ""}</span><code>${M.fmt(z.skor, 2)}</code></button>`).join("")
@@ -161,6 +161,7 @@
       peta.addSource("sm-pengarah", {type: "geojson", data: fc([])}); garis("sm-pengarah", 1, "#8a94a6"); peta.addSource("sm-anginAsap", {type: "geojson", data: fc([])}); garis("sm-anginAsap", 1, "#a88b5a");
       peta.addSource("sm-hujan", {type: "geojson", data: fc((d.zona || []).filter(z => z.hujan).map(z => ({type: "Feature", properties: {}, geometry: {type: "LineString", coordinates: [[z.lon, z.lat], [z.hujan.lon, z.hujan.lat]]}})))}); garis("sm-hujan", 1.5, "#a63a26", [3, 2]);
       peta.addSource("sm-asal", {type: "geojson", data: fc([])}); garis("sm-asal", 1.5, "#6e5426", [2, 2]);
+      peta.addSource("sm-rute", {type: "geojson", data: ruteFc(zonaTerpilih())}); garis("sm-rute", 2, "#f97316", [3, 2]);
       peta.addSource("sm-api", {type: "geojson", data: fc((d.cluster || []).filter(c => c.lat != null).map(c => ({type: "Feature", properties: {mw: c.frp24 || 0}, geometry: {type: "Point", coordinates: [c.lon, c.lat]}})))});
       peta.addLayer({id: "sm-api", type: "circle", source: "sm-api", paint: {"circle-radius": ["case", [">", ["get", "mw"], 40], 6, 3], "circle-color": ["case", [">", ["get", "mw"], 40], "#d7301f", "#f28c28"], "circle-stroke-color": "#fff", "circle-stroke-width": 1, "circle-opacity": .9}});
       for (const [k, id] of [["api", "sm-api"], ["pengarah", "sm-pengarah"], ["anginAsap", "sm-anginAsap"]]) peta.setLayoutProperty(id, "visibility", st.tampak[k] ? "visible" : "none");
@@ -174,6 +175,8 @@
     for (const j of ["awan", "asap"]) { const im = new Image(); im.onerror = () => { st.ada[j] = false; const cb = $(`[data-sm-lap="${j === "awan" ? "awan" : "asap"}"]`, akar); if (cb) { cb.classList.add("sm-mati"); cb.title = "belum tersedia"; cb.querySelector("input").disabled = true; } if (peta.getLayer("sm-" + j)) peta.setLayoutProperty("sm-" + j, "visibility", "none"); }; im.src = urlR(j, L()[st.i]); }
   }
   const terapMarker = () => { const a = st.tampak; st.mk.zona.forEach((m, i) => { m.getElement().hidden = !a.zona || (st.luar && !M.teramati(st.data.zona[i])); }); for (const m of [...st.mk.base, ...st.mk.kota]) m.getElement().hidden = !a.kota; };
+  /* pratinjau rute OMC zona terpilih (ALGORITMA §7c, dihitung semai.py) */
+  const ruteFc = z => fc(z?.rute ? [{type: "Feature", properties: {}, geometry: {type: "LineString", coordinates: z.rute.cp.map(c => [c.lon, c.lat])}}] : []);
   const pilihMarker = () => st.mk.zona.forEach((m, i) => m.getElement().classList.toggle("sm-pilih", i === st.zona));
   function gantiRaster() { const l = L()[st.i], p = st.peta; if (!p?.getSource) return;
     for (const j of ["awan", "asap"]) if (st.tampak[j] && st.ada[j] && st.terap[j] !== l && p.getSource("sm-" + j)) { p.getSource("sm-" + j).updateImage({url: urlR(j, l), coordinates: KOOR}); st.terap[j] = l; } }
@@ -182,7 +185,7 @@
   function setLangkah(i) { st.i = Math.max(0, Math.min(L().length - 1, i)); catJam(); if (!st.rf) st.rf = requestAnimationFrame(() => { st.rf = 0; gantiRaster(); gantiAngin(); }); }
   function pilihZona(i) { if (!st.data?.zona?.[i]) return; st.zona = i;
     akar.querySelectorAll("[data-sm-zona]").forEach(b => b.setAttribute("aria-current", String(+b.dataset.smZona === i))); pilihMarker();
-    requestAnimationFrame(() => { const z = zonaTerpilih(), rek = $("#smRek .ex-bd", akar); if (rek) rek.innerHTML = rekomendasi(); setLangkah(idxLangkah(z.langkah)); st.peta?.easeTo({center: [z.lon, z.lat], zoom: Math.max(st.peta.getZoom(), 6.5), duration: 600}); }); }
+    requestAnimationFrame(() => { const z = zonaTerpilih(), rek = $("#smRek .ex-bd", akar); if (rek) rek.innerHTML = rekomendasi(); st.peta?.getSource("sm-rute")?.setData(ruteFc(z)); setLangkah(idxLangkah(z.langkah)); st.peta?.easeTo({center: [z.lon, z.lat], zoom: Math.max(st.peta.getZoom(), 6.5), duration: 600}); }); }
   function pilihKota(i) { const k = st.data?.asap?.kota?.[i]; if (!k) return; st.kota = i;
     akar.querySelectorAll("[data-sm-kota]").forEach(b => b.setAttribute("aria-current", String(+b.dataset.smKota === i)));
     if (!st.tampak.asap && st.ada.asap) setLapis("asap", true);

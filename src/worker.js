@@ -706,6 +706,7 @@ export const HTML_RUTE = [
   [/^\/laporan-konsesi\/?$/, "/laporan_konsesi.html", "/laporan-konsesi"],   // laporan konsesi terbakar 2026, hanya *.workers.dev   // laporan harian karhutla (public/laporan.*)
   [/^\/presiden\/?$/, "/presiden.html", "/presiden"],
   [/^\/renlap-cetak\/?$/, "/renlap_cetak.html", "/renlap-cetak"],   // renlap rute udara siap cetak per base (public/renlap_cetak*, pola renlap_pdf.py); di centurisk97.id wajib masuk   // panel publik agregat karhutla untuk dashboard presiden (public/presiden*); boleh di-iframe dari domain mana pun
+  [/^\/renlap-omc\/?$/, "/renlap_omc.html", "/renlap-omc"],   // renlap OMC per zona semai (public/renlap_omc*, data/kajian-bnpb/semai-awan SA-09)
   [/^\/uji-lapangan\/?$/, "/instansi_uji.html", "/uji-lapangan"],   // protokol + hasil uji lapangan karhutla (public/instansi_uji*, src/uji_lapangan.js); di centurisk97.id wajib masuk
   [/^\/kabar\/?$/, "/kabar.html", "/kabar"],   // kabar api prioritas per kabupaten, diteruskan Pusdalops ke WA BPBD (public/kabar*, data scripts/data/kabar_kab.py)
   [/^\/laporan-bnpb\/?$/, "/laporan_bnpb.html", "/laporan-bnpb"],
