@@ -15,7 +15,7 @@ KOREKSI = {'Kota. ': 'Kota ', 'Supit Urung': 'Supit Urang', 'Kota Parepare': 'Ko
 
 
 def kode_prov(nama):
-    n = re.sub(r'\s+', ' ', nama.replace('Prov.', '').strip()).lower()
+    n = re.sub(r'\s+', ' ', re.sub(r'^\s*(Prov\.|Provinsi)\s*', '', nama, flags=re.I).strip()).lower()   # WA 14 Nov: "Provinsi Sumatera Utara"
     n = {'kepulauan bangka belitung': 'kep. bangka belitung', 'bangka belitung': 'kep. bangka belitung', 'ntt': 'nusa tenggara timur', 'ntb': 'nusa tenggara barat', 'diy': 'di yogyakarta', 'daerah istimewa yogyakarta': 'di yogyakarta', 'd.i yogyakarta': 'di yogyakarta', 'd.i. yogyakarta': 'di yogyakarta', 'dki jakarta': 'dki jakarta'}.get(n, n)
     if n not in _PROV:
         raise ValueError(f'provinsi tidak dikenal: {nama!r}')

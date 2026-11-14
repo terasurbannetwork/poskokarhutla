@@ -178,3 +178,16 @@ cd data/laporan-bnpb/generator
 - Arsip `hari/` baru mulai 27 Okt 2026, jadi hari sebelum itu tidak bisa dibuat.
 - Python yang dipakai harus versi 3.12 ke atas dan punya Pillow; subprosesnya ikut memakai python yang sama.
 - Peta digambar lewat playwright. Kalau browser bawaan playwright tidak ada, yang dipakai Google Chrome yang terpasang.
+
+## Situasi Banjir per provinsi (templat, 14 Nov 2026)
+
+Tiruan halaman banjir deck "Situasi Banjir dan Bencana Lain 091126": slide 1 sudah banjir (peta + tabel + kondisi
+mutakhir), slide 2 prakiraan N hari (paling banyak 6), slide 3 kab/kota Awas/Siaga di provinsi lain (hanya bila ada).
+
+```bash
+~/.claude/skills/ppt-konsultan/bnpb/.venv/bin/python situasi_banjir.py --prov Aceh --hari 6 --tanggal 2026-11-14
+```
+
+WA Koordalops dibaca dari `../harian-*/wa-koordalops.txt` (14 hari terakhir); WA yang belum tersimpan ditambah lewat
+`--wa <berkas>`. Status N hari dihitung ulang dengan aturan `scripts/banjir/status.py` (empat hari pertama dicek sama
+dengan `status.json` situs). Keluaran `../situasi-banjir-<tanggal>/`; jalankan `aturan_slide.py` sebelum dikirim.
