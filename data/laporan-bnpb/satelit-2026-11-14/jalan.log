@@ -1,0 +1,16 @@
+website: harian30 2026-11-14T17:57+07:00 | peta_karhutla 2026-11-14T17:58+07:00 s.d. 2026-11-13 | hotspot.json titik terakhir 2026-11-14T07:37:00+00:00 | belum_kini 2026-11-14T17:58+07:00
+uji luas 2026-11-13: sendiri 2028 ha vs website 2022 ha; beda > 5 ha: tidak ada
+VERSI per sekarang | 2026-11-14 s.d. data terakhir: luas 2593 ha, padam 1848 ha belum padam 791 ha
+SEGAR 2026-11-14 s.d. 18:00 {'hot': 1381, 'luas': 2581, 'belum': 790, 'padam': 1852}
+penjaga situs: data situs s.d. 14 Nov 14.37 WIB, 1 dari 1804 titik FIRMS belum masuk (0%)
+6 provinsi tabel (hotspot 2026-11-14 ): ['64', '74', '53', '72', '82', '93'] [311, 186, 137, 120, 103, 93]
+selisih hotspot sendiri vs website (hari, prov, sendiri, website): [('2026-11-11', '33', 5, 4), ('2026-11-11', '34', 0, 1), ('2026-11-11', '53', 96, 95), ('2026-11-11', '73', 58, 57), ('2026-11-11', '74', 271, 272), ('2026-11-11', '82', 123, 121), ('2026-11-11', '93', 813, 812), ('2026-11-12', '53', 150, 151), ('2026-11-12', '62', 35, 36), ('2026-11-12', '72', 116, 115), ('2026-11-12', '74', 243, 242), ('2026-11-12', '82', 41, 42), ('2026-11-13', '53', 168, 169), ('2026-11-13', '74', 140, 139), ('2026-11-13', '81', 82, 83)] (15 sel)
+firespot website 2026-11-14 nasional 298
+sel ok 72 beda 0 | jumlah cocok
+ok /Users/priyankaalfatehan28/Developer/poskokarhutla/data/laporan-bnpb/satelit-2026-11-14/Laporan Penanganan Pengendalian Karhutla 141126.pptx | 2026-11-14 s.d. 18:00 WIB: hot 1381 firespot 298 luas 2022 belum 790 | 6 teratas ['64', '74', '53', '72', '82', '93']
+website: harian30 2026-11-14T12:59+07:00 | peta_karhutla 2026-11-14T13:01+07:00 s.d. 2026-11-13 | hotspot.json titik terakhir 2026-11-14T00:20:00+00:00 | belum_kini 2026-11-13T22:01+07:00
+uji luas 2026-11-13: sendiri 2028 ha vs website 2022 ha; beda > 5 ha: tidak ada
+VERSI hari utuh (belum_kini 2026-11-14 belum terbit) | 2026-11-14 s.d. data terakhir: luas 528 ha, padam 1932 ha 
+SEGAR 2026-11-14 s.d. 18:00 {'hot': 1381, 'luas': 2581, 'belum': 790, 'padam': 1852}
+penjaga situs: data situs s.d. 14 Nov 07.20 WIB, 1446 dari 1804 titik FIRMS belum masuk (80%)
+titik.yml sudah jalan, ditunggu 43587527689

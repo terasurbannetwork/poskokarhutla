@@ -108,6 +108,27 @@ test("tab Karhutla: angka dari peta_karhutla_kab (luas/belum hari terakhir, tida
   assert.deepEqual(K.perluDitanya(baris, h).map(x => [x.nama, x.umur]), [["Kapuas", 1]], "Kapuas berkabar 3 Nov, data 4 Nov: ditanya; Seruyan padam: tidak");
 });
 
+test("tab Karhutla ikut pemilih periode (pemilik 13 Nov 2026): N hari terakhir atau rentang tanggal, angka tetap hari akhir jendela", () => {
+  const K = globalThis.DalopsKarhutla;
+  const hari = ["2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-10-31", "2026-11-01", "2026-11-02", "2026-11-03", "2026-11-04"];
+  const kab = {hari, kab: {
+    "62|Kapuas": {nama: "Kapuas", prov: "62", d: [[6, 900, 700], [7, 1200, 900], [8, 1400, 1000], [9, 1534, 1086]]},
+    "15|Lama": {nama: "Lama", prov: "15", d: [[1, 10, 5]]}}};
+  const kabar = [{kab_kode: ["62|Kapuas"], terakhir: "2026-11-03", surut: false, kondisi: "b"}];
+  // hari ini saja: satu hari log, Lama di luar
+  const a = K.rakit(kab, kabar, {hari: 1});
+  assert.deepEqual([a.hari, a.dari, a.lebar, a.baris.map(x => x.nama)], ["2026-11-04", "2026-11-04", 1, ["Kapuas"]]);
+  // 30 hari: data cuma 10 hari, Lama ikut dan sudah padam di akhir jendela
+  const b = K.rakit(kab, kabar, {hari: 30});
+  assert.deepEqual([b.dari, b.lebar, b.baris.map(x => [x.nama, x.padam])], ["2026-10-26", 10, [["Kapuas", false], ["Lama", true]]]);
+  // rentang 27 Okt sampai 1 Nov: hari akhir 1 Nov, angka Kapuas hari itu, kabar 3 Nov (sesudah jendela) tidak dipakai
+  const c = K.rakit(kab, kabar, {dari: "2026-10-27", sampai: "2026-11-01"});
+  assert.deepEqual([c.hari, c.lebar], ["2026-11-01", 6]);
+  assert.deepEqual(c.baris.map(x => [x.nama, x.luas, x.belum, x.lama, x.kabar]), [["Kapuas", 900, 700, 1, null], ["Lama", 0, 0, 0, null]], "Lama terbakar 27 Okt, padam di akhir jendela");
+  // sampai melewati data: dipotong ke hari data terakhir
+  assert.equal(K.rakit(kab, kabar, {dari: "2026-11-01", sampai: "2026-12-31"}).hari, "2026-11-04");
+});
+
 test("kata per jenis: teks WA dan daftar kurang longsor tanpa tinggi genangan; status.json kolom l untuk longsor", () => {
   const x = {nama: "Kab. Gayo Lues", mulai: "2026-11-04", terakhir: "2026-11-04", kurang: [], mengungsi: 5};
   const wa = H.pesanWA(x, H.KATA.longsor);

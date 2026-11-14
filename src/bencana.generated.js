@@ -16,6 +16,7 @@ export default {
         "ringkasan",
         "peta",
         "operasi",
+        "dalops",
         "insight",
         "saham",
         "berita",

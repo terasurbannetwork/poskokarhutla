@@ -821,3 +821,70 @@ h1.dl-l1{margin:0;padding:12px 16px;border-radius:14px;background:#0b2545;color:
 .dl-pop-kab>.dl-pop-kontak{padding:10px 14px 12px;border-top:1px solid var(--line);background:#fafbfd}
 .dl-pop-kab .dl-pop-tombol a,.dl-pop-kab .dl-pop-rinci{padding:8px;border-radius:9px;font-size:.75rem}
 .dl-pop-kab .dl-pop-rinci{background:#fff;box-shadow:inset 0 0 0 1px #d6dce6;color:#0b2545}
+/* rentang tanggal pilihan sendiri di samping pemilih periode (pemilik 13 Nov 2026) */
+.dl-per-rentang{display:inline-flex;align-items:center;gap:6px;margin-left:4px;padding-left:8px;border-left:1px solid #d6dce6}
+.dl-per-rentang[hidden]{display:none}
+.dl-per-tgl{border:0;background:none;color:#0b2545;font:700 .75rem var(--font);padding:4px 2px;cursor:pointer}
+.dl-per-tgl:focus-visible{outline:2px solid #0b2545;outline-offset:1px;border-radius:5px}
+.dl-per-sd{color:#5b6b85;font-weight:600}
+/* tren kejadian per tahun dan per periode (dalops_tren.js, pemilik 13 Nov 2026), meniru kartu tren titik panas layar peta */
+.dl-tren-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+.dl-tren-grid.satu{grid-template-columns:minmax(0,1fr)}
+@media (max-width:900px){.dl-tren-grid{grid-template-columns:minmax(0,1fr)}}
+.dl-tren-k{display:flex;flex-direction:column;gap:6px;padding:14px;border:1px solid #dbe5f3;border-radius:14px;background:#fff;color:#0b2545}
+.dl-tren-j{font:700 .8125rem var(--font);color:#0b2545}
+.dl-tren-k svg{display:block;overflow:visible}
+.dl-tren-b{cursor:default}
+.dl-tren-leg{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:4px 8px;font-size:.6875rem;color:#5b6b85}
+.dl-tren-leg b{color:#0b2545;margin-right:8px}
+.dl-tren-garis{width:14px;height:0;border-top:2px dashed #1d4e89}
+.dl-tren-pudar{width:10px;height:10px;border-radius:2px;background:#9db6d6;opacity:.35}
+.dl-tren-ring{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;align-items:center;margin-top:4px;padding:10px 12px;border-radius:12px;border:1px solid #f3cfc6;background:#fdf3f0}
+.dl-tren-ring.turun{border-color:#bfe0dc;background:#eff8f7}
+.dl-tren-ring-k{display:flex;flex-direction:column;gap:1px;padding-right:14px;border-right:1px solid #e3d6d2}
+.dl-tren-ring-k span{font-size:.625rem;font-weight:800;color:#5b6b85}
+.dl-tren-ring-k b{font-size:1.25rem;font-weight:800;line-height:1.1;white-space:nowrap;color:#c9503a}
+.dl-tren-ring.turun .dl-tren-ring-k b{color:#2b8c86}
+.dl-tren-ring-r{display:flex;flex-direction:column;gap:2px;font-size:.7188rem;color:#5b6b85;min-width:0}
+.dl-tren-ring-r b{color:#0b2545;font-variant-numeric:tabular-nums}
+.dl-tren-seg{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px;padding:3px;border:1px solid #dbe5f3;border-radius:999px;background:#f3f7fd}
+.dl-tren-seg button{min-width:0;padding:5px 0;border:0;border-radius:999px;background:none;color:#0b2545;font:700 .6875rem var(--font);cursor:pointer;white-space:nowrap}
+.dl-tren-seg button:hover{background:#fff}
+.dl-tren-seg button[aria-pressed="true"]{background:#0b2545;color:#fff}
+.dl-tren-pesan{margin:2px 0 0;font-size:.75rem;color:#5b6b85;text-align:center}
+.dl-tren-pesan b{color:#0b2545}
+.dl-tren-pesan .naik{color:#c9503a}.dl-tren-pesan .turun{color:#2b8c86}
+.dl-tip-angka>.dl-tip-lebar{grid-column:1/-1}   /* tinggi air selebar kartu pop-up (pemilik 13 Nov 2026) */
+/* menu Ekspor di kepala seksi (dalops_ekspor.js, pemilik 13 Nov 2026) */
+.dl-ek{position:relative;margin-left:8px}
+.dl-ek-btn[aria-busy="true"]{opacity:.6;cursor:progress}
+.dl-ek-menu{position:absolute;top:calc(100% + 6px);right:0;z-index:40;display:grid;gap:2px;min-width:150px;padding:6px;border-radius:12px;background:#fff;box-shadow:0 12px 32px rgb(11 37 69 / .2),0 0 0 1px rgb(11 37 69 / .06)}
+.dl-ek-menu[hidden]{display:none}
+.dl-ek-menu button{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:0;border-radius:8px;background:none;color:#0b2545;font:600 .8125rem var(--font);text-align:left;cursor:pointer}
+.dl-ek-menu button:hover,.dl-ek-menu button:focus-visible{background:#eef1f6;outline:none}
+.dl-ek-menu svg{width:16px;height:16px}
+.ex-jd>.dl-ek{margin-left:auto}.ex-jd>.dl-semua+.dl-ek{margin-left:8px}
+/* bilah ringkasan peta sebaris dan ikon berwarna per arti (pemilik 13 Nov 2026 "agar dibuat sebaris", "iconnya dibagus-bagusin") */
+.dl-peta .dl-peta-ubin,.dl-peta .dl-peta-ubin.k4,.dl-peta .dl-peta-ubin.k5{flex-wrap:nowrap;align-items:stretch}
+.dl-peta .dl-peta-ubin .db-ubin{flex:1 1 0;min-width:0;padding:6px 8px;column-gap:7px}
+.dl-peta .dl-peta-ubin .db-ubin[hidden]{display:none}
+.dl-peta .dl-peta-ubin .db-ubin>header>span{white-space:normal;overflow:hidden;text-overflow:clip;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.15;font-size:.65rem}
+.dl-peta .dl-peta-ubin .db-ubin>header>i{width:26px;height:26px;border-radius:8px;display:grid;place-items:center}
+.dl-peta .dl-peta-ubin .db-ubin>header>i svg{width:14px;height:14px;stroke-width:2}
+.dl-peta .dl-peta-ubin .db-ubin{grid-template-columns:26px minmax(0,1fr)}
+.dl-peta .dl-peta-ubin .db-ubin.hijau>header>i{background:#e6f4f1;box-shadow:inset 0 0 0 1px #bfe0dc}.dl-peta .dl-peta-ubin .db-ubin.hijau>header>i svg{color:#1f7a6f;stroke:#1f7a6f}
+.dl-peta .dl-peta-ubin .db-ubin.kuning>header>i{background:#fff8d6;box-shadow:inset 0 0 0 1px #f2d36b}.dl-peta .dl-peta-ubin .db-ubin.kuning>header>i svg{color:#a07800;stroke:#a07800}
+.dl-peta .dl-peta-ubin .db-ubin.kuning>b{color:#8a6700}
+.dl-peta .dl-peta-ubin .db-ubin.pra.nol>b{color:inherit}
+.dl-peta .dl-peta-ubin .db-ubin.pra.nol>header>i{opacity:.55}
+/* pemilih angka yang tampil, di ujung kanan bilah */
+.dl-ubin-pilih{position:relative;flex:none;display:flex;align-items:center;padding:0 6px 0 4px;border-left:1px solid var(--db-h2-garis,#dbe5f3)}
+.dl-ubin-atur{display:grid;place-items:center;width:30px;height:30px;border:0;border-radius:8px;background:none;color:#0b2545;cursor:pointer}
+.dl-ubin-atur:hover,.dl-ubin-atur[aria-expanded="true"]{background:#eef1f6}
+.dl-ubin-atur svg{width:16px;height:16px}
+.dl-ubin-menu{position:absolute;right:0;bottom:calc(100% + 8px);z-index:50;display:grid;gap:2px;min-width:210px;padding:6px;border-radius:12px;background:#fff;box-shadow:0 12px 32px rgb(11 37 69 / .2),0 0 0 1px rgb(11 37 69 / .06)}
+.dl-ubin-menu[hidden]{display:none}
+.dl-ubin-menu label{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;color:#0b2545;font:600 .8125rem var(--font);cursor:pointer}
+.dl-ubin-menu label:hover{background:#eef1f6}
+.dl-ubin-menu input{accent-color:#0b2545;margin:0}
+@media (max-width:900px){.dl-peta .dl-peta-ubin,.dl-peta .dl-peta-ubin.k4,.dl-peta .dl-peta-ubin.k5{flex-wrap:wrap}.dl-peta .dl-peta-ubin .db-ubin{flex:1 1 40%}}

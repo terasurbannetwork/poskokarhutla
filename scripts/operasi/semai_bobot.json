@@ -1,0 +1,346 @@
+{
+ "_catatan": "Semua ambang dan bobot ALGORITMA semai-awan. Dasar: N = panduan Nimbus v2.2, L = literatur (R1), H = hipotesis penyusun. Konstanta fisika (Espy 125 m/K, lapse 0,0098 K/m, R, g) ada di semai_murni.py, bukan ambang.",
+ "status": "HIPOTESIS",
+ "versi": "1",
+ "gerbang": {
+  "lcc_min": {
+   "nilai": 0.25,
+   "dasar": "N"
+  },
+  "mucape_min": {
+   "nilai": 1500,
+   "dasar": "N"
+  },
+  "tclw_min": {
+   "nilai": 0.05,
+   "dasar": "N"
+  },
+  "geser_maks": {
+   "nilai": 12.5,
+   "dasar": "N"
+  },
+  "rh850_min": {
+   "nilai": 65,
+   "dasar": "N"
+  },
+  "hujan_maks_mm_jam": {
+   "nilai": 4,
+   "dasar": "N"
+  },
+  "tdasar_min_c": {
+   "nilai": 10,
+   "dasar": "H"
+  },
+  "hangat_min_m": {
+   "nilai": 1000,
+   "dasar": "L"
+  },
+  "jam_mulai": {
+   "nilai": 7,
+   "dasar": "N"
+  },
+  "jam_akhir": {
+   "nilai": 16,
+   "dasar": "N"
+  }
+ },
+ "bahaya": {
+  "mucape_maks": {
+   "nilai": 3500,
+   "dasar": "H"
+  }
+ },
+ "q": {
+  "cape_lo": {
+   "nilai": 1500,
+   "dasar": "N"
+  },
+  "cape_hi": {
+   "nilai": 3000,
+   "dasar": "H"
+  },
+  "air_lo": {
+   "nilai": 0.05,
+   "dasar": "N"
+  },
+  "air_hi": {
+   "nilai": 0.3,
+   "dasar": "H"
+  },
+  "rh_lo": {
+   "nilai": 65,
+   "dasar": "N"
+  },
+  "rh_hi": {
+   "nilai": 95,
+   "dasar": "H"
+  },
+  "geser_maks": {
+   "nilai": 12.5,
+   "dasar": "N"
+  },
+  "naik_penuh_ms": {
+   "nilai": 1.0,
+   "dasar": "H"
+  }
+ },
+ "d": {
+  "tau_menit": {
+   "nilai": 30,
+   "dasar": "N"
+  },
+  "tau_sensitivitas_menit": {
+   "nilai": [
+    20,
+    45,
+    60
+   ],
+   "dasar": "N"
+  },
+  "radius_api_km": {
+   "nilai": 25,
+   "dasar": "N"
+  },
+  "f0_mw": {
+   "nilai": 200,
+   "dasar": "H"
+  },
+  "pengali_gambut": {
+   "nilai": 1.5,
+   "dasar": "H"
+  }
+ },
+ "t": {
+  "dekat_km": {
+   "nilai": 10,
+   "dasar": "N"
+  },
+  "jauh_km": {
+   "nilai": 50,
+   "dasar": "N"
+  }
+ },
+ "skor": {
+  "wq": {
+   "nilai": 0.45,
+   "dasar": "N"
+  },
+  "wd": {
+   "nilai": 0.4,
+   "dasar": "N"
+  },
+  "wt": {
+   "nilai": 0.15,
+   "dasar": "N"
+  },
+  "selisih_min": {
+   "nilai": 0.02,
+   "dasar": "H"
+  }
+ },
+ "cluster": {
+  "frp_min_mw": {
+   "nilai": 40,
+   "dasar": "N"
+  },
+  "frp_persen_terbesar": {
+   "nilai": 0.02,
+   "dasar": "N"
+  },
+  "radius_sel_km": {
+   "nilai": 60,
+   "dasar": "N"
+  }
+ },
+ "zona": {
+  "skor_min": {
+   "nilai": 0.35,
+   "dasar": "N"
+  },
+  "jarak_min_km": {
+   "nilai": 40,
+   "dasar": "N"
+  },
+  "maks": {
+   "nilai": 5,
+   "dasar": "N"
+  },
+  "jendela_persen": {
+   "nilai": 0.85,
+   "dasar": "N"
+  }
+ },
+ "terbang": {
+  "jelajah_kmj": {
+   "nilai": 300,
+   "dasar": "H"
+  },
+  "menit_bulat": {
+   "nilai": 5,
+   "dasar": "H"
+  },
+  "jelajah_nm": {
+   "nilai": 120,
+   "dasar": "H"
+  },
+  "menit_semai": {
+   "nilai": 30,
+   "dasar": "H"
+  }
+ },
+ "ketinggian": {
+  "lcl_min_m": {
+   "nilai": 300,
+   "dasar": "H"
+  },
+  "lcl_maks_m": {
+   "nilai": 3000,
+   "dasar": "H"
+  },
+  "bulat_kaki": {
+   "nilai": 500,
+   "dasar": "H"
+  },
+  "m_ke_kaki": {
+   "nilai": 3.281,
+   "dasar": "L"
+  }
+ },
+ "asap": {
+  "tingkat_tinggi": {
+   "nilai": 0.5,
+   "dasar": "H"
+  },
+  "tingkat_sedang": {
+   "nilai": 0.2,
+   "dasar": "H"
+  },
+  "tingkat_rendah": {
+   "nilai": 0.05,
+   "dasar": "H"
+  },
+  "kota_km": {
+   "nilai": 20,
+   "dasar": "N"
+  },
+  "kota_ambang": {
+   "nilai": 0.05,
+   "dasar": "N"
+  },
+  "lintas_persen": {
+   "nilai": 0.05,
+   "dasar": "H"
+  },
+  "lepas_per_jam": {
+   "nilai": 3,
+   "dasar": "N"
+  },
+  "langkah_menit": {
+   "nilai": 15,
+   "dasar": "N"
+  },
+  "angin10_bagian": {
+   "nilai": 0.6,
+   "dasar": "N"
+  },
+  "angin850_bagian": {
+   "nilai": 0.4,
+   "dasar": "N"
+  },
+  "pemanasan_jam": {
+   "nilai": 12,
+   "dasar": "H"
+  },
+  "kernel_km": {
+   "nilai": 20,
+   "dasar": "H"
+  },
+  "persentil": {
+   "nilai": 99,
+   "dasar": "H"
+  },
+  "maks_baris_kota": {
+   "nilai": 8,
+   "dasar": "N"
+  }
+ },
+ "satelit": {
+  "hilang_persen_rerata7": {
+   "nilai": 0.2,
+   "dasar": "H"
+  },
+  "firms_basi_jam": {
+   "nilai": 6,
+   "dasar": "N"
+  },
+  "putaran_basi_jam": {
+   "nilai": 12,
+   "dasar": "H"
+  }
+ },
+ "mitra": {
+  "bulat_derajat": {
+   "nilai": 0.5,
+   "dasar": "N"
+  }
+ },
+ "raster": {
+  "kelas_q": {
+   "nilai": [
+    0.4,
+    0.55,
+    0.7
+   ],
+   "dasar": "H"
+  }
+ },
+ "muatan_kg": {},
+ "zona_waktu": {
+  "dasar": "H",
+  "offset_jam": {
+   "WIB": 7,
+   "WITA": 8,
+   "WIT": 9
+  },
+  "provinsi": {
+   "11": "WIB",
+   "12": "WIB",
+   "13": "WIB",
+   "14": "WIB",
+   "15": "WIB",
+   "16": "WIB",
+   "17": "WIB",
+   "18": "WIB",
+   "19": "WIB",
+   "21": "WIB",
+   "31": "WIB",
+   "32": "WIB",
+   "33": "WIB",
+   "34": "WIB",
+   "35": "WIB",
+   "36": "WIB",
+   "51": "WITA",
+   "52": "WITA",
+   "53": "WITA",
+   "61": "WIB",
+   "62": "WIB",
+   "63": "WITA",
+   "64": "WITA",
+   "65": "WITA",
+   "71": "WITA",
+   "72": "WITA",
+   "73": "WITA",
+   "74": "WITA",
+   "75": "WITA",
+   "76": "WITA",
+   "81": "WIT",
+   "82": "WIT",
+   "91": "WIT",
+   "92": "WIT",
+   "93": "WIT",
+   "94": "WIT",
+   "95": "WIT",
+   "96": "WIT"
+  }
+ }
+}

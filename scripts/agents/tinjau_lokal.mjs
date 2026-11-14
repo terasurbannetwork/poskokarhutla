@@ -57,6 +57,12 @@ export async function buatServer({hulu = "https://centurisk97.id", akar = AKAR, 
       if (kuki.length) keluar["set-cookie"] = kuki;
       const loc = r.headers.get("location"); if (loc) keluar.location = loc.replace(H.origin, asal);
       let isi = Buffer.from(await r.arrayBuffer());
+      /* keluaran Peluang semai sebelum rutenya terbit (data/kajian-bnpb/semai-awan SA-08): hulu 404 -> data/raw/semai/keluar lokal */
+      const semai = r.status === 404 && req.method === "GET" && /^\/api\/operasi\/semai\/berkas\/((?:arsip\/\d{10}\.json)|[a-z_]+(?:_\d{1,2})?\.(?:json|png))$/.exec(jalur);
+      if (semai) {
+        const f = path.join(akar, "data/raw/semai/keluar", semai[1]);
+        try { const b = await fs.readFile(f); res.writeHead(200, {"content-type": JENIS[path.extname(f)], "cache-control": "no-store", "x-tinjau": "lokal-semai"}); return res.end(b); } catch { /* tidak ada: teruskan 404 hulu */ }
+      }
       /* rute HTML baru yang belum terbit di produksi (hulu 404) tetap disajikan dari folder kerja */
       const baru = r.status === 404 && ruteHtml && await berkas(publik, ruteHtml[1]);
       const htmlLokal = baru || (r.ok && (r.headers.get("content-type") || "").includes("text/html") &&

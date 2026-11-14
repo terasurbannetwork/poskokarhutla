@@ -75,7 +75,7 @@ MB = ukuran terbesar satu pesan GRIB2 global (satu field, sebelum dipotong). Sat
    sejak awal putaran, satuan **meter** di GRIB; skrip menyimpannya dalam **mm** (dikali 1000) supaya float16 tidak menggerus
    hujan kecil. Selisih antarlangkah dari nilai kumulatif besar (puluhan sampai ratusan mm) punya presisi float16 sekitar
    0,03 sampai 0,25 mm; cukup untuk gerbang hujan 3 jam, tetapi SA-03 perlu tahu.
-3. **`gh` adalah tinggi geopotensial dalam meter (gpm), bukan `z` (m2/s2).** Pada 1000 hPa nilainya 91 sampai 183 m, jadi
+3. **`gh` adalah tinggi geopotensial dalam meter (gpm), bukan `z` (m2/s2).** Pada 1000 hPa nilainya 45 sampai 194,5 m (tabel di atas), jadi
    perhitungan level beku di ALGORITMA §2 memakai `gh` apa adanya tanpa dibagi g. Index juga memuat `z` (m2/s2); tidak dipakai.
 4. **`w` dalam Pa/s** (negatif = naik), rentang -7,2 sampai 3,8 di wilayah, termasuk nilai ekstrem sel konvektif; konversi ke
    m/s di ALGORITMA §2 berlaku.

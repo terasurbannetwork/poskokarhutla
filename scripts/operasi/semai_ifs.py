@@ -9,7 +9,7 @@ Pakai:
   python3 scripts/operasi/semai_ifs.py --putaran 2026111400 --langkah 0,24 --cek   (subset + laporan per field)
   python3 scripts/operasi/semai_ifs.py uji                                  (swa-uji luring, stdlib saja)
 Masukan:  https://data.ecmwf.int/forecasts/<tgl>/<jam>z/ifs/0p1/oper/ (CC BY 4.0, tanpa kunci)
-Keluaran: data/raw/semai/<YYYYMMDDHH>/<langkah>.npz (float16, tidak di-commit). Kunci `sfc_<param>` dan `pl_<param>_<hPa>`.
+Keluaran: data/raw/semai/<YYYYMMDDHH>/<langkah>.npz (float16; 2t, 2d, t, gh float32; tidak di-commit). Kunci `sfc_<param>` dan `pl_<param>_<hPa>`.
           Dipotong ke bujur 94..142, lintang 7..-12 (urutan utara ke selatan, barat ke timur).
 Satuan:   apa adanya dari ECMWF, KECUALI `sfc_tp` (kumulatif sejak awal putaran) disimpan dalam mm, bukan m, agar tidak
           tergerus float16. `w` dalam Pa/s, `gh` dalam meter geopotensial, `tclw` kg/m2.
@@ -32,6 +32,8 @@ FIELD = ([("sfc", p, None) for p in ("lcc", "mucape", "tclw", "tp", "10u", "10v"
          + [("pl", p, l) for p in ("t", "gh") for l in (1000, 925, 850, 700, 600, 500)]
          + [("pl", "w", l) for l in (850, 700)])
 # tp kumulatif: pada langkah 0 ECMWF tidak menyimpannya; dianggap 0 dan dicatat, bukan galat.
+# float32: LCL (2t-2d selisih kecil) dan level beku (t, gh) peka terhadap pembulatan float16 (koreksi validasi-model SA-02).
+PRESISI = {"sfc_2t", "sfc_2d"} | {f"pl_{p}_{l}" for p in ("t", "gh") for l in (1000, 925, 850, 700, 600, 500)}
 OPSIONAL_LANGKAH0 = {("sfc", "tp", None)}
 
 
@@ -261,7 +263,7 @@ def jalankan(putaran, langkah, cek):
             bentuk = {a.shape for a in arr.values()}
             if len(bentuk) != 1:
                 gagal.append(f"langkah {s} bentuk beragam {bentuk}")
-            np.savez(os.path.join(keluar, f"{s}.npz"), **{k: v.astype("float16") for k, v in arr.items()})
+            np.savez(os.path.join(keluar, f"{s}.npz"), **{k: v.astype("float32" if k in PRESISI else "float16") for k, v in arr.items()})
             t_urai += time.time() - t0
             print(f"  langkah {s}: {len(arr)} field, {nb / 1e6:.1f} MB, unduh {dtk:.1f} dtk, "
                   f"bentuk {sorted(bentuk)}, packing {sorted(packing)}")

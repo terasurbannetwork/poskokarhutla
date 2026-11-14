@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS op_semai_target (
   catatan    TEXT CHECK (catatan IS NULL OR length(catatan) <= 500),
   oleh       TEXT NOT NULL,                  -- id akun, bukan nama
   dibuat     TEXT NOT NULL,
-  terhapus   TEXT, alasan_hapus TEXT
+  terhapus   TEXT, alasan_hapus TEXT, dihapus_oleh TEXT
 );
 CREATE INDEX IF NOT EXISTS op_semai_target_tgl ON op_semai_target(tanggal, base_id);
 CREATE UNIQUE INDEX IF NOT EXISTS op_semai_target_unik ON op_semai_target(zona_id, base_id) WHERE terhapus IS NULL;

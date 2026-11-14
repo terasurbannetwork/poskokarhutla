@@ -79,6 +79,7 @@ import {RUTE_KORBAN} from "./korban.js";
 import {RUTE_OMC} from "./omc.js";
 import {RUTE_OPERASI} from "./operasi_udara.js";
 import {RUTE_ISIAN} from "./operasi_isian.js";
+import {RUTE_SEMAI} from "./operasi_semai.js";
 import {RUTE_JARAK_PANDANG} from "./jarak_pandang.js";
 import {RUTE_LAPORAN_KARHUTLA, buatDrafLaporanKarhutla} from "./laporan_karhutla.js";
 import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.js";
@@ -637,6 +638,7 @@ const RUTE = {
   ...RUTE_OMC,   // catatan sortie OMC: staf TMC mengisi, GET /api/omc/sortie publik untuk pipeline (src/omc.js)
   ...RUTE_JARAK_PANDANG,   // jarak pandang BMKG dari bot Mac mini -> R2, GET publik (src/jarak_pandang.js)
   ...RUTE_OPERASI,   // peta operasi lapangan khusus staf (src/operasi_udara.js)
+  ...RUTE_SEMAI,   // peluang semai awan: berkas R2 + target renlap OMC (src/operasi_semai.js, migrasi 0129)
   ...RUTE_ISIAN,   // isian manual operasi udara (src/operasi_isian.js, migrasi 0126)
   ...RUTE_LAPORAN_KARHUTLA,   // Laporan Karhutla otomatis: draf, kirim, verifikasi, kunci, ralat, snapshot (src/laporan_karhutla.js)
   ...RUTE_PANTAU,   // Meja Pantau: antrean kerja harian staf (src/pantau.js)
@@ -666,8 +668,8 @@ export const tolakOrigin = (req, url) => {
 async function rute(env, req, url, ctx) {
   /* /lacak (halaman statis; token di fragmen #<36 hex>, dibaca peramban); API-nya (/api/lacak/*) membawa token di header x-lacak */
   if (url.pathname === "/lacak" || url.pathname === "/lacak/") { const h = await halamanLacak(env, req, url); if (h) return h; }
-  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/) || jalur.match(/^(\/api\/akademisi\/gambar)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/akademisi\/riwayat)\/(\d{1,12})$/) || jalur.match(/^(\/api\/operasi\/foto)\/(\d{1,12})$/), tn = jalur.match(/^(\/api\/logbook\/turunan)\/([a-z0-9_]{1,20})$/), sh = jalur.match(/^(\/api\/saham)\/[^/]{1,60}\/(info|transaksi|grafik)$/), lb = jalur.match(/^(\/api\/logbook\/kejadian)\/([0-9a-f]{16})\/(entri|tutup|sk)$/) || jalur.match(/^(\/api\/ai\/(?:agen|percakapan))\/([0-9a-f]{16})\/(hapus)$/) || jalur.match(/^(\/api\/ai\/agen)\/([0-9a-f]{16})\/(sumber)$/) || jalur.match(/^(\/api\/ai\/pengetahuan)\/([0-9a-f]{16})\/(hapus|indeks-ulang)$/), id = tgl ? tgl[2] : tn ? tn[2] : nama ? nama[2] : rl ? rl[2] : lb ? lb[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
-  const kunci = sh ? `${sh[1]}/:kode/${sh[2]}` : tgl ? tgl[1] + "/:tanggal" : tn ? tn[1] + "/:nama" : nama ? nama[1] + "/:nama" : oa ? oa[1] + "/:id" : rl ? `${rl[1]}/:id/${rl[3]}` : lb ? `${lb[1]}/:id/${lb[3]}` : id ?jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
+  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/) || jalur.match(/^(\/api\/akademisi\/gambar)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/akademisi\/riwayat)\/(\d{1,12})$/) || jalur.match(/^(\/api\/operasi\/foto)\/(\d{1,12})$/), sm = jalur.match(/^(\/api\/operasi\/semai\/berkas)\/((?:arsip\/)?[^/]{1,40})$/), tn = jalur.match(/^(\/api\/logbook\/turunan)\/([a-z0-9_]{1,20})$/), sh = jalur.match(/^(\/api\/saham)\/[^/]{1,60}\/(info|transaksi|grafik)$/), lb = jalur.match(/^(\/api\/logbook\/kejadian)\/([0-9a-f]{16})\/(entri|tutup|sk)$/) || jalur.match(/^(\/api\/ai\/(?:agen|percakapan))\/([0-9a-f]{16})\/(hapus)$/) || jalur.match(/^(\/api\/ai\/agen)\/([0-9a-f]{16})\/(sumber)$/) || jalur.match(/^(\/api\/ai\/pengetahuan)\/([0-9a-f]{16})\/(hapus|indeks-ulang)$/), id = sm ? sm[2] : tgl ? tgl[2] : tn ? tn[2] : nama ? nama[2] : rl ? rl[2] : lb ? lb[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
+  const kunci = sm ? sm[1] + "/:nama" : sh ? `${sh[1]}/:kode/${sh[2]}` : tgl ? tgl[1] + "/:tanggal" : tn ? tn[1] + "/:nama" : nama ? nama[1] + "/:nama" : oa ? oa[1] + "/:id" : rl ? `${rl[1]}/:id/${rl[3]}` : lb ? `${lb[1]}/:id/${lb[3]}` : id ?jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
   const f = tabel[req.method + " " + kunci];
   if (!f) {   // jalur ada tapi metode lain: 405, bukan jatuh ke aset statis (HEAD/OPTIONS tetap lewat seperti semula)
     const ok = ["GET", "POST"].filter(m => tabel[m + " " + kunci]);
