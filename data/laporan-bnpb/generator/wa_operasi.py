@@ -131,6 +131,7 @@ def operasi(teks):
             # pesawat yang menyemai tanpa angka sortie dihitung 1 sortie (batas bawah)
             per = re.findall(r'PK-\w+ sebanyak (?:(\d+) sortie/)?[\d.]+ kg', harian)
             so = re.match(r'(\d+)', str(sum(int(n or 1) for n in per))) if per else None
+        so = so or re.search(r'sebanyak \*?(\d+) sortie', harian)   # "*CASA A-2104 sebanyak 1 sortie*" (Sumsel 14 Nov): angka tidak di awal cetak tebal
         sas = list(dict.fromkeys(k.strip() for x in re.findall(r'(?:menyasar|wilayah sasaran|kg (?:NaCl|dry ice)\* (?:di|untuk)) \*([^*]+)\*', isi.split('Hujan')[0])   # "di *X*" hanya sesudah muatan ("1.000 kg NaCl* di *Muara Enim*", Sumsel 29 Okt), bukan "PK-SNP diperbantukan di *Lampung*" (Riau 28 Okt)
                                  for k in re.split(r',\s*(?:dan\s+)?|\s+dan\s+', x.replace('sekitar ', '')) if k.strip()))   # kab yang disasar beberapa pesawat sekali saja
         sas = [k for i, k in enumerate(sas) if not any(a.endswith(' ' + k) and a[:-len(k)].strip()[:1].islower() for a in sas[:i])]   # "Palembang" sesudah "wilayah timur Palembang" (Sumsel 29 Okt); "OKU" sesudah "OKU Timur" dan "Banyuasin" sesudah "Musi Banyuasin" tetap (Sumsel 3 Nov)
@@ -149,6 +150,10 @@ def operasi(teks):
         elif h4 := re.search(r'^>\s*Hujan\s+([a-z]+(?:\s*[–-]\s*[a-z]+|\s+hingga\s+[a-z]+)?)\s+di ([^.\n]+?)(?:,? serta [^.\n]*)?\.', isi, re.M):
             # "Hujan ringan–sedang di Muaro Jambi, ..., dan Kota Jambi, serta ringan pada pagi hari di X." (Jambi 2 Nov): tanpa "dilaporkan"
             hujan = {'intensitas': h4.group(1).replace('–', ' hingga ').replace('-', ' hingga ').replace('  ', ' '), 'lokasi': h4.group(2), 'tanggal': tanggal}
+        elif h5 := re.search(r'Pada \*(\d{1,2}) (\w+)\*, hujan di \*([^*]+)\*', isi):
+            # "Pada *13 November*, hujan di *TNTP* memadamkan ..." (Kalteng 14 Nov): tanggal di depan, tanpa kata "dilaporkan"
+            hujan = {'intensitas': '', 'lokasi': h5.group(3), 'tanggal': dt.date(tanggal.year, BULAN[h5.group(2).lower()], int(h5.group(1)))
+                     if h5.group(2).lower() in BULAN else tanggal}
         tg = h and not h2 and re.search(r'tanggal \*?(\d{1,2}) (\w+)', isi[isi.rfind('\n', 0, h.start()) + 1:h.end()])   # "Hujan ... dilaporkan tanggal 26 Oktober 2026 di *X*" (Jambi 28 Okt)
         if hujan and tg:
             hujan['tanggal'] = dt.date(tanggal.year, BULAN[tg.group(2).lower()], int(tg.group(1)))
