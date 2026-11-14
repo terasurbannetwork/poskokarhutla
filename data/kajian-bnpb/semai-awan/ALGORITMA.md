@@ -115,6 +115,39 @@ Keadaan kosong:
 | Ada api, tidak ada sel lolos gerbang dan hanyut ke api | `tidak_ada_awan` | "Tidak ada awan layak semai yang hanyut ke api dalam 24 jam ke depan." |
 | Putaran IFS tidak ada atau gagal | `tanpa_prakiraan` | "Prakiraan belum tersedia. Putaran terakhir: <jam>." |
 
+## 7b. Mulai dari target, ketinggian, bahan
+
+**Mulai dari target (F-23).** Masukan: satu target berupa titik (cluster), poligon kabupaten, atau poligon KHG. Sel kandidat = sel
+dalam 60 km dari target (bukan dari cluster besar). Faktor D diganti `D_target`: 1 bila titik hujan sel berada di dalam poligon target
+atau dalam 25 km titik target, 0 bila tidak; untuk target berapi, D biasa (§5) tetap dipakai sebagai pengali. Gerbang, Q, T, zona,
+dan jendela sama dengan §3 sampai §7. Dihitung di peramban dari `kandidat_target` bila target dipilih dari daftar yang sudah dihitung
+pipeline (semua kab dengan cluster aktif dan KHG prioritas), supaya tidak memanggil server; target lain menunggu putaran berikutnya.
+
+**Ketinggian semai (F-24).** Semai higroskopis dilakukan di dasar awan, dekat arus naik (R1 §2.1). Ketinggian = LCL sel zona pada
+langkah terbaik (§2) + tinggi permukaan, dalam kaki (x 3,281), dibulatkan ke 500 kaki, ditulis "sekitar 4.500 kaki (dasar awan
+perkiraan)". Bila LCL < 300 m atau > 3.000 m: ditulis "dasar awan tidak terbaca model" tanpa angka.
+
+**Bahan (F-25).** Aturan pilihan, berurutan:
+
+1. **Inversi berasap**: ada lapisan dengan suhu naik terhadap tinggi antara permukaan dan 700 hPa (dari profil `t`/`gh` 1000, 925,
+   850, 700 hPa) DAN titik zona di bawah beban asap tingkat sedang atau tinggi (§9) pada langkah yang sama -> "dry ice dulu untuk
+   memecah inversi, lalu NaCl" (praktik BMKG menurut pemberitaan, R1 §3; dasar ambangnya H).
+2. Selain itu -> "NaCl" (bahan bawaan semai higroskopis TMC Indonesia).
+
+CaO dan flare higroskopis tidak diusulkan sampai pemilik atau BMKG menetapkan kapan dipakai (Q14).
+
+**Jumlah (F-25).** Tidak ada dosis per awan. Jumlah = muatan bahan per sortie armada OMC base itu x jumlah sortie dalam jendela
+terbang zona:
+
+- Muatan per jenis armada dari tabel `semai_bobot.json` `muatan_kg` yang diisi dari jawaban Q15; sampai dijawab, isinya kosong dan
+  layar menulis "muatan armada belum diisi" tanpa angka (tidak ada data dummy). Satu-satunya angka acuan yang ditemukan, sekitar
+  800 kg NaCl per sortie (Riau 2023, hitungan dari rekap 14 sortie 11.200 kg, R1 §3), hanya ditulis di kartu "Cara memutuskan" sebagai
+  acuan berlabel, tidak dipakai menghitung.
+- Sortie per zona = `floor(panjang jendela / (2 x menit terbang + menit semai))`, menit semai bawaan dari Q16, paling sedikit 1,
+  paling banyak jumlah armada OMC siap di base itu (gelar armada hari itu).
+- Dry ice: jumlah per sortie dari Q15 juga; tanpa jawaban, "jumlah dry ice belum diisi".
+- Total harian per base = jumlah semua zona yang sudah dijadikan target renlap base itu (bukan semua zona usulan).
+
 ## 8. Sel kandidat untuk Tinjau BMKG
 
 `semai.json` membawa sampai 400 sel kandidat terbaik (lintang, bujur, langkah, Q, D, T, lima komponen Q) supaya peramban bisa
@@ -133,8 +166,18 @@ Memakai `scripts/udara/lintasan.py` (D6), dengan perubahan:
 3. **Beban relatif per jam**: jumlah bobot partikel per sel 0,1 derajat, dihaluskan kernel 20 km, dinormalkan ke persentil 99 putaran
    itu. Tingkat: tinggi >= 0,5, sedang 0,2 sampai 0,5, rendah 0,05 sampai 0,2 (H). Bukan PM2.5 (prinsip 4).
 4. **Kota di bawah asap**: kota (`kota.json`) dengan beban >= 0,05 dalam 20 km (N; mode semai saja, lapisan udara tetap memakai
-   `R_KOTA = 25`), jam tiba = jam pertama, tingkat = maksimum 24 jam.
-5. **Lintas batas**: jam pertama ketika >= 5% bobot partikel satu cluster berada di poligon negara lain (`negara()` di `lintasan.py`
+   `R_KOTA = 25`), jam tiba = jam pertama, tingkat = maksimum 24 jam. Tiap kota juga membawa:
+   - **status**: "sudah berasap" bila beban >= 0,05 sudah ada di jam pertama yang ditampilkan (bukan "tiba +3 jam" seperti Nimbus,
+     yang membuat kota dekat api tampak seolah asap baru datang); selain itu "tiba +N jam";
+   - **asal**: cluster penyumbang bobot partikel terbesar di kota itu pada jam tingkat maksimum, dengan kabupaten dan jaraknya (km);
+   - **arah datang**: arah mata angin dari kota ke cluster asal (8 arah, mis. "dari tenggara"), dan angin 10 m di kota pada jam tiba
+     (arah dan km/jam);
+   - **lama**: jumlah jam dalam 24 jam dengan beban >= 0,05.
+   Urutan daftar: tiba +N jam lebih dulu (berurutan jam tiba), lalu sudah berasap (berurutan tingkat); paling banyak 8 baris, sisanya
+   "+N kota lain".
+5. **Arah angin di layar**: lapisan angin asap (campuran 60% 10 m dan 40% 850 hPa, sama dengan penggerak partikel) sebagai panah tiap
+   1 derajat pada jam terpilih, terpisah dari angin pengarah awan 850 sampai 700 hPa; kotak lapisan memuat keduanya.
+6. **Lintas batas**: jam pertama ketika >= 5% bobot partikel satu cluster berada di poligon negara lain (`negara()` di `lintasan.py`
    memuat poligon MY, SG, BN, TL; poligon daratan PNG ditambah di SA-05 karena wilayah 94..142 BT memotong batas PNG di 141 BT)
    (H untuk "bagian berarti"); dicatat negara, kota terdekat di sana (GeoNames cities15000, CC BY 4.0, hanya negara tetangga), cluster
    asal.

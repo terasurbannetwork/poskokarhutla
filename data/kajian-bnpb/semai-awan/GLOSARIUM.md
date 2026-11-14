@@ -20,6 +20,12 @@ Istilah Operasi Udara (base, armada, renlap, OMC, cluster, tinjau lokal) mengiku
 | Titik hujan | Letak awan yang diperkirakan sesudah τ menit dari penyemaian, digeser angin pengarah |
 | τ (jeda semai ke hujan) | Bawaan 30 menit; 20, 45, 60 sebagai uji kepekaan |
 | Angin pengarah | Rerata vektor angin 850 dan 700 hPa, lapisan tempat awan rendah bergerak |
+| Tempat semai | Koordinat zona: awan yang ditabur bahan; titik tujuan pesawat di renlap |
+| Target daerah | Kabupaten, cluster, atau KHG di sekitar titik hujan; daerah yang diharapkan kena hujan |
+| Ketinggian semai | Perkiraan tinggi dasar awan (LCL) dalam kaki; semai garam dilakukan di dasar awan |
+| Inversi berasap | Lapisan udara yang makin hangat ke atas di bawah 700 hPa, di bawah asap; BMKG memecahnya dengan dry ice sebelum NaCl |
+| NaCl, dry ice | Garam dapur halus (bahan semai higroskopis); es kering (CO2 padat) untuk mendinginkan dan memecah inversi |
+| Muatan per sortie | Berat bahan yang dibawa satu penerbangan; dasar perkiraan jumlah bahan |
 | Jendela terbang | Jam siang berurutan ketika skor zona >= 85% puncaknya |
 | CAPE, MUCAPE | Energi potensial konvektif: energi awan untuk terus naik; MUCAPE dihitung dari udara paling labil di lapisan bawah |
 | Cairan awan (tclw) | Air cair dalam tetes awan di satu kolom udara, kg/m2 |

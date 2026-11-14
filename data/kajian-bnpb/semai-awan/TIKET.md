@@ -34,6 +34,13 @@ Migrasi produksi diterapkan pemilik.
 | SA-13 | Tinjau BMKG dan Mitra | pemilih peran, bobot, mode Nimbus, jeda, tabel faktor, CSV, `operasi_semai_murni.js` + uji silang; tampilan Mitra dan ringkasan Inggris | `layar-peta` → `inp-reviewer`, `validasi-model` | Q4, Q5, Q12 (bawaan) |
 | SA-16 | Gerbang klaim | `gerbang-semai-klaim.test.mjs`; berkas baru masuk daftar gerbang Operasi Udara | `penulis-gerbang` | – |
 
+## Fase 3b: renlap semai lengkap
+
+| Tiket | Isi | Cakupan | Pengerja → pemeriksa | Menunggu |
+| ----- | --- | ------- | -------------------- | -------- |
+| SA-22 | Ketinggian dan bahan | `semai.py`: ketinggian dasar awan per zona, deteksi inversi berasap, usulan bahan, jumlah sortie dan bahan (ALGORITMA §7b); `muatan_kg` kosong di `semai_bobot.json`; tampil di kartu Rekomendasi, dialog target, dan renlap OMC (PDF/KML/GPX) | `pipa-data` + `layar-peta` → `validasi-model`, `selera-angka` | SA-05, SA-09; angka jumlah: Q15, Q16 |
+| SA-23 | Mulai dari target | `kandidat_target` di pipeline untuk kab bercluster dan KHG prioritas; pemilih target di kolom kanan; zona target dihitung di peramban (ALGORITMA §7b) | `pipa-data` + `layar-peta` → `inp-reviewer`, `validasi-model` | SA-13 |
+
 ## Fase 4: kejujuran
 
 | Tiket | Isi | Cakupan | Pengerja → pemeriksa | Menunggu |
@@ -54,6 +61,6 @@ Migrasi produksi diterapkan pemilik.
 
 ## Urutan
 
-SA-01 → SA-02 → SA-03 → SA-04 → SA-05 → SA-06 → SA-07 → SA-08 → SA-11 → SA-12 → SA-09 → SA-13 → SA-16 → SA-10 → SA-17.
+SA-01 → SA-02 → SA-03 → SA-04 → SA-05 → SA-06 → SA-07 → SA-08 → SA-11 → SA-12 → SA-09 → SA-13 → SA-22 → SA-23 → SA-16 → SA-10 → SA-17.
 SA-02 dan SA-07 boleh berjalan bersamaan (berkas tidak beririsan). SA-11 boleh mulai dengan `semai.json` dari SA-04 tanpa SA-05
 (lapisan asap kosong berlabel "belum tersedia", bukan data karangan).

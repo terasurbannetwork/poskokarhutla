@@ -22,6 +22,9 @@ terbaik seperti ini", "Coba buat tiket dan lain-lain design system dll. Seperti 
 | S3 | 14 Nov 2026 | Zona semai adalah usulan. Pusdalops bisa menjadikan satu zona target renlap OMC dengan satu klik; tiap operasi tetap dikonfirmasi BMKG. Mesin tidak pernah memasukkan zona ke renlap sendiri. | pilihan "Usulan, bisa jadi target renlap" |
 | S4 | 14 Nov 2026 | Empat tampilan: Pos komando, Tinjau BMKG (bobot bisa digeser, tabel faktor per sel, salin CSV), Mitra lintas batas (koordinat dibulatkan, ringkasan asap), dan Ringkasan teks bagikan siap tempel ke WA. | pilihan keempatnya |
 | S5 | 14 Nov 2026 | Fitur besar: paket sebelas dokumen dan tiket dulu, baru kode (AGENTS §3.7). | "Seperti awal ketika bikin awal SIPPA" |
+| S6 | 14 Nov 2026 | Q1: pipeline boleh memasang `eccodes` (pip) di GitHub Actions. | "Boleh pasang" |
+| S7 | 14 Nov 2026 | Q3: tombol "Jadikan target renlap" untuk peran `pusdalops` dan `tmc`, plus moderator `ADMIN_TOKEN`. | "Gas" atas bawaan |
+| S8 | 14 Nov 2026 | Q13: base OMC di luar Sumatera dan Kalimantan menunggu daftar dari BMKG; sampai itu bawaan sementara Q13 berlaku. | "Nanti saja dari BMKG" |
 
 ## Keputusan rancangan (dibuat penyusun paket dari riset, boleh dibatalkan pemilik)
 
@@ -52,9 +55,9 @@ terbaik seperti ini", "Coba buat tiket dan lain-lain design system dll. Seperti 
 
 | Q | Pertanyaan | Bawaan sementara |
 | - | ---------- | ---------------- |
-| Q1 | Boleh pipeline ini memasang `eccodes` (pip) di GitHub Actions, satu-satunya dependensi di luar stdlib? Alternatifnya pakai Open-Meteo 0,25 derajat, yang kuota gratisnya tidak cukup untuk grid Indonesia (12.765 titik, kuota 10.000 per hari). | [SEMENTARA] ya, `eccodes` di workflow sendiri; skrip tetap jalan `uji` luring tanpa eccodes |
+| Q1 | Dijawab S6. Boleh pipeline ini memasang `eccodes` (pip) di GitHub Actions, satu-satunya dependensi di luar stdlib? Alternatifnya pakai Open-Meteo 0,25 derajat, yang kuota gratisnya tidak cukup untuk grid Indonesia (12.765 titik, kuota 10.000 per hari). | [SEMENTARA] ya, `eccodes` di workflow sendiri; skrip tetap jalan `uji` luring tanpa eccodes |
 | Q2 | Base mana yang dihitung untuk jarak terbang OMC: semua base `op_base`, atau hanya base yang punya armada OMC (CASA, C-212, Caravan, Hercules) hari itu? | [SEMENTARA] base yang hari itu punya armada dengan misi OMC di gelar armada; bila tidak ada laporan, semua base `op_base` berlabel "armada OMC belum lapor" |
-| Q3 | Siapa boleh menekan "Jadikan target renlap"? Renlap milik Pusdalops, OMC tertulis milik peran `tmc`. | [SEMENTARA] `pusdalops` dan `tmc`, plus moderator `ADMIN_TOKEN` |
+| Q3 | Dijawab S7. Siapa boleh menekan "Jadikan target renlap"? Renlap milik Pusdalops, OMC tertulis milik peran `tmc`. | [SEMENTARA] `pusdalops` dan `tmc`, plus moderator `ADMIN_TOKEN` |
 | Q4 | Tinjau BMKG: diakses staf BMKG lewat akun berperan baru (`bmkg`), atau tetap tampilan dalam akun BNPB yang bisa dipilih siapa pun yang bisa membuka `/operasi`? | [SEMENTARA] tampilan yang bisa dipilih semua pembaca `/operasi`; peran `bmkg` menunggu jawaban |
 | Q5 | Tampilan Mitra lintas batas: hanya di layar dan ringkasan teks (disalin staf lalu dikirim), atau tautan baca tanpa login untuk mitra asing (ASMC, Malaysia, Timor-Leste)? | [SEMENTARA] hanya layar dan ringkasan teks; tanpa tautan publik |
 | Q6 | Ambang skor zona yang ditampilkan dan jumlah zona maksimum. | [SEMENTARA] ikut panduan Nimbus v2.2: skor >= 0,35, paling banyak 5 zona (A sampai E) per 24 jam, jarak antarzona >= 40 km |
@@ -64,4 +67,7 @@ terbaik seperti ini", "Coba buat tiket dan lain-lain design system dll. Seperti 
 | Q10 | Apakah BNPB bisa memperoleh log sortie OMC BMKG yang berjam dan berkoordinat (bukan hanya rekap per provinsi di situs BMKG) untuk uji balik? | [SEMENTARA] uji balik memakai `omc_sortie` di D1 (`src/omc.js`) yang diisi peran `tmc`; tanpa log BMKG, kepatuhan zona lawan sortie hanya dihitung dari isian itu |
 | Q11 | Tampilan Mitra: kota di negara tetangga yang terkena asap boleh disebut namanya? | [SEMENTARA] ya, nama kota dan jam tiba saja, tanpa angka beban |
 | Q12 | Ringkasan teks bagikan dalam bahasa apa? | [SEMENTARA] Indonesia untuk Pos komando; Inggris untuk Mitra |
-| Q13 | `op_base` hari ini hanya 9 base Sumatera dan Kalimantan (PNK, KTG, PKY, SMQ, KLP, BDJ, PLM, DJB, PKU). Posko TMC dan bandara OMC di Sulawesi, Nusa Tenggara, Maluku, dan Papua ditambahkan ke `op_base`? Daftarnya dari siapa (BMKG, Pusdalops)? | [SEMENTARA] tidak ditambah; zona di luar jelajah 9 base tetap tampil berlabel "di luar jelajah base terdaftar" dan tidak bisa dijadikan target renlap |
+| Q13 | Menunggu daftar BMKG (S8). `op_base` hari ini hanya 9 base Sumatera dan Kalimantan (PNK, KTG, PKY, SMQ, KLP, BDJ, PLM, DJB, PKU). Posko TMC dan bandara OMC di Sulawesi, Nusa Tenggara, Maluku, dan Papua ditambahkan ke `op_base`? Daftarnya dari siapa (BMKG, Pusdalops)? | [SEMENTARA] tidak ditambah; zona di luar jelajah 9 base tetap tampil berlabel "di luar jelajah base terdaftar" dan tidak bisa dijadikan target renlap |
+| Q14 | Bahan apa saja yang boleh diusulkan mesin: NaCl, dry ice, CaO, flare higroskopis? Kapan CaO atau flare dipakai? | [SEMENTARA] hanya NaCl, dan dry ice dulu bila ada inversi berasap (ALGORITMA §7b) |
+| Q15 | Muatan bahan per sortie per jenis armada OMC (CASA 212, Caravan 208B, C-130, lainnya), untuk NaCl dan dry ice. Sumber: BMKG, BRIN, atau operator? | [SEMENTARA] kosong; layar menulis "muatan armada belum diisi", tanpa angka |
+| Q16 | Lama penaburan per sortie di area semai (menit), untuk menghitung jumlah sortie dalam jendela terbang. | [SEMENTARA] 30 menit, berlabel perkiraan |

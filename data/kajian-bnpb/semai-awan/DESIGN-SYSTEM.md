@@ -38,7 +38,8 @@ Satu peta MapLibre yang sama dengan Peta Operasi Udara (`public/operasi_peta.js`
 | Titik api | titik 3 px; > 40 MW lebih besar | merah `#d7301f` > 40 MW, oranye `#f28c28` di bawahnya |
 | Awan layak semai | raster PNG per langkah, sel 0,1 derajat dihaluskan untuk dibaca | biru `#2b7bd8` 70% |
 | Prakiraan asap | raster PNG per jam, tiga tingkat | cokelat `#6e5426` (warna makna asap §2) 25, 45, 65% |
-| Angin pengarah | panah tipis tiap 1 derajat, panjang mengikuti kecepatan | abu `#8a94a6` |
+| Angin pengarah awan (850 sampai 700 hPa) | panah tipis tiap 1 derajat, panjang mengikuti kecepatan | abu `#8a94a6` |
+| Angin asap (10 m dan 850 hPa) | panah tipis tiap 1 derajat | cokelat muda `#a88b5a` |
 | Zona semai | lingkaran 14 px berpinggir merah bata `#a63a26`, label pil "A 0,78"; zona terpilih penuh merah bata, label putih; garis putus ke titik hujan | merah bata |
 | Base | segitiga navy `#0b2545`; base dengan armada OMC berpinggir ungu OMC `#5b35a8` | |
 | Kota | titik abu kecil + nama | |
@@ -59,9 +60,9 @@ di +24. `prefers-reduced-motion`: putar tetap bisa, tanpa transisi raster.
 
 | Kartu | Isi |
 | ----- | --- |
-| Rekomendasi | label kecil "Rekomendasi"; judul besar "Zona A"; provinsi; skor besar monospasi + pil hijau "terbang 10.00 sampai 13.00 WITA"; kotak koordinat dua kolom (DMS kiri, desimal kanan, klik menyalin); garis tipis; "Alasan" dengan empat baris berikon kotak berhuruf C (biru), F (merah bata), T (abu tua), B (navy); tombol penuh navy "Jadikan target renlap" (Pos komando, peran Q3) |
+| Rekomendasi | label kecil "Rekomendasi"; judul besar "Zona A"; provinsi; skor besar monospasi + pil hijau "terbang 10.00 sampai 13.00 WITA"; kotak koordinat dua kolom (DMS kiri, desimal kanan, klik menyalin); garis tipis; "Alasan" dengan empat baris berikon kotak berhuruf C (biru), F (merah bata), T (abu tua), B (navy); baris "Untuk renlap": target daerah (kabupaten dan cluster yang dituju), ketinggian "sekitar 4.500 kaki", bahan berikon ("NaCl" atau "dry ice dulu, lalu NaCl"), perkiraan jumlah ("2 sortie, muatan armada belum diisi" sampai Q15); tombol penuh navy "Jadikan target renlap" (Pos komando, peran S7). Di atas kartu: pemilih kecil "Mulai dari: api besar / target pilihan" (F-23) |
 | Zona usulan 24 jam | daftar kartu L4: lingkaran huruf, provinsi tebal, "terbang 13.00 sampai 16.00, dekat Palangkaraya", skor monospasi kanan; terpilih bergaris navy; pil "sudah target" ungu bila sudah renlap; pil "hati-hati" merah bata bila tanda bahaya MUCAPE; pil "di luar jelajah" oranye |
-| Peringatan asap | hijau lembut bila aman lintas batas ("Asap belum menyeberang ke negara lain 24 jam ke depan"); merah lembut bila menyeberang: label "Peringatan asap", judul "Asap menyeberang ke Timor-Leste sekitar 24 jam lagi", baris kecil jam, kota, cluster asal; daftar kota: nama, negara kecil, "tiba +3 j" monospasi, pil tingkat (tinggi merah, sedang oranye, rendah abu garis); kaki kecil "beban asap relatif dari model lintasan, bukan PM2.5 terukur" |
+| Peringatan asap | hijau lembut bila aman lintas batas ("Asap belum menyeberang ke negara lain 24 jam ke depan"); merah lembut bila menyeberang: label "Peringatan asap", judul "Asap menyeberang ke Timor-Leste sekitar 24 jam lagi", baris kecil jam, kota, cluster asal; daftar kota dalam dua kelompok, "Akan kena asap" (tiba +N j) lalu "Sudah berasap": nama, negara kecil, "tiba +9 j" monospasi atau "sekarang", pil tingkat (tinggi merah, sedang oranye, rendah abu garis); baris kedua kecil berikon panah angin: "dari cluster #13 Kupang, 42 km di tenggara, angin 18 km/j, 7 jam berasap"; klik kota = peta ke kota, bilah jam ke jam tiba, garis tipis dari cluster asal ke kota; kaki kecil "beban asap relatif dari model lintasan, bukan PM2.5 terukur" |
 | Bobot (Tinjau) | tiga penggeser 0 sampai 1 dengan angka monospasi kanan; saklar "seperti Nimbus"; pilihan jeda 20, 30, 45, 60 menit; tombol garis "Setel ulang bobot" |
 | Faktor 10 sel terbaik (Tinjau) | tabel: lintang bujur, Q, D, T, skor tebal; kepala tabel navy (DS Operasi Udara §8); tombol "Salin CSV" |
 

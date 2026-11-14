@@ -46,6 +46,9 @@ Hak baca mengikuti seksi Operasi Udara (`/api/operasi/peta`). Tombol renlap meng
 | F-20 | Uji | **Rapor prospektif**: tiap putaran dibekukan; sesudah jam zona lewat, dinilai lawan hujan satelit di titik hujan; ditampilkan persen zona yang benar menjadi hujan lawan sel acak setara | pendaftaran GSMaP |
 | F-21 | Uji | **Sortie lawan zona**: sortie OMC (`omc_sortie`, tanpa koordinat: poligon sasaran atau kabupaten sasaran, ALGORITMA §12) yang jamnya beririsan jendela terbang zona | Q10 |
 | F-22 | Awan teramati | Tanda pada zona bila Himawari menunjukkan puncak awan dingin di kabupatennya pada jam terbaru | – |
+| F-23 | Target | **Mulai dari target**: Pusdalops memilih kabupaten, cluster, atau kawasan gambut (KHG); sistem mencari sel layak semai di hulu angin yang titik hujannya jatuh dalam 25 km target itu, dengan zona dan jendela yang sama aturannya | Q9 |
+| F-24 | Renlap | **Ketinggian semai**: perkiraan tinggi dasar awan (LCL) di zona pada jam terbaik, dalam kaki dibulatkan 500, berlabel perkiraan, konfirmasi BMKG | – |
+| F-25 | Renlap | **Bahan dan jumlah**: usulan bahan (NaCl, atau dry ice dulu bila ada inversi berasap) dan perkiraan jumlah per zona dan per base dari muatan armada OMC x sortie; total harian per base | Q14, Q15, Q16 |
 
 ## 4. Di luar lingkup
 
@@ -56,6 +59,8 @@ Hak baca mengikuti seksi Operasi Udara (`/api/operasi/peta`). Tombol renlap meng
 - Pembasahan gambut tanpa api aktif (Q9, tiket lanjutan SA-14).
 - Peringatan HP atau email.
 - Model data (pembelajaran mesin) sebelum ada ratusan sortie berlabel (R1 §6).
+- Dosis bahan per awan dari rumus fisika (tidak ada rumus mapan; F-25 memakai muatan armada dan aturan BMKG).
+- Stok bahan semai di gudang (bisa disambung ke LogPal kelak, bukan di paket ini).
 
 ## 5. Ukuran berhasil
 

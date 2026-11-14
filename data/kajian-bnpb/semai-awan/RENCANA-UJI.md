@@ -24,6 +24,8 @@ Kendari dan Palangkaraya, disimpan sebagai `scripts/operasi/fixture_semai.json`)
 | Zona waktu provinsi 62 Kalteng / 63 Kalsel / 51 Bali / 82 Maluku Utara / sel laut dekat Bali | WIB / WITA / WITA / WIT / WITA |
 | Jendela: blok 03Z dan 06Z, provinsi WIB / blok 03Z, provinsi WITA | "10.00 sampai 16.00 WIB" / "11.00 sampai 14.00 WITA" |
 | Hujan blok langkah dari tp kumulatif | `(tp(t+3) - tp(t)) / 3`, langkah 0 terdefinisi |
+| Kota dekat api sudah berasap di jam pertama | status "sudah berasap", bukan "tiba +3 jam" |
+| Arah datang kota di barat laut cluster | "dari tenggara" |
 | Ambang cluster: terbesar 3.000 MW | ambang 60 MW, kalimat kosong menyebut 60 |
 | DMS -4,6 / 121,9 | `4°36'00" S 121°54'00" E` |
 | Pembulatan mitra -4,6 / 121,9 | -4,5 / 122,0 |
