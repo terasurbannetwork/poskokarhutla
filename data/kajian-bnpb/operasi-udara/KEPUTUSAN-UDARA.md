@@ -57,3 +57,9 @@ boleh dipakai untuk membangun, tetapi tidak boleh tampil di layar sebagai angka 
 | Q12 | PDF renlap: boleh dibaca semua staf berperan yang bisa membuka `/operasi`, atau hanya Pusdalops dan pimpinan? Dan renlap JSON/TXT yang sekarang publik di `public/data/operasi/`: tetap publik atau dipindah ke balik sesi? | [SEMENTARA] PDF sama dengan hak baca `/api/operasi/peta`; JSON/TXT tetap seperti sekarang sampai dijawab |
 
 Q16 sampai Q21 dijawab pemilik 12 Nov 2026, lihat K14 sampai K19.
+
+## Tambahan 14 Nov 2026
+
+| No | Tanggal | Keputusan | Kalimat pemilik |
+| -- | ------- | --------- | --------------- |
+| K20 | 14 Nov 2026 | Lingkup K1 ditambah seksi **Peluang semai** (zona semai awan OMC dan prakiraan asap 24 jam). Seksi ini diatur paket `data/kajian-bnpb/semai-awan/` (AGENTS §2.14), bukan PRD modul ini. | "Bisa kah lu tiru ini masukkan ke sistem. Untuk Operasi Udara" |
