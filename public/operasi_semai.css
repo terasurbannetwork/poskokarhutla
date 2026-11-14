@@ -29,7 +29,7 @@
 #opsLaporan .sm-peta-kosong{padding:24px}
 #opsLaporan .sm-atas{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 16px;padding:14px}
 #opsLaporan .sm-baris3{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:20px;align-items:stretch}
-#opsLaporan .sm-kanan2{display:grid;grid-template-rows:auto minmax(0,1fr);gap:20px;min-width:0;contain:size}
+#opsLaporan .sm-kanan2{display:grid;grid-template-rows:auto minmax(0,1fr);gap:20px;min-width:0;contain:size;min-height:360px}
 #opsLaporan .sm-kanan2>#smAsap{display:flex;flex-direction:column;min-height:0}
 #opsLaporan .sm-kanan2>#smAsap>.ex-bd{flex:1;min-height:0;overflow:auto;display:block}
 #opsLaporan .sm-kdaf{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-top:8px}
