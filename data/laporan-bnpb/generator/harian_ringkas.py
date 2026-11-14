@@ -86,7 +86,7 @@ def utama():
     bl = lambda t: f"{t.day} {harian.BULAN[t.month - 1][:3]} {t.year}"
     mulai, sampai = (dt.datetime.strptime(wa[k], '%Y-%m-%d %H.%M') for k in ('mulai', 'sampai'))
     jam_ga = (re.search(r'(\d\d[.:]\d\d)\s*WIB', ga.get('jam') or '') or [None, '06.00'])[1].replace(':', '.')
-    sk = f'Laporan Harian Dit. Koordalops BNPB, {bl(mulai)} {mulai:%H.%M} s.d. {bl(sampai)} {sampai:%H.%M} WIB; GIS BNPB, {HL.title()} {H_DATA[:4]}'
+    sk = f'Laporan Harian Dit. Koordalops BNPB, {bl(mulai)} {mulai:%H.%M} s.d. {bl(sampai)} {sampai:%H.%M} WIB; NASA FIRMS VIIRS dan MODIS, {HL.title()} {H_DATA[:4]}'   # pemilik 14 Nov 2026: tanpa "GIS BNPB"
     sv = f'PVMBG Badan Geologi, {bl(T)} {jam_ga} WIB; definisi status Permen ESDM 15/2011'
     hal = dict(lewat_deck.urutan_slide(nama))   # 7 Nov: nomor halaman bergeser bila slide Pengkinian tidak ada, jadi dicari dari judulnya
     h_ring = next(i for i, t in hal.items() if t.startswith('Laporan ') or 'kejadian menonjol' in t)

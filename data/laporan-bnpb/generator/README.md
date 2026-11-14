@@ -188,6 +188,6 @@ mutakhir), slide 2 prakiraan N hari (paling banyak 6), slide 3 kab/kota Awas/Sia
 ~/.claude/skills/ppt-konsultan/bnpb/.venv/bin/python situasi_banjir.py --prov Aceh --hari 6 --tanggal 2026-11-14
 ```
 
-WA Koordalops dibaca dari `../harian-*/wa-koordalops.txt` (14 hari terakhir); WA yang belum tersimpan ditambah lewat
+WA Koordalops dibaca lewat `jalur.berkas_hari('harian', 'wa-koordalops.txt')` (14 hari terakhir); WA yang belum tersimpan ditambah lewat
 `--wa <berkas>`. Status N hari dihitung ulang dengan aturan `scripts/banjir/status.py` (empat hari pertama dicek sama
-dengan `status.json` situs). Keluaran `../situasi-banjir-<tanggal>/`; jalankan `aturan_slide.py` sebelum dikirim.
+dengan `status.json` situs). Keluaran `../paparan/situasi-banjir-<provinsi>-<tanggal>/`. Baris Sumber tanpa "GIS BNPB" (pemilik 14 Nov 2026, digerbang `aturan_slide.py`); jalankan `aturan_slide.py` sebelum dikirim.
