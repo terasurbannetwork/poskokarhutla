@@ -5,8 +5,8 @@
    Usulan lokasi untuk dilihat, bukan perintah terbang. Semua teks data lewat esc(). */
 (() => {
   "use strict";
+  const {gpx, bingkai} = window.CitraUbin;
   const $ = s => document.querySelector(s), esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"})[c]);
-  const TILE = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
   const ORBIT = 2, RADIUS = 6, KOTAK = 14, NM_KM = 1.852, V = 200;
   const SAT = {M: "MODIS", N: "S-NPP", N20: "NOAA-20", N21: "NOAA-21"}, BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
   const ang = (x, d = 0) => Number(x).toLocaleString("id-ID", {minimumFractionDigits: d, maximumFractionDigits: d});
@@ -20,16 +20,7 @@
   const hal3 = x => String(Math.round(x) % 360 || 360).padStart(3, "0") + "°";
   const dms1 = x => { x = Math.abs(x); let d = Math.trunc(x), m = Math.trunc((x - d) * 60), s = Math.round(((x - d) * 60 - m) * 60); if (s === 60) { s = 0; m++; } if (m === 60) { m = 0; d++; } return [d, m, s]; };
   const dms = (la, lo) => { const a = dms1(la), b = dms1(lo), p = (n, l) => String(n).padStart(l, "0"); return `${la < 0 ? "S" : "N"} ${p(a[0], 2)}° ${p(a[1], 2)}' ${p(a[2], 2)}"  ${lo < 0 ? "W" : "E"} ${p(b[0], 3)}° ${p(b[1], 2)}' ${p(b[2], 2)}"`; };
-  /* Web Mercator piksel global, sama dengan renlap_pdf.gpx */
-  const gpx = (la, lo, z) => { const n = 256 * 2 ** z, s = Math.sin(rad(Math.max(-85, Math.min(85, la)))); return [(lo + 180) / 360 * n, (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * n]; };
   const mpp = (la, z) => 156543.034 * Math.cos(rad(la)) / 2 ** z;
-  /* bingkai citra w x h berpusat (la, lo): ubin Esri sebagai <image> di dalam SVG + fungsi proyeksi */
-  function bingkai(la, lo, z, w, h) {
-    const [cx, cy] = gpx(la, lo, z), x0 = cx - w / 2, y0 = cy - h / 2, img = [];
-    for (let x = Math.floor(x0 / 256); x <= Math.floor((x0 + w) / 256); x++) for (let y = Math.floor(y0 / 256); y <= Math.floor((y0 + h) / 256); y++)
-      img.push(`<image href="${TILE.replace("{z}", z).replace("{y}", y).replace("{x}", x)}" x="${(x * 256 - x0).toFixed(1)}" y="${(y * 256 - y0).toFixed(1)}" width="256.6" height="256.6"/>`);
-    return {P: (a, b) => { const [px, py] = gpx(a, b, z); return [px - x0, py - y0]; }, img: img.join("")};
-  }
   const PANAH = '<defs><marker id="p" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 10,5 0,10z" fill="#38bdf8"/></marker></defs>';
   const rute = (P, t, tebal = 4) => t.slice(1).map((c, i) => { const [x1, y1] = P(t[i].lat, t[i].lon), [x2, y2] = P(c.lat, c.lon);
     return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#38bdf8" stroke-width="${tebal}"/><line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${((x1 + x2) / 2).toFixed(1)}" y2="${((y1 + y2) / 2).toFixed(1)}" stroke="none" marker-end="url(#p)" stroke-width="${tebal}"/>`; }).join("");
