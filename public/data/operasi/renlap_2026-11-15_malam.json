@@ -1,0 +1,1555 @@
+{
+ "tanggal": "2026-11-15",
+ "versi": "malam",
+ "dibuat": "2026-11-14T13:01:15.218398+00:00",
+ "status": "draf",
+ "sumber": {
+  "titik_panas": "hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-14T10:55:00.000Z, 1434 titik sedang/tinggi 72 jam)",
+  "temuan": "GET /api/operasi/temuan (6 temuan 48 jam)",
+  "ffmc": "fwi.json hari_ini 2026-10-12",
+  "pm25": "prakiraan.json dibuat 2026-11-13T23:55Z",
+  "gambut": "public/data/lahan/gambut.geojson (BBSDLP 1:250.000)",
+  "air": "tidak dipakai: data air hanya Kalsel",
+  "jarak_pandang": "tidak tersedia (metar.json basi/terbatas, OP-8)"
+ },
+ "catatan": "USULAN lokasi untuk dilihat, bukan perintah terbang. Komando operasi udara ada pada TNI AU dan PIC.",
+ "bobot_label": "HIPOTESIS. Bobot aturan tangan belum di-backtest; tala ulang dari metrik M1 (ketepatan target) setelah 14 hari data (spek operasi-lapangan 6.2, K7).",
+ "base": [
+  {
+   "id": "PNK",
+   "nama": "Supadio",
+   "icao": "WIOO",
+   "prov": "61",
+   "lat": -0.152258,
+   "lon": 109.404493,
+   "vor": "PNK",
+   "deklinasi_timur": 0.5,
+   "radius_nm": 120,
+   "armada": [
+    "PK-FPA",
+    "VH-L6T",
+    "VN-8424",
+    "H-3217",
+    "HA-5231",
+    "HA-5228"
+   ],
+   "patroli": [],
+   "wb": [],
+   "kandidat_dalam_radius": 0,
+   "di_luar_rute": null
+  },
+  {
+   "id": "KTG",
+   "nama": "Rahadi Oesman",
+   "icao": "WIOK",
+   "prov": "61",
+   "lat": -1.817165,
+   "lon": 109.963469,
+   "vor": null,
+   "deklinasi_timur": 0.5,
+   "radius_nm": 120,
+   "armada": [
+    "VN-8416",
+    "PK-ALE"
+   ],
+   "patroli": [
+    {
+     "lat": -2.2723,
+     "lon": 110.6899,
+     "skor": 5.0,
+     "alasan": {
+      "titik_baru": 1,
+      "menahun_hari": 1,
+      "ffmc": 92.0,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 12:40",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 16' 20\"  E 110° 41' 24\"",
+     "radial": 122,
+     "jarak_vor_nm": 51,
+     "rujukan": "KTG (base, VOR tidak diseed)",
+     "rd": "R 122 D 51 Nm Fr KTG (base, VOR tidak diseed)",
+     "dari_base_nm": 51,
+     "tempat": "Desa Karya Baru, Kec. Air Upas, Kab. Ketapang",
+     "udara": {
+      "pm25_maks": 5,
+      "kab": "Kab. Ketapang"
+     },
+     "urut": 1
+    },
+    {
+     "lat": -2.1845,
+     "lon": 110.8541,
+     "skor": 7.0,
+     "alasan": {
+      "titik_baru": 2,
+      "menahun_hari": 1,
+      "ffmc": 92.0,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 2,
+     "terakhir": {
+      "jam_wib": "14 Nov 13:37",
+      "satelit": "NOAA-20"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 11' 04\"  E 110° 51' 15\"",
+     "radial": 112,
+     "jarak_vor_nm": 58,
+     "rujukan": "KTG (base, VOR tidak diseed)",
+     "rd": "R 112 D 58 Nm Fr KTG (base, VOR tidak diseed)",
+     "dari_base_nm": 58,
+     "tempat": "Desa Bantan Sari, Kec. Air Upas, Kab. Ketapang",
+     "udara": {
+      "pm25_maks": 5,
+      "kab": "Kab. Sukamara"
+     },
+     "urut": 2
+    },
+    {
+     "lat": -2.2174,
+     "lon": 110.95615,
+     "skor": 9.0,
+     "alasan": {
+      "titik_baru": 2,
+      "menahun_hari": 1,
+      "ffmc": 92.0,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "permukiman_km": 1.7,
+      "belum_ditangani": true
+     },
+     "n": 2,
+     "terakhir": {
+      "jam_wib": "14 Nov 13:37",
+      "satelit": "NOAA-20"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 13' 03\"  E 110° 57' 22\"",
+     "radial": 111,
+     "jarak_vor_nm": 64,
+     "rujukan": "KTG (base, VOR tidak diseed)",
+     "rd": "R 111 D 64 Nm Fr KTG (base, VOR tidak diseed)",
+     "dari_base_nm": 64,
+     "tempat": "Desa Kemuning, Kec. Air Upas, Kab. Ketapang",
+     "udara": {
+      "pm25_maks": 5,
+      "kab": "Kab. Sukamara"
+     },
+     "urut": 3
+    },
+    {
+     "lat": -2.2383,
+     "lon": 111.1111,
+     "skor": 5.0,
+     "alasan": {
+      "titik_baru": 1,
+      "menahun_hari": 1,
+      "ffmc": 88.8,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 12:40",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 14' 18\"  E 111° 06' 40\"",
+     "radial": 110,
+     "jarak_vor_nm": 73,
+     "rujukan": "KTG (base, VOR tidak diseed)",
+     "rd": "R 110 D 73 Nm Fr KTG (base, VOR tidak diseed)",
+     "dari_base_nm": 73,
+     "tempat": "Desa Sembikuan, Kec. Permata Kecubung, Kab. Sukamara",
+     "udara": {
+      "pm25_maks": 5,
+      "kab": "Kab. Sukamara"
+     },
+     "urut": 4
+    },
+    {
+     "lat": -2.5337,
+     "lon": 110.9923,
+     "skor": 3.0,
+     "alasan": {
+      "titik_baru": 0,
+      "menahun_hari": 1,
+      "ffmc": 82.7,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 00:58",
+      "satelit": "NOAA-20"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 32' 01\"  E 110° 59' 32\"",
+     "radial": 124,
+     "jarak_vor_nm": 75,
+     "rujukan": "KTG (base, VOR tidak diseed)",
+     "rd": "R 124 D 75 Nm Fr KTG (base, VOR tidak diseed)",
+     "dari_base_nm": 75,
+     "tempat": "Desa Ratu Elok, Kec. Manis Mata, Kab. Ketapang",
+     "udara": {
+      "pm25_maks": 5,
+      "kab": "Kab. Sukamara"
+     },
+     "urut": 5
+    },
+    {
+     "lat": -2.6498,
+     "lon": 110.8237,
+     "skor": 5.0,
+     "alasan": {
+      "titik_baru": 1,
+      "menahun_hari": 1,
+      "ffmc": 82.7,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 13:37",
+      "satelit": "NOAA-20"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 38' 59\"  E 110° 49' 25\"",
+     "radial": 134,
+     "jarak_vor_nm": 72,
+     "rujukan": "KTG (base, VOR tidak diseed)",
+     "rd": "R 134 D 72 Nm Fr KTG (base, VOR tidak diseed)",
+     "dari_base_nm": 72,
+     "tempat": "Kec. Singkup, Kab. Ketapang",
+     "udara": {
+      "pm25_maks": 5,
+      "kab": "Kab. Sukamara"
+     },
+     "urut": 6
+    },
+    {
+     "lat": -1.9957,
+     "lon": 111.5351,
+     "skor": 5.0,
+     "alasan": {
+      "titik_baru": 1,
+      "menahun_hari": 1,
+      "ffmc": 71.5,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 12:40",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 01° 59' 45\"  E 111° 32' 06\"",
+     "radial": 96,
+     "jarak_vor_nm": 95,
+     "rujukan": "KTG (base, VOR tidak diseed)",
+     "rd": "R 096 D 95 Nm Fr KTG (base, VOR tidak diseed)",
+     "dari_base_nm": 95,
+     "tempat": "Desa Nanga Palikodan, Kec. Bulik, Kab. Lamandau",
+     "udara": {
+      "pm25_maks": 5,
+      "kab": "Kab. Lamandau"
+     },
+     "urut": 7
+    },
+    {
+     "lat": -1.8431,
+     "lon": 111.5944,
+     "skor": 5.0,
+     "alasan": {
+      "titik_baru": 1,
+      "menahun_hari": 1,
+      "ffmc": 71.5,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 12:40",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 01° 50' 35\"  E 111° 35' 40\"",
+     "radial": 90,
+     "jarak_vor_nm": 98,
+     "rujukan": "KTG (base, VOR tidak diseed)",
+     "rd": "R 090 D 98 Nm Fr KTG (base, VOR tidak diseed)",
+     "dari_base_nm": 98,
+     "tempat": "Desa Sepondam, Kec. Bulik Timur, Kab. Lamandau",
+     "udara": {
+      "pm25_maks": 5,
+      "kab": "Kab. Lamandau"
+     },
+     "urut": 8
+    }
+   ],
+   "wb": [],
+   "kandidat_dalam_radius": 14,
+   "di_luar_rute": {
+    "sel": 0,
+    "titik": 0
+   }
+  },
+  {
+   "id": "PKY",
+   "nama": "Tjilik Riwut",
+   "icao": "WAGG",
+   "prov": "62",
+   "lat": -2.227146,
+   "lon": 113.943388,
+   "vor": "PKY",
+   "deklinasi_timur": 0.5,
+   "radius_nm": 120,
+   "armada": [
+    "PK-FPU",
+    "PK-KIA",
+    "ZK-HKU",
+    "UR-CSM",
+    "N-814AR",
+    "PK-SNC"
+   ],
+   "patroli": [
+    {
+     "lat": -2.19012,
+     "lon": 113.56433,
+     "skor": 16.0,
+     "alasan": {
+      "titik_baru": 6,
+      "menahun_hari": 1,
+      "gambut": true,
+      "ffmc": 89.0,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 6,
+     "terakhir": {
+      "jam_wib": "14 Nov 13:37",
+      "satelit": "NOAA-20"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 11' 24\"  E 113° 33' 52\"",
+     "radial": 277,
+     "jarak_vor_nm": 23,
+     "rujukan": "VOR PKY",
+     "rd": "R 277 D 23 Nm Fr VOR PKY",
+     "dari_base_nm": 23,
+     "tempat": "Desa Asem Kumbang, Kec. Tasik Payawan, Kab. Katingan",
+     "udara": {
+      "pm25_maks": 5,
+      "kab": "Kota Palangkaraya"
+     },
+     "urut": 1
+    },
+    {
+     "lat": -3.2178,
+     "lon": 114.4055,
+     "skor": 7.0,
+     "alasan": {
+      "titik_baru": 1,
+      "menahun_hari": 1,
+      "ffmc": 86.9,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "permukiman_km": 0.4,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 12:40",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 03° 13' 04\"  E 114° 24' 20\"",
+     "radial": 154,
+     "jarak_vor_nm": 65,
+     "rujukan": "VOR PKY",
+     "rd": "R 154 D 65 Nm Fr VOR PKY",
+     "dari_base_nm": 66,
+     "tempat": "Desa Tamban Jaya, Kec. Tamban Catur, Kab. Kapuas",
+     "udara": {
+      "pm25_maks": 11,
+      "kab": "Kota Banjarmasin"
+     },
+     "urut": 2
+    },
+    {
+     "lat": -2.9623,
+     "lon": 115.2267,
+     "skor": 5.0,
+     "alasan": {
+      "titik_baru": 0,
+      "menahun_hari": 1,
+      "ffmc": 89.1,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "permukiman_km": 1.6,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 00:58",
+      "satelit": "NOAA-20"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 57' 44\"  E 115° 13' 36\"",
+     "radial": 119,
+     "jarak_vor_nm": 88,
+     "rujukan": "VOR PKY",
+     "rd": "R 119 D 88 Nm Fr VOR PKY",
+     "dari_base_nm": 89,
+     "tempat": "Desa Bitahan Baru, Kec. Bungur, Kab. Tapin",
+     "udara": {
+      "pm25_maks": 28,
+      "kab": "Kab. Tapin"
+     },
+     "urut": 3
+    },
+    {
+     "lat": -2.514,
+     "lon": 115.11425,
+     "skor": 9.0,
+     "alasan": {
+      "titik_baru": 2,
+      "menahun_hari": 1,
+      "ffmc": 89.1,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "permukiman_km": 1.6,
+      "belum_ditangani": true
+     },
+     "n": 2,
+     "terakhir": {
+      "jam_wib": "14 Nov 12:40",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 30' 50\"  E 115° 06' 51\"",
+     "radial": 103,
+     "jarak_vor_nm": 72,
+     "rujukan": "VOR PKY",
+     "rd": "R 103 D 72 Nm Fr VOR PKY",
+     "dari_base_nm": 72,
+     "tempat": "Desa Sungai Luang Hilir, Kec. Babirik, Kab. Hulu Sungai Utara",
+     "udara": {
+      "pm25_maks": 25,
+      "kab": "Kab. Hulu Sungai Utara"
+     },
+     "urut": 4
+    },
+    {
+     "lat": -2.4716,
+     "lon": 115.2569,
+     "skor": 10.0,
+     "alasan": {
+      "titik_baru": 1,
+      "menahun_hari": 1,
+      "gambut": true,
+      "ffmc": 90.4,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "permukiman_km": 1.7,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 12:40",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 28' 18\"  E 115° 15' 25\"",
+     "radial": 99,
+     "jarak_vor_nm": 80,
+     "rujukan": "VOR PKY",
+     "rd": "R 099 D 80 Nm Fr VOR PKY",
+     "dari_base_nm": 80,
+     "tempat": "Desa Pasar Senin, Kec. Amuntai Tengah, Kab. Hulu Sungai Utara",
+     "udara": {
+      "pm25_maks": 25,
+      "kab": "Kab. Hulu Sungai Utara"
+     },
+     "urut": 5
+    },
+    {
+     "lat": -1.056,
+     "lon": 114.9992,
+     "skor": 7.0,
+     "alasan": {
+      "titik_baru": 1,
+      "menahun_hari": 1,
+      "ffmc": 82.8,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "permukiman_km": 1.7,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 12:40",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 01° 03' 22\"  E 114° 59' 57\"",
+     "radial": 41,
+     "jarak_vor_nm": 95,
+     "rujukan": "VOR PKY",
+     "rd": "R 041 D 95 Nm Fr VOR PKY",
+     "dari_base_nm": 95,
+     "tempat": "Desa Hajak, Kec. Teweh Baru, Kab. Barito Utara",
+     "udara": {
+      "pm25_maks": 8,
+      "kab": "Kab. Barito Utara"
+     },
+     "urut": 6
+    },
+    {
+     "lat": -1.07685,
+     "lon": 114.85025,
+     "skor": 7.0,
+     "alasan": {
+      "titik_baru": 2,
+      "menahun_hari": 1,
+      "ffmc": 82.8,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 2,
+     "terakhir": {
+      "jam_wib": "14 Nov 12:40",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 01° 04' 37\"  E 114° 51' 01\"",
+     "radial": 37,
+     "jarak_vor_nm": 88,
+     "rujukan": "VOR PKY",
+     "rd": "R 037 D 88 Nm Fr VOR PKY",
+     "dari_base_nm": 88,
+     "tempat": "Desa Bintang Ninggi I, Kec. Teweh Selatan, Kab. Barito Utara",
+     "udara": {
+      "pm25_maks": 8,
+      "kab": "Kab. Barito Utara"
+     },
+     "urut": 7
+    },
+    {
+     "lat": -3.3296,
+     "lon": 112.4909,
+     "skor": 10.0,
+     "alasan": {
+      "titik_baru": 1,
+      "menahun_hari": 1,
+      "gambut": true,
+      "ffmc": 83.2,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "permukiman_km": 1.3,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 12:40",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 03° 19' 47\"  E 112° 29' 27\"",
+     "radial": 233,
+     "jarak_vor_nm": 109,
+     "rujukan": "VOR PKY",
+     "rd": "R 233 D 109 Nm Fr VOR PKY",
+     "dari_base_nm": 109,
+     "tempat": "Desa Persil Raya, Kec. Seruyan Hilir Timur, Kab. Seruyan",
+     "udara": {
+      "pm25_maks": 5,
+      "kab": "Kab. Seruyan"
+     },
+     "urut": 8
+    }
+   ],
+   "wb": [],
+   "kandidat_dalam_radius": 51,
+   "di_luar_rute": {
+    "sel": 36,
+    "titik": 43
+   }
+  },
+  {
+   "id": "SMQ",
+   "nama": "H. Asan Sampit",
+   "icao": "WAOS",
+   "prov": "62",
+   "lat": -2.499198,
+   "lon": 112.974987,
+   "vor": null,
+   "deklinasi_timur": 0.5,
+   "radius_nm": 120,
+   "armada": [
+    "UR-CSN"
+   ],
+   "patroli": [],
+   "wb": [],
+   "kandidat_dalam_radius": 28,
+   "di_luar_rute": null
+  },
+  {
+   "id": "KLP",
+   "nama": "Kuala Pembuang",
+   "icao": "WAGF",
+   "prov": "62",
+   "lat": -3.376062,
+   "lon": 112.536521,
+   "vor": null,
+   "deklinasi_timur": 0.5,
+   "radius_nm": 120,
+   "armada": [
+    "PK-DAP",
+    "HA-5172",
+    "RA-31021",
+    "HA-5235"
+   ],
+   "patroli": [],
+   "wb": [],
+   "kandidat_dalam_radius": 28,
+   "di_luar_rute": null
+  },
+  {
+   "id": "BDJ",
+   "nama": "Syamsudin Noor / Lanud SAM",
+   "icao": "WAOO",
+   "prov": "63",
+   "lat": -3.440112,
+   "lon": 114.761209,
+   "vor": "BDM",
+   "deklinasi_timur": 0.5,
+   "radius_nm": 120,
+   "armada": [
+    "RA-22700",
+    "PK-RTQ",
+    "PK-SNK",
+    "PK-SNL",
+    "A-2904",
+    "A-2105",
+    "A-2107",
+    "A-2119",
+    "A-1328",
+    "RA-22834",
+    "N261BE",
+    "HA-5234",
+    "VH-HGM"
+   ],
+   "patroli": [
+    {
+     "lat": -3.2178,
+     "lon": 114.4055,
+     "skor": 7.0,
+     "alasan": {
+      "titik_baru": 1,
+      "menahun_hari": 1,
+      "ffmc": 86.9,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "permukiman_km": 0.4,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 12:40",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 03° 13' 04\"  E 114° 24' 20\"",
+     "radial": 303,
+     "jarak_vor_nm": 24,
+     "rujukan": "VOR BDM",
+     "rd": "R 303 D 24 Nm Fr VOR BDM",
+     "dari_base_nm": 25,
+     "tempat": "Desa Tamban Jaya, Kec. Tamban Catur, Kab. Kapuas",
+     "udara": {
+      "pm25_maks": 11,
+      "kab": "Kota Banjarmasin"
+     },
+     "urut": 1
+    },
+    {
+     "lat": -2.9623,
+     "lon": 115.2267,
+     "skor": 5.0,
+     "alasan": {
+      "titik_baru": 0,
+      "menahun_hari": 1,
+      "ffmc": 89.1,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "permukiman_km": 1.6,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 00:58",
+      "satelit": "NOAA-20"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 57' 44\"  E 115° 13' 36\"",
+     "radial": 46,
+     "jarak_vor_nm": 41,
+     "rujukan": "VOR BDM",
+     "rd": "R 046 D 41 Nm Fr VOR BDM",
+     "dari_base_nm": 40,
+     "tempat": "Desa Bitahan Baru, Kec. Bungur, Kab. Tapin",
+     "udara": {
+      "pm25_maks": 28,
+      "kab": "Kab. Tapin"
+     },
+     "urut": 2
+    },
+    {
+     "lat": -2.514,
+     "lon": 115.11425,
+     "skor": 9.0,
+     "alasan": {
+      "titik_baru": 2,
+      "menahun_hari": 1,
+      "ffmc": 89.1,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "permukiman_km": 1.6,
+      "belum_ditangani": true
+     },
+     "n": 2,
+     "terakhir": {
+      "jam_wib": "14 Nov 12:40",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 30' 50\"  E 115° 06' 51\"",
+     "radial": 22,
+     "jarak_vor_nm": 60,
+     "rujukan": "VOR BDM",
+     "rd": "R 022 D 60 Nm Fr VOR BDM",
+     "dari_base_nm": 59,
+     "tempat": "Desa Sungai Luang Hilir, Kec. Babirik, Kab. Hulu Sungai Utara",
+     "udara": {
+      "pm25_maks": 25,
+      "kab": "Kab. Hulu Sungai Utara"
+     },
+     "urut": 3
+    },
+    {
+     "lat": -2.4716,
+     "lon": 115.2569,
+     "skor": 10.0,
+     "alasan": {
+      "titik_baru": 1,
+      "menahun_hari": 1,
+      "gambut": true,
+      "ffmc": 90.4,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "permukiman_km": 1.7,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 12:40",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 28' 18\"  E 115° 15' 25\"",
+     "radial": 28,
+     "jarak_vor_nm": 66,
+     "rujukan": "VOR BDM",
+     "rd": "R 028 D 66 Nm Fr VOR BDM",
+     "dari_base_nm": 65,
+     "tempat": "Desa Pasar Senin, Kec. Amuntai Tengah, Kab. Hulu Sungai Utara",
+     "udara": {
+      "pm25_maks": 25,
+      "kab": "Kab. Hulu Sungai Utara"
+     },
+     "urut": 4
+    },
+    {
+     "lat": -2.0831,
+     "lon": 116.1883,
+     "skor": 7.0,
+     "alasan": {
+      "titik_baru": 2,
+      "menahun_hari": 1,
+      "ffmc": 87.1,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 2,
+     "terakhir": {
+      "jam_wib": "14 Nov 12:40",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 04' 59\"  E 116° 11' 18\"",
+     "radial": 47,
+     "jarak_vor_nm": 119,
+     "rujukan": "VOR BDM",
+     "rd": "R 047 D 119 Nm Fr VOR BDM",
+     "dari_base_nm": 118,
+     "tempat": "Kec. Batu Engau, Kab. Paser",
+     "udara": {
+      "pm25_maks": 11,
+      "kab": "Kab. Paser"
+     },
+     "urut": 5
+    },
+    {
+     "lat": -2.6543,
+     "lon": 116.3556,
+     "skor": 7.0,
+     "alasan": {
+      "titik_baru": 1,
+      "menahun_hari": 1,
+      "ffmc": 87.6,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "permukiman_km": 1.3,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 12:40",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 39' 15\"  E 116° 21' 20\"",
+     "radial": 64,
+     "jarak_vor_nm": 108,
+     "rujukan": "VOR BDM",
+     "rd": "R 064 D 108 Nm Fr VOR BDM",
+     "dari_base_nm": 107,
+     "tempat": "Desa Sakalimau, Kec. Sampanahan, Kotabaru",
+     "udara": {
+      "pm25_maks": 8,
+      "kab": "Kab. Kotabaru"
+     },
+     "urut": 6
+    },
+    {
+     "lat": -2.77623,
+     "lon": 116.2846,
+     "skor": 11.0,
+     "alasan": {
+      "titik_baru": 3,
+      "menahun_hari": 1,
+      "ffmc": 87.6,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "permukiman_km": 1.8,
+      "belum_ditangani": true
+     },
+     "n": 3,
+     "terakhir": {
+      "jam_wib": "14 Nov 12:40",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 46' 34\"  E 116° 17' 05\"",
+     "radial": 66,
+     "jarak_vor_nm": 101,
+     "rujukan": "VOR BDM",
+     "rd": "R 066 D 101 Nm Fr VOR BDM",
+     "dari_base_nm": 100,
+     "tempat": "Desa Wilas, Kec. Kelumpang Utara, Kotabaru",
+     "udara": {
+      "pm25_maks": 8,
+      "kab": "Kab. Kotabaru"
+     },
+     "urut": 7
+    },
+    {
+     "lat": -2.19012,
+     "lon": 113.56433,
+     "skor": 16.0,
+     "alasan": {
+      "titik_baru": 6,
+      "menahun_hari": 1,
+      "gambut": true,
+      "ffmc": 89.0,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 6,
+     "terakhir": {
+      "jam_wib": "14 Nov 13:37",
+      "satelit": "NOAA-20"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 11' 24\"  E 113° 33' 52\"",
+     "radial": 316,
+     "jarak_vor_nm": 102,
+     "rujukan": "VOR BDM",
+     "rd": "R 316 D 102 Nm Fr VOR BDM",
+     "dari_base_nm": 104,
+     "tempat": "Desa Asem Kumbang, Kec. Tasik Payawan, Kab. Katingan",
+     "udara": {
+      "pm25_maks": 5,
+      "kab": "Kota Palangkaraya"
+     },
+     "urut": 8
+    }
+   ],
+   "wb": [],
+   "kandidat_dalam_radius": 52,
+   "di_luar_rute": {
+    "sel": 38,
+    "titik": 48
+   }
+  },
+  {
+   "id": "PLM",
+   "nama": "SMB II / Lanud SMH",
+   "icao": "WIPP",
+   "prov": "16",
+   "lat": -2.897653,
+   "lon": 104.698147,
+   "vor": "PLB",
+   "deklinasi_timur": 0.5,
+   "radius_nm": 120,
+   "armada": [
+    "PK-RTY",
+    "PK-IKC",
+    "PK-SNP",
+    "A-2117",
+    "A-2104",
+    "A-1319",
+    "RA-22747",
+    "RA-22477",
+    "RA-22279",
+    "UR-VBC",
+    "UR-CBH"
+   ],
+   "patroli": [
+    {
+     "lat": -3.6084,
+     "lon": 104.178,
+     "skor": 3.0,
+     "alasan": {
+      "titik_baru": 0,
+      "menahun_hari": 1,
+      "ffmc": 93.2,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 01:41",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 03° 36' 30\"  E 104° 10' 41\"",
+     "radial": 213,
+     "jarak_vor_nm": 52,
+     "rujukan": "VOR PLB",
+     "rd": "R 213 D 52 Nm Fr VOR PLB",
+     "dari_base_nm": 53,
+     "tempat": "Desa Sugihan, Kec. Rambang, Kab. Muara Enim",
+     "udara": {
+      "pm25_maks": 12,
+      "kab": "Kab. Muara Enim"
+     },
+     "urut": 1
+    },
+    {
+     "lat": -3.8386,
+     "lon": 105.3724,
+     "skor": 3.0,
+     "alasan": {
+      "titik_baru": 0,
+      "menahun_hari": 1,
+      "ffmc": 93.3,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 01:41",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 03° 50' 19\"  E 105° 22' 21\"",
+     "radial": 143,
+     "jarak_vor_nm": 72,
+     "rujukan": "VOR PLB",
+     "rd": "R 143 D 72 Nm Fr VOR PLB",
+     "dari_base_nm": 69,
+     "tempat": "Kec. Tanjung Raya, Kab. Mesuji",
+     "udara": {
+      "pm25_maks": 15,
+      "kab": "Kab. Mesuji"
+     },
+     "urut": 2
+    },
+    {
+     "lat": -3.6102,
+     "lon": 105.61845,
+     "skor": 3.0,
+     "alasan": {
+      "titik_baru": 0,
+      "menahun_hari": 1,
+      "ffmc": 89.5,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 2,
+     "terakhir": {
+      "jam_wib": "14 Nov 01:41",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 03° 36' 37\"  E 105° 37' 06\"",
+     "radial": 127,
+     "jarak_vor_nm": 73,
+     "rujukan": "VOR PLB",
+     "rd": "R 127 D 73 Nm Fr VOR PLB",
+     "dari_base_nm": 70,
+     "tempat": "Desa Sungai Jeruju, Kec. Cengal, Kab. Ogan Komering Ilir",
+     "udara": {
+      "pm25_maks": 15,
+      "kab": "Kab. Mesuji"
+     },
+     "urut": 3
+    },
+    {
+     "lat": -4.3738,
+     "lon": 105.2963,
+     "skor": 5.0,
+     "alasan": {
+      "titik_baru": 1,
+      "menahun_hari": 1,
+      "ffmc": 93.0,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 13:37",
+      "satelit": "NOAA-20"
+     },
+     "jenis": "patroli",
+     "dms": "S 04° 22' 26\"  E 105° 17' 47\"",
+     "radial": 156,
+     "jarak_vor_nm": 98,
+     "rujukan": "VOR PLB",
+     "rd": "R 156 D 98 Nm Fr VOR PLB",
+     "dari_base_nm": 96,
+     "tempat": "Kec. Menggala Timur, Kab. Tulang Bawang",
+     "udara": {
+      "pm25_maks": 31,
+      "kab": "Kab. Tulang Bawang"
+     },
+     "urut": 4
+    },
+    {
+     "lat": -2.58613,
+     "lon": 106.39067,
+     "skor": 3.0,
+     "alasan": {
+      "titik_baru": 0,
+      "menahun_hari": 1,
+      "ffmc": 92.0,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 3,
+     "terakhir": {
+      "jam_wib": "14 Nov 01:41",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 35' 10\"  E 106° 23' 26\"",
+     "radial": 80,
+     "jarak_vor_nm": 106,
+     "rujukan": "VOR PLB",
+     "rd": "R 080 D 106 Nm Fr VOR PLB",
+     "dari_base_nm": 103,
+     "tempat": "Kec. Koba, Kab. Bangka Tengah",
+     "udara": {
+      "pm25_maks": 7,
+      "kab": "Kab. Bangka Selatan"
+     },
+     "urut": 5
+    },
+    {
+     "lat": -2.6535,
+     "lon": 106.5694,
+     "skor": 3.0,
+     "alasan": {
+      "titik_baru": 0,
+      "menahun_hari": 1,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 00:58",
+      "satelit": "NOAA-20"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 39' 13\"  E 106° 34' 10\"",
+     "radial": 83,
+     "jarak_vor_nm": 116,
+     "rujukan": "VOR PLB",
+     "rd": "R 083 D 116 Nm Fr VOR PLB",
+     "dari_base_nm": 113,
+     "tempat": "Kec. Lubuk Besar, Kab. Bangka Tengah",
+     "udara": {
+      "pm25_maks": 7,
+      "kab": "Kab. Bangka Selatan"
+     },
+     "urut": 6
+    },
+    {
+     "lat": -1.61505,
+     "lon": 106.01825,
+     "skor": 3.0,
+     "alasan": {
+      "titik_baru": 0,
+      "menahun_hari": 1,
+      "belum_ditangani": true
+     },
+     "n": 2,
+     "terakhir": {
+      "jam_wib": "14 Nov 01:41",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 01° 36' 54\"  E 106° 01' 06\"",
+     "radial": 47,
+     "jarak_vor_nm": 112,
+     "rujukan": "VOR PLB",
+     "rd": "R 047 D 112 Nm Fr VOR PLB",
+     "dari_base_nm": 110,
+     "tempat": "Kec. Riau Silip, Kab. Bangka",
+     "udara": {
+      "pm25_maks": 4,
+      "kab": "Kab. Bangka"
+     },
+     "urut": 7
+    },
+    {
+     "lat": -2.0471,
+     "lon": 105.4289,
+     "skor": 3.0,
+     "alasan": {
+      "titik_baru": 0,
+      "menahun_hari": 1,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 01:41",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 02' 50\"  E 105° 25' 44\"",
+     "radial": 43,
+     "jarak_vor_nm": 68,
+     "rujukan": "VOR PLB",
+     "rd": "R 043 D 68 Nm Fr VOR PLB",
+     "dari_base_nm": 67,
+     "tempat": "Kec. Simpang Teritip, Kab. Bangka Barat",
+     "udara": {
+      "pm25_maks": 5,
+      "kab": "Kab. Bangka Barat"
+     },
+     "urut": 8
+    }
+   ],
+   "wb": [
+    {
+     "lat": -1.84905,
+     "lon": 104.35519,
+     "skor": 4.0,
+     "alasan": {
+      "temuan": "fs",
+      "oleh": "PK-IKC",
+      "lokasi_laporan": "Tanah Pilih, Banyuasin II, Banyuasin",
+      "luas_klaim_ha": 5,
+      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
+     },
+     "jenis": "wb",
+     "dms": "S 01° 50' 57\"  E 104° 21' 19\"",
+     "radial": 343,
+     "jarak_vor_nm": 64,
+     "rujukan": "VOR PLB",
+     "rd": "R 343 D 64 Nm Fr VOR PLB",
+     "dari_base_nm": 66,
+     "tempat": null,
+     "udara": {
+      "pm25_maks": 8,
+      "kab": "Kota Jambi"
+     },
+     "urut": 1
+    },
+    {
+     "lat": -1.8048,
+     "lon": 104.25573,
+     "skor": 4.0,
+     "alasan": {
+      "temuan": "berasap",
+      "oleh": "PK-IKC",
+      "lokasi_laporan": "Tanah Pilih, Banyuasin II, Banyuasin",
+      "luas_klaim_ha": 5,
+      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
+     },
+     "jenis": "wb",
+     "dms": "S 01° 48' 17\"  E 104° 15' 21\"",
+     "radial": 339,
+     "jarak_vor_nm": 69,
+     "rujukan": "VOR PLB",
+     "rd": "R 339 D 69 Nm Fr VOR PLB",
+     "dari_base_nm": 71,
+     "tempat": null,
+     "udara": {
+      "pm25_maks": 8,
+      "kab": "Kota Jambi"
+     },
+     "urut": 2
+    },
+    {
+     "lat": -3.37556,
+     "lon": 105.36444,
+     "skor": 3.6,
+     "alasan": {
+      "temuan": "fs",
+      "oleh": "PK-IKC",
+      "lokasi_laporan": "Tulung selapan oki",
+      "luas_klaim_ha": 3,
+      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
+     },
+     "jenis": "wb",
+     "dms": "S 03° 22' 32\"  E 105° 21' 52\"",
+     "radial": 124,
+     "jarak_vor_nm": 52,
+     "rujukan": "VOR PLB",
+     "rd": "R 124 D 52 Nm Fr VOR PLB",
+     "dari_base_nm": 49,
+     "tempat": null,
+     "udara": {
+      "pm25_maks": 12,
+      "kab": "Kab. Ogan Komering Ilir"
+     },
+     "urut": 3
+    }
+   ],
+   "kandidat_dalam_radius": 8,
+   "di_luar_rute": {
+    "sel": 0,
+    "titik": 0
+   }
+  },
+  {
+   "id": "DJB",
+   "nama": "Sultan Thaha",
+   "icao": "WIPA",
+   "prov": "15",
+   "lat": -1.638685,
+   "lon": 103.645063,
+   "vor": "JMB",
+   "deklinasi_timur": 0.5,
+   "radius_nm": 120,
+   "armada": [
+    "PK-WSA",
+    "PK-ALA",
+    "RA-22840",
+    "N-274TH",
+    "VN-8414"
+   ],
+   "patroli": [
+    {
+     "lat": -1.4747,
+     "lon": 102.6186,
+     "skor": 3.0,
+     "alasan": {
+      "titik_baru": 0,
+      "menahun_hari": 1,
+      "ffmc": 83.8,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 01:41",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 01° 28' 29\"  E 102° 37' 07\"",
+     "radial": 278,
+     "jarak_vor_nm": 62,
+     "rujukan": "VOR JMB",
+     "rd": "R 278 D 62 Nm Fr VOR JMB",
+     "dari_base_nm": 62,
+     "tempat": "Desa Mengupeh, Kec. Tengah Ilir, Kab. Tebo",
+     "udara": {
+      "pm25_maks": 5,
+      "kab": "Kab. Tebo"
+     },
+     "urut": 1
+    },
+    {
+     "lat": -1.1489,
+     "lon": 101.7414,
+     "skor": 3.0,
+     "alasan": {
+      "titik_baru": 0,
+      "menahun_hari": 1,
+      "ffmc": 78.6,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 01:41",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 01° 08' 56\"  E 101° 44' 29\"",
+     "radial": 284,
+     "jarak_vor_nm": 118,
+     "rujukan": "VOR JMB",
+     "rd": "R 284 D 118 Nm Fr VOR JMB",
+     "dari_base_nm": 118,
+     "tempat": "Kec. Sungai Rumbai, Kab. Dharmasraya",
+     "udara": {
+      "pm25_maks": 26,
+      "kab": "Kab. Dharmasraya"
+     },
+     "urut": 2
+    },
+    {
+     "lat": -2.0471,
+     "lon": 105.4289,
+     "skor": 3.0,
+     "alasan": {
+      "titik_baru": 0,
+      "menahun_hari": 1,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 01:41",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 02° 02' 50\"  E 105° 25' 44\"",
+     "radial": 103,
+     "jarak_vor_nm": 110,
+     "rujukan": "VOR JMB",
+     "rd": "R 103 D 110 Nm Fr VOR JMB",
+     "dari_base_nm": 110,
+     "tempat": "Kec. Simpang Teritip, Kab. Bangka Barat",
+     "udara": {
+      "pm25_maks": 5,
+      "kab": "Kab. Bangka Barat"
+     },
+     "urut": 3
+    }
+   ],
+   "wb": [
+    {
+     "lat": -1.84905,
+     "lon": 104.35519,
+     "skor": 4.0,
+     "alasan": {
+      "temuan": "fs",
+      "oleh": "PK-IKC",
+      "lokasi_laporan": "Tanah Pilih, Banyuasin II, Banyuasin",
+      "luas_klaim_ha": 5,
+      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
+     },
+     "jenis": "wb",
+     "dms": "S 01° 50' 57\"  E 104° 21' 19\"",
+     "radial": 106,
+     "jarak_vor_nm": 44,
+     "rujukan": "VOR JMB",
+     "rd": "R 106 D 44 Nm Fr VOR JMB",
+     "dari_base_nm": 44,
+     "tempat": null,
+     "udara": {
+      "pm25_maks": 8,
+      "kab": "Kota Jambi"
+     },
+     "urut": 1
+    },
+    {
+     "lat": -1.8048,
+     "lon": 104.25573,
+     "skor": 4.0,
+     "alasan": {
+      "temuan": "berasap",
+      "oleh": "PK-IKC",
+      "lokasi_laporan": "Tanah Pilih, Banyuasin II, Banyuasin",
+      "luas_klaim_ha": 5,
+      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
+     },
+     "jenis": "wb",
+     "dms": "S 01° 48' 17\"  E 104° 15' 21\"",
+     "radial": 105,
+     "jarak_vor_nm": 38,
+     "rujukan": "VOR JMB",
+     "rd": "R 105 D 38 Nm Fr VOR JMB",
+     "dari_base_nm": 38,
+     "tempat": null,
+     "udara": {
+      "pm25_maks": 8,
+      "kab": "Kota Jambi"
+     },
+     "urut": 2
+    },
+    {
+     "lat": -3.16258,
+     "lon": 104.57019,
+     "skor": 3.4,
+     "alasan": {
+      "temuan": "fs",
+      "oleh": "PK-IKC",
+      "lokasi_laporan": "Pulau kabai Indralaya Utara oki",
+      "luas_klaim_ha": 2,
+      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
+     },
+     "jenis": "wb",
+     "dms": "S 03° 09' 45\"  E 104° 34' 13\"",
+     "radial": 148,
+     "jarak_vor_nm": 107,
+     "rujukan": "VOR JMB",
+     "rd": "R 148 D 107 Nm Fr VOR JMB",
+     "dari_base_nm": 107,
+     "tempat": "Desa Pulau Kabai, Kec. Indralaya Utara, Kab. Ogan Ilir",
+     "udara": {
+      "pm25_maks": 14,
+      "kab": "Kab. Ogan Ilir"
+     },
+     "urut": 3
+    }
+   ],
+   "kandidat_dalam_radius": 3,
+   "di_luar_rute": {
+    "sel": 0,
+    "titik": 0
+   }
+  },
+  {
+   "id": "PKU",
+   "nama": "Roesmin Nurjadin",
+   "icao": "WIBB",
+   "prov": "14",
+   "lat": 0.458647,
+   "lon": 101.444321,
+   "vor": "PKU",
+   "deklinasi_timur": 0.5,
+   "radius_nm": 120,
+   "armada": [
+    "PK-WSD",
+    "RA-22729",
+    "N5193Y",
+    "RDPL-34194",
+    "N4875A"
+   ],
+   "patroli": [
+    {
+     "lat": -0.5335,
+     "lon": 101.4168,
+     "skor": 5.0,
+     "alasan": {
+      "titik_baru": 0,
+      "menahun_hari": 1,
+      "ffmc": 79.3,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "permukiman_km": 1.3,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 01:41",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 00° 32' 01\"  E 101° 25' 00\"",
+     "radial": 181,
+     "jarak_vor_nm": 58,
+     "rujukan": "VOR PKU",
+     "rd": "R 181 D 58 Nm Fr VOR PKU",
+     "dari_base_nm": 60,
+     "tempat": "Desa Serosa, Kec. Hulu Kuantan, Kab. Kuantan Singingi",
+     "udara": {
+      "pm25_maks": 5,
+      "kab": "Kab. Kuantan Singingi"
+     },
+     "urut": 1
+    },
+    {
+     "lat": -1.1489,
+     "lon": 101.7414,
+     "skor": 3.0,
+     "alasan": {
+      "titik_baru": 0,
+      "menahun_hari": 1,
+      "ffmc": 78.6,
+      "ffmc_tgl": "2026-10-15",
+      "ffmc_basi": true,
+      "belum_ditangani": true
+     },
+     "n": 1,
+     "terakhir": {
+      "jam_wib": "14 Nov 01:41",
+      "satelit": "NOAA-21"
+     },
+     "jenis": "patroli",
+     "dms": "S 01° 08' 56\"  E 101° 44' 29\"",
+     "radial": 169,
+     "jarak_vor_nm": 96,
+     "rujukan": "VOR PKU",
+     "rd": "R 169 D 96 Nm Fr VOR PKU",
+     "dari_base_nm": 98,
+     "tempat": "Kec. Sungai Rumbai, Kab. Dharmasraya",
+     "udara": {
+      "pm25_maks": 26,
+      "kab": "Kab. Dharmasraya"
+     },
+     "urut": 2
+    }
+   ],
+   "wb": [],
+   "kandidat_dalam_radius": 2,
+   "di_luar_rute": {
+    "sel": 0,
+    "titik": 0
+   }
+  }
+ ]
+}
