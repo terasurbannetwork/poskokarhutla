@@ -205,3 +205,72 @@
 {"tanggal":"2026-11-10","id":"gn:Tangkoko","n_hist":7,"N":0,"harapan":0.0054,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
 {"tanggal":"2026-11-10","id":"gn:Tangkuban Parahu","n_hist":5,"N":0,"harapan":0.0039,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
 {"tanggal":"2026-11-10","id":"gn:Wurlali","n_hist":99,"N":0,"harapan":0.0712,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Agung","n_hist":13,"N":0,"harapan":0.0097,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Ambang","n_hist":6,"N":0,"harapan":0.0046,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Anak Krakatau","n_hist":26,"N":0,"harapan":0.019,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Anak Ranakah","n_hist":10,"N":0,"harapan":0.0075,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Arjuno Welirang","n_hist":0,"N":0,"harapan":0.0004,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Awu","n_hist":15,"N":0,"harapan":0.0111,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Banda Api","n_hist":7,"N":0,"harapan":0.0054,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Batur","n_hist":10,"N":0,"harapan":0.0075,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Batutara","n_hist":13,"N":0,"harapan":0.0097,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Bromo","n_hist":2,"N":0,"harapan":0.0018,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Bur Ni Telong","n_hist":14,"N":0,"harapan":0.0104,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Ciremai","n_hist":3,"N":0,"harapan":0.0025,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Colo","n_hist":0,"N":0,"harapan":0.0004,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Dempo","n_hist":10,"N":0,"harapan":0.0075,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Dieng","n_hist":2,"N":0,"harapan":0.0018,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Dukono","n_hist":36,"N":0,"harapan":0.0261,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Ebulobo","n_hist":3,"N":0,"harapan":0.0025,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Egon","n_hist":10,"N":0,"harapan":0.0075,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Galunggung","n_hist":2,"N":0,"harapan":0.0018,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Gamalama","n_hist":26,"N":0,"harapan":0.019,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Gamkonora","n_hist":43,"N":0,"harapan":0.0311,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Gede","n_hist":14,"N":1,"harapan":0.0104,"p_koreksi":0.61,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Guntur","n_hist":6,"N":0,"harapan":0.0046,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Hobal","n_hist":6,"N":0,"harapan":0.0046,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Ibu","n_hist":59,"N":0,"harapan":0.0426,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Ijen","n_hist":0,"N":0,"harapan":0.0004,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Ile Werung","n_hist":10,"N":0,"harapan":0.0075,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Ili Boleng","n_hist":17,"N":0,"harapan":0.0125,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Ili Lewotolok","n_hist":20,"N":0,"harapan":0.0147,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Inielika","n_hist":3,"N":0,"harapan":0.0025,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Inierie","n_hist":0,"N":0,"harapan":0.0004,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Iya","n_hist":4,"N":0,"harapan":0.0032,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Kaba","n_hist":1,"N":0,"harapan":0.0011,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Karangetang","n_hist":13,"N":0,"harapan":0.0097,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Kelimutu","n_hist":3,"N":0,"harapan":0.0025,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Kelud","n_hist":5,"N":0,"harapan":0.0039,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Kerinci","n_hist":4,"N":0,"harapan":0.0032,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Kie Besi","n_hist":12,"N":0,"harapan":0.0089,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Lamongan","n_hist":2,"N":0,"harapan":0.0018,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Lereboleng","n_hist":7,"N":0,"harapan":0.0054,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Lewotobi Laki-laki","n_hist":6,"N":0,"harapan":0.0046,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Lewotobi Perempuan","n_hist":6,"N":0,"harapan":0.0046,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Lokon","n_hist":10,"N":0,"harapan":0.0075,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Mahawu","n_hist":4,"N":0,"harapan":0.0032,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Marapi","n_hist":4,"N":0,"harapan":0.0032,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Merapi","n_hist":1,"N":0,"harapan":0.0011,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Papandayan","n_hist":8,"N":0,"harapan":0.0061,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Peut Sague","n_hist":32,"N":0,"harapan":0.0232,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Raung","n_hist":0,"N":0,"harapan":0.0004,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Rinjani","n_hist":51,"N":0,"harapan":0.0368,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Rokatenda","n_hist":28,"N":0,"harapan":0.0204,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Ruang","n_hist":5,"N":0,"harapan":0.0039,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Salak","n_hist":12,"N":0,"harapan":0.0089,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Sangeangapi","n_hist":16,"N":0,"harapan":0.0118,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Semeru","n_hist":1,"N":0,"harapan":0.0011,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Seulawah Agam","n_hist":9,"N":0,"harapan":0.0068,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Sinabung","n_hist":10,"N":0,"harapan":0.0075,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Sirung","n_hist":20,"N":0,"harapan":0.0147,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Slamet","n_hist":1,"N":0,"harapan":0.0011,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Soputan","n_hist":8,"N":0,"harapan":0.0061,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Sorikmarapi","n_hist":10,"N":0,"harapan":0.0075,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Sumbing","n_hist":1,"N":0,"harapan":0.0011,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Sundoro","n_hist":1,"N":0,"harapan":0.0011,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Talang","n_hist":8,"N":0,"harapan":0.0061,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Tambora","n_hist":39,"N":0,"harapan":0.0282,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Tandikat","n_hist":5,"N":0,"harapan":0.0039,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Tangkoko","n_hist":7,"N":0,"harapan":0.0054,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Tangkuban Parahu","n_hist":5,"N":0,"harapan":0.0039,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
+{"tanggal":"2026-11-14","id":"gn:Wurlali","n_hist":99,"N":0,"harapan":0.0712,"p_koreksi":1.0,"status":"biasa","mode":"historis_usgs_m45_nb"}
