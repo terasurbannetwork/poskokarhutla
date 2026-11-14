@@ -49,6 +49,9 @@ Hak baca mengikuti seksi Operasi Udara (`/api/operasi/peta`). Tombol renlap meng
 | F-23 | Target | **Mulai dari target**: Pusdalops memilih kabupaten, cluster, atau kawasan gambut (KHG); sistem mencari sel layak semai di hulu angin yang titik hujannya jatuh dalam 25 km target itu, dengan zona dan jendela yang sama aturannya | Q9 |
 | F-24 | Renlap | **Ketinggian semai**: perkiraan tinggi dasar awan (LCL) di zona pada jam terbaik, dalam kaki dibulatkan 500, berlabel perkiraan, konfirmasi BMKG | – |
 | F-25 | Renlap | **Bahan dan jumlah**: usulan bahan (NaCl, atau dry ice dulu bila ada inversi berasap) dan perkiraan jumlah per zona dan per base dari muatan armada OMC x sortie; total harian per base | Q14, Q15, Q16 |
+| F-26 | Bagikan | **Peringatan sebelum subuh**: sesudah putaran pukul 05.00 WIB, ringkasan Pos komando (zona hari itu dan peringatan asap) dikirim bot WA ke grup Pusdalops dan posko TMC; peringatan asap lintas batas merah juga masuk Perlu tindakan Ringkasan Operasi Udara | Q17 |
+| F-27 | Jejak | **Log keputusan harian**: per base per hari, Pusdalops mencatat "terbang" (zona mana) atau "tidak terbang" dengan alasan berpilihan (awan tidak layak, armada tidak siap, cuaca penerbangan, izin, lainnya + teks); terkunci ke putaran beku yang dilihat saat memutuskan; bisa diekspor untuk auditor | – |
+| F-28 | Renlap | **Rute terbang OMC** per sortie: base, titik masuk, tempat semai (pola tabur bolak-balik melintang angin pengarah di dasar awan), kembali ke base; tiap leg berjarak (NM), haluan (derajat magnetis), radial dan jarak dari VOR base, waktu tempuh, ketinggian; peta rute di halaman cetak renlap dan unduhan KML/GPX, sama dengan renlap water bombing | – |
 
 ## 4. Di luar lingkup
 
@@ -57,7 +60,8 @@ Hak baca mengikuti seksi Operasi Udara (`/api/operasi/peta`). Tombol renlap meng
 - Klaim mm hujan tambahan, persen titik panas turun, atau "akan padam" (D8).
 - Tautan publik tanpa login untuk mitra (Q5 bawaan).
 - Pembasahan gambut tanpa api aktif (Q9, tiket lanjutan SA-14).
-- Peringatan HP atau email.
+- Email dan SMS (peringatan lewat WA bot di F-26).
+- Peringatan aset perusahaan (kebun, bandara, jaringan listrik) seperti paket "perusahaan" Nimbus.
 - Model data (pembelajaran mesin) sebelum ada ratusan sortie berlabel (R1 §6).
 - Dosis bahan per awan dari rumus fisika (tidak ada rumus mapan; F-25 memakai muatan armada dan aturan BMKG).
 - Stok bahan semai di gudang (bisa disambung ke LogPal kelak, bukan di paket ini).

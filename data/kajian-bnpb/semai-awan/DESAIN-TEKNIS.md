@@ -37,7 +37,7 @@ dasar = https://data.ecmwf.int/forecasts/{YYYYMMDD}/{HH}z/ifs/0p1/oper/{YYYYMMDD
 - Baris `.index` = JSON per baris: `param`, `levelist` (pl), `_offset`, `_length` (terverifikasi 14 Nov 2026).
 - Field `sfc`: `lcc, mucape, tclw, tp, 10u, 10v, 2t, 2d` (8). Field `pl`: `u, v` di 850, 700, 200 (6); `r` 850 (1); `t, gh` di
   1000, 925, 850, 700, 600, 500 (12); `w` 850, 700 (2) = 21. Total 29 field x 13 langkah (0 sampai 36) = 377 permintaan rentang,
-  sekitar 570 MB.
+  sekitar 840 MB (terukur SA-01: 64,6 MB per langkah). `tp` disimpan dalam mm; `r` 850 hPa bisa sampai sekitar 105% dan dipangkas ke 100.
 - Permintaan rentang berurutan per berkas, digabung bila berdekatan; coba ulang 3 kali dengan jeda; 6 unduhan paralel paling banyak.
 - Putaran dipilih: putaran 00 atau 12 terbaru yang `.index` langkah 36-nya sudah ada; bila belum, putaran sebelumnya. Jam terbit
   terverifikasi 14 Nov 2026: putaran 00z 0,1 derajat lengkap 09.34 UTC (0,25 derajat 07.34 UTC), jadi jadwal 10.00 dan 22.00 UTC.
@@ -137,7 +137,7 @@ dari zona semai A"; renlap PDF/KML/GPX ikut memuatnya (tiket SA-09).
 
 ## 7. Jadwal dan biaya
 
-- `semai.yml`: `cron: "0 10,22 * * *"`, `concurrency: semai`, batas waktu 30 menit. Perkiraan: unduh 570 MB sekitar 4 menit,
+- `semai.yml`: `cron: "0 10,22 * * *"`, `concurrency: semai`, batas waktu 30 menit. Perkiraan: unduh 840 MB sekitar 3 sampai 5 menit,
   urai dan hitung sekitar 5 menit, lintasan sekitar 2 menit. Bila langkah 36 putaran terbaru belum ada, pakai putaran sebelumnya dan
   tandai basi (ALGORITMA §10).
 - Git hanya menerima `semai_rapor.json` (beberapa KB). R2: sekitar 2 MB ditimpa tiap putaran, arsip sekitar 30 MB per tahun.

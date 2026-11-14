@@ -25,13 +25,14 @@ terbaik seperti ini", "Coba buat tiket dan lain-lain design system dll. Seperti 
 | S6 | 14 Nov 2026 | Q1: pipeline boleh memasang `eccodes` (pip) di GitHub Actions. | "Boleh pasang" |
 | S7 | 14 Nov 2026 | Q3: tombol "Jadikan target renlap" untuk peran `pusdalops` dan `tmc`, plus moderator `ADMIN_TOKEN`. | "Gas" atas bawaan |
 | S8 | 14 Nov 2026 | Q13: base OMC di luar Sumatera dan Kalimantan menunggu daftar dari BMKG; sampai itu bawaan sementara Q13 berlaku. | "Nanti saja dari BMKG" |
+| S9 | 14 Nov 2026 | Pemilik menyerahkan keputusan: semua tiket dijalankan sampai selesai, dan pertanyaan terbuka yang tidak butuh data atau akun dari luar diputuskan penyusun dengan bawaan [SEMENTARA]-nya. Yang tetap menunggu pihak luar: daftar base BMKG (Q13), muatan armada (Q15), akun GSMaP/Earthdata, penerapan migrasi produksi. | "tolong lu yang putuskan ya jalankan semua" |
 
 ## Keputusan rancangan (dibuat penyusun paket dari riset, boleh dibatalkan pemilik)
 
 | No | Keputusan | Alasan (bukti) |
 | -- | --------- | -------------- |
 | D1 | Cuaca dari ECMWF IFS Open Data 0,1 derajat (CC BY 4.0), putaran 00 dan 12 UTC, langkah 0 sampai 24 jam per 3 jam. | Diverifikasi 14 Nov 2026 di `data.ecmwf.int`: berkas `ifs/0p1/oper/*-sfc` memuat `lcc, mcc, tcc, mucape, tclw, tcwv, tp, cp, 10u, 10v, 2t, 2d`; berkas `*-pl` memuat `u, v, w, t, q, r, gh` di 14 lapisan termasuk 925, 850, 700, 500, 200 hPa. Grid sama dengan Nimbus (R2 §1). |
-| D2 | Field GRIB2 diambil per potong lewat berkas `.index` (rentang byte), bukan unduh utuh. | Satu langkah `sfc` utuh 94 MB; satu field global sekitar 1,5 MB. 29 field x 13 langkah = sekitar 570 MB per putaran, layak di GitHub Actions. Putaran 0,1 derajat lengkap sekitar 9,5 jam sesudah jam awalnya (00z terbit 09.34 UTC, diverifikasi 14 Nov 2026). |
+| D2 | Field GRIB2 diambil per potong lewat berkas `.index` (rentang byte), bukan unduh utuh. | Satu langkah `sfc` utuh 94 MB; satu field global sekitar 1,5 MB. 29 field x 13 langkah = sekitar 840 MB per putaran, layak di GitHub Actions. Putaran 0,1 derajat lengkap sekitar 9,5 jam sesudah jam awalnya (00z terbit 09.34 UTC, diverifikasi 14 Nov 2026). |
 | D3 | Pengurai GRIB2 memakai `eccodes` (roda pip yang membawa pustaka). Ini pengecualian dari pipeline stdlib (Q1). | Paket data `template 42` (CCSDS/AEC) terverifikasi; stdlib tidak bisa membukanya (R2 §1). |
 | D4 | Skor = gerbang kelayakan dikali rerata geometris berbobot tiga faktor (kualitas awan, hanyut ke api, keselamatan jarak), bukan jumlah berbobot ala Nimbus. Slider bobot Tinjau BMKG mengubah pangkat, jadi tetap bisa digeser. | R1 §6: faktor yang nol harus membuat zona nol; jumlah berbobot membiarkan awan buruk menang karena api besar. |
 | D5 | Kriteria Nimbus dipakai sebagai titik awal, ditambah syarat yang hilang dari Nimbus: suhu dasar awan hangat, kedalaman dasar awan ke level beku, updraf (w) 850 sampai 700 hPa, dan tanda bahaya MUCAPE sangat tinggi. | R1 §4 (Flossmann dkk. 2019; Silverman dan Sukarnjanaset 2000; Tessendorf dkk. 2012). |
@@ -71,3 +72,4 @@ terbaik seperti ini", "Coba buat tiket dan lain-lain design system dll. Seperti 
 | Q14 | Bahan apa saja yang boleh diusulkan mesin: NaCl, dry ice, CaO, flare higroskopis? Kapan CaO atau flare dipakai? | [SEMENTARA] hanya NaCl, dan dry ice dulu bila ada inversi berasap (ALGORITMA §7b) |
 | Q15 | Muatan bahan per sortie per jenis armada OMC (CASA 212, Caravan 208B, C-130, lainnya), untuk NaCl dan dry ice. Sumber: BMKG, BRIN, atau operator? | [SEMENTARA] kosong; layar menulis "muatan armada belum diisi", tanpa angka |
 | Q16 | Lama penaburan per sortie di area semai (menit), untuk menghitung jumlah sortie dalam jendela terbang. | [SEMENTARA] 30 menit, berlabel perkiraan |
+| Q17 | Peringatan subuh lewat bot WA: ke grup mana saja (Pusdalops, posko TMC per provinsi, pimpinan)? | [SEMENTARA] satu grup Pusdalops yang sudah dipakai bot renlap; grup lain menunggu jawaban |

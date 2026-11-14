@@ -25,6 +25,8 @@ Istilah Operasi Udara (base, armada, renlap, OMC, cluster, tinjau lokal) mengiku
 | Ketinggian semai | Perkiraan tinggi dasar awan (LCL) dalam kaki; semai garam dilakukan di dasar awan |
 | Inversi berasap | Lapisan udara yang makin hangat ke atas di bawah 700 hPa, di bawah asap; BMKG memecahnya dengan dry ice sebelum NaCl |
 | NaCl, dry ice | Garam dapur halus (bahan semai higroskopis); es kering (CO2 padat) untuk mendinginkan dan memecah inversi |
+| Rute terbang OMC | Urutan titik sortie: base, titik masuk, pola tabur melintang angin di tempat semai, kembali ke base, dengan jarak, haluan, waktu |
+| Pola tabur | Kaki-kaki lurus di tempat semai tempat bahan ditaburkan |
 | Muatan per sortie | Berat bahan yang dibawa satu penerbangan; dasar perkiraan jumlah bahan |
 | Jendela terbang | Jam siang berurutan ketika skor zona >= 85% puncaknya |
 | CAPE, MUCAPE | Energi potensial konvektif: energi awan untuk terus naik; MUCAPE dihitung dari udara paling labil di lapisan bawah |

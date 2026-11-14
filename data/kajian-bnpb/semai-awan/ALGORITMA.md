@@ -148,6 +148,22 @@ terbang zona:
 - Dry ice: jumlah per sortie dari Q15 juga; tanpa jawaban, "jumlah dry ice belum diisi".
 - Total harian per base = jumlah semua zona yang sudah dijadikan target renlap base itu (bukan semua zona usulan).
 
+## 7c. Rute terbang OMC (F-28)
+
+Satu sortie = satu zona (semai higroskopis menyasar satu sel awan). Rute dibangun dari fungsi renlap yang sudah ada
+(`scripts/operasi/renlap.py`: `jarak_nm`, `baringan`, `radial_jarak`, `dms`), tidak ditulis ulang:
+
+1. **CP0 base** (`op_base`, koordinat bandara).
+2. **CP1 titik masuk**: 10 NM sebelum tempat semai di garis base ke zona (ruang untuk turun ke ketinggian semai, H).
+3. **Pola tabur**: dua kaki lurus 10 NM yang melintang tegak lurus angin pengarah, berpusat di tempat semai, berjarak 3 NM satu sama
+   lain (CP2 sampai CP5), pada ketinggian semai §7b. Panjang dan jarak kaki dari `semai_bobot.json` (H) sampai BMKG memberi pola
+   bakunya. Arah tabur melintang angin supaya garam tersebar di arus naik yang terbawa ke titik hujan.
+4. **CP6 kembali ke base.**
+
+Tiap leg: jarak NM, haluan sebenarnya dan magnetis (deklinasi seperti renlap), radial/jarak dari VOR base, waktu tempuh pada kecepatan
+jelajah Q8, total jarak dan waktu sortie. Rute yang melewati batas jelajah base ditandai merah dan tidak bisa dijadikan target renlap.
+Titik hujan dan cluster yang dituju digambar di peta rute sebagai rujukan, bukan titik terbang.
+
 ## 8. Sel kandidat untuk Tinjau BMKG
 
 `semai.json` membawa sampai 400 sel kandidat terbaik (lintang, bujur, langkah, Q, D, T, lima komponen Q) supaya peramban bisa
@@ -229,3 +245,11 @@ Ditulis sebelum data pertama dinilai dan tidak diubah tanpa catatan penyimpangan
 Isi mengikuti Nimbus (lintasan satelit dua kali sehari, asap dan awan menutupi api, gambut membara lemah, tidak semua titik panas
 kebakaran hutan, grid model 11 km dan konveksi diparameterisasi, semai bukan jaminan hujan) ditambah: penaksir updraf w dari model
 kasar; pengaruh aerosol asap pada awan tidak dihitung; beban asap relatif, bukan PM2.5.
+
+## 14. Ketetapan saat membangun (SA-01, SA-02, 14 Nov 2026)
+
+- G9 lolos bila blok 3 jam beririsan dengan 07.00 sampai 16.00 setempat; jendela kemudian dipotong ke rentang itu (§7).
+- Langkah 36 tidak punya hujan blok (tidak ada `tp(t+3)`), jadi gagal G6 dan hanya dipakai untuk angin dan asap.
+- `tp` disimpan dalam mm; `r` 850 hPa dipangkas ke 100 sebelum dipakai (IFS memberi sampai sekitar 105%).
+- Zona waktu dari kode provinsi tidak dikenal adalah galat, bukan tebakan; sel laut dipetakan ke provinsi daratan terdekat oleh
+  `semai.py`.
