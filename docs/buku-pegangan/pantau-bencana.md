@@ -4,8 +4,8 @@ Pemantauan bencana Indonesia: karhutla, banjir, dan enam bencana lain
 
 Semua selera, keputusan pemilik, gerbang, dan armada yang berlaku di situs Pantau Bencana (repo `poskokarhutla`), di satu tempat. Yang baru diputus masuk ke Riwayat, lalu ke bagian aturannya.
 
-Disegarkan 12 Nov 2026\
-commit 408016faa
+Disegarkan 14 Nov 2026\
+commit e8f784be5
 
 [Mengenal pemilik](#mengenal-pemilik) [Riwayat perubahan](#riwayat-perubahan) [Keputusan pemilik](#keputusan-pemilik) [Stack & peta repo](#stack--peta-repo) [Situs per alamat](#situs-per-alamat) [Halaman & rute](#halaman--rute) [Selera tampilan](#selera-tampilan) [Angka & copy](#angka--copy) [Selera presentasi (PPT)](#selera-presentasi-ppt) [Selera laporan (DOCX/PDF) dan visualisasi data](#selera-laporan-docx-pdf-dan-visualisasi-data) [Fitur yang disembunyikan](#fitur-yang-disembunyikan) [Model & data](#model--data) [Ruang Koordinasi BNPB](#ruang-koordinasi-bnpb) [Ruang Instansi](#ruang-instansi) [Gerbang penjaga](#gerbang-penjaga) [Insiden & pelajaran](#insiden--pelajaran) [Armada agent](#armada-agent) [Tugas pemilik](#tugas-pemilik) [Katalog modul dan design system](#katalog-modul-dan-design-system) [Rencana multi-bencana](#rencana-multi-bencana) [Cara halaman ini diperbarui](#cara-halaman-ini-diperbarui)
 
@@ -70,10 +70,10 @@ Disuling dari log prompt pemilik (`.claude/ilmu-agent/prompt/`), memori, dan com
 
 ### Pola koreksi berulang
 
-| Pola | Muncul 8 sampai 12 Nov | Terakhir | Contoh commit perbaikan | Penahan |
+| Pola | Muncul 8 sampai 14 Nov | Terakhir | Contoh commit perbaikan | Penahan |
 | --- | --- | --- | --- | --- |
-| "Jelek banget", minta dibagusin tanpa rincian | 51 | 12 Nov | `335e150b7`, `81512efb9`, `cfdd0d1c3` | belum bergerbang; tinjau di 8800 sebelum lapor |
-| Ruang putih kosong, kolom tidak rata, isi tidak penuh sampai bawah, bilah tidak ujung ke ujung | 18 | 12 Nov | `0ce1cddd9`, `8f64c3cca`, `3aa9cc01d`, `cfdd0d1c3` | belum bergerbang; ukur tinggi kolom di peramban (memori `tanpa-ruang-kosong`) |
+| "Jelek banget", minta dibagusin tanpa rincian | 57 | 14 Nov | `335e150b7`, `81512efb9`, `cfdd0d1c3`, `fdc6c63b9` | belum bergerbang; tinjau di 8800 sebelum lapor |
+| Ruang putih kosong, kolom tidak rata, isi tidak penuh sampai bawah, bilah tidak ujung ke ujung | 19 | 14 Nov | `0ce1cddd9`, `8f64c3cca`, `3aa9cc01d`, `cfdd0d1c3`, `e8f784be5` | belum bergerbang; ukur tinggi kolom di peramban (memori `tanpa-ruang-kosong`) |
 | Latar abu atau warna tua di belakang isi; gelap hanya untuk kepala halaman | 10 | 11 Nov | `6bd1bf25e`, `a57cc9724` | `gerbang-operasi-gelap`, `gerbang-dasbor` |
 | Rombakan tidak mengikuti `/operasi` utuh (cuma panel kiri, tidak penuh, tidak bisa digeser) | 6 | 12 Nov | `8c45b309b`, `a01139c7f` | `gerbang-dasbor` (DB-03) |
 | Kartu atau blok menempel | 6 | 11 Nov | `b1fbad192`, `0f11e8527` | `gerbang-kartu-renggang`, `gerbang-operasi-renggang` |
@@ -82,11 +82,14 @@ Disuling dari log prompt pemilik (`.claude/ilmu-agent/prompt/`), memori, dan com
 | Jarak baris terlalu longgar | 6 | 12 Nov | `5161c09c3` | belum bergerbang |
 | Oranye atau biru yang terkesan bahaya untuk hal biasa | 4 | 11 Nov | `66b8f6475` | belum bergerbang |
 | Huruf kapital semua | 2 | 11 Nov | `c3c6d6dcb` | `gerbang-dasbor` (dasbor.css); `kartu.css` lama masih kapital |
-| Tombol, label, atau baris tambahan yang tidak diminta ("Gausah ada", "Hilangkan") | lebih dari 100 | 12 Nov | `0cd3304f0`, `53fd40625` | belum bergerbang; catat di Fitur yang disembunyikan |
+| Tombol, label, atau baris tambahan yang tidak diminta ("Gausah ada", "Hilangkan") | lebih dari 100 | 14 Nov | `0cd3304f0`, `53fd40625`, `fdc6c63b9` | belum bergerbang; catat di Fitur yang disembunyikan |
 | Aturan yang sudah dibalik dipakai lagi (pil CUT OFF 9 Nov dicabut, 11 Nov kembali) | 1 | 11 Nov | `d53b9b95c`, `a351753e6` | `gerbang-penanganan-pil-cutoff` |
-| Ikon tidak mewakili isinya atau mirip ikon lain (kualitas udara nyaru dengan hujan, masker, lingkaran untuk data belum lengkap, ikon koroplet) | 6 | 12 Nov | `cfdd0d1c3` | belum bergerbang |
-| Dokumen Word/PDF: teks atau tabel tidak rata kanan-kiri, sampul buram atau bergeser | 2 | 12 Nov | `1cd28a035` | belum bergerbang |
-| Frasa atau klausa nanggung di deck | 3 | 12 Nov | `635c42f4f` | sebagian, pindaian bahasa skill `ppt-konsultan` |
+| Ikon tidak mewakili isinya atau mirip ikon lain (kualitas udara nyaru dengan hujan, masker, lingkaran untuk data belum lengkap, ikon koroplet) | 7 | 13 Nov | `cfdd0d1c3` | belum bergerbang |
+| Dokumen Word/PDF dan tabel deck: teks atau tabel tidak rata, sampul buram atau bergeser | 3 | 14 Nov | `1cd28a035`, `fdc6c63b9` | belum bergerbang |
+| Frasa atau klausa nanggung, padanan kata tidak lazim, singkatan yang tidak dijelaskan (L1, TN) | 6 | 13 Nov | `635c42f4f` | sebagian, pindaian bahasa skill `ppt-konsultan` |
+| "GIS BNPB" ditulis di baris Sumber atau footer | 3 | 14 Nov | `fdc6c63b9` | `aturan_slide.py` skill `ppt-konsultan` (baris Sumber) |
+| Nomor langsung di awal judul (pakai kata dulu: "Enam (6) ...") | 2 | 13 Nov | belum ada | belum bergerbang |
+| Perbandingan antarsumber tidak setara atau tanpa tanggal (titik lawan cluster, tanggal tidak tertulis, tanpa angka tiap titik) | 4 | 13 Nov | belum ada | belum bergerbang |
 | Branch atau worktree | 2 | 10 Nov | `75c19aa8a` | `gerbang-tanpa-branch`, hook `tolak-branch.mjs` |
 
 ### Yang paling sering membuat pemilik kesal
@@ -103,6 +106,20 @@ Terbaru di atas
 
 Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik saat menegur atau memutus.
 
+1. 14 Nov 2026
+   - **Peluang Semai Awan dan Prakiraan Asap**: pemilik minta pola sistem semai luar negeri ditiru dan dimasukkan ke Operasi Udara, lengkap dengan renlap (*"bisa tau harus seeding awan dimana untuk target daerah mana"*), kebutuhan NaCl, bahan semai, atau dry ice, benchmark luar, dan prediktor asap dengan arah angin. Paket 11 dokumen `data/kajian-bnpb/semai-awan/` (AGENTS §2.14), keputusan S1 sampai S11: seksi baru di `/operasi` bukan layar terpisah, Indonesia saja, zona hanya usulan yang dijadikan target renlap oleh Pusdalops, `eccodes` boleh dipasang, base OMC luar Sumatera dan Kalimantan menunggu BMKG. Pemilik menyerahkan sisanya (*"tolong lu yang putuskan ya jalankan semua. Gw ga mau tau"*). SA-01 unduh ECMWF 0,1 derajat terbukti, migrasi 0129 `op_semai_target` dibekukan hash-nya (`c631a8549`, `2c72eedae`, `4167f4287`, `4a081ce7e`).
+   - **OMC dari bandara terdekat, tanpa batas jelajah base** (S10, *"kalo OMC gausah ada batas jelajah base"*), dan **renlap OMC halaman tersendiri** per zona di `/renlap-omc` (S11, *"Renlapnya tersendiri ya"*). Seksi Peluang semai dirapikan sesudah teguran ruang kosong (*"Rapikan. Ini terlalu banyak white space"*): judul dialog target terlihat, kolom kanan tidak terjepit saat data kosong (`e8f784be5`).
+   - **Templat deck Situasi Banjir per provinsi**: tiru deck 091126, khusus banjir, sudah banjir dan prakiraan 6 hari, provinsi lain yang Awas atau Siaga di slide terpisah, lalu Waspada ditambah (*"Tambahin juga dong waspada kalo gitu"*). Teguran di putaran pertama: *"Bagusin. Jelek banget"*, *"Lah anjing kok rata kiri gini ya"*. Navigasi bagian dibagi rata ujung ke ujung, kondisi mutakhir jadi tabel per kab/kota (`241d85651`, `fdc6c63b9`).
+   - **"GIS BNPB" tidak pernah jadi sumber**: *"Jangan pernah ada gini ya GIS BNPB"* (juga dua kali pada 13 Nov). Baris Sumber memakai asal datanya (NASA FIRMS VIIRS dan MODIS, ECMWF, GloFAS); gerbang di `aturan_slide.py` skill `ppt-konsultan`.
+   - **Laporan penanganan karhutla 141126** dibangun dari data situs (`PAKAI_SITUS=1`) di mesin tanpa kunci FIRMS; pengurai OMC WA kini membaca sortie dan hujan per provinsi yang sebelumnya terlewat (`83b2a8317`).
+   - Pemilik sendiri menjalankan `wrangler d1 migrations apply` produksi untuk 0125 sampai 0129 dan mengunggah keluaran semai ke R2 `operasi/semai/`; konfirmasi akhir migrasi tidak tercatat di log.
+1. 13 Nov 2026
+   - **Kajian harus bisa ditangkap sekali baca**: *"saya ga nangkep key takeaways"*, strukturnya dianggap akademis dan abstrak. Urutan yang diminta: masalah, temuan, kesimpulan, rekomendasi. *"kurangi singkatan2 yang sulit dipahami kayak L1 dll"*, pakai istilah Inggris bila lebih mudah dimengerti, bahasa Indonesia yang tidak nanggung. Pemilik menolak daftar "pola tulisan kaku" yang melarang "dalam rangka" dan "hal ini" (*"loh justru itu bahasa indo yang lazim"*).
+   - **Aturan semua deck: jangan nomor di awal judul**: *"usahakan jangan taruh langsung nomor di awal heading kalau pun tidak ada opsi lain, gunakan kata dulu, contoh: Enam (6) xxxxx"*, lalu *"ini saya pengen jadiin aturan di semua pembuatan deck"*. Belum bergerbang.
+   - **Slide perbandingan BRIN lawan data satelit dan Dalops**: kata "kita" diganti Centurisk, "laphar" diganti Dalops, jangan kata "lawan"; perbandingan harus setara (*"titik ya dengan titik, cluster dengan cluster"*), tanggal tiap angka tertulis, satuan di judul dalam kurung (*"jangan dipisah koma Judul (Satuan)"*), tiap titik grafik berangka dan bersumbu Y, koefisien korelasi tiap panel sebagai label, warna biru untuk yang berkorelasi baik, kepala tabel dikelompokkan warna per sumber, isi dikelompokkan dalam wadah (*"jangan plain text minimal tabel"*).
+   - **Pantau Dalops** (permintaan, sebagian sudah dikerjakan sesi itu): pemilih rentang tanggal awal dan akhir ditambahkan (*"Maksudnya ditambahin ya. Bukan diganti"*), tren yang sama untuk banjir, longsor, dan bencana lain, bawaan tidak menampilkan apa pun sampai dipilih, kecamatan terdampak, Awas, Siaga, dan Waspada dihitung terpisah, ketinggian banjir, sudah surut, ekspor Excel, PDF, CSV, dan PPT, pemilih isi yang ditampilkan, semua isinya ikut tampil di peta utama.
+   - **`data/laporan-bnpb` dirapikan per jenis laporan**: `harian/YYYY-MM/<tanggal>`, `penanganan-karhutla/`, `mingguan/`, `bulanan/`, `insidental/`, `paparan/`, `kajian/`, `kampus/`, `omc/`, `arsip/`; jalur folder hari satu sumber di `generator/jalur.py` (`4e0cf3981`).
+   - Templat Perjanjian Kerahasiaan (NDA) BNPB dan perguruan tinggi sebagai pendamping naskah kerja sama (`aa5ba13c4`). Slide prediksi di laporan harian ditunda (*"slide prediksi gausah dulu"*).
 1. 12 Nov 2026
    - **Gelar Kepala BNPB dikonfirmasi**: *"S.Sos., M.Si. (Han)", ini yang bener*. Catatan 2 Nov yang menulis M.Si. dua kali keliru.
    - **Operasi**: kepala halaman lebih kecil, satu ikon unduh waypoint tanpa tulisan KML dan GPX (*"Gausah ada kata" KML dan GPX nya"*), kartu base dirapikan (`2a02ec99b`). Paket isian manual operasi udara (Q16 sampai Q19: pengisi bawaan pusdalops, isian manual menang atas bot, personel darat akumulasi) (`3d6642020`).
@@ -1664,6 +1681,15 @@ Ditelusuri 26 Okt 2026 dari 288 masukan pemilik (15 Sep sampai 26 Okt), memori, 
 
 Catatan hitung: baris bertanda ⚠ dihitung sebagai satu aturan; aturan yang bertanda (baru) dan ⚠ sekaligus dihitung di kedua kolom. Bagian "Belum pasti" memuat 22 pertanyaan (Q01 sampai Q22).
 
+### Tambahan 13 sampai 14 Nov 2026
+
+- Judul tidak diawali angka; bila terpaksa, kata dulu lalu angka dalam kurung ("Enam (6) provinsi ..."). Berlaku di semua deck.
+- Satuan ditulis di judul kolom atau sumbu dalam kurung, "Judul (Satuan)", tidak dipisah koma.
+- Data sendiri disebut Centurisk, laporan harian Dalops disebut Dalops; tidak memakai "kita", "laphar", atau "lawan".
+- Perbandingan antarsumber setara (titik dengan titik, cluster dengan cluster), bertanggal di tiap angka, dengan nilai korelasi sebagai label per panel.
+- Baris Sumber tidak pernah memuat "GIS BNPB"; tulis asal datanya.
+- Isi tidak boleh teks polos: minimal tabel, dan butir yang sejenis dikelompokkan dalam satu wadah.
+
 ## Selera laporan (DOCX/PDF) dan visualisasi data
 
 Dari tata letak JAPFA REPORT yang diukur di `data/kajian-bnpb/SPESIFIKASI-GAYA.md` dan bedah 22 laporan kelas dunia pada 23 Okt: World Bank, ADB, IMF, McKinsey, BCG, Deloitte, IPCC, UNDRR, WMO, OECD, UNICEF, pemerintah Jepang, Inggris, dan Belanda, Our World in Data, dan Financial Times. Pemilik: *"Tiru style mereka dan implementasikan untuk sempurnakan system kita."* Bukti PNG dan vonis tiap pola ada di `data/kajian-bnpb/riset/desain-benchmark/SINTESIS.md`; kode P (pola) dan G (pilih grafik) di bab ini merujuk ke sana. Ukuran, token, dan gerbang mesin ada di `data/kajian-bnpb/PEDOMAN-DESAIN.md`. Aturan [Angka & copy](#angka--copy) serta palet, ikon, dan arah naik-turun di [Selera presentasi (PPT)](#selera-presentasi-ppt) berlaku penuh dan tidak diulang. Bila pola dunia bentrok dengan aturan pemilik yang tertulis, aturan pemilik yang berlaku; bentroknya dicatat di bawah.
@@ -2133,7 +2159,7 @@ Yang tidak bisa dikerjakan sesi agent:
 7. Tombol dummy pensiun sejak 11 Nov; baris dummy yang sudah ada di D1 produksi baru dihapus atas konfirmasi pemilik.
 8. Cek daftar 21 Kodam dan nama jenis bencana DIBI.
 9. Putuskan kapan `/bnpb` masuk nav utama.
-10. Terapkan migrasi D1 yang menunggu ke produksi: SIPPA 0056 sampai 0059, 0067, 0070, 0073, 0074; 0072 indeks `tugas_api`; 0075 riwayat granul satelit; banjir 0064 `push_banjir` dan 0065 `uji_banjir`, serta 0060, 0062, 0063, 0066, 0068, 0069 bila belum. Migrasi baru sampai 0111 (antara lain 0094, 0097, 0098, 0104, 0105, 0106, 0107, 0109, 0110, 0111) perlu dicek status produksinya; repo tidak mencatatnya. Sejak 9 Nov bertambah 0112 sampai 0128 (LogPal, foto lapangan, pemirsa Pusdalops, logbook naratif, meja juklak, Siklus `sk_*`, peran irtama, indeks baca D1, isian Operasi Udara 0126 dan 0127, log tindak lanjut Dalops 0128; tanpa 0128 rute tindak lanjut menjawab 503).
+10. Terapkan migrasi D1 yang menunggu ke produksi: SIPPA 0056 sampai 0059, 0067, 0070, 0073, 0074; 0072 indeks `tugas_api`; 0075 riwayat granul satelit; banjir 0064 `push_banjir` dan 0065 `uji_banjir`, serta 0060, 0062, 0063, 0066, 0068, 0069 bila belum. Migrasi baru sampai 0111 (antara lain 0094, 0097, 0098, 0104, 0105, 0106, 0107, 0109, 0110, 0111) perlu dicek status produksinya; repo tidak mencatatnya. Sejak 9 Nov bertambah 0112 sampai 0129 (LogPal, foto lapangan, pemirsa Pusdalops, logbook naratif, meja juklak, Siklus `sk_*`, peran irtama, indeks baca D1, isian Operasi Udara 0126 dan 0127, log tindak lanjut Dalops 0128, target semai 0129). Pemilik menjalankan apply produksi 0125 sampai 0129 pada 14 Nov; pastikan hasilnya lewat `wrangler d1 migrations list poskowarga --remote`.
 11. Jawab bentrok penutup gelap format lembaga dan kirim logo BNPB vektor dari Humas untuk merek PPT `bnpb`.
 12. Unggah data SIPPA tujuh provinsi ke R2 `sippa/` dan pasang secret Renlap (`GITHUB_TOKEN` worker, `RENLAP_KUNCI`, `CLOUDFLARE_*` di GitHub).
 13. Putar ulang kunci OpenAlex yang sempat ditempel di chat 28 Okt (kini secret worker `OPENALEX_KEY`).
@@ -2143,7 +2169,7 @@ Yang tidak bisa dikerjakan sesi agent:
 17. Branch yang tertinggal: sejak 2 Nov sesi agent boleh menyapu branch yang sudah masuk `main` lewat `scripts/agents/sapu-branch.sh`; branch yang belum di-merge tetap diputus pemilik.
 18. Pastikan secret Worker `GITHUB_TOKEN` (fine-grained, Actions read and write, repo ini saja) terpasang; tanpa itu cadangan pemicu `titik.yml` dan denyut `jaga.yml` tidak jalan, padahal sejak 7 Nov jadwal GitHub dibuang.
 19. Pasang server tinjau lokal sekali lewat `npm run tinjau:pasang` (launchd `id.centurisk97.tinjau-lokal`); sesi agent tidak boleh memasang launchd.
-20. Jawab pertanyaan terbuka paket baru: Operasi Udara (termasuk isian manual Q16 sampai Q19), Cek Kabar Luar Q1 sampai Q6, Tindak Langkah Q1 sampai Q6, Laporan Berkala Q1 sampai Q27, Silang Sumber, Tangga, LogPal; bawaan sementara sudah tertulis di tiap `KEPUTUSAN-*.md`.
+20. Jawab pertanyaan terbuka paket baru: Operasi Udara (termasuk isian manual Q16 sampai Q19), Cek Kabar Luar Q1 sampai Q6, Tindak Langkah Q1 sampai Q6, Laporan Berkala Q1 sampai Q27, Peluang Semai Q1 sampai Q17 (base OMC dari BMKG), Silang Sumber, Tangga, LogPal; bawaan sementara sudah tertulis di tiap `KEPUTUSAN-*.md`.
 
 ## Katalog modul dan design system
 
