@@ -7,21 +7,21 @@
  "slide": [
   {
    "jenis": "impor",
-   "pptx": "/Users/priyankaalfatehan28/Developer/poskokarhutla/data/laporan-bnpb/satelit-2026-11-14/Laporan Penanganan Pengendalian Karhutla 141126 (isi).pptx",
+   "pptx": "data/laporan-bnpb/satelit-2026-11-14/Laporan Penanganan Pengendalian Karhutla 141126 (isi).pptx",
    "halaman": 1,
    "bagian": 1,
    "sumber": "GIS BNPB, satelit NASA FIRMS (VIIRS dan MODIS), 14 Nov 2026 18.00 WIB; luas terbakar hari utuh 13 Nov"
   },
   {
    "jenis": "impor",
-   "pptx": "/Users/priyankaalfatehan28/Developer/poskokarhutla/data/laporan-bnpb/satelit-2026-11-14/Laporan Penanganan Pengendalian Karhutla 141126 (isi).pptx",
+   "pptx": "data/laporan-bnpb/satelit-2026-11-14/Laporan Penanganan Pengendalian Karhutla 141126 (isi).pptx",
    "halaman": 2,
    "bagian": 1,
    "sumber": "GIS BNPB, NASA FIRMS 14 Nov 18.00 WIB; luas terbakar hari utuh 13 Nov; PM2,5 CAMS 13 Nov; hujan model Open-Meteo, kelas BMKG"
   },
   {
    "jenis": "impor",
-   "pptx": "/Users/priyankaalfatehan28/Developer/poskokarhutla/data/laporan-bnpb/satelit-2026-11-14/Laporan Penanganan Pengendalian Karhutla 141126 (isi).pptx",
+   "pptx": "data/laporan-bnpb/satelit-2026-11-14/Laporan Penanganan Pengendalian Karhutla 141126 (isi).pptx",
    "halaman": 3,
    "bagian": 2,
    "sumber": "Laporan Penanganan Karhutla Satgas, 14 Nov 2026 (kegiatan 13 Nov 2026)"

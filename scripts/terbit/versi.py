@@ -18,7 +18,7 @@ TAG = re.compile(r'(<(?:script|link)\b[^>]*?\b(?:src|href)=")([^"#?:]+\.(?:js|cs
 LEWATI = {"data", "geo", "lambang", "img", "citra"}
 IMPOR = re.compile(r"""((?:\bfrom|\bimport)\s*\(?\s*["'])(\.{1,2}/[^"'?#]+\.js|/(?!/)[^"'?#]+\.js)(["'])""")
 IMPOR_V = re.compile(r"""((?:\bfrom|\bimport)\s*\(?\s*["'])(\.{1,2}/[^"'?#]+\.js|/(?!/)[^"'?#]+\.js)(?:\?v=[0-9a-f]{10})?(["'])""")
-LIPAT = ("/petugas/", "/pipa/", "/siklus/", "/admin/")   # /siklus/* juga run_worker_first: Worker menyusun ulang header, aturan ini hanya cermin statis   # 2 Nov 2026: tanpa /pipa/ 81 aturan, dengan 64 (batas dini gerbang 80)   # 11 Nov 2026: Meja Pantau membawa ke 81; /admin/ (staf, lalu lintas kecil) dilipat
+LIPAT = ("/petugas/", "/pipa/", "/siklus/", "/admin/", "/inti/")   # /siklus/* juga run_worker_first: Worker menyusun ulang header, aturan ini hanya cermin statis   # 2 Nov 2026: tanpa /pipa/ 81 aturan, dengan 64 (batas dini gerbang 80)   # 11 Nov 2026: Meja Pantau membawa ke 81; /admin/ (staf, lalu lintas kecil) dilipat   # 14 Nov 2026: 81 lagi; /inti/ (5 aturan pengecualian) dilipat
 TANDA = "# --- dibuat scripts/terbit/versi.py saat terbit (jangan disunting; tidak di-commit) ---"
 
 

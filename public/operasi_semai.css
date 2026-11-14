@@ -152,9 +152,9 @@
 /* tabel cluster, kartu lipat, dialog */
 #opsLaporan .sm-tw{overflow-x:auto}
 #opsLaporan .sm-tabel{width:100%;border-collapse:collapse;font-size:.8125rem}
-#opsLaporan .sm-tabel th{padding:9px 10px;background:#0b2545;color:#fff;font-size:.75rem;font-weight:700;text-align:left;text-transform:none;white-space:nowrap}
+#opsLaporan .sm-tabel th{padding:9px 10px;background:#0b2545;color:#fff;font-size:.75rem;font-weight:700;text-align:center;text-transform:none;white-space:nowrap}
 #opsLaporan .sm-tabel td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
-#opsLaporan .sm-tabel th.n,#opsLaporan .sm-tabel td.n{text-align:right}
+#opsLaporan .sm-tabel th.n,#opsLaporan .sm-tabel td.n{text-align:center}
 #opsLaporan .sm-tabel td.n{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 #opsLaporan .sm-tabel tbody tr{cursor:pointer}
 #opsLaporan .sm-tabel tbody tr:hover td{background:color-mix(in srgb,#2f6fd6 6%,#fff)}
@@ -183,3 +183,6 @@
 #opsLaporan .sm-lapis.sm-tutup .sm-ls{display:none}
 #opsLaporan .sm-lapis.sm-tutup .sm-lapis-hd{padding-bottom:2px}
 @media (max-width:900px){#opsLaporan .sm-dasar{min-width:0}#opsLaporan .sm-jam{flex-wrap:wrap}#opsLaporan .sm-jt{min-width:0;flex:1}#opsLaporan .sm-jam input[type=range]{flex-basis:100%}#opsLaporan .sm-leg{max-width:100%}}
+
+/* judul dialog target terbaca di kepala terang */
+#opsLaporan .sm-dlg .ex-jd h3{color:#0b2545;margin:0;font-size:1.0625rem}

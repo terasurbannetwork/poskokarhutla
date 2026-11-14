@@ -2,7 +2,7 @@ judul: Alur Kerja Sama BNPB dan Perguruan Tinggi sampai Finalisasi Perjanjian Ke
 judul_pendek: Alur Kerja Sama BNPB dan Perguruan Tinggi sampai Finalisasi PKS
 subjudul: Delapan tahap dari pemetaan kampus sampai PKS bertanda tangan, beserta dokumen, syarat closing, pendanaan, dan bahan diskusi dengan Biro Hukum, Organisasi, dan Kerja Sama
 tanggal: 11 November 2026
-foto: C:/Users/USER/.claude/skills/ppt-konsultan/bnpb/assets/proyek-kampus/foto/kampus-itb-hd.jpg
+foto: ~/.claude/skills/ppt-konsultan/bnpb/assets/proyek-kampus/foto/kampus-itb-hd.jpg
 foto_geser: 0.42
 judul_ukuran: 23.5
 label: Kerja Sama BNPB dan Perguruan Tinggi

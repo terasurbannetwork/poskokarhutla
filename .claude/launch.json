@@ -254,15 +254,6 @@
       ],
       "port": 8792,
       "autoPort": false
-    },
-    {
-      "name": "semai-harness",
-      "runtimeExecutable": "bash",
-      "runtimeArgs": [
-        "-c",
-        "cd /private/tmp/claude-501/-Users-priyankaalfatehan28-Developer-poskokarhutla/35f52ce7-3cef-4efd-8cfb-c03632cd0233/scratchpad/sm && node srv.mjs"
-      ],
-      "port": 8911
     }
   ]
 }
