@@ -30,6 +30,9 @@ NEGARA = {
     "Malaysia ": [(109.6, 1.9), (111.0, 1.1), (112.5, 1.5), (114.6, 1.5), (115.6, 3.0), (115.6, 4.2), (117.6, 4.2),
                   (119.3, 5.3), (117.1, 7.0), (116.0, 6.3), (115.2, 4.9), (114.1, 4.6), (111.5, 2.6), (109.6, 2.1)],
     "Timor Leste": [(124.95, -9.35), (125.1, -8.6), (125.6, -8.45), (126.5, -8.35), (127.35, -8.3), (127.1, -8.8), (126.2, -9.2), (125.2, -9.6)],
+}
+# Papua Nugini terpisah supaya mode bawaan (lintasan.json) tidak berubah; hanya negara(..., png=True) dan mode semai memakainya
+NEGARA_PNG = {
     # Papua Nugini: daratan utama + Pulau New Britain barat; Natural Earth 50m admin-0 (domain publik), disederhanakan Douglas-Peucker (48 + 9 titik)
     "Papua Nugini": [(140.98, -9.12), (140.98, -6.91), (140.86, -6.74), (140.97, -6.35), (140.97, -2.61), (141.1, -2.61), (142.55, -3.2), (143.51, -3.43), (144.07, -3.81), (144.48, -3.83), (145.77, -4.82), (145.75, -5.4), (147.57, -6.06), (147.8, -6.32), (147.85, -6.66), (146.95, -6.83), (147.19, -7.38), (148.13, -8.1), (148.58, -9.05), (149.2, -9.03), (149.26, -9.5), (150.01, -9.69), (149.76, -9.81), (149.87, -10.01), (150.85, -10.24), (150.45, -10.31), (150.65, -10.52), (150.32, -10.65), (149.75, -10.35), (147.77, -10.07), (147.02, -9.39), (146.96, -9.06), (146.63, -8.95), (146.03, -8.08), (144.51, -7.57), (144.14, -7.76), (143.65, -7.46), (143.94, -7.94), (143.52, -8.0), (143.61, -8.2), (142.52, -8.32), (142.21, -8.2), (143.11, -8.47), (143.38, -8.76), (143.37, -8.96), (142.65, -9.33), (142.23, -9.17), (141.13, -9.22)],
     "Papua Nugini ": [(151.92, -4.3), (152.41, -4.34), (152.08, -5.46), (150.47, -6.26), (148.34, -5.67), (149.83, -5.52), (150.09, -5.01), (150.18, -5.52), (150.9, -5.45)],
@@ -46,8 +49,8 @@ def di_dalam(x, y, r):
     return c
 
 
-def negara(lon, lat):
-    for n, r in NEGARA.items():
+def negara(lon, lat, png=False):
+    for n, r in (NEGARA_PNG | NEGARA if png else NEGARA).items():
         if di_dalam(lon, lat, r):
             return n.strip()
     return None
@@ -247,7 +250,7 @@ def uji():
     assert k["konsesi"] == ["PT Contoh"] and all(badan_usaha(n) for c in d["kompleks"] for n in c["konsesi"]) and k["kota"][0]["kode"] == "1601" and k["kota"][0]["jam"] == 3, k["kota"]   # 36 km/jam ke utara: jam ke-3 (108 km) masuk 25 km kota
     assert len(k["jalur"]) == 3 and k["jalur"][0]["t"][0] == [105.0, -1.0, 0]
     # mode semai: poligon PNG, status kota, arah, lintas batas 5%
-    assert negara(147.18, -9.44) == "Papua Nugini" and negara(140.70, -2.53) is None and negara(140.40, -8.50) is None   # Port Moresby; Jayapura, Merauke
+    assert negara(147.18, -9.44, True) == "Papua Nugini" and negara(147.18, -9.44) is None and negara(140.70, -2.53, True) is None and negara(140.40, -8.50, True) is None   # Port Moresby; Jayapura, Merauke
     sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../operasi"))
     import semai_murni as M
     assert status_kota([0.3, 0.4, 0.1])["status"] == "sudah berasap" and status_kota([0.3, 0.4, 0.1])["tingkat"] == "sedang"   # dekat api: jam pertama sudah berasap
@@ -389,7 +392,7 @@ def semai(putaran, sekarang, keluar, kluster_p=None, ifs_dir=None):
     semua = []
     for f in kl["features"]:
         p = f["properties"]
-        if p.get("frp24") and BBOX[0] <= p["lon"] <= BBOX[2] and BBOX[1] <= p["lat"] <= BBOX[3] and negara(p["lon"], p["lat"]) is None:
+        if p.get("frp24") and BBOX[0] <= p["lon"] <= BBOX[2] and BBOX[1] <= p["lat"] <= BBOX[3] and negara(p["lon"], p["lat"], True) is None:
             semua.append(p)
     ambang = M.ambang_cluster([p["frp24"] for p in semua], bobot)
     cl = sorted([p for p in semua if p["frp24"] >= ambang], key=lambda p: -p["frp24"])
@@ -509,14 +512,14 @@ def semai(putaran, sekarang, keluar, kluster_p=None, ifs_dir=None):
         uu, vv = (float(a_[min(int((F + qt) // LANGKAH_JAM), len(langkah_ifs) - 1)][round((k["lat"] - lat0) / ds), round((k["lon"] - lon0) / ds)]) for a_ in (u10, v10))
         km = M.haversine(k["lat"], k["lon"], pa["lat"], pa["lon"])
         c0 = math.cos(math.radians(k["lat"]))
-        hasil.append({"nama": k["nama"], "negara": k["negara"], **st, "beban_maks": round(max(beban), 2),
-                      "asal": {"cluster": pa["id"], "kab": pa.get("kab"), "km": round(km)},
+        hasil.append({"nama": k["nama"], "negara": k["negara"], "lat": round(k["lat"], 3), "lon": round(k["lon"], 3), **st, "beban_maks": round(max(beban), 2),
+                      "asal": {"cluster": pa["id"], "kab": pa.get("kab"), "km": round(km), "lat": round(pa["lat"], 3), "lon": round(pa["lon"], 3)},
                       "arah": M.arah_8(k["lat"], k["lon"], pa["lat"], pa["lon"]),
                       "angin": {"dari": M.arah_8(k["lat"], k["lon"], k["lat"] - vv, k["lon"] - uu / c0).replace("dari ", ""), "kmj": round(math.hypot(uu, vv) * 3.6)}})
     hasil = urut_kota(hasil)
     # --- lintas batas: fraksi bobot satu cluster (dari bobot yang sudah dilepas) di poligon negara lain
     poli = {}
-    for nm, rg in NEGARA.items():
+    for nm, rg in (NEGARA | NEGARA_PNG).items():
         poli.setdefault(nm.strip(), []).append(rg)
     per_jam, rinci = [], []
     for q, (x, y, w, c, den) in enumerate(snap):

@@ -10,7 +10,7 @@ Masukan: data/raw/semai/<putaran>/<langkah>.npz (semai_ifs.py), public/data/klus
          public/udara/data/awan_himawari.json (bila ada), <keluar>/asap_beban.npz (bila ada; diisi SA-05).
 Keluaran: <keluar>/semai.json, awan_<langkah>.png (DESAIN-TEKNIS §3). `jalan` butuh numpy (hanya di semai.yml).
 """
-import json, os, re, sys
+import datetime as dt, json, os, re, sys, time
 
 AKAR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, AKAR)
@@ -181,7 +181,96 @@ def uji():
     kosong = M.ringkasan_teks(dict(dat, zona=[], kalimat_kosong=M.kalimat_kosong("tidak_ada_awan")), "pos")
     ok("Tidak ada awan layak semai" in kosong, "ringkasan kosong")
 
+    uji_fixture(b, ok)
     print(f"semai uji: {n[0]} kasus lolos")
+
+
+def uji_fixture(b, ok):
+    """Ujung ke ujung pada potongan nyata (fixture_semai.json): turunan skalar -> gerbang -> D, T -> skor -> zona -> jendela.
+    Stdlib saja; bila numpy ada, cermin vektornya disilangkan ke jalur skalar."""
+    fx = os.path.join(AKAR, "fixture_semai.json")
+    if not os.path.exists(fx):
+        print("semai uji: fixture_semai.json tidak ada, kasus ujung ke ujung dilewati (jalankan `semai.py fixture`)")
+        return
+    with open(fx, encoding="utf-8") as f:
+        F = json.load(f)
+    off = b["zona_waktu"]["offset_jam"]
+    w = (M.nilai(b, "skor.wq"), M.nilai(b, "skor.wd"), M.nilai(b, "skor.wt"))
+    F0, rad, tau = M.nilai(b, "d.f0_mw"), M.nilai(b, "d.radius_api_km"), M.nilai(b, "d.tau_menit")
+    ih = int(F["putaran"][8:10])
+    langkah = F["langkah"]
+    tampil = [s for s in langkah if s >= 12]
+    n_lolos = n_d = 0
+    for nm, L in F["lokasi"].items():
+        zt = M.zona_waktu_prov(L["prov_kode"], b["zona_waktu"]["provinsi"])
+        n = L["n"]
+        cls = [(c["lat"], c["lon"], c["frp24"] * (M.nilai(b, "d.pengali_gambut") if c["gambut"] else 1.0)) for c in L["cluster"]]
+        skor_cs = {}                                    # (i, j) -> {s: skor bawaan}
+        sels = {}
+        for s in tampil:
+            k = langkah.index(s)
+            for i in range(n):
+                for j in range(n):
+                    c = {key: arr[k][i][j] for key, arr in L["medan"].items()}
+                    tp_n = L["medan"]["sfc_tp"][k + 1][i][j] if k + 1 < len(langkah) else None
+                    sel = M.turunan_sel(c, tp_n, (ih + s + off[zt]) % 24)
+                    lat, lon = L["lat0"] - 0.1 * i, L["lon0"] + 0.1 * j
+                    hl, ho = M.titik_hujan(lat, lon, sel["u_pengarah"], sel["v_pengarah"], tau)
+                    Fk = sum(e for y, x, e in cls if M.haversine(hl, ho, y, x) <= rad)
+                    dm = min(M.haversine(hl, ho, y, x) for y, x in L["tempat"])
+                    Dv, Tv = M.faktor_d(Fk, F0), M.faktor_t(dm, M.nilai(b, "t.dekat_km"), M.nilai(b, "t.jauh_km"))
+                    sk, Q, _ = M.skor_sel(sel, Dv, Tv, b)
+                    n_lolos += M.gerbang(sel, b)[0]
+                    sels[(s, i, j)] = (sel, Dv, Tv, sk)
+                    if sk > 0:
+                        n_d += 1
+                    ok(0 <= sk <= 1 and 0 <= Q <= 1 and 0 <= Dv <= 1 and 0 <= Tv <= 1, f"{nm} faktor di luar 0..1")
+                    ok(Dv > 0 or sk == 0, f"{nm}: D = 0 harus skor 0")
+                    skor_cs.setdefault((i, j), {})[s] = sk
+        cells = [dict(lat=L["lat0"] - 0.1 * i, lon=L["lon0"] + 0.1 * j, skor=max(v.values()), ij=(i, j)) for (i, j), v in skor_cs.items()]
+        zn = M.zona_nms(cells, M.nilai(b, "zona.jarak_min_km"), M.nilai(b, "zona.maks"), M.nilai(b, "zona.skor_min"))
+        ok(len(zn) <= 5 and all(z["skor"] >= 0.35 for z in zn), f"{nm}: zona patuh ambang dan maksimum")
+        for a in range(len(zn)):
+            for c2 in range(a):
+                ok(M.haversine(zn[a]["lat"], zn[a]["lon"], zn[c2]["lat"], zn[c2]["lon"]) > 40, f"{nm}: zona berjarak > 40 km")
+        if not cls:
+            ok(not zn and all(v == 0 for d in skor_cs.values() for v in d.values()), f"{nm}: tanpa api di cuplikan tidak ada zona")
+        for z in zn:
+            per = [skor_cs[z["ij"]].get(s, 0.0) for s in tampil]
+            ib = per.index(max(per))
+            txt = M.jendela_85(per, ib, [ih + s for s in tampil], zt, off, M.nilai(b, "zona.jendela_persen"), M.nilai(b, "gerbang.jam_mulai"), M.nilai(b, "gerbang.jam_akhir"))
+            ok(re.fullmatch(r"\d\d\.00 sampai \d\d\.00 " + zt, txt or ""), f"{nm}: jendela {txt}")
+            sel, Dv, _, _ = sels[(tampil[ib], *z["ij"])]
+            ok(Dv > 0 and M.gerbang(sel, b)[0], f"{nm}: zona hanya di sel lolos gerbang dengan api di bawah titik hujan")
+        L["_zn"] = zn
+    ok(n_lolos > 0, "fixture memuat sel lolos gerbang")
+    ok(any(L["_zn"] for L in F["lokasi"].values()), "fixture menghasilkan setidaknya satu zona (Kendari, api nyata di dekatnya)")
+    try:
+        import numpy as np
+    except ImportError:
+        print("semai uji: numpy tidak ada, silang cermin vektor dilewati")
+        return
+    for nm, L in F["lokasi"].items():
+        n = L["n"]
+        for s in tampil:
+            k = langkah.index(s)
+            P = {t: {key: np.array(arr[langkah.index(t)], dtype="float32") for key, arr in L["medan"].items()} for t in (s, s + 3) if t in langkah}
+            jam = np.full((n, n), float((ih + s + off[M.zona_waktu_prov(L["prov_kode"], b["zona_waktu"]["provinsi"])]) % 24))
+            d = turunan_np(P, s, jam)
+            g = gerbang_np(d, b)
+            for i in range(0, n, 4):
+                for j in range(0, n, 4):
+                    sel = sels_ij = None
+                    c = {key: arr[k][i][j] for key, arr in L["medan"].items()}
+                    tp_n = L["medan"]["sfc_tp"][k + 1][i][j] if k + 1 < len(langkah) else None
+                    sel = M.turunan_sel(c, tp_n, jam[i, j])
+                    for key in ("lcl", "geser", "tdasar", "w", "rh850", "elev"):
+                        ok(abs(float(d[key][i, j]) - sel[key]) < 0.02 + 1e-3 * abs(sel[key]), f"{nm} cermin numpy {key}")
+                    ok((sel["hujan"] is None and np.isnan(d["hujan"][i, j])) or abs(float(d["hujan"][i, j]) - sel["hujan"]) < 0.02, "cermin hujan")
+                    ok((sel["hangat_m"] is None) == bool(np.isnan(d["hangat_m"][i, j])), "cermin hangat None/NaN")
+                    if sel["hangat_m"] is not None:
+                        ok(abs(float(d["hangat_m"][i, j]) - sel["hangat_m"]) < 0.5, "cermin hangat_m")
+                    ok(bool(g[i, j]) == M.gerbang(sel, b)[0], f"{nm} cermin gerbang s={s} ({i},{j})")
 
 
 # =====================================================================================================================
@@ -267,19 +356,16 @@ def mask_geom(geom, lat_grid, lon_grid):
     return out
 
 
-def isi_terdekat(label, ada):
+def isi_terdekat(label):
     """Sel tanpa label (-1) diisi label tetangga lewat pelebaran 8-tetangga berulang (pendekatan provinsi daratan terdekat)."""
     np = _np()
     lab = label.copy()
     while (lab < 0).any():
+        pad = np.pad(lab, 1, constant_values=-1)
         baru = lab.copy()
         for di in (-1, 0, 1):
             for dj in (-1, 0, 1):
-                if di == dj == 0:
-                    continue
-                g = np.full_like(lab, -1)
-                a = lab[max(0, -di):NLAT - max(0, di), max(0, -dj):NLON - max(0, dj)]
-                g[max(0, di):NLAT - max(0, -di) or None, max(0, dj):NLON - max(0, -dj) or None] = a
+                g = pad[1 + di:1 + di + NLAT, 1 + dj:1 + dj + NLON]
                 tm = (baru < 0) & (g >= 0)
                 baru[tm] = g[tm]
         if (baru == lab).all():
@@ -301,7 +387,7 @@ def indeks_provinsi():
     for f in g:
         lab[mask_geom(f["geometry"], la, lo) & (lab < 0)] = kode.index(f["properties"]["kode"])
     darat = lab >= 0
-    idx = isi_terdekat(lab, darat)
+    idx = isi_terdekat(lab)
     os.makedirs(os.path.dirname(CACHE_PROV), exist_ok=True)
     np.savez(CACHE_PROV, idx=idx, darat=darat, kode=np.array(kode))
     return idx, darat, kode
@@ -309,10 +395,10 @@ def indeks_provinsi():
 
 # ---- turunan numpy ----------------------------------------------------------------------------------------------------
 def turunan_np(P, i, jam_lokal):
-    """P = {langkah_ke_i: dict npz float32}. i = indeks langkah di daftar penuh. Cermin M.turunan_sel."""
+    """P = {langkah jam: dict npz float32}; i = langkah (jam). Cermin M.turunan_sel."""
     np = _np()
     c = P[i]
-    tp_n = P[i + 1]["sfc_tp"] if i + 1 in P else None
+    tp_n = P[i + 3]["sfc_tp"] if i + 3 in P else None
     gh1000 = c["pl_gh_1000"]
     elev = np.maximum(0.0, gh1000)
     lcl = np.maximum(0.0, M.ESPY * (c["sfc_2t"] - c["sfc_2d"]))
@@ -378,11 +464,6 @@ def titik_hujan_np(lat, lon, u, v, tau):
     return lat + v * d / 111320.0, lon + u * d / (111320.0 * np.maximum(0.05, np.cos(np.radians(lat))))
 
 
-def ramp_pil(x):
-    """Kelas awan 1..4 untuk PNG (b['raster']['kelas_q'])."""
-    return None
-
-
 def tulis_png(path, kelas, palet, alfa):
     """PNG berpalet 8 bit (stdlib zlib + struct). kelas: array uint8 [H, W] (indeks palet, 0 = transparan)."""
     import struct, zlib
@@ -405,7 +486,7 @@ def tempat_np():
     np = _np()
     kota = muat_json("scripts/udara/kota.json")["baris"]
     band = muat_json("scripts/cuaca/data/bandara.json")["bandara"]
-    return np.array([[r[3], r[4]] for r in kota] + [[v[1], v[2]] for v in band]), kota
+    return np.array([[r[3], r[4]] for r in kota] + [[v[1], v[2]] for v in band.values()]), kota
 
 
 def muat_cluster(jalur, prov_nm):
@@ -445,3 +526,491 @@ def SNPP_AKHIR():
     m = u.module_from_spec(sp)
     sp.loader.exec_module(m)
     return m.SNPP_AKHIR
+
+
+# ---- evaluasi sel kandidat ----------------------------------------------------------------------------------------------
+class Konteks:
+    pass
+
+
+def sel_sekitar(lat_c, lon_c, radius_km):
+    """Mask (NLAT, NLON) sel dalam radius_km dari salah satu titik pusat."""
+    np = _np()
+    la, lo = lintang(), bujur()
+    m = np.zeros((NLAT, NLON), bool)
+    r = int(radius_km / 11.0) + 2
+    for y, x in zip(lat_c, lon_c):
+        i, j = int(round((LAT0 - y) / RES)), int(round((x - LON0) / RES))
+        i0, i1, j0, j1 = max(0, i - r), min(NLAT, i + r + 1), max(0, j - 2 * r), min(NLON, j + 2 * r + 1)
+        if i0 >= i1 or j0 >= j1:
+            continue
+        Y, X = np.meshgrid(la[i0:i1], lo[j0:j1], indexing="ij")
+        m[i0:i1, j0:j1] |= haversine_np(Y, X, y, x) <= radius_km
+    return m
+
+
+def lebarkan(mask, r_sel):
+    """Pelebaran biner dengan cakram berjari-jari r_sel sel (tanpa scipy)."""
+    np = _np()
+    out = mask.copy()
+    k = int(r_sel)
+    for di in range(-k, k + 1):
+        for dj in range(-k, k + 1):
+            if di * di + dj * dj > r_sel * r_sel:
+                continue
+            pad = np.pad(mask, k)
+            out |= pad[k + di:k + di + NLAT, k + dj:k + dj + NLON]
+    return out
+
+
+def evaluasi(ctx, ci, cj, sasaran=None):
+    """Hitung semua faktor untuk sel (ci, cj) pada tiap langkah tampil. Mengembalikan dict array (S, N). `sasaran(lat, lon)`
+    -> 0/1 (mode mulai-dari-target, ALGORITMA §7b): D dikali D_target."""
+    np = _np()
+    b = ctx.b
+    N = len(ci)
+    lat, lon = ctx.la[ci], ctx.lo[cj]
+    taus = [n_(b, "d.tau_menit")] + list(n_(b, "d.tau_sensitivitas_menit"))
+    rad, F0 = n_(b, "d.radius_api_km"), n_(b, "d.f0_mw")
+    w = (n_(b, "skor.wq"), n_(b, "skor.wd"), n_(b, "skor.wt"))
+    K = ctx.K
+    ev = {k: [] for k in ("gfull", "gnim", "bahaya", "Q", "Qn", "F", "cl", "hlat", "hlon", "angin_u", "angin_v", "lcl", "elev", "mucape", "lcc", "tclw",
+                          "geser", "rh850", "tdasar", "hangat_m", "w", "cape", "air", "rh", "g", "naik")}
+    ev["D"] = {t: [] for t in taus}; ev["T"] = {t: [] for t in taus}
+    for s in ctx.tampil:
+        d = ctx.der[s]
+        x = {k: (v[ci, cj] if hasattr(v, "shape") and v.ndim == 2 else v) for k, v in d.items()}
+        x["jam_lokal"] = d["jam_lokal"][ci, cj]
+        kp = komp_np(x, b)
+        ev["gfull"].append(gerbang_np(x, b)); ev["gnim"].append(gerbang_np(x, b, "nimbus"))
+        ev["bahaya"].append(x["mucape"] > n_(b, "bahaya.mucape_maks"))
+        ev["Q"].append(q_np(kp)); ev["Qn"].append(q_np(kp, "nimbus"))
+        for k in ("lcl", "elev", "mucape", "lcc", "tclw", "geser", "rh850", "tdasar", "hangat_m", "w"):
+            ev[k].append(x[k])
+        ev["cape"].append(kp["cape"]); ev["air"].append(kp["air"]); ev["rh"].append(kp["rh"]); ev["g"].append(kp["geser"]); ev["naik"].append(kp["naik"])
+        ev["angin_u"].append(x["u_pengarah"]); ev["angin_v"].append(x["v_pengarah"])
+        for t in taus:
+            hl, ho = titik_hujan_np(lat, lon, x["u_pengarah"], x["v_pengarah"], t)
+            if len(K["lat"]):
+                dist = haversine_np(hl[:, None], ho[:, None], K["lat"][None], K["lon"][None])
+                dalam = dist <= rad
+                Fe = (dalam * K["frp_eff"][None]).sum(1)
+                if t == taus[0]:
+                    Fr = (dalam * K["frp"][None]).sum(1)
+                    cl = np.where(dalam.any(1), np.argmax(np.where(dalam, K["frp"][None], -1), 1), -1)
+            else:
+                Fe = np.zeros(N); Fr = np.zeros(N); cl = np.full(N, -1)
+            D = np.where(Fe > 0, 1 - np.exp(-Fe / F0), 0.0)
+            if sasaran is not None:
+                D = D * sasaran(hl, ho)
+            dm = haversine_np(hl[:, None], ho[:, None], ctx.tempat[:, 0][None], ctx.tempat[:, 1][None]).min(1)
+            ev["D"][t].append(D); ev["T"][t].append(ramp_np(dm, n_(b, "t.dekat_km"), n_(b, "t.jauh_km")))
+            if t == taus[0]:
+                ev["hlat"].append(hl); ev["hlon"].append(ho); ev["F"].append(Fr); ev["cl"].append(cl)
+    A = lambda v: np.array(v)
+    for k in list(ev):
+        if k in ("D", "T"):
+            ev[k] = {t: A(v) for t, v in ev[k].items()}
+        else:
+            ev[k] = A(ev[k])
+    t0 = taus[0]
+    ev["taus"] = taus
+    ev["skor_b"] = np.where(ev["gfull"], skor_np(ev["Q"], ev["D"][t0], ev["T"][t0], w), 0.0)
+    ev["skor_n"] = np.where(ev["gnim"], skor_np(ev["Qn"], ev["D"][t0], ev["T"][t0], w, "nimbus"), 0.0)
+    return ev
+
+
+def utc_jam(ctx, jam_sejak_tengah_malam):
+    return (ctx.hari0 + dt.timedelta(hours=float(jam_sejak_tengah_malam))).strftime("%Y-%m-%dT%H:%MZ")
+
+
+def arah_dari(u, v):
+    import math
+    deg = (math.degrees(math.atan2(-u, -v)) + 360) % 360
+    return ARAH_EN[int((deg + 22.5) // 45) % 8]
+
+
+def kota_terdekat(ctx, lat, lon):
+    d = haversine_np(lat, lon, ctx.kota_ll[:, 0], ctx.kota_ll[:, 1])
+    k = int(d.argmin())
+    return k, float(d[k])
+
+
+def rakit_zona(ctx, ev, k, s, huruf, skor_mat, mode, lengkap=True, hati_hati=False):
+    """Satu zona dari sel k pada langkah tampil ke-s. None bila jendela terbang kosong."""
+    np = _np()
+    b = ctx.b
+    t0 = ev["taus"][0]
+    zt = ctx.zt_cell[ctx.ci[k], ctx.cj[k]]
+    lang_utc = [ctx.init.hour + st for st in ctx.tampil]
+    r = M.jendela_rentang(list(map(float, skor_mat[:, k])), s, lang_utc, zt, b["zona_waktu"]["offset_jam"],
+                          n_(b, "zona.jendela_persen"), n_(b, "gerbang.jam_mulai"), n_(b, "gerbang.jam_akhir"))
+    if r is None:
+        return None
+    lat, lon = float(ctx.la[ctx.ci[k]]), float(ctx.lo[ctx.cj[k]])
+    pk = ctx.kode_prov[ctx.idx_prov[ctx.ci[k], ctx.cj[k]]]
+    kk, _ = kota_terdekat(ctx, lat, lon)
+    nama_kota = ctx.kota_nama[kk]
+    darat = bool(ctx.darat[ctx.ci[k], ctx.cj[k]])
+    jend_txt = f"{r['mulai_lokal']:02d}.00 sampai {r['akhir_lokal']:02d}.00 {zt}"
+    z = {"id": f"{ctx.putaran}-{huruf}", "huruf": huruf, "lat": round(lat, 1), "lon": round(lon, 1),
+         "skor": round(float(skor_mat[s, k]), 2), "langkah": int(ctx.tampil[s]), "jendela": [utc_jam(ctx, r["utc_mulai"]), utc_jam(ctx, r["utc_akhir"])],
+         "jendela_teks": jend_txt, "zona_waktu": zt, "prov_kode": pk, "prov": ctx.prov_nm[pk],
+         "kota": nama_kota if darat else f"lepas pantai dekat {nama_kota}",
+         "hujan": {"lat": round(float(ev["hlat"][s, k]), 2), "lon": round(float(ev["hlon"][s, k]), 2), "tau_menit": t0},
+         "Q": round(float(ev["Qn"][s, k] if mode == "nimbus" else ev["Q"][s, k]), 3), "D": round(float(ev["D"][t0][s, k]), 3),
+         "T": round(float(ev["T"][t0][s, k]), 3)}
+    if not lengkap:
+        return z
+    u, v = float(ev["angin_u"][s, k]), float(ev["angin_v"][s, k])
+    kmj = (u * u + v * v) ** 0.5 * 3.6
+    z.update({"Q_nimbus": round(float(ev["Qn"][s, k]), 3), "skor_nimbus": round(float(ev["skor_n"][s, k]), 2),
+              "komp": {a: round(float(ev[a][s, k]), 2) for a in ("cape", "air", "rh")} | {"geser": round(float(ev["g"][s, k]), 2), "naik": round(float(ev["naik"][s, k]), 2)},
+              "masukan": {"lcc": round(float(ev["lcc"][s, k]), 2), "mucape": int(round(float(ev["mucape"][s, k]))), "tclw": round(float(ev["tclw"][s, k]), 3),
+                          "geser": round(float(ev["geser"][s, k]), 1), "rh850": int(round(float(ev["rh850"][s, k]))), "tdasar": round(float(ev["tdasar"][s, k]), 1),
+                          "hangat_m": None if np.isnan(ev["hangat_m"][s, k]) else int(round(float(ev["hangat_m"][s, k]))), "w": round(float(ev["w"][s, k]), 2),
+                          "angin_dari": arah_dari(u, v), "angin_kmj": int(round(kmj)), "geser_km": int(round(kmj * t0 / 60.0)),
+                          "frp_25km": int(round(float(ev["F"][s, k])))}})
+    ic = int(ev["cl"][s, k])
+    z["cluster"] = ctx.cl[ic]["id"] if ic >= 0 else None
+    # base terdekat (op_base seed), menit terbang perkiraan
+    jb = {bid: M.haversine(lat, lon, bs["lat"], bs["lon"]) for bid, bs in ctx.bandara.items()}
+    bid = min(jb, key=jb.get)
+    km = jb[bid]
+    menit = M.menit_terbang(km, n_(b, "terbang.jelajah_kmj"), n_(b, "terbang.menit_bulat"))
+    bd = ctx.bandara[bid]
+    z["base"] = {"id": bid, "icao": bd["icao"], "nama": bd["nama"], "km": int(round(km)), "menit": menit, "perkiraan": True,
+                 "terdaftar": bd["terdaftar"]}
+    tanda = []
+    if ctx.awan_kab.get((ctx.kota_prov[kk], ctx.kota_kab[kk])):
+        tanda.append("awan_teramati")
+    if hati_hati:
+        tanda.append("hati_hati")
+    z["tanda"] = tanda
+    z["mitra"] = {"lat": M.bulat_mitra(lat, n_(b, "mitra.bulat_derajat")), "lon": M.bulat_mitra(lon, n_(b, "mitra.bulat_derajat"))}
+    # ketinggian, inversi, bahan, sortie (ALGORITMA §7b)
+    kaki = M.ketinggian_kaki(float(ev["lcl"][s, k]), float(ev["elev"][s, k]), n_(b, "ketinggian.lcl_min_m"), n_(b, "ketinggian.lcl_maks_m"),
+                             n_(b, "ketinggian.bulat_kaki"), n_(b, "ketinggian.m_ke_kaki"))
+    z["ketinggian"] = {"kaki": kaki, "teks": "dasar awan tidak terbaca model" if kaki is None else f"sekitar {kaki:,} kaki (dasar awan perkiraan)".replace(",", ".")}
+    c = ctx.P[ctx.tampil[s]]
+    t = [float(c[f"pl_t_{p}"][ctx.ci[k], ctx.cj[k]]) for p in M.NIVO_PL[:4]]
+    gh = [float(c[f"pl_gh_{p}"][ctx.ci[k], ctx.cj[k]]) for p in M.NIVO_PL[:4]]
+    inv = M.ada_inversi(t, gh, float(ev["elev"][s, k]))
+    beban = ctx.beban_asap(s, ctx.ci[k], ctx.cj[k])
+    bahan = M.usul_bahan(inv, beban)
+    z["bahan"] = {"usul": bahan, "inversi": bool(inv), "beban_asap": beban, "catatan": None if ctx.asap is not None else "tanpa data asap"}
+    jmenit = (r["akhir_lokal"] - r["mulai_lokal"]) * 60
+    ms = n_(b, "terbang.menit_semai")
+    z["jumlah"] = {"muatan": "muatan armada belum diisi" if not b["muatan_kg"] else None, "armada_siap": None,
+                   "armada_label": "armada siap belum diketahui, dihitung 1",
+                   "sortie": M.jumlah_sortie(jmenit, menit, ms, 1), "sortie_tanpa_batas_armada": M.jumlah_sortie(jmenit, menit, ms, 10 ** 6)}
+    return z
+
+
+def zona_dari(ctx, ev, skor_mat, mode, lengkap=True, hati_hati=False, huruf_awal=0, jauhi=()):
+    np = _np()
+    b = ctx.b
+    if skor_mat.size == 0:
+        return []
+    best = skor_mat.max(0); bi = skor_mat.argmax(0)
+    cells = [dict(lat=float(ctx.la[ctx.ci[k]]), lon=float(ctx.lo[ctx.cj[k]]), skor=float(best[k]), k=k) for k in np.nonzero(best > 0)[0]]
+    pilih = M.zona_nms(cells, n_(b, "zona.jarak_min_km"), n_(b, "zona.maks"), n_(b, "zona.skor_min"))
+    out = []
+    for c in pilih:
+        if any(M.haversine(c["lat"], c["lon"], y, x) <= n_(b, "zona.jarak_min_km") for y, x in jauhi):
+            continue
+        z = rakit_zona(ctx, ev, c["k"], int(bi[c["k"]]), chr(65 + huruf_awal + len(out)), skor_mat, mode, lengkap, hati_hati)
+        if z:
+            out.append(z)
+    return out
+
+
+def baris_kandidat(ctx, ev, ci, cj, skor_rank, maks):
+    """Baris [lat, lon, langkah, Q, D, T, cape, air, rh, geser, naik, D20, T20, D45, T45, D60, T60, g, bhy] terbaik (sel, langkah)."""
+    np = _np()
+    S, N = skor_rank.shape
+    ada = np.argwhere(skor_rank > 0)
+    if len(ada) == 0:
+        return []
+    v = skor_rank[ada[:, 0], ada[:, 1]]
+    top = ada[np.argsort(-v)[:maks]]
+    t0, ts = ev["taus"][0], ev["taus"][1:]
+    out = []
+    for s, k in top:
+        r = [round(float(ctx.la[ci[k]]), 1), round(float(ctx.lo[cj[k]]), 1), int(ctx.tampil[s]),
+             round(float(ev["Q"][s, k]), 3), round(float(ev["D"][t0][s, k]), 3), round(float(ev["T"][t0][s, k]), 3),
+             round(float(ev["cape"][s, k]), 2), round(float(ev["air"][s, k]), 2), round(float(ev["rh"][s, k]), 2),
+             round(float(ev["g"][s, k]), 2), round(float(ev["naik"][s, k]), 2)]
+        for t in ts:
+            r += [round(float(ev["D"][t][s, k]), 3), round(float(ev["T"][t][s, k]), 3)]
+        r += [int(ev["gfull"][s, k]), int(ev["bahaya"][s, k])]
+        out.append(r)
+    return out
+
+
+def kolom_kandidat(ev):
+    ts = ev["taus"][1:]
+    return ["lat", "lon", "langkah", "Q", "D", "T", "cape", "air", "rh", "geser", "naik"] + [f"{a}{t}" for t in ts for a in ("D", "T")] + ["g", "bhy"]
+
+
+# ---- jalan ----------------------------------------------------------------------------------------------------------------
+def pilih_putaran(arg):
+    d = os.path.join(REPO, "data/raw/semai")
+    if arg != "auto":
+        return arg
+    ada = sorted(x for x in os.listdir(d) if re.fullmatch(r"\d{10}", x) and os.path.exists(os.path.join(d, x, "36.npz")))
+    if not ada:
+        sys.exit("tanpa putaran lengkap di data/raw/semai (jalankan semai_ifs.py dulu)")
+    return ada[-1]
+
+
+def muat_putaran(putaran):
+    np = _np()
+    P = {}
+    for s in range(0, 37, 3):
+        z = np.load(os.path.join(REPO, "data/raw/semai", putaran, f"{s}.npz"))
+        P[s] = {k: z[k].astype("float32") for k in z.files}
+    return P
+
+
+def siapkan(putaran, dibuat, b, jalur_kluster, P=None):
+    np = _np()
+    c = Konteks()
+    c.b, c.putaran = b, putaran
+    c.init = dt.datetime.strptime(putaran, "%Y%m%d%H").replace(tzinfo=dt.timezone.utc)
+    c.hari0 = c.init.replace(hour=0)
+    c.P = P if P is not None else muat_putaran(putaran)
+    c.la, c.lo = lintang(), bujur()
+    c.prov_nm = prov_nama()
+    c.idx_prov, c.darat, c.kode_prov = indeks_provinsi()
+    pz, off = b["zona_waktu"]["provinsi"], b["zona_waktu"]["offset_jam"]
+    zn = [M.zona_waktu_prov(k, pz) for k in c.kode_prov]          # KeyError bila provinsi tak dikenal: bukan tebakan
+    c.zt_cell = np.array(zn)[c.idx_prov]
+    off_cell = np.array([off[z] for z in zn])[c.idx_prov]
+    c.tampil = [s for s in range(0, 37, 3) if c.init + dt.timedelta(hours=s) >= dibuat][:9]
+    c.der = {}
+    for s in c.tampil:
+        jam = (c.init.hour + s + off_cell) % 24
+        c.der[s] = turunan_np(c.P, s, jam)
+    c.cl = muat_cluster(jalur_kluster, c.prov_nm)
+    fr = [x["frp24"] for x in c.cl]
+    c.ambang = M.ambang_cluster(fr, b)
+    c.big = [x for x in c.cl if x["frp24"] >= c.ambang]
+    c.K = {"lat": np.array([x["lat"] for x in c.cl]), "lon": np.array([x["lon"] for x in c.cl]), "frp": np.array([x["frp24"] for x in c.cl]),
+           "frp_eff": np.array([x["frp24"] * (n_(b, "d.pengali_gambut") if x["gambut"] else 1.0) for x in c.cl])}
+    c.tempat, kota = tempat_np()
+    c.kota_ll = np.array([[r[3], r[4]] for r in kota])
+    c.kota_nama = [r[6] for r in kota]
+    c.kota_kab = [r[6] for r in kota]
+    c.kota_prov = [r[2] for r in kota]
+    import renlap
+    c.base = renlap.muat_base()
+    # S10 (pemilik 14 Nov 2026): OMC berangkat dari bandara terdekat, tanpa batas jelajah. Kandidat = base op_base + 136 bandara
+    # BMKG (scripts/cuaca/data/bandara.json); bandara yang sudah jadi base memakai id base (renlap bisa menargetkannya).
+    icao_base = {bs.get("icao"): bid for bid, bs in c.base.items() if bs.get("aktif", 1)}
+    c.bandara = {bid: {"nama": bs["nama"], "lat": bs["lat"], "lon": bs["lon"], "icao": bs.get("icao"), "terdaftar": True}
+                 for bid, bs in c.base.items() if bs.get("aktif", 1)}
+    for ic, (nm, la, lo, _pv) in json.load(open(os.path.join(REPO, "scripts/cuaca/data/bandara.json"), encoding="utf-8"))["bandara"].items():
+        if ic not in icao_base:
+            c.bandara[ic] = {"nama": nm, "lat": la, "lon": lo, "icao": ic, "terdaftar": False}
+    c.awan_kab = {}
+    fa = os.path.join(REPO, "public/udara/data/awan_himawari.json")
+    if os.path.exists(fa):
+        for kode, v in json.load(open(fa, encoding="utf-8"))["kab"].items():
+            c.awan_kab[(kode[:2], v["kab"])] = v.get("persen_dingin", 0) > 0
+    c.asap = None
+    return c
+
+
+def pasang_asap(c, keluar):
+    np = _np()
+    f = os.path.join(keluar, "asap_beban.npz")
+    if not os.path.exists(f):
+        return
+    # format lintasan.py mode semai: `jam` = jam sejak awal putaran (per jam layar), `beban` (n, NLAT, NLON) lintang naik (lat0 -12),
+    # dinormalkan p99. Grid semai lintang turun (LAT0 7), jadi dibalik; langkah s memakai jam s.
+    z = np.load(f)
+    jam = [int(x) for x in z["jam"]]
+    c.asap = {j: z["beban"][i][::-1].astype("float32") for i, j in enumerate(jam)}
+
+
+def tingkat_asap(c, v, b):
+    return "tinggi" if v >= n_(b, "asap.tingkat_tinggi") else "sedang" if v >= n_(b, "asap.tingkat_sedang") else "rendah" if v >= n_(b, "asap.tingkat_rendah") else None
+
+
+def jalan(args):
+    np = _np()
+    t_mulai = time.time()
+    b = muat_bobot()
+    putaran = pilih_putaran(args.putaran)
+    dibuat = dt.datetime.fromisoformat(args.sekarang.replace("Z", "+00:00")) if args.sekarang else dt.datetime.now(dt.timezone.utc)
+    keluar = args.keluar or os.path.join(REPO, "data/raw/semai/keluar")
+    os.makedirs(keluar, exist_ok=True)
+    c = siapkan(putaran, dibuat, b, args.kluster or os.path.join(REPO, "public/data/kluster.json"))
+    pasang_asap(c, keluar)
+    c.beban_asap = lambda s, i, j: (None if c.asap is None or c.tampil[s] not in c.asap else tingkat_asap(c, float(c.asap[c.tampil[s]][i, j]), b))
+    out = {"dibuat": dibuat.strftime("%Y-%m-%dT%H:%M:%SZ"), "versi_bobot": b["versi"], "status_bobot": b["status"], "mode": "bawaan",
+           "putaran": {"model": "ECMWF IFS", "res": 0.1, "init": c.init.strftime("%Y-%m-%dT%H:%M:%SZ"), "lisensi": "CC BY 4.0",
+                       "umur_jam": round((dibuat - c.init).total_seconds() / 3600, 1)},
+           "sumber": {"firms": sumber_firms(args.hotspot24 or os.path.join(REPO, "public/data/hotspot24.json"), dibuat, b)},
+           "langkah": c.tampil, "raster": {"awan": "awan_{l}.png", "asap": "asap_{l}.png", "bbox": BBOX},
+           "api": {"n_cluster": len(c.big), "frp_mw": round(sum(x["frp24"] for x in c.big)), "ambang_mw": round(c.ambang, 1)}}
+    # raster awan layak semai (seluruh grid) dan angin pengarah 1 derajat
+    k1, k2, k3 = n_(b, "raster.kelas_q")
+    palet = [(0, 0, 0), (198, 219, 239), (107, 174, 214), (33, 113, 181), (8, 48, 107)]
+    alfa = [0, 150, 175, 200, 225]
+    ukuran_png = []
+    u_l, v_l = [], []
+    for s in c.tampil:
+        d = c.der[s]
+        Q = q_np(komp_np(d, b))
+        kls = np.where(gerbang_np(d, b), 1 + (Q >= k1) + (Q >= k2) + (Q >= k3), 0).astype(np.uint8)
+        ukuran_png.append(tulis_png(os.path.join(keluar, f"awan_{s}.png"), kls, palet, alfa))
+        u_l.append(np.round(d["u_pengarah"][::10, ::10].astype("float64"), 1).tolist()); v_l.append(np.round(d["v_pengarah"][::10, ::10].astype("float64"), 1).tolist())
+    out["angin"] = {"step": 1.0, "lat0": LAT0, "lon0": LON0, "langkah": c.tampil, "u": u_l, "v": v_l, "jenis": "pengarah 850-700 hPa"}
+    fa = os.path.join(keluar, "asap.json")          # blok asap dari lintasan.py mode semai (SA-05), dijalankan lebih dulu
+    out["asap"] = json.load(open(fa, encoding="utf-8")) if os.path.exists(fa) else None
+    # sel kandidat
+    if not c.big:
+        out.update(alasan_kosong="tidak_ada_api_besar", kalimat_kosong=M.kalimat_kosong("tidak_ada_api_besar", c.ambang), zona=[], hati_hati=[],
+                   kandidat_kolom=[], kandidat=[], cluster=[], nimbus={"zona": []}, kandidat_target={})
+    else:
+        mask = sel_sekitar([x["lat"] for x in c.big], [x["lon"] for x in c.big], n_(b, "cluster.radius_sel_km"))
+        c.ci, c.cj = np.nonzero(mask)
+        ev = evaluasi(c, c.ci, c.cj)
+        zona = zona_dari(c, ev, np.where(ev["bahaya"], 0.0, ev["skor_b"]), "bawaan")
+        zl = [(z["lat"], z["lon"]) for z in zona]
+        hati = zona_dari(c, ev, np.where(ev["bahaya"], ev["skor_b"], 0.0), "bawaan", hati_hati=True, huruf_awal=len(zona), jauhi=zl)[:3]
+        nim = zona_dari(c, ev, ev["skor_n"], "nimbus", lengkap=False)
+        rank = np.maximum(ev["skor_b"], ev["skor_n"])
+        out["kandidat_kolom"] = kolom_kandidat(ev)
+        out["kandidat"] = baris_kandidat(c, ev, c.ci, c.cj, rank, 400)
+        out["zona"], out["hati_hati"] = zona, hati
+        out["nimbus"] = {"zona": nim}
+        out["alasan_kosong"] = None if zona else "tidak_ada_awan"
+        out["kalimat_kosong"] = None if zona else M.kalimat_kosong("tidak_ada_awan")
+        lz = {z["cluster"]: z["huruf"] for z in zona if z.get("cluster")}
+        cl_out = []
+        for x in sorted(c.big, key=lambda x: -x["frp24"]):
+            kk, _ = kota_terdekat(c, x["lat"], x["lon"])
+            cl_out.append({"id": x["id"], "lat": round(x["lat"], 2), "lon": round(x["lon"], 2), "prov_kode": x["prov"], "prov": c.prov_nm[x["prov"]],
+                           "kab": x["kab"], "kota": c.kota_nama[kk], "piksel": x["px24"], "frp24": round(x["frp24"]), "gambut": x["gambut"],
+                           "akhir": x["akhir"], "zona": lz.get(x["id"])})
+        out["cluster"] = cl_out
+        out["kandidat_target"] = kandidat_target(c, b)
+    s = json.dumps(out, ensure_ascii=False, separators=(",", ":"))
+    with open(os.path.join(keluar, "semai.json"), "w", encoding="utf-8") as f:
+        f.write(s)
+    out["_lapor"] = dict(detik=round(time.time() - t_mulai, 1), json_kb=round(len(s.encode()) / 1024, 1), png_kb=[round(x / 1024, 1) for x in ukuran_png])
+    return out
+
+
+def kandidat_target(c, b):
+    """Target kabupaten dengan cluster aktif (frp24 > 0): kandidat terbaik per target untuk Tinjau BMKG (ALGORITMA §7b). Poligon KHG
+    tidak ada di repo (khg_prioritas.json hanya memuat nama kab), jadi target KHG belum ada: hanya kabupaten."""
+    np = _np()
+    kolom, hasil = None, {}
+    grup = {}
+    for x in c.cl:
+        if x["kab"]:
+            grup.setdefault((x["prov"], x["kab"]), []).append(x)
+    kabgeo = {}
+    for (pv, kab), cls in sorted(grup.items()):
+        if pv not in kabgeo:
+            f = os.path.join(REPO, "public/geo/kabupaten", f"{pv}.json")
+            kabgeo[pv] = {ft["properties"]["kab"]: ft["geometry"] for ft in json.load(open(f, encoding="utf-8"))["features"]} if os.path.exists(f) else {}
+        m = np.zeros((NLAT, NLON), bool)
+        if kab in kabgeo[pv]:
+            m |= mask_geom(kabgeo[pv][kab], c.la, c.lo)
+        for x in cls:                                  # kab sempit (< 1 sel) tetap punya sel: sel pusat tiap cluster
+            m[min(NLAT - 1, max(0, int(round((LAT0 - x["lat"]) / RES)))), min(NLON - 1, max(0, int(round((x["lon"] - LON0) / RES))))] = True
+        cand = lebarkan(m, n_(b, "cluster.radius_sel_km") / 11.1)
+        dekat = lebarkan(m, n_(b, "d.radius_api_km") / 11.1)
+
+        def sasaran(hl, ho, dekat=dekat):
+            i = np.clip(np.round((LAT0 - hl) / RES).astype(int), 0, NLAT - 1); j = np.clip(np.round((ho - LON0) / RES).astype(int), 0, NLON - 1)
+            return dekat[i, j].astype(float)
+        ci, cj = np.nonzero(cand)
+        c.ci, c.cj = ci, cj
+        ev = evaluasi(c, ci, cj, sasaran)
+        rows = baris_kandidat(c, ev, ci, cj, np.maximum(ev["skor_b"], ev["skor_n"]), 40)
+        if kolom is None:
+            kolom = kolom_kandidat(ev)
+        hasil[f"{pv}|{kab}"] = {"nama": kab, "prov": c.prov_nm[pv], "n_cluster": len(cls), "frp24": round(sum(x["frp24"] for x in cls)), "baris": rows}
+    return {"kolom": kolom or [], "target": hasil, "catatan": "target KHG belum ada: poligon KHG tidak tersedia di repo"}
+
+
+def ukur_w(putaran):
+    """Sebaran w (m/s) di sel lolos G1-G8 (G9 dimatikan) seluruh grid, langkah 0..33 (langkah 36 tanpa hujan blok)."""
+    np = _np()
+    b = muat_bobot()
+    P = muat_putaran(putaran)
+    ws = []
+    for s in range(0, 34, 3):
+        d = turunan_np(P, s, np.full((NLAT, NLON), 12.0))
+        ws.append(d["w"][gerbang_np(d, b)])
+    w = np.concatenate(ws)
+    p = {q: float(np.percentile(w, q)) for q in (50, 90, 95)}
+    print(f"n={len(w)} dari {34 // 3 * NLAT * NLON}; w m/s p50={p[50]:.3f} p90={p[90]:.3f} p95={p[95]:.3f} min={w.min():.3f} maks={w.max():.3f}")
+
+
+def buat_fixture(putaran, jalur_kluster):
+    """Potongan nyata 21 x 21 sel (2 x 2 derajat) sekitar Palangkaraya dan Kendari, 13 langkah, 29 field, dibulatkan."""
+    np = _np()
+    P = muat_putaran(putaran)
+    b = muat_bobot()
+    desimal = {"sfc_lcc": 3, "sfc_mucape": 0, "sfc_tclw": 4, "sfc_tp": 2, "sfc_2t": 2, "sfc_2d": 2, "pl_r_850": 1}
+    lokasi = {"palangkaraya": (-2.21, 113.92, "62"), "kendari": (-3.97, 122.52, "74")}
+    tempat, _ = tempat_np()
+    pn = prov_nama()
+    cl = muat_cluster(jalur_kluster, pn)
+    out = {"_catatan": "Potongan nyata ECMWF IFS 0,1 derajat (CC BY 4.0) dan kluster.json; dibuat `semai.py fixture`. Dipakai `semai.py uji`.",
+           "putaran": putaran, "langkah": list(range(0, 37, 3)), "lokasi": {}}
+    for nm, (y, x, pv) in lokasi.items():
+        i0, j0 = int(round((LAT0 - y) / RES)), int(round((x - LON0) / RES))
+        sl = (slice(i0 - 10, i0 + 11), slice(j0 - 10, j0 + 11))
+        medan = {}
+        for k in P[0]:
+            dec = desimal.get(k, 3 if k.startswith("pl_w") else 1)
+            medan[k] = [np.round(P[s][k][sl].astype("float64"), dec).tolist() for s in range(0, 37, 3)]
+        la0, la1 = LAT0 - RES * (i0 + 10), LAT0 - RES * (i0 - 10)
+        lo0, lo1 = LON0 + RES * (j0 - 10), LON0 + RES * (j0 + 10)
+        out["lokasi"][nm] = {"prov_kode": pv, "lat0": round(LAT0 - RES * (i0 - 10), 1), "lon0": round(lo0, 1), "n": 21,
+                             "cluster": [{k: v for k, v in c.items() if k in ("id", "lat", "lon", "frp24", "gambut")} for c in cl
+                                         if la0 - 0.6 <= c["lat"] <= la1 + 0.6 and lo0 - 0.6 <= c["lon"] <= lo1 + 0.6],
+                             "tempat": [[round(float(a), 3), round(float(b_), 3)] for a, b_ in tempat if la0 - 1 <= a <= la1 + 1 and lo0 - 1 <= b_ <= lo1 + 1],
+                             "medan": medan}
+    p = os.path.join(AKAR, "fixture_semai.json")
+    with open(p, "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
+    print(f"fixture {os.path.getsize(p) / 1024:.0f} KB; cluster: " + ", ".join(f"{k}={len(v['cluster'])}" for k, v in out["lokasi"].items()))
+
+
+def main():
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("cmd", choices=["uji", "jalan", "fixture", "ukurw"])
+    ap.add_argument("--putaran", default="auto")
+    ap.add_argument("--keluar")
+    ap.add_argument("--sekarang")
+    ap.add_argument("--kluster")
+    ap.add_argument("--hotspot24")
+    a = ap.parse_args()
+    if a.cmd == "uji":
+        uji()
+    elif a.cmd == "jalan":
+        o = jalan(a)
+        print(json.dumps(o["_lapor"]))
+        for z in o["zona"]:
+            print(z["huruf"], z["prov_kode"], z["prov"], z["lat"], z["lon"], "skor", z["skor"], z["jendela_teks"], z["base"]["id"], z["base"]["menit"], "menit",
+                  z["tanda"], z["cluster"], z["ketinggian"]["teks"], z["bahan"]["usul"], "sortie", z["jumlah"]["sortie"])
+        print("alasan_kosong:", o["alasan_kosong"], "| hati_hati:", len(o["hati_hati"]), "| nimbus:", [(z["huruf"], z["prov"], z["lat"], z["lon"], z["skor"]) for z in o["nimbus"]["zona"]])
+        print("langkah", o["langkah"], "| kandidat", len(o["kandidat"]), "| target", len(o["kandidat_target"].get("target", {})), "| api", o["api"], "| firms", o["sumber"]["firms"])
+    elif a.cmd == "fixture":
+        buat_fixture(pilih_putaran(a.putaran), a.kluster or os.path.join(REPO, "public/data/kluster.json"))
+    else:
+        ukur_w(pilih_putaran(a.putaran))
+
+
+if __name__ == "__main__":
+    main()

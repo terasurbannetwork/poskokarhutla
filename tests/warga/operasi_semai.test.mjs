@@ -20,7 +20,7 @@ const P1 = "2026111400", P2 = "2026111412";
 const zona = (put, h, o = {}) => ({id: `${put}-${h}`, huruf: h, lat: -1.4, lon: 115.3, skor: 0.74, langkah: 30, jendela: [iso(kini + 6 * 3600e3), iso(kini + 9 * 3600e3)], zona_waktu: "WIB",
   alasan: ["awan_teramati", "cape_cukup"], base: {id: "PKY"}, tanda: [], ...o});
 const arsip = (put, zs) => R2.put(`operasi/semai/arsip/${put}.json`, JSON.stringify({dibuat: iso(kini), putaran: {init: "x"}, zona: zs}));
-await arsip(P1, [zona(P1, "A"), zona(P1, "B", {jendela: [iso(kini - 5 * 3600e3), iso(kini - 2 * 3600e3)]}), zona(P1, "C", {tanda: ["di_luar_jelajah"]}), zona(P1, "D", {lat: -1.2})]);
+await arsip(P1, [zona(P1, "A"), zona(P1, "B", {jendela: [iso(kini - 5 * 3600e3), iso(kini - 2 * 3600e3)]}), zona(P1, "C", {base: {id: "WAEL", icao: "WAEL", nama: "Bandara Contoh", km: 40, menit: 15, terdaftar: false}}), zona(P1, "D", {lat: -1.2})]);
 await arsip(P2, ["A", "B", "C", "D", "E"].map(h => zona(P2, h)));
 await R2.put("operasi/semai/semai.json", '{"zona":[]}'); await R2.put("operasi/semai/awan_12.png", "PNGFAKE"); await R2.put("operasi/semai/semai_lain.json", "x");
 let nipN = 0, ipN = 0;
@@ -60,13 +60,15 @@ uji("moderator ADMIN_TOKEN dan peran tmc boleh menulis", async () => {
   assert.equal((await pos({...sah, zona_id: `${P1}-D`, base_id: "PLM"}, tmc.hp)).s, 201);
 });
 
-uji("validasi: zona 404, putaran beda 400, jendela lewat 400, luar jelajah 400, tanggal, catatan, base, pola", async () => {
+uji("validasi: zona 404, putaran beda 400, jendela lewat 400, tanggal, catatan, base, pola", async () => {
   const p = (b, h = pusdalops.hp) => pos({...sah, ...b}, h);
   assert.equal((await p({zona_id: `${P1}-E`})).s, 404, "zona tidak ada di arsip");
   assert.equal((await p({zona_id: "2026111999-A", putaran: "2026111999"})).s, 404, "arsip putaran tidak ada");
   assert.equal((await p({putaran: P2})).s, 400, "putaran tidak cocok awal zona_id");
   assert.equal((await p({zona_id: `${P1}-B`, base_id: "PLM"})).s, 400, "jendela sudah lewat");
-  assert.equal((await p({zona_id: `${P1}-C`, base_id: "PLM"})).s, 400, "di luar jelajah");
+  assert.equal((await p({zona_id: `${P1}-C`, base_id: "WAWB"})).s, 400, "ICAO acak tak dikenal");
+  assert.equal((await p({zona_id: `${P1}-C`, base_id: "WAEL"})).s, 201, "ICAO non-op_base dari arsip");
+  assert.equal((await DB.prepare("SELECT base_icao, base_nama FROM op_semai_target WHERE base_id = 'WAEL'").first()).base_nama, "Bandara Contoh");
   assert.equal((await p({tanggal: kemarin, base_id: "PLM"})).s, 400, "kemarin");
   assert.equal((await p({tanggal: "2099-01-01", base_id: "PLM"})).s, 400, "terlalu jauh");
   assert.equal((await p({base_id: "XXX"})).s, 400, "base tidak ada");

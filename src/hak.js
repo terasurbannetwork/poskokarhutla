@@ -469,3 +469,13 @@ export const dlStmtTindak = (env, kunci, status, catatan, oleh, kini) => env.DB.
 export const dlStmtTindakLog = (env, kunci, status, catatan, langkah, oleh, kini) => env.DB.prepare("INSERT INTO dl_tindak_log (kunci, status, catatan, langkah, oleh, waktu) VALUES (?, ?, ?, ?, ?, ?)").bind(kunci, status, catatan, langkah, oleh, kini);
 /* nama staf untuk kolom pengisi (Q3): hanya id yang diminta, lewat kunci utama */
 export const dlNamaStaf = async (env, ids) => ids.length ? new Map((await env.DB.prepare("SELECT id, nama FROM staf WHERE id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(ids)).all()).results.map(r => [r.id, r.nama])) : new Map();
+
+/* ======================================================================================================================================================
+   Target semai awan (migrasi 0129_semai_target; src/operasi_semai.js; data/kajian-bnpb/semai-awan/DESAIN-TEKNIS.md §4). Hak dicek di rute. */
+export const smTargetHari = async (env, t) => (await env.DB.prepare("SELECT id, zona_id, putaran, base_id, base_icao, base_nama, tanggal, lat, lon, mulai, selesai, skor, alasan_json, catatan, dibuat FROM op_semai_target WHERE tanggal = ? AND terhapus IS NULL ORDER BY base_id, mulai LIMIT 200").bind(t).all()).results;
+export const smBase = (env, id) => env.DB.prepare("SELECT icao, nama FROM op_base WHERE id = ?").bind(id).first();
+export const smTargetAktif = async (env, zona, base) => !!await env.DB.prepare("SELECT 1 FROM op_semai_target WHERE zona_id = ? AND base_id = ? AND terhapus IS NULL").bind(zona, base).first();
+export const smLajuBuat = async (env, oleh, awal) => (await env.DB.prepare("SELECT count(*) n FROM op_semai_target WHERE oleh = ? AND dibuat >= ?").bind(oleh, awal).first()).n;
+export const smLajuHapus = async (env, oleh, awal) => (await env.DB.prepare("SELECT count(*) n FROM op_semai_target WHERE dihapus_oleh = ? AND terhapus >= ?").bind(oleh, awal).first()).n;
+export const smSisip = (env, ...v) => env.DB.prepare("INSERT INTO op_semai_target (id, zona_id, putaran, base_id, base_icao, base_nama, tanggal, lat, lon, mulai, selesai, skor, alasan_json, catatan, oleh, dibuat) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").bind(...v).run();
+export const smHapus = async (env, waktu, alasan, oleh, id) => !!(await env.DB.prepare("UPDATE op_semai_target SET terhapus = ?, alasan_hapus = ?, dihapus_oleh = ? WHERE id = ? AND terhapus IS NULL").bind(waktu, alasan, oleh, id).run()).meta.changes;

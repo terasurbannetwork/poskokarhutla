@@ -6,11 +6,12 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 
-const CSS = readFileSync(new URL("../../public/operasi_peta.css", import.meta.url), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+/* operasi_semai.css (seksi Peluang semai) ikut dihakimi, dimuat sesudah operasi_peta.css */
+const CSS = ["operasi_peta.css", "operasi_semai.css"].map(n => readFileSync(new URL(`../../public/${n}`, import.meta.url), "utf8")).join("\n").replace(/\/\*[\s\S]*?\*\//g, "");
 const MIN = 12;
 const WADAH = ["#opsLaporan .ops-ringkas-slot", "#opsLaporan .ops-wadah", "#opsLaporan .ops-pa-badan", "#opsLaporan .ops-rl-daftar", ".ops-dlg-isi",
   "#opsLaporan .ops-pb-grid", "#opsLaporan .ops-tindak ul", "#opsIsi", "#opsLaporan",
-  "#opsLaporan .ops-a", "#opsLaporan .ops-utama", "#opsLaporan .ops-pk-grid", "#opsLaporan .ops-pb-pulau", "#opsLaporan .ops-pb-pulau>section", "#opsLaporan .ops-ap-daftar", "#opsLaporan .ops-nl2-tema", "#opsLaporan .ops-apx", "#opsLaporan .ops-apr-grid", "#opsLaporan .ops-dk-grid"];   /* .ops-kanan: kepala + badan satu wadah, bukan penumpuk blok */
+  "#opsLaporan .ops-a", "#opsLaporan .ops-utama", "#opsLaporan .ops-pk-grid", "#opsLaporan .ops-pb-pulau", "#opsLaporan .ops-pb-pulau>section", "#opsLaporan .ops-ap-daftar", "#opsLaporan .ops-nl2-tema", "#opsLaporan .ops-apx", "#opsLaporan .ops-apr-grid", "#opsLaporan .ops-dk-grid", "#opsLaporan .sm-baris3", "#opsLaporan .sm-bawah", "#opsLaporan .sm-lipatan", "#opsLaporan .sm-zdaf", "#opsLaporan .sm-k .ex-bd", "#opsLaporan .sm-form"];   /* .ops-kanan: kepala + badan satu wadah, bukan penumpuk blok */
 
 export function gapTerakhir(css, sel) {
   let hasil = null;

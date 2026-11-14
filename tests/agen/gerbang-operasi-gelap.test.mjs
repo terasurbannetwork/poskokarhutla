@@ -5,12 +5,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 
-const CSS = readFileSync(new URL("../../public/operasi_peta.css", import.meta.url), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+/* operasi_semai.css (seksi Peluang semai) ikut dihakimi, dimuat sesudah operasi_peta.css */
+const CSS = ["operasi_peta.css", "operasi_semai.css"].map(n => readFileSync(new URL(`../../public/${n}`, import.meta.url), "utf8")).join("\n").replace(/\/\*[\s\S]*?\*\//g, "");
 /* kepala tabel dikecualikan: pemilik 11 Nov 2026 memilih kepala tabel navy tua bertulisan putih */
 const TERANG = ["#opsLaporan .ops-wadah details.ops-kartu>summary.ex-hd", "#opsLaporan .ops-pb>header",
   "#opsLaporan .ops-ringkas-slot .ops-pa-sek.ops-rk>summary", "#opsLaporan .ops-ringkas-slot .ops-tindak>header",
   "#opsLaporan .ops-pa-sek>summary", "#opsLaporan .ops-omc-sas small.pv", "#opsLaporan .ops-pb-icao",
-  "#opsLaporan .ops-wadah details.ops-kartu:not(.ops-polos)>summary.ex-hd"];
+  "#opsLaporan .ops-wadah details.ops-kartu:not(.ops-polos)>summary.ex-hd", "#opsLaporan .sm-dk>.ex-hd"];
 const GELAP = /#0b2545|#7a1f12|#0b1730|#163056|rgb\(\s*11\s*,\s*37\s*,\s*69/i;
 
 export function latarTerakhir(css, sel) {

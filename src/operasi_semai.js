@@ -4,6 +4,7 @@ import {json, gagal, bacaBody, adminOK} from "./worker.js";
 import {wib, modOK} from "./posko.js";
 import {stafPeran, pemirsaLihat} from "./staf.js";
 import {PERAN_BACA, bungkus} from "./operasi_udara.js";
+import {smTargetHari, smBase, smTargetAktif, smLajuBuat, smSisip, smLajuHapus, smHapus} from "./hak.js";
 
 export const PERAN_TULIS = ["pusdalops", "tmc"];
 const MAKS_HARI = 30, HARI = 864e5;
@@ -24,8 +25,8 @@ async function daftar(env, req, url, kini) {
   if (!await bacaOK(env, req)) return gagal(403, "target semai awan hanya untuk akun centurisk97, staf berperan, atau moderator");
   const t = url.searchParams.get("tanggal") ?? wib(kini);
   if (!/^\d{4}-\d\d-\d\d$/.test(t) || Number.isNaN(Date.parse(t))) return gagal(400, "tanggal harus YYYY-MM-DD yang sah");
-  const r = await env.DB.prepare("SELECT id, zona_id, putaran, base_id, tanggal, lat, lon, mulai, selesai, skor, alasan_json, catatan, dibuat FROM op_semai_target WHERE tanggal = ? AND terhapus IS NULL ORDER BY base_id, mulai LIMIT 200").bind(t).all();
-  return json(r.results, 200, {"cache-control": "no-store"});
+  const r = await smTargetHari(env, t);
+  return json(r, 200, {"cache-control": "no-store"});
 }
 
 /* hak tulis + badan; mengembalikan {oleh, o} atau Response */
@@ -45,23 +46,24 @@ async function buat(env, req, url, kini) {
   if (typeof tanggal !== "string" || ![wib(kini), wib(kini + HARI)].includes(tanggal)) return gagal(400, "tanggal harus hari ini atau besok (WIB)");
   if (o.catatan != null && (typeof o.catatan !== "string" || o.catatan.length > 500)) return gagal(400, "catatan maksimal 500 huruf");
   const catatan = o.catatan == null ? null : teks(o.catatan, 500) || null;
-  if (typeof base_id !== "string" || !await env.DB.prepare("SELECT 1 FROM op_base WHERE id = ?").bind(base_id).first()) return gagal(400, "base_id tidak ada di daftar base");
+  if (typeof base_id !== "string") return gagal(400, "base_id tidak sah");
   if (!env.MEDIA) return gagal(503, "penyimpanan belum aktif");
   const ar = await env.MEDIA.get(`operasi/semai/arsip/${putaran}.json`);
   let z; try { z = (await ar?.json())?.zona?.find(x => x.id === zona_id); } catch (e) { z = null; }
   if (!z) return gagal(404, "zona tidak ada di putaran itu");
-  if ((z.tanda || []).includes("di_luar_jelajah") || z.luar_jelajah === true) return gagal(400, "zona di luar jelajah base terdaftar, tidak bisa dijadikan target");
+  let icao, nama;  // base = bandara terdekat dari arsip (S10), atau base op_base lain
+  if (z.base?.id === base_id) ({icao, nama} = z.base);
+  else { const b = await smBase(env, base_id); if (!b) return gagal(400, "base_id tidak ada di arsip zona maupun daftar base"); ({icao, nama} = b); }
+  icao = teks(icao, 8) || null; nama = teks(nama, 80) || null;
   const mulai = z.jendela?.[0], selesai = z.jendela?.[1];
   if (!(Date.parse(selesai) > kini)) return gagal(400, "jendela terbang zona ini sudah lewat");
-  if (await env.DB.prepare("SELECT 1 FROM op_semai_target WHERE zona_id = ? AND base_id = ? AND terhapus IS NULL").bind(zona_id, base_id).first()) return gagal(409, "zona ini sudah jadi target untuk base itu");
+  if (await smTargetAktif(env, zona_id, base_id)) return gagal(409, "zona ini sudah jadi target untuk base itu");
   const awal = new Date(Date.parse(wib(kini) + "T00:00:00+07:00")).toISOString();
   // ponytail: cek baca-lalu-tulis tanpa kunci, dua isian serentak bisa melewati batas harian sedikit; duplikat tetap dijaga indeks unik
-  const hari = await env.DB.prepare("SELECT count(*) n FROM op_semai_target WHERE oleh = ? AND dibuat >= ?").bind(oleh, awal).first();
-  if (hari.n >= MAKS_HARI) return gagal(429, `maksimal ${MAKS_HARI} target per hari per akun`);
+  if (await smLajuBuat(env, oleh, awal) >= MAKS_HARI) return gagal(429, `maksimal ${MAKS_HARI} target per hari per akun`);
   const id = crypto.randomUUID();
   try {
-    await env.DB.prepare("INSERT INTO op_semai_target (id, zona_id, putaran, base_id, tanggal, lat, lon, mulai, selesai, skor, alasan_json, catatan, oleh, dibuat) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
-      .bind(id, zona_id, putaran, base_id, tanggal, z.lat, z.lon, mulai, selesai, z.skor, JSON.stringify(z.alasan ?? []), catatan, oleh, new Date(kini).toISOString()).run();
+    await smSisip(env, id, zona_id, putaran, base_id, icao, nama, tanggal, z.lat, z.lon, mulai, selesai, z.skor, JSON.stringify(z.alasan ?? []), catatan, oleh, new Date(kini).toISOString());
   } catch (e) {
     if (/UNIQUE/i.test(String(e?.message || e))) return gagal(409, "zona ini sudah jadi target untuk base itu");
     if (/CHECK/i.test(String(e?.message || e))) return gagal(400, "koordinat atau skor zona di arsip tidak sah");
@@ -76,10 +78,8 @@ async function hapus(env, req, url, kini) {
   if (typeof o.id !== "string" || o.id.length > 60) return gagal(400, "id tidak sah");
   if (typeof o.alasan !== "string" || o.alasan.length > 300 || alasan.length < 5) return gagal(400, "alasan wajib 5 sampai 300 huruf");
   const awal = new Date(Date.parse(wib(kini) + "T00:00:00+07:00")).toISOString();
-  const n = await env.DB.prepare("SELECT count(*) n FROM op_semai_target WHERE dihapus_oleh = ? AND terhapus >= ?").bind(oleh, awal).first();
-  if (n.n >= MAKS_HARI) return gagal(429, `maksimal ${MAKS_HARI} hapus per hari per akun`);
-  const r = await env.DB.prepare("UPDATE op_semai_target SET terhapus = ?, alasan_hapus = ?, dihapus_oleh = ? WHERE id = ? AND terhapus IS NULL").bind(new Date(kini).toISOString(), alasan, oleh, o.id).run();
-  return r.meta.changes ? json({ok: true}) : gagal(404, "target tidak ada atau sudah dihapus");
+  if (await smLajuHapus(env, oleh, awal) >= MAKS_HARI) return gagal(429, `maksimal ${MAKS_HARI} hapus per hari per akun`);
+  return await smHapus(env, new Date(kini).toISOString(), alasan, oleh, o.id) ? json({ok: true}) : gagal(404, "target tidak ada atau sudah dihapus");
 }
 
 export const RUTE_SEMAI = Object.fromEntries(Object.entries({

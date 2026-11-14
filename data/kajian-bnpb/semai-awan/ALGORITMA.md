@@ -101,9 +101,9 @@ Skor dibulatkan 2 desimal di layar. Selisih < 0,02 tidak boleh disebut "lebih ba
    dari awal blok pertama sampai akhir blok terakhir dalam jam setempat, dipotong ke 07.00 sampai 16.00, misalnya putaran 00z di WIB:
    blok 03Z dan 06Z = "10.00 sampai 16.00 WIB"; di WITA blok 03Z saja = "11.00 sampai 14.00 WITA".
 4. **Provinsi** dari titik zona (batas provinsi repo); di laut: kota terdekat ("lepas pantai dekat Kendari").
-5. **Base**: base terdekat dari himpunan Q2 (hari ini `op_base` berisi 9 base Sumatera dan Kalimantan saja; base OMC di Sulawesi,
-   Nusa Tenggara, dan Papua menunggu Q13) dengan jarak garis lurus; menit terbang = jarak / 300 km/jam x 60 (Q8), dibulatkan ke
-   5 menit dan berlabel perkiraan. Zona di luar jelajah base (120 nm, `bobot_renlap.json`) diberi tanda "di luar jelajah".
+5. **Base** (S10): bandara terdekat dari gabungan `op_base` aktif dan 136 bandara BMKG (`scripts/cuaca/data/bandara.json`), jarak
+   garis lurus; menit terbang = jarak / 300 km/jam x 60 (Q8), dibulatkan ke 5 menit, berlabel perkiraan. Tanpa batas jelajah.
+   Bandara yang belum jadi base terdaftar diberi label "bandara, bukan base terdaftar".
 6. **Kota terdekat** dan **cluster yang dituju** (cluster dengan FRP terbesar dalam 25 km titik hujan) dicatat untuk alasan F dan T.
 7. **Tanda awan teramati** (F-22): kabupaten zona punya puncak awan dingin Himawari B13 pada jam terbaru `awan_himawari.json`.
 
@@ -161,7 +161,7 @@ Satu sortie = satu zona (semai higroskopis menyasar satu sel awan). Rute dibangu
 4. **CP6 kembali ke base.**
 
 Tiap leg: jarak NM, haluan sebenarnya dan magnetis (deklinasi seperti renlap), radial/jarak dari VOR base, waktu tempuh pada kecepatan
-jelajah Q8, total jarak dan waktu sortie. Rute yang melewati batas jelajah base ditandai merah dan tidak bisa dijadikan target renlap.
+jelajah Q8, total jarak dan waktu sortie. Tanpa batas jelajah (S10); jarak dan waktu tempuh tetap ditulis.
 Titik hujan dan cluster yang dituju digambar di peta rute sebagai rujukan, bukan titik terbang.
 
 ## 8. Sel kandidat untuk Tinjau BMKG
@@ -253,3 +253,6 @@ kasar; pengaruh aerosol asap pada awan tidak dihitung; beban asap relatif, bukan
 - `tp` disimpan dalam mm; `r` 850 hPa dipangkas ke 100 sebelum dipakai (IFS memberi sampai sekitar 105%).
 - Zona waktu dari kode provinsi tidak dikenal adalah galat, bukan tebakan; sel laut dipetakan ke provinsi daratan terdekat oleh
   `semai.py`.
+- Skala `q_naik` (SA-03, 14 Nov 2026): w IFS 0,1 derajat di sel yang lolos G1 sampai G8 (seluruh grid, langkah 0 sampai 33 putaran 2026111400, n = 39.429) jarang melewati 0,3 m/s: p50 0,029, p90 0,100, p95 0,130 m/s (maksimum 0,552). Skala 1 m/s di §5 membuat `q_naik` hampir selalu di bawah 0,1, jadi `q.naik_penuh_ms` di `semai_bobot.json` diturunkan ke p90 = 0,1 m/s (dasar H, penaksir NWP kasar). Satu putaran, belum dibanding musim lain; ukur ulang bila data bertambah (`python3 scripts/operasi/semai.py ukurw`). Bukan penyetelan ke Nimbus.
+- Permukaan (SA-03): unduhan tidak memuat geopotensial permukaan; elevasi permukaan diaproksimasi `max(0, gh 1000 hPa)` (45 sampai 194,5 m di wilayah, jadi dataran tinggi sejati belum terwakili) dan dipakai untuk kedalaman awan hangat, ketinggian semai, dan pembuangan lapisan di bawah tanah pada deteksi inversi.
+- Cluster untuk F (SA-03): F menjumlah `frp24` semua cluster berapi (`frp24` > 0) dalam 25 km titik hujan; cluster besar (§4) hanya menentukan sel kandidat dan `tidak_ada_api_besar`.

@@ -80,8 +80,9 @@
    "dasar": "N"
   },
   "naik_penuh_ms": {
-   "nilai": 1.0,
-   "dasar": "H"
+   "nilai": 0.1,
+   "dasar": "H",
+   "catatan": "p90 w di sel lolos G1-G8 putaran 2026111400 (n 39.429; p50 0,029, p95 0,130 m/s), `semai.py ukurw`"
   }
  },
  "d": {
