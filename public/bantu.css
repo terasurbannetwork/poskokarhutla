@@ -2,7 +2,7 @@
 [hidden]{display:none!important}
 .ad-sep,.bt-wrap .ex-std .ex-ey{text-transform:none;letter-spacing:0}   /* pemilik: tanpa huruf kapital semua */
 .bt-wrap{max-width:720px;margin:0 auto;padding:20px 16px 56px;display:grid;gap:20px}
-.bt-wrap .ex.ex-std+.ex,.bt-wrap .ex.ex-std{margin:0}
+.bt-wrap>.ex.ex-std{margin:0}   /* jarak dari gap wadah grid */
 .bt-wrap .ex-jd h3{font-size:1.125rem}
 .bt-org{margin:0;font-size:.8125rem;color:var(--ink2)}
 .bt-form{display:grid;gap:12px}
