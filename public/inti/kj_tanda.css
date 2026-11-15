@@ -1,10 +1,12 @@
 /* Keterpaduan KP-07: Tanda kejadian. Pil tanpa garis tepi, ikon polos. */
-.kj-tanda{display:inline-flex;align-items:center;gap:4px;max-width:100%;padding:1px 8px;border-radius:999px;font:600 11.5px/1.5 var(--font,inherit);letter-spacing:0;text-decoration:none;white-space:nowrap;vertical-align:middle}
+/* Token lokal (gerbang token warna): warna permukaan dan teks ikut tema bila tokennya ada, nilai lama jadi cadangan; warna tetap bernama. */
+:root{--kj-teks:var(--ink,#10265c);--kj-redup:var(--ink2,#566)}
+.kj-tanda{display:inline-flex;align-items:center;gap:4px;max-width:100%;padding:1px 8px;border-radius:999px;font:600 .71875rem/1.5 var(--font,inherit);letter-spacing:0;text-decoration:none;white-space:nowrap;vertical-align:middle}
 .kj-tanda svg{flex:none}
-.kj-ok{background:color-mix(in oklab,var(--ink,#10265c) 9%,transparent);color:var(--ink,#10265c)}
-.kj-ambigu{background:oklch(93% .09 90);color:oklch(36% .08 80)}
-.kj-belum{background:color-mix(in oklab,var(--ink2,#566) 14%,transparent);color:var(--ink2,#566);font-weight:500}
+.kj-ok{background:color-mix(in oklab,var(--kj-teks) 9%,transparent);color:var(--kj-teks)}
+.kj-ambigu{--kj-amb-bg:oklch(93% .09 90);--kj-amb-teks:oklch(36% .08 80);background:var(--kj-amb-bg);color:var(--kj-amb-teks)}
+.kj-belum{background:color-mix(in oklab,var(--kj-redup) 14%,transparent);color:var(--kj-redup);font-weight:500}
 a.kj-tanda:hover{text-decoration:underline}
 a.kj-tanda:focus-visible{outline:2px solid currentColor;outline-offset:2px}
-:root[data-theme="dark"] .kj-ambigu{background:oklch(40% .08 85);color:oklch(94% .07 90)}
+:root[data-theme="dark"] .kj-ambigu{--kj-amb-bg:oklch(40% .08 85);--kj-amb-teks:oklch(94% .07 90)}
 .kj-baris{padding:0 12px 6px}

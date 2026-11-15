@@ -1,7 +1,8 @@
 /* Pembuat dokumen (PB-24). Memakai kelas .pb-* dari pb_titik.css (dimuat bersama); tanpa huruf kapital dipaksa. */
+
 .pbd-bag{margin:0 0 16px}
-.pbd-bag h5{margin:0 0 6px;font-size:.9375rem;color:#0b2545}
-.pbd-bag textarea{width:100%;box-sizing:border-box;font:inherit;padding:8px 10px;border:1px solid #c9d4e6;border-radius:10px;resize:vertical}
+.pbd-bag h5{margin:0 0 6px;font-size:.9375rem;color:var(--pb-teks)}
+.pbd-bag textarea{width:100%;box-sizing:border-box;font:inherit;padding:8px 10px;border:1px solid var(--pb-garis);border-radius:10px;resize:vertical}
 .pbd-kal{margin:0;white-space:pre-wrap}
 @media print{
   body *{visibility:hidden}
