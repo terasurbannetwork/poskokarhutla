@@ -29,4 +29,21 @@ Kerjakan urut; ambil satu tiket, kerjakan hanya cakupannya.
 | KP-22 | `scripts/agents/cocok_orang.mjs` | warga-api | T13 | KP-21 |
 | KP-23 | Layar tinjau pasangan admin | warga-api | tinjau lokal | KP-22 |
 | KP-24 | Jejak per orang | lapangan | tinjau lokal | KP-22 |
-| KP-25 | Pemilik menerapkan semua migrasi paket ini di D1 produksi dan menjalankan SQL pencocok orang | pemilik | `wrangler d1 migrations apply` | KP-03a, KP-19, KP-21, KP-22 |
+| KP-25 | Pemilik menerapkan semua migrasi paket ini di D1 produksi dan menjalankan SQL pencocok orang | pemilik | `wrangler d1 migrations apply` | KP-03a, KP-19, KP-21, KP-22
+
+Perintah pemilik KP-25 (hasil pencocok ditulis ke luar repo; skrip menolak path di dalam repo). Migrasi dulu: `npx wrangler d1 migrations apply poskowarga --remote`. Lalu:
+
+```
+cd ~/Developer/poskokarhutla; D=~/cocok-orang; mkdir -p $D
+Q() { npx wrangler d1 execute poskowarga --remote --json --command "$1" > $D/$2.json; }
+Q "SELECT id, nip, wa FROM orang WHERE dummy = 0" orang
+Q "SELECT id, nip, wa FROM staf" staf
+Q "SELECT id, nip, wa FROM instansi_akun" instansi
+Q "SELECT id, nip, wa FROM pdt_akun" pdt
+Q "SELECT id, NULL AS nip, wa FROM km_akun" km
+node scripts/agents/cocok_orang.mjs --orang $D/orang.json --staf $D/staf.json --instansi $D/instansi.json --pdt $D/pdt.json --km $D/km.json --keluar $D/cocok.sql
+npx wrangler d1 execute poskowarga --remote --file $D/cocok.sql
+rm -rf $D   # berkas ekspor memuat NIP dan nomor WA: hapus sesudah diterapkan
+```
+
+Ekspor dan `cocok.sql` berisi id dan nomor pribadi: tinggal di `~/cocok-orang`, jangan masuk repo. Daftar bentrok dan NIP tidak baku muncul di `orang_tinjau` untuk layar tinjau admin (KP-23).

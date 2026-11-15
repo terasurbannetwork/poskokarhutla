@@ -1279,7 +1279,9 @@
     "GET /api/pengungsian/titik": "petugas kab A tidak membuat, melihat",
     "POST /api/pengungsian/titik": "T11 titik pengungsian: 150 m",
     "POST /api/pengungsian/titik/tutup": "T11 titik pengungsian: 150 m",
-    "table titik_pengungsian": "T12 isian (titik, tanggal) ganda 409"
+    "table titik_pengungsian": "T12 isian (titik, tanggal) ganda 409",
+    "table orang_akun": "KP-21 orang_akun: migrasi dijalankan dua kali",
+    "table orang_tinjau": "KP-21 orang_tinjau: CHECK keputusan"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

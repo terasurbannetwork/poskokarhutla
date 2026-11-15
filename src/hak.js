@@ -511,6 +511,11 @@ export const tpKejadianKab = async (env, kejadianId, kab4) => { try { return !!a
 export const tpSisip = (env, ...v) => env.DB.prepare("INSERT INTO titik_pengungsian (id, prov, kab4, kec, desa, nama, jenis_tempat, lat, lon, kejadian_id, buka, dibuat, pembuat) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)").bind(...v).run();
 export const tpTutup = async (env, id, tgl) => !!(await env.DB.prepare("UPDATE titik_pengungsian SET tutup = ? WHERE id = ? AND tutup IS NULL").bind(tgl, id).run()).meta.changes;
 
+/* KP-21/22 orang_akun dan orang_tinjau (migrasi 0138, 0139; KEPUTUSAN D10). Dipakai layar tinjau admin (KP-23); pencocok KP-22 menulis SQL di luar repo. Hak dicek di rute. */
+export const oaTinjauAntre = async env => (await env.DB.prepare("SELECT id, akun_tabel, akun_id, kandidat, alasan, dibuat FROM orang_tinjau WHERE keputusan IS NULL AND dibuat > 0 ORDER BY dibuat, id LIMIT 200").all()).results;
+export const oaPasang = (env, tabel, akunId, orangId, cara, kini) => env.DB.prepare("INSERT OR IGNORE INTO orang_akun (tabel, akun_id, orang_id, cara, dibuat) VALUES (?,?,?,?,?)").bind(tabel, akunId, orangId, cara, kini).run();
+export const oaPutus = async (env, id, keputusan, pemutus, kini) => !!(await env.DB.prepare("UPDATE orang_tinjau SET keputusan = ?, diputus = ?, pemutus = ? WHERE id = ? AND keputusan IS NULL").bind(keputusan, kini, pemutus, id).run()).meta.changes;
+
 /* ======================================================================================================================================================
    Paritas bencana PB-07 (migrasi 0130; data/kajian-bnpb/paritas-bencana/DESAIN-TEKNIS.md 3.2). Jenis tugas longsor dan pesisir ada di tugas_bencana_x (CHECK tugas_bencana 0047
    tidak mencakupnya). Tabel 0130 belum diterapkan = hanya tugas_bencana yang dibaca; karhutla dan tujuh jenis lama tetap jalan. Keduanya SEARCH lewat PK tugas_id. */
