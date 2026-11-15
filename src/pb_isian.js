@@ -13,7 +13,7 @@ import {PROV} from "./bangunan.js";
 import {akunAktif} from "./instansi.js";
 import {kodeKab} from "./kemitraan_akun.js";
 import REGISTRY from "./bencana.generated.js";
-import {pelakuPbTulis, pelakuPbBaca, pbTitikDaftar, pbTitikById, pbStmtTitikSisip, pbStmtTitikUbah, pbStmtTitikHapus, pbStmtLog, pbLogLaju, tanpaTabelPb, batchTulis, pbRenlapMinta, pbRenlapById, pbRenlapDaftar, pbRenlapGeser, pbRenlapLajuMinta} from "./hak.js";
+import {pelakuPbTulis, pelakuPbBaca, pbTitikDaftar, pbTitikById, pbStmtTitikSisip, pbStmtTitikUbah, pbStmtTitikHapus, pbStmtLog, pbLogLaju, tanpaTabelPb, batchTulis, pbRenlapMinta, pbRenlapById, pbRenlapDaftar, pbRenlapGeser, pbRenlapLajuMinta, pbStmtHasil, pbKepatuhan} from "./hak.js";
 
 export const PERAN_TULIS = ["pusdalops"];
 const PERAN_SEMUA = ["pusdalops", "koordalops", "pimpinan"], BENCANA_UDARA = ["karhutla", "udara"];
@@ -312,6 +312,49 @@ const berkas = rute(async (env, req, url) => {
   return new Response(o.body, {headers: {"content-type": FMT[fmt], "content-disposition": `attachment; filename="renlap-${r.bencana}-${r.tanggal}-v${r.versi}.${fmt}"`, "cache-control": "private, no-store", "x-content-type-options": "nosniff", "content-security-policy": "sandbox"}});
 });
 
+/* ======================================================================================================================================================
+   PB-16 hasil tindakan dan kepatuhan (F-5). Hanya untuk renlap terbit/selesai; hak tulis = wilayah BARIS renlap; log memuat jumlah, bukan butir (batas 8 KB); tanpa nama orang. */
+const ALASAN = ["akses_terputus", "cuaca", "sarana_kurang", "warga_menolak", "sudah_aman", "lokasi_salah", "lainnya"], HASIL = ["selesai", "sebagian", "belum", "eskalasi"];
+function butir(x, maks) {
+  if (!x || typeof x !== "object" || Array.isArray(x)) tolak("tiap butir harus objek");
+  const target_no = Number.isInteger(x.target_no) && x.target_no >= 1 && x.target_no <= (maks ?? 500) ? x.target_no : tolak(`target_no harus bilangan bulat 1 sampai ${maks ?? 500}`);
+  const d = x.didatangi === true || x.didatangi === 1 ? 1 : x.didatangi === false || x.didatangi === 0 ? 0 : x.didatangi == null ? null : tolak("didatangi harus true, false, atau kosong");
+  if (x.alasan != null && d !== 0) tolak("alasan hanya untuk target yang tidak didatangi");
+  return {target_no, didatangi: d, alasan: x.alasan == null ? null : pilih(x.alasan, ALASAN, "alasan"), hasil: x.hasil == null ? null : pilih(x.hasil, HASIL, "hasil"), catatan: bersih(x.catatan, 200) || null};
+}
+const hasil = rute(async (env, req, url, kini) => {
+  const tamu = await gerbangTulis(env, req); if (tamu) return tamu;
+  const o = await badan(env, req); if (o instanceof Response) return o;
+  const id = idBody(o);
+  if (!Array.isArray(o.butir) || !o.butir.length || o.butir.length > 100) tolak("butir harus daftar 1 sampai 100 isi");
+  const r = await pbRenlapById(env, pelakuPbBaca, id); if (!r) return gagal(404, "renlap tidak ditemukan");
+  bencanaAktif(env, r.bencana);
+  const p = await penulis(env, req, r.prov, r.kab); if (p instanceof Response) return p;
+  const bs = o.butir.map(x => butir(x, r.jml_target ?? 500));
+  if (new Set(bs.map(x => x.target_no)).size !== bs.length) tolak("target_no kembar dalam satu permintaan");
+  if (!["terbit", "selesai"].includes(r.status)) return gagal(409, "hasil hanya untuk renlap berstatus terbit atau selesai");
+  if (!await lajuOK(env, p.oleh, kini)) return lambat();
+  await batchTulis(env, [...bs.map(b => pbStmtHasil(env, pelakuPbTulis, id, b, p.oleh, kini)),
+    pbStmtLog(env, pelakuPbTulis, kini, p.oleh, "pb_renlap_hasil", id, "isi", null, {butir: bs.length, didatangi: bs.filter(b => b.didatangi === 1).length})]);
+  return json({ok: true, butir: bs.length});
+});
+const kepatuhan = rute(async (env, req, url, kini) => {
+  const q = url.searchParams, bencana = q.get("bencana") ?? "";
+  bencanaAktif(env, bencana);
+  const prov = q.get("prov") ?? "";
+  if (prov) wilayah({prov});
+  const sampai = q.get("sampai") ?? hariWib(kini), dari = q.get("dari") ?? hariWib(Date.parse(sampai) - 30 * 864e5);
+  if (!RE_TGL.test(dari) || !RE_TGL.test(sampai) || isNaN(Date.parse(dari)) || isNaN(Date.parse(sampai))) tolak("dari dan sampai harus YYYY-MM-DD");
+  if (Date.parse(sampai) - Date.parse(dari) > 31 * 864e5) tolak("rentang paling lama 31 hari");
+  const t = await izinBaca(env, req, bencana, prov || "00"); if (t) return t;
+  try {
+    const k = await pbKepatuhan(env, pelakuPbBaca, dari, sampai, bencana, prov), per_alasan = {};
+    let didatangi = 0, baris = 0;
+    for (const x of k.rinci) { baris += x.n; if (x.didatangi === 1) didatangi += x.n; else if (x.didatangi === 0) per_alasan[x.alasan ?? "tanpa_alasan"] = (per_alasan[x.alasan ?? "tanpa_alasan"] ?? 0) + x.n; }
+    return json({tersedia: true, renlap: k.renlap, target: k.target, didatangi, belum_diisi: Math.max(0, k.target - baris), persen: k.target > 0 ? Math.round(1000 * didatangi / k.target) / 10 : null, per_alasan});
+  } catch (e) { if (tanpaTabelPb(e)) return json({tersedia: false}); throw e; }
+});
+
 /* digabung ke RUTE di src/worker.js; nama jalur tanpa garis bawah (gerbang cakupan) */
 export const RUTE_PB = {
   "GET /api/pb/titik": daftar,
@@ -324,4 +367,6 @@ export const RUTE_PB = {
   "POST /api/pb/renlap/terbit": geser("draf", "terbit", "terbit"),
   "POST /api/pb/renlap/selesai-tandai": geser("terbit", "selesai", "selesai"),
   "GET /api/pb/renlap/berkas": berkas,
+  "POST /api/pb/hasil": hasil,
+  "GET /api/pb/kepatuhan": kepatuhan,
 };

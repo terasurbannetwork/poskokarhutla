@@ -680,3 +680,21 @@ export const peringatanXCabut = async (env, kunci, kini, oleh) => {
     return (await env.DB.prepare("SELECT 1 x FROM peringatan_x WHERE kunci = ?").bind(kunci).first()) ? -1 : 0;
   } catch (e) { if (tanpaPx(e)) return null; throw e; }
 };
+
+/* ======================================================================================================================================================
+   PB-16 hasil tindakan dan kepatuhan renlap (pb_renlap_hasil, migrasi 0130; DESAIN-TEKNIS paritas-bencana 3.2, 5). Upsert satu baris per (renlap, target); tanpa hapus.
+   Kepatuhan = didatangi / jml_target renlap berstatus terbit atau selesai; dilaporkan per bencana, wilayah, alasan, TIDAK per pengisi (kolom oleh tidak pernah dibaca).
+   Hanya versi terbaru berstatus terbit/selesai per (bencana, prov, kab, tanggal) dihitung. Kueri lewat indeks pb_renlap_tanggal lalu PK pb_renlap_hasil (SEARCH). */
+Object.assign(MATRIKS, {pb_renlap_hasil: {pb_baca: ["baca"], pb_tulis: ["baca", "tambah", "ubah"]}});
+export const PB_SQL_HASIL = {
+  upsert: `INSERT INTO pb_renlap_hasil (renlap_id, target_no, didatangi, alasan, hasil, catatan, oleh, waktu) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
+    ON CONFLICT (renlap_id, target_no) DO UPDATE SET didatangi = excluded.didatangi, alasan = excluded.alasan, hasil = excluded.hasil, catatan = excluded.catatan, oleh = excluded.oleh, waktu = excluded.waktu`,
+  renlap: "SELECT count(*) renlap, coalesce(sum(r.jml_target), 0) target FROM pb_renlap r WHERE r.tanggal BETWEEN ?1 AND ?2 AND r.bencana = ?3 AND (?4 = '' OR r.prov = ?4) AND r.status IN ('terbit','selesai') AND NOT EXISTS (SELECT 1 FROM pb_renlap n WHERE n.bencana = r.bencana AND n.prov = r.prov AND n.kab = r.kab AND n.tanggal = r.tanggal AND n.versi > r.versi AND n.status IN ('terbit','selesai'))",
+  rinci: `SELECT h.didatangi, h.alasan, count(*) n FROM pb_renlap r JOIN pb_renlap_hasil h ON h.renlap_id = r.id
+    WHERE r.tanggal BETWEEN ?1 AND ?2 AND r.bencana = ?3 AND (?4 = '' OR r.prov = ?4) AND r.status IN ('terbit','selesai') AND NOT EXISTS (SELECT 1 FROM pb_renlap n WHERE n.bencana = r.bencana AND n.prov = r.prov AND n.kab = r.kab AND n.tanggal = r.tanggal AND n.versi > r.versi AND n.status IN ('terbit','selesai')) GROUP BY h.didatangi, h.alasan`,
+};
+export const pbStmtHasil = (env, p, id, b, oleh, kini) => sedia(env, p, "pb_renlap_hasil", "tambah", PB_SQL_HASIL.upsert).bind(id, b.target_no, b.didatangi, b.alasan, b.hasil, b.catatan, oleh, kini);
+export const pbKepatuhan = async (env, p, dari, sampai, bencana, prov) => {
+  const [a, b] = await env.DB.batch([sedia(env, p, "pb_renlap_hasil", "baca", PB_SQL_HASIL.renlap).bind(dari, sampai, bencana, prov), sedia(env, p, "pb_renlap_hasil", "baca", PB_SQL_HASIL.rinci).bind(dari, sampai, bencana, prov)]);
+  return {renlap: a.results[0].renlap, target: a.results[0].target, rinci: b.results};
+};

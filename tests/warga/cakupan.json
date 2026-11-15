@@ -1227,6 +1227,8 @@
     "POST /api/pb/renlap/terbit": "versi berikutnya 2 setelah draf; terbit berlaku 14 hari",
     "POST /api/pb/renlap/selesai-tandai": "versi berikutnya 2 setelah draf; terbit berlaku 14 hari",
     "GET /api/pb/renlap/berkas": "daftar dan berkas: hak baca, header, tamu ditolak",
+    "POST /api/pb/hasil": "hasil: upsert menimpa baris yang sama",
+    "GET /api/pb/kepatuhan": "kepatuhan: hitung dari terbit/selesai saja",
     "table op_isian": "hapus lunak: alasan wajib",
     "table op_isian_log": "riwayat: hak baca, per butir dan per tanggal",
     "table op_isian_kejadian": "sortie: isi, kembar 409, ubah",

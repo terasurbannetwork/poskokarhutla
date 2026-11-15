@@ -166,6 +166,8 @@ CREATE INDEX IF NOT EXISTS pb_log_kunci ON pb_log (tabel, kunci, waktu);
 CREATE INDEX IF NOT EXISTS pb_log_oleh ON pb_log (oleh, waktu);
 ```
 
+Kode `sudah_aman` di CHECK di atas hanya kunci internal (migrasi 0130 sudah beku). Layar dan dokumen tidak pernah menampilkannya apa adanya: labelnya "tidak diperlukan lagi" (kata "aman" dilarang pemilik).
+
 Catatan skema:
 
 | Hal | Keputusan |
