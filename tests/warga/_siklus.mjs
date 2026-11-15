@@ -6,7 +6,7 @@ import {siapkan, ADMIN, MOD2, sha256} from "./_bnpb.mjs";
 
 export {ADMIN, MOD2};
 export const PB = {"x-pb": "1", origin: "http://bnpb.lokal"};
-export const ASET = {"/siklus/index.html": "<!doctype html><title>staf</title>", "/siklus/publik.html": "<!doctype html><title>publik</title>", "/siklus/siklus.js": "export const x = 1;", "/siklus/inti.js": "export const y = 2;",
+export const ASET = {"/bantu.html": "<!doctype html><title>bantu</title>", "/siklus/index.html": "<!doctype html><title>staf</title>", "/siklus/publik.html": "<!doctype html><title>publik</title>", "/siklus/siklus.js": "export const x = 1;", "/siklus/inti.js": "export const y = 2;",
   "/siklus/siklus.css": "body{}", "/siklus/publik.js": "console.log(1)", "/siklus/publik.css": "body{}", "/siklus/data/atribusi.json": '{"v":1}', "/siklus/data/kamus.json": '{"v":1}', "/siklus/data/masa_depan_ringkas.json": '{"v":1}', "/siklus/data/rahasia.json": '{"x":1}'};
 const aset = async req => { const p = new URL(req.url).pathname; return ASET[p] != null ? new Response(ASET[p]) : new Response("tidak ada", {status: 404}); };
 export const id16 = () => [...crypto.getRandomValues(new Uint8Array(8))].map(b => b.toString(16).padStart(2, "0")).join("");

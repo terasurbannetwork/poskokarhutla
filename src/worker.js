@@ -42,6 +42,7 @@ import {RUTE_OPS, nilaiDropTertunda} from "./operasi_lapangan.js";
 import {RUTE_INSTANSI, tugasBaruDariBerkas, bersihkanInstansi} from "./instansi.js";
 import {RUTE_PENUGASAN, halamanLacak} from "./penugasan.js";
 import {RUTE_UJI_PILOT} from "./uji_pilot.js";
+import {RUTE_BANTU} from "./tiga_w.js";
 import {RUTE_PUSH, kirimPushDaerah} from "./push.js";
 import {RUTE_SLA, catatRiwayatStatus} from "./sla.js";
 import {RUTE_PIPA} from "./pipa.js";
@@ -626,6 +627,7 @@ const RUTE = {
   ...RUTE_SIPPA,   // SIPPA: web /pipa staf BNPB, kit, tugas, log gelar, lapangan berkode (src/sippa.js; awalan /api/sippa/*, bukan /api/pipa/*)
   ...RUTE_PUSH,   // Web Push akun instansi: langganan perangkat, status, uji (src/push.js)
   ...RUTE_UJI_PILOT,   // uji pilot SIPPA Kalteng tanpa login, token di fragmen #t= dan header x-uji (src/uji_pilot.js, keputusan SIPPA 59)
+  ...RUTE_BANTU,   // organisasi memegang token menulis 3W dan tawaran miliknya, header x-bantu (src/tiga_w.js, KEPUTUSAN-TIGA-W)
   ...RUTE_PENUGASAN,   // penugasan orang ke tugas api dan pelacak GPS lewat tautan /lacak/<token> (src/penugasan.js)
   ...RUTE_STAF,   // akun staf BNPB per orang dan peran (src/staf.js)
   ...RUTE_CC,   // command center karhutla: antrean alert level 3, tindak lanjut operator, log, kontak BPBD (src/command_center.js)
@@ -721,6 +723,7 @@ export const HTML_RUTE = [
   [/^\/presiden\/?$/, "/presiden.html", "/presiden"],
   [/^\/renlap-cetak\/?$/, "/renlap_cetak.html", "/renlap-cetak"],   // renlap rute udara siap cetak per base (public/renlap_cetak*, pola renlap_pdf.py); di centurisk97.id wajib masuk   // panel publik agregat karhutla untuk dashboard presiden (public/presiden*); boleh di-iframe dari domain mana pun
   [/^\/renlap-omc\/?$/, "/renlap_omc.html", "/renlap-omc"],   // renlap OMC per zona semai (public/renlap_omc*, data/kajian-bnpb/semai-awan SA-09)
+  [/^\/bantu\/?$/, "/bantu.html", "/bantu"],   // halaman organisasi bertoken (#t=), CSP ketat di layaniHTML
   [/^\/uji-lapangan\/?$/, "/instansi_uji.html", "/uji-lapangan"],   // protokol + hasil uji lapangan karhutla (public/instansi_uji*, src/uji_lapangan.js); di centurisk97.id wajib masuk
   [/^\/kabar\/?$/, "/kabar.html", "/kabar"],   // kabar api prioritas per kabupaten, diteruskan Pusdalops ke WA BPBD (public/kabar*, data scripts/data/kabar_kab.py)
   [/^\/laporan-bnpb\/?$/, "/laporan_bnpb.html", "/laporan-bnpb"],
@@ -743,6 +746,7 @@ export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk den
   ["/daftar-kontak", "registrasi kontak pemangku kepentingan (kepala daerah, BPBD, TNI, Polri) yang tidak punya akun situs (permintaan pemilik 23 Okt 2026); hanya menulis baris menunggu, tidak membaca apa pun"],
   ["/renlap", "halaman HP Renlap SIPPA dibuka regu lapangan dengan tautan bertoken di fragmen #t=, tanpa akun (keputusan SIPPA 61, SP-140); data.json hanya terkirim bila token cocok (/api/renlap/data), halaman tanpa token kosong"],
   ["/uji-pilot", "regu uji pilot SIPPA Kalteng membuka dossier dan melapor dengan tautan bertoken, tanpa akun (keputusan pemilik 26 Okt 2026, keputusan SIPPA 59); token dicek di tiap panggilan API, halaman tanpa token kosong"],
+  ["/bantu", "organisasi (NGO, dunia usaha, lembaga luar) menulis 3W dan tawaran dengan tautan bertoken tanpa akun (KEPUTUSAN-TIGA-W D4); halaman tidak memuat data, token di fragmen #t= dicek di tiap panggilan /api/bantu"],
   ["/presiden", "panel publik agregat karhutla untuk dashboard presiden, tanpa data pribadi (keputusan pemilik 22 Okt 2026)"],
   ["/instansi", "pemda, polisi, dan TNI masuk dengan username dan sandi akun instansi sendiri, bukan sesi admin (keputusan pemilik 21 Okt 2026); sesi, status aktif, dan cakupan wilayah dicek di tiap panggilan API"],
   ["/siklus/kejadian", "ringkasan publik satu kejadian (/siklus/kejadian/KJ-...) dibuka tamu tanpa akun (KEPUTUSAN-AWAL U3 bawaan, DESAIN-TEKNIS siklus 7.2): cangkang publik hanya memuat ringkasan yang sudah dipublikasikan KO; halaman dan API staf Siklus tetap wajib sesi (src/siklus.js)"],
@@ -807,6 +811,7 @@ async function layaniHTML(req, env, ctx, url) {
   /* HTML per orang (pemirsa) dan di balik login (host terkunci): jangan disimpan cache bersama */
   if (pmTab || hostTerkunci(url.hostname) || jalur === "/uji-lapangan") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.append("vary", "cookie"); }
   /* /petugas dan /petugas/panel memuat data pribadi: CSP ketat (tanpa skrip/gaya inline; aset sendiri + Google Fonts) dan tanpa referrer; kode pribadi ada di fragmen #k= */
+  if (jalur === "/bantu") { keluaran.headers.set("content-security-policy", CSP_PETUGAS.replace(" 'wasm-unsafe-eval'", "")); keluaran.headers.set("referrer-policy", "no-referrer"); keluaran.headers.set("cache-control", "no-store"); }
   if (jalur === "/petugas" || jalur === "/petugas/panel") {
     keluaran.headers.set("content-security-policy", jalur === "/petugas" ? CSP_PETUGAS : CSP_PETUGAS_PANEL); keluaran.headers.set("referrer-policy", "no-referrer");
     keluaran.headers.set("permissions-policy", "camera=(self), geolocation=(self), microphone=()");   // menimpa camera=() dari public/_headers (memblokir getUserMedia untuk absen wajah)

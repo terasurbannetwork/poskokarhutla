@@ -1,0 +1,21 @@
+/* Kartu Status layanan (LF-06). Warna hanya lewat token tema; huruf di sel menjaga buta warna. */
+.lf-tab td.t{padding:4px}
+.lf-kol{display:inline-flex;flex-direction:column;align-items:center;gap:2px;font-size:.6875rem}
+.lf-sel{--w:var(--line);--t:var(--ink);position:relative;display:flex;align-items:center;justify-content:center;width:100%;min-width:2.5rem;min-height:2.25rem;border:1px solid var(--line);border-radius:8px;background:var(--w);color:var(--t);font-weight:700;font-size:.8125rem;cursor:pointer}
+.lf-sel[data-w="ok"]{--w:var(--ok);--t:var(--on-pekat)}
+.lf-sel[data-w="bad"]{--w:var(--bad);--t:var(--on-pekat)}
+.lf-sel[data-w="warn"]{--w:var(--warn);--t:var(--ink)}
+.lf-sel:focus-visible{outline:2px solid var(--info);outline-offset:2px}
+.lf-jam{position:absolute;top:2px;right:2px;display:inline-flex}
+.lf-beda{position:absolute;bottom:3px;right:3px;width:7px;height:7px;border-radius:50%;background:var(--info);border:1px solid var(--paper)}
+.lf-ket{margin:10px 0 0;font-size:.75rem;color:var(--ink2)}
+.lf-laci{max-width:34rem}
+.lf-isi{display:grid;gap:20px;padding:0 4px}
+.lf-bag{display:grid;gap:8px}
+.lf-bag h4{margin:0;font-size:.8125rem;text-transform:none}
+.lf-bag p{margin:0}
+.lf-isy{margin:0;padding-left:18px;display:grid;gap:4px;font-size:.8125rem}
+.lf-pil{display:inline-block;padding:1px 8px;border-radius:999px;font-weight:700;font-size:.75rem;background:var(--line);color:var(--ink)}
+.lf-pil[data-w="ok"]{background:var(--ok);color:var(--on-pekat)}
+.lf-pil[data-w="bad"]{background:var(--bad);color:var(--on-pekat)}
+.lf-pil[data-w="warn"]{background:var(--warn);color:var(--ink)}

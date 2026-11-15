@@ -11,7 +11,9 @@ import {RUTE_SIKLUS_PULIH} from "../../src/siklus_pulih.js";
 import {RUTE_SIKLUS_DUMMY} from "../../src/siklus_dummy.js";
 import {RUTE_SIKLUS_RENKON} from "../../src/siklus_renkon.js";
 import {RUTE_SIKLUS_PINTU} from "../../src/siklus_pintu.js";
-const RUTE_SIKLUS = {...RK, ...RUTE_SIKLUS_PAPARAN, ...RUTE_SIKLUS_KAJI, ...RUTE_SIKLUS_PULIH, ...RUTE_SIKLUS_RENKON, ...RUTE_SIKLUS_PINTU, ...RUTE_SIKLUS_DUMMY};
+import {RUTE_TIGAW} from "../../src/tiga_w.js";
+import {RUTE_LIFELINE} from "../../src/lifeline.js";
+const RUTE_SIKLUS = {...RK, ...RUTE_SIKLUS_PAPARAN, ...RUTE_SIKLUS_KAJI, ...RUTE_SIKLUS_PULIH, ...RUTE_SIKLUS_RENKON, ...RUTE_SIKLUS_PINTU, ...RUTE_SIKLUS_DUMMY, ...RUTE_LIFELINE, ...RUTE_TIGAW};
 
 const U = await mulai("uji-sk-peran");
 const {DB, api, GET, POST, n} = U;
@@ -68,7 +70,19 @@ const RUTE = [   // [kunci, jalur uji, aktor yang BOLEH]
   ["POST /api/siklus/gladi/:sid/catatan", `/gladi/${SID}/catatan`, "PD KO SA"],
   ["GET /api/siklus/registri", "/registri", "PD KO PM SA"],
   ["GET /api/siklus/saya", "/saya", "PD KO PM SA MOD"],
+  ["GET /api/siklus/kejadian/:id/lifeline", `/kejadian/${ID}/lifeline`, "PD KO PM SA MOD BP"],
+  ["GET /api/siklus/kejadian/:id/lifeline/sel", `/kejadian/${ID}/lifeline/sel?kab4=3201&layanan=air`, "PD KO PM SA MOD BP"],
+  ["POST /api/siklus/kejadian/:id/lifeline", `/kejadian/${ID}/lifeline`, "PD KO SA BP"],
   ["POST /api/siklus/dummy", "/dummy", "SA"],
+  ["GET /api/siklus/kejadian/:id/tiga-w", `/kejadian/${ID}/tiga-w`, "PD KO PM SA MOD BP"],
+  ["POST /api/siklus/kejadian/:id/tiga-w", `/kejadian/${ID}/tiga-w`, "PD KO SA"],
+  ["GET /api/siklus/kejadian/:id/tawaran", `/kejadian/${ID}/tawaran`, "PD KO PM SA MOD"],
+  ["POST /api/siklus/kejadian/:id/tawaran", `/kejadian/${ID}/tawaran`, "PD KO SA"],
+  ["POST /api/siklus/kejadian/:id/tawaran/:sid/keputusan", `/kejadian/${ID}/tawaran/${SID}/keputusan`, "PD KO SA"],
+  ["POST /api/siklus/kejadian/:id/tiga-w/token", `/kejadian/${ID}/tiga-w/token`, "PD KO SA"],
+  ["POST /api/siklus/kejadian/:id/tiga-w/token/cabut", `/kejadian/${ID}/tiga-w/token/cabut`, "PD KO SA"],
+  ["GET /api/siklus/org", "/org", "PD KO PM SA MOD"],
+  ["POST /api/siklus/org", "/org", "PD KO SA"],
 ];
 uji("matriks: semua rute berkunci peran ada di tabel, dan tabel tidak punya rute yang tak diuji", () => {
   const dikenal = new Set(RUTE.map(r => r[0])), tabel = Object.entries(RUTE_SIKLUS).filter(([, d]) => !d.izin.includes("tamu") && !d.izin.includes("sistem") && !d.izin.includes("opsional")).map(([k]) => k);

@@ -37,6 +37,26 @@
    "server": "tests/warga/siklus_ingest.test.mjs",
    "klien": []
   },
+  "GET /api/siklus/kejadian/:id/tawaran": {
+   "server": "tests/warga/tiga_w_rute.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/kejadian/:id/tawaran": {
+   "server": "tests/warga/tiga_w_rute.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/kejadian/:id/tawaran/:sid/keputusan": {
+   "server": "tests/warga/tiga_w_rute.test.mjs",
+   "klien": []
+  },
+  "GET /api/siklus/org": {
+   "server": "tests/warga/tiga_w_rute.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/org": {
+   "server": "tests/warga/tiga_w_rute.test.mjs",
+   "klien": []
+  },
   "GET /api/siklus/ingest/modul": {
    "server": "tests/warga/kejadian_tautan.test.mjs",
    "klien": []
@@ -73,6 +93,18 @@
    "klien": [
     "tests/siklus/layar_kejadian.test.mjs"
    ]
+  },
+  "GET /api/siklus/kejadian/:id/lifeline": {
+   "server": "tests/warga/lifeline_rute.test.mjs",
+   "klien": []
+  },
+  "GET /api/siklus/kejadian/:id/lifeline/sel": {
+   "server": "tests/warga/lifeline_rute.test.mjs",
+   "klien": []
+  },
+  "POST /api/siklus/kejadian/:id/lifeline": {
+   "server": "tests/warga/lifeline_rute.test.mjs",
+   "klien": []
   },
   "GET /api/siklus/kejadian/arsip": {
    "server": "tests/warga/siklus_kejadian.test.mjs",

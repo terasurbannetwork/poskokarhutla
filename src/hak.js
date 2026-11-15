@@ -1266,16 +1266,16 @@ export const twTokenCari = (env, p, tokenSha) => twPilih(env, p, "tw_token",
 
 /* ---- tawaran ---- */
 /* Q2: NGO internasional wajib menyebut mitra lokal (organisasi terdaftar). barang selain daftar meja logistik = "lainnya" + barang_lain. */
-export const twTawaranBuat = async (env, p, {id, kejadianId, orgId, barang, barangLain = null, jumlah, satuan, syarat = null, mitraLokalOrgId = null}, kini, barangSah = []) => {
+export const twTawaranBuat = async (env, p, {id, kejadianId, orgId, barang, barangLain = null, jumlah, satuan, syarat = null, mitraLokalOrgId = null, mitraNama = null}, kini, barangSah = []) => {
   if (barang !== "lainnya" && !barangSah.includes(barang)) throw new Galat(400, "barang tidak dikenal");
   if (barang === "lainnya" && !barangLain) throw new Galat(400, "barang lainnya wajib diisi");
-  if (!Number.isInteger(jumlah) || jumlah < 1) throw new Galat(400, "jumlah bilangan bulat >= 1");
+  if (!Number.isInteger(jumlah) || jumlah < 1 || jumlah > 1e8) throw new Galat(400, "jumlah bilangan bulat 1 sampai 100000000");
   const org = await twOrgById(env, p, orgId);
   if (!org) return false;
-  if (org.jenis === "ngo_internasional" && !mitraLokalOrgId) throw new Galat(400, "organisasi internasional wajib menyebut mitra lokal");
+  if (org.jenis === "ngo_internasional" && !mitraLokalOrgId && !mitraNama) throw new Galat(400, "organisasi internasional wajib menyebut mitra lokal");
   if (mitraLokalOrgId && !(await twOrgById(env, p, mitraLokalOrgId))) throw new Galat(400, "mitra lokal tidak terdaftar");
   const st = [sedia(env, p, "tw_tawaran", "tambah", `INSERT INTO tw_tawaran (id, kejadian_id, org_id, barang, barang_lain, jumlah, satuan, syarat, mitra_lokal_org_id, dibuat, diubah)
-    SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?10 FROM sk_kejadian WHERE id = ?2`).bind(id, kejadianId, orgId, barang, twOpsi(barangLain, 80), jumlah, twTeks(satuan, 1, 20, "satuan"), twOpsi(syarat, 300), mitraLokalOrgId, kini),
+    SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?10 FROM sk_kejadian WHERE id = ?2`).bind(id, kejadianId, orgId, barang, twOpsi(barangLain, 80), jumlah, twTeks(satuan, 1, 20, "satuan"), twOpsi(mitraNama ? `Mitra lokal (belum dicocokkan staf): ${mitraNama}${syarat ? "; " + syarat : ""}`.slice(0, 300) : syarat, 300), mitraLokalOrgId, kini),
     sedia(env, p, "tw_tawaran_riwayat", "tambah", `INSERT INTO tw_tawaran_riwayat (tawaran_id, kejadian_id, status, oleh, dibuat) SELECT id, kejadian_id, 'masuk', ?2, ?3 FROM tw_tawaran WHERE id = ?1 AND dibuat = ?3`).bind(id, "org:" + orgId, kini)];
   const [r] = await env.DB.batch(st);
   return r.meta.changes === 1;
