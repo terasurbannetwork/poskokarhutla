@@ -7,6 +7,7 @@ import {runInThisContext} from 'node:vm';
 import path from 'node:path';
 import {sajikan, bukaPeramban, cariChrome, galatNyata, PUB} from './_layar.mjs';
 import {amanSel, csv, tandaDraf, baganDraf, baganLaporan, BAGIAN_LAPORAN, nilaiPeta, rupiah} from '../../public/siklus/pulih.js';
+import '../../public/inti/antre.js';
 import * as A from '../../public/siklus/antre.js';
 
 runInThisContext(readFileSync(path.join(PUB, 'inti/format.js'), 'utf8') + ';globalThis.fmt = fmt;');
@@ -61,20 +62,28 @@ test('laporan Jitupasna: lima bagian berurutan, tiap rupiah berkeyakinan asumsi-
   assert.match(csv(b), /"Rumah rusak berat menurut laporan warga \(berdampingan dengan isian, tidak dijumlah\)",12,terverifikasi/);
 });
 
-test('antre.js: kirim dua kali, satu baris; jaringan putus menunda; ditolak tinggal; isian kosong tidak jadi 0', async () => {
-  const simpan = new Map(); globalThis.localStorage = {getItem: (k) => simpan.get(k) ?? null, setItem: (k, v) => simpan.set(k, String(v)), removeItem: (k) => simpan.delete(k)};
-  const server = []; const kirim = async (_, baris) => { let dup = 0; for (const b of baris) { if (server.some((x) => x.klien_id === b.klien_id)) dup++; else server.push(b); } return {ok: true, status: 200, j: {diterima: baris.length - dup, duplikat: dup}}; };
-  assert.equal((await A.tambah(JP, {jenis: 'rusak', sektor: 'perumahan', tingkat: 'rb', unit: ''})).ok, false, 'unit kosong ditolak, bukan 0');
-  assert.equal((await A.tambah(JP, {jenis: 'rusak', sektor: 'perumahan', tingkat: 'rb', unit: '10'}, {klien_id: 'klien-0001'})).ok, true);
-  assert.deepEqual(await A.jumlah(JP), {menunggu: 1, ditolak: 0, total: 1});
-  const putus = await A.kirimSemua(JP, async () => ({ok: false, status: 0, j: null})); assert.equal(putus.berhenti, 'tunda'); assert.equal((await A.jumlah(JP)).menunggu, 1, 'tetap di antrean');
-  const satu = await A.kirimSemua(JP, kirim); assert.equal(satu.diterima, 1); assert.equal(server.length, 1);
-  await A.tambah(JP, {jenis: 'rusak', sektor: 'perumahan', tingkat: 'rb', unit: '10'}, {klien_id: 'klien-0001'});   // klien_id sama dikirim lagi (HP kirim ulang)
-  const dua = await A.kirimSemua(JP, kirim); assert.equal(dua.duplikat, 1); assert.equal(server.length, 1, 'satu baris, bukan dua'); assert.equal((await A.jumlah(JP)).total, 0);
-  await A.tambah(JP, {jenis: 'rugi', sektor: 'perumahan', komponen: 'Air Minum', arus_rp: '2000000', bulan: '3'}, {klien_id: 'klien-0002'});
-  const tolak = await A.kirimSemua(JP, async () => ({ok: false, status: 409, j: {galat: 'baris hanya diterima saat dibuka atau pengumpulan'}}));
-  assert.equal(tolak.ditolak, 1); assert.deepEqual(await A.jumlah(JP), {menunggu: 0, ditolak: 1, total: 1}); assert.equal(server.length, 1);
-  assert.equal(server[0].unit, 10); await A.hapus('klien-0002'); delete globalThis.localStorage;
+test('antre.js: kirim dua kali, satu baris; jaringan putus menunda; ditolak tinggal; isian kosong tidak jadi 0; butir lama pindah dengan klien_id sama', async () => {
+  const server = []; let mode = 'ok';
+  const kirimJp = async (_, baris) => {
+    if (mode === 'putus') return {ok: false, status: 0, j: null}; if (mode === 'tolak') return {ok: false, status: 409, j: {galat: 'baris hanya diterima saat dibuka atau pengumpulan'}};
+    let dup = 0; for (const b of baris) { if (server.some((x) => x.klien_id === b.klien_id)) dup++; else server.push(b); } return {ok: true, status: 200, j: {diterima: baris.length - dup, duplikat: dup}};
+  };
+  const s = A.saluran(kirimJp, {simpan: globalThis.PbAntre.memori(), langsung: false, pemicu: false, rand: () => 0.5});
+  assert.equal((await A.tambah(s, JP, {jenis: 'rusak', sektor: 'perumahan', tingkat: 'rb', unit: ''})).ok, false, 'unit kosong ditolak, bukan 0');
+  assert.equal(await s.menunggu(), 0);
+  assert.equal((await A.tambah(s, JP, {jenis: 'rusak', sektor: 'perumahan', tingkat: 'rb', unit: '10'}, {klien_id: 'klien-0001'})).ok, true);
+  mode = 'putus'; await s.kirimSekarang(); assert.equal(await s.menunggu(), 1, 'tetap di antrean'); assert.ok(s.tundaSampai > Date.now());
+  mode = 'ok'; await s.kirimSekarang(); assert.equal(server.length, 1); assert.equal(await s.menunggu(), 0);
+  assert.equal(server[0].unit, 10); assert.equal(server[0].jp_id, undefined, 'jp_id tidak ikut ke server'); assert.equal(server[0].waktu_klien, undefined);
+  await A.tambah(s, JP, {jenis: 'rusak', sektor: 'perumahan', tingkat: 'rb', unit: '10'}, {klien_id: 'klien-0001'});   // klien_id sama dikirim lagi (HP kirim ulang)
+  await s.kirimSekarang(); assert.equal(server.length, 1, 'satu baris, bukan dua'); assert.equal(await s.menunggu(), 0);
+  await A.tambah(s, JP, {jenis: 'rugi', sektor: 'perumahan', komponen: 'Air Minum', arus_rp: '2000000', bulan: '3'}, {klien_id: 'klien-0002'});
+  mode = 'tolak'; await s.kirimSekarang(); const d = await s.daftar(); assert.equal(d.length, 1); assert.equal(d[0].status, 'ditolak'); assert.equal(server.length, 1);
+  // T6/T7: butir basis lama siklus-antre pindah dengan klien_id yang sama; basis lama dihapus sesudah terbaca ulang
+  let dihapus = false; const lama = {semua: async () => [{klien_id: 'lama-0001', jp_id: JP, baris: {jenis: 'rusak', sektor: 'perumahan', tingkat: 'rr', unit: 4, klien_id: 'lama-0001'}, dibuat: Date.now(), keadaan: 'menunggu'}], hapus: async () => { dihapus = true; }};
+  const s2 = A.saluran(kirimJp, {simpan: globalThis.PbAntre.memori(), langsung: false, pemicu: false});
+  assert.equal(await globalThis.PbAntre.pindahDari({db: 'siklus-antre', store: 'butir', petakan: A.petakan, ke: s2, lama}), 1); assert.ok(dihapus);
+  mode = 'ok'; await s2.kirimSekarang(); await s2.kirimSekarang(); assert.equal(server.filter((x) => x.klien_id === 'lama-0001').length, 1); assert.equal(server.at(-1).unit, 4);
 });
 
 test('sumber pulih.js dan antre.js: tanpa markup mentah, tanpa hex, tanpa titik tengah, tanpa .append(x ? y : null)', () => {
@@ -126,11 +135,10 @@ test('layar pulih di Chrome nyata (1440 dan 390)', {skip: !chrome && 'Chrome tid
       try {
         const T = await pb.tab(); await T.ukuran(390, 844); await T.buka(`${s.url}/siklus/pulih/${JP}`, {tunggu: '#pl-isian table'});
         const r = await T.eval(`(async () => { const A = await import('/siklus/antre.js'); const b = {jenis: 'rusak', sektor: 'perumahan', tingkat: 'rr', unit: '4'};
-          await A.tambah(${JSON.stringify(JP)}, b, {klien_id: 'uji-luring-01'}); await A.tambah(${JSON.stringify(JP)}, b, {klien_id: 'uji-luring-01'});
           const kirim = (id, baris) => fetch('/api/siklus/pulih/' + id + '/baris', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({baris})}).then(async (x) => ({ok: x.ok, status: x.status, j: await x.json()}));
-          const a = await A.kirimSemua(${JSON.stringify(JP)}, kirim); await A.tambah(${JSON.stringify(JP)}, b, {klien_id: 'uji-luring-01'}); const c = await A.kirimSemua(${JSON.stringify(JP)}, kirim);
-          return {a, c, sisa: await A.jumlah(${JSON.stringify(JP)})}; })()`);
-        assert.equal(r.a.diterima, 1); assert.equal(r.c.duplikat, 1); assert.equal(r.sisa.total, 0); assert.equal(rekam.baris.filter((x) => x.klien_id === 'uji-luring-01').length, 1, 'satu baris, bukan dua');
+          const s = A.saluran(kirim, {pemicu: false, langsung: false}); await A.tambah(s, ${JSON.stringify(JP)}, b, {klien_id: 'uji-luring-01'}); await s.kirimSekarang(); await A.tambah(s, ${JSON.stringify(JP)}, b, {klien_id: 'uji-luring-01'}); await s.kirimSekarang();
+          return {sisa: await s.menunggu(), pita: !!document.querySelector('#pl-pita')}; })()`);
+        assert.equal(r.sisa, 0); assert.ok(r.pita); assert.equal(rekam.baris.filter((x) => x.klien_id === 'uji-luring-01').length, 1, 'satu baris, bukan dua');
         assert.deepEqual(galatNyata(T), []); await T.tutup();
       } finally { await s.tutup(); }
     });

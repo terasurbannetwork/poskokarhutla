@@ -1,7 +1,7 @@
 /* Siklus Bencana F4: daftar Jitupasna (DS 3.7) dan satu Jitupasna dengan draf R3P (DS 3.8). Rute: /api/siklus/pulih, /pulih/:sid, /harga, /r3p (src/siklus_pulih.js).
    Angka rupiah hasil harga satuan SELALU berpil asumsi-kebijakan (U4, U8); kosong "menunggu", bukan 0. Rumah rusak laporan dan isian Jitupasna berdampingan, tidak dijumlah.
    Draf R3P bertanda "DRAF, bukan dokumen resmi" sampai ditetapkan_resmi; tanda setuju PM disebut "tanda setuju internal". Unduhan hanya CSV staf berkop; sel berawal = + - @ diberi awalan '.
-   Isian lapangan lewat antre.js (IndexedDB, klien_id idempoten). Chrome urgent, isi berat lewat nanti() (inti.js). */
+   Isian lapangan lewat antre.js (antrean bersama PbAntre, klien_id idempoten). Chrome urgent, isi berat lewat nanti() (inti.js). */
 import {h, ik, api, kartu, hl, wadah, para, kead, kead_dari, kosongkan, seg, tombol, tanya, toast, pil, tip, namaJenis, wilayah, angka, tgl, wib, tglWib, geser, peran, penjaga} from "./inti.js";
 import {RE_KJ, SEKTOR_R3P, PETA_SEKTOR, TARIF_STIMULAN} from "./hitung.js";
 import {bilah} from "./kaji.js";
@@ -149,26 +149,21 @@ async function detail(isi, sk, sid) {
   await antreMuat(d.jitupasna.id, P, ulang);
 }
 
-/* pita luring: berapa isian tersimpan di HP; kirim ulang saat daring */
+/* pita luring: antrean bersama inti/antre.js (PbAntre); pita dan kirim ulang dari sana */
 let pita = null;   // dibuat saat layar digambar (modul ini juga diimpor tanpa DOM oleh uji)
 async function antreMuat(jpId, P, ulang) {
-  const kirim = (id, baris) => api(`/api/siklus/pulih/${id}/baris`, {metode: "POST", badan: {baris}});
-  async function segar(kirimDulu) {
-    let ringkas = "";
-    if (kirimDulu && navigator.onLine !== false) { const x = await A.kirimSemua(jpId, kirim); if (x.diterima || x.duplikat) { toast(`${angka(x.diterima + x.duplikat)} isian terkirim`); G.nanti(ulang); return; } if (x.ditolak) ringkas = " Sebagian ditolak server; periksa lalu isi ulang."; }
-    const j = await A.jumlah(jpId);
-    pita.textContent = j.total ? `Tersimpan di HP: ${angka(j.menunggu)} isian menunggu dikirim.${ringkas}` : "";
-    pita.hidden = !j.total;
-  }
-  pita.hidden = true; pita.textContent = "";
+  pita.replaceChildren();
   if (!P.pd && !P.ko) return;
-  G.addEventListener("online", () => segar(true));
-  G.pbTambahBaris = async b => { const x = await A.tambah(jpId, b); if (!x.ok) { toast(x.pesan); return x; } await segar(true); return x; };
-  await segar(true);
+  const s = A.saluran((id, baris) => api(`/api/siklus/pulih/${id}/baris`, {metode: "POST", badan: {baris}}));
+  await A.pindahkan(s).catch(() => 0);   // gagal: basis lama dibiarkan, dicoba lagi saat layar dibuka
+  let n = await s.menunggu(); G.PbAntre.pasangPita(pita);
+  G.PbAntre.dengar(async () => { const k = await s.menunggu(); if (n && !k) { toast("Isian terkirim"); G.nanti(ulang); } n = k; });
+  G.pbTambahBaris = async b => { const x = await A.tambah(s, jpId, b); if (!x.ok) { toast(x.pesan); return x; } n = await s.menunggu(); s.kirimSekarang(); return x; };
+  s.kirimSekarang();
 }
 
 function barisIsian(d, P, ulang) {
-  pita = h("p", {class: "sk-para", role: "status", id: "pl-pita"});
+  pita = h("div", {id: "pl-pita"});
   const jp = d.jitupasna, bisaTulis = (P.pd || P.ko) && (jp.status === "dibuka" || jp.status === "pengumpulan"), rr = d.rekap_rumah_rusak, tot = rr?.total;
   const nilaiBaris = b => b.nilai_rp == null ? [h("span", {}, MENUNGGU), " ", pil("menunggu", {ditunggu: "harga satuan"})] : [h("span", {class: "num"}, rupiah(b.nilai_rp)), " ", pil("asumsi-kebijakan")];
   const t = (d.baris ?? []).map(b => h("tr", {}, h("td", {}, namaSektor(b.sektor)), h("td", {class: "t"}, b.jenis === "rusak" ? "Rusak" : "Rugi"),
