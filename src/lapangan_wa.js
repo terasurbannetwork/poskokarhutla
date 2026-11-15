@@ -9,6 +9,8 @@ import {tx, num} from "./posko.js";
 import {wilayahStaf} from "./staf.js";
 import {laju} from "./bnpb.js";
 import {tanggalWIB, awalHariWIB, KONDISI, KONDISI_API, KONDISI_BANJIR} from "./lapangan_konst.js";
+import * as KM from "./masuk_konst.js";
+import {mkDenyut, mkHapusOtp} from "./hak.js";
 import {salinOrang} from "./lapangan.js";   // impor melingkar aman: hanya dipanggil saat permintaan
 
 const MENIT = 60e3, JAM = 3600e3, HARI = 24 * JAM, RE_ID = /^[0-9a-f]{16}$/, RE_KEAHLIAN = /^[a-z_]{2,30}$/;
@@ -36,9 +38,14 @@ async function kunciWA(env, req) {
 /* satu UPDATE ... RETURNING: dua penarikan serentak tidak mengambil baris yang sama */
 async function antre(env, req, kini) {
   const g = await kunciWA(env, req); if (g) return g;
+  await mkDenyut(env, kini, KM.DENYUT_JEDA);   // denyut gerbang untuk /api/masuk/saluran (paling banyak satu tulis per menit)
+  /* jenis otp (kode masuk): didahulukan, tidak dibatasi percobaan, ditarik ulang tiap OTP_ULANG selama umurnya di bawah OTP_UMUR, tidak pernah sesudahnya; jenis lain tetap */
   const {results} = await env.DB.prepare(`UPDATE wa_antre SET percobaan = percobaan + 1, dikirim = ?1 WHERE id IN (
-      SELECT id FROM wa_antre WHERE status = 'antre' AND dummy = 0 AND percobaan < ?3 AND (dikirim IS NULL OR dikirim <= ?2) ORDER BY dibuat, id LIMIT ${MAKS_TARIK}) RETURNING id, tujuan, pesan, jenis`)
-    .bind(kini, kini - TARIK_ULANG_MS, MAKS_PERCOBAAN).all();
+      SELECT id FROM wa_antre WHERE status = 'antre' AND dummy = 0 AND (
+        (jenis != 'otp' AND percobaan < ?3 AND (dikirim IS NULL OR dikirim <= ?2))
+        OR (jenis = 'otp' AND dibuat > ?4 AND (dikirim IS NULL OR dikirim <= ?5))) ORDER BY (jenis = 'otp') DESC, dibuat, id LIMIT ${MAKS_TARIK}) RETURNING id, tujuan, pesan, jenis`)
+    .bind(kini, kini - TARIK_ULANG_MS, MAKS_PERCOBAAN, kini - KM.OTP_UMUR, kini - KM.OTP_ULANG).all();
+  results.sort((a, b) => (b.jenis === "otp") - (a.jenis === "otp"));   // RETURNING tidak menjamin urutan: kode masuk dikirim gerbang lebih dulu
   return json({ok: true, pesan: results});   // dikirim = waktu tarik selagi status antre (tanda "jangan ditarik ulang 10 menit")
 }
 async function hasil(env, req, kini) {
@@ -51,9 +58,10 @@ async function hasil(env, req, kini) {
     /* hanya baris yang masih antre: hasil ulang atau id asing tidak mengubah apa pun */
     const r = x.ok
       ? await env.DB.prepare("UPDATE wa_antre SET status = 'dikirim', dikirim = ? WHERE id = ? AND status = 'antre' RETURNING jenis, rujukan").bind(kini, x.id).first()
-      : await env.DB.prepare("UPDATE wa_antre SET status = CASE WHEN percobaan >= ? THEN 'gagal' ELSE status END WHERE id = ? AND status = 'antre' RETURNING jenis, rujukan, status").bind(MAKS_PERCOBAAN, x.id).first();
+      : await env.DB.prepare("UPDATE wa_antre SET status = CASE WHEN percobaan >= ? AND jenis != 'otp' THEN 'gagal' ELSE status END WHERE id = ? AND status = 'antre' RETURNING jenis, rujukan, status").bind(MAKS_PERCOBAAN, x.id).first();
     if (!r) continue;
     n++;
+    if (r.jenis === "otp") { if (x.ok) await mkHapusOtp(env, x.id); continue; }   // terkirim: kode terang tidak tinggal di D1; gagal: ditarik ulang sesuai OTP_ULANG
     if (r.jenis !== "panggil" || !r.rujukan) continue;
     if (x.ok || r.status === "gagal") {
       const [pid, rid] = r.rujukan.split(".");

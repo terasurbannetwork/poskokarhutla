@@ -9,6 +9,10 @@ export function buat({ worker, kunci, kirim, fetchFn = fetch, log = () => {}, ti
   const tertunda = new Map() // id -> {id, ok, galat?}
   const dilapor = new Set() // id yang sudah sukses dilapor: tidak dikirim ulang
   let jalan = false
+  // Galat jaringan yang sama berulang tiap 5 dtk tidak dicatat berulang: sekali, lalu "pulih".
+  let galatTerakhir = ''
+  const catatGalat = (...a) => { const k = a.join(' '); if (k === galatTerakhir) return; galatTerakhir = k; log(...a) }
+  const pulih = () => { if (galatTerakhir) { galatTerakhir = ''; log('[lapangan] tarik pulih') } }
   const head = { 'x-wa-kunci': kunci, 'content-type': 'application/json' }
   const panggil = (path, init) => fetchFn(worker + path, { ...init, headers: head, signal: AbortSignal.timeout(timeoutMs) })
 
@@ -18,8 +22,8 @@ export function buat({ worker, kunci, kirim, fetchFn = fetch, log = () => {}, ti
     try {
       const r = await panggil('/api/petugas/wa/hasil', { method: 'POST', body: JSON.stringify({ hasil }) })
       if (r.ok) for (const h of hasil) { tertunda.delete(h.id); dilapor.add(h.id); if (dilapor.size > 5000) dilapor.delete(dilapor.values().next().value) }
-      else log('[lapangan] lapor ditolak', r.status)
-    } catch (e) { log('[lapangan] lapor gagal', String(e?.message || e)) }
+      else catatGalat('[lapangan] lapor ditolak', r.status)
+    } catch (e) { catatGalat('[lapangan] lapor gagal', String(e?.message || e)) }
   }
 
   async function putaran() {
@@ -29,15 +33,16 @@ export function buat({ worker, kunci, kirim, fetchFn = fetch, log = () => {}, ti
     try {
       await lapor() // sisa laporan putaran lalu dulu
       let r
-      try { r = await panggil('/api/petugas/wa/antre', { method: 'GET' }) } catch (e) { log('[lapangan] tarik gagal', String(e?.message || e)); return { n } }
-      if (!r.ok) { log('[lapangan] tarik ditolak', r.status); return { n } }
+      try { r = await panggil('/api/petugas/wa/antre', { method: 'GET' }) } catch (e) { catatGalat('[lapangan] tarik gagal', String(e?.message || e)); return { n } }
+      if (!r.ok) { catatGalat('[lapangan] tarik ditolak', r.status); return { n } }
+      pulih()
       const { pesan = [] } = await r.json().catch(() => ({}))
       for (const p of pesan) {
         if (!p || p.id == null || tertunda.has(p.id) || dilapor.has(p.id)) continue
         const tujuan = normalWa(p.tujuan)
         if (!tujuan || !p.pesan) { tertunda.set(p.id, { id: p.id, ok: false, galat: 'tujuan atau pesan tidak sah' }); continue }
         let k
-        try { k = await kirim(tujuan, String(p.pesan)) } catch (e) { k = { ok: false, galat: String(e?.message || e) } }
+        try { k = await kirim(tujuan, String(p.pesan), p.jenis) } catch (e) { k = { ok: false, galat: String(e?.message || e) } }
         if (k.tunda) break // limiter/WA belum siap: jangan lapor, server menarik ulang
         tertunda.set(p.id, k.ok ? { id: p.id, ok: true } : { id: p.id, ok: false, galat: String(k.galat || 'gagal').slice(0, GALAT_MAKS) })
         n++
@@ -50,7 +55,8 @@ export function buat({ worker, kunci, kirim, fetchFn = fetch, log = () => {}, ti
   return { putaran, tertunda }
 }
 
-export function mulai(opsi, tiapMs = 60000) {
+// Jeda 5 dtk (PM-04: kode masuk tiba < 30 dtk). Putaran yang belum selesai tidak ditumpuk (`jalan`).
+export function mulai(opsi, tiapMs = 5000) {
   const t = buat(opsi)
   const id = setInterval(() => t.putaran().catch(() => {}), tiapMs)
   id.unref?.()

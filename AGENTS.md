@@ -314,7 +314,7 @@ Aturan berhentinya sama dengan §2.1. Dibangun sekali di inti dan dinyalakan per
 Sebelum menyentuh cara orang masuk (halaman `/masuk`, kode sekali pakai, akun umum `mk_*`, aktif otomatis, undangan berantai, papan aktivasi 514 kab/kota, daftar halaman publik `PUBLIK_TANPA_SESI`), baca dokumen di
 `data/kajian-bnpb/pintu-masuk/` dengan urutan otoritas ini (kode di `src/masuk*.js`, `public/masuk.*`, `public/admin/aktivasi.js`, migrasi `mk_*`, `tests/warga/masuk*.test.mjs` milik `warga-api`; `public/inti/undang.js` milik `inti-layar`; `scripts/wa/lapangan_tarik.mjs` milik `wa-bot`):
 
-1. `KEPUTUSAN-MASUK.md`: keputusan pemilik K1–K12, rancangan D1–D17, bawaan sementara Q2, Q3, Q4, Q6; menang atas semuanya.
+1. `KEPUTUSAN-MASUK.md`: keputusan pemilik K1–K12, rancangan D1–D18, bawaan sementara Q2, Q3, Q4, Q6; menang atas semuanya.
 2. `RISET.md`, 3. `PRD.md` (F-1..F-14), 4. `ALUR.md`, 5. `ALGORITMA.md` (kode, batas laju, pencocokan nomor, anggota aktif otomatis), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`PM-*`), `GLOSARIUM.md`.
 

@@ -108,7 +108,7 @@ Uji: `node --test tests/wa/logbook_wa.test.mjs`.
 
 ## Antrean WA modul /petugas (LP-021)
 
-`lapangan_tarik.mjs` jalan di dalam proses gateway (dimulai saat WA terhubung, bila `WA_KUNCI` terisi): tiap 60 detik `GET /api/petugas/wa/antre` (header `x-wa-kunci`), tiap pesan dikirim satu per satu lewat `sendPaced` (limiter yang sama dengan `/send`), lalu `POST /api/petugas/wa/hasil` berkelompok. Nomor tidak sah atau tidak terdaftar dilapor `ok:false`; limiter penuh atau WA putus = ditunda tanpa lapor (server menarik ulang setelah 10 menit). 401/503/jaringan putus hanya dicatat. Id yang sudah dilapor atau menunggu lapor tidak dikirim ulang. Berlaku setelah gateway dimulai ulang (belum dilakukan).
+`lapangan_tarik.mjs` jalan di dalam proses gateway (dimulai saat WA terhubung, bila `WA_KUNCI` terisi): tiap 5 detik (putaran yang belum selesai dilewati; galat jaringan yang sama dicatat sekali) `GET /api/petugas/wa/antre` (header `x-wa-kunci`), tiap pesan dikirim satu per satu lewat `sendPaced` (limiter yang sama dengan `/send`), lalu `POST /api/petugas/wa/hasil` berkelompok. Nomor tidak sah atau tidak terdaftar dilapor `ok:false`; limiter penuh atau WA putus = ditunda tanpa lapor (server menarik ulang setelah 10 menit). 401/503/jaringan putus hanya dicatat. Id yang sudah dilapor atau menunggu lapor tidak dikirim ulang. Berlaku setelah gateway dimulai ulang (belum dilakukan).
 Uji: `node --test tests/wa/lapangan_tarik.test.mjs`.
 
 ## Grup satgas udara (`OPERASI_GRUP`)

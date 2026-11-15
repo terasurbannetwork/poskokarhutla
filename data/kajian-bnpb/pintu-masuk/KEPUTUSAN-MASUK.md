@@ -65,10 +65,11 @@ Penyebabnya ada di pintu, bukan di fitur (rinci di `RISET.md`):
 | K11 (Q9) | Syarat surat tugas dan kartu untuk aktivasi pertama akun instansi boleh diganti kecocokan kontak? | **"Tidak"**. Verifikasi yang ada tetap (D16). |
 | K12 (Q7) | Pemirsa ikut bisa masuk lewat kode? | **"Gas"**. Pemirsa ikut. |
 
-Turunan rancangan dari K12 (agent, bisa dibatalkan pemilik):
+Turunan rancangan dari K12 dan dari pemeriksaan PM-03 (agent, bisa dibatalkan pemilik):
 
 | No | Keputusan | Alasan |
 | --- | --- | --- |
+| D18 | Minta kode baru tidak menghanguskan kode lama; semua kode aktif nomor itu sah sampai salah satunya dipakai. | Temuan pemeriksa PM-03: pihak lain yang meminta kode untuk nomor korban tiap 60 detik mematikan kode yang baru diterima korban. Tebakan tetap terbatas lima per kode. |
 | D17 | Nomor WA pemirsa disimpan di tabel samping `mk_pemirsa_wa (pemirsa_id, wa)` dan diisi Super Admin, yang memang membuat akun pemirsa. Kode yang sah menerbitkan `sesi_pemirsa` lewat fungsi modul pemirsa. Pemirsa cukup dengan kode, tanpa sandi. | Tabel `pemirsa` tidak punya kolom nomor dan tidak diubah. Pemirsa hanya membaca tab yang ditentukan, jadi satu faktor diterima; kalau pemilik mau sandi juga, D17 diganti. |
 
 ## Pertanyaan terbuka (masih bawaan sementara)
@@ -79,9 +80,10 @@ Turunan rancangan dari K12 (agent, bisa dibatalkan pemilik):
 | Q3 | Siapa yang mengisi peta domain email ke lembaga dan wilayah (`mk_domain`)? | **[BAWAAN SEMENTARA]** admin, satu per satu saat ada permohonan; tabel mulai kosong. |
 | Q4 | Tulisan akun yang belum terverifikasi lembaganya tampil langsung atau ditahan? | **[BAWAAN SEMENTARA]** tampil dengan label "belum terverifikasi" di alun-alun; isian modul instansi ditahan sampai akun aktif. |
 | Q6 | Berapa lama sesi dari kode berlaku? | **[BAWAAN SEMENTARA]** sama dengan sesi tiap peran sekarang (staf, instansi, pendataan 30 hari; kampus 12 jam); akun umum 30 hari. |
+| Q11 | Pesan kode boleh melewati pembatas kirim gerbang WA (jeda acak 15 sampai 20 detik, 3 pesan per menit, 8 per tujuan per hari; `scripts/wa/gateway/limiter.js`)? | **[BAWAAN SEMENTARA]** tidak. Kode ikut pembatas yang sama dengan pesan lain, karena nomornya dipakai bersama laporan harian (K9) dan melewati pembatas menaikkan risiko blokir. Akibatnya kode bisa telat 20 detik atau lebih saat gerbang sedang mengirim pesan lain. |
 | Q8 | Siapa yang menerapkan migrasi dan mengisi rahasia `MASUK_KUNCI`? | Pemilik, seperti migrasi lain. Tanpa itu `/masuk` menjawab 503 dan pintu lama tetap jalan. |
 
-Tidak ada pertanyaan terbuka yang menahan tiket. Bawaan sementara yang tersisa: Q2, Q3, Q4, Q6.
+Tidak ada pertanyaan terbuka yang menahan tiket. Bawaan sementara yang tersisa: Q2, Q3, Q4, Q6, Q11.
 
 ## Yang belum dijawab paket ini
 

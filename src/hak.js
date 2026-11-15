@@ -588,3 +588,95 @@ export const pbRenlapDaftar = async (env, p, dari, sampai, bencana, prov) => (aw
 export const pbRenlapGeser = async (env, p, id, dari, ke, f, kini) => (await sedia(env, p, "pb_renlap", "ubah", PB_SQL_RENLAP.geser)
   .bind(id, dari, ke, f.berlaku ?? null, f.jml ?? null, f.ukuran ?? null, f.sha ?? null, f.galat ?? null, kini).run()).meta.changes === 1;
 export const pbRenlapLajuMinta = async (env, p, oleh, sejak) => (await sedia(env, p, "pb_log", "baca", PB_SQL_RENLAP.lajuMinta).bind(oleh, sejak).first())?.n ?? 0;
+
+/* ======================================================================================================================================================
+   Satu Pintu Masuk (migrasi 0133_masuk; src/masuk.js; data/kajian-bnpb/pintu-masuk/DESAIN-TEKNIS.md §2, §4.1). Hak dicek di rute (publik berlaju, kode sah, atau sesi_masuk).
+   Semua kueri lewat kunci utama atau indeks mk_kode_nomor / UNIQUE mk_akun.wa. Kode hanya HMAC; pesan wa_antre jenis 'otp' berbagi id dengan mk_kode (hapus lewat kunci utama). */
+export const mkJedaTerakhir = async (env, nsha, sejak) => (await env.DB.prepare("SELECT max(dibuat) d FROM mk_kode WHERE nomor_sha = ? AND dibuat > ?").bind(nsha, sejak).first())?.d ?? null;
+/* kode baru dan pesan antrean dalam satu batch; kode lama nomor itu TETAP sah (D18: peminta iseng tidak mematikan kode korban) */
+export const mkKodeBaru = (env, id, nsha, kodeSha, nomor, pesan, kini, habis) => env.DB.batch([
+  env.DB.prepare("INSERT INTO mk_kode (id, nomor_sha, kode_sha, saluran, coba, dibuat, habis) VALUES (?, ?, ?, 'wa', 0, ?, ?)").bind(id, nsha, kodeSha, kini, habis),
+  env.DB.prepare("INSERT INTO wa_antre (id, tujuan, pesan, jenis, rujukan, status, percobaan, dibuat) VALUES (?, ?, ?, 'otp', ?, 'antre', 0, ?)").bind(id, nomor, pesan, id, kini)]);
+/* semua kode aktif nomor itu naik `coba` dalam satu pernyataan, sebelum dibandingkan; RETURNING membawa nilai sesudah naik */
+export const mkNaikCobaSemua = async (env, nsha, kini, maks) => (await env.DB.prepare("UPDATE mk_kode SET coba = coba + 1 WHERE id IN (SELECT id FROM mk_kode WHERE nomor_sha = ?1 AND dipakai IS NULL AND habis > ?2 ORDER BY dibuat DESC LIMIT ?3) RETURNING id, coba, kode_sha").bind(nsha, kini, maks).all()).results;
+/* sesudah satu kode menang: kode aktif lain nomor itu hangus dan semua baris otp-nya (termasuk milik pemenang) dihapus lewat kunci utama */
+export const mkSelesaiKode = async (env, nsha, idMenang, kini) => {
+  const ids = (await env.DB.prepare("UPDATE mk_kode SET habis = ? WHERE nomor_sha = ? AND dipakai IS NULL AND habis > ? RETURNING id").bind(kini, nsha, kini).all()).results.map(r => r.id);
+  await env.DB.batch([idMenang, ...ids].map(i => env.DB.prepare("DELETE FROM wa_antre WHERE id = ? AND jenis = 'otp'").bind(i)));
+};
+export const mkHanguskan = (env, id, kini) => env.DB.prepare("UPDATE mk_kode SET habis = ? WHERE id = ?").bind(kini, id).run();
+/* true hanya untuk satu pemanggil: dua periksa serentak, satu yang mengubah baris */
+export const mkPakaiKode = async (env, id, kini) => (await env.DB.prepare("UPDATE mk_kode SET dipakai = ? WHERE id = ? AND dipakai IS NULL AND habis > ?").bind(kini, id, kini).run()).meta.changes === 1;
+export const mkHapusOtp = (env, id) => env.DB.prepare("DELETE FROM wa_antre WHERE id = ? AND jenis = 'otp'").bind(id).run();
+export const mkHanguskanBanyak = (env, ids, kini) => ids.length ? env.DB.batch(ids.map(i => env.DB.prepare("UPDATE mk_kode SET habis = ? WHERE id = ?").bind(kini, i))) : null;
+/* PM-04: denyut gerbang WA, satu baris; ditulis hanya bila lama sudah lewat `jeda` (paling banyak sekali per menit). Tabel belum ada = dilewati diam. */
+export const mkDenyut = async (env, kini, jeda) => {
+  try { await env.DB.prepare("INSERT INTO mk_denyut (nama, waktu) VALUES ('wa', ?1) ON CONFLICT (nama) DO UPDATE SET waktu = ?1 WHERE mk_denyut.waktu <= ?2").bind(kini, kini - jeda).run(); }
+  catch (e) { if (!/no such table/i.test(String(e?.message || e))) throw e; }
+};
+export const mkDenyutBaca = async env => {
+  try { return (await env.DB.prepare("SELECT waktu FROM mk_denyut WHERE nama = 'wa'").first())?.waktu ?? null; }
+  catch (e) { if (/no such table/i.test(String(e?.message || e))) return null; throw e; }
+};
+/* PM-04: pembersihan sejam sekali (dipanggil bersihkanLapangan); otp lama selalu, tabel mk_* belum ada = dilewati */
+export const mkBersihkan = async (env, kini, c) => {
+  await env.DB.prepare("DELETE FROM wa_antre WHERE jenis = 'otp' AND status IN ('antre', 'gagal', 'dikirim') AND dibuat < ?").bind(kini - c.OTP_UMUR).run();
+  try {
+    await env.DB.batch([
+      env.DB.prepare("DELETE FROM mk_kode WHERE dibuat < ?").bind(kini - c.RETENSI_KODE),
+      env.DB.prepare("DELETE FROM mk_sesi WHERE habis < ?").bind(kini),
+      env.DB.prepare("UPDATE mk_undang SET status = 'dicabut' WHERE status = 'terkirim' AND habis < ?").bind(kini),
+      env.DB.prepare("DELETE FROM mk_undang WHERE habis < ?").bind(kini - c.RETENSI_UNDANG),
+      env.DB.prepare("DELETE FROM mk_masuk_log WHERE waktu < ?").bind(kini - c.RETENSI_LOG)]);
+  } catch (e) { if (!/no such table/i.test(String(e?.message || e))) throw e; }
+};
+/* akun umum kosong untuk nomor yang kodenya sah; nama, wilayah, persetujuan dilengkapi PM-08 */
+export const mkAkunUntuk = async (env, id, nomor, kini) => {
+  await env.DB.prepare("INSERT INTO mk_akun (id, wa, status, dibuat) VALUES (?, ?, 'aktif', ?) ON CONFLICT (wa) DO NOTHING").bind(id, nomor, kini).run();
+  return env.DB.prepare("SELECT id, status, setuju_pdp FROM mk_akun WHERE wa = ?").bind(nomor).first();
+};
+export const mkSesiBaru = (env, tokenSha, akunId, kini, habis) => env.DB.batch([
+  env.DB.prepare("INSERT INTO mk_sesi (token_sha, mk_id, kode_pada, dibuat, habis) VALUES (?, ?, ?, ?, ?)").bind(tokenSha, akunId, kini, kini, habis),
+  env.DB.prepare("UPDATE mk_akun SET terakhir_masuk = ? WHERE id = ?").bind(kini, akunId)]);
+export const mkSesiDari = (env, tokenSha, kini) => env.DB.prepare("SELECT s.kode_pada, a.id, a.wa, a.nama, a.prov, a.kab, a.setuju_pdp FROM mk_sesi s JOIN mk_akun a ON a.id = s.mk_id WHERE s.token_sha = ? AND s.habis > ? AND a.status = 'aktif'").bind(tokenSha, kini).first();
+export const mkCabutSesi = (env, tokenSha) => env.DB.prepare("DELETE FROM mk_sesi WHERE token_sha = ?").bind(tokenSha).run();
+
+/* Paritas bencana PB-21 (D13, DESAIN-TEKNIS 3.4): peringatan jenis baru di tabel samping peringatan_x (migrasi 0137); `peringatan` lama tidak disentuh.
+   Tanpa migrasi 0137: tulis dilewati (null), baca hanya tabel lama, jalur jenis lama tidak terganggu. */
+export const JENIS_PERINGATAN_X = ["gunungapi", "udara", "kekeringan", "pesisir", "longsor", "rob"];
+const tanpaPx = e => /no such table: (main\.)?peringatan_x/i.test(String(e?.message || e));
+const KOLOM_PX = ["kunci", "jenis", "tingkat", "prov", "kab", "lat", "lon", "judul", "teks", "sumber", "sumber_url", "dibuat", "berlaku_hingga"];
+export const stmtPeringatanXMasuk = env => env.DB.prepare("INSERT OR IGNORE INTO peringatan_x (" + KOLOM_PX + ") VALUES (" + KOLOM_PX.map(() => "?") + ")");
+/* satu baris (array urut KOLOM_PX); true = masuk, false = duplikat, null = tabel belum ada. CHECK melanggar = melempar (pemanggil melewati satu baris). */
+export const peringatanXTulis = async (env, nilai) => {
+  try { return (await stmtPeringatanXMasuk(env).bind(...nilai).run()).meta.changes > 0; }
+  catch (e) { if (tanpaPx(e)) return null; throw e; }
+};
+const SAH_PX = "berlaku_hingga > ?1 AND dicabut IS NULL AND dibuat >= ?2";
+const CAB = t => `SELECT * FROM (SELECT * FROM ${t} WHERE ${SAH_PX} ORDER BY dibuat DESC LIMIT ?3)`;
+/* UNION ALL kedua tabel, tiap cabang LIMIT sendiri lalu urut dibuat DESC dan LIMIT di luar; hitung = tambah COUNT per tingkat per cabang (dijumlah pemanggil) */
+export const peringatanAktifGabung = async (env, kini, sejak, batas, hitung = false) => {
+  const cnt = t => env.DB.prepare(`SELECT tingkat, count(*) n FROM ${t} WHERE ${SAH_PX} GROUP BY tingkat`).bind(kini, sejak);
+  const gab = env.DB.prepare(`SELECT * FROM (${CAB("peringatan")} UNION ALL ${CAB("peringatan_x")}) ORDER BY dibuat DESC LIMIT ?3`).bind(kini, sejak, batas);
+  const lama = env.DB.prepare(`${CAB("peringatan")} ORDER BY dibuat DESC`).bind(kini, sejak, batas);
+  try {
+    const [r, ...c] = await env.DB.batch([gab, ...(hitung ? [cnt("peringatan"), cnt("peringatan_x")] : [])]);
+    return {daftar: r.results, hitungan: c.flatMap(x => x.results)};
+  } catch (e) {
+    if (!tanpaPx(e)) throw e;
+    const [r, ...c] = await env.DB.batch([lama, ...(hitung ? [cnt("peringatan")] : [])]);
+    return {daftar: r.results, hitungan: c.flatMap(x => x.results)};
+  }
+};
+export const peringatanXBersih = async (env, batas) => {
+  try { await env.DB.prepare("DELETE FROM peringatan_x WHERE berlaku_hingga <= ?").bind(batas).run(); }
+  catch (e) { if (!tanpaPx(e)) throw e; }
+};
+/* cabut di tabel samping; null = tabel belum ada, 0 = tak ada baris aktif, 1 = tercabut, -1 = sudah tercabut sebelumnya */
+export const peringatanXCabut = async (env, kunci, kini, oleh) => {
+  try {
+    const r = await env.DB.prepare("UPDATE peringatan_x SET dicabut = ?, dicabut_oleh = ? WHERE kunci = ? AND dicabut IS NULL").bind(kini, oleh, kunci).run();
+    if (r.meta.changes) return 1;
+    return (await env.DB.prepare("SELECT 1 x FROM peringatan_x WHERE kunci = ?").bind(kunci).first()) ? -1 : 0;
+  } catch (e) { if (tanpaPx(e)) return null; throw e; }
+};

@@ -77,3 +77,17 @@ test('lapor gagal (503) disimpan dan dilapor putaran berikut tanpa kirim ulang',
   assert.equal(n, 1); assert.equal(s2.lapor.length, 1)
   s.tutup(); s2.tutup()
 })
+
+test('putaran tidak tumpang tindih; galat sama dicatat sekali', async () => {
+  const s = await server([{ id: 1, tujuan: '0811', pesan: 'a', jenis: 'otp' }])
+  let sedang = 0, maks = 0, jenis
+  const t = buat({ worker: s.url, kunci: 'kunci-ok', kirim: async (n, p, j) => { jenis = j; maks = Math.max(maks, ++sedang); await new Promise((r) => setTimeout(r, 50)); sedang--; return { ok: true } } })
+  const [a, b] = await Promise.all([t.putaran(), t.putaran()])
+  assert.equal(b.lewat, true); assert.equal(a.lewat, undefined)
+  assert.equal(maks, 1); assert.equal(jenis, 'otp')
+  s.tutup()
+  const logs = []
+  const t2 = buat({ worker: s.url, kunci: 'kunci-ok', kirim: async () => ({ ok: true }), log: (...x) => logs.push(x.join(' ')) })
+  await t2.putaran(); await t2.putaran(); await t2.putaran()
+  assert.equal(logs.filter((l) => /tarik gagal/.test(l)).length, 1)
+})

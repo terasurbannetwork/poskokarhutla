@@ -134,5 +134,6 @@
   "0130_paritas_operasi.sql": "0a789b05bb3969535dc6a981c9c29a2affb5d1960a6836dfbd10a1a47d05a00e",
   "0131_paritas_dokumen.sql": "8621cc74503d478c561a16bd46ab814ea1a5a672fd68a7a68f44ae11702f24fd",
   "0132_indeks_kursor_modul.sql": "6a201780f0d29a5b6865c3a270d6e5af1fa1a86fda9fed24706b4012fa5dab8c",
-  "0133_masuk.sql": "08c3ebf1f4d8ce24b1bd57f3498d4af9ffb7cedafb95d9cc8d0915fdb447e410"
+  "0133_masuk.sql": "08c3ebf1f4d8ce24b1bd57f3498d4af9ffb7cedafb95d9cc8d0915fdb447e410",
+  "0136_masuk_indeks.sql": "09acaabca09639766401e1e902f6c8c4cbe36895f415658654b6908f578bafd0"
 }

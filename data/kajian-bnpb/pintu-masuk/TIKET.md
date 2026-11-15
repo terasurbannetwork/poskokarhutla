@@ -48,6 +48,7 @@ Tahap 3 (pelengkap): PM-13 sampai PM-16.
 | Isi rahasia `MASUK_KUNCI`; pastikan `TURNSTILE_SECRET` terisi | PM-03 |
 | Verifikasi domain pengirim email di Resend | PM-10, PM-16 |
 | Impor kontak pemangku (CSV) supaya aktif otomatis berguna | PM-09 |
+| Muat ulang gerbang WA di Mac mini supaya jeda tarik 5 detik berlaku: `launchctl kickstart -k gui/$(id -u)/id.centurisk97.wa-gateway` | PM-04 |
 | Aktifkan akun instansi pertama tiap daerah lewat verifikasi yang ada (K11) | PM-09, PM-11 |
 
 ## Paket lanjutan (bukan tiket di sini)

@@ -9,6 +9,8 @@ import {superOK, modOK, tx, num, RE_EMAIL, uraiCsvKontak} from "./posko.js";
 import {modAtauStaf, dalamWilayahStaf, wilayahStaf} from "./staf.js";
 import {laju, lajuIP, kodeBaru} from "./bnpb.js";
 import {JENIS_ORANG, RADIUS_BAWAAN_M, RETENSI_FOTO_MS, tanggalWIB, awalHariWIB} from "./lapangan_konst.js";
+import * as KM from "./masuk_konst.js";
+import {mkBersihkan} from "./hak.js";
 import {RUTE_GATEWAY_WA, panggilBuat, panggilDaftar, antrePenugasan, tugasTerlihat} from "./lapangan_wa.js";
 import {petugas} from "./lapangan.js";   // impor melingkar aman: hanya dipanggil saat permintaan, bukan saat modul dimuat
 
@@ -473,6 +475,7 @@ export const bersihkanLapangan = async (env, kini = Date.now()) => {
   try { await env.DB.prepare("DELETE FROM lp_panggil_penerima WHERE panggil_id IN (SELECT id FROM lp_panggil WHERE batas < ?)").bind(kini - 30 * 24 * JAM).run(); }
   catch (e) { if (!/no such table/i.test(e?.message || "")) throw e; }
   await bersihWa(env, kini);
+  await mkBersihkan(env, kini, KM);   // Pintu Masuk: otp lama, kode, sesi, undangan, log masuk (tabel mk_* belum ada = dilewati)
   await hapusFotoLama(env, kini);
 };
 /* LP-049: foto absen/logbook > 2 tahun dihapus dari R2; barisnya tetap (waktu, lokasi, status) dengan foto_key = 'dihapus' (kolom NOT NULL, CHECK panjang >= 5, jadi bukan NULL). Label dan agregat tidak disentuh.

@@ -22,8 +22,9 @@ Pintu masuk adalah permukaan serangan paling berharga di situs. Dokumen ini menu
 
 | Ancaman | Penangkal | Sisa risiko |
 | --- | --- | --- |
-| Menebak kode enam angka | lima percobaan per kode, lima menit, kode lama hangus saat minta baru, batas per IP | peluang kecil per kode; diterima |
+| Menebak kode enam angka | lima percobaan per kode, lima menit, paling banyak tiga kode aktif per nomor, batas per IP | peluang kecil per kode; diterima |
 | Membanjiri nomor orang dengan kode | tiga per 15 menit dan delapan per hari per nomor, Turnstile | orang masih bisa menerima delapan pesan sehari dari pihak iseng, dan bisa dikunci dari masuk lewat kode hari itu; pintu sandi tetap ada |
+| Pihak lain mematikan kode korban atau menguncinya | kode lama tidak hangus saat ada permintaan baru (D18), jadi kode yang sudah diterima korban tetap bisa dipakai | pihak lain masih bisa menghabiskan jatah tiga kode per 15 menit nomor korban; korban memakai kode yang sudah diterima, email, atau sandi |
 | Membuat nomor gerbang diblokir WhatsApp | batas global 300 per jam dan 2.000 per hari, Turnstile wajib, pesan undangan bertemplat tetap | pustaka tidak resmi tetap bisa diblokir kapan saja; cadangan email dan pintu sandi |
 | Penolakan layanan lewat batas global | batas per IP dan per nomor di depan batas global | serangan tersebar bisa menghabiskan 300 kode per jam; orang lain memakai sandi atau email |
 | Mencacah nomor yang terdaftar | jawaban minta kode sama untuk semua nomor; tawaran email diberikan ke semua orang dan emailnya diketik; pesan galat periksa sama | pemilih ruang baru tampil sesudah kode sah |

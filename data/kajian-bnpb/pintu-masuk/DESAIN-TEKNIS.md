@@ -7,6 +7,7 @@ Semua rujukan berkas dan baris diukur 15 Nov 2026; cek ulang sebelum dipakai.
 | Berkas | Isi | Pemilik |
 | --- | --- | --- |
 | `src/masuk.js` (baru) | rute `/masuk` dan `/api/masuk/*`, kode, akun umum, pemilih ruang | `warga-api` |
+| `src/hak.js` (ubah) | semua SQL paket ini (fungsi `mk*`); gerbang `gerbang-d1` melarang akses D1 di berkas `src` baru | `warga-api` |
 | `src/masuk_konst.js` (baru) | semua ambang ALGORITMA | `warga-api` |
 | `src/masuk_undang.js` (baru) | anggota, undangan berantai, papan aktivasi | `warga-api` |
 | `migrations/0133_masuk.sql` | tabel `mk_*`, `alun_penulis`, indeks `wa` | `warga-api` |
@@ -151,6 +152,7 @@ Catatan skema yang sudah dicek:
 | `POST /api/masuk/kode` | publik, Turnstile, laju | minta kode |
 | `POST /api/masuk/periksa` | publik, laju | periksa kode, terbitkan sesi, jawab daftar ruang |
 | `POST /api/masuk/sandi` | sesi akun umum, `kode_pada` 15 menit | sandi staf lewat `cobaMasukStaf` |
+| `GET /api/masuk/saluran` | publik, tanpa data pribadi | apakah saluran WA dan email sedang hidup (ALUR A8) |
 | `GET /api/masuk/saya` | sesi akun umum | profil dan daftar ruang |
 | `POST /api/masuk/lengkapi` | sesi akun umum | nama, wilayah, persetujuan |
 | `POST /api/masuk/mohon` | sesi akun umum | permohonan anggota |
@@ -202,7 +204,7 @@ Dengan tanda `lewat_sesi`, daftar wajah, absen pindai wajah, dan data kesehatan 
 
 | Nama | Guna | Bila kosong |
 | --- | --- | --- |
-| `MASUK_KUNCI` (baru) | HMAC kode dan nomor | `/api/masuk/*` 503 |
+| `MASUK_KUNCI` (baru, paling sedikit 32 karakter) | HMAC kode dan nomor | `/api/masuk/*` 503 |
 | `TURNSTILE_SECRET`, `TURNSTILE_SITEKEY` | pelindung minta kode | minta kode 503 |
 | `WA_KUNCI` | gerbang WA | saluran WA dianggap mati |
 | `EMAIL_API_KEY`, `EMAIL_FROM` | cadangan email | saluran email mati (`emailAktif`, `src/ews.js:54`) |

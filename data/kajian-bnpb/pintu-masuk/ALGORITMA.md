@@ -12,11 +12,11 @@ Semua angka di sini adalah ambang rancangan agent (bisa diubah pemilik); letakny
 
 Urutan pemeriksaan; gagal di satu langkah berhenti di situ.
 
-1. `MASUK_KUNCI`, `TURNSTILE_SECRET`, dan `TURNSTILE_SITEKEY` terisi; bila tidak, 503. Rute ini tidak ikut perilaku lolos `turnstileOK` saat rahasia kosong (`src/worker.js:224-225`).
+1. `MASUK_KUNCI` (paling sedikit 32 karakter), `TURNSTILE_SECRET`, dan `TURNSTILE_SITEKEY` terisi; bila tidak, 503. Rute ini tidak ikut perilaku lolos `turnstileOK` saat rahasia kosong (`src/worker.js:224-225`).
 2. Header `x-pb: 1` ada dan `Origin` sama situs.
 3. Alamat pemanggil terbaca (`cf-connecting-ip`); bila tidak, ditolak.
-4. Turnstile sah.
-5. Batas laju:
+4. Batas laju per IP, lalu Turnstile sah (supaya token ngawur tidak memicu panggilan keluar tanpa hitungan).
+5. Batas laju, urut: jeda kirim ulang, per nomor, global (jeda lebih dulu supaya klik ganda tidak memakan jatah nomor):
 
 | Kunci | Batas |
 | --- | --- |
@@ -25,7 +25,7 @@ Urutan pemeriksaan; gagal di satu langkah berhenti di situ.
 | global | 300 kode per jam, 2.000 per hari |
 | jeda kirim ulang | 60 detik sejak kode terakhir untuk nomor itu |
 
-6. Kode lama nomor itu yang belum dipakai ditandai habis.
+6. Kode lama nomor itu **tidak** dihanguskan (KEPUTUSAN D18); semua kode yang belum dipakai dan belum habis tetap sah, paling banyak tiga karena batas laju.
 7. `kode` = enam angka dari `crypto.getRandomValues` dengan penolakan bias.
 8. Simpan `mk_kode`: `nomor_sha`, `kode_sha = HMAC-SHA256(MASUK_KUNCI, nomor + "|" + kode)`, `habis = kini + 5 menit`, `coba = 0`, `saluran`.
 9. Antre pesan ke `wa_antre` dengan `jenis = 'otp'`, `rujukan = id mk_kode`.
@@ -36,10 +36,10 @@ Batas global tercapai: 429 "sedang ramai, coba beberapa menit lagi". Batas ini m
 ### 2.2 Periksa kode
 
 1. Header `x-pb: 1`, `Origin` sama situs, batas laju per IP 60 percobaan per jam.
-2. Ambil `mk_kode` terbaru nomor itu yang belum dipakai dan belum habis. Tidak ada: "kode salah atau kedaluwarsa".
-3. `coba = coba + 1` ditulis dulu (satu `UPDATE ... RETURNING`), baru dibandingkan. `coba > 5`: kode ditandai habis, pesan yang sama.
-4. Bandingkan HMAC dengan perbandingan waktu tetap.
-5. Cocok: tandai dipakai dalam `UPDATE ... WHERE dipakai IS NULL` dan periksa satu baris berubah (dua permintaan serentak hanya satu yang menang).
+2. Ambil semua `mk_kode` nomor itu yang belum dipakai dan belum habis. Tidak ada: "kode salah atau kedaluwarsa".
+3. `coba = coba + 1` ditulis dulu pada semua baris itu (satu `UPDATE ... RETURNING`), baru dibandingkan. Baris dengan `coba > 5` ditandai habis.
+4. Bandingkan HMAC tiap baris dengan perbandingan waktu tetap, tanpa berhenti di tengah.
+5. Cocok: tandai dipakai dalam `UPDATE ... WHERE dipakai IS NULL` dan periksa satu baris berubah (dua permintaan serentak hanya satu yang menang). Kode aktif lain nomor itu ikut dihanguskan dan baris pesannya dihapus.
 
 Pesan galat untuk kode salah, habis waktu, habis coba, dan nomor tanpa kode sama persis.
 

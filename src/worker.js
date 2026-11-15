@@ -31,6 +31,7 @@ import {RUTE_BANGUNAN} from "./bangunan.js";
 import {RUTE_RISIKO7} from "./risiko7.js";
 import {RUTE_PENDATAAN} from "./pendataan.js";
 import {RUTE_ALUN} from "./alun.js";
+import {RUTE_MASUK} from "./masuk.js";
 import {RUTE_RISET} from "./riset.js";
 import {RUTE_MEJA, segarkanRingkas} from "./meja.js";
 import {RUTE_PENGINGAT, buatPengingat, buatPengingatPrioritas} from "./pengingat.js";
@@ -598,6 +599,7 @@ const RUTE = {
   ...RUTE_RELAWAN,
   ...RUTE_LAPANGAN,   // modul Pegawai dan Relawan Lapangan: petugas + panel (src/lapangan.js, migrasi 0095)
   ...RUTE_ALUN,
+  ...RUTE_MASUK,   // Satu Pintu Masuk: kode WA, sesi akun umum (src/masuk.js, paket data/kajian-bnpb/pintu-masuk/)
   ...RUTE_RISET,
   ...RUTE_MEJA,
   ...RUTE_UJI_BANJIR,   // uji lapangan banjir: POST /api/instansi/uji-banjir (akun instansi), GET /api/uji-lapangan/banjir agregat (src/uji_banjir.js)
@@ -659,7 +661,7 @@ const tabelRute = () => GABUNG ||= {...RUTE, ...Ews.RUTE_EWS};
    Pengecualian: halaman admin ber-Referrer-Policy no-referrer, jadi form POST sama-situs (Keluar, Masuk dengan cookie lama) dikirim peramban dengan
    Origin "null". Itu diterima HANYA bila Sec-Fetch-Site = same-origin (header terlarang, tak bisa dipalsukan halaman; iframe tersandbox mengirim cross-site). */
 export const tolakOrigin = (req, url) => {
-  const o = req.headers.get("origin"), sesi = /(?:^|;\s*)(?:sesi_admin|sesi_pendataan|sesi_staf|sesi_kemitraan|sesi_instansi)=/.test(req.headers.get("cookie") || "");
+  const o = req.headers.get("origin"), sesi = /(?:^|;\s*)(?:sesi_admin|sesi_pendataan|sesi_staf|sesi_kemitraan|sesi_masuk|sesi_instansi)=/.test(req.headers.get("cookie") || "");
   const kosong = !o || o === "null", samaPeramban = kosong && req.headers.get("sec-fetch-site") === "same-origin";
   if (sesi ? (!samaPeramban && (kosong || !URL.canParse(o) || new URL(o).host !== url.host)) : (!kosong && (!URL.canParse(o) || new URL(o).host !== url.host))) return gagal(403, "origin lain ditolak");
   return null;

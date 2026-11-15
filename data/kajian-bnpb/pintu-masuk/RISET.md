@@ -56,6 +56,7 @@ Yang tidak ada: kode sekali pakai, masuk lewat penyedia lain, lupa sandi swalaya
 | --- | --- |
 | Gerbang WA memakai Baileys di satu Mac mini, bukan WhatsApp Business API | Nomor bisa diblokir bila mengirim terlalu banyak ke nomor asing. Kode dibatasi per nomor, per IP, dan per jam secara global. |
 | Gerbang menarik antrean tiap 60 detik (`scripts/wa/lapangan_tarik.mjs:53`, bawaan `tiapMs = 60000`); percobaan ulang tiap 10 menit (`TARIK_ULANG_MS`) | Kode bisa telat sampai satu menit. Target di bawah 30 detik butuh jeda tarik lebih pendek untuk jenis `otp` (PM-04). |
+| Gerbang punya pembatas kirim sendiri: jeda acak 15 sampai 20 detik antarpesan, 3 per menit, 8 per tujuan per hari (`scripts/wa/gateway/limiter.js`) | Kode ikut antre di pembatas yang sama (Q11); sasaran 30 detik tidak dijamin saat gerbang sibuk. Batas 8 per tujuan per hari sama dengan batas 8 kode per nomor per hari. |
 | `wa_antre.pesan` menyimpan isi pesan sampai dibersihkan 24 jam | Isi pesan `otp` dikosongkan saat terkirim; kode disimpan hanya sebagai HMAC. |
 | Email pengirim masih `onboarding@resend.dev` (`wrangler.jsonc:22`) | Cadangan email belum bisa dipakai sampai domain diverifikasi. |
 | Kuota baca D1 Free 5 juta baris per hari; pernah habis 28 Okt dan 11 Nov | Pencarian nomor memakai indeks pada kolom `wa`; tanpa pindai tabel. |
