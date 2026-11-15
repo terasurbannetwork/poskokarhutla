@@ -13,7 +13,8 @@ import {PROV} from "./bangunan.js";
 import {akunAktif} from "./instansi.js";
 import {kodeKab} from "./kemitraan_akun.js";
 import REGISTRY from "./bencana.generated.js";
-import {pelakuPbTulis, pelakuPbBaca, pbTitikDaftar, pbTitikById, pbStmtTitikSisip, pbStmtTitikUbah, pbStmtTitikHapus, pbStmtLog, pbLogLaju, tanpaTabelPb, batchTulis, pbRenlapMinta, pbRenlapById, pbRenlapDaftar, pbRenlapGeser, pbRenlapLajuMinta, pbStmtHasil, pbKepatuhan} from "./hak.js";
+import {pelakuPbTulis, pelakuPbBaca, pbTitikDaftar, pbTitikById, pbStmtTitikSisip, pbStmtTitikUbah, pbStmtTitikHapus, pbStmtLog, pbLogLaju, tanpaTabelPb, batchTulis, pbRenlapMinta, pbRenlapById, pbRenlapDaftar, pbRenlapGeser, pbRenlapLajuMinta, pbStmtHasil, pbKepatuhan, pbPeringatanAktif, pbTindakanDaftar, pbTindakanSatu, pbStmtTindakanUpsert} from "./hak.js";
+import {tindakanUntuk} from "../public/ews_tindakan.js";
 
 export const PERAN_TULIS = ["pusdalops"];
 const PERAN_SEMUA = ["pusdalops", "koordalops", "pimpinan"], BENCANA_UDARA = ["karhutla", "udara"];
@@ -355,6 +356,61 @@ const kepatuhan = rute(async (env, req, url, kini) => {
   } catch (e) { if (tanpaTabelPb(e)) return json({tersedia: false}); throw e; }
 });
 
+/* ======================================================================================================================================================
+   PB-27 tangga tindakan (F-15; DESAIN-TEKNIS paritas-bencana 3.3, 5; KEAMANAN-PRIVASI 2). Butir HARUS nomor dalam daftar tindakanUntuk(jenis, tingkat) milik peringatan itu (public/ews_tindakan.js), bukan teks bebas.
+   Peringatan harus aktif (peringatan atau peringatan_x). Pelaksana = peran (warga, pusdalops, bpbd, regu), bukan nama orang. Warga tidak menulis dan tidak punya rute baca di sini.
+   Batas bawaan Q20 [BAWAAN SEMENTARA, bukan ketentuan hukum]: Awas 2 jam, Siaga 12 jam, Waspada 48 jam sejak butir pertama dicatat; boleh diisi sendiri (maks 30 hari ke depan). */
+const TINGKAT_NO = {Waspada: 1, Siaga: 2, Awas: 3}, BATAS_Q20 = {3: 2 * 36e5, 2: 12 * 36e5, 1: 48 * 36e5}, PELAKSANA = ["warga", "pusdalops", "bpbd", "regu"];
+const kunciPeringatan = o => typeof o === "string" && o.length >= 3 && o.length <= 120 ? o : tolak("peringatan harus kunci peringatan aktif (3 sampai 120 karakter)");
+/* peringatan aktif + daftar butirnya; 404 bila tak aktif atau jenisnya belum punya daftar tindakan */
+export const batasBawaan = (t, kini) => BATAS_Q20[t] ? kini + BATAS_Q20[t] : null;   // tingkat tak dikenal = tanpa batas, bukan NaN
+async function peringatanButir(env, kunci, kini) {
+  const p = await pbPeringatanAktif(env, kunci, kini); if (!p || !TINGKAT_NO[p.tingkat]) return null;
+  const butir = tindakanUntuk(p.jenis, TINGKAT_NO[p.tingkat]); return butir.length ? {p, butir, t: TINGKAT_NO[p.tingkat]} : null;
+}
+/* kab peringatan -> kode BPS 4 digit: kode sah dipakai apa adanya, nama dipetakan lewat kodeKab (pemetaan PB-11); tak terpetakan = "" (fail-closed: instansi kab ditolak) */
+const kabPeringatan = async (env, req, p) => !p.kab ? "" : /^\d{4}$/.test(p.kab) ? p.kab : (p.prov && await kabDariKunci(env, req, `${p.prov}|${p.kab}`)) || "";
+/* baca: akun gerbang/moderator, staf pusdalops/koordalops/pimpinan (wilayah staf), pemirsa pusdalops, akun instansi aktif di provinsinya; udara/tmc tidak (matriks) */
+async function izinBacaTindakan(env, req, prov, kab = "") {
+  if (await adminOK(env, req)) return null;
+  const s = await stafSesiSemua(env, req);
+  if (s) return (s.peran ?? []).some(r => PERAN_SEMUA.includes(r)) ? (dalamWilayahStaf(req, [prov]) ? null : gagal(403, "provinsi di luar wilayah akun Anda")) : gagal(403, "tangga tindakan hanya untuk akun centurisk97, staf Pusdalops, atau moderator");
+  if (await pemirsaLihat(env, req)) return null;
+  const a = await akunTulis(env, req);
+  if (a && a.prov === prov && (a.tingkat !== "kab" || (kab && kab === await kabDariKunci(env, req, a.kunci)))) return null;
+  return gagal(403, "tangga tindakan hanya untuk akun centurisk97, staf Pusdalops, moderator, atau akun instansi wilayahnya");
+}
+const daftarTindakan = rute(async (env, req, url, kini) => {
+  const kunci = kunciPeringatan(url.searchParams.get("peringatan") ?? ""), x = await peringatanButir(env, kunci, kini);
+  if (!x) return gagal(404, "peringatan tidak aktif atau jenisnya belum punya daftar tindakan");
+  const t = await izinBacaTindakan(env, req, x.p.prov ?? "", await kabPeringatan(env, req, x.p)); if (t) return t;
+  let baris;
+  try { baris = await pbTindakanDaftar(env, pelakuPbBaca, kunci); } catch (e) { if (tanpaTabelPb(e)) return json({tersedia: false, butir: []}); throw e; }
+  const per = new Map(baris.map(b => [b.butir, b]));
+  return json({tersedia: true, peringatan: {jenis: x.p.jenis, tingkat: x.p.tingkat}, butir: x.butir.map((teks, no) => {
+    const b = per.get(no); return {no, teks, selesai: b?.selesai === 1, pelaksana: b?.pelaksana ?? null, batas: b?.batas ?? null, waktu: b?.waktu ?? null};
+  })});
+});
+const simpanTindakan = rute(async (env, req, url, kini) => {
+  const tamu = await gerbangTulis(env, req); if (tamu) return tamu;
+  const o = await badan(env, req); if (o instanceof Response) return o;
+  const kunci = kunciPeringatan(o.peringatan);
+  if (!Number.isInteger(o.butir) || o.butir < 0 || o.butir > 30) tolak("butir harus nomor 0 sampai 30");
+  if (typeof o.selesai !== "boolean") tolak("selesai harus true atau false");
+  const pelaksana = o.pelaksana == null || o.pelaksana === "" ? null : pilih(o.pelaksana, PELAKSANA, "pelaksana");
+  if (o.batas != null && (!Number.isInteger(o.batas) || o.batas < kini - 864e5 || o.batas > kini + 30 * 864e5)) tolak("batas harus waktu ms UTC antara kemarin dan 30 hari ke depan");
+  const x = await peringatanButir(env, kunci, kini); if (!x) return gagal(404, "peringatan tidak aktif atau jenisnya belum punya daftar tindakan");
+  if (o.butir >= x.butir.length) tolak(`butir bukan dari daftar tindakan peringatan ini (0 sampai ${x.butir.length - 1})`);
+  const pn = await penulis(env, req, x.p.prov ?? "", await kabPeringatan(env, req, x.p)); if (pn instanceof Response) return pn;
+  const {oleh} = pn;
+  if (!await lajuOK(env, oleh, kini)) return lambat();
+  const lama = await pbTindakanSatu(env, pelakuPbBaca, kunci, o.butir);
+  const t = {pelaksana: o.pelaksana == null ? lama?.pelaksana ?? null : pelaksana, selesai: o.selesai ? 1 : 0, batas: o.batas ?? lama?.batas ?? batasBawaan(x.t, kini)};
+  const kl = (await sha(kunci)).slice(0, 16) + "#" + o.butir;   // pb_log.kunci <= 80; kunci peringatan sampai 120
+  await batchTulis(env, [pbStmtTindakanUpsert(env, pelakuPbTulis, kunci, o.butir, t, oleh, kini), pbStmtLog(env, pelakuPbTulis, kini, oleh, "pb_tindakan", kl, lama ? "ubah" : "isi", lama ?? null, t)]);
+  return json({ok: true, butir: o.butir, ...t, selesai: o.selesai}, lama ? 200 : 201);
+});
+
 /* digabung ke RUTE di src/worker.js; nama jalur tanpa garis bawah (gerbang cakupan) */
 export const RUTE_PB = {
   "GET /api/pb/titik": daftar,
@@ -369,6 +425,8 @@ export const RUTE_PB = {
   "GET /api/pb/renlap/berkas": berkas,
   "POST /api/pb/hasil": hasil,
   "GET /api/pb/kepatuhan": kepatuhan,
+  "GET /api/pb/tindakan": daftarTindakan,
+  "POST /api/pb/tindakan": simpanTindakan,
 };
 
 /* dipakai src/pb_dokumen.js (PB-22): gerbang, badan, laju, pembersih, pemindai pribadi dan wilayah yang sama */

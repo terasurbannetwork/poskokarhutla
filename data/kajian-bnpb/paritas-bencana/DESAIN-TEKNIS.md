@@ -302,7 +302,7 @@ Semua tulis: `POST`, badan `application/json` ≤ 32 KB, hak tulis `penulis()` �
 | `GET /api/pb/dokumen` | `jenis`, `bencana?`, `periode?` | daftar metadata | F-8, F-9, F-10, F-13 |
 | `GET /api/pb/dokumen/berkas` | `id`, `fmt` (`json`,`pdf`) | berkas beku | F-8, F-9, F-10 |
 | `GET /api/pb/tindakan` | `peringatan` | keadaan butir tangga tindakan | F-15 |
-| `POST /api/pb/tindakan` | `peringatan`, `butir`, `selesai`, `pelaksana?`, `batas?` | upsert `pb_tindakan` | F-15 |
+| `POST /api/pb/tindakan` | `peringatan`, `butir`, `selesai`, `pelaksana?`, `batas?` | upsert `pb_tindakan` | F-15; kab peringatan yang berupa nama dipetakan ke kode BPS lewat `kodeKab` (PB-11), tak terpetakan = instansi kab ditolak 403 (fail-closed) |
 | `GET /api/pb/ringkas` | `bencana?` (kosong = semua) | muatan dashboard (§6.3) | F-18, F-19 |
 | `GET /api/pb/papan-sk` | `bencana?`, `prov?` | status darurat berlaku dan akan berakhir (§6.4) | F-20 |
 

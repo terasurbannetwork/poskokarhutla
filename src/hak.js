@@ -723,3 +723,22 @@ export const PB_SQL_PAPAN_SK = `SELECT s.kejadian_id, s.tingkat, s.wilayah, s.no
   JOIN logbook_kejadian k ON k.id = s.kejadian_id WHERE k.dummy = 0 AND (?2 = '' OR k.jenis = ?2) AND (?3 = '[]' OR k.prov IN (SELECT value FROM json_each(?3))) ORDER BY s.tmt_selesai IS NULL, s.tmt_selesai LIMIT 500`;
 /* wilayah = daftar kode prov (JSON); '[]' = nasional. Filter di SQL supaya LIMIT 500 berlaku sesudahnya. */
 export const papanSk = async (env, p, tgl, bencana, wilayah) => (await sedia(env, p, "logbook_sk", "baca", PB_SQL_PAPAN_SK).bind(tgl, bencana, JSON.stringify(wilayah)).all()).results;
+
+/* PB-27 tangga tindakan (pb_tindakan, migrasi 0131; DESAIN-TEKNIS paritas-bencana 3.3, 5). Upsert satu baris per (peringatan, butir); tanpa hapus. Semua kueri lewat PK (SEARCH).
+   pbPeringatanAktif: peringatan lama lalu tabel samping peringatan_x (0137); tanpa 0137 hanya tabel lama. Kolom oleh tidak pernah dibaca. */
+Object.assign(MATRIKS, {pb_tindakan: {pb_baca: ["baca"], pb_tulis: ["baca", "tambah", "ubah"]}});
+export const PB_SQL_TINDAKAN = {
+  daftar: "SELECT butir, pelaksana, batas, selesai, waktu FROM pb_tindakan WHERE peringatan = ?",
+  satu: "SELECT butir, pelaksana, batas, selesai, waktu FROM pb_tindakan WHERE peringatan = ?1 AND butir = ?2",
+  upsert: `INSERT INTO pb_tindakan (peringatan, butir, pelaksana, batas, selesai, oleh, waktu) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+    ON CONFLICT (peringatan, butir) DO UPDATE SET pelaksana = excluded.pelaksana, batas = excluded.batas, selesai = excluded.selesai, oleh = excluded.oleh, waktu = excluded.waktu`,
+};
+export const pbPeringatanAktif = async (env, kunci, kini) => {
+  const SQL = t => `SELECT kunci, jenis, tingkat, prov, kab FROM ${t} WHERE kunci = ?1 AND berlaku_hingga > ?2 AND dicabut IS NULL`;
+  const a = await env.DB.prepare(SQL("peringatan")).bind(kunci, kini).first(); if (a) return a;
+  try { return await env.DB.prepare(SQL("peringatan_x")).bind(kunci, kini).first(); }
+  catch (e) { if (tanpaPx(e)) return null; throw e; }
+};
+export const pbTindakanDaftar = async (env, p, kunci) => (await sedia(env, p, "pb_tindakan", "baca", PB_SQL_TINDAKAN.daftar).bind(kunci).all()).results;
+export const pbTindakanSatu = (env, p, kunci, butir) => sedia(env, p, "pb_tindakan", "baca", PB_SQL_TINDAKAN.satu).bind(kunci, butir).first();
+export const pbStmtTindakanUpsert = (env, p, kunci, butir, t, oleh, kini) => sedia(env, p, "pb_tindakan", "tambah", PB_SQL_TINDAKAN.upsert).bind(kunci, butir, t.pelaksana, t.batas, t.selesai, oleh, kini);
