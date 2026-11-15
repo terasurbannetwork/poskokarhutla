@@ -342,7 +342,7 @@ Aturan: nilai tidak diketahui ditulis `null` (bukan 0 dan bukan teks "aman"); `a
 | Renkon (F-12) | `pb_dokumen.jenis = 'renkon_peta'` hanya menyimpan penunjuk ke dokumen `/siklus` (`public/siklus/renkon.js`); isi renkon tetap di program Siklus (D10), tidak ada buku kejadian baru. Pemetaan kejadian per bencana ke Buku Besar Kejadian: `scripts/siklus/arsip_kejadian.py` ditambah awalan B, C, D, E, P, U, V dari `bencana.json kejadian.awalan`. Pemilik `siklus`. |
 | Penyedia angka laporan berkala (F-13) | `pb_ringkas.py` menulis blok `laporan_berkala` di tiap `ringkas/<id>.json`: daftar angka bernama stabil yang diminta perakit di paket `data/kajian-bnpb/laporan-berkala/` (`DESAIN-TEKNIS.md` paket itu menentukan nama kunci; bila belum ada, tiket F-13 menunggu dan mencatatnya, bukan mengarang nama). Perakit sendiri bukan bagian paket ini (D9). |
 
-Versi beku tidak pernah ditimpa: dokumen yang salah diperbaiki dengan versi baru (`versi + 1`), versi lama tetap `beku`. Tidak ada versi publik; dokumen hanya lewat rute berhak.
+Versi beku tidak pernah ditimpa: dokumen yang salah diperbaiki dengan versi baru (`versi + 1`), versi lama tetap `beku`. Bila `UPDATE` D1 gagal sesudah `put` R2 berhasil, berkas yatim menahan kunci versi itu: `bekukan` berikutnya untuk id yang sama dijawab 409 (put tulis-sekali), dan pemulihannya lewat rakit ulang yang memberi `versi + 1`. Tidak ada versi publik; dokumen hanya lewat rute berhak.
 
 ### 6.3 Dashboard pimpinan (F-18, F-19)
 

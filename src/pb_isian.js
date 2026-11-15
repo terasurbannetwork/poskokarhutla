@@ -370,3 +370,6 @@ export const RUTE_PB = {
   "POST /api/pb/hasil": hasil,
   "GET /api/pb/kepatuhan": kepatuhan,
 };
+
+/* dipakai src/pb_dokumen.js (PB-22): gerbang, badan, laju, pembersih, pemindai pribadi dan wilayah yang sama */
+export {rute, badan, lajuOK, lambat, bersih, RE_PRIBADI, wilayah, idBody, samaTetap};

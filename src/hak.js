@@ -698,3 +698,19 @@ export const pbKepatuhan = async (env, p, dari, sampai, bencana, prov) => {
   const [a, b] = await env.DB.batch([sedia(env, p, "pb_renlap_hasil", "baca", PB_SQL_HASIL.renlap).bind(dari, sampai, bencana, prov), sedia(env, p, "pb_renlap_hasil", "baca", PB_SQL_HASIL.rinci).bind(dari, sampai, bencana, prov)]);
   return {renlap: a.results[0].renlap, target: a.results[0].target, rinci: b.results};
 };
+
+/* PB-22 dokumen terbit (pb_dokumen; DESAIN-TEKNIS paritas-bencana 3.3, 6.2). Versi = max+1 dalam SATU INSERT..SELECT (UNIQUE menutup balapan). Beku tidak pernah di-UPDATE lagi (WHERE status = 'draf'). Tanpa DELETE.
+   Daftar lewat indeks pb_dokumen_periode (rentang periode), satu lewat PK. Kolom oleh tidak pernah keluar. */
+Object.assign(MATRIKS, {pb_dokumen: {pb_baca: ["baca"], pb_tulis: ["baca", "tambah", "ubah"]}});
+const KOL_PB_DOK = "id, jenis, bencana, prov, kab, kib, periode, versi, status, ukuran, sha, dibuat, dibekukan";
+export const PB_SQL_DOK = {
+  rakit: `INSERT INTO pb_dokumen (id, jenis, bencana, prov, kab, kib, periode, versi, status, oleh, dibuat)
+    SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, v, 'draf', ?8, ?9 FROM (SELECT coalesce(max(versi), 0) + 1 v FROM pb_dokumen WHERE jenis = ?2 AND bencana = ?3 AND prov = ?4 AND kab = ?5 AND periode = ?7)`,
+  satu: `SELECT ${KOL_PB_DOK} FROM pb_dokumen WHERE id = ?`,
+  daftar: `SELECT ${KOL_PB_DOK} FROM pb_dokumen WHERE periode BETWEEN ?3 AND ?4 AND jenis = ?1 AND (?2 = '' OR bencana = ?2) AND (?5 = '' OR prov = ?5) ORDER BY periode DESC, versi DESC LIMIT 200`,
+  beku: "UPDATE pb_dokumen SET status = 'beku', ukuran = ?2, sha = ?3, dibekukan = ?4 WHERE id = ?1 AND status = 'draf'",
+};
+export const pbStmtDokRakit = (env, p, d, oleh, kini) => sedia(env, p, "pb_dokumen", "tambah", PB_SQL_DOK.rakit).bind(d.id, d.jenis, d.bencana, d.prov, d.kab, d.kib, d.periode, oleh, kini);
+export const pbDokById = (env, p, id) => sedia(env, p, "pb_dokumen", "baca", PB_SQL_DOK.satu).bind(id).first();
+export const pbDokDaftar = async (env, p, jenis, bencana, dari, sampai, prov) => (await sedia(env, p, "pb_dokumen", "baca", PB_SQL_DOK.daftar).bind(jenis, bencana, dari, sampai, prov).all()).results;
+export const pbDokBeku = async (env, p, id, ukuran, sha, kini) => (await sedia(env, p, "pb_dokumen", "ubah", PB_SQL_DOK.beku).bind(id, ukuran, sha, kini).run()).meta.changes;

@@ -81,6 +81,7 @@ import {RUTE_OMC} from "./omc.js";
 import {RUTE_OPERASI} from "./operasi_udara.js";
 import {RUTE_ISIAN} from "./operasi_isian.js";
 import {RUTE_PB} from "./pb_isian.js";
+import {RUTE_PB_DOK} from "./pb_dokumen.js";
 import {RUTE_SEMAI} from "./operasi_semai.js";
 import {RUTE_JARAK_PANDANG} from "./jarak_pandang.js";
 import {RUTE_LAPORAN_KARHUTLA, buatDrafLaporanKarhutla} from "./laporan_karhutla.js";
@@ -641,6 +642,7 @@ const RUTE = {
   ...RUTE_SEMAI,   // peluang semai awan: berkas R2 + target renlap OMC (src/operasi_semai.js, migrasi 0129)
   ...RUTE_ISIAN,   // isian manual operasi udara (src/operasi_isian.js, migrasi 0126)
   ...RUTE_PB,   // paritas bencana: sarana dan fasilitas sasaran (src/pb_isian.js, migrasi 0130)
+  ...RUTE_PB_DOK,   // paritas bencana: dokumen sitrep, renops, laporan KIB (src/pb_dokumen.js, migrasi 0131)
   ...RUTE_LAPORAN_KARHUTLA,   // Laporan Karhutla otomatis: draf, kirim, verifikasi, kunci, ralat, snapshot (src/laporan_karhutla.js)
   ...RUTE_PANTAU,   // Meja Pantau: antrean kerja harian staf (src/pantau.js)
   ...RUTE_OPS,   // operasi pemadaman lapangan (src/operasi_lapangan.js)
