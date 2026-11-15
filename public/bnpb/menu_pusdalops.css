@@ -46,3 +46,22 @@ html[data-baca-saja] .lb-isian>.pp-cat{display:none}
 html[data-baca-saja] .lm-tagih-aksi{display:none}
 /* /bnpb/dalops tab jenis: tombol WA minta pembaruan atau konfirmasi selesai (Cek Kabar Luar CK-06) */
 html[data-baca-saja] .dl-wa{display:none}
+
+/* Panel kiri ikut token tema di terang dan gelap (dasbor.css masih memakai warna literal #fff/#0b2545/#2f6fd6; dimuat sesudah berkas ini, jadi selektor di sini
+   diberi aside.db-nav supaya menang). Kontras dihitung: ink/card 15,8 (terang) 14,4 (gelap); ink2/card 6,0 dan 8,0; ink2/surface 5,3 dan 7,3; on-head/head-bg 15,8. */
+aside.db-nav{--db-h2:var(--surface);--db-h2-garis:var(--line);background:var(--card);border-color:var(--line);color:var(--ink)}
+aside.db-nav .db-nav-id b,aside.db-nav .db-nav-g,aside.db-nav .db-nav-b.mp-induk{color:var(--ink)}
+aside.db-nav .db-nav-id{box-shadow:inset 4px 0 0 var(--head-bg)}
+aside.db-nav .db-nav-g>i{background:var(--head-bg)}
+aside.db-nav .db-nav-g svg{color:var(--on-head)}
+aside.db-nav .db-nav-b{color:var(--ink);transition:background var(--dur-1) var(--ease),color var(--dur-1) var(--ease)}
+aside.db-nav .db-nav-b:hover{background:var(--surface);color:var(--ink)}
+aside.db-nav .db-nav-b:focus-visible{outline:2px solid var(--info-tx);outline-offset:-2px;background:var(--surface);color:var(--ink)}
+aside.db-nav .db-nav-b:active{background:var(--line)}
+aside.db-nav .db-nav-ik{background:var(--surface)}
+aside.db-nav .db-nav-ik svg{color:var(--info-tx)}
+aside.db-nav .db-nav-b[aria-current="true"],aside.db-nav .db-nav-b[aria-current="true"]:hover{background:var(--brand);color:var(--on-brand)}
+aside.db-nav .db-nav-b[aria-current="true"] .db-nav-ik{background:color-mix(in oklch,var(--on-brand) 16%,transparent)}
+aside.db-nav .db-nav-b[aria-current="true"] .db-nav-ik svg{color:var(--on-brand)}
+aside.db-nav .db-nav-b.mp-induk{font-weight:800}
+@media (prefers-reduced-motion:reduce){aside.db-nav .db-nav-b{transition:none}}

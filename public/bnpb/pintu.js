@@ -68,8 +68,8 @@
   const host = document.getElementById("pintu");
   document.getElementById("admin").append(svg("admin"), "Pintu admin");
   for (const [id, judul, href, ikon, ambilAngka, petugas, sumber] of KARTU) {
-    const angka = h("div", {class: "pt-angka"}), a = h("a", {class: "bn-kartu pt-kartu", href, id: "k-" + id},
-      h("h2", null, svg(ikon), judul, h("span", {class: "pt-panah"}, svg("panah"))), angka, petugas ? pil(petugas, "meja") : null, sumber ? h("div", {class: "bn-label", teks: "Sumber: " + sumber}) : null);
+    const angka = h("div", {class: "pt-angka"}), a = h("a", {class: "bn-kartu pt-kartu", href, id: "k-" + id, title: sumber ? "Sumber: " + sumber : null},
+      h("h2", null, svg(ikon), judul, h("span", {class: "pt-panah"}, svg("panah"))), angka, petugas ? pil(petugas, "meja") : null);
     const kosong = () => angka.append(h("span", {class: "bn-label", teks: "belum ada data"}));
     host.append(a);
     ambilAngka().then(x => { if (!x) return kosong(); angka.append(h("span", {class: "bn-angka", teks: x[0]}), h("span", {class: "bn-label", teks: x[1]})); if (x[2]) a.append(pil(x[2], "risiko")); }).catch(kosong);
