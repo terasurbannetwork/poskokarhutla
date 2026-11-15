@@ -33,3 +33,14 @@ test('bukti terpilih hanya kunci yang diminta server', () => {
 test('tanpa titik tengah dan tanpa huruf kapital semua di teks tampil', () => {
   for (const [, , n] of Object.values(WARNA)) assert.doesNotMatch(n, /·|^[A-Z ]+$/);
 });
+test('konteks IODA: per provinsi, tanpa data = tidak ada data, tanpa titik tengah', async () => {
+  const {konteksIoda, teksIoda} = await import('../../public/siklus/lifeline.js');
+  const d = {dari: '2025-10-29', sampai: '2026-10-28', per_provinsi: {32: {peristiwa: 2, jam_total: 9}}, peristiwa: [{prov: '32', tanggal: '2026-05-01'}, {prov: '32', tanggal: '2026-09-02'}, {prov: '63', tanggal: '2026-10-24'}]};
+  const [a, b] = konteksIoda(d, ['3201', '3202', '63'].map(x => x.slice(0, 2)));
+  assert.equal(konteksIoda(d, ['32', '32', '63']).length, 2);
+  assert.deepEqual([a.prov, a.ada, a.peristiwa, a.terbaru], ['32', true, 2, '2026-09-02']);
+  assert.equal(b.ada, false);
+  assert.match(teksIoda(b, 'Papua'), /tidak ada data$/);
+  assert.equal(konteksIoda(null, ['32'])[0].ada, false);
+  assert.doesNotMatch(teksIoda(a, 'Jawa Barat'), /·|\bnull\b|undefined|NaN/);
+});

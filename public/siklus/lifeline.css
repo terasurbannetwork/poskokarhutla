@@ -19,3 +19,5 @@
 .lf-pil[data-w="ok"]{background:var(--ok);color:var(--on-pekat)}
 .lf-pil[data-w="bad"]{background:var(--bad);color:var(--on-pekat)}
 .lf-pil[data-w="warn"]{background:var(--warn);color:var(--ink)}
+.lf-ioda{display:grid;gap:8px;margin-top:20px}
+.lf-ioda h4{margin:0;font-size:.8125rem;text-transform:none}

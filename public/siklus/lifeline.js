@@ -1,7 +1,7 @@
 /* Kartu "Status layanan" di halaman kejadian (LF-06; data/kajian-bnpb/lifeline/DESIGN-SYSTEM.md, ALUR A3 A4).
    Rute: GET /api/siklus/kejadian/:id/lifeline, GET .../lifeline/sel, POST .../lifeline (src/lifeline.js). 503 = migrasi belum diterapkan: catatan tenang, bukan galat.
    Klik sel membuka laci seketika; isyarat dan riwayat dimuat sesudahnya lewat nanti() (INP). Status resmi ditetapkan staf; usulan hanya saran. */
-import {h, api, kartu, kead, kosongkan, tombol, toast, namaKab, wib, angka, peran} from "./inti.js";
+import {h, api, kartu, kead, kosongkan, tombol, toast, namaKab, namaProv, wib, angka, tgl, peran} from "./inti.js";
 
 const G = globalThis;
 export const LAYANAN = [["listrik", "Listrik"], ["sinyal", "Sinyal"], ["air", "Air"], ["jalan", "Jalan"], ["bbm", "BBM"], ["faskes", "Faskes"], ["pangan", "Pangan"], ["pengungsian", "Pengungsian"]];
@@ -31,6 +31,19 @@ export const buktiDipilih = (isyarat, centang) => (isyarat ?? []).filter((_, i) 
 const NAMA_SUMBER = {lapor_warga: "Lapor warga", logbook: "Logbook Pusdalops", meja_dampak: "Meja dampak", meja_pengungsi: "Meja pengungsi"};
 export const teksIsyarat = b => `${NAMA_SUMBER[b.sumber] ?? b.sumber}, ${String(b.kode).replaceAll("_", " ").replaceAll(":", " ")}${b.jumlah != null ? `, ${angka(b.jumlah)}` : ""}${b.waktu != null ? `, ${wib(b.waktu) ?? ""}` : ""}${b.label ? ` (${b.label})` : ""}`;
 
+/* konteks provinsi IODA (LF-08, D6): per provinsi, tidak pernah menjadi warna kab dan tidak pernah usulan. Sumber public/data/internet_padam.json (dibaca apa adanya); tanpa berkas atau provinsi tak tercantum = "tidak ada data". */
+export function konteksIoda(d, provs) {
+  return [...new Set(provs)].sort().map(p => {
+    const e = d?.per_provinsi?.[p];
+    if (!e) return {prov: p, ada: false};
+    const ev = (d.peristiwa ?? []).filter(x => x.prov === p).map(x => x.tanggal).sort();
+    return {prov: p, ada: true, peristiwa: e.peristiwa ?? null, jam: e.jam_total ?? null, terbaru: ev.length ? ev[ev.length - 1] : null, dari: d.dari ?? null, sampai: d.sampai ?? null};
+  });
+}
+export const teksIoda = (k, nama) => !k.ada ? `${nama}: tidak ada data` : `${nama}: ${k.peristiwa == null ? "tidak ada data" : angka(k.peristiwa)} peristiwa penurunan sinyal internet${k.jam != null ? `, total ${angka(k.jam)} jam` : ""}, ${k.terbaru ? `terbaru ${tgl(k.terbaru) ?? k.terbaru}` : "belum ada peristiwa terbaru tercatat"}, periode ${tgl(k.dari) ?? "tidak ada data"} sampai ${tgl(k.sampai) ?? "tidak ada data"}`;
+let iodaJanji = null;
+const muatIoda = () => iodaJanji ||= fetch("/data/internet_padam.json").then(r => r.ok ? r.json() : null).catch(() => null);
+
 /* ---------- tampilan ---------- */
 const muatCss = () => { if (typeof document === "undefined" || document.querySelector('link[href="/siklus/lifeline.css"]')) return; document.head.append(h("link", {rel: "stylesheet", href: "/siklus/lifeline.css"})); };
 
@@ -55,7 +68,13 @@ export function kartuLifeline(id, P = {}) {
     if (r.status === 503 || r.status === 404) return isi.replaceChildren(kead("kosong", {teks: r.status === 503 ? "Status layanan belum diaktifkan." : "Belum ada kabupaten atau kota terpasang pada kejadian ini."}));
     if (!r.ok) return isi.replaceChildren(r.status === 401 ? kead("sesi") : kead("galat", {teks: r.status === 403 ? (r.j?.galat || "Peran kamu belum berhak membuka bagian ini") : undefined, ulang: muat}));
     const g = r.j; if (!g?.kab?.length) return isi.replaceChildren(kead("kosong", {teks: "Belum ada kabupaten atau kota terpasang pada kejadian ini."}));
-    isi.replaceChildren(tabel(g, laci), h("p", {class: "lf-ket"}, "B baik, T terganggu, L lumpuh, ? belum diketahui. Titik kecil: usulan mesin berbeda dari status resmi."));
+    const ioda = h("div", {class: "lf-ioda"}, h("h4", {}, "Konteks provinsi, padam internet IODA"), kead("memuat"));
+    isi.replaceChildren(tabel(g, laci), h("p", {class: "lf-ket"}, "B baik, T terganggu, L lumpuh, ? belum diketahui. Titik kecil: usulan mesin berbeda dari status resmi."), ioda);
+    G.nanti(async () => {
+      const d = await muatIoda(), ks = konteksIoda(d, g.kab.map(k => String(k.kab4).slice(0, 2)));
+      ioda.replaceChildren(h("h4", {}, "Konteks provinsi, padam internet IODA"), h("ul", {class: "lf-isy"}, ks.map(k => h("li", {}, teksIoda(k, namaProv(k.prov))))),
+        h("p", {class: "lf-ket"}, "Per provinsi dan per periode data, bukan khusus kejadian ini; tidak menjadi warna sel dan bukan bukti listrik atau seluler padam."));
+    });
   }
   function laci(kab4, l) {
     const nama = LAYANAN.find(x => x[0] === l)[1], d = h("dialog", {class: "dlg lf-laci"}), badan = h("div", {class: "lf-isi"}, kead("memuat"));

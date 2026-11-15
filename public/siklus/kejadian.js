@@ -5,6 +5,7 @@ import {h, ik, K, api, kartu, hl, wadah, para, kead, kead_dari, kosongkan, seg, 
   wilayah, angka, tgl, wib, tglWib, geser, peran, penjaga, selisihAntarsumber} from "./inti.js";
 import {FASE, RE_KJ, faseSah} from "./hitung.js";
 import {kartuLifeline} from "./lifeline.js";
+import {kartuTigaW} from "./tiga_w.js";
 
 const G = globalThis, HALAMAN = 50, BATAS_MUAT = 100;
 const KEL = () => (K.kelompok || [["semua", "Semua", "semua"]]).map(([v, t, i]) => [v, t, i]);
@@ -327,5 +328,5 @@ function detailHidup(id, d, P, ulang) {
       }, "bolak", "Pindahkan baris sumber ke kejadian lain") : null);
   })) : kead("kosong", {teks: "Belum ada sumber terpasang"})]});
 
-  return [kepala, h("div", {class: "sk-detail"}, h("div", {}, ringkasan, tahapKartu, waktu, dampak, kartuLifeline(id, P), paparan, kaji, pulih), h("div", {}, terpasang))];
+  return [kepala, h("div", {class: "sk-detail"}, h("div", {}, ringkasan, tahapKartu, waktu, dampak, kartuLifeline(id, P), kartuTigaW(id, P), paparan, kaji, pulih), h("div", {}, terpasang))];
 }

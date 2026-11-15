@@ -39,23 +39,33 @@
   },
   "GET /api/siklus/kejadian/:id/tawaran": {
    "server": "tests/warga/tiga_w_rute.test.mjs",
-   "klien": []
+   "klien": [
+    "tests/siklus/tiga_w_layar.test.mjs"
+   ]
   },
   "POST /api/siklus/kejadian/:id/tawaran": {
    "server": "tests/warga/tiga_w_rute.test.mjs",
-   "klien": []
+   "klien": [
+    "tests/siklus/tiga_w_layar.test.mjs"
+   ]
   },
   "POST /api/siklus/kejadian/:id/tawaran/:sid/keputusan": {
    "server": "tests/warga/tiga_w_rute.test.mjs",
-   "klien": []
+   "klien": [
+    "tests/siklus/tiga_w_layar.test.mjs"
+   ]
   },
   "GET /api/siklus/org": {
    "server": "tests/warga/tiga_w_rute.test.mjs",
-   "klien": []
+   "klien": [
+    "tests/siklus/tiga_w_layar.test.mjs"
+   ]
   },
   "POST /api/siklus/org": {
    "server": "tests/warga/tiga_w_rute.test.mjs",
-   "klien": []
+   "klien": [
+    "tests/siklus/tiga_w_layar.test.mjs"
+   ]
   },
   "GET /api/siklus/ingest/modul": {
    "server": "tests/warga/kejadian_tautan.test.mjs",

@@ -1,0 +1,20 @@
+/* Kartu 3W dan Tawaran (TW-08). Warna hanya lewat token tema. */
+.tw-tab td.t,.tw-tab th.t{padding:4px;text-align:center}
+.tw-sel{display:flex;align-items:center;justify-content:center;width:100%;min-width:2.25rem;min-height:2.25rem;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font-weight:700;font-size:.8125rem;cursor:pointer}
+.tw-sel[data-t="celah"]{border:2px dashed var(--ink2);background:transparent;color:var(--ink2)}
+.tw-sel[data-t="tumpang"]{background:var(--warn);color:var(--ink);border-color:var(--warn)}
+.tw-sel[data-t="kosong"]{color:var(--ink2)}
+.tw-sel:focus-visible,.tw-baris:focus-visible{outline:2px solid var(--info);outline-offset:2px}
+.tw-ket{margin:10px 0 0;font-size:.75rem;color:var(--ink2)}
+.tw-baris{cursor:pointer}
+.tw-pil{display:inline-block;padding:1px 8px;border-radius:999px;font-weight:700;font-size:.75rem;background:var(--line);color:var(--ink)}
+.tw-pil[data-s="diterima"]{background:var(--ok);color:var(--on-pekat)}
+.tw-pil[data-s="ditolak"]{background:var(--bad);color:var(--on-pekat)}
+.tw-pil[data-s="dialihkan"]{background:var(--warn);color:var(--ink)}
+.tw-laci{max-width:36rem}
+.tw-isi{display:grid;gap:20px;padding:0 4px}
+.tw-bag{display:grid;gap:8px}
+.tw-bag h4{margin:0;font-size:.8125rem;text-transform:none}
+.tw-bag p{margin:0}
+.tw-dft{margin:0;padding-left:18px;display:grid;gap:6px;font-size:.8125rem}
+.tw-hasil input{width:100%}
