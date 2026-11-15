@@ -45,6 +45,8 @@
     "formulir.JENIS_TABEL": "MEDAN memuat empat jenis butir tepat",
     "formulir.URUTAN_WAKTU": "urutan waktu log = pasangan di trigger",
     "formulir.cekButir": "log minimal sah diterima",
+    "formulir.periksaFase2": "fase 2: server baru = lama (ok dan data simpan)",
+    "formulir.MEDAN_INSPEKSI": "cekButir baru = lama (ok dan himpunan medan gagal) pada semua jenis",
     "keadaan.memuat": "memuat: kerangka abu aria-busy",
     "keadaan.kosong": "kosong: kalimat apa yang kosong",
     "keadaan.galat": "galat: 403 dan 503 punya kalimat tetap",

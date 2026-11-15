@@ -7,14 +7,14 @@
    - Peta luring: cache "pb-peta-luring" diisi lapangan_tugas.js ("Simpan peta area ini"); di sini hanya DIBACA (cache-first untuk tiles.openfreemap.org) dan TIDAK ikut dibersihkan saat versi naik.
    Naikkan VERSI bila logika berubah; cache cangkang/API versi lama dihapus saat aktif. */
 "use strict";
-const VERSI = 5, CANGKANG = `pb-lapangan-cangkang-v${VERSI}`, API = `pb-lapangan-api-v${VERSI}`, PETA = "pb-peta-luring-v1";
+const VERSI = 6, CANGKANG = `pb-lapangan-cangkang-v${VERSI}`, API = `pb-lapangan-api-v${VERSI}`, PETA = "pb-peta-luring-v1";
 const TAWAR_MS = {halaman: 4000, api: 7000};
 const JALUR_API = new Set(["/api/lapangan/saya", "/api/lapangan/tugas", "/api/lacak/info", "/api/sippa/lapangan/saya"]);
 const KUNCI_KREDENSIAL = {"/api/lapangan/saya": "x-kode-regu", "/api/lapangan/tugas": "x-kode-regu", "/api/lacak/info": "x-lacak", "/api/sippa/lapangan/saya": "x-kode"};
 const HALAMAN = {"/lapangan": "/lapangan", "/lapangan/": "/lapangan", "/lapangan.html": "/lapangan", "/lacak": "/lacak", "/lacak/": "/lacak", "/pipa/lapangan": "/pipa/lapangan", "/pipa/lapangan/": "/pipa/lapangan"};
 /* berkas yang dimuat belakangan (formulir rumah rusak, Kartu Api, peta): dipasang di muka supaya ada saat luring. URL persis sama dengan yang dimuat lapangan.js. */
 const TAMBAHAN_LAPANGAN = ["/vendor/maplibre/maplibre-gl.js?v=4.7.1", "/vendor/maplibre/maplibre-gl.css?v=4.7.1", "/rumah_rusak.js?v=1", "/rumah_rusak.css?v=1", "/inti/lapor-gelap.css?v=1&k=2", "/img/logo.svg"];
-const TAMBAHAN = {"/lapangan": TAMBAHAN_LAPANGAN, "/lacak": ["/img/logo.svg"], "/pipa/lapangan": ["/img/logo.svg", "/vendor/qrcode/qrcode.min.js?v=1", "/pipa/ikon.js", "/pipa/formulir.js", "/pipa/antre.js", "/inti/antre.js", "/inti/antre.css"]}   // modul ES yang di-import lapangan.js (acuanLokal hanya membaca <script src>); diuji terhadap import sebenarnya;
+const TAMBAHAN = {"/lapangan": TAMBAHAN_LAPANGAN, "/lacak": ["/img/logo.svg"], "/pipa/lapangan": ["/img/logo.svg", "/vendor/qrcode/qrcode.min.js?v=1", "/pipa/ikon.js", "/pipa/formulir.js", "/pipa/antre.js", "/inti/antre.js", "/inti/antre.css", "/inti/spek.js"]}   // modul ES yang di-import lapangan.js (acuanLokal hanya membaca <script src>); diuji terhadap import sebenarnya;
 
 /* src/href lokal .js/.css/.svg dari teks HTML (fungsi murni; diuji di Node lewat vm) */
 function acuanLokal(html) {

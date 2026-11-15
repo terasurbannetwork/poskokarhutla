@@ -149,7 +149,7 @@ test("formulir.js tanpa DOM dan tanpa global peramban", () => {
   for (const kata of ["document", "window", "localStorage", "sessionStorage", "navigator", "indexedDB", "fetch(", "location", "toFixed("]) {
     assert.ok(!kode.includes(kata), `formulir.js memakai ${kata}`);
   }
-  assert.ok(!/\bimport\b[^;]*['"]\.\.?\/(inti|admin)/.test(kode), "tidak mengimpor modul public/inti");
+  assert.ok(!/\bimport\b[^;]*['"]\.\.?\/(inti(?!\/spek\.js['"])|admin)/.test(kode), "tidak mengimpor modul public/inti selain spek bersama (KP-18 b)");
 });
 
 test("teks antarmuka: tanpa em dash, tanpa titik tengah, tanpa 'terbukti'", () => {

@@ -54,6 +54,15 @@
         "formulir.js": "9f4410bfcaa03d9f08df0e81650f02b428d5707a27a06eb25a607b80cc3054c6",
         "ikon.js": "933309865cdaa07ee668345dcc251997c7006ab829f4b8caaec2f5393836ad51"
       }
+    },
+    "7": {
+      "sw": 6,
+      "sha256": {
+        "lapangan.js": "be09c69a0468c2ab494903d3be327dc4427d0c00bd37c2eb60963d0c1bc19bdd",
+        "antre.js": "0e9d6237de782cf381cf1051d8656b3be579b7d0ca2e63efb31b22809c12a64d",
+        "formulir.js": "4189cc5396f3babfce42913f5419585e03a73425e7b7116d6b670d85f27930e3",
+        "ikon.js": "933309865cdaa07ee668345dcc251997c7006ab829f4b8caaec2f5393836ad51"
+      }
     }
   },
   "css": {

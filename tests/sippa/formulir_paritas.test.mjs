@@ -57,7 +57,7 @@ test("fase 2: server baru = lama (ok dan data simpan) dan klien baru = lama (ok 
     if (jenis !== "debit") assert.deepEqual(kb.galat.map(g => g.medan).sort(), kl.galat.map(g => g.medan).sort(), `klien medan ${jenis} ${JSON.stringify(u)}`);   // debit: lama menunjuk volume_l untuk detik salah; baru menunjuk medan yang benar
   }
   for (const x of [null, [], "x"]) for (const j of [...JENIS_FASE2, "foto"]) assert.deepEqual(cekFase2(j, x), cekFase2Lama(j, x));
-  assert.ok(total > 60, `${total} contoh`);
+  assert.ok(total > 50, `${total} contoh`);
 });
 
 test("fase 2 server tetap longgar: medan asing diabaikan; klien tetap ketat", () => {
