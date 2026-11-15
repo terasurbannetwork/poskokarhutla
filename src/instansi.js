@@ -22,7 +22,7 @@ import {catatAwalTugas} from "./alarm_himawari.js";
 import {kabarLevel3} from "./kabar.js";
 import {modAtauStaf, dalamWilayahStaf, dariStaf, stafNyata, P_VALIDASI, P_KONSESI} from "./staf.js";
 import {bersihkanPenugasan, dummyPenugasan, hapusDummyPenugasan, PERAN} from "./penugasan.js";
-import {tugasBencanaPer, tugasBencanaAda, stmtTugasBencanaBaru, tanpaTabelPb, tugasBukaJenis, tugasTungguVerifJenis, tugasRedaCukupJenis, stmtRedaTugas} from "./hak.js";
+import {mkSesiPeran, mkCabutSesiPeran, tugasBencanaPer, tugasBencanaAda, stmtTugasBencanaBaru, tanpaTabelPb, tugasBukaJenis, tugasTungguVerifJenis, tugasRedaCukupJenis, stmtRedaTugas} from "./hak.js";
 import {BENCANA, BENCANA_X, DAFTAR_BENCANA, bencanaId, labelBencana, tutupBencana, bacaBencana, butirReda, pasKartuBencana} from "./tugas_bencana.js";
 import {bacaUji, ujiAda, GALAT_BELUM, stmtUji, stmtUjiTugasBaru} from "./uji_lapangan.js";
 
@@ -156,6 +156,16 @@ async function gantiSandi(env, req, kini) {
     env.DB.prepare("DELETE FROM instansi_sesi WHERE akun_id = ? AND token_sha != ?").bind(a.id, await sha(m[1])), stmtJejak(env, "pengguna", a.id, "ganti_sandi", null, kini)]);
   await env.DB.prepare("DELETE FROM push_langganan WHERE akun_id = ?").bind(a.id).run().catch(() => {});   // sesi lain dicabut: perangkat lain tidak boleh tetap menerima push (migrasi 0040 belum ada = dilewati)
   return json({sandi: s.sandi});   // tampil sekali; tidak disimpan, tidak di-log
+}
+/* Satu Pintu Masuk (PM-06): sesi tanpa sandi untuk akun yang nomornya baru dibuktikan; larik set-cookie (dua Path) atau null bila akun tidak aktif. Aturan umur dan cookie milik modul ini. */
+export async function sesiUntuk(env, akunId, kini) {
+  const token = acak(32);
+  return await mkSesiPeran(env, "instansi", akunId, await sha(token), kini, kini + SESI_UMUR) ? cookieSet(token, SESI_UMUR / 1000) : null;
+}
+export async function cabutSesi(env, req) {
+  const m = (req.headers.get("cookie") || "").match(new RegExp(`(?:^|;\\s*)${COOKIE}=([0-9a-f]{64})`));
+  if (m) await mkCabutSesiPeran(env, "instansi", await sha(m[1]));
+  return cookieSet("", 0);
 }
 async function keluar(env, req, kini) {
   const m = (req.headers.get("cookie") || "").match(new RegExp(`(?:^|;\\s*)${COOKIE}=([0-9a-f]{64})`));

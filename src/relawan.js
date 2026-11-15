@@ -15,7 +15,9 @@ import {tx, num, wib, tglSah, RE_PROV, modOK, superOK} from "./posko.js";
 import {laju, lajuIP, kodeBaru, pemegangKode, halamanBnpbPublik} from "./bnpb.js";
 import {halamanAdmin} from "./statistik.js";
 import {halamanBnpb} from "./admin_halaman.js";
-import {salinOrang, hapusOrang} from "./lapangan.js";
+import {salinOrang, hapusOrang, STATUS_RELAWAN_ARR} from "./lapangan.js";
+import {sesiMasuk} from "./masuk_sesi.js";
+import {mkRelawanDariWa} from "./hak.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, MAKS_SESI_MENIT = 960;
 /* daftar tetap: sama dengan CHECK/trigger di 0023 (dijaga tests/warga/relawan.test.mjs) dan public/bnpb/relawan.js (label) */
@@ -220,11 +222,20 @@ async function kapasitas(env, req, url, kini, ctx) {
 
 /* ================================================================ relawan (kode pribadi) */
 const cariRelawan = env => sha_ => env.DB.prepare("SELECT * FROM relawan WHERE kode_sha = ?").bind(sha_).first();
-const dariKode = (env, req, kini) => pemegangKode(env, req, "relawan", cariRelawan(env), kini);
+/* Satu Pintu Masuk (PM-06): sesi=true, tanpa x-kode, sesi_masuk sah + nomor terikat TEPAT satu relawan berstatus sah = baris relawan (tanpa wa, email, gol_darah, darurat_*) bertanda `lewat_sesi`.
+   Hanya GET /api/relawan/saya dan ubah siap/istirahat/ketersediaan yang membuka sesi; cabut data dan aksi penugasan tetap butuh tautan kode pribadi. */
+async function relawanDariSesi(env, req, kini) {
+  try {
+    const s = await sesiMasuk(env, req, kini); if (!s) return null;
+    const r = await mkRelawanDariWa(env, s.wa, STATUS_RELAWAN_ARR);
+    return r.length === 1 ? {...r[0], lewat_sesi: true} : null;
+  } catch (e) { if (/no such table/i.test(String(e?.message || e))) return null; throw e; }
+}
+const dariKode = async (env, req, kini, sesi = false) => (sesi && !req.headers.get("x-kode") && await relawanDariSesi(env, req, kini)) || pemegangKode(env, req, "relawan", cariRelawan(env), kini);
 export const ALUR = ["terdaftar", "diverifikasi", "siap_tugas", "ditugaskan", "bertugas", "selesai"];
 
 async function relawanSaya(env, req, kini) {
-  const r = await dariKode(env, req, kini); if (r instanceof Response) return r;
+  const r = await dariKode(env, req, kini, true); if (r instanceof Response) return r;
   const [tugas, jam, latihan, kampus] = await Promise.all([
     env.DB.prepare(`SELECT g.id, g.status, g.asuransi, g.dibuat, p.judul, p.bencana, p.prov, p.kab, p.mulai, p.selesai, p.catatan FROM relawan_penugasan g JOIN relawan_permintaan p ON p.id = g.permintaan_id
       WHERE g.relawan_id = ? ORDER BY g.dibuat DESC LIMIT 50`).bind(r.id).all(),
@@ -243,10 +254,11 @@ const tutupJam = (env, relawanId, kini) => env.DB.prepare("UPDATE relawan_jam SE
 const batalkanTugas = (env, relawanId, kini) => env.DB.prepare("UPDATE relawan_penugasan SET status = 'dibatalkan', diubah = ? WHERE relawan_id = ? AND status IN ('ditawarkan', 'diterima', 'bertugas')").bind(kini, relawanId);
 
 async function ubahSaya(env, req, kini) {
-  const r = await dariKode(env, req, kini); if (r instanceof Response) return r;
+  const r = await dariKode(env, req, kini, true); if (r instanceof Response) return r;
   const lj = await laju(env, r.id, "relawan.ubah", [[JAM, 60]], kini); if (lj) return lj;
   const b = await bacaBody(req); if (b.galat) return salahBody(b);
   const o = b.o;
+  if (r.lewat_sesi && !["siap", "istirahat", "ketersediaan"].includes(o.aksi)) return gagal(403, "aksi ini butuh tautan kode pribadimu; masuk lewat nomor WhatsApp hanya membuka profil dan ketersediaan");
   if (r.status === "daftar_hitam") return gagal(403, "akunmu tidak bisa diubah. Hubungi admin.");
   if (o.aksi === "siap" || o.aksi === "istirahat") {
     const [dari, ke] = o.aksi === "siap" ? [["diverifikasi", "selesai"], "siap_tugas"] : [["siap_tugas"], "diverifikasi"];

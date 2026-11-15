@@ -67,3 +67,7 @@
   .mj-t-dampak tr:not([data-id]){padding:0 14px 14px}.mj-t-dampak .mj-rincian{text-align:justify;overflow-wrap:anywhere}
   .mj-t-dampak .mj-tanda{margin-top:0}.mj-t-dampak .mj-aksi .mj-btn{flex:1 1 auto;justify-content:center}
 }
+/* KP-20 kartu titik pengungsian */
+.mj-tp .ex-jd h3{display:flex;align-items:center;gap:8px;font-size:1.0625rem}.mj-tp .ex-jd h3 svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mj-tp .mj-tp-form{display:grid;gap:10px}.mj-tp .mj-tabel{min-width:640px}.mj-tp td small{font-size:0.7rem}
+.mj-tp input[type=date]{font:inherit;padding:4px 6px;border-radius:8px;border:1px solid var(--line,#e3e8f0)}

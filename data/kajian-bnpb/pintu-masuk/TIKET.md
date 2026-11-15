@@ -25,7 +25,7 @@ Tahap 3 (pelengkap): PM-13 sampai PM-16.
 
 | Tiket | Kerja | Berkas | Pengerja | Pemeriksa | Bukti | Menunggu |
 | --- | --- | --- | --- | --- | --- | --- |
-| PM-09 | Permohonan anggota dan aktif otomatis lewat kontak; pendataan aktif lewat kontak `bnpb`; tanda "cocok kontak" di antrean tinjau instansi; relawan diarahkan ke form relawan bernomor terisi; layar L5 | `src/masuk_undang.js`, `src/masuk.js`, `public/masuk.js` | `warga-api` | `guard-api`, `security-reviewer` | U-22 sampai U-24 | PM-08 |
+| PM-09 | Permohonan anggota dan aktif otomatis lewat kontak; pendataan aktif lewat kontak `bnpb`; tanda "cocok kontak" dan tanda "nomor belum dibuktikan" di antrean tinjau instansi, pendataan, dan kampus; pendaftaran dari pintu ini memakai nomor sesi, bukan ketikan; relawan diarahkan ke form relawan bernomor terisi; layar L5 | `src/masuk_undang.js`, `src/masuk.js`, `public/masuk.js` | `warga-api` | `guard-api`, `security-reviewer` | U-22 sampai U-24 | PM-08 |
 | PM-10 | Peta domain oleh admin dan kode ke email terpetakan | `src/masuk_undang.js`, `src/masuk.js` | `warga-api` | `security-reviewer` | U-25 | domain pengirim terverifikasi |
 | PM-11 | Undangan berantai, daftar dan cabut anggota, kartu "Undang rekan" | `src/masuk_undang.js`, `public/inti/undang.js` | `warga-api`, `inti-layar` | `guard-api`, `security-reviewer`, `inp-reviewer` | U-26 sampai U-28 | PM-06 |
 | PM-12 | Papan aktivasi 514 kab/kota | `src/masuk_undang.js`, `public/admin/aktivasi.js` | `warga-api` | `selera-angka`, `inp-reviewer`, `guard-api` | U-29, L-2, L-3 | PM-11 |

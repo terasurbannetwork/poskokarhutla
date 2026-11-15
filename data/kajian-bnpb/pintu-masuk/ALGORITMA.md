@@ -72,7 +72,8 @@ Catatan:
 
 - `relawan.wa` dan `orang.wa` tidak dijamin berawalan 62 (`migrations/0023_relawan.sql:47`, `0095:14`). Pencocokan memakai dua bentuk: `nomor` dan `"0" + nomor.slice(2)`.
 - Lebih dari satu baris `relawan` atau `orang` untuk satu nomor: tidak ada yang dibuka; orang diminta memakai tautan kodenya.
-- Dua akun bercookie dengan nomor sama di satu tabel: keduanya tampil di pemilih ruang.
+- Dua akun bercookie dengan nomor sama di satu tabel: keduanya tampil di pemilih ruang, tidak ada sesi otomatis untuk jenis itu, dan sesi baru terbit saat orang memilih satu.
+- Akun bertanda contoh (`dummy = 1`) tidak pernah dicocokkan.
 - Undangan yang masih berlaku untuk nomor itu diproses dulu (bagian 5), lalu pencarian dijalankan.
 - Akun rahasia tidak punya nomor dan tidak pernah dicari. Rute `/api/masuk/*` tidak pernah menerbitkan `sesi_admin`.
 

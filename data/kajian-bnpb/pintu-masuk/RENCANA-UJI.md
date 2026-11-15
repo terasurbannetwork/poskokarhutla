@@ -20,7 +20,7 @@ Semua perilaku di sini tinggal di luar TypeScript (D1, rute, cookie, batas laju)
 | U-12 | `/masuk` dan `/alun-alun` menjawab 200 untuk tamu; `/`, daftar relawan, dan halaman lain tetap 303 | PM-05 |
 | U-13 | Nomor yang sama dengan `instansi_akun.wa` aktif mendapat cookie instansi (dua Path) yang diterima rute `/api/instansi/*` | PM-06 |
 | U-14 | Akun berstatus tidak aktif, atau akun yang nomornya berbeda dari nomor terbukti, tidak mendapat sesi | PM-06 |
-| U-15 | Nomor dengan dua akun mendapat dua sesi dan daftar dua ruang | PM-06 |
+| U-15 | Nomor dengan dua akun berjenis beda mendapat dua sesi dan daftar dua ruang; dua akun berjenis sama tidak mendapat sesi otomatis, memilih satu menerbitkan sesinya, id asing ditolak | PM-06 |
 | U-16 | Relawan dan petugas: sesi bernomor sama membuka profil ringkas dan logbook; rute wajah, absen, dan data kesehatan menolak tanpa `x-kode`; dua baris bernomor sama tidak dibuka; status di luar `STATUS_RELAWAN_SAH` tidak dibuka; tautan kode lama tetap diterima | PM-06 |
 | U-17 | Keluar mencabut `mk_sesi` dan tiap sesi peran; cookie instansi dihapus di kedua Path | PM-06 |
 | U-18 | Staf tidak mendapat `sesi_staf` sebelum sandi benar; sandi salah menaikkan hitungan gagal staf | PM-07 |

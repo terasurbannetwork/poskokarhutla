@@ -134,6 +134,12 @@ async function masuk(env, req, kini) {
   if (m.hasil !== "ok") return gagal(401, "username atau sandi salah");
   const r = json({staf: ringkas(m.staf)}); r.headers.append("set-cookie", m.cookie); return r;
 }
+/* Satu Pintu Masuk (PM-06): hanya mencabut; sesi staf diterbitkan cobaMasukStaf sesudah sandi (PM-07) */
+export async function cabutSesi(env, req) {
+  const t = tokenDari(req);
+  if (t) await hapusSesiToken(env, SIS, await sha(t));
+  return [cookieSet("", 0)];
+}
 async function keluar(env, req) {
   const t = tokenDari(req);
   if (t) await hapusSesiToken(env, SIS, await sha(t));

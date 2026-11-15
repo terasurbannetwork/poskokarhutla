@@ -1,0 +1,12 @@
+/* Dashboard pimpinan (PB-31): kartu per bencana berdampingan sama tinggi, jarak 20px, pil jenis jamak melebar ujung ke ujung. Tanpa huruf kapital dipaksa. */
+.pm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px;align-items:stretch}
+.pm-grid>.ex{height:100%;margin:0}
+.pm-seg{flex-wrap:wrap}
+.pm-st{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px}
+.pm-ket{font-size:.8125rem;color:#41506a}
+.pm-pil{display:inline-flex;padding:3px 10px;border-radius:999px;font-size:.8125rem;font-weight:700;background:#eef3fb;color:#0b2545}
+.pm-segar{background:#e3f3ea;color:#1d6b45}
+.pm-basi{background:#fdf1d6;color:#7a5200}
+.pm-mati{background:#fbe3e0;color:#9b2c20}
+.pm-belum_tersedia{background:#e8ecf3;color:#41506a}
+.pm-hipotesis{background:#e7e1f7;color:#4a2f9c}

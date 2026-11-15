@@ -150,13 +150,15 @@ if (!CHROME) {
     await tab.klik("[data-baru]");
     await tab.tunggu("#mjForm");
     await tab.eval(`(() => { const f = document.querySelector('#mjForm'); const isi = {jumlah_diminta: "10", satuan: "kg", posko: "Posko Luring Uji", kebutuhan_untuk: "50"};
-      f.elements.barang.selectedIndex = 1; for (const [k, v] of Object.entries(isi)) f.elements[k].value = v; })()`);
+      const kontrol = k => f.querySelector('[id$="-' + k + '"]'), peristiwa = (e, t) => e.dispatchEvent(new Event(t, {bubbles: true}));   // form spek bersama: kontrol tanpa name, id sp<n>-<kolom>
+      const br = kontrol("barang"); br.selectedIndex = 1; peristiwa(br, "change");
+      for (const [k, v] of Object.entries(isi)) { const e = kontrol(k); e.value = v; peristiwa(e, e.tagName === "SELECT" ? "change" : "input"); } })()`);
     const luring = (offline) => tab.kirim("Network.emulateNetworkConditions", {offline, latency: 0, downloadThroughput: -1, uploadThroughput: -1});
     await luring(true);
     try {
       tab.kosongkanGalat();
       await tab.klik("#mjForm button[type=submit]");
-      await tab.tungguFungsi("!document.querySelector('.antre-pita')?.hidden && /1 kiriman menunggu sinyal/.test(document.querySelector('.antre-pita').innerText)");
+      await tab.tungguFungsi("!document.querySelector('.antre-pita')?.hidden && /Belum terkirim: 1/.test(document.querySelector('.antre-pita').innerText)");
       assert.equal(await hitung(), sebelum, "catatan sampai ke server padahal peramban luring");
       assert.match(await tab.teks(), /Disimpan di perangkat/);
     } finally { await luring(false); }

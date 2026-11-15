@@ -1,11 +1,21 @@
 /* Satu Pintu Masuk, tiket PM-03 (data/kajian-bnpb/pintu-masuk/: ALGORITMA §2, DESAIN-TEKNIS §3-4, KEAMANAN-PRIVASI §2):
    minta dan periksa kode enam angka lewat WA, sesi akun umum (cookie sesi_masuk), profil minimal, keluar.
    Kode hanya disimpan sebagai HMAC berahasia MASUK_KUNCI, tidak pernah ada di jawaban API atau log. Pesan keluar lewat wa_antre (jenis 'otp'); tidak ada pembacaan WA masuk.
-   Belum di sini: akun peran, sandi staf, undangan, email, halaman (PM-06 sampai PM-16). Semua ambang ada di masuk_konst.js. */
-import {json, gagal, sha, hex, acak, bacaBody, normalWA, turnstileOK, ipHash} from "./worker.js";
+   PM-06: sesi peran (tiap modul menerbitkan dan mencabut sesinya sendiri; di sini tidak ada tulis ke tabel sesi/akun modul lain), pemilih ruang, keluar, nomor pemirsa.
+   PM-07: sandi staf sesudah kode lewat cobaMasukStaf; akun rahasia (sesi_admin) tidak pernah lewat sini. Belum di sini: undangan, email, halaman (PM-08 sampai PM-16). Semua ambang ada di masuk_konst.js. */
+import {json, gagal, sha, hex, acak, bacaBody, normalWA, turnstileOK, ipHash, cacheTepi} from "./worker.js";
 import {laju} from "./bnpb.js";
 import {emailAktif} from "./ews.js";
-import {mkJedaTerakhir, mkKodeBaru, mkNaikCobaSemua, mkHanguskanBanyak, mkSelesaiKode, mkPakaiKode, mkDenyutBaca, mkAkunUntuk, mkSesiBaru, mkSesiDari, mkCabutSesi} from "./hak.js";   // semua SQL di hak.js (gerbang d1)
+import {superOK} from "./posko.js";
+import {sesiUntuk as sesiInstansi, cabutSesi as cabutInstansi} from "./instansi.js";
+import {sesiUntuk as sesiPendataan, cabutSesi as cabutPendataan} from "./pendataan.js";
+import {sesiUntuk as sesiKampus, cabutSesi as cabutKampus} from "./kemitraan_akun.js";
+import {sesiUntuk as sesiPemirsa, cabutSesi as cabutPemirsa, arahPemirsa} from "./pemirsa.js";
+import {cabutSesi as cabutStaf, cobaMasukStaf, hanyaDirektori} from "./staf.js";
+import {STATUS_RELAWAN_ARR} from "./lapangan.js";
+import {mkJedaTerakhir, mkKodeBaru, mkNaikCobaSemua, mkHanguskanBanyak, mkSelesaiKode, mkPakaiKode, mkDenyutBaca, mkAkunUntuk, mkSesiBaru, mkCabutSesi,
+  mkRuangPeran, mkStafPerWa, mkLogMasuk, mkOrangDariWa, mkRelawanDariWa, mkPemirsaAda, mkPemirsaWaSet} from "./hak.js";   // semua SQL di hak.js (gerbang d1)
+import {sesiMasuk, tokenDari} from "./masuk_sesi.js";
 import * as K from "./masuk_konst.js";
 
 const BELUM = "fitur belum diaktifkan (migrasi masuk belum dijalankan)";
@@ -99,40 +109,156 @@ async function periksaKode(env, req, url, kini) {
   if (a.status !== "aktif") return gagal(403, "akun ini diblokir");
   const token = acak(32);
   await mkSesiBaru(env, await sha(token), a.id, kini, kini + K.SESI_UMUR_UMUM);
-  return json({ok: true, lengkap: a.setuju_pdp === 1, ruang: []}, 200, {"set-cookie": kukiSesi(token, K.SESI_UMUR_UMUM / 1000)});   // ruang diisi PM-06
+  /* sesi lama tiap akun peran yang terikat langsung ke nomor ini (D2, D4); akun yang gugur di tengah jalan (dicabut) tidak masuk daftar */
+  const kuki = [kukiSesi(token, K.SESI_UMUR_UMUM / 1000)], log = [], ruang = [];
+  for (const e of tandaiPilih((await cariRuang(env, nomor)).ruang)) {
+    if (e._s && !e.perlu_pilih) {   // lebih dari satu akun sejenis: tanpa sesi otomatis, orang memilih lewat /api/masuk/pilih
+      const c = await MODUL()[e._s[0]].buat(env, e._s[2], kini); if (!c) continue;
+      kuki.push(...c); log.push({id: acak(8), tabel: e._s[1], akun_id: e._s[2]});
+    }
+    ruang.push(e);
+  }
+  await mkLogMasuk(env, log, a.id, kini);
+  const r = json({ok: true, lengkap: a.setuju_pdp === 1, ruang: ruang.map(bersihRuang)});
+  for (const c of kuki) r.headers.append("set-cookie", c);
+  return r;
 }
 
 /* ---------------- sesi akun umum ---------------- */
-const tokenDari = req => /(?:^|;\s*)sesi_masuk=([0-9a-f]{64})(?:;|$)/.exec(req.headers.get("cookie") || "")?.[1] ?? null;
-/* pembaca sesi untuk tiket lain: baris {kode_pada, id, wa, nama, prov, kab, setuju_pdp} atau null. Melempar bila tabel mk_* belum ada (pemanggil menangkap). */
-export async function sesiMasuk(env, req, kini = Date.now()) {
-  const t = tokenDari(req); if (!t) return null;
-  return mkSesiDari(env, await sha(t), kini);
-}
+export {sesiMasuk};   // pembacanya ada di masuk_sesi.js
 const samar = wa => "•".repeat(wa.length - 4) + wa.slice(-4);   // nomor tidak pernah tampil terang
+
+/* ---------------- ruang: akun peran yang terikat langsung ke nomor terbukti (ALGORITMA 3) ---------------- */
+const MODUL = () => ({instansi: {buat: sesiInstansi, cabut: cabutInstansi}, pendataan: {buat: sesiPendataan, cabut: cabutPendataan}, kemitraan: {buat: sesiKampus, cabut: cabutKampus}, pemirsa: {buat: sesiPemirsa, cabut: cabutPemirsa}});   // dibuat saat dipanggil: aman dari siklus impor
+const JENIS_INSTANSI = {pemprov: "Pemerintah provinsi", pemkab: "Pemerintah kabupaten", pemkot: "Pemerintah kota", polda: "Polda", polres: "Polres", kodam: "Kodam", kodim: "Kodim"};
+/* satu nama cookie per jenis: bila nomor terikat ke lebih dari satu akun sejenis, tidak ada sesi otomatis; tiap baris membawa `pilih` (id akun) dan perlu_pilih */
+const tandaiPilih = ruang => {
+  const n = {}; for (const e of ruang) if (e._s) n[e._s[0]] = (n[e._s[0]] || 0) + 1;
+  return ruang.map(e => e._s && n[e._s[0]] > 1 ? {...e, pilih: e._s[2], perlu_pilih: true} : e);
+};
+const bersihRuang = ({_s, ...e}) => e;   // _s = [modul, tabel, akun id] hanya untuk server; `pilih` (id staf) tetap karena klien memilih akun staf lewat itu
+async function cariRuang(env, nomor) {
+  const p = await mkRuangPeran(env, nomor, K.AKUN_PER_JENIS), ruang = [];
+  const tambah = (jenis, nama_ruang, lembaga, wilayah, ke, butuh_sandi, _s, tambahan = {}) => ruang.push({jenis, nama_ruang, lembaga, wilayah, ke, butuh_sandi, ...tambahan, _s});
+  for (const a of p.instansi) tambah("instansi", "Ruang instansi", JENIS_INSTANSI[a.jenis] ?? a.jenis, a.wilayah, "/instansi", false, ["instansi", "instansi_akun", a.id]);
+  for (const a of p.pendataan) tambah("pendataan", "Pendataan Satu Data", a.unit_lain ?? a.unit, null, "/pendataan", false, ["pendataan", "pdt_akun", a.id]);
+  for (const a of p.kemitraan) tambah("kemitraan", "Kemitraan kampus", a.lembaga, null, "/kemitraan", false, ["kemitraan", "km_akun", a.id]);
+  for (const a of p.pemirsa) {
+    let tab = []; try { tab = JSON.parse(a.tab); } catch (e) {}
+    tambah("pemirsa", "Pantauan", a.nama, null, arahPemirsa({tab}, "/") ?? "/", false, ["pemirsa", "pemirsa", a.id]);
+  }
+  for (const a of p.staf) tambah("staf", "Panel staf BNPB", "BNPB", null, "/admin/pantau", true, null, {pilih: a.id});   // tanpa sesi: butuh sandi (D8)
+  /* relawan dan petugas: tanpa cookie baru (DESAIN-TEKNIS 4.3); tepat satu baris, yang lain tidak dibuka */
+  try {
+    const o = await mkOrangDariWa(env, nomor), r = await mkRelawanDariWa(env, nomor, STATUS_RELAWAN_ARR);
+    if (r.length === 1) tambah("relawan", "Relawan", "Relawan", r[0].kab, "/relawan/saya", false, null);
+    if (o.length === 1 || o.length === 0 && r.length === 1) tambah("petugas", "Petugas lapangan", o[0]?.unit ?? "Lapangan", o[0]?.kab ?? r[0]?.kab ?? null, "/petugas", false, null);
+  } catch (e) { if (!/no such table/i.test(String(e?.message || e))) throw e; }
+  return {ruang};
+}
 
 /* saluran kode: WA hidup bila gerbang berdenyut dalam DENYUT_MATI, email bila pengirimnya terkonfigurasi; tanpa data pribadi */
 async function saluran(env, kini) {
   const d = await mkDenyutBaca(env);
   return {wa: d != null && kini - d <= K.DENYUT_MATI, email: emailAktif(env)};
 }
-async function saluranPublik(env, req, url, kini) { return json(await saluran(env, kini), 200, {"cache-control": "public, max-age=15"}); }
+/* cache tepi 15 detik (cacheTepi, kunci tanpa query): tanpanya tiap permintaan membaca D1 dan header cache-control tidak berlaku di jalur ini */
+const saluranPublik = (env, req, url, kini, ctx) => cacheTepi(req, ctx, 15, async () => json(await saluran(env, kini)), true);
 async function saya(env, req, url, kini) {
   const s = await sesiMasuk(env, req, kini); if (!s) return gagal(401, "belum masuk");
-  return json({akun: {id: s.id, wa: samar(s.wa), nama: s.nama, prov: s.prov, kab: s.kab, lengkap: s.setuju_pdp === 1}, baru_kode: kini - s.kode_pada <= K.BARU_KODE, ruang: [], saluran: await saluran(env, kini)});   // ruang diisi PM-06
+  return json({akun: {id: s.id, wa: samar(s.wa), nama: s.nama, prov: s.prov, kab: s.kab, lengkap: s.setuju_pdp === 1}, baru_kode: kini - s.kode_pada <= K.BARU_KODE, ruang: tandaiPilih((await cariRuang(env, s.wa)).ruang).map(bersihRuang), saluran: await saluran(env, kini)});
 }
 async function keluar(env, req, url, kini) {
   const g = penjaga(req, url); if (g) return g;
   const x = await batas(env, await ipHash(env, req), "masuk.keluar_ip", K.LAJU_IP_KELUAR, kini); if (x) return x;
   const t = tokenDari(req);
   if (t) await mkCabutSesi(env, await sha(t));
-  return json({ok: true}, 200, {"set-cookie": kukiSesi("", 0)});
+  /* tiap modul mencabut sesinya sendiri untuk peramban ini dan memberi cookie penghapus (instansi: dua Path). sesi_admin tidak disentuh. */
+  const kuki = [kukiSesi("", 0)];
+  for (const cabut of [...Object.values(MODUL()).map(m => m.cabut), cabutStaf]) {
+    try { kuki.push(...await cabut(env, req)); } catch (e) { if (!/no such table/i.test(String(e?.message || e))) throw e; }
+  }
+  const r = json({ok: true});
+  for (const c of kuki) r.headers.append("set-cookie", c);
+  return r;
+}
+
+/* ---------------- pilih akun peran (ALUR A3 "Ganti ruang"): sesi satu akun, dihitung ulang dari nomor sesi ---------------- */
+async function pilihAkun(env, req, url, kini) {
+  const g = penjaga(req, url); if (g) return g;
+  const ip = await batas(env, await ipHash(env, req), "masuk.pilih_ip", K.LAJU_IP_PILIH, kini); if (ip) return ip;
+  const s = await sesiMasuk(env, req, kini); if (!s) return gagal(401, "belum masuk");
+  const b = await bacaBody(req, 1024); if (b.galat) return gagal(b.status || 400, b.galat);
+  const jenis = typeof b.o.jenis === "string" ? b.o.jenis : "", pilih = typeof b.o.pilih === "string" ? b.o.pilih : "", modul = Object.hasOwn(MODUL(), jenis) ? MODUL()[jenis] : null;
+  if (!modul || !/^[0-9a-f]{16}$/.test(pilih)) return gagal(400, "jenis atau pilih tidak sah");
+  const e = (await cariRuang(env, s.wa)).ruang.find(x => x._s && x._s[0] === jenis && x._s[2] === pilih);
+  if (!e) return gagal(403, "akun itu tidak terikat ke nomormu");
+  try { await modul.cabut(env, req); } catch (x) { if (!/no such table/i.test(String(x?.message || x))) throw x; }   // sesi jenis yang sama di peramban ini diganti
+  const c = await modul.buat(env, pilih, kini); if (!c) return gagal(403, "akun itu tidak aktif");
+  await mkLogMasuk(env, [{id: acak(8), tabel: e._s[1], akun_id: pilih}], s.id, kini);
+  const r = json({ok: true, ke: e.ke});
+  for (const k of c) r.headers.append("set-cookie", k);
+  return r;
+}
+
+/* ---------------- sandi staf sesudah kode (PM-07, D8) ---------------- */
+async function sandiStaf(env, req, url, kini) {
+  if (!kunciSah(env)) return gagal(503, "masuk lewat kode belum dikonfigurasi");
+  const g = penjaga(req, url); if (g) return g;
+  const ip = await batas(env, await ipHash(env, req), "masuk.sandi_ip", K.LAJU_IP_SANDI, kini); if (ip) return ip;   // sebelum sesiMasuk: cookie palsu tidak membebani D1
+  const s = await sesiMasuk(env, req, kini); if (!s) return gagal(401, "belum masuk");
+  if (kini - s.kode_pada > K.BARU_KODE) return gagal(403, "masuk dengan kode lagi dulu (kode sudah lebih dari 15 menit)");
+  const ak = await batas(env, s.id, "masuk.sandi_akun", K.LAJU_AKUN_SANDI, kini); if (ak) return ak;
+  const b = await bacaBody(req, 1024); if (b.galat) return gagal(b.status || 400, b.galat);
+  const sandi = typeof b.o.sandi === "string" ? b.o.sandi.slice(0, 100) : "";
+  if (!sandi) return gagal(400, "sandi wajib diisi");
+  /* akun staf hanya yang nomornya = nomor sesi; klien memilih lewat id dari daftar ruang, tidak pernah mengetik username */
+  const daftar = await mkStafPerWa(env, s.wa, K.AKUN_PER_JENIS);
+  if (!daftar.length) return gagal(403, "tidak ada akun staf untuk nomor ini");
+  const pilih = b.o.staf == null ? null : String(b.o.staf), st = pilih == null ? (daftar.length === 1 ? daftar[0] : null) : daftar.find(x => x.id === pilih);
+  if (!st) return gagal(400, daftar.length > 1 || pilih != null ? "pilih salah satu akun staf dari daftar ruang" : "akun staf tidak ditemukan");
+  const m = await cobaMasukStaf(env, req, st.username, sandi, kini);   // penguncian dan hitungan gagal ikut aturan staf; sandi benar saja yang menerbitkan sesi_staf
+  if (m.hasil === "kunci") return gagal(429, "terlalu banyak percobaan masuk yang salah; coba lagi sejam lagi", {"retry-after": "3600"});
+  if (m.hasil !== "ok") return gagal(401, "sandi salah");
+  await mkLogMasuk(env, [{id: acak(8), tabel: "staf", akun_id: st.id}], s.id, kini);
+  const peran = m.staf.peran || [], ke = m.staf.wajib_ganti ? "/admin/pantau" : hanyaDirektori(peran) ? "/direktori" : peran.length === 1 && peran[0] === "operator_cc" ? "/" : "/admin/pantau";
+  const r = json({ok: true, ke, wajib_ganti: !!m.staf.wajib_ganti}); r.headers.append("set-cookie", m.cookie); return r;
+}
+
+/* ---------------- nomor pemirsa, hanya Super Admin (D17) ---------------- */
+async function pemirsaWa(env, req, url, kini) {
+  const g = penjaga(req, url); if (g) return g;
+  const ip = await batas(env, await ipHash(env, req), "masuk.pemirsa_wa_ip", K.LAJU_IP_PEMIRSA_WA, kini); if (ip) return ip;
+  const oleh = await superOK(env, req); if (!oleh) return gagal(403, "nomor pemirsa hanya diatur Super Admin");
+  const b = await bacaBody(req, 1024); if (b.galat) return gagal(b.status || 400, b.galat);
+  const id = typeof b.o.pemirsa_id === "string" ? b.o.pemirsa_id : "";
+  if (!/^[0-9a-f]{16}$/.test(id)) return gagal(400, "pemirsa_id tidak sah");
+  const wa = b.o.wa == null ? null : normalWA(b.o.wa);
+  if (b.o.wa != null && !wa) return galatNomor();
+  if (!await mkPemirsaAda(env, id)) return gagal(404, "akun pemirsa tidak ada");
+  try { await mkPemirsaWaSet(env, id, wa, String(oleh).slice(0, 40), kini); }
+  catch (e) { if (/UNIQUE/i.test(String(e?.message || e))) return gagal(409, "nomor itu sudah dipakai akun pemirsa lain"); throw e; }
+  return json({ok: true, pemirsa_id: id, wa: wa ? samar(wa) : null});
+}
+
+/* ---------------- halaman (PM-05): public/masuk.html milik PM-08; sebelum itu halaman sementara tanpa data ---------------- */
+const CSP_MASUK = "default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-src https://challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
+const halSementara = '<!doctype html><html lang="id"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Masuk</title><body><h1>Masuk</h1><p>Masuk lewat kode WhatsApp belum tersedia di halaman ini. Gunakan <a href="/admin/masuk">masuk dengan sandi</a>.</p></body></html>';
+async function halamanMasuk(env, req, url) {
+  const a = await env.ASSETS.fetch(new Request(new URL("/masuk.html", url)));
+  const h = {"content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", "content-security-policy": CSP_MASUK};
+  if (!a.ok) { a.body?.cancel(); return new Response(halSementara, {headers: h}); }
+  return new Response(a.body, {headers: h});
 }
 
 export const RUTE_MASUK = {
+  "GET /masuk": halamanMasuk,   // publik (K8, PUBLIK_TANPA_SESI); sesi dicek di API
   "POST /api/masuk/kode": tabelBelum(mintaKode),
   "POST /api/masuk/periksa": tabelBelum(periksaKode),
   "GET /api/masuk/saya": tabelBelum(saya),
+  "POST /api/masuk/sandi": tabelBelum(sandiStaf),
+  "POST /api/masuk/pilih": tabelBelum(pilihAkun),
+  "POST /api/masuk/pemirsa_wa": tabelBelum(pemirsaWa),   // bawaan rancangan `pemirsa-wa`; garis tengah tidak terbaca gerbang cakupan (regex [\\w/:])
   "GET /api/masuk/saluran": saluranPublik,   // tanpa sesi; tabel belum ada = wa false
   "POST /api/masuk/keluar": tabelBelum(keluar),
 };

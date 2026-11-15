@@ -7,6 +7,7 @@
 import {json, gagal, acak, sha, bacaBody} from "./worker.js";
 import {tx, superOK} from "./posko.js";
 import {sandiBaru} from "./staf.js";
+import {mkSesiPeran} from "./hak.js";
 
 const HARI = 24 * 3600e3, SESI_UMUR = 30 * HARI, COOKIE = "sesi_pemirsa";
 /* daftar tetap: sama dengan trigger pemirsa_tab_sah (0036, dibuat ulang 0077, 0099, 0100, 0116) dan tab menu atas public/index.html (dijaga pemirsa.test.mjs) */
@@ -60,6 +61,12 @@ export async function masukPemirsa(env, username, sandi, kini) {
     env.DB.prepare("DELETE FROM pemirsa_sesi WHERE pemirsa_id = ? AND kedaluwarsa <= ?").bind(a.id, kini)]);
   return {token, tab: baca(a.tab), umur: SESI_UMUR / 1000};
 }
+/* Satu Pintu Masuk (PM-06): sesi pemirsa untuk akun yang nomornya baru dibuktikan (mk_pemirsa_wa); larik set-cookie atau null bila diputus */
+export async function sesiUntuk(env, akunId, kini) {
+  const token = acak(32);
+  return await mkSesiPeran(env, "pemirsa", akunId, await sha(token), kini, kini + SESI_UMUR) ? [cookiePemirsa(token, SESI_UMUR / 1000)] : null;
+}
+export async function cabutSesi(env, req) { await hapusSesiPemirsa(env, req); return [cookiePemirsa("", 0)]; }
 export async function hapusSesiPemirsa(env, req) {
   const t = tokenDari(req); if (!t) return;
   try { await env.DB.prepare("DELETE FROM pemirsa_sesi WHERE token_sha = ?").bind(await sha(t)).run(); } catch (e) { if (!tabelBelum(e)) throw e; }

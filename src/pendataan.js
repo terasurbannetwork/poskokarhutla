@@ -8,6 +8,7 @@ import {json, gagal, acak, sha, bacaBody, bacaBytes, normalWA, ipHash, turnstile
 import {tx, superOK, RE_EMAIL} from "./posko.js";
 import {sandiAcak} from "./instansi.js";
 import {laju, lajuIP, halamanBnpbPublik} from "./bnpb.js";
+import {mkSesiPeran, mkCabutSesiPeran} from "./hak.js";
 import {halamanAdmin} from "./statistik.js";
 import {halamanBnpb} from "./admin_halaman.js";
 import * as S from "../public/bnpb/pendataan_spek.js";
@@ -107,6 +108,16 @@ async function masuk(env, req, kini) {
   await env.DB.batch([env.DB.prepare("INSERT INTO pdt_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, ?, ?, ?)").bind(await sha(token), a.id, kini, kini + SESI_UMUR),
     env.DB.prepare("DELETE FROM pdt_sesi WHERE akun_id = ? AND kedaluwarsa <= ?").bind(a.id, kini)]);
   const r = json({akun: akunRingkas(a)}); r.headers.append("set-cookie", cookieSet(token, SESI_UMUR / 1000)); return r;
+}
+/* Satu Pintu Masuk (PM-06): lihat src/instansi.js sesiUntuk */
+export async function sesiUntuk(env, akunId, kini) {
+  const token = acak(32);
+  return await mkSesiPeran(env, "pendataan", akunId, await sha(token), kini, kini + SESI_UMUR) ? [cookieSet(token, SESI_UMUR / 1000)] : null;
+}
+export async function cabutSesi(env, req) {
+  const t = tokenDari(req);
+  if (t) await mkCabutSesiPeran(env, "pendataan", await sha(t));
+  return [cookieSet("", 0)];
 }
 async function keluar(env, req) {
   const t = tokenDari(req);

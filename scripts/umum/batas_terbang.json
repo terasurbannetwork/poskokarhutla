@@ -1,0 +1,336 @@
+{
+ "versi": 1,
+ "catatan": "Tiap baris wajib nilai, satuan, sumber, keyakinan: A resmi dibaca langsung, B sekunder, S bawaan sementara (wajib q). Keyakinan C tidak boleh ada. Angka tanpa sumber tidak ditambahkan. Daya tahan tipe kosong sampai Q2 dijawab.",
+ "baris": [
+  {
+   "id": "penyangga_gunungapi_km",
+   "nilai": 5,
+   "satuan": "km",
+   "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
+   "keyakinan": "S",
+   "q": "Q4",
+   "ket": "di luar radius PVMBG"
+  },
+  {
+   "id": "jarak_gunung_tanpa_radius_km",
+   "nilai": 30,
+   "satuan": "km",
+   "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
+   "keyakinan": "S",
+   "q": "Q16",
+   "ket": "gunung Level II ke atas tanpa radius, diperiksa dari rute"
+  },
+  {
+   "id": "jarak_gunung_level1_km",
+   "nilai": 15,
+   "satuan": "km",
+   "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
+   "keyakinan": "S",
+   "q": "Q16",
+   "ket": "gunung Level I dicatat dari rute"
+  },
+  {
+   "id": "jarak_siklon_km",
+   "nilai": 300,
+   "satuan": "km",
+   "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
+   "keyakinan": "S",
+   "q": "Q16",
+   "ket": "siklon aktif dicatat dari rute"
+  },
+  {
+   "id": "basi_gunungapi_jam",
+   "nilai": 48,
+   "satuan": "jam",
+   "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
+   "keyakinan": "S",
+   "q": "Q17"
+  },
+  {
+   "id": "basi_abu_jam",
+   "nilai": 12,
+   "satuan": "jam",
+   "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
+   "keyakinan": "S",
+   "q": "Q17"
+  },
+  {
+   "id": "basi_tsunami_jam",
+   "nilai": 6,
+   "satuan": "jam",
+   "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
+   "keyakinan": "S",
+   "q": "Q17"
+  },
+  {
+   "id": "basi_siklon_jam",
+   "nilai": 12,
+   "satuan": "jam",
+   "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
+   "keyakinan": "S",
+   "q": "Q17"
+  },
+  {
+   "id": "basi_banjir_jam",
+   "nilai": 24,
+   "satuan": "jam",
+   "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
+   "keyakinan": "S",
+   "q": "Q17"
+  },
+  {
+   "id": "basi_longsor_jam",
+   "nilai": 24,
+   "satuan": "jam",
+   "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
+   "keyakinan": "S",
+   "q": "Q17"
+  },
+  {
+   "id": "basi_metar_jam",
+   "nilai": 3,
+   "satuan": "jam",
+   "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
+   "keyakinan": "S",
+   "q": "Q17"
+  },
+  {
+   "id": "kelonggaran_belokan",
+   "nilai": 1.05,
+   "satuan": "kali jari-jari",
+   "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
+   "keyakinan": "S",
+   "q": "Q17"
+  },
+  {
+   "id": "saran_isi_ulang_km",
+   "nilai": 30,
+   "satuan": "km",
+   "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
+   "keyakinan": "S",
+   "q": "Q17",
+   "ket": "bandara dari rute"
+  },
+  {
+   "id": "acuan_pluscode_km",
+   "nilai": 50,
+   "satuan": "km",
+   "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
+   "keyakinan": "S",
+   "q": "Q17",
+   "ket": "plus code pendek dengan titik acuan"
+  },
+  {
+   "id": "dropping_lempar_rendah_mnt",
+   "nilai": 2,
+   "satuan": "menit",
+   "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
+   "keyakinan": "S",
+   "q": "Q17",
+   "ket": "per titik"
+  },
+  {
+   "id": "orbit_mnt",
+   "nilai": 2,
+   "satuan": "menit",
+   "sumber": "pola orbit renlap karhutla (ORBIT_MNT di scripts/operasi/renlap_pdf.py), bukan angka resmi",
+   "keyakinan": "S",
+   "q": "Q17",
+   "ket": "per titik pantau"
+  },
+  {
+   "id": "cadangan_bbm_mnt",
+   "nilai": 30,
+   "satuan": "menit",
+   "sumber": "mengacu aturan Eropa dan Amerika (20 menit siang, 30 menit malam); aturan Indonesia belum terbaca",
+   "keyakinan": "S",
+   "q": "Q3"
+  },
+  {
+   "id": "kelayakan_vis_tidak_layak_m",
+   "nilai": 1500,
+   "satuan": "m",
+   "sumber": "rancangan agent di public/operasi_peta.js kelayakan(b), bukan ketentuan resmi",
+   "keyakinan": "S",
+   "q": "Q7",
+   "ket": "jarak pandang di bawah ini tidak layak"
+  },
+  {
+   "id": "kelayakan_vis_terbatas_m",
+   "nilai": 5000,
+   "satuan": "m",
+   "sumber": "rancangan agent di public/operasi_peta.js kelayakan(b), bukan ketentuan resmi",
+   "keyakinan": "S",
+   "q": "Q7",
+   "ket": "jarak pandang di bawah ini terbatas"
+  },
+  {
+   "id": "kelayakan_angin_terbatas_kt",
+   "nilai": 20,
+   "satuan": "knot",
+   "sumber": "rancangan agent di public/operasi_peta.js kelayakan(b), bukan ketentuan resmi",
+   "keyakinan": "S",
+   "q": "Q7",
+   "ket": "angin di atas ini terbatas"
+  },
+  {
+   "id": "kelayakan_angin_tidak_layak_kt",
+   "nilai": 30,
+   "satuan": "knot",
+   "sumber": "rancangan agent di public/operasi_peta.js kelayakan(b), bukan ketentuan resmi",
+   "keyakinan": "S",
+   "q": "Q7",
+   "ket": "angin di atas ini tidak layak"
+  },
+  {
+   "id": "kecepatan_bawaan_kmj",
+   "nilai": 200,
+   "satuan": "km/jam",
+   "sumber": "bawaan bila tipe tidak dipilih; sama dengan flight plan banjir 15 Nov 2026",
+   "keyakinan": "S",
+   "q": "Q2"
+  },
+  {
+   "id": "pms510_bidang_ringan_m",
+   "nilai": 4.6,
+   "satuan": "m",
+   "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
+   "keyakinan": "A",
+   "ket": "sisi bidang darat helikopter ringan"
+  },
+  {
+   "id": "pms510_bidang_sedang_m",
+   "nilai": 6,
+   "satuan": "m",
+   "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
+   "keyakinan": "A",
+   "ket": "sisi bidang darat helikopter sedang"
+  },
+  {
+   "id": "pms510_bidang_berat_m",
+   "nilai": 9,
+   "satuan": "m",
+   "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
+   "keyakinan": "A",
+   "ket": "sisi bidang darat helikopter berat"
+  },
+  {
+   "id": "pms510_lingkaran_ringan_m",
+   "nilai": 23,
+   "satuan": "m",
+   "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
+   "keyakinan": "A",
+   "ket": "garis tengah lingkaran bebas halangan, ringan"
+  },
+  {
+   "id": "pms510_lingkaran_sedang_m",
+   "nilai": 27,
+   "satuan": "m",
+   "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
+   "keyakinan": "A",
+   "ket": "garis tengah lingkaran bebas halangan, sedang"
+  },
+  {
+   "id": "pms510_lingkaran_berat_m",
+   "nilai": 33.5,
+   "satuan": "m",
+   "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
+   "keyakinan": "A",
+   "ket": "garis tengah lingkaran bebas halangan, berat"
+  },
+  {
+   "id": "pms510_lingkaran_kali_rotor",
+   "nilai": 1.5,
+   "satuan": "kali diameter rotor",
+   "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
+   "keyakinan": "A",
+   "ket": "lingkaran bebas halangan minimal"
+  },
+  {
+   "id": "pms510_kemiringan_maks_derajat",
+   "nilai": 6,
+   "satuan": "derajat",
+   "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
+   "keyakinan": "A",
+   "ket": "kemiringan lapangan maksimum"
+  },
+  {
+   "id": "pms510_jarak_halangan_3m",
+   "nilai": 24,
+   "satuan": "m dari tepi lingkaran bebas halangan",
+   "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
+   "keyakinan": "A",
+   "ket": "jarak di jalur pendekatan untuk halangan setinggi 3 m"
+  },
+  {
+   "id": "pms510_jarak_halangan_6m",
+   "nilai": 49,
+   "satuan": "m dari tepi lingkaran bebas halangan",
+   "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
+   "keyakinan": "A",
+   "ket": "jarak di jalur pendekatan untuk halangan setinggi 6 m"
+  },
+  {
+   "id": "pms510_jarak_halangan_9m",
+   "nilai": 73,
+   "satuan": "m dari tepi lingkaran bebas halangan",
+   "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
+   "keyakinan": "A",
+   "ket": "jarak di jalur pendekatan untuk halangan setinggi 9 m"
+  },
+  {
+   "id": "pms510_jarak_halangan_12m",
+   "nilai": 98,
+   "satuan": "m dari tepi lingkaran bebas halangan",
+   "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
+   "keyakinan": "A",
+   "ket": "jarak di jalur pendekatan untuk halangan setinggi 12 m"
+  }
+ ],
+ "tipe": [
+  {
+   "id": "AW139",
+   "nama": "AgustaWestland AW139",
+   "nilai": 306,
+   "satuan": "km/jam",
+   "penumpang": "15",
+   "daya_tahan_mnt": null,
+   "sumber": "Wikipedia (sekunder); angka umum, belum dari operator",
+   "keyakinan": "B",
+   "q": "Q2"
+  },
+  {
+   "id": "BELL412EP",
+   "nama": "Bell 412EP",
+   "nilai": 226,
+   "satuan": "km/jam",
+   "penumpang": "13",
+   "daya_tahan_mnt": null,
+   "sumber": "Wikipedia (sekunder); angka umum, belum dari operator",
+   "keyakinan": "B",
+   "q": "Q2"
+  },
+  {
+   "id": "AS332L1",
+   "nama": "Airbus Helicopters AS332 L1 Super Puma",
+   "nilai": 247,
+   "satuan": "km/jam",
+   "penumpang": "20 sampai 24",
+   "daya_tahan_mnt": null,
+   "sumber": "Wikipedia (sekunder); angka umum, belum dari operator",
+   "keyakinan": "B",
+   "q": "Q2"
+  },
+  {
+   "id": "MI171A2",
+   "nama": "Mil Mi-171A2",
+   "nilai": 260,
+   "satuan": "km/jam",
+   "penumpang": "24",
+   "daya_tahan_mnt": null,
+   "sumber": "Wikipedia (sekunder); angka umum, belum dari operator",
+   "keyakinan": "B",
+   "q": "Q2"
+  }
+ ]
+}

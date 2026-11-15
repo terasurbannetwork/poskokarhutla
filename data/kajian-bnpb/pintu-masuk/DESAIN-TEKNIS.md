@@ -8,6 +8,7 @@ Semua rujukan berkas dan baris diukur 15 Nov 2026; cek ulang sebelum dipakai.
 | --- | --- | --- |
 | `src/masuk.js` (baru) | rute `/masuk` dan `/api/masuk/*`, kode, akun umum, pemilih ruang | `warga-api` |
 | `src/hak.js` (ubah) | semua SQL paket ini (fungsi `mk*`); gerbang `gerbang-d1` melarang akses D1 di berkas `src` baru | `warga-api` |
+| `src/masuk_sesi.js` (baru) | pembaca cookie `sesi_masuk` tanpa SQL; dipisah supaya `src/lapangan.js` dan `src/relawan.js` tidak mengimpor `masuk.js` secara melingkar | `warga-api` |
 | `src/masuk_konst.js` (baru) | semua ambang ALGORITMA | `warga-api` |
 | `src/masuk_undang.js` (baru) | anggota, undangan berantai, papan aktivasi | `warga-api` |
 | `migrations/0133_masuk.sql` | tabel `mk_*`, `alun_penulis`, indeks `wa` | `warga-api` |
@@ -151,6 +152,8 @@ Catatan skema yang sudah dicek:
 | `GET /masuk` | publik | halaman; `?ke=` disaring `tujuan()` (`src/statistik.js:251`) |
 | `POST /api/masuk/kode` | publik, Turnstile, laju | minta kode |
 | `POST /api/masuk/periksa` | publik, laju | periksa kode, terbitkan sesi, jawab daftar ruang |
+| `POST /api/masuk/pilih` | sesi akun umum | menerbitkan sesi satu akun saat satu nomor terikat ke beberapa akun berjenis sama |
+| `POST /api/masuk/pemirsa_wa` | Super Admin | mengisi atau menghapus nomor WA pemirsa (D17) |
 | `POST /api/masuk/sandi` | sesi akun umum, `kode_pada` 15 menit | sandi staf lewat `cobaMasukStaf` |
 | `GET /api/masuk/saluran` | publik, tanpa data pribadi | apakah saluran WA dan email sedang hidup (ALUR A8) |
 | `GET /api/masuk/saya` | sesi akun umum | profil dan daftar ruang |
@@ -185,13 +188,15 @@ Cookie `sesi_masuk`: token acak 32 byte, disimpan `sha256` di `mk_sesi`; `HttpOn
 
 Staf: tidak ada `sesiUntuk`. `POST /api/masuk/sandi` memanggil `cobaMasukStaf` (`src/staf.js:114`) dengan username akun yang nomornya terbukti, jadi penguncian dan hitungan gagal ikut aturan staf. `wajib_ganti = 1` diarahkan ke ganti sandi seperti sekarang.
 
+Cookie bernama sama saling menimpa, jadi sesi otomatis hanya terbit bila tepat satu akun untuk jenis itu. Bila lebih dari satu, orang memilih di pemilih ruang dan `POST /api/masuk/pilih` menerbitkan sesi akun terpilih.
+
 Keluar memanggil `cabutSesi` tiap modul dan menghapus `sesi_masuk`. `sesi_admin` tidak disentuh pintu ini. Panjang `pemirsa.id` dicocokkan dengan migrasi 0036 saat PM-02.
 
 ### 4.3 Relawan dan petugas
 
 Kode pribadi hanya tersimpan sebagai sha, jadi tidak bisa dikirim ulang. Dua fungsi pencari di `src/lapangan.js` (`cariOrang` di `:63`, penjaga petugas di `:72`, dan `cariRelawan`) diberi satu jalur tambahan: tanpa header `x-kode`, bila ada `sesi_masuk` sah dan syarat ALGORITMA 3 terpenuhi (nomor cocok, status sah, tepat satu baris), baris itu dikembalikan dengan tanda `lewat_sesi`.
 
-Dengan tanda `lewat_sesi`, daftar wajah, absen pindai wajah, dan data kesehatan relawan (`gol_darah`, `darurat_wa`) **tidak** dibuka; hanya profil ringkas, penugasan, dan logbook. Hak penuh tetap lewat tautan kode pribadi. `pemegangKode` di `src/bnpb.js` tidak diubah, jadi meja, riset, SIPPA, kemitraan, dan alun-alun tidak terpengaruh.
+Dengan tanda `lewat_sesi`, persetujuan dan daftar wajah, absen pindai wajah, unggah dan lihat foto, pencabutan pendaftaran relawan, jawaban penugasan relawan, dan data kesehatan relawan (`gol_darah`, `darurat_wa`) **tidak** dibuka; hanya profil ringkas, penugasan, teks logbook, dan status siap atau istirahat. Hak penuh tetap lewat tautan kode pribadi. `pemegangKode` di `src/bnpb.js` tidak diubah, jadi meja, riset, SIPPA, kemitraan, dan alun-alun tidak terpengaruh.
 
 ## 5. Gerbang WA
 

@@ -136,13 +136,13 @@ def operasi(teks):
                                  for k in re.split(r',\s*(?:dan\s+)?|\s+dan\s+', x.replace('sekitar ', '')) if k.strip()))   # kab yang disasar beberapa pesawat sekali saja
         sas = [k for i, k in enumerate(sas) if not any(a.endswith(' ' + k) and a[:-len(k)].strip()[:1].islower() for a in sas[:i])]   # "Palembang" sesudah "wilayah timur Palembang" (Sumsel 29 Okt); "OKU" sesudah "OKU Timur" dan "Banyuasin" sesudah "Musi Banyuasin" tetap (Sumsel 3 Nov)
         hujan = None
-        h = re.search(r'Hujan\s+\*?([^*\n]*?)\*?\s*(?:terpantau|dilaporkan|terjadi|pada)[^\n]*?di \*([^*]+)\*(?:[^\n]*?pada \*?(\d+) (\w+))?', isi, re.I)   # "hujan dilaporkan" huruf kecil (Sumsel 28 Okt); "Hujan *lebat* terjadi di" (Sumsel 3 Nov)
+        h = re.search(r'Hujan\s+\*?([^*\n]*?)\*?\s*(?:terpantau|dilaporkan|terjadi|pada)[^\n]*?di \*([^*\n]+)\*?(?:[^\n]*?pada \*?(\d+) (\w+))?', isi, re.I)   # bintang penutup boleh hilang (Sumsel 15 Nov)   # "hujan dilaporkan" huruf kecil (Sumsel 28 Okt); "Hujan *lebat* terjadi di" (Sumsel 3 Nov)
         h2 = re.search(r'Hujan\s+([a-z ]+?)\s+pada (\d+) (\w+)[^\n]*?di \*([^*]+)\*', isi)
         h3 = re.search(r'Hujan\s+dilaporkan(?:\s+terjadi)?\s+di ([^*\n]+?)(?:,? dengan [^.\n]*)?(?: pada [^.\n]*)?\.', isi)   # "terjadi di X dengan intensitas ..." (Sumsel 30 Okt)
         if h2:   # "Hujan <intensitas> pada <tgl> ... di *X*" (tanggal di depan)
             hujan = {'intensitas': h2.group(1).strip().lower(), 'lokasi': h2.group(4), 'tanggal': dt.date(tanggal.year, BULAN[h2.group(3).lower()], int(h2.group(2)))}
         elif h:
-            hujan = {'intensitas': h.group(1).strip().lower(), 'lokasi': h.group(2).replace('Kabupaten ', ''),
+            hujan = {'intensitas': h.group(1).strip().lower(), 'lokasi': h.group(2).replace('Kabupaten ', '').rstrip('. '),
                      'tanggal': dt.date(tanggal.year, BULAN[h.group(4).lower()], int(h.group(3)))
                      if h.group(3) and h.group(4).lower() in BULAN else tanggal}   # "pada 15 FS" bukan tanggal (Kalteng 3 Nov)
         elif h3:   # "Hujan dilaporkan di sebagian besar wilayah X pada dini hari" (27 Okt): lokasi tanpa cetak tebal
@@ -150,7 +150,7 @@ def operasi(teks):
         elif h4 := re.search(r'^>\s*Hujan\s+([a-z]+(?:\s*[–-]\s*[a-z]+|\s+hingga\s+[a-z]+)?)\s+di ([^.\n]+?)(?:,? serta [^.\n]*)?\.', isi, re.M):
             # "Hujan ringan–sedang di Muaro Jambi, ..., dan Kota Jambi, serta ringan pada pagi hari di X." (Jambi 2 Nov): tanpa "dilaporkan"
             hujan = {'intensitas': h4.group(1).replace('–', ' hingga ').replace('-', ' hingga ').replace('  ', ' '), 'lokasi': h4.group(2), 'tanggal': tanggal}
-        elif h5 := re.search(r'Pada \*(\d{1,2}) (\w+)\*, hujan di \*([^*]+)\*', isi):
+        elif h5 := re.search(r'Pada \*(\d{1,2}) (\w+)(?: \d{4})?\*, hujan di \*([^*]+)\*', isi):
             # "Pada *13 November*, hujan di *TNTP* memadamkan ..." (Kalteng 14 Nov): tanggal di depan, tanpa kata "dilaporkan"
             hujan = {'intensitas': '', 'lokasi': h5.group(3), 'tanggal': dt.date(tanggal.year, BULAN[h5.group(2).lower()], int(h5.group(1)))
                      if h5.group(2).lower() in BULAN else tanggal}

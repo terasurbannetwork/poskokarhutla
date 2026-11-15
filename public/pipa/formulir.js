@@ -4,6 +4,8 @@
    Batas tiap medan SAMA dengan CHECK migrations/0056_sippa_inti.sql; tests/sippa/formulir.test.mjs membacanya
    dari berkas SQL dan merah bila berselisih. Mengubah satu batas = ubah migrasi baru DAN berkas ini, naikkan FORMULIR_VERSI. */
 
+import {periksa as periksaSpek, dariPipa} from "../inti/spek.js";
+
 export const FORMULIR_VERSI = 1;
 
 /* Kedalaman probe (cm). 150 sampai 500 hanya untuk tugas lengan_dalam = 1 (lengan uji, PRD §9.4.7).
@@ -119,7 +121,7 @@ export const INSPEKSI_LAPANGAN = {
   tindakan: ["tidak_ada", "perbaiki", "ganti", "afkir", "uji_ulang", "serahkan", "tunggu_suku_cadang"],
 };
 export const TINDAKAN_TUNGGU = "tunggu_suku_cadang";
-const MEDAN_INSPEKSI = daftar(
+export const MEDAN_INSPEKSI = daftar(
   teks("id", "ID butir", null, null, ya({ panjang: ID })),
   pilih("jenis", "Jenis inspeksi", INSPEKSI_LAPANGAN.jenis, { wajib: true }),
   pilih("sasaran_jenis", "Sasaran", INSPEKSI_LAPANGAN.sasaran_jenis, { wajib: true }),
@@ -142,61 +144,35 @@ export const URUTAN_WAKTU = [
   ["t_air_mengalir", "t_bongkar_selesai"],
 ];
 
-const n = v => Number(v).toLocaleString("id-ID");
-const ada = v => v !== undefined && v !== null;
-
-function cekMedan(m, v, opsi) {
-  if (!ada(v)) return m.wajib ? "wajib diisi" : null;
-  switch (m.tipe) {
-    case "teks": case "json": {
-      if (typeof v !== "string") return "harus berupa teks";
-      if (m.tipe === "json") { try { JSON.parse(v); } catch { return "bukan JSON yang sah"; } }
-      if (m.panjang && !m.panjang.includes(v.length)) return `panjang harus ${m.panjang.map(n).join(" atau ")} karakter`;
-      if (m.min != null && v.length < m.min) return `minimal ${n(m.min)} karakter`;
-      if (m.maks != null && v.length > m.maks) return `maksimal ${n(m.maks)} karakter`;
-      return null;
-    }
-    case "pilihan": case "bool": {
-      if (!m.pilihan.includes(v)) return `harus salah satu dari ${m.pilihan.map(String).join(", ")}`;
-      if (m.nama === "kedalaman_cm" && KEDALAMAN_CM.lengan_dalam.includes(v) && !(opsi && opsi.lengan_dalam)) {
-        return "kedalaman 150 cm atau lebih hanya untuk tugas lengan uji (lengan_dalam)";
-      }
-      return null;
-    }
-    default: {
-      if (typeof v !== "number" || !Number.isFinite(v)) return "harus berupa angka";
-      if ((m.tipe === "bulat" || m.tipe === "waktu") && !Number.isInteger(v)) return "harus bilangan bulat";
-      if (m.min != null && (m.minEksklusif ? v <= m.min : v < m.min)) return m.maks != null
-        ? `harus ${m.minEksklusif ? "lebih dari" : "antara"} ${n(m.min)}${m.minEksklusif ? " dan paling banyak" : " dan"} ${n(m.maks)}`
-        : `minimal ${n(m.min)}`;
-      if (m.maks != null && v > m.maks) return `harus antara ${n(m.min ?? 0)} dan ${n(m.maks)}`;
-      return null;
-    }
-  }
-}
-
-/* Periksa satu butir kiriman klien. Mengembalikan {ok, galat:[{medan, pesan}]}; semua galat dikumpulkan.
-   opsi.lengan_dalam: tugas boleh probe 150 sampai 500 cm. Medan di luar MEDAN ditolak (kolom server tidak dikirim klien). */
-export function cekButir(jenis, butir, opsi = {}) {
-  const galat = [];
-  const ke = (medanNama, pesan) => { if (!galat.some(g => g.medan === medanNama)) galat.push({ medan: medanNama, pesan }); };
-  const def = jenis === "inspeksi" ? MEDAN_INSPEKSI : Object.hasOwn(MEDAN, jenis) ? MEDAN[jenis] : null;
-  if (!def) return { ok: false, galat: [{ medan: "jenis", pesan: `jenis butir tidak dikenal: ${String(jenis)}` }] };
-  if (!butir || typeof butir !== "object" || Array.isArray(butir)) return { ok: false, galat: [{ medan: "butir", pesan: "butir harus berupa objek" }] };
-  for (const k of Object.keys(butir)) if (!Object.hasOwn(def, k)) ke(k, "medan tidak dikenal");
-  for (const m of Object.values(def)) { const p = cekMedan(m, butir[m.nama], opsi); if (p) ke(m.nama, p); }
+/* Validasi lewat spek bersama public/inti/spek.js (KP-18 b): medan dari MEDAN lewat dariPipa, aturan lintas medan di fungsi cek di bawah.
+   Klien dan server memakai fungsi yang sama (src/sippa.js, src/sippa_lapangan.js); tidak ada salinan kedua. Hasil tetap {ok, galat:[{medan, pesan}]}. */
+const ke = (g, nama, pesan) => g.push({nama, pesan});
+const cekLintas = (jenis, opsi) => b => {
+  const g = [];
   if (jenis === "log") {
     for (const [awal, akhir] of URUTAN_WAKTU) {
-      if (Number.isInteger(butir[awal]) && Number.isInteger(butir[akhir]) && butir[akhir] < butir[awal]) {
-        ke(akhir, `tidak boleh lebih awal dari ${def[awal].label.toLowerCase()}`);
-      }
+      if (Number.isInteger(b[awal]) && Number.isInteger(b[akhir]) && b[akhir] < b[awal]) ke(g, akhir, `tidak boleh lebih awal dari ${MEDAN.log[awal].label.toLowerCase()}`);
     }
-    if (ada(butir.banjir_m3) && butir.jenis !== "banjir") ke("banjir_m3", "hanya untuk sesi jenis banjir");
+    if (b.banjir_m3 != null && b.jenis !== "banjir") ke(g, "banjir_m3", "hanya untuk sesi jenis banjir");
   }
-  if (jenis === "gerak" && butir.rencana !== 1 && !ada(butir.tiba) && !galat.some(g => g.medan === "rencana")) {
-    ke("tiba", "wajib diisi untuk gerak langsung; hanya gerak terencana boleh tanpa waktu tiba");
-  }
-  return { ok: galat.length === 0, galat };
+  if (jenis === "probe" && KEDALAMAN_CM.lengan_dalam.includes(b.kedalaman_cm) && !opsi.lengan_dalam) ke(g, "kedalaman_cm", "kedalaman 150 cm atau lebih hanya untuk tugas lengan uji (lengan_dalam)");
+  if (jenis === "gerak" && (b.rencana == null || b.rencana === 0) && b.tiba == null) ke(g, "tiba", "wajib diisi untuk gerak langsung; hanya gerak terencana boleh tanpa waktu tiba");
+  return g;
+};
+const SPEK = new Map();
+const spekButir = (jenis, opsi) => {
+  const k = jenis + (opsi.lengan_dalam ? "|dalam" : "");
+  if (!SPEK.has(k)) SPEK.set(k, dariPipa(jenis === "inspeksi" ? MEDAN_INSPEKSI : MEDAN[jenis], cekLintas(jenis, opsi)));
+  return SPEK.get(k);
+};
+const hasil = (r, ...awal) => ({ok: r.ok, galat: [...awal, ...r.galat.map(g => ({medan: g.nama, pesan: g.pesan}))]});
+const tolakBentuk = (jenis, butir, tahu) => !tahu ? {ok: false, galat: [{medan: "jenis", pesan: `jenis butir tidak dikenal: ${String(jenis)}`}]}
+  : !butir || typeof butir !== "object" || Array.isArray(butir) ? {ok: false, galat: [{medan: "butir", pesan: "butir harus berupa objek"}]} : null;
+
+/* Periksa satu butir kiriman klien. opsi.lengan_dalam: tugas boleh probe 150 sampai 500 cm. Medan di luar MEDAN ditolak (kolom server tidak dikirim klien). */
+export function cekButir(jenis, butir, opsi = {}) {
+  const tolak = tolakBentuk(jenis, butir, jenis === "inspeksi" || Object.hasOwn(MEDAN, jenis));
+  return tolak ?? hasil(periksaSpek(spekButir(jenis, opsi), butir));
 }
 
 /* ---------- Fase 2 (keputusan 61, SP-120 sampai SP-129): butir lapangan tanpa tabel di MEDAN ----------
@@ -260,34 +236,53 @@ export function tambahTitikJejak(titik, baru, o = JEJAK) {
 }
 export const panjangJejakM = titik => titik.reduce((s, t, i) => i ? s + jarakM(titik[i - 1], t) : 0, 0);
 
-/* validasi klien butir fase 2: aturan sama dengan cekLapangan server; mengembalikan {ok, galat:[{medan,pesan}]} seperti cekButir */
-export function cekFase2(jenis, b) {
-  const galat = [], ke = (medan, pesan) => galat.push({medan, pesan});
-  if (!JENIS_FASE2.includes(jenis)) return {ok: false, galat: [{medan: "jenis", pesan: `jenis butir tidak dikenal: ${String(jenis)}`}]};
-  if (!b || typeof b !== "object" || Array.isArray(b)) return {ok: false, galat: [{medan: "butir", pesan: "butir harus berupa objek"}]};
-  const bom = (k) => { if (b[k] != null && !(Array.isArray(b[k]) && b[k].length <= 100 && b[k].every(x => typeof x === "string" && /^[A-Z]{1,4}-\d{1,6}$/.test(x)))) ke(k, "harus daftar kode BOM seperti P-101"); };
-  if (b.petak_id != null && !(typeof b.petak_id === "string" && /^[A-Za-z0-9._ -]{1,40}$/.test(b.petak_id))) ke("petak_id", "1 sampai 40 karakter huruf, angka, titik, garis, spasi");
+/* validasi butir fase 2 lewat spek bersama. ketat (klien): medan di luar daftar ditolak; longgar (server, periksaFase2 dengan {longgar:true}): medan asing diabaikan seperti dulu.
+   Medan skalar lewat dariPipa; larik (titik jejak, kode BOM) dan aturan antar medan di cek. Waktu = ms epoch; debit_lps dihitung server. */
+const W = () => angka("waktu", "Waktu catat", 1, 9e15, {wajib: true});
+const LAT = () => angka("lat", "Lintang", -11.5, 6.5, {wajib: true}), LON = () => angka("lon", "Bujur", 94.5, 141.5, {wajib: true});
+const PETAK = () => teks("petak_id", "Kode petak", null, null);
+const RE_PETAK = /^[A-Za-z0-9._ -]{1,40}$/, RE_LANGKAH = /^[a-z0-9_]{2,40}$/, RE_BOM = /^[A-Z]{1,4}-\d{1,6}$/;
+const MEDAN_F2 = {
+  periksa: daftar(teks("langkah", "Langkah", null, null, {wajib: true}), W(), PETAK()),
+  sos: daftar(LAT(), LON(), W(), teks("pesan", "Pesan", null, null)),
+  tekanan: daftar(pilih("titik", "Titik ukur", TITIK_TEKANAN.map(t => t[0]), {wajib: true}), angka("bar", "Tekanan (bar)", 0, 25, {wajib: true}), W(), PETAK()),
+  jejak: daftar(pilih("moda", "Moda", MODA_JEJAK.map(m => m[0]), {wajib: true}), PETAK()),
+  selesai: daftar(W(), teks("catatan", "Catatan", null, null)),
+  bor: daftar(PETAK(), LAT(), LON(), angka("kedalaman_cm", "Kedalaman (cm)", 0, 1500, {wajib: true}), W(), teks("catatan", "Catatan", null, null)),
+  debit: daftar(pilih("metode", "Metode", ["pelampung", "ember"], {wajib: true}), LAT(), LON(), W(), angka("lebar_m", "Lebar (m)", 0.01, 500), angka("dalam_m", "Kedalaman air (m)", 0.01, 50),
+    angka("kecepatan_ms", "Kecepatan (m/s)", 0.01, 20), angka("volume_l", "Volume (L)", 0.01, 100000), angka("detik", "Waktu isi (detik)", 0.5, 3600)),
+};
+const KENAL_F2 = {...Object.fromEntries(Object.entries(MEDAN_F2).map(([j, d]) => [j, new Set(["id", ...Object.keys(d)])])), selesai: new Set(["id", "waktu", "catatan", "alat_kembali", "alat_hilang"])};
+const banyak = (s, maks) => [...s].length <= maks;
+const cekF2 = (jenis, ketat) => b => {
+  const g = [];
+  if (b.petak_id != null && !(typeof b.petak_id === "string" && RE_PETAK.test(b.petak_id))) ke(g, "petak_id", "1 sampai 40 karakter huruf, angka, titik, garis, spasi");
+  if (jenis === "periksa" && b.langkah != null && !(typeof b.langkah === "string" && RE_LANGKAH.test(b.langkah))) ke(g, "langkah", "2 sampai 40 karakter a-z, 0-9, garis bawah");
   if (jenis === "jejak") {
-    if (!Array.isArray(b.titik) || b.titik.length < 2 || b.titik.length > JEJAK.maks) ke("titik", "harus 2 sampai 500 titik");
-    else if (!b.titik.every(t => Array.isArray(t) && t.length === 3 && dalam(t[0], -11.5, 6.5) && dalam(t[1], 94.5, 141.5) && dalam(t[2], 1, 9e15))) ke("titik", "tiap titik harus [lintang, bujur, waktu] di dalam Indonesia");
-    if (!MODA_JEJAK.some(m => m[0] === b.moda)) ke("moda", "harus jalan_kaki, perahu, atau kendaraan");
-    return {ok: !galat.length, galat};
+    if (!Array.isArray(b.titik) || b.titik.length < 2 || b.titik.length > JEJAK.maks) ke(g, "titik", "harus 2 sampai 500 titik");
+    else if (!b.titik.every(t => Array.isArray(t) && t.length === 3 && dalam(t[0], -11.5, 6.5) && dalam(t[1], 94.5, 141.5) && dalam(t[2], 1, 9e15))) ke(g, "titik", "tiap titik harus [lintang, bujur, waktu] di dalam Indonesia");
+    return g;
   }
-  if (jenis !== "jejak" && !dalam(b.waktu, 1, 9e15)) ke("waktu", "wajib diisi");
-  if (jenis === "periksa" && !(typeof b.langkah === "string" && /^[a-z0-9_]{2,40}$/.test(b.langkah))) ke("langkah", "2 sampai 40 karakter a-z, 0-9, garis bawah");
-  if (jenis === "tekanan") { if (!TITIK_TEKANAN.some(t => t[0] === b.titik)) ke("titik", "harus pompa, manifold, atau lance"); if (!dalam(b.bar, 0, 25)) ke("bar", "harus antara 0 dan 25"); }
-  if (jenis === "selesai") { bom("alat_kembali"); bom("alat_hilang"); }
-  if (jenis === "sos" || jenis === "bor" || jenis === "debit") { if (!dalam(b.lat, -11.5, 6.5)) ke("lat", "di luar Indonesia"); if (!dalam(b.lon, 94.5, 141.5)) ke("lon", "di luar Indonesia"); }
-  if (jenis === "sos" && b.pesan != null && !(typeof b.pesan === "string" && [...b.pesan].length <= 200)) ke("pesan", "paling banyak 200 karakter");
-  if ((jenis === "selesai" || jenis === "bor") && b.catatan != null && !(typeof b.catatan === "string" && [...b.catatan].length <= (jenis === "bor" ? 200 : 500))) ke("catatan", `paling banyak ${jenis === "bor" ? 200 : 500} karakter`);
-  if (jenis === "bor" && !dalam(b.kedalaman_cm, 0, 1500)) ke("kedalaman_cm", "harus antara 0 dan 1.500");
+  if (jenis === "selesai") for (const k of ["alat_kembali", "alat_hilang"]) {
+    if (b[k] != null && !(Array.isArray(b[k]) && b[k].length <= 100 && b[k].every(x => typeof x === "string" && RE_BOM.test(x)))) ke(g, k, "harus daftar kode BOM seperti P-101");
+  }
+  for (const [k, maks] of [["pesan", 200], ["catatan", jenis === "bor" ? 200 : 500]]) if (typeof b[k] === "string" && !banyak(b[k], maks)) ke(g, k, `paling banyak ${maks} karakter`);
   if (jenis === "debit") {
-    if (b.metode === "pelampung") { if (hitungDebit(b) == null) ke("lebar_m", "isi lebar, kedalaman, dan kecepatan dengan angka lebih dari 0"); }
-    else if (b.metode === "ember") { if (hitungDebit(b) == null) ke("volume_l", "isi volume dan detik dengan angka lebih dari 0 (detik minimal 0,5)"); }
-    else ke("metode", "harus pelampung atau ember");
+    const perlu = b.metode === "pelampung" ? ["lebar_m", "dalam_m", "kecepatan_ms"] : b.metode === "ember" ? ["volume_l", "detik"] : [];
+    for (const k of perlu) if (b[k] == null) ke(g, k, `wajib diisi untuk metode ${b.metode}`);
   }
-  const kenal = {periksa: ["langkah", "waktu", "petak_id"], sos: ["lat", "lon", "waktu", "pesan"], tekanan: ["titik", "bar", "waktu", "petak_id"], selesai: ["waktu", "alat_kembali", "alat_hilang", "catatan"],
-    bor: ["petak_id", "lat", "lon", "kedalaman_cm", "waktu", "catatan"], debit: ["metode", "lat", "lon", "waktu", "lebar_m", "dalam_m", "kecepatan_ms", "volume_l", "detik"]}[jenis];
-  for (const k of Object.keys(b)) if (k !== "id" && !kenal.includes(k)) ke(k, "medan tidak dikenal");
-  return {ok: !galat.length, galat};
+  if (ketat) for (const k of Object.keys(b)) if (!KENAL_F2[jenis].has(k)) ke(g, k, "medan tidak dikenal");
+  return g;
+};
+const SPEK_F2 = new Map();
+function spekF2(jenis, ketat) {
+  const k = jenis + (ketat ? "|k" : "");
+  if (!SPEK_F2.has(k)) SPEK_F2.set(k, {...dariPipa(MEDAN_F2[jenis], cekF2(jenis, ketat)), bebas: true});
+  return SPEK_F2.get(k);
 }
+/* {ok, galat:[{medan, pesan}]}; satu pintu klien (cekFase2) dan server (src/sippa_lapangan.js). */
+export function periksaFase2(jenis, b, {longgar = false} = {}) {
+  const tolak = tolakBentuk(jenis, b, JENIS_FASE2.includes(jenis));
+  return tolak ?? hasil(periksaSpek(spekF2(jenis, !longgar && jenis !== "jejak"), b));
+}
+export const cekFase2 = (jenis, b) => periksaFase2(jenis, b);

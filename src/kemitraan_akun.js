@@ -10,6 +10,7 @@
 import {json, gagal, acak, sha, bacaBody, bacaBytes, normalWA, turnstileOK, cacheTepi} from "./worker.js";
 import {tx, num, tglSah, RE_EMAIL} from "./posko.js";
 import {laju, lajuIP, kodeBaru} from "./bnpb.js";
+import {mkSesiPeran, mkCabutSesiPeran} from "./hak.js";
 import {hashSandi} from "./pendataan.js";
 import {KEAHLIAN, PROV, cekInstitusi, sisipInstitusi, statusMou} from "./relawan.js";
 import {hakKm} from "./kemitraan.js";
@@ -204,6 +205,16 @@ async function aturSandi(env, req, url, kini) {
   if (!u.meta.changes) return gagal(403, TOLAK);
   await env.DB.prepare("DELETE FROM km_sesi WHERE akun_id = ?").bind(a.id).run();   // sandi baru mematikan sesi lama
   return json({ok: true});
+}
+/* Satu Pintu Masuk (PM-06): lihat src/instansi.js sesiUntuk. Cookie kampus SameSite=Strict, 12 jam (milik modul ini). */
+export async function sesiUntuk(env, akunId, kini) {
+  const token = acak(32);
+  return await mkSesiPeran(env, "kemitraan", akunId, await sha(token), kini, kini + SESI_UMUR) ? [cookieSet(token, SESI_UMUR / 1000)] : null;
+}
+export async function cabutSesi(env, req) {
+  const t = tokenDari(req);
+  if (t) await mkCabutSesiPeran(env, "kemitraan", await sha(t));
+  return [cookieSet("", 0)];
 }
 async function keluar(env, req) {
   const t = tokenDari(req);

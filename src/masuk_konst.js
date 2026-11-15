@@ -25,3 +25,10 @@ export const DENYUT_MATI = 5 * MENIT;        // denyut lebih tua dari ini = salu
 export const RETENSI_KODE = HARI;            // mk_kode
 export const RETENSI_UNDANG = 90 * HARI;     // mk_undang, dihitung sesudah masa berlakunya lewat
 export const RETENSI_LOG = 400 * HARI;       // mk_masuk_log
+/* PM-06/PM-07: peran, sandi staf, rute Super Admin */
+export const LAJU_IP_SANDI = [[JAM, 20]];    // POST /api/masuk/sandi per alamat; tebakan sandi staf juga dihitung aturan staf (8 per jam per username dan IP)
+export const LAJU_AKUN_SANDI = [[JAM, 10]];  // per akun umum yang membuktikan nomor
+export const AKUN_PER_JENIS = 5;             // paling banyak akun peran per jenis yang dibuka satu nomor (anggaran subrequest Worker)
+/* perbaikan PM-05..07 */
+export const LAJU_IP_PILIH = [[JAM, 60]];        // POST /api/masuk/pilih per alamat
+export const LAJU_IP_PEMIRSA_WA = [[JAM, 30]];   // POST /api/masuk/pemirsa_wa per alamat

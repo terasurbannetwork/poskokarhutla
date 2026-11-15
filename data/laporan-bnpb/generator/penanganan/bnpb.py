@@ -199,19 +199,20 @@ def ganti_operasi(s, op):
     D = op.get('tanggal_laporan') or op['tanggal']
     K = op['tanggal']
     ARMADA = sorted(([n, p, w] for n, (p, w) in op['armada'].items()), key=lambda r: -(r[1] + r[2]))
-    s = teks(s, '21', str(D.day)); s = teks(s, ' Oktober ', f' {BULAN[D.month - 1]} ')   # judul templat 211026: data per tanggal D
+    s = teks(s, '21', 'TGL#'); s = teks(s, ' Oktober ', f' {BULAN[D.month - 1]} ')   # penanda: hari 15 atau 36 bentrok dengan angka patroli/WB templat (15 Nov 2026)   # judul templat 211026: data per tanggal D
     # personel (per provinsi dan per instansi) tidak diganti: templat sudah memuat angka WA 21 s.d. 26 Okt; WA tak memuat rincian instansi
     pendek = {'Kalimantan Tengah': 'Kalteng', 'Riau': 'Riau', 'Kalimantan Barat': 'Kalbar', 'Sumatera Selatan': 'Sumsel', 'Kalimantan Selatan': 'Kalsel', 'Jambi': 'Jambi'}
     for n, v in op['personel'].items():
         assert f'<a:t>{pendek[n]}</a:t>' in s and f'<a:t>{v:,}</a:t>'.replace(',', '.') in s, f'personel {n} {v} beda dengan templat: isi ulang halaman personel'
     pat, wb = sum(r[1] for r in ARMADA), sum(r[2] for r in ARMADA)
     omc = {n: o for n, o in op['omc'].items() if o['sortie'] or o['sasaran']}   # Kalsel 26 Okt: disasar Hercules yang terbang dari Kalteng
-    ada = [n for n, *_ in OMC_BARIS if n in omc]   # baris templat tanpa OMC dibuang (Kalbar 26 Okt; pemilik 27 Okt 2026)
+    ada = [n for n, *_ in OMC_BARIS if n in omc] or [n for n, *_ in OMC_BARIS if (op['omc'].get(n) or {}).get('hujan')]   # 15 Nov 2026: OMC nihil di semua provinsi, baris = provinsi yang hujannya dilaporkan   # baris templat tanpa OMC dibuang (Kalbar 26 Okt; pemilik 27 Okt 2026)
     hujan = [n for n in ada if op['omc'][n].get('hujan')]
     hujan_wa = [n for n, o in op['omc'].items() if o.get('hujan')]   # subjudul: semua provinsi yang hujannya dilaporkan WA, bukan hanya 4 baris OMC
     s = teks(s, '51', str(pat + wb)); s = teks(s, '4 provinsi', 'OMC#'); s = teks(s, '3 provinsi', f'{len(hujan_wa)} provinsi'); s = teks(s, 'OMC#', f'{len(omc)} provinsi')   # penanda: hasil pertama bisa sama dengan teks kedua
     s = teks(s, '15', str(pat)); s = teks(s, '36', str(wb))
     s = teks(s, '51 unit', f'{pat + wb} unit'); s = teks(s, '15 ', f'{pat} '); s = teks(s, '36 ', f'{wb} ')
+    s = teks(s, 'TGL#', str(D.day))
     # ---- hujan setelah OMC: 4 baris templat; pil biru (hujan) / abu (belum hujan) dari baris Kalbar / Kalsel templat
     proto = lambda y0: (y0, ''.join(s[a_:z_] for a_, z_ in sp_di(s, 3561885, y0)))
     pil = {'biru': proto(3170682), 'abu': proto(4501134)}   # Kalbar templat = biru (hujan), Kalsel templat = abu (belum hujan)
@@ -246,6 +247,12 @@ def ganti_operasi(s, op):
     # sama dengan lencana total. Baris ke-3 dst disalin dari baris templat kedua; rapikan_omc menyusun jaraknya.
     if dua:
         s = baris_semai(s, len(dua))
+    else:   # 15 Nov 2026: OMC nihil di semua provinsi; baris templat Kalteng/Sumsel (3.900 kg, 800 kg) tidak boleh tertinggal
+        s = baris_semai(s, 1)
+        ln, lkg, lso, lh = SEMAI_TEKS[0]
+        ganti = {ln: 'Semua provinsi', lkg: '0 kg', lso: '0 sortie', lh: f'OMC tidak dilaksanakan {bln(K)}'}
+        s = di_baris(s, SEMAI_Y[0], lambda b: re.sub(r'<a:t>([^<]*)</a:t>', lambda m: f'<a:t>{ganti.get(m.group(1), m.group(1))}</a:t>', b))
+        s = pasang_sp(s, 3561885, SEMAI_Y[0] + 61722, pil['abu'], 'TIDAK ADA SORTIE')
     for k, (nama, o) in enumerate(dua):
         ln, lkg, lso, lh = SEMAI_TEKS[min(k, 1)]
         yn = SEMAI_Y[0] if k == 0 else SEMAI_Y[1] + (k - 1) * SEMAI_P

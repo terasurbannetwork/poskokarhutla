@@ -581,6 +581,7 @@ export const pbStmtTitikHapus = (env, p, id, kini) => sedia(env, p, "pb_titik", 
 export const pbStmtLog = (env, p, kini, oleh, tabel, kunci, aksi, sebelum, sesudah, alasan = null) =>
   sedia(env, p, "pb_log", "tambah", PB_SQL.log).bind(kini, oleh, tabel, kunci, aksi, sebelum == null ? null : JSON.stringify(sebelum), sesudah == null ? null : JSON.stringify(sesudah), alasan);
 export const pbLogLaju = async (env, p, oleh, sejak) => (await sedia(env, p, "pb_log", "baca", PB_SQL.laju).bind(oleh, sejak).first())?.n ?? 0;
+
 /* PB-12 renlap generik (pb_renlap; DESAIN-TEKNIS paritas-bencana 3.2, 5). Versi = max+1 dalam SATU INSERT..SELECT (UNIQUE menutup balapan); diminta kedua < 30 menit ditolak di SQL yang sama.
    Hapus tidak ada: hanya status. Semua kueri lewat PK atau indeks pb_renlap_tanggal / pb_log_oleh. */
 Object.assign(MATRIKS, {pb_renlap: {pb_baca: ["baca"], pb_tulis: ["baca", "tambah", "ubah"]}});
@@ -653,6 +654,45 @@ export const mkSesiBaru = (env, tokenSha, akunId, kini, habis) => env.DB.batch([
   env.DB.prepare("UPDATE mk_akun SET terakhir_masuk = ? WHERE id = ?").bind(kini, akunId)]);
 export const mkSesiDari = (env, tokenSha, kini) => env.DB.prepare("SELECT s.kode_pada, a.id, a.wa, a.nama, a.prov, a.kab, a.setuju_pdp FROM mk_sesi s JOIN mk_akun a ON a.id = s.mk_id WHERE s.token_sha = ? AND s.habis > ? AND a.status = 'aktif'").bind(tokenSha, kini).first();
 export const mkCabutSesi = (env, tokenSha) => env.DB.prepare("DELETE FROM mk_sesi WHERE token_sha = ?").bind(tokenSha).run();
+
+/* PM-06 dan PM-07 (ALGORITMA 3): akun peran yang terikat LANGSUNG ke nomor terbukti (D4), sesi peran, log masuk, nomor pemirsa.
+   Tiap kueri lewat indeks wa (instansi_akun_wa, pdt_akun_wa, km_akun_wa, staf_wa, orang_wa, relawan_wa_aktif, UNIQUE mk_akun.wa / mk_pemirsa_wa.wa). Nomor selalu bentuk 62...; hanya orang dan relawan dicocokkan juga bentuk 08... */
+const duaBentuk = n => [n, "0" + n.slice(2)];
+const MK_SESI_SQL = {   // [terbitkan hanya bila akun aktif, buang sesi kedaluwarsa akun itu, cabut satu token]
+  instansi: ["INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) SELECT ?1, id, ?3, ?4 FROM instansi_akun WHERE id = ?2 AND status = 'aktif' AND dummy = 0", "DELETE FROM instansi_sesi WHERE akun_id = ?1 AND kedaluwarsa <= ?2", "DELETE FROM instansi_sesi WHERE token_sha = ?1"],
+  pendataan: ["INSERT INTO pdt_sesi (token_sha, akun_id, dibuat, kedaluwarsa) SELECT ?1, id, ?3, ?4 FROM pdt_akun WHERE id = ?2 AND status = 'aktif' AND dummy = 0", "DELETE FROM pdt_sesi WHERE akun_id = ?1 AND kedaluwarsa <= ?2", "DELETE FROM pdt_sesi WHERE token_sha = ?1"],
+  kemitraan: ["INSERT INTO km_sesi (sha, akun_id, dibuat, sampai) SELECT ?1, id, ?3, ?4 FROM km_akun WHERE id = ?2 AND status = 'aktif' AND dummy = 0", "DELETE FROM km_sesi WHERE akun_id = ?1 AND sampai <= ?2", "DELETE FROM km_sesi WHERE sha = ?1"],
+  pemirsa: ["INSERT INTO pemirsa_sesi (token_sha, pemirsa_id, dibuat, kedaluwarsa) SELECT ?1, id, ?3, ?4 FROM pemirsa WHERE id = ?2 AND status = 'aktif' AND diputus IS NULL", "DELETE FROM pemirsa_sesi WHERE pemirsa_id = ?1 AND kedaluwarsa <= ?2", "DELETE FROM pemirsa_sesi WHERE token_sha = ?1"]};
+/* true bila sesi terbit: akun harus (masih) aktif pada saat INSERT (satu pernyataan, tanpa celah baca-lalu-tulis) */
+export const mkSesiPeran = async (env, jenis, akunId, tokenSha, kini, habis) => {
+  const [t, b] = MK_SESI_SQL[jenis];
+  return (await env.DB.batch([env.DB.prepare(t).bind(tokenSha, akunId, kini, habis), env.DB.prepare(b).bind(akunId, kini)]))[0].meta.changes === 1;
+};
+export const mkCabutSesiPeran = (env, jenis, tokenSha) => env.DB.prepare(MK_SESI_SQL[jenis][2]).bind(tokenSha).run();
+/* satu batch: instansi langsung, instansi lewat keanggotaan (mk_anggota aktif ke akun aktif), pendataan, kampus, staf (tanpa sesi), pemirsa lewat mk_pemirsa_wa */
+export const mkRuangPeran = async (env, nomor, maks) => {
+  const [i, a, p, k, s, m] = (await env.DB.batch([
+    env.DB.prepare("SELECT id, jenis, wilayah FROM instansi_akun WHERE wa = ?1 AND status = 'aktif' AND dummy = 0 LIMIT ?2").bind(nomor, maks),
+    env.DB.prepare("SELECT x.id, x.jenis, x.wilayah FROM mk_akun u JOIN mk_anggota g ON g.mk_id = u.id AND g.tabel = 'instansi_akun' AND g.status = 'aktif' JOIN instansi_akun x ON x.id = g.akun_id AND x.status = 'aktif' AND x.dummy = 0 WHERE u.wa = ?1 AND u.status = 'aktif' LIMIT ?2").bind(nomor, maks),
+    env.DB.prepare("SELECT id, unit, unit_lain FROM pdt_akun WHERE wa = ?1 AND status = 'aktif' AND dummy = 0 LIMIT ?2").bind(nomor, maks),
+    env.DB.prepare("SELECT k.id, (SELECT nama FROM institusi WHERE id = k.institusi_id) lembaga FROM km_akun k WHERE k.wa = ?1 AND k.status = 'aktif' AND k.dummy = 0 LIMIT ?2").bind(nomor, maks),
+    env.DB.prepare("SELECT id, username FROM staf WHERE wa = ?1 AND status = 'aktif' AND dummy = 0 LIMIT ?2").bind(nomor, maks),
+    env.DB.prepare("SELECT p.id, p.nama, p.tab FROM mk_pemirsa_wa w JOIN pemirsa p ON p.id = w.pemirsa_id WHERE w.wa = ?1 AND p.status = 'aktif' AND p.diputus IS NULL LIMIT 1").bind(nomor)])).map(x => x.results);
+  const ada = new Set(i.map(x => x.id));
+  return {instansi: [...i, ...a.filter(x => !ada.has(x.id))].slice(0, maks), pendataan: p, kemitraan: k, staf: s, pemirsa: m};
+};
+export const mkStafPerWa = async (env, nomor, maks) => (await env.DB.prepare("SELECT id, username FROM staf WHERE wa = ?1 AND status = 'aktif' AND dummy = 0 LIMIT ?2").bind(nomor, maks).all()).results;
+export const mkLogMasuk = (env, daftar, mkId, kini) => daftar.length ? env.DB.batch(daftar.map(d => env.DB.prepare("INSERT INTO mk_masuk_log (id, mk_id, tabel, akun_id, waktu) VALUES (?, ?, ?, ?, ?)").bind(d.id, mkId, d.tabel, d.akun_id, kini))) : null;
+/* orang dan relawan: tepat satu baris (>= 2 dikembalikan apa adanya supaya pemanggil menolak). relawan hanya kolom yang dipakai rute /api/relawan/saya: tanpa wa, email, gol_darah, darurat_* */
+export const mkOrangDariWa = async (env, nomor) => (await env.DB.prepare("SELECT * FROM orang WHERE wa IN (?1, ?2) AND status = 'aktif' AND dummy = 0 LIMIT 2").bind(...duaBentuk(nomor)).all()).results;
+export const mkOrangDariRelawan = (env, relawanId) => env.DB.prepare("SELECT * FROM orang WHERE relawan_id = ? AND status = 'aktif'").bind(relawanId).first();
+export const mkRelawanDariWa = async (env, nomor, statusSah) => (await env.DB.prepare(`SELECT id, nama, prov, kab, jalur, kampus_id, organisasi, keahlian, sertifikat, hari_per_minggu, maks_hari, luar_provinsi, status, alasan, dibuat
+  FROM relawan WHERE anonim = 0 AND dummy = 0 AND status NOT IN ('ditolak', 'nonaktif') AND wa IN (?1, ?2) AND status IN (SELECT value FROM json_each(?3)) LIMIT 2`).bind(...duaBentuk(nomor), JSON.stringify(statusSah)).all()).results;
+/* nomor pemirsa (D17): hanya Super Admin yang memanggil. wa null = hapus. Nomor sudah dipakai pemirsa lain = melempar UNIQUE (pemanggil menjawab 409) */
+export const mkPemirsaAda = async (env, id) => !!(await env.DB.prepare("SELECT 1 x FROM pemirsa WHERE id = ?").bind(id).first());
+export const mkPemirsaWaSet = (env, id, wa, oleh, kini) => wa == null
+  ? env.DB.prepare("DELETE FROM mk_pemirsa_wa WHERE pemirsa_id = ?").bind(id).run()
+  : env.DB.prepare("INSERT INTO mk_pemirsa_wa (pemirsa_id, wa, oleh, dibuat) VALUES (?1, ?2, ?3, ?4) ON CONFLICT (pemirsa_id) DO UPDATE SET wa = excluded.wa, oleh = excluded.oleh, dibuat = excluded.dibuat").bind(id, wa, oleh, kini).run();
 
 /* Paritas bencana PB-21 (D13, DESAIN-TEKNIS 3.4): peringatan jenis baru di tabel samping peringatan_x (migrasi 0137); `peringatan` lama tidak disentuh.
    Tanpa migrasi 0137: tulis dilewati (null), baca hanya tabel lama, jalur jenis lama tidak terganggu. */

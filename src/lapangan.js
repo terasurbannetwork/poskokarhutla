@@ -8,6 +8,8 @@ import {gagal, json, acak, bacaBody, ipHash, cacheTepi, shaBytes, sha} from "./w
 import {superOK, num, tx, reguDari} from "./posko.js";
 import {dalamWilayahStaf} from "./staf.js";
 import {pemegangKode, laju, kodeBaru} from "./bnpb.js";
+import {sesiMasuk} from "./masuk_sesi.js";
+import {mkOrangDariWa, mkOrangDariRelawan, mkRelawanDariWa} from "./hak.js";
 import {nilaiGps, jaringanRelay} from "./gps.js";
 import {jaringanHosting} from "./publik.js";
 import {jenisBerkas, ATURAN_MEDIA, jarakM} from "./foto.js";
@@ -17,8 +19,10 @@ import {KONST_PUBLIK, VERSI_SETUJU, TEKS_SETUJU, ARAH, TANTANGAN, NONCE, LURING,
 import {RUTE_LAPANGAN_PANEL, jaga, pb, penjaga, jamRelawan, kirimJpeg} from "./lapangan_panel.js";
 export {bersihkanLapangan} from "./lapangan_panel.js";
 
+const BATAS_TEKS_SESI = 64 * 1024;   // logbook lewat sesi nomor: hanya teks, jadi badan kecil
 const MENIT = 60e3, JAM = 3600e3, HARI = 24 * JAM, RE_ID = /^[0-9a-f]{16}$/, RE_TGL = /^\d{4}-\d{2}-\d{2}$/;
 const STATUS_RELAWAN_SAH = "'diverifikasi', 'siap_tugas', 'ditugaskan', 'bertugas', 'selesai'";
+export const STATUS_RELAWAN_ARR = STATUS_RELAWAN_SAH.replace(/'/g, "").split(", ");   // sama dengan di atas, untuk json_each di hak.js (Satu Pintu Masuk)
 
 /* Buat atau perbarui baris orang jenis relawan dari baris relawan (satu orang per relawan: indeks unik orang_relawan_u). Anonim tidak disalin. */
 export const salinOrang = (env, relawanId, kini = Date.now()) => env.DB.prepare(
@@ -68,9 +72,26 @@ const cariOrang = (env, kini) => async kodeSha => {
   await salinOrang(env, r.id, kini);
   return env.DB.prepare("SELECT * FROM orang WHERE relawan_id = ? AND status = 'aktif'").bind(r.id).first();
 };
+/* Satu Pintu Masuk (PM-06, DESAIN-TEKNIS 4.3): tanpa x-kode, sesi_masuk sah + nomor terikat TEPAT satu orang aktif (atau satu relawan sah yang disalin) = baris orang bertanda `lewat_sesi`.
+   Hak terbatas: tolakRegu menutup wajah, persetujuan wajah, nonce, dan absen; riwayat tanpa absen; logbook hanya teks (unggah foto 403); foto tetap butuh x-kode.
+   GET tidak pernah menulis: relawan tanpa baris orang dilihat lewat baris semu (id null, tanpa penugasan); salinOrang baru jalan di permintaan tulis pertama. Dua baris bernomor sama, status di luar STATUS_RELAWAN_SAH, atau tabel belum ada = tidak dibuka. */
+async function orangDariSesi(env, req, kini) {
+  try {
+    const s = await sesiMasuk(env, req, kini); if (!s) return null;
+    const o = await mkOrangDariWa(env, s.wa);
+    if (o.length > 1) return null;
+    if (o.length === 1) return {...o[0], lewat_sesi: true};
+    const r = await mkRelawanDariWa(env, s.wa, STATUS_RELAWAN_ARR);
+    if (r.length !== 1) return null;
+    if (req.method === "GET" || req.method === "HEAD") return {id: null, jenis: "relawan", relawan_id: r[0].id, nama: r[0].nama, prov: r[0].prov, kab: r[0].kab, unit: null, jabatan: null, wajah_status: "belum", dummy: 0, lewat_sesi: true};
+    await salinOrang(env, r[0].id, kini);
+    const b = await mkOrangDariRelawan(env, r[0].id);
+    return b ? {...b, lewat_sesi: true} : null;
+  } catch (e) { if (/no such table/i.test(String(e?.message || e))) return null; throw e; }
+}
 /* baris orang atau Response: tanpa kode 401, kode salah/dicabut 401 (bukan 403 pemegangKode), terlalu banyak tebakan 429 */
 export async function petugas(env, req, kini) {
-  if (!req.headers.get("x-kode")) return req.headers.get("x-kode-regu") ? orangDariRegu(env, req, kini) : gagal(401, "kode tidak diberikan; buka tautan pribadimu");
+  if (!req.headers.get("x-kode")) return req.headers.get("x-kode-regu") ? orangDariRegu(env, req, kini) : await orangDariSesi(env, req, kini) ?? gagal(401, "kode tidak diberikan; buka tautan pribadimu");
   const r = await pemegangKode(env, req, "lapangan", cariOrang(env, kini), kini, 60);
   return r instanceof Response && r.status === 403 ? gagal(401, "kode tidak berlaku (salah atau sudah diganti); minta tautan baru dari admin") : r;
 }
@@ -86,7 +107,8 @@ async function orangDariRegu(env, req, kini) {
   return o ? {...o, regu: true} : gagal(401, "akun regu ini dinonaktifkan");
 }
 /* kode regu dibagi satu regu, jadi bukan bukti per orang: orang hasil regu hanya boleh logbook dan baca profil (KEAMANAN-PRIVASI). Wajah dan absen = 403. */
-export const tolakRegu = o => o.regu ? gagal(403, "kode regu tidak bisa untuk wajah dan absen: kode itu dibagi satu regu, bukan bukti per orang. Pakai tautan pribadi dari admin.") : null;
+export const tolakRegu = o => o.regu ? gagal(403, "kode regu tidak bisa untuk wajah dan absen: kode itu dibagi satu regu, bukan bukti per orang. Pakai tautan pribadi dari admin.")
+  : o.lewat_sesi ? gagal(403, "masuk lewat nomor WhatsApp tidak membuka wajah dan absen: itu butuh tautan kode pribadi dari admin.") : null;
 
 const setujuTerakhir = (env, orangId) => env.DB.prepare("SELECT versi_teks, setuju FROM orang_setuju WHERE orang_id = ? ORDER BY waktu DESC, rowid DESC LIMIT 1").bind(orangId).first();
 
@@ -359,8 +381,11 @@ async function tugasApiTerdekat(env, lat, lon) {
 async function logbook(env, req, kini) {
   const o = await petugas(env, req, kini); if (o instanceof Response) return o;
   const lj = await laju(env, o.id, "lapangan.logbook", [[JAM, 30]], kini); if (lj) return lj;
-  const f = await bacaForm(req, BATAS_FOTO_LOGBOOK * M_FOTO + 128 * 1024); if (f.r) return f.r;
+  const DILARANG_FOTO = () => gagal(403, "masuk lewat nomor WhatsApp hanya boleh mengirim teks logbook: unggah foto butuh tautan kode pribadi dari admin.");
+  if (o.lewat_sesi && Number(req.headers.get("content-length")) > BATAS_TEKS_SESI) return DILARANG_FOTO();   // ditolak sebelum badan dibaca
+  const f = await bacaForm(req, o.lewat_sesi ? BATAS_TEKS_SESI : BATAS_FOTO_LOGBOOK * M_FOTO + 128 * 1024); if (f.r) return f.r;
   const d = f.d, berkas = f.f.getAll("foto");
+  if (o.lewat_sesi && berkas.length) return DILARANG_FOTO();
   if (typeof d.tugas_id !== "string" || !RE_ID.test(d.tugas_id)) return gagal(400, "tugas_id tidak sah");
   const msTgl = typeof d.tanggal === "string" && RE_TGL.test(d.tanggal) ? Date.parse(d.tanggal + "T00:00:00Z") : NaN;
   if (!Number.isFinite(msTgl) || tanggalWIB(msTgl) !== d.tanggal) return gagal(400, "tanggal harus YYYY-MM-DD yang sah");
@@ -443,7 +468,7 @@ async function riwayat(env, req, kini) {
   const [a, l] = await env.DB.batch([
     env.DB.prepare("SELECT x.id, x.tugas_id, t.judul tugas, x.jenis, x.tanggal, x.waktu, x.status, x.alasan, x.jarak_m, x.luring FROM lp_absen x JOIN lp_tugas t ON t.id = x.tugas_id WHERE x.orang_id = ? AND x.tanggal >= ? ORDER BY x.waktu DESC LIMIT 100").bind(o.id, dari),
     env.DB.prepare("SELECT l.id, l.tugas_id, t.judul tugas, l.tanggal, l.kegiatan, l.hasil, l.terkunci, (SELECT count(*) FROM lp_logbook_foto WHERE logbook_id = l.id) foto FROM lp_logbook l JOIN lp_tugas t ON t.id = l.tugas_id WHERE l.orang_id = ? AND l.tanggal >= ? ORDER BY l.tanggal DESC, l.waktu DESC LIMIT 100").bind(o.id, dari)]);
-  return json({dari, absen: a.results.map(x => ({...x, alasan: JSON.parse(x.alasan), luring: !!x.luring, foto_url: `/api/petugas/foto/${x.id}`})), logbook: l.results.map(x => ({...x, terkunci: !!x.terkunci || x.tanggal < hari}))});
+  return json({dari, absen: o.lewat_sesi ? [] : a.results.map(x => ({...x, alasan: JSON.parse(x.alasan), luring: !!x.luring, foto_url: `/api/petugas/foto/${x.id}`})), logbook: l.results.map(x => ({...x, terkunci: !!x.terkunci || x.tanggal < hari}))});
 }
 /* foto absen atau logbook: pemilik (x-kode) atau peninjau panel; selain itu 404 (tidak membedakan ada/tidak ada) */
 async function fotoBaca(env, req, url, kini, ctx, id) {

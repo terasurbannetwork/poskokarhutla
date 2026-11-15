@@ -645,8 +645,8 @@ const RUTE = {
   ...RUTE_SEMAI,   // peluang semai awan: berkas R2 + target renlap OMC (src/operasi_semai.js, migrasi 0129)
   ...RUTE_ISIAN,   // isian manual operasi udara (src/operasi_isian.js, migrasi 0126)
   ...RUTE_PB_RINGKAS,   // paritas bencana: papan status darurat dari logbook_sk (src/pb_ringkas.js)
-  ...RUTE_PB,   // paritas bencana: sarana dan fasilitas sasaran (src/pb_isian.js, migrasi 0130)
   ...RUTE_PB_DOK,   // paritas bencana: dokumen sitrep, renops, laporan KIB (src/pb_dokumen.js, migrasi 0131)
+  ...RUTE_PB,   // paritas bencana: sarana dan fasilitas sasaran (src/pb_isian.js, migrasi 0130)
   ...RUTE_LAPORAN_KARHUTLA,   // Laporan Karhutla otomatis: draf, kirim, verifikasi, kunci, ralat, snapshot (src/laporan_karhutla.js)
   ...RUTE_PANTAU,   // Meja Pantau: antrean kerja harian staf (src/pantau.js)
   ...RUTE_OPS,   // operasi pemadaman lapangan (src/operasi_lapangan.js)
@@ -743,7 +743,9 @@ export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk den
   ["/instansi", "pemda, polisi, dan TNI masuk dengan username dan sandi akun instansi sendiri, bukan sesi admin (keputusan pemilik 21 Okt 2026); sesi, status aktif, dan cakupan wilayah dicek di tiap panggilan API"],
   ["/siklus/kejadian", "ringkasan publik satu kejadian (/siklus/kejadian/KJ-...) dibuka tamu tanpa akun (KEPUTUSAN-AWAL U3 bawaan, DESAIN-TEKNIS siklus 7.2): cangkang publik hanya memuat ringkasan yang sudah dipublikasikan KO; halaman dan API staf Siklus tetap wajib sesi (src/siklus.js)"],
   ["/bnpb/katalog-dokumen", "katalog dokumen repo, dibuka tanpa login untuk sementara (permintaan pemilik 9 Nov 2026); hanya daftar judul dan tautan GitHub, repo-nya sendiri publik"],
-  ["/pendataan", "pendataan Satu Data BNPB: staf direktorat membuat akun sendiri tanpa akun situs (keputusan pemilik 26 Okt 2026); akun baru menunggu persetujuan Super Admin, sesi dan status aktif dicek di tiap panggilan API"]]);
+  ["/pendataan", "pendataan Satu Data BNPB: staf direktorat membuat akun sendiri tanpa akun situs (keputusan pemilik 26 Okt 2026); akun baru menunggu persetujuan Super Admin, sesi dan status aktif dicek di tiap panggilan API"],
+  ["/masuk", "pintu masuk satu nomor WhatsApp dan kode sekali pakai harus bisa dibuka tamu (keputusan pemilik 15 Nov 2026, K8); halaman tidak memuat data, kode dan sesi dicek di tiap panggilan /api/masuk/*"],
+  ["/alun-alun", "forum alun-alun dibuka tamu tanpa login (keputusan pemilik 15 Nov 2026, K8: \"alun alun\"); tulis dan baca lewat /api/alun* yang berlaju dan ber-Turnstile, daftar relawan dan peta utama tetap terkunci"]]);
 function halamanTerkunci(url) {
   const jalur = url.pathname.replace(/\/+$/, "") || "/";
   if (/\.html$/i.test(url.pathname)) return true;   // berkas HTML statis dibuka langsung lewat nama (Worker dipanggil hanya untuk pola ini)

@@ -6,6 +6,7 @@
 import {kelengkapan, butir, BAGIAN} from "/inti/kelengkapan.js";
 import {periksa, gambar as gambarSpek, dariMeja} from "/inti/spek.js";
 import {bacaXlsx, barisDariLembar, potong, angkaId} from "/bnpb/meja_impor.js";
+import {kartuHtml, pilihanTitik, tanggapBuat, badanBuat, hariWib} from "/bnpb/titik_pengungsian.js";
 {
   const app = document.getElementById("app"), KUNCI = "meja_kode", HAL = 15;
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
@@ -27,6 +28,7 @@ import {bacaXlsx, barisDariLembar, potong, angkaId} from "/bnpb/meja_impor.js";
   const angkaF = (k, v) => k.rupiah ? "Rp" + ID.format(v) : fmt(k).format(v);
 
   let segarkanPita = () => {}, kode = "", kajiOps = [], S = null, saya = null, meja = null, daftar = [], urut = "diubah", arah = -1, hal = 0, form = null, buka = new Map(), pesanT = "", pesanOk = true, imp = null;
+  let titik = [], tp = {bukaForm: false, dekat: null, tutupId: null, nilai: {}, status: "", muat: false};   // KP-20: register titik pengungsian (meja pengungsi)
   const api = async (m, u, b) => {
     let r; try { r = await fetch(u, {method: m, headers: {"x-kode": kode, ...(b ? {"content-type": "application/json"} : {})}, body: b ? JSON.stringify(b) : undefined}); }
     catch (e) { return {ok: false, s: 0, j: {galat: "Tidak ada sinyal. Coba lagi."}}; }
@@ -263,6 +265,36 @@ import {bacaXlsx, barisDariLembar, potong, angkaId} from "/bnpb/meja_impor.js";
       ${imp.gagal.length || imp.hasil.galat.length ? `<div class="mj-wadah"><table class="mj-tabel"><thead><tr><th>Baris Excel</th><th>Alasan</th></tr></thead><tbody>${baris([...imp.hasil.galat, ...imp.gagal].sort((a, c) => a.sumber - c.sumber).slice(0, 100), [x => x.sumber, x => x.pesan])}</tbody></table></div>` : ""}
       <div class="mj-aksi">${imp.sisa.length && fin ? `<button class="mj-btn utama" data-impor-lanjut="1">${IK.maju}Lanjutkan ${ID.format(imp.sisa.reduce((a, c) => a + c.length, 0))} baris</button>` : ""}${fin ? tombolTutup : ""}</div></div>`;
   };
+  /* ---------- titik pengungsian (KP-20): logika murni di titik_pengungsian.js ---------- */
+  const kartuTitik = () => kartuHtml({titik, catatan: daftar, hi: hariWib(), esc, IK, tglF, ID, pil, ...tp});
+  const segarkanTitik = () => { const w = document.getElementById("mjTitik"); if (w) w.innerHTML = meja === "pengungsi" && !form ? kartuTitik() : ""; };
+  const nantiTitik = () => (window.nanti || (f => setTimeout(f, 0)))(segarkanTitik);   // daftar dirender menyusul, klik tidak tertahan
+  async function muatTitik() {
+    if (meja !== "pengungsi") return;
+    tp.muat = true; tp.status = ""; const m0 = meja;
+    const r = await api("GET", "/api/pengungsian/titik");
+    if (meja !== m0) return;
+    tp.muat = false; titik = r.ok ? r.j.titik : []; tp.status = r.ok ? "" : (r.s === 503 ? "Titik pengungsian belum diaktifkan." : r.j.galat || `Titik belum bisa dimuat (${r.s})`);
+    nantiTitik();
+  }
+  const bacaTitikForm = () => Object.fromEntries([...document.querySelectorAll("#tpForm [name]")].map(e => [e.name, e.value]));
+  async function simpanTitik(paksa) {
+    const v = paksa ? tp.nilai : (tp.nilai = bacaTitikForm()), b = badanBuat(v, paksa);
+    if (b.galat) { lapor(b.galat, false); const p = app.querySelector(".mj-pesan"); if (p) { p.className = "mj-pesan galat"; p.textContent = b.galat; } return; }
+    const r = tanggapBuat(await api("POST", "/api/pengungsian/titik", b.badan));
+    if (r.jenis === "dekat") { tp.dekat = r.dekat; return segarkanTitik(); }
+    if (r.jenis === "galat") { lapor(r.pesan, false); const p = app.querySelector(".mj-pesan"); if (p) { p.className = "mj-pesan galat"; p.textContent = r.pesan; } return; }
+    tp = {...tp, bukaForm: false, dekat: null, nilai: {}}; lapor(`Titik ${r.titik.nama} dibuat (${r.titik.id}).`, true);
+    const p = app.querySelector(".mj-pesan"); if (p) { p.className = "mj-pesan ok"; p.textContent = pesanT; }
+    segarkanTitik(); muatTitik();
+  }
+  async function tutupTitik(id) {
+    const tgl = document.querySelector("[data-tp-tgl]")?.value, r = await api("POST", "/api/pengungsian/titik/tutup", {id, ...(tgl ? {tutup: tgl} : {})});
+    const p = app.querySelector(".mj-pesan");
+    if (!r.ok) { lapor(r.j.galat || `Gagal menutup titik (${r.s})`, false); if (p) { p.className = "mj-pesan galat"; p.textContent = pesanT; } return; }
+    tp.tutupId = null; lapor(`Titik ditutup per ${tglF(r.j.tutup)}.`, true); if (p) { p.className = "mj-pesan ok"; p.textContent = pesanT; }
+    segarkanTitik(); muatTitik();
+  }
   const segarkanImpor = () => { const w = document.getElementById("mjImpor"); if (w) w.innerHTML = panelImpor(); };
   async function bacaBerkas(file) {
     imp = {tahap: "baca", nama: file.name}; segarkanImpor();
@@ -303,23 +335,34 @@ import {bacaXlsx, barisDariLembar, potong, angkaId} from "/bnpb/meja_impor.js";
       ${form ? panelForm() : `<div class="mj-bar"><button class="mj-btn utama" data-baru="1">${IK.tambah}Tambah ${esc(m.nama.toLowerCase())}</button>
         ${dampakM() ? `<button class="mj-btn" data-impor-pilih="1">${IK.berkas}Impor dari Excel</button><a class="mj-btn" href="/bnpb/templat/data-dampak.xlsx" download>${IK.unduh}Unduh templat</a><input type="file" id="mjBerkas" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>` : ""}
         <span class="mj-redup" id="mjJumlah">${n} catatan di ${esc(saya.petugas.kab)}</span></div>`}
+      <div id="mjTitik">${meja === "pengungsi" && !form ? kartuTitik() : ""}</div>
       <div id="mjImpor">${panelImpor()}</div>
       <div id="mjTabel">${form ? "" : htmlTabel()}</div>`;
     pasangFormDampak(); pasangSpek();
   }
   /* spek bersama (public/inti/spek.js): sama dengan yang dipakai server (src/meja_spek.js validasi). Kolom gudang dipilih admin, tidak diisi petugas. */
-  const spekMeja = (m, tahap) => dariMeja({kolom: m.kolom.filter(k => k.tipe !== "gudang")}, {tahap});
+  const spekMeja = (m, tahap) => {
+    const sp = dariMeja({kolom: m.kolom.filter(k => k.tipe !== "gudang")}, {tahap});
+    if (m.id !== "pengungsi" || tahap !== null) return sp;
+    /* KP-20: kolom titik_id (kode TP-) diganti pilihan titik terbuka di kabupaten; wajib bila catatan baru dan ada titik terbuka */
+    const pil = pilihanTitik(titik, form?.baris?.data?.titik_id), i = sp.kolom.findIndex(c => c.nama === "titik_id"), c = {nama: "titik_id", label: "Titik pengungsian", tipe: "pilihan", pilihan: pil, wajib: form?.mode === "baru" && pil.length > 0};
+    if (i >= 0) return {...sp, kolom: sp.kolom.map((x, n) => n === i ? c : x)};
+    const j = sp.kolom.findIndex(x => x.nama === "pendataan_ke") + 1;   // server tak mengirim titik_id (src/meja_spek.js tanpaTitik): sisipkan sesudah Pendataan ke
+    return {...sp, kolom: [...sp.kolom.slice(0, j), c, ...sp.kolom.slice(j)]};
+  };
   const pasangSpek = () => {
     const el = document.getElementById("mjSpek"); if (!el || !form) return;
     const m = M(), sp = spekMeja(m, form.mode === "status" ? form.ke : null), awal = {};
     for (const c of sp.kolom) { const v = form.baris?.data?.[c.nama]; if (v != null && form.mode !== "status") awal[c.nama] = v; }
     form.spek = gambarSpek(sp, el, awal);
+    for (const o of el.querySelectorAll('[id$="-titik_id"] option')) { const t = titik.find(x => x.id === o.value); if (t) o.textContent = t.nama; }   // nama titik, bukan kode
   };
   const lapor = (t, ok) => { pesanT = t; pesanOk = ok; };
   async function muat(tanpaForm) {
     const r = await api("GET", `/api/meja/catatan?meja=${meja}`);
     if (!r.ok) { lapor(r.j.galat || `Gagal memuat (${r.s})`, false); daftar = []; } else daftar = r.j.catatan;
-    if (form && document.getElementById("mjForm") || tanpaForm && document.getElementById("mjTabel")) { segarkanTabel(); return; }   // formulir/impor terbuka: isiannya tidak boleh ikut terhapus
+    if (meja === "pengungsi") muatTitik();
+    if (form && document.getElementById("mjForm") || tanpaForm && document.getElementById("mjTabel")) { segarkanTabel(); nantiTitik(); return; }   // formulir/impor terbuka: isiannya tidak boleh ikut terhapus
     buka = new Map(); gambar();
   }
   const salah = (r, t) => {   // galat di tempat: isian form tetap
@@ -330,6 +373,20 @@ import {bacaXlsx, barisDariLembar, potong, angkaId} from "/bnpb/meja_impor.js";
   /* ---------- peristiwa ---------- */
   app.addEventListener("click", async e => {
     const t = e.target.closest("button"); if (!t) return;
+    const d = t.dataset;
+    if (d.tpTambah) { tp.bukaForm = true; tp.dekat = null; return segarkanTitik(); }   // chrome urgent: kartu berubah seketika
+    if (d.tpTutupForm) { tp.bukaForm = false; tp.dekat = null; tp.nilai = {}; return segarkanTitik(); }
+    if (d.tpTutup) { tp.tutupId = d.tpTutup; return segarkanTitik(); }
+    if (d.tpTutupBatal) { tp.tutupId = null; return segarkanTitik(); }
+    if (d.tpTutupOk) { t.disabled = true; return tutupTitik(d.tpTutupOk); }
+    if (d.tpSimpan) { t.disabled = true; await simpanTitik(false); t.disabled = false; return; }
+    if (d.tpPaksa) { t.disabled = true; await simpanTitik(true); t.disabled = false; return; }
+    if (d.tpBatalPaksa) { tp.dekat = null; return segarkanTitik(); }
+    if (d.tpGps) {
+      navigator.geolocation?.getCurrentPosition(p => { tp.nilai = {...bacaTitikForm(), lat: String(p.coords.latitude.toFixed(6)).replace(".", ","), lon: String(p.coords.longitude.toFixed(6)).replace(".", ",")}; segarkanTitik(); },
+        () => { lapor("Lokasi tidak bisa dibaca. Isi koordinat sendiri atau kosongkan.", false); const q = app.querySelector(".mj-pesan"); if (q) { q.className = "mj-pesan galat"; q.textContent = pesanT; } }, {enableHighAccuracy: true, timeout: 15000});
+      return;
+    }
     const tr = t.closest("tr"), r = tr && daftar.find(x => x.id === tr.dataset.id);
     if (t.dataset.meja) {   // chrome urgent: tombol terpilih dan "Memuat" seketika, data menyusul
       meja = t.dataset.meja; form = null; hal = 0; lapor("", true);

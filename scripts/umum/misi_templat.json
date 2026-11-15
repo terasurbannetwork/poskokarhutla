@@ -1,0 +1,248 @@
+{
+ "versi": 1,
+ "misi": {
+  "dropping": {
+   "label": "Dropping bantuan",
+   "bencana": "semua",
+   "lapangan_pendaratan": true,
+   "bidang": [
+    {
+     "id": "titik",
+     "label": "Titik darat atau titik jatuh",
+     "wajib": true
+    },
+    {
+     "id": "cara",
+     "label": "Cara serah (mendarat atau lempar rendah)",
+     "wajib": true
+    },
+    {
+     "id": "muatan_kg",
+     "label": "Berat muatan (kg)",
+     "wajib": true
+    },
+    {
+     "id": "lapangan",
+     "label": "Lapangan pendaratan atau zona dropping",
+     "wajib": true
+    }
+   ],
+   "waktu_di_titik": {
+    "aturan": "darat wajib diketik; lempar rendah memakai bawaan",
+    "darat": "wajib",
+    "orbit": "dropping_lempar_rendah_mnt",
+    "bawaan": null
+   },
+   "daftar_periksa": [
+    "Titik jatuh atau lapangan sudah dikonfirmasi dengan tim darat.",
+    "Berat muatan dicocokkan dengan kapasitas tipe (data tipe dari operator).",
+    "Cara serah dipilih: mendarat atau lempar rendah.",
+    "Zona dropping dijaga tim darat dari kerumunan."
+   ]
+  },
+  "pantau": {
+   "label": "Pantau kondisi",
+   "bencana": "semua",
+   "lapangan_pendaratan": false,
+   "bidang": [
+    {
+     "id": "titik",
+     "label": "Titik atau kecamatan yang dilihat",
+     "wajib": true
+    },
+    {
+     "id": "diamati",
+     "label": "Apa yang diamati",
+     "wajib": true
+    }
+   ],
+   "waktu_di_titik": {
+    "aturan": "orbit per titik; bawaan boleh diganti",
+    "darat": "boleh",
+    "orbit": "orbit_mnt",
+    "bawaan": "orbit"
+   },
+   "daftar_periksa": [
+    "Yang diamati ditulis sebelum terbang.",
+    "Koordinat tiap pengamatan dicatat.",
+    "Waktu orbit per titik disesuaikan dengan keperluan."
+   ]
+  },
+  "evakuasi": {
+   "label": "Evakuasi korban dan medis",
+   "bencana": "semua",
+   "lapangan_pendaratan": true,
+   "bidang": [
+    {
+     "id": "titik_jemput",
+     "label": "Titik jemput",
+     "wajib": true
+    },
+    {
+     "id": "tujuan",
+     "label": "Tujuan (fasilitas kesehatan atau tempat evakuasi)",
+     "wajib": true
+    },
+    {
+     "id": "jumlah_orang",
+     "label": "Jumlah orang tanpa nama",
+     "wajib": true
+    }
+   ],
+   "waktu_di_titik": {
+    "aturan": "darat wajib diketik",
+    "darat": "wajib",
+    "orbit": null,
+    "bawaan": null
+   },
+   "daftar_periksa": [
+    "Titik jemput dan tujuan sudah dikonfirmasi.",
+    "Jumlah orang dicatat tanpa nama.",
+    "Kapasitas dan kesiapan tempat tujuan dikonfirmasi."
+   ]
+  },
+  "angkut": {
+   "label": "Angkut personel dan alat",
+   "bencana": "semua",
+   "lapangan_pendaratan": true,
+   "bidang": [
+    {
+     "id": "titik",
+     "label": "Titik darat",
+     "wajib": true
+    },
+    {
+     "id": "jumlah_orang",
+     "label": "Jumlah orang tanpa nama",
+     "wajib": true
+    },
+    {
+     "id": "berat_alat_kg",
+     "label": "Berat alat (kg)",
+     "wajib": true
+    }
+   ],
+   "waktu_di_titik": {
+    "aturan": "darat wajib diketik",
+    "darat": "wajib",
+    "orbit": null,
+    "bawaan": null
+   },
+   "daftar_periksa": [
+    "Jumlah orang dan berat alat dicocokkan dengan kapasitas tipe.",
+    "Waktu di darat diketik untuk tiap titik bolak-balik."
+   ]
+  },
+  "cari": {
+   "label": "Pencarian (SAR)",
+   "bencana": [
+    "banjir",
+    "longsor",
+    "gempa",
+    "pesisir"
+   ],
+   "lapangan_pendaratan": false,
+   "bidang": [
+    {
+     "id": "titik_acuan",
+     "label": "Titik acuan",
+     "wajib": true
+    },
+    {
+     "id": "pola",
+     "label": "Pola (kotak melebar atau lintasan sejajar)",
+     "wajib": true
+    },
+    {
+     "id": "jarak_lintasan",
+     "label": "Jarak lintasan, diketik staf",
+     "wajib": true
+    }
+   ],
+   "waktu_di_titik": {
+    "aturan": "waktu dari pola pencarian (MU-08)",
+    "darat": "tidak",
+    "orbit": null,
+    "bawaan": null
+   },
+   "daftar_periksa": [
+    "Titik acuan dan pola pencarian ditetapkan.",
+    "Jarak lintasan diketik staf, tanpa bawaan.",
+    "Pola pencarian belum dibangun (MU-08)."
+   ]
+  },
+  "kunjungan": {
+   "label": "Kunjungan lapangan",
+   "bencana": "semua",
+   "lapangan_pendaratan": true,
+   "bidang": [
+    {
+     "id": "titik",
+     "label": "Titik darat",
+     "wajib": true
+    },
+    {
+     "id": "lama_darat",
+     "label": "Lama di darat",
+     "wajib": true
+    }
+   ],
+   "waktu_di_titik": {
+    "aturan": "darat wajib diketik",
+    "darat": "wajib",
+    "orbit": null,
+    "bawaan": null
+   },
+   "daftar_periksa": [
+    "Keluaran disimpan di luar repo.",
+    "Tanpa nama pejabat atau peserta di berkas.",
+    "Titik darat dikonfirmasi dengan pihak setempat."
+   ]
+  }
+ },
+ "bencana": {
+  "gunungapi": [
+   "Periksa gunung api Level I di dekat rute.",
+   "Periksa VONA terbaru untuk gunung terkait.",
+   "Periksa arah angin terhadap gunung terkait."
+  ],
+  "gempa": [
+   "Waspadai gempa susulan di titik darat.",
+   "Waspadai debu di reruntuhan."
+  ],
+  "karhutla": [
+   "Periksa jarak pandang dan asap di base dan di tiap titik."
+  ],
+  "udara": [
+   "Periksa jarak pandang dan asap di base dan di tiap titik."
+  ],
+  "cuaca": [
+   "Periksa apakah rute memotong poligon peringatan dini cuaca BMKG.",
+   "Periksa siklon aktif.",
+   "Periksa badai guntur di METAR."
+  ],
+  "banjir": [
+   "Titik darat di kecamatan berstatus Siaga atau Awas: periksa permukaan lapangan."
+  ],
+  "longsor": [
+   "Titik darat di kecamatan berpeluang longsor tinggi: jangan mendarat di kaki atau mahkota longsor."
+  ],
+  "kekeringan": [
+   "Daftar periksa umum: debu saat mendarat."
+  ],
+  "pesisir": [
+   "Daftar periksa umum: angin laut dan terbang di atas air."
+  ]
+ },
+ "lapangan_pendaratan": {
+  "judul": "Lapangan pendaratan (untuk tim darat)",
+  "butir": [
+   "Bidang darat minimal: sisi {pms510_bidang_ringan_m} (ringan), {pms510_bidang_sedang_m} (sedang), {pms510_bidang_berat_m} (berat).",
+   "Lingkaran bebas halangan: garis tengah {pms510_lingkaran_ringan_m} (ringan), {pms510_lingkaran_sedang_m} (sedang), {pms510_lingkaran_berat_m} (berat); minimal {pms510_lingkaran_kali_rotor}.",
+   "Kemiringan lapangan paling besar {pms510_kemiringan_maks_derajat}.",
+   "Halangan di jalur pendekatan paling tinggi 3 m pada {pms510_jarak_halangan_3m}, 6 m pada {pms510_jarak_halangan_6m}, 9 m pada {pms510_jarak_halangan_9m}, 12 m pada {pms510_jarak_halangan_12m}.",
+   "Hindari tanah lunak atau basah."
+  ],
+  "catatan": "Angka dari NWCG PMS 510 (standar kebakaran hutan Amerika Serikat), bukan standar Indonesia (Q6); mesin tidak menilai lapangan dari citra."
+ }
+}
