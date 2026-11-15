@@ -411,6 +411,16 @@ Tiap sesi yang mengubah layar menutup laporannya dengan tautan `http://localhost
 tidak menjawab, jalankan `npm run tinjau` di latar dan sebut itu. Pemilik masuk sendiri lewat `/admin/masuk` di localhost;
 tulisan lewat server ini mengenai PRODUKSI. Gerbangnya `tests/agen/gerbang-tinjau-lokal.test.mjs`.
 
+### 3.9 Merek dulu, atom dulu, baru layar (15 Nov 2026)
+
+Pemilik: hasil tanpa panduan "masih slop dan generic (belum ada branding)"; resepnya "bikin atomic elements terus baru ke components".
+Tiap layar, dashboard, atau artifact visual dibangun berurutan: token di `public/inti/tema.css`, element dengan semua keadaannya,
+blocks, baru layar; gaya baru tidak muncul di tingkat blocks atau layar. Panduan lengkap dan sembilan ciri slop ada di `~/.claude/DESAIN.md`
+(artifact https://claude.ai/artifact/Ef9FKm77jDE5uzHVYCrZ4u). Yang bisa diperiksa mesin: literal warna di `public/**/*.css` di luar
+`tema.css` tidak boleh bertambah. Gerbangnya `tests/agen/gerbang-token-warna.test.mjs`, daftar sisa `tests/agen/fixtures/token-warna-sisa.json`
+(hanya boleh menyusut; kurangi saat berkasnya disentuh). Deklarasi `--nama:` tidak dihitung, jadi palet lokal lewat properti kustom
+ditolak di tinjauan, bukan oleh mesin. Butir lain panduan itu belum digerbangi.
+
 ## 6. Review
 
 | Permukaan berubah                          | Pengulas                                  |
