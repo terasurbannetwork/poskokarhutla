@@ -342,6 +342,17 @@ Sebelum menyentuh status layanan dasar per kejadian dan kab, baca dokumen di
 
 Aturan berhentinya sama dengan §2.1. Mesin tidak pernah menetapkan status resmi; tidak ada warna selain abu tanpa bukti; IODA per provinsi tidak pernah jadi warna kab; lampu malam baru dipakai sesudah uji balik lulus.
 
+### 2.20 Siapa mengerjakan apa di mana (3W) dan pintu tawaran bantuan: baca dulu, baru bangun
+
+Sebelum menyentuh register organisasi luar, baris 3W per kejadian dan kab per klaster, tautan bertoken organisasi, atau tawaran bantuan dan pencocokannya ke kebutuhan, baca dokumen di
+`data/kajian-bnpb/tiga-w/` dengan urutan otoritas ini (kode di `src/tiga_w.js`, bagian TigaW `src/hak.js`, gabungan rute di `src/siklus.js`, pendaftaran `/bantu` di `src/worker.js` milik `warga-api`; `public/siklus/tiga_w.js` milik `siklus`; `public/bantu.*` milik `layar-peta`; `public/inti/klaster.js` milik `inti-layar`):
+
+1. `KEPUTUSAN-TIGA-W.md`: keputusan pemilik K1-K4, rancangan D1-D8, pertanyaan terbuka Q1-Q7 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`TW-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Tanpa router WA; mesin tidak memutuskan tawaran; organisasi hanya melihat baris miliknya; tidak publik.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
