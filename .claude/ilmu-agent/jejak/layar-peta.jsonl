@@ -408,3 +408,4 @@
 {"t":"2026-11-14T19:00:42.744+07:00","berkas":"public/operasi_semai.css","blob":"c7cefe38c96509f0cc95bc46a8e9ce46618b140c","aturan":"d181982124d3","vonis":"dikerjakan","ringkas":"SA-11/SA-12 seksi Peluang semai","sha":"8b6db0164"}
 {"t":"2026-11-14T19:00:42.798+07:00","berkas":"public/operasi_laporan.js","blob":"25151cc53376baa134a78da0ac3d7d978d3fb438","aturan":"d181982124d3","vonis":"dikerjakan","ringkas":"SA-11/SA-12 seksi Peluang semai","sha":"8b6db0164"}
 {"t":"2026-11-14T19:00:42.853+07:00","berkas":"tests/operasi/semai_layar.test.mjs","blob":"caa8e8a28d2eceb60d1223f64f0cdc193bc473e0","aturan":"d181982124d3","vonis":"dikerjakan","ringkas":"SA-11/SA-12 seksi Peluang semai","sha":"8b6db0164"}
+{"t":"2026-11-15T16:04:37.852+07:00","berkas":"tests/layar/dasbor_tarik.test.mjs","blob":"afd918b213649d4fd8660ddc1e2f086125665b00","aturan":"d181982124d3","vonis":"dikerjakan","ringkas":"PB-02 uji pegangan tarik panel kiri, DOM tiruan vm, 5 uji hijau","sha":"30f11c706"}

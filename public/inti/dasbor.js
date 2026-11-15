@@ -39,6 +39,23 @@
       io.observe(k); return b;
     }));
   }
+  /* pegangan tarik lebar panel kiri 200-320 px (PB-02): lebar = variabel --db-w di <html> (semua .db-a ikut), ditulis di rAF; disimpan per penonton, layar benar tanpa penyimpanan */
+  const KUNCI = "db_nav_lebar", pagar = w => Math.max(200, Math.min(320, Math.round(w)));
+  let tkEl;   // variabel ditulis ke tiap .db-a (bukan <html>) supaya invalidasi style terbatas pada layar ini
+  const setW = w => { w = pagar(w); document.querySelectorAll(".db-a").forEach(a => a.style.setProperty("--db-w", w + "px")); tkEl?.setAttribute("aria-valuenow", String(w)); };
+  function tarik(aside) {
+    if (!aside || aside.querySelector(":scope>.db-tarik")) return;
+    const tk = tkEl = el("span", "db-tarik"); tk.tabIndex = 0; tk.setAttribute("role", "separator"); tk.setAttribute("aria-orientation", "vertical"); tk.setAttribute("aria-label", "Tarik lebar panel");
+    tk.setAttribute("aria-valuemin", "200"); tk.setAttribute("aria-valuemax", "320"); tk.setAttribute("aria-valuenow", "284");
+    aside.append(tk);
+    try { const w = +localStorage.getItem(KUNCI); if (w) setW(w); } catch (e) {}
+    const simpan = w => { try { localStorage.setItem(KUNCI, String(w)); } catch (e) {} };
+    let x0 = 0, w0 = 0, w = 0, rid = 0;
+    const gerak = e => { w = pagar(w0 + e.clientX - x0); if (!rid) rid = requestAnimationFrame(() => { rid = 0; setW(w); }); };
+    const lepas = () => { tk.classList.remove("aktif"); removeEventListener("pointermove", gerak); removeEventListener("pointerup", lepas); removeEventListener("pointercancel", lepas); cancelAnimationFrame(rid); rid = 0; setW(w); simpan(w); };
+    tk.addEventListener("pointerdown", e => { e.preventDefault(); try { tk.setPointerCapture(e.pointerId); } catch (x) {} x0 = e.clientX; w0 = w = aside.offsetWidth; tk.classList.add("aktif"); addEventListener("pointermove", gerak); addEventListener("pointerup", lepas); addEventListener("pointercancel", lepas); });
+    tk.addEventListener("keydown", e => { if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return; e.preventDefault(); w = pagar(aside.offsetWidth + (e.key === "ArrowRight" ? 16 : -16)); setW(w); simpan(w); });
+  }
   function pasang(o = {}) {
     const main = document.querySelector("main.bn-wrap"); if (!main || main.classList.contains("db-a")) return;
     const kanan = el("div", "db-kanan"); kanan.append(...main.childNodes);
@@ -46,7 +63,7 @@
     const id = el("div", "db-nav-id"); id.append(el("b", null, o.nama || document.querySelector("h1")?.textContent || ""), el("small", null, o.sub || "Centurisk97, Ruang Koordinasi"));
     daftar = el("nav", "db-nav-isi"); kakiEl = el("div", "db-nav-kaki");
     nav.append(id, grup("Isi halaman", IK.isi), daftar, kakiEl);
-    main.classList.add("db-a"); main.append(nav, kanan);
+    main.classList.add("db-a"); main.append(nav, kanan); tarik(nav);
     kaki(o.kaki);
     let t; new MutationObserver(() => { clearTimeout(t); t = setTimeout(seksi, 60); }).observe(kanan, {childList: true, subtree: true});
     seksi();
@@ -64,7 +81,7 @@
     (kepala || isi).before(w);
     if (kepala) kanan.append(kepala); if (ringkas) kanan.append(ringkas); kanan.append(isi);
     w.append(nav, kanan);
-    nav.append(daftar, kakiEl);
+    nav.append(daftar, kakiEl); tarik(nav);
     document.body.classList.add("db-oto-aktif");
     const tab = c.tab && document.querySelector(c.tab);
     if (tab) {   // tombol tab bisa dibuat skrip halaman sesudah data dimuat: tunggu sampai ada
