@@ -47,3 +47,15 @@ rm -rf $D   # berkas ekspor memuat NIP dan nomor WA: hapus sesudah diterapkan
 ```
 
 Ekspor dan `cocok.sql` berisi id dan nomor pribadi: tinggal di `~/cocok-orang`, jangan masuk repo. Daftar bentrok dan NIP tidak baku muncul di `orang_tinjau` untuk layar tinjau admin (KP-23).
+
+## Status 15 Nov 2026
+
+Selesai dan di-commit: KP-01 sampai KP-24. Catatan per tiket:
+
+- KP-07: /petugas tidak memasang tanda kejadian (rute tautan hanya staf dan BPBD); daftar gempa hanya publik.
+- KP-12: `public/pipa/antre.js` masih di `antrean_utang` karena pembaca basis lama `sippa-antre` masih memanggil IndexedDB langsung; keluar dari utang setelah butir lama di ponsel habis atau `pindahDari` bisa memindah blob.
+- KP-17: form meja dampak (bagian lipat, Nihil, draf) masih memakai penggambar lama; `gambar()` belum mendukung bagian dan Nihil.
+- KP-18: SIPPA, pendataan, uji pilot sudah lewat `spek.js`; `src/operasi_isian.js` dan validasi klien `/siklus` belum.
+- KP-20: pemilih titik disisipkan di klien; `spekPublik()` tetap tidak mengirim `titik_id`.
+
+Sisa: KP-25 (pemilik): terapkan migrasi 0134, 0135, 0138, 0139 lalu jalankan pencocok orang dengan perintah di atas. Sebelum 0134/0135 diterapkan, rute titik pengungsian menjawab 503; sebelum 0138/0139, kartu Pasangan akun tersembunyi.

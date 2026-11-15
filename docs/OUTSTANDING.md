@@ -104,7 +104,7 @@ Yang tidak dipilih pemilik pada putaran itu: aksi antisipatif berpemicu dana, zo
 | F6 | Kaji ulang pasca-kejadian: draf otomatis dari linimasa, rekomendasi dilacak sampai tertutup | after-action review | Pakai ulang mesin `src/dalops_tindak.js` | belum |
 | F7 | Penurunan tanah dari radar satelit masuk proyeksi rob 10-20 tahun | Copernicus EGMS | Model rob mengecualikan penurunan tanah (`public/banjir/lapis_air.js:122`); olah InSAR di luar GitHub Actions | belum |
 | F8 | Pemetaan bangunan oleh relawan (HOT Tasking Manager), pemeta dari kampus mitra `/kemitraan` | HOT OSM | Bahan bakar F2 dan paparan per bangunan | belum |
-| F9 | Keterpaduan: satu nomor kejadian (KJ- dari `sk_kejadian` + GLIDE) di semua modul | IRWIN, GLIDE | Hanya `/siklus` dan `src/hak.js` yang menyentuh `sk_kejadian` | `data/kajian-bnpb/keterpaduan/` |
+| F9 | (DIBANGUN 15 Nov, KP-01..KP-24; tinggal KP-25 pemilik) Keterpaduan: satu nomor kejadian (KJ- dari `sk_kejadian` + GLIDE) di semua modul | IRWIN, GLIDE | Hanya `/siklus` dan `src/hak.js` yang menyentuh `sk_kejadian` | `data/kajian-bnpb/keterpaduan/` |
 | F10 | Keterpaduan: satu antrean luring bersama di `public/inti/` | - | Enam antrean IndexedDB terpisah | sama dengan F9 |
 | F11 | Keterpaduan: formulir lapangan dari satu definisi (WA, web, luring, ekspor) | ODK/KoboToolbox XLSForm | Berkas spek terpisah per modul | sama dengan F9 |
 | F12 | Keterpaduan: kaji titik pengungsian per putaran dengan kode tetap per titik | IOM DTM | Meja pengungsi mencatat rekap | sama dengan F9 |
