@@ -15,8 +15,6 @@ import argparse
 import html
 import json
 import math
-import os
-import shutil
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
@@ -206,7 +204,8 @@ def penanda(P, t, r, base=False, label=None, ukuran=22):
          f'<text x="{x:.1f}" y="{y + r * .38:.1f}" text-anchor="middle" font-size="{r * 1.05:.0f}" font-weight="800" fill="#fff" font-family="Inter,Arial">{isi}</text>']
     if label:
         s.append(f'<text x="{x + r + 6:.1f}" y="{y + 7:.1f}" font-size="{ukuran}" font-weight="700" fill="#fff" stroke="#0b2545" stroke-width="5" paint-order="stroke" font-family="Inter,Arial">{html.escape(label)}</text>')
-    return s
+    # titik dan labelnya bisa diklik ke Google Maps (pemilik 15 Nov 2026: "Kenapa ga bisa diklik?")
+    return [f'<a href="{html.escape(gmaps(t["lat"], t["lon"]))}" target="_blank">'] + s + ['</a>']
 
 
 def skala(w, h, mpp, km_bar, ukuran=20):
@@ -365,11 +364,7 @@ def halaman_cp(b, titik, i, panas, meta, kerja, cache):
             f'Titik panas terakhir di target: {html.escape((c.get("terakhir") or {}).get("jam_wib", "–"))} WIB.</p></div></div></div>{kaki(meta)}</section>')
 
 
-def cari_chrome():
-    for c in (os.environ.get("CHROME"), "google-chrome", "google-chrome-stable", "chromium", "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"):
-        if c and (shutil.which(c) or os.path.exists(c)):
-            return shutil.which(c) or c
-    raise RuntimeError("Chrome tidak ditemukan (set CHROME)")
+from renlap_keluaran import cari_chrome, dokumen, ke_pdf  # noqa: E402  (pindah ke scripts/umum, PB-13)
 
 
 def buat(a):
@@ -390,10 +385,9 @@ def buat(a):
 
     def cetak(nama, judul, isi):
         hf = kerja / f"{nama}.html"
-        hf.write_text(f'<!doctype html><html lang="id"><head><meta charset="utf-8"><title>{html.escape(judul)}</title><style>{CSS}</style></head><body>{isi}</body></html>')
+        hf.write_text(dokumen(html.escape(judul), isi, CSS))
         pdf = kerja / f"Renlap {nama} {a.tanggal} {a.versi}.pdf"
-        subprocess.run([chrome, "--headless=new", "--disable-gpu", "--no-pdf-header-footer", "--virtual-time-budget=10000",
-                        f"--print-to-pdf={pdf}", hf.as_uri()], check=True, capture_output=True, timeout=600)
+        ke_pdf(chrome, hf, pdf)
         return pdf
 
     for b in d["base"]:
