@@ -55,7 +55,7 @@ Penyebabnya ada di pintu, bukan di fitur (rinci di `RISET.md`):
 | D13 | Nomor migrasi diambil saat tiket dikerjakan, sesudah paket lain yang sudah memesan nomor (paritas-bencana 0130 dan 0131, keterpaduan). Dokumen ini menyebut migrasi dengan nama. | Menghindari bentrok nomor antarpaket. |
 | D14 | Integrasi alun-alun (lencana terverifikasi, tautan ke nomor kejadian, antrean BPBD kabupaten, rekap untuk Kepala) **di luar paket ini** dan mendapat paketnya sendiri sesudah pintu ini jalan. | K3 butuh orang masuk dulu; satu paket satu masalah. |
 
-## Jawaban pemilik atas Q1, Q5, Q7, Q9, Q10 (15 Nov 2026)
+## Jawaban pemilik atas Q1, Q5, Q7, Q9, Q10, dan izin `/bantu` (15 Nov 2026)
 
 | No | Pertanyaan | Jawaban pemilik |
 | --- | --- | --- |
@@ -64,6 +64,7 @@ Penyebabnya ada di pintu, bukan di fitur (rinci di `RISET.md`):
 | K10 (Q10) | Anggota boleh aktif tanpa persetujuan admin lewat kontak pemangku dan undangan berantai? | **"Ya"**. |
 | K11 (Q9) | Syarat surat tugas dan kartu untuk aktivasi pertama akun instansi boleh diganti kecocokan kontak? | **"Tidak"**. Verifikasi yang ada tetap (D16). |
 | K12 (Q7) | Pemirsa ikut bisa masuk lewat kode? | **"Gas"**. Pemirsa ikut. |
+| K13 | Halaman `/bantu` (organisasi menulis 3W dan tawaran bantuan lewat tautan bertoken, paket Tiga W) boleh dibuka tanpa login? | **"Ya, izinkan /bantu"** (15 Nov 2026). Halaman tidak memuat data tanpa token; token dicek di tiap panggilan `/api/bantu`. Entrinya ada di `tests/agen/fixtures/pintu_masuk.json` (daftar beku). |
 
 Turunan rancangan dari K12 dan dari pemeriksaan PM-03 (agent, bisa dibatalkan pemilik):
 
