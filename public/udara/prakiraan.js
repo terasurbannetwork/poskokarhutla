@@ -136,7 +136,7 @@ const Prak = {
 Object.assign(Insight.IK, {prak: '<path d="M3 17l5-6 4 3 5-8 4 5"/><path d="M3 21h18"/>', galat: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', atr: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'});
 Insight.T.skz = {urut: "_", turun: true, hal: 0}; Insight.T.bnd = {urut: "_", turun: true, hal: 0};
 Insight.EX.unshift("prak", "galat", "atr"); Insight.st.prakHari = 0;
-{ const g0 = Insight.gambar.bind(Insight); Insight.gambar = id => ({prak: () => Prak.exPrak(), galat: () => Prak.exGalat(), atr: () => Prak.exAtribusi()})[id]?.() ?? g0(id); }
+{ const g0 = Insight.gambar.bind(Insight); Insight.gambar = id => kepalaKartu(({prak: () => Prak.exPrak(), galat: () => Prak.exGalat(), atr: () => Prak.exAtribusi()})[id]?.() ?? g0(id)); }
 
 /* kontrol peta */
 $("#jamKota")?.addEventListener("input", e => { if (e.target.id !== "jamGeser") return; Prak.st.jam = +e.target.value; Prak.hiasJam(); if (!Prak._rf) Prak._rf = requestAnimationFrame(() => { Prak._rf = 0; Prak.segarkan(); }); });

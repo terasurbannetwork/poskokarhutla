@@ -15,7 +15,7 @@ const Metode = {
         <li><b>Penduduk</b>: WorldPop 2026, kotak 1 km dijumlahkan ke kabupaten/kota lewat pusat kecamatan (CC BY 4.0).</li>
         <li><b>Riwayat (Tren)</b>: hari lampau dari analisis CAMS lewat Open-Meteo, sesudahnya dari prakiraan terbaru; bukan alat ukur.</li>
         <li><b>Sekolah (Dampak)</b>: Dapodik/EMIS, dihitung di kabupaten/kota yang PM2,5 24 jamnya di atas 55,4 µg/m³; hanya yang tercatat dan cocok titiknya.</li>
-        <li><b>Berita</b>: Google News RSS, judul dan cuplikan; diperbarui tangan, jam panen tertulis di kartu.</li></ul>`],
+        <li><b>Berita</b>: Google News RSS, judul dan cuplikan; diperbarui otomatis tiap hari, jam panen tertulis di kartu.</li></ul>`],
       ["Cara menghitung", `<ol class="mt-daftar">
         <li>Tiap kabupaten/kota diberi kategori dari PM2,5 rata-rata 24 jam di titik penduduknya.</li>
         <li>Seluruh penduduk kabupaten/kota ikut kategori itu, lalu dijumlahkan per provinsi dan nasional.</li>

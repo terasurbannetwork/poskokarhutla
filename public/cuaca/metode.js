@@ -1,4 +1,6 @@
 "use strict";
+/* pil ey berikon (ikon dari IK di insight.js) yang diubah kepalaKartu menjadi kepala kartu = nama seksi */
+const eyMetode = (nama, k = "bukti") => `<span class="ex-ey"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px">${IK[k] || IK.bukti}</svg>${nama}</span>`;
 /* ================================================================ metode: sumber, ambang, batasan (tab tersembunyi dari menu, A24) */
 const Metode = {
   tabel: (kep, baris) => `<div class="tw"><table><thead><tr>${kep.map(k => `<th>${k}</th>`).join("")}</tr></thead><tbody>${baris.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`,
@@ -10,14 +12,14 @@ const Metode = {
     const cat = [V.bmkg?.catatan, V.kita?.catatan].filter(Boolean).map(c => `<li>${esc(c)}</li>`).join("");
     const isi = this.tabel(["Yang dinilai", "Tepat", "Alarm palsu", "Meleset", "POD", "FAR", "CSI"], R)
       + `<ul class="mt"><li>Penilaian dicocokkan per provinsi dan tanggal. Prakiraan kita dihitung untuk 1, 2, dan 3 hari sebelumnya, dengan hujan sehari 50 mm atau lebih sebagai alarm. Kejadian pembanding hanya yang dilaporkan, jadi jumlah meleset cenderung terlalu kecil bila laporan telat, dan terlalu besar bila arsip peringatan baru dimulai.</li><li>Tepat = ada peringatan dan ada kejadian. Alarm palsu = ada peringatan, tak ada kejadian. Meleset = ada kejadian, tak ada peringatan.</li><li>POD = tepat / (tepat + meleset). FAR = alarm palsu / (tepat + alarm palsu). CSI = tepat / (tepat + alarm palsu + meleset).</li>${V.bmkg?.kejadian ? `<li>Kejadian pembanding: ${esc(V.bmkg.kejadian)}.</li>` : ""}${cat}</ul>`;
-    return `<div data-ex="Verifikasi">${Kartu.ex("Verifikasi", "", "", isi, "Sumber: BMKG, DIBI BNPB, Open-Meteo, dibuat " + jamWIB(V.dibuat)).replace('<span class="ex-ey"></span>', "")}</div>`; },
+    return `<div data-ex="Verifikasi">${kepalaKartu(Kartu.ex("Verifikasi", "", "", isi, "Sumber: BMKG, DIBI BNPB, Open-Meteo, dibuat " + jamWIB(V.dibuat)).replace('<span class="ex-ey"></span>', () => eyMetode("Verifikasi")))}</div>`; },
   /* uji balik prakiraan model terhadap SYNOP BMKG (cuaca_verif_synop.json): kartu hilang bila berkas tak ada; per ukuran dengan kejadian_uji di bawah 30 tanpa persen */
   async synop() {
     const V = await opsi("../banjir/data/cuaca_verif_synop.json"), h = V?.hujan; if (!h?.mentah || !h.mos) return "";
     const pc = v => v == null ? "–" : fmt(Math.round(v * 100)) + "%", kecil = o => (o.a + o.c) < 30;
     const R = [["Model mentah", h.mentah], ["Model terkoreksi (MOS)", h.mos], ["Kemarin hujan, hari ini hujan (persistensi)", h.persistensi], ["Selalu alarm", h.selalu_alarm]].filter(r => r[1]).map(([k, o]) => [k, fmt(o.n), fmt(o.a), kecil(o) ? "–" : pc(o.pod), kecil(o) ? "–" : pc(o.far), kecil(o) ? "–" : Number(o.csi).toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2})]);
     const isi = this.tabel(["Pembanding", "Pasangan", "Tepat", "POD", "FAR", "CSI"], R) + `<ul class="mt"><li>Prakiraan Open-Meteo 1 hari sebelumnya dibandingkan hujan harian ${fmt(V.ambang_mm)} mm atau lebih di ${fmt(V.n_stasiun)} stasiun SYNOP BMKG (${esc((V.periode || []).map(tglSgk).join(" sampai "))}); ${fmt(h.kejadian_uji)} kejadian pada data uji sesudah ${tglSgk(h.split_tanggal_latih_terakhir)}.</li>${h.vonis ? `<li>Vonis uji balik hujan: ${esc(h.vonis)}. Pembanding dengan kejadian kurang dari 30 tidak diberi persen.</li>` : ""}</ul>`;
-    return `<div data-ex="Verifikasi SYNOP">${Kartu.ex("Prakiraan model vs pengamatan SYNOP BMKG", "", "", isi, "Sumber: " + esc(V.atribusi || "OGIMET, BMKG") + ", dibuat " + jamWIB(V.dibuat)).replace('<span class="ex-ey"></span>', "")}</div>`; },
+    return `<div data-ex="Verifikasi SYNOP">${kepalaKartu(Kartu.ex("Prakiraan model vs pengamatan SYNOP BMKG", "", "", isi, "Sumber: " + esc(V.atribusi || "OGIMET, BMKG") + ", dibuat " + jamWIB(V.dibuat)).replace('<span class="ex-ey"></span>', () => eyMetode("Prakiraan model vs pengamatan SYNOP BMKG")))}</div>`; },
   /* daftar nama siklon TCWC Jakarta (data/nama_siklon_tcwc.json, statis); nama yang sedang dipakai ditandai dari S.sikB. Berkas hilang = kartu dibuang */
   async namaSiklon() {
     const N = await muatJSON("data/nama_siklon_tcwc.json").catch(() => null); if (!N?.daftar) return "";
@@ -25,7 +27,7 @@ const Metode = {
     const sel = n => pakai.has(n.toUpperCase()) ? `<b translate="no">${esc(n)}</b> (dipakai sekarang)` : hapus.has(n.toUpperCase()) ? `<s translate="no">${esc(n)}</s>` : `<span translate="no">${esc(n)}</span>`;
     const isi = this.tabel(["Daftar", "Nama berurutan"], Object.entries(N.daftar).map(([k, L]) => [k, L.map(sel).join(", ")]))
       + `<ul class="mt"><li>Dihapus dari daftar: ${(N.dihapus || []).map(x => `<span translate="no">${esc(x.nama)}</span> (${esc(x.tahun)})`).join(", ")}.</li></ul>`;
-    return `<div data-ex="Nama siklon">${Kartu.ex("Nama siklon TCWC Jakarta", "", "", isi, "Sumber: " + esc(N.sumber || "BMKG TCWC Jakarta")).replace('<span class="ex-ey"></span>', "")}</div>`; },
+    return `<div data-ex="Nama siklon">${kepalaKartu(Kartu.ex("Nama siklon TCWC Jakarta", "", "", isi, "Sumber: " + esc(N.sumber || "BMKG TCWC Jakarta")).replace('<span class="ex-ey"></span>', () => eyMetode("Nama siklon TCWC Jakarta", "siklon")))}</div>`; },
   async render() {
     const PL = typeof Peluang !== "undefined" ? await Peluang.muat("../banjir/data/cuaca_peluang.json") : null, A = S.meta.ambang, sumber = this.tabel(["Data", "Sumber", "Cara tampil"], [
       ["Peringatan nowcast", "BMKG (CAP)", "Apa adanya, berlabel BMKG dan jam terbit; hilang saat masa berlakunya lewat"],
@@ -48,7 +50,7 @@ const Metode = {
       ["Siklon tropis", "JTWC dan GDACS", "Posisi amatan dan prakiraan apa adanya; tanpa siklon aktif kartunya tidak ada"],
       ["Siklon tropis resmi", "BMKG TCWC Jakarta (halaman siklon tropis)", "Posisi, tekanan, area tanggung jawab (AoR) dan dampak apa adanya dari BMKG, angin dalam knot dan km/jam (1 knot = 1,852 km/jam), berlabel jam analisis; kartu terpisah dari JTWC"],
       ["Pelabuhan dan bandara", "Data terbuka (OpenStreetMap), Open-Meteo", "Sarana yang berstatus Waspada atau lebih pada titiknya"],
-      ["Berita", "Google News RSS", "Judul dan cuplikan; diperbarui tangan, jam panen tertulis di kartu"]]);
+      ["Berita", "Google News RSS", "Judul dan cuplikan; diperbarui otomatis tiap hari, jam panen tertulis di kartu"]]);
     const ambang = this.tabel(["Bahaya", "Tingkat 1", "Tingkat 2", "Tingkat 3"], [
       ["Hujan harian (mm)", ...A.hujan.map((v, i) => `${v} ${["lebat", "sangat lebat", "ekstrem"][i]}`)],
       ["Embusan (km/jam)", ...A.angin_kmj.map((v, i) => `${v} ${["waspada", "siaga", "awas"][i]}`)]]);
@@ -56,13 +58,13 @@ const Metode = {
     const K = S.kec?.ambang, st = !K ? "" : this.tabel(["Bahaya", "Waspada", "Siaga", "Awas"], [
       ["Hujan harian (mm)", ...K.hujan_mm], ["Embusan (km/jam)", ...K.angin_kmj], ["Gelombang (m)", ...K.hs_m.map(v => fmt(v))]]);
     const lain = [["Sumber data", sumber, "Sumber: BMKG, Open-Meteo, ECMWF"], ["Ambang", ambang, "Sumber: kelas hujan BMKG"], ...(st ? [["Ambang status 72 jam", st, "Sumber: kelas hujan BMKG, Centurisk97"]] : []), ["Batasan", batas, "Sumber: BMKG, Open-Meteo, ECMWF"]]
-      .map(([j, isi, s]) => `<div data-ex="${j}">${Kartu.ex(j, "", "", isi, s).replace('<span class="ex-ey"></span>', "")}</div>`).join("");
+      .map(([j, isi, s]) => `<div data-ex="${j}">${kepalaKartu(Kartu.ex(j, "", "", isi, s).replace('<span class="ex-ey"></span>', () => eyMetode(j, ({"Sumber data": "resmi", Ambang: "peluang", "Ambang status 72 jam": "peluang"})[j])))}</div>`).join("");
     const sim = `<ul class="mt"><li>Simulasi adalah prakiraan nyata yang digerakkan per jam, bukan model fisik badai: ia tidak bisa menghasilkan puting beliung atau sel petir yang tidak ada di prakiraan.</li>
       <li>Angin siklon memakai profil Holland (1980): V = Vmaks x akar((Rm/r)^B x e^(1 - (Rm/r)^B)) dengan B = 1,5. Vmaks dari lintasan JTWC, Rm (radius angin maksimum) dari pengaturan di layar karena tidak ada di berkas. Angin berputar melawan jarum jam di utara ekuator, searah di selatan, dan masuk 20 derajat ke pusat (asumsi).</li>
       <li>Gelombang di bawah siklon memakai Pierson dan Moskowitz (1964), Hs = 0,21 U kuadrat / g. Ini batas atas laut berkembang penuh, jadi perkiraan atas, bukan prakiraan.</li>
       <li>Pelabuhan: terganggu bila Hs 1,5 m atau lebih, atau angin 16 kt atau lebih; tutup bila Hs 2,5 m atau lebih, atau angin 21 kt atau lebih. Bandara: terganggu bila embusan 54 km/jam atau lebih, atau hujan 10 mm/jam atau lebih; tutup bila embusan 72 km/jam atau lebih. Semua ini hipotesis berdasar kriteria risiko BMKG, bukan keputusan syahbandar atau otoritas bandara.</li></ul>`;
-    const pel = PL ? `<div data-ex="Peluang">${Kartu.ex("Peluang hujan ekstrem", "", "", Peluang.batasan(PL, {judul: "Peluang dan batasnya"}).replace("<b>0. ", "<b>"), "Sumber: ECMWF, Open-Meteo").replace('<span class="ex-ey"></span>', "")}</div>` : "";
-    $("#metode").innerHTML = lain + pel + await this.namaSiklon() + `<div data-ex="Simulasi" id="simulasi">${Kartu.ex("Simulasi", "", "", sim, "Sumber: Holland (1980), Pierson dan Moskowitz (1964), BMKG, Centurisk97").replace('<span class="ex-ey"></span>', "")}</div>` + this.verifikasi() + await this.synop();
+    const pel = PL ? `<div data-ex="Peluang">${kepalaKartu(Kartu.ex("Peluang hujan ekstrem", "", "", Peluang.batasan(PL, {judul: "Peluang dan batasnya"}).replace("<b>0. ", "<b>"), "Sumber: ECMWF, Open-Meteo").replace('<span class="ex-ey"></span>', () => eyMetode("Peluang hujan ekstrem", "peluang")))}</div>` : "";
+    $("#metode").innerHTML = lain + pel + await this.namaSiklon() + `<div data-ex="Simulasi" id="simulasi">${kepalaKartu(Kartu.ex("Simulasi", "", "", sim, "Sumber: Holland (1980), Pierson dan Moskowitz (1964), BMKG, Centurisk97").replace('<span class="ex-ey"></span>', () => eyMetode("Simulasi", "siklon")))}</div>` + this.verifikasi() + await this.synop();
     (typeof Dampak !== "undefined" ? Dampak.dibuat() : Promise.resolve(null)).then(d => { const e = $("#mtRisiko"); if (d && e) e.textContent = "Data InaRISK dibuat " + tglPendek(d.slice(0, 10)); });
   },
 };

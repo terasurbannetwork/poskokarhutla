@@ -17,7 +17,15 @@ IK.awan = '<path d="M7 18a5 5 0 1 1 1.2-9.9A6 6 0 0 1 19.5 10 4 4 0 0 1 18 18z"/
 IK.buktiBmkg = IK.buktiKita = IK.bukti;
 IK.maritim = IK.gelombang;
 IK.resmi = IK.bukti;
+IK.siklonBmkg = IK.siklon;
 
+/* kepala kartu = NAMA SEKSI berikon (AGENTS.md 3.5, 11 Nov 2026), dipakai bersama semua kartu layar ini. Idempotent.
+   Nama seksi diambil dari pil ey (ikon + nama) bila ada, kalau tidak h3 apa adanya; kalimat temuan dan kaki "Sumber:" dibuang;
+   isi kartu tidak pernah diisi kalimat temuan (kartu kosong wajib membawa isi sendiri); keterangan non-legenda di kaki dibuang. */
+const kepalaKartu = h => { if (!h) return h;
+  const e = h.match(/<span class="ex-ey">((?:(?!<\/span>)[\s\S])+)<\/span>/), j = h.match(/<h3>([\s\S]*?)<\/h3>/);
+  if (e && j) h = h.replace(e[0], () => /class="ex-pl"/.test(h) ? '<span class="ex-ey"></span>' : "").replace(j[0], () => `<h3>${e[1]}</h3>`);   /* kartu Peluang (ex-pl) menyimpan ey kosong di tempatnya */
+  return h.replace(/<em>Sumber:[\s\S]*?<\/em>/, () => "").replace(/(<footer class="ex-ft">)<span>[\s\S]*?<\/span>(?=<em>|<\/footer>)/, "$1"); };
 const Insight = {
   /* tabel provinsi: urut menurun menurut hujan, 10 baris per halaman */
   T: {provinsi: {urut: "hujan", turun: true, hal: 0}, kejadian: {urut: "mulai", turun: true, hal: 0}, awan: {urut: "sd", turun: true, hal: 0}},
@@ -25,7 +33,7 @@ const Insight = {
   st: {},   /* state kontrol kartu peluang (wilayah, ambang) */
   PL: null,
   ih: 0, lead: "1",   /* hari kartu Status: indeks di kontrak 72 jam */
-  LABEL: {awan: "Awan sangat dingin", kejadian: "Kejadian cuaca", peluang: "Peluang hujan ekstrem", status: "Wilayah Siaga/Awas 72 jam", siklon: "Siklon tropis", sarana: "Pelabuhan dan bandara terancam", buktiBmkg: "Ketepatan peringatan BMKG", buktiKita: "Ketepatan prakiraan Centurisk97", resmi: "Prakiraan resmi vs model", nowcast: "Nowcast BMKG", gelombang: "Gelombang", maritim: "Prakiraan maritim BMKG", hujan: "Hujan", angin: "Angin", ansambel: "Ansambel", provinsi: "Provinsi"},
+  LABEL: {awan: "Awan sangat dingin", kejadian: "Kejadian cuaca", peluang: "Peluang hujan ekstrem", status: "Wilayah Siaga/Awas 72 jam", siklon: "Siklon tropis", sarana: "Pelabuhan dan bandara terancam", buktiBmkg: "Ketepatan peringatan BMKG", buktiKita: "Ketepatan prakiraan Centurisk97", resmi: "Prakiraan resmi vs model", nowcast: "Nowcast BMKG", gelombang: "Gelombang", maritim: "Prakiraan maritim BMKG", hujan: "Hujan", angin: "Angin", ansambel: "Ansambel", provinsi: "Provinsi", siklonBmkg: "Siklon tropis resmi"},
   /* 10b. peluang hujan ekstrem per kab/provinsi (../banjir/data/cuaca_peluang.json, kontrak peluang/1; mesin public/inti/peluang.js). Tanpa berkas = dibuang. */
   exPeluang() { if (typeof Peluang === "undefined" || !this.PL) return ""; this.st.pelW ??= Object.entries(this.PL.wilayah).filter(([, w]) => w.tingkat === "provinsi").map(([k, w]) => [k, Math.max(0, ...w.hari.map(h => h.p?.[0] ?? 0))]).sort((a, b) => b[1] - a[1])[0]?.[0];
     return Peluang.kartu(this.PL, {ey: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK.peluang}</svg>${this.LABEL.peluang}`, st: this.st, kejadian: "hujan ekstrem", sumber: "ECMWF IFS 51 anggota via Open-Meteo, dibuat " + jamWIB(this.PL?.dibuat)}); },
@@ -75,7 +83,7 @@ const Insight = {
     const kapan = kapan3(j);
     return this.ex(tot ? `${this.hl(fmt(tot) + " kecamatan")} diprakirakan berstatus Waspada atau lebih ${kapan}, ${this.hl(fmt(n[1] + n[2]) + " kecamatan")} Siaga atau Awas`
       : `Tidak ada kecamatan yang diprakirakan melewati ambang Waspada ${kapan}`, "", "",
-      tot ? this.tumpukH(R.map(([p, o]) => ({label: namaProv(p), warna: warnaT(o.t[j]), seg: [2, 1, 0].map(i => ({nilai: o.n[j][i], warna: warnaT(i + 1), tip: `<b>${esc(namaProv(p))}</b><br>${namaT(i + 1)}: ${fmt(o.n[j][i])} kecamatan`}))})), this.uk()) : "",
+      tot ? this.tumpukH(R.map(([p, o]) => ({label: namaProv(p), warna: warnaT(o.t[j]), seg: [2, 1, 0].map(i => ({nilai: o.n[j][i], warna: warnaT(i + 1), tip: `<b>${esc(namaProv(p))}</b><br>${namaT(i + 1)}: ${fmt(o.n[j][i])} kecamatan`}))})), this.uk()) : `<p class="kosong">Tidak ada kecamatan yang diprakirakan melewati ambang Waspada.</p>`,
       `Sumber: Deteksi Centurisk97 dari prakiraan Open-Meteo, dibuat ${jamWIB(S.kec.dibuat)}`, ctl); },
   /* siklon aktif dari JTWC/GDACS; "aktif: []" = kartu dibuang, bukan "aman" */
   exSiklon() {
@@ -143,14 +151,14 @@ const Insight = {
     const nProv = new Set(S.nc.flatMap(a => a.prov)).size, nKec = S.nc.reduce((a, x) => a + x.n, 0);
     Kartu.leg(Object.entries(WARNA_SEV).filter(([k]) => S.nc.some(a => a.severity === k)).map(([k, w]) => [w, SEV_ID[k]]));
     return this.ex(A.length ? `${this.hl(fmt(nKec) + " kecamatan")} di ${this.hl(fmt(nProv) + " provinsi")} dalam peringatan nowcast BMKG yang berlaku` : `Tidak ada peringatan nowcast BMKG yang berlaku`, "", "",
-      A.length ? this.batangH(A.map(a => ({label: hurufJudul(innerWidth < 640 ? a.headline.split(" di ").pop() : a.headline), nilai: a.n, warna: sevWarna(a.severity), teks: fmt(a.n), tip: `<b>${esc(a.event)}</b><br>Tingkat: ${esc(SEV_ID[a.severity] || a.severity)}<br>Kecamatan: ${fmt(a.n)} kecamatan<br>${waktuBerlaku(a.mulai, a.selesai)}`})), this.uk()) : "",
+      A.length ? this.batangH(A.map(a => ({label: hurufJudul(innerWidth < 640 ? a.headline.split(" di ").pop() : a.headline), nilai: a.n, warna: sevWarna(a.severity), teks: fmt(a.n), tip: `<b>${esc(a.event)}</b><br>Tingkat: ${esc(SEV_ID[a.severity] || a.severity)}<br>Kecamatan: ${fmt(a.n)} kecamatan<br>${waktuBerlaku(a.mulai, a.selesai)}`})), this.uk()) : `<p class="kosong">Tidak ada peringatan nowcast BMKG yang berlaku.</p>`,
       `Sumber: BMKG, terbit ${jamWIB(S.ncDibuat ?? S.per.dibuat)}`); },
   exGelombang() {
     const A = [...S.gl].sort((a, b) => b.lv - a.lv || b.total - a.total).slice(0, 15); if (!S.per) return "";
     const nPer = S.gl.reduce((a, o) => a + o.total, 0);
     Kartu.leg(GEL.filter((k, i) => S.gl.some(o => o.kelas[i])).map(k => [k[3], `${k[1]} ${k[2]}`]));
     return this.ex(A.length ? `${this.hl(fmt(S.gl.length) + " provinsi")} dalam peringatan gelombang tinggi BMKG, ${this.hl(fmt(nPer) + " perairan")}` : `Tidak ada peringatan gelombang BMKG yang berlaku`, "", "",
-      A.length ? this.tumpukH(A.map(o => ({label: namaProv(o.prov), warna: GEL[o.lv - 1][3], seg: GEL.map((k, i) => ({nilai: o.kelas[i], warna: k[3], tip: `<b>${esc(namaProv(o.prov))}</b><br>${k[1]}: ${o.kelas[i]} perairan`})).reverse()})), this.uk()) : "",
+      A.length ? this.tumpukH(A.map(o => ({label: namaProv(o.prov), warna: GEL[o.lv - 1][3], seg: GEL.map((k, i) => ({nilai: o.kelas[i], warna: k[3], tip: `<b>${esc(namaProv(o.prov))}</b><br>${k[1]}: ${o.kelas[i]} perairan`})).reverse()})), this.uk()) : `<p class="kosong">Tidak ada peringatan gelombang BMKG yang berlaku.</p>`,
       `Sumber: BMKG Maritim, terbit ${jamWIB(S.per.dibuat)}`); },
   /* prakiraan maritim resmi BMKG per perairan dan pelabuhan (cuaca_maritim.json), hari terpilih; model Open-Meteo berdampingan bila ada. Hanya ditampilkan, tidak masuk status. */
   exMaritim() {
@@ -224,10 +232,10 @@ const Insight = {
       <tbody>${hal.map(r => `<tr class="klik"${attr ? " " + attr(r) : ""}>${kol.map(c => `<td${c.num ? ' class="n"' : ""}>${c.h(r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, per, satuan)}`; },
 
   /* kepala kartu = NAMA SEKSI berikon (AGENTS.md 3.5, 11 Nov 2026): kalimat temuan dan kaki "Sumber:" dibuang; kalimat hanya hidup bila isi kartu kosong (keadaan kosong) */
-  kepala(h, id) { const m = h.match(/<h3>([\s\S]*?)<\/h3>/); if (!m) return h;
+  kepala(h, id) { if (!/<h3>/.test(h)) return h;
     const ik = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px">${IK[id]}</svg>`;
-    h = h.replace(m[0], `<h3>${ik}${this.LABEL[id]}</h3>`).replace(/<em>Sumber:[\s\S]*?<\/em>/, "").replace(/<div class="ex-bd">\s*<\/div>/, `<div class="ex-bd"><p class="kosong">${m[1]}</p></div>`);
-    return id === "peluang" ? h.replace(/(<span class="ex-ey">)[\s\S]*?<\/span>/, "$1</span>") : h.replace(/<span class="ex-ey">(?:(?!<\/span>)[\s\S])*<\/span>/, ""); },
+    h = h.replace(/<h3>[\s\S]*?<\/h3>/, () => `<h3>${ik}${this.LABEL[id]}</h3>`);
+    return kepalaKartu(id === "peluang" ? h.replace(/(<span class="ex-ey">)[\s\S]*?<\/span>/, (m, a) => a + "</span>") : h.replace(/<span class="ex-ey">(?:(?!<\/span>)[\s\S])*<\/span>/, () => "")); },
 
   /* satu kartu: nama seksi berikon di kepala; ikon bagikan dipasang mesin Bagikan (public/bagikan.js) */
   gambar(id) { Kartu._leg = null;

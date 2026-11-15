@@ -28,7 +28,7 @@ const Longsor = (() => {
     const rows = Object.entries(prov).map(([p, a]) => ({n: namaProv(p), v: a[1] + a[2] + a[3], a})).sort((a, b) => b.v - a.v).slice(0, 10)
       .map(r => ({n: r.n, v: r.v, tip: `<b>${esc(r.n)}</b><br>Waspada: ${fmt(r.a[1])}<br>Siaga: ${fmt(r.a[2])}<br>Awas: ${fmt(r.a[3])}`}));
     const ring = n[1] + n[2] + n[3], data = S.st.hari?.[0] ? ` Data sampai ${tgl(S.st.hari[0])}.` : "";
-    const isi = `<p style="margin:0 0 10px;line-height:1.5;text-align:justify">${ring ? `${Kartu.hl(fmt(ring))} kecamatan: ${fmt(n[3])} Awas, ${fmt(n[2])} Siaga, ${fmt(n[1])} Waspada.` : `Tidak ada kecamatan berstatus longsor ${kapan}.`}${data}</p>`
+    const isi = `<p style="margin:0 0 10px;line-height:1.5;text-align:justify">${ring ? `Awas ${fmt(n[3])}, Siaga ${fmt(n[2])}, Waspada ${fmt(n[1])} dari ${fmt(ring)} kecamatan, ${kapan}.` : `Tidak ada kecamatan berstatus longsor ${kapan}.`}${data}</p>`
       + (rows.length ? Kartu.hbar(rows, W) : "");
     return Kartu.kartu(EY.status, "Status longsor kecamatan", isi, "");
   }
@@ -53,7 +53,7 @@ const Longsor = (() => {
     const s = Array(12).fill(0), n = Array(12).fill(0);
     for (const k of Object.values(kab)) { const p = k.longsor?.p; if (p) p.forEach((x, i) => { s[i] += x; n[i]++; }); }
     const v = s.map((t, i) => { const r = n[i] ? t / n[i] * 100 : 0; return {n: BULAN[i], v: r, txt: Math.round(r) + "%", tip: `<b>${BULAN[i]}</b><br>Rata-rata peluang ada kejadian longsor: ${f1(r)}% per kabupaten<br>${fmt(D.kal.n_tahun)} tahun penuh`}; });
-    return Kartu.kartu(EY.musim, "Musim longsor", batang(v), "");
+    return Kartu.kartu(EY.musim, "Musim longsor", `<p style="margin:0 0 6px;font-size:12px;opacity:.75">Logbook Pusdalops BNPB, tahun penuh; rata-rata seluruh kabupaten, bukan prakiraan hari ini.</p>` + batang(v), "");
   }
   return {
     async render() {

@@ -8,9 +8,9 @@ const Posko = (() => {
     const N = D.nasional, K = D.kabupaten.slice(0, 30);
     const baris = K.map(o => `<tr><td><b translate="no">${esc(o.nama)}</b><br><small translate="no">${esc(namaProv(o.prov))}</small></td><td>${pil(o.lv)}</td><td class="num">${fmt(o.kec_n)}</td><td class="num">${fmt(o.posko.length)}</td>
       <td>${o.bpbd?.pusdalops ? `<span translate="no">${esc(o.bpbd.pusdalops)}</span>` : "–"}</td></tr>`).join("");
-    return Kartu.ex("Kabupaten", "", "", `<div class="tw"><table class="kl-tb"><thead><tr><th>Kabupaten/kota</th><th>Status</th><th>Kecamatan</th><th>Posko</th><th>Pusdalops BPBD</th></tr></thead><tbody>${baris}</tbody></table></div>`,
-      `Rekomendasi hasil hitungan, bukan laporan lapangan: ${fmt(N.posko)} posko untuk ${fmt(N.kec)} kecamatan Siaga atau Awas di ${fmt(N.kab)} kabupaten/kota, satu posko per gugus dalam ${fmt(D.param.gabung_km)} km. Kontak dari BNPB peta_bpbd. Sumber: ${esc(D.sumber.pos)}`)
-      .replace('<span class="ex-ey"></span>', '<span class="ex-ey">Posko cuaca ekstrem</span>'); }
+    return kepalaKartu(Kartu.ex("Kabupaten", "", "", `<p class="fnd">Rekomendasi hasil hitungan, bukan laporan lapangan: ${fmt(N.posko)} posko, ${fmt(N.kec)} kecamatan Siaga atau Awas, ${fmt(N.kab)} kabupaten/kota, satu posko per gugus dalam ${fmt(D.param.gabung_km)} km. Kontak dari BNPB peta_bpbd.</p><div class="tw"><table class="kl-tb"><thead><tr><th>Kabupaten/kota</th><th>Status</th><th>Kecamatan</th><th title="${esc(`Sumber: ${D.sumber.pos}`)}">Posko</th><th>Pusdalops BPBD</th></tr></thead><tbody>${baris}</tbody></table></div>`,
+      "")
+      .replace('<span class="ex-ey"></span>', '<span class="ex-ey">Posko cuaca ekstrem</span>')); }
   async function render() {
     const el = $("#posko"); if (!el) return;
     if (!D) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat posko…</div>`;
