@@ -37,6 +37,8 @@ Per kecamatan dengan cakupan >= 30 persen:
 - Anggapan laju tetap. Laju bisa turun (pembatasan air tanah, tanggul) atau naik (pembangunan). Pada Q5 tidak ada skenario kebijakan; layar menulis "bila laju bertahan".
 - Periode deret kurang dari 3 tahun: proyeksi tidak dihitung.
 
+**Butir terbuka (bawaan sementara, bukan keputusan):** rumus galat baku median 1,2533·σ/√n di `subsiden.py` menganggap piksel bebas, padahal piksel InSAR berkorelasi spasial, jadi hasilnya BATAS BAWAH (`galat_jenis: "batas_bawah_piksel_bebas"`). Pilihan n_efektif belum diputuskan: (a) n_eff dari jarak dekorelasi (variogram) atau (b) bootstrap blok spasial. Sementara itu `vstd` dibagi U sebelum dipakai, `galat_sumber` ("vstd" atau "antarpiksel_saja") ditulis per kecamatan, dan proyeksi menandai `rentang_sempit` bila antarpiksel_saja. e_ref belum bisa dihitung = `acuan_belum_dihitung` dan `tayang_ditahan`. Pemilik/pemeriksa memilih (a) atau (b) sebelum angka tayang.
+
 Proyeksi penurunan ini TIDAK dijumlahkan dengan prakiraan muka laut dan tidak dimasukkan ke status rob (D1). Bila DeltaDTM tersedia (Q6): untuk tiap kecamatan hitung luas dan persentase piksel DeltaDTM dengan elevasi di bawah ambang pasang tinggi stasiun terdekat (p90 stasiun, `pasut30`) sesudah dikurangi D(T) tiap rentang, dengan MAE DeltaDTM 0,43 m ditulis di sampingnya. Hasil ini adalah "elevasi dibanding ambang, setelah tanah turun", bukan probabilitas rob.
 
 ## 5. Gerbang pola

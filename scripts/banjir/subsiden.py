@@ -15,7 +15,7 @@ satu geometri -> vU = v_LOS / U (asumsi gerak murni vertikal). Tanda: LiCSBAS mm
 ASUMSI: HIPOTESIS sampai dibandingkan dengan GNSS/levelling (subsiden_literatur.json).
 
 Pakai: python3 scripts/banjir/subsiden.py uji
-       python3 scripts/banjir/subsiden.py hitung <kota> <prov> <dir_naik> <dir_turun> <frame_naik> <frame_turun> <periode>
+       python3 scripts/banjir/subsiden.py hitung <kota> <prov> <dir_naik> <dir_turun> <frame_naik> <frame_turun> <periode> [ref_lat [tgl_awal tgl_akhir]]
 Atribusi: Contains modified Copernicus Sentinel data; COMET LiCSAR (Lazecky dkk. 2020); LiCSBAS (Morishita dkk. 2020).
 """
 import array, json, math, os, statistics, sys
@@ -25,6 +25,7 @@ from umum import KELUAR, simpan
 from wilayah import AKAR, _cincin
 
 ATRIBUSI = "Contains modified Copernicus Sentinel data; COMET LiCSAR (Lazecky dkk. 2020); LiCSBAS (Morishita dkk. 2020)"
+VERSI = 2           # 2 = tambah p10, galat, tgl_awal/tgl_akhir (PT-03)
 MIN_PIKSEL = 10     # kecamatan dengan piksel valid lebih sedikit tidak dilaporkan
 SAH_MM = 400.0      # |laju LOS| lebih besar = pencilan, dibuang
 U_MIN = 0.3
@@ -99,11 +100,14 @@ def sapu(cincin, lat, lon0, dlon, n):
         yield max(0, math.ceil((xs[i] - lon0) / dlon - .5)), min(n, math.floor((xs[i + 1] - lon0) / dlon - .5) + 1)
 
 
-def agregasi(fitur, g, min_piksel=MIN_PIKSEL):
-    """g = Kisi vertikal (mm/thn) -> baris per kecamatan; cm/thn, negatif = turun."""
+def agregasi(fitur, g, min_piksel=MIN_PIKSEL, vstd=None, tgl=(None, None)):
+    """g = Kisi vertikal (mm/thn) -> baris per kecamatan; cm/thn, negatif = turun.
+    vstd = Kisi galat piksel VERTIKAL (vstd LiCSBAS dibagi U, mm/thn, grid sama) atau None; tgl = (awal, akhir) deret.
+    galat = galat baku median (cm/thn) = 1,2533*akar((var antarpiksel + rerata vstd^2)/n). BATAS BAWAH: menganggap piksel
+    bebas (galat_jenis); n_eff belum dipilih (butir terbuka ALGORITMA). galat_sumber = "vstd" atau "antarpiksel_saja"."""
     p, hasil = g.p, []
     for f in fitur:
-        nilai, total = [], 0
+        nilai, ses, total = [], [], 0
         for r in _cincin(f["geometry"]):
             ys = [c[1] for c in r]
             j0 = max(0, math.ceil((max(ys) - p["lat0"]) / p["dlat"] - .5))
@@ -113,11 +117,18 @@ def agregasi(fitur, g, min_piksel=MIN_PIKSEL):
                 for i0, i1 in sapu(r, lat, p["lon0"], p["dlon"], p["w"]):
                     total += i1 - i0
                     nilai += [v for v in g.v[j][i0:i1] if v == v]
+                    if vstd:
+                        ses += [e for v, e in zip(g.v[j][i0:i1], vstd.v[j][i0:i1]) if v == v and e == e]
         if len(nilai) >= min_piksel:
+            var = statistics.pvariance(nilai) + (sum(e * e for e in ses) / len(ses) if ses else 0)
             hasil.append(dict(kec=f["properties"]["kec"], kab=f["properties"]["kab"], n=len(nilai),
                               cakupan=round(100 * len(nilai) / max(total, 1)),
                               med=round(statistics.median(nilai) / 10, 1),
-                              p90=round(kuantil(nilai, .10) / 10, 1)))  # P90 sisi turun: 90% piksel tidak lebih dalam dari ini
+                              p90=round(kuantil(nilai, .10) / 10, 1),  # P90 sisi turun: 90% piksel tidak lebih dalam dari ini
+                              p10=round(kuantil(nilai, .90) / 10, 1),  # sisi naik/dangkal
+                              galat=round(1.2533 * math.sqrt(var / len(nilai)) / 10, 2),
+                              galat_sumber="vstd" if ses else "antarpiksel_saja",
+                              tgl_awal=tgl[0], tgl_akhir=tgl[1]))
     return hasil
 
 
@@ -130,14 +141,22 @@ def gerbang_pola(hasil):
     return (u is not None and s is not None and u <= s - 1.0), u, s
 
 
-def hitung(kota, prov, dn, dt, fn, ft, periode, ref_lat=None):
+def galat_acuan(ref, va, vt):
+    """e_ref cm/thn = simpangan piksel acuan/akar(n) + |selisih median acuan naik vs turun|; None bila tak bisa dihitung.
+    ref, va, vt = nilai vertikal (mm/thn) piksel acuan: gabungan, hanya-naik, hanya-turun. n = piksel acuan (bukan n_eff)."""
+    if len(ref) < 2 or not va or not vt:
+        return None
+    return round((statistics.pstdev(ref) / math.sqrt(len(ref)) + abs(statistics.median(va) - statistics.median(vt))) / 10, 3)
+
+
+def hitung(kota, prov, dn, dt, fn, ft, periode, ref_lat=None, tgl=(None, None)):
     pa, pt = baca_par(os.path.join(dn, "EQA.dem_par")), baca_par(os.path.join(dt, "EQA.dem_par"))
     rd = lambda d, p, n: Kisi(p, baca_raw(os.path.join(d, n), p["w"], p["h"]))
     A = [rd(dn, pa, n) for n in ("vel.filt.mskd", "E.geo", "U.geo")]
     T = [rd(dt, pt, n) for n in ("vel.filt.mskd", "E.geo", "U.geo")]
     nan = float("nan")
     # grid keluaran = grid turun; naik diambil terdekat
-    V, metode = [], {}
+    V, metode, ra, rt = [], {}, [], []  # ra, rt: vertikal tunggal-geometri di area acuan (untuk e_ref)
     for j in range(pt["h"]):
         baris = array.array("f")
         for i in range(pt["w"]):
@@ -146,6 +165,10 @@ def hitung(kota, prov, dn, dt, fn, ft, periode, ref_lat=None):
             a = tuple(k.di(lon, lat) for k in A)
             r = vertikal(a, t)
             baris.append(r[0] if r else nan)
+            if ref_lat is None or lat <= ref_lat:
+                for dst, x in ((ra, vertikal(a, None)), (rt, vertikal(None, t))):
+                    if x:
+                        dst.append(x[0])
             if r:
                 metode[r[1]] = metode.get(r[1], 0) + 1
         V.append(baris)
@@ -157,11 +180,22 @@ def hitung(kota, prov, dn, dt, fn, ft, periode, ref_lat=None):
         for i in range(len(b)):
             b[i] -= med_ref
     fitur = json.load(open(os.path.join(AKAR, "public/geo/kecamatan", f"{prov}.json")))["features"]
-    hasil = agregasi(fitur, g)
+    e_ref = galat_acuan(ref, ra, rt)  # ref = nilai sebelum dikurangi median; simpangan tak terpengaruh
+    vs = os.path.join(dt, "vstd")  # opsional: galat piksel LiCSBAS geometri turun; dibagi U -> galat vertikal
+    gv = None
+    if os.path.exists(vs):
+        sv = baca_raw(vs, pt["w"], pt["h"])
+        gv = Kisi(pt, [array.array("f", [(e / u if u > U_MIN else nan) for e, u in zip(sv[j], T[2].v[j])]) for j in range(pt["h"])])
+    hasil = agregasi(fitur, g, vstd=gv, tgl=tgl)
+    if e_ref is None:
+        for h in hasil:
+            h["acuan_belum_dihitung"] = True
     ok, u, s = gerbang_pola(hasil)
-    return dict(kota=kota, periode=periode, frame=dict(naik=fn, turun=ft), metode_piksel=metode,
+    return dict(versi=VERSI, kota=kota, periode=periode, frame=dict(naik=fn, turun=ft), metode_piksel=metode,
                 referensi=dict(median_dikurangkan_cm_thn=round(med_ref / 10, 2), lintang_maks=ref_lat,
+                               galat_cm_thn=e_ref, acuan_belum_dihitung=e_ref is None,
                                catatan="median piksel area stabil (selatan, dataran tinggi) dikurangkan"),
+                galat_jenis="batas_bawah_piksel_bebas",
                 gerbang=dict(lolos=ok, utara=u, selatan=s), kecamatan=hasil), ok
 
 
@@ -184,6 +218,20 @@ def uji():
     fit = [dict(properties=dict(kec="A", kab="X"), geometry=kot(0.0, .4)), dict(properties=dict(kec="B", kab="X"), geometry=kot(.4, .8))]
     h = agregasi(fit, g, 1)
     assert [x["kec"] for x in h] == ["A"] and h[0]["n"] == 32 and h[0]["med"] == -10.0 and h[0]["cakupan"] == 100, h
+    # p10, galat, tanggal; vstd menambah galat
+    vk = [array.array("f", [30.0] * 4 + [nan] * 4) for _ in range(8)]
+    h2 = agregasi(fit, g, 1, vstd=Kisi(g.p, vk), tgl=("2019-01-01", "2025-01-01"))[0]
+    assert h2["p10"] == -10.0 and h2["tgl_awal"] == "2019-01-01" and h2["tgl_akhir"] == "2025-01-01", h2
+    assert abs(h2["galat"] - round(1.2533 * 30 / math.sqrt(32) / 10, 2)) < 1e-9 and h[0]["galat"] == 0.0, (h2, h[0])
+    assert h2["galat_sumber"] == "vstd" and h[0]["galat_sumber"] == "antarpiksel_saja"
+    # suku pvariance tak nol: nilai bervariasi -> galat > 0 tanpa vstd
+    vv = [array.array("f", [-100.0, -200.0, -100.0, -200.0] + [nan] * 4) for _ in range(8)]
+    h3 = agregasi(fit, Kisi(g.p, vv), 1)[0]
+    assert abs(h3["galat"] - round(1.2533 * 50 / math.sqrt(32) / 10, 2)) < 1e-9 and h3["galat"] > 0, h3
+    # e_ref: 4 piksel acuan sd 0 + selisih median 20 mm -> 2 cm; tak bisa dihitung -> None
+    assert galat_acuan([5.0] * 4, [10.0], [-10.0]) == 2.0
+    assert abs(galat_acuan([0.0, 10.0], [0.0], [0.0]) - round(5 / math.sqrt(2) / 10, 3)) < 1e-9
+    assert galat_acuan([1.0], [1.0], [1.0]) is None and galat_acuan([1.0, 2.0], [], [1.0]) is None
     # gerbang pola
     assert gerbang_pola([dict(kab="Jakarta Utara", med=-6), dict(kab="Jakarta Selatan", med=-1)])[0]
     assert not gerbang_pola([dict(kab="Jakarta Utara", med=-1), dict(kab="Jakarta Selatan", med=-1)])[0]
@@ -206,10 +254,12 @@ if __name__ == "__main__":
     if a[:1] == ["uji"]:
         uji()
     elif a[:1] == ["hitung"] and len(a) >= 8:
-        hasil, ok = hitung(a[1], a[2], a[3], a[4], a[5], a[6], a[7], float(a[8]) if len(a) > 8 else None)
+        hasil, ok = hitung(a[1], a[2], a[3], a[4], a[5], a[6], a[7], float(a[8]) if len(a) > 8 else None,
+                           (a[9], a[10]) if len(a) > 10 else (None, None))
         print(json.dumps(hasil["gerbang"]), "kecamatan:", len(hasil["kecamatan"]))
         if not ok:
             sys.exit("gerbang pola GAGAL: tidak diterbitkan")
+        hasil["dihitung"] = __import__("datetime").date.today().isoformat()
         hasil["atribusi"] = ATRIBUSI
         hasil["label"] = "hipotesis: laju vertikal kasar dari LOS, belum divalidasi GNSS"
         simpan(os.path.join(KELUAR, "subsiden.json"), hasil)
