@@ -1,0 +1,41 @@
+/* Undang rekan (PM-11, DESIGN-SYSTEM L6): hanya tata letak; warna dan kartu dari token situs dan kartu.css (.ex.ex-std, .ex-tabel).
+   Kepala tabel navy bertulisan putih rata tengah; tombol ikon polos tanpa garis luar; sasaran sentuh 44 px; kartu 20 px dari tetangga. */
+.ud-kartu{margin-top:20px}
+.ud-kartu .ex-jd>h3{display:flex;align-items:center;gap:8px;font-size:1.125rem}
+.ud-ik{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ud-kartu>.ex-bd{padding:0;gap:0}
+.ud-form{display:grid;grid-template-columns:1fr 1fr auto;gap:6px 12px;align-items:end;padding:16px 22px 8px}
+.ud-fl{grid-row:1;font-size:.75rem;font-weight:700;color:var(--ink2)}
+.ud-form .ud-fl:nth-of-type(1){grid-column:1}.ud-form .ud-fl:nth-of-type(2){grid-column:2}
+.ud-form #ud-wa{grid-column:1;grid-row:2}.ud-form #ud-nama{grid-column:2;grid-row:2}.ud-form .ud-utama{grid-column:3;grid-row:2}
+.ud-isian{min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit;font-size:.875rem;min-width:0;width:100%;box-sizing:border-box}
+.ud-tb{min-height:44px;padding:0 18px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit;font-size:.8125rem;font-weight:700;cursor:pointer;touch-action:manipulation}
+.ud-tb.ud-utama{background:var(--head-bg);border-color:var(--head-bg);color:var(--on-head)}
+.ud-tb:disabled,.ud-btn:disabled{opacity:.5;cursor:default}
+.ud-pesan{margin:0;padding:4px 22px 12px;min-height:1.25rem;font-size:.8125rem;color:var(--ink2)}
+.ud-pesan .ud-tb{margin-left:4px}
+.ud-bag{border-top:1px solid var(--line)}
+.ud-bag[hidden]{display:none}
+.ud-sub{margin:0;padding:14px 22px 8px;font-size:.9375rem;font-weight:800;color:var(--ink)}
+.ud-ket{margin:0;padding:0 22px 16px;font-size:.8125rem;color:var(--ink2)}
+.ud-ket.ud-galat{color:var(--bad-tx);font-weight:700}
+.ud-wadah{overflow-x:auto}
+.ud-tabel{width:100%;border-collapse:collapse;font-size:.8125rem}
+.ud-tabel thead th{background:var(--head-bg);color:var(--on-head);font-size:.75rem;font-weight:700;padding:12px;text-align:center;white-space:nowrap}
+.ud-tabel td{padding:8px 12px;border-top:1px solid var(--line);vertical-align:middle;overflow-wrap:anywhere}
+.ud-tanda,.ud-aksi{display:flex;flex-wrap:wrap;gap:6px}
+.ud-btn{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;border:0;background:none;color:var(--ink);cursor:pointer;touch-action:manipulation}
+.ud-btn:hover{color:var(--navy2)}.ud-btn:active{transform:scale(.95)}
+.ud-pil{display:inline-flex;align-items:center;font-size:.6875rem;font-weight:800;padding:3px 9px;border-radius:999px;white-space:nowrap;background:color-mix(in srgb,var(--pil) 15%,transparent);color:color-mix(in srgb,var(--pil) 78%,var(--ink))}
+.ud-pil.hijau{--pil:var(--c4)}.ud-pil.kuning{--pil:var(--c3)}.ud-pil.abu{--pil:var(--ink3)}
+.ud-isian:focus-visible,.ud-tb:focus-visible,.ud-btn:focus-visible{outline:2px solid var(--navy2);outline-offset:2px}
+@media (max-width:480px){
+  .ud-form{grid-template-columns:1fr;padding:14px 16px 8px}
+  .ud-fl,.ud-form .ud-fl:nth-of-type(n),.ud-form #ud-wa,.ud-form #ud-nama,.ud-form .ud-utama{grid-column:1;grid-row:auto}
+  .ud-pesan,.ud-sub,.ud-ket{padding-left:16px;padding-right:16px}
+  .ud-tabel thead{display:none}
+  .ud-tabel,.ud-tabel tbody,.ud-tabel tr,.ud-tabel td{display:block}
+  .ud-tabel tr{padding:10px 16px;border-top:1px solid var(--line)}
+  .ud-tabel td{border:0;padding:3px 0;text-align:left}
+  .ud-tabel td::before{content:attr(data-label);display:block;font-size:.7rem;font-weight:700;color:var(--ink2)}
+}

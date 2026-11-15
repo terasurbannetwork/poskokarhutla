@@ -1,4 +1,4 @@
-// Gerbang PM-01 paket Pintu Masuk (data/kajian-bnpb/pintu-masuk/RENCANA-UJI.md §2, G-1..G-7).
+// Gerbang PM-01 paket Pintu Masuk (data/kajian-bnpb/pintu-masuk/RENCANA-UJI.md §2, G-1..G-8).
 // Berkas paket belum ada = tidak ada pelanggaran; gerbang mulai menggigit begitu berkasnya lahir.
 // Tiap aturan = fungsi murni (teks -> daftar pelanggaran), diuji mode-gagalnya, lalu dipindaikan ke berkas nyata.
 // Semua heuristik regex: menangkap bentuk lazim, bukan pembuktian; batasnya ditulis di tiap aturan.
@@ -67,9 +67,28 @@ export function g6(teks) {
 }
 
 // G-7: tulis ke tabel akun/sesi modul lain. Batas: nama tabel yang disusun dinamis tidak terlihat.
-const TABEL = "staf|instansi_akun|staf_sesi|instansi_sesi|pdt_sesi|km_sesi|pemirsa_sesi|pemirsa";
+const TABEL = "staf|instansi_akun|staf_sesi|instansi_sesi|pdt_sesi|km_sesi|pemirsa_sesi|pemirsa|pdt_akun|km_akun|orang|relawan";
 export const g7 = teks => [...teks.matchAll(new RegExp(String.raw`\b(?:INSERT\s+(?:OR\s+\w+\s+)?INTO|UPDATE(?:\s+OR\s+\w+)?|DELETE\s+FROM|REPLACE\s+INTO)\s+(?:${TABEL})\b`, "gi"))]
   .map(m => `menulis tabel modul lain: ${m[0]}`);
+
+// G-8: fungsi mk* di src/hak.js (bagian Satu Pintu Masuk) tidak menulis tabel AKUN modul lain (D19: pintu masuk
+// tidak mengaktifkan atau mengubah akun). Tabel sesi (instansi_sesi, pdt_sesi, km_sesi, pemirsa_sesi) sah ditulis.
+// Batas bagian: tiap `export const mk...` di kolom 0 sampai baris kolom-0 berikutnya yang bukan lanjutan
+// (export/const/function/komentar), jadi bagian lain yang ditambahkan sesudahnya tidak ikut terpindai.
+// Batas heuristik: tabel dari string yang disusun dinamis, atau SQL di konstanta di luar fungsi mk*, tidak terlihat.
+const TABEL_AKUN = "staf|instansi_akun|pdt_akun|km_akun|pemirsa";
+export function g8(teks) {
+  const salah = [], baris = teks.split("\n");
+  const re = new RegExp(String.raw`\b(?:INSERT\s+(?:OR\s+\w+\s+)?INTO|UPDATE(?:\s+OR\s+\w+)?|DELETE\s+FROM|REPLACE\s+INTO)\s+(?:${TABEL_AKUN})\b`, "gi");
+  for (let i = 0; i < baris.length; i++) {
+    const h = /^export const (mk\w*)/.exec(baris[i]);
+    if (!h) continue;
+    let j = i + 1;
+    while (j < baris.length && !/^(?:export |const |let |function |async function |\/[*\/])/.test(baris[j])) j++;
+    for (const m of baris.slice(i, j).join("\n").matchAll(re)) salah.push(`${h[1]} (baris ${i + 1}): menulis tabel akun modul lain: ${m[0]}`);
+  }
+  return salah;
+}
 
 const pindai = (berkas, fn, aturan, akibat, perbaiki) => {
   const salah = berkas.flatMap(r => fn(baca(r)).map(s => `${r}: ${s}`));
@@ -139,3 +158,14 @@ test("G-7 mode gagal: tulis ke tabel modul lain ditolak", () => {
 });
 test("G-7 berkas nyata: src/masuk*.js tidak menulis tabel akun modul lain", () =>
   pindai(srcMasuk(), g7, "G-7", "akun produksi bergeser tanpa lewat modul pemiliknya (D2)", "panggil sesiUntuk/cabutSesi yang diekspor modul pemilik, jangan tulis tabelnya"));
+
+test("G-8 mode gagal: mk* menulis tabel akun ditolak, tabel sesi dan fungsi lain lolos", () => {
+  assert.equal(g8("export const mkA = (env) => env.DB.prepare(\"UPDATE pdt_akun SET aktif=1\")").length, 1);
+  assert.equal(g8("export const mkB = async (env) => {\n  await x(\"INSERT INTO km_akun (a) VALUES (1)\");\n};").length, 1);
+  assert.equal(g8("export const mkC = e => e.DB.prepare('DELETE FROM pemirsa WHERE 1')").length, 1);
+  assert.deepEqual(g8("export const mkD = e => e.DB.prepare('INSERT INTO pdt_sesi (a) SELECT 1 FROM pdt_akun')"), []);
+  assert.deepEqual(g8("export const mkE = e => e.DB.prepare('INSERT INTO pemirsa_sesi (a) VALUES (1)')"), []);
+  assert.deepEqual(g8("export const lain = e => e.DB.prepare('UPDATE staf SET a=1')"), []);
+});
+test("G-8 berkas nyata: fungsi mk* di src/hak.js tidak menulis tabel akun modul lain", () =>
+  pindai(["src/hak.js"], g8, "G-8", "akun instansi, pendataan, kampus, atau pemirsa bisa diaktifkan atau diubah dari pintu masuk, padahal D19 menyerahkannya ke Super Admin dan modul pemilik", "buang tulisan itu dari fungsi mk*; ubah akun lewat fungsi modul pemiliknya atau tandai di antrean tinjau (mk_*)"));
