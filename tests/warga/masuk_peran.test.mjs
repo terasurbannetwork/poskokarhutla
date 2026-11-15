@@ -110,7 +110,8 @@ uji("peran U-13: nomor sama dengan instansi_akun.wa aktif mendapat cookie instan
   await ang(mati, "aktif"); const j2 = await login(1); assert.equal(j2.r.j.ruang.length, 1, "akun tujuan dicabut tidak masuk");
   await ang(tujuan, "menunggu"); assert.equal((await login(1)).r.j.ruang.length, 1, "anggota menunggu tidak masuk");
   await DB.prepare("UPDATE mk_anggota SET status = 'aktif' WHERE akun_id = ?").bind(tujuan).run();
-  const j3 = await login(1); assert.equal(j3.r.j.ruang.length, 2, "anggota aktif ke akun aktif masuk"); assert.equal(await n("instansi_sesi", `akun_id = '${tujuan}'`), 1);
+  const j3 = await login(1); assert.equal(j3.r.j.ruang.length, 2, "anggota aktif ke akun aktif masuk"); assert.ok(j3.r.j.ruang.every(x => x.perlu_pilih), "dua akun instansi: pilih dulu"); assert.deepEqual(j3.r.j.ruang.map(x => x.pilih).sort(), [id, tujuan].sort());
+  assert.equal((await catat(api("POST", "/api/masuk/pilih", {jenis: "instansi", pilih: tujuan}, lengkap(j3)))).s, 200); assert.equal(await n("instansi_sesi", `akun_id = '${tujuan}'`), 1);
 });
 
 uji("peran U-14: akun tidak aktif, akun bernomor beda, atau akun tanpa nomor tidak mendapat sesi", async () => {
@@ -128,20 +129,49 @@ uji("peran U-14: akun tidak aktif, akun bernomor beda, atau akun tanpa nomor tid
   assert.equal(await n("instansi_sesi", `akun_id = '${dicabut}'`), 0);
 });
 
-uji("peran U-15: nomor dengan beberapa akun mendapat sesi tiap akun dan daftar ruangnya; cookie modul lain diterima rutenya", async () => {
+uji("peran U-15: beberapa akun sejenis = tanpa sesi otomatis + pilih; akun beda jenis tetap dapat sesi; /api/masuk/pilih menerbitkan sesi akun terikat saja", async () => {
   const i1 = await instansi({wa: nomor(4)}), i2 = await instansi({wa: nomor(4), jenis: "polres", wilayah: "Polres Contoh"}), p = await pendataan({wa: nomor(4)}), k = await kampus({wa: nomor(4)});
+  const asing = await instansi({wa: nomor(95)});
   const j = await login(4); catat(j.r);
   assert.deepEqual(j.r.j.ruang.map(x => x.jenis).sort(), ["instansi", "instansi", "kemitraan", "pendataan"]);
-  assert.deepEqual(j.r.j.ruang.map(x => x.ke).sort(), ["/instansi", "/instansi", "/kemitraan", "/pendataan"]);
-  assert.equal(await n("instansi_sesi", `akun_id IN ('${i1}', '${i2}')`), 2, "dua akun instansi = dua sesi");
+  const ins = j.r.j.ruang.filter(x => x.jenis === "instansi");
+  assert.ok(ins.every(x => x.perlu_pilih === true && /^[0-9a-f]{16}$/.test(x.pilih))); assert.deepEqual(ins.map(x => x.pilih).sort(), [i1, i2].sort());
+  assert.ok(j.r.j.ruang.filter(x => x.jenis !== "instansi").every(x => !x.perlu_pilih && !x.pilih));
+  assert.ok(!j.lines.some(l => l.startsWith("sesi_instansi=")), "dua akun instansi: tanpa sesi instansi otomatis"); assert.equal(await n("instansi_sesi", `akun_id IN ('${i1}', '${i2}')`), 0);
   assert.equal(await n("pdt_sesi", `akun_id = '${p}'`), 1); assert.equal(await n("km_sesi", `akun_id = '${k}'`), 1);
-  assert.equal(await n("mk_masuk_log", `mk_id = (SELECT id FROM mk_akun WHERE wa = '${nomor(4)}')`), 4);
+  assert.equal(await n("mk_masuk_log", `mk_id = (SELECT id FROM mk_akun WHERE wa = '${nomor(4)}')`), 2, "hanya sesi yang terbit dicatat");
   const pd = await api("GET", "/api/pendataan/saya", undefined, {cookie: "sesi_pendataan=" + j.kuki.sesi_pendataan}); assert.equal(pd.s, 200, pd.t); assert.equal(pd.j.akun.nama, "Sari");
-  const kl = cabutCookie(j.lines, "sesi_kemitraan"); assert.equal(kl.length, 1); assert.ok(kl[0].includes("SameSite=Strict"), "aturan cookie kampus tetap milik modulnya");
-  assert.match(kl[0], /Max-Age=43200/, "12 jam");
-  const km = await api("GET", "/api/kemitraan/saya", undefined, {cookie: "sesi_kemitraan=" + j.kuki.sesi_kemitraan}); assert.equal(km.s, 200, km.t);
-  assert.match(cabutCookie(j.lines, "sesi_pendataan")[0], /Max-Age=2592000/, "30 jam sesuai pendataan");
-  const ins = await api("GET", "/api/instansi/saya", undefined, {cookie: "sesi_instansi=" + j.kuki.sesi_instansi}); assert.equal(ins.s, 200, "cookie instansi terakhir yang berlaku (satu nama cookie per peramban)");
+  const kl = cabutCookie(j.lines, "sesi_kemitraan"); assert.equal(kl.length, 1); assert.ok(kl[0].includes("SameSite=Strict"), "aturan cookie kampus tetap milik modulnya"); assert.match(kl[0], /Max-Age=43200/, "12 jam");
+  assert.equal((await api("GET", "/api/kemitraan/saya", undefined, {cookie: "sesi_kemitraan=" + j.kuki.sesi_kemitraan})).s, 200);
+  assert.match(cabutCookie(j.lines, "sesi_pendataan")[0], /Max-Age=2592000/);
+  /* /api/masuk/saya menghitung penanda yang sama */
+  const sy = await api("GET", "/api/masuk/saya", undefined, {cookie: "sesi_masuk=" + j.kuki.sesi_masuk}); assert.equal(sy.j.ruang.filter(x => x.perlu_pilih).length, 2);
+  /* pilih */
+  const pilih = (b, c = j) => catat(api("POST", "/api/masuk/pilih", b, lengkap(c)));
+  assert.equal((await api("POST", "/api/masuk/pilih", {jenis: "instansi", pilih: i1}, H())).s, 401, "tanpa sesi akun umum");
+  assert.equal((await api("POST", "/api/masuk/pilih", {jenis: "instansi", pilih: i1}, {cookie: j.cookie})).s, 403, "tanpa x-pb dan Origin");
+  assert.equal((await pilih({jenis: "instansi", pilih: asing})).s, 403, "akun bernomor lain ditolak"); assert.equal((await pilih({jenis: "instansi", pilih: i1.replace(/./, c => c === "a" ? "b" : "a").slice(0, 15)})).s, 400);
+  assert.equal((await pilih({jenis: "pendataan", pilih: i1})).s, 403, "id akun jenis lain ditolak"); assert.equal((await pilih({jenis: "staf", pilih: i1})).s, 400); assert.equal((await pilih({jenis: "__proto__", pilih: i1})).s, 400);
+  const a = await pilih({jenis: "instansi", pilih: i1}); assert.equal(a.s, 200, a.t); assert.deepEqual(a.j, {ok: true, ke: "/instansi"});
+  const ja = jar(a.h.getSetCookie()); assert.equal(cabutCookie(a.h.getSetCookie(), "sesi_instansi").length, 2, "dua Path");
+  assert.equal((await api("GET", "/api/instansi/saya", undefined, {cookie: "sesi_instansi=" + ja.kuki.sesi_instansi})).j.akun.id, i1);
+  const b2 = await pilih({jenis: "instansi", pilih: i2}, {...j, cookie: j.cookie + "; sesi_instansi=" + ja.kuki.sesi_instansi}); assert.equal(b2.s, 200, b2.t);
+  const jb = jar(b2.h.getSetCookie());
+  assert.equal((await api("GET", "/api/instansi/saya", undefined, {cookie: "sesi_instansi=" + jb.kuki.sesi_instansi})).j.akun.id, i2);
+  assert.equal((await api("GET", "/api/instansi/saya", undefined, {cookie: "sesi_instansi=" + ja.kuki.sesi_instansi})).s, 401, "sesi jenis yang sama di peramban ini diganti");
+  assert.equal(await n("mk_masuk_log", `tabel = 'instansi_akun' AND mk_id = (SELECT id FROM mk_akun WHERE wa = '${nomor(4)}')`), 2);
+  /* laju IP rute pilih */
+  { let tolak = 0; for (let i = 0; i < 61; i++) if ((await api("POST", "/api/masuk/pilih", {jenis: "instansi", pilih: i1}, {...H({"cf-connecting-ip": "10.7.253.1"})})).s === 429) tolak++; assert.equal(tolak, 1); }
+});
+
+/* akun contoh (dummy = 1) tidak pernah mendapat sesi lewat nomor */
+uji("peran U-14b: akun contoh (dummy = 1) bernomor cocok tidak mendapat sesi, tidak masuk ruang, tidak bisa dipilih", async () => {
+  const d = await instansi({wa: nomor(96), dummy: 1}), pd = await pendataan({wa: nomor(96), dummy: 1}), o = await orang({wa: nomor(96), dummy: 1}), r = await relawan({wa: nomor(96), dummy: 1});
+  const j = await login(96); catat(j.r); assert.deepEqual(j.r.j.ruang, []); assert.deepEqual(Object.keys(j.kuki), ["sesi_masuk"]);
+  assert.equal(await n("instansi_sesi", `akun_id = '${d}'`), 0); assert.equal(await n("pdt_sesi", `akun_id = '${pd}'`), 0);
+  assert.equal((await catat(api("POST", "/api/masuk/pilih", {jenis: "instansi", pilih: d}, lengkap(j)))).s, 403);
+  assert.equal((await api("GET", "/api/petugas/saya", undefined, {cookie: j.cookie})).s, 401); assert.equal(await n("orang", `id = '${o}'`), 1); assert.equal(r.length, 16);
+  const {sesiUntuk} = await import("../../src/instansi.js"); assert.equal(await sesiUntuk({DB}, d, Date.now()), null, "INSERT..SELECT bersyarat juga menolak dummy");
 });
 
 /* ---------------- U-16 ---------------- */
@@ -156,7 +186,19 @@ uji("peran U-16: petugas lewat nomor = profil dan penugasan, wajah/absen/nonce/p
   for (const [m, jl, b] of [["POST", "/api/petugas/wajah", {}], ["DELETE", "/api/petugas/wajah"], ["POST", "/api/petugas/nonce", {}], ["POST", "/api/petugas/absen", {}], ["POST", "/api/petugas/setuju", {}]]) {
     const x = await api(m, jl, b, pb); assert.equal(x.s, 403, `${m} ${jl}: ${x.t}`); assert.match(x.j.galat, /nomor WhatsApp/);
   }
-  const lb = await api("POST", "/api/petugas/logbook", "x", {...pb, "content-type": "text/plain"}); assert.ok(![401, 403].includes(lb.s), "logbook terbuka (profil, penugasan, logbook): ditolak karena isi, bukan hak " + lb.s);
+  /* logbook lewat nomor: teks saja diterima sesuai aturan logbook; foto 403 sebelum badan dibaca atau sesudah parse */
+  const kini = Date.now(), hari = new Date(kini + 7 * 3600e3).toISOString().slice(0, 10), tid = id16();
+  await sisip("lp_tugas", {id: tid, judul: "Patroli uji", bencana: "banjir", lat: -2.5, lon: 112.9, radius_m: 2000, mulai: kini - 3600e3, selesai: kini + 86400e3, dibuat: 1, dummy: 0}); await sisip("lp_anggota", {tugas_id: tid, orang_id: oid});
+  const lb = async (foto, d = {}) => {
+    const f = new FormData(); f.append("data", JSON.stringify({tugas_id: tid, tanggal: hari, kegiatan: "patroli", uraian: "Cek lapangan", hasil: "aman", foto_meta: [], ...d}));
+    for (const x of foto) f.append("foto", new File([x], "f.jpg", {type: "image/jpeg"}));
+    const rs = new Response(f), buf = new Uint8Array(await rs.arrayBuffer());
+    const x = await mf.dispatchFetch(ASAL + "/api/petugas/logbook", {method: "POST", headers: {...pb, "content-type": rs.headers.get("content-type"), "content-length": String(buf.length)}, body: buf}); return {s: x.status, t: await x.text()};
+  };
+  const teks = await lb([]); assert.equal(teks.s, 201, teks.t); assert.equal(await n("lp_logbook", `orang_id = '${oid}'`), 1);
+  const kecil = await lb([new Uint8Array([0xff, 0xd8, 1, 2, 0xff, 0xd9])], {foto_meta: [{lat: -2.5, lon: 112.9, akurasi: 10, waktu: kini}]}); assert.equal(kecil.s, 403, kecil.t); assert.match(kecil.t, /tautan kode pribadi/);
+  const besar = await lb([new Uint8Array(70 * 1024)]); assert.equal(besar.s, 403, "ditolak dari Content-Length sebelum badan dibaca"); assert.match(besar.t, /tautan kode pribadi/);
+  assert.equal(await n("lp_logbook_foto"), 0);
   assert.equal((await api("GET", "/api/petugas/foto/" + id16(), undefined, sesi)).s, 401, "foto absen tetap butuh kode pribadi atau panel");
   /* tanpa sesi: tetap 401; dengan x-kode yang salah: hasilnya kode, bukan sesi */
   assert.equal((await api("GET", "/api/petugas/saya")).s, 401);
@@ -200,8 +242,9 @@ uji("peran U-16c: relawan sah lewat nomor = profil, penugasan, ketersediaan; cab
   assert.equal((await DB.prepare("SELECT anonim, gol_darah FROM relawan WHERE id = ?").bind(rid).first()).gol_darah, "O+", "data tidak dihapus lewat nomor");
   assert.equal((await api("POST", "/api/relawan/saya/penugasan/" + id16(), {aksi: "terima"}, pb)).s, 403, "aksi penugasan tetap butuh kode pribadi");
   /* petugas lewat relawan: orang disalin saat dipakai, hak terbatas (tanpa wajah) */
-  const pt = await api("GET", "/api/petugas/saya", undefined, sesi); assert.equal(pt.s, 200, pt.t); assert.equal(await n("orang", `relawan_id = '${rid}'`), 1);
-  assert.equal((await api("POST", "/api/petugas/absen", {}, pb)).s, 403);
+  const pt = await api("GET", "/api/petugas/saya", undefined, sesi); assert.equal(pt.s, 200, pt.t); assert.equal(pt.j.orang.id, null); assert.equal(pt.j.orang.nama, "Relawan Sah"); assert.deepEqual(pt.j.tugas, []);
+  assert.equal(await n("orang", `relawan_id = '${rid}'`), 0, "GET tidak menulis: pandangan relawan tanpa salinan");
+  assert.equal((await api("POST", "/api/petugas/absen", {}, pb)).s, 403); assert.equal(await n("orang", `relawan_id = '${rid}'`), 1, "salinan baru dibuat di permintaan tulis pertama");
   /* tautan kode lama relawan: persis seperti sekarang */
   const kode = "cd".repeat(13); await DB.prepare("UPDATE relawan SET kode_sha = ? WHERE id = ?").bind(sha256(kode), rid).run();
   const lama = await api("GET", "/api/relawan/saya", undefined, {"x-kode": kode}); assert.equal(lama.s, 200); assert.equal(lama.j.relawan.nama, "Relawan Sah");
@@ -236,9 +279,12 @@ uji("peran U-17: keluar mencabut mk_sesi dan sesi peran peramban ini; cookie ins
 uji("peran U-35: nomor pemirsa hanya diisi Super Admin; pemirsa aktif masuk lewat kode dan hanya tab yang diizinkan; pemirsa diputus tidak", async () => {
   const buat = await api("POST", "/api/pemirsa/admin/buat", {nama: "Mitra Uji", tab: ["berita"]}, ADMIN); assert.equal(buat.s, 201, buat.t);
   const pid = buat.j.pemirsa.id, lain = (await api("POST", "/api/pemirsa/admin/buat", {nama: "Mitra Dua", tab: ["tren"]}, ADMIN)).j.pemirsa.id;
-  const set = (b, h = ADMIN) => api("POST", "/api/masuk/pemirsa_wa", b, h);
-  assert.equal((await set({pemirsa_id: pid, wa: lokal(15)}, {})).s, 403, "tamu");
-  assert.equal((await set({pemirsa_id: pid, wa: lokal(15)}, MOD2)).s, 403, "moderator bukan Super Admin");
+  const set = (b, h = {...ADMIN, ...H()}) => api("POST", "/api/masuk/pemirsa_wa", b, h);
+  assert.equal((await set({pemirsa_id: pid, wa: lokal(15)}, H())).s, 403, "tamu");
+  assert.equal((await set({pemirsa_id: pid, wa: lokal(15)}, ADMIN)).s, 403, "Super Admin tanpa x-pb dan Origin ditolak (penjaga)");
+  assert.equal((await set({pemirsa_id: pid, wa: lokal(15)}, {...ADMIN, ...H({origin: "http://evil.lokal"})})).s, 403, "origin lain");
+  assert.equal((await set({pemirsa_id: pid, wa: lokal(15)}, {...MOD2, ...H()})).s, 403, "moderator bukan Super Admin");
+  { const ip = {"cf-connecting-ip": "10.7.252.9"}; let tolak = 0; for (let i = 0; i < 31; i++) if ((await set({pemirsa_id: pid, wa: "bukan nomor"}, {...ADMIN, ...H(), ...ip})).s === 429) tolak++; assert.equal(tolak, 1, "30 per jam per IP"); }
   assert.equal(await n("mk_pemirsa_wa"), 0);
   assert.equal((await set({pemirsa_id: "xyz", wa: lokal(15)})).s, 400); assert.equal((await set({pemirsa_id: id16(), wa: lokal(15)})).s, 404); assert.equal((await set({pemirsa_id: pid, wa: "bukan nomor"})).s, 400);
   const ok = await set({pemirsa_id: pid, wa: lokal(15)}); assert.equal(ok.s, 200, ok.t); assert.ok(!ok.t.includes(nomor(15)), "nomor tersamar"); assert.equal(await n("mk_pemirsa_wa", `wa = '${nomor(15)}'`), 1);
@@ -271,6 +317,9 @@ uji("peran U-18: staf tidak mendapat sesi_staf dari kode; sandi salah menaikkan 
   assert.ok(!j.lines.some(l => l.startsWith("sesi_staf=")), "tanpa sesi_staf sebelum sandi"); assert.equal(await n("staf_sesi"), 0); assert.ok(!j.r.t.includes(STAF.username), "username tidak keluar");
   const sesi = {cookie: "sesi_masuk=" + j.kuki.sesi_masuk}, sandi = (b, h = lengkap(j)) => catat(api("POST", "/api/masuk/sandi", b, h));
   const gagalStaf = () => n("laju_bnpb", "aksi = 'staf.gagal_ui'");
+  const lajuSandi = await n("laju_bnpb", "aksi = 'masuk.sandi_ip'");
+  assert.equal((await api("POST", "/api/masuk/sandi", {sandi: "x"}, H({cookie: "sesi_masuk=" + "f".repeat(64)}))).s, 401, "kuki palsu");
+  assert.equal(await n("laju_bnpb", "aksi = 'masuk.sandi_ip'"), lajuSandi + 1, "batas IP dihitung sebelum sesi dibaca");
   assert.equal((await api("POST", "/api/masuk/sandi", {sandi: "x"}, H())).s, 401, "tanpa sesi akun umum");
   assert.equal((await api("POST", "/api/masuk/sandi", {sandi: "x"}, {...sesi, "cf-connecting-ip": "10.7.251.1"})).s, 403, "tanpa x-pb dan Origin");
   const awal = await gagalStaf();

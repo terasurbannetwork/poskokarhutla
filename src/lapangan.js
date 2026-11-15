@@ -4,7 +4,7 @@
    Akses petugas = header x-kode: kode pribadi baris `orang` (hanya sha256 di D1), atau kode relawan yang sudah ada (relawan.kode_sha, status sudah diverifikasi).
    Relawan masuk ke `orang` lewat salinOrang(): dipanggil saat diverifikasi (src/relawan.js) dan, bila terlewat, saat kodenya dipakai pertama kali.
    Kode salah dijawab 401 (dihitung per IP oleh pemegangKode, 60 gagal per jam = 429). */
-import {gagal, json, acak, bacaBody, ipHash, cacheTepi, shaBytes, sha} from "./worker.js";
+import {gagal, json, acak, bacaBody, ipHash, cacheTepi, shaBytes, sha, bacaBytes} from "./worker.js";
 import {superOK, num, tx, reguDari} from "./posko.js";
 import {dalamWilayahStaf} from "./staf.js";
 import {pemegangKode, laju, kodeBaru} from "./bnpb.js";
@@ -382,7 +382,7 @@ async function logbook(env, req, kini) {
   const o = await petugas(env, req, kini); if (o instanceof Response) return o;
   const lj = await laju(env, o.id, "lapangan.logbook", [[JAM, 30]], kini); if (lj) return lj;
   const DILARANG_FOTO = () => gagal(403, "masuk lewat nomor WhatsApp hanya boleh mengirim teks logbook: unggah foto butuh tautan kode pribadi dari admin.");
-  if (o.lewat_sesi && Number(req.headers.get("content-length")) > BATAS_TEKS_SESI) return DILARANG_FOTO();   // ditolak sebelum badan dibaca
+  if (o.lewat_sesi && Number(req.headers.get("content-length")) > BATAS_TEKS_SESI) { await bacaBytes(req, BATAS_TEKS_SESI); return DILARANG_FOTO(); }   // ditolak tanpa mengurai berkas; badan hanya dibuang (keep-alive tidak putus)
   const f = await bacaForm(req, o.lewat_sesi ? BATAS_TEKS_SESI : BATAS_FOTO_LOGBOOK * M_FOTO + 128 * 1024); if (f.r) return f.r;
   const d = f.d, berkas = f.f.getAll("foto");
   if (o.lewat_sesi && berkas.length) return DILARANG_FOTO();

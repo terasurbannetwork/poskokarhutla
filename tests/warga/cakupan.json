@@ -1286,6 +1286,7 @@
     "GET /api/masuk/saluran": "masuk U-11:",
     "GET /masuk": "peran U-12:",
     "POST /api/masuk/sandi": "peran U-18:",
+    "POST /api/masuk/pilih": "peran U-15:",
     "POST /api/masuk/pemirsa_wa": "peran U-35:",
     "table mk_masuk_log": "peran U-13:",
     "table mk_pemirsa_wa": "peran U-35:"
