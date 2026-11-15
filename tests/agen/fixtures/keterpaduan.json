@@ -13,6 +13,7 @@
     "op_isian_kejadian": "K14: kunci isian operasi udara (jenis, tanggal, registrasi), tanpa wilayah; ditunda sampai ada kolom wilayah",
     "pantau_tugas": "K14: antrean butir kerja staf, bukan kejadian; tanpa wilayah",
     "tugas_bencana": "K14: pelengkap tugas_api (bahaya per tugas); tertaut lewat tugas_api",
+    "tugas_bencana_x": "K14: pelengkap tugas_api 1:1 (jenis longsor dan pesisir, migrasi 0130); tertaut lewat tugas_api",
     "tugas_isian": "tabel anak tugas_api (isian lapangan); tertaut lewat tugas_api",
     "tugas_kartu": "tabel anak tugas_api (kartu tugas); tertaut lewat tugas_api",
     "tugas_meta": "tabel anak tugas_api (meta kartu); tertaut lewat tugas_api",
