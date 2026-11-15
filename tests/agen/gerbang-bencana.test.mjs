@@ -9,7 +9,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -112,4 +112,84 @@ test('gerbang bisa merah: salinan sementara yang dirusak ditolak', () => {
   r.bencana[0].warna = '#000000'
   writeFileSync(join(t, 'public/bencana.json'), JSON.stringify(r))
   assert.ok(basi(t), 'JSON berubah tanpa membangkitkan ulang lolos')
+})
+
+// ---- PB-04: kunci `kemampuan` dan pemetaan logbook (paritas-bencana TIKET PB-04) ----
+
+// Kemampuan yang menyala (true / tidak kosong) wajib punya pemakai nyata: satu berkas di src/ atau public/
+// (di luar registry dan modul bangkitan) yang menyebut `kemampuan` dan nama kuncinya. Tanpa itu kunci
+// menyala hanya mengaku, tidak mengubah apa pun. Jangan dilonggarkan: tulis pemakainya, bukan kuncinya dicabut.
+const bacaKode = (dir) => {
+  const h = []
+  for (const e of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, e.name)
+    if (e.isDirectory()) h.push(...bacaKode(p))
+    else if (/\.(m?js|html)$/.test(e.name) && !/bencana\.generated\.js$/.test(e.name)) h.push(readFileSync(p, 'utf8'))
+  }
+  return h
+}
+const menyala = (k) => {
+  const n = []
+  for (const x of ['operasi', 'ekonomi', 'pencegahan', 'prioritas']) if (k[x] === true) n.push(x)
+  if (k.dokumen.length) n.push('dokumen')
+  if (k.renlap.sarana.length || k.renlap.bobot) n.push('renlap')
+  if (k.ews.kunci.length || k.ews.tangga) n.push('ews')
+  if (k.dasbor.ringkas || k.dasbor.papan_sk) n.push('dasbor')
+  return n
+}
+const tanpaPemakai = (r, kode) => {
+  const h = []
+  for (const b of r.bencana)
+    for (const n of menyala(b.kemampuan))
+      if (!kode.some((s) => s.includes('kemampuan') && s.includes(n))) h.push(`${b.id}: kemampuan.${n}`)
+  return h
+}
+
+test('PB-04: tiap entri punya kemampuan berbentuk sah (penegak: bencana.py periksa)', () => {
+  const r = reg()
+  for (const b of r.bencana) assert.ok(b.kemampuan && typeof b.kemampuan === 'object', `${b.id}: kunci kemampuan hilang; tambahkan ke public/bencana.json lalu npm run bencana:js`)
+  assert.deepEqual(skema(r), [])
+})
+
+test('PB-04: kemampuan menyala punya pemakai nyata di src/ atau public/', () => {
+  const kode = [...bacaKode(join(ROOT, 'src')), ...bacaKode(join(ROOT, 'public'))]
+  assert.deepEqual(tanpaPemakai(reg(), kode), [], 'kemampuan menyala tanpa pemakai: tulis kode yang membacanya (menyebut `kemampuan` dan kuncinya) atau matikan kuncinya di public/bencana.json')
+})
+
+// Q1 (bawaan sementara): longsor belum punya entri registri; satu-satunya pengecualian, plafon 1, tidak boleh bertambah.
+const PENGECUALIAN_LOGBOOK = ['longsor']
+
+test('PB-04: JENIS_LOGBOOK_KE_BENCANA menunjuk id registri yang ada', async () => {
+  const { JENIS_LOGBOOK_KE_BENCANA: peta } = await import(join(ROOT, 'src/bencana.generated.js'))
+  const id = new Set(reg().bencana.map((b) => b.id))
+  const liar = Object.entries(peta).filter(([, v]) => !id.has(v)).map(([j, v]) => `${j} -> ${v}`)
+  assert.deepEqual(liar.map((s) => s.split(' -> ')[1]).sort(), PENGECUALIAN_LOGBOOK, `pemetaan logbook ke id tak terdaftar: ${liar.join(', ')}; daftarkan bencananya di public/bencana.json (jangan menambah pengecualian)`)
+  assert.equal(peta.gelombang_pasang, 'pesisir')
+  assert.equal(peta.abrasi, 'pesisir')
+})
+
+test('PB-04: fixture jahat ditolak (gerbang tidak buta)', () => {
+  // bentuk
+  const a = reg()
+  delete a.bencana[0].kemampuan
+  assert.ok(skema(a).some((s) => s.includes('kemampuan')), 'kemampuan hilang lolos')
+  const b = reg()
+  b.bencana[1].kemampuan.operasi = 'ya'
+  b.bencana[1].kemampuan.renlap.sarana = ['roket']
+  const g = skema(b).join('\n')
+  assert.ok(g.includes('operasi harus bool') && g.includes("'roket' tidak dikenal"), 'bentuk liar lolos')
+  // pemakai: kunci menyala tanpa kode pembacanya
+  const c = reg()
+  c.bencana[0].kemampuan.operasi = true
+  c.bencana[2].kemampuan.ews.tangga = true
+  assert.deepEqual(tanpaPemakai(c, ['const x = 1']), ['karhutla: kemampuan.operasi', 'pesisir: kemampuan.ews'])
+  assert.deepEqual(tanpaPemakai(c, ['b.kemampuan.operasi; b.kemampuan.ews']), [])
+  assert.deepEqual(tanpaPemakai(reg(), []), [], 'registri bersih (semua mati) harus lolos tanpa pemakai')
+  // generated basi terhadap kemampuan
+  const t = mkdtempSync(join(tmpdir(), 'bencana-kmp-'))
+  mkdirSync(join(t, 'src'), { recursive: true })
+  mkdirSync(join(t, 'public'), { recursive: true })
+  writeFileSync(join(t, 'public/bencana.json'), JSON.stringify(c))
+  writeFileSync(join(t, 'src/bencana.generated.js'), bangkit(reg()))
+  assert.ok(basi(t), 'kemampuan berubah tanpa membangkitkan ulang lolos')
 })
