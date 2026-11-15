@@ -5,8 +5,8 @@
   "banjir": {
    "a_f": {
     "ada": 74,
-    "sebagian": 32,
-    "belum": 4,
+    "sebagian": 33,
+    "belum": 3,
     "tb": 3,
     "berlaku": 110
    },
@@ -21,14 +21,14 @@
   "longsor": {
    "a_f": {
     "ada": 31,
-    "sebagian": 65,
-    "belum": 12,
+    "sebagian": 66,
+    "belum": 11,
     "tb": 5,
     "berlaku": 108
    },
    "g": {
-    "ada": 5,
-    "sebagian": 2,
+    "ada": 4,
+    "sebagian": 3,
     "belum": 3,
     "tb": 1,
     "berlaku": 10
@@ -37,15 +37,15 @@
   "pesisir": {
    "a_f": {
     "ada": 36,
-    "sebagian": 49,
-    "belum": 24,
+    "sebagian": 52,
+    "belum": 21,
     "tb": 4,
     "berlaku": 109
    },
    "g": {
     "ada": 0,
-    "sebagian": 5,
-    "belum": 5,
+    "sebagian": 8,
+    "belum": 2,
     "tb": 1,
     "berlaku": 10
    }
@@ -53,15 +53,15 @@
   "cuaca": {
    "a_f": {
     "ada": 66,
-    "sebagian": 30,
-    "belum": 11,
+    "sebagian": 31,
+    "belum": 10,
     "tb": 6,
     "berlaku": 107
    },
    "g": {
     "ada": 5,
-    "sebagian": 1,
-    "belum": 4,
+    "sebagian": 4,
+    "belum": 1,
     "tb": 1,
     "berlaku": 10
    }
@@ -69,15 +69,15 @@
   "udara": {
    "a_f": {
     "ada": 61,
-    "sebagian": 30,
-    "belum": 17,
+    "sebagian": 33,
+    "belum": 14,
     "tb": 5,
     "berlaku": 108
    },
    "g": {
     "ada": 3,
-    "sebagian": 2,
-    "belum": 6,
+    "sebagian": 7,
+    "belum": 1,
     "tb": 0,
     "berlaku": 11
    }
@@ -85,15 +85,15 @@
   "gempa": {
    "a_f": {
     "ada": 61,
-    "sebagian": 35,
-    "belum": 8,
+    "sebagian": 38,
+    "belum": 5,
     "tb": 9,
     "berlaku": 104
    },
    "g": {
     "ada": 3,
-    "sebagian": 3,
-    "belum": 4,
+    "sebagian": 6,
+    "belum": 1,
     "tb": 1,
     "berlaku": 10
    }
@@ -101,15 +101,15 @@
   "gunungapi": {
    "a_f": {
     "ada": 68,
-    "sebagian": 30,
-    "belum": 9,
+    "sebagian": 33,
+    "belum": 6,
     "tb": 6,
     "berlaku": 107
    },
    "g": {
-    "ada": 0,
-    "sebagian": 5,
-    "belum": 4,
+    "ada": 1,
+    "sebagian": 7,
+    "belum": 1,
     "tb": 2,
     "berlaku": 9
    }
@@ -117,15 +117,15 @@
   "kekeringan": {
    "a_f": {
     "ada": 64,
-    "sebagian": 31,
-    "belum": 9,
+    "sebagian": 32,
+    "belum": 8,
     "tb": 9,
     "berlaku": 104
    },
    "g": {
     "ada": 0,
-    "sebagian": 6,
-    "belum": 5,
+    "sebagian": 9,
+    "belum": 2,
     "tb": 0,
     "berlaku": 11
    }

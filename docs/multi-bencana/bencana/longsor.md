@@ -86,7 +86,7 @@ Audit 15 Nov 2026, HEAD f3ab401e2, kode dan data di checkout (data tayang dibuat
 | C18 | Tren | sebagian | SEBAGIAN | longsor.js:54; banjir/tren.js | Kalender musim, tanpa indeks risiko 0-100 longsor |
 | C19 | Posko, Sarana, Operasi, Keputusan | sebagian | SEBAGIAN | banjir/posko.js; keputusan.js | Sub-tab banjir tersembunyi; longsor tak tercakup |
 | C20 | Dampak | sebagian | SEBAGIAN | banjir/dampak.js | Tanpa bagian longsor |
-| C21 | Dashboard pimpinan | belum | BELUM | - | Tidak ada dashboard pimpinan |
+| C21 | Dashboard pimpinan | belum | SEBAGIAN | public/inti/dasbor_pimpinan.js; public/bnpb/pimpinan.js; src/pb_ringkas.js; public/bencana.json (dasbor.ringkas) | PB-30/31/47: GET /api/pb/ringkas dan /bnpb/pimpinan membaca ringkas per bencana; angka belum diuji dengan data produksi dan tidak dijumlah antarsumber |
 | C22 | Metode | sebagian | SEBAGIAN | banjir/metode.js:226-256 (bab Status tanah longsor) | Tanpa bab kerentanan S, PVMBG, nowcast LHASA, uji balik |
 | C23 | Simulasi | sebagian | SEBAGIAN | banjir/sim_longsor.js (62 baris, lereng tak-hingga SINMAP) | Ada, belum diuji ke longsor nyata |
 | C24 | Lapor Warga | dibuat | ADA | src/bencana.generated.js lapor_bahaya banjir (longsor); tests/warga/api.test.mjs:173 | Tab Informasi tersembunyi |
@@ -144,6 +144,6 @@ Fitur karhutla yang lahir sesudah 19 Okt. Status = apakah bencana ini sudah terc
 | G06 | Prakiraan +1..+3 hari dinilai prospektif (/prediksi) | diadaptasi | ADA | scripts/prediksi/catat.py:16 (LSR); nilai.py:7-8,37; kalender.py:9 | +1..+3 hari dinilai terhadap DIBI longsor; uji balik model sendiri GAGAL |
 | G07 | Semai awan dan prakiraan asap | tidak berlaku | TB | - | Semai awan tidak relevan longsor |
 | G08 | Masuk laporan berkala Kepala BNPB | sebagian | SEBAGIAN | data/kajian-bnpb/laporan-berkala/ALGORITMA.md | Longsor termasuk jenis di rancangan; perakit belum dicek |
-| G09 | Peringatan dini tersambung (EWS, CAP) | dibuat | ADA | src/ews.js:194-196; tests/warga/ews.test.mjs | Longsor dinilai tiap jam dari status kecamatan |
+| G09 | Peringatan dini tersambung (EWS, CAP) | dibuat | SEBAGIAN | src/ews.js:194-196; tests/warga/ews.test.mjs | Longsor dinilai tiap jam dari status kecamatan; PB-34a: penilai longsor hipotesis (uji balik gagal) tidak ditulis ke peringatan_x dan tidak dikirim keluar, tampil lewat /api/ews/cek |
 | G10 | Renlap (rencana operasi harian) lengkap | belum | BELUM | - | Renlap longsor tidak ada |
 | G11 | Pembuat dokumen (laporan, sitrep, renkon, cetak A4) | diadaptasi | ADA | data/laporan-bnpb/generator/harian_prediksi.py; paparan banjir-longsor mingguan | Deck ada; sitrep/renkon khusus longsor tidak |

@@ -95,7 +95,7 @@ tidak berlaku = alasan di kolom catatan (yang paling bisa dibantah: A03/D03, A23
 | C18 | Tren | dibuat | ADA | kekeringan/tren.js:72 | 7 kartu tren |
 | C19 | Posko, Sarana, Operasi, Keputusan | sebagian | SEBAGIAN | kekeringan/posko.js (30 baris) | Posko tersembunyi dengan 2 kartu; tanpa Sarana/Operasi/Keputusan |
 | C20 | Dampak | dibuat | ADA | kekeringan/dampak.js | 5 bagian dampak domain |
-| C21 | Dashboard pimpinan | belum | BELUM | tidak ada ringkasan.js | Dashboard pimpinan belum ada |
+| C21 | Dashboard pimpinan | belum | SEBAGIAN | public/inti/dasbor_pimpinan.js; public/bnpb/pimpinan.js; src/pb_ringkas.js; public/bencana.json (dasbor.ringkas) | PB-30/31/47: GET /api/pb/ringkas dan /bnpb/pimpinan membaca ringkas per bencana; angka belum diuji dengan data produksi dan tidak dijumlah antarsumber |
 | C22 | Metode | sebagian | SEBAGIAN | kekeringan/metode.js | Tanpa bab neraca/simulasi, posko, risiko riwayat, dampak, embung |
 | C23 | Simulasi | diadaptasi | ADA | kekeringan/simulasi.js (332 baris), simulasi.html | Neraca FAO-56 180 hari + skenario; tersambung dari akhir Insight, bukan tab registry |
 | C24 | Lapor Warga | dibuat | ADA | index.html:123,157 (`p-informasi`, `informasi.js data-halaman="kekeringan"`); app.js:65 tab `informasi`; informasi_jenis.js:100-105 | Tab disembunyikan lewat `tab_sembunyi` seperti karhutla |
@@ -146,15 +146,15 @@ Fitur karhutla yang lahir sesudah 19 Okt. Status = apakah kekeringan sudah terca
 | Kode | Komponen | Status | Bukti atau alasan |
 | --- | --- | --- | --- |
 | G01 | Tugas lapangan dan regu | sebagian | `scripts/umum/tugas.py:18` tugas kekeringan (Awas / Siaga, `kejadian_kekeringan_awal.json` D####), dijadwalkan `lintas.yml:293`; `src/penugasan.js:46` daftar periksa kekeringan (hanya APD). Tanpa kabar regu atau level 3; kejadian D tidak digambar di layar (A04). |
-| G02 | Operasi udara/darat | belum | `src/operasi_udara.js`, `operasi_lapangan.js`, `operasi_isian.js` tanpa kekeringan; dropping air/TMC kekeringan belum (A23). |
-| G03 | Sarana lapangan terencana (SIPPA) | belum | SIPPA mencakup pipa portabel karhutla dan banjir; `public/pipa/layar_data.js:27,45` hanya memakai pemicu kemarau dan debit kemarau untuk karhutla. Tanpa jalur air bersih kekeringan. |
+| G02 | Operasi udara/darat | sebagian | public/bencana.json (operasi, renlap.sarana, bobot hipotesis); scripts/umum/renlap.py; public/inti/renlap.js; public/inti/pb_titik.js. PB-39: seksi operasi dan sarana tampil di /operasi lewat registri; belum ada pantauan udara khusus dan bobot masih hipotesis |
+| G03 | Sarana lapangan terencana (SIPPA) | sebagian | public/inti/pb_titik.js; public/bencana.json (renlap.sarana). PB-39: sarana lapangan terencana lewat titik sarana umum, bukan SIPPA pipa; belum ada kit khusus jenis |
 | G04 | Laporan harian/penanganan otomatis (deck, bot WA) | sebagian | `data/laporan-bnpb/generator/harian.py:196` blok kekeringan (`KR`) dan kolom air bersih; `scripts/wa/urai_laporan.py` + `uji_urai_laporan.py:233-241` mengurai laporan kekeringan; `laporan_kejadian.py:52` MODUL kekeringan dengan `pemicu: []` (belum memicu). |
 | G05 | Dalops: cek kabar luar, saringan, tindak lanjut | sebagian | `dalops_kabar.py:23,31,137` (kekeringan, ambang 14 hari, berita + `gdo.json`); `dalops_banjir.py:36`; `public/bnpb/dalops.js:23,29,1057` jenis kekeringan (kabar). Tindak lanjut `dalops_tindak.js` generik, tidak diuji khusus kekeringan. |
 | G06 | Prakiraan +1..+3 hari dinilai prospektif (/prediksi) | sebagian | `kekeringan_prospektif.json` (1 terbit, hasil kosong, dasarian/bulan), bukan +1..+3 hari; `scripts/prediksi/tangga.py:224` memuat peringatan BMKG kekeringan di tab Tangga. `prediksi.json` tanpa kode kekeringan. |
 | G07 | Semai awan dan prakiraan asap | belum | `scripts/operasi/semai*` hanya zona asap karhutla; tanpa zona hujan buatan untuk kekeringan. |
 | G08 | Masuk laporan berkala Kepala BNPB | belum | `scripts/berkala/` belum ada; `KEPUTUSAN-BERKALA.md:71` merujuk tabel cuaca dan kekeringan 12 baris, kodenya belum dibangun. |
-| G09 | Peringatan dini tersambung (EWS, Peringatan Dini, CAP) | sebagian | Peringatan resmi BMKG kekeringan tampil di Insight (`peringatan_bmkg.py`, arsip dasarian); tetapi `public/ews_tindakan.js` `BENCANA` tanpa kekeringan dan `src/peringatan.js:186` CAP tanpa jenis kekeringan, jadi tidak ada langganan email atau CAP. |
-| G10 | Renlap (rencana operasi harian) | belum | Tidak ada renlap kekeringan (`renlap.py`, `renlap_banjir.py` saja). |
+| G09 | Peringatan dini tersambung (EWS, Peringatan Dini, CAP) | sebagian | src/ews.js; public/bencana.json (ews.kunci kekeringan); migrations/0137_peringatan_x.sql. PB-40: penilai hipotesis tidak dikirim keluar; migrasi 0137 belum di produksi; CAP kekeringan belum |
+| G10 | Renlap (rencana operasi harian) | sebagian | public/bencana.json (operasi, renlap.sarana, bobot hipotesis); scripts/umum/renlap.py; public/inti/renlap.js; public/inti/pb_titik.js. PB-39: sumber target, KML/GPX/teks WA lewat renlap umum; belum ada versi terbit di produksi atau PDF khusus jenis |
 | G11 | Pembuat dokumen: laporan harian, sitrep, laporan kejadian, renkon, cetak A4 | sebagian | `public/kekeringan/laporan.html` + `kekeringan/laporan.py` (laporan harian), `laporan_kejadian.py:52` per KIB tanpa pemicu; sitrep/renkon bersama belum punya jalur kekeringan. |
 
 ## Catatan audit 15 Nov

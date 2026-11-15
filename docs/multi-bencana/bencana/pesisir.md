@@ -38,7 +38,7 @@ Audit 15 Nov 2026, HEAD f3ab401e2, kode dan data di checkout (rob.json 13 Okt, c
 | A19 | Statistik per provinsi | sebagian | SEBAGIAN | rob_kejadian.json kab[] | Per kabupaten, tanpa agregat provinsi |
 | A20 | Data lembaga | dibuat | ADA | banjir/data/peringatan_bmkg.json; resmi_bmkg.js; DIBI | Peringatan gelombang BMKG tersaring (layar.test.mjs:71) |
 | A21 | Posko | sebagian | SEBAGIAN | banjir/rob_presiden.py (posko pesisir untuk /presiden) | Bukan posko pesisir di layar |
-| A22 | Operasi | belum | BELUM | - | Tanpa regu atau operasi pesisir |
+| A22 | Operasi | belum | SEBAGIAN | public/bencana.json; scripts/umum/renlap.py; public/inti/renlap.js | Renlap dan sarana per registri ada; koefisien kebutuhan regu belum bersumber |
 | A23 | Aset udara | tidak berlaku | TB | - | Tidak ada aset udara untuk rob/abrasi |
 | A24 | Keputusan ekonomi | belum | BELUM | - | Tanpa analisis biaya tanggul/pompa/mangrove |
 | A25 | Preventif | belum | BELUM | - | Tanpa profil/rencana pencegahan (mangrove, tanggul, relokasi) |
@@ -85,9 +85,9 @@ Audit 15 Nov 2026, HEAD f3ab401e2, kode dan data di checkout (rob.json 13 Okt, c
 | C16 | Cerita | belum | BELUM | - | Tidak ada cerita pesisir |
 | C17 | Berita | belum | BELUM | public/pesisir/pesisir.js:35 (tab tanpa Berita) | Berita dikumpulkan tetapi tidak ditampilkan |
 | C18 | Tren | dibuat | ADA | public/pesisir/tren.js | Tren abrasi dan rob per tahun |
-| C19 | Posko, Sarana, Operasi, Keputusan | belum | BELUM | - | Tanpa posko/operasi/keputusan |
+| C19 | Posko, Sarana, Operasi, Keputusan | belum | SEBAGIAN | public/inti/renlap.js; public/inti/pb_titik.js | Seksi sarana dan renlap tampil di /operasi; sub-tab Keputusan belum |
 | C20 | Dampak | belum | BELUM | - | Tanpa tab Dampak |
-| C21 | Dashboard pimpinan | belum | BELUM | - | Tanpa dashboard pimpinan |
+| C21 | Dashboard pimpinan | belum | SEBAGIAN | public/inti/dasbor_pimpinan.js; public/bnpb/pimpinan.js; src/pb_ringkas.js; public/bencana.json (dasbor.ringkas) | PB-30/31/47: GET /api/pb/ringkas dan /bnpb/pimpinan membaca ringkas per bencana; angka belum diuji dengan data produksi dan tidak dijumlah antarsumber |
 | C22 | Metode | sebagian | SEBAGIAN | public/pesisir/tentang.js (22 baris) | Tanpa tab Metode; metode ada di abrasi.md dan banjir/metode.js |
 | C23 | Simulasi | belum | BELUM | - | Tanpa simulasi genangan rob dari laut |
 | C24 | Lapor Warga | sebagian | SEBAGIAN | migrations/0090_pesisir.sql; lapor_bahaya abrasi, gelombang_pasang | Tab Informasi tersembunyi |
@@ -138,13 +138,13 @@ Fitur karhutla yang lahir sesudah 19 Okt. Status = apakah bencana ini sudah terc
 | Kode | Komponen | Status paket | Audit | Bukti | Catatan |
 | --- | --- | --- | --- | --- | --- |
 | G01 | Tugas lapangan dan regu | belum | BELUM | src/instansi.js:335 | Tugas lapangan belum punya jenis pesisir |
-| G02 | Operasi udara/darat | belum | BELUM | - | Tidak mencakup pesisir |
-| G03 | Sarana lapangan terencana (SIPPA) | belum | BELUM | public/pipa/layar_air.js:12-14 (hanya peringatan penurunan tanah pesisir) | SIPPA tak punya cakupan rob/abrasi |
+| G02 | Operasi udara/darat | belum | SEBAGIAN | public/bencana.json (operasi, renlap.sarana, bobot hipotesis); scripts/umum/renlap.py; public/inti/renlap.js; public/inti/pb_titik.js | PB-35: seksi operasi dan sarana tampil di /operasi lewat registri; belum ada pantauan udara khusus dan bobot masih hipotesis |
+| G03 | Sarana lapangan terencana (SIPPA) | belum | SEBAGIAN | public/inti/pb_titik.js; public/bencana.json (renlap.sarana) | PB-35: sarana lapangan terencana lewat titik sarana umum, bukan SIPPA pipa; belum ada kit khusus jenis |
 | G04 | Laporan harian/penanganan otomatis (deck, bot WA) | sebagian | SEBAGIAN | data/laporan-bnpb/generator/situasi_banjir.py (rob pesisir 66 titik) | Rob ikut deck banjir; gelombang dan abrasi tidak |
 | G05 | Dalops: cek kabar luar, saringan per bencana, tindak lanjut | sebagian | SEBAGIAN | src/dalops.js:33; scripts/data/dalops_banjir.py (gelombang_pasang) | Saringan gelombang pasang ada; rob tidak ikut; cek kabar luar terbatas |
 | G06 | Prakiraan +1..+3 hari dinilai prospektif (/prediksi) | sebagian | SEBAGIAN | scripts/prediksi/catat.py:19-20 (ROB) | Hanya rob; gelombang dan abrasi tidak |
 | G07 | Semai awan dan prakiraan asap | tidak berlaku | TB | - | Semai awan tidak relevan pesisir |
 | G08 | Masuk laporan berkala Kepala BNPB | belum | BELUM | - | Tak ada di perakit berkala |
-| G09 | Peringatan dini tersambung (EWS, CAP) | sebagian | SEBAGIAN | src/ews.js:35,210 (rob tiap jam) | Rob saja; gelombang dan abrasi belum |
-| G10 | Renlap (rencana operasi harian) lengkap | belum | BELUM | - | Renlap pesisir tidak ada |
+| G09 | Peringatan dini tersambung (EWS, CAP) | sebagian | SEBAGIAN | src/ews.js:35,210; public/bencana.json (ews.kunci pesisir); migrations/0137_peringatan_x.sql | PB-38a/46a/36c: penilai tiap jam lewat ASSETS ke peringatan_x; migrasi 0137_peringatan_x.sql belum diterapkan di produksi, jadi belum ADA (gelombang BMKG diteruskan; rob lama tetap) |
+| G10 | Renlap (rencana operasi harian) lengkap | belum | SEBAGIAN | public/bencana.json (operasi, renlap.sarana, bobot hipotesis); scripts/umum/renlap.py; public/inti/renlap.js; public/inti/pb_titik.js | PB-35: sumber target, KML/GPX/teks WA lewat renlap umum; belum ada versi terbit di produksi atau PDF khusus jenis |
 | G11 | Pembuat dokumen (laporan, sitrep, renkon, cetak A4) | sebagian | SEBAGIAN | data/laporan-bnpb/generator/situasi_banjir.py | Hanya sebagai bagian deck banjir |

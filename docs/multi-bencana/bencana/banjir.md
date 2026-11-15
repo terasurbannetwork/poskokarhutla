@@ -99,7 +99,7 @@ Kolom "Status paket": dibuat = ADA, diadaptasi = ADA dengan bentuk beda karena d
 | C18 | Tren | dibuat | ADA | banjir/tren.js | Indeks 0-100 + kalender musim |
 | C19 | Posko, Sarana, Operasi, Keputusan | dibuat | ADA | posko.js, keputusan.js | Tersembunyi; lihat A22/A24 |
 | C20 | Dampak | dibuat | ADA | banjir/dampak.js | 5 bagian |
-| C21 | Dashboard pimpinan | belum | BELUM | public/ringkasan.js hanya karhutla; tidak ada ringkasan.json banjir | Dashboard pimpinan banjir belum ada (Dalops banjir ada di /bnpb/dalops untuk staf) |
+| C21 | Dashboard pimpinan | belum | SEBAGIAN | public/inti/dasbor_pimpinan.js; public/bnpb/pimpinan.js; src/pb_ringkas.js; public/bencana.json (dasbor.ringkas) | PB-30/31/47: GET /api/pb/ringkas dan /bnpb/pimpinan membaca ringkas per bencana; angka belum diuji dengan data produksi dan tidak dijumlah antarsumber |
 | C22 | Metode | sebagian | SEBAGIAN | banjir/metode.js (915 baris, 141 KB); tab metode tersembunyi (bencana.json tab_sembunyi) | Banyak bab (hujan, ambang, uji balik, bukti), tetapi tab tersembunyi dan bab skor kejadian, unit respons, ambang_wilayah tak lengkap |
 | C23 | Simulasi | diadaptasi | ADA | sim.js, sim_genangan.js, sim_longsor.js | Belum divalidasi ke peta genangan nyata (tertulis di Metode) |
 | C24 | Lapor Warga | dibuat | ADA | informasi_jenis.js:65-73; informasi.js:11; api.test.mjs:173 | Tab Informasi tersembunyi |

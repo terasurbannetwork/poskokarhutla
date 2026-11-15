@@ -58,7 +58,7 @@ Komponen baru G01-G11 (di luar 113): ADA 0 / SEBAGIAN 5 / BELUM 4 / TIDAK BERLAK
 | A19 | Statistik per provinsi | dibuat | `laporan_gunungapi.json` 10 hari, 16 provinsi (`laporan.py`); kartu per provinsi di Insight/Berita. |
 | A20 | Data lembaga | dibuat | MAGMA/PVMBG (level, rekomendasi, VONA), BNPB tahunan (`dampak_gunungapi.json`), InaRISK bahaya gunung api sebagai proksi zona. |
 | A21 | Posko | belum | Posko pengungsian belum. (tersembunyi di karhutla) |
-| A22 | Operasi | belum | Kebutuhan masker/air/tenda belum. (tersembunyi di karhutla) |
+| A22 | Operasi | sebagian | public/bencana.json; scripts/umum/renlap.py; public/inti/renlap.js. Renlap dan sarana per registri ada; koefisien kebutuhan regu belum bersumber |
 | A23 | Aset udara | belum | Pangkalan heli evakuasi belum. (tersembunyi di karhutla) |
 | A24 | Keputusan ekonomi | belum | Keputusan ekonomi belum. (tersembunyi di karhutla) |
 | A25 | Preventif | sebagian | Evakuasi desa KRB III/II ke titik aman via jalan OSM (Dijkstra, waktu median/maks; `paparan.py`, laci `peta.js:266`). Rencana pencegahan/latihan belum. |
@@ -105,9 +105,9 @@ Komponen baru G01-G11 (di luar 113): ADA 0 / SEBAGIAN 5 / BELUM 4 / TIDAK BERLAK
 | C16 | Cerita | dibuat | `Cerita.daftar("gunungapi", ...)` di `insight.js:311` (mesin bersama `inti/cerita.js`), data dari `Insight.dataCerita()`. |
 | C17 | Berita | sebagian | Volume harian, peta berita, Sorotan, Topik, Daftar (`berita.js:28`). Dibuang: nada/sentimen (belum teruji), celah liputan, pantauan media, video, internasional; judul EN belum. |
 | C18 | Tren | dibuat | `tren.js`: riwayat level dan erupsi per hari (butuh >= 2 hari data), BNPB tahunan; tanpa kalender musim. |
-| C19 | Posko, Sarana, Operasi, Keputusan | belum | Posko, Sarana, Operasi, Keputusan belum. (tersembunyi di karhutla) |
+| C19 | Posko, Sarana, Operasi, Keputusan | sebagian | public/inti/renlap.js; public/inti/pb_titik.js. Seksi sarana dan renlap tampil di /operasi; sub-tab Keputusan belum |
 | C20 | Dampak | dibuat | `dampak.js` 6 bagian (penduduk, riwayat BNPB, KRB, sekolah/faskes, evakuasi, bandara); paparan kini 69 gunung. Tanpa rupiah dan lahan pertanian (lihat A27). |
-| C21 | Dashboard pimpinan | belum | Tidak ada `ringkasan.js`; `/gunungapi/laporan.html` (kontrak v1) sebagian padanannya. (tersembunyi di karhutla) |
+| C21 | Dashboard pimpinan | sebagian | public/inti/dasbor_pimpinan.js; public/bnpb/pimpinan.js; src/pb_ringkas.js; public/bencana.json (dasbor.ringkas). PB-30/31/47: GET /api/pb/ringkas dan /bnpb/pimpinan membaca ringkas per bencana; angka belum diuji dengan data produksi dan tidak dijumlah antarsumber |
 | C22 | Metode | dibuat | `metode.js`: arti level PVMBG, sumber, model abu, uji balik, lahar, paparan, batasan; tab disembunyikan tetapi dapat dibuka. |
 | C23 | Simulasi | dibuat | `sim.js` (438), `sim_lahar.js`, `sim_kerja.js` (Web Worker), halaman mandiri `simulasi.html`: abu 3D + angin 72 jam, lahar/awan panas, perlakuan radius evakuasi. |
 | C24 | Lapor Warga | dibuat | `index.html:128,164` (`p-informasi`, `../informasi.js data-halaman="gunungapi"`), tab `informasi` ada di `app.js:56`; disembunyikan lewat `tab_sembunyi` seperti karhutla (`public/bencana.json`). Jenis abu, lahar, gemuruh di `informasi_jenis.js:80-85`. |
@@ -158,15 +158,15 @@ Fitur karhutla yang lahir sesudah 19 Okt. Status = apakah gunung api sudah terca
 | Kode | Komponen | Status | Bukti atau alasan |
 | --- | --- | --- | --- |
 | G01 | Tugas lapangan dan regu | sebagian | `scripts/umum/tugas.py` membuat tugas gunung api (Awas IV / Siaga III, rekomendasi teks resmi PVMBG) dan `lintas.yml:293` menjadwalkannya; `src/penugasan.js:44` memuat daftar periksa gunung api (APD, masker abu). Tanpa kabar regu atau level 3 khas gunung api; berkas `tugas_gunungapi.json` tidak ada di checkout (cache CI). |
-| G02 | Operasi udara/darat | belum | `src/operasi_udara.js`, `src/operasi_lapangan.js`, `src/operasi_isian.js` tidak menyebut gunung api. Pangkalan heli evakuasi = A23 belum. |
+| G02 | Operasi udara/darat | sebagian | public/bencana.json (operasi, renlap.sarana, bobot hipotesis); scripts/umum/renlap.py; public/inti/renlap.js; public/inti/pb_titik.js. PB-45: seksi operasi dan sarana tampil di /operasi lewat registri; belum ada pantauan udara khusus dan bobot masih hipotesis |
 | G03 | Sarana lapangan terencana (SIPPA) | tidak berlaku | SIPPA mencakup pipa portabel karhutla dan banjir (`KEPUTUSAN-SIPPA.md`); letusan tidak memakai pipa air. |
 | G04 | Laporan harian/penanganan otomatis (deck, bot WA) | sebagian | `data/laporan-bnpb/generator/harian.py` memuat ancaman dan kawasan gunung api (`ga_ancaman`/`ga_kawasan`); `scripts/umum/status_darurat.py:94` mengenali kata gunung api. `scripts/wa/**` tanpa penanganan khusus gunung api; `laporan_kejadian.py:13` menyebut gunung api belum memicu laporan. |
-| G05 | Dalops: cek kabar luar, saringan, tindak lanjut | sebagian | Tab Gunung Api di `/bnpb/dalops` (`public/bnpb/dalops_gunungapi.js`, kartu cincin 5/10/15 km). `dalops_kabar.py` (`AMBANG`:23) tidak memuat gunung api, dan `dalops_banjir.py:36` `JENIS_BOLEH` tanpa gunung api; `dalops_tindak.js` tanpa pengecualian jenis, tidak diuji khusus gunung api. |
+| G05 | Dalops: cek kabar luar, saringan, tindak lanjut | ada | src/dalops.js:35; scripts/data/dalops_kabar.py:23; public/bnpb/dalops_gunungapi.js. PB-46b: jenis gunung api di Dalops dengan level PVMBG apa adanya, tanpa ambang hari karangan; tindak lanjut generik |
 | G06 | Prakiraan +1..+3 hari dinilai prospektif (/prediksi) | sebagian | Tidak ada kode gunung api di `public/prediksi/data/prediksi.json` (HJN, ASP, API, BNJ, LSR, ROB). Padanannya `prospektif_abu.json` (B03, arah abu vs VONA, 481 dinilai) berdiri sendiri. |
 | G07 | Semai awan dan prakiraan asap | tidak berlaku | Semai awan dan asap karhutla (`scripts/operasi/semai*`, `lintas.py`) tidak berlaku untuk abu vulkanik; model abu sendiri di `abu.py`. |
 | G08 | Masuk laporan berkala Kepala BNPB | belum | `scripts/berkala/` belum ada di checkout; `KEPUTUSAN-BERKALA.md:40` merencanakan potongan status gunung api harian (D10), kodenya belum dibangun. |
-| G09 | Peringatan dini tersambung (EWS, Peringatan Dini, CAP) | belum | `public/ews_tindakan.js` `BENCANA` hanya karhutla, banjir, longsor, cuaca, gempa, tsunami, rob; `src/peringatan.js:47,186` jenis gempa/tsunami/cuaca/karhutla/banjir. Perubahan level D1 `gunungapi_ubah` belum memicu apa pun. |
-| G10 | Renlap (rencana operasi harian) | belum | Tidak ada renlap gunung api (`scripts/operasi/renlap.py`, `renlap_banjir.py` hanya karhutla dan banjir). |
+| G09 | Peringatan dini tersambung (EWS, Peringatan Dini, CAP) | sebagian | src/ews.js; public/ews_tindakan.js; migrations/0137_peringatan_x.sql; tests/warga/ews.test.mjs. PB-38a/46a/36c: penilai tiap jam lewat ASSETS ke peringatan_x; migrasi 0137_peringatan_x.sql belum diterapkan di produksi, jadi belum ADA (hanya kenaikan level resmi PVMBG; kamus tindakan per tingkat disalin dari pedoman_krb.json) |
+| G10 | Renlap (rencana operasi harian) | sebagian | public/bencana.json (operasi, renlap.sarana, bobot hipotesis); scripts/umum/renlap.py; public/inti/renlap.js; public/inti/pb_titik.js. PB-45: sumber target, KML/GPX/teks WA lewat renlap umum; belum ada versi terbit di produksi atau PDF khusus jenis |
 | G11 | Pembuat dokumen: laporan harian, sitrep, laporan kejadian, renkon, cetak A4 | sebagian | `/gunungapi/laporan.html` + `laporan.py` (laporan harian kontrak v1) dan `data/laporan-bnpb/generator/harian.py` (G04); `laporan_kejadian.py:13` belum memicu per KIB untuk gunung api; sitrep/renkon bersama tanpa jalur gunung api. |
 
 ## Catatan
