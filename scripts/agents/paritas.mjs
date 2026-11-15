@@ -47,11 +47,24 @@ function berkasRepo() {
     .toString().split("\n").filter(Boolean);
   return _berkas;
 }
-// Token berkas dalam bukti (tanpa akhiran :baris); ada bila persis atau sebagai akhiran jalur di repo.
-export function adaBerkas(teks, daftar) {
-  const tok = [...teks.matchAll(/[\w.\-/]+\.(?:py|mjs|js|json|jsonc|ya?ml|html|css|md|sql|sh)\b/g)].map((x) => x[0].replace(/^\.?\//, ""));
-  return tok.some((t) => daftar.some((p) => p === t || p.endsWith("/" + t)));
+// Bukti berkas (tanpa akhiran :baris): jalur berekstensi, glob (*), atau direktori (akhiran / atau /**).
+// "ada" bila salah satu cocok sebagai akhiran jalur di repo; "jalur_tidak_ada" bila menyebut jalur tapi tak satu pun cocok;
+// "tanpa_jalur" bila bukti tidak menyebut jalur sama sekali.
+export function statusBukti(teks, daftar) {
+  const tok = [...teks.matchAll(/[\w.\-/*]+/g)].map((x) => x[0].replace(/^\.?\//, "").replace(/\.+$/, ""))
+    .filter((t) => /\.(?:py|mjs|js|json|jsonc|ya?ml|html|css|md|sql|sh)$/.test(t) || (t.includes("/") && (t.includes("*") || t.endsWith("/"))));
+  if (!tok.length) return "tanpa_jalur";
+  const cocok = (t) => {
+    if (t.endsWith("/") || t.endsWith("/**")) { const d = t.replace(/\*+$/, ""); return daftar.some((p) => p.startsWith(d) || p.includes("/" + d)); }
+    if (t.includes("*")) {
+      const re = new RegExp("(^|/)" + t.split("*").map((x) => x.replace(/[.+?^${}()|[\]\\]/g, "\\$&")).join("[^/]*") + "$");
+      return daftar.some((p) => re.test(p));
+    }
+    return daftar.some((p) => p === t || p.endsWith("/" + t));
+  };
+  return tok.some(cocok) ? "ada" : "jalur_tidak_ada";
 }
+export const adaBerkas = (teks, daftar) => statusBukti(teks, daftar) === "ada";
 
 export function hitung(id, baris, daftar, lapor) {
   const h = { ada: 0, sebagian: 0, belum: 0, tb: 0 }, g = { ada: 0, sebagian: 0, belum: 0, tb: 0 };
@@ -59,8 +72,10 @@ export function hitung(id, baris, daftar, lapor) {
     let st = b.status;
     if (K5.ids.includes(id) && K5.kode.includes(b.kode) && st === "tb")
       lapor.galat.push(`${id} ${b.kode}: masih TIDAK BERLAKU, K5 mewajibkan berlaku`);
-    if (st === "ada" && !adaBerkas(b.sisa, daftar)) {
-      lapor.turun.push(`${id} ${b.kode}: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN`);
+    const sb = st === "ada" ? statusBukti(b.sisa, daftar) : "ada";
+    if (sb !== "ada") {
+      lapor.turun.push(`${id} ${b.kode}: ADA diturunkan ke SEBAGIAN (${sb === "tanpa_jalur" ? "bukti tidak menyebut berkas" : "berkas yang disebut tidak ada di repo"})`);
+      (lapor.rinci ||= []).push({ id, kode: b.kode, alasan: sb });
       st = "sebagian";
     }
     (b.kode[0] === "G" ? g : h)[st]++;
@@ -92,7 +107,7 @@ export function sisipTabel(dok, t) {
 }
 
 function semua() {
-  const daftar = berkasRepo(), lapor = { galat: [], turun: [] }, hasil = {};
+  const daftar = berkasRepo(), lapor = { galat: [], turun: [], rinci: [] }, hasil = {};
   for (const [id] of URUTAN) {
     const baris = urai(readFileSync(join(DIR, `${id}.md`), "utf8"));
     const kode = new Set(baris.map((b) => b.kode));
@@ -135,7 +150,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   if (arg === "--uji") uji();
   else {
     const { hasil, lapor } = semua();
-    const json = JSON.stringify({ versi: 1, acuan_dari: "docs/multi-bencana/bencana/*.md", bencana: hasil, diturunkan: lapor.turun }, null, 1) + "\n";
+    const json = JSON.stringify({ versi: 1, acuan_dari: "docs/multi-bencana/bencana/*.md", bencana: hasil, diturunkan: lapor.rinci, jumlah_diturunkan: Object.fromEntries(["tanpa_jalur", "jalur_tidak_ada"].map((a) => [a, lapor.rinci.filter((r) => r.alasan === a).length])) }, null, 1) + "\n";
     const dok = sisipTabel(readFileSync(DOK, "utf8"), tabel(hasil));
     for (const [id] of URUTAN) {
       const { a_f: a, g } = hasil[id];
