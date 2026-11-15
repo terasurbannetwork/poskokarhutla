@@ -386,6 +386,28 @@ Sebelum menyentuh laju penurunan tanah per wilayah pesisir dari InSAR, proyeksi 
 
 Aturan berhentinya sama dengan §2.1. Rob dan penurunan tanah tampil terpisah berlabel; tanpa angka gabungan sebelum uji balik; berkas beku sidik J4 tidak disunting; unduh data hanya sesudah izin pemilik (Q1).
 
+### 2.24 Pembiayaan risiko (kerugian per kejadian lawan dana DSP dan PFB, pemantau parametrik): baca dulu, baru bangun
+
+Sebelum menyentuh perkiraan kerugian per kejadian, pembanding dana siap pakai dan Pooling Fund Bencana, atau pemantau ambang parametrik, baca dokumen di
+`data/kajian-bnpb/pembiayaan-risiko/` dengan urutan otoritas ini (kode dan migrasi milik `warga-api`; layar staf milik `ruang-bnpb`):
+
+1. `KEPUTUSAN-PEMBIAYAAN.md`: keputusan pemilik, rancangan, dan pertanyaan terbuka dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`PR-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Tanpa model kerugian yang lulus uji tidak ada angka kerugian sebelum Jitupasna; saldo DSP dan PFB hanya dari pemberi data resmi (Q1); pemantau parametrik hanya bila ada polis resmi; data uang tidak pernah di `public/`.
+
+### 2.25 Pemetaan bangunan oleh relawan (HOT Tasking Manager, kampus mitra): baca dulu, baru bangun
+
+Sebelum menyentuh metrik kelengkapan bangunan OSM per kab, daftar prioritas pemetaan, penyiapan proyek HOT, atau sumbangan pemeta kampus, baca dokumen di
+`data/kajian-bnpb/pemetaan-relawan/` dengan urutan otoritas ini (pipeline milik `kampus` dan `pipa-umum` sesuai berkasnya; kode Worker milik `warga-api`):
+
+1. `KEPUTUSAN-PEMETAAN.md`: keputusan pemilik, rancangan, dan pertanyaan terbuka dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`HR-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Sistem hanya menyiapkan proyek; mengajukannya ke HOT adalah tindakan keluar oleh pemegang akun (Q1); nama mahasiswa tidak publik; paparan tidak beralih sumber tanpa keputusan pemilik (Q5).
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
