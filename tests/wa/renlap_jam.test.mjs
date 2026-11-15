@@ -20,12 +20,13 @@ function dunia(env = {}, { gagal, gagalPdf } = {}) {
       if (gagal) throw Object.assign(new Error('x'), { stderr: 'baris\nWorker menolak 401' })
       if (args[0].endsWith('renlap_pdf.py')) {
         if (gagalPdf) throw Object.assign(new Error('x'), { stderr: 'Chrome tidak ditemukan (set CHROME)' })
-        return { stdout: 'PLM: 8 CP, 787 km, ± 252 mnt -> /k/Renlap PLM 2026-11-02 pagi.pdf\nPKU: 5 CP -> /k/Renlap PKU 2026-11-02 pagi.pdf\nGABUNGAN 2 base -> /k/Renlap semua base 2026-11-02 pagi.pdf\n' }
+        const k = args[args.indexOf('--out') + 1]
+        return { stdout: `PLM: 8 CP, 787 km, ± 252 mnt -> ${k}/Renlap PLM 2026-11-02 pagi.pdf\nPKU: 5 CP -> ${k}/Renlap PKU 2026-11-02 pagi.pdf\nGABUNGAN 2 base -> ${k}/Renlap semua base 2026-11-02 pagi.pdf\n` }
       }
       return { stdout: '' }
     },
     kirimTeks: async (t, m) => { k.teks.push({ t, m }) },
-    kirimFile: async (t, p, nama, cap, mime) => { k.file.push({ t, p, mime }) },
+    kirimFile: async (t, p, nama, cap, mime) => { k.file.push({ t, p, mime }); k.cap = cap },
   }
   const e = { PENERIMA: '6281,120@g.us', PEMILIK: '6299', WORKER_URL: 'http://w', WA_MESIN: 'k', LAPORAN_BANJIR: '0', ...env }
   const jalan = (jam) => jalankan({ env: e, dep, rumah, log: () => {}, kenali: () => null, tanggalIsi: () => TGL, now: wibKe(jam) })
@@ -52,7 +53,10 @@ test('pagi 07.00: draf lalu PDF, PDF hanya ke PEMILIK, tidak ke penerima', async
   assert.deepEqual(d.k.exec[1].args.slice(0, 5), ['scripts/operasi/renlap_pdf.py', 'buat', '--versi', 'pagi', '--out'])
   assert.ok(d.k.exec[1].args[5].endsWith(path.join('keluaran', TGL, 'renlap-pagi')) && d.k.exec[1].args[5].startsWith(d.rumah))   // gateway hanya kirim dari keluaran
   assert.equal(d.k.exec[0].o.env.WORKER, 'http://w'); assert.equal(d.k.exec[0].o.env.WA_MESIN, 'k')
-  assert.deepEqual(d.k.file, [{ t: '6299', p: '/k/Renlap semua base 2026-11-02 pagi.pdf', mime: 'application/pdf' }])   // satu pesan, bukan per base
+  assert.deepEqual(d.k.file, [{ t: '6299', p: path.join(d.k.exec[1].args[5], 'Renlap semua base 2026-11-02 pagi.pdf'), mime: 'application/pdf' }])   // satu pesan, bukan per base
+  // keterangan WA tanpa jalur mutlak atau nama akun Mac (pemilik 15 Nov 2026)
+  assert.equal(d.k.cap, `Renlap pagi ${TGL}, semua base. PDF per base ada di folder ${path.join('keluaran', TGL, 'renlap-pagi')} bot WA`)
+  assert.ok(!d.k.cap.includes(d.rumah) && !d.k.cap.includes(os.homedir()))
   assert.equal(d.k.teks.length, 0)
 })
 

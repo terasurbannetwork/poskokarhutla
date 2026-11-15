@@ -44,7 +44,7 @@ export async function jalankanRenlap({ env, now, tanggal, jam, state, simpan, ke
         const r = await dep.exec(py, ['scripts/operasi/renlap_pdf.py', 'buat', '--versi', versi, '--out', path.join(dasar, 'keluaran', tanggal, 'renlap-' + versi)], { ...o, timeout: 15 * 60e3 })
         const pdf = pdfDari(r?.stdout)
         if (!pdf.length) throw new Error('renlap_pdf tidak menghasilkan PDF')
-        if (pemilik) for (const p of pdf) await dep.kirimFile(pemilik, p, path.basename(p), `Renlap ${versi} ${tanggal}, semua base. PDF per base ada di ${path.dirname(p)}`, 'application/pdf')
+        if (pemilik) for (const p of pdf) await dep.kirimFile(pemilik, p, path.basename(p), `Renlap ${versi} ${tanggal}, semua base. PDF per base ada di folder ${path.relative(dasar, path.dirname(p))} bot WA`, 'application/pdf')
       }],
     ]
     for (const [id, k, jalan] of langkah) {
