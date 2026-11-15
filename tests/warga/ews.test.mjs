@@ -693,10 +693,63 @@ uji("simulasi gagal-tertutup: boleh_tampil bukan true (false atau hilang) = jeja
 });
 
 uji("PB-26 jenis baru: registri penilai kosong = tidak ada peringatan; hipotesis tidak keluar; jenis tak cocok ditolak", () => {
-  assert.deepEqual(E.PENILAI_JENIS_BARU, {});
-  assert.deepEqual(E.peringatanJenisBaru({}, Date.now()), []);
+  assert.deepEqual(Object.keys(E.PENILAI_JENIS_BARU).sort(), ["gunungapi", "kekeringan", "pesisir", "udara"]);
+  assert.deepEqual(E.peringatanJenisBaru({}, Date.now(), {}), []);
   const nilai = ["longsor:k1:siaga", "longsor", "Siaga", "32", null, null, null, "J", "", "Deteksi Centurisk97", null, 1, 2];
   assert.deepEqual(E.peringatanJenisBaru({}, 1, {longsor: () => [{nilai}]}), [nilai]);
   assert.deepEqual(E.peringatanJenisBaru({}, 1, {longsor: () => [{nilai, sumber_jenis: "hipotesis"}]}), [], "Q17: hipotesis tidak dikirim");
   assert.deepEqual(E.peringatanJenisBaru({}, 1, {rob: () => [{nilai}]}), [], "jenis nilai harus sama dengan kunci penilai");
+});
+
+/* ---- PB-36a pesisir, PB-38a udara, PB-40 kekeringan, PB-46a gunung api: penilai F2 ---- */
+const KX = T0 + 2 * HARI, GEL = (w = {}) => ({dibuat: new Date(KX - JAM).toISOString(), url: "https://maritim.bmkg.go.id/w.json", daftar: [{wilayah: "Banten", prov: "36", dari: wib(KX) + "T07:00", sampai: wib(KX + HARI) + "T07:00", zona: "WIB", sedang: ["P1"], tinggi: ["Perairan Selatan Pandeglang"], sangat_tinggi: [], ekstrem: [], ...w}]});
+const pm = (deret, t = KX - 2 * JAM, dibuat = KX - JAM) => ({dibuat: new Date(dibuat).toISOString(), stasiun: [{nama: "Banjarbaru", lat: -3.475, lon: 114.856, t: new Date(t).toISOString(), deret}]});
+const hasilX = (data, jenis) => E.peringatanJenisBaru(data, KX, {[jenis]: E.PENILAI_JENIS_BARU[jenis]});
+
+uji("PB-36a pesisir: label BMKG tinggi/sangat tinggi/ekstrem diteruskan (label BMKG), sedang dan basi tidak memicu, tanpa kata aman", () => {
+  const [n] = hasilX({gelombang: GEL()}, "pesisir");
+  assert.deepEqual([n[1], n[2], n[3], n[9]], ["pesisir", "Waspada", "36", "BMKG"]); assert.match(n[8], /BMKG/); assert.ok(!/\baman\b/i.test(n[7] + n[8]));
+  assert.equal(hasilX({gelombang: GEL({sangat_tinggi: ["X"]})}, "pesisir")[0][2], "Siaga");
+  assert.equal(hasilX({gelombang: GEL({ekstrem: ["X"]})}, "pesisir")[0][2], "Awas");
+  assert.deepEqual(hasilX({gelombang: GEL({tinggi: []})}, "pesisir"), [], "hanya sedang: tidak memicu");
+  assert.deepEqual(hasilX({gelombang: GEL({sampai: wib(KX - HARI) + "T07:00"})}, "pesisir"), [], "sudah berakhir");
+  assert.deepEqual(hasilX({gelombang: {...GEL(), dibuat: new Date(KX - 2 * HARI).toISOString()}}, "pesisir"), [], "berkas basi > 24 jam");
+  assert.deepEqual(hasilX({}, "pesisir"), []);
+});
+uji("PB-38a udara: PM2,5 24 jam per batas ISPU -> tingkat Q37 (bawaan), basi 6 jam tidak memicu, sumber = Deteksi", () => {
+  const dr = v => Array(30).fill(v);
+  assert.deepEqual(hasilX({pm25: pm(dr(40))}, "udara"), [], "Sedang tidak memicu");
+  assert.equal(hasilX({pm25: pm(dr(100))}, "udara")[0][2], "Waspada");     // Tidak sehat = 1
+  assert.equal(hasilX({pm25: pm(dr(200))}, "udara")[0][2], "Siaga");       // Sangat tidak sehat = 2
+  const [n] = hasilX({pm25: pm(dr(300))}, "udara"); assert.equal(n[2], "Awas"); assert.equal(n[9], "Deteksi Centurisk97"); assert.equal(n[5], -3.47);
+  assert.deepEqual(hasilX({pm25: pm(dr(300), KX - 7 * JAM)}, "udara"), [], "stasiun lebih tua dari 6 jam");
+  assert.deepEqual(hasilX({pm25: pm(dr(300), KX - JAM, KX - 7 * JAM)}, "udara"), [], "berkas lebih tua dari 6 jam");
+  assert.deepEqual(hasilX({pm25: pm([...Array(20).fill(null), ...Array(4).fill(300)])}, "udara"), [], "terlalu sedikit pengukuran");
+  assert.equal(hasilX({pm25: pm(dr(100))}, "udara")[0][9], "Deteksi Centurisk97");
+});
+uji("PB-40 kekeringan: hipotesis tidak keluar (penilai menghasilkan, peringatanJenisBaru membuang)", () => {
+  const data = {kekeringan: {kab: {"11|Aceh Barat": {lv: 3, spi3: -3.7}, "12|Nias": {lv: 0}}}};
+  const mentah = E.PENILAI_JENIS_BARU.kekeringan(data, KX); assert.equal(mentah.length, 1); assert.equal(mentah[0].sumber_jenis, "hipotesis"); assert.equal(mentah[0].nilai[2], "Awas");
+  assert.deepEqual(hasilX(data, "kekeringan"), []);
+});
+uji("PB-46a gunung api: hanya kenaikan level resmi PVMBG memicu; tetap, turun, dan lama tidak; label PVMBG", () => {
+  const b = (gunung, tanggal, dari, ke, jenis = "perubahan") => ({gunung, tanggal, dari, ke, jenis, sumber: {url: "https://magma.esdm.go.id/x"}});
+  const data = {riwayatLevel: {baris: [b("Lokon", wib(KX), 2, 3), b("Merapi", wib(KX), 3, 2), b("Awu", wib(KX), 2, 2, "evaluasi"), b("Ibu", wib(KX - 5 * HARI), 2, 3)]}, perubahanLevel: {baris: [b("Lokon", wib(KX), 2, 3), b("Gamkonora", wib(KX - HARI), 1, 2)]},
+    gunungStatus: {gunung: [{nama: "Lokon", lat: 1.358, lon: 124.792}]}};
+  const h = hasilX(data, "gunungapi"); assert.deepEqual(h.map(n => [n[0], n[2], n[9]]).sort(), [["gunungapi:gamkonora:" + wib(KX - HARI) + ":2", "Waspada", "PVMBG"], ["gunungapi:lokon:" + wib(KX) + ":3", "Siaga", "PVMBG"]].sort(), "Lokon sekali (dua berkas), turun/tetap/lama tidak");
+  assert.deepEqual(h.find(n => n[7].includes("Lokon")).slice(5, 7), [1.36, 124.79]);
+  assert.equal(h[0][10], "https://magma.esdm.go.id/x");
+});
+uji("PB-26 sumber tak dikenal jatuh ke kata Deteksi; sumber resmi hanya dari daftar tetap per jenis", () => {
+  const n = (jenis, sumber) => [jenis + ":x", jenis, "Siaga", null, null, null, null, "J", "", sumber, null, 1, 2];
+  const tes = (jenis, sumber) => E.peringatanJenisBaru({}, 1, {[jenis]: () => [{nilai: n(jenis, sumber)}]})[0][9];
+  assert.equal(tes("gunungapi", "PVMBG"), "PVMBG"); assert.equal(tes("pesisir", "BMKG"), "BMKG");
+  assert.equal(tes("gunungapi", "BMKG"), "Deteksi Centurisk97", "BMKG bukan sumber resmi gunung api");
+  assert.equal(tes("pesisir", "Sumber Karangan"), "Deteksi Centurisk97"); assert.equal(tes("kekeringan", "BMKG"), "Deteksi Centurisk97");
+});
+
+uji("penilai rusak tidak membatalkan jenis lain; stasiun udara tanpa lat/lon angka dilewati", () => {
+  const pmx = pm(Array(30).fill(100)); pmx.stasiun.push({...pmx.stasiun[0], nama: "Rusak", lat: "x"});
+  const h = E.peringatanJenisBaru({gelombang: {...GEL(), daftar: [{...GEL().daftar[0], tinggi: "string"}], dibuat: GEL().dibuat}, pm25: pmx}, KX);
+  assert.deepEqual(h.map(n => n[1]), ["udara"], "pesisir rusak dibuang, udara tetap, stasiun lat non-angka dilewati");
 });

@@ -997,6 +997,7 @@ const W = {
       if (new Date(sekarang).getUTCMinutes() % 10 === 0) try { console.log("nowcast", JSON.stringify(await perbaruiNowcast(env, sekarang))); } catch (e) { console.error("nowcast", e?.message); }
       if (new Date(sekarang).getUTCMinutes() % 30 === 7) try { console.log("gunungapi", JSON.stringify(await perbaruiGunungapi(env, sekarang))); } catch (e) { console.error("gunungapi", e?.message); }   // MAGMA: satu permintaan per 30 menit
       try { console.log("peringatan", JSON.stringify(await periksaPeringatan(env, ev.scheduledTime))); } catch (e) { console.error("peringatan", e?.message); }   // sesudah gempa baru tersimpan
+      if (new Date(sekarang).getUTCMinutes() === 21) try { console.log("peringatan jenis baru", JSON.stringify(await Ews.periksaJenisBaru(env, sekarang))); } catch (e) { console.error("peringatan jenis baru", e?.message); }   // PB-36a/38a/46a: tiap jam menit 21; berkas via ASSETS, nol baca D1
       console.log("ews gempa", JSON.stringify(await Ews.prosesGempa(env, sekarang).catch(e => ({galat: e.message}))));   // email pelanggan EWS dekat pusat gempa
       /* SIHKA paling akhir: email EWS tidak boleh tertahan langkah ini */
       if (new Date(sekarang).getUTCMinutes() % 10 === 3 && new Date(sekarang).getUTCMinutes() !== 23) try { console.log("hujan", JSON.stringify(await perbaruiHujan(env, sekarang))); } catch (e) { console.error("hujan", e?.message); }   // hujan SIHKA per interval: tiap 10 menit (kuota tulis D1 Free, lihat src/hujan.js)

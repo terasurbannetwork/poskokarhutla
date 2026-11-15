@@ -12,6 +12,7 @@ import {json, gagal, sha, acak, hex, ipHash, turnstileOK, bacaBody, cacheTepi} f
 import {wilayah, cariWilayah, km, dalam} from "./titik.js";
 import {BENCANA, TINGKAT} from "../public/ews_tindakan.js";
 import {muatHimawari, tandaiBaru, saringIndonesia} from "./himawari.js";
+import {tulisPeringatan} from "./peringatan.js";
 import {emailKonfirmasi, emailPeringatan, emailGempa, angka, kataPeluang} from "./ews_email.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM;
@@ -218,16 +219,96 @@ export function nilaiTitik(data, lat, lon, kecKunci, hariIni) {
   return [...peta.values()].sort((a, b) => b.tingkat - a.tingkat || a.hari - b.hari);
 }
 
-/* ---------------- jenis baru (PB-26, D13): kerangka, TIDAK menyala ----------------
-   Registri penilai per jenis (gunungapi, udara, kekeringan, pesisir, longsor, rob); sengaja KOSONG: tidak ada aturan atau ambang yang dikarang. Penilai dipasang di F2 (PB-34a, 36a, 38a, 40, 46a)
-   bersama sumbernya. Penilai mengembalikan array nilai berurut kolom `peringatan_x` ([kunci, jenis, tingkat, prov, kab, lat, lon, judul, teks, sumber, sumber_url, dibuat, berlaku_hingga], sumber
-   "Deteksi Centurisk97" atau penerbit resmi, BUKAN "Deteksi Pantau Bencana") yang WAJIB ditulis lewat tulisPeringatan (src/peringatan.js) ke peringatan_x. Hasil berlabel sumber_jenis "hipotesis" tidak
-   keluar (Q17 BAWAAN SEMENTARA: layar saja). Tanpa penilai = [] tanpa baca D1 (beban cron tidak naik). */
-export const PENILAI_JENIS_BARU = {};
+/* ---------------- jenis baru (PB-26, D13; penilai F2: PB-36a, 38a, 40, 46a) ----------------
+   Registri penilai per jenis. Penilai = f(data, kini) -> [{nilai, sumber_jenis?}]; `nilai` urut kolom `peringatan_x` ([kunci, jenis, tingkat, prov, kab, lat, lon, judul, teks, sumber, sumber_url, dibuat,
+   berlaku_hingga]) dan ditulis lewat tulisPeringatan (src/peringatan.js). Sumber resmi (label BMKG, PVMBG, ...) HANYA dari daftar tetap SUMBER_RESMI per jenis; selain itu jatuh ke "Deteksi Centurisk97",
+   jadi hitungan kita tidak pernah menyaru jadi lembaga. Hasil berlabel sumber_jenis "hipotesis" tampil di layar saja, tidak ditulis/dikirim keluar (Q17 BAWAAN SEMENTARA). Tidak ada kalimat "aman". */
+const DETEKSI_X = "Deteksi Centurisk97";
+export const SUMBER_RESMI = {pesisir: ["BMKG"], udara: ["BMKG", "KLHK"], gunungapi: ["PVMBG", "Badan Geologi"], kekeringan: [], longsor: [], rob: []};
+const nilaiX = (kunci, jenis, tingkat, prov, kab, lat, lon, judul, teks, sumber, url, kini, hingga) =>
+  [kunci, jenis, tingkat, prov, kab, lat == null ? null : Math.round(lat * 100) / 100, lon == null ? null : Math.round(lon * 100) / 100, String(judul).slice(0, 200), String(teks).slice(0, 600), sumber, /^https:\/\//.test(url || "") ? url : null, kini, hingga];
+const slug = t => String(t).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
+
+/* pesisir: gelombang tinggi per wilayah dari peringatan maritim BMKG (public/data/peringatan.json::gelombang), DITERUSKAN apa adanya. Label BMKG tinggi/sangat tinggi/ekstrem -> Waspada/Siaga/Awas
+   (pemetaan label ke tingkat BAWAAN SEMENTARA, tanpa angka tinggi gelombang: Q9); "sedang" tidak memicu. Abrasi tidak memicu (hanya kartu). Berkas lebih tua dari 24 jam = diam. */
+const ZONA_JAM = {WIB: 7, WITA: 8, WIT: 9}, LABEL_GELOMBANG = [["ekstrem", "Awas", "ekstrem"], ["sangat_tinggi", "Siaga", "sangat tinggi"], ["tinggi", "Waspada", "tinggi"]];
+const waktuZona = (t, zona) => Date.parse(String(t) + ":00Z") - (ZONA_JAM[zona] ?? 7) * JAM;
+export function penilaiPesisir(data, kini) {
+  const g = data.gelombang; if (!Array.isArray(g?.daftar) || !(Date.parse(g.dibuat) >= kini - CUACA_DEPAN)) return [];
+  const out = [];
+  for (const w of g.daftar) {
+    const dari = waktuZona(w.dari, w.zona), sampai = waktuZona(w.sampai, w.zona);
+    if (!(dari <= kini + CUACA_DEPAN && sampai > kini) || !/^\d{2}$/.test(w.prov || "")) continue;
+    const l = LABEL_GELOMBANG.find(([k]) => w[k]?.length); if (!l) continue;
+    const tempat = w[l[0]].slice(0, 4).join(", ") + (w[l[0]].length > 4 ? ` dan ${w[l[0]].length - 4} perairan lain` : "");
+    out.push({nilai: nilaiX(`pesisir:${w.prov}:${l[1].toLowerCase()}:${String(w.dari).slice(0, 10)}`, "pesisir", l[1], w.prov, null, null, null, `Gelombang ${l[2]} di perairan ${w.wilayah}`,
+      `Peringatan gelombang ${l[2]} dari BMKG untuk ${tempat}, berlaku sampai ${w.sampai} ${w.zona}. Diteruskan dari BMKG, bukan hitungan Centurisk97.`, "BMKG", g.url, kini, sampai)});
+  }
+  return out;
+}
+/* udara: PM2,5 rata-rata 24 jam terakhir per stasiun BMKG (public/udara/data/bmkg_pm25.json) terhadap batas ISPU di scripts/udara/kualitas.py::BATAS. Pemetaan tingkat BAWAAN SEMENTARA Q37 (rancangan
+   agent, bukan ketentuan resmi): Tidak sehat = 1, Sangat tidak sehat = 2, Berbahaya = 3; Baik dan Sedang tidak memicu. Tingkatnya hitungan kita, jadi sumber "Deteksi Centurisk97". Data (berkas atau
+   stasiun) lebih tua dari 6 jam (ALGORITMA 7.2, lantai per jam) tidak memicu; kurang dari 12 jam terisi dari 24 = tidak dinilai. */
+export const BATAS_PM25 = [15.5, 55.4, 150.4, 250.4], PM25_SEGAR = 6 * JAM;
+const KATEGORI_ISPU = ["Baik", "Sedang", "Tidak sehat", "Sangat tidak sehat", "Berbahaya"], TINGKAT_X = ["", "Waspada", "Siaga", "Awas"];
+export function penilaiUdara(data, kini) {
+  const u = data.pm25; if (!Array.isArray(u?.stasiun) || !(Date.parse(u.dibuat) >= kini - PM25_SEGAR)) return [];
+  const out = [];
+  for (const s of u.stasiun) {
+    if (!(Date.parse(s.t) >= kini - PM25_SEGAR) || !Array.isArray(s.deret) || !Number.isFinite(s.lat) || !Number.isFinite(s.lon)) continue;
+    const v = s.deret.slice(-24).filter(Number.isFinite); if (v.length < 12) continue;
+    const rata = v.reduce((a, b) => a + b, 0) / v.length, kat = BATAS_PM25.filter(b => rata > b).length, tingkat = Math.min(3, kat - 1);
+    if (tingkat < 1) continue;
+    out.push({nilai: nilaiX(`udara:${slug(s.nama)}:${wib(kini)}:${TINGKAT_X[tingkat].toLowerCase()}`, "udara", TINGKAT_X[tingkat], null, null, s.lat, s.lon, `Kualitas udara ${KATEGORI_ISPU[kat].toLowerCase()} di sekitar stasiun ${s.nama}`,
+      `PM2,5 rata-rata 24 jam ${angka(rata, 1)} µg/m3 (kategori ISPU ${KATEGORI_ISPU[kat]}) dari pengukuran stasiun BMKG ${s.nama}. Pemetaan ke tingkat peringatan adalah hitungan Centurisk97, bukan peringatan BMKG.`, DETEKSI_X, null, kini, kini + PM25_SEGAR)});
+  }
+  return out;
+}
+/* kekeringan: `lv` kabupaten dari public/data/kekeringan_wilayah.json (1-3 langsung), SELALU hipotesis (uji balik gagal, FAR 97%): tampil di layar, tidak ditulis keluar (Q17). Berkasnya tanpa tanggal. */
+export function penilaiKekeringan(data, kini) {
+  const out = [];
+  for (const [k, v] of Object.entries(data.kekeringan?.kab || {})) {
+    const lv = Math.min(3, v?.lv | 0), [prov, kab] = k.split("|"); if (lv < 1 || !kab) continue;
+    out.push({sumber_jenis: "hipotesis", nilai: nilaiX(`kekeringan:${prov}:${slug(kab)}:${TINGKAT_X[lv].toLowerCase()}`, "kekeringan", TINGKAT_X[lv], /^\d{2}$/.test(prov) ? prov : null, kab, null, null,
+      `Hipotesis kekeringan ${TINGKAT_X[lv].toLowerCase()} di ${kab}`, `Indeks hujan 3 bulan ${angka(v.spi3, 1)}. Hipotesis model, belum lolos uji balik.`, DETEKSI_X, null, kini, kini + HARI)});
+  }
+  return out;
+}
+/* gunung api: HANYA kenaikan level resmi PVMBG yang memicu (Q37 BAWAAN SEMENTARA); level tetap atau turun tidak. Level 2/3/4 = Waspada/Siaga/Awas, label PVMBG. Sumber: riwayat_level.json dan
+   perubahan_level.json (gunungapi/data); kejadian dianggap segar bila tanggalnya <= 2 hari WIB (ALGORITMA 7.2: 48 jam). */
+export function penilaiGunungapi(data, kini) {
+  const awal = wib(kini - 2 * HARI), lihat = new Set(), out = [];
+  const posisi = new Map((data.gunungStatus?.gunung || []).map(g => [g.nama, g]));
+  for (const b of [...(data.riwayatLevel?.baris || []), ...(data.perubahanLevel?.baris || [])]) {
+    if (b?.jenis !== "perubahan" || !(b.ke > b.dari) || !(b.ke >= 2 && b.ke <= 4) || !(b.tanggal >= awal) || !(b.tanggal <= wib(kini))) continue;
+    const kunci = `gunungapi:${slug(b.gunung)}:${b.tanggal}:${b.ke}`; if (lihat.has(kunci)) continue; lihat.add(kunci);
+    const tingkat = TINGKAT_X[b.ke - 1], g = posisi.get(b.gunung);
+    out.push({nilai: nilaiX(kunci, "gunungapi", tingkat, null, null, g?.lat, g?.lon, `Status Gunung ${b.gunung} naik ke Level ${b.ke} (${tingkat})`,
+      `PVMBG menaikkan status Gunung ${b.gunung} dari Level ${b.dari} ke Level ${b.ke} (${tingkat}) pada ${b.tanggal}. Ikuti rekomendasi PVMBG dan arahan BPBD setempat.`, "PVMBG", b.sumber?.url, kini, kini + 2 * HARI)});
+  }
+  return out;
+}
+export const PENILAI_JENIS_BARU = {pesisir: penilaiPesisir, udara: penilaiUdara, kekeringan: penilaiKekeringan, gunungapi: penilaiGunungapi};
 export function peringatanJenisBaru(data, kini, penilai = PENILAI_JENIS_BARU) {
   const out = [];
-  for (const [jenis, f] of Object.entries(penilai)) for (const p of f(data, kini) ?? []) if (p?.sumber_jenis !== "hipotesis" && p?.nilai?.[1] === jenis) out.push(p.nilai);
+  for (const [jenis, f] of Object.entries(penilai)) {
+    let hasil; try { hasil = f(data, kini) ?? []; } catch (e) { console.error("penilai", jenis, e?.message); continue; }   // berkas rusak satu jenis tidak membatalkan jenis lain
+    for (const p of hasil) if (p?.sumber_jenis !== "hipotesis" && p?.nilai?.[1] === jenis) {
+      const n = [...p.nilai]; if (!(SUMBER_RESMI[jenis] || []).includes(n[9])) n[9] = DETEKSI_X;   // sumber tak dikenal = kata Deteksi
+      out.push(n);
+    }
+  }
   return out;
+}
+/* berkas dibaca lewat ASSETS (nol baca D1); tulis hanya yang baru (INSERT OR IGNORE). Dipanggil cron menit 21 tiap jam (worker.js, blok CRON_GEMPA). */
+export async function periksaJenisBaru(env, kini = Date.now()) {
+  const ambil = async p => { try { const r = await env.ASSETS.fetch(new Request("https://aset.lokal" + p)); return r.ok ? await r.json() : null; } catch (e) { return null; } };
+  const [per, pm25, riwayatLevel, perubahanLevel, gunungStatus, kekeringan] = await Promise.all(["/data/peringatan.json", "/udara/data/bmkg_pm25.json", "/gunungapi/data/riwayat_level.json", "/gunungapi/data/perubahan_level.json", "/banjir/data/gunungapi_status.json", "/data/kekeringan_wilayah.json"].map(ambil));
+  const data = {gelombang: {daftar: per?.gelombang, dibuat: per?.dibuat, url: per?.sumber?.gelombang}, pm25, riwayatLevel, perubahanLevel, gunungStatus, kekeringan}, hasil = {tulis: 0, ganda: 0, galat: 0};
+  for (const n of peringatanJenisBaru(data, kini)) {
+    try { const r = await tulisPeringatan(env, n); if (r === null) return {lewat: "tabel peringatan_x belum ada (migrasi 0137)"}; r ? hasil.tulis++ : hasil.ganda++; } catch (e) { console.error("peringatan_x", e?.message); hasil.galat++; }
+  }
+  return hasil;
 }
 
 /* ---------------- gempa ---------------- */

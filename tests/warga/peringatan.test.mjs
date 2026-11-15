@@ -6,9 +6,10 @@ import {readFileSync, existsSync} from "node:fs";
 import path from "node:path";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
+import {periksaJenisBaru} from "../../src/ews.js";
 import {tingkatGempa, bentukCap, BATAS_AKTIF, tulisPeringatan} from "../../src/peringatan.js";
 
-const JAM = 3600e3;
+const JAM = 3600e3, HARI = 24 * JAM;
 const T10 = Math.floor(Date.now() / 600e3) * 600e3;   // menit kelipatan 10: gempaterkini + aturan cuaca ikut jalan
 const iso = t => new Date(t).toISOString().replace(/\.\d+Z/, "+00:00");
 const g = (t, lat, lon, m, dalam, wil, potensi = "Tidak berpotensi tsunami") => ({DateTime: iso(t), Coordinates: `${lat},${lon}`, Magnitude: String(m), Kedalaman: `${dalam} km`, Wilayah: wil, Potensi: potensi});
@@ -231,6 +232,20 @@ uji("PB-21 tanpa tabel peringatan_x: jenis baru dilewati (null), jenis lama teta
     assert.equal(await tulisPeringatan({DB}, ["cuaca:t1:siaga", "cuaca", "Siaga", null, null, null, null, "J", "", "BMKG", null, Date.now(), Date.now() + JAM]), true);
     await tik(T10 + 5400e3);   // bersih-bersih dan cron tidak melempar
   } finally { await DB.prepare("ALTER TABLE peringatan_x_sementara RENAME TO peringatan_x").run(); }
+});
+
+uji("PB-36a/38a/46a periksaJenisBaru: berkas lewat ASSETS ditulis ke peringatan_x, sekali (ulang = ganda, tidak ada baris baru), hipotesis kekeringan tidak ikut", async () => {
+  const kini = Date.now(), wibT = t => new Date(t + 7 * JAM).toISOString().slice(0, 10), isi = {
+    "/data/peringatan.json": {dibuat: new Date(kini).toISOString(), sumber: {gelombang: "https://maritim.bmkg.go.id/w.json"}, gelombang: [{wilayah: "Banten", prov: "36", dari: wibT(kini) + "T00:00", sampai: wibT(kini + 2 * HARI) + "T07:00", zona: "WIB", tinggi: ["Perairan Selatan Pandeglang"], sedang: [], sangat_tinggi: [], ekstrem: []}]},
+    "/udara/data/bmkg_pm25.json": {dibuat: new Date(kini).toISOString(), stasiun: [{nama: "Pontianak", lat: 0, lon: 109.3, t: new Date(kini).toISOString(), deret: Array(30).fill(200)}]},
+    "/gunungapi/data/riwayat_level.json": {baris: [{gunung: "Lokon", jenis: "perubahan", tanggal: wibT(kini), dari: 2, ke: 3}]},
+    "/data/kekeringan_wilayah.json": {kab: {"11|Aceh Barat": {lv: 3, spi3: -3.7}}}};
+  const ASSETS = {fetch: async req => { const j = isi[new URL(req.url).pathname]; return j ? Response.json(j) : new Response("", {status: 404}); }};
+  const sql = pecah(readFileSync(path.join(AKAR, "migrations/0137_peringatan_x.sql"), "utf8")); for (const x of sql) await DB.prepare(x).run();
+  const a = await periksaJenisBaru({DB, ASSETS}, kini); assert.deepEqual(a, {tulis: 3, ganda: 0, galat: 0});
+  const baru = await baris("SELECT kunci, jenis, tingkat, sumber FROM peringatan_x WHERE kunci LIKE 'pesisir:%' OR kunci LIKE 'udara:%' OR kunci LIKE 'gunungapi:%' OR kunci LIKE 'kekeringan:%' ORDER BY jenis");
+  assert.deepEqual(baru.map(r => [r.jenis, r.tingkat, r.sumber]), [["gunungapi", "Siaga", "PVMBG"], ["pesisir", "Waspada", "BMKG"], ["udara", "Siaga", "Deteksi Centurisk97"]], "kekeringan hipotesis tidak tertulis");
+  assert.deepEqual(await periksaJenisBaru({DB, ASSETS}, kini), {tulis: 0, ganda: 3, galat: 0}, "putaran berikutnya tidak menulis ulang");
 });
 
 /* instance kedua: cache tepi AKTIF */
