@@ -479,3 +479,20 @@ export const smLajuBuat = async (env, oleh, awal) => (await env.DB.prepare("SELE
 export const smLajuHapus = async (env, oleh, awal) => (await env.DB.prepare("SELECT count(*) n FROM op_semai_target WHERE dihapus_oleh = ? AND terhapus >= ?").bind(oleh, awal).first()).n;
 export const smSisip = (env, ...v) => env.DB.prepare("INSERT INTO op_semai_target (id, zona_id, putaran, base_id, base_icao, base_nama, tanggal, lat, lon, mulai, selesai, skor, alasan_json, catatan, oleh, dibuat) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").bind(...v).run();
 export const smHapus = async (env, waktu, alasan, oleh, id) => !!(await env.DB.prepare("UPDATE op_semai_target SET terhapus = ?, alasan_hapus = ?, dihapus_oleh = ? WHERE id = ? AND terhapus IS NULL").bind(waktu, alasan, oleh, id).run()).meta.changes;
+
+/* ======================================================================================================================================================
+   Keterpaduan (migrasi 0132_indeks_kursor_modul; src/kejadian_tautan.js; data/kajian-bnpb/keterpaduan/DESAIN-TEKNIS.md). Pelaku: sistem (Bearer ingest), hak dicek di rute.
+   Baca baris modul per jendela [lo, hi) pada kolom kursor + penanda (w, c): `col >= max(lo, c.w) AND (col > c.w OR id > c.id)` supaya baris semilidetik tidak terlewat.
+   Tiap kueri terlayani indeks kursornya; hanya kolom yang dibutuhkan pencocok (tanpa nama, WA, PIC, isi laporan). LIMIT diisi pemanggil (batas + 1). */
+const KT = {
+  tugas_api: ["SELECT t.id kode, t.id cid, t.dibuat w, t.prov, t.kab, coalesce((SELECT b.bencana FROM tugas_bencana b WHERE b.tugas_id = t.id LIMIT 1), 'karhutla') jenis FROM tugas_api t WHERE t.dummy = 0 AND t.dibuat >= ?1 AND t.dibuat < ?2 AND (t.dibuat > ?3 OR t.id > ?4) ORDER BY t.dibuat, t.id LIMIT ?5"],   // indeks tugas_api_dibuat
+  logbook_d1: ["SELECT id kode, id cid, dibuat w, prov, kab, jenis, mulai FROM logbook_kejadian WHERE dummy = 0 AND dibuat >= ?1 AND dibuat < ?2 AND (dibuat > ?3 OR id > ?4) ORDER BY dibuat, id LIMIT ?5"],   // logbook_kejadian_dibuat
+  sippa: ["SELECT t.id kode, t.id cid, t.mulai w, t.prov, t.kab, k.jenis jenis FROM sippa_tugas t LEFT JOIN sippa_kit k ON k.id = t.kit_id WHERE t.dummy = 0 AND t.mulai >= ?1 AND t.mulai < ?2 AND (t.mulai > ?3 OR t.id > ?4)"
+    + " AND NOT (EXISTS (SELECT 1 FROM sippa_log_gelar g WHERE g.tugas_id = t.id AND g.jenis = 'latihan') AND NOT EXISTS (SELECT 1 FROM sippa_log_gelar g WHERE g.tugas_id = t.id AND g.jenis <> 'latihan')) ORDER BY t.mulai, t.id LIMIT ?5"],   // sippa_tugas_mulai + sippa_log_tugas
+  lapangan: ["SELECT id kode, id cid, mulai w, bencana jenis, lat, lon FROM lp_tugas WHERE dummy = 0 AND mulai >= ?1 AND mulai < ?2 AND (mulai > ?3 OR id > ?4) ORDER BY mulai, id LIMIT ?5"],   // lp_tugas_mulai
+  // gempa_kejadian tidak punya kolom dummy (0009), jadi tidak disaring
+  gempa_d1: ["SELECT kode, kode cid, mulai w, utama_id, lat, lon FROM gempa_kejadian WHERE mulai >= ?1 AND mulai < ?2 AND (mulai > ?3 OR kode > ?4) ORDER BY mulai, kode LIMIT ?5"],   // gempa_kejadian_mulai
+  lapsus: ["SELECT l.operasi_id || ':' || l.kejadian_id kode, l.operasi_id || ':' || l.kejadian_id cid, l.dibuat w, k.jenis, k.prov, k.kab, k.mulai FROM lapsus_kejadian l JOIN logbook_kejadian k ON k.id = l.kejadian_id JOIN lapsus_operasi o ON o.id = l.operasi_id AND o.dummy = 0 WHERE k.dummy = 0 AND l.dibuat >= ?1 AND l.dibuat < ?2 AND (l.dibuat > ?3 OR l.operasi_id || ':' || l.kejadian_id > ?4) ORDER BY l.dibuat, l.operasi_id, l.kejadian_id LIMIT ?5"],   // lapsus_kejadian_dibuat
+};
+export const KT_SQL = KT, KT_SUMBER = Object.keys(KT);
+export const ktBaris = async (env, sumber, {lo, hi, w, id, batas}) => (await env.DB.prepare(KT[sumber][0]).bind(Math.max(lo, w), hi, w, id, batas + 1).all()).results;

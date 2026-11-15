@@ -10,8 +10,8 @@ Pemetaan sumber baru:
 | --- | --- | --- | --- | --- | --- |
 | `tugas_api` | `id` | dari `tugas_bencana.jenis`, bawaan karhutla | prov + nama kab ke `kab4` | `dibuat` (ms ke tanggal WIB) | `dibuat` (indeks `tugas_api_dibuat` sudah ada) |
 | `logbook_d1` | `id` | `jenis` logbook, `gempabumi` dipetakan ke `gempa` | prov + nama kab | `mulai` | `dibuat` (indeks baru) |
-| `sippa` | `id` | karhutla atau banjir menurut tugas; jenis `latihan` dikecualikan | prov + nama kab | `mulai` | `mulai` (tabel tanpa `dibuat`; indeks baru) |
-| `lapangan` | `id` | jenis tugas | titik ke kab4 (titik-dalam-poligon) | `mulai` | `mulai` (indeks baru) |
+| `sippa` | `id` | dari `sippa_kit.jenis`: banjir jadi banjir, selain itu (dan kit kosong) karhutla; tugas yang log gelarnya hanya `latihan` dikecualikan (`sippa_tugas` tidak punya kolom jenis) | prov + nama kab | `mulai` | `mulai` (tabel tanpa `dibuat`; indeks baru) |
+| `lapangan` | `id` | jenis tugas | lat/lon, diubah ke kab4 oleh Python (titik-dalam-poligon) | `mulai` | `mulai` (indeks baru) |
 | `gempa_d1` | `kode` | gempa | pusat ke kab4 terdekat di darat | `mulai` | `mulai` (indeks sudah ada) |
 | `lapsus` | `operasi_id:kejadian_id` | ikut logbook | ikut logbook | ikut logbook | `dibuat` (indeks baru) |
 

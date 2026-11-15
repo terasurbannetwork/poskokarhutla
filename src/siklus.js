@@ -16,7 +16,8 @@ import {RUTE_SIKLUS_PULIH} from "./siklus_pulih.js";
 import {RUTE_SIKLUS_RENKON} from "./siklus_renkon.js";
 import {RUTE_SIKLUS_PINTU} from "./siklus_pintu.js";
 import {RUTE_SIKLUS_DUMMY} from "./siklus_dummy.js";
-const RUTE_SIKLUS = {...RUTE_KEJADIAN, ...RUTE_SIKLUS_PAPARAN, ...RUTE_SIKLUS_KAJI, ...RUTE_SIKLUS_PULIH, ...RUTE_SIKLUS_RENKON, ...RUTE_SIKLUS_PINTU, ...RUTE_SIKLUS_DUMMY};
+import {RUTE_TAUTAN} from "./kejadian_tautan.js";
+const RUTE_SIKLUS = {...RUTE_KEJADIAN, ...RUTE_SIKLUS_PAPARAN, ...RUTE_SIKLUS_KAJI, ...RUTE_SIKLUS_PULIH, ...RUTE_SIKLUS_RENKON, ...RUTE_SIKLUS_PINTU, ...RUTE_SIKLUS_DUMMY, ...RUTE_TAUTAN};
 
 const JENIS_BPBD = ["pemprov", "pemkab", "pemkot"], PERAN_STAF = ["pusdalops", "koordalops", "pimpinan"];
 const ID_KJ = "KJ-\\d{4}-[0-9A-HJKMNP-TV-Z]{8}", ID16 = "[0-9a-f]{16}", POLA = {id: ID_KJ, sid: ID16};

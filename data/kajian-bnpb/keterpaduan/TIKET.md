@@ -6,9 +6,9 @@ Kerjakan urut; ambil satu tiket, kerjakan hanya cakupannya.
 | --- | --- | --- | --- | --- |
 | KP-01 | Gerbang `tests/agen/gerbang-keterpaduan.test.mjs` dengan daftar utang (tabel lama, enam antrean) yang hanya boleh menyusut | penulis-gerbang | T15 | - |
 | KP-02 | Satukan normal nomor WA ke `normalWA`; ganti `normalWa` dan `normalNo` | warga-api | T14, `npm run uji:warga` | - |
-| KP-03a | Migrasi `indeks_kursor_modul` + sidik di `tests/warga/migrasi_beku.json` | warga-api (+ migrasi-idempoten) | `migrasi_beku` | - |
+| KP-03a | Migrasi `0132_indeks_kursor_modul` + sidik di `tests/warga/migrasi_beku.json` | warga-api (+ migrasi-idempoten) | `migrasi_beku` | - |
 | KP-03 | `src/hak.js` bagian Keterpaduan + `src/kejadian_tautan.js` rute ingest modul | warga-api (+ guard-api, security-reviewer) | T1, T2 | KP-03a |
-| KP-04 | `pasang.py`: sumber `tugas_api` dan `logbook_d1` | siklus | T3 | KP-03 |
+| KP-04 | `pasang.py`: sumber `tugas_api` dan `logbook_d1` | siklus | T3 | KP-03, migrasi 0132 sudah diterapkan pemilik di D1 produksi (tanpa indeks, rute memindai penuh) |
 | KP-05 | `pasang.py`: sumber `sippa`, `lapangan`, `gempa_d1`, `lapsus` | siklus | T16, uji pasang per sumber | KP-04 |
 | KP-06 | Rute `GET /api/kejadian/tautan` | warga-api | T4 | KP-03 |
 | KP-07 | `public/inti/kj_tanda.js` dan pemasangannya di `/instansi`, logbook, SIPPA, `/petugas`, gempa | inti-layar, lalu pemilik layar masing-masing | tinjau lokal; `inp-reviewer` | KP-06 |
