@@ -1,0 +1,269 @@
+{
+ "hari": "2026-11-15",
+ "cutoff": "2026-11-15T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Kota Subulussalam",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 1897.0,
+    "mengungsi": 278.0,
+    "rumah_dampak": 654.0
+   },
+   "teks": {
+    "dampak": "1.897 KK / 7.703 jiwa (Dalam pendataan)",
+    "status_darurat": "Tanggap Darurat TMT 6/11/2026 s.d 19/11/2026",
+    "kondisi": "Air Belum surut TMA 30-100 cm",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-13",
+   "kondisi_pil": [
+    "Belum surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Tamiang",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 5785.0,
+    "mengungsi": 5088.0
+   },
+   "teks": {
+    "dampak": "± 5.785 KK / 18.158 Jiwa terdampak (pendataan sesuai laporan posko)",
+    "status_darurat": "Siaga Darurat Provinsi TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Untuk wilayah Hulu air sudah mulai surut, untuk wilayah Tengah dan wilayah Hilir Air masih beranjak naik (masih dalam penanganan)",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-12",
+   "kondisi_pil": [
+    "Air hilir naik",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Singkil",
+   "status": "belum",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 27.0,
+    "rumah_dampak": 27.0
+   },
+   "teks": {
+    "dampak": "± 27 KK / 124 jiwa terdampak (masih dalam pendataan)",
+    "status_darurat": "Siaga Darurat Provinsi TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Banjir berangsur surut",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-14",
+   "kondisi_pil": [
+    "Berangsur surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Tenggara",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 503.0,
+    "rumah_dampak": 503.0
+   },
+   "teks": {
+    "dampak": "503 KK / 1.697  Jiwa (Dalam pendataan)",
+    "status_darurat": "Siaga Darurat Provinsi TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Air belum surut di Desa Pancar Iman, Desa Terutung Seperai, Desa Lawe Rutung, Desa Pulonas Baru, dan Desa Trt. Megara Lawe Pasaran",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-13",
+   "kondisi_pil": [
+    "Belum surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Barat",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 147.0,
+    "rumah_dampak": 1.0
+   },
+   "teks": {
+    "dampak": "147 KK / 645  Jiwa (Dalam pendataan)",
+    "status_darurat": "Dalam proses tanda tangan",
+    "kondisi": "Debit air DAS Krueng Meureubo terpantau mulai naik, Wilayah Sungai Mas dan Pante Ceureumen masih diguyur hujan",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-01",
+   "kondisi_pil": [
+    "Debit sungai naik",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "longsor",
+   "prov": "11",
+   "lokasi": "Aceh Tengah",
+   "status": "belum",
+   "baru": true,
+   "label": "Tanah Longsor dan Banjir",
+   "angka": {
+    "hilang": 1.0
+   },
+   "teks": {
+    "dampak": "1 (satu) jiwa hilang tertimbun longsor (dalam pendataan)",
+    "status_darurat": "Siaga Darurat Provinsi TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "masih dilakukan proses pencarian korban hilang oleh tim gabungan",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-14",
+   "dampak_pil": "1 jiwa hilang",
+   "kondisi_pil": [
+    "Pencarian korban",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "32",
+   "lokasi": "Bandung Barat",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Angin Kencang",
+   "angka": {
+    "kk": 427.0,
+    "rumah": 588.0
+   },
+   "teks": {
+    "dampak": "± 427 KK terdampak  (masih dalam pendataan)",
+    "status_darurat": "-",
+    "kondisi": "Pembersihan material / puing",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-14",
+   "kondisi_pil": [
+    "Pembersihan",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "angin",
+   "prov": "32",
+   "lokasi": "Bandung",
+   "status": "berjalan",
+   "baru": true,
+   "label": "Cuaca Ekstrem (Angin Kencang)",
+   "angka": {
+    "kk": 134.0,
+    "rumah_dampak": 134.0
+   },
+   "teks": {
+    "dampak": "± 134 KK terdampak (dalam pendataan)",
+    "status_darurat": "-",
+    "kondisi": "Telah dilakukan pembersihan sisa material pohon tumbang dan rumah rusak, dan akan dilanjutkan esok hari (Minggu, 15 November 2026)",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-14",
+   "kondisi_pil": [
+    "Pembersihan",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "33",
+   "lokasi": "Temanggung",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 1759.0,
+    "jiwa": 6094.0,
+    "tangki": 5.0,
+    "liter": 25000.0
+   },
+   "teks": {
+    "dampak": "± 1.759 KK / 6.094 jiwa terdampak (pendataan)",
+    "status_darurat": "Siaga Darurat Provinsi TMT 01/06/2026 s.d 31/12/2026",
+    "kondisi": "Telah dilakukan pendistribusian air bersih sebanyak 5 tangki/25.000 liter",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-09-05",
+   "kondisi_pil": [
+    "Distribusi air",
+    "tangani"
+   ]
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "33",
+   "lokasi": "Boyolali",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Kekeringan",
+   "angka": {
+    "kk": 12022.0,
+    "jiwa": 57311.0,
+    "tangki": 8.0,
+    "liter": 38000.0
+   },
+   "teks": {
+    "dampak": "± 12.022 KK / 57.311 jiwa terdampak (pendataan)",
+    "status_darurat": "Siaga Darurat Provinsi TMT 01/06/2026 s.d 31/12/2026",
+    "kondisi": "BPBD Kab. Boyolali mendistribusikan air bersih sebanyak 8 tangki / 38.000 liter dengan penerima manfaat 292 KK / 1.412 jiwa",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-06-24",
+   "kondisi_pil": [
+    "Distribusi air",
+    "tangani"
+   ]
+  }
+ ],
+ "prioritas_baru": [
+  "53",
+  "72",
+  "74",
+  "81",
+  "82",
+  "93"
+ ]
+}

@@ -853,16 +853,19 @@ class Deck:
                     o += s.tx(lx_, Y + 45720, lw_ + 9144, 164592, [tk_], sz=620, c=TEKS, al='r', an='ctr', wrap='none')
                     lx_ -= 100584 + 36576; o += s.gambar(lx_, Y + 45720 + (164592 - 100584) // 2, 100584, 100584, ik_k); lx_ -= 128016
             bar = s.PERINGATAN_BARIS; y0 = Y + 237744; dua = any(len(b) > 5 and b[5] for b in bar)   # 11 Nov: baris dua tingkat (daerah + periode) lebih tinggi, pil lebih ramping
-            rp = min(301752 if dua else 228600, (Y + H - y0) // len(bar)); h_p = min(164592, rp - 27432); lb_p = 868680 if dua else 1051560
+            rp = min(301752 if dua else 228600, (Y + H - y0) // len(bar)); h_p = min(164592, rp - 27432); lb_p = getattr(s, 'PIL_LEBAR', None) or (868680 if dua else 1051560)   # 15 Nov: pil "Sangat Tidak Sehat" lebih panjang dari 868680
+            # 15 Nov pemilik ("sebutin aja daerahnya apa", bukan "dan 9 lain"): lokasi boleh beberapa baris ("\n"); baris itu dipertinggi 109728 per baris tambahan
+            nl_ = [b[2].count('\n') + 1 for b in bar]; rps = [rp + (k - 1) * 109728 for k in nl_]
+            if sum(rps) > Y + H - y0: rps = [v * (Y + H - y0) // sum(rps) for v in rps]
             for n, (ik, bhy, lok, pil, wr, *per) in enumerate(bar):   # per = [periode berlaku] opsional (11 Nov pemilik: buletin BMKG 9-12 Nov masih berlaku, "tampilan periodenya bagusin")
-                y = y0 + n * rp; d = 173736; c, t = (MERAH, T_MERAH) if wr == 'merah' else (ORG, T_ORG); xm, ym = X + 27432, y + (rp - d) // 2; db = d * .56   # 10 Nov pemilik: "ini samain kayak di peta"
+                y = y0 + sum(rps[:n]); rp = rps[n]; d = 173736; c, t = (MERAH, T_MERAH) if wr == 'merah' else (ORG, T_ORG); xm, ym = X + 27432, y + (rp - d) // 2; db = d * .56   # 10 Nov pemilik: "ini samain kayak di peta"
                 if n: o += s.garis(X, y, W, 'F1F2F4')
                 o += s.gambar(X + 54864, ym, d, d, ik)   # 10 Nov pemilik: ikon solid saja, tanpa lingkaran dan tanda seru
                 o += s.tx(X + 265176, y, 1005840, rp, [bhy], sz=720, b=True, an='ctr', wrap='none')
                 if per and per[0]:   # lokasi dua baris: nama lokasi, lalu periode kecil abu-abu dengan ikon kalender (panel terlalu sempit untuk kolom sendiri)
                     # 11 Nov pemilik ("rapihin spacing/sizingnya"): blok dua tingkat di tengah baris, jarak antartingkat tetap, ikon sebesar tinggi huruf periode
-                    h1, h2, gap, di = 109728, 91440, 18288, 82296; yt = y + (rp - h1 - gap - h2) // 2; xl = X + 1271016
-                    o += s.tx(xl, yt, 1110000, h1, [lok], sz=700, c=TEKS, an='ctr', wrap='none')
+                    h1, h2, gap, di = 109728 * nl_[n], 91440, 18288, 82296; yt = y + (rp - h1 - gap - h2) // 2; xl = X + 1271016
+                    o += s.tx(xl, yt, W - 27432 - lb_p - 1271016 - 36576, h1, lok.split('\n'), sz=700, c=TEKS, an='ctr', wrap='none')
                     o += s.gambar(xl, yt + h1 + gap + (h2 - di) // 2, di, di, per[1] if len(per) > 1 else 'kalender_navy') + s.tx(xl + di + 36576, yt + h1 + gap, 1060000, h2, [per[0]], sz=600, c=ABU, an='ctr', wrap='none')
                 else:
                     o += s.tx(X + 1271016, y, 1110000, rp, [lok], sz=700, c=TEKS, an='ctr', wrap='none')
@@ -1135,7 +1138,7 @@ class Deck:
             for i, (ik, jd, isi) in enumerate(kartu):
                 x = xk0 + i * (lb + gp); d = 310896
                 o += s.kotak(x, yk, lb, hk, 'FFFFFF', 'roundRect', ln='F2D3BA', adj=12000) + s.kotak(x + 91440, yk + (hk - d) // 2, d, d, ORG, 'ellipse') + s.gambar(x + 91440 + d * .2, yk + (hk - d) // 2 + d * .2, d * .6, d * .6, ik)
-                if len(isi) > 48:   # 11 Nov pemilik ("jangan pakai frasa nanggung"): isi kalimat utuh, boleh dua baris
+                if len(isi) > 48 or len(kartu) > 3:   # 15 Nov: empat kartu terlalu sempit untuk isi satu baris; 11 Nov pemilik ("jangan pakai frasa nanggung"): isi kalimat utuh, boleh dua baris
                     o += s.tx(x + 484632, yk + 36576, lb - 530352, 164592, [jd], sz=860, b=True, an='ctr', wrap='none') + s.tx(x + 484632, yk + 210312, lb - 548640, hk - 237744, [isi], sz=700, c=TEKS, an='t', wrap='square')
                 else:
                     o += s.tx(x + 484632, yk + 54864, lb - 530352, 182880, [jd], sz=880, b=True, an='ctr', wrap='none') + s.tx(x + 484632, yk + 246888, lb - 530352, 173736, [isi], sz=780, c=TEKS, an='ctr', wrap='none')

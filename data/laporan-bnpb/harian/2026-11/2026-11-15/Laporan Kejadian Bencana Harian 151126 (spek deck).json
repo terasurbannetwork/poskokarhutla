@@ -1,0 +1,40 @@
+{
+ "format": "harian",
+ "pesan_kunci": "Laporan Kejadian Bencana Harian, 15-11-2026.",
+ "judul_dokumen": "Laporan Kejadian Bencana Harian",
+ "kajian": "rehab",
+ "tanggal": "2026-11-15",
+ "slide": [
+  {
+   "jenis": "impor",
+   "pptx": "/Users/priyankaalfatehan28/Developer/poskokarhutla/data/laporan-bnpb/harian/2026-11/2026-11-15/Laporan Kejadian Bencana Harian 151126 (isi).pptx",
+   "sumber": "Laporan Harian Dit. Koordalops BNPB, 14 Nov 2026 07.00 s.d. 15 Nov 2026 07.00 WIB; BMKG dan PVMBG, 15 Nov 2026 06.00 WIB",
+   "halaman": 2,
+   "bagian": 1
+  },
+  {
+   "jenis": "impor",
+   "pptx": "/Users/priyankaalfatehan28/Developer/poskokarhutla/data/laporan-bnpb/harian/2026-11/2026-11-15/Laporan Kejadian Bencana Harian 151126 (isi).pptx",
+   "sumber": "PVMBG Badan Geologi, 15 Nov 2026 06.00 WIB; definisi status Permen ESDM 15/2011",
+   "halaman": 5,
+   "bagian": 2
+  }
+ ],
+ "bagian": [
+  {
+   "judul": "Ringkasan Situasi",
+   "label": "Ringkasan",
+   "halaman_tetap": [
+    1
+   ]
+  },
+  {
+   "judul": "Status Siaga Bencana",
+   "label": "Status siaga",
+   "halaman_tetap": [
+    2
+   ]
+  }
+ ],
+ "panel_sisi": "gelap"
+}

@@ -108,11 +108,14 @@ def siapkan(S, T, ke, web, H_SISA, KH, wa_koordalops, wa_bmkg, w):
         for h in g['hari']:
             if h['tgl'] in a: a[h['tgl']] = max(a[h['tgl']], h['fwi'] or 0)
     B['fwi'] = sorted(((sum(a.values()) / len(a), k, [a[d] for d in tg]) for k, a in fw.items() if k in H.NAMA), reverse=True)
-    kd = {re.sub(r'^Kep\. ', 'Kepulauan ', v): k for k, v in H.NAMA.items()}; kd.update({'Kep. Riau': kd.get('Kepulauan Riau', '21')})
+    kd = {re.sub(r'^Kep\. ', 'Kepulauan ', v): k for k, v in H.NAMA.items()}; kd.update({'Kep. ' + n[len('Kepulauan '):]: k for n, k in list(kd.items()) if n.startswith('Kepulauan ')})   # 15 Nov: "Kep. Bangka Belitung" (sebelumnya hanya Kep. Riau)
+    kd.update({'NTT': '53', 'NTB': '52', 'Daerah Istimewa Yogyakarta': '34', 'DIY': '34'})   # 15 Nov: singkatan WA BMKG (sama dengan urai_wa)
     L = {kd[p]: 'sedang' for p in w['hujan'] if p in kd}
     B['tak_kenal'] = [p for p in w['hujan'] + w.get('siaga', []) + w.get('awas', []) if p not in kd]
-    for p in w.get('siaga', []): L[kd[p]] = 'siaga'
-    for p in w.get('awas', []): L[kd[p]] = 'awas'
+    for p in w.get('siaga', []):
+        if p in kd: L[kd[p]] = 'siaga'   # nama tak dikenal sudah tercatat di tak_kenal
+    for p in w.get('awas', []):
+        if p in kd: L[kd[p]] = 'awas'   # nama tak dikenal sudah tercatat di tak_kenal
     B['level'] = L; B['angin'] = [kd[p] for p in w.get('angin', []) if p in kd]
     json.dump(L, open(os.path.join(ke, 'prediksi.json'), 'w'))
     subprocess.run(['node', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'harian_peta_prediksi.mjs'), ke], check=True, stdout=subprocess.DEVNULL)

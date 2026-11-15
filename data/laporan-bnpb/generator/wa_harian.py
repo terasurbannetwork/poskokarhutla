@@ -141,11 +141,11 @@ def pvmbg(teks):
     m = re.search(r'pada hari\s+(.+?pukul\s+\d\d[.:]\d\d\s*WIB)', t)
     level = {}
     for lab in ('Awas', 'Siaga', 'Waspada', 'Normal'):
-        n = re.search(rf'(\d+)\s*\([^)]*\)\s*gunung api pada Level [IV]+\s*\({lab}\)', t)
+        n = re.search(rf'(\d+)\s*\([^)]*\)\s*gunung api pada Level\s*\**\s*[IV]+\s*\({lab}\)', t, re.I)   # 15 Nov: "Level *IV (Awas)*"
         level[lab] = int(n[1]) if n else 0
     gunung, lv = [], None
-    for blok in re.split(r'\n(?=\*[^\s*][^\n]*\*[ \t]*\n)', t):   # judul blok = satu baris utuh *...*; butir "* ..." bukan judul
-        k = re.match(r'\*Laporan khusus gunung api pada Level [IV]+ \((\w+)\)\*', blok)
+    for blok in re.split(r'\n(?=\*(?!(?:Visual|Kegempaan|Rekomendasi)\s*:)[^\s*][^\n]*\*[ \t]*\n)', t):   # judul blok = satu baris utuh *...*; butir "* ..." bukan judul; 15 Nov: "*Visual:*" berbintang juga bukan judul
+        k = re.match(r'\*Laporan khusus gunung api pada Level [IV]+ \((\w+)\)\*', blok, re.I)   # 15 Nov: "Laporan Khusus Gunung Api"
         if k:
             lv = k[1]; continue
         g = re.match(r'\*((?:Gn\.|Gunung)[^*]+)\*', blok)
@@ -153,9 +153,9 @@ def pvmbg(teks):
         bag, cur = {'visual': [], 'gempa': [], 'rekom': []}, None
         for baris in blok.split('\n')[1:]:
             b = baris.strip()
-            if re.match(r'^Visual\s*:', b): cur = 'visual'; continue
-            if re.match(r'^Kegempaan\s*:', b): cur = 'gempa'; continue
-            if re.match(r'^Rekomendasi\s*:', b): cur = 'rekom'; continue
+            if re.match(r'^\*?Visual\s*:', b): cur = 'visual'; continue
+            if re.match(r'^\*?Kegempaan\s*:', b): cur = 'gempa'; continue
+            if re.match(r'^\*?Rekomendasi\s*:', b): cur = 'rekom'; continue
             if b.startswith('Demikian'): break
             if cur and re.match(r'^[*\-•]\s*\S', b): bag[cur].append(re.sub(r'^[*\-•]\s*', '', b))
         urai = []
@@ -164,7 +164,8 @@ def pvmbg(teks):
             if q: urai.append((int(q[1]), q[2].split('/')[0].strip().lower()))
         km = lambda pola: [float(x.replace(',', '.')) for r in bag['rekom'] for x in re.findall(pola, r, re.I)]
         radius, sektor = km(r'radius\s+(\d+(?:[.,]\d+)?)\s*km'), km(r'sejauh\s+(?:maksimal\s+)?(\d+(?:[.,]\d+)?)\s*km')
-        gunung.append({'nama': g[1].strip(), 'level': lv, **bag, 'urai': urai, 'radius': max(radius) if radius else None, 'sektor': max(sektor) if sektor else None})
+        nama, wil = re.match(r'(.+?)\s*(?:\((.*)\))?\s*$', g[1].strip()).groups()   # 15 Nov: "Gn. Merapi (Kab/Kota Sleman, ...)"; kurung = wilayah
+        gunung.append({'nama': nama, 'wilayah': wil or '', 'level': lv, **bag, 'urai': urai, 'radius': max(radius) if radius else None, 'sektor': max(sektor) if sektor else None})
     if not gunung and not any(level.values()):
         raise ValueError('teks PVMBG tidak dikenali')
     return {'jam': m[1] if m else '', 'level': level, 'gunung': gunung}

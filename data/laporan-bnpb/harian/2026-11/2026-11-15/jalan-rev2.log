@@ -1,0 +1,50 @@
+ok /Users/priyankaalfatehan28/Developer/poskokarhutla/data/laporan-bnpb/harian/2026-11/2026-11-15/Laporan Kejadian Bencana Harian 151126.pptx  {"slide": 2, "huruf_terkecil_pt": 7.0, "warna": 30, "angka_diperiksa": 68}
+WA: kejadian dirinci 17
+mode simpanan
+pakai simpanan website /Users/priyankaalfatehan28/Developer/poskokarhutla/data/laporan-bnpb/harian/2026-11/2026-11-15/kerja-151126/web
+hari data website 2026-11-14
+website 2026-11-14 ditambahkan: Nusa Tenggara Timur
+website 2026-11-14 ditambahkan: Sulawesi Tengah
+website 2026-11-14 ditambahkan: Sulawesi Tenggara
+website 2026-11-14 ditambahkan: Maluku
+website 2026-11-14 ditambahkan: Maluku Utara
+website 2026-11-14 ditambahkan: Papua Selatan
+website 2026-11-14 Kalimantan Timur Siaga 196 ha 71 FS -> ditangani PERHATIAN
+website 2026-11-14 Kalimantan Tengah Siaga 43 ha 17 FS -> ditangani 
+website 2026-11-14 Kalimantan Selatan Patroli 41 ha 11 FS -> ditangani 
+website 2026-11-14 Jambi Patroli 0 ha 0 FS -> selesai 
+website 2026-11-14 Sumatera Selatan Patroli 0 ha 0 FS -> selesai 
+website 2026-11-14 Nusa Tenggara Timur Siaga 52 ha 20 FS -> ditangani 
+website 2026-11-14 Sulawesi Tengah Siaga 110 ha 39 FS -> ditangani PERHATIAN
+website 2026-11-14 Sulawesi Tenggara Siaga 142 ha 53 FS -> ditangani PERHATIAN
+website 2026-11-14 Maluku Siaga 65 ha 11 FS -> ditangani 
+website 2026-11-14 Maluku Utara Siaga 155 ha 37 FS -> ditangani PERHATIAN
+website 2026-11-14 Papua Selatan Siaga 180 ha 15 FS -> ditangani PERHATIAN
+tanpa karhutla: laporan 17 menonjol 11
+sudah selesai, dibuang: ['banjir Langkat'] | tampil: [('banjir', 'Kota Subulussalam', '2026-11-13', 'berlangsung'), ('banjir', 'Aceh Tamiang', '2026-11-12', 'berlangsung'), ('banjir', 'Aceh Singkil', '2026-11-14', 'baru'), ('banjir', 'Aceh Tenggara', '2026-11-13', 'berlangsung'), ('banjir', 'Aceh Barat', '2026-11-01', 'berlangsung'), ('longsor', 'Aceh Tengah', '2026-11-14', 'baru'), ('angin', 'Bandung Barat', '2026-11-14', 'baru'), ('angin', 'Bandung', '2026-11-14', 'baru'), ('kekeringan', 'Temanggung', '2026-09-05', 'berlangsung'), ('kekeringan', 'Boyolali', '2026-06-24', 'berlangsung')]
+lampiran: tidak ada data harian 2026-11-07
+lampiran: tidak ada data harian 2026-11-08
+lampiran: tidak ada data harian 2026-11-09
+lampiran: tidak ada data harian 2026-11-13
+lampiran: tidak ada data harian 2026-11-14
+WA: kejadian dirinci 17
+lanjut: tak dikenal [] | rob aktif 10 | hari prakiraan ['2026-11-15', '2026-11-16', '2026-11-17']
+prediksi: cuaca 3 gelombang 131 tinggi 11 | udara > 55,4: 87 [('Kab. Karawang', [80.66666666666667, 118.33333333333333, 97.8]), ('Kab. Bekasi', [80.66666666666667, 118.33333333333333, 97.8]), ('Kab. Mojokerto', [116.66666666666667, 105.45833333333333, 98.7])] | abu [('Merapi', 'Purworejo', 0), ('Semeru', 'Malang', 0)]
+prediksi: lokasi ['Aceh Singkil', 'Aceh Tamiang', 'Aceh Tenggara', 'Aceh Barat', 'Bandung Barat'] | prakiraan dibuat 2026-11-14T14:15+07:00
+hujan lebat per hari [3, 3, 0] [('95', [2, 1, 0]), ('94', [0, 2, 0]), ('81', [1, 0, 0])] | prakiraan 2026-11-14T14:15+07:00
+lampiran kecamatan 330 kab 91 banjir 163 longsor 191
+PERINGATAN gunung api: arsip teks laphar (data/raw/laphar/teks) tidak ada, pil laporan pertama tidak dipasang
+ok /Users/priyankaalfatehan28/Developer/poskokarhutla/data/laporan-bnpb/harian/2026-11/2026-11-15/Laporan Kejadian Bencana Harian 151126.pptx | hari data 2026-11-15 | cutoff 2026-11-15T07:00+07:00 | kejadian 10 karhutla 0 ditangani 0 perlu perhatian 4 selesai 0 | Prioritas ditambah ['53', '72', '74', '81', '82', '93']
+banjir 11 Kota Subulussalam belum DITANGANI PERHATIAN {}
+banjir 11 Aceh Tamiang belum DITANGANI  {}
+banjir 11 Aceh Singkil belum DITANGANI PERHATIAN {}
+banjir 11 Aceh Tenggara belum DITANGANI PERHATIAN {}
+banjir 11 Aceh Barat berjalan DITANGANI  {}
+longsor 11 Aceh Tengah belum DITANGANI PERHATIAN {}
+cuaca 32 Bandung Barat berjalan DITANGANI  {}
+cuaca 32 Bandung berjalan DITANGANI  {}
+kekeringan 33 Temanggung berjalan DITANGANI  {}
+kekeringan 33 Boyolali berjalan DITANGANI  {}
+halaman generator: ringkasan 2 status siaga 5
+mesin ok /Users/priyankaalfatehan28/Developer/poskokarhutla/data/laporan-bnpb/harian/2026-11/2026-11-15/Laporan Kejadian Bencana Harian 151126.pptx
+folder /Users/priyankaalfatehan28/Developer/poskokarhutla/data/laporan-bnpb/harian/2026-11/2026-11-15/Revisi 2
