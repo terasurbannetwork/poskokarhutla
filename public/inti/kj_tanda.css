@@ -4,9 +4,8 @@
 .kj-tanda{display:inline-flex;align-items:center;gap:4px;max-width:100%;padding:1px 8px;border-radius:999px;font:600 .71875rem/1.5 var(--font,inherit);letter-spacing:0;text-decoration:none;white-space:nowrap;vertical-align:middle}
 .kj-tanda svg{flex:none}
 .kj-ok{background:color-mix(in oklab,var(--kj-teks) 9%,transparent);color:var(--kj-teks)}
-.kj-ambigu{--kj-amb-bg:oklch(93% .09 90);--kj-amb-teks:oklch(36% .08 80);background:var(--kj-amb-bg);color:var(--kj-amb-teks)}
+.kj-ambigu{background:color-mix(in oklab,var(--warn) 22%,var(--card));color:color-mix(in oklab,var(--warn-tx) 40%,var(--ink))}
 .kj-belum{background:color-mix(in oklab,var(--kj-redup) 14%,transparent);color:var(--kj-redup);font-weight:500}
 a.kj-tanda:hover{text-decoration:underline}
 a.kj-tanda:focus-visible{outline:2px solid currentColor;outline-offset:2px}
-:root[data-theme="dark"] .kj-ambigu{--kj-amb-bg:oklch(40% .08 85);--kj-amb-teks:oklch(94% .07 90)}
 .kj-baris{padding:0 12px 6px}

@@ -1,6 +1,6 @@
 /* Form dari spek (public/inti/spek.js). Kontrol minimal 16px supaya iOS tidak memperbesar layar saat fokus. */
 /* Token lokal (gerbang token warna): warna permukaan dan teks ikut tema bila tokennya ada, nilai lama jadi cadangan; warna tetap bernama. */
-:root{--sp-garis:var(--garis,#c9d3e0);--sp-kartu:var(--card,#fff);--sp-biru:var(--biru,#1d4f91);--sp-redup:var(--muted,#5b6778);--sp-galat:#b3261e}
+:root{--sp-garis:var(--garis,#c9d3e0);--sp-kartu:var(--card,#fff);--sp-biru:var(--biru,#1d4f91);--sp-redup:var(--muted,#5b6778)}
 .sp-form{display:grid;gap:14px}
 .sp-baris[hidden]{display:none}
 .sp-label{display:block;font-weight:600;margin-bottom:4px}
@@ -11,5 +11,5 @@ textarea.sp-kontrol{min-height:84px;resize:vertical}
 .sp-satuan,.sp-bantu{color:var(--sp-redup);font-size:.875rem}
 .sp-ganda{display:flex;flex-wrap:wrap;gap:8px 16px}
 .sp-cek{display:inline-flex;align-items:center;gap:6px;font-size:1rem}
-.sp-galat{color:var(--sp-galat);font-size:.875rem;min-height:0}
+.sp-galat{color:var(--bad-tx);font-size:.875rem;min-height:0}
 .sp-galat:empty{display:none}

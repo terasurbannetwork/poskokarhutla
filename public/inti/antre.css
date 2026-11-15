@@ -1,9 +1,9 @@
 /* Pita dan daftar antrean bersama (public/inti/antre.js). Tombol ikon polos: tanpa garis, kotak, atau latar. */
 /* Token lokal (gerbang token warna): warna permukaan dan teks ikut tema bila tokennya ada, nilai lama jadi cadangan; warna tetap bernama. */
-:root{--antre-ingat-bg:#fff7e0;--antre-ingat-garis:#e8c766;--antre-ingat-teks:#5a4300;--antre-galat-bg:#fdecec;--antre-galat-garis:#e39a9a;--antre-galat-teks:#7a1d1d;--antre-garis:var(--line,#e3e8ef);--antre-navy:#0b2a4a;--antre-di-navy:#fff}
-.antre-pita { position: sticky; top: 0; z-index: 20; display: flex; gap: 8px; align-items: center; margin: 0 0 12px; padding: 8px 14px; border-radius: 10px; background: var(--antre-ingat-bg); border: 1px solid var(--antre-ingat-garis); color: var(--antre-ingat-teks); font-size: .875rem; font-weight: 600; }
+:root{--antre-garis:var(--line,#e3e8ef)}
+.antre-pita { position: sticky; top: 0; z-index: 20; display: flex; gap: 8px; align-items: center; margin: 0 0 12px; padding: 8px 14px; border-radius: 10px; background: color-mix(in oklab, var(--warn) 18%, var(--card)); border: 1px solid color-mix(in oklab, var(--warn) 55%, var(--card)); color: color-mix(in oklab, var(--warn-tx) 40%, var(--ink)); font-size: .875rem; font-weight: 600; }
 .antre-pita > span { flex: 1; }
-.antre-pita.antre-galat { background: var(--antre-galat-bg); border-color: var(--antre-galat-garis); color: var(--antre-galat-teks); }
+.antre-pita.antre-galat { background: color-mix(in oklab, var(--bad) 12%, var(--card)); border-color: color-mix(in oklab, var(--bad) 45%, var(--card)); color: color-mix(in oklab, var(--bad-tx) 40%, var(--ink)); }
 .antre-pita[hidden], .antre-daftar[hidden] { display: none; }
 .antre-ikon { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; }
 .antre-ikon:disabled { opacity: .5; cursor: default; }
@@ -11,4 +11,4 @@
 .antre-daftar table { width: 100%; border-collapse: collapse; font-size: .8125rem; }
 .antre-daftar th, .antre-daftar td { padding: 6px 10px; border-bottom: 1px solid var(--antre-garis); }
 .antre-daftar td { text-align: left; }
-.antre-daftar thead th { background: var(--antre-navy); color: var(--antre-di-navy); text-align: center; font-weight: 600; }
+.antre-daftar thead th { background: var(--head-bg); color: var(--on-head); text-align: center; font-weight: 600; }
