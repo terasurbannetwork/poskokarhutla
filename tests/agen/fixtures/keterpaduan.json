@@ -12,6 +12,7 @@
   "dikecualikan": {
     "op_isian_kejadian": "K14: kunci isian operasi udara (jenis, tanggal, registrasi), tanpa wilayah; ditunda sampai ada kolom wilayah",
     "pantau_tugas": "K14: antrean butir kerja staf, bukan kejadian; tanpa wilayah",
+    "tugas_bencana_x": "tabel samping 1:1 ke tugas_api (jenis longsor dan pesisir, migrasi 0130 paket paritas-bencana); kejadian ditautkan lewat tugas_api, bukan di sini",
     "tugas_bencana": "K14: pelengkap tugas_api (bahaya per tugas); tertaut lewat tugas_api",
     "tugas_bencana_x": "K14: pelengkap tugas_api 1:1 (jenis longsor dan pesisir, migrasi 0130); tertaut lewat tugas_api",
     "tugas_isian": "tabel anak tugas_api (isian lapangan); tertaut lewat tugas_api",
