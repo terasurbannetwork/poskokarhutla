@@ -38,14 +38,20 @@ const tengah = v => { const m = Array.isArray(v) ? (v.length === 3 ? v[1] : v[0]
 const ang = n => Number(n).toLocaleString("id-ID", {maximumFractionDigits: 1});
 /* KEBIJAKAN (bukan hasil riset lapangan): butir APD per bahaya mengikuti perlengkapan standar SAR/BPBD yang lazim; karhutla (bencana kosong) tetap daftar aslinya di susunChecklist.
    Pemilik boleh menyunting teksnya; kunci butir (apd, n95, ...) dipakai sebagai kunci JSON checklist, jangan diganti tanpa migrasi catatan lama. */
+/* jenis selain karhutla tanpa butir khusus (termasuk tak dikenal) memakai pengingat APD netral, tidak wajib, tanpa klaim peralatan; tidak pernah daftar karhutla */
+const APD_UMUM = {k: "apd", teks: "APD sesuai penugasan", wajib: false};
 const APD_BAHAYA = n => ({
   banjir: [{k: "apd", teks: "APD: pelampung (life jacket), sepatu bot, sarung tangan", wajib: true}, {k: "perahu", teks: "Perahu karet atau alat apung untuk regu sudah dicek", wajib: false}],
   gempa: [{k: "apd", teks: "APD: helm, sarung tangan, sepatu tertutup bersol tebal", wajib: true}, {k: "peluit", teks: "Peluit dan senter atau lampu kepala", wajib: false}],
   gunungapi: [{k: "apd", teks: "APD: helm, kacamata pelindung, sepatu tertutup", wajib: true}, {k: "masker_abu", teks: `Masker penyaring abu (N95 atau setara) untuk tiap orang (${n} buah)`, wajib: true}],
   cuaca: [{k: "apd", teks: "APD: jas hujan, helm, sepatu bot", wajib: true}, {k: "senter_cuaca", teks: "Senter atau lampu kepala cadangan", wajib: false}],
   kekeringan: [{k: "apd", teks: "Topi atau pelindung kepala, baju lengan panjang, sarung tangan", wajib: true}],
-  udara: [{k: "apd", teks: "Kacamata pelindung", wajib: true}, {k: "n95", teks: `Masker N95 untuk tiap orang (${n} buah), kualitas udara buruk`, wajib: true}]});
-const bagianAPD = (b, n) => b && b !== "karhutla" ? APD_BAHAYA(n)[b] ?? null : null;
+  udara: [{k: "apd", teks: "Kacamata pelindung", wajib: true}, {k: "n95", teks: `Masker N95 untuk tiap orang (${n} buah), kualitas udara buruk`, wajib: true}],
+  /* PB-08 (Q9): butir hanya yang bertanda [repo]/[korpus] di docs/multi-bencana/PRAKTIK-PENANGANAN.md bagian 4 dan 10 (keputusan: data/kajian-bnpb/paritas-bencana/KEPUTUSAN-PARITAS.md Q9). Longsor: satu butir, Perka BNPB 13/2010 dan Juklak 6/2026 [korpus] (bagian 4, rujukan khas).
+     Pesisir: bagian 10 tidak punya rujukan [repo]/[korpus] untuk perlengkapan, jadi hanya daftar umum (tanpa butir peralatan khusus). Butir [ingatan]/[perlu cek] sengaja tidak dipakai. */
+  longsor: [APD_UMUM, {k: "sar_perka", teks: "Rujukan: pencarian dan pertolongan, Perka BNPB 13/2010 dan Juklak BNPB 6/2026 (SPM pencarian, pertolongan, evakuasi)", wajib: false}],
+  pesisir: [APD_UMUM]});
+const bagianAPD = (b, n) => { if (!b || b === "karhutla") return null; const d = APD_BAHAYA(n); return Object.hasOwn(d, b) ? d[b] : [APD_UMUM]; };
 /* Butir = [{k, teks, wajib}]. `t.rekomendasi` dan `t.akses` boleh objek atau string JSON (baris D1 mentah). Butir kebutuhan hanya ada bila pipeline memberi angkanya;
    butir `bawa` mengikuti daftar barang yang dipikul di akses. Kunci tetap (a-z0-9_) karena dipakai sebagai kunci JSON checklist. */
 export function susunChecklist(t, orang = 1) {
