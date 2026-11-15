@@ -175,6 +175,10 @@ def jalan():
     ada = [i for i, t in enumerate(tg) if t >= kej["dari"]]  # label bahaya hanya ada selama DIBI 365 hari
     B = {p: [B[p][i] for i in ada] for p in B}; P = {p: [P[p][i] for i in ada] for p in P}
     m = muat_menara()
+    lama = os.path.join(AKAR, "public/data/menara.json")
+    if not m and os.path.exists(lama) and json.load(open(lama)).get("menara_per_provinsi"):
+        # Tanpa kunci dan tanpa cache mentah (mis. runner GitHub): jangan timpa angka menara yang sah dengan kosong (15 Nov 2026: panen bulanan mengosongkannya).
+        print("menara: OPENCELLID_KEY tidak ada; menara.json yang sudah berisi dibiarkan"); return
     menara = {p: m["prov"].get(p, 0) for p in B} if m else None
     ev = evaluasi(B, P, menara)
     bag = None
