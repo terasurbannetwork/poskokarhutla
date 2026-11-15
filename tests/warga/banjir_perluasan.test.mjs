@@ -255,7 +255,7 @@ const muatKlien = () => {
 /* fetch klien -> worker sungguhan dengan cookie sesi akun; catat jalur yang dipanggil */
 const jembatan = (akunSesi, catat) => async (url, o = {}) => {
   catat.push(`${o.method || "GET"} ${url}`);
-  const r = await U.api(o.method || "GET", url, typeof o.body === "string" ? JSON.parse(o.body) : undefined, {...(o.headers || {}), ...akunSesi.h});
+  const r = await U.api(o.method || "GET", url, typeof o.body === "string" ? JSON.parse(o.body) : undefined, {origin: "http://bnpb.lokal", ...(o.headers || {}), ...akunSesi.h});   // peramban selalu mengirim Origin pada POST
   return {status: r.s, json: async () => r.j};
 };
 uji("formulir uji banjir: halaman /uji-lapangan memuat formulir dan skrip; semua medan yang dibaca skrip ada di HTML; tanpa handler inline, titik tengah, atau em dash", async () => {

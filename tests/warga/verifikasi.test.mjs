@@ -23,7 +23,7 @@ before(async () => {
 after(async () => { await mf?.dispose(); });
 const api = async (metode, j, body, hd = {}) => {
   const isi = body === undefined ? undefined : JSON.stringify(body);
-  const r = await mf.dispatchFetch("http://instansi.lokal" + j, {method: metode, headers: {...(metode === "POST" ? {"x-pb": "1", "content-type": "application/json"} : {}), ...hd}, body: isi});
+  const r = await mf.dispatchFetch("http://instansi.lokal" + j, {method: metode, headers: {...(metode === "POST" ? {"x-pb": "1", origin: "http://instansi.lokal", "content-type": "application/json"} : {}), ...hd}, body: isi});
   const t = await r.text(); let x = null; try { x = JSON.parse(t); } catch (e) {} return {s: r.status, j: x, t, sc: r.headers.getSetCookie?.() ?? []};
 };
 const K = (id, lat, lon, o = {}) => ({id, lat, lon, prov: KAB?.prov ?? "62", kab: KAB?.kab ?? "Seruyan", kec: "Kec Uji", level: 1, n24: 2, jam_sejak: 2, luas: 3, konsesi: [], ...o});
@@ -79,7 +79,7 @@ test("layar akun: teks verifikasi; bukan api menutup tanpa dihitung padam; api a
     const f = new FormData(), g = gps(-2.5, 112.0); f.append("tugas_id", tid); f.append("media", new File([jpeg()], "a.bin")); f.append("thumb", new File([WEBP], "t.bin"));
     for (const k of ["lat", "lon", "akurasi", "waktu_gps"]) f.append(k, String(g[k])); f.append("sampel", JSON.stringify(g.sampel));
     const r0 = new Response(f), buf = new Uint8Array(await r0.arrayBuffer());
-    const r = await mf.dispatchFetch("http://instansi.lokal/api/instansi/media", {method: "POST", headers: {"x-pb": "1", "content-type": r0.headers.get("content-type"), "content-length": String(buf.length), ...h}, body: buf});
+    const r = await mf.dispatchFetch("http://instansi.lokal/api/instansi/media", {method: "POST", headers: {"x-pb": "1", origin: "http://instansi.lokal", "content-type": r0.headers.get("content-type"), "content-length": String(buf.length), ...h}, body: buf});
     const j = await r.json(); assert.equal(r.status, 201, JSON.stringify(j)); return j.id;
   };
   const konf = async (tid, hasil) => api("POST", `/api/instansi/konfirmasi/${tid}`, {klien_id: "verif-" + hasil + tid.slice(0, 4), hasil, ...(hasil === "bukan_api" ? {alasan_bukan_api: "tidak_ada_bekas"} : {}), pic_nama: "Pak Joko", pic_jabatan: "Kepala Desa", pic_wa: "0812 1111 2222", media: [await unggah(tid)]}, h);

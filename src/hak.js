@@ -568,3 +568,23 @@ export const pbStmtTitikHapus = (env, p, id, kini) => sedia(env, p, "pb_titik", 
 export const pbStmtLog = (env, p, kini, oleh, tabel, kunci, aksi, sebelum, sesudah, alasan = null) =>
   sedia(env, p, "pb_log", "tambah", PB_SQL.log).bind(kini, oleh, tabel, kunci, aksi, sebelum == null ? null : JSON.stringify(sebelum), sesudah == null ? null : JSON.stringify(sesudah), alasan);
 export const pbLogLaju = async (env, p, oleh, sejak) => (await sedia(env, p, "pb_log", "baca", PB_SQL.laju).bind(oleh, sejak).first())?.n ?? 0;
+/* PB-12 renlap generik (pb_renlap; DESAIN-TEKNIS paritas-bencana 3.2, 5). Versi = max+1 dalam SATU INSERT..SELECT (UNIQUE menutup balapan); diminta kedua < 30 menit ditolak di SQL yang sama.
+   Hapus tidak ada: hanya status. Semua kueri lewat PK atau indeks pb_renlap_tanggal / pb_log_oleh. */
+Object.assign(MATRIKS, {pb_renlap: {pb_baca: ["baca"], pb_tulis: ["baca", "tambah", "ubah"]}});
+const KOL_PB_RENLAP = "id, bencana, prov, kab, tanggal, versi, status, berlaku_sampai, jml_target, ukuran, sha, galat, dibuat, diubah";
+export const PB_SQL_RENLAP = {
+  minta: `INSERT INTO pb_renlap (id, bencana, prov, kab, tanggal, versi, status, oleh, dibuat, diubah)
+    SELECT ?1, ?2, ?3, ?4, ?5, v, 'diminta', ?6, ?7, ?7 FROM (SELECT coalesce(max(versi), 0) + 1 v FROM pb_renlap WHERE bencana = ?2 AND prov = ?3 AND kab = ?4 AND tanggal = ?5)
+    WHERE NOT EXISTS (SELECT 1 FROM pb_renlap WHERE bencana = ?2 AND prov = ?3 AND kab = ?4 AND tanggal = ?5 AND status = 'diminta' AND dibuat > ?8)`,
+  satu: `SELECT ${KOL_PB_RENLAP} FROM pb_renlap WHERE id = ?`,
+  daftar: `SELECT ${KOL_PB_RENLAP} FROM pb_renlap WHERE tanggal BETWEEN ?1 AND ?2 AND bencana = ?3 AND (?4 = '' OR prov = ?4) ORDER BY tanggal DESC, versi DESC LIMIT 200`,
+  geser: "UPDATE pb_renlap SET status = ?3, berlaku_sampai = ?4, jml_target = coalesce(?5, jml_target), ukuran = coalesce(?6, ukuran), sha = coalesce(?7, sha), galat = ?8, diubah = ?9 WHERE id = ?1 AND status = ?2",
+  lajuMinta: "SELECT count(*) n FROM pb_log WHERE oleh = ? AND waktu > ? AND aksi = 'minta'",
+};
+export const pbRenlapMinta = (env, p, r, oleh, kini, tahan) => sedia(env, p, "pb_renlap", "tambah", PB_SQL_RENLAP.minta).bind(r.id, r.bencana, r.prov, r.kab, r.tanggal, oleh, kini, kini - tahan);
+export const pbRenlapById = (env, p, id) => sedia(env, p, "pb_renlap", "baca", PB_SQL_RENLAP.satu).bind(id).first();
+export const pbRenlapDaftar = async (env, p, dari, sampai, bencana, prov) => (await sedia(env, p, "pb_renlap", "baca", PB_SQL_RENLAP.daftar).bind(dari, sampai, bencana, prov).all()).results;
+/* true bila satu baris bergeser dari status `dari` ke `ke` (transisi mundur atau ulang = false) */
+export const pbRenlapGeser = async (env, p, id, dari, ke, f, kini) => (await sedia(env, p, "pb_renlap", "ubah", PB_SQL_RENLAP.geser)
+  .bind(id, dari, ke, f.berlaku ?? null, f.jml ?? null, f.ukuran ?? null, f.sha ?? null, f.galat ?? null, kini).run()).meta.changes === 1;
+export const pbRenlapLajuMinta = async (env, p, oleh, sejak) => (await sedia(env, p, "pb_log", "baca", PB_SQL_RENLAP.lajuMinta).bind(oleh, sejak).first())?.n ?? 0;

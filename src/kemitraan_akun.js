@@ -50,7 +50,7 @@ export async function kodeKab(env, url) {
   if (KODE) return KODE;
   const r = env.ASSETS ? await env.ASSETS.fetch(new Request(new URL("/data/kemitraan/kode.json", url))) : null;
   if (!r?.ok) { r?.body?.cancel(); return null; }
-  return KODE = await r.json();
+  try { return KODE = await r.json(); } catch (e) { return null; }   // JSON rusak: null (pemanggil menolak), tidak di-cache
 }
 const cookieSet = (nilai, umur) => `${COOKIE}=${nilai}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${umur}`;
 const tokenDari = req => (req.headers.get("cookie") || "").match(new RegExp(`(?:^|;\\s*)${COOKIE}=([0-9a-f]{64})(?:;|$)`))?.[1] ?? null;

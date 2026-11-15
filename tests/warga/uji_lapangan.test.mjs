@@ -48,7 +48,7 @@ const api = async (metode, j, body, h = {}, host = "pantau.lokal") => {
   const isi = body === undefined ? undefined : JSON.stringify(body);
   if (j.startsWith("/api/uji-lapangan") && metode === "GET" && !("x-admin-token" in h)) h = {...ADMIN, ...h};   // evaluasi internal: admin default; kosongkan x-admin-token untuk tamu
   h = {"cf-connecting-ip": `203.0.113.${++ipUrut % 250}`, ...h};   // batas laju 20/menit per IP: tiap panggilan IP berbeda
-  const r = await mf.dispatchFetch(`http://${host}${j}`, {method: metode, redirect: "manual", headers: {...(metode === "POST" ? {"x-pb": "1", "content-length": String(new TextEncoder().encode(isi ?? "").length)} : {}), ...(isi !== undefined ? {"content-type": "application/json"} : {}), ...h}, body: isi});
+  const r = await mf.dispatchFetch(`http://${host}${j}`, {method: metode, redirect: "manual", headers: {...(metode === "POST" ? {"x-pb": "1", origin: `http://${host}`, "content-length": String(new TextEncoder().encode(isi ?? "").length)} : {}), ...(isi !== undefined ? {"content-type": "application/json"} : {}), ...h}, body: isi});
   const t = await r.text(); let x = null; try { x = JSON.parse(t); } catch (e) {}
   return {s: r.status, j: x, t, h: r.headers};
 };

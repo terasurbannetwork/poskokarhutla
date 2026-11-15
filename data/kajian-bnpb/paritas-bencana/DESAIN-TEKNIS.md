@@ -288,7 +288,7 @@ Semua tulis: `POST`, badan `application/json` ≤ 32 KB, hak tulis `penulis()` �
 | `POST /api/pb/titik` | `id?` (ubah), `golongan`, `jenis`, `bencana`, `prov`, `kab?`, `nama`, `lat`, `lon`, `kapasitas?`, `status?`, `catatan?` | upsert + `pb_log` | F-2, F-4, F-7 |
 | `POST /api/pb/titik/hapus` | `id`, `alasan` (5-300) | `dihapus` diisi + `pb_log` | F-4 |
 | `POST /api/pb/renlap` | `bencana`, `prov`, `kab?`, `tanggal` (hari ini atau 7 hari ke belakang) | baris `diminta` versi berikut + pemicu workflow (§8.1); jawab `{id, versi, status}` | F-3 |
-| `POST /api/pb/renlap/selesai` | **Mesin**: header `x-renlap-waktu`, `x-renlap-kunci` = HMAC-SHA256(`RENLAP_KUNCI`, `id|waktu|status`), selisih ≤ 300 detik (pola `src/sippa.js:1874-1883`); badan `{id, status: "draf"\|"gagal", ukuran?, sha?, jml_target?, galat?}` | status naik `diminta` ke `draf` atau `gagal` | F-3 |
+| `POST /api/pb/renlap/selesai` | **Mesin**: header `x-renlap-waktu`, `x-renlap-kunci` = HMAC-SHA256(`RENLAP_KUNCI`, `id|waktu|status|ringkas`, ringkas = `fmt:sha256` tiap berkas urut abjad dipisah koma, kosong bila tanpa berkas), selisih ≤ 300 detik (pola `src/sippa.js:1874-1883`); badan `{id, status: "draf"\|"gagal", berkas?: {json, kml, gpx, txt}, ukuran?, sha?, jml_target?, galat?}`; berkas memuat nomor HP atau NIK 16 digit = 422; gagal tanda tangan dibatasi 20 per jam per IP | status naik `diminta` ke `draf` atau `gagal` | F-3 |
 | `POST /api/pb/renlap/terbit` | `id` | `draf` ke `terbit`, `berlaku_sampai` diisi | F-3 |
 | `POST /api/pb/renlap/selesai-tandai` | `id` | `terbit` ke `selesai` | F-3 |
 | `GET /api/pb/renlap` | `bencana`, `prov?`, `dari`, `sampai` | daftar metadata (tanpa isi) | F-3 |
