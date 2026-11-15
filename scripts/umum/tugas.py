@@ -16,6 +16,9 @@ Aturan (cermin "level 3 + level 2 bersyarat"): dua tingkat tertinggi skala perin
   gunungapi   Awas (IV)        Siaga (III)                kejadian_gunungapi_awal.json V#### + gunungapi_status.json / penduduk_radius
   cuaca       Awas / CAP Extreme   Siaga / CAP Severe     kejadian_cuaca_awal.json C#### / jiwa kejadian
   kekeringan  Awas             Siaga                      kejadian_kekeringan_awal.json D#### / jiwa kejadian
+  longsor     Tinggi (hipotesis)   Sedang (hipotesis)     public/longsor/data/nowcast.json + kerentanan.json / penduduk kecamatan; id L<md5 kec>
+  pesisir     Awas rob         Siaga rob                  public/banjir/data/rob.json (lv hari ini) / penduduk kecamatan titik; id P<md5 kec>; abrasi hanya kartu, bukan tugas
+Longsor dan pesisir: tidak ada registri kejadian, id = hash nama kecamatan (stabil); `reda` kosong, umur 72 jam diatur Worker (src/tugas_bencana.js).
 Hanya kejadian aktif; sumber basi (> MAKS_BASI hari) = berkas TIDAK ditulis (berkas lama tidak dihapus karena data macet).
 `kartu`: hanya kunci yang datanya benar-benar ada. `akses`: 3 unit respons (BPBD/Basarnas/pos SAR, unit_respons.json) terdekat, garis lurus, bukan rute.
 `rekomendasi`: hanya gunungapi (teks resmi PVMBG dari MAGMA); lainnya tidak ditulis (tidak ada sumbernya).
@@ -23,7 +26,7 @@ Hanya kejadian aktif; sumber basi (> MAKS_BASI hari) = berkas TIDAK ditulis (ber
 Pakai:  python3 scripts/umum/tugas.py tulis [banjir gempa ...] [--hari YYYY-MM-DD] [--akar DIR] [--gempa BERKAS.json]
         python3 scripts/umum/tugas.py uji
 """
-import argparse, datetime as dt, importlib.util, json, os, re, sys, tempfile, urllib.request
+import argparse, datetime as dt, hashlib, importlib.util, json, os, re, sys, tempfile, urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import kejadian as KJ   # baca, km, selisih, WIB
@@ -35,13 +38,15 @@ JAM_GEMPA = 72
 GEMPA_API = os.environ.get("GEMPA_API", "https://centurisk97.id/api/gempa/terbaru?jam=%d" % JAM_GEMPA)
 DANGKAL_KM = 60          # = DANGKAL_KM src/peringatan.js
 MMI_JIWA = 6.0
-BENCANA = ["banjir", "gempa", "gunungapi", "cuaca", "kekeringan"]
+BENCANA = ["banjir", "gempa", "gunungapi", "cuaca", "kekeringan", "longsor", "pesisir"]
 KEC_AWAS, KEC_SIAGA = 3, 2
 CAP = {"Extreme": 3, "Severe": 2}    # src/peringatan.js TINGKAT_CAP: Severe=Siaga, Extreme=Awas; Moderate (Waspada) tidak dibuat tugas
 NAMA_TINGKAT = {3: "Awas", 2: "Siaga"}
 DASAR_GEMPA = "mmi_maks = laporan Dirasakan BMKG; jiwa_mmi6 = model GMPE/GMICE belum diuji terhadap laporan Dirasakan; perkiraan, bukan pengukuran"
 DASAR_KERING = "ambang hipotesis, gagal uji balik (FAR 0,93), perlu verifikasi petugas"
-LABEL = {"kekeringan": DASAR_KERING}
+DASAR_LONGSOR = "nowcast longsor gagal uji balik (AUC 0,70 lawan klimatologi 0,78); hipotesis, perlu verifikasi petugas"
+DASAR_ROB = "hipotesis: ambang dari iklim model muka laut sendiri, bukan datum lokal; uji balik DIBI Siaga (p99) POD 0,46 dan FAR 0,96, Awas belum diuji sendiri; perlu verifikasi petugas"
+LABEL = {"kekeringan": DASAR_KERING, "longsor": DASAR_LONGSOR, "pesisir": DASAR_ROB}
 
 
 def _p(akar, *a):
@@ -256,7 +261,57 @@ def adaptor_gempa(akar, hari, gempa=None, kini=None, **_):
     return out, bool(segar and pusat and pend and T.get("jam", JAM_GEMPA) >= JAM_GEMPA)
 
 
-ADAPTOR = {"banjir": adaptor_banjir, "gempa": adaptor_gempa, "gunungapi": adaptor_gunungapi, "cuaca": adaptor_cuaca, "kekeringan": adaptor_kekeringan}
+def _id(awalan, kunci):
+    return awalan + hashlib.md5(kunci.encode()).hexdigest()[:10]
+
+
+def _jiwa_kec(akar):
+    return (baca(akar, "public/data/penduduk.json", {}) or {}).get("kec", {})
+
+
+@tanpa_kosong
+def adaptor_longsor(akar, hari, **_):
+    N, K = baca(akar, "public/longsor/data/nowcast.json"), baca(akar, "public/longsor/data/kerentanan.json")
+    if not N or not K or not _segar({"hari": (N.get("dibuat") or "")[:10]}, hari):
+        return None
+    pend, out = _jiwa_kec(akar), []
+    for nama, lv, tingkat in (("tinggi", 3, "Tinggi"), ("sedang", 2, "Sedang")):
+        for i, _s, _t in N.get(nama, []):
+            key, (la, lo) = K["kec"][i], K["k"][i][:2]
+            p, kb, kc = key.split("|")
+            r = {"kode": _id("L", key), "nama": f"Longsor {tingkat}, {kc}, {kb}", "mulai": N.get("jendela_akhir"), "pusat": [la, lo], "prov": [p], "kab": [f"{p}|{kb}"]}
+            out.append(butir(akar, r, lv, tingkat, pend.get(key), {"dasar": DASAR_LONGSOR}, prov=p, kab=kb, kec=kc, otomatis=False, hipotesis=True))
+    return sorted((x for x in out if x), key=lambda x: x["id"]), bool(pend) and len(K["kec"]) == len(K["k"])
+
+
+@tanpa_kosong
+def adaptor_pesisir(akar, hari, **_):
+    R = baca(akar, "public/banjir/data/rob.json")
+    if not R or hari not in R.get("hari", []) or not _segar({"hari": (R.get("dibuat") or "")[:10]}, hari):
+        return None
+    i = R["hari"].index(hari)
+    idx, out = {}, []
+    for k in baca(akar, "public/banjir/data/pusat_kec.json", {}):
+        idx.setdefault(tuple(x.lower() for x in k.split("|")[1:]), []).append(k)
+    pend, lengkap = _jiwa_kec(akar), bool(_jiwa_kec(akar))
+    for t in R["titik"]:
+        lv = t["lv"][i] if i < len(t["lv"]) else None
+        cand = idx.get((t["kab"].lower(), t["kec"].lower()), [])
+        if lv is None or len(cand) != 1:
+            lengkap = lengkap and (lv is not None and lv < 2)   # titik berstatus tinggi yang tak terpetakan = daftar tak utuh
+            continue
+        if lv < 2:
+            continue
+        key = cand[0]
+        p, kb, kc = key.split("|")
+        tg = {3: "Awas", 2: "Siaga"}[min(lv, 3)]
+        r = {"kode": _id("P", key), "nama": f"Rob {tg}, {kc}, {kb}", "mulai": hari, "pusat": [t["lat"], t["lon"]], "prov": [p], "kab": [f"{p}|{kb}"]}
+        out.append(butir(akar, r, min(lv, 3), tg, pend.get(key), {"tinggi_gelombang_m": (t.get("w") or [None] * 99)[i], "dasar": DASAR_ROB}, prov=p, kab=kb, kec=kc, otomatis=False, hipotesis=True))
+    return sorted((x for x in out if x), key=lambda x: x["id"]), lengkap
+
+
+ADAPTOR = {"banjir": adaptor_banjir, "gempa": adaptor_gempa, "gunungapi": adaptor_gunungapi, "cuaca": adaptor_cuaca, "kekeringan": adaptor_kekeringan,
+           "longsor": adaptor_longsor, "pesisir": adaptor_pesisir}
 
 
 def susun(id, tugas, kini, lengkap=False):
@@ -351,6 +406,29 @@ def uji():
         assert k[0]["otomatis"] is False and k[0]["hipotesis"] is True and k[0]["kartu"]["dasar"] == DASAR_KERING and "FAR 0,93" in DASAR_KERING and k.lengkap is True
         tulis_(B + "kejadian_kekeringan_nomor.json", {"aktif": [{"kode": "D0001", "anggota": ["14|M", "14|Z"]}]})
         assert adaptor_kekeringan(t, hari).lengkap is False   # registri tak memuat semua kejadian
+        # longsor: hipotesis, tidak otomatis; level 2 hanya bila jiwa kecamatan >= JIWA_MIN
+        L = "public/longsor/data/"
+        tulis_(L + "kerentanan.json", {"kec": ["13|P|Kec L1", "13|P|Kec L2", "13|P|Kec L3"], "k": [[-0.5, 100.5, 1, 1, 1, .8, .8, .8], [-0.6, 100.6, 1, 1, 1, .8, .8, .8], [-0.7, 100.7, 1, 1, 1, .8, .8, .8]]})
+        tulis_(L + "nowcast.json", {"dibuat": hari + "T01:00+07:00", "jendela_akhir": "2026-10-21", "tinggi": [[0, .8, 1.5]], "sedang": [[1, .5, 1.0], [2, .5, 1.0]]})
+        tulis_("public/data/penduduk.json", {"kec": {"11|Aceh|Dekat": 40000, "13|P|Kec L1": 5, "13|P|Kec L2": 3000, "13|P|Kec L3": 10, "11|Aceh|Pantai": 8000, "11|Aceh|Sepi": 10}})
+        lo = adaptor_longsor(t, hari)
+        assert sorted((x["level"], x["tingkat"], x["kec"]) for x in lo) == [(2, "Sedang", "Kec L2"), (3, "Tinggi", "Kec L1")], lo
+        assert all(x["otomatis"] is False and x["hipotesis"] is True and x["id"].startswith("L") and len(x["id"]) == 11 for x in lo) and lo.lengkap is True
+        assert [x["jiwa"] for x in lo if x["level"] == 3] == [5], lo   # level 3 selalu, jiwa kecil tetap
+        assert adaptor_longsor(t, "2026-11-30") is None and "hipotesis" in susun("longsor", lo, kini, True)["label"]
+        tulis_(L + "nowcast.json", {"dibuat": hari + "T01:00+07:00", "tinggi": [], "sedang": []})
+        assert adaptor_longsor(t, hari) == [] and adaptor_longsor(t, hari).lengkap is True   # tak ada kecamatan berstatus: daftar kosong yang sah
+        # pesisir: rob.json hari ini lv 3/2 (siaga bersyarat jiwa); lv 1 dan hari lain bukan tugas
+        tt = lambda kec, lv: {"lat": 0.1, "lon": 100.0, "prov": "Aceh", "kab": "Aceh", "kec": kec, "w": [0.9, 0.3], "lv": lv}
+        tulis_(B + "rob.json", {"dibuat": hari + "T01:00+07:00", "hari": [hari, "2026-10-23"], "titik": [tt("Dekat", [3, 0]), tt("Jauh", [2, 3]), tt("Sepi", [2, 0]), tt("Biasa", [1, 1])]})
+        tulis_(B + "pusat_kec.json", {"11|Aceh|Dekat": [0.0, 100.0], "11|Aceh|Jauh": [5.0, 100.0], "11|Aceh|Sepi": [1.0, 100.0], "11|Aceh|Biasa": [2.0, 100.0]})
+        pe = adaptor_pesisir(t, hari)
+        assert sorted(x["kec"] for x in pe) == ["Dekat"], pe   # Jauh tak punya jiwa (level 2 tanpa syarat) dan Sepi < JIWA_MIN
+        assert pe[0]["level"] == 3 and pe[0]["tingkat"] == "Awas" and pe[0]["kartu"]["tinggi_gelombang_m"] == 0.9 and pe[0]["id"].startswith("P") and pe[0]["otomatis"] is False and pe[0]["hipotesis"] is True and pe.lengkap is True and "POD 0,46" in susun("pesisir", pe, kini, True)["label"]
+        assert adaptor_pesisir(t, "2026-10-30") is None and [x["id"] for x in adaptor_pesisir(t, hari)] == [x["id"] for x in pe]
+        tulis_(B + "rob.json", {"dibuat": hari + "T01:00+07:00", "hari": [hari], "titik": [tt("Dekat", [0]), tt("Biasa", [1])]})
+        assert adaptor_pesisir(t, hari) == [] and adaptor_pesisir(t, hari).lengkap is True   # tanpa rob aktif: daftar kosong sah
+        tulis_("public/data/penduduk.json", {"kec": {"11|Aceh|Dekat": 40000, "11|Aceh|Jauh": 90000, "12|Lain|Dekat": 7}})   # kembalikan bahan gempa
         # gempa: sumber dari dict (tanpa jaringan); model guncangan memakai pusat_kec nyata kecil
         tulis_(B + "pusat_kec.json", {"11|Aceh|Dekat": [0.0, 100.0], "11|Aceh|Jauh": [5.0, 100.0], "12|Lain|Dekat": [0.0, 100.0]})
         tulis_("public/data/penduduk.json", {"kec": {"11|Aceh|Dekat": 40000, "11|Aceh|Jauh": 90000, "12|Lain|Dekat": 7}})

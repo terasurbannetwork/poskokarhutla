@@ -290,9 +290,11 @@ jobs:
         timeout-minutes: 10
         run: python3 scripts/umum/kejadian.py uji && python3 scripts/umum/kejadian.py
 
-      # Tugas lapangan per bencana (banjir, gempa, gunung api, cuaca, kekeringan) -> public/data/tugas_<id>.json (cache data-, dibaca terbit.yml).
+      # Tugas lapangan per bencana (banjir, gempa, gunung api, cuaca, kekeringan, longsor, pesisir) -> public/data/tugas_<id>.json (cache data-, dibaca terbit.yml).
       # SESUDAH kejadian.py: banjir memakai kejadian_aktif_awal.json (cache banjir- dipulihkan di atas), gunung api gunungapi_status.json,
       # gempa mengambil GEMPA_API (bawaan https://centurisk97.id/api/gempa/terbaru?jam=72). Adaptor yang masukannya basi/hilang tidak menulis.
+      # Longsor membaca public/longsor/data/nowcast.json dari langkah "Panen MIROVA, GDO, nowcast longsor" (jalan lebih awal di run ini); pesisir membaca
+      # public/banjir/data/rob.json dari cache banjir- (ditulis banjir.yml; umur >= 2 hari = adaptor mengembalikan None, sah, tidak menulis).
       - name: Tugas lapangan lintas bencana (boleh gagal)
         continue-on-error: true
         timeout-minutes: 5
