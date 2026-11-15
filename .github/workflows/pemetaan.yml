@@ -1,0 +1,50 @@
+name: Kelengkapan bangunan OSM per kab
+
+# Bulanan tgl 4, 05.30 UTC (12.30 WIB): tidak ada cron lain di tgl 4 jam itu (statis tgl 2, lain tgl 1/3/5).
+# 514 kab x ~3,5 dtk + jeda 1 dtk ke ohsome ± 45 menit; timeout 120 menit. Grid pembanding baru ada untuk prov 13, 33, 63:
+# kab lain keluar "tidak terliput" (rasio kosong), itu benar. Keluaran agregat tanpa nama pengguna.
+# DT: data/kajian-bnpb/pemetaan-relawan/DESAIN-TEKNIS.md. Tanpa secret. Di-commit ke main, tanpa deploy.
+on:
+  schedule:
+    - cron: "30 5 4 * *"
+  workflow_dispatch:
+
+concurrency:
+  group: data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  pemetaan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Uji mandiri
+        run: python3 -I scripts/pemetaan/kelengkapan.py --cek
+
+      - name: Kelengkapan semua kab
+        run: |
+          KAB=$(python3 -I -c "import json;print(','.join(sorted(json.load(open('public/data/kemitraan/kode.json')))))")
+          python3 -I scripts/pemetaan/kelengkapan.py --kab "$KAB" > /dev/null
+
+      - name: Commit kelengkapan
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          f=public/data/kemitraan/pemetaan_kelengkapan.json
+          git add "$f"
+          git diff --cached --quiet -- "$f" && { echo "kelengkapan tidak berubah"; exit 0; }
+          git commit -q -m "data: kelengkapan bangunan OSM $(TZ=Asia/Jakarta date +%F)" -- "$f"
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::error title=Push kelengkapan gagal::git push ke main gagal 3x"
+          exit 1
