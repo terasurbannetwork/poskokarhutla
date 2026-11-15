@@ -147,5 +147,8 @@
   "0143_tiga_w.sql": "1b2c7f0d86fb95380ce6ffdbb9769244c1c6753aba8165afa53976a60fff4a9f",
   "0144_masuk_indeks_hapus.sql": "3c0f9ca41afd7cffc0aecc7b268957cb500fe988fe7a70919c02ddf982ed9810",
   "0145_masuk_kode_akun.sql": "cee61316e8bfbc673acda165beed84ea0a1faed4e8c497470e53c37de955ce34",
-  "0146_indeks_fk_kejadian.sql": "f17a297084428b137163da3f24fc2c17d2d395b31fc1ae5fff5a4c971a692976"
+  "0146_indeks_fk_kejadian.sql": "f17a297084428b137163da3f24fc2c17d2d395b31fc1ae5fff5a4c971a692976",
+  "0147_kaji_ulang.sql": "e3abf7727a55f80b6cda701bf147c5ce987d74dc349b9e7227220bbea2d2fa2e",
+  "0148_pembiayaan.sql": "bb73e7bf830de2fe734747bfd823546c059ddd2d00c19b0d5545bf239b724dff",
+  "0149_pemetaan_relawan.sql": "2ac1d9df8a622dcfab399b9f157731a3c2f0e7cffdcd07f47189b81d90d823d6"
 }

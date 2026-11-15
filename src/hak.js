@@ -462,7 +462,7 @@ export const opRiwayat = async (env, {tabel, kunci, tanggal}) => (tabel != null
 /* ======================================================================================================================================================
    Dalops tindak lanjut Usulan langkah (migrasi 0128_dl_tindak; src/dalops_tindak.js; data/kajian-bnpb/tindak-langkah/DESAIN-TEKNIS.md).
    Hak dicek di rute (modAtauStaf untuk baca; modOK atau staf pusdalops/koordalops untuk tulis). dl_tindak_log append-only: tidak ada fungsi ubah/hapus. */
-export const dlTindakTerkini = async (env, sejak) => (await env.DB.prepare("SELECT kunci, status, catatan, oleh, waktu FROM dl_tindak WHERE waktu > ? ORDER BY waktu DESC LIMIT 2000").bind(sejak).all()).results;
+export const dlTindakTerkini = async (env, sejak) => (await env.DB.prepare("SELECT kunci, status, catatan, oleh, waktu FROM dl_tindak WHERE waktu > ? AND (kunci < 'kaji|' OR kunci >= 'kaji}') ORDER BY waktu DESC LIMIT 2000").bind(sejak).all()).results;
 export const dlTindakRiwayat = async (env, kunci) => (await env.DB.prepare("SELECT waktu, status, catatan, langkah, oleh FROM dl_tindak_log WHERE kunci = ? ORDER BY id DESC LIMIT 100").bind(kunci).all()).results;
 export const dlTindakLaju = async (env, oleh, sejak) => (await env.DB.prepare("SELECT count(*) n FROM dl_tindak_log WHERE oleh = ? AND waktu > ?").bind(oleh, sejak).first())?.n ?? 0;
 export const dlStmtTindak = (env, kunci, status, catatan, oleh, kini) => env.DB.prepare("INSERT INTO dl_tindak (kunci, status, catatan, oleh, waktu) VALUES (?1, ?2, ?3, ?4, ?5) ON CONFLICT (kunci) DO UPDATE SET status = ?2, catatan = ?3, oleh = ?4, waktu = ?5").bind(kunci, status, catatan, oleh, kini);
@@ -1336,4 +1336,141 @@ export const twKandidat = async (env, p, kejadianId, barang, kini, provNama = nu
   }
   kandidat.sort((a, b) => a.dibuat - b.dibuat || b.sisa - a.sisa);
   return {kandidat, tak_terpetakan: tak};
+};
+
+/* ---------- Kaji ulang pasca-kejadian (KU-02; data/kajian-bnpb/kaji-ulang/DESAIN-TEKNIS.md, KEAMANAN-PRIVASI.md) ----------
+   Pelaku seperti Lifeline: ku_baca (Pimpinan, BP baca-saja) dan ku_tulis (Pusdalops/Koordalops/Super Admin); rute KU-04..06 memetakan sesi ke pelaku dan menegakkan peran halus,
+   BP hanya kab wilayahnya dan hanya yang disahkan. Bukan MATRIKS_SK/pelaku admin: hak.test mengunci isi keduanya.
+   `oleh` ikut di hasil baca; rute WAJIB membuangnya untuk Pimpinan. Nama personel lapangan tidak pernah dibaca di sini. Status rekomendasi tinggal di dl_tindak (kunci kaji|KJ|nn).
+   Sahkan dan sahkan ulang menyusul di KU-06 (pemicu ku_kaji_arsip_versi memindahkan versi lama ke ku_potret). */
+const KU_BACA = {ku_baca: ["baca"], ku_tulis: ["baca"]}, KU_ISI = {ku_baca: ["baca"], ku_tulis: ["baca", "tambah", "ubah"]};
+Object.assign(MATRIKS, {ku_kaji: KU_ISI, ku_pelajaran: KU_ISI, ku_rekomendasi: KU_ISI, ku_potret: {ku_baca: ["baca"], ku_tulis: ["baca", "tambah"]}, dl_tindak: KU_BACA});
+export const pelakuKuBaca = {peran: "ku_baca"}, pelakuKuTulis = {peran: "ku_tulis"};
+export const KU_MAKS_REKOMENDASI = 99, KU_STATUS = ["belum", "proses", "selesai"];
+const KU_RE_KJ = /^KJ-\d{4}-[0-9A-HJKMNP-TV-Z]{8}$/, KU_RE_ID = /^[0-9a-f]{16}$/, KU_RE_KONTAK = /\d(?:\D{0,3}\d){8,}|@/;   // sama dengan RE_HP2 logbook.js (tidak diimpor: siklus impor)
+const KU_RE_TERSEMBUNYI = /[\u0080-\u009f\u200b-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/, KU_KUNCI_RUJUK = ["peristiwa", "waktu", "sumber", "kab4"];
+const kuTeks = (v, nama, min, maks) => {
+  const t = typeof v === "string" ? v.normalize("NFKC").replace(/\s+/g, " ").trim() : "";
+  if (t.length < min || t.length > maks || /[\u0000-\u001f\u007f]/.test(t) || KU_RE_TERSEMBUNYI.test(t)) throw new Galat(400, `${nama} ${min}-${maks} karakter tanpa karakter kontrol atau tersembunyi`);
+  if (KU_RE_KONTAK.test(t)) throw new Galat(400, `${nama} tidak boleh memuat nomor telepon atau surel`);
+  return t;
+};
+const kuKj = id => { if (!KU_RE_KJ.test(id ?? "")) throw new Galat(400, "kejadian tidak sah"); return id; };
+const kuTgl = v => {
+  if (typeof v !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(v) || new Date(v + "T00:00:00Z").toISOString().slice(0, 10) !== v) throw new Galat(400, "tenggat wajib, bentuk YYYY-MM-DD");
+  return v;
+};
+const kuId = () => [...crypto.getRandomValues(new Uint8Array(8))].map(b => b.toString(16).padStart(2, "0")).join("");
+export const kuKunci = (kejadianId, nomor) => `kaji|${kejadianId}|${String(nomor).padStart(2, "0")}`;
+/* batas rentang kunci kaji|KJ|nn di PK dl_tindak: '}' (0x7D) tepat sesudah '|' (0x7C), jadi tanpa LIKE */
+export const kuRentang = kejadianId => [`kaji|${kuKj(kejadianId)}|`, `kaji|${kejadianId}}`];
+export const KU_SQL = {
+  kaji: "SELECT kejadian_id, status, versi, mulai_oleh, dibuat, disahkan_oleh, disahkan_pada, diubah FROM ku_kaji WHERE kejadian_id = ?1",
+  potret: "SELECT versi, potret, disahkan_oleh, disahkan_pada FROM ku_kaji WHERE kejadian_id = ?1",
+  potretLama: "SELECT versi, potret, disahkan_oleh, disahkan_pada FROM ku_potret WHERE kejadian_id = ?1 AND versi = ?2",
+  pelajaran: "SELECT id, kategori, teks, rujuk, asal_ops_id, versi_tambah, oleh, dibuat FROM ku_pelajaran WHERE kejadian_id = ?1 ORDER BY dibuat, id LIMIT 500",
+  rekomendasi: "SELECT id, nomor, kunci, teks, unit, tenggat, pelajaran_id, tidak_dilanjutkan, oleh, dibuat FROM ku_rekomendasi WHERE kejadian_id = ?1 ORDER BY nomor LIMIT 99",
+  rekomendasiNomor: "SELECT id, nomor, kunci, teks, tidak_dilanjutkan FROM ku_rekomendasi WHERE kejadian_id = ?1 AND nomor = ?2",
+  nomorBerikut: "SELECT coalesce(max(nomor), 0) + 1 n FROM ku_rekomendasi WHERE kejadian_id = ?1",
+  tindak: "SELECT kunci, status, catatan, oleh, waktu FROM dl_tindak WHERE kunci >= ?1 AND kunci < ?2 ORDER BY kunci LIMIT 200",
+  lintas: "SELECT r.kejadian_id, r.nomor, r.teks, r.unit, r.tenggat, r.tidak_dilanjutkan, t.status, t.waktu FROM ku_rekomendasi r LEFT JOIN dl_tindak t ON t.kunci = r.kunci ORDER BY r.tenggat, r.kejadian_id, r.nomor LIMIT 2000",
+};
+/* satu batch: kaji, pelajaran, rekomendasi, status tindak (rentang kunci). Tanpa potret (berat); potret lewat kuPotret. null bila kaji ulang belum dimulai. */
+export const kuBaca = async (env, p, kejadianId) => {
+  kuKj(kejadianId);
+  const [k, pl, rk, tn] = await env.DB.batch([sedia(env, p, "ku_kaji", "baca", KU_SQL.kaji).bind(kejadianId), sedia(env, p, "ku_pelajaran", "baca", KU_SQL.pelajaran).bind(kejadianId),
+    sedia(env, p, "ku_rekomendasi", "baca", KU_SQL.rekomendasi).bind(kejadianId), sedia(env, p, "dl_tindak", "baca", KU_SQL.tindak).bind(...kuRentang(kejadianId))]);
+  if (!k.results.length) return null;
+  const st = new Map(tn.results.map(r => [r.kunci, r]));
+  return {kaji: k.results[0], pelajaran: pl.results.map(r => ({...r, rujuk: JSON.parse(r.rujuk)})), rekomendasi: rk.results.map(r => ({...r, status: st.get(r.kunci) ?? null}))};
+};
+/* potret beku: versi terkini dari ku_kaji, versi lama dari ku_potret; null bila belum disahkan atau versi tidak ada */
+export const kuPotret = async (env, p, kejadianId, versi = null) => {
+  kuKj(kejadianId);
+  const k = await sedia(env, p, "ku_kaji", "baca", KU_SQL.potret).bind(kejadianId).first();
+  if (!k?.potret) return null;
+  const r = versi == null || versi === k.versi ? k : await sedia(env, p, "ku_potret", "baca", KU_SQL.potretLama).bind(kejadianId, versi).first();
+  return r ? {...r, potret: JSON.parse(r.potret)} : null;
+};
+/* F-7 lintas kejadian: tiap rekomendasi dengan status terkininya (null = belum ada baris dl_tindak); lewat tenggat dihitung pemanggil dari tanggal */
+export const kuDaftarRekomendasi = async (env, p) => (await sedia(env, p, "ku_rekomendasi", "baca", KU_SQL.lintas).all()).results;
+/* mulai: satu baris draf bila kejadian ada dan belum dimulai; jejak sk_jejak hanya bila baris tertulis. true = baru dimulai. */
+export const kuMulai = async (env, p, {kejadianId, oleh}, kini) => {
+  kuKj(kejadianId);
+  const s = sedia(env, p, "ku_kaji", "tambah", "INSERT INTO ku_kaji (kejadian_id, status, versi, mulai_oleh, dibuat, diubah) SELECT id, 'draf', 0, ?2, ?3, ?3 FROM sk_kejadian WHERE id = ?1 AND NOT EXISTS (SELECT 1 FROM ku_kaji WHERE kejadian_id = ?1)").bind(kejadianId, oleh, kini);
+  try {
+    const [r] = await skBatch(env, p, [s, skStmtJejakJikaBerubah(env, pelakuSkStaf /* hak tulis sudah dicek di sedia(ku_kaji); sk_jejak hanya mengenal pelaku sk_* */, oleh, "kaji_ulang", kejadianId, "mulai", null, "draf", null, kini)]);
+    return r.meta.changes === 1;
+  } catch (e) { if (/sudah ada; tidak boleh ditimpa/.test(String(e?.message ?? e))) return false; throw e; }   // balapan dua mulai: pemicu ku_kaji_tetap_sisip, batch batal
+};
+const kuBerubah = async f => { try { return await f(); } catch (e) {
+  const m = String(e?.message ?? e);
+  if (/tidak boleh (diubah|dihapus)/.test(m)) throw new Galat(409, "kaji ulang sudah disahkan; hanya bisa menambah baris baru");
+  if (/FOREIGN KEY/i.test(m)) throw new Galat(404, "kejadian atau pelajaran tidak ada");
+  if (/UNIQUE/i.test(m)) throw new Galat(409, "nomor rekomendasi bentrok; ulangi");
+  throw e; } };
+/* pelajaran baru: versi_tambah = versi kaji saat ini (0 bila draf); kaji ulang harus sudah dimulai (404 bila tidak) */
+export const kuTambahPelajaran = (env, p, {kejadianId, kategori, teks, rujuk = [], asalOpsId = null, oleh}, kini) => {
+  kuKj(kejadianId);
+  if (!["baik", "perbaiki"].includes(kategori)) throw new Galat(400, "kategori baik atau perbaiki");
+  const t = kuTeks(teks, "teks pelajaran", 10, 1000);
+  if (!Array.isArray(rujuk) || rujuk.some(x => !x || typeof x !== "object" || Array.isArray(x) || Object.keys(x).some(k => !KU_KUNCI_RUJUK.includes(k)) || Object.values(x).some(v => v !== null && !["string", "number"].includes(typeof v)))) throw new Galat(400, `rujuk larik objek dengan kunci ${KU_KUNCI_RUJUK.join(", ")}`);
+  const rj = JSON.stringify(rujuk);
+  if (rj.length > 400) throw new Galat(400, "rujuk paling banyak 400 karakter");
+  if (rujuk.some(x => Object.values(x).some(v => typeof v === "number" ? !Number.isFinite(v) : typeof v === "string" && (KU_RE_KONTAK.test(v.normalize("NFKC")) || KU_RE_TERSEMBUNYI.test(v))))) throw new Galat(400, "rujuk tidak boleh memuat nomor telepon, surel, atau karakter tersembunyi");
+  if (asalOpsId != null && !/^[A-Za-z0-9_-]{1,40}$/.test(asalOpsId)) throw new Galat(400, "asal_ops_id tidak sah");
+  const id = kuId();
+  return kuBerubah(async () => {
+    const [r] = await env.DB.batch([sedia(env, p, "ku_pelajaran", "tambah", `INSERT INTO ku_pelajaran (id, kejadian_id, kategori, teks, rujuk, asal_ops_id, versi_tambah, oleh, dibuat)
+      SELECT ?1, kejadian_id, ?3, ?4, ?5, ?6, versi, ?7, ?8 FROM ku_kaji WHERE kejadian_id = ?2`).bind(id, kejadianId, kategori, t, rj, asalOpsId ?? null, oleh, kini)]);
+    if (r.meta.changes !== 1) throw new Galat(404, "kaji ulang belum dimulai");
+    return id;
+  });
+};
+/* ubah teks/kategori pelajaran: hanya saat masih draf (pemicu ku_pelajaran_beku_ubah menolak sisanya -> 409) */
+export const kuUbahPelajaran = (env, p, {id, kategori, teks}, kini) => {
+  if (!KU_RE_ID.test(id ?? "")) throw new Galat(400, "id tidak sah");
+  if (!["baik", "perbaiki"].includes(kategori)) throw new Galat(400, "kategori baik atau perbaiki");
+  const t = kuTeks(teks, "teks pelajaran", 10, 1000);
+  return kuBerubah(async () => (await sedia(env, p, "ku_pelajaran", "ubah", "UPDATE ku_pelajaran SET kategori = ?2, teks = ?3 WHERE id = ?1").bind(id, kategori, t).run()).meta.changes === 1);
+};
+/* dl_tindak(+log) hanya bila baris ku_rekomendasi tadi tertulis (SELECT ... WHERE EXISTS id): pelajaran lintas kejadian = tidak ada yang tertulis */
+const dlStmtTindakJikaBaru = (env, id, oleh, kini) => env.DB.prepare("INSERT INTO dl_tindak (kunci, status, catatan, oleh, waktu) SELECT kunci, 'belum', NULL, ?2, ?3 FROM ku_rekomendasi WHERE id = ?1").bind(id, oleh, kini);
+const dlStmtTindakLogJikaBaru = (env, id, teks, oleh, kini) => env.DB.prepare("INSERT INTO dl_tindak_log (kunci, status, catatan, langkah, oleh, waktu) SELECT kunci, 'belum', NULL, ?2, ?3, ?4 FROM ku_rekomendasi WHERE id = ?1").bind(id, teks, oleh, kini);
+/* rekomendasi baru: nomor = max+1 (bentrok balapan = UNIQUE -> 409, seluruh batch batal), satu batch dengan dl_tindak (belum) dan dl_tindak_log (langkah = teks) (T8).
+   Tenggat wajib (D7/Q4); rentang 7..365 hari dicek rute (butuh tanggal sahkan). Kembali {id, nomor, kunci}. */
+export const kuTambahRekomendasi = async (env, p, {kejadianId, teks, unit, tenggat, pelajaranId = null, oleh}, kini) => {
+  kuKj(kejadianId);
+  const t = kuTeks(teks, "teks rekomendasi", 10, 400), u = kuTeks(unit, "unit", 2, 80), tg = kuTgl(tenggat);
+  if (pelajaranId != null && !KU_RE_ID.test(pelajaranId)) throw new Galat(400, "pelajaran tidak sah");
+  if (!(await sedia(env, p, "ku_kaji", "baca", KU_SQL.kaji).bind(kejadianId).first())) throw new Galat(404, "kaji ulang belum dimulai");
+  const n = (await sedia(env, p, "ku_rekomendasi", "baca", KU_SQL.nomorBerikut).bind(kejadianId).first()).n;
+  if (n > KU_MAKS_REKOMENDASI) throw new Galat(409, "paling banyak 99 rekomendasi per kejadian");
+  const id = kuId(), kunci = kuKunci(kejadianId, n);
+  const [r] = await kuBerubah(() => env.DB.batch([sedia(env, p, "ku_rekomendasi", "tambah", `INSERT INTO ku_rekomendasi (id, kejadian_id, nomor, kunci, teks, unit, tenggat, pelajaran_id, oleh, dibuat)
+    SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10 WHERE ?8 IS NULL OR EXISTS (SELECT 1 FROM ku_pelajaran WHERE id = ?8 AND kejadian_id = ?2)`)
+    .bind(id, kejadianId, n, kunci, t, u, tg, pelajaranId, oleh, kini), dlStmtTindakJikaBaru(env, id, oleh, kini), dlStmtTindakLogJikaBaru(env, id, t, oleh, kini)]));
+  if (r.meta.changes !== 1) throw new Galat(400, "pelajaran bukan milik kejadian ini");
+  return {id, nomor: n, kunci};
+};
+/* status rekomendasi lewat dl_tindak + dl_tindak_log + (bila tidak dilanjutkan) penanda di ku_rekomendasi, satu batch. Selesai wajib catatan 20..300 (D7); tidakDilanjutkan wajib selesai (Q8). null = nomor tidak ada. */
+export const kuUbahStatus = async (env, p, {kejadianId, nomor, status, catatan = null, tidakDilanjutkan = false, oleh}, kini) => {
+  if (!boleh(p, "ku_rekomendasi", "ubah")) throw new Galat(403, `pelaku ${p?.peran ?? "-"} tidak berhak ubah status rekomendasi`);   // dlStmtTindak* tidak lewat sedia
+  kuKj(kejadianId);
+  if (!KU_STATUS.includes(status)) throw new Galat(400, "status belum, proses, atau selesai");
+  const c = catatan == null || catatan === "" ? null : kuTeks(catatan, "catatan", status === "selesai" ? 20 : 1, 300);
+  if (status === "selesai" && c === null) throw new Galat(400, "status selesai wajib catatan penutup 20-300 karakter");
+  if (tidakDilanjutkan && status !== "selesai") throw new Galat(400, "tidak dilanjutkan hanya dengan status selesai");
+  const r = await sedia(env, p, "ku_rekomendasi", "baca", KU_SQL.rekomendasiNomor).bind(kejadianId, Number(nomor)).first();
+  if (!r) return null;
+  const stm = [dlStmtTindak(env, r.kunci, status, c, oleh, kini), dlStmtTindakLog(env, r.kunci, status, c, r.teks, oleh, kini)];
+  if (tidakDilanjutkan && !r.tidak_dilanjutkan) stm.push(sedia(env, p, "ku_rekomendasi", "ubah", "UPDATE ku_rekomendasi SET tidak_dilanjutkan = 1 WHERE id = ?1").bind(r.id));
+  await kuBerubah(() => env.DB.batch(stm));
+  return {kunci: r.kunci, status};
+};
+/* riwayat satu rekomendasi (terbaru dulu, maks 100); null bila nomor tidak ada */
+export const kuRiwayat = async (env, p, kejadianId, nomor) => {
+  kuKj(kejadianId);
+  const r = await sedia(env, p, "ku_rekomendasi", "baca", KU_SQL.rekomendasiNomor).bind(kejadianId, Number(nomor)).first();
+  return r ? dlTindakRiwayat(env, r.kunci) : null;
 };

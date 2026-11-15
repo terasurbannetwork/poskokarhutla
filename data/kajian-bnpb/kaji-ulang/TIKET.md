@@ -16,3 +16,12 @@ Kerjakan urut; ambil satu tiket, kerjakan hanya cakupannya. Nomor migrasi diambi
 | KU-10 | Ringkasan hitungan di Laporan Berkala | pipa-data + layar-peta | paket Laporan Berkala | Q9 |
 | KU-11 | Pemilik menerapkan migrasi di D1 produksi | pemilik | `wrangler d1 migrations apply` | KU-01 |
 | KU-12 | Kalibrasi kriteria Q1 sesudah 10 kejadian disahkan | siklus (+ validasi-model) | catatan kalibrasi di ALGORITMA 8 | KU-09 |
+
+## Catatan untuk rute KU-04 sampai KU-06 (temuan security-reviewer atas KU-02, 15 Nov 2026)
+
+- `oleh` selalu dari sesi (`staf:<id>` atau `admin:<kode>`), tidak pernah dari body. Batasnya: `dl_tindak.oleh` 40 karakter, `ku_*.oleh` dan `sk_jejak.oleh` 64; pakai identitas yang muat 40.
+- Fungsi `ku*` di `src/hak.js` mengembalikan `oleh` apa adanya; rute membuangnya untuk Pimpinan dan BP (peran saja). Pemetaan pelaku: Super Admin, Pusdalops, Koordalops ke `pelakuKuTulis`; Pimpinan dan BP ke `pelakuKuBaca`.
+- BP hanya kab wilayahnya dan hanya kaji ulang berstatus disahkan; di luar itu dijawab sama dengan kejadian tidak ada. Penyaringan ada di rute, bukan di hak.js.
+- Batas laju 120 tulis per 10 menit per pengisi (`dlTindakLaju`) dicek di rute sebelum fungsi tulis; rentang tenggat 7..365 hari dan aturan penulis tunggal Q3 juga di rute.
+- `kuMulai` mengembalikan false untuk kejadian tak ada DAN kaji ulang yang sudah dimulai; rute membedakannya lewat `kuBaca` (404 vs 200/409) sebelum memanggil.
+- Fungsi tulis `ku*` yang memakai `dlStmtTindak*` memeriksa hak sendiri (tidak lewat `sedia`); fungsi baru yang sama wajib begitu.

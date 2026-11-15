@@ -82,3 +82,15 @@ uji("T11: kueri terkini, riwayat, laju, nama staf memakai indeks", () => {
     "SELECT count(*) n FROM dl_tindak_log WHERE oleh = ? AND waktu > ?", "SELECT id, nama FROM staf WHERE id IN (SELECT value FROM json_each(?))"])
     assert.doesNotMatch(plan(sql), /SCAN (dl_tindak|dl_tindak_log|staf)\b/, sql);
 });
+
+uji("kunci kaji| (kaji ulang) tidak bocor ke GET /api/dalops/tindak, walau lebih baru dan lebih dari 2000; kunci banjir tetap muncul; indeks tetap dipakai", async () => {
+  const {results: ada} = await DB.prepare("SELECT count(*) n FROM dl_tindak WHERE kunci NOT LIKE 'kaji|%'").all(), sebelum = ada[0].n;
+  assert.ok(sebelum > 0);
+  await DB.batch(Array.from({length: 2005}, (_, i) => DB.prepare("INSERT INTO dl_tindak (kunci, status, oleh, waktu) VALUES (?, 'belum', 'x', ?)").bind(`kaji|KJ-2026-0000000A|${String(i).padStart(4, "0")}`, Date.now() + 1000 + i)));
+  const g = await api("GET", "/api/dalops/tindak", undefined, MOD2); assert.equal(g.s, 200, g.t);
+  assert.ok(!g.t.includes("kaji|"), "tidak ada kunci kaji|");
+  assert.equal(g.j.butir.length, sebelum, "semua baris non-kaji tetap tampil");
+  const db = new DatabaseSync(":memory:"); db.exec(migrasi());
+  const plan = db.prepare("EXPLAIN QUERY PLAN SELECT kunci, status, catatan, oleh, waktu FROM dl_tindak WHERE waktu > ? AND (kunci < 'kaji|' OR kunci >= 'kaji}') ORDER BY waktu DESC LIMIT 2000").all().map(r => r.detail).join(" | ");
+  assert.doesNotMatch(plan, /SCAN dl_tindak\b(?! USING)/, plan);
+});
