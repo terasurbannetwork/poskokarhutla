@@ -10,7 +10,7 @@ Halaman:
   1  Sudah banjir: peta kab/kota (belum surut, sudah surut) + tabel per kab/kota (kec., mulai, selesai, KK, mengungsi, kondisi).
   2  Prakiraan N hari: peta level tertinggi per kab/kota + tabel per kab/kota (kec. Awas, kec. Siaga, level per hari,
      puncak hujan tiga hari, kondisi kini) memuat juga kab/kota yang masih banjir.
-  3  Provinsi lain: hanya dibuat bila ada kecamatan Siaga/Awas di luar provinsi pilihan; peta Indonesia + tabel per provinsi.
+  3  Provinsi lain: hanya dengan --provinsi-lain (pemilik 15 Nov 2026: "yang ini gausah ada") dan bila ada Siaga/Awas di luar provinsi pilihan.
 Masukan:
   - WA Koordalops ../harian/YYYY-MM/YYYY-MM-DD/wa-koordalops.txt (lewat jalur.py) (14 hari terakhir) + --wa, diurai wa_harian.koordalops. Kecamatan terdampak
     dari data/raw/dalops/banjir.json (logbook Pusdalops) bila ada.
@@ -432,7 +432,7 @@ def gandakan(P, n):
 
 # ---------------------------------------------------------------- deck
 
-def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, tanpa_lain=False):
+def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=False):
     import wa_harian
     from wilayah import PROVINSI
     kode = {v.lower(): k for k, v in PROVINSI.items()}.get(prov.lower()) or sys.exit(f'provinsi tidak dikenal: {prov}')
@@ -450,7 +450,7 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, tanpa_lain=Fals
     jam = dibuat[11:16].replace(':', '.')
     rentang = f'{dt.date.fromisoformat(hari[0]).day}-{tgl(hari[-1])}'
     gis = f'ECMWF IFS, GloFAS, InaRISK BNPB, {tgl(dibuat)} {dibuat[:4]} {jam} WIB'
-    lain = {} if tanpa_lain else {k: v for k, v in rk.items() if k[0] != kode and (v['a'] or v['s'])}
+    lain = {} if not provinsi_lain else {k: v for k, v in rk.items() if k[0] != kode and (v['a'] or v['s'])}
     o0 = 1 if kab_fokus else 0
     n_sl = (3 if lain else 2) + o0
     bagian = ([kab_fokus] if kab_fokus else []) + ['Sudah banjir', f'Prakiraan {n_hari} hari'] + (['Provinsi lain'] if lain else [])
@@ -623,7 +623,7 @@ def uji():
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument('--prov', default='Aceh'); ap.add_argument('--kab', help='kab/kota fokus di slide pertama, mis. "Aceh Singkil"'); ap.add_argument('--tanpa-lain', action='store_true', help='tanpa slide Awas/Siaga provinsi lain'); ap.add_argument('--hari', type=int, default=6)
+    ap.add_argument('--prov', default='Aceh'); ap.add_argument('--kab', help='kab/kota fokus di slide pertama, mis. "Aceh Singkil"'); ap.add_argument('--provinsi-lain', action='store_true', help='tambah slide Awas/Siaga provinsi lain (bawaan: tidak, pemilik 15 Nov 2026)'); ap.add_argument('--hari', type=int, default=6)
     ap.add_argument('--tanggal', default=dt.date.today().isoformat()); ap.add_argument('--wa', nargs='*', default=[])
     ap.add_argument('--keluar'); ap.add_argument('--uji', action='store_true'); ap.add_argument('--ramping', nargs=2, metavar=('ASAL', 'TUJUAN'))
     a = ap.parse_args()
@@ -632,4 +632,4 @@ if __name__ == '__main__':
     else:
         if not 1 <= a.hari <= 6: sys.exit('--hari 1 sampai 6 (hujan.json memuat 6 hari ke depan)')
         nm = (a.kab + ' ' if a.kab else '') + a.prov
-        bangun(a.prov, a.hari, a.tanggal, a.keluar or os.path.join(SINI, '..', 'paparan', f"situasi-banjir-{nm.lower().replace(' ', '-')}-{a.tanggal}"), a.wa, a.kab, a.tanpa_lain)
+        bangun(a.prov, a.hari, a.tanggal, a.keluar or os.path.join(SINI, '..', 'paparan', f"situasi-banjir-{nm.lower().replace(' ', '-')}-{a.tanggal}"), a.wa, a.kab, a.provinsi_lain)

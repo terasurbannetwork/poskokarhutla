@@ -182,7 +182,7 @@ cd data/laporan-bnpb/generator
 ## Situasi Banjir per provinsi (templat, 14 Nov 2026)
 
 Tiruan halaman banjir deck "Situasi Banjir dan Bencana Lain 091126": slide 1 sudah banjir (peta + tabel + kondisi
-mutakhir), slide 2 prakiraan N hari (paling banyak 6), slide 3 kab/kota Awas/Siaga di provinsi lain (hanya bila ada).
+mutakhir), slide 2 prakiraan N hari (paling banyak 6), slide Awas/Siaga provinsi lain hanya dengan `--provinsi-lain`.
 
 ```bash
 ~/.claude/skills/ppt-konsultan/bnpb/.venv/bin/python situasi_banjir.py --prov Aceh --hari 6 --tanggal 2026-11-14
