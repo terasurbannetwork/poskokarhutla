@@ -132,5 +132,6 @@
   "0128_dl_tindak.sql": "ea8d50424d557497a7d507601c02304ca67f3c30705119050d41cc144d99c9db",
   "0129_semai_target.sql": "9a4a36ad0ee0343b5ef8894944e37e0d8cdf64f38ac70f9436731e3aa3941414",
   "0130_paritas_operasi.sql": "0a789b05bb3969535dc6a981c9c29a2affb5d1960a6836dfbd10a1a47d05a00e",
-  "0132_indeks_kursor_modul.sql": "6a201780f0d29a5b6865c3a270d6e5af1fa1a86fda9fed24706b4012fa5dab8c"
+  "0132_indeks_kursor_modul.sql": "6a201780f0d29a5b6865c3a270d6e5af1fa1a86fda9fed24706b4012fa5dab8c",
+  "0133_masuk.sql": "08c3ebf1f4d8ce24b1bd57f3498d4af9ffb7cedafb95d9cc8d0915fdb447e410"
 }

@@ -1255,7 +1255,17 @@
     "table meja_jejak_cadang": "tabel cadangan sementara di migrations/0110_meja_rehab_lepas.sql: dibuat dan dibuang di migrasi yang sama saat meja_catatan dibangun ulang (F0-3, RU-009); salin-pulih datanya diuji tests/warga/unit_skema.test.mjs R1-R10",
     "table op_kontrak": "dibuat migrasi 0126 untuk tiket isian Operasi Udara berikutnya; belum ada kode di src/ yang membaca atau menulisnya, uji integrasi menyusul bersama rutenya",
     "table op_personel": "dibuat migrasi 0126 untuk tiket isian Operasi Udara berikutnya; belum ada kode di src/ yang membaca atau menulisnya, uji integrasi menyusul bersama rutenya",
-    "table op_foto_unggah": "dibuat migrasi 0126 untuk tiket isian Operasi Udara berikutnya; belum ada kode di src/ yang membaca atau menulisnya, uji integrasi menyusul bersama rutenya"
+    "table op_foto_unggah": "dibuat migrasi 0126 untuk tiket isian Operasi Udara berikutnya; belum ada kode di src/ yang membaca atau menulisnya, uji integrasi menyusul bersama rutenya",
+    "table mk_akun": "dibuat migrasi 0133 (paket pintu-masuk PM-02); kode src/masuk.js dan uji tests/warga/masuk.test.mjs menyusul di PM-03",
+    "table mk_sesi": "dibuat migrasi 0133 (paket pintu-masuk PM-02); kode src/masuk.js dan uji tests/warga/masuk.test.mjs menyusul di PM-03",
+    "table mk_kode": "dibuat migrasi 0133 (paket pintu-masuk PM-02); kode src/masuk.js dan uji tests/warga/masuk.test.mjs menyusul di PM-03",
+    "table mk_anggota": "dibuat migrasi 0133 (paket pintu-masuk PM-02); kode src/masuk.js dan uji tests/warga/masuk.test.mjs menyusul di PM-03",
+    "table mk_undang": "dibuat migrasi 0133 (paket pintu-masuk PM-02); kode src/masuk.js dan uji tests/warga/masuk.test.mjs menyusul di PM-03",
+    "table mk_domain": "dibuat migrasi 0133 (paket pintu-masuk PM-02); kode src/masuk.js dan uji tests/warga/masuk.test.mjs menyusul di PM-03",
+    "table mk_masuk_log": "dibuat migrasi 0133 (paket pintu-masuk PM-02); kode src/masuk.js dan uji tests/warga/masuk.test.mjs menyusul di PM-03",
+    "table mk_denyut": "dibuat migrasi 0133 (paket pintu-masuk PM-02); kode src/masuk.js dan uji tests/warga/masuk.test.mjs menyusul di PM-03",
+    "table mk_pemirsa_wa": "dibuat migrasi 0133 (paket pintu-masuk PM-02); kode src/masuk.js dan uji tests/warga/masuk.test.mjs menyusul di PM-03",
+    "table alun_penulis": "dibuat migrasi 0133 (paket pintu-masuk PM-02); kode src/masuk.js dan uji tests/warga/masuk.test.mjs menyusul di PM-03"
   },
   "antre": {
     "batas global 600 laporan/jam": "butuh 600 baris jejak; tambahkan uji yang menyemai jejak langsung"

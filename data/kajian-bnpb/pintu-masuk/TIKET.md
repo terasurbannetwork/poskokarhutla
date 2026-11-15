@@ -1,6 +1,6 @@
 # TIKET: Satu Pintu Masuk
 
-Ambil satu tiket, kerjakan hanya cakupannya. Tiap tiket: pengerja pemilik berkas, lalu pemeriksa bersih yang bukan pengerjanya (AGENTS 3.2). Subagent tidak commit dan tidak push. Selesai: PM-01 (15 Nov 2026).
+Ambil satu tiket, kerjakan hanya cakupannya. Tiap tiket: pengerja pemilik berkas, lalu pemeriksa bersih yang bukan pengerjanya (AGENTS 3.2). Subagent tidak commit dan tidak push. Selesai: PM-01, PM-02 (15 Nov 2026). Migrasi `0133_masuk.sql` belum diterapkan di D1 produksi; itu langkah pemilik.
 
 ## Urutan
 

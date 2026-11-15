@@ -9,7 +9,7 @@ Semua rujukan berkas dan baris diukur 15 Nov 2026; cek ulang sebelum dipakai.
 | `src/masuk.js` (baru) | rute `/masuk` dan `/api/masuk/*`, kode, akun umum, pemilih ruang | `warga-api` |
 | `src/masuk_konst.js` (baru) | semua ambang ALGORITMA | `warga-api` |
 | `src/masuk_undang.js` (baru) | anggota, undangan berantai, papan aktivasi | `warga-api` |
-| `migrations/<nomor>_masuk.sql` (baru) | tabel `mk_*`, `alun_penulis`, indeks `wa` | `warga-api` |
+| `migrations/0133_masuk.sql` | tabel `mk_*`, `alun_penulis`, indeks `wa` | `warga-api` |
 | `public/masuk.html`, `public/masuk.js`, `public/masuk.css` (baru) | layar L1 sampai L5 | sekarang jatuh ke `layar-peta` menurut `ilmu.mjs pemilik`; PM-01 menambah entri roster supaya menjadi milik `warga-api` seperti `public/admin/masuk.html` |
 | `public/inti/undang.js` (baru) | kartu "Undang rekan" L6 | `inti-layar` |
 | `public/admin/aktivasi.js` (baru) | papan aktivasi L7 | `warga-api` |
@@ -134,6 +134,8 @@ CREATE INDEX IF NOT EXISTS kontak_pemangku_wa ON kontak_pemangku (wa);
 
 Catatan skema yang sudah dicek:
 
+- Berkasnya `migrations/0133_masuk.sql` (PM-02). Nomor 0131 dilewati karena dipesan paket paritas-bencana. Lolos pemeriksa `migrasi-idempoten`.
+- `mk_masuk_log` dan `alun_penulis` sengaja tanpa FK ke `mk_akun`: log masuk harus bertahan sesudah akun dihapus, dan baris `alun_penulis` dihapus oleh kode hapus akun (PM-14).
 - `relawan` sudah punya indeks unik `relawan_wa_aktif` (`migrations/0023_relawan.sql:82`); tidak ditambah indeks baru.
 - `wa_antre.jenis` hanya ber-CHECK panjang 1 sampai 20 (`migrations/0095_lapangan_orang.sql`), jadi jenis `otp` diterima tanpa migrasi.
 - `instansi_akun` unik per `(jenis, kunci_wilayah)` dan status aktif mewajibkan `surat = 1 AND kartu = 1` (`0029:37-40`). Karena itu paket ini tidak membuat atau mengaktifkan baris `instansi_akun`; ia hanya menambah anggota.
