@@ -20,6 +20,9 @@ async function baris(env, tgl, bencana, wil, kini) {
   if (cache.size > 200) cache.clear();
   cache.set(k, {t: kini, r}); return r;
 }
+/* Pembaca kemampuan.dasbor (PB-04). Aturan peralihan: selama TIDAK ADA entri registri yang menyalakan kunci itu, semua bencana ikut (perilaku sebelum registri dinyalakan);
+   begitu ada satu yang menyala, hanya yang menyala yang ikut. Jadi tidak ada data yang hilang sebelum pemilik menyalakan registri. */
+const ikutDasbor = (kunci, nyala) => { const ada = REGISTRY.bencana.some(b => nyala(b.kemampuan?.dasbor?.[kunci])); return new Set(REGISTRY.bencana.filter(b => !ada || nyala(b.kemampuan?.dasbor?.[kunci])).map(b => b.id)); };
 const urut = (a, b) => (b.wilayah === "prov") - (a.wilayah === "prov") || (b.tmt_mulai > a.tmt_mulai ? 1 : b.tmt_mulai < a.tmt_mulai ? -1 : 0) || b.perpanjangan_ke - a.perpanjangan_ke;
 
 const unik = rows => { const per = new Map(); for (const r of [...rows].sort(urut)) if (!per.has(r.kejadian_id)) per.set(r.kejadian_id, r); return [...per.values()]; };
@@ -36,7 +39,8 @@ const papan = rute(async (env, req, url, kini) => {
   let rows;
   try { rows = await baris(env, tgl, bencana, prov ? [prov] : [...wilayahStaf(req)].sort(), kini); }
   catch (e) { if (TANPA_TABEL.test(String(e?.message || e))) return json({tersedia: false, sk: []}, 200, {"cache-control": "private, no-store"}); throw e; }
-  const sk = unik(rows).map(r => {
+  const ikut = ikutDasbor("papan_sk", v => v === true);
+  const sk = unik(rows).filter(r => ikut.has(r.jenis)).map(r => {
     const sisa = sisaHari(r, tgl);
     return {bencana: r.jenis, prov: r.prov, kab: r.kab, wilayah: r.wilayah, tingkat: r.tingkat, nomor: r.nomor, tgl_sk: r.tgl_sk, tmt_mulai: r.tmt_mulai, tmt_selesai: r.tmt_selesai, perpanjangan_ke: r.perpanjangan_ke,
       sisa_hari: sisa, sinyal: sisa === null ? "tanpa_tanggal_selesai" : sisa <= AMBANG_BERAKHIR ? "akan_berakhir" : null};
@@ -88,7 +92,7 @@ const ringkas = rute(async (env, req, url, kini) => {
   if (s && prov && !dalamWilayahStaf(req, [prov])) return gagal(403, "provinsi di luar wilayah akun Anda");
   const tgl = new Date(kini + 7 * 36e5).toISOString().slice(0, 10);
   const op = await operasi(env, adm ? "a" : s ? "s" : "p", tgl, prov ? [prov] : [...wilayahStaf(req)].sort(), kini);
-  const ids = REGISTRY.bencana.map(b => b.id).filter(id => !bencana || id === bencana);
+  const ikut = ikutDasbor("ringkas", v => !!v), ids = REGISTRY.bencana.map(b => b.id).filter(id => ikut.has(id) && (!bencana || id === bencana));
   const hasil = await Promise.all(ids.map(async id => ({id, ringkas: await berkas(env, url, id), operasi: op.per[id]})));
   return json({kini: iso(kini), tanggal: tgl, terpotong: op.terpotong, bencana: hasil}, 200, {"cache-control": "private, no-store", vary: "cookie"});
 });

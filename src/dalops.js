@@ -32,6 +32,8 @@ export const RUTE_DALOPS = {
   "GET /api/dalops/kekeringan": (env, req) => data(env, req, "kekeringan"),
   "GET /api/dalops/gelombang": (env, req) => data(env, req, "gelombang"),     // gelombang pasang, abrasi, rob (11 Nov 2026)
   "GET /api/dalops/permukiman": (env, req) => data(env, req, "permukiman"),   // kebakaran permukiman (11 Nov 2026)
+  "GET /api/dalops/gunungapi": (env, req) => data(env, req, "gunungapi"),     // gunung api dari logbook dan MAGMA (PB-46b)
+  "GET /api/dalops/udara": (env, req) => data(env, req, "udara"),             // kualitas udara dan asap (PB-38b)
   "GET /api/dalops/laporan": (env, req, url) => bacaLaporan(env, req, url, data),   // Laporan Masuk: ringkasan rekap WA 07.00 (src/dalops_laporan.js)
   "POST /api/dalops/laporan/dummy": (env, req, url, kini) => dummyLaporan(env, req, kini),
 };

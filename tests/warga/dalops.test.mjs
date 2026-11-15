@@ -57,7 +57,7 @@ test("longsor dan karhutla (pemilik 5 Nov 2026): satu rute per jenis, kunci R2 t
 });
 
 test("gempa, cuaca, kekeringan: tanpa sesi 401, staf mendapat isi R2-nya, belum diunggah 404", async () => {
-  for (const j of ["gempa", "cuaca", "kekeringan"]) {
+  for (const j of ["gempa", "cuaca", "kekeringan", "gelombang", "permukiman", "udara", "gunungapi"]) {
     const url = "http://dalops.lokal/api/dalops/" + j;
     assert.equal((await mf.dispatchFetch(url)).status, 401, "tanpa sesi " + j);
     assert.equal((await mf.dispatchFetch(url, {headers: LUAR})).status, 401, "verifikator tidak berhak " + j);

@@ -8,6 +8,7 @@ import "../../src/worker.js";   // dahulu: impor sirkular
 import {siapkan, berantai, MOD2, ADMIN, sha256} from "./_bnpb.mjs";
 import {migrasi} from "./_bantu.mjs";
 import {PB_SQL_RINGKAS} from "../../src/hak.js";
+import REGISTRY from "../../src/bencana.generated.js";
 
 const uji = berantai();
 const hari = d => new Date(Date.now() + 7 * 36e5 + d * 864e5).toISOString().slice(0, 10);
@@ -34,9 +35,9 @@ const per = (r, b) => r.j.bencana.find(x => x.id === b);
     assert.equal((await ringkas("?prov=../")).s, 400);
   });
 
-  uji("berkas ringkas apa adanya: karhutla mati dan basi tampil, angka null tetap null; delapan bencana", async () => {
+  uji("berkas ringkas apa adanya: karhutla mati dan basi tampil, angka null tetap null; semua bencana registri", async () => {
     const r = await ringkas(); assert.equal(r.s, 200, r.t);
-    assert.equal(r.j.bencana.length, 8);
+    assert.equal(r.j.bencana.length, REGISTRY.bencana.length);
     const k = per(r, "karhutla"); assert.equal(k.ringkas.bencana, "karhutla"); assert.equal(k.ringkas.angka.kejadian_30h, null);
     assert.ok(k.ringkas.basi === true || k.ringkas.basi === false); assert.ok(k.ringkas.angka_meta);
     assert.deepEqual((await ringkas("?bencana=banjir")).j.bencana.map(x => x.id), ["banjir"]);

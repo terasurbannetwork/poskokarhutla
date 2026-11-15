@@ -20,6 +20,8 @@ SIMPAN_HARI = 60      # [BAWAAN SEMENTARA] umur arsip berita lokal
 LONGGAR = 1           # [BAWAAN SEMENTARA] hari kelonggaran sebelum laporan resmi terakhir (tanggal laphar = H-1)
 MAKS_BUKTI = 5
 # [BAWAAN SEMENTARA] Q1: hari senyap minimal untuk "mungkin_selesai" berdasar alam; hanya jenis bersinyal alam
+# gunungapi: TANPA angka hari; tidak ada ambang bersumber, jadi ia tidak masuk AMBANG dan dasar "alam"-nya hanya level resmi PVMBG apa adanya
+# (alam(): level >= 2 Waspada = aktif, level 1 Normal = normal). Mungkin_selesai hanya dari berita atau status resmi (KEPUTUSAN D1: label tidak menutup).
 AMBANG = {"banjir": 3, "longsor": 7, "karhutla": 3, "kekeringan": 14}
 
 # jenis -> (berkas berita tayang, berkas alam atau None)
@@ -31,6 +33,7 @@ BERKAS = {
     "kekeringan": ("/banjir/data/berita_kekeringan.json", "/kekeringan/data/gdo.json"),
     "karhutla": ("/data/berita.json", "/data/peta_karhutla_kab.json"),
     "gelombang": ("/banjir/data/berita_pesisir.json", None),
+    "gunungapi": ("/banjir/data/berita_gunungapi.json", "/banjir/data/gunungapi_status.json"),   # status MAGMA Indonesia, PVMBG
     "permukiman": ("/data/berita.json", None),   # [BAWAAN SEMENTARA] Q2: belum ada umpan sendiri
 }
 # beberapa jenis berbagi berkas: artikel wajib menyebut jenisnya (ALGORITMA 1.3)
@@ -38,6 +41,7 @@ KATA_JENIS = {
     "banjir": re.compile(r"banjir|genang|terendam|meluap|bandang"),
     "longsor": re.compile(r"longsor|tanah bergerak|pergerakan tanah|tertimbun"),
     "gelombang": re.compile(r"\brob\b|gelombang|abrasi|pasang"),
+    "gunungapi": re.compile(r"gunung\s?api|gunung\s+\w+|erupsi|meletus|letusan|abu vulkanik"),
     "karhutla": re.compile(r"kebakaran hutan|kebakaran lahan|karhutla|lahan terbakar|hutan terbakar"),
     "permukiman": re.compile(r"kebakaran (?:rumah|permukiman|pemukiman|pasar|ruko|gedung|bangunan)"),
 }
@@ -134,6 +138,11 @@ def alam(jenis, k, data, h):
         if hit.get(n, 0) > 0:
             return "aktif"
         return "normal" if hit.get(n, 0) == 0 and hit.get(n - 1, 0) == 0 else None
+    if jenis == "gunungapi":   # level resmi PVMBG apa adanya; gunung dicari dari nama di lokasi kejadian
+        t = " ".join(str(k.get(f) or "") for f in ("lokasi", "kab", "judul", "nama")).lower()
+        lv = [g.get("level") for g in data.get("gunung") or [] if g.get("nama") and g["nama"].lower() in t]
+        lv = [x for x in lv if isinstance(x, int)]
+        return None if not lv else ("aktif" if max(lv) >= 2 else "normal")
     if jenis == "kekeringan":
         kol = data.get("kolom_kab") or []
         if "gdo_spi3" not in kol or "gdo_tanah" not in kol:
