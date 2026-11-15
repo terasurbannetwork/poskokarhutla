@@ -704,10 +704,14 @@ export default {
       },
       "prioritas": [],
       "kemampuan": {
-        "operasi": false,
+        "operasi": true,
         "renlap": {
-          "sarana": [],
-          "bobot": ""
+          "sarana": [
+            "terpal",
+            "atap_darurat",
+            "alat_berat"
+          ],
+          "bobot": "cuaca"
         },
         "dokumen": [],
         "ews": {
@@ -868,10 +872,14 @@ export default {
       },
       "prioritas": [],
       "kemampuan": {
-        "operasi": false,
+        "operasi": true,
         "renlap": {
-          "sarana": [],
-          "bobot": ""
+          "sarana": [
+            "tim_sar_unit",
+            "tenda",
+            "air_bersih_unit"
+          ],
+          "bobot": "gempa"
         },
         "dokumen": [],
         "ews": {
@@ -1016,10 +1024,12 @@ export default {
       },
       "prioritas": [],
       "kemampuan": {
-        "operasi": false,
+        "operasi": true,
         "renlap": {
-          "sarana": [],
-          "bobot": ""
+          "sarana": [
+            "masker"
+          ],
+          "bobot": "udara"
         },
         "dokumen": [],
         "ews": {
@@ -1163,10 +1173,14 @@ export default {
       },
       "prioritas": [],
       "kemampuan": {
-        "operasi": false,
+        "operasi": true,
         "renlap": {
-          "sarana": [],
-          "bobot": ""
+          "sarana": [
+            "tenda",
+            "masker",
+            "truk_tangki"
+          ],
+          "bobot": "gunungapi"
         },
         "dokumen": [],
         "ews": {
@@ -1313,10 +1327,13 @@ export default {
         "simulasi": "simulasi.html"
       },
       "kemampuan": {
-        "operasi": false,
+        "operasi": true,
         "renlap": {
-          "sarana": [],
-          "bobot": ""
+          "sarana": [
+            "truk_tangki",
+            "air_bersih_unit"
+          ],
+          "bobot": "kekeringan"
         },
         "dokumen": [],
         "ews": {
