@@ -1,0 +1,190 @@
+{
+  "karhutla_awal": {
+    "sasaran": "Padamkan api di Kec Uji, Kab Satu, cegah meluas ke luar sektor, metode utama Sekat kanal.",
+    "pj": "Hendra",
+    "regu": [
+      "Hendra (ketua_regu)"
+    ],
+    "alat": "Pompa portabel, Selang 1,5 inci",
+    "cuaca": "Angin 12.5 km/jam dari tenggara",
+    "keselamatan": "Pakai APD lengkap. Angin datang dari tenggara: jangan berada searah angin dari api, tetapkan jalur keluar dan titik kumpul.",
+    "sektor": []
+  },
+  "karhutla_kluster": {
+    "tugas_bencana": "karhutla",
+    "bencana_nama": "Karhutla",
+    "kluster": {
+      "id": "K7001",
+      "jarak_km": 0.25,
+      "poligon": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              111.995,
+              -2.555
+            ],
+            [
+              112.01,
+              -2.555
+            ],
+            [
+              112.01,
+              -2.545
+            ],
+            [
+              111.995,
+              -2.545
+            ],
+            [
+              111.995,
+              -2.555
+            ]
+          ]
+        ]
+      }
+    },
+    "angin": {
+      "ws_kmj": 12.5,
+      "wd_derajat": 135,
+      "dari": "tenggara",
+      "kluster": "K7001",
+      "catatan": "wd = arah datangnya angin menurut konvensi meteorologi, diteruskan apa adanya dari kluster.json"
+    }
+  },
+  "karhutla_linimasa": [
+    [
+      1790812800000,
+      "deteksi",
+      "Titik api terdeteksi satelit dan tugas dibuat di Kec Uji, Kab Satu"
+    ],
+    [
+      1790813400000,
+      "konfirmasi",
+      "Konfirmasi lapangan diterima"
+    ],
+    [
+      1790813700000,
+      "isian_konfirmasi",
+      "Isian konfirmasi: api ada"
+    ],
+    [
+      1790814000000,
+      "penugasan",
+      "Hendra ditugaskan sebagai ketua_regu"
+    ],
+    [
+      1790814600000,
+      "berangkat",
+      "Hendra berangkat"
+    ],
+    [
+      1790816400000,
+      "tiba",
+      "Hendra tiba di lokasi"
+    ],
+    [
+      1790823300000,
+      "isian_kabar",
+      "Kabar tindakan: api padam"
+    ],
+    [
+      1790823600000,
+      "padam",
+      "Dilaporkan padam"
+    ],
+    [
+      1790826600000,
+      "terverifikasi",
+      "Padam terverifikasi satelit"
+    ],
+    [
+      1790827800000,
+      "cek_ulang",
+      "Cek ulang lapangan dilakukan"
+    ]
+  ],
+  "karhutla_respons": {
+    "deteksi": 1790812800000,
+    "konfirmasi_menit": 10,
+    "tiba_menit": 60,
+    "padam_menit": 180,
+    "terverifikasi_menit": 230
+  },
+  "karhutla_periode_dibuat": {
+    "sasaran": "Padamkan api di Kec Uji, Kab Satu, cegah meluas ke luar sektor, metode utama Sekat kanal.",
+    "pj": "Hendra",
+    "alat": "Pompa portabel, Selang 1,5 inci",
+    "cuaca": "Angin 12.5 km/jam dari tenggara",
+    "keselamatan": "Pakai APD lengkap. Angin datang dari tenggara: jangan berada searah angin dari api, tetapkan jalur keluar dan titik kumpul.",
+    "regu": [
+      "Hendra (ketua_regu)"
+    ],
+    "status": "draf"
+  },
+  "karhutla_tanpa_kluster": {
+    "awal": {
+      "sasaran": "Padamkan api di Kec Uji, Kab Satu, cegah meluas ke luar sektor.",
+      "pj": "Hendra",
+      "regu": [
+        "Hendra (ketua_regu)"
+      ],
+      "alat": null,
+      "cuaca": null,
+      "keselamatan": "Pakai APD lengkap. Arah angin belum diketahui: tetapkan jalur keluar dan titik kumpul.",
+      "sektor": []
+    },
+    "kluster": {
+      "kluster": null,
+      "angin": null
+    }
+  },
+  "banjir_lain": {
+    "bencana": "banjir",
+    "bencana_nama": "Banjir",
+    "kluster": null,
+    "angin": null,
+    "awal": {
+      "sasaran": "Tangani banjir di Kec Uji, Kab Satu, utamakan keselamatan warga dan regu.",
+      "pj": "Hendra",
+      "regu": [
+        "Hendra (ketua_regu)"
+      ],
+      "alat": null,
+      "cuaca": null,
+      "keselamatan": "Pakai APD sesuai bahaya. Tetapkan jalur keluar dan titik kumpul, pantau peringatan resmi.",
+      "sektor": []
+    },
+    "deteksi": "Tugas banjir dibuat di Kec Uji, Kab Satu"
+  },
+  "gempa_lain": {
+    "bencana": "gempa",
+    "bencana_nama": "Gempa",
+    "kluster": null,
+    "angin": null,
+    "awal": {
+      "sasaran": "Tangani gempa di Kec Uji, Kab Satu, utamakan keselamatan warga dan regu.",
+      "pj": "Hendra",
+      "regu": [
+        "Hendra (ketua_regu)"
+      ],
+      "alat": null,
+      "cuaca": null,
+      "keselamatan": "Pakai APD sesuai bahaya. Tetapkan jalur keluar dan titik kumpul, pantau peringatan resmi.",
+      "sektor": []
+    },
+    "deteksi": "Tugas gempa dibuat di Kec Uji, Kab Satu"
+  },
+  "karhutla_isian_kabar": [
+    [
+      1790813700000,
+      "isian_konfirmasi",
+      "Isian konfirmasi: api ada"
+    ],
+    [
+      1790823300000,
+      "isian_kabar",
+      "Kabar tindakan: api padam"
+    ]
+  ]
+}
