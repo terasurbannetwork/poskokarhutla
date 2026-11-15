@@ -21,6 +21,7 @@ export const JADWAL = [
   {wf: "himawari.yml", maks: 50},
   {wf: "jarak_pandang.yml", maks: 70, jam: [23, 10]},
   {wf: "udara.yml", maks: 770},
+  {wf: "semai.yml", maks: 770},
   {wf: "data.yml", maks: 1490, masukan: {jaga: "ya"}},
   {wf: "banjir.yml", maks: 1490},
   {wf: "gempa.yml", maks: 1490},

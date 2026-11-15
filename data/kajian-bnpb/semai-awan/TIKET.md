@@ -13,7 +13,7 @@ ditulis "berhenti".
 | SA-03 | Turunan dan gerbang | `semai.py`: turunan §2, gerbang §3, raster awan PNG per langkah | `pipa-data` → `validasi-model` | – |
 | SA-04 | Faktor, skor, zona | §4 sampai §8: kandidat, Q D T, dua mode, zona, jendela 85%, base, kota, `semai.json` | `pipa-data` → `validasi-model` | Q2, Q6, Q7, Q8, Q9 (bawaan) |
 | SA-05 | Asap | `lintasan.py` mode semai §9: angin IFS, pemanasan 12 jam, 3 pelepasan per jam, bobot FRP, beban per jam, raster asap, kota 20 km, lintas batas 5%, poligon daratan PNG di `negara()`; `kota_tetangga.json` | `cuaca-udara` → `validasi-model` | Q11 (bawaan) |
-| SA-06 | Workflow | `semai.yml` 10.00 dan 22.00 UTC, unggah R2 `operasi/semai/`, `jaga_jadwal.mjs` (770 menit), batas ukuran berkas, gagal-lunak; `semai_beku.py` append-only di R2; satelit hilang §10 | `mekanik-mesin` → `penulis-gerbang` | Q1 |
+| SA-06 | Workflow | `semai.yml` 10.00 dan 22.00 UTC, unggah R2 `operasi/semai/`, `jaga_jadwal.mjs` (770 menit), batas ukuran berkas, gagal-lunak; arsip append-only di R2 lewat langkah "Arsip putaran" (cek ada dulu, tanpa `semai_beku.py` terpisah); satelit hilang §10 | `mekanik-mesin` → `penulis-gerbang` | Q1 |
 
 ## Fase 2: target renlap
 

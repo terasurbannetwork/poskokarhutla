@@ -1,0 +1,113 @@
+name: Peluang semai awan
+
+# Peluang Semai Awan (data/kajian-bnpb/semai-awan, tiket SA-06). Dua kali sehari, 10.00 dan 22.00 UTC: putaran ECMWF IFS 00 dan 12 UTC
+# 0,1 derajat sudah lengkap sampai langkah 36 sekitar 8 jam sesudah jamnya. semai_ifs.py --putaran auto mundur sampai 4 putaran bila
+# yang terbaru belum lengkap (ALGORITMA §10: layar menandai basi dari `putaran`).
+# Keluaran SEMUANYA ke R2 poskokarhutla-foto/operasi/semai/ (dibaca rute GET /api/operasi/semai/berkas/* di balik sesi), tidak ke git:
+# 18 PNG per 12 jam akan membengkakkan riwayat, dan koordinat zona ada di balik login (KEAMANAN §3).
+# Arsip arsip/<putaran>.json append-only: dibaca POST /api/operasi/semai/target dan /renlap-omc; tidak pernah ditimpa.
+# Penjaga jadwal: scripts/terbit/jaga_jadwal.mjs {wf: "semai.yml", maks: 770}.
+on:
+  schedule:
+    - cron: "0 10,22 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: semai
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+jobs:
+  semai:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # eccodes dan numpy HANYA di workflow ini (Q1); uji mandiri stdlib murni
+      - name: Pasang pengurai GRIB2
+        run: pip install "eccodes==2.50.1" "eccodeslib==2.43.0" "numpy==2.0.2"
+
+      - name: Uji mandiri
+        run: |
+          python3 scripts/operasi/semai_ifs.py uji
+          python3 scripts/operasi/semai.py uji
+
+      # kluster.json (frp24) dan hotspot24.json: dibuat data.yml/titik.yml, cache bisa hilang atau basi, jadi isi dari situs live
+      - name: Pulihkan data karhutla terakhir
+        uses: actions/cache/restore@v4
+        with:
+          path: public/data
+          key: data-${{ github.run_id }}
+          restore-keys: data-
+
+      - name: Data tidak lebih tua dari yang tayang
+        run: python3 scripts/terbit/isi_data.py perlu
+
+      - name: Unduh ECMWF IFS
+        run: python3 scripts/operasi/semai_ifs.py --putaran auto
+
+      - name: Hitung asap dan zona
+        id: hitung
+        run: |
+          set -e
+          P=$(ls data/raw/semai | grep -E '^[0-9]{10}$' | sort | tail -1)
+          S=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          K=data/raw/semai/keluar
+          mkdir -p "$K"
+          echo "putaran=$P" >> "$GITHUB_OUTPUT"
+          # lintasan lebih dulu: semai.py membaca asap.json dan asap_beban.npz untuk bahan dan peringatan asap
+          python3 scripts/udara/lintasan.py semai --putaran "$P" --sekarang "$S" --keluar "$K" --kluster public/data/kluster.json
+          python3 scripts/operasi/semai.py jalan --putaran "$P" --sekarang "$S" --keluar "$K"
+
+      # batas DESAIN-TEKNIS §3: semai.json 300 KB, PNG per langkah 120 KB
+      - name: Batas ukuran
+        run: |
+          set -e
+          K=data/raw/semai/keluar
+          test "$(stat -c %s "$K/semai.json")" -le 307200 || { echo "semai.json melewati 300 KB"; exit 1; }
+          for f in "$K"/awan_*.png "$K"/asap_*.png; do
+            [ -e "$f" ] || continue
+            test "$(stat -c %s "$f")" -le 122880 || { echo "$f melewati 120 KB"; exit 1; }
+          done
+
+      - name: Unggah ke R2
+        run: |
+          set -e
+          K=data/raw/semai/keluar
+          R=poskokarhutla-foto/operasi/semai
+          W="npx --yes wrangler@4.42.0 r2 object put"
+          for f in "$K"/awan_*.png "$K"/asap_*.png; do
+            [ -e "$f" ] || continue
+            $W "$R/$(basename "$f")" --file "$f" --content-type image/png --remote
+          done
+          [ -e "$K/angin_asap.json" ] && $W "$R/angin_asap.json" --file "$K/angin_asap.json" --content-type application/json --remote
+          # semai.json terakhir: layar baru melihat putaran baru sesudah rasternya ada
+          $W "$R/semai.json" --file "$K/semai.json" --content-type application/json --remote
+
+      # append-only: putaran yang sudah diarsip tidak ditimpa (target renlap merujuk zona di arsip itu)
+      - name: Arsip putaran
+        run: |
+          set -e
+          P=${{ steps.hitung.outputs.putaran }}
+          R=poskokarhutla-foto/operasi/semai/arsip/$P.json
+          if npx --yes wrangler@4.42.0 r2 object get "$R" --pipe --remote > /dev/null 2>&1; then
+            echo "arsip $P sudah ada, tidak ditimpa"; exit 0
+          fi
+          python3 - "$P" <<'PY'
+          import json, sys
+          d = json.load(open("data/raw/semai/keluar/semai.json", encoding="utf-8"))
+          for k in ("kandidat", "kandidat_kolom", "angin"):
+              d.pop(k, None)
+          json.dump(d, open("arsip.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+          PY
+          npx --yes wrangler@4.42.0 r2 object put "$R" --file arsip.json --content-type application/json --remote
