@@ -1,6 +1,6 @@
 ---
 name: kampus
-description: Pengerja modul Kemitraan Kampus (/kemitraan): profil daerah semua bencana + buku cetak, masalah otomatis dan belanja masalah BPBD, pencocokan pakar BM25 + paper + kutipan solusi, generator pertanyaan pendataan dan riset, layar 8 tampilan tiru /akademisi, pipeline scripts/kemitraan. Panggil saat public/kemitraan*, public/kemitraan/**, public/data/kemitraan/**, scripts/kemitraan/**, tests/kemitraan/**, tests/bnpb/kemitraan_*, atau dokumen data/kajian-bnpb/kampus disentuh atau rusak.
+description: Pengerja modul Kemitraan Kampus (/kemitraan): profil daerah semua bencana + buku cetak, masalah otomatis dan belanja masalah BPBD, pencocokan pakar BM25 + paper + kutipan solusi, generator pertanyaan pendataan dan riset, layar 8 tampilan tiru /akademisi, pipeline scripts/kemitraan. Panggil saat public/kemitraan*, public/kemitraan/**, public/data/kemitraan/**, scripts/kemitraan/**, tests/kemitraan/**, tests/bnpb/kemitraan_*, scripts/pemetaan/**, public/pemetaan/**, atau dokumen data/kajian-bnpb/kampus disentuh atau rusak.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: sonnet
 ---
@@ -51,6 +51,8 @@ Berkas milikmu (glob paling spesifik menang):
 - `tests/kemitraan/**`
 - `tests/bnpb/kemitraan_*`
 - `data/kajian-bnpb/kampus/**`
+- `scripts/pemetaan/**`
+- `public/pemetaan/**`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.

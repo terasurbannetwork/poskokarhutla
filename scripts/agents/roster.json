@@ -655,7 +655,7 @@
       "kelas": "pengerja",
       "model": "sonnet",
       "ringkas": "Pengerja modul Kemitraan Kampus (/kemitraan): profil daerah semua bencana + buku cetak, masalah otomatis dan belanja masalah BPBD, pencocokan pakar BM25 + paper + kutipan solusi, generator pertanyaan pendataan dan riset, layar 8 tampilan tiru /akademisi, pipeline scripts/kemitraan.",
-      "kapan": "public/kemitraan*, public/kemitraan/**, public/data/kemitraan/**, scripts/kemitraan/**, tests/kemitraan/**, tests/bnpb/kemitraan_*, atau dokumen data/kajian-bnpb/kampus disentuh atau rusak",
+      "kapan": "public/kemitraan*, public/kemitraan/**, public/data/kemitraan/**, scripts/kemitraan/**, tests/kemitraan/**, tests/bnpb/kemitraan_*, scripts/pemetaan/**, public/pemetaan/**, atau dokumen data/kajian-bnpb/kampus disentuh atau rusak",
       "fokus": [
         "Baca dulu data/kajian-bnpb/kampus/ urut otoritas AGENTS.md §2.2; ambil satu tiket TIKET.md, kerjakan hanya cakupannya",
         "Rupa tiru /akademisi: token inti/tema.css, kelas .ak-* ditautkan, komponen baru .km-* (DESIGN-SYSTEM.md)",
@@ -672,7 +672,9 @@
         "scripts/kemitraan/**",
         "tests/kemitraan/**",
         "tests/bnpb/kemitraan_*",
-        "data/kajian-bnpb/kampus/**"
+        "data/kajian-bnpb/kampus/**",
+        "scripts/pemetaan/**",
+        "public/pemetaan/**"
       ]
     },
     {

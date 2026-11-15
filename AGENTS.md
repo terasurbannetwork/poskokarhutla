@@ -400,7 +400,7 @@ Aturan berhentinya sama dengan §2.1. Tanpa model kerugian yang lulus uji tidak 
 ### 2.25 Pemetaan bangunan oleh relawan (HOT Tasking Manager, kampus mitra): baca dulu, baru bangun
 
 Sebelum menyentuh metrik kelengkapan bangunan OSM per kab, daftar prioritas pemetaan, penyiapan proyek HOT, atau sumbangan pemeta kampus, baca dokumen di
-`data/kajian-bnpb/pemetaan-relawan/` dengan urutan otoritas ini (pipeline milik `kampus` dan `pipa-umum` sesuai berkasnya; kode Worker milik `warga-api`):
+`data/kajian-bnpb/pemetaan-relawan/` dengan urutan otoritas ini (pipeline `scripts/pemetaan/**`, konstanta layar `public/pemetaan/**`, dan uji `tests/kemitraan/pemetaan_*` milik `kampus`; kode Worker milik `warga-api`):
 
 1. `KEPUTUSAN-PEMETAAN.md`: keputusan pemilik, rancangan, dan pertanyaan terbuka dengan bawaan sementara; menang atas semuanya.
 2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,

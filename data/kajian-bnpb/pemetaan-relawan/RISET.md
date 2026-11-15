@@ -39,3 +39,23 @@ Konsekuensi: kelengkapan harus dihitung baru, dan kampus tidak bisa menerima tug
 | OSM API 0.6 `changesets.json` | 200 tanpa kunci; pencarian hashtag lewat parameter `q` tidak terbukti, perlu diuji di HR-03. |
 
 Kesimpulan kelayakan: HITUNG kelengkapan lewat ohsome layak (publik, tanpa kunci), tetapi tertinggal beberapa bulan. BACA BALIK sumbangan per hashtag BELUM terbukti dengan ohsome; jalur cadangannya API changeset OSM atau layanan statistik hashtag publik. Dua-duanya dijadikan tiket uji (HR-03) sebelum desain pembacaan balik dikunci. Batas laju dan kuota ohsome tidak kami asumsikan; diukur di HR-03 dan dicatat.
+
+### Hasil HR-03 (15 Nov 2026, kueri nyata, tanpa kunci, User-Agent generik, tanpa data pribadi)
+
+| Uji | Hasil |
+| --- | --- |
+| ohsome `elements/count`, bbox Banda Aceh, `filter=building=* and geometry:polygon`, `time=2026-07-01` | 200, 128.574 elemen. Filter baru (`filter=`) dipakai, bukan parameter lama `types`/`keys`. |
+| ohsome `elements/count`, bbox sekitar Tanah Laut (Kalsel), tanggal sama | 200, 86.828 elemen, 2,2 detik. Satu kueri per kab di bbox kab layak; poligon zona bahaya belum diuji (HR-04). |
+| ohsome `contributions/count`, `time=2026-06-01,2026-07-01` | 200, 30 kontribusi bangunan. Bentuk benar dipastikan; 400 sebelumnya karena `clipGeometry` bukan parameter endpoint ini. |
+| ohsome menyaring hashtag | TIDAK bisa: `hashtag=` ditolak 400 "Unknown parameter". `filter=changeset:<id>` sah, tetapi butuh daftar id changeset dari luar. |
+| OSM API 0.6 `changesets.json?q=...` | 200 tetapi `q` DIABAIKAN (mengembalikan changeset acak, memuat nama pengguna). Tidak dipakai untuk hashtag, dan jawabannya memuat nama pengguna. |
+| ohsomeNow Stats `https://stats.now.ohsome.org/api/stats/hashtags/<hashtag>?startdate=&enddate=` | 200, tanpa kunci, hashtag tidak peka huruf besar. Jawaban agregat: `changesets`, `users` (hitungan), `buildings`, `roads`, `edits`, `latest`. Data hidup (maks timestamp 15 Nov 2026), jadi tidak tertinggal seperti ohsome. Tanpa nama pengguna. |
+| ohsomeNow `/stats?hashtag=&topics=building&startdate=&enddate=` | 200: `added`, `modified`, `deleted`, `value` (bersih) untuk topik bangunan. Hashtag tak ada = nol semua, bukan galat (nol berarti belum ada hasil, bukan kampus tidak aktif). |
+| Batas laju | 40 kueri berurutan ke tiap layanan, tanpa jeda: semua 200, tanpa 429, tanpa header `RateLimit`/`Retry-After`. ohsome rata-rata 3,5 detik (maks 4,6); ohsomeNow rata-rata 0,87 detik (maks 0,98). Batas resmi tidak diumumkan; pipeline tetap memakai jeda 1 detik dan ulang dengan jeda naik saat 429/5xx. |
+
+### Keputusan jalur (HR-03)
+
+- Hitung N_osm per kab: ohsome `elements/count` (publik, tanpa kunci), kueri per kab, tanggal = `toTimestamp` metadata. Tertinggal sekitar 3,5 bulan; tanggal data selalu tampil (ALG §6).
+- Baca balik sumbangan per kampus: **ohsomeNow Stats per hashtag** (`/stats/hashtags/<hashtag>` untuk changeset, jumlah pengguna, bangunan; `/stats?topics=building` untuk dibuat/diubah/dihapus). Hanya agregat, jadi D5, Q3, dan KEAMANAN-PRIVASI terpenuhi tanpa membuang nama dari memori. API changeset OSM TIDAK dipakai. Ohsome TIDAK dipakai untuk hashtag.
+- Risiko: ohsomeNow adalah layanan HeiGIT/HOT tanpa jaminan tingkat layanan; kontrak jawaban belum dibekukan. Pembaca balik wajib menolak bentuk jawaban tak dikenal dan menandai "tidak tersedia", bukan nol. Kolom `users` hanya hitungan; jangan pernah memanggil `/stats/user*` (memuat id pengguna).
+- Catatan: baris studi dan aktivasi 2025 di bagian A tetap BELUM diverifikasi; tidak dikerjakan di tiket ini.
