@@ -130,5 +130,6 @@
   "0126_operasi_isian.sql": "b4d4b65ca33eb0f8be1ccce6b9bc14ee3f7c8efa5cf3ffa85ba947d5b372a029",
   "0127_op_isian_terhapus.sql": "ad64201ac1faba908fd5840688114bc3a287629af76d49e41cd3c1e61ec03ccb",
   "0128_dl_tindak.sql": "ea8d50424d557497a7d507601c02304ca67f3c30705119050d41cc144d99c9db",
-  "0129_semai_target.sql": "9a4a36ad0ee0343b5ef8894944e37e0d8cdf64f38ac70f9436731e3aa3941414"
+  "0129_semai_target.sql": "9a4a36ad0ee0343b5ef8894944e37e0d8cdf64f38ac70f9436731e3aa3941414",
+  "0130_paritas_operasi.sql": "0a789b05bb3969535dc6a981c9c29a2affb5d1960a6836dfbd10a1a47d05a00e"
 }
