@@ -109,3 +109,16 @@ Yang tidak dipilih pemilik pada putaran itu: aksi antisipatif berpemicu dana, zo
 | F11 | Keterpaduan: formulir lapangan dari satu definisi (WA, web, luring, ekspor) | ODK/KoboToolbox XLSForm | Berkas spek terpisah per modul | sama dengan F9 |
 | F12 | Keterpaduan: kaji titik pengungsian per putaran dengan kode tetap per titik | IOM DTM | Meja pengungsi mencatat rekap | sama dengan F9 |
 | F13 | Keterpaduan: satu orang satu catatan (tujuh tabel identitas dipetakan ke `orang`) | - | Bukan soal login, soal jejak per orang | sama dengan F9 |
+
+## P. Paritas Bencana: beban baca D1 (PB-32, 15 Nov 2026)
+
+Diukur dengan `npx wrangler d1 insights poskowarga --timePeriod 1d --sort-by reads --limit 500` di produksi.
+
+| Ukuran | Nilai |
+| ------ | ----- |
+| Baca D1 sehari, semua kueri (270 kueri) | 3.143.797 baris, 63% kuota Free 5 juta |
+| Lima terbesar | `hujan_pos` 580.416, `sihka_dasar` 421.721, `hujan_baca` 304.527, `cuaca_sumber` 273.526, hapus `alarm_himawari` 174.836 |
+| Kueri `pb_*` dan `peringatan_x` | 2 kueri, 14 baris (belum ada pemakai) |
+| Perkiraan per muat dingin `/api/pb/ringkas` atau papan SK | sampai sekitar 1.500 baris; cache isolate 5 menit, hangat 0 baris |
+
+Belum terukur dengan pemakai nyata, karena migrasi 0131 (`pb_dokumen`, `pb_tindakan`) dan 0137 (`peringatan_x`) belum diterapkan pemilik dan semua `kemampuan` masih mati. Aturan DESAIN-TEKNIS 9 tetap: cache naik ke 15 menit bila dashboard dan renlap melewati 1 juta baris sehari. Sisa ruang sekarang sekitar 1,86 juta baris sehari; ukur ulang sesudah bencana pertama dinyalakan (PB-33) dan sebelum PB-48.
