@@ -57,6 +57,7 @@ Berkas milikmu (glob paling spesifik menang):
 - `public/og/**`
 - `public/vendor/**`
 - `public/data/paparan_templat.json`
+- `public/design-system*.json`
 - `scripts/i18n/**`
 - `scripts/og/**`
 - `scripts/situs/**`

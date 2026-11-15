@@ -121,3 +121,53 @@ header.top .ds-merek small{display:block;font-size:var(--ds-fs-1);opacity:.75}
   .ds-pt{zoom:1.15}
   .ds-pratinjau{padding:12px}
 }
+
+/* ===== papan peta sistem (/design-system/sistem): kanvas bertitik, galeri papan kecil, lalu papan penuh. Warna hanya token. ===== */
+.pt{max-width:1320px;margin:0 auto;padding:20px 16px 48px}
+.pt-kanvas{background-image:radial-gradient(var(--line) 1.2px,transparent 1.4px);background-size:22px 22px;border-radius:var(--r);padding:8px 4px}
+.pt h1{font-size:var(--ds-fs-6);font-weight:800}
+.pt .ds-lead{font-size:var(--ds-fs-4);color:var(--ink2);margin:8px 0 0;max-width:78ch;text-align:justify}
+.pt h2{font-size:var(--ds-fs-5);font-weight:800;margin:28px 0 10px}
+.pt-galeri{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.pt-kecil{display:grid;gap:6px;text-decoration:none;color:var(--ink);min-width:0}
+.pt-kecil>b{font-family:var(--display);font-size:var(--ds-fs-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pt-kecil>b i,.pt-papan>header i{font-style:normal;color:var(--ink2);margin-right:8px;font-variant-numeric:tabular-nums}
+.pt-kecil>div{height:124px;overflow:hidden;border:1px solid var(--line);border-radius:10px;background:var(--card);box-shadow:var(--shadow)}
+.pt-kecil:hover>div{border-color:var(--brand2)}
+.pt-kecil .pt-papan{width:1180px;zoom:.2;border:0;box-shadow:none;margin:0;pointer-events:none}
+.pt-papan{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:22px;margin-top:20px}
+.pt-papan>header{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 24px;align-items:start;margin-bottom:18px}
+.pt-papan>header h3{font-size:var(--ds-fs-5);font-weight:800}
+.pt-papan>header p{margin:0;grid-column:1;font-size:var(--ds-fs-3);color:var(--ink2);max-width:70ch;text-align:justify}
+.pt-leg{grid-column:2;grid-row:1/3;display:grid;grid-template-columns:auto auto;gap:3px 14px;font-size:var(--ds-fs-1);color:var(--ink2)}
+.pt-leg span{display:inline-flex;align-items:center;gap:6px}
+.pt-leg i,.pt-simpul::before{width:9px;height:9px;border-radius:3px;background:var(--w);flex:none}
+.pt-alur{display:flex;align-items:stretch;gap:0}
+.pt-kol{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:10px}
+.pt-kol>.lbl{display:block;padding:0 2px 2px}
+.pt-panah{flex:none;width:34px;display:grid;place-items:center;color:var(--ink2)}
+.pt-panah svg{width:20px;height:20px}
+.pt-simpul{position:relative;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:10px 12px 10px 30px;display:grid;gap:2px}
+.pt-simpul::before{content:"";position:absolute;left:12px;top:14px}
+.pt-simpul b{font-size:var(--ds-fs-2);line-height:1.3}
+.pt-simpul span{font-size:var(--ds-fs-1);color:var(--ink2);line-height:1.4}
+.pt-simpul code{font-family:var(--ds-mono);font-size:var(--ds-fs-1);color:var(--brand2);word-break:break-word}
+.pt-simpul.inti{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.pt-simpul.inti span,.pt-simpul.inti code{color:var(--paper);opacity:.8}
+.j-sumber{--w:var(--ink2)}.j-proses{--w:var(--info)}.j-simpan{--w:var(--ok)}.j-layar{--w:var(--f2)}.j-orang{--w:var(--bad)}.j-inti{--w:var(--accent)}
+.pt-cat{margin:16px 0 0;padding:12px 0 0;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px 22px;list-style:none;font-size:var(--ds-fs-1);color:var(--ink2)}
+.pt-cat li::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--brand2);margin-right:7px;vertical-align:2px}
+@media (max-width:760px){
+  .pt-alur{flex-direction:column}
+  .pt-panah{width:auto;height:30px}
+  .pt-panah svg{transform:rotate(90deg)}
+  .pt-papan{padding:16px}
+  .pt-papan>header{grid-template-columns:minmax(0,1fr)}
+  .pt-leg{grid-column:1;grid-row:auto}
+  .pt-galeri{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pt-kecil>div{height:110px}
+  .pt-kecil .pt-papan{zoom:.14}
+  .pt-kecil .pt-alur{flex-direction:row}
+  .pt-kecil .pt-panah{width:34px;height:auto}
+  .pt-kecil .pt-panah svg{transform:none}
+}

@@ -1,0 +1,403 @@
+{
+"catatan": "Papan peta sistem Centurisk97. Sumber fakta: AGENTS.md bagian 2 (peta modul), .github/workflows, src/, public/. jenis: sumber, proses, simpan, layar, inti, orang.",
+"grup": [
+{"nama": "Ringkasan", "papan": [
+  {"judul": "Seluruh sistem", "ket": "Data terbuka diolah pipeline terjadwal, disajikan Worker dan aset statis, lalu dipakai warga dan staf.",
+   "kolom": [
+    {"nama": "Sumber", "simpul": [
+      {"t": "Satelit dan cuaca", "d": "Titik panas FIRMS, cuaca Open-Meteo dan ERA5, Himawari.", "j": "sumber"},
+      {"t": "Lembaga", "d": "BMKG, PVMBG, BNPB, dan data publik lain.", "j": "sumber"},
+      {"t": "Lapangan", "d": "Laporan warga, petugas, regu, dan bot WhatsApp.", "j": "orang"}]},
+    {"nama": "Olah", "simpul": [
+      {"t": "Pipeline Python", "d": "Python 3.12 stdlib di GitHub Actions, hasilnya di-commit sebagai JSON.", "k": "scripts/**", "j": "proses"},
+      {"t": "Model dan uji balik", "d": "Sebaran api, banjir, longsor, prediksi; yang belum lolos tampil sebagai hipotesis.", "k": "scripts/sebaran, scripts/prediksi", "j": "proses"}]},
+    {"nama": "Sajikan", "simpul": [
+      {"t": "Cloudflare Worker", "d": "Rute HTML, API, login, dan cron.", "k": "src/worker.js", "j": "inti"},
+      {"t": "D1 dan R2", "d": "Isian manusia di D1, berkas dan data staf di R2.", "k": "migrations/**", "j": "simpan"},
+      {"t": "Aset statis", "d": "HTML, JS, CSS, dan JSON data tanpa langkah build.", "k": "public/**", "j": "simpan"}]},
+    {"nama": "Pakai", "simpul": [
+      {"t": "Layar publik", "d": "Peta, Insight, Tren, Dampak, Simulasi per bencana.", "j": "layar"},
+      {"t": "Ruang kerja staf", "d": "BNPB, operasi, SIPPA, kemitraan, lapangan, siklus.", "j": "layar"},
+      {"t": "Deck dan laporan", "d": "Laporan harian, paparan, dan surat dinas.", "j": "layar"}]}],
+   "catatan": ["Semua kerja langsung di main, terbit lewat terbit.yml.", "Angka karhutla di deck diambil dari sistem ini."]},
+  {"judul": "Semua modul", "ket": "Tiap modul punya folder layar, folder pipeline, dan satu agent pengerja.",
+   "kolom": [
+    {"nama": "Bencana", "simpul": [
+      {"t": "Karhutla", "d": "Titik panas, luas, cluster, sebaran api.", "k": "public/index.html, scripts/data", "j": "layar"},
+      {"t": "Banjir dan rob", "d": "Hujan, sungai, rob, status, genangan.", "k": "public/banjir, scripts/banjir", "j": "layar"},
+      {"t": "Gempa, gunung api, kekeringan", "k": "public/gempa, public/gunungapi, public/kekeringan", "j": "layar"},
+      {"t": "Cuaca, udara, pesisir, longsor", "k": "public/cuaca, public/udara, public/pesisir, public/longsor", "j": "layar"}]},
+    {"nama": "Inti bersama", "simpul": [
+      {"t": "Layar inti", "d": "Kepala, tema, kartu, tabel, peta, registri bencana.", "k": "public/inti, public/bencana.json", "j": "inti"},
+      {"t": "Pipeline umum", "d": "Jaring, simpan, waktu, wilayah, status, uji balik.", "k": "scripts/umum", "j": "proses"},
+      {"t": "Prediksi", "d": "Prakiraan per kab/kota dengan rapor prospektif.", "k": "public/prediksi, scripts/prediksi", "j": "proses"}]},
+    {"nama": "Ruang kerja", "simpul": [
+      {"t": "Ruang Koordinasi BNPB", "k": "public/bnpb", "j": "layar"},
+      {"t": "Operasi, SIPPA, LogPal", "k": "public/pipa, public/logpal", "j": "layar"},
+      {"t": "Kemitraan, Lapangan, Siklus", "k": "public/kemitraan, public/petugas, public/siklus", "j": "layar"},
+      {"t": "Asisten AI dan Direktori", "k": "public/ai, public/akademisi*", "j": "layar"}]},
+    {"nama": "Mesin", "simpul": [
+      {"t": "Worker dan D1", "k": "src/**, migrations/**", "j": "simpan"},
+      {"t": "Workflow", "k": ".github/workflows", "j": "proses"},
+      {"t": "Gerbang dan agent", "k": "tests/agen, scripts/agents", "j": "proses"}]}],
+   "catatan": ["Pemilik berkas dicek dengan node scripts/agents/ilmu.mjs pemilik <berkas>."]}
+]},
+{"nama": "Layar publik", "papan": [
+  {"judul": "Karhutla", "ket": "Titik panas tiap 3 jam dan olahan harian menjadi peta, tabel wilayah, dan kartu.",
+   "kolom": [
+    {"nama": "Sumber", "simpul": [
+      {"t": "NASA FIRMS", "d": "VIIRS dan MODIS, keyakinan sedang dan tinggi.", "j": "sumber"},
+      {"t": "Cuaca", "d": "Open-Meteo dan ERA5 untuk FWI.", "j": "sumber"},
+      {"t": "Lahan", "d": "Gambut, konsesi, kawasan, OSM.", "k": "scripts/scrape, scripts/geo", "j": "sumber"}]},
+    {"nama": "Pipeline", "simpul": [
+      {"t": "Titik 3 jam", "d": "Lokasi unik 375 m per hari WIB.", "k": "titik.yml", "j": "proses"},
+      {"t": "Olah harian", "d": "FWI, cluster, luas, belum padam, status.", "k": "data.yml, scripts/data", "j": "proses"},
+      {"t": "Statis", "d": "Batas wilayah dan lapisan dasar.", "k": "statis.yml", "j": "proses"}]},
+    {"nama": "Simpan", "simpul": [
+      {"t": "JSON data", "k": "public/data/*.json", "j": "simpan"},
+      {"t": "FIRMS ke D1", "d": "Cron Worker menit 15 tiap 3 jam UTC.", "k": "src/titik.js", "j": "simpan"}]},
+    {"nama": "Layar", "simpul": [
+      {"t": "Peta dan lapisan", "k": "public/index.html", "j": "inti"},
+      {"t": "Insight, Tren, Dampak", "d": "Kartu laporan standar.", "j": "layar"},
+      {"t": "Tabel wilayah", "d": "Hotspot, Firespot, Cluster per hari.", "j": "layar"}]}],
+   "catatan": ["Hotspot disebut sebelum firespot; kompleks ditulis cluster.", "Pengerja: pipa-data dan layar-peta."]},
+  {"judul": "Sebaran api", "ket": "Model eskalasi dan simulasi arah api dengan uji balik dan catatan prospektif.",
+   "kolom": [
+    {"nama": "Masukan", "simpul": [
+      {"t": "Cluster aktif", "d": "Dari pipeline karhutla.", "j": "sumber"},
+      {"t": "Cuaca dan bahan bakar", "d": "Angin, kelembapan, gambut.", "j": "sumber"}]},
+    {"nama": "Model", "simpul": [
+      {"t": "Fitur dan GBDT", "d": "GBDT tulisan tangan tanpa pustaka.", "k": "scripts/sebaran", "j": "proses"},
+      {"t": "Simulasi fisika FBP", "k": "public/sim_*", "j": "proses"},
+      {"t": "Uji balik dan prospektif", "d": "Diperiksa agent validasi-model.", "j": "proses"}]},
+    {"nama": "Keluaran", "simpul": [
+      {"t": "model_sebaran.json", "k": "public/data", "j": "simpan"},
+      {"t": "prospektif.json", "k": "public/data", "j": "simpan"}]},
+    {"nama": "Layar", "simpul": [
+      {"t": "Evaluator di peramban", "k": "public/sebaran_model.js", "j": "inti"},
+      {"t": "Tab Simulasi", "j": "layar"}]}],
+   "catatan": ["Model tanpa uji balik tampil dengan pil hipotesis.", "Pengerja: model-sebaran."]},
+  {"judul": "Banjir dan rob", "ket": "Hujan, sungai, dan rob diolah harian menjadi status wilayah dan peta genangan.",
+   "kolom": [
+    {"nama": "Sumber", "simpul": [
+      {"t": "Hujan dan ensemble", "j": "sumber"},
+      {"t": "Sungai dan pasang", "j": "sumber"},
+      {"t": "Label kejadian", "d": "DIBI, logbook, dan sumber terbuka.", "j": "sumber"}]},
+    {"nama": "Pipeline", "simpul": [
+      {"t": "Olah harian", "k": "banjir.yml, scripts/banjir", "j": "proses"},
+      {"t": "Model per kabupaten", "d": "Pra-registrasi dan uji prospektif.", "k": "model_kab*.py, PRAREG-*.md", "j": "proses"}]},
+    {"nama": "Simpan", "simpul": [
+      {"t": "Data harian banjir", "k": "public/banjir/data", "j": "simpan"}]},
+    {"nama": "Layar", "simpul": [
+      {"t": "Layar banjir", "k": "public/banjir", "j": "inti"},
+      {"t": "Simulasi genangan", "j": "layar"}]}],
+   "catatan": ["Pengerja: banjir dan model-banjir."]},
+  {"judul": "Bencana lain", "ket": "Tiap bencana dipasang lewat registri dan memakai modul inti yang sama.",
+   "kolom": [
+    {"nama": "Pipeline", "simpul": [
+      {"t": "Gempa dan tsunami", "k": "gempa.yml, scripts/gempa", "j": "proses"},
+      {"t": "Gunung api dan kekeringan", "k": "scripts/gunungapi, scripts/kekeringan", "j": "proses"},
+      {"t": "Cuaca dan udara", "k": "udara.yml, scripts/cuaca, scripts/udara", "j": "proses"},
+      {"t": "Pesisir dan longsor", "k": "scripts/pesisir, scripts/longsor", "j": "proses"}]},
+    {"nama": "Registri", "simpul": [
+      {"t": "bencana.json", "d": "Rute, tab, ikon, dan kemampuan tiap bencana.", "k": "public/bencana.json", "j": "inti"}]},
+    {"nama": "Layar", "simpul": [
+      {"t": "Menu bencana", "d": "Digambar dari registri.", "k": "public/inti/kepala.js", "j": "layar"},
+      {"t": "Halaman per bencana", "k": "public/<id>/", "j": "layar"},
+      {"t": "Semua bencana", "k": "public/semua", "j": "layar"}]}],
+   "catatan": ["Bencana baru dipasang lewat registri, tanpa salinan modul."]},
+  {"judul": "Prediksi", "ket": "Prakiraan harian 514 kab/kota dibekukan, dinilai, lalu ditampilkan bersama rapornya.",
+   "kolom": [
+    {"nama": "Masukan", "simpul": [
+      {"t": "Prakiraan cuaca", "j": "sumber"},
+      {"t": "Keluaran modul bencana", "d": "Titik panas, banjir, longsor, asap, rob.", "j": "sumber"}]},
+    {"nama": "Mesin", "simpul": [
+      {"t": "Arsip beku", "d": "Tenggang +1 sampai +3, hanya ditambah.", "k": "scripts/prediksi", "j": "proses"},
+      {"t": "Skor prospektif", "d": "Lawan persistensi dan klimatologi.", "j": "proses"},
+      {"t": "Tangga peringatan", "k": "scripts/prediksi/tangga.py", "j": "proses"}]},
+    {"nama": "Simpan", "simpul": [
+      {"t": "prediksi.json dan tangga.json", "k": "public/prediksi/data", "j": "simpan"},
+      {"t": "Konfirmasi lapangan", "k": "src/prediksi.js", "j": "simpan"}]},
+    {"nama": "Layar", "simpul": [
+      {"t": "Layar /prediksi", "d": "Besok, Rapor, Tangga, Dampak, Laporan provinsi, Konfirmasi.", "k": "public/prediksi", "j": "inti"}]}],
+   "catatan": ["Tidak pernah menulis aman.", "Jadwal: prediksi.yml."]},
+  {"judul": "Laporan warga", "ket": "Warga melapor dengan foto, admin memoderasi, lalu laporan tampil di peta.",
+   "kolom": [
+    {"nama": "Warga", "simpul": [
+      {"t": "Form lapor", "k": "public/warga", "j": "orang"},
+      {"t": "Foto", "d": "Dikecilkan dan dibersihkan di peramban.", "j": "orang"}]},
+    {"nama": "Worker", "simpul": [
+      {"t": "Rute lapor", "d": "Validasi, batas laju, tolak origin lain.", "k": "src/worker.js, src/foto.js", "j": "inti"}]},
+    {"nama": "Simpan", "simpul": [
+      {"t": "Laporan di D1", "j": "simpan"},
+      {"t": "Foto di R2", "j": "simpan"}]},
+    {"nama": "Tinjau", "simpul": [
+      {"t": "Moderasi admin", "k": "public/admin", "j": "layar"},
+      {"t": "Lapisan peta", "j": "layar"}]}],
+   "catatan": ["Diperiksa agent guard-api dan security-reviewer."]},
+  {"judul": "Masuk dan hak akses", "ket": "Di centurisk97.id halaman berada di balik login, dan tiap API menjaga sesinya sendiri.",
+   "kolom": [
+    {"nama": "Orang", "simpul": [
+      {"t": "Staf BNPB dan BPBD", "j": "orang"},
+      {"t": "Instansi dan mitra", "j": "orang"},
+      {"t": "Regu berkode", "d": "Masuk dengan kode tanpa akun.", "j": "orang"}]},
+    {"nama": "Gerbang", "simpul": [
+      {"t": "Host terkunci", "d": "Halaman dialihkan ke /admin/masuk.", "k": "src/worker.js", "j": "inti"},
+      {"t": "Hak per peran", "k": "src/hak.js", "j": "proses"}]},
+    {"nama": "Simpan", "simpul": [
+      {"t": "Akun dan sesi", "k": "D1", "j": "simpan"}]},
+    {"nama": "Terbuka", "simpul": [
+      {"t": "Ruang kerja", "j": "layar"},
+      {"t": "API v1 dan MCP", "d": "Kunci mitra.", "k": "src/api_v1.js, src/mcp.js", "j": "layar"}]}],
+   "catatan": ["Secret tidak pernah masuk berkas yang dilacak git."]}
+]},
+{"nama": "Ruang kerja", "papan": [
+  {"judul": "Ruang Koordinasi BNPB", "ket": "Pintu /bnpb untuk staf: pantau dalops, meja kerja, sitrep, hukum, dan bahan.",
+   "kolom": [
+    {"nama": "Masukan", "simpul": [
+      {"t": "Laporan resmi", "d": "Logbook dan laporan kejadian.", "j": "sumber"},
+      {"t": "Kabar luar", "d": "Berita dan data alam.", "k": "scripts/data/dalops_kabar.py", "j": "sumber"}]},
+    {"nama": "Worker", "simpul": [
+      {"t": "Dalops", "k": "src/dalops*.js", "j": "inti"},
+      {"t": "Meja kerja", "k": "src/meja*.js", "j": "proses"},
+      {"t": "Hukum dan logbook", "k": "src/hukum.js, src/logbook.js", "j": "proses"}]},
+    {"nama": "Simpan", "simpul": [
+      {"t": "D1", "d": "Log tindak lanjut hanya ditambah.", "j": "simpan"},
+      {"t": "R2 unit/", "d": "Data staf Ruang Unit.", "j": "simpan"}]},
+    {"nama": "Layar", "simpul": [
+      {"t": "/bnpb/dalops", "k": "public/bnpb", "j": "layar"},
+      {"t": "/meja, /sitrep, /risiko", "j": "layar"},
+      {"t": "/bnpb/unit", "j": "layar"}]}],
+   "catatan": ["Label kabar luar tidak pernah menutup kejadian.", "Pengerja: ruang-bnpb."]},
+  {"judul": "Operasi udara dan darat", "ket": "Laporan gelar armada dari WhatsApp diurai menjadi status, renlap, dan hasil padam.",
+   "kolom": [
+    {"nama": "Masukan", "simpul": [
+      {"t": "Laporan harian WA", "j": "orang"},
+      {"t": "Zona semai awan", "k": "scripts/operasi/semai*", "j": "proses"}]},
+    {"nama": "Worker", "simpul": [
+      {"t": "Urai laporan", "k": "src/operasi_wa.js", "j": "proses"},
+      {"t": "Operasi udara", "k": "src/operasi_udara.js", "j": "inti"},
+      {"t": "Hasil padam", "k": "src/operasi_hasil.js", "j": "proses"}]},
+    {"nama": "Simpan", "simpul": [
+      {"t": "D1 op_*", "j": "simpan"},
+      {"t": "R2 operasi/renlap/", "j": "simpan"}]},
+    {"nama": "Layar", "simpul": [
+      {"t": "/operasi", "k": "public/operasi_*", "j": "layar"},
+      {"t": "Renlap cetak", "d": "PDF, KML, GPX.", "j": "layar"}]}],
+   "catatan": ["Nama kru tidak disimpan; biaya kontrak tidak masuk public/."]},
+  {"judul": "SIPPA", "ket": "Perencanaan dan operasi pipa portabel untuk karhutla dan banjir di /pipa.",
+   "kolom": [
+    {"nama": "Data", "simpul": [
+      {"t": "Sumber air dan titik", "k": "scripts/data/sippa", "j": "sumber"},
+      {"t": "Form lapangan luring", "j": "orang"}]},
+    {"nama": "Hitung", "simpul": [
+      {"t": "Hidraulika di peramban", "d": "Fungsi murni: zona, pemicu, tekanan.", "k": "public/pipa", "j": "proses"},
+      {"t": "Worker SIPPA", "k": "src/sippa.js", "j": "inti"}]},
+    {"nama": "Simpan", "simpul": [
+      {"t": "D1 sippa_*", "k": "migrations/0055-0057", "j": "simpan"},
+      {"t": "R2 sippa/", "j": "simpan"}]},
+    {"nama": "Layar", "simpul": [
+      {"t": "Perencanaan dan operasi", "j": "layar"},
+      {"t": "Studio, 3D, laporan PDF", "j": "layar"}]}],
+   "catatan": ["Dokumen otoritas: data/kajian-bnpb/pipa/KEPUTUSAN-SIPPA.md."]},
+  {"judul": "Kemitraan Kampus", "ket": "Profil daerah, belanja masalah BPBD, dan pencocokan pakar di /kemitraan.",
+   "kolom": [
+    {"nama": "Sumber", "simpul": [
+      {"t": "Data daerah", "d": "Semua bencana per kab/kota.", "j": "sumber"},
+      {"t": "Korpus paper", "d": "OpenAlex.", "j": "sumber"}]},
+    {"nama": "Pipeline", "simpul": [
+      {"t": "Profil dan masalah", "k": "kemitraan.yml, scripts/kemitraan", "j": "proses"},
+      {"t": "Cocok pakar BM25", "k": "kemitraan-pakar.yml", "j": "proses"}]},
+    {"nama": "Simpan", "simpul": [
+      {"t": "JSON kemitraan", "k": "public/data/kemitraan", "j": "simpan"},
+      {"t": "D1 km_*", "k": "migrations/0080-0084", "j": "simpan"},
+      {"t": "R2 kemitraan/", "j": "simpan"}]},
+    {"nama": "Layar", "simpul": [
+      {"t": "/kemitraan", "k": "public/kemitraan*", "j": "inti"},
+      {"t": "Buku profil daerah", "j": "layar"}]}],
+   "catatan": ["Pengerja: kampus."]},
+  {"judul": "Lapangan", "ket": "Data induk pegawai dan relawan, absen pindai wajah, dan logbook harian di /petugas.",
+   "kolom": [
+    {"nama": "Petugas", "simpul": [
+      {"t": "Ponsel petugas", "d": "Persetujuan, daftar wajah lima arah, absen.", "k": "public/petugas", "j": "orang"},
+      {"t": "Antrean luring", "j": "proses"}]},
+    {"nama": "Worker", "simpul": [
+      {"t": "Lapangan", "k": "src/lapangan*.js", "j": "inti"},
+      {"t": "Panggilan WA", "k": "src/lapangan_wa.js", "j": "proses"}]},
+    {"nama": "Simpan", "simpul": [
+      {"t": "D1 orang, lp_*, wa_antre", "k": "migrations/0095-0098", "j": "simpan"},
+      {"t": "R2 lapangan/", "j": "simpan"}]},
+    {"nama": "Layar", "simpul": [
+      {"t": "Panel pimpinan", "k": "public/petugas/panel.html", "j": "layar"}]}],
+   "catatan": ["Vektor wajah tidak pernah keluar dari Worker."]},
+  {"judul": "Siklus Bencana", "ket": "Buku Besar Kejadian menjadi satu-satunya buku kejadian untuk semua modul.",
+   "kolom": [
+    {"nama": "Sumber", "simpul": [
+      {"t": "Sumber kejadian", "d": "Registri sumber dan pencocok tunggal.", "k": "scripts/siklus/pasang.py", "j": "sumber"},
+      {"t": "Bangunan", "d": "Paparan per bangunan.", "j": "sumber"}]},
+    {"nama": "Mesin", "simpul": [
+      {"t": "Buku Besar Kejadian", "k": "src/siklus_kejadian.js", "j": "inti"},
+      {"t": "Kaji cepat", "k": "src/siklus_kaji.js", "j": "proses"},
+      {"t": "Pemulihan dan renkon", "k": "src/siklus_pulih.js, src/siklus_renkon.js", "j": "proses"}]},
+    {"nama": "Simpan", "simpul": [
+      {"t": "D1 sk_*", "j": "simpan"},
+      {"t": "R2 siklus/", "d": "Paparan rinci di balik sesi.", "j": "simpan"}]},
+    {"nama": "Layar", "simpul": [
+      {"t": "/siklus", "k": "public/siklus", "j": "layar"},
+      {"t": "Tautan kejadian lintas modul", "k": "src/kejadian_tautan.js", "j": "layar"}]}],
+   "catatan": ["Angka antarsumber tidak dijumlah.", "Jadwal: siklus.yml."]},
+  {"judul": "Inventori LogPal", "ket": "Stok gudang BNPB dan BPBD, mutasi, stok opname, dan permintaan bantuan.",
+   "kolom": [
+    {"nama": "Masukan", "simpul": [
+      {"t": "Impor gudang", "d": "SQL ditulis ke luar repo.", "k": "scripts/logpal/impor.mjs", "j": "orang"},
+      {"t": "Mutasi dan opname", "j": "orang"}]},
+    {"nama": "Worker", "simpul": [
+      {"t": "LogPal", "k": "src/logpal.js", "j": "inti"}]},
+    {"nama": "Simpan", "simpul": [
+      {"t": "D1 logpal_*", "k": "migrations/0112", "j": "simpan"}]},
+    {"nama": "Layar", "simpul": [
+      {"t": "/logpal", "k": "public/logpal", "j": "layar"}]}],
+   "catatan": ["Data gudang asli tidak pernah masuk repo."]},
+  {"judul": "Laporan dan deck", "ket": "Angka dihitung mesin, kalimat kebijakan ditulis staf, dan versi beku tidak ditimpa.",
+   "kolom": [
+    {"nama": "Bahan", "simpul": [
+      {"t": "Angka sistem", "d": "Dari JSON pipeline dan D1.", "j": "sumber"},
+      {"t": "Bahan staf", "d": "Lewat form dan WhatsApp.", "j": "orang"}]},
+    {"nama": "Perakit", "simpul": [
+      {"t": "Laporan BNPB", "k": "src/laporan_bnpb.js, src/laporan_karhutla.js", "j": "proses"},
+      {"t": "Mesin deck", "d": "Skill ppt-konsultan, lolos aturan_slide.py.", "j": "inti"},
+      {"t": "Surat dinas", "d": "Skill surat-bnpb.", "j": "proses"}]},
+    {"nama": "Keluaran", "simpul": [
+      {"t": "/laporan-bnpb", "d": "Cetak A4.", "j": "layar"},
+      {"t": "PPTX dan PDF", "d": "Folder Revisi per hari.", "j": "layar"},
+      {"t": "Word berkop", "j": "layar"}]}],
+   "catatan": ["Rupa deck mengikuti sistem desain BNPB."]},
+  {"judul": "Asisten AI dan Direktori", "ket": "Asisten internal staf dan direktori pakar kebencanaan, keduanya di balik sesi staf.",
+   "kolom": [
+    {"nama": "Sumber", "simpul": [
+      {"t": "Pengetahuan", "d": "Dokumen yang diunggah staf.", "j": "sumber"},
+      {"t": "Panen direktori", "k": "akademisi.yml, direktori-bulanan.yml", "j": "proses"}]},
+    {"nama": "Worker", "simpul": [
+      {"t": "Asisten AI", "d": "Workers AI dan pencarian FTS5.", "k": "src/ai.js", "j": "inti"},
+      {"t": "Direktori", "k": "src/akademisi.js", "j": "proses"}]},
+    {"nama": "Simpan", "simpul": [
+      {"t": "D1 pengetahuan", "j": "simpan"},
+      {"t": "R2 direktori", "d": "Data tidak masuk repo.", "j": "simpan"}]},
+    {"nama": "Layar", "simpul": [
+      {"t": "/ai", "k": "public/ai", "j": "layar"},
+      {"t": "/direktori", "k": "public/akademisi*", "j": "layar"}]}],
+   "catatan": ["Pengerja: ai-internal dan warga-api."]}
+]},
+{"nama": "Menjalankannya", "papan": [
+  {"judul": "Pipeline terjadwal", "ket": "Workflow GitHub Actions menjalankan pipeline lalu meng-commit hasilnya ke public/data.",
+   "kolom": [
+    {"nama": "Sering", "simpul": [
+      {"t": "titik.yml", "d": "Titik panas tiap 3 jam.", "j": "proses"},
+      {"t": "himawari.yml", "d": "Alarm api baru.", "j": "proses"}]},
+    {"nama": "Harian", "simpul": [
+      {"t": "data.yml", "d": "Karhutla, dalops, SIPPA, Ruang Unit.", "j": "inti"},
+      {"t": "banjir.yml, udara.yml", "j": "proses"},
+      {"t": "prediksi.yml, kemitraan.yml, siklus.yml", "j": "proses"}]},
+    {"nama": "Berkala", "simpul": [
+      {"t": "statis.yml", "d": "Lapisan dasar.", "j": "proses"},
+      {"t": "kemitraan-pakar.yml", "d": "Bulanan.", "j": "proses"},
+      {"t": "jaga.yml", "d": "Menjaga data tetap segar.", "j": "proses"}]},
+    {"nama": "Hasil", "simpul": [
+      {"t": "Commit JSON", "k": "public/data", "j": "simpan"},
+      {"t": "Unggah R2", "j": "simpan"}]}],
+   "catatan": ["Suite yang menyentuh database tidak dijalankan tiap push."]},
+  {"judul": "Data dan migrasi", "ket": "Isian manusia di D1, berkas di R2, dan migrasi bernomor urut yang idempoten.",
+   "kolom": [
+    {"nama": "Tulis", "simpul": [
+      {"t": "Rute Worker", "d": "POST, PATCH, DELETE menolak origin lain.", "k": "src/worker.js", "j": "inti"},
+      {"t": "Cron Worker", "d": "Satu cron tiap menit, tugas dibagi per menit.", "j": "proses"}]},
+    {"nama": "Simpan", "simpul": [
+      {"t": "D1", "d": "Kuota baca harian dijaga.", "j": "simpan"},
+      {"t": "R2", "d": "Foto, data staf, renlap.", "j": "simpan"}]},
+    {"nama": "Ubah skema", "simpul": [
+      {"t": "Migrasi", "d": "Yang sudah jalan tidak disunting.", "k": "migrations/**", "j": "proses"},
+      {"t": "Periksa", "d": "Agent migrasi-idempoten.", "j": "proses"}]},
+    {"nama": "Terap", "simpul": [
+      {"t": "D1 produksi", "d": "Diterapkan pemilik.", "j": "orang"}]}],
+   "catatan": ["Batas akun Free: lima jadwal cron."]},
+  {"judul": "Menerbitkan perubahan", "ket": "Dari simpan berkas sampai tayang: tinjau lokal, uji, dorong, terbit.",
+   "kolom": [
+    {"nama": "Kerja", "simpul": [
+      {"t": "Sunting di main", "d": "Tanpa branch dan worktree.", "j": "orang"},
+      {"t": "Tinjau lokal", "d": "localhost:8800, kode lokal dengan data produksi.", "k": "scripts/agents/tinjau_lokal.mjs", "j": "layar"}]},
+    {"nama": "Uji", "simpul": [
+      {"t": "Gerbang agen", "k": "npm run uji:agen", "j": "proses"},
+      {"t": "Uji warga", "k": "npm run uji:warga", "j": "proses"}]},
+    {"nama": "Dorong", "simpul": [
+      {"t": "npm run dorong", "d": "Antre, menyusul main, lalu push lewat uji pre-push.", "j": "inti"}]},
+    {"nama": "Terbit", "simpul": [
+      {"t": "terbit.yml", "d": "Deploy hanya dari Actions.", "j": "proses"},
+      {"t": "Cloudflare", "d": "Worker dan aset statis.", "j": "simpan"}]}],
+   "catatan": ["Tayang baru disebut setelah terbit.yml hijau dan aset hidup dicek."]},
+  {"judul": "Gerbang dan agent", "ket": "Aturan pemilik dijadikan uji yang jalan, dan tiap berkas punya satu agent pemilik.",
+   "kolom": [
+    {"nama": "Aturan", "simpul": [
+      {"t": "AGENTS.md", "d": "Router, peta modul, batas mati.", "j": "sumber"},
+      {"t": "Paket dokumen modul", "k": "data/kajian-bnpb/<modul>", "j": "sumber"}]},
+    {"nama": "Mesin", "simpul": [
+      {"t": "Roster agent", "k": "scripts/agents/roster.json", "j": "inti"},
+      {"t": "Ilmu dan jejak", "k": ".claude/ilmu-agent", "j": "simpan"},
+      {"t": "Hook", "d": "Tolak branch, sapu branch, catat prompt.", "j": "proses"}]},
+    {"nama": "Gerbang", "simpul": [
+      {"t": "tests/agen", "d": "Ratchet: hanya boleh menyusut.", "j": "proses"},
+      {"t": "Pengulas", "d": "guard-api, selera-angka, inp-reviewer, validasi-model.", "j": "proses"}]}],
+   "catatan": ["Gerbang tidak boleh dilemahkan untuk meloloskan kerjaan sendiri."]}
+]},
+{"nama": "Di sekitar", "papan": [
+  {"judul": "Bot WhatsApp", "ket": "Gateway di Mac mini menerima bahan dan mengirim laporan begitu bahan lengkap.",
+   "kolom": [
+    {"nama": "Masuk", "simpul": [
+      {"t": "Grup WhatsApp", "j": "orang"}]},
+    {"nama": "Gateway", "simpul": [
+      {"t": "Baileys", "k": "scripts/wa", "j": "inti"},
+      {"t": "Pengatur otomatis", "d": "Layanan launchd.", "j": "proses"}]},
+    {"nama": "Worker", "simpul": [
+      {"t": "Terima dan kenali", "k": "src/wa.js, src/wa_form.js", "j": "proses"}]},
+    {"nama": "Keluar", "simpul": [
+      {"t": "PDF dan PPT", "d": "Laporan harian dan penanganan.", "j": "layar"}]}],
+   "catatan": ["Pengerja: wa-bot."]},
+  {"judul": "Sensor lapangan", "ket": "Alat ESP32 dan LoRa mengirim bacaan ke Worker dengan ambang per alat.",
+   "kolom": [
+    {"nama": "Alat", "simpul": [
+      {"t": "Muka air, hujan, gerak tanah", "j": "sumber"},
+      {"t": "Muka air gambut, gas asap", "j": "sumber"}]},
+    {"nama": "Jalur", "simpul": [
+      {"t": "Gateway LoRaWAN", "j": "proses"}]},
+    {"nama": "Worker", "simpul": [
+      {"t": "/api/sensor/baca", "k": "src/sensor.js", "j": "inti"}]},
+    {"nama": "Pakai", "simpul": [
+      {"t": "Peringatan", "j": "layar"}]}],
+   "catatan": ["Pengerja: sensor."]},
+  {"judul": "API mitra dan MCP", "ket": "Data dibuka untuk mitra lewat API v1 berkunci dan server MCP.",
+   "kolom": [
+    {"nama": "Mitra", "simpul": [
+      {"t": "Sistem mitra", "j": "orang"},
+      {"t": "Asisten AI mitra", "j": "orang"}]},
+    {"nama": "Worker", "simpul": [
+      {"t": "API v1", "k": "src/api_v1.js", "j": "inti"},
+      {"t": "MCP", "k": "src/mcp.js", "j": "proses"}]},
+    {"nama": "Data", "simpul": [
+      {"t": "Kunci mitra", "k": "D1", "j": "simpan"},
+      {"t": "Arsip firespot", "d": "Rute /api/v1/firespot.", "j": "simpan"}]}],
+   "catatan": []},
+  {"judul": "Sistem desain", "ket": "Dua sistem rupa: web Centurisk97 dan deck BNPB, dengan aturan bahasa yang sama.",
+   "kolom": [
+    {"nama": "Sumber", "simpul": [
+      {"t": "Token web", "k": "public/inti/tema.css", "j": "sumber"},
+      {"t": "Token deck", "d": "tema.json skill ppt-konsultan.", "j": "sumber"}]},
+    {"nama": "Halaman", "simpul": [
+      {"t": "/design-system", "d": "Centurisk97.", "j": "inti"},
+      {"t": "/design-system/bnpb", "d": "BNPB.", "j": "layar"},
+      {"t": "/design-system/sistem", "d": "Papan ini.", "j": "layar"}]},
+    {"nama": "Penjaga", "simpul": [
+      {"t": "Gerbang token warna", "k": "tests/agen/gerbang-token-warna.test.mjs", "j": "proses"},
+      {"t": "Gerbang tipografi dan kartu", "j": "proses"}]}],
+   "catatan": []}
+]}
+]
+}
