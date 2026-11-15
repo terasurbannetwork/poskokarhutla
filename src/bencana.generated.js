@@ -535,10 +535,17 @@ export default {
       },
       "prioritas": [],
       "kemampuan": {
-        "operasi": false,
+        "operasi": true,
         "renlap": {
-          "sarana": [],
-          "bobot": ""
+          "sarana": [
+            "perahu_karet",
+            "perahu_motor",
+            "pompa_air",
+            "alat_berat",
+            "tenda",
+            "air_bersih_unit"
+          ],
+          "bobot": "pesisir"
         },
         "dokumen": [],
         "ews": {

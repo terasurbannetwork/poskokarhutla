@@ -168,6 +168,13 @@ test('PB-04: JENIS_LOGBOOK_KE_BENCANA menunjuk id registri yang ada', async () =
   assert.equal(peta.abrasi, 'pesisir')
 })
 
+// Registri dengan semua kemampuan dimatikan: fixture pemakai tidak boleh bergantung pada bencana mana yang sudah menyalakan kuncinya.
+const regMati = () => {
+  const r = reg()
+  for (const b of r.bencana) b.kemampuan = { operasi: false, renlap: { sarana: [], bobot: '' }, dokumen: [], ews: { kunci: [], tangga: false }, dasbor: { ringkas: '', papan_sk: false }, ekonomi: false, pencegahan: false, prioritas: false }
+  return r
+}
+
 test('PB-04: fixture jahat ditolak (gerbang tidak buta)', () => {
   // bentuk
   const a = reg()
@@ -179,12 +186,12 @@ test('PB-04: fixture jahat ditolak (gerbang tidak buta)', () => {
   const g = skema(b).join('\n')
   assert.ok(g.includes('operasi harus bool') && g.includes("'roket' tidak dikenal"), 'bentuk liar lolos')
   // pemakai: kunci menyala tanpa kode pembacanya
-  const c = reg()
+  const c = regMati()
   c.bencana[0].kemampuan.operasi = true
-  c.bencana[2].kemampuan.ews.tangga = true
-  assert.deepEqual(tanpaPemakai(c, ['const x = 1']), ['karhutla: kemampuan.operasi', 'pesisir: kemampuan.ews'])
+  c.bencana[3].kemampuan.ews.tangga = true
+  assert.deepEqual(tanpaPemakai(c, ['const x = 1']), ['karhutla: kemampuan.operasi', 'cuaca: kemampuan.ews'])
   assert.deepEqual(tanpaPemakai(c, ['b.kemampuan.operasi; b.kemampuan.ews']), [])
-  assert.deepEqual(tanpaPemakai(reg(), []), [], 'registri bersih (semua mati) harus lolos tanpa pemakai')
+  assert.deepEqual(tanpaPemakai(regMati(), []), [], 'registri bersih (semua mati) harus lolos tanpa pemakai')
   // generated basi terhadap kemampuan
   const t = mkdtempSync(join(tmpdir(), 'bencana-kmp-'))
   mkdirSync(join(t, 'src'), { recursive: true })
