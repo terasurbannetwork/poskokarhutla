@@ -1,0 +1,28 @@
+/* Halaman /bantu: hanya tata letak. Token, kepala situs, isian, tombol, pesan dari bnpb.css; kartu dari inti/kartu.css. Tanpa gaya inline (CSP). */
+[hidden]{display:none!important}
+.ad-sep,.bt-wrap .ex-std .ex-ey{text-transform:none;letter-spacing:0}   /* pemilik: tanpa huruf kapital semua */
+.bt-wrap{max-width:720px;margin:0 auto;padding:20px 16px 56px;display:grid;gap:20px}
+.bt-wrap .ex.ex-std+.ex,.bt-wrap .ex.ex-std{margin:0}
+.bt-wrap .ex-jd h3{font-size:1.125rem}
+.bt-org{margin:0;font-size:.8125rem;color:var(--ink2)}
+.bt-form{display:grid;gap:12px}
+.bt-form .bn-isian input,.bt-form .bn-isian select,.bt-form .bn-isian textarea{min-height:44px;font-size:1rem}
+.bt-form .bn-tombol{width:100%;min-height:44px}
+.bt-pilih{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;border:0;margin:0;padding:0}
+.bt-pilih legend{font-size:.8125rem;font-weight:600;color:var(--ink2);padding:0;margin-bottom:6px}
+.bt-pilih label{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:6px 10px;border-radius:12px;background:var(--soft);color:var(--ink);font-size:.8125rem;font-weight:700;text-align:center;cursor:pointer;line-height:1.2}
+.bt-pilih input{position:absolute;opacity:0;pointer-events:none}
+.bt-pilih label:has(input:checked){background:var(--navy2);color:var(--on-brand)}
+.bt-pilih label:has(input:focus-visible){outline:2px solid var(--c5);outline-offset:2px}
+.bt-pilih svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.bt-daftar{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.bt-butir{display:grid;gap:6px;padding:12px 14px;border-radius:14px;background:var(--soft)}
+.bt-butir b{font-size:.9rem;overflow-wrap:anywhere}
+.bt-sub{font-size:.78rem;font-weight:600;color:var(--ink2);overflow-wrap:anywhere}
+.bt-butir select{min-height:44px;font-size:1rem}
+.bt-pil{display:inline-flex;align-items:center;justify-self:start;font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--soft);color:var(--ink2)}
+.bt-pil.hijau{background:color-mix(in srgb,var(--c4) 18%,transparent);color:color-mix(in srgb,var(--c4) 70%,var(--ink))}
+.bt-pil.kuning{background:color-mix(in srgb,var(--c3) 22%,transparent);color:color-mix(in srgb,var(--c3) 55%,var(--ink))}
+.bt-pil.merah{background:color-mix(in srgb,var(--c1) 14%,transparent);color:var(--c1)}
+.bt-kosong{margin:0;font-size:.875rem;color:var(--ink2)}
+@media (max-width:480px){.bt-wrap{padding:12px 10px 40px}}
