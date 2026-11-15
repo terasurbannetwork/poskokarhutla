@@ -18,6 +18,7 @@ import {KONST_PUBLIK, VERSI_SETUJU, TEKS_SETUJU, ARAH, TANTANGAN, NONCE, LURING,
   kosinus, vektorDari, haversineM, dalamRadius, lompatanMustahil, putusStatus, tanggalWIB, awalHariWIB, LURING_LAMA_MS, JARINGAN_JENDELA_MS, WAJAH_BARU_ABSEN, SAMPEL_TINJAU} from "./lapangan_konst.js";
 import {RUTE_LAPANGAN_PANEL, jaga, pb, penjaga, jamRelawan, kirimJpeg} from "./lapangan_panel.js";
 export {bersihkanLapangan} from "./lapangan_panel.js";
+import {jejakOrang} from "./lapangan_jejak.js";
 
 const BATAS_TEKS_SESI = 64 * 1024;   // logbook lewat sesi nomor: hanya teks, jadi badan kecil
 const MENIT = 60e3, JAM = 3600e3, HARI = 24 * JAM, RE_ID = /^[0-9a-f]{16}$/, RE_TGL = /^\d{4}-\d{2}-\d{2}$/;
@@ -586,4 +587,5 @@ export const RUTE_LAPANGAN = jaga({
   "POST /api/petugas/dummy": (env, req, url, kini) => pb(req) ?? buatDummy(env, req, kini),
   "DELETE /api/petugas/dummy": (env, req) => pb(req) ?? hapusDummy(env, req),
   ...RUTE_LAPANGAN_PANEL,
+  "GET /api/orang/:id/jejak": jejakOrang,   // KP-24 (src/lapangan_jejak.js)
 });

@@ -1,0 +1,17 @@
+/* Kartu Pasangan akun (Keterpaduan KP-23). Kepala tabel navy bertulisan putih; tombol ikon polos. */
+.ot-kartu{margin-top:20px}
+.ot-kartu .ex-jd>h3{display:flex;align-items:center;gap:8px;font-size:18px}
+.ot-ik{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ot-hitung{font-size:12.5px;font-weight:700;color:var(--ink2,#44546a)}
+.ot-wadah{overflow-x:auto}
+.ot-tabel{width:100%;border-collapse:collapse;font-size:13px;min-width:820px}
+.ot-tabel thead th{background:#0b2545;color:#fff;font-size:12px;font-weight:700;padding:9px 10px;text-align:center;white-space:nowrap}
+.ot-tabel td{padding:10px;border-top:1px solid var(--line,#e3e8f0);vertical-align:top}
+.ot-tabel small,.ot-ket small{display:block;color:var(--ink2,#44546a);font-size:11.5px;overflow-wrap:anywhere}
+.ot-daftar{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ot-orang{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.ot-btn{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 10px;border:0;background:none;color:var(--ink,#0b2545);font-weight:700;font-size:12.5px;cursor:pointer;touch-action:manipulation}
+.ot-btn:hover{color:var(--brand2,#1d4e89)}.ot-btn:active{transform:scale(.97)}
+.ot-redup,.ot-pesan{color:var(--ink2,#44546a);font-size:13px;margin:0}
+.ot-pesan{color:var(--bad,#c9503a);font-weight:700}
+.ot-lebih{padding:8px 0 0}

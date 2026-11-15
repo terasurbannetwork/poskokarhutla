@@ -211,7 +211,10 @@ ${atas("laporan", ctx)}
 export const halamanAkun = () => halaman("akun", "Memuat daftar akun…", `<link href="/admin/akun.css?v=3" rel="stylesheet">
 <script src="/instansi_wilayah.js?v=1"></script>
 <script src="/admin/bersama.js?v=4"></script>
-<script src="/admin/akun.js?v=3"></script>`);
+<script src="/admin/akun.js?v=3"></script>
+<link href="/inti/kartu.css?v=1" rel="stylesheet">
+<link href="/admin/orang_tinjau.css?v=1" rel="stylesheet">
+<script src="/admin/orang_tinjau.js?v=1"></script>`);
 
 /* Kunci API mitra (/admin/kunci-api): terbitkan, salin sekali, daftar, cabut. Data dari /api/kunci-api/admin/*. */
 export const halamanKunciApi = () => halaman("kunci-api", "Memuat daftar kunci…", `<link href="/admin/akun.css?v=3" rel="stylesheet">

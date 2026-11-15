@@ -1289,7 +1289,10 @@
     "POST /api/masuk/pilih": "peran U-15:",
     "POST /api/masuk/pemirsa_wa": "peran U-35:",
     "table mk_masuk_log": "peran U-13:",
-    "table mk_pemirsa_wa": "peran U-35:"
+    "table mk_pemirsa_wa": "peran U-35:",
+    "GET /api/orang/tinjau": "KP-23 daftar hanya memuat data tersamar",
+    "POST /api/orang/tinjau": "KP-23 pasang menulis orang_akun",
+    "GET /api/orang/:id/jejak": "orang lain 404 sama persis dengan orang tak ada"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

@@ -55,6 +55,7 @@ body{padding-top:var(--top);height:auto;min-height:100%}
 .lp-gulir{overflow-x:auto}
 .lp-tabel{width:100%;border-collapse:collapse;font-size:14px}
 .lp-tabel th{text-align:center;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.lp-jejak th{text-transform:none;letter-spacing:0;font-size:13px;background:#14315f;color:#fff;border-bottom:0}.lp-jejak td{text-align:center}.lp-jejak td:first-child{text-align:left}.lp-gulung{overflow-x:auto}
 .lp-tabel td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
 .lp-tabel td .lp-tbl{min-height:48px;padding:6px 12px;font-size:13.5px}
 .lp-tautan-salin{display:flex;gap:8px}

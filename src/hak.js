@@ -513,8 +513,35 @@ export const tpTutup = async (env, id, tgl) => !!(await env.DB.prepare("UPDATE t
 
 /* KP-21/22 orang_akun dan orang_tinjau (migrasi 0138, 0139; KEPUTUSAN D10). Dipakai layar tinjau admin (KP-23); pencocok KP-22 menulis SQL di luar repo. Hak dicek di rute. */
 export const oaTinjauAntre = async env => (await env.DB.prepare("SELECT id, akun_tabel, akun_id, kandidat, alasan, dibuat FROM orang_tinjau WHERE keputusan IS NULL AND dibuat > 0 ORDER BY dibuat, id LIMIT 200").all()).results;
-export const oaPasang = (env, tabel, akunId, orangId, cara, kini) => env.DB.prepare("INSERT OR IGNORE INTO orang_akun (tabel, akun_id, orang_id, cara, dibuat) VALUES (?,?,?,?,?)").bind(tabel, akunId, orangId, cara, kini).run();
-export const oaPutus = async (env, id, keputusan, pemutus, kini) => !!(await env.DB.prepare("UPDATE orang_tinjau SET keputusan = ?, diputus = ?, pemutus = ? WHERE id = ? AND keputusan IS NULL").bind(keputusan, kini, pemutus, id).run()).meta.changes;
+/* KP-23 satu batch atomik: UPDATE tinjau (hanya bila belum diputus dan, untuk pasang, akun belum berpasangan) lalu orang_akun dan jejak yang hanya masuk bila baris tinjau itu baru saja diputus oleh batch ini. true = tertulis; false = 0 baris, tak ada yang lain tertulis. */
+export async function oaPutusBatch(env, t, keputusan, orangId, pemutus, kini) {
+  const pasang = keputusan === "pasang", sudah = "EXISTS (SELECT 1 FROM orang_tinjau WHERE id = ?1 AND keputusan = ?2 AND diputus = ?3 AND pemutus = ?4)";
+  const stmts = [env.DB.prepare("UPDATE orang_tinjau SET keputusan = ?2, diputus = ?3, pemutus = ?4 WHERE id = ?1 AND keputusan IS NULL" + (pasang ? " AND NOT EXISTS (SELECT 1 FROM orang_akun WHERE tabel = ?5 AND akun_id = ?6)" : "")).bind(...[t.id, keputusan, kini, pemutus, ...(pasang ? [t.akun_tabel, t.akun_id] : [])])];
+  if (pasang) stmts.push(env.DB.prepare(`INSERT INTO orang_akun (tabel, akun_id, orang_id, cara, dibuat) SELECT ?5, ?6, ?7, 'admin', ?3 WHERE ${sudah}`).bind(t.id, keputusan, kini, pemutus, t.akun_tabel, t.akun_id, orangId));
+  stmts.push(env.DB.prepare(`INSERT INTO pantau_jejak (waktu, oleh, obyek, aksi, ke, catatan, dummy) SELECT ?3, ?4, 'orang_tinjau:' || ?1, ?2, ?5, NULL, 0 WHERE ${sudah.replace("?4)", "?4)")}`).bind(t.id, keputusan, kini, pemutus, orangId ?? null));
+  return !!(await env.DB.batch(stmts))[0].meta.changes;
+}
+
+/* KP-23 layar tinjau pasangan (src/orang_tinjau.js): ringkasan akun (tanpa nama), orang kandidat, satu baris tinjau. Hak dicek di rute (modOK). Satu batch per halaman: subrequest Free 50. */
+const OA_AKUN = {
+  staf: "SELECT nip, wa, unit FROM staf WHERE id = ?", instansi_akun: "SELECT nip, wa, unit FROM instansi_akun WHERE id = ?",
+  pdt_akun: "SELECT nip, wa, unit FROM pdt_akun WHERE id = ?", km_akun: "SELECT NULL nip, wa, jabatan unit FROM km_akun WHERE id = ?",
+};
+export const oaAkunBanyak = async (env, baris) => baris.length ? (await env.DB.batch(baris.map(r => env.DB.prepare(OA_AKUN[r.akun_tabel]).bind(r.akun_id)))).map(x => x.results[0] ?? null) : [];
+export const oaOrangRingkas = async (env, ids) => ids.length ? (await env.DB.prepare("SELECT id, jenis, unit, jabatan, nip, wa FROM orang WHERE id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(ids)).all()).results : [];
+export const oaTinjauById = (env, id) => env.DB.prepare("SELECT id, akun_tabel, akun_id, kandidat, keputusan FROM orang_tinjau WHERE id = ?").bind(id).first();
+/* KP-24 jejak per orang (K9: orangnya sendiri dan admin). Hanya hitungan per hari per jenis dari kolom pelaku yang terverifikasi di migrasi: lp_absen.orang_id, lp_logbook.orang_id, tugas_isian.akun_id (lewat orang_akun 'instansi_akun').
+   Tanpa isi, vektor, atau foto. meja_catatan.oleh dan logbook_entri.oleh teks bebas tanpa pemetaan ke orang_akun: tidak dibaca. Hak dicek di rute (src/lapangan_jejak.js). */
+export const oaAkunDari = (env, tabel, akunId, orangId) => env.DB.prepare("SELECT 1 FROM orang_akun WHERE tabel = ? AND akun_id = ? AND orang_id = ?").bind(tabel, akunId, orangId).first();
+export const oaJejakBaca = async (env, orangId, tglDari, tglSampai, msDari, msSampai) => {
+  const [o, a, l, t] = await env.DB.batch([
+    env.DB.prepare("SELECT 1 FROM orang WHERE id = ?").bind(orangId),
+    env.DB.prepare("SELECT tanggal, count(*) n FROM lp_absen WHERE orang_id = ? AND tanggal BETWEEN ? AND ? AND status <> 'tolak' GROUP BY tanggal").bind(orangId, tglDari, tglSampai),
+    env.DB.prepare("SELECT tanggal, count(*) n FROM lp_logbook WHERE orang_id = ? AND tanggal BETWEEN ? AND ? GROUP BY tanggal").bind(orangId, tglDari, tglSampai),
+    env.DB.prepare("SELECT strftime('%Y-%m-%d', (dibuat + 25200000) / 1000, 'unixepoch') tanggal, count(*) n FROM tugas_isian WHERE akun_id IN (SELECT akun_id FROM orang_akun WHERE orang_id = ? AND tabel = 'instansi_akun') AND dibuat BETWEEN ? AND ? GROUP BY tanggal").bind(orangId, msDari, msSampai)]);
+  return o.results.length ? {absen: a.results, logbook: l.results, tugas: t.results} : null;
+};
+export const oaJejakCatat = (env, oleh, orangId, kini) => env.DB.prepare("INSERT INTO pantau_jejak (waktu, oleh, obyek, aksi, ke, catatan, dummy) VALUES (?, ?, ?, 'jejak_baca', NULL, NULL, 0)").bind(kini, oleh.slice(0, 40), "orang:" + orangId).run();
 
 /* ======================================================================================================================================================
    Paritas bencana PB-07 (migrasi 0130; data/kajian-bnpb/paritas-bencana/DESAIN-TEKNIS.md 3.2). Jenis tugas longsor dan pesisir ada di tugas_bencana_x (CHECK tugas_bencana 0047

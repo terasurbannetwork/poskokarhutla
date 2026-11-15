@@ -46,6 +46,7 @@ function beranda() {
     ${w.daftar ? `<button class="lp-tautan" id="lpDaftar" type="button">Daftar ulang wajah</button>` : `<button class="lp-tbl utama" id="lpDaftar" type="button">${ik("orang")}Daftar wajah</button>`}
   </section>
   ${profilHtml(saya)}
+  <section class="lp-kartu" id="lpJejak" aria-busy="true"><h2>Jejak kerja</h2><div class="lp-rangka"><i></i><i></i></div></section>
   <section class="lp-kartu"><h2>Tugas hari ini</h2>
     ${tugas.length > 1 ? `<div class="lp-chips" role="radiogroup" aria-label="Pilih tugas" data-n="${tugas.length}">${tugas.map(x => `<label class="lp-chip"><input type="radio" name="tugas" value="${esc(x.id)}" ${x.id === t.id ? "checked" : ""}><span>${esc(x.judul || "Tugas")}</span></label>`).join("")}</div>` : ""}
     ${t ? `<div class="lp-tugas"><b>${esc(t.judul || "Tugas")}</b><span class="lp-kecil">${ik("pin", 16)}${esc(t.wilayah_teks || "Wilayah belum diisi")}</span>
@@ -65,6 +66,7 @@ function beranda() {
   <button class="lp-tbl" id="lpRegu" type="button" hidden>${ik("orang")}Pantau regu</button>
   <button class="lp-tautan" id="lpRiwayat" type="button">Lihat riwayat 14 hari</button>`);
   $("lpRegu").addEventListener("click", () => pindah("regu"));
+  nanti(() => import("./jejak.js").then(m => m.kartuJejak($("lpJejak"), o.id, kode)).catch(() => {}));
   cekKetua();
   $("lpDaftar").addEventListener("click", () => pindah("setuju"));
   $("lpAbsen").addEventListener("click", () => pindah(langkah));
