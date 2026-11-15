@@ -86,6 +86,20 @@ export const BENCANA = {
       3: ["Matikan listrik bila air mulai masuk rumah.", "Ungsikan anak, lansia, dan ternak ke tempat yang lebih tinggi.",
         "Jangan menyeberang jalan yang tergenang air laut berarus."],
     }},
+  /* Butir dari Permen ESDM 15/2011 lewat MAGMA PVMBG (public/gunungapi/data/pedoman_krb.json). Level II Waspada = 1, III Siaga = 2, IV Awas = 3.
+     rujukan[tingkat][i] = sumber butir ke-i; dijaga tests/layar/ews_tindakan.test.mjs. */
+  gunungapi: {nama: "Gunung api", pendek: "Gunung api", warna: "#b5523b", gambar: "bencana-gunungapi.jpg",
+    sumber: "Level aktivitas gunung api dari PVMBG (MAGMA Indonesia)",
+    tindakan: {
+      1: ["KRB I: tetap berkegiatan dengan meningkatkan kewaspadaan.", "KRB II: tetap berkegiatan dengan meningkatkan kewaspadaan terhadap ancaman bahaya.", "KRB III: tidak beraktivitas di sekitar kawah.", "Ikuti radius dan sektor yang ditetapkan PVMBG untuk gunung ini."],
+      2: ["KRB I: tidak beraktivitas di sekitar lembah sungai yang berhulu di daerah puncak.", "KRB II: mulai menyiapkan diri untuk mengungsi sambil menunggu perintah pemerintah daerah sesuai rekomendasi teknis KESDM.", "KRB III: warga di wilayah terancam tidak boleh beraktivitas dan mulai menyiapkan diri untuk mengungsi.", "Ikuti radius dan sektor yang ditetapkan PVMBG untuk gunung ini."],
+      3: ["KRB I: segera mengungsi berdasarkan perintah pemerintah daerah sesuai rekomendasi teknis KESDM.", "KRB II: segera mengungsi berdasarkan perintah pemerintah daerah sesuai rekomendasi teknis KESDM.", "KRB III: warga di wilayah terancam tidak boleh beraktivitas dan segera mengungsi.", "Ikuti radius dan sektor yang ditetapkan PVMBG untuk gunung ini."],
+    },
+    rujukan: {
+      1: ["Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:30)", "Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:36)", "Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:42)", "MAGMA PVMBG (gunungapi_status.json)"],
+      2: ["Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:31)", "Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:37)", "Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:43)", "MAGMA PVMBG (gunungapi_status.json)"],
+      3: ["Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:32)", "Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:38)", "Permen ESDM 15/2011 lewat MAGMA (pedoman_krb.json:44)", "MAGMA PVMBG (gunungapi_status.json)"],
+    }},
 };
 
 /* tindakan untuk tingkat t: pakai tingkat tertinggi yang ada dan <= t; kalau tidak ada (tsunami tanpa waspada), yang terendah */
