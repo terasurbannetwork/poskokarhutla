@@ -1,0 +1,53 @@
+*Titik Banjir Belum Surut 151126* (titik tengah kecamatan, Koordalops s.d. 2026-11-15)
+
+*Aceh Barat, Aceh*
+Kec. Meureubo: 4.1695, 96.2118 https://www.google.com/maps/search/?api=1&query=4.16950,96.21180
+Kec. Pante Ceureumen: 4.4886, 96.3205 https://www.google.com/maps/search/?api=1&query=4.48860,96.32050
+Kec. Sungai Mas: 4.6139, 96.1981 https://www.google.com/maps/search/?api=1&query=4.61390,96.19810
+
+*Aceh Singkil, Aceh*
+Kec. Pulau Banyak: 2.3391, 97.3986 https://www.google.com/maps/search/?api=1&query=2.33910,97.39860
+Kec. Pulau Banyak Barat: 2.1604, 97.2645 https://www.google.com/maps/search/?api=1&query=2.16040,97.26450
+
+*Aceh Tamiang, Aceh*
+Kec. Tenggulun: 4.0118, 97.9510 https://www.google.com/maps/search/?api=1&query=4.01180,97.95100
+
+*Aceh Tengah, Aceh*
+Kec. Bintang: 4.5460, 97.0764 https://www.google.com/maps/search/?api=1&query=4.54600,97.07640
+Kec. Rusip Antara: 4.6853, 96.4754 https://www.google.com/maps/search/?api=1&query=4.68530,96.47540
+
+*Aceh Tenggara, Aceh*
+Kec. Badar: 3.5906, 97.8210 https://www.google.com/maps/search/?api=1&query=3.59060,97.82100
+Kec. Bambel: 3.4520, 97.8792 https://www.google.com/maps/search/?api=1&query=3.45200,97.87920
+Kec. Deleng Pokhkisen: 3.5334, 97.8570 https://www.google.com/maps/search/?api=1&query=3.53340,97.85700
+Kec. Lawe Alas: 3.4246, 97.6107 https://www.google.com/maps/search/?api=1&query=3.42460,97.61070
+Kec. Lawe Bulan: 3.4996, 97.8722 https://www.google.com/maps/search/?api=1&query=3.49960,97.87220
+Kec. Lawe Sigala-Gala: 3.3532, 97.9334 https://www.google.com/maps/search/?api=1&query=3.35320,97.93340
+Kec. Lawe Sumur: 3.4740, 97.8883 https://www.google.com/maps/search/?api=1&query=3.47400,97.88830
+
+*Gayo Lues, Aceh*
+Kec. Blangkejeren: 3.9173, 97.3777 https://www.google.com/maps/search/?api=1&query=3.91730,97.37770
+Kec. Dabun Gelang: 3.9589, 97.5273 https://www.google.com/maps/search/?api=1&query=3.95890,97.52730
+
+*Kota Subulussalam, Aceh*
+Kec. Rundeng: 2.6979, 97.8452 https://www.google.com/maps/search/?api=1&query=2.69790,97.84520
+Kec. Sultan Daulat: 2.8296, 97.9303 https://www.google.com/maps/search/?api=1&query=2.82960,97.93030
+
+*Pidie Jaya, Aceh*
+Kec. Bandar Baru: 5.1827, 96.0918 https://www.google.com/maps/search/?api=1&query=5.18270,96.09180
+Kec. Bandar Dua: 5.1110, 96.3074 https://www.google.com/maps/search/?api=1&query=5.11100,96.30740
+Kec. Meurah Dua: 5.0263, 96.2617 https://www.google.com/maps/search/?api=1&query=5.02630,96.26170
+Kec. Meureudu: 5.1541, 96.1963 https://www.google.com/maps/search/?api=1&query=5.15410,96.19630
+Kec. Panteraja: 5.2554, 96.1456 https://www.google.com/maps/search/?api=1&query=5.25540,96.14560
+
+*Deli Serdang, Sumatera Utara*
+Kec. Hamparan Perak: 3.7277, 98.5935 https://www.google.com/maps/search/?api=1&query=3.72770,98.59350
+Kec. Sunggal: 3.5841, 98.5729 https://www.google.com/maps/search/?api=1&query=3.58410,98.57290
+
+*Simalungun, Sumatera Utara*
+Kec. Pematang Bandar: 3.0880, 99.2541 https://www.google.com/maps/search/?api=1&query=3.08800,99.25410
+Kec. Ujung Padang: 3.0197, 99.4601 https://www.google.com/maps/search/?api=1&query=3.01970,99.46010
+
+*Toba, Sumatera Utara*
+Kec. Borbor: 2.2085, 99.2700 https://www.google.com/maps/search/?api=1&query=2.20850,99.27000
+Kec. Pintu Pohan Meranti: 2.5259, 99.3511 https://www.google.com/maps/search/?api=1&query=2.52590,99.35110
