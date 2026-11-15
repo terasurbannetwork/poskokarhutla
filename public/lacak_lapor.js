@@ -1,11 +1,11 @@
 /* Kartu "Lapor dari lokasi" di /lacak (POST /api/lacak/media lalu /api/lacak/lapor, src/instansi.js laporPetugas). Langkahnya (konfirmasi, kabar, cek ulang) ditentukan server lewat
    info.lapor; petugas hanya memilih kondisi, mengambil foto, lalu Kirim. Laporan tercatat atas nama orang di tautan ini, bukan nama yang diketik.
-   - Foto diproses saat dipilih (kompres WebP/JPEG 1600 px, thumbnail JPEG, EXIF waktu dan GPS seperti public/instansi.js) dan disimpan sebagai draf di IndexedDB pb_lacak per tautan
-     (pilihan dan foto di dua baris terpisah: ketukan tidak menulis ulang blob). Muat ulang halaman tidak menghapus pilihan dan foto. Selama foto diproses, Kirim terkunci.
-   - Kirim: GPS dibaca 3 kali, laporan + foto masuk antrean IndexedDB DULU, baru dikirim. Ulang otomatis saat online, saat halaman terlihat lagi, dan tiap 60 detik dengan jeda bertambah
-     (60 detik x 2^n, maks 30 menit). Batas waktu 90 detik per unggahan dan 45 detik per laporan. Berkas diunggah sekali (id diingat, blob-nya dibuang dari antrean),
-     laporan memakai klien_id tetap (idempoten di server).
-   - Server menolak bacaan GPS lebih dari 6 jam: antrean berumur > 5 jam diberi peringatan. 410 (tautan mati) atau Selesai = draf dan antrean tautan itu dihapus dari ponsel.
+   - Foto diproses saat dipilih (kompres WebP/JPEG 1600 px, thumbnail JPEG, EXIF waktu dan GPS seperti public/instansi.js) dan disimpan sebagai draf per tautan lewat PbAntre
+     (saluran "lacak-draf" yang tidak pernah mengirim; pilihan dan foto di dua butir terpisah: ketukan tidak menulis ulang blob). Muat ulang halaman tidak menghapus pilihan dan foto. Selama foto diproses, Kirim terkunci.
+   - Kirim: GPS dibaca 3 kali, laporan + foto masuk antrean DULU, baru dikirim. Penyimpanan, jeda ulang (60 detik x 2^n, maks 30 menit), dan pemicu online/terlihat ada di public/inti/antre.js
+     (window.PbAntre, satu saluran "lacak:<sha256 token>" per tautan); di sini hanya cara kirimnya: tiap foto diunggah dulu (id diingat selama halaman terbuka), laporan memakai klien_id tetap (idempoten di server). Kode tautan
+     tidak pernah disimpan di butir: header x-lacak dibaca saat kirim lewat opsi.header. Batas waktu 90 detik per unggahan dan 45 detik per laporan.
+   - Server menolak bacaan GPS lebih dari 6 jam: antrean berumur > 5 jam diberi peringatan. 410 (tautan mati) atau Selesai = draf dan antrean tautan itu dihapus dari ponsel; 409 ber-langkah = "berubah".
    - "Rincian lokasi" (info.lapor.rinci, migrasi 0063) mengikuti butir laporan Daops: desa, fungsi kawasan, luas, tipe kebakaran, vegetasi, tanah, kedalaman gambut. Semua opsional.
      Yang diketik hanya luas dipadamkan SEJAK laporan terakhir; totalnya dijumlah server.
    CSP: tanpa skrip/gaya inline; teks data lewat esc(); pratinjau foto lewat blob:. */
@@ -22,22 +22,21 @@
   const LANGKAH = {konfirmasi: "Laporan pertama", kabar: "Kabar", cekulang: "Cek ulang"};
   const NAMA = {menyala: "Api masih menyala", bara: "Tinggal bara atau asap", padam: "Sudah padam", bukan_api: "Bukan api"};
   const BEKAS = [["ya", "Ya, ada"], ["tidak", "Tidak ada"], ["tak_tahu", "Tidak tahu"]];
-  const MAKS_FOTO = 5, JEDA0 = 60e3, JEDA_MAKS = 30 * 60e3, UMUR_PERINGATAN = 5 * 3600e3;
+  const MAKS_FOTO = 5, UMUR_PERINGATAN = 5 * 3600e3;
   const kosong = () => ({kondisi: null, alasan: null, bekas: null, catatan: "", foto: [], desa: "", kawasan: null, tipe: null, veg: [], tanah: null, luas: "", padam: "", gambut: ""});
   const RINCI_TEKS = {rDesa: "desa", rLuas: "luas", rPadam: "padam", rGambut: "gambut"};
   const ha = n => Number(n).toLocaleString("id-ID", {maximumFractionDigits: 2});
   const angka = (s, bulat) => { const t = String(s ?? "").trim().replace(",", "."); if (!t) return null; const n = Number(t); return Number.isFinite(n) && n >= 0 && (!bulat || Number.isInteger(n)) ? n : NaN; };
-  let C = null, L = null, kunci = "", draf = kosong(), antrean = [], urls = [], sibuk = false, menyiapkan = false, memproses = false, lagi = false, sigPilihan = "";
+  let C = null, L = null, kunci = "", draf = kosong(), antrean = [], urls = [], sibuk = false, menyiapkan = false, sigPilihan = "";
+  let S = null, SD = null, P_ = null, simpanAntre = null, terakhir = "", matiTunda = null, suksesTunda = false;
+  const mediaMem = new Map(), fotoMem = new Map();   // id foto terunggah dan blob cadangan (bila penyimpanan hanya teks), per klien_id, hanya selama halaman terbuka
 
-  /* ---- IndexedDB: antrean (keyPath id) dan draf (keyPath tk = sha256 token, 24 hex) ---- */
-  const idb = () => new Promise((ok, no) => { if (!window.indexedDB) return no(new Error("tanpa IndexedDB")); const r = indexedDB.open("pb_lacak", 1);
-    r.onupgradeneeded = () => { r.result.createObjectStore("antrean", {keyPath: "id"}); r.result.createObjectStore("draf", {keyPath: "tk"}); }; r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); });
-  async function tx(st, mode, fn) { const d = await idb(); return new Promise((ok, no) => { const t = d.transaction(st, mode), r = fn(t.objectStore(st)); t.oncomplete = () => { d.close(); ok(r?.result); }; t.onerror = t.onabort = () => { d.close(); no(t.error); }; }); }
-  const simpan = it => it.memori ? Promise.resolve() : tx("antrean", "readwrite", s => s.put(it)).catch(() => {});
-  const buang = async it => { antrean = antrean.filter(x => x !== it); if (!it.memori) await tx("antrean", "readwrite", s => s.delete(it.id)).catch(() => {}); };
-  /* pilihan (kecil, tiap ketuk) dan foto (blob, hanya saat foto berubah) disimpan di dua baris store draf */
-  const simpanPilihan = () => tx("draf", "readwrite", s => { const {foto, ...pilihan} = draf; return s.put({tk: kunci, ...pilihan}); }).catch(() => {});
-  const simpanFoto = () => tx("draf", "readwrite", s => s.put({tk: kunci + ":foto", foto: draf.foto})).catch(() => {});
+  /* ---- penyimpanan lewat PbAntre: antrean kirim (saluran "lacak:<tk>") dan draf (saluran "lacak-draf": kirimnya tidak pernah jalan, hanya penyimpan) ---- */
+  const buang = it => S.buang(it.klien_id).catch(() => {});
+  /* pilihan (kecil, tiap ketuk) dan foto (blob, hanya saat foto berubah) disimpan di dua butir draf */
+  const simpanPilihan = () => { const {foto, ...pilihan} = draf; return SD.masukkan({klien_id: kunci, data: pilihan}).catch(() => {}); };
+  const simpanFoto = () => SD.masukkan({klien_id: kunci + ":foto", data: {foto: draf.foto}}).catch(() => {});
+  const hapusDraf = k => Promise.all([SD.buang(k), SD.buang(k + ":foto")]).catch(() => {});
   const sha = async s => [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 24);
 
   /* ---- foto: EXIF JPEG dibaca dari berkas asli lewat /inti/exif.js (window.bacaExif, dipakai juga /instansi); canvas membuang EXIF dari berkas yang diunggah ---- */
@@ -133,11 +132,17 @@
     tombolSibuk();
   }
   function gambarAntrean() {
-    const w = $("antreanLapor"), tunggu = antrean.filter(x => !x.galat), tua = tunggu.some(x => x.gps && Date.now() - x.gps.waktu_gps > UMUR_PERINGATAN);
-    const baris = [tunggu.length ? `<p>${tunggu.length} laporan tersimpan di ponsel, terkirim otomatis saat ada sinyal.${tunggu[0].terakhir ? " " + esc(tunggu[0].terakhir) : ""}</p>` : "",
+    const w = $("antreanLapor"), tunggu = antrean.filter(x => x.status === "menunggu"), tua = tunggu.some(x => x.data.gps && Date.now() - x.data.gps.waktu_gps > UMUR_PERINGATAN);
+    const baris = [tunggu.length ? `<p>${tunggu.length} laporan tersimpan di ponsel, terkirim otomatis saat ada sinyal.${terakhir ? " " + esc(terakhir) : ""}</p>` : "",
       tua ? `<p class="galat">Laporan sudah hampir 6 jam di ponsel. Cari sinyal segera: lewat 6 jam lokasinya ditolak server.</p>` : "",
-      ...antrean.filter(x => x.galat).map(x => `<p class="galat">${esc(LANGKAH[x.langkah])} ${esc(waktu(x.dibuat))} tidak terkirim: ${esc(x.galat)} <button type="button" class="lk-buang" data-buang="${esc(x.id)}">Buang</button></p>`)].filter(Boolean);
+      ...antrean.filter(x => x.status !== "menunggu").map(x => `<p class="galat">${esc(LANGKAH[x.data.langkah])} ${esc(waktu(x.dibuat))} tidak terkirim: ${esc(x.alasan)} <button type="button" class="lk-buang" data-buang="${esc(x.klien_id)}">Buang</button></p>`)].filter(Boolean);
     w.hidden = !baris.length; w.innerHTML = baris.join("");
+  }
+  async function segarAntrean() {
+    antrean = (await S.daftar()).filter(x => x.data.tk === kunci);
+    if (matiTunda) { const m = matiTunda; matiTunda = null; await bersihkan(C.token); return C.mati({...m.j, galat: `${m.j.galat || "Tautan ini tidak bisa dipakai lagi"}. ${m.n} laporan di ponsel ini belum terkirim dan tidak bisa dikirim lagi: sampaikan isinya ke yang menugaskanmu.`}); }
+    if (suksesTunda) { suksesTunda = false; status(`Laporan terkirim ${waktu(Date.now())}. Terima kasih.`, "ok"); const l = await C.segarkan(); if (l !== undefined) { L = l; gambar(); } }
+    gambarAntrean(); if (!antrean.some(x => x.status === "menunggu")) C?.antreanKosong?.();
   }
 
   /* ---- pilihan dan foto ---- */
@@ -173,7 +178,7 @@
     else if (b.id === "bFotoKamera") return $("fotoKamera").click();
     else if (b.id === "bFotoGaleri") return $("fotoGaleri").click();
     else if (b.id === "bKirimLapor") return kirim();
-    else if (b.dataset.buang) { const it = antrean.find(x => x.id === b.dataset.buang); if (it) buang(it); return gambarAntrean(); }
+    else if (b.dataset.buang) { const it = antrean.find(x => x.klien_id === b.dataset.buang); if (it) { antrean = antrean.filter(x => x !== it); gambarAntrean(); buang(it); } return; }
     else return;
     status(""); gambarPilihan(); simpanPilihan();
   });
@@ -209,83 +214,117 @@
     try {
       let gps = null;
       if (draf.foto.length) { status("Membaca lokasi, tahan ponsel diam sebentar…"); gps = await ambilGPS(); }
-      const it = {id: idAcak(), tk: kunci, klien_id: idAcak(), langkah: L.langkah, kondisi: draf.kondisi, alasan: draf.kondisi === "bukan_api" ? draf.alasan : null, bekas: tanyaBekas() ? draf.bekas : null,
-        catatan: L.langkah === "kabar" ? draf.catatan.trim() : "", isi, gps, berkas: draf.foto.map(f => ({media: f.media, thumb: f.thumb, exif: f.exif, kamera: f.kamera})), dibuat: Date.now(), coba: 0, berikut: 0};
-      try { await tx("antrean", "readwrite", s => s.put(it)); } catch (x) { it.memori = true; }   // tanpa IndexedDB: tetap dikirim, tidak tahan muat ulang
-      antrean.push(it); draf = kosong(); for (const id of [...Object.keys(RINCI_TEKS), "catatan"]) $(id).value = "";   // isian yang masih fokus tidak tertinggal di layar
-      await tx("draf", "readwrite", s => { s.delete(kunci); return s.delete(kunci + ":foto"); }).catch(() => {});
-      status("Tersimpan di ponsel, mengirim…"); gambar(); gambarFoto(); gambarAntrean();
+      const klien = idAcak(), berkas = draf.foto.map(f => ({media: f.media, thumb: f.thumb, exif: f.exif, kamera: f.kamera}));
+      const data = {tk: kunci, langkah: L.langkah, kondisi: draf.kondisi, alasan: draf.kondisi === "bukan_api" ? draf.alasan : null, bekas: tanyaBekas() ? draf.bekas : null,
+        catatan: L.langkah === "kabar" ? draf.catatan.trim() : "", isi, gps, berkas};
+      fotoMem.set(klien, berkas);
+      await S.masukkan({klien_id: klien, data});
+      draf = kosong(); for (const id of [...Object.keys(RINCI_TEKS), "catatan"]) $(id).value = "";   // isian yang masih fokus tidak tertinggal di layar
+      await hapusDraf(kunci);
+      status("Tersimpan di ponsel, mengirim…"); gambar(); gambarFoto(); segarAntrean();
     } catch (x) { return status(x.message, "galat"); }
     finally { sibuk = false; tombolSibuk(); }
-    proses(true);
+    S.kirimSekarang();
   }
-  async function kirimApi(jalur, body) {
+  async function kirimApi(jalur, body, h) {
     const form = body instanceof FormData, henti = new AbortController(), batas = setTimeout(() => henti.abort(), form ? 90e3 : 45e3);   // macet di sinyal lemah = dianggap tanpa sinyal, dicoba lagi
-    try { const r = await fetch("/api/lacak/" + jalur, {method: "POST", signal: henti.signal, headers: {"x-lacak": C.token, "x-pb": "1", ...(form ? {} : {"content-type": "application/json"})}, body: form ? body : JSON.stringify(body)});
+    try { const r = await fetch("/api/lacak/" + jalur, {method: "POST", signal: henti.signal, headers: {...h, ...(form ? {} : {"content-type": "application/json"})}, body: form ? body : JSON.stringify(body)});
       return {ok: r.ok, status: r.status, j: await r.json().catch(() => ({}))}; }
     catch (e) { return {ok: false, status: 0, j: {}}; }
     finally { clearTimeout(batas); }
   }
-  const nilai = r => r.status === 410 ? {mati: r.j} : r.status === 0 || r.status === 429 || r.status >= 500 ? {tunda: r.status ? r.j.galat || "server sibuk" : "tidak ada sinyal"}
-    : {tolak: r.status === 409 && "langkah" in r.j ? "keadaan tugas sudah berubah (mungkin sudah dilaporkan orang lain). Buang, lalu kirim laporan baru." : r.j.galat || "laporan ditolak."};
-  async function kirimItem(it) {
-    for (const [i, b] of it.berkas.entries()) {
-      if (b.mediaId) continue;
+  /* jawaban API -> {s, j} yang dipahami PbAntre: 0/429/5xx = ulang, 409 ber-langkah = berubah, 410 = tautan mati (butir ditolak lalu antrean tautan dibersihkan), lainnya ditolak */
+  function hasil(r, n) {
+    if (r.status === 410) { matiTunda = matiTunda || {j: r.j, n}; return {s: 410, j: {galat: "tautan mati"}}; }
+    if (r.status === 0 || r.status === 429 || r.status >= 500) { terakhir = `Percobaan terakhir ${waktu(Date.now())}: ${r.status ? r.j.galat || "server sibuk" : "tidak ada sinyal"}.`; gambarAntrean(); return {s: r.status, j: {}}; }
+    if (r.status === 409 && "langkah" in r.j) return {s: 409, j: {keadaan: "keadaan tugas sudah berubah (mungkin sudah dilaporkan orang lain). Buang, lalu kirim laporan baru."}};
+    return {s: r.status === 401 || r.status === 403 ? 400 : r.status, j: {galat: r.j.galat || "laporan ditolak."}};
+  }
+  /* kirim satu butir (batch 1): tiap foto diunggah dulu, lalu laporan. h = header dari opsi.header (x-lacak) */
+  async function kirimButir([it], h) {
+    if (it.tk !== kunci) return {s: 400, j: {galat: "milik tautan lain."}};
+    const n = () => S.daftar().then(l => l.filter(x => x.data.tk === kunci && x.status === "menunggu").length), ids = mediaMem.get(it.klien_id) || mediaMem.set(it.klien_id, []).get(it.klien_id);
+    for (const [i, f] of it.berkas.entries()) {
+      if (ids[i] || f.mediaId) { ids[i] = ids[i] || f.mediaId; continue; }
+      const g = f.media instanceof Blob ? f : fotoMem.get(it.klien_id)?.[i];
+      if (!(g?.media instanceof Blob)) return {s: 400, j: {galat: "foto hilang dari ponsel (penyimpanan penuh atau dibersihkan). Buang, lalu kirim ulang."}};
       status(`Mengunggah foto ${i + 1} dari ${it.berkas.length}…`);
-      const fd = new FormData(); fd.append("media", b.media, "foto"); fd.append("thumb", b.thumb, "thumb");
+      const fd = new FormData(); fd.append("media", g.media, "foto"); fd.append("thumb", g.thumb, "thumb");
       for (const k of ["lat", "lon", "akurasi", "waktu_gps", "zona"]) fd.append(k, it.gps[k]); fd.append("sampel", JSON.stringify(it.gps.sampel));
-      if (b.exif?.waktu) fd.append("exif_waktu", b.exif.waktu); if (b.exif?.lat != null) { fd.append("exif_lat", b.exif.lat); fd.append("exif_lon", b.exif.lon); }
-      if (b.kamera) fd.append("kamera", "1");
-      const r = await kirimApi("media", fd); if (!r.ok) return nilai(r);
-      b.mediaId = r.j.id; b.media = b.thumb = null; await simpan(it);   // berkas terunggah tidak perlu disimpan lagi
+      if (g.exif?.waktu) fd.append("exif_waktu", g.exif.waktu); if (g.exif?.lat != null) { fd.append("exif_lat", g.exif.lat); fd.append("exif_lon", g.exif.lon); }
+      if (g.kamera) fd.append("kamera", "1");
+      const r = await kirimApi("media", fd, h); if (!r.ok) return hasil(r, await n());
+      ids[i] = r.j.id;
     }
     status("Mengirim laporan…");
     const r = await kirimApi("lapor", {klien_id: it.klien_id, langkah: it.langkah, kondisi: it.kondisi ?? undefined, alasan_bukan_api: it.alasan ?? undefined, bekas_terbakar_baru: it.bekas ?? undefined,
-      catatan: it.catatan || undefined, ...it.isi, media: it.berkas.map(b => b.mediaId)});
-    return r.ok ? {ok: r.j} : nilai(r);
+      catatan: it.catatan || undefined, ...it.isi, media: ids}, h);
+    if (!r.ok) return hasil(r, await n());
+    mediaMem.delete(it.klien_id); fotoMem.delete(it.klien_id); suksesTunda = true; terakhir = ""; status("");
+    return {s: 200, j: r.j};
   }
-  async function proses(paksa = false) {
-    if (memproses) { lagi = true; return; }
-    if (!C || !antrean.length) return; memproses = true; lagi = false;
-    let berubah = false;
-    try {
-      for (const it of [...antrean].sort((a, b) => a.dibuat - b.dibuat)) {
-        if (it.galat) continue;
-        if (!paksa && it.berikut > Date.now()) break;
-        const h = await kirimItem(it);
-        if (h.ok) { await buang(it); status(`Laporan terkirim ${waktu(Date.now())}. Terima kasih.`, "ok"); const l = await C.segarkan(); if (l !== undefined) { L = l; berubah = true; } continue; }
-        if (h.mati) {   // tautan mati: antrean tidak bisa dikirim lagi, katakan terus terang berapa yang hilang
-          const n = antrean.filter(x => !x.galat).length; for (const x of [...antrean]) await buang(x);
-          return C.mati({...h.mati, galat: `${h.mati.galat || "Tautan ini tidak bisa dipakai lagi"}. ${n} laporan di ponsel ini belum terkirim dan tidak bisa dikirim lagi: sampaikan isinya ke yang menugaskanmu.`}); }
-        if (h.tolak) { it.galat = h.tolak; status(""); await simpan(it); continue; }
-        it.coba++; it.berikut = Date.now() + Math.min(JEDA_MAKS, JEDA0 * 2 ** (it.coba - 1)); it.terakhir = `Percobaan terakhir ${waktu(Date.now())}: ${h.tunda}.`; status(""); await simpan(it); break;
-      }
-    } finally { memproses = false; if (berubah) gambar(); gambarAntrean(); if (!antrean.some(x => !x.galat)) C?.antreanKosong?.(); if (lagi) proses(true); }
-  }
-  addEventListener("online", () => proses(true));
-  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") proses(); });
-  setInterval(() => { if (navigator.onLine !== false) proses(); }, 60e3);
+  addEventListener("online", () => S?.kirimSekarang());
 
   /* dipanggil lacak.js sesudah info termuat: o = {token, lapor, segarkan: () => lapor baru atau undefined, mati: fungsi tautan mati} */
+  /* butir lama IndexedDB pb_lacak/antrean {id, tk, klien_id, langkah, kondisi, alasan, bekas, catatan, isi, gps, berkas, dibuat} -> butir saluran; klien_id dan foto dipertahankan (T6/T7).
+     Draf lama disalin dulu oleh migrasi(). */
+  const petakan = b => ({klien_id: b.klien_id, dibuat: b.dibuat, data: {tk: b.tk, langkah: b.langkah, kondisi: b.kondisi, alasan: b.alasan, bekas: b.bekas, catatan: b.catatan, isi: b.isi, gps: b.gps, berkas: b.berkas || []}});
+  async function bersihkan(token) {
+    if (!token || !S) return;
+    let k; try { k = await sha(token); } catch (e) { k = "t" + token.slice(0, 8); }
+    antrean = antrean.filter(x => x.data.tk !== k); if (k === kunci) draf = kosong();
+    const sk = saluranTk(k); for (const x of await sk.daftar()) await sk.buang(x.klien_id).catch(() => {});
+    await hapusDraf(k);
+  }
+  /* satu saluran per tautan ("lacak:" + sha256 token, aman disimpan): halaman ini hanya mengirim saluran tautannya; butir tautan lain tetap antre sampai tautannya dibuka.
+     Saluran tautan lain tidak pernah mengirim di halaman ini (pemicu mati) dan tidak punya akses ke token halaman ini. */
+  const saluranMap = new Map();
+  function saluranTk(tk) {
+    if (!saluranMap.has(tk)) saluranMap.set(tk, tk === kunci
+      ? P_.saluran("lacak:" + tk, {kirim: kirimButir, header: () => ({"x-lacak": C.token, "x-pb": "1"}), simpan: simpanAntre})
+      : P_.saluran("lacak:" + tk, {kirim: async () => ({s: 0, j: {}}), pemicu: false, langsung: false, simpan: simpanAntre}));
+    return saluranMap.get(tk);
+  }
+  /* tujuan migrasi yang memilah butir lama ke saluran tautannya sendiri (pindahDari hanya mengenal satu tujuan) */
+  const kePerTk = () => ({ get cadangan() { return [...saluranMap.values()].some(x => x.cadangan); }, kedaluwarsa: t => S.kedaluwarsa(t),
+    daftar: async () => (await Promise.all([...saluranMap.values()].map(x => x.daftar()))).flat(), masukkan: b => saluranTk(b.data.tk).masukkan(b) });
+  /* pindahDari menghapus SELURUH basis lama dan hanya satu store per panggilan. Urutan: (1) baca store draf lewat pindahDari dengan tujuan pura-pura yang sengaja gagal
+     sebelum penghapusan (basis tidak tersentuh), (2) salin draf ke saluran lacak-draf dan periksa, (3) baru pindahkan antrean, yang menghapus basis lama. */
+  async function migrasi(P) {
+    const baris = []; let n = 0;
+    const baca = {get cadangan() { return n++ > 0; }, daftar: async () => [], kedaluwarsa: () => false, masukkan: async () => {}};
+    try { await P.pindahDari({db: "pb_lacak", store: "draf", petakan: b => (baris.push(b), {klien_id: "baca"}), ke: baca}); } catch (e) { if (e.message !== "butir belum tertulis semua") throw e; }
+    const id = [];
+    for (const r of baris) {
+      if (typeof r.tk !== "string") continue;
+      if (r.tk.endsWith(":foto")) await SD.masukkan({klien_id: r.tk, data: {foto: r.foto || []}});
+      else { const {tk, ...p} = r; await SD.masukkan({klien_id: tk, data: p}); }
+      id.push(r.tk);
+    }
+    const ada = new Set((await SD.daftar()).map(x => x.klien_id));
+    if (SD.cadangan || !id.every(x => ada.has(x))) throw new Error("draf belum tertulis semua");
+    return P.pindahDari({db: "pb_lacak", store: "antrean", petakan, ke: kePerTk()});
+  }
   window.LacakLapor = {
+    _petakan: petakan, _migrasi: migrasi,
     async mulai(o) {
       C = o; L = o.lapor || null;
       try { kunci = await sha(o.token); } catch (e) { kunci = "t" + o.token.slice(0, 8); }
-      try { const [d, f] = await Promise.all([tx("draf", "readonly", s => s.get(kunci)), tx("draf", "readonly", s => s.get(kunci + ":foto"))]);
-        const {tk, ...p} = d || {}; draf = {...kosong(), ...p, veg: Array.isArray(p.veg) ? p.veg : [], foto: Array.isArray(f?.foto) ? f.foto : []}; } catch (e) {}
-      try { antrean = (await tx("antrean", "readonly", s => s.getAll())).filter(x => x.tk === kunci); } catch (e) {}
-      gambar(); gambarFoto(); gambarAntrean(); proses(true);
+      const P = window.PbAntre;
+      simpanAntre = o.simpan; P_ = P;
+      S = saluranTk(kunci);
+      SD = P.saluran("lacak-draf", {kirim: async () => ({s: 0, j: {}}), pemicu: false, langsung: false, umurMs: 7 * 864e5, simpan: o.simpanDraf});
+      P.dengar(() => { segarAntrean().catch(e => console.error(e)); });
+      await migrasi(P).catch(() => {});   // gagal = basis lama utuh, dicoba lagi saat halaman dibuka berikutnya
+      try { const l = await SD.daftar(), d = l.find(x => x.klien_id === kunci), f = l.find(x => x.klien_id === kunci + ":foto");
+        draf = {...kosong(), ...(d?.data || {}), veg: Array.isArray(d?.data?.veg) ? d.data.veg : [], foto: (f?.data.foto || []).filter(x => x?.thumb instanceof Blob)}; } catch (e) {}
+      try { antrean = (await S.daftar()).filter(x => x.data.tk === kunci); } catch (e) {}
+      gambar(); gambarFoto(); gambarAntrean(); S.kirimSekarang();
       if (adaRinci() && (draf.desa || draf.kawasan || draf.tipe || draf.veg.length || draf.tanah || draf.luas || draf.padam)) $("wadahRinci").open = true;   // draf rincian yang dipulihkan terlihat, sekali saat halaman dibuka
     },
     perbarui(l) { if (l !== undefined) { L = l || null; gambar(); } },
-    menunggu: () => antrean.filter(x => !x.galat).length + (sibuk || menyiapkan ? 1 : 0) + (draf.foto.length ? 1 : 0),   // foto yang belum dikirim ikut dihitung; Hapus foto melepaskannya
+    menunggu: () => antrean.filter(x => x.status === "menunggu").length + (sibuk || menyiapkan ? 1 : 0) + (draf.foto.length ? 1 : 0),   // foto yang belum dikirim ikut dihitung; Hapus foto melepaskannya
     /* tautan mati (410 saat muat atau kirim) atau Selesai: draf, foto, dan antrean tautan ini dihapus dari ponsel */
-    async bersihkan(token) {
-      if (!token) return;
-      let k; try { k = await sha(token); } catch (e) { k = "t" + token.slice(0, 8); }
-      antrean = antrean.filter(x => x.tk !== k); if (k === kunci) draf = kosong();
-      await tx("draf", "readwrite", s => { s.delete(k); return s.delete(k + ":foto"); }).catch(() => {});
-      await tx("antrean", "readwrite", s => { const r = s.openCursor(); r.onsuccess = () => { const c = r.result; if (!c) return; if (c.value.tk === k) c.delete(); c.continue(); }; return r; }).catch(() => {});
-    },
+    bersihkan,
   };
 })();
