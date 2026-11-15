@@ -534,3 +534,31 @@ export const tugasBukaJenis = async (env, b, x, sampai, maks) => idDari(await en
 export const tugasTungguVerifJenis = async (env, b, x, sampai) => idDari(await env.DB.prepare(SQL_TUNGGU[x]).bind(b, sampai).all());
 export const tugasRedaCukupJenis = async (env, b, x, berturut) => idDari(await env.DB.prepare(SQL_TUTUP[x]).bind(b, berturut).all());
 export const stmtRedaTugas = (env, x, reda, id) => env.DB.prepare(SQL_REDA[x]).bind(reda ? 1 : 0, id);
+
+/* ======================================================================================================================================================
+   Paritas bencana PB-10 (migrasi 0130 pb_titik, pb_log; DESAIN-TEKNIS paritas-bencana 2.3, 2.4, 3.2). SEMUA SQL pb_* tinggal di sini; src/pb_*.js tidak menyentuh env.DB.
+   Hak tulis dicek di rute (src/pb_isian.js: modOK atau stafPeran pusdalops, wilayah); di sini hanya pelaku pb_tulis / pb_baca. Daftar kolom tanpa `oleh` (tanpa identitas pengisi di keluaran). */
+export const MATRIKS_PB = {
+  pb_titik: {pb_baca: ["baca"], pb_tulis: ["baca", "tambah", "ubah"]},
+  pb_log:   {pb_tulis: ["baca", "tambah"]},
+};
+Object.assign(MATRIKS, MATRIKS_PB);
+export const pelakuPbTulis = {peran: "pb_tulis"}, pelakuPbBaca = {peran: "pb_baca"};
+const KOL_PB_TITIK = "id, golongan, jenis, bencana, prov, kab, nama, lat, lon, kapasitas, status, catatan, dibuat, diubah";
+export const PB_SQL = {
+  daftar: `SELECT ${KOL_PB_TITIK} FROM pb_titik WHERE prov = ?1 AND bencana = ?2 AND dihapus IS NULL AND (?3 = '' OR kab = ?3) AND (?4 = '' OR golongan = ?4) AND (?5 = '' OR jenis = ?5) ORDER BY jenis, nama LIMIT 500`,
+  satu: `SELECT ${KOL_PB_TITIK}, dihapus FROM pb_titik WHERE id = ?`,
+  sisip: "INSERT INTO pb_titik (id, golongan, jenis, bencana, prov, kab, nama, lat, lon, kapasitas, status, catatan, oleh, dibuat, diubah) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?14)",
+  ubah: "UPDATE pb_titik SET golongan = ?2, jenis = ?3, nama = ?4, lat = ?5, lon = ?6, kapasitas = ?7, status = ?8, catatan = ?9, diubah = ?10 WHERE id = ?1 AND dihapus IS NULL",
+  hapus: "UPDATE pb_titik SET dihapus = ?2, diubah = ?2 WHERE id = ?1 AND dihapus IS NULL",
+  log: "INSERT INTO pb_log (waktu, oleh, tabel, kunci, aksi, sebelum, sesudah, alasan) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+  laju: "SELECT count(*) n FROM pb_log WHERE oleh = ? AND waktu > ?",
+};
+export const pbTitikDaftar = async (env, p, q) => (await sedia(env, p, "pb_titik", "baca", PB_SQL.daftar).bind(q.prov, q.bencana, q.kab ?? "", q.golongan ?? "", q.jenis ?? "").all()).results;
+export const pbTitikById = (env, p, id) => sedia(env, p, "pb_titik", "baca", PB_SQL.satu).bind(id).first();
+export const pbStmtTitikSisip = (env, p, t, oleh, kini) => sedia(env, p, "pb_titik", "tambah", PB_SQL.sisip).bind(t.id, t.golongan, t.jenis, t.bencana, t.prov, t.kab, t.nama, t.lat, t.lon, t.kapasitas, t.status, t.catatan, oleh, kini);
+export const pbStmtTitikUbah = (env, p, id, t, kini) => sedia(env, p, "pb_titik", "ubah", PB_SQL.ubah).bind(id, t.golongan, t.jenis, t.nama, t.lat, t.lon, t.kapasitas, t.status, t.catatan, kini);
+export const pbStmtTitikHapus = (env, p, id, kini) => sedia(env, p, "pb_titik", "ubah", PB_SQL.hapus).bind(id, kini);
+export const pbStmtLog = (env, p, kini, oleh, tabel, kunci, aksi, sebelum, sesudah, alasan = null) =>
+  sedia(env, p, "pb_log", "tambah", PB_SQL.log).bind(kini, oleh, tabel, kunci, aksi, sebelum == null ? null : JSON.stringify(sebelum), sesudah == null ? null : JSON.stringify(sesudah), alasan);
+export const pbLogLaju = async (env, p, oleh, sejak) => (await sedia(env, p, "pb_log", "baca", PB_SQL.laju).bind(oleh, sejak).first())?.n ?? 0;

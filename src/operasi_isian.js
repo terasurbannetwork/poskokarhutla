@@ -13,12 +13,12 @@ export const PERAN_TULIS = ["pusdalops"];
 const MAKS_LAJU = 60, JENDELA_LAJU = 10 * 60e3, HARI = 864e5;
 const STATUS = ["siap", "operasi", "siaga", "tidak_siap"], JENIS_GERAK = ["rencana", "berangkat", "kembali", "batal"], STATUS_TEMUAN = ["fs", "berasap", "berasap_tipis", "clear"], LAPOR = ["masih_berasap", "padam"];
 const TABEL_HAPUS = ["op_armada_status", "op_gerak", "op_gerak_hasil", "op_temuan"];
-const teks = (v, maks) => typeof v === "string" ? v.replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, maks) : "";
-class Galat { constructor(pesan, status = 400) { this.pesan = pesan; this.status = status; } }
-const tolak = (pesan, status) => { throw new Galat(pesan, status); };
+export const teks = (v, maks) => typeof v === "string" ? v.replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, maks) : "";
+export class Galat { constructor(pesan, status = 400) { this.pesan = pesan; this.status = status; } }
+export const tolak = (pesan, status) => { throw new Galat(pesan, status); };
 
 /* batas tanggal isian: hari ini WIB sampai 7 hari ke belakang */
-function tanggalSah(t, kini) {
+export function tanggalSah(t, kini) {
   if (typeof t !== "string" || !tglSah(t)) tolak("tanggal harus YYYY-MM-DD yang sah");
   if (t > wib(kini)) tolak("tanggal tidak boleh di depan hari ini");
   if (t < wib(kini - 7 * HARI)) tolak("tanggal isian hanya boleh hari ini sampai 7 hari ke belakang");
