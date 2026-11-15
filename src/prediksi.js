@@ -9,7 +9,7 @@ import {json, gagal, adminOK, bacaBody, bersihTeks} from "./worker.js";
 import {reguDari, tx, num, tglSah, wib} from "./posko.js";
 import {lajuIP} from "./bnpb.js";
 import {periksaToken} from "./pipa.js";
-import {KECUALI_LAIN, tanpaBencana, tanpaTabel, JAUH_KM} from "./instansi.js";
+import {kecualiLain, tanpaTabel, JAUH_KM} from "./instansi.js";
 
 const HARI = 864e5, KODE = ["HJN", "API", "BNJ", "LSR", "ASP", "ROB"];
 const RE_KAB = /^[\p{L}\p{N}][\p{L}\p{N} .,'()\/-]{1,79}$/u;
@@ -51,8 +51,8 @@ const SQL_GC = saring => `SELECT t.prov, t.kab, date(coalesce(i.waktu_gps, i.dib
   GROUP BY 1, 2, 3 ORDER BY 3, 1, 2 LIMIT 5000`;
 async function groundcheck(env, ms) {
   const ambil = s => env.DB.prepare(SQL_GC(s)).bind(ms).all().then(r => r.results);
-  try { return await ambil(KECUALI_LAIN); }
-  catch (e) { if (tanpaBencana(e)) return ambil(""); if (tanpaTabel(e)) return []; throw e; }
+  try { return await kecualiLain(ambil); }
+  catch (e) { if (tanpaTabel(e)) return []; throw e; }
 }
 
 async function baca(env, req, url, kini = Date.now()) {

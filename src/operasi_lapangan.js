@@ -12,7 +12,7 @@ import {tx, num, modOK, superOK} from "./posko.js";
 import {laju} from "./bnpb.js";
 import {km} from "./titik.js";
 import {akunAktif, dalamLingkup, jsonAman, bencanaPer, PROV} from "./instansi.js";
-import {labelBencana, tutupBencana} from "./tugas_bencana.js";
+import {labelBencana, tutupBencana, teksBencana} from "./tugas_bencana.js";
 import {modAtauStaf, dalamWilayahStaf, stafNyata, dariStaf} from "./staf.js";
 import {BARANG} from "./meja_spek.js";
 import {sisipLogistik} from "./meja.js";
@@ -360,9 +360,9 @@ async function awalPeriode(env, t, kini) {
   const ketua = pen.find(p => p.peran === "ketua_regu") ?? pen[0], tempat = [t.kec, t.kab].filter(Boolean).join(", ");
   const alat = Array.isArray(rek?.alat) ? rek.alat.filter(x => typeof x === "string").join(", ").slice(0, 400) : null;
   const cuaca = ang ? `Angin ${ang.ws_kmj ?? "tidak diketahui"} km/jam${ang.dari ? ` dari ${ang.dari}` : ""}` : null;
-  const bc = await bencanaTugas(env, t), lain = bc !== "karhutla";
-  return {sasaran: (lain ? `Tangani ${labelBencana(bc).nama.toLowerCase()} di ${tempat}, utamakan keselamatan warga dan regu.` : `Padamkan api di ${tempat}, cegah meluas ke luar sektor${cara ? `, metode utama ${cara}` : ""}.`).slice(0, 500), pj: ketua?.nama ?? null, regu: pen.map(p => `${p.nama} (${p.peran})`).slice(0, 40), alat: alat || null,
-    cuaca, keselamatan: lain ? "Pakai APD sesuai bahaya. Tetapkan jalur keluar dan titik kumpul, pantau peringatan resmi." : ang?.dari ? `Pakai APD lengkap. Angin datang dari ${ang.dari}: jangan berada searah angin dari api, tetapkan jalur keluar dan titik kumpul.` : "Pakai APD lengkap. Arah angin belum diketahui: tetapkan jalur keluar dan titik kumpul.", sektor: []};
+  const bc = await bencanaTugas(env, t), TK = teksBencana(bc);
+  return {sasaran: TK.sasaran(tempat, cara).slice(0, 500), pj: ketua?.nama ?? null, regu: pen.map(p => `${p.nama} (${p.peran})`).slice(0, 40), alat: alat || null,
+    cuaca, keselamatan: TK.keselamatan(ang?.dari), sektor: []};
 }
 const bacaPeriode = (o, dasar) => {
   const f = {};
@@ -596,7 +596,7 @@ async function linimasa(env, req, kini, id) {
   const drops = await nilaiDrop(env, drop, kini), E = [];
   const tambah = (waktu, jenis, ket, ref = null) => { if (waktu != null) E.push({waktu, jenis, ket, ref}); };
   const bc = await bencanaTugas(env, t), tb = tutupBencana(bc), HL = tb?.hasil ?? HASIL_LABEL;
-  tambah(t.dibuat, "deteksi", bc === "karhutla" ? `Titik api terdeteksi satelit dan tugas dibuat di ${[t.kec, t.kab].filter(Boolean).join(", ")}` : `Tugas ${labelBencana(bc).nama.toLowerCase()} dibuat di ${[t.kec, t.kab].filter(Boolean).join(", ")}`);
+  tambah(t.dibuat, "deteksi", teksBencana(bc).deteksi([t.kec, t.kab].filter(Boolean).join(", ")));
   tambah(t.konfirmasi_pada, "konfirmasi", "Konfirmasi lapangan diterima");
   for (const i of isian) tambah(i.dibuat, i.langkah === "konfirmasi" ? "isian_konfirmasi" : "isian_kabar", i.langkah === "konfirmasi" ? `Isian konfirmasi: ${HL[i.hasil] ?? i.hasil}` : tb ? `Kabar tindakan: ${tb.status[i.status_api] ?? i.status_api}` : `Kabar tindakan: api ${i.status_api}`, i.id);
   for (const p of pen) { tambah(p.dibuat, "penugasan", `${p.nama} ditugaskan sebagai ${p.peran}`, p.id); tambah(p.berangkat_pada, "berangkat", `${p.nama} berangkat`, p.id); tambah(p.tiba_pada, "tiba", `${p.nama} tiba di lokasi`, p.id); tambah(p.selesai_pada, "selesai_tugas", `${p.nama} selesai bertugas`, p.id); }

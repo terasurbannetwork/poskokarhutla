@@ -19,6 +19,9 @@ const NORMAL = ["normal", "aman", "surut", "selesai", "berakhir"];
 /* kunciKartu = KUNCI_UMUM + kartu hazard dari pipeline (scripts/umum/tugas.py). reda.kartuLevelMaks: kartu.level (tingkat resmi PVMBG) <= nilai = reda. */
 export const BENCANA = {
   karhutla: {nama: "Karhutla", sebut: "Api", kata: "padam", berkas: "tugas_kompleks.json", meta: "tugas_kompleks_dibuat", reda: null,
+    sasaran: (tempat, cara) => `Padamkan api di ${tempat}, cegah meluas ke luar sektor${cara ? `, metode utama ${cara}` : ""}.`,
+    keselamatan: dari => dari ? `Pakai APD lengkap. Angin datang dari ${dari}: jangan berada searah angin dari api, tetapkan jalur keluar dan titik kumpul.` : "Pakai APD lengkap. Arah angin belum diketahui: tetapkan jalur keluar dan titik kumpul.",
+    deteksi: tempat => `Titik api terdeteksi satelit dan tugas dibuat di ${tempat}`,
     kunciKartu: ["insiden", "front", "masuk", "radius_m", "luas_aktif", "luas_koreksi", "tren", "konsesi", "syarat", "insiden_awal_ms", "insiden_awal", "jenis", "firespot"]},
   banjir: {nama: "Banjir", sebut: "Banjir", kata: "surut", berkas: "tugas_banjir.json", meta: "tugas_banjir_dibuat", reda: {berturut: 2, normal: NORMAL, levelMaks: 1},
     kunciKartu: [...KUNCI_UMUM, "jiwa_terdampak", "hujan_mm"]},
@@ -33,10 +36,39 @@ export const BENCANA = {
   udara: {nama: "Kualitas udara", sebut: "Kualitas udara", kata: "membaik", berkas: "tugas_udara.json", meta: "tugas_udara_dibuat", reda: null, umurMaksJam: UMUR_KAJI_CEPAT_JAM,
     kunciKartu: [...KUNCI_UMUM, "ispu", "polutan", "tren"]},
 };
+/* Longsor dan pesisir (paritas bencana PB-07): tugasnya di tabel samping tugas_bencana_x (migrasi 0130), berkas tugas_<id>.json dibuat PB-09. reda: null = tanpa penutupan otomatis,
+   umurMaksJam = jendela kaji cepat yang sama dengan gempa (angka kebijakan di atas). Teks hanya dari docs/multi-bencana/PRAKTIK-PENANGANAN.md bagian tanggap darurat (Perka BNPB 13/2010 SAR [korpus]); tanpa angka. */
+BENCANA.longsor = {nama: "Longsor", sebut: "Longsor", kata: "selesai", berkas: "tugas_longsor.json", meta: "tugas_longsor_dibuat", reda: null, umurMaksJam: UMUR_KAJI_CEPAT_JAM,
+  sasaran: tempat => `Cari dan tolong korban timbunan di ${tempat}, amankan dari longsor susulan, evakuasi warga.`,
+  keselamatan: () => "Waspadai longsor susulan dan retakan di mahkota longsor. Tutup akses ke zona berbahaya.",
+  kunciKartu: [...KUNCI_UMUM, "hujan_mm", "jiwa_kab_terlibat", "dasar"]};
+BENCANA.pesisir = {nama: "Gelombang pasang dan abrasi", sebut: "Gelombang pasang", kata: "selesai", berkas: "tugas_pesisir.json", meta: "tugas_pesisir_dibuat", reda: null, umurMaksJam: UMUR_KAJI_CEPAT_JAM,
+  sasaran: tempat => `Evakuasi permukiman pesisir yang terkena gelombang di ${tempat}, siapkan penampungan dan logistik.`,
+  keselamatan: () => "Waspadai tanggul yang rusak dan genangan rob. Pakai perahu dan pompa sesuai kebutuhan lapangan.",
+  kunciKartu: [...KUNCI_UMUM, "tinggi_gelombang_m", "jiwa_kab_terlibat", "dasar"]};
+/* Jenis tugas yang disimpan di tugas_bencana_x (CHECK tugas_bencana 0047 tidak mencakupnya). */
+export const BENCANA_X = ["longsor", "pesisir"];
+/* Sarana dan fasilitas sasaran (F-2, F-7), dicerminkan CHECK pb_titik (migrasi 0130). */
+export const SARANA = ["heli_evakuasi", "perahu_karet", "perahu_motor", "pompa_air", "truk_tangki", "tenda", "terpal", "atap_darurat", "alat_berat", "genset", "dapur_umum", "masker", "air_bersih_unit", "tim_sar_unit"];
+export const FASILITAS = ["tempat_evakuasi", "faskes", "sekolah", "gudang", "helipad", "sumber_air", "barak", "ruang_udara_bersih", "pos_pantau"];
 export const DAFTAR_BENCANA = Object.keys(BENCANA);
-/* baris tugas_bencana yang tak ada = karhutla */
-export const bencanaId = v => Object.hasOwn(BENCANA, v) ? v : "karhutla";
+/* Jenis dari baris D1 yang tak dikenal: BUKAN karhutla. Entri netral tak terdaftar di DAFTAR_BENCANA (tak enumerable), supaya satu baris ganjil tidak menjatuhkan daftar. */
+export const TIDAK_DIKENAL = "tidak_dikenal";
+Object.defineProperty(BENCANA, TIDAK_DIKENAL, {enumerable: false, value: {nama: "Jenis tidak dikenal", sebut: "Tugas", kata: "selesai", berkas: null, meta: null, reda: null, kunciKartu: []}});
+/* baris tugas_bencana yang tak ada (null/undefined) = karhutla; teks jenis yang tak dikenal = TIDAK_DIKENAL (dicatat di log), tidak diam-diam jadi karhutla */
+export const bencanaId = v => {
+  if (v == null || v === "") return "karhutla";
+  if (!Object.hasOwn(BENCANA, v)) { console.error("jenis bencana tidak dikenal:", String(v).slice(0, 40)); return TIDAK_DIKENAL; }
+  return v;
+};
 export const labelBencana = v => BENCANA[bencanaId(v)];
+/* teks tugas per jenis; jenis tanpa kunci teks sendiri (banjir dst) memakai kalimat umum seperti sebelumnya */
+export const teksBencana = v => {
+  const b = labelBencana(v), n = b.nama.toLowerCase();
+  return {sasaran: b.sasaran ?? (tempat => `Tangani ${n} di ${tempat}, utamakan keselamatan warga dan regu.`),
+    keselamatan: b.keselamatan ?? (() => "Pakai APD sesuai bahaya. Tetapkan jalur keluar dan titik kumpul, pantau peringatan resmi."),
+    deteksi: b.deteksi ?? (tempat => `Tugas ${n} dibuat di ${tempat}`)};
+};
 /* Kata penutup tugas per bahaya di atas kolom padam_pada/padam_verif (satu alur, dua kosakata). Tanpa entri = kosakata api (karhutla, dan bahaya lain seperti sebelumnya).
    Banjir: "terverifikasi" = data pantauan banjir masih menyatakan reda 48 jam sesudah dilaporkan surut; BUKAN citra satelit. */
 const TUTUP = {banjir: {
@@ -48,7 +80,7 @@ const TUTUP = {banjir: {
     muncul_lagi: "Banjir naik lagi sesudah dilaporkan surut. Tugas dibuka kembali."}}};
 export const tutupBencana = v => typeof v === "string" && Object.hasOwn(TUTUP, v) ? TUTUP[v] : null;
 /* ?bencana= : kosong = semua (null); dikenal = id; selain itu undefined (tolak 400) */
-export const bacaBencana = v => v == null || v === "" ? null : Object.hasOwn(BENCANA, v) ? v : undefined;
+export const bacaBencana = v => v == null || v === "" ? null : Object.hasOwn(BENCANA, v) && v !== TIDAK_DIKENAL ? v : undefined;
 /* butir berkas sudah reda menurut aturan bahayanya (butir yang sama sekali tak ada ditangani pemanggil) */
 export function butirReda(b, k) {
   const r = BENCANA[b]?.reda; if (!r) return false;

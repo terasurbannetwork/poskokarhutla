@@ -153,7 +153,7 @@ uji("ringkasan push dan kabar: kata per bahaya; karhutla saja = kalimat lama", a
 });
 
 uji("tabel 0047 belum diterapkan: karhutla dan daftar tugas jalan seperti dulu, bahaya lain tidak dibuat (bukan galat)", async () => {
-  await bersih(); await U.DB.prepare("DROP INDEX tugas_bencana_jenis").run(); await U.DB.prepare("ALTER TABLE tugas_bencana RENAME TO tugas_bencana_x").run();
+  await bersih(); await U.DB.prepare("DROP INDEX tugas_bencana_jenis").run(); await U.DB.prepare("ALTER TABLE tugas_bencana RENAME TO tugas_bencana_cad").run();
   try {
     const a = await akun("pemprovkalteng2");
     berkas("banjir", T0 + 59 * MENIT, [K(-2.5, 112, {id: "B0010"})]);
@@ -166,7 +166,7 @@ uji("tabel 0047 belum diterapkan: karhutla dan daftar tugas jalan seperti dulu, 
     assert.deepEqual((await U.api("GET", "/api/instansi/tugas?bencana=banjir", undefined, a)).j.tugas, []);
     assert.equal((await verifikasiPadam(env, T0)).periksa, 0);
   } finally {
-    await U.DB.prepare("ALTER TABLE tugas_bencana_x RENAME TO tugas_bencana").run(); await U.DB.prepare("CREATE INDEX IF NOT EXISTS tugas_bencana_jenis ON tugas_bencana (bencana)").run();
+    await U.DB.prepare("ALTER TABLE tugas_bencana_cad RENAME TO tugas_bencana").run(); await U.DB.prepare("CREATE INDEX IF NOT EXISTS tugas_bencana_jenis ON tugas_bencana (bencana)").run();
   }
 });
 

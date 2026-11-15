@@ -23,10 +23,9 @@
      Berkas klien public/admin/command_*.{js,css} (vanilla; CSP tanpa skrip/gaya sebaris; teks dari API tidak pernah lewat innerHTML). Gerbang centurisk97.id tidak ikut: halamanTerkunci (src/worker.js) mengecualikan /command-center. */
 import {json, gagal, bacaBody, adminOK} from "./worker.js";
 import {modOK, tx, tglSah} from "./posko.js";
-import {PROV, tanpaBencana, tanpaTabel} from "./instansi.js";
+import {PROV, kecualiLain, tanpaTabel} from "./instansi.js";
 import {stafSesi, stafTertahan, dalamWilayahStaf} from "./staf.js";
 import {pemirsaSesi} from "./pemirsa.js";
-import {FILTER_BENCANA} from "./monitor.js";
 import {kunciPublikKarhutla} from "./peringatan.js";
 import {laju} from "./bnpb.js";
 import {CSP_ADMIN, halamanCc} from "./admin_halaman.js";
@@ -109,7 +108,7 @@ function saring(a, awal = []) {
   return {sql: `${a.dummy ? "" : "AND t.dummy = 0"} ${wil}`, ikat: a.wil.length ? [...awal, JSON.stringify(a.wil)] : awal};
 }
 /* karhutla saja (tugas_bencana 0047 belum ada = semua tugas karhutla) */
-async function denganBencana(fn) { try { return await fn(FILTER_BENCANA.karhutla); } catch (e) { if (!tanpaBencana(e)) throw e; return fn(""); } }
+const denganBencana = fn => kecualiLain(fn);
 
 const KOLOM_ALERT = "t.id, t.prov, t.kab, t.kec, t.lat, t.lon, t.n24, t.luas_ha, t.dibuat, t.konfirmasi_pada, t.dummy, c.status cstatus, c.oleh coleh, c.sejak csejak";
 /* satu batch: alert terbuka (cc baru/dalam_konfirmasi, tugas 'buka') dan keputusan akhir 12 jam terakhir.

@@ -327,7 +327,7 @@ export function tahanLain(q) {
 }
 
 /* ================================================================ GET /api/uji-lapangan */
-const TABEL = ["tugas_kartu", "tugas_luas_awal", "tugas_bencana", "tugas_muncul", "uji_terlewat", "uji_sampel", "uji_tugas", "uji_isian"];
+const TABEL = ["tugas_kartu", "tugas_luas_awal", "tugas_bencana", "tugas_bencana_x", "tugas_muncul", "uji_terlewat", "uji_sampel", "uji_tugas", "uji_isian"];
 async function adaTabel(env) {
   const r = (await env.DB.prepare(`SELECT name FROM sqlite_master WHERE type = 'table' AND name IN (${TABEL.map(() => "?").join(",")})`).bind(...TABEL).all()).results;
   return new Set(r.map(x => x.name));
@@ -335,7 +335,7 @@ async function adaTabel(env) {
 export async function agregat(env, kini = Date.now()) {
   const A = await adaTabel(env);
   if (!A.has("uji_tugas") || !A.has("uji_isian")) return null;
-  const hanyaKarhutla = A.has("tugas_bencana") ? "AND NOT EXISTS (SELECT 1 FROM tugas_bencana bb WHERE bb.tugas_id = t.id AND bb.bencana != 'karhutla')" : "";
+  const hanyaKarhutla = A.has("tugas_bencana") ? "AND NOT EXISTS (SELECT 1 FROM tugas_bencana bb WHERE bb.tugas_id = t.id AND bb.bencana != 'karhutla')" + (A.has("tugas_bencana_x") ? " AND NOT EXISTS (SELECT 1 FROM tugas_bencana_x bx WHERE bx.tugas_id = t.id)" : "") : "";
   const FS = A.has("tugas_kartu") ? "(SELECT json_extract(kk.kartu, '$.firespot') FROM tugas_kartu kk WHERE kk.tugas_id = t.id)" : "NULL";
   const PLAT = A.has("tugas_luas_awal") ? "(SELECT la.luas_ha FROM tugas_luas_awal la WHERE la.tugas_id = t.id)" : "NULL";
   const DASAR = `FROM tugas_isian i JOIN tugas_api t ON t.id = i.tugas_id LEFT JOIN uji_tugas u ON u.tugas_id = t.id LEFT JOIN uji_isian x ON x.isian_id = i.id WHERE t.dummy = 0 AND i.dummy = 0 ${hanyaKarhutla}`;

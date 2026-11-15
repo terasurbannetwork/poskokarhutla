@@ -496,3 +496,41 @@ const KT = {
 };
 export const KT_SQL = KT, KT_SUMBER = Object.keys(KT);
 export const ktBaris = async (env, sumber, {lo, hi, w, id, batas}) => (await env.DB.prepare(KT[sumber][0]).bind(Math.max(lo, w), hi, w, id, batas + 1).all()).results;
+
+/* ======================================================================================================================================================
+   Paritas bencana PB-07 (migrasi 0130; data/kajian-bnpb/paritas-bencana/DESAIN-TEKNIS.md 3.2). Jenis tugas longsor dan pesisir ada di tugas_bencana_x (CHECK tugas_bencana 0047
+   tidak mencakupnya). Tabel 0130 belum diterapkan = hanya tugas_bencana yang dibaca; karhutla dan tujuh jenis lama tetap jalan. Keduanya SEARCH lewat PK tugas_id. */
+export const tanpaTabelPb = e => /no such table: (main\.)?(tugas_bencana_x|pb_\w+)/i.test(String(e?.message || e));
+const SQL_TB = "SELECT tugas_id, bencana FROM tugas_bencana WHERE tugas_id IN (SELECT value FROM json_each(?))";
+const SQL_TBX = "SELECT tugas_id, bencana FROM tugas_bencana_x WHERE tugas_id IN (SELECT value FROM json_each(?))";
+/* Map id tugas -> teks jenis mentah (id tanpa baris = karhutla, diputuskan pemanggil). Melempar "no such table: tugas_bencana" bila 0047 belum ada. */
+export async function tugasBencanaPer(env, ids) {
+  const out = new Map(); if (!ids.length) return out;
+  const j = JSON.stringify(ids); let hs;
+  try { hs = await env.DB.batch([env.DB.prepare(SQL_TB).bind(j), env.DB.prepare(SQL_TBX).bind(j)]); }
+  catch (e) { if (!tanpaTabelPb(e)) throw e; hs = [await env.DB.prepare(SQL_TB).bind(j).all()]; }
+  for (const h of hs) for (const r of h.results) out.set(r.tugas_id, r.bencana);
+  return out;
+}
+/* tabel jenis untuk bencana ini ada? (melempar "no such table" bila belum; bencana x memeriksa tugas_bencana_x) */
+export const tugasBencanaAda = (env, x) => (x ? env.DB.prepare("SELECT 1 FROM tugas_bencana_x WHERE tugas_id = ''") : env.DB.prepare("SELECT 1 FROM tugas_bencana WHERE tugas_id = ''")).first();
+export const stmtTugasBencanaBaru = (env, id, bc, x) => x ? env.DB.prepare("INSERT OR IGNORE INTO tugas_bencana_x (tugas_id, bencana) VALUES (?, ?)").bind(id, bc) : env.DB.prepare("INSERT OR IGNORE INTO tugas_bencana (tugas_id, bencana) VALUES (?, ?)").bind(id, bc);
+/* Penutupan tugas per jenis (instansi.js tutupKedaluwarsa, selesaiBencana). x = jenis di tugas_bencana_x (longsor, pesisir), selain itu tugas_bencana; indeks tugas_bencana_jenis / tugas_bencana_x_jenis. */
+const SQL_BUKA = {
+  false: "SELECT t.id FROM tugas_bencana x JOIN tugas_api t ON t.id = x.tugas_id WHERE x.bencana = ?1 AND t.status = 'buka' AND t.dummy = 0 AND t.dibuat <= ?2 LIMIT ?3",
+  true: "SELECT t.id FROM tugas_bencana_x x JOIN tugas_api t ON t.id = x.tugas_id WHERE x.bencana = ?1 AND t.status = 'buka' AND t.dummy = 0 AND t.dibuat <= ?2 LIMIT ?3"};
+const SQL_TUNGGU = {
+  false: "SELECT t.id FROM tugas_bencana x JOIN tugas_api t ON t.id = x.tugas_id WHERE x.bencana = ? AND t.status = 'padam' AND t.padam_verif = 'padam_dilaporkan' AND t.padam_pada <= ? AND t.dummy = 0 LIMIT 500",
+  true: "SELECT t.id FROM tugas_bencana_x x JOIN tugas_api t ON t.id = x.tugas_id WHERE x.bencana = ? AND t.status = 'padam' AND t.padam_verif = 'padam_dilaporkan' AND t.padam_pada <= ? AND t.dummy = 0 LIMIT 500"};
+const SQL_TUTUP = {
+  false: "SELECT x.tugas_id FROM tugas_bencana x JOIN tugas_api t ON t.id = x.tugas_id WHERE x.bencana = ?1 AND x.reda >= ?2 AND t.status = 'buka' AND t.dummy = 0 LIMIT 500",
+  true: "SELECT x.tugas_id FROM tugas_bencana_x x JOIN tugas_api t ON t.id = x.tugas_id WHERE x.bencana = ?1 AND x.reda >= ?2 AND t.status = 'buka' AND t.dummy = 0 LIMIT 500"};
+const SQL_REDA = {
+  false: "UPDATE tugas_bencana SET reda = CASE WHEN ?1 THEN reda + 1 ELSE 0 END WHERE tugas_id = ?2",
+  true: "UPDATE tugas_bencana_x SET reda = CASE WHEN ?1 THEN reda + 1 ELSE 0 END WHERE tugas_id = ?2"};
+const idDari = r => r.results.map(v => v.id ?? v.tugas_id);
+/* tugas buka jenis b yang dibuat sebelum/pada `sampai` (ms), paling banyak `maks` */
+export const tugasBukaJenis = async (env, b, x, sampai, maks) => idDari(await env.DB.prepare(SQL_BUKA[x]).bind(b, sampai, maks).all());
+export const tugasTungguVerifJenis = async (env, b, x, sampai) => idDari(await env.DB.prepare(SQL_TUNGGU[x]).bind(b, sampai).all());
+export const tugasRedaCukupJenis = async (env, b, x, berturut) => idDari(await env.DB.prepare(SQL_TUTUP[x]).bind(b, berturut).all());
+export const stmtRedaTugas = (env, x, reda, id) => env.DB.prepare(SQL_REDA[x]).bind(reda ? 1 : 0, id);

@@ -6,13 +6,13 @@ import {pemirsaSesi} from "./pemirsa.js";
 import {modOK} from "./posko.js";
 import {stafSesi} from "./staf.js";
 import {sqlDaftar, AGREGAT} from "./monitor_sql.js";
-import {akunAktif, lingkupSql, dalamLingkup, KECUALI_LAIN, tanpaBencana, tanpaTabel, kirimMedia, jsonAman, PROV} from "./instansi.js";
+import {akunAktif, lingkupSql, dalamLingkup, KECUALI_LAIN, kecualiLain, SARING_JENIS, tanpaBencana, tanpaTabel, kirimMedia, jsonAman, PROV} from "./instansi.js";
 import {laju} from "./bnpb.js";
 
 const JAM = 36e5, RE_ID = /^[0-9A-Za-z]{16}$/;
 const PERAN_DALOPS = ["pusdalops", "koordalops", "pimpinan", "verifikator", "operator_cc"], JENIS_BPBD = ["pemprov", "pemkab", "pemkot"];
 const tabelBaca = e => /no such table: (main\.)?monitor_baca/i.test(String(e?.message || e));
-export const FILTER_BENCANA = {karhutla: KECUALI_LAIN, banjir: "AND EXISTS (SELECT 1 FROM tugas_bencana bb WHERE bb.tugas_id = t.id AND bb.bencana = 'banjir')"};
+export const FILTER_BENCANA = {karhutla: KECUALI_LAIN, banjir: SARING_JENIS("banjir")};
 const DARI_IDS = "IN (SELECT value FROM json_each(?))";   // json_each, bukan ?,?,?: batas 100 parameter D1
 
 /* {pihak, pembaca, nama, unit, dummy, sql: [klausa, bind], boleh(t)} atau Response galat. Tanpa sesi apa pun: 401 dari akunAktif. */
@@ -49,7 +49,7 @@ async function daftar(env, req, url, kini) {
   if (!Object.hasOwn(FILTER_BENCANA, bencana)) return gagal(400, "bencana harus karhutla atau banjir");
   const p = await pelaku(env, req, kini); if (p instanceof Response) return p;
   const baca = bagian => env.DB.prepare(sqlDaftar(p.sql[0], bagian)).bind(...p.sql[1], kini - 72 * JAM, kini - 72 * JAM).all();
-  let T; try { T = (await baca(FILTER_BENCANA[bencana])).results; } catch (e) { if (!tanpaBencana(e)) throw e; T = bencana === "banjir" ? [] : (await baca("")).results; }   // 0047 belum ada = semua tugas karhutla, tak ada banjir
+  let T; try { T = (await (bencana === "karhutla" ? kecualiLain(baca) : baca(FILTER_BENCANA[bencana]))).results; } catch (e) { if (!tanpaBencana(e)) throw e; T = []; }   // 0047 belum ada = semua tugas karhutla, tak ada banjir
   const ids = JSON.stringify(T.map(t => t.id)), per = (m, t, f) => (m.get(t) || m.set(t, []).get(t)).push(f), B = new Map(), I = new Map(), M = new Map();
   if (T.length) {
     let baris = [];
@@ -106,7 +106,8 @@ async function ringkas(env, req, ctx, url, kini) {
     const jalan = async (baca, filter) => (await env.DB.prepare(AGREGAT(baca).replace("?1", filter.replace(/^AND /, "") || "1")).bind(kini - 72 * JAM, kini - 72 * JAM).all()).results;
     let R = [];
     try {
-      try { R = await jalan(true, FILTER_BENCANA[bencana]); } catch (e) { if (!tabelBaca(e)) throw e; R = await jalan(false, FILTER_BENCANA[bencana]); }
+      const pakai = f => jalan(true, f).catch(e => { if (!tabelBaca(e)) throw e; return jalan(false, f); });
+      R = await (bencana === "karhutla" ? kecualiLain(pakai) : pakai(FILTER_BENCANA[bencana]));
     } catch (e) {
       if (tanpaBencana(e)) R = bencana === "banjir" ? [] : await jalan(true, "").catch(() => []);
       else if (!tanpaTabel(e)) throw e;
