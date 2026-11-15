@@ -167,6 +167,36 @@ $("#kartu").addEventListener("click", e => {
   isiTingkat(b.closest(".kartu"), +b.dataset.t);
 });
 
+/* ---------------------------------------------------------------- tangga tindakan untuk staf dan akun instansi (PB-27)
+   Warga tanpa sesi: dua tanya sesi kembali 401 lalu tidak ada apa-apa; /api/pb/tindakan tidak pernah dipanggil. Hak tulis akhirnya ditentukan server (403 tampil apa adanya). */
+const lewatIdle = fn => (window.requestIdleCallback ? requestIdleCallback(fn, {timeout: 3000}) : setTimeout(fn, 800));
+async function sesiTangga() {
+  const j = async u => { try { const r = await fetch(u, {credentials: "same-origin"}); return r.ok ? await r.json().catch(() => null) : null; } catch (e) { return null; } };
+  const st = await j("/api/staf/saya"); if (st?.staf) return {bisaTulis: (st.staf.peran || []).includes("pusdalops")};
+  const ins = await j("/api/instansi/saya"); return ins?.akun ? {bisaTulis: true} : null;
+}
+const mutu = (src, tipe) => new Promise((ok, no) => { const e = document.createElement(tipe === "css" ? "link" : "script"); if (tipe === "css") { e.rel = "stylesheet"; e.href = src; } else e.src = src; e.onload = ok; e.onerror = no; document.head.appendChild(e); if (tipe === "css") ok(); });
+let tanggaSiap;
+const muatTangga = () => tanggaSiap ||= Promise.all([mutu("/inti/kartu.css", "css"), mutu("/inti/pb_titik.css", "css"), window.PbTangga ? 0 : mutu("/inti/tangga_tugas.js")]).catch(e => { tanggaSiap = null; throw e; });
+async function bagianTangga() {
+  const s = await sesiTangga(); if (!s) return;
+  let j; try { const r = await fetch("/api/peringatan/aktif", {cache: "no-store"}); j = r.ok ? await r.json() : null; } catch (e) { j = null; } await provP;
+  const P = j?.peringatan?.filter(p => p.kunci && BENCANA[p.jenis]) || []; if (!P.length) return;
+  const bag = document.createElement("section"); bag.className = "bag"; bag.id = "tangga"; bag.setAttribute("aria-labelledby", "h-tangga");
+  bag.innerHTML = '<h2 id="h-tangga">Tangga tindakan peringatan aktif</h2><div class="kartu-grid" data-tg></div>';
+  const g = $("[data-tg]", bag);
+  P.forEach(p => { const a = document.createElement("article"); a.className = "st-kartu"; a.style.setProperty("--w", BENCANA[p.jenis].warna); a.dataset.kunci = p.kunci;
+    a.innerHTML = `<div class="st-kepala"><i></i>${esc(BENCANA[p.jenis].nama)}</div><ul class="st-rinci"><li><b><span class="pil t${{Waspada: 1, Siaga: 2, Awas: 3}[p.tingkat] || 1}">${esc(p.tingkat)}</span><span>${esc(p.judul)}</span></b><small>${esc([p.kab, namaProv(p.prov)].filter(Boolean).join(", "))}</small></li></ul>
+      <button type="button" class="tbl sek" data-tangga aria-expanded="false">Tangga tindakan</button><div class="tg-isi"></div>`; g.appendChild(a); });
+  g.addEventListener("click", e => { const b = e.target.closest("[data-tangga]"); if (!b) return;
+    const a = b.closest("article"), host = $(".tg-isi", a), buka = b.getAttribute("aria-expanded") !== "true";
+    b.setAttribute("aria-expanded", buka);   // chrome dulu, kerja berat di tugas berikutnya
+    if (!buka) { host.hidden = true; return; } host.hidden = false; if (host.dataset.siap) return;
+    requestAnimationFrame(() => setTimeout(async () => { try { await muatTangga(); host.dataset.siap = "1"; window.PbTangga.pasang(host, {peringatan: a.dataset.kunci, bisaTulis: s.bisaTulis}); } catch (er) { host.textContent = "Tangga tindakan belum bisa dimuat. Coba lagi."; } }, 0)); });
+  $("#tindakan").before(bag);
+}
+lewatIdle(bagianTangga);
+
 /* ---------------------------------------------------------------- lembar langganan (pola foto.js) */
 const Lang = {
   k: null, loc: null, wil: null, ts: null,
