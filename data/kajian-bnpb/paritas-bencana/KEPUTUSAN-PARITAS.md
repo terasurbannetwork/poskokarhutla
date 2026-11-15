@@ -1,0 +1,100 @@
+# KEPUTUSAN-PARITAS: semua bencana selengkap karhutla dan banjir
+
+Dokumen ini menang atas semua dokumen lain di folder ini. Keputusan pemilik dicatat apa adanya. Hal yang belum diputuskan ada di bagian Q dan tidak dijawab dengan karangan; bawaan sementaranya ditandai **[BAWAAN SEMENTARA]**.
+
+## Masalah
+
+Karhutla punya rantai penuh dari hulu ke hilir: deteksi (FIRMS, Himawari), model sebaran dengan uji balik dan prospektif, operasi (tugas api, regu, Operasi Udara dan renlap, SIPPA, OMC), dan pembuat dokumen (laporan harian dan Penanganan lewat bot WA). Banjir di urutan kedua. Bencana lain jauh tertinggal.
+
+Audit ulang 15 Nov 2026 (`docs/multi-bencana/PARITAS-2026-11-15.md`, rincian `docs/multi-bencana/bencana/<id>.md`, 113 komponen PAKET-FITUR ditambah G01-G11) menghasilkan hitungan ADA / SEBAGIAN / BELUM:
+
+| Bencana | Ada | Sebagian | Belum |
+| --- | --- | --- | --- |
+| Gunung api | 78 | 21 | 8 |
+| Banjir | 75 | 31 | 4 |
+| Cuaca ekstrem | 69 | 27 | 11 |
+| Kualitas udara | 69 | 22 | 16 |
+| Gempa dan tsunami | 67 | 29 | 7 |
+| Kekeringan | 64 | 31 | 9 |
+| Pesisir | 37 | 48 | 24 |
+| Longsor | 33 | 63 | 12 |
+
+Celah yang sama di hampir semua bencana: operasi dan renlap (G02, G10; penghambatnya: CHECK `tugas_bencana` di migrasi 0047 tanpa longsor dan pesisir, daftar `BENCANA` di `src/tugas_bencana.js`, teks khusus karhutla, dan daftar periksa regu `src/penugasan.js:42-47`, DESAIN-TEKNIS 2.1; `src/operasi_lapangan.js:163` hanya menolak kluster api dan tetap), pembuat dokumen dan laporan berkala (G08, G11), peringatan dini tersambung (G09: gunung api, udara, kekeringan, pesisir belum), dashboard pimpinan (C21, A30), keputusan ekonomi, pencegahan, prioritas (A24, A25, A14), kasus historis dan tren (B04, B06), cerita (C16).
+
+## Keputusan pemilik
+
+| No | Tanggal | Keputusan |
+| --- | --- | --- |
+| K1 | 15 Nov 2026 | Semua bencana dibuat selengkap karhutla dan banjir. Pemilik: "Oke coba diintegrasikan semua ... Gw mau semua bencana lainnya selengkap karhutla dan banjir". |
+| K2 | 15 Nov 2026 | Audit ulang dulu sebelum apa pun ("Audit ulang dulu"). Hasilnya `docs/multi-bencana/PARITAS-2026-11-15.md`. |
+| K3 | 15 Nov 2026 | Pembuat dokumen dan renlap harus lengkap untuk semua bencana, dan penanganan mengikuti praktik terbaik. Pemilik: "Coba pembuat dokumennya juga renlapnya lengkapnya. Dan best practice untuk penanganan semua bencana ya". Rujukan praktik: `docs/multi-bencana/PRAKTIK-PENANGANAN.md`. |
+| K4 | 15 Nov 2026 | Layar berbentuk dashboard memakai dashboard model A `/operasi` utuh. Pemilik: "Untuk yang bentuknya dashboard agar gunakan format dashboard lah ya". Acuan `data/kajian-bnpb/dashboard/`, `public/inti/dasbor.css` dan `dasbor.js`, gerbang `tests/agen/gerbang-dasbor.test.mjs`. |
+| K5 | 15 Nov 2026 | Operasi, renlap, dan sarana lapangan **berlaku** untuk gempa (SAR, evakuasi, tenda, air), cuaca ekstrem (distribusi terpal dan atap darurat, pembersihan jalan), dan kualitas udara (distribusi masker, ruang udara bersih). Audit semula menilainya tidak berlaku; pemilik menyetujui usulan lewat "Oke gas gimana?". Dicatat di `docs/multi-bencana/bencana/{gempa,cuaca,udara}.md` baris A22, A23 (gempa), G02, G03, G10. |
+| K6 | 15 Nov 2026 | Kumpulkan 400 data publik yang berguna per bencana, tiap data diriset tujuannya: deteksi, prediksi, penanganan, pasca bencana, analisis dampak, atau tujuan lain. Pemilik: "Cari 400 data publik yang berguna dan untuk bencana apa", "diriset masuknya gimana", "Pastikan data publik itu berguna ya", "Lu udah pastiin ga ada yang tumpang tindih data saat ini kan?", "Coba cari lagi lah yang lain. Kan udah banyak yang dipakai di sistem". Daftar: `docs/multi-bencana/DATA-PUBLIK.md` (status Baru, Sebagian, Dipakai). |
+| K7 | 15 Nov 2026 | Temuan rusak dari audit dibereskan dulu ("Bereskan yang rusak dulu"). Sudah: jadwal workflow gempa/udara/banjir/gunung api/pesisir, grid penduduk 39 gunung, kartu cuaca/udara/longsor ikut AGENTS 3.5, gerbang kartu selaras. |
+| K8 | 10 Nov 2026 | Paket dokumen lengkap dulu, baru kode (AGENTS.md 3.7). Pemilik: "disiapkan semuanya dari hulu ke hilir baru dikerjakan kodingannya biar ga jelek". |
+| K9 | 11 Nov 2026 | Tiap perubahan layar ditinjau pemilik di `http://localhost:8800` (AGENTS.md 3.8). |
+| K10 | 15 Nov 2026 | Kerja jalan terus tanpa berhenti menunggu pemilik untuk hal yang bisa diputuskan dengan bawaan sementara. Pemilik: "Oke gas semua ya. Jangan ada berhenti." |
+
+Aturan pemilik yang sudah berlaku dan mengikat paket ini: tanpa data dummy dan tanpa tombol 🧪/🧹 (11 Nov); kepala kartu nama seksi tanpa kalimat kesimpulan dan tanpa kaki (AGENTS 3.5, 11 Nov); tanpa huruf kapital dipaksa; tanpa titik tengah sebagai pemisah; nama situs Centurisk97, tidak pernah "Pantau Bencana"; angka antarsumber tidak dijumlah; angka karhutla hanya dari sistem; nama kru tidak disimpan; klik tidak membekukan layar (INP); tiap perilaku di luar TypeScript punya uji integrasi.
+
+## Keputusan rancangan (agent, bisa dibatalkan pemilik)
+
+| No | Keputusan | Alasan |
+| --- | --- | --- |
+| D1 | **Dibangun sekali, dipasang ke semua bencana.** Kemampuan baru (operasi, renlap, pembuat dokumen, tangga tindakan, dashboard pimpinan, papan status darurat, keputusan ekonomi) dibangun generik di `public/inti/**`, `src/**`, `scripts/umum/**`, lalu tiap bencana menyalakannya lewat registri `public/bencana.json`. Tidak ada salinan per bencana. | `docs/multi-bencana/MODUL-PLUG-AND-PLAY.md`; salinan per bencana adalah sumber celah paritas sekarang. |
+| D2 | Cakupan: banjir (termasuk rob), longsor, pesisir dan abrasi, cuaca ekstrem, kualitas udara dan asap, gempa dan tsunami, gunung api, kekeringan. Karhutla adalah acuan, dan ikut menerima kemampuan baru yang belum ia punya (G08 laporan berkala). | K1. |
+| D3 | Tujuh alur kerja: **W1** operasi dan renlap generik; **W2** pembuat dokumen (sitrep dan renops dari data, laporan per KIB, renkon, masuk laporan berkala); **W3** peringatan dini dan tangga tindakan untuk semua jenis; **W4** dashboard pimpinan dan papan status darurat (model A); **W5** keputusan ekonomi, pencegahan, prioritas wilayah; **W6** bukti model (prospektif tampil, kasus historis, tren, uji balik longsor dan cuaca); **W7** pasang data publik prioritas dan mesin mutu (CI, data basi, i18n, mobile). | Celah lintas bencana dari audit 15 Nov dan `PRAKTIK-PENANGANAN.md` bagian 1.4 dan 11. |
+| D4 | Fase: **F1** fondasi generik W1-W4 dengan karhutla dan banjir sebagai pemakai pertama yang membuktikan generik tidak memundurkan mereka; **F2** pasang per bencana berurut celah terbesar; **F3** W5, W6, W7 lanjutan. | Generik dibuktikan di modul yang sudah matang dulu. |
+| D5 | Urutan bencana di F2 menurut celah audit: longsor, pesisir, udara, kekeringan, cuaca, gempa dan tsunami, gunung api, banjir. | Hitungan BELUM dan SEBAGIAN terbesar didahulukan. |
+| D6 | Tidak ada model baru tanpa uji balik. Model yang belum lolos uji balik tampil dengan pil "hipotesis" (pola kekeringan). Longsor (AUC 0,70 lawan klimatologi 0,78) dan cuaca (hujan ≥50 mm POD 6,5%) diperbaiki di W6 sebelum angkanya dipakai untuk keputusan. | Aturan validasi-model; memori "Kekeringan hipotesis". |
+| D7 | Sumber resmi didahulukan (BMKG, PVMBG/MAGMA, Badan Geologi, BIG, BNPB, KLHK, PU). Data publik baru diambil dari `docs/multi-bencana/DATA-PUBLIK.md` berstatus Baru atau Sebagian, dimulai dari nilai Tinggi; tiap data yang dipasang memakai satu skrip panen dengan self-check `uji` dan langkah workflow. | K6; mencegah tumpang tindih dan sumber yatim. |
+| D8 | Operasi non-karhutla memakai pola privasi Operasi Udara: tanpa nama kru atau relawan di data operasi, tanpa biaya kontrak di `public/`, isian manual lewat staf berperan, D1 hanya lewat `src/hak.js`. | `data/kajian-bnpb/operasi-udara/KEAMANAN-PRIVASI.md`; gerbang `gerbang-d1`. |
+| D9 | Laporan berkala (G08) tidak dibuat terpisah per bencana: paket `data/kajian-bnpb/laporan-berkala/` dibangun satu kali dan memuat semua jenis. Paket ini hanya memastikan tiap bencana menyediakan angka yang dibutuhkan perakitnya. | Tidak ada dua mesin laporan. |
+| D10 | Buku kejadian tetap satu: Buku Besar Kejadian `/siklus` (F1). Kejadian per bencana (awalan B, C, D, E, P, U, V) dipetakan ke sana, tidak dibuat buku baru. | AGENTS.md 2.7 dan 2.9. |
+| D11 | Pengerja: pemilik berkas menurut `node scripts/agents/ilmu.mjs pemilik <berkas>`; `inti-layar` untuk `public/inti/**`, `warga-api` untuk `src/**` dan migrasi, pengerja bencana untuk `scripts/<id>/**` dan `public/<id>/**`, `mekanik-mesin` untuk workflow. Pemeriksa per AGENTS.md bagian 6. | Satu berkas satu pemilik. |
+| D12 | Panel seksi kiri di layar baru **bisa ditarik** (200 sampai 320 px), seperti `/operasi`. `DasborA` di `public/inti/dasbor.js` belum punya pegangan tarik; tiket F1 pertama menambahkannya ke `DasborA` supaya semua layar model A ikut. | Aturan pemilik "panel peta wajib bisa ditarik" (memori sidebar-bisa-ditarik); DESIGN-SYSTEM semula mengusulkan lebar tetap. |
+| D13 | `peringatan.jenis` dan `peringatan.sumber` di D1 (`migrations/0010_peringatan.sql`) dibatasi CHECK (jenis lima nilai: gempa, tsunami, karhutla, banjir, cuaca). SQLite tidak bisa mengubah CHECK dan `ALTER` tidak idempoten di D1, jadi tabel `peringatan` lama TIDAK disentuh. Pola tabel samping idempoten: satu migrasi baru hanya `CREATE TABLE IF NOT EXISTS peringatan_x` (skema kolom sama dengan `peringatan`, CHECK `jenis` memuat gunungapi, udara, kekeringan, pesisir, longsor, rob; CHECK `sumber` memuat BMKG, InaTEWS, PVMBG, KLHK, Badan Geologi, Deteksi Centurisk97) dan indeks yang sama dengan `IF NOT EXISTS`. Jalur jenis baru di `src/peringatan.js` menulis ke `peringatan_x`; pembaca memakai `UNION ALL` dengan `peringatan`; semua kueri baru lewat `src/hak.js`, tiap cabang diuji `EXPLAIN` SEARCH. Rancangan lengkap di DESAIN-TEKNIS bagian 3.4. Ditinjau `migrasi-idempoten` sebelum pemilik menerapkan; uji migrasi jalan dua kali. | Temuan ALGORITMA 15 Nov; salin lalu tukar nama tabel tidak aman diulang dan merisikokan pemicu, indeks, dan baris lama. |
+| D14 | Registri cakupan uji integrasi paket ini adalah `tests/warga/cakupan.json` (berkas yang ada; tidak ada registri kedua di folder e2e dan tidak dibuat). Tiap tabel, rute, dan trigger baru masuk sana dengan uji yang menjalankannya. | Berkas registri yang nyata di repo; sebelumnya (brief awal menyebut jalur e2e yang tidak ada) ditulis sebagai pertanyaan Q34, dipindah ke sini karena bukan keputusan pemilik. |
+
+## Pertanyaan terbuka untuk pemilik (Q)
+
+| Q | Pertanyaan | Bawaan sementara | Menahan |
+| --- | --- | --- | --- |
+| Q1 | Longsor mendapat layar sendiri `/longsor` atau tetap tab di `/banjir`? | **[BAWAAN SEMENTARA]** tetap tab di `/banjir` dengan entri registri sendiri; layar sendiri dibangun bila pemilik memintanya. | tidak menahan |
+| Q2 | Dashboard pimpinan satu untuk semua bencana dengan saringan jenis, atau satu per bencana? | **[BAWAAN SEMENTARA]** satu dashboard lintas bencana dengan saringan jenis (pola yang pemilik minta untuk Kabar luar Dalops: "ada yang sifatnya semua bencana ada yang sifatnya bisa filter bencananya apa"). | tidak menahan |
+| Q3 | Siapa pengisi renlap dan operasi non-karhutla: staf Pusdalops, BPBD lewat akun instansi, atau keduanya? | **[BAWAAN SEMENTARA]** keduanya: staf Pusdalops (`stafPeran`) dan akun instansi BPBD untuk wilayahnya sendiri. | W1 tiket hak akses |
+| Q4 | Aset udara untuk gempa dan cuaca (heli SAR, evakuasi, distribusi) datanya dari mana? | **[BAWAAN SEMENTARA]** isian manual seperti Operasi Udara (migrasi 0126), tanpa panen otomatis. | tidak menahan |
+| Q5 | Papan status darurat: sumber SK status siaga/tanggap darurat dari isian staf (`logbook_sk` yang sudah ada) atau ditarik dari JDIH daerah? | **[BAWAAN SEMENTARA]** `logbook_sk` yang sudah ada; JDIH menyusul bila pemilik meminta. | tidak menahan |
+| Q6 | Keputusan ekonomi dalam rupiah: koefisien harga dari mana? | **[BAWAAN SEMENTARA]** IHPB dan Indeks Kemahalan Konstruksi BPS untuk bangunan, PIHPS/Panel Harga Pangan untuk logistik; tanpa angka rupiah bila sumbernya tidak ada. | W5 |
+| Q7 | Video (A34) dikerjakan? | **[BAWAAN SEMENTARA]** tidak dikerjakan sampai pemilik memutuskan. | tidak menahan |
+| Q8 | Bahasa Inggris lengkap untuk semua bencana masuk paket ini atau terpisah? | **[BAWAAN SEMENTARA]** masuk W7 sesudah F2. | tidak menahan |
+| Q9 | Ambang angka dari riset praktik yang bertanda [perlu cek] (hujan, angin, gelombang, HTH, ISPU) dipakai di layar? | **[BAWAAN SEMENTARA]** tidak dipakai sampai naskah penerbitnya dibaca; pakai ambang yang sudah ada di kode. | W3 ambang tangga |
+| Q10 | Dasar yang mengikat untuk laporan kepada Presiden tidak ditemukan di korpus. | **[BAWAAN SEMENTARA]** ikut praktik Laporan Kejadian Bencana harian dan paket laporan berkala. | tidak menahan |
+| Q11 | Riset praktik (`PRAKTIK-PENANGANAN.md` bagian 11) mengusulkan papan komando SKPDB (komandan, lima staf, rapat, notulen, jadwal sitrep) dan gladi terjadwal dengan hasil terukur. Masuk paket ini? | **[BAWAAN SEMENTARA]** di luar lingkup; gladi sudah ada di program Siklus Bencana (F5 Renkon Hidup dan Gladi). Papan komando dikerjakan bila pemilik memintanya. | tidak menahan |
+| Q12 | Hitungan audit di tabel Masalah belum memasukkan K5 (G02, G03, G10 gempa, cuaca, udara berubah ke berlaku). | **[BAWAAN SEMENTARA]** dihitung ulang dengan skrip di tiket pertama (PB-01); target PRD memakai hitungan ulang itu. | tidak menahan |
+| Q13 | Rute tiga layar baru (dashboard pimpinan, pembuat dokumen, papan status darurat): halaman sendiri di `/bnpb/*`, atau digabung ke `/operasi`, `/bnpb/sitrep`, dan `public/bnpb/siaga.html` yang sudah ada? | **[BAWAAN SEMENTARA]** papan status darurat dilebur ke `siaga.html` yang sudah ada (diperiksa tumpang tindihnya dulu); pembuat dokumen di `/bnpb/sitrep`; dashboard pimpinan halaman sendiri `/bnpb/pimpinan`. | tiket layar W2, W4 |
+| Q14 | Saringan jenis bencana di dashboard boleh pilih lebih dari satu? | **[BAWAAN SEMENTARA]** ya, pil pilih jamak. | tidak menahan |
+| Q15 | Mode TV `?tv=1` untuk dashboard pimpinan? | **[BAWAAN SEMENTARA]** tidak, menyusul bila diminta. | tidak menahan |
+| Q16 | Garis target di ubin kesiapan? | **[BAWAAN SEMENTARA]** tidak, karena target resmi per daerah tidak ada sumbernya. | tidak menahan |
+| Q17 | Peringatan dari sumber berstatus hipotesis (longsor, cuaca, D6) boleh dikirim lewat email, push, dan CAP? | **[BAWAAN SEMENTARA]** tidak; tampil di layar dengan pil hipotesis saja (ALGORITMA). | W3 |
+| Q18 | Peringatan jenis baru perlu persetujuan staf sebelum dikirim keluar? | **[BAWAAN SEMENTARA]** ya untuk 30 hari pertama tiap jenis, lalu ditinjau. | W3 |
+| Q19 | BPBD kabupaten boleh membuka operasi tanpa persetujuan Pusdalops? | **[BAWAAN SEMENTARA]** boleh untuk wilayahnya sendiri, tercatat dan terlihat Pusdalops. | W1 |
+| Q20 | Batas waktu checklist tangga tindakan (30 menit/2 jam, 3/12 jam, 24/48 jam per tingkat). | **[BAWAAN SEMENTARA]** angka itu dipakai sebagai bawaan, bukan ketentuan hukum, dan bisa diubah staf per daerah. | tidak menahan |
+| Q21 | Bobot prioritas wilayah: 0,4 bahaya, 0,3 paparan, 0,2 kerentanan, 0,1 tren peringatan (hari berstatus Waspada ke atas dalam 30 hari dibagi 30), persis komponen ALGORITMA bagian 4. | **[BAWAAN SEMENTARA]** dipakai dengan label "bobot sementara" (hipotesis) sampai diuji terhadap kejadian; komponen kosong membagi ulang bobot. | W5 |
+| Q22 | Laju mengungsi untuk jenis bencana tanpa data historis. | **[BAWAAN SEMENTARA]** tidak ditampilkan angka; hanya jiwa terpapar. | W5 |
+| Q23 | Ambang "kejadian besar" yang memicu laporan per KIB dan dashboard. | **[BAWAAN SEMENTARA]** ikut ambang aktivasi Pusdalops yang sudah ada di logbook; tanpa ambang baru. | W2 |
+| Q24 | ISPU KLHK tidak terjangkau dari CI (DATA-PUBLIK No 132). Jalur pengganti untuk pemicu EWS udara: proxy, OpenAQ, atau CAMS? (Gabungan Q24 dan Q28 lama.) | **[BAWAAN SEMENTARA]** EWS udara memakai sumber yang terjangkau sekarang, PM2,5 BMKG dan OpenAQ, dengan label sumber dan data basi ditandai; CAMS hanya dengan label model dan tanpa klaim terukur; ISPU dipasang bila aksesnya terbuka; tidak memakai jalur baru tanpa keputusan pemilik. | F-14 udara |
+| Q25 | Pesisir memetakan `gelombang_pasang` dan `abrasi` ke satu id `pesisir`; rob tetap di banjir. Tepat? | **[BAWAAN SEMENTARA]** ya, rob tetap `banjir` (sesuai `prediksi` kode `ROB`) | tidak menahan |
+| Q26 | Masa berlaku renlap generik: 14 hari seperti SIPPA (`RENLAP_BERLAKU_MS`) atau satu hari seperti renlap udara harian? | **[BAWAAN SEMENTARA]** 14 hari untuk renlap per wilayah, renlap harian (tanggal) tetap per tanggal; layar menampilkan "berlaku sampai" | tidak menahan |
+| Q27 | Ambang sinyal "akan berakhir" papan status darurat | **[BAWAAN SEMENTARA]** 7 hari | tidak menahan |
+| Q28 | Digabung ke Q24. | - | - |
+| Q29 | Batas ukuran berkas statis baru per berkas | **[BAWAAN SEMENTARA]** 100 KB ringkas, 1 MB lainnya | tidak menahan |
+| Q30 | `instansi_akun` tidak punya jenis `bpbd` dan menyimpan `kab` sebagai nama teks. Akun instansi mana yang disebut "BPBD" di Q3 dan bagaimana mencocokkannya ke kode kab 4 digit? | **[BAWAAN SEMENTARA]** akun `pemprov`, `pemkab`, `pemkot` aktif boleh menulis untuk `prov` akunnya; untuk `tingkat = 'kab'` dibatasi lagi ke kab hasil pemetaan `kunci_wilayah` ke kode BPS (tabel pemetaan dari `scripts/umum/nama_wilayah.py`, dibangkitkan, bukan nama bebas); polda, polres, kodam, kodim tidak menulis | W1 hak akses (Q3) |
+| Q31 | Apakah pemirsa (`pemirsaLihat`, tab pusdalops) boleh membuka berkas renlap dan dokumen beku, atau hanya daftar dan ringkasan? | **[BAWAAN SEMENTARA]** hanya daftar dan ringkasan; berkas ditutup bagi pemirsa (sama dengan PDF renlap udara) | peran baca renlap dan dokumen |
+| Q32 | Pimpinan boleh membekukan dokumen (sitrep, renops) atau hanya Pusdalops dan koordalops yang merakit lalu pimpinan membaca? | **[BAWAAN SEMENTARA]** pimpinan boleh membekukan (tanda persetujuan); perakit tetap Pusdalops dan koordalops | matriks hak dokumen |
+| Q33 | Pemindai pola nomor telepon dan NIK pada dokumen hasil rakitan menolak rakit, atau hanya memperingatkan? | **[BAWAAN SEMENTARA]** menolak (422), karena dokumen beku tak dapat ditimpa dan kebocoran tak dapat ditarik | tidak menahan |
+| Q34 | Dipindah ke D14 (registri cakupan = `tests/warga/cakupan.json`); bukan pertanyaan pemilik. | - | - |
+| Q35 | `npm run uji` tidak menjalankan `uji:layar`, `uji:gempa`, dan sejenisnya; uji layar baru paket ini (`tests/layar/pb_*.test.mjs`) masuk rangkaian `uji` atau jalan sendiri? | **[BAWAAN SEMENTARA]** masuk lewat satu skrip baru `uji:paritas` yang dipanggil dari `npm run uji` oleh `mekanik-mesin` di PB-01; tidak melonggarkan hook pre-push | PB-01 |
+| Q36 | Nomor migrasi D13 belum ditetapkan di DESAIN-TEKNIS; 0130 dan 0131 sudah dipakai paket ini. Cukup nomor berikutnya yang kosong saat tiket PB-21? | **[BAWAAN SEMENTARA]** ya, dicek ulang dengan `ls migrations` saat tiket | PB-21 |
+| Q37 | Pemetaan tingkat udara dari kategori ISPU PM2,5 (Tidak sehat = 1, Sangat tidak sehat = 2, Berbahaya = 3) dan aturan gunung api bahwa hanya kenaikan level PVMBG yang memicu peringatan baru (penurunan hanya menurunkan tampilan). Keduanya rancangan agent, bukan ketentuan resmi. | **[BAWAAN SEMENTARA]** dipakai seperti tertulis di ALGORITMA 2.3, bisa diubah pemilik atau staf per daerah; label resmi sumber tetap tampil di samping tingkat. | PB-38, PB-46 |

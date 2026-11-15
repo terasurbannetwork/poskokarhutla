@@ -298,12 +298,12 @@ Sebelum menautkan modul ke Buku Besar Kejadian, menyentuh antrean luring Indexed
 
 Aturan berhentinya sama dengan §2.1. Tidak ada router WA bersama (pemilik: "jangan"); tidak ada buku kejadian kedua; pencocok kejadian tetap satu (`pasang.py`); orang tidak pernah dicocokkan dari nama.
 
-### 2.15 Paritas Bencana (semua bencana selengkap karhutla dan banjir): baca dulu, baru bangun
+### 2.16 Paritas Bencana (semua bencana selengkap karhutla dan banjir): baca dulu, baru bangun
 
 Sebelum menyentuh kemampuan lintas bencana (operasi dan renlap untuk semua jenis, pembuat dokumen sitrep/renops/laporan per KIB, tangga tindakan dan peringatan dini semua jenis, dashboard pimpinan dan papan status darurat, keputusan ekonomi dan prioritas wilayah, registri `kemampuan` di `public/bencana.json`, pemasangan data publik dari `docs/multi-bencana/DATA-PUBLIK.md`), baca dokumen di
 `data/kajian-bnpb/paritas-bencana/` dengan urutan otoritas ini (kode tersebar di pemilik masing-masing: `public/inti/**` milik `inti-layar`, `src/**` dan migrasi milik `warga-api`, `scripts/<id>/**` dan `public/<id>/**` milik pengerja bencana, workflow milik `mekanik-mesin`; cek `ilmu.mjs pemilik`):
 
-1. `KEPUTUSAN-PARITAS.md`: keputusan pemilik K1–K10, rancangan D1–D13, pertanyaan terbuka Q1–Q36 dengan bawaan sementara; menang atas semuanya.
+1. `KEPUTUSAN-PARITAS.md`: keputusan pemilik K1–K10, rancangan D1–D14, pertanyaan terbuka Q1–Q37 dengan bawaan sementara; menang atas semuanya.
 2. `RISET.md`, 3. `PRD.md` (F-1..F-33, alur kerja W1–W7), 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md` (dashboard model A, K4), 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`PB-*`), `GLOSARIUM.md`.
 
