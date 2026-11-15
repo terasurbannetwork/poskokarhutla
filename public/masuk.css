@@ -1,0 +1,30 @@
+/* Halaman /masuk: hanya tata letak. Token, kepala situs, kartu, isian, tombol, pesan dari bnpb.css. Tanpa gaya inline (CSP). */
+[hidden]{display:none!important}   /* display:grid/flex pada form dan daftar menimpa atribut hidden */
+.ad-sep{text-transform:none;letter-spacing:0}   /* pemilik: tanpa teks huruf kapital semua */
+.mk-wrap{max-width:420px;margin:0 auto;padding:32px 16px 56px}
+.mk-kartu{padding:24px 22px;display:grid;gap:16px}
+.mk-kepala{display:grid;gap:6px}
+.mk-kepala h1{font-size:1.375rem;font-weight:800;line-height:1.25}
+.mk-kepala h1:focus{outline:none}
+.mk-kartu .bn-isian input,.mk-kartu .bn-isian select{min-height:44px;font-size:1rem}   /* 1rem: iOS tidak memperbesar layar saat fokus */
+.mk-kartu .bn-tombol{min-height:44px;width:100%;display:inline-flex;align-items:center;justify-content:center}
+.mk-kartu .bn-setuju{align-items:flex-start;line-height:1.5}
+.mk-kartu .bn-setuju input{flex:none;width:22px;height:22px;margin-top:1px;accent-color:var(--navy2)}
+.mk-kartu .bn-pesan a{color:inherit;font-weight:700}
+.mk-kode{text-align:center;font:700 1.5rem/1.2 var(--display);letter-spacing:.4em;font-variant-numeric:tabular-nums;text-indent:.4em}
+.mk-tautan{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 6px;border:0;background:none;color:var(--navy2);font-weight:700;font-size:.875rem;font-family:inherit;text-decoration:underline;cursor:pointer;justify-self:center}
+.mk-tautan:disabled{color:var(--ink3);text-decoration:none;cursor:default}
+.mk-baris-bawah{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.mk-ruang{display:grid;gap:12px}
+.mk-daftar{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.mk-baris{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 12px;align-items:center;width:100%;min-height:56px;padding:10px 14px;border:0;border-radius:14px;background:var(--soft);color:var(--ink);text-align:left;cursor:pointer;font:inherit}
+.mk-baris svg{grid-row:1/3;width:22px;height:22px;fill:none;stroke:var(--navy2);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.mk-nama{font-weight:800;font-size:.9rem;overflow-wrap:anywhere}
+.mk-sub{font-size:.78rem;font-weight:600;color:var(--ink2);overflow-wrap:anywhere}
+.mk-baris:active{transform:scale(.99)}
+@media (hover:hover) and (pointer:fine){.mk-baris:hover{box-shadow:0 0 0 1px color-mix(in srgb,var(--c5) 45%,transparent)}}
+.mk-kartu :is(button,a,input,select):focus-visible{outline:2px solid var(--c5);outline-offset:2px}
+@media (max-width:480px){.mk-wrap{padding:16px 12px 40px}.mk-kartu{padding:20px 16px}}
+.mk-rinci{font-size:.8125rem;color:var(--ink2);line-height:1.5}
+.mk-rinci summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+.mk-rinci p{margin:0 0 8px}

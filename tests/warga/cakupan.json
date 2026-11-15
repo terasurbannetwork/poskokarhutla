@@ -5,6 +5,8 @@
     "POST /api/pengungsian/titik": "T11 titik pengungsian: 150 m",
     "POST /api/pengungsian/titik/tutup": "T11 titik pengungsian: 150 m",
     "table titik_pengungsian": "T12 isian (titik, tanggal) ganda 409",
+    "GET /api/orang/tinjau": "KP-23 daftar hanya memuat data tersamar",
+    "POST /api/orang/tinjau": "KP-23 pasang menulis orang_akun",
     "table orang_akun": "KP-21 orang_akun: migrasi dijalankan dua kali",
     "table orang_tinjau": "KP-21 orang_tinjau: CHECK keputusan",
     "GET /api/ai/model": "referensi: daftar model berisi bawaan ber-alat",
@@ -1056,6 +1058,7 @@
     "POST /api/petugas/nonce": "nonce: butuh kode dan x-pb",
     "POST /api/petugas/absen": "absen penolakan (U-05, U-06)",
     "POST /api/petugas/logbook": "logbook (U-13, LP-032, LP-033)",
+    "GET /api/orang/:id/jejak": "orang lain 404 sama persis dengan orang tak ada",
     "GET /api/petugas/riwayat": "riwayat dan foto (U-11)",
     "GET /api/petugas/foto/:id": "riwayat dan foto (U-11)",
     "GET /api/petugas/panel/ringkas": "panel ringkas (LP-016, U-04)",
@@ -1287,12 +1290,10 @@
     "GET /masuk": "peran U-12:",
     "POST /api/masuk/sandi": "peran U-18:",
     "POST /api/masuk/pilih": "peran U-15:",
+    "POST /api/masuk/lengkapi": "halaman U-20:",
     "POST /api/masuk/pemirsa_wa": "peran U-35:",
     "table mk_masuk_log": "peran U-13:",
-    "table mk_pemirsa_wa": "peran U-35:",
-    "GET /api/orang/tinjau": "KP-23 daftar hanya memuat data tersamar",
-    "POST /api/orang/tinjau": "KP-23 pasang menulis orang_akun",
-    "GET /api/orang/:id/jejak": "orang lain 404 sama persis dengan orang tak ada"
+    "table mk_pemirsa_wa": "peran U-35:"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

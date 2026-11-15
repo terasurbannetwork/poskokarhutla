@@ -224,7 +224,7 @@ function formMasuk() {
     t.disabled = true; const r = await api("POST", "/api/pendataan/masuk", {username: v.username.trim().toLowerCase(), sandi: v.sandi}); t.disabled = false;
     if (!r.ok) return setPesan(pesan, r.j.galat);
     await muatSaya();
-  }}}, isianTeks("Nama pengguna", "username", {autocomplete: "username", autocapitalize: "none"}), h("label", {class: "bn-isian"}, "Sandi", h("input", {name: "sandi", type: "password", autocomplete: "current-password"})), pesan, t);
+  }}}, isianTeks("Nama pengguna", "username", {autocomplete: "username", autocapitalize: "none"}), h("label", {class: "bn-isian"}, "Sandi", h("input", {name: "sandi", type: "password", autocomplete: "current-password"})), pesan, t, h("a", {href: "/masuk?ke=%2Fpendataan", teks: "Masuk dengan nomor WhatsApp"}));
   return f;
 }
 function formDaftar() {

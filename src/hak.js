@@ -680,6 +680,8 @@ export const mkSesiBaru = (env, tokenSha, akunId, kini, habis) => env.DB.batch([
   env.DB.prepare("INSERT INTO mk_sesi (token_sha, mk_id, kode_pada, dibuat, habis) VALUES (?, ?, ?, ?, ?)").bind(tokenSha, akunId, kini, kini, habis),
   env.DB.prepare("UPDATE mk_akun SET terakhir_masuk = ? WHERE id = ?").bind(kini, akunId)]);
 export const mkSesiDari = (env, tokenSha, kini) => env.DB.prepare("SELECT s.kode_pada, a.id, a.wa, a.nama, a.prov, a.kab, a.setuju_pdp FROM mk_sesi s JOIN mk_akun a ON a.id = s.mk_id WHERE s.token_sha = ? AND s.habis > ? AND a.status = 'aktif'").bind(tokenSha, kini).first();
+/* PM-08: profil akun umum; waktu persetujuan pertama dipertahankan (setuju_pdp = waktu ms, > 0 berarti sudah setuju) */
+export const mkLengkapi = (env, id, nama, prov, kab, kini) => env.DB.prepare("UPDATE mk_akun SET nama = ?, prov = ?, kab = ?, setuju_pdp = coalesce(setuju_pdp, ?) WHERE id = ?").bind(nama, prov, kab, kini, id).run();
 export const mkCabutSesi = (env, tokenSha) => env.DB.prepare("DELETE FROM mk_sesi WHERE token_sha = ?").bind(tokenSha).run();
 
 /* PM-06 dan PM-07 (ALGORITMA 3): akun peran yang terikat LANGSUNG ke nomor terbukti (D4), sesi peran, log masuk, nomor pemirsa.

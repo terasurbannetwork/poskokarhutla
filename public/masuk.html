@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Masuk, Centurisk97</title>
+<meta name="description" content="Masuk ke Centurisk97 dengan nomor WhatsApp dan kode sekali pakai.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="/bnpb/bnpb.css" rel="stylesheet">
+<link href="/masuk.css?v=1" rel="stylesheet">
+</head>
+<body>
+<header class="ad-top">
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a>
+  <span class="ad-sep">Masuk</span>
+</header>
+<main class="mk-wrap">
+  <section class="bn-kartu mk-kartu" aria-labelledby="mkJudul">
+    <div class="mk-kepala">
+      <h1 id="mkJudul" tabindex="-1">Masuk</h1>
+      <p id="mkInfo" class="bn-label" hidden></p>
+    </div>
+    <p id="mkTerganggu" class="bn-pesan galat" role="status" hidden>Kode WhatsApp sedang terganggu. <a id="aTerganggu" href="/admin/masuk">Masuk dengan sandi</a></p>
+
+    <p id="mkMuat" class="bn-label" role="status">Memuat...</p>
+
+    <form id="fNomor" class="bn-form" novalidate hidden>
+      <label class="bn-isian" for="iNomor">Nomor WhatsApp
+        <input id="iNomor" name="wa" type="tel" inputmode="numeric" autocomplete="tel" maxlength="20" placeholder="08xx xxxx xxxx" required>
+      </label>
+      <button class="bn-tombol" id="bKirim" type="submit">Kirim kode</button>
+      <p class="bn-pesan" role="status"></p>
+      <a class="mk-tautan" id="aSandi" href="/admin/masuk">Masuk dengan sandi</a>
+    </form>
+
+    <form id="fKode" class="bn-form" novalidate hidden>
+      <label class="bn-isian" for="iKode">Kode enam angka
+        <input id="iKode" class="mk-kode" name="kode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" placeholder="______" required>
+      </label>
+      <button class="bn-tombol" id="bKode" type="submit">Masuk</button>
+      <p class="bn-pesan" role="status"></p>
+      <div class="mk-baris-bawah">
+        <button class="mk-tautan" id="bUlang" type="button" disabled>Kirim ulang</button>
+        <button class="mk-tautan" id="bGanti" type="button">Ganti nomor</button>
+      </div>
+    </form>
+
+    <div id="vRuang" class="mk-ruang" hidden>
+      <ul id="daftarRuang" class="mk-daftar"></ul>
+      <p class="bn-pesan" role="status"></p>
+      <button class="mk-tautan" id="bKeluar" type="button" hidden>Keluar</button>
+    </div>
+
+    <form id="fSandi" class="bn-form" novalidate hidden>
+      <label class="bn-isian" for="iSandi">Sandi
+        <input id="iSandi" name="sandi" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" required>
+      </label>
+      <button class="bn-tombol" id="bSandi" type="submit">Masuk</button>
+      <p class="bn-pesan" role="status"></p>
+      <button class="mk-tautan" id="bKembali" type="button">Kembali ke daftar ruang</button>
+    </form>
+
+    <form id="fLengkapi" class="bn-form" novalidate hidden>
+      <label class="bn-isian" for="iNama">Nama
+        <input id="iNama" name="nama" type="text" autocomplete="name" minlength="2" maxlength="80" required>
+      </label>
+      <label class="bn-isian" for="iProv">Provinsi
+        <select id="iProv" name="prov" required><option value="">Pilih provinsi</option></select>
+      </label>
+      <label class="bn-isian" for="iKab">Kabupaten atau kota
+        <input id="iKab" name="kab" type="text" list="daftarKab" autocomplete="off" minlength="2" maxlength="60" required>
+      </label>
+      <datalist id="daftarKab"></datalist>
+      <label class="bn-setuju" for="iSetuju">
+        <input id="iSetuju" name="setuju" type="checkbox">
+        <span>Saya setuju nomor WhatsApp dan data ini dipakai untuk masuk, undangan, dan pemberitahuan tugas.</span>
+      </label>
+      <details class="mk-rinci">
+        <summary>Baca selengkapnya</summary>
+        <p>Yang kami simpan: nomor WhatsApp, nama, provinsi, dan kabupaten atau kota.</p>
+        <p>Gunanya: membuatmu bisa masuk, menerima undangan, dan menerima pemberitahuan tugas.</p>
+        <p>Data ini tidak ditampilkan ke publik. Kamu bisa meminta data dan akunmu dihapus kapan saja.</p>
+      </details>
+      <button class="bn-tombol" id="bSimpan" type="submit">Simpan</button>
+      <p class="bn-pesan" role="status"></p>
+    </form>
+  </section>
+</main>
+<script src="/instansi_wilayah.js?v=1"></script>
+<script src="/bnpb/turnstile.js"></script>
+<script src="/masuk.js?v=1"></script>
+</body>
+</html>

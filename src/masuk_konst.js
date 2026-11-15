@@ -32,3 +32,7 @@ export const AKUN_PER_JENIS = 5;             // paling banyak akun peran per jen
 /* perbaikan PM-05..07 */
 export const LAJU_IP_PILIH = [[JAM, 60]];        // POST /api/masuk/pilih per alamat
 export const LAJU_IP_PEMIRSA_WA = [[JAM, 30]];   // POST /api/masuk/pemirsa_wa per alamat
+/* PM-08: lengkapi profil akun umum */
+export const LAJU_IP_LENGKAPI = [[JAM, 30]];     // POST /api/masuk/lengkapi per alamat
+export const NAMA_MAKS = 80;                     // sama dengan CHECK mk_akun.nama
+export const KAB_MAKS = 60;                      // sama dengan CHECK mk_akun.kab

@@ -113,6 +113,7 @@ export const halamanMasuk = (galat, ke = "", merek = "Centurisk97") => `${kepala
       <button class="ad-tombol-masuk" type="submit">Masuk</button>
     </form>
     <p class="ad-catatan">${ikonMasuk('<path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6Z"/>')}Sesi 12 jam, percobaan masuk dibatasi</p>
+    <p class="ad-catatan"><a href="/masuk${ke ? "?ke=" + encodeURIComponent(ke) : ""}">Masuk dengan nomor WhatsApp</a></p>
   </div>
 </main>
 </div>

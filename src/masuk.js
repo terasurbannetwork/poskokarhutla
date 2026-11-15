@@ -2,8 +2,10 @@
    minta dan periksa kode enam angka lewat WA, sesi akun umum (cookie sesi_masuk), profil minimal, keluar.
    Kode hanya disimpan sebagai HMAC berahasia MASUK_KUNCI, tidak pernah ada di jawaban API atau log. Pesan keluar lewat wa_antre (jenis 'otp'); tidak ada pembacaan WA masuk.
    PM-06: sesi peran (tiap modul menerbitkan dan mencabut sesinya sendiri; di sini tidak ada tulis ke tabel sesi/akun modul lain), pemilih ruang, keluar, nomor pemirsa.
-   PM-07: sandi staf sesudah kode lewat cobaMasukStaf; akun rahasia (sesi_admin) tidak pernah lewat sini. Belum di sini: undangan, email, halaman (PM-08 sampai PM-16). Semua ambang ada di masuk_konst.js. */
-import {json, gagal, sha, hex, acak, bacaBody, normalWA, turnstileOK, ipHash, cacheTepi} from "./worker.js";
+   PM-08: lengkapi profil akun umum, halaman public/masuk.*.
+   PM-07: sandi staf sesudah kode lewat cobaMasukStaf; akun rahasia (sesi_admin) tidak pernah lewat sini. Belum di sini: undangan, email (PM-09 sampai PM-16). Semua ambang ada di masuk_konst.js. */
+import {json, gagal, sha, hex, acak, bacaBody, bersihTeks, normalWA, turnstileOK, ipHash, cacheTepi} from "./worker.js";
+import {PROV} from "./bangunan.js";
 import {laju} from "./bnpb.js";
 import {emailAktif} from "./ews.js";
 import {superOK} from "./posko.js";
@@ -13,7 +15,7 @@ import {sesiUntuk as sesiKampus, cabutSesi as cabutKampus} from "./kemitraan_aku
 import {sesiUntuk as sesiPemirsa, cabutSesi as cabutPemirsa, arahPemirsa} from "./pemirsa.js";
 import {cabutSesi as cabutStaf, cobaMasukStaf, hanyaDirektori} from "./staf.js";
 import {STATUS_RELAWAN_ARR} from "./lapangan.js";
-import {mkJedaTerakhir, mkKodeBaru, mkNaikCobaSemua, mkHanguskanBanyak, mkSelesaiKode, mkPakaiKode, mkDenyutBaca, mkAkunUntuk, mkSesiBaru, mkCabutSesi,
+import {mkJedaTerakhir, mkKodeBaru, mkNaikCobaSemua, mkHanguskanBanyak, mkSelesaiKode, mkPakaiKode, mkDenyutBaca, mkAkunUntuk, mkSesiBaru, mkCabutSesi, mkLengkapi,
   mkRuangPeran, mkStafPerWa, mkLogMasuk, mkOrangDariWa, mkRelawanDariWa, mkPemirsaAda, mkPemirsaWaSet} from "./hak.js";   // semua SQL di hak.js (gerbang d1)
 import {sesiMasuk, tokenDari} from "./masuk_sesi.js";
 import * as K from "./masuk_konst.js";
@@ -119,7 +121,7 @@ async function periksaKode(env, req, url, kini) {
     ruang.push(e);
   }
   await mkLogMasuk(env, log, a.id, kini);
-  const r = json({ok: true, lengkap: a.setuju_pdp === 1, ruang: ruang.map(bersihRuang)});
+  const r = json({ok: true, lengkap: a.setuju_pdp > 0, ruang: ruang.map(bersihRuang)});
   for (const c of kuki) r.headers.append("set-cookie", c);
   return r;
 }
@@ -166,7 +168,7 @@ async function saluran(env, kini) {
 const saluranPublik = (env, req, url, kini, ctx) => cacheTepi(req, ctx, 15, async () => json(await saluran(env, kini)), true);
 async function saya(env, req, url, kini) {
   const s = await sesiMasuk(env, req, kini); if (!s) return gagal(401, "belum masuk");
-  return json({akun: {id: s.id, wa: samar(s.wa), nama: s.nama, prov: s.prov, kab: s.kab, lengkap: s.setuju_pdp === 1}, baru_kode: kini - s.kode_pada <= K.BARU_KODE, ruang: tandaiPilih((await cariRuang(env, s.wa)).ruang).map(bersihRuang), saluran: await saluran(env, kini)});
+  return json({akun: {id: s.id, wa: samar(s.wa), nama: s.nama, prov: s.prov, kab: s.kab, lengkap: s.setuju_pdp > 0}, baru_kode: kini - s.kode_pada <= K.BARU_KODE, ruang: tandaiPilih((await cariRuang(env, s.wa)).ruang).map(bersihRuang), saluran: await saluran(env, kini)});
 }
 async function keluar(env, req, url, kini) {
   const g = penjaga(req, url); if (g) return g;
@@ -181,6 +183,26 @@ async function keluar(env, req, url, kini) {
   const r = json({ok: true});
   for (const c of kuki) r.headers.append("set-cookie", c);
   return r;
+}
+
+/* ---------------- lengkapi profil akun umum (PM-08, ALUR A4): nama, wilayah, persetujuan pemrosesan data ---------------- */
+const teksPendek = (v, maks, nama) => {
+  if (typeof v !== "string") return {galat: nama + " wajib diisi"};
+  const r = bersihTeks(v.trim(), maks); if (r.galat) return {galat: nama + ": " + r.galat};
+  if (r.teks.length < 2 || /\[(?:tautan|nomor) dihapus\]/.test(r.teks)) return {galat: nama + " tidak sah (2 sampai " + maks + " huruf, tanpa tautan atau nomor)"};
+  return r;
+};
+async function lengkapi(env, req, url, kini) {
+  const g = penjaga(req, url); if (g) return g;
+  const ip = await batas(env, await ipHash(env, req), "masuk.lengkapi_ip", K.LAJU_IP_LENGKAPI, kini); if (ip) return ip;
+  const s = await sesiMasuk(env, req, kini); if (!s) return gagal(401, "belum masuk");
+  const b = await bacaBody(req, 1024); if (b.galat) return gagal(b.status || 400, b.galat);
+  if (b.o.setuju !== true) return gagal(400, "persetujuan pemrosesan data wajib dicentang");
+  const nama = teksPendek(b.o.nama, K.NAMA_MAKS, "nama"); if (nama.galat) return gagal(400, nama.galat);
+  const kab = teksPendek(b.o.kab, K.KAB_MAKS, "kabupaten atau kota"); if (kab.galat) return gagal(400, kab.galat);
+  if (typeof b.o.prov !== "string" || !PROV.has(b.o.prov)) return gagal(400, "provinsi tidak sah");
+  await mkLengkapi(env, s.id, nama.teks, b.o.prov, kab.teks, kini);
+  return json({ok: true, lengkap: true});
 }
 
 /* ---------------- pilih akun peran (ALUR A3 "Ganti ruang"): sesi satu akun, dihitung ulang dari nomor sesi ---------------- */
@@ -257,6 +279,7 @@ export const RUTE_MASUK = {
   "POST /api/masuk/periksa": tabelBelum(periksaKode),
   "GET /api/masuk/saya": tabelBelum(saya),
   "POST /api/masuk/sandi": tabelBelum(sandiStaf),
+  "POST /api/masuk/lengkapi": tabelBelum(lengkapi),
   "POST /api/masuk/pilih": tabelBelum(pilihAkun),
   "POST /api/masuk/pemirsa_wa": tabelBelum(pemirsaWa),   // bawaan rancangan `pemirsa-wa`; garis tengah tidak terbaca gerbang cakupan (regex [\\w/:])
   "GET /api/masuk/saluran": saluranPublik,   // tanpa sesi; tabel belum ada = wa false
