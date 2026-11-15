@@ -65,6 +65,21 @@
   for (const m of Object.keys(seksiPilih)) try { const k = localStorage.getItem("ops_seksi_" + m); if (seksiDaftar(m).some(x => x[0] === k)) seksiPilih[m] = k; } catch (e) {}
   if (typeof location !== "undefined" && location.hash === "#semai") seksiPilih.udara = "semai";   // hash seksi Peluang semai (DESIGN-SYSTEM semai-awan §1)
   const seksiKartu = (m, id) => seksiDaftar(m).find(x => x[3].includes(id))?.[0];
+  /* PB-17 sarana dan fasilitas lintas bencana: seksi muncul hanya bila registri menyalakan kemampuan.operasi untuk bencana selain karhutla (kini semuanya mati: tampilan karhutla tidak berubah) */
+  let pbBencana = [];
+  fetch("/bencana.json").then(r => r.ok ? r.json() : null).then(j => { pbBencana = (j?.bencana || []).filter(b => b.id !== "karhutla" && b.kemampuan?.operasi === true); if (!pbBencana.length) return;
+    SEKSI.udara[0][1].push(["sarana", "Sarana dan fasilitas", "base", []]); const nv = $("#opsLaporan .ops-nav-isi"); if (nv) nv.innerHTML = navSeksi(st._d || null); }).catch(() => {});
+  let pbMuat = null;
+  const muatPb = () => pbMuat ||= (() => { if (!document.querySelector('link[href^="/inti/pb_titik.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/inti/pb_titik.css?v=1"; document.head.append(l); } return window.PbTitik ? Promise.resolve() : muatSkrip("/inti/pb_titik.js?v=1"); })();
+  function pasangPb(host) {
+    if (host.dataset.siap) return; host.dataset.siap = "1";
+    muatPb().then(() => { if (!window.PbTitik) { host.dataset.siap = ""; return; }
+      const pil = document.createElement("div"), isi = document.createElement("div"); pil.className = "seg ops-kat"; pil.setAttribute("role", "group"); pil.setAttribute("aria-label", "Bencana"); isi.className = "pb-titik";
+      let aktif = null, nomor = 0; const buka = b => { pil.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.b === b.id))); const n = ++nomor;
+        requestAnimationFrame(() => setTimeout(() => { if (n !== nomor) return; aktif?.tutup(); aktif = window.PbTitik.pasang(isi, {bencana: b.id, sarana: b.kemampuan?.renlap?.sarana || []}); }, 0)); };
+      pbBencana.forEach(b => { const t = document.createElement("button"); t.type = "button"; t.dataset.b = b.id; t.innerHTML = lbl("peta", esc(b.nama)); t.addEventListener("click", () => buka(b)); pil.append(t); });
+      host.replaceChildren(...(pbBencana.length > 1 ? [pil] : []), isi); buka(pbBencana[0]); });
+  }
   function navSeksi(D) {
     const m = st.mode, u = U(), hit = {};
     if (D && m === "udara") { const ar = D.peta.armada || [], bs = (D.peta.base || []).map(b => infoBase(D, b)), tg = bs.reduce((t, x) => t + x.tg.length, 0);
@@ -91,7 +106,8 @@
     const m = st.mode, k = seksiPilih[m], x = seksiDaftar(m).find(z => z[0] === k) || seksiDaftar(m)[0];
     $("#opsIsi")?.querySelectorAll("details.ops-kartu[data-kartu]").forEach(el => { el.hidden = !x[3].includes(el.dataset.kartu); if (!el.hidden && !(el.dataset.kartu in ingatKartu)) el.open = true; });
     const r = $("#opsRingkas"); if (r) r.hidden = x[0] !== "ringkasan";
-    const sm = $("#smSeksi"), semai = x[0] === "semai", pr = $("#opsLaporan .ops-periode"); if (pr) pr.hidden = semai;   // Peluang semai tidak mengikuti pemilih tanggal
+    const pbS = $("#pbSeksi"), sar = x[0] === "sarana"; if (pbS) { pbS.hidden = !sar; if (sar) pasangPb(pbS); }
+    const sm = $("#smSeksi"), semai = x[0] === "semai", pr = $("#opsLaporan .ops-periode"); if (pr) pr.hidden = semai || sar;   // Peluang semai tidak mengikuti pemilih tanggal
     if (sm) { sm.hidden = !semai; if (semai) muatSemai().then(() => window.OpsSemai?.tampil(sm, {D: () => st._d})); }
     const j = $("#opsJudul"); if (j) j.innerHTML = `${lbl(x[2], "")}${x[1]}`;
     $("#opsLaporan .ops-nav-isi")?.querySelectorAll("[data-seksi]").forEach(b => b.setAttribute("aria-current", b.dataset.seksi === x[0] ? "page" : "false"));
@@ -339,7 +355,7 @@
     if (n !== nomor) return;
     const D = st._d = {...siapkan(d), ...s, pm: st.pm, label: labelPeriode(rg)};
     D.vs = vs?.ada ? {...vs, label: labelPeriode(rb), hari: D.hitung(vs.aksi)} : null;
-    el.innerHTML = st.mode === "udara" ? udara(D) + `<section id="smSeksi" class="ops-wadah sm" hidden></section>` : darat(D);
+    el.innerHTML = st.mode === "udara" ? udara(D) + `<section id="smSeksi" class="ops-wadah sm" hidden></section>` + (pbBencana.length ? `<section id="pbSeksi" class="ops-wadah" hidden></section>` : "") : darat(D);
     /* Ringkasan tinggal di wadah yang sama dengan tab dan pemilih periode (pemilik 11 Nov 2026 "disatuin dalam satu container") */
     const rk = [...el.querySelectorAll(":scope > .ops-tindak, :scope > .ops-rk")], slot = $("#opsRingkas"); if (slot) slot.replaceChildren(...rk);
     const nv = $("#opsLaporan .ops-nav-isi"); if (nv) nv.innerHTML = navSeksi(D);
