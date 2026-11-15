@@ -1,0 +1,18 @@
+// PB-36a/38a/40/42/44/46a: gerbang kamus tangga tindakan. Entri LAMA dibekukan; jenis baru wajib bersumber.
+import test from "node:test"; import assert from "node:assert/strict";
+import {BENCANA, tindakanUntuk} from "../../public/ews_tindakan.js";
+const LAMA = ["karhutla", "banjir", "longsor", "cuaca", "gempa", "tsunami", "rob"];
+test("tingkat hanya 1..3 dan tidak ada daftar kosong (server memakai length daftar)", () => {
+  for (const [id, b] of Object.entries(BENCANA)) for (const [t, d] of Object.entries(b.tindakan)) {
+    assert.ok([1, 2, 3].includes(+t), `${id} tingkat ${t}`); assert.ok(Array.isArray(d) && d.length, `${id} tingkat ${t} kosong`);
+  }
+});
+test("jenis baru: tiap butir punya rujukan paralel, tanpa 'aman', tanpa titik tengah", () => {
+  for (const [id, b] of Object.entries(BENCANA).filter(([id]) => !LAMA.includes(id))) for (const [t, d] of Object.entries(b.tindakan)) {
+    assert.equal(b.rujukan?.[t]?.length, d.length, `${id} tingkat ${t} butir tanpa rujukan`);
+    for (const k of d) { assert.doesNotMatch(k, /\baman\b/i); assert.doesNotMatch(k, / · /); }
+  }
+});
+test("tindakanUntuk jenis tak dikenal kosong; tsunami tingkat 1 jatuh ke tingkat terendah", () => {
+  assert.deepEqual(tindakanUntuk("pesisir", 2), []); assert.equal(tindakanUntuk("tsunami", 1), BENCANA.tsunami.tindakan[2]);
+});
