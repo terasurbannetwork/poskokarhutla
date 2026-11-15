@@ -144,5 +144,7 @@
   "0140_masuk_indeks_anggota.sql": "35d2615714aa011e85903bfd82d9db62de3635dda4ee17f0d252b6719aaec7ce",
   "0141_lifeline.sql": "8b3b19c7f1504969c9f788583fac1857a8ec1ddc81d39109e7f7633d5f685fb5",
   "0142_lifeline_indeks.sql": "c0f637117a772b1163ddcd16c99e0850030f0632a2ecfa68d43084deaa540a2a",
-  "0143_tiga_w.sql": "1b2c7f0d86fb95380ce6ffdbb9769244c1c6753aba8165afa53976a60fff4a9f"
+  "0143_tiga_w.sql": "1b2c7f0d86fb95380ce6ffdbb9769244c1c6753aba8165afa53976a60fff4a9f",
+  "0144_masuk_indeks_hapus.sql": "3c0f9ca41afd7cffc0aecc7b268957cb500fe988fe7a70919c02ddf982ed9810",
+  "0145_masuk_kode_akun.sql": "cee61316e8bfbc673acda165beed84ea0a1faed4e8c497470e53c37de955ce34"
 }

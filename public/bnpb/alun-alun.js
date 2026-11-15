@@ -54,6 +54,9 @@
   /* ---------- pil ---------- */
   const pilJenis = j => h("span", {class: "bn-pil " + j}, svg(j), JENIS[j]);
   const pilTeks = (kls, t, ik) => h("span", {class: "bn-pil " + kls}, ik ? svg(ik) : null, t);
+  const pilVer = () => pilTeks("terverifikasi", "Terverifikasi", "centang");
+  const labelLembaga = x => x.label ? h("span", {class: "al-lembaga", teks: x.label}) : null;
+  const CATATAN = "Kosongkan bila tidak ingin namamu tampil. Kiriman tetap bertanda Terverifikasi.";
   const wilayah = u => [u.kab, u.prov_nama || PROV[u.prov]].filter(Boolean).join(", ");
 
   /* ---------- filter ---------- */
@@ -78,12 +81,13 @@
   function baris(u) {
     const kanan = h("span", {class: "al-kanan"});
     if (u.resmi) kanan.append(pilTeks("resmi", "Resmi", "resmi"));
+    if (u.terverifikasi) kanan.append(pilVer());
     if (u.terjawab) kanan.append(pilTeks("terjawab", "Terjawab", "centang"));
     if (u.bantuan) kanan.append(pilTeks(u.bantuan, BANTUAN[u.bantuan], "jam"));
     for (const t of u.tautan || []) kanan.append(pilTeks("tautan", t.label, "teruskan"));   // status bantuan lanjutan (relawan/logistik), label dari server tanpa data pribadi
     const b = h("button", {class: "al-baris" + (u.sematan ? " al-sematan" : ""), type: "button", "data-id": u.id, "aria-current": String(u.id === S.aktif)},
       h("span", {class: "al-judul", teks: u.judul}), kanan,
-      h("span", {class: "al-meta"}, pilJenis(u.jenis), h("span", {teks: wilayah(u) || "Wilayah belum disebut"}), h("span", {teks: relatif(u.dibuat)}),
+      h("span", {class: "al-meta"}, pilJenis(u.jenis), labelLembaga(u), h("span", {teks: wilayah(u) || "Wilayah belum disebut"}), h("span", {teks: relatif(u.dibuat)}),
         h("span", {class: "al-angka", title: "Balasan"}, svg("balas"), angka(u.balasan)), h("span", {class: "al-angka", title: "Upvote"}, svg("naik"), angka(u.upvote))));
     return h("li", null, b);
   }
@@ -129,11 +133,12 @@
     const pemilik = !!kodeUtas(u.id), root = kotak();
     const kepala = h("div", {class: "al-kepala"}, pilJenis(u.jenis));
     if (u.resmi) kepala.append(pilTeks("resmi", "Resmi", "resmi"));
+    if (u.terverifikasi) kepala.append(pilVer());
     if (u.bantuan) kepala.append(pilTeks(u.bantuan, BANTUAN[u.bantuan], "jam"));
     if (u.teruskan_ke) kepala.append(pilTeks(u.teruskan_ke, TERUSKAN[u.teruskan_ke], "teruskan"));
     for (const t of u.tautan || []) kepala.append(pilTeks("tautan", t.label, "teruskan"));
     if (u.terjawab) kepala.append(pilTeks("terjawab", "Terjawab", "centang"));
-    const meta = h("div", {class: "al-meta"}, h("span", {teks: u.nama || "Warga"}), h("span", {teks: wilayah(u)}), h("span", {teks: relatif(u.dibuat)}));
+    const meta = h("div", {class: "al-meta"}, h("span", {teks: u.nama || "Warga"}), labelLembaga(u), h("span", {teks: wilayah(u)}), h("span", {teks: relatif(u.dibuat)}));
     const aksi = h("div", {class: "al-bar"}, tombolUp(u.id, u.upvote),
       h("button", {class: "al-ikonbtn", type: "button", "data-aksi": "lapor", "data-id": u.id, title: "Laporkan"}, svg("bendera"), "Laporkan"),
       h("button", {class: "al-ikonbtn", type: "button", "data-aksi": "bagikan", title: "Salin tautan", "aria-label": "Salin tautan"}, svg("bagikan")));
@@ -142,12 +147,13 @@
       const tombol = h("div", {class: "al-bar"}, tombolUp(b.id, b.upvote), h("button", {class: "al-ikonbtn", type: "button", "data-aksi": "lapor", "data-id": b.id, title: "Laporkan", "aria-label": "Laporkan balasan"}, svg("bendera")));
       if (pemilik && u.jenis !== "pengumuman") tombol.append(h("button", {class: "al-ikonbtn", type: "button", "data-aksi": "terjawab", "data-id": ya ? "" : b.id}, svg("centang"), ya ? "Cabut tanda terjawab" : "Tandai terjawab"));
       return h("li", {class: "al-balas" + (b.petugas ? " petugas" : "") + (ya ? " jawaban" : "")},
-        h("div", {class: "al-meta"}, b.petugas ? pilTeks("resmi", "Petugas", "resmi") : h("strong", {teks: b.nama || "Warga"}), ya ? pilTeks("terjawab", "Jawaban", "centang") : null, h("span", {teks: relatif(b.dibuat)})),
+        h("div", {class: "al-meta"}, b.petugas ? pilTeks("resmi", "Petugas", "resmi") : h("strong", {teks: b.nama || "Warga"}), b.terverifikasi ? pilVer() : null, labelLembaga(b), ya ? pilTeks("terjawab", "Jawaban", "centang") : null, h("span", {teks: relatif(b.dibuat)})),
         h("p", {teks: b.teks}), tombol);
     }));
     const form = h("form", {class: "al-formbalas", id: "formBalas", autocomplete: "off"},
       h("label", {class: "bn-isian"}, `Balasanmu (${angka(u.balasan)} balasan)`, h("textarea", {name: "teks", maxlength: "280", required: true})),
-      h("label", {class: "bn-isian"}, "Nama tampil (opsional)", h("input", {name: "nama", maxlength: "40"})),
+      h("label", {class: "bn-isian"}, "Nama tampil (opsional)", h("input", {name: "nama", maxlength: "40", value: S.nama || null})),
+      S.masuk ? h("p", {class: "al-sebagai", teks: CATATAN}) : null,
       h("p", {class: "bn-pesan", id: "balasPesan", role: "status"}), h("div", null, h("button", {class: "bn-tombol", type: "submit"}, "Kirim balasan")));
     root.replaceChildren(h("button", {class: "bn-tombol sekunder al-kembali", type: "button", "data-aksi": "tutup"}, svg("kembali"), "Kembali"), kepala, h("h2", {teks: u.judul}), meta,
       h("div", {class: "al-teks", teks: u.teks}), aksi, daftar, form);
@@ -189,7 +195,7 @@
 
   /* ---------- tulis utas ---------- */
   let lokasi = null;
-  $("tulisBuka").addEventListener("click", () => { pesan($("tulisPesan"), ""); $("dlgTulis").showModal(); });
+  $("tulisBuka").addEventListener("click", () => { pesan($("tulisPesan"), ""); $("tSebagai").hidden = !S.masuk; $("tSebagai").textContent = S.masuk ? CATATAN : ""; if (S.masuk) $("tNama").querySelector("input").value = S.nama; $("dlgTulis").showModal(); });
   $("tulisBatal").addEventListener("click", () => $("dlgTulis").close());
   $("lokasiPakai").addEventListener("click", () => {
     if (!navigator.geolocation) { $("lokasiInfo").textContent = "Peramban ini tidak bisa membaca lokasi."; return; }
@@ -209,12 +215,23 @@
     await muatDaftar(true); bukaRincian(r.j.id);
   });
 
+  /* ---------- akun (opsional: tamu tetap bisa membaca dan menulis) ---------- */
+  async function muatAkun() {
+    try {
+      const r = await api("GET", "/api/masuk/saya?lunak=1"), w = $("akunKepala");
+      if (!r.ok) return;
+      if (r.j.akun) { S.masuk = true; S.nama = (r.j.akun.nama || "").slice(0, 40); w.replaceChildren(h("a", {href: "/masuk", teks: r.j.akun.nama || "Akun saya"})); }
+      else if (r.j.masuk === false) w.replaceChildren(h("a", {href: "/masuk?ke=%2Falun-alun", teks: "Masuk"}));
+    } catch (e) {}
+  }
+
   /* ---------- mulai ---------- */
   async function mulai() {
+    const akun = muatAkun();
     bangunFilter();
     try { const b = await (await fetch("/bencana.json")).json(); for (const x of b.bencana) if (x.status !== "mati") BENCANA[x.id] = x.nama; } catch (e) {}
     isiPilihan($("fBencana"), BENCANA, "Semua bencana"); isiPilihan($("tBencana"), BENCANA);
-    await muatDaftar(true);
+    await muatDaftar(true); await akun;
     const m = location.hash.match(/^#u=([0-9a-f]{16})$/); if (m) bukaRincian(m[1]);
   }
   mulai();

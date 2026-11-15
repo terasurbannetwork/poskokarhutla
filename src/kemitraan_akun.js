@@ -10,7 +10,7 @@
 import {json, gagal, acak, sha, bacaBody, bacaBytes, normalWA, turnstileOK, cacheTepi} from "./worker.js";
 import {tx, num, tglSah, RE_EMAIL} from "./posko.js";
 import {laju, lajuIP, kodeBaru} from "./bnpb.js";
-import {mkSesiPeran, mkCabutSesiPeran} from "./hak.js";
+import {sandiPeranTulis, mkSesiPeran, mkCabutSesiPeran} from "./hak.js";
 import {tandaKampus} from "./masuk_tanda.js";
 import {hashSandi} from "./pendataan.js";
 import {KEAHLIAN, PROV, cekInstitusi, sisipInstitusi, statusMou} from "./relawan.js";
@@ -207,6 +207,14 @@ async function aturSandi(env, req, url, kini) {
   await env.DB.prepare("DELETE FROM km_sesi WHERE akun_id = ?").bind(a.id).run();   // sandi baru mematikan sesi lama
   return json({ok: true});
 }
+/* Satu Pintu Masuk (PM-13): atur sandi sesudah kode WA; aturan modul ini (PBKDF2 milik pendataan, 10 sampai 100 huruf; penanda kunci gagal dan tautan atur dikosongkan). {ok} atau {galat}.
+   Diekspor sebagai `aturSandi` (nama lokal aturSandi sudah dipakai rute tautan atur sandi). */
+async function aturSandiKode(env, akunId, sandi, kini) {
+  if (typeof sandi !== "string" || sandi.length < 10 || sandi.length > 100) return {galat: "sandi minimal 10 huruf, maksimal 100"};
+  const garam = acak(16);
+  return await sandiPeranTulis(env, "kemitraan", akunId, garam, await hashSandi(garam, sandi), kini) ? {ok: true} : {galat: "akun tidak aktif"};
+}
+export {aturSandiKode as aturSandi};
 /* Satu Pintu Masuk (PM-06): lihat src/instansi.js sesiUntuk. Cookie kampus SameSite=Strict, 12 jam (milik modul ini). */
 export async function sesiUntuk(env, akunId, kini) {
   const token = acak(32);

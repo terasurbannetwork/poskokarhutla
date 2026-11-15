@@ -199,7 +199,9 @@ uji("kirim: email hanya saat admin menekan; satu email gabungan ke EMAIL_TO; tan
 uji("dummy: lahir dari rantai sumber dummy modul lain, tiap jenis terisi, tidak ikut angka publik/asli, tidak pernah dikirim, hapus bersih", async () => {
   const W = await siapkan("uji-pengingat-dummy", {ikat: EMAIL, luar, asetKu: asetDengan(kW)});
   assert.equal((await W.adm("POST", "/api/pengingat/dummy", {aksi: "isi"})).s, 409, "sumber dummy belum ada: jujur, tidak mengarang");
-  for (const m of ["relawan", "riset", "meja", "alun", "logbook"]) { const r = await W.adm("POST", `/api/${m}/dummy`, {aksi: "isi"}); assert.ok(r.s === 200 || r.s === 201, `${m}: ${r.t}`); }
+  for (const m of ["relawan", "riset", "meja", "logbook"]) { const r = await W.adm("POST", `/api/${m}/dummy`, {aksi: "isi"}); assert.ok(r.s === 200 || r.s === 201, `${m}: ${r.t}`); }
+  /* Alun-alun tidak punya rute contoh lagi (PM-15): baris sumbernya disiapkan langsung di D1, utas butuh_bantuan terbuka berumur 30 jam */
+  await W.DB.prepare("INSERT INTO alun_utas (id, jenis, judul, teks, bencana, prov, kab, pemilik_sha, bantuan, dibuat, dummy) VALUES (?, 'butuh_bantuan', 'Butuh perahu karet (sumber uji)', 'Kami butuh perahu karet.', 'banjir', '33', 'Kabupaten Demak', ?, 'terbuka', ?, 1)").bind("c".repeat(16), "0".repeat(64), Date.now() - 30 * JAM).run();
   const a = await W.api("POST", "/api/alun", {jenis: "butuh_bantuan", judul: "Perahu karet asli", teks: "Kami butuh perahu karet.", bencana: "banjir", prov: "33", kab: "Kabupaten Demak"}, {"cf-connecting-ip": "10.7.2.1"});
   await W.DB.prepare("UPDATE alun_utas SET dibuat = ? WHERE id = ?").bind(Date.now() - 30 * JAM, a.j.id).run();
   assert.equal((await W.adm("POST", "/api/pengingat/admin/periksa", {})).j.dibuat, 1, "satu pengingat asli");

@@ -39,7 +39,7 @@ Semua perilaku di sini tinggal di luar TypeScript (D1, rute, cookie, batas laju)
 | U-31 | Hapus akun umum membuang `mk_akun`, `mk_sesi`, `mk_anggota`, `alun_penulis`; kiriman tetap ada tanpa nama | PM-14 |
 | U-32 | Anggota yang 180 hari tidak masuk diperiksa ulang; tidak lolos menjadi menunggu | PM-14 |
 | U-33 | Kiriman alun-alun dari akun yang masuk menulis `alun_penulis`; tamu tetap bisa menulis tanpa baris itu; rute contoh alun-alun sudah tidak ada | PM-15 |
-| U-34 | Kode lewat email: jawaban sama untuk semua alamat; email hanya terkirim bila alamat sama dengan email akun bernomor itu | PM-16 |
+| U-34 | Kode lewat email: jawaban sama untuk semua alamat; email hanya terkirim bila alamat sama dengan email akun bernomor itu; kode email hanya membuka akun yang emailnya cocok, tanpa `sesi_masuk` dan tanpa akun lain bernomor sama | PM-16 |
 | U-35 | Nomor di `mk_pemirsa_wa` milik pemirsa aktif mendapat `sesi_pemirsa` dan hanya tab yang diizinkan; pemirsa yang diputus tidak; hanya Super Admin yang bisa mengisi nomor pemirsa | PM-06 |
 
 ## 2. Gerbang (`tests/agen/gerbang-pintu-masuk.test.mjs`)
@@ -52,7 +52,8 @@ Semua perilaku di sini tinggal di luar TypeScript (D1, rute, cookie, batas laju)
 | G-4 | `PUBLIK_TANPA_SESI` hanya bertambah jalur yang tertulis di KEPUTUSAN K8 (`/masuk`, `/alun-alun`); tiap entri baru membawa alasan |
 | G-5 | Berkas uji tidak memuat nomor WA selain awalan `62800` |
 | G-6 | Semua ambang ALGORITMA hanya ada di `src/masuk_konst.js` |
-| G-7 | `src/masuk*.js` tidak menulis ke `staf`, `instansi_akun`, atau tabel sesi modul lain |
+| G-7 | `src/masuk*.js` tidak menulis ke tabel akun atau sesi modul lain (`staf`, `instansi_akun`, `pdt_akun`, `km_akun`, `orang`, `relawan`, dan tabel sesinya) |
+| G-8 | Fungsi `src/hak.js` yang dipakai pintu masuk tidak menulis tabel akun modul lain; satu fungsi berizin (`sandiPeranTulis`) hanya boleh mengubah kolom sandi akun aktif, tidak pernah `status` |
 
 Tiap gerbang punya uji mode gagal (contoh pelanggaran yang benar-benar ditolak).
 

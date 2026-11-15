@@ -8,7 +8,7 @@ import {json, gagal, acak, sha, bacaBody, bacaBytes, normalWA, ipHash, turnstile
 import {tx, superOK, RE_EMAIL} from "./posko.js";
 import {sandiAcak} from "./instansi.js";
 import {laju, lajuIP, halamanBnpbPublik} from "./bnpb.js";
-import {mkSesiPeran, mkCabutSesiPeran} from "./hak.js";
+import {sandiPeranTulis, mkSesiPeran, mkCabutSesiPeran} from "./hak.js";
 import {tandaPendataan} from "./masuk_tanda.js";
 import {halamanAdmin} from "./statistik.js";
 import {halamanBnpb} from "./admin_halaman.js";
@@ -109,6 +109,12 @@ async function masuk(env, req, kini) {
   await env.DB.batch([env.DB.prepare("INSERT INTO pdt_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, ?, ?, ?)").bind(await sha(token), a.id, kini, kini + SESI_UMUR),
     env.DB.prepare("DELETE FROM pdt_sesi WHERE akun_id = ? AND kedaluwarsa <= ?").bind(a.id, kini)]);
   const r = json({akun: akunRingkas(a)}); r.headers.append("set-cookie", cookieSet(token, SESI_UMUR / 1000)); return r;
+}
+/* Satu Pintu Masuk (PM-13): atur sandi sesudah kode WA; aturan modul ini (PBKDF2, 10 sampai 100 huruf). Semua sesi akun dicabut. {ok} atau {galat}. */
+export async function aturSandi(env, akunId, sandi, kini) {
+  if (typeof sandi !== "string" || sandi.length < 10 || sandi.length > 100) return {galat: "sandi minimal 10 huruf, maksimal 100"};
+  const n = await sandiBaru(sandi);
+  return await sandiPeranTulis(env, "pendataan", akunId, n.garam, n.sandi_hash, kini) ? {ok: true} : {galat: "akun tidak aktif"};
 }
 /* Satu Pintu Masuk (PM-06): lihat src/instansi.js sesiUntuk */
 export async function sesiUntuk(env, akunId, kini) {

@@ -24,6 +24,10 @@
 .ud-tabel thead th{background:var(--head-bg);color:var(--on-head);font-size:.75rem;font-weight:700;padding:12px;text-align:center;white-space:nowrap}
 .ud-tabel td{padding:8px 12px;border-top:1px solid var(--line);vertical-align:middle;overflow-wrap:anywhere}
 .ud-tanda,.ud-aksi{display:flex;flex-wrap:wrap;gap:6px}
+.ud-konf:empty{display:none}
+.ud-konf-isi{padding:6px 0}
+.ud-konf-isi .ud-ket{padding:0 0 8px}
+.ud-ajak{padding:16px 22px}.ud-ajak a{color:var(--navy2);font-weight:700;display:inline-flex;align-items:center;min-height:44px}
 .ud-btn{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;border:0;background:none;color:var(--ink);cursor:pointer;touch-action:manipulation}
 .ud-btn:hover{color:var(--navy2)}.ud-btn:active{transform:scale(.95)}
 .ud-pil{display:inline-flex;align-items:center;font-size:.6875rem;font-weight:800;padding:3px 9px;border-radius:999px;white-space:nowrap;background:color-mix(in srgb,var(--pil) 15%,transparent);color:color-mix(in srgb,var(--pil) 78%,var(--ink))}
@@ -32,6 +36,7 @@
 @media (max-width:480px){
   .ud-form{grid-template-columns:1fr;padding:14px 16px 8px}
   .ud-fl,.ud-form .ud-fl:nth-of-type(n),.ud-form #ud-wa,.ud-form #ud-nama,.ud-form .ud-utama{grid-column:1;grid-row:auto}
+  .ud-ajak{padding:12px 16px}
   .ud-pesan,.ud-sub,.ud-ket{padding-left:16px;padding-right:16px}
   .ud-tabel thead{display:none}
   .ud-tabel,.ud-tabel tbody,.ud-tabel tr,.ud-tabel td{display:block}

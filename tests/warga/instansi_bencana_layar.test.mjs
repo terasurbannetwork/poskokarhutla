@@ -70,6 +70,8 @@ else {
       const m = u.pathname.match(/^\/api\/instansi\/tugas\/(\w+)$/); if (m) { const t = daftar.find(x => x.id === m[1]); return t ? j({tugas: t, kartu: t.kartu, isian: [], media: [], gudang_terdekat: []}) : j({}, 404); }
       if (u.pathname === "/api/instansi/push/status") return j({tersedia: false});
       if (u.pathname === "/api/titik") return j({titik: []});
+      if (u.pathname === "/api/masuk/saya") return j({masuk: false});   // pemeriksaan sesi_masuk kartu Undang rekan (?lunak=1)
+      if (u.pathname === "/api/instansi/siklus/kejadian/tautan") return j({tautan: {}});   // tanda kejadian KP-07
       if (u.pathname.startsWith("/api/instansi/penugasan/")) return j({kini: Date.now(), penugasan: []});
       if (u.pathname.startsWith("/api/")) return j({galat: "tidak ada di fixture"}, 404);
       const f = path.join(PUB, u.pathname);

@@ -12,6 +12,9 @@ Semua rujukan berkas dan baris diukur 15 Nov 2026; cek ulang sebelum dipakai.
 | `src/masuk_konst.js` (baru) | semua ambang ALGORITMA | `warga-api` |
 | `src/masuk_undang.js` (baru) | anggota, undangan berantai, papan aktivasi | `warga-api` |
 | `src/masuk_tanda.js` (baru) | tanda antrean tinjau (`cocok_kontak`, `nomor_terbukti`, `diundang_staf`) untuk modul instansi, pendataan, kampus | `warga-api` |
+| `migrations/0144_masuk_indeks_hapus.sql` | indeks `alun_penulis (mk_id)` dan `km_sesi (akun_id)` untuk hapus akun dan cabut sesi | `warga-api` |
+| `migrations/0145_masuk_kode_akun.sql` | tabel `mk_kode_akun (kode_id, tabel, akun_id)`: ikatan kode email ke akun (D21) | `warga-api` |
+| `public/inti/undang.js`, `public/inti/undang.css` | kartu "Undang rekan", dipasang di `/instansi` | `inti-layar` |
 | `migrations/0140_masuk_indeks_anggota.sql` | indeks `mk_anggota (status, dibuat)` dan `mk_undang (oleh_tabel, oleh_id, dibuat)` | `warga-api` |
 | `migrations/0133_masuk.sql` | tabel `mk_*`, `alun_penulis`, indeks `wa` | `warga-api` |
 | `public/masuk.html`, `public/masuk.js`, `public/masuk.css` (baru) | layar L1 sampai L5 | sekarang jatuh ke `layar-peta` menurut `ilmu.mjs pemilik`; PM-01 menambah entri roster supaya menjadi milik `warga-api` seperti `public/admin/masuk.html` |
@@ -161,8 +164,9 @@ Catatan skema yang sudah dicek:
 | `GET /api/masuk/saya` | sesi akun umum | profil dan daftar ruang |
 | `POST /api/masuk/lengkapi` | sesi akun umum | nama, wilayah, persetujuan |
 | `POST /api/masuk/mohon` | sesi akun umum | permohonan anggota |
-| `POST /api/masuk/email`, `/email/periksa` | publik atau sesi | kode ke email (ALGORITMA 2.4) |
-| `POST /api/masuk/atur-sandi` | sesi akun umum, `kode_pada` 15 menit | sandi baru akun non-staf |
+| `POST /api/masuk/email`, `/email/periksa` | sesi akun umum | bukti anggota lewat email berdomain terpetakan |
+| `POST /api/masuk/kode_email` | publik, Turnstile, laju | kode masuk cadangan lewat email (ALGORITMA 2.4, D21) |
+| `POST /api/masuk/sandi_baru` | sesi akun umum, `kode_pada` 15 menit | sandi baru akun non-staf (D23) |
 | `POST /api/masuk/hapus` | sesi akun umum | hapus akun umum sendiri |
 | `POST /api/masuk/keluar` | sesi | cabut semua sesi peramban ini |
 | `GET /api/masuk/undang`, `POST`, `POST /api/masuk/undang/cabut/:id` | anggota aktif, pemilik akun, staf | undangan (router hanya mengenal `:id` di ujung jalur) |

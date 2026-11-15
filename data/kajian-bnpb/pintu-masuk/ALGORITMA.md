@@ -53,6 +53,8 @@ Pesan galat untuk kode salah, habis waktu, habis coba, dan nomor tanpa kode sama
 
 Layar menawarkan email kepada semua orang dan meminta alamatnya diketik. Jawaban selalu sama. Email hanya benar-benar dikirim bila alamat itu sama persis dengan kolom `email` sebuah akun peran aktif yang `wa`-nya sama dengan nomor yang diketik. Aturan kode sama dengan 2.1 dan 2.2.
 
+Kode dari email diikat ke akun yang alamatnya cocok (`mk_kode_akun`). Saat kode itu sah, hanya sesi akun tersebut yang terbit: tanpa akun umum, tanpa `sesi_masuk`, tanpa pemrosesan undangan atau bukti ulang (KEPUTUSAN D21). Staf lewat email tidak mendapat sesi dan diarahkan ke pintu sandi.
+
 ## 3. Menentukan akun yang boleh dimasuki
 
 Masukan: `nomor` yang kodenya sah. Keluaran: daftar `{tabel, akun_id, ruang, butuh_sandi}`. Aturan tunggal: **akun tujuan harus terikat langsung ke nomor yang baru dibuktikan**. Tidak ada pemetaan tidak langsung; `orang_akun` tidak dipakai untuk menerbitkan sesi.
@@ -126,7 +128,7 @@ Anggota yang diaktifkan undangan mencatat `oleh` pengundangnya. Mencabut pengund
 | Kampus | 12 jam | pembuat sesi kemitraan |
 | Staf | 30 hari | `cobaMasukStaf` sesudah sandi |
 
-"Baru masuk dengan kode" = `mk_sesi.kode_pada` dalam 15 menit terakhir; syarat untuk atur sandi. Atur sandi berlaku untuk `instansi_akun` (hanya pemilik nomor akun, bukan anggota), `pdt_akun`, dan `km_akun`; tidak untuk `staf`.
+"Baru masuk dengan kode" = `mk_sesi.kode_pada` dalam 15 menit terakhir; syarat untuk atur sandi. Atur sandi berlaku untuk `instansi_akun` (hanya pemilik nomor akun, bukan anggota; sandinya dibuat acak oleh server dan tampil sekali), `pdt_akun`, dan `km_akun` (sandi pilihan sendiri); tidak untuk `staf`. Hanya akun aktif. Mengatur sandi mencabut semua sesi akun itu.
 
 ## 7. Bukti ulang
 

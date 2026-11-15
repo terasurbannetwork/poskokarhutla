@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/bnpb/alun-alun.css?v=4" rel="stylesheet">
+<link href="/bnpb/alun-alun.css?v=5" rel="stylesheet">
 </head>
 <body>
 <header class="ad-top">
@@ -19,7 +19,7 @@
 <main class="bn-wrap">
   <div class="bn-judul">
     <h1>Alun-alun</h1>
-    <div class="bn-aksi"><button class="bn-tombol" id="tulisBuka" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Tulis utas</button></div>
+    <div class="bn-aksi"><span id="akunKepala" class="al-akun"></span><button class="bn-tombol" id="tulisBuka" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Tulis utas</button></div>
   </div>
   <div class="al-tata">
     <aside class="al-saring" aria-label="Saring utas">
@@ -47,8 +47,9 @@
       <label class="bn-isian">Bencana<select name="bencana" id="tBencana" required></select></label>
       <label class="bn-isian">Provinsi<select name="prov" id="tProv" required></select></label>
       <label class="bn-isian">Kabupaten atau kota (opsional)<input name="kab" maxlength="60"></label>
-      <label class="bn-isian">Nama tampil (opsional)<input name="nama" maxlength="40"></label>
+      <label class="bn-isian" id="tNama">Nama tampil (opsional)<input name="nama" maxlength="40"></label>
     </div>
+    <p class="al-sebagai" id="tSebagai" hidden></p>
     <div class="al-lokasi"><button class="bn-tombol sekunder" id="lokasiPakai" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Pakai lokasiku (kira-kira)</button><span id="lokasiInfo" class="bn-label"></span></div>
     <p id="tulisPesan" class="bn-pesan" role="status"></p>
     <div class="al-aksi-form"><button class="bn-tombol sekunder" id="tulisBatal" type="button">Batal</button><button class="bn-tombol" id="tulisKirim" type="submit">Kirim</button></div>

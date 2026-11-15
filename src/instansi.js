@@ -23,7 +23,7 @@ import {kabarLevel3} from "./kabar.js";
 import {modAtauStaf, dalamWilayahStaf, dariStaf, stafNyata, P_VALIDASI, P_KONSESI} from "./staf.js";
 import {bersihkanPenugasan, dummyPenugasan, hapusDummyPenugasan, PERAN} from "./penugasan.js";
 import {tandaInstansi} from "./masuk_tanda.js";
-import {mkSesiPeran, mkCabutSesiPeran, mkCabutSesiAkun, tugasBencanaPer, tugasBencanaAda, stmtTugasBencanaBaru, tanpaTabelPb, tugasBukaJenis, tugasTungguVerifJenis, tugasRedaCukupJenis, stmtRedaTugas} from "./hak.js";
+import {sandiPeranTulis, mkSesiPeran, mkCabutSesiPeran, mkCabutSesiAkun, tugasBencanaPer, tugasBencanaAda, stmtTugasBencanaBaru, tanpaTabelPb, tugasBukaJenis, tugasTungguVerifJenis, tugasRedaCukupJenis, stmtRedaTugas} from "./hak.js";
 import {BENCANA, BENCANA_X, DAFTAR_BENCANA, bencanaId, labelBencana, tutupBencana, bacaBencana, butirReda, pasKartuBencana} from "./tugas_bencana.js";
 import {bacaUji, ujiAda, GALAT_BELUM, stmtUji, stmtUjiTugasBaru} from "./uji_lapangan.js";
 
@@ -157,6 +157,12 @@ async function gantiSandi(env, req, kini) {
     env.DB.prepare("DELETE FROM instansi_sesi WHERE akun_id = ? AND token_sha != ?").bind(a.id, await sha(m[1])), stmtJejak(env, "pengguna", a.id, "ganti_sandi", null, kini)]);
   await env.DB.prepare("DELETE FROM push_langganan WHERE akun_id = ?").bind(a.id).run().catch(() => {});   // sesi lain dicabut: perangkat lain tidak boleh tetap menerima push (migrasi 0040 belum ada = dilewati)
   return json({sandi: s.sandi});   // tampil sekali; tidak disimpan, tidak di-log
+}
+/* Satu Pintu Masuk (PM-13): atur sandi sesudah kode WA. Aturan modul ini tetap: sandi acak dari server (bukan pilihan pengguna), tampil sekali, semua sesi akun dicabut.
+   Argumen `sandi` diabaikan (ada demi bentuk bersama ketiga modul). Kembalian {ok, sandi} atau {galat}. */
+export async function aturSandi(env, akunId, sandi, kini) {
+  const s = await sandiBaru();
+  return await sandiPeranTulis(env, "instansi", akunId, s.garam, s.sandi_sha, kini) ? {ok: true, sandi: s.sandi} : {galat: "akun tidak aktif"};
 }
 /* Satu Pintu Masuk (PM-06): sesi tanpa sandi untuk akun yang nomornya baru dibuktikan; larik set-cookie (dua Path) atau null bila akun tidak aktif. Aturan umur dan cookie milik modul ini. */
 export async function sesiUntuk(env, akunId, kini) {

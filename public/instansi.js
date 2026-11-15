@@ -73,11 +73,26 @@
     window.InstansiSaya = saya;   // dibaca instansi_laporan.js (satu panggilan /saya saja)
     for (const v of ["vMasuk", "vVerif", "vUtama", "vGanti"]) $(v).hidden = true;
     $("keluar").hidden = !saya; $("akun").hidden = !saya;
-    if (!saya) { $("vMasuk").hidden = false; return; }
+    if (!saya) { undangAkun = null; $("vMasuk").hidden = false; return; }
     $("akun").textContent = saya.akun.wilayah;
     if (saya.akun.status === "aktif" && saya.akun.wajib_ganti) { $("vGanti").hidden = false; return; }
-    if (saya.akun.status === "aktif") { $("vUtama").hidden = false; siapIsi(); gantiTab(tab, true); pindahLama().finally(() => { prosesAntrean(); muatDraf(); }); return; }
+    if (saya.akun.status === "aktif") { $("vUtama").hidden = false; pasangUndang(); siapIsi(); gantiTab(tab, true); pindahLama().finally(() => { prosesAntrean(); muatDraf(); }); return; }
     $("vVerif").hidden = false; isiVerif();
+  }
+  /* Pintu Masuk PM-11: kartu Undang rekan (public/inti/undang.js). API /api/masuk/* memakai cookie sesi_masuk, bukan sesi instansi: orang yang masuk dengan sandi lama
+     tanpa sesi_masuk diajak masuk dengan nomor WhatsApp (satu kalimat), bukan diberi galat 401. Hanya akun aktif; dipasang sekali per akun. */
+  let undangAkun = null;
+  async function pasangUndang() {
+    const w = $("undangRekan"), id = saya?.akun?.id; if (!w || !id || undangAkun === id) return;
+    undangAkun = id;
+    let masuk = false, putus = "";
+    try { const r = await fetch("/api/masuk/saya?lunak=1", {credentials: "same-origin"}); if (r.ok) masuk = (await r.json()).masuk !== false; else putus = "Kartu undang rekan belum bisa dimuat."; } catch (e) { putus = "Tidak ada koneksi."; }
+    if (saya?.akun?.id !== id) return;   // akun berganti selama menunggu
+    w.replaceChildren(); w.hidden = false;
+    if (putus) { undangAkun = null; const p = document.createElement("p"); p.className = "lp-kecil"; p.textContent = putus; w.append(p); return; }   // dicoba lagi pada tampil() berikutnya, bukan ajakan masuk
+    if (masuk && window.UndangRekan) return window.UndangRekan.pasang(w, {akunId: id});
+    const a = document.createElement("a"); a.href = "/masuk?ke=%2Finstansi"; a.textContent = "Masuk dengan nomor WhatsApp";
+    const p = document.createElement("p"); p.className = "lp-kecil"; p.append(a, " untuk mengundang rekan."); w.append(p);
   }
   /* wadah tab dibuat SEKALI dan hanya disembunyikan/ditampilkan: pindah tab, muat ulang, atau kirim tidak menghancurkan peta maupun isian form yang belum terkirim */
   function siapIsi() { if (!$("tabTugas")) $("isi").innerHTML = `<div id="tabTugas"></div><div id="tabKontak" hidden></div>`; }

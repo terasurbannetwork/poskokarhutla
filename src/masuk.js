@@ -7,17 +7,17 @@
 import {json, gagal, sha, hex, acak, bacaBody, bersihTeks, normalWA, turnstileOK, ipHash, cacheTepi} from "./worker.js";
 import {PROV} from "./bangunan.js";
 import {laju} from "./bnpb.js";
-import {emailAktif} from "./ews.js";
-import {superOK} from "./posko.js";
-import {sesiUntuk as sesiInstansi, cabutSesi as cabutInstansi} from "./instansi.js";
-import {sesiUntuk as sesiPendataan, cabutSesi as cabutPendataan} from "./pendataan.js";
-import {sesiUntuk as sesiKampus, cabutSesi as cabutKampus} from "./kemitraan_akun.js";
+import {emailAktif, kirimEmail} from "./ews.js";
+import {superOK, RE_EMAIL} from "./posko.js";
+import {sesiUntuk as sesiInstansi, cabutSesi as cabutInstansi, aturSandi as sandiInstansi} from "./instansi.js";
+import {sesiUntuk as sesiPendataan, cabutSesi as cabutPendataan, aturSandi as sandiPendataan} from "./pendataan.js";
+import {sesiUntuk as sesiKampus, cabutSesi as cabutKampus, aturSandi as sandiKampus} from "./kemitraan_akun.js";
 import {sesiUntuk as sesiPemirsa, cabutSesi as cabutPemirsa, arahPemirsa} from "./pemirsa.js";
 import {cabutSesi as cabutStaf, cobaMasukStaf, hanyaDirektori} from "./staf.js";
 import {STATUS_RELAWAN_ARR} from "./lapangan.js";
 import {mkJedaTerakhir, mkKodeBaru, mkNaikCobaSemua, mkHanguskanBanyak, mkSelesaiKode, mkPakaiKode, mkDenyutBaca, mkAkunUntuk, mkSesiBaru, mkCabutSesi, mkLengkapi,
   mkRuangPeran, mkStafPerWa, mkLogMasuk, mkOrangDariWa, mkRelawanDariWa, mkPemirsaAda, mkPemirsaWaSet,
-  mkUndangTerima} from "./hak.js";   // semua SQL di hak.js (gerbang d1)
+  mkUndangTerima, mkAkunSaya, mkHapusAkun, mkAnggotaLama, mkAnggotaTurun, mkKontakCocok, mkEmailAkunCocok, mkKodeEmailAkun, mkKodeAkunAmbil, mkHanguskan, mkAnggotaMenungguMilik} from "./hak.js";   // semua SQL di hak.js (gerbang d1)
 import {sesiMasuk, tokenDari} from "./masuk_sesi.js";
 import * as K from "./masuk_konst.js";
 
@@ -111,10 +111,13 @@ async function periksaKode(env, req, url, kini) {
   const kode = typeof b.o.kode === "string" ? b.o.kode.trim() : "";
   if (!reKode.test(kode)) return galatKode();
   const nsha = await hmac(env.MASUK_KUNCI, "wa|" + nomor);
-  if (!await cocokKode(env, nsha, await hmac(env.MASUK_KUNCI, nomor + "|" + kode), kini, K.KODE_AKTIF_MAKS)) return galatKode();
+  const menang = await cocokKode(env, nsha, await hmac(env.MASUK_KUNCI, nomor + "|" + kode), kini, K.KODE_AKTIF_MAKS);
+  if (!menang) return galatKode();
+  if (menang.saluran === "email") return periksaEmail(env, menang, nomor, kini);   // D21: email hanya membuka akun yang emailnya cocok
   /* nomor yang kodenya sah tetapi belum punya akun: akun umum kosong (nama, wilayah, persetujuan dilengkapi PM-08) */
   const a = await mkAkunUntuk(env, acak(8), nomor, kini);
   if (a.status !== "aktif") return gagal(403, "akun ini diblokir");
+  await buktiUlang(env, a.id, nomor, kini);   // PM-14: anggota yang lama tidak masuk diperiksa ulang SEBELUM undangan baru dihitung
   await buktiNomor(env, a.id, nomor, kini);   // PM-09: undangan berlaku dan kontak bnpb dipakai SEBELUM daftar ruang dihitung
   const token = acak(32);
   await mkSesiBaru(env, await sha(token), a.id, kini, kini + K.SESI_UMUR_UMUM);
@@ -128,7 +131,24 @@ async function periksaKode(env, req, url, kini) {
     ruang.push(e);
   }
   await mkLogMasuk(env, log, a.id, kini);
-  const r = json({ok: true, lengkap: a.setuju_pdp > 0, ruang: ruang.map(bersihRuang)});
+  const r = json({ok: true, lengkap: a.setuju_pdp > 0, ruang: ruang.map(bersihRuang), menunggu: await menungguMilik(env, a.id)});
+  for (const c of kuki) r.headers.append("set-cookie", c);
+  return r;
+}
+
+/* PM-16 (D21): kode lewat email hanya membuka akun yang emailnya cocok saat kode diminta (mk_kode_akun), bukan semua peran bernomor itu. Tidak membuat atau menemukan mk_akun, tidak menerbitkan
+   sesi_masuk, tidak memproses undangan atau bukti ulang, tidak mencatat mk_masuk_log (tanpa mk_id). Staf tidak mendapat sesi: diarahkan ke pintu sandi lama. Satu akun per modul (satu cookie per modul).
+   Akibatnya lewat email orang tidak bisa memilih akun lain, mengundang, mengatur sandi, atau menghapus akun. */
+async function periksaEmail(env, menang, nomor, kini) {
+  const ada = new Set((await mkKodeAkunAmbil(env, menang.id)).map(x => x.tabel + ":" + x.akun_id)), kuki = [], ruang = [], dipakai = new Set();
+  for (const e of (await cariRuang(env, nomor)).ruang) {
+    if (e.jenis === "staf") { if (ada.has("staf:" + e.pilih)) ruang.push({jenis: "staf", nama_ruang: e.nama_ruang, lembaga: e.lembaga, wilayah: null, ke: "/admin/masuk", butuh_sandi: true}); continue; }
+    if (!e._s || !ada.has(e._s[1] + ":" + e._s[2]) || dipakai.has(e._s[0])) continue;
+    const c = await MODUL()[e._s[0]].buat(env, e._s[2], kini); if (!c) continue;   // akun yang gugur sejak kode diminta tidak dibuka
+    dipakai.add(e._s[0]); kuki.push(...c);
+    ruang.push({jenis: e.jenis, nama_ruang: e.nama_ruang, lembaga: e.lembaga, wilayah: e.wilayah, ke: e.ke, butuh_sandi: false});
+  }
+  const r = json({ok: true, lewat: "email", ruang});
   for (const c of kuki) r.headers.append("set-cookie", c);
   return r;
 }
@@ -138,6 +158,17 @@ async function periksaKode(env, req, url, kini) {
 async function buktiNomor(env, mkId, nomor, kini) {
   await mkUndangTerima(env, mkId, nomor, kini);
 }
+
+/* PM-14 (ALGORITMA §7): anggota aktif yang 180 hari tidak masuk ke akun lembaganya: kontak pemangku yang cocok masih ada = tetap aktif; selain itu menunggu pemeriksaan.
+   Undangan tidak dihitung ulang (sudah dipakai); email terpetakan tidak bisa diperiksa tanpa email baru, jadi jatuh ke menunggu. */
+async function buktiUlang(env, mkId, nomor, kini) {
+  for (const g of await mkAnggotaLama(env, mkId, kini - K.BUKTI_ULANG)) {
+    const kategori = K.PETA_KATEGORI[g.jenis];
+    if (kategori && await mkKontakCocok(env, nomor, kategori, g)) continue;
+    await mkAnggotaTurun(env, g.id, kini);
+  }
+}
+const menungguMilik = async (env, mkId) => (await mkAnggotaMenungguMilik(env, mkId)).map(x => x.wilayah);
 
 /* ---------------- sesi akun umum ---------------- */
 export {sesiMasuk};   // pembacanya ada di masuk_sesi.js
@@ -180,21 +211,38 @@ async function saluran(env, kini) {
 /* cache tepi 15 detik (cacheTepi, kunci tanpa query): tanpanya tiap permintaan membaca D1 dan header cache-control tidak berlaku di jalur ini */
 const saluranPublik = (env, req, url, kini, ctx) => cacheTepi(req, ctx, 15, async () => json(await saluran(env, kini)), true);
 async function saya(env, req, url, kini) {
-  const s = await sesiMasuk(env, req, kini); if (!s) return gagal(401, "belum masuk");
-  return json({akun: {id: s.id, wa: samar(s.wa), nama: s.nama, prov: s.prov, kab: s.kab, lengkap: s.setuju_pdp > 0}, baru_kode: kini - s.kode_pada <= K.BARU_KODE, ruang: tandaiPilih((await cariRuang(env, s.wa)).ruang).map(bersihRuang), saluran: await saluran(env, kini)});
+  const tamu = () => url.searchParams.get("lunak") === "1" ? json({masuk: false}) : gagal(401, "belum masuk");
+  if (!tokenDari(req)) return tamu();   // tanpa cookie berbentuk sah: tanpa laju dan tanpa D1 sama sekali
+  const ip = await batas(env, await ipHash(env, req), "masuk.saya_ip", K.LAJU_IP_SAYA, kini); if (ip) return ip;   // sebelum sesiMasuk, juga untuk ?lunak=1
+  const s = await sesiMasuk(env, req, kini);
+  if (!s) return tamu();   // ?lunak=1: pemeriksaan diam-diam dari halaman lain (tanpa galat 401 di konsol)
+  const ruang = tandaiPilih((await cariRuang(env, s.wa)).ruang), baru = kini - s.kode_pada <= K.BARU_KODE;
+  /* aksi yang butuh kode baru (atur sandi, hapus akun): daftar akun yang boleh diatur sandinya dan jumlah keanggotaan yang ikut hilang saat akun dihapus */
+  let sandi = [], anggotaN = 0;
+  if (baru) {
+    const milik = await mkAkunSaya(env, s.id, s.wa, K.AKUN_PER_JENIS);
+    sandi = [...ruang.filter(e => e._s && (e._s[0] === "pendataan" || e._s[0] === "kemitraan")).map(e => ({jenis: e._s[0], pilih: e._s[2], lembaga: e.lembaga})),
+      ...milik.filter(x => x.pemilik).map(x => ({jenis: "instansi", pilih: x.id, lembaga: x.wilayah}))];
+    anggotaN = milik.filter(x => !x.pemilik).length;
+  }
+  return json({akun: {id: s.id, wa: samar(s.wa), nama: s.nama, prov: s.prov, kab: s.kab, lengkap: s.setuju_pdp > 0}, baru_kode: baru, ruang: ruang.map(bersihRuang), menunggu: await menungguMilik(env, s.id),
+    ...(baru ? {sandi, anggota_n: anggotaN} : {}), saluran: await saluran(env, kini)});
 }
-async function keluar(env, req, url, kini) {
-  const g = penjaga(req, url); if (g) return g;
-  const x = await batas(env, await ipHash(env, req), "masuk.keluar_ip", K.LAJU_IP_KELUAR, kini); if (x) return x;
+/* cabut sesi akun umum peramban ini dan tiap sesi peran; mengembalikan cookie penghapus (instansi: dua Path). sesi_admin tidak disentuh. */
+async function cabutPeramban(env, req) {
   const t = tokenDari(req);
   if (t) await mkCabutSesi(env, await sha(t));
-  /* tiap modul mencabut sesinya sendiri untuk peramban ini dan memberi cookie penghapus (instansi: dua Path). sesi_admin tidak disentuh. */
   const kuki = [kukiSesi("", 0)];
   for (const cabut of [...Object.values(MODUL()).map(m => m.cabut), cabutStaf]) {
     try { kuki.push(...await cabut(env, req)); } catch (e) { if (!/no such table/i.test(String(e?.message || e))) throw e; }
   }
+  return kuki;
+}
+async function keluar(env, req, url, kini) {
+  const g = penjaga(req, url); if (g) return g;
+  const x = await batas(env, await ipHash(env, req), "masuk.keluar_ip", K.LAJU_IP_KELUAR, kini); if (x) return x;
   const r = json({ok: true});
-  for (const c of kuki) r.headers.append("set-cookie", c);
+  for (const c of await cabutPeramban(env, req)) r.headers.append("set-cookie", c);
   return r;
 }
 
@@ -260,6 +308,72 @@ async function sandiStaf(env, req, url, kini) {
   const r = json({ok: true, ke, wajib_ganti: !!m.staf.wajib_ganti}); r.headers.append("set-cookie", m.cookie); return r;
 }
 
+/* ---------------- atur sandi sesudah kode (PM-13, ALUR A7): pendataan, kampus, dan instansi (hanya pemilik nomor akun); tidak pernah staf, pemirsa, atau akun rahasia ---------------- */
+const SANDI_MODUL = {instansi: sandiInstansi, pendataan: sandiPendataan, kemitraan: sandiKampus};
+async function sandiCalon(env, s, jenis) {   // akun yang boleh diatur sandinya oleh nomor sesi ini, dihitung di server dari nomor sesi
+  if (jenis === "instansi") return (await mkAkunSaya(env, s.id, s.wa, K.AKUN_PER_JENIS)).filter(x => x.pemilik).map(x => x.id);
+  const p = await mkRuangPeran(env, s.wa, K.AKUN_PER_JENIS);
+  return (jenis === "pendataan" ? p.pendataan : p.kemitraan).map(x => x.id);
+}
+async function sandiBaru(env, req, url, kini) {
+  if (!kunciSah(env)) return gagal(503, "masuk lewat kode belum dikonfigurasi");
+  const g = penjaga(req, url); if (g) return g;
+  const ip = await batas(env, await ipHash(env, req), "masuk.sandi_baru_ip", K.LAJU_IP_SANDI_BARU, kini); if (ip) return ip;   // sebelum sesiMasuk: cookie palsu tidak membebani D1
+  const s = await sesiMasuk(env, req, kini); if (!s) return gagal(401, "belum masuk");
+  if (kini - s.kode_pada > K.BARU_KODE) return gagal(403, "masuk dengan kode lagi dulu (kode sudah lebih dari 15 menit)");
+  const ak = await batas(env, s.id, "masuk.sandi_baru_akun", K.LAJU_AKUN_SANDI_BARU, kini); if (ak) return ak;
+  const b = await bacaBody(req, 1024); if (b.galat) return gagal(b.status || 400, b.galat);
+  const jenis = typeof b.o.jenis === "string" ? b.o.jenis : "";
+  if (!Object.hasOwn(SANDI_MODUL, jenis)) return gagal(400, "jenis harus instansi, pendataan, atau kemitraan");
+  const calon = await sandiCalon(env, s, jenis);
+  if (!calon.length) return gagal(403, "tidak ada akun itu yang bisa diatur sandinya dari nomormu");
+  const pilih = b.o.pilih == null ? null : String(b.o.pilih), id = pilih == null ? (calon.length === 1 ? calon[0] : null) : calon.find(x => x === pilih);
+  if (!id) return gagal(pilih == null ? 400 : 403, pilih == null ? "pilih salah satu akun dari daftar" : "akun itu tidak terikat ke nomormu");
+  const h = await SANDI_MODUL[jenis](env, id, typeof b.o.sandi === "string" ? b.o.sandi : null, kini);   // format hash dan panjang minimum: aturan modul itu
+  if (h.galat) return gagal(400, h.galat);
+  return json({ok: true, ...(h.sandi ? {sandi: h.sandi} : {})});   // sandi acak instansi tampil sekali, tidak disimpan di sini
+}
+
+/* ---------------- hapus akun umum (PM-14, ALUR A10): akun lembaga tidak terhapus ---------------- */
+async function hapusAkun(env, req, url, kini) {
+  const g = penjaga(req, url); if (g) return g;
+  const ip = await batas(env, await ipHash(env, req), "masuk.hapus_ip", K.LAJU_IP_HAPUS, kini); if (ip) return ip;
+  const s = await sesiMasuk(env, req, kini); if (!s) return gagal(401, "belum masuk");
+  if (kini - s.kode_pada > K.BARU_KODE) return gagal(403, "masuk dengan kode lagi dulu (kode sudah lebih dari 15 menit)");
+  const b = await bacaBody(req, 1024); if (b.galat) return gagal(b.status || 400, b.galat);
+  if (b.o.yakin !== true) return gagal(400, "konfirmasi penghapusan wajib (yakin: true)");
+  await mkHapusAkun(env, s.id);   // undangan berstatus 'diterima' buatan akun ini dibiarkan: anggota yang diundangnya tetap aktif
+  const r = json({ok: true});
+  for (const c of await cabutPeramban(env, req)) r.headers.append("set-cookie", c);
+  return r;
+}
+
+/* ---------------- kode lewat email (PM-16, ALGORITMA §2.4, ALUR A8): publik, jawaban SELALU sama ---------------- */
+async function kodeEmail(env, req, url, kini, ctx) {
+  if (!kunciSah(env) || !env.TURNSTILE_SECRET || !env.TURNSTILE_SITEKEY) return gagal(503, "masuk lewat kode belum dikonfigurasi");
+  if (!emailAktif(env)) return gagal(503, "kode lewat email belum aktif");
+  const g = penjaga(req, url); if (g) return g;
+  if (!req.headers.get("cf-connecting-ip")) return gagal(403, "alamat jaringan tidak terbaca");
+  const b = await bacaBody(req, 1024); if (b.galat) return gagal(b.status || 400, b.galat);
+  const nomor = normalWA(b.o.wa); if (!nomor) return galatNomor();
+  const email = typeof b.o.email === "string" ? b.o.email.trim().toLowerCase() : "";
+  if (email.length > 254 || !RE_EMAIL.test(email) || /[^\x21-\x7e]/.test(email)) return gagal(400, "alamat email tidak sah");   // bentuk saja; tidak bergantung pada akun
+  const ip = await batas(env, await ipHash(env, req), "masuk.kode_email_ip", K.LAJU_IP_KODE_EMAIL, kini); if (ip) return ip;   // sebelum siteverify
+  if (!(await turnstileOK(env, b.o.turnstile, req))) return gagal(403, "verifikasi Turnstile gagal");
+  const nsha = await hmac(env.MASUK_KUNCI, "wa|" + nomor);
+  const n = await batas(env, nsha, "masuk.kode_email_nomor", K.LAJU_NOMOR_KODE_EMAIL, kini); if (n) return n;   // dihitung untuk SEMUA permintaan, cocok atau tidak
+  const gl = await batas(env, "global", "masuk.kode_email_global", K.LAJU_GLOBAL_KODE_EMAIL, kini, "sedang ramai, coba beberapa menit lagi"); if (gl) return gl;
+  /* kerja yang sama untuk alamat cocok dan tidak: satu pencarian, satu tulis mk_kode (alamat tak cocok = baris yang sudah hangus), email dikirim di latar supaya waktu jawab tidak membocorkan */
+  const cocok = await mkEmailAkunCocok(env, nomor, email), kode = kodeAcak(), id = acak(8);
+  await mkKodeEmailAkun(env, id, nsha, await hmac(env.MASUK_KUNCI, nomor + "|" + kode), kini, cocok.length ? kini + K.KODE_UMUR : kini, cocok);   // kode terikat ke akun yang cocok (D21)
+  if (cocok.length) {
+    const teks = `Kode masuk Centurisk97: ${kode}. Berlaku ${K.KODE_UMUR / 60e3} menit. Jangan berikan kode ini kepada siapa pun.`;
+    const kirim = kirimEmail(env, email, {subject: "Kode masuk Centurisk97", text: teks, html: `<p>${teks}</p>`}).catch(() => mkHanguskan(env, id, kini).catch(() => {}));   // gagal kirim: kode dihanguskan, jawaban tetap sama
+    if (ctx?.waitUntil) ctx.waitUntil(kirim); else await kirim;
+  }
+  return json({ok: true, tunggu: K.JEDA_KIRIM / 1000});
+}
+
 /* ---------------- nomor pemirsa, hanya Super Admin (D17) ---------------- */
 async function pemirsaWa(env, req, url, kini) {
   const g = penjaga(req, url); if (g) return g;
@@ -294,6 +408,9 @@ export const RUTE_MASUK = {
   "POST /api/masuk/sandi": tabelBelum(sandiStaf),
   "POST /api/masuk/lengkapi": tabelBelum(lengkapi),
   "POST /api/masuk/pilih": tabelBelum(pilihAkun),
+  "POST /api/masuk/sandi_baru": tabelBelum(sandiBaru),   // bawaan rancangan `atur-sandi`; garis tengah tidak terbaca gerbang cakupan
+  "POST /api/masuk/hapus": tabelBelum(hapusAkun),
+  "POST /api/masuk/kode_email": tabelBelum(kodeEmail),
   "POST /api/masuk/pemirsa_wa": tabelBelum(pemirsaWa),   // bawaan rancangan `pemirsa-wa`; garis tengah tidak terbaca gerbang cakupan (regex [\\w/:])
   "GET /api/masuk/saluran": saluranPublik,   // tanpa sesi; tabel belum ada = wa false
   "POST /api/masuk/keluar": tabelBelum(keluar),

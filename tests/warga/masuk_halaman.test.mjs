@@ -117,5 +117,7 @@ uji("halaman L-1c: keluar dan kode sah mengosongkan isian; hitung mundur dari ja
   assert.match(js, /\[saya\.s, saluran\.s\]\.some\(x => x === 404 \|\| x === 503\)/);
   assert.match(html, /id="mkMuat"/); assert.match(html, /<form id="fNomor"[^>]*hidden>/, "form nomor tersembunyi sampai pemeriksaan awal selesai");
   assert.doesNotMatch(html, /\/privasi/); assert.match(html, /<details class="mk-rinci">\s*<summary>Baca selengkapnya<\/summary>/);
-  assert.doesNotMatch(html, /hapus sendiri|tombol hapus/i, "tidak mengklaim tombol hapus yang belum ada");
+  assert.match(html, /menghapus akunmu sendiri dari halaman akun/, "teks persetujuan L4 menyebut hapus akun sendiri (PM-14)");
+  for (const id of ["fEmail", "fSandiBaru", "fHapus", "bHapusAkun", "bEmail", "iSandiBaru"]) assert.match(html, new RegExp(`id="${id}"`), id);
+  assert.match(html, /id="iSandiBaru"[^>]*autocomplete="new-password"/); assert.match(html, /id="iSandiBaru"[^>]*type="password"|type="password"[^>]*id="iSandiBaru"/);
 });

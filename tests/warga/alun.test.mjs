@@ -216,48 +216,13 @@ uji("batas laju: 5 utas per jam per IP lalu 429; IP lain tidak ikut; upvote 120/
   await U.DB.prepare("DELETE FROM alun_utas WHERE id LIKE 'b0000000000%'").run();
 });
 
-uji("dummy: tolak non-super; isi tiap jenis dan status; tidak tampil publik; hapus bersih tanpa sentuh data asli", async () => {
-  const asli = await U.n("alun_utas"), asliB = await U.n("alun_balas"), asliS = await U.n("alun_suara");
-  assert.equal((await U.api("POST", "/api/alun/dummy", {aksi: "isi"}, ip(70))).s, 403);
-  assert.equal((await U.api("POST", "/api/alun/dummy", {aksi: "isi"}, MOD2)).s, 403, "moderator biasa bukan Super Admin");
-  assert.equal((await U.api("POST", "/api/alun/dummy", {aksi: "isi"}, GERBANG)).s, 403);
-  assert.equal((await U.api("POST", "/api/alun/dummy", {aksi: "liar"}, ADMIN)).s, 400);
-  const r = await U.api("POST", "/api/alun/dummy", {aksi: "isi"}, ADMIN); assert.equal(r.s, 200);
-  assert.equal((await U.api("POST", "/api/alun/dummy", {aksi: "isi"}, ADMIN)).s, 409, "sudah ada");
-  const q = async (kol, w = "dummy = 1") => (await U.n("alun_utas", `${w} AND ${kol}`));
-  for (const j of JENIS) assert.ok(await q(`jenis = '${j}'`) >= 1, j);
-  for (const s of BANTUAN) assert.ok(await q(`bantuan = '${s}'`) >= 1, s);
-  for (const m of MODERASI) assert.ok(await q(`moderasi = '${m}'`) >= 1, m);
-  assert.ok(await q("terjawab_id IS NOT NULL") >= 2); assert.ok(await q("teruskan_ke = 'relawan'") >= 1); assert.ok(await q("teruskan_ke = 'logistik'") >= 1); assert.ok(await q("sematan = 1") >= 1);
-  assert.ok(await q("upvote > 10") >= 1 && await q("upvote = 0") >= 1, "upvote bervariasi");
-  assert.ok(await U.n("alun_balas", "dummy = 1 AND petugas = 1") >= 1);
-  assert.equal(await U.n("alun_utas", "dummy = 1 AND balasan_n <> (SELECT count(*) FROM alun_balas b WHERE b.utas_id = alun_utas.id AND b.moderasi <> 'tersembunyi')"), 0, "cacah balasan sesuai");
-  assert.equal(await U.n("alun_utas", "dummy = 1 AND upvote <> (SELECT count(*) FROM alun_suara s WHERE s.pos_id = alun_utas.id AND s.jenis = 'upvote')"), 0, "upvote sesuai baris suara");
-  // publik tidak melihat dummy; admin ?dummy=1 melihat
-  const pub = (await U.api("GET", "/api/alun?jenis=butuh_bantuan")).j; assert.ok(!pub.utas.some(x => x.dummy) && pub.utas.length === (await U.n("alun_utas", "jenis = 'butuh_bantuan' AND dummy = 0 AND moderasi <> 'tersembunyi'")));
-  const dId = (await U.DB.prepare("SELECT id FROM alun_utas WHERE dummy = 1 AND moderasi = 'tampil' LIMIT 1").first()).id;
-  assert.equal((await U.api("GET", "/api/alun/" + dId)).s, 404); assert.equal((await U.api("GET", "/api/alun/" + dId + "?dummy=1")).s, 404, "tanpa admin tetap 404");
-  assert.equal((await U.api("GET", "/api/alun/" + dId + "?dummy=1", undefined, ADMIN)).s, 200);
-  assert.equal((await U.api("GET", "/api/alun?dummy=1")).j.utas.some(x => x.dummy), false, "?dummy=1 tanpa admin diabaikan");
-  assert.equal((await U.api("GET", "/api/alun?dummy=1", undefined, ADMIN)).j.utas.some(x => x.dummy), true);
-  assert.equal((await U.api("POST", "/api/alun/upvote/" + dId, {}, ip(71))).s, 404);
-  // layar admin berangka sesudah isi
-  const ad = (await U.api("GET", "/api/alun/admin?dummy=1", undefined, ADMIN)).j;
-  assert.ok(Object.values(ad.stat.per_jenis).every(n => n > 0)); assert.ok(ad.stat.rata_terjawab_ms > 0); assert.ok(ad.stat.bantuan_terbuka_24j >= 1); assert.ok(ad.antrean.length >= 3);
-  assert.ok(ad.antrean.some(x => x.moderasi === "tersembunyi") && ad.antrean.some(x => x.moderasi === "dilaporkan") && ad.antrean.some(x => x.tipe === "balasan")); assert.ok(ad.bantuan.length >= 4);
-  const ad0 = (await U.api("GET", "/api/alun/admin", undefined, ADMIN)).j; assert.ok(!ad0.utas.some(x => x.dummy), "tanpa ?dummy=1 admin hanya data asli");
-  const h = await U.api("POST", "/api/alun/dummy", {aksi: "hapus"}, ADMIN); assert.equal(h.s, 200); assert.equal(h.j.utas, r.j.utas);
-  assert.equal(await U.n("alun_utas", "dummy = 1"), 0); assert.equal(await U.n("alun_balas", "dummy = 1"), 0);
-  assert.equal(await U.n("alun_utas"), asli); assert.equal(await U.n("alun_balas"), asliB); assert.equal(await U.n("alun_suara"), asliS, "suara dummy ikut hilang, suara asli utuh");
-});
-
 uji("halaman /alun-alun dan /admin/alun: 200 ber-CSP tanpa inline; admin tanpa token dialihkan; API admin tanpa token 403", async () => {
   const p = await U.api("GET", "/alun-alun"); assert.equal(p.s, 200);
   const csp = p.h.get("content-security-policy"); assert.match(csp, /script-src 'self'(;|$)/); assert.doesNotMatch(csp, /unsafe-inline/);
   assert.match(p.t, /alun-alun\.js/); assert.doesNotMatch(p.t, /\sonclick=|<script>[^<]/);
   const a = await U.api("GET", "/admin/alun", undefined, ADMIN); assert.equal(a.s, 200); assert.match(a.t, /\/admin\/alun\.js/); assert.match(a.t, /id="aksiJudul"/);
   const tanpa = await U.mf.dispatchFetch("http://bnpb.lokal/admin/alun", {redirect: "manual"}); assert.ok([302, 303].includes(tanpa.status), String(tanpa.status)); assert.match(tanpa.headers.get("location"), /\/admin\/masuk/);
-  for (const [m, j, b] of [["GET", "/api/alun/admin"], ["POST", "/api/alun/admin/abcdef0123456789", {aksi: "hapus"}], ["POST", "/api/alun/dummy", {aksi: "isi"}]]) assert.equal((await U.api(m, j, b)).s, 403, j);
+  for (const [m, j, b] of [["GET", "/api/alun/admin"], ["POST", "/api/alun/admin/abcdef0123456789", {aksi: "hapus"}]]) assert.equal((await U.api(m, j, b)).s, 403, j);
   assert.equal((await U.api("PUT", "/api/alun", {})).s, 405);
   assert.equal((await U.api("POST", "/api/alun", SAH, {...ip(80), origin: "https://jahat.example"})).s, 403, "origin lain");
 });
@@ -441,35 +406,7 @@ uji("C1 menghapus utas ikut membuang tautannya (FK), tujuan tetap ada; utas tanp
   const polos = await bantuan(207); assert.deepEqual(await pil(polos), []);
 });
 
-uji("C1 dummy: urutan isi bebas (alun/relawan/meja) selalu berhasil; tautan hanya ke tujuan dummy yang sudah ada; 🧹 tiap modul tidak meninggalkan yatim berbahaya", async () => {
-  const isi = async (W, m) => { const r = await W.adm("POST", `/api/${m}/dummy`, {aksi: "isi"}); assert.ok(r.s === 200 || r.s === 201, `${m}: ${r.s} ${r.t}`); return r; };
-  const hapus = async (W, m) => { const r = await W.adm("POST", `/api/${m}/dummy`, {aksi: "hapus"}); assert.equal(r.s, 200, `${m}: ${r.t}`); };
-  /* alun lebih dulu: tanpa tujuan, tanpa tautan; modul lain tetap bisa diisi */
-  const A = await siapkan("uji-alun-c1-a");
-  assert.equal((await isi(A, "alun")).j.tautan, 0);
-  await isi(A, "relawan"); await isi(A, "meja");
-  assert.equal(await A.n("alun_tautan"), 0);
-  /* relawan dan meja lebih dulu, alun sesudahnya: dua tautan ke tujuan dummy yang ada, tidak ada baris dummy baru di modul lain */
-  const W = await siapkan("uji-alun-c1-dummy");
-  await isi(W, "relawan"); await isi(W, "meja");
-  const sebelum = [await W.n("relawan_permintaan", "dummy = 1"), await W.n("meja_catatan", "dummy = 1")];
-  assert.equal((await isi(W, "alun")).j.tautan, 2);
-  assert.deepEqual([await W.n("relawan_permintaan", "dummy = 1"), await W.n("meja_catatan", "dummy = 1")], sebelum);
-  assert.equal(await W.n("alun_tautan", "dummy = 1"), 2);
-  const a = await W.adm("GET", "/api/alun/admin?dummy=1"), adaPil = a.j.bantuan.filter(x => x.tautan.length); assert.equal(adaPil.length, 2);
-  assert.deepEqual((await W.api("GET", "/api/alun")).j.utas.filter(x => x.tautan?.length), [], "dummy tidak tampil publik");
-  /* 🧹 modul tujuan lebih dulu: tautan dummy yang tersisa tidak tampil dan tidak merusak apa pun; 🧹 alun membersihkannya */
-  await hapus(W, "relawan"); await hapus(W, "meja");
-  assert.equal((await W.adm("GET", "/api/alun/admin?dummy=1")).s, 200);
-  assert.equal((await W.adm("GET", "/api/alun/admin?dummy=1")).j.bantuan.filter(x => x.tautan.length).length, 0, "tujuan hilang = pil hilang");
-  await hapus(W, "alun");
-  assert.equal(await W.n("alun_tautan"), 0); assert.equal(await W.n("alun_utas", "dummy = 1"), 0);
-  /* urutan lain: meja, alun, relawan, riset, lalu hapus alun dulu */
-  const Z = await siapkan("uji-alun-c1-z");
-  for (const m of ["meja", "alun", "relawan", "riset"]) await isi(Z, m);
-  assert.equal(await Z.n("alun_tautan", "dummy = 1"), 1, "hanya logistik yang sudah ada saat alun diisi");
-  await hapus(Z, "alun"); await hapus(Z, "meja"); await hapus(Z, "relawan"); await hapus(Z, "riset");
-  assert.equal(await Z.n("alun_tautan"), 0);
+uji("C1: tanpa tabel alun_tautan alun-alun tetap jalan, teruskan 503, hapus utas tetap bisa", async () => {
   /* tanpa alun_tautan */
   const X = await siapkan("uji-alun-c1-tanpa"); await X.DB.prepare("DROP TABLE alun_tautan").run();
   const id = (await X.api("POST", "/api/alun", {...SAH, jenis: "butuh_bantuan"}, ip(210))).j.id;

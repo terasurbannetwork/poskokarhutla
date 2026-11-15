@@ -1,4 +1,4 @@
-/* Admin Alun-alun (/admin/alun): antrean moderasi, utas dan balasan petugas, butuh bantuan (status dan teruskan), pengumuman resmi, tombol dummy.
+/* Admin Alun-alun (/admin/alun): antrean moderasi, utas dan balasan petugas, butuh bantuan (status dan teruskan), pengumuman resmi.
    CSP admin: tanpa skrip/gaya inline; semua teks dari data lewat textContent (helper h). Data dari /api/alun/admin (sesi admin). */
 (() => {
   const app = document.getElementById("app"), aksiJudul = document.getElementById("aksiJudul"), API = "/api/alun", NS = "http://www.w3.org/2000/svg";
@@ -38,7 +38,7 @@
   }
   function barisAntrean(x) {
     return h("tr", {"data-id": x.id},
-      h("td", null, h("div", {class: "ax-aksi"}, pil(x.tipe === "utas" ? "tanya" : "info_lapangan", x.tipe === "utas" ? "Utas" : x.petugas ? "Balasan petugas" : "Balasan"), x.dummy ? pil("dummy", "DUMMY") : null)),
+      h("td", null, h("div", {class: "ax-aksi"}, pil(x.tipe === "utas" ? "tanya" : "info_lapangan", x.tipe === "utas" ? "Utas" : x.petugas ? "Balasan petugas" : "Balasan"))),
       h("td", null, cuplik(x.tipe === "utas" ? x.judul : "Di: " + x.judul, x.teks)),
       h("td", null, h("div", {class: "ax-aksi"}, pil(x.moderasi, MOD[x.moderasi]), h("b", {teks: angka(x.aduan)}), ...Object.entries(x.alasan).map(([a, n]) => pil("dilaporkan", `${ALASAN[a] || a} ${angka(n)}`)))),
       h("td", {class: "w", teks: jam(x.dibuat)}),
@@ -47,7 +47,7 @@
   }
   const tAntrean = () => tabel(["Jenis", "Isi", "Aduan", "Waktu", ""], D.antrean.map(barisAntrean), "Tidak ada konten yang menunggu moderasi.");
   const tUtas = () => h("div", {class: "ax-isi"}, tabel(["Utas", "Jenis", "Status", "Balasan", "Upvote", "Waktu", ""], D.utas.map(u => h("tr", {"data-id": u.id},
-    h("td", null, cuplik(u.judul, [u.kab, D.prov[u.prov]].filter(Boolean).join(", ")), u.dummy ? pil("dummy", "DUMMY") : null),
+    h("td", null, cuplik(u.judul, [u.kab, D.prov[u.prov]].filter(Boolean).join(", "))),
     h("td", null, pilJenis(u.jenis)), h("td", null, h("div", {class: "ax-aksi"}, pil(u.moderasi, MOD[u.moderasi]), u.bantuan ? pil(u.bantuan, BANTUAN[u.bantuan]) : null, u.terjawab ? pil("selesai", "Terjawab", "centang") : null, u.sematan ? pil("pengumuman", "Tersemat") : null)),
     h("td", {class: "n", teks: angka(u.balasan)}), h("td", {class: "n", teks: angka(u.upvote)}), h("td", {class: "w", teks: jam(u.dibuat)}),
     h("td", {class: "a"}, tombol(buka === u.id ? "Tutup" : "Buka", {"data-aksi": "buka"}, "utama")))), "Belum ada utas."), h("div", {id: "axPanel", class: "ax-panel"}));
@@ -73,7 +73,7 @@
       const ke = h("select", {class: "ax-sel", "data-f": "ke"}, h("option", {value: "", teks: "Tidak diteruskan"}), h("option", {value: "relawan", teks: "Relawan", selected: u.teruskan_ke === "relawan"}), h("option", {value: "logistik", teks: "Logistik", selected: u.teruskan_ke === "logistik"}));
       const cat = h("input", {class: "ax-sel", "data-f": "catatan", maxlength: "300", value: u.teruskan_catatan || "", placeholder: "Catatan untuk tim"});
       return h("tr", {"data-id": u.id, class: u.bantuan === "terbuka" && umur(u.dibuat) >= 24 ? "ax-tua" : ""},
-        h("td", null, cuplik(u.judul, [u.kab, D.prov[u.prov]].filter(Boolean).join(", ")), u.dummy ? pil("dummy", "DUMMY") : null), h("td", {class: "n", teks: `${angka(umur(u.dibuat))} jam`}), h("td", null, sel), h("td", null, ke, h("div", {class: "ax-aksi"}, ...u.tautan.map(t => pil(t.tahap === "terpenuhi" || t.tahap === "diterima" ? "selesai" : "ditangani", t.label)))), h("td", null, cat),
+        h("td", null, cuplik(u.judul, [u.kab, D.prov[u.prov]].filter(Boolean).join(", "))), h("td", {class: "n", teks: `${angka(umur(u.dibuat))} jam`}), h("td", null, sel), h("td", null, ke, h("div", {class: "ax-aksi"}, ...u.tautan.map(t => pil(t.tahap === "terpenuhi" || t.tahap === "diterima" ? "selesai" : "ditangani", t.label)))), h("td", null, cat),
         h("td", {class: "a"}, h("div", {class: "ax-aksi"}, tombol("Simpan", {"data-aksi": "simpan_bantuan"}, "utama"), tombol("Relawan", {"data-aksi": "form_relawan"}), tombol("Logistik", {"data-aksi": "form_logistik"}))));
     }), "Tidak ada permintaan bantuan yang masih berjalan.");
   }
@@ -85,7 +85,7 @@
       h("div", {class: "ax-baris"}, h("label", null, "Bencana", ben), h("label", null, "Provinsi", prov), h("label", null, "Kabupaten atau kota (opsional)", h("input", {name: "kab", maxlength: "60"}))),
       h("label", {class: "ax-cek"}, h("input", {type: "checkbox", name: "sematan", checked: true}), "Sematkan di atas daftar"), h("div", null, h("button", {class: "ad-tombol utama", type: "submit"}, "Terbitkan")));
     const us = D.utas.filter(u => u.jenis === "pengumuman");
-    return h("div", {class: "ax-isi"}, form, tabel(["Pengumuman", "Status", "Balasan", "Waktu", ""], us.map(u => h("tr", {"data-id": u.id}, h("td", null, cuplik(u.judul, D.prov[u.prov]), u.dummy ? pil("dummy", "DUMMY") : null),
+    return h("div", {class: "ax-isi"}, form, tabel(["Pengumuman", "Status", "Balasan", "Waktu", ""], us.map(u => h("tr", {"data-id": u.id}, h("td", null, cuplik(u.judul, D.prov[u.prov])),
       h("td", null, pil(u.sematan ? "pengumuman" : "tampil", u.sematan ? "Tersemat" : "Biasa")), h("td", {class: "n", teks: angka(u.balasan)}), h("td", {class: "w", teks: jam(u.dibuat)}),
       h("td", {class: "a"}, h("div", {class: "ax-aksi"}, tombol(u.sematan ? "Lepas sematan" : "Sematkan", {"data-aksi": u.sematan ? "lepas_sematan" : "sematkan"}, "utama"), tombol("Hapus", {"data-aksi": "hapus"}, "bahaya"))))), "Belum ada pengumuman."));
   }
@@ -101,7 +101,7 @@
     if (tab === "utas" && buka) tampilRincian(buka);
   }
   async function muat() {
-    try { D = await ambil(`${API}/admin`)  /* tanpa data dummy, pemilik 11 Nov 2026 */; } catch (e) { if (e.message !== "perlu masuk") document.getElementById("axIsi").replaceChildren(h("p", {class: "ax-kosong", teks: e.message})); return; }
+    try { D = await ambil(`${API}/admin`) ; } catch (e) { if (e.message !== "perlu masuk") document.getElementById("axIsi").replaceChildren(h("p", {class: "ax-kosong", teks: e.message})); return; }
     gambar();
   }
   /* rincian utas (balasan, balas sebagai petugas, tandai terjawab) */
@@ -155,16 +155,5 @@
     }
   });
 
-  /* ---------- dummy (DUMMY.md): isi seluruh halaman, hapus semuanya ---------- */
-  // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 11 Nov 2026 (semua proyek); pulihkan: hapus `if (false)` di baris berikut
-  if (false) aksiJudul.replaceChildren(h("button", {class: "ad-tombol ad-bulat", "data-dummy": "isi", title: "Isi data dummy untuk halaman ini", "aria-label": "Isi data dummy", teks: "🧪"}),
-    h("button", {class: "ad-tombol ad-bulat", "data-dummy": "hapus", title: "Hapus semua data dummy", "aria-label": "Hapus data dummy", teks: "🧹"}));
-  aksiJudul.addEventListener("click", async e => {
-    const d = e.target.closest("[data-dummy]"); if (!d) return;
-    if (d.dataset.dummy === "hapus" && !confirm("Hapus SEMUA data dummy Alun-alun? Utas asli tidak tersentuh.")) return;
-    const r = await kirim(`${API}/dummy`, {aksi: d.dataset.dummy});
-    alert(r.ok ? (d.dataset.dummy === "isi" ? `Dummy dibuat: ${r.j.utas} utas, ${r.j.balasan} balasan, ${r.j.suara} suara.` : `Dummy dihapus: ${r.j.utas} utas, ${r.j.balasan} balasan.`) : r.j.galat || `Gagal (${r.status})`);
-    if (r.ok) location.reload();
-  });
   kerangka(); muat();
 })();

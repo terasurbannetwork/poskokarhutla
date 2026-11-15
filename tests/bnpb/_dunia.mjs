@@ -24,10 +24,9 @@ export async function buatDunia() {
     const t = await r.text(); let x = null; try { x = JSON.parse(t); } catch (e) {}
     return {s: r.status, j: x, t, h: r.headers};
   };
-  /* urutan penting: dummy Alun-alun ikut menyisipkan baris Meja (logistik), sehingga dummy Meja yang diisi SESUDAH Alun-alun dijawab 409 (temuan, dilaporkan ke warga-api).
-     Tiap modul diisi sendiri-sendiri: modul yang dummy-nya rusak melapor galatnya (uji halamannya gagal dengan sebab itu), modul lain tetap jalan */
+  /* Tiap modul diisi sendiri-sendiri: modul yang dummy-nya rusak melapor galatnya (uji halamannya gagal dengan sebab itu), modul lain tetap jalan */
   const galatIsi = {}, kode = {};
-  for (const m of ["meja", "relawan", "riset", "alun", "pengingat"]) { const r = await api("POST", `/api/${m}/dummy`, {aksi: "isi"}); if (r.s >= 300) galatIsi[m] = `POST /api/${m}/dummy ${r.s} ${r.t.slice(0, 160)}`; }
+  for (const m of ["meja", "relawan", "riset", "pengingat"]) { const r = await api("POST", `/api/${m}/dummy`, {aksi: "isi"}); if (r.s >= 300) galatIsi[m] = `POST /api/${m}/dummy ${r.s} ${r.t.slice(0, 160)}`; }
   /* Instansi lalu Operasi lapangan (L4-L13): dummy ops memakai tugas dummy instansi yang sudah ada (tugas buka tertua), jadi urutannya tetap */
   const inst = await api("POST", "/api/instansi/admin/dummy", {aksi: "isi"}); if (inst.s >= 300) galatIsi.instansi = `POST /api/instansi/admin/dummy ${inst.s} ${inst.t.slice(0, 160)}`;
   const ops = await api("POST", "/api/ops/dummy", {aksi: "isi"}); if (ops.s >= 300) galatIsi.ops = `POST /api/ops/dummy ${ops.s} ${ops.t.slice(0, 160)}`;

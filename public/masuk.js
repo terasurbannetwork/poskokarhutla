@@ -38,8 +38,12 @@
     sandi: {f: $("fSandi"), h: "Masukkan sandi", info: ""},
     peran: {f: $("vPeran"), h: "Saya petugas atau relawan", info: "Pilih peranmu."},
     lengkapi: {f: $("fLengkapi"), h: "Lengkapi data", info: "Sekali saja. Data ini membantu petugas menanggapi kirimanmu."},
+    email: {f: $("fEmail"), h: "Kode lewat email", info: "Ketik alamat email akunmu. Kode dikirim bila alamat itu cocok dengan akun bernomor ini."},
+    sandibaru: {f: $("fSandiBaru"), h: "Atur sandi", info: ""},
+    hapus: {f: $("fHapus"), h: "Hapus akun", info: "Penghapusan tidak bisa dibatalkan."},
   };
   let aktif = "nomor", nomor = "", pilihStaf = null, hitung = null, gambarUlang = null;
+  let emailMode = false, segarNo = 0, kirimWa = 0, saluranEmail = false, waMati = false, emailDari = "nomor", sandiTarget = null, akunKini = {sandi: [], anggotaN: 0};
   const pesanEl = () => LANGKAH[aktif].f.querySelector(".bn-pesan");
   const pesan = (t, ok) => { const p = pesanEl(); p.textContent = t || ""; p.className = "bn-pesan" + (t ? (ok ? " ok" : " galat") : ""); };
   const layar = (nama, info) => {
@@ -50,7 +54,7 @@
     const f = LANGKAH[nama].f.querySelector("input:not([type=checkbox]),select,button.mk-baris") || $("mkJudul");
     f.focus({preventScroll: false});
   };
-  const sibuk = (tombol, ya, teks) => { if (ya) { tombol.dataset.teks = tombol.textContent; tombol.textContent = teks; } else if (tombol.dataset.teks) tombol.textContent = tombol.dataset.teks; tombol.disabled = ya; };
+  const sibuk = (tombol, ya, teks) => { if (ya) { if (!tombol.disabled) tombol.dataset.teks = tombol.textContent; tombol.textContent = teks; } else if (tombol.dataset.teks) tombol.textContent = tombol.dataset.teks; tombol.disabled = ya; };
 
   async function kirim(jalur, badan) {
     if (navigator.onLine === false) return {s: 0, j: {galat: "tidak ada koneksi"}};
@@ -71,7 +75,7 @@
     const t = await window.tokenTurnstile?.();
     const r = await kirim("/api/masuk/kode", {wa: nomor, turnstile: t || undefined});
     sibuk(tombol, false);
-    if (r.s === 200) { layar("kode", `Kode dikirim ke WhatsApp ${tersamar(nomor)}`); mulaiHitung(r.j.tunggu || 60); return; }
+    if (r.s === 200) { kirimWa++; layar("kode", `Kode dikirim ke WhatsApp ${tersamar(nomor)}`); mulaiHitung(r.j.tunggu || 60); tawarEmail(); return; }
     if (r.s === 503) tutup();
     if (ulang && r.s === 429 && r.tunggu) mulaiHitung(r.tunggu);
     pesan(galat(r));
@@ -101,23 +105,60 @@
     periksaJalan = false; sibuk($("bKode"), false);
     if (r.s !== 200) { if (r.s === 503) tutup(); $("iKode").select(); return pesan(galat(r)); }
     clearInterval(hitung); gambarUlang = null; $("iKode").value = ""; $("iNomor").value = ""; nomor = "";
-    sesudahMasuk(r.j.ruang || [], r.j.lengkap);
+    if (r.j.lewat === "email") return sesudahEmail(r.j.ruang || []);
+    sesudahMasuk(r.j.ruang || [], r.j.lengkap, r.j.menunggu);
   }
   $("fKode").addEventListener("submit", e => { e.preventDefault(); periksa(); });
   $("iKode").addEventListener("input", () => { const i = $("iKode"), b = i.value.replace(/\D/g, "").slice(0, 6); if (b !== i.value) i.value = b; if (b.length === 6) periksa(); });
   $("bUlang").addEventListener("click", () => mintaKode(true));
-  $("bGanti").addEventListener("click", () => { clearInterval(hitung); $("iKode").value = ""; layar("nomor"); });
+  $("bGanti").addEventListener("click", () => { clearInterval(hitung); $("iKode").value = ""; kirimWa = 0; layar("nomor"); tawarEmail(); });
+
+  /* ---------- kode lewat email (PM-16, ALUR A8): ditawarkan sesudah dua kali kirim WA, atau saat WA terganggu; alamat diketik, jawaban server selalu sama ---------- */
+  const tawarEmail = () => {
+    const ya = saluranEmail && (kirimWa >= 2 || waMati), baru = $("bEmail").hidden && ya;
+    $("bEmail").hidden = !ya; $("bEmailNomor").hidden = !(saluranEmail && waMati);
+    if (baru && aktif === "kode") pesan("Kode belum sampai? Kamu bisa meminta kode lewat email.", true);   // pembaca layar tahu ada tombol baru (role=status)
+  };
+  function bukaEmail(dari) { emailDari = dari; $("iEmail").value = ""; layar("email"); }
+  $("bEmail").addEventListener("click", () => bukaEmail("kode"));
+  $("bEmailNomor").addEventListener("click", () => {
+    const v = $("iNomor").value.trim();
+    if (!nomorSah(v)) return pesan("Nomor WhatsApp tidak sah. Contoh 0812xxxxxxxx.");
+    nomor = v; bukaEmail("nomor");
+  });
+  $("bEmailKembali").addEventListener("click", () => { layar(emailDari === "kode" && nomor ? "kode" : "nomor"); tawarEmail(); });
+  $("fEmail").addEventListener("submit", async e => {
+    e.preventDefault();
+    const email = $("iEmail").value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return pesan("Alamat email tidak sah.");
+    pesan(""); sibuk($("bEmailKirim"), true, "Mengirim...");
+    const t = await window.tokenTurnstile?.();
+    const r = await kirim("/api/masuk/kode_email", {wa: nomor, email, turnstile: t || undefined});
+    sibuk($("bEmailKirim"), false);
+    if (r.s !== 200) return pesan(r.s === 503 ? "Kode lewat email belum aktif." : galat(r));
+    $("iEmail").value = ""; layar("kode", "Bila alamat itu cocok dengan akunmu, kode dikirim ke email dan berlaku lima menit. Cek juga folder spam."); mulaiHitung(r.j.tunggu || 60);
+  });
+
+  /* ---------- kode lewat email sah (D21): hanya akun yang emailnya cocok terbuka; tanpa akun umum, tanpa halaman akun ---------- */
+  function sesudahEmail(ruang) {
+    if (!ruang.length) { layar("nomor"); return pesan("Tidak ada akun yang bisa dibuka lewat email ini."); }
+    if (ruang.length === 1) return pergi(ruang[0].butuh_sandi ? ruang[0].ke : ke || ruang[0].ke);
+    emailMode = true; daftarRuang(ruang, []); layar("ruang");
+  }
 
   /* ---------- sesudah kode sah ---------- */
-  function sesudahMasuk(ruang, lengkap) {
+  function sesudahMasuk(ruang, lengkap, menunggu) {
+    if (!ruang.length && menunggu?.length) { daftarRuang(ruang, menunggu); layar("ruang"); $("bKeluar").hidden = false; return segarkanAkun(); }   // hanya keanggotaan yang menunggu: tampilkan, jangan lempar ke alun-alun
     if (!ruang.length) return lengkap ? pergi(ke) : bukaLengkapi();
     const satu = ruang.length === 1 && !ruang[0].perlu_pilih && !ruang[0].butuh_sandi;
     if (satu) return pergi(ke || ruang[0].ke);
-    daftarRuang(ruang); layar("ruang");
+    daftarRuang(ruang, menunggu); layar("ruang"); $("bKeluar").hidden = false; segarkanAkun();
   }
 
   /* ---------- L3: ruang ---------- */
-  function daftarRuang(ruang) {
+  function daftarRuang(ruang, menunggu) {
+    const w = $("daftarMenunggu"); w.replaceChildren(); w.hidden = !(menunggu && menunggu.length);
+    for (const nama of menunggu || []) { const li = el("li", "mk-catatan"); li.append(el("span", "mk-pil kuning", "Menunggu pemeriksaan"), " " + nama); w.append(li); }
     const ul = $("daftarRuang"); ul.replaceChildren();
     if (!ruang.length) { const a = el("a", "mk-tautan", "Belum ada ruang untuk nomor ini. Ke alun-alun"); a.href = "/alun-alun"; const li = el("li"); li.append(a); ul.append(li); return; }
     for (const r of ruang) {
@@ -128,6 +169,7 @@
     }
   }
   async function pilih(r, b) {
+    if (emailMode) return pergi(r.ke);   // lewat email: sesi sudah terbit, staf ke pintu sandi lama
     if (r.butuh_sandi) { pilihStaf = r.pilih || null; layar("sandi", `${r.nama_ruang}. Masukkan sandi akun stafmu.`); return; }
     if (!r.perlu_pilih) return pergi(r.ke);
     b.disabled = true; pesan("");
@@ -136,10 +178,63 @@
     if (x.s === 200) return pergi(x.j.ke || r.ke);
     pesan(galat(x));
   }
+  /* ---------- aksi akun (PM-13, PM-14): atur sandi dan hapus akun, hanya sesudah kode dalam 15 menit terakhir ---------- */
+  function panelAkun(d) {
+    const baru = !!d.baru_kode; akunKini = {sandi: d.sandi || [], anggotaN: d.anggota_n || 0};
+    $("vAkun").hidden = !baru; $("mkAkunInfo").hidden = baru;
+    const ul = $("daftarSandi"); ul.replaceChildren();
+    for (const x of akunKini.sandi) {
+      const b = el("button", "mk-baris"); b.type = "button"; b.append(ikon(x.jenis), el("span", "mk-nama", "Atur sandi"), el("span", "mk-sub", x.lembaga || ""));
+      b.addEventListener("click", () => bukaSandi(x)); const li = el("li"); li.append(b); ul.append(li);
+    }
+  }
+  async function segarkanAkun() {
+    const no = ++segarNo, r = await baca("/api/masuk/saya");
+    if (no !== segarNo) return;   // panggilan lebih baru menang
+    if (r.s === 200) { panelAkun(r.j); daftarRuang(r.j.ruang || [], r.j.menunggu); }
+  }
+  function bukaSandi(x) {
+    sandiTarget = x; const acak = x.jenis === "instansi";   // akun instansi: sandi dibuatkan server (aturan modulnya), tampil sekali
+    $("lSandiBaru").hidden = acak; $("bLihatSandi").hidden = acak; $("iSandiBaru").value = ""; $("iSandiBaru").type = "password"; $("bLihatSandi").textContent = "Tampilkan sandi"; $("bLihatSandi").setAttribute("aria-pressed", "false");
+    $("cSandiBaru").textContent = acak ? "Sandi dibuatkan otomatis dan hanya tampil sekali. Catat di tempat aman. Sesi lain akun ini ikut keluar." : "Paling sedikit 10 huruf. Sesi lain akun ini ikut keluar.";
+    $("oSandiHasil").hidden = true; $("oSandiHasil").textContent = ""; $("bSandiBaru").hidden = false; $("bSandiBaru").textContent = acak ? "Buat sandi baru" : "Simpan sandi";
+    layar("sandibaru", x.lembaga || "");
+  }
+  $("bLihatSandi").addEventListener("click", () => { const i = $("iSandiBaru"), tampil = i.type === "password"; i.type = tampil ? "text" : "password"; $("bLihatSandi").textContent = tampil ? "Sembunyikan sandi" : "Tampilkan sandi"; $("bLihatSandi").setAttribute("aria-pressed", String(tampil)); });
+  $("fSandiBaru").addEventListener("submit", async e => {
+    e.preventDefault();
+    if (!sandiTarget) return;
+    const acak = sandiTarget.jenis === "instansi", sandi = $("iSandiBaru").value;
+    if (!acak && (sandi.length < 10 || sandi.length > 100)) return pesan("Sandi 10 sampai 100 huruf.");
+    pesan(""); sibuk($("bSandiBaru"), true, "Menyimpan...");
+    const r = await kirim("/api/masuk/sandi_baru", {jenis: sandiTarget.jenis, pilih: sandiTarget.pilih, ...(acak ? {} : {sandi})});
+    sibuk($("bSandiBaru"), false);
+    if (r.s !== 200) return pesan(r.s === 403 ? kalimat(r.j.galat) || "Tidak diizinkan." : galat(r));
+    $("iSandiBaru").value = "";
+    if (r.j.sandi) { $("oSandiHasil").textContent = r.j.sandi; $("oSandiHasil").hidden = false; }
+    $("bSandiBaru").hidden = true; pesan(r.j.sandi ? "Sandi baru dibuat. Catat sekarang, tidak tampil lagi." : "Sandi baru disimpan.", true);
+  });
+  $("bSandiKembali").addEventListener("click", () => { $("oSandiHasil").textContent = ""; $("iSandiBaru").value = ""; sandiTarget = null; layar("ruang"); });
+  $("bHapusAkun").addEventListener("click", () => {
+    const n = akunKini.anggotaN;
+    $("cHapus").textContent = `Nomor, nama, dan wilayahmu dihapus. ${n ? `Keanggotaanmu di ${n} akun lembaga ikut hilang.` : "Kamu tidak punya keanggotaan di akun lembaga."} Kirimanmu di alun-alun tetap tampil tanpa namamu. Akun lembaga tidak terhapus.`;
+    layar("hapus");
+  });
+  $("bHapusBatal").addEventListener("click", () => layar("ruang"));
+  $("fHapus").addEventListener("submit", async e => {
+    e.preventDefault();
+    pesan(""); sibuk($("bHapusYa"), true, "Menghapus...");
+    const r = await kirim("/api/masuk/hapus", {yakin: true});
+    sibuk($("bHapusYa"), false);
+    if (r.s !== 200) return pesan(r.s === 403 ? kalimat(r.j.galat) || "Tidak diizinkan." : galat(r));
+    $("bKeluar").hidden = true; bersih(); layar("nomor"); pesan("Akunmu sudah dihapus.", true);
+  });
+
   /* sisa data orang sebelumnya tidak boleh tinggal di halaman sesudah keluar (peramban bersama) */
   function bersih() {
-    clearInterval(hitung); gambarUlang = null; nomor = ""; pilihStaf = null;
-    for (const i of ["iNomor", "iKode", "iSandi", "iNama", "iKab"]) $(i).value = "";
+    clearInterval(hitung); gambarUlang = null; nomor = ""; pilihStaf = null; kirimWa = 0; emailMode = false; segarNo++; sandiTarget = null; akunKini = {sandi: [], anggotaN: 0};
+    for (const i of ["iNomor", "iKode", "iSandi", "iNama", "iKab", "iSandiBaru", "iEmail"]) $(i).value = "";
+    $("oSandiHasil").textContent = ""; $("daftarSandi").replaceChildren(); $("daftarMenunggu").replaceChildren(); $("vAkun").hidden = true;
     $("iProv").value = ""; $("iSetuju").checked = false; $("daftarRuang").replaceChildren(); $("daftarKab").replaceChildren();
     $("daftarAkun").replaceChildren(); $("vGabung").hidden = true; $("iGProv").value = ""; $("iGKab").replaceChildren(); gabungNo++;
   }
@@ -274,14 +369,14 @@
       $("bKeluar").hidden = false;
       const ruang = saya.j.ruang || [];
       if (!ruang.length && !saya.j.akun?.lengkap) return bukaLengkapi();
-      daftarRuang(ruang); layar("ruang");
+      daftarRuang(ruang, saya.j.menunggu); panelAkun(saya.j); layar("ruang");
       if (location.hash === "#peran") bukaPeran();   // tautan "Saya petugas atau relawan" dari kepala situs
       return;
     }
     layar("nomor");
     if (saya.s === 0 && saluran.s === 0) return pesan("Tidak ada koneksi.");
     if ([saya.s, saluran.s].some(x => x === 404 || x === 503)) { tutup(); return pesan("Masuk dengan nomor WhatsApp belum aktif."); }   // rute belum terbit atau migrasi belum jalan
-    if (saluran.s === 200 && saluran.j.wa === false) $("mkTerganggu").hidden = false;
+    if (saluran.s === 200) { saluranEmail = !!saluran.j.email; waMati = saluran.j.wa === false; if (waMati) $("mkTerganggu").hidden = false; tawarEmail(); }
   }
   window.addEventListener("offline", () => { if (aktif !== "ruang") pesan("Tidak ada koneksi."); });
   mulai();

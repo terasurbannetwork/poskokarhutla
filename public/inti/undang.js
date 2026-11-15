@@ -84,15 +84,31 @@
     const form = h("form", {class: "ud-form", novalidate: true},
       h("label", {class: "ud-fl", for: "ud-wa"}, "Nomor WhatsApp"), inWa,
       h("label", {class: "ud-fl", for: "ud-nama"}, "Nama"), inNama, tbUndang);
+    const slotSesi = h("div", {class: "ud-konf", role: "status", "aria-live": "polite"});
     const bUndang = h("div", {class: "ud-bag"}), bAnggota = h("div", {class: "ud-bag"}), bTunggu = h("div", {class: "ud-bag"});
     bAnggota.hidden = true; bTunggu.hidden = true;
-    kartu.append(
-      h("header", {class: "ex-hd"}, h("div", {class: "ex-jd"}, h("h3", null, svg(IK_UNDANG), "Undang rekan"))),
-      h("div", {class: "ex-bd"}, form, pesan, bUndang, bTunggu, bAnggota));
+    const bd = h("div", {class: "ex-bd"}, form, pesan, slotSesi, bUndang, bTunggu, bAnggota);
+    kartu.append(h("header", {class: "ex-hd"}, h("div", {class: "ex-jd"}, h("h3", null, svg(IK_UNDANG), "Undang rekan"))), bd);
     wadah.replaceChildren(kartu);
 
     const lapor = t => { pesan.textContent = t || ""; };
     const judul = (t, ...x) => h("h4", {class: "ud-sub"}, t, ...x);
+    /* konfirmasi dalam halaman (bukan dialog bawaan peramban: memblokir main thread): satu terbuka sekali waktu, fokus ke Batal, Escape membatalkan */
+    let tutupKonf = null;
+    const konfirmasi = (slot, kalimat, labelYa, onYa, balik) => {
+      if (tutupKonf) tutupKonf();
+      const tutup = () => { slot.replaceChildren(); if (tutupKonf === tutup) tutupKonf = null; };
+      const ya = tombolTeks(labelYa, () => { ya.disabled = true; batal.disabled = true; tutup(); onYa(); }, "ud-utama");
+      const batal = tombolTeks("Batal", () => { tutup(); if (balik) balik.focus(); }, "ud-tipis");
+      const kotak = h("div", {class: "ud-konf-isi"}, h("p", {class: "ud-ket", teks: kalimat}), h("span", {class: "ud-aksi"}, ya, batal));
+      kotak.addEventListener("keydown", ev => { if (ev.key === "Escape") batal.click(); });
+      tutupKonf = tutup; slot.replaceChildren(kotak); batal.focus();
+    };
+    /* 401: orang belum punya sesi pintu masuk; kartu jadi satu ajakan masuk */
+    const ajak = () => {
+      const jalur = (g.location && g.location.pathname) || "/";
+      bd.replaceChildren(h("p", {class: "ud-ket ud-ajak"}, h("a", {href: "/masuk?ke=" + encodeURIComponent(jalur), teks: "Masuk dengan nomor WhatsApp untuk mengundang rekan."})));
+    };
     const status = (t, kelas) => h("p", {class: "ud-ket " + (kelas || ""), role: "status", teks: t});
 
     /* ---- undangan ---- */
@@ -100,6 +116,7 @@
       const n = ++no.u; bUndang.replaceChildren(judul("Undangan"), status("Memuat..."));
       const r = await api("GET", "/api/masuk/undang" + q);
       if (n !== no.u) return;
+      if (r.s === 401) { ajak(); return; }
       if (r.s !== 200 || !r.j) { bUndang.replaceChildren(judul("Undangan"), status(galat(r.s, r.ra, r.j), "ud-galat")); return; }
       const d = r.j.undangan || [];
       if (!d.length) { bUndang.replaceChildren(judul("Undangan"), status("Belum ada undangan.")); return; }
@@ -130,23 +147,25 @@
       bAnggota.hidden = false;
       const d = (r.j.anggota || []).filter(a => a.status !== "dicabut"), kini = Date.now();
       if (!d.length) { bAnggota.replaceChildren(judul("Anggota"), status("Belum ada anggota selain pemilik nomor akun.")); return; }
-      const baris = d.map(a => [namaSel(a.nama), a.wa || "", jalur(a.jalur), relatif(a.terakhir_masuk, kini),
-        tombolIkon(IK_CABUT, `Cabut anggota ${a.nama || a.wa}`, ev => cabutAnggota(a, ev.currentTarget))]);
+      const baris = d.map(a => {
+        const slot = h("div", {class: "ud-konf", role: "status", "aria-live": "polite"});
+        const nm = a.nama || a.wa;
+        const t = tombolIkon(IK_CABUT, `Cabut anggota ${nm}`, ev => konfirmasi(slot, `Cabut ${nm}? Ia tidak bisa lagi masuk ke akun ini dan undangan yang ia kirim ikut dicabut. Sesi yang sedang berjalan tetap hidup sampai berakhir.`, "Ya, cabut", () => cabutAnggota(a, t), ev.currentTarget));
+        return [namaSel(a.nama), a.wa || "", jalur(a.jalur), relatif(a.terakhir_masuk, kini), h("div", null, t, slot)];
+      });
       bAnggota.replaceChildren(judul("Anggota"), tabel(["Nama", "Nomor", "Jalur masuk", "Terakhir masuk", "Aksi"], baris));
     }
     async function cabutAnggota(a, tombol, sesi) {
       if (tombol.disabled) return;
       const nm = a.nama || a.wa;
-      const ok = sesi ? g.confirm("Semua orang di akun ini, termasuk kamu, harus masuk ulang. Lanjutkan?")
-        : g.confirm(`Cabut ${nm}? Ia tidak bisa masuk ke akun ini lagi dan undangan yang ia kirim ikut dicabut. Sesi yang sedang berjalan tetap hidup sampai berakhir.`);
-      if (!ok) return;
       tombol.disabled = true; lapor("");
       const r = await api("POST", "/api/masuk/anggota/cabut/" + encodeURIComponent(a.id), sesi ? {cabut_sesi: true} : {});
       if (r.s !== 200) { tombol.disabled = false; lapor(r.s === 409 ? "Anggota itu sudah dicabut." : galat(r.s, r.ra, r.j)); if (r.s === 404 || r.s === 409) muatAnggota(); return; }
       if (r.j && r.j.sesi_semua_dicabut) lapor("Semua sesi di akun ini diputus. Semua orang perlu masuk ulang.");
       else if (r.j && r.j.sesi_lama_masih_hidup) {
         pesan.textContent = `${nm} dicabut. Sesi yang sudah berjalan masih hidup. `;
-        pesan.append(tombolTeks("Putuskan semua sesi", ev => cabutAnggota(a, ev.currentTarget, true), "ud-tipis"));
+        const ts = tombolTeks("Putuskan semua sesi", () => konfirmasi(slotSesi, "Putuskan semua sesi? Semua orang di akun ini, termasuk kamu, harus masuk ulang.", "Ya, putuskan semua sesi", () => cabutAnggota(a, ts, true), ts), "ud-tipis");
+        pesan.append(ts);
       } else lapor(`${nm} dicabut.`);
       await Promise.all([muatAnggota(), muatUndang()]);   // pesan tidak disentuh muat ulang, tombol sesi tetap ada
     }
@@ -161,9 +180,10 @@
       bTunggu.hidden = false;
       const baris = d.map(a => {
         const tanda = h("span", {class: "ud-tanda"}, a.cocok_kontak ? pil("Cocok kontak", "hijau") : null, a.nomor_terbukti ? pil("Nomor terbukti", "hijau") : null);
-        const aksi = h("span", {class: "ud-aksi"});
-        aksi.append(tombolTeks("Setujui", ev => putus(a, "setujui", aksi), "ud-utama"), tombolTeks("Tolak", ev => putus(a, "tolak", aksi), "ud-tipis"));
-        return [a.nama || "Tanpa nama", a.wa || "", tanda, aksi];
+        const aksi = h("span", {class: "ud-aksi"}), slot = h("div", {class: "ud-konf", role: "status", "aria-live": "polite"});
+        const tolak = tombolTeks("Tolak", ev => konfirmasi(slot, `Tolak permohonan ${a.nama || a.wa}? Ia tidak jadi anggota akun ini.`, "Ya, tolak", () => putus(a, "tolak", aksi), ev.currentTarget), "ud-tipis");
+        aksi.append(tombolTeks("Setujui", () => putus(a, "setujui", aksi), "ud-utama"), tolak);
+        return [a.nama || "Tanpa nama", a.wa || "", tanda, h("div", null, aksi, slot)];
       });
       bTunggu.replaceChildren(judul("Menunggu persetujuan"), tabel(["Nama", "Nomor", "Tanda", "Keputusan"], baris));
     }

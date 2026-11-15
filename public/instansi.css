@@ -238,3 +238,4 @@
 .in-bc-ik{width:18px;height:18px;flex:none}
 .in-bc{display:inline-flex!important;align-items:center;gap:5px;font-weight:700}
 .in-bc .in-bc-ik{width:15px;height:15px}
+.in-undang{margin:20px 0}   /* Pintu Masuk PM-11: jarak 20px dari kartu tetangga */

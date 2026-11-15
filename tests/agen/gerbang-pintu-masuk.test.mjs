@@ -71,23 +71,65 @@ const TABEL = "staf|instansi_akun|staf_sesi|instansi_sesi|pdt_sesi|km_sesi|pemir
 export const g7 = teks => [...teks.matchAll(new RegExp(String.raw`\b(?:INSERT\s+(?:OR\s+\w+\s+)?INTO|UPDATE(?:\s+OR\s+\w+)?|DELETE\s+FROM|REPLACE\s+INTO)\s+(?:${TABEL})\b`, "gi"))]
   .map(m => `menulis tabel modul lain: ${m[0]}`);
 
-// G-8: fungsi mk* di src/hak.js (bagian Satu Pintu Masuk) tidak menulis tabel AKUN modul lain (D19: pintu masuk
-// tidak mengaktifkan atau mengubah akun). Tabel sesi (instansi_sesi, pdt_sesi, km_sesi, pemirsa_sesi) sah ditulis.
-// Batas bagian: tiap `export const mk...` di kolom 0 sampai baris kolom-0 berikutnya yang bukan lanjutan
-// (export/const/function/komentar), jadi bagian lain yang ditambahkan sesudahnya tidak ikut terpindai.
-// Batas heuristik: tabel dari string yang disusun dinamis, atau SQL di konstanta di luar fungsi mk*, tidak terlihat.
+// G-8 (D19: pintu masuk tidak mengaktifkan, menonaktifkan, atau mengubah akun modul lain): fungsi di src/hak.js
+// tidak menulis tabel AKUN modul lain. Tabel sesi (instansi_sesi, pdt_sesi, km_sesi, pemirsa_sesi) dan mk_*/alun_penulis sah.
+// Cakupan fungsi, dua lapis yang tidak bergantung satu sama lain:
+//   (1) nama: tiap deklarasi kolom-0 `export const|function|async function` berawalan mk, sandiPeran, atau alunPenulis;
+//   (2) pemakaian: nama apa pun yang diimpor src/masuk*.js dari "./hak.js", plus nama hak.js yang DIPANGGIL aturSandi di
+//       instansi.js, pendataan.js, kemitraan_akun.js (jalur tulis sandi akun peran dari pintu masuk).
+// Badan fungsi = dari deklarasinya sampai baris kolom-0 berikutnya yang bukan lanjutan (export/const/let/function/komentar).
+// Fungsi berizin (IZIN_TULIS_AKUN) boleh UPDATE tabel akun, tetapi: tanpa `status` di klausa SET, tanpa INSERT/DELETE/REPLACE,
+// dan tiap UPDATE wajib memuat `status = 'aktif'` di WHERE (akun nonaktif/diblokir tidak pernah tersentuh).
+// Batas heuristik: tabel dari string yang disusun dinamis, SQL di konstanta di luar badan fungsi, dan pemanggilan
+// lewat re-export/alias berantai tidak terlihat; akhir pernyataan SQL dianggap kutip " atau ` berikutnya.
 const TABEL_AKUN = "staf|instansi_akun|pdt_akun|km_akun|pemirsa";
-export function g8(teks) {
-  const salah = [], baris = teks.split("\n");
-  const re = new RegExp(String.raw`\b(?:INSERT\s+(?:OR\s+\w+\s+)?INTO|UPDATE(?:\s+OR\s+\w+)?|DELETE\s+FROM|REPLACE\s+INTO)\s+(?:${TABEL_AKUN})\b`, "gi");
+// Satu-satunya penulis tabel akun lain dari pintu masuk: ganti sandi lewat kode WA (ALUR A7). Menambah nama di sini
+// butuh keputusan pemilik di KEPUTUSAN-MASUK.md dulu.
+export const IZIN_TULIS_AKUN = ["sandiPeranTulis"];
+const TULIS = String.raw`(?:INSERT\s+(?:OR\s+\w+\s+)?INTO|DELETE\s+FROM|REPLACE\s+INTO)\s+(?:${TABEL_AKUN})\b`;
+const UBAH = new RegExp(String.raw`UPDATE(?:\s+OR\s+\w+)?\s+(?:${TABEL_AKUN})\b([^"\x60]*)`, "gi");
+const awalanPenjaga = /^(?:mk|sandiPeran|alunPenulis)/;
+export function blokHak(teks) {
+  const baris = teks.split("\n"), out = [];
   for (let i = 0; i < baris.length; i++) {
-    const h = /^export const (mk\w*)/.exec(baris[i]);
+    const h = /^export (?:const|function|async function) (\w+)/.exec(baris[i]);
     if (!h) continue;
     let j = i + 1;
     while (j < baris.length && !/^(?:export |const |let |function |async function |\/[*\/])/.test(baris[j])) j++;
-    for (const m of baris.slice(i, j).join("\n").matchAll(re)) salah.push(`${h[1]} (baris ${i + 1}): menulis tabel akun modul lain: ${m[0]}`);
+    out.push({nama: h[1], baris: i + 1, isi: baris.slice(i, j).join("\n")});
+  }
+  return out;
+}
+const impor = teks => [...teks.matchAll(/import\s*\{([^}]*)\}\s*from\s*["']\.\/hak\.js["']/gs)].flatMap(m => m[1].split(",").map(x => x.trim().split(/\s+as\s+/)[0]).filter(Boolean));
+// nama hak.js yang dipanggil di dalam fungsi aturSandi / aturSandiKode sebuah modul peran
+export function dipakaiAturSandi(teks) {
+  const diimpor = new Set(impor(teks)), out = [];
+  for (const b of blokHak(teks.replace(/^(async )?function /gm, "export function "))) {
+    if (!/^aturSandi/.test(b.nama)) continue;
+    for (const n of diimpor) if (new RegExp(String.raw`\b${n}\s*\(`).test(b.isi)) out.push(n);
+  }
+  return out;
+}
+export function g8(teks, tambahan = [], izin = IZIN_TULIS_AKUN) {
+  const salah = [], ekstra = new Set(tambahan), reTulis = new RegExp(TULIS, "gi");
+  for (const b of blokHak(teks)) {
+    if (!awalanPenjaga.test(b.nama) && !ekstra.has(b.nama)) continue;
+    const id = `${b.nama} (baris ${b.baris})`;
+    for (const m of b.isi.matchAll(reTulis)) salah.push(`${id}: menulis tabel akun modul lain: ${m[0]}`);
+    for (const m of b.isi.matchAll(UBAH)) {
+      if (!izin.includes(b.nama)) { salah.push(`${id}: menulis tabel akun modul lain: ${m[0].slice(0, 40)}`); continue; }
+      const [set, ...w] = m[1].split(/\bWHERE\b/i), where = w.join(" ");
+      if (/\bstatus\s*=/i.test(set)) salah.push(`${id}: fungsi berizin mengubah kolom status akun (SET): ${m[0].slice(0, 60)}`);
+      if (!/\bstatus\s*=\s*'aktif'/i.test(where)) salah.push(`${id}: UPDATE tabel akun tanpa status = 'aktif' di WHERE: ${m[0].slice(0, 60)}`);
+    }
   }
   return salah;
+}
+// cakupan nyata: hak.js + nama yang diimpor masuk*.js + nama yang dipanggil aturSandi di tiga modul peran
+export function g8Nyata() {
+  const tambahan = [...srcMasuk().flatMap(r => impor(baca(r))),
+    ...["src/instansi.js", "src/pendataan.js", "src/kemitraan_akun.js"].filter(r => existsSync(AKAR + r)).flatMap(r => dipakaiAturSandi(baca(r)))];
+  return g8(baca("src/hak.js"), tambahan);
 }
 
 const pindai = (berkas, fn, aturan, akibat, perbaiki) => {
@@ -159,13 +201,38 @@ test("G-7 mode gagal: tulis ke tabel modul lain ditolak", () => {
 test("G-7 berkas nyata: src/masuk*.js tidak menulis tabel akun modul lain", () =>
   pindai(srcMasuk(), g7, "G-7", "akun produksi bergeser tanpa lewat modul pemiliknya (D2)", "panggil sesiUntuk/cabutSesi yang diekspor modul pemilik, jangan tulis tabelnya"));
 
-test("G-8 mode gagal: mk* menulis tabel akun ditolak, tabel sesi dan fungsi lain lolos", () => {
-  assert.equal(g8("export const mkA = (env) => env.DB.prepare(\"UPDATE pdt_akun SET aktif=1\")").length, 1);
-  assert.equal(g8("export const mkB = async (env) => {\n  await x(\"INSERT INTO km_akun (a) VALUES (1)\");\n};").length, 1);
-  assert.equal(g8("export const mkC = e => e.DB.prepare('DELETE FROM pemirsa WHERE 1')").length, 1);
-  assert.deepEqual(g8("export const mkD = e => e.DB.prepare('INSERT INTO pdt_sesi (a) SELECT 1 FROM pdt_akun')"), []);
-  assert.deepEqual(g8("export const mkE = e => e.DB.prepare('INSERT INTO pemirsa_sesi (a) VALUES (1)')"), []);
-  assert.deepEqual(g8("export const lain = e => e.DB.prepare('UPDATE staf SET a=1')"), []);
+const H = "export const ";
+test("G-8 mode gagal: penulis tabel akun di luar izin ditolak, tabel sesi dan mk_* lolos", () => {
+  assert.equal(g8(H + "mkA = (env) => env.DB.prepare(\"UPDATE pdt_akun SET aktif=1\")").length, 1);
+  assert.equal(g8(H + "mkB = async (env) => {\n  await x(\"INSERT INTO km_akun (a) VALUES (1)\");\n};").length, 1);
+  assert.equal(g8(H + "mkC = e => e.DB.prepare('DELETE FROM pemirsa WHERE 1')").length, 1);
+  assert.equal(g8(H + "sandiPeranLain = e => e.DB.prepare('UPDATE staf SET a=1')").length, 1);   // awalan sandiPeran, bukan izin
+  assert.deepEqual(g8(H + "mkD = e => e.DB.prepare('INSERT INTO pdt_sesi (a) SELECT 1 FROM pdt_akun')"), []);
+  assert.deepEqual(g8(H + "mkE = e => e.DB.prepare('INSERT INTO pemirsa_sesi (a) VALUES (1)')"), []);
+  assert.deepEqual(g8(H + "alunPenulisTulis = e => e.DB.prepare('INSERT INTO alun_penulis (a) VALUES (1)')"), []);
+  assert.deepEqual(g8(H + "lain = e => e.DB.prepare('UPDATE staf SET a=1')"), []);               // di luar cakupan, tanpa impor
 });
-test("G-8 berkas nyata: fungsi mk* di src/hak.js tidak menulis tabel akun modul lain", () =>
-  pindai(["src/hak.js"], g8, "G-8", "akun instansi, pendataan, kampus, atau pemirsa bisa diaktifkan atau diubah dari pintu masuk, padahal D19 menyerahkannya ke Super Admin dan modul pemilik", "buang tulisan itu dari fungsi mk*; ubah akun lewat fungsi modul pemiliknya atau tandai di antrean tinjau (mk_*)"));
+test("G-8 mode gagal: fungsi non-mk yang diimpor masuk.js atau dipanggil aturSandi ikut dipindai", () => {
+  const hak = H + "tulisAkun = e => e.DB.prepare(\"UPDATE pdt_akun SET garam = 1 WHERE id = 1 AND status = 'aktif'\")";
+  assert.deepEqual(g8(hak), []);
+  assert.equal(g8(hak, ["tulisAkun"]).length, 1);
+  assert.deepEqual(impor('import {a as b,\n  tulisAkun, mkX} from "./hak.js";'), ["a", "tulisAkun", "mkX"]);
+  assert.deepEqual(dipakaiAturSandi('import {tulisAkun, mkSesiPeran} from "./hak.js";\nexport async function aturSandi(env) {\n  return await tulisAkun(env);\n}\nasync function lain() { mkSesiPeran(); }'), ["tulisAkun"]);
+  assert.deepEqual(dipakaiAturSandi('import {tulisAkun} from "./hak.js";\nasync function aturSandiKode(env) { return tulisAkun(env); }\nexport {aturSandiKode as aturSandi};'), ["tulisAkun"]);
+});
+test("G-8 mode gagal: fungsi berizin tidak boleh SET status, INSERT, atau UPDATE tanpa status aktif di WHERE", () => {
+  const ok = H + "sandiPeranTulis = async env => {\n  const a = env.DB.prepare(\"UPDATE pdt_akun SET garam = ?2, wajib_ganti = 0 WHERE id = ?1 AND status = 'aktif' AND dummy = 0\");\n};";
+  assert.deepEqual(g8(ok), []);
+  assert.equal(g8(ok.replace("wajib_ganti = 0", "status = 'aktif'")).length, 1);                       // SET status
+  assert.equal(g8(ok.replace("SET garam", "SET status='nonaktif', garam")).length, 1);
+  assert.equal(g8(ok.replace(" AND status = 'aktif'", "")).length, 1);                                 // WHERE tanpa status aktif
+  assert.equal(g8(ok.replace(/ WHERE.*?"/, ' "')).length, 1);                                          // tanpa WHERE sama sekali
+  assert.equal(g8(ok + '\n// x\nexport const sandiPeranTulis2 = 1;').length, 0);
+  assert.equal(g8(ok.replace("UPDATE pdt_akun", "INSERT INTO km_akun")).length, 1);                    // INSERT dilarang
+  assert.equal(g8(ok.replace("UPDATE pdt_akun SET", "DELETE FROM staf WHERE x = 1; UPDATE pdt_akun SET")).length, 1);
+  assert.deepEqual(g8(ok.replace("'aktif' AND dummy = 0\")", "'aktif' AND dummy = 0\"") + H + "mkDel = e => e.DB.prepare('DELETE FROM pdt_sesi WHERE akun_id = 1')"), []);
+});
+test("G-8 berkas nyata: fungsi hak.js untuk pintu masuk tidak menulis tabel akun modul lain kecuali penulis sandi berizin", () => {
+  const salah = g8Nyata().map(s => `src/hak.js: ${s}`);
+  assert.deepEqual(salah, [], `G-8 dilanggar. Akibat: akun instansi, pendataan, kampus, staf, atau pemirsa bisa diaktifkan, dinonaktifkan, atau diubah dari pintu masuk, padahal D19 menyerahkannya ke Super Admin dan modul pemilik. Perbaiki: buang tulisan itu dari fungsi tsb; ubah akun lewat fungsi modul pemiliknya, tandai di antrean tinjau (mk_*), atau, bila memang penulis sandi, hanya SET kolom sandi dengan WHERE status = 'aktif' dan catat keputusannya di KEPUTUSAN-MASUK.md sebelum menambah IZIN_TULIS_AKUN. ${RUJUK}`);
+});

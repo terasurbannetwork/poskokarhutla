@@ -414,7 +414,7 @@ uji("anggota T2/T3/R8: undangan dari pengundang yang tak lagi berhak mati; antre
   /* R8: nomor tujuan yang sama paling banyak 3 undangan sehari lintas akun dan pengundang */
   const akuns = [await instansi({wa: nomor(157)}), await instansi({wa: nomor(158)}), await instansi({wa: nomor(159)}), await instansi({wa: nomor(160)})];
   for (let k = 0; k < 3; k++) assert.equal((await undang(H(ADMIN), {wa: lokal(161), akun_id: akuns[k]})).s, 201);
-  const r8 = await undang(H(ADMIN), {wa: lokal(161), akun_id: akuns[3]}); assert.equal(r8.s, 429); assert.match(r8.j.galat, /nomor itu/);
+  const r8 = await undang(H(ADMIN), {wa: lokal(161), akun_id: akuns[3]}); assert.equal(r8.s, 429); assert.equal(r8.j.galat, "Nomor ini belum bisa diundang sekarang. Coba lagi besok.");
 });
 
 /* ---------------- halaman papan ---------------- */

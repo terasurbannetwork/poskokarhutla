@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/masuk.css?v=2" rel="stylesheet">
+<link href="/masuk.css?v=3" rel="stylesheet">
 </head>
 <body>
 <header class="ad-top">
@@ -33,6 +33,7 @@
       </label>
       <button class="bn-tombol" id="bKirim" type="submit">Kirim kode</button>
       <p class="bn-pesan" role="status"></p>
+      <button class="mk-tautan" id="bEmailNomor" type="button" hidden>Kirim kode ke email</button>
       <a class="mk-tautan" id="aSandi" href="/admin/masuk">Masuk dengan sandi</a>
     </form>
 
@@ -46,11 +47,28 @@
         <button class="mk-tautan" id="bUlang" type="button" disabled>Kirim ulang</button>
         <button class="mk-tautan" id="bGanti" type="button">Ganti nomor</button>
       </div>
+      <button class="mk-tautan" id="bEmail" type="button" hidden>Kirim ke email</button>
+    </form>
+
+    <form id="fEmail" class="bn-form" novalidate hidden>
+      <label class="bn-isian" for="iEmail">Alamat email akunmu
+        <input id="iEmail" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" required>
+      </label>
+      <button class="bn-tombol" id="bEmailKirim" type="submit">Kirim kode</button>
+      <p class="bn-pesan" role="status"></p>
+      <button class="mk-tautan" id="bEmailKembali" type="button">Kembali</button>
     </form>
 
     <div id="vRuang" class="mk-ruang" hidden>
       <ul id="daftarRuang" class="mk-daftar"></ul>
+      <ul id="daftarMenunggu" class="mk-daftar" hidden></ul>
       <p class="bn-pesan" role="status"></p>
+      <div id="vAkun" class="mk-akun" hidden>
+        <h2 class="mk-sub-judul">Akunmu</h2>
+        <ul id="daftarSandi" class="mk-daftar"></ul>
+        <button class="mk-tautan mk-bahaya" id="bHapusAkun" type="button">Hapus akun</button>
+      </div>
+      <p id="mkAkunInfo" class="mk-catatan" hidden>Untuk mengatur sandi atau menghapus akun, masuk lagi dengan kode WhatsApp.</p>
       <button class="mk-tautan" id="bPeran" type="button">Saya petugas atau relawan</button>
       <button class="mk-tautan" id="bKeluar" type="button" hidden>Keluar</button>
     </div>
@@ -79,6 +97,25 @@
       <button class="mk-tautan" id="bKembali" type="button">Kembali ke daftar ruang</button>
     </form>
 
+    <form id="fSandiBaru" class="bn-form" novalidate hidden>
+      <label class="bn-isian" for="iSandiBaru" id="lSandiBaru">Sandi baru
+        <input id="iSandiBaru" name="sandi" type="password" autocomplete="new-password" autocapitalize="none" spellcheck="false" minlength="10" maxlength="100">
+      </label>
+      <button class="mk-tautan" id="bLihatSandi" type="button" aria-pressed="false">Tampilkan sandi</button>
+      <p class="mk-catatan" id="cSandiBaru">Paling sedikit 10 huruf. Sesi lain akun ini ikut keluar.</p>
+      <output id="oSandiHasil" class="mk-sandi-hasil" hidden></output>
+      <button class="bn-tombol" id="bSandiBaru" type="submit">Simpan sandi</button>
+      <p class="bn-pesan" role="status"></p>
+      <button class="mk-tautan" id="bSandiKembali" type="button">Kembali ke daftar ruang</button>
+    </form>
+
+    <form id="fHapus" class="bn-form" novalidate hidden>
+      <p class="mk-catatan" id="cHapus"></p>
+      <button class="bn-tombol mk-bahaya-tombol" id="bHapusYa" type="submit">Ya, hapus akun saya</button>
+      <p class="bn-pesan" role="status"></p>
+      <button class="mk-tautan" id="bHapusBatal" type="button">Batal</button>
+    </form>
+
     <form id="fLengkapi" class="bn-form" novalidate hidden>
       <label class="bn-isian" for="iNama">Nama
         <input id="iNama" name="nama" type="text" autocomplete="name" minlength="2" maxlength="80" required>
@@ -98,7 +135,7 @@
         <summary>Baca selengkapnya</summary>
         <p>Yang kami simpan: nomor WhatsApp, nama, provinsi, dan kabupaten atau kota.</p>
         <p>Gunanya: membuatmu bisa masuk, menerima undangan, dan menerima pemberitahuan tugas.</p>
-        <p>Data ini tidak ditampilkan ke publik. Kamu bisa meminta data dan akunmu dihapus kapan saja.</p>
+        <p>Data ini tidak ditampilkan ke publik. Kamu bisa menghapus akunmu sendiri dari halaman akun kapan saja.</p>
       </details>
       <button class="bn-tombol" id="bSimpan" type="submit">Simpan</button>
       <p class="bn-pesan" role="status"></p>
@@ -107,6 +144,6 @@
 </main>
 <script src="/instansi_wilayah.js?v=1"></script>
 <script src="/bnpb/turnstile.js"></script>
-<script src="/masuk.js?v=2"></script>
+<script src="/masuk.js?v=3"></script>
 </body>
 </html>

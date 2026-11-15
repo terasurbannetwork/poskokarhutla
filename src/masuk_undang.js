@@ -225,7 +225,7 @@ async function undangBuat(env, req, url, kini) {
   if (akun && await mkSudahAnggota(env, nomor, akun.id)) return gagal(409, "nomor itu sudah menjadi anggota akun ini");
   const tabel = ke === "pendataan" ? "pdt_akun" : "instansi_akun";
   if (await mkUndangAda(env, nomor, tabel, akun?.id ?? null, kini)) return gagal(409, "nomor itu sudah punya undangan yang masih berlaku");
-  if (await mkUndangNomorHitung(env, nomor, kini - K.UNDANG_JENDELA) >= K.UNDANG_PER_NOMOR) return gagal(429, "nomor itu sudah menerima terlalu banyak undangan hari ini");
+  if (await mkUndangNomorHitung(env, nomor, kini - K.UNDANG_JENDELA) >= K.UNDANG_PER_NOMOR) return gagal(429, "Nomor ini belum bisa diundang sekarang. Coba lagi besok.");   // tanpa petunjuk tentang nomor itu
   const h = await mkUndangHitung(env, oleh.tabel, oleh.id, kini - K.UNDANG_JENDELA, kini);
   if (h.harian >= K.UNDANG_HARIAN) return gagal(429, "batas undangan hari ini sudah habis; coba lagi besok");
   if (h.terbuka >= K.UNDANG_TERBUKA) return gagal(429, "terlalu banyak undangan yang belum dijawab; tunggu atau cabut sebagian");
@@ -245,10 +245,9 @@ async function undangDaftar(env, req, url, kini) {
     if (!akunId) return gagal(400, "akun_id wajib");
     milik = await hakAkun(env, req, p, akunId); if (!milik) return gagal(403, "kamu bukan pemilik atau anggota akun itu");
   }
-  const baris = await mkUndangDaftar(env, ke === "pendataan" ? "pdt_akun" : "instansi_akun", ke === "pendataan" ? null : akunId, K.DAFTAR_MAKS);
   const aku = p.s ? {tabel: "mk_akun", id: p.s.id} : p.mod ? olehStaf(p.mod) : null;
-  const semua = !!p.mod || !!milik?.pemilik;   // anggota biasa hanya melihat undangan yang ia kirim sendiri
-  const lihat = baris.filter(u => semua || (!!aku && aku.tabel === u.oleh_tabel && aku.id === u.oleh_id));
+  const semua = !!p.mod || !!milik?.pemilik;   // anggota biasa hanya melihat undangan yang ia kirim sendiri: disaring di SQL sebelum LIMIT
+  const lihat = await mkUndangDaftar(env, ke === "pendataan" ? "pdt_akun" : "instansi_akun", ke === "pendataan" ? null : akunId, K.DAFTAR_MAKS, semua ? null : aku?.tabel ?? "-", semua ? null : aku?.id ?? "-");
   return json({undangan: lihat.map(u => ({id: u.id, nama: u.nama, wa: samar(u.wa), status: u.status === "terkirim" && u.habis <= kini ? "habis" : u.status, dibuat: u.dibuat, habis: u.habis,
     milikku: !!aku && (aku.tabel === u.oleh_tabel && aku.id === u.oleh_id)})), boleh_cabut_semua: !!milik?.pemilik || p.admin});
 }
@@ -284,10 +283,11 @@ async function anggotaCabut(env, req, url, kini, ctx, id) {
   const b = await bacaBody(req, 1024); if (b.galat) return gagal(b.status || 400, b.galat);
   const a = await mkAnggotaById(env, id), pemilik = !!a && !!p.s && !!a.akun_wa && a.akun_wa === p.s.wa && a.akun_status === "aktif";
   if (!a || (!p.admin && !pemilik)) return gagal(404, "anggota tidak ada");   // sama untuk id yang tidak ada dan yang tidak boleh diakses
-  if (!await mkAnggotaCabut(env, id, "cabut:" + labelOleh(p, pemilik), kini)) return gagal(409, "anggota itu sudah dicabut");
+  const sesi = b.o.cabut_sesi === true;
+  /* sudah dicabut + cabut_sesi: pemanggil berhak tetap boleh memutus sesi akun itu (tombol "Putuskan semua sesi"); tanpa cabut_sesi tetap 409 */
+  if (!await mkAnggotaCabut(env, id, "cabut:" + labelOleh(p, pemilik), kini) && !(a.status === "dicabut" && sesi)) return gagal(409, "anggota itu sudah dicabut");
   await mkUndangCabutOleh(env, "mk_akun", a.mk_id, a.akun_id);   // undangan sisa dari orang yang tak lagi berhak ikut mati
   /* anggota yang sudah dicabut tidak bisa mendapat sesi baru. Sesi instansi yang sudah terbit tidak mencatat orang, jadi hanya bisa dicabut untuk SEMUA pemegang akun itu (cabut_sesi) */
-  const sesi = b.o.cabut_sesi === true;
   if (sesi) await cabutSemuaSesi(env, a.akun_id);
   return json({ok: true, id, status: "dicabut", sesi_semua_dicabut: sesi, sesi_lama_masih_hidup: !sesi});
 }
@@ -296,9 +296,11 @@ async function anggotaTinjau(env, req, url, kini) {
   const ip = await batas(env, await ipHash(env, req), "masuk.baca_ip", K.LAJU_IP_BACA, kini); if (ip) return ip;
   const p = await pelaku(env, req, kini); if (!p.s && !p.mod) return gagal(401, "belum masuk");
   const wil = p.staf ? wilayahStaf(req) : [];
-  const baris = await mkAnggotaMenunggu(env, K.DAFTAR_MAKS, p.admin || (p.staf && !wil.length), p.s?.wa ?? "", JSON.stringify(wil));   // hak disaring di SQL sebelum LIMIT
+  const akunId = url.searchParams.get("akun_id") || "";
+  if (akunId && !reId.test(akunId)) return gagal(400, "akun_id tidak sah");
+  const baris = await mkAnggotaMenunggu(env, K.DAFTAR_MAKS, p.admin || (p.staf && !wil.length), p.s?.wa ?? "", JSON.stringify(wil), akunId);   // hak dan akun_id disaring di SQL sebelum LIMIT
   const tanda = await tandaInstansi(env, baris);
-  return json({anggota: baris.map((r, i) => ({id: r.id, nama: r.nama, wa: samar(r.wa), lembaga: r.wilayah, jenis: r.jenis, akun_aktif: r.akun_status === "aktif", dibuat: r.dibuat, cocok_kontak: tanda[i].cocok_kontak, nomor_terbukti: true}))});
+  return json({anggota: baris.map((r, i) => ({id: r.id, akun_id: r.akun_id, nama: r.nama, wa: samar(r.wa), lembaga: r.wilayah, jenis: r.jenis, akun_aktif: r.akun_status === "aktif", dibuat: r.dibuat, cocok_kontak: tanda[i].cocok_kontak, nomor_terbukti: true}))});
 }
 async function anggotaPutus(env, req, url, kini, ctx, id) {
   const g = penjaga(req, url); if (g) return g;
