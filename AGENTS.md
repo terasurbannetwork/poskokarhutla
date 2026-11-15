@@ -410,14 +410,14 @@ Aturan berhentinya sama dengan §2.1. Sistem hanya menyiapkan proyek; mengajukan
 
 ### 2.26 Alun-alun Terpadu (`/alun-alun`, kotak masuk alun-alun di `/instansi`, kabar warga per kejadian, rekap untuk pimpinan): baca dulu, baru bangun
 
-Sebelum menyentuh tautan utas alun-alun ke Buku Besar Kejadian, kotak masuk alun-alun akun instansi, balasan atas nama lembaga, status dan riwayat bantuan, pemberitahuan kebutuhan ke BPBD, atau rekap alun-alun untuk Layar Pimpinan dan dasbor pimpinan, baca dokumen di
-`data/kajian-bnpb/alun-terpadu/` dengan urutan otoritas ini (kode di `src/alun.js`, `src/alun_instansi.js`, `src/alun_konst.js`, bagian alun di `src/hak.js` dan `src/kejadian_tautan.js`, `public/instansi_alun.js`, `public/admin/alun.js` milik `warga-api`; `public/bnpb/alun-alun.*` dan `public/admin/pimpinan.js` milik `ruang-bnpb`; `scripts/siklus/alun_rekap.py`, sumber `alun` di `scripts/siklus/pasang.py`, dan `public/siklus/**` milik `siklus`; `public/inti/dasbor_pimpinan.js` milik `inti-layar`):
+Sebelum menyentuh kabupaten baku utas alun-alun, tautannya ke Buku Besar Kejadian, kotak masuk alun-alun akun instansi, balasan atas nama lembaga, status dan riwayat bantuan, tanda tidak valid, pemberitahuan kebutuhan ke BPBD, atau rekap alun-alun untuk Layar Pimpinan, baca dokumen di
+`data/kajian-bnpb/alun-terpadu/` dengan urutan otoritas ini (kode di `src/alun.js`, `src/alun_instansi.js`, `src/alun_konst.js`, bagian alun di `src/hak.js`, `src/kejadian_tautan.js`, `src/siklus_kejadian.js`, `src/siklus_kab.js`, `public/instansi_alun.js`, `public/admin/alun.js` milik `warga-api`; `public/bnpb/alun-alun.*` dan `public/admin/pimpinan.js` milik `ruang-bnpb`; `scripts/siklus/alun_rekap.py`, aturan sumber `alun` di `scripts/siklus/pasang.py`, dan `public/siklus/**` milik `siklus`):
 
-1. `KEPUTUSAN-ALUN.md`: keputusan pemilik K1–K7, rancangan D1–D13, pertanyaan terbuka Q1–Q9 dengan bawaan sementara; menang atas semuanya.
+1. `KEPUTUSAN-ALUN.md`: keputusan pemilik K1–K7, rancangan D1–D18, pertanyaan terbuka Q1–Q13 dengan bawaan sementara; menang atas semuanya.
 2. `RISET.md`, 3. `PRD.md` (F-1..F-12), 4. `ALUR.md`, 5. `ALGORITMA.md` (utas yang ditautkan, hak wilayah, ukuran rekap, pemberitahuan), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`AT-*`), `GLOSARIUM.md`.
 
-Aturan berhentinya sama dengan §2.1. Kiriman alun-alun tidak pernah membuat kejadian atau mengubah fasenya; pencocok tetap satu (`pasang.py`); rekap dihitung pipeline dan hanya memuat angka agregat tanpa data orang; tidak ada versi publik atau mitra sebelum pemilik menjawab Q1 dan Q2; tidak pernah menulis "aman"; label lembaga dihitung server.
+Aturan berhentinya sama dengan §2.1. Kiriman alun-alun tidak pernah membuat kejadian atau mengubah fasenya (dijaga di pencocok dan di rute ingest Worker); pencocok tetap satu (`pasang.py`); kabupaten utas berkode baku; pemberitahuan hanya untuk kiriman terverifikasi dan tanpa judul; rekap dihitung pipeline, tanpa judul dan tanpa data orang; tidak ada versi publik, mitra, pemirsa, atau Laporan Berkala sebelum pemilik menjawab Q1, Q2, Q11, Q12; tidak pernah menulis "aman"; label lembaga diambil server dan hanya untuk balasan lembaga; tanpa trigger dan tanpa `ALTER` pada tabel `alun_*`.
 
 ## 3. Bentuk kerja
 

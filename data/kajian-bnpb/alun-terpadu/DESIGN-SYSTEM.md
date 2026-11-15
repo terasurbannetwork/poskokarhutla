@@ -18,20 +18,20 @@ Tidak ada palet atau komponen baru. Layar memakai kepala situs bersama, token Ce
 
 ### L1. Form tulis utas (`/alun-alun`)
 
-Isian "Kabupaten atau kota" menjadi isian teks dengan daftar pilihan yang menyesuaikan provinsi (sama dengan langkah lengkapi di `/masuk`). Tetap bisa diketik bila daftar gagal dimuat. Tidak ada perubahan lain di form.
+Isian "Kabupaten atau kota" menjadi pilihan dari daftar yang menyesuaikan provinsi (isian teks dengan daftar pilihan; nilai yang dikirim adalah kode kabupaten). Teks yang tidak cocok dengan daftar ditolak dengan satu baris pesan di bawah isian: "Pilih kabupaten atau kota dari daftar." Bila daftar gagal dimuat, isian dinonaktifkan dan utas tetap bisa dikirim tanpa kabupaten.
 
 ### L2. Tanda di utas (`/alun-alun`)
 
 Di baris daftar dan kepala rincian, sesudah pil yang ada:
 
-- Pil "Terkait kejadian KJ-2026-0123" (ikon teruskan), menaut ke ringkasan publik kejadian. Hanya untuk kejadian yang sudah dipublikasikan.
-- Balasan lembaga: pil berikon perisai dengan nama lembaga ("BPBD Kabupaten Demak"), gaya sama dengan pil "Petugas" yang ada.
+- Pil "Terkait kejadian KJ-2026-0123" (ikon teruskan), menaut ke ringkasan publik kejadian. Hanya untuk kejadian yang sudah dipublikasikan. Di rincian, satu baris keterangan kecil: "Tanda ini menunjukkan keterkaitan, bukan kebenaran isi."
+- Balasan lembaga: pil berikon perisai dengan nama lembaga ("BPBD Kabupaten Demak"). Kiriman pribadi orang yang masuk hanya berpil "Terverifikasi", tanpa nama lembaga.
 
-Status bantuan memakai pil yang sudah ada (Terbuka, Ditangani, Selesai). Di rincian utas "butuh bantuan", bagian "Riwayat penanganan" berupa daftar ringkas: status, lembaga, waktu relatif, catatan.
+Status bantuan memakai pil yang sudah ada (Terbuka, Ditangani, Selesai). Di rincian kebutuhan, bagian "Riwayat penanganan" berupa daftar ringkas: status, lembaga atau pelaku, alasan, waktu relatif. Catatan staf tidak tampil di sini.
 
-### L3. Balas sebagai lembaga dari halaman alun-alun
+### L3. Tombol "Belum selesai" (`/alun-alun`)
 
-Di form balasan, bagi yang berhak: satu kotak centang "Balas sebagai <nama lembaga>". Saat dicentang, isian nama tampil disembunyikan dan tombol berbunyi "Kirim sebagai <nama lembaga>".
+Di rincian kebutuhan yang berstatus Selesai, bagi penulisnya selama 14 hari: tombol "Belum selesai". Menekannya menampilkan konfirmasi di dalam halaman ("Buka lagi kebutuhan ini?"), bukan dialog bawaan peramban.
 
 ### L4. Kotak masuk di `/instansi` (tab "Alun-alun")
 
@@ -47,25 +47,30 @@ Kartu standar bernama "Alun-alun".
 - Kolom Aksi: tombol ikon "Buka".
 - Urutan bawaan: kebutuhan terbuka paling lama di atas.
 - Di bawah 480 px: tabel menjadi daftar kartu baris.
-- Menekan "Buka" menampilkan rincian di panel yang sama: isi utas, balasan, form "Balas sebagai <nama lembaga>", dan untuk utas "butuh bantuan" deretan pilihan status tiga butir selebar wadah (Terbuka, Ditangani, Selesai) dengan isian catatan saat memilih Selesai.
-- Mengubah status dan menolak tidak memakai dialog bawaan peramban; konfirmasi tampil di dalam halaman.
+- Menekan "Buka" menampilkan rincian di panel yang sama: isi utas, balasan, riwayat (termasuk catatan staf), form "Balas sebagai <nama lembaga>", dan untuk kebutuhan deretan pilihan status tiga butir selebar wadah (Terbuka, Ditangani, Selesai).
+- Memilih Selesai menampilkan deretan pilihan alasan baku selebar wadah dan isian "Catatan untuk staf (opsional)".
+- Tombol "Tandai tidak valid" di kaki panel, dengan pilihan alasan baku dan konfirmasi di dalam halaman.
+- Tidak ada dialog bawaan peramban; semua konfirmasi tampil di dalam halaman.
 
 ### L5. Kartu "Alun-alun" di Layar Pimpinan (`/admin/pimpinan`)
 
 Kartu standar menggantikan kartu alun-alun yang ada.
 
-- Baris angka: Kebutuhan terbuka, Lama tak terjawab, Waktu respons (median 7 hari), Terjawab lembaga.
-- Tabel "Kabupaten dengan kebutuhan terbuka terbanyak": Kabupaten atau kota, Terbuka, Lama tak terjawab, Terakhir dijawab. Sepuluh baris.
+- Baris angka (kiriman terverifikasi): Kebutuhan terbuka, Lama tak terjawab, Waktu respons (median 7 hari), Terjawab.
+- Satu baris kecil di bawahnya: angka yang sama untuk kiriman tamu, berlabel "Kiriman tanpa akun".
+- Tabel per provinsi: Provinsi, Terbuka, Lama tak terjawab, Terjawab, Belum ada di Buku Besar. Urut abjad provinsi; kepala kolom bisa diurutkan. Tidak ada kata peringkat.
 - Baris kecil di pojok kartu: "Rekap <tanggal jam WIB>"; berwarna peringatan bila lebih dari 36 jam.
 - Kosong: "Rekap belum tersedia."
 
-### L6. Dasbor pimpinan (`/bnpb/pimpinan`)
+Dasbor pimpinan `/bnpb/pimpinan` tidak diubah paket ini (KEPUTUSAN Q11).
 
-Dua baris angka baru di kelompok operasi tiap bencana: "Kebutuhan warga terbuka" dan "Lama tak terjawab", dengan keterangan sumber dan waktu seperti baris operasi lain.
+### L6. Antrean "Ditandai tidak valid" (`/admin/alun`)
+
+Kartu standar bernama "Ditandai tidak valid": tabel Judul, Wilayah, Alasan, Lembaga penanda, Waktu, tombol ikon "Sembunyikan" dan "Cabut tanda". Moderator yang mengubah status kebutuhan memilih alasan baku yang sama dengan kotak masuk.
 
 ### L7. "Belum ada di Buku Besar" (`/admin/alun`)
 
-Kartu standar bernama "Belum ada di Buku Besar": tabel Jenis, Judul, Wilayah, Bencana, Umur, tombol ikon "Buka". Pemilih provinsi di kanan judul.
+Kartu standar bernama "Belum ada di Buku Besar": hitungan per provinsi dari rekap, dan tabel Jenis, Judul, Wilayah, Bencana, Umur, tombol ikon "Buka" yang dimuat dari basis data saat provinsi dipilih. Pemilih provinsi di kanan judul.
 
 ### L8. "Kabar warga" di halaman kejadian (`/siklus`)
 

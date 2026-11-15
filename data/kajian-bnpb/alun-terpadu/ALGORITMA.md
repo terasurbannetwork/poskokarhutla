@@ -2,92 +2,146 @@
 
 Semua ambang adalah usulan agent dan tinggal di satu tempat (`src/alun_konst.js` untuk Worker, kepala `scripts/siklus/alun_rekap.py` untuk pipeline, dengan uji yang memastikan keduanya sama).
 
-## 1. Utas yang dikirim ke pencocok kejadian
+## 1. Wilayah baku
+
+Saat utas ditulis:
+
+1. Provinsi wajib, kode 2 digit (seperti sekarang).
+2. Kabupaten opsional. Bila diisi, klien mengirim kode kabupaten 4 digit yang dipilih dari daftar. Server memeriksa kode itu ada dan termasuk provinsi yang dipilih (satu fungsi pemeriksa di `src/siklus_kab.js`, memakai tabel nama yang sama dengan `kab4Dari`). Tidak sah: ditolak 400 "pilih kabupaten atau kota dari daftar".
+3. Klien lama yang mengirim teks: server mencoba `kab4Dari(prov, teks)`; hasil null ditolak dengan pesan yang sama.
+4. Server menyimpan nama baku kabupaten ke `alun_utas.kab` (supaya tampilan lama tetap jalan) dan baris `alun_wilayah (utas_id, prov, kab4)`.
+5. Koordinat tetap disimpan dibulatkan seperti sekarang, tetapi tidak dipakai untuk menentukan wilayah.
+
+Utas tanpa kabupaten tidak punya `kab4`: masuk kotak masuk akun tingkat provinsi saja, tidak dikirim ke pencocok, tidak memicu pemberitahuan, dan dihitung "tanpa kabupaten" di rekap. Utas lama tanpa baris `alun_wilayah` diperlakukan sama.
+
+Syarat tambahan untuk AT-03: nama baku yang dikirim ke pipeline harus dipetakan pipeline (`KN.kab4(kab, prov)`) ke kode yang sama dengan kode Worker, untuk semua kabupaten dan kota. Ada uji yang membandingkan keduanya.
+
+## 2. Utas yang dikirim ke pencocok kejadian
 
 Satu baris ingest per utas yang memenuhi semua syarat:
 
-1. `jenis` utas adalah `butuh_bantuan` atau `info_lapangan`.
-2. `moderasi <> 'tersembunyi'` dan `dummy = 0`.
-3. `bencana` terpetakan ke jenis Buku Besar lewat `PETA` (`src/kejadian_tautan.js:13`). `umum` dan jenis yang tidak terpetakan tidak dikirim.
-4. `dibuat` dalam rentang yang diminta (paling lama 120 hari, aturan rute ingest yang ada).
+1. `jenis` utas `butuh_bantuan` atau `info_lapangan`.
+2. `moderasi = 'tampil'` dan `dummy = 0`.
+3. Punya baris `alun_wilayah` dengan `kab4`.
+4. Tidak punya tanda "tidak valid" (`alun_tanda`).
+5. `bencana` adalah jenis yang diterima Buku Besar (`JENIS_SAH`, `src/siklus_kejadian.js`) sesudah pemetaan nama (`PETA`, `src/kejadian_tautan.js`, yang hanya memetakan beberapa nama; sisanya lolos bila sudah sama). `umum`, `pesisir`, `udara`, dan jenis lain yang tidak diterima tidak dikirim.
+6. `dibuat` dalam rentang yang diminta (paling lama 120 hari, aturan rute ingest yang ada).
 
-Bentuk baris: `{sumber: "alun", kode: <id utas>, jenis: <jenis Buku Besar>, kab4, mulai: <dibuat>, lat, lon}`.
+Bentuk baris mengikuti kontrak rute ingest modul yang ada: `sumber`, `kode`, `jenis`, `prov`, `kab` (nama baku), `mulai`. Koordinat tidak dikirim. Rute memakai kursor `(dibuat, id)` dan indeks baru untuk itu.
 
-`kab4` = `kab4Dari(prov, kab)` (`src/siklus_kab.js:60`). Hasil null (kabupaten kosong, ejaan tidak dikenal, atau nama ganda) dikirim apa adanya; pencocok memakai `lat` dan `lon` bila ada, selain itu memberi status `tanpa_wilayah`.
+## 3. Aturan pencocok khusus sumber `alun`
 
-## 2. Keputusan pencocok
+Ini aturan baru di `scripts/siklus/pasang.py`, bukan aturan yang sudah ada:
 
-Aturan pencocok tidak diubah: jenis sama, kabupaten sama, dan `mulai` dalam jendela 3 hari dari rentang kejadian (`scripts/siklus/pasang.py:19`). Tambahan khusus sumber `alun`:
-
-| Keadaan | Status di `sk_kejadian_sumber` | Tampil sebagai |
+| Hal | Sumber lain (sekarang) | Sumber `alun` |
 | --- | --- | --- |
-| tepat satu kejadian cocok | terpasang | "Terkait kejadian KJ-..." |
-| lebih dari satu cocok | ambigu, dengan daftar kandidat | antrean tinjau staf |
-| kabupaten tidak dikenali dan tanpa koordinat | tanpa_wilayah | tidak ditampilkan ke publik |
-| berwilayah jelas, tidak ada yang cocok | tidak ada baris tautan | "Belum ada di Buku Besar" (hanya staf) |
+| Banyak baris sumber yang sama per kejadian | tidak (kejadian yang sudah punya entri sumber itu bukan kandidat) | boleh; pemeriksaan itu dilewati |
+| Tanpa kandidat | membuat kejadian `baru` | tidak membuat apa pun; tidak ada baris tautan |
+| Tepat satu kandidat | `tambah` | `tambah` |
+| Lebih dari satu kandidat | `ambigu`, masuk antrean tinjau | `ambigu` sebagai status saja; tidak masuk antrean tinjau |
+| Dihitung untuk "siap verifikasi" dan keyakinan | ya | tidak |
+| Urutan prioritas masuk | sesuai `PRIORITAS_MASUK` | paling akhir |
 
-Sumber `alun` tidak pernah membuat `sk_kejadian`, tidak mengubah `fase`, dan tidak dihitung sebagai bukti untuk kenaikan keyakinan kejadian (`yakin`). Ini diuji dengan menjalankan pencocok atas utas tanpa kejadian dan memeriksa jumlah baris `sk_kejadian` tidak bertambah.
+Kandidat ditentukan seperti sekarang: jenis sama, kabupaten sama, dan `mulai` kejadian dalam 3 hari dari `mulai` utas (`JENDELA = 3`).
 
-Utas yang kemudian disembunyikan moderator atau dihapus: tautannya dibuang pada putaran pencocok berikutnya.
+Penjaga kedua di Worker: `POST /api/siklus/ingest/kejadian` menolak aksi `baru` bila `sumber = 'alun'`, apa pun pengirimnya.
 
-## 3. Wilayah dan hak akun instansi
+Hasil yang dilihat orang:
 
-Satu utas "dalam wilayah" sebuah akun bila aturan lingkup yang sudah ada benar untuk `(prov, kab)` utas: akun tingkat kabupaten dengan `prov` dan `kab` sama, atau akun tingkat provinsi yang `cakupan`-nya memuat provinsi itu (`lingkupSql` dan `dalamLingkup`, `src/instansi.js:250`). Utas tanpa kabupaten hanya masuk kotak masuk akun tingkat provinsi.
+| Keadaan | Tampil sebagai |
+| --- | --- |
+| terpasang ke kejadian yang sudah dipublikasikan | "Terkait kejadian KJ-..." untuk semua orang |
+| terpasang ke kejadian yang belum dipublikasikan | hanya untuk staf, lewat rute Siklus |
+| ambigu | hanya hitungan di rekap |
+| berwilayah, tidak cocok | "Belum ada di Buku Besar" (hanya staf) |
+
+## 4. Mencabut tautan
+
+Saat moderator menyembunyikan atau menghapus utas, atau akun instansi menandainya tidak valid, Worker menghapus baris `sk_kejadian_sumber` bersumber `alun` untuk utas itu pada saat yang sama. Utas yang ditampilkan lagi dan masih dalam rentang akan dikirim lagi pada putaran pencocok berikutnya, karena kodenya sudah tidak ada. Tidak ada aksi ingest baru.
+
+## 5. Wilayah dan hak akun instansi
+
+Satu utas "dalam wilayah" sebuah akun bila `alun_wilayah.kab4` termasuk daftar kode kabupaten akun (`lingkupKab4`, `src/siklus_kab.js`), atau, untuk utas tanpa kabupaten, provinsinya termasuk cakupan akun tingkat provinsi. Penyaringan dilakukan di SQL atas `alun_wilayah`, bukan dengan membandingkan teks.
 
 | Tindakan | Syarat |
 | --- | --- |
-| Melihat kotak masuk | akun instansi aktif; utas dalam wilayah |
-| Membalas sebagai lembaga | akun instansi aktif; utas dalam wilayah; utas tidak tersembunyi |
-| Mengubah status bantuan | seperti di atas, dan jenis akun pemprov, pemkab, atau pemkot (Q8); utas berjenis `butuh_bantuan` |
-| Membalas sebagai lembaga dari halaman alun-alun | `sesi_masuk` sah; orang itu pemilik nomor atau anggota aktif **tepat satu** akun instansi aktif; utas dalam wilayah akun itu |
+| Melihat kotak masuk | sesi instansi aktif; utas dalam wilayah |
+| Membalas atas nama lembaga | seperti di atas; utas tidak tersembunyi |
+| Mengubah status bantuan | seperti di atas, dan jenis akun pemprov, pemkab, atau pemkot (Q8); utas `butuh_bantuan` |
+| Menandai tidak valid | sesi instansi aktif; utas dalam wilayah |
 
-Balasan lembaga disimpan sebagai `alun_balas` dengan `petugas = 1`, `nama` NULL, dan baris `alun_penulis` berlabel nama lembaga. Aturan aduan untuk balasan petugas (tidak bisa disembunyikan massa) berlaku.
+Balasan lembaga disimpan sebagai `alun_balas` biasa (`petugas = 0`, `nama` NULL dari server) dengan baris `alun_lembaga (pos_id, akun_id, lembaga)`. Nama lembaga diambil server dari akun. "Balasan resmi" berarti balasan lembaga atau balasan petugas pusat (`petugas = 1`).
 
-Transisi status bantuan: terbuka ke ditangani, ditangani ke selesai, terbuka ke selesai, dan kembali ke terbuka oleh lembaga yang sama atau moderator. Tiap transisi menulis satu baris riwayat (`alun_riwayat`): utas, dari, ke, lembaga, waktu, catatan (wajib untuk selesai, paling banyak 280 huruf). Riwayat tidak pernah diubah atau dihapus kecuali utasnya dihapus moderator.
+Aduan atas balasan lembaga: menjadi `dilaporkan` untuk moderator, tidak pernah tersembunyi otomatis (aturan yang sama dengan balasan petugas), diterapkan lewat keberadaan baris `alun_lembaga`.
 
-## 4. Ukuran rekap
+## 6. Status bantuan dan riwayat
 
-Rekap dihitung dari baris ingest rekap (utas `butuh_bantuan`, `info_lapangan`, `tanya` yang tampil dan bukan contoh, 90 hari terakhir) beserta waktu balasan lembaga pertamanya.
+Transisi yang sah:
+
+| Dari | Ke | Oleh |
+| --- | --- | --- |
+| terbuka | ditangani | akun instansi wilayah (pemprov, pemkab, pemkot), moderator, fitur Teruskan |
+| terbuka atau ditangani | selesai | akun instansi wilayah, moderator; wajib alasan baku |
+| ditangani atau selesai | terbuka | akun instansi yang sama jenisnya, moderator |
+| selesai | terbuka | pelapor, dalam 14 hari sejak ditutup |
+
+Alasan baku penutupan: bantuan sudah tiba, ditangani instansi lain, tidak ditemukan di lokasi, kiriman ganda, lainnya. Catatan bebas (paling banyak 280 huruf) boleh ditambahkan dan hanya terlihat staf dan moderator.
+
+Pelapor dikenali dari kode pemilik utas (`x-kode`, seperti penanda jawaban sekarang) atau dari `sesi_masuk` yang `mk_id`-nya sama dengan `alun_penulis` utas itu.
+
+Tiap transisi menulis satu baris `alun_riwayat`: utas, dari, ke, pelaku (`instansi`, `admin`, `pelapor`, `teruskan`), nama lembaga bila ada, alasan, catatan staf, waktu. Yang tampil publik hanya dari, ke, pelaku atau nama lembaga, alasan, dan waktu. Riwayat tidak pernah diubah; dihapus hanya bersama utasnya.
+
+## 7. Tanda tidak valid
+
+Akun instansi dalam wilayah boleh menandai satu utas tidak valid dengan alasan baku (bukan kebutuhan, ganda, di luar wilayah, lainnya). Akibatnya: utas keluar dari rekap dan pencocok, tautan kejadiannya dicabut, dan utas masuk antrean moderator. Utas tetap tampil. Moderator bisa mencabut tanda. Satu akun paling banyak 30 tanda per hari.
+
+## 8. Pemberitahuan
+
+Saat utas `butuh_bantuan` tersimpan dan semua ini benar: penulisnya punya `sesi_masuk` sah (ada baris `alun_penulis`), utas punya `kab4`, bukan dari moderator, dan `TURNSTILE_SECRET` terisi:
+
+1. Cari akun instansi aktif yang wilayahnya mencakup `kab4` itu.
+2. Periksa batas: 3 pemberitahuan per kabupaten per jam, 20 per akun per jam. Lewat batas: tidak dikirim (utas tetap ada di kotak masuk).
+3. Panggil `kabarkan()` dengan kunci `alun:<id utas>` supaya tidak ganda; batas 40 penerima per kunci yang ada berlaku.
+4. Isi: "Kebutuhan baru di alun-alun, <nama kabupaten>." dan tautan ke kotak masuk. Tanpa judul, isi, atau nama.
+5. Dijalankan di belakang jawaban (`waitUntil`), jadi kegagalan kirim tidak menggagalkan penulisan utas. Tidak ada jadwal cron baru.
+
+Kiriman tamu, kiriman tanpa kabupaten, dan kiriman moderator tidak memicu pemberitahuan.
+
+## 9. Ukuran rekap
+
+Rekap dihitung dari baris ingest rekap: utas `butuh_bantuan`, `info_lapangan`, dan `tanya` berstatus tampil, bukan contoh, tidak ditandai tidak valid, 90 hari terakhir. Tiap baris membawa: id, jenis utas, bencana, prov, kab4, dibuat, status bantuan, waktu balasan resmi pertama dan jenisnya (lembaga atau petugas pusat), tanda terverifikasi, status tautan kejadian (terpasang, ambigu, tidak ada), jumlah "dibuka lagi". Tanpa judul, isi, nama, nomor.
 
 | Ukuran | Definisi |
 | --- | --- |
-| Kebutuhan terbuka | jumlah utas `butuh_bantuan` dengan status terbuka saat rekap |
-| Lama tak terjawab | kebutuhan terbuka yang berumur lebih dari 24 jam (Q4) dan belum punya balasan lembaga |
-| Waktu respons | selisih `dibuat` utas dan waktu balasan lembaga pertama; median atas utas `butuh_bantuan` yang dibuat 7 hari terakhir dan sudah dijawab |
-| Terjawab lembaga | persentase utas `butuh_bantuan` 7 hari terakhir yang punya balasan lembaga |
-| Belum ada di Buku Besar | jumlah utas `info_lapangan` dan `butuh_bantuan` 7 hari terakhir yang berwilayah jelas dan tanpa tautan |
+| Kebutuhan terbuka | jumlah utas `butuh_bantuan` berstatus terbuka saat rekap |
+| Lama tak terjawab | kebutuhan terbuka berumur lebih dari 24 jam (Q4) tanpa balasan resmi |
+| Waktu respons | selisih `dibuat` dan balasan resmi pertama; median atas utas `butuh_bantuan` 7 hari terakhir yang sudah dijawab |
+| Terjawab | bagian utas `butuh_bantuan` 7 hari terakhir yang punya balasan resmi; dirinci lembaga dan petugas pusat |
+| Dibuka lagi | jumlah utas yang ditutup lalu dibuka pelapor, 7 hari terakhir |
+| Belum ada di Buku Besar | jumlah utas `info_lapangan` dan `butuh_bantuan` 7 hari terakhir yang berkabupaten dan tanpa tautan |
 | Topik | hitungan per pasangan jenis bencana dan jenis utas |
-| Terverifikasi | hitungan terpisah untuk utas yang punya baris `alun_penulis` dan yang tidak (Q6) |
+| Tanpa kabupaten | jumlah utas tanpa `kab4` |
 
-Pemecahan: nasional, per provinsi, per kabupaten (sepuluh teratas menurut kebutuhan terbuka ditulis ke berkas ringkas; seluruhnya ke berkas rinci).
+Angka utama tiap ukuran hanya dari kiriman terverifikasi. Kiriman tamu dihitung dengan definisi yang sama dan ditulis sebagai baris terpisah.
+
+Pemecahan: nasional, per provinsi, per kabupaten. Berkas ringkas memuat nasional dan per provinsi; berkas rinci memuat semua kabupaten.
 
 Aturan angka:
 
-- Median dari kurang dari 5 utas ditulis sebagai "belum cukup data", bukan angka.
-- Persentase dengan penyebut kurang dari 5 ditulis sebagai pecahan ("2 dari 3").
-- Tidak ada angka gabungan, skor, atau peringkat kinerja BPBD.
-- Waktu ditulis dengan `fmt.durasi` di layar ("6 jam 24 menit").
+- Median dari kurang dari 5 utas ditulis "belum cukup data".
+- Bagian dengan penyebut kurang dari 5 ditulis sebagai pecahan ("2 dari 3").
+- Hitungan per kabupaten di bawah 3 pada berkas rinci tetap ditulis apa adanya; berkas itu hanya untuk staf berwenang.
+- Tidak ada angka gabungan, skor, atau peringkat.
 
-## 5. Pemberitahuan
+## 10. Kesegaran
 
-Saat utas `butuh_bantuan` tersimpan (bukan dari moderator, bukan contoh):
+Berkas rekap membawa `dihitung`. Layar menandai "lama" bila lebih dari 36 jam.
 
-1. Cari akun instansi aktif yang wilayahnya mencakup utas (aturan bagian 3).
-2. Panggil `kabarkan()` dengan kunci kejadian `alun:<id utas>` supaya tidak terkirim dua kali; batas 40 penerima per kunci yang sudah ada berlaku.
-3. Isi: "Kebutuhan baru di alun-alun: <judul>, <kabupaten atau provinsi>." dengan tautan ke kotak masuk. Tanpa isi utas, tanpa nama penulis.
-4. Dijalankan lewat `ctx.waitUntil`, jadi kegagalan kirim tidak menggagalkan penulisan utas. Tidak ada jadwal cron baru.
-5. Tidak ada penerima: dicatat sebagai "dilewati"; utas tetap masuk pengingat admin `bantuan_terbuka` yang sudah ada.
+## 11. Uji kejujuran
 
-Batas banjir: paling banyak 20 pemberitahuan alun-alun per akun per jam; lebihnya digabung menjadi satu ("N kebutuhan baru di alun-alun").
-
-## 6. Kesegaran
-
-Berkas rekap membawa `dihitung` (waktu). Layar menandai "lama" bila lebih dari 36 jam. Tanda kejadian di utas membawa waktu keputusan pencocok terakhir.
-
-## 7. Uji kejujuran
-
-- Jumlah `sk_kejadian` tidak berubah oleh sumber `alun`.
-- Rekap tidak memuat `mk_id`, nama penulis, nomor, atau teks isi utas; hanya judul utas publik.
-- Angka rekap bisa dihitung ulang dari baris ingest yang sama (uji membandingkan dengan hitungan mandiri atas data uji).
+- Jumlah `sk_kejadian`, fase, dan keyakinannya tidak berubah oleh sumber `alun`, baik lewat pencocok maupun lewat rute ingest langsung.
+- Rekap tidak memuat judul, `mk_id`, nama, nomor, atau isi utas.
+- Angka rekap sama dengan hitungan mandiri atas data uji.
 - Tidak ada kata "aman" di teks yang dihasilkan.
 - Ambang di Worker dan pipeline sama.
+- Kode kabupaten Worker dan pipeline sama untuk semua kabupaten dan kota.

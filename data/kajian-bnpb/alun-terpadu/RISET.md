@@ -13,7 +13,7 @@ Diukur 15 Nov 2026 dari kode repo. Rujukan baris dicek ulang sebelum dipakai.
 | Keputusan pencocok dikirim balik | `POST /api/siklus/ingest/kejadian` | `src/siklus_kejadian.js:474` |
 | Baca tautan untuk layar | `GET /api/siklus/kejadian/tautan` (staf dan BPBD) | `src/kejadian_tautan.js:58` |
 | Peta id registri bencana ke jenis Buku Besar | `PETA` | `src/kejadian_tautan.js:13` |
-| Kode kabupaten dari nama | `kab4Dari(prov, kab)`; null bila ganda atau tidak dikenal | `src/siklus_kab.js:60` |
+| Kode kabupaten dari nama | `kab4Dari(prov, kab)`: cocok nama polos persis; null bila ganda atau tidak dikenal | `src/siklus_kab.js` |
 | Lingkup wilayah akun instansi | `lingkupSql`, `dalamLingkup`, `lingkupKab4` | `src/instansi.js:250`, `src/siklus_kab.js:49` |
 | Sesi instansi | `akunAktif`, `sesiDari`; kolom `tingkat`, `cakupan`, `prov`, `kab` | `src/instansi.js:108`, `:120` |
 | Rute instansi yang dipakai modul lain | pola `/api/instansi/siklus/*` | `src/siklus.js:47` |
@@ -40,6 +40,22 @@ Diukur 15 Nov 2026 dari kode repo. Rujukan baris dicek ulang sebelum dipakai.
 | Laporan Berkala belum punya kode | Hanya berkas angka yang disiapkan (D11) |
 | KEPUTUSAN-CEK-KABAR Q3: laporan warga tidak dipakai di fase 1 | Tidak diubah oleh paket ini (Q5) |
 | Dasbor pimpinan tidak punya registri kartu umum; baris operasi di larik `OPERASI` | Angka alun-alun masuk sebagai baris operasi baru |
+
+### 2.1 Koreksi dari pemeriksa bersih (15 Nov 2026)
+
+| Yang semula ditulis | Kenyataan di kode | Akibat untuk rancangan |
+| --- | --- | --- |
+| Pencocok dipakai apa adanya | `pasang.py` hanya menerima satu entri per sumber per kejadian, dan tanpa kandidat berarti membuat kejadian baru | aturan khusus sumber `alun` (ALGORITMA 3) |
+| Rute ingest Worker aman dari kiriman warga | `POST /api/siklus/ingest/kejadian` menerima aksi `baru` dari sumber mana pun, dan kejadian baru berkeyakinan terverifikasi | Worker menolak aksi `baru` untuk sumber `alun` |
+| Kode kabupaten dihitung dari teks saat ingest | `kab4Dari` cocok nama polos persis; daftar di `public/data/wilayah/indeks.json` berbentuk "Kab. X"; pipeline memetakan sendiri lewat `KN.kab4`; kotak masuk membandingkan teks | kabupaten baku berkode disimpan saat tulis (D4) |
+| Koordinat dipakai bila ejaan tidak dikenal | rute ingest membuang koordinat bila ada `kab`, dan mengirim 0,0 bila keduanya kosong | koordinat tidak dipakai untuk wilayah |
+| Tautan bisa dibuang pipeline | ingest hanya menyisipkan; tidak ada aksi lepas; hapus utas tidak menyentuh `sk_kejadian_sumber` | tautan dicabut di Worker saat moderasi (D12) |
+| Riwayat meniru trigger `dl_tindak` | `migrations/0128_dl_tindak.sql` tidak memakai trigger | tanpa trigger; dijaga kode dan gerbang (D11) |
+| Label lembaga lewat `alun_penulis` | `alun_penulis.mk_id` wajib terisi; balasan dari sesi instansi tidak punya `mk_id` | tabel samping `alun_lembaga` |
+| Rekap ditulis ke `alun/rekap/` | gudang Siklus menolak kunci di luar `siklus/{mentah,bersih,saji}/` | kunci di bawah `siklus/saji/alun/` |
+| Angka masuk dasbor pimpinan lewat `pb_ringkas` | rute itu juga dibuka untuk pemirsa; `/admin/pimpinan` hanya admin | dasbor pimpinan di luar paket (Q11) |
+| `kabarkan()` memuat judul | kepala `src/kabar.js` menyatakan isi tanpa teks bebas; `semuaAkun` dibatasi 500 akun | isi tanpa judul; pencarian akun wilayah berindeks sendiri |
+| Label lembaga hanya pada balasan lembaga | sekarang label menempel pada semua kiriman pemilik nomor akun (`src/alun.js`) | D7 mengubah perilaku itu |
 
 ## 3. Praktik yang ditiru
 
