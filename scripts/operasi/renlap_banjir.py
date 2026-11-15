@@ -10,6 +10,7 @@ tetangga terdekat. Usulan lokasi untuk dilihat, bukan perintah terbang.
 
   python3 scripts/operasi/renlap_banjir.py uji
   python3 scripts/operasi/renlap_banjir.py daftar [--prov ...] [--tanggal ...]   (daftar titik saja: CSV, KML, TXT)
+  python3 scripts/operasi/renlap_banjir.py peta [--prov ...] [--tanggal ...]     (PDF peta titik: ikhtisar + per kab/kota)
   python3 scripts/operasi/renlap_banjir.py buat --prov Aceh "Sumatera Utara" [--tanggal YYYY-MM-DD] [--kecepatan 200] [--keluar DIR]
 Keluaran: PDF per base + gabungan, KML, GPX, TXT siap WA, JSON (bawaan data/laporan-bnpb/paparan/renlap-udara-banjir-<tanggal>/).
 """
@@ -342,6 +343,92 @@ def daftar(a):
     print(keluar)
 
 
+def peta_pdf(a):
+    """PDF peta titik banjir belum surut: 1 halaman ikhtisar (semua titik bernomor + daftar), lalu 1 halaman per kab/kota
+    (citra satelit, batas kecamatan, titik, koordinat klik). Tanpa base dan rute."""
+    tanggal = a.tanggal or date.today().isoformat()
+    cp, dibuat, wa1 = target(a.prov, tanggal)
+    cp.sort(key=lambda c: (c['prov'], -c['lat'], c['kab'], c['kec']))
+    for i, c in enumerate(cp, 1):
+        c.update(urut=i, kode=str(i))
+    keluar = Path(a.keluar) if a.keluar else AKAR / f'data/laporan-bnpb/paparan/renlap-udara-banjir-{tanggal}'
+    kerja = keluar / 'kerja'; cache = RP.KERJA / 'ubin'
+    kerja.mkdir(parents=True, exist_ok=True); cache.mkdir(parents=True, exist_ok=True)
+    tg = f'{date.fromisoformat(tanggal):%d%m%y}'
+    meta = {'per': RP.tgl_panjang(R.waktu(dibuat)), 'wa': f'{int(wa1[8:])} {RP.BULAN[int(wa1[5:7]) - 1]} {wa1[:4]}'}
+    kaki_ = (f'<div class="kaki">Sumber: laporan Dit. Koordalops BNPB s.d. {meta["wa"]}, logbook Pusdalops BNPB, status banjir Centurisk97 (ECMWF IFS, GloFAS, InaRISK) '
+             f'{meta["per"]}. Titik = titik tengah kecamatan yang dilaporkan banjir belum surut, bukan lokasi genangan persis. Bertanda * = nama kecamatan belum dilaporkan, '
+             f'diambil dari kecamatan berstatus prakiraan tertinggi. Citra Esri World Imagery.</div>')
+    ey = 'BNPB, PANTAUAN UDARA BANJIR, TITIK KECAMATAN BELUM SURUT'
+
+    def peta(titik, W, H, nama, zmaks, geom=False):
+        la = [t['lat'] for t in titik]; lo = [t['lon'] for t in titik]
+        if geom:
+            pts = [p for t in titik for g in t['geom'] for q in ([g['coordinates']] if g['type'] == 'Polygon' else g['coordinates']) for p in q[0]]
+            la += [p[1] for p in pts]; lo += [p[0] for p in pts]
+        la0, la1, lo0, lo1 = min(la), max(la), min(lo), max(lo)
+        z = zmaks
+        while z > 4:
+            (ax, ay), (bx, by) = RP.gpx(la1, lo0, z), RP.gpx(la0, lo1, z)
+            if (bx - ax) * 1.15 <= W and (by - ay) * 1.15 <= H:
+                break
+            z -= 1
+        clat, clon = (la0 + la1) / 2, (lo0 + lo1) / 2
+        P = RP.bingkai(clat, clon, z, W, H, cache, kerja / f'{nama}.jpg')
+        s = [f'<svg viewBox="0 0 {W} {H}" xmlns="http://www.w3.org/2000/svg">']
+        if geom:
+            for t in titik:
+                for g in t['geom']:
+                    for q in ([g['coordinates']] if g['type'] == 'Polygon' else g['coordinates']):
+                        d = ' '.join(f'{x:.1f},{y:.1f}' for x, y in (P(p[1], p[0]) for p in q[0]))
+                        s.append(f'<polygon points="{d}" fill="#38bdf8" fill-opacity=".14" stroke="#fff" stroke-width="2.5" stroke-dasharray="9 6"/>')
+        for t in titik:
+            s += RP.penanda(P, t, 15 if geom else 12, label=t['kec'] if geom else None, ukuran=19)
+        mpp = RP.m_per_px(clat, z)
+        bar = next(k for k in (1, 2, 5, 10, 20, 25, 50, 100) if k * 1000 / mpp >= W * .12)
+        return s + RP.skala(W, H, mpp, bar) + RP.utara(W) + ['</svg>']
+
+    def baris(t, ringkas=False):
+        bintang = '*' if t['sumber_nama'] == 'prakiraan sistem' else ''
+        kab_ = f' <span style="color:#6b7280">{html.escape(t["kab"])}</span>' if ringkas else f'<br><span style="color:#6b7280">{html.escape(t["kab"])}</span>'
+        return (f'<tr><td><span class="bul">{t["urut"]}</span></td><td><b>{html.escape(t["kec"])}{bintang}</b>{kab_}</td>'
+                f'<td class="n"><a href="{RP.gmaps(t["lat"], t["lon"])}">{t["lat"]:.4f}, {t["lon"]:.4f}</a></td><td class="n">{pil(max(t["lv"] or [0]))}</td></tr>')
+
+    isi = []
+    s = peta(cp, 1100, 1060, 'ikhtisar', 10)
+    kab = list(dict.fromkeys(c['kab'] for c in cp))
+    tabel = lambda xs, ringkas=False: (f'<table class="{"rk" if ringkas else ""}"><thead><tr><th></th><th>Kecamatan</th><th class="n">Koordinat</th><th class="n">Prakiraan</th></tr></thead>'
+                                       f'<tbody>{"".join(baris(t, ringkas) for t in xs)}</tbody></table>')
+    h = (len(cp) + 1) // 2
+    kpi = (f'<div class="kpi"><div class="o"><b>{RP.ang(len(cp))} kecamatan</b><span>banjir belum surut</span></div><div><b>{RP.ang(len(kab))} kab/kota</b><span>Aceh dan Sumatera Utara</span></div>'
+           f'<div><b>{RP.ang(sum(1 for c in cp if max(c["lv"] or [0]) >= 2))} kecamatan</b><span>Siaga atau Awas pada prakiraan</span></div>'
+           f'<div class="o"><b>{RP.ang(sum(1 for c in cp if c["sumber_nama"] == "prakiraan sistem"))} titik</b><span>nama kecamatan belum dilaporkan (*)</span></div></div>')
+    isi.append(f'<section class="hal">{RP.kepala(ey, "Titik banjir belum surut di Aceh dan Sumatera Utara", meta)}{kpi}'
+               f'<div class="dua"><div><div class="peta" style="height:118mm"><img src="ikhtisar.jpg">{"".join(s)}</div>'
+               f'<div class="leg"><span><i style="background:#e8590c"></i>Titik tengah kecamatan, nomor sesuai daftar</span></div></div>'
+               f'<div class="kartu" style="display:grid;grid-template-columns:1fr 1fr;gap:3mm;font-size:.74em"><div>{tabel(cp[:h], True)}</div><div>{tabel(cp[h:], True)}</div></div></div>{kaki_}</section>')
+    for k in kab:
+        xs = [c for c in cp if c['kab'] == k]
+        s = peta(xs, 1000, 1000, f'kab_{xs[0]["urut"]}', 14, geom=True)
+        o = xs[0]
+        info = (f'<tr><td>Kondisi terakhir</td><td>{html.escape(o["kondisi"])} ({date.fromisoformat(o["akhir"]).day} {RP.BULAN[int(o["akhir"][5:7]) - 1]})</td></tr>'
+                f'<tr><td>KK terdampak</td><td>{RP.ang(o["kk"]) if o["kk"] else "–"}</td></tr><tr><td>Mengungsi</td><td>{RP.ang(o["ungsi"]) + " jiwa" if o["ungsi"] else "–"}</td></tr>'
+                f'<tr><td>Status darurat</td><td>{html.escape(o["darurat"])}</td></tr><tr><td>Nama kecamatan dari</td><td>{o["sumber_nama"]}</td></tr>')
+        isi.append(f'<section class="hal"><div class="kepala"><div><div class="ey">{ey}</div><h1>{html.escape(k)}, {html.escape(o["prov"])}</h1></div>'
+                   f'<div class="per"><span class="pil abu">{RP.ang(len(xs))} kecamatan</span></div></div>'
+                   f'<div class="dua cp"><div><div class="peta" style="height:150mm;width:150mm"><img src="kab_{xs[0]["urut"]}.jpg">{"".join(s)}</div>'
+                   f'<div class="leg"><span style="color:#0284c7">- - Batas kecamatan</span><span><i style="background:#e8590c"></i>Titik tengah kecamatan</span></div></div>'
+                   f'<div><div class="kartu"><h3>Koordinat, klik untuk Google Maps</h3>{tabel(xs)}</div>'
+                   f'<div class="kartu"><h3>Laporan Koordalops</h3><table><tbody>{info}</tbody></table></div></div></div>{kaki_}</section>')
+    hf = kerja / 'peta.html'
+    css = RP.CSS + '.rk td{padding:1.2mm 1.5mm!important;line-height:1.15}.rk .bul{width:5mm;height:5mm;font-size:.85em}.rk .pil{padding:.3mm 2mm}'
+    hf.write_text(f'<!doctype html><html lang="id"><head><meta charset="utf-8"><style>{css}</style></head><body>{"".join(isi)}</body></html>')
+    pdf = keluar / f'Peta Titik Banjir Belum Surut {tg}.pdf'
+    subprocess.run([RP.cari_chrome(), '--headless=new', '--disable-gpu', '--no-pdf-header-footer', '--virtual-time-budget=15000',
+                    f'--print-to-pdf={pdf}', hf.as_uri()], check=True, capture_output=True, timeout=900)
+    print(pdf)
+
+
 def uji():
     kec_kab = {'meureudu': 'Meureudu', 'bandar dua': 'Bandar Dua', 'blangkejeren': 'Blangkejeren'}
     kej = [{'kab_kode': ['11|Pidie Jaya'], 'kec': ['Meureudu', 'Bandar dua', 'Lawe Alas']}]
@@ -359,10 +446,10 @@ if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'uji':
         uji(); sys.exit()
     ap = argparse.ArgumentParser()
-    ap.add_argument('perintah', choices=['buat', 'daftar'])
+    ap.add_argument('perintah', choices=['buat', 'daftar', 'peta'])
     ap.add_argument('--prov', nargs='+', default=['Aceh', 'Sumatera Utara'])
     ap.add_argument('--tanggal', default='')
     ap.add_argument('--kecepatan', type=float, default=200.0, help='km/jam jelajah helikopter')
     ap.add_argument('--keluar', default='')
     a = ap.parse_args()
-    (daftar if a.perintah == 'daftar' else buat)(a)
+    {'daftar': daftar, 'peta': peta_pdf, 'buat': buat}[a.perintah](a)
