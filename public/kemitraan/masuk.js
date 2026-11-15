@@ -20,7 +20,8 @@
     <form id="msForm" novalidate>${fieldHtml("msEmail", "Email", "email", 'autocomplete="username" maxlength="120"')}${fieldHtml("msSandi", "Sandi", "password", 'autocomplete="current-password" maxlength="100"')}
       <p class="km-pesan" id="msPesan" role="alert" hidden></p>
       <div class="km-aksi"><button type="submit" class="ak-tbl" id="msKirim">${ikon(IK_KUNCI, "")}<span>Masuk</span></button><a class="ak-tbl alt" href="/kemitraan/daftar">${ikon(IK_SURAT, "")}<span>Daftar</span></a></div>
-    </form></section>`;
+    </form>
+    <p class="km-ket"><a href="/masuk?ke=%2Fkemitraan">Masuk dengan nomor WhatsApp</a></p></section>`;
   const aturHtml = () => `<section class="ak-panel km-form km-sempit">
     <h2 class="km-judul">Atur sandi</h2>
     <p class="km-ket">Tautan ini berlaku sekali dan 72 jam sejak diterbitkan. Sandi minimal 10 karakter.</p>
