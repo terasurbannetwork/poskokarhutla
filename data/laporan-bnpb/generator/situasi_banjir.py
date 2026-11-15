@@ -576,7 +576,7 @@ def slide_lengkap(L):
           (rb(len(belum)), 'Kab/kota belum surut', KONDISI['Belum surut'][0], KONDISI['Belum surut'][1], 'banjir-putih.png'),
           (rb(kk), 'KK terdampak', 'EEF3F9', NAVY, 'rumah-putih.png'), (rb(jiwa or None), 'Jiwa terdampak', 'EEF3F9', NAVY, 'orang-putih.png'),
           (rb(ungsi or None), 'Jiwa mengungsi', 'EEF3F9', NAVY, 'tenda-putih.png'),
-          (rb(hilang + md or None), 'Jiwa meninggal dan hilang', KONDISI['Belum surut'][0], KONDISI['Belum surut'][1], 'hati-putih.png'),
+          (rb(hilang + md or None), 'Jiwa meninggal atau hilang', KONDISI['Belum surut'][0], KONDISI['Belum surut'][1], 'hati-putih.png'),
           (rb(cA + cS), 'Kecamatan Siaga dan Awas', LEVEL[2][0], LEVEL[2][1], 'awas-putih.png'), (rb(cW), 'Kecamatan Waspada', LEVEL[1][0], 'C98A4B', 'hujan-putih.png')]
     for i, (n_, ket, isi, tg, ik) in enumerate(ub):
         ubin(sl, .6 + (i % 4) * (w4 + .07), 1.45 + (i // 4) * .66, w4, .6, n_, ket, isi, tg, ik)
