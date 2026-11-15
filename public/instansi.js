@@ -263,7 +263,19 @@
     f.innerHTML = `<option value="">Semua</option>` + kab.map(k => `<option ${k === filter.kab ? "selected" : ""}>${esc(k)}</option>`).join("");
     segarkanChip(); $("bJarak").textContent = posisi ? "Jarak darimu aktif" : "Urut terdekat";
     $("daftar").innerHTML = daftarHtml(); $("daftar").removeAttribute("aria-busy");
+    tandaKejadian();
     perbaruiPenanda();
+  }
+  /* KP-07: tanda kejadian Buku Besar di bawah tiap baris tugas; dipasang di tugas tertunda supaya klik tidak tertahan */
+  function tandaKejadian() {
+    if (!window.KjTanda) return;
+    window.nanti(() => {
+      const d = [];
+      for (const b of document.querySelectorAll("#daftar .in-baris[data-id]")) {
+        const el = document.createElement("div"); el.className = "kj-baris"; b.after(el); d.push({sumber: "tugas_api", kode: b.dataset.id, el});
+      }
+      window.KjTanda.pasang(d);
+    });
   }
   /* chip jenis bencana: Semua dan bahaya yang punya tugas; hanya muncul bila ada lebih dari satu bahaya. Keadaan aktif diperbarui seketika oleh penangan klik (chrome urgent). */
   function segarkanChip() {

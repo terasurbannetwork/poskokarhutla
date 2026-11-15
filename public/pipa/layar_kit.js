@@ -233,12 +233,21 @@ export const tabBbmHtml = (bbm, per = null) => tabel(["Waktu", "Jenis", "Aksi", 
 export function tabTugasHtml(tugas, peran, kini = Date.now(), per = null) {
   const tulis = peran === "W" || peran === "M";
   const status = t => t.dicabut != null ? ["dicabut"] : kini >= t.berakhir ? ["kedaluwarsa"] : ["aktif"];
-  const baris = tugas.map(t => { const [s] = status(t); return `<tr>${td("Regu", esc(t.nama_regu))}${td("Unsur", esc(UNSUR[t.unsur] ?? t.unsur))}${td("Wilayah", esc(`${t.kab ?? "–"}, ${namaProv(t.prov)}`))}${td("Berlaku", `${waktuTag(t.mulai)} sampai ${waktuTag(t.berakhir)}`)}${td("Status", pilStatus(s, false, s))}${td("Aksi", tulis && s === "aktif" ? `<button type="button" class="ad-tombol bahaya" data-cabut="${esc(t.id)}">Cabut tugas</button>` : "")}</tr>`; });
+  const baris = tugas.map(t => { const [s] = status(t); return `<tr>${td("Regu", `${esc(t.nama_regu)}<div data-kj="sippa:${esc(t.id)}"></div>`)}${td("Unsur", esc(UNSUR[t.unsur] ?? t.unsur))}${td("Wilayah", esc(`${t.kab ?? "–"}, ${namaProv(t.prov)}`))}${td("Berlaku", `${waktuTag(t.mulai)} sampai ${waktuTag(t.berakhir)}`)}${td("Status", pilStatus(s, false, s))}${td("Aksi", tulis && s === "aktif" ? `<button type="button" class="ad-tombol bahaya" data-cabut="${esc(t.id)}">Cabut tugas</button>` : "")}</tr>`; });
   return `<p class="ad-catat">Kode penugasan tidak pernah ditampilkan lagi sesudah dibuat; yang tersimpan hanya sidik jarinya.</p>${tabel(["Regu", "Unsur", "Wilayah", "Berlaku", "Status", "Aksi"], baris, "Belum ada penugasan untuk kit ini.", per)}${tulis ? `<div class="sp-aksi"><button type="button" class="ad-tombol" data-tugaskan>Tugaskan</button></div>` : ""}`;
 }
 
 /* ---------- DOM ---------- */
 const el = (tag, kelas, teks) => { const e = document.createElement(tag); if (kelas) e.className = kelas; if (teks != null) e.textContent = teks; return e; };
+/* KP-07: tanda kejadian Buku Besar di tab Penugasan; skrip dan gayanya dimuat sekali, pasangnya menunggu halaman tercat */
+let muatKj = null;
+function tandaKejadian(akar) {
+  muatKj ??= new Promise(ok => {
+    if (window.KjTanda) return ok(); const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/inti/kj_tanda.css?v=1"; document.head.append(l);
+    const sk = document.createElement("script"); sk.src = "/inti/kj_tanda.js?v=1"; sk.onload = sk.onerror = () => ok(); document.head.append(sk);
+  });
+  muatKj.then(() => window.KjTanda?.pindai(akar));
+}
 const peranSaya = () => peranKlien(document.body?.dataset);
 const pergi = jalur => { history.pushState(null, "", jalur + location.search); dispatchEvent(new PopStateEvent("popstate")); };   // app.js mendengar popstate: aria-current seketika, layar sesudah satu frame
 
@@ -537,7 +546,7 @@ async function rincian(akar, konteks) {
     return st.tab === "komponen" ? tabKomponenHtml(d.komponen || [], peran, {ubah: st.ubah, per: st.per}) : st.tab === "gerak" ? tabGerakHtml(d.gerak || [], d.kit, peran, st.per)
       : st.tab === "pemakaian" ? tabPemakaianHtml(d.pemakaian || [], st.per) : st.tab === "bbm" ? tabBbmHtml(d.bbm || [], st.per) : tabTugasHtml(d.tugas || [], peran, Date.now(), st.per);
   };
-  const gambarTab = () => { if (!sinyal.aborted && st.d) isi.querySelector("#sp-tab-isi").innerHTML = isiTab(); };
+  const gambarTab = () => { if (!sinyal.aborted && st.d) { const w = isi.querySelector("#sp-tab-isi"); w.innerHTML = isiTab(); if (st.tab === "tugas") tandaKejadian(w); } };
   /* satu gambar ulang antre sekaligus: klik beruntun tidak menumpuk kerja berat */
   let tabTerjadwal = false;
   const jadwalkanTab = () => { if (tabTerjadwal) return; tabTerjadwal = true; nanti(() => { tabTerjadwal = false; gambarTab(); }); };

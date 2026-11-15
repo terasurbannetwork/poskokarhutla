@@ -1,0 +1,10 @@
+/* Keterpaduan KP-07: Tanda kejadian. Pil tanpa garis tepi, ikon polos. */
+.kj-tanda{display:inline-flex;align-items:center;gap:4px;max-width:100%;padding:1px 8px;border-radius:999px;font:600 11.5px/1.5 var(--font,inherit);letter-spacing:0;text-decoration:none;white-space:nowrap;vertical-align:middle}
+.kj-tanda svg{flex:none}
+.kj-ok{background:color-mix(in oklab,var(--ink,#10265c) 9%,transparent);color:var(--ink,#10265c)}
+.kj-ambigu{background:oklch(93% .09 90);color:oklch(36% .08 80)}
+.kj-belum{background:color-mix(in oklab,var(--ink2,#566) 14%,transparent);color:var(--ink2,#566);font-weight:500}
+a.kj-tanda:hover{text-decoration:underline}
+a.kj-tanda:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+:root[data-theme="dark"] .kj-ambigu{background:oklch(40% .08 85);color:oklch(94% .07 90)}
+.kj-baris{padding:0 12px 6px}

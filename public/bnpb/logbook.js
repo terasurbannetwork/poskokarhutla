@@ -361,11 +361,12 @@
       const wil = [e.desa, e.kec, String(e.kab || "").split("|").pop()].filter(Boolean).join(", ");
       const wk = e.waktu ? new Date(e.waktu).toLocaleTimeString("id-ID", {timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit"}).replace(".", ":") : "";
       const kd = larik(e.kendala);
-      tb.append(h("tr", null, h("td", {teks: wk}), h("td", null, pil(namaJenis(e.jenis || "lainnya"), "info", e.jenis || "lainnya")), h("td", null, e.status === "tutup" ? pil("Ditutup", "ok", "ok") : pil("Buka", "tunggu", "tunggu")), h("td", {teks: wil}),
+      tb.append(h("tr", null, h("td", null, h("span", {teks: wk}), e.kejadian_id ? h("div", {"data-kj": "logbook_d1:" + e.kejadian_id}) : null), h("td", null, pil(namaJenis(e.jenis || "lainnya"), "info", e.jenis || "lainnya")), h("td", null, e.status === "tutup" ? pil("Ditutup", "ok", "ok") : pil("Buka", "tunggu", "tunggu")), h("td", {teks: wil}),
         h("td", null, ringkasDampak(e), e.ambang && !e.ambang.ya ? h("div", null, pil("Di bawah ambang Juklak 7/2023", "tunggu", "tunggu")) : null), h("td", null, h("div", {class: "lb-ikonbaris"}, kd.map(k => h("span", {title: KENDALA[k] || k}, ikon(k)))))));
     }
     boxHari.replaceChildren(h("div", {class: "lb-tabel-bungkus"}, h("table", {class: "lb-tabel"}, h("thead", null, h("tr", null, ["Jam", "Jenis", "Status", "Wilayah", "Dampak", "Kendala"].map(t => h("th", {teks: t})))), tb)),
       h("p", {class: "lb-draf", teks: `${F(rows.length)} entri`}));
+    if (window.KjTanda) window.KjTanda.pindai(boxHari);   // KP-07: tanda kejadian Buku Besar, hanya baris yang terlihat
   }
 
   /* ---------- dummy (Super Admin saja) ---------- */
