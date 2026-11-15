@@ -225,19 +225,23 @@ def peta(png, w_in, h_in, warna, label=(), kode=None, kotak=None):
                 d.polygon(pts, fill=('#' + warna[k]) if k in warna else ('#F3F5F8' if luar else '#E1E6ED'), outline='#FFFFFF', width=SS)
     F = lambda n, b=True: ImageFont.truetype(os.path.join(FONT, 'Roboto-' + ('Bold' if b else 'Regular') + '.ttf'), n * SS)
     if label:
-        fn, fs, ph, D = F(30), F(24, False), 52 * SS, 38 * SS
-        A = [dict(k=k, n=n, st=t, isi=i, tg=c, ik=ik, ax=X(pus[k][0]), ay=Y(pus[k][1])) for k, n, t, i, c, ik in label if k in pus]
+        # pil berlabel; status boleh dua baris "ringkas\nrincian" (mis. jumlah dan nama kecamatan Siaga), baris kedua di bawah nama
+        fn, fs, f2, D = F(34), F(28), F(26, False), 42 * SS
+        A = [dict(k=k, n=n, st=t.split('\n')[0], st2=(t.split('\n') + [''])[1], isi=i, tg=c, ik=ik, ax=X(pus[k][0]), ay=Y(pus[k][1]))
+             for k, n, t, i, c, ik in label if k in pus]
+        for a in A:
+            a['ph'] = 58 * SS; a['blok'] = a['ph'] + (40 * SS if a['st2'] else 0)   # nama kecamatan di bawah pil, di luar pil
+            a['w'] = 8 * SS + D + 10 * SS + d.textlength(a['n'], font=fn) + 8 * SS + d.textlength(a['st'], font=fs) + 16 * SS
         A.sort(key=lambda a: a['ax']); h = (len(A) + 1) // 2; kiri, kanan = A[:h], A[h:]
         for grup, sisi in ((kiri, 'l'), (kanan, 'r')):
             grup.sort(key=lambda a: a['ay']); n = len(grup)
             for i, a in enumerate(grup):
-                a['w'] = 8 * SS + D + 8 * SS + d.textlength(a['n'], font=fn) + 8 * SS + d.textlength(a['st'], font=fs) + 14 * SS
-                y_ideal = min(max(a['ay'], ph), H_ - ph)
-                a['y'] = y_ideal if n == 1 else ph + i * (H_ - 2 * ph) / (n - 1) * 0.5 + y_ideal * 0.5
+                y_ideal = min(max(a['ay'], a['ph']), H_ - a['blok'])
+                a['y'] = y_ideal if n == 1 else a['ph'] + i * (H_ - 2 * a['blok']) / (n - 1) * 0.5 + y_ideal * 0.5
                 a['x0'] = 6 * SS if sisi == 'l' else W_ - 6 * SS - a['w']; a['x1'] = a['x0'] + a['w']
             for i in range(1, n):   # tanpa tumpuk
-                grup[i]['y'] = max(grup[i]['y'], grup[i - 1]['y'] + ph + 8 * SS)
-            lebih = grup[-1]['y'] + ph / 2 - H_ if grup else 0
+                grup[i]['y'] = max(grup[i]['y'], grup[i - 1]['y'] - grup[i - 1]['ph'] / 2 + grup[i - 1]['blok'] + grup[i]['ph'] / 2 + 10 * SS)
+            lebih = grup[-1]['y'] - grup[-1]['ph'] / 2 + grup[-1]['blok'] - H_ if grup else 0
             if lebih > 0:
                 for a in grup: a['y'] -= lebih
         for a in A:
@@ -245,13 +249,17 @@ def peta(png, w_in, h_in, warna, label=(), kode=None, kotak=None):
             d.line([(ujung, a['y']), (a['ax'], a['ay'])], fill='#' + NAVY, width=2 * SS)
             d.ellipse([a['ax'] - 6 * SS, a['ay'] - 6 * SS, a['ax'] + 6 * SS, a['ay'] + 6 * SS], fill='#FFFFFF', outline='#' + NAVY, width=2 * SS)
         for a in A:
-            y0 = a['y'] - ph / 2
+            ph = a['ph']; y0 = a['y'] - ph / 2
             d.rounded_rectangle([a['x0'], y0, a['x1'], y0 + ph], radius=ph / 2, fill='#' + a['isi'], outline='#' + a['tg'], width=SS)
             c0 = a['x0'] + 8 * SS; d.ellipse([c0, a['y'] - D / 2, c0 + D, a['y'] + D / 2], fill='#' + a['tg'])
             g_ = Image.open(os.path.join(TPL, a['ik'])).convert('RGBA').resize((int(D * .62), int(D * .62)), Image.LANCZOS)
             im.paste(g_, (int(c0 + D * .19), int(a['y'] - D * .31)), g_)
-            tx = c0 + D + 8 * SS; d.text((tx, a['y']), a['n'], font=fn, fill='#' + NAVY, anchor='lm')
+            tx = c0 + D + 10 * SS
+            d.text((tx, a['y']), a['n'], font=fn, fill='#' + NAVY, anchor='lm')
             d.text((tx + d.textlength(a['n'], font=fn) + 8 * SS, a['y'] + SS), a['st'], font=fs, fill='#' + a['tg'], anchor='lm')
+            if a['st2']:
+                xs2 = a['x0'] + 12 * SS if a in kiri else a['x1'] - 12 * SS - d.textlength(a['st2'], font=f2)
+                d.text((xs2, y0 + ph + 22 * SS), a['st2'], font=f2, fill='#' + NAVY, anchor='lm', stroke_width=3 * SS, stroke_fill='#FFFFFF')
     # skala 100 km dan arah utara
     px = 100 / 111.32 * s; x0, y0 = 30 * SS, H_ - 26 * SS
     d.line([(x0, y0), (x0 + px, y0)], fill='#' + NAVY, width=3 * SS)
@@ -390,6 +398,14 @@ def tabel(sl, x, y, w, kol, baris, rh, y_maks):
                     tx(sl, px + d + .07, yy, pw - d - .1, h, v['pil'], sz=7.5, b=True, c=v['tegas'], al='c')
                 else:
                     tx(sl, cx, yy, lw, h, v['pil'], sz=7.5, b=True, c=v['tegas'], al='c')
+            elif isinstance(v, dict) and 'daftar' in v:   # butir bertumpuk berikon, tanpa pemisah koma (pemilik 15 Nov 2026)
+                lh, d = .19, .17; y0 = yy + (h - lh * len(v['daftar'])) / 2   # ukuran ikon sama di semua baris
+                WI = {'rumah-putih.png': '1B5A93', 'jalan-putih.png': 'D9600B', 'jembatan-putih.png': '8F3F07'}   # warna per jenis (pemilik: "iconnya ga keliatan")
+                for j, (ik, tk) in enumerate(v['daftar']):
+                    yj = y0 + j * lh
+                    kotak(sl, cx + .08, yj + (lh - d) / 2, d, d, WI.get(ik, NAVY), MSO_SHAPE.OVAL)
+                    sl.shapes.add_picture(os.path.join(TPL, ik), Inches(cx + .08 + d * .17), Inches(yj + (lh - d) / 2 + d * .17), Inches(d * .66), Inches(d * .66))
+                    tx(sl, cx + .14 + d, yj, lw - d - .18, lh, tk, sz=8.5)
             elif isinstance(v, dict) and 'kotak' in v:
                 kw = min(lw - .04, .26)
                 kotak(sl, cx + (lw - kw) / 2, yy + h * .16, kw, h * .68, v['isi'], MSO_SHAPE.ROUNDED_RECTANGLE, .2)
@@ -491,6 +507,20 @@ def legenda(sl, x, y, w, nama, kolom=3, tinggi=.22):
         kotak(sl, cx, cy + .06, .11, .11, PALET[i % len(PALET)], MSO_SHAPE.ROUNDED_RECTANGLE, .2)
         tx(sl, cx + .18, cy, lw - .2, tinggi, n, sz=8)
     return y + math.ceil(len(nama) / kolom) * tinggi
+
+
+def butir_kerusakan(t):
+    """'27 unit rumah terdampak, 10 titik akses jalan terdampak dan 1 jembatan kayu rusak' -> [(ikon, butir)]."""
+    t = rapi(t).rstrip('.')
+    if t == '–': return []
+    out = []
+    for b in re.split(r',\s*(?![^()]*\))|\s+dan\s+(?=\d)', t):
+        b = b.strip().rstrip('.')
+        if not b: continue
+        lb = b.lower()
+        ik = 'jembatan-putih.png' if 'jembatan' in lb else 'jalan-putih.png' if re.search(r'jalan|akses', lb) else 'rumah-putih.png' if re.search(r'rumah|ruko|fas', lb) else 'awas-putih.png'
+        out.append((ik, b[:1].upper() + b[1:]))
+    return out
 
 
 def angka_kerusakan(t):
@@ -618,9 +648,9 @@ def slide_lengkap(L):
     n_baris = math.ceil(len(seri) / 3)
     grafik_tumpuk(sl, .6, 1.42, 5.8, 5.5 - n_baris * .22 - .1, [tgl(h) for h in hari_wa[i0:]], {k: v[i0:] for k, v in seri.items()}, 'KK terdampak per kab/kota, laporan harian')
     legenda(sl, .75, 6.95 - n_baris * .22, 5.6, list(seri))
-    kolR = [('Kab/Kota', 1.35, 'l'), ('Rumah', .62, 'c'), ('Jembatan', .7, 'c'), ('Jalan', .55, 'c'), ('Rincian kerusakan', 2.97, 'j', 8, 'bungkus')]
+    kolR = [('Kab/Kota', 1.35, 'l'), ('Rumah', .62, 'c'), ('Jembatan', .7, 'c'), ('Jalan', .55, 'c'), ('Rincian kerusakan', 2.97, 'l')]
     brR = [[o['kab'], rb(kr[o['kab']][0]), rb(kr[o['kab']][1]), rb(kr[o['kab']][2]),
-            (rapi((o.get('butir') or {}).get('Kerusakan')) if (o.get('butir') or {}).get('Kerusakan') else '–', INK, False)] for o in lap]
+            ({'daftar': butir_kerusakan((o.get('butir') or {}).get('Kerusakan'))} if (o.get('butir') or {}).get('Kerusakan') else '–')] for o in lap]
     brR.append({'total': True, 'sel': [f'Total {len(lap)} kab/kota', rb(rum), rb(jem), rb(jal), '']})
     tabel(sl, 6.55, 1.4, 6.19, kolR, brR, .6, 6.95)
     sumber(sl, sk)
@@ -781,24 +811,35 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
     awal = (['Terdapat', f' {a}', ' kecamatan berstatus Awas,', f' {s_}', ' Siaga', ''] if a else ['Terdapat', f' {s_}', ' kecamatan berstatus Siaga', ''])
     judul(sl, awal + [' di', f' {nk}', f' kab/kota {prov} dan', f' {w_}', f' Waspada pada {n_hari} hari ke depan (', rentang, ')'])
     wr = {f'{kode}|{v["kab"]}': LEVEL[max(v['hari'])][1] for k, v in rk.items() if k[0] == kode and max(v['hari']) >= 1}
-    lb = [(f'{kode}|{v["kab"]}', v['kab'], LEVEL[3 if v['a'] else 2][2], LEVEL[3 if v['a'] else 2][0], LEVEL[3 if v['a'] else 2][1],
+    # label peta: jumlah dan nama kecamatan Siaga/Awas (pemilik 15 Nov 2026: "kasih tau kecamatannya apa aja", "sama jumlahnya")
+    kec_st = {}
+    for k_, v_ in st['kec'].items():
+        pr_, kb_, kc_ = k_.split('|')
+        if pr_ == kode and max(v_['b']) >= 2: kec_st.setdefault(kb_, []).append((max(v_['b']), kc_))
+    def teks_kec(kb_):
+        xs = sorted(kec_st.get(kb_, []), reverse=True); a_ = [c for l_, c in xs if l_ == 3]; s2 = [c for l_, c in xs if l_ == 2]
+        ring = ', '.join(x for x in (f'{len(a_)} kec. Awas' if a_ else '', f'{len(s2)} kec. Siaga' if s2 else '') if x)
+        return ring + '\n' + ', '.join(a_ + s2)
+    lb = [(f'{kode}|{v["kab"]}', v['kab'], teks_kec(v['kab']), LEVEL[3 if v['a'] else 2][0], LEVEL[3 if v['a'] else 2][1],
            'awas-putih.png' if v['a'] else 'banjir-putih.png') for v in kab if v['a'] or v['s']]
-    png = os.path.join(kerja, 'p2.png'); peta(png, 5.8, 3.82, wr, lb, kode)
-    sl.shapes.add_picture(png, Inches(.6), Inches(1.42), Inches(5.8), Inches(3.82))
-    lw3 = (5.8 - 2 * .07) / 3; xs = [.6 + i * (lw3 + .07) for i in range(3)]
+    LP = 4.9   # panel kiri disempitkan, tabel kanan lebih lega (pemilik 15 Nov 2026)
+    png = os.path.join(kerja, 'p2.png'); peta(png, LP, 3.82, wr, lb, kode)
+    sl.shapes.add_picture(png, Inches(.6), Inches(1.42), Inches(LP), Inches(3.82))
+    lw3 = (LP - 2 * .07) / 3; xs = [.6 + i * (lw3 + .07) for i in range(3)]
     for x_, n_, nm, lv, ik, df in ((xs[0], a, 'Awas', 3, 'awas-putih.png', 'Hujan tiga hari 120 mm atau lebih di wilayah bahaya tinggi, atau debit sungai setara banjir 20 tahunan.'),
                                     (xs[1], s_, 'Siaga', 2, 'banjir-putih.png', 'Hujan tiga hari 80 mm atau lebih, hujan 30 mm per jam, atau peluang hujan lebat 50% di wilayah bahaya sedang ke atas, atau debit sungai setara banjir 5 tahunan.'),
                                     (xs[2], w_, 'Waspada', 1, 'hujan-putih.png', 'Hujan tiga hari 40 mm atau lebih, hujan 20 mm per jam, atau debit sungai setara banjir 2 tahunan.')):
         tegas = 'C98A4B' if lv == 1 else LEVEL[lv][1]
         kartu(sl, x_, 5.36, lw3, rb(n_), 'Kecamatan ' + nm, LEVEL[lv][0], tegas, ik)
         keterangan(sl, x_, 5.86, lw3, 1.09, nm, df, LEVEL[lv][0], tegas, ik)
-    kol = [('Kab/Kota', 1.55, 'l'), ('Kec. Awas', .6, 'c'), ('Kec. Siaga', .62, 'c')] + [(h, .4, 'c') for h in hk] + [('Hujan 3 hari', .7, 'c'), ('Tgl. puncak', .62, 'c'), ('Kini', .86, 'c')]
+    # kolom Awas hanya bila ada kecamatan Awas, supaya kepala dan pil tetap satu baris
+    kol = [('Kab/Kota', 1.55, 'l')] + ([('Awas', .5, 'c')] if a else []) + [('Siaga', .5, 'c')] + [(h, .5, 'c') for h in hk] + [('Hujan', .7, 'c'), ('Puncak', .7, 'c'), ('Kini', 1.1, 'c')]
 
-    br = [[v['kab'], rb(v['a'] or None), rb(v['s'] or None)] + [sel_hari(x) for x in v['hari']] +
-          [str(round(v['mm'])) if v['tgl'] else '–', tgl(v['tgl']) if v['tgl'] else '–',
+    br = [[v['kab']] + ([rb(v['a'] or None)] if a else []) + [rb(v['s'] or None)] + [sel_hari(x) for x in v['hari']] +
+          [f"{round(v['mm'])} mm" if v['tgl'] else '–', tgl(v['tgl']) if v['tgl'] else '–',   # hujan dan tanggal dipisah (pemilik 15 Nov 2026)
            pil_kondisi(kini[v['kab']]) if v['kab'] in kini else '–'] for v in kab]
-    br.append({'total': True, 'sel': [f'Jumlah {len(kab)} kab/kota', rb(a), rb(s_)] + [''] * (len(hari) + 3)})
-    tabel(sl, 6.55, 1.4, 6.19, kol, br, .44, 6.95)
+    br.append({'total': True, 'sel': [f'{len(kab)} kab/kota'] + ([rb(a)] if a else []) + [rb(s_)] + [''] * (len(hari) + 3)})
+    tabel(sl, .6 + LP + .15, 1.4, 12.73 - (.6 + LP + .15), kol, br, .44, 6.95)
     sumber(sl, gis)
 
     # ---- 3. provinsi lain
