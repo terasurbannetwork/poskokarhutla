@@ -47,8 +47,8 @@ Dengan G01-G11 (124): **ADA 70 / SEBAGIAN 32 / BELUM 9 / TIDAK BERLAKU 13**.
 | A19 | Statistik per provinsi | dibuat | `riwayat_prov.json` (per provinsi per tahun, nilai b), `laporan.json` prov + 61 kabupaten (60 hari), `risiko.json` prov. |
 | A20 | Data lembaga | dibuat | BMKG (Potensi, Dirasakan, Shakemap), USGS PAGER (kolom `pager`), `public/data/bpbd.json` BNPB; label lembaga di kartu. |
 | A21 | Posko | belum | Tidak ada tab/modul posko gempa. (tersembunyi di karhutla) |
-| A22 | Operasi | belum | Koefisien tenda/air/SAR belum ada. (tersembunyi di karhutla) |
-| A23 | Aset udara | tidak berlaku | Tidak ada aset udara respons gempa dalam data terbuka. |
+| A22 | Operasi | belum | Keputusan pemilik 15 Nov 2026: berlaku (SAR, evakuasi, tenda dan air untuk pengungsi). Belum ada kode. Sebelumnya dinilai tidak berlaku: Koefisien tenda/air/SAR belum ada. (tersembunyi di karhutla) |
+| A23 | Aset udara | belum | Keputusan pemilik 15 Nov 2026: berlaku (heli evakuasi dan SAR ke wilayah terisolasi). Belum ada kode. Sebelumnya dinilai tidak berlaku: Tidak ada aset udara respons gempa dalam data terbuka. |
 | A24 | Keputusan ekonomi | belum | Keputusan ekonomi (biaya respons vs kerugian) belum ada. (tersembunyi di karhutla) |
 | A25 | Preventif | sebagian | Jalur evakuasi tsunami di Simulasi (`sim.js:154-250`) dan fasilitas rawan `bukti.json` (di atas sesar, MMI VII, pesisir rendah, tanpa tempat tinggi dalam 2 km). Rencana mitigasi bangunan/latihan evakuasi belum. |
 | A26 | Penanggung jawab lahan | tidak berlaku | Gempa tidak punya penanggung jawab lahan. |
@@ -145,15 +145,15 @@ Dengan G01-G11 (124): **ADA 70 / SEBAGIAN 32 / BELUM 9 / TIDAK BERLAKU 13**.
 | Kode | Komponen | Status | Bukti atau alasan |
 | --- | --- | --- | --- |
 | G01 | Tugas lapangan dan regu | diadaptasi | `src/instansi.js:644,1027,1170,1176` (gempa: penutupan Tanpa dampak, kedaluwarsa 72 jam), `src/penugasan.js:43` daftar bekal gempa; `lintas.yml:293` tugas_<id>.json mengambil `GEMPA_API`; `tests/warga/tugas_bencana.test.mjs`. Tidak ada level 3 / sinyal reda khas gempa. |
-| G02 | Operasi udara/darat | tidak berlaku | Tidak ada aset udara respons gempa di data terbuka; `src/operasi_*.js` dan `public/operasi_*` tidak menyebut gempa. |
-| G03 | Sarana lapangan terencana | belum | `src/sippa.js` dan `public/pipa/**` tidak memuat gempa (grep 15 Nov); SIPPA khusus pipa karhutla/banjir. |
+| G02 | Operasi udara/darat | belum | Keputusan pemilik 15 Nov 2026: berlaku (operasi SAR dan evakuasi darat/udara, distribusi tenda dan logistik). Belum ada kode. Sebelumnya dinilai tidak berlaku: Tidak ada aset udara respons gempa di data terbuka; `src/operasi_*.js` dan `public/operasi_*` tidak menyebut gempa. |
+| G03 | Sarana lapangan terencana | belum | Keputusan pemilik 15 Nov 2026: berlaku (sarana lapangan: tenda, air bersih, dapur umum, alat berat). Belum ada kode. Sebelumnya dinilai tidak berlaku: `src/sippa.js` dan `public/pipa/**` tidak memuat gempa (grep 15 Nov); SIPPA khusus pipa karhutla/banjir. |
 | G04 | Laporan harian/penanganan otomatis | sebagian | `public/gempa/laporan.html` + `laporan.json` (harian, `laporan_gempa.py`, `gempa.yml:42`); `src/laporan_bencana.js:1` laporan multi-bahaya memuat gempa; `public/bnpb/dokumen_laphar.js` menyebut gempa; bot WA `scripts/wa/urai_laporan.py:72` memetakan kode 107/108. Deck PPTX khusus gempa tidak ada. |
 | G05 | Dalops: cek kabar luar, saringan, tindak lanjut | diadaptasi | `scripts/data/dalops_kabar.py:30` sumber gempa `berita_gempa.json`, uji P9 tingkat provinsi `:302`; `public/bnpb/dalops.js:21,28` saringan gempa dan lapisan gempa BMKG `:236-252`; tindak lanjut `src/dalops_tindak.js` generik. Kabar luar bergantung berita_gempa yang basi (A33). |
 | G06 | Prakiraan +1..+3 hari dinilai prospektif | sebagian | `scripts/prediksi/dampak.py:5,23` dan `public/prediksi/prediksi.js:205-215` hanya menampilkan risiko riwayat/InaRISK per kab; tanpa prakiraan harian (gempa tak diprakirakan; `prospektif_susulan.json` terpisah dari /prediksi). |
 | G07 | Semai awan dan prakiraan asap | tidak berlaku | Gempa tidak dipengaruhi cuaca dan tidak ada asap. |
 | G08 | Masuk laporan berkala Kepala BNPB | belum | `scripts/berkala/` tidak ada di repo; paket `data/kajian-bnpb/laporan-berkala` belum berkode, tidak ada rujukan gempa. |
 | G09 | Peringatan dini tersambung (EWS, CAP) | dibuat | `src/ews.js:29,47-50,221-230` (radius gempa, tsunami 500 km, cron tiap menit), `src/peringatan.js:37-40` (Waspada/Siaga), `src/ews_email.js` emailGempa; `tests/warga/ews.test.mjs`, `peringatan.test.mjs`. |
-| G10 | Renlap lengkap | tidak berlaku | Renlap Operasi Udara karhutla; gempa tidak punya rencana operasi udara harian. |
+| G10 | Renlap lengkap | belum | Keputusan pemilik 15 Nov 2026: berlaku (renlap harian SAR, evakuasi, dan distribusi). Belum ada kode. Sebelumnya dinilai tidak berlaku: Renlap Operasi Udara karhutla; gempa tidak punya rencana operasi udara harian. |
 | G11 | Pembuat dokumen | sebagian | Factsheet `factsheet_gempa.json`, bagikan PDF/PPTX/xlsx lewat `bagikan.js`, `laporan.html`; siklus Kaji Cepat gempa `scripts/siklus/kaji_gempa.py` (`siklus.yml:105`), `src/siklus_kaji.js:12` MODEL gempa; sitrep dan laporan kejadian per KIB belum khusus gempa. |
 
 ## Catatan

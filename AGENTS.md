@@ -333,6 +333,9 @@ tua). Tanpa kaki keterangan/sumber (pemilik 4 Nov 2026: "hilangkan"); definisi k
 `title` kepala tabel. Tombol atau pemilih bagian di kanan judul. Jangan
 membuat kepala bagian sendiri (bilah gelap, `.head` + h2 lepas). Layar laporan baru masuk
 daftar `LAYAR` di gerbang `tests/agen/gerbang-kartu-std.test.mjs`.
+Sejak 15 Nov 2026 gerbang itu juga menegakkan pembaruan di bawah: kepala kartu tanpa `.hl` (kalimat temuan) dan tanpa kaki Sumber; layar lama
+ditampung ratchet `tests/agen/fixtures/kartu_std.json` (hanya boleh menyusut, hapus entri saat berkas bersih), layar yang sudah dirombak
+(`WAJIB_BERSIH` di `fixtures/kartu_std.mjs`) tanpa pengecualian.
 
 **Pembaruan 11 Nov 2026 (pemilik: "gausah ada kesimpulan ini", "Catet ya gausah ada yang gini. Jelek banget"):**
 kepala kartu = NAMA SEKSI berikon (mis. "Base dan armada", "Renlap"), bukan kalimat temuan, dan isi kartu

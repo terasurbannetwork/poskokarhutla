@@ -1,11 +1,15 @@
-/* Gerbang kartu laporan standar .ex-std (keputusan pemilik 4 Nov 2026: "ini standar ke depannya").
-   Tiap bagian layar laporan = satu kartu: pil kategori, judul kalimat temuan dengan angka .hl, isi (tabel menempel penuh),
-   tanpa kaki keterangan/sumber (pemilik 4 Nov 2026: "hilangkan"). Gaya tunggalnya di public/inti/kartu.css; layar laporan memakainya, bukan membuat kepala sendiri.
-   Layar laporan baru: tambahkan ke LAYAR di bawah (skrip + halaman HTML yang memuatnya).
-   ponytail: statis (cari kelas di sumber), tidak merender; uji layar di peramban kalau perlu bukti tampilan. */
+/* Gerbang kartu laporan standar .ex-std (pemilik 4 Nov 2026 "ini standar ke depannya"; DIPERBARUI 15 Nov 2026 mengikuti AGENTS.md 3.5
+   pembaruan 11 Nov: "gausah ada kesimpulan ini"). Tiap bagian layar laporan = satu kartu: pil kategori, KEPALA = NAMA SEKSI (bukan kalimat
+   temuan, tanpa angka .hl), isi (tabel menempel penuh), tanpa kaki keterangan/sumber. Angka temuan tampil di isi/Ringkasan.
+   Gaya tunggalnya di public/inti/kartu.css. Kode lama yang belum dirombak ditampung daftar ratchet fixtures/kartu_std.json (plafon hanya boleh
+   turun; kunci bersih = hapus entri). WAJIB_BERSIH tak boleh masuk daftar. Pemindainya fixtures/kartu_std.mjs (statis, bukan render).
+   Layar laporan baru: tambahkan ke LAYAR (skrip + halaman HTML) dan ke SCOPE bila direktori baru.
+   Kembaran sempit untuk /operasi: gerbang-tanpa-kesimpulan.test.mjs. */
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {readFileSync} from 'node:fs'
+import {berkas, muatDaftar, banding, tegas} from './fixtures/ratchet.mjs'
+import {pindai, ukurSemua, SCOPE, WAJIB_BERSIH} from './fixtures/kartu_std.mjs'
 
 const ROOT = new URL('../..', import.meta.url).pathname
 const baca = p => readFileSync(ROOT + p, 'utf8')
@@ -35,7 +39,6 @@ for (const l of LAYAR) {
     const js = baca(l.skrip)
     assert.match(js, /ex-std/, 'bagian layar harus dibungkus kartu .ex-std')
     assert.match(js, /ex-ey/, 'kartu harus punya pil kategori .ex-ey')
-    assert.match(js, /class:\s*"hl"|class="hl"|\bhl\(/, 'judul kartu harus menyorot angka temuan dengan .hl')
     assert.doesNotMatch(js, /Sumber: |class:\s*"ex-ft"/, 'kartu standar tanpa kaki keterangan/sumber (pemilik 4 Nov 2026)')
     for (const re of l.lama) assert.doesNotMatch(js, re, `pola kepala lama ${re} masih dipakai`)
     assert.match(baca(l.html), /\/inti\/kartu\.css/, `${l.html} harus memuat /inti/kartu.css`)
@@ -48,7 +51,44 @@ for (const skrip of ['public/siklus/kaji.js', 'public/siklus/pulih.js', 'public/
     const js = baca(skrip)
     assert.match(js, /import\s*\{[^}]*\bkartu\b[^}]*\}\s*from\s*"\.\/inti\.js"/, 'harus mengimpor kartu dari ./inti.js')
     assert.match(js, /\bkartu\(/, 'bagian layar harus dibangun dengan kartu(')
-    assert.match(js, /\bhl\(/, 'judul kartu harus menyorot angka temuan dengan hl(')
     assert.doesNotMatch(js, /Sumber: |class:\s*"ex-ft"|class:\s*"head"|"h2"/, 'tanpa kaki sumber dan tanpa kepala bagian sendiri')
   })
 }
+
+// Aturan baru (3.5, 11 Nov 2026): kepala kartu bukan kalimat temuan (tanpa .hl), tanpa sumber/kaki. Kode lama = ratchet menyusut.
+test('kepala kartu = nama seksi, tanpa kaki sumber: kode lama hanya boleh menyusut', () => {
+  const daftar = Object.fromEntries(Object.entries(muatDaftar('kartu_std.json', ukurSemua())).filter(([k]) => !k.startsWith('_')))
+  tegas(assert, banding(ukurSemua(), daftar),
+    'kartu_std.json\nSEBAB: kepala kartu memuat hl()/.hl (kalimat temuan) atau kartu memberi kaki "Sumber:" (AGENTS.md 3.5, 11 Nov 2026).\nAKIBAT: pemilik menolak kalimat kesimpulan di kartu.\nPERBAIKI: kepala = nama seksi (angka temuan ke isi/Ringkasan; kalimat boleh jadi title), sumber ke isi bila perlu.')
+})
+test('layar yang sudah dirombak wajib bersih tanpa pengecualian', () => {
+  const u = ukurSemua(), daftar = muatDaftar('kartu_std.json')
+  for (const f of WAJIB_BERSIH) {
+    assert.deepEqual(Object.keys(u).filter(k => k.startsWith(f + '#')), [], `${f} sudah dirombak: tidak boleh melanggar aturan 3.5 baru`)
+    assert.deepEqual(Object.keys(daftar).filter(k => k.startsWith(f + '#')), [], `${f} tidak boleh ada di daftar pengecualian`)
+  }
+  assert.ok(WAJIB_BERSIH.every(f => berkas(f.replace(/\/[^/]+$/, ''), /\.js$/).includes(f)), 'WAJIB_BERSIH menunjuk berkas yang tidak ada')
+})
+
+// Bukti gerbang tidak buta: fixture jahat harus tertangkap, fixture sah lolos.
+test('pemindai menangkap kepala kalimat temuan dan kaki sumber', () => {
+  const jahat = {
+    posisi: 'const x = kartu("Hujan", `${Kartu.hl(fmt(n))} area berhujan lebat`, isi, "");',
+    objek: 'kartu({ey: "Kaji", judul: ["Kaji ", hl("belum")], isi: []})',
+    h3: 'return `<h3>${hl(fmt(n))} base</h3>`;',
+    h3judul: 'return `<header><h3>${judul}</h3></header>`;',
+    sumber: 'this.kartu("Angin", "Angin", isi, "Open-Meteo")',
+    kaki: 'return `<footer class="ex-ft">Sumber: BMKG</footer>`;',
+  }
+  for (const [nama, src] of Object.entries(jahat)) {
+    const r = pindai(src)
+    assert.ok(r.judulHl + r.sumber + r.kaki > 0, `fixture jahat "${nama}" lolos: gerbang buta`)
+  }
+  const sah = [
+    'Kartu.kartu(EY.status, "Status longsor kecamatan", isi, "")',
+    'const isi = `Ada ${hl(fmt(n))} area`; return bagian("Renlap", isi);',
+    'kartu({ey: "Kaji cepat", judul: "Kaji cepat", isi: [hl("5")]})',
+    'return `<h3>${nama}</h3>`; // NAMA_SEKSI\nconst NAMA_SEKSI = {}; <h3>${judul}</h3>',
+  ]
+  for (const src of sah) assert.deepEqual(pindai(src), {judulHl: 0, sumber: 0, kaki: 0}, `fixture sah ditolak: ${src}`)
+})
