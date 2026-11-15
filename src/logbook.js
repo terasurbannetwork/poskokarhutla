@@ -427,9 +427,10 @@ async function skAktif(env, req, kini) {
 
 /* ---------------- dummy (DUMMY.md): Super Admin saja; baris dummy=1 bertanda jelas, dihapus bersih oleh aksi hapus ---------------- */
 const KAB_BPS = {"33|Banjarnegara": "3304", "33|Cilacap": "3301", "14|Rokan Hilir": "1407", "33|Magelang": "3308"};   // dummy saja: kunci "prov|nama" -> kode BPS untuk KIB
-const SK_CONTOH = [   // di kejadian pertama (longsor Banjarnegara): SK kab ditulis dulu agar uji urutan prov-dulu bermakna
-  {tingkat: "tanggap", wilayah: "kab", nomor: "360/101/2026", tgl_sk: "2026-10-30", tmt_mulai: "2026-10-30", tmt_selesai: "2026-11-05", perpanjangan_ke: 0, tautan: "https://contoh.invalid/sk/kab-360-101"},
-  {tingkat: "tanggap", wilayah: "prov", nomor: "188/445/2026", tgl_sk: "2026-10-31", tmt_mulai: "2026-10-31", tmt_selesai: "2026-11-14", perpanjangan_ke: 1, tautan: "https://contoh.invalid/sk/prov-188-445"}];
+const hariWIB = (kini, geser) => new Date(kini + 7 * 36e5 + geser * HARI).toISOString().slice(0, 10);   // tanggal relatif hari ini WIB agar contoh tidak kedaluwarsa
+const skContoh = kini => [   // di kejadian pertama (longsor Banjarnegara): SK kab ditulis dulu agar uji urutan prov-dulu bermakna; kab sudah lewat kemarin, prov aktif 14 hari lagi
+  {tingkat: "tanggap", wilayah: "kab", nomor: "360/101/2026", tgl_sk: hariWIB(kini, -16), tmt_mulai: hariWIB(kini, -16), tmt_selesai: hariWIB(kini, -1), perpanjangan_ke: 0, tautan: "https://contoh.invalid/sk/kab-360-101"},
+  {tingkat: "tanggap", wilayah: "prov", nomor: "188/445/2026", tgl_sk: hariWIB(kini, -15), tmt_mulai: hariWIB(kini, -15), tmt_selesai: hariWIB(kini, 14), perpanjangan_ke: 1, tautan: "https://contoh.invalid/sk/prov-188-445"}];
 export const CONTOH = [   // [jenis, kab, kec, desa, status, [[menit lalu, dampak...]]] — angka dari rantai nyata: entri lanjutan menimpa, mengungsi_kk <= mengungsi_jiwa
   ["longsor", "33|Banjarnegara", "Pandanarum", "Tulis", "buka", [[300, {md: 1, hilang: 4, luka: 3, mengungsi_jiwa: 120, mengungsi_kk: 38, rumah_rb: 3, rumah_rs: 2, rumah_rr: 5, kendala: ["akses", "sinyal"], kebutuhan: ["tenda", "makanan"]}],
     [60, {md: 2, hilang: 2, luka: 6, mengungsi_jiwa: 210, mengungsi_kk: 66, rumah_rb: 5, rumah_rs: 4, rumah_rr: 9, kendala: ["akses", "alat_berat"], kebutuhan: ["tenda", "makanan", "alat_berat"],
@@ -471,7 +472,7 @@ async function dummyRute(env, req, kini) {
     for (const [menit, d] of entri) st.push(...stmtEntriJk(env, id, {...Object.fromEntries(ANGKA.map(k => [k, d[k] ?? null])), kendala: d.kendala, kebutuhan: d.kebutuhan, catatan: "Data dummy untuk menilai layar", sumber_instansi: "Dummy", waktu: waktuDummy(kini, menit),
       jk: {...(periksaJuklak({yakin: true, ...d.jk, md: d.md, luka: d.luka, mengungsi_jiwa: d.mengungsi_jiwa}).j ?? {})}}, "dummy", kini));
     st.push(...stmtNarasi(env, id, {narasi: {nama_kejadian: `Contoh ${jenis} ${kab}`, penyebab: "Data dummy untuk menilai layar", kronologis: "Data dummy untuk menilai layar", deskripsi: "Data dummy untuk menilai layar", upaya: "Data dummy untuk menilai layar"}}, kini));
-    if (JK_ADA && jenis === "longsor") for (const x of SK_CONTOH) st.push(env.DB.prepare("INSERT INTO logbook_sk (id, kejadian_id, tingkat, wilayah, nomor, tgl_sk, tmt_mulai, tmt_selesai, perpanjangan_ke, tautan, oleh, dibuat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'dummy', ?)")
+    if (JK_ADA && jenis === "longsor") for (const x of skContoh(kini)) st.push(env.DB.prepare("INSERT INTO logbook_sk (id, kejadian_id, tingkat, wilayah, nomor, tgl_sk, tmt_mulai, tmt_selesai, perpanjangan_ke, tautan, oleh, dibuat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'dummy', ?)")
       .bind(acak(8), id, x.tingkat, x.wilayah, x.nomor, x.tgl_sk, x.tmt_mulai, x.tmt_selesai, x.perpanjangan_ke, x.tautan, kini));
   }
   await env.DB.batch(st);
