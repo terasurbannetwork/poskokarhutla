@@ -43,6 +43,7 @@ const api = (rekam = {post: []}) => (m, j, q, badan) => {
 const SALAH = /\bnull\b|undefined|NaN|\[object/;
 
 test('renkon: status berikut, kelompok segmen, usulan tidak menimpa, gabung asumsi mempertahankan aspek lain', () => {
+  assert.deepEqual(R.penunjukRenkon('0123456789abcdef'), {jenis: 'renkon_peta', jalur: '/siklus/renkon/0123456789abcdef'}); assert.equal(R.penunjukRenkon('x'), null, 'PB-25: penunjuk saja, sid tak sah ditolak');
   assert.equal(R.statusBerikut('persiapan'), 'pelaksanaan'); assert.equal(R.statusBerikut('berlaku'), 'dimutakhirkan'); assert.equal(R.statusBerikut('dimutakhirkan'), null);
   assert.deepEqual(['semua', 'persiapan', 'berlaku', 'kedaluwarsa', 'dimutakhirkan'].map((k) => DAFTAR.filter((r) => R.cocokKelompok(r, k)).length), [4, 1, 2, 1, 0]);
   assert.equal(R.sisaTeks(DAFTAR[2]), 'lewat 3 hari'); assert.equal(R.sisaTeks(DAFTAR[1]), '40 hari'); assert.equal(R.sisaTeks(DAFTAR[3]), null);

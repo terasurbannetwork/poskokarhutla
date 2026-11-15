@@ -5,7 +5,7 @@ baris tanpa wilayah hanya di `tanpa_wilayah` (tidak punya kab4, tidak ada di k<k
 Keluaran ke data/raw/siklus (git-ignored) atau --keluar; tidak mengunggah (gudang.py yang mengunggah).
 Pakai: python3 -I scripts/siklus/arsip_kejadian.py bangun [--bersih DIR] [--keluar DIR] | uji
 """
-import collections, hashlib, importlib.util, json, os, sys, tempfile
+import collections, hashlib, importlib.util, json, os, re, sys, tempfile
 
 AB = os.path.dirname(os.path.abspath(__file__))
 KOLOM = ["id", "jenis", "kab4", "mulai", "akhir", "nama", "sumber", "dampak"]
@@ -20,6 +20,22 @@ def _muat(nama):
 
 P = _muat("pasang")
 SUMBER = ("dibi", "logbook")
+REGISTRI = os.path.join(P.AKAR, "public/bencana.json")
+KUNCI_JENIS = {"pesisir": "gelombang"}   # id bencana -> kunci jenis bersama (kunci_kejadian.JENIS); selain ini sama dengan id
+SUDAH_ADA = ("K", "G")                   # karhutla (sel:i:j) dan gempa punya jalur sendiri di pasang.py
+
+
+def awalan_bencana(registri=REGISTRI, tanpa=SUDAH_ADA):
+    """PB-25 (F-12): {awalan: id bencana} dari bencana.json kejadian.awalan, tanpa daftar tulisan tangan. Bencana yang belum terdaftar tidak muncul."""
+    return {b["kejadian"]["awalan"]: b["id"] for b in json.load(open(registri, encoding="utf-8"))["bencana"] if b["kejadian"]["awalan"] not in tanpa}
+
+
+def jenis_dari_kode(kode, peta=None):
+    """Kode kejadian per bencana (`B0012`) -> kunci jenis Buku Besar, atau None (awalan tak dikenal). Tidak ada buku kejadian kedua: hanya kunci jenis."""
+    peta = peta or awalan_bencana()
+    m = re.match(r"^([A-Z])\d{4,}$", str(kode))
+    b = peta.get(m.group(1)) if m else None
+    return KUNCI_JENIS.get(b, b)
 
 
 def sha_sumber(bersih, tahun):
@@ -139,6 +155,11 @@ def _uji():
     S = _muat("saji")
     assert S.periksa_berkas("siklus/saji/kejadian/arsip/2019/32.json", json.dumps(p).encode()) == []
     assert S.periksa_berkas("siklus/saji/kejadian/arsip/2019/32.json", json.dumps({"total": 1}).encode())
+    # PB-25: awalan dari registri, bukan daftar tulisan tangan
+    pa = awalan_bencana()
+    assert {"B", "P", "C", "U", "V", "D"} <= set(pa) and not set(pa) & set(SUDAH_ADA), pa
+    assert jenis_dari_kode("B0012", pa) == "banjir" and jenis_dari_kode("P0003", pa) == "gelombang"
+    assert jenis_dari_kode("K0001", pa) is None and jenis_dari_kode("Z0001", pa) is None and jenis_dari_kode("KJ-2019-AAAA", pa) is None
     print("arsip_kejadian: uji hijau")
 
 

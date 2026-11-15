@@ -15,6 +15,8 @@ const bilangan = x => typeof x === "number" && Number.isFinite(x);
 const ang = n => angka(n) ?? MENUNGGU;
 
 /* ---------- fungsi murni (diuji tanpa peramban) ---------- */
+/* PB-25 (F-12): pb_dokumen jenis renkon_peta hanya menyimpan penunjuk ke Renkon ini (tanpa salinan isi, tanpa buku kejadian kedua) */
+export const penunjukRenkon = sid => /^[0-9a-f]{16}$/.test(sid ?? "") ? {jenis: "renkon_peta", jalur: `/siklus/renkon/${sid}`} : null;
 export const statusBerikut = s => URUT_RK[URUT_RK.indexOf(s) + 1] ?? null;
 export const sisaTeks = r => r?.kesegaran?.sisa == null ? null : r.kesegaran.sisa < 0 ? `lewat ${angka(-r.kesegaran.sisa)} hari` : `${angka(r.kesegaran.sisa)} hari`;
 /* kelompok segmen daftar: persiapan = tiga status penyusunan; berlaku = ditetapkan atau berlaku yang belum kedaluwarsa */
