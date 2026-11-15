@@ -3,6 +3,18 @@
 Hanya membaca berkas yang sudah ada di public/ (tanpa jaringan). Angka antarsumber tidak dijumlah,
 nilai tak diketahui = null, tanpa nama orang atau koordinat. stdlib saja.
 
+Sumber kesegaran per bencana (kunci waktu: "diperbarui" bila ada, selain itu "dibuat"; ambang jam dari bencana.json):
+  karhutla   titik=data/meta.json, presiden=data/presiden/semua.json, berita, dampak (himawari /api dilewati)
+  banjir     banjir=banjir/data/wilayah_hari.json (GANTI dari meta.json yang tak ditulis ulang)
+  pesisir    abrasi, rob, pasut, gelombang (berkas banjir/ dan pesisir/ apa adanya)
+  cuaca      cuaca=banjir/data/cuaca_sepekan.json (GANTI dari cuaca_meta.json), berita_cuaca (/api nowcast dilewati)
+  gempa      gempa_laporan=gempa/data/laporan.json (TAMBAH, harian dari gempa.yml; /api/gempa/terbaru dilewati), berita_gempa
+  udara      kualitas=udara/data/prakiraan.json, berita_udara
+  gunungapi  gunungapi=banjir/data/gunungapi_status.json, berita_gunungapi
+  kekeringan kekeringan=kekeringan/data/gdo.json (GANTI dari kekeringan_meta.json; lintas.yml harian), berita_kekeringan
+  longsor    nowcast=longsor/data/nowcast.json (TAMBAH; lintas.yml harian)
+Berkas statis (model_guncangan, vs30, batimetri, emsc_arsip, ...) bukan tanda basi dan tidak dipakai.
+
 Pakai:  python3 scripts/umum/pb_ringkas.py buat   tulis satu berkas per bencana di public/bencana.json
         python3 -I scripts/umum/pb_ringkas.py uji self-check
 """
@@ -42,7 +54,8 @@ def _iso(t):
 
 
 def _stempel(d):
-    return _waktu(d.get("dibuat") or d.get("diperbarui")) if isinstance(d, dict) else None
+    # diperbarui = kesegaran sebenarnya; dibuat bisa tanggal kalibrasi tetap (mis. dart.json)
+    return _waktu(d.get("diperbarui") or d.get("dibuat")) if isinstance(d, dict) else None
 
 
 # Ambang umur bacaan (jam) untuk sumber di luar sumber_status. Status ALGORITMA paritas-bencana 7.1:
@@ -50,6 +63,12 @@ def _stempel(d):
 # ponytail: nilai awal kerja (logbook harian, nowcast BMKG); orkestrator memasukkannya ke ALGORITMA 7.2.
 LOGBOOK_AMBANG_JAM = 72
 PERINGATAN_AMBANG_JAM = 6
+# registri menunjuk berkas yang tak ditulis ulang workflow-nya: ganti jalur (ambang tetap) atau tambah sumber statis-baca
+GANTI = {("banjir", "banjir"): "/banjir/data/wilayah_hari.json",
+         ("cuaca", "cuaca"): "/banjir/data/cuaca_sepekan.json",
+         ("kekeringan", "kekeringan"): "/kekeringan/data/gdo.json"}
+TAMBAH = {"gempa": [["gempa_laporan", "/gempa/data/laporan.json", 30]],
+          "longsor": [["nowcast", "/longsor/data/nowcast.json", 30]]}
 URUT = ("segar", "basi", "mati")
 
 
@@ -87,7 +106,8 @@ def rakit(b, akar=AKAR, kini=None):
         if hitung and t and (terbaru is None or t > terbaru):
             terbaru = t
 
-    for id_, jalur, ambang_jam in b["sumber_status"]:
+    for id_, jalur, ambang_jam in b["sumber_status"] + TAMBAH.get(b["id"], []):
+        jalur = GANTI.get((b["id"], id_), jalur)
         if jalur.startswith("/api/"):
             continue  # ponytail: sumber hidup lewat Worker tidak dibaca di pipeline; tambah bila ada salinan statis
         catat(id_, _baca(akar, jalur), ambang_jam, True)
