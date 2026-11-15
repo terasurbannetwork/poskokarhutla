@@ -1,0 +1,4 @@
+{
+ "_catatan": "Acuan beku hitungan ADA komponen A-F yang tidak boleh turun (PB-01). Banjir 73 = hitungan skrip 15 Nov 2026 sesudah penurunan bukti. Karhutla tidak punya docs/multi-bencana/bencana/karhutla.md, jadi tak ada angka di sini; karhutla dijaga uji golden PB-03.",
+ "banjir": { "ada": 73 }
+}

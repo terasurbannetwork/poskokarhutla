@@ -1,0 +1,35 @@
+name: Gerbang paritas bencana
+
+# PB-01: hitungan paritas di docs/multi-bencana/PARITAS-2026-11-15.md dan public/data/paritas.json harus sama dengan keluaran
+# scripts/agents/paritas.mjs. Hanya baca (tanpa commit), di luar grup `data`, tanpa npm ci.
+on:
+  push:
+    paths:
+      - "docs/multi-bencana/bencana/*.md"
+      - "public/bencana.json"
+      - "docs/multi-bencana/PARITAS-2026-11-15.md"
+      - "public/data/paritas.json"
+      - "scripts/agents/paritas.mjs"
+  pull_request:
+    paths:
+      - "docs/multi-bencana/bencana/*.md"
+      - "public/bencana.json"
+      - "scripts/agents/paritas.mjs"
+  schedule:
+    - cron: "30 1 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  paritas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node scripts/agents/paritas.mjs --uji
+      - run: node scripts/agents/paritas.mjs --cek

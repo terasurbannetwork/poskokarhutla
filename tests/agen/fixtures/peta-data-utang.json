@@ -55,6 +55,10 @@
   "public/data/opera_dist.json": {
    "alasan": "Jalan manual di lab.yml karena butuh numpy, rasterio, dan unduhan raster besar; bukan jadwal harian.",
    "tanggal": "2026-11-10"
+  },
+  "public/data/paritas.json": {
+   "alasan": "dipakai dashboard pimpinan (PB-31) dan laporan paritas; belum ada pemakai layar",
+   "tanggal": "2026-11-15"
   }
  }
 }

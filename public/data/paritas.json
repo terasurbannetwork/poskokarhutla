@@ -1,0 +1,169 @@
+{
+ "versi": 1,
+ "acuan_dari": "docs/multi-bencana/bencana/*.md",
+ "bencana": {
+  "banjir": {
+   "a_f": {
+    "ada": 73,
+    "sebagian": 33,
+    "belum": 4,
+    "tb": 3,
+    "berlaku": 110
+   },
+   "g": {
+    "ada": 5,
+    "sebagian": 4,
+    "belum": 1,
+    "tb": 1,
+    "berlaku": 10
+   }
+  },
+  "longsor": {
+   "a_f": {
+    "ada": 31,
+    "sebagian": 65,
+    "belum": 12,
+    "tb": 5,
+    "berlaku": 108
+   },
+   "g": {
+    "ada": 5,
+    "sebagian": 2,
+    "belum": 3,
+    "tb": 1,
+    "berlaku": 10
+   }
+  },
+  "pesisir": {
+   "a_f": {
+    "ada": 36,
+    "sebagian": 49,
+    "belum": 24,
+    "tb": 4,
+    "berlaku": 109
+   },
+   "g": {
+    "ada": 0,
+    "sebagian": 5,
+    "belum": 5,
+    "tb": 1,
+    "berlaku": 10
+   }
+  },
+  "cuaca": {
+   "a_f": {
+    "ada": 66,
+    "sebagian": 30,
+    "belum": 11,
+    "tb": 6,
+    "berlaku": 107
+   },
+   "g": {
+    "ada": 5,
+    "sebagian": 1,
+    "belum": 4,
+    "tb": 1,
+    "berlaku": 10
+   }
+  },
+  "udara": {
+   "a_f": {
+    "ada": 61,
+    "sebagian": 30,
+    "belum": 17,
+    "tb": 5,
+    "berlaku": 108
+   },
+   "g": {
+    "ada": 3,
+    "sebagian": 2,
+    "belum": 6,
+    "tb": 0,
+    "berlaku": 11
+   }
+  },
+  "gempa": {
+   "a_f": {
+    "ada": 61,
+    "sebagian": 35,
+    "belum": 8,
+    "tb": 9,
+    "berlaku": 104
+   },
+   "g": {
+    "ada": 3,
+    "sebagian": 3,
+    "belum": 4,
+    "tb": 1,
+    "berlaku": 10
+   }
+  },
+  "gunungapi": {
+   "a_f": {
+    "ada": 67,
+    "sebagian": 31,
+    "belum": 9,
+    "tb": 6,
+    "berlaku": 107
+   },
+   "g": {
+    "ada": 0,
+    "sebagian": 5,
+    "belum": 4,
+    "tb": 2,
+    "berlaku": 9
+   }
+  },
+  "kekeringan": {
+   "a_f": {
+    "ada": 64,
+    "sebagian": 31,
+    "belum": 9,
+    "tb": 9,
+    "berlaku": 104
+   },
+   "g": {
+    "ada": 0,
+    "sebagian": 6,
+    "belum": 5,
+    "tb": 0,
+    "berlaku": 11
+   }
+  }
+ },
+ "diturunkan": [
+  "banjir E10: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "banjir F03: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "longsor C13: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "longsor E10: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "pesisir E10: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "cuaca C06: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "cuaca D10: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "cuaca F02: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "udara C06: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "udara C11: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "udara C13: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "udara C34: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "udara C38: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "udara D07: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "udara D10: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "udara F02: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "gempa C06: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "gempa C11: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "gempa D04: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "gempa D07: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "gempa F01: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "gempa F02: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "gunungapi B01: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "gunungapi C03: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "gunungapi C10: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "gunungapi C11: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "gunungapi C31: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "gunungapi D06: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "gunungapi D07: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "gunungapi D10: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "gunungapi E09: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "gunungapi F01: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN",
+  "gunungapi F02: ADA tanpa berkas bukti yang ada, diturunkan ke SEBAGIAN"
+ ]
+}
