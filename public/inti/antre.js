@@ -14,7 +14,7 @@
   const jeda = (n, r = 0.5) => Math.min(PLAFON, MENIT * 2 ** (n - 1) * (1 + (r * 2 - 1) * 0.2));   // plafon berlaku sesudah jitter (ALGORITMA 2)
   const teksAman = x => String(x).slice(0, 200);
   const DILARANG = new Set(["x-kode", "x-lacak", "kode", "sesi", "session", "token", "authorization"]);
-  const LAMA = new Set(["pb_lacak", "pb_instansi", "lp-antre", "pb_antre", "sippa-antre", "siklus-antre"]);
+  const LAMA = new Set(["pb_lacak", "pb_instansi", "pb_instansi_draf", "lp-antre", "pb_antre", "sippa-antre", "siklus-antre"]);
   const acakId = () => { const a = new Uint8Array(12); if (g.crypto && g.crypto.getRandomValues) g.crypto.getRandomValues(a); else for (let i = 0; i < 12; i++) a[i] = Math.random() * 256; return Array.from(a, x => x.toString(16).padStart(2, "0")).join(""); };
   const rupiahAngka = n => new Intl.NumberFormat("id-ID").format(n);
 

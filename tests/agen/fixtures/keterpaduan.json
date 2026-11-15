@@ -24,8 +24,6 @@
     "uji_tugas": "tabel anak tugas_api (sampel uji lapangan); tertaut lewat tugas_api"
   },
   "antrean_utang": [
-    "public/instansi.js",
-    "public/petugas/antre.js",
     "public/pipa/antre.js"
   ]
 }

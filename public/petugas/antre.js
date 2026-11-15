@@ -1,73 +1,57 @@
-/* Antrean luring (IndexedDB) untuk absen tanpa sinyal, dan simpanan nonce luring. Isi antrean memuat vektor wajah SAMPAI terkirim: item dihapus utuh
-   (vektor ikut hilang) begitu server menjawab. Logika di atas `simpan` (antarmuka sederhana) supaya bisa diuji dengan memori; IndexedDB di bawah.
-   simpan = {semua(tabel), taruh(tabel, nilai), hapus(tabel, kunci)}; tabel: antre (kunci id), nonce (kunci nonce), meta (kunci k). */
+/* Antrean luring absen petugas di atas antrean bersama `PbAntre` (public/inti/antre.js, KP-15). Tidak memanggil indexedDB sendiri.
+   Tiga saluran: `petugas-absen` (rahasia: vektor wajah di data butir, tidak pernah ke localStorage, umur 36 jam, foto Blob ikut di data),
+   `petugas-nonce` (6 nonce luring) dan `petugas-meta` (selisih jam server). Dua yang terakhir bukan antrean kirim: tidak pernah dikirim (kirimSekarang tak dipanggil),
+   hanya memakai penyimpanannya. Butir absen yang ditolak server dibuang utuh supaya vektornya ikut hilang (aturan lama: jawaban tegas = buang). */
 
 export const JUMLAH_NONCE_LURING = 6;   // ALGORITMA §4: saat daring HP menyimpan 6 nonce berumur 36 jam
+export const UMUR_ABSEN_MS = 36 * 3600000;   // K13: saluran wajah 36 jam
+const KUNCI_SISIPAN = ["foto", "klien_id", "waktu_klien"];   // ditambah antrean/butir, bukan bagian JSON absen
 
-/* ---------- logika murni di atas simpan ---------- */
-export const tambahAntre = (simpan, item) => simpan.taruh("antre", item);
-export async function daftarAntre(simpan) { return (await simpan.semua("antre")).sort((a, b) => a.dibuat - b.dibuat); }
-export async function jumlahAntre(simpan) { return (await simpan.semua("antre")).length; }
+/* opsi: simpan (uji: PbAntre.memori()), sekarang, kirimAbsen(data, foto, header) -> {s, j}, header() -> {"x-kode"} */
+export function buatToko({simpan, sekarang = Date.now, kirimAbsen, header} = {}) {
+  const P = globalThis.PbAntre;
+  if (!P) throw new Error("PbAntre belum dimuat: tambahkan <script src=\"/inti/antre.js\"> sebelum modul");
+  const dasar = {simpan, sekarang, langsung: false, pemicu: false};
+  const absen = P.saluran("petugas-absen", {...dasar, rahasia: true, umurMs: UMUR_ABSEN_MS, header,
+    kirim: (badan, h) => { const {foto, klien_id, waktu_klien, ...data} = badan[0]; return kirimAbsen(data, foto, h); }});
+  const nonce = P.saluran("petugas-nonce", {...dasar, rahasia: true, umurMs: UMUR_ABSEN_MS});
+  const meta = P.saluran("petugas-meta", {...dasar, rahasia: true, umurMs: 14 * 86400000});
 
-/* status yang layak diulang nanti: jaringan putus (0), batas waktu, terlalu sering, galat server. Selain itu server SUDAH menjawab tegas (kiriman salah), jadi dibuang. */
-export const bisaDiulang = status => status === 0 || status === 408 || status === 429 || status >= 500;
-
-/* kirim berurutan (lama ke baru). kirim(item) -> {ok, status, galat?}. Berhenti di kegagalan yang bisa diulang supaya urutan tetap.
-   -> {terkirim: [id], ditolak: [{id, status, galat}], sisa: n} */
-export async function kirimAntre(simpan, kirim) {
-  const hasil = {terkirim: [], ditolak: [], sisa: 0};
-  const daftar = await daftarAntre(simpan);
-  for (let i = 0; i < daftar.length; i++) {
-    const item = daftar[i], r = await kirim(item);
-    if (r.ok) { await simpan.hapus("antre", item.id); hasil.terkirim.push(item.id); }
-    else if (!bisaDiulang(r.status)) { await simpan.hapus("antre", item.id); hasil.ditolak.push({id: item.id, status: r.status, galat: r.galat ?? ""}); }
-    else { hasil.sisa = daftar.length - i; break; }
-  }
-  return hasil;
-}
-
-/* nonce luring: simpan hanya yang belum kedaluwarsa; ambil yang paling cepat kedaluwarsa, tiap nonce sekali pakai */
-export async function simpanNonce(simpan, daftar, kini) {
-  for (const n of await simpan.semua("nonce")) if (!(n.kedaluwarsa > kini)) await simpan.hapus("nonce", n.nonce);
-  for (const n of daftar) if (n && typeof n.nonce === "string" && n.kedaluwarsa > kini) await simpan.taruh("nonce", {nonce: n.nonce, tantangan: n.tantangan, kedaluwarsa: n.kedaluwarsa});
-}
-export async function ambilNonce(simpan, kini) {
-  const sah = [];
-  for (const n of await simpan.semua("nonce")) { if (n.kedaluwarsa > kini) sah.push(n); else await simpan.hapus("nonce", n.nonce); }
-  sah.sort((a, b) => a.kedaluwarsa - b.kedaluwarsa);
-  const n = sah[0] ?? null;
-  if (n) await simpan.hapus("nonce", n.nonce);
-  return n;
-}
-export async function jumlahNonce(simpan, kini) { return (await simpan.semua("nonce")).filter(n => n.kedaluwarsa > kini).length; }
-
-/* selisih jam (waktu server dikurangi jam HP) terakhir yang terukur, dipakai stempel saat luring */
-export const simpanSelisih = (simpan, selisihMs, kapan) => simpan.taruh("meta", {k: "selisih", nilai: selisihMs, kapan});
-export async function bacaSelisih(simpan) { const m = (await simpan.semua("meta")).find(x => x.k === "selisih"); return m ? m.nilai : 0; }
-
-/* penyimpanan memori (uji) */
-export function simpanMemori() {
-  const t = {antre: new Map(), nonce: new Map(), meta: new Map()}, kunci = {antre: "id", nonce: "nonce", meta: "k"};
-  return {
-    async semua(tabel) { return [...t[tabel].values()]; },
-    async taruh(tabel, nilai) { t[tabel].set(nilai[kunci[tabel]], nilai); },
-    async hapus(tabel, k) { t[tabel].delete(k); },
+  const sahSemua = async kini => {   // butir nonce yang belum kedaluwarsa; yang basi dibuang
+    const sah = [];
+    for (const x of await nonce.daftar()) { if (x.data.kedaluwarsa > kini) sah.push(x); else await nonce.buang(x.klien_id); }
+    return sah.sort((a, b) => a.data.kedaluwarsa - b.data.kedaluwarsa);
   };
-}
-
-/* ---------- IndexedDB ---------- */
-const DB = "lp-antre", VERSI_DB = 1;
-export function simpanIdb() {
-  let buka = null;
-  const db = () => buka ??= new Promise((ok, gagal) => {
-    const r = indexedDB.open(DB, VERSI_DB);
-    r.onupgradeneeded = () => { r.result.createObjectStore("antre", {keyPath: "id"}); r.result.createObjectStore("nonce", {keyPath: "nonce"}); r.result.createObjectStore("meta", {keyPath: "k"}); };
-    r.onsuccess = () => ok(r.result); r.onerror = () => { buka = null; gagal(r.error); };
-  });
-  const tx = async (tabel, mode, f) => { const d = await db(); return new Promise((ok, gagal) => { const t = d.transaction(tabel, mode), req = f(t.objectStore(tabel)); t.oncomplete = () => ok(req?.result); t.onerror = t.onabort = () => gagal(t.error); }); };
   return {
-    semua: tabel => tx(tabel, "readonly", s => s.getAll()),
-    taruh: (tabel, nilai) => tx(tabel, "readwrite", s => s.put(nilai)),
-    hapus: (tabel, k) => tx(tabel, "readwrite", s => s.delete(k)),
+    absen, nonce, meta,
+    /* IndexedDB mati -> saluran rahasia jatuh ke memori dan butir hilang saat tab ditutup: tolak, jangan bilang "tersimpan di HP" */
+    async tambahAbsen({id, dibuat, data, foto}) {
+      const k = await absen.masukkan({klien_id: id, data: {...data, foto}, dibuat});
+      if (absen.cadangan) { await absen.buang(id); throw new Error("Penyimpanan HP tidak tersedia; absen tidak bisa disimpan luring"); }
+      return k;
+    },
+    jumlahAbsen: async () => (await absen.daftar()).length,   // daftar() membuang butir lewat 36 jam (vektor ikut hilang) walau HP lama luring
+    /* kirim berurutan lama ke baru. -> {terkirim: [id], ditolak: [{id, galat}], sisa: n} */
+    async kirimTertunda() {
+      const sebelum = (await absen.daftar()).map(x => x.klien_id);
+      await absen.kirimSekarang();
+      const ada = await absen.daftar(), ditolak = [];
+      for (const x of ada) if (x.status !== "menunggu") { ditolak.push({id: x.klien_id, galat: x.alasan || ""}); await absen.buang(x.klien_id); }   // vektor ikut hilang
+      const tinggal = new Set(ada.map(x => x.klien_id));
+      return {terkirim: sebelum.filter(id => !tinggal.has(id)), ditolak, sisa: ada.length - ditolak.length};
+    },
+    async simpanNonce(daftar, kini) {
+      await sahSemua(kini);
+      for (const n of daftar) if (n && typeof n.nonce === "string" && n.kedaluwarsa > kini) await nonce.masukkan({klien_id: n.nonce, data: {nonce: n.nonce, tantangan: n.tantangan, kedaluwarsa: n.kedaluwarsa}, dibuat: kini});
+    },
+    async ambilNonce(kini) {   // paling cepat kedaluwarsa dulu, sekali pakai
+      const n = (await sahSemua(kini))[0]; if (!n) return null;
+      await nonce.buang(n.klien_id); return n.data;
+    },
+    jumlahNonce: async kini => (await sahSemua(kini)).length,
+    simpanSelisih: (selisihMs, kapan) => meta.masukkan({klien_id: "selisih", data: {nilai: selisihMs}, dibuat: kapan}),
+    async bacaSelisih() { const m = (await meta.daftar()).find(x => x.klien_id === "selisih"); return m ? m.data.nilai : 0; },
+    /* butir lama (basis `lp-antre`) -> saluran absen; basis lama dihapus hanya setelah semua butir terbaca ulang. Store nonce/meta lama ikut hilang (diisi ulang saat daring). */
+    pindahkanLama: () => P.pindahDari({db: "lp-antre", store: "antre", ke: absen, petakan: it => ({klien_id: it.id, dibuat: it.dibuat, data: {...it.data, foto: it.foto}})}),
   };
 }

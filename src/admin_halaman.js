@@ -279,7 +279,7 @@ export const halamanSippaLapangan = () => `<!doctype html>
 <body>
 <div id="app"><p>Memuat form lapangan…</p></div>
 <noscript><p>Form lapangan butuh JavaScript aktif.</p></noscript>
-<script type="module" src="/pipa/lapangan.js?v=5"></script>
+<script type="module" src="/pipa/lapangan.js?v=6"></script>
 </body></html>`;
 
 /* Command center karhutla (src/command_center.js): MEJA OPERATOR /command-center (kerangka admin/staf bersama; ctx undefined = moderator). Layar dinding dibuang 2 Nov 2026.

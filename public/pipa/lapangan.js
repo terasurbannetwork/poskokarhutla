@@ -4,7 +4,7 @@
    INP: ketukan stopwatch dan Kirim sekarang mengubah tombol seketika, simpan dan kirim lewat nanti() (anggaran form lapangan < 100 ms). */
 import {ikon} from "./ikon.js";
 import {cekButir, MEDAN, KEDALAMAN_CM, JENIS_FASE2, TAHAP_FOTO, LANGKAH_PERIKSA, MODA_JEJAK, TITIK_TEKANAN, KEBUTUHAN_DEBIT_LPS, SOS_TAHAN_MS, hitungDebit, bandingDebit, TINDAKAN_TUNGGU, peringatanBor, peringatanTekanan, pengingatTekanan, tambahTitikJejak, panjangJejakM} from "./formulir.js";
-import {tambah, tambahFoto, hapus, jumlah, daftar, perbaiki, kirimSemua, keluar, buangSemua, kodeTersimpan, idbSiap, buangKadaluarsa} from "./antre.js";
+import {tambah, tambahFoto, hapus, jumlah, daftar, perbaiki, kirimSemua, keluar, buangSemua, kodeTersimpan, idbSiap, buangKadaluarsa, pindahkan} from "./antre.js";
 
 const LS_KODE = "sippa.kode", LS_TERKIRIM = "sippa.terkirim", LS_DRAF = "sippa.draf.", LS_PERIKSA = "sippa.periksa.", LS_TEKANAN = "sippa.tekanan.";
 const NOMOR_DARURAT = [["112", "Darurat umum"], ["117", "Call center BNPB"]];
@@ -691,7 +691,7 @@ export function pasang(akar) {
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") tunda(kirim); });
   pasang.lepas = () => { clearInterval(berkala); clearInterval(pengingatTimer); if (rek) navigator.geolocation.clearWatch(rek.id); };
   /* isian lebih dari 14 hari milik kode yang mustahil terkirim: dibuang dan jumlahnya diberitahukan (SP-015) */
-  tunda(async () => { const k = await buangKadaluarsa().catch(() => null); if (k?.butir) pitaTulis(`${angka(k.butir)} isian lebih dari 14 hari dibuang dari antrean karena tidak mungkin terkirim lagi.`); await mulai(); });
+  tunda(async () => { await pindahkan().catch(() => 0); const k = await buangKadaluarsa().catch(() => null); if (k?.butir) pitaTulis(`${angka(k.butir)} isian lebih dari 14 hari dibuang dari antrean karena tidak mungkin terkirim lagi.`); await mulai(); });
 }
 
 export const lepas = () => pasang.lepas?.();

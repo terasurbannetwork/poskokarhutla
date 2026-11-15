@@ -1,14 +1,20 @@
 /* Sambungan antrean luring (antre.js) ke jaringan: kirim ulang absen yang tersimpan, isi simpanan nonce luring, ukur selisih jam server. */
-import {simpanIdb, kirimAntre, jumlahAntre, simpanNonce, jumlahNonce, ambilNonce, simpanSelisih, bacaSelisih, tambahAntre, JUMLAH_NONCE_LURING} from "./antre.js";
+import {buatToko, JUMLAH_NONCE_LURING} from "./antre.js";
 import {api, kirimForm} from "./umum.js";
 
-export const toko = simpanIdb();
-const aman = async (f, ganti) => { try { return await f(); } catch (e) { return ganti; } };   // IndexedDB bisa mati (mode privat lama): jangan jatuhkan layar
+/* antrean bersama PbAntre (/inti/antre.js, skrip klasik di index.html); dibuat malas supaya modul ini bisa diimpor tanpa jaringan */
+let kodeKini = null, _toko = null, _lama = null;
+const toko = () => _toko ??= buatToko({
+  kirimAbsen: async (data, foto) => { const r = await kirimForm("/api/petugas/absen", bentukForm({...data, luring: true}, foto), {kode: kodeKini}); return {s: r.status, j: r.data}; },
+  header: () => ({"x-kode": kodeKini}),
+});
+/* IndexedDB bisa mati (mode privat lama): jangan jatuhkan layar. Butir basis lama dipindah sekali per muatan halaman. */
+const aman = async (f, ganti) => { try { _lama ??= toko().pindahkanLama().catch(() => 0); await _lama; return await f(); } catch (e) { return ganti; } };
 
-export const hitungAntre = () => aman(() => jumlahAntre(toko), 0);
-export const selisihTerakhir = () => aman(() => bacaSelisih(toko), 0);
-export const nonceLuring = () => aman(() => ambilNonce(toko, Date.now()), null);
-export const simpanAbsen = item => tambahAntre(toko, item);
+export const hitungAntre = () => aman(() => toko().jumlahAbsen(), 0);
+export const selisihTerakhir = () => aman(() => toko().bacaSelisih(), 0);
+export const nonceLuring = () => aman(() => toko().ambilNonce(Date.now()), null);
+export const simpanAbsen = async item => { await aman(() => 0); await toko().tambahAbsen(item); };
 
 /* badan multipart absen: data (JSON) + foto */
 export function bentukForm(data, foto) {
@@ -18,18 +24,11 @@ export function bentukForm(data, foto) {
   return f;
 }
 
-/* kirim semua yang tertunda; satu penerbangan sekaligus. -> {terkirim, ditolak, sisa} */
-let jalan = null;
-export function kirimTertunda(kode) {
-  return jalan ??= (async () => {
-    try {
-      return await kirimAntre(toko, async item => {
-        const r = await kirimForm("/api/petugas/absen", bentukForm({...item.data, luring: true}, item.foto), {kode});
-        return {ok: r.ok, status: r.status, galat: r.data?.galat};
-      });
-    } catch (e) { return {terkirim: [], ditolak: [], sisa: await hitungAntre()}; }
-    finally { jalan = null; }
-  })();
+/* kirim semua yang tertunda; satu penerbangan sekaligus (dijaga saluran). -> {terkirim, ditolak, sisa} */
+export async function kirimTertunda(kode) {
+  kodeKini = kode;
+  try { await aman(() => 0); return await toko().kirimTertunda(); }
+  catch (e) { return {terkirim: [], ditolak: [], sisa: await hitungAntre()}; }
 }
 
 /* nonce daring 1 buah; ukur selisih jam = waktu_server dikurangi titik tengah t0..t1 (setengah perjalanan pulang-pergi) */
@@ -39,7 +38,7 @@ export async function mintaNonce(kode) {
   const n = r.data.nonce?.[0], ws = Number(r.data.waktu_server);
   if (!n || !Number.isFinite(ws)) return {ok: false, status: 500};
   const selisih = ws - (t0 + t1) / 2;
-  await aman(() => simpanSelisih(toko, selisih, t1));
+  await aman(() => toko().simpanSelisih(selisih, t1));
   return {ok: true, nonce: n, selisih};
 }
 
@@ -47,9 +46,9 @@ export async function mintaNonce(kode) {
 export async function isiNonceLuring(kode) {
   if (!navigator.onLine) return;
   await aman(async () => {
-    const ada = await jumlahNonce(toko, Date.now()), perlu = JUMLAH_NONCE_LURING - ada;
+    const ada = await toko().jumlahNonce(Date.now()), perlu = JUMLAH_NONCE_LURING - ada;
     if (perlu <= 0) return;
     const r = await api("/api/petugas/nonce", {metode: "POST", kode, badan: {jumlah: perlu, luring: true}});
-    if (r.ok && Array.isArray(r.data.nonce)) await simpanNonce(toko, r.data.nonce, Date.now());
+    if (r.ok && Array.isArray(r.data.nonce)) await toko().simpanNonce(r.data.nonce, Date.now());
   });
 }

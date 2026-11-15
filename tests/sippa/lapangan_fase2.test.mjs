@@ -135,33 +135,18 @@ test("kalimatDebit: angka id-ID dibanding 5 liter per detik; isian belum lengkap
   assert.match(L.kalimatDebit(2.5), /2,5 liter per detik, kurang/); assert.match(L.kalimatDebit(null), /Isi semua kolom/);
 });
 
-/* ---------- antrean luring jenis baru ---------- */
-let nomor = 0;
-const KODE = "0123456789abcdef0123456789";
-function idbPalsu() {
-  const isi = {butir: new Map(), foto: new Map()};
-  const minta = f => { const r = {}; queueMicrotask(() => { try { r.result = f(); r.onsuccess?.({target: r}); } catch (e) { r.error = e; r.onerror?.({target: r}); } }); return r; };
-  const db = {createObjectStore: () => ({}), transaction: nama => ({objectStore: () => ({
-    put: v => minta(() => { isi[nama].set(v.id, structuredClone(v)); return v.id; }), get: k => minta(() => structuredClone(isi[nama].get(k))),
-    getAll: () => minta(() => [...isi[nama].values()].map(v => structuredClone(v))), delete: k => minta(() => { isi[nama].delete(k); })})})};
-  return {isi, open: () => { const q = {}; queueMicrotask(() => { q.result = db; q.onupgradeneeded?.({target: q}); q.onsuccess?.({target: q}); }); return q; }};
-}
-async function siap(balas) {
-  const idb = idbPalsu(), m = new Map(); globalThis.indexedDB = idb;
-  globalThis.localStorage = {getItem: k => m.get(k) ?? null, setItem: (k, v) => m.set(k, String(v)), removeItem: k => m.delete(k), key: i => [...m.keys()][i] ?? null, get length() { return m.size; }};
-  m.set("sippa.kode", KODE);
-  const panggilan = []; globalThis.fetch = async (url, init = {}) => { panggilan.push({url, badan: typeof init.body === "string" ? JSON.parse(init.body) : init.body}); const j = await balas(panggilan.at(-1)); return {ok: j.status < 300, status: j.status, json: async () => j.json ?? {}}; };
-  return {A: await import(`../../public/pipa/antre.js?fase2=${++nomor}`), idb, panggilan};
-}
+/* ---------- antrean luring jenis baru (KP-12: di atas PbAntre, penyimpanan memori) ---------- */
+import {siapAntre, isiButir, isiFoto} from "./antre_alat.mjs";
+const siap = async balas => { const {A, simpan, panggilan} = await siapAntre({balas}); return {A, simpan, panggilan}; };
 const diterima = r => ({status: 200, json: Array.isArray(r.badan) || r.badan?.get ? {foto_id: "f".repeat(16)} : {diterima: Object.values(r.badan).filter(Array.isArray).flat().map(b => b.id), ganda: [], ditolak: [], jam_server: Date.now()}});
 const T1 = {tugas_id: "T1"};
 
 test("antre fase 2: tujuh jenis baru tersimpan luring tanpa fetch, terkirim dalam larik bernama jenisnya, antrean kosong sesudahnya", async () => {
-  const {A, idb, panggilan} = await siap(diterima);
+  const {A, simpan, panggilan} = await siap(diterima);
   const butir = [["periksa", {langkah: "tiba", waktu: KINI}], ["sos", {...POS, waktu: KINI}], ["tekanan", {titik: "lance", bar: 2.4, waktu: KINI}], ["jejak", {titik: [[-2.2, 113.9, KINI], [-2.3, 113.9, KINI + 1]], moda: "perahu"}],
     ["selesai", {waktu: KINI, alat_kembali: ["P-101"], alat_hilang: []}], ["bor", {...POS, kedalaman_cm: 120, waktu: KINI}], ["debit", {...POS, metode: "ember", volume_l: 20, detik: 8, waktu: KINI}]];
   for (const [jenis, data] of butir) assert.equal((await A.tambah({jenis, data, tugas_id: "T1"})).ok, true, jenis);
-  assert.equal(panggilan.length, 0); assert.equal(idb.isi.butir.size, 7);
+  assert.equal(panggilan.length, 0); assert.equal((await isiButir(simpan)).length, 7);
   const h = await A.kirimSemua(T1);
   assert.equal(panggilan.length, 1); assert.equal(h.diterima, 7);
   for (const [jenis] of butir) assert.equal(panggilan[0].badan[jenis].length, 1, jenis);
@@ -169,26 +154,26 @@ test("antre fase 2: tujuh jenis baru tersimpan luring tanpa fetch, terkirim dala
 });
 
 test("antre fase 2: butir yang melanggar kontrak ditolak saat tambah dan tidak masuk antrean (SOS di luar Indonesia, bor 2000 cm, debit tanpa metode)", async () => {
-  const {A, idb} = await siap(diterima);
+  const {A, simpan} = await siap(diterima);
   for (const [jenis, data] of [["sos", {lat: 51, lon: 0, waktu: KINI}], ["bor", {...POS, kedalaman_cm: 2000, waktu: KINI}], ["debit", {...POS, waktu: KINI}]]) {
     const r = await A.tambah({jenis, data, tugas_id: "T1"}); assert.equal(r.ok, false, jenis); assert.ok(r.galat.length);
   }
-  assert.equal(idb.isi.butir.size, 0);
+  assert.equal((await isiButir(simpan)).length, 0);
 });
 
 test("antre fase 2: foto bukti berdiri sendiri berangkat lewat /lapangan/foto dengan tahap, lat, lon; tanpa lokasi atau dengan tahap asing ditolak sebelum disimpan", async () => {
-  const {A, idb, panggilan} = await siap(diterima);
+  const {A, simpan, panggilan} = await siap(diterima);
   const jpeg = {type: "image/jpeg", size: 10};
   assert.equal((await A.tambahFoto(jpeg, null, {tahap: "tiba", tugas_id: "T1"})).ok, false, "tanpa GPS");
   assert.equal((await A.tambahFoto(jpeg, null, {tahap: "siang", lat: -2.2, lon: 113.9, tugas_id: "T1"})).ok, false, "tahap asing");
-  assert.equal(idb.isi.foto.size, 0);
+  assert.equal((await isiFoto(simpan)).length, 0);
   assert.equal((await A.tambahFoto(jpeg, null, {tahap: "injeksi", lat: -2.123456789, lon: 113.9, tugas_id: "T1"})).ok, true);
   assert.equal(panggilan.length, 0);
   await A.kirimSemua(T1);
   assert.equal(panggilan.length, 1); assert.match(panggilan[0].url, /\/api\/sippa\/lapangan\/foto$/);
   const fd = panggilan[0].badan; assert.equal(fd.get("tahap"), "injeksi"); assert.equal(fd.get("lat"), "-2.123457"); assert.equal(fd.get("lon"), "113.9");
   assert.match(fd.get("lat"), /^-?\d{1,3}(\.\d{1,10})?$/, "format yang diterima server");
-  assert.equal(idb.isi.foto.size, 0, "foto terhapus sesudah terkirim");
+  assert.equal((await isiFoto(simpan)).length, 0, "foto terhapus sesudah terkirim");
 });
 
 test("antre fase 2: foto bukti tugas lain tidak ikut berangkat dengan kode tugas ini; foto lama (log) tetap hanya milik butir tugasnya", async () => {
