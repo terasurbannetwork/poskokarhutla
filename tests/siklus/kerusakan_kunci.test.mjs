@@ -16,10 +16,30 @@ test('sidik berkas kriteria cocok dengan kerusakan_sidik.json', () => {
   assert.equal(sha(teks.replace(/\n$/, '')), sidik.sidik);
 });
 
-const diHead = (() => { try { execFileSync('git', ['cat-file', '-e', `HEAD:${KRI}`], { stdio: 'ignore' }); return true; } catch { return false; } })();
+// v2: jangkar null hanya sah selagi versi kriteria ini belum ada di origin/main (belum di-push); sesudah push sesi induk wajib mengisinya.
+const diOrigin = (() => { try { return execFileSync('git', ['show', `origin/main:${KRI}`], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }) === teks; } catch { return false; } })();
 
-test('jangkar_commit wajib terisi begitu berkas kriteria sudah ada di HEAD', () => {
-  assert.ok(sidik.jangkar_commit || !diHead, 'isi jangkar_commit (hash commit yang memuat kriteria) sesudah commit pertama');
+test('jangkar_commit wajib terisi begitu versi kriteria ini sudah ada di origin/main', () => {
+  assert.ok(sidik.jangkar_commit || !diOrigin, 'isi jangkar_commit (hash commit yang memuat kriteria) sesudah push');
+});
+
+test('riwayat v1 tercatat di kriteria dan sidik, versi sama', () => {
+  assert.equal(K.versi, sidik.versi);
+  const v1 = { sidik: '9493ddcc1ab3789d900d599212b6bb6995c882073d61946160563cee62ae60aa', jangkar_commit: '16f7ec1928bebb2755e34494636665fde6617eb1' };
+  assert.deepEqual([K.riwayat[0].sidik, K.riwayat[0].jangkar_commit], [v1.sidik, v1.jangkar_commit]);
+  assert.deepEqual([sidik.riwayat[0].sidik, sidik.riwayat[0].jangkar_commit], [v1.sidik, v1.jangkar_commit]);
+});
+
+test('v2: aturan baca 10 m, pengecualian, plasebo, kelayakan, keterbatasan terkunci', () => {
+  assert.equal(K.aturan_baca.resolusi_m, 10);
+  assert.ok(K.aturan_baca.grid_k >= 2 && K.aturan_baca.fraksi_air_min > 0);
+  assert.equal(K.adegan.min_sah_komposit, 2);
+  assert.equal(K.adegan.jendela_cari_hari, 120);
+  assert.equal(K.adegan.titik_geometri, 400);
+  assert.equal(K.adegan.plasebo.min_jarak_hari_dari_mulai, 12);
+  assert.equal(K.pengecualian_mekanis.min_bagian_terliput, 0.9);
+  assert.ok(K.kelayakan.min_pasangan >= 20 && K.kelayakan.naif_hand_wajib);
+  assert.match(K.keterbatasan_wajib.join(' '), /sawah dan tambak/);
 });
 
 test('bila sudah dijangkar, isi di commit jangkar sama persis', () => {

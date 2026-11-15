@@ -12,6 +12,7 @@ Jitupasna (F3 program Siklus) butuh jumlah bangunan rusak per tingkat. Cacah lap
 | --- | --- |
 | K1 | 15 Nov 2026: F2 "peta kerusakan bangunan dari satelit sesudah kejadian, masuk Jitupasna /siklus" disetujui, dengan catatan jujur bahwa Sentinel 10 m kuat untuk banjir dan kebakaran tetapi lemah untuk gempa (tolok ukur: Copernicus EMS, Microsoft AI for Good Venezuela 2026, dataset xBD-S12 dengan 10.315 pasang citra dari 16 bencana). |
 | K2 | Paket dokumen dulu, baru kode (AGENTS.md 3.7). |
+| K3 | 15/16 Nov 2026: pemilik menjawab "Boleh, kunci v2 (Recommended)" atas pertanyaan mengganti kriteria dengan versi 2 (baca 10 m, ambang cakupan, plasebo lebih bersih), dikunci ulang dengan sidik baru; v1 dicatat gagal kelayakan; bagian uji tetap belum pernah disentuh. |
 
 ## Keputusan rancangan (agent, bisa dibatalkan pemilik)
 
@@ -42,3 +43,17 @@ Jitupasna (F3 program Siklus) butuh jumlah bangunan rusak per tingkat. Cacah lap
 | Q10 | Untuk kerusakan bangunan, model gagal tampil tanpa angka (D2) atau dengan pil hipotesis seperti Siklus PRD F3-08 (KA 11)? | **[BAWAAN SEMENTARA]** D2 menang: tanpa angka. Alasan: angka rusak bangunan dibaca sebagai fakta oleh pimpinan, dan percobaan Cianjur gagal. | KS-08 |
 | Q11 | Parameter skor dan pembanding uji banjir yang belum tertulis (KS-01, `scripts/siklus/kerusakan_kriteria.json`, sidik di `kerusakan_sidik.json`)? | **[BAWAAN SEMENTARA, HIPOTESIS, usulan validasi-model, perlu cek rujukan]** (a) skor satelit = jumlah bangunan terendam kabupaten (batas bawah, ALGORITMA 1); ambang absolut VV saja, kisi -16 sampai -20 dB, dipilih dengan rho Spearman tertinggi di bagian kalibrasi saja; (b) adegan sebelum = komposit median 3 adegan orbit sama dalam 60 hari sebelum `mulai`, sesudah 0 sampai 6 hari dari `mulai` (7 sampai 12 hari hanya sensitivitas deskriptif); (c) naif hujan = maks jumlah 3 hari bergeser mulai-2 sampai mulai+6, ERA5 lewat Open-Meteo archive (`scripts/banjir/uji_balik.py:6,38`), plus naif kerawanan HAND < 5 m dan frekuensi DIBI kabupaten pada kalibrasi; (d) CI resample blok sumber|bulan dan sensitivitas per kabupaten, wajib lolos di keduanya; (e) batas klaim: vonis hanya peringkat besar-kecil di antara kabupaten yang sudah banjir. | KS-02 |
 | Q8 | Tampil juga di Laporan Berkala? | **[BAWAAN SEMENTARA]** tidak; hanya cacah resmi. | tidak menahan |
+| Q12 | Masker sawah dan tambak untuk skor banjir? | **[BAWAAN SEMENTARA]** tanpa masker (WorldCover butuh GDAL); peringkat vonis berarti "peringkat termasuk sawah dan tambak", dikunci di `keterbatasan_wajib` kriteria v2 dan wajib ada di vonis. | KS-03 |
+| Q13 | Naif HAND (Copernicus GLO-30) dihitung di mana? | **[BAWAAN SEMENTARA]** HAND tetap wajib; KS-03 menolak jalan (`kerusakan.py prasyarat`) selama naif HAND belum terhitung untuk semua kabupaten uji. Mesin lokal tanpa numpy dan GDAL tidak bisa; butuh mesin atau runner ber-numpy dan GDAL, keputusan pemilik soal tempatnya. | KS-03 |
+
+## Riwayat kriteria
+
+| Versi | Sidik | Jangkar | Status |
+| --- | --- | --- | --- |
+| 1 | `9493ddcc1ab3789d900d599212b6bb6995c882073d61946160563cee62ae60aa` | `16f7ec1928bebb2755e34494636665fde6617eb1` | Gagal kelayakan (validasi-model): satu piksel overview 110 m per sel, satelit mendekati plasebo. |
+| 2 | `7eddd1f5e7c296cff8c5cd78ab700689e22a34140d2032d26bf2111497e1ba80` | diisi sesi induk sesudah push | Terkunci menunggu jangkar. Daftar pasangan, pemisahan kalibrasi/uji, ambang lulus, CI, dan naif tidak berubah. |
+
+Pasangan KALIBRASI yang sudah dilihat sebelum v2 dikunci (indeks di `kerusakan_kriteria.json`): 205 (Kota Pekalongan 2026-01-17, dikeluarkan mekanis: adegan sesudah terdekat +8 hari), 209 (Kota Semarang 2026-01-16), 212 (Kota Semarang 2026-03-15), 218 (Kota Tegal 2025-12-26). Hasil v1 (bangunan terendam satelit lawan plasebo, ambang -16/-17 dB): 209 12 lawan 22 dan 12 lawan 10; 212 22 lawan 11 dan 6 lawan 5; 218 3 lawan 3 dan 0 lawan 0. Tidak ada pasangan bagian uji yang pernah dilihat.
+
+Uji asap v2 (3 pasangan kalibrasi, belum vonis kelayakan karena n < 20): 209 satelit 0 lawan plasebo 0 (-16), 1 lawan 0 (-17); 212 8 lawan 76 (-16), 6 lawan 64 (-17); 218 34 lawan 0 (-16), 0 lawan 0 (-17). Unduhan per pasangan 36,5 MB (218), 107 MB (209), 118 MB (212) pada k=4.
+

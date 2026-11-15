@@ -1,8 +1,16 @@
 {
  "berkas": "scripts/siklus/kerusakan_kriteria.json",
- "sidik": "9493ddcc1ab3789d900d599212b6bb6995c882073d61946160563cee62ae60aa",
+ "sidik": "7eddd1f5e7c296cff8c5cd78ab700689e22a34140d2032d26bf2111497e1ba80",
  "cara": "sha256 atas isi berkas kriteria tanpa satu baris baru penutup (byte per byte)",
- "ditulis": "2026-11-15",
- "jangkar_commit": "16f7ec1928bebb2755e34494636665fde6617eb1",
- "catatan": "Isi jangkar_commit dengan hash commit yang memuat kedua berkas, sesudah di-push, SEBELUM KS-02 memulai. Uji memastikan isi di commit itu sama."
+ "ditulis": "2026-11-16",
+ "versi": 2,
+ "riwayat": [
+  {
+   "versi": 1,
+   "sidik": "9493ddcc1ab3789d900d599212b6bb6995c882073d61946160563cee62ae60aa",
+   "jangkar_commit": "16f7ec1928bebb2755e34494636665fde6617eb1"
+  }
+ ],
+ "jangkar_commit": null,
+ "catatan": "Versi 2. Isi jangkar_commit dengan hash commit yang memuat kedua berkas, sesudah di-push, SEBELUM KS-03 memulai. Uji memastikan isi di commit itu sama. Jangkar v1 tercatat di riwayat dan tidak berlaku lagi."
 }
