@@ -631,13 +631,8 @@ def slide_lengkap(L):
     n_lebat = sum(1 for v in bk.values() if any((x or 0) >= 3 for x in v))
     naik = [t for t in titik if t['kls'] >= 1]
     tt = titik[0] if titik else None
-    if naik:
-        ek = [f' kab/kota {prov};', f' {len(naik)}', ' titik sungai mencapai debit banjir 2 tahunan']
-    elif tt:
-        ek = [f' kab/kota {prov}; debit sungai tertinggi', f' {round(100 * tt["r"])}%', f' banjir 2 tahunan ({tt["kab"]})']
-    else:
-        ek = [f' kab/kota {prov}']
-    judul(sl, ['BMKG: hujan lebat atau petir di', f' {n_lebat}'] + ek)
+    # judul tanpa debit sungai (pemilik 15 Nov 2026: "Debit sungai tertinggi gausah disebut")
+    judul(sl, ['BMKG memprakirakan hujan lebat atau petir di', f' {n_lebat}', f' kab/kota {prov} pada {n_hari} hari ke depan (', rentang, ')'])
     kolB = [('Kab/Kota', 1.5, 'l')] + [(h, .7, 'c') for h in hk]   # tanpa kolom prakiraan kita (pemilik 15 Nov 2026: "Hilangkan")
 
     def sel_b(x):
