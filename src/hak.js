@@ -714,3 +714,12 @@ export const pbStmtDokRakit = (env, p, d, oleh, kini) => sedia(env, p, "pb_dokum
 export const pbDokById = (env, p, id) => sedia(env, p, "pb_dokumen", "baca", PB_SQL_DOK.satu).bind(id).first();
 export const pbDokDaftar = async (env, p, jenis, bencana, dari, sampai, prov) => (await sedia(env, p, "pb_dokumen", "baca", PB_SQL_DOK.daftar).bind(jenis, bencana, dari, sampai, prov).all()).results;
 export const pbDokBeku = async (env, p, id, ukuran, sha, kini) => (await sedia(env, p, "pb_dokumen", "ubah", PB_SQL_DOK.beku).bind(id, ukuran, sha, kini).run()).meta.changes;
+
+/* PB-28 papan status darurat (F-20; DESAIN-TEKNIS paritas-bencana 6.4). Baca saja dari logbook_sk (0094) + kejadiannya lewat PK; indeks logbook_sk_selesai (0098/0131).
+   Dua cabang UNION ALL (tmt_selesai >= hari ini; tmt_selesai IS NULL), keduanya tmt_mulai <= hari ini, supaya OR tidak jadi SCAN. Kolom oleh dan tautan tidak pernah dibaca. */
+Object.assign(MATRIKS, {logbook_sk: {pb_baca: ["baca"]}});
+export const PB_SQL_PAPAN_SK = `SELECT s.kejadian_id, s.tingkat, s.wilayah, s.nomor, s.tgl_sk, s.tmt_mulai, s.tmt_selesai, s.perpanjangan_ke, k.jenis, k.prov, k.kab
+  FROM (SELECT * FROM logbook_sk WHERE tmt_selesai >= ?1 AND tmt_mulai <= ?1 UNION ALL SELECT * FROM logbook_sk WHERE tmt_selesai IS NULL AND tmt_mulai <= ?1) s
+  JOIN logbook_kejadian k ON k.id = s.kejadian_id WHERE k.dummy = 0 AND (?2 = '' OR k.jenis = ?2) AND (?3 = '[]' OR k.prov IN (SELECT value FROM json_each(?3))) ORDER BY s.tmt_selesai IS NULL, s.tmt_selesai LIMIT 500`;
+/* wilayah = daftar kode prov (JSON); '[]' = nasional. Filter di SQL supaya LIMIT 500 berlaku sesudahnya. */
+export const papanSk = async (env, p, tgl, bencana, wilayah) => (await sedia(env, p, "logbook_sk", "baca", PB_SQL_PAPAN_SK).bind(tgl, bencana, JSON.stringify(wilayah)).all()).results;

@@ -1233,6 +1233,7 @@
     "POST /api/pb/dokumen/bekukan": "bekukan: R2 tulis sekali",
     "GET /api/pb/dokumen": "daftar: metadata tanpa oleh",
     "GET /api/pb/dokumen/berkas": "berkas: fmt hanya json dan pdf",
+    "GET /api/pb/papan-sk": "sisa_hari, sinyal, SK provinsi mengalahkan kabupaten",
     "table op_isian": "hapus lunak: alasan wajib",
     "table op_isian_log": "riwayat: hak baca, per butir dan per tanggal",
     "table op_isian_kejadian": "sortie: isi, kembar 409, ubah",

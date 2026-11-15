@@ -91,12 +91,35 @@ JEDA_JENDELA = 30  # hari ke belakang dari mulai SK untuk mencari kejadian DIBI 
 # kelas bencana -> potongan huruf kecil pada teks jenis SK maupun jenis DIBI (satu teks bisa memuat banyak kelas)
 KELAS = {"karhutla": ("kebakaran hutan", "kebakaran lahan"), "banjir": ("banjir",), "longsor": ("longsor", "gerakan tanah"),
          "kekeringan": ("kekeringan",), "cuaca": ("cuaca ekstrem", "angin", "puting beliung", "topan"),
-         "gunungapi": ("gunung api", "gunungapi", "erupsi")}
+         "gunungapi": ("gunung api", "gunungapi", "erupsi"), "udara": ("kabut asap", "bencana asap", "kualitas udara", "pencemaran udara")}
 
 
 def kelas_jenis(teks):
     t = str(teks or "").lower()
     return {k for k, ws in KELAS.items() if any(w in t for w in ws)}
+
+
+# PB-28 / F-20: saran status darurat per jenis baru. HANYA saran: penetapan tetap SK kepala daerah (Pedoman BNPB 2016).
+# Tingkat berasal dari sumber resmi (level PVMBG, kategori ISPU, lv kekeringan) atau ambang tertulis di ALGORITMA.md paritas-bencana
+# (EWS 1 Waspada, 2 Siaga, 3 Awas). Tidak ada tabel "tingkat -> Siaga/Tanggap Darurat" di dokumen, jadi tidak dikarang di sini.
+SARAN_SUMBER = {"gunungapi": "level PVMBG per gunung (riwayat_level.py)", "udara": "PM2,5 24 jam kategori ISPU (kualitas.py BATAS); Q37 bawaan sementara",
+                "kekeringan": "lv kabupaten kekeringan_wilayah.json (SPI-3 + kelembapan tanah); hipotesis sampai uji balik lolos"}
+SARAN_TINGKAT = {1: "Waspada", 2: "Siaga", 3: "Awas"}
+SARAN_HIPOTESIS = {"kekeringan"}   # model tanpa uji balik
+AKAN_BERAKHIR_HARI = 7             # Q27 bawaan sementara
+
+
+def saran_status(jenis, tingkat):
+    """Saran (bukan penetapan) bagi pemegang keputusan dari tingkat peringatan resmi; None bila jenis tak dikenal atau tingkat 0/di luar 1..3."""
+    if jenis not in SARAN_SUMBER or tingkat not in SARAN_TINGKAT:
+        return None
+    return {"saran": True, "penetapan": False, "jenis": jenis, "tingkat": tingkat, "label": SARAN_TINGKAT[tingkat], "sumber": SARAN_SUMBER[jenis],
+            "hipotesis": jenis in SARAN_HIPOTESIS, "catatan": "Saran dari sumber peringatan; status darurat ditetapkan SK kepala daerah."}
+
+
+def sinyal_berakhir(sisa_hari):
+    """'akan_berakhir' bila sisa hari masa berlaku SK 0..AKAN_BERAKHIR_HARI (Q27); None bila SK tanpa tanggal berakhir atau sudah lewat."""
+    return "akan_berakhir" if sisa_hari is not None and 0 <= sisa_hari <= AKAN_BERAKHIR_HARI else None
 
 
 def tgl_ke_hari(t):
@@ -539,6 +562,14 @@ def uji():
     assert jeda_kejadian(dict(sk, mulai="2025-05-01"), dibi) is None  # di luar jendela 30 hari
     assert jeda_kejadian(dict(sk, mulai="2024-12-31"), dibi) is None  # sebelum cakupan DIBI
     assert jeda_kejadian(dict(sk, kab_kode=None), dibi) is None and jeda_kejadian(sk, None) is None
+    assert kelas_jenis("Kabut asap") == {"udara"} and kelas_jenis("Erupsi Gunung Api") == {"gunungapi"} and kelas_jenis("Kekeringan") == {"kekeringan"}
+    for j in ("gunungapi", "udara", "kekeringan"):
+        a = saran_status(j, 2)
+        assert a["saran"] is True and a["penetapan"] is False and a["label"] == "Siaga" and a["sumber"] and "aman" not in json.dumps(a).lower().split()
+        assert saran_status(j, 0) is None and saran_status(j, 4) is None
+    assert saran_status("kekeringan", 1)["hipotesis"] is True and saran_status("udara", 3)["hipotesis"] is False
+    assert saran_status("banjir", 2) is None and "nama" not in saran_status("udara", 1)
+    assert [sinyal_berakhir(x) for x in (None, -1, 0, 7, 8)] == [None, None, "akan_berakhir", "akan_berakhir", None]
     assert kelas_jenis("Banjir,Tanah longsor,Cuaca ekstrem") == {"banjir", "longsor", "cuaca"} and kelas_jenis("Gempabumi") == set()
     rg = perkaya([dict(sk), dict(sk, mulai="2025-01-01", berakhir="2025-01-20"), dict(sk, skala="provinsi", mulai="2025-01-01", berakhir="2025-02-05")], dibi)
     assert (rg["kab_lewat_batas"], rg["kab_total"], rg["prov_lewat_batas"], rg["prov_total"], rg["jeda_median_hari"]) == (1, 2, 1, 1, 2)

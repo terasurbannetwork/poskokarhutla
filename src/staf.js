@@ -53,7 +53,7 @@ export const IZIN_PEMIRSA_PUSDALOPS = [
   /^\/api\/logbook\/(buka|hari|sk\/aktif)$/, /^\/api\/logbook\/turunan\/(rapor_bpbd|rekomendasi|penanganan|serupa_\d{2})$/, /^\/api\/logbook\/kejadian\/[0-9a-f]{16}\/sk$/,
   /^\/api\/pusdalops\/(berantai|lapsus|medsos|medsos\/jeda|pemulihan|pemulihan\/ringkasan|rollcall|rollcall\/ringkasan)$/, /^\/api\/pusdalops\/(lapsus|pemulihan|rollcall)\/[0-9a-f]{16}$/,
   /^\/api\/operasi\/(peta|monitor|nilai)$/,
-  /^\/api\/pb\/(titik|renlap|kepatuhan)$/,   // paritas bencana: sarana, fasilitas, daftar renlap tanpa berkas, kepatuhan (src/pb_isian.js)
+  /^\/api\/pb\/(titik|renlap|kepatuhan|papan-sk)$/,   // paritas bencana: sarana, fasilitas, daftar renlap tanpa berkas, kepatuhan (src/pb_isian.js)
   /^\/api\/laporan-bnpb$/,
   /^\/api\/saham\/(konsesi|cari|dividen)$/, /^\/api\/saham\/[A-Za-z0-9.-]{1,12}\/(info|transaksi|grafik)$/,
   /^\/api\/pantau$/, /^\/api\/omc\/admin$/,
