@@ -380,7 +380,7 @@ def tabel(sl, x, y, w, kol, baris, rh, y_maks):
     for bi, b in enumerate(baris):
         pita, tot = isinstance(b, dict) and 'pita' in b, isinstance(b, dict) and b.get('total')
         sel = b.get('sel', []) if isinstance(b, dict) else b
-        h = rh * (.65 if pita else 1)
+        h = b['h'] if isinstance(b, dict) and 'h' in b else rh * (.65 if pita else 1)
         if yy + h > y_maks + 1e-6: raise ValueError(f'tabel tidak muat: {len(baris)} baris, tinggi baris {rh:.2f}')
         if pita: kotak(sl, x, yy, w, h, PITA); tx(sl, x + .1, yy, w * .6, h, b['pita'], sz=9.19, b=True)
         if tot: kotak(sl, x, yy, w, h, NAVY, MSO_SHAPE.ROUNDED_RECTANGLE, .14)
@@ -399,13 +399,13 @@ def tabel(sl, x, y, w, kol, baris, rh, y_maks):
                 else:
                     tx(sl, cx, yy, lw, h, v['pil'], sz=7.5, b=True, c=v['tegas'], al='c')
             elif isinstance(v, dict) and 'daftar' in v:   # butir bertumpuk berikon, tanpa pemisah koma (pemilik 15 Nov 2026)
-                lh, d = .19, .17; y0 = yy + (h - lh * len(v['daftar'])) / 2   # ukuran ikon sama di semua baris
+                lh = min(.22, h / len(v['daftar'])); d = .17; y0 = yy + (h - lh * len(v['daftar'])) / 2   # ukuran ikon sama di semua baris
                 WI = {'rumah-putih.png': '1B5A93', 'jalan-putih.png': 'D9600B', 'jembatan-putih.png': '8F3F07'}   # warna per jenis (pemilik: "iconnya ga keliatan")
                 for j, (ik, tk) in enumerate(v['daftar']):
                     yj = y0 + j * lh
                     kotak(sl, cx + .08, yj + (lh - d) / 2, d, d, WI.get(ik, NAVY), MSO_SHAPE.OVAL)
                     sl.shapes.add_picture(os.path.join(TPL, ik), Inches(cx + .08 + d * .17), Inches(yj + (lh - d) / 2 + d * .17), Inches(d * .66), Inches(d * .66))
-                    tx(sl, cx + .14 + d, yj, lw - d - .18, lh, tk, sz=8.5)
+                    tx(sl, cx + .14 + d, yj, lw - d - .18, lh, tk, sz=8)
             elif isinstance(v, dict) and 'kotak' in v:
                 kw = min(lw - .04, .26)
                 kotak(sl, cx + (lw - kw) / 2, yy + h * .16, kw, h * .68, v['isi'], MSO_SHAPE.ROUNDED_RECTANGLE, .2)
@@ -586,12 +586,12 @@ def slide_lengkap(L):
     j0 = sungai['hari'].index(hari[0]) if hari[0] in sungai['hari'] else None
     titik = []
     for t in sungai['titik']:
-        if t['prov'] != kode or not t.get('q2') or j0 is None: continue
+        if t['prov'] != kode or not t.get('q2') or j0 is None or not t.get('kab'): continue
         qf = [x for x in t['q'][j0:j0 + n_hari] if x is not None]
         if not qf: continue
         pk = max(qf); i = t['q'][j0:j0 + n_hari].index(pk)
         kls = 3 if pk >= t['q20'] else 2 if pk >= t['q5'] else 1 if pk >= t['q2'] else 0
-        titik.append(dict(kab=t['kab'], kec=t['kec'], pk=pk, q2=t['q2'], r=pk / t['q2'], kls=kls, tgl=hari[i]))
+        titik.append(dict(kab=t['kab'] or '–', kec=t['kec'] or '–', pk=pk, q2=t['q2'], r=pk / t['q2'], kls=kls, tgl=hari[i]))
     titik.sort(key=lambda t: -t['r'])
     sg_kab = {}
     for t in titik: sg_kab[t['kab']] = max(sg_kab.get(t['kab'], 0), t['r'])
@@ -602,8 +602,8 @@ def slide_lengkap(L):
     ungsi = sum(o['ungsi'] or 0 for o in lap); hilang = sum(o.get('hilang') or 0 for o in lap); md = sum(o.get('meninggal') or 0 for o in lap)
     kab_pr = {v['kab']: v for k, v in rk.items() if k[0] == kode}
     cS = sum(v['s'] for v in kab_pr.values()); cA = sum(v['a'] for v in kab_pr.values()); cW = sum(v['w'] for v in kab_pr.values())
-    judul(sl, ['Banjir melanda', f' {len(lap)}', f' kab/kota di {prov} dengan', f' {rb(kk)}', ' KK terdampak;', f' {len(belum)}', ' belum surut dan',
-               f' {cA + cS}', f' kecamatan Siaga{"/Awas" if cA else ""} pada {n_hari} hari ke depan (', rentang, ')'])
+    judul(sl, ['Banjir melanda', f' {len(lap)}', f' kab/kota {prov} (', rb(kk), ' KK);', f' {len(belum)}', ' belum surut,',
+               f' {cA + cS}', f' kecamatan Siaga{"/Awas" if cA else ""} pada', f' {rentang}', ''])
     w4 = (12.13 - 3 * .07) / 4
     ub = [(rb(len(lap)), 'Kab/kota terdampak banjir', 'EEF3F9', NAVY, 'radius-putih.png'),
           (rb(len(belum)), 'Kab/kota belum surut', KONDISI['Belum surut'][0], KONDISI['Belum surut'][1], 'banjir-putih.png'),
@@ -649,9 +649,11 @@ def slide_lengkap(L):
     grafik_tumpuk(sl, .6, 1.42, 5.8, 5.5 - n_baris * .22 - .1, [tgl(h) for h in hari_wa[i0:]], {k: v[i0:] for k, v in seri.items()}, 'KK terdampak per kab/kota, laporan harian')
     legenda(sl, .75, 6.95 - n_baris * .22, 5.6, list(seri))
     kolR = [('Kab/Kota', 1.35, 'l'), ('Rumah', .62, 'c'), ('Jembatan', .7, 'c'), ('Jalan', .55, 'c'), ('Rincian kerusakan', 2.97, 'l')]
-    brR = [[o['kab'], rb(kr[o['kab']][0]), rb(kr[o['kab']][1]), rb(kr[o['kab']][2]),
-            ({'daftar': butir_kerusakan((o.get('butir') or {}).get('Kerusakan'))} if (o.get('butir') or {}).get('Kerusakan') else '–')] for o in lap]
-    brR.append({'total': True, 'sel': [f'Total {len(lap)} kab/kota', rb(rum), rb(jem), rb(jal), '']})
+    isi_r = [butir_kerusakan((o.get('butir') or {}).get('Kerusakan')) for o in lap]
+    unit = min(.3, (6.95 - 1.4 - .23 - .4) / max(1, sum(max(1, len(x)) for x in isi_r)))   # tinggi per butir; baris = jumlah butir x unit
+    brR = [{'sel': [o['kab'], rb(kr[o['kab']][0]), rb(kr[o['kab']][1]), rb(kr[o['kab']][2]), {'daftar': x} if x else '–'],
+            'h': max(1, len(x)) * unit} for o, x in zip(lap, isi_r)]
+    brR.append({'total': True, 'sel': [f'Total {len(lap)} kab/kota', rb(rum), rb(jem), rb(jal), ''], 'h': .4})
     tabel(sl, 6.55, 1.4, 6.19, kolR, brR, .6, 6.95)
     sumber(sl, sk)
     # ---------- 5. hujan (BMKG) dan sungai (GloFAS)
@@ -670,19 +672,19 @@ def slide_lengkap(L):
 
     def sel_b(x):
         return {'pil': BMKG_GAYA[x][0], 'isi': BMKG_GAYA[x][1], 'tegas': BMKG_GAYA[x][2]} if x else '–'
-    urut_b = sorted(bk, key=lambda n: (-sum(x or 0 for x in bk[n]), n))
+    urut_b = sorted(bk, key=lambda n: (-sum(x or 0 for x in bk[n]), n))[:22]   # baris tetap terbaca di provinsi besar
     brB = []
     for n in urut_b:
         brB.append([n] + [sel_b(x) for x in bk[n]])
     tabel(sl, .6, 1.4, 5.8, kolB, brB, .3, 6.95)
     kolS = [('Kab/Kota', 1.3, 'l'), ('Kecamatan', 1.15, 'l'), ('Debit, m³/dtk', .9, 'c'), ('Batas meluap', 1.2, 'c'), ('% batas meluap', 1.0, 'c'), ('Puncak', .7, 'c')]
     # dikelompokkan per kab/kota (pemilik 15 Nov 2026): kab/kota urut persen tertinggi, nama hanya di baris pertama kelompok
-    pilih = titik[:len(bk)]; urut_kab = list(dict.fromkeys(t['kab'] for t in pilih))
+    pilih = titik[:len(urut_b)]; urut_kab = list(dict.fromkeys(t['kab'] for t in pilih))
     pilih = [t for k in urut_kab for t in pilih if t['kab'] == k]
     pilih = [dict(t, kab_tampil=t['kab'] if i == 0 or pilih[i - 1]['kab'] != t['kab'] else '') for i, t in enumerate(pilih)]
     brS = [[t['kab_tampil'], (t['kec'], INK, False), rb(round(t['pk'])), rb(round(t['q2'])),
             ({'pil': f'{round(100 * t["r"])}%', 'isi': LEVEL[min(3, t['kls'] + 1)][0] if t['kls'] else 'EEF3F9', 'tegas': LEVEL[min(3, t['kls'] + 1)][1] if t['kls'] else NAVY}),
-            tgl(t['tgl'])] for t in pilih]
+            tgl(t["tgl"])] for t in pilih]
     tabel(sl, 6.55, 1.4, 6.19, kolS, brS, .4, 6.95)
     sumber(sl, f'BMKG prakiraan cuaca, {tgl(bmkg["dibuat"])} {bmkg["dibuat"][:4]} {bmkg["dibuat"][11:16].replace(":", ".")} WIB; GloFAS, {tgl(dibuat)} {dibuat[:4]}')
 
@@ -819,9 +821,10 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
     def teks_kec(kb_):
         xs = sorted(kec_st.get(kb_, []), reverse=True); a_ = [c for l_, c in xs if l_ == 3]; s2 = [c for l_, c in xs if l_ == 2]
         ring = ', '.join(x for x in (f'{len(a_)} kec. Awas' if a_ else '', f'{len(s2)} kec. Siaga' if s2 else '') if x)
-        return ring + '\n' + ', '.join(a_ + s2)
+        nm = a_ + s2
+        return ring + '\n' + ', '.join(nm[:3]) + (f' +{len(nm) - 3} lainnya' if len(nm) > 3 else '')
     lb = [(f'{kode}|{v["kab"]}', v['kab'], teks_kec(v['kab']), LEVEL[3 if v['a'] else 2][0], LEVEL[3 if v['a'] else 2][1],
-           'awas-putih.png' if v['a'] else 'banjir-putih.png') for v in kab if v['a'] or v['s']]
+           'awas-putih.png' if v['a'] else 'banjir-putih.png') for v in kab if v['a'] or v['s']][:6]   # paling banyak 6 label supaya peta terbaca
     LP = 4.9   # panel kiri disempitkan, tabel kanan lebih lega (pemilik 15 Nov 2026)
     png = os.path.join(kerja, 'p2.png'); peta(png, LP, 3.82, wr, lb, kode)
     sl.shapes.add_picture(png, Inches(.6), Inches(1.42), Inches(LP), Inches(3.82))
