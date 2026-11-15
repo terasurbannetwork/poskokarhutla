@@ -11,6 +11,6 @@
    "jangkar_commit": "16f7ec1928bebb2755e34494636665fde6617eb1"
   }
  ],
- "jangkar_commit": null,
+ "jangkar_commit": "c2c20f19a48ca187f4ffd670ed7479c123341b5c",
  "catatan": "Versi 2. Isi jangkar_commit dengan hash commit yang memuat kedua berkas, sesudah di-push, SEBELUM KS-03 memulai. Uji memastikan isi di commit itu sama. Jangkar v1 tercatat di riwayat dan tidak berlaku lagi."
 }
