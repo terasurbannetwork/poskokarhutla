@@ -1,7 +1,7 @@
-ok /Users/priyankaalfatehan28/Developer/poskokarhutla/data/laporan-bnpb/harian/2026-11/2026-11-15/Laporan Kejadian Bencana Harian 151126.pptx  {"slide": 2, "huruf_terkecil_pt": 7.0, "warna": 30, "angka_diperiksa": 68}
+ok data/laporan-bnpb/harian/2026-11/2026-11-15/Laporan Kejadian Bencana Harian 151126.pptx  {"slide": 2, "huruf_terkecil_pt": 7.0, "warna": 30, "angka_diperiksa": 68}
 WA: kejadian dirinci 17
 mode simpanan
-pakai simpanan website /Users/priyankaalfatehan28/Developer/poskokarhutla/data/laporan-bnpb/harian/2026-11/2026-11-15/kerja-151126/web
+pakai simpanan website data/laporan-bnpb/harian/2026-11/2026-11-15/kerja-151126/web
 hari data website 2026-11-14
 website 2026-11-14 ditambahkan: Nusa Tenggara Timur
 website 2026-11-14 ditambahkan: Sulawesi Tengah
@@ -34,7 +34,7 @@ prediksi: lokasi ['Aceh Singkil', 'Aceh Tamiang', 'Aceh Tenggara', 'Aceh Barat',
 hujan lebat per hari [3, 3, 0] [('95', [2, 1, 0]), ('94', [0, 2, 0]), ('81', [1, 0, 0])] | prakiraan 2026-11-14T14:15+07:00
 lampiran kecamatan 330 kab 91 banjir 163 longsor 191
 PERINGATAN gunung api: arsip teks laphar (data/raw/laphar/teks) tidak ada, pil laporan pertama tidak dipasang
-ok /Users/priyankaalfatehan28/Developer/poskokarhutla/data/laporan-bnpb/harian/2026-11/2026-11-15/Laporan Kejadian Bencana Harian 151126.pptx | hari data 2026-11-15 | cutoff 2026-11-15T07:00+07:00 | kejadian 10 karhutla 0 ditangani 0 perlu perhatian 4 selesai 0 | Prioritas ditambah ['53', '72', '74', '81', '82', '93']
+ok data/laporan-bnpb/harian/2026-11/2026-11-15/Laporan Kejadian Bencana Harian 151126.pptx | hari data 2026-11-15 | cutoff 2026-11-15T07:00+07:00 | kejadian 10 karhutla 0 ditangani 0 perlu perhatian 4 selesai 0 | Prioritas ditambah ['53', '72', '74', '81', '82', '93']
 banjir 11 Kota Subulussalam belum DITANGANI PERHATIAN {}
 banjir 11 Aceh Tamiang belum DITANGANI  {}
 banjir 11 Aceh Singkil belum DITANGANI PERHATIAN {}
@@ -46,5 +46,5 @@ cuaca 32 Bandung berjalan DITANGANI  {}
 kekeringan 33 Temanggung berjalan DITANGANI  {}
 kekeringan 33 Boyolali berjalan DITANGANI  {}
 halaman generator: ringkasan 2 status siaga 5
-mesin ok /Users/priyankaalfatehan28/Developer/poskokarhutla/data/laporan-bnpb/harian/2026-11/2026-11-15/Laporan Kejadian Bencana Harian 151126.pptx
-folder /Users/priyankaalfatehan28/Developer/poskokarhutla/data/laporan-bnpb/harian/2026-11/2026-11-15/Revisi 2
+mesin ok data/laporan-bnpb/harian/2026-11/2026-11-15/Laporan Kejadian Bencana Harian 151126.pptx
+folder data/laporan-bnpb/harian/2026-11/2026-11-15/Revisi 2

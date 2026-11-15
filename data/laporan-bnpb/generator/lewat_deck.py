@@ -110,6 +110,12 @@ def bingkai(pptx, format, judul=None, subjudul=None, tanggal=None, sampul=True, 
         for f in os.listdir(kerja):
             if f.startswith(akar_k): shutil.move(os.path.join(kerja, f), os.path.join(os.path.dirname(keluar), f))
         shutil.rmtree(kerja, ignore_errors=True)
+    # 15 Nov (Mac): salinan spek yang tersimpan di repo publik memakai jalur relatif repo, bukan /Users/<nama>/... (gerbang-jalur-mutlak);
+    # jalur mutlak hanya dipakai saat membangun di atas
+    akar_repo = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..')) + os.sep
+    t_ = open(sp, encoding='utf-8').read()
+    t2 = t_.replace(akar_repo.replace(os.sep, '/'), '').replace(akar_repo.replace('\\', '\\\\'), '').replace(os.path.expanduser('~'), '~')
+    if t2 != t_: open(sp, 'w', encoding='utf-8').write(t2)
     if r.returncode:
         sys.exit(f'deck.py gagal ({r.returncode}):\n{r.stderr[-3000:]}')
     if 'GAGAL' in r.stdout:

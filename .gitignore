@@ -108,3 +108,7 @@ node_modules*/
 scripts/operasi/kerja/
 # profil peramban uji
 *.prof/
+
+# log jalan laporan harian/penanganan berisi jalur mutlak mesin lokal (15 Nov 2026, gerbang-jalur-mutlak); log lama tetap terlacak
+data/laporan-bnpb/harian/**/jalan*.log
+data/laporan-bnpb/penanganan-karhutla/**/jalan*.log
