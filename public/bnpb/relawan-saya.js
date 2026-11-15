@@ -27,7 +27,7 @@
   else { const b = baca(); if (b && /^[0-9a-f]{26}$/.test(b)) kode = b; }
 
   /* F6 luring: check-in/out masuk antrean perangkat bila tanpa sinyal (antre.js); kode TIDAK ikut tersimpan, diambil dari sini saat kirim */
-  const antre = Antre.buat({untuk: "relawan", simpan: Antre.penyimpanan("bnpb"), kirimItem: Antre.pengirim(() => kode || ""), kodeAda: () => !!kode});
+  const antre = AntreBnpb.buat("relawan", () => kode || "");
   async function api(metode, j, body) {
     let r; try { r = await fetch(j, {method: metode, headers: {"x-kode": kode, ...(body ? {"content-type": "application/json"} : {})}, body: body ? JSON.stringify(body) : undefined}); } catch (e) { return {ok: false, s: 0, j: {galat: "Tidak ada sinyal. Coba lagi."}}; }
     return {ok: r.ok, s: r.status, j: await r.json().catch(() => ({}))};
@@ -118,6 +118,7 @@
       $("isi").hidden = true; pesan("Datamu sudah dihapus. Terima kasih sudah bersedia membantu.", true);
     }
   });
-  const segarkanPita = Antre.pasang(antre, {wadah: document.querySelector("main"), selesai: () => { if (kode) muat(); }});
+  const segarkanPita = antre.pasang(document.querySelector("main"), () => { if (kode) muat(); });
+  antre.pindah().then(() => antre.pindahLokal());
   if (!kode) { $("tanpaKode").hidden = false; } else muat();
 })();

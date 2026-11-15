@@ -31,8 +31,8 @@ import {bacaXlsx, barisDariLembar, potong, angkaId} from "/bnpb/meja_impor.js";
     catch (e) { return {ok: false, s: 0, j: {galat: "Tidak ada sinyal. Coba lagi."}}; }
     return {ok: r.ok, s: r.status, j: await r.json().catch(() => ({})), tunggu: +r.headers.get("retry-after") || 0};
   };
-  /* F6 luring: catatan baru dan perpindahan status/ubah isi masuk antrean perangkat bila tanpa sinyal (antre.js); kode tidak ikut tersimpan */
-  const antre = Antre.buat({untuk: "meja", simpan: Antre.penyimpanan("bnpb"), kirimItem: Antre.pengirim(() => kode), kodeAda: () => !!kode});
+  /* F6 luring: catatan baru dan perpindahan status/ubah isi masuk antrean perangkat bila tanpa sinyal (antre.js di atas PbAntre); kode tidak ikut tersimpan */
+  const antre = AntreBnpb.buat("meja", () => kode);
 
   /* ---------- nilai & formulir dinamis dari spek ---------- */
   const nilaiF = (k, v) => {
@@ -411,7 +411,7 @@ import {bacaXlsx, barisDariLembar, potong, angkaId} from "/bnpb/meja_impor.js";
     const dariUrl = location.hash.match(/(?:^|[#&])k=([0-9a-fA-F]{26})(?:&|$)/);
     if (dariUrl) { sessionStorage.setItem(KUNCI, dariUrl[1].toLowerCase()); history.replaceState(null, "", location.pathname); }   // kode tidak tertinggal di bilah alamat
     kode = sessionStorage.getItem(KUNCI) || "";
-    if (kode) segarkanPita = Antre.pasang(antre, {wadah: document.body, selesai: () => { if (meja) muat(); }, buang: l => lapor(l.map(x => x.pesan).join("; "), false)});   // kirim ulang segera, tanpa menunggu spek
+    if (kode) { segarkanPita = antre.pasang(document.body, () => { if (meja) muat(); }); antre.pindah().then(() => antre.pindahLokal()); }   // kirim ulang segera, tanpa menunggu spek
     if (!kode) { app.innerHTML = '<p class="mj-pesan galat">Halaman ini hanya untuk petugas yang punya tautan dari admin. Buka lagi tautan yang dikirim kepadamu.</p>'; return; }
     const [sp, sy] = await Promise.all([fetch("/api/meja/spek").then(r => r.json()).catch(() => null), api("GET", "/api/meja/saya")]);
     if (sy.s === 0 || !sp) { app.innerHTML = '<p class="mj-pesan galat">Tidak ada sinyal, Meja Kerja belum bisa dibuka. Kiriman yang sudah disimpan di perangkat tetap dikirim otomatis saat sinyal kembali.</p>'; return; }
