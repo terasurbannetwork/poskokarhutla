@@ -42,9 +42,9 @@
 @media (max-width:560px){.pv-kartu{left:8px;right:8px;bottom:8px;width:auto;padding:12px;gap:8px;border-radius:14px}
   .pv-kartu .pv-kepala{display:none}.pv-kartu p{font-size:12.5px}
   .pv-aksi{display:grid;grid-template-columns:1fr 1fr;gap:6px}.pv button.pv-pri{grid-column:1/-1}.pv button{min-height:44px;font-size:11.5px;padding:0 8px}}
-.pb-pil{display:inline-flex;align-items:center;gap:6px;color:#fff;text-decoration:none;font:600 12px Inter,sans-serif;background:rgb(255 255 255 / .12);border-radius:999px;padding:6px 11px;white-space:nowrap;margin-right:6px}
-.pb-pil i{width:7px;height:7px;border-radius:50%;background:#5a9e74;box-shadow:0 0 0 3px rgb(90 158 116 / .3)}
-@media (max-width:720px){.pb-pil .pb-pil-l{display:none}}
+.pst-pil{display:inline-flex;align-items:center;gap:6px;color:#fff;text-decoration:none;font:600 12px Inter,sans-serif;background:rgb(255 255 255 / .12);border-radius:999px;padding:6px 11px;white-space:nowrap;margin-right:6px}
+.pst-pil i{width:7px;height:7px;border-radius:50%;background:#5a9e74;box-shadow:0 0 0 3px rgb(90 158 116 / .3)}
+@media (max-width:720px){.pst-pil .pst-pil-l{display:none}}
 </style>`);
   const KUE = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 4 4 0 0 1-5-5 4 4 0 0 1-4-4z"/><path d="M8.5 9.5h.01M15 15h.01M10 16h.01M7 13h.01"/></svg>';
   const kebijakan = new URL("privasi.html#penyimpanan", D.baseURI).href;
@@ -78,9 +78,9 @@
   /* pil header (angka dari Worker; tanpa panggilan API) */
   function pil() {
     const a = D.documentElement.dataset, tema = D.getElementById("tema");
-    if (true || !tema || a.pbOnline == null || D.querySelector(".pb-pil")) return; /* pil statistik disembunyikan dulu (pemilik, 14 Okt 2026) */
+    if (true || !tema || a.pbOnline == null || D.querySelector(".pst-pil")) return; /* pil statistik disembunyikan dulu (pemilik, 14 Okt 2026) */
     const f = n => Number(n || 0).toLocaleString("id-ID");
-    tema.parentElement.insertAdjacentHTML("afterbegin", `<a class="pb-pil" href="/statistik" title="Statistik pengunjung"><i aria-hidden="true"></i>${f(a.pbOnline)} online, <span class="pb-pil-l">${f(a.pbTampil)} tampilan, Statistik →</span></a>`);
+    tema.parentElement.insertAdjacentHTML("afterbegin", `<a class="pst-pil" href="/statistik" title="Statistik pengunjung"><i aria-hidden="true"></i>${f(a.pbOnline)} online, <span class="pst-pil-l">${f(a.pbTampil)} tampilan, Statistik →</span></a>`);
   }
   D.addEventListener("click", e => { if (e.target.closest?.("[data-pv-buka]")) { e.preventDefault(); atur(); } });   // tautan "Pengaturan privasi" di mana pun
   /* spanduk persetujuan: disembunyikan 14 Okt 2026, dinyalakan 19 Okt, dihapus 20 Okt 2026 (pemilik). Tanpa pilihan, analitik nyala;
