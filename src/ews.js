@@ -288,7 +288,19 @@ export function penilaiGunungapi(data, kini) {
   }
   return out;
 }
-export const PENILAI_JENIS_BARU = {pesisir: penilaiPesisir, udara: penilaiUdara, kekeringan: penilaiKekeringan, gunungapi: penilaiGunungapi};
+/* longsor: status `l` per kecamatan (banjir/data/status.json, indeks sejajar `hari`), tingkat tertinggi dari hari ini ke depan. SELALU hipotesis (uji balik longsor belum lolos, PB-49): tampil di layar, tidak ditulis/dikirim keluar (Q17). */
+export function penilaiLongsor(data, kini) {
+  const st = data.status, awal = wib(kini), out = [];
+  if (!Array.isArray(st?.hari)) return out;
+  for (const [k, v] of Object.entries(st.kec || {})) {
+    let lv = 0, h = -1; (v?.l || []).forEach((x, i) => { if (st.hari[i] >= awal && Math.min(3, x | 0) > lv) { lv = Math.min(3, x | 0); h = i; } });
+    const [prov, kab, kec] = k.split("|"); if (lv < 1 || !kec) continue;
+    out.push({sumber_jenis: "hipotesis", nilai: nilaiX(`longsor:${prov}:${slug(kab)}:${slug(kec)}:${st.hari[h]}:${TINGKAT_X[lv].toLowerCase()}`, "longsor", TINGKAT_X[lv], /^\d{2}$/.test(prov) ? prov : null, kab, null, null,
+      `Hipotesis tanah longsor ${TINGKAT_X[lv].toLowerCase()} di kecamatan ${kec}`, `Status longsor kecamatan ${kec}, ${kab} untuk ${st.hari[h]}. Hipotesis model, belum lolos uji balik.`, DETEKSI_X, null, kini, kini + HARI)});
+  }
+  return out;
+}
+export const PENILAI_JENIS_BARU = {pesisir: penilaiPesisir, udara: penilaiUdara, kekeringan: penilaiKekeringan, gunungapi: penilaiGunungapi, longsor: penilaiLongsor};
 export function peringatanJenisBaru(data, kini, penilai = PENILAI_JENIS_BARU) {
   const out = [];
   for (const [jenis, f] of Object.entries(penilai)) {
@@ -303,8 +315,8 @@ export function peringatanJenisBaru(data, kini, penilai = PENILAI_JENIS_BARU) {
 /* berkas dibaca lewat ASSETS (nol baca D1); tulis hanya yang baru (INSERT OR IGNORE). Dipanggil cron menit 21 tiap jam (worker.js, blok CRON_GEMPA). */
 export async function periksaJenisBaru(env, kini = Date.now()) {
   const ambil = async p => { try { const r = await env.ASSETS.fetch(new Request("https://aset.lokal" + p)); return r.ok ? await r.json() : null; } catch (e) { return null; } };
-  const [per, pm25, riwayatLevel, perubahanLevel, gunungStatus, kekeringan] = await Promise.all(["/data/peringatan.json", "/udara/data/bmkg_pm25.json", "/gunungapi/data/riwayat_level.json", "/gunungapi/data/perubahan_level.json", "/banjir/data/gunungapi_status.json", "/data/kekeringan_wilayah.json"].map(ambil));
-  const data = {gelombang: {daftar: per?.gelombang, dibuat: per?.dibuat, url: per?.sumber?.gelombang}, pm25, riwayatLevel, perubahanLevel, gunungStatus, kekeringan}, hasil = {tulis: 0, ganda: 0, galat: 0};
+  const [per, pm25, riwayatLevel, perubahanLevel, gunungStatus, kekeringan, status] = await Promise.all(["/data/peringatan.json", "/udara/data/bmkg_pm25.json", "/gunungapi/data/riwayat_level.json", "/gunungapi/data/perubahan_level.json", "/banjir/data/gunungapi_status.json", "/data/kekeringan_wilayah.json", "/banjir/data/status.json"].map(ambil));
+  const data = {gelombang: {daftar: per?.gelombang, dibuat: per?.dibuat, url: per?.sumber?.gelombang}, pm25, status, riwayatLevel, perubahanLevel, gunungStatus, kekeringan}, hasil = {tulis: 0, ganda: 0, galat: 0};
   for (const n of peringatanJenisBaru(data, kini)) {
     try { const r = await tulisPeringatan(env, n); if (r === null) return {lewat: "tabel peringatan_x belum ada (migrasi 0137)"}; r ? hasil.tulis++ : hasil.ganda++; } catch (e) { console.error("peringatan_x", e?.message); hasil.galat++; }
   }

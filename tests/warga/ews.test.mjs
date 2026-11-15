@@ -693,7 +693,7 @@ uji("simulasi gagal-tertutup: boleh_tampil bukan true (false atau hilang) = jeja
 });
 
 uji("PB-26 jenis baru: registri penilai kosong = tidak ada peringatan; hipotesis tidak keluar; jenis tak cocok ditolak", () => {
-  assert.deepEqual(Object.keys(E.PENILAI_JENIS_BARU).sort(), ["gunungapi", "kekeringan", "pesisir", "udara"]);
+  assert.deepEqual(Object.keys(E.PENILAI_JENIS_BARU).sort(), ["gunungapi", "kekeringan", "longsor", "pesisir", "udara"]);
   assert.deepEqual(E.peringatanJenisBaru({}, Date.now(), {}), []);
   const nilai = ["longsor:k1:siaga", "longsor", "Siaga", "32", null, null, null, "J", "", "Deteksi Centurisk97", null, 1, 2];
   assert.deepEqual(E.peringatanJenisBaru({}, 1, {longsor: () => [{nilai}]}), [nilai]);
@@ -731,6 +731,12 @@ uji("PB-40 kekeringan: hipotesis tidak keluar (penilai menghasilkan, peringatanJ
   const data = {kekeringan: {kab: {"11|Aceh Barat": {lv: 3, spi3: -3.7}, "12|Nias": {lv: 0}}}};
   const mentah = E.PENILAI_JENIS_BARU.kekeringan(data, KX); assert.equal(mentah.length, 1); assert.equal(mentah[0].sumber_jenis, "hipotesis"); assert.equal(mentah[0].nilai[2], "Awas");
   assert.deepEqual(hasilX(data, "kekeringan"), []);
+});
+uji("PB-34a longsor: hipotesis, tampil lewat penilai tapi tidak keluar; hari lampau dan tingkat 0 diabaikan", () => {
+  const h = new Date(KX + 7 * 3600e3).toISOString().slice(0, 10);
+  const data = {status: {hari: ["2000-01-01", h], kec: {"11|Aceh Barat|Meureubo": {l: [3, 2]}, "11|Aceh Barat|Johan": {l: [3, 0]}}}};
+  const mentah = E.PENILAI_JENIS_BARU.longsor(data, KX); assert.equal(mentah.length, 1); assert.equal(mentah[0].sumber_jenis, "hipotesis"); assert.equal(mentah[0].nilai[2], "Siaga");
+  assert.deepEqual(hasilX(data, "longsor"), []);
 });
 uji("PB-46a gunung api: hanya kenaikan level resmi PVMBG memicu; tetap, turun, dan lama tidak; label PVMBG", () => {
   const b = (gunung, tanggal, dari, ke, jenis = "perubahan") => ({gunung, tanggal, dari, ke, jenis, sumber: {url: "https://magma.esdm.go.id/x"}});
