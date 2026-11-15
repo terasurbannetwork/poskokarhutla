@@ -66,7 +66,7 @@
   const semuaOtomatis = async () => { if (g.navigator && g.navigator.onLine === false) return; for (const s of otomatis) await s._otomatis(); };
   function pasangPemicu(rand) {
     if (terpasang) return; terpasang = true;
-    g.addEventListener("online", semuaOtomatis);
+    g.addEventListener("online", async () => { for (const s of otomatis) await s.kirimSekarang(); });   // sinyal kembali: coba segera, tanpa menunggu jeda mundur dari percobaan luring
     g.document.addEventListener("visibilitychange", () => { if (g.document.visibilityState === "visible") semuaOtomatis(); });
     setInterval(() => { if (g.document.visibilityState === "visible") semuaOtomatis(); }, 30000 + Math.floor(rand() * 30000));
   }
