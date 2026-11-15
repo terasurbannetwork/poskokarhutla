@@ -38,7 +38,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
-      PIPA: titik|data|banjir|gempa|lintas|prediksi|statis|titik_palsu|kemitraan
+      PIPA: titik|data|banjir|gempa|lintas|prediksi|statis|titik_palsu|kemitraan|pemetaan
     steps:
       - name: Redam, tunggu slot, picu terbit.yml, ulangi bila run pending-nya dibatalkan
         shell: bash
