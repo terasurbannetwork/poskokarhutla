@@ -1001,3 +1001,164 @@ export const lfHitungUsulan = async (env, p, kejadianId, kini) => {
   for (let i = 0; i < stm.length; i += 50) await env.DB.batch(stm.slice(i, i + 50));
   return {sel: stm.length, tak_terpetakan};
 };
+
+/* ---------- TigaW: 3W dan tawaran bantuan (TW-03; data/kajian-bnpb/tiga-w/DESAIN-TEKNIS.md, ALGORITMA.md, migrasi 0143) ----------
+   Hak (siapa boleh, Q1/Q3/Q6) dicek di rute TW-04 sampai TW-07; di sini hanya pelaku tw_baca / tw_tulis. Token organisasi: hanya sha-256.
+   alasan_internal tidak pernah dikembalikan bila `untukOrg` (T12). kab4 -> nama kab lewat NAMA_KAB4; nama kab di meja/LogPal -> kab4 lewat kab4Dari DI JS (tidak di SQL). */
+import {NAMA_KAB4 as TW_NAMA_KAB4, kab4Dari as twKab4Dari} from "./siklus_kab.js";
+Object.assign(MATRIKS, {
+  org:                {tw_baca: ["baca"], tw_tulis: ["baca", "tambah"]},
+  tw_baris:           {tw_baca: ["baca"], tw_tulis: ["baca", "tambah", "ubah"]},
+  tw_token:           {tw_baca: ["baca"], tw_tulis: ["baca", "tambah", "ubah"]},
+  tw_tawaran:         {tw_baca: ["baca"], tw_tulis: ["baca", "tambah", "ubah"]},
+  tw_tawaran_riwayat: {tw_baca: ["baca"], tw_tulis: ["baca", "tambah"]},
+  tw_isyarat:         {tw_baca: ["baca"], tw_tulis: ["baca"]},   // pembacaan meja logistik dan LogPal untuk pencocokan
+});
+export const pelakuTwBaca = {peran: "tw_baca"}, pelakuTwTulis = {peran: "tw_tulis"};
+export const TW_KLASTER = ["kesehatan", "sar", "logistik", "pengungsian", "pendidikan", "sarpras", "ekonomi", "pemulihan"];
+export const TW_STATUS_BARIS = ["rencana", "berjalan", "selesai"];
+export const TW_JENIS_ORG = ["kl", "tni", "polri", "ngo_nasional", "ngo_internasional", "dunia_usaha", "kampus", "pmi", "pbb_regional", "lainnya"];
+export const TW_AMBANG_TUMPANG = 3;   // HIPOTESIS (Q4): tumpang tindih bila LEBIH dari 3 organisasi berjalan di (kab, klaster); belum diuji balik
+const TW_PENDIDIKAN_HARI = 3;         // klaster pendidikan bukan celah untuk kejadian kurang dari 3 hari (ALGORITMA 1)
+const twMs = tgl => Date.parse(tgl + "T00:00:00+07:00");
+const twTeks = (v, min, maks, nama) => { const s = v == null ? "" : String(v).trim(); if (s.length < min || s.length > maks) throw new Galat(400, `${nama} ${min} sampai ${maks} karakter`); return s; };
+const twOpsi = (v, maks) => (v == null || v === "" ? null : twTeks(v, 2, maks, "isian"));
+const twTawaranKolom = untukOrg => "id, org_id, barang, barang_lain, jumlah, satuan, syarat, mitra_lokal_org_id, status, alasan_organisasi, kebutuhan, dibuat, diubah" + (untukOrg ? "" : ", alasan_internal");
+const twPilih = (env, p, tabel, sql) => sedia(env, p, tabel, "baca", sql);
+
+/* ---- organisasi ---- */
+export const twOrgBuat = async (env, p, {id, nama, singkatan = null, jenis, negara = null, institusiId = null, oleh}, kini) => {
+  if (!TW_JENIS_ORG.includes(jenis)) throw new Galat(400, "jenis organisasi tidak dikenal");
+  if (jenis === "ngo_internasional" && !negara) throw new Galat(400, "organisasi internasional wajib menyebut negara asal");
+  const r = await sedia(env, p, "org", "tambah", "INSERT INTO org (id, nama, singkatan, jenis, negara, institusi_id, dibuat, oleh) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)")
+    .bind(id, twTeks(nama, 2, 120, "nama"), twOpsi(singkatan, 20), jenis, negara ? String(negara).toUpperCase() : null, institusiId, kini, oleh).run();
+  return r.meta.changes === 1;
+};
+export const twOrgDaftar = (env, p) => twPilih(env, p, "org", "SELECT id, nama, singkatan, jenis, negara, institusi_id, dibuat FROM org ORDER BY nama LIMIT 1000").all().then(r => r.results);
+export const twOrgById = (env, p, id) => twPilih(env, p, "org", "SELECT id, nama, singkatan, jenis, negara, institusi_id FROM org WHERE id = ?1").bind(id).first();
+
+/* ---- baris 3W ---- */
+const twCekBaris = ({klaster, status, kegiatan}) => {
+  if (!TW_KLASTER.includes(klaster)) throw new Galat(400, "klaster tidak dikenal");
+  if (!TW_STATUS_BARIS.includes(status)) throw new Galat(400, "status tidak dikenal");
+  return twTeks(kegiatan, 5, 200, "kegiatan");
+};
+/* kab di luar sk_kejadian_kab = tidak menulis apa pun, hasil false (T2) */
+export const twBarisBuat = async (env, p, b, kini) => {
+  const keg = twCekBaris(b);
+  const r = await sedia(env, p, "tw_baris", "tambah", `INSERT INTO tw_baris (id, kejadian_id, kab4, klaster, org_id, kegiatan, status, mulai, selesai, sumber, diubah, oleh)
+    SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12 FROM sk_kejadian_kab WHERE kejadian_id = ?2 AND kab4 = ?3`)
+    .bind(b.id, b.kejadianId, b.kab4, b.klaster, b.orgId, keg, b.status, b.mulai ?? null, b.selesai ?? null, b.sumber ?? "staf", kini, b.oleh).run();
+  return r.meta.changes === 1;
+};
+/* ubah status/kegiatan/selesai; orgId bila lewat token (hanya baris miliknya, T5) */
+export const twBarisUbah = async (env, p, {id, kejadianId, orgId = null, status, kegiatan, selesai = null, oleh}, kini) => {
+  if (!TW_STATUS_BARIS.includes(status)) throw new Galat(400, "status tidak dikenal");
+  const r = await sedia(env, p, "tw_baris", "ubah", `UPDATE tw_baris SET status = ?3, kegiatan = ?4, selesai = ?5, diubah = ?6, oleh = ?7
+    WHERE id = ?1 AND kejadian_id = ?2 AND (?8 IS NULL OR org_id = ?8)`).bind(id, kejadianId, status, twTeks(kegiatan, 5, 200, "kegiatan"), selesai, kini, oleh, orgId).run();
+  return r.meta.changes === 1;
+};
+export const twBarisDaftar = (env, p, kejadianId, orgId = null) => twPilih(env, p, "tw_baris",
+  `SELECT b.id, b.kab4, b.klaster, b.org_id, o.nama org_nama, o.jenis org_jenis, b.kegiatan, b.status, b.mulai, b.selesai, b.sumber, b.diubah FROM tw_baris b JOIN org o ON o.id = b.org_id
+   WHERE b.kejadian_id = ?1 AND (?2 IS NULL OR b.org_id = ?2) ORDER BY b.kab4, b.klaster, b.diubah DESC LIMIT 2000`).bind(kejadianId, orgId).all().then(r => r.results);
+/* jumlah organisasi berbeda berstatus berjalan per (kab4, klaster) */
+export const twGrid = (env, p, kejadianId) => twPilih(env, p, "tw_baris",
+  "SELECT kab4, klaster, count(DISTINCT org_id) n FROM tw_baris WHERE kejadian_id = ?1 AND status = 'berjalan' GROUP BY kab4, klaster LIMIT 5000").bind(kejadianId).all().then(r => r.results);
+/* celah dan tumpang tindih per kab kejadian (ALGORITMA 1, 2). Klaster pendidikan bukan celah selama kejadian < 3 hari di kab itu. */
+export const twCelahTumpang = async (env, p, kejadianId, kini) => {
+  const [kab, grid] = await env.DB.batch([twPilih(env, p, "tw_baris", "SELECT kab4, mulai FROM sk_kejadian_kab WHERE kejadian_id = ?1 ORDER BY kab4 LIMIT 600").bind(kejadianId),
+    twPilih(env, p, "tw_baris", "SELECT kab4, klaster, count(DISTINCT org_id) n FROM tw_baris WHERE kejadian_id = ?1 AND status = 'berjalan' GROUP BY kab4, klaster LIMIT 5000").bind(kejadianId)]);
+  const n = new Map(grid.results.map(r => [r.kab4 + "|" + r.klaster, r.n]));
+  return kab.results.map(({kab4, mulai}) => {
+    const muda = kini - twMs(mulai) < TW_PENDIDIKAN_HARI * 864e5;
+    const relevan = TW_KLASTER.filter(c => !(c === "pendidikan" && muda));
+    return {kab4, celah: relevan.filter(c => !(n.get(kab4 + "|" + c) > 0)), tumpang: TW_KLASTER.filter(c => n.get(kab4 + "|" + c) > TW_AMBANG_TUMPANG),
+      per_klaster: Object.fromEntries(TW_KLASTER.map(c => [c, n.get(kab4 + "|" + c) ?? 0]))};
+  });
+};
+
+/* ---- token organisasi (hanya sha-256) ---- */
+/* terbitkan: cabut token aktif lama lalu sisipkan yang baru dalam SATU batch */
+export const twTokenBuat = async (env, p, {id, orgId, kejadianId, tokenSha}, kini) => {
+  const [, r] = await env.DB.batch([sedia(env, p, "tw_token", "ubah", "UPDATE tw_token SET cabut = ?3 WHERE org_id = ?1 AND kejadian_id = ?2 AND cabut IS NULL").bind(orgId, kejadianId, kini),
+    sedia(env, p, "tw_token", "tambah", "INSERT INTO tw_token (id, org_id, kejadian_id, token_sha, dibuat) VALUES (?1, ?2, ?3, ?4, ?5)").bind(id, orgId, kejadianId, tokenSha, kini)]);
+  return r.meta.changes === 1;
+};
+export const twTokenCabut = async (env, p, orgId, kejadianId, kini) => (await sedia(env, p, "tw_token", "ubah", "UPDATE tw_token SET cabut = ?3 WHERE org_id = ?1 AND kejadian_id = ?2 AND cabut IS NULL").bind(orgId, kejadianId, kini).run()).meta.changes;
+/* null = tak dikenal; cabut != null = tercabut; fase dari kejadian (rute menolak 'selesai', 'dibatalkan', 'digabung') */
+export const twTokenCari = (env, p, tokenSha) => twPilih(env, p, "tw_token",
+  "SELECT t.id, t.org_id, t.kejadian_id, t.cabut, k.fase FROM tw_token t JOIN sk_kejadian k ON k.id = t.kejadian_id WHERE t.token_sha = ?1").bind(tokenSha).first();
+
+/* ---- tawaran ---- */
+/* Q2: NGO internasional wajib menyebut mitra lokal (organisasi terdaftar). barang selain daftar meja logistik = "lainnya" + barang_lain. */
+export const twTawaranBuat = async (env, p, {id, kejadianId, orgId, barang, barangLain = null, jumlah, satuan, syarat = null, mitraLokalOrgId = null}, kini, barangSah = []) => {
+  if (barang !== "lainnya" && !barangSah.includes(barang)) throw new Galat(400, "barang tidak dikenal");
+  if (barang === "lainnya" && !barangLain) throw new Galat(400, "barang lainnya wajib diisi");
+  if (!Number.isInteger(jumlah) || jumlah < 1) throw new Galat(400, "jumlah bilangan bulat >= 1");
+  const org = await twOrgById(env, p, orgId);
+  if (!org) return false;
+  if (org.jenis === "ngo_internasional" && !mitraLokalOrgId) throw new Galat(400, "organisasi internasional wajib menyebut mitra lokal");
+  if (mitraLokalOrgId && !(await twOrgById(env, p, mitraLokalOrgId))) throw new Galat(400, "mitra lokal tidak terdaftar");
+  const st = [sedia(env, p, "tw_tawaran", "tambah", `INSERT INTO tw_tawaran (id, kejadian_id, org_id, barang, barang_lain, jumlah, satuan, syarat, mitra_lokal_org_id, dibuat, diubah)
+    SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?10 FROM sk_kejadian WHERE id = ?2`).bind(id, kejadianId, orgId, barang, twOpsi(barangLain, 80), jumlah, twTeks(satuan, 1, 20, "satuan"), twOpsi(syarat, 300), mitraLokalOrgId, kini),
+    sedia(env, p, "tw_tawaran_riwayat", "tambah", `INSERT INTO tw_tawaran_riwayat (tawaran_id, kejadian_id, status, oleh, dibuat) SELECT id, kejadian_id, 'masuk', ?2, ?3 FROM tw_tawaran WHERE id = ?1 AND dibuat = ?3`).bind(id, "org:" + orgId, kini)];
+  const [r] = await env.DB.batch(st);
+  return r.meta.changes === 1;
+};
+/* untukOrg: hanya tawaran organisasi itu dan TANPA alasan_internal (T12) */
+export const twTawaranDaftar = (env, p, kejadianId, {orgId = null, untukOrg = false} = {}) => twPilih(env, p, "tw_tawaran",
+  `SELECT ${twTawaranKolom(untukOrg)} FROM tw_tawaran WHERE kejadian_id = ?1 AND (?2 IS NULL OR org_id = ?2) ORDER BY dibuat DESC LIMIT 1000`).bind(kejadianId, orgId).all().then(r => r.results);
+export const twTawaranById = (env, p, kejadianId, id, {orgId = null, untukOrg = false} = {}) => twPilih(env, p, "tw_tawaran",
+  `SELECT ${twTawaranKolom(untukOrg)} FROM tw_tawaran WHERE id = ?1 AND kejadian_id = ?2 AND (?3 IS NULL OR org_id = ?3)`).bind(id, kejadianId, orgId).first();
+export const twRiwayat = (env, p, tawaranId, {untukOrg = false} = {}) => twPilih(env, p, "tw_tawaran_riwayat",
+  `SELECT id, status, ${untukOrg ? "" : "alasan_internal, oleh, "}alasan_organisasi, dibuat FROM tw_tawaran_riwayat WHERE tawaran_id = ?1 ORDER BY id DESC LIMIT 100`).bind(tawaranId).all().then(r => r.results);
+
+/* keputusan: status + riwayat dalam SATU batch. Hanya tawaran berstatus masuk/dicocokkan yang bisa diputus (diterima/dialihkan/ditolak final). dialihkan/ditolak wajib alasan_organisasi (>= 5, juga dijaga CHECK). */
+export const TW_STATUS_TAWARAN = ["masuk", "dicocokkan", "diterima", "dialihkan", "ditolak"];
+export const twKeputusan = async (env, p, {id, kejadianId, status, alasanInternal = null, alasanOrganisasi = null, kebutuhan = null, oleh}, kini) => {
+  if (!TW_STATUS_TAWARAN.includes(status) || status === "masuk") throw new Galat(400, "status keputusan tidak dikenal");
+  const ai = alasanInternal ? twTeks(alasanInternal, 1, 300, "alasan internal") : null, ao = alasanOrganisasi ? twTeks(alasanOrganisasi, 1, 300, "alasan organisasi") : null;
+  if ((status === "dialihkan" || status === "ditolak") && (!ao || ao.length < 5)) throw new Galat(400, "dialihkan atau ditolak wajib alasan untuk organisasi");
+  const keb = kebutuhan == null ? null : JSON.stringify(kebutuhan);
+  if (keb !== null && keb.length > 2000) throw new Galat(400, "kebutuhan terlalu panjang");
+  const [u] = await env.DB.batch([
+    sedia(env, p, "tw_tawaran", "ubah", `UPDATE tw_tawaran SET status = ?3, alasan_internal = ?4, alasan_organisasi = ?5, kebutuhan = coalesce(?6, kebutuhan), diubah = ?7
+      WHERE id = ?1 AND kejadian_id = ?2 AND status IN ('masuk', 'dicocokkan')`).bind(id, kejadianId, status, ai, ao, keb, kini),
+    sedia(env, p, "tw_tawaran_riwayat", "tambah", `INSERT INTO tw_tawaran_riwayat (tawaran_id, kejadian_id, status, alasan_internal, alasan_organisasi, oleh, dibuat)
+      SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7 WHERE changes() > 0`).bind(id, kejadianId, status, ai, ao, oleh, kini)]);
+  return u.meta.changes === 1;
+};
+
+/* ---- pencocokan (ALGORITMA 3, D6): hanya mengurutkan, staf yang memilih. Barang "lainnya" tidak dicocokkan. ----
+   meja logistik: kueri per provinsi dilayani indeks tw_meja_barang (0143); nama kab dipetakan ke kab4 di JS (kab4Dari). */
+export const TW_SQL = {
+  kab: "SELECT kab4, mulai FROM sk_kejadian_kab WHERE kejadian_id = ?1 ORDER BY kab4 LIMIT 600",
+  meja: `SELECT id, prov, kab, status, dibuat, json_extract(data, '$.jumlah_diminta') diminta, json_extract(data, '$.jumlah_kirim') kirim, json_extract(data, '$.posko') posko
+    FROM meja_catatan INDEXED BY tw_meja_barang WHERE meja = 'logistik' AND prov = ?1 AND json_extract(data, '$.barang') = ?2 AND status IN ('diminta', 'disetujui') AND dibuat >= ?3 AND dummy = 0 ORDER BY dibuat LIMIT 500`,
+  logpal: `SELECT id, provinsi, kab, items, dibuat FROM logpal_permintaan WHERE jenis = 'Tanggap darurat' AND ditolak = 0 AND tahap < 5 AND kab <> '' AND dibuat >= ?1 AND dummy = 0 ORDER BY dibuat LIMIT 500`,
+};
+const twNorm = s => String(s ?? "").toLowerCase().replace(/_/g, " ").trim();
+/* provNama: {kode: nama provinsi} (src/instansi.js PROV bentuk [slug, nama] dipetakan pemanggil) supaya kab sama nama beda provinsi tidak tertukar; tanpa itu LogPal dicocokkan lewat nama kab saja. */
+export const twKandidat = async (env, p, kejadianId, barang, kini, provNama = null) => {
+  if (!barang || barang === "lainnya") return {kandidat: [], tak_terpetakan: 0};
+  const kabs = (await twPilih(env, p, "tw_isyarat", TW_SQL.kab).bind(kejadianId).all()).results;
+  if (!kabs.length) return {kandidat: [], tak_terpetakan: 0};
+  const mulai = Math.min(...kabs.map(k => twMs(k.mulai))), set = new Set(kabs.map(k => k.kab4)), provs = [...new Set(kabs.map(k => k.kab4.slice(0, 2)))];
+  const [lp, ...mj] = await env.DB.batch([twPilih(env, p, "tw_isyarat", TW_SQL.logpal).bind(mulai), ...provs.map(pv => twPilih(env, p, "tw_isyarat", TW_SQL.meja).bind(pv, barang, mulai))]);
+  const kandidat = []; let tak = 0;
+  mj.forEach((h, i) => { for (const r of h.results) { const k = twKab4Dari(provs[i], r.kab); if (!k) { tak++; continue; } if (!set.has(k)) continue;
+    kandidat.push({sumber: "meja", id: r.id, kab4: k, posko: r.posko, status: r.status, dibuat: r.dibuat, sisa: Math.max(0, (r.diminta ?? 0) - (r.kirim ?? 0))}); } });
+  const cari = twNorm(barang);
+  for (const r of lp.results) {
+    const pv = provNama ? Object.keys(provNama).find(k => twNorm(provNama[k]) === twNorm(r.provinsi)) : null;
+    if (provNama && !pv) continue;
+    const ada = (() => { try { return JSON.parse(r.items).filter(x => twNorm(x.barang) === cari); } catch { return []; } })();
+    if (!ada.length) continue;
+    const k = pv ? twKab4Dari(pv, r.kab) : [...set].find(s => twNorm(TW_NAMA_KAB4[s]) === twNorm(r.kab));
+    if (!k) { tak++; continue; }
+    if (!set.has(k)) continue;
+    kandidat.push({sumber: "logpal", id: r.id, kab4: k, status: "tanggap darurat", dibuat: r.dibuat, sisa: ada.reduce((a, x) => a + (+x.jumlah || 0), 0)});
+  }
+  kandidat.sort((a, b) => a.dibuat - b.dibuat || b.sisa - a.sisa);
+  return {kandidat, tak_terpetakan: tak};
+};

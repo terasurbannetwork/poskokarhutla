@@ -1298,7 +1298,14 @@
     "table lf_riwayat": "T3 tetapkan menulis status",
     "trigger lf_riwayat_tetap_ubah": "T3 tetapkan menulis status",
     "trigger lf_riwayat_tetap_hapus": "T3 tetapkan menulis status",
-    "table lf_usulan": "T6 usulan tidak mengubah status"
+    "table lf_usulan": "T6 usulan tidak mengubah status",
+    "table org": "T1 organisasi",
+    "table tw_baris": "T2 baris 3W",
+    "table tw_token": "T5 token",
+    "table tw_tawaran": "T6 tawaran",
+    "table tw_tawaran_riwayat": "T7 keputusan",
+    "trigger tw_riwayat_tetap_ubah": "T7b riwayat tawaran append-only",
+    "trigger tw_riwayat_tetap_hapus": "T7b riwayat tawaran append-only"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",
