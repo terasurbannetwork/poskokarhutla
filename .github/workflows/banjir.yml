@@ -196,6 +196,16 @@ jobs:
       - name: Status kecamatan
         run: python3 scripts/banjir/status.py
 
+      # Uji balik status.py vs DIBI -> validasi.json (beku sejak 13 Okt: hanya self-check yang jalan). Mingguan (Minggu UTC) atau dispatch; ambil ERA5 bertahap,
+      # respons mentah ikut cache banjir- (data/raw/banjir/uji_balik), kuota habis = berhenti rapi dan lanjut minggu depan.
+      - name: Uji balik DIBI, validasi.json (mingguan, boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 25
+        run: |
+          if [ "$(date -u +%u)" = "7" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            [ -f data/raw/banjir/dibi_tanggal.json ] && timeout 1400 python3 scripts/banjir/uji_balik.py || echo "::warning title=uji_balik::dilewati atau belum selesai (kuota/dibi_tanggal); validasi.json lama bertahan"
+          fi
+
       # posko.py merantai cuaca, gunung api, berita (sumber eksternal): gagal tidak menjatuhkan run, berkas lama bertahan
       - name: Posko dan rantai modul (boleh gagal)
         continue-on-error: true

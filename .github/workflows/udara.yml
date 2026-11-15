@@ -20,7 +20,7 @@ permissions:
 jobs:
   perbarui:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -71,7 +71,7 @@ jobs:
       # Berkas bergulir tetap di public/udara/data (ikut commit & cache udara-). Uji sudah jalan di langkah "Uji aturan".
       - name: MOS PM2,5 dan ensambel GEOS-CF (boleh gagal)
         continue-on-error: true
-        timeout-minutes: 15
+        timeout-minutes: 30   # 14-15 Nov: 15 mnt habis di geoscf.py (OPeNDAP ulang berkali-kali), geoscf.json beku sejak 1 Nov
         env:
           OPENAQ_KEY: ${{ secrets.OPENAQ_KEY }}
         run: |

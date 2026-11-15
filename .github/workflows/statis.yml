@@ -17,7 +17,7 @@ permissions:
 jobs:
   statis:
     runs-on: ubuntu-latest
-    timeout-minutes: 360   # Overpass publik sering 504; tarik_osm mengulang sendiri dengan jeda; + bukti gempa (Overpass) dan embung
+    timeout-minutes: 300   # Overpass publik sering 504; tarik_osm mengulang sendiri dengan jeda; + bukti gempa (Overpass) dan embung
     steps:
       - uses: actions/checkout@v4
 
@@ -84,6 +84,18 @@ jobs:
           git commit -q -m "data: lapisan statis $(TZ=Asia/Jakarta date +%F)"
           git pull -q --rebase && git push -q
 
+  # Job TERPISAH (15 Nov 2026): langkah OSM di atas menggantung 6 jam (Overpass) dan run dibatalkan, jadi semua yang di bawah tidak pernah jalan
+  # (riwayat gempa, meta, embung, paparan gunung api berhenti sejak Okt). Tanpa needs: berjalan paralel dan tak bergantung OSM.
+  bulanan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
       # ---- Lapisan bulanan lintas bencana. Semua boleh gagal; keluaran di folder di luar cache, jadi HARUS di-commit ke main (terbit.yml/titik.yml
       # mengambilnya dari checkout). Dijalankan SESUDAH Commit di atas: berkas yang setengah tertulis tidak boleh menghalangi `git pull --rebase`.
       # Urutan gempa: riwayat, bahaya, sesar, bukti (bukti.py membaca sesar.geojson, jadi sesar dulu), citra (Sentinel-2 STAC M>=6,5 darat dari riwayat_m5.json, ±9 menit). Tanpa tangan: semua tanpa argumen, tanpa input.
@@ -106,17 +118,57 @@ jobs:
         continue-on-error: true
         timeout-minutes: 90
         run: |
+          # TIF WorldPop dulu: paparan.py menghitung penduduk gunung baru dari TIF, pop_grid.py memakai cache atau TIF yang sama
+          if [ ! -f data/raw/penduduk/idn_pop_2026_CN_1km_R2025A_UA_v1.tif ]; then
+            mkdir -p data/raw/penduduk
+            curl -fsSL -m 900 -A "poskokarhutla/1.0" -o data/raw/penduduk/idn_pop_2026_CN_1km_R2025A_UA_v1.tif \
+              https://data.worldpop.org/GIS/Population/Global_2015_2030/R2025A/2026/IDN/v1/1km_ua/constrained/idn_pop_2026_CN_1km_R2025A_UA_v1.tif || echo "::warning::TIF WorldPop gagal diunduh"
+          fi
           python3 scripts/gunungapi/paparan.py uji && { python3 scripts/gunungapi/paparan.py || echo "::warning title=gunungapi-paparan::paparan.py gagal; berkas lamanya dibiarkan"; }
           python3 scripts/gunungapi/citra.py uji && { python3 scripts/gunungapi/citra.py || echo "::warning title=gunungapi-citra::citra.py gagal; berkas lamanya dibiarkan"; }
+
+      # Piksel penduduk per gunung untuk simulasi (pop_grid.py membaca cache pop_piksel.json dari paparan.py, atau TIF WorldPop bila belum ada).
+      - name: Piksel penduduk gunung api (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 30
+        run: |
+          python3 scripts/gunungapi/pop_grid.py && python3 scripts/gunungapi/pop_grid.py --uji
+
+      # Abrasi garis pantai tahunan (Landsat via Planetary Computer): hanya Februari atau dispatch tangan; cache adegan supaya tahun berikutnya hanya membaca adegan baru.
+      - name: Bulan abrasi?
+        id: abrasi
+        run: |
+          if [ "$(date -u +%m)" = "02" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then echo "jalan=1" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Pulihkan cache adegan abrasi
+        if: steps.abrasi.outputs.jalan == '1'
+        uses: actions/cache/restore@v4
+        with:
+          path: data/raw/pesisir/adegan
+          key: abrasi-${{ github.run_id }}
+          restore-keys: abrasi-
+
+      - name: Abrasi garis pantai tahunan (boleh gagal)
+        if: steps.abrasi.outputs.jalan == '1'
+        continue-on-error: true
+        timeout-minutes: 200
+        run: python3 scripts/pesisir/abrasi.py uji && python3 scripts/pesisir/abrasi.py
+
+      - name: Simpan cache adegan abrasi
+        if: always() && steps.abrasi.outputs.jalan == '1'
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw/pesisir/adegan
+          key: abrasi-${{ github.run_id }}
 
       # bahaya.py MENGHAPUS lapisan lama bila sumbernya tak terjangkau (aturan A18): berkas yang hilang dipulihkan dari index, bukan di-commit sebagai hapus.
       - name: Commit lapisan bulanan lintas bencana
         run: |
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
-          B="public/gempa/data/riwayat_m5.json public/gempa/data/riwayat_prov.json public/gempa/data/riwayat_grid.json public/gempa/data/risiko.json public/gempa/data/meta.json public/gempa/data/inarisk_gempa.json public/gempa/data/inarisk_tsunami.json public/gempa/data/batas_lempeng.geojson public/gempa/data/bahaya_meta.json public/gempa/data/sesar.geojson public/gempa/data/bukti.json public/gempa/data/citra.json public/gempa/data/citra public/kekeringan/data/embung.json public/gunungapi/data/paparan.json public/gunungapi/data/citra"
+          B="public/gempa/data/riwayat_m5.json public/gempa/data/riwayat_prov.json public/gempa/data/riwayat_grid.json public/gempa/data/risiko.json public/gempa/data/meta.json public/gempa/data/inarisk_gempa.json public/gempa/data/inarisk_tsunami.json public/gempa/data/batas_lempeng.geojson public/gempa/data/bahaya_meta.json public/gempa/data/sesar.geojson public/gempa/data/bukti.json public/gempa/data/citra.json public/gempa/data/citra public/kekeringan/data/embung.json public/gunungapi/data/paparan.json public/gunungapi/data/citra public/gunungapi/data/pop public/pesisir/data/abrasi.json"
           for f in $B; do [ ! -e "$f" ] || git add "$f"; done
-          git checkout -- public/gempa/data public/kekeringan/data public/gunungapi/data
+          git checkout -- public/gempa/data public/kekeringan/data public/gunungapi/data public/pesisir/data
           git diff --cached --quiet && { echo "lapisan bulanan tidak berubah"; exit 0; }
           git commit -q -m "data: lapisan bulanan gempa, kekeringan, gunung api $(TZ=Asia/Jakarta date +%F)"
           for i in 1 2 3; do
