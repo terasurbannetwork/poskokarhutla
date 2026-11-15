@@ -1,0 +1,39 @@
+/* Papan aktivasi daerah (Pintu Masuk PM-12, DESIGN-SYSTEM L7). Kepala tabel navy bertulisan putih rata tengah; tombol ikon polos; tanpa huruf kapital semua; kartu terpisah 20 px. */
+.av-kartu{margin-top:20px}
+.av-kartu .ex-jd>h3{display:flex;align-items:center;gap:8px;font-size:1.125rem}
+.av-ik{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.av-kontrol{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.av-hitung{font-size:.78rem;font-weight:700;color:var(--ink2)}
+.av-pilih{min-height:44px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit;font-size:.8125rem;max-width:220px}
+.av-wadah{overflow-x:auto}
+.av-tabel{width:100%;border-collapse:collapse;font-size:.8125rem;min-width:760px}
+.av-tabel thead th{background:var(--head-bg);color:var(--on-head);font-size:.75rem;font-weight:700;padding:0;text-align:center;white-space:nowrap}
+.av-urut{width:100%;min-height:44px;padding:0 12px;border:0;background:none;color:inherit;font:inherit;cursor:pointer;touch-action:manipulation}
+.av-tabel thead th[aria-sort=ascending] .av-urut::after{content:" \25B2";font-size:.65rem}
+.av-tabel thead th[aria-sort=descending] .av-urut::after{content:" \25BC";font-size:.65rem}
+.av-tabel td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+.av-tabel td small,.av-nama small{display:block;color:var(--ink2);font-size:.72rem;overflow-wrap:anywhere}
+.av-n{text-align:center;font-variant-numeric:tabular-nums}
+.av-a{text-align:center}
+.av-btn{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;border:0;background:none;color:var(--ink);cursor:pointer;touch-action:manipulation}
+.av-btn:hover{color:var(--navy2)}.av-btn:active{transform:scale(.95)}.av-btn:disabled{opacity:.5;cursor:default}
+.av-pil{display:inline-flex;align-items:center;font-size:.6875rem;font-weight:800;padding:3px 9px;border-radius:999px;white-space:nowrap;background:color-mix(in srgb,var(--pil) 15%,transparent);color:color-mix(in srgb,var(--pil) 78%,var(--ink))}
+.av-pil.hijau{--pil:var(--c4)}.av-pil.kuning{--pil:var(--c3)}.av-pil.abu{--pil:var(--ink3)}.av-pil.jingga{--pil:var(--c2)}
+.av-rinci>td{background:var(--soft);padding:12px 16px}
+.av-rkepala{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.av-kontak{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.av-kontak li{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.av-nama{min-width:0}
+.av-pesan{margin:0;padding:12px 16px;color:var(--ink2);font-size:.8125rem}
+.av-pesan.galat,.av-galat{color:var(--bad-tx);font-weight:700}
+.av-kosong,.av-redup{color:var(--ink2);text-align:center}
+@media (max-width:480px){
+  .av-tabel{min-width:0}
+  .av-tabel thead{display:none}
+  .av-tabel,.av-tabel tbody,.av-tabel tr,.av-tabel td{display:block}
+  .av-tabel tr{padding:10px 12px;border-top:1px solid var(--line)}
+  .av-tabel td{border:0;padding:3px 0;text-align:left}
+  .av-tabel td::before{content:attr(data-label);display:block;font-size:.7rem;font-weight:700;color:var(--ink2)}
+  .av-tabel td.av-a,.av-tabel td.av-n{text-align:left}
+  .av-rinci>td::before{content:none}
+}

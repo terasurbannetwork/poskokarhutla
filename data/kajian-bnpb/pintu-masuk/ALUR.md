@@ -27,12 +27,12 @@ Sesudah kode sah, layar "Pilih ruang" menampilkan satu baris per akun: nama ruan
 ## A5. Bergabung ke lembaga dari akun umum
 
 1. Orang memilih: relawan, BPBD atau pemda, TNI atau Polri, staf unit BNPB, kampus.
-2. Relawan: diarahkan ke form relawan yang ada dengan nomor terisi.
+2. Relawan: pilihan ini disembunyikan selama halaman daftar relawan terkunci untuk tamu (K8).
 3. BPBD, pemda, TNI, Polri: orang memilih lembaga dan wilayah.
    - Akun lembaga itu sudah aktif dan orang lolos salah satu jalur bukti (ALGORITMA 4): ia menjadi anggota aktif dan tiba di `/instansi`.
    - Akun sudah aktif tetapi tidak lolos: ditawari "Buktikan lewat email dinas". Lolos bila domain email itu sudah dipetakan admin ke akun tersebut. Tidak lolos: permohonan anggota menunggu pemeriksaan.
    - Akun lembaga itu belum pernah aktif: orang diarahkan ke verifikasi akun instansi yang ada (surat tugas dan kartu). Bila nomornya cocok kontak pemangku, permohonannya ditandai "cocok kontak" dan naik ke atas antrean.
-4. Unit BNPB: diarahkan ke pendaftaran pendataan yang ada. Bila nomornya cocok kontak berkategori BNPB atau ada undangan staf, akun pendataannya langsung aktif.
+4. Unit BNPB: diarahkan ke pendaftaran pendataan yang ada. Akunnya tetap disetujui Super Admin; kecocokan kontak BNPB, undangan staf, dan nomor yang sudah terbukti tampil sebagai tanda di antrean tinjau.
 5. Kampus: diarahkan ke pendaftaran kampus yang ada, tanpa perubahan.
 
 Selama menunggu, orang tetap bisa memakai akun umumnya.

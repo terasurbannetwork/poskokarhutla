@@ -10,6 +10,7 @@ Pintu masuk adalah permukaan serangan paling berharga di situs. Dokumen ini menu
 | Melengkapi dan menghapus profil sendiri | tidak | ya | ya | ya | ya | ya |
 | Memohon jadi anggota | tidak | ya | ya | ya | ya | ya |
 | Mengundang ke akunnya | tidak | tidak | ya | ya | ya, dalam wilayah haknya | ya |
+| Menyetujui atau menolak anggota yang menunggu | tidak | tidak | tidak | ya | ya, tiga peran, dalam wilayahnya | ya |
 | Mencabut anggota | tidak | tidak | tidak | ya | tidak | ya |
 | Mengatur sandi akun instansi | tidak | tidak | tidak | ya | tidak | ya |
 | Melihat papan aktivasi | tidak | tidak | tidak | tidak | ya | ya |
@@ -34,6 +35,8 @@ Pintu masuk adalah permukaan serangan paling berharga di situs. Dokumen ini menu
 | Kode terbaca di antrean | baris `otp` dihapus saat terkirim atau saat kode dipakai; yang tidak terkirim tidak ditarik lagi sesudah 5 menit dan dihapus pembersihan sejam sekali | isi pesan yang tidak pernah terkirim tinggal sampai sekitar satu jam; kodenya sudah hangus |
 | Nomor pemirsa diambil alih | pemirsa hanya membaca tab yang ditentukan; nomor diisi Super Admin; Super Admin bisa memutus akun | pemegang nomor bisa membaca tab pemirsa itu sampai diputus (K12, D17) |
 | Mengaku lembaga lain lewat email dinas | hanya domain yang dipetakan admin ke satu akun; akhiran dicocokkan berbatas titik; akhiran umum ditolak | mutu bergantung pada ketelitian admin memetakan domain |
+| Akun pendataan dibajak lewat nomor orang lain | pintu ini tidak pernah mengubah status akun pendataan (D19); bukti nomor hanya tanda di antrean tinjau | Super Admin yang menyetujui akun bernomor salah tetap membuka akun itu ke pemegang sandinya; tanda "nomor terbukti" membantu menilainya |
+| Anggota dicabut masih memegang sesi instansi | sesi instansi tidak mencatat orang; pemilik akun ditawari "Putuskan semua sesi" yang menghapus seluruh sesi akun itu | tanpa memutus semua sesi, cookie lama anggota itu berlaku sampai 30 hari |
 | Undangan dipakai menaikkan hak | undangan hanya ke akun pengundang sendiri, tidak pernah ke staf, tidak membuat akun lembaga, batas 20 per hari | anggota nakal bisa memasukkan orang luar ke lembaganya; jejak "diundang oleh", daftar anggota, dan pencabutan oleh pemilik akun |
 | Undangan dipakai mengirim pesan liar | templat tetap; nama lembaga dari basis data; ketikan pengundang tidak masuk pesan | - |
 | Kontak pemangku palsu memicu aktif otomatis | hanya kontak `status = 'aktif'` (dibuat atau disetujui admin); pendaftaran kontak sendiri berstatus menunggu; nomor ajudan tidak mengaktifkan | mutu bergantung pada pemeriksaan kontak oleh admin |

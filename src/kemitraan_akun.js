@@ -11,6 +11,7 @@ import {json, gagal, acak, sha, bacaBody, bacaBytes, normalWA, turnstileOK, cach
 import {tx, num, tglSah, RE_EMAIL} from "./posko.js";
 import {laju, lajuIP, kodeBaru} from "./bnpb.js";
 import {mkSesiPeran, mkCabutSesiPeran} from "./hak.js";
+import {tandaKampus} from "./masuk_tanda.js";
 import {hashSandi} from "./pendataan.js";
 import {KEAHLIAN, PROV, cekInstitusi, sisipInstitusi, statusMou} from "./relawan.js";
 import {hakKm} from "./kemitraan.js";
@@ -277,7 +278,8 @@ async function daftarKampusAdmin(env, req, url, kini) {
   const W = sy.join(" AND ");
   const [rs, n] = await Promise.all([env.DB.prepare(`SELECT ${LIHAT_KAMPUS} FROM km_kampus k JOIN institusi i ON i.id = k.institusi_id WHERE ${W} ORDER BY (k.status = 'menunggu') DESC, i.nama LIMIT ? OFFSET ?`).bind(...arg, per, off).all(),
     env.DB.prepare(`SELECT count(*) n FROM km_kampus k JOIN institusi i ON i.id = k.institusi_id WHERE ${W}`).bind(...arg).first()]);
-  return json({total: n.n, kampus: rs.results.map(bentukKampus)});
+  const tanda = await tandaKampus(env, rs.results.filter(r => r.status === "menunggu").map(r => r.id));   // Pintu Masuk PM-09: nomor_terbukti pada kampus menunggu
+  return json({total: n.n, kampus: rs.results.map(r => ({...bentukKampus(r), ...(tanda.get(r.id) || {})}))});
 }
 
 async function lembarKampus(env, req, url, kini, ctx, p) {

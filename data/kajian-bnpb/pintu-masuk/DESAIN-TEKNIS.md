@@ -11,6 +11,8 @@ Semua rujukan berkas dan baris diukur 15 Nov 2026; cek ulang sebelum dipakai.
 | `src/masuk_sesi.js` (baru) | pembaca cookie `sesi_masuk` tanpa SQL; dipisah supaya `src/lapangan.js` dan `src/relawan.js` tidak mengimpor `masuk.js` secara melingkar | `warga-api` |
 | `src/masuk_konst.js` (baru) | semua ambang ALGORITMA | `warga-api` |
 | `src/masuk_undang.js` (baru) | anggota, undangan berantai, papan aktivasi | `warga-api` |
+| `src/masuk_tanda.js` (baru) | tanda antrean tinjau (`cocok_kontak`, `nomor_terbukti`, `diundang_staf`) untuk modul instansi, pendataan, kampus | `warga-api` |
+| `migrations/0140_masuk_indeks_anggota.sql` | indeks `mk_anggota (status, dibuat)` dan `mk_undang (oleh_tabel, oleh_id, dibuat)` | `warga-api` |
 | `migrations/0133_masuk.sql` | tabel `mk_*`, `alun_penulis`, indeks `wa` | `warga-api` |
 | `public/masuk.html`, `public/masuk.js`, `public/masuk.css` (baru) | layar L1 sampai L5 | sekarang jatuh ke `layar-peta` menurut `ilmu.mjs pemilik`; PM-01 menambah entri roster supaya menjadi milik `warga-api` seperti `public/admin/masuk.html` |
 | `public/inti/undang.js` (baru) | kartu "Undang rekan" L6 | `inti-layar` |
@@ -163,8 +165,10 @@ Catatan skema yang sudah dicek:
 | `POST /api/masuk/atur-sandi` | sesi akun umum, `kode_pada` 15 menit | sandi baru akun non-staf |
 | `POST /api/masuk/hapus` | sesi akun umum | hapus akun umum sendiri |
 | `POST /api/masuk/keluar` | sesi | cabut semua sesi peramban ini |
-| `GET /api/masuk/undang`, `POST`, `POST /api/masuk/undang/:id/cabut` | anggota aktif, pemilik akun, staf | undangan |
-| `GET /api/masuk/anggota`, `POST /api/masuk/anggota/:id/cabut` | pemilik akun, admin | daftar dan cabut anggota |
+| `GET /api/masuk/undang`, `POST`, `POST /api/masuk/undang/cabut/:id` | anggota aktif, pemilik akun, staf | undangan (router hanya mengenal `:id` di ujung jalur) |
+| `GET /api/masuk/anggota`, `POST /api/masuk/anggota/cabut/:id` | pemilik akun, admin | daftar dan cabut anggota; `cabut_sesi` memutus semua sesi akun |
+| `GET /api/masuk/anggota/tinjau`, `POST /api/masuk/anggota/putus/:id` | pemilik akun, staf berwilayah (tiga peran), admin | antrean anggota menunggu, setujui atau tolak |
+| `GET /api/masuk/akun` | sesi akun umum | akun instansi aktif di satu wilayah, untuk dipilih pemohon |
 | `GET /api/masuk/aktivasi` | staf atau admin | papan 514 kab/kota, cache tepi 5 menit |
 | `POST /api/masuk/domain` | admin | peta domain ke akun |
 

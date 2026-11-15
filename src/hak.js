@@ -723,6 +723,120 @@ export const mkPemirsaWaSet = (env, id, wa, oleh, kini) => wa == null
   ? env.DB.prepare("DELETE FROM mk_pemirsa_wa WHERE pemirsa_id = ?").bind(id).run()
   : env.DB.prepare("INSERT INTO mk_pemirsa_wa (pemirsa_id, wa, oleh, dibuat) VALUES (?1, ?2, ?3, ?4) ON CONFLICT (pemirsa_id) DO UPDATE SET wa = excluded.wa, oleh = excluded.oleh, dibuat = excluded.dibuat").bind(id, wa, oleh, kini).run();
 
+/* PM-09 sampai PM-12 (ALGORITMA §4, §5, §8): anggota, email terpetakan, undangan berantai, papan aktivasi. Tiap kueri lewat indeks
+   (mk_anggota_akun, mk_anggota_status 0140, mk_undang_wa/akun/oleh, mk_domain PK, kontak_pemangku_wa/wilayah, instansi_akun_wa/wilayah, pdt_akun_wa); tabel mk_* belum ada = melempar "no such table" (pemanggil menjawab 503). */
+export const mkInstansiById = (env, id) => env.DB.prepare("SELECT id, jenis, tingkat, wilayah, prov, kab, cakupan, status, wa FROM instansi_akun WHERE id = ? AND dummy = 0").bind(id).first();
+/* akun aktif yang bisa dipilih pemohon: tingkat kabupaten (prov+kab persis) dan tingkat provinsi yang cakupannya memuat prov; jenis disaring ke satu rumpun */
+export const mkAkunPilihan = async (env, jenis, prov, kab) => {
+  const j = JSON.stringify(jenis);
+  const [a, b] = await env.DB.batch([
+    env.DB.prepare("SELECT id, jenis, tingkat, wilayah FROM instansi_akun WHERE tingkat = 'kab' AND prov = ?1 AND kab = ?2 AND status = 'aktif' AND dummy = 0 AND jenis IN (SELECT value FROM json_each(?3)) LIMIT 20").bind(prov, kab ?? "", j),
+    env.DB.prepare("SELECT id, jenis, tingkat, wilayah FROM instansi_akun WHERE tingkat = 'prov' AND status = 'aktif' AND dummy = 0 AND jenis IN (SELECT value FROM json_each(?2)) AND EXISTS (SELECT 1 FROM json_each(cakupan) WHERE value = ?1) LIMIT 20").bind(prov, j)]);
+  return [...(kab ? a.results : []), ...b.results];
+};
+/* undangan hanya sah selama pengundangnya MASIH berhak: admin, staf aktif, anggota aktif akun itu, atau pemilik nomor akun aktif (x = instansi_akun tujuan) */
+const UNDANG_BERHAK = "(u.oleh_tabel = 'admin' OR (u.oleh_tabel = 'staf' AND EXISTS (SELECT 1 FROM staf s WHERE s.id = u.oleh_id AND s.status = 'aktif')) OR (u.oleh_tabel = 'mk_akun' AND (EXISTS (SELECT 1 FROM mk_anggota g WHERE g.mk_id = u.oleh_id AND g.tabel = 'instansi_akun' AND g.akun_id = u.akun_id AND g.status = 'aktif') OR EXISTS (SELECT 1 FROM mk_akun o WHERE o.id = u.oleh_id AND o.status = 'aktif' AND o.wa = x.wa))))";
+export const mkUndangBerlaku = (env, nomor, akunId, kini) => env.DB.prepare(`SELECT u.id, u.oleh_tabel, u.oleh_id FROM mk_undang u JOIN instansi_akun x ON x.id = u.akun_id AND x.status = 'aktif' AND x.dummy = 0 WHERE u.wa = ?1 AND u.status = 'terkirim' AND u.tabel = 'instansi_akun' AND u.akun_id = ?2 AND u.habis > ?3 AND ${UNDANG_BERHAK} ORDER BY u.dibuat DESC LIMIT 1`).bind(nomor, akunId, kini).first();
+/* kontak pemangku aktif: nomor = wa (bukan ajudan_wa), kategori dalam daftar, wilayah sama dengan akun (kabupaten persis tanpa beda huruf; akun provinsi: kontak tingkat provinsi dalam cakupan) */
+export const mkKontakCocok = (env, nomor, kategori, a) => env.DB.prepare(`SELECT id FROM kontak_pemangku WHERE wa = ?1 AND status = 'aktif' AND kategori IN (SELECT value FROM json_each(?2))
+  AND ((?3 = 'kab' AND prov = ?4 AND lower(kab) = lower(?5)) OR (?3 <> 'kab' AND kab IS NULL AND prov IN (SELECT value FROM json_each(?6)))) LIMIT 1`).bind(nomor, JSON.stringify(kategori), a.tingkat, a.prov ?? "", a.kab ?? "", a.cakupan ?? "[]").first();
+export const mkAnggotaCari = (env, mkId, akunId) => env.DB.prepare("SELECT id, status, jalur FROM mk_anggota WHERE mk_id = ? AND tabel = 'instansi_akun' AND akun_id = ?").bind(mkId, akunId).first();
+export const mkMenungguHitung = async (env, mkId) => (await env.DB.prepare("SELECT count(*) n FROM mk_anggota WHERE mk_id = ? AND status = 'menunggu'").bind(mkId).first()).n;
+/* satu baris per (mk_id, akun): baru, atau menunggu yang naik jadi aktif. Aktif dan dicabut tidak pernah ditimpa di sini. undangId: undangan itu ikut menjadi diterima. */
+export const mkAnggotaTulis = async (env, id, mkId, akunId, status, jalur, rujukan, oleh, undangId, kini) => {
+  const st = [env.DB.prepare(`INSERT INTO mk_anggota (id, mk_id, tabel, akun_id, status, jalur, rujukan, oleh, dibuat, diubah) VALUES (?1, ?2, 'instansi_akun', ?3, ?4, ?5, ?6, ?7, ?8, ?8)
+    ON CONFLICT (mk_id, tabel, akun_id) DO UPDATE SET status = excluded.status, jalur = excluded.jalur, rujukan = excluded.rujukan, oleh = excluded.oleh, diubah = excluded.diubah WHERE mk_anggota.status = 'menunggu' AND excluded.status = 'aktif'`)
+    .bind(id, mkId, akunId, status, jalur, rujukan, oleh ?? null, kini)];
+  if (undangId) st.push(env.DB.prepare("UPDATE mk_undang SET status = 'diterima' WHERE id = ? AND status = 'terkirim'").bind(undangId));
+  await env.DB.batch(st);
+  return mkAnggotaCari(env, mkId, akunId);
+};
+/* saat kode sah: semua undangan berlaku untuk nomor itu ke akun aktif menjadi anggota aktif (jalur undang), lalu ditandai diterima bila anggotanya aktif */
+export const mkUndangTerima = (env, mkId, nomor, kini) => env.DB.batch([
+  env.DB.prepare(`INSERT INTO mk_anggota (id, mk_id, tabel, akun_id, status, jalur, rujukan, oleh, dibuat, diubah)
+    SELECT lower(hex(randomblob(8))), ?1, 'instansi_akun', u.akun_id, 'aktif', 'undang', 'undang:' || u.id, u.oleh_tabel || ':' || u.oleh_id, ?3, ?3
+    FROM mk_undang u JOIN instansi_akun x ON x.id = u.akun_id AND x.status = 'aktif' AND x.dummy = 0
+    WHERE u.wa = ?2 AND u.status = 'terkirim' AND u.tabel = 'instansi_akun' AND u.habis > ?3 AND ${UNDANG_BERHAK}
+    ON CONFLICT (mk_id, tabel, akun_id) DO UPDATE SET status = 'aktif', jalur = 'undang', rujukan = excluded.rujukan, oleh = excluded.oleh, diubah = excluded.diubah WHERE mk_anggota.status = 'menunggu'`).bind(mkId, nomor, kini),
+  env.DB.prepare(`UPDATE mk_undang SET status = 'diterima' WHERE wa = ?1 AND status = 'terkirim' AND tabel = 'instansi_akun' AND habis > ?2
+    AND EXISTS (SELECT 1 FROM mk_anggota g WHERE g.mk_id = ?3 AND g.tabel = 'instansi_akun' AND g.akun_id = mk_undang.akun_id AND g.status = 'aktif' AND g.rujukan = 'undang:' || mk_undang.id)`).bind(nomor, kini, mkId)]);
+/* tanda antrean tinjau: nomor yang pernah dibuktikan lewat kode (punya mk_akun) dan kontak pemangku aktif bernomor itu */
+export const mkTandaNomor = async (env, daftar, kini = Date.now()) => {
+  const j = JSON.stringify([...new Set(daftar.filter(Boolean))]);
+  const [a, k, d] = (await env.DB.batch([
+    env.DB.prepare("SELECT wa FROM mk_akun WHERE wa IN (SELECT value FROM json_each(?1))").bind(j),
+    env.DB.prepare("SELECT wa, kategori, prov, kab FROM kontak_pemangku WHERE wa IN (SELECT value FROM json_each(?1)) AND status = 'aktif'").bind(j),
+    env.DB.prepare("SELECT wa FROM mk_undang WHERE wa IN (SELECT value FROM json_each(?1)) AND status = 'terkirim' AND tabel = 'pdt_akun' AND habis > ?2").bind(j, kini)])).map(x => x.results);
+  return {terbukti: new Set(a.map(r => r.wa)), kontak: k, diundang: new Set(d.map(r => r.wa))};
+};
+export const mkWaKampus = async (env, ids) => (await env.DB.prepare("SELECT institusi_id, wa FROM km_akun WHERE institusi_id IN (SELECT value FROM json_each(?1)) AND dummy = 0").bind(JSON.stringify(ids)).all()).results;
+/* antrean anggota menunggu (admin dan staf) dan daftar anggota satu akun (pemilik dan admin) */
+/* hak disaring DI SQL sebelum LIMIT: semua = admin atau staf nasional; nomor = pemilik nomor akun (akun aktif); wilayah = JSON kode provinsi staf berwilayah */
+export const mkAnggotaMenunggu = async (env, maks, semua, nomor, wilayah) => (await env.DB.prepare(`SELECT g.id, g.dibuat, u.nama, u.wa, x.id akun_id, x.jenis, x.tingkat, x.wilayah, x.prov, x.kab, x.cakupan, x.status akun_status
+  FROM mk_anggota g JOIN mk_akun u ON u.id = g.mk_id JOIN instansi_akun x ON x.id = g.akun_id WHERE g.status = 'menunggu' AND g.tabel = 'instansi_akun'
+  AND (?2 = 1 OR (?3 <> '' AND x.wa = ?3 AND x.status = 'aktif') OR (?4 <> '[]' AND EXISTS (SELECT 1 FROM json_each(x.cakupan) WHERE json_each.value IN (SELECT value FROM json_each(?4))))) ORDER BY g.dibuat LIMIT ?1`).bind(maks, semua ? 1 : 0, nomor ?? "", wilayah ?? "[]").all()).results;
+export const mkAnggotaAkun = async (env, akunId, maks) => (await env.DB.prepare(`SELECT g.id, g.status, g.jalur, g.dibuat, u.nama, u.wa, u.terakhir_masuk FROM mk_anggota g JOIN mk_akun u ON u.id = g.mk_id
+  WHERE g.tabel = 'instansi_akun' AND g.akun_id = ?1 AND g.status <> 'dicabut' ORDER BY g.dibuat DESC LIMIT ?2`).bind(akunId, maks).all()).results;
+export const mkAnggotaById = (env, id) => env.DB.prepare("SELECT g.id, g.status, g.mk_id, g.akun_id, x.cakupan, x.wa akun_wa, x.status akun_status FROM mk_anggota g JOIN instansi_akun x ON x.id = g.akun_id WHERE g.id = ?").bind(id).first();
+export const mkAnggotaSetujui = async (env, id, oleh, kini) => (await env.DB.prepare("UPDATE mk_anggota SET status = 'aktif', jalur = 'tinjau', rujukan = ?2, oleh = ?2, diubah = ?3 WHERE id = ?1 AND status = 'menunggu'").bind(id, oleh, kini).run()).meta.changes === 1;
+export const mkAnggotaCabut = async (env, id, oleh, kini) => (await env.DB.prepare("UPDATE mk_anggota SET status = 'dicabut', rujukan = ?2, oleh = ?2, diubah = ?3 WHERE id = ?1 AND status IN ('aktif', 'menunggu')").bind(id, oleh, kini).run()).meta.changes === 1;
+export const mkCabutSesiAkun = (env, akunId) => env.DB.prepare("DELETE FROM instansi_sesi WHERE akun_id = ?").bind(akunId).run();   // semua sesi akun instansi itu, siapa pun pemegangnya (sesi modul tidak mencatat orang)
+/* akun instansi yang boleh diundangkan seseorang: yang nomornya = nomor sesi (pemilik) dan yang ia anggota aktifnya */
+export const mkAkunSaya = async (env, mkId, nomor, maks) => {
+  const [a, b] = (await env.DB.batch([
+    env.DB.prepare("SELECT id, jenis, tingkat, wilayah, prov, kab, cakupan, 1 pemilik FROM instansi_akun WHERE wa = ?1 AND status = 'aktif' AND dummy = 0 LIMIT ?2").bind(nomor, maks),
+    env.DB.prepare(`SELECT x.id, x.jenis, x.tingkat, x.wilayah, x.prov, x.kab, x.cakupan, 0 pemilik FROM mk_anggota g JOIN instansi_akun x ON x.id = g.akun_id AND x.status = 'aktif' AND x.dummy = 0
+      WHERE g.mk_id = ?1 AND g.tabel = 'instansi_akun' AND g.status = 'aktif' LIMIT ?2`).bind(mkId, maks)])).map(x => x.results);
+  const ada = new Set(a.map(x => x.id));
+  return [...a, ...b.filter(x => !ada.has(x.id))];
+};
+/* undangan */
+export const mkUndangHitung = async (env, olehTabel, olehId, sejak, kini) => {
+  const [h, t] = (await env.DB.batch([
+    env.DB.prepare("SELECT count(*) n FROM mk_undang WHERE oleh_tabel = ?1 AND oleh_id = ?2 AND dibuat > ?3").bind(olehTabel, olehId, sejak),
+    env.DB.prepare("SELECT count(*) n FROM mk_undang WHERE oleh_tabel = ?1 AND oleh_id = ?2 AND status = 'terkirim' AND habis > ?3").bind(olehTabel, olehId, kini)])).map(x => x.results[0].n);
+  return {harian: h, terbuka: t};
+};
+export const mkSudahAnggota = async (env, nomor, akunId) => !!(await env.DB.prepare(`SELECT 1 x FROM mk_akun u JOIN mk_anggota g ON g.mk_id = u.id AND g.tabel = 'instansi_akun' AND g.akun_id = ?2 AND g.status = 'aktif' WHERE u.wa = ?1
+  UNION ALL SELECT 1 FROM instansi_akun WHERE id = ?2 AND wa = ?1 LIMIT 1`).bind(nomor, akunId).first());
+export const mkUndangNomorHitung = async (env, nomor, sejak) => (await env.DB.prepare("SELECT count(*) n FROM mk_undang WHERE wa = ?1 AND dibuat > ?2").bind(nomor, sejak).first()).n;
+/* pengundang kehilangan hak atas satu akun: undangannya yang masih terkirim ke akun itu dicabut */
+export const mkUndangCabutOleh = (env, olehTabel, olehId, akunId) => env.DB.prepare("UPDATE mk_undang SET status = 'dicabut' WHERE oleh_tabel = ?1 AND oleh_id = ?2 AND tabel = 'instansi_akun' AND akun_id = ?3 AND status = 'terkirim'").bind(olehTabel, olehId, akunId).run();
+export const mkUndangAda = (env, nomor, tabel, akunId, kini) => env.DB.prepare("SELECT id FROM mk_undang WHERE wa = ?1 AND status = 'terkirim' AND tabel = ?2 AND akun_id IS ?3 AND habis > ?4 LIMIT 1").bind(nomor, tabel, akunId, kini).first();
+/* undangan dan pesan WA dalam satu batch; id sama dipakai kedua baris */
+export const mkUndangBaru = (env, u, pesan, kini) => env.DB.batch([
+  env.DB.prepare("INSERT INTO mk_undang (id, wa, nama, tabel, akun_id, oleh_tabel, oleh_id, status, dibuat, habis) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, 'terkirim', ?8, ?9)").bind(u.id, u.wa, u.nama ?? null, u.tabel, u.akun_id ?? null, u.oleh_tabel, u.oleh_id, kini, kini + u.umur),
+  env.DB.prepare("INSERT INTO wa_antre (id, tujuan, pesan, jenis, rujukan, status, percobaan, dibuat) VALUES (?1, ?2, ?3, 'undang', ?1, 'antre', 0, ?4)").bind(u.id, u.wa, pesan, kini)]);
+export const mkUndangDaftar = async (env, tabel, akunId, maks) => (await env.DB.prepare("SELECT id, wa, nama, status, dibuat, habis, oleh_tabel, oleh_id FROM mk_undang WHERE tabel = ?1 AND akun_id IS ?2 AND status <> 'dicabut' ORDER BY dibuat DESC LIMIT ?3").bind(tabel, akunId, maks).all()).results;
+export const mkUndangById = (env, id) => env.DB.prepare("SELECT id, tabel, akun_id, oleh_tabel, oleh_id, status FROM mk_undang WHERE id = ?").bind(id).first();
+export const mkUndangCabut = async (env, id) => (await env.DB.prepare("UPDATE mk_undang SET status = 'dicabut' WHERE id = ? AND status = 'terkirim'").bind(id).run()).meta.changes === 1;
+export const mkKontakById = (env, id) => env.DB.prepare("SELECT id, nama, wa, kategori, prov, kab FROM kontak_pemangku WHERE id = ? AND status = 'aktif'").bind(id).first();
+/* domain email terpetakan: kandidat = tiap akhiran berbatas titik dari domain surel; yang cocok harus dipetakan ke akun itu */
+export const mkDomainCocok = async (env, kandidat, akunId) => (await env.DB.prepare("SELECT domain FROM mk_domain WHERE domain IN (SELECT value FROM json_each(?1)) AND tabel = 'instansi_akun' AND akun_id = ?2 LIMIT 1").bind(JSON.stringify(kandidat), akunId).first())?.domain ?? null;
+export const mkDomainTulis = (env, domain, akunId, oleh, kini) => env.DB.prepare("INSERT INTO mk_domain (domain, tabel, akun_id, oleh, dibuat) VALUES (?, 'instansi_akun', ?, ?, ?) ON CONFLICT DO NOTHING").bind(domain, akunId, oleh, kini).run();
+export const mkDomainHapus = async (env, domain, akunId) => (await env.DB.prepare("DELETE FROM mk_domain WHERE domain = ? AND tabel = 'instansi_akun' AND akun_id = ?").bind(domain, akunId).run()).meta.changes === 1;
+export const mkKodeEmailBaru = (env, id, nsha, kodeSha, kini, habis) => env.DB.prepare("INSERT INTO mk_kode (id, nomor_sha, kode_sha, saluran, coba, dibuat, habis) VALUES (?, ?, ?, 'email', 0, ?, ?)").bind(id, nsha, kodeSha, kini, habis).run();
+/* papan aktivasi: lima kueri berkelompok (bukan per baris); kunci hasil = "<prov>|<kab>" */
+export const mkPapanHitung = async (env, kini, jendelaLog, kategori) => {
+  const [a, g, t, u, k] = (await env.DB.batch([
+    env.DB.prepare("SELECT prov, kab, count(*) n FROM instansi_akun WHERE tingkat = 'kab' AND status = 'aktif' AND dummy = 0 GROUP BY prov, kab"),
+    env.DB.prepare("SELECT x.prov, x.kab, count(*) n FROM mk_anggota g JOIN instansi_akun x ON x.id = g.akun_id WHERE g.tabel = 'instansi_akun' AND g.status = 'aktif' AND x.tingkat = 'kab' AND x.status = 'aktif' GROUP BY x.prov, x.kab"),
+    env.DB.prepare("SELECT x.prov, x.kab, max(l.waktu) n FROM mk_masuk_log l JOIN instansi_akun x ON x.id = l.akun_id WHERE l.tabel = 'instansi_akun' AND l.waktu > ?1 AND x.tingkat = 'kab' GROUP BY x.prov, x.kab").bind(kini - jendelaLog),
+    env.DB.prepare("SELECT x.prov, x.kab, sum(u.status = 'terkirim' AND u.habis > ?1) terkirim, sum(u.status = 'diterima') diterima FROM mk_undang u JOIN instansi_akun x ON x.id = u.akun_id WHERE u.tabel = 'instansi_akun' AND x.tingkat = 'kab' GROUP BY x.prov, x.kab").bind(kini),
+    env.DB.prepare(`SELECT k.prov, k.kab, count(*) n FROM kontak_pemangku k WHERE k.status = 'aktif' AND k.kab IS NOT NULL AND k.wa IS NOT NULL AND k.kategori IN (SELECT value FROM json_each(?1))
+      AND NOT EXISTS (SELECT 1 FROM mk_akun w JOIN mk_anggota m ON m.mk_id = w.id AND m.tabel = 'instansi_akun' AND m.status = 'aktif' WHERE w.wa = k.wa)
+      AND NOT EXISTS (SELECT 1 FROM instansi_akun y WHERE y.wa = k.wa AND y.status = 'aktif' AND y.dummy = 0) GROUP BY k.prov, k.kab`).bind(JSON.stringify(kategori))])).map(x => x.results);
+  return {akun: a, anggota: g, terakhir: t, undangan: u, kontak: k};
+};
+export const mkPapanRinci = async (env, prov, kab, kategori, maks) => {
+  const [k, a] = (await env.DB.batch([
+    env.DB.prepare(`SELECT k.id, k.nama, k.jabatan, k.kategori, k.wa FROM kontak_pemangku k WHERE k.status = 'aktif' AND k.prov = ?1 AND k.kab = ?2 AND k.wa IS NOT NULL AND k.kategori IN (SELECT value FROM json_each(?3))
+      AND NOT EXISTS (SELECT 1 FROM mk_akun w JOIN mk_anggota m ON m.mk_id = w.id AND m.tabel = 'instansi_akun' AND m.status = 'aktif' WHERE w.wa = k.wa)
+      AND NOT EXISTS (SELECT 1 FROM instansi_akun y WHERE y.wa = k.wa AND y.status = 'aktif' AND y.dummy = 0) ORDER BY k.nama LIMIT ?4`).bind(prov, kab, JSON.stringify(kategori), maks),
+    env.DB.prepare("SELECT id, jenis, wilayah FROM instansi_akun WHERE tingkat = 'kab' AND prov = ?1 AND kab = ?2 AND status = 'aktif' AND dummy = 0").bind(prov, kab)])).map(x => x.results);
+  return {kontak: k, akun: a};
+};
+
 /* Paritas bencana PB-21 (D13, DESAIN-TEKNIS 3.4): peringatan jenis baru di tabel samping peringatan_x (migrasi 0137); `peringatan` lama tidak disentuh.
    Tanpa migrasi 0137: tulis dilewati (null), baca hanya tabel lama, jalur jenis lama tidak terganggu. */
 export const JENIS_PERINGATAN_X = ["gunungapi", "udara", "kekeringan", "pesisir", "longsor", "rob"];

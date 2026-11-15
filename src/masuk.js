@@ -16,7 +16,8 @@ import {sesiUntuk as sesiPemirsa, cabutSesi as cabutPemirsa, arahPemirsa} from "
 import {cabutSesi as cabutStaf, cobaMasukStaf, hanyaDirektori} from "./staf.js";
 import {STATUS_RELAWAN_ARR} from "./lapangan.js";
 import {mkJedaTerakhir, mkKodeBaru, mkNaikCobaSemua, mkHanguskanBanyak, mkSelesaiKode, mkPakaiKode, mkDenyutBaca, mkAkunUntuk, mkSesiBaru, mkCabutSesi, mkLengkapi,
-  mkRuangPeran, mkStafPerWa, mkLogMasuk, mkOrangDariWa, mkRelawanDariWa, mkPemirsaAda, mkPemirsaWaSet} from "./hak.js";   // semua SQL di hak.js (gerbang d1)
+  mkRuangPeran, mkStafPerWa, mkLogMasuk, mkOrangDariWa, mkRelawanDariWa, mkPemirsaAda, mkPemirsaWaSet,
+  mkUndangTerima} from "./hak.js";   // semua SQL di hak.js (gerbang d1)
 import {sesiMasuk, tokenDari} from "./masuk_sesi.js";
 import * as K from "./masuk_konst.js";
 
@@ -82,6 +83,23 @@ async function mintaKode(env, req, url, kini) {
   return json({ok: true, tunggu: K.JEDA_KIRIM / 1000});   // sama untuk nomor dikenal maupun tidak
 }
 
+/* semua kode aktif satu kunci naik coba dulu, lalu dibandingkan satu per satu tanpa keluar lebih awal (D18); baris pemenang = satu pemanggil saja (UPDATE ... WHERE dipakai IS NULL).
+   Dipakai kode WA dan kode email (src/masuk_undang.js). Mengembalikan baris pemenang atau null; kode aktif lain kunci itu hangus. */
+export async function cocokKode(env, nsha, h, kini, maks) {
+  const baris = await mkNaikCobaSemua(env, nsha, kini, maks);
+  if (!baris.length) return null;
+  const lewat = [];
+  let menang = null;
+  for (const r of baris) {
+    if (r.coba > K.MAKS_COBA) { lewat.push(r.id); continue; }
+    if (samaWaktu(r.kode_sha, h) && !menang) menang = r;
+  }
+  if (lewat.length) await mkHanguskanBanyak(env, lewat, kini);
+  if (!menang || !await mkPakaiKode(env, menang.id, kini)) return null;   // permintaan serentak: hanya satu yang menang
+  await mkSelesaiKode(env, nsha, menang.id, kini);   // kode aktif lain hangus, baris otp dihapus
+  return menang;
+}
+
 /* ---------------- periksa kode (ALGORITMA 2.2) ---------------- */
 async function periksaKode(env, req, url, kini) {
   if (!kunciSah(env)) return gagal(503, "masuk lewat kode belum dikonfigurasi");
@@ -93,22 +111,11 @@ async function periksaKode(env, req, url, kini) {
   const kode = typeof b.o.kode === "string" ? b.o.kode.trim() : "";
   if (!reKode.test(kode)) return galatKode();
   const nsha = await hmac(env.MASUK_KUNCI, "wa|" + nomor);
-  /* semua kode aktif nomor itu naik coba dulu, lalu dibandingkan satu per satu tanpa keluar lebih awal (D18) */
-  const baris = await mkNaikCobaSemua(env, nsha, kini, K.KODE_AKTIF_MAKS);
-  if (!baris.length) return galatKode();
-  const h = await hmac(env.MASUK_KUNCI, nomor + "|" + kode), lewat = [];
-  let menang = null;
-  for (const r of baris) {
-    if (r.coba > K.MAKS_COBA) { lewat.push(r.id); continue; }
-    if (samaWaktu(r.kode_sha, h) && !menang) menang = r;
-  }
-  if (lewat.length) await mkHanguskanBanyak(env, lewat, kini);
-  if (!menang) return galatKode();
-  if (!await mkPakaiKode(env, menang.id, kini)) return galatKode();   // permintaan serentak: hanya satu yang menang
-  await mkSelesaiKode(env, nsha, menang.id, kini);   // kode aktif lain nomor itu hangus, baris otp dihapus
+  if (!await cocokKode(env, nsha, await hmac(env.MASUK_KUNCI, nomor + "|" + kode), kini, K.KODE_AKTIF_MAKS)) return galatKode();
   /* nomor yang kodenya sah tetapi belum punya akun: akun umum kosong (nama, wilayah, persetujuan dilengkapi PM-08) */
   const a = await mkAkunUntuk(env, acak(8), nomor, kini);
   if (a.status !== "aktif") return gagal(403, "akun ini diblokir");
+  await buktiNomor(env, a.id, nomor, kini);   // PM-09: undangan berlaku dan kontak bnpb dipakai SEBELUM daftar ruang dihitung
   const token = acak(32);
   await mkSesiBaru(env, await sha(token), a.id, kini, kini + K.SESI_UMUR_UMUM);
   /* sesi lama tiap akun peran yang terikat langsung ke nomor ini (D2, D4); akun yang gugur di tengah jalan (dicabut) tidak masuk daftar */
@@ -124,6 +131,12 @@ async function periksaKode(env, req, url, kini) {
   const r = json({ok: true, lengkap: a.setuju_pdp > 0, ruang: ruang.map(bersihRuang)});
   for (const c of kuki) r.headers.append("set-cookie", c);
   return r;
+}
+
+/* PM-09 (ALGORITMA §5): undangan berlaku (pengundang masih berhak) ke akun instansi aktif menjadi anggota aktif saat kode sah. Pintu ini TIDAK PERNAH mengubah status pdt_akun
+   (D19): pendaftaran pendataan memakai sandi dan nomor ketikan pendaftar yang tak dibuktikan, jadi persetujuannya tetap Super Admin. Tidak menyentuh instansi_akun. */
+async function buktiNomor(env, mkId, nomor, kini) {
+  await mkUndangTerima(env, mkId, nomor, kini);
 }
 
 /* ---------------- sesi akun umum ---------------- */
@@ -285,3 +298,4 @@ export const RUTE_MASUK = {
   "GET /api/masuk/saluran": saluranPublik,   // tanpa sesi; tabel belum ada = wa false
   "POST /api/masuk/keluar": tabelBelum(keluar),
 };
+export {tabelBelum, kunciSah, penjaga, batas, hmac, samaWaktu, kodeAcak, galatKode, galatNomor, reKode, samar, cariRuang};   // dipakai src/masuk_undang.js

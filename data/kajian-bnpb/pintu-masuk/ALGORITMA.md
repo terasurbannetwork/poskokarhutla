@@ -97,7 +97,7 @@ Peta kategori kontak:
 | --- | --- |
 | `bpbd`, `kepala_daerah`, `pemda` | anggota akun instansi pemda atau BPBD wilayah itu |
 | `tni`, `polri` | anggota akun instansi TNI atau Polri wilayah itu |
-| `bnpb` | akun pendataan miliknya sendiri (`pdt_akun` yang ia daftarkan berpindah dari menunggu ke aktif) |
+| `bnpb` | tidak aktif otomatis; hanya tanda "cocok kontak" di antrean tinjau pendataan (KEPUTUSAN D19) |
 | lainnya | tidak aktif otomatis |
 
 Tidak ada jalur yang cocok: permohonan berstatus `menunggu` di antrean tinjau. Permohonan aktivasi pertama akun instansi yang nomornya cocok kontak diberi tanda "cocok kontak" dan diurutkan paling atas.
@@ -113,7 +113,7 @@ Pengundang `P` adalah anggota aktif sebuah akun instansi, pemilik nomor akun itu
 3. `P` belum melewati 20 undangan per hari dan 100 undangan terbuka.
 4. `n` bukan nomor `P` sendiri dan belum menjadi anggota `A`.
 
-Undangan tidak pernah menunjuk tabel `staf` dan tidak pernah membuat akun lembaga. Isi pesan undangan adalah templat tetap; satu-satunya bagian yang berubah adalah nama lembaga dari basis data. Nama yang diketik pengundang tidak masuk pesan.
+Undangan tidak pernah menunjuk tabel `staf` dan tidak pernah membuat akun lembaga. Satu nomor menerima paling banyak tiga undangan per 24 jam dari semua pengundang. Undangan hanya sah selama pengundangnya masih berhak; mencabut anggota ikut mencabut undangan yang ia kirim. Undangan ke pendataan hanya memberi tanda "diundang staf" di antrean tinjau, tidak mengaktifkan. Isi pesan undangan adalah templat tetap; satu-satunya bagian yang berubah adalah nama lembaga dari basis data. Nama yang diketik pengundang tidak masuk pesan.
 
 Anggota yang diaktifkan undangan mencatat `oleh` pengundangnya. Mencabut pengundang tidak mencabut yang diundang; pemilik nomor akun dan admin bisa mencabut anggota mana pun.
 

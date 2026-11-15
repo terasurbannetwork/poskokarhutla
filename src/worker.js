@@ -32,6 +32,7 @@ import {RUTE_RISIKO7} from "./risiko7.js";
 import {RUTE_PENDATAAN} from "./pendataan.js";
 import {RUTE_ALUN} from "./alun.js";
 import {RUTE_MASUK} from "./masuk.js";
+import {RUTE_MASUK_UNDANG} from "./masuk_undang.js";
 import {RUTE_RISET} from "./riset.js";
 import {RUTE_MEJA, segarkanRingkas} from "./meja.js";
 import {RUTE_PENGUNGSIAN_TITIK} from "./pengungsian_titik.js";
@@ -604,6 +605,7 @@ const RUTE = {
   ...RUTE_LAPANGAN,   // modul Pegawai dan Relawan Lapangan: petugas + panel (src/lapangan.js, migrasi 0095)
   ...RUTE_ALUN,
   ...RUTE_MASUK,   // Satu Pintu Masuk: kode WA, sesi akun umum (src/masuk.js, paket data/kajian-bnpb/pintu-masuk/)
+  ...RUTE_MASUK_UNDANG,   // Pintu Masuk PM-09 sampai PM-12: anggota, email dinas, undangan berantai, papan aktivasi (src/masuk_undang.js)
   ...RUTE_RISET,
   ...RUTE_MEJA,
   ...RUTE_ORANG_TINJAU,   // tinjau pasangan akun ke orang, admin saja (src/orang_tinjau.js, migrasi 0138-0139, Keterpaduan KP-23)

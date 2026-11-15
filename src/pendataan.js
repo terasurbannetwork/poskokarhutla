@@ -9,6 +9,7 @@ import {tx, superOK, RE_EMAIL} from "./posko.js";
 import {sandiAcak} from "./instansi.js";
 import {laju, lajuIP, halamanBnpbPublik} from "./bnpb.js";
 import {mkSesiPeran, mkCabutSesiPeran} from "./hak.js";
+import {tandaPendataan} from "./masuk_tanda.js";
 import {halamanAdmin} from "./statistik.js";
 import {halamanBnpb} from "./admin_halaman.js";
 import * as S from "../public/bnpb/pendataan_spek.js";
@@ -279,6 +280,7 @@ async function ringkas(env, req) {
     env.DB.prepare("SELECT * FROM pdt_isian ORDER BY diubah DESC LIMIT 5000").all(),
     env.DB.prepare(`SELECT ${BKOLOM}, b.dummy FROM pdt_berkas b ORDER BY b.dibuat LIMIT 10000`).all()]);
   const akun = ak.results, per = new Map(akun.map(a => [a.id, a])), mb = kelompok(br.results);
+  const tanda = await tandaPendataan(env, akun.map(a => a.status === "menunggu" ? a : {}));   // hanya yang menunggu dicocokkan
   const lih = a => a.unit === "lainnya" ? "lainnya:" + String(a.unit_lain).toLowerCase() : a.unit;
   const grup = new Map();
   for (const a of akun) { const k = lih(a); if (!grup.has(k)) grup.set(k, {akun: [], isian: [], unit_lain: a.unit_lain}); grup.get(k).akun.push(a); }
@@ -290,7 +292,7 @@ async function ringkas(env, req) {
   return json({ringkas: {unit_total: unit.length, unit_sudah: unit.filter(u => u.status === "Sudah kirim").length, akun_aktif: akun.filter(a => a.status === "aktif").length, akun_menunggu: akun.filter(a => a.status === "menunggu").length,
       data: jml("data"), aplikasi: jml("aplikasi"), umum: jml("umum"), draf: jml("draf")},
     unit, lainnya,
-    akun: akun.map(a => ({...a, wajib_ganti: !!a.wajib_ganti, isian: is.results.filter(i => i.akun_id === a.id).length})),
+    akun: akun.map((a, i) => ({...a, ...(a.status === "menunggu" ? tanda[i] : {}), wajib_ganti: !!a.wajib_ganti, isian: is.results.filter(i => i.akun_id === a.id).length})),   // PM-09: cocok_kontak dan nomor_terbukti
     isian: is.results.map(i => { const a = per.get(i.akun_id) || {}; return {...isianBentuk(i, mb), akun_id: i.akun_id, unit: i.unit, unit_lain: a.unit_lain ?? null, pengisi: a.nama ?? "", jabatan: a.jabatan ?? "", dummy: i.dummy,
       judul: S.judulIsian(i.jenis, baca(i.isi))}; }),
     status_unit: STATUS_UNIT});

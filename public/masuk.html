@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/masuk.css?v=1" rel="stylesheet">
+<link href="/masuk.css?v=2" rel="stylesheet">
 </head>
 <body>
 <header class="ad-top">
@@ -51,7 +51,23 @@
     <div id="vRuang" class="mk-ruang" hidden>
       <ul id="daftarRuang" class="mk-daftar"></ul>
       <p class="bn-pesan" role="status"></p>
+      <button class="mk-tautan" id="bPeran" type="button">Saya petugas atau relawan</button>
       <button class="mk-tautan" id="bKeluar" type="button" hidden>Keluar</button>
+    </div>
+
+    <div id="vPeran" class="mk-ruang" hidden>
+      <ul id="daftarPeran" class="mk-daftar"></ul>
+      <div id="vGabung" class="bn-form" hidden>
+        <label class="bn-isian" for="iGProv">Provinsi
+          <select id="iGProv"><option value="">Pilih provinsi</option></select>
+        </label>
+        <label class="bn-isian" for="iGKab">Kabupaten atau kota
+          <select id="iGKab" disabled><option value="">Pilih kabupaten atau kota</option></select>
+        </label>
+        <ul id="daftarAkun" class="mk-daftar"></ul>
+      </div>
+      <p class="bn-pesan" role="status"></p>
+      <button class="mk-tautan" id="bPeranKembali" type="button">Kembali ke daftar ruang</button>
     </div>
 
     <form id="fSandi" class="bn-form" novalidate hidden>
@@ -91,6 +107,6 @@
 </main>
 <script src="/instansi_wilayah.js?v=1"></script>
 <script src="/bnpb/turnstile.js"></script>
-<script src="/masuk.js?v=1"></script>
+<script src="/masuk.js?v=2"></script>
 </body>
 </html>

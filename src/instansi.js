@@ -22,7 +22,8 @@ import {catatAwalTugas} from "./alarm_himawari.js";
 import {kabarLevel3} from "./kabar.js";
 import {modAtauStaf, dalamWilayahStaf, dariStaf, stafNyata, P_VALIDASI, P_KONSESI} from "./staf.js";
 import {bersihkanPenugasan, dummyPenugasan, hapusDummyPenugasan, PERAN} from "./penugasan.js";
-import {mkSesiPeran, mkCabutSesiPeran, tugasBencanaPer, tugasBencanaAda, stmtTugasBencanaBaru, tanpaTabelPb, tugasBukaJenis, tugasTungguVerifJenis, tugasRedaCukupJenis, stmtRedaTugas} from "./hak.js";
+import {tandaInstansi} from "./masuk_tanda.js";
+import {mkSesiPeran, mkCabutSesiPeran, mkCabutSesiAkun, tugasBencanaPer, tugasBencanaAda, stmtTugasBencanaBaru, tanpaTabelPb, tugasBukaJenis, tugasTungguVerifJenis, tugasRedaCukupJenis, stmtRedaTugas} from "./hak.js";
 import {BENCANA, BENCANA_X, DAFTAR_BENCANA, bencanaId, labelBencana, tutupBencana, bacaBencana, butirReda, pasKartuBencana} from "./tugas_bencana.js";
 import {bacaUji, ujiAda, GALAT_BELUM, stmtUji, stmtUjiTugasBaru} from "./uji_lapangan.js";
 
@@ -167,6 +168,8 @@ export async function cabutSesi(env, req) {
   if (m) await mkCabutSesiPeran(env, "instansi", await sha(m[1]));
   return cookieSet("", 0);
 }
+/* PM-11: cabut anggota dengan cabut_sesi: semua sesi akun ini berakhir (sesi modul tidak mencatat orang, jadi tidak bisa per orang) */
+export const cabutSemuaSesi = (env, akunId) => mkCabutSesiAkun(env, akunId);
 async function keluar(env, req, kini) {
   const m = (req.headers.get("cookie") || "").match(new RegExp(`(?:^|;\\s*)${COOKIE}=([0-9a-f]{64})`));
   if (m) {
@@ -1391,7 +1394,8 @@ async function daftarAkun(env, req, url, kini) {
 }
 async function antrean(env, req) {
   if (!await modAtauStaf(env, req, P_VALIDASI)) return tolakMod();
-  return json({akun: (await env.DB.prepare(`SELECT ${KOLOM_ADMIN} FROM instansi_akun WHERE status = 'menunggu' ORDER BY dikirim LIMIT 200`).all()).results.filter(a => dalamWilayahStaf(req, jsonAman(a.cakupan) || []) && !(stafNyata(req) && a.dummy)).map(barisAkun)});
+  const baris = (await env.DB.prepare(`SELECT ${KOLOM_ADMIN} FROM instansi_akun WHERE status = 'menunggu' ORDER BY dikirim LIMIT 200`).all()).results.filter(a => dalamWilayahStaf(req, jsonAman(a.cakupan) || []) && !(stafNyata(req) && a.dummy)), tanda = await tandaInstansi(env, baris);
+  return json({akun: baris.map((a, i) => ({...barisAkun(a), ...tanda[i]}))});   // Pintu Masuk PM-09: cocok_kontak dan nomor_terbukti ikut tiap baris
 }
 /* setuju dan tolak membawa `dikirim` (waktu kirim verifikasi yang dilihat admin) dan UPDATE mensyaratkannya: bila wakil mengirim ulang data sesudah admin membuka kartu, 409 (bukan menyetujui data lain) */
 async function ubahAkun(env, req, id, kini) {

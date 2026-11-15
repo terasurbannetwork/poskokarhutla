@@ -36,3 +36,33 @@ export const LAJU_IP_PEMIRSA_WA = [[JAM, 30]];   // POST /api/masuk/pemirsa_wa p
 export const LAJU_IP_LENGKAPI = [[JAM, 30]];     // POST /api/masuk/lengkapi per alamat
 export const NAMA_MAKS = 80;                     // sama dengan CHECK mk_akun.nama
 export const KAB_MAKS = 60;                      // sama dengan CHECK mk_akun.kab
+/* PM-09 sampai PM-12: anggota, email terpetakan, undangan berantai, papan aktivasi (ALGORITMA §4, §5, §8) */
+export const UNDANG_UMUR = 14 * HARI;            // umur satu undangan
+export const UNDANG_HARIAN = 20;                 // undangan per pengundang per 24 jam
+export const UNDANG_TERBUKA = 100;               // undangan terbuka (terkirim, belum habis) per pengundang
+export const MOHON_MENUNGGU_MAKS = 5;            // permohonan anggota berstatus menunggu per akun umum
+export const LAJU_IP_MOHON = [[JAM, 30]];        // POST /api/masuk/mohon per alamat
+export const LAJU_IP_AKUN = [[JAM, 120]];        // GET /api/masuk/akun per alamat
+export const LAJU_IP_UNDANG = [[JAM, 60]];       // POST dan cabut undangan, anggota per alamat
+export const LAJU_IP_DOMAIN = [[JAM, 60]];       // POST /api/masuk/domain per alamat (admin)
+export const LAJU_IP_EMAIL = [[JAM, 20]];        // POST /api/masuk/email per alamat
+export const LAJU_EMAIL_GLOBAL = [[JAM, 100], [HARI, 500]];   // kode email semua orang; Resend punya kuota sendiri
+export const KODE_EMAIL_MAKS = 4;                // baris kode email aktif yang diperiksa per (orang, akun, email)
+export const PAPAN_CACHE = 5 * MENIT;            // umur hitungan papan aktivasi di cache tepi
+export const PAPAN_JENDELA_LOG = 120 * HARI;     // log masuk yang dibaca papan; lebih tua dari ini tampil "lama"
+export const LAMA_TIDAK_MASUK = 30 * HARI;       // lewat ini akun aktif berstatus "lama tidak masuk"
+export const KONTAK_RINCI_MAKS = 200;            // kontak pemangku yang ditampilkan di rincian satu kabupaten
+export const LAJU_IP_PAPAN = [[JAM, 120]];       // GET papan dan rincian per alamat
+/* peta kategori kontak pemangku -> jenis akun instansi yang boleh dimasuki otomatis (ALGORITMA §4); kategori lain tidak aktif otomatis */
+export const PETA_KATEGORI = {
+  pemprov: ["bpbd", "kepala_daerah", "pemda"], pemkab: ["bpbd", "kepala_daerah", "pemda"], pemkot: ["bpbd", "kepala_daerah", "pemda"],
+  polda: ["polri"], polres: ["polri"], kodam: ["tni"], kodim: ["tni"]};
+export const RUMPUN = {pemda: ["pemprov", "pemkab", "pemkot"], aparat: ["polda", "polres", "kodam", "kodim"]};
+/* akhiran milik umum: domain yang dipetakan admin harus punya satu label lagi di depannya; surel gratis tidak pernah dipetakan */
+export const AKHIRAN_UMUM = ["go.id", "ac.id", "co.id", "or.id", "sch.id", "mil.id", "desa.id", "web.id", "net.id", "my.id", "biz.id", "id"];
+export const SUREL_GRATIS = ["gmail.com", "yahoo.com", "yahoo.co.id", "outlook.com", "hotmail.com", "live.com", "icloud.com", "proton.me", "protonmail.com", "mail.com", "ymail.com"];
+export const PERAN_AKTIVASI = ["verifikator", "pusdalops", "koordalops"];   // staf yang melihat papan dan mengundang (admin selalu)
+export const UNDANG_JENDELA = HARI;              // jendela hitung UNDANG_HARIAN
+export const DAFTAR_MAKS = 200;                  // baris daftar anggota, undangan, dan antrean tinjau per jawaban
+export const UNDANG_PER_NOMOR = 3;               // undangan ke satu nomor tujuan per jendela, lintas pengundang
+export const LAJU_IP_BACA = [[JAM, 120]];        // GET daftar undangan, anggota, antrean tinjau per alamat (bucket terpisah dari tulis)

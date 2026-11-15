@@ -29,7 +29,7 @@ Semua perilaku di sini tinggal di luar TypeScript (D1, rute, cookie, batas laju)
 | U-21 | Tautan "Masuk" di `/admin/masuk`, `/instansi`, `/pendataan`, `/kemitraan` menuju `/masuk`; form sandi lama tetap berfungsi | PM-08 |
 | U-22 | Permohonan anggota dengan nomor di `kontak_pemangku` aktif, kategori dan wilayah cocok, akun tujuan aktif: anggota aktif berjalur `kontak` | PM-09 |
 | U-23 | Nomor ajudan, kontak menunggu, wilayah beda, atau akun tujuan belum aktif: anggota berstatus menunggu; tidak ada baris `instansi_akun` yang dibuat atau diubah | PM-09 |
-| U-24 | Akun pendataan milik nomor yang cocok kontak kategori `bnpb` berpindah dari menunggu ke aktif | PM-09 |
+| U-24 | Akun pendataan yang menunggu tidak berubah status saat pemegang nomornya masuk lewat kode, dengan kontak `bnpb` cocok maupun undangan staf; tandanya muncul di antrean. Akun yang didaftarkan pihak lain dengan nomor korban tetap menunggu dan sandinya ditolak | PM-09 |
 | U-25 | Email yang domainnya ada di `mk_domain` untuk akun itu dengan kode sah: anggota aktif; `.go.id` atau `.ac.id` tanpa peta ditolak; akhiran dicocokkan berbatas titik (`xgo.id` ditolak) | PM-10 |
 | U-26 | Undangan sah mengaktifkan anggota saat kode sah; undangan dicabut atau lewat 14 hari tidak | PM-11 |
 | U-27 | Undangan ke tabel `staf`, ke akun lain, atau ke akun tidak aktif ditolak; undangan ke-21 dalam sehari dan ke-101 terbuka ditolak | PM-11 |

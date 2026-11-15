@@ -28,3 +28,10 @@
 .mk-rinci{font-size:.8125rem;color:var(--ink2);line-height:1.5}
 .mk-rinci summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
 .mk-rinci p{margin:0 0 8px}
+/* L5 (PM-09): daftar peran dan pilihan akun lembaga; pil status berwarna dari token bnpb.css */
+.mk-pil{display:inline-flex;align-items:center;justify-self:start;font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--soft);color:var(--ink2)}
+.mk-pil.hijau{background:color-mix(in srgb,var(--c4) 18%,transparent);color:color-mix(in srgb,var(--c4) 70%,var(--ink))}
+.mk-pil.kuning{background:color-mix(in srgb,var(--c3) 22%,transparent);color:color-mix(in srgb,var(--c3) 55%,var(--ink))}
+.mk-baris:disabled{opacity:.7;cursor:default}
+.mk-catatan{font-size:.8125rem;line-height:1.5;color:var(--ink2);margin:0}
+.mk-catatan a{color:var(--navy2);font-weight:700}

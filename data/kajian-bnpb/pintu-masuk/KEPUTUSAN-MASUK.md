@@ -70,6 +70,8 @@ Turunan rancangan dari K12 dan dari pemeriksaan PM-03 (agent, bisa dibatalkan pe
 | No | Keputusan | Alasan |
 | --- | --- | --- |
 | D18 | Minta kode baru tidak menghanguskan kode lama; semua kode aktif nomor itu sah sampai salah satunya dipakai. | Temuan pemeriksa PM-03: pihak lain yang meminta kode untuk nomor korban tiap 60 detik mematikan kode yang baru diterima korban. Tebakan tetap terbatas lima per kode. |
+| D19 | Akun pendataan **tidak pernah** aktif otomatis. Kecocokan kontak BNPB, undangan staf, dan nomor yang sudah terbukti hanya menjadi tanda di antrean tinjau; Super Admin tetap yang menyetujui. Ini membatalkan bagian pendataan di D6. | Temuan pemeriksa PM-09: pendaftaran pendataan publik dengan sandi pilihan pendaftar dan nomor yang tidak dibuktikan. Mengaktifkan berdasarkan nomor membiarkan orang lain yang mendaftar dengan nomor seorang pegawai memakai akun itu begitu pegawai tersebut masuk. |
+| D20 | Mencabut anggota ikut mencabut undangan yang ia kirim, dan undangan hanya sah selama pengundangnya masih berhak. Staf berperan verifikator, pusdalops, atau koordalops boleh menyetujui atau menolak anggota yang menunggu di wilayahnya; mencabut anggota aktif tetap hanya pemilik nomor akun dan admin. | Temuan pemeriksa PM-11. |
 | D17 | Nomor WA pemirsa disimpan di tabel samping `mk_pemirsa_wa (pemirsa_id, wa)` dan diisi Super Admin, yang memang membuat akun pemirsa. Kode yang sah menerbitkan `sesi_pemirsa` lewat fungsi modul pemirsa. Pemirsa cukup dengan kode, tanpa sandi. | Tabel `pemirsa` tidak punya kolom nomor dan tidak diubah. Pemirsa hanya membaca tab yang ditentukan, jadi satu faktor diterima; kalau pemilik mau sandi juga, D17 diganti. |
 
 ## Pertanyaan terbuka (masih bawaan sementara)

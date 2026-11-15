@@ -25,6 +25,7 @@
     relawan: "M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z",
     petugas: "M12 3l2.5 5 5.5.8-4 3.9 1 5.5-5-2.7-5 2.7 1-5.5-4-3.9 5.5-.8z",
     umum: "M4 6h16|M4 12h16|M4 18h16",
+    aparat: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z|M9 12l2 2 4-4",
   };
   const ikon = n => { const s = document.createElementNS(NS, "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true");
     for (const d of (IKON[n] || IKON.umum).split("|")) { const p = document.createElementNS(NS, "path"); p.setAttribute("d", d); s.append(p); } return s; };
@@ -35,6 +36,7 @@
     kode: {f: $("fKode"), h: "Masuk", info: ""},
     ruang: {f: $("vRuang"), h: "Pilih ruang", info: "Pilih ruang yang mau dibuka."},
     sandi: {f: $("fSandi"), h: "Masukkan sandi", info: ""},
+    peran: {f: $("vPeran"), h: "Saya petugas atau relawan", info: "Pilih peranmu."},
     lengkapi: {f: $("fLengkapi"), h: "Lengkapi data", info: "Sekali saja. Data ini membantu petugas menanggapi kirimanmu."},
   };
   let aktif = "nomor", nomor = "", pilihStaf = null, hitung = null, gambarUlang = null;
@@ -139,8 +141,10 @@
     clearInterval(hitung); gambarUlang = null; nomor = ""; pilihStaf = null;
     for (const i of ["iNomor", "iKode", "iSandi", "iNama", "iKab"]) $(i).value = "";
     $("iProv").value = ""; $("iSetuju").checked = false; $("daftarRuang").replaceChildren(); $("daftarKab").replaceChildren();
+    $("daftarAkun").replaceChildren(); $("vGabung").hidden = true; $("iGProv").value = ""; $("iGKab").replaceChildren(); gabungNo++;
   }
   async function keluar() {
+    clearTimeout(alih);
     const b = $("bKeluar"); b.disabled = true;
     const r = await kirim("/api/masuk/keluar", {});
     b.disabled = false;
@@ -148,6 +152,70 @@
   }
   $("bKeluar").addEventListener("click", keluar);
   $("bKembali").addEventListener("click", () => layar("ruang"));
+
+
+  /* ---------- L5: saya petugas atau relawan (PM-09, ALUR A5): lima pilihan, lalu gabung ke akun lembaga yang sudah aktif ---------- */
+  const PERAN = [["pemda", "BPBD atau pemda", "Gabung ke akun lembaga daerahmu", "instansi", null],
+    ["aparat", "TNI atau Polri", "Gabung ke akun lembaga daerahmu", "aparat", null], ["pendataan", "Unit BNPB", "Daftar pendataan satu data", "pendataan", "/pendataan"],
+    ["kemitraan", "Kampus", "Daftar kemitraan kampus", "kemitraan", "/kemitraan/daftar"]];
+  let rumpun = null, gabungNo = 0, sedangGabung = false, alih = null;
+  const baca = jalur => fetch(jalur).then(async r => ({s: r.status, j: await r.json().catch(() => ({}))}), () => ({s: 0, j: {}}));
+  const ejaan = k => window.Wilayah?.kab(k) ?? k;
+  function bukaPeran() {
+    const ul = $("daftarPeran");
+    if (!ul.children.length) for (const [id, nama, sub, ik, ke] of PERAN) {
+      const b = el("button", "mk-baris"); b.type = "button"; b.append(ikon(ik), el("span", "mk-nama", nama), el("span", "mk-sub", sub));
+      b.addEventListener("click", () => pilihPeran(id, ke)); const li = el("li"); li.append(b); ul.append(li);
+    }
+    $("vGabung").hidden = true; layar("peran");
+  }
+  function pilihPeran(id, ke) {
+    if (ke) return location.assign(ke);   // relawan, unit BNPB, kampus: formulir yang sudah ada
+    rumpun = id; gabungNo++;
+    const s = $("iGProv"); if (s.options.length < 2) for (const [k, n] of Object.entries(window.Wilayah?.PROV || {})) { const o = document.createElement("option"); o.value = k; o.textContent = n; s.append(o); }
+    s.value = ""; $("iGKab").replaceChildren(new Option("Pilih kabupaten atau kota", "")); $("iGKab").disabled = true; $("daftarAkun").replaceChildren(); pesan("");
+    $("vGabung").hidden = false; s.focus();
+  }
+  async function muatAkun() {
+    const no = ++gabungNo, prov = $("iGProv").value, kab = $("iGKab").value;
+    if (!prov) return;
+    $("daftarAkun").replaceChildren(el("li", "mk-catatan", "Memuat...")); pesan("");
+    const r = await baca(`/api/masuk/akun?prov=${encodeURIComponent(prov)}&rumpun=${rumpun}${kab ? "&kab=" + encodeURIComponent(kab) : ""}`);
+    if (no !== gabungNo) return;   // pilihan berganti selama menunggu: hasil basi dibuang
+    if (r.s !== 200) {   // gagal: pesan dan tombol Coba lagi, pilihan tidak terkunci
+      const li = el("li"), b = el("button", "mk-tautan", "Coba lagi"); b.type = "button"; b.addEventListener("click", muatAkun); li.append(b); $("daftarAkun").replaceChildren(li);
+      return pesan(r.s === 0 ? "Tidak ada koneksi." : r.s === 401 ? "Masuk dulu lewat kode WhatsApp." : kalimat(r.j.galat) || "Daftar akun belum bisa dimuat.");
+    }
+    if (!kab) {   // daftar kabupaten dari server (ejaan sama dengan akun lembaga)
+      const k = $("iGKab"); k.replaceChildren(new Option("Pilih kabupaten atau kota", ""), ...(r.j.kab || []).map(n => new Option(ejaan(n), n))); k.disabled = false;
+    }
+    daftarAkun(r.j.akun || [], !!kab && !r.j.kab_ada_akun);
+  }
+  function daftarAkun(akun, tanpaAkunDaerah) {
+    const ul = $("daftarAkun"); ul.replaceChildren();
+    for (const a of akun) {
+      const b = el("button", "mk-baris"); b.type = "button"; b.append(ikon("instansi"), el("span", "mk-nama", ejaan(a.lembaga)), el("span", "mk-sub", "Ketuk untuk bergabung"));
+      b.addEventListener("click", () => gabung(a, b)); const li = el("li"); li.append(b); ul.append(li);
+    }
+    if (tanpaAkunDaerah) {   // ALUR A5: akun lembaga belum pernah aktif, orang diarahkan ke verifikasi yang ada
+      const li = el("li"), p = el("p", "mk-catatan", "Belum ada akun lembaga yang aktif di daerah ini. Verifikasi akun lembaganya dulu di "), a = el("a", null, "halaman instansi"); a.href = "/instansi"; p.append(a, "."); li.append(p); ul.append(li);
+    } else if (!akun.length && $("iGKab").value) ul.append(el("li", "mk-catatan", "Belum ada akun lembaga yang aktif di daerah ini."));
+  }
+  async function gabung(a, b) {
+    if (sedangGabung) return;   // satu permohonan sekali jalan: dua klik pada dua akun tidak mengirim dua
+    sedangGabung = true; for (const x of $("daftarAkun").querySelectorAll("button")) x.disabled = true; pesan("");
+    const r = await kirim("/api/masuk/mohon", {jenis: "instansi", akun_id: a.id});
+    sedangGabung = false;
+    if (r.s !== 200) { for (const x of $("daftarAkun").querySelectorAll("button")) x.disabled = false; return pesan(galat(r)); }
+    b.querySelector(".mk-sub")?.remove();
+    const aktif = r.j.status === "aktif", pil = el("span", "mk-pil " + (aktif ? "hijau" : "kuning"), aktif ? "Aktif" : "Menunggu pemeriksaan"); b.append(pil);
+    if (aktif) { pesan("Kamu sudah bergabung. Membuka ruang lembaga...", true); alih = setTimeout(() => pergi(r.j.ke), 900); }
+    else { pesan("Permohonanmu menunggu pemeriksaan petugas. Sementara itu akun umummu tetap bisa dipakai.", true); for (const x of $("daftarAkun").querySelectorAll("button")) if (x !== b) x.disabled = false; }
+  }
+  $("iGProv").addEventListener("change", () => { $("iGKab").replaceChildren(new Option("Pilih kabupaten atau kota", "")); $("iGKab").disabled = true; $("daftarAkun").replaceChildren(); muatAkun(); });
+  $("iGKab").addEventListener("change", muatAkun);
+  $("bPeran").addEventListener("click", bukaPeran);
+  $("bPeranKembali").addEventListener("click", () => { clearTimeout(alih); layar("ruang"); });
 
   /* ---------- sandi staf ---------- */
   $("fSandi").addEventListener("submit", async e => {
@@ -206,7 +274,9 @@
       $("bKeluar").hidden = false;
       const ruang = saya.j.ruang || [];
       if (!ruang.length && !saya.j.akun?.lengkap) return bukaLengkapi();
-      daftarRuang(ruang); return layar("ruang");
+      daftarRuang(ruang); layar("ruang");
+      if (location.hash === "#peran") bukaPeran();   // tautan "Saya petugas atau relawan" dari kepala situs
+      return;
     }
     layar("nomor");
     if (saya.s === 0 && saluran.s === 0) return pesan("Tidak ada koneksi.");
