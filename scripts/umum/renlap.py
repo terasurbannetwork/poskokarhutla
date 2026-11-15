@@ -283,9 +283,75 @@ def rakit_banjir(a, titik, B, ambil=None):
     return r, isi
 
 
+ABRASI = AKAR / "public/pesisir/data/abrasi.json"
+
+
+def target_pesisir(jalur=ABRASI):
+    """-> (dibuat, kandidat). Kandidat = transek abrasi.json berkelas 'abrasi' (laju mundur nyata menurut selang 95%), keyakinan bukan rendah,
+    tanpa 'gangguan'/'tinjau' (kriteria sama dengan ringkasan abrasi.py). TANPA ambang kritis: abrasi.py dan dokumen tidak menulis angka
+    m/tahun kritis, jadi semua yang lolos disusun menurut urutan laju. Fitur `tingkat` = |laju| / |laju| terbesar di antara kandidat (0..1);
+    ini peringkat relatif, bukan ukuran bahaya, dan skornya HIPOTESIS (bobot sama rata, skor_generik). Fitur lain tanpa data."""
+    d = json.loads(Path(jalur).read_text(encoding="utf-8"))
+    ok = [t for t in d["transek"] if t.get("kelas") == "abrasi" and t.get("keyakinan") in ("sedang", "tinggi")
+          and not t.get("gangguan") and not t.get("tinjau") and isinstance(t.get("laju"), (int, float)) and t["laju"] < 0
+          and isinstance(t.get("lat"), (int, float)) and isinstance(t.get("lon"), (int, float))]
+    mk = max((-t["laju"] for t in ok), default=1) or 1
+    th = (d.get("dibuat") or "")[:10]
+    kand = []
+    for t in ok:
+        a = t.get("periode") or [None, None]
+        kand.append({"id": t["id"], "lat": t["lat"], "lon": t["lon"], "fitur": {"tingkat": round(-t["laju"] / mk, 3)}, "laju": t["laju"],
+                     "tempat": "Transek %s, %s: laju %s m/th (%s, keyakinan %s), periode garis pantai %s sampai %s, berkas dibuat %s"
+                               % (t["id"], t.get("desa") or "desa tidak tercatat", str(t["laju"]).replace(".", ","), t["kelas"], t["keyakinan"], a[0], a[1], th)})
+    return d.get("dibuat"), kand
+
+
+def rakit_pesisir(a, titik, B, ambil=None):
+    """pesisir: kandidat = transek abrasi kritis (`target_pesisir`); base = titik sarana bila ada, selain itu SATU base semu 'Tanpa base'
+    di koordinat target teratas (target tetap ditulis). prov/kab tidak menyaring: abrasi.json hanya memuat situs tetap yang dipantau.
+    Sumber gagal dibaca -> RuntimeError (kirim melapor gagal)."""
+    base = [{"id": str(t.get("id", ""))[:12] or "B%d" % (i + 1), "nama": t.get("nama") or "Sarana", "lat": t["lat"], "lon": t["lon"]}
+            for i, t in enumerate(titik) if t.get("golongan") == "sarana" and isinstance(t.get("lat"), (int, float)) and isinstance(t.get("lon"), (int, float))]
+    try:
+        dibuat, kand = (ambil or target_pesisir)()
+    except Exception as e:
+        raise RuntimeError("sumber target pesisir gagal dibaca: %s" % type(e).__name__) from e
+    kand = sorted(kand, key=lambda c: (-c["fitur"]["tingkat"], c["id"]))
+    if not base and kand:
+        base = [{"id": "tanpa-base", "nama": "Tanpa base (titik awal = target teratas)", "lat": kand[0]["lat"], "lon": kand[0]["lon"]}]
+    Bs = dict(B, ambang=dict(B["ambang"], skor_minimum=0))   # tanpa penyaring ambang: urutan laju saja
+    r = susun("pesisir", kand, base, Bs) if base else {"bencana": "pesisir", "status": "draf", "bobot_label": B["per_bencana"]["pesisir"]["label"],
+                                                      "catatan": "USULAN lokasi untuk dilihat, bukan perintah terbang.", "base": []}
+    for b in r["base"]:
+        for c in b["patroli"]:
+            c["alasan"]["laju_m_per_th"] = c["laju"]
+    jml = sum(len(b["patroli"]) for b in r["base"])
+    r.update(tanggal=a.tanggal, versi=a.versi, jml_target=jml, bobot_label=r["bobot_label"].lower(),
+             catatan="Usulan lokasi untuk dilihat, bukan perintah terbang.",
+             sumber_data={"berkas": "abrasi.json", "dibuat": dibuat, "catatan": "abrasi tahunan: laju dari deret garis pantai; hanya situs yang dipantau; tanpa ambang laju dari sumber; skor relatif terhadap transek terburuk yang lolos saringan"})
+    if not jml:
+        r["alasan_kosong"] = "tidak ada transek abrasi nyata berkeyakinan sedang atau tinggi"
+    nama = "renlap_%s_%s" % (a.tanggal, a.versi)
+    t = ["Usulan target pesisir (abrasi), %s (versi %s)" % (a.tanggal, a.versi),
+         "Usulan lokasi untuk dilihat, bukan perintah terbang. Skor hipotesis, urutan laju mundur, tanpa ambang laju dari sumber.",
+         "Skor relatif terhadap transek terburuk yang lolos saringan (laju mundur terbesar = 1,00); laju mentah di samping skor.",
+         "Data abrasi tahunan, berkas dibuat %s (bukan kondisi hari ini)." % (str(dibuat)[:10] or "tanggal tidak tercatat")]
+    for b in r["base"]:
+        t.append("\nBase %s" % b["nama"])
+        t += ["%d. %s\n   laju %s m/th, skor %s\n   %.5f, %.5f" % (c["urut"], c["tempat"], str(c["laju"]).replace(".", ","), str(c["skor"]).replace(".", ","), c["lat"], c["lon"])
+              for c in b["patroli"]]
+    if not jml:
+        t.append("Tidak ada target: %s." % r["alasan_kosong"])
+    tb = [dict(b, id="tanpa base") if b["id"] == "tanpa-base" else b for b in r["base"]]   # nama titik kml/gpx: "tanpa base CP1"
+    isi = {"json": json.dumps(r, ensure_ascii=False, indent=1, default=str), "kml": K.kml(tb, nama), "gpx": K.gpx(tb, nama), "txt": "\n".join(t) + "\n"}
+    return r, isi
+
+
 def rakit(a, titik, B, ambil=None):
     if a.bencana == "banjir":
         return rakit_banjir(a, titik, B, ambil)
+    if a.bencana == "pesisir":
+        return rakit_pesisir(a, titik, B, ambil)
     """base = titik golongan sarana; kandidat target: KOSONG (belum ada sumber target per bencana dengan skema terjamin di repo, tidak dikarang)."""
     base = [{"id": str(t.get("id", ""))[:12] or "B%d" % (i + 1), "nama": t.get("nama") or "Sarana", "lat": t["lat"], "lon": t["lon"]}
             for i, t in enumerate(titik) if t.get("golongan") == "sarana" and isinstance(t.get("lat"), (int, float)) and isinstance(t.get("lon"), (int, float))]
@@ -379,6 +445,41 @@ def uji_banjir():
         assert "OSError" in str(e)
 
 
+def uji_pesisir(B, ok):
+    tr = lambda i, la, lo, lj, k="abrasi", y="tinggi", **x: dict(id=i, lat=la, lon=lo, laju=lj, kelas=k, keyakinan=y, desa="D", periode=[1988, 2025], **x)
+    # jarak antartransek > 6 km supaya pilih_cakupan tak membuang
+    d = {"dibuat": "2026-11-15T10:00:00+00:00", "transek": [tr("a-1", -6.9, 110.4, -10.0), tr("a-2", -7.0, 110.4, -5.0), tr("a-3", -7.1, 110.4, -20.0, y="sedang"),
+         tr("x-1", 1, 1, -50.0, y="rendah"), tr("x-2", 1, 1, 3.0, k="akresi"), tr("x-3", 1, 1, -30.0, tinjau=[2008]), tr("x-4", 1, 1, -30.0, gangguan=True)]}
+    import tempfile, types
+    with tempfile.TemporaryDirectory() as td:
+        j = Path(td) / "a.json"
+        j.write_text(json.dumps(d))
+        dibuat, kand = target_pesisir(j)
+        assert sorted(c["id"] for c in kand) == ["a-1", "a-2", "a-3"], kand
+        assert {c["id"]: c["fitur"]["tingkat"] for c in kand} == {"a-1": 0.5, "a-2": 0.25, "a-3": 1.0}, kand
+        A = types.SimpleNamespace(**dict(ok, bencana="pesisir"))
+        r, isi = rakit_pesisir(A, [], B, lambda: target_pesisir(j))   # tanpa base: target tetap ditulis
+        assert r["jml_target"] == 3 and r["base"][0]["id"] == "tanpa-base" and "hipotesis" in r["bobot_label"], r
+        assert r["base"][0]["patroli"][0]["skor"] == 1.0 and r["base"][0]["patroli"][0]["alasan"]["laju_m_per_th"] == -20.0
+        import re
+        for k in ("json", "txt"):   # tanpa huruf kapital semua, tanpa kata "kritis"
+            assert not re.search(r"\b[A-Z]{2,}\b", isi[k]) and "kritis" not in isi[k].lower(), k
+        assert "tanpa base CP1" in isi["kml"] and "tanpa base-CP1" in isi["gpx"] and "tanpa-base" not in isi["kml"]
+        assert "laju -20,0 m/th, skor 1,0" in isi["txt"] and "relatif terhadap transek terburuk yang lolos saringan" in isi["txt"]
+        assert "periode garis pantai 1988 sampai 2025, berkas dibuat 2026-11-15" in isi["txt"]
+        r2, _ = rakit_pesisir(A, [{"id": "b" * 16, "golongan": "sarana", "nama": "S", "lat": -7.0, "lon": 110.4}], B, lambda: target_pesisir(j))
+        assert r2["jml_target"] == 3 and r2["base"][0]["nama"] == "S"
+    r3, _ = rakit_pesisir(A, [], B, lambda: (None, []))
+    assert r3["jml_target"] == 0 and r3["alasan_kosong"]
+    try:
+        rakit_pesisir(A, [], B, lambda: 1 / 0)
+        raise SystemExit("sumber gagal harus RuntimeError")
+    except RuntimeError:
+        pass
+    r4, _ = rakit_pesisir(A, [], B)   # berkas nyata
+    assert r4["jml_target"] > 0 and r4["sumber_data"]["dibuat"]
+
+
 def uji():
     B = muat_bobot()
     reg = [b["id"] for b in json.loads((AKAR / "public/bencana.json").read_text(encoding="utf-8"))["bencana"]]
@@ -430,8 +531,9 @@ def uji():
             raise SystemExit("harus ditolak: %s=%r" % (k, v))
         except ValueError:
             pass
-    r, isi = rakit(types.SimpleNamespace(**dict(ok, bencana="pesisir")), [{"id": "a" * 16, "golongan": "sarana", "nama": "H", "lat": 1.0, "lon": 2.0}, {"golongan": "fasilitas", "lat": 1, "lon": 2}], B)
+    r, isi = rakit(types.SimpleNamespace(**dict(ok, bencana="gempa")), [{"id": "a" * 16, "golongan": "sarana", "nama": "H", "lat": 1.0, "lon": 2.0}, {"golongan": "fasilitas", "lat": 1, "lon": 2}], B)
     assert r["jml_target"] == 0 and len(r["base"]) == 1 and set(isi) == {"json", "kml", "gpx", "txt"}
+    uji_pesisir(B, ok)
     print("renlap (umum): lulus")
 
 
