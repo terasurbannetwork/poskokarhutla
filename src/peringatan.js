@@ -190,11 +190,13 @@ const aktifGeo = async (env, sejak) => {
    Koordinat -> <circle> "lat,lon 0" (titik); tanpa koordinat -> hanya areaDesc + geocode BPS provinsi. Waktu CAP wajib berzona: +00:00, bukan Z. */
 const xml = x => String(x ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;"})[c]).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "");
 const capWaktu = t => new Date(t).toISOString().replace(/\.\d+Z$/, "+00:00");
-const CAP_KATEGORI = {gempa: "Geo", tsunami: "Geo", cuaca: "Met", karhutla: "Fire", banjir: "Met"}, CAP_TINGKAT = {Awas: ["Extreme", "Immediate"], Siaga: ["Severe", "Expected"], Waspada: ["Moderate", "Expected"]};
-const CAP_PASTI = {gempa: "Observed", tsunami: "Likely", cuaca: "Likely", karhutla: "Likely", banjir: "Likely"}, CAP_EVENT = {gempa: "Gempa bumi", tsunami: "Potensi tsunami", cuaca: "Cuaca ekstrem", karhutla: "Kebakaran hutan dan lahan", banjir: "Banjir"};
-/* senderName jujur soal asal: sumber BMKG/InaTEWS = diteruskan dari mereka; Deteksi = hitungan kita sendiri, tegas bukan BMKG dan bukan InaTEWS */
+/* jenis baru (PB-26, tabel peringatan_x): kategori CAP baku OASIS; kepastian BAWAAN SEMENTARA (Q17/Q18): level resmi = Observed, prakiraan = Likely, sisanya Possible; ditinjau saat penilai tiap jenis dipasang di F2 */
+export const CAP_KATEGORI = {gempa: "Geo", tsunami: "Geo", cuaca: "Met", karhutla: "Fire", banjir: "Met", gunungapi: "Geo", udara: "Health", kekeringan: "Met", pesisir: "Met", longsor: "Geo", rob: "Met"}, CAP_TINGKAT = {Awas: ["Extreme", "Immediate"], Siaga: ["Severe", "Expected"], Waspada: ["Moderate", "Expected"]};
+export const CAP_PASTI = {gempa: "Observed", tsunami: "Likely", cuaca: "Likely", karhutla: "Likely", banjir: "Likely", gunungapi: "Observed", udara: "Likely", kekeringan: "Possible", pesisir: "Likely", longsor: "Possible", rob: "Likely"},
+  CAP_EVENT = {gempa: "Gempa bumi", tsunami: "Potensi tsunami", cuaca: "Cuaca ekstrem", karhutla: "Kebakaran hutan dan lahan", banjir: "Banjir", gunungapi: "Aktivitas gunung api", udara: "Kualitas udara", kekeringan: "Kekeringan", pesisir: "Gelombang tinggi dan abrasi pesisir", longsor: "Tanah longsor", rob: "Banjir rob"};
+/* senderName jujur soal asal: sumber BMKG/InaTEWS/PVMBG/KLHK/Badan Geologi = diteruskan dari mereka; Deteksi = hitungan kita sendiri, tegas bukan BMKG dan bukan InaTEWS */
 const CAP_SITUS = "https://centurisk97.id/";
-const namaPengirim = sumber => /^(BMKG|InaTEWS)$/.test(sumber) ? `Centurisk97, meneruskan ${sumber}` : `Centurisk97, ${sumber} (hitungan otomatis, bukan peringatan BMKG atau InaTEWS)`;
+const namaPengirim = sumber => /^(BMKG|InaTEWS|PVMBG|KLHK|Badan Geologi)$/.test(sumber) ? `Centurisk97, meneruskan ${sumber}` : `Centurisk97, ${sumber} (hitungan otomatis, bukan peringatan BMKG atau InaTEWS)`;
 export function bentukCap(daftar, kini) {
   const info = p => {
     const [sev, urg] = CAP_TINGKAT[p.tingkat] ?? ["Unknown", "Unknown"], lokasi = [p.kab, PROV[p.prov]?.[1]].filter(Boolean).join(", ") || "Indonesia";

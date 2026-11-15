@@ -218,6 +218,18 @@ export function nilaiTitik(data, lat, lon, kecKunci, hariIni) {
   return [...peta.values()].sort((a, b) => b.tingkat - a.tingkat || a.hari - b.hari);
 }
 
+/* ---------------- jenis baru (PB-26, D13): kerangka, TIDAK menyala ----------------
+   Registri penilai per jenis (gunungapi, udara, kekeringan, pesisir, longsor, rob); sengaja KOSONG: tidak ada aturan atau ambang yang dikarang. Penilai dipasang di F2 (PB-34a, 36a, 38a, 40, 46a)
+   bersama sumbernya. Penilai mengembalikan array nilai berurut kolom `peringatan_x` ([kunci, jenis, tingkat, prov, kab, lat, lon, judul, teks, sumber, sumber_url, dibuat, berlaku_hingga], sumber
+   "Deteksi Centurisk97" atau penerbit resmi, BUKAN "Deteksi Pantau Bencana") yang WAJIB ditulis lewat tulisPeringatan (src/peringatan.js) ke peringatan_x. Hasil berlabel sumber_jenis "hipotesis" tidak
+   keluar (Q17 BAWAAN SEMENTARA: layar saja). Tanpa penilai = [] tanpa baca D1 (beban cron tidak naik). */
+export const PENILAI_JENIS_BARU = {};
+export function peringatanJenisBaru(data, kini, penilai = PENILAI_JENIS_BARU) {
+  const out = [];
+  for (const [jenis, f] of Object.entries(penilai)) for (const p of f(data, kini) ?? []) if (p?.sumber_jenis !== "hipotesis" && p?.nilai?.[1] === jenis) out.push(p.nilai);
+  return out;
+}
+
 /* ---------------- gempa ---------------- */
 export const radiusGempa = m => RADIUS_GEMPA.find(([a]) => m >= a)?.[1] ?? 0;
 export const berpotensiTsunami = p => /berpotensi tsunami/i.test(p || "") && !/tidak berpotensi/i.test(p || "");

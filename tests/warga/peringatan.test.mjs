@@ -299,3 +299,15 @@ uji("/aktif lebih dari 50: daftar 50 terbaru, total dan per_tingkat sebenarnya (
     assert.deepEqual(p.j.per_tingkat, {Awas: 1, Siaga: 40, Waspada: 9});
   } finally { await mf3.dispose(); }
 });
+
+test("PB-26 CAP jenis baru: kategori, kepastian, event terisi untuk enam jenis; sumber resmi diteruskan, Deteksi tegas bukan resmi", async () => {
+  const {CAP_KATEGORI, CAP_PASTI} = await import("../../src/peringatan.js"), {JENIS_PERINGATAN_X} = await import("../../src/hak.js");
+  const kini = Date.parse("2026-11-15T03:00:00Z"), dasar = {kab: null, lat: null, lon: null, sumber_url: null, dibuat: iso(kini - JAM), berlaku_hingga: iso(kini + JAM), prov: "32", tingkat: "Siaga", teks: "uji"};
+  const daftar = JENIS_PERINGATAN_X.map((j, i) => ({...dasar, kunci: `${j}:x:siaga`, jenis: j, judul: "J " + j, sumber: i % 2 ? "Deteksi Centurisk97" : "PVMBG"}));
+  for (const j of JENIS_PERINGATAN_X) { assert.ok(CAP_KATEGORI[j], j); assert.ok(CAP_PASTI[j], j); }
+  const x = bentukCap(daftar, kini);
+  assert.doesNotMatch(x, /<category>Other<\/category>|<certainty>Unknown<\/certainty>|<event>(gunungapi|udara|kekeringan|pesisir|longsor|rob)<\/event>/);
+  assert.match(x, /<senderName>Centurisk97, meneruskan PVMBG<\/senderName>/);
+  assert.match(x, /<senderName>Centurisk97, Deteksi Centurisk97 \(hitungan otomatis, bukan peringatan BMKG atau InaTEWS\)<\/senderName>/);
+  assert.doesNotMatch(x, /\baman\b/i);
+});

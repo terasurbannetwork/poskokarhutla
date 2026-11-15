@@ -691,3 +691,12 @@ uji("simulasi gagal-tertutup: boleh_tampil bukan true (false atau hilang) = jeja
   assert.ok(!ok.basi_sumber.includes("jejak")); assert.ok(ok.peringatan.some(x => x.sumber_jenis === "simulasi"));
   assert.equal(E.jejakSegar({jejakBoleh: false, jejakStatus: "ok", jejakAcuan: new Date().toISOString()}, Date.now()), false);
 });
+
+uji("PB-26 jenis baru: registri penilai kosong = tidak ada peringatan; hipotesis tidak keluar; jenis tak cocok ditolak", () => {
+  assert.deepEqual(E.PENILAI_JENIS_BARU, {});
+  assert.deepEqual(E.peringatanJenisBaru({}, Date.now()), []);
+  const nilai = ["longsor:k1:siaga", "longsor", "Siaga", "32", null, null, null, "J", "", "Deteksi Centurisk97", null, 1, 2];
+  assert.deepEqual(E.peringatanJenisBaru({}, 1, {longsor: () => [{nilai}]}), [nilai]);
+  assert.deepEqual(E.peringatanJenisBaru({}, 1, {longsor: () => [{nilai, sumber_jenis: "hipotesis"}]}), [], "Q17: hipotesis tidak dikirim");
+  assert.deepEqual(E.peringatanJenisBaru({}, 1, {rob: () => [{nilai}]}), [], "jenis nilai harus sama dengan kunci penilai");
+});
