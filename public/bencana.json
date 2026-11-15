@@ -191,6 +191,25 @@
           "awas": 3,
           "siaga": 1
         }
+      },
+      "kemampuan": {
+        "operasi": false,
+        "renlap": {
+          "sarana": [],
+          "bobot": ""
+        },
+        "dokumen": [],
+        "ews": {
+          "kunci": [],
+          "tangga": false
+        },
+        "dasbor": {
+          "ringkas": "",
+          "papan_sk": false
+        },
+        "ekonomi": false,
+        "pencegahan": false,
+        "prioritas": false
       }
     },
     {
@@ -356,7 +375,26 @@
         ],
         "leksikon": "scripts/berita/banjir.py"
       },
-      "prioritas": []
+      "prioritas": [],
+      "kemampuan": {
+        "operasi": false,
+        "renlap": {
+          "sarana": [],
+          "bobot": ""
+        },
+        "dokumen": [],
+        "ews": {
+          "kunci": [],
+          "tangga": false
+        },
+        "dasbor": {
+          "ringkas": "",
+          "papan_sk": false
+        },
+        "ekonomi": false,
+        "pencegahan": false,
+        "prioritas": false
+      }
     },
     {
       "id": "pesisir",
@@ -494,7 +532,26 @@
         ],
         "leksikon": "scripts/berita/pesisir.py"
       },
-      "prioritas": []
+      "prioritas": [],
+      "kemampuan": {
+        "operasi": false,
+        "renlap": {
+          "sarana": [],
+          "bobot": ""
+        },
+        "dokumen": [],
+        "ews": {
+          "kunci": [],
+          "tangga": false
+        },
+        "dasbor": {
+          "ringkas": "",
+          "papan_sk": false
+        },
+        "ekonomi": false,
+        "pencegahan": false,
+        "prioritas": false
+      }
     },
     {
       "id": "cuaca",
@@ -637,7 +694,26 @@
         ],
         "leksikon": "scripts/cuaca/berita.py"
       },
-      "prioritas": []
+      "prioritas": [],
+      "kemampuan": {
+        "operasi": false,
+        "renlap": {
+          "sarana": [],
+          "bobot": ""
+        },
+        "dokumen": [],
+        "ews": {
+          "kunci": [],
+          "tangga": false
+        },
+        "dasbor": {
+          "ringkas": "",
+          "papan_sk": false
+        },
+        "ekonomi": false,
+        "pencegahan": false,
+        "prioritas": false
+      }
     },
     {
       "id": "gempa",
@@ -782,7 +858,26 @@
         ],
         "leksikon": "scripts/gempa/berita.py"
       },
-      "prioritas": []
+      "prioritas": [],
+      "kemampuan": {
+        "operasi": false,
+        "renlap": {
+          "sarana": [],
+          "bobot": ""
+        },
+        "dokumen": [],
+        "ews": {
+          "kunci": [],
+          "tangga": false
+        },
+        "dasbor": {
+          "ringkas": "",
+          "papan_sk": false
+        },
+        "ekonomi": false,
+        "pencegahan": false,
+        "prioritas": false
+      }
     },
     {
       "id": "udara",
@@ -911,7 +1006,26 @@
         ],
         "leksikon": "scripts/udara/berita.py"
       },
-      "prioritas": []
+      "prioritas": [],
+      "kemampuan": {
+        "operasi": false,
+        "renlap": {
+          "sarana": [],
+          "bobot": ""
+        },
+        "dokumen": [],
+        "ews": {
+          "kunci": [],
+          "tangga": false
+        },
+        "dasbor": {
+          "ringkas": "",
+          "papan_sk": false
+        },
+        "ekonomi": false,
+        "pencegahan": false,
+        "prioritas": false
+      }
     },
     {
       "id": "gunungapi",
@@ -1039,7 +1153,26 @@
         ],
         "leksikon": "scripts/gunungapi/berita.py"
       },
-      "prioritas": []
+      "prioritas": [],
+      "kemampuan": {
+        "operasi": false,
+        "renlap": {
+          "sarana": [],
+          "bobot": ""
+        },
+        "dokumen": [],
+        "ews": {
+          "kunci": [],
+          "tangga": false
+        },
+        "dasbor": {
+          "ringkas": "",
+          "papan_sk": false
+        },
+        "ekonomi": false,
+        "pencegahan": false,
+        "prioritas": false
+      }
     },
     {
       "id": "kekeringan",
@@ -1170,6 +1303,25 @@
       "prioritas": [],
       "halaman": {
         "simulasi": "simulasi.html"
+      },
+      "kemampuan": {
+        "operasi": false,
+        "renlap": {
+          "sarana": [],
+          "bobot": ""
+        },
+        "dokumen": [],
+        "ews": {
+          "kunci": [],
+          "tangga": false
+        },
+        "dasbor": {
+          "ringkas": "",
+          "papan_sk": false
+        },
+        "ekonomi": false,
+        "pencegahan": false,
+        "prioritas": false
       }
     }
   ]

@@ -5,6 +5,7 @@ Worker tidak boleh mengimpor JSON langsung (uji Node tanpa bundler), jadi modul 
 
 Pakai:  python3 scripts/umum/bencana.py cek    validasi skema dan keberadaan berkas, keluar 1 bila ada galat
         python3 scripts/umum/bencana.py js     tulis src/bencana.generated.js
+        python3 scripts/umum/bencana.py uji    self-check
         python3 scripts/umum/bencana.py        self-check kecil (tanpa menyentuh berkas)
 """
 import json
@@ -26,7 +27,62 @@ WAJIB = {
     "warisan": bool, "tab": list, "tab_sembunyi": list, "sumber_status": list, "kejadian": dict, "tingkat": list,
     "foto_kategori": list, "lapor_bahaya": list, "cron_worker": list, "workflow": str, "pengerja": str,
     "bagikan": dict, "og": dict, "kata": dict, "peringatan_relevan": str, "lapisan": list, "berita": dict, "prioritas": list,
+    "kemampuan": dict,
 }
+
+# DESAIN-TEKNIS paritas-bencana 1 dan 2.3; salinan daftar di src/tugas_bencana.js (SARANA)
+SARANA = ("heli_evakuasi", "perahu_karet", "perahu_motor", "pompa_air", "truk_tangki", "tenda", "terpal", "atap_darurat",
+          "alat_berat", "genset", "dapur_umum", "masker", "air_bersih_unit", "tim_sar_unit")
+DOKUMEN = ("sitrep", "renops", "laporan_kib", "renkon_peta")
+# logbook_kejadian.jenis (migrasi 0091) -> id registri; rob tetap banjir (Q25, bawaan sementara)
+JENIS_LOGBOOK_KE_BENCANA = {
+    "banjir": "banjir", "cuaca": "cuaca", "karhutla": "karhutla", "longsor": "longsor", "gempabumi": "gempa",
+    "gunungapi": "gunungapi", "kekeringan": "kekeringan", "gelombang_pasang": "pesisir", "abrasi": "pesisir",
+}
+KEMAMPUAN_BOOL = ("operasi", "ekonomi", "pencegahan", "prioritas")
+
+
+def galat_kemampuan(id_, k):
+    """Galat bentuk `kemampuan` satu entri; ponytail: bobot/ews.kunci hanya diperiksa bentuknya, bukan keberadaan
+    kunci di bobot_renlap.json / src/ews.js (belum ada saat PB-04; tambah saat PB-13 dan PB-26)."""
+    if not isinstance(k, dict):
+        return [f"{id_}: kemampuan harus objek"]
+    g = []
+    objek = {"renlap": ("sarana", "bobot"), "ews": ("kunci", "tangga"), "dasbor": ("ringkas", "papan_sk")}
+    for n in KEMAMPUAN_BOOL:
+        if not isinstance(k.get(n), bool):
+            g.append(f"{id_}: kemampuan.{n} harus bool")
+    if not isinstance(k.get("dokumen"), list):
+        g.append(f"{id_}: kemampuan.dokumen harus list")
+    else:
+        g += [f"{id_}: kemampuan.dokumen '{x}' tidak dikenal" for x in k["dokumen"] if x not in DOKUMEN]
+    for n, (a, b) in objek.items():
+        o = k.get(n)
+        if not isinstance(o, dict):
+            g.append(f"{id_}: kemampuan.{n} harus objek")
+            continue
+        if set(o) != {a, b}:
+            g.append(f"{id_}: kemampuan.{n} harus berkunci tepat {a} dan {b}")
+            continue
+        if n == "renlap":
+            if not isinstance(o["sarana"], list):
+                g.append(f"{id_}: kemampuan.renlap.sarana harus list")
+            else:
+                g += [f"{id_}: kemampuan.renlap.sarana '{x}' tidak dikenal" for x in o["sarana"] if x not in SARANA]
+            if not isinstance(o["bobot"], str):
+                g.append(f"{id_}: kemampuan.renlap.bobot harus string")
+        elif n == "ews":
+            if not isinstance(o["kunci"], list) or any(not isinstance(x, str) or not SLUG.match(x) for x in o["kunci"]):
+                g.append(f"{id_}: kemampuan.ews.kunci harus list slug")
+            if not isinstance(o["tangga"], bool):
+                g.append(f"{id_}: kemampuan.ews.tangga harus bool")
+        else:
+            if not isinstance(o["ringkas"], str):
+                g.append(f"{id_}: kemampuan.dasbor.ringkas harus string")
+            if not isinstance(o["papan_sk"], bool):
+                g.append(f"{id_}: kemampuan.dasbor.papan_sk harus bool")
+    g += [f"{id_}: kemampuan.{n} tidak dikenal" for n in k if n not in KEMAMPUAN_BOOL + ("dokumen",) + tuple(objek)]
+    return g
 
 
 def baca(jalur=JSON_REGISTRY):
@@ -79,6 +135,7 @@ def periksa(reg, akar=AKAR):
                 g.append(f"{id_}: '{k}' harus {t.__name__}")
         if g and any(s.startswith(f"{id_}: medan") or s.startswith(f"{id_}: '") for s in g):
             continue
+        g += galat_kemampuan(id_, b["kemampuan"])
         if not SLUG.match(b["id"]):
             g.append(f"{id_}: id harus huruf kecil/angka/garis bawah")
         unik("id", b["id"], id_)
@@ -149,7 +206,8 @@ def periksa(reg, akar=AKAR):
 
 def bangkitkan(reg):
     """Isi src/bencana.generated.js, deterministik."""
-    return KEPALA + "export default " + json.dumps(reg, ensure_ascii=False, indent=2) + ";\n"
+    return (KEPALA + "export default " + json.dumps(reg, ensure_ascii=False, indent=2) + ";\n"
+            + "export const JENIS_LOGBOOK_KE_BENCANA = " + json.dumps(JENIS_LOGBOOK_KE_BENCANA, ensure_ascii=False, indent=2) + ";\n")
 
 
 def cek():
@@ -175,7 +233,9 @@ def _uji():
     reg = baca()
     assert periksa(reg) == [], periksa(reg)
     assert bangkitkan(reg) == bangkitkan(json.loads(json.dumps(reg))), "pembangkitan tidak deterministik"
-    assert bangkitkan(reg).startswith(KEPALA) and bangkitkan(reg).rstrip().endswith("};")
+    assert bangkitkan(reg).startswith(KEPALA) and "export const JENIS_LOGBOOK_KE_BENCANA" in bangkitkan(reg)
+    assert JENIS_LOGBOOK_KE_BENCANA["gelombang_pasang"] == JENIS_LOGBOOK_KE_BENCANA["abrasi"] == "pesisir"
+    assert all(v in {b["id"] for b in reg["bencana"]} for v in JENIS_LOGBOOK_KE_BENCANA.values() if v != "longsor")
 
     def rusak(f, kata):
         r = copy.deepcopy(reg)
@@ -194,6 +254,18 @@ def _uji():
     rusak(lambda b: _id(b, "udara").update(halaman={"tabngawur": "x.html"}), "bukan tab")
     rusak(lambda b: _id(b, "udara").pop("kata"), "'kata' hilang")
     rusak(lambda b: _id(b, "udara").update(nama_en="a — b"), "em dash")
+    # kemampuan sah dan tak sah
+    rusak(lambda b: b[0].pop("kemampuan"), "'kemampuan' hilang")
+    rusak(lambda b: b[0]["kemampuan"].update(operasi="ya"), "operasi harus bool")
+    rusak(lambda b: b[0]["kemampuan"]["renlap"].update(sarana=["roket"]), "'roket' tidak dikenal")
+    rusak(lambda b: b[0]["kemampuan"].update(dokumen=["surat"]), "'surat' tidak dikenal")
+    rusak(lambda b: b[0]["kemampuan"]["renlap"].update(bobot=3), "bobot harus string")
+    rusak(lambda b: b[0]["kemampuan"]["ews"].update(tangga=1), "tangga harus bool")
+    rusak(lambda b: b[0]["kemampuan"]["dasbor"].pop("papan_sk"), "dasbor harus berkunci")
+    rusak(lambda b: b[0]["kemampuan"].update(sihir=True), "kemampuan.sihir tidak dikenal")
+    r = copy.deepcopy(reg)
+    r["bencana"][0]["kemampuan"].update(operasi=True, dokumen=["sitrep"], renlap={"sarana": ["tenda"], "bobot": "banjir"})
+    assert periksa(r) == [], periksa(r)
     print("bencana.py: self-check lolos")
 
 
@@ -203,7 +275,7 @@ if __name__ == "__main__":
         sys.exit(cek())
     if perintah == "js":
         sys.exit(js())
-    if perintah is None:
+    if perintah in (None, "uji"):
         _uji()
     else:
         print(__doc__)
