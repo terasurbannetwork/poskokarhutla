@@ -7,13 +7,14 @@ Karhutla: kode_sumber `sel:<i>:<j>` (sel 0,02 derajat), bukan `K####` yang diber
 Rekaman: {sumber, kode, jenis (tuple kunci), kab [kab4 Kemendagri terurut], tgl ISO, nilai {kolom: angka|None}, akhir}.
 Pakai: python3 -I scripts/siklus/pasang.py riwayat [--bersih DIR] | masuk --basis URL --dari D --sampai S [--kering] | uji
 """
-import collections, datetime as dt, functools, glob, gzip, hashlib, importlib.util, json, math, os, sys, urllib.error, urllib.parse, urllib.request
+import collections, datetime as dt, functools, glob, gzip, hashlib, importlib.util, json, math, os, re, sys, urllib.error, urllib.parse, urllib.request
 
 AB = os.path.dirname(os.path.abspath(__file__))
 AKAR = os.path.normpath(os.path.join(AB, "../.."))
 BERSIH_BAWAAN = os.path.join(AKAR, "data/raw/siklus/siklus/bersih")
 ALFABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 PRIORITAS = ("dibi", "logbook", "lintas", "gempa", "karhutla", "rob")
+PRIORITAS_MASUK = PRIORITAS + ("tugas_api", "logbook_d1", "sippa", "lapangan", "gempa_d1", "lapsus")   # hanya bertahap; lapsus terakhir: kembar logbook_d1, harus menempel bukan mendirikan
 MATI = ("digabung", "dibatalkan")
 JENDELA = 3        # semua jenis 3 hari (F1.4; kekeringan/karhutla/gunungapi menunggu UA-1)
 YAKIN = {"dibi": "resmi", "logbook": "terverifikasi"}
@@ -268,7 +269,7 @@ def bertahap(rekaman, kj, sumber, diambil, jendela=JENDELA):
     indeks = [dict(x, lokal=False) for x in kj if x["fase"] not in MATI]
     terpakai = {x["id"] for x in kj}
     kep, tunda, h = [], [], collections.Counter()
-    for r in sorted(rekaman, key=lambda r: (PRIORITAS.index(r["sumber"]) if r["sumber"] in PRIORITAS else 9, r["tgl"], r["kode"])):
+    for r in sorted(rekaman, key=lambda r: (PRIORITAS_MASUK.index(r["sumber"]) if r["sumber"] in PRIORITAS_MASUK else 99, r["tgl"], r["kode"])):
         if (r["sumber"], r["kode"]) in ada:
             h["sudah_ada"] += 1
             continue
@@ -341,18 +342,33 @@ def _tarik(http, basis, jalur, dari, sampai, ekstra=None):
     return hasil
 
 
-SUMBER_MODUL = ("tugas_api", "logbook_d1")
+SUMBER_MODUL = ("tugas_api", "logbook_d1", "sippa", "lapangan", "gempa_d1", "lapsus")   # urutan = PRIORITAS: lapsus sesudah logbook_d1
 
 
-def tarik_modul(http, basis, dari, sampai):
-    """KP-04: tugas_api dan logbook_d1 dari Worker -> rekaman. kab4 dari nama + prov (kunci.kab4); tak terpetakan = tanpa wilayah.
-    Nama sumber BEDA dari `logbook` (CSV, kode = jenis|kab|tgl): kembar CSV/D1 tidak pernah satu kunci, jadi pemasang menambahkannya ke KJ- yang
-    sama (tambah, bukan KJ- kedua) selama jenis, kab4, dan jendela 3 hari cocok. Tanpa lewati/dedup khusus."""
+def tarik_modul(http, basis, dari, sampai, cari=None):
+    """KP-04/05: sumber modul dari Worker -> rekaman. kab4 dari nama + prov (kunci.kab4); tak terpetakan = tanpa wilayah.
+    lapangan dan gempa_d1 hanya punya lat/lon: kab4 lewat hidup._kab_titik (pencari titik-dalam-poligon yang sama dengan gempa usgs/bmkg;
+    `cari` malas dari scripts/data/wilayah.py; di luar kab/laut = tanpa wilayah). gempa_d1 dengan utama_id `u:`/`b:` dilewati: sudah masuk sebagai
+    usgs/bmkg lewat hidup.gempa_bmkg (aturan yang sama), jadi gempa itu tidak masuk dua kali.
+    Nama sumber BEDA dari `logbook` (CSV): kembar CSV/D1 tidak pernah satu kunci, jadi ditambahkan ke KJ- yang sama selama jenis, kab4, jendela cocok.
+    lapsus (kode operasi_id:kejadian_id) kembar baris logbook_d1: terurut sesudahnya (PRIORITAS), jadi menempel (tambah), tidak mendirikan KJ- sendiri."""
+    H = None
     hasil = []
     for s in SUMBER_MODUL:
         for b in _tarik(http, basis, "modul", dari, sampai, {"sumber": s}):
-            k = KN.kab4(b.get("kab"), b.get("prov")) if b.get("kab") else None
-            hasil.append({"sumber": s, "kode": str(b["kode"]), "jenis": (b["jenis"],), "kab": [k] if k else [], "tgl": b["mulai"][:10], "nilai": {}, "akhir": None})
+            if s == "gempa_d1" and re.match(r"^[ub]:.+", str(b.get("utama_id") or "")):
+                continue
+            if b.get("kab"):
+                k = KN.kab4(b["kab"], b.get("prov"))
+                kab = [k] if k else []
+            elif b.get("lat") is not None and b.get("lon") is not None:
+                if H is None:
+                    H = _muat("hidup")
+                    cari = cari or H._wilayah().cari
+                kab = H._kab_titik(cari, b["lat"], b["lon"])
+            else:
+                kab = []
+            hasil.append({"sumber": s, "kode": str(b["kode"]), "jenis": (b["jenis"],), "kab": kab, "tgl": b["mulai"][:10], "nilai": {}, "akhir": None})
     return hasil
 
 
@@ -462,6 +478,8 @@ def _uji():
             return {"baris": [{"sumber": "tugas_api", "kode": "t1", "jenis": "karhutla", "prov": "16", "kab": "Kab. Ogan Komering Ilir", "mulai": "2026-03-03"},
                               {"sumber": "tugas_api", "kode": "t2", "jenis": "karhutla", "prov": "16", "kab": "Kab. Ogan Komering Ilir", "mulai": "2026-03-05"},
                               {"sumber": "tugas_api", "kode": "t3", "jenis": "karhutla", "prov": "16", "kab": "Kab. Tak Ada", "mulai": "2026-03-03"}], "lanjut": None}
+        if q["sumber"][0] != "logbook_d1":
+            return {"baris": [], "lanjut": None}
         if "lanjut" not in q:                      # logbook_d1: dua halaman lewat `lanjut`
             return {"baris": [{"sumber": "logbook_d1", "kode": "l1", "jenis": "gempa", "prov": "32", "kab": "Bogor", "mulai": "2026-03-03"}], "lanjut": "1|l1"}
         assert q["lanjut"] == ["1|l1"]
@@ -474,6 +492,26 @@ def _uji():
     kep, _, _ = bertahap(m[1:2], [kjK], [], 1)
     assert [k["aksi"] for k in kep] == ["baru"], "T3: 4 hari -> baru"
     kep, _, _ = bertahap(m[2:3], [kjK], [], 1)
+    assert kep[0]["aksi"] == "tanpa_wilayah"
+    # KP-05: sippa/lapangan/gempa_d1/lapsus
+    cr = lambda lon, lat: ("32", "Bogor", "X") if lat < -6 and lon > 100 else None
+    SP = {"sippa": [{"kode": "s1", "jenis": "karhutla", "prov": "16", "kab": "Kab. Ogan Komering Ilir", "mulai": "2026-03-03"}],
+          "lapangan": [{"kode": "p1", "jenis": "banjir", "lat": -6.5, "lon": 106.8, "mulai": "2026-03-04"}, {"kode": "p2", "jenis": "banjir", "lat": 0.0, "lon": 90.0, "mulai": "2026-03-04"}],
+          "gempa_d1": [{"kode": "G1", "jenis": "gempa", "lat": -6.5, "lon": 106.8, "utama_id": "u:abc", "mulai": "2026-03-04"}, {"kode": "G2", "jenis": "gempa", "lat": -6.5, "lon": 106.8, "utama_id": "b:xyz", "mulai": "2026-03-04"},
+                       {"kode": "G3", "jenis": "gempa", "lat": -6.5, "lon": 106.8, "utama_id": "lain-3", "mulai": "2026-03-04"}],
+          "logbook_d1": [{"kode": "kjx", "jenis": "banjir", "prov": "32", "kab": "Bogor", "mulai": "2026-03-04"}],
+          "lapsus": [{"kode": "opx:kjx", "jenis": "banjir", "prov": "32", "kab": "Bogor", "mulai": "2026-03-04"}]}
+    m2 = tarik_modul(lambda me, u, i=None: {"baris": SP.get(urllib.parse.parse_qs(urllib.parse.urlsplit(u).query)["sumber"][0], []), "lanjut": None}, "http://x", "2026-03-01", "2026-03-10", cari=cr)
+    by = {r["kode"]: r for r in m2}
+    assert set(by) == {"s1", "p1", "p2", "G3", "kjx", "opx:kjx"}, "gempa_d1 u:/b: dilewati (sudah usgs/bmkg)"
+    assert by["s1"]["kab"] == ["1602"] and by["p1"]["kab"] == ["3201"] and by["G3"]["kab"] == ["3201"] and by["opx:kjx"]["kab"] == ["3201"]
+    assert by["p2"]["kab"] == [] and by["p2"]["sumber"] == "lapangan"
+    kep, tn, _ = bertahap([by["opx:kjx"], by["kjx"]], [], [], 1)      # urutan masuk dibalik: logbook_d1 tetap pendiri
+    assert [(k["sumber"], k["aksi"]) for k in kep] == [("logbook_d1", "baru")] and [r["kode"] for r in tn] == ["opx:kjx"]
+    kep, _, _ = bertahap(tn, [{"id": id_kj("banjir|3201|2026-03-04"), "jenis": "banjir", "kab4": "3201", "mulai": "2026-03-04", "fase": "terdeteksi"}],
+                         [{"sumber": "logbook_d1", "kode": "kjx", "kejadian_id": id_kj("banjir|3201|2026-03-04")}], 1)
+    assert [(k["sumber"], k["aksi"]) for k in kep] == [("lapsus", "tambah")], "lapsus menempel ke KJ- kembarnya"
+    kep, _, _ = bertahap([by["p2"]], [], [], 1)
     assert kep[0]["aksi"] == "tanpa_wilayah"
     # T16 logbook: gempa sudah dipetakan Worker, diterima; kembar CSV `logbook` (kode jenis|kab|tgl) dan D1 `logbook_d1` (kode id) = satu KJ-, bukan dua
     kjB = {"id": "KJ-2026-9A2WGN3G", "jenis": "banjir", "kab4": "3201", "mulai": "2026-03-02", "fase": "terdeteksi"}
