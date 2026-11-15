@@ -33,9 +33,17 @@ Lapor Warga tidak menyimpan sidik perangkat. Pelapor dihitung per `laporan.ip_ha
 
 Isyarat Lapor Warga, logbook, dan meja tidak bertaut ke `KJ-`. Bila dua kejadian aktif menyentuh kab yang sama, isyarat kab itu dipakai untuk usulan keduanya, dengan label "isyarat kab, tidak khusus kejadian". Status resmi tetap per kejadian, ditetapkan staf (D9).
 
-## 4. Basi
+## 4. Dua konsep "basi" yang berbeda
 
-`basi = sekarang - diperbarui > 24 jam`.
+1. **Status resmi basi**: `sekarang - diperbarui > 24 jam` (Q7). Hanya tanda di layar; warna tidak berubah.
+2. **Titik pengungsian basi**: catatan meja pengungsi terbaru sebuah titik terbuka bertanggal data lebih dari 3 hari lalu. Dipakai untuk usulan pengungsian (merah bila separuh atau lebih titik terbuka basi, kuning bila ada) dan sebagai syarat kesegaran hijau air dan pangan: titik basi tidak pernah menghasilkan hijau (usulan abu, dengan alasan). Titik yang tercatat "tidak" tetap kuning atau merah walau basi (condong hati-hati).
+
+Penyimpangan terdokumentasi dari tabel bagian 2 (semua berlabel hipotesis; alasan usulan memuat "ambang hipotesis"):
+- Pelapor dihitung per `ip_hash` per layanan dengan laporan terakhirnya; elpiji digabung ke bbm sehingga satu `ip_hash` yang melapor bbm dan elpiji = satu pelapor. `ip_hash` kolomnya NOT NULL, jadi tidak ada pelapor tanpa hash.
+- BBM merah = `habis` >= 5 pelapor (angka mutlak), berbeda dari listrik dan sinyal (lebih dari separuh).
+- Jalan kuning dari warga: tergenang, putus, atau tertimbun gabungan >= 3 pelapor (tabel tidak memberi angka).
+- Kuning dari logbook atau meja dampak menang atas hijau; hijau dari warga menang atas kuning dari warga saja.
+- Pengungsi: titik dikenali lewat `titik_id` bila ada, kalau tidak lewat nama tempat huruf kecil; jendela sejak mulai kejadian, bukan 24 jam. Register `titik_pengungsian` belum dipakai.
 
 ## 5. Uji jujur
 

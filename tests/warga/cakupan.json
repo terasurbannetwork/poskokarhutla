@@ -1293,7 +1293,12 @@
     "POST /api/masuk/lengkapi": "halaman U-20:",
     "POST /api/masuk/pemirsa_wa": "peran U-35:",
     "table mk_masuk_log": "peran U-13:",
-    "table mk_pemirsa_wa": "peran U-35:"
+    "table mk_pemirsa_wa": "peran U-35:",
+    "table lf_status": "T3 tetapkan menulis status",
+    "table lf_riwayat": "T3 tetapkan menulis status",
+    "trigger lf_riwayat_tetap_ubah": "T3 tetapkan menulis status",
+    "trigger lf_riwayat_tetap_hapus": "T3 tetapkan menulis status",
+    "table lf_usulan": "T6 usulan tidak mengubah status"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

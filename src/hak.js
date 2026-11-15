@@ -846,3 +846,158 @@ export const pbRingkasTindakan = async (env, kini, wil) => {
   catch (e) { if (!tanpaPx(e)) throw e; }
   return hasil;
 };
+
+/* ---------- Status Lifeline (LF-02, LF-03, LF-04; data/kajian-bnpb/lifeline/DESAIN-TEKNIS.md, ALGORITMA.md) ----------
+   Hak (siapa boleh menetapkan, Q2) dicek di rute LF-05; di sini hanya pelaku lf_baca / lf_tulis. lf_isyarat = pembacaan isyarat dari tabel modul lain.
+   Bukti dari Lapor Warga hanya jumlah dan waktu; ip_hash dipakai di dalam SQL (pelapor berbeda) dan tidak pernah dikembalikan (KEAMANAN-PRIVASI). */
+import {BUKTI_SAH as LF_BUKTI_SAH, LABEL_KAB as LF_LABEL_KAB, LAYANAN as LF_LAYANAN, WARNA as LF_WARNA, WARGA as LF_WARGA, TITIK_BASI_HARI as LF_BASI_HARI, usulan as lfUsulan} from "./lifeline_usulan.js";
+import {kab4Dari as lfKab4Dari} from "./siklus_kab.js";
+export {LF_LAYANAN, LF_WARNA};
+Object.assign(MATRIKS, {
+  lf_status:  {lf_baca: ["baca"], lf_tulis: ["baca", "tambah", "ubah"]},
+  lf_riwayat: {lf_baca: ["baca"], lf_tulis: ["baca", "tambah"]},
+  lf_usulan:  {lf_baca: ["baca"], lf_tulis: ["baca", "tambah", "ubah"]},
+  lf_isyarat: {lf_baca: ["baca"], lf_tulis: ["baca"]},
+});
+export const pelakuLfBaca = {peran: "lf_baca"}, pelakuLfTulis = {peran: "lf_tulis"};
+const LF_JENDELA_MS = 24 * 36e5, LF_HARI_MS = 864e5, LF_MAKS_BUKTI = 10;
+const lfMulaiMs = tgl => Date.parse(tgl + "T00:00:00+07:00");   // kejadian dicatat per tanggal WIB
+const LF_JENIS_SQL = Object.values(LF_WARGA).flatMap(w => w.jenis).map(j => `'${j}'`).join(", ");   // konstanta kode, bukan masukan
+const LF_JENIS_LAYANAN = Object.fromEntries(Object.entries(LF_WARGA).flatMap(([l, w]) => w.jenis.map(j => [j, l])));
+
+export const LF_SQL = {
+  kab: "SELECT kab4, mulai FROM sk_kejadian_kab WHERE kejadian_id = ?1 ORDER BY kab4 LIMIT 600",
+  status: "SELECT kab4, layanan, warna, catatan, diubah FROM lf_status WHERE kejadian_id = ?1 LIMIT 5000",
+  statusSel: "SELECT kab4, layanan, warna, catatan, oleh, diubah FROM lf_status WHERE kejadian_id = ?1 AND kab4 = ?2 AND layanan = ?3",
+  usulan: "SELECT kab4, layanan, warna, alasan, isyarat, dihitung FROM lf_usulan WHERE kejadian_id = ?1 LIMIT 5000",
+  usulanSel: "SELECT warna, alasan, isyarat, dihitung FROM lf_usulan WHERE kejadian_id = ?1 AND kab4 = ?2 AND layanan = ?3",
+  riwayat: "SELECT id, warna, catatan, bukti, oleh, dibuat FROM lf_riwayat WHERE kejadian_id = ?1 AND kab4 = ?2 AND layanan = ?3 ORDER BY dibuat DESC, id DESC LIMIT 100",
+  /* INDEXED BY: tanpa itu planner memilih laporan_aktif (disembunyikan=?) dan memindai semua laporan (dibuktikan uji T10). Migrasi 0142 WAJIB terapan sebelum rute apa pun memanggil ini (LF-05 tidak terbit sebelum LF-11).
+     Satu baris per pelapor (ip_hash; kolomnya NOT NULL, jadi tak ada pelapor NULL yang menyatu) per layanan (elpiji digabung ke bbm) per kab: sub dan waktu laporan TERAKHIRnya; ip_hash tinggal di subkueri. */
+  warga: `SELECT prov, kab, jenis, sub, t FROM (SELECT w.prov prov, w.kab kab, CASE l.jenis WHEN 'elpiji' THEN 'bbm' ELSE l.jenis END jenis, l.sub sub, max(l.dibuat) t FROM laporan l INDEXED BY laporan_jenis_dibuat JOIN laporan_wilayah w ON w.laporan_id = l.id
+    WHERE l.jenis IN (${LF_JENIS_SQL}) AND l.dibuat >= ?1 AND l.disembunyikan = 0 GROUP BY w.prov, w.kab, 3, l.ip_hash) LIMIT 20000`,
+  /* kode kendala dan kebutuhan logbook per kab dalam satu provinsi; dilayani logbook_kejadian_kab / logbook_entri_waktu */
+  logbook: `SELECT k.kab kab, 'kendala' s, j.value kode, count(*) n, max(e.waktu) t FROM logbook_entri e JOIN logbook_kejadian k ON k.id = e.kejadian_id, json_each(e.kendala) j
+    WHERE k.prov = ?1 AND e.waktu >= ?2 AND k.dummy = 0 AND j.value IN ('listrik', 'sinyal', 'akses') GROUP BY k.kab, j.value
+    UNION ALL SELECT k.kab, 'kebutuhan', j.value, count(*), max(e.waktu) FROM logbook_entri e JOIN logbook_kejadian k ON k.id = e.kejadian_id, json_each(e.kebutuhan) j
+    WHERE k.prov = ?1 AND e.waktu >= ?2 AND k.dummy = 0 AND j.value = 'air_bersih' GROUP BY k.kab, j.value LIMIT 2000`,
+  /* kerusakan meja dampak per kab; dilayani meja_catatan_prov_diubah (0142: meja, prov, diubah; kueri tidak menyaring kab) */
+  dampak: `SELECT kab, sum(coalesce(json_extract(data, '$.listrik_unit'), 0)) listrik, sum(coalesce(json_extract(data, '$.telekom_unit'), 0)) telekom, sum(coalesce(json_extract(data, '$.air_unit'), 0)) air,
+    sum(coalesce(json_extract(data, '$.spbu_unit'), 0)) spbu, sum(coalesce(json_extract(data, '$.jalan_km'), 0) + coalesce(json_extract(data, '$.jembatan_rb'), 0) + coalesce(json_extract(data, '$.jembatan_rs'), 0) + coalesce(json_extract(data, '$.jembatan_rr'), 0)) jalan,
+    sum(coalesce(json_extract(data, '$.faskes_rb'), 0) + coalesce(json_extract(data, '$.faskes_rs'), 0) + coalesce(json_extract(data, '$.faskes_rr'), 0) + coalesce(json_extract(data, '$.faskes_terendam'), 0)) faskes, max(diubah) t
+    FROM meja_catatan WHERE meja = 'dampak' AND prov = ?1 AND diubah >= ?2 AND dummy = 0 GROUP BY kab LIMIT 600`,
+  /* catatan meja pengungsi sejak kejadian (keadaan titik = catatan terbarunya, dipilah di JS); dilayani meja_catatan_prov_diubah (0142) */
+  pengungsi: `SELECT kab, coalesce('t:' || json_extract(data, '$.titik_id'), 'n:' || lower(json_extract(data, '$.nama_tempat'))) tempat, json_extract(data, '$.tgl_data') tgl, json_extract(data, '$.tgl_tutup') tutup,
+    json_extract(data, '$.keb_air') air, json_extract(data, '$.keb_pangan') pangan, diubah FROM meja_catatan WHERE meja = 'pengungsi' AND prov = ?1 AND diubah >= ?2 AND dummy = 0 LIMIT 5000`,
+};
+const lfPilih = (env, p, tabel, sql) => sedia(env, p, tabel, "baca", sql);
+
+/* ---------- LF-02: baca kisi, sel, riwayat; tulis status + riwayat ---------- */
+/* kisi: tiap kab di sk_kejadian_kab x delapan layanan; tanpa baris lf_status = abu (T1). Tanpa `oleh`. */
+export const lfKisi = async (env, p, kejadianId) => {
+  const [kab, st, us] = await env.DB.batch([lfPilih(env, p, "lf_isyarat", LF_SQL.kab).bind(kejadianId), lfPilih(env, p, "lf_status", LF_SQL.status).bind(kejadianId), lfPilih(env, p, "lf_usulan", LF_SQL.usulan).bind(kejadianId)]);
+  const s = new Map(st.results.map(r => [r.kab4 + "|" + r.layanan, r])), u = new Map(us.results.map(r => [r.kab4 + "|" + r.layanan, r]));
+  return kab.results.map(({kab4}) => ({kab4, layanan: Object.fromEntries(LF_LAYANAN.map(l => {
+    const a = s.get(kab4 + "|" + l), b = u.get(kab4 + "|" + l);
+    return [l, {warna: a?.warna ?? "abu", catatan: a?.catatan ?? null, diubah: a?.diubah ?? null, usulan: b ? {warna: b.warna, alasan: b.alasan, isyarat: JSON.parse(b.isyarat), dihitung: b.dihitung} : null}];
+  }))}));
+};
+/* satu sel + riwayat (terbaru dulu). null bila kab bukan bagian kejadian. `oleh` ikut (status dan tiap riwayat): rute LF-05 WAJIB membuangnya untuk pimpinan (KEAMANAN-PRIVASI: pimpinan hanya melihat peran). */
+export const lfSel = async (env, p, kejadianId, kab4, layanan) => {
+  const [ada, st, us, rw] = await env.DB.batch([lfPilih(env, p, "lf_isyarat", "SELECT 1 x FROM sk_kejadian_kab WHERE kejadian_id = ?1 AND kab4 = ?2").bind(kejadianId, kab4), lfPilih(env, p, "lf_status", LF_SQL.statusSel).bind(kejadianId, kab4, layanan),
+    lfPilih(env, p, "lf_usulan", LF_SQL.usulanSel).bind(kejadianId, kab4, layanan), lfPilih(env, p, "lf_riwayat", LF_SQL.riwayat).bind(kejadianId, kab4, layanan)]);
+  if (!ada.results.length) return null;
+  const a = st.results[0], b = us.results[0];
+  return {kab4, layanan, status: a ? {...a} : {warna: "abu", catatan: null, oleh: null, diubah: null}, usulan: b ? {...b, isyarat: JSON.parse(b.isyarat)} : null,
+    riwayat: rw.results.map(r => ({...r, bukti: JSON.parse(r.bukti)}))};
+};
+/* bukti: daftar {sumber, kode, jumlah, waktu}; hanya pasangan sumber+kode dari BUKTI_SAH, kunci lain dibuang, label selalu dari konstanta server (bukan klien); paling banyak 2000 karakter JSON */
+export const lfBersihBukti = b => {
+  if (b == null) return [];
+  if (!Array.isArray(b) || b.length > LF_MAKS_BUKTI) throw new Galat(400, `bukti harus larik paling banyak ${LF_MAKS_BUKTI}`);
+  const hasil = b.map(x => {
+    if (!x || typeof x !== "object" || !LF_BUKTI_SAH[x.sumber]?.includes(x.kode)) throw new Galat(400, "bukti tidak sah");
+    const angka = v => typeof v === "number" && Number.isFinite(v) ? v : null;
+    return {sumber: x.sumber, kode: x.kode, jumlah: angka(x.jumlah), waktu: angka(x.waktu), label: LF_LABEL_KAB};
+  });
+  if (JSON.stringify(hasil).length > 2000) throw new Galat(400, "bukti terlalu panjang");
+  return hasil;
+};
+/* Tetapkan status: riwayat + status dalam SATU batch (atomik). Selain abu wajib bukti atau catatan (D4); kab di luar kejadian = tidak menulis apa pun, hasil false. */
+export const lfTetapkan = async (env, p, {kejadianId, kab4, layanan, warna, catatan = null, bukti = [], oleh}, kini) => {
+  if (!LF_LAYANAN.includes(layanan)) throw new Galat(400, "layanan tidak dikenal");
+  if (!LF_WARNA.includes(warna)) throw new Galat(400, "warna tidak dikenal");
+  const b = lfBersihBukti(bukti), c = catatan == null || catatan === "" ? null : String(catatan).trim();
+  if (c !== null && (c.length < 20 || c.length > 300)) throw new Galat(400, "catatan 20 sampai 300 karakter");
+  if (warna !== "abu" && !b.length && c === null) throw new Galat(400, "status selain abu wajib bukti atau catatan");
+  const kab = "FROM sk_kejadian_kab WHERE kejadian_id = ?1 AND kab4 = ?2";
+  const rw = sedia(env, p, "lf_riwayat", "tambah", `INSERT INTO lf_riwayat (kejadian_id, kab4, layanan, warna, catatan, bukti, oleh, dibuat) SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8 ${kab}`).bind(kejadianId, kab4, layanan, warna, c, JSON.stringify(b), oleh, kini);
+  const st = sedia(env, p, "lf_status", "ubah", `INSERT INTO lf_status (kejadian_id, kab4, layanan, warna, catatan, oleh, diubah) SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7 ${kab}
+    ON CONFLICT (kejadian_id, kab4, layanan) DO UPDATE SET warna = excluded.warna, catatan = excluded.catatan, oleh = excluded.oleh, diubah = excluded.diubah`).bind(kejadianId, kab4, layanan, warna, c, oleh, kini);
+  const [r] = await env.DB.batch([rw, st]);
+  return r.meta.changes === 1;
+};
+
+/* ---------- LF-03: pembaca isyarat ---------- */
+const lfKosong = layanan => ({layanan, warga: {total: 0, n: {}, pulih: 0, t: 0}, logbook: {n: 0, t: 0}, meja: {n: 0, t: 0}, titik: {terbuka: 0, tidak: 0, basi: 0, t: 0}});
+/* kabs = [{kab4, mulai: 'YYYY-MM-DD'}]. Hasil: {isyarat: {kab4: {layanan: isyarat}}, tak_terpetakan: {lapor_warga, logbook, meja}}. Jendela 24 jam, hanya sesudah mulai kab di kejadian (D9: isyarat kab). */
+export const lfBacaIsyarat = async (env, p, kabs, kini) => {
+  const peta = new Map(kabs.map(k => [k.kab4, lfMulaiMs(k.mulai)])), isy = {}, tak = {lapor_warga: 0, logbook: 0, meja: 0};
+  for (const {kab4} of kabs) isy[kab4] = Object.fromEntries(LF_LAYANAN.map(l => [l, lfKosong(l)]));
+  const awal = kini - LF_JENDELA_MS, batas = k => Math.max(awal, peta.get(k));
+  const grup = new Map();   // provinsi|mulai -> kab4; satu kueri per kelompok supaya batas waktu pas
+  for (const [k, m] of peta) { const g = k.slice(0, 2) + "|" + m; grup.set(g, [...(grup.get(g) ?? []), k]); }
+  const stm = [lfPilih(env, p, "lf_isyarat", LF_SQL.warga).bind(awal)];
+  for (const g of grup.keys()) { const [prov, m] = g.split("|"), dari = Math.max(awal, +m);
+    stm.push(lfPilih(env, p, "lf_isyarat", LF_SQL.logbook).bind(prov, dari), lfPilih(env, p, "lf_isyarat", LF_SQL.dampak).bind(prov, dari), lfPilih(env, p, "lf_isyarat", LF_SQL.pengungsi).bind(prov, +m)); }
+  const [warga, ...lain] = await env.DB.batch(stm), grupKunci = [...grup.keys()];
+  /* Lapor Warga: per kab, per layanan, daftar {sub, t} per pelapor */
+  const per = {};
+  for (const r of warga.results) {
+    const k = r.prov && r.kab ? lfKab4Dari(r.prov, r.kab) : null;
+    if (!k) { tak.lapor_warga++; continue; }
+    if (!peta.has(k) || r.t < batas(k)) continue;
+    ((per[k] ??= {})[LF_JENIS_LAYANAN[r.jenis]] ??= []).push({sub: r.sub, t: r.t});
+  }
+  for (const [k, ls] of Object.entries(per)) for (const [l, rows] of Object.entries(ls)) {
+    const w = isy[k][l].warga, cfg = LF_WARGA[l], gt = Math.max(0, ...rows.filter(x => cfg.gangguan.includes(x.sub)).map(x => x.t));
+    w.total = rows.length; w.t = Math.max(...rows.map(x => x.t));
+    for (const x of rows) w.n[x.sub] = (w.n[x.sub] ?? 0) + 1;
+    if (cfg.baik) w.pulih = rows.filter(x => x.sub === cfg.baik && x.t > gt).length;
+  }
+  const taruh = (k, l, bagian, n, t) => { if (n > 0) { const o = isy[k][l][bagian]; o.n += n; o.t = Math.max(o.t, t ?? 0); } };
+  grupKunci.forEach((g, i) => {
+    const prov = g.slice(0, 2), [lb, dm, pg] = lain.slice(i * 3, i * 3 + 3), anggota = new Set(grup.get(g));
+    const petakan = (kab, jenis) => { const k = lfKab4Dari(prov, kab); if (!k) { if (jenis) tak[jenis]++; return null; } return anggota.has(k) ? k : null; };
+    const LB = {listrik: "listrik", sinyal: "sinyal", akses: "jalan", air_bersih: "air"};
+    for (const r of lb.results) { const k = petakan(r.kab, "logbook"); if (k) taruh(k, LB[r.kode], "logbook", r.n, r.t); }
+    for (const r of dm.results) { const k = petakan(r.kab, "meja"); if (k) for (const [l, v] of [["listrik", r.listrik], ["sinyal", r.telekom], ["air", r.air], ["bbm", r.spbu], ["jalan", r.jalan], ["faskes", r.faskes]]) taruh(k, l, "meja", v, r.t); }
+    /* pengungsi: keadaan tiap tempat = catatan dengan tgl_data terbaru (lalu diubah terbaru) */
+    const terbaru = new Map();
+    for (const r of pg.results) { const k = petakan(r.kab, null); if (!k || !r.tempat) continue; const kk = k + "|" + r.tempat, a = terbaru.get(kk); if (!a || (r.tgl ?? "") > (a.tgl ?? "") || ((r.tgl ?? "") === (a.tgl ?? "") && r.diubah > a.diubah)) terbaru.set(kk, {...r, k}); }
+    for (const r of terbaru.values()) {
+      if (r.tutup) continue;
+      const basi = !r.tgl || kini - lfMulaiMs(r.tgl) > LF_BASI_HARI * LF_HARI_MS;
+      for (const l of ["air", "pangan", "pengungsian"]) {
+        const t = isy[r.k][l].titik; t.terbuka++; t.t = Math.max(t.t, r.diubah);
+        if ((l === "air" && r.air === "tidak") || (l === "pangan" && r.pangan === "tidak")) t.tidak++;
+        if (basi) t.basi++;
+      }
+    }
+  });
+  return {isyarat: isy, tak_terpetakan: tak};
+};
+
+/* ---------- LF-04: cache usulan ---------- */
+export const lfStmtUsulan = (env, p, kejadianId, kab4, layanan, u, kini) => sedia(env, p, "lf_usulan", "ubah",
+  `INSERT INTO lf_usulan (kejadian_id, kab4, layanan, warna, alasan, isyarat, dihitung) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+   ON CONFLICT (kejadian_id, kab4, layanan) DO UPDATE SET warna = excluded.warna, alasan = excluded.alasan, isyarat = excluded.isyarat, dihitung = excluded.dihitung`).bind(kejadianId, kab4, layanan, u.warna, u.alasan, JSON.stringify(u.isyarat), kini);
+/* hitung usulan seluruh kisi satu kejadian dan simpan ke lf_usulan; TIDAK menyentuh lf_status (T6). Kembali {sel, tak_terpetakan}. */
+export const lfHitungUsulan = async (env, p, kejadianId, kini) => {
+  const kabs = (await lfPilih(env, p, "lf_isyarat", LF_SQL.kab).bind(kejadianId).all()).results;
+  if (!kabs.length) return {sel: 0, tak_terpetakan: {lapor_warga: 0, logbook: 0, meja: 0}};
+  const {isyarat, tak_terpetakan} = await lfBacaIsyarat(env, p, kabs, kini);
+  const stm = kabs.flatMap(({kab4}) => LF_LAYANAN.map(l => lfStmtUsulan(env, p, kejadianId, kab4, l, lfUsulan(isyarat[kab4][l]), kini)));
+  for (let i = 0; i < stm.length; i += 50) await env.DB.batch(stm.slice(i, i + 50));
+  return {sel: stm.length, tak_terpetakan};
+};
