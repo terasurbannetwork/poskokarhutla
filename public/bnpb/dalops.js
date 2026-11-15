@@ -23,10 +23,12 @@
     kekeringan: {k: "kekeringan", kata: "kekeringan", ik: "kekeringan", ya: "Selesai", tidak: "Masih berlangsung", ya_k: "selesai", tidak_k: "masih berlangsung", tinggi: false, pra: false},
     /* pemilik 11 Nov 2026: tiap jenis tab sendiri */
     gelombang: {k: "gelombang", kata: "gelombang pasang", ik: "gelombang_pasang", ya: "Sudah surut", tidak: "Belum surut", ya_k: "sudah surut", tidak_k: "belum surut", tinggi: false, pra: false},
-    permukiman: {k: "permukiman", kata: "kebakaran permukiman", ik: "kebakaran_permukiman", ya: "Padam", tidak: "Masih ditangani", ya_k: "sudah padam", tidak_k: "masih ditangani", tinggi: false, pra: false}};
+    permukiman: {k: "permukiman", kata: "kebakaran permukiman", ik: "kebakaran_permukiman", ya: "Padam", tidak: "Masih ditangani", ya_k: "sudah padam", tidak_k: "masih ditangani", tinggi: false, pra: false},
+    /* PB-38b: kualitas udara dan asap; datanya belum tentu ada (404 tampil "belum tersedia") */
+    udara: {k: "udara", kata: "kualitas udara dan asap", ik: "udara", ya: "Selesai", tidak: "Masih berlangsung", ya_k: "selesai", tidak_k: "masih berlangsung", tinggi: false, pra: false}};
   /* saring peta per jenis (pemilik 11 Nov 2026 "filternya diatur lagi"): status selalu ada; dampak yang relevan per jenis; prakiraan hanya jenis berprakiraan */
   const SARING = {banjir: ["ungsi", "kabar"], longsor: ["korban", "kabar"], gempa: ["korban", "ungsi", "kabar"], cuaca: ["korban", "ungsi", "kabar"],
-    kekeringan: ["kabar"], gelombang: ["ungsi", "kabar"], permukiman: ["korban", "ungsi", "kabar"]};
+    kekeringan: ["kabar"], gelombang: ["ungsi", "kabar"], permukiman: ["korban", "ungsi", "kabar"], udara: ["kabar"]};
   const NAMA_SARING = {korban: ["Ada korban jiwa", "peringatan"], ungsi: ["Ada pengungsi", "personel"], kabar: ["Kabar > 3 hari", "tunggu"], kurang: ["Data belum lengkap", "kurang"]};
   let J = JN.banjir;
   /* kamera bersama semua peta jenis (pemilik 11 Nov 2026 "mapnya tetap aja, gausah ngulang"): peta yang tampil mencatat pusat dan zoom,
@@ -1054,7 +1056,7 @@
      Satu panel per jenis, dirender sekali saat pertama dibuka; ganti tab hanya mengganti hidden. J (label per jenis) ikut tab yang tampil,
      supaya pop-up peta dan tombol WA di panel itu memakai kata jenisnya. ---------- */
   const TAB = [["karhutla", "Karhutla", "karhutla"], ["banjir", "Banjir", "banjir"], ["longsor", "Longsor", "longsor"], ["gunungapi", "Gunung Api", "gunungapi"], ["gempa", "Gempa & Tsunami", "gempabumi"],
-    ["cuaca", "Cuaca Ekstrem", "cuaca"], ["kekeringan", "Kekeringan", "kekeringan"], ["gelombang", "Gelombang Pasang", "gelombang_pasang"], ["permukiman", "Kebakaran Permukiman", "kebakaran_permukiman"], ["laporan_masuk", "Laporan Masuk", "daftar"], ["laporan", "Laporan", "simpan"]];
+    ["cuaca", "Cuaca Ekstrem", "cuaca"], ["kekeringan", "Kekeringan", "kekeringan"], ["gelombang", "Gelombang & Abrasi", "gelombang_pasang"], ["permukiman", "Kebakaran Permukiman", "kebakaran_permukiman"], ["udara", "Kualitas Udara", "udara"], ["laporan_masuk", "Laporan Masuk", "daftar"], ["laporan", "Laporan", "simpan"]];
   const panel = Object.fromEntries(TAB.map(([k]) => [k, h("div", {class: "dl-panel", id: "tab-" + k, role: "tabpanel", hidden: true})]));
   const sudahBuka = new Set();
   let aktif = "banjir";   // tab yang tampil: J dikembalikan ke jenis ini sesudah tab lain selesai dimuat di latar
@@ -1191,7 +1193,7 @@
     }
     let r = jenis === "banjir" ? jawabAwal : null; if (jenis === "banjir") jawabAwal = null;
     try { r = r || await fetch("/api/dalops/" + jenis, {credentials: "same-origin"}); } catch (e) { return tulis("Tidak ada sinyal. Muat ulang halaman ini."); }
-    if (r.status === 404) return tulis(JN[jenis].pra === false ? `Data ${jenis} belum tersedia: rute /api/dalops/${jenis} belum aktif atau datanya belum diunggah.` : `Data ${jenis} belum diunggah. Jalankan python3 scripts/data/dalops_banjir.py --unggah di mesin Pusdalops.`);
+    if (r.status === 404) return tulis(JN[jenis].pra === false ? `Data ${JN[jenis].kata} belum tersedia.` : `Data ${jenis} belum diunggah. Jalankan python3 scripts/data/dalops_banjir.py --unggah di mesin Pusdalops.`);
     if (!r.ok) return tulis("Data gagal dimuat (" + r.status + "). Muat ulang halaman ini.");
     const d = await r.json();
     if (jenis !== "karhutla") dataJenis[jenis] ||= Promise.resolve(d);   // tabel lintas memakai jawaban yang sama
