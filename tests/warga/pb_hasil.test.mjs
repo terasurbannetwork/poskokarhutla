@@ -73,7 +73,7 @@ uji("hasil: 100 butir sukses; kepatuhan hanya versi terbit terbaru per tanggal",
 
 uji("kepatuhan: hak baca, bencana, rentang", async () => {
   assert.equal((await kep("", {})).s, 403);
-  assert.equal((await api("GET", "/api/pb/kepatuhan?bencana=banjir&prov=32", undefined, MOD2)).s, 404);
+  assert.equal((await api("GET", "/api/pb/kepatuhan?bencana=longsor&prov=32", undefined, MOD2)).s, 404);
   assert.equal((await kep("&dari=2026-01-01&sampai=2026-12-31")).s, 400);
   assert.equal((await kep("&dari=bukan")).s, 400);
   assert.equal((await kep(`&dari=${hari(32)}&sampai=${hari()}`)).s, 400);   // 32 hari

@@ -28,9 +28,9 @@ const T = (o = {}) => ({bencana: "pesisir", golongan: "sarana", jenis: "tenda", 
 let id;
 
 uji("bencana tanpa kemampuan operasi atau tidak dikenal = 404, bukan 400", async () => {
-  assert.equal((await pos("", T({bencana: "banjir"}))).s, 404);
+  assert.equal((await pos("", T({bencana: "longsor"}))).s, 404);
   assert.equal((await pos("", T({bencana: "xyz"}))).s, 404);
-  assert.equal((await dapat("bencana=banjir&prov=32")).s, 404);
+  assert.equal((await dapat("bencana=longsor&prov=32")).s, 404);
 });
 
 uji("hak tulis: tamu, akun gerbang, koordalops, udara, staf wilayah lain ditolak", async () => {
