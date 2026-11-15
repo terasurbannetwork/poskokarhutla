@@ -18,7 +18,7 @@ export const hitungDebit = d => d.metode === "pelampung" ? r3(d.lebar_m * d.dala
 
 export function cekLapangan(jenis, b, kini) {
   const r = periksaFase2(jenis, b, {longgar: true});   // validasi = spek bersama (KP-18 b); di bawah hanya pembulatan dan bentuk simpan
-  if (!r.ok) return g(r.galat.map(x => x.pesan).join("; "));
+  if (!r.ok) return g(r.galat.map(x => `${x.medan}: ${x.pesan}`).join("; "));
   const w = waktuOK(b.waktu, kini), p = petak(b.petak_id);
   if (jenis === "jejak") {
     const titik = b.titik.map(t => [r6(t[0]), r6(t[1]), Math.round(t[2])]);

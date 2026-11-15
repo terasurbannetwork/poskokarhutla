@@ -63,10 +63,10 @@ uji("validasi per jenis: batas dan enum ditolak dengan alasan, tidak menulis", a
   await x("tekanan", {titik: "pipa", bar: 1}, /titik/); await x("tekanan", {titik: "lance", bar: 25.1}, /bar/); await x("tekanan", {titik: "lance", bar: -1}, /bar/);
   await x("jejak", {titik: [[-2, 113, w]], moda: "perahu"}, /titik/); await x("jejak", {titik: [[-2, 113, w], [-2, 113, w]], moda: "terbang"}, /moda/);
   await x("jejak", {titik: Array(501).fill([-2, 113, w]), moda: "perahu"}, /titik/); await x("jejak", {titik: [[-2, 113, w], [50, 113, w]], moda: "perahu"}, /titik/);
-  await x("bor", {lat: -2, lon: 113, kedalaman_cm: 1501}, /kedalaman/); await x("bor", {lat: 0, lon: 0, kedalaman_cm: 10}, /lat dan lon/); await x("bor", {lat: -2, lon: 113, kedalaman_cm: 10, catatan: "c".repeat(201)}, /catatan/);
-  await x("sos", {lat: -2, lon: 113, pesan: "p".repeat(201)}, /pesan/); await x("sos", {lat: 99, lon: 113}, /lat dan lon/);
-  await x("selesai", {alat_kembali: ["abc"], alat_hilang: []}, /kode_bom/); await x("selesai", {alat_kembali: [], alat_hilang: [], catatan: "c".repeat(501)}, /catatan/);
-  await x("debit", {metode: "pelampung", lat: -2, lon: 113, lebar_m: 2, dalam_m: 1}, /pelampung wajib/); await x("debit", {metode: "ember", lat: -2, lon: 113, volume_l: 10}, /ember wajib/); await x("debit", {metode: "cebok", lat: -2, lon: 113}, /metode/);
+  await x("bor", {lat: -2, lon: 113, kedalaman_cm: 1501}, /kedalaman/); await x("bor", {lat: 0, lon: 0, kedalaman_cm: 10}, /lat|lon/); await x("bor", {lat: -2, lon: 113, kedalaman_cm: 10, catatan: "c".repeat(201)}, /catatan/);
+  await x("sos", {lat: -2, lon: 113, pesan: "p".repeat(201)}, /pesan/); await x("sos", {lat: 99, lon: 113}, /lat|lon/);
+  await x("selesai", {alat_kembali: ["abc"], alat_hilang: []}, /kode.bom/i); await x("selesai", {alat_kembali: [], alat_hilang: [], catatan: "c".repeat(501)}, /catatan/);
+  await x("debit", {metode: "pelampung", lat: -2, lon: 113, lebar_m: 2, dalam_m: 1}, /wajib diisi untuk metode pelampung/); await x("debit", {metode: "ember", lat: -2, lon: 113, volume_l: 10}, /wajib diisi untuk metode ember/); await x("debit", {metode: "cebok", lat: -2, lon: 113}, /metode/);
   assert.equal(await n("sippa_lapangan"), n0);
   assert.equal([..."😀".repeat(200)].length, 200); const e = await lap(KODE, "sos", {id: uuid(), waktu: w, lat: -2, lon: 113, pesan: "😀".repeat(200)}); assert.equal(e.j.diterima.length, 1, "200 titik kode emoji lolos (SQLite length() sama)");
   const j = await lap(KODE, "jejak", {id: uuid(), titik: Array(500).fill(0).map((_, i) => [-2.1 + i * 1e-5, 113.5, w - 500 + i]), moda: "kendaraan"}); assert.equal(j.j.diterima.length, 1, j.t);
