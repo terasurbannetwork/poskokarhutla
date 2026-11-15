@@ -146,5 +146,6 @@
   "0142_lifeline_indeks.sql": "c0f637117a772b1163ddcd16c99e0850030f0632a2ecfa68d43084deaa540a2a",
   "0143_tiga_w.sql": "1b2c7f0d86fb95380ce6ffdbb9769244c1c6753aba8165afa53976a60fff4a9f",
   "0144_masuk_indeks_hapus.sql": "3c0f9ca41afd7cffc0aecc7b268957cb500fe988fe7a70919c02ddf982ed9810",
-  "0145_masuk_kode_akun.sql": "cee61316e8bfbc673acda165beed84ea0a1faed4e8c497470e53c37de955ce34"
+  "0145_masuk_kode_akun.sql": "cee61316e8bfbc673acda165beed84ea0a1faed4e8c497470e53c37de955ce34",
+  "0146_indeks_fk_kejadian.sql": "f17a297084428b137163da3f24fc2c17d2d395b31fc1ae5fff5a4c971a692976"
 }
