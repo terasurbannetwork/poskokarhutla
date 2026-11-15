@@ -95,6 +95,16 @@
         "belum_ditangani": 1.0
       }
     },
+    "longsor": {
+      "label": "HIPOTESIS: bobot sama rata, belum ada uji balik",
+      "bobot": {
+        "tingkat": 1.0,
+        "baru": 1.0,
+        "terdampak": 1.0,
+        "fasilitas": 1.0,
+        "belum_ditangani": 1.0
+      }
+    },
     "kekeringan": {
       "label": "HIPOTESIS: bobot sama rata, belum ada uji balik",
       "bobot": {

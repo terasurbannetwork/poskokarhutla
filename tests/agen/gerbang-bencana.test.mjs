@@ -48,13 +48,22 @@ test('cek: skema registry sah (python3 scripts/umum/bencana.py cek hijau)', () =
 
 // Tahap buka bertahap (keputusan pemilik 16 Okt 2026): halaman jadi = 'uji' (menu: Segera),
 // terverifikasi = 'aktif'. Tabel ini dibalik SENGAJA saat satu modul naik tahap; jangan dilonggarkan.
-const TAHAP = { karhutla: 'aktif', banjir: 'aktif', gempa: 'aktif', cuaca: 'aktif', udara: 'aktif', gunungapi: 'aktif', kekeringan: 'aktif', pesisir: 'aktif' }
+const TAHAP = { karhutla: 'aktif', banjir: 'aktif', gempa: 'aktif', cuaca: 'aktif', udara: 'aktif', gunungapi: 'aktif', kekeringan: 'aktif', pesisir: 'aktif', longsor: 'mati' }
 
 test('registry mengikuti tabel tahap per bencana', () => {
   const o = Object.fromEntries(reg().bencana.map((b) => [b.id, b]))
   assert.deepEqual(Object.fromEntries(reg().bencana.map((b) => [b.id, b.status])), TAHAP)
   assert.equal(o.karhutla.rute, '/')
   assert.equal(o.banjir.rute, '/banjir/')
+})
+
+test('entri ber-layar: tab ada di halaman induk (tanpa halaman sendiri)', () => {
+  for (const b of reg().bencana.filter((x) => x.layar)) {
+    const induk = reg().bencana.find((x) => x.id === b.layar.induk)
+    assert.ok(induk, `${b.id}: induk ${b.layar.induk} tidak terdaftar di public/bencana.json`)
+    const html = readFileSync(join(ROOT, 'public', induk.rute, 'index.html'), 'utf8')
+    assert.ok(html.includes(`id="p-${b.layar.tab}"`), `${b.id}: halaman induk ${induk.rute} tak memuat tab ${b.layar.tab}; tambahkan section id="p-${b.layar.tab}" atau betulkan medan layar`)
+  }
 })
 
 test('id unik', () => {
@@ -156,8 +165,8 @@ test('PB-04: kemampuan menyala punya pemakai nyata di src/ atau public/', () => 
   assert.deepEqual(tanpaPemakai(reg(), kode), [], 'kemampuan menyala tanpa pemakai: tulis kode yang membacanya (menyebut `kemampuan` dan kuncinya) atau matikan kuncinya di public/bencana.json')
 })
 
-// Q1 (bawaan sementara): longsor belum punya entri registri; satu-satunya pengecualian, plafon 1, tidak boleh bertambah.
-const PENGECUALIAN_LOGBOOK = ['longsor']
+// Tanpa pengecualian: tiap jenis logbook menunjuk id registri (longsor terdaftar sejak K11).
+const PENGECUALIAN_LOGBOOK = []
 
 test('PB-04: JENIS_LOGBOOK_KE_BENCANA menunjuk id registri yang ada', async () => {
   const { JENIS_LOGBOOK_KE_BENCANA: peta } = await import(join(ROOT, 'src/bencana.generated.js'))

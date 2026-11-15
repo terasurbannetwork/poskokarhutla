@@ -1356,6 +1356,133 @@ export default {
         "pencegahan": false,
         "prioritas": false
       }
+    },
+    {
+      "id": "longsor",
+      "nama": "Tanah Longsor",
+      "nama_en": "Landslides",
+      "ikon": "longsor",
+      "warna": "#8a6d3b",
+      "rute": "/banjir/longsor/",
+      "data": "/longsor/data/",
+      "status": "mati",
+      "warisan": false,
+      "layar": {
+        "induk": "banjir",
+        "tab": "longsor",
+        "jalur": "/banjir/#longsor"
+      },
+      "model_status": "hipotesis",
+      "tab": [
+        "longsor"
+      ],
+      "tab_sembunyi": [],
+      "sumber_status": [],
+      "kejadian": {
+        "awalan": "E",
+        "nama": "Kejadian longsor",
+        "nama_jamak": "Kejadian longsor"
+      },
+      "tingkat": [
+        {
+          "kode": 0,
+          "nama": "Normal",
+          "warna": "#9aa4b2"
+        },
+        {
+          "kode": 1,
+          "nama": "Waspada",
+          "warna": "#e0b400"
+        },
+        {
+          "kode": 2,
+          "nama": "Siaga",
+          "warna": "#e8743b"
+        },
+        {
+          "kode": 3,
+          "nama": "Awas",
+          "warna": "#d64545"
+        }
+      ],
+      "foto_kategori": [
+        [
+          "longsor",
+          "Longsor"
+        ],
+        [
+          "retakan",
+          "Retakan tanah"
+        ],
+        [
+          "evakuasi",
+          "Evakuasi"
+        ],
+        [
+          "lainnya",
+          "Lainnya"
+        ]
+      ],
+      "lapor_bahaya": [],
+      "cron_worker": [],
+      "workflow": "lintas.yml",
+      "pengerja": "longsor",
+      "bagikan": {
+        "nama": "Centurisk97 Tanah Longsor",
+        "sumber": "Open-Meteo, ERA5, PVMBG, BNPB",
+        "tagar": [
+          "#longsor",
+          "#tanahlongsor"
+        ]
+      },
+      "og": {
+        "judul": "Tanah longsor hari ini · Centurisk97",
+        "desk_templat": "{tgl}: {n} kecamatan berbahaya tinggi, model masih hipotesis."
+      },
+      "kata": {
+        "unit": "hujan 7 hari",
+        "kejadian": "kecamatan rawan longsor",
+        "tindakan": [
+          "Pantau",
+          "Jauhi lereng",
+          "Siapkan evakuasi"
+        ],
+        "frasa_wilayah": "kecamatan rawan longsor"
+      },
+      "peringatan_relevan": "longsor|gerakan tanah",
+      "lapisan": [
+        "penduduk",
+        "sekolah",
+        "fasilitas",
+        "jalan"
+      ],
+      "berita": {
+        "kueri": [
+          "longsor",
+          "tanah longsor"
+        ],
+        "leksikon": "scripts/berita/banjir.py"
+      },
+      "prioritas": [],
+      "kemampuan": {
+        "operasi": false,
+        "renlap": {
+          "sarana": [],
+          "bobot": ""
+        },
+        "dokumen": [],
+        "ews": {
+          "kunci": [],
+          "tangga": false
+        },
+        "dasbor": {
+          "ringkas": "",
+          "papan_sk": false
+        },
+        "ekonomi": false,
+        "pencegahan": false,
+        "prioritas": false
+      }
     }
   ]
 };

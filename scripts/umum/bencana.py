@@ -165,7 +165,8 @@ def periksa(reg, akar=AKAR):
         if not fk or any(not (isinstance(x, list) and len(x) == 2 and SLUG.match(str(x[0])) and x[1]) for x in fk) \
                 or len({x[0] for x in fk if isinstance(x, list) and x}) != len(fk):
             g.append(f"{id_}: foto_kategori harus [[slug, label], ..] tanpa slug ganda")
-        if not b["lapor_bahaya"] or any(not isinstance(x, str) or not SLUG.match(x) for x in b["lapor_bahaya"]):
+        # entri ber-`layar` (tab di halaman induk, PB-33-0/K11) boleh tanpa lapor_bahaya: kategori laporannya tetap di induk
+        if (not b["lapor_bahaya"] and not b.get("layar")) or any(not isinstance(x, str) or not SLUG.match(x) for x in b["lapor_bahaya"]):
             g.append(f"{id_}: lapor_bahaya harus daftar slug dan tidak kosong")
         else:
             for x in b["lapor_bahaya"]:
@@ -235,7 +236,7 @@ def _uji():
     assert bangkitkan(reg) == bangkitkan(json.loads(json.dumps(reg))), "pembangkitan tidak deterministik"
     assert bangkitkan(reg).startswith(KEPALA) and "export const JENIS_LOGBOOK_KE_BENCANA" in bangkitkan(reg)
     assert JENIS_LOGBOOK_KE_BENCANA["gelombang_pasang"] == JENIS_LOGBOOK_KE_BENCANA["abrasi"] == "pesisir"
-    assert all(v in {b["id"] for b in reg["bencana"]} for v in JENIS_LOGBOOK_KE_BENCANA.values() if v != "longsor")
+    assert all(v in {b["id"] for b in reg["bencana"]} for v in JENIS_LOGBOOK_KE_BENCANA.values())
 
     def rusak(f, kata):
         r = copy.deepcopy(reg)

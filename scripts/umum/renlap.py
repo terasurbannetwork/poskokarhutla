@@ -174,7 +174,7 @@ SKOR = {  # satu penilai per id di public/bencana.json; jenis tanpa uji balik = 
     "karhutla": skor_karhutla,
     "banjir": skor_banjir,
     **{i: (lambda c, B, _i=i: skor_generik(_i, c, B)) for i in
-       ("pesisir", "cuaca", "gempa", "udara", "gunungapi", "kekeringan")},
+       ("pesisir", "cuaca", "gempa", "udara", "gunungapi", "kekeringan", "longsor")},
 }
 
 
@@ -359,6 +359,8 @@ KEKERINGAN_META = AKAR / "public/data/kekeringan_meta.json"
 CUACA_KEC = AKAR / "public/banjir/data/cuaca_kec.json"
 GEMPA_M5 = AKAR / "public/gempa/data/riwayat_m5.json"
 GUNUNG_STATUS = AKAR / "public/banjir/data/gunungapi_status.json"
+LONGSOR_NOWCAST = AKAR / "public/longsor/data/nowcast.json"
+LONGSOR_KEREN = AKAR / "public/longsor/data/kerentanan.json"
 
 
 def _js(jalur):
@@ -511,6 +513,27 @@ def target_gunungapi(prov, tanggal, jalur=GUNUNG_STATUS):
     return meta, _rel(kand, "terdampak")
 
 
+def target_longsor(prov, tanggal, jalur=LONGSOR_NOWCAST, keren=None):
+    """-> (meta, kandidat). Sumber: public/longsor/data/nowcast.json (scripts/longsor/model.py nowcast_dari; baris `tinggi` = [indeks kec, S, t]) + kerentanan.json
+    (nama kecamatan = urutan `kec`, pusat kolom 0-1 baris `k`). Saringan sama dengan modul longsor: bahaya tinggi (t >= 1 dan S >= 0,50), kecamatan provinsi `prov`.
+    Fitur `tingkat` = S x t kecamatan / nilai terbesar di antara kandidat (peringkat relatif; model belum lolos uji balik: AUC 0,70 lawan klimatologi 0,78, jadi hipotesis).
+    `tanggal` tidak menyaring: nowcast adalah keadaan jendela hujan terakhir, tanggalnya tampil di `data`."""
+    n, kr = _js(jalur), _js(keren or LONGSOR_KEREN)
+    meta = {"berkas": "nowcast.json, kerentanan.json", "dibuat": n.get("dibuat"),
+            "data": "nowcast longsor dengan hujan 7 hari sampai %s, berkas dibuat %s (bukan kondisi tanggal usulan bila berbeda)" % (n.get("jendela_akhir"), str(n.get("dibuat"))[:10]),
+            "catatan": "model sendiri (hipotesis, uji balik belum lolos: auc 0,70 lawan klimatologi 0,78); bahaya tinggi saja; skor relatif: S x t dibagi nilai terbesar"}
+    kand = []
+    for i, S, t in n["tinggi"]:
+        k = kr["kec"][i]
+        if not k.startswith(prov + "|"):
+            continue
+        kc = k.split("|")
+        kand.append({"id": k, "lat": kr["k"][i][0], "lon": kr["k"][i][1], "_n": S * t, "kerentanan": S, "hujan_per_p95": t,
+                     "tempat": "Kec. %s, %s: bahaya tinggi menurut model (hipotesis), kerentanan %s, hujan 7 hari %s kali P95, hujan sampai %s"
+                               % (kc[2], kc[1], _koma(S), _koma(t), n.get("jendela_akhir"))})
+    return meta, _rel(kand, "tingkat")
+
+
 def _rakit_jenis(bencana, a, titik, B, ambil, default):
     """satu rakit untuk jenis tanpa uji balik: base = titik sarana bila ada, selain itu SATU base semu 'tanpa-base' di target teratas.
     ambil(prov, tanggal) -> (meta, kandidat); gagal -> RuntimeError (kirim melapor gagal)."""
@@ -572,7 +595,11 @@ def rakit_gunungapi(a, titik, B, ambil=None):
     return _rakit_jenis("gunungapi", a, titik, B, ambil, target_gunungapi)
 
 
-RAKIT = {"udara": rakit_udara, "kekeringan": rakit_kekeringan, "cuaca": rakit_cuaca, "gempa": rakit_gempa, "gunungapi": rakit_gunungapi}
+def rakit_longsor(a, titik, B, ambil=None):
+    return _rakit_jenis("longsor", a, titik, B, ambil, target_longsor)
+
+
+RAKIT = {"longsor": rakit_longsor, "udara": rakit_udara, "kekeringan": rakit_kekeringan, "cuaca": rakit_cuaca, "gempa": rakit_gempa, "gunungapi": rakit_gunungapi}
 
 
 def rakit(a, titik, B, ambil=None):
@@ -797,14 +824,24 @@ def uji_jenis(B, ok):
         tanpa_kapital(r, isi)
         assert [c["id"] for c in target_gunungapi("81", "x", T / "gs.json")[1]] == [] and [c["id"] for c in target_gunungapi("82", "x", T / "gs.json")[1]] == ["Ternate"]
         # sumber gagal -> RuntimeError
-        for f in (rakit_udara, rakit_kekeringan, rakit_cuaca, rakit_gempa, rakit_gunungapi):
+        for f in (rakit_udara, rakit_kekeringan, rakit_cuaca, rakit_gempa, rakit_gunungapi, rakit_longsor):
             try:
                 f(A("udara"), [], B, lambda p, t: 1 / 0)
                 raise SystemExit("sumber gagal harus RuntimeError")
             except RuntimeError:
                 pass
+        # longsor: bahaya tinggi per provinsi, pusat dari kerentanan, relatif S x t
+        ns = {"dibuat": "2026-11-15T19:41+07:00", "jendela_akhir": "2026-11-14", "tinggi": [[0, 0.8, 2.0], [1, 0.5, 1.0], [2, 0.9, 1.5]]}
+        kk = {"kec": ["11|Aceh Besar|Satu", "11|Aceh Besar|Dua", "12|Nias|Tiga"], "k": [[5.1, 95.1], [5.2, 95.2], [1.1, 97.1]]}
+        tulis("ns.json", ns), tulis("kr.json", kk)
+        meta, kd = target_longsor("11", "2026-11-15", T / "ns.json", T / "kr.json")
+        assert {c["id"]: c["fitur"]["tingkat"] for c in kd} == {"11|Aceh Besar|Satu": 1.0, "11|Aceh Besar|Dua": 0.312}, kd
+        assert "2026-11-14" in meta["data"] and "hipotesis" in meta["catatan"]
+        r, isi = rakit_longsor(A("longsor"), [], B, lambda p, t: target_longsor(p, t, T / "ns.json", T / "kr.json"))
+        assert r["jml_target"] == 2 and r["bobot_label"].startswith("hipotesis"), r
+        tanpa_kapital(r, isi)
     # berkas nyata repo: tanggal diambil dari berkasnya sendiri; hasil bisa 0 target beralasan, tak boleh melempar
-    nyata = {"udara": ("2026-10-15", "11"), "kekeringan": ("2026-11-15", "11"), "cuaca": ("2026-10-18", "11"), "gempa": ("2026-11-15", "82"), "gunungapi": ("2026-11-15", "35")}
+    nyata = {"udara": ("2026-10-15", "11"), "kekeringan": ("2026-11-15", "11"), "cuaca": ("2026-10-18", "11"), "gempa": ("2026-11-15", "82"), "gunungapi": ("2026-11-15", "35"), "longsor": ("2026-11-15", "32")}
     for b, (tg, pv) in nyata.items():
         r, isi = RAKIT[b](A(b, prov=pv, tanggal=tg), [], B)
         assert r["jml_target"] > 0 or r["alasan_kosong"], b
