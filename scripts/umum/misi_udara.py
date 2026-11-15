@@ -561,7 +561,7 @@ def halaman(r, P, W, H, mpp, gambar, tanggal, templat, batas):
     if (akhir["lat"], akhir["lon"]) != (base["lat"], base["lon"]):
         s += rp.penanda(P, rute[-1], 15, base=True, label=akhir["nama"])
     for t in r["titik"]:
-        s += rp.penanda(P, t, 13, label=nama_titik(t), ukuran=18)
+        s += rp.penanda(P, t, 13, label=nama_titik(t).split(",")[0], ukuran=18)   # label peta pendek supaya tidak terpotong tepi; nama lengkap ada di tabel
     s += rp.skala(W, H, mpp, next(k for k in (5, 10, 20, 25, 50, 100, 200) if k * 1000 / mpp >= W * .12)) + rp.utara(W) + ["</svg>"]
     pil = ' <span class="pil abu">titik menyusul</span>'
     baris = ""
@@ -573,11 +573,11 @@ def halaman(r, P, W, H, mpp, gambar, tanggal, templat, batas):
             " b" if awal else "", "B" if awal else t["urut"], e(t["kode"]), e(t.get("nama") or ""), pil if t.get("menyusul") else "",
             rp.gmaps(t["lat"], t["lon"]), t["lat"], t["lon"], di, ang(t["kum_km"]), ang(t["kum_mnt"]))
     n_sm = sum(1 for t in r["titik"] if t["menyusul"])
-    kpi = ('<div class="kpi"><div class="o"><b>%s titik</b><span>%s masih titik menyusul, koordinat sementara</span></div>'
+    kpi = ('<div class="kpi"><div class="o"><b>%s titik tujuan</b><span>%s</span></div>'
            '<div><b>%s leg</b><span>berangkat dari %s, kembali ke %s</span></div>'
            '<div><b>± %s km</b><span>garis lurus (%s NM)</span></div>'
            '<div class="o"><b>± %s menit terbang</b><span>pada %s km/jam, di titik %s menit</span></div></div>') % (
-        ang(len(r["titik"])), ang(n_sm), ang(len(leg)), e(base["nama"]), e(akhir["nama"]), ang(T["km"]), ang(T["nm"]), ang(T["terbang_mnt"]), ang(r["kecepatan_kmj"]), ang(T["di_titik_mnt"]))
+        ang(len(r["titik"])), ("%s di antaranya masih menyusul, koordinat sementara" % ang(n_sm)) if n_sm else "semua koordinat sudah pasti", ang(len(leg)), e(base["nama"]), e(akhir["nama"]), ang(T["km"]), ang(T["nm"]), ang(T["terbang_mnt"]), ang(r["kecepatan_kmj"]), ang(T["di_titik_mnt"]))
     sem = "; ".join("%s %s %s (%s)" % (s_["label"], ang(s_["nilai"], 0 if float(s_["nilai"]).is_integer() else 2), s_["satuan"], s_["q"]) for s_ in r["sementara_dipakai"]) or "tidak ada"
     kaki = ('<div class="kaki">%s Jarak garis lurus (lingkaran besar), haluan sejati, kecepatan jelajah %s km/jam tanpa angin. %s '
             'Status pemeriksaan: %s. Bawaan sementara yang dipakai: %s.</div>') % (e(KALIMAT_USULAN), ang(r["kecepatan_kmj"]), "Citra Esri World Imagery." if gambar else "Peta tanpa citra satelit.", e(r["status"]), e(sem))
