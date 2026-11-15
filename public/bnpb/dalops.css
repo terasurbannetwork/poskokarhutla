@@ -897,3 +897,7 @@ h1.dl-l1{margin:0;padding:12px 16px;border-radius:14px;background:#0b2545;color:
 .dl-masuk-tb:focus-visible{outline:2px solid var(--info-tx);outline-offset:2px;text-decoration:none}
 .dl-masuk-tb:active{transform:scale(.98);background:color-mix(in oklch,var(--brand) 75%,black)}
 @media (prefers-reduced-motion:reduce){.dl-masuk-tb{transition:none}}
+
+/* ringkasan Status Lifeline (dalops_lifeline.js): kartu dilipat, tabel memakai .ad-tabel */
+.dl-lf>summary{cursor:pointer;font-weight:700;color:var(--ink2);padding:6px 0}
+.dl-lf[open]>summary{margin-bottom:10px}
