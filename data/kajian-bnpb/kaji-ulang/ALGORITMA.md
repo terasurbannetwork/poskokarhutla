@@ -48,8 +48,8 @@ Durasi tingkat kejadian (tidak berasal dari tugas):
 
 | Ukuran | Rumus | Bila tidak ada |
 | --- | --- | --- |
-| Deteksi ke fase tanggap | `fase tanggap` dikurangi `sk_kejadian.dibuat` | tidak ada data bila jejak fase tanggap tidak ada |
-| Tanggap ke pulih | waktu fase pemulihan dikurangi waktu fase tanggap | sama |
+| Deteksi ke fase tanggap | `fase tanggap` dikurangi `sk_kejadian.dibuat` | bila jejak fase kosong dipakai tanggal `tanggap_mulai` (00:00 WIB, presisi hari, diberi tanda `dari_tanggal`); selain itu tidak ada data |
+| Tanggap ke pulih | waktu pulih dikurangi waktu fase tanggap; pulih = yang lebih dulu antara fase pemulihan dan selesai (sama dengan peristiwa tahap pulih di linimasa) | tidak ada data bila salah satu tidak ada; selisih di bawah semenit ditulis "kurang dari semenit", bukan 0 |
 | Layanan merah ke hijau pertama | per (kab, layanan), `lf_riwayat` | tidak ada data bila tidak pernah hijau |
 
 Urutan terbalik (selesai tercatat sebelum mulai) = null, bukan nol dan bukan angka negatif, sesuai `durasiTahap`.

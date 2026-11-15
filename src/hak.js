@@ -1481,17 +1481,18 @@ export const kuRiwayat = async (env, p, kejadianId, nomor) => {
    subkueri, awal 0043 dan penugasan 0035 digugurkan bila belum ada); tabel pendamping dibaca SEKALI lewat subkueri yang sama, tak pernah per tugas. Tabel opsional yang belum ada = null
    ("belum diaktifkan"), bukan larik kosong. Hitungan kueri maksimal KU_MAKS_KUERI_DRAF (diuji lewat pembungkus prepare). Hak: satu cek ku_kaji baca (tabel sk_*, tugas_*, lf_*, tw_* milik pelaku lain). */
 export const KU_MAKS_KUERI_DRAF = 14, KU_MAKS_TUGAS = 200;
-const KU_TAUTAN = `SELECT kode FROM sk_kejadian_sumber WHERE kejadian_id = ?1 AND sumber = 'tugas_api' AND status = 'terpasang' LIMIT ${KU_MAKS_TUGAS}`;
+const KU_TAUTAN = `SELECT kode FROM sk_kejadian_sumber WHERE kejadian_id = ?1 AND sumber = 'tugas_api' AND status = 'terpasang' ORDER BY kode LIMIT ${KU_MAKS_TUGAS}`;   // ORDER BY: yang terpotong selalu sama (temp b-tree hanya atas tautan satu kejadian)
+export const KU_BATAS = {jejak: 50, muncul: 400, pelajaran: 400, layanan: 1000, baris3w: 1000, tawaran: 1000};   // tiap sumber dibaca batas + 1; kelebihan = terpotong (tidak diam)
 export const KU_SQL_DRAF = {
   kejadian: "SELECT id, jenis, nama, fase, fase_diubah, dibuat, tanggap_mulai, tanggap_akhir FROM sk_kejadian WHERE id = ?1",
   kab: "SELECT kab4 FROM sk_kejadian_kab WHERE kejadian_id = ?1 LIMIT 100",
-  jejak: "SELECT waktu, dari, ke FROM sk_jejak WHERE obyek = 'kejadian' AND obyek_id = ?1 AND aksi = 'fase' ORDER BY waktu LIMIT 50",
+  jejak: `SELECT waktu, dari, ke FROM sk_jejak WHERE obyek = 'kejadian' AND obyek_id = ?1 AND aksi = 'fase' ORDER BY waktu LIMIT ${KU_BATAS.jejak + 1}`,
   tautan: "SELECT count(*) n FROM sk_kejadian_sumber WHERE kejadian_id = ?1 AND sumber = 'tugas_api' AND status = 'terpasang'",
-  muncul: `SELECT tugas_id, waktu FROM tugas_muncul WHERE tugas_id IN (${KU_TAUTAN}) LIMIT 400`,
-  pelajaran: `SELECT id, tugas_id, catatan, dibuat FROM ops_pelajaran WHERE tugas_id IN (${KU_TAUTAN}) LIMIT 400`,
-  layanan: "SELECT kab4, layanan, warna, dibuat FROM lf_riwayat WHERE kejadian_id = ?1 ORDER BY kab4, layanan, dibuat LIMIT 1000",
-  baris3w: "SELECT kab4, klaster, mulai FROM tw_baris WHERE kejadian_id = ?1 LIMIT 1000",
-  tawaran: "SELECT dibuat FROM tw_tawaran WHERE kejadian_id = ?1 LIMIT 1000",
+  muncul: `SELECT tugas_id, waktu FROM tugas_muncul WHERE tugas_id IN (${KU_TAUTAN}) LIMIT ${KU_BATAS.muncul + 1}`,
+  pelajaran: `SELECT id, tugas_id, catatan, dibuat FROM ops_pelajaran WHERE tugas_id IN (${KU_TAUTAN}) LIMIT ${KU_BATAS.pelajaran + 1}`,
+  layanan: `SELECT kab4, layanan, warna, dibuat FROM lf_riwayat WHERE kejadian_id = ?1 ORDER BY kab4, layanan, dibuat LIMIT ${KU_BATAS.layanan + 1}`,
+  baris3w: `SELECT kab4, klaster, mulai FROM tw_baris WHERE kejadian_id = ?1 LIMIT ${KU_BATAS.baris3w + 1}`,
+  tawaran: `SELECT dibuat FROM tw_tawaran WHERE kejadian_id = ?1 LIMIT ${KU_BATAS.tawaran + 1}`,
 };
 export const kuSqlTugas = (awal, tugasan, bencana) => `SELECT t.id, t.prov, t.kab, t.status, t.dibuat, t.konfirmasi_pada, t.padam_pada, t.verif_pada, t.padam_verif,
   ${awal ? "t.terdeteksi_awal, t.himawari_awal" : "NULL terdeteksi_awal, NULL himawari_awal"},
@@ -1522,5 +1523,7 @@ export const kuMuatDraf = async (env, p, kejadianId) => {
   }
   const [muncul, pelajaran, layanan, baris3w, tawaran] = [await kuOpsional(env, KU_SQL_DRAF.muncul, kejadianId), await kuOpsional(env, KU_SQL_DRAF.pelajaran, kejadianId),
     await kuOpsional(env, KU_SQL_DRAF.layanan, kejadianId), await kuOpsional(env, KU_SQL_DRAF.baris3w, kejadianId), await kuOpsional(env, KU_SQL_DRAF.tawaran, kejadianId)];
-  return {kejadian: kej.results[0], kab: kab.results.map(r => r.kab4), jejak: jejak.results, tugas: baris, tautan: tautan.results[0].n, muncul, pelajaran, layanan, baris3w, tawaran};
+  const terpotong = [], potong = (nama, a) => { if (a && a.length > KU_BATAS[nama]) { terpotong.push(nama); return a.slice(0, KU_BATAS[nama]); } return a; };
+  return {kejadian: kej.results[0], kab: kab.results.map(r => r.kab4), jejak: potong("jejak", jejak.results), tugas: baris, tautan: tautan.results[0].n, muncul: potong("muncul", muncul), pelajaran: potong("pelajaran", pelajaran),
+    layanan: potong("layanan", layanan), baris3w: potong("baris3w", baris3w), tawaran: potong("tawaran", tawaran), terpotong, kolom: {awal, penugasan: tugasan}};
 };

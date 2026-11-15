@@ -119,10 +119,61 @@ uji("murni: potret dipangkas dengan penanda; durasi tingkat kejadian dari jejak 
   assert.deepEqual(r.durasi.kejadian.deteksi_ke_tanggap, {menit: null, ket: KU_STATUS_DATA.kosong}, "terbalik = tidak ada data");
   const banyak = Array.from({length: 300}, (_, i) => ({waktu: i, dari: "a", ke: "tanggap"}));
   r = rakitKajiUlang({...dasar, jejak: banyak}, {maksPotret: 5000});
-  assert.ok(r.tidak_dimuat > 0 && r.catatan_pangkas === `${r.tidak_dimuat} peristiwa tidak dimuat`); assert.ok(JSON.stringify(r.linimasa).length <= 5000);
+  assert.ok(r.tidak_dimuat > 0 && r.catatan_pangkas === `${r.tidak_dimuat} peristiwa dan 0 catatan lapangan tidak dimuat`); assert.ok(JSON.stringify(r).length <= 5000, "seluruh potret, bukan hanya linimasa");
   assert.equal(r.linimasa.at(-1).waktu, 299, "yang terlama dipangkas");
   const satu = {id: "a", dibuat: 0, konfirmasi_pada: 60 * MENIT, bencana: "karhutla"};
   r = rakitKajiUlang({...dasar, tugas: [satu], tautan: 1});
   const tk = r.durasi.tugas.tahap.find(x => x.ke === "konfirmasi" && x.dari === "tugas");
-  assert.deepEqual([tk.n, tk.nilai_menit, tk.p50_menit, tk.p90_menit], [1, 60, null, null]);
+  assert.deepEqual([tk.n, tk.nilai_menit, tk.p50_menit, tk.p90_menit, tk.dalam_target_pct], [1, 60, null, null, null]);
+});
+
+const dasarMurni = () => ({kejadian: {id: KJ0, jenis: "karhutla", nama: "x", fase: "tanggap", fase_diubah: 9, dibuat: 0}, kab: [], jejak: [], tugas: [], tautan: 0, muncul: null, pelajaran: null, layanan: null, baris3w: null, tawaran: null});
+
+uji("T20 potret seluruhnya <= maksPotret: 400 catatan panjang dan linimasa besar dipangkas, penanda ada, urutan pangkas butir lalu peristiwa", () => {
+  const pel = Array.from({length: 400}, (_, i) => ({id: String(i).padStart(16, "0"), tugas_id: "t", catatan: "c".repeat(1000), dibuat: i}));
+  const jejak = Array.from({length: 50}, (_, i) => ({waktu: i, dari: "a", ke: "tanggap"}));
+  const r = rakitKajiUlang({...dasarMurni(), pelajaran: pel, jejak});
+  assert.ok(JSON.stringify(r).length <= 100000, String(JSON.stringify(r).length));
+  assert.ok(r.catatan_lapangan.tidak_dimuat > 0 && r.catatan_lapangan.butir.length + r.catatan_lapangan.tidak_dimuat === 400);
+  assert.equal(r.tidak_dimuat, 0, "linimasa utuh selama catatan cukup dipangkas"); assert.match(r.catatan_pangkas, /catatan lapangan tidak dimuat/);
+  assert.ok(JSON.stringify(rakitKajiUlang({...dasarMurni(), pelajaran: pel, jejak}, {maksPotret: 3000})).length <= 3000);
+});
+
+uji("sumber terpotong: celah sumber_terpotong; Lifeline terpotong tidak mengeluarkan layanan_tanpa_riwayat", () => {
+  const lf = [{kab4: "1601", layanan: "listrik", warna: "hijau", dibuat: 1}];
+  const r = rakitKajiUlang({...dasarMurni(), kab: ["1601"], layanan: lf, terpotong: ["layanan", "muncul"]});
+  assert.deepEqual(r.celah.filter(c => c.jenis === "sumber_terpotong").map(c => c.sumber), ["layanan", "muncul"]);
+  assert.ok(!r.celah.some(c => c.jenis === "layanan_tanpa_riwayat"));
+  assert.ok(rakitKajiUlang({...dasarMurni(), kab: ["1601"], layanan: lf}).celah.some(c => c.jenis === "layanan_tanpa_riwayat"));
+});
+
+uji("durasi kejadian: tanggap_mulai bila jejak kosong; pulih = yang lebih dulu antara pemulihan dan selesai; < 1 menit = ket, bukan 0", () => {
+  const d = dasarMurni(); d.kejadian.dibuat = Date.parse("2026-11-01T00:00:00+07:00") - 60 * MENIT; d.kejadian.tanggap_mulai = "2026-11-01";
+  let r = rakitKajiUlang(d);
+  assert.deepEqual([r.durasi.kejadian.deteksi_ke_tanggap.menit, r.durasi.kejadian.deteksi_ke_tanggap.dari_tanggal], [60, true]);
+  r = rakitKajiUlang({...dasarMurni(), jejak: [{waktu: 0, dari: "a", ke: "tanggap"}, {waktu: 30 * MENIT, dari: "transisi", ke: "selesai"}, {waktu: 90 * MENIT, dari: "selesai", ke: "pemulihan"}]});
+  assert.equal(r.durasi.kejadian.tanggap_ke_pulih.menit, 30, "selesai lebih dulu = pulih");
+  r = rakitKajiUlang({...dasarMurni(), jejak: [{waktu: 0, dari: "a", ke: "tanggap"}, {waktu: 20000, dari: "a", ke: "pemulihan"}]});
+  assert.deepEqual(r.durasi.kejadian.tanggap_ke_pulih, {menit: null, ket: "kurang dari semenit"});
+  r = rakitKajiUlang({...dasarMurni(), tugas: [{id: "a", dibuat: 0, konfirmasi_pada: 20000, bencana: "karhutla"}], tautan: 1});
+  const tk = r.durasi.tugas.tahap.find(x => x.dari === "tugas" && x.ke === "konfirmasi");
+  assert.equal(tk.nilai_menit, 0); assert.match(tk.ket, /kurang dari semenit/);
+});
+
+uji("kolom awal/penugasan hilang jadi celah belum diaktifkan; deteksi_perkiraan dengan n; tugas dimuat sebagian diberi penanda 'dari n dari N tugas'", () => {
+  const t = Array.from({length: 3}, (_, i) => ({id: "t" + i, dibuat: i, bencana: "karhutla"}));
+  let r = rakitKajiUlang({...dasarMurni(), tugas: t, tautan: 250, kolom: {awal: false, penugasan: false}});
+  assert.deepEqual(r.celah.filter(c => c.jenis === "sumber_belum_aktif").map(c => c.sumber).sort(), ["catatan_lapangan", "kolom_deteksi_awal", "layanan", "penugasan", "tiga_w", "tugas_muncul"]);
+  assert.equal(r.celah.find(c => c.jenis === "deteksi_perkiraan").n, 3);
+  assert.equal(r.durasi.tugas.ket, "dari 3 dari 250 tugas");
+});
+
+uji("DB: kelebihan sumber pendamping terbaca batas + 1 lalu dipotong dan ditandai; Lifeline terpotong tanpa celah palsu", async () => {
+  await DB.prepare("WITH RECURSIVE n(i) AS (SELECT 1 UNION ALL SELECT i + 1 FROM n WHERE i < 1001) INSERT INTO lf_riwayat (kejadian_id, kab4, layanan, warna, catatan, oleh, dibuat) SELECT ?1, '1601', 'listrik', 'kuning', 'catatan staf cukup panjang ya', 'staf:1', i FROM n").bind(KJ2).run();
+  const d = await kuMuatDraf({DB}, p, KJ2);
+  assert.equal(d.layanan.length, 1000); assert.deepEqual(d.terpotong, ["layanan"]);
+  const r = rakitKajiUlang(d);
+  assert.ok(r.celah.some(c => c.jenis === "sumber_terpotong" && c.sumber === "layanan"));
+  assert.ok(!r.celah.some(c => c.jenis === "layanan_tanpa_riwayat"));
+  assert.deepEqual(d.kolom, {awal: true, penugasan: true});
 });

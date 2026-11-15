@@ -9,10 +9,12 @@ export const KU_STATUS_DATA = {ada: "ada", kosong: "tidak ada data", belum: "bel
 export const KU_MAKS_POTRET = 100000;
 export const KU_TAHAP = ["deteksi", "tugas", "konfirmasi", "respons", "padam", "fase", "layanan", "koordinasi", "pulih"];
 const MENIT = 6e4, PULIH = new Set(["pemulihan", "selesai"]);
-const ukuran = menit => menit == null || !Number.isFinite(menit) || menit < 0 ? {menit: null, ket: KU_STATUS_DATA.kosong} : {menit: Math.round(menit / MENIT)};   // urutan terbalik = tidak ada data, bukan negatif
+const SEMENIT = "kurang dari semenit";
+/* ms -> {menit}; urutan terbalik = tidak ada data, bukan negatif; di bawah semenit = ket, bukan 0 polos */
+const ukuran = ms => ms == null || !Number.isFinite(ms) || ms < 0 ? {menit: null, ket: KU_STATUS_DATA.kosong} : ms < MENIT ? {menit: null, ket: SEMENIT} : {menit: Math.round(ms / MENIT)};
 
 export function rakitKajiUlang(d, {maksPotret = KU_MAKS_POTRET} = {}) {
-  const {kejadian: kj, jejak = [], tugas = [], muncul, pelajaran, layanan, baris3w, tawaran} = d, ev = [], celah = [];
+  const {kejadian: kj, jejak = [], tugas = [], muncul, pelajaran, layanan, baris3w, tawaran, terpotong = []} = d, ev = [], celah = [];
   const tambah = (waktu, tahap, sumber, ket, ref = null, tambahan = {}) => { if (waktu != null) ev.push({waktu, tahap, sumber, ket, ref, ...tambahan}); };
 
   tambah(kj.dibuat, "deteksi", "sk_kejadian", "Kejadian tercatat");
@@ -35,18 +37,18 @@ export function rakitKajiUlang(d, {maksPotret = KU_MAKS_POTRET} = {}) {
   const urutTahap = Object.fromEntries(KU_TAHAP.map((t, i) => [t, i]));
   ev.sort((a, b) => a.waktu - b.waktu || urutTahap[a.tahap] - urutTahap[b.tahap]);
 
-  /* potret <= maksPotret: peristiwa terlama dipangkas, jumlahnya dicatat (tidak diam) */
-  let linimasa = ev, dipangkas = 0, panjang = JSON.stringify(ev).length;
-  if (panjang > maksPotret - 200) {   // 200 = sisa untuk penanda pangkas dan bagian lain
-    let i = 0; while (i < ev.length && panjang > maksPotret - 200) panjang -= JSON.stringify(ev[i++]).length + 1;
-    linimasa = ev.slice(i); dipangkas = i;
-  }
+  let dipangkas = 0;   // diisi sesudah hasil dirakit (pangkas memakai ukuran bagian lain)
 
   /* durasi */
-  const tugasDurasi = !tugas.length ? {status: KU_STATUS_DATA.kosong} : {status: KU_STATUS_DATA.ada, n_tugas: tugas.length, tahap: ringkasTahap(tugas).map(r => r.n === 0
+  const tugasN = d.tautan ?? 0, dimuat = tugas.length, tanpaTugas = Math.max(0, Math.min(tugasN, 200) - dimuat), tidakDimuat = Math.max(0, tugasN - 200);
+  const tugasDurasi = !tugas.length ? {status: KU_STATUS_DATA.kosong} : {status: KU_STATUS_DATA.ada, n_tugas: tugas.length, ...(tidakDimuat ? {ket: `dari ${dimuat} dari ${tugasN} tugas`} : {}), tahap: ringkasTahap(tugas).map(r => r.n === 0
     ? {...r, p50_menit: null, p90_menit: null, ket: KU_STATUS_DATA.kosong}
-    : r.n === 1 ? {...r, nilai_menit: r.p50_menit, p50_menit: null, p90_menit: null, ket: "n = 1"} : r)};
-  const fase1 = k => jejak.find(j => j.ke === k)?.waktu ?? null, tanggap = fase1("tanggap"), pulihW = fase1("pemulihan");
+    : r.n === 1 ? {...r, nilai_menit: r.p50_menit, p50_menit: null, p90_menit: null, dalam_target_pct: null, ket: r.p50_menit === 0 ? `n = 1, ${SEMENIT}` : "n = 1"}   // satu tugas: tanpa persentil dan tanpa persen dalam target
+      : r.p50_menit === 0 ? {...r, ket: SEMENIT} : r)};
+  /* tanggap = jejak fase 'tanggap'; bila jejak kosong, tanggal tanggap_mulai (WIB, presisi hari) dipakai untuk deteksi_ke_tanggap saja. pulih = yang lebih dulu antara pemulihan dan selesai,
+     sama dengan peristiwa tahap 'pulih' di linimasa (PULIH). */
+  const tanggap = jejak.find(j => j.ke === "tanggap")?.waktu ?? null, tanggapHari = !jejak.length && kj.tanggap_mulai ? Date.parse(`${kj.tanggap_mulai}T00:00:00+07:00`) : null;
+  const pulihW = jejak.find(j => PULIH.has(j.ke))?.waktu ?? null;
   const terakhir = new Map(), pertama = new Map();   // (kab, layanan) -> merah pertama / hijau pertama sesudahnya
   for (const l of [...(layanan ?? [])].sort((a, b) => a.dibuat - b.dibuat)) {
     const k = `${l.kab4}|${l.layanan}`; terakhir.set(k, l);
@@ -55,15 +57,14 @@ export function rakitKajiUlang(d, {maksPotret = KU_MAKS_POTRET} = {}) {
   }
   const merahHijau = [...pertama.values()].map(({kab4, layanan: ly, merah, hijau}) => ({kab4, layanan: ly, ...ukuran(hijau == null ? null : hijau - merah)}));
   const durasiKejadian = {
-    deteksi_ke_tanggap: ukuran(tanggap == null ? null : tanggap - kj.dibuat),
+    deteksi_ke_tanggap: {...ukuran((tanggap ?? tanggapHari) == null ? null : (tanggap ?? tanggapHari) - kj.dibuat), ...(tanggap == null && tanggapHari != null ? {dari_tanggal: true} : {})},
     tanggap_ke_pulih: ukuran(tanggap == null || pulihW == null ? null : pulihW - tanggap),
     layanan_merah_ke_hijau: layanan == null ? {status: KU_STATUS_DATA.belum} : merahHijau.length ? {status: KU_STATUS_DATA.ada, sel: merahHijau} : {status: KU_STATUS_DATA.kosong},
   };
 
   /* bagian pendamping (kartu terpisah, tanpa total gabungan) */
-  const tugasN = d.tautan ?? 0, dimuat = tugas.length, tanpaTugas = Math.max(0, Math.min(tugasN, 200) - dimuat);
   const bagian = {
-    tugas: {status: tugasN ? KU_STATUS_DATA.ada : KU_STATUS_DATA.kosong, ...(tugasN ? {terhubung: tugasN, dimuat, tidak_dimuat: Math.max(0, tugasN - 200), tanpa_tugas: tanpaTugas} : {})},
+    tugas: {status: tugasN ? KU_STATUS_DATA.ada : KU_STATUS_DATA.kosong, ...(tugasN ? {terhubung: tugasN, dimuat, tidak_dimuat: tidakDimuat, tanpa_tugas: tanpaTugas} : {})},
     layanan: layanan == null ? {status: KU_STATUS_DATA.belum} : !layanan.length ? {status: KU_STATUS_DATA.kosong}
       : {status: KU_STATUS_DATA.ada, sel: [...terakhir.values()].map(({kab4, layanan: ly, warna, dibuat}) => ({kab4, layanan: ly, warna, dibuat}))},
     koordinasi: baris3w == null && tawaran == null ? {status: KU_STATUS_DATA.belum} : !(baris3w?.length || tawaran?.length) ? {status: KU_STATUS_DATA.kosong}
@@ -75,19 +76,36 @@ export function rakitKajiUlang(d, {maksPotret = KU_MAKS_POTRET} = {}) {
 
   /* celah: tahap tanpa peristiwa, tugas tanpa konfirmasi, layanan tanpa riwayat, sumber belum ada */
   const sumberBelum = {layanan: layanan == null, koordinasi: baris3w == null && tawaran == null};
-  for (const t of KU_TAHAP) if (!linimasa.some(e => e.tahap === t) && !dipangkas) celah.push({jenis: "tahap", tahap: t, ket: sumberBelum[t] ? KU_STATUS_DATA.belum : KU_STATUS_DATA.kosong});
+  for (const t of KU_TAHAP) if (!ev.some(e => e.tahap === t)) celah.push({jenis: "tahap", tahap: t, ket: sumberBelum[t] ? KU_STATUS_DATA.belum : KU_STATUS_DATA.kosong});
   const tanpaKonf = tugas.filter(t => t.konfirmasi_pada == null).length;
   if (tanpaKonf) celah.push({jenis: "tugas_tanpa_konfirmasi", n: tanpaKonf, ket: "tugas tanpa konfirmasi lapangan"});
-  if (tanpaTugas) celah.push({jenis: "tautan_tanpa_tugas", n: tanpaTugas, ket: "tautan ke tugas yang datanya tidak ditemukan"});
+  if (tanpaTugas) celah.push({jenis: "tautan_tanpa_tugas", n: tanpaTugas, ket: "tautan ke tugas yang tidak ditemukan atau bukan data nyata"});
   if (bagian.tugas.tidak_dimuat) celah.push({jenis: "tugas_tidak_dimuat", n: bagian.tugas.tidak_dimuat, ket: `${bagian.tugas.tidak_dimuat} tugas tidak dimuat (batas 200)`});
   const tanpaMulai = (baris3w ?? []).filter(r => r.mulai == null).length;
   if (tanpaMulai) celah.push({jenis: "kegiatan_tanpa_waktu", n: tanpaMulai, ket: "kegiatan koordinasi tanpa waktu mulai"});
-  if (layanan?.length) {
+  if (layanan?.length && !terpotong.includes("layanan")) {   // terpotong: 'tanpa riwayat' bisa palsu
     const ada = new Set(layanan.map(l => `${l.kab4}|${l.layanan}`));
     for (const kab4 of d.kab) { const hilang = LAYANAN.filter(ly => !ada.has(`${kab4}|${ly}`)); if (hilang.length) celah.push({jenis: "layanan_tanpa_riwayat", kab4, layanan: hilang, ket: KU_STATUS_DATA.kosong}); }
   }
+  for (const k of terpotong) celah.push({jenis: "sumber_terpotong", sumber: k, ket: `${k}: data melebihi batas baca, sebagian tidak dimuat`});
+  const nPerkiraan = tugas.filter(t => waktuTahap(t).perkiraan).length;
+  if (nPerkiraan) celah.push({jenis: "deteksi_perkiraan", n: nPerkiraan, ket: "deteksi tanpa jam asli, tidak masuk durasi"});
+  if (d.kolom?.awal === false) celah.push({jenis: "sumber_belum_aktif", sumber: "kolom_deteksi_awal", ket: KU_STATUS_DATA.belum});
+  if (d.kolom?.penugasan === false) celah.push({jenis: "sumber_belum_aktif", sumber: "penugasan", ket: KU_STATUS_DATA.belum});
   for (const [k, v] of Object.entries({layanan: sumberBelum.layanan, tiga_w: sumberBelum.koordinasi, tugas_muncul: muncul == null, catatan_lapangan: pelajaran == null})) if (v) celah.push({jenis: "sumber_belum_aktif", sumber: k, ket: KU_STATUS_DATA.belum});
 
-  return {kejadian: {id: kj.id, jenis: kj.jenis, nama: kj.nama, fase: kj.fase, kab: d.kab.length ? d.kab : null}, linimasa, tidak_dimuat: dipangkas,
-    ...(dipangkas ? {catatan_pangkas: `${dipangkas} peristiwa tidak dimuat`} : {}), durasi: {tugas: tugasDurasi, kejadian: durasiKejadian}, ...bagian, celah};
+  const hasil = {kejadian: {id: kj.id, jenis: kj.jenis, nama: kj.nama, fase: kj.fase, kab: d.kab.length ? d.kab : null}, linimasa: ev, tidak_dimuat: 0, durasi: {tugas: tugasDurasi, kejadian: durasiKejadian}, ...bagian, celah};
+  /* potret <= maksPotret: sisa = JSON seluruh hasil tanpa linimasa dan butir (plus penanda pangkas terburuk); butir catatan terakhir dipangkas dulu, lalu peristiwa terlama. Jumlahnya dicatat. */
+  const butir = hasil.catatan_lapangan.butir ?? [], len = x => JSON.stringify(x).length + 1;
+  const kosong = {...hasil, linimasa: [], tidak_dimuat: 999999, catatan_pangkas: `${999999} peristiwa dan ${999999} catatan lapangan tidak dimuat`, catatan_lapangan: butir.length ? {...hasil.catatan_lapangan, butir: [], tidak_dimuat: 999999} : hasil.catatan_lapangan};
+  let total = JSON.stringify(kosong).length + ev.reduce((n, e) => n + len(e), 0) + butir.reduce((n, b) => n + len(b), 0), nb = butir.length, i = 0;
+  if (total > maksPotret) {
+    while (nb > 0 && total > maksPotret) total -= len(butir[--nb]);
+    while (i < ev.length && total > maksPotret) total -= len(ev[i++]);
+    dipangkas = i;
+    hasil.linimasa = ev.slice(i); hasil.tidak_dimuat = i;
+    if (nb < butir.length) hasil.catatan_lapangan = {...hasil.catatan_lapangan, butir: butir.slice(0, nb), tidak_dimuat: butir.length - nb};
+    hasil.catatan_pangkas = `${i} peristiwa dan ${butir.length - nb} catatan lapangan tidak dimuat`;
+  }
+  return hasil;
 }
