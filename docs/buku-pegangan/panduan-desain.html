@@ -1,0 +1,300 @@
+<title>Panduan Desain Atomik</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap">
+<style>
+/* Tata letak: satu kolom baca, empat tahap berurutan, tiap tahap memuat contoh hidup yang dibangun dari tahap sebelumnya. */
+:root{
+  --paper:oklch(97.6% .006 255);--card:oklch(100% 0 0);--surface:oklch(95.5% .012 255);
+  --ink:oklch(25.5% .075 256);--ink2:oklch(50% .045 258);--line:oklch(90% .015 255);
+  --brand:oklch(25.5% .075 256);--brand2:oklch(42% .11 255);--on-brand:oklch(100% 0 0);
+  --muda:oklch(93% .03 252);
+  --ok:oklch(62% .16 150);--bad:oklch(57% .21 27);--f2:oklch(73% .17 58);--info:oklch(66% .13 235);
+  --naik:#b8392b;--turun:#2b8c86;
+  --shadow:0 2px 14px oklch(25% .07 256 / .08);
+  --r:16px;--r-sm:10px;--pill:999px;
+  --gerak:160ms;--kurva:cubic-bezier(.2,.8,.2,1);
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --display:"Plus Jakarta Sans","Inter",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:oklch(18% .035 256);--card:oklch(22.5% .045 256);--surface:oklch(26% .05 256);
+  --ink:oklch(94% .012 255);--ink2:oklch(76% .035 255);--line:oklch(33% .05 256);
+  --brand:oklch(64% .12 252);--brand2:oklch(70% .11 250);--on-brand:oklch(18% .035 256);
+  --muda:oklch(30% .06 254);--naik:#e8796b;--turun:#5cc2bb;
+  --shadow:0 2px 14px oklch(0% 0 0 / .35);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:oklch(18% .035 256);--card:oklch(22.5% .045 256);--surface:oklch(26% .05 256);
+  --ink:oklch(94% .012 255);--ink2:oklch(76% .035 255);--line:oklch(33% .05 256);
+  --brand:oklch(64% .12 252);--brand2:oklch(70% .11 250);--on-brand:oklch(18% .035 256);
+  --muda:oklch(30% .06 254);--naik:#e8796b;--turun:#5cc2bb;
+  --shadow:0 2px 14px oklch(0% 0 0 / .35);color-scheme:dark}
+
+body{background:var(--paper);color:var(--ink);font:400 14.5px/1.55 var(--sans);letter-spacing:-.006em;margin:0}
+.kepala{background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));color:#fff}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.kepala .wrap{padding-block:28px 26px}
+.kepala h1{font:800 clamp(22px,4vw,30px)/1.15 var(--display);letter-spacing:-.018em;margin:0 0 8px;text-wrap:balance}
+.kepala p{margin:0;max-width:62ch;opacity:.86}
+main.wrap{padding-block:22px 48px;display:grid;gap:18px}
+.lbl{font:800 10.5px/1.2 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+p{margin:0;text-align:justify;hyphens:auto}
+a{color:var(--brand2)}
+
+/* Kartu standar: kepala terang, nama seksi */
+.ex{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.ex>header{background:var(--muda);padding:12px 18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ex>header h2{font:700 16px/1.3 var(--display);margin:0;color:var(--ink)}
+.ey{font:800 10.5px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;background:var(--brand);color:var(--on-brand);padding:5px 9px;border-radius:var(--pill)}
+.isi{padding:18px;display:grid;gap:14px}
+
+/* Tangga tahap */
+.tangga{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tangga button{all:unset;box-sizing:border-box;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 12px;display:grid;gap:2px;transition:background var(--gerak) var(--kurva),transform var(--gerak) var(--kurva)}
+.tangga button b{font:700 14px/1.2 var(--display)}
+.tangga button span{font-size:12px;color:var(--ink2)}
+.tangga button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.tangga button[aria-pressed="true"] span{color:inherit;opacity:.8}
+.tangga button:active{transform:translateY(1px)}
+:focus-visible{outline:2px solid var(--info);outline-offset:2px}
+@media (max-width:620px){.tangga{grid-template-columns:repeat(2,1fr)}}
+
+/* Tahap 0: token */
+.token{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.token div{border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden;font-size:11.5px}
+.token i{display:block;height:34px}
+.token span{display:block;padding:5px 7px;color:var(--ink2)}
+.huruf{display:grid;gap:4px}
+.huruf .d{font:800 24px/1.15 var(--display);letter-spacing:-.018em}
+.num{font-variant-numeric:tabular-nums}
+
+/* Tahap 1: element */
+.baris{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tombol{font:600 12.5px/1 var(--sans);height:34px;padding:0 16px;border-radius:var(--pill);border:1px solid var(--brand);background:var(--brand);color:var(--on-brand);cursor:pointer;transition:transform var(--gerak) var(--kurva),opacity var(--gerak)}
+.tombol:hover{opacity:.9}
+.tombol:active,.tombol.tekan{transform:translateY(1px) scale(.98)}
+.tombol:disabled{opacity:.45;cursor:not-allowed}
+.tombol.muat{opacity:.75;cursor:progress}
+.tombol.galat{background:var(--bad);border-color:var(--bad);color:#fff}
+.pil{display:inline-flex;align-items:center;gap:6px;font:600 12px/1 var(--sans);padding:6px 10px;border-radius:var(--pill);background:var(--surface);border:1px solid var(--line)}
+.pil::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--t,var(--ink2))}
+.segmen{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--surface);border:1px solid var(--line);border-radius:var(--pill);padding:3px;position:relative}
+.segmen button{all:unset;box-sizing:border-box;text-align:center;font:600 12.5px/1 var(--sans);height:28px;line-height:28px;border-radius:var(--pill);cursor:pointer;position:relative;z-index:1;transition:color var(--gerak)}
+.segmen button[aria-pressed="true"]{color:var(--on-brand)}
+.segmen .geser{position:absolute;top:3px;bottom:3px;left:3px;width:calc((100% - 6px)/3);background:var(--brand);border-radius:var(--pill);transition:transform 260ms var(--kurva)}
+.angka{font:800 34px/1 var(--display);letter-spacing:-.02em}
+.ket{font-size:12px;color:var(--ink2)}
+
+/* Tahap 2: block */
+.blok{border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:12px;background:var(--card)}
+.blok .atas{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.delta{font:600 12.5px/1 var(--sans)}
+.batang{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:end;height:84px}
+.batang i{background:var(--brand2);border-radius:4px 4px 0 0;min-height:3px;transition:height 320ms var(--kurva)}
+.batang i:last-child{background:var(--f2)}
+.sumbu{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;font-size:11px;color:var(--ink2);text-align:center}
+
+/* Tabel */
+.gulir{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:460px}
+th{background:var(--brand);color:var(--on-brand);text-align:center;font:700 12px/1.3 var(--sans);padding:9px 10px}
+td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
+td:first-child{font-weight:600;white-space:nowrap}
+
+ol.cek{margin:0;padding-left:20px;display:grid;gap:6px}
+ol.cek label{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+ol.cek input{margin-top:3px;accent-color:var(--brand2)}
+.hitung{font:700 13px/1 var(--sans)}
+[data-tahap][hidden]{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="kepala"><div class="wrap">
+  <h1>Merek dulu, atom dulu, baru layar</h1>
+  <p>Panduan kerja desain untuk semua proyek. Dibaca sebelum baris CSS pertama ditulis, supaya hasilnya tidak jatuh ke rupa bawaan.</p>
+</div></div>
+
+<main class="wrap">
+
+<section class="ex">
+  <header><span class="ey">Urutan</span><h2>Empat tahap</h2></header>
+  <div class="isi">
+    <div class="tangga" role="group" aria-label="Pilih tahap">
+      <button id="t0" aria-pressed="true" data-ke="0"><b>0. Merek</b><span>token rupa</span></button>
+      <button id="t1" aria-pressed="false" data-ke="1"><b>1. Element</b><span>satuan terkecil</span></button>
+      <button id="t2" aria-pressed="false" data-ke="2"><b>2. Blocks</b><span>satu tugas nyata</span></button>
+      <button id="t3" aria-pressed="false" data-ke="3"><b>3. Layar</b><span>susunan blocks</span></button>
+    </div>
+
+    <div data-tahap="0">
+      <div class="isi" style="padding:0">
+        <p>Semua nilai rupa diberi nama sebelum dipakai: warna, huruf, radius, bayangan, jarak, durasi gerak. Proyek yang sudah punya sistem memakai sistemnya. Contoh di halaman ini memakai token Centurisk97.</p>
+        <div class="token">
+          <div><i style="background:var(--brand)"></i><span>brand</span></div>
+          <div><i style="background:var(--brand2)"></i><span>brand2</span></div>
+          <div><i style="background:var(--paper)"></i><span>paper</span></div>
+          <div><i style="background:var(--surface)"></i><span>surface</span></div>
+          <div><i style="background:var(--ok)"></i><span>ok</span></div>
+          <div><i style="background:var(--f2)"></i><span>f2, tinggi</span></div>
+          <div><i style="background:var(--bad)"></i><span>bad</span></div>
+          <div><i style="background:var(--turun)"></i><span>turun</span></div>
+        </div>
+        <div class="huruf">
+          <span class="lbl">Huruf</span>
+          <span class="d">Plus Jakarta Sans untuk judul dan angka</span>
+          <span>Inter untuk teks dan kontrol, dasar 14,5 px.</span>
+        </div>
+        <p class="ket">Selesai bila tidak ada warna atau ukuran yang ditulis langsung di luar daftar token.</p>
+      </div>
+    </div>
+
+    <div data-tahap="1" hidden>
+      <div class="isi" style="padding:0">
+        <p>Tiap element dibuat sendiri dan ditampilkan dengan semua keadaannya: diam, hover, ditekan, fokus, nonaktif, memuat, kosong, galat. Element yang hanya punya keadaan diam belum jadi.</p>
+        <span class="lbl">Tombol, lima keadaan</span>
+        <div class="baris">
+          <button class="tombol" id="b1">Simpan</button>
+          <button class="tombol tekan" id="b2">Ditekan</button>
+          <button class="tombol muat" id="b3">Menyimpan</button>
+          <button class="tombol" id="b4" disabled>Nonaktif</button>
+          <button class="tombol galat" id="b5">Gagal, coba lagi</button>
+        </div>
+        <span class="lbl">Pil status, warna hanya untuk arti</span>
+        <div class="baris">
+          <span class="pil" style="--t:var(--ok)">Padam</span>
+          <span class="pil" style="--t:var(--f2)">Tinggi</span>
+          <span class="pil" style="--t:var(--bad)">Belum padam</span>
+          <span class="pil">Hipotesis</span>
+        </div>
+        <span class="lbl">Segmen, pil bergeser ke pilihan baru</span>
+        <div class="segmen" id="seg" role="group" aria-label="Rentang">
+          <span class="geser" id="geser"></span>
+          <button id="s0" aria-pressed="true" data-i="0">24 jam</button>
+          <button id="s1" aria-pressed="false" data-i="1">3 hari</button>
+          <button id="s2" aria-pressed="false" data-i="2">7 hari</button>
+        </div>
+        <span class="lbl">Angka, berganti saat nilainya berubah</span>
+        <div class="baris"><span class="angka num" id="angka1">1.204</span><span class="ket">ikut pilihan segmen di atas, data contoh</span></div>
+      </div>
+    </div>
+
+    <div data-tahap="2" hidden>
+      <div class="isi" style="padding:0">
+        <p>Block menyusun element yang sudah ada untuk satu tugas nyata dengan data nyata. Di tingkat ini tidak ada gaya baru. Block di bawah hanya memakai pil, segmen, angka, dan token dari tahap sebelumnya.</p>
+        <div class="blok">
+          <div class="atas"><span class="lbl">Titik panas, data contoh</span><span class="pil" style="--t:var(--f2)">Tinggi</span></div>
+          <div class="baris"><span class="angka num" id="angka2">1.204</span><span class="delta num" id="delta" style="color:var(--naik)">naik 18%</span></div>
+          <div class="batang" id="batang" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="sumbu" id="sumbu"></div>
+          <div class="segmen" id="seg2" role="group" aria-label="Rentang block">
+            <span class="geser" id="geser2"></span>
+            <button id="k0" aria-pressed="true" data-i="0">24 jam</button>
+            <button id="k1" aria-pressed="false" data-i="1">3 hari</button>
+            <button id="k2" aria-pressed="false" data-i="2">7 hari</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div data-tahap="3" hidden>
+      <div class="isi" style="padding:0">
+        <p>Layar hanya mengatur letak blocks: mana yang di atas, mana yang berdampingan, mana yang dilipat. Bila di tahap ini masih perlu menulis warna, radius, atau bayangan baru, kembali ke tahap 0 atau 1 dan tambahkan di sana.</p>
+        <div class="gulir"><table>
+          <tr><th>Bila butuh</th><th>Kembali ke</th></tr>
+          <tr><td>Warna atau ukuran baru</td><td>Tahap 0, tambah token</td></tr>
+          <tr><td>Kontrol baru atau keadaan baru</td><td>Tahap 1, buat element berikut semua keadaannya</td></tr>
+          <tr><td>Tampilan data baru</td><td>Tahap 2, susun block dari element yang ada</td></tr>
+        </table></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ex">
+  <header><span class="ey">Aturan nol</span><h2>Yang tidak punya arti, dihapus</h2></header>
+  <div class="isi">
+    <p>Tiap warna, garis, bayangan, ikon, dan gerak harus bisa menjawab satu pertanyaan: ini memberi tahu apa. Yang tidak bisa menjawab, dibuang.</p>
+    <div class="gulir"><table>
+      <tr><th>Boleh</th><th>Jangan</th></tr>
+      <tr><td style="font-weight:400;white-space:normal">Garis tepi tipis dan bayangan lembut untuk memisahkan benda</td><td>Gradasi hias, ungu bawaan, kilau</td></tr>
+      <tr><td style="font-weight:400;white-space:normal">Warna untuk arti: naik, turun, status, skala bahaya</td><td>Warna untuk meramaikan</td></tr>
+      <tr><td style="font-weight:400;white-space:normal">Gerak yang menjelaskan perubahan, dari satu token durasi dan kurva</td><td>Ornamen, emoji, ikon pengisi, animasi yang jalan sendiri</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<section class="ex">
+  <header><span class="ey">Periksa</span><h2>Sembilan ciri slop</h2><span class="hitung num" id="hitung" style="margin-left:auto">0 dari 9 lolos</span></header>
+  <div class="isi">
+    <ol class="cek" id="cek">
+      <li><label><input type="checkbox" id="c1">Tidak ada warna atau ukuran yang ditulis langsung, semuanya token.</label></li>
+      <li><label><input type="checkbox" id="c2">Rupanya tidak bisa ditempel ke proyek lain tanpa ada yang sadar.</label></li>
+      <li><label><input type="checkbox" id="c3">Tidak ada gradasi ungu ke biru, kilau, atau latar buram tanpa alasan.</label></li>
+      <li><label><input type="checkbox" id="c4">Tidak ada deretan kartu seragam berisi ikon, judul, satu kalimat.</label></li>
+      <li><label><input type="checkbox" id="c5">Kotak angka besar hanya untuk angka yang memang inti halaman.</label></li>
+      <li><label><input type="checkbox" id="c6">Tidak ada emoji penanda bagian, tidak semua rata tengah.</label></li>
+      <li><label><input type="checkbox" id="c7">Tiap element punya semua keadaannya.</label></li>
+      <li><label><input type="checkbox" id="c8">Tidak ada gaya baru di tingkat blocks atau layar.</label></li>
+      <li><label><input type="checkbox" id="c9">Tiap gerak menjelaskan sesuatu.</label></li>
+    </ol>
+  </div>
+</section>
+
+<section class="ex">
+  <header><span class="ey">Acuan</span><h2>Yang ditiru dari Monoisme</h2></header>
+  <div class="isi">
+    <div class="gulir"><table>
+      <tr><th>Ditiru</th><th>Tidak ditiru</th></tr>
+      <tr><td style="font-weight:400;white-space:normal">Urutan element lalu blocks</td><td>Latar gelap</td></tr>
+      <tr><td style="font-weight:400;white-space:normal">Aturan nol dan gerak bermakna</td><td>Huruf serif miring</td></tr>
+      <tr><td style="font-weight:400;white-space:normal">Tiap komponen punya halaman: Preview, Contoh, Pola, API, Aksesibilitas, Pasang</td><td>Bahasa gaul</td></tr>
+      <tr><td style="font-weight:400;white-space:normal">Catatan rilis bernomor, dependensi sesedikit mungkin</td><td>Pustaka gerak di repo tanpa build step</td></tr>
+    </table></div>
+    <p class="ket">Monoisme dibuat 0xNihilist, lisensi MIT: <a href="https://hark.com/site/8e0ac441-efad-4ab4-b734-1995179d478c">hark.com/site/8e0ac441</a>. Merek kita tetap Centurisk97 untuk situs dan sistem BNPB untuk deck. Teks panduan lengkap ada di <code>~/.claude/DESAIN.md</code>.</p>
+  </div>
+</section>
+</main>
+
+<script>
+(function(){
+  var fmt=function(n){return n.toLocaleString('id-ID')};
+  // Data contoh, bukan angka sistem.
+  var DATA=[
+    {n:1204,d:'naik 18%',naik:true,b:[40,52,47,61,58,72,100],l:['00','04','08','12','16','20','24']},
+    {n:3418,d:'naik 6%',naik:true,b:[70,64,81,77,90,86,100],l:['H-3','','H-2','','H-1','','Kini']},
+    {n:6952,d:'turun 11%',naik:false,b:[100,92,95,80,74,69,62],l:['Sn','Sl','Rb','Km','Jm','Sb','Mg']}
+  ];
+  function pilih(grup,geser,i){
+    grup.querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed',String(+b.dataset.i===i))});
+    geser.style.transform='translateX('+(i*100)+'%)';
+  }
+  function pasang(i){
+    var x=DATA[i];
+    document.getElementById('angka1').textContent=fmt(x.n);
+    document.getElementById('angka2').textContent=fmt(x.n);
+    var d=document.getElementById('delta');d.textContent=x.d;d.style.color=x.naik?'var(--naik)':'var(--turun)';
+    document.querySelectorAll('#batang i').forEach(function(el,k){el.style.height=x.b[k]+'%'});
+    document.getElementById('sumbu').innerHTML=x.l.map(function(t){return '<span>'+t+'</span>'}).join('');
+    pilih(document.getElementById('seg'),document.getElementById('geser'),i);
+    pilih(document.getElementById('seg2'),document.getElementById('geser2'),i);
+  }
+  ['seg','seg2'].forEach(function(id){
+    document.getElementById(id).addEventListener('click',function(e){
+      var b=e.target.closest('button');if(b)pasang(+b.dataset.i);
+    });
+  });
+  pasang(0);
+
+  document.querySelector('.tangga').addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;
+    document.querySelectorAll('.tangga button').forEach(function(x){x.setAttribute('aria-pressed',String(x===b))});
+    document.querySelectorAll('[data-tahap]').forEach(function(x){x.hidden=x.dataset.tahap!==b.dataset.ke});
+  });
+
+  var cek=document.getElementById('cek'),hit=document.getElementById('hitung');
+  cek.addEventListener('change',function(){
+    var n=cek.querySelectorAll('input:checked').length;
+    hit.textContent=n+' dari 9 lolos';
+    hit.style.color=n===9?'var(--ok)':'';
+  });
+})();
+</script>

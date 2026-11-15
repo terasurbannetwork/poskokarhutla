@@ -83,7 +83,7 @@
     return r;
   };
   Tabel.render = function () {
-    if (!KK) { muat().then(() => Tabel.render()); return _render(); }
+    if (!KK) { if ($("#p-insight.on")) muat().then(() => Tabel.render()); return _render(); }   /* tab Insight tertutup: jangan tarik 993 KB; bukaTab("insight") merender lagi */
     _render(); const el = $("#kompleks"); if (!el || !S.kluster) return;
     if (!$("#ks-saring")) { $("#tq")?.insertAdjacentHTML("afterend", `<label class="ks-saring" id="ks-saring"><input type="checkbox"><span class="ks-sw">hanya di areal konsesi</span></label>`);
       $("#ks-saring input").onchange = e => { F.hanya = e.target.checked; F.jenis = ""; Tabel.hal = 0; nanti(() => Tabel.render()); };
@@ -154,5 +154,8 @@
       peta.setPaintProperty("kl-line", "line-width", ["case", ["in", ["get", "id"], ["literal", ids]], 3.6, 1.8]);
       if (typeof toast === "function") toast(`${ids.length} cluster dengan titik panas di areal ${jn(j)[2].toLowerCase()} ditandai garis tebal`); });
   }
-  muat();
+  /* 993 KB: tidak ikut berebut jalur dengan data layar pertama. Dimuat saat peramban senggang sesudah halaman selesai (optimasi muat,
+     pemilik 15 Nov 2026); laci, tooltip, dan tabel tetap memanggil muat() sendiri bila pengguna lebih dulu sampai. */
+  const senggang = () => (window.requestIdleCallback || setTimeout)(muat, {timeout: 4000});
+  document.readyState === "complete" ? senggang() : addEventListener("load", senggang, {once: true});
 })();

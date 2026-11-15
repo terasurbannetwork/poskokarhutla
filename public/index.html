@@ -1772,6 +1772,13 @@ function muatSatelit() {
     new Promise((ok, no) => { const s = document.createElement("script"); s.src = "/satelit_data.js"; s.onload = ok; s.onerror = () => no(new Error("satelit_data.js")); document.head.appendChild(s); })
   ])).catch(e => { muatSatelit._p = null; document.querySelectorAll('link[href="/satelit_data.css"],script[src="/satelit_data.js"]').forEach(x => x.remove()); throw e; });
 }
+/* tab Operasi: operasi_laporan.js (181 KB) dimuat malas saat tab pertama kali dibuka (optimasi muat, pemilik 15 Nov 2026). Skrip itu merender
+   sendiri bila tab Operasi sedang terbuka. Ditunda sampai DOMContentLoaded supaya operasi_peta.js (window.OpsUdara) pasti sudah jalan. */
+function muatOperasiLaporan() {
+  return muatOperasiLaporan._p ||= new Promise(ok => document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", ok, {once: true}) : ok())
+    .then(() => new Promise((ok, no) => { const s = document.createElement("script"); s.src = "/operasi_laporan.js"; s.onload = ok; s.onerror = () => { s.remove(); no(new Error("operasi_laporan.js")); }; document.head.appendChild(s); }))
+    .catch(e => { muatOperasiLaporan._p = null; console.warn("Operasi:", e.message); });
+}
 /* akun pemirsa (src/pemirsa.js): worker menulis tab yang boleh dilihat di <html data-pemirsa-tab>; tab lain disembunyikan dan dialihkan ke tab pertamanya */
 const PEMIRSA = document.documentElement.dataset.pemirsaTab?.split(",").filter(Boolean) || null;
 function bukaTab(id, dorong = true) {
@@ -1788,7 +1795,7 @@ function bukaTab(id, dorong = true) {
   if (dorong) history.replaceState(null, "", id === "ringkasan" ? "/" : "/" + id + (id === "sim" && S.pilihK ? "/" + S.pilihK : ""));
   nanti(() => {
     if (id === "peta" && peta) { peta.resize(); lebarPanel(); }
-    if (id === "operasi") window.OperasiLaporan?.render();
+    if (id === "operasi") window.OperasiLaporan ? OperasiLaporan.render() : muatOperasiLaporan();
     if (id === "sim") lengkapiKluster().then(() => Sim.buka());
     if (id === "insight") { Tabel.render(); if (!sudah.prioritas) { sudah.prioritas = 1; renderPrioritas(); } }
     if (id === "posko") bukaSub(S.poskoSub);
@@ -7215,7 +7222,7 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="aktor.js"></script>
 <script src="operasi.js"></script>
 <script src="operasi_peta.js?v=203"></script>
-<script src="operasi_laporan.js?v=157"></script><!-- menu Operasi: laporan Udara | Darat tanpa peta (pemilik 4 Nov 2026) --><!-- Operasi udara: menu Operasi = laporan tanpa peta; panel Operasi, overlay, laci base di peta (pemilik 3-4 Nov 2026) -->
+<!-- operasi_laporan.js dimuat malas oleh muatOperasiLaporan() saat tab Operasi dibuka --><!-- menu Operasi: laporan Udara | Darat tanpa peta (pemilik 4 Nov 2026) --><!-- Operasi udara: menu Operasi = laporan tanpa peta; panel Operasi, overlay, laci base di peta (pemilik 3-4 Nov 2026) -->
 <script src="ringkasan.js"></script>
 <script src="inti/sapa.js"></script>
 <script src="sapa.js"></script>

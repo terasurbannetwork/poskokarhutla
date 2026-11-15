@@ -697,6 +697,8 @@ export const HTML_RUTE = [
   [/^\/tentang-halaman\/?$/, "/tentang.html", "/tentang-halaman"],   /* /tentang kini tab di index.html (registry) */   // html_handling "none" mematikan /tentang -> tentang.html otomatis
   [/^\/privasi\/?$/, "/privasi.html", "/privasi"],
   [/^\/syarat\/?$/, "/syarat.html", "/syarat"],
+  [/^\/design-system\/?$/, "/design-system.html", "/design-system"],   // sistem desain web Centurisk97 (public/design-system*); token dibaca dari /inti/tema.css
+  [/^\/design-system\/bnpb\/?$/, "/design-system-bnpb.html", "/design-system/bnpb"],   // sistem desain deck dan laporan BNPB
   [/^\/peringatan\/?$/, "/peringatan.html", "/peringatan"],
   [/^\/laporan\/?$/, "/laporan.html", "/laporan"],
   [/^\/paparan\/?$/, "/paparan.html", "/paparan"],   // deck paparan rakor karhutla per provinsi (public/paparan*)
