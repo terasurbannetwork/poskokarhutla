@@ -55,3 +55,6 @@ export function lingkupKab4(akun, kab4) {
 
 /* semua kab4 di dalam lingkup akun (untuk kueri terindeks `kab4 IN (SELECT value FROM json_each(?))`); urut naik */
 export const daftarKab4 = akun => Object.keys(NAMA_KAB4).filter(k => lingkupKab4(akun, k));
+
+/* petugas/akun tingkat kab (prov 2 digit + nama kabupaten) -> kab4; null bila tak terpetakan atau ganda */
+export const kab4Dari = (prov, kab) => { const a = Object.keys(NAMA_KAB4).filter(k => k.startsWith(String(prov)) && NAMA_KAB4[k].toLowerCase() === String(kab).trim().toLowerCase()); return a.length === 1 ? a[0] : null; };

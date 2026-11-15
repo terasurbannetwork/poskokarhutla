@@ -2,7 +2,8 @@
    Daftar meja, status per meja, dan transisi HARUS sama dengan CHECK/trigger migrations/0118_meja_juklak.sql (dijaga tests/warga/meja.test.mjs).
    Sifat meja: pusat (milik BNPB pusat, wilayah tetap PUSAT, tanpa petugas berkode), adminIsi (admin bisa menambah dari /admin/meja), publik:false (keluar dari /api/meja/ringkas), rapor:false (tidak mengubah skor rapor BPBD).
    Impor lewat worker.js dulu bila dipakai sendirian (posko.js dan worker.js saling impor). */
-import {tx, num, tglSah, wib} from "./posko.js";
+import {wib} from "./posko.js";
+import {periksa, dariMeja} from "../public/inti/spek.js";
 import {nilai, tenggat} from "../public/inti/jam_aturan.js";   // MB-2: angka tenggat berpasal hanya hidup di sana
 import {kelengkapan, bentrokNihil, BAGIAN} from "../public/inti/kelengkapan.js";
 
@@ -251,7 +252,7 @@ export const MEJA = {
     kolom: [
       tgl("tgl_data", "Tanggal data", {wajib: true, maks: "hariini"}), k("nama_tempat", "Nama tempat pengungsian", "teks", {wajib: true, maks: 120}), k("pos_lapangan", "Pos lapangan", "teks", {maks: 80}),
       k("jenis_tempat", "Jenis tempat", "pilih", {nilai: ["terkonsentrasi", "tidak_terkonsentrasi"], wajib: true}), k("tipe_tempat", "Tipe tempat", "pilih", {nilai: ["fasilitas_umum", "tanah_lapang", "lahan_gedung_swasta", "tempat_ibadah", "rumah_perorangan"]}),
-      k("kejadian", "Bencana", "pilih", {nilai: BENCANA, wajib: true}), angka("pendataan_ke", "Pendataan ke", {min: 1, maks: 1000, wajib: false}), tgl("tgl_buka", "Tanggal buka", {wajib: true, maks: "hariini"}), tgl("tgl_tutup", "Tanggal tutup"),
+      k("kejadian", "Bencana", "pilih", {nilai: BENCANA, wajib: true}), angka("pendataan_ke", "Pendataan ke", {min: 1, maks: 1000, wajib: false}), k("titik_id", "Titik pengungsian (kode TP-)", "teks", {maks: 11, wajib: false}), tgl("tgl_buka", "Tanggal buka", {wajib: true, maks: "hariini"}), tgl("tgl_tutup", "Tanggal tutup"),
       angka("kk", "Kepala keluarga (KK)"),
       ...UMUR.flatMap(([u, t]) => [angka(`${u}_l`, `${t} laki-laki`), angka(`${u}_p`, `${t} perempuan`)]),
       ...["bayi", "balita", "anak"].flatMap(u => [angka(`yatim_${u}_l`, `Yatim piatu ${u} laki-laki`, {wajib: false}), angka(`yatim_${u}_p`, `Yatim piatu ${u} perempuan`, {wajib: false}), angka(`pisah_${u}_l`, `Terpisah wali ${u} laki-laki`, {wajib: false}), angka(`pisah_${u}_p`, `Terpisah wali ${u} perempuan`, {wajib: false})]),
@@ -363,43 +364,24 @@ export const EKSPOR_RISIKO = {
 /* pasangan 'meja:dari>ke' sah; sama dengan trigger meja_catatan_ubah */
 export const PASANGAN = DAFTAR_MEJA.flatMap(m => Object.entries(MEJA[m].transisi).flatMap(([d, o]) => Object.keys(o).map(ke => `${m}:${d}>${ke}`)));
 /* bentuk untuk klien: tanpa fungsi */
-export const spekPublik = () => ({ambang: AMBANG, ambang_internal: AMBANG_INTERNAL, rapor: RAPOR, meja: Object.values(MEJA).map(m => Object.fromEntries(Object.entries(m).filter(([, v]) => typeof v !== "function")))});
+/* titik_id tidak dikirim ke peramban sampai layar KP-20 (data/kajian-bnpb/keterpaduan/TIKET.md) ada; server tetap menerimanya. */
+const tanpaTitik = m => m.id === "pengungsi" ? {...m, kolom: m.kolom.filter(c => c.nama !== "titik_id")} : m;
+export const spekPublik = () => ({ambang: AMBANG, ambang_internal: AMBANG_INTERNAL, rapor: RAPOR, meja: Object.values(MEJA).map(tanpaTitik).map(m => Object.fromEntries(Object.entries(m).filter(([, v]) => typeof v !== "function")))});
 
 /* ---------------------------------------------------------------- tanggal */
 const selisihHari = (a, b) => Math.round((Date.parse(a + "T00:00:00Z") - Date.parse(b + "T00:00:00Z")) / HARI);
 const mundurBulan = (t, n) => { const d = new Date(t + "T00:00:00Z"); d.setUTCMonth(d.getUTCMonth() - n); return d.toISOString().slice(0, 10); };
 
 /* ---------------------------------------------------------------- validasi */
-const URL_OK = s => { try { const u = new URL(s); return (u.protocol === "http:" || u.protocol === "https:") && !u.username && !u.password && !/\s/.test(s); } catch (e) { return false; } };
-function satu(c, v, kini) {
-  const kosong = v == null || v === "";
-  if (kosong) return c.wajib ? {galat: `${c.label} wajib diisi`} : {};
-  if (c.tipe === "teks") {
-    const s = tx(v, c.maks ?? 120); if (!s) return {galat: `${c.label}: teks 1-${c.maks ?? 120} huruf`};
-    const g = c.bersih ? teksBersih(s) : ""; return g ? {galat: `${c.label}: ${g}`} : {v: s};
-  }
-  if (c.tipe === "angka") { const n = num(v, c.min ?? 0, c.maks ?? 1e9, !c.desimal); const p = 10 ** (typeof c.desimal === "number" ? c.desimal : 2); return Number.isNaN(n) ? {galat: `${c.label}: angka ${c.desimal ? "" : "bulat "}${c.min ?? 0} sampai ${c.maks ?? 1e9}`} : {v: c.desimal ? Math.round(n * p) / p : n}; }
-  if (c.tipe === "pilih") return typeof v === "string" && c.nilai.includes(v) ? {v} : {galat: `${c.label}: pilih salah satu dari ${c.nilai.join(", ")}`};
-  if (c.tipe === "multi") return Array.isArray(v) && v.length <= c.nilai.length && v.every(x => typeof x === "string" && c.nilai.includes(x)) && new Set(v).size === v.length ? {v} : {galat: `${c.label}: pilihan tidak sah`};
-  if (c.tipe === "gudang") return typeof v === "string" && /^[0-9a-f]{16}$/.test(v) ? {v} : {galat: `${c.label}: pilih gudang dari daftar`};
-  if (c.tipe === "ya") return typeof v === "boolean" ? {v} : {galat: `${c.label}: harus ya atau tidak`};
-  if (c.tipe === "tanggal") {
-    const maks = c.maks === "hariini" ? wib(kini + HARI) : c.maks ?? "2100-12-31";
-    return typeof v === "string" && tglSah(v) && v >= (c.min ?? "2000-01-01") && v <= maks ? {v} : {galat: `${c.label}: tanggal YYYY-MM-DD antara ${c.min ?? "2000-01-01"} dan ${maks}`};
-  }
-  if (c.tipe === "tautan") return typeof v === "string" && v.length <= 300 && URL_OK(v) ? {v} : {galat: `${c.label}: tautan http/https, maksimal 300 huruf`};
-  return {galat: `${c.label}: tipe tidak dikenal`};
-}
-/* tahap null = isian awal (kolom tanpa `tahap`); tahap 'dikirim' dst = isian saat pindah ke status itu. Kolom di luar tahap ditolak. */
+/* tahap null = isian awal (kolom tanpa `tahap`); tahap 'dikirim' dst = isian saat pindah ke status itu. Kolom di luar tahap ditolak.
+   Validasinya SATU: periksa() dari public/inti/spek.js, modul yang sama dipakai peramban (public/bnpb/meja.js). Bentuk keluaran tetap {galat: teks} atau {data}. */
 export function validasi(meja, masuk, tahap, kini = Date.now(), lama = {}) {
   const M = MEJA[meja]; if (!M) return {galat: "meja tidak dikenal"};
   if (!masuk || typeof masuk !== "object" || Array.isArray(masuk)) return {galat: "data harus objek"};
-  const boleh = M.kolom.filter(c => (c.tahap ?? null) === tahap && c.tipe !== "wilayah"), nama = new Set(boleh.map(c => c.nama));
-  for (const x of Object.keys(masuk)) if (!nama.has(x)) return {galat: `kolom "${x.slice(0, 40)}" tidak dikenal untuk ${tahap ? "tahap " + tahap : "isian awal"} di meja ${M.nama}`};
-  const data = {};
-  for (const c of boleh) { const r = satu(c, masuk[c.nama], kini); if (r.galat) return r; if (r.v !== undefined) data[c.nama] = r.v; }
-  const gabung = {...lama, ...data}, g = M.cek?.(gabung);
-  return g ? {galat: g} : {data: {...data, ...M.hitung?.(gabung)}};
+  const r = periksa(dariMeja(M, {tahap, bersih: teksBersih}), masuk, {kini, lama});
+  if (!r.ok) return {galat: r.galat[0].pesan};
+  const gabung = {...lama, ...r.data};
+  return {data: {...r.data, ...M.hitung?.(gabung)}};
 }
 
 /* ---------------------------------------------------------------- status turunan & tanda bahaya */

@@ -503,6 +503,14 @@ export const ktTautan = async (env, p, pairs, dummyOk) => {
 export const ktKab = async (env, p, ids) => ids.length ? (await sedia(env, p, "sk_kejadian_kab", "baca", "SELECT kejadian_id, kab4 FROM sk_kejadian_kab WHERE kejadian_id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(ids)).all()).results : [];
 export const ktBaris = async (env, sumber, {lo, hi, w, id, batas}) => (await env.DB.prepare(KT[sumber][0]).bind(Math.max(lo, w), hi, w, id, batas + 1).all()).results;
 
+/* KP-19 titik pengungsian (migrasi 0134_titik_pengungsian, 0135_meja_pengungsi_titik; src/pengungsian_titik.js). Hak dicek di rute; tidak ada rute publik. */
+export const tpDaftar = async (env, kab4) => (await env.DB.prepare("SELECT t.id, t.prov, t.kab4, t.kec, t.desa, t.nama, t.jenis_tempat, t.lat, t.lon, t.kejadian_id, t.buka, t.tutup, (SELECT max(json_extract(c.data, '$.tgl_data')) FROM meja_catatan c WHERE c.meja = 'pengungsi' AND json_extract(c.data, '$.titik_id') = t.id) putaran_terakhir FROM titik_pengungsian t WHERE t.kab4 = ? ORDER BY t.tutup IS NOT NULL, t.nama LIMIT 300").bind(kab4).all()).results;
+export const tpById = (env, id) => env.DB.prepare("SELECT id, kab4, nama, tutup, buka FROM titik_pengungsian WHERE id = ?").bind(id).first();
+export const tpSekitar = async (env, kab4, lat, lon, d) => (await env.DB.prepare("SELECT id, nama, lat, lon FROM titik_pengungsian WHERE kab4 = ? AND lat BETWEEN ? AND ? AND lon BETWEEN ? AND ? LIMIT 50").bind(kab4, lat - d, lat + d, lon - d, lon + d).all()).results;
+export const tpKejadianKab = async (env, kejadianId, kab4) => { try { return !!await env.DB.prepare("SELECT 1 FROM sk_kejadian_kab WHERE kejadian_id = ? AND kab4 = ?").bind(kejadianId, kab4).first(); } catch (e) { if (/no such table/i.test(String(e?.message || e))) return false; throw e; } };
+export const tpSisip = (env, ...v) => env.DB.prepare("INSERT INTO titik_pengungsian (id, prov, kab4, kec, desa, nama, jenis_tempat, lat, lon, kejadian_id, buka, dibuat, pembuat) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)").bind(...v).run();
+export const tpTutup = async (env, id, tgl) => !!(await env.DB.prepare("UPDATE titik_pengungsian SET tutup = ? WHERE id = ? AND tutup IS NULL").bind(tgl, id).run()).meta.changes;
+
 /* ======================================================================================================================================================
    Paritas bencana PB-07 (migrasi 0130; data/kajian-bnpb/paritas-bencana/DESAIN-TEKNIS.md 3.2). Jenis tugas longsor dan pesisir ada di tugas_bencana_x (CHECK tugas_bencana 0047
    tidak mencakupnya). Tabel 0130 belum diterapkan = hanya tugas_bencana yang dibaca; karhutla dan tujuh jenis lama tetap jalan. Keduanya SEARCH lewat PK tugas_id. */

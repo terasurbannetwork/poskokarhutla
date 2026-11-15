@@ -4,6 +4,7 @@
    Meja "Data kejadian dan dampak" (kolom `bagian` di spek): formulir per bagian yang bisa dilipat, pilihan Nihil per bagian, meter kelengkapan hidup (debounce),
    draf isian tersimpan di perangkat, impor .xlsx per 50 baris. */
 import {kelengkapan, butir, BAGIAN} from "/inti/kelengkapan.js";
+import {periksa, gambar as gambarSpek, dariMeja} from "/inti/spek.js";
 import {bacaXlsx, barisDariLembar, potong, angkaId} from "/bnpb/meja_impor.js";
 {
   const app = document.getElementById("app"), KUNCI = "meja_kode", HAL = 15;
@@ -227,7 +228,7 @@ import {bacaXlsx, barisDariLembar, potong, angkaId} from "/bnpb/meja_impor.js";
     const judul = t === "baru" ? `Tambah ${m.nama.toLowerCase()}` : t === "ubah" ? `Ubah ${m.nama.toLowerCase()}` : `Pindah ke ${label(form.ke).toLowerCase()}`;
     return `<form class="bn-blok mj-form" id="mjForm" autocomplete="off" novalidate><h2>${IK.tambah}${esc(judul)}</h2>${wil}
       ${t === "baru" && m.tautKaji ? `<label class="bn-isian">Kaji cepat induk (opsional, yang sudah masuk JITUPASNA)<select name="_kaji">${opsKaji()}</select></label>` : ""}
-      <div class="bn-baris">${kolom.map(k => isian(k, r?.data?.[k.nama])).join("")}</div>
+      <div id="mjSpek"></div>
       ${t === "status" ? `<label class="bn-isian">Catatan (opsional)<input name="_catatan" maxlength="200" autocomplete="off"></label>` : ""}
       <div class="mj-aksi"><button class="mj-btn utama" type="submit">Simpan</button><button class="mj-btn" type="button" data-batal="1">Batal</button></div></form>`;
   };
@@ -304,8 +305,16 @@ import {bacaXlsx, barisDariLembar, potong, angkaId} from "/bnpb/meja_impor.js";
         <span class="mj-redup" id="mjJumlah">${n} catatan di ${esc(saya.petugas.kab)}</span></div>`}
       <div id="mjImpor">${panelImpor()}</div>
       <div id="mjTabel">${form ? "" : htmlTabel()}</div>`;
-    pasangFormDampak();
+    pasangFormDampak(); pasangSpek();
   }
+  /* spek bersama (public/inti/spek.js): sama dengan yang dipakai server (src/meja_spek.js validasi). Kolom gudang dipilih admin, tidak diisi petugas. */
+  const spekMeja = (m, tahap) => dariMeja({kolom: m.kolom.filter(k => k.tipe !== "gudang")}, {tahap});
+  const pasangSpek = () => {
+    const el = document.getElementById("mjSpek"); if (!el || !form) return;
+    const m = M(), sp = spekMeja(m, form.mode === "status" ? form.ke : null), awal = {};
+    for (const c of sp.kolom) { const v = form.baris?.data?.[c.nama]; if (v != null && form.mode !== "status") awal[c.nama] = v; }
+    form.spek = gambarSpek(sp, el, awal);
+  };
   const lapor = (t, ok) => { pesanT = t; pesanOk = ok; };
   async function muat(tanpaForm) {
     const r = await api("GET", `/api/meja/catatan?meja=${meja}`);
@@ -394,7 +403,9 @@ import {bacaXlsx, barisDariLembar, potong, angkaId} from "/bnpb/meja_impor.js";
       if (!r.ok) { tombol.disabled = false; return salah(r, "Gagal menyimpan stok"); }
       form = null; lapor("Stok tersimpan.", true); return muat();
     }
-    const kolom = m.kolom.filter(k => (k.tahap ?? null) === (form.mode === "status" ? form.ke : null)), data = ambil(f, kolom);
+    const tahap = form.mode === "status" ? form.ke : null, kolom = m.kolom.filter(k => (k.tahap ?? null) === tahap), data = dampakM() ? ambil(f, kolom) : form.spek.isi();
+    const cek = dampakM() ? periksa(spekMeja(m, tahap), data) : form.spek.periksa();   // sama dengan server; kolom gudang, cek lintas kolom, dan data pribadi tetap diputuskan server
+    if (!cek.ok) { tombol.disabled = false; const g = cek.galat[0].pesan; salah({j: {galat: g}, s: 400}, "Gagal menyimpan"); if (dampakM()) tandaiGalat(f, g); return; }
     const wil = dampakM() ? {kec: f.elements._kec?.value.trim() || undefined, desa: f.elements._desa?.value.trim() || undefined} : {...(f.elements._desa ? {desa: f.elements._desa.value.trim() || undefined} : {}), ...(f.elements._kec ? {kec: f.elements._kec.value.trim() || undefined} : {})};
     const r = form.mode === "baru" ? await antre.kirim("POST", "/api/meja/catatan", {meja, ...wil, ...(m.tautKaji && f.elements._kaji?.value ? {kaji_id: f.elements._kaji.value} : {}), data})
       : form.mode === "ubah" ? await antre.kirim("POST", `/api/meja/catatan/${form.baris.id}`, {aksi: "ubah", ...wil, data})

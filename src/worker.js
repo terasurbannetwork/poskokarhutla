@@ -34,6 +34,7 @@ import {RUTE_ALUN} from "./alun.js";
 import {RUTE_MASUK} from "./masuk.js";
 import {RUTE_RISET} from "./riset.js";
 import {RUTE_MEJA, segarkanRingkas} from "./meja.js";
+import {RUTE_PENGUNGSIAN_TITIK} from "./pengungsian_titik.js";
 import {RUTE_PENGINGAT, buatPengingat, buatPengingatPrioritas} from "./pengingat.js";
 import {RUTE_OPS, nilaiDropTertunda} from "./operasi_lapangan.js";
 import {RUTE_INSTANSI, tugasBaruDariBerkas, bersihkanInstansi} from "./instansi.js";
@@ -604,6 +605,7 @@ const RUTE = {
   ...RUTE_MASUK,   // Satu Pintu Masuk: kode WA, sesi akun umum (src/masuk.js, paket data/kajian-bnpb/pintu-masuk/)
   ...RUTE_RISET,
   ...RUTE_MEJA,
+  ...RUTE_PENGUNGSIAN_TITIK,   // titik pengungsian TP- (src/pengungsian_titik.js, migrasi 0134, Keterpaduan KP-19)
   ...RUTE_UJI_BANJIR,   // uji lapangan banjir: POST /api/instansi/uji-banjir (akun instansi), GET /api/uji-lapangan/banjir agregat (src/uji_banjir.js)
   ...RUTE_UJI,   // uji lapangan karhutla: GET /api/uji-lapangan agregat Q1-Q5, tanpa data pribadi (src/uji_lapangan.js)
   ...RUTE_INSTANSI,   // akun instansi (pemda, polisi, TNI) dan tugas api per kompleks (src/instansi.js)

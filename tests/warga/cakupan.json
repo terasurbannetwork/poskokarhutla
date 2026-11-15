@@ -1274,7 +1274,11 @@
     "GET /api/masuk/saya": "masuk U-2b:",
     "POST /api/masuk/keluar": "masuk U-2b:",
     "table mk_denyut": "masuk U-11:",
-    "GET /api/masuk/saluran": "masuk U-11:"
+    "GET /api/masuk/saluran": "masuk U-11:",
+    "GET /api/pengungsian/titik": "petugas kab A tidak membuat, melihat",
+    "POST /api/pengungsian/titik": "T11 titik pengungsian: 150 m",
+    "POST /api/pengungsian/titik/tutup": "T11 titik pengungsian: 150 m",
+    "table titik_pengungsian": "T12 isian (titik, tanggal) ganda 409"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

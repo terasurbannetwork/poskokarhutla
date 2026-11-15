@@ -770,8 +770,9 @@ uji("juklak pengungsi: agregat tanpa nama, turunan dihitung server, jumlah haria
   assert.equal(rk.n, 3); assert.equal(rk.status.berjalan, 2); assert.equal(rk.status.ditutup, 1);
   assert.equal(rk.jumlah.kk, 6, "KK dari catatan terbaru, tanpa tempat tertutup dan tanpa hari lama"); assert.equal(rk.jumlah.jiwa_total, 17, "jiwa terbaru 17, bukan jumlah semua hari");
   /* kolom terpanjang lewat rute: JSON tetap dalam CHECK 6000 huruf */
+  /* titik_id harus kode titik nyata (KP-19): dilewati di sini, diuji di pengungsian_titik.test.mjs */
   const penuh = {};
-  for (const c of MEJA.pengungsi.kolom.filter(c => (c.tahap ?? null) === null)) penuh[c.nama] = c.tipe === "angka" ? c.maks : c.tipe === "teks" ? '"'.repeat(c.maks) : c.tipe === "pilih" ? c.nilai.reduce((a, x) => x.length > a.length ? x : a, "") : hari(0);
+  for (const c of MEJA.pengungsi.kolom.filter(c => (c.tahap ?? null) === null && c.nama !== "titik_id")) penuh[c.nama] = c.tipe === "angka" ? c.maks : c.tipe === "teks" ? '"'.repeat(c.maks) : c.tipe === "pilih" ? c.nilai.reduce((a, x) => x.length > a.length ? x : a, "") : hari(0);
   penuh.tgl_tutup = hari(0); const v = validasi("pengungsi", penuh, null, KINI); assert.ok(!v.galat, v.galat); assert.ok(JSON.stringify(v.data).length <= 6000, "JSON terpanjang: " + JSON.stringify(v.data).length);
   const bb = await adm("POST", "/api/meja/catatan", {meja: "pengungsi", prov: "71", kab: "Kab Batas", desa: "Desa B", kec: "Kec B", data: penuh}); assert.equal(bb.s, 201, bb.t);
   assert.ok((await DB.prepare("SELECT length(data) n FROM meja_catatan WHERE id = ?").bind(bb.j.catatan.id).first()).n <= 6000);

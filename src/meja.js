@@ -12,10 +12,11 @@ import {halamanBnpb} from "./admin_halaman.js";
 import {PROV} from "./alun.js";
 import {waktuTanggapApi} from "./sla.js";
 import {stafPeran, dalamWilayahStaf, wilayahStaf} from "./staf.js";
-import {stmtPelapor, stmtHapusPelaporDummy, pengaduanById, bacaPelapor, stmtJejakPelapor, cariKejadianLogbook, kejadianLogbookById, kibLogbook, simpanTautanLogbook, batalTerima, stmtHapusKelengkapanGrup, stmtHapusKelengkapan, stmtSisipKelengkapan, bacaKelengkapan, stmtImporDampak, batchTulis, skemaMejaAda} from "./hak.js";
+import {tpById, stmtPelapor, stmtHapusPelaporDummy, pengaduanById, bacaPelapor, stmtJejakPelapor, cariKejadianLogbook, kejadianLogbookById, kibLogbook, simpanTautanLogbook, batalTerima, stmtHapusKelengkapanGrup, stmtHapusKelengkapan, stmtSisipKelengkapan, bacaKelengkapan, stmtImporDampak, batchTulis, skemaMejaAda} from "./hak.js";
 import {buatKejadian, lanjutEntri, periksaEntri} from "./logbook.js";
 import {cariKab, bangunMuatan, luarJendela, tutupKab, tanggalWib} from "./meja_terima.js";
 import {BAGIAN} from "../public/inti/kelengkapan.js";
+import {kab4Dari} from "./siklus_kab.js";
 import {MEJA, DAFTAR_MEJA, DAFTAR_PETUGAS, MEJA_RAPOR, PUSAT, EKSPOR_RISIKO, BENCANA, RAPOR, spekPublik, validasi, statusEfektif, tandaBahaya, teksBersih} from "./meja_spek.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, LAJU_TULIS = [[JAM, 120]], LAJU_PELAPOR = [[JAM, 30]], TTL_RINGKAS = 2 * JAM, MAKS_EKSPOR = 20000, MAKS_ISIAN = 16384, MAKS_IMPOR = 256 * 1024, MAKS_BARIS_IMPOR = 50, MAKS_KAB_IMPOR = 8, LAJU_IMPOR = [[JAM, 5]], LAJU_TERIMA = [[JAM, 60]],   /* impor: batas CPU 10 ms akun Free */ RE_ID = /^[0-9a-f]{16}$/;
@@ -34,7 +35,7 @@ const tolak = () => gagal(403, "akses ditolak: butuh kode petugas atau token adm
 
 /* ---------------------------------------------------------------- pelaku */
 const adminSaja = async (env, req) => { const m = await modOK(env, req); return m ? {admin: true, oleh: "admin:" + m} : tolak(); };
-async function pelaku(env, req) {
+export async function pelaku(env, req) {
   if (!req.headers.get("x-kode")) {
     const m = await modOK(env, req); if (m) return {admin: true, oleh: "admin:" + m};
     const u = await stafPeran(env, req, PERAN_ULP);   // staf Irtama/ULP hanya untuk meja pengaduan (daftar, buat, muatBaris menjaga)
@@ -122,6 +123,13 @@ function cekPelapor(o) {
   if (Object.values(v).includes(undefined)) return {galat: "identitas pelapor: teks melebihi batas atau bukan teks"};
   return {v: Object.values(v).some(Boolean) ? v : null};
 }
+/* KP-19: titik_id (opsional, meja pengungsi) harus titik yang ada di kabupaten catatan; catatan tanpa titik memakai indeks lama */
+async function cekTitik(env, meja, data, prov, kab) {
+  if (meja !== "pengungsi" || data.titik_id == null) return null;
+  const t = /^TP-[A-Z2-7]{8}$/.test(data.titik_id) ? await tpById(env, data.titik_id).catch(() => null) : null, kab4 = kab4Dari(prov, kab);
+  if (!(t && kab4 && t.kab4 === kab4)) return gagal(400, "titik pengungsian tidak ditemukan di kabupaten ini");
+  return t.tutup && data.tgl_data > t.tutup ? gagal(400, `titik pengungsian ini sudah ditutup pada ${t.tutup}; tanggal data tidak boleh sesudahnya`) : null;
+}
 async function buat(env, req, kini) {
   const p = await pelaku(env, req); if (p instanceof Response) return p;
   const b = await bacaBody(req, MAKS_ISIAN); if (b.galat) return gagal(b.status || 400, b.galat);
@@ -158,6 +166,7 @@ async function buat(env, req, kini) {
     if (!kj || kj.meja !== "kaji_cepat" || kj.status !== "masuk_jitupasna" || kj.prov !== prov || kj.kab !== kab || kj.dummy) return gagal(400, "kaji_id harus catatan kaji cepat berstatus masuk_jitupasna di kabupaten ini");
     kajiId = b.o.kaji_id; wl = {kec: kj.kec, desa: kj.desa};
   }
+  const tt = await cekTitik(env, M.id, v.data, prov, kab); if (tt) return tt;
   if (p.petugas) { const l = await laju(env, p.petugas.id, "meja.tulis", LAJU_TULIS, kini); if (l) return l; }
   const id = acak(8);
   try {
@@ -273,6 +282,8 @@ async function ubah(env, req, id, kini) {
     const wl = wilayahTeks({kec: b.o.kec ?? r.kec, desa: b.o.desa ?? r.desa}, M); if (wl.galat) return gagal(400, wl.galat);
     data = v.data; ({kec, desa} = wl);
     for (const sk of M.sistem ?? []) if (lama[sk] != null) data[sk] = lama[sk];   // tautan Logbook tidak hilang saat isi diperbarui
+    if (r.meja === "pengungsi" && lama.titik_id) data.titik_id = lama.titik_id;   // titik tidak dipindah sesudah dibuat
+    const tt = await cekTitik(env, r.meja, data, r.prov, r.kab); if (tt) return tt;
     if (M.ubahBuka && r.status !== M.awal) ke = M.awal;   // isi berubah sesudah diverifikasi/diterima: verifikasi ulang, penerimaan berikutnya jadi pengkinian
     /* gudang: stok_awal menggerakkan saldo, jadi petugas tidak boleh; admin boleh dan selisih terhadap stok_awal lama menggeser saldo dan dicatat sebagai baris meja_stok koreksi (saldo bergeser relatif, bukan dihitung ulang) */
     if (r.meja === "gudang") {
