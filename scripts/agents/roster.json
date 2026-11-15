@@ -209,6 +209,7 @@
         "tests/layar/**",
         "tests/prioritas.test.mjs",
         "public/*.css",
+        "public/design-system-*.json",
         "public/suara/**",
         "public/_headers*",
         "public/.assetsignore",
@@ -243,6 +244,7 @@
       "tidak": "pipeline data; worker & D1; workflow",
       "milik": [
         "public/inti/**",
+        "tests/inti/**",
         "public/bencana.json",
         "public/semua/**"
       ]

@@ -44,6 +44,7 @@ Kamu **hanya** mengurus: Pengerja modul layar bersama lintas bencana (public/int
 Berkas milikmu (glob paling spesifik menang):
 
 - `public/inti/**`
+- `tests/inti/**`
 - `public/bencana.json`
 - `public/semua/**`
 

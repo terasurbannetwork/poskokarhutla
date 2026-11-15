@@ -7,5 +7,6 @@
 .antre-ikon:disabled { opacity: .5; cursor: default; }
 .antre-daftar { margin: 0 0 12px; overflow-x: auto; }
 .antre-daftar table { width: 100%; border-collapse: collapse; font-size: .8125rem; }
-.antre-daftar th, .antre-daftar td { padding: 6px 10px; text-align: left; border-bottom: 1px solid #e3e8ef; }
+.antre-daftar th, .antre-daftar td { padding: 6px 10px; border-bottom: 1px solid #e3e8ef; }
+.antre-daftar td { text-align: left; }
 .antre-daftar thead th { background: #0b2a4a; color: #fff; text-align: center; font-weight: 600; }

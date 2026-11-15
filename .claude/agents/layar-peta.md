@@ -48,6 +48,7 @@ Berkas milikmu (glob paling spesifik menang):
 - `tests/layar/**`
 - `tests/prioritas.test.mjs`
 - `public/*.css`
+- `public/design-system-*.json`
 - `public/suara/**`
 - `public/_headers*`
 - `public/.assetsignore`
