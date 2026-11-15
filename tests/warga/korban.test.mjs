@@ -78,7 +78,7 @@ uji("daftar tetap: JS == CHECK migrasi == klien; tanpa titik tengah; teks data l
   const sql = teks(readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && /bencana TEXT NOT NULL DEFAULT .karhutla. CHECK \(bencana IN/.test(teks("migrations/" + f))).sort().map(f => "migrations/" + f).at(-1)), ambil = pola => [...sql.match(pola)[1].matchAll(/'(\w+)'/g)].map(m => m[1]);
   assert.deepEqual(Object.keys(BENCANA), ambil(/bencana TEXT NOT NULL DEFAULT 'karhutla' CHECK \(bencana IN \(([^)]*)\)/)); assert.deepEqual(Object.keys(KATEGORI), ambil(/kategori IN \(('warga'[^)]*)\)/));
   assert.deepEqual(Object.keys(PENYEBAB), ambil(/penyebab IN \(([^)]*)\)/)); assert.deepEqual(Object.keys(SUMBER), ambil(/sumber IN \(('laporan_langsung'[^)]*)\)/)); assert.deepEqual(STATUS, ambil(/status IN \(('dilaporkan'[^)]*)\)/));
-  const bencanaReg = JSON.parse(teks("public/bencana.json")).bencana?.map(b => b.id) ?? JSON.parse(teks("public/bencana.json")).map(b => b.id);
+  const bencanaReg = JSON.parse(teks("public/bencana.json")).bencana.filter(b => !b.layar).map(b => b.id);   // K11: entri dengan medan layar (longsor) = tab banjir, laporan lewat banjir
   for (const b of bencanaReg) assert.ok(b in BENCANA, "bencana terdaftar belum ada di korban: " + b);
   for (const f of ["public/instansi_korban.js", "public/admin/korban.js"]) { const js = teks(f);
     for (const arr of [Object.keys(BENCANA), Object.keys(KATEGORI), Object.keys(PENYEBAB), Object.keys(SUMBER)]) for (const v of arr) assert.ok(js.includes(`"${v}"`), `${f}: tak mengenal ${v}`);

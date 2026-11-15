@@ -231,7 +231,7 @@ uji("BAHAYA = lapor_bahaya registry + umum, tiap bahaya registry diterima CHECK,
   const dariRegistry = new Set(["umum", ...REGISTRY.bencana.flatMap(b => b.lapor_bahaya)]);
   assert.deepEqual(new Set(Object.keys(BAHAYA)), dariRegistry, "BAHAYA harus persis lapor_bahaya registry + umum");
   for (const b of Object.keys(BAHAYA)) lapor({bahaya: b});   // jenis umum (listrik:padam) di tiap bahaya
-  for (const b of REGISTRY.bencana) assert.ok(Object.values(JENIS).some(d => d.bahaya && b.lapor_bahaya.some(x => d.bahaya.includes(x))), `bencana ${b.id} belum punya jenis laporan khusus`);
+  for (const b of REGISTRY.bencana.filter(b => !b.layar)) assert.ok(Object.values(JENIS).some(d => d.bahaya && b.lapor_bahaya.some(x => d.bahaya.includes(x))), `bencana ${b.id} belum punya jenis laporan khusus`);
 });
 
 /* 0020 dijalankan di atas laporan yang sudah berisi beserta anaknya (kontak, suara), seperti produksi */

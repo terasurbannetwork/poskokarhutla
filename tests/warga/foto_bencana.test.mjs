@@ -8,7 +8,8 @@ import path from "node:path";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah, JPEG_SAH, WEBP_SAH} from "./_bantu.mjs";
 
-const REG = JSON.parse(readFileSync(path.join(AKAR, "public/bencana.json"), "utf8")).bencana, ADMIN = {"x-admin-token": "rahasia-admin"};
+// K11: entri bermedan `layar` (longsor) hanya tab layar induk: tanpa halaman, jejak, atau foto_kategori D1 sendiri
+const REG = JSON.parse(readFileSync(path.join(AKAR, "public/bencana.json"), "utf8")).bencana.filter(b => !b.layar), ADMIN = {"x-admin-token": "rahasia-admin"};
 const aset = async req => { const p = decodeURIComponent(new URL(req.url).pathname), f = path.join(AKAR, "public", p.endsWith("/") ? p + "index.html" : p);
   return existsSync(f) && f.startsWith(path.join(AKAR, "public")) ? new Response(readFileSync(f)) : new Response("tidak ada", {status: 404}); };
 const opsi = nama => ({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
