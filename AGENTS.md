@@ -292,7 +292,7 @@ Aturan berhentinya sama dengan §2.1. Zona adalah usulan, tidak pernah masuk ren
 Sebelum menautkan modul ke Buku Besar Kejadian, menyentuh antrean luring IndexedDB atau spek formulir lintas modul, titik pengungsian, atau pemetaan akun ke register `orang`, baca dokumen di
 `data/kajian-bnpb/keterpaduan/` dengan urutan otoritas ini (kode di `public/inti/antre.js`, `public/inti/spek.js`, `public/inti/kj_tanda.js` milik `inti-layar`; `src/kejadian_tautan.js` dan migrasi paket ini milik `warga-api`; sumber baru `scripts/siklus/pasang.py` milik `siklus`):
 
-1. `KEPUTUSAN-KETERPADUAN.md`: keputusan pemilik K1-K7, rancangan D1-D12, pertanyaan terbuka Q1-Q7 dengan bawaan sementara; menang atas semuanya.
+1. `KEPUTUSAN-KETERPADUAN.md`: keputusan pemilik K1-K7, rancangan D1-D13, jawaban pemilik K8-K14 (15 Nov 2026); menang atas semuanya.
 2. `RISET.md` (+ `INVENTARIS-INPUT.md`), 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
 9. `RENCANA-UJI.md`, 10. `TIKET.md` (`KP-*`), `GLOSARIUM.md`.
 

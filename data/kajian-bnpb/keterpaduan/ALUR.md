@@ -20,7 +20,7 @@
 ## A3. Kaji titik pengungsian
 
 1. Petugas kab membuka meja pengungsi, memilih titik dari daftar kab atau membuat titik baru (nama, jenis tempat, koordinat dari GPS atau peta).
-2. Sistem memeriksa titik lain dalam 200 m dan menanyakan bila ada (Q4).
+2. Sistem memeriksa titik lain dalam 200 m dan menanyakan bila ada (K11).
 3. Petugas mengisi putaran: kk, jiwa per umur dan jenis kelamin, rentan, enam kebutuhan.
 4. Titik ditautkan ke kejadian `KJ-` yang aktif di kab itu; bila lebih dari satu, petugas memilih.
 5. Rekap kab tetap memakai catatan terakhir per titik yang masih berjalan.

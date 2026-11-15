@@ -20,11 +20,11 @@ Satu kejadian, satu nomor, di semua layar. Satu antrean luring yang perilakunya 
 | --- | --- | --- |
 | F-1 | Baris tugas api, logbook, SIPPA, tugas lapangan, gempa, dan laporan khusus tertaut ke `KJ-` lewat `sk_kejadian_sumber`. | K1, D1, D3 |
 | F-2 | Tanda `KJ-` di layar tiap modul, mengarah ke halaman kejadian di `/siklus`; tanda "belum bertaut" bila belum. | K1 |
-| F-3 | Isian nomor GLIDE pada kejadian. | D4, Q1 |
+| F-3 | Isian nomor GLIDE pada kejadian dan pengingat staf untuk kejadian besar tanpa GLIDE. | D4, K8 |
 | F-4 | `public/inti/antre.js` dengan saluran per modul dan pita "belum terkirim" bersama. | K3, D5, D6 |
 | F-5 | `public/inti/spek.js`: satu format spek, satu validator, satu penggambar form, templat Excel. | K4, D7 |
 | F-6 | Register titik pengungsian berkode `TP-` dengan koordinat dan tautan kejadian. | K5, D9 |
-| F-7 | Meja pengungsi per titik per putaran; tabel putaran per titik. | K5, D9, Q5 |
+| F-7 | Meja pengungsi per titik per putaran; tabel putaran per titik. | K5, D9, K12 |
 | F-8 | Tabel samping `orang_akun` untuk empat tabel akun, pencocokan NIP baku lalu WA, daftar tinjau bentrok dan NIP tidak baku. | K6, D10 |
 | F-9 | Satu fungsi normal nomor WA. | D11 |
 | F-10 | Gerbang: tabel kejadian atau tugas baru tanpa jalur tautan ditolak; antrean IndexedDB di luar `public/inti/antre.js` ditolak sesudah pemindahan selesai. | AGENTS 3.4 |

@@ -8,7 +8,7 @@
 | Spek | Tidak memuat data; aman disajikan publik seperti `GET /api/meja/spek`. |
 | Titik pengungsian | Nama tempat dan koordinat adalah data operasi, tidak tampil di layar publik. Isian tetap agregat tanpa nama dan NIK (Juklak 9/2023). |
 | `orang_akun` | Tidak menambah salinan nomor WA atau NIP; hanya penunjuk. Daftar tinjau hanya admin. |
-| Jejak per orang | Orangnya sendiri dan admin (Q2); pimpinan hanya angka agregat. Akses jejak dicatat di `pantau_jejak`. |
+| Jejak per orang | Orangnya sendiri dan admin (K9); pimpinan hanya angka agregat. Akses jejak dicatat di `pantau_jejak`. |
 | Pencocok orang | Berjalan di mesin pemilik, menulis SQL ke luar repo; daftar pasangan tidak pernah masuk git (repo publik). |
 
 Pemeriksa: `security-reviewer` dan `guard-api` untuk rute baru; `migrasi-idempoten` untuk semua migrasi paket ini.

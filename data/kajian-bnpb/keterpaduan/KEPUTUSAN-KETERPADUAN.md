@@ -42,16 +42,18 @@ Repo menyimpan satu hal yang sama dalam banyak salinan (ukur 15 Nov 2026, rinci 
 | D12 | Cara masuk (login) tiap peran tidak diubah oleh paket ini. | K6. |
 | D13 | Nomor migrasi diambil saat tiket dikerjakan, sesudah paket `paritas-bencana` yang sudah memesan 0130 dan 0131. Dokumen ini menyebut migrasi dengan nama, bukan nomor. | Menghindari bentrok nomor antarpaket. |
 
-## Pertanyaan terbuka untuk pemilik (Q)
+## Jawaban pemilik atas Q1-Q7 (15 Nov 2026)
 
-| Q | Pertanyaan | Bawaan sementara | Menahan |
-| --- | --- | --- | --- |
-| Q1 | Siapa yang meminta nomor GLIDE ke ADRC untuk kejadian besar? | **[BAWAAN SEMENTARA]** sistem hanya mencatat GLIDE yang diisi staf; tidak meminta sendiri. | tidak menahan |
-| Q2 | Jejak kerja per orang (absen, laporan, isian meja) boleh dilihat siapa? | **[BAWAAN SEMENTARA]** orangnya sendiri dan admin; pimpinan hanya angka agregat. | KP-24 |
-| Q3 | Akun pemirsa ikut dipetakan ke `orang`? | **[BAWAAN SEMENTARA]** tidak; pemirsa tidak menyimpan WA atau NIP. | tidak menahan |
-| Q4 | Siapa yang boleh membuat titik pengungsian baru? | **[BAWAAN SEMENTARA]** petugas kab lewat meja kerja dan staf pusat; titik ganda dalam radius 200 m ditanyakan dulu. | KP-19 |
-| Q5 | Putaran kaji pengungsian wajib tiap berapa hari? | **[BAWAAN SEMENTARA]** tidak dipaksa; layar menandai titik yang putaran terakhirnya lebih dari 3 hari, dan putaran pertama ditargetkan 72 jam sesudah kejadian (IOM DTM). | tidak menahan |
-| Q6 | Berapa lama butir antrean luring ditahan di ponsel? | **[BAWAAN SEMENTARA]** 14 hari, kecuali absen wajah 36 jam (umur nonce yang sudah ada). | tidak menahan |
-| Q7 | Modul tanpa wilayah (`op_isian_kejadian`, `pantau_tugas`, `tugas_bencana`) ikut ditautkan? | **[BAWAAN SEMENTARA]** `tugas_bencana` ikut lewat `tugas_api`; dua lainnya ditunda sampai ada wilayah. | tidak menahan |
+| No | Pertanyaan | Jawaban pemilik |
+| --- | --- | --- |
+| K8 (Q1) | Siapa yang meminta nomor GLIDE ke ADRC? | **Sistem mengingatkan staf untuk meminta.** Kejadian besar tanpa GLIDE masuk daftar tugas staf. Batas "kejadian besar": **[BAWAAN SEMENTARA]** kejadian yang tanggal tanggap daruratnya terisi (`sk_kejadian.tanggap_*`). |
+| K9 (Q2) | Jejak kerja per orang boleh dilihat siapa? | Orangnya sendiri dan admin; pimpinan hanya angka agregat. |
+| K10 (Q3) | Pemirsa ikut dipetakan ke `orang`? | Tidak. |
+| K11 (Q4) | Siapa yang boleh membuat titik pengungsian? | Petugas kab lewat meja kerja dan staf pusat; titik dalam 200 m dari titik lain ditanyakan dulu. |
+| K12 (Q5) | Putaran wajib tiap berapa hari? | Tidak dipaksa; layar menandai titik yang putaran terakhirnya lebih dari 3 hari; putaran pertama ditargetkan 72 jam sesudah kejadian. |
+| K13 (Q6) | Berapa lama butir antrean ditahan? | 14 hari, kecuali absen wajah 36 jam. |
+| K14 (Q7) | Modul tanpa wilayah ikut ditautkan? | Ditunda sampai ada kolom wilayah; `tugas_bencana` ikut lewat `tugas_api`. |
+
+Tidak ada pertanyaan terbuka yang menahan tiket. Satu bawaan sementara tersisa: batas "kejadian besar" di K8.
 
 Migrasi baru di paket ini (`titik_pengungsian`, `meja_pengungsi_titik`, `orang_akun`, `orang_tinjau`, `indeks_kursor_modul`) harus diterapkan pemilik di D1 produksi; tanpa migrasi, rute menjawab 503 dan layar tetap tampil tanpa nomor kejadian.

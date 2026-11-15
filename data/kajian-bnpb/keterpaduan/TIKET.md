@@ -12,7 +12,7 @@ Kerjakan urut; ambil satu tiket, kerjakan hanya cakupannya.
 | KP-05 | `pasang.py`: sumber `sippa`, `lapangan`, `gempa_d1`, `lapsus` | siklus | T16, uji pasang per sumber | KP-04 |
 | KP-06 | Rute `GET /api/kejadian/tautan` | warga-api | T4 | KP-03 |
 | KP-07 | `public/inti/kj_tanda.js` dan pemasangannya di `/instansi`, logbook, SIPPA, `/petugas`, gempa | inti-layar, lalu pemilik layar masing-masing | tinjau lokal; `inp-reviewer` | KP-06 |
-| KP-08 | Isian GLIDE di halaman kejadian `/siklus` | siklus | uji siklus | - |
+| KP-08 | Isian GLIDE di halaman kejadian `/siklus` + pengingat: kejadian besar tanpa GLIDE masuk daftar tugas staf (K8) | siklus | uji siklus | - |
 | KP-09 | `public/inti/antre.js` + `tests/inti/antre.test.mjs` | inti-layar | T5, T7 | - |
 | KP-10 | Pindahkan antrean `/siklus` | siklus | T6, T7 | KP-09 |
 | KP-11 | Pindahkan antrean meja dan relawan (`public/bnpb/antre.js`) | ruang-bnpb | T6, T7 | KP-09 |
@@ -28,5 +28,5 @@ Kerjakan urut; ambil satu tiket, kerjakan hanya cakupannya.
 | KP-21 | Migrasi `orang_akun`, `orang_tinjau` | warga-api (+ migrasi-idempoten) | `migrasi_beku` | KP-02 |
 | KP-22 | `scripts/agents/cocok_orang.mjs` | warga-api | T13 | KP-21 |
 | KP-23 | Layar tinjau pasangan admin | warga-api | tinjau lokal | KP-22 |
-| KP-24 | Jejak per orang | lapangan | tinjau lokal | KP-22, Q2 |
+| KP-24 | Jejak per orang | lapangan | tinjau lokal | KP-22 |
 | KP-25 | Pemilik menerapkan semua migrasi paket ini di D1 produksi dan menjalankan SQL pencocok orang | pemilik | `wrangler d1 migrations apply` | KP-03a, KP-19, KP-21, KP-22 |

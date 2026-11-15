@@ -35,7 +35,7 @@ Kuota baca D1 (5 juta per hari, akun Free): `GET /api/siklus/ingest/modul` memba
 | `/api/kejadian/tautan` | GET | staf, instansi (wilayahnya), petugas (tugasnya) |
 | `/api/pengungsian/titik` | GET, POST | petugas kab meja kerja, staf pusat |
 | `/api/orang/tinjau` | GET, POST | admin |
-| `/api/orang/:id/jejak` | GET | orangnya sendiri, admin (Q2) |
+| `/api/orang/:id/jejak` | GET | orangnya sendiri, admin (K9) |
 
 ## Pemindahan antrean
 
@@ -43,4 +43,4 @@ Tiap halaman: muat `public/inti/antre.js`, buka basis data lama, pindahkan butir
 
 ## Bukan bagian paket ini
 
-Router WA bersama (K2), perubahan login (D12), tautan untuk `op_isian_kejadian` dan `pantau_tugas` (Q7).
+Router WA bersama (K2), perubahan login (D12), tautan untuk `op_isian_kejadian` dan `pantau_tugas` (K14).

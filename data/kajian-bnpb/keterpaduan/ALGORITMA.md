@@ -30,7 +30,7 @@ Kursor: komposit `(waktu, id)`, `LIMIT 501` lalu `lanjut` bila lebih dari 500, s
 - 4xx lain: butir ditolak, ditahan dengan alasan.
 - 413 pada batch: batch dibelah dua.
 - Foto: unggah dulu, simpan `media_id`, kosongkan blob, baru kirim butir.
-- Umur: 14 hari (Q6), absen wajah 36 jam.
+- Umur: 14 hari (K13), absen wajah 36 jam.
 
 ## 3. Spek
 
@@ -43,7 +43,7 @@ Adapter lama ke baru: `pilih` ke `pilihan`, `nilai` ke `pilihan`, `MEDAN` pipa t
 - Kode `TP-` + 8 huruf base32 acak (bukan hash, karena nama tempat bisa berubah).
 - Titik dekat: Worker membaca kandidat di `kab4` yang sama dalam kotak plus minus 0,002 derajat (sekitar 220 m) lewat indeks `(kab4, lat, lon)`, lalu menghitung haversine; di bawah 200 m ditanyakan.
 - Putaran = `pendataan_ke`; satu catatan per (titik, tanggal). Kunci unik baru: `(titik_id, tgl_data)`.
-- Basi: putaran terakhir lebih dari 3 hari dan titik belum tutup (Q5).
+- Basi: putaran terakhir lebih dari 3 hari dan titik belum tutup (K12).
 
 ## 5. Pencocokan orang
 
