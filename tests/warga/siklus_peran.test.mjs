@@ -31,6 +31,8 @@ const RUTE = [   // [kunci, jalur uji, aktor yang BOLEH]
   ["POST /api/siklus/kejadian/:id/publik", `/kejadian/${ID}/publik`, "KO SA"],
   ["POST /api/siklus/kejadian/:id/gabung", `/kejadian/${ID}/gabung`, "KO SA"],
   ["POST /api/siklus/kejadian/:id/koreksi", `/kejadian/${ID}/koreksi`, "KO SA"],
+  ["POST /api/siklus/kejadian/:id/glide", `/kejadian/${ID}/glide`, "PD KO SA"],
+  ["GET /api/siklus/glide/pengingat", "/glide/pengingat", "PD KO SA"],
   ["GET /api/siklus/antrean", "/antrean", "PD KO SA"],
   ["POST /api/siklus/antrean/:sid", `/antrean/${SID}`, "PD KO SA"],
   ["GET /api/siklus/jejak", `/jejak?id=${ID}`, "PD KO PM SA MOD"],
