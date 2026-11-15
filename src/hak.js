@@ -1474,3 +1474,53 @@ export const kuRiwayat = async (env, p, kejadianId, nomor) => {
   const r = await sedia(env, p, "ku_rekomendasi", "baca", KU_SQL.rekomendasiNomor).bind(kejadianId, Number(nomor)).first();
   return r ? dlTindakRiwayat(env, r.kunci) : null;
 };
+
+/* ---------- Kaji ulang: bahan draf (KU-03; ALGORITMA 2a, 3) ----------
+   Bacaan draf, tanpa tulis dan tanpa nama orang. Tugas terhubung = sk_kejadian_sumber sumber 'tugas_api' status 'terpasang'; `kode` di sana = tugas_api.id (KT.tugas_api memakai `t.id kode`;
+   sumber lain seperti lapsus berkode gabungan, jadi hanya 'tugas_api' yang benar-benar tugas). SATU kueri set-based memuat tugas (kolom sama dengan muatTugas di sla.js: tiba dan kabar lewat
+   subkueri, awal 0043 dan penugasan 0035 digugurkan bila belum ada); tabel pendamping dibaca SEKALI lewat subkueri yang sama, tak pernah per tugas. Tabel opsional yang belum ada = null
+   ("belum diaktifkan"), bukan larik kosong. Hitungan kueri maksimal KU_MAKS_KUERI_DRAF (diuji lewat pembungkus prepare). Hak: satu cek ku_kaji baca (tabel sk_*, tugas_*, lf_*, tw_* milik pelaku lain). */
+export const KU_MAKS_KUERI_DRAF = 14, KU_MAKS_TUGAS = 200;
+const KU_TAUTAN = `SELECT kode FROM sk_kejadian_sumber WHERE kejadian_id = ?1 AND sumber = 'tugas_api' AND status = 'terpasang' LIMIT ${KU_MAKS_TUGAS}`;
+export const KU_SQL_DRAF = {
+  kejadian: "SELECT id, jenis, nama, fase, fase_diubah, dibuat, tanggap_mulai, tanggap_akhir FROM sk_kejadian WHERE id = ?1",
+  kab: "SELECT kab4 FROM sk_kejadian_kab WHERE kejadian_id = ?1 LIMIT 100",
+  jejak: "SELECT waktu, dari, ke FROM sk_jejak WHERE obyek = 'kejadian' AND obyek_id = ?1 AND aksi = 'fase' ORDER BY waktu LIMIT 50",
+  tautan: "SELECT count(*) n FROM sk_kejadian_sumber WHERE kejadian_id = ?1 AND sumber = 'tugas_api' AND status = 'terpasang'",
+  muncul: `SELECT tugas_id, waktu FROM tugas_muncul WHERE tugas_id IN (${KU_TAUTAN}) LIMIT 400`,
+  pelajaran: `SELECT id, tugas_id, catatan, dibuat FROM ops_pelajaran WHERE tugas_id IN (${KU_TAUTAN}) LIMIT 400`,
+  layanan: "SELECT kab4, layanan, warna, dibuat FROM lf_riwayat WHERE kejadian_id = ?1 ORDER BY kab4, layanan, dibuat LIMIT 1000",
+  baris3w: "SELECT kab4, klaster, mulai FROM tw_baris WHERE kejadian_id = ?1 LIMIT 1000",
+  tawaran: "SELECT dibuat FROM tw_tawaran WHERE kejadian_id = ?1 LIMIT 1000",
+};
+export const kuSqlTugas = (awal, tugasan, bencana) => `SELECT t.id, t.prov, t.kab, t.status, t.dibuat, t.konfirmasi_pada, t.padam_pada, t.verif_pada, t.padam_verif,
+  ${awal ? "t.terdeteksi_awal, t.himawari_awal" : "NULL terdeteksi_awal, NULL himawari_awal"},
+  ${tugasan ? "(SELECT min(tiba_pada) FROM penugasan WHERE tugas_id = t.id AND tiba_pada IS NOT NULL) tiba" : "NULL tiba"},
+  (SELECT min(dibuat) FROM tugas_isian WHERE tugas_id = t.id AND langkah = 'tindakan') kabar,
+  ${bencana ? "coalesce((SELECT b.bencana FROM tugas_bencana b WHERE b.tugas_id = t.id), 'karhutla')" : "'karhutla'"} bencana
+  FROM tugas_api t WHERE t.dummy = 0 AND t.id IN (${KU_TAUTAN})`;
+const kuOpsional = async (env, sql, ...bind) => {
+  try { return (await env.DB.prepare(sql).bind(...bind).all()).results; }
+  catch (e) { if (/no such table/i.test(String(e?.message ?? e))) return null; throw e; }
+};
+/* null bila kejadian tidak ada. Bentuk hasil = masukan rakitKajiUlang (src/kaji_ulang_rakit.js). */
+export const kuMuatDraf = async (env, p, kejadianId) => {
+  izin(p, "ku_kaji", "baca");
+  kuKj(kejadianId);
+  const [kej, kab, jejak, tautan] = await env.DB.batch(["kejadian", "kab", "jejak", "tautan"].map(k => env.DB.prepare(KU_SQL_DRAF[k]).bind(kejadianId)));
+  if (!kej.results.length) return null;
+  let awal = true, tugasan = true, bencana = true, baris = null;
+  for (let i = 0; i < 4 && !baris; i++) {
+    try { baris = (await env.DB.prepare(kuSqlTugas(awal, tugasan, bencana)).bind(kejadianId).all()).results; }
+    catch (e) {
+      const m = String(e?.message ?? e);
+      if (awal && /no such column: t?\.?(terdeteksi_awal|himawari_awal)/i.test(m)) awal = false;
+      else if (tugasan && /no such table: (main\.)?penugasan/i.test(m)) tugasan = false;
+      else if (bencana && /no such table: (main\.)?tugas_bencana/i.test(m)) bencana = false;
+      else throw e;
+    }
+  }
+  const [muncul, pelajaran, layanan, baris3w, tawaran] = [await kuOpsional(env, KU_SQL_DRAF.muncul, kejadianId), await kuOpsional(env, KU_SQL_DRAF.pelajaran, kejadianId),
+    await kuOpsional(env, KU_SQL_DRAF.layanan, kejadianId), await kuOpsional(env, KU_SQL_DRAF.baris3w, kejadianId), await kuOpsional(env, KU_SQL_DRAF.tawaran, kejadianId)];
+  return {kejadian: kej.results[0], kab: kab.results.map(r => r.kab4), jejak: jejak.results, tugas: baris, tautan: tautan.results[0].n, muncul, pelajaran, layanan, baris3w, tawaran};
+};
