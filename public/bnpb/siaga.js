@@ -247,6 +247,20 @@
   const gambarSekarang = () => { cancelAnimationFrame(rafId); isiSemua(); };
   function ganti(k) { kode = k; lokal(KUNCI, k); gambarIsi(); }
 
+  /* Papan SK status darurat (PB-29, F-20): seksi terpisah dari kalender risiko; sumbernya logbook_sk lewat /api/pb/papan-sk. Skrip dan CSS dimuat malas saat seksi mendekati layar. */
+  function papanSkMalas(host, sProv) {
+    let jalan = false;
+    const muat = () => {
+      if (jalan) return; jalan = true;
+      const ln = document.createElement("link"); ln.rel = "stylesheet"; ln.href = "/inti/pb_titik.css"; document.head.append(ln);
+      const sc = document.createElement("script"); sc.src = "/inti/papan_sk.js";
+      sc.onload = () => { const p = window.PbPapanSk.pasang(host, {prov: sProv.value, provDaftar: Object.entries(PROV)}); sProv.addEventListener("change", () => p.gantiProv(sProv.value)); };   // ganti provinsi siaga ikut ke papan
+      document.head.append(sc);
+    };
+    if ("IntersectionObserver" in window) { const io = new IntersectionObserver(e => { if (e.some(x => x.isIntersecting)) { io.disconnect(); muat(); } }, {rootMargin: "300px"}); io.observe(host); }
+    else setTimeout(muat, 1500);
+  }
+
   async function mulai() {
     [D, SEN, KB, SU] = await Promise.all([ambil("/data/bnpb/siaga.json"), ambil("/data/senyap.json"), ambil("/data/bnpb/logbook_kebutuhan.json"), ambil("/data/bnpb/logbook_susulan.json")]);
     if (!D) return app.replaceChildren(kosong("peringatan", "Data siaga belum terbit. Jalankan scripts/bnpb/siaga.py."));
@@ -263,10 +277,12 @@
     const sb = h("div", {class: "sg-bulan", role: "radiogroup", "aria-label": "Bulan"});
     BLN.forEach((n, i) => { const r = h("input", {type: "radio", name: "sgbln", value: i + 1, checked: i + 1 === bulan}); r.addEventListener("change", () => { bulan = i + 1; ref = i + 1 === kini.getUTCMonth() + 1 ? new Date(Date.UTC(kini.getUTCFullYear(), kini.getUTCMonth(), kini.getUTCDate())) : new Date(Date.UTC(kini.getUTCFullYear() + (i + 1 < kini.getUTCMonth() + 1 ? 1 : 0), i, 1)); gambarIsi(); }); sb.append(h("label", null, r, n.slice(0, 3))); });
     boxIsi = h("div", {class: "bn-form"});
+    const hostSk = h("div", {class: "sg-tidakcetak"});
     const aksi = h("div", {class: "bn-aksi"});
     app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Siaga pra-musim"}), sedangDummy ? pil("data dummy aktif", "info", "uji") : null, aksi),
-      h("section", {class: "bn-blok sg-pilih sg-tidakcetak"}, h("div", {class: "bn-baris"}, h("label", {class: "bn-isian"}, "Provinsi", sProv), h("label", {class: "bn-isian"}, "Kabupaten/kota", sKab)), sb), boxIsi);
+      h("section", {class: "bn-blok sg-pilih sg-tidakcetak"}, h("div", {class: "bn-baris"}, h("label", {class: "bn-isian"}, "Provinsi", sProv), h("label", {class: "bn-isian"}, "Kabupaten/kota", sKab)), sb), boxIsi, hostSk);
     gambarSekarang();
+    papanSkMalas(hostSk, sProv);
     pasangTip();
     superDummy(aksi);
   }

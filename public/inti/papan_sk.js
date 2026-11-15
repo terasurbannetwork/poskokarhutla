@@ -59,9 +59,9 @@
       if (S.tutup) return;
       if (!S.sk.length) { ringkas.textContent = ""; return wadah.replaceChildren(el("p", "ops-kosong", "Tidak ada SK status darurat yang tercatat berlaku untuk pilihan ini.")); }
       const nb = hitungBerakhir(S.sk);
-      ringkas.textContent = S.sk.length + " SK tercatat berlaku, " + nb + " akan berakhir dalam 7 hari." + (S.terpotong ? " Daftar dipotong 500 baris; persempit pilihan." : "");
+      ringkas.textContent = S.sk.length.toLocaleString("id-ID") + " SK tercatat berlaku, " + nb.toLocaleString("id-ID") + " akan berakhir dalam 7 hari." + (S.terpotong ? " Daftar dipotong 500 baris; persempit pilihan." : "");
       const isi = [tabel(["Bencana", "Jenis status", "Wilayah", "Nomor SK", "Mulai", "Selesai", "Sisa hari", "Penanda"], S.sk.slice(0, S.batas).map(s => barisSk(s, S.reg, namaProv)))];
-      if (S.sk.length > S.batas) { const l = tombol("daftar", "Tampilkan lagi (" + (S.sk.length - S.batas) + " baris)", "pb-sekunder"); l.dataset.lagi = "1"; isi.push(l); }
+      if (S.sk.length > S.batas) { const l = tombol("daftar", "Tampilkan lagi (" + (S.sk.length - S.batas).toLocaleString("id-ID") + " baris)", "pb-sekunder"); l.dataset.lagi = "1"; isi.push(l); }
       wadah.replaceChildren(...isi);
     }
     async function muat() {
@@ -80,7 +80,9 @@
 
     const mulai = () => { isiBen(); muat(); };
     if (S.reg) mulai(); else api("/bencana.json").then(r => { if (S.tutup) return; S.reg = r.j; mulai(); });
-    return {muat, tutup() { S.tutup = true; host.replaceChildren(); }, _S: S};
+    /* pemasang luar (mis. pilihan provinsi /bnpb/siaga) mengganti provinsi tanpa membangun ulang kartu */
+    const gantiProv = p => { if (selProv.value === (p || "")) return; selProv.value = p || ""; muat(); };
+    return {muat, gantiProv, tutup() { S.tutup = true; host.replaceChildren(); }, _S: S};
   }
 
   g.PbPapanSk = {tgl, sisaTeks, penanda, wilayahTeks, bencanaNama, pilihBencana, barisSk, hitungBerakhir, urlPapan, galatRamah, pasang};
