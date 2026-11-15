@@ -22,6 +22,7 @@ import sys
 import time
 import urllib.parse
 import urllib.request
+from datetime import datetime as dt_, timedelta
 from pathlib import Path
 
 AKAR = Path(__file__).resolve().parents[2]
@@ -347,11 +348,240 @@ def rakit_pesisir(a, titik, B, ambil=None):
     return r, isi
 
 
+# ---- PB-37/39/41/43/45: udara, kekeringan, cuaca, gempa, gunung api. Sumber target = keluaran yang ADA di repo (nama berkas di docstring tiap
+# fungsi); tanpa ambang karangan; skor skor_generik sama rata berlabel hipotesis; fitur 0..1 = nilai relatif terhadap yang terbesar di antara
+# kandidat (rumus ditulis di docstring dan di keluaran). Level resmi (pvmbg) hanya dicatat dan menyaring, tidak masuk skor. Keluaran yang
+# dibutuhkan tidak ada atau tidak bertanggal cocok -> 0 target dengan `alasan_kosong` jujur, bukan karangan. Sumber gagal dibaca -> RuntimeError.
+PUSAT_KEC = AKAR / "public/banjir/data/pusat_kec.json"
+ASAP = AKAR / "public/data/asap.json"
+KEKERINGAN = AKAR / "public/data/kekeringan_wilayah.json"
+KEKERINGAN_META = AKAR / "public/data/kekeringan_meta.json"
+CUACA_KEC = AKAR / "public/banjir/data/cuaca_kec.json"
+GEMPA_M5 = AKAR / "public/gempa/data/riwayat_m5.json"
+GUNUNG_STATUS = AKAR / "public/banjir/data/gunungapi_status.json"
+
+
+def _js(jalur):
+    return json.loads(Path(jalur).read_text(encoding="utf-8"))
+
+
+def _koma(x):
+    return str(x).replace(".", ",")
+
+
+def _rel_tetap(kand, pembagi, kunci):
+    """fitur `kunci` = nilai mentah (`_n`) / pembagi, 0..1."""
+    for c in kand:
+        c["fitur"] = {kunci: round(c.pop("_n") / pembagi, 3)}
+    return kand
+
+
+def _rel(kand, kunci):
+    """pembagi = nilai mentah terbesar di antara kandidat: peringkat relatif, bukan ukuran bahaya."""
+    return _rel_tetap(kand, max((c["_n"] for c in kand), default=1) or 1, kunci)
+
+
+def target_udara(prov, tanggal, jalur=ASAP):
+    """-> (meta, kandidat). Sumber: public/data/asap.json (prakiraan cams 1 derajat, 4 hari) + public/banjir/data/pusat_kec.json. Saringan sama dengan
+    scripts/udara/dampak_udara.py: kecamatan provinsi `prov` yang pm2,5 rata-rata 24 jam sel cams-nya di atas batas baik+sedang (kec_tidak_sehat,
+    55,4 ug/m3). Kandidat = satu per sel cams (pusat = rata-rata pusat kecamatan di sel itu); fitur `tingkat` = pm2,5 sel / pm2,5 sel terbesar.
+    `tanggal` harus ada di asap.json["hari"], kalau tidak 0 target (prakiraan tak mencakup tanggalnya)."""
+    sp = importlib.util.spec_from_file_location("pb_dampak_udara", AKAR / "scripts/udara/dampak_udara.py")
+    du = importlib.util.module_from_spec(sp)
+    sys.modules["pb_dampak_udara"] = du
+    sp.loader.exec_module(du)
+    asap = _js(jalur)
+    meta = {"berkas": "asap.json, pusat_kec.json", "dibuat": asap.get("dibuat"),
+            "data": "prakiraan cams per sel 1 derajat untuk %s, berkas dibuat %s" % (tanggal, str(asap.get("dibuat"))[:10]),
+            "catatan": "perkiraan model kasar (kisi sekitar 40 km, belum dikoreksi ke alat ukur); batas pm2,5 55,4 ug/m3 sama dengan dampak_udara.py; skor relatif terhadap sel terburuk"}
+    if tanggal not in asap["hari"]:
+        meta["alasan_kosong"] = "prakiraan asap hanya mencakup %s sampai %s, tidak mencakup %s" % (asap["hari"][0], asap["hari"][-1], tanggal)
+        return meta, []
+    d = asap["hari"].index(tanggal)
+    i = asap["kolom"].index("pm25_rata") - 2
+    pm = {du.kualitas.kunci_sel(r[0], r[1]): r[2:][i][d] for r in asap["grid"]}
+    pusat = {k: v for k, v in _js(PUSAT_KEC).items() if k.startswith(prov + "|")}
+    sel = {}
+    for k in du.kec_tidak_sehat(asap, pusat, d):
+        sel.setdefault(du.kualitas.kunci_sel(*pusat[k]), []).append(pusat[k])
+    kand = [{"id": "sel-%s,%s" % s, "lat": round(sum(p[0] for p in v) / len(v), 4), "lon": round(sum(p[1] for p in v) / len(v), 4), "_n": pm[s],
+             "pm25": pm[s], "n_kec": len(v),
+             "tempat": "Sel cams %s, %s: pm2,5 rata-rata 24 jam %s ug/m3 (batas %s), %d kecamatan, prakiraan %s"
+                       % (_koma(s[0]), _koma(s[1]), _koma(pm[s]), _koma(du.BATAS), len(v), tanggal)} for s, v in sorted(sel.items()) if pm[s] is not None]
+    return meta, _rel(kand, "tingkat")
+
+
+def target_kekeringan(prov, tanggal, jalur=KEKERINGAN):
+    """-> (meta, kandidat). Sumber: public/data/kekeringan_wilayah.json (tingkat kabupaten hasil scripts/kekeringan/status.py) + kekeringan_meta.json
+    (hari_ini) + pusat_kec.json (pusat kabupaten = rata-rata pusat kecamatannya). Saringan sama dengan dampak.py (Siaga dan Awas): kabupaten provinsi `prov`
+    bertingkat 2 atau 3. Fitur `tingkat` = tingkat / 3 (tingkat model sendiri, hipotesis; ambang spi3 belum lolos uji balik). `tanggal` tidak menyaring:
+    berkas ini keadaan harian terakhir, tanggalnya dibedakan di `data`."""
+    w, m = _js(jalur), _js(KEKERINGAN_META)
+    pus = _js(PUSAT_KEC)
+    meta = {"berkas": "kekeringan_wilayah.json, kekeringan_meta.json, pusat_kec.json", "dibuat": m.get("hari_ini"),
+            "data": "keadaan kekeringan hari %s (bukan kondisi tanggal usulan bila berbeda)" % m.get("hari_ini"),
+            "catatan": "tingkat model sendiri (hipotesis, ambang belum lolos uji balik); skor relatif: tingkat dibagi 3"}
+    kand, tanpa = [], 0
+    for k, v in sorted(w["kab"].items()):
+        if not k.startswith(prov + "|") or v["lv"] < 2:
+            continue
+        ps = [p for kk, p in pus.items() if kk.startswith(k + "|")]
+        if not ps:
+            tanpa += 1
+            continue
+        kand.append({"id": k, "lat": round(sum(p[0] for p in ps) / len(ps), 4), "lon": round(sum(p[1] for p in ps) / len(ps), 4), "_n": v["lv"], "tingkat_model": v["lv"],
+                     "spi3": v.get("spi3"), "jiwa_tingkat2_ke_atas": v["jiwa"][1],
+                     "tempat": "%s: tingkat %d dari 3 (model, hipotesis), spi3 %s, hujan 3 bulan %s mm, penduduk di kecamatan bertingkat 2 ke atas %d jiwa, keadaan hari %s"
+                               % (k.split("|", 1)[1], v["lv"], _koma(v.get("spi3")), v.get("mm3"), v["jiwa"][1], m.get("hari_ini"))})
+    if tanpa:
+        meta["catatan"] += "; %d kabupaten tanpa koordinat pusat dilewati" % tanpa
+    return meta, _rel_tetap(kand, 3, "tingkat")
+
+
+def target_cuaca(prov, tanggal, jalur=CUACA_KEC):
+    """-> (meta, kandidat). Sumber: public/banjir/data/cuaca_kec.json (scripts/cuaca/prakiraan_kec.py, indeks baris = urutan pusat_kec.json). Saringan sama
+    dengan dampak_cuaca.py (zona): kecamatan provinsi `prov` bertingkat >= 2 pada `tanggal` (harus ada di berkas, kalau tidak 0 target). Fitur `tingkat` =
+    tingkat / 3 (tingkat model dari hujan 50/100/150 mm, embusan 54/72/90 km/jam, gelombang; ambang hipotesis). Peringatan nowcast bmkg di
+    public/data/peringatan.json hanya bersumber resmi dan berumur jam: tidak masuk skor."""
+    c = _js(jalur)
+    meta = {"berkas": "cuaca_kec.json, pusat_kec.json", "dibuat": c.get("dibuat"),
+            "data": "prakiraan tingkat kecamatan untuk %s, berkas dibuat %s" % (tanggal, str(c.get("dibuat"))[:10]),
+            "catatan": "tingkat model sendiri (ambang hipotesis, uji balik hujan 50 mm belum lolos); peringatan resmi bmkg tidak masuk skor; skor relatif: tingkat dibagi 3"}
+    if tanggal not in c["hari"]:
+        meta["alasan_kosong"] = "prakiraan kecamatan hanya mencakup %s sampai %s, tidak mencakup %s" % (c["hari"][0], c["hari"][-1], tanggal)
+        return meta, []
+    n = c["hari"].index(tanggal)
+    kunci = list(_js(PUSAT_KEC).items())
+    kand = []
+    for r in c["kec"]:
+        k, (la, lo) = kunci[r[0]]
+        t = r[1][n]
+        if not k.startswith(prov + "|") or t is None or t < 2:
+            continue
+        pp, kb, kc = k.split("|")
+        mm, g = r[4][n], r[5][n]
+        kand.append({"id": k, "lat": la, "lon": lo, "_n": t, "tingkat_model": t, "hujan_mm": mm, "embusan_kmj": g,
+                     "tempat": "Kec. %s, %s: tingkat %d dari 3 (model, hipotesis), hujan %s, embusan %s, prakiraan %s"
+                               % (kc, kb, t, "%d mm" % mm if mm is not None else "tanpa data", "%d km/jam" % g if g is not None else "tanpa data", tanggal)})
+    return meta, _rel_tetap(kand, 3, "tingkat")
+
+
+def target_gempa(prov, tanggal, jalur=GEMPA_M5):
+    """-> (meta, kandidat). Sumber: public/gempa/data/riwayat_m5.json (katalog usgs, kolom waktu_utc, lat, lon, dalam_km, m, prov). Saringan sama dengan
+    scripts/umum/paparan_bangunan.py gempa(): magnitudo >= 5 dalam 30 hari terakhir katalog (dihitung dari kejadian terakhir di berkas), provinsi `prov`.
+    Fitur `tingkat` = magnitudo / magnitudo terbesar di antara kandidat (peringkat relatif; kedalaman dan jarak ke permukiman tidak dihitung). Paparan bangunan
+    (data/terkunci, di luar repo) dan mmi tidak dipakai. Katalog usgs tertinggal beberapa hari: umurnya tampil di `data`, `tanggal` tidak menyaring."""
+    r = _js(jalur)
+    ev = [dict(zip(r["kolom"], b)) for b in r["baris"]]
+    meta = {"berkas": "riwayat_m5.json", "dibuat": None, "catatan": "peringkat relatif magnitudo; tanpa mmi, tanpa paparan bangunan (berkasnya terkunci di luar repo); gempa laut ikut bila provinsinya tercatat"}
+    if not ev:
+        meta.update(data="katalog kosong", alasan_kosong="riwayat_m5.json kosong")
+        return meta, []
+    akhir = max(e["waktu_utc"] for e in ev)
+    batas = (dt_.fromisoformat(akhir) - timedelta(days=30)).isoformat(timespec="minutes")
+    meta.update(dibuat=akhir, data="katalog usgs, gempa magnitudo 5 ke atas 30 hari sampai %s utc (kejadian terakhir di berkas)" % akhir.replace("T", " "))
+    kand = [{"id": "%s_%s" % (e["waktu_utc"], e["prov"]), "lat": e["lat"], "lon": e["lon"], "_n": e["m"], "magnitudo": e["m"], "dalam_km": e["dalam_km"],
+             "tempat": "Gempa m%s, %s utc, kedalaman %s km, provinsi %s" % (_koma(e["m"]), e["waktu_utc"].replace("T", " "), _koma(e["dalam_km"]), e["prov"])}
+            for e in ev if e["waktu_utc"] >= batas and e["m"] >= 5 and e["prov"] == prov]
+    return meta, _rel(kand, "tingkat")
+
+
+def target_gunungapi(prov, tanggal, jalur=GUNUNG_STATUS):
+    """-> (meta, kandidat). Sumber: public/banjir/data/gunungapi_status.json (magma pvmbg; penduduk_radius dari cincin paparan worldpop 1 km, scripts/gunungapi/
+    magma.py dan pop_grid.py). Saringan sama dengan scripts/gunungapi/dampak.py terpapar() (radius rekomendasi dan penduduk dalam radius > 0), ditambah level resmi 2 ke atas (terpapar() tidak menyaring level);
+    provinsi `prov` dicocokkan per token nama (dipecah koma dan ' dan ', awalan daerah istimewa/di dibuang; gunung lintas provinsi masuk bila salah satunya). Level resmi pvmbg hanya dicatat dan menyaring, TIDAK masuk skor.
+    Fitur `terdampak` = penduduk dalam radius / penduduk terbanyak di antara kandidat (peringkat relatif)."""
+    s = _js(jalur)
+    _jalur_banjir()
+    from wilayah import PROVINSI
+    def token(x):
+        x = x.strip().lower()
+        for aw in ("daerah istimewa ", "di "):
+            x = x[len(aw):] if x.startswith(aw) else x
+        return x
+    nama = token(PROVINSI[prov])
+    lv = {2: "waspada", 3: "siaga", 4: "awas"}
+    meta = {"berkas": "gunungapi_status.json", "dibuat": s.get("dibuat"),
+            "data": "status resmi pvmbg, berkas dibuat %s (bukan kondisi tanggal usulan bila berbeda)" % str(s.get("dibuat"))[:10],
+            "catatan": "level resmi pvmbg hanya menyaring (level 2 ke atas) dan dicatat, tidak dihitung dalam skor; skor relatif: penduduk dalam radius dibagi penduduk terbanyak"}
+    kand = [{"id": g["nama"], "lat": g["lat"], "lon": g["lon"], "_n": g["penduduk_radius"], "level_resmi": g["level"], "radius_km": g["radius_km"], "penduduk_radius": g["penduduk_radius"],
+             "tempat": "G. %s, %s: status resmi level %d (%s), radius rekomendasi %s km, penduduk dalam radius sekitar %d jiwa (worldpop 1 km), periode laporan %s"
+                       % (g["nama"], g["prov"], g["level"], lv.get(g["level"], "?"), _koma(g["radius_km"]), g["penduduk_radius"], (g.get("periode") or "tidak tercatat").replace("WIB", "wib"))}
+            for g in s["gunung"] if g.get("level", 1) >= 2 and g.get("radius_km") and (g.get("penduduk_radius") or 0) > 0 and nama in [token(t) for t in re.split(r",| dan ", g.get("prov") or "")]]
+    return meta, _rel(kand, "terdampak")
+
+
+def _rakit_jenis(bencana, a, titik, B, ambil, default):
+    """satu rakit untuk jenis tanpa uji balik: base = titik sarana bila ada, selain itu SATU base semu 'tanpa-base' di target teratas.
+    ambil(prov, tanggal) -> (meta, kandidat); gagal -> RuntimeError (kirim melapor gagal)."""
+    base = [{"id": str(t.get("id", ""))[:12] or "B%d" % (i + 1), "nama": t.get("nama") or "Sarana", "lat": t["lat"], "lon": t["lon"]}
+            for i, t in enumerate(titik) if t.get("golongan") == "sarana" and isinstance(t.get("lat"), (int, float)) and isinstance(t.get("lon"), (int, float))]
+    try:
+        meta, kand = (ambil or default)(a.prov, a.tanggal)
+    except Exception as e:
+        raise RuntimeError("sumber target %s gagal dibaca: %s" % (bencana, type(e).__name__)) from e
+    kand = sorted(kand, key=lambda c: (-sum(c["fitur"].values()), c["id"]))
+    if not base and kand:
+        base = [{"id": "tanpa-base", "nama": "Tanpa base (titik awal = target teratas)", "lat": kand[0]["lat"], "lon": kand[0]["lon"]}]
+    Bs = dict(B, ambang=dict(B["ambang"], skor_minimum=0))
+    r = susun(bencana, kand, base, Bs) if base else {"bencana": bencana, "status": "draf", "bobot_label": B["per_bencana"][bencana]["label"],
+                                                       "catatan": "", "base": []}
+    ekstra = ("id", "lat", "lon", "fitur", "tempat", "urut", "skor", "alasan", "n")
+    for b in r["base"]:
+        for c in b["patroli"]:
+            c["alasan"].update({k: v for k, v in c.items() if k not in ekstra})
+            for k in [k for k in c if k not in ekstra]:
+                del c[k]
+    jml = sum(len(b["patroli"]) for b in r["base"])
+    r.update(tanggal=a.tanggal, versi=a.versi, jml_target=jml, bobot_label=r["bobot_label"].lower(),
+             catatan="Usulan lokasi untuk dilihat, bukan perintah terbang.",
+             sumber_data={"berkas": meta["berkas"], "dibuat": meta["dibuat"], "data": meta["data"], "catatan": meta["catatan"]})
+    if not jml:
+        r["alasan_kosong"] = meta.get("alasan_kosong") or "tidak ada target %s di provinsi ini dari %s" % (bencana, meta["berkas"])
+    nama = "renlap_%s_%s" % (a.tanggal, a.versi)
+    t = ["Usulan target %s, %s (versi %s)" % (bencana, a.tanggal, a.versi),
+         "Usulan lokasi untuk dilihat, bukan perintah terbang. Skor hipotesis, bobot sama rata, tanpa ambang karangan.",
+         "Skor: %s." % meta["catatan"], "Data: %s." % meta["data"]]
+    for b in r["base"]:
+        t.append("\nBase %s" % b["nama"])
+        t += ["%d. %s\n   skor %s\n   %.5f, %.5f" % (c["urut"], c["tempat"], _koma(c["skor"]), c["lat"], c["lon"]) for c in b["patroli"]]
+    if not jml:
+        t.append("Tidak ada target: %s." % r["alasan_kosong"])
+    tb = [dict(b, id="tanpa base") if b["id"] == "tanpa-base" else b for b in r["base"]]
+    isi = {"json": json.dumps(r, ensure_ascii=False, indent=1, default=str), "kml": K.kml(tb, nama), "gpx": K.gpx(tb, nama), "txt": "\n".join(t) + "\n"}
+    return r, isi
+
+
+def rakit_udara(a, titik, B, ambil=None):
+    return _rakit_jenis("udara", a, titik, B, ambil, target_udara)
+
+
+def rakit_kekeringan(a, titik, B, ambil=None):
+    return _rakit_jenis("kekeringan", a, titik, B, ambil, target_kekeringan)
+
+
+def rakit_cuaca(a, titik, B, ambil=None):
+    return _rakit_jenis("cuaca", a, titik, B, ambil, target_cuaca)
+
+
+def rakit_gempa(a, titik, B, ambil=None):
+    return _rakit_jenis("gempa", a, titik, B, ambil, target_gempa)
+
+
+def rakit_gunungapi(a, titik, B, ambil=None):
+    return _rakit_jenis("gunungapi", a, titik, B, ambil, target_gunungapi)
+
+
+RAKIT = {"udara": rakit_udara, "kekeringan": rakit_kekeringan, "cuaca": rakit_cuaca, "gempa": rakit_gempa, "gunungapi": rakit_gunungapi}
+
+
 def rakit(a, titik, B, ambil=None):
     if a.bencana == "banjir":
         return rakit_banjir(a, titik, B, ambil)
     if a.bencana == "pesisir":
         return rakit_pesisir(a, titik, B, ambil)
+    if a.bencana in RAKIT:
+        return RAKIT[a.bencana](a, titik, B, ambil)
     """base = titik golongan sarana; kandidat target: KOSONG (belum ada sumber target per bencana dengan skema terjamin di repo, tidak dikarang)."""
     base = [{"id": str(t.get("id", ""))[:12] or "B%d" % (i + 1), "nama": t.get("nama") or "Sarana", "lat": t["lat"], "lon": t["lon"]}
             for i, t in enumerate(titik) if t.get("golongan") == "sarana" and isinstance(t.get("lat"), (int, float)) and isinstance(t.get("lon"), (int, float))]
@@ -463,7 +693,7 @@ def uji_pesisir(B, ok):
         assert r["base"][0]["patroli"][0]["skor"] == 1.0 and r["base"][0]["patroli"][0]["alasan"]["laju_m_per_th"] == -20.0
         import re
         for k in ("json", "txt"):   # tanpa huruf kapital semua, tanpa kata "kritis"
-            assert not re.search(r"\b[A-Z]{2,}\b", isi[k]) and "kritis" not in isi[k].lower(), k
+            assert not re.search(r"\b[A-Z]{2,}\b", isi[k]) and not re.search(r"kritis|\baman\b", isi[k].lower()), k
         assert "tanpa base CP1" in isi["kml"] and "tanpa base-CP1" in isi["gpx"] and "tanpa-base" not in isi["kml"]
         assert "laju -20,0 m/th, skor 1,0" in isi["txt"] and "relatif terhadap transek terburuk yang lolos saringan" in isi["txt"]
         assert "periode garis pantai 1988 sampai 2025, berkas dibuat 2026-11-15" in isi["txt"]
@@ -478,6 +708,108 @@ def uji_pesisir(B, ok):
         pass
     r4, _ = rakit_pesisir(A, [], B)   # berkas nyata
     assert r4["jml_target"] > 0 and r4["sumber_data"]["dibuat"]
+
+
+def uji_jenis(B, ok):
+    """udara, kekeringan, cuaca, gempa, gunung api: masukan sintetis (berkas sementara) + berkas nyata repo bila ada."""
+    import tempfile, types
+    from datetime import date
+    def tanpa_kapital(r, isi):
+        for k in ("json", "txt"):
+            assert not re.search(r"\b[A-Z]{2,}\b", isi[k]) and not re.search(r"kritis|\baman\b", isi[k].lower()), (k, re.findall(r"\b[A-Z]{2,}\b", isi[k]))
+    A = lambda b, **x: types.SimpleNamespace(**dict(ok, bencana=b, **dict({"prov": "11"}, **x)))
+    with tempfile.TemporaryDirectory() as td:
+        T = Path(td)
+        def tulis(n, o):
+            (T / n).write_text(json.dumps(o))
+            return T / n
+        # udara: dua sel di atas batas (provinsi 11), satu di bawah, satu kecamatan provinsi lain
+        asap = {"dibuat": "2026-11-15T08:00+07:00", "hari": ["2026-11-15", "2026-11-16"], "kolom": ["lat", "lon", "pm25_maks", "co_rata", "co_maks", "aod_maks", "pm25_rata", "pm10_maks"],
+                "grid": [[5.5, 95.5, [0, 0]] + [[0, 0]] * 3 + [[100, 20]] + [[0, 0]], [4.5, 96.5, [0, 0]] + [[0, 0]] * 3 + [[60, 10]] + [[0, 0]],
+                         [3.5, 97.5, [0, 0]] + [[0, 0]] * 3 + [[30, 90]] + [[0, 0]], [-6.5, 106.5, [0, 0]] + [[0, 0]] * 3 + [[200, 200]] + [[0, 0]]]}
+        pusat = {"11|A|X": [5.4, 95.4], "11|A|Y": [5.6, 95.6], "11|B|Z": [4.4, 96.4], "11|C|W": [3.4, 97.4], "32|D|V": [-6.4, 106.4]}
+        pj = tulis("pusat.json", pusat)
+        global PUSAT_KEC
+        asli, PUSAT_KEC = PUSAT_KEC, pj
+        try:
+            meta, kd = target_udara("11", "2026-11-15", tulis("asap.json", asap))
+            assert len(kd) == 2 and {c["fitur"]["tingkat"] for c in kd} == {1.0, 0.6} and {c["n_kec"] for c in kd} == {2, 1}, kd
+            m0, k0 = target_udara("11", "2026-12-01", T / "asap.json")
+            assert k0 == [] and "tidak mencakup 2026-12-01" in m0["alasan_kosong"]
+            r, isi = rakit_udara(A("udara"), [], B, lambda p, t: target_udara(p, t, T / "asap.json"))
+            assert r["jml_target"] == 2 and r["base"][0]["id"] == "tanpa-base" and "hipotesis" in r["bobot_label"], r
+            tanpa_kapital(r, isi)
+        finally:
+            PUSAT_KEC = asli
+        # kekeringan: tingkat >= 2 saja, kabupaten tanpa kecamatan dilewati dan dicatat
+        wil = {"kab": {"11|A": {"lv": 3, "jiwa": [9, 8, 7], "spi3": -2.5, "mm3": 100}, "11|B": {"lv": 2, "jiwa": [5, 4, 0], "spi3": -1.6, "mm3": 150},
+                       "11|C": {"lv": 1, "jiwa": [5, 0, 0], "spi3": -1.1, "mm3": 200}, "11|D": {"lv": 3, "jiwa": [1, 1, 1], "spi3": -3, "mm3": 1}, "12|A": {"lv": 3, "jiwa": [1, 1, 1], "spi3": -3, "mm3": 1}}}
+        PUSAT_KEC = tulis("pusat2.json", {"11|A|X": [5.0, 95.0], "11|A|Y": [6.0, 96.0], "11|B|Z": [4.0, 97.0], "11|C|W": [3.0, 98.0], "12|A|V": [2.0, 99.0]})
+        global KEKERINGAN_META
+        asli_m, KEKERINGAN_META = KEKERINGAN_META, tulis("meta.json", {"hari_ini": "2026-11-14"})
+        try:
+            meta, kd = target_kekeringan("11", "2026-11-15", tulis("wil.json", wil))
+            assert [c["id"] for c in kd] == ["11|A", "11|B"] and [c["fitur"]["tingkat"] for c in kd] == [1.0, 0.667] and kd[0]["lat"] == 5.5 and "1 kabupaten tanpa koordinat" in meta["catatan"], (kd, meta)
+            r, isi = rakit_kekeringan(A("kekeringan"), [], B, lambda p, t: target_kekeringan(p, t, T / "wil.json"))
+            assert r["jml_target"] == 2 and "keadaan hari 2026-11-14" in isi["txt"]
+            tanpa_kapital(r, isi)
+        finally:
+            KEKERINGAN_META = asli_m
+        # cuaca: tingkat 2 dan 3 pada tanggal; hari yang tak tercakup = kosong beralasan
+        PUSAT_KEC = tulis("pusat3.json", {"11|A|X": [5.0, 95.0], "11|A|Y": [6.0, 96.0], "32|B|Z": [-6.0, 107.0]})
+        ck = {"dibuat": "2026-11-15T07:00+07:00", "hari": ["2026-11-15", "2026-11-16", "2026-11-17"],
+              "kec": [[0, [3, 1, 0], [0] * 3, [0] * 3, [120, 10, 0], [80, 20, 10], None], [1, [1, 2, 0], [0] * 3, [0] * 3, [None, 60, 0], [10, 70, None], None],
+                      [2, [3, 3, 3], [0] * 3, [0] * 3, [200, 200, 200], [90, 90, 90], None]]}
+        try:
+            meta, kd = target_cuaca("11", "2026-11-15", tulis("ck.json", ck))
+            assert [c["id"] for c in kd] == ["11|A|X"] and kd[0]["fitur"]["tingkat"] == 1.0 and "hujan 120 mm, embusan 80 km/jam" in kd[0]["tempat"], kd
+            meta, kd = target_cuaca("11", "2026-11-16", T / "ck.json")
+            assert [c["fitur"]["tingkat"] for c in kd] == [0.667] and "hujan 60 mm, embusan 70 km/jam" in kd[0]["tempat"], kd
+            assert "embusan tanpa data" in target_cuaca("11", "2026-11-17", tulis("ck2.json", dict(ck, kec=[[0, [0, 0, 2], [0] * 3, [0] * 3, [0, 0, 5], [0, 0, None], None]])))[1][0]["tempat"]
+            assert target_cuaca("11", "2026-11-20", T / "ck.json")[1] == []
+            r, isi = rakit_cuaca(A("cuaca", tanggal="2026-11-15"), [], B, lambda p, t: target_cuaca(p, t, T / "ck.json"))
+            assert r["jml_target"] == 1
+            tanpa_kapital(r, isi)
+        finally:
+            PUSAT_KEC = asli
+        # gempa: m5 ke atas, 30 hari dari kejadian terakhir, provinsi cocok
+        kol = ["waktu_utc", "lat", "lon", "dalam_km", "m", "prov"]
+        gm = {"kolom": kol, "baris": [["2026-09-01T00:00", 1, 1, 10, 7.0, "11"], ["2026-10-20T00:00", 1, 2, 10, 5.0, "11"], ["2026-11-10T12:00", 2, 3, 20.5, 6.0, "11"],
+                                      ["2026-11-10T13:00", 3, 4, 10, 4.9, "11"], ["2026-11-10T14:00", 4, 5, 10, 6.5, "12"]]}
+        meta, kd = target_gempa("11", "2026-11-15", tulis("gm.json", gm))
+        assert sorted(c["magnitudo"] for c in kd) == [5.0, 6.0] and {c["fitur"]["tingkat"] for c in kd} == {1.0, 0.833}, kd
+        r, isi = rakit_gempa(A("gempa"), [], B, lambda p, t: target_gempa(p, t, T / "gm.json"))
+        assert r["jml_target"] == 2 and "2026-11-10 12:00 utc" in isi["txt"]
+        tanpa_kapital(r, isi)
+        assert target_gempa("11", "x", tulis("kosong.json", {"kolom": kol, "baris": []}))[0]["alasan_kosong"]
+        # gunung api: level 2 ke atas dengan radius dan penduduk; level resmi dicatat, tidak masuk skor
+        gs = {"dibuat": "2026-11-10T15:47:44+07:00", "gunung": [
+            {"nama": "Satu", "prov": "Daerah Istimewa Aceh", "lat": 4, "lon": 96, "level": 3, "radius_km": 5.0, "penduduk_radius": 1000, "periode": "10 November 2026"},
+            {"nama": "Dua", "prov": "Aceh", "lat": 5, "lon": 97, "level": 2, "radius_km": 2.0, "penduduk_radius": 250},
+            {"nama": "Tiga", "prov": "Aceh", "lat": 5, "lon": 98, "level": 1, "radius_km": 2.0, "penduduk_radius": 999},
+            {"nama": "Empat", "prov": "Aceh", "lat": 6, "lon": 98, "level": 3, "radius_km": 2.0, "penduduk_radius": 0},
+            {"nama": "Ternate", "prov": "Maluku Utara", "lat": 1, "lon": 127, "level": 3, "radius_km": 2.0, "penduduk_radius": 70},
+            {"nama": "Lima", "prov": "Jawa Timur", "lat": -7, "lon": 112, "level": 3, "radius_km": 2.0, "penduduk_radius": 500}]}
+        meta, kd = target_gunungapi("11", "2026-11-15", tulis("gs.json", gs))
+        assert [c["id"] for c in kd] == ["Satu", "Dua"] and [c["fitur"] for c in kd] == [{"terdampak": 1.0}, {"terdampak": 0.25}], kd
+        r, isi = rakit_gunungapi(A("gunungapi"), [{"id": "s" * 16, "golongan": "sarana", "nama": "Gudang", "lat": 4.1, "lon": 96.1}], B, lambda p, t: target_gunungapi(p, t, T / "gs.json"))
+        assert r["jml_target"] == 2 and r["base"][0]["nama"] == "Gudang" and "level 3 (siaga)" in isi["txt"] and r["base"][0]["patroli"][0]["alasan"]["level_resmi"] == 3
+        tanpa_kapital(r, isi)
+        assert [c["id"] for c in target_gunungapi("81", "x", T / "gs.json")[1]] == [] and [c["id"] for c in target_gunungapi("82", "x", T / "gs.json")[1]] == ["Ternate"]
+        # sumber gagal -> RuntimeError
+        for f in (rakit_udara, rakit_kekeringan, rakit_cuaca, rakit_gempa, rakit_gunungapi):
+            try:
+                f(A("udara"), [], B, lambda p, t: 1 / 0)
+                raise SystemExit("sumber gagal harus RuntimeError")
+            except RuntimeError:
+                pass
+    # berkas nyata repo: tanggal diambil dari berkasnya sendiri; hasil bisa 0 target beralasan, tak boleh melempar
+    nyata = {"udara": ("2026-10-15", "11"), "kekeringan": ("2026-11-15", "11"), "cuaca": ("2026-10-18", "11"), "gempa": ("2026-11-15", "82"), "gunungapi": ("2026-11-15", "35")}
+    for b, (tg, pv) in nyata.items():
+        r, isi = RAKIT[b](A(b, prov=pv, tanggal=tg), [], B)
+        assert r["jml_target"] > 0 or r["alasan_kosong"], b
+        tanpa_kapital(r, isi)
+        print("  %s %s: %d target nyata%s" % (b, pv, r["jml_target"], "" if r["jml_target"] else " (kosong: %s)" % r["alasan_kosong"]))
 
 
 def uji():
@@ -531,9 +863,10 @@ def uji():
             raise SystemExit("harus ditolak: %s=%r" % (k, v))
         except ValueError:
             pass
-    r, isi = rakit(types.SimpleNamespace(**dict(ok, bencana="gempa")), [{"id": "a" * 16, "golongan": "sarana", "nama": "H", "lat": 1.0, "lon": 2.0}, {"golongan": "fasilitas", "lat": 1, "lon": 2}], B)
+    r, isi = rakit(types.SimpleNamespace(**dict(ok, bencana="gempa", prov="99")), [{"id": "a" * 16, "golongan": "sarana", "nama": "H", "lat": 1.0, "lon": 2.0}, {"golongan": "fasilitas", "lat": 1, "lon": 2}], B)
     assert r["jml_target"] == 0 and len(r["base"]) == 1 and set(isi) == {"json", "kml", "gpx", "txt"}
     uji_pesisir(B, ok)
+    uji_jenis(B, ok)
     print("renlap (umum): lulus")
 
 
