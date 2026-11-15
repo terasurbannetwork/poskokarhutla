@@ -5,7 +5,7 @@ Kerjakan urut; ambil satu tiket, kerjakan hanya cakupannya.
 | Tiket | Isi | Pengerja | Bukti siap | Bergantung |
 | --- | --- | --- | --- | --- |
 | KS-01 | Kunci kriteria banjir (tingkat kab dan kecamatan terpisah), daftar kejadian uji dan pemisahan kalibrasi/uji di `kerusakan_kriteria.json` sebelum citra dilihat | siklus (+ validasi-model) | T1 | Q4, Q5 |
-| KS-02 | Pipeline banjir: air dari Sentinel-1 ke agregat per kab dengan bangunan | siklus | `python3 scripts/siklus/kerusakan.py uji` | KS-01 |
+| KS-02 | Pipeline banjir: air dari Sentinel-1 ke agregat per kab dengan bangunan; WAJIB menolak jalan bila `jangkar_commit` di `scripts/siklus/kerusakan_sidik.json` null atau sidik berkas kriteria tidak cocok; menghitung naif HAND sebelum vonis | siklus | `python3 scripts/siklus/kerusakan.py uji` | KS-01 |
 | KS-03 | Uji balik banjir, vonis ke R2 dan ringkasan | siklus (+ validasi-model) | T2 | KS-02 |
 | KS-04 | Anggaran R2 di `sumber.json`, jadwal di `siklus.yml` | siklus + mekanik-mesin | T11 | KS-03 |
 | KS-05 | Migrasi perluasan CHECK `unit_asal` (bangun ulang tabel) + sidik beku + cakupan | warga-api (+ migrasi-idempoten) | T7 | Q7 |

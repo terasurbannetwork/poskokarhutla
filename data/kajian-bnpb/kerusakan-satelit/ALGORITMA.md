@@ -5,7 +5,7 @@ Konvensi sama dengan ALGORITMA Siklus: label keyakinan (`estimasi-model` untuk k
 ## 1. Banjir: bangunan terendam
 
 Masukan: Sentinel-1 RTC VV dan VH sebelum dan sesudah (pola `citra_banjir.py`), bangunan Open Buildings halus 110 m.
-1. Air = piksel yang gelap baru: turun lebih dari ambang dB terhadap rerata beberapa adegan sebelum (`gelap_baru`), dikurangi air permanen (peta air tetap) dan lereng curam (kemiripan bayangan radar).
+1. Air = piksel yang gelap baru dengan ambang ABSOLUT VV (pola `gelap_baru`, `citra_banjir.py:164`): VV sesudah di bawah ambang dB sedangkan komposit median 3 adegan sebelum di atas atau sama dengan ambang; kisi -16 sampai -20 dB (titik awal -17, `citra_banjir.py:31`), dipilih di bagian kalibrasi saja (Q11). Dikurangi air permanen (peta air tetap) dan lereng curam (kemiripan bayangan radar).
 2. Bangunan terendam = bangunan yang pusatnya jatuh di piksel air. Perangkap: bangunan di kawasan padat memantulkan ganda (dihilangkan atau naik), jadi radar meremehkan genangan di permukiman; ini ditulis di keluaran sebagai batas bawah, label `estimasi-model`.
 3. Keluaran per kab dan kecamatan: bangunan terendam (batas bawah), bangunan di kotak terliput, bagian terliput.
 
@@ -18,13 +18,14 @@ Uji karhutla belum layak dijalankan. Dua sebab: (a) area terbakar dari titik pan
 Dikunci sebelum satu piksel dihitung, di `scripts/siklus/kerusakan_kriteria.json` (pola `lab_kerusakan.json`), sidik SHA tertulis di vonis.
 
 Satuan uji dan n. Kebenaran DIBI hanya per kabupaten. Satuan uji = pasangan (kabupaten, kejadian banjir); n = jumlah pasangan. Kecamatan atau sel tidak dipakai kecuali ada kebenaran lebih rinci. Kriteria ini berlaku untuk "lulus terbatas".
-- Daftar kejadian uji dikunci di berkas kriteria SEBELUM citra dilihat (cegah bias pemilihan), dengan aturan pemilihan tertulis (semua kejadian banjir DIBI sejak 2017 yang punya adegan Sentinel-1 sah sebelum dan sesudah, tanpa memilih sesudah melihat hasil). **[BAWAAN SEMENTARA]**
+- Daftar kejadian uji dikunci di berkas kriteria SEBELUM citra dilihat (cegah bias pemilihan), dengan aturan pemilihan tertulis (semesta nyata: baris DIBI banjir dengan rumah terendam lebih dari nol dari tiga sumber yang memuat kolomnya, yaitu provinsi 31, 32, 36 tahun 2019 sampai 2020, provinsi 52, 53 tahun 2021, dan DIBI publik 2025-10-28 sampai 2026-10-28, digugus 7 hari per kabupaten, 875 pasangan; yang tanpa adegan Sentinel-1 sah dikeluarkan mekanis tanpa melihat hasil; Q11). **[BAWAAN SEMENTARA]**
 - Pemisahan: kalibrasi ambang air (dB) pada separuh pasangan, diacak dengan benih terkunci dan blok per kejadian; uji pada separuh lain. Ambang tidak disetel di separuh uji.
 - n uji paling sedikit 30 pasangan (kabupaten, kejadian). **[BAWAAN SEMENTARA, HIPOTESIS]**
 - Bias kebenaran: DIBI kurang mencatat kejadian kecil, jadi kebenaran bias ke kejadian besar; kecil dan nol tercatat tidak berarti nol rusak. Uji memakai hanya pasangan dengan catatan DIBI berisi (rumah terendam lebih dari nol) dan melaporkan sensitivitas dengan sampel tanpa catatan sebagai deskriptif; vonis tidak boleh dibaca sebagai berlaku untuk kejadian kecil.
-- Pembanding naif: yang TERKUAT di antara beberapa (wajib_kalahkan, pola `lab_kerusakan.json`): jumlah bangunan kabupaten, luas kabupaten, kedalaman hujan (curah hujan maksimum beberapa hari), dan kombinasi bangunan kali hujan. Plasebo (adegan pra-kejadian) wajib juga.
-- Lulus (kab, bukan kecamatan): rho Spearman uji paling sedikit 0,3 (sama dengan lab, karena kebenaran kasar); mengalahkan plasebo dan naif terkuat dengan selisih paling sedikit 0,05; CI90 bootstrap berblok per kejadian batas bawah selisih di atas nol; n uji terpenuhi. **[BAWAAN SEMENTARA, HIPOTESIS]** Dengan kebenaran sekasar ini, "lulus" sebenarnya hanya "lulus terbatas".
+- Pembanding naif: yang TERKUAT di antara beberapa (wajib_kalahkan, pola `lab_kerusakan.json`): jumlah bangunan kabupaten, luas kabupaten, hujan (maks jumlah 3 hari ERA5), kombinasi bangunan kali hujan, kerawanan tetap HAND, dan frekuensi DIBI kabupaten pada kalibrasi (rincian di berkas kriteria, Q11). Plasebo (adegan pra-kejadian) wajib juga.
+- Lulus (kab, bukan kecamatan): rho Spearman uji paling sedikit 0,3 (sama dengan lab, karena kebenaran kasar); mengalahkan plasebo dan naif terkuat dengan selisih paling sedikit 0,05; CI90 bootstrap dengan resample blok sumber|bulan, dan sensitivitas resample per kabupaten, batas bawah selisih di atas nol di keduanya; n uji terpenuhi. **[BAWAAN SEMENTARA, HIPOTESIS]** Dengan kebenaran sekasar ini, "lulus" sebenarnya hanya "lulus terbatas".
 - Lulus penuh (angka per kecamatan boleh tampil) syaratnya kriteria TERPISAH di tingkat kecamatan: kebenaran lebih rinci dari DIBI per kabupaten (mis. data kecamatan dari BPBD), n sel atau kecamatan uji paling sedikit 40, rho paling sedikit 0,5 dan kriteria selisih sama. Tanpa kebenaran itu vonis maksimal lulus terbatas. Q5.
+- Batas klaim: vonis hanya peringkat besar-kecil di antara kabupaten yang sudah banjir; tidak boleh dipakai untuk "banjir ya atau tidak".
 - Selain itu gagal. Kriteria tidak diubah sesudah hasil dilihat; perubahan = berkas baru, sidik baru, uji ulang. Vonis tidak pernah dilonggarkan untuk meloloskan fitur.
 
 ## 4. Gempa

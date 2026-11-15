@@ -1,0 +1,8 @@
+{
+ "berkas": "scripts/siklus/kerusakan_kriteria.json",
+ "sidik": "9493ddcc1ab3789d900d599212b6bb6995c882073d61946160563cee62ae60aa",
+ "cara": "sha256 atas isi berkas kriteria tanpa satu baris baru penutup (byte per byte)",
+ "ditulis": "2026-11-15",
+ "jangkar_commit": null,
+ "catatan": "Isi jangkar_commit dengan hash commit yang memuat kedua berkas, sesudah di-push, SEBELUM KS-02 memulai. Uji memastikan isi di commit itu sama."
+}
