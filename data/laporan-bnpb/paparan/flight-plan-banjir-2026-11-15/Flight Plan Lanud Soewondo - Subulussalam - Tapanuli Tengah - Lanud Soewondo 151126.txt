@@ -1,5 +1,5 @@
 *Flight plan 2026-11-15: Lanud Soewondo - Subulussalam - Tapanuli Tengah - Lanud Soewondo* (usulan, bukan perintah terbang)
-Leg 1 WIMK ke DZ1 Subulussalam (LZ Lapangan SMPN 2 Sultan Daulat, kunjungan Desa Jabi-Jabi): haluan 225°, 122 km (66 NM), ± 37 mnt, 2.7843, 97.8936 https://www.google.com/maps/search/?api=1&query=2.78430,97.89360
-Leg 2 DZ1 ke DZ2 Tapanuli Tengah (Kec. Pandan, ibu kota kab.) (titik sementara, menyusul): haluan 139°, 161 km (87 NM), ± 48 mnt, 1.6921, 98.8426 https://www.google.com/maps/search/?api=1&query=1.69210,98.84260
+Leg 1 WIMK ke DZ1 Subulussalam (LZ Lapangan Bola Jambi, Kec. Sultan Daulat, kunjungan Desa Jabi-Jabi): haluan 225°, 121 km (65 NM), ± 36 mnt, 2.7949, 97.8966 https://www.google.com/maps/search/?api=1&query=2.79490,97.89660
+Leg 2 DZ1 ke DZ2 Tapanuli Tengah (Kec. Pandan, ibu kota kab.) (titik sementara, menyusul): haluan 139°, 162 km (87 NM), ± 48 mnt, 1.6921, 98.8426 https://www.google.com/maps/search/?api=1&query=1.69210,98.84260
 Leg 3 DZ2 ke WIMK Kembali ke Lanud Soewondo (WIMK): haluan 355°, 208 km (113 NM), ± 63 mnt, 3.5589, 98.6719 https://www.google.com/maps/search/?api=1&query=3.55890,98.67190
 Total ± 491 km, ± 147 mnt terbang pada 200 km/jam, belum termasuk waktu di darat.
