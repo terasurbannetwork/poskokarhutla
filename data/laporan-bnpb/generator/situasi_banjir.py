@@ -638,17 +638,16 @@ def slide_lengkap(L):
     else:
         ek = [f' kab/kota {prov}']
     judul(sl, ['BMKG: hujan lebat atau petir di', f' {n_lebat}'] + ek)
-    kolB = [('Kab/Kota', 1.4, 'l')] + [(h, .52, 'c') for h in hk] + [('Prakiraan', 1.0, 'c')]
+    kolB = [('Kab/Kota', 1.5, 'l')] + [(h, .7, 'c') for h in hk]   # tanpa kolom prakiraan kita (pemilik 15 Nov 2026: "Hilangkan")
 
     def sel_b(x):
         return {'pil': BMKG_GAYA[x][0], 'isi': BMKG_GAYA[x][1], 'tegas': BMKG_GAYA[x][2]} if x else '–'
     urut_b = sorted(bk, key=lambda n: (-sum(x or 0 for x in bk[n]), n))
     brB = []
     for n in urut_b:
-        lv = max(kab_pr.get(n, {'hari': [0]})['hari'])
-        brB.append([n] + [sel_b(x) for x in bk[n]] + [pil_level(lv)])
+        brB.append([n] + [sel_b(x) for x in bk[n]])
     tabel(sl, .6, 1.4, 5.8, kolB, brB, .3, 6.95)
-    kolS = [('Kab/Kota', 1.4, 'l'), ('Kecamatan', 1.3, 'l'), ('Debit, m³/dtk', .95, 'c'), ('Q2, m³/dtk', .8, 'c'), ('% Q2', .6, 'c'), ('Tgl. puncak', .7, 'c')]
+    kolS = [('Kab/Kota', 1.3, 'l'), ('Kecamatan', 1.15, 'l'), ('Debit, m³/dtk', .9, 'c'), ('Banjir 2 th, m³/dtk', 1.15, 'c'), ('% banjir 2 th', .95, 'c'), ('Puncak', .7, 'c')]
     brS = [[t['kab'], (t['kec'], INK, False), rb(round(t['pk'])), rb(round(t['q2'])),
             ({'pil': f'{round(100 * t["r"])}%', 'isi': LEVEL[min(3, t['kls'] + 1)][0] if t['kls'] else 'EEF3F9', 'tegas': LEVEL[min(3, t['kls'] + 1)][1] if t['kls'] else NAVY}),
             tgl(t['tgl'])] for t in titik[:len(bk)]]
