@@ -32,5 +32,82 @@
   "deklinasi_timur_derajat": {
     "_label": "PERKIRAAN tetap per base (Indonesia 0 sampai 1 derajat timur), bukan WMM. ponytail: ganti WMM bila selisih 1 derajat terasa di lapangan.",
     "bawaan": 0.5
+  },
+  "per_bencana": {
+    "_label": "HIPOTESIS. Jenis tanpa uji balik memakai bobot sama rata (1.0) tanpa sumber; tidak ada angka karangan. Tala ulang hanya setelah uji balik jenis itu lolos (KEPUTUSAN-PARITAS D6). Karhutla memakai bagian bobot di atas.",
+    "banjir": {
+      "label": "HIPOTESIS: bobot sama rata, belum ada uji balik",
+      "bobot": {
+        "tingkat": 1.0,
+        "baru": 1.0,
+        "terdampak": 1.0,
+        "fasilitas": 1.0,
+        "belum_ditangani": 1.0
+      }
+    },
+    "pesisir": {
+      "label": "HIPOTESIS: bobot sama rata, belum ada uji balik",
+      "bobot": {
+        "tingkat": 1.0,
+        "baru": 1.0,
+        "terdampak": 1.0,
+        "fasilitas": 1.0,
+        "belum_ditangani": 1.0
+      }
+    },
+    "cuaca": {
+      "label": "HIPOTESIS: bobot sama rata, belum ada uji balik",
+      "bobot": {
+        "tingkat": 1.0,
+        "baru": 1.0,
+        "terdampak": 1.0,
+        "fasilitas": 1.0,
+        "belum_ditangani": 1.0
+      }
+    },
+    "gempa": {
+      "label": "HIPOTESIS: bobot sama rata, belum ada uji balik",
+      "bobot": {
+        "tingkat": 1.0,
+        "baru": 1.0,
+        "terdampak": 1.0,
+        "fasilitas": 1.0,
+        "belum_ditangani": 1.0
+      }
+    },
+    "udara": {
+      "label": "HIPOTESIS: bobot sama rata, belum ada uji balik",
+      "bobot": {
+        "tingkat": 1.0,
+        "baru": 1.0,
+        "terdampak": 1.0,
+        "fasilitas": 1.0,
+        "belum_ditangani": 1.0
+      }
+    },
+    "gunungapi": {
+      "label": "HIPOTESIS: bobot sama rata, belum ada uji balik",
+      "bobot": {
+        "tingkat": 1.0,
+        "baru": 1.0,
+        "terdampak": 1.0,
+        "fasilitas": 1.0,
+        "belum_ditangani": 1.0
+      }
+    },
+    "kekeringan": {
+      "label": "HIPOTESIS: bobot sama rata, belum ada uji balik",
+      "bobot": {
+        "tingkat": 1.0,
+        "baru": 1.0,
+        "terdampak": 1.0,
+        "fasilitas": 1.0,
+        "belum_ditangani": 1.0
+      }
+    },
+    "karhutla": {
+      "label": "HIPOTESIS: lihat bagian bobot di atas (aturan tangan, belum di-backtest)",
+      "bobot": "bobot"
+    }
   }
 }

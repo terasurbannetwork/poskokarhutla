@@ -27,6 +27,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 AKAR = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(AKAR / "scripts/umum"))
 BOBOT = AKAR / "scripts/operasi/bobot_renlap.json"
 SEED = AKAR / "migrations/0103_operasi_lapangan.sql"
 KELUAR = AKAR / "public/data/operasi"
@@ -462,56 +463,8 @@ def susun(tanggal, versi, kini, titik, temuan, base, B, ffmc, pm, gambut, desa_p
 
 
 # ---------------------------------------------------------------- teks WA
-def _alasan(c):
-    a, o = c["alasan"], []
-    if "titik_baru" in a:
-        o.append("%d titik baru lintasan terakhir" % a["titik_baru"] if a["titik_baru"] else "tanpa titik baru")
-        if a["menahun_hari"] > 1:
-            o.append("menahun %d hari" % a["menahun_hari"])
-        if a.get("gambut"):
-            o.append("gambut")
-        if "ffmc" in a and not a.get("ffmc_basi"):
-            o.append("FFMC %s" % a["ffmc"])
-        if "permukiman_km" in a:
-            o.append("permukiman %s km" % a["permukiman_km"])
-        o.append("belum ada temuan 48 jam" if a.get("belum_ditangani") else "sudah ada temuan 48 jam")
-        if a.get("clear_lalu_titik_baru"):
-            o.append("sempat clear, ada titik baru")
-    else:
-        o.append("temuan %s%s%s" % (a["temuan"], " oleh " + a["oleh"] if a.get("oleh") else "",
-                                    ", laporan menyebut " + a["lokasi_laporan"] if a.get("lokasi_laporan") else ""))
-        if a.get("luas_klaim_ha"):
-            o.append("klaim %s ha" % a["luas_klaim_ha"])
-        o.append("jarak sumber air: tidak tersedia")
-    return "; ".join(o)
-
-
-def teks(r):
-    t = datetime.fromisoformat(r["tanggal"])
-    judul = "%d %s %d" % (t.day, BULAN[t.month - 1], t.year)
-    out = []
-    for b in r["base"]:
-        L = ["USULAN TARGET, Base %s %s, operasi %s (versi %s)" % (b["id"], b["nama"], judul, r["versi"]),
-             "Usulan lokasi untuk dilihat, bukan perintah terbang. Keputusan terbang pada PIC dan komando.", ""]
-        for judul2, kunci in (("TARGET PATROLI (berurut dari base)", "patroli"), ("TARGET WATER BOMBING (FS terkonfirmasi)", "wb")):
-            L.append(judul2)
-            if not b[kunci]:
-                L.append("  tidak ada usulan")
-            for c in b[kunci]:
-                L += ["%d. %s" % (c["urut"], c["tempat"] or "(nama wilayah tidak tersedia)"), "   " + c["dms"], "   " + c["rd"],
-                      "   Alasan: " + _alasan(c)]
-                if "terakhir" in c:
-                    L.append("   Titik panas terakhir: %s WIB, %s" % (c["terakhir"]["jam_wib"], c["terakhir"]["satelit"]))
-                u = c["udara"]
-                L.append("   Udara pagi (06-10 WIB): " + ("PM2,5 prakiraan maks %s ug/m3 (%s); jarak pandang tidak tersedia" % (u["pm25_maks"], u["kab"])
-                                                       if isinstance(u, dict) else "tidak tersedia"))
-            if kunci == "patroli" and b.get("di_luar_rute"):
-                L.append("  Titik panas di luar radius pandang semua target: %d titik di %d sel" % (b["di_luar_rute"]["titik"], b["di_luar_rute"]["sel"]))
-            L.append("")
-        L.append("Kaki: radial = baringan benar dikurangi deklinasi timur %s derajat (PERKIRAAN tetap, bukan WMM); jelajah %d Nm. Titik panas: %s. FFMC: %s. Skor hipotesis."
-                 % (b["deklinasi_timur"], b["radius_nm"], r["sumber"]["titik_panas"], r["sumber"]["ffmc"]))
-        out.append("\n".join(L))
-    return ("\n\n" + "=" * 40 + "\n\n").join(out) + "\n"
+# _alasan dan teks pindah ke scripts/umum/renlap_keluaran.py (PB-13), isinya tak berubah.
+from renlap_keluaran import _alasan, teks  # noqa: E402,F401
 
 
 # ---------------------------------------------------------------- API mesin
