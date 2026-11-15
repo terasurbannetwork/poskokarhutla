@@ -549,7 +549,9 @@ export default {
         },
         "dokumen": [],
         "ews": {
-          "kunci": [],
+          "kunci": [
+            "pesisir"
+          ],
           "tangga": false
         },
         "dasbor": {
@@ -1033,7 +1035,9 @@ export default {
         },
         "dokumen": [],
         "ews": {
-          "kunci": [],
+          "kunci": [
+            "udara"
+          ],
           "tangga": false
         },
         "dasbor": {
@@ -1184,8 +1188,10 @@ export default {
         },
         "dokumen": [],
         "ews": {
-          "kunci": [],
-          "tangga": false
+          "kunci": [
+            "gunungapi"
+          ],
+          "tangga": true
         },
         "dasbor": {
           "ringkas": "",
@@ -1337,7 +1343,9 @@ export default {
         },
         "dokumen": [],
         "ews": {
-          "kunci": [],
+          "kunci": [
+            "kekeringan"
+          ],
           "tangga": false
         },
         "dasbor": {

@@ -189,7 +189,7 @@ uji("email: HTML aman, tata letak tabel, kalimat biasa, angka id-ID", () => {
 uji("konfig: sitekey, email_aktif, daftar bencana", async () => {
   const r = await panggil("GET", "/api/ews/konfig");
   assert.equal(r.s, 200); assert.equal(r.j.turnstile, "kunci-situs"); assert.equal(r.j.email_aktif, true);
-  assert.deepEqual(r.j.bencana.sort(), ["banjir", "cuaca", "gempa", "karhutla", "longsor", "rob", "tsunami"]);
+  assert.deepEqual(r.j.bencana.sort(), ["banjir", "cuaca", "gempa", "gunungapi", "karhutla", "longsor", "rob", "tsunami"]);
   assert.equal(r.j.bencana.length, new Set(r.j.bencana).size);
 });
 
