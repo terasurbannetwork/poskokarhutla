@@ -165,3 +165,36 @@ uji("0131 tanpa kolom nama orang; kueri utama SEARCH lewat indeks", () => {
     assert.ok(r.includes(indeks) || indeks === "USING" && /USING/.test(r), `${q} -> ${r}`);
   }
 });
+
+/* ---------- 0137 peringatan_x (PB-21, D13) ---------- */
+const SQL0137 = pecah(readFileSync(path.join(AKAR, "migrations/0137_peringatan_x.sql"), "utf8"));
+const px = (o = {}) => ({kunci: "longsor:a:siaga", jenis: "longsor", tingkat: "Siaga", prov: "32", kab: null, lat: -6, lon: 107, judul: "J", teks: "", sumber: "Deteksi Centurisk97", sumber_url: null, dibuat: 1000, berlaku_hingga: 9e12, dicabut: null, dicabut_oleh: null, ...o});
+const masukPx = o => { const t = px(o), k = Object.keys(t); db.prepare(`INSERT INTO peringatan_x (${k}) VALUES (${k.map(() => "?")})`).run(...Object.values(t)); };
+
+uji("0137 peringatan_x: dua kali tanpa galat dan tanpa ubah data; hanya CREATE IF NOT EXISTS; tabel peringatan lama utuh", () => {
+  db.prepare("INSERT INTO peringatan (kunci, jenis, tingkat, judul, sumber, dibuat, berlaku_hingga) VALUES ('gempa:z:waspada', 'gempa', 'Waspada', 'J', 'BMKG', 1, 2)").run();
+  masukPx();
+  const foto = () => JSON.stringify([db.prepare("SELECT * FROM peringatan_x").all(), db.prepare("SELECT * FROM peringatan").all(), db.prepare("SELECT sql FROM sqlite_master WHERE name = 'peringatan'").all()]);
+  const sebelum = foto();
+  for (const s of SQL0137) db.exec(s);
+  assert.equal(foto(), sebelum);
+  assert.ok(SQL0137.every(s => /^CREATE (TABLE|INDEX) IF NOT EXISTS/i.test(s)), "hanya CREATE ... IF NOT EXISTS");
+  assert.ok(!/^\s*(ALTER|DROP|INSERT|UPDATE|DELETE)\b/im.test(readFileSync(path.join(AKAR, "migrations/0137_peringatan_x.sql"), "utf8").replace(/--.*$/gm, "")), "tanpa ALTER/DROP/seed");
+});
+
+uji("0137 CHECK peringatan_x: lima jenis lama dan nilai liar ditolak, enam jenis baru dan sumber baru diterima", () => {
+  for (const o of [{jenis: "gempa"}, {jenis: "tsunami"}, {jenis: "karhutla"}, {jenis: "banjir"}, {jenis: "cuaca"}, {jenis: "ufo"}, {tingkat: "Merah"}, {sumber: "Deteksi Pantau Bencana"}, {sumber: "X"}, {lat: 20}, {lon: 90}, {prov: "321"}, {judul: ""}, {sumber_url: "http://x"}, {kunci: "ab"}])
+    assert.throws(() => masukPx({kunci: "k:" + JSON.stringify(o), ...o}), /CHECK/i, JSON.stringify(o));
+  const sumber = ["BMKG", "InaTEWS", "PVMBG", "KLHK", "Badan Geologi", "Deteksi Centurisk97"];
+  ["gunungapi", "udara", "kekeringan", "pesisir", "longsor", "rob"].forEach((jenis, i) => masukPx({kunci: "baru:" + jenis, jenis, sumber: sumber[i]}));
+});
+
+uji("0137 EXPLAIN: UNION ALL peringatan dan peringatan_x, tiap cabang SEARCH lewat indeks aktifnya, tanpa SCAN", () => {
+  const q = t => `SELECT * FROM (SELECT * FROM ${t} WHERE berlaku_hingga > ?1 AND dicabut IS NULL AND dibuat >= ?2 ORDER BY dibuat DESC LIMIT ?3)`;
+  const r = db.prepare(`EXPLAIN QUERY PLAN SELECT * FROM (${q("peringatan")} UNION ALL ${q("peringatan_x")}) ORDER BY dibuat DESC LIMIT ?3`).all(1, 0, 50).map(x => x.detail).join(" | ");
+  assert.match(r, /SEARCH peringatan USING INDEX peringatan_aktif/, r);
+  assert.match(r, /SEARCH peringatan_x USING INDEX peringatan_x_aktif/, r);
+  assert.ok(!/SCAN (peringatan|peringatan_x)\b/.test(r), r);
+  const g = db.prepare(`SELECT kunci FROM (${q("peringatan")} UNION ALL ${q("peringatan_x")}) ORDER BY dibuat DESC LIMIT ?3`).all(0, 0, 50).map(x => x.kunci);
+  assert.ok(g.includes("gempa:z:waspada") && g.includes("longsor:a:siaga") && g.indexOf("longsor:a:siaga") < g.indexOf("gempa:z:waspada"), "kedua tabel, dibuat DESC: " + g);
+});

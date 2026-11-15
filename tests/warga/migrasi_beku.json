@@ -135,5 +135,6 @@
   "0131_paritas_dokumen.sql": "8621cc74503d478c561a16bd46ab814ea1a5a672fd68a7a68f44ae11702f24fd",
   "0132_indeks_kursor_modul.sql": "6a201780f0d29a5b6865c3a270d6e5af1fa1a86fda9fed24706b4012fa5dab8c",
   "0133_masuk.sql": "08c3ebf1f4d8ce24b1bd57f3498d4af9ffb7cedafb95d9cc8d0915fdb447e410",
-  "0136_masuk_indeks.sql": "09acaabca09639766401e1e902f6c8c4cbe36895f415658654b6908f578bafd0"
+  "0136_masuk_indeks.sql": "09acaabca09639766401e1e902f6c8c4cbe36895f415658654b6908f578bafd0",
+  "0137_peringatan_x.sql": "92f81735e29a1c91b00db1ff08d08c4a436ac554e1822a1186f89f54a8483a31"
 }

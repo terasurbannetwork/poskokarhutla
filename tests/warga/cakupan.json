@@ -1236,6 +1236,8 @@
     "table pb_renlap": "pb_skema CHECK renlap",
     "table pb_dokumen": "pb_skema pb_dokumen CHECK",
     "table pb_tindakan": "pb_skema pb_tindakan CHECK",
+    "table peringatan_x": "PB-21 peringatan_x: jenis baru masuk tabel samping",
+    "migrasi 0137": "0137 peringatan_x: dua kali tanpa galat dan tanpa ubah data",
     "table pb_renlap_hasil": "pb_skema pb_renlap_hasil mengikuti FK",
     "table pb_log": "pb_skema pb_log menolak JSON",
     "GET /api/operasi/semai/berkas/:nama": "berkas: pembaca 200 dengan tipe dan cache benar",

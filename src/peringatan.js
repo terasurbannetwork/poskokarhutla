@@ -15,6 +15,7 @@ import {modOK} from "./posko.js";
 import {wilayah, cariWilayah} from "./titik.js";
 import {wilayahTerdekat} from "./gempa.js";
 import {PROV} from "./instansi.js";
+import {JENIS_PERINGATAN_X, peringatanXTulis, peringatanAktifGabung, peringatanXBersih, peringatanXCabut} from "./hak.js";
 
 const JAM = 3600e3, HARI = 24 * JAM, DANGKAL_KM = 60, DARAT_KM = 100, TEKS_MAKS = 600;
 const SUMBER_BMKG = "https://www.bmkg.go.id/gempabumi/gempabumi-terkini.html", SUMBER_INATEWS = "https://inatews.bmkg.go.id/", SUMBER_CUACA = "https://www.bmkg.go.id/alerts/nowcast/id";
@@ -32,6 +33,13 @@ async function tulis(st) {
   let n = 0;
   for (const s of st) { try { await s.run(); n++; } catch (e) { console.error("peringatan tulis", e?.message); } }
   return n;
+}
+
+/* PB-21 (D13): jenis baru (gunungapi, udara, kekeringan, pesisir, longsor, rob) masuk peringatan_x, jenis lama tetap ke peringatan. Nilai urut KOLOM.
+   true = tertulis, false = duplikat, null = tabel peringatan_x belum ada (migrasi 0137): dilewati, jenis lama tidak terganggu. Baris yang melanggar CHECK dilewati diam (INSERT OR IGNORE): false. */
+export async function tulisPeringatan(env, nilai) {
+  if (JENIS_PERINGATAN_X.includes(nilai[1])) return peringatanXTulis(env, nilai);
+  return (await env.DB.prepare(MASUK).bind(...nilai).run()).meta.changes > 0;
 }
 
 /* ---------------- gempa & tsunami ---------------- */
@@ -143,8 +151,11 @@ export async function periksaPeringatan(env, kini = Date.now()) {
   return hasil;
 }
 
-export const bersihkanPeringatan = (env, kini = Date.now()) =>
-  env.DB.prepare("DELETE FROM peringatan WHERE berlaku_hingga <= ?").bind(kini - 7 * HARI).run();
+export const bersihkanPeringatan = async (env, kini = Date.now()) => {
+  const r = await env.DB.prepare("DELETE FROM peringatan WHERE berlaku_hingga <= ?").bind(kini - 7 * HARI).run();
+  await peringatanXBersih(env, kini - 7 * HARI);   // tabel samping ikut langkah menit 17; tabel belum ada = dilewati
+  return r;
+};
 
 /* ---------------- API ---------------- */
 const iso = t => new Date(t).toISOString();
@@ -152,16 +163,13 @@ const bentuk = r => ({kunci: r.kunci, jenis: r.jenis, tingkat: r.tingkat, prov: 
   sumber: r.sumber === DETEKSI_D1 ? DETEKSI : r.sumber, sumber_url: r.sumber_url, dibuat: iso(r.dibuat), berlaku_hingga: iso(r.berlaku_hingga)});
 
 export const BATAS_AKTIF = 50;   // baris daftar /api/peringatan/aktif (terbaru dulu); hitungan sebenarnya ada di `total` / `per_tingkat`, yang tidak dipotong
-const AKTIF_SAH = "berlaku_hingga > ? AND dicabut IS NULL AND dibuat >= ?";
 const TINGKAT_HITUNG = ["Awas", "Siaga", "Waspada"];
 /* hitung = true: tambah hitungan SEBENARNYA (COUNT per tingkat, tanpa LIMIT) dalam batch yang sama dengan daftarnya, jadi satu potret. Dipakai JSON saja; CAP dan GeoJSON tidak butuh. */
 async function muatAktif(env, sejak, hitung = false) {
   const kini = Date.now(), kosong = {kini, daftar: [], per_tingkat: Object.fromEntries(TINGKAT_HITUNG.map(k => [k, 0])), total: 0};
   try {
-    const st = [env.DB.prepare(`SELECT * FROM peringatan WHERE ${AKTIF_SAH} ORDER BY dibuat DESC LIMIT ${BATAS_AKTIF}`).bind(kini, sejak)];
-    if (hitung) st.push(env.DB.prepare(`SELECT tingkat, count(*) n FROM peringatan WHERE ${AKTIF_SAH} GROUP BY tingkat`).bind(kini, sejak));
-    const [rows, cnt] = await env.DB.batch(st), daftar = rows.results.map(bentuk);
-    const per = {...kosong.per_tingkat}; for (const r of cnt?.results ?? []) if (r.tingkat in per) per[r.tingkat] = r.n;
+    const {daftar: rows, hitungan} = await peringatanAktifGabung(env, kini, sejak, BATAS_AKTIF, hitung), daftar = rows.map(bentuk);
+    const per = {...kosong.per_tingkat}; for (const r of hitungan) if (r.tingkat in per) per[r.tingkat] += r.n;   // dua cabang: dijumlah di sini
     return {kini, daftar, per_tingkat: per, total: hitung ? TINGKAT_HITUNG.reduce((a, k) => a + per[k], 0) : daftar.length};
   } catch (e) { console.error("peringatan api", e?.message); return kosong; }   // migrasi belum jalan / D1 galat: daftar kosong, bukan 5xx
 }
@@ -231,7 +239,9 @@ async function cabut(env, req, kunci, kini) {
   if (!/^[\w:.,|+\-]{3,200}$/.test(kunci)) return gagal(404, "peringatan tidak ada");
   const r = await env.DB.prepare("UPDATE peringatan SET dicabut = ?, dicabut_oleh = ? WHERE kunci = ? AND dicabut IS NULL").bind(kini, mod, kunci).run();
   if (r.meta.changes) return json({ok: true});
-  return (await env.DB.prepare("SELECT 1 x FROM peringatan WHERE kunci = ?").bind(kunci).first()) ? json({ok: true, sudah: true}) : gagal(404, "peringatan tidak ada");
+  if (await env.DB.prepare("SELECT 1 x FROM peringatan WHERE kunci = ?").bind(kunci).first()) return json({ok: true, sudah: true});
+  const x = await peringatanXCabut(env, kunci, kini, mod);   // tabel samping (jenis baru); null/0 = tidak ada
+  return x ? json(x === 1 ? {ok: true} : {ok: true, sudah: true}) : gagal(404, "peringatan tidak ada");
 }
 
 /* GET/HEAD /api/peringatan/aktif?sejak=<epoch ms> (cache tepi 30 dtk; kunci cache = jalur + sejak dibulatkan ke menit, parameter lain dibuang)

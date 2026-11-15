@@ -6,7 +6,7 @@ import {readFileSync, existsSync} from "node:fs";
 import path from "node:path";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
-import {tingkatGempa, bentukCap, BATAS_AKTIF} from "../../src/peringatan.js";
+import {tingkatGempa, bentukCap, BATAS_AKTIF, tulisPeringatan} from "../../src/peringatan.js";
 
 const JAM = 3600e3;
 const T10 = Math.floor(Date.now() / 600e3) * 600e3;   // menit kelipatan 10: gempaterkini + aturan cuaca ikut jalan
@@ -188,13 +188,49 @@ uji("banjir: kejadian level 2 = Siaga, level 3 = Awas berlabel Deteksi; naik Sia
 });
 
 uji("galat D1 (tabel hilang): /aktif tetap 200 daftar kosong, cron diam tanpa mematahkan putaran lain", async () => {
-  await DB.prepare("ALTER TABLE peringatan RENAME TO peringatan_x").run();
+  await DB.prepare("ALTER TABLE peringatan RENAME TO peringatan_sementara").run();
   try {
     const r = await api("/api/peringatan/aktif"); assert.equal(r.status, 200); assert.equal(r.j.n, 0); assert.deepEqual(r.j.peringatan, []);
     assert.deepEqual([r.j.total, r.j.terpotong, r.j.per_tingkat], [0, false, {Awas: 0, Siaga: 0, Waspada: 0}], "galat D1: hitungan nol, bukan 5xx");
     await tik(T10 + 4800e3);   // tidak melempar
-  } finally { await DB.prepare("ALTER TABLE peringatan_x RENAME TO peringatan").run(); }
+  } finally { await DB.prepare("ALTER TABLE peringatan_sementara RENAME TO peringatan").run(); }
   assert.ok((await api("/api/peringatan/aktif")).j.n >= 3);
+});
+
+uji("PB-21 peringatan_x: jenis baru masuk tabel samping, jenis lama ke tabel lama; /aktif menggabung keduanya berurut dibuat DESC; hitungan dijumlah; cabut jalan di kedua tabel; migrasi 0137 dua kali utuh", async () => {
+  const kini = Date.now() + 10 * JAM, B = (k, jenis, tingkat, dibuat, sumber = "Deteksi Centurisk97") => [k, jenis, tingkat, "32", null, null, null, "J " + k, "", sumber, null, dibuat, kini + 10 * JAM];   // dibuat paling baru dari alarm cron lain di berkas ini
+  const sql = pecah(readFileSync(path.join(AKAR, "migrations/0137_peringatan_x.sql"), "utf8")); for (const x of sql) await DB.prepare(x).run();
+  const foto = JSON.stringify(await baris("SELECT * FROM peringatan_x"));
+  assert.equal(await tulisPeringatan({DB}, B("longsor:u1:siaga", "longsor", "Siaga", kini - 1000)), true);
+  assert.equal(await tulisPeringatan({DB}, B("longsor:u1:siaga", "longsor", "Siaga", kini - 1000)), false, "kunci sama = duplikat");
+  assert.equal(await tulisPeringatan({DB}, B("gempa:u1:waspada", "gempa", "Waspada", kini - 500, "BMKG")), true);
+  assert.equal((await baris("SELECT count(*) n FROM peringatan WHERE kunci = 'longsor:u1:siaga'"))[0].n, 0);
+  assert.equal((await baris("SELECT count(*) n FROM peringatan_x WHERE kunci = 'gempa:u1:waspada'"))[0].n, 0);
+  assert.equal(await tulisPeringatan({DB}, B("gempa:u2:x", "gempa", "Waspada", kini).map((v, i) => i === 1 ? "longsor" : i === 9 ? "Bukan Sumber" : v)), false, "INSERT OR IGNORE melewati baris yang melanggar CHECK, tidak melempar");
+  assert.equal((await baris("SELECT count(*) n FROM peringatan_x WHERE kunci = 'gempa:u2:x'"))[0].n, 0);
+  await tulisPeringatan({DB}, B("rob:u1:awas", "rob", "Awas", kini - 100));
+  const r = await api("/api/peringatan/aktif?sejak=" + (Math.floor(Date.now() / 60e3) * 60e3 - 3600e3));
+  assert.deepEqual(r.j.peringatan.map(x => x.kunci).slice(0, 3), ["rob:u1:awas", "gempa:u1:waspada", "longsor:u1:siaga"], "urut dibuat DESC lintas tabel");
+  assert.ok(r.j.peringatan.length <= BATAS_AKTIF);
+  const jml = r.j.per_tingkat.Awas + r.j.per_tingkat.Siaga + r.j.per_tingkat.Waspada; assert.equal(r.j.total, jml); assert.ok(r.j.per_tingkat.Awas >= 1);
+  assert.equal((await api("/api/admin/peringatan/" + encodeURIComponent("longsor:u1:siaga") + "/cabut", {method: "POST", headers: ADMIN})).status, 200);
+  assert.equal((await api("/api/admin/peringatan/" + encodeURIComponent("longsor:u1:siaga") + "/cabut", {method: "POST", headers: ADMIN})).j.sudah, true);
+  assert.equal((await api("/api/admin/peringatan/" + encodeURIComponent("tidak:ada:x") + "/cabut", {method: "POST", headers: ADMIN})).status, 404);
+  assert.ok(!(await api("/api/peringatan/aktif")).j.peringatan.some(x => x.kunci === "longsor:u1:siaga"));
+  const sebelum = JSON.stringify(await baris("SELECT * FROM peringatan_x ORDER BY kunci"));
+  for (const x of sql) await DB.prepare(x).run();   // migrasi 0137 diulang: data tetap utuh
+  assert.equal(JSON.stringify(await baris("SELECT * FROM peringatan_x ORDER BY kunci")), sebelum);
+  assert.notEqual(foto, JSON.stringify(await baris("SELECT * FROM peringatan_x")), "(ada data tertulis sejak foto awal)");
+});
+
+uji("PB-21 tanpa tabel peringatan_x: jenis baru dilewati (null), jenis lama tetap melayani /aktif dan tulis", async () => {
+  await DB.prepare("ALTER TABLE peringatan_x RENAME TO peringatan_x_sementara").run();
+  try {
+    assert.equal(await tulisPeringatan({DB}, ["longsor:t1:siaga", "longsor", "Siaga", null, null, null, null, "J", "", "Deteksi Centurisk97", null, Date.now(), Date.now() + JAM]), null);
+    const r = await api("/api/peringatan/aktif"); assert.equal(r.status, 200); assert.ok(r.j.n >= 1, "jenis lama tetap tampil");
+    assert.equal(await tulisPeringatan({DB}, ["cuaca:t1:siaga", "cuaca", "Siaga", null, null, null, null, "J", "", "BMKG", null, Date.now(), Date.now() + JAM]), true);
+    await tik(T10 + 5400e3);   // bersih-bersih dan cron tidak melempar
+  } finally { await DB.prepare("ALTER TABLE peringatan_x_sementara RENAME TO peringatan_x").run(); }
 });
 
 /* instance kedua: cache tepi AKTIF */
