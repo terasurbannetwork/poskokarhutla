@@ -205,8 +205,8 @@ export default {
           "tangga": false
         },
         "dasbor": {
-          "ringkas": "",
-          "papan_sk": false
+          "ringkas": "karhutla",
+          "papan_sk": true
         },
         "ekonomi": false,
         "pencegahan": false,
@@ -378,19 +378,30 @@ export default {
       },
       "prioritas": [],
       "kemampuan": {
-        "operasi": false,
+        "operasi": true,
         "renlap": {
-          "sarana": [],
-          "bobot": ""
+          "sarana": [
+            "perahu_karet",
+            "perahu_motor",
+            "pompa_air",
+            "tenda",
+            "air_bersih_unit",
+            "dapur_umum",
+            "alat_berat"
+          ],
+          "bobot": "banjir"
         },
         "dokumen": [],
         "ews": {
-          "kunci": [],
-          "tangga": false
+          "kunci": [
+            "banjir",
+            "rob"
+          ],
+          "tangga": true
         },
         "dasbor": {
-          "ringkas": "",
-          "papan_sk": false
+          "ringkas": "banjir",
+          "papan_sk": true
         },
         "ekonomi": false,
         "pencegahan": false,
@@ -555,8 +566,8 @@ export default {
           "tangga": false
         },
         "dasbor": {
-          "ringkas": "",
-          "papan_sk": false
+          "ringkas": "pesisir",
+          "papan_sk": true
         },
         "ekonomi": false,
         "pencegahan": false,
@@ -721,8 +732,8 @@ export default {
           "tangga": false
         },
         "dasbor": {
-          "ringkas": "",
-          "papan_sk": false
+          "ringkas": "cuaca",
+          "papan_sk": true
         },
         "ekonomi": false,
         "pencegahan": false,
@@ -889,8 +900,8 @@ export default {
           "tangga": false
         },
         "dasbor": {
-          "ringkas": "",
-          "papan_sk": false
+          "ringkas": "gempa",
+          "papan_sk": true
         },
         "ekonomi": false,
         "pencegahan": false,
@@ -1041,8 +1052,8 @@ export default {
           "tangga": false
         },
         "dasbor": {
-          "ringkas": "",
-          "papan_sk": false
+          "ringkas": "udara",
+          "papan_sk": true
         },
         "ekonomi": false,
         "pencegahan": false,
@@ -1194,8 +1205,8 @@ export default {
           "tangga": true
         },
         "dasbor": {
-          "ringkas": "",
-          "papan_sk": false
+          "ringkas": "gunungapi",
+          "papan_sk": true
         },
         "ekonomi": false,
         "pencegahan": false,
@@ -1349,8 +1360,8 @@ export default {
           "tangga": false
         },
         "dasbor": {
-          "ringkas": "",
-          "papan_sk": false
+          "ringkas": "kekeringan",
+          "papan_sk": true
         },
         "ekonomi": false,
         "pencegahan": false,
@@ -1476,8 +1487,8 @@ export default {
           "tangga": false
         },
         "dasbor": {
-          "ringkas": "",
-          "papan_sk": false
+          "ringkas": "longsor",
+          "papan_sk": true
         },
         "ekonomi": false,
         "pencegahan": false,
