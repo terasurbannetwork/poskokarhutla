@@ -50,8 +50,8 @@ Kolom "Status paket": dibuat = ADA, diadaptasi = ADA dengan bentuk beda karena d
 | A19 | Statistik per provinsi | dibuat | ADA | laporan.json; meta.json | Agregat dari status |
 | A20 | Data lembaga | dibuat | ADA | peringatan.py; peringatan.json; bahaya.json | Label lembaga |
 | A21 | Posko | dibuat | ADA | banjir/posko.py; posko.json; posko.js:137 | Tab posko tersembunyi seperti karhutla |
-| A22 | Operasi | sebagian | SEBAGIAN | posko.js; scripts/operasi/renlap_banjir.py (CLI manual); data/laporan-bnpb/generator/penanganan_banjir.py | Renlap dan penanganan banjir ada tetapi dijalankan tangan atau bot, tak ada di workflow banjir, tak di layar banjir |
-| A23 | Aset udara | sebagian | SEBAGIAN | renlap_banjir.py (BASE bandara, rute tetangga terdekat); src/sippa.js:25,35 (kit banjir, pindah_banjir); keputusan.js:156 | Base heli banjir belum ada di seed 0103; rekomendasi aset belum |
+| A22 | Operasi | sebagian | SEBAGIAN | posko.js; scripts/umum/renlap.py (kandidat, rute, KML/GPX/WA banjir, PB-15) + scripts/operasi/renlap_banjir.py (CLI manual PDF/daftar/peta/rencana); data/laporan-bnpb/generator/penanganan_banjir.py | Renlap dan penanganan banjir ada tetapi dijalankan tangan atau bot, tak ada di workflow banjir, tak di layar banjir |
+| A23 | Aset udara | sebagian | SEBAGIAN | scripts/umum/renlap.py (BASE bandara, rute tetangga terdekat); src/sippa.js:25,35 (kit banjir, pindah_banjir); keputusan.js:156 | Base heli banjir belum ada di seed 0103; rekomendasi aset belum |
 | A24 | Keputusan ekonomi | sebagian | SEBAGIAN | keputusan.js (Monte Carlo, bootstrap, CBA) | Ada dan tersembunyi, tetapi tanpa uji |
 | A25 | Preventif | sebagian | SEBAGIAN | tren.js:182; keputusan.js:42 | Saran pra-musim; tanpa profil/rencana pencegahan |
 | A26 | Penanggung jawab lahan | tidak berlaku | TB | bukti_das.py | Tak ada penanggung jawab tunggal; konsesi per DAS hanya luasan. Bisa dibantah |
@@ -148,7 +148,7 @@ Kolom "Status paket": dibuat = ADA, diadaptasi = ADA dengan bentuk beda karena d
 | Kode | Komponen | Audit | Bukti | Catatan |
 | --- | --- | --- | --- | --- |
 | G01 | Tugas lapangan dan regu | SEBAGIAN | src/tugas_bencana.js; src/penugasan.js:42 (daftar periksa banjir); src/instansi.js:1242,1637; migrasi 0047-0049 | Tugas banjir (buka, surut dilaporkan, surut terverifikasi) ada; kluster, poligon, angin, level 3 dan kabar regu karhutla-only (operasi_lapangan.js:163 menolak non-karhutla) |
-| G02 | Operasi udara/darat | SEBAGIAN | scripts/operasi/renlap_banjir.py (daftar, peta, buat); src/operasi_lapangan.js:614; src/operasi_udara.js 0 rujukan banjir | Renlap udara pantau banjir ada sebagai CLI manual (pemilik 15 Nov); tak ada pantauan operasi udara banjir di /operasi, tak terjadwal |
+| G02 | Operasi udara/darat | SEBAGIAN | scripts/umum/renlap.py (SKOR banjir, bagi_base, kirim) + operasi/renlap_banjir.py (daftar, peta, buat PDF); src/operasi_lapangan.js:614; src/operasi_udara.js 0 rujukan banjir | Renlap udara pantau banjir ada sebagai CLI manual (pemilik 15 Nov); tak ada pantauan operasi udara banjir di /operasi, tak terjadwal |
 | G03 | Sarana lapangan terencana | ADA | src/sippa.js:25-35,54 (kit, templat, pindah_banjir); public/pipa/layar_pemicu.js; tests/sippa/formulir.test.mjs | SIPPA mencakup banjir |
 | G04 | Laporan harian/penanganan otomatis | ADA | scripts/wa/otomatis.mjs:42 (penanganan_banjir.py, cut-off 17.00 WIB); data/laporan-bnpb/generator/penanganan_banjir.py; scripts/wa/peringatan_banjir.mjs; src/laporan_bencana.js | Peringatan WA hujan lebat mati sampai PENERIMA_PERINGATAN_BANJIR diisi |
 | G05 | Dalops: cek kabar luar, saringan, tindak lanjut | ADA | scripts/data/dalops_banjir.py banjir.yml:370-378; public/bnpb/dalops.js:1-14; src/dalops_tindak.js:11 | Pantau Banjir Dalops, kabar luar harian, tindak lanjut kunci banjir|... |
@@ -156,5 +156,5 @@ Kolom "Status paket": dibuat = ADA, diadaptasi = ADA dengan bentuk beda karena d
 | G07 | Semai awan dan prakiraan asap | TB | - | Semai awan dan asap untuk karhutla dan kekeringan; tak ada kaitan operasional dengan banjir |
 | G08 | Masuk laporan berkala Kepala BNPB | BELUM | scripts/berkala/ dan src/laporan_berkala.js tidak ada; hanya paket dokumen data/kajian-bnpb/laporan-berkala/ | Banjir belum masuk karena mesin berkalanya belum dibangun |
 | G09 | Peringatan dini tersambung (EWS, CAP) | ADA | src/ews.js:194-214; src/peringatan.js:90-108; src/push.js:151-202 (migrasi 0064); src/berantai.js | Status kecamatan, rob, kejadian aktif Siaga/Awas, push naik status, peringatan berantai |
-| G10 | Renlap lengkap | SEBAGIAN | scripts/operasi/renlap_banjir.py (PDF per base, KML, GPX, TXT WA, JSON) | Target titik tengah kecamatan, bukan genangan; tanpa versi, R2 operasi/renlap/, atau tampilan di layar; base heli banjir belum ada |
+| G10 | Renlap lengkap | SEBAGIAN | scripts/umum/renlap.py + renlap_keluaran.py (KML, GPX, TXT WA, JSON; PDF masih operasi/renlap_banjir.py) | Target titik tengah kecamatan, bukan genangan; tanpa versi, R2 operasi/renlap/, atau tampilan di layar; base heli banjir belum ada |
 | G11 | Pembuat dokumen | SEBAGIAN | penanganan_banjir.py; renlap_banjir.py peta (PDF titik belum surut Aceh dan Sumut, b6d185500); laporan_banjir.py; src/laporan_bencana.js | Laporan penanganan dan peta PDF ada; sitrep, renkon, surat dan laporan per KIB banjir belum |

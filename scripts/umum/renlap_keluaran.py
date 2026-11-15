@@ -5,6 +5,7 @@ KML dan GPX baru (karhutla belum punya), pola dari renlap_banjir.py. Python stdl
 
   python3 -I scripts/umum/renlap_keluaran.py uji
 """
+import html
 import os
 import re
 import shutil
@@ -140,6 +141,44 @@ def dokumen(judul, isi, css):
 def ke_pdf(chrome, berkas_html, pdf):
     subprocess.run([chrome, "--headless=new", "--disable-gpu", "--no-pdf-header-footer", "--virtual-time-budget=10000",
                     f"--print-to-pdf={pdf}", berkas_html.as_uri()], check=True, capture_output=True, timeout=600)
+
+
+# ---- banjir (PB-15): format lama renlap_banjir.py dipindah apa adanya (sha256 di renlap.py EMAS_BANJIR). Beda dengan kml/gpx generik di atas
+# (tanpa deskripsi catatan, html.escape, koordinat apa adanya); rute = {id,nama,icao,lat,lon,patroli:[{urut,kec,kab,kondisi,lat,lon}]}. ----
+def gmaps(lat, lon):
+    return f"https://www.google.com/maps/search/?api=1&query={lat:.5f},{lon:.5f}"
+
+
+def kml_banjir(rute, nama):
+    pm = []
+    for b in rute:
+        pm.append(f'<Placemark><name>Base {html.escape(b["nama"])}</name><Point><coordinates>{b["lon"]},{b["lat"]},0</coordinates></Point></Placemark>')
+        for c in b['patroli']:
+            pm.append(f'<Placemark><name>{b["id"]} CP{c["urut"]} {html.escape(c["kec"])}</name><description>{html.escape(c["kab"])}: {html.escape(c["kondisi"])}</description>'
+                      f'<Point><coordinates>{c["lon"]},{c["lat"]},0</coordinates></Point></Placemark>')
+        jalur = ' '.join(f'{p["lon"]},{p["lat"]},0' for p in [b] + b['patroli'] + [b])
+        pm.append(f'<Placemark><name>Rute {b["id"]}</name><LineString><coordinates>{jalur}</coordinates></LineString></Placemark>')
+    return f'<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>{html.escape(nama)}</name>{"".join(pm)}</Document></kml>'
+
+
+def gpx_banjir(rute, nama):
+    wpt, rte = [], []
+    for b in rute:
+        wpt.append(f'<wpt lat="{b["lat"]}" lon="{b["lon"]}"><name>{b["id"]}</name></wpt>')
+        pts = ''.join(f'<rtept lat="{p["lat"]}" lon="{p["lon"]}"><name>{b["id"] if p is b else b["id"] + "-CP" + str(p["urut"])}</name></rtept>' for p in [b] + b['patroli'] + [b])
+        for c in b['patroli']:
+            wpt.append(f'<wpt lat="{c["lat"]}" lon="{c["lon"]}"><name>{b["id"]}-CP{c["urut"]}</name><desc>{html.escape(c["kec"])}, {html.escape(c["kab"])}</desc></wpt>')
+        rte.append(f'<rte><name>{b["id"]} pantau banjir</name>{pts}</rte>')
+    return f'<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Centurisk97" xmlns="http://www.topografix.com/GPX/1/1"><metadata><name>{html.escape(nama)}</name></metadata>{"".join(wpt)}{"".join(rte)}</gpx>'
+
+
+def teks_banjir(rute, tanggal):
+    t = [f'*Renlap udara pantau banjir {tanggal}* (usulan, bukan perintah terbang)']
+    for b in rute:
+        t.append(f'\n*Base {b["nama"]} ({b["icao"]})*')
+        for c in b['patroli']:
+            t.append(f'CP{c["urut"]} Kec. {c["kec"]}, {c["kab"]}: {c["lat"]:.4f}, {c["lon"]:.4f} {gmaps(c["lat"], c["lon"])}')
+    return '\n'.join(t)
 
 
 def uji():

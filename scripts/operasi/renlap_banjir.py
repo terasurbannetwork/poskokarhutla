@@ -28,94 +28,12 @@ AKAR = SINI.parents[1]
 sys.path.insert(0, str(SINI)); sys.path.insert(0, str(AKAR / 'data/laporan-bnpb/generator')); sys.path.insert(0, str(AKAR / 'scripts/banjir'))
 import renlap as R  # noqa: E402
 import renlap_pdf as RP  # noqa: E402
+import importlib.util  # noqa: E402
+_sp = importlib.util.spec_from_file_location('umum_renlap', AKAR / 'scripts/umum/renlap.py')  # namanya sama dengan operasi/renlap.py (R)
+U = importlib.util.module_from_spec(_sp); sys.modules['umum_renlap'] = U; _sp.loader.exec_module(U)  # mesin umum: kandidat, rute, KML/GPX/WA banjir
+BASE, LEVEL, bagi_base, kecamatan_kab, nama_kecamatan, norm, target = U.BASE, U.LEVEL, U.bagi_base, U.kecamatan_kab, U.nama_kecamatan, U.norm, U.target
 
-# bandara publik (ICAO, koordinat aerodrome); tanpa VOR tercatat -> kolom radial dikosongkan
-BASE = [
-    {'id': 'BTJ', 'nama': 'Sultan Iskandar Muda', 'icao': 'WITT', 'lat': 5.5236, 'lon': 95.4206},
-    {'id': 'MEQ', 'nama': 'Cut Nyak Dhien', 'icao': 'WITC', 'lat': 4.0500, 'lon': 96.2490},
-    {'id': 'KNO', 'nama': 'Kualanamu', 'icao': 'WIMM', 'lat': 3.6422, 'lon': 98.8853},
-]
-LEVEL = {0: 'Normal', 1: 'Waspada', 2: 'Siaga', 3: 'Awas'}
 WARNA = {0: ('#eef0f3', '#6b7280'), 1: ('#fdf3e7', '#9a5b1e'), 2: ('#e8894a', '#ffffff'), 3: ('#8f3f07', '#ffffff')}
-
-
-def norm(s):
-    return re.sub(r'\s+', ' ', (s or '').strip()).lower()
-
-
-def kecamatan_kab(kode, kab, geo):
-    """{nama_kecil: nama} kecamatan satu kab/kota dari batas kecamatan."""
-    return {norm(f['properties']['kec']): f['properties']['kec'] for f in geo if f['properties']['kab'] == kab}
-
-
-def nama_kecamatan(o, kode, kec_kab, kej):
-    """-> (daftar nama kecamatan, sumber). Hanya nama yang benar-benar kecamatan kab/kota ini (logbook kadang mencampur kab tetangga)."""
-    teks = ' '.join((o.get('butir') or {}).values()) + ' ' + (o.get('kondisi') or '')
-    wa = [nm for k, nm in kec_kab.items() if re.search(r'\b' + re.escape(k) + r'\b', teks.lower())]
-    if wa:
-        return sorted(wa), 'WA Koordalops'
-    # logbook: semua kejadian provinsi ini (logbook pernah mencatat kecamatan Gayo Lues di bawah Aceh Tenggara); nama dicocokkan
-    # ke kecamatan kab/kota ini saja, toleran salah ketik kecil ("Deleng Pokhkison" = "Deleng Pokhkisen")
-    from difflib import get_close_matches
-    lb = {norm(c) for e in kej if any(k.startswith(f'{kode}|') for k in e.get('kab_kode', [])) for c in (e.get('kec') or [])}
-    cocok = {(get_close_matches(k, list(kec_kab), 1, .85) or [None])[0] for k in lb}
-    lb = sorted(kec_kab[k] for k in cocok if k)
-    return (lb, 'logbook Pusdalops') if lb else ([], '')
-
-
-def target(prov_list, tanggal, n_hari=6):
-    import situasi_banjir as S
-    from bahaya import kecamatan
-    from wilayah import PROVINSI
-    st, dibuat = S.status_n_hari(n_hari)
-    if st['hari'][0] < tanggal <= st['hari'][-1]:
-        i = st['hari'].index(tanggal); st['hari'] = st['hari'][i:]
-        for v in st['kec'].values(): v['b'], v['h3d'] = v['b'][i:], v['h3d'][i:]
-    K = kecamatan()
-    lb_path = AKAR / 'data/raw/dalops/banjir.json'
-    kej = json.loads(lb_path.read_text())['kejadian'] if lb_path.exists() else []
-    kode_dari = {v.lower(): k for k, v in PROVINSI.items()}
-    out, wa_akhir = [], []
-    for prov in prov_list:
-        kode = kode_dari[prov.lower()]
-        geo = json.loads((AKAR / f'public/geo/kecamatan/{kode}.json').read_text())['features']
-        lap, wa0, wa1 = S.sudah_banjir(kode, tanggal)
-        wa_akhir.append(wa1)
-        for o in lap:
-            if o['status'] != 'Belum surut':
-                continue
-            kec_kab = kecamatan_kab(kode, o['kab'], geo)
-            nama, sumber = nama_kecamatan(o, kode, kec_kab, kej)
-            if not nama:   # cadangan: kecamatan berstatus tertinggi di kab/kota ini
-                cal = sorted(((max(v['b']), max(v['h3d']), k.split('|')[2]) for k, v in st['kec'].items() if k.startswith(f'{kode}|{o["kab"]}|')), reverse=True)
-                nama, sumber = [c[2] for c in cal[:2]], 'prakiraan sistem'
-            for nm in nama:
-                k = f'{kode}|{o["kab"]}|{nm}'
-                if k not in K:
-                    continue
-                v = st['kec'].get(k, {'b': [0] * len(st['hari']), 'h3d': [0] * len(st['hari'])})
-                cincin = [f['geometry'] for f in geo if f['properties']['kab'] == o['kab'] and f['properties']['kec'] == nm]
-                out.append(dict(prov=PROVINSI[kode], kode_prov=kode, kab=o['kab'], kec=nm, lat=K[k]['lat'], lon=K[k]['lon'], sumber_nama=sumber,
-                                kondisi=S.rapi(o.get('kondisi')), akhir=o['akhir'], kk=o.get('kk'), ungsi=o.get('ungsi'),
-                                darurat=S.status_darurat((o.get('butir') or {}).get('Penetapan status')), hari=st['hari'], lv=v['b'],
-                                h3=max(v['h3d']) if v['h3d'] else 0, geom=cincin))
-    return out, dibuat, max(w for w in wa_akhir if w)
-
-
-def bagi_base(cp):
-    rute = {b['id']: dict(b, patroli=[]) for b in BASE}
-    for c in cp:
-        b = min(BASE, key=lambda b: R.jarak_nm(b['lat'], b['lon'], c['lat'], c['lon']))
-        rute[b['id']]['patroli'].append(c)
-    for b in rute.values():   # urut tetangga terdekat dari base
-        sisa, pos, urut = list(b['patroli']), (b['lat'], b['lon']), []
-        while sisa:
-            n = min(sisa, key=lambda c: R.jarak_nm(pos[0], pos[1], c['lat'], c['lon']))
-            sisa.remove(n); urut.append(n); pos = (n['lat'], n['lon'])
-        for i, c in enumerate(urut, 1):
-            c.update(urut=i, tempat=f"Kec. {c['kec']}, {c['kab']}")
-        b['patroli'] = urut
-    return [b for b in rute.values() if b['patroli']]
 
 
 # ---------------------------------------------------------------- PDF
@@ -243,38 +161,6 @@ def halaman_cp(b, titik, i, meta, kerja, cache):
             f'<p class="fnd">Hujan tiga hari tertinggi {RP.ang(c["h3"])} mm. A Awas, S Siaga, W Waspada.</p></div></div></div>{kaki(meta)}</section>')
 
 
-def kml(rute, nama):
-    pm = []
-    for b in rute:
-        pm.append(f'<Placemark><name>Base {html.escape(b["nama"])}</name><Point><coordinates>{b["lon"]},{b["lat"]},0</coordinates></Point></Placemark>')
-        for c in b['patroli']:
-            pm.append(f'<Placemark><name>{b["id"]} CP{c["urut"]} {html.escape(c["kec"])}</name><description>{html.escape(c["kab"])}: {html.escape(c["kondisi"])}</description>'
-                      f'<Point><coordinates>{c["lon"]},{c["lat"]},0</coordinates></Point></Placemark>')
-        jalur = ' '.join(f'{p["lon"]},{p["lat"]},0' for p in [b] + b['patroli'] + [b])
-        pm.append(f'<Placemark><name>Rute {b["id"]}</name><LineString><coordinates>{jalur}</coordinates></LineString></Placemark>')
-    return f'<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>{html.escape(nama)}</name>{"".join(pm)}</Document></kml>'
-
-
-def gpx_teks(rute, nama):
-    wpt, rte = [], []
-    for b in rute:
-        wpt.append(f'<wpt lat="{b["lat"]}" lon="{b["lon"]}"><name>{b["id"]}</name></wpt>')
-        pts = ''.join(f'<rtept lat="{p["lat"]}" lon="{p["lon"]}"><name>{b["id"] if p is b else b["id"] + "-CP" + str(p["urut"])}</name></rtept>' for p in [b] + b['patroli'] + [b])
-        for c in b['patroli']:
-            wpt.append(f'<wpt lat="{c["lat"]}" lon="{c["lon"]}"><name>{b["id"]}-CP{c["urut"]}</name><desc>{html.escape(c["kec"])}, {html.escape(c["kab"])}</desc></wpt>')
-        rte.append(f'<rte><name>{b["id"]} pantau banjir</name>{pts}</rte>')
-    return f'<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Centurisk97" xmlns="http://www.topografix.com/GPX/1/1"><metadata><name>{html.escape(nama)}</name></metadata>{"".join(wpt)}{"".join(rte)}</gpx>'
-
-
-def teks_wa(rute, tanggal):
-    t = [f'*Renlap udara pantau banjir {tanggal}* (usulan, bukan perintah terbang)']
-    for b in rute:
-        t.append(f'\n*Base {b["nama"]} ({b["icao"]})*')
-        for c in b['patroli']:
-            t.append(f'CP{c["urut"]} Kec. {c["kec"]}, {c["kab"]}: {c["lat"]:.4f}, {c["lon"]:.4f} {RP.gmaps(c["lat"], c["lon"])}')
-    return '\n'.join(t)
-
-
 def buat(a):
     tanggal = a.tanggal or date.today().isoformat()
     cp, dibuat, wa1 = target(a.prov, tanggal)
@@ -305,9 +191,9 @@ def buat(a):
     if len(semua) > 1:
         hasil.append(cetak('Semua Base', ''.join(semua)))
     nama = f'Renlap Udara Pantau Banjir {tg}'
-    (keluar / f'{nama}.kml').write_text(kml(rute, nama))
-    (keluar / f'{nama}.gpx').write_text(gpx_teks(rute, nama))
-    (keluar / f'{nama}.txt').write_text(teks_wa(rute, tanggal))
+    (keluar / f'{nama}.kml').write_text(U.K.kml_banjir(rute, nama))
+    (keluar / f'{nama}.gpx').write_text(U.K.gpx_banjir(rute, nama))
+    (keluar / f'{nama}.txt').write_text(U.K.teks_banjir(rute, tanggal))
     (keluar / f'{nama}.json').write_text(json.dumps([{k: v for k, v in b.items()} | {'patroli': [{k: v for k, v in c.items() if k != 'geom'} for c in b['patroli']]} for b in rute],
                                                      ensure_ascii=False, indent=1, default=str))
     for p in hasil:

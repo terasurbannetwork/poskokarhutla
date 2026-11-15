@@ -63,10 +63,117 @@ def skor_karhutla(titik, temuan, B, **kw):
     return operasi().kandidat(titik, temuan, B, **kw)
 
 
+# ---- banjir (PB-15): dipindah dari scripts/operasi/renlap_banjir.py tanpa mengubah logikanya. Kandidat = kecamatan yang dilaporkan banjir
+# belum surut (Koordalops, logbook Pusdalops, status banjir sistem); TIDAK ada skor ambang di logika lama: semua kecamatan itu jadi target,
+# diberi ke base bandara terdekat, urut tetangga terdekat. Skor di bawah hanya tingkat tertinggi prakiraan (0..3), bukan penyaring. ----
+# bandara publik (ICAO, koordinat aerodrome); tanpa VOR tercatat -> kolom radial dikosongkan
+BASE = [
+    {'id': 'BTJ', 'nama': 'Sultan Iskandar Muda', 'icao': 'WITT', 'lat': 5.5236, 'lon': 95.4206},
+    {'id': 'MEQ', 'nama': 'Cut Nyak Dhien', 'icao': 'WITC', 'lat': 4.0500, 'lon': 96.2490},
+    {'id': 'KNO', 'nama': 'Kualanamu', 'icao': 'WIMM', 'lat': 3.6422, 'lon': 98.8853},
+]
+LEVEL = {0: 'Normal', 1: 'Waspada', 2: 'Siaga', 3: 'Awas'}
+
+
+def _jalur_banjir():
+    for j in (AKAR / "data/laporan-bnpb/generator", AKAR / "scripts/banjir"):
+        if str(j) not in sys.path:
+            sys.path.insert(0, str(j))
+
+
+def norm(s):
+    return re.sub(r'\s+', ' ', (s or '').strip()).lower()
+
+
+def kecamatan_kab(kode, kab, geo):
+    """{nama_kecil: nama} kecamatan satu kab/kota dari batas kecamatan."""
+    return {norm(f['properties']['kec']): f['properties']['kec'] for f in geo if f['properties']['kab'] == kab}
+
+
+def nama_kecamatan(o, kode, kec_kab, kej):
+    """-> (daftar nama kecamatan, sumber). Hanya nama yang benar-benar kecamatan kab/kota ini (logbook kadang mencampur kab tetangga)."""
+    teks = ' '.join((o.get('butir') or {}).values()) + ' ' + (o.get('kondisi') or '')
+    wa = [nm for k, nm in kec_kab.items() if re.search(r'\b' + re.escape(k) + r'\b', teks.lower())]
+    if wa:
+        return sorted(wa), 'WA Koordalops'
+    # logbook: semua kejadian provinsi ini (logbook pernah mencatat kecamatan Gayo Lues di bawah Aceh Tenggara); nama dicocokkan
+    # ke kecamatan kab/kota ini saja, toleran salah ketik kecil ("Deleng Pokhkison" = "Deleng Pokhkisen")
+    from difflib import get_close_matches
+    lb = {norm(c) for e in kej if any(k.startswith(f'{kode}|') for k in e.get('kab_kode', [])) for c in (e.get('kec') or [])}
+    cocok = {(get_close_matches(k, list(kec_kab), 1, .85) or [None])[0] for k in lb}
+    lb = sorted(kec_kab[k] for k in cocok if k)
+    return (lb, 'logbook Pusdalops') if lb else ([], '')
+
+
+def target(prov_list, tanggal, n_hari=6):
+    _jalur_banjir()
+    import situasi_banjir as S
+    from bahaya import kecamatan
+    from wilayah import PROVINSI
+    st, dibuat = S.status_n_hari(n_hari)
+    if st['hari'][0] < tanggal <= st['hari'][-1]:
+        i = st['hari'].index(tanggal); st['hari'] = st['hari'][i:]
+        for v in st['kec'].values(): v['b'], v['h3d'] = v['b'][i:], v['h3d'][i:]
+    K = kecamatan()
+    lb_path = AKAR / 'data/raw/dalops/banjir.json'
+    kej = json.loads(lb_path.read_text())['kejadian'] if lb_path.exists() else []
+    kode_dari = {v.lower(): k for k, v in PROVINSI.items()}
+    out, wa_akhir = [], []
+    for prov in prov_list:
+        kode = kode_dari[prov.lower()]
+        geo = json.loads((AKAR / f'public/geo/kecamatan/{kode}.json').read_text())['features']
+        lap, wa0, wa1 = S.sudah_banjir(kode, tanggal)
+        wa_akhir.append(wa1)
+        for o in lap:
+            if o['status'] != 'Belum surut':
+                continue
+            kec_kab = kecamatan_kab(kode, o['kab'], geo)
+            nama, sumber = nama_kecamatan(o, kode, kec_kab, kej)
+            if not nama:   # cadangan: kecamatan berstatus tertinggi di kab/kota ini
+                cal = sorted(((max(v['b']), max(v['h3d']), k.split('|')[2]) for k, v in st['kec'].items() if k.startswith(f'{kode}|{o["kab"]}|')), reverse=True)
+                nama, sumber = [c[2] for c in cal[:2]], 'prakiraan sistem'
+            for nm in nama:
+                k = f'{kode}|{o["kab"]}|{nm}'
+                if k not in K:
+                    continue
+                v = st['kec'].get(k, {'b': [0] * len(st['hari']), 'h3d': [0] * len(st['hari'])})
+                cincin = [f['geometry'] for f in geo if f['properties']['kab'] == o['kab'] and f['properties']['kec'] == nm]
+                out.append(dict(prov=PROVINSI[kode], kode_prov=kode, kab=o['kab'], kec=nm, lat=K[k]['lat'], lon=K[k]['lon'], sumber_nama=sumber,
+                                kondisi=S.rapi(o.get('kondisi')), akhir=o['akhir'], kk=o.get('kk'), ungsi=o.get('ungsi'),
+                                darurat=S.status_darurat((o.get('butir') or {}).get('Penetapan status')), hari=st['hari'], lv=v['b'],
+                                h3=max(v['h3d']) if v['h3d'] else 0, geom=cincin))
+    return out, dibuat, max(w for w in wa_akhir if w)
+
+
+def bagi_base(cp, base=None):
+    base = base or BASE
+    rute = {b['id']: dict(b, patroli=[]) for b in base}
+    for c in cp:
+        b = min(base, key=lambda b: operasi().jarak_nm(b['lat'], b['lon'], c['lat'], c['lon']))
+        rute[b['id']]['patroli'].append(c)
+    for b in rute.values():   # urut tetangga terdekat dari base
+        sisa, pos, urut = list(b['patroli']), (b['lat'], b['lon']), []
+        while sisa:
+            n = min(sisa, key=lambda c: operasi().jarak_nm(pos[0], pos[1], c['lat'], c['lon']))
+            sisa.remove(n); urut.append(n); pos = (n['lat'], n['lon'])
+        for i, c in enumerate(urut, 1):
+            c.update(urut=i, tempat=f"Kec. {c['kec']}, {c['kab']}")
+        b['patroli'] = urut
+    return [b for b in rute.values() if b['patroli']]
+
+
+
+def skor_banjir(c, B=None):
+    """-> (tingkat tertinggi 0..3, alasan). Bukan penyaring: bagi_base memakai semua kandidat (perilaku renlap_banjir.py lama)."""
+    t = max(c.get("lv") or [0])
+    return float(t), {"tingkat": t, "sumber_nama": c.get("sumber_nama")}
+
+
 SKOR = {  # satu penilai per id di public/bencana.json; jenis tanpa uji balik = bobot sama rata berlabel HIPOTESIS
     "karhutla": skor_karhutla,
+    "banjir": skor_banjir,
     **{i: (lambda c, B, _i=i: skor_generik(_i, c, B)) for i in
-       ("banjir", "pesisir", "cuaca", "gempa", "udara", "gunungapi", "kekeringan")},
+       ("pesisir", "cuaca", "gempa", "udara", "gunungapi", "kekeringan")},
 }
 
 
@@ -152,7 +259,33 @@ def ambil_titik(base_url, kunci, a):
     return _http("GET", base_url + "/api/pb/titik/mesin?" + q, kunci, "titik|{w}|%s|%s|%s" % (a.bencana, a.prov, a.kab)).get("titik") or []
 
 
-def rakit(a, titik, B):
+def rakit_banjir(a, titik, B, ambil=None):
+    """banjir: kandidat = kecamatan banjir belum surut dari data repo (`target`); base = titik sarana bila ada, selain itu bandara BASE.
+    Sumber gagal dibaca -> RuntimeError, sehingga `kirim` melapor status gagal (bukan draf kosong yang tampak sah)."""
+    base = [{"id": str(t.get("id", ""))[:12] or "B%d" % (i + 1), "nama": t.get("nama") or "Sarana", "icao": "", "lat": t["lat"], "lon": t["lon"]}
+            for i, t in enumerate(titik) if t.get("golongan") == "sarana" and isinstance(t.get("lat"), (int, float)) and isinstance(t.get("lon"), (int, float))] or None
+    try:
+        _jalur_banjir()
+        from wilayah import PROVINSI
+        cp = (ambil or target)([PROVINSI[a.prov]], a.tanggal)[0]
+    except Exception as e:
+        raise RuntimeError("sumber target banjir gagal dibaca: %s" % type(e).__name__) from e
+    rute = bagi_base(cp, base) if cp else []
+    nama = "renlap_%s_%s" % (a.tanggal, a.versi)
+    jml = sum(len(b["patroli"]) for b in rute)
+    r = {"bencana": "banjir", "status": "draf", "bobot_label": B["per_bencana"]["banjir"]["label"],
+         "catatan": "USULAN lokasi untuk dilihat, bukan perintah terbang.", "tanggal": a.tanggal, "versi": a.versi, "jml_target": jml,
+         "base": [{k: v for k, v in b.items() if k != "geom"} | {"patroli": [{k: v for k, v in c.items() if k != "geom"} for c in b["patroli"]]} for b in rute]}
+    if not jml:
+        r["alasan_kosong"] = "tidak ada kecamatan banjir belum surut"
+    isi = {"json": json.dumps(r, ensure_ascii=False, indent=1, default=str), "kml": K.kml_banjir(rute, nama), "gpx": K.gpx_banjir(rute, nama),
+           "txt": K.teks_banjir(rute, a.tanggal) if rute else "USULAN TARGET banjir, %s (versi %s)\nTidak ada target: %s.\n" % (a.tanggal, a.versi, r["alasan_kosong"])}
+    return r, isi
+
+
+def rakit(a, titik, B, ambil=None):
+    if a.bencana == "banjir":
+        return rakit_banjir(a, titik, B, ambil)
     """base = titik golongan sarana; kandidat target: KOSONG (belum ada sumber target per bencana dengan skema terjamin di repo, tidak dikarang)."""
     base = [{"id": str(t.get("id", ""))[:12] or "B%d" % (i + 1), "nama": t.get("nama") or "Sarana", "lat": t["lat"], "lon": t["lon"]}
             for i, t in enumerate(titik) if t.get("golongan") == "sarana" and isinstance(t.get("lat"), (int, float)) and isinstance(t.get("lon"), (int, float))]
@@ -206,8 +339,47 @@ def contoh_karhutla():
                       "di_luar_rute": {"sel": 2, "titik": 5}}]}
 
 
+# SHA-256 keluaran banjir dari renlap_banjir.py LAMA (15 Nov 2026, sebelum dipindah) atas kecamatan sintetis di bawah.
+EMAS_BANJIR = {"json": "7c0313f59aa8c372ec625812c6cddf9cee140eb0a299fc1a606e7680cf1d9d9b", "kml": "f2d14c92cc2a73e3de4a80674da3477867e60edcaa1abcab02dd5b70d4a5bf03",
+               "gpx": "29c645fce3b560304b04e2cd521300b481b05d6e14eaa46fcba94fab4cea74a5", "txt": "2177a3794a08acb5f41c28b3b2fb4d19781a20ff3afbed103dd3bc507147090e"}
+
+
+def contoh_banjir():
+    def c(prov, kp, kab, kec, lat, lon, sn, kond, kk, ungsi, darurat, lv, h3, akhir="2026-11-14"):
+        return dict(prov=prov, kode_prov=kp, kab=kab, kec=kec, lat=lat, lon=lon, sumber_nama=sn, kondisi=kond, akhir=akhir, kk=kk, ungsi=ungsi,
+                    darurat=darurat, hari=["a"], lv=lv, h3=h3, geom=[])
+    return [c("Aceh", "11", "Pidie Jaya", "Meureudu", 5.2, 96.2, "WA Koordalops", "Banjir <60 cm> & lumpur", 100, 50, "x", [1, 3], 40.5),
+            c("Aceh", "11", "Aceh Tengah", "Bebesen", 4.6, 96.8, "logbook Pusdalops", "Genangan", None, None, "y", [0, 2], 10),
+            c("Sumatera Utara", "12", "Deli Serdang", "Labuhan Deli", 3.7, 98.7, "prakiraan sistem", "Banjir", 5, 2, "z", [2, 2], 5, "2026-11-13"),
+            c("Sumatera Utara", "12", "Langkat", "Stabat", 3.8, 98.4, "WA Koordalops", "Banjir", 5, 2, "z", [1], 5, "2026-11-13"),
+            c("Aceh", "11", "Bireuen", "Jeumpa", 5.1, 96.7, "WA Koordalops", "Banjir", 5, 2, "z", [0], 5)]
+
+
+def uji_banjir():
+    """keluaran banjir (json, kml, gpx, txt) identik dengan renlap_banjir.py lama; kecamatan yang masuk tidak disaring skor"""
+    r = bagi_base(contoh_banjir())
+    nama = "Renlap Udara Pantau Banjir 151126"
+    o = {"json": json.dumps([{k: v for k, v in b.items()} | {"patroli": [{k: v for k, v in c.items() if k != "geom"} for c in b["patroli"]]} for b in r],
+                            ensure_ascii=False, indent=1, default=str),
+         "kml": K.kml_banjir(r, nama), "gpx": K.gpx_banjir(r, nama), "txt": K.teks_banjir(r, "2026-11-15")}
+    for k, v in o.items():
+        assert hashlib.sha256(v.encode("utf-8")).hexdigest() == EMAS_BANJIR[k], k
+    assert sum(len(b["patroli"]) for b in r) == 5 and SKOR["banjir"](contoh_banjir()[0])[0] == 3.0
+    # rakit (jalur kirim): sumber diinjeksi, tanpa jaringan; sumber gagal -> kosong dengan alasan, bukan karangan
+    import types
+    a = types.SimpleNamespace(bencana="banjir", prov="11", kab="", tanggal="2026-11-15", versi="1")
+    rb, isi = rakit_banjir(a, [], muat_bobot(), lambda p, t: (contoh_banjir()[:2], None, None))
+    assert rb["jml_target"] == 2 and "Meureudu" in isi["txt"] and set(isi) == {"json", "kml", "gpx", "txt"}
+    def gagal(p, t):
+        raise OSError("x")
+    try:
+        rakit_banjir(a, [], muat_bobot(), gagal)
+        raise AssertionError("sumber gagal harus melempar")
+    except RuntimeError as e:
+        assert "OSError" in str(e)
+
+
 def uji():
-    import hashlib
     B = muat_bobot()
     reg = [b["id"] for b in json.loads((AKAR / "public/bencana.json").read_text(encoding="utf-8"))["bencana"]]
     assert sorted(SKOR) == sorted(reg), (sorted(SKOR), sorted(reg))
@@ -218,13 +390,13 @@ def uji():
         if i != "karhutla":
             assert set(e["bobot"]) == set(FITUR) and len(set(e["bobot"].values())) == 1, i
     for i in reg:
-        if i == "karhutla":
+        if i in ("karhutla", "banjir"):
             continue
         s, al = SKOR[i]({"fitur": {"tingkat": 1, "baru": 0.5, "terdampak": None}}, B)
         assert s == 1.5 and al["tanpa_data"] == ["terdampak", "fasilitas", "belum_ditangani"] and al["hipotesis"], (i, s, al)
         assert SKOR[i]({"fitur": {}}, B)[0] == 0  # tanpa data = 0 dan dicatat, bukan angka karangan
     try:
-        SKOR["banjir"]({"fitur": {"tingkat": 2}}, B)
+        SKOR["pesisir"]({"fitur": {"tingkat": 2}}, B)
         raise SystemExit("fitur di luar 0..1 harus ditolak")
     except AssertionError:
         pass
@@ -237,7 +409,7 @@ def uji():
     base = [{"id": "A", "nama": "Bandara A", "lat": 0.0, "lon": 100.0}, {"id": "B", "nama": "Bandara B", "lat": 0.0, "lon": 110.0}]
     kd = [{"lat": 0.1 * i, "lon": 100.0 + 0.05 * i, "tempat": "K%d" % i, "fitur": {"tingkat": i / 5, "baru": 1}} for i in range(1, 6)]
     kd.append({"lat": 0.2, "lon": 110.1, "tempat": "Z", "fitur": {"tingkat": 0, "baru": 1}})
-    r1, r2 = susun("banjir", kd, base, B), susun("banjir", list(reversed(kd)), base, B)
+    r1, r2 = susun("pesisir", kd, base, B), susun("pesisir", list(reversed(kd)), base, B)
     assert r1 == r2 and [c["tempat"] for c in r1["base"][1]["patroli"]] == ["Z"] and "HIPOTESIS" in r1["bobot_label"]
     assert sum(len(b["patroli"]) for b in r1["base"]) <= 6
     # keluaran karhutla byte-identik sebelum/sesudah ekstraksi (hash dari kode lama), dan operasi/renlap.teks sama dengan penulis bersama
@@ -248,6 +420,7 @@ def uji():
     assert ringkas({"json": "{}"}) == "json:" + hashlib.sha256(b"{}").hexdigest()
     assert ringkas({"txt": "b", "json": "a"}).startswith("json:")
     import types
+    uji_banjir()
     ok = dict(id="0123456789abcdef", bencana="banjir", prov="31", kab="3171", tanggal="2026-11-15", versi="1")
     cek_argumen(types.SimpleNamespace(**ok), reg)
     cek_argumen(types.SimpleNamespace(**dict(ok, kab="")), reg)
@@ -257,7 +430,7 @@ def uji():
             raise SystemExit("harus ditolak: %s=%r" % (k, v))
         except ValueError:
             pass
-    r, isi = rakit(types.SimpleNamespace(**ok), [{"id": "a" * 16, "golongan": "sarana", "nama": "H", "lat": 1.0, "lon": 2.0}, {"golongan": "fasilitas", "lat": 1, "lon": 2}], B)
+    r, isi = rakit(types.SimpleNamespace(**dict(ok, bencana="pesisir")), [{"id": "a" * 16, "golongan": "sarana", "nama": "H", "lat": 1.0, "lon": 2.0}, {"golongan": "fasilitas", "lat": 1, "lon": 2}], B)
     assert r["jml_target"] == 0 and len(r["base"]) == 1 and set(isi) == {"json", "kml", "gpx", "txt"}
     print("renlap (umum): lulus")
 
