@@ -197,7 +197,7 @@ Generik tidak boleh memundurkan modul matang. Syarat berlaku di tiap tiket PB-07
 | ----------- | ---- | ----- |
 | Tanpa kolom orang di `pb_*` | gerbang memindai skema (`nama_kru`, `pelapor`, `korban`, `no_hp`, `wa`, `nik`, `email`) | PB-06 |
 | Tanpa nomor telepon atau NIK di dokumen rakitan | uji rakit: `0812...`, `+62...`, NIK 16 digit = 422 | PB-22 |
-| `oleh` bukan nama | `staf:<id>`, `admin:<hash12>`, `inst:<id>`; diisi Worker dari sesi, nilai dari badan permintaan diabaikan | PB-10, PB-11 |
+| `oleh` bukan nama | `staf:<id>`, `admin:<hash12>`, `instansi:<id>`; diisi Worker dari sesi, nilai dari badan permintaan diabaikan | PB-10, PB-11 |
 | Kepatuhan tanpa dimensi pengisi | keluaran `kepatuhan` tidak memuat `oleh` | PB-16 |
 | Tanpa data operasi di `public/` | gerbang daftar putih `public/data/{ringkas,ekonomi,pencegahan,prioritas}/`, workflow `contents: read` | PB-06, PB-14 |
 | Cache | respons rute baca `private, no-store` dan `vary: cookie`; cache isolate berkunci hak dan wilayah | PB-12, PB-30 |

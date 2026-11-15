@@ -300,6 +300,13 @@ jobs:
         timeout-minutes: 5
         run: python3 scripts/umum/tugas.py uji && python3 scripts/umum/tugas.py tulis
 
+      # Ringkasan per bencana untuk kartu beranda (PB-19): public/data/ringkas/*.json, ikut cache data- (dibaca terbit.yml). SESUDAH semua sumbernya
+      # (meta.json karhutla, logbook, peringatan_berita.json, status gunung api) di run ini. Sekali per hari; langkah per workflow bencana belum.
+      - name: Ringkasan per bencana (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python3 scripts/umum/pb_ringkas.py uji && python3 scripts/umum/pb_ringkas.py buat
+
       # Indeks risiko operasional per kecamatan (Ruang Koordinasi BNPB, /risiko): SESUDAH cuaca, gunung api, kekeringan; fwi/hotspot/penduduk dari
       # cache karhutla. Keluaran public/banjir/data/risiko_kecamatan.json ikut cache banjir- yang dipulihkan terbit.yml. Sumber basi > 7 hari = null.
       - name: Indeks risiko kecamatan (boleh gagal)

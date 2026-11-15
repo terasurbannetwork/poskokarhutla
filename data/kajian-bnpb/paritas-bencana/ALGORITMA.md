@@ -209,6 +209,8 @@ Batas ditandai BAWAAN SEMENTARA; tiap batas diturunkan dari jadwal workflow sumb
 | Sumber | Jadwal | Batas basi | Catatan |
 | --- | --- | --- | --- |
 | level gunung api (MAGMA) | harian | 48 jam | `riwayat_level.py` |
+| logbook kejadian (ringkasan per bencana, PB-19) | harian | 3 hari | **[BAWAAN SEMENTARA]** dipakai `scripts/umum/pb_ringkas.py` untuk kejadian 30 hari; logbook diisi daerah tidak menentu, satu hari libur tidak dianggap basi |
+| peringatan cuaca aktif (ringkasan per bencana, PB-19) | tiap jam | 6 jam | **[BAWAAN SEMENTARA]** lantai per jam, sama dengan PM2,5 |
 | PM2,5 dan ISPU | tiap jam bila sumber terjangkau | 6 jam (lantai per jam; aturan dikali 2 memberi 2 jam) | ISPU KLHK tidak terjangkau dari CI; jalur pengganti mengikuti Q24 (bawaan: PM2,5 BMKG dan OpenAQ) |
 | status kekeringan | harian | 48 jam | `kekeringan_wilayah.json` |
 | gempa BMKG dan USGS | tiap menit | 2 jam | `GEMPA_UMUR_MAKS` |

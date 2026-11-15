@@ -6,7 +6,7 @@ Satu prinsip memegang seluruh dokumen (D1): kemampuan dibangun SEKALI di `src/`,
 
 ## 1. Registri kemampuan per bencana (`public/bencana.json`)
 
-Sumber tunggal registri sudah `public/bencana.json`; `scripts/umum/bencana.py` (`periksa`, `bangkitkan`) menegakkan skema dan membangkitkan `src/bencana.generated.js`; gerbang `tests/agen/gerbang-bencana.test.mjs` menolak bila `src/bencana.generated.js` basi. Kunci baru ditambahkan ke tiap entri (delapan bencana plus karhutla), dan `bencana.py` menjadi satu-satunya penegak skemanya.
+Sumber tunggal registri sudah `public/bencana.json`; `scripts/umum/bencana.py` (`periksa`, `bangkitkan`) menegakkan skema dan membangkitkan `src/bencana.generated.js`; gerbang `tests/agen/gerbang-bencana.test.mjs` menolak bila `src/bencana.generated.js` basi. Kunci baru ditambahkan ke tiap entri (delapan entri registri termasuk karhutla (longsor menyusul bila punya entri sendiri, Q1)), dan `bencana.py` menjadi satu-satunya penegak skemanya.
 
 ```json
 "kemampuan": {
@@ -70,7 +70,7 @@ Pola `src/operasi_isian.js` ditiru, tidak disalin: modul baru `src/pb_isian.js` 
 | --- | --- | --- |
 | Penulis | `PERAN_TULIS = ["pusdalops"]` + `modOK` | `pusdalops` + `modOK` (nasional atau sesuai wilayah staf), DAN akun instansi pemda aktif (pemprov, pemkab, pemkot) untuk wilayah akunnya sendiri (`akunAktif`, `src/instansi.js:118`) |
 | Wilayah | nasional | staf: `staf.wilayah` = larik kode provinsi BPS, kosong = nasional, disaring `dalamWilayahStaf(req, [prov])` (`src/staf.js:95`). Akun instansi: `instansi_akun` (migrasi 0029) punya `jenis` (pemprov, pemkab, pemkot, polda, polres, kodam, kodim; TIDAK ada jenis `bpbd`), `tingkat` (`prov`/`kab`), `prov` (2 digit), `kab` (NAMA teks, bukan kode 4 digit) dan `kunci_wilayah`. Pembatas yang dapat dipercaya hanya `prov`; untuk `tingkat = 'kab'` kecocokan `kab` memakai `kunci_wilayah`, bukan perbandingan nama bebas (Q30) |
-| Pencatat | `staf:<id>` atau `admin:<hash12>` | tambah `inst:<id>` (id akun instansi, bukan nama) |
+| Pencatat | `staf:<id>` atau `admin:<hash12>` | tambah `instansi:<id>` (id akun instansi, bukan nama) |
 | Hapus | `terhapus` di `op_isian` | hapus lunak per baris (`diubah`, `dihapus`), riwayat di `pb_log` |
 
 Bila Q3 dijawab pemilik lain, perubahan terbatas pada fungsi `penulis(env, req, prov, kab)` di `src/pb_isian.js`.
@@ -171,7 +171,7 @@ Catatan skema:
 | Hal | Keputusan |
 | --- | --- |
 | `tugasBencanaPer(env, ids)` di `src/hak.js` | dua kueri dalam satu `batch`: `SELECT tugas_id, bencana FROM tugas_bencana WHERE tugas_id IN (SELECT value FROM json_each(?))` dan padanannya untuk `tugas_bencana_x`; keduanya SEARCH lewat PK. Bila tabel kedua belum ada, jalankan hanya yang pertama. Menggantikan isi `bencanaPer` (`src/instansi.js:335`). |
-| Penyimpanan jabatan atau nama | tidak ada kolom nama orang di satu pun tabel `pb_*`. `oleh` berisi `staf:<id>`, `admin:<hash12>`, atau `inst:<id>`. |
+| Penyimpanan jabatan atau nama | tidak ada kolom nama orang di satu pun tabel `pb_*`. `oleh` berisi `staf:<id>`, `admin:<hash12>`, atau `instansi:<id>`. |
 | Unik versi | `UNIQUE (bencana, prov, kab, tanggal, versi)`; versi baru = `max(versi)+1` dihitung di dalam satu `INSERT ... SELECT` agar dua permintaan bersamaan tidak lolos (uji dua permintaan bersamaan di `tests/warga/pb_renlap.test.mjs`). |
 | Hapus | `pb_titik` hapus lunak; `pb_renlap` tidak dihapus, hanya `dibatalkan`; versi `terbit` tidak pernah ditimpa isinya (R2 tulis sekali, §4). |
 | `pb_renlap_hasil` `ON DELETE CASCADE` | aman karena `pb_renlap` tidak pernah di-DELETE oleh kode; cascade hanya untuk uji dan pembersihan manual pemilik. |
@@ -349,7 +349,7 @@ Versi beku tidak pernah ditimpa: dokumen yang salah diperbaiki dengan versi baru
 | Layar | `public/bnpb/pimpinan.html` + `public/bnpb/pimpinan.js` (pemilik `ruang-bnpb`), dengan `public/inti/dasbor_pimpinan.js` (pemilik `inti-layar`) untuk komponen lintas bencana. Model A utuh: memuat `/inti/dasbor.css`, `/inti/dasbor.js`, kepala L1 gelap, panel seksi kiri `db-nav-isi`, kepala bagian terang, tabel berkepala navy; kartu `.ex.ex-std`, kepala = nama seksi, tanpa kalimat kesimpulan, tanpa kaki. |
 | Gerbang | di commit yang sama: `public/bnpb/pimpinan.html` masuk `LAYAR` dan `MODEL_A` (penanda `db-nav-isi`, `db-l1`) di `tests/agen/gerbang-dasbor.test.mjs` (pemilik `penulis-gerbang`; menambah entri, tidak melemahkan), dan masuk `tests/agen/gerbang-tanpa-kesimpulan.test.mjs` bila daftar layarnya terpisah. |
 | Saringan jenis | satu layar, saringan jenis bencana (Q2 bawaan): deretan pilihan segmen penuh lebar (memori "Deretan pilihan ujung ke ujung"), pilihan banyak; klik tidak membekukan layar: kepala kontrol urgent, isi berat deferred (INP.md). |
-| Data | (a) `public/data/ringkas/<id>.json` untuk delapan bencana plus karhutla (satu `fetch` paralel, tiap ≤ 100 KB), (b) `GET /api/pb/ringkas` untuk angka operasi internal (jumlah renlap terbit, persen kepatuhan, tugas buka per jenis) bagi peran berhak. Pemirsa tanpa hak baca operasi melihat (a) saja. |
+| Data | (a) `public/data/ringkas/<id>.json` untuk delapan entri registri termasuk karhutla (longsor menyusul bila punya entri sendiri, Q1) (satu `fetch` paralel, tiap ≤ 100 KB), (b) `GET /api/pb/ringkas` untuk angka operasi internal (jumlah renlap terbit, persen kepatuhan, tugas buka per jenis) bagi peran berhak. Pemirsa tanpa hak baca operasi melihat (a) saja. |
 | Muatan `GET /api/pb/ringkas` | `{kini, bencana: [{id, tugas_buka, renlap_terbit, kepatuhan_persen, dokumen_beku_7h, sk_berlaku, sk_berakhir_7h}]}`; tiga kueri terindeks (§9); `null` bila tabel belum ada. |
 | Tren | grafik interaktif dengan tooltip (memori "Selera teks dan grafik"); paragraf rata kiri-kanan. |
 
