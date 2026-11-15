@@ -86,7 +86,7 @@ Sudah ada di repo dan tidak diulang di sini: isi juklak meja kerja (`data/kajian
 | Inventori logistik dan permintaan bantuan (LogPal) | ada (`/logpal`) | |
 | Relawan dan pegawai lapangan, absen, logbook, panggilan lewat bot WA | ada (`/petugas`, `/relawan`) | |
 | Laporan warga terverifikasi berfoto, geotag | ada (`public/warga`, `admin`) | |
-| Laporan berkala Kepala BNPB (harian sampai tahunan) | ada (`/laporan-bnpb`) | |
+| Laporan berkala Kepala BNPB (harian sampai tahunan) | paket dokumen (`data/kajian-bnpb/laporan-berkala/`); perakit `scripts/berkala/` dan rute belum dibangun (audit 15 Nov) | |
 | Usulan langkah dan log tindak lanjut | ada (`/bnpb/dalops`, menu Penanganan) | |
 | Cek kabar luar (berita dan data alam untuk kejadian belum selesai) | ada | |
 | Prakiraan harian per kab atau kota 1 sampai 3 hari, uji prospektif | ada (`/prediksi`) | |
