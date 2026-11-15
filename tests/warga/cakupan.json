@@ -1234,6 +1234,7 @@
     "GET /api/pb/dokumen": "daftar: metadata tanpa oleh",
     "GET /api/pb/dokumen/berkas": "berkas: fmt hanya json dan pdf",
     "GET /api/pb/papan-sk": "sisa_hari, sinyal, SK provinsi mengalahkan kabupaten",
+    "GET /api/pb/ringkas": "hitungan operasi: renlap terbit, versi lama tersingkir",
     "GET /api/pb/tindakan": "baca: daftar butir dari kamus digabung keadaan",
     "POST /api/pb/tindakan": "upsert: baris pertama 201 dengan batas bawaan Q20",
     "table op_isian": "hapus lunak: alasan wajib",

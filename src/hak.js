@@ -750,3 +750,25 @@ export const pbPeringatanAktif = async (env, kunci, kini) => {
 export const pbTindakanDaftar = async (env, p, kunci) => (await sedia(env, p, "pb_tindakan", "baca", PB_SQL_TINDAKAN.daftar).bind(kunci).all()).results;
 export const pbTindakanSatu = (env, p, kunci, butir) => sedia(env, p, "pb_tindakan", "baca", PB_SQL_TINDAKAN.satu).bind(kunci, butir).first();
 export const pbStmtTindakanUpsert = (env, p, kunci, butir, t, oleh, kini) => sedia(env, p, "pb_tindakan", "tambah", PB_SQL_TINDAKAN.upsert).bind(kunci, butir, t.pelaksana, t.batas, t.selesai, oleh, kini);
+
+/* PB-30 GET /api/pb/ringkas (DESAIN-TEKNIS paritas-bencana 6.3, 9). Hitungan murah per bencana, wilayah (JSON kode prov, '[]' = nasional) disaring di SQL, semua SEARCH:
+   renlap lewat pb_renlap_tanggal (30 hari), hasil lewat PK renlap_id, tindakan dari peringatan aktif (peringatan_aktif / peringatan_x_aktif) ke PK pb_tindakan. Tanpa kolom oleh. */
+const PB_RENLAP_TERBARU = "r.status IN ('terbit','selesai') AND NOT EXISTS (SELECT 1 FROM pb_renlap n WHERE n.bencana = r.bencana AND n.prov = r.prov AND n.kab = r.kab AND n.tanggal = r.tanggal AND n.versi > r.versi AND n.status IN ('terbit','selesai'))";
+export const PB_SQL_RINGKAS = {
+  renlap: `SELECT r.bencana, count(*) renlap, coalesce(sum(r.tanggal = ?3), 0) hari_ini, coalesce(sum(r.jml_target), 0) target FROM pb_renlap r
+    WHERE r.tanggal BETWEEN ?1 AND ?2 AND (?4 = '[]' OR r.prov IN (SELECT value FROM json_each(?4))) AND ${PB_RENLAP_TERBARU} GROUP BY r.bencana LIMIT 500`,
+  didatangi: `SELECT r.bencana, count(*) n FROM pb_renlap r INDEXED BY pb_renlap_tanggal CROSS JOIN pb_renlap_hasil h ON h.renlap_id = r.id
+    WHERE r.tanggal BETWEEN ?1 AND ?2 AND (?3 = '[]' OR r.prov IN (SELECT value FROM json_each(?3))) AND h.didatangi = 1 AND ${PB_RENLAP_TERBARU} GROUP BY r.bencana LIMIT 500`,
+  tindakan: t => `SELECT p.jenis bencana, count(*) n FROM ${t} p CROSS JOIN pb_tindakan x ON x.peringatan = p.kunci
+    WHERE p.berlaku_hingga > ?1 AND p.dicabut IS NULL AND x.selesai = 0 AND (?2 = '[]' OR p.prov IN (SELECT value FROM json_each(?2))) GROUP BY p.jenis LIMIT 500`,
+};
+export const pbRingkasRenlap = async (env, p, dari, sampai, hari, wil) => {
+  const [a, b] = await env.DB.batch([sedia(env, p, "pb_renlap", "baca", PB_SQL_RINGKAS.renlap).bind(dari, sampai, hari, JSON.stringify(wil)), sedia(env, p, "pb_renlap_hasil", "baca", PB_SQL_RINGKAS.didatangi).bind(dari, sampai, JSON.stringify(wil))]);
+  return {renlap: a.results, didatangi: b.results};
+};
+export const pbRingkasTindakan = async (env, kini, wil) => {
+  const w = JSON.stringify(wil), hasil = (await sedia(env, pelakuPbBaca, "pb_tindakan", "baca", PB_SQL_RINGKAS.tindakan("peringatan")).bind(kini, w).all()).results;
+  try { hasil.push(...(await sedia(env, pelakuPbBaca, "pb_tindakan", "baca", PB_SQL_RINGKAS.tindakan("peringatan_x")).bind(kini, w).all()).results); }
+  catch (e) { if (!tanpaPx(e)) throw e; }
+  return hasil;
+};
