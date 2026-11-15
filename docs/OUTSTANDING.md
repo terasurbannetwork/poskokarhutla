@@ -88,3 +88,24 @@ Dasar: D1 produksi 5 Nov, hampir semua tabel isian manusia 0 baris (akun, meja, 
 | E6 | Laporan triwulan TA ke Ka BNPB (PPTX+PDF lewat ppt-konsultan): kunjungan, MoU, soal, skor, dana luar | E3, E4 | sesi induk |
 | E7 | Bahan kunjungan kerja satu klik: pilih kab, briefing 2 halaman (riwayat bencana, status hari ini, kapasitas BPBD, isu terbuka, kampus mitra) | E3 untuk kampus mitra | ruang-bnpb |
 | E8 | Cadangan air tanah GRACE-FO untuk kekeringan; resolusi asli ~300 km bulanan, telat 2-3 bulan: tampil per pulau/provinsi, bukan per kab | token Earthdata (habis ~11 Des) | gunungapi-kering |
+
+## F. Fitur strategis pilihan pemilik 15 Nov 2026 (benchmark luar negeri, belum dibangun)
+
+Dasar: riset sesi 15 Nov 2026 yang mencocokkan sistem bencana luar negeri ke isi repo. Tiap baris fitur besar: paket dokumen dulu (AGENTS 3.7), baru kode.
+Yang tidak dipilih pemilik pada putaran itu: aksi antisipatif berpemicu dana, zona evakuasi hidup, hub tukar data antarlembaga, feed publik terkurasi, kewaspadaan wabah di pengungsian, perpindahan penduduk dari data seluler, daftar warga rentan, satu pintu WA masuk (ditolak tegas: "jangan").
+
+| No | Fitur | Benchmark | Catatan repo | Paket |
+| -- | ----- | --------- | ------------ | ----- |
+| F1 | Status Lifeline per kab/kota (listrik, sinyal, air, jalan, BBM, faskes, pangan, pengungsian), tiap warna wajib bukti | FEMA Community Lifelines, DHS CLSS | Listrik dari lampu malam: `scripts/umum/lampu_malam.py` ada tapi BELUM LAYAK TERBIT (uji balik Palu 2018 dan Bali 2025 gagal); butuh VNP46A2 asli + EARTHDATA_TOKEN (habis ~11 Des 2026) | belum |
+| F2 | Peta kerusakan bangunan dari satelit sesudah kejadian, masuk Jitupasna `/siklus` | Copernicus EMS, xBD-S12, Microsoft AI for Good | Sentinel 10 m kuat untuk banjir/kebakaran, lemah untuk gempa; pakai ulang radar genangan `scripts/banjir/citra_banjir.py` | belum |
+| F3 | Siapa mengerjakan apa di mana (3W) per kejadian dan kab, per klaster PB nasional | OCHA 3W/4W | Meja `klaster` hanya dokumen, bukan kehadiran lapangan | belum |
+| F4 | Pintu bantuan internasional dan dunia usaha: tawaran dicocokkan ke kebutuhan dan 3W | AHA Centre, Palu 2018 | Pelengkap F3, bisa satu paket | belum |
+| F5 | Pembiayaan risiko: perkiraan kerugian (PAGER, paparan) lawan sisa DSP dan PFB, pemantau ambang parametrik | PFB Kemenkeu, asuransi BMN 2026 | `scripts/gempa/pager.py` ada | belum |
+| F6 | Kaji ulang pasca-kejadian: draf otomatis dari linimasa, rekomendasi dilacak sampai tertutup | after-action review | Pakai ulang mesin `src/dalops_tindak.js` | belum |
+| F7 | Penurunan tanah dari radar satelit masuk proyeksi rob 10-20 tahun | Copernicus EGMS | Model rob mengecualikan penurunan tanah (`public/banjir/lapis_air.js:122`); olah InSAR di luar GitHub Actions | belum |
+| F8 | Pemetaan bangunan oleh relawan (HOT Tasking Manager), pemeta dari kampus mitra `/kemitraan` | HOT OSM | Bahan bakar F2 dan paparan per bangunan | belum |
+| F9 | Keterpaduan: satu nomor kejadian (KJ- dari `sk_kejadian` + GLIDE) di semua modul | IRWIN, GLIDE | Hanya `/siklus` dan `src/hak.js` yang menyentuh `sk_kejadian` | `data/kajian-bnpb/keterpaduan/` |
+| F10 | Keterpaduan: satu antrean luring bersama di `public/inti/` | - | Enam antrean IndexedDB terpisah | sama dengan F9 |
+| F11 | Keterpaduan: formulir lapangan dari satu definisi (WA, web, luring, ekspor) | ODK/KoboToolbox XLSForm | Berkas spek terpisah per modul | sama dengan F9 |
+| F12 | Keterpaduan: kaji titik pengungsian per putaran dengan kode tetap per titik | IOM DTM | Meja pengungsi mencatat rekap | sama dengan F9 |
+| F13 | Keterpaduan: satu orang satu catatan (tujuh tabel identitas dipetakan ke `orang`) | - | Bukan soal login, soal jejak per orang | sama dengan F9 |

@@ -287,6 +287,28 @@ Sebelum menyentuh zona semai awan (OMC), awan layak semai, prakiraan asap 24 jam
 
 Aturan berhentinya sama dengan §2.1. Zona adalah usulan, tidak pernah masuk renlap sendiri; tidak ada klaim "akan hujan" atau "memadamkan"; mesin asap tetap satu (`lintasan.py`).
 
+### 2.15 Keterpaduan (nomor kejadian, antrean luring, spek formulir, titik pengungsian, satu orang): baca dulu, baru bangun
+
+Sebelum menautkan modul ke Buku Besar Kejadian, menyentuh antrean luring IndexedDB atau spek formulir lintas modul, titik pengungsian, atau pemetaan akun ke register `orang`, baca dokumen di
+`data/kajian-bnpb/keterpaduan/` dengan urutan otoritas ini (kode di `public/inti/antre.js`, `public/inti/spek.js`, `public/inti/kj_tanda.js` milik `inti-layar`; `src/kejadian_tautan.js` dan migrasi paket ini milik `warga-api`; sumber baru `scripts/siklus/pasang.py` milik `siklus`):
+
+1. `KEPUTUSAN-KETERPADUAN.md`: keputusan pemilik K1-K7, rancangan D1-D12, pertanyaan terbuka Q1-Q7 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md` (+ `INVENTARIS-INPUT.md`), 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`KP-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Tidak ada router WA bersama (pemilik: "jangan"); tidak ada buku kejadian kedua; pencocok kejadian tetap satu (`pasang.py`); orang tidak pernah dicocokkan dari nama.
+
+### 2.15 Paritas Bencana (semua bencana selengkap karhutla dan banjir): baca dulu, baru bangun
+
+Sebelum menyentuh kemampuan lintas bencana (operasi dan renlap untuk semua jenis, pembuat dokumen sitrep/renops/laporan per KIB, tangga tindakan dan peringatan dini semua jenis, dashboard pimpinan dan papan status darurat, keputusan ekonomi dan prioritas wilayah, registri `kemampuan` di `public/bencana.json`, pemasangan data publik dari `docs/multi-bencana/DATA-PUBLIK.md`), baca dokumen di
+`data/kajian-bnpb/paritas-bencana/` dengan urutan otoritas ini (kode tersebar di pemilik masing-masing: `public/inti/**` milik `inti-layar`, `src/**` dan migrasi milik `warga-api`, `scripts/<id>/**` dan `public/<id>/**` milik pengerja bencana, workflow milik `mekanik-mesin`; cek `ilmu.mjs pemilik`):
+
+1. `KEPUTUSAN-PARITAS.md`: keputusan pemilik K1–K10, rancangan D1–D13, pertanyaan terbuka Q1–Q36 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md` (F-1..F-33, alur kerja W1–W7), 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md` (dashboard model A, K4), 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`PB-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Dibangun sekali di inti dan dinyalakan per bencana lewat registri, tanpa salinan per bencana; karhutla dan banjir tidak boleh mundur (uji golden PB-03); model tanpa uji balik tampil sebagai hipotesis.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
