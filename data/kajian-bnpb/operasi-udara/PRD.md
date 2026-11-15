@@ -78,6 +78,7 @@ Tujuan: data yang biasanya masuk lewat bot WA tetap bisa diisi staf langsung di 
 | F-29 | Foto dokumentasi | tabel baru `op_foto_unggah` + R2 `operasi/foto/` | bot WA (`op_foto`) |
 | F-30 | Modifikasi cuaca (OMC) | `omc_operasi`, sortie OMC | sudah ada formulir `/admin/omc` (`src/omc.js`); layar hanya menautkan, tidak membuat formulir kedua |
 | F-31 | Riwayat isian: siapa, kapan, sebelum dan sesudah, alasan | tabel baru `op_isian_log` | – |
+| F-32 | Badan air kandidat serok per tipe pesawat amfibi: kartu (jumlah kandidat per base, daftar terdekat) dan lapisan peta, dengan pemilih tipe | `public/data/operasi/sumber_air.json` (kolom `panjang_m`, `lebar_m`), tabel syarat tipe di layar | Q22, Q23, Q24, Q25 |
 
 Tidak bisa diisi manual (larangan tetap): hotspot, firespot, luas terbakar, belum padam (hanya dari sistem kita), METAR (BMKG), posisi ADS-B, renlap dan targetnya (mesin `scripts/operasi/renlap.py`), status "didatangi" (dihitung dari aksi, F-23 yang mengubahnya).
 

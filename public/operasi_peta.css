@@ -788,6 +788,14 @@
 #opsLaporan .ops-peta-leg .k-1::before{background:#4f8fc4}
 #opsLaporan .ops-peta-leg .k-t::before{background:#e08a3a}
 #opsLaporan .ops-peta-leg .k-a::before{background:#0f9488}
+/* F-32 badan air kandidat serok: pemilih tipe selebar kartu dibagi rata, baris syarat berpil. Wadahnya display:contents supaya ikut jarak .ex-bd. */
+#opsLaporan .ops-peta-leg .k-s::before{background:var(--info)}
+#opsLaporan .ops-serok{display:contents}
+#opsLaporan .ops-serok-seg{display:flex;width:100%}
+#opsLaporan .ops-serok-seg button{flex:1 1 0;justify-content:center}
+#opsLaporan .ops-serok-syarat{display:flex;flex-wrap:wrap;gap:6px 8px;margin:0}
+#opsLaporan .ops-serok-syarat span{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:.86em;font-weight:600}
+#opsLaporan .ops-serok-syarat span.redup{color:var(--ink2);font-weight:500}
 .ops-peta-base{display:inline-flex;align-items:center;gap:6px;padding:3px 9px 3px 3px;border:0;border-radius:999px;background:#0b2545;color:#fff;font:inherit;font-size:.6875rem;font-weight:800;cursor:pointer;box-shadow:0 2px 8px rgb(8 18 38 / .3);white-space:nowrap}
 .ops-peta-base i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:rgb(255 255 255 / .16)}
 .ops-peta-base i .ops-lbl svg{width:12px;height:12px;color:#fff}

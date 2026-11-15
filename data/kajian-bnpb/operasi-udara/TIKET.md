@@ -61,3 +61,4 @@ Urutan: UD-26 → UD-27 → UD-30 → UD-31 → sisanya. Rute dulu, layar sesuda
 | UD-34 | Formulir unggah foto (seret dan lepas, beberapa berkas, pratinjau) | `layar-peta` → `inp-reviewer` | UD-29 |
 | UD-35 | Pil manual, riwayat per butir, hapus lunak dari layar | `layar-peta` → `selera-angka` | UD-27 |
 | UD-36 | OMC: tautan "Isi OMC" ke `/admin/omc` di grup Isian dan kartu Modifikasi cuaca, hanya untuk peran `tmc` (`src/omc.js` `PERAN_TULIS`) | `layar-peta` | – |
+| UD-37 | F-32 badan air kandidat serok: `scripts/operasi/sumber_air.py` menyimpan `panjang_m` dan `lebar_m` dari kotak batas; kartu dan lapisan di `public/operasi_laporan.js`; fungsi murni `kandidatSerok` beruji | `pipa-data` + `layar-peta` → `selera-angka` + `inp-reviewer` | Q22–Q25 (bawaan sementara) |

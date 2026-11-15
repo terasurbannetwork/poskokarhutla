@@ -117,3 +117,16 @@ sumber_air_terdekat = badan air terdekat dari daftar Q9; kosong sampai Q9 dijawa
 menganggur(operator) = Σ (hari_siap - hari_siap_yang_terbang) per armada, 30 hari    // dari kpi monitor
 biaya menganggur = menganggur × tarif harian (Q7; tidak tampil sebelum ada)
 ```
+
+## 12. Badan air kandidat serok (F-32)
+
+```
+panjang_m, lebar_m = sisi panjang dan sisi pendek kotak batas badan air (OSM)        [SEMENTARA, Q24, label "perkiraan"]
+kandidat(badan, tipe) = jenis bukan sungai dan panjang_m >= tipe.panjang_m dan lebar_m >= tipe.lebar_m   // tipe tanpa syarat lebar: lebar_m >= 0
+jumlah per base        = banyaknya kandidat dalam radius base (radius_km berkas sumber air)
+```
+
+Kedalaman dan tinggi gelombang tidak dinilai (Q23): tidak ada di data. Kata yang tampil "kandidat", tidak pernah "layak" atau "aman".
+Badan air berjenis sungai tidak dihitung kandidat dan tampil di kolom sendiri "Sungai belum dinilai": kotak batas ruas berkelok melebihkan lintasan lurus dan lebar (15 Nov 2026: Sungai Sail terukur 4.234 m x 1.199 m).
+Syarat per tipe (Q22, dari laporan K21): AT-802F 1.000 m; US-2 330 m; CL-415 dan DHC-515 1.340 m; AG600M 1.500 m x 200 m; Be-200ES 2.300 m.
+

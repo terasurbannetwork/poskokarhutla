@@ -30,7 +30,7 @@
     Operator: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>', "Jejak ADS-B": '<circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4M7.8 16.2a6 6 0 0 1 0-8.4M19 5a10 10 0 0 1 0 14M5 19A10 10 0 0 1 5 5"/>',
     "Temuan pilot": '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 2 1.5 3 3 3-1-3 0-6 0-8.5z"/>', "OMC resmi BMKG aktif": '<path d="M7 18a4 4 0 0 1-.6-7.96A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/>',
     "Modifikasi cuaca": '<path d="M7 16a4 4 0 0 1-.6-7.96A6 6 0 0 1 18 7a4.5 4.5 0 0 1-.5 9z"/><path d="M8 19v2M12 19v2M16 19v2"/>', Dokumentasi: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
-    Efektivitas: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>', "Kontrak 2026": '<path d="M6 3h9l3 3v15H6z"/><path d="M9 11h6M9 15h6"/>'};
+    Efektivitas: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>', "Badan air kandidat serok": '<path d="M2 8c2.5-2.5 5-2.5 7.5 0s5 2.5 7.5 0 3.5-2 5-1M2 14c2.5-2.5 5-2.5 7.5 0s5 2.5 7.5 0 3.5-2 5-1M2 20c2.5-2.5 5-2.5 7.5 0s5 2.5 7.5 0 3.5-2 5-1"/>', "Kontrak 2026": '<path d="M6 3h9l3 3v15H6z"/><path d="M9 11h6M9 15h6"/>'};
   const eyebrow = ey => { const t = String(ey).replace(/<[^>]+>/g, "").trim(), svg = IK_EY[t];
     return svg ? `<span class="ex-ey ops-ey-ik" title="${esc(t)}" aria-label="${esc(t)}" role="img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${svg}</svg></span>` : `<span class="ex-ey">${ey}</span>`; };
   /* semua kartu bisa dilipat (pemilik 11 Nov 2026 "semua agar dibuat collapsible", pola pangantara): <details> dengan kepala navy
@@ -40,12 +40,12 @@
   const idKartu = ey => String(ey).replace(/<[^>]+>/g, "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   /* kepala kartu = NAMA SEKSI, bukan kalimat kesimpulan (pemilik 11 Nov 2026 "ini semuanya bukan kesimpulan kesimpulan ya");
      kalimat temuan (judul) pindah ke baris pertama isi supaya infonya tetap ada */
-  const NAMA_SEKSI = {"rencana-tindakan": "Rencana tindakan", "data-belum-lengkap": "Data belum lengkap", "papan-base": "Papan base", "peta-operasi": "Peta operasi", base: "Tabel base dan armada", renlap: "Renlap", "aksi-armada": "Aksi armada", "tren-30-hari": "Tren 30 hari", "histori-armada": "Histori armada", operator: "Operator",
+  const NAMA_SEKSI = {"rencana-tindakan": "Rencana tindakan", "data-belum-lengkap": "Data belum lengkap", "papan-base": "Papan base", "peta-operasi": "Peta operasi", "badan-air-kandidat-serok": "Badan air kandidat serok", base: "Tabel base dan armada", renlap: "Renlap", "aksi-armada": "Aksi armada", "tren-30-hari": "Tren 30 hari", "histori-armada": "Histori armada", operator: "Operator",
     "jejak-ads-b": "Jejak ADS-B", "temuan-pilot": "Temuan pilot", "omc-resmi-bmkg-aktif": "OMC resmi BMKG", "modifikasi-cuaca": "Modifikasi cuaca", dokumentasi: "Dokumentasi", efektivitas: "Efektivitas", "kontrak-2026": "Kontrak 2026",
     personel: "Personel per unsur", "penanganan-lahan": "Penanganan lahan", "dipadamkan-2026": "Dipadamkan 2026", "patroli-regu": "Patroli regu"};
   /* kategori informasi (pemilik 11 Nov 2026: pil di bawah Ringkasan untuk memilih kategori, pola pangantara; KEPUTUSAN K11, Q14) */
   /* tiga kategori (pemilik 11 Nov 2026, usulan 4): Hari ini, Tren, Kontrak dan OMC */
-  const KATEGORI_MODE = {udara: [["hariini", "Hari ini", "kalender", ["papan-base", "peta-operasi", "base", "renlap", "aksi-armada", "temuan-pilot"]],
+  const KATEGORI_MODE = {udara: [["hariini", "Hari ini", "kalender", ["papan-base", "peta-operasi", "badan-air-kandidat-serok", "base", "renlap", "aksi-armada", "temuan-pilot"]],
     ["tren", "Tren", "tren", ["tren-30-hari", "efektivitas", "histori-armada", "dokumentasi", "jejak-ads-b"]],
     ["kontrak", "Kontrak dan OMC", "op", ["operator", "kontrak-2026", "omc-resmi-bmkg-aktif", "modifikasi-cuaca"]]],
     darat: [["personel", "Personel", "peran", ["personel"]], ["lahan", "Lahan", "api", ["penanganan-lahan", "dipadamkan-2026"]], ["patroli", "Patroli", "vis", ["patroli-regu"]]]};
@@ -55,7 +55,7 @@
   for (const m of Object.keys(katPilih)) try { const k = localStorage.getItem("ops_kat_" + m); if (KATEGORI_MODE[m].some(x => x[0] === k)) katPilih[m] = k; } catch (e) {}
   /* model A (pemilik 11 Nov 2026, DESIGN-SYSTEM §7): panel seksi kiri; satu seksi = satu tampilan, kartu di dalamnya terbuka.
      [kunci, nama, ikon, kartu-kartu]; seksi "ringkasan" = Perlu tindakan + Ringkasan + kartu yang disebut */
-  const SEKSI = {udara: [["Hari ini", [["ringkasan", "Ringkasan", "tren", ["papan-base"]], ["tindak", "Tindak lanjut", "catat", ["rencana-tindakan", "data-belum-lengkap"]], ["base", "Base dan armada", "base", ["base", "histori-armada"]], ["peta", "Peta operasi", "api", ["peta-operasi"]], ["semai", "Peluang semai", "awan", []], ["renlap", "Renlap dan sortie", "sortie", ["renlap", "aksi-armada", "temuan-pilot"]]]],
+  const SEKSI = {udara: [["Hari ini", [["ringkasan", "Ringkasan", "tren", ["papan-base"]], ["tindak", "Tindak lanjut", "catat", ["rencana-tindakan", "data-belum-lengkap"]], ["base", "Base dan armada", "base", ["base", "histori-armada"]], ["peta", "Peta operasi", "api", ["peta-operasi", "badan-air-kandidat-serok"]], ["semai", "Peluang semai", "awan", []], ["renlap", "Renlap dan sortie", "sortie", ["renlap", "aksi-armada", "temuan-pilot"]]]],
       ["Kinerja", [["tren", "Tren 30 hari", "tren", ["tren-30-hari"]], ["efektivitas", "Efektivitas", "padam", ["efektivitas"]], ["operator", "Operator", "op", ["operator"]], ["dok", "Dokumentasi foto", "catat", ["dokumentasi", "jejak-ads-b"]]]],
       ["Kontrak", [["kontrak", "Kontrak 2026", "jam", ["kontrak-2026"]], ["omc", "Modifikasi cuaca", "awan", ["omc-resmi-bmkg-aktif", "modifikasi-cuaca"]]]]],
     darat: [["Hari ini", [["ringkasan", "Ringkasan", "tren", []], ["personel", "Personel", "peran", ["personel"]], ["lahan", "Penanganan lahan", "api", ["penanganan-lahan", "dipadamkan-2026"]], ["patroli", "Patroli regu", "vis", ["patroli-regu"]]]]]};
@@ -176,8 +176,8 @@
     const mon = mons.some(Boolean) ? {...mons[0], aksi: mons.flatMap(m => m?.aksi || [])} : null;
     return {t, dari, dariP, peta, mon, nilai, jejak, omc: (omc?.sortie || []).filter(x => (x.mulai || "").slice(0, 10) <= t || !x.mulai), snap, patroli: patroli?.patroli || null};
   })();
-  const muatStatis = () => st.statis ||= Promise.all([ambil("/data/harian30.json"), ambil("/udara/data/omc_hasil.json"), ambil("/data/bnpb.json"), ambil("/data/operasi_resmi.json"), ambil("/udara/data/omc_bmkg.json")])
-    .then(([h30, omcHasil, bnpb, resmi, omcBmkg]) => ({h30, omcHasil, bnpb, resmi, omcBmkg}));
+  const muatStatis = () => st.statis ||= Promise.all([ambil("/data/harian30.json"), ambil("/udara/data/omc_hasil.json"), ambil("/data/bnpb.json"), ambil("/data/operasi_resmi.json"), ambil("/udara/data/omc_bmkg.json"), ambil("/data/operasi/sumber_air.json")])
+    .then(([h30, omcHasil, bnpb, resmi, omcBmkg, air]) => ({h30, omcHasil, bnpb, resmi, omcBmkg, air}));
 
   /* ---------------- kerangka: tab Udara/Darat, tanggal, salin teks ---------------- */
   /* panel seksi bisa ditarik lebarnya (aturan pemilik: semua panel samping bisa ditarik), lebar diingat */
@@ -232,6 +232,7 @@
       const ud = e.target.closest("[data-unduh]"); if (ud) { e.preventDefault(); if (st._d) for (const f of ud.dataset.unduh.split(",")) unduhRute(st._d, ud.dataset.base, f); return; }   // tombol di dalam <summary>: jangan ikut melipat
       const fb = e.target.closest("[data-fbase-buka]"); if (fb) { const kartu = fb.closest(".ex"), pn = kartu?.querySelector(".ops-pilbase-isi"); if (!pn) return; const buka = pn.hidden;
         pn.hidden = !buka; fb.setAttribute("aria-expanded", String(buka)); if (buka && kartu.tagName === "DETAILS") kartu.open = true; return; }
+      const sr = e.target.closest("[data-serok]"); if (sr) { st.serok = sr.dataset.serok; sr.closest(".ops-serok").outerHTML = isiSerok(st._d); petaOps?.getSource("serok")?.setData({type: "FeatureCollection", features: titikSerok(st._d)}); return; }
       const fp = e.target.closest("[data-fpulau], [data-ftanda], [data-fmisi], [data-fbase-semua]"); if (fp) return saringBase(fp);
       const fo = e.target.closest("[data-fop]"); if (fo) return saringOp(fo);
       const gr = e.target.closest("tr.ops-grup"); if (gr) return lipatGrup(gr);
@@ -592,9 +593,28 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
 
 
   /* ---------- peta operasi (usulan 3, K8): base + jangkauan, cluster api, target renlap, aksi; MapLibre seperti Pantau Dalops ---------- */
+  /* F-32 badan air kandidat serok pesawat amfibi (KEPUTUSAN-UDARA K21, ALGORITMA §12). Syarat per tipe dari laporan K21, belum dicek ke
+     pabrikan (Q22): [kunci, nama, kapasitas L, panjang m, lebar m, kedalaman m, gelombang m]. Panjang dan lebar badan air = kotak batas OSM
+     (perkiraan, Q24); kedalaman dan gelombang tidak ada di data, jadi kata yang tampil "kandidat", tidak pernah "layak" (Q23). */
+  const SEROK_TIPE = [["at802f", "AT-802F", 3104, 1000, 0, 1.5, .8], ["us2", "US-2", 15000, 330, 0, 0, 3], ["cl415", "CL-415", 6137, 1340, 0, 1.8, 1.8],
+    ["dhc515", "DHC-515", 7000, 1340, 0, 2, 1.8], ["ag600m", "AG600M", 12000, 1500, 200, 2.5, 2], ["be200", "Be-200ES", 12000, 2300, 0, 2.5, 1.3]];
+  const JENIS_AIR = {lake: "Danau", reservoir: "Waduk", river: "Sungai", oxbow: "Danau tapal kuda", lagoon: "Laguna"};
+  const serokTipe = () => SEROK_TIPE.find(t => t[0] === st.serok) || SEROK_TIPE[0];
+  const serokOk = (t, tp) => t[2] !== "river" && t[5] >= tp[3] && t[6] >= tp[4];   // sungai tidak dinilai: kotak batas ruas berkelok melebihkan lintasan lurus dan lebar
+  const titikSerok = D => { const tp = serokTipe(); return (D.air?.titik || []).filter(t => t.length > 6 && serokOk(t, tp)).map(t => ({type: "Feature",
+    properties: {nama: t[3] || JENIS_AIR[t[2]] || "Badan air", jenis: JENIS_AIR[t[2]] || "Badan air", pj: t[5], lb: t[6], lat: t[0], lon: t[1]}, geometry: {type: "Point", coordinates: [t[1], t[0]]}})); };
+  function isiSerok(D) {
+    const tp = serokTipe(), air = D.air, ada = air?.kolom?.includes("panjang_m"), r = air?.radius_km || 0, des = v => String(v).replace(".", ",");
+    const seg = `<div class="seg ops-serok-seg" role="group" aria-label="Tipe pesawat amfibi">${SEROK_TIPE.map(t => `<button type="button" data-serok="${t[0]}" aria-pressed="${t === tp}" title="Kapasitas ${fmt(t[2])} liter">${lbl("air", t[1])}</button>`).join("")}</div>`;
+    const syarat = `<p class="ops-serok-syarat" title="Syarat dari laporan evaluasi pesawat amfibi 15 Nov 2026, belum dicek ke pabrikan"><span>${lbl("ember", `${fmt(tp[2])} liter`)}</span><span>${lbl("sortie", `Panjang minimal ${fmt(tp[3])} m`)}</span>${tp[4] ? `<span>${lbl("sortie", `Lebar minimal ${fmt(tp[4])} m`)}</span>` : ""}${tp[5] ? `<span class="redup">${lbl("air", `Kedalaman minimal ${des(tp[5])} m, belum dicek`)}</span>` : ""}<span class="redup">${lbl("air", `Gelombang maksimal ${des(tp[6])} m, belum dicek`)}</span></p>`;
+    const baris = ada ? (D.peta.base || []).filter(b => b.lat != null).map(b => { const dekat = air.titik.map(t => [km(b.lat, b.lon, t[0], t[1]), t]).filter(x => x[0] <= r), dk = dekat.filter(x => serokOk(x[1], tp)).sort((x, y) => x[0] - y[0]), d = dk[0];
+      return `<tr>${kiri(esc(b.nama.split(" / ")[0]))}${sel(fmt(dk.length))}${sel(fmt(dekat.filter(x => x[1][2] === "river").length))}${kiri(d ? esc(d[1][3] || "Tanpa nama") : "–")}${kiri(d ? esc(JENIS_AIR[d[1][2]] || "Badan air") : "–")}${sel(d ? fmt(Math.round(d[0])) : "–")}${sel(d ? fmt(d[1][5]) : "–")}${sel(d ? fmt(d[1][6]) : "–")}</tr>`; }) : [];
+    return `<div class="ops-serok">${seg}${syarat}${tabelH(["Base", `#Kandidat|Badan air dalam ${fmt(r)} km dari base yang panjang dan lebarnya memenuhi syarat tipe ini; sungai tidak dihitung`, `#Sungai belum dinilai|Ruas sungai dalam ${fmt(r)} km; lintasan lurus dan lebarnya tidak bisa dinilai dari kotak batas`, "Kandidat terdekat", "Jenis", "#Jarak (km)", "#Panjang (m)|Sisi panjang kotak batas di OpenStreetMap, perkiraan", "#Lebar (m)|Sisi pendek kotak batas di OpenStreetMap, perkiraan"], baris, "Data panjang dan lebar badan air belum terbit.")}</div>`;
+  }
+  const kartuSerok = D => bagian("Badan air kandidat serok", "", isiSerok(D));
   function kartuPeta(D) {
     return bagian("Peta operasi", "", `<div class="ops-peta-wadah"><div id="opsPeta" class="ops-peta" role="region" aria-label="Peta operasi udara"></div><aside class="ops-laci ops-laci-r" id="opsLaciR" hidden aria-label="Rincian titik di peta"><div class="ops-laci-isi"></div></aside><aside class="ops-laci" id="opsLaci" aria-label="Daftar base dan rincian di peta"><span class="ops-laci-tarik" tabindex="0" role="separator" aria-orientation="vertical" aria-label="Tarik lebar panel"></span><div class="ops-laci-isi"></div></aside>
-      <div class="ops-peta-leg"><span class="k-b">Base</span>${[["k-j", "jangkau,jangkau-g", "Jangkauan", true], ["k-3", "kl", "Cluster api", true], ["k-t", "tg", "Target renlap", true], ["k-a", "ak", "Aksi armada", false]].map(([c, l, t, on]) => `<button type="button" class="${c}" data-lapis="${l}" aria-pressed="${on}" title="Nyalakan atau matikan lapisan">${t}</button>`).join("")}</div></div>`);
+      <div class="ops-peta-leg"><span class="k-b">Base</span>${[["k-j", "jangkau,jangkau-g", "Jangkauan", true], ["k-3", "kl", "Cluster api", true], ["k-t", "tg", "Target renlap", true], ["k-a", "ak", "Aksi armada", false], ["k-s", "serok", "Kandidat serok", false]].map(([c, l, t, on]) => `<button type="button" class="${c}" data-lapis="${l}" aria-pressed="${on}" title="Nyalakan atau matikan lapisan">${t}</button>`).join("")}</div></div>`);
   }
   /* laci kanan peta (pemilik 11 Nov 2026 "ketika di klik keluar side bar di kanan", "ada list base, gaya panel Lapisan"):
      bawaan = daftar base per pulau, baris pil; base terpilih terbuka dengan rinciannya. Klik cluster, target, aksi di peta = rincian titik itu. */
@@ -683,6 +703,9 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
       hover("kl", p => tip("api", p.nama, [["ts", "Status", esc(LVK[p.lv] || "Patroli")], ["temuan", "Titik 24 jam", fmt(p.px)], ["base", "Kabupaten", p.kab && p.kab !== p.nama ? esc(p.kab) : ""], ["base", "Koordinat", kord(p)]]));
       hover("tg", p => tip("sortie", `Target ${p.n}${p.nama && p.nama !== "Target" ? `: ${p.nama}` : ""}`, [["base", "Renlap", esc(p.base)], ["catat", "Alasan", p.alasan ? `<span class="pl">${pil(p.alasan)}</span>` : ""], ["base", "Koordinat", kord(p)]]));
       hover("ak", p => tip("air", `${p.reg} ${p.misi}`, [["jam", "Jam", `${esc(p.jam)} WIB`], ["base", "Lokasi", esc(p.lok)], ["base", "Koordinat", kord(p)]]));
+      peta.addSource("serok", {type: "geojson", data: fc(titikSerok(D))});
+      peta.addLayer({id: "serok", type: "circle", source: "serok", layout: {visibility: "none"}, paint: {"circle-color": "#2f86d1", "circle-radius": 4, "circle-stroke-color": "#fff", "circle-stroke-width": 1}});
+      hover("serok", p => tip("air", p.nama, [["air", "Jenis", esc(p.jenis)], ["sortie", "Panjang", `${fmt(p.pj)} m`], ["sortie", "Lebar", `${fmt(p.lb)} m`], ["base", "Koordinat", kord(p)]]));
       if (peta.getLayer("ak")) peta.setLayoutProperty("ak", "visibility", "none");   // sortie mati bawaan (riset dashboard: jangan semua lapisan sekaligus)
       for (const id of ["kl", "tg", "ak"]) peta.on("click", id, e => bukaLaci(id, e.features[0].properties, e.lngLat));
       for (const b of bs) { const x = infoBase(D, b), e = document.createElement("button"); e.type = "button"; e.className = `ops-peta-base lv${x.lv}`; e.addEventListener("click", ev => { ev.stopPropagation(); bukaLaci("base", {id: b.id}); }); e.title = `${b.nama}: ${x.a.length} armada`;
@@ -749,7 +772,7 @@ ${pts.map(p => `<Placemark><name>${xml(p.nama)}</name><description>${xml(p.ket)}
       <div class="ops-lap-angka" style="--n:${tiles.length}">${tiles.join("")}</div></section>`;
     return [
       ringkas, `<section class="ops-wadah">${[
-      kartuRencana(D), kartuPengkinian(D), kartuPapan(D), kartuPeta(D), kartuBase(D), kartuRenlap(D), kartuAksi(D), kartuTemuan(D),
+      kartuRencana(D), kartuPengkinian(D), kartuPapan(D), kartuPeta(D), kartuSerok(D), kartuBase(D), kartuRenlap(D), kartuAksi(D), kartuTemuan(D),
       kartuTren(D), kartuNilai(D), kartuHistori(D), kartuGaleri(D),   // Jejak ADS-B disembunyikan (pemilik 11 Nov 2026 "hilangkan ini")
      
       kartuOperator(D), kartuKontrak(D), kartuOmcResmi(D), kartuOmc(D)].join("")}</section>`].join("");

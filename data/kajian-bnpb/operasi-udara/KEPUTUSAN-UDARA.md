@@ -63,3 +63,17 @@ Q16 sampai Q21 dijawab pemilik 12 Nov 2026, lihat K14 sampai K19.
 | No | Tanggal | Keputusan | Kalimat pemilik |
 | -- | ------- | --------- | --------------- |
 | K20 | 14 Nov 2026 | Lingkup K1 ditambah seksi **Peluang semai** (zona semai awan OMC dan prakiraan asap 24 jam). Seksi ini diatur paket `data/kajian-bnpb/semai-awan/` (AGENTS §2.14), bukan PRD modul ini. | "Bisa kah lu tiru ini masukkan ke sistem. Untuk Operasi Udara" |
+
+## Tambahan 15 Nov 2026
+
+| No | Tanggal | Keputusan | Kalimat pemilik |
+| --- | --- | --- | --- |
+| K21 | 15 Nov 2026 | Seksi Operasi Udara ditambah kartu dan lapisan peta **Badan air kandidat serok**: badan air di sekitar base yang ukurannya cukup untuk pesawat amfibi menyerok air, per tipe pesawat. Bahan syarat per tipe dari laporan "Evaluasi TCO Pesawat Amfibi dan Arsitektur Terpadu Mitigasi Karhutla" (Tamtomo, Yani, Willyanto, 15 Nov 2026), lampiran B. | "Ini ada yang bisa dimasukkan ke sistem ga", lalu "Ya, mulai itu" atas usul peta badan air layak serok per tipe pesawat di /operasi |
+
+| No | Pertanyaan | Bawaan sementara |
+| --- | --- | --- |
+| Q22 | Syarat koridor air per tipe (panjang, lebar, kedalaman, gelombang) diambil dari mana yang resmi? | [SEMENTARA] angka laporan K21, berlabel "dari laporan, belum dicek ke pabrikan" |
+| Q23 | Kedalaman dan tinggi gelombang badan air tidak ada di data peta. Tampil sebagai apa? | [SEMENTARA] kata yang dipakai "kandidat", tidak pernah "layak" atau "aman"; kedalaman dan gelombang ditulis "belum dicek" |
+| Q24 | Panjang lintasan lurus dihitung dari apa? | [SEMENTARA] sisi panjang dan sisi pendek kotak batas badan air di OpenStreetMap, berlabel perkiraan; sungai tidak dihitung kandidat dan tampil sebagai "belum dinilai" |
+| Q25 | Tipe mana yang ditampilkan? Indonesia belum mengoperasikan pesawat amfibi pemadam. | [SEMENTARA] enam tipe di laporan K21, sebagai bahan kajian, bukan data armada |
+

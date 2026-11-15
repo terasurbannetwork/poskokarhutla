@@ -34,6 +34,15 @@ def luas_kotak_ha(b):
     return dx * dy * 100 * 0.5
 
 
+def sisi_kotak_m(b):
+    """Sisi panjang dan sisi pendek kotak batas (m). Perkiraan lintasan lurus dan lebar untuk kandidat serok pesawat amfibi
+    (data/kajian-bnpb/operasi-udara ALGORITMA §12): kotak batas ruas berkelok melebihkan lintasan lurus."""
+    lat = math.radians((b["minlat"] + b["maxlat"]) / 2)
+    dy = (b["maxlat"] - b["minlat"]) * 111320
+    dx = (b["maxlon"] - b["minlon"]) * 111320 * math.cos(lat)
+    return round(max(dx, dy)), round(min(dx, dy))
+
+
 def tanya(lat, lon, r_m):
     q = (f'[out:json][timeout:180];(way["natural"="water"](around:{r_m},{lat},{lon});relation["natural"="water"](around:{r_m},{lat},{lon});'
          f'way["waterway"="riverbank"](around:{r_m},{lat},{lon}););out center bb tags;')
@@ -58,7 +67,7 @@ def saring(el):
         ha = luas_kotak_ha(b)
         if ha < LUAS_MIN_HA:
             continue
-        out.append([round(c["lat"], 5), round(c["lon"], 5), jenis, t.get("name") or "", round(ha)])
+        out.append([round(c["lat"], 5), round(c["lon"], 5), jenis, t.get("name") or "", round(ha), *sisi_kotak_m(b)])
     return out
 
 
@@ -75,8 +84,8 @@ def buat(a):
         print(f"{b['id']}: {len(el)} badan air OSM, {len(titik)} lolos (>= {LUAS_MIN_HA:g} ha)", file=sys.stderr)
         time.sleep(5)
     d = {"dibuat": datetime.now(timezone.utc).isoformat(timespec="minutes"), "sumber": "OpenStreetMap (Overpass), natural=water dan waterway=riverbank",
-         "radius_km": a.radius_km, "luas_min_ha": LUAS_MIN_HA, "per_base": per, "kolom": ["lat", "lon", "jenis", "nama", "ha"],
-         "catatan": "Kandidat dari peta, bukan titik yang dicek pilot: kedalaman, rintangan, dan izin belum diketahui. Luas = perkiraan dari kotak batas.",
+         "radius_km": a.radius_km, "luas_min_ha": LUAS_MIN_HA, "per_base": per, "kolom": ["lat", "lon", "jenis", "nama", "ha", "panjang_m", "lebar_m"],
+         "catatan": "Kandidat dari peta, bukan titik yang dicek pilot: kedalaman, rintangan, dan izin belum diketahui. Luas, panjang, dan lebar = perkiraan dari kotak batas.",
          "titik": sorted(semua.values())}
     KELUAR.write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")))
     print(f"{len(d['titik'])} titik -> {KELUAR} ({KELUAR.stat().st_size // 1024} KB)", file=sys.stderr)
@@ -89,6 +98,9 @@ def uji():
           {"tags": {"natural": "water", "water": "lake", "name": "Danau"}, "bounds": {"minlat": 0, "maxlat": .01, "minlon": 0, "maxlon": .01}, "center": {"lat": .005, "lon": .005}},
           {"tags": {"natural": "water"}, "bounds": {"minlat": 0, "maxlat": .0001, "minlon": 0, "maxlon": .0001}, "center": {"lat": 0, "lon": 0}}]
     assert [x[3] for x in saring(el)] == ["Danau"], "kolam dan badan air kecil dibuang"
+    pj, lb = sisi_kotak_m({"minlat": 0.0, "maxlat": 0.01, "minlon": 0.0, "maxlon": 0.02})
+    assert 2200 < pj < 2250 and 1100 < lb < 1125, (pj, lb)   # 0,02 x 0,01 derajat di khatulistiwa = 2.226 m x 1.113 m
+    assert saring(el)[0][5:] == [1113, 1113], saring(el)[0]
     print("uji sumber_air: lolos")
 
 
