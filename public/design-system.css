@@ -10,7 +10,6 @@ body{margin:0;padding-top:var(--top)}
 h1,h2,h3,h4{font-family:var(--display);letter-spacing:-.018em;margin:0}
 button,input,select{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--info);outline-offset:2px;border-radius:6px}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* kepala situs: bilah navy bersama (kepala.css), isinya merek + pilihan sistem + tema */
 header.top .ds-merek{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;flex:none}
