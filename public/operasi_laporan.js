@@ -70,15 +70,15 @@
   fetch("/bencana.json").then(r => r.ok ? r.json() : null).then(j => { pbBencana = (j?.bencana || []).filter(b => b.id !== "karhutla" && b.kemampuan?.operasi === true); if (!pbBencana.length) return;
     SEKSI.udara[0][1].push(["sarana", "Sarana dan fasilitas", "base", []]); const nv = $("#opsLaporan .ops-nav-isi"); if (nv) nv.innerHTML = navSeksi(st._d || null); }).catch(() => {});
   let pbMuat = null;
-  const muatPb = () => pbMuat ||= (() => { if (!document.querySelector('link[href^="/inti/pb_titik.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/inti/pb_titik.css?v=1"; document.head.append(l); } return window.PbTitik ? Promise.resolve() : muatSkrip("/inti/pb_titik.js?v=1"); })();
+  const muatPb = () => pbMuat ||= (() => { if (!document.querySelector('link[href^="/inti/pb_titik.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/inti/pb_titik.css?v=1"; document.head.append(l); } return Promise.all([window.PbTitik ? 0 : muatSkrip("/inti/pb_titik.js?v=1").catch(() => 0), (() => { if (!document.querySelector('link[href^="/inti/renlap.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/inti/renlap.css?v=1"; document.head.append(l); } return window.PbRenlap ? 0 : muatSkrip("/inti/renlap.js?v=1").catch(() => 0); })()]).catch(() => 0).then(() => { if (!window.PbTitik || !window.PbRenlap) pbMuat = null; }); })();   // gagal muat tidak di-cache; renlap gagal tidak menahan sarana   // PB-18: renlap dipasang bersama sarana
   function pasangPb(host) {
     if (host.dataset.siap) return; host.dataset.siap = "1";
     muatPb().then(() => { if (!window.PbTitik) { host.dataset.siap = ""; return; }
-      const pil = document.createElement("div"), isi = document.createElement("div"); pil.className = "seg ops-kat"; pil.setAttribute("role", "group"); pil.setAttribute("aria-label", "Bencana"); isi.className = "pb-titik";
-      let aktif = null, nomor = 0; const buka = b => { pil.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.b === b.id))); const n = ++nomor;
-        requestAnimationFrame(() => setTimeout(() => { if (n !== nomor) return; aktif?.tutup(); aktif = window.PbTitik.pasang(isi, {bencana: b.id, sarana: b.kemampuan?.renlap?.sarana || []}); }, 0)); };
+      const pil = document.createElement("div"), isi = document.createElement("div"), isi2 = document.createElement("div"); isi2.className = "pb-titik"; pil.className = "seg ops-kat"; pil.setAttribute("role", "group"); pil.setAttribute("aria-label", "Bencana"); isi.className = "pb-titik";
+      let aktif = null, aktifR = null, nomor = 0; const buka = b => { pil.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.b === b.id))); const n = ++nomor;
+        requestAnimationFrame(() => setTimeout(() => { if (n !== nomor) return; aktif?.tutup(); aktif = window.PbTitik.pasang(isi, {bencana: b.id, sarana: b.kemampuan?.renlap?.sarana || []}); aktifR?.tutup(); aktifR = window.PbRenlap ? window.PbRenlap.pasang(isi2, {bencana: b.id}) : null; }, 0)); };
       pbBencana.forEach(b => { const t = document.createElement("button"); t.type = "button"; t.dataset.b = b.id; t.innerHTML = lbl("peta", esc(b.nama)); t.addEventListener("click", () => buka(b)); pil.append(t); });
-      host.replaceChildren(...(pbBencana.length > 1 ? [pil] : []), isi); buka(pbBencana[0]); });
+      host.replaceChildren(...(pbBencana.length > 1 ? [pil] : []), isi, isi2); buka(pbBencana[0]); });
   }
   function navSeksi(D) {
     const m = st.mode, u = U(), hit = {};
