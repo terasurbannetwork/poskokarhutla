@@ -495,6 +495,12 @@ const KT = {
   lapsus: ["SELECT l.operasi_id || ':' || l.kejadian_id kode, l.operasi_id || ':' || l.kejadian_id cid, l.dibuat w, k.jenis, k.prov, k.kab, k.mulai FROM lapsus_kejadian l JOIN logbook_kejadian k ON k.id = l.kejadian_id JOIN lapsus_operasi o ON o.id = l.operasi_id AND o.dummy = 0 WHERE k.dummy = 0 AND l.dibuat >= ?1 AND l.dibuat < ?2 AND (l.dibuat > ?3 OR l.operasi_id || ':' || l.kejadian_id > ?4) ORDER BY l.dibuat, l.operasi_id, l.kejadian_id LIMIT ?5"],   // lapsus_kejadian_dibuat
 };
 export const KT_SQL = KT, KT_SUMBER = Object.keys(KT);
+/* KP-06 baca tautan per pasangan (sumber, kode): satu kueri per pasangan lewat UNIQUE (sumber, kode, dummy), dibatch; dummy = 0 didahulukan. Tanpa nama/WA/isi. */
+export const ktTautan = async (env, p, pairs, dummyOk) => {
+  const sql = sedia(env, p, "sk_kejadian_sumber", "baca", "SELECT sumber, kode, kejadian_id, status, kab4, kandidat FROM sk_kejadian_sumber WHERE sumber = ? AND kode = ? AND dummy IN (0, ?) ORDER BY dummy LIMIT 1");
+  return (await env.DB.batch(pairs.map(([s, k]) => sql.bind(s, k, dummyOk ? 1 : 0)))).map(r => r.results[0] ?? null);
+};
+export const ktKab = async (env, p, ids) => ids.length ? (await sedia(env, p, "sk_kejadian_kab", "baca", "SELECT kejadian_id, kab4 FROM sk_kejadian_kab WHERE kejadian_id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(ids)).all()).results : [];
 export const ktBaris = async (env, sumber, {lo, hi, w, id, batas}) => (await env.DB.prepare(KT[sumber][0]).bind(Math.max(lo, w), hi, w, id, batas + 1).all()).results;
 
 /* ======================================================================================================================================================

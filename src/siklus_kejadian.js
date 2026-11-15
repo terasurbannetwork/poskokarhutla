@@ -423,6 +423,29 @@ async function ingestKejadian(c) {
   return json(hasil);
 }
 
+/* ================================================================ nomor GLIDE (KP-08, D4, K8): sk_kejadian_sumber sumber = 'glide', kode = nomor */
+export const RE_GLIDE = /^[A-Z]{2}-\d{4}-\d{6}-[A-Z]{3}$/;
+export const glideSah = v => { const g = typeof v === "string" ? v.trim().toUpperCase() : ""; if (!RE_GLIDE.test(g)) tolak("nomor GLIDE harus berbentuk EQ-2018-000155-IDN (dua huruf, tahun, enam angka, tiga huruf negara)"); return g; };
+/* kejadian besar (K8, bawaan sementara) = tanggal tanggap darurat terisi; bersih dari GLIDE bila tak ada baris sumber 'glide' */
+export const tanpaGlide = (kejadian, sumberPer) => kejadian.filter(k => k.tanggap_mulai && !(sumberPer[k.id] ?? []).some(s => s.sumber === "glide"));
+async function isiGlide(c) {
+  const b = await bodi(c), id = c.p.id, p = c.h.pelaku, glide = masukan(() => glideSah(b.glide));
+  const r = await H.skKejadianById(c.env, p, id); if (!lihat(c, r)) return NO();
+  if (!HIDUP(r.fase)) return gagal(409, "kejadian dibatalkan atau digabung tidak menerima nomor GLIDE");
+  const ada = (await H.skSumberDariKejadian(c.env, p, id)).find(s => s.sumber === "glide");
+  if (ada) return ada.kode === glide ? json({id, glide, sudah_ada: true}) : gagal(409, `kejadian sudah punya nomor GLIDE ${ada.kode}; koreksi nomor belum tersedia`);
+  const lj = await ujiLaju(c, "sk.glide", 60); if (lj) return lj;
+  const sid = acak(8), res = await H.skBatch(c.env, p, [H.skStmtSumberBaru(c.env, p, {id: sid, sumber: "glide", kode: glide, kejadian_id: id, status: "terpasang", jenis: r.jenis, kab4: r.kab4, mulai: r.mulai, diambil: c.kini, kini: c.kini, dummy: r.dummy}),
+    H.skStmtJejak(c.env, p, c.h.oleh, "kejadian", id, "glide", null, glide, null, c.kini, r.dummy)]);
+  if (!res[0]?.meta?.changes) return gagal(409, "nomor GLIDE itu sudah dipakai kejadian lain");
+  return json({id, glide}, 201);
+}
+async function glidePengingat(c) {
+  const p = c.h.pelaku, aktif = (await H.skKejadianAktif(c.env, p, c.h.dummyOk)).filter(k => k.tanggap_mulai), per = {};
+  for (const k of aktif) per[k.id] = await H.skSumberDariKejadian(c.env, p, k.id);
+  return json({baris: tanpaGlide(aktif, per).map(k => ({id: k.id, jenis: k.jenis, nama: k.nama, kab4: k.kab4, wilayah: wilayahKab4(k.kab4), fase: k.fase, tanggap_mulai: k.tanggap_mulai}))});
+}
+
 /* ================================================================ tabel rute */
 /* siapa saya: untuk layar (tombol dummy, filter wilayah); BP memakai rute instansi sendiri */
 async function saya(c) {
@@ -441,6 +464,8 @@ export const RUTE_SIKLUS = {
   "POST /api/siklus/kejadian/:id/publik": {izin: ["KO"], f: ubahPublik},
   "POST /api/siklus/kejadian/:id/gabung": {izin: ["KO"], f: gabung},
   "POST /api/siklus/kejadian/:id/koreksi": {izin: ["KO"], f: koreksi},
+  "POST /api/siklus/kejadian/:id/glide": {izin: ["PDKO"], f: isiGlide},
+  "GET /api/siklus/glide/pengingat": {izin: ["PDKO"], f: glidePengingat},
   "GET /api/siklus/antrean": {izin: ["PDKO"], f: antreanDaftar},
   "POST /api/siklus/antrean/:sid": {izin: ["PDKO"], f: antreanPutus},
   "GET /api/siklus/jejak": {izin: ["STAF"], f: jejakDaftar},

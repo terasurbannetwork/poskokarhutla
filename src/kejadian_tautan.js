@@ -6,6 +6,7 @@ import {tolak, tglSah} from "./pusdalops_umum.js";
 import {gerbangIngest, masukan, JENIS_SAH} from "./siklus_kejadian.js";
 import {hariAntara} from "./siklus_hitung.js";
 import * as H from "./hak.js";
+import {lingkupKab4} from "./siklus_kab.js";
 
 const BATAS = 500, WIB = 7 * 36e5;   // WIB = UTC+7 (ms)
 const PETA = {gempabumi: "gempa", gelombang_pasang: "gelombang"};
@@ -49,6 +50,42 @@ async function ingestModul(c) {
   return json({baris: b.slice(0, f.batas).map(r => item(f.sumber, r)).filter(Boolean), lanjut: b.length > f.batas ? `${b[f.batas - 1].w}|${b[f.batas - 1].cid}` : null});
 }
 
+/* KP-06: GET /api/siklus/kejadian/tautan?k=sumber:kode (sampai 50) atau ?sumber=&kode=. Staf (PD/KO/PM, SA, moderator) melihat semua; BP hanya kejadian yang kab4-nya di lingkup,
+   selebihnya "belum" tanpa kejadian_id (sama dengan baris tidak ada). Petugas (x-kode) belum dipasang: ponytail, butuh pemetaan tugas lapangan ke kode sumber. */
+const kandidatDari = t => { try { const a = JSON.parse(t || "[]"); return Array.isArray(a) ? a : []; } catch { return []; } };   // kandidat rusak tidak menjatuhkan seluruh panggilan
+const MAKS_PASANG = 50, TERLIHAT = ["tugas_api", "logbook_d1", "sippa", "lapangan", "gempa_d1", "lapsus"];
+async function tautan(c) {
+  const q = c.url.searchParams;
+  const ps = masukan(() => {
+    const mentah = q.getAll("k");
+    const qs = q.get("sumber"), qk = q.get("kode");
+    if ((qs == null) !== (qk == null)) tolak("sumber dan kode harus diberi bersama");
+    if (qs != null) mentah.push(`${qs}:${qk}`);
+    if (!mentah.length) tolak("beri k=sumber:kode atau sumber dan kode");
+    if (mentah.length > MAKS_PASANG) tolak(`paling banyak ${MAKS_PASANG} pasangan sekali panggil`);
+    return mentah.map(m => { const i = m.indexOf(":"), s = m.slice(0, i), k = m.slice(i + 1);
+      if (!TERLIHAT.includes(s)) tolak(`sumber harus salah satu dari ${TERLIHAT.join(", ")}`);
+      if (i < 1 || k.length < 1 || k.length > 120) tolak("kode 1-120 karakter"); return [s, k]; });
+  });
+  const baris = await H.ktTautan(c.env, c.h.pelaku, ps, c.h.dummyOk);
+  const bp = c.h.tipe === "bp";
+  const kab = new Map();   // kejadian_id -> kab4 (BP saja)
+  if (bp) {
+    const ids = [...new Set(baris.flatMap(r => r ? [r.kejadian_id, ...kandidatDari(r.kandidat)] : []).filter(Boolean))];
+    for (const r of await H.ktKab(c.env, c.h.pelaku, ids)) (kab.get(r.kejadian_id) ?? kab.set(r.kejadian_id, []).get(r.kejadian_id)).push(r.kab4);
+  }
+  const dalam = id => (kab.get(id) ?? []).some(k => lingkupKab4(c.h.akun, k));
+  return json({tautan: ps.map(([sumber, kode], i) => {
+    const r = baris[i], belum = {sumber, kode, status: "belum", kejadian_id: null, kandidat: null};
+    if (!r) return belum;
+    // BP: baris harus di lingkupnya, dan kejadian yang ditunjuk juga harus menyentuh lingkupnya (bukan kejadian kab lain)
+    if (bp && !(r.kejadian_id ? dalam(r.kejadian_id) : (r.kab4 && lingkupKab4(c.h.akun, r.kab4)))) return belum;
+    const kand = r.status === "ambigu" ? kandidatDari(r.kandidat).filter(id => !bp || dalam(id)) : null;
+    return {sumber, kode, status: r.status, kejadian_id: r.kejadian_id, kandidat: kand};
+  })});
+}
+
 export const RUTE_TAUTAN = {
+  "GET /api/siklus/kejadian/tautan": {izin: ["STAF", "BP"], f: tautan},
   "GET /api/siklus/ingest/modul": {izin: ["sistem"], f: ingestModul},
 };

@@ -37,6 +37,14 @@
    "server": "tests/warga/siklus_ingest.test.mjs",
    "klien": []
   },
+  "GET /api/siklus/ingest/modul": {
+   "server": "tests/warga/kejadian_tautan.test.mjs",
+   "klien": []
+  },
+  "GET /api/siklus/kejadian/tautan": {
+   "server": "tests/warga/kejadian_tautan_baca.test.mjs",
+   "klien": []
+  },
   "GET /api/siklus/jejak": {
    "server": "tests/warga/siklus_kejadian.test.mjs",
    "klien": []
@@ -200,6 +208,14 @@
    "klien": [
     "tests/siklus/layar_kejadian.test.mjs"
    ]
+  },
+  "POST /api/siklus/kejadian/:id/glide": {
+   "server": "tests/warga/siklus_glide.test.mjs",
+   "klien": []
+  },
+  "GET /api/siklus/glide/pengingat": {
+   "server": "tests/warga/siklus_glide.test.mjs",
+   "klien": []
   },
   "POST /api/siklus/kejadian/:id/gabung": {
    "server": "tests/warga/siklus_kejadian.test.mjs",

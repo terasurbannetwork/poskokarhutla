@@ -150,7 +150,7 @@ async function daftar(isi, sk) {
   }
 
   isi.replaceChildren(kart); kontrol(); muat();
-  if (P.pd) antrean(isi, P);
+  if (P.pd) { antrean(isi, P); pengingatGlide(isi); }
 }
 
 async function baru(sesudah) {
@@ -180,6 +180,26 @@ async function antrean(isi) {
     judul.replaceChildren(...(baris.length ? [hl(angka(baris.length)), " baris sumber menunggu keputusan, ", hl(angka(a)), " ambigu dan ", hl(angka(t)), " tanpa wilayah"] : ["Tidak ada baris sumber yang ", hl("menunggu keputusan")]));
     if (!baris.length) return hasil.append(kead("kosong", {teks: "Semua baris sumber sudah terpasang ke kejadian"}));
     for (const b of baris) hasil.append(satu(b, muat));
+  }
+  muat();
+}
+/* kejadian besar (tanggal tanggap darurat terisi) tanpa nomor GLIDE: tugas staf meminta nomor ke ADRC (KP-08, K8) */
+const RE_GLIDE = /^[A-Z]{2}-\d{4}-\d{6}-[A-Z]{3}$/;
+async function isiGlide(id, ulang) {
+  const v = await tanya({judul: "Nomor GLIDE", teks: "Contoh EQ-2018-000155-IDN: dua huruf jenis, tahun, enam angka, tiga huruf negara. Nomor dari ADRC; tercatat di garis waktu.", kolom: [{nama: "glide", label: "Nomor GLIDE", wajib: true, maks: 24}], ya: "Simpan"});
+  if (!v) return; const g = v.glide.trim().toUpperCase(); if (!RE_GLIDE.test(g)) return toast("Nomor GLIDE tidak sah. Bentuknya EQ-2018-000155-IDN.");
+  const x = await api(`/api/siklus/kejadian/${id}/glide`, {metode: "POST", badan: {glide: g}});
+  if (!x.ok) return toast(x.j?.galat || "Nomor GLIDE belum bisa disimpan"); toast("Nomor GLIDE tersimpan"); ulang();
+}
+async function pengingatGlide(isi) {
+  const hasil = h("div", {class: "sk-kb"}), kart = kartu({ey: [ik("tanya", 12), "Nomor GLIDE"], judul: ["Kejadian besar tanpa GLIDE"], isi: [hasil], id: "glide"});
+  isi.append(kart); hasil.append(kead("memuat"));
+  async function muat() {
+    const r = await api("/api/siklus/glide/pengingat"); kosongkan(hasil);
+    if (!r.ok) return hasil.append(kead_dari(r, muat));
+    if (!r.j.baris.length) return hasil.append(kead("kosong", {teks: "Semua kejadian tanggap darurat sudah bernomor GLIDE"}));
+    for (const b of r.j.baris) hasil.append(h("div", {}, h("div", {}, h("a", {href: `/siklus/kejadian/${b.id}`}, b.id), `: ${namaJenis(b.jenis)}, ${b.wilayah ?? "wilayah belum terpetakan"}, tanggap sejak ${tgl(b.tanggap_mulai)} `, pil("menunggu", {ditunggu: "nomor GLIDE dari ADRC"})),
+      tombol("Isi nomor", "biasa", () => isiGlide(b.id, muat), "tambah", "Catat nomor GLIDE untuk kejadian ini")));
   }
   muat();
 }
@@ -244,6 +264,7 @@ function detailHidup(id, d, P, ulang) {
   if (!ko && pd && r.fase === "terdeteksi") aksi.append(tombol("Verifikasi", "utama", () => pindah("terverifikasi"), "centang"));
   if (ko && i > 0) aksi.append(tombol("Mundur", "biasa", () => pindah(FASE[i - 1]), "mundur", `Mundur ke ${K.fase?.[FASE[i - 1]]?.[0]}`));
   if ((ko || pd) && r.fase === "terdeteksi" && faseSah(r.fase, "dibatalkan")) aksi.append(tombol("Batalkan", "bahaya", () => pindah("dibatalkan"), "silang"));
+  if ((ko || pd) && r.fase !== "dibatalkan") aksi.append(tombol("Nomor GLIDE", "biasa", () => isiGlide(id, ulang), "tautan", "Catat nomor GLIDE dari ADRC"));
   if (ko) {
     aksi.append(tombol("Gabung", "biasa", async () => {
       const v = await tanya({judul: "Gabung dengan kejadian lain", teks: "Kejadian yang mulai lebih awal bertahan; yang lain menjadi alias. Fase keduanya harus sama.", kolom: [{nama: "ke", label: "Nomor kejadian tujuan (KJ-...)", wajib: true, maks: 20}, {nama: "alasan", label: "Alasan", maks: 200}], ya: "Gabung"});
