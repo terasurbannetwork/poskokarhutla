@@ -359,7 +359,7 @@ def nav(sl, judul_bagian, aktif, no):
 def tabel(sl, x, y, w, kol, baris, rh, y_maks):
     """kol [(judul, bobot, rata)]; baris: list sel | {'pita': teks, 'sel': [...]} | {'total': True, 'sel': [...]};
     sel = teks | ('teks', warna, tebal) | {'pil': teks, 'isi', 'tegas'} | {'kotak': teks, 'isi', 'tegas'}. -> y akhir."""
-    tb = sum(k[1] for k in kol); L = [w * k[1] / tb for k in kol]; hk = .32 if any(len(k[0]) > 10 for k in kol) else .23
+    tb = sum(k[1] for k in kol); L = [w * k[1] / tb for k in kol]; hk = .23   # kepala tabel satu baris (pemilik 15 Nov 2026)
     rh = min(rh, (y_maks - y - hk) / sum(.65 if isinstance(b, dict) and 'pita' in b else 1 for b in baris))   # rh = batas atas tinggi baris
     kotak(sl, x, y, w, hk, NAVY, MSO_SHAPE.ROUNDED_RECTANGLE, .18)
     cx = x
@@ -378,9 +378,16 @@ def tabel(sl, x, y, w, kol, baris, rh, y_maks):
         for i, (k, lw) in enumerate(zip(kol, L)):
             v = sel[i] if i < len(sel) else None
             if isinstance(v, dict) and 'pil' in v:
-                pw = min(lw - .08, .14 + len(v['pil']) * .065)
-                kotak(sl, cx + (lw - pw) / 2, yy + h * .18, pw, h * .64, v['isi'], MSO_SHAPE.ROUNDED_RECTANGLE, .5)
-                tx(sl, cx, yy, lw, h, v['pil'], sz=7.5, b=True, c=v['tegas'], al='c')
+                ik = v.get('ikon'); ph = min(h * .64, .26); d = ph * .78
+                pw = min(lw - .06, .16 + len(v['pil']) * .062 + (d + .05 if ik else 0))
+                px, py = cx + (lw - pw) / 2, yy + (h - ph) / 2
+                kotak(sl, px, py, pw, ph, v['isi'], MSO_SHAPE.ROUNDED_RECTANGLE, .5)
+                if ik:   # ikon putih di lingkaran warna tegas (pemilik 15 Nov 2026: "kasih icon")
+                    kotak(sl, px + (ph - d) / 2, py + (ph - d) / 2, d, d, v.get('lingkar', v['tegas']), MSO_SHAPE.OVAL)
+                    sl.shapes.add_picture(os.path.join(TPL, ik), Inches(px + (ph - d) / 2 + d * .2), Inches(py + (ph - d) / 2 + d * .2), Inches(d * .6), Inches(d * .6))
+                    tx(sl, px + d + .07, yy, pw - d - .1, h, v['pil'], sz=7.5, b=True, c=v['tegas'], al='c')
+                else:
+                    tx(sl, cx, yy, lw, h, v['pil'], sz=7.5, b=True, c=v['tegas'], al='c')
             elif isinstance(v, dict) and 'kotak' in v:
                 kw = min(lw - .04, .26)
                 kotak(sl, cx + (lw - kw) / 2, yy + h * .16, kw, h * .68, v['isi'], MSO_SHAPE.ROUNDED_RECTANGLE, .2)
@@ -440,12 +447,14 @@ def gandakan(P, n):
     return list(P.slides)
 
 
-def ubin(sl, x, y, w, h, angka, ket, isi='EEF3F9', tegas=NAVY):
-    """Ubin angka kunci: bilah warna di kiri, angka besar, keterangan."""
+def ubin(sl, x, y, w, h, angka, ket, isi='EEF3F9', tegas=NAVY, ikon='orang-putih.png'):
+    """Ubin angka kunci: ikon putih di lingkaran berwarna, angka besar, keterangan (pemilik 15 Nov 2026: "kasih icon")."""
     kotak(sl, x, y, w, h, isi, MSO_SHAPE.ROUNDED_RECTANGLE, .1)
-    kotak(sl, x, y + .08, .06, h - .16, tegas)
-    tx(sl, x + .18, y + .05, w - .25, h * .55, angka, sz=17, b=True, c=tegas if tegas != NAVY else NAVY)
-    tx(sl, x + .18, y + h * .58, w - .25, h * .34, ket, sz=8, c=INK)
+    d = h * .66; cy = y + (h - d) / 2
+    kotak(sl, x + .12, cy, d, d, tegas, MSO_SHAPE.OVAL)
+    sl.shapes.add_picture(os.path.join(TPL, ikon), Inches(x + .12 + d * .2), Inches(cy + d * .2), Inches(d * .6), Inches(d * .6))
+    tx(sl, x + .24 + d, y + .04, w - d - .3, h * .56, angka, sz=17, b=True, c=tegas)
+    tx(sl, x + .24 + d, y + h * .58, w - d - .3, h * .34, ket, sz=8, c=INK)
 
 
 PALET = ['051C2C', '1B5A93', '4F86C6', '9CC3E6', 'D9600B', 'E8894A', 'F3C9A0', '8F3F07', '6B7280', 'B8C2CF']
@@ -460,8 +469,7 @@ def grafik_tumpuk(sl, x, y, w, h, kategori, seri, judul_g):
     g = sl.shapes.add_chart(XL_CHART_TYPE.COLUMN_STACKED, Inches(x), Inches(y), Inches(w), Inches(h), cd).chart
     g.has_title = True; g.chart_title.text_frame.text = judul_g
     rr = g.chart_title.text_frame.paragraphs[0].runs[0]; rr.font.size = Pt(9.19); rr.font.bold = True; rr.font.name = 'Roboto'; rr.font.color.rgb = warna(NAVY)
-    g.has_legend = True; g.legend.position = XL_LEGEND_POSITION.BOTTOM; g.legend.include_in_layout = False
-    g.legend.font.size = Pt(7.5); g.legend.font.name = 'Roboto'
+    g.has_legend = False   # legenda digambar sendiri sebagai kisi rata (legenda bawaan berantakan, pemilik 15 Nov 2026)
     g.plots[0].gap_width = 60; g.plots[0].overlap = 100
     for i, sr in enumerate(g.series):
         sr.format.fill.solid(); sr.format.fill.fore_color.rgb = warna(PALET[i % len(PALET)])
@@ -472,6 +480,16 @@ def grafik_tumpuk(sl, x, y, w, h, kategori, seri, judul_g):
     return g
 
 
+def legenda(sl, x, y, w, nama, kolom=3, tinggi=.22):
+    """Legenda kisi rata: kotak warna PALET + nama, `kolom` per baris. -> y akhir."""
+    lw = w / kolom
+    for i, n in enumerate(nama):
+        cx, cy = x + (i % kolom) * lw, y + (i // kolom) * tinggi
+        kotak(sl, cx, cy + .06, .11, .11, PALET[i % len(PALET)], MSO_SHAPE.ROUNDED_RECTANGLE, .2)
+        tx(sl, cx + .18, cy, lw - .2, tinggi, n, sz=8)
+    return y + math.ceil(len(nama) / kolom) * tinggi
+
+
 def angka_kerusakan(t):
     """Rumah, jembatan, akses jalan dari butir Kerusakan WA; None bila tidak disebut."""
     t = t or ''
@@ -479,6 +497,32 @@ def angka_kerusakan(t):
         xs = [int(m.replace('.', '').replace(',', '')) for m in re.findall(pola, t, re.I)]
         return sum(xs) if xs else None
     return (jml(r'([\d.,]+)\s*unit\s*rumah'), jml(r'(\d+)\s*(?:unit\s*)?jembatan'), jml(r'(\d+)\s*(?:titik\s*|ruas\s*)?(?:akses\s*)?jalan'))
+
+
+def pil_kondisi(st):
+    return {'pil': st, 'isi': KONDISI[st][0], 'tegas': KONDISI[st][1], 'ikon': 'banjir-putih.png' if st == 'Belum surut' else 'cek-putih.png'}
+
+
+def pil_level(lv, singkat=False):
+    if not lv: return '–'
+    nm = LEVEL[lv][2]
+    return {'pil': nm[0] if singkat else nm, 'isi': LEVEL[lv][0], 'tegas': LEVEL[lv][1] if lv >= 2 else '9A5B1E', 'lingkar': LEVEL[lv][1] if lv >= 2 else 'C98A4B',
+            **({} if singkat else {'ikon': {3: 'awas-putih.png', 2: 'banjir-putih.png', 1: 'hujan-putih.png'}[lv]})}
+
+
+DARURAT = {'tanggap': ('Tanggap Darurat', 'F8DDE0', 'C8102E'), 'siaga': ('Siaga Darurat', 'FBE7D6', 'B84E08'),
+           'transisi': ('Transisi Darurat', 'DCEBF8', '1B5A93'), 'proses': ('Dalam penetapan', 'EEF0F3', '6B7280')}
+
+
+def pil_darurat(t):
+    """Butir Penetapan Status -> (pil jenis status, tanggal berakhir)."""
+    t = (t or '').strip(); lt = t.lower()
+    j = 'tanggap' if 'tanggap' in lt else 'transisi' if 'transisi' in lt else 'siaga' if 'siaga' in lt else 'proses' if t and t != '-' else None
+    if not j: return '–', '–'
+    nm, isi, tg = DARURAT[j]
+    if 'provinsi' in lt: nm += ' Prov.'
+    m = re.search(r's\.?d\.?\s*(\d{1,2})/(\d{1,2})/(\d{4})', t)
+    return {'pil': nm, 'isi': isi, 'tegas': tg}, (f'{int(m[1])} {BULAN[int(m[2]) - 1]} {m[3]}' if m else '–')
 
 
 def status_darurat(t):
@@ -528,25 +572,25 @@ def slide_lengkap(L):
     judul(sl, ['Banjir melanda', f' {len(lap)}', f' kab/kota di {prov} dengan', f' {rb(kk)}', ' KK terdampak;', f' {len(belum)}', ' belum surut dan',
                f' {cA + cS}', f' kecamatan Siaga{"/Awas" if cA else ""} pada {n_hari} hari ke depan (', rentang, ')'])
     w4 = (12.13 - 3 * .07) / 4
-    ub = [(rb(len(lap)), 'Kab/kota terdampak banjir', 'EEF3F9', NAVY), (rb(len(belum)), 'Kab/kota belum surut', KONDISI['Belum surut'][0], KONDISI['Belum surut'][1]),
-          (rb(kk), 'KK terdampak', 'EEF3F9', NAVY), (rb(jiwa or None), 'Jiwa terdampak', 'EEF3F9', NAVY),
-          (rb(ungsi or None), 'Jiwa mengungsi', 'EEF3F9', NAVY), (rb(hilang + md or None), 'Jiwa meninggal dan hilang', KONDISI['Belum surut'][0], KONDISI['Belum surut'][1]),
-          (rb(cA + cS), 'Kecamatan Siaga dan Awas', LEVEL[2][0], LEVEL[2][1]), (rb(cW), 'Kecamatan Waspada', LEVEL[1][0], 'C98A4B')]
-    for i, (n_, ket, isi, tg) in enumerate(ub):
-        ubin(sl, .6 + (i % 4) * (w4 + .07), 1.45 + (i // 4) * .66, w4, .6, n_, ket, isi, tg)
+    ub = [(rb(len(lap)), 'Kab/kota terdampak banjir', 'EEF3F9', NAVY, 'radius-putih.png'),
+          (rb(len(belum)), 'Kab/kota belum surut', KONDISI['Belum surut'][0], KONDISI['Belum surut'][1], 'banjir-putih.png'),
+          (rb(kk), 'KK terdampak', 'EEF3F9', NAVY, 'rumah-putih.png'), (rb(jiwa or None), 'Jiwa terdampak', 'EEF3F9', NAVY, 'orang-putih.png'),
+          (rb(ungsi or None), 'Jiwa mengungsi', 'EEF3F9', NAVY, 'tenda-putih.png'),
+          (rb(hilang + md or None), 'Jiwa meninggal dan hilang', KONDISI['Belum surut'][0], KONDISI['Belum surut'][1], 'hati-putih.png'),
+          (rb(cA + cS), 'Kecamatan Siaga dan Awas', LEVEL[2][0], LEVEL[2][1], 'awas-putih.png'), (rb(cW), 'Kecamatan Waspada', LEVEL[1][0], 'C98A4B', 'hujan-putih.png')]
+    for i, (n_, ket, isi, tg, ik) in enumerate(ub):
+        ubin(sl, .6 + (i % 4) * (w4 + .07), 1.45 + (i // 4) * .66, w4, .6, n_, ket, isi, tg, ik)
     nama = list(dict.fromkeys([o['kab'] for o in lap] + [v['kab'] for v in sorted(kab_pr.values(), key=lambda v: (-v['a'], -v['s'], -v['mm'])) if v['a'] or v['s']]))
     lpk = {o['kab']: o for o in lap}
-    kol = [('Kab/Kota', 1.55, 'l'), ('Kondisi kini', .95, 'c'), ('KK', .7, 'c'), ('Jiwa', .7, 'c'), ('Mengungsi', .78, 'c'), ('Status darurat', 2.55, 'l', 8.5),
-           ('Prakiraan tertinggi', 1.05, 'c'), ('Mulai Siaga', .78, 'c'), ('Hujan 3 hari, mm', .8, 'c'), ('Sungai, % Q2', .8, 'c')]
+    kol = [('Kab/Kota', 1.5, 'l'), ('Kondisi kini', 1.2, 'c'), ('KK', .68, 'c'), ('Jiwa', .72, 'c'), ('Mengungsi', .8, 'c'), ('Status darurat', 1.75, 'c'),
+           ('Berakhir', .9, 'c'), ('Prakiraan', 1.08, 'c'), ('Mulai Siaga', .8, 'c'), ('Hujan 3 hari', .85, 'c')]
     br = []
     for n in nama:
         o, v = lpk.get(n), kab_pr.get(n, {'hari': [0] * n_hari, 'mm': 0, 'tgl': None})
         lv = max(v['hari']); ms = next((hari[i] for i, x in enumerate(v['hari']) if x >= 2), None)
-        br.append([n, {'pil': o['status'], 'isi': KONDISI[o['status']][0], 'tegas': KONDISI[o['status']][1]} if o else '–',
-                   rb(o['kk']) if o else '–', rb(o.get('jiwa')) if o else '–', rb(o['ungsi']) if o else '–',
-                   (status_darurat((o.get('butir') or {}).get('Penetapan status')), INK, False) if o else '–',
-                   {'pil': LEVEL[lv][2], 'isi': LEVEL[lv][0], 'tegas': LEVEL[lv][1] if lv >= 2 else '9A5B1E'} if lv else '–',
-                   tgl(ms) if ms else '–', str(round(v['mm'])) if v['tgl'] else '–', f'{round(100 * sg_kab[n])}%' if n in sg_kab else '–'])
+        pd_, sd_ = pil_darurat((o.get('butir') or {}).get('Penetapan status')) if o else ('–', '–')
+        br.append([n, pil_kondisi(o['status']) if o else '–', rb(o['kk']) if o else '–', rb(o.get('jiwa')) if o else '–', rb(o['ungsi']) if o else '–',
+                   pd_, sd_, pil_level(lv), tgl(ms) if ms else '–', f"{round(v['mm'])} mm" if v['tgl'] else '–'])
     tabel(sl, .6, 2.86, 12.13, kol, br, .4, 6.95)
     sumber(sl, f'{sk}; {gis}')
     # ---------- 3. perkembangan dan kerusakan
@@ -568,7 +612,9 @@ def slide_lengkap(L):
     arah = 'naik' if tot[-1] > tot[i0] else 'turun' if tot[-1] < tot[i0] else 'tetap'
     judul(sl, [f'KK terdampak {arah} dari', f' {rb(tot[i0])}', f' ({tgl(hari_wa[i0])}) menjadi', f' {rb(tot[-1])}', f' ({tgl(hari_wa[-1])}); kerusakan',
                f' {rb(rum)}', ' rumah,', f' {rb(jem)}', ' jembatan, dan', f' {rb(jal)}', ' akses jalan'])
-    grafik_tumpuk(sl, .6, 1.42, 5.8, 5.5, [tgl(h) for h in hari_wa[i0:]], {k: v[i0:] for k, v in seri.items()}, 'KK terdampak per kab/kota, laporan harian')
+    n_baris = math.ceil(len(seri) / 3)
+    grafik_tumpuk(sl, .6, 1.42, 5.8, 5.5 - n_baris * .22 - .1, [tgl(h) for h in hari_wa[i0:]], {k: v[i0:] for k, v in seri.items()}, 'KK terdampak per kab/kota, laporan harian')
+    legenda(sl, .75, 6.95 - n_baris * .22, 5.6, list(seri))
     kolR = [('Kab/Kota', 1.35, 'l'), ('Rumah', .62, 'c'), ('Jembatan', .7, 'c'), ('Jalan', .55, 'c'), ('Rincian kerusakan', 2.97, 'j', 8, 'bungkus')]
     brR = [[o['kab'], rb(kr[o['kab']][0]), rb(kr[o['kab']][1]), rb(kr[o['kab']][2]),
             (rapi((o.get('butir') or {}).get('Kerusakan')) if (o.get('butir') or {}).get('Kerusakan') else '–', INK, False)] for o in lap]
@@ -592,7 +638,7 @@ def slide_lengkap(L):
     else:
         ek = [f' kab/kota {prov}']
     judul(sl, ['BMKG: hujan lebat atau petir di', f' {n_lebat}'] + ek)
-    kolB = [('Kab/Kota', 1.45, 'l')] + [(h, .56, 'c') for h in hk] + [('Kita', .62, 'c')]
+    kolB = [('Kab/Kota', 1.4, 'l')] + [(h, .52, 'c') for h in hk] + [('Prakiraan', 1.0, 'c')]
 
     def sel_b(x):
         return {'pil': BMKG_GAYA[x][0], 'isi': BMKG_GAYA[x][1], 'tegas': BMKG_GAYA[x][2]} if x else '–'
@@ -600,9 +646,9 @@ def slide_lengkap(L):
     brB = []
     for n in urut_b:
         lv = max(kab_pr.get(n, {'hari': [0]})['hari'])
-        brB.append([n] + [sel_b(x) for x in bk[n]] + [{'pil': LEVEL[lv][2][0], 'isi': LEVEL[lv][0], 'tegas': LEVEL[lv][1] if lv >= 2 else '9A5B1E'} if lv else '–'])
+        brB.append([n] + [sel_b(x) for x in bk[n]] + [pil_level(lv)])
     tabel(sl, .6, 1.4, 5.8, kolB, brB, .3, 6.95)
-    kolS = [('Kab/Kota', 1.4, 'l'), ('Kecamatan', 1.3, 'l'), ('Debit puncak, m³/dtk', .95, 'c'), ('Q2, m³/dtk', .75, 'c'), ('% Q2', .6, 'c'), ('Tgl. puncak', .7, 'c')]
+    kolS = [('Kab/Kota', 1.4, 'l'), ('Kecamatan', 1.3, 'l'), ('Debit, m³/dtk', .95, 'c'), ('Q2, m³/dtk', .8, 'c'), ('% Q2', .6, 'c'), ('Tgl. puncak', .7, 'c')]
     brS = [[t['kab'], (t['kec'], INK, False), rb(round(t['pk'])), rb(round(t['q2'])),
             ({'pil': f'{round(100 * t["r"])}%', 'isi': LEVEL[min(3, t['kls'] + 1)][0] if t['kls'] else 'EEF3F9', 'tegas': LEVEL[min(3, t['kls'] + 1)][1] if t['kls'] else NAVY}),
             tgl(t['tgl'])] for t in titik[:len(bk)]]
@@ -681,9 +727,9 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
         y = 1.4
         if lp and lp.get('butir'):
             b = lp['butir']; kolL = [('Butir', 1.25, 'l'), (f'Laporan Koordalops {tgl(lp["akhir"])}', 4.94, 'j', 8.5, 'bungkus')]
-            brL = [[nm, (rapi(b[nm]), INK, False)] for nm in ('Dampak', 'Pengungsi', 'Kerusakan', 'Kondisi mutakhir') if b.get(nm)]
+            brL = [[nm.replace('mutakhir', 'terakhir'), (rapi(b[nm]), INK, False)] for nm in ('Dampak', 'Pengungsi', 'Kerusakan', 'Kondisi mutakhir') if b.get(nm)]   # pemilik 15 Nov: "Kondisi terakhir"
             y = tabel(sl, 6.55, 1.4, 6.19, kolL, brL, .36, 1.4 + .23 + .36 * len(brL)) + .14
-        kolK = [('Kecamatan', 1.7, 'l')] + [(h, .4, 'c') for h in hk] + [('Hujan 3 hari, mm', .8, 'c'), ('Tgl. puncak', .72, 'c')]
+        kolK = [('Kecamatan', 1.7, 'l')] + [(h, .4, 'c') for h in hk] + [('Hujan 3 hari', .8, 'c'), ('Tgl. puncak', .72, 'c')]
 
         def puncak_kec(v):
             i = max(range(len(v['b'])), key=lambda d: (v['b'][d], v['h3d'][d]))
@@ -711,7 +757,7 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
     kartu(sl, 3.53, 6.2, 2.86, str(len(lap) - len(belum)), 'Sudah surut', *KONDISI['Sudah surut'], 'cek-putih.png')
     kol = [('Kab/Kota', 2.0, 'l'), ('Kec.', .5, 'c'), ('Mulai', .65, 'c'), ('Selesai', .75, 'c'), ('KK terdampak', 1.1, 'c'), ('Mengungsi', .95, 'c'), ('Kondisi', 1.4, 'c')]
     br = [{'pita': prov}] + [[o['kab'], rb(o['kec']), tgl(o['mulai']), tgl(o['surut_tgl']) if o['surut_tgl'] else '–', rb(o['kk']), rb(o['ungsi']),
-                              {'pil': o['status'], 'isi': KONDISI[o['status']][0], 'tegas': KONDISI[o['status']][1]}] for o in lap]
+                              pil_kondisi(o['status'])] for o in lap]
     br.append({'total': True, 'sel': [f'Total {len(lap)} kab/kota', rb(n_kec), '', '', rb(n_kk), rb(sum(o['ungsi'] or 0 for o in lap) or None), '']})
     # tabel kondisi mutakhir di bawah: tinggi baris tabel atas diperkecil (paling kecil .24) supaya kondisi muat; yang tak muat = KK terkecil
     m_eff, rk_ = len(br) - .35, .28
@@ -719,7 +765,7 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
     yb = tabel(sl, 6.55, 1.4, 6.19, kol, br, rh1, 6.95)
     n_k = int((6.95 - yb - .14 - .23) // rk_)
     if belum and n_k >= 1:   # kondisi mutakhir kab/kota yang belum surut, kata-kata laporan Koordalops
-        kol2 = [('Kab/Kota', 1.35, 'l'), ('Laporan', .58, 'c'), ('Kondisi mutakhir', 4.26, 'j', 8, 'bungkus')]
+        kol2 = [('Kab/Kota', 1.35, 'l'), ('Laporan', .58, 'c'), ('Kondisi terakhir', 4.26, 'j', 8, 'bungkus')]
         tabel(sl, 6.55, yb + .14, 6.19, kol2, [[o['kab'], tgl(o['akhir']), (rapi(o['kondisi']), INK, False)] for o in belum[:n_k]], rk_, 6.95)
     sumber(sl, f'Laporan Dit. Koordalops BNPB, {tgl(wa0 or tanggal)} s.d. {tgl(wa1 or tanggal)} {(wa1 or tanggal)[:4]}; Logbook Pusdalops BNPB')
 
@@ -745,11 +791,11 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
         tegas = 'C98A4B' if lv == 1 else LEVEL[lv][1]
         kartu(sl, x_, 5.36, lw3, rb(n_), 'Kecamatan ' + nm, LEVEL[lv][0], tegas, ik)
         keterangan(sl, x_, 5.86, lw3, 1.09, nm, df, LEVEL[lv][0], tegas, ik)
-    kol = [('Kab/Kota', 1.65, 'l'), ('Kec. Awas', .52, 'c'), ('Kec. Siaga', .52, 'c')] + [(h, .4, 'c') for h in hk] + [('Hujan 3 hari, mm', .7, 'c'), ('Tgl. puncak', .62, 'c'), ('Kini', .86, 'c')]
+    kol = [('Kab/Kota', 1.55, 'l'), ('Kec. Awas', .6, 'c'), ('Kec. Siaga', .62, 'c')] + [(h, .4, 'c') for h in hk] + [('Hujan 3 hari', .7, 'c'), ('Tgl. puncak', .62, 'c'), ('Kini', .86, 'c')]
 
     br = [[v['kab'], rb(v['a'] or None), rb(v['s'] or None)] + [sel_hari(x) for x in v['hari']] +
           [str(round(v['mm'])) if v['tgl'] else '–', tgl(v['tgl']) if v['tgl'] else '–',
-           {'pil': kini[v['kab']], 'isi': KONDISI[kini[v['kab']]][0], 'tegas': KONDISI[kini[v['kab']]][1]} if v['kab'] in kini else '–'] for v in kab]
+           pil_kondisi(kini[v['kab']]) if v['kab'] in kini else '–'] for v in kab]
     br.append({'total': True, 'sel': [f'Jumlah {len(kab)} kab/kota', rb(a), rb(s_)] + [''] * (len(hari) + 3)})
     tabel(sl, 6.55, 1.4, 6.19, kol, br, .44, 6.95)
     sumber(sl, gis)
@@ -775,7 +821,7 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
         # kab/kota Awas di luar provinsi pilihan dirinci, karena paling mendesak
         aw = sorted([v for v in lain.values() if v['a']], key=lambda v: (-v['a'], -v['mm']))
         if aw:   # kab/kota Awas dirinci di tabel sendiri
-            kolA = [('Kab/Kota Awas', 1.5, 'l'), ('Provinsi', 1.35, 'l'), ('Kec. Awas', .7, 'c'), ('Kec. Siaga', .7, 'c'), ('Hujan 3 hari, mm', .85, 'c'), ('Tgl. puncak', .75, 'c')]
+            kolA = [('Kab/Kota Awas', 1.5, 'l'), ('Provinsi', 1.35, 'l'), ('Kec. Awas', .7, 'c'), ('Kec. Siaga', .7, 'c'), ('Hujan 3 hari', .85, 'c'), ('Tgl. puncak', .75, 'c')]
             tabel(sl, .6, 5.55, 5.8, kolA, [[v['kab'], (PROVINSI[v['pr']], INK, False), rb(v['a']), rb(v['s'] or None), str(round(v['mm'])), tgl(v['tgl'])] for v in aw[:5]], .3, 6.95)
         kol = [('Provinsi', 1.7, 'l'), ('Kab/Kota', .44, 'c'), ('Kec. Awas', .5, 'c'), ('Kec. Siaga', .5, 'c')] + [(h, .37, 'c') for h in hk] + [('Hujan tertinggi', 1.6, 'l', 8.5), ('mm', .42, 'c')]
         br = [[PROVINSI[o['pr']], str(len(o['kab'])), rb(o['a'] or None), rb(o['s'] or None)] + [sel_hari(x) for x in o['hari']] +
