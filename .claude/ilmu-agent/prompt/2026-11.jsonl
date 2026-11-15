@@ -4024,3 +4024,6 @@
 {"t":"2026-11-06T11:01:55.831+07:00","sesi":"f7351503","prompt":"Masih ada lagi yang belum kelar?","label":[],"berkas":[]}
 {"t":"2026-11-06T11:02:05.389+07:00","sesi":"a43fb598","prompt":"Oke, gw kirim","label":[],"berkas":[]}
 {"t":"2026-11-06T11:02:13.681+07:00","sesi":"a43fb598","prompt":"masih banyak yang belum?","label":[],"berkas":[]}
+{"t":"2026-11-15T15:35:24.508+07:00","sesi":"eb8f25e0","prompt":"Solve\n\n```bash\nsudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder\n```","label":[],"berkas":[]}
+{"t":"2026-11-15T15:49:00.004+07:00","sesi":"1bddc016","prompt":"The app was quit while you were working. Please continue from where you left off.","label":[],"berkas":[]}
+{"t":"2026-11-15T15:49:27.353+07:00","sesi":"eb8f25e0","prompt":"The app was quit while you were working. Please continue from where you left off.","label":[],"berkas":[]}
