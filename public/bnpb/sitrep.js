@@ -176,6 +176,22 @@
     return kartu("Permintaan bantuan", "pesan", isi, "Alun-alun");
   }
 
+  /* PB-24 (Q13): pembuat dokumen dilebur di sini; dokumen.js/css dimuat malas saat tombol ditekan, tombolnya urgent, isinya menyusul */
+  const muatBerkas = (u, css) => new Promise((ok, gagal) => { const e = document.createElement(css ? "link" : "script"); if (css) e.rel = "stylesheet"; e[css ? "href" : "src"] = u; e.onload = ok; e.onerror = gagal; document.head.append(e); });
+  function sDokumen() {
+    const ada_ = (D.reg?.bencana || []).some(b => (b.kemampuan?.dokumen || []).length);
+    if (!ada_) return kartu("Pembuat dokumen", "pesan", belum("Belum ada bencana yang menyalakan pembuat dokumen."), "registri kemampuan.dokumen di bencana.json");
+    const host = h("div", {class: "sr-isi"}), b = h("button", {type: "button", class: "bn-tombol sekunder"}, svg("pesan"), h("span", {teks: "Buka pembuat dokumen"}));
+    b.addEventListener("click", () => { b.disabled = true; requestAnimationFrame(() => setTimeout(async () => {
+      try {
+        await Promise.all([muatBerkas("/inti/dokumen.css?v=1", true), muatBerkas("/inti/pb_titik.css?v=1", true), window.PbDokumen ? null : muatBerkas("/inti/dokumen.js?v=1")]);
+        host.replaceChildren(); PbDokumen.pasang(host, {registri: D.reg, prov, provDaftar: Object.entries(PROV)});
+      } catch (e) { b.disabled = false; host.replaceChildren(belum("Pembuat dokumen belum bisa dimuat. Coba lagi.")); }
+    }, 0)); });
+    host.append(b);
+    return kartu("Pembuat dokumen", "pesan", host, "dokumen mesin per bencana, staf hanya menulis ringkasan dan kebijakan");
+  }
+
   const hitungPil = (o, ikon, warna) => { const e = Object.entries(o || {}).sort((a, b) => b[1] - a[1]); return e.length ? h("span", {class: "sr-pils"}, ...e.map(([k, n]) => pil(`${String(k).replace(/_/g, " ")} ${F(n)}`, ikon, warna))) : "–"; };
   function sLogbook(L) {
     const SUMBER = "logbook petugas lapangan /petugas (agregat, tanpa nama)";
@@ -216,7 +232,7 @@
       h("div", {class: "sr-pils"}, pil(namaWil(), "peta", "var(--navy2)"), ARSIP ? pil("Arsip " + tglPendek(ARSIP.tgl) + ", 07.00 WIB", "kotak", "var(--c2)") : pil(wib(model.kini, {day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false}).replace(".", ":") + " WIB", null, "var(--c7)"),
         dataTgl ? pil("Data terbaru " + jamWIB(dataTgl), null, "var(--c5)") : null));
     const grid = h("div", {class: "sr-grid"}, sNeraca(N), sWarga(model.warga), sRelawan(model.relawan), sMeja(model.meja), sAlun(model.alun), sLogbook(model.logbook));
-    lap.replaceChildren(sKejadian(model.kej), sNaik(model.naik), grid);
+    lap.replaceChildren(sKejadian(model.kej), sNaik(model.naik), grid, sDokumen());
     /* model A (sistem desain dashboard, pemilik 11 Nov 2026): panel kiri berisi identitas laporan, daftar seksi, dan kaki "Pembaruan data" */
     const nav = $("srNav");
     if (nav) {
