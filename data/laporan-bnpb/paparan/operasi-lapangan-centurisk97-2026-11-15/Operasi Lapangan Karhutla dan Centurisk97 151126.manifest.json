@@ -1,0 +1,751 @@
+{
+ "spek": "lapangan-1511",
+ "pesan_kunci": "Cara kerja renlap dan pompa di Kalteng siap diduplikasi, pantauan udara Papua Selatan membuktikan data satelit, dan semuanya berjalan di Centurisk97.",
+ "slide": [
+  {
+   "nomor": 1,
+   "jenis": "kesimpulan",
+   "asal": "lapangan-1511#1",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    706.1335877862596,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "1",
+    "NASA FIRMS; Renlap Kalteng, 1 Nov 2026; regu Kalteng, 28 Okt 2026; tim mobile, 15 Nov 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FBE7D6",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Renlap Kalimantan Tengah memandu regu ke gambut terbakar dekat jalan dan air; satu pompa portabel mengairi {{angka:pp.ha|satuan}} lahan terbakar",
+   "pesan": "Metode renlap Kalteng",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "logo",
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 2,
+   "jenis": "galeri",
+   "asal": "lapangan-1511#2",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    706.1335877862596,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "2",
+    "Renlap Kalteng, 1 Nov 2026; Renlap Kaltim, 30 Okt 2026; tim mobile BNPB, 15 Nov 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Tim mobile yang menyusun renlap dan menaruh pompa di Kalimantan Tengah diduplikasi ke Kalimantan Timur; satu pompa mengairi {{angka:pp.ha|satuan}}",
+   "pesan": "Duplikasi tim mobile",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "panel",
+   "judul_bentuk": "deskriptif",
+   "seri": "lapangan",
+   "visual": [
+    "foto"
+   ],
+   "gambar": [
+    "logo",
+    "logo",
+    "ikon",
+    "foto",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "foto",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     137.0,
+     210.3,
+     363.0,
+     "Renlap Kalteng"
+    ],
+    [
+     264.3,
+     137.0,
+     210.3,
+     363.0,
+     "Tim mobile Kalteng"
+    ],
+    [
+     485.4,
+     137.0,
+     210.3,
+     363.0,
+     "Renlap Kaltim"
+    ],
+    [
+     706.5,
+     137.0,
+     210.3,
+     363.0,
+     "Duplikasi ke Kaltim"
+    ]
+   ],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 3,
+   "jenis": "galeri",
+   "asal": "lapangan-1511#3",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    706.1335877862596,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "3",
+    "NASA FIRMS; Renlap rute udara, 30 Okt 2026; kegiatan udara BNPB, 31 Okt 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Pantauan udara Merauke menyusuri {{angka:mk.cp.jumlah|satuan}} dari renlap; cluster terpadat di data sama dengan api yang terlihat dari udara",
+   "pesan": "Pantauan udara Papua Selatan",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "panel",
+   "judul_bentuk": "deskriptif",
+   "seri": "lapangan",
+   "visual": [
+    "foto"
+   ],
+   "gambar": [
+    "logo",
+    "logo",
+    "ikon",
+    "foto",
+    "ikon",
+    "foto",
+    "foto",
+    "foto",
+    "foto",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     137.0,
+     307.7,
+     363.0,
+     "Rute udara Merauke"
+    ],
+    [
+     361.7,
+     137.0,
+     307.7,
+     363.0,
+     "Merauke dari udara"
+    ],
+    [
+     680.1,
+     137.0,
+     236.7,
+     363.0,
+     "Temuan"
+    ]
+   ],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  },
+  {
+   "nomor": 4,
+   "jenis": "kesimpulan",
+   "asal": "lapangan-1511#4",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    706.1335877862596,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "4",
+    "Centurisk97 BNPB, 15 Nov 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FBE7D6",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Centurisk97 memantau {{angka:ct.bencana|satuan}} di {{angka:pr.kab|satuan}} dalam satu sistem, dari data satelit sampai renlap regu lapangan",
+   "pesan": "Tentang Centurisk97",
+   "pembatas": false,
+   "kontras": null,
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "logo",
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [],
+   "terisi": [],
+   "naik": 0,
+   "subjudul": null
+  }
+ ],
+ "angka": [
+  {
+   "kunci": "pp.ha",
+   "opsi": "|satuan",
+   "tampil": "5 ha per hari",
+   "nilai": 5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Tim mobile BNPB Kalimantan Tengah, Nov 2026",
+   "naskah": "lapangan-1511#1"
+  },
+  {
+   "kunci": "sat.jam",
+   "opsi": "|satuan",
+   "tampil": "3 jam",
+   "nilai": 3,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "lapangan-1511#1"
+  },
+  {
+   "kunci": "kt.lokasi",
+   "opsi": "|satuan",
+   "tampil": "10 lokasi",
+   "nilai": 10,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renlap Pilot SIPPA Kalimantan Tengah, 26 Okt 2026",
+   "naskah": "lapangan-1511#1"
+  },
+  {
+   "kunci": "kt.selang.pjg",
+   "opsi": "|satuan",
+   "tampil": "sekitar 2.400 m",
+   "nilai": 2424,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Renlap Pilot SIPPA Kalimantan Tengah, 26 Okt 2026",
+   "naskah": "lapangan-1511#1"
+  },
+  {
+   "kunci": "pp.ha",
+   "opsi": "|satuan",
+   "tampil": "5 ha per hari",
+   "nilai": 5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Tim mobile BNPB Kalimantan Tengah, Nov 2026",
+   "naskah": "lapangan-1511#1"
+  },
+  {
+   "kunci": "kt.lance",
+   "opsi": "|satuan",
+   "tampil": "1,5 m",
+   "nilai": 1.5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Renlap Pilot SIPPA Kalimantan Tengah, 26 Okt 2026",
+   "naskah": "lapangan-1511#1"
+  },
+  {
+   "kunci": "lp.kaladan.air",
+   "opsi": "|satuan",
+   "tampil": "50 m",
+   "nilai": 50,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Laporan regu lapangan Kalimantan Tengah, 28 Okt 2026",
+   "naskah": "lapangan-1511#1"
+  },
+  {
+   "kunci": "lp.gambut",
+   "opsi": "|satuan",
+   "tampil": "1 m",
+   "nilai": 1,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Laporan regu lapangan Kalimantan Tengah, 28 Okt 2026",
+   "naskah": "lapangan-1511#1"
+  },
+  {
+   "kunci": "lp.balukon.air1",
+   "opsi": "|satuan",
+   "tampil": "600 m",
+   "nilai": 600,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Laporan regu lapangan Kalimantan Tengah, 28 Okt 2026",
+   "naskah": "lapangan-1511#1"
+  },
+  {
+   "kunci": "lp.balukon.air2",
+   "opsi": "|satuan",
+   "tampil": "700 m",
+   "nilai": 700,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Laporan regu lapangan Kalimantan Tengah, 28 Okt 2026",
+   "naskah": "lapangan-1511#1"
+  },
+  {
+   "kunci": "pp.ha",
+   "opsi": "|satuan",
+   "tampil": "5 ha per hari",
+   "nilai": 5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Tim mobile BNPB Kalimantan Tengah, Nov 2026",
+   "naskah": "lapangan-1511#2"
+  },
+  {
+   "kunci": "lp.kab",
+   "opsi": "|satuan",
+   "tampil": "4 kab/kota",
+   "nilai": 4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Laporan regu lapangan Kalimantan Tengah, 28 Okt 2026",
+   "naskah": "lapangan-1511#2"
+  },
+  {
+   "kunci": "kt.kanal",
+   "opsi": "|satuan",
+   "tampil": "40 m",
+   "nilai": 40,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renlap Pilot SIPPA Kalimantan Tengah, 26 Okt 2026",
+   "naskah": "lapangan-1511#2"
+  },
+  {
+   "kunci": "kt.selang.pjg",
+   "opsi": "|satuan",
+   "tampil": "sekitar 2.400 m",
+   "nilai": 2424,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Renlap Pilot SIPPA Kalimantan Tengah, 26 Okt 2026",
+   "naskah": "lapangan-1511#2"
+  },
+  {
+   "kunci": "pp.ha",
+   "opsi": "|satuan",
+   "tampil": "5 ha per hari",
+   "nilai": 5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Tim mobile BNPB Kalimantan Tengah, Nov 2026",
+   "naskah": "lapangan-1511#2"
+  },
+  {
+   "kunci": "lp.gambut",
+   "opsi": "|satuan",
+   "tampil": "1 m",
+   "nilai": 1,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Laporan regu lapangan Kalimantan Tengah, 28 Okt 2026",
+   "naskah": "lapangan-1511#2"
+  },
+  {
+   "kunci": "sat.jam",
+   "opsi": "|satuan",
+   "tampil": "3 jam",
+   "nilai": 3,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "lapangan-1511#2"
+  },
+  {
+   "kunci": "mk.cp.jumlah",
+   "opsi": "|satuan",
+   "tampil": "11 check point",
+   "nilai": 11,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renlap rute udara BNPB, 30 Okt 2026",
+   "naskah": "lapangan-1511#3"
+  },
+  {
+   "kunci": "mk.cp5",
+   "opsi": "|satuan",
+   "tampil": "231 titik",
+   "nilai": 231,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "lapangan-1511#3"
+  },
+  {
+   "kunci": "mk.kab31",
+   "opsi": "|satuan",
+   "tampil": "1.206 titik",
+   "nilai": 1206,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "lapangan-1511#3"
+  },
+  {
+   "kunci": "mk.cp.jumlah",
+   "opsi": "|satuan",
+   "tampil": "11 check point",
+   "nilai": 11,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renlap rute udara BNPB, 30 Okt 2026",
+   "naskah": "lapangan-1511#3"
+  },
+  {
+   "kunci": "ct.bencana",
+   "opsi": "|satuan",
+   "tampil": "8 jenis bencana",
+   "nilai": 8,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Sistem Centurisk97 BNPB, 15 Nov 2026",
+   "naskah": "lapangan-1511#4"
+  },
+  {
+   "kunci": "pr.kab",
+   "opsi": "|satuan",
+   "tampil": "514 kab/kota",
+   "nilai": 514,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Prediksi harian BNPB, 1 Nov 2026",
+   "naskah": "lapangan-1511#4"
+  },
+  {
+   "kunci": "ct.bencana",
+   "opsi": "|satuan",
+   "tampil": "8 jenis bencana",
+   "nilai": 8,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Sistem Centurisk97 BNPB, 15 Nov 2026",
+   "naskah": "lapangan-1511#4"
+  },
+  {
+   "kunci": "sat.jam",
+   "opsi": "|satuan",
+   "tampil": "3 jam",
+   "nilai": 3,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "NASA FIRMS, diolah BNPB",
+   "naskah": "lapangan-1511#4"
+  },
+  {
+   "kunci": "ct.kec",
+   "opsi": "|satuan",
+   "tampil": "7.270 kecamatan",
+   "nilai": 7270,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Sistem Centurisk97 BNPB, 15 Nov 2026",
+   "naskah": "lapangan-1511#4"
+  },
+  {
+   "kunci": "pr.hari",
+   "opsi": "|satuan",
+   "tampil": "3 hari",
+   "nilai": 3,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Prediksi harian BNPB, 1 Nov 2026",
+   "naskah": "lapangan-1511#4"
+  },
+  {
+   "kunci": "ct.renlap",
+   "opsi": "|satuan",
+   "tampil": "2 kali sehari",
+   "nilai": 2,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Sistem Centurisk97 BNPB, 15 Nov 2026",
+   "naskah": "lapangan-1511#4"
+  }
+ ],
+ "catatan": [
+  [
+   "lapangan-1511#1",
+   "judul_baris",
+   2
+  ],
+  [
+   "lapangan-1511#2",
+   "judul_baris",
+   2
+  ],
+  [
+   "lapangan-1511#3",
+   "judul_baris",
+   2
+  ],
+  [
+   "lapangan-1511#4",
+   "judul_baris",
+   2
+  ]
+ ],
+ "keputusan": [],
+ "peringatan": [],
+ "masukan": {
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/logo-bersama/kris-logo.png": "d0c25d345951e4c4a3e4444be49d0a41bf58ce3ad1d2be1cc78608ad51ab0c25",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/logo/sumber-bnpb.png": "40625fac249ac73b97d4b25bcd29b48961037a80bf49ae2a789877db29bacb64",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-kepala/data/angka.json": "defd3034e5b313c4de994a57e0ce26aa01a58334c07ecfe07edc7ebf6ce78053",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-kepala/foto/renlap/kalteng-v0-01-abu.png": "c8b750cccbc58a13378a307099685010a37455207be075c5eb3621658e05203a",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-kepala/foto/renlap/kaltim-01-abu.png": "8b4243bbc12e2c1cac35c6eb94795939245db3247fa17fc749c13d6f48c48e81",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-kepala/foto/renlap/merauke-01-abu.png": "aacc19db7d20cd4b2a63ef6f99431f272ca2abbd86b17b9fd4361d386fbfe7e5",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-kepala/foto/udara-04.jpg": "99569c1a9325d65ad7580a004c9e846837eeb883bb10271f3f21f5a20e0b30b9",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-kepala/foto/udara-20.jpg": "e7febbca708f34708900332408235d5c46ddf92c4d8fdfb29d9c9eb26a508e6f",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-kepala/foto/udara-26.jpg": "e5e7155a81d0e952bd13b75745d679aa2e8625f837546d3870311e074ba7c0fe",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-kepala/foto/udara-37.jpg": "511d716c2f078ad57f773182408917552f556327302ec56413cdb8a45070d7ae",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-kepala/spek/lapangan-1511.json": "9bb65e2c84124f7f37569af34c4c3aa6b9768154bf1fc118ac52469b7b89b771",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-kepala/tema.json": "0c558b5ff095336745e0d70f98a918bd534b5cfa96fb04dc41773e66af960264",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262"
+ }
+}
