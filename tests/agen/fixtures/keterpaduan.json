@@ -1,13 +1,14 @@
 {
   "_catatan": "Gerbang KP-01 (paket Keterpaduan, D2 dan D5). bertaut: tabel kejadian/tugas yang punya sumber pencocok di scripts/siklus/pasang.py. utang: tabel lama belum tertaut, hanya boleh menyusut. dikecualikan: bukan kejadian sendiri, alasan wajib. antrean_utang: berkas public/ yang masih memanggil indexedDB.open sendiri, hanya boleh menyusut sampai hanya public/inti/antre.js.",
-  "bertaut": [],
+  "bertaut": [
+    "logbook_kejadian",
+    "tugas_api"
+  ],
   "utang": [
     "gempa_kejadian",
     "lapsus_kejadian",
-    "logbook_kejadian",
     "lp_tugas",
-    "sippa_tugas",
-    "tugas_api"
+    "sippa_tugas"
   ],
   "dikecualikan": {
     "op_isian_kejadian": "K14: kunci isian operasi udara (jenis, tanggal, registrasi), tanpa wilayah; ditunda sampai ada kolom wilayah",

@@ -322,14 +322,14 @@ def _http(token):
     return panggil
 
 
-def _tarik(http, basis, jalur, dari, sampai):
+def _tarik(http, basis, jalur, dari, sampai, ekstra=None):
     """Dipaginasi `lanjut`; rentang dipotong 120 hari (batas rute)."""
     hasil, a, akhir = [], dt.date.fromisoformat(dari), dt.date.fromisoformat(sampai)
     while a <= akhir:
         b = min(a + dt.timedelta(days=119), akhir)
         lanjut = None
         while True:
-            q = {"dari": a.isoformat(), "sampai": b.isoformat()}
+            q = dict(ekstra or {}, dari=a.isoformat(), sampai=b.isoformat())
             if lanjut:
                 q["lanjut"] = lanjut
             p = http("GET", "%s/api/siklus/ingest/%s?%s" % (basis, jalur, urllib.parse.urlencode(q)))
@@ -338,6 +338,21 @@ def _tarik(http, basis, jalur, dari, sampai):
             if not lanjut:
                 break
         a = b + dt.timedelta(days=1)
+    return hasil
+
+
+SUMBER_MODUL = ("tugas_api", "logbook_d1")
+
+
+def tarik_modul(http, basis, dari, sampai):
+    """KP-04: tugas_api dan logbook_d1 dari Worker -> rekaman. kab4 dari nama + prov (kunci.kab4); tak terpetakan = tanpa wilayah.
+    Nama sumber BEDA dari `logbook` (CSV, kode = jenis|kab|tgl): kembar CSV/D1 tidak pernah satu kunci, jadi pemasang menambahkannya ke KJ- yang
+    sama (tambah, bukan KJ- kedua) selama jenis, kab4, dan jendela 3 hari cocok. Tanpa lewati/dedup khusus."""
+    hasil = []
+    for s in SUMBER_MODUL:
+        for b in _tarik(http, basis, "modul", dari, sampai, {"sumber": s}):
+            k = KN.kab4(b.get("kab"), b.get("prov")) if b.get("kab") else None
+            hasil.append({"sumber": s, "kode": str(b["kode"]), "jenis": (b["jenis"],), "kab": [k] if k else [], "tgl": b["mulai"][:10], "nilai": {}, "akhir": None})
     return hasil
 
 
@@ -439,6 +454,35 @@ def _uji():
     assert st["post"] == 2 and len(st["kj"]) == 1 and {s["kejadian_id"] for s in st["sm"]} == {st["kj"][0]["id"]}
     masuk(palsu, "http://x", rek, "2026-03-01", "2026-03-10", diambil=1)
     assert st["post"] == 2, "jalan dua kali = nol baris baru"
+    # KP-04 T3: tugas_api karhutla kab OKI; KJ karhutla kab4 sama 2 hari -> tambah, 4 hari -> baru; kab tak dikenal -> tanpa_wilayah
+    def modul(metode, url, isi=None):
+        q = urllib.parse.parse_qs(urllib.parse.urlsplit(url).query)
+        assert "/ingest/modul?" in url and q["dari"] and q["sampai"]
+        if q["sumber"][0] == "tugas_api":
+            return {"baris": [{"sumber": "tugas_api", "kode": "t1", "jenis": "karhutla", "prov": "16", "kab": "Kab. Ogan Komering Ilir", "mulai": "2026-03-03"},
+                              {"sumber": "tugas_api", "kode": "t2", "jenis": "karhutla", "prov": "16", "kab": "Kab. Ogan Komering Ilir", "mulai": "2026-03-05"},
+                              {"sumber": "tugas_api", "kode": "t3", "jenis": "karhutla", "prov": "16", "kab": "Kab. Tak Ada", "mulai": "2026-03-03"}], "lanjut": None}
+        if "lanjut" not in q:                      # logbook_d1: dua halaman lewat `lanjut`
+            return {"baris": [{"sumber": "logbook_d1", "kode": "l1", "jenis": "gempa", "prov": "32", "kab": "Bogor", "mulai": "2026-03-03"}], "lanjut": "1|l1"}
+        assert q["lanjut"] == ["1|l1"]
+        return {"baris": [{"sumber": "logbook_d1", "kode": "l2", "jenis": "banjir", "prov": "32", "kab": "Bogor", "mulai": "2026-03-04T10:00:00"}], "lanjut": None}
+    m = tarik_modul(modul, "http://x", "2026-03-01", "2026-03-10")
+    assert [r["kode"] for r in m] == ["t1", "t2", "t3", "l1", "l2"] and m[0]["kab"] == ["1602"] and m[2]["kab"] == [] and m[3]["jenis"] == ("gempa",) and m[4]["tgl"] == "2026-03-04"
+    kjK = {"id": "KJ-2026-KKKKKKKK", "jenis": "karhutla", "kab4": "1602", "mulai": "2026-03-01", "fase": "terdeteksi"}
+    kep, _, _ = bertahap(m[:1], [kjK], [], 1)
+    assert [(k["aksi"], k["sumber"]) for k in kep] == [("tambah", "tugas_api")], "T3: 2 hari -> tambah"
+    kep, _, _ = bertahap(m[1:2], [kjK], [], 1)
+    assert [k["aksi"] for k in kep] == ["baru"], "T3: 4 hari -> baru"
+    kep, _, _ = bertahap(m[2:3], [kjK], [], 1)
+    assert kep[0]["aksi"] == "tanpa_wilayah"
+    # T16 logbook: gempa sudah dipetakan Worker, diterima; kembar CSV `logbook` (kode jenis|kab|tgl) dan D1 `logbook_d1` (kode id) = satu KJ-, bukan dua
+    kjB = {"id": "KJ-2026-9A2WGN3G", "jenis": "banjir", "kab4": "3201", "mulai": "2026-03-02", "fase": "terdeteksi"}
+    kep, _, _ = bertahap(m[4:], [kjB], [{"sumber": "logbook", "kode": "banjir|3201|2026-03-04", "kejadian_id": kjB["id"]}], 1)
+    assert [(k["aksi"], k["kejadian_id"]) for k in kep] == [("tambah", kjB["id"])]
+    kep, tn, _ = bertahap([R("logbook", ("banjir",), ("3201",), "2026-03-04"), m[4]], [], [], 1)
+    assert [k["aksi"] for k in kep] == ["baru"] and len(tn) == 1, "satu putaran: kembar ditunda lalu ditambahkan, bukan KJ- kedua"
+    kep, _, _ = bertahap([m[3]], [], [], 1)
+    assert kep[0]["aksi"] == "baru" and kep[0]["jenis"] == "gempa"
     # dari_baris: jenis kosong ditolak dipasang, kab_asal multi dipecah, nilai null tetap null
     assert dari_baris("dibi", {"kunci_jenis": [], "kab4": "3201", "tgl": "2020-01-01"}) is None
     r = dari_baris("logbook", {"kunci_jenis": ["banjir"], "kab4": None, "kab_asal": "32|Bogor; 32|Bekasi; ", "tgl": "2020-01-01", "rb": 2, "rs": None, "ha": None})
@@ -536,6 +580,7 @@ if __name__ == "__main__":
         b = _opsi(a, "--bersih", BERSIH_BAWAAN)
         yr = {str(y) for y in range(int(_opsi(a, "--dari")[:4]), int(_opsi(a, "--sampai")[:4]) + 1)}
         rek = [r for s in ("dibi", "logbook") for r in satuan(baca_bersih(b, s, yr)[0]) if _opsi(a, "--dari") <= r["tgl"] <= _opsi(a, "--sampai")]
+        rek += tarik_modul(_http(tk), _opsi(a, "--basis").rstrip("/"), _opsi(a, "--dari"), _opsi(a, "--sampai"))
         print(json.dumps(masuk(_http(tk), _opsi(a, "--basis").rstrip("/"), rek, _opsi(a, "--dari"), _opsi(a, "--sampai"), "--kering" in a), indent=1))
     else:
         sys.exit("pakai: pasang.py riwayat [--bersih DIR] | masuk --basis URL --dari D --sampai S [--kering] | masuk --hidup --basis URL [--mentah DIR] [--dari D] [--kirim] | uji")
