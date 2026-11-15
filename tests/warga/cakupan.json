@@ -1241,6 +1241,8 @@
     "table tugas_bencana_x": "pb_skema tugas_bencana_x menolak karhutla",
     "table pb_titik": "pb_skema CHECK titik",
     "table pb_renlap": "pb_skema CHECK renlap",
+    "table pb_dokumen": "pb_skema pb_dokumen CHECK",
+    "table pb_tindakan": "pb_skema pb_tindakan CHECK",
     "table pb_renlap_hasil": "pb_skema pb_renlap_hasil mengikuti FK",
     "table pb_log": "pb_skema pb_log menolak JSON",
     "GET /api/operasi/semai/berkas/:nama": "berkas: pembaca 200 dengan tipe dan cache benar",

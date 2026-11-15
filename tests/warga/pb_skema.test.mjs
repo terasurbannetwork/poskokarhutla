@@ -107,3 +107,61 @@ uji("pb_skema EXPLAIN QUERY PLAN kueri utama memakai SEARCH lewat indeks", () =>
     assert.ok(!/SCAN (pb_|tugas_bencana_x)/.test(r), r);
   }
 });
+
+/* ---- Migrasi 0131: pb_dokumen, pb_tindakan, indeks logbook_sk_selesai (PB-20) ---- */
+const T31 = ["pb_dokumen", "pb_tindakan"];
+const dok = (o = {}) => ({id: "e".repeat(16), jenis: "sitrep", bencana: "longsor", prov: "32", kab: "", kib: null, periode: "2026-11-15", versi: 1, status: "draf", oleh: "staf:1", dibuat: 1, ...o});
+const masukDok = o => { const t = dok(o), k = Object.keys(t); db.prepare(`INSERT INTO pb_dokumen (${k}) VALUES (${k.map(() => "?")})`).run(...Object.values(t)); };
+const tind = (o = {}) => ({peringatan: "gempa:abc", butir: 0, pelaksana: "bpbd", selesai: 0, waktu: 1, ...o});
+const masukTind = o => { const t = tind(o), k = Object.keys(t); db.prepare(`INSERT INTO pb_tindakan (${k}) VALUES (${k.map(() => "?")})`).run(...Object.values(t)); };
+
+uji("0131 dijalankan dua kali tanpa galat dan tanpa mengubah data; hanya CREATE IF NOT EXISTS", () => {
+  const mentah = readFileSync(path.join(AKAR, "migrations/0131_paritas_dokumen.sql"), "utf8");
+  const sql = pecah(mentah);
+  masukDok(); masukTind();
+  const foto = () => JSON.stringify(T31.map(t => db.prepare(`SELECT * FROM ${t}`).all()));
+  const sebelum = foto();
+  for (const s of sql) db.exec(s);
+  assert.equal(foto(), sebelum);
+  assert.ok(sql.every(s => /^CREATE (TABLE|INDEX) IF NOT EXISTS/i.test(s)), "hanya CREATE ... IF NOT EXISTS");
+  assert.ok(!/^\s*(ALTER|DROP|INSERT|UPDATE|DELETE)\b/im.test(mentah.replace(/--.*$/gm, "")), "tanpa ALTER/DROP/seed");
+});
+
+uji("pb_skema pb_dokumen CHECK: jenis, bencana, status, periode, versi, kab, kib, sha ditolak; UNIQUE versi", () => {
+  db.exec("DELETE FROM pb_dokumen");
+  for (const o of [{jenis: "memo"}, {bencana: "tsunami"}, {status: "terbit"}, {periode: "abc"}, {periode: "x".repeat(21)}, {versi: 0}, {versi: 100}, {kab: "32"}, {prov: "3"}, {kib: "123"}, {kib: "12345678901234ab"}, {sha: "pendek"}, {id: "pendek"}])
+    assert.throws(() => masukDok(o), /CHECK/i, JSON.stringify(o));
+  masukDok({kib: "1234567890123456", jenis: "laporan_kib"});
+  assert.throws(() => masukDok({kib: "1234567890123456", jenis: "laporan_kib"}), /UNIQUE|PRIMARY/i);
+  masukDok({id: "f".repeat(16), versi: 2, status: "beku", dibekukan: 2});
+  assert.equal(db.prepare("SELECT count(*) n FROM pb_dokumen").get().n, 2);
+});
+
+uji("pb_skema pb_tindakan CHECK: butir, pelaksana, selesai, peringatan kosong ditolak; PK ganda ditolak", () => {
+  db.exec("DELETE FROM pb_tindakan");
+  for (const o of [{butir: -1}, {butir: 31}, {pelaksana: "presiden"}, {selesai: 2}, {peringatan: ""}, {peringatan: "x".repeat(121)}])
+    assert.throws(() => masukTind(o), /CHECK/i, JSON.stringify(o));
+  masukTind(); masukTind({butir: 1, pelaksana: null});
+  assert.throws(() => masukTind(), /UNIQUE|PRIMARY/i);
+  assert.equal(db.prepare("SELECT selesai FROM pb_tindakan WHERE butir = 1").get().selesai, 0);
+});
+
+uji("0131 tanpa kolom nama orang; kueri utama SEARCH lewat indeks", () => {
+  const liar = /nama_kru|pelapor|korban|no_hp|\bwa\b|nik|email|telepon|jabatan|^nama$/i;
+  for (const t of T31) {
+    const kol = db.prepare(`SELECT name FROM pragma_table_info('${t}')`).all().map(r => r.name);
+    assert.deepEqual(kol.filter(k => liar.test(k)), [], t);
+  }
+  const rencana = q => db.prepare("EXPLAIN QUERY PLAN " + q).all().map(r => r.detail).join(" | ");
+  for (const [q, indeks] of [
+    ["SELECT * FROM pb_dokumen WHERE periode = '2026-11-15' AND jenis = 'sitrep'", "pb_dokumen_periode"],
+    ["SELECT * FROM pb_dokumen WHERE kib = '1234567890123456' AND jenis = 'laporan_kib'", "pb_dokumen_kib"],
+    ["SELECT * FROM pb_tindakan WHERE peringatan = 'x'", "USING"],
+    ["SELECT * FROM pb_tindakan WHERE waktu < 5", "pb_tindakan_waktu"],
+    ["SELECT * FROM logbook_sk WHERE tmt_selesai >= '2026-11-15'", "logbook_sk_selesai"],
+  ]) {
+    const r = rencana(q);
+    assert.match(r, /SEARCH/, `${q}\n${r}`);
+    assert.ok(r.includes(indeks) || indeks === "USING" && /USING/.test(r), `${q} -> ${r}`);
+  }
+});
