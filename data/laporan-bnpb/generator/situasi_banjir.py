@@ -369,7 +369,7 @@ def tabel(sl, x, y, w, kol, baris, rh, y_maks):
         tx(sl, cx + .03, y, lw - .06, hk, k[0].upper() if len(k[0]) < 40 else k[0], sz=7.5, b=True, c='FFFFFF', al='c')
         cx += lw
     yy = y + hk
-    for b in baris:
+    for bi, b in enumerate(baris):
         pita, tot = isinstance(b, dict) and 'pita' in b, isinstance(b, dict) and b.get('total')
         sel = b.get('sel', []) if isinstance(b, dict) else b
         h = rh * (.65 if pita else 1)
@@ -401,7 +401,8 @@ def tabel(sl, x, y, w, kol, baris, rh, y_maks):
                 tx(sl, cx + (.1 if kiri else .02), yy, lw - (.16 if kiri else .04), h, t_, sz=k[3] if len(k) > 3 else 9.19, b=b_, c=c_, al=k[2], wrap=bk)
             cx += lw
         yy += h
-        if not pita and not tot: kotak(sl, x, yy - .004, w, .007, GARIS)
+        lanjut = bi + 1 < len(baris) and isinstance(baris[bi + 1], list) and baris[bi + 1][0] == ''   # baris lanjutan kelompok: tanpa garis
+        if not pita and not tot and not lanjut: kotak(sl, x, yy - .004, w, .007, GARIS)
     return yy
 
 
@@ -645,9 +646,13 @@ def slide_lengkap(L):
         brB.append([n] + [sel_b(x) for x in bk[n]])
     tabel(sl, .6, 1.4, 5.8, kolB, brB, .3, 6.95)
     kolS = [('Kab/Kota', 1.3, 'l'), ('Kecamatan', 1.15, 'l'), ('Debit, m³/dtk', .9, 'c'), ('Batas meluap', 1.2, 'c'), ('% batas meluap', 1.0, 'c'), ('Puncak', .7, 'c')]
-    brS = [[t['kab'], (t['kec'], INK, False), rb(round(t['pk'])), rb(round(t['q2'])),
+    # dikelompokkan per kab/kota (pemilik 15 Nov 2026): kab/kota urut persen tertinggi, nama hanya di baris pertama kelompok
+    pilih = titik[:len(bk)]; urut_kab = list(dict.fromkeys(t['kab'] for t in pilih))
+    pilih = [t for k in urut_kab for t in pilih if t['kab'] == k]
+    pilih = [dict(t, kab_tampil=t['kab'] if i == 0 or pilih[i - 1]['kab'] != t['kab'] else '') for i, t in enumerate(pilih)]
+    brS = [[t['kab_tampil'], (t['kec'], INK, False), rb(round(t['pk'])), rb(round(t['q2'])),
             ({'pil': f'{round(100 * t["r"])}%', 'isi': LEVEL[min(3, t['kls'] + 1)][0] if t['kls'] else 'EEF3F9', 'tegas': LEVEL[min(3, t['kls'] + 1)][1] if t['kls'] else NAVY}),
-            tgl(t['tgl'])] for t in titik[:len(bk)]]
+            tgl(t['tgl'])] for t in pilih]
     tabel(sl, 6.55, 1.4, 6.19, kolS, brS, .4, 6.95)
     sumber(sl, f'BMKG prakiraan cuaca, {tgl(bmkg["dibuat"])} {bmkg["dibuat"][:4]} {bmkg["dibuat"][11:16].replace(":", ".")} WIB; GloFAS, {tgl(dibuat)} {dibuat[:4]}')
 
