@@ -17,7 +17,10 @@ const Insight = {
   /* pil kategori (ikon + nama) di samping pil "perkiraan model CAMS, belum dikoreksi": tiap kartu berangka jiwa/PM2,5 membawa label model */
   IK: {stasiun: '<path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/>', pel: '<path d="M3 20h18M6 20v-6M11 20V8M16 20v-9"/>', asal: '<path d="M4 20c4 0 4-8 8-8s4-8 8-8"/><circle cx="4" cy="20" r="1.5"/><circle cx="20" cy="4" r="1.5"/>', jiwa: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>', kab: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', jarak: '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>'},
   eyIk: (id, nama) => `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${Insight.IK[id]}</svg>${nama}`,
-  exM: (id, nama, ...a) => Kartu.ex(...a).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${Insight.eyIk(id, nama)}</span>${PIL_MODEL}`),
+  /* kepala kartu = NAMA SEKSI berikon (AGENTS.md 3.5, 11 Nov 2026): kalimat temuan dan kaki "Sumber:" dibuang; kalimat hanya hidup bila isi kartu kosong */
+  kepala(h, id, nama, pil = "") { const m = h.match(/<h3>([\s\S]*?)<\/h3>/); if (!m) return h;
+    return h.replace(m[0], `<h3>${Insight.eyIk(id, nama)}</h3>`).replace('<span class="ex-ey"></span>', "").replace(/<em>Sumber:[\s\S]*?<\/em>/, "").replace(/<div class="ex-bd">\s*<\/div>/, `<div class="ex-bd"><p class="kosong">${m[1]}</p></div>`).replace("</h3>", `</h3>${pil}`); },
+  exM: (id, nama, ...a) => Insight.kepala(Kartu.ex(...a), id, nama, PIL_MODEL),
   seg(key, opsi) { return Kartu.seg(key, opsi, this.st); },
   segHari: function (key) { return this.seg(key, hariTampil().map(i => [i, labelHari(i)])); },
   kapan: h => labelHari(h) === "Hari ini" ? "hari ini" : `<span translate="no">${tglPendek(S.uk.hari[h])}</span>`,
@@ -83,8 +86,8 @@ const Insight = {
         <g class="gf" style="--i:${i}">${Kartu.pil(L + Math.max(3, X(x.vis_m)) + 8, y + 5, km + (w ? ", " + w : ""), JP[k].w, k === 1 ? "#3b2e00" : "#fff")[0]}</g></g>`; }).join("");
     Kartu.leg(JP.map(j => [j.w, j.n]));
     const terbaru = jamWIB(Math.max(...seg.map(x => +new Date(x.waktu))));
-    return Kartu.ex(rendah ? `${this.hl(fmt(rendah) + " bandara")} melapor jarak pandang di bawah 5 km${asap ? `, ${fmt(asap)} di antaranya berasap` : ""}` : `${this.hl(fmt(m.length) + " bandara")} melapor jarak pandang berkurang${asap ? `, ${fmt(asap)} berasap` : ""}`, "", "",
-      `<svg viewBox="0 0 ${W} ${m.length * rh + 6}" role="img" aria-label="Jarak pandang bandara">${g}</svg>`, `Sumber: NOAA Aviation Weather (METAR), ${terbaru}`).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${Insight.eyIk("jarak", "Jarak pandang")}</span>`); },
+    const h = Kartu.ex(rendah ? `${this.hl(fmt(rendah) + " bandara")} melapor jarak pandang di bawah 5 km${asap ? `, ${fmt(asap)} di antaranya berasap` : ""}` : `${this.hl(fmt(m.length) + " bandara")} melapor jarak pandang berkurang${asap ? `, ${fmt(asap)} berasap` : ""}`, "", "",
+      `<svg viewBox="0 0 ${W} ${m.length * rh + 6}" role="img" aria-label="Jarak pandang bandara">${g}</svg>`, `Sumber: NOAA Aviation Weather (METAR), ${terbaru}`); return this.kepala(h, "jarak", "Jarak pandang"); },
 
   tabel(id, kol, baris, atribut, per, satuan, awal) {
     const st = this.T[id], s = st.turun ? -1 : 1, kk = kol.find(c => c.k === st.urut), f = kk ? kk.v : awal;

@@ -2,8 +2,8 @@
 /* chrome urgen: halaman aktif langsung berpindah, isi tabel menyusul di ulang() */
 const halUrgen = (pg, box) => { const h = pg.dataset.h; box.querySelectorAll(".pgn-b").forEach(x => { if (!/^\d+$/.test(x.textContent)) return; const on = x.dataset.h === h; x.classList.toggle("on", on); on ? x.setAttribute("aria-current", "page") : x.removeAttribute("aria-current"); }); };
 /* ================================================================ insight */
-/* Kartu Insight cuaca ekstrem: anatomi sama dengan karhutla dan banjir (pil kategori, judul satu kalimat dengan angka merah, grafik berangka,
-   legenda tengah dan "Sumber:"), mesin kartu dari public/inti. Kartu tanpa isi dibuang (A18); ikon bagikan dari mesin Bagikan. */
+/* Kartu Insight cuaca ekstrem: anatomi sama dengan karhutla dan banjir (kepala = nama seksi berikon, tanpa kalimat temuan dan tanpa kaki "Sumber:"; grafik berangka,
+   legenda tengah), mesin kartu dari public/inti. Kartu tanpa isi dibuang (A18); ikon bagikan dari mesin Bagikan. */
 Tip.polaSatu = /^([\d.,]+(?:\s?(?:rb|jt))?\s+(?:kecamatan|perairan|mm|km\/jam|titik))$/;
 if (!window.__pilihPasang) { window.__pilihPasang = 1; PilihCantik.pasang(); }
 const NAVY = "oklch(25.5% .075 256)", BIRU = "#4f8fc4", HIJAU = "#2b8c86";
@@ -223,11 +223,17 @@ const Insight = {
     return `<div class="tw"><table><thead><tr>${kol.map(c => `<th class="${c.num ? "n" : ""}"${c.t ? ` title="${esc(c.t)}"` : ""} aria-sort="${c === kk ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c.k}">${c.n}<i>${c === kk ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
       <tbody>${hal.map(r => `<tr class="klik"${attr ? " " + attr(r) : ""}>${kol.map(c => `<td${c.num ? ' class="n"' : ""}>${c.h(r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, per, satuan)}`; },
 
-  /* satu kartu: label pil berikon di kepala; ikon bagikan dipasang mesin Bagikan (public/bagikan.js) */
+  /* kepala kartu = NAMA SEKSI berikon (AGENTS.md 3.5, 11 Nov 2026): kalimat temuan dan kaki "Sumber:" dibuang; kalimat hanya hidup bila isi kartu kosong (keadaan kosong) */
+  kepala(h, id) { const m = h.match(/<h3>([\s\S]*?)<\/h3>/); if (!m) return h;
+    const ik = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:6px">${IK[id]}</svg>`;
+    h = h.replace(m[0], `<h3>${ik}${this.LABEL[id]}</h3>`).replace(/<em>Sumber:[\s\S]*?<\/em>/, "").replace(/<div class="ex-bd">\s*<\/div>/, `<div class="ex-bd"><p class="kosong">${m[1]}</p></div>`);
+    return id === "peluang" ? h.replace(/(<span class="ex-ey">)[\s\S]*?<\/span>/, "$1</span>") : h.replace(/<span class="ex-ey">(?:(?!<\/span>)[\s\S])*<\/span>/, ""); },
+
+  /* satu kartu: nama seksi berikon di kepala; ikon bagikan dipasang mesin Bagikan (public/bagikan.js) */
   gambar(id) { Kartu._leg = null;
     try { let h = this["ex" + id[0].toUpperCase() + id.slice(1)](); if (!h) return "";
       if (id === "status" || id === "sarana") h = beriAmbang(h);   /* angka bergantung pada ambang tingkat kecamatan: pil hipotesis sampai teruji */
-      return h.replace('<span class="ex-ey"></span>', `<span class="ex-ey"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[id]}</svg>${this.LABEL[id]}</span>`);
+      return this.kepala(h, id);
     } catch (e) { console.error(e); return ""; } },
   ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); }); },
   async render() {

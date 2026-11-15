@@ -19,16 +19,18 @@ const Longsor = (() => {
       return `<g><rect class="gy" style="--i:${i}" x="${cx - bw / 2}" y="${B - h}" width="${bw}" height="${h}" rx="3" fill="${w}" data-tip="${x.tip}"/>`
         + `<text x="${cx}" y="${B - h - 4}" text-anchor="middle" font-size="10.5" fill="currentColor">${x.txt ?? ""}</text><text x="${cx}" y="${tinggi - 8}" text-anchor="middle" font-size="10.5" fill="currentColor" opacity=".75">${x.n}</text></g>`; }).join("")}</svg>`;
   }
+  const IK = d => `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px">${d}</svg>`;
+  const EY = {status: IK('<path d="M12 3 2 21h20z"/><path d="M12 10v5M12 18v.01"/>') + "Status", nowcast: IK('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') + "Nowcast", musim: IK('<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/>') + "Musim"};
   function status() {
-    if (!S.st?.kec) return Kartu.kartu("Status", "Status longsor kecamatan", '<p style="margin:0">Memuat status longsor…</p>', "Open-Meteo dan InaRISK");
+    if (!S.st?.kec) return Kartu.kartu(EY.status, "Status longsor kecamatan", '<p style="margin:0">Memuat status longsor…</p>', "");
     const kec = S.st.kec, n = [0, 0, 0, 0], prov = {}, t = S.st.hari?.[S.hari], kapan = S.hari === 0 ? "hari ini" : (t ? tgl(t) : "hari yang dipilih");
     for (const [k, v] of Object.entries(kec)) { const l = v.l?.[S.hari] || 0; n[l]++; if (l) { const p = k.split("|")[0]; (prov[p] ||= [0, 0, 0, 0])[l]++; } }
     const rows = Object.entries(prov).map(([p, a]) => ({n: namaProv(p), v: a[1] + a[2] + a[3], a})).sort((a, b) => b.v - a.v).slice(0, 10)
       .map(r => ({n: r.n, v: r.v, tip: `<b>${esc(r.n)}</b><br>Waspada: ${fmt(r.a[1])}<br>Siaga: ${fmt(r.a[2])}<br>Awas: ${fmt(r.a[3])}`}));
     const ring = n[1] + n[2] + n[3], data = S.st.hari?.[0] ? ` Data sampai ${tgl(S.st.hari[0])}.` : "";
-    const isi = `<p style="margin:0 0 10px;line-height:1.5;text-align:justify">${ring ? `${fmt(n[3])} Awas, ${fmt(n[2])} Siaga, ${fmt(n[1])} Waspada.` : `Tidak ada kecamatan berstatus longsor ${kapan}.`}${data}</p>`
+    const isi = `<p style="margin:0 0 10px;line-height:1.5;text-align:justify">${ring ? `${Kartu.hl(fmt(ring))} kecamatan: ${fmt(n[3])} Awas, ${fmt(n[2])} Siaga, ${fmt(n[1])} Waspada.` : `Tidak ada kecamatan berstatus longsor ${kapan}.`}${data}</p>`
       + (rows.length ? Kartu.hbar(rows, W) : "");
-    return Kartu.kartu("Status", ring ? `${Kartu.hl(fmt(ring))} kecamatan berstatus longsor ${kapan}` : `Status longsor kecamatan ${kapan}`, isi, "prakiraan hujan Open-Meteo dan indeks bahaya InaRISK BNPB");
+    return Kartu.kartu(EY.status, "Status longsor kecamatan", isi, "");
   }
   async function nowcast() {
     const nc = D.nc; if (!nc) return "";
@@ -41,9 +43,9 @@ const Longsor = (() => {
     const ok = uj.vonis && a.model != null && a.klim != null, kalah = ok && a.model < a.klim;
     const vonis = ok ? `<p style="margin:0 0 10px;line-height:1.5;text-align:justify"><b>Uji balik: ${esc(uj.vonis)}.</b> AUC model ${f2(a.model)}, hujan saja ${f2(a.hujan)}, klimatologi musiman ${f2(a.klim)}. `
       + (kalah ? "Model belum mengalahkan pola musim, jadi pakai sebagai petunjuk awal, bukan peringatan." : "Model mengungguli pola musim pada uji balik.") + "</p>" : "";
-    const isi = `<p style="margin:0 0 10px;line-height:1.5;text-align:justify">Hujan 7 hari sampai ${tgl(nc.jendela_akhir)}: ${fmt(r.tinggi)} kecamatan berbahaya tinggi dan ${fmt(r.sedang)} sedang dari ${fmt(r.kec)}.</p>`
+    const isi = `<p style="margin:0 0 10px;line-height:1.5;text-align:justify">Hujan 7 hari sampai ${tgl(nc.jendela_akhir)}: ${Kartu.hl(fmt(r.tinggi))} kecamatan berbahaya tinggi dan ${fmt(r.sedang)} sedang dari ${fmt(r.kec)}.</p>`
       + vonis + nama + (riw.length ? batang(riw) : "");
-    return Kartu.kartu("Nowcast", `${Kartu.hl(fmt(r.tinggi))} kecamatan berbahaya tinggi menurut nowcast longsor`, isi, "Open-Meteo, ERA5, DEM Terrarium, GEM Active Faults, SoilGrids");
+    return Kartu.kartu(EY.nowcast, "Nowcast longsor", isi, "");
   }
   const riwayat = () => D.lb ? LogbookTren.kartu(D.lb, "longsor", "longsor", W) : "";
   function musim() {
@@ -51,7 +53,7 @@ const Longsor = (() => {
     const s = Array(12).fill(0), n = Array(12).fill(0);
     for (const k of Object.values(kab)) { const p = k.longsor?.p; if (p) p.forEach((x, i) => { s[i] += x; n[i]++; }); }
     const v = s.map((t, i) => { const r = n[i] ? t / n[i] * 100 : 0; return {n: BULAN[i], v: r, txt: Math.round(r) + "%", tip: `<b>${BULAN[i]}</b><br>Rata-rata peluang ada kejadian longsor: ${f1(r)}% per kabupaten<br>${fmt(D.kal.n_tahun)} tahun penuh`}; });
-    return Kartu.kartu("Musim", `Puncak musim longsor ${Kartu.hl(BULAN[v.indexOf(v.reduce((a, b) => b.v > a.v ? b : a))])}: peluang kejadian per bulan`, batang(v), "Logbook harian Pusdalops BNPB, tahun penuh; rata-rata seluruh kabupaten, bukan prakiraan hari ini");
+    return Kartu.kartu(EY.musim, "Musim longsor", batang(v), "");
   }
   return {
     async render() {
