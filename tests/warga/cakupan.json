@@ -1228,6 +1228,7 @@
     "GET /api/pb/titik": "baca: hak per peran",
     "POST /api/pb/titik": "hak tulis: tamu, akun gerbang",
     "POST /api/pb/titik/hapus": "hapus lunak: alasan 5 sampai 300",
+    "GET /api/pb/titik/mesin": "PB-14: titik/mesin HMAC sah 200",
     "GET /api/pb/renlap": "daftar dan berkas: hak baca, header, tamu ditolak",
     "POST /api/pb/renlap": "minta: versi 1, diminta kedua dalam 30 menit 409",
     "POST /api/pb/renlap/selesai": "callback sah: draf, berkas ditulis ke R2 sekali",

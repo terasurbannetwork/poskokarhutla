@@ -1,0 +1,68 @@
+name: Renlap PB
+
+# Renlap generik semua bencana (PB-14). Dipicu worker lewat POST /api/pb/renlap/minta.
+# Mesin tidak menulis ke R2 atau repo: berkas dikirim di badan callback /api/pb/renlap/selesai, Worker yang menulis (tulis sekali).
+on:
+  workflow_dispatch:
+    inputs:
+      renlap_id:
+        description: "id renlap (16 heksadesimal huruf kecil)"
+        required: true
+      bencana:
+        description: "id bencana di public/bencana.json"
+        required: true
+      prov:
+        description: "kode provinsi 2 digit"
+        required: true
+      kab:
+        description: "kode kab/kota 4 digit; kosong = tingkat provinsi"
+        required: false
+        default: ""
+      tanggal:
+        description: "tanggal renlap YYYY-MM-DD"
+        required: true
+      versi:
+        description: "nomor versi (1-2 digit)"
+        required: true
+
+concurrency:
+  group: renlap-pb-${{ inputs.renlap_id }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  renlap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      RENLAP_ID: ${{ inputs.renlap_id }}
+      BENCANA: ${{ inputs.bencana }}
+      PROV: ${{ inputs.prov }}
+      KAB: ${{ inputs.kab }}
+      TANGGAL: ${{ inputs.tanggal }}
+      VERSI: ${{ inputs.versi }}
+      PB_URL: ${{ vars.PB_URL || 'https://centurisk97.id' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Periksa masukan
+        run: |
+          [[ "$RENLAP_ID" =~ ^[0-9a-f]{16}$ ]] || { echo "renlap_id tidak sah"; exit 1; }
+          [[ "$BENCANA" =~ ^[a-z0-9_-]{1,40}$ ]] || { echo "bencana tidak sah"; exit 1; }
+          [[ "$PROV" =~ ^[0-9]{2}$ ]] || { echo "prov tidak sah"; exit 1; }
+          [[ "$KAB" =~ ^([0-9]{4})?$ ]] || { echo "kab tidak sah"; exit 1; }
+          [[ -z "$KAB" || "$KAB" == "$PROV"* ]] || { echo "kab bukan bagian prov"; exit 1; }
+          [[ "$TANGGAL" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]] || { echo "tanggal tidak sah"; exit 1; }
+          [[ "$VERSI" =~ ^[0-9]{1,2}$ ]] || { echo "versi tidak sah"; exit 1; }
+          python3 scripts/umum/renlap.py uji
+
+      - name: Bangun dan kirim renlap
+        env:
+          RENLAP_KUNCI: ${{ secrets.RENLAP_KUNCI }}   # hanya langkah ini yang memegang kunci
+        run: python3 scripts/umum/renlap.py kirim --id "$RENLAP_ID" --bencana "$BENCANA" --prov "$PROV" --kab "$KAB" --tanggal "$TANGGAL" --versi "$VERSI"

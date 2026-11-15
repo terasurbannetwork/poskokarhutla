@@ -2,7 +2,7 @@
    Dibuktikan: minta (versi, jendela 30 menit, tanggal, laju 6/jam), callback HMAC mengikat isi berkas (salah, basi, badan diganti, status acak, id tak dikenal, mundur),
    kunci prototipe ditolak, nomor HP dan NIK di berkas 422, R2 tulis sekali,
    terbit, hak baca berkas (pemirsa dan tamu ditolak, header), tanpa migrasi 503, kueri baca SEARCH.
-   TODO PB-14: pemicu workflow belum ada; rute minta hanya mencatat status diminta.
+   PB-14: pemicu workflow (tanpa token picu:false) dan GET /api/pb/titik/mesin (HMAC).
    Jalankan: node --test tests/warga/pb_renlap.test.mjs */
 import assert from "node:assert/strict";
 import {createHmac, createHash} from "node:crypto";
@@ -11,6 +11,7 @@ import {siapkan, berantai, MOD2, GERBANG, ADMIN} from "./_bnpb.mjs";
 import {migrasi} from "./_bantu.mjs";
 import {PB_SQL_RENLAP} from "../../src/hak.js";
 import "../../src/worker.js";
+import {badanDispatch} from "../../src/pb_isian.js";   // sesudah worker.js: impor sirkular
 
 const uji = berantai(), KUNCI = "kunci-renlap-uji";
 const REG = JSON.stringify({pesisir: {operasi: true, renlap: {sarana: ["tenda"]}}});
@@ -135,4 +136,29 @@ uji("tanpa migrasi 0130: minta dan callback 503, daftar tersedia:false", async (
   assert.equal((await U.api("POST", "/api/pb/renlap/selesai", {id, status: "gagal"}, {"x-renlap-waktu": String(w), "x-renlap-kunci": tanda(KUNCI, id, w, "gagal")})).s, 503);
   const d = await U.api("GET", "/api/pb/renlap?bencana=pesisir&prov=32", undefined, MOD2);
   assert.equal(d.s, 200); assert.equal(d.j.tersedia, false);
+});
+
+uji("PB-14: minta tanpa GITHUB_TOKEN picu:false; badan dispatch semua string", async () => {
+  assert.equal(a.picu, false); assert.match(a.pesan, /belum disambungkan/);   // a = respons minta pertama (laju 6/jam sudah habis di sini)
+  const d = badanDispatch({id: "a".repeat(16), bencana: "pesisir", prov: "32", kab: null, tanggal: hari()}, 3);
+  assert.equal(d.ref, "main"); assert.equal(d.inputs.versi, "3"); assert.equal(d.inputs.kab, "");
+  assert.ok(Object.values(d.inputs).every(v => typeof v === "string"));
+});
+
+uji("PB-14: titik/mesin HMAC sah 200 tanpa oleh; salah, basi, tanpa header 403 seragam", async () => {
+  await DB.prepare("INSERT INTO pb_titik (id, golongan, jenis, bencana, prov, kab, nama, lat, lon, status, oleh, dibuat, diubah) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)")
+    .bind("b".repeat(16), "sarana", "tenda", "pesisir", "32", "3273", "Tenda uji", -6.9, 107.6, "siap", "staf:x", 1, 1).run();
+  const jalur = "/api/pb/titik/mesin?bencana=pesisir&prov=32&kab=3273", w = Math.floor(Date.now() / 1000);
+  const h = (kunci = KUNCI, waktu = w, kab = "3273") => ({"x-renlap-waktu": String(waktu), "x-renlap-kunci": createHmac("sha256", kunci).update(`titik|${waktu}|pesisir|32|${kab}`).digest("hex")});
+  const ok = await api("GET", jalur, undefined, h()); assert.equal(ok.s, 200, ok.t);
+  assert.equal(ok.j.titik.length, 1); assert.ok(!("oleh" in ok.j.titik[0]));
+  assert.equal((await api("GET", jalur, undefined, h("salah"))).s, 403);
+  assert.equal((await api("GET", jalur, undefined, h(KUNCI, w - 400))).s, 403);
+  assert.equal((await api("GET", jalur, undefined, h(KUNCI, w, ""))).s, 403);   // tanda untuk wilayah lain
+  assert.equal((await api("GET", jalur, undefined, {})).s, 403);
+  const hx = (b, p, k) => ({"x-renlap-waktu": String(w), "x-renlap-kunci": createHmac("sha256", KUNCI).update(`titik|${w}|${b}|${p}|${k}`).digest("hex")});
+  assert.equal((await api("GET", "/api/pb/titik/mesin?bencana=pesisir&prov=99&kab=", undefined, hx("pesisir", "99", ""))).s, 400);     // prov tak sah sesudah tanda sah
+  assert.equal((await api("GET", "/api/pb/titik/mesin?bencana=pesisir&prov=32&kab=3300", undefined, hx("pesisir", "32", "3300"))).s, 400);
+  assert.equal((await api("GET", "/api/pb/titik/mesin?bencana=xyz&prov=32&kab=", undefined, hx("xyz", "32", ""))).s, 404);
+  assert.equal((await api("POST", jalur, {}, h())).s, 405);
 });

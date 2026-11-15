@@ -6,14 +6,22 @@ Python stdlib saja. Usulan lokasi untuk dilihat, bukan perintah terbang.
 
   python3 -I scripts/umum/renlap.py uji
   python3 -I scripts/umum/renlap.py buat --masukan BERKAS.json --keluar DIR
+  python3 -I scripts/umum/renlap.py kirim --id H16 --bencana B --prov PP [--kab PPKK] --tanggal YYYY-MM-DD --versi N   (PB-14; env RENLAP_KUNCI, PB_URL)
 masukan: {"bencana","tanggal","versi","base":[{id,nama,lat,lon}],"kandidat":[{lat,lon,tempat,fitur:{tingkat,baru,terdampak,fasilitas,belum_ditangani}}]}
   fitur 0..1 (atau null bila datanya tidak ada: tidak dihitung dan dicatat di alasan.tanpa_data, bukan dianggap 0).
 Keluaran: renlap_<tanggal>_<versi>.json, .kml, .gpx.
 """
 import argparse
+import hashlib
+import hmac
 import importlib.util
 import json
+import os
+import re
 import sys
+import time
+import urllib.parse
+import urllib.request
 from pathlib import Path
 
 AKAR = Path(__file__).resolve().parents[2]
@@ -99,6 +107,89 @@ def buat(a):
     print("ditulis %s.{json,kml,gpx}; base: %s" % (k / n, ", ".join("%s p%d" % (b["id"], len(b["patroli"])) for b in r["base"])))
 
 
+# ---- PB-14: subperintah kirim (dipanggil workflow renlap-pb.yml). Berkas dikirim di badan callback; Worker menulis R2. ----
+def ringkas(isi):
+    """persis ringkasBerkas di src/pb_isian.js: fmt:sha256(utf-8) urut abjad, dipisah koma"""
+    return ",".join("%s:%s" % (f, hashlib.sha256(isi[f].encode("utf-8")).hexdigest()) for f in sorted(isi))
+
+
+def tanda(kunci, pesan):
+    return hmac.new(kunci.encode("utf-8"), pesan.encode("utf-8"), hashlib.sha256).hexdigest()
+
+
+def cek_argumen(a, reg):
+    """validasi ulang tegas (workflow sudah memvalidasi; ini sabuk kedua). ValueError bila jahat."""
+    ok = (re.fullmatch(r"[0-9a-f]{16}", a.id or "") and a.bencana in reg and re.fullmatch(r"\d{2}", a.prov or "")
+          and re.fullmatch(r"(\d{4})?", a.kab or "") and (a.kab or a.prov).startswith(a.prov)
+          and re.fullmatch(r"\d{4}-\d{2}-\d{2}", a.tanggal or "") and re.fullmatch(r"\d{1,2}", a.versi or ""))
+    if not ok:
+        raise ValueError("argumen tidak sah")
+
+
+def _http(metode, url, kunci, pesan, badan=None, waktu=None):
+    w = str(waktu or int(time.time()))
+    kep = {"x-renlap-waktu": w, "x-renlap-kunci": tanda(kunci, w and pesan.replace("{w}", w)), "User-Agent": "renlap-pb/1"}
+    if badan is not None:
+        kep["Content-Type"] = "application/json"
+    rq = urllib.request.Request(url, data=badan, headers=kep, method=metode)
+    with urllib.request.urlopen(rq, timeout=30) as r:
+        return json.loads(r.read().decode("utf-8"))
+
+
+def lapor(base_url, kunci, rid, status, isi=None, jml=None, galat=None):
+    """POST callback selesai; ringkas diikat ke HMAC. Tanpa berkas bila gagal."""
+    isi = isi or {}
+    o = {"id": rid, "status": status, "berkas": isi}
+    if jml is not None:
+        o["jml_target"] = jml
+    if galat:
+        o["galat"] = galat[:200]
+    _http("POST", base_url + "/api/pb/renlap/selesai", kunci, "%s|{w}|%s|%s" % (rid, status, ringkas(isi)), json.dumps(o, ensure_ascii=False).encode("utf-8"))
+
+
+def ambil_titik(base_url, kunci, a):
+    q = urllib.parse.urlencode({"bencana": a.bencana, "prov": a.prov, "kab": a.kab})
+    return _http("GET", base_url + "/api/pb/titik/mesin?" + q, kunci, "titik|{w}|%s|%s|%s" % (a.bencana, a.prov, a.kab)).get("titik") or []
+
+
+def rakit(a, titik, B):
+    """base = titik golongan sarana; kandidat target: KOSONG (belum ada sumber target per bencana dengan skema terjamin di repo, tidak dikarang)."""
+    base = [{"id": str(t.get("id", ""))[:12] or "B%d" % (i + 1), "nama": t.get("nama") or "Sarana", "lat": t["lat"], "lon": t["lon"]}
+            for i, t in enumerate(titik) if t.get("golongan") == "sarana" and isinstance(t.get("lat"), (int, float)) and isinstance(t.get("lon"), (int, float))]
+    r = {"bencana": a.bencana, "status": "draf", "bobot_label": B["per_bencana"][a.bencana]["label"],
+         "catatan": "USULAN lokasi untuk dilihat, bukan perintah terbang.", "base": [dict(b, patroli=[], wb=[], di_luar_rute=None) for b in base],
+         "tanggal": a.tanggal, "versi": a.versi, "alasan_kosong": "belum ada sumber target", "jml_target": 0}
+    n = "renlap_%s_%s" % (a.tanggal, a.versi)
+    return r, {"json": json.dumps(r, ensure_ascii=False, indent=1), "kml": K.kml(r["base"], n), "gpx": K.gpx(r["base"], n),
+               "txt": "USULAN TARGET %s, %s (versi %s)\nUsulan lokasi untuk dilihat, bukan perintah terbang.\nTidak ada target: belum ada sumber target.\n" % (a.bencana, a.tanggal, a.versi)}
+
+
+def kirim(a):
+    kunci = os.environ.get("RENLAP_KUNCI", "")
+    if not kunci:
+        print("RENLAP_KUNCI wajib", file=sys.stderr)
+        return 2
+    url = os.environ.get("PB_URL", "https://centurisk97.id").rstrip("/")
+    try:
+        reg = [b["id"] for b in json.loads((AKAR / "public/bencana.json").read_text(encoding="utf-8"))["bencana"]]
+        cek_argumen(a, reg)
+    except Exception as e:
+        print("argumen: %s" % e, file=sys.stderr)
+        return 2
+    try:
+        r, isi = rakit(a, ambil_titik(url, kunci, a), muat_bobot())
+        lapor(url, kunci, a.id, "draf", isi, r["jml_target"])
+        print("terkirim %s: %d base, %d target" % (a.id, len(r["base"]), r["jml_target"]))
+        return 0
+    except Exception as e:
+        try:
+            lapor(url, kunci, a.id, "gagal", galat="%s: %s" % (type(e).__name__, e))
+        except Exception:
+            pass
+        print("gagal: %s" % e, file=sys.stderr)
+        return 1
+
+
 # SHA-256 teks karhutla dari kode SEBELUM ekstraksi (operasi/renlap.py teks(), 15 Nov 2026) atas masukan sintetis di bawah.
 EMAS_TEKS = "3df952cd5d04837a00a5335696596653f965eb24e79c5784d61a00fae994fd1e"
 
@@ -153,6 +244,21 @@ def uji():
     h = hashlib.sha256(K.teks(contoh_karhutla()).encode("utf-8")).hexdigest()
     assert h == EMAS_TEKS, h
     assert operasi().teks(contoh_karhutla()) == K.teks(contoh_karhutla())
+    # PB-14: ringkas cocok vektor "{}" dan argumen jahat ditolak
+    assert ringkas({"json": "{}"}) == "json:" + hashlib.sha256(b"{}").hexdigest()
+    assert ringkas({"txt": "b", "json": "a"}).startswith("json:")
+    import types
+    ok = dict(id="0123456789abcdef", bencana="banjir", prov="31", kab="3171", tanggal="2026-11-15", versi="1")
+    cek_argumen(types.SimpleNamespace(**ok), reg)
+    cek_argumen(types.SimpleNamespace(**dict(ok, kab="")), reg)
+    for k, v in (("id", "XYZ"), ("bencana", "ngawur"), ("prov", "3"), ("kab", "3271"), ("tanggal", "15-11-2026"), ("versi", "1;rm"), ("id", "0123456789abcdef\n")):
+        try:
+            cek_argumen(types.SimpleNamespace(**dict(ok, **{k: v})), reg)
+            raise SystemExit("harus ditolak: %s=%r" % (k, v))
+        except ValueError:
+            pass
+    r, isi = rakit(types.SimpleNamespace(**ok), [{"id": "a" * 16, "golongan": "sarana", "nama": "H", "lat": 1.0, "lon": 2.0}, {"golongan": "fasilitas", "lat": 1, "lon": 2}], B)
+    assert r["jml_target"] == 0 and len(r["base"]) == 1 and set(isi) == {"json", "kml", "gpx", "txt"}
     print("renlap (umum): lulus")
 
 
@@ -161,7 +267,13 @@ if __name__ == "__main__":
         uji()
     else:
         ap = argparse.ArgumentParser()
-        ap.add_argument("perintah", choices=["buat"])
-        ap.add_argument("--masukan", required=True)
-        ap.add_argument("--keluar", required=True)
-        buat(ap.parse_args())
+        ap.add_argument("perintah", choices=["buat", "kirim"])
+        ap.add_argument("--masukan")
+        ap.add_argument("--keluar")
+        for f in ("id", "bencana", "prov", "tanggal", "versi"):
+            ap.add_argument("--" + f)
+        ap.add_argument("--kab", default="")
+        A = ap.parse_args()
+        if A.perintah == "kirim":
+            sys.exit(kirim(A))
+        buat(A)

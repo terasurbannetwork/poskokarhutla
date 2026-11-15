@@ -167,8 +167,8 @@ const daftar = rute(async (env, req, url) => {
 /* ======================================================================================================================================================
    PB-12 renlap generik (F-3; DESAIN-TEKNIS paritas-bencana 3.2, 4, 5; KEAMANAN-PRIVASI 2, 6). Metadata di D1 pb_renlap, berkas di R2 MEDIA operasi/renlap/<bencana>/<tanggal>/<prov>[-<kab>]/v<versi>/renlap.<fmt>.
    Status: diminta -> draf (callback mesin) | gagal; draf -> terbit -> selesai. Tidak ada jalan mundur dan tidak ada hapus.
-   TODO PB-14: sesudah baris `diminta` tercatat, picu workflow renlap-pb.yml (workflow_dispatch, GITHUB_TOKEN) dari `minta`; selama belum, baris menunggu dan mesin
-   (PB-13/14) memanggil /api/pb/renlap/selesai. Tanpa pemicu, permintaan lebih dari 30 menit boleh diulang (jendela 409 habis). */
+   PB-14: sesudah baris `diminta` tercatat, `minta` memicu workflow renlap-pb.yml (workflow_dispatch, GITHUB_TOKEN); mesin membaca titik lewat GET /api/pb/titik/mesin dan memanggil
+   /api/pb/renlap/selesai. Pemicu gagal tidak membatalkan baris; permintaan lebih dari 30 menit boleh diulang (jendela 409 habis). */
 const FMT = {json: "application/json; charset=utf-8", pdf: "application/pdf", kml: "application/vnd.google-earth.kml+xml", gpx: "application/gpx+xml", txt: "text/plain; charset=utf-8"};
 const MAKS_PDF = 15e6, MAKS_JSON = 2e6, MAKS_LAIN = 1e6, TAHAN_MINTA = 30 * 60e3, MAKS_MINTA_JAM = 6, BERLAKU_MS = 14 * 864e5, RE_TGL = /^\d{4}-\d{2}-\d{2}$/;
 const hariWib = ms => new Date(ms + 7 * 36e5).toISOString().slice(0, 10);
@@ -182,6 +182,21 @@ const ringkasBerkas = async isi => (await Promise.all(Object.keys(isi).sort().ma
 const RE_PRIBADI = /(?:^|[^\d])(?:\+62|62|0)8\d{8,11}(?!\d)|(?:^|[^\d.])\d{16}(?![\d.])/;   // nomor HP dan NIK 16 digit; koordinat berdesimal tidak kena
 const samaTetap = (x, y) => { if (x.length !== y.length) return false; let d = 0; for (let i = 0; i < x.length; i++) d |= x.charCodeAt(i) ^ y.charCodeAt(i); return d === 0; };
 const idBody = o => typeof o.id === "string" && RE_ID.test(o.id) ? o.id : tolak("id harus 16 heks");
+
+/* badan dispatch workflow renlap-pb.yml: semua nilai string (syarat GitHub) */
+export const badanDispatch = (r, versi) => ({ref: "main", inputs: {renlap_id: r.id, bencana: r.bencana, prov: r.prov, kab: r.kab ?? "", tanggal: r.tanggal, versi: String(versi)}});
+async function picuRenlap(env, r, versi) {
+  if (!env.GITHUB_TOKEN) return {picu: false, pesan: "mesin belum disambungkan"};
+  try {
+    const x = await fetch(`https://api.github.com/repos/${env.GITHUB_REPO || "terasurbannetwork/poskokarhutla"}/actions/workflows/renlap-pb.yml/dispatches`, {method: "POST", signal: AbortSignal.timeout(8000),
+      headers: {authorization: `Bearer ${env.GITHUB_TOKEN}`, accept: "application/vnd.github+json", "x-github-api-version": "2022-11-28", "user-agent": "pb-renlap", "content-type": "application/json"},
+      body: JSON.stringify(badanDispatch(r, versi))});
+    x.body?.cancel().catch(() => {});
+    if (x.status === 204) return {picu: true};
+    console.error("pb renlap: dispatch ditolak HTTP", x.status);   // kode status hanya di log, tidak ke klien
+    return {picu: false, pesan: "pemicu mesin gagal"};
+  } catch { return {picu: false, pesan: "pemicu mesin tidak terjangkau"}; }
+}
 
 const minta = rute(async (env, req, url, kini) => {
   const tamu = await gerbangTulis(env, req); if (tamu) return tamu;
@@ -203,7 +218,7 @@ const minta = rute(async (env, req, url, kini) => {
   if (!baru.meta.changes) return gagal(409, "renlap untuk wilayah dan tanggal ini sudah diminta dan masih diproses");
   const lama = await pbRenlapById(env, pelakuPbBaca, r.id);
   await batchTulis(env, [pbStmtLog(env, pelakuPbTulis, kini, p.oleh, "pb_renlap", r.id, "minta", null, {bencana, ...w, tanggal, versi: lama.versi})]);
-  return json({id: r.id, versi: lama.versi, status: "diminta"}, 201);
+  return json({id: r.id, versi: lama.versi, status: "diminta", ...await picuRenlap(env, r, lama.versi)}, 201);
 });
 
 /* callback mesin: tanpa sesi, hanya HMAC. HMAC dihitung SELALU (waktu konstan); id tak dikenal, tanda salah, dan waktu basi dijawab sama (403) */
@@ -245,6 +260,19 @@ const selesai = async (env, req, url, kini) => {
     throw e;
   }
 };
+
+/* mesin membaca titik: tanpa sesi, HMAC(RENLAP_KUNCI, `titik|waktu|bencana|prov|kab`); kegagalan tanda tangan 403 seragam, sesudah 20 kegagalan per IP per jam 429; panggilan sah tidak dibatasi (baca saja, tanpa oleh, terikat wilayah). Kolom sama dengan GET staf */
+const titikMesin = rute(async (env, req, url, kini) => {
+  if (!env.RENLAP_KUNCI) return gagal(503, "RENLAP_KUNCI belum dipasang");
+  const q = url.searchParams, [bencana, prov, kab] = ["bencana", "prov", "kab"].map(k => q.get(k) ?? "");
+  const kunci = (req.headers.get("x-renlap-kunci") || "").toLowerCase(), wt = req.headers.get("x-renlap-waktu") || "";
+  const sah = samaTetap(kunci, await hmacHex(env.RENLAP_KUNCI, `titik|${wt}|${bencana}|${prov}|${kab}`));
+  if (!sah || !/^\d{9,12}$/.test(wt) || Math.abs(kini / 1000 - Number(wt)) > 300) return await lajuIP(env, req, "pb_renlap.gagal", [[36e5, 20]], kini) ?? gagal(403, "tanda tangan atau waktu tidak berlaku");
+  bencanaAktif(env, bencana);
+  const w = wilayah({prov, kab: kab || undefined});
+  try { return json({titik: await pbTitikDaftar(env, pelakuPbBaca, {...w, bencana})}); }
+  catch (e) { if (tanpaTabelPb(e)) return json({titik: []}); throw e; }
+});
 
 /* terbit: draf -> terbit (+14 hari, Q26); selesai-tandai: terbit -> selesai. Penulis wilayah baris, bukan wilayah badan */
 const geser = (dari, ke, aksi) => rute(async (env, req, url, kini) => {
@@ -289,6 +317,7 @@ export const RUTE_PB = {
   "GET /api/pb/titik": daftar,
   "POST /api/pb/titik": simpan,
   "POST /api/pb/titik/hapus": hapus,
+  "GET /api/pb/titik/mesin": titikMesin,
   "GET /api/pb/renlap": daftarRenlap,
   "POST /api/pb/renlap": minta,
   "POST /api/pb/renlap/selesai": selesai,
