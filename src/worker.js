@@ -144,11 +144,8 @@ export function bersihDetail(jenis, d) {
   return {detail: keluar};
 }
 
-export function normalWA(s) {
-  const d = String(s ?? "").replace(/[\s\-().]/g, "");
-  const m = d.match(/^(?:\+?62|0)(8\d{7,12})$/);
-  return m ? "62" + m[1] : null;
-}
+import {normalWA} from "./nomor.js";
+export {normalWA};   // implementasi tunggal di nomor.js (KP-02); impor lama dari worker.js tetap jalan
 
 /* ---------------- titik panas 24 jam (public/data/titik24.json dari scripts/warga/titik24.py) ---------------- */
 let TITIK = null;

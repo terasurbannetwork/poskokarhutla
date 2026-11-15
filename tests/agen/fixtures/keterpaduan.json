@@ -1,0 +1,32 @@
+{
+  "_catatan": "Gerbang KP-01 (paket Keterpaduan, D2 dan D5). bertaut: tabel kejadian/tugas yang punya sumber pencocok di scripts/siklus/pasang.py. utang: tabel lama belum tertaut, hanya boleh menyusut. dikecualikan: bukan kejadian sendiri, alasan wajib. antrean_utang: berkas public/ yang masih memanggil indexedDB.open sendiri, hanya boleh menyusut sampai hanya public/inti/antre.js.",
+  "bertaut": [],
+  "utang": [
+    "gempa_kejadian",
+    "lapsus_kejadian",
+    "logbook_kejadian",
+    "lp_tugas",
+    "sippa_tugas",
+    "tugas_api"
+  ],
+  "dikecualikan": {
+    "op_isian_kejadian": "K14: kunci isian operasi udara (jenis, tanggal, registrasi), tanpa wilayah; ditunda sampai ada kolom wilayah",
+    "pantau_tugas": "K14: antrean butir kerja staf, bukan kejadian; tanpa wilayah",
+    "tugas_bencana": "K14: pelengkap tugas_api (bahaya per tugas); tertaut lewat tugas_api",
+    "tugas_isian": "tabel anak tugas_api (isian lapangan); tertaut lewat tugas_api",
+    "tugas_kartu": "tabel anak tugas_api (kartu tugas); tertaut lewat tugas_api",
+    "tugas_meta": "tabel anak tugas_api (meta kartu); tertaut lewat tugas_api",
+    "tugas_muncul": "tabel anak tugas_api (api muncul lagi); tertaut lewat tugas_api",
+    "tugas_luas_awal": "tabel anak tugas_api (luas awal); tertaut lewat tugas_api",
+    "tugas_lapangan": "tabel anak tugas_api (verifikasi padam); tertaut lewat tugas_api",
+    "uji_tugas": "tabel anak tugas_api (sampel uji lapangan); tertaut lewat tugas_api"
+  },
+  "antrean_utang": [
+    "public/bnpb/antre.js",
+    "public/instansi.js",
+    "public/lacak_lapor.js",
+    "public/petugas/antre.js",
+    "public/pipa/antre.js",
+    "public/siklus/antre.js"
+  ]
+}

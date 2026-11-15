@@ -4,6 +4,7 @@
    Kolom notif/ambang disiapkan untuk notifikasi kejadian per wilayah; pengirimnya belum ada. Pengirim nanti WAJIB menyaring status = 'aktif' AND diverifikasi IS NOT NULL:
    registrasi publik tidak membuktikan kepemilikan nomor/email, jadi admin menandai nomor sudah dicek sebelum kontak menerima pesan. */
 import {json, gagal, acak, sha, adminOK, bacaBody, turnstileOK} from "./worker.js";
+import {normalWA} from "./nomor.js";
 import {PROV} from "./relawan.js";
 import {laju, lajuIP, halamanBnpbPublik} from "./bnpb.js";
 
@@ -17,11 +18,9 @@ const KOLOM = "id, nama, jabatan, lembaga, kategori, prov, kab, wa, email, telep
 
 const bersih = t => String(t).normalize("NFC").replace(/[\u0000-\u001F\u007F​-‏‪-‮⁦-⁩﻿]/g, "").replace(/\s+/g, " ").trim();
 /* murni: nomor apa pun bentuknya ("0812-3456 789", "+62 812…", "812…") -> "62812…"; null bila kosong; false bila tidak sah */
-export function normalWa(t) {
+export function normalWa(t) {   // kontrak kontak: null = kosong, false = tidak sah; isinya normalWA tunggal
   if (t == null || bersih(t) === "") return null;
-  let d = String(t).replace(/[^0-9]/g, "");
-  if (d.startsWith("0")) d = "62" + d.slice(1); else if (d.startsWith("8")) d = "62" + d;
-  return /^628[0-9]{7,12}$/.test(d) ? d : false;
+  return normalWA(t) ?? false;
 }
 
 /* murni: objek masukan -> {k} (baris siap simpan, tanpa id/waktu) atau {galat}. kabSah(prov, kab) memeriksa ejaan kab terhadap pusat_kec. */
