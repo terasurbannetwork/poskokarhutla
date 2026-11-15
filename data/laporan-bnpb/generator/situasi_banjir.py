@@ -83,7 +83,7 @@ def status_n_hari(n):
     beda = [k for k, v in st['kec'].items() if k in resmi['kec'] and v['b'][:len(resmi['hari'])] != resmi['kec'][k]['b'][:n]]
     if st['hari'][:len(resmi['hari'])] == resmi['hari'][:n] and beda:
         sys.exit(f'status {n} hari tidak sama dengan status.json resmi di {len(beda)} kecamatan: {beda[:3]}')
-    dibuat = json.load(open(os.path.join(tmp, 'meta.json')))['dibuat']
+    dibuat = json.load(open(unduh('meta.json', tmp)))['dibuat']   # jam data situs, bukan jam hitung ulang ini
     shutil.rmtree(tmp, ignore_errors=True)
     return st, dibuat
 
@@ -111,6 +111,7 @@ def sudah_banjir(kode, tanggal, wa_tambahan=()):
             kab = kab_bersih(x['lokasi']); t, a = x.get('teks', {}), x.get('angka', {})
             o = J.setdefault(kab, dict(kab=kab, pertama=h, akhir=h, kk=None, ungsi=None, kondisi='', surut_tgl=None))
             o['akhir'] = h; o['kondisi'] = t.get('kondisi') or o['kondisi']
+            o['butir'] = butir_wa(berkas[h], kab) or o.get('butir') or {}
             nk = _cari(o['kondisi'] + ' ' + (t.get('dampak') or ''), r'(\d+)\s*kec(?:amatan|\.)')
             if nk: o['kec_wa'] = nk
             kk = a.get('kk') or _cari(t.get('dampak'), r'([\d.,]+)\s*KK')
@@ -132,6 +133,18 @@ def sudah_banjir(kode, tanggal, wa_tambahan=()):
         o['status'] = 'Sudah surut' if o['surut_tgl'] else 'Belum surut'
     baris = sorted(J.values(), key=lambda o: (o['status'] != 'Belum surut', -(o['kk'] or 0)))
     return baris, (min(berkas) if berkas else None), (max(berkas) if berkas else None)
+
+
+def butir_wa(teks, kab):
+    """Butir '- Kunci: isi' satu kejadian banjir kab/kota dari teks WA Koordalops mentah (Dampak, Pengungsi, Kerusakan, ...)."""
+    for blok in re.split(r'\n\s*\d+\.\s*', '\n' + teks)[1:]:
+        kepala = blok.split('\n', 1)[0]
+        if 'banjir' in kepala.lower() and re.search(rf'\b{re.escape(kab)}\b', kepala, re.I):
+            out = {}
+            for m in re.finditer(r'^[\s\-*•⁠]*([A-Za-z][A-Za-z ]{2,30}?)\s*[:;]\s*(.+)$', blok.split('\n\n')[0], re.M):
+                out.setdefault(m[1].strip().capitalize(), m[2].strip())
+            return out
+    return {}
 
 
 def rapi(t):
@@ -231,6 +244,41 @@ def peta(png, w_in, h_in, warna, label=(), kode=None, kotak=None):
     px = 100 / 111.32 * s; x0, y0 = 30 * SS, H_ - 26 * SS
     d.line([(x0, y0), (x0 + px, y0)], fill='#' + NAVY, width=3 * SS)
     d.text((x0 + px / 2, y0 - 16 * SS), '100 km', font=F(20, False), fill='#' + NAVY, anchor='mm')
+    d.polygon([(x0 + 6 * SS, y0 - 70 * SS), (x0, y0 - 46 * SS), (x0 + 12 * SS, y0 - 46 * SS)], fill='#' + NAVY)
+    d.text((x0 + 6 * SS, y0 - 36 * SS), 'U', font=F(20), fill='#' + NAVY, anchor='mm')
+    im.resize((W, H), Image.LANCZOS).save(png, optimize=True)
+
+
+def peta_kec(png, w_in, h_in, kode, kab, level):
+    """Peta kecamatan satu kab/kota: warna level tertinggi N hari {kec: 0..3}, nama kecamatan di tengahnya, kab tetangga abu muda."""
+    G = json.load(open(os.path.join(AKAR, 'public', 'geo', 'kecamatan', f'{kode}.json'), encoding='utf-8'))['features']
+    K = geo_kab(kode)
+    xs = [c for f in G if f['properties']['kab'] == kab for q in cincin(f['geometry']) for c in q[0]]
+    lon0, lon1, lat0, lat1 = min(c[0] for c in xs), max(c[0] for c in xs), min(c[1] for c in xs), max(c[1] for c in xs)
+    SS, W, H = 2, int(w_in * 300), int(h_in * 300); W_, H_ = W * SS, H * SS
+    s = min(W_ * .9 / (lon1 - lon0), H_ * .9 / (lat1 - lat0)); cx, cy = (lon0 + lon1) / 2, (lat0 + lat1) / 2
+    X = lambda o: W_ / 2 + (o - cx) * s; Y = lambda a: H_ / 2 - (a - cy) * s
+    im = Image.new('RGB', (W_, H_), '#FFFFFF'); d = ImageDraw.Draw(im)
+    isi = {3: LEVEL[3][1], 2: LEVEL[2][1], 1: 'F6D9BC', 0: 'E1E6ED'}
+    for k, g in K.items():
+        if k != f'{kode}|{kab}':
+            for q in cincin(g):
+                d.polygon([(X(c[0]), Y(c[1])) for c in q[0]], fill='#F3F5F8', outline='#FFFFFF', width=SS)
+    pus = {}
+    for f in G:
+        if f['properties']['kab'] != kab: continue
+        n = f['properties']['kec']; lv = level.get(n, 0)
+        for q in cincin(f['geometry']):
+            pts = [(X(c[0]), Y(c[1])) for c in q[0]]
+            if len(pts) > 2: d.polygon(pts, fill='#' + isi[lv], outline='#FFFFFF', width=2 * SS)
+            if len(q[0]) > len(pus.get(n, (0, []))[1]): pus[n] = (lv, q[0])
+    F = lambda n, b=True: ImageFont.truetype(os.path.join(FONT, 'Roboto-' + ('Bold' if b else 'Regular') + '.ttf'), n * SS)
+    for n, (lv, ring) in pus.items():
+        x, y = X(sum(c[0] for c in ring) / len(ring)), Y(sum(c[1] for c in ring) / len(ring))
+        d.text((x, y), n, font=F(24), fill='#FFFFFF' if lv >= 2 else '#' + NAVY, anchor='mm', stroke_width=0)
+    px = 10 / 111.32 * s; x0, y0 = 30 * SS, H_ - 26 * SS
+    d.line([(x0, y0), (x0 + px, y0)], fill='#' + NAVY, width=3 * SS)
+    d.text((x0 + px / 2, y0 - 16 * SS), '10 km', font=F(20, False), fill='#' + NAVY, anchor='mm')
     d.polygon([(x0 + 6 * SS, y0 - 70 * SS), (x0, y0 - 46 * SS), (x0 + 12 * SS, y0 - 46 * SS)], fill='#' + NAVY)
     d.text((x0 + 6 * SS, y0 - 36 * SS), 'U', font=F(20), fill='#' + NAVY, anchor='mm')
     im.resize((W, H), Image.LANCZOS).save(png, optimize=True)
@@ -384,31 +432,84 @@ def gandakan(P, n):
 
 # ---------------------------------------------------------------- deck
 
-def bangun(prov, n_hari, tanggal, keluar, wa=()):
+def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, tanpa_lain=False):
     import wa_harian
     from wilayah import PROVINSI
     kode = {v.lower(): k for k, v in PROVINSI.items()}.get(prov.lower()) or sys.exit(f'provinsi tidak dikenal: {prov}')
     prov = PROVINSI[kode]
     st, dibuat = status_n_hari(n_hari)
-    hari = st['hari']
-    if hari[0] != tanggal: print(f'PERINGATAN: data hujan situs mulai {hari[0]}, bukan {tanggal}', file=sys.stderr)
+    if st['hari'][0] < tanggal <= st['hari'][-1]:   # data situs belum diperbarui hari ini: buang hari yang sudah lewat
+        i = st['hari'].index(tanggal); st['hari'] = st['hari'][i:]
+        for v in st['kec'].values(): v['b'], v['h3d'] = v['b'][i:], v['h3d'][i:]
+        print(f'PERINGATAN: data situs dibuat {dibuat}; prakiraan dipotong jadi {len(st["hari"])} hari mulai {tanggal}', file=sys.stderr)
+    hari = st['hari']; n_hari = len(hari)
     rk = rekap_status(st)
     lap, wa0, wa1 = sudah_banjir(kode, tanggal, wa)
     if wa1 and wa1 < tanggal:
         print(f'PERINGATAN: WA Koordalops terakhir {wa1}; aturan_slide.py menuntut sampai {tanggal}. Tambahkan --wa <berkas WA terbaru>.', file=sys.stderr)
     jam = dibuat[11:16].replace(':', '.')
     rentang = f'{dt.date.fromisoformat(hari[0]).day}-{tgl(hari[-1])}'
-    gis = f'Prakiraan hujan ECMWF IFS, debit sungai GloFAS, bahaya InaRISK BNPB, {tgl(dibuat)} {dibuat[:4]} {jam} WIB'
-    lain = {k: v for k, v in rk.items() if k[0] != kode and (v['a'] or v['s'])}
-    n_sl = 3 if lain else 2
-    bagian = ['Sudah banjir', f'Prakiraan {n_hari} hari'] + (['Provinsi lain'] if lain else [])
+    gis = f'ECMWF IFS, GloFAS, InaRISK BNPB, {tgl(dibuat)} {dibuat[:4]} {jam} WIB'
+    lain = {} if tanpa_lain else {k: v for k, v in rk.items() if k[0] != kode and (v['a'] or v['s'])}
+    o0 = 1 if kab_fokus else 0
+    n_sl = (3 if lain else 2) + o0
+    bagian = ([kab_fokus] if kab_fokus else []) + ['Sudah banjir', f'Prakiraan {n_hari} hari'] + (['Provinsi lain'] if lain else [])
 
     os.makedirs(keluar, exist_ok=True)
     tpl = os.path.join(TPL, 'templat.pptx')
     P = Presentation(tpl); S = gandakan(P, n_sl); kerja = tempfile.mkdtemp(prefix='situasi-banjir-png-')
 
+    def sel_hari(lv):
+        return {'kotak': LEVEL[lv][2][0], 'isi': LEVEL[lv][0] if lv < 2 else LEVEL[lv][1], 'tegas': 'FFFFFF' if lv >= 2 else '9A5B1E'} if lv else '–'
+    hk = [f'{HARI_SINGKAT[dt.date.fromisoformat(h).weekday()]} {dt.date.fromisoformat(h).day}' for h in hari]
+
+    # ---- 0. fokus satu kab/kota: peta kecamatan, laporan Koordalops, status per kecamatan
+    if kab_fokus:
+        sl = S[0]; nav(sl, bagian, 0, 1)
+        kec = {k.split('|')[2]: v for k, v in st['kec'].items() if k.startswith(f'{kode}|{kab_fokus}|')}
+        semua = sorted({f['properties']['kec'] for f in json.load(open(os.path.join(AKAR, 'public', 'geo', 'kecamatan', f'{kode}.json')))['features']
+                        if f['properties']['kab'] == kab_fokus})
+        if not semua: sys.exit(f'kab/kota tidak dikenal di {prov}: {kab_fokus}')
+        mx = {n: max(kec[n]['b']) if n in kec else 0 for n in semua}
+        cA, cS, cW = (sum(1 for v in mx.values() if v == x) for x in (3, 2, 1))
+        lp = next((o for o in lap if o['kab'] == kab_fokus), None)
+        ada = [(n_, nm) for n_, nm in ((cA, 'Awas'), (cS, 'Siaga'), (cW, 'Waspada')) if n_]   # tanpa "0 kecamatan ..."
+        st_kab = []
+        for j, (n_, nm) in enumerate(ada):
+            st_kab += [(' ' if j else '') + str(n_), (' kecamatan ' if j == 0 else ' ') + nm + (',' if j < len(ada) - 2 else ' dan' if j == len(ada) - 2 else '')]
+        ekor = [f' pada {n_hari} hari ke depan (', rentang, ')'] if ada else [f'tanpa kecamatan berstatus pada {n_hari} hari ke depan (', rentang, ')']
+        kepala = f'Banjir {kab_fokus} sejak {tgl(lp["mulai"])} berdampak pada' if lp else f'Di {kab_fokus} terdapat'
+        isi = ([kepala, f' {rb(lp["kk"])}', ' KK; '] if lp else [kepala + ' ']) if ada else ([kepala, f' {rb(lp["kk"])}', ' KK, '] if lp else [f'{kab_fokus} '])
+        if len(isi) % 2 == 0: isi.append('')
+        pre = isi + st_kab if ada else isi + ['']
+        if len(pre) % 2: pre.append('')   # ekor mulai dari potongan teks (indeks genap)
+        judul(sl, pre + ekor)
+        png = os.path.join(kerja, 'p0.png'); peta_kec(png, 5.8, 4.33, kode, kab_fokus, mx)
+        sl.shapes.add_picture(png, Inches(.6), Inches(1.42), Inches(5.8), Inches(4.33))
+        lw3 = (5.8 - 2 * .07) / 3
+        for i, (n_, nm, lv, ik) in enumerate(((cA, 'Awas', 3, 'awas-putih.png'), (cS, 'Siaga', 2, 'banjir-putih.png'), (cW, 'Waspada', 1, 'hujan-putih.png'))):
+            kartu(sl, .6 + i * (lw3 + .07), 5.86, lw3, rb(n_), 'Kecamatan ' + nm, LEVEL[lv][0], 'C98A4B' if lv == 1 else LEVEL[lv][1], ik)
+        sisa_kosong = 6.95 - 6.28
+        if sisa_kosong > .4 and lp:   # status penanganan di bawah kartu
+            kartu(sl, .6, 6.53, 5.8, KONDISI[lp['status']][1] and lp['status'], (lp.get('butir') or {}).get('Penetapan status', '–'), *KONDISI[lp['status']],
+                  'banjir-putih.png' if lp['status'] == 'Belum surut' else 'cek-putih.png')
+        y = 1.4
+        if lp and lp.get('butir'):
+            b = lp['butir']; kolL = [('Butir', 1.25, 'l'), (f'Laporan Koordalops {tgl(lp["akhir"])}', 4.94, 'j', 8.5, 'bungkus')]
+            brL = [[nm, (rapi(b[nm]), INK, False)] for nm in ('Dampak', 'Pengungsi', 'Kerusakan', 'Kondisi mutakhir') if b.get(nm)]
+            y = tabel(sl, 6.55, 1.4, 6.19, kolL, brL, .36, 1.4 + .23 + .36 * len(brL)) + .14
+        kolK = [('Kecamatan', 1.7, 'l')] + [(h, .4, 'c') for h in hk] + [('Hujan 3 hari, mm', .8, 'c'), ('Tgl. puncak', .72, 'c')]
+
+        def puncak_kec(v):
+            i = max(range(len(v['b'])), key=lambda d: (v['b'][d], v['h3d'][d]))
+            return str(round(v['h3d'][i])), tgl(hari[i])
+        urut = sorted(semua, key=lambda n: (-mx[n], -(max(kec[n]['h3d']) if n in kec else 0), n))
+        brK = [[n] + ([sel_hari(x) for x in kec[n]['b']] + list(puncak_kec(kec[n])) if n in kec else ['–'] * (len(hari) + 2)) for n in urut]
+        tabel(sl, 6.55, y, 6.19, kolK, brK, .4, 6.95)
+        sumber(sl, (f'Laporan Dit. Koordalops BNPB, {tgl(lp["akhir"])} {lp["akhir"][:4]}; ' if lp else '') + gis)
+
     # ---- 1. sudah banjir
-    sl = S[0]; nav(sl, bagian, 0, 1)
+    sl = S[o0]; nav(sl, bagian, o0, o0 + 1)
     belum = [o for o in lap if o['status'] == 'Belum surut']
     n_kec = sum(o['kec'] or 0 for o in lap); n_kk = sum(o['kk'] or 0 for o in lap)
     if lap:
@@ -427,14 +528,18 @@ def bangun(prov, n_hari, tanggal, keluar, wa=()):
     br = [{'pita': prov}] + [[o['kab'], rb(o['kec']), tgl(o['mulai']), tgl(o['surut_tgl']) if o['surut_tgl'] else '–', rb(o['kk']), rb(o['ungsi']),
                               {'pil': o['status'], 'isi': KONDISI[o['status']][0], 'tegas': KONDISI[o['status']][1]}] for o in lap]
     br.append({'total': True, 'sel': [f'Total {len(lap)} kab/kota', rb(n_kec), '', '', rb(n_kk), rb(sum(o['ungsi'] or 0 for o in lap) or None), '']})
-    yb = tabel(sl, 6.55, 1.4, 6.19, kol, br, min(.33, (6.95 - 1.63) / max(len(br), 1)), 6.95)
-    if belum and 6.95 - yb > .8:   # sisa ruang: kondisi mutakhir kab/kota yang belum surut, kata-kata laporan Koordalops
-        kol2 = [('Kab/Kota', 1.45, 'l'), ('Laporan', .62, 'c'), ('Kondisi mutakhir', 4.12, 'j', 8.5, 'bungkus')]
-        tabel(sl, 6.55, yb + .14, 6.19, kol2, [[o['kab'], tgl(o['akhir']), (rapi(o['kondisi']), INK, False)] for o in belum], .62, 6.95)
+    # tabel kondisi mutakhir di bawah: tinggi baris tabel atas diperkecil (paling kecil .24) supaya kondisi muat; yang tak muat = KK terkecil
+    m_eff, rk_ = len(br) - .35, .28
+    rh1 = min(.33, max(.23, (6.95 - 1.4 - .23 - .14 - .23 - len(belum) * rk_ - .23) / m_eff)) if belum else .33
+    yb = tabel(sl, 6.55, 1.4, 6.19, kol, br, rh1, 6.95)
+    n_k = int((6.95 - yb - .14 - .23) // rk_)
+    if belum and n_k >= 1:   # kondisi mutakhir kab/kota yang belum surut, kata-kata laporan Koordalops
+        kol2 = [('Kab/Kota', 1.35, 'l'), ('Laporan', .58, 'c'), ('Kondisi mutakhir', 4.26, 'j', 8, 'bungkus')]
+        tabel(sl, 6.55, yb + .14, 6.19, kol2, [[o['kab'], tgl(o['akhir']), (rapi(o['kondisi']), INK, False)] for o in belum[:n_k]], rk_, 6.95)
     sumber(sl, f'Laporan Dit. Koordalops BNPB, {tgl(wa0 or tanggal)} s.d. {tgl(wa1 or tanggal)} {(wa1 or tanggal)[:4]}; Logbook Pusdalops BNPB')
 
     # ---- 2. prakiraan N hari, provinsi pilihan
-    sl = S[1]; nav(sl, bagian, 1, 2)
+    sl = S[o0 + 1]; nav(sl, bagian, o0 + 1, o0 + 2)
     kini = {o['kab']: o['status'] for o in lap}
     kab = sorted([v for k, v in rk.items() if k[0] == kode and (v['a'] or v['s'] or v['kab'] in kini)],
                  key=lambda v: (-v['a'], -v['s'], -v['mm'], v['kab']))
@@ -455,11 +560,8 @@ def bangun(prov, n_hari, tanggal, keluar, wa=()):
         tegas = 'C98A4B' if lv == 1 else LEVEL[lv][1]
         kartu(sl, x_, 5.36, lw3, rb(n_), 'Kecamatan ' + nm, LEVEL[lv][0], tegas, ik)
         keterangan(sl, x_, 5.86, lw3, 1.09, nm, df, LEVEL[lv][0], tegas, ik)
-    hk = [f'{HARI_SINGKAT[dt.date.fromisoformat(h).weekday()]} {dt.date.fromisoformat(h).day}' for h in hari]
     kol = [('Kab/Kota', 1.65, 'l'), ('Kec. Awas', .52, 'c'), ('Kec. Siaga', .52, 'c')] + [(h, .4, 'c') for h in hk] + [('Hujan 3 hari, mm', .7, 'c'), ('Tgl. puncak', .62, 'c'), ('Kini', .86, 'c')]
 
-    def sel_hari(lv):
-        return {'kotak': LEVEL[lv][2][0], 'isi': LEVEL[lv][0] if lv < 2 else LEVEL[lv][1], 'tegas': 'FFFFFF' if lv >= 2 else '9A5B1E'} if lv else '–'
     br = [[v['kab'], rb(v['a'] or None), rb(v['s'] or None)] + [sel_hari(x) for x in v['hari']] +
           [str(round(v['mm'])) if v['tgl'] else '–', tgl(v['tgl']) if v['tgl'] else '–',
            {'pil': kini[v['kab']], 'isi': KONDISI[kini[v['kab']]][0], 'tegas': KONDISI[kini[v['kab']]][1]} if v['kab'] in kini else '–'] for v in kab]
@@ -469,7 +571,7 @@ def bangun(prov, n_hari, tanggal, keluar, wa=()):
 
     # ---- 3. provinsi lain
     if lain:
-        sl = S[2]; nav(sl, bagian, 2, 3)
+        sl = S[o0 + 2]; nav(sl, bagian, o0 + 2, o0 + 3)
         pv = {}
         for (pr, kb), v in lain.items():
             o = pv.setdefault(pr, dict(pr=pr, a=0, s=0, kab=[], mm=0, tgl=None, hari=[0] * len(hari)))
@@ -497,7 +599,7 @@ def bangun(prov, n_hari, tanggal, keluar, wa=()):
         tabel(sl, 6.55, 1.4, 6.19, kol, br, min(.33, (6.95 - 1.63) / max(len(br), 1)), 6.95)
         sumber(sl, gis)
 
-    d = dt.date.fromisoformat(tanggal); nama = f'Situasi Banjir {prov} {d:%d%m%y}'
+    d = dt.date.fromisoformat(tanggal); nama = f'Situasi Banjir {kab_fokus + " dan " if kab_fokus else ""}{prov} {d:%d%m%y}'
     out = os.path.join(keluar, nama + '.pptx'); P.save(out)
     shutil.rmtree(kerja, ignore_errors=True)
     from pdf import ke_pdf
@@ -521,7 +623,7 @@ def uji():
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument('--prov', default='Aceh'); ap.add_argument('--hari', type=int, default=6)
+    ap.add_argument('--prov', default='Aceh'); ap.add_argument('--kab', help='kab/kota fokus di slide pertama, mis. "Aceh Singkil"'); ap.add_argument('--tanpa-lain', action='store_true', help='tanpa slide Awas/Siaga provinsi lain'); ap.add_argument('--hari', type=int, default=6)
     ap.add_argument('--tanggal', default=dt.date.today().isoformat()); ap.add_argument('--wa', nargs='*', default=[])
     ap.add_argument('--keluar'); ap.add_argument('--uji', action='store_true'); ap.add_argument('--ramping', nargs=2, metavar=('ASAL', 'TUJUAN'))
     a = ap.parse_args()
@@ -529,4 +631,5 @@ if __name__ == '__main__':
     elif a.ramping: ramping(*a.ramping)
     else:
         if not 1 <= a.hari <= 6: sys.exit('--hari 1 sampai 6 (hujan.json memuat 6 hari ke depan)')
-        bangun(a.prov, a.hari, a.tanggal, a.keluar or os.path.join(SINI, '..', 'paparan', f"situasi-banjir-{a.prov.lower().replace(' ', '-')}-{a.tanggal}"), a.wa)
+        nm = (a.kab + ' ' if a.kab else '') + a.prov
+        bangun(a.prov, a.hari, a.tanggal, a.keluar or os.path.join(SINI, '..', 'paparan', f"situasi-banjir-{nm.lower().replace(' ', '-')}-{a.tanggal}"), a.wa, a.kab, a.tanpa_lain)
