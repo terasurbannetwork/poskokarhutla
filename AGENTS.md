@@ -408,6 +408,17 @@ Sebelum menyentuh metrik kelengkapan bangunan OSM per kab, daftar prioritas peme
 
 Aturan berhentinya sama dengan §2.1. Sistem hanya menyiapkan proyek; mengajukannya ke HOT adalah tindakan keluar oleh pemegang akun (Q1); nama mahasiswa tidak publik; paparan tidak beralih sumber tanpa keputusan pemilik (Q5).
 
+### 2.26 Alun-alun Terpadu (`/alun-alun`, kotak masuk alun-alun di `/instansi`, kabar warga per kejadian, rekap untuk pimpinan): baca dulu, baru bangun
+
+Sebelum menyentuh tautan utas alun-alun ke Buku Besar Kejadian, kotak masuk alun-alun akun instansi, balasan atas nama lembaga, status dan riwayat bantuan, pemberitahuan kebutuhan ke BPBD, atau rekap alun-alun untuk Layar Pimpinan dan dasbor pimpinan, baca dokumen di
+`data/kajian-bnpb/alun-terpadu/` dengan urutan otoritas ini (kode di `src/alun.js`, `src/alun_instansi.js`, `src/alun_konst.js`, bagian alun di `src/hak.js` dan `src/kejadian_tautan.js`, `public/instansi_alun.js`, `public/admin/alun.js` milik `warga-api`; `public/bnpb/alun-alun.*` dan `public/admin/pimpinan.js` milik `ruang-bnpb`; `scripts/siklus/alun_rekap.py`, sumber `alun` di `scripts/siklus/pasang.py`, dan `public/siklus/**` milik `siklus`; `public/inti/dasbor_pimpinan.js` milik `inti-layar`):
+
+1. `KEPUTUSAN-ALUN.md`: keputusan pemilik K1–K7, rancangan D1–D13, pertanyaan terbuka Q1–Q9 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md` (F-1..F-12), 4. `ALUR.md`, 5. `ALGORITMA.md` (utas yang ditautkan, hak wilayah, ukuran rekap, pemberitahuan), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`AT-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Kiriman alun-alun tidak pernah membuat kejadian atau mengubah fasenya; pencocok tetap satu (`pasang.py`); rekap dihitung pipeline dan hanya memuat angka agregat tanpa data orang; tidak ada versi publik atau mitra sebelum pemilik menjawab Q1 dan Q2; tidak pernah menulis "aman"; label lembaga dihitung server.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
