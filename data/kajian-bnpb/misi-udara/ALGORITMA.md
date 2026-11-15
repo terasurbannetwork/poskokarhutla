@@ -19,7 +19,7 @@ Validasi: lintang -11,5 sampai 6,5 dan bujur 94,5 sampai 141,5; di luar itu dito
 Masukan: base awal, daftar titik berurutan, base akhir (bawaan sama dengan base awal), kecepatan jelajah `v` km/jam.
 
 Untuk tiap pasangan berurutan: jarak lingkaran besar (haversine, `jarak_nm`), haluan sejati awal (`baringan`), waktu = jarak dibagi `v`.
-Waktu kumulatif = jumlah waktu leg ditambah waktu di titik (bagian 5). Haluan dicetak tiga angka; 0 ditulis 360.
+Waktu kumulatif di tabel = jumlah waktu terbang leg saja; waktu di titik (bagian 5) dicetak di kolom dan total tersendiri, tidak dijumlahkan ke waktu terbang. Semua keluaran yang dibaca orang memformat dari nilai mentah yang sama; hanya JSON yang dibulatkan satu desimal. Leg berjarak di bawah 0,05 km dicetak tanpa haluan. Haluan dicetak tiga angka; 0 ditulis 360.
 
 Urutan titik tidak diubah mesin (K1). Mesin hanya menyisipkan titik belokan (bagian 4).
 

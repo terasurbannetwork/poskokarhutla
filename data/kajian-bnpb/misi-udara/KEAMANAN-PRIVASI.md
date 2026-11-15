@@ -25,6 +25,7 @@ Otoritas: `KEPUTUSAN-MISI.md`. Pola: `data/kajian-bnpb/operasi-udara/KEAMANAN-PR
 8. **Data basi dan data kosong tidak pernah lolos diam-diam.** Tiap pemeriksaan mencetak jam data; di atas batas basi dicetak "tidak diperiksa" (ALGORITMA bagian 3).
 9. **Teks keluar lewat penyaring.** Nama titik dan zona melewati penyaring HTML dan XML sebelum masuk PDF, KML, GPX, dan layar.
 10. **Rahasia.** Tidak ada kunci, token, atau nomor HP di berkas yang dilacak git; nomor HP tidak masuk repo.
+11. **Citra peta dari luar.** Latar peta PDF diunduh sebagai ubin citra dari server Esri, sehingga area rute terlihat oleh server itu dan nomor ubinnya tersimpan di cache `scripts/operasi/kerja/ubin` (diabaikan git). Untuk jenis `kunjungan` peta digambar tanpa citra secara bawaan; `--citra` memaksanya, `--tanpa-citra` tersedia untuk jenis lain. Tautan pendek hanya diikuti ke port 443.
 
 ## 3. Matriks hak (Q10 [SEMENTARA])
 

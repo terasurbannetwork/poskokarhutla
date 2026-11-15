@@ -12,6 +12,7 @@ tetangga terdekat. Usulan lokasi untuk dilihat, bukan perintah terbang.
   python3 scripts/operasi/renlap_banjir.py daftar [--prov ...] [--tanggal ...]   (daftar titik saja: CSV, KML, TXT)
   python3 scripts/operasi/renlap_banjir.py peta [--prov ...] [--tanggal ...]     (PDF peta titik: ikhtisar + per kab/kota)
   python3 scripts/operasi/renlap_banjir.py buat --prov Aceh "Sumatera Utara" [--tanggal YYYY-MM-DD] [--kecepatan 200] [--keluar DIR]
+Flight plan rute tetap per jenis misi (dropping, pantau, dst.) pindah ke scripts/umum/misi_udara.py (Misi Udara MU-03, 15 Nov 2026).
 Keluaran: PDF per base + gabungan, KML, GPX, TXT siap WA, JSON (bawaan data/laporan-bnpb/paparan/renlap-udara-banjir-<tanggal>/).
 """
 import argparse
@@ -315,123 +316,7 @@ def peta_pdf(a):
     print(pdf)
 
 
-def susun_tetap(titik, v):
-    """Rute urut tetap (tanpa optimasi): leg, haluan, jarak, waktu terbang kumulatif (tanpa waktu di darat)."""
-    leg, kum_km, kum_mnt = [], 0.0, 0.0
-    titik[0].update(kum_km=0, kum_mnt=0)
-    for i in range(1, len(titik)):
-        a, c = titik[i - 1], titik[i]
-        j = RP.km((a['lat'], a['lon']), (c['lat'], c['lon']))
-        kum_km += j; kum_mnt += j / v * 60
-        c.update(kum_km=kum_km, kum_mnt=kum_mnt)
-        leg.append({'no': i, 'dari': a['kode'], 'ke': c['kode'], 'lat': c['lat'], 'lon': c['lon'], 'km': j, 'nm': j / R.NM_KM, 'mnt': j / v * 60,
-                    'haluan': R.baringan(a['lat'], a['lon'], c['lat'], c['lon'])})
-    return leg
-
-
-def rencana(a):
-    """Flight plan rute tetap pilihan pemilik (15 Nov 2026: "Medan (Lanud Suwondo) - Subulussalam (titik dropping Heli menyusul) -
-    Tapanuli Tengah (titik dropping Heli menyusul) - Medan (Lanud Suwondo)"). Titik dropping yang belum ditetapkan memakai titik sementara
-    (pusat kota/ibu kota kabupaten) dan ditandai; jalankan ulang dengan --titik bila koordinat dropping sudah ada.
-    --base "KODE|Nama|ICAO|lat|lon"   --titik "KODE|Nama tempat|lat|lon|sementara(1/0)" ... (urut terbang)"""
-    bk, bn, bi, bla, blo = a.base.split('|')
-    base = {'kode': bk, 'nama': bn, 'icao': bi, 'lat': float(bla), 'lon': float(blo), 'tempat': f'Base {bn} ({bi})'}
-    cp = []
-    for t in a.titik:
-        k, nm, la, lo, sm = t.split('|')
-        cp.append({'kode': k, 'kec': nm, 'tempat': nm, 'lat': float(la), 'lon': float(lo), 'sementara': sm == '1'})
-    for i, c in enumerate(cp, 1):
-        c['urut'] = i
-    titik = [base] + cp + [dict(base, tempat=f'Kembali ke {bn} ({bi})')]
-    leg = susun_tetap(titik, a.kecepatan)
-    tanggal = a.tanggal or date.today().isoformat()
-    d = date.fromisoformat(tanggal); tg = f'{d:%d%m%y}'
-    keluar = Path(a.keluar) if a.keluar else AKAR / f'data/laporan-bnpb/paparan/flight-plan-banjir-{tanggal}'
-    kerja = keluar / 'kerja'; cache = RP.KERJA / 'ubin'
-    kerja.mkdir(parents=True, exist_ok=True); cache.mkdir(parents=True, exist_ok=True)
-    meta = {'per': f'{d.day} {RP.BULAN[d.month - 1]} {d.year}'}
-    judul = ' - '.join([bn] + [c['kec'].split(' (')[0] for c in cp] + [bn])
-    ey = 'BNPB, FLIGHT PLAN HELIKOPTER DROPPING BANTUAN BANJIR'
-    W, H = 1100, 1060
-    la = [t['lat'] for t in titik]; lo = [t['lon'] for t in titik]
-    z = 12
-    while z > 4:
-        (ax, ay), (bx, by) = RP.gpx(max(la), min(lo), z), RP.gpx(min(la), max(lo), z)
-        if (bx - ax) * 1.3 <= W and (by - ay) * 1.3 <= H:
-            break
-        z -= 1
-    clat, clon = (min(la) + max(la)) / 2, (min(lo) + max(lo)) / 2
-    P = RP.bingkai(clat, clon, z, W, H, cache, kerja / 'rute.jpg')
-    s = RP.svg_rute(P, titik, W, H)
-    s += RP.penanda(P, titik[0], 15, base=True, label=bn)
-    for c in cp:
-        s += RP.penanda(P, c, 13, label=c['kec'] + (' (sementara)' if c['sementara'] else ''), ukuran=18)
-    mpp = RP.m_per_px(clat, z)
-    s += RP.skala(W, H, mpp, next(k for k in (5, 10, 20, 25, 50, 100) if k * 1000 / mpp >= W * .12)) + RP.utara(W) + ['</svg>']
-    tot_km, tot_mnt = titik[-1]['kum_km'], titik[-1]['kum_mnt']
-    tanda = ' <span class="pil abu">titik menyusul</span>'
-    baris = ''.join(
-        f'<tr><td><span class="bul{" b" if t is titik[0] or t is titik[-1] else ""}">{"B" if t is titik[0] or t is titik[-1] else t["urut"]}</span></td>'
-        f'<td><b>{t["kode"]}</b> {html.escape(t["tempat"])}{tanda if t.get("sementara") else ""}</td>'
-        f'<td class="n"><a href="{RP.gmaps(t["lat"], t["lon"])}">{t["lat"]:.4f}, {t["lon"]:.4f}</a></td>'
-        f'<td class="n">{RP.ang(t["kum_km"])} km</td><td class="n">+{RP.ang(t["kum_mnt"])} mnt</td></tr>' for t in titik)
-    n_sm = sum(c['sementara'] for c in cp)
-    kpi = (f'<div class="kpi"><div class="o"><b>{RP.ang(len(cp))} titik dropping</b><span>{RP.ang(n_sm)} masih titik sementara, koordinat menyusul</span></div>'
-           f'<div><b>{RP.ang(len(leg))} leg</b><span>berangkat dan kembali di {html.escape(bn)}</span></div>'
-           f'<div><b>± {RP.ang(tot_km)} km</b><span>garis lurus ({RP.ang(tot_km / R.NM_KM)} NM)</span></div>'
-           f'<div class="o"><b>± {RP.ang(tot_mnt)} menit terbang</b><span>pada {RP.ang(a.kecepatan)} km/jam, belum termasuk waktu di darat</span></div></div>')
-    kaki_ = (f'<div class="kaki">Jarak garis lurus (lingkaran besar), haluan sejati, kecepatan jelajah {RP.ang(a.kecepatan)} km/jam tanpa angin. Koordinat Lanud Soewondo '
-             f'dari data aerodrome publik; titik bertanda menyusul adalah pusat kota/ibu kota kabupaten, diganti setelah titik dropping ditetapkan. Citra Esri World Imagery. '
-             f'Usulan untuk perencanaan, bukan perintah terbang: rute, ketinggian, dan izin wilayah udara ditetapkan PIC dan komando.</div>')
-    h1 = (f'<section class="hal">{RP.kepala(ey, judul, meta, "Tanggal<b>%s</b>" % meta["per"])}{kpi}'
-          f'<div class="dua"><div><div class="peta" style="height:118mm"><img src="rute.jpg">{"".join(s)}</div>'
-          f'<div class="leg"><span><i style="background:#e8590c"></i>Titik dropping</span><span><i style="background:#0b2545"></i>Base</span>'
-          f'<span style="color:#0284c7">— Rute dan arah terbang</span></div></div>'
-          f'<div class="kartu"><h3>Urutan titik, klik koordinat untuk Google Maps</h3><table><thead><tr><th></th><th>Titik</th><th class="n">Koordinat</th>'
-          f'<th class="n">Jarak tempuh</th><th class="n">Waktu terbang</th></tr></thead><tbody>{baris}</tbody></table>'
-          f'<p class="fnd">Jarak dan waktu kumulatif sejak lepas landas, tanpa waktu bongkar muat di titik dropping.</p></div></div>{kaki_}</section>')
-    lb = ''.join(f'<tr><td>{x["no"]}</td><td style="white-space:nowrap"><b>{x["dari"]}</b> ke <b>{x["ke"]}</b></td><td class="mono">{R.dms(x["lat"], x["lon"])}</td>'
-                 f'<td class="n"><a href="{RP.gmaps(x["lat"], x["lon"])}">{x["lat"]:.4f}, {x["lon"]:.4f}</a></td>'
-                 f'<td class="n"><b>{round(x["haluan"]) % 360 or 360:03d}°</b></td><td class="n">{RP.ang(x["km"], 1)} km</td><td class="n">{RP.ang(x["nm"], 1)} NM</td>'
-                 f'<td class="n">{RP.ang(x["mnt"])} mnt</td></tr>' for x in leg)
-    lb += (f'<tr><td></td><td><b>Total</b></td><td></td><td></td><td></td><td class="n"><b>{RP.ang(tot_km)} km</b></td>'
-           f'<td class="n"><b>{RP.ang(tot_km / R.NM_KM)} NM</b></td><td class="n"><b>{RP.ang(tot_mnt)} mnt</b></td></tr>')
-    putus = ''.join(f'<li>Koordinat titik dropping {html.escape(c["kec"])} (sekarang titik sementara).</li>' for c in cp if c['sementara'])
-    h2 = (f'<section class="hal">{RP.kepala(ey, "Tabel leg untuk pilot: haluan, jarak, dan waktu", meta, "Tanggal<b>%s</b>" % meta["per"])}'
-          f'<div class="dua" style="grid-template-columns:170mm 1fr"><div class="kartu"><h3>Tabel leg</h3><table><thead><tr><th>Leg</th><th>Dari ke</th>'
-          f'<th>Koordinat tujuan (DMS)</th><th class="n">Google Maps</th><th class="n">Haluan sejati</th><th class="n">Jarak</th><th class="n">NM</th>'
-          f'<th class="n">Waktu</th></tr></thead><tbody>{lb}</tbody></table><p class="fnd">Waktu leg pada {RP.ang(a.kecepatan)} km/jam tanpa angin.</p></div>'
-          f'<div class="kartu" style="align-self:start"><h3>Yang perlu ditetapkan</h3><ol>{putus}'
-          f'<li>Jenis helikopter, kecepatan jelajah, muatan, dan kebutuhan isi ulang bahan bakar; hitungan memakai {RP.ang(a.kecepatan)} km/jam.</li>'
-          f'<li>Lama di tiap titik dropping (bongkar muat) untuk jadwal kembali.</li>'
-          f'<li>Leg melintasi Bukit Barisan: awan rendah dan cuaca sore; ketinggian dan izin wilayah udara ditetapkan pilot.</li></ol></div></div>{kaki_}</section>')
-    hf = kerja / 'flight_plan.html'
-    hf.write_text(f'<!doctype html><html lang="id"><head><meta charset="utf-8"><style>{RP.CSS}</style></head><body>{h1}{h2}</body></html>')
-    nama = f'Flight Plan {judul} {tg}'
-    pdf = keluar / f'{nama}.pdf'
-    subprocess.run([RP.cari_chrome(), '--headless=new', '--disable-gpu', '--no-pdf-header-footer', '--virtual-time-budget=10000',
-                    f'--print-to-pdf={pdf}', hf.as_uri()], check=True, capture_output=True, timeout=600)
-    pm = ''.join(f'<Placemark><name>{html.escape(t["kode"] + " " + t["tempat"])}</name><Point><coordinates>{t["lon"]},{t["lat"]},0</coordinates></Point></Placemark>' for t in titik[:-1])
-    jalur = ' '.join(f'{t["lon"]},{t["lat"]},0' for t in titik)
-    (keluar / f'{nama}.kml').write_text(f'<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>{html.escape(nama)}</name>{pm}'
-                                        f'<Placemark><name>Rute</name><LineString><coordinates>{jalur}</coordinates></LineString></Placemark></Document></kml>')
-    (keluar / f'{nama}.gpx').write_text(
-        f'<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="Centurisk97" xmlns="http://www.topografix.com/GPX/1/1"><metadata><name>{html.escape(nama)}</name></metadata>'
-        + ''.join(f'<wpt lat="{t["lat"]}" lon="{t["lon"]}"><name>{t["kode"]}</name><desc>{html.escape(t["tempat"])}</desc></wpt>' for t in titik[:-1])
-        + '<rte><name>Flight plan</name>' + ''.join(f'<rtept lat="{t["lat"]}" lon="{t["lon"]}"><name>{t["kode"]}</name></rtept>' for t in titik) + '</rte></gpx>')
-    wa = [f'*Flight plan {tanggal}: {judul}* (usulan, bukan perintah terbang)']
-    for x, t in zip(leg, titik[1:]):
-        wa.append(f'Leg {x["no"]} {x["dari"]} ke {x["ke"]} {t["tempat"]}{" (titik sementara, menyusul)" if t.get("sementara") else ""}: '
-                  f'haluan {round(x["haluan"]) % 360 or 360:03d}°, {RP.ang(x["km"])} km ({RP.ang(x["nm"])} NM), ± {RP.ang(x["mnt"])} mnt, {t["lat"]:.4f}, {t["lon"]:.4f} {RP.gmaps(t["lat"], t["lon"])}')
-    wa.append(f'Total ± {RP.ang(tot_km)} km, ± {RP.ang(tot_mnt)} mnt terbang pada {RP.ang(a.kecepatan)} km/jam, belum termasuk waktu di darat.')
-    (keluar / f'{nama}.txt').write_text('\n'.join(wa))
-    print('\n'.join(wa)); print(pdf)
-
-
 def uji():
-    t = [{'kode': 'B', 'lat': 0.0, 'lon': 0.0}, {'kode': 'C', 'lat': 1.0, 'lon': 0.0}, {'kode': 'B', 'lat': 0.0, 'lon': 0.0}]
-    lg = susun_tetap(t, 200)
-    assert len(lg) == 2 and round(lg[0]['haluan']) % 360 == 0 and round(lg[1]['haluan']) == 180 and abs(t[-1]['kum_km'] - 2 * lg[0]['km']) < 1e-9
     kec_kab = {'meureudu': 'Meureudu', 'bandar dua': 'Bandar Dua', 'blangkejeren': 'Blangkejeren'}
     kej = [{'kab_kode': ['11|Pidie Jaya'], 'kec': ['Meureudu', 'Bandar dua', 'Lawe Alas']}]
     assert nama_kecamatan({'kab': 'Pidie Jaya', 'butir': {}, 'kondisi': ''}, '11', kec_kab, kej) == (['Bandar Dua', 'Meureudu'], 'logbook Pusdalops')
@@ -448,12 +333,10 @@ if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'uji':
         uji(); sys.exit()
     ap = argparse.ArgumentParser()
-    ap.add_argument('perintah', choices=['buat', 'daftar', 'peta', 'rencana'])
-    ap.add_argument('--base', default='WIMK|Lanud Soewondo|WIMK|3.5589|98.6719')
-    ap.add_argument('--titik', nargs='+', default=[])
+    ap.add_argument('perintah', choices=['buat', 'daftar', 'peta'])
     ap.add_argument('--prov', nargs='+', default=['Aceh', 'Sumatera Utara'])
     ap.add_argument('--tanggal', default='')
     ap.add_argument('--kecepatan', type=float, default=200.0, help='km/jam jelajah helikopter')
     ap.add_argument('--keluar', default='')
     a = ap.parse_args()
-    {'daftar': daftar, 'peta': peta_pdf, 'buat': buat, 'rencana': rencana}[a.perintah](a)
+    {'daftar': daftar, 'peta': peta_pdf, 'buat': buat}[a.perintah](a)

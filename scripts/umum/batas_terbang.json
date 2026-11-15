@@ -4,6 +4,7 @@
  "baris": [
   {
    "id": "penyangga_gunungapi_km",
+   "label": "penyangga di luar radius gunung api",
    "nilai": 5,
    "satuan": "km",
    "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
@@ -13,6 +14,7 @@
   },
   {
    "id": "jarak_gunung_tanpa_radius_km",
+   "label": "jarak periksa gunung Level II ke atas tanpa radius",
    "nilai": 30,
    "satuan": "km",
    "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
@@ -22,6 +24,7 @@
   },
   {
    "id": "jarak_gunung_level1_km",
+   "label": "jarak catat gunung Level I",
    "nilai": 15,
    "satuan": "km",
    "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
@@ -31,6 +34,7 @@
   },
   {
    "id": "jarak_siklon_km",
+   "label": "jarak catat siklon aktif",
    "nilai": 300,
    "satuan": "km",
    "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
@@ -40,6 +44,7 @@
   },
   {
    "id": "basi_gunungapi_jam",
+   "label": "batas basi data gunung api",
    "nilai": 48,
    "satuan": "jam",
    "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
@@ -48,6 +53,7 @@
   },
   {
    "id": "basi_abu_jam",
+   "label": "batas basi data abu",
    "nilai": 12,
    "satuan": "jam",
    "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
@@ -56,6 +62,7 @@
   },
   {
    "id": "basi_tsunami_jam",
+   "label": "batas basi data tsunami",
    "nilai": 6,
    "satuan": "jam",
    "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
@@ -64,6 +71,7 @@
   },
   {
    "id": "basi_siklon_jam",
+   "label": "batas basi data siklon",
    "nilai": 12,
    "satuan": "jam",
    "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
@@ -72,6 +80,7 @@
   },
   {
    "id": "basi_banjir_jam",
+   "label": "batas basi data banjir",
    "nilai": 24,
    "satuan": "jam",
    "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
@@ -80,6 +89,7 @@
   },
   {
    "id": "basi_longsor_jam",
+   "label": "batas basi data longsor",
    "nilai": 24,
    "satuan": "jam",
    "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
@@ -88,6 +98,7 @@
   },
   {
    "id": "basi_metar_jam",
+   "label": "batas basi data METAR",
    "nilai": 3,
    "satuan": "jam",
    "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
@@ -96,6 +107,7 @@
   },
   {
    "id": "kelonggaran_belokan",
+   "label": "kelonggaran belokan",
    "nilai": 1.05,
    "satuan": "kali jari-jari",
    "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
@@ -104,6 +116,7 @@
   },
   {
    "id": "saran_isi_ulang_km",
+   "label": "jarak saran isi ulang dari rute",
    "nilai": 30,
    "satuan": "km",
    "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
@@ -113,6 +126,7 @@
   },
   {
    "id": "acuan_pluscode_km",
+   "label": "jarak plus code pendek dari titik acuan",
    "nilai": 50,
    "satuan": "km",
    "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
@@ -122,6 +136,7 @@
   },
   {
    "id": "dropping_lempar_rendah_mnt",
+   "label": "waktu dropping lempar rendah per titik",
    "nilai": 2,
    "satuan": "menit",
    "sumber": "bawaan sementara, tanpa sumber resmi (KEPUTUSAN-MISI)",
@@ -131,6 +146,7 @@
   },
   {
    "id": "orbit_mnt",
+   "label": "waktu orbit pantau per titik",
    "nilai": 2,
    "satuan": "menit",
    "sumber": "pola orbit renlap karhutla (ORBIT_MNT di scripts/operasi/renlap_pdf.py), bukan angka resmi",
@@ -140,6 +156,7 @@
   },
   {
    "id": "cadangan_bbm_mnt",
+   "label": "cadangan bahan bakar",
    "nilai": 30,
    "satuan": "menit",
    "sumber": "mengacu aturan Eropa dan Amerika (20 menit siang, 30 menit malam); aturan Indonesia belum terbaca",
@@ -148,6 +165,7 @@
   },
   {
    "id": "kelayakan_vis_tidak_layak_m",
+   "label": "batas jarak pandang tidak layak",
    "nilai": 1500,
    "satuan": "m",
    "sumber": "rancangan agent di public/operasi_peta.js kelayakan(b), bukan ketentuan resmi",
@@ -157,6 +175,7 @@
   },
   {
    "id": "kelayakan_vis_terbatas_m",
+   "label": "batas jarak pandang terbatas",
    "nilai": 5000,
    "satuan": "m",
    "sumber": "rancangan agent di public/operasi_peta.js kelayakan(b), bukan ketentuan resmi",
@@ -166,6 +185,7 @@
   },
   {
    "id": "kelayakan_angin_terbatas_kt",
+   "label": "batas angin terbatas",
    "nilai": 20,
    "satuan": "knot",
    "sumber": "rancangan agent di public/operasi_peta.js kelayakan(b), bukan ketentuan resmi",
@@ -175,6 +195,7 @@
   },
   {
    "id": "kelayakan_angin_tidak_layak_kt",
+   "label": "batas angin tidak layak",
    "nilai": 30,
    "satuan": "knot",
    "sumber": "rancangan agent di public/operasi_peta.js kelayakan(b), bukan ketentuan resmi",
@@ -184,6 +205,7 @@
   },
   {
    "id": "kecepatan_bawaan_kmj",
+   "label": "kecepatan jelajah bawaan",
    "nilai": 200,
    "satuan": "km/jam",
    "sumber": "bawaan bila tipe tidak dipilih; sama dengan flight plan banjir 15 Nov 2026",
@@ -192,6 +214,7 @@
   },
   {
    "id": "pms510_bidang_ringan_m",
+   "label": "sisi bidang darat helikopter ringan",
    "nilai": 4.6,
    "satuan": "m",
    "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
@@ -200,6 +223,7 @@
   },
   {
    "id": "pms510_bidang_sedang_m",
+   "label": "sisi bidang darat helikopter sedang",
    "nilai": 6,
    "satuan": "m",
    "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
@@ -208,6 +232,7 @@
   },
   {
    "id": "pms510_bidang_berat_m",
+   "label": "sisi bidang darat helikopter berat",
    "nilai": 9,
    "satuan": "m",
    "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
@@ -216,6 +241,7 @@
   },
   {
    "id": "pms510_lingkaran_ringan_m",
+   "label": "garis tengah lingkaran bebas halangan, ringan",
    "nilai": 23,
    "satuan": "m",
    "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
@@ -224,6 +250,7 @@
   },
   {
    "id": "pms510_lingkaran_sedang_m",
+   "label": "garis tengah lingkaran bebas halangan, sedang",
    "nilai": 27,
    "satuan": "m",
    "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
@@ -232,6 +259,7 @@
   },
   {
    "id": "pms510_lingkaran_berat_m",
+   "label": "garis tengah lingkaran bebas halangan, berat",
    "nilai": 33.5,
    "satuan": "m",
    "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
@@ -240,6 +268,7 @@
   },
   {
    "id": "pms510_lingkaran_kali_rotor",
+   "label": "lingkaran bebas halangan minimal",
    "nilai": 1.5,
    "satuan": "kali diameter rotor",
    "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
@@ -248,6 +277,7 @@
   },
   {
    "id": "pms510_kemiringan_maks_derajat",
+   "label": "kemiringan lapangan maksimum",
    "nilai": 6,
    "satuan": "derajat",
    "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
@@ -256,6 +286,7 @@
   },
   {
    "id": "pms510_jarak_halangan_3m",
+   "label": "jarak di jalur pendekatan untuk halangan setinggi 3 m",
    "nilai": 24,
    "satuan": "m dari tepi lingkaran bebas halangan",
    "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
@@ -264,6 +295,7 @@
   },
   {
    "id": "pms510_jarak_halangan_6m",
+   "label": "jarak di jalur pendekatan untuk halangan setinggi 6 m",
    "nilai": 49,
    "satuan": "m dari tepi lingkaran bebas halangan",
    "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
@@ -272,6 +304,7 @@
   },
   {
    "id": "pms510_jarak_halangan_9m",
+   "label": "jarak di jalur pendekatan untuk halangan setinggi 9 m",
    "nilai": 73,
    "satuan": "m dari tepi lingkaran bebas halangan",
    "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
@@ -280,6 +313,7 @@
   },
   {
    "id": "pms510_jarak_halangan_12m",
+   "label": "jarak di jalur pendekatan untuk halangan setinggi 12 m",
    "nilai": 98,
    "satuan": "m dari tepi lingkaran bebas halangan",
    "sumber": "NWCG PMS 510, Standards for Helicopter Operations, Mei 2019, Bab 8 (standar kebakaran hutan Amerika Serikat; edisi 2023 belum dicek)",
@@ -290,6 +324,7 @@
  "tipe": [
   {
    "id": "AW139",
+   "label": "kecepatan jelajah AW139 (angka umum)",
    "nama": "AgustaWestland AW139",
    "nilai": 306,
    "satuan": "km/jam",
@@ -301,6 +336,7 @@
   },
   {
    "id": "BELL412EP",
+   "label": "kecepatan jelajah BELL412EP (angka umum)",
    "nama": "Bell 412EP",
    "nilai": 226,
    "satuan": "km/jam",
@@ -312,6 +348,7 @@
   },
   {
    "id": "AS332L1",
+   "label": "kecepatan jelajah AS332L1 (angka umum)",
    "nama": "Airbus Helicopters AS332 L1 Super Puma",
    "nilai": 247,
    "satuan": "km/jam",
@@ -323,6 +360,7 @@
   },
   {
    "id": "MI171A2",
+   "label": "kecepatan jelajah MI171A2 (angka umum)",
    "nama": "Mil Mi-171A2",
    "nilai": 260,
    "satuan": "km/jam",

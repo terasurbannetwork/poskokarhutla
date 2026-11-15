@@ -202,36 +202,36 @@
  },
  "bencana": {
   "gunungapi": [
-   "Periksa gunung api Level I di dekat rute.",
-   "Periksa VONA terbaru untuk gunung terkait.",
-   "Periksa arah angin terhadap gunung terkait."
+   "Pilot dan tim darat: periksa gunung api Level I di dekat rute.",
+   "Pilot dan tim darat: periksa VONA terbaru untuk gunung terkait.",
+   "Pilot dan tim darat: periksa arah angin terhadap gunung terkait."
   ],
   "gempa": [
-   "Waspadai gempa susulan di titik darat.",
-   "Waspadai debu di reruntuhan."
+   "Pilot dan tim darat: waspadai gempa susulan di titik darat.",
+   "Pilot dan tim darat: waspadai debu di reruntuhan."
   ],
   "karhutla": [
-   "Periksa jarak pandang dan asap di base dan di tiap titik."
+   "Pilot dan tim darat: periksa jarak pandang dan asap di base dan di tiap titik."
   ],
   "udara": [
-   "Periksa jarak pandang dan asap di base dan di tiap titik."
+   "Pilot dan tim darat: periksa jarak pandang dan asap di base dan di tiap titik."
   ],
   "cuaca": [
-   "Periksa apakah rute memotong poligon peringatan dini cuaca BMKG.",
-   "Periksa siklon aktif.",
-   "Periksa badai guntur di METAR."
+   "Pilot dan tim darat: periksa apakah rute memotong poligon peringatan dini cuaca BMKG.",
+   "Pilot dan tim darat: periksa siklon aktif.",
+   "Pilot dan tim darat: periksa badai guntur di METAR."
   ],
   "banjir": [
-   "Titik darat di kecamatan berstatus Siaga atau Awas: periksa permukaan lapangan."
+   "Pilot dan tim darat: titik darat di kecamatan berstatus Siaga atau Awas: periksa permukaan lapangan."
   ],
   "longsor": [
-   "Titik darat di kecamatan berpeluang longsor tinggi: jangan mendarat di kaki atau mahkota longsor."
+   "Pilot dan tim darat: titik darat di kecamatan berpeluang longsor tinggi: jangan mendarat di kaki atau mahkota longsor."
   ],
   "kekeringan": [
-   "Daftar periksa umum: debu saat mendarat."
+   "Pilot dan tim darat: daftar periksa umum: debu saat mendarat."
   ],
   "pesisir": [
-   "Daftar periksa umum: angin laut dan terbang di atas air."
+   "Pilot dan tim darat: daftar periksa umum: angin laut dan terbang di atas air."
   ]
  },
  "lapangan_pendaratan": {
