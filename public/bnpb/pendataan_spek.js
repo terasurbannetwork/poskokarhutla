@@ -7,6 +7,8 @@
    - Satu akun boleh mengisi BANYAK isian data dan BANYAK isian aplikasi; isian "umum" (kebutuhan dan kendala) satu per akun.
    - Nilai pilihan disimpan sebagai LABEL apa adanya supaya ekspor CSV terbaca tanpa kamus. */
 
+import {periksa, dariKolom} from "../inti/spek.js";
+
 export const LAINNYA = "Lainnya";
 
 /* sasaran monitoring: hanya unit BNPB ini (pemilik, 26 Okt). Akun di luar daftar memilih "lainnya" dan menulis unitnya. */
@@ -117,39 +119,44 @@ function berlaku(c, o) {
   return vs.some(x => !c.syarat.bukan.includes(x));
 }
 
+/* KP-18a: validasi tipe lewat spek bersama public/inti/spek.js (satu validator untuk Worker dan peramban). Kolom syarat, Lainnya, dan _lain tetap aturan modul ini. */
+const POLA_URL = "^[hH][tT][tT][pP][sS]?://[^\\s<>\"]+$";
+const MEDAN = c => {
+  const b = {k: c.k, label: c.label, bantu: c.bantu};   // wajib sengaja tidak dipasang: dicek sesudah syarat dihitung
+  switch (c.tipe) {
+    case "teks": case "panjang": return {...b, tipe: c.tipe, maks: maksDari(c)};
+    case "pilih": return {...b, tipe: "pilihan", pilihan: [...c.opsi, LAINNYA]};
+    case "banyak": return {...b, tipe: "ganda", pilihan: [...c.opsi, LAINNYA]};
+    case "angka": return {...b, tipe: "bulat", min: c.min, maks: c.maks};
+    case "jam": return {...b, tipe: "jam"};
+    case "url": return {...b, tipe: "teks", maks: maksDari(c), tautan: true, pola: POLA_URL};
+  }
+};
+const SPEK = Object.fromEntries(Object.entries(KOLOM).map(([j, daftar]) => [j, dariKolom(daftar.flatMap(c => [MEDAN(c), ...(c.opsi ? [{k: c.k + "_lain", label: c.label + " (Lainnya)", tipe: "teks", maks: 200}] : [])]))]));
+export const spekIsian = jenis => SPEK[jenis];
+
 /* murni: (jenis, isian mentah, kirim) -> {isi} bersih atau {galat}. kirim=false (draf): kolom wajib boleh kosong, bentuk tetap diperiksa. */
 export function periksaIsian(jenis, mentah, kirim = false) {
   const kolom = KOLOM[jenis]; if (!kolom) return {galat: "jenis isian tidak dikenal"};
   if (!mentah || typeof mentah !== "object" || Array.isArray(mentah)) return {galat: "isian harus objek"};
   const dikenal = new Set(kolom.flatMap(c => c.opsi ? [c.k, c.k + "_lain"] : [c.k]));
   for (const k of Object.keys(mentah)) if (!dikenal.has(k)) return {galat: `kolom tidak dikenal: ${String(k).slice(0, 40)}`};
-  const isi = {};
-  for (const c of kolom) {
-    let v = mentah[c.k];
-    if (typeof v === "string") v = bersih(v, c.tipe === "panjang");
+  const pra = {}, tipe = new Map(kolom.map(c => [c.k, c]));
+  for (const k of dikenal) {
+    let v = mentah[k];
+    if (typeof v === "string") v = bersih(v, tipe.get(k)?.tipe === "panjang");
     if (Array.isArray(v)) v = v.map(x => typeof x === "string" ? bersih(x) : x);
     if (kosong(v)) continue;
-    if (c.tipe === "teks" || c.tipe === "panjang") {
-      if (typeof v !== "string") return {galat: `${c.label} harus teks`};
-      if (v.length > maksDari(c)) return {galat: `${c.label} maksimal ${maksDari(c)} huruf`};
-    } else if (c.tipe === "pilih") {
-      if (typeof v !== "string" || !(c.opsi.includes(v) || v === LAINNYA)) return {galat: `${c.label}: pilihan tidak dikenal`};
-    } else if (c.tipe === "banyak") {
-      if (!Array.isArray(v) || v.length > c.opsi.length + 1 || new Set(v).size !== v.length || !v.every(x => typeof x === "string" && (c.opsi.includes(x) || x === LAINNYA))) return {galat: `${c.label}: pilihan tidak dikenal`};
-    } else if (c.tipe === "angka") {
-      if (typeof v === "string" && /^\d{1,6}$/.test(v)) v = Number(v);
-      if (!Number.isInteger(v) || v < c.min || v > c.maks) return {galat: `${c.label} harus angka ${c.min} sampai ${c.maks}`};
-    } else if (c.tipe === "jam") {
-      if (typeof v !== "string" || !/^([01]\d|2[0-3]):[0-5]\d$/.test(v)) return {galat: `${c.label} harus jam JJ:MM`};
-    } else if (c.tipe === "url") {
-      if (typeof v !== "string" || v.length > maksDari(c) || !/^https?:\/\/[^\s<>"]+$/i.test(v) || !URL.canParse(v)) return {galat: `${c.label} harus alamat web yang diawali http:// atau https://`};
-    }
-    isi[c.k] = v;
-    if (c.opsi && (v === LAINNYA || (Array.isArray(v) && v.includes(LAINNYA)))) {
-      const l = typeof mentah[c.k + "_lain"] === "string" ? bersih(mentah[c.k + "_lain"]) : "";
-      if (l.length > 200) return {galat: `${c.label} (Lainnya) maksimal 200 huruf`};
-      if (l) isi[c.k + "_lain"] = l;
-    }
+    if (tipe.get(k)?.tipe === "angka" && typeof v === "string") v = /^\d{1,6}$/.test(v) ? Number(v) : NaN;
+    pra[k] = v;
+  }
+  const r = periksa(SPEK[jenis], pra);
+  if (!r.ok) return {galat: r.galat[0].pesan};
+  const isi = {};
+  for (const c of kolom) {
+    if (!(c.k in r.data)) continue;
+    const v = isi[c.k] = r.data[c.k];
+    if (c.opsi && (v === LAINNYA || (Array.isArray(v) && v.includes(LAINNYA))) && r.data[c.k + "_lain"]) isi[c.k + "_lain"] = r.data[c.k + "_lain"];
   }
   for (const c of kolom) if (!berlaku(c, isi)) { delete isi[c.k]; delete isi[c.k + "_lain"]; }
   if (kirim) for (const c of kolom) {

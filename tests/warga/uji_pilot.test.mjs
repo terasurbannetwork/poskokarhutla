@@ -69,7 +69,7 @@ uji("uji pilot: aturan isian (cekIsi) menolak tahap, petak, angka, dan suhu di l
   assert.match(cekIsi("tiba", null, {jenis: "karhutla"}).galat.join(), /Jumlah orang/);
   assert.match(cekIsi("petak_sebelum", null, {}).galat.join(), /pilih petak/);
   assert.match(cekIsi("tiba", "L1", {n_orang: 3, jenis: "latihan"}).galat.join(), /tidak memakai petak/);
-  assert.match(cekIsi("air_mengalir", null, {air_sampai_lance: "1", tekanan_lance_bar: "30"}).galat.join(), /0 sampai 25/);
+  assert.match(cekIsi("air_mengalir", null, {air_sampai_lance: "1", tekanan_lance_bar: "30"}).galat.join(), /0 dan 25/);
   assert.match(cekIsi("petak_sesudah", "K1", {suhu: {"1": [10, 20, 30]}}).galat.join(), /suhu titik 1/);
   assert.match(cekIsi("petak_sesudah", "K1", {suhu: {"9": [1, 2, 3, 4]}}).galat.join(), /suhu titik 9/);
   assert.equal(cekIsi("petak_sesudah", "K1", {suhu: {"1": ["52,5", null, "", 30]}}).ok, true);

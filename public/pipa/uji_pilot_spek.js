@@ -4,6 +4,8 @@
    (tests/warga/uji_pilot.test.mjs membacanya dari SQL). Waktu tiap tahap = waktu foto, jadi stopwatch keputusan 53
    (tiba, air mengalir, bongkar) terisi dari laporan itu sendiri. */
 
+import {periksa} from "../inti/spek.js";
+
 export const PETAK = ["L1", "L2", "K1", "K2"];
 export const KEDALAMAN = [10, 30, 50, 100];
 export const TITIK = 5;
@@ -43,7 +45,9 @@ export const TAHAP = [
 export const TAHAP_ID = TAHAP.map(t => t.id);
 export const MAKS = {catatan: 1000, nama: 60, regu: 80, isi: 4000};
 
-/* -> {ok, isi (bersih, siap JSON), galat:[...]} ; masukan = objek bernilai string (FormData) atau angka */
+/* -> {ok, isi (bersih, siap JSON), galat:[...]} ; masukan = objek bernilai string (FormData) atau angka.
+   KP-18a: angka, bulat, dan pilihan diperiksa spek bersama public/inti/spek.js; suhu (kisi titik x kedalaman) bukan tipe spek, jadi tetap diperiksa di sini. */
+const SPEK_TAHAP = Object.fromEntries(TAHAP.map(t => [t.id, {kolom: t.medan.filter(m => m.tipe !== "suhu").map(m => m.tipe === "pilihan" ? {...m, pilihan: m.pilihan.map(([k]) => k)} : m)}]));
 export function cekIsi(tahapId, petak, isi = {}, catatan = "") {
   const t = TAHAP.find(x => x.id === tahapId), galat = [];
   if (!t) return {ok: false, galat: [`tahap harus salah satu dari ${TAHAP_ID.join(", ")}`]};
@@ -52,30 +56,29 @@ export function cekIsi(tahapId, petak, isi = {}, catatan = "") {
   if (t.catatanWajib && !String(catatan || "").trim()) galat.push("tulis kendalanya di catatan");
   const bersih = {}, kenal = new Set(t.medan.map(m => m.nama));
   for (const k of Object.keys(isi || {})) if (!kenal.has(k)) galat.push(`isian ${k} tidak dikenal untuk tahap ${t.judul}`);
+  const pra = {};
   for (const m of t.medan) {
     const v = isi?.[m.nama];
-    const kosong = v == null || v === "" || (m.tipe === "suhu" && typeof v === "object" && !Object.keys(v).length);
-    if (kosong) { if (m.wajib) galat.push(`${m.label} wajib diisi`); continue; }
-    if (m.tipe === "pilihan") {
-      const s = String(v); if (!m.pilihan.some(([k]) => k === s)) { galat.push(`${m.label}: pilihan tidak dikenal`); continue; }
-      bersih[m.nama] = /^\d+$/.test(s) ? Number(s) : s;
-    } else if (m.tipe === "suhu") {
-      if (typeof v !== "object" || Array.isArray(v)) { galat.push("suhu harus kisi titik × kedalaman"); continue; }
-      const kisi = {};
-      for (const [titik, baris] of Object.entries(v)) {
-        if (!/^[1-5]$/.test(titik) || !Array.isArray(baris) || baris.length !== KEDALAMAN.length) { galat.push(`suhu titik ${titik} tidak sah`); continue; }
-        const a = baris.map(x => x == null || x === "" ? null : Number(String(x).replace(",", ".")));
-        if (a.some(x => x != null && !(Number.isFinite(x) && x >= -10 && x <= 900))) { galat.push(`suhu titik ${titik} harus -10 sampai 900 °C`); continue; }
-        if (a.some(x => x != null)) kisi[titik] = a;
-      }
-      if (Object.keys(kisi).length) bersih.suhu = kisi;
-    } else {
-      const x = Number(String(v).replace(",", "."));
-      if (!Number.isFinite(x) || x < m.min || x > m.maks || (m.tipe === "bulat" && !Number.isInteger(x))) {
-        galat.push(`${m.label} harus ${m.tipe === "bulat" ? "bilangan bulat " : ""}${m.min} sampai ${m.maks} ${m.satuan}`); continue;
-      }
-      bersih[m.nama] = x;
+    if (v == null || v === "") continue;
+    if (m.tipe === "suhu") continue;
+    pra[m.nama] = String(v).replace(",", ".");   // koma desimal; pilihan memakai kunci teks
+  }
+  const r = periksa(SPEK_TAHAP[t.id], pra);
+  for (const g of r.galat) galat.push(g.pesan);
+  for (const m of t.medan) if (m.nama in r.data) bersih[m.nama] = m.tipe === "pilihan" && /^\d+$/.test(r.data[m.nama]) ? Number(r.data[m.nama]) : r.data[m.nama];
+  for (const m of t.medan) {
+    if (m.tipe !== "suhu") continue;
+    const v = isi?.[m.nama];
+    if (v == null || v === "" || (typeof v === "object" && !Object.keys(v).length)) { if (m.wajib) galat.push(`${m.label} wajib diisi`); continue; }
+    if (typeof v !== "object" || Array.isArray(v)) { galat.push("suhu harus kisi titik × kedalaman"); continue; }
+    const kisi = {};
+    for (const [titik, baris] of Object.entries(v)) {
+      if (!/^[1-5]$/.test(titik) || !Array.isArray(baris) || baris.length !== KEDALAMAN.length) { galat.push(`suhu titik ${titik} tidak sah`); continue; }
+      const a = baris.map(x => x == null || x === "" ? null : Number(String(x).replace(",", ".")));
+      if (a.some(x => x != null && !(Number.isFinite(x) && x >= -10 && x <= 900))) { galat.push(`suhu titik ${titik} harus -10 sampai 900 °C`); continue; }
+      if (a.some(x => x != null)) kisi[titik] = a;
     }
+    if (Object.keys(kisi).length) bersih.suhu = kisi;
   }
   return {ok: !galat.length, isi: bersih, galat};
 }
