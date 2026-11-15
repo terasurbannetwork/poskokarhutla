@@ -1,0 +1,11 @@
+/* Pita dan daftar antrean bersama (public/inti/antre.js). Tombol ikon polos: tanpa garis, kotak, atau latar. */
+.antre-pita { position: sticky; top: 0; z-index: 20; display: flex; gap: 8px; align-items: center; margin: 0 0 12px; padding: 8px 14px; border-radius: 10px; background: #fff7e0; border: 1px solid #e8c766; color: #5a4300; font-size: .875rem; font-weight: 600; }
+.antre-pita > span { flex: 1; }
+.antre-pita.antre-galat { background: #fdecec; border-color: #e39a9a; color: #7a1d1d; }
+.antre-pita[hidden], .antre-daftar[hidden] { display: none; }
+.antre-ikon { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; }
+.antre-ikon:disabled { opacity: .5; cursor: default; }
+.antre-daftar { margin: 0 0 12px; overflow-x: auto; }
+.antre-daftar table { width: 100%; border-collapse: collapse; font-size: .8125rem; }
+.antre-daftar th, .antre-daftar td { padding: 6px 10px; text-align: left; border-bottom: 1px solid #e3e8ef; }
+.antre-daftar thead th { background: #0b2a4a; color: #fff; text-align: center; font-weight: 600; }
