@@ -644,7 +644,7 @@ def slide_lengkap(L):
     for n in urut_b:
         brB.append([n] + [sel_b(x) for x in bk[n]])
     tabel(sl, .6, 1.4, 5.8, kolB, brB, .3, 6.95)
-    kolS = [('Kab/Kota', 1.3, 'l'), ('Kecamatan', 1.15, 'l'), ('Debit, m³/dtk', .9, 'c'), ('Banjir 2 th, m³/dtk', 1.15, 'c'), ('% banjir 2 th', .95, 'c'), ('Puncak', .7, 'c')]
+    kolS = [('Kab/Kota', 1.3, 'l'), ('Kecamatan', 1.15, 'l'), ('Debit, m³/dtk', .9, 'c'), ('Batas meluap', 1.2, 'c'), ('% batas meluap', 1.0, 'c'), ('Puncak', .7, 'c')]
     brS = [[t['kab'], (t['kec'], INK, False), rb(round(t['pk'])), rb(round(t['q2'])),
             ({'pil': f'{round(100 * t["r"])}%', 'isi': LEVEL[min(3, t['kls'] + 1)][0] if t['kls'] else 'EEF3F9', 'tegas': LEVEL[min(3, t['kls'] + 1)][1] if t['kls'] else NAVY}),
             tgl(t['tgl'])] for t in titik[:len(bk)]]
