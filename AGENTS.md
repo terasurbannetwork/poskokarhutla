@@ -320,6 +320,17 @@ Sebelum menyentuh cara orang masuk (halaman `/masuk`, kode sekali pakai, akun um
 
 Aturan berhentinya sama dengan §2.1. Sesi peran tetap diterbitkan modulnya sendiri; pintu lama tidak ditutup; staf selalu wajib sandi dan akun rahasia tidak pernah lewat kode; paket ini tidak membuat baris `staf` atau `instansi_akun`; tidak pernah membaca WA masuk; kode tidak pernah tersimpan atau tercatat dalam bentuk terbaca.
 
+### 2.18 Misi Udara (renlap flight semua bencana: dropping, pantau, evakuasi, angkut, pencarian, kunjungan): baca dulu, baru bangun
+
+Sebelum menyentuh flight plan helikopter per jenis misi, pemeriksaan zona terbang per bencana (radius gunung api, abu, tsunami, cuaca), pembaca titik dari tautan Google Maps, atau pola pencarian, baca dokumen di
+`data/kajian-bnpb/misi-udara/` dengan urutan otoritas ini (kode di `scripts/umum/misi_udara.py`, `scripts/umum/zona_terbang.py`, `scripts/umum/batas_terbang.json`, `scripts/umum/misi_templat.json` milik `pipa-umum`; `scripts/wa/misi_udara.mjs` milik `wa-bot`; `src/pb_misi.js` dan migrasi `pb_misi`, `pb_misi_hasil` milik `warga-api`; `public/inti/misi_udara.*` milik `inti-layar`):
+
+1. `KEPUTUSAN-MISI.md`: keputusan pemilik K1–K6, rancangan D1–D9, pertanyaan terbuka Q1–Q17 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md` (F-1..F-15, enam jenis misi), 4. `ALUR.md`, 5. `ALGORITMA.md` (zona, belokan, daya tahan, kelayakan), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`MU-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Usulan, bukan perintah terbang, dan tidak pernah menulis "aman"; zona dan ambang hanya dari sumber, angka tanpa sumber tidak dikodekan; tanpa nama orang; keluaran tidak di `public/` dan jenis kunjungan tidak di-commit; satu mesin di `scripts/umum/`, tanpa `renlap_<bencana>.py`; renlap karhutla dan semai awan tidak diubah.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
