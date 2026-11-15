@@ -72,6 +72,7 @@ export const RUTE_BNPB = {
   "GET /kinerja-bnpb": (env, req, url) => halamanBnpbPublik(env, url, "kinerja"),
   "GET /sitrep": (env, req, url) => halamanBnpbPublik(env, url, "sitrep"),
   "GET /kebutuhan": (env, req, url) => halamanBnpbPublik(env, url, "kebutuhan"),
+  "GET /bnpb/pimpinan": (env, req, url) => halamanBnpbPublik(env, url, "pimpinan", {pribadi: true}),   // dashboard pimpinan semua bencana (PB-31, /api/pb/ringkas)
   "GET /bnpb/siaga": (env, req, url) => halamanBnpbPublik(env, url, "siaga"),   // kalender siaga pra-musim (data /data/bnpb/siaga.json)
   /* bukan "/kebakaran": jalur itu disisakan untuk entri registry bencana bila kelak ada */
   "GET /risiko-kebakaran": (env, req, url) => halamanBnpbPublik(env, url, "kebakaran"),
