@@ -353,6 +353,39 @@ Sebelum menyentuh register organisasi luar, baris 3W per kejadian dan kab per kl
 
 Aturan berhentinya sama dengan §2.1. Tanpa router WA; mesin tidak memutuskan tawaran; organisasi hanya melihat baris miliknya; tidak publik.
 
+### 2.21 Kaji ulang pasca-kejadian (after-action review per kejadian Buku Besar): baca dulu, baru bangun
+
+Sebelum menyentuh draf kaji ulang otomatis dari linimasa sistem, pelajaran dan rekomendasi staf, pelacakan rekomendasi lewat mesin log tindak lanjut, baca dokumen di
+`data/kajian-bnpb/kaji-ulang/` dengan urutan otoritas ini (kode di `src/` dan migrasinya milik `warga-api`; layar di `public/siklus/` milik `siklus`):
+
+1. `KEPUTUSAN-KAJI-ULANG.md`: keputusan pemilik, rancangan, dan pertanyaan terbuka dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`KU-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Draf dari data sistem, kalimat pelajaran ditulis staf; bagian tanpa data tertulis "tidak ada data", tidak pernah nol; riwayat rekomendasi append-only.
+
+### 2.22 Peta kerusakan bangunan dari satelit (masuk Jitupasna /siklus): baca dulu, baru bangun
+
+Sebelum menyentuh perkiraan bangunan rusak dari citra satelit sesudah kejadian, validasi per jenis bahaya, penerimaan staf ke Jitupasna, baca dokumen di
+`data/kajian-bnpb/kerusakan-satelit/` dengan urutan otoritas ini (pipeline satelit milik `siklus` dan `pipa-umum` sesuai berkasnya; perubahan D1 Jitupasna milik `warga-api`):
+
+1. `KEPUTUSAN-KERUSAKAN.md`: keputusan pemilik, rancangan, dan pertanyaan terbuka dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`KS-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Validasi dulu per jenis bahaya; tanpa vonis lulus tidak ada angka rusak; keluaran satelit selalu berlabel perkiraan dan hanya masuk Jitupasna lewat penerimaan staf; gempa tetap gagal sampai metode baru lulus.
+
+### 2.23 Penurunan tanah dari radar satelit (InSAR) dan proyeksi rob: baca dulu, baru bangun
+
+Sebelum menyentuh laju penurunan tanah per wilayah pesisir dari InSAR, proyeksi genangan rob 10-20 tahun, baca dokumen di
+`data/kajian-bnpb/penurunan-tanah/` dengan urutan otoritas ini (pipeline `scripts/banjir/subsiden.py` dan layar `public/banjir/**` milik `banjir`):
+
+1. `KEPUTUSAN-PENURUNAN.md`: keputusan pemilik, rancangan, dan pertanyaan terbuka dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md`, 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`PT-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Rob dan penurunan tanah tampil terpisah berlabel; tanpa angka gabungan sebelum uji balik; berkas beku sidik J4 tidak disunting; unduh data hanya sesudah izin pemilik (Q1).
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
