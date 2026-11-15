@@ -15,6 +15,7 @@ import {CSP_ADMIN} from "./admin_halaman.js";
 import {modOK} from "./posko.js";
 import {stafSesi, cobaMasukStaf, hanyaDirektori} from "./staf.js";
 import {masukPemirsa, arahPemirsa, cookiePemirsa} from "./pemirsa.js";
+import {pelakuSistem, hitungLaju, stmtLaju} from "./hak.js";
 import {halStatistik} from "./bencana.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, WIB = 7 * JAM;
@@ -257,13 +258,23 @@ export async function masuk(env, req, kini, halamanMasuk) {
   if (!env.SESI_KUNCI || !env.ADMIN_TOKEN) return htmlMasuk(hal("Server belum dikonfigurasi (SESI_KUNCI / ADMIN_TOKEN)."), 503);
   /* ?ke= dari tombol "Masuk staf": akun gerbang (AKUN_SITUS) lolos adminOK tapi ditolak rute staf, jadi dialihkan balik = putar terus (9 Nov 2026). Dia harus bisa ganti akun: tampilkan form. */
   if (req.method === "GET") return (ke ? await modOK(env, req) : await adminOK(env, req, kini)) ? alihkan(ke || "/admin/statistik") : htmlMasuk(hal(""));
-  const laju = await lunak(cekLaju(env, await ipHash(env, req), "masuk", kini), null);
+  const iph = await ipHash(env, req), laju = await lunak(cekLaju(env, iph, "masuk", kini), null);
   if (laju) return htmlMasuk(hal("Terlalu banyak percobaan. Coba lagi nanti."), 429, {"retry-after": laju.headers.get("retry-after") || "900"});
   const u = await bacaBytes(req, 2048), t = u.b ? new TextDecoder().decode(u.b) : "";   // body dibaca per byte; lebih dari 2 KB = dianggap kosong (401)
   /* akun = entri "email:sandi" (atau "username:sandi") di ADMIN_TOKEN/AKUN_SITUS, huruf kecil; tetap lewat adminOK supaya sesi & pencabutan sama dengan token */
   const f = new URLSearchParams(t.length <= 2048 ? t : ""), email = (f.get("email") || "").trim().toLowerCase(), sandi = f.get("sandi") || "";
   const kunciEmail = email ? (await sha(env.IP_SALT + "|masuk|" + email)).slice(0, 32) : "";   // batas per akun: memutar IP tak menghindarinya
-  if (kunciEmail && await lunak(gagalSudahBanyak(env, kunciEmail, "admin_gagal", MAKS_GAGAL_EMAIL, kini), false)) return htmlMasuk(hal("Terlalu banyak percobaan untuk akun ini. Coba lagi nanti."), 429, {"retry-after": "3600"});
+  /* Di bawah ambang per akun sandi benar masuk dari IP mana pun; di atasnya hanya dari IP yang pernah berhasil masuk untuk akun itu (penanda masuk_ok), selain itu 429 sama dengan sandi salah (bukan orakel).
+     ponytail: penanda di laju_bnpb (aksi bebas) dengan waktu = kini + 30 hari: pembersih (src/bnpb.js, waktu <= kini - 2 hari) baru menghapusnya ~32 hari sesudah login, dan dibaca "waktu > kini". */
+  const tahan = async () => {
+    if (!kunciEmail) return null;
+    const ok = (await sha(env.IP_SALT + "|masuk_ok|" + email + "|" + iph)).slice(0, 32);
+    if (await lunak(gagalSudahBanyak(env, kunciEmail, "admin_gagal", MAKS_GAGAL_EMAIL, kini), false)
+      && !await lunak(hitungLaju(env, pelakuSistem, ok, "masuk_ok", kini), 0))
+      return htmlMasuk(hal("Terlalu banyak percobaan untuk akun ini. Coba lagi nanti."), 429, {"retry-after": "3600"});
+    if (!await lunak(hitungLaju(env, pelakuSistem, ok, "masuk_ok", kini + 29 * HARI), 1)) await lunak(stmtLaju(env, pelakuSistem, ok, "masuk_ok", kini + 30 * HARI).run(), null);   // satu baris per hari paling banyak
+    return null;
+  };
   const sah = email && sandi && await adminOK(env, new Request("http://x/", {headers: {"x-admin-token": `${email}:${sandi}`}}), kini);
   if (!sah) {
     /* akun pemirsa (src/pemirsa.js): hanya tab tertentu; sesi admin di peramban ini dihapus supaya batasnya benar-benar berlaku */
@@ -272,18 +283,23 @@ export async function masuk(env, req, kini, halamanMasuk) {
       /* akun staf (src/staf.js) lewat pintu yang sama: satu halaman masuk untuk admin, pemirsa, dan staf (perintah pemilik 3 Nov 2026). Penguncian staf ikut aturan staf. */
       const m = email && sandi ? await cobaMasukStaf(env, req, email, sandi, kini).catch(e => (/no such table/i.test(String(e?.message || e)) || d1Habis(e) ? {hasil: "salah"} : Promise.reject(e))) : {hasil: "salah"};
       if (m.hasil === "ok") {
+        const tolak = await tahan(); if (tolak) return tolak;
         /* operator_cc SAJA ke peta utama "/" (dulu di form Meja Pantau), Direktori saja ke /direktori; ?ke= yang sah menang */
         /* akun Direktori saja: ?ke= di luar /direktori diabaikan, kalau tidak "/" melempar balik ke /admin/masuk?ke=/ dan login berputar (3 Nov 2026) */
         const p = m.staf.peran || [], d = hanyaDirektori(p), keSah = d && !/^\/direktori([/?#]|$)/.test(ke) ? "" : ke;
         const arah = m.staf.wajib_ganti ? "/admin/pantau" : keSah || (d ? "/direktori" : p.length === 1 && p[0] === "operator_cc" ? "/" : "/admin/pantau");
         const r = alihkan(arah, {"set-cookie": m.cookie}); r.headers.append("set-cookie", cookie("", 0)); r.headers.append("set-cookie", cookiePemirsa("", 0)); return r;
       }
+      const penuh = kunciEmail && await lunak(gagalSudahBanyak(env, kunciEmail, "admin_gagal", MAKS_GAGAL_EMAIL, kini), false);
       if (kunciEmail) await lunak(catatGagal(env, kunciEmail, "admin_gagal", kini), null);
+      if (penuh) return htmlMasuk(hal("Terlalu banyak percobaan untuk akun ini. Coba lagi nanti."), 429, {"retry-after": "3600"});
       return m.hasil === "kunci" ? htmlMasuk(hal("Terlalu banyak percobaan untuk akun ini. Coba lagi nanti."), 429, {"retry-after": "3600"}) : htmlMasuk(hal("Username atau kata sandi salah."), 401);
     }
+    const tolak = await tahan(); if (tolak) return tolak;
     const r = alihkan((ke && !arahPemirsa(p, ke.split("?")[0]) ? ke : arahPemirsa(p, "/") ?? "/"), {"set-cookie": cookiePemirsa(p.token, p.umur)});
     r.headers.append("set-cookie", cookie("", 0)); return r;
   }
+  const tolak = await tahan(); if (tolak) return tolak;
   const r = alihkan(ke || "/admin/statistik", {"set-cookie": cookie(await buatSesi(env, sah, kini), SESI_UMUR / 1000)});
   r.headers.append("set-cookie", cookiePemirsa("", 0)); return r;
 }

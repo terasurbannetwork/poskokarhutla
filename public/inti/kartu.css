@@ -108,11 +108,11 @@
 /* ===== kepala kartu navy, berlaku untuk SEMUA kartu .ex (pemilik 5 Nov 2026: opsi 1 "gas", "semua terapin") =====
    :is(html,#_) memberi spesifisitas ID supaya menang atas salinan lama per halaman (#insight/#tren/#dampak/#berita/#metode/#satelit .ex-hd)
    tanpa menyunting tiap berkas. Kontrol (seg, select) tetap berlatar terang sendiri di atas navy. */
-:is(html,#_) .ex>.ex-hd{background:#0b2545;border-bottom:0;color:#fff}
-:is(html,#_) .ex>.ex-hd .ex-ey{color:#d6e4f5;background:rgb(255 255 255 / .14)}
-:is(html,#_) .ex>.ex-hd .ex-jd>h3,:is(html,#_) .ex>.ex-hd h3{color:#fff}
-:is(html,#_) .ex>.ex-hd .hl{color:#ffab7a}
-:is(html,#_) .ex>.ex-hd .ctl{color:#d6e4f5}
+:is(html,#_) .ex>.ex-hd{background:var(--head-bg);border-bottom:0;color:var(--on-head)}
+:is(html,#_) .ex>.ex-hd .ex-ey{color:var(--on-head-2);background:color-mix(in srgb,var(--on-head) 14%,transparent)}
+:is(html,#_) .ex>.ex-hd .ex-jd>h3,:is(html,#_) .ex>.ex-hd h3{color:var(--on-head)}
+:is(html,#_) .ex>.ex-hd .hl{color:var(--head-hl)}
+:is(html,#_) .ex>.ex-hd .ctl{color:var(--on-head-2)}
 /* gaya B: ubin ikon di kiri, baris pil (kategori + tingkat) dan judul di kanan (dipasang Peluang.kartu lewat .ex-ik dan .ex-pl) */
 .ex>.ex-hd:has(>.ex-ik){display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:14px;align-items:center}
 .ex>.ex-hd:has(>.ex-ik)>.ex-ik{grid-row:1/3}

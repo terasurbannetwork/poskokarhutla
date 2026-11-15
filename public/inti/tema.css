@@ -7,6 +7,12 @@
   --f0:oklch(72% .15 150); --f1:oklch(86% .16 98); --f2:oklch(73% .17 58); --f3:oklch(57% .21 27);
   --shadow:0 2px 14px oklch(25% .07 256 / .08); --shadow-lg:0 8px 28px oklch(25% .07 256 / .16);
   --r:16px; --r-sm:10px; --top:58px;
+  --fs-1:11px; --fs-2:12px; --fs-3:13px; --fs-4:14.5px; --fs-5:16px; --fs-6:18px; --fs-7:21px; --fs-8:28px;
+  --jr-1:4px; --jr-2:8px; --jr-3:12px; --jr-4:16px; --jr-5:20px; --jr-6:24px; --jr-7:32px; /* awalan jr: --sp-* sudah dipakai lokal di pipa.css dengan nilai lain */
+  --r-xs:6px; --r-pill:999px; --dur-1:.12s; --dur-2:.2s; --ease:cubic-bezier(.2,.7,.2,1); --h-ctl:40px;
+  --brand-accent:oklch(71.7% .139 55.3); --head-bg:oklch(25.5% .075 256); --on-head:#fff; --on-head-2:oklch(91.4% .028 253.2); --head-hl:oklch(81.3% .118 50.7); --on-brand:#fff;
+  /* teks status, lolos AA 4,5:1 di atas --card (hue token asal, lightness disesuaikan) */
+  --ok-tx:oklch(54.5% .16 150); --warn-tx:oklch(57% .16 75); --bad-tx:oklch(57% .21 27); --info-tx:oklch(55.5% .13 235); --f2-tx:oklch(57.5% .17 58); --accent-tx:oklch(56.5% .09 252);
   --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --display:"Plus Jakarta Sans",var(--font);
   color-scheme:light;
 }
@@ -15,12 +21,14 @@
   --ink:oklch(94% .012 255); --ink2:oklch(76% .035 255); --line:oklch(33% .05 256);
   --brand:oklch(64% .12 252); --brand2:oklch(70% .11 250); --accent:oklch(72% .1 252);
   --shadow:0 2px 14px oklch(0% 0 0 / .35); --shadow-lg:0 8px 28px oklch(0% 0 0 / .5); color-scheme:dark;
+  --ok-tx:oklch(62% .16 150); --warn-tx:oklch(76% .16 75); --bad-tx:oklch(65% .21 27); --info-tx:oklch(66% .13 235); --f2-tx:oklch(73% .17 58); --accent-tx:oklch(68% .09 252);
 }}
 :root[data-theme="dark"]{
   --paper:oklch(18% .035 256); --card:oklch(22.5% .045 256); --surface:oklch(26% .05 256);
   --ink:oklch(94% .012 255); --ink2:oklch(76% .035 255); --line:oklch(33% .05 256);
   --brand:oklch(64% .12 252); --brand2:oklch(70% .11 250); --accent:oklch(72% .1 252);
   --shadow:0 2px 14px oklch(0% 0 0 / .35); --shadow-lg:0 8px 28px oklch(0% 0 0 / .5); color-scheme:dark;
+  --ok-tx:oklch(62% .16 150); --warn-tx:oklch(76% .16 75); --bad-tx:oklch(65% .21 27); --info-tx:oklch(66% .13 235); --f2-tx:oklch(73% .17 58); --accent-tx:oklch(68% .09 252);
 }
 /* dasar halaman bersama (dulu disalin di gaya.css, semua.css, tabel.css) */
 body{background:var(--paper);color:var(--ink);font:14.5px/1.5 var(--font);letter-spacing:-.006em;-webkit-font-smoothing:antialiased}

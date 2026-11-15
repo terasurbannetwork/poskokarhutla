@@ -30,8 +30,8 @@ KELUAR = os.path.join(AKAR, "public/data/lahan")
 sys.path.insert(0, os.path.join(AKAR, "scripts/data"))
 
 # Kunci publik yang GFW sendiri tempel di tautan unduh katalognya (item ArcGIS Online
-# 5581330f..., 5920a4a5..., 221fee51...), bukan kunci akun kita.
-GFW = "https://data-api.globalforestwatch.org/dataset/{}/download/shp?x-api-key=2d60cd88-8348-4c0f-a6d5-bd9adb585a8c"
+# 5581330f..., 5920a4a5..., 221fee51...). Kuncinya TIDAK di repo: ganti penanda GFW_KUNCI saat unduh (ambil()).
+GFW = "https://data-api.globalforestwatch.org/dataset/{}/download/shp?x-api-key=GFW_KUNCI"
 UNDUH = {
     # v2025 menolak unduh shp (501); data Indonesianya sama (KLHK, source_yr 2012)
     "gfw_oil_palm.zip": GFW.format("gfw_oil_palm/v20191031"),
@@ -53,6 +53,9 @@ X0, X1, Y0, Y1 = 195, 228, 123, 136  # ubin z8 yang menutup 94..141.5 BT, 6.5 LU
 def ambil(url, tujuan, coba=4):
     if os.path.exists(tujuan) and os.path.getsize(tujuan) > 0:
         return
+    if "GFW_KUNCI" in url:
+        from alert_tebang import kunci_gfw
+        url = url.replace("GFW_KUNCI", kunci_gfw())
     for i in range(coba):
         try:
             with urllib.request.urlopen(url, timeout=1800) as r, open(tujuan + ".part", "wb") as f:

@@ -76,11 +76,15 @@ test("jejak dan pesan: body chunked besar ditolak 413 (dibaca bertahap), bukan d
 /* ---------------- 3. batas gagal masuk per email ---------------- */
 test("masuk admin: 20 kegagalan per email per jam (IP berbeda-beda) mengunci akun itu, email lain tidak terganggu", async () => {
   const masuk = (email, sandi, ip = ipBaru()) => kirim("POST", "/admin/masuk", {body: `email=${encodeURIComponent(email)}&sandi=${encodeURIComponent(sandi)}`, ip, h: {"content-type": "application/x-www-form-urlencoded"}});
+  const A = ipBaru();
+  const awal = await masuk("admin@contoh.id", SANDI, A); assert.equal(awal.s, 303, "login benar dari IP tetap A: " + awal.t); assert.match(awal.h.get("set-cookie") || "", /sesi_admin=/);
   for (let i = 0; i < 20; i++) assert.equal((await masuk("admin@contoh.id", "salah" + i)).s, 401, "percobaan " + i);
-  const kunci = await masuk("admin@contoh.id", SANDI); assert.equal(kunci.s, 429, "IP baru, sandi benar, tetap terkunci: " + kunci.t); assert.ok(kunci.h.get("retry-after"));
+  const kunci = await masuk("admin@contoh.id", "salah20"); assert.equal(kunci.s, 429, "kegagalan ke-21 ditolak: " + kunci.t); assert.ok(kunci.h.get("retry-after"));
+  const baru = await masuk("admin@contoh.id", SANDI); assert.equal(baru.s, 429, "IP tak dikenal di atas ambang: sandi benar harus 429, dapat " + baru.s); assert.ok(baru.h.get("retry-after")); assert.doesNotMatch(baru.h.get("set-cookie") || "", /sesi_admin=[^;]/);
+  const dikenal = await masuk("admin@contoh.id", SANDI, A); assert.equal(dikenal.s, 303, "IP A pernah berhasil, tetap masuk: " + dikenal.t); assert.match(dikenal.h.get("set-cookie") || "", /sesi_admin=/);
   assert.equal((await masuk("lain@contoh.id", "salah")).s, 401, "email lain tidak terkunci");
-  const baris = (await DB.prepare("SELECT kunci FROM laju_posko WHERE aksi = 'admin_gagal'").all()).results;
-  assert.ok(!baris.some(x => x.kunci.includes("@")), "email mentah tidak tersimpan");
+  const baris = (await DB.prepare("SELECT kunci FROM laju_posko WHERE aksi = 'admin_gagal' UNION ALL SELECT kunci FROM laju_bnpb WHERE aksi = 'masuk_ok'").all()).results;
+  assert.ok(baris.length > 20 && !baris.some(x => x.kunci.includes("@") || x.kunci.includes(A)), "email dan IP mentah tidak tersimpan");
 });
 
 /* ---------------- 4. CSRF ---------------- */

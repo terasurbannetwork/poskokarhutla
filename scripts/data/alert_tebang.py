@@ -23,8 +23,23 @@ AKAR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 KELUAR = os.path.join(AKAR, "public/data/alert_tebang.json")
 API = "https://data-api.globalforestwatch.org"
 DATASET = "gfw_integrated_alerts"
-# Kunci publik GFW (lihat scrape/lahan.py); bukan kunci akun kita.
-KUNCI = "2d60cd88-8348-4c0f-a6d5-bd9adb585a8c"
+
+
+def kunci_gfw():
+    """Kunci GFW dari env GFW_API_KEY, atau .env (pola firms.py). Dipakai juga lahan.py dan grup_perusahaan.py."""
+    k = os.environ.get("GFW_API_KEY")
+    if not k:
+        try:
+            for b in open(os.path.join(AKAR, ".env")):
+                if b.startswith("GFW_API_KEY="):
+                    k = b.split("=", 1)[1].strip()
+        except OSError:
+            pass
+    if not k:
+        sys.exit("GFW_API_KEY belum diset")
+    return k
+
+
 UA = "poskokarhutla-pipa-data/1.0 (+https://github.com/terasurbannetwork/poskokarhutla)"
 UBIN = 1.0  # derajat
 JENIS = ("sawit", "hti", "hph", "tambang")
@@ -49,11 +64,11 @@ def minta(url, badan=None, coba=5):
 
 
 def versi():
-    return minta(f"{API}/dataset/{DATASET}/latest?x-api-key={KUNCI}")["data"]["version"]
+    return minta(f"{API}/dataset/{DATASET}/latest?x-api-key={kunci_gfw()}")["data"]["version"]
 
 
 def kueri(ver, sql, geom):
-    return minta(f"{API}/dataset/{DATASET}/{ver}/query/json?x-api-key={KUNCI}", {"sql": sql, "geometry": geom})["data"]
+    return minta(f"{API}/dataset/{DATASET}/{ver}/query/json?x-api-key={kunci_gfw()}", {"sql": sql, "geometry": geom})["data"]
 
 
 def kotak(x0, y0, x1, y1):

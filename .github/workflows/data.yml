@@ -849,6 +849,8 @@ jobs:
       - name: Alert tebang GFW (boleh gagal)
         if: steps.hari.outputs.jalan == '1'
         continue-on-error: true
+        env:
+          GFW_API_KEY: ${{ secrets.GFW_API_KEY }}
         run: |
           python3 scripts/data/alert_tebang.py --uji
           python3 scripts/data/alert_tebang.py

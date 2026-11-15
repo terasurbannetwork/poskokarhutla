@@ -11,12 +11,14 @@ Sumber massal (tanpa scraping Google):
 Tak cocok = null, bukan tebakan.
 """
 import datetime as dt, json, os, re, struct, sys, urllib.request, zipfile, io
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from alert_tebang import kunci_gfw
 
 AKAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../..")
 CACHE = os.path.join(AKAR, "scripts/data/.cache")
 KONSESI = os.path.join(AKAR, "data/raw/konsesi/konsesi_lengkap.geojson")  # bernama, dari scripts/scrape/konsesi.py
 KELUAR = os.path.join(AKAR, "data/raw/konsesi/grup_perusahaan.json")
-GFW = "https://data-api.globalforestwatch.org/dataset/gfw_oil_palm/v20191031/download/shp?x-api-key=2d60cd88-8348-4c0f-a6d5-bd9adb585a8c"
+GFW = "https://data-api.globalforestwatch.org/dataset/gfw_oil_palm/v20191031/download/shp?x-api-key={}"
 TRASE = "https://resources.trase.earth/data/facilities-data/indonesia_wood_pulp_concessions_2020_2022_v2026_02_20.geo.json"
 SUMBER = [
     "Global Forest Watch / Kemenhut, Indonesia oil palm concessions v20191031 (kolom group_comp) https://data.globalforestwatch.org/",
@@ -86,7 +88,7 @@ def baca_dbf(b):
 
 
 def muat_gfw():
-    z = zipfile.ZipFile(ambil(GFW, "gfw_oil_palm.zip"))
+    z = zipfile.ZipFile(ambil(GFW.format(kunci_gfw()), "gfw_oil_palm.zip"))
     dbf = z.read(next(n for n in z.namelist() if n.endswith(".dbf")))
     out = {}
     for r in baca_dbf(dbf):

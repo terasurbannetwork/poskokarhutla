@@ -303,6 +303,12 @@ const SAMAR = [
   [/\b((?:api[_-]?key|token|secret|password|passwd|pwd|sandi|kata sandi)(?:-?nya)?\s*[:=]\s*)\S+/gi, '$1[rahasia]'],
   // Tanpa titik dua ("passwordnya abc123!!"): kata berikutnya disamarkan bila berangka/bersimbol, supaya "sandi acak" tetap terbaca.
   [/\b((?:password|passwd|pwd|sandi)(?:-?nya)?(?:\s+(?:adalah|yaitu|is))?\s+)(?=\S*[\d!@#$%^&*])\S{4,}/gi, '$1[rahasia]'],
+  // Sandi disebut SEBELUM kata kuncinya: "ganti jadi X ya password", "pakai X buat sandi", "X itu sandinya".
+  [/\b((?:jadi|pakai|ganti)\s+)[^\s.,;]+(?=\s+(?:ya\s+)?(?:(?:buat|untuk)\s+)?(?:password|sandi|pass)\b)/gi, '$1[rahasia]'],
+  [/\b((?:password|passwd|pwd|sandi|pass)nya\s+(?:(?:jadi|adalah)\s+)?)(?!\[)[^\s.,;]{3,}/gi, '$1[rahasia]'],
+  [/[^\s.,;]+(?=\s+itu\s+(?:password|sandi)nya\b)/gi, '[rahasia]'],
+  // Garam/hash hex 32+ karakter (SQL akun); hash commit git 7-12 karakter tak kena.
+  [/\b[0-9a-f]{32,}\b/gi, '[token]'],
   [/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g, '[email]'],
   // Jalur rumah membocorkan nama akun mesin (gerbang jalur mutlak menolaknya di repo publik).
   [/\/(?:Users|home)\/[^/\s"']+/g, '~'],
