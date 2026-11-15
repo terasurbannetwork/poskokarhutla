@@ -96,7 +96,7 @@ Yang tidak dipilih pemilik pada putaran itu: aksi antisipatif berpemicu dana, zo
 
 | No | Fitur | Benchmark | Catatan repo | Paket |
 | -- | ----- | --------- | ------------ | ----- |
-| F1 | Status Lifeline per kab/kota (listrik, sinyal, air, jalan, BBM, faskes, pangan, pengungsian), tiap warna wajib bukti | FEMA Community Lifelines, DHS CLSS | Listrik dari lampu malam: `scripts/umum/lampu_malam.py` ada tapi BELUM LAYAK TERBIT (uji balik Palu 2018 dan Bali 2025 gagal); butuh VNP46A2 asli + EARTHDATA_TOKEN (habis ~11 Des 2026) | belum |
+| F1 | (PAKET 15 Nov: data/kajian-bnpb/lifeline/) Status Lifeline per kab/kota (listrik, sinyal, air, jalan, BBM, faskes, pangan, pengungsian), tiap warna wajib bukti | FEMA Community Lifelines, DHS CLSS | Listrik dari lampu malam: `scripts/umum/lampu_malam.py` ada tapi BELUM LAYAK TERBIT (uji balik Palu 2018 dan Bali 2025 gagal); butuh VNP46A2 asli + EARTHDATA_TOKEN (habis ~11 Des 2026) | belum |
 | F2 | Peta kerusakan bangunan dari satelit sesudah kejadian, masuk Jitupasna `/siklus` | Copernicus EMS, xBD-S12, Microsoft AI for Good | Sentinel 10 m kuat untuk banjir/kebakaran, lemah untuk gempa; pakai ulang radar genangan `scripts/banjir/citra_banjir.py` | belum |
 | F3 | Siapa mengerjakan apa di mana (3W) per kejadian dan kab, per klaster PB nasional | OCHA 3W/4W | Meja `klaster` hanya dokumen, bukan kehadiran lapangan | belum |
 | F4 | Pintu bantuan internasional dan dunia usaha: tawaran dicocokkan ke kebutuhan dan 3W | AHA Centre, Palu 2018 | Pelengkap F3, bisa satu paket | belum |

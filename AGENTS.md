@@ -331,6 +331,17 @@ Sebelum menyentuh flight plan helikopter per jenis misi, pemeriksaan zona terban
 
 Aturan berhentinya sama dengan §2.1. Usulan, bukan perintah terbang, dan tidak pernah menulis "aman"; zona dan ambang hanya dari sumber, angka tanpa sumber tidak dikodekan; tanpa nama orang; keluaran tidak di `public/` dan jenis kunjungan tidak di-commit; satu mesin di `scripts/umum/`, tanpa `renlap_<bencana>.py`; renlap karhutla dan semai awan tidak diubah.
 
+### 2.19 Status Lifeline per kab/kota (listrik, sinyal, air, jalan, BBM, faskes, pangan, pengungsian): baca dulu, baru bangun
+
+Sebelum menyentuh status layanan dasar per kejadian dan kab, baca dokumen di
+`data/kajian-bnpb/lifeline/` dengan urutan otoritas ini (kode di `src/lifeline.js` dan bagian Lifeline `src/hak.js` milik `warga-api`; `public/siklus/lifeline.js` milik `siklus`; ringkasan `/bnpb/dalops` milik `ruang-bnpb`; jalur VNP46A2 `scripts/umum/lampu_malam.py` milik `pipa-umum`):
+
+1. `KEPUTUSAN-LIFELINE.md`: keputusan pemilik K1-K2, rancangan D1-D9, pertanyaan terbuka Q1-Q7 dengan bawaan sementara; menang atas semuanya.
+2. `RISET.md`, 3. `PRD.md`, 4. `ALUR.md`, 5. `ALGORITMA.md` (ambang HIPOTESIS), 6. `DESIGN-SYSTEM.md`, 7. `DESAIN-TEKNIS.md`, 8. `KEAMANAN-PRIVASI.md`,
+9. `RENCANA-UJI.md`, 10. `TIKET.md` (`LF-*`), `GLOSARIUM.md`.
+
+Aturan berhentinya sama dengan §2.1. Mesin tidak pernah menetapkan status resmi; tidak ada warna selain abu tanpa bukti; IODA per provinsi tidak pernah jadi warna kab; lampu malam baru dipakai sesudah uji balik lulus.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
