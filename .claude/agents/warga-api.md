@@ -52,6 +52,7 @@ Berkas milikmu (glob paling spesifik menang):
 - `public/panduan/**`
 - `scripts/warga/**`
 - `public/foto.*`
+- `public/masuk.*`
 - `public/titik_live.js`
 - `public/statistik_publik.js`
 - `public/instansi*`

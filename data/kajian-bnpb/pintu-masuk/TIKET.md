@@ -1,6 +1,6 @@
 # TIKET: Satu Pintu Masuk
 
-Ambil satu tiket, kerjakan hanya cakupannya. Tiap tiket: pengerja pemilik berkas, lalu pemeriksa bersih yang bukan pengerjanya (AGENTS 3.2). Subagent tidak commit dan tidak push. Belum ada tiket yang dikerjakan.
+Ambil satu tiket, kerjakan hanya cakupannya. Tiap tiket: pengerja pemilik berkas, lalu pemeriksa bersih yang bukan pengerjanya (AGENTS 3.2). Subagent tidak commit dan tidak push. Selesai: PM-01 (15 Nov 2026).
 
 ## Urutan
 
@@ -16,7 +16,7 @@ Tahap 3 (pelengkap): PM-13 sampai PM-16.
 | PM-02 | Migrasi `mk_*`, `alun_penulis`, indeks `wa`; nama kolom dicocokkan dengan migrasi asli | `migrations/<nomor>_masuk.sql`, `tests/warga/migrasi_beku.json` | `warga-api` | `migrasi-idempoten` | migrasi jalan dua kali tanpa galat | nomor migrasi (D13) |
 | PM-03 | Minta dan periksa kode, batas laju, HMAC, penjaga `x-pb` dan `Origin`, 503 saat tabel atau rahasia belum ada, pendaftaran rute, `sesi_masuk` di `tolakOrigin` | `src/masuk.js`, `src/masuk_konst.js`, `src/worker.js`, `tests/warga/masuk.test.mjs` | `warga-api` | `guard-api`, `security-reviewer` | U-1 sampai U-9 | PM-02 |
 | PM-04 | Gerbang WA: aturan tarik dan hapus baris `otp`, jeda tarik 5 detik, denyut `mk_denyut`, pembersihan `mk_*` | `src/lapangan_wa.js`, `src/lapangan_panel.js`, `scripts/wa/lapangan_tarik.mjs` | `warga-api`, `wa-bot` | `security-reviewer` | U-10, U-11 | PM-03 |
-| PM-05 | Buka `/masuk` dan `/alun-alun` di `PUBLIK_TANPA_SESI` (K8), tiap entri beralasan | `src/worker.js` | `warga-api` | `guard-api` | U-12, G-4 | - |
+| PM-05 | Buka `/masuk` dan `/alun-alun` di `PUBLIK_TANPA_SESI` (K8), tiap entri beralasan | `src/worker.js`, `tests/warga/posko.test.mjs` (daftar 11 kunci di baris 646 disamakan atau memakai `tests/agen/fixtures/pintu_masuk.json`) | `warga-api` | `guard-api` | U-12, G-4 | - |
 | PM-06 | `sesiUntuk` dan `cabutSesi` di modul instansi, pendataan, kampus; `cabutSesi` staf; pencocokan nomor ke akun; pemilih ruang; `cariOrang` dan `cariRelawan` menerima sesi bernomor sama dengan hak terbatas; `mk_masuk_log`; pemirsa lewat `mk_pemirsa_wa` dan rute Super Admin pengisi nomornya; keluar | `src/masuk.js`, `src/pemirsa.js`, `src/instansi.js`, `src/pendataan.js`, `src/kemitraan_akun.js`, `src/staf.js`, `src/lapangan.js` | `warga-api` | `guard-api`, `security-reviewer` | U-13 sampai U-17, U-35 | PM-03 |
 | PM-07 | Sandi staf sesudah kode lewat `cobaMasukStaf`; akun rahasia tidak pernah lewat pintu ini | `src/masuk.js` | `warga-api` | `security-reviewer` | U-18, U-19 | PM-06 |
 | PM-08 | Akun umum: lengkapi profil, persetujuan, layar L1 sampai L4, tautan dari pintu lama | `src/masuk.js`, `public/masuk.html`, `public/masuk.js`, `public/masuk.css`, `src/statistik.js`, `public/instansi.html` dan halaman masuk modul lain | `warga-api` | `inp-reviewer`, `selera-angka`, `security-reviewer` | U-20, U-21, L-1, L-4 | PM-03 |

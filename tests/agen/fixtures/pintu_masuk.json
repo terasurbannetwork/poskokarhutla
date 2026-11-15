@@ -1,0 +1,5 @@
+{
+  "_catatan": "G-4 gerbang-pintu-masuk: kunci PUBLIK_TANPA_SESI (src/worker.js) per 15 Nov 2026, dibekukan. Jangan tambah di sini tanpa keputusan pemilik tertulis di data/kajian-bnpb/pintu-masuk/KEPUTUSAN-MASUK.md.",
+  "beku": ["/lapangan", "/petugas", "/meja", "/daftar-kontak", "/renlap", "/uji-pilot", "/presiden", "/instansi", "/siklus/kejadian", "/bnpb/katalog-dokumen", "/pendataan"],
+  "boleh_tambah_k8": ["/masuk", "/alun-alun"]
+}
