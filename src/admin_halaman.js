@@ -232,10 +232,10 @@ export const halamanKontak = () => halaman("kontak", "Memuat buku kontak…", `<
 
 /* Ruang Koordinasi BNPB: satu pola untuk keempat halaman (skrip + gaya di public/admin/<k>.js|css) */
 export const halamanBnpb = (k, ctx) => halaman(k, `Memuat ${HAL[k][1]}…`, `${k === "aktivasi" ? '<link href="/inti/kartu.css?v=1" rel="stylesheet">\n' : ""}<link href="/admin/${k}.css?v=${k === "pantau" ? 3 : 1}" rel="stylesheet">
-${k === "pantau" || k === "aktivasi" ? `<script src="/inti/format.js"></script>\n<script src="/instansi_wilayah.js?v=1"></script>
+${k === "aktivasi" ? `<script src="/inti/pesan.js?v=1"></script>\n` : ""}${k === "pantau" || k === "aktivasi" ? `<script src="/inti/format.js"></script>\n<script src="/instansi_wilayah.js?v=1"></script>
 ` : k === "kinerja" ? `<script src="/inti/nanti.js"></script>
 ` : ""}<script src="/admin/bersama.js?v=4"></script>
-<script src="/admin/${k}.js?v=${k === "pantau" ? 6 : 1}"></script>`, ctx);
+<script src="/admin/${k}.js?v=${k === "pantau" ? 6 : k === "aktivasi" ? 2 : 1}"></script>`, ctx);
 
 export const CSP_ADMIN = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'none'; form-action 'self'";
 

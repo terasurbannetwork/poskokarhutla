@@ -192,7 +192,7 @@ const undang = (h, b) => api("POST", "/api/masuk/undang", b, h);
 uji("anggota U-26: undangan berlaku mengaktifkan anggota saat kode sah; dicabut atau lewat 14 hari tidak; pemilik dan anggota boleh mengundang, orang luar tidak", async () => {
   const akun = await instansi({wa: nomor(5)}), awal = await snapInstansi();
   const u = await undang(H(ADMIN), {wa: lokal(60), nama: "Rekan Satu", akun_id: akun}); assert.equal(u.s, 201, u.t);
-  assert.equal(u.j.status, "terkirim"); assert.match(u.j.wa, /^•+0060$/); assert.ok(!u.t.includes(nomor(60)) && !u.t.includes(lokal(60)));
+  assert.equal(u.j.status, "terkirim"); assert.match(u.j.wa, /^x+0060$/); assert.ok(!u.t.includes(nomor(60)) && !u.t.includes(lokal(60)));
   const j = await login(60); const a = await anggota(60, akun); assert.equal(a.status, "aktif"); assert.equal(a.jalur, "undang"); assert.equal(a.rujukan, "undang:" + u.j.id); assert.match(a.oleh, /^admin:/);
   assert.equal((await DB.prepare("SELECT status FROM mk_undang WHERE id = ?").bind(u.j.id).first()).status, "diterima");
   assert.equal(j.r.j.ruang.filter(x => x.jenis === "instansi").length, 1); assert.equal(sesiInstansi(j.r).length, 2, "sesi instansi terbit saat kode sah");
@@ -211,7 +211,7 @@ uji("anggota U-26: undangan berlaku mengaktifkan anggota saat kode sah; dicabut 
   assert.equal((await undang(H(), {wa: lokal(66), akun_id: akun})).s, 401);
   /* daftar undangan: pemilik, anggota; nomor tersamar; tamu dan orang luar tidak */
   const dl = await api("GET", "/api/masuk/undang?akun_id=" + akun, undefined, bacaDari(jp)); assert.equal(dl.s, 200, dl.t);
-  assert.ok(dl.j.undangan.length >= 3 && dl.j.undangan.every(x => /^•+\d{4}$/.test(x.wa))); assert.ok(dl.j.undangan.some(x => x.milikku));
+  assert.ok(dl.j.undangan.length >= 3 && dl.j.undangan.every(x => /^x+\d{4}$/.test(x.wa))); assert.ok(dl.j.undangan.some(x => x.milikku));
   assert.ok(!dl.t.includes(nomor(63)) && !dl.t.includes(lokal(63)));
   const dA = await api("GET", "/api/masuk/undang?akun_id=" + akun, undefined, bacaDari(ja)); assert.equal(dA.s, 200); assert.ok(dA.j.undangan.length >= 1 && dA.j.undangan.every(x => x.milikku), "anggota biasa hanya melihat undangannya sendiri"); assert.ok(dA.j.undangan.length < dl.j.undangan.length);
   assert.equal((await api("GET", "/api/masuk/undang?akun_id=" + akun, undefined, bacaDari(jl))).s, 403); assert.equal((await api("GET", "/api/masuk/undang?akun_id=" + akun)).s, 401);
@@ -311,7 +311,7 @@ uji("anggota U-29: papan aktivasi: angka per kabupaten cocok dengan isi tabel uj
   assert.equal((await api("GET", "/api/masuk/aktivasi?prov=99", undefined, ADMIN)).s, 400); assert.equal((await api("GET", "/api/masuk/aktivasi?kab=" + k1, undefined, ADMIN)).s, 400, "kab tanpa prov");
   /* rincian: kontak aktif berkategori yang belum anggota, nomor tersamar, akun tujuan menurut kategori */
   const r = await api("GET", `/api/masuk/aktivasi?prov=62&kab=${encodeURIComponent(k1)}`, undefined, ADMIN); assert.equal(r.s, 200, r.t);
-  assert.deepEqual(r.j.kontak.map(k => k.nama).sort(), ["Kontak A", "Kontak C"]); assert.ok(!r.t.includes(nomor(120)) && !r.t.includes(lokal(120)) && /•+0120/.test(r.t));
+  assert.deepEqual(r.j.kontak.map(k => k.nama).sort(), ["Kontak A", "Kontak C"]); assert.ok(!r.t.includes(nomor(120)) && !r.t.includes(lokal(120)) && /x+0120/.test(r.t));
   assert.equal(r.j.kontak.find(k => k.id === kA).akun_id, a1, "bpbd: akun pemkab"); assert.equal(r.j.kontak.find(k => k.id === kC).akun_id, a1b, "polri: akun polres"); assert.equal(r.j.akun.length, 2);
   assert.equal((await api("GET", `/api/masuk/aktivasi?prov=62&kab=Tidak%20Ada`, undefined, ADMIN)).s, 400);
   /* undang dari rincian (kontak_id, tanpa nomor terang) lalu angka naik setelah papan dihitung ulang */
@@ -342,7 +342,7 @@ uji("anggota tinjau: antrean instansi, pendataan, dan kampus membawa cocok_konta
   assert.equal((await mohon(jm, akun)).j.status, "menunggu");
   const idA = (await DB.prepare("SELECT id FROM mk_anggota WHERE mk_id = ? AND akun_id = ?").bind(await mkId(133), akun).first()).id;
   const t = await api("GET", "/api/masuk/anggota/tinjau", undefined, ADMIN); assert.equal(t.s, 200, t.t);
-  const ma = t.j.anggota.find(x => x.id === idA); assert.ok(ma && ma.nomor_terbukti === true && ma.cocok_kontak === false && /^•+0133$/.test(ma.wa)); assert.ok(!t.t.includes(nomor(133)));
+  const ma = t.j.anggota.find(x => x.id === idA); assert.ok(ma && ma.nomor_terbukti === true && ma.cocok_kontak === false && /^x+0133$/.test(ma.wa)); assert.ok(!t.t.includes(nomor(133)));
   assert.equal((await api("GET", "/api/masuk/anggota/tinjau")).s, 401);
   assert.equal((await api("GET", "/api/masuk/anggota/tinjau", undefined, bacaDari(await login(134)))).j.anggota.length, 0, "orang luar tidak melihat apa pun");
   assert.equal((await api("GET", "/api/masuk/anggota/tinjau", undefined, bacaDari(jo))).j.anggota.filter(x => x.id === idA).length, 1, "pemilik nomor akun melihat permohonan ke akunnya");
@@ -357,7 +357,7 @@ uji("anggota tinjau: antrean instansi, pendataan, dan kampus membawa cocok_konta
   assert.equal((await putus("tolak", idB, H(ADMIN))).s, 200); assert.equal((await anggota(135, akun)).status, "dicabut"); assert.equal((await mohon(jx, akun)).s, 403, "ditolak tidak bisa mohon ulang lewat bukti");
   /* daftar dan cabut anggota: pemilik nomor akun dan admin saja; anggota biasa dan staf tidak */
   const dl = await api("GET", "/api/masuk/anggota?akun_id=" + akun, undefined, bacaDari(jo)); assert.equal(dl.s, 200, dl.t);
-  assert.deepEqual(dl.j.anggota.map(x => x.id), [idA]); assert.ok(/^•+0133$/.test(dl.j.anggota[0].wa) && !dl.t.includes(nomor(133)));
+  assert.deepEqual(dl.j.anggota.map(x => x.id), [idA]); assert.ok(/^x+0133$/.test(dl.j.anggota[0].wa) && !dl.t.includes(nomor(133)));
   const jb = await login(133); assert.equal(sesiInstansi(jb.r).length, 2, "anggota aktif mendapat sesi instansi lewat kode");
   assert.equal((await api("GET", "/api/masuk/anggota?akun_id=" + akun, undefined, bacaDari(jb))).s, 403, "anggota biasa"); assert.equal(dl.j.cabut_sesi_default, false); assert.equal((await api("GET", "/api/masuk/anggota")).s, 401);
   assert.equal((await api("POST", "/api/masuk/anggota/cabut/" + idA, {}, dari(jb))).s, 404);

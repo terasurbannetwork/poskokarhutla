@@ -2,31 +2,24 @@
    Dipasang halaman mana pun: UndangRekan.pasang(wadah, {akunId}). Satu kartu standar .ex.ex-std berisi form undang, tabel undangan,
    tabel anggota (hanya bila GET /api/masuk/anggota 200), dan antrean menunggu. Semua teks dari data lewat textContent (DOM aman),
    semua POST membawa x-pb: 1. Nomor selalu tersamar dari server. Hasil fetch lama tidak menimpa yang baru (nomor urut per bagian).
+   WAJIB memuat /inti/pesan.js (window.PesanLayar) SEBELUM skrip ini; tanpa itu pasang() melempar galat.
    Juga dimuat node untuk uji (tests/inti/undang.test.mjs, lewat vm). Tanpa timer berulang. */
 (g => {
   "use strict";
-  const HARI = 864e5;
+  const P = () => { if (!g.PesanLayar) throw new Error("undang.js butuh /inti/pesan.js: muat sebelum /inti/undang.js"); return g.PesanLayar; };
 
   /* ---- bagian murni ---- */
   const STATUS = {terkirim: ["Terkirim", "kuning"], diterima: ["Diterima", "hijau"], habis: ["Kedaluwarsa", "abu"]};
   const pilStatus = s => STATUS[s] || ["Kedaluwarsa", "abu"];
   const JALUR = {undangan: "Undangan", kontak: "Kontak", email: "Email", tinjau: "Ditinjau"};
   const jalur = j => JALUR[j] || "Ditinjau";
-  const angka = n => Number(n || 0).toLocaleString("id-ID");
-  const tanggal = t => t ? new Date(t).toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta"}) : "-";
-  const relatif = (t, kini) => {
-    if (!t) return "Belum pernah";
-    const d = Math.floor((kini - t) / HARI);
-    return d < 1 ? "Hari ini" : d < 7 ? `${angka(d)} hari lalu` : d < 30 ? `${angka(Math.floor(d / 7))} minggu lalu` : `${angka(Math.floor(d / 30))} bulan lalu`;
-  };
+  const tanggal = t => P().tanggal(t);
+  const relatif = (t, kini) => P().relatif(t || null, kini);   // 0 = belum pernah masuk
   /* kalimat galat manusiawi; s = status HTTP (0 = putus), ra = header retry-after (detik), j = badan jawaban */
   const galat = (s, ra, j) => {
-    if (s === 0) return "Tidak ada sambungan. Coba lagi saat daring.";
     if (s === 401) return "Sesi masuk berakhir. Masuk lagi lalu ulangi.";
     if (s === 409) return "Nomor ini sudah anggota atau sudah diundang.";
-    if (s === 429) { const n = Number(ra); return n > 0 ? `Terlalu sering. Tunggu ${angka(n >= 120 ? Math.ceil(n / 60) : n)} ${n >= 120 ? "menit" : "detik"} lalu coba lagi.` : (j && j.galat) || "Batas undangan tercapai. Coba lagi nanti."; }
-    if (s === 400 || s === 403 || s === 404) return (j && typeof j.galat === "string" && j.galat) || "Permintaan ditolak.";
-    return "Terjadi gangguan. Coba lagi sebentar lagi.";
+    return P().galat(s, s === 400 || s === 403 || s === 404 ? j && j.galat : null, Number(ra));
   };
 
   /* ---- jaringan: tidak pernah melempar; {s, j, ra} ---- */
@@ -72,6 +65,7 @@
   const namaSel = nama => h("b", {teks: nama || "Tanpa nama"});
 
   function pasang(wadah, opsi) {
+    const PL = P();
     const akunId = opsi && opsi.akunId, q = akunId ? "?akun_id=" + encodeURIComponent(akunId) : "";
     const no = {u: 0, a: 0, t: 0};   // nomor urut per bagian: hasil fetch yang sudah usang dibuang
     let kirim = false;
@@ -107,7 +101,7 @@
     /* 401: orang belum punya sesi pintu masuk; kartu jadi satu ajakan masuk */
     const ajak = () => {
       const jalur = (g.location && g.location.pathname) || "/";
-      bd.replaceChildren(h("p", {class: "ud-ket ud-ajak"}, h("a", {href: "/masuk?ke=" + encodeURIComponent(jalur), teks: "Masuk dengan nomor WhatsApp untuk mengundang rekan."})));
+      bd.replaceChildren(h("p", {class: "ud-ket ud-ajak"}, h("a", {href: "/masuk?ke=" + encodeURIComponent(jalur), teks: PL.MASUK_WA})));
     };
     const status = (t, kelas) => h("p", {class: "ud-ket " + (kelas || ""), role: "status", teks: t});
 
@@ -123,8 +117,8 @@
       const baris = d.map(u => {
         const [label, warna] = pilStatus(u.status);
         const boleh = u.status === "terkirim" && (u.milikku || r.j.boleh_cabut_semua);
-        return [namaSel(u.nama), u.wa || "", pil(label, warna), tanggal(u.habis),
-          boleh ? tombolIkon(IK_CABUT, `Cabut undangan untuk ${u.nama || u.wa}`, ev => cabutUndang(u, ev.currentTarget)) : ""];
+        return [namaSel(u.nama), PL.samar(u.wa), pil(label, warna), tanggal(u.habis),
+          boleh ? tombolIkon(IK_CABUT, `Cabut undangan untuk ${u.nama || PL.samar(u.wa)}`, ev => cabutUndang(u, ev.currentTarget)) : ""];
       });
       bUndang.replaceChildren(judul("Undangan"), tabel(["Nama", "Nomor", "Status", "Berlaku sampai", "Aksi"], baris));
     }
@@ -149,15 +143,15 @@
       if (!d.length) { bAnggota.replaceChildren(judul("Anggota"), status("Belum ada anggota selain pemilik nomor akun.")); return; }
       const baris = d.map(a => {
         const slot = h("div", {class: "ud-konf", role: "status", "aria-live": "polite"});
-        const nm = a.nama || a.wa;
+        const nm = a.nama || PL.samar(a.wa);
         const t = tombolIkon(IK_CABUT, `Cabut anggota ${nm}`, ev => konfirmasi(slot, `Cabut ${nm}? Ia tidak bisa lagi masuk ke akun ini dan undangan yang ia kirim ikut dicabut. Sesi yang sedang berjalan tetap hidup sampai berakhir.`, "Ya, cabut", () => cabutAnggota(a, t), ev.currentTarget));
-        return [namaSel(a.nama), a.wa || "", jalur(a.jalur), relatif(a.terakhir_masuk, kini), h("div", null, t, slot)];
+        return [namaSel(a.nama), PL.samar(a.wa), jalur(a.jalur), relatif(a.terakhir_masuk, kini), h("div", null, t, slot)];
       });
       bAnggota.replaceChildren(judul("Anggota"), tabel(["Nama", "Nomor", "Jalur masuk", "Terakhir masuk", "Aksi"], baris));
     }
     async function cabutAnggota(a, tombol, sesi) {
       if (tombol.disabled) return;
-      const nm = a.nama || a.wa;
+      const nm = a.nama || PL.samar(a.wa);
       tombol.disabled = true; lapor("");
       const r = await api("POST", "/api/masuk/anggota/cabut/" + encodeURIComponent(a.id), sesi ? {cabut_sesi: true} : {});
       if (r.s !== 200) { tombol.disabled = false; lapor(r.s === 409 ? "Anggota itu sudah dicabut." : galat(r.s, r.ra, r.j)); if (r.s === 404 || r.s === 409) muatAnggota(); return; }
@@ -181,11 +175,11 @@
       const baris = d.map(a => {
         const tanda = h("span", {class: "ud-tanda"}, a.cocok_kontak ? pil("Cocok kontak", "hijau") : null, a.nomor_terbukti ? pil("Nomor terbukti", "hijau") : null);
         const aksi = h("span", {class: "ud-aksi"}), slot = h("div", {class: "ud-konf", role: "status", "aria-live": "polite"});
-        const tolak = tombolTeks("Tolak", ev => konfirmasi(slot, `Tolak permohonan ${a.nama || a.wa}? Ia tidak jadi anggota akun ini.`, "Ya, tolak", () => putus(a, "tolak", aksi), ev.currentTarget), "ud-tipis");
+        const tolak = tombolTeks("Tolak", ev => konfirmasi(slot, `Tolak permohonan ${a.nama || PL.samar(a.wa)}? Ia tidak jadi anggota akun ini.`, "Ya, tolak", () => putus(a, "tolak", aksi), ev.currentTarget), "ud-tipis");
         aksi.append(tombolTeks("Setujui", () => putus(a, "setujui", aksi), "ud-utama"), tolak);
-        return [a.nama || "Tanpa nama", a.wa || "", tanda, h("div", null, aksi, slot)];
+        return [a.nama || "Tanpa nama", PL.samar(a.wa), tanda, h("div", null, aksi, slot)];
       });
-      bTunggu.replaceChildren(judul("Menunggu persetujuan"), tabel(["Nama", "Nomor", "Tanda", "Keputusan"], baris));
+      bTunggu.replaceChildren(judul(PL.MENUNGGU), tabel(["Nama", "Nomor", "Tanda", "Keputusan"], baris));
     }
     async function putus(a, aksi, sel) {
       const bt = sel.querySelectorAll("button"); if (bt[0].disabled) return;
@@ -215,5 +209,5 @@
     return {muat: () => Promise.all([muatUndang(), muatAnggota(), muatTunggu()])};
   }
 
-  g.UndangRekan = {pasang, pilStatus, jalur, galat, tanggal, relatif};
+  g.UndangRekan = {pasang, pilStatus, jalur, galat};
 })(typeof window !== "undefined" ? window : globalThis);

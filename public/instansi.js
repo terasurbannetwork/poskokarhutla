@@ -86,12 +86,12 @@
     const w = $("undangRekan"), id = saya?.akun?.id; if (!w || !id || undangAkun === id) return;
     undangAkun = id;
     let masuk = false, putus = "";
-    try { const r = await fetch("/api/masuk/saya?lunak=1", {credentials: "same-origin"}); if (r.ok) masuk = (await r.json()).masuk !== false; else putus = "Kartu undang rekan belum bisa dimuat."; } catch (e) { putus = "Tidak ada koneksi."; }
+    try { const r = await fetch("/api/masuk/saya?lunak=1", {credentials: "same-origin"}); if (r.ok) masuk = (await r.json()).masuk !== false; else putus = "Kartu undang rekan belum bisa dimuat."; } catch (e) { putus = window.PesanLayar?.LURING || "Tidak ada koneksi."; }
     if (saya?.akun?.id !== id) return;   // akun berganti selama menunggu
     w.replaceChildren(); w.hidden = false;
     if (putus) { undangAkun = null; const p = document.createElement("p"); p.className = "lp-kecil"; p.textContent = putus; w.append(p); return; }   // dicoba lagi pada tampil() berikutnya, bukan ajakan masuk
     if (masuk && window.UndangRekan) return window.UndangRekan.pasang(w, {akunId: id});
-    const a = document.createElement("a"); a.href = "/masuk?ke=%2Finstansi"; a.textContent = "Masuk dengan nomor WhatsApp";
+    const a = document.createElement("a"); a.href = "/masuk?ke=%2Finstansi"; a.textContent = window.PesanLayar?.MASUK_WA || "Masuk dengan nomor WhatsApp";
     const p = document.createElement("p"); p.className = "lp-kecil"; p.append(a, " untuk mengundang rekan."); w.append(p);
   }
   /* wadah tab dibuat SEKALI dan hanya disembunyikan/ditampilkan: pindah tab, muat ulang, atau kirim tidak menghancurkan peta maupun isian form yang belum terkirim */

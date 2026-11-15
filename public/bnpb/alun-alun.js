@@ -32,9 +32,8 @@
     "75": "Gorontalo", "76": "Sulawesi Barat", "81": "Maluku", "82": "Maluku Utara", "91": "Papua", "92": "Papua Barat", "93": "Papua Selatan", "94": "Papua Tengah", "95": "Papua Pegunungan", "96": "Papua Barat Daya"};
   const BENCANA = {umum: "Umum (semua bencana)"};
   const angka = n => Number(n || 0).toLocaleString("id-ID");
-  const relatif = t => { const s = Math.max(0, (Date.now() - t) / 1000); if (s < 60) return "baru saja"; if (s < 3600) return `${angka(Math.floor(s / 60))} menit lalu`;
-    if (s < 86400) return `${angka(Math.floor(s / 3600))} jam lalu`; if (s < 30 * 86400) return `${angka(Math.floor(s / 86400))} hari lalu`;
-    return new Date(t).toLocaleDateString("id-ID", {day: "numeric", month: "short", year: "numeric"}); };
+  const relatif = t => PesanLayar.relatif(t);
+  const gal = (r, srv) => PesanLayar.galat(r.s, srv, r.ra);
   const simpan = {
     ambil: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
     taruh: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} },
@@ -46,8 +45,10 @@
   async function api(metode, jalur, body, kode) {
     /* tulis, balas, lapor: token Turnstile bila server mengaktifkannya (/bnpb/turnstile.js); upvote dan terjawab tanpa */
     if (body && metode === "POST" && /^\/api\/alun(\/balas\/|\/lapor\/|$)/.test(jalur)) { const t = await window.tokenTurnstile?.(); if (t) body = {...body, turnstile: t}; }
-    const r = await fetch(jalur, {method: metode, headers: {...(body ? {"content-type": "application/json"} : {}), ...(kode ? {"x-kode": kode} : {})}, body: body ? JSON.stringify(body) : undefined});
-    return {ok: r.ok, s: r.status, j: await r.json().catch(() => ({}))};
+    let r;
+    try { r = await fetch(jalur, {method: metode, headers: {...(body ? {"content-type": "application/json"} : {}), ...(kode ? {"x-kode": kode} : {})}, body: body ? JSON.stringify(body) : undefined}); }
+    catch (e) { return {ok: false, s: 0, j: {}}; }
+    return {ok: r.ok, s: r.status, ra: Number(r.headers.get("retry-after")) || 0, j: await r.json().catch(() => ({}))};
   }
   const pesan = (el, t, ok) => { el.textContent = t || ""; el.className = "bn-pesan" + (t ? (ok ? " ok" : " galat") : ""); };
 
@@ -103,7 +104,7 @@
     if (ulang) { daftar.replaceChildren(h("li", {class: "al-kosong", teks: "Memuat..."})); $("lagi").hidden = true; }
     const r = await api("GET", "/api/alun?" + q);
     if (no !== S.no) return;
-    if (!r.ok) { daftar.replaceChildren(); pesan($("daftarPesan"), r.s === 503 ? "Alun-alun belum diaktifkan." : r.j.galat || "Gagal memuat utas.", false); return; }
+    if (!r.ok) { daftar.replaceChildren(); pesan($("daftarPesan"), r.s === 503 ? "Alun-alun belum diaktifkan." : gal(r, r.j.galat), false); return; }
     pesan($("daftarPesan"), "");
     daftar.dataset.no = String(no); if (ulang) daftar.replaceChildren();
     const utas = [...(ulang ? r.j.sematan : []), ...r.j.utas];
@@ -122,7 +123,7 @@
     kotak().replaceChildren(h("p", {class: "al-kosong", teks: "Memuat..."}));
     const r = await api("GET", "/api/alun/" + id);
     if (S.aktif !== id) return;
-    if (!r.ok) { kotak().replaceChildren(h("button", {class: "bn-tombol sekunder al-kembali", type: "button", "data-aksi": "tutup"}, svg("kembali"), "Kembali"), h("p", {class: "al-kosong", teks: r.s === 404 ? "Utas ini tidak ada atau sudah disembunyikan." : r.j.galat || "Gagal memuat."})); return; }
+    if (!r.ok) { kotak().replaceChildren(h("button", {class: "bn-tombol sekunder al-kembali", type: "button", "data-aksi": "tutup"}, svg("kembali"), "Kembali"), h("p", {class: "al-kosong", teks: r.s === 404 ? "Utas ini tidak ada atau sudah disembunyikan." : gal(r, r.j.galat)})); return; }
     gambarRincian(r.j);
   }
   function tombolUp(id, n, kls) {
@@ -167,11 +168,11 @@
     if (a === "lapor") { $("dlgLapor").dataset.id = b.dataset.id; pesan($("laporPesan"), ""); $("dlgLapor").showModal(); return; }
     if (a === "upvote") {
       const pos = b.dataset.id, r = await api("POST", "/api/alun/upvote/" + pos, {});
-      if (r.ok) { catatUp(pos); b.setAttribute("aria-pressed", "true"); b.lastChild.textContent = angka(r.j.upvote); } else alert(r.j.galat || "Gagal");
+      if (r.ok) { catatUp(pos); b.setAttribute("aria-pressed", "true"); b.lastChild.textContent = angka(r.j.upvote); } else alert(gal(r, r.j.galat));
     }
     if (a === "terjawab") {
       const r = await api("POST", "/api/alun/terjawab/" + id, {balasan_id: b.dataset.id || null}, kodeUtas(id));
-      if (r.ok) bukaRincian(id); else alert(r.j.galat || "Gagal");
+      if (r.ok) bukaRincian(id); else alert(gal(r, r.j.galat));
     }
   });
   kotak().addEventListener("submit", async e => {
@@ -180,7 +181,7 @@
     tombol.disabled = true; pesan(p, "");
     const r = await api("POST", "/api/alun/balas/" + id, {teks: f.teks.value, nama: f.nama.value || null});
     tombol.disabled = false;
-    if (r.ok) { await bukaRincian(id); muatDaftar(true); } else pesan(p, r.j.galat || `Gagal (${r.s})`, false);
+    if (r.ok) { await bukaRincian(id); muatDaftar(true); } else pesan(p, gal(r, r.j.galat), false);
   });
   $("daftar").addEventListener("click", e => { const b = e.target.closest(".al-baris"); if (b) bukaRincian(b.dataset.id); });
 
@@ -190,7 +191,7 @@
     e.preventDefault();
     const id = $("dlgLapor").dataset.id, alasan = new FormData(e.target).get("alasan");
     const r = await api("POST", "/api/alun/lapor/" + id, {alasan});
-    if (r.ok) { $("dlgLapor").close(); if (r.j.tersembunyi) { tutupRincian(); muatDaftar(true); } } else pesan($("laporPesan"), r.j.galat || `Gagal (${r.s})`, false);
+    if (r.ok) { $("dlgLapor").close(); if (r.j.tersembunyi) { tutupRincian(); muatDaftar(true); } } else pesan($("laporPesan"), gal(r, r.j.galat), false);
   });
 
   /* ---------- tulis utas ---------- */
@@ -209,7 +210,7 @@
     tombol.disabled = true; pesan($("tulisPesan"), "");
     const r = await api("POST", "/api/alun", {jenis: d.jenis, judul: d.judul, teks: d.teks, bencana: d.bencana, prov: d.prov, kab: d.kab || null, nama: d.nama || null, ...(lokasi || {})});
     tombol.disabled = false;
-    if (!r.ok) return pesan($("tulisPesan"), r.j.galat || `Gagal (${r.s})`, false);
+    if (!r.ok) return pesan($("tulisPesan"), gal(r, r.j.galat), false);
     simpan.taruh("alun.kode." + r.j.id, r.j.kode);   // hanya di peramban ini; dipakai untuk menandai balasan terjawab
     f.reset(); lokasi = null; $("lokasiInfo").textContent = ""; $("dlgTulis").close();
     await muatDaftar(true); bukaRincian(r.j.id);
@@ -221,7 +222,7 @@
       const r = await api("GET", "/api/masuk/saya?lunak=1"), w = $("akunKepala");
       if (!r.ok) return;
       if (r.j.akun) { S.masuk = true; S.nama = (r.j.akun.nama || "").slice(0, 40); w.replaceChildren(h("a", {href: "/masuk", teks: r.j.akun.nama || "Akun saya"})); }
-      else if (r.j.masuk === false) w.replaceChildren(h("a", {href: "/masuk?ke=%2Falun-alun", teks: "Masuk"}));
+      else if (r.j.masuk === false) w.replaceChildren(h("a", {href: "/masuk?ke=%2Falun-alun", teks: PesanLayar.MASUK_WA}));
     } catch (e) {}
   }
 

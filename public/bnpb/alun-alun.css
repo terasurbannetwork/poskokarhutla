@@ -78,5 +78,5 @@ button[data-jenis="tanya"]{--pil:var(--c5)}button[data-jenis="butuh_bantuan"]{--
 .al-lembaga{font-weight:700;color:var(--navy2)}
 .al-sebagai{margin:0;font-size:.8125rem;font-weight:600;color:var(--ink2)}
 .al-akun{display:inline-flex;align-items:center}
-.al-akun a{display:inline-flex;align-items:center;min-height:44px;padding:0 .75rem;font-size:.875rem;font-weight:700;color:var(--navy2);text-decoration:none}
+.al-akun a{display:inline-flex;align-items:center;text-align:center;max-width:100%;min-height:44px;padding:0 .75rem;font-size:.875rem;font-weight:700;color:var(--navy2);text-decoration:none}
 .bn-isian[hidden]{display:none}

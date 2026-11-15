@@ -15,13 +15,7 @@
   const nama = k => window.Wilayah?.kab(k) ?? k;   // ejaan resmi (/instansi_wilayah.js)
   const STATUS = {belum_ada: ["Belum ada akun aktif", "abu"], diundang: ["Diundang", "kuning"], aktif: ["Aktif", "hijau"], lama: ["Aktif, lama tidak masuk", "jingga"]};
   const URUT_STATUS = {belum_ada: 0, diundang: 1, lama: 2, aktif: 3};
-  const HARI = 864e5;
-  const relatif = (t, kini) => {
-    if (!t) return "Tidak ada dalam 4 bulan";
-    const d = Math.floor((kini - t) / HARI);
-    return d < 1 ? "Hari ini" : d < 7 ? `${angka(d)} hari lalu` : d < 30 ? `${angka(Math.floor(d / 7))} minggu lalu` : `${angka(Math.floor(d / 30))} bulan lalu`;
-  };
-  const KOLOM = [["kab", "Kabupaten atau kota", "Nama daerah; provinsi di baris kedua"], ["akun", "Akun aktif", "Jumlah akun instansi aktif di daerah itu"], ["terakhir", "Terakhir masuk", "Masuk terakhir lewat pintu masuk ke akun daerah itu (120 hari terakhir)"],
+    const KOLOM = [["kab", "Kabupaten atau kota", "Nama daerah; provinsi di baris kedua"], ["akun", "Akun aktif", "Jumlah akun instansi aktif di daerah itu"], ["terakhir", "Terakhir masuk", "Masuk terakhir lewat pintu masuk ke akun daerah itu (120 hari terakhir)"],
     ["undangan", "Undangan", "Terkirim dan diterima"], ["status", "Status", "Keadaan aktivasi daerah"], [null, "Aksi", "Undang kontak pemangku yang belum menjadi anggota"]];
   const S = {prov: "", status: "", urut: "kab", arah: 1, no: 0, buka: null};
   let D = null;
@@ -56,7 +50,7 @@
     return h("tr", {"data-kunci": r.prov + "|" + r.kab},
       h("td", {"data-label": "Kabupaten atau kota"}, h("b", {teks: nama(r.kab)}), h("small", {teks: r.prov_nama})),
       h("td", {class: "av-n", "data-label": "Akun aktif"}, angka(r.akun_aktif), r.anggota ? h("small", {teks: `${angka(r.anggota)} anggota`}) : null),
-      h("td", {"data-label": "Terakhir masuk", teks: r.akun_aktif ? relatif(r.terakhir_masuk, D.dibuat) : "-"}),
+      h("td", {"data-label": "Terakhir masuk", teks: r.akun_aktif ? (r.terakhir_masuk ? PesanLayar.relatif(r.terakhir_masuk) : "Tidak ada dalam 120 hari") : PesanLayar.KOSONG}),
       h("td", {"data-label": "Undangan"}, `${angka(r.undangan_terkirim)} terkirim, ${angka(r.undangan_diterima)} diterima`),
       h("td", {"data-label": "Status"}, h("span", {class: "av-pil " + warna, teks: label})),
       h("td", {class: "av-a", "data-label": "Aksi"}, tombol, r.kontak_belum ? h("small", {teks: `${angka(r.kontak_belum)} kontak`}) : null));
@@ -93,7 +87,7 @@
     const [prov, kab] = tr.dataset.kunci.split("|");
     const isi = h("td", {colspan: String(KOLOM.length)}, h("p", {class: "av-pesan", teks: "Memuat kontak..."}));
     const baru = h("tr", {class: "av-rinci"}, isi); tr.after(baru); S.buka = tr.dataset.kunci;
-    let r; try { r = await Admin.ambil(`/api/masuk/aktivasi?prov=${encodeURIComponent(prov)}&kab=${encodeURIComponent(kab)}`, "Papan aktivasi"); } catch (e) { isi.replaceChildren(h("p", {class: "av-pesan galat", teks: e.message || "Gagal memuat."})); return; }
+    let r; try { r = await Admin.ambil(`/api/masuk/aktivasi?prov=${encodeURIComponent(prov)}&kab=${encodeURIComponent(kab)}`, "Papan aktivasi"); } catch (e) { isi.replaceChildren(h("p", {class: "av-pesan galat", teks: e.message || PesanLayar.galat(0)})); return; }
     if (S.buka !== tr.dataset.kunci) return;
     const tutup = h("button", {type: "button", class: "av-btn", "data-tutup": "1", "aria-label": "Tutup rincian"}, svg(IK_TUTUP));
     const kepalaR = h("div", {class: "av-rkepala"}, h("b", {teks: `Kontak pemangku di ${nama(kab)} yang belum menjadi anggota`}), tutup);
@@ -111,7 +105,7 @@
     if (t.dataset.tutup) { t.closest("tr").remove(); S.buka = null; return; }
     if (t.dataset.undang) {
       t.disabled = true;
-      const x = await Admin.kirim("/api/masuk/undang", {kontak_id: t.dataset.undang, akun_id: t.dataset.akun}).catch(() => ({ok: false, j: {galat: "tidak ada koneksi"}}));
+      const x = await Admin.kirim("/api/masuk/undang", {kontak_id: t.dataset.undang, akun_id: t.dataset.akun}).catch(() => ({ok: false, j: {galat: PesanLayar.LURING}}));
       if (x.ok) t.replaceWith(h("span", {class: "av-pil kuning", teks: "Undangan terkirim"}));
       else { t.disabled = false; const li = t.closest("li"); li.querySelector(".av-galat")?.remove(); li.append(h("small", {class: "av-galat", role: "alert", teks: x.j?.galat || "Gagal mengirim undangan."})); }
     }

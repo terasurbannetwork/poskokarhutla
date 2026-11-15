@@ -8,10 +8,8 @@
     : /^\/kemitraan(?:[\/?#]|$)/.test(ke) ? "/kemitraan/masuk" : "/admin/masuk" + (ke ? "?ke=" + encodeURIComponent(ke) : "");
   const digit = t => String(t ?? "").replace(/\D/g, "");
   const nomorSah = t => { const d = digit(t); return d.length >= 9 && d.length <= 15 && /^(?:0|62)8/.test(d); };
-  const tersamar = t => { let d = digit(t); if (d.startsWith("62")) d = "0" + d.slice(2); return d.slice(0, 4) + " xxxx xx" + d.slice(-2); };
   const kalimat = t => { const s = String(t || "").trim(); return s ? s[0].toUpperCase() + s.slice(1) + (/[.!?]$/.test(s) ? "" : ".") : ""; };
-  const lama = d => { const n = Math.max(1, Math.ceil(d)); return n >= 90 ? `${Math.ceil(n / 60)} menit` : `${n} detik`; };
-  globalThis.MasukMurni = {jalurAman, pintuSandi, nomorSah, tersamar, kalimat};
+  globalThis.MasukMurni = {jalurAman, pintuSandi, nomorSah, kalimat};
   if (!document.getElementById("fNomor")) return;   // dimuat tanpa halaman (uji)
 
   const $ = id => document.getElementById(id), NS = "http://www.w3.org/2000/svg";
@@ -63,8 +61,7 @@
       return {s: r.status, j: await r.json().catch(() => ({})), tunggu: Number(r.headers.get("retry-after")) || 0};
     } catch (e) { return {s: 0, j: {galat: "tidak ada koneksi"}}; }
   }
-  const galat = r => r.s === 0 ? "Tidak ada koneksi." : r.s === 429 ? `Terlalu banyak percobaan. Coba lagi ${r.tunggu ? lama(r.tunggu) + " lagi" : "nanti"}.`
-    : r.s === 503 ? "Masuk dengan nomor WhatsApp belum aktif." : kalimat(r.j.galat) || "Terjadi gangguan. Coba lagi.";
+  const galat = r => r.s === 503 ? "Masuk dengan nomor WhatsApp belum aktif." : PesanLayar.galat(r.s, kalimat(r.j.galat), r.tunggu);
   const pergi = tujuan => location.assign(jalurAman(tujuan) || "/alun-alun");
 
   /* ---------- L1: nomor ---------- */
@@ -75,7 +72,7 @@
     const t = await window.tokenTurnstile?.();
     const r = await kirim("/api/masuk/kode", {wa: nomor, turnstile: t || undefined});
     sibuk(tombol, false);
-    if (r.s === 200) { kirimWa++; layar("kode", `Kode dikirim ke WhatsApp ${tersamar(nomor)}`); mulaiHitung(r.j.tunggu || 60); tawarEmail(); return; }
+    if (r.s === 200) { kirimWa++; layar("kode", `Kode dikirim ke WhatsApp ${PesanLayar.samar(digit(nomor))}`); mulaiHitung(r.j.tunggu || 60); tawarEmail(); return; }
     if (r.s === 503) tutup();
     if (ulang && r.s === 429 && r.tunggu) mulaiHitung(r.tunggu);
     pesan(galat(r));
@@ -158,7 +155,7 @@
   /* ---------- L3: ruang ---------- */
   function daftarRuang(ruang, menunggu) {
     const w = $("daftarMenunggu"); w.replaceChildren(); w.hidden = !(menunggu && menunggu.length);
-    for (const nama of menunggu || []) { const li = el("li", "mk-catatan"); li.append(el("span", "mk-pil kuning", "Menunggu pemeriksaan"), " " + nama); w.append(li); }
+    for (const nama of menunggu || []) { const li = el("li", "mk-catatan"); li.append(el("span", "mk-pil kuning", PesanLayar.MENUNGGU), " " + nama); w.append(li); }
     const ul = $("daftarRuang"); ul.replaceChildren();
     if (!ruang.length) { const a = el("a", "mk-tautan", "Belum ada ruang untuk nomor ini. Ke alun-alun"); a.href = "/alun-alun"; const li = el("li"); li.append(a); ul.append(li); return; }
     for (const r of ruang) {
@@ -279,7 +276,7 @@
     if (no !== gabungNo) return;   // pilihan berganti selama menunggu: hasil basi dibuang
     if (r.s !== 200) {   // gagal: pesan dan tombol Coba lagi, pilihan tidak terkunci
       const li = el("li"), b = el("button", "mk-tautan", "Coba lagi"); b.type = "button"; b.addEventListener("click", muatAkun); li.append(b); $("daftarAkun").replaceChildren(li);
-      return pesan(r.s === 0 ? "Tidak ada koneksi." : r.s === 401 ? "Masuk dulu lewat kode WhatsApp." : kalimat(r.j.galat) || "Daftar akun belum bisa dimuat.");
+      return pesan(r.s === 0 ? PesanLayar.LURING : r.s === 401 ? "Masuk dulu lewat kode WhatsApp." : kalimat(r.j.galat) || "Daftar akun belum bisa dimuat.");
     }
     if (!kab) {   // daftar kabupaten dari server (ejaan sama dengan akun lembaga)
       const k = $("iGKab"); k.replaceChildren(new Option("Pilih kabupaten atau kota", ""), ...(r.j.kab || []).map(n => new Option(ejaan(n), n))); k.disabled = false;
@@ -303,7 +300,7 @@
     sedangGabung = false;
     if (r.s !== 200) { for (const x of $("daftarAkun").querySelectorAll("button")) x.disabled = false; return pesan(galat(r)); }
     b.querySelector(".mk-sub")?.remove();
-    const aktif = r.j.status === "aktif", pil = el("span", "mk-pil " + (aktif ? "hijau" : "kuning"), aktif ? "Aktif" : "Menunggu pemeriksaan"); b.append(pil);
+    const aktif = r.j.status === "aktif", pil = el("span", "mk-pil " + (aktif ? "hijau" : "kuning"), aktif ? "Aktif" : PesanLayar.MENUNGGU); b.append(pil);
     if (aktif) { pesan("Kamu sudah bergabung. Membuka ruang lembaga...", true); alih = setTimeout(() => pergi(r.j.ke), 900); }
     else { pesan("Permohonanmu menunggu pemeriksaan petugas. Sementara itu akun umummu tetap bisa dipakai.", true); for (const x of $("daftarAkun").querySelectorAll("button")) if (x !== b) x.disabled = false; }
   }

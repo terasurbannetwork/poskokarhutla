@@ -90,15 +90,16 @@ uji("halaman U-21: pintu lama tetap ada dan menautkan ke /masuk dengan ?ke= hala
 
 uji("halaman L-1b: penyaring ?ke= menolak jalur di luar situs; pintu sandi mengikuti tujuan; nomor tersamar", () => {
   const ctx = {document: {getElementById: () => null}}; ctx.globalThis = ctx; vm.createContext(ctx);
+  if (existsSync(path.join(AKAR, "public/inti/pesan.js"))) vm.runInContext(baca("public/inti/pesan.js"), ctx, {filename: "pesan.js"});
   vm.runInContext(baca("public/masuk.js"), ctx, {filename: "masuk.js"});
-  const {jalurAman, pintuSandi, nomorSah, tersamar, kalimat} = ctx.MasukMurni;
+  const {jalurAman, pintuSandi, nomorSah, kalimat} = ctx.MasukMurni;
   for (const jahat of ["//evil.com", "/\\evil", "https://x", "http://x/y", "/\tx", "/\t/evil.com", "/\n/evil.com", "/ evil", "javascript:alert(1)", "evil.com", "", "\\\\evil", "/\u0000x", "/\x7f", null, undefined, 5, ["/a"]]) assert.equal(jalurAman(jahat), "", JSON.stringify(jahat));
   for (const baik of ["/", "/instansi", "/admin/pantau?x=1", "/alun-alun#a", "/petugas/panel"]) assert.equal(jalurAman(baik), baik);
   assert.equal(pintuSandi(""), "/admin/masuk"); assert.equal(pintuSandi("/instansi"), "/instansi"); assert.equal(pintuSandi("/instansi/laporan"), "/instansi");
   assert.equal(pintuSandi("/pendataan"), "/pendataan"); assert.equal(pintuSandi("/kemitraan/daerah"), "/kemitraan/masuk");
   assert.equal(pintuSandi("/instansiku"), "/admin/masuk?ke=%2Finstansiku"); assert.equal(pintuSandi("/admin/pantau"), "/admin/masuk?ke=%2Fadmin%2Fpantau");
   assert.equal(nomorSah("0812 3456 7890"), true); assert.equal(nomorSah("+62 812-3456-7890"), true); assert.equal(nomorSah("12345"), false); assert.equal(nomorSah("0212345678"), false); assert.equal(nomorSah(""), false);
-  assert.equal(tersamar("0812 3456 7890"), "0812 xxxx xx90"); assert.equal(tersamar("+62" + "81234567890"), "0812 xxxx xx90");
+  assert.equal(ctx.PesanLayar.samar("62800123456"), "xxxxxxx3456");   // satu penyamar bersama (/inti/pesan.js)
   assert.equal(kalimat("kode salah atau kedaluwarsa"), "Kode salah atau kedaluwarsa."); assert.equal(kalimat(""), ""); assert.equal(kalimat("Sudah."), "Sudah.");
   assert.doesNotMatch(baca("public/masuk.js"), /console\.|localStorage|sessionStorage|innerHTML|insertAdjacentHTML|eval\(/, "kode dan nomor tidak dicatat atau disimpan; teks server lewat textContent");
 });
@@ -120,4 +121,14 @@ uji("halaman L-1c: keluar dan kode sah mengosongkan isian; hitung mundur dari ja
   assert.match(html, /menghapus akunmu sendiri dari halaman akun/, "teks persetujuan L4 menyebut hapus akun sendiri (PM-14)");
   for (const id of ["fEmail", "fSandiBaru", "fHapus", "bHapusAkun", "bEmail", "iSandiBaru"]) assert.match(html, new RegExp(`id="${id}"`), id);
   assert.match(html, /id="iSandiBaru"[^>]*autocomplete="new-password"/); assert.match(html, /id="iSandiBaru"[^>]*type="password"|type="password"[^>]*id="iSandiBaru"/);
+});
+
+uji("halaman L-1d: masuk.js dan aktivasi.js memakai PesanLayar, tanpa salinan kalimat, tanggal, atau penyamar lama", () => {
+  const ak = baca("public/admin/aktivasi.js"), mj = baca("public/masuk.js");
+  for (const [nama, js] of [["masuk.js", mj], ["aktivasi.js", ak]]) {
+    assert.match(js, /PesanLayar\./, nama + " memakai PesanLayar");
+    for (const lama of ["Tidak ada sambungan", "lalu coba lagi", "Menunggu persetujuan", "•"]) assert.ok(!js.includes(lama), nama + " tanpa salinan: " + lama);
+  }
+  assert.doesNotMatch(mj, /const tersamar|const lama =/); assert.match(baca("public/masuk.html"), /\/inti\/pesan\.js\?v=1"><\/script>\s*<script src="\/masuk\.js/);
+  assert.match(ak, /Tidak ada dalam 120 hari/); assert.doesNotMatch(ak, /4 bulan/);
 });

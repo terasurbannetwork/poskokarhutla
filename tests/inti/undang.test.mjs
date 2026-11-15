@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import vm from "node:vm";
 const SRC = readFileSync(new URL("../../public/inti/undang.js", import.meta.url), "utf8");
+const PESAN = readFileSync(new URL("../../public/inti/pesan.js", import.meta.url), "utf8");
 
 class El {
   constructor(t) { this.tag = t; this.anak = []; this.att = {}; this.ev = {}; this._t = ""; this.disabled = false; this.value = ""; this.hidden = false; }
@@ -15,11 +16,12 @@ class El {
   querySelectorAll(t) { const o = []; const w = e => { for (const a of e.anak) { if (a.tag === t) o.push(a); w(a); } }; w(this); return o; }
   cari(f) { const o = []; const w = e => { for (const a of e.anak) { if (f(a)) o.push(a); w(a); } }; w(this); return o; }
 }
-function dunia(rute) {
+function dunia(rute, tanpaPesan) {
   const panggilan = [];
   const document = {createElement: t => new El(t), createElementNS: (n, t) => new El(t)};
   const fetch = async (url, o) => { panggilan.push({url, o}); const r = rute(url, o || {}); await null; return {status: r.s, json: async () => r.j, headers: {get: k => (r.h || {})[k] ?? null}}; };
   const ctx = {document, fetch, location: {pathname: "/instansi"}, console: {}, globalThis: null}; ctx.window = ctx; ctx.globalThis = ctx;
+  if (!tanpaPesan) vm.runInNewContext(PESAN, ctx);
   vm.runInNewContext(SRC, ctx);
   return {ctx, panggilan, wadah: new El("div")};
 }
@@ -35,14 +37,15 @@ test("pemetaan status ke pil dan jalur", () => {
 test("kalimat galat: 409, 429 dengan retry-after, putus", () => {
   const U = dunia(() => ({s: 404, j: {}})).ctx.UndangRekan;
   assert.equal(U.galat(409), "Nomor ini sudah anggota atau sudah diundang.");
-  assert.match(U.galat(429, "30"), /Tunggu 30 detik/); assert.match(U.galat(429, "600"), /Tunggu 10 menit/);
-  assert.match(U.galat(0), /Tidak ada sambungan/);
+  assert.equal(U.galat(429, "30"), "Terlalu sering. Coba lagi 30 detik lagi."); assert.equal(U.galat(429, "600"), "Terlalu sering. Coba lagi 10 menit lagi.");
+  assert.equal(U.galat(429, null), "Terlalu sering. Coba lagi nanti."); assert.equal(U.galat(0), "Tidak ada koneksi.");
+  assert.equal(U.galat(403, null, {galat: "Ditolak."}), "Ditolak."); assert.equal(U.galat(500), "Gagal. Coba lagi.");
 });
 test("pasang: tabel undangan, cabut hanya untuk terkirim yang boleh, POST membawa x-pb, klik ganda satu kiriman", async () => {
   const w = dunia((url, o) => url.startsWith("/api/masuk/undang?") ? {s: 200, j: ADA} : url === "/api/masuk/undang" && o.method === "POST" ? {s: 201, j: {ok: true}} : {s: 403, j: {}});
   w.ctx.UndangRekan.pasang(w.wadah, {akunId: "0123456789abcdef"}); await tunda();
   const teks = w.wadah.textContent;
-  for (const k of ["Undang rekan", "Terkirim", "Diterima", "Kedaluwarsa", "0812****34"]) assert.ok(teks.includes(k), k);
+  for (const k of ["Undang rekan", "Terkirim", "Diterima", "Kedaluwarsa", "xxxxxx**34"]) assert.ok(teks.includes(k), k);
   assert.equal(w.wadah.cari(e => e.tag === "button" && /Cabut undangan/.test(e.att["aria-label"] || "")).length, 1);
   const form = w.wadah.cari(e => e.tag === "form")[0], [wa] = w.wadah.cari(e => e.tag === "input");
   wa.value = "081234567890";
@@ -97,7 +100,18 @@ test("hanya satu konfirmasi terbuka; Escape membatalkan; Setujui tanpa konfirmas
 });
 test("401: satu kalimat ajakan masuk dengan tautan ke /masuk?ke=", async () => {
   const w = dunia(() => ({s: 401, j: {}})); w.ctx.UndangRekan.pasang(w.wadah, {}); await tunda();
-  assert.match(w.wadah.textContent, /Masuk dengan nomor WhatsApp untuk mengundang rekan\./);
+  assert.match(w.wadah.textContent, /Masuk dengan nomor WhatsApp/);
   assert.equal(w.wadah.cari(e => e.tag === "a")[0].att.href, "/masuk?ke=%2Finstansi");
   assert.equal(w.wadah.cari(e => e.tag === "form").length, 0);
+});
+
+test("tanpa pesan.js: pasang melempar galat yang jelas; nomor tersamar x, tanggal dan menunggu dari modul", async () => {
+  const w0 = dunia(() => ({s: 404, j: {}}), true);
+  assert.throws(() => w0.ctx.UndangRekan.pasang(w0.wadah, {}), /pesan\.js/);
+  const w = dunia(ruteAnggota); w.ctx.UndangRekan.pasang(w.wadah, {}); await tunda();
+  const t = w.wadah.textContent;
+  assert.ok(t.includes("Menunggu pemeriksaan")); assert.ok(!t.includes("Menunggu persetujuan")); assert.ok(t.includes("xxxxxx**22"));
+  assert.doesNotMatch(t, /[•·]/);
+  const w2 = dunia((url) => url.startsWith("/api/masuk/undang") ? {s: 200, j: ADA} : {s: 403, j: {}}); w2.ctx.UndangRekan.pasang(w2.wadah, {}); await tunda();
+  assert.ok(w2.wadah.textContent.includes("15 Jan 2027"));   // 1800000000000 ms
 });

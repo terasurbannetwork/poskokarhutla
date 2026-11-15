@@ -172,7 +172,7 @@ const menungguMilik = async (env, mkId) => (await mkAnggotaMenungguMilik(env, mk
 
 /* ---------------- sesi akun umum ---------------- */
 export {sesiMasuk};   // pembacanya ada di masuk_sesi.js
-const samar = wa => "•".repeat(wa.length - 4) + wa.slice(-4);   // nomor tidak pernah tampil terang
+const samar = wa => "x".repeat(Math.max(0, wa.length - 4)) + wa.slice(-4);   // nomor tidak pernah tampil terang
 
 /* ---------------- ruang: akun peran yang terikat langsung ke nomor terbukti (ALGORITMA 3) ---------------- */
 const MODUL = () => ({instansi: {buat: sesiInstansi, cabut: cabutInstansi}, pendataan: {buat: sesiPendataan, cabut: cabutPendataan}, kemitraan: {buat: sesiKampus, cabut: cabutKampus}, pemirsa: {buat: sesiPemirsa, cabut: cabutPemirsa}});   // dibuat saat dipanggil: aman dari siklus impor
