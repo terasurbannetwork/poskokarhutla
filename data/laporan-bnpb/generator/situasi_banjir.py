@@ -112,12 +112,22 @@ def sudah_banjir(kode, tanggal, wa_tambahan=()):
             o = J.setdefault(kab, dict(kab=kab, pertama=h, akhir=h, kk=None, ungsi=None, kondisi='', surut_tgl=None))
             o['akhir'] = h; o['kondisi'] = t.get('kondisi') or o['kondisi']
             o['butir'] = butir_wa(berkas[h], kab) or o.get('butir') or {}
+            jw = _cari(t.get('dampak') or o['butir'].get('Dampak'), r'KK\s*/\s*([\d.,]+)\s*jiwa')   # "x KK / y jiwa", bukan "1 jiwa hilang"
+            if jw: o['jiwa'] = jw
+            ug = _cari(o['butir'].get('Pengungsi'), r'([\d.,]+)\s*jiwa')
+            hl = _cari(o['butir'].get('Dampak'), r'(\d+)(?:\s*\(\w+\))?\s*jiwa\s*hilang')
+            md = _cari(o['butir'].get('Dampak'), r'(\d+)(?:\s*\(\w+\))?\s*jiwa\s*meninggal')
+            if hl is not None: o['hilang'] = hl
+            if md is not None: o['meninggal'] = md
             nk = _cari(o['kondisi'] + ' ' + (t.get('dampak') or ''), r'(\d+)\s*kec(?:amatan|\.)')
             if nk: o['kec_wa'] = nk
             kk = a.get('kk') or _cari(t.get('dampak'), r'([\d.,]+)\s*KK')
             if kk: o['kk'] = int(kk)
             u = a.get('mengungsi') or _cari(t.get('pengungsi'), r'([\d.,]+)\s*jiwa') or _cari(t.get('kondisi'), r'([\d.,]+)\s*jiwa\s*mengungsi')
-            if u: o['ungsi'] = int(u)
+            if re.search(r'^\s*nihil', o['butir'].get('Pengungsi') or '', re.I): o['ungsi'] = 0   # "Pengungsi: Nihil" menimpa angka lama
+            elif u: o['ungsi'] = int(u)
+            elif ug: o['ungsi'] = ug
+            o.setdefault('seri', {})[h] = (o['kk'], o['ungsi'])
             kn = o['kondisi'].lower()   # WA 14 Nov Pidie Jaya: "sebagian gampong sudah surut ... genangan kecil" = belum surut
             srt = dl.surut(o['kondisi']) and not re.search(r'mulai surut|berangsur|sebagian|genangan|belum surut', kn)
             o['surut_tgl'] = (o['surut_tgl'] or h) if srt else None
@@ -430,9 +440,177 @@ def gandakan(P, n):
     return list(P.slides)
 
 
+def ubin(sl, x, y, w, h, angka, ket, isi='EEF3F9', tegas=NAVY):
+    """Ubin angka kunci: bilah warna di kiri, angka besar, keterangan."""
+    kotak(sl, x, y, w, h, isi, MSO_SHAPE.ROUNDED_RECTANGLE, .1)
+    kotak(sl, x, y + .08, .06, h - .16, tegas)
+    tx(sl, x + .18, y + .05, w - .25, h * .55, angka, sz=17, b=True, c=tegas if tegas != NAVY else NAVY)
+    tx(sl, x + .18, y + h * .58, w - .25, h * .34, ket, sz=8, c=INK)
+
+
+PALET = ['051C2C', '1B5A93', '4F86C6', '9CC3E6', 'D9600B', 'E8894A', 'F3C9A0', '8F3F07', '6B7280', 'B8C2CF']
+
+
+def grafik_tumpuk(sl, x, y, w, h, kategori, seri, judul_g):
+    """Kolom bertumpuk native: seri {nama: [nilai per kategori]}."""
+    from pptx.chart.data import CategoryChartData
+    from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION
+    cd = CategoryChartData(); cd.categories = kategori
+    for nm, v in seri.items(): cd.add_series(nm, v)
+    g = sl.shapes.add_chart(XL_CHART_TYPE.COLUMN_STACKED, Inches(x), Inches(y), Inches(w), Inches(h), cd).chart
+    g.has_title = True; g.chart_title.text_frame.text = judul_g
+    rr = g.chart_title.text_frame.paragraphs[0].runs[0]; rr.font.size = Pt(9.19); rr.font.bold = True; rr.font.name = 'Roboto'; rr.font.color.rgb = warna(NAVY)
+    g.has_legend = True; g.legend.position = XL_LEGEND_POSITION.BOTTOM; g.legend.include_in_layout = False
+    g.legend.font.size = Pt(7.5); g.legend.font.name = 'Roboto'
+    g.plots[0].gap_width = 60; g.plots[0].overlap = 100
+    for i, sr in enumerate(g.series):
+        sr.format.fill.solid(); sr.format.fill.fore_color.rgb = warna(PALET[i % len(PALET)])
+    for ax in (g.category_axis, g.value_axis):
+        ax.tick_labels.font.size = Pt(7.5); ax.tick_labels.font.name = 'Roboto'; ax.format.line.color.rgb = warna(GARIS)
+    g.value_axis.tick_labels.number_format = '#,##0'; g.value_axis.tick_labels.number_format_is_linked = False
+    g.value_axis.major_gridlines.format.line.color.rgb = warna('E6EAF0')
+    return g
+
+
+def angka_kerusakan(t):
+    """Rumah, jembatan, akses jalan dari butir Kerusakan WA; None bila tidak disebut."""
+    t = t or ''
+    def jml(pola):
+        xs = [int(m.replace('.', '').replace(',', '')) for m in re.findall(pola, t, re.I)]
+        return sum(xs) if xs else None
+    return (jml(r'([\d.,]+)\s*unit\s*rumah'), jml(r'(\d+)\s*(?:unit\s*)?jembatan'), jml(r'(\d+)\s*(?:titik\s*|ruas\s*)?(?:akses\s*)?jalan'))
+
+
+def status_darurat(t):
+    """'Siaga Darurat Provinsi TMT 11/11/2026 s.d 31/01/2027' -> 'Siaga Darurat Provinsi s.d. 31 Jan 2027'."""
+    t = (t or '').strip()
+    m = re.search(r'^(.*?)\s*TMT\s*[\d/]+\s*s\.?d\.?\s*(\d{1,2})/(\d{1,2})/(\d{4})', t, re.I)
+    if not m: return t.rstrip('.') or '–'
+    jenis = re.sub(r'^Penetapan Status\s*', '', m[1]).strip()
+    return f'{jenis} s.d. {int(m[2])} {BULAN[int(m[3]) - 1]} {m[4]}'
+
+
+BMKG = {'hujan ringan': 1, 'hujan sedang': 2, 'hujan lebat': 3, 'hujan petir': 3, 'petir': 3, 'hujan sangat lebat': 3}
+BMKG_GAYA = {1: ('Ringan', 'DCEBF8', '1B5A93'), 2: ('Sedang', '9CC3E6', '051C2C'), 3: ('Lebat', '1B5A93', 'FFFFFF')}
+
+
 # ---------------------------------------------------------------- deck
 
-def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=False):
+def slide_lengkap(L):
+    """Slide ringkasan, perkembangan dan kerusakan, hujan dan sungai untuk paket --lengkap (dipanggil dari bangun dengan locals())."""
+    buka, sel_hari, hk, hari, rk, lap, kode, prov = L['buka'], L['sel_hari'], L['hk'], L['hari'], L['rk'], L['lap'], L['kode'], L['prov']
+    wa0, wa1, tanggal, gis, dibuat, n_hari, rentang, kerja = L['wa0'], L['wa1'], L['tanggal'], L['gis'], L['dibuat'], L['n_hari'], L['rentang'], L['kerja']
+    sk = f'Laporan Dit. Koordalops BNPB, {tgl(wa0 or tanggal)} s.d. {tgl(wa1 or tanggal)} {(wa1 or tanggal)[:4]}'
+    tmp = tempfile.mkdtemp(prefix='situasi-banjir-lengkap-')
+    sungai = json.load(open(unduh('sungai.json', tmp)))
+    bmkg = json.load(open(unduh('cuaca_bmkg_kab10.json', tmp)))
+    shutil.rmtree(tmp, ignore_errors=True)
+    # debit sungai per titik di provinsi ini pada hari prakiraan
+    j0 = sungai['hari'].index(hari[0]) if hari[0] in sungai['hari'] else None
+    titik = []
+    for t in sungai['titik']:
+        if t['prov'] != kode or not t.get('q2') or j0 is None: continue
+        qf = [x for x in t['q'][j0:j0 + n_hari] if x is not None]
+        if not qf: continue
+        pk = max(qf); i = t['q'][j0:j0 + n_hari].index(pk)
+        kls = 3 if pk >= t['q20'] else 2 if pk >= t['q5'] else 1 if pk >= t['q2'] else 0
+        titik.append(dict(kab=t['kab'], kec=t['kec'], pk=pk, q2=t['q2'], r=pk / t['q2'], kls=kls, tgl=hari[i]))
+    titik.sort(key=lambda t: -t['r'])
+    sg_kab = {}
+    for t in titik: sg_kab[t['kab']] = max(sg_kab.get(t['kab'], 0), t['r'])
+    # ---------- 1. ringkasan
+    sl = buka('ringkas')
+    belum = [o for o in lap if o['status'] == 'Belum surut']
+    kk, jiwa = sum(o['kk'] or 0 for o in lap), sum(o.get('jiwa') or 0 for o in lap)
+    ungsi = sum(o['ungsi'] or 0 for o in lap); hilang = sum(o.get('hilang') or 0 for o in lap); md = sum(o.get('meninggal') or 0 for o in lap)
+    kab_pr = {v['kab']: v for k, v in rk.items() if k[0] == kode}
+    cS = sum(v['s'] for v in kab_pr.values()); cA = sum(v['a'] for v in kab_pr.values()); cW = sum(v['w'] for v in kab_pr.values())
+    judul(sl, ['Banjir melanda', f' {len(lap)}', f' kab/kota di {prov} dengan', f' {rb(kk)}', ' KK terdampak;', f' {len(belum)}', ' belum surut dan',
+               f' {cA + cS}', f' kecamatan Siaga{"/Awas" if cA else ""} pada {n_hari} hari ke depan (', rentang, ')'])
+    w4 = (12.13 - 3 * .07) / 4
+    ub = [(rb(len(lap)), 'Kab/kota terdampak banjir', 'EEF3F9', NAVY), (rb(len(belum)), 'Kab/kota belum surut', KONDISI['Belum surut'][0], KONDISI['Belum surut'][1]),
+          (rb(kk), 'KK terdampak', 'EEF3F9', NAVY), (rb(jiwa or None), 'Jiwa terdampak', 'EEF3F9', NAVY),
+          (rb(ungsi or None), 'Jiwa mengungsi', 'EEF3F9', NAVY), (rb(hilang + md or None), 'Jiwa meninggal dan hilang', KONDISI['Belum surut'][0], KONDISI['Belum surut'][1]),
+          (rb(cA + cS), 'Kecamatan Siaga dan Awas', LEVEL[2][0], LEVEL[2][1]), (rb(cW), 'Kecamatan Waspada', LEVEL[1][0], 'C98A4B')]
+    for i, (n_, ket, isi, tg) in enumerate(ub):
+        ubin(sl, .6 + (i % 4) * (w4 + .07), 1.45 + (i // 4) * .66, w4, .6, n_, ket, isi, tg)
+    nama = list(dict.fromkeys([o['kab'] for o in lap] + [v['kab'] for v in sorted(kab_pr.values(), key=lambda v: (-v['a'], -v['s'], -v['mm'])) if v['a'] or v['s']]))
+    lpk = {o['kab']: o for o in lap}
+    kol = [('Kab/Kota', 1.55, 'l'), ('Kondisi kini', .95, 'c'), ('KK', .7, 'c'), ('Jiwa', .7, 'c'), ('Mengungsi', .78, 'c'), ('Status darurat', 2.55, 'l', 8.5),
+           ('Prakiraan tertinggi', 1.05, 'c'), ('Mulai Siaga', .78, 'c'), ('Hujan 3 hari, mm', .8, 'c'), ('Sungai, % Q2', .8, 'c')]
+    br = []
+    for n in nama:
+        o, v = lpk.get(n), kab_pr.get(n, {'hari': [0] * n_hari, 'mm': 0, 'tgl': None})
+        lv = max(v['hari']); ms = next((hari[i] for i, x in enumerate(v['hari']) if x >= 2), None)
+        br.append([n, {'pil': o['status'], 'isi': KONDISI[o['status']][0], 'tegas': KONDISI[o['status']][1]} if o else '–',
+                   rb(o['kk']) if o else '–', rb(o.get('jiwa')) if o else '–', rb(o['ungsi']) if o else '–',
+                   (status_darurat((o.get('butir') or {}).get('Penetapan status')), INK, False) if o else '–',
+                   {'pil': LEVEL[lv][2], 'isi': LEVEL[lv][0], 'tegas': LEVEL[lv][1] if lv >= 2 else '9A5B1E'} if lv else '–',
+                   tgl(ms) if ms else '–', str(round(v['mm'])) if v['tgl'] else '–', f'{round(100 * sg_kab[n])}%' if n in sg_kab else '–'])
+    tabel(sl, .6, 2.86, 12.13, kol, br, .4, 6.95)
+    sumber(sl, f'{sk}; {gis}')
+    # ---------- 3. perkembangan dan kerusakan
+    sl = buka('tren')
+    hari_wa = sorted({h for o in lap for h in o.get('seri', {})})
+    seri = {}
+    for o in sorted(lap, key=lambda o: -(o['kk'] or 0)):
+        nil, akhir = [], None
+        for h in hari_wa:
+            kk_h = (o['seri'].get(h) or (None, None))[0]
+            if kk_h and kk_h >= .1 * (akhir or 0): akhir = kk_h   # laporan kejadian baru kecil (<10%) di kab/kota yang sama tidak menimpa angka
+            akhir = akhir or 0
+            nil.append(akhir)
+        seri[o['kab']] = nil
+    tot = [sum(v[i] for v in seri.values()) for i in range(len(hari_wa))]
+    i0 = next((i for i, x in enumerate(tot) if x), 0)
+    kr = {o['kab']: angka_kerusakan((o.get('butir') or {}).get('Kerusakan')) for o in lap}
+    rum, jem, jal = (sum(x[j] or 0 for x in kr.values()) for j in range(3))
+    arah = 'naik' if tot[-1] > tot[i0] else 'turun' if tot[-1] < tot[i0] else 'tetap'
+    judul(sl, [f'KK terdampak {arah} dari', f' {rb(tot[i0])}', f' ({tgl(hari_wa[i0])}) menjadi', f' {rb(tot[-1])}', f' ({tgl(hari_wa[-1])}); kerusakan',
+               f' {rb(rum)}', ' rumah,', f' {rb(jem)}', ' jembatan, dan', f' {rb(jal)}', ' akses jalan'])
+    grafik_tumpuk(sl, .6, 1.42, 5.8, 5.5, [tgl(h) for h in hari_wa[i0:]], {k: v[i0:] for k, v in seri.items()}, 'KK terdampak per kab/kota, laporan harian')
+    kolR = [('Kab/Kota', 1.35, 'l'), ('Rumah', .62, 'c'), ('Jembatan', .7, 'c'), ('Jalan', .55, 'c'), ('Rincian kerusakan', 2.97, 'j', 8, 'bungkus')]
+    brR = [[o['kab'], rb(kr[o['kab']][0]), rb(kr[o['kab']][1]), rb(kr[o['kab']][2]),
+            (rapi((o.get('butir') or {}).get('Kerusakan')) if (o.get('butir') or {}).get('Kerusakan') else '–', INK, False)] for o in lap]
+    brR.append({'total': True, 'sel': [f'Total {len(lap)} kab/kota', rb(rum), rb(jem), rb(jal), '']})
+    tabel(sl, 6.55, 1.4, 6.19, kolR, brR, .6, 6.95)
+    sumber(sl, sk)
+    # ---------- 5. hujan (BMKG) dan sungai (GloFAS)
+    sl = buka('pemicu')
+    bk = {}
+    for kd, v in bmkg['kab'].items():
+        if v.get('prov') != kode: continue
+        hh = {x['tgl']: BMKG.get((x.get('kondisi') or '').strip().lower(), 0) for x in v.get('hari', [])}
+        bk[kab_bersih(v['nama'])] = [hh.get(h) for h in hari]
+    n_lebat = sum(1 for v in bk.values() if any((x or 0) >= 3 for x in v))
+    naik = [t for t in titik if t['kls'] >= 1]
+    tt = titik[0] if titik else None
+    if naik:
+        ek = [f' kab/kota {prov};', f' {len(naik)}', ' titik sungai mencapai debit banjir 2 tahunan']
+    elif tt:
+        ek = [f' kab/kota {prov}; debit sungai tertinggi', f' {round(100 * tt["r"])}%', f' banjir 2 tahunan ({tt["kab"]})']
+    else:
+        ek = [f' kab/kota {prov}']
+    judul(sl, ['BMKG: hujan lebat atau petir di', f' {n_lebat}'] + ek)
+    kolB = [('Kab/Kota', 1.45, 'l')] + [(h, .56, 'c') for h in hk] + [('Kita', .62, 'c')]
+
+    def sel_b(x):
+        return {'pil': BMKG_GAYA[x][0], 'isi': BMKG_GAYA[x][1], 'tegas': BMKG_GAYA[x][2]} if x else '–'
+    urut_b = sorted(bk, key=lambda n: (-sum(x or 0 for x in bk[n]), n))
+    brB = []
+    for n in urut_b:
+        lv = max(kab_pr.get(n, {'hari': [0]})['hari'])
+        brB.append([n] + [sel_b(x) for x in bk[n]] + [{'pil': LEVEL[lv][2][0], 'isi': LEVEL[lv][0], 'tegas': LEVEL[lv][1] if lv >= 2 else '9A5B1E'} if lv else '–'])
+    tabel(sl, .6, 1.4, 5.8, kolB, brB, .3, 6.95)
+    kolS = [('Kab/Kota', 1.4, 'l'), ('Kecamatan', 1.3, 'l'), ('Debit puncak, m³/dtk', .95, 'c'), ('Q2, m³/dtk', .75, 'c'), ('% Q2', .6, 'c'), ('Tgl. puncak', .7, 'c')]
+    brS = [[t['kab'], (t['kec'], INK, False), rb(round(t['pk'])), rb(round(t['q2'])),
+            ({'pil': f'{round(100 * t["r"])}%', 'isi': LEVEL[min(3, t['kls'] + 1)][0] if t['kls'] else 'EEF3F9', 'tegas': LEVEL[min(3, t['kls'] + 1)][1] if t['kls'] else NAVY}),
+            tgl(t['tgl'])] for t in titik[:len(bk)]]
+    tabel(sl, 6.55, 1.4, 6.19, kolS, brS, .4, 6.95)
+    sumber(sl, f'BMKG prakiraan cuaca, {tgl(bmkg["dibuat"])} {bmkg["dibuat"][:4]} {bmkg["dibuat"][11:16].replace(":", ".")} WIB; GloFAS, {tgl(dibuat)} {dibuat[:4]}')
+
+
+def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=False, lengkap=False):
     import wa_harian
     from wilayah import PROVINSI
     kode = {v.lower(): k for k, v in PROVINSI.items()}.get(prov.lower()) or sys.exit(f'provinsi tidak dikenal: {prov}')
@@ -451,21 +629,28 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
     rentang = f'{dt.date.fromisoformat(hari[0]).day}-{tgl(hari[-1])}'
     gis = f'ECMWF IFS, GloFAS, InaRISK BNPB, {tgl(dibuat)} {dibuat[:4]} {jam} WIB'
     lain = {} if not provinsi_lain else {k: v for k, v in rk.items() if k[0] != kode and (v['a'] or v['s'])}
-    o0 = 1 if kab_fokus else 0
-    n_sl = (3 if lain else 2) + o0
-    bagian = ([kab_fokus] if kab_fokus else []) + ['Sudah banjir', f'Prakiraan {n_hari} hari'] + (['Provinsi lain'] if lain else [])
+    if lengkap:   # paket paling banyak 5 slide (pemilik 15 Nov 2026)
+        urut = ['ringkas', 'sudah', 'tren', 'prakiraan', 'pemicu']
+        label = {'ringkas': 'Ringkasan', 'sudah': 'Sudah banjir', 'tren': 'Perkembangan', 'prakiraan': f'Prakiraan {n_hari} hari', 'pemicu': 'Hujan dan sungai'}
+    else:
+        urut = (['fokus'] if kab_fokus else []) + ['sudah', 'prakiraan'] + (['lain'] if lain else [])
+        label = {'fokus': kab_fokus, 'sudah': 'Sudah banjir', 'prakiraan': f'Prakiraan {n_hari} hari', 'lain': 'Provinsi lain'}
+    pos = {k: i for i, k in enumerate(urut)}; bagian = [label[k] for k in urut]; n_sl = len(urut)
 
     os.makedirs(keluar, exist_ok=True)
     tpl = os.path.join(TPL, 'templat.pptx')
     P = Presentation(tpl); S = gandakan(P, n_sl); kerja = tempfile.mkdtemp(prefix='situasi-banjir-png-')
+
+    def buka(jenis):
+        i = pos[jenis]; nav(S[i], bagian, i, i + 1); return S[i]
 
     def sel_hari(lv):
         return {'kotak': LEVEL[lv][2][0], 'isi': LEVEL[lv][0] if lv < 2 else LEVEL[lv][1], 'tegas': 'FFFFFF' if lv >= 2 else '9A5B1E'} if lv else '–'
     hk = [f'{HARI_SINGKAT[dt.date.fromisoformat(h).weekday()]} {dt.date.fromisoformat(h).day}' for h in hari]
 
     # ---- 0. fokus satu kab/kota: peta kecamatan, laporan Koordalops, status per kecamatan
-    if kab_fokus:
-        sl = S[0]; nav(sl, bagian, 0, 1)
+    if 'fokus' in pos:
+        sl = buka('fokus')
         kec = {k.split('|')[2]: v for k, v in st['kec'].items() if k.startswith(f'{kode}|{kab_fokus}|')}
         semua = sorted({f['properties']['kec'] for f in json.load(open(os.path.join(AKAR, 'public', 'geo', 'kecamatan', f'{kode}.json')))['features']
                         if f['properties']['kab'] == kab_fokus})
@@ -509,7 +694,7 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
         sumber(sl, (f'Laporan Dit. Koordalops BNPB, {tgl(lp["akhir"])} {lp["akhir"][:4]}; ' if lp else '') + gis)
 
     # ---- 1. sudah banjir
-    sl = S[o0]; nav(sl, bagian, o0, o0 + 1)
+    sl = buka('sudah')
     belum = [o for o in lap if o['status'] == 'Belum surut']
     n_kec = sum(o['kec'] or 0 for o in lap); n_kk = sum(o['kk'] or 0 for o in lap)
     if lap:
@@ -539,7 +724,7 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
     sumber(sl, f'Laporan Dit. Koordalops BNPB, {tgl(wa0 or tanggal)} s.d. {tgl(wa1 or tanggal)} {(wa1 or tanggal)[:4]}; Logbook Pusdalops BNPB')
 
     # ---- 2. prakiraan N hari, provinsi pilihan
-    sl = S[o0 + 1]; nav(sl, bagian, o0 + 1, o0 + 2)
+    sl = buka('prakiraan')
     kini = {o['kab']: o['status'] for o in lap}
     kab = sorted([v for k, v in rk.items() if k[0] == kode and (v['a'] or v['s'] or v['kab'] in kini)],
                  key=lambda v: (-v['a'], -v['s'], -v['mm'], v['kab']))
@@ -570,8 +755,8 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
     sumber(sl, gis)
 
     # ---- 3. provinsi lain
-    if lain:
-        sl = S[o0 + 2]; nav(sl, bagian, o0 + 2, o0 + 3)
+    if 'lain' in pos:
+        sl = buka('lain')
         pv = {}
         for (pr, kb), v in lain.items():
             o = pv.setdefault(pr, dict(pr=pr, a=0, s=0, kab=[], mm=0, tgl=None, hari=[0] * len(hari)))
@@ -599,7 +784,9 @@ def bangun(prov, n_hari, tanggal, keluar, wa=(), kab_fokus=None, provinsi_lain=F
         tabel(sl, 6.55, 1.4, 6.19, kol, br, min(.33, (6.95 - 1.63) / max(len(br), 1)), 6.95)
         sumber(sl, gis)
 
-    d = dt.date.fromisoformat(tanggal); nama = f'Situasi Banjir {kab_fokus + " dan " if kab_fokus else ""}{prov} {d:%d%m%y}'
+    if lengkap:
+        slide_lengkap(locals())
+    d = dt.date.fromisoformat(tanggal); nama = f'Situasi Banjir {kab_fokus + " dan " if kab_fokus and not lengkap else ""}{prov} {d:%d%m%y}'
     out = os.path.join(keluar, nama + '.pptx'); P.save(out)
     shutil.rmtree(kerja, ignore_errors=True)
     from pdf import ke_pdf
@@ -625,11 +812,12 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('--prov', default='Aceh'); ap.add_argument('--kab', help='kab/kota fokus di slide pertama, mis. "Aceh Singkil"'); ap.add_argument('--provinsi-lain', action='store_true', help='tambah slide Awas/Siaga provinsi lain (bawaan: tidak, pemilik 15 Nov 2026)'); ap.add_argument('--hari', type=int, default=6)
     ap.add_argument('--tanggal', default=dt.date.today().isoformat()); ap.add_argument('--wa', nargs='*', default=[])
+    ap.add_argument('--lengkap', action='store_true', help='paket 5 slide: ringkasan, sudah banjir, perkembangan, prakiraan, hujan dan sungai')
     ap.add_argument('--keluar'); ap.add_argument('--uji', action='store_true'); ap.add_argument('--ramping', nargs=2, metavar=('ASAL', 'TUJUAN'))
     a = ap.parse_args()
     if a.uji: uji()
     elif a.ramping: ramping(*a.ramping)
     else:
         if not 1 <= a.hari <= 6: sys.exit('--hari 1 sampai 6 (hujan.json memuat 6 hari ke depan)')
-        nm = (a.kab + ' ' if a.kab else '') + a.prov
-        bangun(a.prov, a.hari, a.tanggal, a.keluar or os.path.join(SINI, '..', 'paparan', f"situasi-banjir-{nm.lower().replace(' ', '-')}-{a.tanggal}"), a.wa, a.kab, a.provinsi_lain)
+        nm = (a.kab + ' ' if a.kab and not a.lengkap else '') + a.prov + (' lengkap' if a.lengkap else '')
+        bangun(a.prov, a.hari, a.tanggal, a.keluar or os.path.join(SINI, '..', 'paparan', f"situasi-banjir-{nm.lower().replace(' ', '-')}-{a.tanggal}"), a.wa, a.kab, a.provinsi_lain, a.lengkap)
