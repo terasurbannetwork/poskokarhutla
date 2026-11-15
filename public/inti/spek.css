@@ -1,0 +1,13 @@
+/* Form dari spek (public/inti/spek.js). Kontrol minimal 16px supaya iOS tidak memperbesar layar saat fokus. */
+.sp-form{display:grid;gap:14px}
+.sp-baris[hidden]{display:none}
+.sp-label{display:block;font-weight:600;margin-bottom:4px}
+.sp-isi{display:flex;align-items:center;gap:8px}
+.sp-kontrol{flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--garis,#c9d3e0);border-radius:8px;background:var(--card,#fff);color:inherit}
+textarea.sp-kontrol{min-height:84px;resize:vertical}
+.sp-kontrol:focus-visible{outline:2px solid var(--biru,#1d4f91);outline-offset:1px}
+.sp-satuan,.sp-bantu{color:var(--muted,#5b6778);font-size:14px}
+.sp-ganda{display:flex;flex-wrap:wrap;gap:8px 16px}
+.sp-cek{display:inline-flex;align-items:center;gap:6px;font-size:16px}
+.sp-galat{color:#b3261e;font-size:14px;min-height:0}
+.sp-galat:empty{display:none}
