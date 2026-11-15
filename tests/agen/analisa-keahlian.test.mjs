@@ -2,7 +2,8 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-const akar = {}; new Function("window", readFileSync(new URL("../../public/fungsi_direktori.js", import.meta.url), "utf8"))(akar);
+import {KLASTER_PB} from "../../public/inti/klaster.js";
+const akar = {KLASTER_PB}; new Function("window", readFileSync(new URL("../../public/fungsi_direktori.js", import.meta.url), "utf8"))(akar);
 const a = akar.analisaKeahlian;
 const K = [
   {id: "W1", judul: "Peat fire risk mapping in Central Kalimantan", tahun: 2012},

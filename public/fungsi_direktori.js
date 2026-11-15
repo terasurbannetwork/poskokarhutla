@@ -81,17 +81,10 @@
     tanggap: [K("emergency response", "evacuat", "search and rescue", "rescue", "relief", "humanitarian", "triage", "rapid assessment", "damage assessment", "tanggap darurat", "evakuasi", "pengungsi", "kaji cepat", "posko"), "Tanggap darurat"],
     pasca: [K("recover", "reconstruct", "rehabilitat", "post-?disaster", "aftermath", "trauma", "ptsd", "livelihood", "pemulihan", "rehabilitasi", "rekonstruksi", "pasca ?bencana", "huntara", "hunian tetap"), "Pascabencana"],
   };
-  /* 8 klaster PB nasional (Keputusan Kepala BNPB 173/2014) */
-  const KLASTER = {
-    kesehatan: [K("health", "hospital", "medical", "disease", "nutrition", "mental", "psycholog", "kesehatan", "rumah sakit", "puskesmas", "gizi", "epidemi", "pandemi", "covid", "dengue", "malaria"), "Kesehatan"],
-    sar: [K("search and rescue", "rescue", "pencarian dan pertolongan", "penyelamatan", "basarnas"), "Pencarian dan penyelamatan"],
-    logistik: [K("logistic", "supply chain", "distribution", "stockpil", "logistik", "rantai pasok"), "Logistik"],
-    pengungsian: [K("shelter", "displace", "refugee", "evacuat", "gender", "child protection", "disabilit", "pengungsi", "evakuasi", "perlindungan", "kelompok rentan"), "Pengungsian dan perlindungan"],
-    pendidikan: [K("school", "education", "student", "teacher", "curricul", "sekolah", "pendidikan", "siswa", "guru", "kurikulum"), "Pendidikan"],
-    sarpras: [K("infrastructur", "(?<!capacity )buildings?\\b", "bridges?\\b", "roads?\\b", "structural", "retrofit", "construction", "dam\\b", "levee", "bangunan", "jembatan", "jalan", "struktur", "bendungan", "tanggul", "konstruksi"), "Sarana dan prasarana"],
-    ekonomi: [K("econom", "livelihood", "poverty", "insurance", "disaster financ", "risk financ", "economic loss", "ekonomi", "mata pencaharian", "kemiskinan", "asuransi", "pembiayaan", "kerugian"), "Ekonomi"],
-    pemulihan: [K("recover", "reconstruct", "rehabilitat", "build back better", "pemulihan", "rehabilitasi", "rekonstruksi"), "Pemulihan dini"],
-  };
+  /* 8 klaster PB nasional: daftar dan kata kunci tinggal di public/inti/klaster.js (satu sumber, juga dipakai Worker).
+     Berkas ini skrip klasik, jadi halaman memuat klaster.js sebagai module yang mengisi globalThis.KLASTER_PB; dibaca malas saat dipanggil. */
+  let klasterRe = null;
+  const KLASTER = () => { if (klasterRe) return klasterRe; const d = akar.KLASTER_PB || globalThis.KLASTER_PB; if (!d) return []; return (klasterRe = d.map(k => [k.kunci, K(...k.kata), k.nama])); };   // jangan simpan daftar kosong bila modul belum termuat
   const PROV = {
     "Aceh": ["aceh", "banda aceh", "simeulue"], "Sumatera Utara": ["sumatera utara", "north sumatra", "medan", "nias", "toba", "sinabung", "karo"], "Sumatera Barat": ["sumatera barat", "west sumatra", "padang", "mentawai", "bukittinggi"],
     "Kepulauan Riau": ["kepulauan riau", "riau islands", "batam"], "Riau": ["riau", "pekanbaru"], "Jambi": ["jambi"], "Sumatera Selatan": ["sumatera selatan", "south sumatra", "palembang"],
@@ -118,7 +111,7 @@
       const t = teksKarya(k), j = norm(k.judul);
       for (const [kunci, re] of Object.entries(JENIS)) if (re.test(t)) tambah(jenis, kunci, kunci, k);
       for (const [kunci, [re, label]] of Object.entries(FASE)) if (re.test(t)) tambah(fase, kunci, label, k);
-      for (const [kunci, [re, label]] of Object.entries(KLASTER)) if (re.test(t)) tambah(klaster, kunci, label, k);
+      for (const [kunci, re, label] of KLASTER()) if (re.test(t)) tambah(klaster, kunci, label, k);
       /* wilayah dari judul saja: topik OpenAlex tidak memuat nama tempat */
       let sisa = j; for (const [p, re] of PROV_RE) { const b = sisa.replace(re, " "); if (b !== sisa) { tambah(wilayah, p, p, k); sisa = b; } }
     }
