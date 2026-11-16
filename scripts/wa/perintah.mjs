@@ -115,7 +115,7 @@ async function buat({ laporan, tanggal }, ctx) {
       }
       return balas(`Bahan ${lap.judul} ${labelTanggal(tanggal)} belum lengkap.\n` + baris.join('\n'))
     }
-    // Cut-off dilewati hanya untuk hari lampau (cekSiap); hari ini tetap 12.00 / 17.00 WIB.
+    // Cut-off dilewati hanya untuk hari lampau (cekSiap); hari ini tetap 12.00 / 18.00 WIB.
     const c = cekSiap(lap, terpilih, now, tanggal)
     if (!c.siap) return balas(`${lap.judul} ${labelTanggal(tanggal)} menunggu: ${c.alasan}.`)
     const { kerja, out, f, berkas } = siapkanKeluaran(lap, tanggal, teks, dasar)

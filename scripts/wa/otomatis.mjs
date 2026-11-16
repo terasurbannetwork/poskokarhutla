@@ -1,7 +1,7 @@
 // Pengatur otomatis laporan harian: baca bahan WA dari worker, jalankan generator DETERMINISTIK
 // (data/laporan-bnpb/generator/*.py, tanpa LLM), kirim PDF + PPTX lewat gateway lokal.
 //   node scripts/wa/otomatis.mjs [--tanggal YYYY-MM-DD] [--kering]
-// --cutoff = pemicu jam (launchd 12.05 dan 17.05): bangun dengan bahan yang ada; laporan tak bisa dibangun dikabari ke PEMILIK.
+// --cutoff = pemicu jam (launchd 12.05 dan 18.05): bangun dengan bahan yang ada; laporan tak bisa dibangun dikabari ke PEMILIK.
 // --kering = jalan penuh kecuali memanggil gateway (tidak /send-file, tidak /send; hanya log).
 // Galat HANYA dikabarkan ke PEMILIK (sekali per galat yang sama), tidak pernah ke PENERIMA.
 import fs from 'node:fs'
@@ -25,15 +25,18 @@ const { buat: buatDrive } = createRequire(import.meta.url)('./drive.cjs')
 const GENERATOR = path.resolve(DI, '../../data/laporan-bnpb/generator')
 const execP = promisify(execFile)
 
-// Aturan jam dari data/laporan-bnpb/generator/README.md: harian cut-off 12.00 WIB, penanganan 17.00 WIB.
+// Aturan jam: harian cut-off 12.00 WIB; penanganan 18.00 WIB (pemilik 16 Nov 2026, sama dengan laporan manual 13 Nov).
 export const LAPORAN = [
   { id: 'harian', judul: 'Laporan Kejadian Bencana Harian', butuh: ['rekap_koordalops_24', 'bmkg_pagi', 'pvmbg_pagi'], jam: 12,
     berkas: (d) => `Laporan Kejadian Bencana Harian ${ddmmyy(d)}`,
-    // format 2 slide tanpa karhutla, pemilik 6 Nov; harian.py tetap dipakai pembangun manual
+    // format laporan manual 16 Nov (kejadian baru + masih berlangsung, Peringatan Dini, Rencana Aksi); harian.py tetap dipakai pembangun manual
     args: (d, f, out) => ['harian_ringkas.py', '--tanggal', d, '--koordalops', f.rekap_koordalops_24, '--bmkg', f.bmkg_pagi, '--pvmbg', f.pvmbg_pagi, '--jam', '12:00', '--out', out] },
-  { id: 'penanganan', judul: 'Laporan Penanganan Pengendalian Karhutla', butuh: ['bmkg_pagi', 'satgas'], opsional: true, jam: 17, // opsional: mode --cutoff membangun dari data sistem walau bahan WA belum ada (penanganan.py menerima --bmkg/--operasi opsional)
+  // opsional: mode --cutoff membangun dari data sistem walau bahan WA belum ada. pilihan: bahan tambahan yang dipakai bila ada, tidak ditunggu
+  // (Excel 'Gelar Kekuatan Satgas Udara Karhutla' untuk panel Armada Udara, pemilik 16 Nov 2026). Format laporan manual 13 Nov, cut-off 18.00.
+  { id: 'penanganan', judul: 'Laporan Penanganan Pengendalian Karhutla', butuh: ['bmkg_pagi', 'satgas'], pilihan: ['gelar_udara'], opsional: true, jam: 18, waktu: 25 * 60e3,
     berkas: (d) => `Laporan Penanganan Pengendalian Karhutla ${ddmmyy(d)}`,
-    args: (d, f, out) => ['penanganan.py', '--tanggal', d, '--jam', '17:00', ...(f.bmkg_pagi ? ['--bmkg', f.bmkg_pagi] : []), ...(f.satgas ? ['--operasi', f.satgas] : []), '--out', out] },
+    args: (d, f, out) => ['penanganan_otomatis.py', '--tanggal', d, '--jam', '18:00', ...(f.bmkg_pagi ? ['--bmkg', f.bmkg_pagi] : []), ...(f.satgas ? ['--operasi', f.satgas] : []),
+      ...(f.gelar_udara ? ['--gelar', f.gelar_udara] : []), '--out', out] },
 ]
 
 // Padanan banjir (penanganan_banjir.py): angkanya dari situs yang tayang, tanpa bahan WA (butuh kosong). Cut-off 17.00 WIB seperti penanganan.
@@ -84,7 +87,7 @@ export function cekSiap(lap, terpilih, now, tanggal, cutoff = false) {
 }
 
 export const hashBahan = (lap, teks) =>
-  crypto.createHash('sha256').update(JSON.stringify(lap.butuh.map((k) => [k, teks[k]]))).digest('hex')
+  crypto.createHash('sha256').update(JSON.stringify([...lap.butuh, ...(lap.pilihan || []).filter((k) => teks[k] != null)].map((k) => [k, teks[k]]))).digest('hex')
 
 function ambilKunci(berkas) {
   const baca = () => { try { return JSON.parse(fs.readFileSync(berkas, 'utf8')) } catch { return {} } }
@@ -152,11 +155,11 @@ export async function ambilBahan({ env, dep, tanggal, kenali = kenaliAsli, tangg
   const teksDari = async (p) => { if (!teksCache.has(p.id)) teksCache.set(p.id, await ambilTeks(p, dep, env)); return teksCache.get(p.id) }
   const pilihSesuai = async (lap) => {
     const terpilih = {}, teks = {}
-    for (const k of lap.butuh) {
+    for (const k of [...lap.butuh, ...(lap.pilihan || [])]) {
       for (const p of semua[k] || []) {
         let t
         try { t = await teksDari(p) } catch (x) { log(lap.id, k, 'teks tak terbaca:', x.message); continue }
-        const td = tanggalIsi(t, k)
+        const td = BERKAS_BINER.test(p.nama_berkas || '') ? tanggalWib(new Date(Number(p.diterima) || Date.parse(p.diterima) || 0)) : tanggalIsi(t, k) // Excel tanpa tanggal isi: tanggal terima
         if (td === tanggal) { terpilih[k] = p; teks[k] = t; break }
         log(`bahan bertanggal ${td || 'tak terbaca'}, bukan ${tanggal}`, k, p.id)
       }
@@ -177,7 +180,12 @@ export function siapkanKeluaran(lap, tanggal, teks, dasar) {
   const out = path.join(dasar, 'keluaran', tanggal)
   fs.mkdirSync(kerja, { recursive: true }); fs.mkdirSync(out, { recursive: true })
   const f = {}
-  for (const k of lap.butuh) { if (teks[k] == null) continue; f[k] = path.join(kerja, k + '.txt'); fs.writeFileSync(f[k], teks[k]) }
+  for (const k of [...lap.butuh, ...(lap.pilihan || [])]) {
+    if (teks[k] == null) continue
+    const biner = String(teks[k]).match(/^biner:(\.\w+):/) // berkas biner (Excel) dari ambilTeks
+    f[k] = path.join(kerja, k + (biner ? biner[1] : '.txt'))
+    fs.writeFileSync(f[k], biner ? Buffer.from(teks[k].slice(biner[0].length), 'base64') : teks[k])
+  }
   const dasarNama = path.join(out, lap.berkas(tanggal))
   return { kerja, out, f, berkas: ['pdf', 'pptx'].map((x) => ({ x, p: `${dasarNama}.${x}` })) }
 }
@@ -186,7 +194,7 @@ export async function jalankanGenerator(lap, tanggal, f, out, kerja, dep, env = 
   try {
     // Seluruh pohon proses perlu Python >= 3.12 + Pillow (penanganan.py memanggil `python3` telanjang): venv di depan PATH.
     const pyBin = rumah(env.WA_PY_BIN) || path.join(RUMAH, 'py', 'bin')
-    await dep.exec(path.join(pyBin, 'python3'), lap.args(tanggal, f, out), { cwd: GENERATOR, timeout: 10 * 60e3, maxBuffer: 20e6, env: { ...process.env, PATH: pyBin + path.delimiter + (process.env.PATH || '') } })
+    await dep.exec(path.join(pyBin, 'python3'), lap.args(tanggal, f, out), { cwd: GENERATOR, timeout: lap.waktu || 10 * 60e3, maxBuffer: 20e6, env: { ...process.env, PATH: pyBin + path.delimiter + (process.env.PATH || '') } })
   } catch (x) {
     const penuh = String(x.stderr || x.message || x)
     try { fs.writeFileSync(path.join(kerja, 'galat.txt'), penuh, { mode: 0o600 }) } catch {}
@@ -333,11 +341,15 @@ export async function jalankan(opsi = {}) {
   } finally { lepas() }
 }
 
+// Excel (gelar udara) diambil utuh sebagai biner, dikodekan 'biner:.xlsx:<base64>' supaya tetap satu string di hash dan state.
+const BERKAS_BINER = /\.(xlsx?|ods)$/i
 async function ambilTeks(p, dep, env) {
-  if (p.teks && p.teks.trim()) return p.teks
+  const biner = BERKAS_BINER.test(p.nama_berkas || '')
+  if (!biner && p.teks && p.teks.trim()) return p.teks
   if (!p.ada_berkas) throw new Error(`pesan ${p.id} kosong`)
   const r = await dep.fetch(`${env.WORKER_URL || 'https://centurisk97.id'}/api/wa/berkas?id=${encodeURIComponent(p.id)}`, { headers: { authorization: `Bearer ${env.WA_MESIN || ''}` } })
   if (!r.ok) throw new Error(`berkas ${p.id} HTTP ${r.status}`)
+  if (biner) return `biner:${p.nama_berkas.match(BERKAS_BINER)[0].toLowerCase()}:${Buffer.from(await r.arrayBuffer()).toString('base64')}`
   return await r.text()
 }
 

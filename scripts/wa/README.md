@@ -6,11 +6,12 @@ Dua proses, tanpa LLM:
   melayani API lokal `127.0.0.1:PORT` (`/send`, `/send-file`) lewat limiter anti-blokir (`gateway/limiter.js`).
   Bahan yang belum tersimpan menunggu di `~/.wa-bot/outbox/` (dicoba ulang tiap 5 menit).
 - `otomatis.mjs`: baca bahan hari ini dari worker (`/api/wa/masuk`, token `WA_MESIN`), jalankan
-  `data/laporan-bnpb/generator/harian_ringkas.py` (2 slide, bahan Koordalops 24 jam + BMKG pagi + PVMBG pagi) dan `penanganan.py`, kirim PDF + PPTX ke `PENERIMA`.
+  `data/laporan-bnpb/generator/harian_ringkas.py` (2 slide format laporan manual 16 Nov, bahan Koordalops 24 jam + BMKG pagi + PVMBG pagi) dan
+  `penanganan_otomatis.py` (3 slide format laporan manual 13 Nov; armada dari Excel "Gelar Kekuatan Satgas Udara" bila dikirim ke bot hari itu), kirim PDF + PPTX ke `PENERIMA`.
   Dipicu gateway 2 menit sesudah bahan terakhir tersimpan, dan launchd tiap 10 menit sebagai cadangan (06.00 sampai 23.00 WIB).
 
 Aturan jam (README generator): Harian = rekap Koordalops 24 jam + BMKG pagi, sesudah 12.00 WIB. Penanganan = BMKG pagi + teks Satgas,
-sesudah 17.00 WIB. Bahan berubah sesudah terkirim = dibangun ulang dan dikirim lagi dengan awalan "Revisi: ". Galat hanya ke `PEMILIK`.
+sesudah 18.00 WIB (pemilik 16 Nov 2026). Bahan berubah sesudah terkirim = dibangun ulang dan dikirim lagi dengan awalan "Revisi: ". Galat hanya ke `PEMILIK`.
 
 ## Pasang
 
@@ -23,7 +24,7 @@ node otomatis.mjs --kering               # uji tanpa kirim apa pun (butuh worker
 Python generator (harus 3.12 ke atas + Pillow, seluruh pohon prosesnya; `otomatis.mjs` menaruh `~/.wa-bot/py/bin` paling depan di PATH, ubah lewat `WA_PY_BIN`):
 
 ```bash
-uv venv --python 3.13 ~/.wa-bot/py && uv pip install --python ~/.wa-bot/py/bin/python pillow
+uv venv --python 3.13 ~/.wa-bot/py && uv pip install --python ~/.wa-bot/py/bin/python pillow openpyxl   # openpyxl: Excel gelar udara (16 Nov 2026)
 cp "<Laporan Kejadian Bencana Harian 221026.pptx milik pemilik>" data/laporan-bnpb/generator/cache/templat/harian-221026.pptx   # di luar git
 ```
 
@@ -76,7 +77,7 @@ Ini WhatsApp Web tidak resmi: pakai nomor khusus, nomor bisa diblokir (lihat `pa
 
 Hanya dari nomor `PEMILIK` (boleh beberapa, dipisah koma). Pesan perintah (teks pendek tanpa lampiran) tidak diteruskan sebagai bahan; balasan hanya ke pengirimnya, lewat jalur kirim berjeda yang sama, tidak pernah ke `PENERIMA`. Dari nomor lain: diperlakukan sebagai bahan biasa. Tanpa LLM; satu perintah sekaligus (sibuk dibalas "Sedang membuat laporan, tunggu sebentar.").
 
-- `buat harian [tanggal]` / `buat penanganan [tanggal]`: bahan dipilih dan generator dijalankan seperti `otomatis.mjs`; PPTX + PDF dikirim ke peminta saja, caption "(permintaan, belum dikirim ke penerima)". Tidak menandai terkirim, tidak mengunggah ke `/pelaporan`, tidak ke Drive. Hari lampau mengabaikan cut-off; hari ini tetap 12.00 (harian) / 17.00 (penanganan) WIB dan dibalas alasan menunggu. Bahan kurang: dibalas jenis yang kurang dan tanggal bahan yang ada.
+- `buat harian [tanggal]` / `buat penanganan [tanggal]`: bahan dipilih dan generator dijalankan seperti `otomatis.mjs`; PPTX + PDF dikirim ke peminta saja, caption "(permintaan, belum dikirim ke penerima)". Tidak menandai terkirim, tidak mengunggah ke `/pelaporan`, tidak ke Drive. Hari lampau mengabaikan cut-off; hari ini tetap 12.00 (harian) / 18.00 (penanganan) WIB dan dibalas alasan menunggu. Bahan kurang: dibalas jenis yang kurang dan tanggal bahan yang ada.
 - `kirim ulang harian|penanganan [tanggal]`: kirim keluaran di `~/.wa-bot/keluaran/<tanggal>/` ke peminta; belum ada = dibalas tiada.
 - `status [tanggal]`: dari `GET /api/wa/rekap`: "N dari M laporan wajib masuk untuk DD Mon. Belum: ..." plus status kirim harian/penanganan hari ini dari `state.json`.
 - `bantuan`, atau kata awal buat/kirim/status yang tak dikenal: daftar perintah.
@@ -84,7 +85,7 @@ Hanya dari nomor `PEMILIK` (boleh beberapa, dipisah koma). Pesan perintah (teks 
 
 ## Pemicu jam cut-off (`--cutoff`)
 
-`node scripts/wa/otomatis.mjs --cutoff [--kering] [--tanggal D]`: pada jam cut-off bangun dengan bahan yang ada. Penanganan (17.00) dibangun dari data sistem walau BMKG/satgas WA belum masuk (laporan balik memuat `bahanBelumMasuk`, slide tidak diberi catatan). Harian (12.00) wajib Koordalops + BMKG; bila belum ada, PEMILIK dikabari sekali. Bahan masuk kemudian = jalan biasa membangun ulang dan mengirim "Revisi: ". Plist templat `launchd/id.centurisk97.wa-cutoff.plist` (12.05 dan 17.05, sertakan `CHROMIUM_SHELL` karena Playwright headless shell tidak terpasang). Belum dimuat: setelah pemilik setuju,
+`node scripts/wa/otomatis.mjs --cutoff [--kering] [--tanggal D]`: pada jam cut-off bangun dengan bahan yang ada. Penanganan (18.00) dibangun dari data sistem walau BMKG/satgas WA belum masuk (laporan balik memuat `bahanBelumMasuk`, slide tidak diberi catatan). Harian (12.00) wajib Koordalops + BMKG; bila belum ada, PEMILIK dikabari sekali. Bahan masuk kemudian = jalan biasa membangun ulang dan mengirim "Revisi: ". Plist templat `launchd/id.centurisk97.wa-cutoff.plist` (12.05 dan 18.05, sertakan `CHROMIUM_SHELL` karena Playwright headless shell tidak terpasang). Belum dimuat: setelah pemilik setuju,
 
 ```bash
 sed -e "s#__REPO__#$HOME/Developer/poskokarhutla#" -e "s#__NODE__#$(which node)#" -e "s#__HOME__#$HOME#" scripts/wa/launchd/id.centurisk97.wa-cutoff.plist > ~/Library/LaunchAgents/id.centurisk97.wa-cutoff.plist

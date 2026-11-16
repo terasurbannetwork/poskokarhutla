@@ -548,7 +548,8 @@ class Deck:
                     if (cx - gx) ** 2 + (cy - gy) ** 2 < perlu ** 2: cy = gy - (perlu ** 2 - (cx - gx) ** 2) ** .5
                 titik[p] = (cx, cy)
         terisi = [(cx - besar(per[p]) / 2, cy - besar(per[p]) / 2, cx + besar(per[p]) / 2, cy + besar(per[p]) / 2) for p, (cx, cy) in titik.items()]
-        terisi += [(gx - dg / 2, gy - dg / 2, gx + dg / 2, gy + dg / 2 + 137160) for _, gx, gy, _w in GA_T]
+        # 14 Nov: ruang nama gunung selebar teksnya (bukan selebar segitiga); label "Jabar" sempat menimpa "Anak Krakatau"
+        terisi += [(gx - max(dg, len(nm_g) * 46000 * k) / 2, gy - dg / 2, gx + max(dg, len(nm_g) * 46000 * k) / 2, gy + dg / 2 + 137160) for nm_g, gx, gy, _w in GA_T]
         # 10 Nov pemilik: peringatan dini masuk peta, lingkaran putih bertanda seru, garis dan tanda oranye atau merah; PERINGATAN_PETA = [(lon, lat, label, 'merah'|'oranye', sisi label)]
         PD_T, dp = [], int(201168 * k)
         for lon_, lat_, lab_, wr_, sisi_ in (getattr(s, 'PERINGATAN_PETA', None) or [] if V3 else []):
@@ -583,7 +584,9 @@ class Deck:
             calon = {'kanan': (cx + d / 2 + 54864, cy - 73152, cx + d / 2 + 54864 + lw, cy + 73152), 'kiri': (cx - d / 2 - 54864 - lw, cy - 73152, cx - d / 2 - 54864, cy + 73152),
                      'bawah': (cx - lw / 2, cy + yb, cx + lw / 2, cy + yb + 146304), 'atas': (cx - lw / 2, cy - d / 2 - 173736, cx + lw / 2, cy - d / 2 - 27432)}
             urut = ['kiri', 'bawah', 'kanan'] if p in KIRI else ['bawah', 'kanan', 'kiri'] if p in BAWAH else ['kanan', 'kiri', 'bawah']
-            sisi = next((u for u in urut + (['atas'] if V3 else []) if not tabrak(calon[u])), None if k < 1 else urut[0])   # 10 Nov: penanda gunung menutup sisi lain, label naik ke atas lingkaran
+            # 14 Nov: semua sisi menabrak -> sisi dengan tumpang tindih terkecil (dulu urut[0]: "Jabar" menimpa "Anak Krakatau")
+            luas_t = lambda r: sum(max(0, min(r[2], q[2]) - max(r[0], q[0])) * max(0, min(r[3], q[3]) - max(r[1], q[1])) for q in terisi)
+            sisi = next((u for u in urut + (['atas'] if V3 else []) if not tabrak(calon[u])), None if k < 1 else min(urut + (['atas'] if V3 else []), key=lambda u: (calon[u][0] < MX or calon[u][2] > MX + MW, luas_t(calon[u]))))   # 10 Nov: penanda gunung menutup sisi lain, label naik ke atas lingkaran
             if sisi is None: continue   # 6 Nov: peta kecil alternatif 4/5, label yang menimpa label lain dilewati
             r = calon[sisi]; terisi.append(r)
             o += (s.tx(r[2] - 1463040, cy - 73152, 1463040, 146304, [nm], sz=int(750 * k), b=True, al='r', an='ctr') if sisi == 'kiri'
@@ -602,6 +605,7 @@ class Deck:
                   else s.tx(gx + dp / 2 + 36576, gy - 73152, 1463040, 146304, [lab_], sz=int(680 * k), an='ctr', wrap='none'))
         n_seru = sum(1 for x in KJ if x['perhatian'])
         if not V3 and n_seru != len(s.SER): raise AssertionError(f'peta {n_seru} tanda seru, kartu perlu perhatian {len(s.SER)} (atasan 3 Nov: harus sama)')
+        if getattr(s, 'KOTAK_PETA', None) and k == 1: o += s.KOTAK_PETA(s, MX, MY, MW, MH)   # 14 Nov pemilik: kotak tambahan di ruang kosong peta (skrip harian)
         if leg is None: return o
         lx, ly = leg
         lain_ent = [(k_, v) for k_, v in JENIS_LAIN.items() if any(x['jenis'] == k_ for x in s.LN)]
@@ -820,7 +824,8 @@ class Deck:
                     xd = XL + CB + CP + CK + (CD - sum(lp_) - 36576 * (len(lp_) - 1)) / 2
                 for t_ in dm.split(', ') if dm != '–' else []:
                     p_, w_ = s.pil(xd, yp, t_, T_NAVY, NAVY, 'orang_navy' if 'KK' in t_ else 'awas_navy', sz=620, h=hp, w=(100000 + len(t_) * 700 * 59 + hp * .9) if KM else None); o += p_; xd += w_ + 36576
-                if dm == '–': o += s.tx(xd, y, 300000, rp, ['–'], sz=sz, c=ABU, an='ctr', wrap='none')
+                if dm == '–':   # 16 Nov pemilik ("stripnya center dong"): strip di tengah kolom DAMPAK, sejajar pil KK
+                    o += s.tx(XL + CB + CP + CK, y, CD, rp, ['–'], sz=sz, c=ABU, al='ctr', an='ctr', wrap='none') if TK else s.tx(xd, y, 300000, rp, ['–'], sz=sz, c=ABU, an='ctr', wrap='none')
                 if KM and x.get('mulai'):   # pil kalender di tengah kolom MULAI; oranye = kejadian baru
                     dmu = dt.date.fromisoformat(x['mulai']); tmu = f"{dmu.day} {BULAN[dmu.month - 1][:3]}"
                     tint_, warna_, ik_ = (T_ORG, ORG, 'kalender_oranye') if x.get('baru') else (T_NAVY, NAVY, 'kalender_navy')

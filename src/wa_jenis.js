@@ -12,6 +12,7 @@ export const JENIS_LAPORAN = [
   {kunci: "pvmbg_pagi", label: "PVMBG pagi", wajib: true},
   {kunci: "pvmbg_malam", label: "PVMBG malam", wajib: false},
   {kunci: "gelar_armada", label: "Gelar armada", wajib: false},
+  {kunci: "gelar_udara", label: "Gelar kekuatan Satgas Udara (Excel)", wajib: false},
   {kunci: "dry_ice_omc", label: "Dry ice OMC", wajib: false},
   {kunci: "hujan_omc", label: "Hujan pasca OMC", wajib: false},
   {kunci: "bpbd_kejadian", label: "Kejadian BPBD", wajib: false},
@@ -28,6 +29,8 @@ function judulMensesneg(teks) {
 
 export function kenali(teks, namaBerkas) {
   if (/Laporan Harian Dit\.? ?Koordalops/i.test(namaBerkas || "")) return "laphar_pdf";
+  /* Excel "Data Gelar Kekuatan Satgas Udara Karhutla": armada laporan penanganan (pemilik 13 dan 16 Nov 2026); hanya nama berkasnya dibaca */
+  if (/\.(xlsx?|ods)$/i.test(namaBerkas || "") && /gelar/i.test(namaBerkas) && /(kekuatan|satgas|udara)/i.test(namaBerkas)) return "gelar_udara";
   const t = String(teks ?? "").toLowerCase().replace(/[*_]/g, "").replace(/\s+/g, " ").trim();
   if (/^laporan harian dit\.? ?koordalops/.test(t)) return "laphar_pdf";
   const malam = () => /selamat malam|pukul 19\.00/.test(t);

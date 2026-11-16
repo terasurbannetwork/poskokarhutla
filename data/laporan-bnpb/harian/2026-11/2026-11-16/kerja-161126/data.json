@@ -1,0 +1,183 @@
+{
+ "hari": "2026-11-16",
+ "cutoff": "2026-11-16T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Barat",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 147.0,
+    "rumah_dampak": 1.0
+   },
+   "teks": {
+    "dampak": "147 KK / 645 Jiwa (Dalam pendataan)",
+    "status_darurat": "Dalam proses tanda tangan",
+    "kondisi": "Kondisi TMA di beberapa wilayah fluktuatif, Wilayah Sungai Mas dan Pante Ceureumen masih diguyur hujan",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-01",
+   "kondisi_pil": [
+    "TMA fluktuatif",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Kota Subulussalam",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 1897.0,
+    "rumah_dampak": 1897.0
+   },
+   "teks": {
+    "dampak": "1.897 KK / 7.703 jiwa (Dalam pendataan)",
+    "status_darurat": "Tanggap Darurat TMT 6/11/2026 s.d 19/11/2026",
+    "kondisi": "Air Belum surut TMA 30-100 cm, telah dilakukan penyaluran logistik oleh BPBD ke desa terdampak banjir",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-13",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "longsor",
+   "prov": "11",
+   "lokasi": "Aceh Tengah",
+   "status": "belum",
+   "baru": false,
+   "label": "Tanah Longsor dan Banjir",
+   "angka": {
+    "meninggal": 1.0
+   },
+   "teks": {
+    "dampak": "1 (satu) jiwa MD",
+    "status_darurat": "Siaga Darurat Provinsi TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Korban hilang sudah ditemukan sekitar pukul 11.47 WIB, tanggal 15 November 2026 dalam kondisi meninggal dunia, Air belum surut dan jalan Kampung Arul Badak belum bisa dilalui",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-14",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Tamiang",
+   "status": "berjalan",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 4397.0,
+    "mengungsi": 2650.0
+   },
+   "teks": {
+    "dampak": "± 4.397 KK / 15.921 Jiwa terdampak (pendataan sesuai laporan posko)",
+    "status_darurat": "Siaga Darurat Provinsi TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Kondisi TMA di beberapa wilayah fluktuatif, tanggul penahan banjir mengalami ablasi dan kondisi cuaca cerah berawan",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-12",
+   "kondisi_pil": [
+    "TMA fluktuatif",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Aceh Tenggara",
+   "status": "belum",
+   "baru": false,
+   "label": "Banjir",
+   "angka": {
+    "kk": 503.0,
+    "rumah_dampak": 503.0
+   },
+   "teks": {
+    "dampak": "503 KK / 1.697  Jiwa (Dalam pendataan)",
+    "status_darurat": "Siaga Darurat Provinsi TMT 11/11/2026 s.d 31/01/2027",
+    "kondisi": "Air belum surut di Desa Pancar Iman, Desa Terutung Seperai, Desa Lawe Rutung, Desa Pulonas Baru, dan Desa Trt. Megara Lawe Pasaran",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-13",
+   "kondisi_pil": [
+    "Sebagian surut",
+    "surut"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "14",
+   "lokasi": "Rokan Hilir",
+   "status": "belum",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {
+    "kk": 4403.0,
+    "rumah_dampak": 4403.0
+   },
+   "teks": {
+    "dampak": "± 4.403 KK / 17.612 jiwa terdampak",
+    "status_darurat": "-",
+    "kondisi": "Banjir belum surut, TMA ± 30-40 cm",
+    "pengungsi": ""
+   },
+   "tangani": true,
+   "perhatian": false,
+   "mulai": "2026-11-15",
+   "kondisi_pil": [
+    "Belum surut",
+    "waspada"
+   ]
+  },
+  {
+   "jenis": "banjir",
+   "prov": "13",
+   "lokasi": "Pesisir Selatan",
+   "status": "selesai",
+   "baru": true,
+   "label": "Banjir",
+   "angka": {},
+   "teks": {
+    "dampak": "±2.280  jiwa terdampak",
+    "status_darurat": "-",
+    "kondisi": "Banjir sudah surut",
+    "pengungsi": ""
+   },
+   "tangani": false,
+   "perhatian": false,
+   "mulai": "2026-11-15",
+   "kondisi_pil": [
+    "Sudah surut",
+    "selesai"
+   ]
+  }
+ ],
+ "prioritas_baru": [
+  "53",
+  "64",
+  "81",
+  "93"
+ ]
+}

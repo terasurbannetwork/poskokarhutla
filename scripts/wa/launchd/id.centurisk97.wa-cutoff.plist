@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<!-- TEMPLATE, belum terpasang. Pemicu jam cut-off: 12.05 WIB (harian) dan 17.05 WIB (penanganan), jam lokal mesin = WIB. Ganti __REPO__ __NODE__ __HOME__. Lihat scripts/wa/README.md. -->
+<!-- TEMPLATE, belum terpasang. Pemicu jam cut-off: 12.05 WIB (harian) dan 18.05 WIB (penanganan, pemilik 16 Nov 2026), jam lokal mesin = WIB. Ganti __REPO__ __NODE__ __HOME__. Lihat scripts/wa/README.md. -->
 <plist version="1.0">
 <dict>
   <key>Label</key>
@@ -14,7 +14,7 @@
   <key>StartCalendarInterval</key>
   <array>
     <dict><key>Hour</key><integer>12</integer><key>Minute</key><integer>5</integer></dict>
-    <dict><key>Hour</key><integer>17</integer><key>Minute</key><integer>5</integer></dict>
+    <dict><key>Hour</key><integer>18</integer><key>Minute</key><integer>5</integer></dict>
   </array>
   <key>WorkingDirectory</key>
   <string>__REPO__</string>

@@ -38,13 +38,13 @@ test('pilihTerbaru: ambil pesan terbaru per jenis, jenis tak dikenal diabaikan',
   assert.equal(r.bmkg_pagi.id, '2'); assert.equal(Object.keys(r).length, 1)
 })
 
-test('cekSiap: cut-off 12.00 harian dan 17.00 penanganan, dua jenis wajib ada', () => {
+test('cekSiap: cut-off 12.00 harian dan 18.00 penanganan (pemilik 16 Nov 2026), dua jenis wajib ada', () => {
   const [h, p] = LAPORAN
   const t = { rekap_koordalops_24: 1, bmkg_pagi: 1, satgas: 1, pvmbg_pagi: 1 }
   assert.equal(cekSiap(h, t, wibKe(11.9), TGL).siap, false)
   assert.equal(cekSiap(h, t, wibKe(12), TGL).siap, true)
-  assert.equal(cekSiap(p, t, wibKe(16.9), TGL).siap, false)
-  assert.equal(cekSiap(p, t, wibKe(17), TGL).siap, true)
+  assert.equal(cekSiap(p, t, wibKe(17.9), TGL).siap, false)
+  assert.equal(cekSiap(p, t, wibKe(18), TGL).siap, true)
   assert.equal(cekSiap(p, { bmkg_pagi: 1 }, wibKe(20), TGL).siap, false)           // satgas belum ada
   assert.equal(cekSiap(p, t, wibKe(1), '2026-10-28').siap, true)                  // hari lampau: cut-off sudah lewat
 })
@@ -54,7 +54,7 @@ test('kirim sekali: dua laporan x dua berkas x dua penerima, caption tanpa titik
   await d.jalan()
   assert.equal(d.kirim.file.length, 8)
   assert.ok(d.kirim.file.every((f) => !f.c.includes('·') && !f.c.startsWith('Revisi')))
-  assert.deepEqual(d.kirim.exec.map((a) => a[0]), ['harian_ringkas.py', 'penanganan.py'])
+  assert.deepEqual(d.kirim.exec.map((a) => a[0]), ['harian_ringkas.py', 'penanganan_otomatis.py'])
   assert.ok(d.kirim.exec[0].includes('12:00') && d.kirim.exec[1].includes('--operasi'))
   await d.jalan()
   assert.equal(d.kirim.file.length, 8); assert.equal(d.kirim.exec.length, 2)
@@ -272,7 +272,7 @@ test('--cutoff: penanganan dibangun tanpa bahan WA, harian menunggu dan PEMILIK 
   const h = await d.jalan({ cutoff: true })
   assert.equal(h.find((x) => x.id === 'penanganan').status, 'terkirim')
   assert.deepEqual(h.find((x) => x.id === 'penanganan').bahanBelumMasuk, ['bmkg_pagi', 'satgas'])
-  assert.ok(!d.kirim.exec.find((a) => a[0] === 'penanganan.py').includes('--bmkg'))
+  assert.ok(!d.kirim.exec.find((a) => a[0] === 'penanganan_otomatis.py').includes('--bmkg'))
   assert.equal(h.find((x) => x.id === 'harian').status, 'tunggu')
   await d.jalan({ cutoff: true })
   assert.equal(d.kirim.teks.filter((t) => t.t === '6299' && /harian|Harian/.test(t.m)).length, 1)
@@ -291,4 +291,31 @@ test('Pantau Dalops ikut rekap WA Koordalops: sekali per isi rekap, walau deck g
   assert.equal(w2.kirim.teks.filter((x) => /Pantau Dalops/.test(x.m)).length, 1, 'PEMILIK dikabari sekali')
   const w3 = dunia(LENGKAP); let n3 = 0; w3.dep.dalops = async () => { n3++ }
   await w3.jalan({ kering: true }); assert.equal(n3, 0, 'mode kering tidak mengunggah')
+})
+
+test('Excel gelar udara: diunduh biner, jadi --gelar penanganan, tanggal = tanggal terima; Excel baru = revisi', async () => {
+  const xlsx = Buffer.from([0x50, 0x4b, 3, 4, 0xff, 0x00, 0x10])
+  const G = (id, jam) => ({ id, diterima: Date.parse(`${TGL}T00:00:00Z`) + (jam - 7) * 3600e3, teks: '[gelar_udara] ', nama_berkas: 'Data Gelar Kekuatan Satgas Udara Karhutla.xlsx', ada_berkas: 1 })
+  const d = dunia([...LENGKAP, G('7', 9)])
+  const ambil = []
+  d.dep.fetch = async (u) => u.includes('/api/wa/berkas') ? (ambil.push(u), { ok: true, status: 200, arrayBuffer: async () => xlsx, text: async () => 'RUSAK' })
+    : { ok: true, status: 200, json: async () => ({ pesan: d.pesan }), text: async () => '' }
+  d.pesan = [...LENGKAP, G('7', 9)]
+  await d.jalan()
+  const a = d.kirim.exec.find((x) => x[0] === 'penanganan_otomatis.py')
+  assert.ok(a.includes('--gelar') && a.includes('18:00'))
+  const f = a[a.indexOf('--gelar') + 1]
+  assert.ok(f.endsWith('gelar_udara.xlsx')); assert.deepEqual(fs.readFileSync(f), xlsx)   // biner utuh, bukan r.text()
+  assert.ok(ambil.length >= 1)
+  d.pesan = [...LENGKAP, G('7', 9), G('8', 10)]; xlsx[5] = 1   // Excel baru masuk: dibangun dan dikirim ulang sebagai revisi
+  await d.jalan()
+  assert.ok(d.kirim.file.some((x) => x.c.startsWith('Revisi: Laporan Penanganan')))
+})
+
+test('Excel gelar udara kemarin tidak dipakai; tanpa Excel penanganan tetap jalan tanpa --gelar', async () => {
+  const d = dunia(LENGKAP)
+  d.pesan = [...LENGKAP, { id: '7', diterima: Date.parse('2026-10-28T03:00:00Z'), teks: '[gelar_udara] ', nama_berkas: 'Gelar Kekuatan Satgas Udara.xlsx', ada_berkas: 1 }]
+  d.dep.fetch = async (u) => u.includes('/api/wa/berkas') ? { ok: true, status: 200, arrayBuffer: async () => Buffer.from('x') } : { ok: true, status: 200, json: async () => ({ pesan: d.pesan }) }
+  await d.jalan()
+  assert.ok(!d.kirim.exec.find((x) => x[0] === 'penanganan_otomatis.py').includes('--gelar'))
 })
