@@ -944,7 +944,7 @@ export default {
         "prioritas": false,
         "layar": {
           "unduh_tabel": true,
-          "brief": false,
+          "brief": true,
           "pilih_tanggal": false,
           "profil_kab": false,
           "tab_operasi": false,
