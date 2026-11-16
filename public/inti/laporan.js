@@ -87,6 +87,51 @@ const Laporan = (() => {
     return `<div class="lp-gr"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc("Tren harian " + u.label)}">${s}</svg></div>`;
   }
 
+  /* ---- laporan rentang (PB-83, F-42): model murni, tanpa DOM ----
+     Hanya tanggal yang ada di D.hari (D16). Angka per periode = gabung() menurut agregat metrik (jumlah, maks, rerata), tidak dihitung ulang dari sumber lain. */
+  function rentang(D, S, dari, sampai) {
+    const i0 = D.hari.indexOf(dari), i1 = D.hari.indexOf(sampai);
+    if (i0 < 0 || i1 < 0 || i0 > i1) return null;
+    const c = kon(D, S), hari = D.hari.slice(i0, i1 + 1), pot = (o, k) => A(o, k, c.n).slice(i0, i1 + 1);
+    const ringkas = c.ms.map(m => { const a = pot(c.sr, m.k), ada1 = a.filter(ada), mx = ada1.length ? Math.max(...ada1) : null, j = mx == null ? -1 : a.indexOf(mx);
+      return {m, total: gabung(m, a), rerata: ada1.length ? ada1.reduce((x, y) => x + y, 0) / ada1.length : null, maks: mx, hariMaks: j >= 0 ? hari[j] : null, hariData: ada1.length}; });
+    const agr = o => Object.fromEntries(c.ms.map(m => [m.k, gabung(m, pot(o, m.k))]));
+    const prov = Object.keys(D.prov).filter(p => !S.prov || p === S.prov).map(p => ({kode: p, nama: D.prov[p].nama, v: agr(D.prov[p])}))
+      .sort((a, b) => (b.v[c.u.k] ?? -1) - (a.v[c.u.k] ?? -1) || a.nama.localeCompare(b.nama, "id"));
+    const kab = (D.kab || []).filter(k => !S.prov || k.prov === S.prov).map(k => ({nama: k.nama, prov: nama(D, k.prov), v: agr(k)}))
+      .filter(k => ada(k.v[c.u.k]) && k.v[c.u.k] > 0).sort((a, b) => b.v[c.u.k] - a.v[c.u.k]).slice(0, 10);
+    return {c, i0, i1, dari, sampai, hari, ringkas, prov, kab, nasional: agr(c.sr), berjalan: hari.some(h => c.brj(h))};
+  }
+  /* tabel per hari untuk Excel: satu baris per hari per wilayah (Nasional atau provinsi terpilih, lalu provinsi, lalu kab/kota) */
+  function barisHarian(D, S, dari, sampai) {
+    const R = rentang(D, S, dari, sampai); if (!R) return null; const {c} = R, ms = c.ms;
+    const kolom = ["Tanggal", "Tingkat", "Provinsi", "Wilayah", ...ms.map(m => m.label + (m.satuan && m.satuan.toLowerCase() !== String(m.label).toLowerCase() ? ` (${m.satuan})` : ""))];
+    const nilai = (o, j) => ms.map(m => { const v = A(o, m.k, c.n)[j]; return ada(v) ? v : null; }), baris = [];
+    const provUrut = Object.keys(D.prov).sort((a, b) => D.prov[a].nama.localeCompare(D.prov[b].nama, "id"));
+    const kabUrut = (D.kab || []).filter(k => !S.prov || k.prov === S.prov).sort((a, b) => nama(D, a.prov).localeCompare(nama(D, b.prov), "id") || a.nama.localeCompare(b.nama, "id"));
+    for (let j = R.i0; j <= R.i1; j++) { const h = D.hari[j], t = tgl(h, 1) + (c.brj(h) ? " (berjalan)" : "");
+      baris.push([t, S.prov ? "Provinsi" : "Nasional", S.prov ? nama(D, S.prov) : "", S.prov ? nama(D, S.prov) : "Indonesia", ...nilai(c.sr, j)]);
+      if (!S.prov && !c.f) provUrut.forEach(p => baris.push([t, "Provinsi", D.prov[p].nama, D.prov[p].nama, ...nilai(D.prov[p], j)]));
+      kabUrut.forEach(k => baris.push([t, "Kab/kota", nama(D, k.prov), k.nama, ...nilai(k, j)])); }
+    return {R, kolom, baris};
+  }
+  /* tampilan cetak ringkasan periode (PDF lewat dialog cetak peramban, sama dengan Cetak PDF satu hari) */
+  function htmlRentang(R) {
+    const {c} = R, D = c.D, per = `${tgl(R.dari, 1)} sampai ${tgl(R.sampai, 1)}`, u = c.u, du = u.desimal | 0, tot = R.ringkas.find(x => x.m.k === u.k);
+    const kop = `<div class="lp-kop" aria-hidden="true"><img src="/img/logo.svg?v=2" alt="" width="40" height="40"><div><b>Centurisk97</b><span>${esc(D.judul)}</span><small>${esc(per)}${dgn(c)}</small></div></div><div class="lp-kop-garis" aria-hidden="true"></div>`;
+    const kep = `<section class="lp-kep"><div class="lp-jd"><h1>${esc(D.judul)}: ${esc(per)}</h1><div class="lp-pils"><span class="lp-pil ${R.berjalan ? "sm" : "ok"}">${R.berjalan ? "Data masih bertambah" : "Data lengkap"}</span><span class="lp-pil">${angka(R.hari.length)} hari</span><span class="lp-pil">Cut-off ${esc(wkt(D.cutoff))}</span></div></div></section>`;
+    const ag = m => m.agregat === "maks" ? "tertinggi" : m.agregat === "rerata" ? "rerata" : "jumlah";
+    const ring = kartu("Ringkasan periode", `${esc(u.label)} ${esc(per)}${dgn(c)}: ${Kartu.hl(angka(tot.total, du))} ${esc(u.satuan || "")}`,
+      `<div class="tw"><table class="lp-tb"><thead><tr><th>Metrik</th><th class="n">Periode</th><th class="n">Rata-rata per hari</th><th class="n">Hari tertinggi</th></tr></thead><tbody>${R.ringkas.map(x => { const d = x.m.desimal | 0;
+        return `<tr><td>${esc(x.m.label)}${x.m.satuan && x.m.satuan.toLowerCase() !== String(x.m.label).toLowerCase() ? ` <small>${esc(x.m.satuan)}</small>` : ""} <small>(${ag(x.m)})</small></td><td class="n">${angka(x.total, d)}</td><td class="n">${angka(x.rerata, d || 1)}</td><td class="n">${x.hariMaks ? `${angka(x.maks, d)} <small>${esc(tgl(x.hariMaks))}</small>` : "–"}</td></tr>`; }).join("")}</tbody></table></div>`, D);
+    const tren = kartu("Tren harian", `Tren harian ${esc(u.label)}${dgn(c)}, ${esc(per)}`, batang({...c, n: R.i1 + 1}, R.i0), D);
+    const kolM = c.ms.map(m => `<th class="n">${esc(m.label)}</th>`).join(""), selM = v => c.ms.map(m => `<td class="n">${angka(v[m.k], m.desimal | 0)}</td>`).join("");
+    const prov = R.prov.length && !c.f ? kartu("Per provinsi", `Per provinsi, ${esc(per)}`, `<div class="tw"><table class="lp-tb"><thead><tr><th>Provinsi</th>${kolM}</tr></thead><tbody>${R.prov.map(r => `<tr><td>${esc(r.nama)}</td>${selM(r.v)}</tr>`).join("")}</tbody>${c.S.prov ? "" : `<tfoot><tr><td>Nasional</td>${selM(R.nasional)}</tr></tfoot>`}</table></div>`, D) : "";
+    const kab = kartu("Kab/kota teratas", R.kab.length ? `${angka(R.kab.length)} kab/kota dengan ${esc(String(u.label).toLowerCase())} terbanyak, ${esc(per)}` : "Tidak ada kab/kota bernilai pada periode ini",
+      R.kab.length ? `<div class="tw"><table class="lp-tb"><thead><tr><th class="n">#</th><th>Kab/kota</th><th>Provinsi</th>${kolM}</tr></thead><tbody>${R.kab.map((r, j) => `<tr><td class="n">${j + 1}</td><td>${esc(r.nama)}</td><td>${esc(r.prov)}</td>${selM(r.v)}</tr>`).join("")}</tbody></table></div>` : kosong("Tidak ada kab/kota bernilai pada periode ini."), D);
+    return `<div id="insight" class="lp lp-rentang">${kop}${kep}${ring}${tren}${prov}${kab}${B.sumber(c)}</div>`;
+  }
+
   /* ---- bagian ---- */
   const B = {
     kop: c => `<div class="lp-kop" aria-hidden="true"><img src="/img/logo.svg?v=2" alt="" width="40" height="40"><div><b>Centurisk97</b><span>${esc(c.D.judul)}</span><small>${esc(tgl(c.S.hari, 1))}${dgn(c)}</small></div></div><div class="lp-kop-garis" aria-hidden="true"></div>`,
@@ -94,7 +139,7 @@ const Laporan = (() => {
       const {D, S} = c, brj = c.brj(S.hari), kodes = Object.keys(D.prov).sort((a, b) => D.prov[a].nama.localeCompare(D.prov[b].nama, "id"));
       const hari = `<select data-set="hari" aria-label="Hari laporan">${[...D.hari].reverse().map(h => `<option value="${esc(h)}"${h === S.hari ? " selected" : ""}>${esc(tgl(h, 1))}${c.brj(h) ? " (berjalan)" : ""}</option>`).join("")}</select>`;
       return `<section class="lp-kep" aria-live="polite"><div class="lp-jd"><h1>${esc(D.judul)}</h1><div class="lp-pils"><span class="lp-pil ${brj ? "sm" : "ok"}" title="${brj ? "Hari ini belum selesai; angka masih bisa bertambah sampai pukul 24.00 WIB" : "Hari sudah selesai; angka tidak berubah lagi"}">${brj ? "Data masih bertambah" : "Data lengkap"}</span><span class="lp-pil">Cut-off ${esc(wkt(D.cutoff))}</span></div></div>
-        <div class="lp-aksi">${hari}${kodes.length && !c.f ? Kartu.selProv("prov", "Seluruh Indonesia", kodes, k => D.prov[k].nama, S) : ""}<button type="button" class="lp-cetak" id="lpCetak" aria-label="Cetak PDF" title="Cetak PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M7 14h10v7H7z"/></svg></button></div></section>`; },
+        <div class="lp-aksi">${hari}${kodes.length && !c.f ? Kartu.selProv("prov", "Seluruh Indonesia", kodes, k => D.prov[k].nama, S) : ""}<button type="button" class="lp-cetak" id="lpRentang" aria-haspopup="dialog" aria-label="Unduh laporan rentang tanggal" title="Unduh laporan rentang tanggal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M12 13v5m0 0-2-2m2 2 2-2"/></svg></button><button type="button" class="lp-cetak" id="lpCetak" aria-label="Cetak PDF" title="Cetak PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M7 14h10v7H7z"/></svg></button></div></section>`; },
     ring(c) {
       const {D, S, u, i, n} = c, s = A(c.sr, u.k, n), ub = ubah(u, s[i], i > 0 ? s[i - 1] : null), b = D.hari[i - 1];
       const judul = `${esc(u.label)} ${esc(tgl(S.hari))}${dgn(c)}: ${Kartu.hl(angka(s[i], u.desimal | 0))} ${esc(u.satuan || "")}${ub.k ? ", " + esc(ub.k) : ""}`;
@@ -167,6 +212,7 @@ const Laporan = (() => {
       semua();
       host.addEventListener("click", e => {
         if (e.target.closest("#lpCetak")) return print();
+        if (e.target.closest("#lpRentang")) return bukaRentang(D, S, host);
         const b = e.target.closest("button[data-set]"); if (!b || b.dataset.set !== "rentang") return;
         b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));   /* kontrol urgent */
         S.rentang = b.dataset.v; nanti(() => isi("tren")); });
@@ -179,10 +225,55 @@ const Laporan = (() => {
       if (typeof PilihCantik !== "undefined" && document.querySelector("main")) PilihCantik.pasang();
     })();
   }
+  /* ---- dialog unduh rentang (PB-83): kalender inti dan mesin unduh dimuat malas saat dibutuhkan, jadi laporan.html tiap bencana tidak berubah ---- */
+  const muatSkrip = (src, css) => new Promise((ok, gagal) => {
+    if (css && !document.querySelector(`link[href="${css}"]`)) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = css; document.head.append(l); }
+    const ada0 = document.querySelector(`script[src="${src}"]`); if (ada0) return ada0.dataset.siap ? ok() : ada0.addEventListener("load", () => ok(), {once: true});
+    const s = document.createElement("script"); s.src = src; s.onload = () => { s.dataset.siap = 1; ok(); }; s.onerror = () => { s.remove(); gagal(new Error("Gagal memuat " + src)); }; document.head.append(s); });
+  const svgI = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  const IK_KAL = svgI('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>'), IK_PDF = svgI('<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h4"/>'),
+    IK_XLS = svgI('<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/>');
+  function bukaRentang(D, S, host) {
+    const akhir = D.hari_lengkap && D.hari.includes(D.hari_lengkap) ? D.hari_lengkap : D.hari[D.hari.length - 1], ia = D.hari.indexOf(akhir);
+    const st = {dari: D.hari[Math.max(0, ia - 6)], sampai: akhir};
+    let dlg = document.getElementById("lpDlgRentang");
+    if (!dlg) { dlg = document.createElement("dialog"); dlg.id = "lpDlgRentang"; dlg.className = "dlg lp-dlg-rt"; document.body.append(dlg); }
+    const pintas = [["7", "7 hari"], ["30", "30 hari"], ["0", "Semua"]];
+    const gambar = () => { const R = rentang(D, S, st.dari, st.sampai), ok = !!R;
+      dlg.innerHTML = `<div class="dh"><div><h3>Unduh laporan rentang tanggal</h3><p>${esc(D.judul)}${S.prov ? ", " + esc(nama(D, S.prov)) : ""}. Hanya tanggal yang ada di laporan yang bisa dipilih.</p></div><button type="button" data-rt="tutup" aria-label="Tutup">×</button></div>
+        <div class="db"><div class="seg penuh lp-rt-pil" role="group" aria-label="Rentang cepat">${pintas.map(([v, l]) => `<button type="button" data-rt-n="${v}">${IK_KAL}${l}</button>`).join("")}</div>
+        <div class="lp-rt-tgl"><label><span>Dari</span><button type="button" class="lp-rt-b" data-rt="dari">${IK_KAL}${esc(tgl(st.dari, 1))}</button></label><label><span>Sampai</span><button type="button" class="lp-rt-b" data-rt="sampai">${IK_KAL}${esc(tgl(st.sampai, 1))}</button></label></div>
+        <p class="lp-rt-ket" role="status">${ok ? `${angka(R.hari.length)} hari dipilih${R.berjalan ? ", termasuk hari yang datanya masih bertambah" : ""}.` : "Tanggal awal harus sebelum atau sama dengan tanggal akhir."}</p>
+        <div class="lp-rt-aksi"><button type="button" class="lp-rt-u" data-rt="pdf"${ok ? "" : " disabled"}>${IK_PDF}PDF ringkasan periode</button><button type="button" class="lp-rt-u sek" data-rt="xlsx"${ok ? "" : " disabled"}>${IK_XLS}Excel per hari</button></div></div>`; };
+    const jumlah = () => { const c = kon(D, S), a = A(c.sr, c.u.k, c.n), j = {}; D.hari.forEach((h, k) => { if (ada(a[k])) j[h] = a[k]; }); return j; };
+    dlg.onclick = async e => { const b = e.target.closest("button"); if (!b) return; const k = b.dataset.rt;
+      if (b.dataset.rtN != null) { const n = +b.dataset.rtN; st.sampai = akhir; st.dari = n ? D.hari[Math.max(0, ia - n + 1)] : D.hari[0]; return gambar(); }
+      if (k === "tutup") return dlg.close();
+      if (k === "dari" || k === "sampai") { try { await muatSkrip("/inti/kalender.js", "/inti/kalender.css"); } catch (er) { return; }
+        const c = kon(D, S); Kalender.buka({tombol: b, hariIni: D.hari[D.hari.length - 1], terpilih: st[k], judul: k === "dari" ? "Tanggal awal" : "Tanggal akhir", satuan: c.u.satuan || "data",
+          ket: `Angka = ${String(c.u.label).toLowerCase()} hari itu. Yang bisa dipilih: tanggal yang ada di laporan.`, terbanyak: {judul: "Terbanyak", n: 6}, awal: D.hari[0],
+          muat: async () => ({jumlah: jumlah()}), bisa: t => D.hari.includes(t), pilih: t => { st[k] = t; gambar(); }}); return; }
+      if (k === "pdf") { const R = rentang(D, S, st.dari, st.sampai); if (!R) return; dlg.close();
+        const simpan = host.innerHTML, judul = document.title; host.innerHTML = htmlRentang(R); document.title = `${D.judul} ${R.dari} sampai ${R.sampai}`;
+        const pulih = () => { host.innerHTML = simpan; document.title = judul; removeEventListener("afterprint", pulih); }; addEventListener("afterprint", pulih);
+        return setTimeout(() => print(), 50); }
+      if (k === "xlsx") { const T = barisHarian(D, S, st.dari, st.sampai); if (!T) return; b.disabled = true;
+        try { await muatSkrip("/inti/unduh.js"); await muatSkrip("/inti/unduh_tabel.js");
+          const per = `${tgl(st.dari, 1)} sampai ${tgl(st.sampai, 1)}`, R = T.R;
+          const ringkas = {nama: "Ringkasan periode", ket: per, kolom: ["Metrik", "Agregat", "Periode", "Rata-rata per hari", "Hari tertinggi", "Nilai tertinggi"],
+            baris: R.ringkas.map(x => { const d = x.m.desimal | 0; return [x.m.label, x.m.agregat || "jumlah", angka(x.total, d), angka(x.rerata, d || 1), x.hariMaks ? tgl(x.hariMaks, 1) : "–", angka(x.maks, d)]; })};
+          /* mesin unduh membaca angka seperti di layar (teks id-ID); kosong = tanda minus panjang, bukan nol */
+          const ms = R.c.ms, teks = T.baris.map(r => r.map((v, i) => i < 4 ? v : angka(v, ms[i - 4].desimal | 0)));
+          const L = {judul: `${D.judul}, ${per}`, iso: `${st.dari}_${st.sampai}`, tanggal: per, sumber: (D.sumber || []).map(s => s.nama).filter(Boolean).join(", "),
+            tabel: [ringkas, {nama: "Per hari", ket: "Satu baris per hari per wilayah" + (R.berjalan ? "; hari bertanda (berjalan) datanya masih bertambah" : ""), kolom: T.kolom, baris: teks}]};
+          window.unduhBlob(await UnduhTabel.format.xlsx(L), `${String(D.judul || "laporan").toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${st.dari}-sampai-${st.sampai}.xlsx`); }
+        catch (er) { console.error(er); } finally { b.disabled = false; } } };
+    gambar(); dlg.showModal(); }
+
   /* laporan kejadian (fokus): tabel per provinsi dan kenaikan antar-kab tidak relevan untuk satu kab/kota */
   const LEWAT_FOKUS = ["prov", "naik"];
   const bagian = (D, S, k) => D.fokus && LEWAT_FOKUS.includes(k) ? "" : B[k](kon(D, S));
   const baris = (D, S, k) => { const c = kon(D, S); return k === "prov" ? barisProv(c) : barisKab(c); };
   const bangun = (D, S) => Object.fromEntries(URUT.map(k => [k, bagian(D, S, k)]));
-  return {pasang, awal, bangun, bagian, baris, cek, urut: URUT};
+  return {pasang, awal, bangun, bagian, baris, cek, urut: URUT, rentang, barisHarian, htmlRentang};
 })();
