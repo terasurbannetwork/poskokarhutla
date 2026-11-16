@@ -40,6 +40,9 @@ JENIS_LOGBOOK_KE_BENCANA = {
     "gunungapi": "gunungapi", "kekeringan": "kekeringan", "gelombang_pasang": "pesisir", "abrasi": "pesisir",
 }
 KEMAMPUAN_BOOL = ("operasi", "ekonomi", "pencegahan", "prioritas")
+# W8 layar publik setara karhutla (paritas-bencana DESAIN-TEKNIS 12.2, D15): nyala per fitur, daftar = pilihan lapisan/ukuran
+LAYAR_BOOL = ("unduh_tabel", "brief", "pilih_tanggal", "profil_kab", "tab_operasi")
+LAYAR_LIST = ("cari", "ukuran_provinsi")
 
 
 def galat_kemampuan(id_, k):
@@ -81,7 +84,16 @@ def galat_kemampuan(id_, k):
                 g.append(f"{id_}: kemampuan.dasbor.ringkas harus string")
             if not isinstance(o["papan_sk"], bool):
                 g.append(f"{id_}: kemampuan.dasbor.papan_sk harus bool")
-    g += [f"{id_}: kemampuan.{n} tidak dikenal" for n in k if n not in KEMAMPUAN_BOOL + ("dokumen",) + tuple(objek)]
+    ly = k.get("layar")
+    if not isinstance(ly, dict):
+        g.append(f"{id_}: kemampuan.layar harus objek")
+    elif set(ly) != set(LAYAR_BOOL + LAYAR_LIST):
+        g.append(f"{id_}: kemampuan.layar harus berkunci tepat {', '.join(LAYAR_BOOL + LAYAR_LIST)}")
+    else:
+        g += [f"{id_}: kemampuan.layar.{n} harus bool" for n in LAYAR_BOOL if not isinstance(ly[n], bool)]
+        g += [f"{id_}: kemampuan.layar.{n} harus list slug" for n in LAYAR_LIST
+              if not isinstance(ly[n], list) or any(not isinstance(x, str) or not SLUG.match(x) for x in ly[n])]
+    g += [f"{id_}: kemampuan.{n} tidak dikenal" for n in k if n not in KEMAMPUAN_BOOL + ("dokumen", "layar") + tuple(objek)]
     return g
 
 
@@ -264,6 +276,10 @@ def _uji():
     rusak(lambda b: b[0]["kemampuan"]["ews"].update(tangga=1), "tangga harus bool")
     rusak(lambda b: b[0]["kemampuan"]["dasbor"].pop("papan_sk"), "dasbor harus berkunci")
     rusak(lambda b: b[0]["kemampuan"].update(sihir=True), "kemampuan.sihir tidak dikenal")
+    rusak(lambda b: b[0]["kemampuan"].pop("layar"), "layar harus objek")
+    rusak(lambda b: b[0]["kemampuan"]["layar"].update(brief="ya"), "layar.brief harus bool")
+    rusak(lambda b: b[0]["kemampuan"]["layar"].update(cari=["Desa Baru"]), "layar.cari harus list slug")
+    rusak(lambda b: b[0]["kemampuan"]["layar"].pop("tab_operasi"), "layar harus berkunci tepat")
     r = copy.deepcopy(reg)
     r["bencana"][0]["kemampuan"].update(operasi=True, dokumen=["sitrep"], renlap={"sarana": ["tenda"], "bobot": "banjir"})
     assert periksa(r) == [], periksa(r)

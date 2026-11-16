@@ -210,7 +210,16 @@ export default {
         },
         "ekonomi": false,
         "pencegahan": false,
-        "prioritas": false
+        "prioritas": false,
+        "layar": {
+          "unduh_tabel": false,
+          "brief": false,
+          "pilih_tanggal": false,
+          "profil_kab": false,
+          "tab_operasi": false,
+          "cari": [],
+          "ukuran_provinsi": []
+        }
       }
     },
     {
@@ -405,7 +414,16 @@ export default {
         },
         "ekonomi": false,
         "pencegahan": false,
-        "prioritas": false
+        "prioritas": false,
+        "layar": {
+          "unduh_tabel": false,
+          "brief": false,
+          "pilih_tanggal": false,
+          "profil_kab": false,
+          "tab_operasi": false,
+          "cari": [],
+          "ukuran_provinsi": []
+        }
       }
     },
     {
@@ -571,7 +589,16 @@ export default {
         },
         "ekonomi": false,
         "pencegahan": false,
-        "prioritas": false
+        "prioritas": false,
+        "layar": {
+          "unduh_tabel": false,
+          "brief": false,
+          "pilih_tanggal": false,
+          "profil_kab": false,
+          "tab_operasi": false,
+          "cari": [],
+          "ukuran_provinsi": []
+        }
       }
     },
     {
@@ -737,7 +764,16 @@ export default {
         },
         "ekonomi": false,
         "pencegahan": false,
-        "prioritas": false
+        "prioritas": false,
+        "layar": {
+          "unduh_tabel": false,
+          "brief": false,
+          "pilih_tanggal": false,
+          "profil_kab": false,
+          "tab_operasi": false,
+          "cari": [],
+          "ukuran_provinsi": []
+        }
       }
     },
     {
@@ -905,7 +941,16 @@ export default {
         },
         "ekonomi": false,
         "pencegahan": false,
-        "prioritas": false
+        "prioritas": false,
+        "layar": {
+          "unduh_tabel": false,
+          "brief": false,
+          "pilih_tanggal": false,
+          "profil_kab": false,
+          "tab_operasi": false,
+          "cari": [],
+          "ukuran_provinsi": []
+        }
       }
     },
     {
@@ -1057,7 +1102,16 @@ export default {
         },
         "ekonomi": false,
         "pencegahan": false,
-        "prioritas": false
+        "prioritas": false,
+        "layar": {
+          "unduh_tabel": false,
+          "brief": false,
+          "pilih_tanggal": false,
+          "profil_kab": false,
+          "tab_operasi": false,
+          "cari": [],
+          "ukuran_provinsi": []
+        }
       }
     },
     {
@@ -1210,7 +1264,16 @@ export default {
         },
         "ekonomi": false,
         "pencegahan": false,
-        "prioritas": false
+        "prioritas": false,
+        "layar": {
+          "unduh_tabel": false,
+          "brief": false,
+          "pilih_tanggal": false,
+          "profil_kab": false,
+          "tab_operasi": false,
+          "cari": [],
+          "ukuran_provinsi": []
+        }
       }
     },
     {
@@ -1365,7 +1428,16 @@ export default {
         },
         "ekonomi": false,
         "pencegahan": false,
-        "prioritas": false
+        "prioritas": false,
+        "layar": {
+          "unduh_tabel": false,
+          "brief": false,
+          "pilih_tanggal": false,
+          "profil_kab": false,
+          "tab_operasi": false,
+          "cari": [],
+          "ukuran_provinsi": []
+        }
       }
     },
     {
@@ -1492,7 +1564,16 @@ export default {
         },
         "ekonomi": false,
         "pencegahan": false,
-        "prioritas": false
+        "prioritas": false,
+        "layar": {
+          "unduh_tabel": false,
+          "brief": false,
+          "pilih_tanggal": false,
+          "profil_kab": false,
+          "tab_operasi": false,
+          "cari": [],
+          "ukuran_provinsi": []
+        }
       }
     }
   ]

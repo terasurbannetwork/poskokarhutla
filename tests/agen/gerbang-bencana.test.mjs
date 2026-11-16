@@ -144,6 +144,8 @@ const menyala = (k) => {
   if (k.renlap.sarana.length || k.renlap.bobot) n.push('renlap')
   if (k.ews.kunci.length || k.ews.tangga) n.push('ews')
   if (k.dasbor.ringkas || k.dasbor.papan_sk) n.push('dasbor')
+  // W8 (PB-69): tiap fitur layar yang menyala atau berisi wajib punya pemakai yang menyebut kemampuan dan nama fiturnya
+  for (const [x, v] of Object.entries(k.layar || {})) if (v === true || (Array.isArray(v) && v.length)) n.push(x)
   return n
 }
 const tanpaPemakai = (r, kode) => {
