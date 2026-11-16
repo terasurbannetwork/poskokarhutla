@@ -1,7 +1,16 @@
 /* Tsunami per zona (tsunami_zona.js): pemutar buletin di dalam kartu */
 .tz-lb{margin:0 0 .5rem}
-.tz-pm{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-top:.25rem}
+.tz-pm{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
 .tz-pm input[type=range]{flex:1 1 12rem;min-width:8rem}
-.tz-pm #tzLabel{font-size:.8125rem;flex:1 1 100%}
-.tz-b{background:transparent;border:0;box-shadow:none}
+.tz-pm #tzLabel{font-size:13px;font-weight:600;color:var(--ink);flex:1 1 100%;margin-top:4px}
+.tz-pm .tz-b{flex:none;width:36px;height:36px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);box-shadow:none;cursor:pointer}
+.tz-pm .tz-b:hover{border-color:var(--brand2)}
+.tz-pm .tz-b[data-a="putar"]{background:var(--brand);border-color:var(--brand);color:var(--card)}
+.tz-pm input[type=range]{accent-color:var(--brand)}
+/* satu kartu: pemutar dan zona buletin terpilih dipisah garis tipis */
+.tz-pemutar{padding-bottom:16px;border-bottom:1px solid var(--line)}
+.tz-zona{display:grid;gap:12px;padding-top:16px;min-width:0}
+.tz-jd{margin:0;font-size:15px;font-weight:700;line-height:1.35;color:var(--ink)}
+.tz-jd .hl{color:var(--accent,var(--brand2))}
+.tz-zona .fnd{margin:0}
 #tsunamiZona .ina-tb tr.on td{background:var(--hi,rgba(11,37,69,.06))}

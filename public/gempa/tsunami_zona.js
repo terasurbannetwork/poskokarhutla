@@ -89,22 +89,23 @@ const TsunamiZona = {
     const pilih = `<div class="seg penuh ina-seg" role="group" aria-label="Kejadian arsip">${this.daftar(d).map(k => `<button data-kj="${esc(k.id)}" aria-pressed="${k.id === this.st.id}" title="${esc(k.area)}">${esc(this.tglKejadian(k.t))}, M ${fmt(k.m)}</button>`).join("")}</div>`;
     const pemutar = `<div class="tz-pm" role="group" aria-label="Pemutar ulang buletin">${this.tombol("mundur", "mundur", "Buletin sebelumnya")}${this.tombol("putar", "putar", "Putar ulang")}${this.tombol("maju", "maju", "Buletin berikutnya")}
       <input id="tzGeser" type="range" min="0" max="${N - 1}" value="${this.st.k}" aria-label="Pilih buletin"><span id="tzLabel" translate="no"></span></div>`;
+    /* satu kartu (pemilik 16 Nov 2026: "kalau saling berkaitan, mending disatuin aja panelnya"): pemutar di atas, zona buletin terpilih di bawah (#tzZona, diisi gambar()) */
     el.querySelector("#tzKtl").innerHTML = this.kartu("Tsunami per zona", `Pemutaran ulang <span class="hl">${fmt(this.daftar(d).length)}</span> kejadian arsip BMKG`,
-      `<p class="tz-lb">${this.pil("Latihan: pemutaran ulang arsip", "#6b7280")} ${this.pil("Kejadian asli " + tgl, "#3f6fa8")} ${this.pil("Resmi BMKG", "#0b2545")}</p>${pemutar}`, pilih);
+      `<div class="tz-pemutar"><p class="tz-lb">${this.pil("Latihan: pemutaran ulang arsip", "#6b7280")} ${this.pil("Kejadian asli " + tgl, "#3f6fa8")} ${this.pil("Resmi BMKG", "#0b2545")}</p>${pemutar}</div><div id="tzZona" class="tz-zona"></div>`, pilih);
     this.label(el); },
 
   gambar(el) {
     const d = this.d, kej = d.kejadian[this.st.id], b = kej.buletin[this.st.k], N = kej.buletin.length, r = this.ringkas(kej, b), tgl = this.tglKejadian(kej.t);
     const jd = r.zona
-      ? `<span class="hl">${fmt(r.zona)}</span> zona peringatan BMKG mencakup <span class="hl">${fmt(r.kab)}</span> kabupaten/kota pada buletin ke-${this.st.k + 1}, kejadian ${esc(tgl)}${r.belum ? `; <span class="hl">${fmt(r.belum)}</span> zona belum dipetakan ke kabupaten` : ""}`
-      : `Buletin ke-${this.st.k + 1} kejadian ${esc(tgl)} tidak memuat zona peringatan`;
+      ? `<span class="hl">${fmt(r.zona)}</span> zona peringatan BMKG mencakup <span class="hl">${fmt(r.kab)}</span> kabupaten/kota pada buletin ke-${this.st.k + 1}${r.belum ? `; <span class="hl">${fmt(r.belum)}</span> zona belum dipetakan ke kabupaten` : ""}`
+      : `Buletin ke-${this.st.k + 1} tidak memuat zona peringatan`;
     const B = this.barisKab(kej, b), bd = this.belumDipetakan(b);
     const tabel = B.length ? `<div class="tw ex-tabel ina-tb"><table><thead><tr><th>Kabupaten/kota</th><th title="Tingkat resmi tertinggi dari zona BMKG yang mencakupnya">Tingkat BMKG</th><th title="Zona BMKG yang mencakup kabupaten ini">Zona</th>
         <th class="n" title="Penduduk seluruh kabupaten (WorldPop 2026), bukan penduduk di zona rendah">Penduduk</th><th class="n" title="Sekolah Dapodik/EMIS, seluruh kabupaten">Sekolah</th><th class="n" title="Rumah sakit dan puskesmas OSM, dipasang lewat pusat kecamatan terdekat (perkiraan)">Faskes</th><th class="n" title="Titik evakuasi BNPB (TES, rambu, sirine); hanya 4 wilayah rintisan">Titik evakuasi</th></tr></thead>
         <tbody>${B.map(x => `<tr><td>${esc(x.nama)}${x.sebagian ? ' <small title="Zona menunjuk sebagian garis pantai kabupaten">(sebagian pantai)</small>' : ""}</td><td>${this.pilTingkat(x.tingkat)}</td><td><small translate="no">${x.zona.map(esc).join(", ")}</small></td>
         <td class="n">${this.selEks(x.eks?.penduduk, x.st)}</td><td class="n">${this.selEks(x.eks?.sekolah, x.st)}</td><td class="n">${this.selFaskes(x.eks?.faskes, x.st)}</td><td class="n">${this.selEks(x.eks?.evakuasi, x.st)}</td></tr>`).join("")}</tbody></table></div>` : `<div class="kosong">Buletin ini tidak memuat zona.</div>`;
     const sisa = bd.length ? `<h5 class="ina-h5">Zona yang belum terhubung ke kabupaten (${fmt(bd.length)})</h5><div class="ina-pil">${bd.map(z => `<span class="ina-w"><b translate="no">${esc(z.nama)}</b> <small translate="no">${esc(z.provinsi)}</small> ${this.pilTingkat(z.tingkat)}</span>`).join("")}</div>` : "";
-    const k1 = this.kartu("Tsunami per zona", jd, `<p class="tz-lb">${this.pil("Latihan, kejadian asli " + tgl, "#6b7280")}</p>${tabel}${sisa}<p class="fnd ina-atr">Eksposur = seluruh kabupaten/kota. ${this.BELUM[0].toUpperCase() + this.BELUM.slice(1)} berarti berkas sumbernya tidak memuat kabupaten itu, bukan nol. Pemetaan zona ke kabupaten dibuat dari nama zona (Centurisk97) dan belum ditinjau manusia; tingkat zona adalah pernyataan BMKG. Sumber: <a href="https://www.bmkg.go.id/gempabumi/berpotensi-tsunami" target="_blank" rel="noopener">BMKG</a> (InaTEWS), WorldPop, Dapodik/EMIS, OSM, BNPB.</p>`);
+    const k1 = `<h4 class="tz-jd">${jd}</h4>${tabel}${sisa}<p class="fnd ina-atr">Eksposur = seluruh kabupaten/kota. ${this.BELUM[0].toUpperCase() + this.BELUM.slice(1)} berarti berkas sumbernya tidak memuat kabupaten itu, bukan nol. Pemetaan zona ke kabupaten dibuat dari nama zona (Centurisk97) dan belum ditinjau manusia; tingkat zona adalah pernyataan BMKG. Sumber: <a href="https://www.bmkg.go.id/gempabumi/berpotensi-tsunami" target="_blank" rel="noopener">BMKG</a> (InaTEWS), WorldPop, Dapodik/EMIS, OSM, BNPB.</p>`;
     const U = b.ukur || [], umax = U.reduce((m, u) => u.tinggi_m > (m?.tinggi_m ?? -1) ? u : m, null);
     const k2 = this.kartu("Muka air terukur", U.length ? `<span class="hl">${fmt(U.length)}</span> stasiun melaporkan muka air, tertinggi <span class="hl">${fmt(umax.tinggi_m)} m</span> di ${esc(umax.stasiun)}` : `Buletin ke-${this.st.k + 1} belum memuat pengukuran muka air`,
       U.length ? `<div class="tw ex-tabel ina-tb"><table><thead><tr><th>Stasiun</th><th class="n">Jam WIB</th><th class="n">Tinggi (m)</th></tr></thead><tbody>${[...U].sort((x, y) => y.tinggi_m - x.tinggi_m).map(u => `<tr><td translate="no">${esc(u.stasiun)}</td><td class="n">${esc(u.jam.replace(":", "."))}</td><td class="n">${fmt(u.tinggi_m)}</td></tr>`).join("")}</tbody></table></div>`
@@ -114,7 +115,8 @@ const TsunamiZona = {
       `<div class="tw ex-tabel ina-tb"><table><thead><tr><th class="n">Ke</th><th>Subjek</th><th class="n">Terbit</th><th class="n">M</th><th class="n">Zona</th><th>Perubahan</th></tr></thead><tbody>${gw}</tbody></table></div>`);
     const tt = this.produk(kej, this.st.k, "tt"), wz = this.produk(kej, this.st.k, "wz");
     const k4 = tt || wz ? this.kartu("Peta BMKG", `Peta waktu tiba dan zona peringatan resmi BMKG, <span class="hl">gambar utuh</span>`, `<div class="ina-fg">${tt ? this.gbr(tt, "Peta waktu tiba tsunami BMKG") : ""}${wz ? this.gbr(wz, "Peta zona peringatan BMKG") : ""}</div><p class="fnd ina-atr">Gambar milik BMKG, ditampilkan utuh tanpa diubah. Sumber: <a href="https://www.bmkg.go.id/gempabumi/berpotensi-tsunami" target="_blank" rel="noopener">BMKG</a> (InaTEWS).</p>`) : "";
-    const isi = el.querySelector("#tzIsi"); isi.innerHTML = k1 + k2 + '<div id="tzDart"></div>' + k3 + k4; this.kartuDart().then(h => { const e = isi.querySelector("#tzDart"); if (e) e.innerHTML = h; });
+    const zn = el.querySelector("#tzZona"); if (zn) zn.innerHTML = k1;
+    const isi = el.querySelector("#tzIsi"); isi.innerHTML = k2 + '<div id="tzDart"></div>' + k3 + k4; this.kartuDart().then(h => { const e = isi.querySelector("#tzDart"); if (e) e.innerHTML = h; });
     isi.querySelectorAll("figure.ina-f img").forEach(i => i.addEventListener("error", () => i.closest("figure")?.remove(), {once: true}));
   },
 };
