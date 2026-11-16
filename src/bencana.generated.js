@@ -946,7 +946,7 @@ export default {
           "unduh_tabel": true,
           "brief": true,
           "pilih_tanggal": true,
-          "profil_kab": false,
+          "profil_kab": true,
           "tab_operasi": true,
           "cari": [
             "desa",
@@ -957,7 +957,11 @@ export default {
             "posko",
             "bpbd"
           ],
-          "ukuran_provinsi": []
+          "ukuran_provinsi": [
+            "gempa",
+            "dirasakan",
+            "terbesar"
+          ]
         }
       }
     },
