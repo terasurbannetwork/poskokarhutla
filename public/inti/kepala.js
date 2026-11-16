@@ -51,3 +51,5 @@ async function gambar(d) {
 }
 
 document.querySelectorAll("details.bencana").forEach(d => gambar(d).catch(() => {}));
+/* deretan tab kepala: tab yang tidak muat masuk menu "Lainnya" (inti/tab_lainnya.js), semua laman bencana */
+import("./tab_lainnya.js").then(m => m.pasangLainnya(document.querySelector("nav.tabs"))).catch(() => {});
