@@ -60,7 +60,7 @@ Fitur PRD bagian 4. Satu fitur dapat dikerjakan beberapa tiket; fitur selesai bi
 | F-33 | Sisa temuan rusak audit nol | PB-66 | `npm run uji:agen` |
 | F-34 | Berkas Excel, Word, PDF, PNG memuat baris dan kolom yang sama dengan tabel di layar; karhutla tidak berubah sesudah pindah ke mesin inti | PB-70, PB-71, PB-79a-c | `tests/layar/pb_unduh_tabel.test.mjs` |
 | F-35 | Brief dua halaman A4; tiap angka sama dengan angka di halaman pada saat yang sama; tanpa kalimat kebijakan buatan mesin | PB-72, PB-79a-c, PB-80 | `tests/layar/pb_brief.test.mjs` |
-| F-36 | Hanya tanggal yang datanya ada yang bisa dipilih; ganti tanggal tidak membekukan layar | PB-73, PB-79a-c | `tests/layar/pb_pilih_tanggal.test.mjs`, `inp-reviewer` |
+| F-36 | Tanggal lain membuka kalender bulanan seperti karhutla (K15) dengan jumlah per hari; hanya tanggal yang datanya ada yang bisa dipilih; ganti tanggal tidak membekukan layar | PB-73, PB-79a-c | `tests/layar/pb_pilih_tanggal.test.mjs`, `inp-reviewer` |
 | F-37 | Klik kab/kota di peta dan hasil cari membuka profil yang sama dengan karhutla dan banjir | PB-74, PB-79a-c | `tests/layar/pb_profil_kab.test.mjs` |
 | F-38 | Cari mengembalikan desa, faskes, sekolah, bandara, posko, BPBD; karhutla tetap menemukan konsesi dan Daops | PB-75, PB-79a-c, PB-80 | `tests/layar/pb_cari.test.mjs` |
 | F-39 | Tiap ukuran tabel provinsi menjumlah dari data halaman; gempa tanpa tingkat Siaga | PB-76, PB-79a-c | `tests/layar/pb_ukuran_provinsi.test.mjs` |

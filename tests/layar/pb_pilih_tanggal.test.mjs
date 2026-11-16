@@ -45,7 +45,7 @@ test("gerbang registri: false/tanpa kunci/id asing/karhutla = tidak terpasang; t
 test("terpasang bila registri true: host berisi tiga bagian, Real Time/Riwayat hanya bila adaptor punya riwayat", async () => {
   const P = dunia({daftar: [reg("gempa", true)]}), host = {innerHTML: "", firstChild: null, addEventListener() {}}; let riw = null;
   P.pasang({id: "gempa", host: () => host, tanggal: () => [Date.now()], ubah() {}, get riwayat() { return riw; }}); await tunggu();
-  assert.equal(P.diizinkan(), true); assert.match(host.innerHTML, /Hari ini/); assert.match(host.innerHTML, /Kemarin/); assert.match(host.innerHTML, /<select[^>]*data-pt-lain/); assert.doesNotMatch(host.innerHTML, /Riwayat/);
+  assert.equal(P.diizinkan(), true); assert.match(host.innerHTML, /Hari ini/); assert.match(host.innerHTML, /Kemarin/); assert.match(host.innerHTML, /<button[^>]*data-pt-lain[^>]*>Tanggal lain<\/button>/); assert.doesNotMatch(host.innerHTML, /<select/); assert.doesNotMatch(host.innerHTML, /Riwayat/);
   assert.match(host.innerHTML, /data-pt="[^"]+" aria-pressed="false">Hari ini/, "hari ini berdata, tombol hidup");
   assert.match(host.innerHTML, /data-pt="" aria-pressed="false" disabled>Kemarin/, "kemarin tanpa data, tombol mati");
   assert.doesNotMatch(host.innerHTML, /#[0-9a-f]{3,6}\b/i, "tanpa warna literal");
@@ -54,7 +54,7 @@ test("terpasang bila registri true: host berisi tiga bagian, Real Time/Riwayat h
 test("sesuai dan penyaringan gempa per tanggal WIB memakai dalamRentang di peta.js", () => {
   const P = dunia().model; assert.equal(P.sesuai(m("2026-11-15T17:30:00Z"), "2026-11-16"), true); assert.equal(P.sesuai(m("2026-11-15T10:00:00Z"), "2026-11-16"), false); assert.equal(P.sesuai(1, null), true);
   const src = baca("public/gempa/peta.js"), ambil = n => src.split(/\r?\n/).find(l => l.startsWith("const " + n + " ="));
-  const S = {gempa: [], rentang: 24, tanggal: null}, ctx = vm.createContext({S, Date}); vm.runInContext(ambil("tglWIB") + "\n" + ambil("dalamRentang") + "\nglobalThis.dalam = dalamRentang;", ctx);
+  const S = {gempa: [], rentang: 24, tanggal: null, gempa30: null}, ctx = vm.createContext({S, Date}); vm.runInContext(ambil("tglWIB") + "\n" + ambil("dataGempa") + "\n" + ambil("dalamRentang") + "\nglobalThis.dalam = dalamRentang;", ctx);
   S.gempa = [{id: "a", t: m("2026-11-15T17:30:00Z")}, {id: "b", t: m("2026-11-15T10:00:00Z")}, {id: "c", t: m("2026-11-14T20:00:00Z")}, {id: "d", t: m("2026-11-16T01:00:00Z")}];
   S.tanggal = "2026-11-16"; assert.deepEqual(ctx.dalam().map(g => g.id), ["a", "d"]);
   S.tanggal = "2026-11-15"; assert.deepEqual(ctx.dalam().map(g => g.id), ["b", "c"]);
@@ -76,6 +76,20 @@ test("memilih tanggal saat Riwayat aktif mengembalikan mode ke Real Time (adapto
   assert.equal(P.riwayat(), false); assert.equal(P.terpilih(), "2026-11-16");
   assert.deepEqual(panggil.slice(1).map(x => x.join(":")).sort(), ["riw:false", "tgl:2026-11-16"]);
   assert.match(host.innerHTML, /data-ptm="0" aria-pressed="true"/);
+});
+test("PB-79: pilih_tanggal.js tidak lagi membuat <select>; Tanggal lain = tombol yang membuka Kalender", () => {
+  const m = baca("public/inti/pilih_tanggal.js").replace(/\/\*[\s\S]*?\*\//g, ""); assert.doesNotMatch(m, /<select|<option/); assert.match(m, /Kalender\.buka\(/); assert.match(m, /data-pt-lain/);
+});
+test("PB-79: tombol Tanggal lain membuka Kalender dengan konfigurasi adaptor; label mengikuti tanggal terpilih", async () => {
+  const dengar = {}, host = {innerHTML: "", firstChild: null, addEventListener: (n, f) => { dengar[n] = f; }}, ubah = []; let Kal = null;
+  const win = {}; win.window = win;
+  const ctx = vm.createContext({window: win, console, setTimeout, Date, Promise, Number, Set, Kalender: {buka: o => { Kal = o; }},
+    fetch: async () => ({ok: true, json: async () => ({bencana: [{id: "gempa", warna: "#8a6d4e", kemampuan: {layar: {pilih_tanggal: true}}}]})})});
+  vm.runInContext(baca("public/inti/pilih_tanggal.js"), ctx); const PT = win.PilihTanggal;
+  PT.pasang({id: "gempa", host: () => host, tanggal: () => [Date.now()], ubah: i => ubah.push(i), kalender: {satuan: "gempa", bisa: () => true, muat: async () => ({jumlah: {}})}}); await tunggu();
+  assert.match(host.innerHTML, />Tanggal lain<\/button>/);
+  dengar.click({target: {closest: s => s === "[data-pt-lain]" ? {} : null}}); assert.ok(Kal); assert.equal(Kal.warna, "#8a6d4e"); assert.equal(Kal.satuan, "gempa"); assert.equal(Kal.judul, "Pilih tanggal");
+  Kal.pilih("2026-11-03"); await tunggu(); assert.deepEqual(ubah, ["2026-11-03"]); assert.equal(PT.terpilih(), "2026-11-03"); assert.match(host.innerHTML, /aria-pressed="true">3 Nov<\/button>/);
 });
 test("adaptor gempa: memilih tanggal melepas S.riwayat; Real Time memakai urut ukuran aktif", () => {
   const t = baca("public/gempa/tanggal.js"); assert.match(t, /if \(iso && S\.riwayat\) S\.riwayat = false/); assert.match(t, /ukAktif\(\)\.kunci/);

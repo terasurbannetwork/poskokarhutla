@@ -49,7 +49,9 @@ const S = {gempa: [], dibuat: null, rentang: bacaLokal("gempa-rentang", 72), jal
 const namaProv = k => k === "-" ? "Perairan" : S.nama[k] ?? k;
 /* tanggal WIB terpilih (PB-73, inti/pilih_tanggal.js lewat tanggal.js) menggantikan jendela jam; null = jendela jam seperti biasa */
 const tglWIB = ms => new Date(ms + 7 * 36e5).toISOString().slice(0, 10);
-const dalamRentang = () => { if (S.tanggal) return S.gempa.filter(g => tglWIB(g.t) === S.tanggal); const t0 = Date.now() - S.rentang * 36e5; return S.gempa.filter(g => g.t >= t0); };
+/* data 7 hari (S.gempa) cukup untuk tanggal baru; tanggal lebih tua dari itu memakai data 30 hari (S.gempa30, dimuat kalender tanggal.js) */
+const dataGempa = () => S.tanggal && S.gempa30 && S.tanggal <= tglWIB(Date.now() - 168 * 36e5) ? S.gempa30 : S.gempa;
+const dalamRentang = () => { if (S.tanggal) return dataGempa().filter(g => tglWIB(g.t) === S.tanggal); const t0 = Date.now() - S.rentang * 36e5; return S.gempa.filter(g => g.t >= t0); };
 function agregat(daftar) { const o = {};
   for (const g of daftar) { const k = g.prov || "-", a = o[k] ||= {n: 0, m: 0, mmi: 0}; a.n++; a.m = Math.max(a.m, g.m); if (g.mmi_maks) a.mmi++; } return o; }
 
@@ -96,7 +98,7 @@ const Peta = {
     ["lempeng", "sesar", "riwayat", "katalog", "kekerapan", "bahaya", "satelit", "sensor", "dart", "gnss"].forEach(k => this.lihat(k) && nanti(() => this.pasangLapis(k)));
     Evakuasi.pasang(); Kejadian.pasangLapis(); renderLegenda(); },
   geoGempa() { const kini = Date.now(), t0 = kini - S.rentang * 36e5;
-    return {type: "FeatureCollection", features: S.gempa.map((g, i) => (S.tanggal ? tglWIB(g.t) !== S.tanggal : g.t < t0) ? null : ({type: "Feature", geometry: {type: "Point", coordinates: [g.lon, g.lat]},
+    return {type: "FeatureCollection", features: dataGempa().map((g, i) => (S.tanggal ? tglWIB(g.t) !== S.tanggal : g.t < t0) ? null : ({type: "Feature", geometry: {type: "Point", coordinates: [g.lon, g.lat]},
       properties: {i, m: g.m, d: kelasDalam(g.dalam), u: (kini - g.t) / 36e5}})).filter(Boolean)}; },
   async pasangLapis(k) {
     if (!peta?.getSource("gempa") || peta.getLayer(k)) return;
@@ -163,7 +165,7 @@ const Peta = {
     const titik = (id, kartu) => { peta.on("mousemove", id, e => { diTitik = id; kursor("pointer"); PI?.tampilTip(kartu(e.features[0].properties.i), e.originalEvent); });
       peta.on("mouseleave", id, () => { diTitik = 0; kursor(""); tip(); }); };
     for (const k of ["sensor", "dart", "gnss"]) titik(k, i => { const b = S.titikLain[k][i]; return PI.kartuTip({judul: b.judul, sub: `<small class="tp-sub">${b.sub}</small>`}); });
-    titik("gempa", i => this.kartuGempa(S.gempa[i])); titik("riwayat", i => this.kartuRiwayat(S.riwayat.baris[i]));
+    titik("gempa", i => this.kartuGempa(dataGempa()[i])); titik("riwayat", i => this.kartuRiwayat(S.riwayat.baris[i]));
     peta.on("mousemove", "prov-fill", e => { kursor("pointer"); const f = e.features[0];
       if (hov !== f.id) { if (hov !== null) peta.setFeatureState({source: "prov", id: hov}, {hover: false}); hov = f.id; peta.setFeatureState({source: "prov", id: hov}, {hover: true}); }
       if (!diTitik && PI) PI.tampilTip(this.kartuProv(f.properties.kode), e.originalEvent); });
@@ -174,7 +176,7 @@ const Peta = {
     peta.on("click", e => {
       if (Evakuasi.klik(e)) return;
       const gm = peta.queryRenderedFeatures(e.point, {layers: ["gempa"]});
-      if (gm.length) return this.pilih(S.gempa[gm[0].properties.i]);
+      if (gm.length) return this.pilih(dataGempa()[gm[0].properties.i]);
       const ss = peta.getLayer("susulan") && peta.queryRenderedFeatures(e.point, {layers: ["susulan"]}); if (ss?.length) return Kejadian.pilihSusulan(ss[0].properties.i);
       if (peta.getLayer("riwayat") && peta.queryRenderedFeatures(e.point, {layers: ["riwayat"]}).length) return;
       const w = peta.getLayer("prov-fill") && peta.queryRenderedFeatures(e.point, {layers: ["prov-fill"]});
@@ -244,13 +246,13 @@ $("#rows").addEventListener("click", e => {
     if (uk2 && S.ukuran !== uk2.slug && pilihUkuran(uk2.slug)) return; S.urut = {k, turun: S.urut.k === k ? !S.urut.turun : k !== "nama"}; S.hal = 0; return renderDaftar(); }
   const rw = e.target.closest("[data-kr]"); if (rw) return turun(rw.dataset.kr);
   const p = e.target.closest("[data-k]"); if (p) return turun(p.dataset.k);
-  const g = e.target.closest("[data-g]"); if (g) { const q = S.gempa.find(x => x.id === g.dataset.g); if (q) Peta.pilih(q); } });
+  const g = e.target.closest("[data-g]"); if (g) { const q = dataGempa().find(x => x.id === g.dataset.g); if (q) Peta.pilih(q); } });
 $("#handle").onclick = () => $("#panel").classList.toggle("min");
 
 /* ---------- jendela waktu ---------- */
 const RENTANG = [[24, "24 jam"], [72, "72 jam"], [168, "7 hari"]];
 function renderRentang() { $("#rentang").innerHTML = RENTANG.map(([v, n]) => `<button data-v="${v}" aria-pressed="${S.rentang === v && !S.tanggal}">${n}</button>`).join(""); window.PilihTanggal?.gambar(); }
-$("#rentang").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.rentang = +b.dataset.v; simpanLokal("gempa-rentang", S.rentang); S.hal = 0; S.tanggal = null; window.PilihTanggal?.lepas();
+$("#rentang").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.rentang = +b.dataset.v; simpanLokal("gempa-rentang", S.rentang); S.hal = 0; S.tanggal = null; window.PilihTanggal?.lepas(); if (S.riwayat) { S.riwayat = false; window.PilihTanggal?.keRealTime(); }   /* dari Riwayat kembali ke tampilan awal */
   $("#rentang").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));  nanti(() => { Peta.segarkan(); renderDaftar(); renderPita(); renderLegenda(); }); });
 
 /* ---------- pita status tsunami resmi BMKG: hanya bila BMKG menyatakan berpotensi tsunami (kode 1 sampai 3) dalam 24 jam; tanpa pernyataan = tidak tampil, tidak ditafsir aman ---------- */
