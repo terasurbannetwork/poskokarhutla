@@ -723,9 +723,9 @@ def _rincian_banjir(Dk, provs, hal):
     tabel(k, 43.2, 140, kol, baris, bawah=500, pt=8, maks=48 if hal else 26)   # halaman pecahan berisi lebih sedikit baris
 
 
-def s_rincian_longsor(Dk):
+def s_rincian_longsor(Dk, no='L2'):
     # pemilik 13 Nov: judul dan heading tidak diawali angka
-    s, k = Dk.slide(judul(f'L2. Rincian [{len(LONGSOR)}] kejadian tanah longsor'))   # pemilik 16 Nov: judul lampiran to the point
+    s, k = Dk.slide(judul(f'{no}. Rincian [{len(LONGSOR)}] kejadian tanah longsor'))   # pemilik 16 Nov: judul lampiran to the point
     kepala_panel(k, 43.2, 102, 873.6, 'Tanah longsor sepekan per kejadian', 'longsor', MINGGU['catatan_longsor'] or None)
     kol = [('KAB/KOTA', 92, 'l'), ('LOKASI', 158, 'l'), ('MULAI', 36, 'c'), ('MENINGGAL', 52, 'c'), ('HILANG', 40, 'c'), ('KK', 34, 'c'),
            ('KERUSAKAN', 186, 'l'), ('PENANGANAN TERAKHIR', 196.6, 'l'), ('KABAR', 40, 'c'), ('', 39, 'c')]
@@ -764,26 +764,27 @@ def s_rincian_longsor(Dk):
         k.gambar(png, x + 1, y0 + 15, w - 2, hh)
 
 
-def s_lampiran_ungsi(Dk, no='L3'):
+def s_lampiran_ungsi(Dk, no='L3', jenis=None):
     """Lampiran pengungsian sepekan (pemilik 16 Nov 2026: 'tambahin lampiran yang kayak gini', contoh L2 deck 021126) dalam gaya tabel 091126."""
-    jiwa = [r for r in UNGSI if r[5]]
-    kk_saja = [r for r in UNGSI if r[4] and not r[5]]
-    t_j, t_k = sum(r[5] for r in jiwa), sum(r[4] or 0 for r in UNGSI)
-    s, k = Dk.slide(judul(f'{no}. Pengungsian sepekan di [{len(UNGSI)}] kab/kota'))   # pemilik 16 Nov: judul lampiran to the point
+    U = [r for r in UNGSI if jenis is None or r[2] == jenis]   # 16 Nov: deck banjir dan deck longsor dipisah
+    jiwa = [r for r in U if r[5]]
+    kk_saja = [r for r in U if r[4] and not r[5]]
+    t_j, t_k = sum(r[5] for r in jiwa), sum(r[4] or 0 for r in U)
+    s, k = Dk.slide(judul(f'{no}. Pengungsian sepekan di [{len(U)}] kab/kota'))   # pemilik 16 Nov: judul lampiran to the point
     kepala_panel(k, 43.2, 102, 873.6, 'Pengungsi per kab/kota', 'pengungsi',
                  'Angka dari laporan terakhir yang memuatnya; pengungsi yang sudah kembali tetap dicatat')
     kol = [('KAB/KOTA', 150, 'l'), ('KONDISI', 112, 'c'), ('KK', 56, 'c'), ('JIWA', 60, 'c'),
            ('LOKASI PENGUNGSIAN DAN DESA ASAL', 435.6, 'l'), ('KABAR', 60, 'c')]
     baris = []
-    for prov in dict.fromkeys(r[0] for r in UNGSI):
+    for prov in dict.fromkeys(r[0] for r in U):
         baris.append(('prov', prov))
-        for r in (r for r in UNGSI if r[0] == prov):
+        for r in (r for r in U if r[0] == prov):
             pil = ('Belum surut' if r[3] else 'Sudah surut') if r[2] == 'banjir' else ('Masih ditangani' if r[3] else 'Tertangani')
             nama = ('runs', [R(r[1], 9, TEKS, True), '\n', R('Banjir' if r[2] == 'banjir' else 'Tanah longsor', 7.5, TEKS3)])
             baris.append(('data', [nama, ('pil', pil, r[3], 8.6), f0(r[4]), f0(r[5]), rt(r[6], 8.5), r[7]]))
     baris.append(('total', ['Jumlah', '', f0(t_k), f0(t_j), ('runs', [R('KK dan jiwa dijumlah terpisah: tidak semua kab/kota melaporkan keduanya',
                                                                        7.5, PUTIH, False)]), '']))
-    tabel(k, 43.2, 140, kol, baris, bawah=500, pt=8.5, maks=34)
+    tabel(k, 43.2, 140, kol, baris, bawah=500, pt=8.5, maks=34 if len(U) > 6 else 52)   # baris sedikit: lebih tinggi (D-39)
 
 
 # ======================================================================== probabilitas dan mitigasi dari data GIS (minggu tanpa deck 091126)
@@ -794,6 +795,7 @@ ARTI = [('Awas', AWAS, PITA_MERAH, 'peringatan', 'Hujan 3 hari 120 mm atau lebih
 MITIGASI = {}      # kab terdampak -> langkah (diisi skrip minggu, dari laporan Koordalops)
 PANTAU = []        # [(kab, langkah)] pantauan khusus, mis. longsor yang masih ditangani
 N_SIAGA_MITIGASI = 12
+PAKAI_PANTAU = True
 
 
 def muat_gis():
@@ -895,7 +897,8 @@ def s_mitigasi(Dk):
     tk = {r[1] for r in terdampak}
     aw = [o for o in rows if o['a'] and o['kab'] not in tk]
     sg = sorted((o for o in rows if not o['a'] and o['kab'] not in tk), key=lambda o: (-o['s'], -o['mm']))[:N_SIAGA_MITIGASI]
-    n = len(terdampak) + len(aw) + len(sg) + len(PANTAU)
+    pantau = PANTAU if PAKAI_PANTAU else []   # deck banjir terpisah: tanpa pantauan longsor
+    n = len(terdampak) + len(aw) + len(sg) + len(pantau)
     s, k = Dk.slide(judul(f'Mitigasi [{n}] kab/kota: [{len(terdampak)}] terdampak ditangani sekarang; [{len(aw)}] Awas dan [{len(sg)}] Siaga '
                           f'disiapkan sebelum {akhir.day} {BLN[akhir.month]}'))
 
@@ -914,9 +917,9 @@ def s_mitigasi(Dk):
     # tanggal puncak ditulis sebagai keterangan, bukan tenggat: puncak bisa jatuh sebelum tanggal paparan
     kanan += [('data', [o['kab'], rt(f'Siapkan evakuasi {langkah_kec(o["ks"])} ({o["s"]} kecamatan Siaga, puncak hujan '
                                      f'{o["tgl"].day} {BLN[o["tgl"].month][:3]})', 8)]) for o in sg]
-    if PANTAU:
+    if pantau:
         kanan += [('prov', 'Pantauan khusus', PITA_BIRU, (BIRU, 'longsor'))]
-        kanan += [('data', [kb, rt(t, 8)]) for kb, t in PANTAU]
+        kanan += [('data', [kb, rt(t, 8)]) for kb, t in pantau]
     panel(43.2, 418, 'Tindakan terdekat', 'tanggap-darurat', kiri)
     panel(476.6, 440.2, f'Mitigasi sebelum {akhir.day} {BLN[akhir.month]}', 'prabencana', kanan)
 
@@ -1024,71 +1027,81 @@ def salinan_091():
 
 
 # ======================================================================== rakit
-def main():
+def bangun(jenis):
+    """Satu deck: jenis 'banjir' (peta banjir, probabilitas, mitigasi, rincian banjir, pengungsian banjir) atau 'longsor' (peta longsor,
+    rincian longsor, pengungsian longsor). Pemilik 16 Nov 2026: "slide tentang longsor pisahin dlu aja, kita fokus di banjir dulu".
+    Mengembalikan jalur PPTX hasil deck.py (PDF di sebelahnya)."""
+    global PAKAI_PANTAU
+    PAKAI_PANTAU = jenis != 'banjir'
     Dk = Deck()
-    s_peta_banjir(Dk)
-    s_peta_longsor(Dk)
-    gis = bool(MINGGU.get('gis'))
-    if gis:   # 16 Nov: minggu tanpa deck 091126 memakai data GIS sendiri untuk probabilitas dan mitigasi
-        s_probabilitas(Dk)
-        s_mitigasi(Dk)
-    n_isi = 4 if gis else 2
-    n_l1 = s_rincian_banjir(Dk)
-    n_l2 = (s_rincian_longsor(Dk) or 1) if LONGSOR else 0   # pemilik 16 Nov 2026: lampiran rincian longsor dibuat bila ada kejadian
-    s_lampiran_ungsi(Dk, 'L3' if n_l2 else 'L2')
-    nama = MINGGU['nama']
+    a, b_ = MINGGU['awal'], MINGGU['akhir']
+    sk = f'Laporan Dit. Koordalops BNPB, {a.day} s.d. {tgl_p(b_)} {b_.year}'
+    if jenis == 'banjir':
+        s_peta_banjir(Dk)
+        susun = [{'halaman': 1, 'bagian': 1, 'sumber': sumber()}]
+        judul_bagian = ['Peta banjir']
+        n_isi = 1
+        if MINGGU.get('gis'):   # 16 Nov: minggu tanpa deck 091126 memakai data GIS sendiri untuk probabilitas dan mitigasi
+            s_probabilitas(Dk); s_mitigasi(Dk)
+            susun += [{'halaman': 2, 'bagian': 2, 'sumber': sumber_gis()},
+                      {'halaman': 3, 'bagian': 3, 'sumber': f'Usulan dari {sumber_gis()}; {sk}'}]
+            judul_bagian += ['Probabilitas banjir', 'Mitigasi']
+            n_isi = 3
+        elif MINGGU['impor_091']:
+            sb091 = {2: 'GIS BNPB, 9 Nov 2026 13.34 WIB', 5: 'GIS BNPB, 9 Nov 2026 13.34 WIB; Laporan Dit. Koordalops BNPB, 5 s.d. 9 Nov 2026'}
+            imp = salinan_091()
+            # pemilik 16 Nov 2026: bagian Kebutuhan dan jalur logistik (slide 3-4 deck 091126: LogPal, jalur) dihapus
+            susun += [{'jenis': 'impor', 'pptx': imp, 'halaman': n, 'bagian': b, 'sumber': sb091[n]} for n, b in ((2, 2), (5, 3))]
+            judul_bagian += ['Probabilitas banjir', 'Mitigasi']
+        n_l = s_rincian_banjir(Dk)
+        if any(r[2] == 'banjir' for r in UNGSI):
+            s_lampiran_ungsi(Dk, 'L2', 'banjir'); n_l += 1
+        nama = MINGGU['nama'].replace('Banjir dan Longsor', 'Banjir')
+        judul_dok, subjek = 'Laporan Situasi dan Kondisi Wilayah Terdampak Banjir', 'Paparan Situasi Banjir Mingguan'
+    else:
+        s_peta_longsor(Dk)
+        susun = [{'halaman': 1, 'bagian': 1, 'sumber': sumber()}]
+        judul_bagian = ['Peta tanah longsor']
+        n_isi = 1
+        s_rincian_longsor(Dk, 'L1'); n_l = 1
+        if sum(1 for r in UNGSI if r[2] == 'longsor') >= 3:   # 1-2 baris: sudah tercantum di kartu peta longsor (D-39 ruang kosong)
+            s_lampiran_ungsi(Dk, 'L2', 'longsor'); n_l += 1
+        nama = MINGGU['nama'].replace('Banjir dan Longsor', 'Tanah Longsor')
+        judul_dok, subjek = 'Laporan Situasi dan Kondisi Wilayah Terdampak Tanah Longsor', 'Paparan Situasi Tanah Longsor Mingguan'
     kerja = os.path.join(SINI, 'kerja')   # 16 Nov: hasil dibangun di sini lalu dipindah ke 'Revisi N' (PDF lama di folder bisa sedang dibuka)
     os.makedirs(kerja, exist_ok=True)
     isi = os.path.join(kerja, f'{nama}.pptx')
     Dk.I.simpan(isi)
     if '--isi' in sys.argv:
-        print('isi saja:', isi); return
-    sb091 = {2: 'GIS BNPB, 9 Nov 2026 13.34 WIB', 3: 'BPBD Aceh; BPBD Sumut; DSP Gudang UPT Padang; BPBD Sumbar, Okt 2026; Poslog Kualanamu, 25 Okt 2026',
-             4: 'Perkiraan dari jarak dan kecepatan rata-rata tiap moda; belum dikonfirmasi operator angkutan',
-             5: 'GIS BNPB, 9 Nov 2026 13.34 WIB; Laporan Dit. Koordalops BNPB, 5 s.d. 9 Nov 2026'}
-    # pemilik 16 Nov 2026: sampul tanpa blok "Dipresentasikan oleh" dan tanpa pil "Disampaikan kepada" (pengecualian resmi deck.py)
-    TANPA = 'pemilik 16 Nov 2026: sampul laporan mingguan tanpa penyaji dan tanpa pil sasaran'
-    PENYAJI = {'nama': 'Tim Ahli dan Tim Sus IT BNPB', 'jabatan': 'Badan Nasional Penanggulangan Bencana'}
-    susun = []   # pemilik 16 Nov 2026 ("gausah ada cover dan daftar isi"): deck langsung dibuka slide isi; tab bagian tetap
-    susun += [{'halaman': n, 'bagian': 1, 'sumber': sumber()} for n in (1, 2)]
-    judul_bagian = ['Peta banjir dan longsor']   # pemilik 16 Nov 2026 (sebelumnya "Situasi banjir dan longsor sepekan")
-    if gis:
-        susun += [{'halaman': 3, 'bagian': 2, 'sumber': sumber_gis()},
-                  {'halaman': 4, 'bagian': 3, 'sumber': f'Usulan dari {sumber_gis()}; Laporan Dit. Koordalops BNPB, '
-                                                        f'{MINGGU["awal"].day} s.d. {tgl_p(MINGGU["akhir"])} {MINGGU["akhir"].year}'}]
-        judul_bagian += ['Probabilitas banjir', 'Mitigasi']
-    elif MINGGU['impor_091']:
-        imp = salinan_091()
-        # pemilik 16 Nov 2026: bagian Kebutuhan dan jalur logistik (slide 3-4 deck 091126: LogPal, jalur) dihapus
-        susun += [{'jenis': 'impor', 'pptx': imp, 'halaman': n, 'bagian': b, 'sumber': sb091[n]} for n, b in ((2, 2), (5, 3))]
-        judul_bagian += ['Probabilitas banjir', 'Mitigasi']
-    # pemilik 16 Nov 2026: rincian banjir, longsor, dan pengungsian jadi lampiran L1-L3 di belakang, tanpa bagian (tidak masuk daftar isi dan tab)
-    susun += [{'halaman': n, 'sumber': sumber()} for n in range(n_isi + 1, n_isi + 1 + n_l1 + n_l2 + 1)]
-    foto = os.path.join(LB, 'mingguan/2026-11-02/banjir', 'bahan', 'sampul.jpg').replace(os.sep, '/')
-    kredit = 'Foto: Nasution007, CC BY-SA 4.0, Wikimedia Commons'
-    # pemilik 16 Nov 2026 ("cover belakang juga gausah"): tanpa slide penutup; deck berakhir di lampiran
+        print('isi saja:', isi); return None
+    # pemilik 16 Nov 2026: tanpa sampul, daftar isi, dan penutup; lampiran L* di belakang tanpa bagian (tidak masuk tab)
+    susun += [{'halaman': n, 'sumber': sumber()} for n in range(n_isi + 1, n_isi + 1 + n_l)]
     tetap = {}
     for no, b in enumerate(susun, 1):
         if b.get('bagian'):
             tetap.setdefault(b['bagian'], []).append(no)
-    # label tab = judul bagian di daftar isi (pemeriksa 12 Nov)
-    bagian = [{'judul': j, 'label': j} for j in judul_bagian]
-    for n, b in enumerate(bagian, 1):
-        b['halaman_tetap'] = tetap[n]
+    bagian = [{'judul': j, 'label': j, 'halaman_tetap': tetap[n]} for n, j in enumerate(judul_bagian, 1)]   # label tab = judul bagian
+    TANPA = 'pemilik 16 Nov 2026: laporan mingguan tanpa sampul, penyaji, dan pil sasaran'
+    foto = os.path.join(LB, 'mingguan/2026-11-02/banjir', 'bahan', 'sampul.jpg').replace(os.sep, '/')
     import lewat_deck
-    a, b_ = MINGGU['awal'], MINGGU['akhir']
-    keluar = lewat_deck.bingkai(
-        isi, 'kajian', 'Laporan Situasi dan Kondisi Wilayah Terdampak Banjir dan Tanah Longsor',
-        f'{HARI[a.weekday()]}, {a.day} {BLN[a.month]} s.d. {HARI[b_.weekday()]}, {tgl_l(b_)}', MINGGU['paparan'],
-        sampul=False, foto=([foto], kredit), penyaji=None, tanpa_kepada=TANPA, bagian=bagian, susun=susun,
-        spek_tambah={'panel_sisi': 'gelap', 'subjek_dokumen': 'Paparan Situasi Banjir dan Longsor Mingguan', 'skala_logo_bnpb': 1.1})
-    # pemilik 16 Nov 2026: tiap keluaran masuk folder 'Revisi N' baru di folder minggu (PPTX dan PDF, nama tanpa (revN))
+    return lewat_deck.bingkai(
+        isi, 'kajian', judul_dok, f'{HARI[a.weekday()]}, {a.day} {BLN[a.month]} s.d. {HARI[b_.weekday()]}, {tgl_l(b_)}', MINGGU['paparan'],
+        sampul=False, foto=([foto], 'Foto: Nasution007, CC BY-SA 4.0, Wikimedia Commons'), penyaji=None, tanpa_kepada=TANPA,
+        bagian=bagian, susun=susun, spek_tambah={'panel_sisi': 'gelap', 'subjek_dokumen': subjek, 'skala_logo_bnpb': 1.1})
+
+
+def main():
+    """Deck banjir dan (bila ada kejadian) deck tanah longsor, keduanya ke satu folder 'Revisi N' baru (pemilik 16 Nov 2026)."""
     import re, shutil
+    hasil = [bangun('banjir')] + ([bangun('longsor')] if LONGSOR else [])
+    if '--isi' in sys.argv:
+        return
     n = 1 + max([int(x[7:]) for x in os.listdir(SINI) if re.fullmatch(r'Revisi \d+', x)] + [0])
     ke = os.path.join(SINI, f'Revisi {n}'); os.makedirs(ke)
-    for ext in ('.pptx', '.pdf'):
-        if os.path.exists(keluar[:-5] + ext):
-            shutil.move(keluar[:-5] + ext, os.path.join(ke, nama + ext))
+    for keluar in hasil:
+        for ext in ('.pptx', '.pdf'):
+            if os.path.exists(keluar[:-5] + ext):
+                shutil.move(keluar[:-5] + ext, os.path.join(ke, os.path.basename(keluar)[:-5] + ext))
     print(ke)
 
 

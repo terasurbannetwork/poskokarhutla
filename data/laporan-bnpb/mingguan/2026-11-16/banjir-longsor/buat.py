@@ -2,7 +2,7 @@
 
 Mesin dan desain sama dengan minggu sebelumnya (../../2026-11-09/banjir-longsor/buat.py); berkas ini hanya mengisi data minggunya.
 Data = tanggal laphar Dit. Koordalops 9 s.d. 15 Nov 2026, dari teks WA laporan pagi 10 s.d. 16 Nov
-(harian/2026-11/2026-11-*/wa-koordalops.txt). Laporan 15 Nov (laphar 14 Nov) tidak tersedia di repo.
+(harian/2026-11/2026-11-*/wa-koordalops.txt). Laporan 15 Nov (laphar 14 Nov) baru masuk repo sesudah Revisi 1-5; dipakai mulai Revisi 6.
 Mulai, selesai, kabar terakhir = tanggal laphar. Kejadian yang hanya muncul sebagai pengkinian tanpa tanggal mulai: mulai = None ('–').
 Bagian Probabilitas banjir dan Mitigasi tidak ada: slide itu berasal dari deck 091126 (GIS BNPB 9 Nov) dan belum ada versi 16 Nov.
 
@@ -20,7 +20,7 @@ D = None
 
 M.MINGGU = {'awal': date(2026, 11, 9), 'akhir': date(2026, 11, 15), 'paparan': date(2026, 11, 16),
             'nama': 'Paparan Situasi Banjir dan Longsor Sepekan 161126', 'impor_091': False, 'catatan_longsor': '',
-            'catatan_sumber': 'laporan harian 14 Nov tidak tersedia',
+            'catatan_sumber': '',
             # pemilik 16 Nov 2026: bagian Probabilitas banjir dan Mitigasi ditambahkan; data prakiraan sistem banjir (centurisk97.id/banjir/data,
             # dibuat 15 Nov 2026 14.17 WIB, prakiraan 15-18 Nov) disalin ke bahan/gis supaya deck bisa dibangun ulang dengan angka yang sama
             'gis': os.path.join(SINI, 'bahan', 'gis')}
@@ -33,7 +33,7 @@ M.MITIGASI = {
     'Kota Subulussalam': 'Lanjutkan logistik ke desa tergenang di Sultan Daulat dan Rundeng',
     'Aceh Tenggara': 'Pantau 5 desa yang masih tergenang; bersihkan lokasi yang sudah surut',
     'Aceh Barat': 'Siapkan akses pengganti ke Sikundo; pantau Sungai Mas dan Pante Ceureumen',
-    'Langkat': 'Siapkan evakuasi Secanggang, Besitang; 10 kecamatan berstatus Siaga',
+    'Aceh Singkil': 'Tuntaskan pendataan; perbaiki 10 titik akses jalan dan jembatan kayu yang rusak',
     'Toba': 'Perbaiki tanggul sungai yang roboh sebelum hujan berikutnya',
     'Simalungun': 'Tuntaskan pendataan 15 rumah rusak; pantau lokasi terdampak',
     'Rokan Hilir': 'Siapkan evakuasi Bagan Sinembah Raya, Kubu Babussalam; 8 kecamatan Siaga',
@@ -56,9 +56,11 @@ M.BANJIR = [
     ('Aceh', 'Aceh Tenggara', '', None, None, 503, 1697, D, D, D, '15 Nov',
      'Air belum surut di 5 dari 17 desa terdampak, antara lain Pancar Iman dan Lawe Rutung'),
     ('Aceh', 'Aceh Barat', 'Sungai Mas, Pante Ceureumen', None, None, 147, 645, D, D, D, '15 Nov',
-     'Tinggi air naik turun dan hujan masih turun; jalan menuju Sikundo tidak bisa dilalui'),
-    ('Sumatera Utara', 'Langkat', '', '12 Nov', None, 835, 2755, 150, 336, '10-50 cm', '13 Nov',
-     'Banjir berangsur surut; pengungsi sudah kembali ke rumah'),
+     'Debit Krueng Meureubo mulai naik (14 Nov); hujan masih turun; jalan menuju Sikundo tidak bisa dilalui'),
+    ('Aceh', 'Aceh Singkil', '', '14 Nov', None, 27, 124, D, D, D, '14 Nov',
+     'Banjir berangsur surut; 10 titik akses jalan terdampak dan 1 jembatan kayu rusak'),
+    ('Sumatera Utara', 'Langkat', '', '12 Nov', '14 Nov', 155, 694, 150, 336, D, '14 Nov',
+     'Banjir sudah surut; angka direvisi menjadi 155 KK menurut posko (12 Nov: 835 KK); pengungsi sudah kembali ke rumah'),
     ('Sumatera Utara', 'Toba', '', '13 Nov', None, 2, D, D, D, D, '13 Nov',
      'Tanggul sungai roboh; 10 ha lahan pertanian gagal panen; masih ditangani pemerintah daerah'),
     ('Sumatera Utara', 'Simalungun', '', None, None, 15, D, D, D, D, '13 Nov',
@@ -73,7 +75,7 @@ M.BANJIR = [
 
 # (prov, kab, lokasi, mulai, md, hilang, kk, kerusakan, kondisi_teks, kabar, masih[, [(label, teks) tambahan untuk tabel ringkas]])
 M.LONGSOR = [
-    ('Aceh', 'Aceh Tengah', 'Kampung Arul Badak', None, 1, D, D, '2 ruas jalan nasional terdampak',
+    ('Aceh', 'Aceh Tengah', 'Kampung Arul Badak', '14 Nov', 1, D, D, '2 ruas jalan nasional terdampak',
      'Longsor disertai banjir; korban hilang ditemukan meninggal dunia 15 Nov; air belum surut dan jalan Kampung Arul Badak belum bisa dilalui', '15 Nov', True,
      [('Status', 'Siaga Darurat Provinsi 11 Nov 2026 s.d. 31 Jan 2027'), ('Pengungsi', 'tidak ada pengungsian')]),   # WA 16 Nov "Pengungsi: Nihil"; pemilik 16 Nov: tulis "tidak ada pengungsian"
     ('Kalimantan Selatan', 'Hulu Sungai Selatan', 'Lokasi belum disebut dalam laporan', '12 Nov', D, D, 13, '5 rumah rusak berat',
@@ -87,7 +89,7 @@ M.UNGSI = [
     ('Aceh', 'Gayo Lues', 'banjir', True, 8, 26, 'Rumah saudara; 9 Nov di Kampung Pertik', '11 Nov'),
     ('Aceh', 'Aceh Tamiang', 'banjir', True, 784, 2650, 'Kawasan yang lebih tinggi (hunian sementara BNPB)', '15 Nov'),
     ('Aceh', 'Kota Subulussalam', 'banjir', True, 70, 278, 'Lokasi belum disebut', '15 Nov'),
-    ('Sumatera Utara', 'Langkat', 'banjir', True, 150, 336, 'Lokasi belum disebut; sudah kembali ke rumah 13 Nov', '12 Nov'),
+    ('Sumatera Utara', 'Langkat', 'banjir', False, 150, 336, 'Lokasi belum disebut; sudah kembali ke rumah 13 Nov', '12 Nov'),
     ('Kalimantan Selatan', 'Hulu Sungai Selatan', 'longsor', True, D, 21, 'Rumah sanak saudara (mengungsi mandiri)', '12 Nov'),
 ]
 
