@@ -32,9 +32,9 @@ BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "
 P_MIN_HARIAN = 0.005  # baris prakiraan dibuang bila semua peluang harian di bawah ini
 TINGKAT_TSUNAMI = {1: "waspada", 2: "siaga", 3: "awas"}
 METRIK = [
-    {"k": "kejadian", "label": "Gempa M 4 atau lebih", "satuan": "kejadian", "utama": True, "agregat": "jumlah", "arah": "naik_buruk", "desimal": 0, "dari": "n4"},
-    {"k": "m5", "label": "Gempa M 5 atau lebih", "satuan": "kejadian", "agregat": "jumlah", "arah": "naik_buruk", "desimal": 0, "dari": "n5"},
-    {"k": "dirasakan", "label": "Gempa dirasakan", "satuan": "kejadian", "agregat": "jumlah", "arah": "naik_buruk", "desimal": 0, "dari": "dir"},
+    {"k": "kejadian", "label": "Gempa M 4 atau lebih (USGS)", "satuan": "kejadian", "utama": True, "agregat": "jumlah", "arah": "naik_buruk", "desimal": 0, "dari": "n4"},
+    {"k": "m5", "label": "Gempa M 5 atau lebih (USGS)", "satuan": "kejadian", "agregat": "jumlah", "arah": "naik_buruk", "desimal": 0, "dari": "n5"},
+    {"k": "dirasakan", "label": "Gempa dirasakan (BMKG)", "satuan": "kejadian", "agregat": "jumlah", "arah": "naik_buruk", "desimal": 0, "dari": "dir"},
     {"k": "mmaks", "label": "M terbesar", "satuan": "M", "agregat": "maks", "arah": "netral", "desimal": 1, "dari": "m"},
 ]
 

@@ -24,7 +24,7 @@ const Kejadian = {
         const r = e.target.closest("tr[data-kode]"); if (r && (e.type === "click" || e.key === "Enter" || e.key === " ")) { e.preventDefault(); this.buka(r.dataset.kode); } };
       el.addEventListener("click", buka); el.addEventListener("keydown", buka); }
     if (!el.children.length) el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat kejadian gempa…</div>`;
-    this.K = await Sus.daftar();
+    this.K = await Sus.daftar(); await NamaWil.siap();
     if (!this.K?.length) { el.innerHTML = `<div class="kosong">${this.K ? "Tidak ada kejadian gempa 30 hari terakhir." : "Data kejadian gempa belum tersedia."}</div>`; return; }
     this.gambarTabel(); },
 
