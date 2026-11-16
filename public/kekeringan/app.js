@@ -98,7 +98,7 @@ async function muatData() {
     lain("kekeringan_hth"), lain("kekeringan_prakiraan"), lain("kekeringan_padi"), lain("kekeringan_ujibalik"), lain("kekeringan_bukti"), lain("kekeringan_resmi"), lain("kekeringan_bnpb"), lain("kekeringan_riwayat")]);
   Object.assign(S, {meta, grid, wil, tren, hth, prak: prak?.lengkap === false ? null : prak, padi, uji, bukti, resmi, bnpb, riw}); S.geo.prov = prov;
   muatJSON("../data/iklim.json").then(d => { S.iklim = d; if ($("#p-insight").classList.contains("on")) Insight.render(); }).catch(() => {});
-  $("#upd").textContent = "Data " + jamWIB(meta.dibuat);
+  $("#upd").innerHTML = jamData(meta.dibuat);
   /* lencana ENSO di kepala, sama dengan karhutla (lapisan5.js lencanaIklim): El Niño = kemarau lebih kering */
   const e = meta.enso; if (e?.status && !$(".l5-iklim")) { const o = e.oni, kuat = o >= 2 ? " sangat kuat" : o >= 1.5 ? " kuat" : o >= 1 ? " sedang" : o >= .5 ? " lemah" : "", kering = e.status === "El Niño" || e.iod === "IOD positif";
     const el = document.createElement("span"); el.className = "l5-iklim" + (kering ? " kering" : ""); el.textContent = e.status === "El Niño" ? "El Niño" + kuat : e.status === "La Niña" ? "La Niña" : "ENSO netral";

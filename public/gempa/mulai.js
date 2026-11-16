@@ -10,7 +10,7 @@ async function muatData() {
   S.tersedia = !!d?.dibuat;
   S.gempa = (d?.gempa || []).map(g => ({...g, t: Date.parse(g.waktu)}));
   S.dibuat = d?.dibuat || null;
-  $("#upd").textContent = S.dibuat ? "Data " + jamWIB(S.dibuat) : "Belum ada data";
+  $("#upd").innerHTML = S.dibuat ? jamData(S.dibuat) : "Belum ada data";
 }
 
 /* ================================================================ cari: provinsi dan lokasi gempa */

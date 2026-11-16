@@ -107,23 +107,25 @@ async function muatTambahan() {
   S.dmp = dmp; if (uji?.jenis?.cuaca?.auc) S.uji = uji;
   await kej; isiTab();
 }
+/* hari ini menurut jam WIB peramban; di luar jangkauan data (data basi) jatuh ke hari_ini data. Murni, diuji tests/cuaca/sapa_hari.test.mjs */
+const hariIniIdx = (pr, t) => { const i = pr.hari.indexOf(tglWIB(t)); return i >= 0 ? i : Math.max(0, pr.hari.indexOf(pr.hari_ini)); };
 async function muatData() {
   const tambahan = muatTambahan();
   const [pr, meta, geo] = await Promise.all([muatJSON("../banjir/data/cuaca_prakiraan.json"), muatJSON("../banjir/data/cuaca_meta.json"), muatJSON("../geo/provinsi.json")]);
   Object.assign(S, {pr, meta, geo});
+  /* hari ini ditetapkan SEBELUM penantian (nowcast) mana pun: sapa.js (siap) dan pembaca S.h0 lain tak boleh melihat S.pr tanpa S.h0 yang benar */
+  S.h0 = S.hari = hariIniIdx(pr, SEKARANG());
   /* nowcast: /api/cuaca/nowcast (Worker menarik BMKG tiap 10 menit) lebih dulu, lalu peringatan.json harian; gelombang selalu dari peringatan.json.
      S.ncDibuat = waktu terbit RSS BMKG yang sebenarnya (atau waktu tarik bila terbit tak ada); null bila nowcast dari berkas harian. */
   const [file, api] = await Promise.all([muatJSON("../data/peringatan.json").catch(() => null), muatJSON("/api/cuaca/nowcast").catch(() => null)]);
   const apiSah = api && Array.isArray(api.nowcast) && (api.terbit || api.dibuat);
   S.ncDibuat = apiSah ? api.terbit || api.dibuat : null;
   S.per = apiSah ? {gelombang: [], ...file, dibuat: file ? file.dibuat : S.ncDibuat, nowcast: api.nowcast} : file; /* BMKG tak terbaca: bagian peringatan dibuang, prakiraan tetap */
-  /* hari ini menurut jam WIB peramban; di luar jangkauan data (data basi) jatuh ke hari_ini data */
-  const i = pr.hari.indexOf(tglWIB(SEKARANG())); S.h0 = S.hari = i >= 0 ? i : Math.max(0, pr.hari.indexOf(pr.hari_ini));
   S.sel = new Map(pr.sel.map(r => [r[0].toFixed(3) + "," + r[1].toFixed(3), r]));
   S.ensK = new Map(pr.ens.map(r => [Math.round(r[0]) + "," + Math.round(r[1]), r]));
   olahPeringatan();
   await tambahan;
-  $("#upd").textContent = "Data " + jamWIB(meta.dibuat);
+  $("#upd").innerHTML = jamData(meta.dibuat);
   if (BASI_TAMPIL && basi()) { const b = $("#basi"); b.hidden = false; b.textContent = `Prakiraan terakhir diperbarui ${Math.round((SEKARANG() - Date.parse(meta.dibuat)) / 36e5)} jam lalu (${jamWIB(meta.dibuat)}).`; }
 }
 /* peringatan yang masih berlaku pada jam sekarang. Nowcast: satu CAP satu baris. Gelombang: satu provinsi satu baris (nama perairan dihitung per kelas);

@@ -100,7 +100,7 @@ async function muatData() {
   const st = await muatJSON("../banjir/data/gunungapi_status.json");
   if (!st.gunung?.length) throw new Error("data gunung api kosong");
   S.st = st; muatJSON("../geo/provinsi.json").then(g => { S.geo.prov = g; }).catch(() => {});
-  $("#upd").textContent = "Data " + jamWIB(st.dibuat);
+  $("#upd").innerHTML = jamData(st.dibuat);
   /* hitungan dari daftar, bukan dari tulisan pada berkas: satu sumber kebenaran */
   S.n = {1: 0, 2: 0, 3: 0, 4: 0}; st.gunung.forEach(g => S.n[g.level]++);
 }
