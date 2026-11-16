@@ -229,8 +229,10 @@ function renderDaftar() {
 function ringkasProv(k, isi) {
   const per = S.tanggal ? "pada " + new Date(S.tanggal + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "long", timeZone: "Asia/Jakarta"}) : "dalam " + (S.rentang === 168 ? "7 hari" : S.rentang + " jam") + " terakhir";
   const kuat = isi.reduce((a, g) => !a || g.m > a.m ? g : a, null), rasa = isi.filter(g => g.mmi_maks > 0).length;
-  const kotak = (v, l) => `<div><b>${v}</b><span>${l}</span></div>`;
-  return `<p class="gk-per">${esc(namaProv(k))}, ${esc(per)}</p><div class="gk-ring">${kotak(fmt(isi.length), "gempa")}${kotak(kuat ? esc(mTulis(kuat.m)) : "–", "terkuat")}${kotak(fmt(rasa), "dirasakan warga")}</div>`; }
+  /* ikon: gelombang seismik, puncak, lingkaran getar (path sama dengan IKK gempa/rasa di bagikan.js) */
+  const IK = {gempa: "M2 12h4l2-6 4 12 3-9 2 3h5", kuat: "M3 17l6-6 4 4 8-8M15 7h6v6", rasa: "M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM6.3 6.3a8 8 0 0 0 0 11.4M17.7 6.3a8 8 0 0 1 0 11.4"};
+  const kotak = (ik, v, l, w) => `<div class="gk-k"><span class="gk-ik" aria-hidden="true"${w ? ` style="--w:${w}"` : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="${IK[ik]}"/></svg></span><b${w ? ` style="color:${w}"` : ""}>${v}</b><span class="gk-l">${l}</span></div>`;
+  return `<p class="gk-per">${esc(namaProv(k))}, ${esc(per)}</p><div class="gk-ring">${kotak("gempa", fmt(isi.length), "gempa")}${kotak("kuat", kuat ? esc(mTulis(kuat.m)) : "–", "terkuat", kuat ? warnaM(kuat.m) : "")}${kotak("rasa", fmt(rasa), "dirasakan")}</div>`; }
 /* riwayat provinsi di bawah daftar: M 5+ sejak 1900 (riwayat_prov.json) dan indeks risiko (risiko.json), diisi bila datanya sudah dimuat */
 function riwayatSingkat(k) {
   const r = riwayatProv().find(x => x.k === k), id = "gkRisiko" + k;
@@ -282,7 +284,10 @@ function renderLegenda() {
   const T = k => Peta.lihat(k);
   const dia = {3: 8, 5: 14, 7: 26}, skala = (st, f) => `<div class="legscale">${st.map(v => `<i style="background:${f(v)}"></i>`).join("")}</div>`;
   const sumber = ["gempa", "riwayat", "katalog", "kekerapan", "bahaya", "lempeng", "sesar", "sensor", "dart", "gnss", "evakuasi"].filter(T).map(k => { const [n, s, p] = SUMBER[k], tip = typeof p === "function" ? p() : p;
-    return `<span${tip ? ` data-tip="${esc("<b>" + n + "</b><br>" + tip)}"` : ""}>${n}: ${esc(s)}</span>`; }).join("");
+    /* tooltip atribusi = teks, bukan angka: kepala (nama lapisan, sumber singkat) lalu paragraf; dibungkus <div> supaya rapikanTip
+       (inti/tip.js) tidak membaca "label: isi" sebagai angka besar. Label pendek sebelum titik dua ditebalkan tipis. */
+    const atr = tip ? esc(String(tip).replace(new RegExp("^" + n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ":\\s*", "i"), "")).replace(/^([^:]{2,32}):\s+/, "<b>$1:</b> ") : "";   /* "Batas lempeng: ..." tidak mengulang judul */
+    return `<span${tip ? ` data-tip="${esc(`<div class="tp2-h"><b>${esc(n)}</b><small>${esc(s)}</small></div><div class="tp2-atr">${atr}</div>`)}"` : ""}>${n}: ${esc(s)}</span>`; }).join("");
   $("#legenda").innerHTML = `<details ${legBuka ? "open" : ""} id="legDet"><summary class="lbl">Legenda <span>▾</span></summary><div class="lg-isi">
     ${T("gempa") || T("riwayat") || T("katalog") ? `<div class="lbl">Kekuatan</div><div class="leg" style="margin:4px 0 8px">${[3, 5, 7].map(m => `<span style="display:flex;align-items:center"><span class="bulat-slot"><i class="sw dot bulat" style="width:${dia[m]}px;height:${dia[m]}px;margin:0;background:#9aa8b8"></i></span>${mTulis(m)}</span>`).join("")}</div>
       <div class="lbl">Kedalaman</div><div class="leg" style="margin:4px 0 8px">${KELAS_DALAM.map(([n, w, r]) => `<span><i class="sw dot" style="background:${w}"></i>${n}, ${r}</span>`).join("")}</div>` : ""}

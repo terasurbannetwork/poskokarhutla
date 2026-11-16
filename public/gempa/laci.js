@@ -4,7 +4,10 @@
    Status tsunami resmi BMKG tampil apa adanya dan terpisah dari yang lain: kode 0 "Tidak berpotensi tsunami", 1 sampai 3 menurut kata BMKG,
    null = "BMKG tidak menyebut tsunami", TIDAK PERNAH "aman". Bagian yang datanya kosong dibuang (A18). Peta guncangan BMKG hanya tautan keluar. */
 const Laci = {
-  kot: (l, v, s) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`,
+  /* kotak angka laci: kepala terang berikon (latar gelap hanya kepala halaman, AGENTS.md 3.5); ikon dari kunci IK_KOT */
+  IK_KOT: {kuat: "M2 12h4l2-6 4 12 3-9 2 3h5", dalam: "M12 3v14m0 0-5-5m5 5 5-5M5 21h14",
+    tsunami: "M2 9c2.5-3.5 5-3.5 7.5 0s5 3.5 7.5 0 3-2 5-2M2 16c2.5-3.5 5-3.5 7.5 0s5 3.5 7.5 0 3-2 5-2"},
+  kot(l, v, s, ik) { const p = this.IK_KOT[ik]; return `<div class="kpi">${`<span class="lbl">${p ? `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${p}"/></svg>` : ""}${l}</span>`}<b>${v}</b><small>${s}</small></div>`; },
   /* "0,64° LU, 121,75° BT" (ID) atau "0.64° N, 121.75° E" (EN) */
   koord(g) { const en = window.BAHASA === "en", f = v => Math.abs(v).toFixed(2).replace(".", en ? "." : ",");
     return `${f(g.lat)}° ${en ? (g.lat < 0 ? "S" : "N") : (g.lat < 0 ? "LS" : "LU")}, ${f(g.lon)}° ${en ? "E" : "BT"}`; },
@@ -13,9 +16,9 @@ const Laci = {
     const el = $("#laci"); if (!el) return;
     const kd = kelasDalam(g.dalam), ts = g.tsunami, bmkg = g.sumber !== "usgs";
     const stT = !ts ? null : ts.kode == null ? ["BMKG tidak menyebut tsunami", "#5b6575"] : ts.kode === 0 ? ["Tidak berpotensi tsunami", "#5b6575"] : TSUNAMI[ts.kode];
-    const kot = this.kot, koord = g => this.koord(g), rom = v => ROMAWI[Math.min(12, Math.max(1, Math.round(v)))];
-    const isi = `<div class="grid g2">${kot("Kekuatan", `<span style="color:${warnaM(g.m)}">${mTulis(g.m)}</span>`, g.mtipe ? esc(g.mtipe) : "magnitudo")}${kot("Kedalaman", g.dalam == null ? "–" : fmt(g.dalam) + " km", kd < 0 ? "tidak diketahui" : "kelas " + KELAS_DALAM[kd][0].toLowerCase())}</div>
-      ${stT && bmkg ? kot("Status tsunami, BMKG", `<span style="color:${stT[1]};font-size:15px">${stT[0]}</span>`, "status resmi BMKG") : ""}
+    const kot = (...a) => this.kot(...a), koord = g => this.koord(g), rom = v => ROMAWI[Math.min(12, Math.max(1, Math.round(v)))];
+    const isi = `<div class="grid g2">${kot("Kekuatan", `<span style="color:${warnaM(g.m)}">${mTulis(g.m)}</span>`, g.mtipe ? esc(g.mtipe) : "magnitudo", "kuat")}${kot("Kedalaman", g.dalam == null ? "–" : fmt(g.dalam) + " km", kd < 0 ? "tidak diketahui" : "kelas " + KELAS_DALAM[kd][0].toLowerCase(), "dalam")}</div>
+      ${stT && bmkg ? kot("Status tsunami, BMKG", `<span style="color:${stT[1]};font-size:15px">${stT[0]}</span>`, "status resmi BMKG", "tsunami") : ""}
       ${g.dirasakan ? `<p class="fnd" translate="no">${esc(g.dirasakan)}</p>` : ""}
       <table class="tb2"><tbody><tr><td>Pusat gempa</td><td class="n" translate="no">${koord(g)}</td></tr>${g.mmi_maks ? `<tr><td>Dirasakan</td><td class="n" translate="no">MMI ${rom(g.mmi_maks)}</td></tr>` : ""}
         ${g.prov ? `<tr><td>Provinsi</td><td class="n">${esc(namaProv(g.prov))}</td></tr>` : ""}${g.kab ? `<tr><td>Kabupaten/kota</td><td class="n" translate="no">${esc(g.kab)}</td></tr>` : ""}</tbody></table>

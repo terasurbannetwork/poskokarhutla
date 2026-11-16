@@ -41,10 +41,12 @@
 .lc-kls i{width:8px;height:8px;border-radius:50%;background:var(--w)}
 /* daftar gempa satu provinsi: ringkasan, lokasi dua baris dengan rincian, riwayat provinsi */
 .gk-per{margin:0 2px 6px;font-size:12px;font-weight:700;color:var(--ink)}
-.gk-ring{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 8px}
-.gk-ring div{border:1px solid var(--line);border-radius:8px;padding:7px 9px;display:grid;gap:1px}
-.gk-ring b{font-family:var(--display);font-size:16px;color:var(--ink)}
-.gk-ring span{font-size:11px;color:var(--ink2)}
+.gk-ring{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 10px}
+.gk-k{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto;column-gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--card)}
+.gk-ik{grid-row:1/3;display:grid;place-items:center;width:28px;height:28px;border-radius:8px;color:var(--w,var(--brand2));background:color-mix(in oklch,var(--w,var(--brand2)) 14%,transparent)}
+.gk-ik svg{width:16px;height:16px}
+.gk-k b{font-family:var(--display);font-size:16px;line-height:1.15;color:var(--ink);white-space:nowrap}
+.gk-l{font-size:11px;line-height:1.2;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tb.tb-g{align-items:start;padding-top:8px;padding-bottom:8px}
 .tb .kom.gk{flex-direction:column;align-items:flex-start;gap:2px}
 .gk-t{white-space:normal;line-height:1.3;font-weight:600}
@@ -62,3 +64,15 @@
 .lc-citra figure{margin:0;display:grid;gap:4px}
 .lc-citra img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:var(--bg2,#0001)}
 .lc-citra figcaption{font-size:11.5px}
+/* tooltip sumber di legenda: atribusi sebagai paragraf terbaca, bukan angka besar (16 Nov 2026) */
+#tip .tp2-atr{margin-top:6px;max-width:300px;font-size:12px;line-height:1.5;color:var(--ink2);overflow-wrap:anywhere}
+#tip .tp2-atr b{font-weight:600;color:var(--ink)}
+/* laci gempa: kotak angka berkepala terang berikon (16 Nov 2026) */
+#laci .kpi{box-shadow:none;border-radius:12px}
+#laci .kpi .lbl{display:flex;align-items:center;justify-content:center;gap:6px;background:color-mix(in oklch,var(--brand) 8%,var(--card));color:var(--ink);font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--line)}
+#laci .kpi .lbl svg{flex:none;color:var(--brand2)}
+#laci .kpi b{padding-top:8px}
+/* kartu hover titik gempa di peta: isian dalam kisi dua kolom, tidak berdesakan satu baris */
+#tip .tp-gr.tp-satu{display:grid;grid-template-columns:repeat(2,minmax(0,auto));justify-content:center;gap:8px 18px}
+#tip .tp-st small{white-space:nowrap}
+#tip .tp-nm b{white-space:normal;text-align:center;max-width:260px}
