@@ -41,7 +41,7 @@ function html() {
   const tb = (iso, n) => `<button type="button" data-pt="${iso || ""}" aria-pressed="${!!iso && T === iso}"${iso ? "" : " disabled"}>${n}</button>`;
   const lain = b.lain.length, sel = lain ? T && b.lain.some(x => x.iso === T) : false;
   const s1 = `<div class="seg penuh" role="group" aria-label="Pilih tanggal data" data-pt-baris>${tb(b.hariIni, "Hari ini")}${tb(b.kemarin, "Kemarin")}`
-    + `<select data-pt-lain aria-label="Tanggal lain" aria-pressed="${sel}"${lain ? "" : " disabled"} style="flex:1;min-width:0;border:0;border-radius:999px;font:inherit;font-size:12px;font-weight:600;cursor:pointer;padding:5px 2px;text-align:center;background:${sel ? "var(--brand)" : "none"};color:${sel ? "var(--on-brand)" : "var(--ink2)"}">`
+    + `<select data-pt-lain data-cantik="native" aria-label="Tanggal lain" aria-pressed="${sel}"${lain ? "" : " disabled"} style="flex:1;min-width:0;border:0;border-radius:999px;font:inherit;font-size:12px;font-weight:600;cursor:pointer;padding:5px 2px;text-align:center;background:${sel ? "var(--brand)" : "none"};color:${sel ? "var(--on-brand)" : "var(--ink2)"}">`
     + `<option value="">Tanggal lain</option>${b.lain.map(x => `<option value="${x.iso}"${T === x.iso ? " selected" : ""}>${esc(x.label)}</option>`).join("")}</select></div>`;
   const s2 = A.riwayat ? `<div class="seg penuh" role="group" aria-label="Real Time atau Riwayat" data-pt-mode><button type="button" data-ptm="0" aria-pressed="${!R}">Real Time</button><button type="button" data-ptm="1" aria-pressed="${R}">Riwayat</button></div>` : "";
   return `<div style="display:flex;flex-direction:column;gap:5px;width:100%">${s1}${s2}</div>`;
