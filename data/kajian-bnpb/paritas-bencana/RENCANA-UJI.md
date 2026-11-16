@@ -66,6 +66,7 @@ Fitur PRD bagian 4. Satu fitur dapat dikerjakan beberapa tiket; fitur selesai bi
 | F-39 | Tiap ukuran tabel provinsi menjumlah dari data halaman; gempa tanpa tingkat Siaga | PB-76, PB-79a-c | `tests/layar/pb_ukuran_provinsi.test.mjs` |
 | F-40 | Tab Operasi tidak ada di DOM yang terlihat untuk tamu; muncul untuk sesi yang boleh membaca rute operasi; tangga tindakan tampil saat tingkat peringatan berubah untuk bencana yang `ews.tangga`-nya menyala (gunung api di PB-79b, gempa sesudah PB-44) | PB-77, PB-79a-c | `tests/layar/pb_tab_operasi.test.mjs` |
 | F-41 | Tiap lapisan atau kartu lanjutan punya sumber data bertanggal | PB-81 | per tiket anak |
+| F-42 | Rentang tanpa data tidak bisa dipilih; jumlah PDF rentang sama dengan penjumlahan laporan harian per hari menurut `agregat` metrik (jumlah, maks, rerata); tabel unduhan punya satu baris per hari per wilayah sama dengan layar; hari berjalan ditandai "Data masih bertambah" | PB-83 | `tests/layar/pb_laporan_rentang.test.mjs` |
 
 ## 3. Kriteria terima per tiket
 

@@ -501,6 +501,7 @@ Tidak ada rute Worker, tabel D1, migrasi, atau berkas `public/data/` baru di W8 
 | F-38 cari luas | `public/inti/cari.js` (baru) dengan daftar lapisan dari registri | adaptor memilih lapisan; lapisan konsesi dan Daops tetap di `public/cari.js` karhutla | `public/cari.js` |
 | F-39 tabel provinsi multi-ukuran | `public/inti/tabel.js` (sudah ada) ditambah segmen ukuran | adaptor menyerahkan ukuran dan nilainya | panel karhutla `public/index.html:1894` |
 | F-41 lanjutan | tidak ada mesin baru: lapisan per kab/kota memakai `public/peta_kab.js` yang dipindah ke inti bila dipakai; citra memakai `public/inti/citra_ubin.js`; sinyal memakai mesin Status Lifeline | per tiket anak PB-81 | `public/peta_kab.js`, `public/banding.js`, `public/timelapse.js`, `public/sinyal.js` |
+| F-42 laporan rentang | `public/inti/laporan.js` (ubah: pemilih rentang di kepala, penyusun ringkasan rentang murni tanpa DOM), `public/inti/kalender.js` (mode rentang bila belum ada), `public/inti/unduh_tabel.js` (dipakai ulang) | tidak ada; semua bencana yang memuat `laporan.json` v1 ikut | tombol Cetak PDF satu hari yang sekarang (`#lpCetak`) |
 | F-40 tab Operasi | `public/inti/renlap.js` dan `public/inti/pb_titik.js` (sudah ada, PB-17 dan PB-18) | `public/<id>/tab.js` menambah tab `operasi` yang tersembunyi untuk tamu | `public/operasi_peta.js:243-248` |
 
 ### 12.2 Registri

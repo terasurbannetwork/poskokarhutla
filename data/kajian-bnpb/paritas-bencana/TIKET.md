@@ -140,6 +140,7 @@ Dasar: audit layar 16 Nov 2026 terhadap `/gempa`, `/kekeringan`, `/gunungapi`, `
 | PB-80 | Karhutla pindah ke mesin inti | brief dari `public/ringkasan.js`, cari dari `public/cari.js`, pemilih tanggal dan segmen ukuran panel dari `public/index.html` ke `public/inti/brief.js`, `cari.js`, `pilih_tanggal.js`, `tabel.js` dengan adaptor karhutla; lapisan konsesi dan Daops tetap adaptor karhutla; mengakhiri pengecualian masa pilot di D15 | `layar-peta` + `inti-layar` → `inp-reviewer`, verifier bersih | PB-78 | - | `node --test tests/layar/pb_brief.test.mjs tests/layar/pb_cari.test.mjs tests/layar/pb_pilih_tanggal.test.mjs tests/layar/pb_ukuran_provinsi.test.mjs`; tinjau `/` |
 | PB-82 | Tinjau ulang kartu ganda gempa | pemilik memutuskan letak enam kartu fasilitas gempa yang tampil di Insight dan Dampak (K14); bila dipindah, `public/gempa/insight.js` dan `dampak.js` | pemilik, lalu `gempa` → `selera-angka` | PB-79a, PB-79b, PB-79c | - | tinjau `/gempa/insight` dan `/gempa/dampak` |
 | PB-81 | F-41 lanjutan | satu tiket anak per butir (PB-81.1 dan seterusnya): lapisan peta per kab/kota; banding citra dan timelapse lewat jalur citra yang sudah ada (`public/inti/citra_ubin.js`, citra gunung api); sinyal komunikasi lewat mesin dan aturan Status Lifeline (AGENTS.md 2.19: IODA per provinsi tidak pernah jadi warna kab), bukan lapisan baru; tiap anak dimulai dengan memastikan datanya ada (D16) | pemilik berkas per butir | PB-79a-c | - | per tiket anak |
+| PB-83 | F-42 unduh laporan rentang | `public/inti/laporan.js`, `public/inti/kalender.js`, `public/inti/laporan.css` bila perlu, `public/i18n/en.json`, `tests/layar/pb_laporan_rentang.test.mjs` (baru); diuji di `/gempa/laporan`, lalu bencana lain yang memakai mesin yang sama; karhutla tidak disentuh. Bawaan sementara Q44: PDF rentang berisi satu ringkasan periode, bukan halaman per hari | `inti-layar` → `selera-angka` + `inp-reviewer` | PB-71 (unduh tabel), PB-73 (kalender) | Q44 (bawaan sementara, tidak menahan) | `node --test tests/layar/pb_laporan_rentang.test.mjs`; tinjau `/gempa/laporan` |
 
 ## Ringkasan
 
@@ -148,8 +149,8 @@ Dasar: audit layar 16 Nov 2026 terhadap `/gempa`, `/kekeringan`, `/gunungapi`, `
 | F1 | PB-01 sampai PB-32 | 32 |
 | F2 | PB-33 sampai PB-48 (PB-34, PB-36, PB-38, PB-46 dipecah menjadi 2 sampai 3 tiket bersuffiks huruf) | 23 |
 | F3 | PB-49 sampai PB-67 (PB-54 dipecah a dan b; PB-61 dan PB-65 berisi tiket anak) | 20 |
-| F4 | PB-68.1 sampai PB-68.10, PB-69 sampai PB-82 (PB-79 dipecah a, b, c; PB-81 berisi tiket anak) | 26 |
-| Total | | 101 |
+| F4 | PB-68.1 sampai PB-68.10, PB-69 sampai PB-83 (PB-79 dipecah a, b, c; PB-81 berisi tiket anak) | 27 |
+| Total | | 102 |
 
 Tiket pertama yang siap dikerjakan: PB-01, PB-02, dan PB-03 (ketiganya tanpa kebergantungan dan boleh bersamaan karena berkasnya tidak beririsan). PB-66 bisa disisipkan kapan saja sesudah PB-06.
 
