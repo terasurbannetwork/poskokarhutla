@@ -4,7 +4,7 @@
    tautan bersih /gunungapi/k/V0001. Tabel standar: kepala gelap, urut, paginasi (A10). Tanpa berkasnya tab menampilkan "belum tersedia", bukan daftar kosong. */
 const Kejadian = {
   st: {urut: "lv", turun: true, hal: 0}, PER: 10, K: undefined, _p: null,
-  KOL: [["kode", "Kode"], ["nama", "Gunung"], ["prov", "Provinsi"], ["lv", "Level", 0], ["mulai", "Mulai"], ["aktif", "Status"]],
+  KOL: [["kode", "Kode"], ["nama", "Gunung"], ["prov", "Provinsi"], ["lv", "Level", 0], ["mulai", "Dipantau sejak"], ["aktif", "Status"]],
   /* kejadian + gunungnya (dicocokkan lewat nama "G. Semeru" -> "Semeru"); yang tak cocok dibuang */
   muat() { return this._p ||= muatJSON("../banjir/data/kejadian_gunungapi_awal.json").then(d => { const G = S.st.gunung;
       return this.K = (d.kejadian || []).map(k => ({...k, g: G.find(g => g.nama === k.nama.replace(/^G\.\s*/, ""))})).filter(k => k.g); }).catch(() => { this._p = null; return this.K = null; }); },
