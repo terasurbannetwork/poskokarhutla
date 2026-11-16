@@ -1,0 +1,18 @@
+/* inti/timelapse.css (PB-81.1): dialog timelapse bersama untuk semua bencana selain karhutla (karhutla memakai public/timelapse.css sampai PB-80). Hanya var(--...). */
+#ctTl{position:fixed;inset:0;z-index:70;display:grid;place-items:center;background:color-mix(in oklab,var(--ink) 45%,transparent);padding:12px}
+#ctTl[hidden]{display:none}
+#ctTl .ctt-k{width:min(520px,100%);max-height:calc(100vh - 24px);overflow:auto;display:flex;flex-direction:column;gap:10px;font-size:var(--fs-2)}
+#ctTl .ctt-h{display:flex;justify-content:space-between;align-items:center}
+#ctTl .ctt-h b{font-size:var(--fs-4)}
+#ctTl .ctt-h button{border:0;background:var(--surface);color:var(--ink);width:36px;height:36px;border-radius:50%;display:grid;place-items:center;cursor:pointer}
+#ctTl .ctt-a{color:var(--ink2);font-size:var(--fs-1)}
+#ctTl .ctt-bar{height:6px;border-radius:3px;background:var(--surface);overflow:hidden}
+#ctTl .ctt-bar i{display:block;height:100%;width:0;background:var(--brand2);transition:width var(--dur-2)}
+#ctTl .ctt-s{min-height:16px;color:var(--ink2)}
+#ctTl .ctt-i{width:100%;border-radius:var(--r-sm);background:var(--surface)}
+#ctTl .ctt-b{display:flex;gap:8px}
+#ctTl .ctt-b .btn{flex:1;text-align:center;text-decoration:none;min-height:40px;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--surface);color:var(--ink)}
+#ctTl .ctt-b .btn.pri{background:var(--ink);color:var(--paper)}
+#ctTl .ctt-b .btn:disabled{opacity:.5;cursor:default}
+#ctTl .ctt-atr{color:var(--ink2);font-size:var(--fs-1)}
+#ctTl button:focus-visible,#ctTl a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}

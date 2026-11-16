@@ -217,6 +217,9 @@ export default {
           "pilih_tanggal": false,
           "profil_kab": false,
           "tab_operasi": false,
+          "citra": false,
+          "sinyal": false,
+          "peta_kab": false,
           "cari": [],
           "ukuran_provinsi": []
         }
@@ -421,6 +424,9 @@ export default {
           "pilih_tanggal": false,
           "profil_kab": false,
           "tab_operasi": false,
+          "citra": false,
+          "sinyal": false,
+          "peta_kab": false,
           "cari": [],
           "ukuran_provinsi": []
         }
@@ -596,6 +602,9 @@ export default {
           "pilih_tanggal": false,
           "profil_kab": false,
           "tab_operasi": false,
+          "citra": false,
+          "sinyal": false,
+          "peta_kab": false,
           "cari": [],
           "ukuran_provinsi": []
         }
@@ -771,6 +780,9 @@ export default {
           "pilih_tanggal": true,
           "profil_kab": true,
           "tab_operasi": false,
+          "citra": true,
+          "sinyal": true,
+          "peta_kab": false,
           "cari": [
             "kab",
             "desa",
@@ -956,6 +968,9 @@ export default {
           "pilih_tanggal": true,
           "profil_kab": true,
           "tab_operasi": true,
+          "citra": false,
+          "sinyal": true,
+          "peta_kab": false,
           "cari": [
             "desa",
             "kab",
@@ -1129,6 +1144,9 @@ export default {
           "pilih_tanggal": false,
           "profil_kab": false,
           "tab_operasi": false,
+          "citra": false,
+          "sinyal": false,
+          "peta_kab": false,
           "cari": [],
           "ukuran_provinsi": []
         }
@@ -1291,6 +1309,9 @@ export default {
           "pilih_tanggal": true,
           "profil_kab": true,
           "tab_operasi": true,
+          "citra": true,
+          "sinyal": true,
+          "peta_kab": false,
           "cari": [
             "kab",
             "desa",
@@ -1467,6 +1488,9 @@ export default {
           "pilih_tanggal": true,
           "profil_kab": true,
           "tab_operasi": false,
+          "citra": false,
+          "sinyal": false,
+          "peta_kab": false,
           "cari": [
             "desa",
             "kab",
@@ -1615,6 +1639,9 @@ export default {
           "pilih_tanggal": false,
           "profil_kab": false,
           "tab_operasi": false,
+          "citra": false,
+          "sinyal": false,
+          "peta_kab": false,
           "cari": [],
           "ukuran_provinsi": []
         }

@@ -41,7 +41,7 @@ JENIS_LOGBOOK_KE_BENCANA = {
 }
 KEMAMPUAN_BOOL = ("operasi", "ekonomi", "pencegahan", "prioritas")
 # W8 layar publik setara karhutla (paritas-bencana DESAIN-TEKNIS 12.2, D15): nyala per fitur, daftar = pilihan lapisan/ukuran
-LAYAR_BOOL = ("unduh_tabel", "brief", "pilih_tanggal", "profil_kab", "tab_operasi")
+LAYAR_BOOL = ("unduh_tabel", "brief", "pilih_tanggal", "profil_kab", "tab_operasi", "citra", "sinyal", "peta_kab")   # citra, sinyal, peta_kab: PB-81
 LAYAR_LIST = ("cari", "ukuran_provinsi")
 
 

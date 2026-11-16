@@ -54,6 +54,8 @@ const Dampak = (() => {
         nanti(() => { const k = D && el.querySelector("#dk-pend .dk-kartu"); if (k) k.innerHTML = pendKartu(); }); }); }
     if (!D) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat dampak gempa…</div>`;
       try { D = await muatJSON("../banjir/data/dampak_gempa.json"); } catch (e) { el.innerHTML = `<div class="kosong">Data dampak belum tersedia.</div>`; return; } }
-    el.innerHTML = gambar(); tambahan(el); }
+    el.innerHTML = gambar(); tambahan(el);
+    /* PB-81.2: kartu sinyal komunikasi, hanya bila kemampuan.layar.sinyal menyala; provinsi awal = bahaya tinggi terbanyak */
+    if (typeof SinyalInti !== "undefined") SinyalInti.pasang(el, {id: "gempa", prov: () => Object.entries(D.prov || {}).sort((a, b) => b[1].tinggi - a[1].tinggi)[0]?.[0]}); }
   return {render};
 })();

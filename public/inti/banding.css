@@ -1,0 +1,39 @@
+/* inti/banding.css (PB-81.1): pembelah peta bersama untuk semua bencana selain karhutla (karhutla memakai public/banding.css sampai PB-80).
+   Hanya var(--...) dari tema.css. Wadah menumpuk di atas #peta; panel, perkakas, dan legenda disembunyikan selama banding. */
+.ct-baris{display:flex;gap:8px;justify-content:flex-end}
+.ct-tbl{border:0;width:34px;height:34px;border-radius:var(--r-sm);display:grid;place-items:center;cursor:pointer;flex:none;background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.ct-tbl:hover{background:var(--surface)}
+.ct-tbl[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.ct-tbl:focus-visible,#ctBd button:focus-visible,#ctBd .ct-gar:focus-visible span{outline:2px solid var(--accent);outline-offset:2px}
+#ctBd{position:absolute;inset:0;z-index:6;--p:50%;overflow:hidden;pointer-events:none}
+#ctBd>*{pointer-events:auto}
+#ctBd[hidden]{display:none}
+#ctBd .ct-s{position:absolute;inset:0}
+#ctBd .ct-s[hidden]{display:none}
+#ctBd .ct-m{position:absolute;inset:0}
+#ctBd .ct-a{clip-path:inset(0 calc(100% - var(--p)) 0 0)}
+#ctBd .ct-b{clip-path:inset(0 0 0 var(--p))}
+#ctBd .ct-gar{position:absolute;top:0;bottom:0;left:var(--p);width:44px;margin-left:-22px;z-index:3;cursor:ew-resize;touch-action:none;outline:0}
+#ctBd .ct-gar i{position:absolute;left:50%;top:0;bottom:0;width:3px;margin-left:-1.5px;background:var(--card);box-shadow:var(--shadow)}
+#ctBd .ct-gar span{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:var(--card);color:var(--ink);display:grid;place-items:center;box-shadow:var(--shadow-lg)}
+#ctBd.geser .ct-gar span{box-shadow:0 0 0 3px var(--accent),var(--shadow-lg)}
+#ctBd .ct-chip{position:absolute;top:12px;z-index:4;max-width:calc(50% - 30px)}
+#ctBd .ct-ka{left:12px}#ctBd .ct-ki{right:12px}
+#ctBd .ct-chip>button{display:flex;align-items:baseline;gap:7px;max-width:100%;border:0;border-radius:var(--r-sm);padding:7px 12px;background:var(--card);color:var(--ink);box-shadow:var(--shadow);cursor:pointer;font:inherit;text-align:left}
+#ctBd .ct-chip>button b{font-size:var(--fs-6);line-height:1;font-weight:800}
+#ctBd .ct-chip>button span{font-size:var(--fs-1);color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+#ctBd .ct-chip>button::after{content:"\25BE";font-size:var(--fs-1);color:var(--ink2)}
+#ctBd .ct-po{position:absolute;top:calc(100% + 6px);width:260px;max-width:calc(100vw - 24px);display:flex;flex-direction:column;gap:3px;padding:8px;border-radius:var(--r-sm);background:var(--card);color:var(--ink);box-shadow:var(--shadow-lg);z-index:5}
+#ctBd .ct-ka .ct-po{left:0}#ctBd .ct-ki .ct-po{right:0}
+#ctBd .ct-po[hidden]{display:none}
+#ctBd .ct-po button{border:0;background:none;color:inherit;font:inherit;font-size:var(--fs-2);text-align:left;padding:9px 10px;border-radius:var(--r-xs);cursor:pointer;min-height:36px}
+#ctBd .ct-po button:hover{background:var(--surface)}
+#ctBd .ct-po button[aria-pressed=true]{background:var(--ink);color:var(--paper);font-weight:700}
+#ctBd .ct-in{display:flex;align-items:center;gap:8px;font-size:var(--fs-2);font-weight:700;padding:6px 10px 2px}
+#ctBd .ct-in input{flex:1;min-width:0;font:inherit;font-weight:400;color:inherit;background:none;border:1px solid var(--line);border-radius:var(--r-xs);padding:5px 7px}
+#ctBd .ct-bar{position:absolute;top:64px;left:12px;right:12px;z-index:4;display:flex;gap:6px;justify-content:center;overflow-x:auto;scrollbar-width:none;pointer-events:none}
+#ctBd .ct-bar button{pointer-events:auto;flex:none;display:flex;align-items:center;gap:5px;border:0;border-radius:var(--r-pill);padding:8px 12px;min-height:36px;background:var(--card);color:var(--ink);box-shadow:var(--shadow);font:inherit;font-size:var(--fs-2);font-weight:700;cursor:pointer;white-space:nowrap}
+#ctBd .ct-bar .ct-x{background:var(--ink);color:var(--paper)}
+#ctBd .ct-atr{position:absolute;left:8px;bottom:6px;z-index:2;font-size:var(--fs-1);color:var(--ink);background:var(--card);padding:1px 6px;border-radius:var(--r-xs)}
+.page.ct-banding .panel,.page.ct-banding .tools,.page.ct-banding .dok,.page.ct-banding .laci,.page.ct-banding .waktu,.page.ct-banding .pil-sik{display:none!important}
+@media (max-width:640px){#ctBd .ct-chip>button span{display:none}#ctBd .ct-bar{justify-content:flex-start;pointer-events:auto}}

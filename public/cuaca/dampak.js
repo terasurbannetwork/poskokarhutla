@@ -107,7 +107,9 @@ const Dampak = (() => {
       try { D = await muatJSON("../banjir/data/cuaca_dampak.json"); } catch (e) { el.innerHTML = `<div class="kosong">Data dampak belum tersedia.</div>`; return; } }
     const isi = gambar(); if (!isi) { el.innerHTML = `<div class="kosong">Data dampak belum tersedia.</div>`; return; }
     const ada = Object.keys(BAG).filter(k => isi.includes(`id="dk-${k}"`));
-    el.innerHTML = `<div class="dk-lay"><nav class="dk-nav" aria-label="Bagian dampak">${ada.map(k => `<button data-ke="${k}" style="--w:${BAG[k][1]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[k]}"/></svg>${BAG[k][0]}</button>`).join("")}</nav><div id="dkIsi">${isi}</div></div>`; }
+    el.innerHTML = `<div class="dk-lay"><nav class="dk-nav" aria-label="Bagian dampak">${ada.map(k => `<button data-ke="${k}" style="--w:${BAG[k][1]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[k]}"/></svg>${BAG[k][0]}</button>`).join("")}</nav><div id="dkIsi">${isi}</div></div>`;
+    /* PB-81.2: kartu sinyal komunikasi (konteks provinsi), hanya bila kemampuan.layar.sinyal menyala */
+    if (typeof SinyalInti !== "undefined") SinyalInti.pasang(el.querySelector("#dkIsi"), {id: "cuaca"}); }
   /* tanggal pembuatan berkas InaRISK untuk tab Metode */
   const dibuat = async () => { if (RB === null) RB = await muatJSON("../banjir/data/cuaca_risiko_bnpb.json").catch(() => false); return RB?.dibuat || null; };
   return {render, dibuat};
