@@ -74,7 +74,7 @@ function bukaTab(id, dorong = true) {
   if (dorong) history.replaceState(null, "", "/cuaca/" + id + location.search);
   nanti(() => { if (id === "peta" && peta) peta.resize();
     if (id === "simulasi") { const f = $("#simulasiBingkai"); if (!f.src) f.src = "/cuaca/simulasi.html?tertanam=1"; }
-    if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
+    if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1&bencana=cuaca"; } }
     ({kejadian: Kejadian, insight: Insight, metode: Metode, berita: Berita, tren: Tren, dampak: Dampak, foto: Foto, posko: Posko, informasi: window.Informasi})[id]?.render(); });
 }
 /* tab Kejadian hanya ada bila ada kejadian segar (A18): dipanggil lagi sesudah berkasnya terbaca */

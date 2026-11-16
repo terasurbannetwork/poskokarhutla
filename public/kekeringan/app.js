@@ -77,7 +77,7 @@ function bukaTab(id, dorong = true) {
   if (dorong) history.replaceState(null, "", "/kekeringan/" + id);   /* tautan bersih tanpa tagar; worker mengarahkan jalur ini ke index.html */
   nanti(() => { if (id === "peta" && peta) peta.resize();
     if (id === "simulasi") { const f = $("#simulasiBingkai"); if (!f.src) f.src = "/kekeringan/simulasi.html?tertanam=1"; }
-    if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
+    if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1&bencana=kekeringan"; } }
     ({insight: Insight, berita: Berita, tren: Tren, dampak: Dampak, posko: Posko, foto: window.Foto, metode: Metode, informasi: window.Informasi})[id]?.render(); });
 }
 { const tb = ([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k] || ""}</svg>${n}</button>`;

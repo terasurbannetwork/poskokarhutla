@@ -17,7 +17,7 @@ function bukaTab(id, dorong = true) {
   /* tautan bersih tanpa tagar: /gempa/peta (worker mengarahkan jalur ini ke index.html) */
   if (dorong) history.replaceState(null, "", "/gempa/" + id);
   nanti(() => { if (id === "peta" && typeof peta !== "undefined" && peta) peta.resize(); ISI_TAB[id]?.();
-    if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } } });
+    if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1&bencana=gempa"; } } });
 }
 { const tb = ([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k] || ""}</svg>${n}</button>`;
   $("#tabs").innerHTML = TABS.filter(t => !TAB_SEMBUNYI.has(t[0])).map(tb).join("");

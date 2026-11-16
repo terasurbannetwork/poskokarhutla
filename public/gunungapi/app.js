@@ -83,7 +83,7 @@ function bukaTab(id, dorong = true, gid = "") {
   /* tautan bersih tanpa tagar: /gunungapi/insight (worker mengarahkan jalur ini ke index.html); Simulasi membawa gunungnya: /gunungapi/simulasi?g=semeru */
   if (dorong) history.replaceState(null, "", "/gunungapi/" + id + (id === "simulasi" && (S.simId || window.Sim?.keadaan?.id) ? "?g=" + (S.simId || window.Sim.keadaan.id) : ""));
   nanti(() => { if (id === "peta" && peta) peta.resize();
-    if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
+    if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1&bencana=gunungapi"; } }
     ({kejadian: Kejadian, insight: Insight, berita: Berita, tren: Tren, dampak: Dampak, simulasi: SimTab, foto: window.Foto, metode: Metode, informasi: window.Informasi})[id]?.render(); });
 }
 { $("#tabs").innerHTML = TABS.filter(t => !TAB_SEMBUNYI.has(t[0])).map(([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k]}</svg>${n}</button>`).join("");
