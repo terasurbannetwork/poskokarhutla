@@ -52,3 +52,16 @@
 #inaTabel{overflow-x:auto;max-width:100%}
 .ina-bd,.ina-bd .lc-sek{grid-template-columns:minmax(0,1fr)}
 .ina-bd .tb2 td,.ina-bd .tb2 th{white-space:normal}
+/* laci detail InaTEWS: parameter per buletin sebagai baris (nama, rilis, nomor kiri; kekuatan dan kedalaman kanan), status tsunami satu baris (16 Nov 2026) */
+#inaDetail table.tb2 th.n{text-align:right}
+.ina-par{display:grid;gap:0}
+.ina-pr{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
+.ina-pr:last-child{border-bottom:0}
+.ina-pr-k,.ina-pr-v{display:grid;gap:1px;min-width:0}
+.ina-pr-k b{font-size:13px;font-weight:600;color:var(--ink)}
+.ina-pr-v{text-align:right;flex:none}
+.ina-pr-v b{font-family:var(--display);font-size:14px;font-weight:700;color:var(--ink)}
+.ina-pr small{font-size:11px;color:var(--ink2);overflow-wrap:anywhere}
+.ina-pr-kat{margin-top:2px;padding-top:10px;border-top:1px dashed var(--line);border-bottom:0}
+.ina-tsb{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ina-tsb .fnd{margin:0}

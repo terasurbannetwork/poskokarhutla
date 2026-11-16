@@ -91,7 +91,11 @@ const Ina = {
   waktu: t => new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit"}).replace(",", "") + " WIB",
   jam: t => new Date(t).toLocaleTimeString("id-ID", {timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit"}) + " WIB",
   /* teks BMKG apa adanya: KAPITAL dijadikan huruf judul (singkatan sampai 4 huruf, mis. NTT, tetap), tanda hubung jadi koma */
-  tempat: s => { const r = String(s || "").trim().replace(/\b[A-Z]{2,}(?:-[A-Z]{2,})*\b/g, t => t.split("-").map(x => x.length <= 4 ? x : x[0] + x.slice(1).toLowerCase()).join(", ")); return r ? (typeof wilayahPendek === "function" ? wilayahPendek(r) : r) : "–"; },
+  /* teks BMKG mentah ("127 km BaratLaut GORONTALOUTARA-GORONTALO") dirapikan wilayahPendek+NamaWil selagi masih huruf besar ("Gorontalo Utara");
+     kamus belum dimuat = cara lama (huruf besar dikecilkan) */
+  tempat: s => { const mentah = String(s || "").trim();
+    if (mentah && typeof wilayahPendek === "function" && typeof NamaWil !== "undefined" && NamaWil.kamus) { const w = wilayahPendek(mentah); if (!/\b[A-Z]{4,}\b/.test(w)) return w; }
+    const r = mentah.replace(/\b[A-Z]{2,}(?:-[A-Z]{2,})*\b/g, t => t.split("-").map(x => x.length <= 4 ? x : x[0] + x.slice(1).toLowerCase()).join(", ")); return r ? (typeof wilayahPendek === "function" ? wilayahPendek(r) : r) : "–"; },
   dalam: d => d == null || !isFinite(d) ? "–" : fmt(d) + " km",
   pilLevel: l => { const v = Ina.LEVEL[String(l).toUpperCase()]; return `<span class="pill pm" style="--w:${v ? v[1] : "#5b6575"}">${v ? v[0] : esc(l)}</span>`; },
   pilMMI: (s, n) => `<span class="lc-mmi" style="--w:${typeof MMI_WARNA !== "undefined" ? MMI_WARNA[Math.min(12, Math.max(1, n))] : "#c9961a"};color:${n <= 3 ? "#3b3320" : "#fff"}">MMI ${esc(s)}</span>`,
@@ -160,6 +164,7 @@ const Ina = {
   /* chrome (pilihan, judul) urgent; isi tabel ditunda lewat nanti() */
   async render(segar) {
     const el = $("#katalog"); if (!el) return;
+    if (typeof NamaWil !== "undefined" && !NamaWil.kamus) await NamaWil.siap();   /* nama kab BMKG di tabel dirapikan dulu (Ina.tempat, cache r.tp) */
     if (!el.dataset.siap) { el.dataset.siap = 1;
       el.addEventListener("click", e => { const b = e.target.closest("[data-j]"); if (b) return this.pilih(b.dataset.j);
         const h = e.target.closest("[data-h]"); if (h) { if (h.disabled) return; this.st.hal = +h.dataset.h; el.querySelectorAll(".pgn-b").forEach(b => { b.classList.toggle("on", b === h); if (b === h) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); }); return nanti(() => { this.gambarTabel(); el.querySelector(`.pgn-b[data-h="${this.st.hal}"]`)?.focus(); }); }
@@ -198,7 +203,9 @@ const Ina = {
     if (!r) return; const n = ++this._n, el = this.laci();
     el.innerHTML = this.kepala(r) + `<div class="bd ina-bd" id="inaIsi"><div class="kosong"><div class="spin"></div>Memuat detail kejadian…</div></div>`; el.classList.add("on");
     el.querySelector(".tutup").onclick = () => this.tutup();
-    nanti(async () => { const d = await this.rakit(r).catch(() => null); if (n !== this._n) return;
+    nanti(async () => { if (typeof NamaWil !== "undefined") await NamaWil.siap();
+      { const h = $("#inaJudul"); if (h && n === this._n) h.textContent = this.tempat(r.tempat); }
+      const d = await this.rakit(r).catch(() => null); if (n !== this._n) return;
       const isi = $("#inaIsi"); if (!isi) return; const a = d?.fl?.area || d?.m5?.area, h = $("#inaJudul"); if (h && a) h.textContent = this.tempat(a);
       isi.innerHTML = this.isi(r, d); this.pasangIsi(isi, r, d, n); });
   },
@@ -230,14 +237,16 @@ const Ina = {
     /* 1. parameter apa adanya per buletin, berlabel; tidak dirata-rata */
     const jn = {m5: "Gempa M 5,0+", dirasakan: "Gempa dirasakan", tsunami: "Peringatan dini tsunami"}, par = [...d.bul.filter(b => b.jenis !== "tsunami")];
     if (d.tsu) par.push(d.tsu.buletin[0], ...(d.tsu.buletin.length > 1 ? [d.tsu.buletin[d.tsu.buletin.length - 1]] : []));
-    const kat = d.kat ? `<tr><td>Katalog BMKG (pemutakhiran)</td><td class="n" translate="no">${esc(mTulis(d.kat.m))}, ${esc(this.dalam(d.kat.dalam))}</td></tr>` : "";
-    kes.push(sek("Parameter menurut BMKG", `<div class="tw"><table class="tb2"><thead><tr><th>Buletin</th><th>Rilis</th><th class="n">Kekuatan</th><th class="n">Kedalaman</th></tr></thead><tbody>${par.map(b => `<tr><td>${jn[b.jenis]}<br><small translate="no">${esc(b.id)}${b.subjek && b.jenis === "tsunami" ? ", " + esc(b.subjek) : ""}</small></td><td translate="no">${esc(this.waktu(b.terbit))}</td><td class="n">${esc(mTulis(b.m))}</td><td class="n">${esc(this.dalam(b.dalam))}</td></tr>`).join("")}</tbody></table></div>${kat ? `<table class="tb2"><tbody>${kat}</tbody></table>` : ""}
-      <p class="fnd">Setiap buletin ditulis seperti yang dirilis BMKG. Parameter awal bisa berbeda dari pemutakhiran, keduanya tidak dirata-rata.</p>`));
+    /* satu baris per buletin: nama, waktu rilis, nomor di kiri; kekuatan dan kedalaman rata kanan (laci sempit, tanpa tabel empat kolom) */
+    const prBaris = (judul, kecil, m, dlm, kelas = "") => `<div class="ina-pr${kelas}"><div class="ina-pr-k"><b>${judul}</b>${kecil.map(x => `<small translate="no">${x}</small>`).join("")}</div><div class="ina-pr-v" translate="no"><b>${esc(mTulis(m))}</b><small>kedalaman ${esc(this.dalam(dlm))}</small></div></div>`;
+    const kat = d.kat ? prBaris("Pemutakhiran katalog BMKG", ["nilai terkini di katalog"], d.kat.m, d.kat.dalam, " ina-pr-kat") : "";
+    kes.push(sek("Parameter menurut BMKG", `<div class="ina-par">${par.map(b => prBaris(jn[b.jenis], [`Rilis ${esc(this.waktu(b.terbit))}`, `Nomor ${esc(b.id)}${b.subjek && b.jenis === "tsunami" ? ", " + esc(b.subjek) : ""}`], b.m, b.dalam)).join("")}${kat}</div>
+      <p class="fnd">Ditulis seperti dirilis BMKG. Nilai awal bisa berbeda dari pemutakhiran, dan keduanya tidak dirata-rata.</p>`));
     if (d.nb) { const b = d.nb; kes.unshift(sek("Informasi BMKG", `<p>${this.pilPD(b)} <span class="pill pm" style="--w:${b.berakhir ? "#5b6575" : "#d64545"}">${b.berakhir ? "Dinyatakan berakhir" : "Belum dinyatakan berakhir"}</span></p><p class="fnd" translate="no">${esc(b.deskripsi || b.judul || "")}</p>
       <table class="tb2"><tbody>${this.baru(esc(this.waktu(b.terbit)), "Waktu rilis")}${b.instruksi ? this.baru(esc(b.instruksi), "Imbauan") : ""}${this.baru(esc(b.id), "Nomor buletin")}</tbody></table>`)); }
     /* 2. status tsunami resmi (tidak pernah ditafsir ulang) */
     const pot = d.bul.map(b => this.potensi(b.potensi)).find(Boolean) || (d.tsu ? ["Potensi tsunami", "#d64545"] : null);
-    kes.push(sek("Status tsunami, BMKG", `<p><span class="pill pm" style="--w:${pot ? pot[1] : "#5b6575"}">${pot ? pot[0] : "BMKG tidak menyebut tsunami"}</span></p><p class="fnd">${pot ? "Status resmi BMKG apa adanya." : "BMKG tidak menyebut tsunami pada buletin ini; ketiadaan pernyataan tidak kami tafsirkan."}</p>`));
+    kes.push(sek("Status tsunami, BMKG", `<div class="ina-tsb"><span class="pill pm" style="--w:${pot ? pot[1] : "#5b6575"}">${pot ? pot[0] : "BMKG tidak menyebut tsunami"}</span><span class="fnd">${pot ? "Status resmi BMKG apa adanya." : "Ketiadaan pernyataan tidak kami tafsirkan."}</span></div>`));
     /* 3. peta guncangan utuh */
     const mmi = (d.fl || d.m5 || d.bul[0]); const idm = mmi?.id;
     kes.push(sek("Peta guncangan", idm ? `<div class="ina-fg">${this.gbr(C + idm + ".mmi.jpg", "Peta guncangan (shakemap) BMKG")}</div>` : ""));
