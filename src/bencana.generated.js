@@ -947,7 +947,7 @@ export default {
           "brief": true,
           "pilih_tanggal": false,
           "profil_kab": false,
-          "tab_operasi": false,
+          "tab_operasi": true,
           "cari": [],
           "ukuran_provinsi": []
         }

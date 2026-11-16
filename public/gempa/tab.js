@@ -3,7 +3,7 @@
 const TABS = [["peta", "Peta"], ["kejadian", "Kejadian"], ["katalog", "Katalog BMKG"], ["insight", "Insight"], ["tren", "Tren"], ["berita", "Berita"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["foto", "Foto"], ["tentang", "Tentang"], ["informasi", "Informasi"], ["metode", "Metode"]];
 /* tidak tampil di nav tapi tetap bisa dibuka lewat URL /gempa/metode dan /gempa/informasi dan tautan (A24). */
 const TAB_SEMBUNYI = new Set(["informasi", "metode"]);
-const ISI_TAB = {kejadian: () => Kejadian.render(), katalog: () => { Ina.render(); TsunamiZona.render(); }, insight: () => { Insight.render(); Beruntun.render(); }, tren: () => Tren.render(), berita: () => Berita.render(), dampak: () => Dampak.render(), foto: () => Foto.render(),
+const ISI_TAB = {kejadian: () => Kejadian.render(), katalog: () => { Ina.render(); TsunamiZona.render(); }, insight: () => { Insight.render(); Beruntun.render(); }, tren: () => Tren.render(), berita: () => Berita.render(), dampak: () => Dampak.render(), foto: () => Foto.render(), operasi: () => window.GempaOperasi?.render(),
   sim: () => typeof Sim !== "undefined" && Sim.render(), metode: () => Metode.render(), informasi: () => window.Informasi?.render()};
 const IK_TAB = {katalog: '<path d="M4 4h16v16H4zM4 10h16M4 15h16M10 4v16"/>', kejadian: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
@@ -26,3 +26,5 @@ function bukaTab(id, dorong = true) {
   document.addEventListener("click", e => { if (hd.classList.contains("buka") && !e.target.closest("#tabs")) atur(false); });
   $("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; bukaTab(b.dataset.t); atur(false); }); }
 $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; simpanLokal("pb-tema", t); nanti(() => typeof peta !== "undefined" && peta && peta.setStyle(DASAR(), {diff: false})); };
+/* PB-77 (F-40): tab Operasi, tersembunyi untuk tamu; logika dan probe hak baca di operasi.js (dimuat di sini supaya index.html tidak berubah). */
+{ const s = document.createElement("script"); s.src = "operasi.js?v=1"; s.onload = () => window.GempaOperasi?.pasang(); document.head.append(s); }
