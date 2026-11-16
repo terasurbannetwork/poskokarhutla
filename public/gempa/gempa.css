@@ -103,3 +103,12 @@
 .lc-mb-t{height:8px;border-radius:999px;background:var(--line);overflow:hidden}
 .lc-mb-t i{display:block;height:100%;border-radius:999px;background:var(--w)}
 .lc-mb b{font-weight:700;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+/* laci: kartu Lokasi (baris berikon, tautan peta guncangan sebagai tombol) */
+.lc-lbs{display:grid}
+.lc-lb{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+.lc-lb:last-child{border-bottom:0}
+.lc-lb-k{display:inline-flex;align-items:center;gap:7px;color:var(--ink2)}
+.lc-lb-k svg{flex:none;color:var(--brand2)}
+.lc-lb b{font-weight:700;color:var(--ink);text-align:right}
+.lc-luar{justify-self:start;display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border:1px solid var(--line);border-radius:999px;font-size:12px;font-weight:600;color:var(--brand2);text-decoration:none}
+.lc-luar:hover{background:var(--surface)}
