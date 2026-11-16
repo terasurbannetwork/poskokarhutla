@@ -35,18 +35,19 @@
 :is(#laci,#inaDetail) .lc-sek .fnd{margin:0;font-size:11.5px;line-height:1.45;color:var(--ink2)}
 #laci .lc-src{font-size:10.5px!important}
 :is(#laci,#inaDetail) .lc-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.lc-kls{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:11px;color:var(--ink2)}
-.lc-kls span{display:inline-flex;align-items:center;gap:5px}
-.lc-kls span.on{color:var(--ink);font-weight:700}
-.lc-kls i{width:8px;height:8px;border-radius:50%;background:var(--w)}
+.lc-kls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;font-size:11px;color:var(--ink2)}
+.lc-kls span{display:flex;align-items:center;justify-content:center;gap:5px;padding:4px 2px;border-radius:7px;border:1px solid transparent;background:color-mix(in oklch,var(--w) 10%,transparent);white-space:nowrap;font-variant-numeric:tabular-nums}
+.lc-kls span.on{border-color:var(--w);color:var(--ink);font-weight:700;background:color-mix(in oklch,var(--w) 18%,transparent)}
+.lc-kls i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--w)}
 /* daftar gempa satu provinsi: ringkasan, lokasi dua baris dengan rincian, riwayat provinsi */
-.gk-per{margin:0 2px 6px;font-size:12px;font-weight:700;color:var(--ink)}
 .gk-ring{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 10px}
-.gk-k{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto;column-gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--card)}
-.gk-ik{grid-row:1/3;display:grid;place-items:center;width:28px;height:28px;border-radius:8px;color:var(--w,var(--brand2));background:color-mix(in oklch,var(--w,var(--brand2)) 14%,transparent)}
-.gk-ik svg{width:16px;height:16px}
-.gk-k b{font-family:var(--display);font-size:16px;line-height:1.15;color:var(--ink);white-space:nowrap}
-.gk-l{font-size:11px;line-height:1.2;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gk-per{margin:0 2px 8px;font-size:12px;font-weight:700;line-height:1.35;color:var(--ink)}
+.gk-k{display:grid;gap:4px;min-width:0;border:1px solid var(--line);border-radius:10px;padding:8px 10px 9px;background:var(--card)}
+.gk-kh{display:flex;align-items:center;gap:5px;min-width:0}
+.gk-ik{flex:none;display:grid;place-items:center;width:18px;height:18px;border-radius:5px;color:var(--w,var(--brand2));background:color-mix(in oklch,var(--w,var(--brand2)) 14%,transparent)}
+.gk-ik svg{width:12px;height:12px}
+.gk-l{min-width:0;font-size:10.5px;font-weight:700;letter-spacing:.03em;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gk-k b{font-family:var(--display);font-size:18px;line-height:1.1;color:var(--ink);white-space:nowrap}
 .tb.tb-g{align-items:start;padding-top:8px;padding-bottom:8px}
 .tb .kom.gk{flex-direction:column;align-items:flex-start;gap:2px}
 .gk-t{white-space:normal;line-height:1.3;font-weight:600}
@@ -76,3 +77,29 @@
 #tip .tp-gr.tp-satu{display:grid;grid-template-columns:repeat(2,minmax(0,auto));justify-content:center;gap:8px 18px}
 #tip .tp-st small{white-space:nowrap}
 #tip .tp-nm b{white-space:normal;text-align:center;max-width:260px}
+/* riwayat provinsi: kotak yang sama dengan ringkasan; baris tambahan kecil (satuan, pil kelas) */
+.gk-rw .gk-ring{margin:4px 0 0}
+.gk-k-wadah{min-width:0;display:grid}
+.gk-x{display:flex;align-items:center;gap:5px;flex-wrap:wrap;min-width:0}
+.gk-x:empty{display:none}
+.gk-sub{font-size:10.5px;color:var(--ink2)}
+.gk-x .lc-mmi{font-size:10px;padding:1px 7px}
+/* laci: indeks risiko provinsi sebagai pengukur (nama + pil kiri, skor kanan, bilah 0 sampai 100) */
+.lc-rsk{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.lc-rsk-k{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0;font-size:12.5px;color:var(--ink)}
+.lc-rsk-v{display:flex;align-items:baseline;gap:4px;flex:none}
+.lc-rsk-v b{font-family:var(--display);font-size:22px;line-height:1;color:var(--ink)}
+.lc-rsk-v small{font-size:11px;color:var(--ink2)}
+.lc-bar{height:6px;border-radius:999px;background:color-mix(in oklch,var(--w) 15%,var(--line));overflow:hidden}
+.lc-bar i{display:block;height:100%;border-radius:999px;background:var(--w)}
+/* laci: angka utama bagian (korban jiwa, total terpapar) dan bilah per MMI (16 Nov 2026) */
+.lc-big{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.lc-big > div{display:grid;gap:2px;min-width:0}
+.lc-big b{font-family:var(--display);font-size:19px;line-height:1.15;color:var(--ink)}
+.lc-big small{font-size:11.5px;color:var(--ink2)}
+.lc-mmi-bar{display:grid;gap:6px}
+.lc-mb{display:grid;grid-template-columns:62px minmax(0,1fr) auto;align-items:center;gap:8px;font-size:12px}
+.lc-mb .lc-mmi{text-align:center}
+.lc-mb-t{height:8px;border-radius:999px;background:var(--line);overflow:hidden}
+.lc-mb-t i{display:block;height:100%;border-radius:999px;background:var(--w)}
+.lc-mb b{font-weight:700;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}

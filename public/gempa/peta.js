@@ -225,19 +225,20 @@ function renderDaftar() {
   box.innerHTML = ringkasProv(j[0], isi) + kepala(G, [[null, "Lokasi"], ["m", "Kekuatan"], ["t", "Waktu"]]) +
     isi.slice(S.hal * per, S.hal * per + per).map((g, i) => { const r = rinci(g); return `<button class="tb tb-g" data-g="${esc(g.id)}" style="grid-template-columns:${G}"><span class="rk">${S.hal * per + i + 1}</span><span class="kom gk"><span class="gk-t">${esc(wilayahPendek(g.wilayah))}</span>${r ? `<small class="gk-s">${esc(r)}</small>` : ""}</span><span>${pilM(g.m)}</span><span class="n">${esc(jamPendek(g.waktu))}</span></button>`; }).join("") +
     (isi.length > per ? paginasi(S.hal, isi.length, per, "gempa") : "") + riwayatSingkat(j[0]); }
+/* kotak angka panel provinsi: ikon kecil + label di atas, angka di bawah (dipakai ringkasan dan riwayat provinsi) */
+const GK_IK = {gempa: "M2 12h4l2-6 4 12 3-9 2 3h5", kuat: "M3 17l6-6 4 4 8-8M15 7h6v6", rasa: "M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM6.3 6.3a8 8 0 0 0 0 11.4M17.7 6.3a8 8 0 0 1 0 11.4", jam: "M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0", risiko: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"};
+const gkKotak = (ik, v, l, w, x = "") => `<div class="gk-k"><span class="gk-kh"><span class="gk-ik" aria-hidden="true"${w ? ` style="--w:${w}"` : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="${GK_IK[ik]}"/></svg></span><span class="gk-l">${l}</span></span><b${w ? ` style="color:${w}"` : ""}>${v}</b>${x}</div>`;   /* kotak sempit: ikon+label di atas, angka di bawah */
 /* ringkasan di atas daftar gempa satu provinsi: periode yang sedang dipilih dan tiga angka dari daftar itu sendiri (tanpa hitungan baru) */
 function ringkasProv(k, isi) {
   const per = S.tanggal ? "pada " + new Date(S.tanggal + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "long", timeZone: "Asia/Jakarta"}) : "dalam " + (S.rentang === 168 ? "7 hari" : S.rentang + " jam") + " terakhir";
   const kuat = isi.reduce((a, g) => !a || g.m > a.m ? g : a, null), rasa = isi.filter(g => g.mmi_maks > 0).length;
-  /* ikon: gelombang seismik, puncak, lingkaran getar (path sama dengan IKK gempa/rasa di bagikan.js) */
-  const IK = {gempa: "M2 12h4l2-6 4 12 3-9 2 3h5", kuat: "M3 17l6-6 4 4 8-8M15 7h6v6", rasa: "M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM6.3 6.3a8 8 0 0 0 0 11.4M17.7 6.3a8 8 0 0 1 0 11.4"};
-  const kotak = (ik, v, l, w) => `<div class="gk-k"><span class="gk-ik" aria-hidden="true"${w ? ` style="--w:${w}"` : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="${IK[ik]}"/></svg></span><b${w ? ` style="color:${w}"` : ""}>${v}</b><span class="gk-l">${l}</span></div>`;
-  return `<p class="gk-per">${esc(namaProv(k))}, ${esc(per)}</p><div class="gk-ring">${kotak("gempa", fmt(isi.length), "gempa")}${kotak("kuat", kuat ? esc(mTulis(kuat.m)) : "–", "terkuat", kuat ? warnaM(kuat.m) : "")}${kotak("rasa", fmt(rasa), "dirasakan")}</div>`; }
+  return `<p class="gk-per">${esc(namaProv(k))}, ${esc(per)}</p><div class="gk-ring">${gkKotak("gempa", fmt(isi.length), "Gempa")}${gkKotak("kuat", kuat ? esc(mTulis(kuat.m)) : "–", "Terkuat", kuat ? warnaM(kuat.m) : "")}${gkKotak("rasa", fmt(rasa), "Dirasakan")}</div>`; }
 /* riwayat provinsi di bawah daftar: M 5+ sejak 1900 (riwayat_prov.json) dan indeks risiko (risiko.json), diisi bila datanya sudah dimuat */
 function riwayatSingkat(k) {
   const r = riwayatProv().find(x => x.k === k), id = "gkRisiko" + k;
-  if (typeof Risiko !== "undefined") Risiko.prov(k).then(v => { const el = document.getElementById(id); if (el && v) el.innerHTML = `Indeks risiko riwayat <b>${fmt(v.skor)} dari 100</b> <span class="lc-mmi" style="--w:${v.w};color:${v.skor < 30 ? "#3b3320" : "#fff"}">${esc(v.kelas)}</span>`; }).catch(() => {});
-  return `<div class="gk-rw"><p class="gk-rw-h">Riwayat provinsi</p>${r ? `<p><b>${fmt(r.n)}</b> gempa M 5+ sejak 1900, terbesar <b>${esc(mTulis(r.m))}</b></p>` : ""}<p id="${id}"></p></div>`; }
+  if (typeof Risiko !== "undefined") Risiko.prov(k).then(v => { const el = document.getElementById(id); if (!el || !v) return;
+    el.querySelector("b").textContent = fmt(v.skor); el.querySelector(".gk-x").innerHTML = `<span class="gk-sub">dari 100</span><span class="lc-mmi" style="--w:${v.w};color:${v.skor < 30 ? "#3b3320" : "#fff"}">${esc(v.kelas)}</span>`; }).catch(() => {});
+  return `<div class="gk-rw"><p class="gk-rw-h">Riwayat provinsi</p><div class="gk-ring">${r ? gkKotak("jam", fmt(r.n), "Sejak 1900", "", '<span class="gk-x"><span class="gk-sub">gempa M 5+</span></span>') + gkKotak("kuat", esc(mTulis(r.m)), "Terbesar", warnaM(r.m)) : ""}<div id="${id}" class="gk-k-wadah">${gkKotak("risiko", "–", "Indeks risiko", "", '<span class="gk-x"></span>')}</div></div></div>`; }
 /* pilih ukuran provinsi (segmen atau kepala kolom): urut ikut ukuran, warna peta dan legenda mengikuti; render berat ditunda */
 function pilihUkuran(slug) { const u = KAT_UKURAN.find(x => x.slug === slug); if (!u || !(S.ukuranIzin || []).some(x => x.slug === slug)) return false;
   S.ukuran = slug; S.urut = {k: u.kunci, turun: true}; S.hal = 0; renderDaftar(); nanti(() => { Peta.aturWilayah(); renderLegenda(); }); return true; }

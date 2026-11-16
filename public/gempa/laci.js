@@ -45,17 +45,17 @@ const Laci = {
     if (g.m >= 4.5 && typeof GempaGuncangan !== "undefined") Guncang.hitung(g).then(({P, F}) => { if (!P?.total) return;
       const ks = Object.keys(P.per).map(Number).filter(k => k >= 3 && P.per[k] > 0).sort((a, b) => b - a); if (!ks.length) return;
       const nf = t => F ? F.filter(f => f.t === t).length : 0, fas = F && F.length ? `<p class="fnd">Dari fasilitas rawan yang dimuat (sebagian sekolah dengan syarat teringan tidak dimuat), ${[nf("sekolah") && fmt(nf("sekolah")) + " sekolah", nf("rs") && fmt(nf("rs")) + " fasilitas kesehatan", nf("publik") && fmt(nf("publik")) + " bangunan publik"].filter(Boolean).reduce((s, x, i, A) => s + (i ? (i === A.length - 1 ? " dan " : ", ") : "") + x, "") || fmt(F.length) + " fasilitas"} diperkirakan terguncang MMI VI atau lebih.</p>` : "";
-      tambah(2, `<h4 class="lc-h">Perkiraan penduduk terpapar ${pilModel}</h4><table class="tb2"><tbody>${ks.map(k => baris(`<span class="lc-mmi" style="--w:${MMI_WARNA[k]};color:${k <= 3 ? "#3b3320" : "#fff"}">MMI ${rom(k)}</span>`, jiwaTeks(P.per[k]))).join("")}</tbody></table>${fas}
+      tambah(2, `<h4 class="lc-h">Perkiraan penduduk terpapar ${pilModel}</h4>${(() => { const maks = Math.max(...ks.map(k => P.per[k])), tot = ks.reduce((x, k) => x + P.per[k], 0);
+          return `<div class="lc-big"><div><b>${jiwaTeks(tot)}</b><small>terguncang MMI III atau lebih</small></div></div><div class="lc-mmi-bar">${ks.map(k => `<div class="lc-mb"><span class="lc-mmi" style="--w:${MMI_WARNA[k]};color:${k <= 3 ? "#3b3320" : "#fff"}">MMI ${rom(k)}</span><span class="lc-mb-t"><i style="--w:${MMI_WARNA[k]};width:${Math.max(3, Math.round(P.per[k] / maks * 100))}%"></i></span><b>${jiwaTeks(P.per[k])}</b></div>`).join("")}</div>`; })()}${fas}
         <p class="fnd">Perkiraan model guncangan, belum diuji terhadap laporan Dirasakan.</p>`); }).catch(() => {});
     /* 2b. korban jiwa model empiris USGS PAGER (koefisien Indonesia), berdampingan dengan perkiraan model di atas; catatan bila tsunami/likuefaksi mungkin dominan */
     if (g.m >= 4.5 && typeof GempaPager !== "undefined") Guncang.hitung(g).then(({P}) => { if (!P?.total) return;
       const r = GempaPager.hitung(P.per), kls = GempaPager.kelas(GempaPager.bulat2(r.jiwa)), ts = (g.tsunami?.kode || 0) >= 1 || (typeof Tsunami !== "undefined" && Tsunami.layak(g)), likuefaksi = g.m >= 7;
-      const klsDaftar = [["hijau", "kurang dari 1"], ["kuning", "1 sampai 99"], ["oranye", "100 sampai 999"], ["merah", "1.000 atau lebih"]];
-      tambah(2, `<h4 class="lc-h">Perkiraan korban jiwa ${pilPager}</h4><table class="tb2"><tbody>${baris("Perkiraan", `<b class="lc-v">${r.jiwa < 1 ? "kurang dari 1 jiwa" : "sekitar " + duaAngka(r.jiwa) + " jiwa"}</b>`)}${baris("Rentang wajar", r.jiwa < 1 ? "kurang dari 4 jiwa" : duaAngka(r.bawah) + " sampai " + duaAngka(r.atas) + " jiwa")}
-        ${baris("Kelas PAGER", `<span class="lc-mmi" style="--w:${PAGER_WARNA[kls]};color:#fff">${kls}</span>`)}</tbody></table>
-        <div class="lc-kls" aria-label="Kelas PAGER menurut perkiraan jiwa">${klsDaftar.map(([k, t]) => `<span${k === kls ? ' class="on"' : ""}><i style="--w:${PAGER_WARNA[k]}"></i>${k} ${t}</span>`).join("")}</div>
+      const klsDaftar = [["hijau", "<1", "kurang dari 1"], ["kuning", "1–99", "1 sampai 99"], ["oranye", "100–999", "100 sampai 999"], ["merah", "≥1.000", "1.000 atau lebih"]];
+      tambah(2, `<h4 class="lc-h">Perkiraan korban jiwa ${pilPager}</h4><div class="lc-big"><div><b>${r.jiwa < 1 ? "kurang dari 1" : "sekitar " + duaAngka(r.jiwa)}</b><small>jiwa, rentang wajar ${r.jiwa < 1 ? "kurang dari 4" : duaAngka(r.bawah) + " sampai " + duaAngka(r.atas)}</small></div><span class="lc-mmi" style="--w:${PAGER_WARNA[kls]};color:#fff" title="Kelas PAGER">${kls}</span></div>
+        <div class="lc-kls" aria-label="Kelas PAGER menurut perkiraan jiwa">${klsDaftar.map(([k, t, p]) => `<span style="--w:${PAGER_WARNA[k]}"${k === kls ? ' class="on"' : ""} title="Kelas ${k}: ${p} jiwa"><i></i>${t}</span>`).join("")}</div>
         ${ts || likuefaksi ? `<p class="fnd">Model ini tidak menghitung korban tsunami${likuefaksi ? "/likuefaksi" : ""}; pada gempa Palu 28 Sep 2018 PAGER resmi memberi 86 jiwa (dihitung Centurisk97 dengan paparan model guncangan), korban nyata 4.140 jiwa (EM-DAT, CRED/UCLouvain).</p>` : ""}
-        <p class="fnd">Model empiris, bukan laporan korban dan bukan status resmi BMKG. Rentang wajar seperempat sampai empat kali perkiraan.</p>
+        <p class="fnd">Kelas PAGER menurut perkiraan jiwa. Model empiris, bukan laporan korban dan bukan status resmi BMKG; rentang wajar seperempat sampai empat kali perkiraan.</p>
         <p class="fnd lc-src">Sumber: USGS PAGER (Jaiswal &amp; Wald 2010), model guncangan dan penduduk WorldPop Centurisk97</p>`); }).catch(() => {});
     /* 6. bandara di zona guncangan MMI VI atau lebih (A35, model guncangan yang sama) */
     if (g.m >= 5 && typeof GempaGuncangan !== "undefined") Guncang.bandara(g).then(B => { if (!B?.length) return;
@@ -73,7 +73,8 @@ const Laci = {
         <p class="fnd">Simulasi, bukan prakiraan. Ikuti status resmi BMKG di atas.</p>`); }).catch(() => {});
     /* 4. indeks risiko riwayat provinsi (data/risiko.json): skor 0 sampai 100, kelas sebagai pil */
     if (g.prov) Risiko.prov(g.prov).then(r => { if (!r) return;
-      tambah(4, `<h4 class="lc-h">Indeks risiko riwayat provinsi</h4><table class="tb2"><tbody>${baris(esc(namaProv(g.prov)), `<span class="lc-skor"><b class="lc-v">${r.skor} dari 100</b><span class="lc-mmi" style="--w:${r.w};color:${r.skor < 30 ? "#3b3320" : "#fff"}">${r.kelas}</span></span>`)}</tbody></table>
+      tambah(4, `<h4 class="lc-h">Indeks risiko riwayat provinsi</h4><div class="lc-rsk"><div class="lc-rsk-k"><span>${esc(namaProv(g.prov))}</span><span class="lc-mmi" style="--w:${r.w};color:${r.skor < 30 ? "#3b3320" : "#fff"}">${r.kelas}</span></div><div class="lc-rsk-v"><b>${r.skor}</b><small>dari 100</small></div></div>
+        <div class="lc-bar" style="--w:${r.w}" role="img" aria-label="Skor ${r.skor} dari 100"><i style="width:${Math.max(2, Math.min(100, r.skor))}%"></i></div>
         <p class="fnd lc-src">Dari gempa M 5+ ${r.r.tahun[0]} sampai ${r.r.tahun[1]}. Sumber: USGS</p>`); }).catch(() => {});
     /* 8. detail lengkap BMKG/InaTEWS (peta guncangan, siaran pers, mekanisme, stasiun, zona tsunami): dipasangkan lewat waktu dan jarak ke katalog BMKG */
     if (typeof Ina !== "undefined") Ina.untukLaci(g).then(r => { if (!r || !sama()) return;
