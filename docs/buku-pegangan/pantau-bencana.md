@@ -4,8 +4,8 @@ Pemantauan bencana Indonesia: karhutla, banjir, dan enam bencana lain
 
 Semua selera, keputusan pemilik, gerbang, dan armada yang berlaku di situs Pantau Bencana (repo `poskokarhutla`), di satu tempat. Yang baru diputus masuk ke Riwayat, lalu ke bagian aturannya.
 
-Disegarkan 14 Nov 2026\
-commit e8f784be5
+Disegarkan 16 Nov 2026\
+commit 0e9a49a2f
 
 [Mengenal pemilik](#mengenal-pemilik) [Riwayat perubahan](#riwayat-perubahan) [Keputusan pemilik](#keputusan-pemilik) [Stack & peta repo](#stack--peta-repo) [Situs per alamat](#situs-per-alamat) [Halaman & rute](#halaman--rute) [Selera tampilan](#selera-tampilan) [Angka & copy](#angka--copy) [Selera presentasi (PPT)](#selera-presentasi-ppt) [Selera laporan (DOCX/PDF) dan visualisasi data](#selera-laporan-docx-pdf-dan-visualisasi-data) [Fitur yang disembunyikan](#fitur-yang-disembunyikan) [Model & data](#model--data) [Ruang Koordinasi BNPB](#ruang-koordinasi-bnpb) [Ruang Instansi](#ruang-instansi) [Gerbang penjaga](#gerbang-penjaga) [Insiden & pelajaran](#insiden--pelajaran) [Armada agent](#armada-agent) [Tugas pemilik](#tugas-pemilik) [Katalog modul dan design system](#katalog-modul-dan-design-system) [Rencana multi-bencana](#rencana-multi-bencana) [Cara halaman ini diperbarui](#cara-halaman-ini-diperbarui)
 
@@ -67,30 +67,43 @@ Disuling dari log prompt pemilik (`.claude/ilmu-agent/prompt/`), memori, dan com
 - Menjelaskan arah lewat contoh: "kaya yang di operasi", "kaya platform METI", "kaya sippa kemarin". Contoh itu standar yang harus disamai utuh, bukan sebagian.
 - Menempelkan dokumen contoh sebagai templat dan mau contoh itu jadi bawaan tetap, bukan sekali pakai: *"biar tiap saya perintahkan "buat docs dan pdf kajian" dia langsung meniru itu"* (12 Nov, Laporan Bencana Oktober 2026 A4).
 - Mau Claude memutus selera saat dia ragu (*"coba yang menurut lu terbaik"*, *"terserah deh bagusnya gimana"*), tapi hasilnya tetap dinilai keras.
+- Mau Claude jalan sendiri sampai tiket habis, tanpa berhenti minta izin tiap langkah: 15 Nov tercatat 13 prompt sejenis (*"Lanjut terus jangan berhenti. Gausah nunggu arahan gw"*, *"Lu putuskan semua sendiri"*). Yang tetap ditanyakan hanya tindakan keluar (migrasi produksi, push, kunci).
+- Memeriksa kewajaran angka sebelum menerima deck (*"ini beneran di pekanbaru segini? wajar ga? itu data darimana/"*). Angka yang tidak bisa dibela dihapus, bukan dihaluskan (*"hapus aja yang pekanbaru"*).
+- Memoles deck per gambar dulu baru dirakit: *"kirim gambarnya dlu ke saya, baru build deck keseluruhan, kita poles sampai bener2 bagus"* (16 Nov). Dia juga menyunting PPTX langsung, jadi revisi berikutnya dibangun dari berkas yang dia sunting.
+- Sejak 16 Nov sebagian prompt datang dari perangkat Windows dengan sapaan saya/kamu, untuk deck laporan dan paparan. Aturannya sama; jalur `C:\Users\...` di prompt bukan jalur repo.
 
 ### Pola koreksi berulang
 
-| Pola | Muncul 8 sampai 14 Nov | Terakhir | Contoh commit perbaikan | Penahan |
-| --- | --- | --- | --- | --- |
-| "Jelek banget", minta dibagusin tanpa rincian | 57 | 14 Nov | `335e150b7`, `81512efb9`, `cfdd0d1c3`, `fdc6c63b9` | belum bergerbang; tinjau di 8800 sebelum lapor |
-| Ruang putih kosong, kolom tidak rata, isi tidak penuh sampai bawah, bilah tidak ujung ke ujung | 19 | 14 Nov | `0ce1cddd9`, `8f64c3cca`, `3aa9cc01d`, `cfdd0d1c3`, `e8f784be5` | belum bergerbang; ukur tinggi kolom di peramban (memori `tanpa-ruang-kosong`) |
-| Latar abu atau warna tua di belakang isi; gelap hanya untuk kepala halaman | 10 | 11 Nov | `6bd1bf25e`, `a57cc9724` | `gerbang-operasi-gelap`, `gerbang-dasbor` |
-| Rombakan tidak mengikuti `/operasi` utuh (cuma panel kiri, tidak penuh, tidak bisa digeser) | 6 | 12 Nov | `8c45b309b`, `a01139c7f` | `gerbang-dasbor` (DB-03) |
-| Kartu atau blok menempel | 6 | 11 Nov | `b1fbad192`, `0f11e8527` | `gerbang-kartu-renggang`, `gerbang-operasi-renggang` |
-| Kalimat kesimpulan di kepala atau baris pertama kartu | 6 | 11 Nov | `b634ad16a`, `e3178c01b` | `gerbang-tanpa-kesimpulan` |
-| Isi terpotong saat digulir atau di tepi | 8 | 12 Nov | `0ce1cddd9`, `899bb6a0a` | belum bergerbang |
-| Jarak baris terlalu longgar | 6 | 12 Nov | `5161c09c3` | belum bergerbang |
-| Oranye atau biru yang terkesan bahaya untuk hal biasa | 4 | 11 Nov | `66b8f6475` | belum bergerbang |
-| Huruf kapital semua | 2 | 11 Nov | `c3c6d6dcb` | `gerbang-dasbor` (dasbor.css); `kartu.css` lama masih kapital |
-| Tombol, label, atau baris tambahan yang tidak diminta ("Gausah ada", "Hilangkan") | lebih dari 100 | 14 Nov | `0cd3304f0`, `53fd40625`, `fdc6c63b9` | belum bergerbang; catat di Fitur yang disembunyikan |
-| Aturan yang sudah dibalik dipakai lagi (pil CUT OFF 9 Nov dicabut, 11 Nov kembali) | 1 | 11 Nov | `d53b9b95c`, `a351753e6` | `gerbang-penanganan-pil-cutoff` |
-| Ikon tidak mewakili isinya atau mirip ikon lain (kualitas udara nyaru dengan hujan, masker, lingkaran untuk data belum lengkap, ikon koroplet) | 7 | 13 Nov | `cfdd0d1c3` | belum bergerbang |
-| Dokumen Word/PDF dan tabel deck: teks atau tabel tidak rata, sampul buram atau bergeser | 3 | 14 Nov | `1cd28a035`, `fdc6c63b9` | belum bergerbang |
-| Frasa atau klausa nanggung, padanan kata tidak lazim, singkatan yang tidak dijelaskan (L1, TN) | 6 | 13 Nov | `635c42f4f` | sebagian, pindaian bahasa skill `ppt-konsultan` |
-| "GIS BNPB" ditulis di baris Sumber atau footer | 3 | 14 Nov | `fdc6c63b9` | `aturan_slide.py` skill `ppt-konsultan` (baris Sumber) |
-| Nomor langsung di awal judul (pakai kata dulu: "Enam (6) ...") | 2 | 13 Nov | belum ada | belum bergerbang |
-| Perbandingan antarsumber tidak setara atau tanpa tanggal (titik lawan cluster, tanggal tidak tertulis, tanpa angka tiap titik) | 4 | 13 Nov | belum ada | belum bergerbang |
-| Branch atau worktree | 2 | 10 Nov | `75c19aa8a` | `gerbang-tanpa-branch`, hook `tolak-branch.mjs` |
+Kolom "8 sampai 14 Nov" dibekukan dari penyegaran sebelumnya; kolom "15 sampai 16 Nov" dihitung dari log prompt sejak itu.
+
+| Pola | 8 sampai 14 Nov | 15 sampai 16 Nov | Terakhir | Contoh commit perbaikan | Penahan |
+| --- | --- | --- | --- | --- | --- |
+| Tombol, label, slide, atau baris tambahan yang tidak diminta ("Gausah ada", "Hilangkan", "hapus aja") | lebih dari 100 | 25 | 16 Nov | `0cd3304f0`, `53fd40625`, `fdc6c63b9`, `f21596a57`, `f50b163f5` | belum bergerbang; catat di Fitur yang disembunyikan |
+| "Jelek banget", minta dibagusin tanpa rincian | 57 | 8 | 16 Nov | `335e150b7`, `81512efb9`, `cfdd0d1c3`, `31c54ef59` | belum bergerbang; tinjau di 8800 sebelum lapor, kirim gambar per slide sebelum merakit deck |
+| Ruang putih kosong, kolom tidak rata, isi tidak penuh sampai bawah, bilah tidak ujung ke ujung | 19 | 0 | 14 Nov | `0ce1cddd9`, `8f64c3cca`, `3aa9cc01d`, `cfdd0d1c3`, `e8f784be5` | belum bergerbang; ukur tinggi kolom di peramban (memori `tanpa-ruang-kosong`) |
+| Ubin, pil, atau pemisah tanpa ikon, atau ikon tidak terlihat (*"Kasih icon gitu pemisahnya jangan koma"*) | 0 | 6 | 16 Nov | `98b427199`, `4de55cd43` | belum bergerbang |
+| Teks mepet atau menabrak gambar, yang seharusnya sebaris jadi dua baris | 0 | 6 | 16 Nov | `98b427199`, `7430bb7c2` | belum bergerbang; `aturan_slide.py` memeriksa tumpang tindih kotak, bukan jarak |
+| Sampul, daftar isi, atau penutup di deck yang tidak memintanya | 0 | 5 | 16 Nov | `ffcc32a6b`, `4b16f451c`, `55cd11848` | belum bergerbang; ikuti permintaan per deck, bawaan skill tetap bersampul |
+| Angka yang tidak wajar atau sumbernya ditanya (PM2,5 Pekanbaru, DIBI basi, angka tabel lawan WA hari ini) | 0 | 6 | 16 Nov | `dc50c1a28`, `f48e2da64` | belum bergerbang |
+| Latar abu atau warna tua di belakang isi; gelap hanya untuk kepala halaman | 10 | 0 | 11 Nov | `6bd1bf25e`, `a57cc9724` | `gerbang-operasi-gelap`, `gerbang-dasbor` |
+| Rombakan tidak mengikuti `/operasi` utuh (cuma panel kiri, tidak penuh, tidak bisa digeser) | 6 | 0 | 12 Nov | `8c45b309b`, `a01139c7f` | `gerbang-dasbor` (DB-03) |
+| Kartu atau blok menempel | 6 | 0 | 11 Nov | `b1fbad192`, `0f11e8527` | `gerbang-kartu-renggang`, `gerbang-operasi-renggang` |
+| Kalimat kesimpulan di kepala atau baris pertama kartu | 6 | 0 | 11 Nov | `b634ad16a`, `e3178c01b` | `gerbang-tanpa-kesimpulan`, `gerbang-kartu-std` (sejak 15 Nov juga menolak `.hl` dan kaki Sumber) |
+| Isi terpotong saat digulir atau di tepi | 8 | 0 | 12 Nov | `0ce1cddd9`, `899bb6a0a` | belum bergerbang |
+| Jarak baris terlalu longgar | 6 | 0 | 12 Nov | `5161c09c3` | belum bergerbang |
+| Oranye atau biru yang terkesan bahaya untuk hal biasa | 4 | 0 | 11 Nov | `66b8f6475` | belum bergerbang |
+| Palet lokal dan warna literal di CSS di luar token | 0 | 1 | 15 Nov | `5122b4d9e`, `47aefb417`, `ae88f0211` | `gerbang-token-warna` (ratchet, AGENTS §3.9) |
+| Huruf kapital semua | 2 | 0 | 11 Nov | `c3c6d6dcb` | `gerbang-dasbor` (dasbor.css); `kartu.css` lama masih kapital |
+| Nama akun Mac, jalur mutlak, atau kata BNPB di keluaran yang dibagikan (*"Ini agar jangan ada priyankaalfatehannya dong"*, *"Jangan ada kata BNPBNya"*) | 0 | 3 | 15 Nov | `f34013b9f`, `e12773d91` | `gerbang-jalur-mutlak`, uji `renlap_jam` |
+| Aturan yang sudah dibalik dipakai lagi (pil CUT OFF 9 Nov dicabut, 11 Nov kembali) | 1 | 0 | 11 Nov | `d53b9b95c`, `a351753e6` | `gerbang-penanganan-pil-cutoff` |
+| Ikon tidak mewakili isinya atau mirip ikon lain (kualitas udara nyaru dengan hujan, masker, lingkaran untuk data belum lengkap, ikon koroplet) | 7 | 0 | 13 Nov | `cfdd0d1c3` | belum bergerbang |
+| Dokumen Word/PDF dan tabel deck: teks atau tabel tidak rata, sampul buram atau bergeser | 3 | 1 | 16 Nov | `1cd28a035`, `fdc6c63b9` | belum bergerbang |
+| Frasa atau klausa nanggung, padanan kata tidak lazim, singkatan yang tidak dijelaskan (L1, TN, Q2) | 6 | 3 | 16 Nov | `635c42f4f`, `763ef30dd` | sebagian, pindaian bahasa skill `ppt-konsultan` |
+| Ringkasan "dan 9 lainnya" alih-alih nama daerahnya | 0 | 1 | 16 Nov | `20c8cfcd2` | belum bergerbang |
+| "GIS BNPB" ditulis di baris Sumber atau footer | 3 | 0 | 14 Nov | `fdc6c63b9` | `aturan_slide.py` skill `ppt-konsultan` (baris Sumber) |
+| Nomor langsung di awal judul (pakai kata dulu: "Enam (6) ...") | 2 | 0 | 13 Nov | belum ada | belum bergerbang |
+| Perbandingan antarsumber tidak setara atau tanpa tanggal (titik lawan cluster, tanggal tidak tertulis, tanpa angka tiap titik) | 4 | 0 | 13 Nov | belum ada | belum bergerbang |
+| Branch atau worktree | 2 | 0 | 10 Nov | `75c19aa8a` | `gerbang-tanpa-branch`, hook `tolak-branch.mjs` |
 
 ### Yang paling sering membuat pemilik kesal
 
@@ -99,6 +112,8 @@ Disuling dari log prompt pemilik (`.claude/ilmu-agent/prompt/`), memori, dan com
 3. Ruang kosong dan tata letak yang tidak simetris (*"Agak banyak white spacenya ... karena gw sangat ga suka"*).
 4. Hiasan yang tidak diminta: latar abu, highlight oranye, garis tebal, progress bar, label berulang, huruf kapital.
 5. Harus menunggu push dan terbit untuk melihat hasil. Selalu tutup laporan layar dengan tautan `localhost:8800`.
+6. Hasil yang tidak berangkat dari acuan yang sudah disetujui. 16 Nov laporan harian dibuat dari referensi lain (*"jelek. coba kamu buat berdasarkan laporan tgl 14 revisi 5 aja"*). Mulai dari revisi terakhir yang diterima, bukan dari nol.
+7. Bagian yang diminta hilang dari keluaran gabungan: paparan Sumut dan Aceh dirakit tanpa Aceh (*"sumpah saya bingung sama kamu, yang aceh kemana?"*). Sebelum lapor, cocokkan daftar bagian yang diminta dengan isi berkas.
 
 Terbaru di atas
 
@@ -106,6 +121,21 @@ Terbaru di atas
 
 Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik saat menegur atau memutus.
 
+1. 16 Nov 2026
+   - **Laporan harian 16 Nov dari acuan 14 Nov Revisi 5**: versi pertama ditolak (*"jelek. coba kamu buat berdasarkan laporan tgl 14 revisi 5 aja"*). Slide 1 menyebut daerahnya langsung, bukan "dan 9 lainnya"; angka PM2,5 Pekanbaru yang tidak bisa dibela dihapus (*"hapus aja yang pekanbaru"*); seksi kebutuhan dan jalur logistik dibuang; slide yang dipindah ke lampiran tidak masuk daftar isi dan penanda bagian; strip di tabel rata tengah. Generator laporan harian dan laporan karhutla di bot WA disamakan dengan format terkini (*"generator laporan bencana dan laporan karhutla untuk bot WA itu outdated deh"*) (`20c8cfcd2`).
+   - **Laporan banjir dan longsor mingguan 2 sampai 8 Nov dan 9 sampai 15 Nov**, Revisi 1 sampai 6 dalam satu pagi: tanpa sampul dan daftar isi (*"gausah ada cover dan daftar isi"*), tanpa penutup (*"cover belakang juga gausah"*), lalu deck banjir dan longsor dipisah (*"slide tentang longsor pisahin dlu aja, kita fokus di banjir dulu"*). Kartu kejadian: butir bila lebih dari satu, "tidak ada pengungsian" menggantikan "nihil", nama daerah apa adanya bila data kecamatan tidak ada, label "tanggal kejadian". Angka pengungsi mengikuti WA hari ini (*"ikut hari ini dlu aja"*); pemilik bertanya kenapa DIBI di sistem basi (`0a8b8d476`, `ffcc32a6b`, `31c54ef59`, `4b16f451c`, `f48e2da64`).
+   - **Paparan kebencanaan Sumut dan Aceh 161126**: dua paparan, banjir jadi fokus, paling banyak 8 halaman (*"2 paparan bro jangan cuma sastu"*), daftar isi berpemisah per provinsi, spasi atas tidak mepet dan teks tidak menabrak gambar; berkas ada di `data/laporan-bnpb/paparan/` (`dc50c1a28`).
+   - **Gempa dikaji ulang dari MVP**: atasan pemilik menilai laman gempa masih perlu banyak perbaikan; sesi brainstorm daftar MVP dan pengembangan berikutnya dimulai, belum ada commit.
+1. 15 Nov 2026
+   - **Semua bencana selengkap karhutla dan banjir**: *"Gw mau semua bencana lainnya selengkap karhutla dan banjir"*. Paket Paritas Bencana (K1 sampai K10, 75 tiket `PB-*`, AGENTS §2.16) lalu dikerjakan hampir semua dalam sehari: registri `kemampuan` di `bencana.json`, renlap generik `scripts/umum/renlap.py`, rute `/api/pb/*`, pembuat dokumen, tangga tindakan, papan SK status darurat, dashboard pimpinan `/bnpb/pimpinan`; uji golden karhutla menjaga yang lama tidak mundur (`30f11c706`, `cca3fc179`, `3451b407b`, `54d592839`). Laporan warga longsor tetap di banjir (*"Tetap di banjir"*, K11).
+   - **Data publik harus berguna**: diminta 400 data publik per bencana dan tujuannya (deteksi, prediksi, penanganan, pasca, dampak), dengan *"Pastikan data publik itu berguna ya"*. Hasilnya 412 data tanpa tumpang tindih dengan yang sudah dipakai (`0ffe2b0e2`, `1ad9a8236`).
+   - **Sistem harus kuat, bukan sekadar login**: *"Gw mau yang membuat sistem ini powerful jangan cuma lgoin gitu"*, dengan riset benchmark luar negeri. Lahir paket Keterpaduan (satu nomor kejadian, antrean luring, spek formulir), Satu Pintu Masuk (kode WA sekali pakai, *"Gw mau semua orang bisa login dengan mudah"*), Status Lifeline, 3W dan pintu `/bantu`, Kaji ulang, Peta kerusakan satelit, Penurunan tanah InSAR, Pembiayaan risiko, Pemetaan relawan HOT, Misi Udara, dan Alun-alun Terpadu (AGENTS §2.15 sampai §2.26). Router WA bersama ditolak (*"2. jangan"*). `/bantu` boleh dibuka tanpa login (*"Ya, izinkan /bantu"*, K13).
+   - **Merek dulu, atom dulu, baru layar**: pemilik minta UI/UX dirombak (*"Perbaiki UI/UX, visual & desain karena Opus 5.5 tidak melakukan pekerjaan yang baik"*) dan design system Centurisk97 serta BNPB punya halaman sendiri meniru design system SATUSEHAT. Navy tetap warna utama (*"Tetap navy yang paling banyak dipakai"*). AGENTS §3.9 dan gerbang `gerbang-token-warna` (ratchet literal warna), rombak UI tahap 1, papan peta sistem `/design-system/sistem` (`5122b4d9e`, `ae88f0211`, `513fc20b8`). Format dashboard untuk yang berbentuk dashboard (*"Untuk yang bentuknya dashboard agar gunakan format dashboard lah ya"*).
+   - **Flight plan heli dropping banjir** Lanud Soewondo, Subulussalam, Tapanuli Tengah: titik dari tautan Google Maps, LZ diralat dua kali sesuai koordinasi lapangan, titik di PDF harus bisa diklik (*"Kenapa ga bisa diklik? Bukannya renlap harusnya bisa ya"*) dan KML/GPX ikut (*"kmx gpx nya mana?"*). Lalu diperluas ke semua bencana dan enam jenis misi (paket Misi Udara, `scripts/umum/misi_udara.py`); kartu tidak lagi menulis titik menyusul palsu (*"Ini kenapa ada 2 titik menyusul?"*) (`4f3878e33`, `4f8cf0077`, `810b6e57c`, `85de86f0a`).
+   - **Templat Situasi Banjir paling banyak 5 slide** (*"Btw buat semuanya jadi maksimal 5 slide"*): provinsi lain jadi pilihan (*"Yang provinsi lainnya gausah"*), ikon di ubin dan pil, kepala tabel satu baris, sungai dikelompokkan per kab/kota, kolom "Batas meluap" menggantikan Q2 sesudah pemilik bertanya *"Banjir 2 tahun maksudnya apa?"*, debit sungai tertinggi tidak disebut, ubin "Jiwa meninggal atau hilang" dengan kab/kotanya, kecamatan Siaga disebut namanya; versi Aceh, Aceh Singkil, dan Sumut (`b8b3c6e10`, `98b427199`, `763ef30dd`, `6eb12acdd`).
+   - **Paparan operasi lapangan 15 Nov** tanpa sampul dan daftar isi, 4 halaman: renlap Kalteng (enam gambar di halaman 1, satu model renlap dengan kluster rinci, *"Cukup 1 model aja"*), duplikasi tim mobile Kaltim, pantauan udara Papua Selatan, dan kartu Centurisk97 yang umum untuk semua bencana (*"Ini agar dibuat seumum mungkin"*, *"Jangan ada kata BNPBNya"*) (`55cd11848`, `41167da6a`, `d14f3805a`).
+   - **Tanpa nama akun di keluaran**: *"Ini agar jangan ada priyankaalfatehannya dong"*. Keterangan PDF renlap di WA hanya menulis folder relatif (`f34013b9f`, `e12773d91`).
+   - **Audit keamanan** atas permintaan pemilik (*"Audit semua juga keamanan website ini ya"*): kunci GFW pindah ke env, `samarkan()` menangkap sandi dan hex panjang, dan `/admin/masuk` di atas ambang gagal hanya menerima IP yang pernah berhasil masuk, tanpa menolak sandi benar (`7bdc1f311`).
 1. 14 Nov 2026
    - **Peluang Semai Awan dan Prakiraan Asap**: pemilik minta pola sistem semai luar negeri ditiru dan dimasukkan ke Operasi Udara, lengkap dengan renlap (*"bisa tau harus seeding awan dimana untuk target daerah mana"*), kebutuhan NaCl, bahan semai, atau dry ice, benchmark luar, dan prediktor asap dengan arah angin. Paket 11 dokumen `data/kajian-bnpb/semai-awan/` (AGENTS §2.14), keputusan S1 sampai S11: seksi baru di `/operasi` bukan layar terpisah, Indonesia saja, zona hanya usulan yang dijadikan target renlap oleh Pusdalops, `eccodes` boleh dipasang, base OMC luar Sumatera dan Kalimantan menunggu BMKG. Pemilik menyerahkan sisanya (*"tolong lu yang putuskan ya jalankan semua. Gw ga mau tau"*). SA-01 unduh ECMWF 0,1 derajat terbukti, migrasi 0129 `op_semai_target` dibekukan hash-nya (`c631a8549`, `2c72eedae`, `4167f4287`, `4a081ce7e`).
    - **OMC dari bandara terdekat, tanpa batas jelajah base** (S10, *"kalo OMC gausah ada batas jelajah base"*), dan **renlap OMC halaman tersendiri** per zona di `/renlap-omc` (S11, *"Renlapnya tersendiri ya"*). Seksi Peluang semai dirapikan sesudah teguran ruang kosong (*"Rapikan. Ini terlalu banyak white space"*): judul dialog target terlihat, kolom kanan tidak terjepit saat data kosong (`e8f784be5`).
@@ -422,6 +452,12 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
 | Butir di bawah tabel diganti kartu | 1 Nov 2026 | Daftar butir berlabel tebal di bawah tabel diganti pita kartu atau baris tabel (*"either lu buat dalam card atau dalam tabel"*) |
 | Gelar Kepala BNPB | 4 Nov 2026, dikonfirmasi 12 Nov | "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si. (Han)", M.Si. sekali; gerbang menolak bentuk lama |
 | Tanpa logo BerAKHLAK | 9 Nov 2026 | *"JANGAN PERNAH ADA LAGI. HAPUSKAN."* Berlaku di semua deck |
+| Semua bencana selengkap karhutla dan banjir | 15 Nov 2026 | Dibangun sekali di inti, dinyalakan per bencana lewat registri `kemampuan`; paket Paritas Bencana, AGENTS §2.16 |
+| Laporan warga longsor tetap di banjir | 15 Nov 2026 | *"Tetap di banjir"* (K11 paritas, Q41) |
+| `/bantu` publik bertoken | 15 Nov 2026 | Halaman organisasi Tiga W dibuka tanpa login (*"Ya, izinkan /bantu"*), masuk `PUBLIK_TANPA_SESI` |
+| Tanpa router WA bersama | 15 Nov 2026 | Ditolak di daftar usulan strategis (*"2. jangan"*); AGENTS §2.15 dan §2.20 |
+| Navy tetap warna utama | 15 Nov 2026 | *"Tetap navy yang paling banyak dipakai"*; token di `public/inti/tema.css`, gerbang `gerbang-token-warna` |
+| Deck tanpa sampul, daftar isi, atau penutup bila diminta | 15 sampai 16 Nov 2026 | Paparan operasi lapangan dan laporan mingguan banjir: *"gausah ada cover dan daftar isi"*, *"cover belakang juga gausah"*; berlaku per deck, bawaan skill tetap bersampul |
 | Hanya `main` tanpa pengecualian | 9 Nov 2026 | Hook menolak branch dan worktree sejak dibuat; gerbang `gerbang-tanpa-branch` |
 | Rantai Satu Kejadian digabung ke Buku Besar Siklus | 10 Nov 2026 | Tidak ada dua buku kejadian |
 | Rapor SPM tanpa ambang | 10 Nov 2026 | Angka ditampilkan apa adanya |
@@ -1681,6 +1717,18 @@ Ditelusuri 26 Okt 2026 dari 288 masukan pemilik (15 Sep sampai 26 Okt), memori, 
 
 Catatan hitung: baris bertanda ⚠ dihitung sebagai satu aturan; aturan yang bertanda (baru) dan ⚠ sekaligus dihitung di kedua kolom. Bagian "Belum pasti" memuat 22 pertanyaan (Q01 sampai Q22).
 
+### Tambahan 15 sampai 16 Nov 2026
+
+- Situasi Banjir per provinsi paling banyak 5 slide; provinsi lain hanya atas permintaan (`--provinsi-lain`).
+- Pemisah antarbutir berupa ikon, bukan koma; ubin dan pil berikon yang terlihat.
+- Ringkasan menyebut nama daerah, tidak "dan 9 lainnya".
+- Lampiran tidak masuk daftar isi maupun penanda bagian di pita atas.
+- Lebih dari satu butir dalam satu sel atau kartu: daftar berbutir, bukan sebaris.
+- Kosong ditulis maknanya ("tidak ada pengungsian"), bukan "nihil" atau strip; strip di tabel rata tengah.
+- Istilah teknis diganti kata yang dipahami pembaca: "Batas meluap" (debit banjir 2 tahunan GloFAS), bukan Q2.
+- Paparan dua provinsi: daftar isi berpemisah per provinsi dan batas antarbagian.
+- Poles dulu per gambar slide bersama pemilik, baru rakit deck utuh.
+
 ### Tambahan 13 sampai 14 Nov 2026
 
 - Judul tidak diawali angka; bila terpaksa, kata dulu lalu angka dalam kurung ("Enam (6) provinsi ..."). Berlaku di semua deck.
@@ -2084,6 +2132,12 @@ Produksi sudah di migrasi 0049, tetapi per 22 Okt belum ada satu pun akun instan
 | `gerbang-peta-data`, `gerbang-kesegaran`, `gerbang-cache-banjir` | data baru punya pemakai dan jadwal, batas umur berkas, cache banjir dipulihkan sebelum deploy | `npm run uji:agen` |
 | `gerbang-folder-revisi`, `gerbang-penanganan-pil-cutoff`, `gerbang-perusahaan-sekali` | folder `Revisi N`, pil CUT OFF di Penanganan, halaman perusahaan hanya 081126 | `npm run uji:agen` |
 | `gerbang-silang` | Silang Sumber tidak menulis ke `prediksi` | `npm run uji:agen` |
+| `gerbang-token-warna` | literal warna di `public/**/*.css` di luar `tema.css` tidak bertambah (ratchet `fixtures/token-warna-sisa.json`) | `npm run uji:agen` |
+| `gerbang-kartu-std` | kepala kartu tanpa `.hl` dan tanpa kaki Sumber; layar lama di ratchet `fixtures/kartu_std.json`, layar rombakan di `WAJIB_BERSIH` | `npm run uji:agen` |
+| `gerbang-paritas`, `paritas-hitung`, `gerbang-bencana` | skema `pb_*` tanpa kolom orang, tulis `public/` berdaftar putih, matriks paritas dari bukti berkas, kemampuan yang menyala punya pemakai nyata | `npm run uji:agen`, `npm run uji:paritas` |
+| `gerbang-keterpaduan`, `cocok_orang` | tabel kejadian dan tugas baru serta antrean IndexedDB lewat jalur bersama (ratchet utang); orang tidak dicocokkan dari nama | `npm run uji:agen` |
+| `gerbang-pintu-masuk` | G-1 sampai G-8: kode sekali pakai tidak tersimpan terbaca, staf tetap bersandi, daftar `PUBLIK_TANPA_SESI` | `npm run uji:agen` |
+| `samarkan` | penyamaran log prompt menangkap sandi, nomor, dan hex panjang | `npm run uji:agen` |
 | gerbang titik tengah | pemisah titik tengah di layar publik tidak bertambah (sisa 128 baris per 3 Nov) | `npm run uji:agen` |
 | `.gitignore` | salinan nyasar `* 2` dan `* 2.*` | |
 
@@ -2095,6 +2149,10 @@ Semuanya: `npm run uji`. Commit hanya bila tiap suite mencetak `fail 0`; grep pa
 
 | Tanggal | Insiden | Pelajaran |
 | --- | --- | --- |
+| 16 Nov | Perubahan `wa_operasi` (pesawat A-xxxx, frasa "untuk sasaran") tertinggal di autostash | Dipulihkan (`dfb7db836`); jangan `git stash` di checkout bersama, cek `git stash list` sesudah pull |
+| 15 Nov | Panen bulanan `menara.py` tanpa `OPENCELLID_KEY` mengosongkan data menara | Skrip tidak menimpa data bila kunci tidak ada; berkas dipulihkan ke unduhan 30 Okt (`8e082434e`) |
+| 15 Nov | SK contoh logbook bertanggal tetap kedaluwarsa dan memblokir `uji:warga`; jalur mutlak `/Users/<nama>` di spek deck memblokir pre-push | Tanggal contoh relatif hari ini (`684bbe331`); spek deck dan log tanpa jalur mutlak (`e12773d91`) |
+| 15 Nov | Commit "gas" membawa penanda bentrok ke ilmu `inti-layar` saat rebase | Penanda dibuang (`b8860019c`); `gerbang-konflik` |
 | 12 Nov | Deklarasi `el` di alarm tertelan komentar sebaris, berkas JS rusak tanpa ketahuan | Gerbang `gerbang-js-sah` menjalankan `node --check` di tiap JS publik |
 | 11 Nov | Rebase menghilangkan editan `/operasi`; catatan ilmu agent dan log prompt 10 Nov tertinggal di autostash yang tak pernah dibuka | Editan dipulihkan (`6ca8ccb9a`, `d11653795`); sesudah pull dengan autostash, cek `git stash list` |
 | 11 Nov | Kuota baca D1 habis, akun staf tidak bisa masuk | Akun dari secret tetap bisa masuk, indeks kolom pindai penuh, polling berhenti di tab tersembunyi, gerbang ratchet D1 |
@@ -2144,7 +2202,7 @@ Semuanya: `npm run uji`. Commit hanya bila tiap suite mencetak `fail 0`; grep pa
 
 Agent yang lahir sesudah 16 Okt: `gempa`, `cuaca-udara`, `gunungapi-kering`, `inti-layar`, `pipa-umum` (17 sampai 19 Okt), `ruang-bnpb` (19 Okt), `pesisir` (21 Okt), `sippa` (26 Okt, layar `/pipa` dan `tests/sippa`), `neraca-air` (27 Okt, neraca air Pulau Jawa per kab/kota), lalu `prediksi`, `longsor`, dan `wa-bot` (29 Okt), `kampus` (30 Okt), `sensor` (1 Nov), `lapangan` (2 Nov), `model-banjir` (4 Nov, dipecah dari `banjir` karena plafon ilmu 40 KB), `ai-internal` (5 Nov, layar `/ai`).
 
-Aturannya: Opus merencanakan, model murah mengerjakan; penulis kode bukan pengulasnya; agent penulis jalan di main satu per satu atau paralel bila berkasnya terpisah dan disebut di brief; sejak 2 Nov branch dan worktree boleh sebagai tempat kerja sementara, lalu di-merge ke `main` dan dihapus di sesi yang sama (`AGENTS.md` §3.3). Diff agent tidak pernah di-commit hanya karena laporannya.
+Aturannya: Opus merencanakan, model murah mengerjakan; penulis kode bukan pengulasnya; agent penulis jalan di main satu per satu atau paralel bila berkasnya terpisah dan disebut di brief; sejak 9 Nov tanpa branch dan worktree sama sekali, semua kerja langsung di `main` (`AGENTS.md` §3.3, hook `tolak-branch.mjs`). Diff agent tidak pernah di-commit hanya karena laporannya.
 
 ## Tugas pemilik
 
@@ -2169,7 +2227,7 @@ Yang tidak bisa dikerjakan sesi agent:
 17. Branch yang tertinggal: sejak 2 Nov sesi agent boleh menyapu branch yang sudah masuk `main` lewat `scripts/agents/sapu-branch.sh`; branch yang belum di-merge tetap diputus pemilik.
 18. Pastikan secret Worker `GITHUB_TOKEN` (fine-grained, Actions read and write, repo ini saja) terpasang; tanpa itu cadangan pemicu `titik.yml` dan denyut `jaga.yml` tidak jalan, padahal sejak 7 Nov jadwal GitHub dibuang.
 19. Pasang server tinjau lokal sekali lewat `npm run tinjau:pasang` (launchd `id.centurisk97.tinjau-lokal`); sesi agent tidak boleh memasang launchd.
-20. Jawab pertanyaan terbuka paket baru: Operasi Udara (termasuk isian manual Q16 sampai Q19), Cek Kabar Luar Q1 sampai Q6, Tindak Langkah Q1 sampai Q6, Laporan Berkala Q1 sampai Q27, Peluang Semai Q1 sampai Q17 (base OMC dari BMKG), Silang Sumber, Tangga, LogPal; bawaan sementara sudah tertulis di tiap `KEPUTUSAN-*.md`.
+20. Jawab pertanyaan terbuka paket baru: Operasi Udara (termasuk isian manual Q16 sampai Q19), Cek Kabar Luar Q1 sampai Q6, Tindak Langkah Q1 sampai Q6, Laporan Berkala Q1 sampai Q27, Peluang Semai Q1 sampai Q17 (base OMC dari BMKG), Silang Sumber, Tangga, LogPal, Paritas Bencana Q1 sampai Q37, Satu Pintu Masuk, Misi Udara Q1 sampai Q17, Lifeline Q1 sampai Q7, Tiga W Q1 sampai Q7, Kaji ulang, Kerusakan satelit, Penurunan tanah (Q1 izin unduh), Pembiayaan risiko (Q1 saldo DSP dan PFB), Pemetaan relawan (Q1 pengajuan ke HOT, Q5), Alun-alun Terpadu Q1 sampai Q13; bawaan sementara sudah tertulis di tiap `KEPUTUSAN-*.md`.
 
 ## Katalog modul dan design system
 
