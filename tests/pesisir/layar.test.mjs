@@ -79,9 +79,9 @@ test("gelombang BMKG: kelas sedang bukan peringatan, yang lewat masa berlaku dib
 test("halaman: tiap tab TABS punya <section id=p-...>, tanpa titik tengah dan tanpa nama lama", () => {
   const html = teks("index.html"), js = teks("pesisir.js");
   const tabs = [...js.match(/const TABS\s*=\s*\[([\s\S]*?)\];/)[1].matchAll(/\[\s*"([a-z_]+)"\s*,/g)].map(m => m[1]);
-  assert.deepEqual(tabs, ["peta", "insight", "tren", "foto", "tentang", "informasi"]);
+  assert.deepEqual(tabs, ["peta", "insight", "tren", "dampak", "foto", "tentang", "informasi"]);
   for (const t of tabs) assert.match(html, new RegExp(`<section[^>]*id="p-${t}"`), t);
-  for (const f of ["index.html", "pesisir.js", "peta.js", "insight.js", "tren.js", "tentang.js", "hitung.js", "grafik.js", "pesisir.css", "foto.js", "foto.css"]) {
+  for (const f of ["index.html", "pesisir.js", "peta.js", "insight.js", "tren.js", "dampak.js", "tentang.js", "hitung.js", "grafik.js", "pesisir.css", "foto.js", "foto.css"]) {
     const s = teks(f); assert.ok(!s.includes("·"), f + " memuat titik tengah"); assert.ok(!/Pantau Bencana/i.test(s), f + " menyebut Pantau Bencana"); }
   for (const m of html.matchAll(/<script[^>]*src="(?!https?:)([^"]+)"/g)) assert.ok(fs.existsSync(new URL(m[1].replace(/^\//, "../../public/").replace(/^\.\.\/(?!\.\.)/, "../../public/").replace(/^(?!\.\.)/, "../../public/pesisir/"), import.meta.url)), m[1] + " tidak ada");
 });
@@ -95,4 +95,27 @@ test("Tren: arah per situs dari cacah transek, judul tanpa angka meter, rentang 
   assert.ok(!/\d\s*m\b|rb\(|Math\.abs/.test(jd.replace(/\$\{fmt\(r\.mundur100\)[^}]*\}/, "").replace("lebih dari 100 m", "")), "judul memuat angka meter: " + jd);
   assert.match(jd, /mundur lebih dari 100 m/);
   assert.match(src, /bertanda tinjau \(lompatan citra\)/);
+});
+
+test("Dampak: kab berstatus rob dari hari ini ke depan, penduduk dipasang lewat nama (dan kode provinsi bila kembar), tanpa pasangan = null", () => {
+  const rob = {hari: ["2026-11-15", "2026-11-16", "2026-11-17"], titik: [
+    {prov: "Jawa Tengah", kab: "Demak", lv: [3, 0, 1]}, {prov: "Jawa Tengah", kab: "Demak", lv: [0, 2, null]}, {prov: "Jawa Barat", kab: "Bekasi", lv: [null, 0, 0]},
+    {prov: "Aceh", kab: "Kembar", lv: [0, 0, 2]}, {prov: "Bali", kab: "Tanpa", lv: [0, 1, 0]}]};
+  const pk = {kolom: ["a", "jiwa_total"], kab: {"33|Demak": [0, 1100000], "11|Kembar": [0, 50], "12|Kembar": [0, 70]}};
+  const D = P.dampakRob(rob, pk, "2026-11-16", {Aceh: "11"});
+  assert.deepEqual(D.daftar.map(x => [x.kab, x.lv, x.titik, x.hari, x.jiwa]), [["Demak", 2, 2, "2026-11-16", 1100000], ["Kembar", 2, 1, "2026-11-17", 50], ["Tanpa", 1, 1, "2026-11-16", null]]);
+  assert.equal(D.tanpaJiwa, 1); assert.equal(D.jiwa, 1100050); assert.equal(D.sampai, "2026-11-17");
+  assert.equal(P.jiwaKab(pk, "Bali", "Kembar", {}), null, "nama kembar tanpa kode provinsi tidak ditebak");
+  assert.equal(P.dampakRob(rob, pk, "2026-12-01", {}), null, "data tak mencakup hari ini = null");
+});
+test("Dampak: riwayat DIBI per kab menjumlah ke total kejadian, urut terdampak", () => {
+  const rob = baca("banjir/data/rob.json"), R = P.dampakRiwayat(rob);
+  assert.equal(R.reduce((a, x) => a + x.n, 0), rob.kejadian.length);
+  assert.equal(R.reduce((a, x) => a + x.terdampak, 0), rob.kejadian.reduce((a, k) => a + (k.terdampak || 0), 0));
+  for (let i = 1; i < R.length; i++) assert.ok(R[i - 1].terdampak >= R[i].terdampak);
+});
+test("Dampak: tampilan tanpa .hl dan tanpa kaki Sumber, semua kabupaten rob di arsip terpasang ke penduduk", () => {
+  const js = teks("dampak.js"); assert.doesNotMatch(js, /Kartu\.hl|hl\(|Sumber: |ex-ft/); assert.match(js, /ex ex-std/);
+  const rob = baca("banjir/data/rob.json"), pk = baca("banjir/data/paparan_kab.json"), K = [...new Set(rob.titik.map(t => t.prov + "|" + t.kab))];
+  assert.ok(K.filter(k => P.jiwaKab(pk, ...k.split("|"), {}) != null).length >= K.length * .9, "kurang dari 90% kab rob terpasang ke data penduduk");
 });

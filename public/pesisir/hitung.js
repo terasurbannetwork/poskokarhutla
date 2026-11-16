@@ -78,5 +78,24 @@
       KEYS.forEach((k, i) => { o.kelas[i] += g[k].length; o.perairan[i].push(...g[k]); }); if (g.sampai > o.sampai) o.sampai = g.sampai; }
     return Object.values(P).map(o => ({...o, lv: o.kelas.reduce((a, n, i) => n ? i + 1 : a, 0), total: o.kelas.reduce((a, b) => a + b, 0)})).filter(o => o.lv).sort((a, b) => b.lv - a.lv || b.total - a.total); }
 
-  g.Pesisir = {ketLompatan, med, KELAS_GEL, kelasGel, tglWIB, hariKe, abrasiTercepat, abrasiBersih, abrasiSitus, tinjau, bersih, BASE, perSitus, seriSitus, robHari, robSeri, robBmkg, robTahun, pasutPekan, hsHari, gelHari, gelBmkg, idxHari};
+  /* Dampak (PB-84): kab/kota yang titik robnya berstatus Waspada atau lebih pada hari dari tgl sampai akhir data, dengan penduduk seluruh kab/kota
+     (WorldPop lewat paparan_kab.json, kolom jiwa_total). Penduduk BUKAN area tergenang: titik rob hanya titik model. Tanpa pasangan nama yang jelas, jiwa = null. */
+  function jiwaKab(pk, prov, kab, kodeProv) {
+    const C = Object.entries(pk?.kab || {}).filter(([k]) => k.split("|").slice(1).join("|").toLowerCase() === String(kab).toLowerCase()); if (!C.length) return null;
+    const k = C.length === 1 ? C[0] : C.filter(([x]) => kodeProv?.[prov] && x.split("|")[0] === kodeProv[prov]).length === 1 ? C.filter(([x]) => x.split("|")[0] === kodeProv[prov])[0] : null;
+    const i = (pk.kolom || []).indexOf("jiwa_total"); return k && i >= 0 && Number.isFinite(k[1][i]) ? k[1][i] : null; }
+  function dampakRob(rob, pk, tgl, kodeProv) {
+    const d0 = (rob?.hari || []).findIndex(h => h >= tgl), n = rob?.hari?.length || 0; if (d0 < 0 || !rob.titik?.length) return null;
+    const K = {};
+    for (const t of rob.titik) { let m = -1, hm = null; for (let i = d0; i < n; i++) { const v = t.lv?.[i]; if (v != null && v > m) { m = v; hm = rob.hari[i]; } }
+      if (m < 1) continue; const o = K[t.prov + "|" + t.kab] ||= {prov: t.prov, kab: t.kab, lv: 0, titik: 0, hari: null}; o.titik++; if (m > o.lv) { o.lv = m; o.hari = hm; } }
+    const L = Object.values(K).map(o => ({...o, jiwa: jiwaKab(pk, o.prov, o.kab, kodeProv)})).sort((a, b) => b.lv - a.lv || (b.jiwa ?? -1) - (a.jiwa ?? -1) || b.titik - a.titik);
+    return {sampai: rob.hari[n - 1], daftar: L, jiwa: L.reduce((a, x) => a + (x.jiwa || 0), 0), tanpaJiwa: L.filter(x => x.jiwa == null).length}; }
+  /* dampak tercatat kejadian Banjir Rob (DIBI) per kab/kota, seluruh tahun */
+  function dampakRiwayat(rob) { const P = {};
+    for (const k of rob?.kejadian || []) { const o = P[k.prov + "|" + k.kab] ||= {prov: k.prov, kab: k.kab, n: 0, terdampak: 0, mengungsi: 0, rumah: 0, rusak: 0, meninggal: 0, akhir: ""};
+      o.n++; o.terdampak += k.terdampak || 0; o.mengungsi += k.mengungsi || 0; o.rumah += k.rumah_terendam || 0; o.rusak += k.rumah_rusak || 0; o.meninggal += k.meninggal || 0; if (k.tanggal > o.akhir) o.akhir = k.tanggal; }
+    return Object.values(P).sort((a, b) => b.terdampak - a.terdampak || b.rumah - a.rumah || b.n - a.n); }
+
+  g.Pesisir = {dampakRob, dampakRiwayat, jiwaKab, ketLompatan, med, KELAS_GEL, kelasGel, tglWIB, hariKe, abrasiTercepat, abrasiBersih, abrasiSitus, tinjau, bersih, BASE, perSitus, seriSitus, robHari, robSeri, robBmkg, robTahun, pasutPekan, hsHari, gelHari, gelBmkg, idxHari};
 })(typeof globalThis !== "undefined" ? globalThis : window);

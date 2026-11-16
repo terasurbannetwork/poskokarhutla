@@ -446,6 +446,7 @@ export default {
         "peta",
         "insight",
         "tren",
+        "dampak",
         "foto",
         "tentang",
         "informasi"
