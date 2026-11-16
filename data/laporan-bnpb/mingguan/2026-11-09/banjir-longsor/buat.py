@@ -406,19 +406,42 @@ def sisi_sumatera(lon, lat):
     return 'k' if lon < 95.6 + (5.6 - lat) * 0.93 else 'n'
 
 
-def tata_label(titik, sisi):
-    """titik = {kab: (x, y)}, sisi = {kab: 'k'|'n'} -> {kab: (sisi, y)}. Label tiap sisi diurut menurut y titiknya, berjarak minimal
-    21 pt. Kolom kiri berhenti di atas kotak inset Se-Indonesia (355 pt), kanan di atas kartu (430 pt)."""
+def lebar_label(nama, status):
+    return (len(nama) * 9 + len(status) * 7.5) * 0.53 + 26
+
+
+def tata_label(titik, sisi, status, masker=None):
+    """titik = {kab: (x, y)}, sisi = {kab: 'k'|'n'}, status = {kab: teks status} -> {kab: (sisi, y, x)}.
+    Label tiap sisi diurut menurut y titiknya, berjarak minimal 21 pt; kolom kiri berhenti di atas kotak inset Se-Indonesia (355 pt),
+    kanan di atas kartu (430 pt). masker = gambar '1' (1 px = 1 pt dari pojok peta) berisi wilayah berwarna; pemilik 16 Nov 2026:
+    label tidak boleh menutup wilayah merah, jadi y dicari ke celah kosong terdekat, lalu pil dirapatkan ke tepi kanan peta."""
+    def bebas(x, y, w):
+        if masker is None:
+            return True
+        kot = (int(max(0, x - 43.2 - 2)), int(max(0, y - 102 - 2)), int(min(418, x - 43.2 + w + 2)), int(min(338, y - 102 + 18)))
+        return kot[2] <= kot[0] or kot[3] <= kot[1] or masker.crop(kot).getbbox() is None
     out = {}
     for s_, bawah in (('k', 355), ('n', 430)):
         xs = sorted(((y, kab) for kab, (x, y) in titik.items() if sisi[kab] == s_), key=lambda t: t[0])
-        ys = []
-        for y, kab in xs:
-            ys.append(max(y - 8, 106, (ys[-1] + 21) if ys else 0))
-        # lewat batas bawah: dorong naik dari bawah, hanya label yang bertabrakan yang ikut bergeser
-        for i in range(len(ys) - 1, -1, -1):
-            ys[i] = min(ys[i], bawah if i == len(ys) - 1 else ys[i + 1] - 21)
-        out.update({kab: (s_, y) for (_, kab), y in zip(xs, ys)})
+        taruh = []
+        for y0, kab in xs:
+            w = lebar_label(kab, status[kab])
+            pilihan = [43.2] if s_ == 'k' else [320.4, 461 - w]
+            ingin = max(y0 - 8, 106)
+            calon = sorted((y for y in [ingin + d for d in range(-120, 121, 3)] if 106 <= y <= bawah),
+                           key=lambda y: (abs(y - ingin), y))
+            hasil = None
+            for x in pilihan:
+                for y in calon:
+                    if all(abs(y - t) >= 21 for t in taruh) and bebas(x, y, w):
+                        hasil = (x, y); break
+                if hasil:
+                    break
+            if not hasil:   # tidak ada celah: tetap rapat ke tepi, urut di bawah label sebelumnya
+                y = max([ingin] + [t + 21 for t in taruh if t >= ingin - 21])
+                hasil = (pilihan[-1], min(y, bawah))
+            taruh.append(hasil[1])
+            out[kab] = (s_, hasil[1], hasil[0])
     return out
 
 
@@ -436,15 +459,22 @@ def s_peta_banjir(Dk):
     pi = gambar_peta(pin, INSET_EXT, (1000, 377), warna, SEMUA_PROV, garis=1, kotak=EXT_SUM)
     ke_inset = inset(k, pin)
     titik, sisi = {}, {}
+    masker = Image.new('1', (418, 338), 0); dm = ImageDraw.Draw(masker)   # wilayah berwarna di peta utama, 1 px = 1 pt
     for r in BANJIR:
         lon, lat = pusat(KODE[r[0]], r[1])
         di_peta = EXT_SUM[0] <= lon <= EXT_SUM[1] and EXT_SUM[3] <= lat <= EXT_SUM[2]
         titik[r[1]] = proj(lon, lat) if di_peta else ke_inset(pi(lon, lat))   # di luar peta utama: tunjuk ke inset Se-Indonesia
         sisi[r[1]] = sisi_sumatera(lon, lat) if di_peta else 'k'
-    pos = dict(tata_label({kb: t for kb, t in titik.items() if kb not in POS_BANJIR}, sisi), **POS_BANJIR)
+        f_ = next((f for f in geo(KODE[r[0]]) if f['properties']['kab'] == r[1]), None)
+        for poly in (cincin(f_) if f_ else []):
+            pts = [proj(x, y) for x, y in poly[0]]
+            dm.polygon([(x - 43.2, y - 102) for x, y in pts], fill=1)
+    stat = {r[1]: 'Belum surut' if not r[4] else 'Sudah surut' for r in BANJIR}
+    pos = {kb: (s_, y, 43.2 if s_ == 'k' else 320.4) for kb, (s_, y) in POS_BANJIR.items()}
+    pos.update(tata_label({kb: t for kb, t in titik.items() if kb not in POS_BANJIR}, sisi, stat, masker))
     for r in BANJIR:
-        sisi, yl = pos[r[1]]
-        label_peta(k, 43.2 if sisi == 'k' else 320.4, yl, r[1], 'Belum surut' if not r[4] else 'Sudah surut', not r[4], titik[r[1]])
+        _, yl, xl = pos[r[1]]
+        label_peta(k, xl, yl, r[1], stat[r[1]], not r[4], titik[r[1]])
     unsur_peta(k, 100 / 111 * 418 / (EXT_SUM[1] - EXT_SUM[0]))
     kartu(k, 43.2, 446.4, 206.1, len(belum), 'Belum dilaporkan surut (kab/kota)', True)
     kartu(k, 254.3, 446.4, 206.1, len(BANJIR) - len(belum), 'Sudah dilaporkan surut (kab/kota)', False)
@@ -512,29 +542,68 @@ def s_peta_longsor(Dk):
     kartu(k, 43.2, 446.4, 206.1, len(masih), 'Masih ditangani (kab/kota)', True)
     kartu(k, 254.3, 446.4, 206.1, len(kab) - len(masih), 'Tertangani (kab/kota)', False)
     # 12 Nov (pemeriksa: baris terlalu renggang): kolom kab/kota memuat lokasi kejadian di baris kedua
-    ringkas = len(LONGSOR) <= LONGSOR_RINGKAS
-    if ringkas:   # 16 Nov: kejadian sedikit, kerusakan dan penanganan masuk tabel ini; lampiran L2 tidak dibuat (D-39 ruang kosong)
-        kol = [('KAB/KOTA, LOKASI, KERUSAKAN, PENANGANAN', 262.5, 'l'), ('MULAI', 34, 'c'), ('KABAR', 36, 'c'), ('MENINGGAL', 50, 'c'),
-               ('HILANG', 34, 'c'), ('KK', 29, 'c')]
-    else:
-        kol = [('KAB/KOTA DAN LOKASI', 158, 'l'), ('MULAI', 34, 'c'), ('KABAR', 34, 'c'), ('MENINGGAL', 50, 'c'), ('HILANG', 38, 'c'),
-               ('KK', 36, 'c'), ('KONDISI', 95.5, 'c')]
+    if len(LONGSOR) <= LONGSOR_RINGKAS:   # pemilik 16 Nov 2026: tabel ringkas "jelek banget"; kejadian sedikit tampil sebagai kartu
+        kartu_longsor(k, md, hl)
+        return
+    kol = [('KAB/KOTA DAN LOKASI', 158, 'l'), ('MULAI', 34, 'c'), ('KABAR', 34, 'c'), ('MENINGGAL', 50, 'c'), ('HILANG', 38, 'c'),
+           ('KK', 36, 'c'), ('KONDISI', 95.5, 'c')]
     baris = []
     for prov in dict.fromkeys(r[0] for r in LONGSOR):
         baris.append(('prov', prov))
         for r in (r for r in LONGSOR if r[0] == prov):
-            if ringkas:
-                nama = ('runs', [R(r[1], 11, TEKS, True), '\n', R(r[2], 9.5, TEKS3), '\n', R('Kerusakan: ', 9.5, TEKS, True), R(r[7], 9.5, TEKS),
-                                 '\n', R('Masih ditangani. ' if r[10] else 'Tertangani. ', 9.5, MERAH if r[10] else BIRU_TUA, True),
-                                 R(r[8], 9.5, TEKS)]
-                        + [x for t in (r[11] if len(r) > 11 else []) for x in ('\n', R(t[0] + ': ', 9.5, TEKS, True), R(t[1], 9.5, TEKS))])
-                baris.append(('data', [nama, r[3] or '–', r[9], f0(r[4]), f0(r[5]), f0(r[6])]))
-            else:
-                nama = ('runs', [R(r[1], 9.19, TEKS, True), '\n', R(r[2], 7.5, TEKS3)])
-                baris.append(('data', [nama, r[3] or '–', r[9], f0(r[4]), f0(r[5]), f0(r[6]),
-                                       ('pil', 'Masih ditangani' if r[10] else 'Tertangani', r[10], 8.6)]))
-    baris.append(('total', [f'Total {len(LONGSOR)} kejadian', '', '', md, hl, f0(sum(r[6] or 0 for r in LONGSOR))] + ([] if ringkas else [''])))
-    tabel(k, 471.3, 101, kol, baris, maks=150 if ringkas else 46)
+            nama = ('runs', [R(r[1], 9.19, TEKS, True), '\n', R(r[2], 7.5, TEKS3)])
+            baris.append(('data', [nama, r[3] or '–', r[9], f0(r[4]), f0(r[5]), f0(r[6]),
+                                   ('pil', 'Masih ditangani' if r[10] else 'Tertangani', r[10], 8.6)]))
+    baris.append(('total', [f'Total {len(LONGSOR)} kejadian', '', '', md, hl, f0(sum(r[6] or 0 for r in LONGSOR)), '']))
+    tabel(k, 471.3, 101, kol, baris, maks=46)
+
+
+def kartu_longsor(k, md, hl):
+    """Satu kartu per kejadian (sampai LONGSOR_RINGKAS kejadian) di kanan peta longsor: kepala berwarna (nama, provinsi, status),
+    deret angka (meninggal, hilang, KK, mulai, kabar), lalu baris berlabel (lokasi, kerusakan, penanganan, keterangan tambahan).
+    Rincian lengkap tetap di lampiran L2."""
+    x0, w, y0, bawah = 471.3, 445.5, 101, 462
+    n = len(LONGSOR); gap = 10
+    h = min(200, (bawah - y0 - gap * (n - 1)) / n)
+    for i, r in enumerate(LONGSOR):
+        y = y0 + i * (h + gap)
+        masih = r[10]
+        warna, tint = (MERAH, PITA_MERAH) if masih else (BIRU, PITA_BIRU)
+        k.bulat(x0, y, w, h, PUTIH, GARIS_INSET, radius=5)
+        k.bulat(x0, y, w, 30, tint, radius=5)
+        k.kotak(x0, y + 22, w, 8, tint)   # kepala bersudut bulat hanya di atas
+        k.kotak(x0 + 8, y + 5, 20, 20, warna, bentuk=MSO_SHAPE.OVAL)
+        k.gambar(ikon('longsor'), x0 + 12.5, y + 9.5, 11, 11)
+        k.teks(x0 + 34, y, 300, 30, [R(r[1], 12, TEKS, True), R('   ' + r[0], 8.5, TEKS3)], bungkus=False)
+        st = 'Masih ditangani' if masih else 'Tertangani'
+        k.teks(x0 + w - 130, y, 120, 30, [R(st, 9, MERAH if masih else BIRU_TUA, True)], rata='r', bungkus=False)
+        # deret angka
+        ys = y + 36
+        sel = [('Meninggal', f0(r[4])), ('Hilang', f0(r[5])), ('KK terdampak', f0(r[6])), ('Mulai', r[3] or '–'), ('Kabar terakhir', r[9])]
+        lw = (w - 16) / len(sel)
+        for j, (lab, v) in enumerate(sel):
+            xx = x0 + 8 + j * lw
+            k.teks(xx, ys, lw, 18, [R(v, 14, NAVY if v != '–' else TEKS3, True)], rata='c', bungkus=False)
+            k.teks(xx, ys + 18, lw, 10, [R(lab, 7, TEKS3)], rata='c', bungkus=False)
+            if j:
+                k.garis(xx, ys + 3, xx, ys + 26, GARIS_INSET, 0.75)
+        k.garis(x0 + 8, ys + 34, x0 + w - 8, ys + 34, GARIS_INSET, 0.75)
+        # baris berlabel
+        isi = [('Lokasi', r[2]), ('Kerusakan', r[7]), ('Penanganan', r[8])] + list(r[11] if len(r) > 11 else [])
+        yy = ys + 40
+        for lab, teks in isi:
+            nb = B.baris_teks(teks, w - 100, 8.5)
+            hh = 11.5 * nb
+            if yy + hh > y + h - 4:
+                break
+            k.teks(x0 + 10, yy, 76, hh, [R(lab, 8.5, TEKS, True)], jangkar='t', bungkus=False)
+            k.teks(x0 + 88, yy, w - 98, hh, [R(teks, 8.5, TEKS)], jangkar='t', spasi=0.95)
+            yy += hh + 3
+    # pita total
+    k.bulat(x0, 470, w, 26, NAVY, radius=4)
+    k.teks(x0 + 10, 470, 200, 26, [R(f'Total {len(LONGSOR)} kejadian', 9.5, PUTIH, True)], bungkus=False)
+    ringkas = f'{md} meninggal dunia   {hl} hilang   {f0(sum(r[6] or 0 for r in LONGSOR))} KK terdampak'
+    k.teks(x0 + w - 300, 470, 290, 26, [R(ringkas, 9.5, PUTIH, True)], rata='r', bungkus=False)
 
 
 # ======================================================================== slide 3-4: rincian (pola deck 021126, gaya 091126)
@@ -608,7 +677,28 @@ def s_rincian_longsor(Dk):
                                    r[9]]))
     baris.append(('total', [f'Total {len(LONGSOR)} kejadian', '', '', sum(r[4] or 0 for r in LONGSOR), sum(r[5] or 0 for r in LONGSOR),
                             f0(sum(r[6] or 0 for r in LONGSOR)), '', '', '']))
-    tabel(k, 43.2, 140, kol, baris, bawah=500, pt=8.5, maks=46)
+    sedikit = len(LONGSOR) <= LONGSOR_RINGKAS
+    if not sedikit:
+        tabel(k, 43.2, 140, kol, baris, bawah=500, pt=8.5, maks=46)
+        return
+    # 16 Nov (D-39): kejadian sedikit, tabel di atas dan peta lokasi per kab/kota di bawahnya (provinsi, kab/kota disorot)
+    yb = tabel(k, 43.2, 140, kol, baris, bawah=330, pt=8.5, maks=46)
+    kab = list(dict.fromkeys((r[0], r[1]) for r in LONGSOR))
+    gap = 12; y0 = yb + 12; h = 500 - y0; w = (873.6 - gap * (len(kab) - 1)) / len(kab)
+    for i, (p, kb) in enumerate(kab):
+        x = 43.2 + i * (w + gap)
+        masih = any(r[10] for r in LONGSOR if (r[0], r[1]) == (p, kb))
+        kp = KODE[p]
+        pts = [pt for f in geo(kp) for poly in cincin(f) for pt in poly[0]]
+        lo0, lo1 = min(q[0] for q in pts), max(q[0] for q in pts); la0, la1 = min(q[1] for q in pts), max(q[1] for q in pts)
+        cx, cy = (lo0 + lo1) / 2, (la0 + la1) / 2
+        hh = h - 16; sk = max((lo1 - lo0) / w, (la1 - la0) / hh) * 1.08   # derajat per pt, provinsi utuh dengan sedikit ruang
+        ext = (cx - w / 2 * sk, cx + w / 2 * sk, cy + hh / 2 * sk, cy - hh / 2 * sk)
+        png = os.path.join(SINI, 'bahan', f'lokasi-longsor-{i + 1}.png')
+        f_ = gambar_peta(png, ext, (int(w * 4), int(hh * 4)), {(kp, kb): MERAH if masih else BIRU}, sorted({kp} | set(SEMUA_PROV)), garis=2)
+        k.bulat(x, y0, w, h, PUTIH, GARIS_INSET, radius=4)
+        k.teks(x + 8, y0 + 2, w - 16, 14, [R(kb, 9, TEKS, True), R(f'   {p}', 7.5, TEKS3)], bungkus=False)
+        k.gambar(png, x + 1, y0 + 15, w - 2, hh)
 
 
 def s_lampiran_ungsi(Dk, no='L3'):
@@ -881,7 +971,7 @@ def main():
         s_mitigasi(Dk)
     n_isi = 4 if gis else 2
     n_l1 = s_rincian_banjir(Dk)
-    n_l2 = 0 if len(LONGSOR) <= LONGSOR_RINGKAS else (s_rincian_longsor(Dk) or 1)
+    n_l2 = (s_rincian_longsor(Dk) or 1) if LONGSOR else 0   # pemilik 16 Nov 2026: lampiran rincian longsor dibuat bila ada kejadian
     s_lampiran_ungsi(Dk, 'L3' if n_l2 else 'L2')
     nama = MINGGU['nama']
     kerja = os.path.join(SINI, 'kerja')   # 16 Nov: hasil dibangun di sini lalu dipindah ke 'Revisi N' (PDF lama di folder bisa sedang dibuka)
@@ -893,7 +983,10 @@ def main():
     sb091 = {2: 'GIS BNPB, 9 Nov 2026 13.34 WIB', 3: 'BPBD Aceh; BPBD Sumut; DSP Gudang UPT Padang; BPBD Sumbar, Okt 2026; Poslog Kualanamu, 25 Okt 2026',
              4: 'Perkiraan dari jarak dan kecepatan rata-rata tiap moda; belum dikonfirmasi operator angkutan',
              5: 'GIS BNPB, 9 Nov 2026 13.34 WIB; Laporan Dit. Koordalops BNPB, 5 s.d. 9 Nov 2026'}
-    susun = [{'jenis': 'sampul'}, {'jenis': 'daftar-isi'}]
+    # pemilik 16 Nov 2026: sampul tanpa blok "Dipresentasikan oleh" dan tanpa pil "Disampaikan kepada" (pengecualian resmi deck.py)
+    TANPA = 'pemilik 16 Nov 2026: sampul laporan mingguan tanpa penyaji dan tanpa pil sasaran'
+    PENYAJI = {'nama': 'Tim Ahli dan Tim Sus IT BNPB', 'jabatan': 'Badan Nasional Penanggulangan Bencana'}
+    susun = [{'jenis': 'sampul', 'penyaji': None, 'tanpa_penyaji': TANPA}, {'jenis': 'daftar-isi'}]
     susun += [{'halaman': n, 'bagian': 1, 'sumber': sumber()} for n in (1, 2)]
     judul_bagian = ['Peta banjir dan longsor']   # pemilik 16 Nov 2026 (sebelumnya "Situasi banjir dan longsor sepekan")
     if gis:
@@ -910,7 +1003,7 @@ def main():
     susun += [{'halaman': n, 'sumber': sumber()} for n in range(n_isi + 1, n_isi + 1 + n_l1 + n_l2 + 1)]
     foto = os.path.join(LB, 'mingguan/2026-11-02/banjir', 'bahan', 'sampul.jpg').replace(os.sep, '/')
     kredit = 'Foto: Nasution007, CC BY-SA 4.0, Wikimedia Commons'
-    susun.append({'jenis': 'penutup', 'layout': 'putih', 'foto': [foto], 'kredit': kredit})
+    susun.append({'jenis': 'penutup', 'layout': 'putih', 'foto': [foto], 'kredit': kredit, 'penyaji': PENYAJI})   # penutup tetap bernama tim
     tetap = {}
     for no, b in enumerate(susun, 1):
         if b.get('bagian'):
@@ -924,8 +1017,7 @@ def main():
     keluar = lewat_deck.bingkai(
         isi, 'kajian', 'Laporan Situasi dan Kondisi Wilayah Terdampak Banjir dan Tanah Longsor',
         f'{HARI[a.weekday()]}, {a.day} {BLN[a.month]} s.d. {HARI[b_.weekday()]}, {tgl_l(b_)}', MINGGU['paparan'],
-        foto=([foto], kredit), penyaji={'nama': 'Tim Ahli dan Tim Sus IT BNPB', 'jabatan': 'Badan Nasional Penanggulangan Bencana'},
-        kepada='Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana', bagian=bagian, susun=susun,
+        foto=([foto], kredit), penyaji=None, tanpa_kepada=TANPA, bagian=bagian, susun=susun,
         spek_tambah={'panel_sisi': 'gelap', 'subjek_dokumen': 'Paparan Situasi Banjir dan Longsor Mingguan', 'skala_logo_bnpb': 1.1})
     # pemilik 16 Nov 2026: tiap keluaran masuk folder 'Revisi N' baru di folder minggu (PPTX dan PDF, nama tanpa (revN))
     import re, shutil
