@@ -20,7 +20,7 @@ export function pasangLainnya(nav) {
       tandai(); pulihkan();
       if (!burgerAktif() && luap()) {
         det = document.createElement("details"); det.className = "lainnya"; det.dataset.oto = "1";
-        det.innerHTML = `<summary>Lainnya</summary><div class="menu" role="menu"></div>`; nav.appendChild(det);
+        det.innerHTML = `<summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Lainnya</summary><div class="menu" role="menu"></div>`; nav.appendChild(det);
         const menu = det.querySelector(".menu");
         const tampak = () => [...nav.querySelectorAll(":scope > button")].filter(b => !b.hidden);
         /* pindahkan tab paling kanan sampai muat; paling sedikit satu tab tetap di deretan */
