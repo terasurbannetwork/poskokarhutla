@@ -278,14 +278,17 @@ def gambut_porsi(jalur, sel, ukuran=0.5):
     g = baca(jalur, {"features": []})
     lat_c = {}
     for f in g["features"]:
-        ring = f["geometry"]["coordinates"][0]
-        xs = [q[0] for q in ring]; ys = [q[1] for q in ring]
-        x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
-        for la in {math.floor(y0 / ukuran), math.floor(y1 / ukuran)}:
-            for lo in {math.floor(x0 / ukuran), math.floor(x1 / ukuran)}:
-                a = max(0.0, min(x1, (lo + 1) * ukuran) - max(x0, lo * ukuran)) * max(0.0, min(y1, (la + 1) * ukuran) - max(y0, la * ukuran))
-                k = f"{la * ukuran + ukuran / 2:g},{lo * ukuran + ukuran / 2:g}"
-                lat_c[k] = lat_c.get(k, 0.0) + a
+        geo = f["geometry"]
+        # Polygon: cincin luar coordinates[0]; MultiPolygon (29 fitur sejak peta Kementan 26 Okt 2026): cincin luar tiap bagian. Dulu TypeError dan neraca beku sejak 19 Okt.
+        cincin = [geo["coordinates"][0]] if geo["type"] == "Polygon" else [pg[0] for pg in geo["coordinates"]]
+        for ring in cincin:
+            xs = [q[0] for q in ring]; ys = [q[1] for q in ring]
+            x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
+            for la in {math.floor(y0 / ukuran), math.floor(y1 / ukuran)}:
+                for lo in {math.floor(x0 / ukuran), math.floor(x1 / ukuran)}:
+                    a = max(0.0, min(x1, (lo + 1) * ukuran) - max(x0, lo * ukuran)) * max(0.0, min(y1, (la + 1) * ukuran) - max(y0, la * ukuran))
+                    k = f"{la * ukuran + ukuran / 2:g},{lo * ukuran + ukuran / 2:g}"
+                    lat_c[k] = lat_c.get(k, 0.0) + a
     return {k: min(1.0, lat_c.get(k, 0.0) / ukuran ** 2) for k in sel}
 
 
@@ -498,6 +501,15 @@ KASUS = [  # dr, taw, p, kc, et0, hujan, irigasi -> (dr', eta, ks)
 
 
 def uji():
+    import tempfile
+    kotak = lambda x, y: [[x, y], [x + .25, y], [x + .25, y + .25], [x, y + .25], [x, y]]
+    gj = {"features": [{"geometry": {"type": "Polygon", "coordinates": [kotak(100.0, 1.0)]}},
+                       {"geometry": {"type": "MultiPolygon", "coordinates": [[kotak(100.25, 1.0)], [kotak(100.0, 1.25)]]}}]}
+    with tempfile.TemporaryDirectory() as d:
+        pj = os.path.join(d, "g.geojson")
+        json.dump(gj, open(pj, "w"))
+        gp = gambut_porsi(pj, ["1.25,100.25"])
+    assert abs(gp["1.25,100.25"] - 3 * .25 ** 2 / .5 ** 2) < 1e-9, gp   # Polygon + dua bagian MultiPolygon dalam satu sel 0,5 derajat
     for dr, taw, p, kc, e, h, ir, (d2, eta, ks) in KASUS:
         r = langkah(dr, taw, p, kc, e, h, ir)
         assert all(abs(a - b) < 1e-9 for a, b in zip(r, (d2, eta, ks))), (dr, r, (d2, eta, ks))
